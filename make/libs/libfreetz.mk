@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.3)
+$(call PKG_INIT_LIB, 0.2)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=c8ccab47ae8c08d3f72bb61113bee42b
+$(PKG)_SOURCE_MD5:=ac972cf14ad57ae040dfc66d32a1b8e5
 $(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -15,7 +15,8 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LIBFREETZ_DIR) \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -fPIC" \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
