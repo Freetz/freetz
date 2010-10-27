@@ -6,6 +6,7 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=hp-utils
 SUBDAEMON=hp-utils
 DAEMON_BIN=httpd-$SUBDAEMON
+DAEMON_ENV="PATH=$PATH"
 
 
 if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
@@ -16,4 +17,4 @@ fi
 
 homedir=/mod/pkg/${DAEMON}/usr/mww-${DAEMON}/
 
-exec $DAEMON_BIN "$@" -p "$HP_UTILS_PORT" -c /mod/etc/httpd-${DAEMON}.conf -h "$homedir" -r "hp-utils"
+exec env - $DAEMON_ENV $DAEMON_BIN "$@" -p "$HP_UTILS_PORT" -c /mod/etc/httpd-${DAEMON}.conf -h "$homedir" -r "hp-utils"

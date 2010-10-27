@@ -6,6 +6,7 @@ export LD_LIBRARY_PATH=/mod/lib
 DAEMON=rrdstats
 SUBDAEMON=rrd
 DAEMON_BIN=httpd-$SUBDAEMON
+DAEMON_ENV="PATH=$PATH"
 
 if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2
@@ -15,4 +16,4 @@ fi
 
 homedir=/mod/pkg/rrdstats/usr/mww-${SUBDAEMON}/
 
-exec $DAEMON_BIN "$@" -p "$RRDSTATS_WEBTCPPORT" -c /mod/etc/httpd-${SUBDAEMON}.conf -h "$homedir" -r "RRDstats"
+exec env - $DAEMON_ENV $DAEMON_BIN "$@" -p "$RRDSTATS_WEBTCPPORT" -c /mod/etc/httpd-${SUBDAEMON}.conf -h "$homedir" -r "RRDstats"
