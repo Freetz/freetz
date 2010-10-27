@@ -170,18 +170,17 @@ choice
 endchoice
 
 config FREETZ_TYPE_FON_WLAN_7270
-	depends on FREETZ_TYPE_FON_WLAN_7270_V1 && \
-		FREETZ_TYPE_FON_WLAN_7270_V2 && \
+	depends on \
+		FREETZ_TYPE_FON_WLAN_7270_V1 || \
+		FREETZ_TYPE_FON_WLAN_7270_V2 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3
-	select FREETZ_TARGET_IPV6_SUPPORT if \
-		FREETZ_TYPE_LANG_DE
 	bool
 
 config FREETZ_TYPE_LABOR
 	bool "Beta/Labor"
 	depends on \
-		FREETZ_TYPE_FON_WLAN_7270 && \
-		! FREETZ_TYPE_FON_WLAN_7270_V1
+		FREETZ_TYPE_FON_WLAN_7270_V2 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3
 	default n
 	help
 		Enable this to compile the mod based on an AVM "beta/labor" firmware.
