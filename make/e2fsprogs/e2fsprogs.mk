@@ -87,8 +87,11 @@ $(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
 $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -type f -name "*.c" \
 	-exec $(SED) -i -r -e 's|(\#define (_LARGEFILE(64)?_SOURCE))|\#ifndef \2\n\1\n\#endif|g' \{\} \+ ;
 
-
-ifneq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
+# we don't really build profiled libraries, we just misuse e2fsprogs' profile-target
+# to build static libraries with pic-objects inside, s. 010-pic_instead_of_profile.patch
+$(PKG)_CONFIGURE_OPTIONS += --enable-profile
+else
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --enable-elf-shlibs
 endif
@@ -98,15 +101,17 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(E2FSPROGS_DIR) \
+	$(SUBMAKE1) -C $(E2FSPROGS_DIR) \
 		INFO=true \
 		all \
 		$(E2FSPROGS_MAKE_ALL_EXTRAS)
 
 $($(PKG)_LIBS_STAGING_DIR): $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%: $($(PKG)_DIR)/lib/%
-# ensure no shared library from previous builds exists in STAGING_DIR
+# ensure no shared/static-pic library from previous builds exists in STAGING_DIR
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 	$(RM) $(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.so*)
+else
+	$(RM) $(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%_pic.a)
 endif
 	LIBSUBDIR=`echo $(notdir $@) | $(SED) -r -e 's|^lib||g' -e 's|[.]so[.].*$$||g' -e 's|[.]a$$||g'` \
 	&& \
@@ -142,6 +147,7 @@ $(pkg)-clean:
 	$(RM) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.so*) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.a) \
+		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%_pic.a) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/%.pc)
 	$(RM) -r \
 		$(subst com_err,et,$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/%))
