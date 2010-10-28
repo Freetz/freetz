@@ -17,6 +17,10 @@ EOF
 
 skin_body_begin() {
 	local title=$1 id=$2
+	local help=""
+	if [ -n "$_CGI_HELP" ]; then
+		help="&nbsp;<span class='help'>(<a href='$(html "$_CGI_HELP")' target='_blank'>$(lang de:"Hilfe" en:"Help")</a>)</span>"
+	fi
 	cat << EOF
 <table id="edge" border="0" cellspacing="0" cellpadding="0" width="$_cgi_total_width">
 <colgroup><col width="20"><col width="*"><col width="20"></colgroup>
@@ -24,7 +28,7 @@ skin_body_begin() {
 <td id="edge-top-left"></td>
 <td id="edge-top">
 <div class="version">$(html < /etc/.freetz-version)</div>
-<div class="titlebar"><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a> <span class="title">$title</span></div>
+<div class="titlebar"><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a>&nbsp;<span class="title">$title</span>$help</div>
 </td>
 <td id="edge-top-right"></td>
 </tr>

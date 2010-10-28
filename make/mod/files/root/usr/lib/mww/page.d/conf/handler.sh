@@ -21,10 +21,12 @@ else
 	PACKAGE_TITLE=${2:-$PACKAGE}
 fi
 
-[ -z "$ID" ] && ID=_index
-
 help="/packages/$PACKAGE"
-[ "$ID" = _index ] || help="$help/$ID"
+if [ -z "$ID" ]; then
+	ID=_index
+else
+	help="$help#$ID"
+fi
 
 cgi --id="conf:$PACKAGE/$ID" --help="$help" --style=mod/daemons.css
 

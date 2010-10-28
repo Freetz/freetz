@@ -6,7 +6,7 @@ set -- $(grep "^$PACKAGE|.*|$ID\$" "$EXTRA_REG")
 IFS=$OIFS
 sec=${3:-2}
 
-cgi --id="extra:$PACKAGE/$ID" --help="/packages/$PACKAGE/$ID"
+cgi --id="extra:$PACKAGE/$ID" --help="/packages/$PACKAGE#$ID"
 
 if [ "$sec_level" -gt "$sec" ]; then
 	cgi_begin 'Extras'
