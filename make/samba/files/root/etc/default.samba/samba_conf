@@ -1,12 +1,6 @@
 #!/bin/sh
 
-CFGCTL=$(which usbcfgctl)
-if [ -z "$CFGCTL" ]; then
-	CFGCTL=ar7cfgctl
-else
-	# usbcfgctl needs environment
-	[ -r /var/env.cache ] && . /var/env.cache
-fi
+. /etc/default.samba/modlibsamba
 
 
 echo "### global"
@@ -43,40 +37,7 @@ echo "### expert"
 
 echo "### default"
 
-if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" == "yes" ]; then
-
-	# AVM moved with 04.86 "password" to usbhost.users section
-	if cat /var/flash/usb.cfg 2>/dev/null \
-	  | sed -n '/^usbhost {/,/^}/p' \
-	  | sed -n '/^ *users {/,/^ *}/p' \
-	  | grep -q "^ *password = \".*\";$" \
-	  ; then
-		password_location="usbhost.users.password"
-	else
-		password_location="usbhost.password"
-	fi
-	password="$(echo $password_location | $CFGCTL -s)"
-
-	# AVM moved with 04.86 "readonly/local_write" to usbhost.acl_directories.access section
-	if cat /var/flash/usb.cfg 2>/dev/null \
-	  | sed -n '/^usbhost {/,/^}/p' \
-	  | sed -n '/^ *acl_directories {/,/^ *}/p' \
-	  | sed -n '/^ *access {/,/^ *}/p' \
-	  | grep -q "^ *local_write = .*;$" \
-	  ; then
-		if [ "$(echo usbhost.acl_directories.access.local_write | $CFGCTL -s)" == "yes" ]; then
-			readonly="no"
-		else
-			readonly="yes"
-		fi
-	else
-		if [ "$(echo usbhost.readonly | $CFGCTL -s)" == "yes" ]; then
-			readonly="yes"
-		else
-			readonly="no"
-		fi
-	fi
-
+if [ "$MODLIBSAMBA_ENABLED" == "yes" ]; then
 	for SHARE in /var/media/ftp/*; do
 		if [ -d "$SHARE" ]; then
 			SHORTNAME=$(basename "$SHARE" | sed s/-Partition-/-/)
@@ -84,8 +45,8 @@ if [ "$(echo usbhost.samba_server_enabled | $CFGCTL -s)" == "yes" ]; then
 			echo "[$SHORTNAME]"
 			echo " path = $SHARE"
 			echo " user = $SAMBA_SYSTEMUSER"
-			echo " read only = $readonly"
-			[ "$password" == "\"\"" ] && echo " guest ok = yes"
+			echo " read only = $MODLIBSAMBA_READONLY"
+			[ "$MODLIBSAMBA_PASSWORD" == "\"\"" ] && echo " guest ok = yes"
 			fi
 	done
 fi

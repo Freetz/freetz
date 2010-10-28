@@ -47,6 +47,23 @@ sec_end
 
 if [ -d /var/media/ftp ]; then
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+. /etc/default.samba/modlibsamba
+if [ "$MODLIBSAMBA_ENABLED" == "yes" ]; then
+	SAMBACONF_ENABLED="$(lang de:"an" en:"on")"
+else
+	SAMBACONF_ENABLED="$(lang de:"aus" en:"off")"
+fi
+if [ "$MODLIBSAMBA_PASSWORD" == "\"\"" ]; then
+	SAMBACONF_PASSWORD="$(lang de:"ohne" en:"without")"
+else
+	SAMBACONF_PASSWORD="$(lang de:"gesetzt" en:"set")"
+fi
+if [ "$MODLIBSAMBA_READONLY" == "yes" ]; then
+	SAMBACONF_READONLY="$(lang de:"lesen" en:"read")"
+else
+	SAMBACONF_READONLY="$(lang de:"schreiben" en:"write")"
+fi
+
 cat << EOF
 <p>
 $(lang de:"Standard Freigabe(n) bitte im AVM WebIF festlegen" en:"Standard share(s), please specify in AVM WebIF"):
@@ -56,9 +73,9 @@ $(lang de:"Standard Freigabe(n) bitte im AVM WebIF festlegen" en:"Standard share
 </ul>
 $(lang de:"Optionen" en:"Options"):
 <ul>
-<li>$(lang de:"Netzwerkspeicher/NAS (an/aus)" en:"NAS/network-storage (on/off)")</li>
-<li>$(lang de:"Zugriffsberechtigung Heimnetz (lesen/schreiben)" en:"Access Authorization local lan (read/write)")</li>
-<li>$(lang de:"Kennwortschutz (ohne/setzen)" en:"Password protection (without/set)")</li>
+<li>$(lang de:"Netzwerkspeicher/NAS (an/aus, momentan" en:"NAS/network-storage (on/off, currently") $SAMBACONF_ENABLED)</li>
+<li>$(lang de:"Zugriffsberechtigung Heimnetz (lesen/schreiben, momentan" en:"Access Authorization local lan (read/write, currently") $SAMBACONF_READONLY)</li>
+<li>$(lang de:"Kennwortschutz (ohne/setzen, momentan" en:"Password protection (without/set, currently") $SAMBACONF_PASSWORD)</li>
 </ul>
 </p>
 EOF
