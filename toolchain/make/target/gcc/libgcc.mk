@@ -8,5 +8,5 @@ endif
 
 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1: $(DEPEND)
 	mkdir -p $(dir $@)
-	-cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(dir $@)
+	-cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s.so* $(dir $@)
 	$(TARGET_STRIP) $@
