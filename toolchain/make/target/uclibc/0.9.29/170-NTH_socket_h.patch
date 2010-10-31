@@ -1,0 +1,21 @@
+From 5adbe137bfe433447fdfcdb281182f37fccc334e Mon Sep 17 00:00:00 2001
+From: Khem Raj <kraj@mvista.com>
+Date: Thu, 04 Dec 2008 19:57:38 +0000
+Subject: Remove __NTH from the declation.
+
+---
+diff --git libc/sysdeps/linux/mips/bits/socket.h libc/sysdeps/linux/mips/bits/socket.h
+index 39fadc6..05e26e6 100644
+--- libc/sysdeps/linux/mips/bits/socket.h
++++ libc/sysdeps/linux/mips/bits/socket.h
+@@ -268,8 +268,8 @@ struct cmsghdr
+ 			 + CMSG_ALIGN (sizeof (struct cmsghdr)))
+ #define CMSG_LEN(len)   (CMSG_ALIGN (sizeof (struct cmsghdr)) + (len))
+ 
+-extern struct cmsghdr * __NTH (__cmsg_nxthdr (struct msghdr *__mhdr,
+-				      struct cmsghdr *__cmsg)) __THROW;
++extern struct cmsghdr *__cmsg_nxthdr (struct msghdr *__mhdr,
++				      struct cmsghdr *__cmsg) __THROW;
+ #ifdef __USE_EXTERN_INLINES
+ # ifndef _EXTERN_INLINE
+ #  define _EXTERN_INLINE extern __inline
