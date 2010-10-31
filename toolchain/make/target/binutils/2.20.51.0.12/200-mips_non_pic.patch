@@ -1,6 +1,6 @@
 --- bfd/elf32-mips.c
 +++ bfd/elf32-mips.c
-@@ -1662,6 +1662,15 @@ static const struct ecoff_debug_swap mip
+@@ -1663,6 +1663,15 @@ static const struct ecoff_debug_swap mip
  #define elf_backend_plt_readonly	1
  #define elf_backend_plt_sym_val		_bfd_mips_elf_plt_sym_val
  
@@ -35,7 +35,7 @@
  #include "elf32-target.h"
 --- bfd/elfxx-mips.c
 +++ bfd/elfxx-mips.c
-@@ -707,6 +707,11 @@ static bfd *reldyn_sorting_bfd;
+@@ -713,6 +713,11 @@ static bfd *reldyn_sorting_bfd;
  /* Nonzero if ABFD is using NewABI conventions.  */
  #define NEWABI_P(abfd) (ABI_N32_P (abfd) || ABI_64_P (abfd))
  
@@ -47,7 +47,7 @@
  /* The IRIX compatibility level we are striving for.  */
  #define IRIX_COMPAT(abfd) \
    (get_elf_backend_data (abfd)->elf_backend_mips_irix_compat (abfd))
-@@ -719,6 +724,9 @@ static bfd *reldyn_sorting_bfd;
+@@ -725,6 +730,9 @@ static bfd *reldyn_sorting_bfd;
  #define MIPS_ELF_OPTIONS_SECTION_NAME(abfd) \
    (NEWABI_P (abfd) ? ".MIPS.options" : ".options")
  
@@ -57,7 +57,7 @@
  /* True if NAME is the recognized name of any SHT_MIPS_OPTIONS section.
     Some IRIX system files do not use MIPS_ELF_OPTIONS_SECTION_NAME.  */
  #define MIPS_ELF_OPTIONS_SECTION_NAME_P(NAME) \
-@@ -7688,7 +7696,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7667,7 +7675,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
  	      /* We need a stub, not a plt entry for the undefined
  		 function.  But we record it as if it needs plt.  See
@@ -68,7 +68,7 @@
  	      h->needs_plt = 1;
  	      h->type = STT_FUNC;
  	    }
-@@ -7794,6 +7804,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7774,6 +7784,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_32:
  	case R_MIPS_REL32:
  	case R_MIPS_64:
@@ -77,7 +77,7 @@
  	  /* In VxWorks executables, references to external symbols
  	     are handled using copy relocs or PLT stubs, so there's
  	     no need to add a .rela.dyn entry for this relocation.  */
-@@ -7849,11 +7861,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7829,11 +7841,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_GPREL16:
  	case R_MIPS_LITERAL:
  	case R_MIPS_GPREL32:
@@ -99,7 +99,7 @@
  	  /* This relocation describes the C++ object vtable hierarchy.
  	     Reconstruct it for later use during GC.  */
  	case R_MIPS_GNU_VTINHERIT:
-@@ -7876,20 +7898,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7856,20 +7878,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
        /* We must not create a stub for a symbol that has relocations
  	 related to taking the function's address.  This doesn't apply to
@@ -125,7 +125,7 @@
  	  }
  
        /* See if this reloc would need to refer to a MIPS16 hard-float stub,
-@@ -12605,7 +12627,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
+@@ -12589,7 +12611,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
  	  break;
  	}
      }
@@ -148,7 +148,7 @@
  extern bfd_boolean _bfd_mips_elf_finish_dynamic_sections
    (bfd *, struct bfd_link_info *);
  extern void _bfd_mips_elf_final_write_processing
-@@ -154,6 +157,15 @@ extern const struct bfd_elf_special_sect
+@@ -152,6 +155,15 @@ extern const struct bfd_elf_special_sect
  
  extern bfd_boolean _bfd_mips_elf_common_definition (Elf_Internal_Sym *);
  
@@ -166,7 +166,7 @@
  {
 --- gas/config/tc-mips.c
 +++ gas/config/tc-mips.c
-@@ -1897,6 +1897,12 @@ md_begin (void)
+@@ -1903,6 +1903,12 @@ md_begin (void)
  	as_bad (_("-G may not be used in position-independent code"));
        g_switch_value = 0;
      }
@@ -179,7 +179,7 @@
  
    if (! bfd_set_arch_mach (stdoutput, bfd_arch_mips, file_mips_arch))
      as_warn (_("Could not set architecture and machine"));
-@@ -11319,6 +11325,7 @@
+@@ -11330,6 +11336,7 @@
      OPTION_PDR,
      OPTION_NO_PDR,
      OPTION_MVXWORKS_PIC,
@@ -187,7 +187,7 @@
  #endif /* OBJ_ELF */
      OPTION_END_OF_ENUM    
    };
-@@ -11424,6 +11431,7 @@ struct option md_longopts[] =
+@@ -11437,6 +11444,7 @@ struct option md_longopts[] =
    {"mpdr", no_argument, NULL, OPTION_PDR},
    {"mno-pdr", no_argument, NULL, OPTION_NO_PDR},
    {"mvxworks-pic", no_argument, NULL, OPTION_MVXWORKS_PIC},
@@ -195,7 +195,7 @@
  #endif /* OBJ_ELF */
  
    {NULL, no_argument, NULL, 0}
-@@ -11864,6 +11872,11 @@ md_parse_option (int c, char *arg)
+@@ -11885,6 +11893,11 @@ md_parse_option (int c, char *arg)
      case OPTION_MVXWORKS_PIC:
        mips_pic = VXWORKS_PIC;
        break;

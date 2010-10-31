@@ -1,6 +1,6 @@
---- ld/emultempl/elf32.em.orig	2010-05-27 20:26:45.000000000 +0200
-+++ ld/emultempl/elf32.em	2010-06-02 11:09:17.050404917 +0200
-@@ -1254,6 +1254,8 @@
+--- ld/emultempl/elf32.em
++++ ld/emultempl/elf32.em
+@@ -1271,6 +1271,8 @@
  	      && command_line.rpath == NULL)
  	    {
  	      lib_path = (const char *) getenv ("LD_RUN_PATH");
@@ -9,7 +9,7 @@
  	      if (gld${EMULATION_NAME}_search_needed (lib_path, &n,
  						      force))
  		break;
-@@ -1481,6 +1483,8 @@
+@@ -1498,6 +1500,8 @@
    rpath = command_line.rpath;
    if (rpath == NULL)
      rpath = (const char *) getenv ("LD_RUN_PATH");
@@ -17,4 +17,4 @@
 +      rpath = NULL;
  
    for (abfd = link_info.input_bfds; abfd; abfd = abfd->link_next)
-     {
+     if (bfd_get_flavour (abfd) == bfd_target_elf_flavour)
