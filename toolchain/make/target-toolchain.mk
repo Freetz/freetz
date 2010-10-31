@@ -8,10 +8,7 @@ TARGET_TOOLCHAIN_SYSROOT=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase)/usr/
 
 include $(TOOLCHAIN_DIR)/make/target/*/*.mk
 
-TARGET_TOOLCHAIN := binutils gcc
-ifeq ($(strip $(FREETZ_TARGET_GXX)),y)
-	TARGET_TOOLCHAIN += uclibcxx
-endif
+TARGET_TOOLCHAIN := binutils gcc uclibcxx
 
 ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
 	TARGET_TOOLCHAIN += ccache
