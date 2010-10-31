@@ -1,0 +1,130 @@
+From 8145c8e9b5d984af10e4510cac7fba9e5ed3d8ae Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Mon, 20 Jul 2009 20:41:28 +0000
+Subject: It fixes the following warnings seen on mips build.
+
+libc/sysdeps/linux/mips/clone.S: Assembler messages:
+libc/sysdeps/linux/mips/clone.S:122: Warning: No .frame pseudo-op used in PIC code
+libc/sysdeps/linux/mips/clone.S:75: Warning: Pretending global symbol used as branch target is local.
+
+libc/sysdeps/linux/mips/crt1.S: Assembler messages:
+libc/sysdeps/linux/mips/crt1.S:134: Warning: No .cprestore pseudo-op used in PIC code
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+diff --git libc/sysdeps/linux/mips/clone.S libc/sysdeps/linux/mips/clone.S
+index 716cd99..15fa295 100644
+--- libc/sysdeps/linux/mips/clone.S
++++ libc/sysdeps/linux/mips/clone.S
+@@ -55,8 +55,8 @@ clone:
+ 
+ 	/* Sanity check arguments.  */
+ 	li		v0,EINVAL
+-	beqz		a0,error	/* No NULL function pointers.  */
+-	beqz		a1,error	/* No NULL stack pointers.  */
++	beqz		a0,L(error)	/* No NULL function pointers.  */
++	beqz		a1,L(error)	/* No NULL stack pointers.  */
+ 
+ #if _MIPS_SIM != _MIPS_SIM_ABI32
+ 	and		a1,~(16-1)	/* force alignment */
+@@ -71,8 +71,8 @@ clone:
+ 	li		v0,__NR_clone
+ 	syscall
+ 
+-	bnez		a3,error
+-	beqz		v0,__thread_start
++	bnez		a3,L(error)
++	beqz		v0,L(__thread_start)
+ 
+ 	/* Successful return from the parent */
+ #if _MIPS_SIM != _MIPS_SIM_ABI32
+@@ -82,7 +82,7 @@ clone:
+ 	j $31  ; nop
+ 
+ 	/* Something bad happened -- no child created */
+-error:
++L(error):
+ #if _MIPS_SIM != _MIPS_SIM_ABI32
+ 	.cpreturn
+ #endif
+@@ -104,12 +104,14 @@ error:
+    its own function so that we can terminate the stack trace with our
+    debug info.  */
+ 
+-.globl  __thread_start;
++	.globl  __thread_start;
+ 	.align 2;
+ 	.ent  __thread_start, 0;
+ 
+ __thread_start:
++L(__thread_start):
+ #if _MIPS_SIM == _MIPS_SIM_ABI32
++	.frame	sp, 24, sp
+ 	/* cp is already loaded.  */
+ 	.cprestore	16
+ #endif
+@@ -123,5 +125,10 @@ __thread_start:
+ 
+ 	/* Call _exit rather than doing it inline for breakpoint purposes.  */
+ 	move		a0,v0
+-	jal		HIDDEN_JUMPTARGET(_exit)
++#ifdef __PIC__
++        PTR_LA          t9,_exit
++        jalr            t9
++#else
++        jal             _exit
++#endif
+ 	.end  __thread_start
+diff --git libc/sysdeps/linux/mips/crt1.S libc/sysdeps/linux/mips/crt1.S
+index 2e38cf0..e851d52 100644
+--- libc/sysdeps/linux/mips/crt1.S
++++ libc/sysdeps/linux/mips/crt1.S
+@@ -81,10 +81,12 @@
+ #endif
+ 	.type	    main,@function
+ 	.type	    __uClibc_main,@function
++	.ent	__start
+ 
+ __start:
+ #ifdef __PIC__
+ #if _MIPS_SIM == _MIPS_SIM_ABI32
++	.frame	sp, 24, sp
+         .set noreorder
+ 	move $0, $31		/* Save old ra.  */
+ 	bal 10f			/* Find addr of cpload.  */
+@@ -93,6 +95,7 @@ __start:
+ 	.cpload $31
+ 	move $31, $0
+ 	.set reorder
++	.cprestore 16
+ #else
+ 	move $0, $31; /* Save old ra.  */
+ 	.set noreorder
+@@ -136,6 +138,7 @@ hlt:
+ 	/* Crash if somehow `__uClibc_main' returns anyway.  */
+ 	b   hlt
+ .size __start,.-__start
++.end __start
+ 
+ /* Define a symbol for the first piece of initialized data.  */
+ 	.data
+diff --git libc/sysdeps/linux/mips/sys/asm.h libc/sysdeps/linux/mips/sys/asm.h
+index 76f6af3..79d1439 100644
+--- libc/sysdeps/linux/mips/sys/asm.h
++++ libc/sysdeps/linux/mips/sys/asm.h
+@@ -97,6 +97,7 @@ l:							\
+ # define SETUP_GPX64_L(cp_reg, ra_save, l)
+ # define RESTORE_GP64
+ # define USE_ALT_CP(a)
++# define L(label) $L ## label
+ #else /* (_MIPS_SIM == _MIPS_SIM_ABI64) || (_MIPS_SIM == _MIPS_SIM_NABI32) */
+ /*
+  * For callee-saved gp calling convention:
+@@ -131,6 +132,7 @@ l:							\
+ /* Use alternate register for context pointer.  */
+ # define USE_ALT_CP(reg)	\
+ 		.cplocal reg
++# define L(label) .L ## label
+ #endif /* _MIPS_SIM != _MIPS_SIM_ABI32 */
+ 
+ /*
