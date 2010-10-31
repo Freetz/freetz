@@ -1,0 +1,53 @@
+From 91c46e2e60da0b43a1e8740729737318862f64eb Mon Sep 17 00:00:00 2001
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Tue, 6 Sep 2005 15:10:23 -0700
+Subject: [PATCH] [NETFILTER]: Don't increase master refcount on expectations
+
+As it's been discussed [1][2]. We shouldn't increase the master conntrack
+refcount for non-fulfilled conntracks. During the conntrack destruction,
+the expectations are always killed before the conntrack itself, this
+guarantees that there won't be any orphan expectation.
+
+[1]https://lists.netfilter.org/pipermail/netfilter-devel/2005-August/020783.html
+[2]https://lists.netfilter.org/pipermail/netfilter-devel/2005-August/020904.html
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Patrick McHardy <kaber@trash.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ net/ipv4/netfilter/ip_conntrack_core.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
+index e23e8ca..babce30 100644
+--- linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
++++ linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
+@@ -734,6 +734,9 @@ void ip_conntrack_unexpect_related(struct ip_conntrack_expect *exp)
+ 	write_unlock_bh(&ip_conntrack_lock);
+ }
+ 
++/* We don't increase the master conntrack refcount for non-fulfilled
++ * conntracks. During the conntrack destruction, the expectations are
++ * always killed before the conntrack itself */
+ struct ip_conntrack_expect *ip_conntrack_expect_alloc(struct ip_conntrack *me)
+ {
+ 	struct ip_conntrack_expect *new;
+@@ -744,17 +747,14 @@ struct ip_conntrack_expect *ip_conntrack_expect_alloc(struct ip_conntrack *me)
+ 		return NULL;
+ 	}
+ 	new->master = me;
+-	atomic_inc(&new->master->ct_general.use);
+ 	atomic_set(&new->use, 1);
+ 	return new;
+ }
+ 
+ void ip_conntrack_expect_put(struct ip_conntrack_expect *exp)
+ {
+-	if (atomic_dec_and_test(&exp->use)) {
+-		ip_conntrack_put(exp->master);
++	if (atomic_dec_and_test(&exp->use))
+ 		kmem_cache_free(ip_conntrack_expect_cachep, exp);
+-	}
+ }
+ 
+ static void ip_conntrack_expect_insert(struct ip_conntrack_expect *exp)

@@ -1,0 +1,27 @@
+From db5356da707a5e8414c6ea9e5d50ce3ef884afce Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 7 Oct 2005 16:43:55 -0700
+Subject: [PATCH] [PATCH] key: plug request_key_auth memleak (CAN-2005-3119)
+
+Plug request_key_auth memleak.  This can be triggered by unprivileged
+users, so is local DoS.
+
+Signed-off-by: Chris Wright <chrisw@osdl.org>
+Signed-Off-By: David Howells <dhowells@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+ security/keys/request_key_auth.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git linux-2.6.13.1/security/keys/request_key_auth.c linux-2.6.13.1/security/keys/request_key_auth.c
+index f222646..6ca5e50 100644
+--- linux-2.6.13.1/security/keys/request_key_auth.c
++++ linux-2.6.13.1/security/keys/request_key_auth.c
+@@ -96,6 +96,7 @@ static void request_key_auth_destroy(struct key *key)
+ 	kenter("{%d}", key->serial);
+ 
+ 	key_put(rka->target_key);
++	kfree(rka);
+ 
+ } /* end request_key_auth_destroy() */
+ 

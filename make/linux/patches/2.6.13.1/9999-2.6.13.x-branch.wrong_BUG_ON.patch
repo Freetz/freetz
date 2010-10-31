@@ -1,0 +1,70 @@
+From 99e56fc6ee51c66c0d248c6dea7a45d70e15604e Mon Sep 17 00:00:00 2001
+From: Alexander Nyberg <alexn@telia.com>
+Date: Wed, 14 Sep 2005 18:54:06 +0200
+Subject: [PATCH] [PATCH] Fix fs/exec.c:788 (de_thread()) BUG_ON
+
+It turns out that the BUG_ON() in fs/exec.c: de_thread() is unreliable
+and can trigger due to the test itself being racy.
+
+de_thread() does
+ 	while (atomic_read(&sig->count) > count) {
+	}
+	.....
+	.....
+	BUG_ON(!thread_group_empty(current));
+
+but release_task does
+	write_lock_irq(&tasklist_lock)
+	__exit_signal
+		(this is where atomic_dec(&sig->count) is run)
+	__exit_sighand
+	__unhash_process
+		takes write lock on tasklist_lock
+		remove itself out of PIDTYPE_TGID list
+	write_unlock_irq(&tasklist_lock)
+
+so there's a clear (although small) window between the
+atomic_dec(&sig->count) and the actual PIDTYPE_TGID unhashing of the
+thread.
+
+And actually there is no need for all threads to have exited at this
+point, so we simply kill the BUG_ON.
+
+Big thanks to Marc Lehmann who provided the test-case.
+
+Fixes Bug 5170 (http://bugme.osdl.org/show_bug.cgi?id=5170)
+
+Signed-off-by: Alexander Nyberg <alexn@telia.com>
+Cc: Roland McGrath <roland@redhat.com>
+Cc: Andrew Morton <akpm@osdl.org>
+Cc: Ingo Molnar <mingo@elte.hu>
+Acked-by: Andi Kleen <ak@suse.de>
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+Signed-off-by: Chris Wright <chrisw@osdl.org>
+---
+ fs/exec.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git linux-2.6.13.1/fs/exec.c linux-2.6.13.1/fs/exec.c
+index 222ab1c..6756827 100644
+--- linux-2.6.13.1/fs/exec.c
++++ linux-2.6.13.1/fs/exec.c
+@@ -751,8 +751,8 @@ static inline int de_thread(struct task_struct *tsk)
+         }
+ 
+ 	/*
+-	 * Now there are really no other threads at all,
+-	 * so it's safe to stop telling them to kill themselves.
++	 * There may be one thread left which is just exiting,
++	 * but it's safe to stop telling the group to kill themselves.
+ 	 */
+ 	sig->flags = 0;
+ 
+@@ -791,7 +791,6 @@ no_thread_group:
+ 			kmem_cache_free(sighand_cachep, oldsighand);
+ 	}
+ 
+-	BUG_ON(!thread_group_empty(current));
+ 	BUG_ON(!thread_group_leader(current));
+ 	return 0;
+ }

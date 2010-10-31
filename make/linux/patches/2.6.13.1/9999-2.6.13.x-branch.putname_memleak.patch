@@ -1,0 +1,53 @@
+From 5be2ff20d0750801919c784e10427ee98d6c5639 Mon Sep 17 00:00:00 2001
+From: Linus Torvalds <torvalds@osdl.org>
+Date: Fri, 7 Oct 2005 16:43:54 -0700
+Subject: [PATCH] [PATCH] Avoid 'names_cache' memory leak with CONFIG_AUDITSYSCALL
+
+Avoid 'names_cache' memory leak with CONFIG_AUDITSYSCALL
+
+The nameidata "last.name" is always allocated with "__getname()", and
+should always be free'd with "__putname()".
+
+Using "putname()" without the underscores will leak memory, because the
+allocation will have been hidden from the AUDITSYSCALL code.
+
+Arguably the real bug is that the AUDITSYSCALL code is really broken,
+but in the meantime this fixes the problem people see.
+
+Reported by Robert Derr, patch by Rick Lindsley.
+
+Acked-by: Al Viro <viro@ftp.linux.org.uk>
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+Signed-off-by: Chris Wright <chrisw@osdl.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+ fs/namei.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git linux-2.6.13.1/fs/namei.c linux-2.6.13.1/fs/namei.c
+index 6ec1f0f..6436879 100644
+--- linux-2.6.13.1/fs/namei.c
++++ linux-2.6.13.1/fs/namei.c
+@@ -1557,19 +1557,19 @@ do_link:
+ 	if (nd->last_type != LAST_NORM)
+ 		goto exit;
+ 	if (nd->last.name[nd->last.len]) {
+-		putname(nd->last.name);
++		__putname(nd->last.name);
+ 		goto exit;
+ 	}
+ 	error = -ELOOP;
+ 	if (count++==32) {
+-		putname(nd->last.name);
++		__putname(nd->last.name);
+ 		goto exit;
+ 	}
+ 	dir = nd->dentry;
+ 	down(&dir->d_inode->i_sem);
+ 	path.dentry = __lookup_hash(&nd->last, nd->dentry, nd);
+ 	path.mnt = nd->mnt;
+-	putname(nd->last.name);
++	__putname(nd->last.name);
+ 	goto do_last;
+ }
+ 
