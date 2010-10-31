@@ -1,0 +1,99 @@
+From 46447589470fd53abd88402bd1f562c0370aa361 Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 15 Sep 2007 09:12:59 +0000
+Subject: bug 1310: drop hidden aliases to data since some arches crap with this due to copy relocs
+
+---
+diff --git extra/Configs/Config.in extra/Configs/Config.in
+index 8eab394..0c277f9 100644
+--- extra/Configs/Config.in
++++ extra/Configs/Config.in
+@@ -498,6 +498,7 @@ config UCLIBC_HAS_PROGRAM_INVOCATION_NAME
+ config UCLIBC_HAS___PROGNAME
+ 	bool "Support for __progname"
+ 	default y
++	depends on UCLIBC_HAS_PROGRAM_INVOCATION_NAME
+ 	help
+ 	  Some packages (like openssh) like to peek into internal libc
+ 	  symbols to make their output a bit more user friendly.
+diff --git libc/misc/internals/__uClibc_main.c libc/misc/internals/__uClibc_main.c
+index 91c8a39..c9c16e1 100644
+--- libc/misc/internals/__uClibc_main.c
++++ libc/misc/internals/__uClibc_main.c
+@@ -104,14 +104,14 @@ extern void (*__fini_array_end []) (void) attribute_hidden;
+ # endif
+ #endif
+ 
+-attribute_hidden const char *__uclibc_progname = NULL;
+-#ifdef __UCLIBC_HAS___PROGNAME__
+-strong_alias (__uclibc_progname, __progname)
+-#endif
++attribute_hidden const char *__uclibc_progname = "";
+ #ifdef __UCLIBC_HAS_PROGRAM_INVOCATION_NAME__
+-attribute_hidden const char *__progname_full = NULL;
+-strong_alias (__uclibc_progname, program_invocation_short_name)
+-strong_alias (__progname_full, program_invocation_name)
++const char *program_invocation_short_name = "";
++const char *program_invocation_name = "";
++#endif
++#ifdef __UCLIBC_HAS___PROGNAME__
++weak_alias (program_invocation_short_name, __progname)
++weak_alias (program_invocation_name, __progname_full)
+ #endif
+ 
+ /*
+@@ -337,15 +337,14 @@ void __uClibc_main(int (*main)(int, char **, char **), int argc,
+     }
+ #endif
+ 
++    __uclibc_progname = *argv;
+ #ifdef __UCLIBC_HAS_PROGRAM_INVOCATION_NAME__
+-    __progname_full = *argv;
+-    __progname = strrchr(*argv, '/');
+-    if (__progname != NULL)
+-	++__progname;
++    program_invocation_name = *argv;
++    program_invocation_short_name = strrchr(*argv, '/');
++    if (program_invocation_short_name != NULL)
++	++program_invocation_short_name;
+     else
+-	__progname = __progname_full;
+-#else
+-    __uclibc_progname = *argv;
++	program_invocation_short_name = program_invocation_name;
+ #endif
+ 
+ #ifdef __UCLIBC_CTOR_DTOR__
+
+
+From 63342ff906c121b36440ae7a41449e87f5b5f689 Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 27 Jun 2008 19:12:50 +0000
+Subject: if argv[0] is NULL, dont try to parse it and subsequently crash ... found by running execve05 ltp test on blackfin ([#4194])
+
+---
+diff --git libc/misc/internals/__uClibc_main.c libc/misc/internals/__uClibc_main.c
+index 3511615..6c0dab7 100644
+--- libc/misc/internals/__uClibc_main.c
++++ libc/misc/internals/__uClibc_main.c
+@@ -339,12 +339,14 @@ void __uClibc_main(int (*main)(int, char **, char **), int argc,
+ 
+     __uclibc_progname = *argv;
+ #ifdef __UCLIBC_HAS_PROGRAM_INVOCATION_NAME__
+-    program_invocation_name = *argv;
+-    program_invocation_short_name = strrchr(*argv, '/');
+-    if (program_invocation_short_name != NULL)
+-	++program_invocation_short_name;
+-    else
+-	program_invocation_short_name = program_invocation_name;
++    if (*argv != NULL) {
++	program_invocation_name = *argv;
++	program_invocation_short_name = strrchr(*argv, '/');
++	if (program_invocation_short_name != NULL)
++	    ++program_invocation_short_name;
++	else
++	    program_invocation_short_name = program_invocation_name;
++    }
+ #endif
+ 
+ #ifdef __UCLIBC_CTOR_DTOR__
