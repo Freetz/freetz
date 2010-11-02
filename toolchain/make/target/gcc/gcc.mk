@@ -207,6 +207,9 @@ $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
+	# Link some files to make mklibs happy
+	ln -sf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/gcc/$(REAL_GNU_TARGET_NAME)/$(TARGET_TOOLCHAIN_GCC_VERSION)/libgcc_pic.a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgcc_s_pic.a; \
+	ln -sf $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/gcc/$(REAL_GNU_TARGET_NAME)/$(TARGET_TOOLCHAIN_GCC_VERSION)/libgcc.map $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgcc_s_pic.map
 	# strip libraries
 	-(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* libgcc_s.so.1 >/dev/null 2>&1)
 	# set up the symlinks to enable lying about target name
