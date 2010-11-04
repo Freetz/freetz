@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-external_dir="$(cat /etc/external.dir 2>/dev/null || echo /var/media/ftp/uStor01/external)"
+. /mod/etc/conf/mod.cfg
 
 cgi --id=firmware_update
 cgi_begin '$(lang de:"external-Datei Update" en:"external-file update")'
@@ -32,7 +32,7 @@ $(lang de:"hochgeladen werden." en:"upload the appropriate firmware afterwards."
 
 <form action="do_external.cgi" method=POST enctype="multipart/form-data" onsubmit="return CheckInput(document.forms[0]);">
 	<p>$(lang de:"external-Datei" en:"External-file") <input type=file size=50 id="ex_file"></p>
-	<p>$(lang de:"Zielverzeichnis" en:"Target directory") <input type="textfield" size=50 name="the_target" value="$external_dir"></p>
+	<p>$(lang de:"Zielverzeichnis" en:"Target directory") <input type="textfield" size=50 name="the_target" value="$MOD_EXTERNAL_DIRECTORY"></p>
 	<input type=submit value="$(lang de:"Datei hochladen" en:"Upload file")" style="width:200px">
 </form>
 EOF

@@ -10,6 +10,10 @@ cat << EOF
 
 <h1>$(lang de:"Automatisch Dienste starten/stoppen beim ein-/aush&auml;ngen" en:"Automatically start/stop services at (un)mount")</h1>
 <p>
+$(lang de:"Verzeichnis von external" en:"Directory of external"):
+<input type="text" name="external_directory" size="55" maxlength="250" value="$(html "$MOD_EXTERNAL_DIRECTORY")">
+</p>
+<p>
 <input type="hidden" name="external_freetz_services" value="no">
 <input id="e1" type="checkbox" name="external_freetz_services" value="yes"$external_freetz_services_chk>
 <label for="e1">$(lang de:"Folgende externalisierte Freetz-Dienste behandeln" en:"Manage these externalised services of Freetz")</label>: $_services

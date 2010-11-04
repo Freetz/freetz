@@ -15,11 +15,11 @@ start() {
 	echo "rc.mod version $(cat /etc/.freetz-version)"
 
 	# Basic Packages
-	for pkg in crond swap telnetd webcfg websrv dsld ftpd smbd multid; do
+	for pkg in crond swap telnetd webcfg external websrv dsld ftpd smbd multid; do
 		local pkg_default=/etc/default.$pkg
 		[ -d "$pkg_default" -a ! -e "/mod${pkg_default}" ] && ln -s "$pkg_default" "/mod${pkg_default}"
 		local rc="/etc/init.d/rc.$pkg"
-		[ -e "/mod$rc" ] || ln -s "$rc" "/mod$rc"
+		[ -e "$rc" -a ! -e "/mod$rc" ] && ln -s "$rc" "/mod$rc"
 	done
 
 	[ -d /tmp/flash ] || /usr/bin/modload
@@ -74,7 +74,7 @@ modreg_file() {
 
 register() {
 	modreg cgi mod "Freetz"
-	modreg conf mod webcfg "$(lang de:"Weboberfläche" en:"Web interface")"
+	modreg conf mod webcfg "$(lang de:"Weboberflï¿½che" en:"Web interface")"
 
 	modreg_file  .profile    0
 	modreg_file  hosts       1

@@ -10,11 +10,6 @@ indent() {
 
 EXTERNAL_FILE=$1
 echo "[external] Processing file $EXTERNAL_FILE"
-#EXTERNAL_TARGET=$(cat "$EXTERNAL_FILE" | tar -xO ./.external)
-#if [ $? -ne 0 ]; then
-#	echo "[external] FAIL, invalid file"
-#	exit 1
-#fi
 EXTERNAL_TARGET=$NAME
 echo "[external] Target directory: $EXTERNAL_TARGET"
 
