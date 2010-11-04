@@ -1,3 +1,5 @@
+. /usr/lib/cgi-bin/mod/modlibcgi
+
 start_stop() {
 	local startORstop=$1
 	local package=$2
@@ -114,7 +116,7 @@ if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 	fi
 fi
 
-pkg_pre_$hook | html
+pkg_pre_$hook | html | highlight
 
 if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 	apply_changes stop "$package"
@@ -138,8 +140,9 @@ if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 		echo
 		modsave flash
 	} | html
-fi
+fi | while read line; do echo $line | highlight; done
 
-pkg_post_$hook | html
+
+pkg_post_$hook | html | highlight
 
 echo '</pre>'

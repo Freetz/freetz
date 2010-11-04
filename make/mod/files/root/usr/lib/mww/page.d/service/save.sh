@@ -1,3 +1,5 @@
+. /usr/lib/cgi-bin/mod/modlibcgi
+
 cgi --style=mod/daemons.css
 REG=/mod/etc/reg/daemon.reg
 eval "$(modcgi cmd service)"
@@ -28,7 +30,7 @@ esac
 cgi_begin "$message ..."
 echo "<div id='result'>"
 echo -n "<p>$message:</p><pre class='log'>"
-"$rcfile" "$SERVICE_CMD" | html
+"$rcfile" "$SERVICE_CMD" | html | highlight
 echo '</pre>'
 echo "</div>"
 
