@@ -74,7 +74,7 @@ modreg_file() {
 
 register() {
 	modreg cgi mod "Freetz"
-	modreg conf mod webcfg "$(lang de:"Weboberflï¿½che" en:"Web interface")"
+	modreg conf mod webcfg "$(lang de:"Weboberfläche" en:"Web interface")"
 
 	modreg_file  .profile    0
 	modreg_file  hosts       1
