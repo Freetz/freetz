@@ -58,11 +58,11 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 		if [ `ls "$EXTERNAL_TEMP" 2>/dev/null | wc -l` -gt 0 ]; then
 			mv "$EXTERNAL_TEMP" "$EXTERNAL_TARGETDIR/"
 			EXTERNAL_MSG="moved"
-			[ "$EXTERNAL_DOWNLOADER" == "y" ] && echo "$FILENAME $FILEPERM /mod/etc/external$EXTERNAL_LINKSUBDIR" >> $OUT_DIR/$OUT_CONF
+			[ "$EXTERNAL_DOWNLOADER" == "y" ] && echo "$FILENAME $FILEPERM /mod/external$EXTERNAL_LINKSUBDIR" >> $OUT_DIR/$OUT_CONF
 		else
 			EXTERNAL_MSG="not found"
 		fi
-		ln -s "/mod/etc/external$EXTERNAL_LINKSUBDIR/$FILENAME" "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
+		ln -s "/mod/external$EXTERNAL_LINKSUBDIR/$FILENAME" "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
 		echo2 "$EXTERNAL_FILE... $EXTERNAL_MSG & linked"
 	fi
 done
