@@ -2,7 +2,7 @@ OPTIONS_CFG="${FILESYSTEM_MOD_DIR}/etc/options.cfg"
 
 echo1 "creating options.cfg"
 
-if [ "$FREETZ_DONT_USE_DOT_CONFIG_FOR_OPTIONS" != "y" ]; then
+if [ "$FREETZ_CREATE_SEPARATE_OPTIONS_CFG" != "y" ]; then
 	echo2 "by symlinking it to .config"
 	ln -snf .config $OPTIONS_CFG
 else
@@ -16,4 +16,3 @@ else
 		fi
 	done
 fi
-
