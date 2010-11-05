@@ -2380,6 +2380,7 @@ config FREETZ_REMOVE_FREETZ_INFO
 config FREETZ_REMOVE_DOT_CONFIG
 	bool "Remove .config from image"
 	depends on FREETZ_SHOW_ADVANCED
+	select FREETZ_DONT_USE_DOT_CONFIG_FOR_OPTIONS
 	default n
 	help
 		Usually, a stripped version of the FREETZ configuration file .config
@@ -2389,6 +2390,15 @@ config FREETZ_REMOVE_DOT_CONFIG
 		but if you want to save a few bytes in your image and
 		you are sure that removing this file is the last chance to have
 		a working image, you can do it on your own risk!
+
+config FREETZ_DONT_USE_DOT_CONFIG_FOR_OPTIONS
+	bool "Don't use .config for options.cfg"
+	depends on FREETZ_SHOW_ADVANCED
+	depends on ! FREETZ_REMOVE_DOT_CONFIG
+	default y
+	help
+		Don't replace options.cfg by a link to .config
+		This needs about 162 Bytes
 endmenu
 
 config FREETZ_AVMPLUGINS_ENABLED
