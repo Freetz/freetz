@@ -24,6 +24,13 @@ GCC_SITE:=@GNU/gcc/gcc-$(GCC_VERSION)
 GCC_DIR:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)
 GCC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gcc
 
+ifeq ($(GCC_VERSION),4.2.4)
+GCC_MD5:=d79f553e7916ea21c556329eacfeaa16
+endif
+ifeq ($(GCC_VERSION),4.4.5)
+GCC_MD5:=44b3192c4c584b9be5243d9e8e7e0ed1
+endif
+
 GCC_INITIAL_PREREQ=
 GCC_STAGING_PREREQ=
 GCC_TARGET_PREREQ=
@@ -82,7 +89,7 @@ endef
 
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
 $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) .config $(GCC_SOURCE) $(GCC_SITE)
+	$(DL_TOOL) $(DL_DIR) .config $(GCC_SOURCE) $(GCC_SITE) $(GCC_MD5)
 
 gcc-unpacked: $(GCC_DIR)/.unpacked
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)

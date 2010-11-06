@@ -9,6 +9,14 @@ BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 BINUTILS_DIR1:=$(BINUTILS_DIR)-build
 
+ifeq ($(BINUTILS_VERSION),2.18)
+BINUTILS_MD5:=9d22ee4dafa3a194457caf4706f9cf01
+endif
+ifeq ($(BINUTILS_VERSION),2.20.51.0.12)
+BINUTILS_MD5:=f3a1f0535935ddae61ded2bcd3c7ce09
+endif
+
+
 # We do not rely on the host's gmp/mpfr but use a known working one
 BINUTILS_HOST_PREREQ=
 BINUTILS_TARGET_PREREQ=
@@ -32,7 +40,7 @@ endif
 binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(BINUTILS_SOURCE)), $(strip $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)))
 $(DL_DIR)/$(BINUTILS_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) .config $(BINUTILS_SOURCE) $(BINUTILS_SITE)
+	$(DL_TOOL) $(DL_DIR) .config $(BINUTILS_SOURCE) $(BINUTILS_SITE) $(BINUTILS_MD5)
 endif
 
 binutils-unpacked: $(BINUTILS_DIR)/.unpacked

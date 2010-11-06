@@ -10,12 +10,19 @@ GDB_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdb-$(GDB_VERSION)
 GDB_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gdb
 GDB_DESTDIR:=$(TARGET_UTILS_DIR)/usr/bin
 
+ifeq ($(GDB_VERSION),6.6)
+GDB_MD5:=a4df41d28dd514d64e8ccbfe125fd9a6
+endif
+ifeq ($(GDB_VERSION),6.8)
+GDB_MD5:=c9da266b884fb8fa54df786dfaadbc7a
+endif
+
 $(GDB_DESTDIR):
 	mkdir -p $@
 
 gdb-source: $(DL_DIR)/$(GDB_SOURCE)
 $(DL_DIR)/$(GDB_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) .config $(GDB_SOURCE) $(GDB_SITE)
+	$(DL_TOOL) $(DL_DIR) .config $(GDB_SOURCE) $(GDB_SITE) $(GDB_MD5)
 
 gdb-unpacked: $(GDB_DIR)/.unpacked
 $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
