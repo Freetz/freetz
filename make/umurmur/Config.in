@@ -1,7 +1,8 @@
 config FREETZ_PACKAGE_UMURMUR
 	bool "umurmur 0.2.4"
 	select FREETZ_LIB_libconfig
-	select FREETZ_LIB_libpolarssl
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_UMURMUR_USE_POLARSSL
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_UMURMUR_USE_POLARSSL
 	default n
 	help
 		umurmur is a minimalistic Mumble server primarily
@@ -14,3 +15,11 @@ config FREETZ_PACKAGE_UMURMUR
 		of systems usually only has a flash memory for disk.
 		umurmur supports a subset of the features of Murmur.
 		http://code.google.com/p/umurmur/
+
+config FREETZ_PACKAGE_UMURMUR_USE_POLARSSL
+	bool "Use polarssl instead of openssl"
+	depends on FREETZ_PACKAGE_UMURMUR
+	select FREETZ_LIB_libpolarssl
+	default n
+	help
+		Use lightweight PolarSSL as SSL library.
