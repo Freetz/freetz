@@ -179,6 +179,7 @@ config FREETZ_TYPE_FON_WLAN_7270
 config FREETZ_TYPE_LABOR
 	bool "Beta/Labor"
 	depends on \
+		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7270
 	default n
 	help
@@ -192,10 +193,10 @@ choice
 	config FREETZ_TYPE_LABOR_PREVIEW
 		bool "Preview"
 		depends on \
+			FREETZ_TYPE_FON_WLAN_7170 || \
 			FREETZ_TYPE_FON_WLAN_7270
-		select FREETZ_TARGET_IPV6_SUPPORT
 		help
-			Phone Firmware
+			Labor Preview
 endchoice
 
 config FREETZ_TYPE_ALIEN_HARDWARE
@@ -379,6 +380,7 @@ config FREETZ_TYPE_STRING
 	default "7141"						if FREETZ_TYPE_FON_WLAN_7141
 	default "7150"						if FREETZ_TYPE_FON_7150
 	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
+	default "7170_preview"					if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PREVIEW
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
 	default "7270_v1"					if FREETZ_TYPE_FON_WLAN_7270_V1 && ! FREETZ_TYPE_LABOR
 	default "7270_v1_preview"				if FREETZ_TYPE_FON_WLAN_7270_V1 && FREETZ_TYPE_LABOR_PREVIEW
@@ -449,7 +451,8 @@ comment "Replace kernel (currently not available)"
 config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
-		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
+		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
+		! (FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_PREVIEW)
 	default y
 
 config FREETZ_REPLACE_KERNEL
@@ -584,6 +587,7 @@ config FREETZ_HAS_AVM_INETD
 	default y		if \
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_WLAN_3270_V3 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7570
@@ -1943,6 +1947,8 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7170 && \
 											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.86-18618.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
+											FREETZ_TYPE_LABOR_PREVIEW
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.76.image"			if	FREETZ_TYPE_FON_WLAN_7170 && \
 											FREETZ_TYPE_LANG_A_CH
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.en.58.04.82.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
