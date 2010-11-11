@@ -1,8 +1,8 @@
---- etc/init.d/rc.S.orig	2009-08-02 13:15:18.000000000 +0000
-+++ etc/init.d/rc.S	2009-08-02 13:15:19.000000000 +0000
-@@ -1061,26 +1007,6 @@
- ##########################################################################################
- echo 1 > /proc/sys/net/ipv4/ip_forward
+--- etc/init.d/rc.S.orig	2010-11-11 17:48:48.024417294 +0100
++++ etc/init.d/rc.S	2010-11-11 17:48:48.074417294 +0100
+@@ -1133,26 +1133,6 @@
+ echo 0 > /proc/sys/net/ipv6/conf/default/autoconf
+ fi
  ##########################################################################################
 -## Defaults fuellen
 -##########################################################################################
@@ -27,7 +27,7 @@
  ## Module init (phase 1)
  ##########################################################################################
  ##########################################################################################
-@@ -1332,31 +1258,6 @@
+@@ -1413,35 +1393,6 @@
  modprobe ubik2 takeover_printk=1 $ubik2_params
  cat /dev/debug &
  fi
@@ -39,6 +39,10 @@
 -## modprobe capi # module sind im kernel einkompiliert
 -isdn_fbox=`ls -R /lib/modules/ | grep 'isdn_fbox.*ko'`
 -isdn_fbox=${isdn_fbox%.ko}
+-echo AVM_PRINTK >/dev/debug
+-if ! `ps | grep -v grep | grep -q "cat /dev/debug"` ; then
+-cat /dev/debug &
+-fi
 -## VAG2 + VAG3
 -isdn_params=""
 -## ########### Annex A DTMF/EC settings ###########

@@ -29,7 +29,15 @@ echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170
 
 echo2 "patching rc.S and rc.conf"
-if isFreetzType LANG_DE || isFreetzType ANNEX_B; then
+SCRIPTPATCHER="${TOOLS_DIR}/scriptpatcher.sh"
+RC_S_FILE="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+
+${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "copy_telefonie_defaults" -o ${RC_S_FILE}
+${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "link_telefonie_defaults" -o ${RC_S_FILE}
+
+if isFreetzType LABOR_PREVIEW; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170_preview.patch" || exit 2
+elif isFreetzType LANG_DE || isFreetzType ANNEX_B; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170.patch" || exit 2
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170_a_ch.patch" || exit 2
