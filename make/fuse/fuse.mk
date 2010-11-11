@@ -27,11 +27,13 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-util
 $(PKG)_CONFIGURE_OPTIONS += --disable-example
 $(PKG)_CONFIGURE_OPTIONS += --disable-mtab
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
+$(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
 
 ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13_1)),y)
 $(PKG)_CONFIGURE_OPTIONS += --enable-kernel-module
 $(PKG)_CONFIGURE_OPTIONS += --disable-auto-modprobe
-$(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
+else
+$(PKG)_CONFIGURE_OPTIONS += --disable-kernel-module
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
