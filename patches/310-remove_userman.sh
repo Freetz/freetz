@@ -4,7 +4,7 @@ rm_files ${FILESYSTEM_MOD_DIR}/bin/userman* \
 	 $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman) \
 	 $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*')
 for j in userlist useradd; do
-	for i in $(find "${HTML_LANG_MOD_DIR}" -type f | xargs grep -l $j); do
+	for i in $(find "${HTML_LANG_MOD_DIR}" -type f -name '*.html' | xargs grep -l $j); do
 		modsed "/$j/d" $i
 	done
 done
