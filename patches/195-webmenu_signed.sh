@@ -3,7 +3,7 @@ echo1 "applying webmenu signed patch"
 
 
 if isFreetzType LANG_DE; then
-	if isFreetzType 7240 7270 && ! isFreetzType LABOR; then
+	if isFreetzType 3270 3270_V3 7240 7270; then
 		modsed "s/^g_coninf_data.FirmwareSigned = .*/g_coninf_data.FirmwareSigned = \"1\"/g" ${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua
 	else
 		modsed "s/^.*var signed.*/\tvar signed = 1;/g" ${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/home/home.js
