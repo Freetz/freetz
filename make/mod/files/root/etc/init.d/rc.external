@@ -41,6 +41,7 @@ exec_rcs() {
 		EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES"
 	fi
 	if [ ! -d "$EXTERNAL_DIRECTORY" ]; then
+		rm -rf "$EXTERNAL_LINK" 2>/dev/null
 		echo "Directory could not be found, failed." | tee -a $LOG_FILE
 		exit 1
 	fi
