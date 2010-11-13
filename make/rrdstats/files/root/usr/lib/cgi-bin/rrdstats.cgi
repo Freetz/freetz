@@ -78,14 +78,16 @@ if [ -x /etc/init.d/rc.inetd ]; then
 cat << EOF
 <p>
 <input type="hidden" name="web_inetd" value="no">
-<input id="a3" type="checkbox" name="web_inetd" value="yes"$web_inetd_chk><label for="a3">$(lang de:"Aktivieren inetd Nutzung" en:"Activate inetd support")</label>
+<input id="a3" type="checkbox" name="web_inetd" value="yes"$web_inetd_chk>
+<label for="a3">$(lang de:"Aktivieren inetd Nutzung" en:"Activate inetd support")</label>
 </p>
 EOF
 fi
 cat << EOF
 <p>
 <input type="hidden" name="web_auth" value="no">
-<input id="a1" type="checkbox" name="web_auth" value="yes"$web_auth_chk><label for="a1">$(lang de:"Authentifizierung" en:"Authentication").&nbsp;</label>
+<input id="a1" type="checkbox" name="web_auth" value="yes"$web_auth_chk>
+<label for="a1">$(lang de:"Authentifizierung" en:"Authentication").&nbsp;</label>
 $(lang de:"Benutzer" en:"User"):
 <input type="text" name="web_user" size="15" maxlength="15" value="$(html "$RRDSTATS_WEB_USER")">
 $(lang de:"Passwort" en:"Password"):
@@ -304,14 +306,16 @@ if [ -x /etc/init.d/rc.inetd ]; then
 cat << EOF
 <p>
 <input type="hidden" name="digitemp_inetd" value="no">
-<input id="a4" type="checkbox" name="digitemp_inetd" value="yes"$digitemp_inetd_chk><label for="a4">$(lang de:"Aktivieren inetd Nutzung" en:"Activate inetd support")</label>
+<input id="a4" type="checkbox" name="digitemp_inetd" value="yes"$digitemp_inetd_chk>
+<label for="a4">$(lang de:"Aktivieren inetd Nutzung" en:"Activate inetd support")</label>
 </p>
 EOF
 fi
 cat << EOF
 <p>
 <input type="hidden" name="digitemp_auth" value="no">
-<input id="a2" type="checkbox" name="digitemp_auth" value="yes"$digitemp_auth_chk><label for="a2">$(lang de:"Authentifizierung" en:"Authentication").&nbsp;</label>
+<input id="a2" type="checkbox" name="digitemp_auth" value="yes"$digitemp_auth_chk>
+<label for="a2">$(lang de:"Authentifizierung" en:"Authentication").&nbsp;</label>
 $(lang de:"Benutzer" en:"User"):
 <input type="text" name="digitemp_user" size="15" maxlength="15" value="$(html "$RRDSTATS_DIGITEMP_USER")">
 $(lang de:"Passwort" en:"Password"):
