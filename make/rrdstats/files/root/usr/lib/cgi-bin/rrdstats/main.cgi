@@ -140,28 +140,28 @@ generate_graph() {
 				DEF:ip=$FILE:ip:LAST                                     \
 				                                                         \
 				LINE3:tx$GREEN:"Upstream    (min/avg/max/cur)[dBmV]\: "  \
-				GPRINT:tx:MIN:"\t%3.0lf%s"                               \
-				GPRINT:tx:AVERAGE:"\t%3.0lf%s"                           \
-				GPRINT:tx:MAX:"\t%3.0lf%s"                               \
-				GPRINT:tx:LAST:"\t%3.0lf%s\n"                            \
+				GPRINT:tx:MIN:" %5.1lf%s"                               \
+				GPRINT:tx:AVERAGE:"\t%5.1lf%s"                           \
+				GPRINT:tx:MAX:"\t%5.1lf%s"                               \
+				GPRINT:tx:LAST:"\t%5.1lf%s\n"                            \
 				                                                         \
 				LINE3:sn$YELLOW:"S-N Ratio   (min/avg/max/cur)[dB]\:   " \
-				GPRINT:sn:MIN:"\t%3.0lf%s"                               \
-				GPRINT:sn:AVERAGE:"\t%3.0lf%s"                           \
-				GPRINT:sn:MAX:"\t%3.0lf%s"                               \
-				GPRINT:sn:LAST:"\t%3.0lf%s\n"                            \
+				GPRINT:sn:MIN:" %3.0lf%s  "                               \
+				GPRINT:sn:AVERAGE:"\t%3.0lf%s  "                           \
+				GPRINT:sn:MAX:"\t%3.0lf%s  "                               \
+				GPRINT:sn:LAST:"\t%3.0lf%s  \n"                            \
 				                                                         \
 				LINE3:rx$RED:"Downstream  (min/avg/max/cur)[dBmV]\: "    \
-				GPRINT:rx:MIN:"\t%3.0lf%s"                               \
-				GPRINT:rx:AVERAGE:"\t%3.0lf%s"                           \
-				GPRINT:rx:MAX:"\t%3.0lf%s"                               \
-				GPRINT:rx:LAST:"\t%3.0lf%s\n"                            \
+				GPRINT:rx:MIN:" %5.1lf%s"                               \
+				GPRINT:rx:AVERAGE:"\t%5.1lf%s"                           \
+				GPRINT:rx:MAX:"\t%5.1lf%s"                               \
+				GPRINT:rx:LAST:"\t%5.1lf%s\n"                            \
 				                                                         \
 				LINE3:ip$BLUE:"Computers   (min/avg/max/cur)[count]\:"   \
-				GPRINT:ip:MIN:"\t%3.0lf%s"                               \
-				GPRINT:ip:AVERAGE:"\t%3.0lf%s"                           \
-				GPRINT:ip:MAX:"\t%3.0lf%s"                               \
-				GPRINT:ip:LAST:"\t%3.0lf%s\n"                            > /dev/null
+				GPRINT:ip:MIN:" %3.0lf%s  "                               \
+				GPRINT:ip:AVERAGE:"\t%3.0lf%s  "                           \
+				GPRINT:ip:MAX:"\t%3.0lf%s  "                               \
+				GPRINT:ip:LAST:"\t%3.0lf%s  \n"                            > /dev/null
 			fi
 			;;
 		tt1)
