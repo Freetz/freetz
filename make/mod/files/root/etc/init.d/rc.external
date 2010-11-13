@@ -7,6 +7,7 @@ CONF_NAME=mod
 local LOG_FILE=/var/log/$DAEMON.log
 local EXTERNAL_LINK=/mod/external
 local EXTERNAL_DIRECTORY=`echo $MOD_EXTERNAL_DIRECTORY|sed 's/\/*$//'`
+local EXTERNAL_CUSTOM_FILE=/tmp/flash/mod/rc.external
 
 check_date() {
 	echo -n "Waiting for time-synchronisation:" | tee -a $LOG_FILE
@@ -50,7 +51,7 @@ exec_rcs() {
 			[ -x /etc/init.d/rc.$pkg ] && /etc/init.d/rc.$pkg $1 2>&1 | tee -a $LOG_FILE
 		fi
 	done
-	[ -f /tmp/flash/mod/rc.external ] && . /tmp/flash/mod/rc.external $1 2>&1 | tee -a $LOG_FILE
+	[ -f $EXTERNAL_CUSTOM_FILE ] && . $EXTERNAL_CUSTOM_FILE $1 2>&1 | tee -a $LOG_FILE
 }
 
 
@@ -88,7 +89,24 @@ if [ $# -ge 2 ]; then
 	echo "$EXTERNAL_DIRECTORY" | grep -q "$2" || exit 1
 fi
 
+create_custom_file() {
+cat << EOF > $EXTERNAL_CUSTOM_FILE
+#!/bin/sh
 case $1 in
+	load)
+		;;
+	unload)
+		;;
+esac
+EOF
+}
+
+case $1 in
+	""|load)
+		modreg file mod rc_external rc.external 0 rc_external
+
+		[ ! -e $EXTERNAL_CUSTOM_FILE ] && create_custom_file
+		;;
 	start)
 		start
 		;;
