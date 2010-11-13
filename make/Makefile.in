@@ -427,16 +427,16 @@ $(PKG)_FREETZ_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/.$(pkg)_config
 $(PKG)_FREETZ_CONFIG_TEMP:=$($(PKG)_MAKE_DIR)/.$(pkg)_config.temp
 endef
 
+_HASH_SIGN:=\#
 ## check for changed suboptions
 # should only be called if $(PKG)_CONFIG_SUBOPTS is defined
 define PKG_UNPACKED_CHECK_SUBOPTS__INT
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(OPT)=$(if $($(OPT)),y,n)";) : ) > $($(PKG)_FREETZ_CONFIG_TEMP)
+	@($(foreach OPT,$($(PKG)_CONFIG_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_HASH_SIGN) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_TEMP)
 	@diff -q $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE) || \
 		cp $($(PKG)_FREETZ_CONFIG_TEMP) $($(PKG)_FREETZ_CONFIG_FILE)
 	@$(RM) $($(PKG)_FREETZ_CONFIG_TEMP)
 $($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
-
 endef
 
 PKG_BIN_UNPACKED=$(eval $(PKG_UNPACKED_BIN__INT))
