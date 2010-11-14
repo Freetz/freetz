@@ -55,6 +55,8 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-security-context=no
 $(PKG)_CONFIGURE_OPTIONS += --with-kernel-headers=$(FREETZ_BASE_DIR)/$(KERNEL_HEADERS_DIR)
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-dpd
+$(PKG)_CONFIGURE_OPTIONS += --enable-frag
 $(PKG)_CONFIGURE_OPTIONS += --enable-natt
 $(PKG)_CONFIGURE_OPTIONS += --enable-hybrid
 $(PKG)_CONFIGURE_OPTIONS += --enable-security-context=no 
@@ -62,6 +64,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-adminport
 $(PKG)_CONFIGURE_OPTIONS += --without-libradius
 $(PKG)_CONFIGURE_OPTIONS += --without-libpam
 $(PKG)_CONFIGURE_OPTIONS += --without-readline
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -1,5 +1,5 @@
 --- eval.c.orig	1995-01-30 19:51:46.000000000 +0100
-+++ eval.c	2010-11-14 13:00:58.000000000 +0100
++++ eval.c	2010-11-14 19:55:36.000000000 +0100
 @@ -98,6 +98,28 @@
      }
  }
@@ -30,7 +30,7 @@
  
  char   *eval_client(request)
 --- fix_options.c.orig	1997-04-08 02:29:19.000000000 +0200
-+++ fix_options.c	2010-11-14 13:00:58.000000000 +0100
++++ fix_options.c	2010-11-14 19:55:36.000000000 +0100
 @@ -11,6 +11,9 @@
  
  #include <sys/types.h>
@@ -75,7 +75,7 @@
      if ((ip = getprotobyname("ip")) != 0)
  	ipproto = ip->p_proto;
 --- hosts_access.3.orig	1996-02-11 17:01:27.000000000 +0100
-+++ hosts_access.3	2010-11-14 13:00:58.000000000 +0100
++++ hosts_access.3	2010-11-14 19:55:36.000000000 +0100
 @@ -3,7 +3,7 @@
  hosts_access, hosts_ctl, request_init, request_set \- access control library
  .SH SYNOPSIS
@@ -104,7 +104,7 @@
  hosts_ctl() is a wrapper around the request_init() and hosts_access()
  routines with a perhaps more convenient interface (though it does not
 --- hosts_access.5.orig	1995-01-30 19:51:47.000000000 +0100
-+++ hosts_access.5	2010-11-14 13:00:58.000000000 +0100
++++ hosts_access.5	2010-11-14 19:55:36.000000000 +0100
 @@ -8,11 +8,11 @@
  impatient reader is encouraged to skip to the EXAMPLES section for a
  quick introduction.
@@ -217,7 +217,7 @@
  tcpdchk(8), tcpdmatch(8), test programs.
  .SH BUGS
 --- hosts_access.c.orig	1997-02-12 02:13:23.000000000 +0100
-+++ hosts_access.c	2010-11-14 13:00:58.000000000 +0100
++++ hosts_access.c	2010-11-14 19:55:36.000000000 +0100
 @@ -24,7 +24,13 @@
  /* System libraries. */
  
@@ -644,7 +644,7 @@
 +}
 +#endif /* DISABLE_WILDCARD_MATCHING */
 --- hosts_options.5.orig	1994-12-28 17:42:29.000000000 +0100
-+++ hosts_options.5	2010-11-14 13:00:58.000000000 +0100
++++ hosts_options.5	2010-11-14 19:55:36.000000000 +0100
 @@ -2,10 +2,8 @@
  .SH NAME
  hosts_options \- host access control language extensions
@@ -704,7 +704,7 @@
  contents to the client. Newline characters are replaced by
  carriage-return newline, and %<letter> sequences are expanded (see
 --- inetcf.c.orig	1997-02-12 02:13:24.000000000 +0100
-+++ inetcf.c	2010-11-14 13:00:58.000000000 +0100
++++ inetcf.c	2010-11-14 19:55:36.000000000 +0100
 @@ -26,13 +26,17 @@
    * guesses. Shorter names follow longer ones.
    */
@@ -724,14 +724,14 @@
  };
  
 --- libwrap.lds.orig	1970-01-01 01:00:00.000000000 +0100
-+++ libwrap.lds	2010-11-14 13:00:58.000000000 +0100
++++ libwrap.lds	2010-11-14 19:55:36.000000000 +0100
 @@ -0,0 +1,4 @@
 +{
 +  local:
 +	aclexec_matched;
 +};
 --- Makefile.orig	1997-03-21 19:27:21.000000000 +0100
-+++ Makefile	2010-11-14 13:00:58.000000000 +0100
++++ Makefile	2010-11-14 19:55:36.000000000 +0100
 @@ -21,7 +21,7 @@
  	@echo "	dynix epix esix freebsd hpux irix4 irix5 irix6 isc iunix"
  	@echo "	linux machten mips(untested) ncrsvr4 netbsd next osf power_unix_211"
@@ -956,7 +956,7 @@
  workarounds.o: cflags
  workarounds.o: tcpd.h
 --- misc.c.orig	1996-02-11 17:01:30.000000000 +0100
-+++ misc.c	2010-11-14 13:00:58.000000000 +0100
++++ misc.c	2010-11-14 19:55:36.000000000 +0100
 @@ -58,9 +58,31 @@
  {
      char   *cp;
@@ -1008,7 +1008,7 @@
 +}
 +
 --- options.c.orig	1996-02-11 17:01:32.000000000 +0100
-+++ options.c	2010-11-14 13:00:58.000000000 +0100
++++ options.c	2010-11-14 19:55:36.000000000 +0100
 @@ -41,12 +41,14 @@
  #include <netinet/in.h>
  #include <netdb.h>
@@ -1098,7 +1098,7 @@
  
  /* ARGSUSED */
 --- percent_m.c.orig	1994-12-28 17:42:37.000000000 +0100
-+++ percent_m.c	2010-11-14 13:00:58.000000000 +0100
++++ percent_m.c	2010-11-14 19:55:36.000000000 +0100
 @@ -29,11 +29,15 @@
  
      while (*bp = *cp)
@@ -1116,7 +1116,7 @@
  	    cp += 2;
  	} else {
 --- percent_x.c.orig	1994-12-28 17:42:38.000000000 +0100
-+++ percent_x.c	2010-11-14 13:00:58.000000000 +0100
++++ percent_x.c	2010-11-14 19:55:36.000000000 +0100
 @@ -63,6 +63,8 @@
  		ch == 'n' ? eval_hostname(request->client) :
  		ch == 'N' ? eval_hostname(request->server) :
@@ -1127,7 +1127,7 @@
  		ch == 'u' ? eval_user(request) :
  		ch == '%' ? "%" : (tcpd_warn("unrecognized %%%c", ch), "");
 --- refuse.c.orig	1994-12-28 17:42:40.000000000 +0100
-+++ refuse.c	2010-11-14 13:00:58.000000000 +0100
++++ refuse.c	2010-11-14 19:55:36.000000000 +0100
 @@ -25,7 +25,12 @@
  void    refuse(request)
  struct request_info *request;
@@ -1142,7 +1142,7 @@
      /* NOTREACHED */
  }
 --- rfc931.c.orig	1995-01-02 16:11:34.000000000 +0100
-+++ rfc931.c	2010-11-14 13:00:58.000000000 +0100
++++ rfc931.c	2010-11-14 19:55:36.000000000 +0100
 @@ -33,7 +33,7 @@
  
  int     rfc931_timeout = RFC931_TIMEOUT;/* Global so it can be changed */
@@ -1311,8 +1311,45 @@
  	fclose(fp);
      }
      STRN_CPY(dest, result, STRING_LENGTH);
+--- safe_finger.8.orig	1970-01-01 01:00:00.000000000 +0100
++++ safe_finger.8	2010-11-14 19:55:36.000000000 +0100
+@@ -0,0 +1,34 @@
++.TH SAFE_FINGER 8 "21th June 1997" Linux "Linux Programmer's Manual"
++.SH NAME
++safe_finger \- finger client wrapper that protects against nasty stuff
++from finger servers
++.SH SYNOPSIS
++.B safe_finger [finger_options]
++.SH DESCRIPTION
++The
++.B safe_finger
++command protects against nasty stuff from finger servers. Use this
++program for automatic reverse finger probes from the
++.B tcp_wrapper
++.B (tcpd)
++, not the raw finger command. The
++.B safe_finger
++command makes sure that the finger client is not run with root
++privileges. It also runs the finger client with a defined PATH
++environment.
++.B safe_finger
++will also protect you from problems caused by the output of some
++finger servers. The problem: some programs may react to stuff in
++the first column. Other programs may get upset by thrash anywhere
++on a line. File systems may fill up as the finger server keeps
++sending data. Text editors may bomb out on extremely long lines.
++The finger server may take forever because it is somehow wedged.
++.B safe_finger
++takes care of all this badness.
++.SH SEE ALSO
++.BR hosts_access (5),
++.BR hosts_options (5),
++.BR tcpd (8)
++.SH AUTHOR
++Wietse Venema, Eindhoven University of Technology, The Netherlands.
++
 --- safe_finger.c.orig	1994-12-28 17:42:42.000000000 +0100
-+++ safe_finger.c	2010-11-14 13:00:58.000000000 +0100
++++ safe_finger.c	2010-11-14 19:55:36.000000000 +0100
 @@ -26,21 +26,24 @@
  #include <stdio.h>
  #include <ctype.h>
@@ -1341,7 +1378,7 @@
  void    cleanup(sig)
  int     sig;
 --- scaffold.c.orig	1997-03-21 19:27:24.000000000 +0100
-+++ scaffold.c	2010-11-14 13:00:58.000000000 +0100
++++ scaffold.c	2010-11-14 19:55:36.000000000 +0100
 @@ -17,6 +17,7 @@
  #include <arpa/inet.h>
  #include <netdb.h>
@@ -1490,7 +1527,7 @@
  
  /* check_path - examine accessibility */
 --- scaffold.h.orig	1994-12-31 18:19:20.000000000 +0100
-+++ scaffold.h	2010-11-14 13:00:58.000000000 +0100
++++ scaffold.h	2010-11-14 19:55:36.000000000 +0100
 @@ -4,6 +4,10 @@
    * Author: Wietse Venema, Eindhoven University of Technology, The Netherlands.
    */
@@ -1503,7 +1540,7 @@
  extern int check_dns();
  extern int check_path();
 --- shell_cmd.c.orig	1994-12-28 17:42:44.000000000 +0100
-+++ shell_cmd.c	2010-11-14 13:00:58.000000000 +0100
++++ shell_cmd.c	2010-11-14 19:55:36.000000000 +0100
 @@ -20,6 +20,11 @@
  #include <stdio.h>
  #include <syslog.h>
@@ -1590,7 +1627,7 @@
  
  /* do_child - exec command with { stdin, stdout, stderr } to /dev/null */
 --- socket.c.orig	1997-03-21 19:27:25.000000000 +0100
-+++ socket.c	2010-11-14 13:00:58.000000000 +0100
++++ socket.c	2010-11-14 19:55:36.000000000 +0100
 @@ -24,13 +24,22 @@
  #include <sys/types.h>
  #include <sys/param.h>
@@ -1896,7 +1933,7 @@
      /*
       * Eat up the not-yet received datagram. Some systems insist on a
 --- tcpd.8.orig	1996-02-21 16:39:16.000000000 +0100
-+++ tcpd.8	2010-11-14 13:00:58.000000000 +0100
++++ tcpd.8	2010-11-14 19:55:36.000000000 +0100
 @@ -12,7 +12,11 @@
  TLI.  Functionality may be limited when the protocol underneath TLI is
  not an internet protocol.
@@ -1976,7 +2013,7 @@
  syslog.conf(5), format of the syslogd control file.
  inetd.conf(5), format of the inetd control file.
 --- tcpd.c.orig	1996-02-11 17:01:33.000000000 +0100
-+++ tcpd.c	2010-11-14 13:00:58.000000000 +0100
++++ tcpd.c	2010-11-14 19:55:36.000000000 +0100
 @@ -120,7 +120,12 @@
  
      /* Report request and invoke the real daemon program. */
@@ -1991,7 +2028,7 @@
      (void) execv(path, argv);
      syslog(LOG_ERR, "error: cannot execute %s: %m", path);
 --- tcpdchk.8.orig	1995-01-08 17:00:31.000000000 +0100
-+++ tcpdchk.8	2010-11-14 13:00:58.000000000 +0100
++++ tcpdchk.8	2010-11-14 19:55:36.000000000 +0100
 @@ -1,7 +1,7 @@
  .TH TCPDCHK 8
  .SH NAME
@@ -2038,7 +2075,7 @@
  .na
  .nf
 --- tcpdchk.c.orig	1997-02-12 02:13:25.000000000 +0100
-+++ tcpdchk.c	2010-11-14 13:00:58.000000000 +0100
++++ tcpdchk.c	2010-11-14 19:55:36.000000000 +0100
 @@ -22,6 +22,9 @@
  
  #include <sys/types.h>
@@ -2193,7 +2230,7 @@
  	if (pat[strlen(pat) - 1] == '.') {
  	    tcpd_warn("%s: domain or host name ends in dot", pat);
 --- tcpd.h.orig	1996-03-19 16:22:25.000000000 +0100
-+++ tcpd.h	2010-11-14 13:00:58.000000000 +0100
++++ tcpd.h	2010-11-14 19:55:36.000000000 +0100
 @@ -4,6 +4,15 @@
    * Author: Wietse Venema, Eindhoven University of Technology, The Netherlands.
    */
@@ -2343,7 +2380,7 @@
 +
 +#endif
 --- tcpdmatch.8.orig	1996-02-11 17:01:36.000000000 +0100
-+++ tcpdmatch.8	2010-11-14 13:00:58.000000000 +0100
++++ tcpdmatch.8	2010-11-14 19:55:36.000000000 +0100
 @@ -1,7 +1,7 @@
  .TH TCPDMATCH 8
  .SH NAME
@@ -2414,7 +2451,7 @@
  .na
  .nf
 --- tcpdmatch.c.orig	1996-02-11 17:01:36.000000000 +0100
-+++ tcpdmatch.c	2010-11-14 13:00:58.000000000 +0100
++++ tcpdmatch.c	2010-11-14 19:55:36.000000000 +0100
 @@ -57,7 +57,11 @@
  int     argc;
  char  **argv;
@@ -2537,7 +2574,7 @@
  }
  
 --- tli.c.orig	1997-03-21 19:27:26.000000000 +0100
-+++ tli.c	2010-11-14 13:00:58.000000000 +0100
++++ tli.c	2010-11-14 19:55:36.000000000 +0100
 @@ -65,8 +65,13 @@
  void    tli_host(request)
  struct request_info *request;
@@ -2598,8 +2635,39 @@
  		break;
  	}
      }
+--- try-from.8.orig	1970-01-01 01:00:00.000000000 +0100
++++ try-from.8	2010-11-14 19:55:36.000000000 +0100
+@@ -0,0 +1,28 @@
++.TH TRY-FROM 8 "21th June 1997" Linux "Linux Programmer's Manual"
++.SH NAME
++try-from \- test program for the tcp_wrapper
++.SH SYNOPSIS
++.B try-from
++.SH DESCRIPTION
++The
++.B try\-from
++command can be called via a remote shell command to find out
++if the hostname and address are properly recognized
++by the
++.B tcp_wrapper
++library, if username lookup works, and (SysV only) if the TLI
++on top of IP heuristics work. Diagnostics are reported through
++.BR syslog (3)
++and redirected to stderr.
++
++Example:
++
++rsh host /some/where/try\-from
++
++.SH SEE ALSO
++.BR hosts_access (5),
++.BR hosts_options (5),
++.BR tcpd (8)
++.SH AUTHOR
++Wietse Venema, Eindhoven University of Technology, The Netherlands.
++
 --- update.c.orig	1994-12-28 17:42:56.000000000 +0100
-+++ update.c	2010-11-14 13:00:58.000000000 +0100
++++ update.c	2010-11-14 19:55:36.000000000 +0100
 @@ -46,10 +46,18 @@
  	    request->fd = va_arg(ap, int);
  	    continue;
@@ -2620,8 +2688,8 @@
  
  	    /*
 --- weak_symbols.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ weak_symbols.c	2010-11-14 13:00:58.000000000 +0100
-@@ -0,0 +1,11 @@
++++ weak_symbols.c	2010-11-14 19:55:36.000000000 +0100
+@@ -0,0 +1,12 @@
 + /*
 +  * @(#) weak_symbols.h 1.5 99/12/29 23:50
 +  * 
@@ -2629,12 +2697,13 @@
 +  */
 +
 +#ifdef HAVE_WEAKSYMS
++#include "tcpd.h"
 +#include <syslog.h>
 +int deny_severity = LOG_WARNING;
 +int allow_severity = SEVERITY; 
 +#endif
 --- workarounds.c.orig	1996-03-19 16:22:26.000000000 +0100
-+++ workarounds.c	2010-11-14 13:00:58.000000000 +0100
++++ workarounds.c	2010-11-14 19:55:36.000000000 +0100
 @@ -8,7 +8,7 @@
    */
  
