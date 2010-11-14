@@ -269,6 +269,7 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 		--enable-threads \
 		--disable-libgomp \
 		--disable-multilib \
+		--disable-fixed-point \
 		$(GCC_SHARED_LIBGCC) \
 		$(GCC_DECIMAL_FLOAT) \
 		$(DISABLE_NLS) \
