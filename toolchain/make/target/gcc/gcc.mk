@@ -129,6 +129,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked $(GCC_INITIAL_PREREQ)
 		--disable-libmudflap \
 		--disable-multilib \
 		--disable-tls \
+		--disable-fixed-point \
 		$(GCC_DECIMAL_FLOAT) \
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
@@ -195,6 +196,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ)
 		--disable-multilib \
 		--disable-libmudflap \
 		--disable-tls \
+		--disable-fixed-point \
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
 		$(GCC_SHARED_LIBGCC) \
