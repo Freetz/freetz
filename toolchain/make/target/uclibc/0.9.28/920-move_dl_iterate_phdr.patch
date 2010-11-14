@@ -1,0 +1,362 @@
+--- ldso/ldso/dl-elf.c	2005-08-18 00:49:41.000000000 +0200
++++ ldso/ldso/dl-elf.c	2010-11-14 00:00:00.000000000 +0100
+@@ -864,26 +864,3 @@
+ {
+ 	__dl_parse_dynamic_info(dpnt, dynamic_info, debug_addr, load_off);
+ }
+-#ifdef __USE_GNU
+-#if ! defined LIBDL || (! defined PIC && ! defined __PIC__)
+-int
+-__dl_iterate_phdr (int (*callback) (struct dl_phdr_info *info, size_t size, void *data), void *data)
+-{
+-	struct elf_resolve *l;
+-	struct dl_phdr_info info;
+-	int ret = 0;
+-
+-	for (l = _dl_loaded_modules; l != NULL; l = l->next) {
+-		info.dlpi_addr = l->loadaddr;
+-		info.dlpi_name = l->libname;
+-		info.dlpi_phdr = l->ppnt;
+-		info.dlpi_phnum = l->n_phent;
+-		ret = callback (&info, sizeof (struct dl_phdr_info), data);
+-		if (ret)
+-			break;
+-	}
+-	return ret;
+-}
+-strong_alias(__dl_iterate_phdr, dl_iterate_phdr);
+-#endif
+-#endif
+--- ldso/ldso/dl-hash.c	2005-08-18 00:49:41.000000000 +0200
++++ ldso/ldso/dl-hash.c	2010-11-14 00:00:00.000000000 +0100
+@@ -32,14 +32,6 @@
+ 
+ 
+ /* Various symbol table handling functions, including symbol lookup */
+-
+-/*
+- * This is the start of the linked list that describes all of the files present
+- * in the system with pointers to all of the symbol, string, and hash tables,
+- * as well as all of the other good stuff in the binary.
+- */
+-struct elf_resolve *_dl_loaded_modules = NULL;
+-
+ /*
+  * This is the list of modules that are loaded when the image is first
+  * started.  As we add more via dlopen, they get added into other
+--- ldso/ldso/dl-symbols.c	1970-01-01 01:00:00.000000000 +0100
++++ ldso/ldso/dl-symbols.c	2010-11-14 00:00:00.000000000 +0100
+@@ -0,0 +1,21 @@
++/*
++ * This contains all symbols shared between
++ * dynamic linker ld.so and into static libc
++ *
++ * Copyright (c) 2008  STMicroelectronics Ltd
++ * Author: Carmelo Amoroso <carmelo.amoroso@st.com>
++ *
++ *
++ * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
++ *
++ */
++
++/*
++ * This is the start of the linked list that describes all of the files present
++ * in the system with pointers to all of the symbol, string, and hash tables,
++ * as well as all of the other good stuff in the binary.
++ */
++#include <ldso.h>
++
++struct elf_resolve *_dl_loaded_modules = NULL;
++
+--- ldso/ldso/ldso.c	2005-08-18 00:49:41.000000000 +0200
++++ ldso/ldso/ldso.c	2010-11-14 00:00:00.000000000 +0100
+@@ -66,6 +66,7 @@
+ unsigned long attribute_hidden _dl_skip_args = 0;
+ const char *_dl_progname = UCLIBC_LDSO;      /* The name of the executable being run */
+ #include "dl-startup.c"
++#include "dl-symbols.c"
+ /* Forward function declarations */
+ static int _dl_suid_ok(void);
+ 
+--- libc/Makefile	2005-08-18 00:49:48.000000000 +0200
++++ libc/Makefile	2010-11-14 00:00:00.000000000 +0100
+@@ -71,6 +71,8 @@
+ 	done
+ 	cp $(LIBNAME) shared_$(LIBNAME)
+ 	$(AR) $(ARFLAGS) $(LIBNAME) misc/internals/static.o
++	$(AR) d shared_$(LIBNAME) __uClibc_main.o dl-core.o dl-iterate-phdr.o dl-support.o
++	$(AR) $(ARFLAGS) shared_$(LIBNAME) misc/internals/__uClibc_main-shared.o misc/elf/dl-iterate-phdr-shared.o
+ 	$(RANLIB) $(LIBNAME)
+ 
+ $(LIBNAME_TARGET): $(LIBNAME)
+--- libc/misc/elf/dl-core.c	1970-01-01 01:00:00.000000000 +0100
++++ libc/misc/elf/dl-core.c	2010-11-14 00:00:00.000000000 +0100
+@@ -0,0 +1,19 @@
++/*
++ * This contains all symbols and functions to support
++ * dynamic linking into static libc.
++
++ * Copyright (c) 2008  STMicroelectronics Ltd
++ * Author: Carmelo Amoroso <carmelo.amoroso@st.com>
++ *
++ * Based on draft work by Peter S. Mazinger <ps.m@gmx.net>
++ *
++ * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
++ *
++ */
++
++#if defined(SHARED)
++#error "This file is not suitable for linking into dynamic libc"
++#else
++/* Include ldso symbols and functions used into static libc */
++#include "../../../ldso/ldso/dl-symbols.c"
++#endif
+--- libc/misc/elf/dl-iterate-phdr.c	1970-01-01 01:00:00.000000000 +0100
++++ libc/misc/elf/dl-iterate-phdr.c	2010-11-14 00:00:00.000000000 +0100
+@@ -0,0 +1,84 @@
++/* Get loaded objects program headers.
++   Copyright (C) 2001,2002,2003,2004,2006,2007 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Jakub Jelinek <jakub@redhat.com>, 2001.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public License as
++   published by the Free Software Foundation; either version 2.1 of the
++   License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; see the file COPYING.LIB.  If not,
++   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++   Boston, MA 02111-1307, USA.
++   */
++
++
++#include <link.h>
++#include <ldso.h>
++
++/* we want this in libc but nowhere else */
++#ifdef __USE_GNU
++
++extern __typeof(dl_iterate_phdr) __dl_iterate_phdr;
++
++/*hidden_proto(__dl_iterate_phdr)*/
++int
++__dl_iterate_phdr (int (*callback) (struct dl_phdr_info *info, size_t size, void *data), void *data)
++{
++	struct elf_resolve *l;
++	struct dl_phdr_info info;
++	int ret = 0;
++
++	for (l = _dl_loaded_modules; l != NULL; l = l->next) {
++		info.dlpi_addr = l->loadaddr;
++		info.dlpi_name = l->libname;
++		info.dlpi_phdr = l->ppnt;
++		info.dlpi_phnum = l->n_phent;
++		ret = callback (&info, sizeof (struct dl_phdr_info), data);
++		if (ret)
++			break;
++	}
++	return ret;
++}
++/*hidden_def (__dl_iterate_phdr)*/
++
++# if defined(SHARED)
++
++weak_alias(__dl_iterate_phdr, dl_iterate_phdr)
++
++# else
++
++/* dl-support.c defines these and initializes them early on.  */
++extern ElfW(Phdr) *_dl_phdr;
++extern size_t _dl_phnum;
++
++int
++dl_iterate_phdr (int (*callback) (struct dl_phdr_info *info,
++                                  size_t size, void *data), void *data)
++{
++  if (_dl_phnum != 0)
++    {
++      /* This entry describes this statically-linked program itself.  */
++      struct dl_phdr_info info;
++      int ret;
++      info.dlpi_addr = 0;
++      info.dlpi_name = "";
++      info.dlpi_phdr = _dl_phdr;
++      info.dlpi_phnum = _dl_phnum;
++      ret = (*callback) (&info, sizeof (struct dl_phdr_info), data);
++      if (ret)
++        return ret;
++    }
++   /* Then invoke callback on loaded modules, if any */
++  return __dl_iterate_phdr (callback, data);
++}
++
++# endif
++#endif
+--- libc/misc/elf/dl-support.c	1970-01-01 01:00:00.000000000 +0100
++++ libc/misc/elf/dl-support.c	2010-11-14 00:00:00.000000000 +0100
+@@ -0,0 +1,38 @@
++/* Support for dynamic linking code in static libc.
++   Copyright (C) 1996-2002, 2003, 2004, 2005 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++/* This file defines some things that for the dynamic linker are defined in
++   rtld.c and dl-sysdep.c in ways appropriate to bootstrap dynamic linking.  */
++
++#include <link.h>
++#include <elf.h>
++
++ElfW(Phdr) *_dl_phdr;
++size_t _dl_phnum;
++
++void
++internal_function
++_dl_aux_init (ElfW(auxv_t) *av)
++{
++   /* Get the program headers base address from the aux vect */
++   _dl_phdr = (ElfW(Phdr) *) av[AT_PHDR].a_un.a_val;
++
++   /* Get the number of program headers from the aux vect */
++   _dl_phnum = (size_t) av[AT_PHNUM].a_un.a_val;
++}
+--- libc/misc/elf/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ libc/misc/elf/Makefile	2010-11-14 00:00:00.000000000 +0100
+@@ -0,0 +1,49 @@
++# Makefile for uClibc
++#
++# Copyright (C) 2000 by Lineo, inc.
++# Copyright (C) 2000,2001 Erik Andersen <andersen@uclibc.org>
++#
++# This program is free software; you can redistribute it and/or modify it under
++# the terms of the GNU Library General Public License as published by the Free
++# Software Foundation; either version 2 of the License, or (at your option) any
++# later version.
++#
++# This program is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++# FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
++# details.
++#
++# You should have received a copy of the GNU Library General Public License
++# along with this program; if not, write to the Free Software Foundation, Inc.,
++# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++#
++# Derived in part from the Linux-8086 C library, the GNU C Library, and several
++# other sundry sources.  Files within this library are copyright by their
++# respective copyright holders.
++
++TOPDIR=../../../
++include $(TOPDIR)Rules.mak
++
++CFLAGS += -D_GNU_SOURCE -I$(TOPDIR)ldso/ldso/$(TARGET_ARCH) -I$(TOPDIR)ldso/include
++
++CSRC=dl-support.c dl-core.c dl-iterate-phdr.c
++COBJS=$(patsubst %.c,%.o, $(CSRC))
++OBJS=$(COBJS)
++
++OBJ_LIST=../../obj.misc.elf
++
++all: $(OBJ_LIST) dl-iterate-phdr-shared.o
++
++$(OBJ_LIST): $(OBJS)
++	echo $(patsubst %, misc/elf/%, $(OBJS)) > $(OBJ_LIST)
++
++$(COBJS): %.o : %.c
++	$(CC) $(CFLAGS) -c $< -o $@
++	$(STRIPTOOL) -x -R .note -R .comment $*.o
++
++dl-iterate-phdr-shared.o: dl-iterate-phdr.c
++	$(CC) -DSHARED $(CFLAGS) -c $< -o $@
++	$(STRIPTOOL) -x -R .note -R .comment $@
++
++clean:
++	$(RM) *.[oa] *~ core
+--- libc/misc/internals/Makefile	2005-08-18 00:49:48.000000000 +0200
++++ libc/misc/internals/Makefile	2010-11-14 00:00:00.000000000 +0100
+@@ -31,7 +31,7 @@
+ 
+ OBJ_LIST=../../obj.misc.internals
+ 
+-all: $(OBJ_LIST) interp.o static.o
++all: $(OBJ_LIST) interp.o static.o __uClibc_main-shared.o
+ 
+ $(OBJ_LIST): $(OBJS)
+ 	echo $(patsubst %, misc/internals/%, $(OBJS)) > $(OBJ_LIST)
+@@ -48,5 +48,9 @@
+ 	$(CC) $(CFLAGS) -c $< -o $@
+ 	$(STRIPTOOL) -x -R .note -R .comment $*.o
+ 
++__uClibc_main-shared.o: __uClibc_main.c
++	$(CC) -DSHARED $(CFLAGS) -c $< -o $@
++	$(STRIPTOOL) -x -R .note -R .comment $@
++
+ clean:
+ 	$(RM) *.[oa] interp.c *~ core
+--- libc/misc/internals/__uClibc_main.c	2005-08-18 00:49:48.000000000 +0200
++++ libc/misc/internals/__uClibc_main.c	2010-11-14 00:00:00.000000000 +0100
+@@ -17,6 +17,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <elf.h>
++#include <link.h>
+ #include <bits/uClibc_page.h>
+ #include <paths.h>
+ #include <unistd.h>
+@@ -28,6 +29,12 @@
+ extern void __guard_setup(void);
+ #endif
+ 
++#if !defined(SHARED)
++/*
++ * Needed to initialize _dl_phdr when statically linked
++ */
++void internal_function _dl_aux_init (ElfW(auxv_t) *av);
++#endif
+ 
+ /*
+  * Prototypes.
+@@ -206,6 +213,13 @@
+ 	aux_dat += 2;
+     }
+ 
++#if !defined(SHARED)
++    /* Get the program headers (_dl_phdr) from the aux vector
++       It will be used into __libc_setup_tls. */
++
++    _dl_aux_init (auxvt);
++#endif
++
+     /* Make certain getpagesize() gives the correct answer */
+     __pagesize = (auxvt[AT_PAGESZ].a_un.a_val)? auxvt[AT_PAGESZ].a_un.a_val : PAGE_SIZE;
+ 
+--- libc/misc/Makefile	2005-08-18 00:49:48.000000000 +0200
++++ libc/misc/Makefile	2010-11-14 00:00:00.000000000 +0100
+@@ -25,7 +25,7 @@
+ include $(TOPDIR)Rules.mak
+ 
+ 
+-DIRS = assert ctype dirent file fnmatch internals \
++DIRS = assert ctype dirent elf file fnmatch internals \
+        mntent syslog time utmp sysvipc statfs \
+        error ttyent gnu search locale
+ ifeq ($(strip $(UCLIBC_HAS_REGEX)),y)
