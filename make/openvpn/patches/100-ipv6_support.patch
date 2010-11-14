@@ -157,7 +157,7 @@
  int openvpn_snprintf(char *str, size_t size, const char *format, ...)
 --- config.h.in	2009-12-12 00:27:04.000000000 +0100
 +++ config.h.in	2010-02-22 00:35:26.000000000 +0100
-@@ -529,6 +529,9 @@
+@@ -526,6 +526,9 @@
  /* Use LZO compression library */
  #undef USE_LZO
  
@@ -169,7 +169,15 @@
  
 --- configure	2009-12-12 00:27:03.000000000 +0100
 +++ configure	2010-02-22 00:35:26.000000000 +0100
-@@ -1323,6 +1323,7 @@
+@@ -774,6 +774,7 @@
+ enable_profiling
+ enable_strict_options
+ enable_selinux
++enable_ipv6
+ with_ssl_headers
+ with_ssl_lib
+ with_lzo_headers
+@@ -1439,6 +1440,7 @@
    --disable-http          Disable HTTP proxy support
    --disable-fragment      Disable internal fragmentation support (--fragment)
    --disable-multihome     Disable multi-homed UDP server support (--multihome)
@@ -177,7 +185,7 @@
    --disable-port-share    Disable TCP server port-share support (--port-share)
    --disable-debug         Disable debugging support (disable gremlin and verb 7+ messages)
    --enable-small          Enable smaller executable size (disable OCC, usage message, and verb 4 parm list)
-@@ -2553,6 +2554,15 @@
+@@ -2724,6 +2726,15 @@
  fi
  
  
@@ -193,17 +201,17 @@
  # Check whether --enable-port-share was given.
  if test "${enable_port_share+set}" = set; then
    enableval=$enable_port_share; PORT_SHARE="$enableval"
-@@ -9815,6 +9825,73 @@
+@@ -11082,6 +11093,73 @@
  
  LDFLAGS="$OLDLDFLAGS"
  
 +if test "$PF_INET6" = "yes"; then
-+  { echo "$as_me:$LINENO: checking for struct sockaddr_in6 for IPv6 support..." >&5
-+echo "$as_me: checking for struct sockaddr_in6 for IPv6 support..." >&6;}
-+  { echo "$as_me:$LINENO: checking for struct sockaddr_in6" >&5
-+echo $ECHO_N "checking for struct sockaddr_in6... $ECHO_C" >&6; }
++  { $as_echo "$as_me:$LINENO: checking for struct sockaddr_in6 for IPv6 support..." >&5
++$as_echo "$as_me: checking for struct sockaddr_in6 for IPv6 support..." >&6;}
++  { $as_echo "$as_me:$LINENO: checking for struct sockaddr_in6" >&5
++$as_echo $ECHO_N "checking for struct sockaddr_in6... $ECHO_C" >&6; }
 +if test "${ac_cv_type_struct_sockaddr_in6+set}" = set; then
-+  echo $ECHO_N "(cached) $ECHO_C" >&6
++  $as_echo $ECHO_N "(cached) $ECHO_C" >&6
 +else
 +  cat >conftest.$ac_ext <<_ACEOF
 +/* confdefs.h.  */
@@ -231,20 +239,20 @@
 +  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
 +  *) ac_try_echo=$ac_try;;
 +esac
-+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
++eval "$as_echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 +  (eval "$ac_compile") 2>conftest.er1
 +  ac_status=$?
 +  grep -v '^ *+' conftest.er1 >conftest.err
 +  rm -f conftest.er1
 +  cat conftest.err >&5
-+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
 +  (exit $ac_status); } && {
 +	 test -z "$ac_c_werror_flag" ||
 +	 test ! -s conftest.err
 +       } && test -s conftest.$ac_objext; then
 +  ac_cv_type_struct_sockaddr_in6=yes
 +else
-+  echo "$as_me: failed program was:" >&5
++  $as_echo "$as_me: failed program was:" >&5
 +sed 's/^/| /' conftest.$ac_ext >&5
 +
 +	ac_cv_type_struct_sockaddr_in6=no
@@ -252,8 +260,8 @@
 +
 +rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 +fi
-+{ echo "$as_me:$LINENO: result: $ac_cv_type_struct_sockaddr_in6" >&5
-+echo "${ECHO_T}$ac_cv_type_struct_sockaddr_in6" >&6; }
++{ $as_echo "$as_me:$LINENO: result: $ac_cv_type_struct_sockaddr_in6" >&5
++$as_echo "${ECHO_T}$ac_cv_type_struct_sockaddr_in6" >&6; }
 +if test $ac_cv_type_struct_sockaddr_in6 = yes; then
 +
 +cat >>confdefs.h <<\_ACEOF
@@ -266,7 +274,7 @@
 +
  
  if test "$MEMCHECK" = "valgrind"; then
-    { echo "$as_me:$LINENO: checking for valgrind tool and Header files..." >&5
+    { $as_echo "$as_me:$LINENO: checking for valgrind tool and Header files..." >&5
 --- configure.ac	2009-10-01 20:02:18.000000000 +0200
 +++ configure.ac	2010-02-22 00:35:18.000000000 +0100
 @@ -135,6 +135,12 @@
@@ -825,7 +833,7 @@
  static inline void
 --- route.c	2009-10-01 20:02:18.000000000 +0200
 +++ route.c	2010-02-22 00:35:18.000000000 +0100
-@@ -599,13 +599,23 @@
+@@ -601,13 +601,23 @@
  	  if (!local)
  	    {
  	      /* route remote host to original default gateway */
