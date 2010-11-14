@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN,16)
+$(call PKG_INIT_BIN,17)
 $(PKG)_SOURCE:=ngircd-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=ftp://ftp.berlios.de/pub/ngircd
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ngircd/ngircd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ngircd
-$(PKG)_SOURCE_MD5:=8c9e0382cd982b0ca77c05528ebe28eb
+$(PKG)_SOURCE_MD5:=9965d7358055d45fe226f7e11e969a1f
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
@@ -33,6 +33,12 @@ $(PKG)_CONFIGURE_OPTIONS += --with-syslog
 $(PKG)_CONFIGURE_OPTIONS += --without-ident
 $(PKG)_CONFIGURE_OPTIONS += --without-zeroconf
 $(PKG)_CONFIGURE_OPTIONS += --without-kqueue
+$(PKG)_CONFIGURE_OPTIONS += --with-pam=no
+$(PKG)_CONFIGURE_OPTIONS += --with-gnutls=no
+$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
+
+#$(PKG)_CONFIGURE_OPTIONS += --enable-sniffer
+#$(PKG)_CONFIGURE_OPTIONS += --enable-debug
 
 
 $(PKG_SOURCE_DOWNLOAD)
