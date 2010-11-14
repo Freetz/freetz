@@ -18,6 +18,11 @@ if isFreetzType W501V W701V W901V; then
 	modsed "s/avme/tcom/g" "${HTML_DIR}/fon/sipoptionen.js"
 fi
 
+if [ "$FREETZ_TYPE_FON_WLAN" == "y" ]; then
+	# PCR & SCR could not be changed on Fritz!Box Fon WLAN via web-interface
+	return 0
+fi
+
 # Model
 #modsed '/id="uiPostVci"/ a<input type="hidden" name="connection_voip:settings/traffic_class" value="<? query connection_voip:settings/traffic_class ?>" id="uiPostTrafficClass" disabled />' "${HTML_DIR}/fon/sipoptionen.frm"
 modsed '/id="uiPostVci"/ a<input type="hidden" name="connection_voip:settings/scr" value="<? query connection_voip:settings/scr ?>" id="uiPostScr" disabled />' "${HTML_DIR}/fon/sipoptionen.frm"
