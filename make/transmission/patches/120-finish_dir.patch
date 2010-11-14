@@ -83,7 +83,7 @@
  .Ar ratio
 --- extras/rpc-spec.txt
 +++ extras/rpc-spec.txt
-@@ -416,6 +416,8 @@
+@@ -417,6 +417,8 @@
     "download-dir"                   | string     | default path to download torrents
     "dht-enabled"                    | boolean    | true means allow dht in public torrents
     "encryption"                     | string     | "required", "preferred", "tolerated"
@@ -92,15 +92,15 @@
     "idle-seeding-limit"             | number     | the default seed inactivity limit for torrents to use
     "idle-seeding-limit-enabled"     | boolean    | true if the seeding inactivity limit is honored by default
     "incomplete-dir"                 | string     | path for incomplete torrents, when enabled
-@@ -636,3 +638,5 @@
-          |         | yes       | session-get    | new arg "units"
-          |         | yes       | torrent-set    | new arg "seedIdleLimit"
-          |         | yes       | torrent-set    | new arg "seedIdleMode"
+@@ -640,3 +642,5 @@
+    ------+---------+-----------+----------------+-------------------------------
+    11    | 2.12    | yes       | session-get    | new arg "blocklist-url"
+          |         | yes       | session-set    | new arg "blocklist-url"
 +         |         | yes       | session-set    | new arg "finish-dir"
 +         |         | yes       | session-set    | new arg "finish-dir-enabled"
 --- libtransmission/rpcimpl.c
 +++ libtransmission/rpcimpl.c
-@@ -1414,6 +1414,10 @@
+@@ -1452,6 +1452,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( args_in, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -111,7 +111,7 @@
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_GLOBAL, &i ) )
          tr_sessionSetPeerLimit( session, i );
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_TORRENT, &i ) )
-@@ -1543,6 +1547,8 @@
+@@ -1582,6 +1586,8 @@
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT, tr_sessionGetPeerLimitPerTorrent( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR, tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, tr_sessionIsIncompleteDirEnabled( s ) );
@@ -122,7 +122,7 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_LPD_ENABLED, tr_sessionIsLPDEnabled( s ) );
 --- libtransmission/session.c
 +++ libtransmission/session.c
-@@ -259,6 +259,8 @@
+@@ -260,6 +260,8 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,       FALSE );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR,           tr_getDefaultDownloadDir( ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,   FALSE );
@@ -131,7 +131,7 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_LAZY_BITFIELD,            TRUE );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                 TR_MSG_INF );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_OPEN_FILE_LIMIT,          atoi( TR_DEFAULT_OPEN_FILE_LIMIT_STR ) );
-@@ -327,6 +329,8 @@
+@@ -322,6 +324,8 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,       tr_sessionIsIdleLimited( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR,           tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,   tr_sessionIsIncompleteDirEnabled( s ) );
@@ -140,7 +140,7 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_LAZY_BITFIELD,            s->useLazyBitfield );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                 tr_getMessageLevel( ) );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_OPEN_FILE_LIMIT,          tr_fdGetFileLimit( s ) );
-@@ -713,6 +717,10 @@
+@@ -703,6 +707,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -151,7 +151,7 @@
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_RENAME_PARTIAL_FILES, &boolVal ) )
          tr_sessionSetIncompleteFileNamingEnabled( session, boolVal );
  
-@@ -939,6 +947,49 @@
+@@ -913,6 +921,49 @@
  ****
  ***/
  
@@ -201,17 +201,17 @@
  void*
  tr_sessionGetBuffer( tr_session * session )
  {
-@@ -1785,6 +1836,7 @@
+@@ -1759,6 +1810,7 @@
      tr_free( session->torrentDir );
      tr_free( session->downloadDir );
      tr_free( session->incompleteDir );
 +    tr_free( session->finishDir );
-     tr_free( session->proxy );
-     tr_free( session->proxyUsername );
-     tr_free( session->proxyPassword );
+     tr_free( session->blocklist_url );
+     tr_free( session->peer_congestion_algorithm );
+     tr_free( session );
 --- libtransmission/session.h
 +++ libtransmission/session.h
-@@ -97,6 +97,7 @@
+@@ -95,6 +95,7 @@
      tr_bool                      isRatioLimited;
      tr_bool                      isIdleLimited;
      tr_bool                      isIncompleteDirEnabled;
@@ -219,14 +219,14 @@
      tr_bool                      pauseAddedTorrent;
      tr_bool                      deleteSourceTorrent;
  
-@@ -152,6 +153,7 @@
+@@ -149,6 +150,7 @@
      char *                       resumeDir;
      char *                       torrentDir;
      char *                       incompleteDir;
 +    char *                       finishDir;
  
-     tr_proxy_type                proxyType;
-     char *                       proxy;
+     char *                       blocklist_url;
+ 
 --- libtransmission/torrent.c
 +++ libtransmission/torrent.c
 @@ -424,6 +424,12 @@
@@ -244,7 +244,7 @@
              tor->ratio_limit_hit_func( tor, tor->ratio_limit_hit_func_user_data );
 --- libtransmission/transmission.h
 +++ libtransmission/transmission.h
-@@ -174,6 +174,8 @@
+@@ -167,6 +167,8 @@
  #define TR_PREFS_KEY_IDLE_LIMIT_ENABLED            "idle-seeding-limit-enabled"
  #define TR_PREFS_KEY_INCOMPLETE_DIR                "incomplete-dir"
  #define TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED        "incomplete-dir-enabled"
@@ -253,7 +253,7 @@
  #define TR_PREFS_KEY_LAZY_BITFIELD                 "lazy-bitfield-enabled"
  #define TR_PREFS_KEY_MSGLEVEL                      "message-level"
  #define TR_PREFS_KEY_OPEN_FILE_LIMIT               "open-file-limit"
-@@ -394,6 +396,27 @@
+@@ -380,6 +382,27 @@
  
  
  /**
