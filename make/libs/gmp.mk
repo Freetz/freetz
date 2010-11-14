@@ -44,7 +44,7 @@ GMP_DIR2:=$(TOOLS_SOURCE_DIR)/gmp-$(GMP_VERSION)
 GMP_HOST_DIR:=$(abspath $(TOOLS_BUILD_DIR))
 GMP_HOST_BINARY:=$(GMP_HOST_DIR)/lib/libgmp.a
 
-$(GMP_DIR2)/.configured: $(GMP_DIR)/.unpacked
+$(GMP_DIR2)/.configured: | $(GMP_DIR)/.unpacked
 	mkdir -p $(GMP_DIR2)
 	(cd $(GMP_DIR2); $(RM) -r config.cache; \
 		CC="$(TOOLS_CC)" \

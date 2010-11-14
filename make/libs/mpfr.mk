@@ -52,7 +52,7 @@ MPFR_DIR2:=$(TOOLS_SOURCE_DIR)/mpfr-$(MPFR_VERSION)
 MPFR_HOST_DIR:=$(abspath $(TOOLS_BUILD_DIR))
 MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
 
-$(MPFR_DIR2)/.configured: $(MPFR_DIR)/.unpacked $(GMP_HOST_BINARY)
+$(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
 	$(MPFR_PREVENT_AUTOCONF_CALL)
 	mkdir -p $(MPFR_DIR2)
 	(cd $(MPFR_DIR2); $(RM) config.cache; \
