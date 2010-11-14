@@ -35,7 +35,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-zeroconf
 $(PKG)_CONFIGURE_OPTIONS += --without-kqueue
 $(PKG)_CONFIGURE_OPTIONS += --with-pam=no
 $(PKG)_CONFIGURE_OPTIONS += --with-gnutls=no
-$(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 #$(PKG)_CONFIGURE_OPTIONS += --enable-sniffer
 #$(PKG)_CONFIGURE_OPTIONS += --enable-debug
@@ -46,7 +46,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(NGIRCD_DIR)
+	$(SUBMAKE) -C $(NGIRCD_DIR) \
 		LDFLAGS="$(TARGET_LDFLAGS) $(NGIRCD_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
