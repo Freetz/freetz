@@ -20,3 +20,12 @@
  	}
  	free(ca_file);
  }
+@@ -214,7 +220,7 @@
+     ssl_set_ciphers(ssl, ciphers);
+     ssl_set_session(ssl, 0, 0, ssn);
+ 
+-    ssl_set_ca_chain(ssl, certificate.next, NULL, NULL);
++    ssl_set_ca_chain(ssl, (certificate.next ? certificate.next : &certificate), NULL, NULL);
+     ssl_set_own_cert(ssl, &certificate, &key);
+     ssl_set_dh_param(ssl, my_dhm_P, my_dhm_G);
+ 
