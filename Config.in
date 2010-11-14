@@ -1739,11 +1739,12 @@ config FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
 		panel of your 7570/W920V box fitting the descriptions of the W920V.
 
 config FREETZ_PATCH_GETCONS
-	bool "Don't redirect console messages"
+	bool
+#	bool "Redirect console messages"
 	default n
 	help
-		Patch /etc/profile so that console messages are not redirected to
-		/dev/pts/0. These can sometimes be very anoying.
+		Patch /etc/profile so that console messages are redirected to
+		the last opened console.
 
 endmenu
 
