@@ -37,7 +37,7 @@ esac
 
 start() {
 	echo -n "Starting $DAEMON ... "
-	if [ -e "/var/run/$DAEMON.pid" ]; then
+	if [ -n "$(mypidof $DAEMON)" ]; then
 		echo "already started."
 		return 1;
 	fi
