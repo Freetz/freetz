@@ -52,11 +52,9 @@ GCC_COMMON_CONFIGURE_OPTIONS := \
 	$(DISABLE_LARGEFILE) \
 	$(QUIET)
 
-ifneq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.4)
 # enable non-PIC for mips* targets
 GCC_COMMON_CONFIGURE_OPTIONS += --with-mips-plt
-endif
 endif
 
 ifndef TARGET_TOOLCHAIN_NO_MPFR
