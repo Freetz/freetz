@@ -41,8 +41,29 @@ endif
 
 GCC_STAGING_PREREQ+=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 
+GCC_COMMON_CONFIGURE_OPTIONS := \
+	--with-gnu-ld \
+	--disable-__cxa_atexit \
+	--enable-target-optspace \
+	--disable-libgomp \
+	--disable-libmudflap \
+	--disable-multilib \
+	--disable-tls \
+	--disable-fixed-point \
+	--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp \
+	$(DISABLE_NLS) \
+	$(DISABLE_LARGEFILE) \
+	$(QUIET)
+
+ifneq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.4)
+# enable non-PIC for mips* targets
+GCC_COMMON_CONFIGURE_OPTIONS += --with-mips-plt
+endif
+endif
+
 ifndef TARGET_TOOLCHAIN_NO_MPFR
-GCC_DECIMAL_FLOAT:=--disable-decimal-float
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-decimal-float
 
 GCC_INITIAL_PREREQ+=$(GMP_HOST_BINARY) $(MPFR_HOST_BINARY)
 GCC_TARGET_PREREQ+=$(GMP_TARGET_BINARY) $(MPFR_TARGET_BINARY)
@@ -51,22 +72,11 @@ GCC_WITH_HOST_GMP=--with-gmp=$(GMP_HOST_DIR)
 GCC_WITH_HOST_MPFR=--with-mpfr=$(MPFR_HOST_DIR)
 endif
 
-GCC_CROSS_LANGUAGES:=c,c++
-GCC_TARGET_LANGUAGES:=c,c++
-
 GCC_EXTRA_MAKE_OPTIONS :=
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 GCC_EXTRA_MAKE_OPTIONS += "LDFLAGS=-static"
 endif
 
-GCC_SHARED_LIBGCC:=--enable-shared
-EXTRA_GCC_CONFIG_OPTIONS:=--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp
-ifneq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
-ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.4)
-# enable non-PIC for mips* targets
-EXTRA_GCC_CONFIG_OPTIONS += --with-mips-plt
-endif
-endif
 
 GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
 # This macro exists for the following reason:
@@ -122,20 +132,10 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked $(GCC_INITIAL_PREREQ)
 		--target=$(REAL_GNU_TARGET_NAME) \
 		--enable-languages=c \
 		--disable-shared \
-		--disable-__cxa_atexit \
-		--enable-target-optspace \
-		--with-gnu-ld \
-		--disable-libgomp \
-		--disable-libmudflap \
-		--disable-multilib \
-		--disable-tls \
-		--disable-fixed-point \
-		$(GCC_DECIMAL_FLOAT) \
+		--disable-threads \
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
-		$(DISABLE_NLS) \
-		$(EXTRA_GCC_CONFIG_OPTIONS) \
-		$(QUIET) \
+		$(GCC_COMMON_CONFIGURE_OPTIONS) \
 	);
 	touch $@
 
@@ -188,22 +188,12 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
-		--enable-languages=$(GCC_CROSS_LANGUAGES) \
-		--disable-__cxa_atexit \
-		--enable-target-optspace \
-		--with-gnu-ld \
-		--disable-libgomp \
-		--disable-multilib \
-		--disable-libmudflap \
-		--disable-tls \
-		--disable-fixed-point \
+		--enable-languages=c,c++ \
+		--enable-shared \
+		--enable-threads \
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
-		$(GCC_SHARED_LIBGCC) \
-		$(GCC_DECIMAL_FLOAT) \
-		$(DISABLE_NLS) \
-		$(DISABLE_LARGEFILE) \
-		$(EXTRA_GCC_CONFIG_OPTIONS) \
+		$(GCC_COMMON_CONFIGURE_OPTIONS) \
 	);
 	touch $@
 
@@ -258,23 +248,14 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 		$(TARGET_CONFIGURE_ENV) \
 		$(GCC_DIR)/configure \
 		--prefix=/usr \
+		--with-gxx-include-dir=/usr/include/c++ \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(REAL_GNU_TARGET_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
-		--enable-languages=$(GCC_TARGET_LANGUAGES) \
-		--with-gxx-include-dir=/usr/include/c++ \
-		--disable-__cxa_atexit \
-		--with-gnu-ld \
-		--disable-libmudflap \
+		--enable-languages=c,c++ \
+		--enable-shared \
 		--enable-threads \
-		--disable-libgomp \
-		--disable-multilib \
-		--disable-fixed-point \
-		$(GCC_SHARED_LIBGCC) \
-		$(GCC_DECIMAL_FLOAT) \
-		$(DISABLE_NLS) \
-		$(DISABLE_LARGEFILE) \
-		$(EXTRA_GCC_CONFIG_OPTIONS) \
+		$(GCC_COMMON_CONFIGURE_OPTIONS) \
 	);
 	touch $@
 
