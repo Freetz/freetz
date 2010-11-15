@@ -1,21 +1,17 @@
 BINUTILS_VERSION:=$(TARGET_TOOLCHAIN_BINUTILS_VERSION)
 BINUTILS_SOURCE:=binutils-$(BINUTILS_VERSION).tar.bz2
-ifeq ($(TARGET_TOOLCHAIN_BINUTILS_MAJOR_VERSION),2.20)
-BINUTILS_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
-else
+ifeq ($(TARGET_TOOLCHAIN_BINUTILS_MAJOR_VERSION),2.18)
 BINUTILS_SITE:=@GNU/binutils
+else
+BINUTILS_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
 endif
 BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils
 BINUTILS_DIR1:=$(BINUTILS_DIR)-build
 
-ifeq ($(BINUTILS_VERSION),2.18)
-BINUTILS_MD5:=9d22ee4dafa3a194457caf4706f9cf01
-endif
-ifeq ($(BINUTILS_VERSION),2.20.51.0.12)
-BINUTILS_MD5:=f3a1f0535935ddae61ded2bcd3c7ce09
-endif
-
+BINUTILS_MD5_2.18         := 9d22ee4dafa3a194457caf4706f9cf01
+BINUTILS_MD5_2.21.51.0.1  := 3e8b6349f38d6e0feba317055f0ced14
+BINUTILS_MD5              := $(BINUTILS_MD5_$(BINUTILS_VERSION))
 
 # We do not rely on the host's gmp/mpfr but use a known working one
 BINUTILS_HOST_PREREQ=
