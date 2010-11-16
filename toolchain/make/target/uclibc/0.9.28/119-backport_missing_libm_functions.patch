@@ -1,0 +1,528 @@
+--- libm/float_wrappers.c	2005-08-18 00:49:41.000000000 +0200
++++ libm/float_wrappers.c	2010-11-16 00:00:00.000000000 +0100
+@@ -306,7 +306,7 @@
+ #ifdef L_ilogbf
+ int ilogbf (float x)
+ {
+-	return (float) ilogb( (double)x );
++	return (int) ilogb( (double)x );
+ }
+ #endif
+ 
+@@ -327,7 +327,6 @@
+ #endif
+ 
+ 
+-#if 0
+ #ifdef L_llrintf
+ long long llrintf (float x)
+ {
+@@ -342,7 +341,6 @@
+ 	return (float) llround( (double)x );
+ }
+ #endif
+-#endif
+ 
+ #ifdef L_log10f
+ float log10f (float x)
+@@ -386,11 +394,10 @@
+ #endif
+ 
+ 
+-#if 0
+ #ifdef L_lrintf
+ long lrintf (float x)
+ {
+-	return (float) lrint( (double)x );
++	return (long) lrint( (double)x );
+ }
+ #endif
+ 
+@@ -398,10 +395,9 @@
+ #ifdef L_lroundf
+ long lroundf (float x)
+ {
+-	return (float) lround( (double)x );
++	return (long) lround( (double)x );
+ }
+ #endif
+-#endif
+ 
+ 
+ #ifdef L_modff
+@@ -477,7 +473,6 @@
+ #endif
+ 
+ 
+-#if 0
+ #ifdef L_roundf
+ float roundf (float x)
+ {
+@@ -486,6 +481,7 @@
+ #endif
+ 
+ 
++#if 0
+ #ifdef L_scalblnf
+ float scalblnf (float x, long exp)
+ {
+--- libm/Makefile	2005-08-18 00:49:41.000000000 +0200
++++ libm/Makefile	2010-11-16 00:00:00.000000000 +0100
+@@ -66,15 +66,16 @@
+          w_cosh.c w_drem.c w_exp.c w_fmod.c w_gamma.c w_gamma_r.c\
+          w_hypot.c w_j0.c w_j1.c w_jn.c w_lgamma.c w_lgamma_r.c\
+          w_log.c w_log10.c w_pow.c w_remainder.c w_scalb.c w_sinh.c\
+-         w_sqrt.c fpmacros.c nan.c s_ceilf.c s_floorf.c
++         w_sqrt.c fpmacros.c nan.c \
++         s_llrint.c s_llround.c s_lrint.c s_lround.c s_round.c
+ FL_MOBJ = acosf.o acoshf.o asinf.o asinhf.o atan2f.o atanf.o atanhf.o cbrtf.o \
+-	ceilf.o copysignf.o cosf.o coshf.o erfcf.o erff.o exp2f.o expf.o \
+-	expm1f.o fabsf.o fdimf.o floorf.o fmaf.o fmaxf.o fminf.o fmodf.o \
++	ceilf.o copysignf.o cosf.o coshf.o erfcf.o erff.o expf.o \
++	expm1f.o fabsf.o floorf.o fmodf.o \
+ 	frexpf.o hypotf.o ilogbf.o ldexpf.o lgammaf.o log10f.o log1pf.o \
+-	log2f.o logbf.o logf.o lrintf.o lroundf.o modff.o nearbyintf.o \
+-	nextafterf.o powf.o remainderf.o remquof.o rintf.o roundf.o \
+-	scalblnf.o scalbnf.o sinf.o sinhf.o sqrtf.o tanf.o tanhf.o \
+-	tgammaf.o truncf.o
++	logbf.o logf.o modff.o \
++	nextafterf.o powf.o remainderf.o rintf.o \
++	scalbnf.o sinf.o sinhf.o sqrtf.o tanf.o tanhf.o \
++	llrintf.o llroundf.o lrintf.o lroundf.o roundf.o
+ else
+ # This list of math functions was taken from POSIX/IEEE 1003.1b-1993
+ CSRC =   w_acos.c w_asin.c s_atan.c w_atan2.c s_ceil.c s_cos.c \
+--- libm/s_llrint.c	1970-01-01 01:00:00.000000000 +0100
++++ libm/s_llrint.c	2010-11-16 00:00:00.000000000 +0100
+@@ -0,0 +1,88 @@
++/* Round argument to nearest integral value according to current rounding
++   direction.
++   Copyright (C) 1997, 2004, 2006 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include "math.h"
++
++#include "math_private.h"
++
++static const double two52[2] =
++{
++  4.50359962737049600000e+15, /* 0x43300000, 0x00000000 */
++ -4.50359962737049600000e+15, /* 0xC3300000, 0x00000000 */
++};
++
++
++long long int
++llrint (double x)
++{
++  int32_t j0;
++  u_int32_t i1, i0;
++  long long int result;
++  volatile double w;
++  double t;
++  int sx;
++
++  EXTRACT_WORDS (i0, i1, x);
++  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++  sx = i0 >> 31;
++  i0 &= 0xfffff;
++  i0 |= 0x100000;
++
++  if (j0 < 20)
++    {
++      w = two52[sx] + x;
++      t = w - two52[sx];
++      EXTRACT_WORDS (i0, i1, t);
++      j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++      i0 &= 0xfffff;
++      i0 |= 0x100000;
++
++      result = (j0 < 0 ? 0 : i0 >> (20 - j0));
++    }
++  else if (j0 < (int32_t) (8 * sizeof (long long int)) - 1)
++    {
++      if (j0 >= 52)
++	result = (((long long int) i0 << 32) | i1) << (j0 - 52);
++      else
++	{
++	  w = two52[sx] + x;
++	  t = w - two52[sx];
++	  EXTRACT_WORDS (i0, i1, t);
++	  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++	  i0 &= 0xfffff;
++	  i0 |= 0x100000;
++
++	  if (j0 == 20)
++	    result = (long long int) i0;
++	  else
++	    result = ((long long int) i0 << (j0 - 20)) | (i1 >> (52 - j0));
++	}
++    }
++  else
++    {
++      /* The number is too large.  It is left implementation defined
++	 what happens.  */
++      return (long long int) x;
++    }
++
++  return sx ? -result : result;
++}
++
+--- libm/s_llround.c	1970-01-01 01:00:00.000000000 +0100
++++ libm/s_llround.c	2010-11-16 00:00:00.000000000 +0100
+@@ -0,0 +1,74 @@
++/* Round double value to long long int.
++   Copyright (C) 1997 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include "math.h"
++
++#include "math_private.h"
++
++long long int
++llround (double x)
++{
++  int32_t j0;
++  u_int32_t i1, i0;
++  long long int result;
++  int sign;
++
++  EXTRACT_WORDS (i0, i1, x);
++  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++  sign = (i0 & 0x80000000) != 0 ? -1 : 1;
++  i0 &= 0xfffff;
++  i0 |= 0x100000;
++
++  if (j0 < 20)
++    {
++      if (j0 < 0)
++	return j0 < -1 ? 0 : sign;
++      else
++	{
++	  i0 += 0x80000 >> j0;
++
++	  result = i0 >> (20 - j0);
++	}
++    }
++  else if (j0 < (int32_t) (8 * sizeof (long long int)) - 1)
++    {
++      if (j0 >= 52)
++	result = (((long long int) i0 << 32) | i1) << (j0 - 52);
++      else
++	{
++	  u_int32_t j = i1 + (0x80000000 >> (j0 - 20));
++	  if (j < i1)
++	    ++i0;
++
++	  if (j0 == 20)
++	    result = (long long int) i0;
++	  else
++	    result = ((long long int) i0 << (j0 - 20)) | (j >> (52 - j0));
++	}
++    }
++  else
++    {
++      /* The number is too large.  It is left implementation defined
++	 what happens.  */
++      return (long long int) x;
++    }
++
++  return sign * result;
++}
+--- libm/s_lrint.c	1970-01-01 01:00:00.000000000 +0100
++++ libm/s_lrint.c	2010-11-16 00:00:00.000000000 +0100
+@@ -0,0 +1,92 @@
++/* Round argument to nearest integral value according to current rounding
++   direction.
++   Copyright (C) 1997, 2004 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include "math.h"
++
++#include "math_private.h"
++
++static const double two52[2] =
++{
++  4.50359962737049600000e+15, /* 0x43300000, 0x00000000 */
++ -4.50359962737049600000e+15, /* 0xC3300000, 0x00000000 */
++};
++
++
++long int
++lrint (double x)
++{
++  int32_t j0;
++  u_int32_t i0,i1;
++  volatile double w;
++  double t;
++  long int result;
++  int sx;
++
++  EXTRACT_WORDS (i0, i1, x);
++  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++  sx = i0 >> 31;
++  i0 &= 0xfffff;
++  i0 |= 0x100000;
++
++  if (j0 < 20)
++    {
++      if (j0 < -1)
++	return 0;
++      else
++	{
++	  w = two52[sx] + x;
++	  t = w - two52[sx];
++	  EXTRACT_WORDS (i0, i1, t);
++	  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++	  i0 &= 0xfffff;
++	  i0 |= 0x100000;
++
++	  result = i0 >> (20 - j0);
++	}
++    }
++  else if (j0 < (int32_t) (8 * sizeof (long int)) - 1)
++    {
++      if (j0 >= 52)
++	result = ((long int) i0 << (j0 - 20)) | (i1 << (j0 - 52));
++      else
++	{
++	  w = two52[sx] + x;
++	  t = w - two52[sx];
++	  EXTRACT_WORDS (i0, i1, t);
++	  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++	  i0 &= 0xfffff;
++	  i0 |= 0x100000;
++
++	  if (j0 == 20)
++	    result = (long int) i0;
++	  else
++	    result = ((long int) i0 << (j0 - 20)) | (i1 >> (52 - j0));
++	}
++    }
++  else
++    {
++      /* The number is too large.  It is left implementation defined
++	 what happens.  */
++      return (long int) x;
++    }
++
++  return sx ? -result : result;
++}
+--- libm/s_lround.c	1970-01-01 01:00:00.000000000 +0100
++++ libm/s_lround.c	2010-11-16 00:00:00.000000000 +0100
+@@ -0,0 +1,74 @@
++/* Round double value to long int.
++   Copyright (C) 1997, 2004 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include "math.h"
++
++#include "math_private.h"
++
++long int
++lround (double x)
++{
++  int32_t j0;
++  u_int32_t i1, i0;
++  long int result;
++  int sign;
++
++  EXTRACT_WORDS (i0, i1, x);
++  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++  sign = (i0 & 0x80000000) != 0 ? -1 : 1;
++  i0 &= 0xfffff;
++  i0 |= 0x100000;
++
++  if (j0 < 20)
++    {
++      if (j0 < 0)
++	return j0 < -1 ? 0 : sign;
++      else
++	{
++	  i0 += 0x80000 >> j0;
++
++	  result = i0 >> (20 - j0);
++	}
++    }
++  else if (j0 < (int32_t) (8 * sizeof (long int)) - 1)
++    {
++      if (j0 >= 52)
++	result = ((long int) i0 << (j0 - 20)) | (i1 << (j0 - 52));
++      else
++	{
++	  u_int32_t j = i1 + (0x80000000 >> (j0 - 20));
++	  if (j < i1)
++	    ++i0;
++
++	  if (j0 == 20)
++	    result = (long int) i0;
++	  else
++	    result = ((long int) i0 << (j0 - 20)) | (j >> (52 - j0));
++	}
++    }
++  else
++    {
++      /* The number is too large.  It is left implementation defined
++	 what happens.  */
++      return (long int) x;
++    }
++
++  return sign * result;
++}
+--- libm/s_round.c	1970-01-01 01:00:00.000000000 +0100
++++ libm/s_round.c	2010-11-16 00:00:00.000000000 +0100
+@@ -0,0 +1,91 @@
++/* Round double to integer away from zero.
++   Copyright (C) 1997 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include "math.h"
++
++#include "math_private.h"
++
++
++static const double huge = 1.0e300;
++
++double
++round (double x)
++{
++  int32_t i0, j0;
++  u_int32_t i1;
++
++  EXTRACT_WORDS (i0, i1, x);
++  j0 = ((i0 >> 20) & 0x7ff) - 0x3ff;
++  if (j0 < 20)
++    {
++      if (j0 < 0)
++	{
++	  if (huge + x > 0.0)
++	    {
++	      i0 &= 0x80000000;
++	      if (j0 == -1)
++		i0 |= 0x3ff00000;
++	      i1 = 0;
++	    }
++	}
++      else
++	{
++	  u_int32_t i = 0x000fffff >> j0;
++	  if (((i0 & i) | i1) == 0)
++	    /* X is integral.  */
++	    return x;
++	  if (huge + x > 0.0)
++	    {
++	      /* Raise inexact if x != 0.  */
++	      i0 += 0x00080000 >> j0;
++	      i0 &= ~i;
++	      i1 = 0;
++	    }
++	}
++    }
++  else if (j0 > 51)
++    {
++      if (j0 == 0x400)
++	/* Inf or NaN.  */
++	return x + x;
++      else
++	return x;
++    }
++  else
++    {
++      u_int32_t i = 0xffffffff >> (j0 - 20);
++      if ((i1 & i) == 0)
++	/* X is integral.  */
++	return x;
++
++      if (huge + x > 0.0)
++	{
++	  /* Raise inexact if x != 0.  */
++	  u_int32_t j = i1 + (1 << (51 - j0));
++	  if (j < i1)
++	    i0 += 1;
++	  i1 = j;
++	}
++      i1 &= ~i;
++    }
++
++  INSERT_WORDS (x, i0, i1);
++  return x;
++}
