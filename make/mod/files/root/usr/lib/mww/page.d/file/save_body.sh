@@ -1,3 +1,4 @@
+. /usr/lib/cgi-bin/mod/modlibcgi
 echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
 
 if ! allowed; then
@@ -21,4 +22,4 @@ else
 			;;
 	esac
 	echo '</pre>'
-fi
+fi | while read line; do echo $line | highlight; done

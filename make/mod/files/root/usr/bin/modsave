@@ -25,7 +25,7 @@ save() {
 		exit 1
 	fi
 
-	echo -n 'Writing /var/flash/freetz ... '
+	echo -n "Writing $size bytes to /var/flash/freetz ... "
 	cat $TMPFILE > /var/flash/freetz 2>/dev/null
 	local rv=$?
 	rm -f $TMPFILE
@@ -34,7 +34,7 @@ save() {
 		echo 'Error: Could not save config file.'
 		exit $rv
 	fi
-	echo "$size bytes written."
+	echo "done."
 }
 
 case $1 in
