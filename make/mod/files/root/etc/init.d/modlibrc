@@ -370,7 +370,7 @@ modlib_status() {
 modlib_loadconfig() {
 	local CONF_FILE="/mod/etc/conf/${1-$CONF_NAME}.cfg"
 	if [ ! -r "$CONF_FILE" ]; then
-		echo "Error[${DAEMON_LONG_NAME}]: not configured" 1>&2
+		echo "Error [${DAEMON_LONG_NAME}]: not configured." 1>&2
 		exit 1
 	fi
 	. "$CONF_FILE"
