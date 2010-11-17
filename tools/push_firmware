@@ -122,7 +122,7 @@ while [ -z "$img" ]; do
 	fi
 	if [ -z "$img" ]; then
 		if tar tf "$arg1" ./var/tmp/kernel.image > /dev/null  2>&1; then
-			tmpimg=$(mktemp -t) || { echo "$basename: Error creating temporary fil."; exit 1; }
+			tmpimg=$(mktemp -t freetzXXX) || { echo "$basename: Error creating temporary file."; exit 1; }
 			echo >&2
 			echo "Hint: file seems to be a full firmware image archive in 'tar' format" >&2
 			echo "containing the 'kernel.image'. Now trying to unpack and use that image." >&2
@@ -138,15 +138,14 @@ while [ -z "$img" ]; do
 done
 
 ping_params="-c1 -w1"
-if [ "$(uname -o)" == "Cygwin" ]; then
+if [ "$(uname -s)" == "Darwin" ]; then
+	ping_params="-c1 -t1"
+elif [ "$(uname -o)" == "Cygwin" ]; then
 	CYGWIN=1
 	ping_params="-n 1 -w 500"
 fi
-if [ "$(uname -s)" == "Darwin" ]; then
-	ping_params="-c1 -t1"
-fi
 
-if [ -n "`which ftp`" -a -x "`which ftp`" ] ; then
+if [ "$(uname -s)" != "Darwin" -a -n "`which ftp`" -a -x "`which ftp`" ] ; then
   FOUND_FTP=1
   echo "ftp command found"
 elif [ -n "`which ncftp`" -a -x "`which ncftp`" ] ; then
