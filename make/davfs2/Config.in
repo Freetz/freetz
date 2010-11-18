@@ -13,6 +13,13 @@ config FREETZ_PACKAGE_DAVFS2
 		HTTP/1.1 that allows remote collaborative authoring of Web
 		resources, defined in RFC 4918.
 
+config FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF
+	bool "remove webinterface"
+	depends on FREETZ_PACKAGE_DAVFS2
+	default n
+	help
+		This option removes the webinterface
+
 config FREETZ_PACKAGE_DAVFS2_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_DAVFS2
