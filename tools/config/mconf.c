@@ -579,7 +579,7 @@ static void build_conf(struct menu *menu)
 				if (sym_is_changable(sym))
 					cprint_name("[%c]", val == no ? ' ' : '*');
 				else
-					cprint_name("---");
+					cprint_name("[X]");
 				break;
 			case S_TRISTATE:
 				cprint_tag("t%p", menu);
@@ -591,7 +591,7 @@ static void build_conf(struct menu *menu)
 				if (sym_is_changable(sym))
 					cprint_name("<%c>", ch);
 				else
-					cprint_name("---");
+					cprint_name("[X]");
 				break;
 			default:
 				cprint_tag("s%p", menu);
