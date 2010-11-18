@@ -11,3 +11,10 @@ config FREETZ_PACKAGE_CIFSMOUNT
 		Thus, cifsmount is a replacement for smbmount, having the advantage
 		of being significantly smaller than smbmount. So if you want to mount
 		Windows or Samba shares from your router box, this package is for you.
+
+config FREETZ_PACKAGE_CIFSMOUNT_REMOVE_WEBIF
+	bool "remove webinterface"
+	depends on FREETZ_PACKAGE_CIFSMOUNT
+	default n
+	help
+		This option removes the webinterface
