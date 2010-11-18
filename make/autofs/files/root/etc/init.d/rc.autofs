@@ -1,0 +1,72 @@
+#!/bin/sh
+
+DAEMON=autofs
+DAEMON_BIN=automount
+PID_FILE=/var/run/automount/autofs-running
+. /etc/init.d/modlibrc
+
+
+config() {
+	mkdir -p $(dirname $PID_FILE)
+	mkdir -p /var/media/autofs
+	mkdir -p /var/cache
+	modprobe fuse 2>/dev/null
+	modprobe cifs 2>/dev/null
+	modprobe nfs 2>/dev/null
+	modprobe autofs4
+}
+
+start() {
+	modlib_startdaemon $DAEMON_BIN $AUTOFS_CMDLINE
+}
+
+stop() {
+	local current_pid="$(cat $PID_FILE 2>/dev/null)"
+	kill $current_pid 2>/dev/null
+	sync
+	sleep 1
+	if kill -0 $current_pid 2>/dev/null; then
+		killall -9 $DAEMON_BIN
+	fi
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -d /var/media/autofs ] && mkdir -p /var/media/autofs
+
+		modreg file $DAEMON conf 'auto.conf' 1 "auto_conf"
+		modreg cgi $DAEMON autofs
+		modreg daemon $DAEMON
+
+		modlib_start $AUTOFS_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	reload)
+		modlib_reload
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

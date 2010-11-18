@@ -1,0 +1,54 @@
+config FREETZ_PACKAGE_AUTOFS
+	bool "autofs 5.0.5"
+	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_MODULE_autofs4
+	select FREETZ_BUSYBOX_MOUNT_HELPERS
+	select FREETZ_BUSYBOX_MOUNT_LABEL
+	default n
+	help
+		autofs is a kernel-based automounter for Linux.  It performs a job
+		similar to amd(8) but relies on a small stub of kernel code instead of
+		pretending to be an NFS server.  The result is simpler code, better
+		reliability, and much faster operation in the common case (everything
+		already mounted.)
+
+config FREETZ_PACKAGE_AUTOFS_NFS
+	bool "select nfs module"
+	depends on FREETZ_PACKAGE_AUTOFS
+	select FREETZ_MODULE_nfs
+	default n
+	help
+		select this if you want mount NFS-Shares
+
+config FREETZ_PACKAGE_AUTOFS_CIFS
+	bool "select cifs package"
+	depends on FREETZ_PACKAGE_AUTOFS
+	select FREETZ_PACKAGE_CIFSMOUNT
+	default n
+	help
+		select this if you want mount Samba-Shares
+
+config FREETZ_PACKAGE_AUTOFS_DAVFS2
+	bool "select davfs2 package"
+	depends on FREETZ_PACKAGE_AUTOFS
+	select FREETZ_PACKAGE_DAVFS2
+	default n
+	help
+		select this if you want mount Webdav-Shares
+
+config FREETZ_PACKAGE_AUTOFS_SSHFS
+	bool "select sshfs package"
+	depends on FREETZ_PACKAGE_AUTOFS
+	select FREETZ_PACKAGE_SSHFS_FUSE
+	default n
+	help
+		select this if you want mount SSHfs-Shares
+
+config FREETZ_PACKAGE_AUTOFS_CURL
+	bool "select curl package"
+	depends on FREETZ_PACKAGE_AUTOFS
+	select FREETZ_PACKAGE_CURL
+	default n
+	help
+		select this if you want mount FTP-Shares
+
