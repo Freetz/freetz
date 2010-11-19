@@ -37,7 +37,6 @@ $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 
 $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF)" == "y" ] && echo -e "etc/init.d/rc.davfs2\netc/default.davfs2/\nusr/lib/cgi-bin/davfs2.cgi" >> $@; \
 	[ "$(FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF)" == "y" ] \
 		&& echo "etc/init.d/rc.davfs2" >> $@ \
 		&& echo "etc/default.davfs2/" >> $@ \
