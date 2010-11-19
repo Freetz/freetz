@@ -1,0 +1,28 @@
+Change memcpy to memmove.
+
+If an inode is large (>16K) it will cause the src and dest pointers
+to overlap in the data cache memcpy, potentially leading to block_list
+corruption/truncation.
+
+http://squashfs.cvs.sourceforge.net/viewvc/squashfs/squashfs/squashfs-tools/mksquashfs.c?r1=1.196&r2=1.197
+
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -894,7 +894,7 @@
+ 			*((unsigned char *)(inode_table + inode_bytes + block_offset - 1)) = SQUASHFS_MARKER_BYTE;
+ 		inode_bytes += SQUASHFS_COMPRESSED_SIZE(c_byte) + block_offset;
+ 		total_inode_bytes += SQUASHFS_METADATA_SIZE + block_offset;
+-		memcpy(data_cache, data_cache + SQUASHFS_METADATA_SIZE, cache_bytes - SQUASHFS_METADATA_SIZE);
++		memmove(data_cache, data_cache + SQUASHFS_METADATA_SIZE, cache_bytes - SQUASHFS_METADATA_SIZE);
+ 		cache_bytes -= SQUASHFS_METADATA_SIZE;
+ 	}
+ 
+@@ -1407,7 +1407,7 @@
+ 			*((unsigned char *)(directory_table + directory_bytes + block_offset - 1)) = SQUASHFS_MARKER_BYTE;
+ 		directory_bytes += SQUASHFS_COMPRESSED_SIZE(c_byte) + block_offset;
+ 		total_directory_bytes += SQUASHFS_METADATA_SIZE + block_offset;
+-		memcpy(directory_data_cache, directory_data_cache + SQUASHFS_METADATA_SIZE, directory_cache_bytes - SQUASHFS_METADATA_SIZE);
++		memmove(directory_data_cache, directory_data_cache + SQUASHFS_METADATA_SIZE, directory_cache_bytes - SQUASHFS_METADATA_SIZE);
+ 		directory_cache_bytes -= SQUASHFS_METADATA_SIZE;
+ 	}
+ 
