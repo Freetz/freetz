@@ -1,0 +1,14 @@
+Do not create empty files on sporadic/spurious read errors (like original mksquashfs does), abort instead.
+This should prevent users from flashing non-working images.
+
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -2633,7 +2633,7 @@
+ 		ERROR("File %s changed size while reading filesystem, attempting to re-read\n", dir_ent->pathname);
+ 		goto again;
+ 	} else if(status == 1) {
+-		ERROR("Failed to read file %s, creating empty file\n", dir_ent->pathname);
++		BAD_ERROR("Failed to read file %s, aborting (original mksquashfs creates empty file)\n", dir_ent->pathname);
+ 		write_file_empty(inode, dir_ent, duplicate_file);
+ 	}
+ }
