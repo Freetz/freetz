@@ -1,0 +1,43 @@
+autofs-5.0.5 - fix get query dn failure
+
+From: Ian Kent <raven@themaw.net>
+
+Recent changes to the LDAP connection logic can fail to retrieve a valid
+query dn upon LDAP connection.
+
+If LDAP is being used to store autofs maps, the LDAP schema to be used
+for the maps is explicitly defined in the autofs configuration and no
+master map entries exist in LDAP autofs fails to try and retrieve a
+query dn, returning success instead of failure.
+---
+
+ CHANGELOG             |    1 +
+ modules/lookup_ldap.c |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 224a34a..5a921e1 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -24,6 +24,7 @@
+ - fix strdup() return value check (Leonardo Chiquitto).
+ - fix reconnect get base dn.
+ - add missing sasl mutex callbacks.
++- fix get query dn failure.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index e3c0c51..8387951 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -556,7 +556,7 @@ static int do_bind(unsigned logopt, LDAP *ldap, const char *uri, struct lookup_c
+ 		}
+ 	}
+ 
+-	if (ctxt->schema && !need_base)
++	if (ctxt->schema && ctxt->qdn && !need_base)
+ 		return 1;
+ 
+ 	/*

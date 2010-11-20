@@ -1,0 +1,42 @@
+autofs-5.0.5 - fix strdup() return value check
+
+From: Ian Kent <raven@themaw.net>
+
+Patch posted by Leonardo Chiquitto.
+
+Fix copy and paste error when checking strdup() return value, originally
+reported by David Binderman in:
+
+http://bugzilla.novell.com/show_bug.cgi?id=523348
+---
+
+ CHANGELOG      |    1 +
+ lib/defaults.c |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 35ac649..3166898 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -21,6 +21,7 @@
+ - dont connect at ldap lookup module init.
+ - fix random selection option.
+ - fix disable timeout.
++- fix strdup() return value check (Leonardo Chiquitto).
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/defaults.c b/lib/defaults.c
+index cb8354d..5ce71b7 100644
+--- lib/defaults.c
++++ b/lib/defaults.c
+@@ -65,7 +65,7 @@ static char *get_env_string(const char *name)
+ 		return NULL;
+ 
+ 	res = strdup(val);
+-	if (!val)
++	if (!res)
+ 		return NULL;
+ 
+ 	return res;

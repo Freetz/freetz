@@ -1,0 +1,494 @@
+autofs-5.0.5 - expire thread use pending mutex
+
+From: Ian Kent <raven@themaw.net>
+
+Some time ago the mount request thread creation was changed to
+use its own mutex for its condition handling due to execution
+order problems under heavy mount request pressure. When there
+are a large number of master map entries we see the same problem
+with expire thread creation. This patch changes the expire thread
+creation to use the same approach as the mount thread creation.
+---
+
+ CHANGELOG           |    1 +
+ daemon/direct.c     |   76 +++++++++++----------------------------------------
+ daemon/indirect.c   |   76 +++++++++++----------------------------------------
+ include/automount.h |   41 ++++++++++++++++++++++++++++
+ 4 files changed, 76 insertions(+), 118 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 5f6465a..e9deabf 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -46,6 +46,7 @@
+ - remove state machine timed wait.
+ - remove extra read master map call.
+ - fix error handing in do_mount_indirect().
++- expire thread use pending mutex.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/direct.c b/daemon/direct.c
+index 9b4e57b..4e8749b 100644
+--- daemon/direct.c
++++ b/daemon/direct.c
+@@ -35,6 +35,7 @@
+ #include <sys/vfs.h>
+ #include <sched.h>
+ 
++#define INCLUDE_PENDING_FUNCTIONS
+ #include "automount.h"
+ 
+ /* Attribute to create detached thread */
+@@ -48,8 +49,6 @@ pthread_key_t key_mnt_direct_params;
+ pthread_key_t key_mnt_offset_params;
+ pthread_once_t key_mnt_params_once = PTHREAD_ONCE_INIT;
+ 
+-static pthread_mutex_t ea_mutex = PTHREAD_MUTEX_INITIALIZER;
+-
+ static void key_mnt_params_destroy(void *arg)
+ {
+ 	struct mnt_params *mp;
+@@ -952,17 +951,6 @@ void *expire_proc_direct(void *arg)
+ 	return NULL;
+ }
+ 
+-static void pending_cond_destroy(void *arg)
+-{
+-	struct pending_args *mt;
+-	int status;
+-
+-	mt = (struct pending_args *) arg;
+-	status = pthread_cond_destroy(&mt->cond);
+-	if (status)
+-		fatal(status);
+-}
+-
+ static void expire_send_fail(void *arg)
+ {
+ 	struct ioctl_ops *ops = get_ioctl_ops();
+@@ -972,19 +960,6 @@ static void expire_send_fail(void *arg)
+ 		       mt->ioctlfd, mt->wait_queue_token, -ENOENT);
+ }
+ 
+-static void free_pending_args(void *arg)
+-{
+-	struct pending_args *mt = arg;
+-	free(mt);
+-}
+-
+-static void expire_mutex_unlock(void *arg)
+-{
+-	int status = pthread_mutex_unlock(&ea_mutex);
+-	if (status)
+-		fatal(status);
+-}
+-
+ static void *do_expire_direct(void *arg)
+ {
+ 	struct ioctl_ops *ops = get_ioctl_ops();
+@@ -995,9 +970,7 @@ static void *do_expire_direct(void *arg)
+ 
+ 	args = (struct pending_args *) arg;
+ 
+-	status = pthread_mutex_lock(&ea_mutex);
+-	if (status)
+-		fatal(status);
++	pending_mutex_lock(args);
+ 
+ 	memcpy(&mt, args, sizeof(struct pending_args));
+ 
+@@ -1008,7 +981,7 @@ static void *do_expire_direct(void *arg)
+ 	if (status)
+ 		fatal(status);
+ 
+-	expire_mutex_unlock(NULL);
++	pending_mutex_unlock(args);
+ 
+ 	pthread_cleanup_push(expire_send_fail, &mt);
+ 
+@@ -1124,7 +1097,7 @@ int handle_packet_expire_direct(struct autofs_point *ap, autofs_packet_expire_di
+ 	if (status)
+ 		fatal(status);
+ 
+-	status = pthread_mutex_lock(&ea_mutex);
++	status = pthread_mutex_init(&mt->mutex, NULL);
+ 	if (status)
+ 		fatal(status);
+ 
+@@ -1140,6 +1113,8 @@ int handle_packet_expire_direct(struct autofs_point *ap, autofs_packet_expire_di
+ 	debug(ap->logopt, "token %ld, name %s",
+ 		  (unsigned long) pkt->wait_queue_token, mt->name);
+ 
++	pending_mutex_lock(mt);
++
+ 	status = pthread_create(&thid, &th_attr_detached, do_expire_direct, mt);
+ 	if (status) {
+ 		error(ap->logopt, "expire thread create failed");
+@@ -1147,8 +1122,9 @@ int handle_packet_expire_direct(struct autofs_point *ap, autofs_packet_expire_di
+ 			       mt->ioctlfd, pkt->wait_queue_token, -status);
+ 		cache_unlock(mc);
+ 		master_source_unlock(ap->entry);
+-		expire_mutex_unlock(NULL);
++		pending_mutex_unlock(mt);
+ 		pending_cond_destroy(mt);
++		pending_mutex_destroy(mt);
+ 		free_pending_args(mt);
+ 		pthread_setcancelstate(state, NULL);
+ 		return 1;
+@@ -1158,8 +1134,9 @@ int handle_packet_expire_direct(struct autofs_point *ap, autofs_packet_expire_di
+ 	master_source_unlock(ap->entry);
+ 
+ 	pthread_cleanup_push(free_pending_args, mt);
++	pthread_cleanup_push(pending_mutex_destroy, mt);
+ 	pthread_cleanup_push(pending_cond_destroy, mt);
+-	pthread_cleanup_push(expire_mutex_unlock, NULL);
++	pthread_cleanup_push(pending_mutex_unlock, mt);
+ 	pthread_setcancelstate(state, NULL);
+ 
+ 	mt->signaled = 0;
+@@ -1167,7 +1144,7 @@ int handle_packet_expire_direct(struct autofs_point *ap, autofs_packet_expire_di
+ 		gettimeofday(&now, NULL);
+ 		wait.tv_sec = now.tv_sec + 2;
+ 		wait.tv_nsec = now.tv_usec * 1000;
+-		status = pthread_cond_wait(&mt->cond, &ea_mutex);
++		status = pthread_cond_timedwait(&mt->cond, &mt->mutex, &wait);
+ 		if (status && status != ETIMEDOUT)
+ 			fatal(status);
+ 	}
+@@ -1175,6 +1152,7 @@ int handle_packet_expire_direct(struct autofs_point *ap, autofs_packet_expire_di
+ 	pthread_cleanup_pop(1);
+ 	pthread_cleanup_pop(1);
+ 	pthread_cleanup_pop(1);
++	pthread_cleanup_pop(1);
+ 
+ 	return 0;
+ }
+@@ -1188,22 +1166,6 @@ static void mount_send_fail(void *arg)
+ 	ops->close(ap->logopt, mt->ioctlfd);
+ }
+ 
+-static void pending_mutex_destroy(void *arg)
+-{
+-	struct pending_args *mt = (struct pending_args *) arg;
+-	int status = pthread_mutex_destroy(&mt->mutex);
+-	if (status)
+-		fatal(status);
+-}
+-
+-static void mount_mutex_unlock(void *arg)
+-{
+-	struct pending_args *mt = (struct pending_args *) arg;
+-	int status = pthread_mutex_unlock(&mt->mutex);
+-	if (status)
+-		fatal(status);
+-}
+-
+ static void *do_mount_direct(void *arg)
+ {
+ 	struct ioctl_ops *ops = get_ioctl_ops();
+@@ -1214,9 +1176,7 @@ static void *do_mount_direct(void *arg)
+ 
+ 	args = (struct pending_args *) arg;
+ 
+-	status = pthread_mutex_lock(&args->mutex);
+-	if (status)
+-		fatal(status);
++	pending_mutex_lock(args);
+ 
+ 	memcpy(&mt, args, sizeof(struct pending_args));
+ 
+@@ -1227,7 +1187,7 @@ static void *do_mount_direct(void *arg)
+ 	if (status)
+ 		fatal(status);
+ 
+-	mount_mutex_unlock(args);
++	pending_mutex_unlock(args);
+ 
+ 	pthread_cleanup_push(mount_send_fail, &mt);
+ 
+@@ -1434,9 +1394,7 @@ int handle_packet_missing_direct(struct autofs_point *ap, autofs_packet_missing_
+ 	if (status)
+ 		fatal(status);
+ 
+-	status = pthread_mutex_lock(&mt->mutex);
+-	if (status)
+-		fatal(status);
++	pending_mutex_lock(mt);
+ 
+ 	mt->ap = ap;
+ 	mt->ioctlfd = ioctlfd;
+@@ -1458,7 +1416,7 @@ int handle_packet_missing_direct(struct autofs_point *ap, autofs_packet_missing_
+ 		cache_unlock(mc);
+ 		master_source_unlock(ap->entry);
+ 		master_mutex_unlock();
+-		mount_mutex_unlock(mt);
++		pending_mutex_unlock(mt);
+ 		pending_cond_destroy(mt);
+ 		pending_mutex_destroy(mt);
+ 		free_pending_args(mt);
+@@ -1474,7 +1432,7 @@ int handle_packet_missing_direct(struct autofs_point *ap, autofs_packet_missing_
+ 	pthread_cleanup_push(free_pending_args, mt);
+ 	pthread_cleanup_push(pending_mutex_destroy, mt);
+ 	pthread_cleanup_push(pending_cond_destroy, mt);
+-	pthread_cleanup_push(mount_mutex_unlock, mt);
++	pthread_cleanup_push(pending_mutex_unlock, mt);
+ 	pthread_setcancelstate(state, NULL);
+ 
+ 	mt->signaled = 0;
+diff --git a/daemon/indirect.c b/daemon/indirect.c
+index 09d784b..f3651bd 100644
+--- daemon/indirect.c
++++ b/daemon/indirect.c
+@@ -34,13 +34,12 @@
+ #include <sys/vfs.h>
+ #include <sched.h>
+ 
++#define INCLUDE_PENDING_FUNCTIONS
+ #include "automount.h"
+ 
+ /* Attribute to create detached thread */
+ extern pthread_attr_t th_attr_detached;
+ 
+-static pthread_mutex_t ea_mutex = PTHREAD_MUTEX_INITIALIZER;
+-
+ static int unlink_mount_tree(struct autofs_point *ap, struct mnt_list *mnts)
+ {
+ 	struct mnt_list *this;
+@@ -587,17 +586,6 @@ void *expire_proc_indirect(void *arg)
+ 	return NULL;
+ }
+ 
+-static void pending_cond_destroy(void *arg)
+-{
+-	struct pending_args *mt;
+-	int status;
+-
+-	mt = (struct pending_args *) arg;
+-	status = pthread_cond_destroy(&mt->cond);
+-	if (status)
+-		fatal(status);
+-}
+-
+ static void expire_send_fail(void *arg)
+ {
+ 	struct ioctl_ops *ops = get_ioctl_ops();
+@@ -607,19 +595,6 @@ static void expire_send_fail(void *arg)
+ 		       ap->ioctlfd, mt->wait_queue_token, -ENOENT);
+ }
+ 
+-static void free_pending_args(void *arg)
+-{
+-	struct pending_args *mt = arg;
+-	free(mt);
+-}
+-
+-static void expire_mutex_unlock(void *arg)
+-{
+-	int status = pthread_mutex_unlock(&ea_mutex);
+-	if (status)
+-		fatal(status);
+-}
+-
+ static void *do_expire_indirect(void *arg)
+ {
+ 	struct ioctl_ops *ops = get_ioctl_ops();
+@@ -629,9 +604,7 @@ static void *do_expire_indirect(void *arg)
+ 
+ 	args = (struct pending_args *) arg;
+ 
+-	status = pthread_mutex_lock(&ea_mutex);
+-	if (status)
+-		fatal(status);
++	pending_mutex_lock(args);
+ 
+ 	memcpy(&mt, args, sizeof(struct pending_args));
+ 
+@@ -642,7 +615,7 @@ static void *do_expire_indirect(void *arg)
+ 	if (status)
+ 		fatal(status);
+ 
+-	expire_mutex_unlock(NULL);
++	pending_mutex_unlock(args);
+ 
+ 	pthread_cleanup_push(expire_send_fail, &mt);
+ 
+@@ -690,7 +663,7 @@ int handle_packet_expire_indirect(struct autofs_point *ap, autofs_packet_expire_
+ 	if (status)
+ 		fatal(status);
+ 
+-	status = pthread_mutex_lock(&ea_mutex);
++	status = pthread_mutex_init(&mt->mutex, NULL);
+ 	if (status)
+ 		fatal(status);
+ 
+@@ -700,21 +673,25 @@ int handle_packet_expire_indirect(struct autofs_point *ap, autofs_packet_expire_
+ 	mt->len = pkt->len;
+ 	mt->wait_queue_token = pkt->wait_queue_token;
+ 
++	pending_mutex_lock(mt);
++
+ 	status = pthread_create(&thid, &th_attr_detached, do_expire_indirect, mt);
+ 	if (status) {
+ 		error(ap->logopt, "expire thread create failed");
+ 		ops->send_fail(ap->logopt,
+ 			       ap->ioctlfd, pkt->wait_queue_token, -status);
+-		expire_mutex_unlock(NULL);
++		pending_mutex_unlock(mt);
+ 		pending_cond_destroy(mt);
++		pending_mutex_destroy(mt);
+ 		free_pending_args(mt);
+ 		pthread_setcancelstate(state, NULL);
+ 		return 1;
+ 	}
+ 
+ 	pthread_cleanup_push(free_pending_args, mt);
++	pthread_cleanup_push(pending_mutex_destroy, mt);
+ 	pthread_cleanup_push(pending_cond_destroy, mt);
+-	pthread_cleanup_push(expire_mutex_unlock, NULL);
++	pthread_cleanup_push(pending_mutex_unlock, mt);
+ 	pthread_setcancelstate(state, NULL);
+ 
+ 	mt->signaled = 0;
+@@ -722,7 +699,7 @@ int handle_packet_expire_indirect(struct autofs_point *ap, autofs_packet_expire_
+ 		gettimeofday(&now, NULL);
+ 		wait.tv_sec = now.tv_sec + 2;
+ 		wait.tv_nsec = now.tv_usec * 1000;
+-		status = pthread_cond_timedwait(&mt->cond, &ea_mutex, &wait);
++		status = pthread_cond_timedwait(&mt->cond, &mt->mutex, &wait);
+ 		if (status && status != ETIMEDOUT)
+ 			fatal(status);
+ 	}
+@@ -730,6 +707,7 @@ int handle_packet_expire_indirect(struct autofs_point *ap, autofs_packet_expire_
+ 	pthread_cleanup_pop(1);
+ 	pthread_cleanup_pop(1);
+ 	pthread_cleanup_pop(1);
++	pthread_cleanup_pop(1);
+ 
+ 	return 0;
+ }
+@@ -743,22 +721,6 @@ static void mount_send_fail(void *arg)
+ 		       ap->ioctlfd, mt->wait_queue_token, -ENOENT);
+ }
+ 
+-static void pending_mutex_destroy(void *arg)
+-{
+-	struct pending_args *mt = (struct pending_args *) arg;
+-	int status = pthread_mutex_destroy(&mt->mutex);
+-	if (status)
+-		fatal(status);
+-}
+-
+-static void mount_mutex_unlock(void *arg)
+-{
+-	struct pending_args *mt = (struct pending_args *) arg;
+-	int status = pthread_mutex_unlock(&mt->mutex);
+-	if (status)
+-		fatal(status);
+-}
+-
+ static void *do_mount_indirect(void *arg)
+ {
+ 	struct ioctl_ops *ops = get_ioctl_ops();
+@@ -770,9 +732,7 @@ static void *do_mount_indirect(void *arg)
+ 
+ 	args = (struct pending_args *) arg;
+ 
+-	status = pthread_mutex_lock(&args->mutex);
+-	if (status)
+-		fatal(status);
++	pending_mutex_lock(args);
+ 
+ 	memcpy(&mt, args, sizeof(struct pending_args));
+ 
+@@ -783,7 +743,7 @@ static void *do_mount_indirect(void *arg)
+ 	if (status)
+ 		fatal(status);
+ 
+-	mount_mutex_unlock(args);
++	pending_mutex_unlock(args);
+ 
+ 	pthread_cleanup_push(mount_send_fail, &mt);
+ 
+@@ -879,9 +839,7 @@ int handle_packet_missing_indirect(struct autofs_point *ap, autofs_packet_missin
+ 	if (status)
+ 		fatal(status);
+ 
+-	status = pthread_mutex_lock(&mt->mutex);
+-	if (status)
+-		fatal(status);
++	pending_mutex_lock(mt);
+ 
+ 	mt->ap = ap;
+ 	strncpy(mt->name, pkt->name, pkt->len);
+@@ -898,7 +856,7 @@ int handle_packet_missing_indirect(struct autofs_point *ap, autofs_packet_missin
+ 		ops->send_fail(ap->logopt,
+ 			       ap->ioctlfd, pkt->wait_queue_token, -status);
+ 		master_mutex_unlock();
+-		mount_mutex_unlock(mt);
++		pending_mutex_unlock(mt);
+ 		pending_cond_destroy(mt);
+ 		pending_mutex_destroy(mt);
+ 		free_pending_args(mt);
+@@ -911,7 +869,7 @@ int handle_packet_missing_indirect(struct autofs_point *ap, autofs_packet_missin
+ 	pthread_cleanup_push(free_pending_args, mt);
+ 	pthread_cleanup_push(pending_mutex_destroy, mt);
+ 	pthread_cleanup_push(pending_cond_destroy, mt);
+-	pthread_cleanup_push(mount_mutex_unlock, mt);
++	pthread_cleanup_push(pending_mutex_unlock, mt);
+ 	pthread_setcancelstate(state, NULL);
+ 
+ 	mt->signaled = 0;
+diff --git a/include/automount.h b/include/automount.h
+index 9e1feb0..7d4efcc 100644
+--- include/automount.h
++++ b/include/automount.h
+@@ -375,6 +375,47 @@ struct pending_args {
+ 	unsigned long wait_queue_token;	/* Associated kernel wait token */
+ };
+ 
++#ifdef INCLUDE_PENDING_FUNCTIONS
++static void pending_cond_destroy(void *arg)
++{
++	struct pending_args *mt = (struct pending_args *) arg;
++	int status;
++	status = pthread_cond_destroy(&mt->cond);
++	if (status)
++		fatal(status);
++}
++
++static void pending_mutex_destroy(void *arg)
++{
++	struct pending_args *mt = (struct pending_args *) arg;
++	int status = pthread_mutex_destroy(&mt->mutex);
++	if (status)
++		fatal(status);
++}
++
++static void free_pending_args(void *arg)
++{
++	struct pending_args *mt = (struct pending_args *) arg;
++	free(mt);
++}
++
++static void pending_mutex_lock(void *arg)
++{
++        struct pending_args *mt = (struct pending_args *) arg;
++        int status = pthread_mutex_lock(&mt->mutex);
++        if (status)
++                fatal(status);
++}
++
++static void pending_mutex_unlock(void *arg)
++{
++        struct pending_args *mt = (struct pending_args *) arg;
++        int status = pthread_mutex_unlock(&mt->mutex);
++        if (status)
++                fatal(status);
++}
++#endif
++
+ struct thread_stdenv_vars {
+ 	uid_t uid;
+ 	gid_t gid;

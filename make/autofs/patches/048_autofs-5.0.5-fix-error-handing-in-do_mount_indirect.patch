@@ -1,0 +1,47 @@
+autofs-5.0.5 - fix error handing in do_mount_indirect()
+
+From: Ian Kent <raven@themaw.net>
+
+A couple of error returns in do_mount_indirect() fail to notify
+the kernel of request status before terminating.
+---
+
+ CHANGELOG         |    1 +
+ daemon/indirect.c |    4 ++++
+ 2 files changed, 5 insertions(+), 0 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index e5d743b..5f6465a 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -45,6 +45,7 @@
+ - fix negative cache included map lookup.
+ - remove state machine timed wait.
+ - remove extra read master map call.
++- fix error handing in do_mount_indirect().
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/indirect.c b/daemon/indirect.c
+index 8025ee4..09d784b 100644
+--- daemon/indirect.c
++++ b/daemon/indirect.c
+@@ -792,6 +792,9 @@ static void *do_mount_indirect(void *arg)
+ 	len = ncat_path(buf, sizeof(buf), ap->path, mt.name, mt.len);
+ 	if (!len) {
+ 		crit(ap->logopt, "path to be mounted is to long");
++		ops->send_fail(ap->logopt,
++			       ap->ioctlfd, mt.wait_queue_token,
++			      -ENAMETOOLONG);
+ 		pthread_setcancelstate(state, NULL);
+ 		pthread_exit(NULL);
+ 	}
+@@ -800,6 +803,7 @@ static void *do_mount_indirect(void *arg)
+ 	if (status != -1 && !(S_ISDIR(st.st_mode) && st.st_dev == mt.dev)) {
+ 		error(ap->logopt,
+ 		      "indirect trigger not valid or already mounted %s", buf);
++		ops->send_ready(ap->logopt, ap->ioctlfd, mt.wait_queue_token);
+ 		pthread_setcancelstate(state, NULL);
+ 		pthread_exit(NULL);
+ 	}

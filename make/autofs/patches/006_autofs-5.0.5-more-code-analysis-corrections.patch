@@ -1,0 +1,241 @@
+autofs-5.0.5 - more code analysis corrections (and fix a typo in an init script)
+
+From: Jeff Moyer <jmoyer@redhat.com>
+
+- fix an obvious type in Redhat init script.
+- don't call ldap_msgfree when result pointer is null.
+- check return of ldap_parse_result as pointers will be invalid on fail.
+- get rid of a bogus assignment in defaults_free_searchdns.
+- get rid of unused optlen variable in parse_sun.c.
+- check return status of stat(2) in do_mount_direct().
+- get rid of unused name variable in master_add_map_source().
+- check return from ops->askumount() in expire_cleanup().
+- in mount_autofs.c:mount_mount(), don't increment val since we never
+  look at it again.
+- in autofs_sasl_dispose() ctxt must always be valid or we would have
+  a much bigger problem.
+- in st_start_handler() and alarm_start_handler() it is possible for
+  pthread_attr_destroy() to be called with a NULL pointer.
+- we could end up with a non-null result pointer after a failed call to
+  ldap_search_s(), well maybe, so check for it anyway.
+
+Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+---
+
+ CHANGELOG              |    1 +
+ daemon/direct.c        |    2 +-
+ daemon/state.c         |    5 +++--
+ lib/alarm.c            |    3 ++-
+ lib/defaults.c         |    1 -
+ lib/master.c           |    6 +-----
+ modules/cyrus-sasl.c   |    2 +-
+ modules/lookup_ldap.c  |   13 +++++++++++--
+ modules/mount_autofs.c |    2 +-
+ modules/parse_sun.c    |    3 +--
+ redhat/autofs.init.in  |    2 +-
+ 11 files changed, 23 insertions(+), 17 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 23351c8..b9b1602 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -5,6 +5,7 @@
+ - add mount wait timeout parameter.
+ - special case cifs escapes.
+ - fix compile fail with when LDAP is excluded.
++- more code analysis corrections (and fix a typo in an init script).
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/direct.c b/daemon/direct.c
+index 0c78627..9b4e57b 100644
+--- daemon/direct.c
++++ b/daemon/direct.c
+@@ -1245,7 +1245,7 @@ static void *do_mount_direct(void *arg)
+ 	}
+ 
+ 	status = stat(mt.name, &st);
+-	if (!S_ISDIR(st.st_mode) || st.st_dev != mt.dev) {
++	if (status != 0 || !S_ISDIR(st.st_mode) || st.st_dev != mt.dev) {
+ 		error(ap->logopt,
+ 		     "direct trigger not valid or already mounted %s",
+ 		     mt.name);
+diff --git a/daemon/state.c b/daemon/state.c
+index 71af46a..27bc6de 100644
+--- daemon/state.c
++++ b/daemon/state.c
+@@ -160,7 +160,7 @@ void expire_cleanup(void *arg)
+ 			 * been signaled to shutdown.
+ 			 */
+ 			rv = ops->askumount(ap->logopt, ap->ioctlfd, &idle);
+-			if (!idle && !ap->shutdown) {
++			if (!rv && !idle && !ap->shutdown) {
+ 				next = ST_READY;
+ 				if (!ap->submount)
+ 					alarm_add(ap, ap->exp_runfreq);
+@@ -1198,7 +1198,8 @@ int st_start_handler(void)
+ 
+ 	status = pthread_create(&thid, pattrs, st_queue_handler, NULL);
+ 
+-	pthread_attr_destroy(pattrs);
++	if (pattrs)
++		pthread_attr_destroy(pattrs);
+ 
+ 	return !status;
+ }
+diff --git a/lib/alarm.c b/lib/alarm.c
+index 46df38a..f403d8f 100755
+--- lib/alarm.c
++++ b/lib/alarm.c
+@@ -239,7 +239,8 @@ int alarm_start_handler(void)
+ 
+ 	status = pthread_create(&thid, pattrs, alarm_handler, NULL);
+ 
+-	pthread_attr_destroy(pattrs);
++	if (pattrs)
++		pthread_attr_destroy(pattrs);
+ 
+ 	return !status;
+ }
+diff --git a/lib/defaults.c b/lib/defaults.c
+index 2204b18..cb8354d 100644
+--- lib/defaults.c
++++ b/lib/defaults.c
+@@ -534,7 +534,6 @@ void defaults_free_searchdns(struct ldap_searchdn *sdn)
+ 	struct ldap_searchdn *this = sdn;
+ 	struct ldap_searchdn *next;
+ 
+-	next = this;
+ 	while (this) {
+ 		next = this->next;
+ 		free(this->basedn);
+diff --git a/lib/master.c b/lib/master.c
+index e43f835..8455f40 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -152,7 +152,7 @@ master_add_map_source(struct master_mapent *entry,
+ {
+ 	struct map_source *source;
+ 	char *ntype, *nformat;
+-	const char **tmpargv, *name = NULL;
++	const char **tmpargv;
+ 
+ 	source = malloc(sizeof(struct map_source));
+ 	if (!source)
+@@ -188,10 +188,6 @@ master_add_map_source(struct master_mapent *entry,
+ 	source->argc = argc;
+ 	source->argv = tmpargv;
+ 
+-	/* Can be NULL for "hosts" map */
+-	if (argv)
+-		name = argv[0];
+-
+ 	master_source_writelock(entry);
+ 
+ 	if (!entry->maps)
+diff --git a/modules/cyrus-sasl.c b/modules/cyrus-sasl.c
+index 828143e..92e2226 100644
+--- modules/cyrus-sasl.c
++++ b/modules/cyrus-sasl.c
+@@ -911,7 +911,7 @@ void autofs_sasl_dispose(struct lookup_context *ctxt)
+ {
+ 	int status, ret;
+ 
+-	if (ctxt && ctxt->sasl_conn) {
++	if (ctxt->sasl_conn) {
+ 		sasl_dispose(&ctxt->sasl_conn);
+ 		ctxt->sasl_conn = NULL;
+ 	}
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index f1fb9ce..d8bd169 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -389,13 +389,16 @@ static int get_query_dn(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt
+ 				error(logopt,
+ 				      MODPREFIX "query failed for search dn %s: %s",
+ 				      this->basedn, ldap_err2string(rv));
++				if (result) {
++					ldap_msgfree(result);
++					result = NULL;
++				}
+ 			}
+ 
+ 			this = this->next;
+ 		}
+ 
+ 		if (!result) {
+-			ldap_msgfree(result);
+ 			error(logopt,
+ 			      MODPREFIX "failed to find query dn under search base dns");
+ 			free(query);
+@@ -1954,6 +1957,12 @@ do_paged:
+ 		sp->cookie = NULL;
+ 	}
+ 
++	if (rv != LDAP_SUCCESS) {
++		debug(ap->logopt,
++		      MODPREFIX "ldap_parse_result failed with %d", rv);
++		goto out_free;
++	}
++
+ 	/*
+ 	 * Parse the page control returned to get the cookie and
+ 	 * determine whether there are more pages.
+@@ -1970,8 +1979,8 @@ do_paged:
+ 	if (returnedControls)
+ 		ldap_controls_free(returnedControls);
+ 
++out_free:
+ 	ldap_control_free(pageControl);
+-
+ 	return rv;
+ }
+ 
+diff --git a/modules/mount_autofs.c b/modules/mount_autofs.c
+index afb1859..2a5d860 100644
+--- modules/mount_autofs.c
++++ b/modules/mount_autofs.c
+@@ -119,7 +119,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name,
+ 			else if (strncmp(cp, "timeout=", 8) == 0) {
+ 				char *val = strchr(cp, '=');
+ 				unsigned tout;
+-				if (val++) {
++				if (val) {
+ 					int ret = sscanf(cp, "timeout=%u", &tout);
+ 					if (ret)
+ 						timeout = tout;
+diff --git a/modules/parse_sun.c b/modules/parse_sun.c
+index db36ae2..921daf4 100644
+--- modules/parse_sun.c
++++ b/modules/parse_sun.c
+@@ -1334,7 +1334,7 @@ int parse_mount(struct autofs_point *ap, const char *name,
+ 	char *pmapent, *options;
+ 	const char *p;
+ 	int mapent_len, rv = 0;
+-	int optlen, cur_state;
++	int cur_state;
+ 	int slashify = ctxt->slashify_colons;
+ 	unsigned int append_options;
+ 
+@@ -1389,7 +1389,6 @@ int parse_mount(struct autofs_point *ap, const char *name,
+ 		logerr(MODPREFIX "strdup: %s", estr);
+ 		return 1;
+ 	}
+-	optlen = strlen(options);
+ 
+ 	p = skipspace(pmapent);
+ 
+diff --git a/redhat/autofs.init.in b/redhat/autofs.init.in
+index fded1d8..806302b 100644
+--- redhat/autofs.init.in
++++ b/redhat/autofs.init.in
+@@ -172,7 +172,7 @@ case "$1" in
+ 		fi
+ 		;;
+ 	*)
+-		echo $"Usage: $0 {start|forcestart|stop|status|restart|orcerestart|reload|condrestart}"
++		echo $"Usage: $0 {start|forcestart|stop|status|restart|forcerestart|reload|condrestart}"
+ 		exit 1;
+ 		;;
+ esac

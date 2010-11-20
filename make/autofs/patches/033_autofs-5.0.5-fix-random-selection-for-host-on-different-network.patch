@@ -1,0 +1,145 @@
+autofs-5.0.5 - fix random selection for host on different network
+
+From: Ian Kent <raven@themaw.net>
+
+When we select from a list of hosts from which we can mount the list
+is ordered by response time within proximity.
+
+This is intended for normal selection but when using random selection
+if any hosts are on another network (and so considered further away)
+they will never be at the head of the list and so are unlikely to be
+used. This leads to a limited set of hosts being used for mounts which
+usually isn't what's required when the random selection option is used.
+---
+
+ CHANGELOG            |    1 +
+ include/replicated.h |    2 +-
+ modules/mount_nfs.c  |    2 +-
+ modules/replicated.c |   28 ++++++++++++++++++++--------
+ 4 files changed, 23 insertions(+), 10 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index e319b4d..470de69 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -31,6 +31,7 @@
+ - add simple bind authentication.
+ - fix master map source server unavailable handling.
+ - add autofs_ldap_auth.conf man page.
++- fix random selection for host on different network.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/include/replicated.h b/include/replicated.h
+index fd87c08..519689d 100644
+--- include/replicated.h
++++ b/include/replicated.h
+@@ -64,7 +64,7 @@ struct host {
+ 
+ void seed_random(void);
+ void free_host_list(struct host **);
+-int parse_location(unsigned, struct host **, const char *);
++int parse_location(unsigned, struct host **, const char *, unsigned int);
+ int prune_host_list(unsigned, struct host **, unsigned int, const char *, unsigned int);
+ void dump_host_list(struct host *);
+ 
+diff --git a/modules/mount_nfs.c b/modules/mount_nfs.c
+index 14d3850..21e1929 100644
+--- modules/mount_nfs.c
++++ b/modules/mount_nfs.c
+@@ -137,7 +137,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name, int
+ 	else if (mount_default_proto == 4)
+ 		vers = vers | NFS4_VERS_MASK;
+ 
+-	if (!parse_location(ap->logopt, &hosts, what)) {
++	if (!parse_location(ap->logopt, &hosts, what, random_selection)) {
+ 		info(ap->logopt, MODPREFIX "no hosts available");
+ 		return 1;
+ 	}
+diff --git a/modules/replicated.c b/modules/replicated.c
+index 4cd3eb4..9eefb19 100644
+--- modules/replicated.c
++++ b/modules/replicated.c
+@@ -1041,13 +1041,23 @@ int prune_host_list(unsigned logopt, struct host **list,
+ 
+ static int add_new_host(struct host **list,
+ 			const char *host, unsigned int weight,
+-			struct addrinfo *host_addr)
++			struct addrinfo *host_addr,
++			unsigned int random_selection)
+ {
+ 	struct host *new;
+ 	unsigned int prx;
+ 	int addr_len;
+ 
+-	prx = get_proximity(host_addr->ai_addr);
++	/*
++	 * If we are using random selection we pretend all hosts are at
++	 * the same proximity so hosts further away don't get excluded.
++	 * We can't use PROXIMITY_LOCAL or we won't perform an RPC ping
++	 * to remove hosts that may be down.
++	 */
++	if (random_selection)
++		prx = PROXIMITY_SUBNET;
++	else
++		prx = get_proximity(host_addr->ai_addr);
+ 	/*
+ 	 * If we tried to add an IPv6 address and we don't have IPv6
+ 	 * support return success in the hope of getting an IPv4
+@@ -1071,7 +1081,8 @@ static int add_new_host(struct host **list,
+ 	return 1;
+ }
+ 
+-static int add_host_addrs(struct host **list, const char *host, unsigned int weight)
++static int add_host_addrs(struct host **list, const char *host,
++			  unsigned int weight, unsigned int random_selection)
+ {
+ 	struct addrinfo hints, *ni, *this;
+ 	int ret;
+@@ -1087,7 +1098,7 @@ static int add_host_addrs(struct host **list, const char *host, unsigned int wei
+ 
+ 	this = ni;
+ 	while (this) {
+-		ret = add_new_host(list, host, weight, this);
++		ret = add_new_host(list, host, weight, this, random_selection);
+ 		if (!ret)
+ 			break;
+ 		this = this->ai_next;
+@@ -1110,7 +1121,7 @@ try_name:
+ 
+ 	this = ni;
+ 	while (this) {
+-		ret = add_new_host(list, host, weight, this);
++		ret = add_new_host(list, host, weight, this, random_selection);
+ 		if (!ret)
+ 			break;
+ 		this = this->ai_next;
+@@ -1197,7 +1208,8 @@ static char *seek_delim(const char *s)
+ 	return NULL;
+ }
+ 
+-int parse_location(unsigned logopt, struct host **hosts, const char *list)
++int parse_location(unsigned logopt, struct host **hosts,
++		   const char *list, unsigned int random_selection)
+ {
+ 	char *str, *p, *delim;
+ 	unsigned int empty = 1;
+@@ -1252,7 +1264,7 @@ int parse_location(unsigned logopt, struct host **hosts, const char *list)
+ 				}
+ 
+ 				if (p != delim) {
+-					if (!add_host_addrs(hosts, p, weight)) {
++					if (!add_host_addrs(hosts, p, weight, random_selection)) {
+ 						if (empty) {
+ 							p = next;
+ 							continue;
+@@ -1274,7 +1286,7 @@ int parse_location(unsigned logopt, struct host **hosts, const char *list)
+ 				*delim = '\0';
+ 				next = delim + 1;
+ 
+-				if (!add_host_addrs(hosts, p, weight)) {
++				if (!add_host_addrs(hosts, p, weight, random_selection)) {
+ 					p = next;
+ 					continue;
+ 				}

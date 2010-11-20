@@ -1,0 +1,39 @@
+autofs-5.0.5 - don't use master_lex_destroy() to clear parse buffer
+
+From: Ian Kent <raven@themaw.net>
+
+Using master_lex_destroy() does not seem not to resolve the original
+problem it set out to solve in all cases. Change to using memset() to
+clear the buffer instead.
+---
+
+ CHANGELOG        |    1 +
+ lib/master_tok.l |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index e37dadb..329b028 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -9,6 +9,7 @@
+ - fix backwards #ifndef INET6.
+ - fix stale initialization for file map instance.
+ - add "preen" fsck for ext4 mounts.
++- don't use master_lex_destroy() to clear parse buffer.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master_tok.l b/lib/master_tok.l
+index 373248b..be2ce10 100644
+--- lib/master_tok.l
++++ b/lib/master_tok.l
+@@ -414,7 +414,7 @@ static void master_echo(void)
+ 
+ void master_set_scan_buffer(const char *buffer)
+ {
+-	master_lex_destroy();
++	memset(buff, 0, sizeof(buff));
+ 	optr = buff;
+ 
+ 	line = buffer;

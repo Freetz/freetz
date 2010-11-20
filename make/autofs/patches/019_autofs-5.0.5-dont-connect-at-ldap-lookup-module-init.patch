@@ -1,0 +1,202 @@
+autofs-5.0.5 - dont connect at ldap lookup module init
+
+From: Ian Kent <raven@themaw.net>
+
+When using LDAP as a map source and no server is available at
+startup autofs will fiail to mount autofs mounts because it
+cannot read the mount maps.
+
+For the case were the master map is available (for example as
+a file map) indirect autofs mounts should still be able to
+continue but the LDAP lookup module unnecessarily tryes to
+connect a an LDAP server and returns a fail if it can't
+connect causing the autofs mount to not complete.
+
+If no server is available to obtain the mount information and
+an entry for a requested mount has not been seen before then
+mount requests will fail. But, if an entry has previously been
+seen autofs will use that while the server is unavailable.
+
+If an autofs indirect mount uses the browse option and no
+server is available at startup the map cannot be read so no
+mount point directories will be created (and the mount will
+behave as though the browse option was not present). A HUP
+signal can be issued to make autofs read the map and create
+the map mount point directores. Or the next access to a mount
+point that isn't already in the cache but in the map on the
+server will trigger a map re-read.
+---
+
+ CHANGELOG             |    1 +
+ daemon/lookup.c       |    7 +++++-
+ modules/lookup_ldap.c |   61 +++++++++++++++++--------------------------------
+ 3 files changed, 28 insertions(+), 41 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index a2569aa..f38fc3f 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -18,6 +18,7 @@
+ - fix rpc fail on large export list.
+ - fix memory leak on reload.
+ - update kernel patches for 2.6.18 and 2.6.19.
++- dont connect at ldap lookup module init.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/lookup.c b/daemon/lookup.c
+index 665ada0..a4b9a80 100644
+--- daemon/lookup.c
++++ b/daemon/lookup.c
+@@ -292,8 +292,13 @@ static int do_read_map(struct autofs_point *ap, struct map_source *map, time_t a
+ 	 * For maps that don't support enumeration return success
+ 	 * and do whatever we must to have autofs function with an
+ 	 * empty map entry cache.
++	 *
++	 * For indirect maps that use the browse option, when the
++	 * server is unavailable continue as best we can with
++	 * whatever we have in the cache, if anything.
+ 	 */
+-	if (status == NSS_STATUS_UNKNOWN)
++	if (status == NSS_STATUS_UNKNOWN ||
++	   (ap->type == LKP_INDIRECT && status == NSS_STATUS_UNAVAIL))
+ 		return NSS_STATUS_SUCCESS;
+ 
+ 	return status;
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index d8bd169..079ded1 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -724,8 +724,12 @@ static LDAP *do_reconnect(unsigned logopt, struct lookup_context *ctxt)
+ 	uris_mutex_lock(ctxt);
+ 	if (ctxt->dclist)
+ 		uri = strdup(ctxt->dclist->uri);
+-	else
++	else if (ctxt->uri)
+ 		uri = strdup(ctxt->uri->uri);
++	else {
++		uris_mutex_unlock(ctxt);
++		goto find_server;
++	}
+ 	uris_mutex_unlock(ctxt);
+ 
+ 	if (!uri) {
+@@ -757,6 +761,7 @@ static LDAP *do_reconnect(unsigned logopt, struct lookup_context *ctxt)
+ 	autofs_sasl_dispose(ctxt);
+ #endif
+ 
++find_server:
+ 	/* Current server failed connect, try the rest */
+ 	ldap = find_server(logopt, ctxt);
+ 	if (!ldap)
+@@ -1342,7 +1347,6 @@ int lookup_init(const char *mapfmt, int argc, const char *const *argv, void **co
+ {
+ 	struct lookup_context *ctxt;
+ 	char buf[MAX_ERR_BUF];
+-	LDAP *ldap = NULL;
+ 	int ret;
+ 
+ 	*context = NULL;
+@@ -1416,23 +1420,6 @@ int lookup_init(const char *mapfmt, int argc, const char *const *argv, void **co
+ 	}
+ #endif
+ 
+-	if (ctxt->server || !ctxt->uris) {
+-		ldap = connect_to_server(LOGOPT_NONE, ctxt->server, ctxt);
+-		if (!ldap) {
+-			free_context(ctxt);
+-			return 1;
+-		}
+-	} else {
+-		ldap = find_server(LOGOPT_NONE, ctxt);
+-		if (!ldap) {
+-			free_context(ctxt);
+-			error(LOGOPT_ANY, MODPREFIX
+-			     "failed to find available server");
+-			return 1;
+-		}
+-	}
+-	unbind_ldap_connection(LOGOPT_ANY, ldap, ctxt);
+-
+ 	/* Open the parser, if we can. */
+ 	ctxt->parse = open_parse(mapfmt, MODPREFIX, argc - 1, argv + 1);
+ 	if (!ctxt->parse) {
+@@ -1463,6 +1450,11 @@ int lookup_read_master(struct master *master, time_t age, void *context)
+ 	int scope = LDAP_SCOPE_SUBTREE;
+ 	LDAP *ldap;
+ 
++	/* Initialize the LDAP context. */
++	ldap = do_reconnect(logopt, ctxt);
++	if (!ldap)
++		return NSS_STATUS_UNAVAIL;
++
+ 	class = ctxt->schema->entry_class;
+ 	entry = ctxt->schema->entry_attr;
+ 	info = ctxt->schema->value_attr;
+@@ -1486,13 +1478,6 @@ int lookup_read_master(struct master *master, time_t age, void *context)
+ 		return NSS_STATUS_UNAVAIL;
+ 	}
+ 
+-	/* Initialize the LDAP context. */
+-	ldap = do_reconnect(logopt, ctxt);
+-	if (!ldap) {
+-		free(query);
+-		return NSS_STATUS_UNAVAIL;
+-	}
+-
+ 	/* Look around. */
+ 	debug(logopt,
+ 	      MODPREFIX "searching for \"%s\" under \"%s\"", query, ctxt->qdn);
+@@ -2264,6 +2249,11 @@ static int read_one_map(struct autofs_point *ap,
+ 	sp.ap = ap;
+ 	sp.age = age;
+ 
++	/* Initialize the LDAP context. */
++	sp.ldap = do_reconnect(ap->logopt, ctxt);
++	if (!sp.ldap)
++		return NSS_STATUS_UNAVAIL;
++
+ 	class = ctxt->schema->entry_class;
+ 	entry = ctxt->schema->entry_attr;
+ 	info = ctxt->schema->value_attr;
+@@ -2289,13 +2279,6 @@ static int read_one_map(struct autofs_point *ap,
+ 		return NSS_STATUS_UNAVAIL;
+ 	}
+ 
+-	/* Initialize the LDAP context. */
+-	sp.ldap = do_reconnect(ap->logopt, ctxt);
+-	if (!sp.ldap) {
+-		free(sp.query);
+-		return NSS_STATUS_UNAVAIL;
+-	}
+-
+ 	/* Look around. */
+ 	debug(ap->logopt,
+ 	      MODPREFIX "searching for \"%s\" under \"%s\"", sp.query, ctxt->qdn);
+@@ -2401,6 +2384,11 @@ static int lookup_one(struct autofs_point *ap,
+ 		return CHE_FAIL;
+ 	}
+ 
++	/* Initialize the LDAP context. */
++	ldap = do_reconnect(ap->logopt, ctxt);
++	if (!ldap)
++		return CHE_UNAVAIL;
++
+ 	class = ctxt->schema->entry_class;
+ 	entry = ctxt->schema->entry_attr;
+ 	info = ctxt->schema->value_attr;
+@@ -2479,13 +2467,6 @@ static int lookup_one(struct autofs_point *ap,
+ 		return CHE_FAIL;
+ 	}
+ 
+-	/* Initialize the LDAP context. */
+-	ldap = do_reconnect(ap->logopt, ctxt);
+-	if (!ldap) {
+-		free(query);
+-		return CHE_UNAVAIL;
+-	}
+-
+ 	debug(ap->logopt,
+ 	      MODPREFIX "searching for \"%s\" under \"%s\"", query, ctxt->qdn);
+ 

@@ -1,0 +1,199 @@
+autofs-5.0.5 - fix null cache race
+
+From: Ian Kent <raven@themaw.net>
+
+The null map entry cache scope is across the entire master map but
+it is used by individual master map entries during master map re-read
+and subsequest updates resulting form it. The current null cache locking
+doesn't properly account for this.
+
+To resolve this, when we re-read the master, map we need to block
+access to the null cache until the master map has been read and the
+null cache updated.
+---
+
+ CHANGELOG           |    1 +
+ daemon/automount.c  |    4 +++-
+ include/automount.h |    1 +
+ lib/cache.c         |   33 ++++++++++++++++++++++++++-------
+ lib/master.c        |   27 ++++++++++++++++++++-------
+ lib/master_parse.y  |    5 -----
+ 6 files changed, 51 insertions(+), 20 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 5d673ea..f022893 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -38,6 +38,7 @@
+ - fix wildcard map entry match.
+ - fix parse_sun() module init.
+ - dont check null cache on expire.
++- fix null cache race.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/automount.c b/daemon/automount.c
+index 5a1f189..206734b 100644
+--- daemon/automount.c
++++ b/daemon/automount.c
+@@ -1273,14 +1273,16 @@ static int do_hup_signal(struct master *master, time_t age)
+ 	if (status)
+ 		fatal(status);
+ 
++	master_mutex_lock();
+ 	if (master->reading) {
+ 		status = pthread_mutex_unlock(&mrc.mutex);
+ 		if (status)
+ 			fatal(status);
++		master_mutex_unlock();
+ 		return 1;
+ 	}
+-
+ 	master->reading = 1;
++	master_mutex_unlock();
+ 
+ 	status = pthread_create(&thid, &th_attr_detached, do_read_master, NULL);
+ 	if (status) {
+diff --git a/include/automount.h b/include/automount.h
+index ae517a7..9e1feb0 100644
+--- include/automount.h
++++ b/include/automount.h
+@@ -194,6 +194,7 @@ void cache_multi_writelock(struct mapent *me);
+ void cache_multi_unlock(struct mapent *me);
+ int cache_delete_offset_list(struct mapent_cache *mc, const char *key);
+ void cache_release(struct map_source *map);
++void cache_clean_null_cache(struct mapent_cache *mc);
+ void cache_release_null_cache(struct master *master);
+ struct mapent *cache_enumerate(struct mapent_cache *mc, struct mapent *me);
+ char *cache_get_offset(const char *prefix, char *offset, int start, struct list_head *head, struct list_head **pos);
+diff --git a/lib/cache.c b/lib/cache.c
+index 440b3e8..a096150 100644
+--- lib/cache.c
++++ b/lib/cache.c
+@@ -228,15 +228,38 @@ struct mapent_cache *cache_init(struct autofs_point *ap, struct map_source *map)
+ 	return mc;
+ }
+ 
++void cache_clean_null_cache(struct mapent_cache *mc)
++{
++	struct mapent *me, *next;
++	int i;
++
++	for (i = 0; i < mc->size; i++) {
++		me = mc->hash[i];
++		if (me == NULL)
++			continue;
++		next = me->next;
++		free(me->key);
++		if (me->mapent)
++			free(me->mapent);
++		free(me);
++
++		while (next != NULL) {
++			me = next;
++			next = me->next;
++			free(me->key);
++			free(me);
++		}
++	}
++
++	return;
++}
++
+ struct mapent_cache *cache_init_null_cache(struct master *master)
+ {
+ 	struct mapent_cache *mc;
+ 	unsigned int i;
+ 	int status;
+ 
+-	if (master->nc)
+-		cache_release_null_cache(master);
+-
+ 	mc = malloc(sizeof(struct mapent_cache));
+ 	if (!mc)
+ 		return NULL;
+@@ -264,8 +287,6 @@ struct mapent_cache *cache_init_null_cache(struct master *master)
+ 	if (status)
+ 		fatal(status);
+ 
+-	cache_writelock(mc);
+-
+ 	for (i = 0; i < mc->size; i++) {
+ 		mc->hash[i] = NULL;
+ 		INIT_LIST_HEAD(&mc->ino_index[i]);
+@@ -274,8 +295,6 @@ struct mapent_cache *cache_init_null_cache(struct master *master)
+ 	mc->ap = NULL;
+ 	mc->map = NULL;
+ 
+-	cache_unlock(mc);
+-
+ 	return mc;
+ }
+ 
+diff --git a/lib/master.c b/lib/master.c
+index 196b6b9..61f671c 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -811,15 +811,28 @@ int master_read_master(struct master *master, time_t age, int readall)
+ 	unsigned int logopt = master->logopt;
+ 	struct mapent_cache *nc;
+ 
+-	nc = cache_init_null_cache(master);
+-	if (!nc) {
+-		error(logopt,
+-		      "failed to init null map cache for %s", master->name);
+-		return 0;
++	/*
++	 * We need to clear and re-populate the null map entry cache
++	 * before alowing anyone else to use it.
++	 */
++	if (master->nc) {
++		cache_writelock(master->nc);
++		nc = master->nc;
++		cache_clean_null_cache(nc);
++	} else {
++		nc = cache_init_null_cache(master);
++		if (!nc) {
++			error(logopt,
++			      "failed to init null map cache for %s",
++			      master->name);
++			return 0;
++		}
++		cache_writelock(nc);
++		master->nc = nc;
+ 	}
+-	master->nc = nc;
+-
+ 	master_init_scan();
++	lookup_nss_read_master(master, age);
++	cache_unlock(nc);
+ 
+ 	lookup_nss_read_master(master, age);
+ 	if (!master->read_fail)
+diff --git a/lib/master_parse.y b/lib/master_parse.y
+index 8adb393..8b86810 100644
+--- lib/master_parse.y
++++ b/lib/master_parse.y
+@@ -741,21 +741,16 @@ int master_parse_entry(const char *buffer, unsigned int default_timeout, unsigne
+ 
+ 	/* Add null map entries to the null map cache */
+ 	if (type && !strcmp(type, "null")) {
+-		cache_writelock(nc);
+ 		cache_update(nc, NULL, path, NULL, lineno);
+-		cache_unlock(nc);
+ 		local_free_vars();
+ 		return 1;
+ 	}
+ 
+ 	/* Ignore all subsequent matching nulled entries */
+-	cache_readlock(nc);
+ 	if (cache_lookup_distinct(nc, path)) {
+-		cache_unlock(nc);
+ 		local_free_vars();
+ 		return 1;
+ 	}
+-	cache_unlock(nc);
+ 
+ 	if (debug || verbose) {
+ 		logopt = (debug ? LOGOPT_DEBUG : 0);

@@ -1,0 +1,65 @@
+autofs-5.0.5 - fix wildcard map entry match
+
+From: Ian Kent <raven@themaw.net>
+
+In some cases we can get a key string that includes a '*' at the start.
+This causes an incorrect comparison in the cache library routines and can
+lead to a segmentation fault.
+
+This patch enures that the key length is also considered when checking the
+wildcard key entry.
+---
+
+ CHANGELOG       |    1 +
+ daemon/lookup.c |    4 ++--
+ lib/cache.c     |    2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 6ef2d5a..76207c8 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -35,6 +35,7 @@
+ - make redhat init script more lsb compliant.
+ - don't hold lock for simple mounts.
+ - fix remount locking.
++- fix wildcard map entry match.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/lookup.c b/daemon/lookup.c
+index 8537861..ec979c9 100644
+--- daemon/lookup.c
++++ b/daemon/lookup.c
+@@ -600,7 +600,7 @@ int lookup_ghost(struct autofs_point *ap, const char *root)
+ 		cache_readlock(mc);
+ 		me = cache_enumerate(mc, NULL);
+ 		while (me) {
+-			if (*me->key == '*')
++			if (!strcmp(me->key, "*"))
+ 				goto next;
+ 
+ 			if (*me->key == '/') {
+@@ -1035,7 +1035,7 @@ void lookup_prune_one_cache(struct autofs_point *ap, struct mapent_cache *mc, ti
+ 
+ 		key = strdup(me->key);
+ 		me = cache_enumerate(mc, me);
+-		if (!key || *key == '*') {
++		if (!key || !strcmp(key, "*")) {
+ 			if (key)
+ 				free(key);
+ 			continue;
+diff --git a/lib/cache.c b/lib/cache.c
+index cd62ac2..440b3e8 100644
+--- lib/cache.c
++++ b/lib/cache.c
+@@ -719,7 +719,7 @@ int cache_update(struct mapent_cache *mc, struct map_source *ms, const char *key
+ 	me = cache_lookup(mc, key);
+ 	while (me && me->source != ms)
+ 		me = cache_lookup_key_next(me);
+-	if (!me || (*me->key == '*' && *key != '*')) {
++	if (!me || (!strcmp(me->key, "*") && strcmp(key, "*"))) {
+ 		ret = cache_add(mc, ms, key, mapent, age);
+ 		if (!ret) {
+ 			debug(logopt, "failed for %s", key);

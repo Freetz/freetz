@@ -1,0 +1,118 @@
+autofs-5.0.5 - remove state machine timed wait
+
+From: Ian Kent <raven@themaw.net>
+
+We are seeing a problem using timed waits when running under KVM.
+
+Using timed condition waits in the state machine (and in some other
+places) has been used because of observed task throughput problems
+in the past. Also, we've seen condition waits not reacting to signals
+occassionaly.
+
+But now we are seeing problems with the setup of the wait time within
+KVM VMs causing the condition wait to go into a tight loop using
+excessive CPU.
+
+Changing the state queue handler to not use timed waits appears to
+not have the previously observed throughput problems, hopefully we
+won't see lost signals either.
+---
+
+ CHANGELOG      |    1 +
+ daemon/state.c |   30 +++++++-----------------------
+ 2 files changed, 8 insertions(+), 23 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index f12128c..a998a67 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -43,6 +43,7 @@
+ - fix mapent becomes negative during lookup.
+ - check each dc server individually.
+ - fix negative cache included map lookup.
++- remove state machine timed wait.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/state.c b/daemon/state.c
+index 27bc6de..38617c3 100644
+--- daemon/state.c
++++ b/daemon/state.c
+@@ -197,11 +197,11 @@ void expire_cleanup(void *arg)
+ 		}
+ 	}
+ 
++	st_set_done(ap);
++
+ 	if (next != ST_INVAL)
+ 		__st_add_task(ap, next);
+ 
+-	st_set_done(ap);
+-
+ 	st_mutex_unlock();
+ 
+ 	return;
+@@ -332,11 +332,10 @@ static void do_readmap_cleanup(void *arg)
+ 	st_mutex_lock();
+ 
+ 	ap->readmap_thread = 0;
+-	st_ready(ap);
+ 	st_set_done(ap);
+-
+ 	if (!ap->submount)
+ 		alarm_add(ap, ap->exp_runfreq);
++	st_ready(ap);
+ 
+ 	st_mutex_unlock();
+ 
+@@ -1060,8 +1059,6 @@ static void *st_queue_handler(void *arg)
+ {
+ 	struct list_head *head;
+ 	struct list_head *p;
+-	struct timespec wait;
+-	struct timeval now;
+ 	int status, ret;
+ 
+ 	st_mutex_lock();
+@@ -1072,17 +1069,11 @@ static void *st_queue_handler(void *arg)
+ 		 * entry is added.
+ 		 */
+ 		head = &state_queue;
+-		gettimeofday(&now, NULL);
+-		wait.tv_sec = now.tv_sec + 1;
+-		wait.tv_nsec = now.tv_usec * 1000;
+ 
+ 		while (list_empty(head)) {
+-			status = pthread_cond_timedwait(&cond, &mutex, &wait);
+-			if (status) {
+-				if (status == ETIMEDOUT)
+-					break;
++			status = pthread_cond_wait(&cond, &mutex);
++			if (status)
+ 				fatal(status);
+-			}
+ 		}
+ 
+ 		p = head->next;
+@@ -1108,18 +1099,11 @@ static void *st_queue_handler(void *arg)
+ 		}
+ 
+ 		while (1) {
+-			gettimeofday(&now, NULL);
+-			wait.tv_sec = now.tv_sec + 1;
+-			wait.tv_nsec = now.tv_usec * 1000;
+-
+ 			signaled = 0;
+ 			while (!signaled) {
+-				status = pthread_cond_timedwait(&cond, &mutex, &wait);
+-				if (status) {
+-					if (status == ETIMEDOUT)
+-						break;
++				status = pthread_cond_wait(&cond, &mutex);
++				if (status)
+ 					fatal(status);
+-				}
+ 			}
+ 
+ 			head = &state_queue;

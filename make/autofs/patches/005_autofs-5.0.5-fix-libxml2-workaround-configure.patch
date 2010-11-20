@@ -1,0 +1,79 @@
+autofs-5.0.5 - fix libxml2 workaround configure
+
+From: Ian Kent <raven@themaw.net>
+
+The configure logic related to work around the libxml2 library
+reload issues is not quite right. The xml code is needed if
+ldap is used so it is sufficient to require inclusion of the
+workaround code if autofs is being built with LDAP support.
+---
+
+ CHANGELOG          |    1 +
+ daemon/Makefile    |    2 --
+ daemon/automount.c |    8 +++++---
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 671c979..23351c8 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -4,6 +4,7 @@
+ - refactor ldap sasl bind handling.
+ - add mount wait timeout parameter.
+ - special case cifs escapes.
++- fix compile fail with when LDAP is excluded.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/Makefile b/daemon/Makefile
+index 371ec72..9e9d635 100644
+--- daemon/Makefile
++++ b/daemon/Makefile
+@@ -23,10 +23,8 @@ LDFLAGS += -rdynamic
+ LIBS = -ldl
+ 
+ ifeq ($(LDAP), 1)
+-  ifeq ($(SASL), 1)
+     CFLAGS += $(XML_FLAGS)
+     LIBS += $(XML_LIBS)
+-  endif
+ endif
+ 
+ all: automount
+diff --git a/daemon/automount.c b/daemon/automount.c
+index 979ecd6..7c44d4b 100644
+--- daemon/automount.c
++++ b/daemon/automount.c
+@@ -38,10 +38,12 @@
+ #include <sys/utsname.h>
+ 
+ #include "automount.h"
+-#ifdef LIBXML2_WORKAROUND
++#if defined(LIBXML2_WORKAROUND) || defined(TIRPC_WORKAROUND)
+ #include <dlfcn.h>
++#ifdef WITH_LDAP
+ #include <libxml/parser.h>
+ #endif
++#endif
+ 
+ const char *program;		/* Initialized with argv[0] */
+ const char *version = VERSION_STRING;	/* Program version */
+@@ -2110,7 +2112,7 @@ int main(int argc, char *argv[])
+ 		exit(1);
+ 	}
+ 
+-#ifdef LIBXML2_WORKAROUND
++#if defined(WITH_LDAP) && defined(LIBXML2_WORKAROUND)
+ 	void *dh_xml2 = dlopen("libxml2.so", RTLD_NOW);
+ 	if (!dh_xml2)
+ 		dh_xml2 = dlopen("libxml2.so.2", RTLD_NOW);
+@@ -2158,7 +2160,7 @@ int main(int argc, char *argv[])
+ 	if (dh_tirpc)
+ 		dlclose(dh_tirpc);
+ #endif
+-#ifdef LIBXML2_WORKAROUND
++#if defined(WITH_LDAP) && defined( LIBXML2_WORKAROUND)
+ 	if (dh_xml2) {
+ 		xmlCleanupParser();
+ 		dlclose(dh_xml2);

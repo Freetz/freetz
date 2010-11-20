@@ -1,0 +1,43 @@
+autofs-5.0.5 - make documentation for set-log-priority clearer
+
+From: Jeff Moyer <jmoyer@redhat.com>
+
+It is not apparent from the documentation of the --set-log-priority
+option that the option can be used to change the log priority of the
+damon while it is running.  This patch tries to fix that.
+
+Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+---
+
+ CHANGELOG       |    1 +
+ man/automount.8 |    4 +++-
+ 2 files changed, 4 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 329b028..ccf2d32 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -10,6 +10,7 @@
+ - fix stale initialization for file map instance.
+ - add "preen" fsck for ext4 mounts.
+ - don't use master_lex_destroy() to clear parse buffer.
++- make documentation for set-log-priority clearer.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/man/automount.8 b/man/automount.8
+index 9fcaaf4..d9a45c2 100644
+--- man/automount.8
++++ b/man/automount.8
+@@ -77,7 +77,9 @@ changes. For example, if verbose logging is set in the configuration then
+ attempting to set logging to basic logging, by using alert, crit, err
+ or emerg won't stop the verbose logging. However, setting logging to debug
+ will lead to everything (debug logging) being logged witch can then also
+-be disabled, returning the daemon to verbose logging.
++be disabled, returning the daemon to verbose logging. This option can be
++specified to change the logging priority of an already running automount
++process.
+ .P
+ The \fIpath\fP argument corresponds to the automounted
+ path name as specified in the master map.

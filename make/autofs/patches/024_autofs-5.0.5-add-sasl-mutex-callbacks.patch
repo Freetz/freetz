@@ -1,0 +1,102 @@
+autofs-5.0.5 - add sasl mutex callbacks
+
+From: Ian Kent <raven@themaw.net>
+
+We missed the fact that Cyrus SASL requires the user to provide mutex
+handling functions when being used in a threaded environment.
+
+Original patch contributed by Kazuhiro Kikuchi (of Fujitsu), slightly
+modified by myself.
+---
+
+ CHANGELOG            |    1 +
+ modules/cyrus-sasl.c |   57 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+), 0 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index e2abae3..224a34a 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -23,6 +23,7 @@
+ - fix disable timeout.
+ - fix strdup() return value check (Leonardo Chiquitto).
+ - fix reconnect get base dn.
++- add missing sasl mutex callbacks.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/cyrus-sasl.c b/modules/cyrus-sasl.c
+index 92e2226..d117f0a 100644
+--- modules/cyrus-sasl.c
++++ b/modules/cyrus-sasl.c
+@@ -944,12 +944,69 @@ void autofs_sasl_dispose(struct lookup_context *ctxt)
+ 	}
+ }
+ 
++static void *sasl_mutex_new(void)
++{
++	pthread_mutex_t* mutex;
++
++	mutex = malloc(sizeof(pthread_mutex_t));
++	if (!mutex)
++		return 0;
++		
++	pthread_mutex_init(mutex, NULL);
++
++	return (void *) mutex;
++}
++
++static int sasl_mutex_lock(void *mutex __attribute__((unused)))
++{
++	int rc;
++
++	if (!mutex)
++		return SASL_FAIL;
++
++	rc = pthread_mutex_lock((pthread_mutex_t *) mutex);
++
++	return (rc==0 ? SASL_OK : SASL_FAIL);
++}
++
++static int sasl_mutex_unlock(void *mutex __attribute__((unused)))
++{
++	int rc;
++
++	if (!mutex)
++		return SASL_FAIL;
++
++	rc = pthread_mutex_unlock((pthread_mutex_t *) mutex);
++
++	return (rc==0 ? SASL_OK : SASL_FAIL);
++}
++
++static void sasl_mutex_dispose(void *mutex __attribute__((unused)))
++{
++	int rc;
++
++	if (!mutex)
++		return;
++
++	rc = pthread_mutex_destroy((pthread_mutex_t *) mutex);
++	if (rc == 0)
++		free(mutex);
++
++	return;
++}
++
+ /*
+  * Initialize the sasl callbacks, which increments the global
+  * use counter.
+  */
+ int autofs_sasl_client_init(unsigned logopt)
+ {
++
++	sasl_set_mutex(sasl_mutex_new,
++		       sasl_mutex_lock,
++		       sasl_mutex_unlock,
++		       sasl_mutex_dispose);
++
+ 	/* Start up Cyrus SASL--only needs to be done at library load. */
+ 	if (sasl_client_init(callbacks) != SASL_OK) {
+ 		error(logopt, "sasl_client_init failed");

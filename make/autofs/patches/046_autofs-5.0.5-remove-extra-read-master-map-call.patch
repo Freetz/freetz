@@ -1,0 +1,37 @@
+autofs-5.0.5 - remove extra read master map call
+
+From: Ian Kent <raven@themaw.net>
+
+Fix a mistake with a recent patch where a call to lookup_read_master()
+which should have been removed wasn't.
+---
+
+ CHANGELOG    |    1 +
+ lib/master.c |    1 -
+ 2 files changed, 1 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index a998a67..e5d743b 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -44,6 +44,7 @@
+ - check each dc server individually.
+ - fix negative cache included map lookup.
+ - remove state machine timed wait.
++- remove extra read master map call.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master.c b/lib/master.c
+index 62d6fc0..03d8f77 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -840,7 +840,6 @@ int master_read_master(struct master *master, time_t age, int readall)
+ 	lookup_nss_read_master(master, age);
+ 	cache_unlock(nc);
+ 
+-	lookup_nss_read_master(master, age);
+ 	if (!master->read_fail)
+ 		master_mount_mounts(master, age, readall);
+ 	else {

@@ -1,0 +1,94 @@
+autofs-5.0.5 - Make "verbose" mode a little less verbose
+
+From: Leonardo Chiquitto <leonardo.lists@gmail.com>
+
+Remove some log message duplication for verbose logging.
+---
+
+ daemon/automount.c      |    2 +-
+ daemon/lookup.c         |    2 +-
+ modules/mount_changer.c |    2 +-
+ modules/mount_ext2.c    |    2 +-
+ modules/mount_generic.c |    2 +-
+ modules/mount_nfs.c     |    2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+
+diff --git a/daemon/automount.c b/daemon/automount.c
+index 206734b..9939a25 100644
+--- daemon/automount.c
++++ b/daemon/automount.c
+@@ -512,7 +512,7 @@ static int umount_subtree_mounts(struct autofs_point *ap, const char *path, unsi
+ 	 * it already to ensure it's ok to remove any offset triggers.
+ 	 */
+ 	if (!is_mm_root && is_mounted(_PATH_MOUNTED, path, MNTS_REAL)) {
+-		info(ap->logopt, "unmounting dir = %s", path);
++		debug(ap->logopt, "unmounting dir = %s", path);
+ 		if (umount_ent(ap, path)) {
+ 			warn(ap->logopt, "could not umount dir %s", path);
+ 			left++;
+diff --git a/daemon/lookup.c b/daemon/lookup.c
+index f5d9da8..a4bd07f 100644
+--- daemon/lookup.c
++++ b/daemon/lookup.c
+@@ -688,7 +688,7 @@ static int lookup_name_file_source_instance(struct autofs_point *ap, struct map_
+ 	char *type, *format;
+ 
+ 	if (stat(map->argv[0], &st) == -1) {
+-		warn(ap->logopt, "file map not found");
++		debug(ap->logopt, "file map not found");
+ 		return NSS_STATUS_NOTFOUND;
+ 	}
+ 
+diff --git a/modules/mount_changer.c b/modules/mount_changer.c
+index f4d82dd..d7bfa09 100644
+--- modules/mount_changer.c
++++ b/modules/mount_changer.c
+@@ -129,7 +129,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name, int
+ 
+ 		return 1;
+ 	} else {
+-		info(ap->logopt, MODPREFIX "mounted %s type %s on %s",
++		debug(ap->logopt, MODPREFIX "mounted %s type %s on %s",
+ 		    what, fstype, fullpath);
+ 		return 0;
+ 	}
+diff --git a/modules/mount_ext2.c b/modules/mount_ext2.c
+index 26d59d1..1edf347 100644
+--- modules/mount_ext2.c
++++ b/modules/mount_ext2.c
+@@ -140,7 +140,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name, int
+ 
+ 		return 1;
+ 	} else {
+-		info(ap->logopt,
++		debug(ap->logopt,
+ 		      MODPREFIX "mounted %s type %s on %s",
+ 		      what, fstype, fullpath);
+ 		return 0;
+diff --git a/modules/mount_generic.c b/modules/mount_generic.c
+index da85d1a..79e3d32 100644
+--- modules/mount_generic.c
++++ b/modules/mount_generic.c
+@@ -122,7 +122,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name, int
+ 
+ 		return 1;
+ 	} else {
+-		info(ap->logopt, MODPREFIX "mounted %s type %s on %s",
++		debug(ap->logopt, MODPREFIX "mounted %s type %s on %s",
+ 		     loc, fstype, fullpath);
+ 		free(loc);
+ 		return 0;
+diff --git a/modules/mount_nfs.c b/modules/mount_nfs.c
+index 21e1929..9110eba 100644
+--- modules/mount_nfs.c
++++ b/modules/mount_nfs.c
+@@ -251,7 +251,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name, int
+ 		}
+ 
+ 		if (!err) {
+-			info(ap->logopt, MODPREFIX "mounted %s on %s", loc, fullpath);
++			debug(ap->logopt, MODPREFIX "mounted %s on %s", loc, fullpath);
+ 			free(loc);
+ 			free_host_list(&hosts);
+ 			return 0;

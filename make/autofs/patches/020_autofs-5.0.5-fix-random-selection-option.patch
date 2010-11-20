@@ -1,0 +1,39 @@
+autofs-5.0.5 - fix random selection option
+
+From: Ian Kent <raven@themaw.net>
+
+When parsing the master map we fail to check if the random selection
+option has been seen and set the random selection option unconditionally.
+---
+
+ CHANGELOG          |    1 +
+ lib/master_parse.y |    3 ++-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index f38fc3f..c976f79 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -19,6 +19,7 @@
+ - fix memory leak on reload.
+ - update kernel patches for 2.6.18 and 2.6.19.
+ - dont connect at ldap lookup module init.
++- fix random selection option.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master_parse.y b/lib/master_parse.y
+index 454a2ed..8adb393 100644
+--- lib/master_parse.y
++++ b/lib/master_parse.y
+@@ -811,7 +811,8 @@ int master_parse_entry(const char *buffer, unsigned int default_timeout, unsigne
+ 				ops->timeout(ap->logopt, ap->ioctlfd, &tout);
+ 		}
+ 	}
+-	entry->ap->flags |= MOUNT_FLAG_RANDOM_SELECT;
++	if (random_selection)
++		entry->ap->flags |= MOUNT_FLAG_RANDOM_SELECT;
+ 	if (negative_timeout)
+ 		entry->ap->negative_timeout = negative_timeout;
+ 

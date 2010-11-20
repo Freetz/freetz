@@ -1,0 +1,53 @@
+autofs-5.0.5 - fix negative cache included map lookup
+
+From: Ian Kent <raven@themaw.net>
+
+If we are looking up a mount from multiple included map sources we
+can't update the negative cache until we have looked at all sources.
+If we don't postpone the negative cache update we will get a false
+negative on a subsequent lookups.
+
+Also clean up "not found" message.
+---
+
+ CHANGELOG       |    1 +
+ daemon/lookup.c |    6 +++++-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 84e3216..f12128c 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -42,6 +42,7 @@
+ - fix cache_init() on source re-read.
+ - fix mapent becomes negative during lookup.
+ - check each dc server individually.
++- fix negative cache included map lookup.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/lookup.c b/daemon/lookup.c
+index ec979c9..f5d9da8 100644
+--- daemon/lookup.c
++++ b/daemon/lookup.c
+@@ -813,6 +813,10 @@ static void update_negative_cache(struct autofs_point *ap, struct map_source *so
+ 	struct map_source *map;
+ 	struct mapent *me;
+ 
++	/* Don't update negative cache for included maps */ 
++	if (source && source->depth)
++		return;
++
+ 	/* Have we recorded the lookup fail for negative caching? */
+ 	me = lookup_source_mapent(ap, name, LKP_DISTINCT);
+ 	if (me)
+@@ -823,7 +827,7 @@ static void update_negative_cache(struct autofs_point *ap, struct map_source *so
+ 		cache_unlock(me->mc);
+ 	else {
+ 		/* Notify only once after fail */
+-		error(ap->logopt, "key \"%s\" not found in map.", name);
++		logmsg("key \"%s\" not found in map source(s).", name);
+ 
+ 		/* Doesn't exist in any source, just add it somewhere */
+ 		if (source)

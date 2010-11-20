@@ -1,0 +1,25 @@
+autofs-5.0.5 - make nfs4 default for RedHat replicated selection configuration
+
+From: Ian Kent <raven@themaw.net>
+
+We know for sure that RHEL-6 and later is set to mount NFSv4 as default and
+fall back to earlier NFS versions if it can't mount as NFSv4. So set our
+default for replicated mount probing to start at NFSv4 instead of v3.
+---
+
+ redhat/autofs.sysconfig.in |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+
+diff --git a/redhat/autofs.sysconfig.in b/redhat/autofs.sysconfig.in
+index c72cd2b..a46335d 100644
+--- redhat/autofs.sysconfig.in
++++ b/redhat/autofs.sysconfig.in
+@@ -40,6 +40,7 @@ BROWSE_MODE="no"
+ # 			       used for single host map entries.
+ #
+ #MOUNT_NFS_DEFAULT_PROTOCOL=3
++MOUNT_NFS_DEFAULT_PROTOCOL=4
+ #
+ # APPEND_OPTIONS - append to global options instead of replace.
+ #

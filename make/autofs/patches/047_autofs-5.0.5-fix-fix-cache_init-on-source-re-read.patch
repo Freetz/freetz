@@ -1,0 +1,28 @@
+autofs-5.0.5 - fix "fix cache_init() on source re-read"
+
+From: Ian Kent <raven@themaw.net>
+
+Remove extra cache create call in master_add_map_source().
+---
+
+ lib/master.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+
+diff --git a/lib/master.c b/lib/master.c
+index 03d8f77..12f2d22 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -188,12 +188,6 @@ master_add_map_source(struct master_mapent *entry,
+ 	source->argc = argc;
+ 	source->argv = tmpargv;
+ 
+-	source->mc = cache_init(entry->ap, source);
+-	if (!source->mc) {
+-		master_free_map_source(source, 0);
+-		return NULL;
+-	}
+-
+ 	master_source_writelock(entry);
+ 
+ 	if (!entry->maps) {

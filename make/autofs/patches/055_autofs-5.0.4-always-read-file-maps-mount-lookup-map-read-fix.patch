@@ -1,0 +1,48 @@
+autofs-5.0.5 - always read file maps mount lookup map read fix
+
+From: Ian Kent <raven@themaw.net>
+
+If, during a mount lookup, a file map is found to have changed and the
+browse option is not being used, the file map won't be refreshed, even
+though file maps should always be read into the cache.
+
+A previous change for the "always read file maps" optimization moved
+the check for the browse option into the map module read function so
+checking for this in send_map_update_request() is not needed and
+causes nobrowse file maps to not be read if they have changed. This
+isn't quite optimal as there will be a partial read of the file map
+to satisfy the lookup and a full read of the map done by the queued
+update request. I don't think anything can be done about that though.
+---
+
+ CHANGELOG    |    1 +
+ lib/master.c |    3 ---
+ 2 files changed, 1 insertions(+), 3 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 577ae41..e05038b 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -50,6 +50,7 @@
+ - remove ERR_remove_state() openssl call.
+ - fix init script restart option.
+ - fix init script status privilege error.
++- always read file maps mount lookup map read fix.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master.c b/lib/master.c
+index 12f2d22..ebeccce 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -489,9 +489,6 @@ void send_map_update_request(struct autofs_point *ap)
+ 	struct map_source *map;
+ 	int status, need_update = 0;
+ 
+-	if (!(ap->flags & MOUNT_FLAG_GHOST))
+-		return;
+-
+ 	status = pthread_mutex_lock(&instance_mutex);
+ 	if (status)
+ 		fatal(status);

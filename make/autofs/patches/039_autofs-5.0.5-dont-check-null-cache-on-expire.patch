@@ -1,0 +1,52 @@
+autofs-5.0.5 - dont check null cache on expire
+
+From: Ian Kent <raven@themaw.net>
+
+When expiring an entry there is no need to check the null map
+entry cache. If we have a mount then it must have been done at
+some point when the entry was not a nulled so it still needs
+to be expired. Remove this check.
+---
+
+ CHANGELOG          |    1 +
+ daemon/automount.c |    9 ---------
+ 2 files changed, 1 insertions(+), 9 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 334be80..5d673ea 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -37,6 +37,7 @@
+ - fix remount locking.
+ - fix wildcard map entry match.
+ - fix parse_sun() module init.
++- dont check null cache on expire.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/automount.c b/daemon/automount.c
+index 915928b..5a1f189 100644
+--- daemon/automount.c
++++ b/daemon/automount.c
+@@ -526,20 +526,11 @@ static int umount_subtree_mounts(struct autofs_point *ap, const char *path, unsi
+    it also tries to umount path itself */
+ int umount_multi(struct autofs_point *ap, const char *path, int incl)
+ {
+-	struct mapent_cache *nc;
+ 	int is_autofs_fs;
+ 	int left;
+ 
+ 	debug(ap->logopt, "path %s incl %d", path, incl);
+ 
+-	nc = ap->entry->master->nc;
+-	cache_readlock(nc);
+-	if (cache_lookup_distinct(nc, path)) {
+-		cache_unlock(nc);
+-		return 0;
+-	}
+-	cache_unlock(nc);
+-
+ 	is_autofs_fs = 0;
+ 	if (master_find_submount(ap, path))
+ 		is_autofs_fs = 1;

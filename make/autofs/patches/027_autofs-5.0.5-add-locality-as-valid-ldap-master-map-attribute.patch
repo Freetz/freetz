@@ -1,0 +1,39 @@
+autofs-5.0.5 - add locality as valid ldap master map attribute
+
+From: Ian Kent <raven@themaw.net>
+
+The master map dn string parsing is quite strict so we will need to add
+allowable attributes as required. One such attribute is "l", the locality.
+---
+
+ CHANGELOG        |    1 +
+ lib/master_tok.l |    3 ++-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index a11a969..6ca1827 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -26,6 +26,7 @@
+ - add missing sasl mutex callbacks.
+ - fix get query dn failure.
+ - fix ampersand escape in auto.smb.
++- add locality as valid ldap master map attribute.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master_tok.l b/lib/master_tok.l
+index be2ce10..2693c51 100644
+--- lib/master_tok.l
++++ b/lib/master_tok.l
+@@ -110,7 +110,8 @@ AT_OU		([oO][[uU])
+ AT_DC		([dD][[cC])
+ AT_O		([oO])
+ AT_C		([cC])
+-DNATTRSTR	({AT_CN}|{AT_NMN}|{AT_AMN}|{AT_OU}|{AT_DC}|{AT_O}|{AT_C})
++AT_L		([lL])
++DNATTRSTR	({AT_CN}|{AT_NMN}|{AT_AMN}|{AT_OU}|{AT_DC}|{AT_O}|{AT_C}|{AT_L})
+ DNNAMESTR1	([[:alnum:]_.\- ]+)
+ DNNAMESTR2	([[:alnum:]_.\-]+)
+ 

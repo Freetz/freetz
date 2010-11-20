@@ -1,0 +1,98 @@
+autofs-5.0.5 - fix cache_init() on source re-read
+
+From: Ian Kent <raven@themaw.net>
+
+The master map entry cache is released and re-allocated for each
+map source upon master map re-read. This is done without holding
+the master map entry write lock and, when there are many master
+map entries, could lead to a race because other activities can be
+underway concurrently. In this case then we must either use
+additional expensive exclusive locking or not do the cache
+re-recreate.
+
+So the question really becomes what do we have to gain by releasing
+and re-creating the cache since we spend a fairly significant amount
+of effort on pruning stale entries during ongoing operation already.
+
+This patch moves the allocation of the map entry cache (belonging to
+the map source) into the function used to add the map source to the
+master map entry and does not release and re-create the cache if the
+source already exists for the given master map entry.
+---
+
+ CHANGELOG              |    1 +
+ lib/master.c           |    6 ++++++
+ lib/master_parse.y     |   10 ----------
+ modules/mount_autofs.c |    8 --------
+ 4 files changed, 7 insertions(+), 18 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index f022893..bfee5de 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -39,6 +39,7 @@
+ - fix parse_sun() module init.
+ - dont check null cache on expire.
+ - fix null cache race.
++- fix cache_init() on source re-read.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master.c b/lib/master.c
+index 61f671c..62d6fc0 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -188,6 +188,12 @@ master_add_map_source(struct master_mapent *entry,
+ 	source->argc = argc;
+ 	source->argv = tmpargv;
+ 
++	source->mc = cache_init(entry->ap, source);
++	if (!source->mc) {
++		master_free_map_source(source, 0);
++		return NULL;
++	}
++
+ 	master_source_writelock(entry);
+ 
+ 	if (!entry->maps) {
+diff --git a/lib/master_parse.y b/lib/master_parse.y
+index 8b86810..b82129f 100644
+--- lib/master_parse.y
++++ b/lib/master_parse.y
+@@ -830,16 +830,6 @@ int master_parse_entry(const char *buffer, unsigned int default_timeout, unsigne
+ 		return 0;
+ 	}
+ 
+-	if (!source->mc) {
+-		source->mc = cache_init(entry->ap, source);
+-		if (!source->mc) {
+-			error(m_logopt, "failed to init source cache");
+-			if (new)
+-				master_free_mapent(new);
+-			local_free_vars();
+-			return 0;
+-		}
+-	}
+ 	source->master_line = lineno;
+ 
+ 	entry->age = age;
+diff --git a/modules/mount_autofs.c b/modules/mount_autofs.c
+index 2a5d860..ec75111 100644
+--- modules/mount_autofs.c
++++ b/modules/mount_autofs.c
+@@ -200,14 +200,6 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name,
+ 	}
+ 	free_map_type_info(info);
+ 
+-	source->mc = cache_init(entry->ap, source);
+-	if (!source->mc) {
+-		error(ap->logopt, MODPREFIX "failed to init source cache");
+-		master_free_map_source(source, 0);
+-		master_free_mapent(entry);
+-		return 1;
+-	}
+-
+ 	mounts_mutex_lock(ap);
+ 
+ 	if (handle_mounts_startup_cond_init(&suc)) {

@@ -1,0 +1,38 @@
+autofs-5.0.5 - fix restart
+
+From: Ian Kent <raven@themaw.net>
+
+The recent LSB improvement change has introduced a problem with
+the restart action.
+---
+
+ CHANGELOG             |    1 +
+ redhat/autofs.init.in |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index ce9c385..02a5e36 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -48,6 +48,7 @@
+ - fix error handing in do_mount_indirect().
+ - expire thread use pending mutex.
+ - remove ERR_remove_state() openssl call.
++- fix init script restart option.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/redhat/autofs.init.in b/redhat/autofs.init.in
+index 1e926ce..e2a4b78 100644
+--- redhat/autofs.init.in
++++ b/redhat/autofs.init.in
+@@ -126,7 +126,7 @@ function stop() {
+ }
+ 
+ function restart() {
+-	status > /dev/null 2>&1
++	status autofs > /dev/null 2>&1
+ 	if [ $? -eq 0 ]; then
+ 		stop
+ 	fi

@@ -1,0 +1,39 @@
+autofs-5.0.5 - fix disable timeout
+
+From: Ian Kent <raven@themaw.net>
+
+Using a timeout of zero should disable expires but instead causes
+the alarm handler to fire constant expires.
+---
+
+ CHANGELOG   |    1 +
+ lib/alarm.c |    3 +++
+ 2 files changed, 4 insertions(+), 0 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index c976f79..35ac649 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -20,6 +20,7 @@
+ - update kernel patches for 2.6.18 and 2.6.19.
+ - dont connect at ldap lookup module init.
+ - fix random selection option.
++- fix disable timeout.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/alarm.c b/lib/alarm.c
+index f403d8f..d5cdc05 100755
+--- lib/alarm.c
++++ b/lib/alarm.c
+@@ -67,6 +67,9 @@ int alarm_add(struct autofs_point *ap, time_t seconds)
+ 	unsigned int empty = 1;
+ 	int status;
+ 
++	if (!seconds)
++		return 1;
++
+ 	new = malloc(sizeof(struct alarm));
+ 	if (!new)
+ 		return 0;

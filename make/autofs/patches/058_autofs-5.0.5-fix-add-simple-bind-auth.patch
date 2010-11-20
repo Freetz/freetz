@@ -1,0 +1,71 @@
+autofs-5.0.5 - fix add simple bind auth
+
+From: Ian Kent <raven@themaw.net>
+
+Simple authentication should not require SASL.
+---
+
+ CHANGELOG             |    1 +
+ include/lookup_ldap.h |    5 +++++
+ modules/cyrus-sasl.c  |    1 -
+ modules/lookup_ldap.c |    1 -
+ 4 files changed, 6 insertions(+), 2 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index b107515..1975369 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -53,6 +53,7 @@
+ - always read file maps mount lookup map read fix.
+ - fix direct map not updating on reread.
+ - add external bind method.
++- fix add simple bind auth.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+#diff --git a/include/lookup_ldap.h b/include/lookup_ldap.h
+#index 4067ccc..d34c9b8 100644
+#--- include/lookup_ldap.h
+#+++ b/include/lookup_ldap.h
+#@@ -102,6 +104,8 @@ struct lookup_context {
+# #define LDAP_AUTH_NOTREQUIRED	0x0001
+# #define LDAP_AUTH_REQUIRED	0x0002
+# #define LDAP_AUTH_AUTODETECT	0x0004
+#+#endif
+#+
+# #define LDAP_AUTH_USESIMPLE	0x0008
+# 
+# /* lookup_ldap.c */
+#@@ -109,6 +113,7 @@ LDAP *init_ldap_connection(unsigned logopt, const char *uri, struct lookup_conte
+# int unbind_ldap_connection(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt);
+# int authtype_requires_creds(const char *authtype);
+# 
+#+#ifdef WITH_SASL
+# /* cyrus-sasl.c */
+# int autofs_sasl_client_init(unsigned logopt);
+# int autofs_sasl_init(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt);
+diff --git a/modules/cyrus-sasl.c b/modules/cyrus-sasl.c
+index 967edc3..b5c87b6 100644
+--- modules/cyrus-sasl.c
++++ b/modules/cyrus-sasl.c
+@@ -51,7 +51,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <ldap.h>
+ #include <sasl/sasl.h>
+ 
+ #include "automount.h"
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index 1432056..71aee1b 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -28,7 +28,6 @@
+ #include <arpa/nameser.h>
+ #include <resolv.h>
+ #include <lber.h>
+-#include <ldap.h>
+ 
+ #define MODULE_LOOKUP
+ #include "automount.h"

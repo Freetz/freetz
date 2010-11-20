@@ -1,0 +1,368 @@
+autofs-5.0.5 - add dump maps option
+
+From: Ondrej Valousek <webserv@s3group.cz>
+
+Modified by Ian Kent <raven@themaw.net>
+---
+
+ CHANGELOG          |    1 
+ daemon/automount.c |   52 ++++++++++++++++-----
+ include/log.h      |    1 
+ include/master.h   |    1 
+ lib/log.c          |   14 ++++--
+ lib/master.c       |  126 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ man/automount.8    |    3 +
+ 7 files changed, 180 insertions(+), 18 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 1975369..11054da 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -54,6 +54,7 @@
+ - fix direct map not updating on reread.
+ - add external bind method.
+ - fix add simple bind auth.
++- add option to dump configured automount maps.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/automount.c b/daemon/automount.c
+index 9939a25..1b1007d 100644
+--- daemon/automount.c
++++ b/daemon/automount.c
+@@ -1664,6 +1664,7 @@ static void usage(void)
+ 		"	-f --foreground do not fork into background\n"
+ 		"	-r --random-multimount-selection\n"
+ 		"			use ramdom replicated server selection\n"
++		"	-m --dumpmaps	dump automounter maps and exit\n"
+ 		"	-n --negative-timeout n\n"
+ 		"			set the timeout for failed key lookups.\n"
+ 		"	-O --global-options\n"
+@@ -1813,7 +1814,7 @@ int main(int argc, char *argv[])
+ 	int res, opt, status;
+ 	int logpri = -1;
+ 	unsigned ghost, logging, daemon_check;
+-	unsigned foreground, have_global_options;
++	unsigned dumpmaps, foreground, have_global_options;
+ 	time_t timeout;
+ 	time_t age = time(NULL);
+ 	struct rlimit rlim;
+@@ -1827,6 +1828,7 @@ int main(int argc, char *argv[])
+ 		{"foreground", 0, 0, 'f'},
+ 		{"random-multimount-selection", 0, 0, 'r'},
+ 		{"negative-timeout", 1, 0, 'n'},
++		{"dumpmaps", 0, 0, 'm'},
+ 		{"global-options", 1, 0, 'O'},
+ 		{"version", 0, 0, 'V'},
+ 		{"set-log-priority", 1, 0, 'l'},
+@@ -1857,10 +1859,11 @@ int main(int argc, char *argv[])
+ 	global_options = NULL;
+ 	have_global_options = 0;
+ 	foreground = 0;
++	dumpmaps = 0;
+ 	daemon_check = 1;
+ 
+ 	opterr = 0;
+-	while ((opt = getopt_long(argc, argv, "+hp:t:vdD:fVrO:l:n:CF", long_options, NULL)) != EOF) {
++	while ((opt = getopt_long(argc, argv, "+hp:t:vmdD:fVrO:l:n:CF", long_options, NULL)) != EOF) {
+ 		switch (opt) {
+ 		case 'h':
+ 			usage();
+@@ -1902,6 +1905,10 @@ int main(int argc, char *argv[])
+ 			global_negative_timeout = getnumopt(optarg, opt);
+ 			break;
+ 
++		case 'm':
++			dumpmaps = 1;
++			break;
++
+ 		case 'O':
+ 			if (!have_global_options) {
+ 				global_options = strdup(optarg);
+@@ -1988,7 +1995,8 @@ int main(int argc, char *argv[])
+ 	}
+ #endif
+ 
+-	if (!query_kproto_ver() || get_kver_major() < 5) {
++	/* Don't need the kernel module just to look at the configured maps */
++	if (!dumpmaps && (!query_kproto_ver() || get_kver_major() < 5)) {
+ 		fprintf(stderr,
+ 			"%s: test mount forbidden or "
+ 			"incorrect kernel protocol version, "
+@@ -2001,34 +2009,50 @@ int main(int argc, char *argv[])
+ 	rlim.rlim_max = MAX_OPEN_FILES;
+ 	res = setrlimit(RLIMIT_NOFILE, &rlim);
+ 	if (res)
+-		warn(logging,
+-		     "can't increase open file limit - continuing");
++		printf("%s: can't increase open file limit - continuing",
++			argv[0]);
+ 
+ #if ENABLE_CORES
+ 	rlim.rlim_cur = RLIM_INFINITY;
+ 	rlim.rlim_max = RLIM_INFINITY;
+ 	res = setrlimit(RLIMIT_CORE, &rlim);
+ 	if (res)
+-		warn(logging,
+-		     "can't increase core file limit - continuing");
++		printf("%s: can't increase core file limit - continuing",
++			argv[0]);
+ #endif
+ 
+-	become_daemon(foreground, daemon_check);
+-
+ 	if (argc == 0)
+ 		master_list = master_new(NULL, timeout, ghost);
+ 	else
+ 		master_list = master_new(argv[0], timeout, ghost);
+ 
+ 	if (!master_list) {
+-		logerr("%s: can't create master map %s",
+-			program, argv[0]);
+-		res = write(start_pipefd[1], pst_stat, sizeof(*pst_stat));
+-		close(start_pipefd[1]);
+-		release_flag_file();
++		printf("%s: can't create master map %s", program, argv[0]);
+ 		exit(1);
+ 	}
+ 
++	if (dumpmaps) {
++		struct mapent_cache *nc;
++
++		open_log();
++
++		master_init_scan();
++
++		nc = cache_init_null_cache(master_list);
++		if (!nc) {
++			printf("%s: failed to init null map cache for %s",
++				master_list->name, argv[0]);
++			exit(1);
++		}
++		master_list->nc = nc;
++
++		lookup_nss_read_master(master_list, 0);
++		master_show_mounts(master_list);
++		exit(0);
++	}
++
++	become_daemon(foreground, daemon_check);
++
+ 	if (pthread_attr_init(&th_attr)) {
+ 		logerr("%s: failed to init thread attribute struct!",
+ 		     program);
+diff --git a/include/log.h b/include/log.h
+index 6a4a942..7a394cb 100644
+--- include/log.h
++++ b/include/log.h
+@@ -35,6 +35,7 @@ extern void set_log_verbose_ap(struct autofs_point *ap);
+ extern void set_log_debug_ap(struct autofs_point *ap);
+ extern void set_mnt_logging(unsigned global_logopt);
+ 
++extern void open_log(void);
+ extern void log_to_syslog(void);
+ extern void log_to_stderr(void);
+  
+diff --git a/include/master.h b/include/master.h
+index 0d6aa82..bef59d3 100644
+--- include/master.h
++++ b/include/master.h
+@@ -110,6 +110,7 @@ int master_submount_list_empty(struct autofs_point *ap);
+ int master_notify_submount(struct autofs_point *, const char *path, enum states);
+ void master_notify_state_change(struct master *, int);
+ int master_mount_mounts(struct master *, time_t, int);
++int master_show_mounts(struct master *);
+ extern inline unsigned int master_get_logopt(void);
+ int master_list_empty(struct master *);
+ int master_done(struct master *);
+diff --git a/lib/log.c b/lib/log.c
+index 46220fd..832add7 100644
+--- lib/log.c
++++ b/lib/log.c
+@@ -193,17 +193,23 @@ void logmsg(const char *msg, ...)
+ 	return;
+ }
+ 
+-void log_to_syslog(void)
++void open_log(void)
+ {
+-	char buf[MAX_ERR_BUF];
+-	int nullfd;
+-
+ 	if (!syslog_open) {
+ 		syslog_open = 1;
+ 		openlog("automount", LOG_PID, LOG_DAEMON);
+ 	}
+ 
+ 	logging_to_syslog = 1;
++	return;
++}
++
++void log_to_syslog(void)
++{
++	char buf[MAX_ERR_BUF];
++	int nullfd;
++
++	open_log();
+ 
+ 	/* Redirect all our file descriptors to /dev/null */
+ 	nullfd = open("/dev/null", O_RDWR);
+diff --git a/lib/master.c b/lib/master.c
+index ebeccce..ad3aa77 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -30,6 +30,7 @@
+ /* The root of the map entry tree */
+ struct master *master_list = NULL;
+ 
++extern const char *global_options;
+ extern long global_negative_timeout;
+ 
+ /* Attribute to create a joinable thread */
+@@ -1189,6 +1190,131 @@ int master_mount_mounts(struct master *master, time_t age, int readall)
+ 	return 1;
+ }
+ 
++/* The nss source instances end up in reverse order. */
++static void list_source_instances(struct map_source *source, struct map_source *instance)
++{
++	if (!source || !instance) {
++		printf("none");
++		return;
++	}
++
++	if (instance->next)
++		list_source_instances(source, instance->next);
++
++	/*
++	 * For convienience we map nss instance type "files" to "file".
++	 * Check for that and report corrected instance type.
++	 */
++	if (strcmp(instance->type, "file"))
++		printf("%s ", instance->type);
++	else {
++		if (source->argv && *(source->argv[0]) != '/')
++			printf("files ");
++		else
++			printf("%s ", instance->type);
++	}
++
++	return;
++}
++
++int master_show_mounts(struct master *master)
++{
++	struct list_head *p, *head;
++
++	printf("\nautofs dump map information\n"
++		 "===========================\n\n");
++
++	printf("global options: ");
++	if (!global_options)
++		printf("none configured\n");
++	else {
++		printf("%s\n", global_options);
++		unsigned int append_options = defaults_get_append_options();
++		const char *append = append_options ? "will" : "will not";
++		printf("global options %s be appended to map entries\n", append);
++	}
++
++	if (list_empty(&master->mounts)) {
++		printf("no master map entries found\n\n");
++		return 1;
++	}
++
++	head = &master->mounts;
++	p = head->next;
++	while (p != head) {
++		struct map_source *source;
++		struct master_mapent *this;
++		struct autofs_point *ap;
++		time_t now = time(NULL);
++		int i;
++
++		this = list_entry(p, struct master_mapent, list);
++		p = p->next;
++
++		ap = this->ap;
++
++		printf("\nMount point: %s\n", ap->path);
++		printf("\nsource(s):\n");
++
++		/* Read the map content into the cache */
++		if (lookup_nss_read_map(ap, NULL, now))
++			lookup_prune_cache(ap, now);
++		else {
++			printf("  failed to read map\n\n");
++			continue;
++		}
++
++		if (!this->maps) {
++			printf("  no map sources found\n\n");
++			continue;
++		}
++
++		source = this->maps;
++		while (source) {
++			struct mapent *me;
++
++			if (source->type)
++				printf("\n  type: %s\n", source->type);
++			else {
++				printf("\n  instance type(s): ");
++				list_source_instances(source, source->instance);
++				printf("\n");
++			}
++
++			if (source->argc >= 1) {
++				i = 0;
++				if (source->argv[0] && *source->argv[0] != '-') {
++					printf("  map: %s\n", source->argv[0]);
++					i = 1;
++				}
++				if (source->argc > 1) {
++					printf("  arguments: ");
++					for (; i < source->argc; i++)
++						printf("%s ", source->argv[i]);
++					printf("\n");
++				}
++			}
++
++			printf("\n");
++
++			me = cache_lookup_first(source->mc);
++			if (!me)
++				printf("  no keys found in map\n");
++			else {
++				do {
++					printf("  %s | %s\n", me->key, me->mapent);
++				} while ((me = cache_lookup_next(source->mc, me)));
++			}
++
++			source = source->next;
++		}
++
++		printf("\n");
++	}
++
++	return 1;
++}
++
+ int master_list_empty(struct master *master)
+ {
+ 	int res = 0;
+diff --git a/man/automount.8 b/man/automount.8
+index 18f74bf..d57ecba 100644
+--- man/automount.8
++++ b/man/automount.8
+@@ -57,6 +57,9 @@ Run the daemon in the forground and log to stderr instead of syslog."
+ Enables the use of ramdom selection when choosing a host from a
+ list of replicated servers.
+ .TP
++.I "\-m, \-\-dumpmaps"
++Dump configured automounter maps, then exit.
++.TP
+ .I "\-O, \-\-global-options"
+ Allows the specification of global mount options used for all master
+ map entries. These options will either replace or be appened to options

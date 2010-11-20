@@ -1,0 +1,116 @@
+autofs-5.0.5 - make redhat init script more lsb compliant
+
+From: Ian Kent <raven@themaw.net>
+
+
+---
+
+ CHANGELOG             |    1 +
+ redhat/autofs.init.in |   39 ++++++++++++++++++++++++++++++++-------
+ 2 files changed, 33 insertions(+), 7 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 470de69..8a9611b 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -32,6 +32,7 @@
+ - fix master map source server unavailable handling.
+ - add autofs_ldap_auth.conf man page.
+ - fix random selection for host on different network.
++- make redhat init script more lsb compliant.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/redhat/autofs.init.in b/redhat/autofs.init.in
+index 363e824..1e926ce 100644
+--- redhat/autofs.init.in
++++ b/redhat/autofs.init.in
+@@ -86,14 +86,18 @@ function start() {
+ 	fi
+ 
+ 	echo -n $"Starting $prog: "
+-	$prog $OPTIONS 
++	$prog $OPTIONS --pid-file /var/run/autofs.pid
+ 	RETVAL=$?
+ 	if [ $RETVAL -eq 0 ] ; then
+ 		success "$prog startup"
+ 	else
+ 		failure "$prog startup"
+ 	fi
+-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/autofs
++	if [ $RETVAL -eq 0 ]; then
++		touch /var/lock/subsys/autofs
++	else
++		RETVAL=1
++	fi
+ 	echo
+ 	return $RETVAL
+ }
+@@ -107,7 +111,11 @@ function stop() {
+ 		[ $RETVAL = 0 -a -z "`pidof $prog`" ] || sleep 3
+ 		count=`expr $count + 1`
+ 	done
+-	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/autofs
++	if [ $RETVAL -eq 0 ]; then
++		rm -f /var/lock/subsys/autofs
++	else
++		RETVAL=1
++	fi
+ 	if [ -n "`pidof $prog`" ] ; then
+ 		failure "$prog shutdown"
+ 	else
+@@ -118,7 +126,10 @@ function stop() {
+ }
+ 
+ function restart() {
+-	stop
++	status > /dev/null 2>&1
++	if [ $? -eq 0 ]; then
++		stop
++	fi
+ 	start
+ }
+ 
+@@ -142,6 +153,12 @@ function reload() {
+ 
+ RETVAL=0
+ 
++# Only the root user may change the service status
++if [ `id -u` -ne 0 ]; then
++	echo "insufficient privilege to change service status"
++	exit 4
++fi
++
+ case "$1" in
+ 	start)
+ 		start
+@@ -154,7 +171,7 @@ case "$1" in
+ 		stop
+ 		;;
+ 	status)
+-		status $prog
++		status -p /var/run/autofs.pid -l autofs $prog
+ 		;;
+ 	restart)
+ 		restart
+@@ -171,9 +188,17 @@ case "$1" in
+ 			restart
+ 		fi
+ 		;;
+-	*)
++	usage)
+ 		echo $"Usage: $0 {start|forcestart|stop|status|restart|forcerestart|reload|condrestart}"
+-		exit 1;
++		exit 0
++		;;
++	try-restart|force-reload)
++		echo "$1 service action not supported"
++		exit 3
++		;;
++	*)
++		echo "unknown, invalid or excess argument(s)"
++		exit 2
+ 		;;
+ esac
+ 

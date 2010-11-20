@@ -1,0 +1,203 @@
+autofs-5.0.5 - check each dc server
+
+From: Ian Kent <raven@themaw.net>
+
+We return a space separated list of dc servers from get_dc_list() but the
+GSSAPI code needs an individual server in the uri to function correctly.
+
+Change the logic in find_server() and do_reconnect() to attempt a connection
+to each dc server individually.
+---
+
+ CHANGELOG             |    1 
+ modules/lookup_ldap.c |  103 +++++++++++++++++++++++++++++--------------------
+ 2 files changed, 62 insertions(+), 42 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 4788f44..84e3216 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -41,6 +41,7 @@
+ - fix null cache race.
+ - fix cache_init() on source re-read.
+ - fix mapent becomes negative during lookup.
++- check each dc server individually.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index 9aac960..e9d1fa2 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -615,23 +615,43 @@ static LDAP *connect_to_server(unsigned logopt, const char *uri, struct lookup_c
+ 	return ldap;
+ }
+ 
++static LDAP *find_dc_server(unsigned logopt, const char *uri, struct lookup_context *ctxt)
++{
++	char *str, *tok, *ptr = NULL;
++	LDAP *ldap = NULL;
++
++	str = strdup(uri);
++	if (!str)
++		return NULL;
++
++	tok = strtok_r(str, " ", &ptr);
++	while (tok) {
++		const char *this = (const char *) tok;
++		debug(logopt, "trying server uri %s", this);
++		ldap = connect_to_server(logopt, this, ctxt);
++		if (ldap) {
++			info(logopt, "connected to uri %s", this);
++			free(str);
++			return ldap;
++		}
++		tok = strtok_r(NULL, " ", &ptr);
++	}
++
++	free(str);
++
++	return NULL;
++}
++
+ static LDAP *find_server(unsigned logopt, struct lookup_context *ctxt)
+ {
+ 	LDAP *ldap = NULL;
+ 	struct ldap_uri *this;
+ 	struct list_head *p, *first;
+-	struct dclist *dclist = NULL;
++	struct dclist *dclist;
+ 	char *uri = NULL;
+ 
+ 	uris_mutex_lock(ctxt);
+-	if (ctxt->dclist) {
+-		dclist = ctxt->dclist;
+-		if (ctxt->dclist->expire < time(NULL)) {
+-			free_dclist(ctxt->dclist);
+-			ctxt->dclist = NULL;
+-			dclist = NULL;
+-		}
+-	}
++	dclist = ctxt->dclist;
+ 	if (!ctxt->uri)
+ 		first = ctxt->uris;
+ 	else
+@@ -648,9 +668,16 @@ static LDAP *find_server(unsigned logopt, struct lookup_context *ctxt)
+ 			continue;
+ 		}
+ 		this = list_entry(p, struct ldap_uri, list);
+-		if (!strstr(this->uri, ":///"))
++		if (!strstr(this->uri, ":///")) {
+ 			uri = strdup(this->uri);
+-		else {
++			debug(logopt, "trying server uri %s", uri);
++			ldap = connect_to_server(logopt, uri, ctxt);
++			if (ldap) {
++				info(logopt, "connected to uri %s", uri);
++				free(uri);
++				break;
++			}
++		} else {
+ 			if (dclist)
+ 				uri = strdup(dclist->uri);
+ 			else {
+@@ -663,21 +690,11 @@ static LDAP *find_server(unsigned logopt, struct lookup_context *ctxt)
+ 				dclist = tmp;
+ 				uri = strdup(dclist->uri);
+ 			}
+-		}
+-		if (!uri) {
+-			if (dclist) {
+-				free_dclist(dclist);
+-				dclist = NULL;
++			ldap = find_dc_server(logopt, uri, ctxt);
++			if (ldap) {
++				free(uri);
++				break;
+ 			}
+-			p = p->next;
+-			continue;
+-		}
+-		debug(logopt, "trying server uri %s", uri);
+-		ldap = connect_to_server(logopt, uri, ctxt);
+-		if (ldap) {
+-			info(logopt, "connected to uri %s", uri);
+-			free(uri);
+-			break;
+ 		}
+ 		free(uri);
+ 		uri = NULL;
+@@ -708,7 +725,7 @@ static LDAP *find_server(unsigned logopt, struct lookup_context *ctxt)
+ 
+ static LDAP *do_reconnect(unsigned logopt, struct lookup_context *ctxt)
+ {
+-	LDAP *ldap;
++	LDAP *ldap = NULL;
+ 	char *uri;
+ 
+ 	if (ctxt->server || !ctxt->uris) {
+@@ -723,25 +740,29 @@ static LDAP *do_reconnect(unsigned logopt, struct lookup_context *ctxt)
+ 		return ldap;
+ 	}
+ 
++	if (ctxt->dclist) {
++		ldap = find_dc_server(logopt, ctxt->dclist->uri, ctxt);
++		if (ldap)
++			return ldap;
++	}
++
+ 	uris_mutex_lock(ctxt);
+-	if (ctxt->dclist)
+-		uri = strdup(ctxt->dclist->uri);
+-	else if (ctxt->uri)
+-		uri = strdup(ctxt->uri->uri);
+-	else {
++	if (ctxt->dclist) {
++		if (!ldap || ctxt->dclist->expire < time(NULL)) {
++			free_dclist(ctxt->dclist);
++			ctxt->dclist = NULL;
++		}
++		/* Make sure we don't skip the domain spec */
++		ctxt->uri = NULL;
+ 		uris_mutex_unlock(ctxt);
+ 		goto find_server;
+ 	}
+ 	uris_mutex_unlock(ctxt);
+ 
+-	if (!uri) {
+-		char buf[MAX_ERR_BUF];
+-		char *estr = strerror_r(errno, buf, sizeof(buf));
+-		crit(logopt, MODPREFIX "strdup: %s", estr);
+-		return NULL;
+-	}
++	if (!ctxt->uri)
++		goto find_server;
+ 
+-	ldap = do_connect(logopt, uri, ctxt);
++	ldap = do_connect(logopt, ctxt->uri->uri, ctxt);
+ #ifdef WITH_SASL
+ 	/*
+ 	 * Dispose of the sasl authentication connection and try the
+@@ -752,19 +773,17 @@ static LDAP *do_reconnect(unsigned logopt, struct lookup_context *ctxt)
+ 		ldap = connect_to_server(logopt, uri, ctxt);
+ 	}
+ #endif
+-	free(uri);
+-
+ 	if (ldap)
+ 		return ldap;
+ 
+ 	/* Failed to connect, try to find a new server */
+ 
++find_server:
+ #ifdef WITH_SASL
+ 	autofs_sasl_dispose(ctxt);
+ #endif
+ 
+-find_server:
+-	/* Current server failed connect, try the rest */
++	/* Current server failed, try the rest or dc connection */
+ 	ldap = find_server(logopt, ctxt);
+ 	if (!ldap)
+ 		error(logopt, MODPREFIX "failed to find available server");

@@ -1,0 +1,223 @@
+autofs-5.0.5 - refactor ldap sasl bind
+
+From: Ian Kent <raven@themaw.net>
+
+During the sasl authentication (and possible authentication method
+selection) we establish a connection and then dispose of it and then
+authenticate again. This is a little inefficient but some servers
+don't like a second authentication using the same LDAP handle and
+authentication fails when it should succeed. We should use the
+authentication connection once we get it and not perform another
+later.
+
+Also fixed with this patch. If a server returns a set of
+authentication mechanisms that all require authentication, then the
+connection pointer is returned to the caller uninitialized (reported
+and fix provided by Jeff Moyer).
+---
+
+ CHANGELOG             |    1 +
+ modules/cyrus-sasl.c  |   55 ++++++++++++++++++---------------------------
+ modules/lookup_ldap.c |   60 -------------------------------------------------
+ 3 files changed, 23 insertions(+), 93 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 674a48b..5adcca5 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -1,6 +1,7 @@
+ ??/??/20?? autofs-5.0.6
+ -----------------------
+ - fix included map read fail handling.
++- refactor ldap sasl bind handling.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/cyrus-sasl.c b/modules/cyrus-sasl.c
+index 04001d0..828143e 100644
+--- modules/cyrus-sasl.c
++++ b/modules/cyrus-sasl.c
+@@ -87,8 +87,8 @@ static sasl_callback_t callbacks[] = {
+ 	{ SASL_CB_LIST_END, NULL, NULL },
+ };
+ 
+-static char *sasl_auth_id, *sasl_auth_secret;
+-sasl_secret_t *sasl_secret;
++static char *sasl_auth_id = NULL;
++static char *sasl_auth_secret = NULL;
+ 
+ static int
+ sasl_log_func(void *context, int level, const char *message)
+@@ -798,7 +798,7 @@ sasl_bind_mech(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt, const c
+ sasl_conn_t *
+ sasl_choose_mech(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt)
+ {
+-	sasl_conn_t *conn;
++	sasl_conn_t *conn = NULL;
+ 	int authenticated;
+ 	int i;
+ 	char **mechanisms;
+@@ -845,22 +845,6 @@ sasl_choose_mech(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt)
+ 	return conn;
+ }
+ 
+-int
+-autofs_sasl_bind(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt)
+-{
+-	sasl_conn_t *conn;
+-
+-	if (!ctxt->sasl_mech)
+-		return -1;
+-
+-	conn = sasl_bind_mech(logopt, ldap, ctxt, ctxt->sasl_mech);
+-	if (!conn)
+-		return -1;
+-
+-	ctxt->sasl_conn = conn;
+-	return 0;
+-}
+-
+ /*
+  *  Routine called when unbinding an ldap connection.
+  */
+@@ -883,35 +867,40 @@ autofs_sasl_unbind(struct lookup_context *ctxt)
+  * -1  -  Failure
+  */
+ int
+-autofs_sasl_init(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt)
++autofs_sasl_bind(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt)
+ {
+-	sasl_conn_t *conn;
++	sasl_conn_t *conn = NULL;
++
++	/* If we already have a connection use it */
++	if (ctxt->sasl_conn)
++		return 0;
+ 
+ 	sasl_auth_id = ctxt->user;
+ 	sasl_auth_secret = ctxt->secret;
+ 
++	if (ctxt->auth_required & LDAP_AUTH_AUTODETECT) {
++		if (ctxt->sasl_mech) {
++			free(ctxt->sasl_mech);
++			ctxt->sasl_mech = NULL;
++		}
++	}
++
+ 	/*
+ 	 *  If LDAP_AUTH_AUTODETECT is set, it means that there was no
+ 	 *  mechanism specified in the configuration file or auto
+ 	 *  selection has been requested, so try to auto-select an
+ 	 *  auth mechanism.
+ 	 */
+-	if (!(ctxt->auth_required & LDAP_AUTH_AUTODETECT))
++	if (ctxt->sasl_mech)
+ 		conn = sasl_bind_mech(logopt, ldap, ctxt, ctxt->sasl_mech);
+-	else {
+-		if (ctxt->sasl_mech) {
+-			free(ctxt->sasl_mech);
+-			ctxt->sasl_mech = NULL;
+-		}
++	else
+ 		conn = sasl_choose_mech(logopt, ldap, ctxt);
+-	}
+ 
+-	if (conn) {
+-		sasl_dispose(&conn);
+-		return 0;
+-	}
++	if (!conn)
++		return -1;
+ 
+-	return -1;
++	ctxt->sasl_conn = conn;
++	return 0;
+ }
+ 
+ /*
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index 2ecf5fe..f1fb9ce 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -59,7 +59,6 @@ struct ldap_search_params {
+ 	time_t age;
+ };
+ 
+-static LDAP *auth_init(unsigned logopt, const char *, struct lookup_context *);
+ static int decode_percent_hack(const char *, char **);
+ 
+ #ifndef HAVE_LDAP_CREATE_PAGE_CONTROL
+@@ -600,33 +599,6 @@ static LDAP *connect_to_server(unsigned logopt, const char *uri, struct lookup_c
+ {
+ 	LDAP *ldap;
+ 
+-#ifdef WITH_SASL
+-	/*
+-	 * Determine which authentication mechanism to use if we require
+-	 * authentication.
+-	 */
+-	if (ctxt->auth_required & (LDAP_AUTH_REQUIRED|LDAP_AUTH_AUTODETECT)) {
+-		ldap = auth_init(logopt, uri, ctxt);
+-		if (!ldap && ctxt->auth_required & LDAP_AUTH_AUTODETECT)
+-			info(logopt,
+-			     "no authentication mechanisms auto detected.");
+-		if (!ldap) {
+-			error(logopt, MODPREFIX
+-			      "cannot initialize authentication setup");
+-			return NULL;
+-		}
+-
+-		if (!do_bind(logopt, ldap, uri, ctxt)) {
+-			unbind_ldap_connection(logopt, ldap, ctxt);
+-			autofs_sasl_dispose(ctxt);
+-			error(logopt, MODPREFIX "cannot bind to server");
+-			return NULL;
+-		}
+-
+-		return ldap;
+-	}
+-#endif
+-
+ 	ldap = do_connect(logopt, uri, ctxt);
+ 	if (!ldap) {
+ 		warn(logopt,
+@@ -1074,38 +1046,6 @@ out:
+ 
+ 	return ret;
+ }
+-
+-/*
+- *  Reads in the xml configuration file and parses out the relevant
+- *  information.  If there is no configuration file, then we fall back to
+- *  trying all supported authentication mechanisms until one works.
+- *
+- *  Returns ldap connection on success, with authtype, user and secret
+- *  filled in as appropriate.  Returns NULL on failre.
+- */
+-static LDAP *auth_init(unsigned logopt, const char *uri, struct lookup_context *ctxt)
+-{
+-	int ret;
+-	LDAP *ldap;
+-
+-	ldap = init_ldap_connection(logopt, uri, ctxt);
+-	if (!ldap)
+-		return NULL;
+-
+-	/*
+-	 *  Initialize the sasl library.  It is okay if user and secret
+-	 *  are NULL, here.
+-	 *
+-	 *  The autofs_sasl_init routine will figure out which mechamism
+-	 *  to use. If kerberos is used, it will also take care to initialize
+-	 *  the credential cache and the client and service principals.
+-	 */
+-	ret = autofs_sasl_init(logopt, ldap, ctxt);
+-	if (ret)
+-		return NULL;
+-
+-	return ldap;
+-}
+ #endif
+ 
+ /*

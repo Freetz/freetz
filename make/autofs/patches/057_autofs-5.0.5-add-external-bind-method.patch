@@ -1,0 +1,419 @@
+autofs-5.0.5 - add external bind method
+
+From: Ian Kent <raven@themaw.net>
+
+Add sasl external bind handler.
+---
+
+ CHANGELOG                      |    1 
+ include/lookup_ldap.h          |    7 ++
+ man/autofs_ldap_auth.conf.5.in |   24 +++++++-
+ modules/Makefile               |    5 +-
+ modules/cyrus-sasl-extern.c    |  117 ++++++++++++++++++++++++++++++++++++++++
+ modules/cyrus-sasl.c           |   20 +++++++
+ modules/lookup_ldap.c          |   78 ++++++++++++++++++++++-----
+ 7 files changed, 234 insertions(+), 18 deletions(-)
+ create mode 100644 modules/cyrus-sasl-extern.c
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 46eb3ce..b107515 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -52,6 +52,7 @@
+ - fix init script status privilege error.
+ - always read file maps mount lookup map read fix.
+ - fix direct map not updating on reread.
++- add external bind method.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/include/lookup_ldap.h b/include/lookup_ldap.h
+index 1e1c7a4..4067ccc 100644
+--- include/lookup_ldap.h
++++ b/include/lookup_ldap.h
+@@ -10,6 +10,7 @@
+ #include <krb5.h>
+ #endif
+ 
++#include "list.h"
+ #include "dclist.h"
+ 
+ struct ldap_schema {
+@@ -76,9 +77,13 @@ struct lookup_context {
+ 	int          kinit_done;
+ 	int          kinit_successful;
+ #ifdef WITH_SASL
++	/* Kerberos */
+ 	krb5_context krb5ctxt;
+ 	krb5_ccache  krb5_ccache;
+ 	sasl_conn_t  *sasl_conn;
++	/* SASL external */
++	char	     *extern_cert;
++	char	     *extern_key;
+ #endif
+ 	/* keytab file name needs to be added */
+ 
+@@ -111,6 +116,8 @@ int autofs_sasl_bind(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt);
+ void autofs_sasl_unbind(struct lookup_context *ctxt);
+ void autofs_sasl_dispose(struct lookup_context *ctxt);
+ void autofs_sasl_done(void);
++/* cyrus-sasl-extern */
++int do_sasl_extern(LDAP *ldap, struct lookup_context *ctxt);
+ #endif
+ 
+ #endif
+diff --git a/man/autofs_ldap_auth.conf.5.in b/man/autofs_ldap_auth.conf.5.in
+index ecec20d..2260952 100644
+--- man/autofs_ldap_auth.conf.5.in
++++ b/man/autofs_ldap_auth.conf.5.in
+@@ -60,12 +60,30 @@ authentication  mechanism. If no suitable mechanism can be found, connections
+ to the ldap server are made without authentication. Finally, if it is set to
+ simple, then simple authentication will be used instead of SASL.
+ .TP
+-\fBauthtype="GSSAPI"|"LOGIN"|"PLAIN"|"ANONYMOUS"|"DIGEST-MD5"\fP
++\fBauthtype="GSSAPI"|"LOGIN"|"PLAIN"|"ANONYMOUS"|"DIGEST-MD5|EXTERNAL"\fP
+ This attribute can be used to specify a preferred authentication mechanism.
+- In normal operations, the automounter will attempt to authenticate to the
++In normal operations, the automounter will attempt to authenticate to the
+ ldap server using the list of supportedSASLmechanisms obtained from the
+ directory server.  Explicitly setting the authtype will bypass this selection
+-and only try the mechanism specified.
++and only try the mechanism specified. The EXTERNAL mechanism may be used to
++authenticate using a client certificate and requires that authrequired
++set to "yes" if using SSL or usetls, tlsrequired and authrequired all set to
++"yes" if using TLS, in addition to authtype being set to EXTERNAL.
++.sp
++If using authtype EXTERNAL two additional configuration entries are
++required:
++.sp
++\fBexternal_cert="<client certificate path>"\fP
++.sp
++This specifies the path of the file containing the client certificate.
++.sp
++\fBexternal_key="<client certificate key path>"\fP
++.sp
++This specifies the path of the file containing the client certificate key.
++.sp
++These two configuration entries are mandatory when using the EXTERNAL method
++as the HOME environment variable cannot be assumed to be set or, if it is,
++to be set to the location we expect.
+ .TP
+ \fBuser="<username>"\fP
+ This attribute holds the authentication identity used by authentication
+diff --git a/modules/Makefile b/modules/Makefile
+index 164d412..9ad3915 100644
+--- modules/Makefile
++++ b/modules/Makefile
+@@ -41,7 +41,7 @@ ifeq ($(LDAP), 1)
+   SRCS += lookup_ldap.c
+   MODS += lookup_ldap.so
+   ifeq ($(SASL), 1)
+-    SASL_OBJ = cyrus-sasl.o
++    SASL_OBJ = cyrus-sasl.o cyrus-sasl-extern.o
+     LDAP_FLAGS += $(SASL_FLAGS) $(XML_FLAGS) $(KRB5_FLAGS) -DLDAP_THREAD_SAFE
+     LIBLDAP += $(LIBSASL) $(XML_LIBS) $(KRB5_LIBS)
+   endif
+@@ -92,6 +92,9 @@ lookup_hesiod.so: lookup_hesiod.c
+ cyrus-sasl.o: cyrus-sasl.c
+ 	$(CC) $(CFLAGS) $(LDAP_FLAGS) -c $<
+ 
++cyrus-sasl-extern.o: cyrus-sasl-extern.c
++	$(CC) $(CFLAGS) $(LDAP_FLAGS) -c $<
++
+ lookup_ldap.so: lookup_ldap.c dclist.o $(SASL_OBJ)
+ 	$(CC) $(SOLDFLAGS) $(CFLAGS) $(LDAP_FLAGS) -o lookup_ldap.so \
+ 		lookup_ldap.c dclist.o $(SASL_OBJ) \
+diff --git a/modules/cyrus-sasl-extern.c b/modules/cyrus-sasl-extern.c
+new file mode 100644
+index 0000000..5bb3028
+--- /dev/null
++++ b/modules/cyrus-sasl-extern.c
+@@ -0,0 +1,117 @@
++/*
++ * cyrus-sasl-extern.c - Module for Cyrus sasl external authentication.
++ *
++ *   Copyright 2010 Ian Kent <raven@themaw.net>
++ *   Copyright 2010 Red Hat, Inc.
++ *   All rights reserved.
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation, Inc., 675 Mass Ave, Cambridge MA 02139,
++ *   USA; either version 2 of the License, or (at your option) any later
++ *   version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ */
++
++#include "config.h"
++
++#ifdef WITH_SASL
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <sasl/sasl.h>
++#include <ldap.h>
++#include <ldap_cdefs.h>
++#include <lber_types.h>
++
++#include "lookup_ldap.h"
++
++struct values {
++	char *mech;
++	char *realm;
++	char *authcid;
++	char *authzid;
++	char *password;
++	char **resps;
++	int nresps;
++};
++
++static int interaction(unsigned flags, sasl_interact_t *interact, void *values)
++{
++	const char *val = interact->defresult;
++	struct values *vals = values;
++
++	switch(interact->id) {
++	case SASL_CB_GETREALM:
++		if (values)
++			val = vals->realm;
++		break;
++
++	case SASL_CB_AUTHNAME:
++		if (values)
++			val = vals->authcid;
++		break;
++
++	case SASL_CB_PASS:
++		if (values)
++			val = vals->password;
++		break;
++
++	case SASL_CB_USER:
++		if (values)
++			val = vals->authzid;
++		break;
++
++	case SASL_CB_NOECHOPROMPT:
++	case SASL_CB_ECHOPROMPT:
++		break;
++	}
++
++	if (val && !*val)
++		val = NULL;
++
++	if (val || interact->id == SASL_CB_USER) {
++		interact->result = (val && *val) ? val : "";
++		interact->len = strlen(interact->result);
++	}
++
++	return LDAP_SUCCESS;
++}
++
++int sasl_extern_interact(LDAP *ldap, unsigned flags, void *values, void *list)
++{
++	sasl_interact_t *interact = list;
++
++	if (!ldap)
++		return LDAP_PARAM_ERROR;
++
++	while (interact->id != SASL_CB_LIST_END) {
++		int rc = interaction(flags, interact, values);
++		if (rc)
++			return rc;
++		interact++;
++	}
++
++	return LDAP_SUCCESS;
++}
++
++int do_sasl_extern(LDAP *ldap, struct lookup_context *ctxt)
++{
++	int flags = LDAP_SASL_QUIET;
++	char *mech = ctxt->sasl_mech;
++	struct values values;
++	int rc;
++
++	memset(&values, 0, sizeof(struct values));
++	values.mech = mech;
++
++	rc = ldap_sasl_interactive_bind_s(ldap, NULL, mech, NULL, NULL,
++					  flags, sasl_extern_interact, &values);
++	return rc;
++}
++#endif
+diff --git a/modules/cyrus-sasl.c b/modules/cyrus-sasl.c
+index d117f0a..967edc3 100644
+--- modules/cyrus-sasl.c
++++ b/modules/cyrus-sasl.c
+@@ -875,6 +875,26 @@ autofs_sasl_bind(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt)
+ 	if (ctxt->sasl_conn)
+ 		return 0;
+ 
++	if (ctxt->sasl_mech && !strncmp(ctxt->sasl_mech, "EXTERNAL", 8)) {
++		int result;
++
++		debug(logopt,
++		      "Attempting sasl bind with mechanism %s",
++		      ctxt->sasl_mech);
++
++		result = do_sasl_extern(ldap, ctxt);
++		if (result)
++			debug(logopt,
++			      "Failed to authenticate with mech %s",
++			      ctxt->sasl_mech);
++		else
++			debug(logopt,
++			      "sasl bind with mechanism %s succeeded",
++			      ctxt->sasl_mech);
++
++		return result;
++	}
++
+ 	sasl_auth_id = ctxt->user;
+ 	sasl_auth_secret = ctxt->secret;
+ 
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index 3d47048..1432056 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -41,6 +41,9 @@
+ 
+ int lookup_version = AUTOFS_LOOKUP_VERSION;	/* Required by protocol */
+ 
++#define ENV_LDAPTLS_CERT	"LDAPTLS_CERT"
++#define ENV_LDAPTLS_KEY		"LDAPTLS_KEY"
++
+ static struct ldap_schema common_schema[] = {
+ 	{"nisMap", "nisMapName", "nisObject", "cn", "nisMapEntry"},
+ 	{"automountMap", "ou", "automount", "cn", "automountInformation"},
+@@ -61,6 +64,16 @@ struct ldap_search_params {
+ 
+ static int decode_percent_hack(const char *, char **);
+ 
++static int set_env(unsigned logopt, const char *name, const char *val)
++{
++	int ret = setenv(name, val, 1);
++	if (ret == -1) {
++		error(logopt, "failed to set config value for %s", name);
++		return 0;
++	}
++	return 1;
++}
++
+ #ifndef HAVE_LDAP_CREATE_PAGE_CONTROL
+ int ldap_create_page_control(LDAP *ldap, ber_int_t pagesize,
+ 			     struct berval *cookie, char isCritical,
+@@ -578,13 +591,17 @@ static LDAP *do_connect(unsigned logopt, const char *uri, struct lookup_context
+ {
+ 	LDAP *ldap;
+ 
+-	ldap = init_ldap_connection(logopt, uri, ctxt);
+-	if (!ldap)
+-		return NULL;
++	if (ctxt->extern_cert && ctxt->extern_key) {
++		set_env(logopt, ENV_LDAPTLS_CERT, ctxt->extern_cert);
++		set_env(logopt, ENV_LDAPTLS_KEY, ctxt->extern_key);
++	}
+ 
+-	if (!do_bind(logopt, ldap, uri, ctxt)) {
+-		unbind_ldap_connection(logopt, ldap, ctxt);
+-		return NULL;
++	ldap = init_ldap_connection(logopt, uri, ctxt);
++	if (ldap) {
++		if (!do_bind(logopt, ldap, uri, ctxt)) {
++			unbind_ldap_connection(logopt, ldap, ctxt);
++			ldap = NULL;
++		}
+ 	}
+ 
+ 	return ldap;
+@@ -839,6 +856,7 @@ int parse_ldap_config(unsigned logopt, struct lookup_context *ctxt)
+ 	xmlNodePtr   root = NULL;
+ 	char         *authrequired, *auth_conf, *authtype;
+ 	char         *user = NULL, *secret = NULL;
++	char         *extern_cert = NULL, *extern_key = NULL;
+ 	char         *client_princ = NULL, *client_cc = NULL;
+ 	char	     *usetls, *tlsrequired;
+ 
+@@ -1023,6 +1041,26 @@ int parse_ldap_config(unsigned logopt, struct lookup_context *ctxt)
+ 			ret = -1;
+ 			goto out;
+ 		}
++	} else if (auth_required == LDAP_AUTH_REQUIRED &&
++		  (authtype && !strncmp(authtype, "EXTERNAL", 8))) {
++		ret = get_property(logopt, root, "external_cert",  &extern_cert);
++		ret |= get_property(logopt, root, "external_key",  &extern_key);
++		/*
++		 * For EXTERNAL auth to function we need a client certificate
++		 * and and certificate key. The ca certificate used to verify
++		 * the server certificate must also be set correctly in the
++		 * global configuration as the connection must be encrypted
++		 * and the server and client certificates must have been
++		 * verified for the EXTERNAL method to be offerred by the
++		 * server. If the cert and key have not been set in the autofs
++		 * configuration they must be set in the ldap rc file.
++		 */
++		if (ret != 0 || !extern_cert || !extern_key) {
++			if (extern_cert)
++				free(extern_cert);
++			if (extern_key)
++				free(extern_key);
++		}
+ 	}
+ 
+ 	/*
+@@ -1043,6 +1081,8 @@ int parse_ldap_config(unsigned logopt, struct lookup_context *ctxt)
+ 	ctxt->secret = secret;
+ 	ctxt->client_princ = client_princ;
+ 	ctxt->client_cc = client_cc;
++	ctxt->extern_cert = extern_cert;
++	ctxt->extern_key = extern_key;
+ 
+ 	debug(logopt, MODPREFIX
+ 	      "ldap authentication configured with the following options:");
+@@ -1052,14 +1092,20 @@ int parse_ldap_config(unsigned logopt, struct lookup_context *ctxt)
+ 	      "auth_required: %u, "
+ 	      "sasl_mech: %s",
+ 	      use_tls, tls_required, auth_required, authtype);
+-	debug(logopt, MODPREFIX
+-	      "user: %s, "
+-	      "secret: %s, "
+-	      "client principal: %s "
+-	      "credential cache: %s",
+-	      user, secret ? "specified" : "unspecified",
+-	      client_princ, client_cc);
+-
++	if (authtype && !strncmp(authtype, "EXTERNAL", 8)) {
++		debug(logopt, MODPREFIX "external cert: %s",
++		      extern_cert ? extern_cert : "ldap default");
++		debug(logopt, MODPREFIX "external key: %s ",
++		      extern_key ? extern_key : "ldap default");
++	} else {
++		debug(logopt, MODPREFIX
++		      "user: %s, "
++		      "secret: %s, "
++		      "client principal: %s "
++		      "credential cache: %s",
++		      user, secret ? "specified" : "unspecified",
++		      client_princ, client_cc);
++	}
+ out:
+ 	xmlFreeDoc(doc);
+ 
+@@ -1326,6 +1372,10 @@ static void free_context(struct lookup_context *ctxt)
+ 		defaults_free_searchdns(ctxt->sdns);
+ 	if (ctxt->dclist)
+ 		free_dclist(ctxt->dclist);
++	if (ctxt->extern_cert)
++		free(ctxt->extern_cert);
++	if (ctxt->extern_key)
++		free(ctxt->extern_key);
+ 	free(ctxt);
+ 
+ 	return;

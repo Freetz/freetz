@@ -1,0 +1,36 @@
+autofs-5.0.5 - fix ampersand escape in auto.smb
+
+From: Ian Kent <raven@themaw.net>
+
+CIFS share names containing an ampersand need to be escaped.
+---
+
+ CHANGELOG        |    1 +
+ samples/auto.smb |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 5a921e1..a11a969 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -25,6 +25,7 @@
+ - fix reconnect get base dn.
+ - add missing sasl mutex callbacks.
+ - fix get query dn failure.
++- fix ampersand escape in auto.smb.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/samples/auto.smb b/samples/auto.smb
+index fb39053..2dfb8f8 100755
+--- samples/auto.smb
++++ b/samples/auto.smb
+@@ -26,6 +26,7 @@ $SMBCLIENT -gNL $key 2>/dev/null| awk -v key="$key" -v opts="$opts" -F'|' -- '
+ 		  # Enclose mount dir and location in quotes
+ 		  # Double quote "$" in location as it is special
+ 		  gsub(/\$$/, "\\$", loc);
++		  gsub(/\&/,"\\\\&",loc)
+ 		  print " \\\n\t \"/" dir "\"", "\"://" key "/" loc "\""
+ 		}
+ 	END 	{ if (!first) print "\n"; else exit 1 }

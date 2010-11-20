@@ -1,0 +1,48 @@
+autofs-5.0.5 - remove ERR_remove_state() openssl call
+
+From: Ian Kent <raven@themaw.net>
+
+autofs should never have had to use ERR_remove_state() so remove that call.
+---
+
+ CHANGELOG             |    1 +
+ modules/lookup_ldap.c |   12 +-----------
+ 2 files changed, 2 insertions(+), 11 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index e9deabf..ce9c385 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -47,6 +47,7 @@
+ - remove extra read master map call.
+ - fix error handing in do_mount_indirect().
+ - expire thread use pending mutex.
++- remove ERR_remove_state() openssl call.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index e9d1fa2..3d47048 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -169,18 +169,8 @@ int unbind_ldap_connection(unsigned logopt, LDAP *ldap, struct lookup_context *c
+ 	int rv;
+ 
+ #ifdef WITH_SASL
+-	/*
+-	 * The OpenSSL library can't handle having its message and error
+-	 * string database loaded multiple times and segfaults if the
+-	 * TLS environment is not reset at the right times. As there
+-	 * is no ldap_stop_tls call in the openldap library we have
+-	 * to do the job ourselves, here and in lookup_done when the
+-	 * module is closed.
+-	 */
+-	if (ctxt->use_tls == LDAP_TLS_RELEASE) {
+-		ERR_remove_state(0);
++	if (ctxt->use_tls == LDAP_TLS_RELEASE)
+ 		ctxt->use_tls = LDAP_TLS_INIT;
+-	}
+ 	autofs_sasl_unbind(ctxt);
+ #endif
+ 

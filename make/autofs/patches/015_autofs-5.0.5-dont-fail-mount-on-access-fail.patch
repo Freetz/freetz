@@ -1,0 +1,55 @@
+autofs-5.0.5 - dont fail mount on access fail
+
+From: Ian Kent <raven@themaw.net>
+
+If we encounter a recursive autofs mount in the mount location
+path, and call access(2) to perform the mount, the mount may
+succeed but the access(2) call return a fail. In the case where
+there are multiple processes waiting on this mount they will all
+get the failure return which may be incorrect for other waiters.
+Ignoring the return code from the access(2) call and allowing the
+mount to go ahead anyway should give the VFS the chance to check
+the access for each individual process and so return an accurate
+retult.
+---
+
+ CHANGELOG      |    1 +
+ daemon/spawn.c |   12 +++++++++---
+ 2 files changed, 10 insertions(+), 3 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 8429e20..88bcc1b 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -14,6 +14,7 @@
+ - fix timeout in connect_nb().
+ - fix pidof init script usage.
+ - check for path mount location in generic module.
++- dont fail mount on access fail.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/spawn.c b/daemon/spawn.c
+index 7c254d9..285f4d7 100644
+--- daemon/spawn.c
++++ b/daemon/spawn.c
+@@ -189,9 +189,15 @@ static int do_spawn(unsigned logopt, unsigned int wait,
+ 			}
+ 			setpgrp();
+ 
+-			/* Trigger the recursive mount */
+-			if (access(argv[loc], F_OK) == -1)
+-				_exit(errno);
++			/*
++			 * Trigger the recursive mount.
++			 *
++			 * Ignore the access(2) return code as there may be
++			 * multiple waiters for this mount and we need to
++			 * let the  VFS handle access returns to each
++			 * individual waiter.
++			 */
++			access(argv[loc], F_OK);
+ 
+ 			seteuid(0);
+ 			setegid(0);

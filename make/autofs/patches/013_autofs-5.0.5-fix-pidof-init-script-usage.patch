@@ -1,0 +1,91 @@
+autofs-5.0.5 - fix pidof init script usage
+
+From: Ian Kent <raven@themaw.net>
+
+For some reason, following an update, pidof doesn't return the pid
+of a running automount daemon when the path is used rather than just
+the name, probably to do with the inode of the daemon program changing.
+
+So we change the init script to use just the program name rather than
+the path.
+---
+
+ CHANGELOG             |    1 +
+ redhat/autofs.init.in |    8 ++++----
+ samples/rc.autofs.in  |    8 ++++----
+ 3 files changed, 9 insertions(+), 8 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index dd093e2..cc2efab 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -12,6 +12,7 @@
+ - don't use master_lex_destroy() to clear parse buffer.
+ - make documentation for set-log-priority clearer.
+ - fix timeout in connect_nb().
++- fix pidof init script usage.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/redhat/autofs.init.in b/redhat/autofs.init.in
+index 806302b..363e824 100644
+--- redhat/autofs.init.in
++++ b/redhat/autofs.init.in
+@@ -101,14 +101,14 @@ function start() {
+ function stop() {
+ 	echo -n $"Stopping $prog: "
+ 	count=0
+-	while [ -n "`pidof $DAEMON`" -a $count -lt 15 ] ; do
++	while [ -n "`pidof $prog`" -a $count -lt 15 ] ; do
+ 		killproc $prog -TERM >& /dev/null
+ 		RETVAL=$?
+-		[ $RETVAL = 0 -a -z "`pidof $DAEMON`" ] || sleep 3
++		[ $RETVAL = 0 -a -z "`pidof $prog`" ] || sleep 3
+ 		count=`expr $count + 1`
+ 	done
+ 	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/autofs
+-	if [ -n "`pidof $DAEMON`" ] ; then
++	if [ -n "`pidof $prog`" ] ; then
+ 		failure "$prog shutdown"
+ 	else
+ 		success "$prog shutdown"
+@@ -128,7 +128,7 @@ function reload() {
+ 		RETVAL=1
+ 		return $RETVAL
+ 	fi
+-	pid=`pidof $DAEMON`
++	pid=`pidof $prog`
+ 	if [ -z $pid ]; then
+ 		echo $"$prog not running"
+ 		RETVAL=1
+diff --git a/samples/rc.autofs.in b/samples/rc.autofs.in
+index b193a4e..ae2e907 100644
+--- samples/rc.autofs.in
++++ b/samples/rc.autofs.in
+@@ -88,13 +88,13 @@ function start() {
+ function stop() {
+ 	echo -n $"Stopping $prog: "
+ 	count=0
+-	while [ -n "`pidof $DAEMON`" -a $count -lt 15 ] ; do
++	while [ -n "`pidof $prog`" -a $count -lt 15 ] ; do
+ 		killall -TERM $prog >& /dev/null
+ 		RETVAL=$?
+-		[ $RETVAL = 0 -a -z "`pidof $DAEMON`" ] || sleep 3
++		[ $RETVAL = 0 -a -z "`pidof $prog`" ] || sleep 3
+ 		count=`expr $count + 1`
+ 	done
+-	if [ -z "`pidof $DAEMON`" ] ; then
++	if [ -z "`pidof $prog`" ] ; then
+ 		echo "done."
+ 	else
+ 		echo "failed."
+@@ -108,7 +108,7 @@ function restart() {
+ }
+ 
+ function reload() {
+-	pid=`pidof $DAEMON`
++	pid=`pidof $prog`
+ 	if [ -z $pid ]; then
+ 		echo $"$prog not running"
+ 		RETVAL=1

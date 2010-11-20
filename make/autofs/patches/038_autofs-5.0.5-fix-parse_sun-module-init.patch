@@ -1,0 +1,111 @@
+autofs-5.0.5 - fix parse_sun() module init
+
+From: Ian Kent <raven@themaw.net>
+
+In the parse sun module we pre-open the NFS mount module and cache
+the library handle because it is used so often. Since this is shared
+amonst all the master map entries multiple threads can race when
+accessing the instance counter, especially when there are many
+master map entries, leading to a double close on the mount library
+handle.
+---
+
+ CHANGELOG           |    1 +
+ modules/parse_sun.c |   37 ++++++++++++++++++++++++++++++-------
+ 2 files changed, 31 insertions(+), 7 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 76207c8..334be80 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -36,6 +36,7 @@
+ - don't hold lock for simple mounts.
+ - fix remount locking.
+ - fix wildcard map entry match.
++- fix parse_sun() module init.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/parse_sun.c b/modules/parse_sun.c
+index 34458d0..1f91ad1 100644
+--- modules/parse_sun.c
++++ b/modules/parse_sun.c
+@@ -45,6 +45,22 @@ int parse_version = AUTOFS_PARSE_VERSION;	/* Required by protocol */
+ 
+ static struct mount_mod *mount_nfs = NULL;
+ static int init_ctr = 0;
++static int macro_init_done = 0;
++static pthread_mutex_t instance_mutex = PTHREAD_MUTEX_INITIALIZER;
++
++static void instance_mutex_lock(void)
++{
++	int status = pthread_mutex_lock(&instance_mutex);
++	if (status)
++		fatal(status);
++}
++
++static void instance_mutex_unlock(void)
++{
++	int status = pthread_mutex_unlock(&instance_mutex);
++	if (status)
++		fatal(status);
++}
+ 
+ extern const char *global_options;
+ 
+@@ -276,9 +292,12 @@ int parse_init(int argc, const char *const *argv, void **context)
+ 	unsigned int append_options;
+ 
+ 	/* Get processor information for predefined escapes */
+-
+-	if (!init_ctr)
++	macro_lock();
++	if (!macro_init_done) {
++		macro_init_done = 1;
+ 		macro_init();
++	}
++	macro_unlock();
+ 
+ 	/* Set up context and escape chain */
+ 
+@@ -434,19 +453,21 @@ options_done:
+ 
+ 	/* We only need this once.  NFS mounts are so common that we cache
+ 	   this module. */
+-	if (!mount_nfs) {
++	instance_mutex_lock();
++	if (mount_nfs)
++		init_ctr++;
++	else {
+ 		if ((mount_nfs = open_mount("nfs", MODPREFIX))) {
+ 			init_ctr++;
+-			return 0;
+ 		} else {
+ 			kill_context(ctxt);
+ 			*context = NULL;
++			instance_mutex_unlock();
+ 			return 1;
+ 		}
+-	} else {
+-		init_ctr++;
+-		return 0;
+ 	}
++	instance_mutex_unlock();
++	return 0;
+ }
+ 
+ static const char *parse_options(const char *str, char **ret, unsigned int logopt)
+@@ -1734,10 +1755,12 @@ int parse_done(void *context)
+ 	int rv = 0;
+ 	struct parse_context *ctxt = (struct parse_context *) context;
+ 
++	instance_mutex_lock();
+ 	if (--init_ctr == 0) {
+ 		rv = close_mount(mount_nfs);
+ 		mount_nfs = NULL;
+ 	}
++	instance_mutex_unlock();
+ 	if (ctxt)
+ 		kill_context(ctxt);
+ 

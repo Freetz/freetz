@@ -1,0 +1,44 @@
+autofs-5.0.5 - fix timeout in connect_nb()
+
+From: Ian Kent <raven@themaw.net>
+
+When changing the timed wait from using select(2) to poll(2) in
+connect_nb(), to overcome the 1024 file handle limit of select(),
+the wait timeout was not converted from seconds to milliseconds.
+---
+
+ CHANGELOG      |    1 +
+ lib/rpc_subs.c |    7 +++++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index ccf2d32..dd093e2 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -11,6 +11,7 @@
+ - add "preen" fsck for ext4 mounts.
+ - don't use master_lex_destroy() to clear parse buffer.
+ - make documentation for set-log-priority clearer.
++- fix timeout in connect_nb().
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/rpc_subs.c b/lib/rpc_subs.c
+index cafc775..628f0fc 100644
+--- lib/rpc_subs.c
++++ b/lib/rpc_subs.c
+@@ -161,6 +161,13 @@ static int connect_nb(int fd, struct sockaddr *addr, socklen_t len, struct timev
+ 	if (ret == 0)
+ 		goto done;
+ 
++	if (timeout != -1) {
++		if (timeout >= (INT_MAX - 1)/1000)
++			timeout = INT_MAX - 1;
++		else
++			timeout = timeout * 1000;
++	}
++
+ 	pfd[0].fd = fd;
+ 	pfd[0].events = POLLOUT;
+ 

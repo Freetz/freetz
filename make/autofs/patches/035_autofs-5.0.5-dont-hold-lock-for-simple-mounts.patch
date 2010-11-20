@@ -1,0 +1,121 @@
+autofs-5.0.5 - don't hold lock for simple mounts
+
+From: Ian Kent <raven@themaw.net>
+
+A map entry that depends on another map entry in the "same" map cannot
+be allowed in all cases. In particular, multi-mount entries must not
+change during mount operations so the internal map entry cache must
+remain locked during the mount. This is because, during the mount, we
+must consult the map and possibly update the internal cache entry to
+ensure we are using the most up to date mount information.
+
+This isn't the case for non multi-mount map entries but autofs didn't
+allow for this, which is the issue this patch addresses.
+---
+
+ CHANGELOG           |    1 +
+ modules/parse_sun.c |   41 +++++++++++++++++------------------------
+ 2 files changed, 18 insertions(+), 24 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 8a9611b..488cd2e 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -33,6 +33,7 @@
+ - add autofs_ldap_auth.conf man page.
+ - fix random selection for host on different network.
+ - make redhat init script more lsb compliant.
++- don't hold lock for simple mounts.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/parse_sun.c b/modules/parse_sun.c
+index 921daf4..34458d0 100644
+--- modules/parse_sun.c
++++ b/modules/parse_sun.c
+@@ -1136,19 +1136,6 @@ static int mount_subtree(struct autofs_point *ap, struct mapent *me,
+ 
+ 	rv = 0;
+ 
+-	if (!me || !me->multi) {
+-		int loclen = strlen(loc);
+-		int namelen = strlen(name);
+-		const char *root = ap->path;
+-
+-		if (!strcmp(ap->path, "/-"))
+-			root = name;
+-
+-		rv = sun_mount(ap, root, name, namelen, loc, loclen, options, ctxt);
+-
+-		goto done;
+-	}
+-
+ 	mm = me->multi;
+ 	mm_key = mm->key;
+ 	move = MOUNT_MOVE_NONE;
+@@ -1294,7 +1281,6 @@ static int mount_subtree(struct autofs_point *ap, struct mapent *me,
+ 	if (rv > 0)
+ 		return rv;
+ 
+-done:
+ 	/*
+ 	 * Convert fail on nonstrict, non-empty multi-mount
+ 	 * to success
+@@ -1622,17 +1608,25 @@ int parse_mount(struct autofs_point *ap, const char *name,
+ 		 * it's already been parsed (above) and any option string
+ 		 * has already been stripped so just use the remainder.
+ 		 */
++		cache_readlock(mc);
+ 		if (*name == '/' &&
+ 		   (me = cache_lookup_distinct(mc, name)) && me->multi) {
+ 			loc = strdup(p);
+ 			if (!loc) {
+ 				free(options);
++				cache_unlock(mc);
+ 				warn(ap->logopt, MODPREFIX "out of memory");
+ 				return 1;
+ 			}
+-			loclen = strlen(p);
+-			goto mount_it;
++			cache_multi_writelock(me);
++			rv = mount_subtree(ap, me, name, loc, options, ctxt);
++			cache_multi_unlock(me);
++			cache_unlock(mc);
++			free(loc);
++			free(options);
++			return rv;
+ 		}
++		cache_unlock(mc);
+ 
+ 		l = chunklen(p, check_colon(p));
+ 		loc = dequote(p, l, ap->logopt);
+@@ -1716,21 +1710,20 @@ int parse_mount(struct autofs_point *ap, const char *name,
+ 			      MODPREFIX "entry %s is empty!", name);
+ 			return 1;
+ 		}
+-mount_it:
++
+ 		debug(ap->logopt,
+ 		      MODPREFIX "core of entry: options=%s, loc=%.*s",
+ 		      options, loclen, loc);
+ 
+-		cache_readlock(mc);
+-		cache_multi_writelock(me);
+-
+-		rv = mount_subtree(ap, me, name, loc, options, ctxt);
++		if (!strcmp(ap->path, "/-"))
++			rv = sun_mount(ap, name, name, name_len,
++				       loc, loclen, options, ctxt);
++		else
++			rv = sun_mount(ap, ap->path, name, name_len,
++				       loc, loclen, options, ctxt);
+ 
+ 		free(loc);
+ 		free(options);
+-
+-		cache_multi_unlock(me);
+-		cache_unlock(mc);
+ 		pthread_setcancelstate(cur_state, NULL);
+ 	}
+ 	return rv;

@@ -1,0 +1,43 @@
+autofs-5.0.5 - fix submount shutdown wait
+
+From: Ian Kent <raven@themaw.net>
+
+When expiring a mount that has submounts we determine if a submount is
+still in use by its state being other than ST_SHUTDOWN. But a submount
+that is in the process of exiting could also be in one of the states
+ST_SHUTDOWN_PENDING or ST_SHUTDOWN_FORCE, in which case we should also
+continue to wait for the submount entry to be removed from the list or
+for it to reach another state.
+---
+
+ lib/master.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+
+diff --git a/lib/master.c b/lib/master.c
+index ad3aa77..95bd3fb 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -905,8 +905,9 @@ int master_notify_submount(struct autofs_point *ap, const char *path, enum state
+ 		st_wait_task(this, state, 0);
+ 
+ 		/*
+-		 * If our submount gets to state ST_SHUTDOWN we need to
+-		 * wait until it goes away or changes to ST_READY.
++		 * If our submount gets to state ST_SHUTDOWN, ST_SHUTDOWN_PENDING or
++		 * ST_SHUTDOWN_FORCE we need to wait until it goes away or changes
++		 * to ST_READY.
+ 		 */
+ 		mounts_mutex_lock(ap);
+ 		st_mutex_lock();
+@@ -914,7 +915,9 @@ int master_notify_submount(struct autofs_point *ap, const char *path, enum state
+ 			struct timespec t = { 0, 300000000 };
+ 			struct timespec r;
+ 
+-			if (this->state != ST_SHUTDOWN) {
++			if (this->state != ST_SHUTDOWN &&
++			    this->state != ST_SHUTDOWN_PENDING &&
++			    this->state != ST_SHUTDOWN_FORCE) {
+ 				ret = 0;
+ 				break;
+ 			}

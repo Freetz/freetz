@@ -1,0 +1,39 @@
+autofs-5.0.5 - fix stale initialization for file map instance
+
+From: Ian Kent <raven@themaw.net>
+
+Somehow, during the changes to minimize reading of file maps, an error
+of not initializing a field of the map source instance structure got
+through undetected. This has the effect of preventing all file map
+lookups, following the first one, to fail.
+---
+
+ CHANGELOG       |    1 +
+ daemon/lookup.c |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 7997d1d..8b62370 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -7,6 +7,7 @@
+ - fix compile fail with when LDAP is excluded.
+ - more code analysis corrections (and fix a typo in an init script).
+ - fix backwards #ifndef INET6.
++- fix stale initialization for file map instance.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/lookup.c b/daemon/lookup.c
+index 9d5a5c8..665ada0 100644
+--- daemon/lookup.c
++++ b/daemon/lookup.c
+@@ -398,6 +398,7 @@ static enum nsswitch_status read_map_source(struct nss_source *this,
+ 	tmap.instance = map->instance;
+ 	tmap.recurse = map->recurse;
+ 	tmap.depth = map->depth;
++	tmap.stale = map->stale;
+ 	tmap.argc = 0;
+ 	tmap.argv = NULL;
+ 

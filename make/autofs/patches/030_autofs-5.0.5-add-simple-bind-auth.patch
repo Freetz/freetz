@@ -1,0 +1,132 @@
+autofs-5.0.5 - add simple bind authentication
+
+From: James Y Knight <foom@fuhm.net>
+
+This patch adds the ability to do a simple bind against an LDAP server with
+the configured username and password.
+---
+
+ CHANGELOG                     |    1 +
+ include/lookup_ldap.h         |    1 +
+ modules/lookup_ldap.c         |   21 +++++++++++++--------
+ samples/autofs_ldap_auth.conf |   16 +++++++++-------
+ 4 files changed, 24 insertions(+), 15 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 5973824..d95542d 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -28,6 +28,7 @@
+ - fix ampersand escape in auto.smb.
+ - add locality as valid ldap master map attribute.
+ - add locality as valid ldap master map attribute fix.
++- add simple bind authentication.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/include/lookup_ldap.h b/include/lookup_ldap.h
+index dcae220..1e1c7a4 100644
+--- include/lookup_ldap.h
++++ b/include/lookup_ldap.h
+@@ -97,6 +97,7 @@ struct lookup_context {
+ #define LDAP_AUTH_NOTREQUIRED	0x0001
+ #define LDAP_AUTH_REQUIRED	0x0002
+ #define LDAP_AUTH_AUTODETECT	0x0004
++#define LDAP_AUTH_USESIMPLE	0x0008
+ 
+ /* lookup_ldap.c */
+ LDAP *init_ldap_connection(unsigned logopt, const char *uri, struct lookup_context *ctxt);
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index 8387951..d7d4f71 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -137,11 +137,13 @@ static void uris_mutex_unlock(struct lookup_context *ctxt)
+ 	return;
+ }
+ 
+-int bind_ldap_anonymous(unsigned logopt, LDAP *ldap, const char *uri, struct lookup_context *ctxt)
++int bind_ldap_simple(unsigned logopt, LDAP *ldap, const char *uri, struct lookup_context *ctxt)
+ {
+ 	int rv;
+ 
+-	if (ctxt->version == 2)
++	if (ctxt->auth_required == LDAP_AUTH_USESIMPLE)
++		rv = ldap_simple_bind_s(ldap, ctxt->user, ctxt->secret);
++	else if (ctxt->version == 2)
+ 		rv = ldap_simple_bind_s(ldap, ctxt->base, NULL);
+ 	else
+ 		rv = ldap_simple_bind_s(ldap, NULL, NULL);
+@@ -517,12 +519,12 @@ static int do_bind(unsigned logopt, LDAP *ldap, const char *uri, struct lookup_c
+ 		rv = autofs_sasl_bind(logopt, ldap, ctxt);
+ 		debug(logopt, MODPREFIX "autofs_sasl_bind returned %d", rv);
+ 	} else {
+-		rv = bind_ldap_anonymous(logopt, ldap, uri, ctxt);
+-		debug(logopt, MODPREFIX "ldap anonymous bind returned %d", rv);
++		rv = bind_ldap_simple(logopt, ldap, uri, ctxt);
++		debug(logopt, MODPREFIX "ldap simple bind returned %d", rv);
+ 	}
+ #else
+-	rv = bind_ldap_anonymous(logopt, ldap, uri, ctxt);
+-	debug(logopt, MODPREFIX "ldap anonymous bind returned %d", rv);
++	rv = bind_ldap_simple(logopt, ldap, uri, ctxt);
++	debug(logopt, MODPREFIX "ldap simple bind returned %d", rv);
+ #endif
+ 
+ 	if (rv != 0)
+@@ -971,11 +973,13 @@ int parse_ldap_config(unsigned logopt, struct lookup_context *ctxt)
+ 			auth_required = LDAP_AUTH_NOTREQUIRED;
+ 		else if (!strcasecmp(authrequired, "autodetect"))
+ 			auth_required = LDAP_AUTH_AUTODETECT;
++		else if (!strcasecmp(authrequired, "simple"))
++			auth_required = LDAP_AUTH_USESIMPLE;
+ 		else {
+ 			error(logopt,
+ 			      MODPREFIX
+ 			      "The authrequired property must have value "
+-			      "\"yes\", \"no\" or \"autodetect\".");
++			      "\"yes\", \"no\", \"autodetect\", or \"simple\".");
+ 			ret = -1;
+ 			goto out;
+ 		}
+@@ -991,7 +995,8 @@ int parse_ldap_config(unsigned logopt, struct lookup_context *ctxt)
+ 		goto out;
+ 	}
+ 
+-	if (authtype && authtype_requires_creds(authtype)) {
++	if (auth_required == LDAP_AUTH_USESIMPLE ||
++	   (authtype && authtype_requires_creds(authtype))) {
+ 		ret = get_property(logopt, root, "user",  &user);
+ 		ret |= get_property(logopt, root, "secret", &secret);
+ 		if (ret != 0 || (!user || !secret)) {
+diff --git a/samples/autofs_ldap_auth.conf b/samples/autofs_ldap_auth.conf
+index a1f60c0..be5e7dd 100644
+--- samples/autofs_ldap_auth.conf
++++ b/samples/autofs_ldap_auth.conf
+@@ -17,17 +17,19 @@ tlsrequired  -  This flag tells whether the ldap connection must be
+ 
+ authrequired  -  This option tells whether an authenticated connection to
+ 	    the ldap server is required in order to perform ldap queries.
+-	    If this flag is set to yes, then only authenticated connections
++	    If the flag is set to yes, only sasl authenticated connections
+ 	    will be allowed. If it is set to no then authentication is not
+-	    needed for ldap server connections. Finally, if it is set to
+-	    autodetect then the ldap server will be queried to establish
+-	    a suitable authentication mechanism. If no suitable mechanism
+-	    can be found, connections to the ldap server are made without
+-	    authentication.
+-	    Legal values for this option include:
++	    needed for ldap server connections. If it is set to autodetect
++	    then the ldap server will be queried to establish a suitable sasl
++	    authentication mechanism. If no suitable mechanism can be found,
++	    connections to the ldap server are made without authentication.
++	    Finally, if it is set to simple, then simple authentication will
++	    be used instead of SASL.
++
+ 	    "yes"
+ 	    "no"
+ 	    "autodetect"
++	    "simple"
+ 
+ authtype  -  This attribute can be used to specify a preferred
+ 	    authentication mechanism.  In normal operations, the

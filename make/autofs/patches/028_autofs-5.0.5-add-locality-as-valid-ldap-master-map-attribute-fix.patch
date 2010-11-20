@@ -1,0 +1,55 @@
+autofs-5.0.5 - add locality as valid ldap master map attribute fix
+
+From: Ian Kent <raven@themaw.net>
+
+A recent change enabled the use of the locality ("l") attribute in map name
+dns used in the master map.
+
+When using an entry like:
+/mp yp:lnxhome
+
+the l following the ":" would match a dn patern in the tokenizer leading
+to a syntax error. This has exposed a bug present for some time as, for
+the map entry syntax above, this could also happen if the map name started
+with another attribute, such as "cn" or "o".
+---
+
+ CHANGELOG        |    1 +
+ lib/master_tok.l |    4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 6ca1827..5973824 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -27,6 +27,7 @@
+ - fix get query dn failure.
+ - fix ampersand escape in auto.smb.
+ - add locality as valid ldap master map attribute.
++- add locality as valid ldap master map attribute fix.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master_tok.l b/lib/master_tok.l
+index 2693c51..d05d1fb 100644
+--- lib/master_tok.l
++++ b/lib/master_tok.l
+@@ -210,7 +210,7 @@ OPTNTOUT	(-n{OPTWS}|-n{OPTWS}={OPTWS}|--negative-timeout{OPTWS}|--negative-timeo
+ 	}
+ 
+ 	{MTYPE} |
+-	{MTYPE}/{DNSERVERSTR}{DNATTRSTR} |
++	{MTYPE}/{DNSERVERSTR}{DNATTRSTR}= |
+ 	{MTYPE}/{DNATTRSTR}= {
+ 		tlen = master_leng - 1;
+ 		if (bptr != buff && isblank(master_text[tlen])) {
+@@ -250,7 +250,7 @@ OPTNTOUT	(-n{OPTWS}|-n{OPTWS}={OPTWS}|--negative-timeout{OPTWS}|--negative-timeo
+ 		yyless(0);
+ 	}
+ 
+-	{DNSERVERSTR}{DNATTRSTR} {
++	{DNSERVERSTR}{DNATTRSTR}= {
+ 		BEGIN(DNSTR);
+ 		yyless(0);
+ 	}

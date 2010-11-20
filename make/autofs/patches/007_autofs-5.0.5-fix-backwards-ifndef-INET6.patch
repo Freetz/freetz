@@ -1,0 +1,48 @@
+autofs-5.0.5 - fix backwards #ifndef INET6
+
+From: Jeff Moyer <jmoyer@redhat.com>
+
+Fix reversed macro checks for INET6 in get_proximity().
+
+Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+---
+
+ CHANGELOG            |    1 +
+ modules/replicated.c |    4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index b9b1602..7997d1d 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -6,6 +6,7 @@
+ - special case cifs escapes.
+ - fix compile fail with when LDAP is excluded.
+ - more code analysis corrections (and fix a typo in an init script).
++- fix backwards #ifndef INET6.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/replicated.c b/modules/replicated.c
+index a66de9f..4cd3eb4 100644
+--- modules/replicated.c
++++ b/modules/replicated.c
+@@ -231,7 +231,7 @@ static unsigned int get_proximity(struct sockaddr *host_addr)
+ 			break;
+ 
+ 		case AF_INET6:
+-#ifndef INET6
++#ifdef INET6
+ 			if (host_addr->sa_family == AF_INET)
+ 				break;
+ 
+@@ -313,7 +313,7 @@ static unsigned int get_proximity(struct sockaddr *host_addr)
+ 			break;
+ 
+ 		case AF_INET6:
+-#ifndef INET6
++#ifdef INET6
+ 			if (host_addr->sa_family == AF_INET)
+ 				break;
+ 

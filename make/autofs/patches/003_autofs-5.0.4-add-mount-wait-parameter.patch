@@ -1,0 +1,172 @@
+autofs-5.0.4 - add mount wait parameter
+
+From: Ian Kent <raven@themaw.net>
+
+Often delays when trying to mount from a server that is not reponding
+for some reason are undesirable. To try and prevent these delays we
+provide a configuration setting to limit the time that we wait for
+our spawned mount(8) process to complete before sending it a SIGTERM
+signal. This patch adds a configuration parameter to allow us to
+request we limit the time we wait for mount(8) to complete before
+send it a TERM signal.
+---
+
+ CHANGELOG                      |    1 +
+ daemon/spawn.c                 |    3 ++-
+ include/defaults.h             |    2 ++
+ lib/defaults.c                 |   13 +++++++++++++
+ man/auto.master.5.in           |    7 +++++++
+ redhat/autofs.sysconfig.in     |    9 +++++++++
+ samples/autofs.conf.default.in |    9 +++++++++
+ 7 files changed, 43 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 5adcca5..fadb229 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -2,6 +2,7 @@
+ -----------------------
+ - fix included map read fail handling.
+ - refactor ldap sasl bind handling.
++- add mount wait timeout parameter.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/daemon/spawn.c b/daemon/spawn.c
+index e02d926..db356d4 100644
+--- daemon/spawn.c
++++ b/daemon/spawn.c
+@@ -305,6 +305,7 @@ int spawn_mount(unsigned logopt, ...)
+ 	unsigned int options;
+ 	unsigned int retries = MTAB_LOCK_RETRIES;
+ 	int update_mtab = 1, ret, printed = 0;
++	unsigned int wait = defaults_get_mount_wait();
+ 	char buf[PATH_MAX];
+ 
+ 	/* If we use mount locking we can't validate the location */
+@@ -355,7 +356,7 @@ int spawn_mount(unsigned logopt, ...)
+ 	va_end(arg);
+ 
+ 	while (retries--) {
+-		ret = do_spawn(logopt, -1, options, prog, (const char **) argv);
++		ret = do_spawn(logopt, wait, options, prog, (const char **) argv);
+ 		if (ret & MTAB_NOTUPDATED) {
+ 			struct timespec tm = {3, 0};
+ 
+diff --git a/include/defaults.h b/include/defaults.h
+index 9bf16e5..cda2174 100644
+--- include/defaults.h
++++ b/include/defaults.h
+@@ -24,6 +24,7 @@
+ 
+ #define DEFAULT_TIMEOUT			600
+ #define DEFAULT_NEGATIVE_TIMEOUT	60
++#define DEFAULT_MOUNT_WAIT		-1
+ #define DEFAULT_UMOUNT_WAIT		12
+ #define DEFAULT_BROWSE_MODE		1
+ #define DEFAULT_LOGGING			0
+@@ -64,6 +65,7 @@ struct ldap_searchdn *defaults_get_searchdns(void);
+ void defaults_free_searchdns(struct ldap_searchdn *);
+ unsigned int defaults_get_mount_nfs_default_proto(void);
+ unsigned int defaults_get_append_options(void);
++unsigned int defaults_get_mount_wait(void);
+ unsigned int defaults_get_umount_wait(void);
+ const char *defaults_get_auth_conf_file(void);
+ unsigned int defaults_get_map_hash_table_size(void);
+diff --git a/lib/defaults.c b/lib/defaults.c
+index 17164bd..2204b18 100644
+--- lib/defaults.c
++++ b/lib/defaults.c
+@@ -47,6 +47,7 @@
+ 
+ #define ENV_MOUNT_NFS_DEFAULT_PROTOCOL	"MOUNT_NFS_DEFAULT_PROTOCOL"
+ #define ENV_APPEND_OPTIONS		"APPEND_OPTIONS"
++#define ENV_MOUNT_WAIT			"MOUNT_WAIT"
+ #define ENV_UMOUNT_WAIT			"UMOUNT_WAIT"
+ #define ENV_AUTH_CONF_FILE		"AUTH_CONF_FILE"
+ 
+@@ -325,6 +326,7 @@ unsigned int defaults_read_config(unsigned int to_syslog)
+ 		    check_set_config_value(key, ENV_NAME_ENTRY_ATTR, value, to_syslog) ||
+ 		    check_set_config_value(key, ENV_NAME_VALUE_ATTR, value, to_syslog) ||
+ 		    check_set_config_value(key, ENV_APPEND_OPTIONS, value, to_syslog) ||
++		    check_set_config_value(key, ENV_MOUNT_WAIT, value, to_syslog) ||
+ 		    check_set_config_value(key, ENV_UMOUNT_WAIT, value, to_syslog) ||
+ 		    check_set_config_value(key, ENV_AUTH_CONF_FILE, value, to_syslog) ||
+ 		    check_set_config_value(key, ENV_MAP_HASH_TABLE_SIZE, value, to_syslog) ||
+@@ -667,6 +669,17 @@ unsigned int defaults_get_append_options(void)
+ 	return res;
+ }
+ 
++unsigned int defaults_get_mount_wait(void)
++{
++	long wait;
++
++	wait = get_env_number(ENV_MOUNT_WAIT);
++	if (wait < 0)
++		wait = DEFAULT_MOUNT_WAIT;
++
++	return (unsigned int) wait;
++}
++
+ unsigned int defaults_get_umount_wait(void)
+ {
+ 	long wait;
+diff --git a/man/auto.master.5.in b/man/auto.master.5.in
+index 71c4402..792035f 100644
+--- man/auto.master.5.in
++++ b/man/auto.master.5.in
+@@ -174,6 +174,13 @@ Set the default timeout for caching failed key lookups (program default
+ 60). If the equivalent command line option is given it will override this
+ setting.
+ .TP
++.B MOUNT_WAIT
++Set the default time to wait for a response from a spawned mount(8)
++before sending it a SIGTERM. Note that we still need to wait for the
++RPC layer to timeout before the sub-process exits so this isn't ideal
++but it is the best we can do. The default is to wait until mount(8)
++returns without intervention.
++.TP
+ .B UMOUNT_WAIT
+ Set the default time to wait for a response from a spawned umount(8)
+ before sending it a SIGTERM. Note that we still need to wait for the
+diff --git a/redhat/autofs.sysconfig.in b/redhat/autofs.sysconfig.in
+index 37448ea..c72cd2b 100644
+--- redhat/autofs.sysconfig.in
++++ b/redhat/autofs.sysconfig.in
+@@ -14,6 +14,15 @@ TIMEOUT=300
+ #
+ #NEGATIVE_TIMEOUT=60
+ #
++# MOUNT_WAIT - time to wait for a response from umount(8).
++# 	       Setting this timeout can cause problems when
++# 	       mount would otherwise wait for a server that
++# 	       is temporarily unavailable, such as when it's
++# 	       restarting. The defailt of waiting for mount(8)
++# 	       usually results in a wait of around 3 minutes.
++#
++#MOUNT_WAIT=-1
++#
+ # UMOUNT_WAIT - time to wait for a response from umount(8).
+ #
+ #UMOUNT_WAIT=12
+diff --git a/samples/autofs.conf.default.in b/samples/autofs.conf.default.in
+index 7dee5fd..b87c4d0 100644
+--- samples/autofs.conf.default.in
++++ b/samples/autofs.conf.default.in
+@@ -14,6 +14,15 @@ TIMEOUT=300
+ #
+ #NEGATIVE_TIMEOUT=60
+ #
++# MOUNT_WAIT - time to wait for a response from umount(8).
++# 	       Setting this timeout can cause problems when
++# 	       mount would otherwise wait for a server that
++# 	       is temporarily unavailable, such as when it's
++# 	       restarting. The defailt of waiting for mount(8)
++# 	       usually results in a wait of around 3 minutes.
++#
++#MOUNT_WAIT=-1
++#
+ # UMOUNT_WAIT - time to wait for a response from umount(8).
+ #
+ #UMOUNT_WAIT=12

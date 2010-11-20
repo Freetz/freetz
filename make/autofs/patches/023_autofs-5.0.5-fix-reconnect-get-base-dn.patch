@@ -1,0 +1,41 @@
+autofs-5.0.5 - fix reconnect get base dn
+
+From: Ian Kent <raven@themaw.net>
+
+If connect to an LDAP server but fail to find a valid query dn a
+subsequent reconnect succeeds without setting the schema fields
+used for constructing queries. A segfault then occurs when we try
+to construct a query using the schema values that should have been
+set during the query dn validation.
+---
+
+ CHANGELOG             |    1 +
+ modules/lookup_ldap.c |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 3166898..e2abae3 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -22,6 +22,7 @@
+ - fix random selection option.
+ - fix disable timeout.
+ - fix strdup() return value check (Leonardo Chiquitto).
++- fix reconnect get base dn.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index 079ded1..e3c0c51 100644
+--- modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -556,7 +556,7 @@ static int do_bind(unsigned logopt, LDAP *ldap, const char *uri, struct lookup_c
+ 		}
+ 	}
+ 
+-	if (!need_base)
++	if (ctxt->schema && !need_base)
+ 		return 1;
+ 
+ 	/*

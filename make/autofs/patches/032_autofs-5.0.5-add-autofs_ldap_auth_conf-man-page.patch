@@ -1,0 +1,260 @@
+autofs-5.0.5 - add autofs_ldap_auth.conf man page
+
+From: Ian Kent <raven@themaw.net>
+
+
+---
+
+ CHANGELOG                      |    1 
+ man/auto.master.5.in           |    3 +
+ man/autofs.5                   |    1 
+ man/autofs.8.in                |    1 
+ man/autofs_ldap_auth.conf.5.in |   93 ++++++++++++++++++++++++++++++++++++++++
+ man/automount.8                |    1 
+ samples/autofs_ldap_auth.conf  |   63 ---------------------------
+ 7 files changed, 101 insertions(+), 62 deletions(-)
+ create mode 100644 man/autofs_ldap_auth.conf.5.in
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index fc4e738..e319b4d 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -30,6 +30,7 @@
+ - add locality as valid ldap master map attribute fix.
+ - add simple bind authentication.
+ - fix master map source server unavailable handling.
++- add autofs_ldap_auth.conf man page.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/man/auto.master.5.in b/man/auto.master.5.in
+index 792035f..453ff98 100644
+--- man/auto.master.5.in
++++ b/man/auto.master.5.in
+@@ -365,6 +365,8 @@ and set the location of the client certificate and private key
+ in the per-user configuration. The location of these files and the configuration
+ entry requirements is system dependent so the documentation for your
+ installation will need to be consulted to get further information.
++.P
++See \fBautofs_ldap_auth.conf\fP(5) for more information.
+ .SH EXAMPLE
+ .sp
+ .RS +.2i
+@@ -399,6 +401,7 @@ configuration will be used to locate the source of the map
+ .BR automount (8),
+ .BR autofs (5),
+ .BR autofs (8).
++.BR autofs_ldap_auth.conf (5)
+ .SH AUTHOR
+ This manual page was written by Christoph Lameter <chris@waterf.org>,
+ for the Dean GNU/Linux system.  Edited by <hpa@transmeta.com> and
+diff --git a/man/autofs.5 b/man/autofs.5
+index 5a01791..c5614e1 100644
+--- man/autofs.5
++++ b/man/autofs.5
+@@ -229,6 +229,7 @@ and LDAP only.
+ .BR auto.master (5),
+ .BR autofs (8),
+ .BR mount (8).
++.BR autofs_ldap_auth.conf (5)
+ .SH AUTHOR
+ This manual page was written by Christoph Lameter <chris@waterf.org>,
+ for the Debian GNU/Linux system.  Edited by H. Peter Avian
+diff --git a/man/autofs.8.in b/man/autofs.8.in
+index 4828b39..ac0670d 100644
+--- man/autofs.8.in
++++ b/man/autofs.8.in
+@@ -50,6 +50,7 @@ will display the status of,
+ .BR automount (8),
+ .BR autofs (5),
+ .BR auto.master (5).
++.BR autofs_ldap_auth.conf (5)
+ .SH AUTHOR
+ This manual page was written by Christoph Lameter <chris@waterf.org>,
+ for the Debi GNU/Linux system.  Edited by H. Peter Anvin
+diff --git a/man/autofs_ldap_auth.conf.5.in b/man/autofs_ldap_auth.conf.5.in
+new file mode 100644
+index 0000000..ecec20d
+--- /dev/null
++++ b/man/autofs_ldap_auth.conf.5.in
+@@ -0,0 +1,93 @@
++.\" t
++.TH AUTOFS_LDAP_AUTH.CONF 5 "19 Feb 2010"
++.SH NAME
++autofs_ldap_auth.conf \- autofs LDAP authentication configuration
++.SH "DESCRIPTION"
++LDAP authenticated binds, TLS encrypted connections and certification
++may be used by setting appropriate values in the autofs authentication
++configuration file and configuring the LDAP client with appropriate
++settings.  The default location of this file is
++.nh
++.BR @@autofsmapdir@@/autofs_ldap_auth.conf .
++.hy
++If this file exists it will be used to establish whether TLS or authentication
++should be used.
++.P
++An example of this file is:
++.sp
++.RS +.2i
++.ta 1.0i
++.nf
++<?xml version="1.0" ?>
++<autofs_ldap_sasl_conf
++        usetls="yes"
++        tlsrequired="no"
++        authrequired="no"
++        authtype="DIGEST-MD5"
++        user="xyz"
++        secret="abc"
++/>
++.fi
++.RE
++.sp
++If TLS encryption is to be used the location of the Certificate Authority
++certificate must be set within the LDAP client configuration in 
++order to validate the server certificate. If, in addition, a certified
++connection is to be used then the client certificate and private key file
++locations must also be configured within the LDAP client.
++.SH "OPTIONS"
++This files contains a single XML element, as shown in the example above, with
++several attributes.
++.TP
++The possible attributes are:
++.TP
++\fBusetls="yes"|"no"\fP
++Determines whether an encrypted connection to the ldap server
++should be attempted.
++.TP
++\fBtlsrequired="yes"|"no"\fP
++This flag tells whether the ldap connection must be encrypted. If set to "yes",
++the automounter will fail to start if an encrypted connection cannot be
++established.
++.TP
++\fBauthrequired="yes"|"no"|"autodetect"|"simple"\fP
++This option tells whether an authenticated connection to the ldap server is
++required in order to perform ldap queries. If the flag is set to yes, only
++sasl authenticated connections will be allowed. If it is set to no then
++authentication is not needed for ldap server connections. If it is set to
++autodetect then the ldap server will be queried to establish a suitable sasl
++authentication  mechanism. If no suitable mechanism can be found, connections
++to the ldap server are made without authentication. Finally, if it is set to
++simple, then simple authentication will be used instead of SASL.
++.TP
++\fBauthtype="GSSAPI"|"LOGIN"|"PLAIN"|"ANONYMOUS"|"DIGEST-MD5"\fP
++This attribute can be used to specify a preferred authentication mechanism.
++ In normal operations, the automounter will attempt to authenticate to the
++ldap server using the list of supportedSASLmechanisms obtained from the
++directory server.  Explicitly setting the authtype will bypass this selection
++and only try the mechanism specified.
++.TP
++\fBuser="<username>"\fP
++This attribute holds the authentication identity used by authentication
++mechanisms that require it.  Legal values for this attribute include any
++printable characters that can be used by the selected authentication
++mechanism.
++.TP
++\fBsecret="<password>"\fP
++This attribute holds the secret used by authentication mechanisms that
++require it. Legal values for this attribute include any printable
++characters that can be used by the selected authentication mechanism.
++.TP
++\fBclientprinc="<GSSAPI client principal>"\fP
++When using GSSAPI authentication, this attribute is consulted to determine
++the principal name to use when authenticating to the directory server. By
++default, this will be set to "autofsclient/<fqdn>@<REALM>.
++.TP
++\fBcredentialcache="<external credential cache path>"\fP
++When using GSSAPI authentication, this attribute can be used to specify an
++externally configured credential cache that is used during authentication.
++By default, autofs will setup a memory based credential cache.
++.SH "SEE ALSO"
++.BR auto.master (5),
++.SH AUTHOR
++This manual page was written by Ian Kent <raven@themaw.net>.
+diff --git a/man/automount.8 b/man/automount.8
+index d9a45c2..18f74bf 100644
+--- man/automount.8
++++ b/man/automount.8
+@@ -152,6 +152,7 @@ constructed has been detached from the mount tree.
+ .BR autofs (8),
+ .BR auto.master (5),
+ .BR mount (8).
++.BR autofs_ldap_auth.conf (5)
+ .SH BUGS
+ Don't know, I've fixed everything I know about.
+ 
+diff --git a/samples/autofs_ldap_auth.conf b/samples/autofs_ldap_auth.conf
+index be5e7dd..4033ba0 100644
+--- samples/autofs_ldap_auth.conf
++++ b/samples/autofs_ldap_auth.conf
+@@ -1,68 +1,7 @@
+ <?xml version="1.0" ?>
+ <!--
+ This files contains a single entry with multiple attributes tied to it.
+-The attributes are:
+-
+-usetls  -  Determines whether an encrypted connection to the ldap server
+-	   should be attempted.  Legal values for the entry are:
+-	   "yes"
+-	   "no"
+-
+-tlsrequired  -  This flag tells whether the ldap connection must be
+-	   encrypted.  If set to "yes", the automounter will fail to start
+-	   if an encrypted connection cannot be established.  Legal values
+-	   for this option include:
+-	   "yes"
+-	   "no"
+-
+-authrequired  -  This option tells whether an authenticated connection to
+-	    the ldap server is required in order to perform ldap queries.
+-	    If the flag is set to yes, only sasl authenticated connections
+-	    will be allowed. If it is set to no then authentication is not
+-	    needed for ldap server connections. If it is set to autodetect
+-	    then the ldap server will be queried to establish a suitable sasl
+-	    authentication mechanism. If no suitable mechanism can be found,
+-	    connections to the ldap server are made without authentication.
+-	    Finally, if it is set to simple, then simple authentication will
+-	    be used instead of SASL.
+-
+-	    "yes"
+-	    "no"
+-	    "autodetect"
+-	    "simple"
+-
+-authtype  -  This attribute can be used to specify a preferred
+-	    authentication mechanism.  In normal operations, the
+-	    automounter will attempt to authenticate to the ldap server
+-	    using the list of supportedSASLmechanisms obtained from the
+-	    directory server.  Explicitly setting the authtype will bypass
+-	    this selection and only try the mechanism specified.  Legal
+-	    values for this attribute include:
+-	    "GSSAPI"
+-	    "LOGIN"
+-	    "PLAIN"
+-	    "ANONYMOUS"
+-	    "DIGEST-MD5"
+-
+-user  -  This attribute holds the authentication identity used by
+-	    authentication mechanisms that require it.  Legal values for
+-	    this attribute include any printable characters that can be
+-	    used by the selected authentication mechanism.
+-
+-secret  -  This attribute holds the secret used by authentication
+-	    mechanisms that require it.  Legal values for this attribute
+-	    include any printable characters that can be used by the
+-	    selected authentication mechanism.
+-
+-clientprinc  -  When using GSSAPI authentication, this attribute is
+-	    consulted to determine the principal name to use when
+-	    authenticating to the directory server.  By default, this will
+-	    be set to "autofsclient/<fqdn>@<REALM>.
+-
+-credentialcache - When using GSSAPI authentication, this attribute
+-	    can be used to specify an externally configured credential
+-	    cache that is used during authentication. By default, autofs
+-	    will setup a memory based credential cache.
++See autofs_ldap_auth.conf(5) for more information.
+ -->
+ 
+ <autofs_ldap_sasl_conf

@@ -1,0 +1,72 @@
+autofs-5.0.5 - fix memory leak on reload
+
+From: Ian Kent <raven@themaw.net>
+
+When sending a signal to the automount daemon to re-load the maps a map
+entry cache is pre-allocated before checking if the entry already exists.
+If the master map entry was found to exist the pre-allocated cache was
+not being freed.
+
+If there are a large number of entries in the master map and there are
+frequent re-load requests sent to the daemon the memory leak will cause
+the system to become unstable fairly quilkly.
+
+Since the map entry cache (allocated for each map entry) is fairly large
+these days (and is configurable) pre-allocating it is no longer a cheap
+operation. This patch fixes the memory leak and only allocates a map
+entry cache if the entry does not already exist.
+---
+
+ CHANGELOG    |    1 +
+ lib/master.c |   17 +++++++++++++++--
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 20566a6..df2ec09 100644
+--- CHANGELOG
++++ b/CHANGELOG
+@@ -16,6 +16,7 @@
+ - check for path mount location in generic module.
+ - dont fail mount on access fail.
+ - fix rpc fail on large export list.
++- fix memory leak on reload.
+ 
+ 03/09/2009 autofs-5.0.5
+ -----------------------
+diff --git a/lib/master.c b/lib/master.c
+index 8455f40..83019aa 100644
+--- lib/master.c
++++ b/lib/master.c
+@@ -190,9 +190,15 @@ master_add_map_source(struct master_mapent *entry,
+ 
+ 	master_source_writelock(entry);
+ 
+-	if (!entry->maps)
++	if (!entry->maps) {
++		source->mc = cache_init(entry->ap, source);
++		if (!source->mc) {
++			master_free_map_source(source, 0);
++			master_source_unlock(entry);
++			return NULL;
++		}
+ 		entry->maps = source;
+-	else {
++	} else {
+ 		struct map_source *this, *last, *next;
+ 
+ 		/* Typically there only a few map sources */
+@@ -205,6 +211,13 @@ master_add_map_source(struct master_mapent *entry,
+ 			return this;
+ 		}
+ 
++		source->mc = cache_init(entry->ap, source);
++		if (!source->mc) {
++			master_free_map_source(source, 0);
++			master_source_unlock(entry);
++			return NULL;
++		}
++
+ 		last = NULL;
+ 		next = entry->maps;
+ 		while (next) {
