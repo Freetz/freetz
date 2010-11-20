@@ -22,8 +22,8 @@ TARGET_TOOLCHAIN_MD5SUM:=a8d66a7b35498447476882e274440885
 endif
 TARGET_TOOLCHAIN_SOURCE:=gcc-$(TARGET_TOOLCHAIN_GCC_VERSION)-uClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION)-freetz-$(TARGET_TOOLCHAIN_VERSION).tar.lzma
 
-cross_compiler_kernel:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
-cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
+CROSS_COMPILER_KERNEL:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
+CROSS_COMPILER:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 
 $(KERNEL_TOOLCHAIN_DIR):
 	@mkdir -p $@
@@ -37,21 +37,21 @@ $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE): | $(DL_DIR)
 $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TARGET_TOOLCHAIN_SOURCE) "" $(TARGET_TOOLCHAIN_MD5SUM)
 
-download-toolchain: $(cross_compiler_kernel) kernel-configured \
-			$(cross_compiler) \
+download-toolchain: $(CROSS_COMPILER_KERNEL) kernel-configured \
+			$(CROSS_COMPILER) \
 			$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1 \
 			$(CCACHE) uclibcxx libtool-host
 
-gcc-kernel: $(cross_compiler_kernel)
-$(cross_compiler_kernel): $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
+gcc-kernel: $(CROSS_COMPILER_KERNEL)
+$(CROSS_COMPILER_KERNEL): $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
 		$(KERNEL_TOOLCHAIN_SYMLINK_DOT_FILE) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
 	$(TOOLS_DIR)/busybox tar $(VERBOSE) -xaf $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) -C $(TOOLCHAIN_DIR)/build
 	@touch $@
 
-gcc: $(cross_compiler)
-$(cross_compiler): $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) | \
+gcc: $(CROSS_COMPILER)
+$(CROSS_COMPILER): $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE) | \
 		$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) $(TOOLS_DIR)/busybox
 	mkdir -p $(TOOLCHAIN_DIR)/build
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)/$(TARGET_TOOLCHAIN_COMPILER)

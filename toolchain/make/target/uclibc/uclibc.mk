@@ -179,8 +179,8 @@ $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/l
 		install_runtime
 	touch -c $@
 else
-cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(cross_compiler)
+CROSS_COMPILER:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(CROSS_COMPILER)
 	touch -c $@
 
 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
@@ -195,7 +195,7 @@ endif
 
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
-uclibc: $(cross_compiler) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0
+uclibc: $(CROSS_COMPILER) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0
 
 uclibc-configured-source: uclibc-source
 
@@ -231,7 +231,7 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
 	touch -c $@
 
-uclibc_target: cross_compiler uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
+uclibc_target: gcc uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
 
 uclibc_target-clean: uclibc_target-dirclean
 	$(RM) $(TARGET_UTILS_DIR)/lib/libc.a

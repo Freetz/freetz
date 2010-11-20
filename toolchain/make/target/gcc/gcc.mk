@@ -211,8 +211,8 @@ $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	$(call CREATE_TARGET_NAME_SYMLINKS,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME))
 	touch $@
 
-cross_compiler:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
-cross_compiler gcc: uclibc-configured binutils gcc_initial uclibc \
+CROSS_COMPILER:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
+gcc: uclibc-configured binutils gcc_initial uclibc \
 	$(GCC_BUILD_DIR2)/.installed $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1
 
 gcc-uninstall:
