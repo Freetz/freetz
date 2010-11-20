@@ -179,7 +179,7 @@ $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/l
 		install_runtime
 	touch -c $@
 else
-$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(CROSS_COMPILER)
+$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(TARGET_CROSS_COMPILER)
 	touch -c $@
 
 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
@@ -194,7 +194,7 @@ endif
 
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
-uclibc: $(CROSS_COMPILER) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0
+uclibc: $(TARGET_CROSS_COMPILER) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0
 
 uclibc-configured-source: uclibc-source
 
