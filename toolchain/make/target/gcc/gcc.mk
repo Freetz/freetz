@@ -141,8 +141,7 @@ $(GCC_BUILD_DIR1)/.compiled: $(GCC_BUILD_DIR1)/.configured
 		$(if $(GCC_BUILD_TARGET_LIBGCC),all-target-libgcc)
 	touch $@
 
-gcc_initial=$(GCC_BUILD_DIR1)/.installed
-$(gcc_initial) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc: $(GCC_BUILD_DIR1)/.compiled
+$(GCC_BUILD_DIR1)/.installed: $(GCC_BUILD_DIR1)/.compiled
 	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(GCC_BUILD_DIR1) \
 		install-gcc \
@@ -150,9 +149,9 @@ $(gcc_initial) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g
 	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
-	touch $(gcc_initial)
+	touch $@
 
-gcc_initial: uclibc-configured binutils $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
+gcc_initial: uclibc-configured binutils $(GCC_BUILD_DIR1)/.installed
 
 gcc_initial-uninstall: gcc-uninstall
 
