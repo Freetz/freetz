@@ -179,7 +179,6 @@ $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/l
 		install_runtime
 	touch -c $@
 else
-CROSS_COMPILER:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(CROSS_COMPILER)
 	touch -c $@
 
