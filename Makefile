@@ -492,12 +492,12 @@ common-clean:
 	$(RM) -r $(BUILD_DIR)
 	-$(MAKE) -C $(CONFIG) clean
 
-common-dirclean: common-clean
+common-dirclean: common-clean kernel-dirclean
 	$(RM) -r $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
-common-distclean: common-dirclean
+common-distclean: common-dirclean kernel-distclean
 	$(RM) .config .config.old .config.cmd .tmpconfig.h
 	$(RM) -r $(DL_DIR)
 	$(RM) -r $(FW_IMAGES_DIR)
