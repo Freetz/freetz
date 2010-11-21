@@ -27,3 +27,14 @@
  	new->count = 0;
  	return new;
  }
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -3398,7 +3398,7 @@
+ 
+ struct pathnames *init_subdir()
+ {
+-	struct pathnames *new = malloc(sizeof(struct pathnames *));
++	struct pathnames *new = malloc(sizeof(struct pathnames));
+ 	new->count = 0;
+ 	return new;
+ }
