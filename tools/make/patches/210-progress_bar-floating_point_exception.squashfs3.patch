@@ -1,0 +1,22 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -2280,10 +2280,15 @@
+ void progress_bar(long long current, long long max, int columns)
+ {
+ 	char rotate_list[] = { '|', '/', '-', '\\' };
+-	int max_digits = floor(log10(max)) + 1;
+-	int used = max_digits * 2 + 11;
+-	int hashes = (current * (columns - used)) / max;
+-	int spaces = columns - used - hashes;
++	int max_digits, used, hashes, spaces;
++
++	if (max == 0)
++		return;
++
++	max_digits = floor(log10(max)) + 1;
++	used = max_digits * 2 + 11;
++	hashes = (current * (columns - used)) / max;
++	spaces = columns - used - hashes;
+ 
+ 	if(current > max) {
+ 		printf("%lld %lld\n", current, max);
