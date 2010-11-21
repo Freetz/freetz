@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,3.11.1)
+$(call PKG_INIT_BIN,3.12)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=28dfcb9e24cdbeb12b99ac1eb8af7dea
+$(PKG)_SOURCE_MD5:=8b2257ce9abef74c4a44d825d23140f3
 $(PKG)_SITE:=http://www.kernel.org/pub/linux/utils/kernel/module-init-tools
 
 $(PKG)_BINARIES_ALL := depmod insmod lsmod modindex modinfo modprobe rmmod
