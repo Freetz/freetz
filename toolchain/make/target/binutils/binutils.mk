@@ -3,7 +3,7 @@ BINUTILS_SOURCE:=binutils-$(BINUTILS_VERSION).tar.bz2
 ifeq ($(TARGET_TOOLCHAIN_BINUTILS_MAJOR_VERSION),2.18)
 BINUTILS_SITE:=@GNU/binutils
 else
-BINUTILS_SITE:=http://ftp.kernel.org/pub/linux/devel/binutils
+BINUTILS_SITE:=@KERNEL/linux/devel/binutils
 endif
 BINUTILS_DIR:=$(TARGET_TOOLCHAIN_DIR)/binutils-$(BINUTILS_VERSION)
 BINUTILS_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/binutils

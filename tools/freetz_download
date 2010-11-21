@@ -111,6 +111,11 @@ if [ -n "$MAIN_URL" ]; then
     sites[0]=http://ftpmirror.gnu.org/$MAIN_URL # automatically chooses a nearby and up-to-date mirror
     sites[1]=http://ftp.gnu.org/gnu/$MAIN_URL
     num_sites=2
+  elif [ ${MAIN_URL:0:7} == "@KERNEL" ]; then
+    MAIN_URL=${MAIN_URL/@KERNEL\//}
+    sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
+    sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
+    num_sites=2
   else
     sites[$num_sites]=$MAIN_URL
     (( num_sites++ ))
@@ -155,6 +160,6 @@ for i in ${sites[@]}; do
     fi
   fi
   exit 0
-  done
+done
 
 exit 1

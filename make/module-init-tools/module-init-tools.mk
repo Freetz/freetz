@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,3.12)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=8b2257ce9abef74c4a44d825d23140f3
-$(PKG)_SITE:=http://www.kernel.org/pub/linux/utils/kernel/module-init-tools
+$(PKG)_SITE:=@KERNEL/linux/utils/kernel/$(pkg)
 
 $(PKG)_BINARIES_ALL := depmod insmod lsmod modindex modinfo modprobe rmmod
 $(PKG)_BINARIES := $(strip $(foreach binary,$($(PKG)_BINARIES_ALL),$(if $(FREETZ_PACKAGE_$(PKG)_$(binary)),$(binary))))

@@ -1,7 +1,8 @@
 $(call PKG_INIT_BIN,3.1.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://www.kernel.org/pub/software/utils/pciutils
 $(PKG)_SOURCE_MD5:=35222edb86b50a6641352c66fe829b2e
+$(PKG)_SITE:=@KERNEL/software/utils/$(pkg)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/lspci
 $(PKG)_SETPCI_BINARY:=$($(PKG)_DIR)/setpci
 $(PKG)_IDS:=$($(PKG)_DIR)/pci.ids
