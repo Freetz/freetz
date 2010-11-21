@@ -1,4 +1,6 @@
-include $(sort $(wildcard $(TOOLCHAIN_DIR)/make/kernel/*/*.mk))
+include $(TOOLCHAIN_DIR)/make/kernel/binutils/binutils.mk
+include $(TOOLCHAIN_DIR)/make/kernel/gcc/gcc.mk
+include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
 
 KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel
 
