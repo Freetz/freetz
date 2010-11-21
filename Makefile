@@ -190,7 +190,7 @@ TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
 TOOLS_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLS))
 TOOLS_SOURCE:=$(patsubst %,%-source,$(TOOLS))
 
-include $(TOOLS_DIR)/make/*.mk
+include $(sort $(wildcard $(TOOLS_DIR)/make/*.mk))
 
 $(DL_DIR): $(DL_FW_DIR)
 $(MIRROR_DIR): $(DL_DIR)
@@ -213,7 +213,7 @@ step: world tools firmware
 -include .config.cmd
 
 include $(MAKE_DIR)/Makefile.in
-include $(MAKE_DIR)/*/Makefile.in
+include $(sort $(wildcard $(MAKE_DIR)/*/Makefile.in))
 include $(TOOLCHAIN_DIR)/make/Makefile.in
 
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
@@ -240,7 +240,7 @@ TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
 ALL_PACKAGES:=
 LOCALSOURCE_PACKAGES:=
-include $(MAKE_DIR)/*/*.mk
+include $(sort $(wildcard $(MAKE_DIR)/*/*.mk))
 NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
 PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
 PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(NON_LOCALSOURCE_PACKAGES))

@@ -1,5 +1,5 @@
--include $(TOOLCHAIN_DIR)/make/kernel/*/Makefile.in
--include $(TOOLCHAIN_DIR)/make/target/*/Makefile.in
+-include $(sort $(wildcard $(TOOLCHAIN_DIR)/make/kernel/*/Makefile.in))
+-include $(sort $(wildcard $(TOOLCHAIN_DIR)/make/target/*/Makefile.in))
 
 REAL_GNU_KERNEL_NAME:=mipsel-unknown-linux-gnu
 

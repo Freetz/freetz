@@ -1,4 +1,4 @@
-include $(TOOLCHAIN_DIR)/make/kernel/*/*.mk
+include $(sort $(wildcard $(TOOLCHAIN_DIR)/make/kernel/*/*.mk))
 
 KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel
 

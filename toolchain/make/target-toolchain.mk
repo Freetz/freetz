@@ -6,7 +6,7 @@ TARGET_TOOLCHAIN_PREFIX-gcc-final-phase=$(TARGET_TOOLCHAIN_STAGING_DIR)
 # TODO: modify gcc, so that we don't need this hack
 TARGET_TOOLCHAIN_SYSROOT=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase)/usr/
 
-include $(TOOLCHAIN_DIR)/make/target/*/*.mk
+include $(sort $(wildcard $(TOOLCHAIN_DIR)/make/target/*/*.mk))
 
 TARGET_TOOLCHAIN := binutils gcc uclibcxx
 
