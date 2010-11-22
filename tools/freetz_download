@@ -39,7 +39,7 @@ EOF
 
 do_download()
 {
-  # $1 = full download URL, $2 = target directory
+  # $1 = target directory, $2 = full download URL
   echo
   if [ "$DEBUG" == "1" ]; then echo "wget -nd -T 20 -t 3 --passive-ftp -P $1 $2"; fi
   wget -nd -t3 --timeout=20 --passive-ftp -P "$1" "$2"
@@ -58,6 +58,24 @@ do_check()
   wget --quiet -t3 --timeout=20 --passive-ftp --spider "$1"
   wget_result=$?
   return $wget_result
+}
+
+# $1 - url
+# $2 - subdir
+# $3 - version
+do_checkout_svn()
+{
+  local extra_flags
+  svn help export | grep -q trust-server-cert && extra_flags="--trust-server-cert"
+  svn export --non-interactive $extra_flags -r$3 "$1" "$2"
+}
+
+# $1 - url
+# $2 - subdir
+# $3 - version
+do_checkout_git()
+{
+  git clone "$1" "$2" && (cd "$2" && git checkout "$3" && rm -rf .git)
 }
 
 
@@ -116,6 +134,20 @@ if [ -n "$MAIN_URL" ]; then
     sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
     sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
     num_sites=2
+  elif [ ${MAIN_URL:0:4} == "svn@" -o ${MAIN_URL:0:6} == "svn://" ]; then
+    if [ ${MAIN_URL:0:4} == "svn@" ]; then
+      MAIN_URL=${MAIN_URL/svn@/}
+    fi
+    DL_METHOD=svn
+    num_sites=0
+    MD5=""
+  elif [ ${MAIN_URL:0:4} == "git@" -o ${MAIN_URL:0:6} == "git://" ]; then
+    if [ ${MAIN_URL:0:4} == "git@" ]; then
+      MAIN_URL=${MAIN_URL/git@/}
+    fi
+    DL_METHOD=git
+    num_sites=0
+    MD5=""
   else
     sites[$num_sites]=$MAIN_URL
     (( num_sites++ ))
@@ -161,5 +193,35 @@ for i in ${sites[@]}; do
   fi
   exit 0
 done
+
+if [ "$DL_METHOD" == "svn" -o "$DL_METHOD" == "git" ]; then
+  echo
+  case "$DL_FILE" in
+    *.tar.gz) COMPRESSION_FLAG=z ;;
+    *.tar.bz2) COMPRESSION_FLAG=j ;;
+    *) { echo "Failed to detect compression method from $DL_FILE"; exit 1; } ;;
+  esac
+
+  SUBDIR=$(echo "$DL_FILE" | sed -r -e 's,(.*)[.]tar[.](gz|bz2)$,\1,')
+  VERSION=$(echo "$SUBDIR" | sed -r -e 's,.*-([^-]+),\1,')
+  [ -n "$VERSION" ] || { echo "Failed to detect version from $DL_FILE"; exit 1; }
+
+  TMP_DIR=$(mktemp -d -t freetzXXX) || { echo "Error creating temporary dir."; exit 1; }
+  echo "Checking out files from the $DL_METHOD repository..." \
+  && ( \
+    cd "$TMP_DIR" \
+    && rm -rf "$SUBDIR" \
+    && [ ! -d "$SUBDIR" ] \
+    && do_checkout_"$DL_METHOD" "$MAIN_URL" "$SUBDIR" "$VERSION" \
+    && echo "Packing checkout..." \
+    && tar c${COMPRESSION_FLAG}f "$DL_FILE" "$SUBDIR" \
+  ) \
+  && mv "$TMP_DIR/$DL_FILE" "$DL_DIR/" \
+  && rm -rf "$TMP_DIR" \
+  && exit 0
+
+  rm -f "$DL_DIR/$DL_FILE"
+  rm -rf "$TMP_DIR"
+fi
 
 exit 1
