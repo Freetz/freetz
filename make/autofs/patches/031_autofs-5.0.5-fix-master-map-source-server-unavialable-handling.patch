@@ -21,7 +21,7 @@ the next re-read to update our mounts.
 diff --git a/CHANGELOG b/CHANGELOG
 index d95542d..fc4e738 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -29,6 +29,7 @@
  - add locality as valid ldap master map attribute.
  - add locality as valid ldap master map attribute fix.
@@ -33,7 +33,7 @@ index d95542d..fc4e738 100644
 diff --git a/daemon/automount.c b/daemon/automount.c
 index 7c44d4b..915928b 100644
 --- daemon/automount.c
-+++ b/daemon/automount.c
++++ daemon/automount.c
 @@ -1478,7 +1478,6 @@ static void handle_mounts_cleanup(void *arg)
  		master_free_mapent_sources(ap->entry, 1);
  		master_free_mapent(ap->entry);
@@ -56,7 +56,7 @@ index 7c44d4b..915928b 100644
 diff --git a/daemon/lookup.c b/daemon/lookup.c
 index a4b9a80..8537861 100644
 --- daemon/lookup.c
-+++ b/daemon/lookup.c
++++ daemon/lookup.c
 @@ -157,6 +157,9 @@ int lookup_nss_read_master(struct master *master, time_t age)
  			result = do_read_master(master, "file", age);
  		}
@@ -90,7 +90,7 @@ index a4b9a80..8537861 100644
 diff --git a/include/master.h b/include/master.h
 index c519e97..0d6aa82 100644
 --- include/master.h
-+++ b/include/master.h
++++ include/master.h
 @@ -56,6 +56,7 @@ struct master {
  	unsigned int recurse;
  	unsigned int depth;
@@ -102,7 +102,7 @@ index c519e97..0d6aa82 100644
 diff --git a/lib/master.c b/lib/master.c
 index 83019aa..196b6b9 100644
 --- lib/master.c
-+++ b/lib/master.c
++++ lib/master.c
 @@ -794,6 +794,7 @@ struct master *master_new(const char *name, unsigned int timeout, unsigned int g
  	master->recurse = 0;
  	master->depth = 0;
@@ -129,7 +129,7 @@ index 83019aa..196b6b9 100644
 diff --git a/modules/lookup_file.c b/modules/lookup_file.c
 index e43ab2f..6104d0c 100644
 --- modules/lookup_file.c
-+++ b/modules/lookup_file.c
++++ modules/lookup_file.c
 @@ -656,8 +656,6 @@ int lookup_read_map(struct autofs_point *ap, time_t age, void *context)
  			if (!status) {
  				warn(ap->logopt,

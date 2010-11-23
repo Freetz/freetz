@@ -1,0 +1,1907 @@
+--- linux-2.6.19.2/fs/autofs/inode.c.orig	2007-01-19 15:42:56.000000000 +0100
++++ linux-2.6.19.2/fs/autofs/inode.c	2010-11-24 00:08:05.690574003 +0100
+@@ -25,6 +25,15 @@
+ 	struct autofs_sb_info *sbi = autofs_sbi(sb);
+ 	unsigned int n;
+ 
++	/*
++	 * In the event of a failure in get_sb_nodev the superblock
++	 * info is not present so nothing else has been setup, so
++	 * just call kill_anon_super when we are called from
++	 * deactivate_super.
++	 */
++	if (!sbi)
++		goto out_kill_sb;
++
+ 	if ( !sbi->catatonic )
+ 		autofs_catatonic_mode(sbi); /* Free wait queues, close pipe */
+ 
+@@ -137,7 +146,8 @@
+ 
+ 	s->s_fs_info = sbi;
+ 	sbi->magic = AUTOFS_SBI_MAGIC;
+-	sbi->catatonic = 0;
++	sbi->pipe = NULL;
++	sbi->catatonic = 1;
+ 	sbi->exp_timeout = 0;
+ 	sbi->oz_pgrp = process_group(current);
+ 	autofs_initialize_hash(&sbi->dirhash);
+@@ -181,6 +191,7 @@
+ 	if ( !pipe->f_op || !pipe->f_op->write )
+ 		goto fail_fput;
+ 	sbi->pipe = pipe;
++	sbi->catatonic = 0;
+ 
+ 	/*
+ 	 * Success! Install the root dentry now to indicate completion.
+@@ -199,6 +210,7 @@
+ 	iput(root_inode);
+ fail_free:
+ 	kfree(sbi);
++	s->s_fs_info = NULL;
+ fail_unlock:
+ 	return -EINVAL;
+ }
+--- linux-2.6.19.2/fs/autofs/waitq.c.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/fs/autofs/waitq.c	2010-11-24 00:08:05.700574003 +0100
+@@ -41,6 +41,7 @@
+ 		wq = nwq;
+ 	}
+ 	fput(sbi->pipe);	/* Close the pipe */
++	sbi->pipe = NULL;
+ 	autofs_hash_dputall(&sbi->dirhash); /* Remove all dentry pointers */
+ }
+ 
+--- linux-2.6.19.2/fs/autofs4/autofs_i.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/fs/autofs4/autofs_i.h	2010-11-24 00:08:05.700574003 +0100
+@@ -21,6 +21,8 @@
+ #define AUTOFS_IOC_FIRST     AUTOFS_IOC_READY
+ #define AUTOFS_IOC_COUNT     32
+ 
++#define AUTOFS_TYPE_TRIGGER	(AUTOFS_TYPE_DIRECT|AUTOFS_TYPE_OFFSET)
++
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/time.h>
+@@ -52,6 +54,11 @@
+ 
+ 	int		flags;
+ 
++	struct completion expire_complete;
++
++	struct list_head active;
++	struct list_head expiring;
++
+ 	struct autofs_sb_info *sbi;
+ 	unsigned long last_used;
+ 	atomic_t count;
+@@ -66,15 +73,14 @@
+ };
+ 
+ #define AUTOFS_INF_EXPIRING	(1<<0) /* dentry is in the process of expiring */
++#define AUTOFS_INF_MOUNTPOINT	(1<<1) /* mountpoint status for direct expire */
+ 
+ struct autofs_wait_queue {
+ 	wait_queue_head_t queue;
+ 	struct autofs_wait_queue *next;
+ 	autofs_wqt_t wait_queue_token;
+ 	/* We use the following to see what we are waiting for */
+-	unsigned int hash;
+-	unsigned int len;
+-	char *name;
++	struct qstr name;
+ 	u32 dev;
+ 	u64 ino;
+ 	uid_t uid;
+@@ -83,15 +89,11 @@
+ 	pid_t tgid;
+ 	/* This is for status reporting upon return */
+ 	int status;
+-	atomic_t wait_ctr;
++	unsigned int wait_ctr;
+ };
+ 
+ #define AUTOFS_SBI_MAGIC 0x6d4a556d
+ 
+-#define AUTOFS_TYPE_INDIRECT     0x0001
+-#define AUTOFS_TYPE_DIRECT       0x0002
+-#define AUTOFS_TYPE_OFFSET       0x0004
+-
+ struct autofs_sb_info {
+ 	u32 magic;
+ 	int pipefd;
+@@ -110,6 +112,9 @@
+ 	struct mutex wq_mutex;
+ 	spinlock_t fs_lock;
+ 	struct autofs_wait_queue *queues; /* Wait queue pointer */
++	spinlock_t lookup_lock;
++	struct list_head active_list;
++	struct list_head expiring_list;
+ };
+ 
+ static inline struct autofs_sb_info *autofs4_sbi(struct super_block *sb)
+@@ -134,18 +139,14 @@
+ static inline int autofs4_ispending(struct dentry *dentry)
+ {
+ 	struct autofs_info *inf = autofs4_dentry_ino(dentry);
+-	int pending = 0;
+ 
+ 	if (dentry->d_flags & DCACHE_AUTOFS_PENDING)
+ 		return 1;
+ 
+-	if (inf) {
+-		spin_lock(&inf->sbi->fs_lock);
+-		pending = inf->flags & AUTOFS_INF_EXPIRING;
+-		spin_unlock(&inf->sbi->fs_lock);
+-	}
++	if (inf->flags & AUTOFS_INF_EXPIRING)
++		return 1;
+ 
+-	return pending;
++	return 0;
+ }
+ 
+ static inline void autofs4_copy_atime(struct file *src, struct file *dst)
+@@ -159,6 +160,7 @@
+ 
+ /* Expiration */
+ int is_autofs4_dentry(struct dentry *);
++int autofs4_expire_wait(struct dentry *dentry);
+ int autofs4_expire_run(struct super_block *, struct vfsmount *,
+ 			struct autofs_sb_info *,
+ 			struct autofs_packet_expire __user *);
+--- linux-2.6.19.2/fs/autofs4/expire.c.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/fs/autofs4/expire.c	2010-11-24 00:08:05.700574003 +0100
+@@ -56,12 +56,24 @@
+ 	mntget(mnt);
+ 	dget(dentry);
+ 
+-	if (!autofs4_follow_mount(&mnt, &dentry))
++	if (!follow_down(&mnt, &dentry))
+ 		goto done;
+ 
++	if (is_autofs4_dentry(dentry)) {
++		struct autofs_sb_info *sbi = autofs4_sbi(dentry->d_sb);
++
+ 	/* This is an autofs submount, we can't expire it */
+-	if (is_autofs4_dentry(dentry))
++		if (sbi->type == AUTOFS_TYPE_INDIRECT)
++			goto done;
++
++		/*
++		 * Otherwise it's an offset mount and we need to check
++		 * if we can umount its mount, if there is one.
++		 */
++		spin_lock(&dcache_lock);
++		if (!d_mountpoint(dentry))
+ 		goto done;
++	}
+ 
+ 	/* Update the expiry counter if fs is busy */
+ 	if (!may_umount_tree(mnt)) {
+@@ -73,8 +85,8 @@
+ 	status = 0;
+ done:
+ 	DPRINTK("returning = %d", status);
+-	mntput(mnt);
+ 	dput(dentry);
++	mntput(mnt);
+ 	return status;
+ }
+ 
+@@ -259,13 +271,15 @@
+ 	now = jiffies;
+ 	timeout = sbi->exp_timeout;
+ 
+-	/* Lock the tree as we must expire as a whole */
+ 	spin_lock(&sbi->fs_lock);
+ 	if (!autofs4_direct_busy(mnt, root, timeout, do_now)) {
+ 		struct autofs_info *ino = autofs4_dentry_ino(root);
+-
+-		/* Set this flag early to catch sys_chdir and the like */
++		if (d_mountpoint(root)) {
++			ino->flags |= AUTOFS_INF_MOUNTPOINT;
++			root->d_mounted--;
++		}
+ 		ino->flags |= AUTOFS_INF_EXPIRING;
++		init_completion(&ino->expire_complete);
+ 		spin_unlock(&sbi->fs_lock);
+ 		return root;
+ 	}
+@@ -292,6 +306,8 @@
+ 	struct list_head *next;
+ 	int do_now = how & AUTOFS_EXP_IMMEDIATE;
+ 	int exp_leaves = how & AUTOFS_EXP_LEAVES;
++	struct autofs_info *ino;
++	unsigned int ino_count;
+ 
+ 	if (!root)
+ 		return NULL;
+@@ -316,6 +332,9 @@
+ 		dentry = dget(dentry);
+ 		spin_unlock(&dcache_lock);
+ 
++		spin_lock(&sbi->fs_lock);
++		ino = autofs4_dentry_ino(dentry);
++
+ 		/*
+ 		 * Case 1: (i) indirect mount or top level pseudo direct mount
+ 		 *	   (autofs-4.1).
+@@ -326,6 +345,11 @@
+ 			DPRINTK("checking mountpoint %p %.*s",
+ 				dentry, (int)dentry->d_name.len, dentry->d_name.name);
+ 
++			/* Path walk currently on this dentry? */
++			ino_count = atomic_read(&ino->count) + 2;
++			if (atomic_read(&dentry->d_count) > ino_count)
++				goto next;
++
+ 			/* Can we umount this guy */
+ 			if (autofs4_mount_busy(mnt, dentry))
+ 				goto next;
+@@ -333,7 +357,7 @@
+ 			/* Can we expire this guy */
+ 			if (autofs4_can_expire(dentry, timeout, do_now)) {
+ 				expired = dentry;
+-				break;
++				goto found;
+ 			}
+ 			goto next;
+ 		}
+@@ -343,46 +367,80 @@
+ 
+ 		/* Case 2: tree mount, expire iff entire tree is not busy */
+ 		if (!exp_leaves) {
+-			/* Lock the tree as we must expire as a whole */
+-			spin_lock(&sbi->fs_lock);
+-			if (!autofs4_tree_busy(mnt, dentry, timeout, do_now)) {
+-				struct autofs_info *inf = autofs4_dentry_ino(dentry);
++			/* Path walk currently on this dentry? */
++			ino_count = atomic_read(&ino->count) + 1;
++			if (atomic_read(&dentry->d_count) > ino_count)
++				goto next;
+ 
+-				/* Set this flag early to catch sys_chdir and the like */
+-				inf->flags |= AUTOFS_INF_EXPIRING;
+-				spin_unlock(&sbi->fs_lock);
++			if (!autofs4_tree_busy(mnt, dentry, timeout, do_now)) {
+ 				expired = dentry;
+-				break;
++				goto found;
+ 			}
+-			spin_unlock(&sbi->fs_lock);
+ 		/*
+ 		 * Case 3: pseudo direct mount, expire individual leaves
+ 		 *	   (autofs-4.1).
+ 		 */
+ 		} else {
++			/* Path walk currently on this dentry? */
++			ino_count = atomic_read(&ino->count) + 1;
++			if (atomic_read(&dentry->d_count) > ino_count)
++				goto next;
++
+ 			expired = autofs4_check_leaves(mnt, dentry, timeout, do_now);
+ 			if (expired) {
+ 				dput(dentry);
+-				break;
++				goto found;
+ 			}
+ 		}
+ next:
++		spin_unlock(&sbi->fs_lock);
+ 		dput(dentry);
+ 		spin_lock(&dcache_lock);
+ 		next = next->next;
+ 	}
++	spin_unlock(&dcache_lock);
++	return NULL;
+ 
+-	if (expired) {
++found:
+ 		DPRINTK("returning %p %.*s",
+ 			expired, (int)expired->d_name.len, expired->d_name.name);
++	ino = autofs4_dentry_ino(expired);
++	ino->flags |= AUTOFS_INF_EXPIRING;
++	init_completion(&ino->expire_complete);
++	spin_unlock(&sbi->fs_lock);
+ 		spin_lock(&dcache_lock);
+ 		list_move(&expired->d_parent->d_subdirs, &expired->d_u.d_child);
+ 		spin_unlock(&dcache_lock);
+ 		return expired;
++}
++
++int autofs4_expire_wait(struct dentry *dentry)
++{
++	struct autofs_sb_info *sbi = autofs4_sbi(dentry->d_sb);
++	struct autofs_info *ino = autofs4_dentry_ino(dentry);
++	int status;
++
++	/* Block on any pending expire */
++	spin_lock(&sbi->fs_lock);
++	if (ino->flags & AUTOFS_INF_EXPIRING) {
++		spin_unlock(&sbi->fs_lock);
++
++		DPRINTK("waiting for expire %p name=%.*s",
++			 dentry, dentry->d_name.len, dentry->d_name.name);
++
++		status = autofs4_wait(sbi, dentry, NFY_NONE);
++		wait_for_completion(&ino->expire_complete);
++
++		DPRINTK("expire done status=%d", status);
++
++		if (d_unhashed(dentry))
++			return -EAGAIN;
++
++		return status;
+ 	}
+-	spin_unlock(&dcache_lock);
++	spin_unlock(&sbi->fs_lock);
+ 
+-	return NULL;
++	return 0;
+ }
+ 
+ /* Perform an expiry operation */
+@@ -392,7 +450,9 @@
+ 		      struct autofs_packet_expire __user *pkt_p)
+ {
+ 	struct autofs_packet_expire pkt;
++	struct autofs_info *ino;
+ 	struct dentry *dentry;
++	int ret = 0;
+ 
+ 	memset(&pkt,0,sizeof pkt);
+ 
+@@ -408,9 +468,15 @@
+ 	dput(dentry);
+ 
+ 	if ( copy_to_user(pkt_p, &pkt, sizeof(struct autofs_packet_expire)) )
+-		return -EFAULT;
++		ret = -EFAULT;
+ 
+-	return 0;
++	spin_lock(&sbi->fs_lock);
++	ino = autofs4_dentry_ino(dentry);
++	ino->flags &= ~AUTOFS_INF_EXPIRING;
++	complete_all(&ino->expire_complete);
++	spin_unlock(&sbi->fs_lock);
++
++	return ret;
+ }
+ 
+ /* Call repeatedly until it returns -EAGAIN, meaning there's nothing
+@@ -425,7 +491,7 @@
+ 	if (arg && get_user(do_now, arg))
+ 		return -EFAULT;
+ 
+-	if (sbi->type & AUTOFS_TYPE_DIRECT)
++	if (sbi->type & AUTOFS_TYPE_TRIGGER)
+ 		dentry = autofs4_expire_direct(sb, mnt, sbi, do_now);
+ 	else
+ 		dentry = autofs4_expire_indirect(sb, mnt, sbi, do_now);
+@@ -435,9 +501,16 @@
+ 
+ 		/* This is synchronous because it makes the daemon a
+                    little easier */
+-		ino->flags |= AUTOFS_INF_EXPIRING;
+ 		ret = autofs4_wait(sbi, dentry, NFY_EXPIRE);
++
++		spin_lock(&sbi->fs_lock);
++		if (ino->flags & AUTOFS_INF_MOUNTPOINT) {
++			sb->s_root->d_mounted++;
++			ino->flags &= ~AUTOFS_INF_MOUNTPOINT;
++		}
+ 		ino->flags &= ~AUTOFS_INF_EXPIRING;
++		complete_all(&ino->expire_complete);
++		spin_unlock(&sbi->fs_lock);
+ 		dput(dentry);
+ 	}
+ 
+--- linux-2.6.19.2/fs/autofs4/inode.c.orig	2007-01-19 15:42:56.000000000 +0100
++++ linux-2.6.19.2/fs/autofs4/inode.c	2010-11-24 00:08:05.700574003 +0100
+@@ -25,8 +25,10 @@
+ 
+ static void ino_lnkfree(struct autofs_info *ino)
+ {
++	if (ino->u.symlink) {
+ 	kfree(ino->u.symlink);
+ 	ino->u.symlink = NULL;
++	}
+ }
+ 
+ struct autofs_info *autofs4_init_ino(struct autofs_info *ino,
+@@ -42,14 +44,18 @@
+ 	if (ino == NULL)
+ 		return NULL;
+ 
++	if (!reinit) {
+ 	ino->flags = 0;
+-	ino->mode = mode;
+ 	ino->inode = NULL;
+ 	ino->dentry = NULL;
+ 	ino->size = 0;
++		INIT_LIST_HEAD(&ino->active);
++		INIT_LIST_HEAD(&ino->expiring);
++		atomic_set(&ino->count, 0);
++	}
+ 
++	ino->mode = mode;
+ 	ino->last_used = jiffies;
+-	atomic_set(&ino->count, 0);
+ 
+ 	ino->sbi = sbi;
+ 
+@@ -99,6 +105,9 @@
+ 	struct dentry *this_parent = sbi->sb->s_root;
+ 	struct list_head *next;
+ 
++	if (!sbi->sb->s_root)
++		return;
++
+ 	spin_lock(&dcache_lock);
+ repeat:
+ 	next = this_parent->d_subdirs.next;
+@@ -146,14 +155,22 @@
+ {
+ 	struct autofs_sb_info *sbi = autofs4_sbi(sb);
+ 
+-	sb->s_fs_info = NULL;
++	/*
++	 * In the event of a failure in get_sb_nodev the superblock
++	 * info is not present so nothing else has been setup, so
++	 * just call kill_anon_super when we are called from
++	 * deactivate_super.
++	 */
++	if (!sbi)
++		goto out_kill_sb;
+ 
+-	if ( !sbi->catatonic )
+-		autofs4_catatonic_mode(sbi); /* Free wait queues, close pipe */
++	/* Free wait queues, close pipe */
++	autofs4_catatonic_mode(sbi);
+ 
+ 	/* Clean up and release dangling references */
+ 	autofs4_force_release(sbi);
+ 
++	sb->s_fs_info = NULL;
+ 	kfree(sbi);
+ 
+ out_kill_sb:
+@@ -268,7 +285,7 @@
+ 			*type = AUTOFS_TYPE_DIRECT;
+ 			break;
+ 		case Opt_offset:
+-			*type = AUTOFS_TYPE_DIRECT | AUTOFS_TYPE_OFFSET;
++			*type = AUTOFS_TYPE_OFFSET;
+ 			break;
+ 		default:
+ 			return 1;
+@@ -311,18 +328,22 @@
+ 	s->s_fs_info = sbi;
+ 	sbi->magic = AUTOFS_SBI_MAGIC;
+ 	sbi->pipefd = -1;
+-	sbi->catatonic = 0;
++	sbi->pipe = NULL;
++	sbi->catatonic = 1;
+ 	sbi->exp_timeout = 0;
+ 	sbi->oz_pgrp = process_group(current);
+ 	sbi->sb = s;
+ 	sbi->version = 0;
+ 	sbi->sub_version = 0;
+-	sbi->type = 0;
++	sbi->type = AUTOFS_TYPE_INDIRECT;
+ 	sbi->min_proto = 0;
+ 	sbi->max_proto = 0;
+ 	mutex_init(&sbi->wq_mutex);
+ 	spin_lock_init(&sbi->fs_lock);
+ 	sbi->queues = NULL;
++	spin_lock_init(&sbi->lookup_lock);
++	INIT_LIST_HEAD(&sbi->active_list);
++	INIT_LIST_HEAD(&sbi->expiring_list);
+ 	s->s_blocksize = 1024;
+ 	s->s_blocksize_bits = 10;
+ 	s->s_magic = AUTOFS_SUPER_MAGIC;
+@@ -357,7 +378,7 @@
+ 	}
+ 
+ 	root_inode->i_fop = &autofs4_root_operations;
+-	root_inode->i_op = sbi->type & AUTOFS_TYPE_DIRECT ?
++	root_inode->i_op = sbi->type & AUTOFS_TYPE_TRIGGER ?
+ 			&autofs4_direct_root_inode_operations :
+ 			&autofs4_indirect_root_inode_operations;
+ 
+@@ -389,6 +410,7 @@
+ 		goto fail_fput;
+ 	sbi->pipe = pipe;
+ 	sbi->pipefd = pipefd;
++	sbi->catatonic = 0;
+ 
+ 	/*
+ 	 * Success! Install the root dentry now to indicate completion.
+@@ -413,6 +435,7 @@
+ 	kfree(ino);
+ fail_free:
+ 	kfree(sbi);
++	s->s_fs_info = NULL;
+ fail_unlock:
+ 	return -EINVAL;
+ }
+--- linux-2.6.19.2/fs/autofs4/root.c.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/fs/autofs4/root.c	2010-11-24 00:08:05.700574003 +0100
+@@ -26,25 +26,25 @@
+ static int autofs4_dir_mkdir(struct inode *,struct dentry *,int);
+ static int autofs4_root_ioctl(struct inode *, struct file *,unsigned int,unsigned long);
+ static int autofs4_dir_open(struct inode *inode, struct file *file);
+-static int autofs4_dir_close(struct inode *inode, struct file *file);
+-static int autofs4_dir_readdir(struct file * filp, void * dirent, filldir_t filldir);
+-static int autofs4_root_readdir(struct file * filp, void * dirent, filldir_t filldir);
+ static struct dentry *autofs4_lookup(struct inode *,struct dentry *, struct nameidata *);
+ static void *autofs4_follow_link(struct dentry *, struct nameidata *);
+ 
++#define TRIGGER_FLAGS   (LOOKUP_CONTINUE | LOOKUP_DIRECTORY)
++#define TRIGGER_INTENTS (LOOKUP_OPEN | LOOKUP_CREATE)
++
+ const struct file_operations autofs4_root_operations = {
+ 	.open		= dcache_dir_open,
+ 	.release	= dcache_dir_close,
+ 	.read		= generic_read_dir,
+-	.readdir	= autofs4_root_readdir,
++	.readdir	= dcache_readdir,
+ 	.ioctl		= autofs4_root_ioctl,
+ };
+ 
+ const struct file_operations autofs4_dir_operations = {
+ 	.open		= autofs4_dir_open,
+-	.release	= autofs4_dir_close,
++	.release	= dcache_dir_close,
+ 	.read		= generic_read_dir,
+-	.readdir	= autofs4_dir_readdir,
++	.readdir	= dcache_readdir,
+ };
+ 
+ struct inode_operations autofs4_indirect_root_inode_operations = {
+@@ -71,42 +71,10 @@
+ 	.rmdir		= autofs4_dir_rmdir,
+ };
+ 
+-static int autofs4_root_readdir(struct file *file, void *dirent,
+-				filldir_t filldir)
+-{
+-	struct autofs_sb_info *sbi = autofs4_sbi(file->f_dentry->d_sb);
+-	int oz_mode = autofs4_oz_mode(sbi);
+-
+-	DPRINTK("called, filp->f_pos = %lld", file->f_pos);
+-
+-	/*
+-	 * Don't set reghost flag if:
+-	 * 1) f_pos is larger than zero -- we've already been here.
+-	 * 2) we haven't even enabled reghosting in the 1st place.
+-	 * 3) this is the daemon doing a readdir
+-	 */
+-	if (oz_mode && file->f_pos == 0 && sbi->reghost_enabled)
+-		sbi->needs_reghost = 1;
+-
+-	DPRINTK("needs_reghost = %d", sbi->needs_reghost);
+-
+-	return dcache_readdir(file, dirent, filldir);
+-}
+-
+ static int autofs4_dir_open(struct inode *inode, struct file *file)
+ {
+ 	struct dentry *dentry = file->f_dentry;
+-	struct vfsmount *mnt = file->f_vfsmnt;
+ 	struct autofs_sb_info *sbi = autofs4_sbi(dentry->d_sb);
+-	struct dentry *cursor;
+-	int status;
+-
+-	status = dcache_dir_open(inode, file);
+-	if (status)
+-		goto out;
+-
+-	cursor = file->private_data;
+-	cursor->d_fsdata = NULL;
+ 
+ 	DPRINTK("file=%p dentry=%p %.*s",
+ 		file, dentry, dentry->d_name.len, dentry->d_name.name);
+@@ -114,157 +82,30 @@
+ 	if (autofs4_oz_mode(sbi))
+ 		goto out;
+ 
+-	if (autofs4_ispending(dentry)) {
+-		DPRINTK("dentry busy");
+-		dcache_dir_close(inode, file);
+-		status = -EBUSY;
+-		goto out;
+-	}
+-
+-	status = -ENOENT;
+-	if (!d_mountpoint(dentry) && dentry->d_op && dentry->d_op->d_revalidate) {
+-		struct nameidata nd;
+-		int empty, ret;
+-
+-		/* In case there are stale directory dentrys from a failed mount */
+-		spin_lock(&dcache_lock);
+-		empty = list_empty(&dentry->d_subdirs);
++	/*
++	 * An empty directory in an autofs file system is always a
++	 * mount point. The daemon must have failed to mount this
++	 * during lookup so it doesn't exist. This can happen, for
++	 * example, if user space returns an incorrect status for a
++	 * mount request. Otherwise we're doing a readdir on the
++	 * autofs file system so just let the libfs routines handle
++	 * it.
++	 */
++	if (!d_mountpoint(dentry) && __simple_empty(dentry)) {
+ 		spin_unlock(&dcache_lock);
+-
+-		if (!empty)
+-			d_invalidate(dentry);
+-
+-		nd.flags = LOOKUP_DIRECTORY;
+-		ret = (dentry->d_op->d_revalidate)(dentry, &nd);
+-
+-		if (ret <= 0) {
+-			if (ret < 0)
+-				status = ret;
+-			dcache_dir_close(inode, file);
+-			goto out;
+-		}
+-	}
+-
+-	if (d_mountpoint(dentry)) {
+-		struct file *fp = NULL;
+-		struct vfsmount *fp_mnt = mntget(mnt);
+-		struct dentry *fp_dentry = dget(dentry);
+-
+-		if (!autofs4_follow_mount(&fp_mnt, &fp_dentry)) {
+-			dput(fp_dentry);
+-			mntput(fp_mnt);
+-			dcache_dir_close(inode, file);
+-			goto out;
+-		}
+-
+-		fp = dentry_open(fp_dentry, fp_mnt, file->f_flags);
+-		status = PTR_ERR(fp);
+-		if (IS_ERR(fp)) {
+-			dcache_dir_close(inode, file);
+-			goto out;
+-		}
+-		cursor->d_fsdata = fp;
+-	}
+-	return 0;
+-out:
+-	return status;
+-}
+-
+-static int autofs4_dir_close(struct inode *inode, struct file *file)
+-{
+-	struct dentry *dentry = file->f_dentry;
+-	struct autofs_sb_info *sbi = autofs4_sbi(dentry->d_sb);
+-	struct dentry *cursor = file->private_data;
+-	int status = 0;
+-
+-	DPRINTK("file=%p dentry=%p %.*s",
+-		file, dentry, dentry->d_name.len, dentry->d_name.name);
+-
+-	if (autofs4_oz_mode(sbi))
+-		goto out;
+-
+-	if (autofs4_ispending(dentry)) {
+-		DPRINTK("dentry busy");
+-		status = -EBUSY;
+-		goto out;
+-	}
+-
+-	if (d_mountpoint(dentry)) {
+-		struct file *fp = cursor->d_fsdata;
+-		if (!fp) {
+-			status = -ENOENT;
+-			goto out;
+-		}
+-		filp_close(fp, current->files);
+-	}
+-out:
+-	dcache_dir_close(inode, file);
+-	return status;
+-}
+-
+-static int autofs4_dir_readdir(struct file *file, void *dirent, filldir_t filldir)
+-{
+-	struct dentry *dentry = file->f_dentry;
+-	struct autofs_sb_info *sbi = autofs4_sbi(dentry->d_sb);
+-	struct dentry *cursor = file->private_data;
+-	int status;
+-
+-	DPRINTK("file=%p dentry=%p %.*s",
+-		file, dentry, dentry->d_name.len, dentry->d_name.name);
+-
+-	if (autofs4_oz_mode(sbi))
+-		goto out;
+-
+-	if (autofs4_ispending(dentry)) {
+-		DPRINTK("dentry busy");
+-		return -EBUSY;
+-	}
+-
+-	if (d_mountpoint(dentry)) {
+-		struct file *fp = cursor->d_fsdata;
+-
+-		if (!fp)
+ 			return -ENOENT;
+-
+-		if (!fp->f_op || !fp->f_op->readdir)
+-			goto out;
+-
+-		status = vfs_readdir(fp, filldir, dirent);
+-		file->f_pos = fp->f_pos;
+-		if (status)
+-			autofs4_copy_atime(file, fp);
+-		return status;
+ 	}
++	spin_unlock(&dcache_lock);
++
+ out:
+-	return dcache_readdir(file, dirent, filldir);
++	return dcache_dir_open(inode, file);
+ }
+ 
+ static int try_to_fill_dentry(struct dentry *dentry, int flags)
+ {
+ 	struct autofs_sb_info *sbi = autofs4_sbi(dentry->d_sb);
+ 	struct autofs_info *ino = autofs4_dentry_ino(dentry);
+-	int status = 0;
+-
+-	/* Block on any pending expiry here; invalidate the dentry
+-           when expiration is done to trigger mount request with a new
+-           dentry */
+-	if (ino && (ino->flags & AUTOFS_INF_EXPIRING)) {
+-		DPRINTK("waiting for expire %p name=%.*s",
+-			 dentry, dentry->d_name.len, dentry->d_name.name);
+-
+-		status = autofs4_wait(sbi, dentry, NFY_NONE);
+-
+-		DPRINTK("expire done status=%d", status);
+-
+-		/*
+-		 * If the directory still exists the mount request must
+-		 * continue otherwise it can't be followed at the right
+-		 * time during the walk.
+-		 */
+-		status = d_invalidate(dentry);
+-		if (status != -EBUSY)
+-			return -ENOENT;
+-	}
++	int status;
+ 
+ 	DPRINTK("dentry=%p %.*s ino=%p",
+ 		 dentry, dentry->d_name.len, dentry->d_name.name, dentry->d_inode);
+@@ -292,7 +133,8 @@
+ 			return status;
+ 		}
+ 	/* Trigger mount for path component or follow link */
+-	} else if (flags & (LOOKUP_CONTINUE | LOOKUP_DIRECTORY) ||
++	} else if (dentry->d_flags & DCACHE_AUTOFS_PENDING ||
++			flags & (TRIGGER_FLAGS | TRIGGER_INTENTS) ||
+ 			current->link_count) {
+ 		DPRINTK("waiting for mount name=%.*s",
+ 			dentry->d_name.len, dentry->d_name.name);
+@@ -319,7 +161,8 @@
+ 	spin_lock(&dentry->d_lock);
+ 	dentry->d_flags &= ~DCACHE_AUTOFS_PENDING;
+ 	spin_unlock(&dentry->d_lock);
+-	return status;
++
++	return 0;
+ }
+ 
+ /* For autofs direct mounts the follow link triggers the mount */
+@@ -334,39 +177,55 @@
+ 	DPRINTK("dentry=%p %.*s oz_mode=%d nd->flags=%d",
+ 		dentry, dentry->d_name.len, dentry->d_name.name, oz_mode,
+ 		nd->flags);
+-
+-	/* If it's our master or we shouldn't trigger a mount we're done */
+-	lookup_type = nd->flags & (LOOKUP_CONTINUE | LOOKUP_DIRECTORY);
+-	if (oz_mode || !lookup_type)
++	/*
++	 * For an expire of a covered direct or offset mount we need
++	 * to beeak out of follow_down() at the autofs mount trigger
++	 * (d_mounted--), so we can see the expiring flag, and manage
++	 * the blocking and following here until the expire is completed.
++	 */
++	if (oz_mode) {
++		spin_lock(&sbi->fs_lock);
++		if (ino->flags & AUTOFS_INF_EXPIRING) {
++			spin_unlock(&sbi->fs_lock);
++			/* Follow down to our covering mount. */
++			if (!follow_down(&nd->mnt, &nd->dentry))
++				goto done;
++			goto follow;
++		}
++		spin_unlock(&sbi->fs_lock);
+ 		goto done;
++	}
+ 
+-	/* If an expire request is pending wait for it. */
+-	if (ino && (ino->flags & AUTOFS_INF_EXPIRING)) {
+-		DPRINTK("waiting for active request %p name=%.*s",
+-			dentry, dentry->d_name.len, dentry->d_name.name);
+-
+-		status = autofs4_wait(sbi, dentry, NFY_NONE);
++	/* If an expire request is pending everyone must wait. */
++	autofs4_expire_wait(dentry);
+ 
+-		DPRINTK("request done status=%d", status);
+-	}
++	/* We trigger a mount for almost all flags */
++	lookup_type = nd->flags & (TRIGGER_FLAGS | TRIGGER_INTENTS);
++	if (!(lookup_type || dentry->d_flags & DCACHE_AUTOFS_PENDING))
++		goto follow;
+ 
+ 	/*
+-	 * If the dentry contains directories then it is an
+-	 * autofs multi-mount with no root mount offset. So
+-	 * don't try to mount it again.
++	 * If the dentry contains directories then it is an autofs
++	 * multi-mount with no root mount offset. So don't try to
++	 * mount it again.
+ 	 */
+ 	spin_lock(&dcache_lock);
+-	if (!d_mountpoint(dentry) && __simple_empty(dentry)) {
++	if (dentry->d_flags & DCACHE_AUTOFS_PENDING ||
++	    (!d_mountpoint(dentry) && __simple_empty(dentry))) {
+ 		spin_unlock(&dcache_lock);
+ 
+ 		status = try_to_fill_dentry(dentry, 0);
+ 		if (status)
+ 			goto out_error;
+ 
++		goto follow;
++	}
++	spin_unlock(&dcache_lock);
++follow:
+ 		/*
+-		 * The mount succeeded but if there is no root mount
+-		 * it must be an autofs multi-mount with no root offset
+-		 * so we don't need to follow the mount.
++	 * If there is no root mount it must be an autofs
++	 * multi-mount with no root offset so we don't need
++	 * to follow it.
+ 		 */
+ 		if (d_mountpoint(dentry)) {
+ 			if (!autofs4_follow_mount(&nd->mnt, &nd->dentry)) {
+@@ -375,10 +234,6 @@
+ 			}
+ 		}
+ 
+-		goto done;
+-	}
+-	spin_unlock(&dcache_lock);
+-
+ done:
+ 	return NULL;
+ 
+@@ -402,12 +257,23 @@
+ 	int status = 1;
+ 
+ 	/* Pending dentry */
++	spin_lock(&sbi->fs_lock);
+ 	if (autofs4_ispending(dentry)) {
+ 		/* The daemon never causes a mount to trigger */
++		spin_unlock(&sbi->fs_lock);
++
+ 		if (oz_mode)
+ 			return 1;
+ 
+ 		/*
++		 * If the directory has gone away due to an expire
++		 * we have been called as ->d_revalidate() and so
++		 * we need to return false and proceed to ->lookup().
++		 */
++		if (autofs4_expire_wait(dentry) == -EAGAIN)
++			return 0;
++
++		/*
+ 		 * A zero status is success otherwise we have a
+ 		 * negative error code.
+ 		 */
+@@ -417,6 +283,7 @@
+ 
+ 		return status;
+ 	}
++	spin_unlock(&sbi->fs_lock);
+ 
+ 	/* Negative dentry.. invalidate if "old" */
+ 	if (dentry->d_inode == NULL)
+@@ -430,6 +297,7 @@
+ 		DPRINTK("dentry=%p %.*s, emptydir",
+ 			 dentry, dentry->d_name.len, dentry->d_name.name);
+ 		spin_unlock(&dcache_lock);
++
+ 		/* The daemon never causes a mount to trigger */
+ 		if (oz_mode)
+ 			return 1;
+@@ -459,6 +327,17 @@
+ 	de->d_fsdata = NULL;
+ 
+ 	if (inf) {
++		struct autofs_sb_info *sbi = autofs4_sbi(de->d_sb);
++
++		if (sbi) {
++			spin_lock(&sbi->lookup_lock);
++			if (!list_empty(&inf->active))
++				list_del(&inf->active);
++			if (!list_empty(&inf->expiring))
++				list_del(&inf->expiring);
++			spin_unlock(&sbi->lookup_lock);
++		}
++
+ 		inf->dentry = NULL;
+ 		inf->inode = NULL;
+ 
+@@ -478,10 +357,116 @@
+ 	.d_release	= autofs4_dentry_release,
+ };
+ 
++static struct dentry *autofs4_lookup_active(struct autofs_sb_info *sbi, struct dentry *parent, struct qstr *name)
++{
++	unsigned int len = name->len;
++	unsigned int hash = name->hash;
++	const unsigned char *str = name->name;
++	struct list_head *p, *head;
++
++	spin_lock(&dcache_lock);
++	spin_lock(&sbi->lookup_lock);
++	head = &sbi->active_list;
++	list_for_each(p, head) {
++		struct autofs_info *ino;
++		struct dentry *dentry;
++		struct qstr *qstr;
++
++		ino = list_entry(p, struct autofs_info, active);
++		dentry = ino->dentry;
++
++		spin_lock(&dentry->d_lock);
++
++		/* Already gone? */
++		if (atomic_read(&dentry->d_count) == 0)
++			goto next;
++
++		qstr = &dentry->d_name;
++
++		if (dentry->d_name.hash != hash)
++			goto next;
++		if (dentry->d_parent != parent)
++			goto next;
++
++		if (qstr->len != len)
++			goto next;
++		if (memcmp(qstr->name, str, len))
++			goto next;
++
++		if (d_unhashed(dentry)) {
++			dget(dentry);
++			spin_unlock(&dentry->d_lock);
++			spin_unlock(&sbi->lookup_lock);
++			spin_unlock(&dcache_lock);
++			return dentry;
++		}
++next:
++		spin_unlock(&dentry->d_lock);
++	}
++	spin_unlock(&sbi->lookup_lock);
++	spin_unlock(&dcache_lock);
++
++	return NULL;
++}
++
++static struct dentry *autofs4_lookup_expiring(struct autofs_sb_info *sbi, struct dentry *parent, struct qstr *name)
++{
++	unsigned int len = name->len;
++	unsigned int hash = name->hash;
++	const unsigned char *str = name->name;
++	struct list_head *p, *head;
++
++	spin_lock(&dcache_lock);
++	spin_lock(&sbi->lookup_lock);
++	head = &sbi->expiring_list;
++	list_for_each(p, head) {
++		struct autofs_info *ino;
++		struct dentry *dentry;
++		struct qstr *qstr;
++
++		ino = list_entry(p, struct autofs_info, expiring);
++		dentry = ino->dentry;
++
++		spin_lock(&dentry->d_lock);
++
++		/* Bad luck, we've already been dentry_iput */
++		if (!dentry->d_inode)
++			goto next;
++
++		qstr = &dentry->d_name;
++
++		if (dentry->d_name.hash != hash)
++			goto next;
++		if (dentry->d_parent != parent)
++			goto next;
++
++		if (qstr->len != len)
++			goto next;
++		if (memcmp(qstr->name, str, len))
++			goto next;
++
++		if (d_unhashed(dentry)) {
++			dget(dentry);
++			spin_unlock(&dentry->d_lock);
++			spin_unlock(&sbi->lookup_lock);
++			spin_unlock(&dcache_lock);
++			return dentry;
++		}
++next:
++		spin_unlock(&dentry->d_lock);
++	}
++	spin_unlock(&sbi->lookup_lock);
++	spin_unlock(&dcache_lock);
++
++	return NULL;
++}
++
+ /* Lookups in the root directory */
+ static struct dentry *autofs4_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
+ {
+ 	struct autofs_sb_info *sbi;
++	struct autofs_info *ino;
++	struct dentry *expiring, *unhashed;
+ 	int oz_mode;
+ 
+ 	DPRINTK("name = %.*s",
+@@ -497,31 +482,68 @@
+ 	DPRINTK("pid = %u, pgrp = %u, catatonic = %d, oz_mode = %d",
+ 		 current->pid, process_group(current), sbi->catatonic, oz_mode);
+ 
++	expiring = autofs4_lookup_expiring(sbi, dentry->d_parent, &dentry->d_name);
++	if (expiring) {
+ 	/*
+-	 * Mark the dentry incomplete, but add it. This is needed so
+-	 * that the VFS layer knows about the dentry, and we can count
+-	 * on catching any lookups through the revalidate.
+-	 *
+-	 * Let all the hard work be done by the revalidate function that
+-	 * needs to be able to do this anyway..
+-	 *
+-	 * We need to do this before we release the directory semaphore.
++		 * If we are racing with expire the request might not
++		 * be quite complete but the directory has been removed
++		 * so it must have been successful, so just wait for it.
++		 */
++		ino = autofs4_dentry_ino(expiring);
++		autofs4_expire_wait(expiring);
++		spin_lock(&sbi->lookup_lock);
++		if (!list_empty(&ino->expiring))
++			list_del_init(&ino->expiring);
++		spin_unlock(&sbi->lookup_lock);
++		dput(expiring);
++	}
++
++	unhashed = autofs4_lookup_active(sbi, dentry->d_parent, &dentry->d_name);
++	if (unhashed)
++		dentry = unhashed;
++	else {
++		/*
++		 * Mark the dentry incomplete but don't hash it. We do this
++		 * to serialize our inode creation operations (symlink and
++		 * mkdir) which prevents deadlock during the callback to
++		 * the daemon. Subsequent user space lookups for the same
++		 * dentry are placed on the wait queue while the daemon
++		 * itself is allowed passage unresticted so the create
++		 * operation itself can then hash the dentry. Finally,
++		 * we check for the hashed dentry and return the newly
++		 * hashed dentry.
+ 	 */
+ 	dentry->d_op = &autofs4_root_dentry_operations;
+ 
++		/*
++		 * And we need to ensure that the same dentry is used for
++		 * all following lookup calls until it is hashed so that
++		 * the dentry flags are persistent throughout the request.
++		 */
++		ino = autofs4_init_ino(NULL, sbi, 0555);
++		if (!ino)
++			return ERR_PTR(-ENOMEM);
++
++		dentry->d_fsdata = ino;
++		ino->dentry = dentry;
++
++		spin_lock(&sbi->lookup_lock);
++		list_add(&ino->active, &sbi->active_list);
++		spin_unlock(&sbi->lookup_lock);
++
++		d_instantiate(dentry, NULL);
++	}
++
+ 	if (!oz_mode) {
+ 		spin_lock(&dentry->d_lock);
+ 		dentry->d_flags |= DCACHE_AUTOFS_PENDING;
+ 		spin_unlock(&dentry->d_lock);
+-	}
+-	dentry->d_fsdata = NULL;
+-	d_add(dentry, NULL);
+-
+ 	if (dentry->d_op && dentry->d_op->d_revalidate) {
+ 		mutex_unlock(&dir->i_mutex);
+ 		(dentry->d_op->d_revalidate)(dentry, nd);
+ 		mutex_lock(&dir->i_mutex);
+ 	}
++	}
+ 
+ 	/*
+ 	 * If we are still pending, check if we had to handle
+@@ -534,22 +556,47 @@
+ 			if (sigismember (sigset, SIGKILL) ||
+ 			    sigismember (sigset, SIGQUIT) ||
+ 			    sigismember (sigset, SIGINT)) {
++			    if (unhashed)
++				dput(unhashed);
+ 			    return ERR_PTR(-ERESTARTNOINTR);
+ 			}
+ 		}
++		if (!oz_mode) {
+ 		spin_lock(&dentry->d_lock);
+ 		dentry->d_flags &= ~DCACHE_AUTOFS_PENDING;
+ 		spin_unlock(&dentry->d_lock);
+ 	}
++	}
+ 
+ 	/*
+ 	 * If this dentry is unhashed, then we shouldn't honour this
+-	 * lookup even if the dentry is positive.  Returning ENOENT here
+-	 * doesn't do the right thing for all system calls, but it should
+-	 * be OK for the operations we permit from an autofs.
++	 * lookup.  Returning ENOENT here doesn't do the right thing
++	 * for all system calls, but it should be OK for the operations
++	 * we permit from an autofs.
+ 	 */
+-	if (dentry->d_inode && d_unhashed(dentry))
+-		return ERR_PTR(-ENOENT);
++	if (!oz_mode && d_unhashed(dentry)) {
++		/*
++		 * A user space application can (and has done in the past)
++		 * remove and re-create this directory during the callback.
++		 * This can leave us with an unhashed dentry, but a
++		 * successful mount!  So we need to perform another
++		 * cached lookup in case the dentry now exists.
++		 */
++		struct dentry *parent = dentry->d_parent;
++		struct dentry *new = d_lookup(parent, &dentry->d_name);
++		if (new != NULL)
++			dentry = new;
++		else
++			dentry = ERR_PTR(-ENOENT);
++
++		if (unhashed)
++			dput(unhashed);
++
++		return dentry;
++	}
++
++	if (unhashed)
++		return unhashed;
+ 
+ 	return NULL;
+ }
+@@ -571,21 +618,32 @@
+ 		return -EACCES;
+ 
+ 	ino = autofs4_init_ino(ino, sbi, S_IFLNK | 0555);
+-	if (ino == NULL)
+-		return -ENOSPC;
++	if (!ino)
++		return -ENOMEM;
+ 
+-	ino->size = strlen(symname);
+-	ino->u.symlink = cp = kmalloc(ino->size + 1, GFP_KERNEL);
++	spin_lock(&sbi->lookup_lock);
++	if (!list_empty(&ino->active))
++		list_del_init(&ino->active);
++	spin_unlock(&sbi->lookup_lock);
+ 
+-	if (cp == NULL) {
++	ino->size = strlen(symname);
++	cp = kmalloc(ino->size + 1, GFP_KERNEL);
++	if (!cp) {
++		if (!dentry->d_fsdata)
+ 		kfree(ino);
+-		return -ENOSPC;
++		return -ENOMEM;
+ 	}
+ 
+ 	strcpy(cp, symname);
+ 
+ 	inode = autofs4_get_inode(dir->i_sb, ino);
+-	d_instantiate(dentry, inode);
++	if (!inode) {
++		kfree(cp);
++		if (!dentry->d_fsdata)
++			kfree(ino);
++		return -ENOMEM;
++	}
++	d_add(dentry, inode);
+ 
+ 	if (dir == dir->i_sb->s_root->d_inode)
+ 		dentry->d_op = &autofs4_root_dentry_operations;
+@@ -600,6 +658,7 @@
+ 		atomic_inc(&p_ino->count);
+ 	ino->inode = inode;
+ 
++	ino->u.symlink = cp;
+ 	dir->i_mtime = CURRENT_TIME;
+ 
+ 	return 0;
+@@ -611,9 +670,9 @@
+  * Normal filesystems would do a "d_delete()" to tell the VFS dcache
+  * that the file no longer exists. However, doing that means that the
+  * VFS layer can turn the dentry into a negative dentry.  We don't want
+- * this, because since the unlink is probably the result of an expire.
+- * We simply d_drop it, which allows the dentry lookup to remount it
+- * if necessary.
++ * this, because the unlink is probably the result of an expire.
++ * We simply d_drop it and add it to a expiring list in the super block,
++ * which allows the dentry lookup to check for an incomplete expire.
+  *
+  * If a process is blocked on the dentry waiting for the expire to finish,
+  * it will invalidate the dentry and try to mount with a new one.
+@@ -642,7 +701,15 @@
+ 
+ 	dir->i_mtime = CURRENT_TIME;
+ 
+-	d_drop(dentry);
++	spin_lock(&dcache_lock);
++	spin_lock(&sbi->lookup_lock);
++	if (list_empty(&ino->expiring))
++		list_add(&ino->expiring, &sbi->expiring_list);
++	spin_unlock(&sbi->lookup_lock);
++	spin_lock(&dentry->d_lock);
++	__d_drop(dentry);
++	spin_unlock(&dentry->d_lock);
++	spin_unlock(&dcache_lock);
+ 
+ 	return 0;
+ }
+@@ -653,6 +720,9 @@
+ 	struct autofs_info *ino = autofs4_dentry_ino(dentry);
+ 	struct autofs_info *p_ino;
+ 	
++	DPRINTK("dentry %p, removing %.*s",
++		dentry, dentry->d_name.len, dentry->d_name.name);
++
+ 	if (!autofs4_oz_mode(sbi))
+ 		return -EACCES;
+ 
+@@ -661,6 +731,10 @@
+ 		spin_unlock(&dcache_lock);
+ 		return -ENOTEMPTY;
+ 	}
++	spin_lock(&sbi->lookup_lock);
++	if (list_empty(&ino->expiring))
++		list_add(&ino->expiring, &sbi->expiring_list);
++	spin_unlock(&sbi->lookup_lock);
+ 	spin_lock(&dentry->d_lock);
+ 	__d_drop(dentry);
+ 	spin_unlock(&dentry->d_lock);
+@@ -695,11 +769,21 @@
+ 		dentry, dentry->d_name.len, dentry->d_name.name);
+ 
+ 	ino = autofs4_init_ino(ino, sbi, S_IFDIR | 0555);
+-	if (ino == NULL)
+-		return -ENOSPC;
++	if (!ino)
++		return -ENOMEM;
++
++	spin_lock(&sbi->lookup_lock);
++	if (!list_empty(&ino->active))
++		list_del_init(&ino->active);
++	spin_unlock(&sbi->lookup_lock);
+ 
+ 	inode = autofs4_get_inode(dir->i_sb, ino);
+-	d_instantiate(dentry, inode);
++	if (!inode) {
++		if (!dentry->d_fsdata)
++			kfree(ino);
++		return -ENOMEM;
++	}
++	d_add(dentry, inode);
+ 
+ 	if (dir == dir->i_sb->s_root->d_inode)
+ 		dentry->d_op = &autofs4_root_dentry_operations;
+@@ -751,44 +835,6 @@
+ }
+ 
+ /*
+- * Tells the daemon whether we need to reghost or not. Also, clears
+- * the reghost_needed flag.
+- */
+-static inline int autofs4_ask_reghost(struct autofs_sb_info *sbi, int __user *p)
+-{
+-	int status;
+-
+-	DPRINTK("returning %d", sbi->needs_reghost);
+-
+-	status = put_user(sbi->needs_reghost, p);
+-	if ( status )
+-		return status;
+-
+-	sbi->needs_reghost = 0;
+-	return 0;
+-}
+-
+-/*
+- * Enable / Disable reghosting ioctl() operation
+- */
+-static inline int autofs4_toggle_reghost(struct autofs_sb_info *sbi, int __user *p)
+-{
+-	int status;
+-	int val;
+-
+-	status = get_user(val, p);
+-
+-	DPRINTK("reghost = %d", val);
+-
+-	if (status)
+-		return status;
+-
+-	/* turn on/off reghosting, with the val */
+-	sbi->reghost_enabled = val;
+-	return 0;
+-}
+-
+-/*
+ * Tells the daemon whether it can umount the autofs mount.
+ */
+ static inline int autofs4_ask_umount(struct vfsmount *mnt, int __user *p)
+@@ -852,11 +898,6 @@
+ 	case AUTOFS_IOC_SETTIMEOUT:
+ 		return autofs4_get_set_timeout(sbi, p);
+ 
+-	case AUTOFS_IOC_TOGGLEREGHOST:
+-		return autofs4_toggle_reghost(sbi, p);
+-	case AUTOFS_IOC_ASKREGHOST:
+-		return autofs4_ask_reghost(sbi, p);
+-
+ 	case AUTOFS_IOC_ASKUMOUNT:
+ 		return autofs4_ask_umount(filp->f_vfsmnt, p);
+ 
+--- linux-2.6.19.2/fs/autofs4/waitq.c.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/fs/autofs4/waitq.c	2010-11-24 00:08:05.700574003 +0100
+@@ -28,6 +28,12 @@
+ {
+ 	struct autofs_wait_queue *wq, *nwq;
+ 
++	mutex_lock(&sbi->wq_mutex);
++	if (sbi->catatonic) {
++		mutex_unlock(&sbi->wq_mutex);
++		return;
++	}
++
+ 	DPRINTK("entering catatonic mode");
+ 
+ 	sbi->catatonic = 1;
+@@ -36,15 +42,18 @@
+ 	while (wq) {
+ 		nwq = wq->next;
+ 		wq->status = -ENOENT; /* Magic is gone - report failure */
+-		kfree(wq->name);
+-		wq->name = NULL;
++		if (wq->name.name) {
++			kfree(wq->name.name);
++			wq->name.name = NULL;
++		}
++		wq->wait_ctr--;
+ 		wake_up_interruptible(&wq->queue);
+ 		wq = nwq;
+ 	}
+-	if (sbi->pipe) {
+ 		fput(sbi->pipe);	/* Close the pipe */
+ 		sbi->pipe = NULL;
+-	}
++	sbi->pipefd = -1;
++	mutex_unlock(&sbi->wq_mutex);
+ }
+ 
+ static int autofs4_write(struct file *file, const void *addr, int bytes)
+@@ -86,11 +95,16 @@
+ 				 struct autofs_wait_queue *wq,
+ 				 int type)
+ {
+-	union autofs_packet_union pkt;
++	union {
++		struct autofs_packet_hdr hdr;
++		union autofs_packet_union v4_pkt;
++		union autofs_v5_packet_union v5_pkt;
++	} pkt;
++	struct file *pipe = NULL;
+ 	size_t pktsz;
+ 
+ 	DPRINTK("wait id = 0x%08lx, name = %.*s, type=%d",
+-		wq->wait_queue_token, wq->len, wq->name, type);
++		wq->wait_queue_token, wq->name.len, wq->name.name, type);
+ 
+ 	memset(&pkt,0,sizeof pkt); /* For security reasons */
+ 
+@@ -100,26 +114,26 @@
+ 	/* Kernel protocol v4 missing and expire packets */
+ 	case autofs_ptype_missing:
+ 	{
+-		struct autofs_packet_missing *mp = &pkt.missing;
++		struct autofs_packet_missing *mp = &pkt.v4_pkt.missing;
+ 
+ 		pktsz = sizeof(*mp);
+ 
+ 		mp->wait_queue_token = wq->wait_queue_token;
+-		mp->len = wq->len;
+-		memcpy(mp->name, wq->name, wq->len);
+-		mp->name[wq->len] = '\0';
++		mp->len = wq->name.len;
++		memcpy(mp->name, wq->name.name, wq->name.len);
++		mp->name[wq->name.len] = '\0';
+ 		break;
+ 	}
+ 	case autofs_ptype_expire_multi:
+ 	{
+-		struct autofs_packet_expire_multi *ep = &pkt.expire_multi;
++		struct autofs_packet_expire_multi *ep = &pkt.v4_pkt.expire_multi;
+ 
+ 		pktsz = sizeof(*ep);
+ 
+ 		ep->wait_queue_token = wq->wait_queue_token;
+-		ep->len = wq->len;
+-		memcpy(ep->name, wq->name, wq->len);
+-		ep->name[wq->len] = '\0';
++		ep->len = wq->name.len;
++		memcpy(ep->name, wq->name.name, wq->name.len);
++		ep->name[wq->name.len] = '\0';
+ 		break;
+ 	}
+ 	/*
+@@ -131,14 +145,14 @@
+ 	case autofs_ptype_missing_direct:
+ 	case autofs_ptype_expire_direct:
+ 	{
+-		struct autofs_v5_packet *packet = &pkt.v5_packet;
++		struct autofs_v5_packet *packet = &pkt.v5_pkt.v5_packet;
+ 
+ 		pktsz = sizeof(*packet);
+ 
+ 		packet->wait_queue_token = wq->wait_queue_token;
+-		packet->len = wq->len;
+-		memcpy(packet->name, wq->name, wq->len);
+-		packet->name[wq->len] = '\0';
++		packet->len = wq->name.len;
++		memcpy(packet->name, wq->name.name, wq->name.len);
++		packet->name[wq->name.len] = '\0';
+ 		packet->dev = wq->dev;
+ 		packet->ino = wq->ino;
+ 		packet->uid = wq->uid;
+@@ -152,8 +166,19 @@
+ 		return;
+ 	}
+ 
+-	if (autofs4_write(sbi->pipe, &pkt, pktsz))
++	/* Check if we have become catatonic */
++	mutex_lock(&sbi->wq_mutex);
++	if (!sbi->catatonic) {
++		pipe = sbi->pipe;
++		get_file(pipe);
++	}
++	mutex_unlock(&sbi->wq_mutex);
++
++	if (pipe) {
++		if (autofs4_write(pipe, &pkt, pktsz))
+ 		autofs4_catatonic_mode(sbi);
++		fput(pipe);
++	}
+ }
+ 
+ static int autofs4_getpath(struct autofs_sb_info *sbi,
+@@ -169,7 +194,7 @@
+ 	for (tmp = dentry ; tmp != root ; tmp = tmp->d_parent)
+ 		len += tmp->d_name.len + 1;
+ 
+-	if (--len > NAME_MAX) {
++	if (!len || --len > NAME_MAX) {
+ 		spin_unlock(&dcache_lock);
+ 		return 0;
+ 	}
+@@ -189,58 +214,55 @@
+ }
+ 
+ static struct autofs_wait_queue *
+-autofs4_find_wait(struct autofs_sb_info *sbi,
+-		  char *name, unsigned int hash, unsigned int len)
++autofs4_find_wait(struct autofs_sb_info *sbi, struct qstr *qstr)
+ {
+ 	struct autofs_wait_queue *wq;
+ 
+ 	for (wq = sbi->queues; wq; wq = wq->next) {
+-		if (wq->hash == hash &&
+-		    wq->len == len &&
+-		    wq->name && !memcmp(wq->name, name, len))
++		if (wq->name.hash == qstr->hash &&
++		    wq->name.len == qstr->len &&
++		    wq->name.name &&
++			 !memcmp(wq->name.name, qstr->name, qstr->len))
+ 			break;
+ 	}
+ 	return wq;
+ }
+ 
+-int autofs4_wait(struct autofs_sb_info *sbi, struct dentry *dentry,
+-		enum autofs_notify notify)
++/*
++ * Check if we have a valid request.
++ * Returns
++ * 1 if the request should continue.
++ *   In this case we can return an autofs_wait_queue entry if one is
++ *   found or NULL to idicate a new wait needs to be created.
++ * 0 or a negative errno if the request shouldn't continue.
++ */
++static int validate_request(struct autofs_wait_queue **wait,
++			    struct autofs_sb_info *sbi,
++			    struct qstr *qstr,
++			    struct dentry*dentry, enum autofs_notify notify)
+ {
+-	struct autofs_info *ino;
+ 	struct autofs_wait_queue *wq;
+-	char *name;
+-	unsigned int len = 0;
+-	unsigned int hash = 0;
+-	int status, type;
+-
+-	/* In catatonic mode, we don't wait for nobody */
+-	if (sbi->catatonic)
+-		return -ENOENT;
+-	
+-	name = kmalloc(NAME_MAX + 1, GFP_KERNEL);
+-	if (!name)
+-		return -ENOMEM;
++	struct autofs_info *ino;
+ 
+-	/* If this is a direct mount request create a dummy name */
+-	if (IS_ROOT(dentry) && (sbi->type & AUTOFS_TYPE_DIRECT))
+-		len = sprintf(name, "%p", dentry);
+-	else {
+-		len = autofs4_getpath(sbi, dentry, &name);
+-		if (!len) {
+-			kfree(name);
+-			return -ENOENT;
+-		}
++	/* Wait in progress, continue; */
++	wq = autofs4_find_wait(sbi, qstr);
++	if (wq) {
++		*wait = wq;
++		return 1;
+ 	}
+-	hash = full_name_hash(name, len);
+ 
+-	if (mutex_lock_interruptible(&sbi->wq_mutex)) {
+-		kfree(name);
+-		return -EINTR;
+-	}
++	*wait = NULL;
+ 
+-	wq = autofs4_find_wait(sbi, name, hash, len);
++	/* If we don't yet have any info this is a new request */
+ 	ino = autofs4_dentry_ino(dentry);
+-	if (!wq && ino && notify == NFY_NONE) {
++	if (!ino)
++		return 1;
++
++	/*
++	 * If we've been asked to wait on an existing expire (NFY_NONE)
++	 * but there is no wait in the queue ...
++	 */
++	if (notify == NFY_NONE) {
+ 		/*
+ 		 * Either we've betean the pending expire to post it's
+ 		 * wait or it finished while we waited on the mutex.
+@@ -251,13 +273,14 @@
+ 		while (ino->flags & AUTOFS_INF_EXPIRING) {
+ 			mutex_unlock(&sbi->wq_mutex);
+ 			schedule_timeout_interruptible(HZ/10);
+-			if (mutex_lock_interruptible(&sbi->wq_mutex)) {
+-				kfree(name);
++			if (mutex_lock_interruptible(&sbi->wq_mutex))
+ 				return -EINTR;
++
++			wq = autofs4_find_wait(sbi, qstr);
++			if (wq) {
++				*wait = wq;
++				return 1;
+ 			}
+-			wq = autofs4_find_wait(sbi, name, hash, len);
+-			if (wq)
+-				break;
+ 		}
+ 
+ 		/*
+@@ -265,18 +288,96 @@
+ 		 * cases where we wait on NFY_NONE neither depend on the
+ 		 * return status of the wait.
+ 		 */
+-		if (!wq) {
+-			kfree(name);
+-			mutex_unlock(&sbi->wq_mutex);
++		return 0;
++	}
++
++	/*
++	 * If we've been asked to trigger a mount and the request
++	 * completed while we waited on the mutex ...
++	 */
++	if (notify == NFY_MOUNT) {
++		/*
++		 * If the dentry isn't hashed just go ahead and try the
++		 * mount again with a new wait (not much else we can do).
++		*/
++		if (!d_unhashed(dentry)) {
++			/*
++			 * But if the dentry is hashed, that means that we
++			 * got here through the revalidate path.  Thus, we
++			 * need to check if the dentry has been mounted
++			 * while we waited on the wq_mutex. If it has,
++			 * simply return success.
++			 */
++			if (d_mountpoint(dentry))
+ 			return 0;
+ 		}
+ 	}
+ 
++	return 1;
++}
++
++int autofs4_wait(struct autofs_sb_info *sbi, struct dentry *dentry,
++		enum autofs_notify notify)
++{
++	struct autofs_wait_queue *wq;
++	struct qstr qstr;
++	char *name;
++	int status, ret, type;
++
++	/* In catatonic mode, we don't wait for nobody */
++	if (sbi->catatonic)
++		return -ENOENT;
++
++	if (!dentry->d_inode) {
++		/*
++		 * A wait for a negative dentry is invalid for certain
++		 * cases. A direct or offset mount "always" has its mount
++		 * point directory created and so the request dentry must
++		 * be positive or the map key doesn't exist. The situation
++		 * is very similar for indirect mounts except only dentrys
++		 * in the root of the autofs file system may be negative.
++		 */
++		if (sbi->type & AUTOFS_TYPE_TRIGGER)
++			return -ENOENT;
++		else if (!IS_ROOT(dentry->d_parent))
++			return -ENOENT;
++	}
++
++	name = kmalloc(NAME_MAX + 1, GFP_KERNEL);
++	if (!name)
++		return -ENOMEM;
++
++	/* If this is a direct mount request create a dummy name */
++	if (IS_ROOT(dentry) && sbi->type & AUTOFS_TYPE_TRIGGER)
++		qstr.len = sprintf(name, "%p", dentry);
++	else {
++		qstr.len = autofs4_getpath(sbi, dentry, &name);
++		if (!qstr.len) {
++			kfree(name);
++			return -ENOENT;
++		}
++	}
++	qstr.name = name;
++	qstr.hash = full_name_hash(name, qstr.len);
++
++	if (mutex_lock_interruptible(&sbi->wq_mutex)) {
++		kfree(qstr.name);
++		return -EINTR;
++	}
++
++	ret = validate_request(&wq, sbi, &qstr, dentry, notify);
++	if (ret <= 0) {
++		if (ret == 0)
++			mutex_unlock(&sbi->wq_mutex);
++		kfree(qstr.name);
++		return ret;
++	}
++
+ 	if (!wq) {
+ 		/* Create a new wait queue */
+ 		wq = kmalloc(sizeof(struct autofs_wait_queue),GFP_KERNEL);
+ 		if (!wq) {
+-			kfree(name);
++			kfree(qstr.name);
+ 			mutex_unlock(&sbi->wq_mutex);
+ 			return -ENOMEM;
+ 		}
+@@ -287,9 +388,7 @@
+ 		wq->next = sbi->queues;
+ 		sbi->queues = wq;
+ 		init_waitqueue_head(&wq->queue);
+-		wq->hash = hash;
+-		wq->name = name;
+-		wq->len = len;
++		memcpy(&wq->name, &qstr, sizeof(struct qstr));
+ 		wq->dev = autofs4_get_dev(sbi);
+ 		wq->ino = autofs4_get_ino(sbi);
+ 		wq->uid = current->uid;
+@@ -297,7 +396,7 @@
+ 		wq->pid = current->pid;
+ 		wq->tgid = current->tgid;
+ 		wq->status = -EINTR; /* Status return if interrupted */
+-		atomic_set(&wq->wait_ctr, 2);
++		wq->wait_ctr = 2;
+ 		mutex_unlock(&sbi->wq_mutex);
+ 
+ 		if (sbi->version < 5) {
+@@ -307,38 +406,35 @@
+ 				type = autofs_ptype_expire_multi;
+ 		} else {
+ 			if (notify == NFY_MOUNT)
+-				type = (sbi->type & AUTOFS_TYPE_DIRECT) ?
++				type = (sbi->type & AUTOFS_TYPE_TRIGGER) ?
+ 					autofs_ptype_missing_direct :
+ 					 autofs_ptype_missing_indirect;
+ 			else
+-				type = (sbi->type & AUTOFS_TYPE_DIRECT) ?
++				type = (sbi->type & AUTOFS_TYPE_TRIGGER) ?
+ 					autofs_ptype_expire_direct :
+ 					autofs_ptype_expire_indirect;
+ 		}
+ 
+ 		DPRINTK("new wait id = 0x%08lx, name = %.*s, nfy=%d\n",
+-			(unsigned long) wq->wait_queue_token, wq->len, wq->name, notify);
++			(unsigned long) wq->wait_queue_token, wq->name.len,
++			wq->name.name, notify);
+ 
+ 		/* autofs4_notify_daemon() may block */
+ 		autofs4_notify_daemon(sbi, wq, type);
+ 	} else {
+-		atomic_inc(&wq->wait_ctr);
++		wq->wait_ctr++;
+ 		mutex_unlock(&sbi->wq_mutex);
+-		kfree(name);
++		kfree(qstr.name);
+ 		DPRINTK("existing wait id = 0x%08lx, name = %.*s, nfy=%d",
+-			(unsigned long) wq->wait_queue_token, wq->len, wq->name, notify);
+-	}
+-
+-	/* wq->name is NULL if and only if the lock is already released */
+-
+-	if (sbi->catatonic) {
+-		/* We might have slept, so check again for catatonic mode */
+-		wq->status = -ENOENT;
+-		kfree(wq->name);
+-		wq->name = NULL;
++			(unsigned long) wq->wait_queue_token, wq->name.len,
++			wq->name.name, notify);
+ 	}
+ 
+-	if (wq->name) {
++	/*
++	 * wq->name.name is NULL iff the lock is already released
++	 * or the mount has been made catatonic.
++	 */
++	if (wq->name.name) {
+ 		/* Block all but "shutdown" signals while waiting */
+ 		sigset_t oldset;
+ 		unsigned long irqflags;
+@@ -349,7 +445,7 @@
+ 		recalc_sigpending();
+ 		spin_unlock_irqrestore(&current->sighand->siglock, irqflags);
+ 
+-		wait_event_interruptible(wq->queue, wq->name == NULL);
++		wait_event_interruptible(wq->queue, wq->name.name == NULL);
+ 
+ 		spin_lock_irqsave(&current->sighand->siglock, irqflags);
+ 		current->blocked = oldset;
+@@ -362,8 +458,10 @@
+ 	status = wq->status;
+ 
+ 	/* Are we the last process to need status? */
+-	if (atomic_dec_and_test(&wq->wait_ctr))
++	mutex_lock(&sbi->wq_mutex);
++	if (!--wq->wait_ctr)
+ 		kfree(wq);
++	mutex_unlock(&sbi->wq_mutex);
+ 
+ 	return status;
+ }
+@@ -385,16 +483,13 @@
+ 	}
+ 
+ 	*wql = wq->next;	/* Unlink from chain */
+-	mutex_unlock(&sbi->wq_mutex);
+-	kfree(wq->name);
+-	wq->name = NULL;	/* Do not wait on this queue */
+-
++	kfree(wq->name.name);
++	wq->name.name = NULL;	/* Do not wait on this queue */
+ 	wq->status = status;
+-
+-	if (atomic_dec_and_test(&wq->wait_ctr))	/* Is anyone still waiting for this guy? */
+-		kfree(wq);
+-	else
+ 		wake_up_interruptible(&wq->queue);
++	if (!--wq->wait_ctr)
++		kfree(wq);
++	mutex_unlock(&sbi->wq_mutex);
+ 
+ 	return 0;
+ }
+--- linux-2.6.19.2/include/linux/auto_fs4.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/include/linux/auto_fs4.h	2010-11-24 00:08:05.700574003 +0100
+@@ -29,6 +29,11 @@
+ #define AUTOFS_EXP_IMMEDIATE		1
+ #define AUTOFS_EXP_LEAVES		2
+ 
++#define AUTOFS_TYPE_ANY			0x0000
++#define AUTOFS_TYPE_INDIRECT		0x0001
++#define AUTOFS_TYPE_DIRECT		0x0002
++#define AUTOFS_TYPE_OFFSET		0x0004
++
+ /* Daemon notification packet types */
+ enum autofs_notify {
+ 	NFY_NONE,
+@@ -59,6 +64,13 @@
+ 	char name[NAME_MAX+1];
+ };
+ 
++union autofs_packet_union {
++	struct autofs_packet_hdr hdr;
++	struct autofs_packet_missing missing;
++	struct autofs_packet_expire expire;
++	struct autofs_packet_expire_multi expire_multi;
++};
++
+ /* autofs v5 common packet struct */
+ struct autofs_v5_packet {
+ 	struct autofs_packet_hdr hdr;
+@@ -78,20 +90,19 @@
+ typedef struct autofs_v5_packet autofs_packet_missing_direct_t;
+ typedef struct autofs_v5_packet autofs_packet_expire_direct_t;
+ 
+-union autofs_packet_union {
++union autofs_v5_packet_union {
+ 	struct autofs_packet_hdr hdr;
+-	struct autofs_packet_missing missing;
+-	struct autofs_packet_expire expire;
+-	struct autofs_packet_expire_multi expire_multi;
+ 	struct autofs_v5_packet v5_packet;
++	autofs_packet_missing_indirect_t missing_indirect;
++	autofs_packet_expire_indirect_t expire_indirect;
++	autofs_packet_missing_direct_t missing_direct;
++	autofs_packet_expire_direct_t expire_direct;
+ };
+ 
+ #define AUTOFS_IOC_EXPIRE_MULTI		_IOW(0x93,0x66,int)
+ #define AUTOFS_IOC_EXPIRE_INDIRECT	AUTOFS_IOC_EXPIRE_MULTI
+ #define AUTOFS_IOC_EXPIRE_DIRECT	AUTOFS_IOC_EXPIRE_MULTI
+ #define AUTOFS_IOC_PROTOSUBVER		_IOR(0x93,0x67,int)
+-#define AUTOFS_IOC_ASKREGHOST           _IOR(0x93,0x68,int)
+-#define AUTOFS_IOC_TOGGLEREGHOST        _IOR(0x93,0x69,int)
+ #define AUTOFS_IOC_ASKUMOUNT		_IOR(0x93,0x70,int)
+ 
+ 
+--- linux-2.6.19.2/include/linux/compat_ioctl.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/include/linux/compat_ioctl.h	2010-11-24 00:08:05.700574003 +0100
+@@ -568,8 +568,6 @@
+ COMPATIBLE_IOCTL(AUTOFS_IOC_EXPIRE)
+ COMPATIBLE_IOCTL(AUTOFS_IOC_EXPIRE_MULTI)
+ COMPATIBLE_IOCTL(AUTOFS_IOC_PROTOSUBVER)
+-COMPATIBLE_IOCTL(AUTOFS_IOC_ASKREGHOST)
+-COMPATIBLE_IOCTL(AUTOFS_IOC_TOGGLEREGHOST)
+ COMPATIBLE_IOCTL(AUTOFS_IOC_ASKUMOUNT)
+ /* Raw devices */
+ COMPATIBLE_IOCTL(RAW_SETBIND)

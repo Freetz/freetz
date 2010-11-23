@@ -30,7 +30,7 @@ source already exists for the given master map entry.
 diff --git a/CHANGELOG b/CHANGELOG
 index f022893..bfee5de 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -39,6 +39,7 @@
  - fix parse_sun() module init.
  - dont check null cache on expire.
@@ -42,7 +42,7 @@ index f022893..bfee5de 100644
 diff --git a/lib/master.c b/lib/master.c
 index 61f671c..62d6fc0 100644
 --- lib/master.c
-+++ b/lib/master.c
++++ lib/master.c
 @@ -188,6 +188,12 @@ master_add_map_source(struct master_mapent *entry,
  	source->argc = argc;
  	source->argv = tmpargv;
@@ -59,7 +59,7 @@ index 61f671c..62d6fc0 100644
 diff --git a/lib/master_parse.y b/lib/master_parse.y
 index 8b86810..b82129f 100644
 --- lib/master_parse.y
-+++ b/lib/master_parse.y
++++ lib/master_parse.y
 @@ -830,16 +830,6 @@ int master_parse_entry(const char *buffer, unsigned int default_timeout, unsigne
  		return 0;
  	}
@@ -80,7 +80,7 @@ index 8b86810..b82129f 100644
 diff --git a/modules/mount_autofs.c b/modules/mount_autofs.c
 index 2a5d860..ec75111 100644
 --- modules/mount_autofs.c
-+++ b/modules/mount_autofs.c
++++ modules/mount_autofs.c
 @@ -200,14 +200,6 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name,
  	}
  	free_map_type_info(info);

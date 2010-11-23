@@ -17,7 +17,7 @@ linking against the Kerberos librarys.
 diff --git a/Makefile.conf.in b/Makefile.conf.in
 index 7670364..80093c1 100644
 --- Makefile.conf.in
-+++ b/Makefile.conf.in
++++ Makefile.conf.in
 @@ -31,6 +31,8 @@ XML_FLAGS = @XML_FLAGS@
  SASL = @HAVE_SASL@
  LIBSASL= @LIBSASL@
@@ -30,7 +30,7 @@ index 7670364..80093c1 100644
 diff --git a/aclocal.m4 b/aclocal.m4
 index e7f1a30..750a159 100644
 --- aclocal.m4
-+++ b/aclocal.m4
++++ aclocal.m4
 @@ -215,6 +215,25 @@ else
  fi])
  
@@ -60,7 +60,7 @@ index e7f1a30..750a159 100644
 diff --git a/configure b/configure
 index f5b7d07..352b0d6 100755
 --- configure
-+++ b/configure
++++ configure
 @@ -640,6 +640,8 @@ ac_subst_vars='LTLIBOBJS
  LIBOBJS
  DAEMON_LDFLAGS
@@ -166,7 +166,7 @@ index f5b7d07..352b0d6 100755
 diff --git a/configure.in b/configure.in
 index 78085bd..233edab 100644
 --- configure.in
-+++ b/configure.in
++++ configure.in
 @@ -145,8 +145,9 @@ AF_CHECK_PROG(RPCGEN, rpcgen, , $searchpath)
  #
  AF_SLOPPY_MOUNT()
@@ -190,7 +190,7 @@ index 78085bd..233edab 100644
 diff --git a/modules/Makefile b/modules/Makefile
 index 0bb9464..164d412 100644
 --- modules/Makefile
-+++ b/modules/Makefile
++++ modules/Makefile
 @@ -42,8 +42,8 @@ ifeq ($(LDAP), 1)
    MODS += lookup_ldap.so
    ifeq ($(SASL), 1)

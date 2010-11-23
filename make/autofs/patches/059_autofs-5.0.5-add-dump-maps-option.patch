@@ -18,7 +18,7 @@ Modified by Ian Kent <raven@themaw.net>
 diff --git a/CHANGELOG b/CHANGELOG
 index 1975369..11054da 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -54,6 +54,7 @@
  - fix direct map not updating on reread.
  - add external bind method.
@@ -30,7 +30,7 @@ index 1975369..11054da 100644
 diff --git a/daemon/automount.c b/daemon/automount.c
 index 9939a25..1b1007d 100644
 --- daemon/automount.c
-+++ b/daemon/automount.c
++++ daemon/automount.c
 @@ -1664,6 +1664,7 @@ static void usage(void)
  		"	-f --foreground do not fork into background\n"
  		"	-r --random-multimount-selection\n"
@@ -155,7 +155,7 @@ index 9939a25..1b1007d 100644
 diff --git a/include/log.h b/include/log.h
 index 6a4a942..7a394cb 100644
 --- include/log.h
-+++ b/include/log.h
++++ include/log.h
 @@ -35,6 +35,7 @@ extern void set_log_verbose_ap(struct autofs_point *ap);
  extern void set_log_debug_ap(struct autofs_point *ap);
  extern void set_mnt_logging(unsigned global_logopt);
@@ -167,7 +167,7 @@ index 6a4a942..7a394cb 100644
 diff --git a/include/master.h b/include/master.h
 index 0d6aa82..bef59d3 100644
 --- include/master.h
-+++ b/include/master.h
++++ include/master.h
 @@ -110,6 +110,7 @@ int master_submount_list_empty(struct autofs_point *ap);
  int master_notify_submount(struct autofs_point *, const char *path, enum states);
  void master_notify_state_change(struct master *, int);
@@ -179,7 +179,7 @@ index 0d6aa82..bef59d3 100644
 diff --git a/lib/log.c b/lib/log.c
 index 46220fd..832add7 100644
 --- lib/log.c
-+++ b/lib/log.c
++++ lib/log.c
 @@ -193,17 +193,23 @@ void logmsg(const char *msg, ...)
  	return;
  }
@@ -211,7 +211,7 @@ index 46220fd..832add7 100644
 diff --git a/lib/master.c b/lib/master.c
 index ebeccce..ad3aa77 100644
 --- lib/master.c
-+++ b/lib/master.c
++++ lib/master.c
 @@ -30,6 +30,7 @@
  /* The root of the map entry tree */
  struct master *master_list = NULL;
@@ -355,7 +355,7 @@ index ebeccce..ad3aa77 100644
 diff --git a/man/automount.8 b/man/automount.8
 index 18f74bf..d57ecba 100644
 --- man/automount.8
-+++ b/man/automount.8
++++ man/automount.8
 @@ -57,6 +57,9 @@ Run the daemon in the forground and log to stderr instead of syslog."
  Enables the use of ramdom selection when choosing a host from a
  list of replicated servers.

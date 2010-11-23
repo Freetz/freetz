@@ -36,7 +36,7 @@ server will trigger a map re-read.
 diff --git a/CHANGELOG b/CHANGELOG
 index a2569aa..f38fc3f 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -18,6 +18,7 @@
  - fix rpc fail on large export list.
  - fix memory leak on reload.
@@ -48,7 +48,7 @@ index a2569aa..f38fc3f 100644
 diff --git a/daemon/lookup.c b/daemon/lookup.c
 index 665ada0..a4b9a80 100644
 --- daemon/lookup.c
-+++ b/daemon/lookup.c
++++ daemon/lookup.c
 @@ -292,8 +292,13 @@ static int do_read_map(struct autofs_point *ap, struct map_source *map, time_t a
  	 * For maps that don't support enumeration return success
  	 * and do whatever we must to have autofs function with an
@@ -67,7 +67,7 @@ index 665ada0..a4b9a80 100644
 diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
 index d8bd169..079ded1 100644
 --- modules/lookup_ldap.c
-+++ b/modules/lookup_ldap.c
++++ modules/lookup_ldap.c
 @@ -724,8 +724,12 @@ static LDAP *do_reconnect(unsigned logopt, struct lookup_context *ctxt)
  	uris_mutex_lock(ctxt);
  	if (ctxt->dclist)

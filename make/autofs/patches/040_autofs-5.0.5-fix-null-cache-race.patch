@@ -24,7 +24,7 @@ null cache updated.
 diff --git a/CHANGELOG b/CHANGELOG
 index 5d673ea..f022893 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -38,6 +38,7 @@
  - fix wildcard map entry match.
  - fix parse_sun() module init.
@@ -36,7 +36,7 @@ index 5d673ea..f022893 100644
 diff --git a/daemon/automount.c b/daemon/automount.c
 index 5a1f189..206734b 100644
 --- daemon/automount.c
-+++ b/daemon/automount.c
++++ daemon/automount.c
 @@ -1273,14 +1273,16 @@ static int do_hup_signal(struct master *master, time_t age)
  	if (status)
  		fatal(status);
@@ -58,7 +58,7 @@ index 5a1f189..206734b 100644
 diff --git a/include/automount.h b/include/automount.h
 index ae517a7..9e1feb0 100644
 --- include/automount.h
-+++ b/include/automount.h
++++ include/automount.h
 @@ -194,6 +194,7 @@ void cache_multi_writelock(struct mapent *me);
  void cache_multi_unlock(struct mapent *me);
  int cache_delete_offset_list(struct mapent_cache *mc, const char *key);
@@ -70,7 +70,7 @@ index ae517a7..9e1feb0 100644
 diff --git a/lib/cache.c b/lib/cache.c
 index 440b3e8..a096150 100644
 --- lib/cache.c
-+++ b/lib/cache.c
++++ lib/cache.c
 @@ -228,15 +228,38 @@ struct mapent_cache *cache_init(struct autofs_point *ap, struct map_source *map)
  	return mc;
  }
@@ -134,7 +134,7 @@ index 440b3e8..a096150 100644
 diff --git a/lib/master.c b/lib/master.c
 index 196b6b9..61f671c 100644
 --- lib/master.c
-+++ b/lib/master.c
++++ lib/master.c
 @@ -811,15 +811,28 @@ int master_read_master(struct master *master, time_t age, int readall)
  	unsigned int logopt = master->logopt;
  	struct mapent_cache *nc;
@@ -174,7 +174,7 @@ index 196b6b9..61f671c 100644
 diff --git a/lib/master_parse.y b/lib/master_parse.y
 index 8adb393..8b86810 100644
 --- lib/master_parse.y
-+++ b/lib/master_parse.y
++++ lib/master_parse.y
 @@ -741,21 +741,16 @@ int master_parse_entry(const char *buffer, unsigned int default_timeout, unsigne
  
  	/* Add null map entries to the null map cache */

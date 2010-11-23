@@ -39,7 +39,7 @@ Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
 diff --git a/CHANGELOG b/CHANGELOG
 index 23351c8..b9b1602 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -5,6 +5,7 @@
  - add mount wait timeout parameter.
  - special case cifs escapes.
@@ -51,7 +51,7 @@ index 23351c8..b9b1602 100644
 diff --git a/daemon/direct.c b/daemon/direct.c
 index 0c78627..9b4e57b 100644
 --- daemon/direct.c
-+++ b/daemon/direct.c
++++ daemon/direct.c
 @@ -1245,7 +1245,7 @@ static void *do_mount_direct(void *arg)
  	}
  
@@ -64,7 +64,7 @@ index 0c78627..9b4e57b 100644
 diff --git a/daemon/state.c b/daemon/state.c
 index 71af46a..27bc6de 100644
 --- daemon/state.c
-+++ b/daemon/state.c
++++ daemon/state.c
 @@ -160,7 +160,7 @@ void expire_cleanup(void *arg)
  			 * been signaled to shutdown.
  			 */
@@ -87,7 +87,7 @@ index 71af46a..27bc6de 100644
 diff --git a/lib/alarm.c b/lib/alarm.c
 index 46df38a..f403d8f 100755
 --- lib/alarm.c
-+++ b/lib/alarm.c
++++ lib/alarm.c
 @@ -239,7 +239,8 @@ int alarm_start_handler(void)
  
  	status = pthread_create(&thid, pattrs, alarm_handler, NULL);
@@ -101,7 +101,7 @@ index 46df38a..f403d8f 100755
 diff --git a/lib/defaults.c b/lib/defaults.c
 index 2204b18..cb8354d 100644
 --- lib/defaults.c
-+++ b/lib/defaults.c
++++ lib/defaults.c
 @@ -534,7 +534,6 @@ void defaults_free_searchdns(struct ldap_searchdn *sdn)
  	struct ldap_searchdn *this = sdn;
  	struct ldap_searchdn *next;
@@ -113,7 +113,7 @@ index 2204b18..cb8354d 100644
 diff --git a/lib/master.c b/lib/master.c
 index e43f835..8455f40 100644
 --- lib/master.c
-+++ b/lib/master.c
++++ lib/master.c
 @@ -152,7 +152,7 @@ master_add_map_source(struct master_mapent *entry,
  {
  	struct map_source *source;
@@ -137,7 +137,7 @@ index e43f835..8455f40 100644
 diff --git a/modules/cyrus-sasl.c b/modules/cyrus-sasl.c
 index 828143e..92e2226 100644
 --- modules/cyrus-sasl.c
-+++ b/modules/cyrus-sasl.c
++++ modules/cyrus-sasl.c
 @@ -911,7 +911,7 @@ void autofs_sasl_dispose(struct lookup_context *ctxt)
  {
  	int status, ret;
@@ -150,7 +150,7 @@ index 828143e..92e2226 100644
 diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
 index f1fb9ce..d8bd169 100644
 --- modules/lookup_ldap.c
-+++ b/modules/lookup_ldap.c
++++ modules/lookup_ldap.c
 @@ -389,13 +389,16 @@ static int get_query_dn(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt
  				error(logopt,
  				      MODPREFIX "query failed for search dn %s: %s",
@@ -195,7 +195,7 @@ index f1fb9ce..d8bd169 100644
 diff --git a/modules/mount_autofs.c b/modules/mount_autofs.c
 index afb1859..2a5d860 100644
 --- modules/mount_autofs.c
-+++ b/modules/mount_autofs.c
++++ modules/mount_autofs.c
 @@ -119,7 +119,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name,
  			else if (strncmp(cp, "timeout=", 8) == 0) {
  				char *val = strchr(cp, '=');
@@ -208,7 +208,7 @@ index afb1859..2a5d860 100644
 diff --git a/modules/parse_sun.c b/modules/parse_sun.c
 index db36ae2..921daf4 100644
 --- modules/parse_sun.c
-+++ b/modules/parse_sun.c
++++ modules/parse_sun.c
 @@ -1334,7 +1334,7 @@ int parse_mount(struct autofs_point *ap, const char *name,
  	char *pmapent, *options;
  	const char *p;
@@ -229,7 +229,7 @@ index db36ae2..921daf4 100644
 diff --git a/redhat/autofs.init.in b/redhat/autofs.init.in
 index fded1d8..806302b 100644
 --- redhat/autofs.init.in
-+++ b/redhat/autofs.init.in
++++ redhat/autofs.init.in
 @@ -172,7 +172,7 @@ case "$1" in
  		fi
  		;;

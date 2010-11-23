@@ -19,7 +19,7 @@ Add sasl external bind handler.
 diff --git a/CHANGELOG b/CHANGELOG
 index 46eb3ce..b107515 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -52,6 +52,7 @@
  - fix init script status privilege error.
  - always read file maps mount lookup map read fix.
@@ -31,7 +31,7 @@ index 46eb3ce..b107515 100644
 diff --git a/include/lookup_ldap.h b/include/lookup_ldap.h
 index 1e1c7a4..4067ccc 100644
 --- include/lookup_ldap.h
-+++ b/include/lookup_ldap.h
++++ include/lookup_ldap.h
 @@ -10,6 +10,7 @@
  #include <krb5.h>
  #endif
@@ -66,7 +66,7 @@ index 1e1c7a4..4067ccc 100644
 diff --git a/man/autofs_ldap_auth.conf.5.in b/man/autofs_ldap_auth.conf.5.in
 index ecec20d..2260952 100644
 --- man/autofs_ldap_auth.conf.5.in
-+++ b/man/autofs_ldap_auth.conf.5.in
++++ man/autofs_ldap_auth.conf.5.in
 @@ -60,12 +60,30 @@ authentication  mechanism. If no suitable mechanism can be found, connections
  to the ldap server are made without authentication. Finally, if it is set to
  simple, then simple authentication will be used instead of SASL.
@@ -104,7 +104,7 @@ index ecec20d..2260952 100644
 diff --git a/modules/Makefile b/modules/Makefile
 index 164d412..9ad3915 100644
 --- modules/Makefile
-+++ b/modules/Makefile
++++ modules/Makefile
 @@ -41,7 +41,7 @@ ifeq ($(LDAP), 1)
    SRCS += lookup_ldap.c
    MODS += lookup_ldap.so
@@ -128,7 +128,7 @@ diff --git a/modules/cyrus-sasl-extern.c b/modules/cyrus-sasl-extern.c
 new file mode 100644
 index 0000000..5bb3028
 --- /dev/null
-+++ b/modules/cyrus-sasl-extern.c
++++ modules/cyrus-sasl-extern.c
 @@ -0,0 +1,117 @@
 +/*
 + * cyrus-sasl-extern.c - Module for Cyrus sasl external authentication.
@@ -250,7 +250,7 @@ index 0000000..5bb3028
 diff --git a/modules/cyrus-sasl.c b/modules/cyrus-sasl.c
 index d117f0a..967edc3 100644
 --- modules/cyrus-sasl.c
-+++ b/modules/cyrus-sasl.c
++++ modules/cyrus-sasl.c
 @@ -875,6 +875,26 @@ autofs_sasl_bind(unsigned logopt, LDAP *ldap, struct lookup_context *ctxt)
  	if (ctxt->sasl_conn)
  		return 0;
@@ -281,7 +281,7 @@ index d117f0a..967edc3 100644
 diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
 index 3d47048..1432056 100644
 --- modules/lookup_ldap.c
-+++ b/modules/lookup_ldap.c
++++ modules/lookup_ldap.c
 @@ -41,6 +41,9 @@
  
  int lookup_version = AUTOFS_LOOKUP_VERSION;	/* Required by protocol */

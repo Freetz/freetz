@@ -16,7 +16,7 @@ the configured username and password.
 diff --git a/CHANGELOG b/CHANGELOG
 index 5973824..d95542d 100644
 --- CHANGELOG
-+++ b/CHANGELOG
++++ CHANGELOG
 @@ -28,6 +28,7 @@
  - fix ampersand escape in auto.smb.
  - add locality as valid ldap master map attribute.
@@ -28,7 +28,7 @@ index 5973824..d95542d 100644
 diff --git a/include/lookup_ldap.h b/include/lookup_ldap.h
 index dcae220..1e1c7a4 100644
 --- include/lookup_ldap.h
-+++ b/include/lookup_ldap.h
++++ include/lookup_ldap.h
 @@ -97,6 +97,7 @@ struct lookup_context {
  #define LDAP_AUTH_NOTREQUIRED	0x0001
  #define LDAP_AUTH_REQUIRED	0x0002
@@ -40,7 +40,7 @@ index dcae220..1e1c7a4 100644
 diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
 index 8387951..d7d4f71 100644
 --- modules/lookup_ldap.c
-+++ b/modules/lookup_ldap.c
++++ modules/lookup_ldap.c
 @@ -137,11 +137,13 @@ static void uris_mutex_unlock(struct lookup_context *ctxt)
  	return;
  }
@@ -102,7 +102,7 @@ index 8387951..d7d4f71 100644
 diff --git a/samples/autofs_ldap_auth.conf b/samples/autofs_ldap_auth.conf
 index a1f60c0..be5e7dd 100644
 --- samples/autofs_ldap_auth.conf
-+++ b/samples/autofs_ldap_auth.conf
++++ samples/autofs_ldap_auth.conf
 @@ -17,17 +17,19 @@ tlsrequired  -  This flag tells whether the ldap connection must be
  
  authrequired  -  This option tells whether an authenticated connection to
