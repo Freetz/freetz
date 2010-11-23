@@ -7,6 +7,10 @@ DAEMON_CONFIG=/mod/etc/samba/smb.conf
 . /etc/init.d/modlibrc
 
 
+config() {
+	/etc/init.d/rc.samba config
+}
+
 start() {
 	modlib_startdaemon $DAEMON_BIN -D -s $DAEMON_CONFIG
 }
@@ -40,7 +44,7 @@ case $1 in
 		modlib_status
 		;;
 	config)
-		/etc/init.d/rc.samba config
+		config
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|reload|status|config]" 1>&2
