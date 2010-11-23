@@ -165,6 +165,7 @@ else
 	$(RM) $(OPENSSH_SSHSERVER_TARGET_BINARY)
 	$(RM) -rf $(OPENSSH_DEST_DIR)/etc
 	$(RM) -rf $(OPENSSH_DEST_DIR)/usr/lib/cgi-bin
+	$(RM) -f $(OPENSSH_TARGET_DIR)/.language
 endif
 
 # SFTP server
