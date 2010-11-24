@@ -7,13 +7,28 @@ PID_FILE=/var/run/automount/autofs-running
 
 
 config() {
+	#autofs
 	mkdir -p $(dirname $PID_FILE)
 	mkdir -p /var/media/autofs
-	mkdir -p /var/cache
+	modprobe autofs4
 	modprobe fuse 2>/dev/null
+
+	#davfs2
+	if [ "$AUTOFS_DAVFS2_CONF" == "yes" ]; then
+		modlib_addgroup davfs2
+		modlib_adduser davfs2 -s /bin/false -D -S -H -G davfs2 -g DavFS2
+		mkdir -p /var/davfs2
+		touch /var/davfs2/davfs2.conf /var/davfs2/secrets
+		chmod 600 /var/davfs2/secrets
+		mkdir -p /var/cache
+		rm /var/cache/davfs2 2>/dev/null
+		mkdir $AUTOFS_DAVFS2_TEMP 2>/dev/null
+		ln -s $AUTOFS_DAVFS2_TEMP /var/cache/davfs2
+	fi
+
+	#other
 	modprobe cifs 2>/dev/null
 	modprobe nfs 2>/dev/null
-	modprobe autofs4
 }
 
 start() {
