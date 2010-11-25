@@ -55,25 +55,18 @@ $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DA
 
 $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) $(UCLIBC_DIR)/.config
-ifeq ($(strip $(UCLIBC_VERSION)),0.9.28)
-	$(SED) -i -e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(shell pwd)/$(UCLIBC_KERNEL_SOURCE_DIR)\",g' $(UCLIBC_DIR)/.config
-else
-	$(SED) -i -e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=\"$(shell pwd)/$(UCLIBC_KERNEL_HEADERS_DIR)\",g' $(UCLIBC_DIR)/.config
-endif
-	$(SED) -i -e 's,^CROSS=.*,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS),g' $(UCLIBC_DIR)/Rules.mak
-ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
-	$(SED) -i -e 's,.*UCLIBC_HAS_IPV6.*,UCLIBC_HAS_IPV6=y,g' $(UCLIBC_DIR)/.config
-else
-	$(SED) -i -e 's,.*UCLIBC_HAS_IPV6.*,# UCLIBC_HAS_IPV6 is not set,g' $(UCLIBC_DIR)/.config
-endif
-ifeq ($(strip $(FREETZ_TARGET_LFS)),y)
-	$(SED) -i -e 's,.*UCLIBC_HAS_LFS.*,UCLIBC_HAS_LFS=y,g' $(UCLIBC_DIR)/.config
-else
-	$(SED) -i -e 's,.*UCLIBC_HAS_LFS.*,# UCLIBC_HAS_LFS is not set,g' $(UCLIBC_DIR)/.config
-endif
-	$(SED) -i -e '/.*UCLIBC_HAS_FOPEN_LARGEFILE_MODE.*/d' $(UCLIBC_DIR)/.config
-	echo "# UCLIBC_HAS_FOPEN_LARGEFILE_MODE is not set" >> $(UCLIBC_DIR)/.config
-	$(SED) 's,.*UCLIBC_HAS_WCHAR.*,UCLIBC_HAS_WCHAR=y,g' $(UCLIBC_DIR)/.config
+	$(call PKG_EDIT_CONFIG,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)) $(UCLIBC_DIR)/Rules.mak
+	$(call PKG_EDIT_CONFIG, \
+		$(if $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28), \
+			KERNEL_SOURCE=\"$(FREETZ_BASE_DIR)/$(UCLIBC_KERNEL_SOURCE_DIR)\" \
+		, \
+			KERNEL_HEADERS=\"$(FREETZ_BASE_DIR)/$(UCLIBC_KERNEL_HEADERS_DIR)\" \
+		) \
+		UCLIBC_HAS_IPV6=$(FREETZ_TARGET_IPV6_SUPPORT) \
+		UCLIBC_HAS_LFS=$(FREETZ_TARGET_LFS) \
+		UCLIBC_HAS_FOPEN_LARGEFILE_MODE=n \
+		UCLIBC_HAS_WCHAR=y \
+	) $(UCLIBC_DIR)/.config
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/lib
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/lib
@@ -83,7 +76,7 @@ endif
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(HOSTCC)" \
-		oldconfig
+		oldconfig < /dev/null > /dev/null
 	touch $@
 
 # $1 - source dir
