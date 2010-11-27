@@ -191,23 +191,29 @@ SUBST_MAP_TOUPPER_NAME = $(SUBST_MAP_TOUPPER) -:_
 #   $(1) = name to convert
 TOUPPER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOUPPER_NAME))
 
-# For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_PACKAGE_$(PKG)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
-# and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
-# $(1) - list of package suboptions (suffixes) to be evaluated
-# $(2) - optional infix
-define PKG_SELECTED_SUBOPTIONS
+define SELECTED_SUBOPTIONS__INT
 $(strip \
 	$(foreach suboption, $(1), \
 		$(if \
 			$(or \
-				$(FREETZ_PACKAGE_$(PKG)_$(if $(2),$(2)_,)$(suboption)), \
-				$(FREETZ_PACKAGE_$(PKG)_$(if $(2),$(2)_,)$(call TOUPPER_NAME,$(suboption))) \
+				$(FREETZ_$(3)_$(if $(2),$(2)_,)$(suboption)), \
+				$(FREETZ_$(3)_$(if $(2),$(2)_,)$(call TOUPPER_NAME,$(suboption))) \
 			), \
 			$(suboption) \
 		) \
 	) \
 )
 endef
+# For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_PACKAGE_$(PKG)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
+# and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
+# $(1) - list of package suboptions (suffixes) to be evaluated
+# $(2) - optional infix
+PKG_SELECTED_SUBOPTIONS = $(call SELECTED_SUBOPTIONS__INT,$(1),$(2),PACKAGE_$(PKG))
+# For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_LIB_lib$(pkg)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
+# and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
+# $(1) - list of package suboptions (suffixes) to be evaluated
+# $(2) - optional infix, default WITH
+LIB_SELECTED_SUBOPTIONS = $(call SELECTED_SUBOPTIONS__INT,$(1),$(2),LIB_lib$(patsubst lib%,%,$(pkg)))
 
 # SED helper macros
 # single quote sign within sed script quoted with single quote sign

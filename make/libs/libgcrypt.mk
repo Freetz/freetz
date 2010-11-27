@@ -8,6 +8,13 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_DIGESTS            := crc md4 md5 rmd160 sha1 sha256 sha512 tiger whirlpool
+$(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des rfc2268 seed serpent twofish
+$(PKG)_ASYMMETRIC_CIPHERS := dsa ecc elgamal rsa
+$(foreach i,digest symmetric_cipher asymmetric_cipher, \
+  $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(call TOUPPER_NAME,$(i))_%,$($(PKG)_$(call TOUPPER_NAME,$(i))S))) \
+)
+
 $(PKG)_DEPENDS_ON := libgpg-error
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
@@ -16,9 +23,9 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-asm
 $(PKG)_CONFIGURE_OPTIONS += --with-gpg-error-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
-$(PKG)_CONFIGURE_OPTIONS += --enable-digests="md5 rmd160 sha1 sha256 sha512"
-$(PKG)_CONFIGURE_OPTIONS += --enable-ciphers="arcfour des aes"
-$(PKG)_CONFIGURE_OPTIONS += --enable-pubkey-ciphers="rsa dsa"
+$(PKG)_CONFIGURE_OPTIONS += --enable-digests="$(call LIB_SELECTED_SUBOPTIONS,$($(PKG)_DIGESTS),WITH_DIGEST)"
+$(PKG)_CONFIGURE_OPTIONS += --enable-ciphers="$(call LIB_SELECTED_SUBOPTIONS,$($(PKG)_SYMMETRIC_CIPHERS),WITH_SYMMETRIC_CIPHER)"
+$(PKG)_CONFIGURE_OPTIONS += --enable-pubkey-ciphers="$(call LIB_SELECTED_SUBOPTIONS,$($(PKG)_ASYMMETRIC_CIPHERS),WITH_ASYMMETRIC_CIPHER)"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
