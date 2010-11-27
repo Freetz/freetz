@@ -11,8 +11,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_DIGESTS            := crc md4 md5 rmd160 sha1 sha256 sha512 tiger whirlpool
 $(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des rfc2268 seed serpent twofish
 $(PKG)_ASYMMETRIC_CIPHERS := dsa ecc elgamal rsa
-$(foreach i,digest symmetric_cipher asymmetric_cipher, \
-  $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(call TOUPPER_NAME,$(i))_%,$($(PKG)_$(call TOUPPER_NAME,$(i))S))) \
+$(foreach i,DIGEST SYMMETRIC_CIPHER ASYMMETRIC_CIPHER, \
+  $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(i)_%,$($(PKG)_$(i)S))) \
 )
 
 $(PKG)_DEPENDS_ON := libgpg-error
