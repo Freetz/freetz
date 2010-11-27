@@ -6,7 +6,7 @@
  echo ANNEX=$ANNEX
 -# Fritz_Box_7570
 +# Fritz_Box_7570 / W920V / getestet auf orig FW W920 und Freetz FW 7570 / "for i in  avme ; do " to make fwmod happy *g*
-+hwrev="$(echo $(grep HWRevision < /proc/sys/urlader/environment) | cut -d' ' -f2)"
++hwrev="$(set $(grep HWRevision /proc/sys/urlader/environment); echo $2)"
 +case "$hwrev" in
 +	135.* | 146.* | 153.* ) korrekt_version=1 ;;
 +esac
