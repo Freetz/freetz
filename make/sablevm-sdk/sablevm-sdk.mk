@@ -14,6 +14,8 @@ $(PKG)_LIB_TARGET_CLASSPATH:=$($(PKG)_DEST_DIR)/usr/share/sablevm-classpath/libc
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libsablevm-$($(PKG)_VERSION).so
 $(PKG)_LIB_TARGET_CLASSPATH_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sablevm-classpath/libjavaio-$($(PKG)_VERSION).so
 
+$(PKG)_BUILD_PREREQ += fastjar jikes
+
 $(PKG)_DEPENDS_ON := libtool popt zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SABLEVM_SDK_MINI
@@ -43,6 +45,9 @@ $($(PKG)_DIR)/sablevm/.configured: $($(PKG)_DIR)/.unpacked
 		--srcdir="./../sablevm" \
 		--with-internal-libffi=yes \
 		--with-internal-libpopt=no \
+		--with-jikes="$$(which jikes)" \
+		--with-fastjar="$$(which fastjar)" \
+		
 	);
 	touch $@
 
@@ -63,6 +68,8 @@ $($(PKG)_DIR)/sablevm-classpath/.configured: $($(PKG)_DIR)/.unpacked
 		--disable-gtk-peer \
 		--disable-gtk-cairo \
 		--without-x \
+		--with-jikes="$$(which jikes)" \
+		--with-fastjar="$$(which fastjar)" \
 	);
 	touch $@
 
