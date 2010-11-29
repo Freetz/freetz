@@ -15,7 +15,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-gmp-build=$(TARGET_TOOLCHAIN_STAGING_DIR)
 # Patch #3 modifies configure.in which in turn causes autoconf-1.11 & automake-2.64
 # to be called which could be missed on build system. As the patch also modifies
 # configure it's safe simply to touch configure.in
-$(PKG)_PREVENT_AUTOCONF_CALL := touch -t 200001010000.00 $(abspath $(MPFR_DIR))/configure.in;
+$(PKG)_PREVENT_AUTOCONF_CALL := touch -t 200001010000.00 $(MPFR_DIR)/configure.in;
 $(PKG)_CONFIGURE_PRE_CMDS += $($(PKG)_PREVENT_AUTOCONF_CALL)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
@@ -49,7 +49,7 @@ $(PKG_FINISH)
 
 # host version
 MPFR_DIR2:=$(TOOLS_SOURCE_DIR)/mpfr-$(MPFR_VERSION)
-MPFR_HOST_DIR:=$(abspath $(TOOLS_BUILD_DIR))
+MPFR_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
 MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
 
 $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
