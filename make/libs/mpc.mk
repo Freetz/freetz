@@ -46,7 +46,6 @@ MPC_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
 MPC_HOST_BINARY:=$(MPC_HOST_DIR)/lib/libmpc.a
 
 $(MPC_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPC_DIR)/.unpacked
-	$(MPC_PREVENT_AUTOCONF_CALL)
 	mkdir -p $(MPC_DIR2)
 	(cd $(MPC_DIR2); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
