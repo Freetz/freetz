@@ -8,26 +8,26 @@ config FREETZ_PACKAGE_TINYPROXY
 		http://tinyproxy.sourceforge.net
 
 config FREETZ_PACKAGE_TINYPROXY_WITH_TRANSPARENT_PROXY
-	prompt "Enable transparent proxying"
-	bool
-	default y
+	bool "Enable transparent proxying"
 	depends FREETZ_PACKAGE_TINYPROXY
+	default y
 
 config FREETZ_PACKAGE_TINYPROXY_WITH_FILTER
-	prompt "Enable filtering support"
-	bool
-	default y
+	bool "Enable filtering support"
 	depends FREETZ_PACKAGE_TINYPROXY
+	default y
 
 config FREETZ_PACKAGE_TINYPROXY_WITH_UPSTREAM
-	prompt "Enable upstream support"
-	bool
-	default n
+	bool "Enable upstream support"
 	depends FREETZ_PACKAGE_TINYPROXY
+	default n
 
 #config FREETZ_PACKAGE_TINYPROXY_WITH_SOCKS
-#	prompt "Enable SOCKS support"
-#	bool
-#	default n
+#	bool "Enable SOCKS support"
 #	depends FREETZ_PACKAGE_TINYPROXY
+#	default n
 
+config FREETZ_PACKAGE_TINYPROXY_STATIC
+	bool "Build statically linked binary"
+	depends FREETZ_PACKAGE_TINYPROXY
+	default n
