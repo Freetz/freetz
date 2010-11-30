@@ -24,15 +24,9 @@ start() {
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
-	/etc/init.d/rc.crond
-	/etc/init.d/rc.telnetd
-	/etc/init.d/rc.webcfg
-	/etc/init.d/rc.swap
-	/etc/init.d/rc.external
-
-	[ -x /etc/init.d/rc.dsld ] && /etc/init.d/rc.dsld
-	/etc/init.d/rc.multid
-	[ -x /etc/init.d/rc.ftpd ] && /etc/init.d/rc.ftpd
+	for pkg in crond telnetd webcfg swap external dsld multid ftpd; do
+		[ -x "$rc" ] && "$rc"
+	done
 
 	# Static Packages
 	[ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ] && EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
@@ -59,6 +53,7 @@ start() {
 		echo " ... done."
 	fi
 
+	#compat (may be removed later):
 	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom
 	[ -r /tmp/flash/mod/rc.custom ] && . /tmp/flash/mod/rc.custom
 

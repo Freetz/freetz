@@ -67,6 +67,7 @@ fi
 echo 'done.'
 
 echo -n 'Loading modules ... '
+#compat (may be removed later):
 [ -r /tmp/flash/modules ] && mv /tmp/flash/modules /tmp/flash/mod/modules
 if [ -r /tmp/flash/mod/modules ]; then
 	grep -v "^#" /tmp/flash/mod/modules | while read -r module; do
