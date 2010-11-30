@@ -167,7 +167,7 @@ MAKEDEVS_TOOL="makedevs"
 UNSQUASHFS_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
 
-MKSQUASHFS_OPTIONS="-le -noappend -all-root -info"
+MKSQUASHFS_OPTIONS="-noappend -all-root -info"
 UNSQUASHFS_OPTIONS="-no-progress"
 
 TAR_TOOL="tar"
@@ -206,6 +206,12 @@ fi
 
 # Load config
 . "$DOT_CONFIG"
+
+if [ "$FREETZ_TARGET_ARCH_LE" == "y" ]; then
+	MKSQUASHFS_OPTIONS+=" -le"
+else
+	MKSQUASHFS_OPTIONS+=" -be"
+fi
 
 if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_KERNEL_VERSION_2_6_19_2" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
@@ -581,13 +587,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
 		echo "installing mod base"
 
-		# Emergency stop switch for execution of debug.cfg
-		sed -i -r 's#(\. /var/flash/debug\.cfg)#[ "$dbg_off" == "y" ] || \1#g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-		# Emergency stop switch for execution of Freetz as a whole
-		echo '[ "$ds_off" == "y" ] || . /etc/init.d/rc.mod 2>&1 | tee /var/log/mod.log' >> "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-
 		MOD_CRON="${VARTAR_MOD_DIR}/var/spool/cron/crontabs"
 		MOD_ROOT="${VARTAR_MOD_DIR}/var/mod"
+
+		# Remove symlink before creating directory
+		rm -rf ${VARTAR_MOD_DIR}/var/spool
 
 		mkdir -p "$MOD_CRON"
 		mkdir -p "${MOD_ROOT}/pkg" "${MOD_ROOT}/home" "${MOD_ROOT}/lib" "${MOD_ROOT}/root"
@@ -737,8 +741,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	echo0 "installing modules"
-	# 7270 modules dir is 2.6.19.2 not 2.6.19.2-ur8
-	[ ! -e "$MODULES_DIR" ] && MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
+	# ar7 (FON WLAN) and ohio (7170) modules dir is 2.6.13.1-ar7/ohio
+	# ur8 (7270) and iks (7390) modules dir is 2.6.19.2
+	# ar9 (7320) modules dir is 2.6.28.10
+	if [ "$FREETZ_KERNEL_LAYOUT" = "ar7" ] || [ "$FREETZ_KERNEL_LAYOUT" = "ohio" ]; then
+		MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
+	elif [ "$FREETZ_KERNEL_LAYOUT" = "ar9" ]; then
+		MODULES_DIR="${MODULES_DIR}.10"
+	fi
+
 	for i in \
 	$( \
 		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}" && \
@@ -879,10 +890,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	echo0 "stripping leftover unstripped binaries"
-	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' \) \
+	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
 		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS32.*not stripped.*|\1|p'`; do
 		echo2 $i
-		${ABS_BASE_DIR}/toolchain/target/bin/mipsel-linux-uclibc-strip --remove-section={.comment,.note,.pdr} $i > /dev/null 2>&1
+		${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip --remove-section={.comment,.note,.pdr} $i > /dev/null 2>&1
 	done
 
 	# external should run after modifying and stripping and so on

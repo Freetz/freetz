@@ -2,6 +2,8 @@
 
 mod_base="."
 fw_base="build/original/filesystem"
+DOT_CONFIG=".config"
+
 case $# in
 	0)
 		;;
@@ -18,9 +20,16 @@ case $# in
 		echo "    fw base directory defaults to 'build/original/filesystem'" >&2
 		exit 1
 esac
+
+# Import Freetz config variables
+. $mod_base/$DOT_CONFIG
+
+LDD="$mod_base/toolchain/target/bin/${FREETZ_TARGET_ARCH}-linux-ldd"
+
 files=$(find "$mod_base/$fw_base" -type f | xargs file | grep "ELF 32" | sed -e 's/: .*//' | grep -v -E '\.ko$')
+
 for file in $files; do
 	echo "$file"
-	"$mod_base/toolchain/target/mipsel-linux-uclibc/bin/ldd" "$file" | sed -e 's/ =>.*//'
+	$LDD "$file" | sed -e 's/ =>.*//'
 	echo "----------------------------------------------------------------------"
 done

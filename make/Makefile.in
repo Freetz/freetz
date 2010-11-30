@@ -26,9 +26,6 @@ HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	)
 GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
 
-REAL_GNU_TARGET_NAME:=mipsel-linux-uclibc
-GNU_TARGET_NAME:=mipsel-linux
-
 ifeq ($(strip $(FREETZ_TARGET_NLS)),y)
 DISABLE_NLS:=
 else
@@ -54,24 +51,13 @@ else
 FPIC:=
 endif
 
-TARGET_ARCH:=$(strip $(subst ",, $(FREETZ_TARGET_ARCH)))
-# FIXME: declared twice (make/toolchain/Makefile.in)
-TARGET_UCLIBC_VERSION:=$(strip $(subst ",, $(FREETZ_TARGET_UCLIBC_VERSION)))
+
 TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
-TARGET_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_TARGET_MAKE_PATH)))
 KERNEL_ARCH:=mips
 KERNEL_CROSS:=$(strip $(subst ",, $(FREETZ_KERNEL_CROSS)))
-KERNEL_MAKE_PATH:=$(strip $(subst ",, $(FREETZ_KERNEL_MAKE_PATH)))
 TARGET_CFLAGS:=$(strip $(subst ",, $(FREETZ_TARGET_CFLAGS))) $(CFLAGS_LARGEFILE)
 
-ifneq ($(patsubst /%,/,$(TARGET_MAKE_PATH)),/)
-TARGET_MAKE_PATH:=$(FREETZ_BASE_DIR)/$(TARGET_MAKE_PATH)
-endif
-ifneq ($(patsubst /%,/,$(KERNEL_MAKE_PATH)),/)
-KERNEL_MAKE_PATH:=$(FREETZ_BASE_DIR)/$(KERNEL_MAKE_PATH)
-endif
-
-TARGET_SPECIFIC_SUBDIR:=target-$(TARGET_ARCH)_uClibc-$(TARGET_UCLIBC_VERSION)
+TARGET_SPECIFIC_SUBDIR:=target-$(TARGET_ARCH)_uClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION)
 SOURCE_DIR:=$(SOURCE_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
 PACKAGES_DIR:=$(PACKAGES_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
 TARGET_SPECIFIC_ROOT_DIR:=$(PACKAGES_DIR)/root

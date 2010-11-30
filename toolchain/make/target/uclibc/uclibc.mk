@@ -67,6 +67,18 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 		UCLIBC_HAS_FOPEN_LARGEFILE_MODE=n \
 		UCLIBC_HAS_WCHAR=y \
 	) $(UCLIBC_DIR)/.config
+ifneq ($(strip $(UCLIBC_VERSION)),0.9.28)
+ifeq ($(strip $(FREETZ_TARGET_ARCH_LE)),y)
+	$(SED) -i -e 's,.*ARCH_BIG_ENDIAN.*,ARCH_LITTLE_ENDIAN=y,g' $(UCLIBC_DIR)/.config
+	$(SED) -i -e 's,.*ARCH_WANTS_BIG_ENDIAN.*,# ARCH_WANTS_BIG_ENDIAN is not set,g' $(UCLIBC_DIR)/.config
+	$(SED) -i -e 's,.*ARCH_WANTS_LITTLE_ENDIAN.*,ARCH_WANTS_LITTLE_ENDIAN=y,g' $(UCLIBC_DIR)/.config
+else
+	$(SED) -i -e 's,.*ARCH_LITTLE_ENDIAN.*,ARCH_BIG_ENDIAN=y,g' $(UCLIBC_DIR)/.config
+	$(SED) -i -e 's,.*ARCH_WANTS_BIG_ENDIAN.*,ARCH_WANTS_BIG_ENDIAN=y,g' $(UCLIBC_DIR)/.config
+	$(SED) -i -e 's,.*ARCH_WANTS_LITTLE_ENDIAN.*,# ARCH_WANTS_LITTLE_ENDIAN is not set,g' $(UCLIBC_DIR)/.config
+endif
+endif
+
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/lib
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/lib

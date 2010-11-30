@@ -12,3 +12,5 @@ if [ $count -gt 1 ]; then
 else
 	modsed '\@^/usr/sbin/inetd.*$@d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
+
+isFreetzType 7320 && rm_files "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd"

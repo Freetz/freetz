@@ -1,0 +1,22 @@
+--- usr/www/avme/html/de/home/home.js.orig	2010-06-25 14:42:42.000000000 +0200
++++ usr/www/avme/html/de/home/home.js	2010-06-27 09:41:48.031616849 +0200
+@@ -725,7 +725,7 @@
+ var nPartTotal = Number(g_usbhost_data.part_count_total);
+ if (isNaN(nPartTotal)) nPartTotal = 0;
+ var unplugOk = parseInt(g_usbhost_data.unplug_ok, 10) == 1;
+-if (nPartTotal > nStor)
++if (nPartTotal > 0)
+ {
+ if (unplugOk)
+ {
+@@ -733,9 +733,7 @@
+ }
+ else
+ {
+-strStor = "{?895:5106?} ";
+-strStor += "<a href=\"javascript:syslog_jslSubmitFormEx(5);\">{?895:8842?}</a>";
+-strStor = strStor.fontcolor("#cc0000");
++strStor = "Es wurden " + nStor + " von " + nPartTotal + " Partitionen eingebunden.";
+ }
+ strArr.push(strStor);
+ }

@@ -11,6 +11,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NOIP_DIR) \
+	ARCH="$(TARGET_ARCH)" \
 	CC="$(TARGET_CC)" \
 	CFLAGS="$(TARGET_CFLAGS)"
 

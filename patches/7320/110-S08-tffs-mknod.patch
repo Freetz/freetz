@@ -1,0 +1,13 @@
+--- etc/init.d/S08-tffs.orig	2010-09-15 13:39:31.000000000 +0200
++++ etc/init.d/S08-tffs	2010-09-28 01:56:31.089189998 +0200
+@@ -58,6 +58,10 @@
+ #########################################################################
+ mknod /var/flash/voip.cfg c $tffs_major $((0x72))
+ mknod /var/flash/voipd_call_stat c $tffs_major $((0x7A))
++#########################################################################
++## freetz
++#########################################################################
++mknod /var/flash/freetz c $tffs_major $((0x3c))
+ ## mknod /var/flash/telefon_msns c $tffs_major $((0x80)) entfaellt mit tecfg v54
+ #########################################################################
+ ## FLASH_FS_ID_MSNLISTE = 0x0080, /*--- /var/flash/telefon_msns ---*/

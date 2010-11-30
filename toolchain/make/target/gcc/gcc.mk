@@ -94,8 +94,10 @@ $(if $(strip $(1)),\
 endef
 
 gcc-source: $(DL_DIR)/$(GCC_SOURCE)
+ifneq ($(strip $(DL_DIR)/$(GCC_SOURCE)), $(strip $(DL_DIR)/$(GCC_KERNEL_SOURCE)))
 $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(GCC_SOURCE) $(GCC_SITE) $(GCC_MD5)
+endif
 
 gcc-unpacked: $(GCC_DIR)/.unpacked
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)

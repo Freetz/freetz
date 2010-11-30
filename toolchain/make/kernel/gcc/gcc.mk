@@ -20,11 +20,28 @@
 
 GCC_KERNEL_VERSION:=$(KERNEL_TOOLCHAIN_GCC_VERSION)
 GCC_KERNEL_SOURCE:=gcc-$(GCC_KERNEL_VERSION).tar.bz2
-GCC_KERNEL_MD5:=4a21ac777d4b5617283ce488b808da7b
 GCC_KERNEL_SITE:=@GNU/gcc/gcc-$(GCC_KERNEL_VERSION)
 GCC_KERNEL_DIR:=$(KERNEL_TOOLCHAIN_DIR)/gcc-$(GCC_KERNEL_VERSION)
 GCC_KERNEL_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/kernel/gcc
 GCC_KERNEL_BUILD_DIR:=$(KERNEL_TOOLCHAIN_DIR)/gcc-$(GCC_KERNEL_VERSION)-build
+
+ifeq ($(GCC_KERNEL_VERSION),3.4.6)
+GCC_KERNEL_MD5:=4a21ac777d4b5617283ce488b808da7b
+endif
+ifeq ($(GCC_KERNEL_VERSION),4.4.5)
+GCC_KERNEL_MD5:=44b3192c4c584b9be5243d9e8e7e0ed1
+endif
+
+GCC_INITIAL_PREREQ=
+
+ifndef KERNEL_TOOLCHAIN_NO_MPFR
+GCC_DECIMAL_FLOAT:=--disable-decimal-float
+
+GCC_INITIAL_PREREQ+=$(GMP_HOST_BINARY) $(MPFR_HOST_BINARY)
+
+GCC_WITH_HOST_GMP=--with-gmp=$(GMP_HOST_DIR)
+GCC_WITH_HOST_MPFR=--with-mpfr=$(MPFR_HOST_DIR)
+endif
 
 GCC_KERNEL_EXTRA_MAKE_OPTIONS :=
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
@@ -44,7 +61,7 @@ $(GCC_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 	done
 	touch $@
 
-$(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked
+$(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_INITIAL_PREREQ)
 	mkdir -p $(GCC_KERNEL_BUILD_DIR)
 	(cd $(GCC_KERNEL_BUILD_DIR); PATH=$(KERNEL_TOOLCHAIN_PATH) \
 		CC="$(HOSTCC)" \
@@ -55,22 +72,24 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked
 		--target=$(REAL_GNU_KERNEL_NAME) \
 		--enable-languages=c \
 		--disable-shared \
-		--disable-__cxa_atexit \
-		--enable-target-optspace \
+		--with-newlib \
+		--disable-libssp \
 		--with-gnu-ld \
-		--disable-libmudflap \
+		--with-gnu-as \
 		--without-headers \
 		--disable-threads \
+		$(GCC_WITH_HOST_GMP) \
+		$(GCC_WITH_HOST_MPFR) \
 		--disable-nls \
 	);
 	touch $@
 
 $(GCC_KERNEL_BUILD_DIR)/.compiled: $(GCC_KERNEL_BUILD_DIR)/.configured
-	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE) $(GCC_KERNEL_EXTRA_MAKE_OPTIONS) -C $(GCC_KERNEL_BUILD_DIR) all
+	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE) $(GCC_KERNEL_EXTRA_MAKE_OPTIONS) -C $(GCC_KERNEL_BUILD_DIR) all-gcc
 	touch $@
 
 $(KERNEL_CROSS_COMPILER): $(GCC_KERNEL_BUILD_DIR)/.compiled
-	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE1) -C $(GCC_KERNEL_BUILD_DIR) install
+	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE1) -C $(GCC_KERNEL_BUILD_DIR) install-gcc
 	$(call GCC_INSTALL_COMMON,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(GCC_KERNEL_VERSION),$(REAL_GNU_KERNEL_NAME),$(HOST_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(KERNEL_TOOLCHAIN_STAGING_DIR))
 

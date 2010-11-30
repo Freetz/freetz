@@ -1,0 +1,12 @@
+--- linux-2.6.28/arch/mips/Makefile.orig	2010-10-16 15:48:55.071946790 +0200
++++ linux-2.6.28/arch/mips/Makefile	2010-10-16 15:48:55.211946790 +0200
+@@ -635,6 +635,9 @@
+ cflags-$(CONFIG_AMAZON_S) += -I$(srctree)/arch/mips/include/asm/mach-amazone_s -save-temps
+ load-$(CONFIG_AMAZON_S) += 0xFFFFFFFF80002000
+ 
++# temporary until string.h is fixed
++cflags-y += -ffreestanding
++
+ cflags-y			+= -I$(srctree)/arch/mips/include/asm/mach-generic
+ drivers-$(CONFIG_PCI)		+= arch/mips/pci/
+ 

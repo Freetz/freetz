@@ -1,5 +1,8 @@
+# doesn't configure on mips (be)
+
 config FREETZ_PACKAGE_JAMVM
 	bool "JamVM 1.5.1 (binary only)"
+	depends on FREETZ_TARGET_ARCH_LE
 	select FREETZ_PACKAGE_CLASSPATH
 	select FREETZ_LIB_libffi
 	select FREETZ_LIB_libz
@@ -24,7 +27,7 @@ config FREETZ_PACKAGE_JAMVM
 		Classpath mailing lists for possible patches). Later snapshots of
 		Classpath may also work, if no modifications have been made to the VM
 		interface.
-		
+
 		Note, JamVM will not work with the class library from Sun or IBM's
 		Virtual Machines.
 

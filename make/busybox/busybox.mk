@@ -158,7 +158,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
-		ARCH="mipsel" \
+		ARCH="mips" \
 		-C $(BUSYBOX_DIR)
 
 $($(PKG)_BINARY).links: $($(PKG)_BINARY)

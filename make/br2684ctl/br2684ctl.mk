@@ -16,6 +16,8 @@ $(PKG_CONFIGURED_NOP)
 
 ifneq ($(findstring ur8,$(FREETZ_KERNEL_LAYOUT)),)
 BR2684CTL_OPTS := -DCONFIG_MIPS_UR8
+else ifneq ($(findstring iks,$(FREETZ_KERNEL_LAYOUT)),)
+BR2684CTL_OPTS := -DCONFIG_MACH_IKAN_MIPS
 endif
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured

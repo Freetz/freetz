@@ -1,3 +1,6 @@
+# 7320 uses ttyS1 as serial console
+isFreetzType 7320 && return 0
+
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/etc/inittab"
 #
 ::restart:/sbin/init

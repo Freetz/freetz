@@ -21,7 +21,7 @@ case $tty in
 		[ -z "$TERM" ] && export TERM=xterm
 		unset serial_term
 		;;
-	/dev/tts/*|/dev/ttyS0|/dev/console)
+	/dev/tts/*|/dev/ttyS*|/dev/console)
 		export TERM=vt102
 		export serial_term=y
 		if [ -z "$HOME" -o "$HOME" == "/" ]; then

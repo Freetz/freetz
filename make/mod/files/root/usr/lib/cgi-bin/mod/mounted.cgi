@@ -120,7 +120,7 @@ disabledbtn="disabled='disabled' "
 DFOUT=$("$DEBUG_PATH"df -h | sed -n '1d; :a; $!N; $!ba; s/\n  */ /g;p')
 mfilt=$("$DEBUG_PATH"mount |
 	sed -rn '
-		\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (jffs|fuse|cifs)|^.*:/.* on .* type nfs# {
+		\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (jffs|fuse|cifs|yaffs)|^.*:/.* on .* type nfs# {
 			s/^([^ ]+) on (.*) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/; p
 		}
 	'

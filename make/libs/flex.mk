@@ -19,7 +19,7 @@ $(FLEX_STAGING_BINARY): $(FLEX_BINARY)
 	$(SUBMAKE) -C $(FLEX_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	# Don't try to run mipsel flex on host
+	# Don't try to run mips flex on host
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/flex
 
 $(pkg)-precompiled: $(FLEX_STAGING_BINARY)
