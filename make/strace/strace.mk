@@ -5,7 +5,7 @@ $(PKG)_SITE:=@SF/strace
 $(PKG)_BINARY:=$($(PKG)_DIR)/strace
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/strace
 
-$(PKG)_CONFIGURE_ENV += ac_cv_have_little_endian_long_long=yes
+$(PKG)_CONFIGURE_PRE_CMDS += autoreconf;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
