@@ -1,9 +1,8 @@
 #!/bin/sh
 
 ## Store 'clean' environment for later use
-if [ ! -e /var/env.cache ]; then
-	export -p | grep '^export [A-Z]' > /var/env.cache
-fi
+# overwrite AVM's version
+env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
 
 cd /
 export TERM=xterm
