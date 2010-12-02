@@ -28,7 +28,7 @@ sec_begin '$(lang de:"Public Key Authentication" en:"Public key authentication")
 
 cat << EOF
 <ul>
-<li><a href="$(href file authorized-keys authorized-keys)">$(lang de:"authorized_keys bearbeiten" en:"Edit authorized_keys")</a></li>
+<li><a href="$(href file authorized-keys authorized_keys)">$(lang de:"authorized_keys bearbeiten" en:"Edit authorized_keys")</a></li>
 </ul>
 EOF
 
