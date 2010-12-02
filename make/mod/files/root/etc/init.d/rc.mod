@@ -4,9 +4,6 @@
 # overwrite AVM's version
 env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
 
-cd /
-export TERM=xterm
-
 DAEMON=mod
 . /etc/init.d/modlibrc
 
