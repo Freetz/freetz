@@ -1,0 +1,43 @@
+--- opendd.c
++++ opendd.c
+@@ -321,6 +321,7 @@
+   void *value = NULL;
+   option_type type;
+   char *smtp = NULL, *user = NULL, *pwd = NULL;
++  char *port = "25", port_buf[20];
+   char *mailfrom = NULL, *mailto = NULL;
+   int retcode = 0;
+   int dyndns_use_ssl = 0;
+@@ -340,6 +341,23 @@
+     break;
+   }
+   
++  value = get_option("smtpserverport", &type);
++  if (value != NULL) {
++    switch(type) {
++    case OPTION_STRING:
++      port = (char *)value;
++      break;
++    case OPTION_INT:
++      sprintf (port_buf, "%d", *(int *)value);
++      port = port_buf;
++      break;
++    default:
++      logmsg(LOG_ERR, "send_report() : \"smtpserverport\" is not a valid option !");
++      return 0;
++      break;
++    }
++  }
++  
+   value = get_option("mailto", &type);
+   if (value == NULL)
+     return 0;
+@@ -401,7 +419,7 @@
+     set_socket_ssl(0);
+   
+   /* Send to your SMTP server */
+-  retcode = sendmail(smtp, "25", mailfrom, mailto, user, pwd, PLAIN, additional_header, msg);
++  retcode = sendmail(smtp, port, mailfrom, mailto, user, pwd, PLAIN, additional_header, msg);
+   
+   /* Then reenable it */
+   if (dyndns_use_ssl)
