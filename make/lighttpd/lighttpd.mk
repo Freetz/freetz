@@ -94,6 +94,8 @@ endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_LOCKS)),y)
 $(PKG)_DEPENDS_ON += e2fsprogs # we need libuuid from it
+$(PKG)_CONFIGURE_ENV += $(if $(FREETZ_PACKAGE_E2FSPROGS_STATIC),UUID_PIC_LIB=uuid_pic)
+$(PKG)_CONFIGURE_ENV += ac_cv_header_uuid_uuid_h=yes
 $(PKG)_CONFIGURE_OPTIONS += --with-webdav-locks
 else
 $(PKG)_CONFIGURE_OPTIONS += --without-webdav-locks
