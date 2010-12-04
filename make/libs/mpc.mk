@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=e98267ebd5648a39f881d66797122fb6
 $(PKG)_SITE:=http://www.multiprecision.org/mpc/download
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libmpc.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpc.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpc.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmpc.so.$($(PKG)_LIB_VERSION)
 
