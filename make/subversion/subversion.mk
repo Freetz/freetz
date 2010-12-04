@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.6.13)
+$(call PKG_INIT_BIN, 1.6.15)
 $(PKG)_MAJOR_VERSION:=1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=7ae1c827689f21cf975804005be30aeb
+$(PKG)_SOURCE_MD5:=113fca1d9e4aa389d7dc2b210010fa69
 $(PKG)_SITE:=http://subversion.tigris.org/downloads/
 
 ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
