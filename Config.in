@@ -2220,7 +2220,6 @@ config FREETZ_DL_SOURCE2
 	default "fritz.box_fon_wlan_7141.40.04.37.image"		if	FREETZ_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.57.image"			if	FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "fw_Speedport_W900V_v34.04.57.image"			if	FREETZ_TYPE_SPEEDPORT_W900V_7170
-#HIER
 	default "FRITZ.Box_Fon_WLAN_7240.73.04.86.image"		if	FREETZ_TYPE_7240_7270
 	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it-fr.54.04.81.image"	if	(FREETZ_TYPE_FON_WLAN_7270_V1 || \
 												FREETZ_TYPE_FON_WLAN_7270_V2) && \
@@ -2362,6 +2361,36 @@ config FREETZ_MOD_DL_SITE_5
 
 endmenu
 
+menu "Build system options"
+config FREETZ_VERBOSITY_LEVEL
+	int "Verbosity level (0-2)"
+	default 2
+	help
+		Verbosity level of the fwmod script and tar.
+		0 is the least and 2 the most information.
+
+config FREETZ_JLEVEL
+	int "Number of jobs to run simultaneously"
+	default "2"
+	help
+		Number of jobs to run simultanesouly
+
+config FREETZ_CHECK_CHANGED
+	bool "Force package clean if it has changed"
+	default y
+	help
+		If this is activated, all packages are checked for changes in make/<pkg>/files
+		and make/<pkg>/patches. If so, the package will be recreated.
+
+config FREETZ_BACKUP_CONFIG_CACHE
+	bool "Backup config.cache"
+	default n
+	help
+		This is a developer only option.
+		It causes config.cache to be backed up before calling package configure script and after that.
+		This might simplify searching for a missing/wrong config.cache entry.
+endmenu
+
 config FREETZ_SECURITY_LEVEL
 	int "Default Security level (0-2)"
 	default 1
@@ -2371,13 +2400,7 @@ config FREETZ_SECURITY_LEVEL
 		1 : only configuration files without shell commands might be edited
 		2 : no configuration files might be edited.
 
-config FREETZ_VERBOSITY_LEVEL
-	int "Verbosity level (0-2)"
-	default 2
-	help
-		Verbosity level of the fwmod script and tar.
-		0 is the least and 2 the most information.
-
+menu "Look and feel"
 choice
 	prompt "Favicon"
 	default FREETZ_FAVICON_NONE
@@ -2400,21 +2423,6 @@ choice
 		bool "han-solo's favicons"
 endchoice
 
-config FREETZ_BACKUP_CONFIG_CACHE
-	bool "Backup config.cache"
-	default n
-	help
-		This is a developer only option.
-		It causes config.cache to be backed up before calling package configure script and after that.
-		This might simplify searching for a missing/wrong config.cache entry.
-
-config FREETZ_CHECK_CHANGED
-	bool "Force package clean if it has changed"
-	default y
-	help
-		If this is activated, all packages are checked for changes in make/<pkg>/files
-		and make/<pkg>/patches. If so, the package will be recreated.
-
 config FREETZ_FAVICON_STRING
 	string
 	default "none"			if FREETZ_FAVICON_NONE
@@ -2423,10 +2431,32 @@ config FREETZ_FAVICON_STRING
 	default "dsl123"		if FREETZ_FAVICON_DSL123
 	default "hansolo"		if FREETZ_FAVICON_HANSOLO
 
+choice
+	prompt "Freetz Style"
+	default FREETZ_STYLE_COLORED
+	help
+		Changes the style sheet file for Freetz web interface.
+		For example, look of the Freetz status-bars can be changed
+		from colored to grey by change of the Freetz style.
+
+	config FREETZ_STYLE_COLORED
+		bool "Default Freetz style with colored (green) status-bars"
+
+	config FREETZ_STYLE_GREY
+		bool "Alternative style scheme with grey status-bars"
+endchoice
+
+config FREETZ_STYLE
+	string
+	default "colored"			if FREETZ_STYLE_COLORED
+	default "grey"				if FREETZ_STYLE_GREY
+endmenu
+
+menu "Image versioning/naming options"
+
 config FREETZ_SUBVERSION_STRING
 	bool "Add Freetz version to subversion string"
-	default y if \
-		! FREETZ_TYPE_FON_WLAN_7270_V1
+	default y if !FREETZ_TYPE_FON_WLAN_7270_V1
 	default n
 	help
 		Add Freetz version to subversion string, e.g. -11945-freetz-devel-2417.
@@ -2453,26 +2483,6 @@ config FREETZ_DEVELOPER_VERSION_STRING
 		versions of the Freetz source code only and requires svnversion to be
 		installed.
 
-choice
-	prompt "Freetz Style"
-	default FREETZ_STYLE_COLORED
-	help
-		Changes the style sheet file for Freetz web interface.
-		For example, look of the Freetz status-bars can be changed
-		from colored to grey by change of the Freetz style.
-
-	config FREETZ_STYLE_COLORED
-		bool "Default Freetz style with colored (green) status-bars"
-
-	config FREETZ_STYLE_GREY
-		bool "Alternative style scheme with grey status-bars"
-endchoice
-
-config FREETZ_STYLE
-	string
-	default "colored"			if FREETZ_STYLE_COLORED
-	default "grey"				if FREETZ_STYLE_GREY
-
 config FREETZ_USER_DEFINED_COMMENT
 	string "User defined comment"
 	default ""
@@ -2494,6 +2504,7 @@ config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
 		Add the user defined comment as a prefix in front of the image file name.
 		Otherwise the user defined comment will be added between the language setting
 		and the build date
+endmenu
 
 menu "Info pages"
 	depends on FREETZ_SHOW_ADVANCED
@@ -2614,62 +2625,6 @@ menu "Plugin selection"
 			Integrates AVM's webdav
 endmenu
 
-menu External
-config EXTERNAL_ENABLED
-	bool "Enable external processing"
-	default n
-	help
-		Enable this to move (big) files out of the firmware-image onto
-		an attached USB device or a mounted network share like SMB or NFS.
-
-		-------------------------- WARNING ----------------------------------
-		Move all the files from build/modified/external to your choosen
-		directory on the box BEFORE you flash the reduced image!
-
-		-------------------------- WARNING ----------------------------------
-		Do NOT external files needed to boot up Freetz!
-
-config EXTERNAL_DOWNLOADER
-	bool "Prepare files for Downloader"
-	default n
-	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOWNLOADER
-	help
-		Prepare files for Downloader package.
-		Downloader loads usualy files from a http or ftp server into the RAM of the box.
-
-config EXTERNAL_LINKS
-	bool	"Do not ignore symbolic links"
-	default n
-	depends on EXTERNAL_ENABLED
-	help
-		Allows externalisation of symbolic links.
-
-config EXTERNAL_SUBDIRS
-	bool "Keep subdirectories"
-	default n if ! EXTERNAL_DOWNLOADER
-	default y if EXTERNAL_DOWNLOADER
-	depends on EXTERNAL_ENABLED
-	help
-		Keep the original directory structure
-
-config EXTERNAL_CREATEPAK
-	bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
-	default y
-	depends on EXTERNAL_ENABLED && ! EXTERNAL_DOWNLOADER
-	help
-		Creates a file for upload with the webinterface
-
-config EXTERNAL_OWN_FILES
-	string "own files"
-	default ""
-	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
-	help
-		Put your own files/directorys here (space seperated)
-
-source make/external.in
-
-endmenu
-
 
 comment "CAUTION: SQUASHFS blocksizes greater than 64 KB can cause extensive memory usage and lead to an unstable box."
 	depends on !(FREETZ_SQUASHFS_BLOCKSIZE_ORIG||FREETZ_SQUASHFS_BLOCKSIZE_65536)
@@ -2719,6 +2674,30 @@ if FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL
 endif
 endchoice
 
+menu "Kernel modules"
+	source kernel/Config.in
+endmenu
+
+menu "BusyBox options"
+	depends on FREETZ_REPLACE_BUSYBOX
+	source make/busybox/Config.in
+endmenu
+
+menu "Shared libraries"
+config FREETZ_STRIP_LIBRARIES
+	bool "Run mklibs on the built root filesystem (Experimental)"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		Recompiles all the shared libraries to only include the
+		symbols actually needed to run the binaries on the target.
+
+		Caution: Because symbols are different in every AVM image
+		you have to update the list of missing symbols in fwmod
+		by hand.
+
+		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
 config FREETZ_REPLACE_SSL_LIBS
 	bool "Replace AVM ssl-libs"
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_LIBSSL
@@ -2729,51 +2708,67 @@ config FREETZ_REPLACE_SSL_LIBS
 		Activating this option may cause an unstable system, uncontrolled reboots
 		and other side effects.
 
-		Activiating this option saves about 400K space in image.
+		Activating this option saves about 400KB in the image.
 
-menu "BusyBox options"
-	depends on FREETZ_REPLACE_BUSYBOX
-	source make/busybox/Config.in
-endmenu
-
-menu "Kernel modules"
-	source kernel/Config.in
-endmenu
-
-menu "Shared libraries"
-	config FREETZ_STRIP_LIBRARIES
-		bool "Run mklibs on the built root filesystem (Experimental)"
-		depends on FREETZ_SHOW_ADVANCED
-		default n
-		help
-			Recompiles all the shared libraries to only include the
-			symbols actually needed to run the binaries on the target.
-
-			Caution: Because symbols are different in every AVM image
-			you have to update the list of missing symbols in fwmod
-			by hand.
-
-			EXPERIMENTAL FEATURE, USE AT OWN RISK!
 	comment "Libraries -------------------------------"
-
 	source make/libs/Config.in
 endmenu
 
-menu "Compiler options"
-
-choice
-	prompt "Toolchains"
-	default FREETZ_DOWNLOAD_TOOLCHAIN
+menu External
+config EXTERNAL_ENABLED
+	bool "Enable external processing"
+	default n
 	help
-		Download Toolchain, build toolchain
+		Enable this to move (big) files out of the firmware-image onto
+		an attached USB device or a mounted network share like SMB or NFS.
 
-	config FREETZ_DOWNLOAD_TOOLCHAIN
-		bool "Download and use precompiled toolchain" if \
-			! (FREETZ_TARGET_UCLIBC_VERSION_0_9_28 && FREETZ_TARGET_IPV6_SUPPORT)
+		-------------------------- WARNING ----------------------------------
+		Move all the files from build/modified/external to your choosen
+		directory on the box BEFORE you flash the reduced image!
 
-	config FREETZ_BUILD_TOOLCHAIN
-		bool "Build toolchain (requires 4GB diskspace)"
-endchoice
+		-------------------------- WARNING ----------------------------------
+		Do NOT external files needed to boot up Freetz!
+
+config EXTERNAL_DOWNLOADER
+	bool "Prepare files for Downloader"
+	default n
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOWNLOADER
+	help
+		Prepare files for Downloader package.
+		Downloader loads usualy files from a http or ftp server into the RAM of the box.
+
+config EXTERNAL_LINKS
+	bool "Do not ignore symbolic links"
+	default n
+	depends on EXTERNAL_ENABLED
+	help
+		Allows externalisation of symbolic links.
+
+config EXTERNAL_SUBDIRS
+	bool "Keep subdirectories"
+	default n if ! EXTERNAL_DOWNLOADER
+	default y if EXTERNAL_DOWNLOADER
+	depends on EXTERNAL_ENABLED
+	help
+		Keep the original directory structure
+
+config EXTERNAL_CREATEPAK
+	bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
+	default y
+	depends on EXTERNAL_ENABLED && ! EXTERNAL_DOWNLOADER
+	help
+		Creates a file for upload with the webinterface
+
+config EXTERNAL_OWN_FILES
+	string "own files"
+	default ""
+	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
+	help
+		Put your own files/directorys here (space seperated)
+
+source make/external.in
+
+endmenu
 
 config FREETZ_TARGET_ARCH_LE
 	bool
@@ -2830,16 +2825,6 @@ config FREETZ_TARGET_MAKE_PATH
 	string
 	default "toolchain/target/bin"
 
-config FREETZ_TARGET_CFLAGS
-	string "Target compiler flags"
-	default "-Os -pipe -march=4kc -Wa,--trap"
-
-config FREETZ_JLEVEL
-	int "Number of jobs to run simultaneously"
-	default "2"
-	help
-		Number of jobs to run simultanesouly
-
 config FREETZ_KERNEL_CROSS
 	string
 	default "mips-unknown-linux-gnu-" if FREETZ_TARGET_ARCH_BE
@@ -2848,6 +2833,23 @@ config FREETZ_KERNEL_CROSS
 config FREETZ_KERNEL_MAKE_PATH
 	string
 	default "toolchain/kernel/bin"
+
+
+menu "Toolchain options"
+
+choice
+	prompt "Toolchains"
+	default FREETZ_DOWNLOAD_TOOLCHAIN
+	help
+		Download Toolchain, build toolchain
+
+	config FREETZ_DOWNLOAD_TOOLCHAIN
+		bool "Download and use precompiled toolchain" if \
+			! (FREETZ_TARGET_UCLIBC_VERSION_0_9_28 && FREETZ_TARGET_IPV6_SUPPORT)
+
+	config FREETZ_BUILD_TOOLCHAIN
+		bool "Build toolchain (requires 4GB diskspace)"
+endchoice
 
 source toolchain/Config.in
 

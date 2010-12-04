@@ -61,6 +61,32 @@ config FREETZ_UCLIBC_0_9_30_BASED_BOX
 	default y if FREETZ_TYPE_FON_WLAN_7320
 	default n
 
+comment "Kernel toolchain options ----------------------------------"
+choice
+	prompt "Kernel compiler"
+	default FREETZ_KERNEL_COMPILER_GCC_4_4_5 if FREETZ_KERNEL_VERSION_2_6_28
+	default FREETZ_KERNEL_COMPILER_GCC_3_4_6
+
+	config FREETZ_KERNEL_COMPILER_GCC_3_4_6
+		bool "gcc-3.4.6"
+		depends on ! FREETZ_KERNEL_VERSION_2_6_28
+
+	config FREETZ_KERNEL_COMPILER_GCC_4_4_5
+		bool "gcc-4.4.5"
+		depends on FREETZ_KERNEL_VERSION_2_6_28
+endchoice
+
+config FREETZ_KERNEL_GCC_VERSION
+	string
+	default "4.4.5" if FREETZ_KERNEL_COMPILER_GCC_4_4_5
+	default "3.4.6"
+
+config FREETZ_KERNEL_BINUTILS_VERSION
+	string
+	default "2.20.51.0.12" if FREETZ_KERNEL_COMPILER_GCC_4_4_5
+	default "2.18"
+
+comment "Target toolchain options ----------------------------------"
 choice
 	prompt "Target uClibc version"
 	default FREETZ_TARGET_UCLIBC_VERSION_0_9_28 if FREETZ_UCLIBC_0_9_28_BASED_BOX
@@ -87,6 +113,20 @@ endchoice
 comment "CAUTION: Usage of an uClibc version higher than that used by AVM may lead to an unstable box"
 	depends on (FREETZ_UCLIBC_0_9_29_BASED_BOX && !FREETZ_TARGET_UCLIBC_VERSION_0_9_29) \
 		|| (FREETZ_UCLIBC_0_9_30_BASED_BOX && !FREETZ_TARGET_UCLIBC_VERSION_0_9_30)
+
+choice
+	prompt "uClibc config" if FREETZ_BUILD_TOOLCHAIN
+	default FREETZ_TARGET_UCLIBC_CONFIG_MOD
+
+	config FREETZ_TARGET_UCLIBC_CONFIG_MOD
+		bool "mod (recommended)"
+
+	config FREETZ_TARGET_UCLIBC_CONFIG_8MB
+		bool "8MB"
+
+	config FREETZ_TARGET_UCLIBC_CONFIG_4MB
+		bool "4MB" if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+endchoice
 
 choice
 	prompt "Target compiler"
@@ -116,25 +156,15 @@ config FREETZ_TARGET_BINUTILS_VERSION
 	string
 	default "2.21.51.0.1"
 
-choice
-	prompt "uClibc config" if FREETZ_BUILD_TOOLCHAIN
-	default FREETZ_TARGET_UCLIBC_CONFIG_MOD
-
-	config FREETZ_TARGET_UCLIBC_CONFIG_MOD
-		bool "mod (recommended)"
-
-	config FREETZ_TARGET_UCLIBC_CONFIG_8MB
-		bool "8MB"
-
-	config FREETZ_TARGET_UCLIBC_CONFIG_4MB
-		bool "4MB" if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-endchoice
-
 config FREETZ_TARGET_UCLIBC_REF
 	string
 	default "mod"		if FREETZ_TARGET_UCLIBC_CONFIG_MOD || FREETZ_DOWNLOAD_TOOLCHAIN
 	default "orig-4mb"	if FREETZ_TARGET_UCLIBC_CONFIG_4MB
 	default "orig-8mb"	if FREETZ_TARGET_UCLIBC_CONFIG_8MB
+
+config FREETZ_TARGET_CFLAGS
+	string "Target compiler flags"
+	default "-Os -pipe -march=4kc -Wa,--trap"
 
 config FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET
 	bool "Use reduced set of locales" if FREETZ_BUILD_TOOLCHAIN && (FREETZ_UCLIBC_0_9_29_BASED_BOX || FREETZ_UCLIBC_0_9_30_BASED_BOX)
@@ -147,25 +177,6 @@ config FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET
 		 - de_DE.UTF-8
 
 		This saves about 235KB in the image and at run-time.
-
-config FREETZ_STATIC_TOOLCHAIN
-	bool "Build static toolchains" if FREETZ_BUILD_TOOLCHAIN
-	default n
-	help
-		Build statically linked kernel and target toolchains.
-
-config FREETZ_TARGET_CCACHE
-	bool "Build ccache for target toolchains"
-	default y
-	help
-		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
-		compilers, using the -E compiler switch and a hash to detect when a
-		compilation can be satisfied from cache. This often results in a 5 to 10
-		times speedup in common compilations.
-
-		The idea came from Erik Thiele wrote the original compilercache program
-		as a bourne shell script. ccache is a re-implementation of Erik's idea
-		in C with more features and better performance.
 
 config FREETZ_TARGET_NLS
 #	bool "Native language support (NLS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
@@ -190,32 +201,6 @@ config FREETZ_TARGET_LFS
 		be changed unless you know what you are doing, as it can easily cause
 		problems.
 
-choice
-
-	prompt "Kernel compiler"
-	default FREETZ_KERNEL_COMPILER_GCC_4_4_5 if FREETZ_KERNEL_VERSION_2_6_28
-	default FREETZ_KERNEL_COMPILER_GCC_3_4_6
-
-	config FREETZ_KERNEL_COMPILER_GCC_3_4_6
-		bool "gcc-3.4.6"
-		depends on ! FREETZ_KERNEL_VERSION_2_6_28
-
-	config FREETZ_KERNEL_COMPILER_GCC_4_4_5
-		bool "gcc-4.4.5"
-		depends on FREETZ_KERNEL_VERSION_2_6_28
-
-endchoice
-
-config FREETZ_KERNEL_GCC_VERSION
-	string
-	default "4.4.5" if FREETZ_KERNEL_COMPILER_GCC_4_4_5
-	default "3.4.6"
-
-config FREETZ_KERNEL_BINUTILS_VERSION
-	string
-	default "2.20.51.0.12" if FREETZ_KERNEL_COMPILER_GCC_4_4_5
-	default "2.18"
-
 config FREETZ_TARGET_TOOLCHAIN
 	select FREETZ_LIB_libgmp
 	select FREETZ_LIB_libmpfr
@@ -226,8 +211,27 @@ config FREETZ_TARGET_TOOLCHAIN
 		Build the binutils and gcc to run on the target.
 		Files are installed into toolchain/target/target-utils.
 
-comment "GNU debugger (gdb)"
+comment "Both kernel and target toolchain related options ----------"
+config FREETZ_STATIC_TOOLCHAIN
+	bool "Build static toolchains" if FREETZ_BUILD_TOOLCHAIN
+	default n
+	help
+		Build statically linked kernel and target toolchains.
 
+config FREETZ_TARGET_CCACHE
+	bool "Build ccache"
+	default y
+	help
+		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
+		compilers, using the -E compiler switch and a hash to detect when a
+		compilation can be satisfied from cache. This often results in a 5 to 10
+		times speedup in common compilations.
+
+		The idea came from Erik Thiele wrote the original compilercache program
+		as a bourne shell script. ccache is a re-implementation of Erik's idea
+		in C with more features and better performance.
+
+comment "GNU debugger (gdb) options --------------------------------"
 config FREETZ_PACKAGE_GDB
 	bool "Build gdb for target"
 	default n
