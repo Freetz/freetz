@@ -58,7 +58,7 @@ $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
 	(cd $(MPFR_DIR2); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		$(FREETZ_BASE_DIR)/$(MPFR_DIR)/configure \
-		--prefix=/ \
+		--prefix=$(MPFR_HOST_DIR) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--disable-shared \
@@ -69,7 +69,7 @@ $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
 	touch $@
 
 $(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured | $(TOOLS_BUILD_DIR)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(MPFR_DIR2) DESTDIR=$(MPFR_HOST_DIR) install
+	PATH=$(TARGET_PATH) $(MAKE) -C $(MPFR_DIR2) install
 
 host-libmpfr: $(MPFR_HOST_BINARY)
 

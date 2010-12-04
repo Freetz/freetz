@@ -50,7 +50,7 @@ $(MPC_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPC_DIR)/.unpacked
 	(cd $(MPC_DIR2); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		$(FREETZ_BASE_DIR)/$(MPC_DIR)/configure \
-		--prefix=/ \
+		--prefix=$(MPC_HOST_DIR) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--disable-shared \
@@ -62,7 +62,7 @@ $(MPC_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPC_DIR)/.unpacked
 	touch $@
 
 $(MPC_HOST_BINARY): $(MPC_DIR2)/.configured | $(TOOLS_BUILD_DIR)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(MPC_DIR2) DESTDIR=$(MPC_HOST_DIR) install
+	PATH=$(TARGET_PATH) $(MAKE) -C $(MPC_DIR2) install
 
 host-libmpc: $(MPC_HOST_BINARY)
 

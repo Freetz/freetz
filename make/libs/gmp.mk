@@ -49,7 +49,7 @@ $(GMP_DIR2)/.configured: | $(GMP_DIR)/.unpacked
 	(cd $(GMP_DIR2); $(RM) -r config.cache; \
 		CC="$(TOOLS_CC)" \
 		$(FREETZ_BASE_DIR)/$(GMP_DIR)/configure \
-		--prefix=/ \
+		--prefix=$(GMP_HOST_DIR) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--disable-shared \
@@ -59,7 +59,7 @@ $(GMP_DIR2)/.configured: | $(GMP_DIR)/.unpacked
 	touch $@
 
 $(GMP_HOST_BINARY): $(GMP_DIR2)/.configured | $(TOOLS_BUILD_DIR)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(GMP_DIR2) DESTDIR=$(GMP_HOST_DIR) install
+	PATH=$(TARGET_PATH) $(MAKE) -C $(GMP_DIR2) install
 
 host-libgmp: $(GMP_HOST_BINARY)
 
