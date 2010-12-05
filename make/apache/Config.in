@@ -23,3 +23,12 @@ config FREETZ_PACKAGE_APACHE_STATIC
 		  - libc.so.0
 		  - libgcc_s.so.1
 		  - libm.so.0
+
+config FREETZ_PACKAGE_APACHE_COMPILEINMODS
+	bool "Compile in modules instead of building loadable modules"
+	depends on FREETZ_PACKAGE_APACHE
+	default n
+	help
+		Apache will build modules to be loaded via "LoadModule".
+		By activating this switch, they will be built into the binary.
+
