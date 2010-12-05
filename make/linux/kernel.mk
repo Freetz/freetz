@@ -1,3 +1,4 @@
+comma:=,
 space:=$(empty) $(empty)
 AVM_SOURCE:=$(strip $(subst ",, $(subst $(space),\ ,$(FREETZ_DL_KERNEL_SOURCE))))
 
@@ -131,13 +132,34 @@ $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 		oldconfig
 	touch $@
 
-$(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.configured
+$(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		prepare
+	touch $@
+
+$(KERNEL_DIR)/.headers_installed: $(KERNEL_DIR)/.prepared
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13_1)),y)
+	$(call COPY_KERNEL_HEADERS,$(KERNEL_BUILD_ROOT_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(comma)asm-generic$(comma)linux})
+else
+	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		ARCH=$(KERNEL_ARCH) \
+		INSTALL_HDR_PATH=$(KERNEL_HEADERS_DEVEL_DIR) \
+		headers_install
+	find "$(KERNEL_HEADERS_DEVEL_DIR)" \( -name "..install.cmd" -o -name ".install" \) -exec rm -f \{\} \+
+endif
+	touch $@
+
+# Install the kernel headers to the toolchain dir if necessary
+ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
+$(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.headers_installed
+else
+$(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.prepared
+endif
 	touch $@
 
 $(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
