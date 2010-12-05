@@ -2368,7 +2368,7 @@ config FREETZ_VERBOSITY_LEVEL
 
 config FREETZ_JLEVEL
 	int "Number of jobs to run simultaneously"
-	default "2"
+	default 2
 	help
 		Number of jobs to run simultanesouly
 
@@ -2389,7 +2389,7 @@ config FREETZ_BACKUP_CONFIG_CACHE
 endmenu
 
 config FREETZ_SECURITY_LEVEL
-	int "Default Security level (0-2)"
+	int "Default security level (0-2)"
 	default 1
 	help
 		There are several security levels.
@@ -2398,6 +2398,26 @@ config FREETZ_SECURITY_LEVEL
 		2 : no configuration files might be edited.
 
 menu "Look and feel"
+choice
+	prompt "Freetz Style"
+	default FREETZ_STYLE_COLORED
+	help
+		Changes the style sheet file for Freetz web interface.
+		For example, look of the Freetz status-bars can be changed
+		from colored to grey by change of the Freetz style.
+
+	config FREETZ_STYLE_COLORED
+		bool "Default - green status-bars"
+
+	config FREETZ_STYLE_GREY
+		bool "Alternative - grey status-bars"
+endchoice
+
+config FREETZ_STYLE
+	string
+	default "colored" if FREETZ_STYLE_COLORED
+	default "grey"    if FREETZ_STYLE_GREY
+
 choice
 	prompt "Favicon"
 	default FREETZ_FAVICON_NONE
@@ -2427,29 +2447,9 @@ config FREETZ_FAVICON_STRING
 	default "cuma"			if FREETZ_FAVICON_CUMA
 	default "dsl123"		if FREETZ_FAVICON_DSL123
 	default "hansolo"		if FREETZ_FAVICON_HANSOLO
-
-choice
-	prompt "Freetz Style"
-	default FREETZ_STYLE_COLORED
-	help
-		Changes the style sheet file for Freetz web interface.
-		For example, look of the Freetz status-bars can be changed
-		from colored to grey by change of the Freetz style.
-
-	config FREETZ_STYLE_COLORED
-		bool "Default Freetz style with colored (green) status-bars"
-
-	config FREETZ_STYLE_GREY
-		bool "Alternative style scheme with grey status-bars"
-endchoice
-
-config FREETZ_STYLE
-	string
-	default "colored"			if FREETZ_STYLE_COLORED
-	default "grey"				if FREETZ_STYLE_GREY
 endmenu
 
-menu "Image versioning/naming options"
+menu "Additional image/box information"
 
 config FREETZ_SUBVERSION_STRING
 	bool "Add Freetz version to subversion string"
@@ -2501,10 +2501,6 @@ config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
 		Add the user defined comment as a prefix in front of the image file name.
 		Otherwise the user defined comment will be added between the language setting
 		and the build date
-endmenu
-
-menu "Info pages"
-	depends on FREETZ_SHOW_ADVANCED
 
 config FREETZ_REMOVE_BOX_INFO
 	bool "Remove BOX-Info page from image"
@@ -2557,13 +2553,11 @@ config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
 		When checked causes options.cfg to be created as a separate file containing
 		a much smaller subset of options included in .config. This increases image
 		size by about 160 bytes but reduces memory footprint at run-time.
-
 endmenu
 
 config FREETZ_AVMPLUGINS_ENABLED
 	bool "Integrate AVM Plugins into image"
-	depends on \
-		FREETZ_TYPE_FON_WLAN_7270_V1
+	depends on FREETZ_TYPE_FON_WLAN_7270_V1
 	default n
 	help
 		This feature disables AVM's plugin download and handling.
