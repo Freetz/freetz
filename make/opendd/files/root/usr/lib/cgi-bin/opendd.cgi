@@ -62,6 +62,7 @@ cat << EOF
 <p>$(lang de:"Absender" en:"From"): <input type="text" name="email_from" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_FROM")"></p>
 <p>$(lang de:"Empf&auml;nger" en:"To"): <input type="text" name="email_to" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_TO")"></p>
 <p>$(lang de:"E-Mail-Server" en:"E-mail-server"): <input type="text" name="email_server" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_SERVER")"></p>
+<p>$(lang de:"E-Mail-Server Port" en:"E-mail-server port"): <input type="text" name="email_port" size="4" maxlength="5" value="$(html "$OPENDD_EMAIL_PORT")"></p>
 <p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="email_user" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_USER")"></p>
 <p>$(lang de:"Passwort" en:"Password"): <input type="password" name="email_pass" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_PASS")"></p>
 EOF
