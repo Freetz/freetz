@@ -178,7 +178,7 @@ do_mount ()
 		mnt_failure=0
 		umask $old_umask
 		eventadd 140 "$mnt_name ($mnt_dev)"
-		log_freetz notice "Partition $mnt_name ($mnt_dev) was successful mounted"
+		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully"
 		[ -x $rcftpd ] && [ "$($rcftpd status)" != "running" ] && $rcftpd start # start ftpd, if not started
 		/etc/init.d/rc.swap autostart $mnt_path
 		local autorun="$mnt_path/autorun.sh"
@@ -218,7 +218,7 @@ do_mount ()
 			then
 				mnt_failure=0
 				eventadd 140 "SWAP ($mnt_dev)"
-				log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was successful mounted"
+				log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was mounted successfully"
 			else
 				mnt_failure=1
 				eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
