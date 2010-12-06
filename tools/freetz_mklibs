@@ -7,11 +7,23 @@ REAL_GNU_TARGET_NAME=${GNU_TARGET_NAME}-uclibc
 mklibs() {
 	# TODO: replace the next 5 lines with code that replaces all
 	# absolute sym links... to make mklibs happy
-	ln -sf libcapi20.so.3.0.4 "${FILESYSTEM_MOD_DIR}/lib/libcapi20.so"
-	ln -sf libcapi20.so.3.0.4 "${FILESYSTEM_MOD_DIR}/lib/libcapi20.so.3"
-	ln -sf libfwsign.so "${FILESYSTEM_MOD_DIR}/lib/libfwsign.so.0"
-	ln -sf libled2.so.2.2.0 "${FILESYSTEM_MOD_DIR}/lib/libled2.so.2.2"
-	ln -sf libled2.so.2.2.0 "${FILESYSTEM_MOD_DIR}/lib/libled2.so.2"
+	local -a abs_symlinks=( \
+		/lib/libcapi20.so \
+		/lib/libcapi20.so.3 \
+		/lib/libfwsign.so.0 \
+		/lib/libled2.so.2.2 \
+		/lib/libled2.so.2 \
+	)
+	local -a rel_targets=( \
+		libcapi20.so.3.0.4 \
+		libcapi20.so.3.0.4 \
+		libfwsign.so \
+		libled2.so.2.2.0 \
+		libled2.so.2.2.0 \
+	)
+	for ((i=0; i<5; i++)); do
+		[ -h "${FILESYSTEM_MOD_DIR}/${abs_symlinks[$i]}" ] && ln -sf "${rel_targets[i]}" "${FILESYSTEM_MOD_DIR}/${abs_symlinks[$i]}"
+	done
 
 	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
 	mkdir -p ${MOD_DIR}/mklibs-out
