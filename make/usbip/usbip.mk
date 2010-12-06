@@ -1,12 +1,15 @@
 $(call PKG_INIT_BIN,0.1.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/usbip
+$(PKG)_SOURCE_MD5:=d1094b6d4449787864f8be001639232c
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cmd/usbipd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/usbipd
+
+# kernel 2.6.28 has stock usbip modules
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/drivers/2.6.21/usbip.ko
 $(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/usb/usbip
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/usbip.ko
-$(PKG)_SOURCE_MD5:=d1094b6d4449787864f8be001639232c
 
 $(PKG)_DEPENDS_ON := kernel sysfsutils glib2
 
@@ -46,7 +49,8 @@ $($(PKG)_MOD_TARGET_BINARY): $($(PKG)_MOD_BINARY)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MOD_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) \
+	$(if $(FREETZ_KERNEL_VERSION_2_6_28),,$($(PKG)_MOD_TARGET_BINARY))
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(USBIP_DIR)/src clean
