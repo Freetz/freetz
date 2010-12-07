@@ -121,6 +121,10 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid
 		externals these file(s)
 			/usr/sbin/blkid
 
+comment "WARNING: Don't externalize blkid onto an USB device. It's needed for filesystem detection."
+	depends on EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid && \
+		FREETZ_PATCH_FREETZMOUNT_BLKID
+
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_uuidd
 	boolean "uuidd"
 	depends on FREETZ_PACKAGE_E2FSPROGS_E2FIXING
