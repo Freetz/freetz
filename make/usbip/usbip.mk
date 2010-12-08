@@ -8,7 +8,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/usbipd
 
 # kernel 2.6.28 has stock usbip modules
 $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/drivers/2.6.21/usbip.ko
-$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/usb/usbip
+$(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/drivers/usb/usbip
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/usbip.ko
 
 $(PKG)_DEPENDS_ON := kernel sysfsutils glib2
