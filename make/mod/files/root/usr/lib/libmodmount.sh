@@ -98,8 +98,11 @@ mount_fs ()
 	local ntfs_bin="/bin/ntfs-3g"
 	local err_mo=1 # set mount error as default
 	local err_fst=1 # set file system detection error as default
-	[ -x $fstyp_bin ] && local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null) # fs type detection using fstyp binary
-	[ -x $blkid_bin ] && local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
+	if [ -x $fstyp_bin ]; then
+		local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null) # fs type detection using fstyp binary
+	elif [ -x $blkid_bin ]; then
+		local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
+	fi
 	[ -z "$fs_type" ] && local fs_type="unknown" # set unknown file system type if detection failed
 	case $fs_type in
 	vfat)
