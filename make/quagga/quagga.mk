@@ -49,6 +49,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-user=root
 $(PKG)_CONFIGURE_OPTIONS += --enable-group=root
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-pie
 $(PKG)_CONFIGURE_OPTIONS += --enable-multipath=8
 $(PKG)_CONFIGURE_OPTIONS += --enable-vtysh
 $(PKG)_CONFIGURE_OPTIONS += --disable-capabilities
