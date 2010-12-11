@@ -52,7 +52,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MEDIATOMB_DIR) \
-	$(if $(FREETZ_PACKAGE_MEDIATOMB_STATIC),LDFLAGS="-static" STATIC_LINKING_LIBS="-lavcodec -lavutil -lssl -lcrypto -ldl -lm")
+	$(if $(FREETZ_PACKAGE_MEDIATOMB_STATIC),LDFLAGS="-static" STATIC_LINKING_LIBS="-lavcodec -lavutil -lssl -lcrypto -ldl -lz -lm")
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
