@@ -13,30 +13,6 @@ BINUTILS_MD5_2.18         := 9d22ee4dafa3a194457caf4706f9cf01
 BINUTILS_MD5_2.21.51.0.1  := 3e8b6349f38d6e0feba317055f0ced14
 BINUTILS_MD5              := $(BINUTILS_MD5_$(BINUTILS_VERSION))
 
-# We do not rely on the host's gmp/mpfr but use a known working one
-BINUTILS_HOST_PREREQ=
-BINUTILS_TARGET_PREREQ=
-
-ifndef TARGET_TOOLCHAIN_NO_MPFR
-BINUTILS_HOST_PREREQ+=$(GMP_HOST_BINARY) $(MPFR_HOST_BINARY)
-BINUTILS_TARGET_PREREQ+=$(GMP_TARGET_BINARY) $(MPFR_TARGET_BINARY)
-
-BINUTILS_EXTRA_CONFIG_OPTIONS+=--with-gmp=$(GMP_HOST_DIR)
-BINUTILS_EXTRA_CONFIG_OPTIONS+=--with-mpfr=$(MPFR_HOST_DIR)
-
-BINUTILS_TARGET_CONFIG_OPTIONS+=--with-gmp=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
-BINUTILS_TARGET_CONFIG_OPTIONS+=--with-mpfr=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
-
-ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.5)
-BINUTILS_HOST_PREREQ+=$(MPC_HOST_BINARY)
-BINUTILS_TARGET_PREREQ+=$(MPC_TARGET_BINARY)
-
-BINUTILS_EXTRA_CONFIG_OPTIONS+=--with-mpc=$(MPC_HOST_DIR)
-BINUTILS_TARGET_CONFIG_OPTIONS+=--with-mpc=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
-endif
-
-endif
-
 BINUTILS_EXTRA_MAKE_OPTIONS :=
 ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
 BINUTILS_EXTRA_MAKE_OPTIONS += "LDFLAGS=-all-static"
@@ -60,7 +36,7 @@ $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR
 	sed -i -r -e 's,(zlibVersion)([ \t]*[(][)]),\1WeDontWantZlib\2,g' $$(find $(BINUTILS_DIR) -name "configure" -type f)
 	touch $@
 
-$(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_HOST_PREREQ)
+$(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked
 	mkdir -p $(BINUTILS_DIR1)
 	(cd $(BINUTILS_DIR1); $(RM) config.cache; \
 		CC="$(HOSTCC)" \
@@ -74,7 +50,6 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_HOST_PREREQ)
 		--disable-libssp \
 		$(DISABLE_NLS) \
 		--disable-werror \
-		$(BINUTILS_EXTRA_CONFIG_OPTIONS) \
 		$(QUIET) \
 	);
 	touch $@
@@ -111,7 +86,7 @@ binutils: uclibc-configured binutils-dependencies $(TARGET_TOOLCHAIN_STAGING_DIR
 #
 #############################################################
 BINUTILS_DIR2:=$(BINUTILS_DIR)-target
-$(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_TARGET_PREREQ)
+$(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
 	mkdir -p $(BINUTILS_DIR2)
 	(cd $(BINUTILS_DIR2); $(RM) config.cache; \
 		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
@@ -126,7 +101,6 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked $(BINUTILS_TARGET_PREREQ
 		--disable-multilib \
 		--without-zlib \
 		$(DISABLE_NLS) \
-		$(BINUTILS_TARGET_CONFIG_OPTIONS) \
 		--disable-werror \
 	)
 	touch $@
