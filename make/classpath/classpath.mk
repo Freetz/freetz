@@ -35,6 +35,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-plugin
 $(PKG)_CONFIGURE_OPTIONS += --disable-qt-peer
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --disable-Werror
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
