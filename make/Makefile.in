@@ -42,15 +42,7 @@ DISABLE_LARGEFILE:=--disable-largefile
 CFLAGS_LARGEFILE=$(CFLAGS_LFS_DISABLED)
 endif
 
-# TODO: TARGET_TOOLCHAIN_GCC_MAJOR_VERSION is defined in toolchain/make/Makefile.in,
-# which is included later than this file. Thus $(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION)
-# is always empty at this point and FPIC is always set to -fPIC
-ifneq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.2)
 FPIC:=-fPIC
-else
-FPIC:=
-endif
-
 
 TARGET_CROSS:=$(strip $(subst ",, $(FREETZ_TARGET_CROSS)))
 KERNEL_ARCH:=mips
