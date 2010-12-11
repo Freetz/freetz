@@ -279,6 +279,10 @@ ifeq ($(strip $(FREETZ_LIB_libmpfr)),y)
 LIBS+=mpfr
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libmpc)),y)
+LIBS+=mpc
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libexif)),y)
 LIBS+=libexif
 endif
