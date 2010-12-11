@@ -1,13 +1,12 @@
-$(call PKG_INIT_BIN, 0.97.2)
+$(call PKG_INIT_BIN, 0.98)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=6a35347901ace03c31cc49751b338f31
+$(PKG)_SOURCE_MD5:=90c6571b8b0309e372faa0f9f6255ea9
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/mini.jar
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/share/classpath/mini.jar
 
-#TODO: FREETZ_LIBRARY_PATH !?
 $(PKG)_LIBRARY_DIR:=/usr/lib/classpath
 $(PKG)_LIBNAMES_SHORT:=io lang langmanagement langreflect net nio util
 $(PKG)_LIBNAMES_LONG:=$(CLASSPATH_LIBNAMES_SHORT:%=libjava%.so.$($(PKG)_LIB_VERSION))
@@ -16,22 +15,26 @@ $(PKG)_LIBS_BUILD_DIR:=$(join $(CLASSPATH_LIBS_BUILD_DIR_SHORT:%=$($(PKG)_DIR)/n
 $(PKG)_LIBS_STAGING_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)$(CLASSPATH_LIBRARY_DIR)/%)
 $(PKG)_LIBS_TARGET_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)$(CLASSPATH_LIBRARY_DIR)/%)
 
-$(PKG)_BUILD_PREREQ += fastjar ecj
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binaries are provided by packages of the same name
+$(PKG)_BUILD_PREREQ += fastjar javac
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems fastjar is provided by the package of the same name, whereas javac (Java compiler) is provided by many packages. You could use either of them interchangeably.
 
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON := libiconv
 endif
 
 $(PKG)_CONFIGURE_ENV += HAVE_INET6_I_KNOW_IT_BETTER=$(if $(FREETZ_TARGET_IPV6_SUPPORT),yes,no)
+$(PKG)_CONFIGURE_ENV += JAVAC=javac
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-gtk-peer
-$(PKG)_CONFIGURE_OPTIONS += --disable-qt-peer
+$(PKG)_CONFIGURE_OPTIONS += --disable-alsa
 $(PKG)_CONFIGURE_OPTIONS += --disable-gconf-peer
-$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --disable-gjdoc
+$(PKG)_CONFIGURE_OPTIONS += --disable-gtk-peer
+$(PKG)_CONFIGURE_OPTIONS += --disable-gmp
+$(PKG)_CONFIGURE_OPTIONS += --disable-examples
 $(PKG)_CONFIGURE_OPTIONS += --disable-plugin
-$(PKG)_CONFIGURE_OPTIONS += --with-ecj
-$(PKG)_CONFIGURE_OPTIONS += --disable-Werror
+$(PKG)_CONFIGURE_OPTIONS += --disable-qt-peer
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
