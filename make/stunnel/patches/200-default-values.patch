@@ -1,6 +1,6 @@
---- src/Makefile.in	2010-03-01 17:55:59.000000000 +0100
-+++ src/Makefile.in	2010-03-27 23:17:03.000000000 +0100
-@@ -231,7 +231,7 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -253,7 +253,7 @@
  INCLUDES = -I/usr/kerberos/include
  
  # Additional compiler flags
@@ -9,18 +9,18 @@
  
  # Win32 executable
  EXTRA_DIST = stunnel.exe make.bat mingw.mak makece.bat evc.mak vc.mak nogui.c os2.mak
---- src/options.c	2010-03-23 15:58:34.000000000 +0100
-+++ src/options.c	2010-03-27 23:14:44.000000000 +0100
-@@ -613,7 +613,7 @@
+--- src/options.c
++++ src/options.c
+@@ -620,7 +620,7 @@
+     /* cert */
      switch(cmd) {
      case CMD_INIT:
- #ifdef CONFDIR
--        section->cert=CONFDIR CONFSEPARATOR "stunnel.pem";
+-        section->cert=NULL;
 +        section->cert="/tmp/flash/.stunnel/certs.pem";
- #else
-         section->cert="stunnel.pem";
- #endif
-@@ -626,7 +626,7 @@
+         break;
+     case CMD_EXEC:
+         if(strcasecmp(opt, "cert"))
+@@ -629,7 +629,7 @@
          return NULL; /* OK */
      case CMD_DEFAULT:
  #ifdef CONFDIR
@@ -29,7 +29,7 @@
  #else
          s_log(LOG_NOTICE, "%-15s = %s", "cert", "stunnel.pem");
  #endif
-@@ -886,7 +886,7 @@
+@@ -912,7 +912,7 @@
      /* key */
      switch(cmd) {
      case CMD_INIT:
@@ -38,3 +38,11 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
+@@ -920,6 +920,7 @@
+         section->key=stralloc(arg);
+         return NULL; /* OK */
+     case CMD_DEFAULT:
++        s_log(LOG_NOTICE, "%-15s = %s", "key", "/tmp/flash/.stunnel/key.pem");
+         break;
+     case CMD_HELP:
+         s_log(LOG_NOTICE, "%-15s = certificate private key", "key");

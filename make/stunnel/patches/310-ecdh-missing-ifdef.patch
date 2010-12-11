@@ -1,0 +1,30 @@
+--- src/options.c
++++ src/options.c
+@@ -753,6 +753,7 @@
+         break;
+     }
+ 
++#ifndef OPENSSL_NO_ECDH
+     /* curve */
+     switch(cmd) {
+     case CMD_INIT:
+@@ -772,6 +773,7 @@
+         s_log(LOG_NOTICE, "%-15s = ECDH curve name", "curve");
+         break;
+     }
++#endif
+ 
+     /* delay */
+     switch(cmd) {
+--- src/prototypes.h
++++ src/prototypes.h
+@@ -135,7 +135,9 @@
+     long session_timeout;
+     int verify_level;
+     int verify_use_only_my;
++#ifndef OPENSSL_NO_ECDH
+     int curve;
++#endif
+     long ssl_options;
+     SOCKADDR_LIST ocsp_addr;
+     char *ocsp_path;

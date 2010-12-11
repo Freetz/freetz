@@ -1,15 +1,13 @@
---- configure	2010-03-26 21:56:26.000000000 +0100
-+++ configure	2010-04-12 01:00:00.000000000 +0200
-@@ -23993,7 +23993,7 @@
- { echo "$as_me:$LINENO: **************************************** SSL" >&5
- echo "$as_me: **************************************** SSL" >&6;}
+--- configure
++++ configure
+@@ -11731,13 +11731,13 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: **************************************** SSL" >&5
+ $as_echo "$as_me: **************************************** SSL" >&6;}
  checkssldir() { :
 -    if test -f "$1/include/openssl/ssl.h"
 +    if test -f "$1/include${OPENSSL_ALTERNATIVE+/${OPENSSL_ALTERNATIVE}}/openssl/ssl.h"
-     then cat >>confdefs.h <<\_ACEOF
- #define HAVE_OPENSSL 1
- _ACEOF
-@@ -24001,7 +24001,7 @@
+     then $as_echo "#define HAVE_OPENSSL 1" >>confdefs.h
+ 
          ssldir="$1"
          return 0
      fi
@@ -18,7 +16,7 @@
      then ssldir="$1"
          return 0
      fi
-@@ -24049,8 +24049,13 @@
+@@ -11785,8 +11785,13 @@
  
  
  # Add SSL includes and libraries
@@ -27,31 +25,31 @@
 +if [ -z "$OPENSSL_ALTERNATIVE" ]; then
  LIBS="$LIBS -L$ssldir/lib -lssl -lcrypto"
 +else
-+CFLAGS="$CFLAGS -DUSE_OPENSSL_ALTERNATIVE=$OPENSSL_ALTERNATIVE"
++CFLAGS="$CFLAGS -DUSE_OPENSSL_ALTERNATIVE=$OPENSSL_ALTERNATIVE -DOPENSSL_NO_DH -DOPENSSL_NO_ECDH"
 +LIBS="$LIBS -L$ssldir/lib -l$OPENSSL_ALTERNATIVE"
 +fi
  
  # Check for obsolete RSAref library
- { echo "$as_me:$LINENO: checking for obsolete RSAref library" >&5
-@@ -24104,6 +24109,7 @@
- rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-       conftest$ac_exeext conftest.$ac_ext
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for obsolete RSAref library" >&5
+@@ -11815,6 +11820,7 @@
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
  
 +if [ -z "$OPENSSL_ALTERNATIVE" ]; then
- as_ac_Header=`echo "ac_cv_header_$ssldir/include/openssl/engine.h" | $as_tr_sh`
- if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-   { echo "$as_me:$LINENO: checking for $ssldir/include/openssl/engine.h" >&5
-@@ -24241,6 +24247,7 @@
-   { echo "$as_me:$LINENO: WARNING: Openssl engine header not found" >&5
- echo "$as_me: WARNING: Openssl engine header not found" >&2;}
+ as_ac_Header=`$as_echo "ac_cv_header_$ssldir/include/openssl/engine.h" | $as_tr_sh`
+ ac_fn_c_check_header_mongrel "$LINENO" "$ssldir/include/openssl/engine.h" "$as_ac_Header" "$ac_includes_default"
+ if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+@@ -11824,6 +11830,7 @@
+   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: OpenSSL engine header not found" >&5
+ $as_echo "$as_me: WARNING: OpenSSL engine header not found" >&2;}
  fi
 +fi
  
  
  
---- src/ctx.c	2010-01-29 11:38:40.000000000 +0100
-+++ src/ctx.c	2010-04-12 00:00:00.000000000 +0200
-@@ -390,6 +390,7 @@
+--- src/ctx.c
++++ src/ctx.c
+@@ -383,6 +383,7 @@
  #define CACHE_RESP_OK     0x81
  
  static int sess_new_cb(SSL *ssl, SSL_SESSION *sess) {
@@ -59,7 +57,7 @@
      unsigned char *val, *val_tmp;
      int val_len;
  
-@@ -402,11 +403,15 @@
+@@ -395,11 +396,15 @@
      cache_transfer(ssl->ctx, CACHE_CMD_NEW, SSL_SESSION_get_timeout(sess),
          sess->session_id, sess->session_id_length, val, val_len, NULL, NULL);
      free(val);
@@ -75,7 +73,7 @@
      unsigned char *val, *val_tmp=NULL;
      unsigned int val_len=0;
      SSL_SESSION *sess;
-@@ -420,11 +425,14 @@
+@@ -413,11 +418,14 @@
      sess=d2i_SSL_SESSION(NULL, (const unsigned char **)&val_tmp, val_len);
      free(val);
      return sess;
@@ -90,7 +88,7 @@
  }
  
  #define MAX_VAL_LEN 512
-@@ -440,6 +448,7 @@
+@@ -433,6 +441,7 @@
          const unsigned char *key, const unsigned int key_len,
          const unsigned char *val, const unsigned int val_len,
          unsigned char **ret, unsigned int *ret_len) {
@@ -98,7 +96,7 @@
      char session_id_txt[2*SSL_MAX_SSL_SESSION_ID_LENGTH+1];
      const char hex[16]="0123456789ABCDEF";
      const char *type_description[]={"new", "get", "remove"};
-@@ -556,6 +565,7 @@
+@@ -550,6 +559,7 @@
      s_log(LOG_INFO, "cache_transfer: session found");
      memcpy(*ret, packet->val, *ret_len);
      free(packet);
@@ -106,7 +104,7 @@
  }
  
  /**************************************** informational callback */
-@@ -575,8 +585,10 @@
+@@ -565,8 +575,10 @@
              where & SSL_CB_READ ? "read" : "write",
              SSL_alert_type_string_long(ret),
              SSL_alert_desc_string_long(ret));
