@@ -1,11 +1,12 @@
 $(call PKG_INIT_LIB, 2.0.35)
 $(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=gd-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=6c6c3dbb7bf079e0bb5fbbfd3bb8a71c
 $(PKG)_SITE:=http://www.libgd.org/releases
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgd.so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=6c6c3dbb7bf079e0bb5fbbfd3bb8a71c
 
 $(PKG)_DEPENDS_ON := jpeg libpng freetype
 

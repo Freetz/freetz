@@ -1,11 +1,12 @@
 $(call PKG_INIT_LIB, 0.18)
 $(PKG)_LIB_VERSION:=1.18.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=916f65fa68d154621fc0cf1f405f2726
 $(PKG)_SITE:=http://www.intra2net.com/de/produkte/opensource/ftdi/TGZ
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_SOURCE_MD5:=916f65fa68d154621fc0cf1f405f2726
 
 $(PKG)_DEPENDS_ON := libusb
 
