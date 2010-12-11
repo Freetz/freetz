@@ -30,20 +30,3 @@ config FREETZ_PACKAGE_JAMVM
 
 # Include here a cleaner menu structure
 source make/classpath/Config.in
-
-config FREETZ_LIB_libffi
-	bool "ffi-sable (libffi.so)"
-	requires FREETZ_PACKAGE_JAMVM
-	help
-		libffi is a library that really only provides the lowest, machine
-		dependent layer of a fully featured foreign function interface. A layer
-		must exist above libffi that handles type conversions for values passed
-		between the two languages. ffi stands for Foreign Function Interface.
-		A foreign function interface is the popular name for the interface that
-		allows code written in one language to call code written in another
-		language.
-
-		NOTE:
-		At the moment, this library is only used by JamVM. If any other package
-		should need it, the fixed dependency can be removed and the library be
-		put into the general library section of menuconfig.
