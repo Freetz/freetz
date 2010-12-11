@@ -29,7 +29,7 @@ $(PKG)_CONFIGURE_ENV += glib_cv_byte_contents_gmutex="0,0,0,0,0,0,0,0,0,0,0,0,0,
 $(PKG)_CONFIGURE_ENV += lt_cv_deplibs_check_method=pass_all
 $(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_NM) -B"
 
-$(PKG)_CONFIGURE_OPTIONS += --cache-file=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/config.cache
+$(PKG)_CONFIGURE_OPTIONS += --cache-file=$(CONFIG_CACHE_PATH)
 $(PKG)_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
 $(PKG)_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
 $(PKG)_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
