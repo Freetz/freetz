@@ -4,19 +4,11 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=ca96df88e044c7c25d19692ec8b250b2
 $(PKG)_SITE:=http://curl.haxx.se/download
 
-ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/curl
-$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.a
-$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.a
-$(PKG)_LDFLAGS:=-all-static
-else
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/curl
+$(PKG)_BINARY:=$($(PKG)_DIR)/src$(if $(FREETZ_PACKAGE_CURL_STATIC),,/.libs)/curl
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libcurl.so.$($(PKG)_LIB_VERSION)
-endif
-
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
 
 $(PKG)_DEPENDS_ON := openssl
 ifeq ($(strip $(FREETZ_PACKAGE_CURL_WITH_ZLIB)),y)
@@ -29,8 +21,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURL_STATIC
 $(PKG)_CONFIGURE_ENV += curl_cv_writable_argv=yes
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_STATIC),--disable-shared,--enable-shared)
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 $(PKG)_CONFIGURE_OPTIONS += --disable-thread
@@ -62,7 +54,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(CURL_DIR) \
-		LDFLAGS="$(CURL_LDFLAGS)"
+		$(if $(FREETZ_PACKAGE_CURL_STATIC),STATIC_LDFLAGS=-all-static)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	$(SUBMAKE) -C $(CURL_DIR) \
@@ -81,11 +73,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 
 $(pkg):
 
-ifeq ($(strip $(FREETZ_PACKAGE_CURL_STATIC)),y)
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_STAGING_BINARY)
-else
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
-endif
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(CURL_DIR) clean
