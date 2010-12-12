@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.12)
+$(call PKG_INIT_BIN, 2.13)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=f3d34fdbbf3ae25635f9e7bf7e662cd9
+$(PKG)_SOURCE_MD5:=eb126ae88b80487f2840896939019421
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
