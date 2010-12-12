@@ -19,6 +19,7 @@ $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libinotifytools.so.$($(PKG)_LIB_
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 configure.ac aclocal.m4;
 
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
+$(PKG)_CONFIGURE_OPTIONS += --disable-doxygen
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
