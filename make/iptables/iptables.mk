@@ -2,6 +2,7 @@ $(call PKG_INIT_BIN, 1.4.1.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=723fa88d8a0915e184f99e03e9bf06cb
 $(PKG)_SITE:=http://netfilter.org/projects/$(pkg)/files
+$(PKG)_CONDITIONAL_PATCHES+=$(KERNEL_VERSION)
 ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_CONDITIONAL_PATCHES+=cond
 endif
