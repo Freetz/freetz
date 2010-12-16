@@ -99,7 +99,7 @@
  			goto restat;
  	}
  
-@@ -3497,7 +3520,7 @@
+@@ -3490,7 +3513,7 @@
  	if((metadata = malloc(bytes)) == NULL)
  		BAD_ERROR("Failed to alloc metadata buffer in write_recovery_data\n");
  
@@ -108,7 +108,7 @@
  
  	sprintf(recovery_file, "squashfs_recovery_%s_%d", getbase(destination_file), pid);
  	if((recoverfd = open(recovery_file, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU)) == -1)
-@@ -3527,7 +3550,7 @@
+@@ -3520,7 +3543,7 @@
  	int fd, recoverfd, bytes;
  	squashfs_super_block orig_sBlk, sBlk;
  	char *metadata;
@@ -117,7 +117,7 @@
  	struct stat buf;
  	char header[] = RECOVER_ID;
  	char header2[RECOVER_ID_SIZE];
-@@ -3541,15 +3565,21 @@
+@@ -3534,15 +3557,21 @@
  	if((fd = open(destination_file, O_RDWR)) == -1)
  		BAD_ERROR("Failed to open destination file because %s\n", strerror(errno));
  
@@ -142,7 +142,7 @@
  
  	if(memcmp(((char *) &sBlk) + 4, ((char *) &orig_sBlk) + 4, sizeof(squashfs_super_block) - 4) != 0)
  		BAD_ERROR("Recovery file and destination file do not seem to match\n");
-@@ -3559,10 +3588,11 @@
+@@ -3552,10 +3581,11 @@
  	if((metadata = malloc(bytes)) == NULL)
  		BAD_ERROR("Failed to alloc metadata buffer in read_recovery_data\n");
  
