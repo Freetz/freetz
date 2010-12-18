@@ -83,7 +83,7 @@ config FREETZ_KERNEL_GCC_VERSION
 
 config FREETZ_KERNEL_BINUTILS_VERSION
 	string
-	default "2.21.51.0.1" if FREETZ_KERNEL_COMPILER_GCC_4_4_5
+	default "2.21.51.0.4" if FREETZ_KERNEL_COMPILER_GCC_4_4_5
 	default "2.18"
 
 comment "Target toolchain options ----------------------------------"
@@ -135,8 +135,8 @@ choice
 	config FREETZ_TARGET_COMPILER_GCC_4_4_5
 		bool "gcc-4.4.5"
 
-	config FREETZ_TARGET_COMPILER_GCC_4_5_1
-		bool "gcc-4.5.1"
+	config FREETZ_TARGET_COMPILER_GCC_4_5_2
+		bool "gcc-4.5.2"
 		depends on FREETZ_BUILD_TOOLCHAIN
 endchoice
 
@@ -150,11 +150,11 @@ config FREETZ_TARGET_UCLIBC_VERSION
 config FREETZ_TARGET_GCC_VERSION
 	string
 	default "4.4.5"		if FREETZ_TARGET_COMPILER_GCC_4_4_5
-	default "4.5.1"		if FREETZ_TARGET_COMPILER_GCC_4_5_1
+	default "4.5.2"		if FREETZ_TARGET_COMPILER_GCC_4_5_2
 
 config FREETZ_TARGET_BINUTILS_VERSION
 	string
-	default "2.21.51.0.1"
+	default "2.21.51.0.4"
 
 config FREETZ_TARGET_UCLIBC_REF
 	string
@@ -204,7 +204,7 @@ config FREETZ_TARGET_LFS
 config FREETZ_TARGET_TOOLCHAIN
 	select FREETZ_LIB_libgmp
 	select FREETZ_LIB_libmpfr
-	select FREETZ_LIB_libmpc if FREETZ_TARGET_COMPILER_GCC_4_5_1
+	select FREETZ_LIB_libmpc if FREETZ_TARGET_COMPILER_GCC_4_5_2
 	bool "Build binutils and gcc for target" if FREETZ_BUILD_TOOLCHAIN
 	default n
 	help
