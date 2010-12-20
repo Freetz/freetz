@@ -25,7 +25,7 @@ echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_72* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7240
 
 echo2 "patching rc.S and rc.conf"
-	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/7240_7270_rc.S_piglet.patch || exit 2
+	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/${FREETZ_TYPE_LANG_STRING}/7240_7270_rc.S_piglet.patch || exit 2
 
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7240\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_CAPI_POTS=.*$/CONFIG_CAPI_POTS=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
