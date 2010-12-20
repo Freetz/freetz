@@ -154,7 +154,7 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) \
-		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(E2FSPROGS_TARGET_LIBDIR)/lib%*.so*) \
+		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(E2FSPROGS_TARGET_LIBDIR)/lib%.so*) \
 		$(E2FSPROGS_BINARIES_ALL:%=$(E2FSPROGS_DEST_DIR)/usr/sbin/%)
 
 $(PKG_FINISH)
