@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.0)
-$(PKG)_LIB_VERSION:=0.7.0
+$(call PKG_INIT_LIB, 1.2.2)
+$(PKG)_LIB_VERSION:=0.7.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c95b73759acfc30712beef6ce4e88efa
+$(PKG)_SOURCE_MD5:=5a9fcabc9a1b7c6f1cd75ddc78f36c56
 $(PKG)_SITE:=http://downloads.xiph.org/releases/ogg
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
