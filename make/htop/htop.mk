@@ -1,9 +1,10 @@
-$(call PKG_INIT_BIN, 0.8.3)
+$(call PKG_INIT_BIN, 0.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=7c5507f35f363f3f40183a2ba3c561f8
 $(PKG)_SITE:=@SF/htop
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/htop
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/htop
-$(PKG)_SOURCE_MD5:=5c9f093f9eaddf6e77aa6d54c2116d0c
 
 $(PKG)_DEPENDS_ON := ncurses
 
@@ -15,9 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(HTOP_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)"
+	$(SUBMAKE) -C $(HTOP_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
