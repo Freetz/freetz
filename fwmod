@@ -891,9 +891,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	echo0 "stripping leftover unstripped binaries"
 	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
-		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS32.*not stripped.*|\1|p'`; do
+		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p'`; do
 		echo2 $i
-		${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip --remove-section={.comment,.note,.pdr} $i > /dev/null 2>&1
+		chmod u+r $i
+		${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip -p --remove-section={.comment,.note,.pdr} $i
 	done
 
 	# external should run after modifying and stripping and so on
