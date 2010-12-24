@@ -1,0 +1,55 @@
+
+mkstemps was added in GLIBC-2.11 (http://sourceware.org/git/?p=glibc.git;a=commitdiff;h=3a83202db6e5591f2b72974c1ad98602c6620770)
+Pretend not to have it (even on systems with GLIBC >= 2.11) and use the bundled version of it instead in order to avoid the dependency on GLIBC-2.11
+
+--- libiberty/configure
++++ libiberty/configure
+@@ -4016,7 +4016,7 @@
+ funcs="$funcs memmove"
+ funcs="$funcs mempcpy"
+ funcs="$funcs memset"
+-funcs="$funcs mkstemps"
++funcs="$funcs mkstemps"; ac_cv_func_mkstemps=no
+ funcs="$funcs putenv"
+ funcs="$funcs random"
+ funcs="$funcs rename"
+--- libiberty/make-temp-file.c
++++ libiberty/make-temp-file.c
+@@ -43,7 +43,7 @@
+ #endif
+ 
+ #include "libiberty.h"
+-extern int mkstemps PARAMS ((char *, int));
++extern int mkstemps_libiberty PARAMS ((char *, int));
+ 
+ /* '/' works just fine on MS-DOS based systems.  */
+ #ifndef DIR_SEPARATOR
+@@ -167,7 +167,7 @@
+   strcpy (temp_filename + base_len, TEMP_FILE);
+   strcpy (temp_filename + base_len + TEMP_FILE_LEN, suffix);
+ 
+-  fd = mkstemps (temp_filename, suffix_len);
++  fd = mkstemps_libiberty (temp_filename, suffix_len);
+   /* If mkstemps failed, then something bad is happening.  Maybe we should
+      issue a message about a possible security attack in progress?  */
+   if (fd == -1)
+--- libiberty/mkstemps.c
++++ libiberty/mkstemps.c
+@@ -51,7 +51,7 @@
+ 
+ /*
+ 
+-@deftypefn Replacement int mkstemps (char *@var{template}, int @var{suffix_len})
++@deftypefn Replacement int mkstemps_libiberty (char *@var{template}, int @var{suffix_len})
+ 
+ Generate a unique temporary file name from @var{template}.
+ @var{template} has the form:
+@@ -71,7 +71,7 @@
+ */
+ 
+ int
+-mkstemps (template, suffix_len)
++mkstemps_libiberty (template, suffix_len)
+      char *template;
+      int suffix_len;
+ {
