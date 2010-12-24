@@ -62,11 +62,16 @@ else
 	avm_revision=$notdefined
 fi
 if [ -r /proc/sys/urlader/environment ]; then
-	flash_size=$(($(sed -ne "s/^flashsize.\([0-9x].*\)/\1/p" /proc/sys/urlader/environment) / 0x100000))
-else
+	flash_size=$(sed -ne "s/^flashsize.\([0-9x].*\)/\1/p" /proc/sys/urlader/environment)
+	case "$flash_size" in
+		0x*)    flash_size=$(($flash_size / 0x100000));;
+		*)      flash_size="";;
+	esac
+fi
+if [ -z $flash_size ]; then
 	flash_size=$CONFIG_ROMSIZE
 fi
-if [ -x $(which run_clock) ]; then
+if [ $(which run_clock) ]; then
 	run_clock=$(run_clock | sed 's/.*: //')
 fi
 
@@ -92,15 +97,19 @@ if [ ! -z "$cpu_model" ]; then
 fi
 echo "</dl>"
 
-echo "<dl class='info'>"
-echo "<dt>$(lang de:"Taktfrequenzen" en:"Clock frequencies")</dt><dd><dl>"
-sed 's/ [ ]*/ /g;s/^Clocks: //;s/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*\):[ ]*\([0-9,.]*\)[ ]*\([a-zA-Z]*\) */<dt>\1<\/dt><dd>\2 \3<\/dd>/g;' /proc/clocks 2>/dev/null
-echo "</dl></dd>"
-echo "</dl>" 
+if [ -e /proc/clocks ]; then
+	echo "<dl class='info'>"
+	echo "<dt>$(lang de:"Taktfrequenzen" en:"Clock frequencies")</dt><dd><dl>"
+	sed 's/ [ ]*/ /g;s/^Clocks: //;s/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*\):[ ]*\([0-9,.]*\)[ ]*\([a-zA-Z]*\) */<dt>\1<\/dt><dd>\2 \3<\/dd>/g;' /proc/clocks 2>/dev/null
+	echo "</dl></dd>"
+	echo "</dl>"
+fi
 
-echo "<dl class='info'>"
-echo "<dt>$(lang de:"Betriebsstundenz&auml;hler" en:"Operating hours counter")</dt><dd>$run_clock</dd>"
-echo "</dl>"
+if [ -n "$run_clock" ]; then
+	echo "<dl class='info'>"
+	echo "<dt>$(lang de:"Betriebsstundenz&auml;hler" en:"Operating hours counter")</dt><dd>$run_clock</dd>"
+	echo "</dl>"
+fi
 
 sec_end
 
@@ -150,7 +159,7 @@ fi
 
 sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
 
-echo "<dl class='info'>" 
+echo "<dl class='info'>"
 echo "<dt>Firmware$(lang de:"" en:" ")version</dt><dd>${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}"
 echo "<dt>AVM-Revision</dt><dd>$avm_revision</dd>"
 echo "<dt>$(lang de:"Sprache" en:"Language")</dt><dd>$Language</dd>"
