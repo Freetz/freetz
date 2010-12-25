@@ -2,10 +2,19 @@ FAKEROOT_VERSION:=1.14.5
 FAKEROOT_SOURCE:=fakeroot_$(FAKEROOT_VERSION).orig.tar.bz2
 FAKEROOT_SOURCE_MD5:=659a1f3a36554abfc2a3eaad2fdc0604
 FAKEROOT_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
-FAKEROOT_DIR:=$(TOOLS_SOURCE_DIR)/fakeroot-$(FAKEROOT_VERSION)
+
 FAKEROOT_MAKE_DIR:=$(TOOLS_DIR)/make
+FAKEROOT_DIR:=$(TOOLS_SOURCE_DIR)/fakeroot-$(FAKEROOT_VERSION)
+FAKEROOT_MAINARCH_DIR:=$(FAKEROOT_DIR)/build/arch
+FAKEROOT_BIARCH_DIR:=$(FAKEROOT_DIR)/build/biarch
+
 FAKEROOT_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
+FAKEROOT_MAINARCH_LD_PRELOAD_PATH:=$(FAKEROOT_DESTDIR)/lib
+FAKEROOT_BIARCH_LD_PRELOAD_PATH:=$(FAKEROOT_DESTDIR)/lib32
 FAKEROOT_TARGET_SCRIPT:=$(FAKEROOT_DESTDIR)/bin/fakeroot
+FAKEROOT_TARGET_BIARCH_LIB:=$(FAKEROOT_BIARCH_LD_PRELOAD_PATH)/libfakeroot-0.so
+
+BIARCH_BUILD_SYSTEM:=$(findstring $(shell uname -m),x86_64)
 
 $(DL_DIR)/$(FAKEROOT_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TOOLS_DOT_CONFIG) $(FAKEROOT_SOURCE) $(FAKEROOT_SITE) $(FAKEROOT_SOURCE_MD5)
@@ -21,30 +30,43 @@ $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE) | $(TOOLS_SOURCE_DIR)
 	done
 	touch $@
 
-$(FAKEROOT_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
-	(cd $(FAKEROOT_DIR); rm -rf config.cache; \
+$(FAKEROOT_MAINARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
+	(mkdir -p $(FAKEROOT_MAINARCH_DIR); cd $(FAKEROOT_MAINARCH_DIR); $(RM) config.cache; \
 		CFLAGS="-O3 -Wall" \
 		CC="$(TOOLS_CC)" \
-		./configure \
-		--prefix=/ \
+		../../configure \
+		--prefix=$(FAKEROOT_DESTDIR) \
 		--enable-shared \
 		$(DISABLE_NLS) \
 	);
-	touch $(FAKEROOT_DIR)/.configured
+	touch $@
 
-$(FAKEROOT_TARGET_SCRIPT): $(FAKEROOT_DIR)/.configured
-	$(MAKE) DESTDIR=$(FAKEROOT_DESTDIR) -C $(FAKEROOT_DIR) install
-	$(SED) -i -e 's,^FAKEROOT_PREFIX=.*,FAKEROOT_PREFIX=$(FAKEROOT_DESTDIR)/,g' $(FAKEROOT_TARGET_SCRIPT)
-	$(SED) -i -e 's,^FAKEROOT_BINDIR=.*,FAKEROOT_BINDIR=$(FAKEROOT_DESTDIR)/bin,g' $(FAKEROOT_TARGET_SCRIPT)
-	$(SED) -i -e 's,^PATHS=.*,PATHS=$(FAKEROOT_DESTDIR)/lib,g' $(FAKEROOT_TARGET_SCRIPT)
+$(FAKEROOT_TARGET_SCRIPT): $(FAKEROOT_MAINARCH_DIR)/.configured
+	$(MAKE) -C $(FAKEROOT_MAINARCH_DIR) install
+	$(SED) -i -e 's,^PATHS=.*,PATHS=$(FAKEROOT_MAINARCH_LD_PRELOAD_PATH)$(if $(BIARCH_BUILD_SYSTEM),:$(FAKEROOT_BIARCH_LD_PRELOAD_PATH)),g' $(FAKEROOT_TARGET_SCRIPT)
 
-fakeroot: $(FAKEROOT_TARGET_SCRIPT)
+$(FAKEROOT_BIARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
+	(mkdir -p $(FAKEROOT_BIARCH_DIR); cd $(FAKEROOT_BIARCH_DIR); $(RM) config.cache; \
+		CFLAGS="-m32 -O3 -Wall" \
+		CC="$(TOOLS_CC)" \
+		../../configure \
+		--prefix=$(FAKEROOT_DESTDIR) \
+		--enable-shared \
+		$(DISABLE_NLS) \
+	);
+	touch $@
+
+$(FAKEROOT_TARGET_BIARCH_LIB): $(FAKEROOT_BIARCH_DIR)/.configured
+	$(MAKE) -C $(FAKEROOT_BIARCH_DIR) libdir="$(FAKEROOT_BIARCH_LD_PRELOAD_PATH)" install-libLTLIBRARIES
+
+fakeroot: $(FAKEROOT_TARGET_SCRIPT) $(if $(BIARCH_BUILD_SYSTEM),$(FAKEROOT_TARGET_BIARCH_LIB))
 
 fakeroot-clean:
-	$(MAKE) -C $(FAKEROOT_DIR) clean
+	-$(MAKE) -C $(FAKEROOT_MAINARCH_DIR) clean
+	-$(MAKE) -C $(FAKEROOT_BIARCH_DIR) clean
 
 fakeroot-dirclean:
 	$(RM) -r $(FAKEROOT_DIR)
 
 fakeroot-distclean: fakeroot-dirclean
-	$(RM) -r $(FAKEROOT_TARGET_SCRIPT) $(FAKEROOT_DESTDIR)/bin/faked $(FAKEROOT_DESTDIR)/lib/libfakeroot*
+	$(RM) -r $(FAKEROOT_TARGET_SCRIPT) $(FAKEROOT_DESTDIR)/bin/faked $(FAKEROOT_DESTDIR)/lib*/libfakeroot*
