@@ -48,7 +48,8 @@ MPC_HOST_BINARY:=$(MPC_HOST_DIR)/lib/libmpc.a
 $(MPC_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPC_DIR)/.unpacked
 	mkdir -p $(MPC_DIR2)
 	(cd $(MPC_DIR2); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
+		CC="$(TOOLCHAIN_HOSTCC)" \
+		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		$(FREETZ_BASE_DIR)/$(MPC_DIR)/configure \
 		--prefix=$(MPC_HOST_DIR) \
 		--build=$(GNU_HOST_NAME) \

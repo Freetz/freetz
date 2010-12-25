@@ -123,7 +123,8 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked $(GCC_INITIAL_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR1)
 	(cd $(GCC_BUILD_DIR1); $(RM) config.cache; \
 		PATH=$(TARGET_PATH) \
-		CC="$(HOSTCC)" \
+		CC="$(TOOLCHAIN_HOSTCC)" \
+		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		$(GCC_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_PREFIX) \
 		--with-sysroot=$(TARGET_TOOLCHAIN_DEVEL_SYSROOT) \
@@ -181,7 +182,8 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ)
 	ln -sf ../include $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/sys-include
 	(cd $(GCC_BUILD_DIR2); $(RM) config.cache; \
 		PATH=$(TARGET_PATH) \
-		CC="$(HOSTCC)" \
+		CC="$(TOOLCHAIN_HOSTCC)" \
+		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		$(GCC_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase) \
 		--with-sysroot=$(TARGET_TOOLCHAIN_SYSROOT) \
@@ -244,7 +246,7 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR3)
 	(cd $(GCC_BUILD_DIR3); $(RM) config.cache; \
 		GCC="$(TARGET_CC)" \
-		CFLAGS_FOR_BUILD="-g -O2 $(HOST_CFLAGS)" \
+		CFLAGS_FOR_BUILD="-g -O2 $(TOOLCHAIN_HOST_CFLAGS)" \
 		$(TARGET_CONFIGURE_ENV) \
 		$(GCC_DIR)/configure \
 		--prefix=/usr \

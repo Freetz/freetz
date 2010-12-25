@@ -25,7 +25,8 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 
 $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
 	( cd $(CCACHE_DIR); rm -f config.cache; \
-		CC=$(HOSTCC) \
+		CC=$(TOOLCHAIN_HOSTCC) \
+		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		./configure \
 		--target=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
@@ -36,7 +37,7 @@ $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
 	touch $@
 
 $(CCACHE_DIR)/$(CCACHE_BINARY): $(CCACHE_DIR)/.configured
-	$(MAKE) CC=$(HOSTCC) -C $(CCACHE_DIR)
+	$(MAKE) -C $(CCACHE_DIR)
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin

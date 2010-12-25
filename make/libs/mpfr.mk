@@ -56,7 +56,8 @@ $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
 	$(MPFR_PREVENT_AUTOCONF_CALL)
 	mkdir -p $(MPFR_DIR2)
 	(cd $(MPFR_DIR2); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
+		CC="$(TOOLCHAIN_HOST_CC)" \
+		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		$(FREETZ_BASE_DIR)/$(MPFR_DIR)/configure \
 		--prefix=$(MPFR_HOST_DIR) \
 		--build=$(GNU_HOST_NAME) \

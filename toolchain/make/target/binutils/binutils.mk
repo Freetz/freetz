@@ -34,7 +34,8 @@ $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR
 $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked
 	mkdir -p $(BINUTILS_DIR1)
 	(cd $(BINUTILS_DIR1); $(RM) config.cache; \
-		CC="$(HOSTCC)" \
+		CC="$(TOOLCHAIN_HOSTCC)" \
+		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		$(BINUTILS_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_PREFIX) \
 		--with-sysroot=$(TARGET_TOOLCHAIN_SYSROOT) \

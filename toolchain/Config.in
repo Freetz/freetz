@@ -218,6 +218,21 @@ config FREETZ_STATIC_TOOLCHAIN
 	help
 		Build statically linked kernel and target toolchains.
 
+config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
+#	bool "Minimize required GLIBC version" if FREETZ_BUILD_TOOLCHAIN
+	bool
+	default y
+#	help
+#		This options causes apgcc to be used to compile toolchain.
+#		It requires the latest(trunk) version of apgcc to be
+#		properly installed and configured on the build system.
+
+config FREETZ_BUILD_32BIT_TOOLCHAIN
+	bool "Build 32-bit toolchain" if FREETZ_BUILD_TOOLCHAIN
+	default n
+	help
+		This option causes a 32-bit toolchain to be built even on 64-bit systems.
+
 config FREETZ_TARGET_CCACHE
 	bool "Build ccache"
 	default y

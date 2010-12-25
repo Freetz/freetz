@@ -1,3 +1,19 @@
+TOOLCHAIN_HOSTCC:=gcc
+TOOLCHAIN_HOST_CFLAGS:=
+ifeq ($(strip $(FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION)),y)
+
+# avoids dependency on __isoc99_sscanf@@GLIBC_2.7 (added in GLIBC 2.7)
+TOOLCHAIN_HOST_CFLAGS+=-D_GNU_SOURCE
+
+# avoids dependency on __stack_chk_fail@@GLIBC_2.4 (added in GLIBC 2.4)
+TOOLCHAIN_HOST_CFLAGS+=-fno-stack-protector
+
+endif
+
+ifeq ($(strip $(FREETZ_BUILD_32BIT_TOOLCHAIN)),y)
+TOOLCHAIN_HOST_CFLAGS+=-m32
+endif
+
 BINUTILS_BINARIES_BIN := addr2line ar as c++filt elfedit gprof ld nm objcopy objdump ranlib readelf size strings strip
 GCC_BINARIES_BIN := gcc g++ cc c++ cpp gccbug gcov
 GCC_BINARIES_LIBEXEC := cc1 cc1plus collect2 install-tools/fixincl

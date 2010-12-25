@@ -34,6 +34,8 @@ ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 UCLIBC_COMMON_BUILD_FLAGS += V=1
 endif
 
+UCLIBC_HOST_CFLAGS:=$(TOOLCHAIN_HOST_CFLAGS) -U_GNU_SOURCE -fno-strict-aliasing
+
 $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(UCLIBC_LOCALE_DATA_FILENAME) $(UCLIBC_LOCALE_DATA_SITE)
 
@@ -77,7 +79,7 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
-		HOSTCC="$(HOSTCC)" \
+		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
 		oldconfig < /dev/null > /dev/null
 	touch $@
 
@@ -87,7 +89,7 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
-		HOSTCC="$(HOSTCC)" headers \
+		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" headers \
 		$(if $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28),install_dev,install_headers)
 	$(call COPY_KERNEL_HEADERS,$(UCLIBC_KERNEL_HEADERS_DIR),$(TARGET_TOOLCHAIN_STAGING_DIR)/usr)
 	touch $@
@@ -98,7 +100,7 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
-		HOSTCC="$(HOSTCC)" \
+		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
 		menuconfig && \
 	cp -f $^ $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) && \
 	touch $^
@@ -109,7 +111,7 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(GCC_BUILD_DIR1)/.installed
 		PREFIX= \
 		DEVEL_PREFIX=/ \
 		RUNTIME_PREFIX=/ \
-		HOSTCC="$(HOSTCC)" \
+		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
 		all
 ifeq ($(or $(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_30)),$(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_31))),y)
 	# At this point uClibc is compiled and there is no reason for us to recompile it.
@@ -146,7 +148,7 @@ endif
 	$(MAKE1) -C $(UCLIBC_DIR)/utils \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
-		HOSTCC="$(HOSTCC)" \
+		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS) -m32" \
 		BUILD_LDFLAGS="$(if $(FREETZ_STATIC_TOOLCHAIN),-static)" \
 		hostutils
 	for i in ldd ldconfig; do \

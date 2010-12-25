@@ -49,7 +49,9 @@ GMP_HOST_BINARY:=$(GMP_HOST_DIR)/lib/libgmp.a
 $(GMP_DIR2)/.configured: | $(GMP_DIR)/.unpacked
 	mkdir -p $(GMP_DIR2)
 	(cd $(GMP_DIR2); $(RM) -r config.cache; \
-		CC="$(TOOLS_CC)" \
+		CC="$(TOOLCHAIN_HOSTCC)" \
+		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
+		$(if $(strip $(FREETZ_BUILD_32BIT_TOOLCHAIN)),ABI=32) \
 		$(FREETZ_BASE_DIR)/$(GMP_DIR)/configure \
 		--prefix=$(GMP_HOST_DIR) \
 		--build=$(GNU_HOST_NAME) \
