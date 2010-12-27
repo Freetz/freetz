@@ -145,6 +145,8 @@ ifneq ($(strip $(UCLIBC_VERSION)),0.9.28)
 	cp $(UCLIBC_DIR)/ldso/libdl/libdl_so.a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libdl_pic.a
 endif
 	# Build the host utils.
+	# Note: in order the host utils to work the __ELF_NATIVE_CLASS (= __WORDSIZE) of the host
+	# must match that of the target. That's the reason we hardcode the "-m32" option here.
 	$(MAKE1) -C $(UCLIBC_DIR)/utils \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
