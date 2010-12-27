@@ -913,7 +913,6 @@ menu "Select kernel modules (IPv6)"
 
 config FREETZ_MODULE_ip6_queue
 	bool "ip6_queue.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 	help
 		Userspace queueing via NETLINK
@@ -972,7 +971,7 @@ config FREETZ_MODULE_ip6t_ah
 		This module allows one to match AH and ESP packets.
 
 config FREETZ_MODULE_ip6t_dst
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_dst.ko"
 	default n
 	help
@@ -982,7 +981,7 @@ config FREETZ_MODULE_ip6t_dst
 		and destination options headers of a packet.
 
 config FREETZ_MODULE_ip6t_esp
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_esp.ko"
 	default n
 	help
@@ -1042,7 +1041,7 @@ config FREETZ_MODULE_ip6t_ipv6header
 		the ipv6 extension headers.
 
 config FREETZ_MODULE_ip6t_length
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_length.ko"
 	default n
 	help
@@ -1052,7 +1051,7 @@ config FREETZ_MODULE_ip6t_length
 		specific value or range of values.
 
 config FREETZ_MODULE_ip6t_limit
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_limit.ko"
 	default n
 	help
@@ -1073,7 +1072,7 @@ config FREETZ_MODULE_ip6t_LOG
 		any iptables table which records the packet header to the syslog.
 
 config FREETZ_MODULE_ip6t_mac
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_mac.ko"
 	default n
 	help
@@ -1083,7 +1082,7 @@ config FREETZ_MODULE_ip6t_mac
 		Ethernet address of the packet.
 
 config FREETZ_MODULE_ip6t_mark
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_mark.ko"
 	default n
 	help
@@ -1094,7 +1093,7 @@ config FREETZ_MODULE_ip6t_mark
 		(see below).
 
 config FREETZ_MODULE_ip6t_multiport
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_multiport.ko"
 	default n
 	help
@@ -1105,7 +1104,7 @@ config FREETZ_MODULE_ip6t_multiport
 		match a single range of ports.
 
 config FREETZ_MODULE_ip6t_owner
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_owner.ko"
 	default n
 	help
@@ -1136,7 +1135,7 @@ config FREETZ_MODULE_ip6table_mangle
 		which can effect how the packet is routed.
 
 config FREETZ_MODULE_ip6t_MARK
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_MARK.ko"
 	default n
 	help
