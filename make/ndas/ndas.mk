@@ -10,6 +10,8 @@ $(PKG)_SOURCE_MD5:=f6b5d28b638ac074f54d404e4c136d5e
 
 $(PKG)_DEPENDS_ON := kernel
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
+
 $(PKG)_MODULES:=ndas_block.ko ndas_core.ko ndas_sal.ko
 
 NDAS_OPTIONS:= \
