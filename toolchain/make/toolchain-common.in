@@ -86,7 +86,9 @@ $(patsubst %/,%,$(dir $(patsubst %/,%,$(strip $(1)))))
 endef
 
 
-TOOLCHAIN_EXCLUDE_FILES := *uClibc++* *g++-uc libtool* aclocal
+TOOLCHAIN_EXCLUDE_FILES := *uClibc++* *g++-uc libtool* aclocal lib32
+# Union of versions 2.6.13, 2.6.19, and 2.6.28
+KERNEL_HEADERS_SUBDIRS := asm asm-generic drm linux mtd rdma scsi sound video
 
 # $1 - toolchain base dir
 # $2 - tarball name suffix (TARGET_ARCH? / toolchain version)
@@ -95,7 +97,7 @@ define TOOLCHAIN_CREATE_TARBALL
 	dname="$(notdir $(call updir,$(1)))"; \
 	tname="$${dname}$(if $(strip $(2)),-$(strip $(2)))"; \
 	$(RM) $(DL_DIR)/$${tname}.tar.lzma; \
-	$(TOOLS_DIR)/tar -C $${droot} -c $${dname} $(foreach f,$(TOOLCHAIN_EXCLUDE_FILES),--exclude $(f)) | \
+	$(TOOLS_DIR)/tar -C $${droot} -c $${dname} $(foreach f,$(TOOLCHAIN_EXCLUDE_FILES) $(addprefix include/,$(KERNEL_HEADERS_SUBDIRS)),--exclude $(f)) | \
 	$(TOOLS_DIR)/lzma e -si $(DL_DIR)/$${tname}.tar.lzma -d25;
 endef
 
@@ -103,7 +105,8 @@ endef
 # $2 - target dir
 # $3 - subdirs to be copied (optional, if omitted all subdirs are copied)
 define COPY_KERNEL_HEADERS
-	if [ ! -f $(strip $(2))/include/linux/version.h ] ; then \
+	if ! diff -q $(strip $(1))/include/linux/version.h $(strip $(2))/include/linux/version.h >/dev/null 2>&1 ; then \
+		$(RM) -r $(addprefix $(strip $(2))/include/,$(KERNEL_HEADERS_SUBDIRS)); \
 		mkdir -p $(strip $(2))/include/; \
 		cp -pLR $(strip $(1))/include/$(if $(strip $(3)),$(strip $(3)),*) $(strip $(2))/include/; \
 	fi;

@@ -39,7 +39,7 @@ $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE): | $(DL_DIR)
 	@$(DL_TOOL) $(DL_DIR) $(TOPDIR)/.config $(TARGET_TOOLCHAIN_SOURCE) "" $(TARGET_TOOLCHAIN_MD5)
 
 download-toolchain: $(KERNEL_CROSS_COMPILER) kernel-configured \
-			$(TARGET_CROSS_COMPILER) \
+			$(TARGET_CROSS_COMPILER) target-toolchain-kernel-headers \
 			$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1 \
 			$(CCACHE) uclibcxx libtool-host
 

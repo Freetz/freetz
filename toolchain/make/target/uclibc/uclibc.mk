@@ -91,7 +91,6 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" headers \
 		$(if $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28),install_dev,install_headers)
-	$(call COPY_KERNEL_HEADERS,$(UCLIBC_KERNEL_HEADERS_DIR),$(TARGET_TOOLCHAIN_STAGING_DIR)/usr)
 	touch $@
 
 uclibc-menuconfig: $(UCLIBC_DIR)/.config
@@ -134,7 +133,6 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 		install_runtime install_dev
-	$(call COPY_KERNEL_HEADERS,$(UCLIBC_KERNEL_HEADERS_DIR),$(TARGET_TOOLCHAIN_STAGING_DIR)/usr)
 	# Copy some files to make mklibs happy
 ifneq ($(strip $(UCLIBC_VERSION)),0.9.28)
 	for f in libc_pic.a libdl_pic.a libpthread_pic.a; do \

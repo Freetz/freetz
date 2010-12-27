@@ -40,7 +40,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 
 target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
 			$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) \
-			kernel-configured uclibc-configured \
+			kernel-configured uclibc-configured target-toolchain-kernel-headers \
 			$(TARGET_TOOLCHAIN)
 
 target-toolchain-source: $(TARGET_TOOLCHAIN_DIR) \

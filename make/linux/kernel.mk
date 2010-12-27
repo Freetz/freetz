@@ -141,7 +141,7 @@ $(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
 		prepare
 	touch $@
 
-$(KERNEL_DIR)/.headers_installed: $(KERNEL_DIR)/.prepared
+$(KERNEL_HEADERS_DEVEL_DIR)/include/linux/version.h: $(KERNEL_DIR)/.prepared
 ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13_1)),y)
 	$(call COPY_KERNEL_HEADERS,$(KERNEL_BUILD_ROOT_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(comma)asm-generic$(comma)linux})
 else
@@ -154,15 +154,12 @@ else
 endif
 	touch $@
 
-# Install the kernel headers to the toolchain dir if necessary
-ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-$(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.headers_installed
-else
-$(KERNEL_DIR)/.depend_done: $(KERNEL_DIR)/.prepared
-endif
-	touch $@
+target-toolchain-kernel-headers: $(TARGET_TOOLCHAIN_KERNEL_VERSION_HEADER)
+$(TARGET_TOOLCHAIN_KERNEL_VERSION_HEADER): $(TOPDIR)/.config $(KERNEL_HEADERS_DEVEL_DIR)/include/linux/version.h | $(if $(FREETZ_BUILD_TOOLCHAIN),$(TARGET_TOOLCHAIN_STAGING_DIR),$(TARGET_CROSS_COMPILER))
+	@$(call COPY_KERNEL_HEADERS,$(KERNEL_HEADERS_DEVEL_DIR),$(TARGET_TOOLCHAIN_STAGING_DIR)/usr)
+	@touch $@
 
-$(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.depend_done $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
+$(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	$(call _ECHO, kernel image... )
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -210,7 +207,7 @@ $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL
 
 kernel-precompiled: pkg-echo-start $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT) pkg-echo-done
 
-kernel-configured: $(KERNEL_DIR)/.depend_done
+kernel-configured: $(KERNEL_DIR)/.prepared
 
 kernel-modules: $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 
@@ -253,4 +250,4 @@ pkg-echo-start:
 pkg-echo-done:
 	@$(call _ECHO_DONE)
 
-.PHONY: kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig
+.PHONY: kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig target-toolchain-kernel-headers
