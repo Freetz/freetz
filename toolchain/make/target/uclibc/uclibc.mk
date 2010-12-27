@@ -83,7 +83,7 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 		oldconfig < /dev/null > /dev/null
 	touch $@
 
-$(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config
+$(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config | $(UCLIBC_KERNEL_HEADERS_DIR)/include/linux/version.h
 	$(MAKE1) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
