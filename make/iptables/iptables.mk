@@ -7,6 +7,8 @@ ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_CONDITIONAL_PATCHES+=cond
 endif
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
+
 $(PKG)_BINARIES_ALL := iptables-multi ip6tables-multi
 $(PKG)_BINARIES := $(filter-out $(if $(FREETZ_TARGET_IPV6_SUPPORT),,ip6%), $($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
@@ -26,6 +28,8 @@ $(PKG)_TARGET_EXTENSIONS:=$($(PKG)_EXTENSIONS_DIR)/.installed
 $(PKG)_CONFIGURE_ENV += AR="$(TARGET_AR)"
 $(PKG)_CONFIGURE_ENV += RANLIB="$(TARGET_RANLIB)"
 $(PKG)_CONFIGURE_OPTIONS += --with-ksource="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,ac_cv(_header_linux),do_not_cache_me\1,g' configure;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
