@@ -95,6 +95,8 @@ else
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --enable-elf-shlibs
 endif
+$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
