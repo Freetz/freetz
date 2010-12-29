@@ -1,0 +1,13 @@
+--- modules/fork-module.c
++++ modules/fork-module.c
+@@ -271,6 +271,10 @@
+    SLfile_free_fd (f0);
+ }
+ 
++#if !defined(WCONTINUED)
++#warning TODO: consider backporting the following changeset to uClibc-0.9.28 git.uclibc.org/uClibc/diff/libc/sysdeps/linux/common/bits/waitflags.h?id=eb1c3012e66fc6a966d5d90e14752a13d3a2f407
++#define WCONTINUED 8 /* Report continued child. */
++#endif
+ static SLang_IConstant_Type Module_IConstants [] =
+ {
+    MAKE_ICONSTANT("WNOHANG", WNOHANG),
