@@ -1,0 +1,91 @@
+--- src/bittwiste.c
++++ src/bittwiste.c
+@@ -321,14 +321,14 @@
+                         error("strdup(): cannot allocate memory for str");
+                     if ((cp = (char *)strtok(str, ",")) == NULL)
+                         error("invalid sender IP address");
+-                    if (inet_aton(cp, &in_addr) == 0)
++                    if (bittwist_inet_aton(cp, &in_addr) == 0)
+                         error("invalid sender IP address");
+                     memcpy(&arpopt->ar_old_spa, &in_addr, sizeof(struct in_addr));
+                     if ((cp = (char *)strtok(NULL, ",")) == NULL) /* overwrite all sender IP address */
+                         arpopt->ar_spa_flag = 1;
+                     else { /* overwrite matching IP address only */
+                         arpopt->ar_spa_flag = 2;
+-                        if (inet_aton(cp, &in_addr) == 0)
++                        if (bittwist_inet_aton(cp, &in_addr) == 0)
+                             error("invalid sender IP address");
+                         memcpy(&arpopt->ar_new_spa, &in_addr, sizeof(struct in_addr));
+                     }
+@@ -359,14 +359,14 @@
+                         error("strdup(): cannot allocate memory for str");
+                     if ((cp = (char *)strtok(str, ",")) == NULL)
+                         error("invalid target IP address");
+-                    if (inet_aton(cp, &in_addr) == 0)
++                    if (bittwist_inet_aton(cp, &in_addr) == 0)
+                         error("invalid target IP address");
+                     memcpy(&arpopt->ar_old_tpa, &in_addr, sizeof(struct in_addr));
+                     if ((cp = (char *)strtok(NULL, ",")) == NULL) /* overwrite all target IP address */
+                         arpopt->ar_tpa_flag = 1;
+                     else { /* overwrite matching IP address only */
+                         arpopt->ar_tpa_flag = 2;
+-                        if (inet_aton(cp, &in_addr) == 0)
++                        if (bittwist_inet_aton(cp, &in_addr) == 0)
+                             error("invalid target IP address");
+                         memcpy(&arpopt->ar_new_tpa, &in_addr, sizeof(struct in_addr));
+                     }
+@@ -434,14 +434,14 @@
+                         error("strdup(): cannot allocate memory for str");
+                     if ((cp = (char *)strtok(str, ",")) == NULL)
+                         error("invalid source IP address");
+-                    if (inet_aton(cp, &in_addr) == 0)
++                    if (bittwist_inet_aton(cp, &in_addr) == 0)
+                         error("invalid source IP address");
+                     memcpy(&ipopt->ip_old_src, &in_addr, sizeof(struct in_addr));
+                     if ((cp = (char *)strtok(NULL, ",")) == NULL) /* overwrite all source IP address */
+                         ipopt->ip_src_flag = 1;
+                     else { /* overwrite matching IP address only */
+                         ipopt->ip_src_flag = 2;
+-                        if (inet_aton(cp, &in_addr) == 0)
++                        if (bittwist_inet_aton(cp, &in_addr) == 0)
+                             error("invalid source IP address");
+                         memcpy(&ipopt->ip_new_src, &in_addr, sizeof(struct in_addr));
+                     }
+@@ -453,14 +453,14 @@
+                         error("strdup(): cannot allocate memory for str");
+                     if ((cp = (char *)strtok(str, ",")) == NULL)
+                         error("invalid destination IP address");
+-                    if (inet_aton(cp, &in_addr) == 0)
++                    if (bittwist_inet_aton(cp, &in_addr) == 0)
+                         error("invalid destination IP address");
+                     memcpy(&ipopt->ip_old_dst, &in_addr, sizeof(struct in_addr));
+                     if ((cp = (char *)strtok(NULL, ",")) == NULL) /* overwrite all destination IP address */
+                         ipopt->ip_dst_flag = 1;
+                     else { /* overwrite matching IP address only */
+                         ipopt->ip_dst_flag = 2;
+-                        if (inet_aton(cp, &in_addr) == 0)
++                        if (bittwist_inet_aton(cp, &in_addr) == 0)
+                             error("invalid destination IP address");
+                         memcpy(&ipopt->ip_new_dst, &in_addr, sizeof(struct in_addr));
+                     }
+@@ -2253,7 +2253,7 @@
+  *    The Regents of the University of California.  All rights reserved.
+  *
+  */
+-int inet_aton(const char *cp, struct in_addr *addr)
++int bittwist_inet_aton(const char *cp, struct in_addr *addr)
+ {
+     u_long val;
+     int base, n;
+--- src/bittwiste.h
++++ src/bittwiste.h
+@@ -53,7 +53,8 @@
+ void notice(const char *, ...);
+ void error(const char *, ...);
+ struct ether_addr *ether_aton(const char *a);
+-int inet_aton(const char *cp, struct in_addr *addr);
++#warning TODO: consider backporting the following change to uClibc-0.9.28 git.uclibc.org/uClibc/diff/include/arpa/inet.h?id=789db36adee475a7b5500beca72fea274360a2bd
++int bittwist_inet_aton(const char *cp, struct in_addr *addr);
+ void usage(void);
+ 
+ #endif  /* !_BITTWISTE_H_ */
