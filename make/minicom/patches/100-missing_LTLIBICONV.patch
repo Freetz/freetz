@@ -1,0 +1,11 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -328,7 +328,7 @@
+ 	$(LINK) $(ascii_xfr_OBJECTS) $(ascii_xfr_LDADD) $(LIBS)
+ minicom$(EXEEXT): $(minicom_OBJECTS) $(minicom_DEPENDENCIES) 
+ 	@rm -f minicom$(EXEEXT)
+-	$(LINK) $(minicom_OBJECTS) $(minicom_LDADD) $(LIBS)
++	$(LINK) $(minicom_OBJECTS) $(minicom_LDADD) $(LIBS) $(LTLIBICONV)
+ minicom.keyserv$(EXEEXT): $(minicom_keyserv_OBJECTS) $(minicom_keyserv_DEPENDENCIES) 
+ 	@rm -f minicom.keyserv$(EXEEXT)
+ 	$(LINK) $(minicom_keyserv_OBJECTS) $(minicom_keyserv_LDADD) $(LIBS)
