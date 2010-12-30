@@ -18,6 +18,8 @@ $(PKG)_LIBS_TARGET_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)$(CLASSPAT
 $(PKG)_BUILD_PREREQ += fastjar javac
 $(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems fastjar is provided by the package of the same name, whereas javac (Java compiler) is provided by many packages. You could use either of them interchangeably.
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON := libiconv
 endif

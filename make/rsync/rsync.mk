@@ -8,6 +8,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/rsync
 
 $(PKG)_DEPENDS_ON := popt
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 # rsync sets some C99 related options, not all packages are C99 compliant, so make the following values rsync specific
 $(PKG)_AC_VARIABLES := prog_cc_c89 prog_cc_c99 prog_cc_stdc
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES),./configure.sh)

@@ -7,6 +7,8 @@ $(PKG)_SOURCE_MD5:=d0dd58bbd6cd36795e05c6f1f74420b0
 
 $(PKG)_DEPENDS_ON := libpcap
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 $(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
 $(PKG)_CONFIGURE_ENV += ac_cv_path_PCAP_CONFIG=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcap-config
 

@@ -8,6 +8,8 @@ $(PKG)_SOURCE_MD5:=508bf1911173ac43e4e6c31d9dc36b8f
 $(PKG)_BUILD_PREREQ += ruby
 $(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by a package with the same name
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath

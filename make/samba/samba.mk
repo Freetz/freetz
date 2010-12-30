@@ -12,6 +12,8 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/sbin/%,$(filter-out $($(P
 
 $(PKG)_DEPENDS_ON+= popt
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_CONFIGURE_ENV += libreplace_cv_HAVE_IPV6=no
 endif

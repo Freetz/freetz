@@ -7,6 +7,8 @@ $(PKG)_SOURCE_MD5:=fa68528eaec1757f52bacf9fea8c68a9
 
 $(PKG)_DEPENDS_ON := ncurses
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_resolv_res_mkquery=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared

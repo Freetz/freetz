@@ -34,6 +34,8 @@ $(PKG)_DEPENDS_ON:= libusb
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthread

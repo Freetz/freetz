@@ -5,6 +5,8 @@ $(PKG)_SITE:=http://ftp.deepspace6.net/pub/ds6/sources/nc6/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nc6
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nc6
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 

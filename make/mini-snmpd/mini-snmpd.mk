@@ -6,6 +6,8 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/mini_snmpd
 $(PKG)_BINARY:=$($(PKG)_DIR)/mini_snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mini_snmpd
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_CFLAGS:=-D__IPV6__
 else
