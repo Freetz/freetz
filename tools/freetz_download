@@ -63,19 +63,33 @@ do_check()
 # $1 - url
 # $2 - subdir
 # $3 - version
+do_checkout_cvs()
+{
+  local module_name
+  module_name="${2/-$3/}"
+  (cvs -d:"$1" export -D "$3" "$module_name" || cvs -d:"$1" export -r "$3" "$module_name") && mv "$module_name" "$2"
+}
 do_checkout_svn()
 {
   local extra_flags
   svn help export | grep -q trust-server-cert && extra_flags="--trust-server-cert"
   svn export --non-interactive $extra_flags -r$3 "$1" "$2"
 }
-
-# $1 - url
-# $2 - subdir
-# $3 - version
 do_checkout_git()
 {
   git clone "$1" "$2" && (cd "$2" && git checkout "$3" && rm -rf .git)
+}
+do_checkout_bzr()
+{
+  bzr export -r"$3" "$2" "$1"
+}
+do_checkout_hg()
+{
+  hg clone -r "$3" "$1" "$2" && (cd "$2" && rm -rf .hg .hgignore .hgtags)
+}
+do_checkout_darcs()
+{
+  darcs get -t "$3" "$1" "$2" && (cd "$2" && rm -rf _darcs)
 }
 
 
@@ -134,23 +148,17 @@ if [ -n "$MAIN_URL" ]; then
     sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
     sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
     num_sites=2
-  elif [ ${MAIN_URL:0:4} == "svn@" -o ${MAIN_URL:0:6} == "svn://" ]; then
-    if [ ${MAIN_URL:0:4} == "svn@" ]; then
-      MAIN_URL=${MAIN_URL/svn@/}
-    fi
-    DL_METHOD=svn
-    num_sites=0
-    MD5=""
-  elif [ ${MAIN_URL:0:4} == "git@" -o ${MAIN_URL:0:6} == "git://" ]; then
-    if [ ${MAIN_URL:0:4} == "git@" ]; then
-      MAIN_URL=${MAIN_URL/git@/}
-    fi
-    DL_METHOD=git
-    num_sites=0
-    MD5=""
   else
-    sites[$num_sites]=$MAIN_URL
-    (( num_sites++ ))
+    supportedVCSs="cvs|svn|git|bzr|hg|darcs"
+    VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
+    if [ -n "${VCS}" ]; then
+      MAIN_URL="$(echo "${MAIN_URL}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
+      num_sites=0
+      MD5=""
+    else
+      sites[$num_sites]=$MAIN_URL
+      (( num_sites++ ))
+    fi
   fi
 fi
 
@@ -194,7 +202,7 @@ for i in ${sites[@]}; do
   exit 0
 done
 
-if [ "$DL_METHOD" == "svn" -o "$DL_METHOD" == "git" ]; then
+if [ -n "$VCS" ]; then
   echo
   case "$DL_FILE" in
     *.tar.gz) COMPRESSION_FLAG=z ;;
@@ -207,12 +215,12 @@ if [ "$DL_METHOD" == "svn" -o "$DL_METHOD" == "git" ]; then
   [ -n "$VERSION" ] || { echo "Failed to detect version from $DL_FILE"; exit 1; }
 
   TMP_DIR=$(mktemp -d -t freetzXXX) || { echo "Error creating temporary dir."; exit 1; }
-  echo "Checking out files from the $DL_METHOD repository..." \
+  echo "Checking out files from the $VCS repository..." \
   && ( \
     cd "$TMP_DIR" \
     && rm -rf "$SUBDIR" \
     && [ ! -d "$SUBDIR" ] \
-    && do_checkout_"$DL_METHOD" "$MAIN_URL" "$SUBDIR" "$VERSION" \
+    && do_checkout_"$VCS" "$MAIN_URL" "$SUBDIR" "$VERSION" \
     && echo "Packing checkout..." \
     && tar c${COMPRESSION_FLAG}f "$DL_FILE" "$SUBDIR" \
   ) \
