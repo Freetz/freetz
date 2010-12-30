@@ -5,7 +5,7 @@
  minicom$(EXEEXT): $(minicom_OBJECTS) $(minicom_DEPENDENCIES) 
  	@rm -f minicom$(EXEEXT)
 -	$(LINK) $(minicom_OBJECTS) $(minicom_LDADD) $(LIBS)
-+	$(LINK) $(minicom_OBJECTS) $(minicom_LDADD) $(LIBS) $(LTLIBICONV)
++	$(LINK) $(minicom_OBJECTS) $(minicom_LDADD) $(LIBS) $(ICONVLIB)
  minicom.keyserv$(EXEEXT): $(minicom_keyserv_OBJECTS) $(minicom_keyserv_DEPENDENCIES) 
  	@rm -f minicom.keyserv$(EXEEXT)
  	$(LINK) $(minicom_keyserv_OBJECTS) $(minicom_keyserv_LDADD) $(LIBS)
