@@ -1,0 +1,24 @@
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Date: Fri, 20 Oct 2006 09:08:18 +0900
+Subject: [PATCH] [SCSI] replace u8 and u32 with __u8 and __u32 in scsi.h for user space
+
+Signed-off-by: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Signed-off-by: Mike Christie <michaelc@cs.wisc.edu>
+Signed-off-by: James Bottomley <James.Bottomley@SteelEye.com>
+---
+ include/scsi/scsi.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git linux-2.6.19.2/include/scsi/scsi.h linux-2.6.19.2/include/scsi/scsi.h
+index 8a3f0bd..5c0e979 100644
+--- linux-2.6.19.2/include/scsi/scsi.h
++++ linux-2.6.19.2/include/scsi/scsi.h
+@@ -430,7 +430,7 @@
+ #define SCSI_IOCTL_GET_PCI		0x5387
+ 
+ /* Pull a u32 out of a SCSI message (using BE SCSI conventions) */
+-static inline u32 scsi_to_u32(u8 *ptr)
++static inline __u32 scsi_to_u32(__u8 *ptr)
+ {
+ 	return (ptr[0]<<24) + (ptr[1]<<16) + (ptr[2]<<8) + ptr[3];
+ }
