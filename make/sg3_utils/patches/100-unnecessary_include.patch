@@ -1,0 +1,20 @@
+--- include/sg_linux_inc.h
++++ include/sg_linux_inc.h
+@@ -5,14 +5,14 @@
+   #define __user
+   typedef unsigned char u8;
+   #include "/usr/src/linux/include/scsi/sg.h"
+-  #include "/usr/src/linux/include/scsi/scsi.h"
++  /*#include "/usr/src/linux/include/scsi/scsi.h"*/
+ #else
+   #ifdef SG_TRICK_GNU_INCLUDES
+     #include <linux/../scsi/sg.h>
+-    #include <linux/../scsi/scsi.h>
++    /*#include <linux/../scsi/scsi.h>*/
+   #else
+     #include <scsi/sg.h>
+-    #include <scsi/scsi.h>
++    /*#include <scsi/scsi.h>*/
+   #endif
+ #endif
+ 
