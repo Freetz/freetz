@@ -1,0 +1,21 @@
+--- linux-2.6.13.1/fs/exec.c.orig	2007-08-17 14:10:39.000000000 +0200
++++ linux-2.6.13.1/fs/exec.c	2011-01-04 15:39:00.243156033 +0100
+@@ -751,8 +751,8 @@
+         }
+ 
+ 	/*
+-	 * Now there are really no other threads at all,
+-	 * so it's safe to stop telling them to kill themselves.
++	 * There may be one thread left which is just exiting,
++	 * but it's safe to stop telling the group to kill themselves.
+ 	 */
+ 	sig->flags = 0;
+ 
+@@ -791,7 +791,6 @@
+ 			kmem_cache_free(sighand_cachep, oldsighand);
+ 	}
+ 
+-	BUG_ON(!thread_group_empty(current));
+ 	BUG_ON(!thread_group_leader(current));
+ 	return 0;
+ }

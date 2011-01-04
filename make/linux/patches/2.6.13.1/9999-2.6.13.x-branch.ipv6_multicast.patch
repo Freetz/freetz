@@ -1,0 +1,33 @@
+From 6ce0c8dfdfdacc4d370ccd51fa5d4cd28118a9cf Mon Sep 17 00:00:00 2001
+From: David Stevens <dlstevens@us.ibm.com>
+Date: Thu, 15 Sep 2005 13:46:06 -0600
+Subject: [PATCH] [PATCH] fix IPv6 per-socket multicast filtering in exact-match case
+
+per-socket multicast filters were not being applied to all sockets
+in the case of an exact-match bound address, due to an over-exuberant
+"return" in the look-up code. Fix below. IPv4 does not have this problem.
+
+Thanks to Hoerdt Mickael for reporting the bug.
+
+Signed-off-by: David L Stevens <dlstevens@us.ibm.com>
+Signed-off-by: Chris Wright <chrisw@osdl.org>
+---
+ net/ipv6/udp.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git linux-2.6.13.1/net/ipv6/udp.c linux-2.6.13.1/net/ipv6/udp.c
+index eff050a..377f71c 100644
+--- linux-2.6.13.1/net/ipv6/udp.c
++++ linux-2.6.13.1/net/ipv6/udp.c
+@@ -404,9 +404,8 @@ static struct sock *udp_v6_mcast_next(struct sock *sk,
+ 				continue;
+ 
+ 			if (!ipv6_addr_any(&np->rcv_saddr)) {
+-				if (ipv6_addr_equal(&np->rcv_saddr, loc_addr))
+-					return s;
+-				continue;
++				if (!ipv6_addr_equal(&np->rcv_saddr, loc_addr))
++					continue;
+ 			}
+ 			if(!inet6_mc_check(s, loc_addr, rmt_addr))
+ 				continue;
