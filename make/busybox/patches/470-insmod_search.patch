@@ -1,6 +1,6 @@
---- modutils/insmod.c.orig	2010-07-06 04:25:54.000000000 +0200
-+++ modutils/insmod.c	2010-07-30 21:53:01.669676320 +0200
-@@ -9,6 +9,99 @@
+--- modutils/insmod.c.orig	2010-12-20 01:41:27.000000000 +0100
++++ modutils/insmod.c	2011-01-04 16:56:19.292164714 +0100
+@@ -11,6 +11,99 @@
  
  #include "libbb.h"
  #include "modutils.h"
@@ -100,7 +100,7 @@
  
  /* 2.6 style insmod has no options and required filename
   * (not module name - .ko can't be omitted) */
-@@ -55,9 +148,15 @@
+@@ -59,9 +152,15 @@
  	if (!filename)
  		bb_show_usage();
  
@@ -117,9 +117,9 @@
 +done:
  	return rc;
  }
---- modutils/Config.src.orig	2010-07-25 00:12:43.000000000 +0200
-+++ modutils/Config.src	2010-07-30 21:53:01.669676320 +0200
-@@ -228,7 +228,7 @@
+--- modutils/Config.src.orig	2010-12-20 01:41:27.000000000 +0100
++++ modutils/Config.src	2011-01-04 16:56:19.292164714 +0100
+@@ -229,7 +229,7 @@
  config DEFAULT_MODULES_DIR
  	string "Default directory containing modules"
  	default "/lib/modules"

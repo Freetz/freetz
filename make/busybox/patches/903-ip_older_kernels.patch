@@ -1,6 +1,6 @@
---- networking/libiproute/ipaddress.c.orig	2010-10-09 21:57:14.000000000 +0200
-+++ networking/libiproute/ipaddress.c	2010-10-12 13:15:41.000000000 +0200
-@@ -164,6 +164,7 @@
+--- networking/libiproute/ipaddress.c.orig	2010-12-20 01:41:27.000000000 +0100
++++ networking/libiproute/ipaddress.c	2011-01-04 17:01:53.596934712 +0100
+@@ -162,6 +162,7 @@
  		printf("master %s ", ll_idx_n2a(*(int*)RTA_DATA(tb[IFLA_MASTER]), b1));
  	}
  #endif
@@ -8,7 +8,7 @@
  	if (tb[IFLA_OPERSTATE]) {
  		static const char operstate_labels[] ALIGN1 =
  			"UNKNOWN\0""NOTPRESENT\0""DOWN\0""LOWERLAYERDOWN\0"
-@@ -171,6 +172,7 @@
+@@ -169,6 +170,7 @@
  		printf("state %s ", nth_string(operstate_labels,
  					*(uint8_t *)RTA_DATA(tb[IFLA_OPERSTATE])));
  	}
@@ -16,9 +16,9 @@
  	if (G_filter.showqueue)
  		print_queuelen((char*)RTA_DATA(tb[IFLA_IFNAME]));
  
---- networking/libiproute/iplink.c.orig	2010-10-09 21:58:13.000000000 +0200
-+++ networking/libiproute/iplink.c	2010-10-12 13:15:41.000000000 +0200
-@@ -279,6 +279,7 @@
+--- networking/libiproute/iplink.c.orig	2010-12-20 01:41:27.000000000 +0100
++++ networking/libiproute/iplink.c	2011-01-04 17:01:53.596934712 +0100
+@@ -277,6 +277,7 @@
  	return ipaddr_list_or_flush(argv, 0);
  }
  
@@ -26,14 +26,14 @@
  #ifndef NLMSG_TAIL
  #define NLMSG_TAIL(nmsg) \
  	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
-@@ -365,20 +366,31 @@
+@@ -363,20 +364,31 @@
  		return 2;
  	return 0;
  }
 +#endif
  
  /* Return value becomes exitcode. It's okay to not return at all */
- int do_iplink(char **argv)
+ int FAST_FUNC do_iplink(char **argv)
  {
  	static const char keywords[] ALIGN1 =
 +#ifdef IFLA_LINKINFO
