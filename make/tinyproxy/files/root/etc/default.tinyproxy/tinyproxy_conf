@@ -1,3 +1,50 @@
-echo "Port $TINYPROXY_PORT"
+#!/bin/sh
 
-cat /tmp/flash/tinyproxy.conf
+. /mod/etc/conf/tinyproxy.cfg
+
+BUILDIN_SUPPORT=$(tinyproxy -h | sed -n "/proxy support/ s/^[ ]*// ; s/ proxy support// p" | tr '\n' ' ')
+
+[ -n "${TINYPROXY_USER// /}" ] && echo "User $TINYPROXY_USER"
+[ -n "${TINYPROXY_GROUP// /}" ] && echo "Group $TINYPROXY_GROUP"
+[ -n "${TINYPROXY_PORT// /}" ] && echo "Port $TINYPROXY_PORT"
+[ -n "${TINYPROXY_LISTEN// /}" ] && echo "Listen $TINYPROXY_LISTEN"
+[ -n "${TINYPROXY_BIND// /}" ] && echo "Bind $TINYPROXY_BIND"
+[ "$TINYPROXY_BINDSAME" = "yes" ] && echo "BindSame $TINYPROXY_BINDSAME"
+[ -n "${TINYPROXY_TIMEOUT// /}" ] && echo "Timeout $TINYPROXY_TIMEOUT"
+[ -n "${TINYPROXY_ERRORFILE// /}" ] && echo  "ErrorFile ${TINYPROXY_ERRORFILE//\"/}" | sed  's%[ ]*;[ ]*%\nErrorFile %' |sed 's% [ ]*/% "/%g' | sed 's%[ ]*$%"%g'
+[ -n "${TINYPROXY_DEFAULTERRORFILE// /}" ] && echo "DefaultErrorFile \"$TINYPROXY_DEFAULTERRORFILE\""
+[ -n "${TINYPROXY_STATHOST// /}" ] && echo "StatHost $TINYPROXY_STATHOST"
+[ -n "${TINYPROXY_STATFILE// /}" ] && echo "StatFile \"$TINYPROXY_STATFILE\""
+[ -n "${TINYPROXY_LOGFILE// /}" -a "${TINYPROXY_SYSLOG}" != "yes" ] && echo "LogFile \"$TINYPROXY_LOGFILE\""
+[ "$TINYPROXY_SYSLOG" = "yes" ] && echo "Syslog $TINYPROXY_SYSLOG"
+[ -n "${TINYPROXY_LOGLEVEL// /}" ] && echo "LogLevel $TINYPROXY_LOGLEVEL"
+[ -n "${TINYPROXY_PIDFILE// /}" ] && echo "PidFile \"$TINYPROXY_PIDFILE\""
+[ "$TINYPROXY_XTINYPROXY" = "yes"  ] && echo "XTinyproxy $TINYPROXY_XTINYPROXY"
+if echo "$BUILDIN_SUPPORT" | grep -q -i upstream ; then
+	[ -n "${TINYPROXY_UPSTREAM// /}" ] && echo "Upstream $TINYPROXY_UPSTREAM" | sed 's/[[:space:]]*;[[:space:]]*/;Upstream /g' | tr ';' '\n'
+	[ -n "${TINYPROXY_NOUPSTREAM// /}" ] && echo "No Upstream $TINYPROXY_NOUPSTREAM" | sed 's/[[:space:]]*;[[:space:]]*/;No Upstream /g' | tr ';' '\n'
+fi
+[ -n "${TINYPROXY_MAXCLIENTS// /}" ] && echo "MaxClients $TINYPROXY_MAXCLIENTS"
+[ -n "${TINYPROXY_MINSPARESERVERS// /}" ] && echo "MinSpareServers $TINYPROXY_MINSPARESERVERS"
+[ -n "${TINYPROXY_MAXSPARESERVERS// /}" ] && echo "MaxSpareServers $TINYPROXY_MAXSPARESERVERS"
+[ -n "${TINYPROXY_STARTSERVERS// /}" ] && echo "StartServers $TINYPROXY_STARTSERVERS"
+[ -n "${TINYPROXY_MAXREQUESTSPERCHILD// /}" ] && echo "MaxRequestsPerChild $TINYPROXY_MAXREQUESTSPERCHILD"
+[ -n "${TINYPROXY_ALLOW// /}" ] && echo "Allow $TINYPROXY_ALLOW" | sed 's/[[:space:]]*;[[:space:]]*/;Allow /g' | tr ';' '\n'
+[ -n "${TINYPROXY_DENY// /}" ] && echo "Deny $TINYPROXY_DENY" | sed 's/[[:space:]]*;[[:space:]]*/;Deny /g' | tr ';' '\n'
+[ -n "${TINYPROXY_ADDHEADER// /}" ] && echo "AddHeader $TINYPROXY_ADDHEADER"
+[ -n "${TINYPROXY_VIAPROXYNAME// /}" ] && echo "ViaProxyName \"$TINYPROXY_VIAPROXYNAME\""
+[ "$TINYPROXY_DISABLEVIAHEADER" = "yes" ] && echo "DisableViaHeader $TINYPROXY_DISABLEVIAHEADER"
+[ -n "${TINYPROXY_FILTER// /}" ] && echo "$TINYPROXY_FILTER" > /var/tmp/tinyproxy.filter
+[ -n "${TINYPROXY_FILTER// /}" ] && echo "Filter \"/var/tmp/tinyproxy.filter\""
+[ "$TINYPROXY_FILTERURLS" = "yes" ] && echo "FilterURLs $TINYPROXY_FILTERURLS"
+[ "$TINYPROXY_FILTEREXTENDED" = "yes" ] && echo "FilterExtended $TINYPROXY_FILTEREXTENDED"
+[ "$TINYPROXY_FILTERCASESENSITIVE" = "yes" ] && echo "FilterCaseSensitive $TINYPROXY_FILTERCASESENSITIVE"
+[ "$TINYPROXY_FILTERDEFAULTDENY" = "yes" ] && echo "FilterDefaultDeny $TINYPROXY_FILTERDEFAULTDENY"
+[ -n "${TINYPROXY_ANONYMOUS// /}" ] && echo "Anonymous $TINYPROXY_ANONYMOUS" | sed 's/[[:space:]]*;[[:space:]]*/;Anonymous /g' | tr ';' '\n'
+[ -n "${TINYPROXY_CONNECTPORT// /}" ] && echo "ConnectPort $TINYPROXY_CONNECTPORT" | sed 's/[[:space:]]*;[[:space:]]*/;ConnectPort /g' | tr ';' '\n'
+if echo "$BUILDIN_SUPPORT" | grep -q -i reverse ; then
+	[ -n "${TINYPROXY_REVERSEPATH// /}" ] && echo "ReversePath $TINYPROXY_REVERSEPATH"
+	[ "$TINYPROXY_REVERSEONLY" = "yes" ] && echo "ReverseOnly $TINYPROXY_REVERSEONLY"
+	[ "$TINYPROXY_REVERSEMAGIC" = "yes" ] && echo "ReverseMagic $TINYPROXY_REVERSEMAGIC"
+	[ -n "${TINYPROXY_REVERSEBASEURL// /}" ] && echo "ReverseBaseURL $TINYPROXY_REVERSEBASEURL"
+fi

@@ -27,6 +27,11 @@ config FREETZ_PACKAGE_TINYPROXY_WITH_UPSTREAM
 #	depends FREETZ_PACKAGE_TINYPROXY
 #	default n
 
+config FREETZ_PACKAGE_TINYPROXY_WITH_REVERSE
+	bool "Enable reverse proxy support"
+	depends FREETZ_PACKAGE_TINYPROXY
+	default n
+
 config FREETZ_PACKAGE_TINYPROXY_STATIC
 	bool "Build statically linked binary"
 	depends FREETZ_PACKAGE_TINYPROXY

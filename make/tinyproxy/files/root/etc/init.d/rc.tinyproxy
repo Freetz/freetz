@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=tinyproxy
+PID_FILE=/var/run/tinyproxy.pid
 . /etc/init.d/modlibrc
 
 config() {
@@ -16,36 +17,48 @@ config() {
 }
 
 start() {
-
 	modlib_startdaemon $DAEMON -c /mod/etc/$DAEMON.conf
-
-	if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
-		echo -n "Configuring IPTABLES to make all web traffic go through tinyproxy ... "
-		/usr/sbin/iptables -t nat -A PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port $TINYPROXY_PORT
-		echo "done."
-	fi
-
-	if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
-		echo -n "Starting the webserver for the proxy config file ... "
-		httpd -p $TINYPROXY_CONFSERVERPORT -h /usr/mww_tinyproxy
-		echo "done."
-	fi
 }
 
-stop() {
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-
+start_addons() {
 	if [ "$TINYPROXY_CATCHALL" == "yes" ]; then
-		echo -n "Removing tinyproxy IPTABLES rules if any ... "
-		/usr/sbin/iptables -t nat -D PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port $TINYPROXY_PORT
-		echo "done."
+		echo -n " -- Redirect HTTP (Port 80) to tinyproxy (iptables) ... "
+		/usr/sbin/iptables -t nat -A PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port $TINYPROXY_PORT
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+		fi
+
 	fi
 
 	if [ "$TINYPROXY_CONFSERVER" == "yes" ]; then
-		echo -n "Stopping the webserver for the proxy config file ... "
-		pid=$(ps | egrep "httpd\ -p.*tinyproxy" | cut -d ' ' -f 2)
-		kill -9 $pid > /dev/null 2>&1
+		echo -n " -- Starting the webserver for the proxy config file ... "
+		httpd -p $TINYPROXY_CONFSERVERPORT -h /usr/mww_tinyproxy
+		exitval=$?
+		if [ "$exitval" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+		fi
+
+	fi
+}
+	
+stop_addons() {
+	if [ "$TINYPROXY_CATCHALL" == "yes" ] &&  iptables -t nat -S PREROUTING | grep -q "to-ports $TINYPROXY_PORT" ; then
+		echo -n " -- Removing tinyproxy IPTABLES rules ... "
+		while iptables -t nat -S PREROUTING | grep -q "to-ports $TINYPROXY_PORT"; do
+			/usr/sbin/iptables -t nat -D PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-ports $TINYPROXY_PORT
+		done
+		iptables -t nat -S PREROUTING | grep -q "to-ports $TINYPROXY_PORT" && echo  "failed." ||  echo  "done."
+	fi
+
+	confpid=$(ps | egrep "httpd\ -p.*tinyproxy" | sed 's/^[ ]*\([0-9]*\) .*/\1/')
+	if [ "$TINYPROXY_CONFSERVER" == "yes" ] && [ -n "$confpid" ]; then
+		echo -n " -- Stopping the webserver for the proxy config file ... "
+		kill -9 $confpid > /dev/null 2>&1
 		exitval=$?
 		if [ "$exitval" -eq 0 ]; then
 			echo 'done.'
@@ -53,8 +66,6 @@ stop() {
 			echo 'failed.'
 		fi
 	fi
-
-	return $exitval
 }
 
 case $1 in
@@ -74,12 +85,14 @@ case $1 in
 		modlib_stop
 		;;
 	start)
-		modlib_start
+		modlib_start && start_addons
 		;;
 	stop)
+		stop_addons
 		modlib_stop
 		;;
 	restart)
+		stop_addons
 		modlib_restart
 		;;
 	status)
