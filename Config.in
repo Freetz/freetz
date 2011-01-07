@@ -1520,10 +1520,10 @@ config FREETZ_REMOVE_MEDIASRV
 		Remove the MediaServer-daemon (mediasrv) and some other related files.
 		This patch hides also the MediaServer options in the Web UI, so you must
 		disable it before flashing the new image.
-		Saves compressed 280 KB on a 7270_V3 and 40 KB on a 7170.
+		Saves compressed 230 KB on a 7270_V2 and 40 KB on a 7170.
 
 config FREETZ_REMOVE_MINID
-	bool "Remove minid"
+	bool "Remove minid and MT-D/F"
 	default n
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
@@ -1539,8 +1539,8 @@ config FREETZ_REMOVE_MINID
 		! FREETZ_TYPE_SPEEDPORT_W701V_7170
 	help
 		Remove the mini-daemon (minid) and some other related files. This patch
-		removes Fritz!Mini support and all Web UI entrys.
-		Saves compressed 340 KB on a 7270_V3 and 7170.
+		removes Fritz!Mini and MT-D/F support and all Web UI entrys.
+		Saves compressed 660 KB on a 7270_V3 and 460 KB on a 7170.
 
 		ATTENTION: You must remove all Fritz!Mini's from your Fritz!Box configuration
 		and delete all Mini users with the Gini! software to avoid complications.

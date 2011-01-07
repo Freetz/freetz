@@ -3,9 +3,14 @@ echo1 "removing minid files"
 for files in \
 	bin/minid \
 	bin/minidcfg \
+	bin/cjpeg \
+	bin/djpeg \
 	bin/email.plugin \
 	bin/music.plugin \
+	bin/playerd \
 	bin/playerd_tables \
+	bin/pnm* \
+	bin/rdjpgcom \
 	bin/rssagg.plugin \
 	bin/streamer.plugin \
 	bin/telephon.plugin \
@@ -14,9 +19,11 @@ for files in \
 	lib/libavcodec.so* \
 	lib/libavformat.so* \
 	lib/libavutil.so* \
+	lib/libexif.so* \
 	lib/libflashclient.so* \
 	lib/libhttp.so* \
 	lib/libmediacli.so* \
+	lib/libnetpbm.so* \
 	usr/share/ctlmgr/libmini.so \
 	etc/default.*/*/ringtone.wav \
 	; do
@@ -32,3 +39,5 @@ done
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_MINI=.*$/CONFIG_MINI=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
+
