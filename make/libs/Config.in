@@ -545,7 +545,7 @@ config FREETZ_LIB_libconfig
 config FREETZ_LIB_libcurl
 	bool "libcurl (libcurl.so)"
 	default n
-	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_CURL_WITH_SSL
 	help
 		A client-side URL transfer library.
 
