@@ -1,6 +1,6 @@
-CCACHE_VERSION:=2.4
-CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.gz
-CCACHE_MD5:=73c1ed1e767c1752dd0f548ec1e66ce7
+CCACHE_VERSION:=3.1.3
+CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.bz2
+CCACHE_MD5:=1fd1cde402ebd6d3404981ffb0394528
 CCACHE_SITE:=http://samba.org/ftp/ccache
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
 CCACHE_BINARY:=ccache
@@ -13,7 +13,7 @@ endif
 
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -f $(CCACHE_DIR)
-	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(CCACHE_SOURCE)
+	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(CCACHE_SOURCE)
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
 	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache\",g" \
