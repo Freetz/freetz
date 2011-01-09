@@ -11,8 +11,11 @@ lanip="$(ifconfig | grep -v lan:0 | grep -A 2 lan | awk -F'[ :]+' '/inet addr/{p
 ###POSTBACK INTERFACE
 if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = "box" ]; then
 
+# Ermitteln der Log Datei vom syslogd:
+	logfile="$(ps | grep -v "grep" | grep -e "syslogd" | awk '{i=1; while (i<=20){ if ($i == "-O"){ print $(i+1)}; i++;}}')"
+
 # awk Error Lines + 20 = Real Line
-	(awk -v IFCS=$x -v PSTR=$post_string -v QSTR=$QUERY_STRING -v LANIP=$lanip 'BEGIN { 
+	(awk -v SYSLOGDFILE=$logfile -v IFCS=$x -v PSTR=$post_string -v QSTR=$QUERY_STRING -v LANIP=$lanip 'BEGIN {
 		myIP = ENVIRON["REMOTE_ADDR"];
 		changed = 0; 		# FW CONFIGURATION CHANGED
 		dirchanged = 0; 	# DIRECTORIES CHANGED
@@ -23,7 +26,7 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 		loadSettings();
 		if (ENVIRON["NHIPT_CONFIG"] == "box") {dirchanged=1; cfgchanged=1; login=1}
 		RCOD=myConf["ADMINIP"];
-		Boot=myConf["BOOT"]; Bootstrap=myConf["BOOTSTRAP"]; 
+		Boot=myConf["BOOT"]; Bootstrap=myConf["BOOTSTRAP"];
 		if (Boot=="flash"){BootTarget="/tmp/flash/";}
 		if (Boot=="usb"){if (myConf["BOOTDIR"] == ""){BootTarget=myConf["ROOT"] "/";} else {BootTarget=myConf["BOOTDIR"] "/";}}
 		BootTargetOld = BootTarget;
@@ -33,7 +36,7 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 			if (i > 1) {ip = ipadr[1]; mask=ipadr[2];} else {ip = ipadr[1]; mask="255.255.255.255";}
 			if (index(mask,".") == 0) {
 				sm = "";
-				ma[8]=255; ma[7]=127; ma[6]=63; ma[5]=31; 
+				ma[8]=255; ma[7]=127; ma[6]=63; ma[5]=31;
 				ma[4]=15; ma[3]=7; ma[2]=3; ma[1]=1; ma[0]=0;
 				for (i=1;i<=4;i++){if (mask >=8) {sm = sm "255.";mask=mask-8;} else {sm = sm ma[mask] ".";mask=0;}}
 				mask=sm;
@@ -46,7 +49,7 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 			if (ENVIRON["REQUEST_METHOD"] == "POST" || ENVIRON["NHIPT_CONFIG"] == "box") {
 				n = split(urldecode(PSTR), PA, "&"); for (i=1;i<=n;i++) {split(PA[i], PM, "=");Param[PM[1]] = PM[2]}
 				if (ENVIRON["NHIPT_CONFIG"] == "box") {
-					delete Param; 
+					delete Param;
 					Param["AIRBAG"] = myConf["AIRBAG"]
 					Param["BACDIR"] = ENVIRON["NHIPT_BACK"]
 					Param["LOGDIR"] = ENVIRON["NHIPT_LOGD"]
@@ -62,7 +65,7 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 					Param["BOOTSTRAP"] = ENVIRON["NHIPT_BOOTSTRAP"]
 					Param["SESAV"] = "save"
 					Param["SETIP"] = "set"
-					myConf["PORT"] = Param["PORT"]	
+					myConf["PORT"] = Param["PORT"]
 					if (ENVIRON["NHIPT_START_LOG"] == "start") {Param["STRTLOG"] = "start";}
 					noloadmodules=1;
 				}
@@ -77,8 +80,18 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 				if (Param["STRTLOG"] > "")	{ret = startLogging(); myCmd = "Logging started...";}
 				if (Param["STOPLOG"] > "")	{ret = stopLogging(); myCmd = "Logging stopped";}
 				if (Param["GETSTAT"] > "")	{checkConfig(); hs["0"] = "...PASSED"; hs["1"] = "...FAILED!"; hs["2"] = "...NOT SAVED!"; for (x in check){ print "STATUS_" x "=" hs[check[x]]; ret += check[x];} myCmd = "Installation Status";}
-				if (Param["GETFWLOG"] > "")	{myCmd = "tail -n 50 " myConf["LOGD"] "/fw.log"; ret = system(myCmd);}
-				if (Param["GETSYSLOG"] > "")	{myCmd = "tail -n 50 " myConf["LOGD"] "/system.log"; ret = system(myCmd);}
+				if (logtarget == 1) {
+					# Use System Log
+					if (SYSLOGDFILE > "") {
+						if (Param["GETFWLOG"] > "")	{myCmd = "grep 'SRC=' " SYSLOGDFILE ".2 " SYSLOGDFILE ".1 " SYSLOGDFILE ".0 " SYSLOGDFILE " | tail -n 50"; ret = system(myCmd);}
+						if (Param["GETSYSLOG"] > ""){myCmd = "grep -v -E \"DECT|DCT|dect|SRC=\" " SYSLOGDFILE ".2 " SYSLOGDFILE ".1 " SYSLOGDFILE ".0 " SYSLOGDFILE " | tail -n 50"; ret = system(myCmd);}
+					}
+				} else {
+					if (Param["GETFWLOG"] > "")	{myCmd = "tail -n 50 " myConf["LOGD"] "/system.log | grep 'SRC='"; ret = system(myCmd);}
+					if (Param["GETFWLOG"] > "")	{myCmd = "tail -n 50 " myConf["LOGD"] "/fw.log"; ret = system(myCmd);}
+				}
+#				if (Param["GETFWLOG"] > "")	{myCmd = "tail -n 50 " myConf["LOGD"] "/fw.log"; ret = system(myCmd);}
+#				if (Param["GETSYSLOG"] > "")	{myCmd = "tail -n 50 " myConf["LOGD"] "/system.log"; ret = system(myCmd);}
 				if (Param["SESAV"] > "")	{
 					if (Param["DSLDOFF"] == "") {Param["DSLDOFF"] = 0;}
 					if (myConf["BOOT"] != Param["BOOT"] ||  myConf["BACK"] != Param["BACDIR"] || Param["ROOT"] > "" || Param["BOOTSTRAP"] > "" || myConf["LOGD"] != Param["LOGDIR"] || myConf["BOOTDIR"] != Param["BOOTDIR"]){dirchanged=1; myCmd = "Saving Settings to " BootTarget "nhipt.par...";	myConf["BOOT"] = Param["BOOT"];  myConf["BACK"] = Param["BACDIR"]; myConf["LOGD"] = Param["LOGDIR"]; if (myConf["BOOTDIR"] != Param["BOOTDIR"]) {myConf["BOOTDIR"] = Param["BOOTDIR"]; Boot="newdir";} if (myConf["ROOT"] != Param["ROOT"] && Param["ROOT"] > "") {myConf["ROOT"] = Param["ROOT"];} if (myConf["BOOTSTRAP"] != Param["BOOTSTRAP"] && Param["BOOTSTRAP"] > "") {myConf["BOOTSTRAP"] = Param["BOOTSTRAP"];}}
@@ -97,45 +110,45 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 					esp		   = "-m esp ";
 					ah		   = "-m ah ";
 					comment	   = "-m comment ";
-					gsub(/ /,"",Param["S"]); gsub(/ /,"",Param["D"]);      gsub(/ /,"",Param["I"]);     gsub(/ /,"",Param["O"]); 
+					gsub(/ /,"",Param["S"]); gsub(/ /,"",Param["D"]);      gsub(/ /,"",Param["I"]);     gsub(/ /,"",Param["O"]);
 					gsub(/ /,"",Param["P"]); gsub(/ /,"",Param["MODULE"]); gsub(/ /,"",Param["SPORT"]); gsub(/ /,"",Param["DPORT"]);
-					if (Param["ROW"] == "A") { myCmd = myCmdPrefix "tables -t " table " -A " Param["CHAIN"] " ";} else {myCmd = myCmdPrefix "tables -t " table " -I " Param["CHAIN"] " " Param["ROW"] " ";} 
+					if (Param["ROW"] == "A") { myCmd = myCmdPrefix "tables -t " table " -A " Param["CHAIN"] " ";} else {myCmd = myCmdPrefix "tables -t " table " -I " Param["CHAIN"] " " Param["ROW"] " ";}
 					if (myConf["AIRBAG"] == 1 && Param["ROW"] == 1){myCmd = "### AIRBAG FIRED ###" myCmd;}
 					if (index(Param["S"],"!") > 0) { x = "! "; gsub(/!/,"",Param["S"]);} else { x = ""; }
-					if (Param["S"] > "" && index(Param["S"],"-") == 0) {myCmd = myCmd "-s " x Param["S"] " ";} 
+					if (Param["S"] > "" && index(Param["S"],"-") == 0) {myCmd = myCmd "-s " x Param["S"] " ";}
 					if (Param["S"] > "" && index(Param["S"],"-") > 0)  {myCmd = myCmd iprange x "--src-range " Param["S"] " "; iprange="";}
 					if (index(Param["D"],"!") > 0) { x = "! "; gsub(/!/,"",Param["D"]);} else { x = ""; }
-					if (Param["D"] > "" && index(Param["D"],"-") == 0) {myCmd = myCmd "-d " x Param["D"] " ";} 
+					if (Param["D"] > "" && index(Param["D"],"-") == 0) {myCmd = myCmd "-d " x Param["D"] " ";}
 					if (Param["D"] > "" && index(Param["D"],"-") > 0)  {myCmd = myCmd iprange x "--dst-range " Param["D"] " "; iprange="";}
 					if (index(Param["I"],"!") > 0) { x = "! "; gsub(/!/,"",Param["I"]);} else { x = ""; }
-					if (Param["I"] > "") {myCmd = myCmd "-i " x Param["I"] " ";} 
+					if (Param["I"] > "") {myCmd = myCmd "-i " x Param["I"] " ";}
 					if (index(Param["O"],"!") > 0) { x = "! "; gsub(/!/,"",Param["O"]);} else { x = ""; }
-					if (Param["O"] > "") {myCmd = myCmd "-o " x Param["O"] " ";} 
+					if (Param["O"] > "") {myCmd = myCmd "-o " x Param["O"] " ";}
 					if (index(Param["P"],"!") > 0) { x = "! "; gsub(/!/,"",Param["P"]);} else { x = ""; }
-					if (Param["P"] == "icmp" && Param["EXTRA"] > "") {myCmd = myCmd "-p " x Param["P"] " --icmp-type " Param["EXTRA"] " ";} else if (Param["P"] > "") {myCmd = myCmd "-p " x Param["P"] " ";} 
+					if (Param["P"] == "icmp" && Param["EXTRA"] > "") {myCmd = myCmd "-p " x Param["P"] " --icmp-type " Param["EXTRA"] " ";} else if (Param["P"] > "") {myCmd = myCmd "-p " x Param["P"] " ";}
 
-					if (Param["MODULE"] == "state") { myCmd = myCmd state "--state " Param["EXTRA"] " "; state="";} 
-						else if (Param["MODULE"] == "comment") { system("modprobe ipt_comment"); myCmd = myCmd comment "--comment \47" Param["EXTRA"] "\47 "; comment="";} 
-						else if (Param["MODULE"] == "ah") { system("modprobe xt_ah"); myCmd = myCmd ah "--ahspi " Param["EXTRA"] " "; ah="";} 
-						else if (Param["MODULE"] == "esp") { system("modprobe xt_esp"); myCmd = myCmd esp "--espspi " Param["EXTRA"] " "; esp="";} 
+					if (Param["MODULE"] == "state") { myCmd = myCmd state "--state " Param["EXTRA"] " "; state="";}
+						else if (Param["MODULE"] == "comment") { system("modprobe ipt_comment"); myCmd = myCmd comment "--comment \47" Param["EXTRA"] "\47 "; comment="";}
+						else if (Param["MODULE"] == "ah") { system("modprobe xt_ah"); myCmd = myCmd ah "--ahspi " Param["EXTRA"] " "; ah="";}
+						else if (Param["MODULE"] == "esp") { system("modprobe xt_esp"); myCmd = myCmd esp "--espspi " Param["EXTRA"] " "; esp="";}
 					if (index(Param["SPORT"],"!") > 0) { x = "! "; gsub(/!/,"",Param["SPORT"]);} else { x = ""; }
-					if (Param["SPORT"] > "" &&  index(Param["SPORT"],",") == 0  && index(Param["SPORT"],":") == 0)  {myCmd = myCmd "--sport " x Param["SPORT"] " ";} 
+					if (Param["SPORT"] > "" &&  index(Param["SPORT"],",") == 0  && index(Param["SPORT"],":") == 0)  {myCmd = myCmd "--sport " x Param["SPORT"] " ";}
 					if (Param["SPORT"] > "" && (index(Param["SPORT"],",") > 0   || index(Param["SPORT"],":") >  0)) {myCmd = myCmd multiport x "--sports " Param["SPORT"] " "; multiport="";}
 					if (index(Param["DPORT"],"!") > 0) { x = "! "; gsub(/!/,"",Param["DPORT"]);} else { x = ""; }
-					if (Param["DPORT"] > "" &&  index(Param["DPORT"],",") == 0  && index(Param["DPORT"],":") == 0)  {myCmd = myCmd "--dport " x Param["DPORT"] " ";} 
+					if (Param["DPORT"] > "" &&  index(Param["DPORT"],",") == 0  && index(Param["DPORT"],":") == 0)  {myCmd = myCmd "--dport " x Param["DPORT"] " ";}
 					if (Param["DPORT"] > "" && (index(Param["DPORT"],",") > 0   || index(Param["DPORT"],":") >  0)) {myCmd = myCmd multiport x "--dports " Param["DPORT"] " "; multiport="";}
-					if (Param["ACTION"] == "LOG" && Param["EXTRA"] >  "") {myCmd = myCmd "-j LOG --log-prefix " Param["EXTRA"]  " ";targetSet=1;} 
-					if (Param["ACTION"] == "LOG" && Param["EXTRA"] == "") {myCmd = myCmd "-j LOG --log-prefix \"[IPT] \"";targetSet=1;} 
-					if (Param["ACTION"] == "LOG" && Param["EXTRA"] == "") {myCmd = myCmd "-j LOG --log-prefix \"[IPT] \"";targetSet=1;} 
-					if (Param["ACTION"] == "DNAT" && Param["EXTRA"] >  "") {myCmd = myCmd "-j DNAT --to-destination " Param["EXTRA"]  " ";targetSet=1;} 
-					if (Param["ACTION"] == "SNAT" && Param["EXTRA"] >  "") {myCmd = myCmd "-j SNAT --to-source " Param["EXTRA"]  " ";targetSet=1;} 
-					if (Param["ACTION"] == "MASQUERADE" && Param["EXTRA"] >  "") {system("modprobe ipt_MASQUERADE");myCmd = myCmd "-j MASQUERADE --to-ports " Param["EXTRA"]  " ";targetSet=1;} 
-					if (Param["ACTION"] == "CONNMARK" && Param["EXTRA"] >  "") {myCmd = myCmd "-j CONNMARK --set-mark " Param["EXTRA"]  " ";targetSet=1;} 
-					if (Param["ACTION"] == "REDIRECT" && Param["EXTRA"] >  "") {system("modprobe ipt_REDIRECT"); myCmd = myCmd "-j REDIRECT --to-ports " Param["EXTRA"]  " ";targetSet=1;} 
-					if (Param["ACTION"] == "MARK" && Param["EXTRA"] >  "") {system("modprobe xt_MARK\nmodprobe xt_mark"); myCmd = myCmd "-j MARK --set-mark " Param["EXTRA"]  " ";targetSet=1;} 
-					if (Param["ACTION"] == "NOTRACK") {system("modprobe xt_NOTRACK"); myCmd = myCmd "-j NOTRACK " Param["EXTRA"]  " ";targetSet=1;} 
-					if (targetSet==0) {myCmd = myCmd "-j " Param["ACTION"];} 
-					
+					if (Param["ACTION"] == "LOG" && Param["EXTRA"] >  "") {myCmd = myCmd "-j LOG --log-prefix " Param["EXTRA"]  " ";targetSet=1;}
+					if (Param["ACTION"] == "LOG" && Param["EXTRA"] == "") {myCmd = myCmd "-j LOG --log-prefix \"[IPT] \"";targetSet=1;}
+					if (Param["ACTION"] == "LOG" && Param["EXTRA"] == "") {myCmd = myCmd "-j LOG --log-prefix \"[IPT] \"";targetSet=1;}
+					if (Param["ACTION"] == "DNAT" && Param["EXTRA"] >  "") {myCmd = myCmd "-j DNAT --to-destination " Param["EXTRA"]  " ";targetSet=1;}
+					if (Param["ACTION"] == "SNAT" && Param["EXTRA"] >  "") {myCmd = myCmd "-j SNAT --to-source " Param["EXTRA"]  " ";targetSet=1;}
+					if (Param["ACTION"] == "MASQUERADE" && Param["EXTRA"] >  "") {system("modprobe ipt_MASQUERADE");myCmd = myCmd "-j MASQUERADE --to-ports " Param["EXTRA"]  " ";targetSet=1;}
+					if (Param["ACTION"] == "CONNMARK" && Param["EXTRA"] >  "") {myCmd = myCmd "-j CONNMARK --set-mark " Param["EXTRA"]  " ";targetSet=1;}
+					if (Param["ACTION"] == "REDIRECT" && Param["EXTRA"] >  "") {system("modprobe ipt_REDIRECT"); myCmd = myCmd "-j REDIRECT --to-ports " Param["EXTRA"]  " ";targetSet=1;}
+					if (Param["ACTION"] == "MARK" && Param["EXTRA"] >  "") {system("modprobe xt_MARK\nmodprobe xt_mark"); myCmd = myCmd "-j MARK --set-mark " Param["EXTRA"]  " ";targetSet=1;}
+					if (Param["ACTION"] == "NOTRACK") {system("modprobe xt_NOTRACK"); myCmd = myCmd "-j NOTRACK " Param["EXTRA"]  " ";targetSet=1;}
+					if (targetSet==0) {myCmd = myCmd "-j " Param["ACTION"];}
+
 					ret = system(myCmd);
 					if (ret==0){changed=1;}
 				}
@@ -149,14 +162,14 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 					if (Param["MODE"] == "POL" && Param["POL"] == "DROP")   {myCmd = myCmdPrefix "tables -t " table " -P " Param["CHAIN"] " DROP";	ret = system(myCmd);if (ret==0){changed=1;}}
 					if (Param["MODE"] == "DEL")				{myCmd = myCmdPrefix "tables -t " table " -D " Param["CHAIN"] " " Param["IDX"];			ret = system(myCmd);if (ret==0){changed=1;}}
 					if (Param["MODE"] == "POL" && Param["POL"] == "PURGE")  {myCmd = myCmdPrefix "tables -t " table " -F " Param["CHAIN"];			ret = system(myCmd);if (ret==0){changed=1;}}
-					if (Param["MODE"] == "UP"  && Param["IDX"] > 1)         
+					if (Param["MODE"] == "UP"  && Param["IDX"] > 1)
 					{
-						myCmd = "(" myCmdPrefix "tables -t " table " -S " Param["CHAIN"] " " Param["IDX"] ") | awk \47{gsub(/-A/,\"" myCmdPrefix "tables -t " table " -I\",$1);gsub($2,\"& " Param["IDX"]-1 "\",$2); print $0}\47 | sh"; 
+						myCmd = "(" myCmdPrefix "tables -t " table " -S " Param["CHAIN"] " " Param["IDX"] ") | awk \47{gsub(/-A/,\"" myCmdPrefix "tables -t " table " -I\",$1);gsub($2,\"& " Param["IDX"]-1 "\",$2); print $0}\47 | sh";
 						ret = system(myCmd); if (ret==0){changed=1;}
 						print "Exit Code " ret " - " myCmd;
 						if (ret ==0) {myCmd = myCmdPrefix "tables -t " table " -D " Param["CHAIN"] " " Param["IDX"]+1;	ret = system(myCmd);if (ret==0){changed=1;}} else {myCmd="";}
 					}
-					if (Param["MODE"] == "DN")         
+					if (Param["MODE"] == "DN")
 					{
 						myCmd = "(" myCmdPrefix "tables -t " table " -S " Param["CHAIN"] " " Param["IDX"] ") | awk \47{gsub(/-A/,\"" myCmdPrefix "tables -t " table " -I\",$1);gsub($2,\"& " Param["IDX"]+2 "\",$2); print $0}\47 | sh";
 						ret = system(myCmd); if (ret==0){changed=1;}
@@ -164,9 +177,9 @@ if [ "$QUERY_STRING" != "" ] || [ "$post_string" != "" ] || [ "$NHIPT_CONFIG" = 
 						if (ret ==0) {myCmd = myCmdPrefix "tables -t " table " -D " Param["CHAIN"] " " Param["IDX"]; ret = system(myCmd); if (ret==0){changed=1;}} else {myCmd="";}
 					}
 				}
-			}		
+			}
 			if (myConf["AIRBAG"]==1){ checkAirbag();}
-			if (changed==1) {myConf["CHANGED"] = 2; saveSettings(myConf);}			
+			if (changed==1) {myConf["CHANGED"] = 2; saveSettings(myConf);}
 			print "Exit Code " ret " - " myCmd;
 			if (flashmodified == 1){system("modsave flash");}
 
@@ -242,7 +255,7 @@ function loadModules(){
 function checkConfig(){
 	if (RCOD > "") {check["admin_set"] = 0; } else {check["admin_set"] = 1;}
 	check["changed"] = myConf["CHANGED"];
-	check["iptables"] = system("iptables -S INPUT 1 1> /dev/null");	
+	check["iptables"] = system("iptables -S INPUT 1 1> /dev/null");
 	if (logtarget == 0) {
 		check["directory_log"] = system("ls " myConf["LOGD"] " 1> /dev/null");
 		check["log_running"] = system("ps | grep -v grep | grep iptlogger 1> /dev/null");
@@ -336,30 +349,30 @@ function appendRules(){
 ret = system("(cat <<EOF >> /var/tmp/nhipt.cfg \n\
 ###FIREWALL###\n" bootModules() "\n\n \
 \nEOF\n)\
-if [ -n \"$(lsmod | grep -e \47^iptable_filter\47)\" ]; then (iptables -S 2> /dev/null) 			| awk \47{print \"iptables \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
-if [ -n \"$(lsmod | grep -e \47^iptable_nat\47)\" ]; 	then (iptables -t nat -S 2> /dev/null)     	| awk \47{print \"iptables -t nat \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
-if [ -n \"$(lsmod | grep -e \47^iptable_mangle\47)\" ];	then (iptables -t mangle -S 2> /dev/null)	| awk \47{print \"iptables -t mangle \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
-if [ -n \"$(lsmod | grep -e \47^iptable_raw\47)\" ]; 	then (iptables -t raw -S 2> /dev/null)		| awk \47{print \"iptables -t raw \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
-if [ -n \"$(lsmod | grep -e \47^ip6table_filter\47)\" ]; then (ip6tables -t filter -S 2> /dev/null) | awk \47{print \"ip6tables -t filter \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
-if [ -n \"$(lsmod | grep -e \47^ip6table_mangle\47)\" ]; then (ip6tables -t mangle -S 2> /dev/null) | awk \47{print \"ip6tables -t mangle \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
-if [ -n \"$(lsmod | grep -e \47^ip6table_raw\47)\" ]; 	then (ip6tables -t raw -S 2> /dev/null)		| awk \47{print \"ip6tables -t raw \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
+if [ -n \"$(iptables -S -t filter  | grep -e \47^Table does not exist\47)\" ]; then touch /var/tmp/iptfilter.tmp; else (iptables -t filter -S  2> /dev/null) | awk \47{print \"iptables -t filter \" $0}\47  >> /var/tmp/nhipt.cfg; fi\
+if [ -n \"$(iptables -S -t nat     | grep -e \47^Table does not exist\47)\" ]; then touch /var/tmp/iptfilter.tmp; else (iptables -t nat -S     2> /dev/null) | awk \47{print \"iptables -t nat \" $0}\47     >> /var/tmp/nhipt.cfg; fi\
+if [ -n \"$(iptables -S -t mangle  | grep -e \47^Table does not exist\47)\" ]; then touch /var/tmp/iptfilter.tmp; else (iptables -t mangle -S  2> /dev/null) | awk \47{print \"iptables -t mangle \" $0}\47  >> /var/tmp/nhipt.cfg; fi\
+if [ -n \"$(iptables -S -t raw     | grep -e \47^Table does not exist\47)\" ]; then touch /var/tmp/iptfilter.tmp; else (iptables -t raw -S     2> /dev/null) | awk \47{print \"iptables -t raw \" $0}\47     >> /var/tmp/nhipt.cfg; fi\
+if [ -n \"$(ip6tables -S -t filter | grep -e \47^Table does not exist\47)\" ]; then touch /var/tmp/iptfilter.tmp; else (ip6tables -t filter -S 2> /dev/null) | awk \47{print \"ip6tables -t filter \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
+if [ -n \"$(ip6tables -S -t mangle | grep -e \47^Table does not exist\47)\" ]; then touch /var/tmp/iptfilter.tmp; else (ip6tables -t mangle -S 2> /dev/null) | awk \47{print \"ip6tables -t mangle \" $0}\47 >> /var/tmp/nhipt.cfg; fi\
+if [ -n \"$(ip6tables -S -t raw    | grep -e \47^Table does not exist\47)\" ]; then touch /var/tmp/iptfilter.tmp; else (ip6tables -t raw -S    2> /dev/null) | awk \47{print \"ip6tables -t raw \" $0}\47    >> /var/tmp/nhipt.cfg; fi\
 cat /var/tmp/nhipt.cfg > " BootTarget "nhipt.cfg");
 return ret;
 }
 function startLogging(){
 	if (logtarget == 1) {return 0;}
 	ret = system("ps | grep -v \"grep\" | grep \"iptlogger\"");
-	if (ret == 0) { print "Sevice already running"; return 0;} 
+	if (ret == 0) { print "Sevice already running"; return 0;}
 	else {
-		ret = 0; 	
-		print "Starting Service..."; 
+		ret = 0;
+		print "Starting Service...";
 		if (system("test -f /var/tmp/iptlogger.sh") == 0 ) { print "...starting existing service..."; } else { print "...creating iptlogger.sh..."; ret = createIptlogger(); }
 		if (system("test -f /var/tmp/logfw.sh") == 0 ) { print "...starting watchdog"; } else { print "...creating watchdog"; ret = createWatchdog(); }
-		return ret += system("sh /var/tmp/logfw.sh&"); 
+		return ret += system("sh /var/tmp/logfw.sh&");
 	}
 }
 function stopLogging()
-{	print "Stopping deamon iptlogger.sh"; 
+{	print "Stopping deamon iptlogger.sh";
 	ret = system("ps | grep -v grep | grep iptlogger | awk \47{print $1}\47 | xargs kill");
 	ret += system("ps | grep -v grep | grep logfw | awk \47{print $1}\47 | xargs kill");
 	return ret;
@@ -369,7 +382,7 @@ function persist(mode){
 		ret = system("ls " myConf["LOGD"] " 1> /dev/null");
 		if (ret != 0){ system("mkdir " myConf["LOGD"]); print "creating " myConf["LOGD"]; }
 		if (myConf["BACK"] != "") {	ret = system("ls " myConf["BACK"] " 1> /dev/null"); 	if (ret != 0){ system("mkdir " myConf["BACK"]); print "creating " myConf["BACK"];}}
-		ret = system("ls " myConf["BOOTDIR"] " 1> /dev/null"); 
+		ret = system("ls " myConf["BOOTDIR"] " 1> /dev/null");
 		if (ret != 0){ system("mkdir " myConf["BOOTDIR"]); print "creating " myConf["BOOTDIR"]; }
 	}
 	if (Boot!=myConf["BOOT"] || Bootstrap!=myConf["BOOTSTRAP"]){
@@ -377,7 +390,7 @@ function persist(mode){
 		flashmodified = 1;
 		if (myConf["BOOT"]=="flash"){BootTarget="/tmp/flash/";myDelay="";}
 		if (myConf["BOOT"]=="usb"){
-			if (myConf["BOOTDIR"] == ""){BootTarget=myConf["ROOT"] "/"; myConf["BOOTDIR"]=myConf["ROOT"]} else {BootTarget=myConf["BOOTDIR"] "/";} 
+			if (myConf["BOOTDIR"] == ""){BootTarget=myConf["ROOT"] "/"; myConf["BOOTDIR"]=myConf["ROOT"]} else {BootTarget=myConf["BOOTDIR"] "/";}
 			myDelay= "for i in 1 2 3 4 5 6 7 8\ndo\n sleep 5\necho \"retry $i times\"\n  if [ -r " BootTarget "nhipt.par ]\n  then\n echo \"usb stick connected\"\n	break\n  fi \ndone\n\n";
 		}
 		myCmd = "Saving Settings to " BootTarget "...";
@@ -394,7 +407,7 @@ function persist(mode){
 			if (ret==0) {close (myBootstrap);}
 		}
 		if (printed==0) {print "###NHIPT-START###\ncat " BootTarget "nhipt.cfg > /var/tmp/nhipt.cfg\ncat " BootTarget "nhipt.par > /var/tmp/nhipt.par\nchmod +x /var/tmp/nhipt.cfg\n/bin/sh /var/tmp/nhipt.cfg\n###NHIPT-END###\n" >> "/var/tmp/debug.cfg";printed=1;}
-		system("cat /var/tmp/debug.cfg > " myBootstrap);	
+		system("cat /var/tmp/debug.cfg > " myBootstrap);
 		mode="all";
 		print "STAGE0 - bootstrap reconfigured"
 	}
@@ -430,7 +443,7 @@ function persist(mode){
 		myCmd = "Nothing to save"; ret=0;
 	}
 	return ret;
-} 
+}
 function bootModules(){
 	strRet = ""
 	system("lsmod \| grep \"^ip_\\\|^ipt_\\\|^iptable\\\|^x_\\\|^xt_\" \| awk \47{print $1}\47 \| sort > /var/tmp/nhipt.yyy");
@@ -461,8 +474,8 @@ function saveSettings(Settings){
 	if (flashmodified == 1 || dirchanged == 1 || cfgchanged == 1){
 		ret += system("cat /var/tmp/nhipt.par > " BootTarget "nhipt.par");
 		print "STAGE4 - settings saved";
-		if (dirchanged == 1 && logtarget == 0) { 
-			logDeamonIsRunning = system("ps | grep -v grep | grep iptlogger 1> /dev/null"); 
+		if (dirchanged == 1 && logtarget == 0) {
+			logDeamonIsRunning = system("ps | grep -v grep | grep iptlogger 1> /dev/null");
 			if (logDeamonIsRunning == 0) { ret=stopLogging(); ret=createIptlogger(); ret+=createWatchdog();	ret+=startLogging(); print "STAGE5 - fw and system log reconfigured";}
 		}
 		## Remove orphaned boot files
@@ -472,58 +485,78 @@ function saveSettings(Settings){
 	return ret;
 }
 function urldecode (s) {
-	hextab["0"] = 0;	hextab["8"] = 8;
-	hextab["1"] = 1;	hextab["9"] = 9;
-	hextab["2"] = 2;	hextab["A"] = hextab["a"] = 10;
-	hextab["3"] = 3;	hextab["B"] = hextab["b"] = 11;
-	hextab["4"] = 4;	hextab["C"] = hextab["c"] = 12;
-	hextab["5"] = 5;	hextab["D"] = hextab["d"] = 13;
-	hextab["6"] = 6;	hextab["E"] = hextab["e"] = 14;
-	hextab["7"] = 7;	hextab["F"] = hextab["f"] = 15;
+	hextab["0"] = 0; hextab["8"] = 8;
+	hextab["1"] = 1; hextab["9"] = 9;
+	hextab["2"] = 2; hextab["A"] = hextab["a"] = 10;
+	hextab["3"] = 3; hextab["B"] = hextab["b"] = 11;
+	hextab["4"] = 4; hextab["C"] = hextab["c"] = 12;
+	hextab["5"] = 5; hextab["D"] = hextab["d"] = 13;
+	hextab["6"] = 6; hextab["E"] = hextab["e"] = 14;
+	hextab["7"] = 7; hextab["F"] = hextab["f"] = 15;
  	decoded = "";
-	i   = 1;RELATED,ESTABLISHED
+	i = 1;RELATED,ESTABLISHED
 	len = length (s);
 	while ( i <= len ) {
-	    c = substr (s, i, 1);
-	    if ( c == "%" ) {
-	    	if ( i+2 <= len ) {
-		    c1 = substr (s, i+1, 1);
-		    c2 = substr (s, i+2, 1);
-		    if ( hextab[c1] == "" || hextab[c2] == "" ) { print "WARNING: invalid hex encoding: %" c1 c2 | "cat >&2"; } else {
-		    	code = 0 + hextab[c1] * 16 + hextab[c2] + 0;
-		    	c = sprintf ("%c", code);
-			i = i + 2;
-		    }
-		} else {print "WARNING: invalid % encoding: " substr (s, i, len - i) | "cat >&2"; }
-	    } else if ( c == "+" ) { c = " ";}
-	    decoded = decoded c;
-	    i++;
+		c = substr (s, i, 1);
+		if ( c == "%" ) {
+			if ( i+2 <= len ) {
+				c1 = substr (s, i+1, 1);
+				c2 = substr (s, i+2, 1);
+				if ( hextab[c1] == "" || hextab[c2] == "" ) {
+					print "WARNING: invalid hex encoding: %" c1 c2 | "cat >&2";
+				} else {
+					code = 0 + hextab[c1] * 16 + hextab[c2] + 0;
+					c = sprintf ("%c", code);
+					i = i + 2;
+				}
+			} else {
+				print "WARNING: invalid % encoding: " substr (s, i, len - i) | "cat >&2";
+			}
+		} else if ( c == "+" ) {
+				c = " ";
+			}
+		decoded = decoded c;
+		i++;
 	}
 	return decoded;
-	} # end urldecode
+} # end urldecode
 	{
 	} # end main
 	END
-	{		
- 	}' 2>&1) >> /var/tmp/nhipt.log
+	{
+	}' 2>&1) >> /var/tmp/nhipt.log
 fi
 
-if [ "$NHIPT_CONFIG" = "box" ]; then 
+if [ "$NHIPT_CONFIG" = "box" ]; then
 	echo "iptables reconfigured"
 else
 
 ### HTML FORM
 
-if [ -n "$(lsmod | grep -e '^iptable_filter')" ];	then iptables -t filter -S > /var/tmp/iptfilter.tmp;	else touch /var/tmp/iptfilter.tmp;	fi
-if [ -n "$(lsmod | grep -e '^iptable_nat')" ];		then iptables -t nat -S > /var/tmp/iptnat.tmp;			else touch /var/tmp/iptnat.tmp;		fi
-if [ -n "$(lsmod | grep -e '^iptable_mangle')" ];	then iptables -t mangle -S > /var/tmp/iptmangle.tmp;	else touch /var/tmp/iptmangle.tmp;	fi
-if [ -n "$(lsmod | grep -e '^iptable_raw')" ]; 		then iptables -t raw -S > /var/tmp/iptraw.tmp;			else touch /var/tmp/iptraw.tmp;		fi
-if [ -n "$(lsmod | grep -e '^ipv6')" ]; 			then ip6tables -t filter -S > /var/tmp/ip6tfilter.tmp;	else touch /var/tmp/ip6tfilter.tmp;	fi
-#if[ -n "$(lsmod | grep -e '^ip6table_filter')" ];	then ip6tables -t filter -S > /var/tmp/ip6tfilter.tmp;	else touch /var/tmp/ip6tfilter.tmp;	fi
-if [ -n "$(lsmod | grep -e '^ip6table_mangle')" ];	then ip6tables -t mangle -S > /var/tmp/ip6tmangle.tmp;	else touch /var/tmp/ip6tmangle.tmp;	fi
-if [ -n "$(lsmod | grep -e '^ip6table_raw')" ];		then ip6tables -t raw -S > /var/tmp/ip6traw.tmp;		else touch /var/tmp/ip6traw.tmp;	fi
+touch /var/tmp/iptfilter.tmp;
+touch /var/tmp/iptnat.tmp;
+touch /var/tmp/iptmangle.tmp;
+touch /var/tmp/iptraw.tmp;
+touch /var/tmp/ip6tfilter.tmp;
+touch /var/tmp/ip6tmangle.tmp;
+touch /var/tmp/ip6traw.tmp;
 
-  echo "$(awk -v IFCS=$x -v PSTR=$post_string -v QSTR=$QUERY_STRING 'BEGIN { 
+if [ -n "$(iptables -S -t filter | grep -e '^Table does not exist')" ]; then touch /var/tmp/iptfilter.tmp; else iptables -t filter -S > /var/tmp/iptfilter.tmp; fi
+if [ -n "$(iptables -S -t nat    | grep -e '^Table does not exist')" ]; then touch /var/tmp/iptnat.tmp; else iptables -t nat -S > /var/tmp/iptnat.tmp; fi
+if [ -n "$(iptables -S -t mangle | grep -e '^Table does not exist')" ]; then touch /var/tmp/iptmangle.tmp; else iptables -t mangle -S > /var/tmp/iptmangle.tmp; fi
+if [ -n "$(iptables -S -t raw 	 | grep -e '^Table does not exist')" ]; then touch /var/tmp/iptraw.tmp; else iptables -t raw -S > /var/tmp/iptraw.tmp; fi
+
+if [ -n "$(ip6tables -S -t filter | grep -e '^-sh: ip6tables: not found')" ]; then
+	touch /var/tmp/ip6tfilter.tmp;
+	touch /var/tmp/ip6tmangle.tmp;
+	touch /var/tmp/ip6traw.tmp;
+else
+	if [ -n "$(ip6tables -S -t filter | grep -e '^Table does not exist')" ]; then touch /var/tmp/ip6tfilter.tmp; else ip6tables -t filter -S > /var/tmp/ip6tfilter.tmp; fi
+	if [ -n "$(ip6tables -S -t mangle | grep -e '^Table does not exist')" ]; then touch /var/tmp/ip6tmangle.tmp; else ip6tables -t mangle -S > /var/tmp/ip6tmangle.tmp; fi
+	if [ -n "$(ip6tables -S -t raw 	  | grep -e '^Table does not exist')" ]; then touch /var/tmp/ip6traw.tmp; else ip6tables -t raw -S > /var/tmp/ip6traw.tmp; fi
+fi
+
+  echo "$(awk -v IFCS=$x -v PSTR=$post_string -v QSTR=$QUERY_STRING 'BEGIN {
 	print "Content-type: text/html"
 	print ""
 	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"  \"http://www.w3.org/TR/html4/strict.dtd\">";
@@ -562,9 +595,12 @@ if [ -n "$(lsmod | grep -e '^ip6table_raw')" ];		then ip6tables -t raw -S > /var
 	print "</head>";
 	print "<body>";
 	exitSwitch=0;
+
+    BoxType = substr(ENVIRON["CONFIG_PRODUKT"],index(ENVIRON["CONFIG_PRODUKT"],"Box_") + 4, 2);
+
 	system("lsmod \| grep \"^ip_\\\|^ipt_\\\|^iptable\\\|^x_\\\|^xt_\" \| awk \47{print $1}\47 \| sort > /var/tmp/nhipt.yyy");
 	ip6enabled = system("lsmod | grep -e \47^ipv6\47 1> /dev/null");
-	while((stat = getline test < "/var/tmp/nhipt.yyy") > 0) { myModules[test] = 1; } if (stat==0) { close("/var/tmp/nhipt.yyy"); system("rm /var/tmp/nhipt.yyy");}
+	while((stat = getline test < "/var/tmp/nhipt.yyy") > 0) { myModules[test] = 1;} if (stat==0) { close("/var/tmp/nhipt.yyy"); system("rm /var/tmp/nhipt.yyy");}
 	while ((stat = getline test < "/var/tmp/nhipt.par") > 0) { split(test,par,"=");myConf[par[1]] = par[2]; }
 	RCOD=myConf["ADMINIP"];
 	if (stat==-1) {system("cat " BootTarget "nhipt.par > /var/tmp/nhipt.par"); while ((stat = getline test < "/var/tmp/nhipt.par") > 0) { split(test,par,"=");myConf[par[1]] = par[2]; }}
@@ -575,7 +611,7 @@ if [ -n "$(lsmod | grep -e '^ip6table_raw')" ];		then ip6tables -t raw -S > /var
 	if (myConf["LOGD"] == "") { myConf["LOGD"] = myRoot;}
 	myConf["MYIP"] = myIP = ENVIRON["REMOTE_ADDR"];
 	#CHECK LOGIN CREDENTIALS
-	gsub(/ /,"",RCOD); 
+	gsub(/ /,"",RCOD);
 	if (RCOD > ""){ i = split(RCOD,ipadr,"/"); if (i > 1) {ip = ipadr[1]; mask=ipadr[2];} else {ip = ipadr[1]; mask="255.255.255.255";} if (index(mask,".") == 0) { sm = "";	ma[8]=255; ma[7]=127; ma[6]=63; ma[5]=31; ma[4]=15; ma[3]=7; ma[2]=3; ma[1]=1; ma[0]=0; for (i=1;i<=4;i++){if (mask >=8) {sm = sm "255.";mask=mask-8;} else {sm = sm ma[mask] ".";mask=0;}} mask=sm; } split(myIP,mpar,".");	split(ip,ipar,"."); split(mask,maskar,"."); if ((and(mpar[1],maskar[1]) == and(ipar[1],maskar[1])) && (and(mpar[2],maskar[2]) == and(ipar[2],maskar[2])) && (and(mpar[3],maskar[3]) == and(ipar[3],maskar[3])) && (and(mpar[4],maskar[4]) == and(ipar[4],maskar[4]))) { login=1} else {login=0} } else { login = 1;}
 	#END CHECK
 	if(login != 1){print "<BR><BR><BR><H1>ACCESS DENIED FROM IP : " myIP "</H1>\n</BODY>\n</HTML>"; exitSwitch=1; exit 0;};
@@ -591,7 +627,7 @@ if [ -n "$(lsmod | grep -e '^ip6table_raw')" ];		then ip6tables -t raw -S > /var
 	check["log_deamon"] = system("ps | grep -v grep | grep iptlogger 1> /dev/null");
 	check["changed"] = myConf["CHANGED"];
 	check["AIRBAG"] = myConf["AIRBAG"];
-	if (myConf["LOGTARGET"] == "syslog") { nolog=1; } else { nolog=0; } 
+	if (myConf["LOGTARGET"] == "syslog") { nolog=1; } else { nolog=0; }
 	print "<TABLE cellspacing=\"0\">";
 	i = 0;
 	formPrinted = 0;
@@ -611,11 +647,11 @@ if [ -n "$(lsmod | grep -e '^ip6table_raw')" ];		then ip6tables -t raw -S > /var
 	myProt = "<OPTION VALUE=\"\"></OPTION><OPTION VALUE=tcp>tcp</OPTION><OPTION VALUE=udp>udp</OPTION><OPTION VALUE=icmp>icmp</OPTION><OPTION VALUE=ah>ah</OPTION><OPTION VALUE=esp>esp</OPTION><OPTION VALUE=gre>gre</OPTION><OPTION VALUE=sctp>sctp</OPTION>\
 <OPTION VALUE=ipv6>ipv6</OPTION><OPTION VALUE=ipv6-route>ipv6-route</OPTION><OPTION VALUE=ipv6-frag>ipv6-frag</OPTION><OPTION VALUE=ipv6-icmp>ipv6-icmp</OPTION><OPTION VALUE=ipv6-nonxt>ipv6-nonxt</OPTION><OPTION VALUE=ipv6-opts>ipv6-opts</OPTION>\
 <OPTION VALUE=vrrp>vrrp</OPTION><OPTION VALUE=pgm>pgm</OPTION><OPTION VALUE=igmp>igmp</OPTION><OPTION VALUE=l2tp>l2tp</OPTION><OPTION VALUE=sctp>sctp</OPTION><OPTION VALUE=!tcp>!tcp</OPTION><OPTION VALUE=!udp>!udp</OPTION><OPTION VALUE=!icmp>!icmp</OPTION><OPTION VALUE=!ah>!ah</OPTION><OPTION VALUE=!esp>!esp</OPTION><OPTION VALUE=!gre>!gre</OPTION><OPTION VALUE=!sctp>!sctp</OPTION></SELECT>";
-	
+
 	# PRESET FORM ROW STRING LEFT AND RIGHT - ACTION DROP DOWN WILL BE CREATED AND INSERTED DURING RUN TIME
 	myFL = "<TD><INPUT TYPE=TEXT NAME=S SIZE=18 MAXLENGTH=32></TD><TD><INPUT TYPE=TEXT NAME=D SIZE=18 MAXLENGTH=32></TD><TD><SELECT NAME=I>" ifSel "</SELECT></TD><TD><SELECT NAME=O>" ifSel "</SELECT></TD><TD><SELECT NAME=P>" myProt "</TD><TD><SELECT NAME=MODULE><OPTION VALUE=\"\">auto</OPTION><OPTION VALUE=state>state</OPTION><OPTION VALUE=ah>ah</OPTION><OPTION VALUE=esp>esp</OPTION><OPTION VALUE=comment>comment</OPTION></SELECT></TD><TD><INPUT TYPE=TEXT NAME=SPORT SIZE=3></TD><TD><INPUT TYPE=TEXT NAME=DPORT></TD><TD><SELECT NAME=ACTION>";
 	myFR = "</SELECT></TD><TD><INPUT TYPE=TEXT NAME=EXTRA></TD><TD><INPUT TYPE=SUBMIT NAME=DOIT VALUE=Insert></TD></TR></FORM>";
-	
+
 }
 
 
@@ -651,7 +687,7 @@ function AdminIFC () {
 	myStr = myStr "<TR><TH class=right>SET BACKUP DIRECTORY : </TH><TD COLSPAN=2><INPUT CLASS=admin TYPE=TEXT NAME=BACDIR VALUE=\"" myConf["BACK"] "\"></TD></TR>";
 if (nolog == 0) {
 	myStr = myStr "<TR><TH class=right>SET LOG DIRECTORY : </TH><TD COLSPAN=2><INPUT CLASS=admin TYPE=TEXT NAME=LOGDIR VALUE=\"" myConf["LOGD"] "\"></TD></TR>";
-} else { 
+} else {
 	myStr = myStr "<INPUT TYPE=HIDDEN NAME=LOGDIR VALUE=\"" myConf["LOGD"] "\">";
 }
 if (myConf["BOOT"]=="usb") {
@@ -661,16 +697,27 @@ if (myConf["BOOT"]=="usb") {
 }
 	if (ip6enabled == 1){ myRowspan = 7;} else { myRowspan = 8;}
 	myStr = myStr "<TR><TH class=right>BOOT FROM : </TH><TD class=left><INPUT TYPE=RADIO NAME=BOOT VALUE=flash" flash ">Fritz flash</TD><TD class=left><INPUT TYPE=RADIO NAME=BOOT VALUE=usb" usb ">USB stick</TD></TR>";
-	myStr = myStr "<TR><TH class=right>LOG TO : </TH><TD class=left><INPUT TYPE=RADIO NAME=LOGTO VALUE=internal " loginternal "> nhipt-deamon</TD><TD class=left><INPUT TYPE=RADIO NAME=LOGTO VALUE=syslog " logsyslog "> syslog-deamon </TD></TR>";
+	if (BoxType == 72) {
+		myStr = myStr "<TR><TH class=right>LOG TO : </TH><TD class=left><INPUT TYPE=RADIO NAME=LOGTO VALUE=internal " loginternal "> nhipt-deamon</TD><TD class=left><INPUT TYPE=RADIO NAME=LOGTO VALUE=syslog " logsyslog "> syslog-deamon </TD></TR>";
+	} else { 
+		myStr = myStr "<INPUT TYPE=HIDDEN NAME=LOGTO VALUE=syslog>"
+	}
+	if (BoxType == 73) {
+		myModules["ip_conntrack"] = 1;
+		myModules["ip_nat"] = 1;
+		myModules["iptable_mangle"] = 1;
+	}
 	myStr = myStr "<TR><TH class=right>ADMIN LEVEL : </TH><TD class=left><INPUT TYPE=RADIO NAME=AIRBAG VALUE=0 " admunsafe "> advanced</TD><TD class=left><INPUT TYPE=RADIO NAME=AIRBAG VALUE=1 " admsafe "> safe</TD></TR>";
 	myStr = myStr "<TR><TH class=right>BOOT DELAY : </TH><TD class=left><SELECT NAME=DELAY>" cbOption(myConf["DELAY"],0,"OFF") cbOption(myConf["DELAY"],30,"30 sec") cbOption(myConf["DELAY"],60,"1 min") cbOption(myConf["DELAY"],180,"3 min") cbOption(myConf["DELAY"],300,"5 min") cbOption(myConf["DELAY"],600,"10 min")"</TD><TD class=left><INPUT TYPE=CHECKBOX NAME=DSLDOFF VALUE=1 " dsldoff "> stop dsld on delay</TD></TR>";
 	myStr = myStr "<TR><TH class=right ROWSPAN=" myRowspan ">EXTRAS : </TH><TH class=left>" cbModule("ip_conntrack", "CONNTRACK") "</TH><TH class=left>" cbModule("ip_nat", "NAT") "</TH></TR>";
-	myStr = myStr "<TR><TD class=left>" cbModule("ip_conntrack_ftp", "ftp")   "</TD><TD class=left>" cbModule("ip_nat_ftp","ftp") "</TD></TR>";
+	if (BoxType != 73) {
+		myStr = myStr "<TR><TD class=left>" cbModule("ip_conntrack_ftp", "ftp")   "</TD><TD class=left>" cbModule("ip_nat_ftp","ftp") "</TD></TR>";
+	}
 	myStr = myStr "<TR><TD class=left>" cbModule("ip_conntrack_h323", "h323") "</TD><TD class=left>" cbModule("ip_nat_h323","h323") "</TD></TR>";
 	myStr = myStr "<TR><TD class=left>" cbModule("ip_conntrack_irc", "irc")   "</TD><TD class=left>" cbModule("ip_nat_irc", "irc") "</TD></TR>";
 	myStr = myStr "<TR><TD class=left>" cbModule("ip_conntrack_pptp", "pptp") "</TD><TD class=left>" cbModule("ip_nat_pptp", "pptp") "</TD></TR>";
 	myStr = myStr "<TR><TD class=left>" cbModule("ip_conntrack_tftp", "tftp") "</TD><TD class=left>" cbModule("ip_nat_tftp", "tftp") "</TD></TR>";
-	if (ip6enabled == 0){ 
+	if (ip6enabled == 0){
 		myStr = myStr "<TR><TH class=left>" cbModule("iptable_mangle", "mangle")  "</TH><TH class=left>" cbModule("iptable_raw", "raw")  "</TH></TR>";
 		myStr = myStr "<TR><TH class=left>" cbModule("ip6table_mangle", "mangle [ipv6]")  "</TH><TH class=left>" cbModule("ip6table_raw", "raw [ipv6]")  "</TH><TD><INPUT TYPE=SUBMIT NAME=SESAV VALUE=set></TD></TR>";}
 	else {
@@ -696,7 +743,10 @@ function AdminButtons(){
 		<TR CLASS=solid><TD><INPUT TYPE=SUBMIT NAME=GETSYSLOG VALUE=\"list syslog\"></TD><TD><INPUT TYPE=SUBMIT NAME=SAVSYSLOG VALUE=\"arch syslog\"></TD><TD><INPUT TYPE=SUBMIT NAME=CUTSYSLOG VALUE=\"trunc syslog\"></TD></TR>\
 		</FORM>";
 	} else {
-		myStr = myStr "<TR CLASS=solid><TD COLSPAN=3><INPUT TYPE=SUBMIT NAME=GETSTAT VALUE=\"check status\"></TD></TR></FORM>";
+		myStr = myStr "<TR CLASS=solid><TD COLSPAN=3><INPUT TYPE=SUBMIT NAME=GETSTAT VALUE=\"check status\"></TD></TR>\
+		<TR CLASS=solid><TD><INPUT TYPE=SUBMIT NAME=GETFWLOG VALUE=\"list fw log\"></TD></TR>\
+		<TR CLASS=solid><TD><INPUT TYPE=SUBMIT NAME=GETSYSLOG VALUE=\"list syslog\"></TD></TR>\
+		</FORM>";
 	}
 	myStr = myStr "</TABLE>";
 	return myStr;
@@ -704,8 +754,8 @@ function AdminButtons(){
 function myTBHL (chain) {
 	formPrinted = 1;
 	print "<FORM METHOD=POST ACTION=" myURL "?J=" JumpMark "#" table ipv6 chain JumpMark ">"
-	print "<TR class=solid><TD COLSPAN=\"11\" class=noborder><A NAME=" table ipv6 chain CurrentJumpMark "><INPUT TYPE=HIDDEN NAME=CHAIN VALUE=" chain "><INPUT TYPE=HIDDEN NAME=TABLE VALUE=" table "><INPUT TYPE=HIDDEN NAME=IPV6 VALUE=" ipv6 ">&nbsp;</TD></TR><TR><TH COLSPAN=\"11\">RULES FOR CHAIN " chain " [ " table " ] [ " ipv6txt " ]</TH></TR>";			
-	print "<TR><TH>ID</TH><TH>Source IP</TH><TH>Dest IP</TH><TH>In IFC</TH><TH>Out IFC</TH><TH>Prot</TH><TH>Module</TH><TH>S-Port</TH><TH>D-Port</TH><TH>Action</TH><TH>Param</TH><TH>Edit</TH></TR>";			
+	print "<TR class=solid><TD COLSPAN=\"11\" class=noborder><A NAME=" table ipv6 chain CurrentJumpMark "><INPUT TYPE=HIDDEN NAME=CHAIN VALUE=" chain "><INPUT TYPE=HIDDEN NAME=TABLE VALUE=" table "><INPUT TYPE=HIDDEN NAME=IPV6 VALUE=" ipv6 ">&nbsp;</TD></TR><TR><TH COLSPAN=\"11\">RULES FOR CHAIN " chain " [ " table " ] [ " ipv6txt " ]</TH></TR>";
+	print "<TR><TH>ID</TH><TH>Source IP</TH><TH>Dest IP</TH><TH>In IFC</TH><TH>Out IFC</TH><TH>Prot</TH><TH>Module</TH><TH>S-Port</TH><TH>D-Port</TH><TH>Action</TH><TH>Param</TH><TH>Edit</TH></TR>";
 }
 
 {
@@ -717,8 +767,8 @@ function myTBHL (chain) {
 			print myDD(i) myFL myTT(CChains,nCChains,CurrentChain) myFR;
 		}
 		if (inSubTable ==1) {
-			if (MySection == "-P") { 
-				print "<TR><TD COLSPAN=4 class=noborder>&nbsp;</TD></TR><TR><TH COLSPAN=4>CUSTOM CHAINS</TH></TR>"; 
+			if (MySection == "-P") {
+				print "<TR><TD COLSPAN=4 class=noborder>&nbsp;</TD></TR><TR><TH COLSPAN=4>CUSTOM CHAINS</TH></TR>";
 				inSubTable=1;
 				print "<FORM METHOD=POST ACTION=" myURL "?J=" JumpMark "#P" table ipv6 JumpMark "><TR><TD COLSPAN=2><INPUT TYPE=HIDDEN NAME=TABLE VALUE=" table "><INPUT TYPE=HIDDEN NAME=IPV6 VALUE=" ipv6 "><INPUT TYPE=TEXT NAME=CHAIN></TD><TD COLSPAN=2><INPUT TYPE=SUBMIT NAME=MODE VALUE=New></TD></TR></FORM>";
 			}
@@ -736,7 +786,7 @@ function myTBHL (chain) {
 		myFile = FILENAME;
 		MySection = ""
 
-		if (inSubTable ==1) {inSubTable=0; 
+		if (inSubTable ==1) {inSubTable=0;
 				print "</TABLE><P></TD><TD CLASS=noborder COLSPAN=9></TD></TR>"
 			}
 		print "<TR class=solid><TD COLSPAN=\"3\" class=noborder><TABLE cellspacing=0>";
@@ -755,7 +805,7 @@ function myTBHL (chain) {
 	myArray["Chain"]=$2;
 	if (myArray["Action"] == "-P") {
 		myArray["Target"]=$3;
-		if (MySection != $1) 
+		if (MySection != $1)
 			{ inSubTable=1; print "<TR><TH COLSPAN=4><A NAME=P" table ipv6 CurrentJumpMark ">DEFAULT POLICIES</TH></TR><TR><TH>CHAIN</TH><TH>POLICY</TH><TH COLSPAN=2>EDIT</TH></TR>"; }
 		nTables++;
 		Chains[nTables,1] = $2;
@@ -769,18 +819,18 @@ function myTBHL (chain) {
 		inSubTable=1;
 		print "<TR><TD COLSPAN=\"2\">" myArray["Chain"] "</TD><TD><A HREF=" myURL "?MODE=POL&IPV6=" ipv6 "&TABLE=" table "&CHAIN=" myArray["Chain"] "&POL=DEL&J=" JumpMark "#P" table ipv6 JumpMark ">[Del]</A></TD><TD><A HREF=" myURL "?MODE=POL&IPV6=" ipv6 "&TABLE=" table "&CHAIN=" myArray["Chain"] "&POL=PURGE&J=" JumpMark "#P" table ipv6 JumpMark ">[purge]</A></TD></TR>";
 	} else {
-		if (MySection != $1){ 
+		if (MySection != $1){
 			if (MySection != "-N") { print "<TR><TD COLSPAN=4 class=noborder>&nbsp;</TD></TR><TR><TH COLSPAN=4>CUSTOM CHAINS</TH></TR>"; }
 			inSubTable=1;
 			print "<FORM METHOD=POST ACTION=" myURL "?J=" JumpMark "#P" table ipv6 JumpMark "><TR><TD COLSPAN=2><INPUT TYPE=HIDDEN NAME=TABLE VALUE=" table "><INPUT TYPE=HIDDEN NAME=IPV6 VALUE=" ipv6 "><INPUT TYPE=TEXT NAME=CHAIN></TD><TD COLSPAN=2><INPUT TYPE=SUBMIT NAME=MODE VALUE=New></TD></TR></FORM>";
 			if (settingsPrinted == 0) {settingsPrinted=1;
-				print "</TABLE><P></TD><TD COLSPAN=6 class=noborder>" AdminIFC() "</TD><TD class=noborder></TD><TD COLSPAN=2 class=noborder>" AdminButtons() "</TD></TR>"; 
+				print "</TABLE><P></TD><TD COLSPAN=6 class=noborder>" AdminIFC() "</TD><TD class=noborder></TD><TD COLSPAN=2 class=noborder>" AdminButtons() "</TD></TR>";
 				inSubTable=0;
 				print "<FORM METHOD=POST ACTION=" myURL ">";
-				print "<TR><TH COLSPAN=\"2\">Experts only: /var/mod/root # </TH><TD COLSPAN=\"9\"><INPUT TYPE=TEXT NAME=EXPERT class=expert></TD><TD><INPUT TYPE=SUBMIT NAME=EXEC VALUE=execute></TD></TR></FORM>";			
+				print "<TR><TH COLSPAN=\"2\">Experts only: /var/mod/root # </TH><TD COLSPAN=\"9\"><INPUT TYPE=TEXT NAME=EXPERT class=expert></TD><TD><INPUT TYPE=SUBMIT NAME=EXEC VALUE=execute></TD></TR></FORM>";
 				} else {inSubTable=0; print "</TABLE><P></TD><TD CLASS=noborder COLSPAN=9></TD></TR>"}
 			}
-		if (CurrentChain != myArray["Chain"]) { 
+		if (CurrentChain != myArray["Chain"]) {
 			if (i > 0){
 				print myDD(i) myFL myTT(CChains,nCChains,CurrentChain) myFR;
 				for (y=1;y<=nTables;y++) { if (Chains[y,1]==CurrentChain) {Chains[y,2] = 1;}}
@@ -791,22 +841,22 @@ function myTBHL (chain) {
 		}
 		x="";
 		for ( j = 3; j <= NF; j++ ) {
-			if ($j == "-s")					{j++; if ($j == "!") {j++; myArray["SourceIP"] = "!" $j;} else {myArray["SourceIP"] = $j;}} 
+			if ($j == "-s")					{j++; if ($j == "!") {j++; myArray["SourceIP"] = "!" $j;} else {myArray["SourceIP"] = $j;}}
 			else if ($j == "-d")			{j++; if ($j == "!") {j++; myArray["DestIP"]   = "!" $j;} else {myArray["DestIP"]   = $j;}}
 			else if ($j == "-i")			{j++; if ($j == "!") {j++; myArray["InIF"]     = "!" $j;} else {myArray["InIF"]     = $j;}}
 			else if ($j == "-o")			{j++; if ($j == "!") {j++; myArray["OutIF"]    = "!" $j;} else {myArray["OutIF"]    = $j;}}
 			else if ($j == "-p")			{j++; if ($j == "!") {j++; myArray["Prot"]     = "!" $j;} else {myArray["Prot"]     = $j;}}
-			else if ($j == "-m")			{j++; myArray["Module"] = myArray["Module"] $j " ";} 
+			else if ($j == "-m")			{j++; myArray["Module"] = myArray["Module"] $j " ";}
 			else if ($j == "!")             {x="!";}
-			else if ($j == "--src-range")	{j++; myArray["SourceIP"] = x $j; x="";} 
-			else if ($j == "--dst-range")	{j++; myArray["DestIP"] = x $j;   x="";} 
-			else if ($j == "--sport")		{j++; if ($j == "!") {j++; myArray["Sport"]     = "!" $j;} else {myArray["Sport"]    = $j;}} 
+			else if ($j == "--src-range")	{j++; myArray["SourceIP"] = x $j; x="";}
+			else if ($j == "--dst-range")	{j++; myArray["DestIP"] = x $j;   x="";}
+			else if ($j == "--sport")		{j++; if ($j == "!") {j++; myArray["Sport"]     = "!" $j;} else {myArray["Sport"]    = $j;}}
 			else if ($j == "--dport")		{j++; if ($j == "!") {j++; myArray["Dport"]     = "!" $j;} else {myArray["Dport"]    = $j;}}
 			else if ($j == "--sports")		{j++; if ($j == "!") {j++; myArray["Sport"]     = "!" $j;} else {myArray["Sport"]    = $j;}}
 			else if ($j == "--dports")		{j++; if ($j == "!") {j++; myArray["Dport"]     = "!" $j;} else {myArray["Dport"]    = $j;}}
-			else if ($j == "--ports")		{j++; if ($j == "!") {j++; myArray["Dport"]     = "!" $j;} else {myArray["Dport"]    = $j;} myArray["Sport"] = myArray["Dport"]} 
-			else if ($j == "--state")		{j++; myArray["State"] = $j " ";} 
-			else if ($j == "-j")			{j++; myArray["Target"] = $j;}		
+			else if ($j == "--ports")		{j++; if ($j == "!") {j++; myArray["Dport"]     = "!" $j;} else {myArray["Dport"]    = $j;} myArray["Sport"] = myArray["Dport"]}
+			else if ($j == "--state")		{j++; myArray["State"] = $j " ";}
+			else if ($j == "-j")			{j++; myArray["Target"] = $j;}
 			else if ($j == "--log-prefix")	{j++; myArray["Log"] = $j;     ixx = length($j); if (index($j, "\"") > 0 && substr($j,ixx,1) != "\"") {do {j++; myArray["Log"] = myArray["Log"] " " $j " "; if (index($j, "\"") > 0) break;} while (j <= NF)}}
 			else if ($j == "--comment")		{j++; myArray["Comment"] = $j; ixx = length($j); if (index($j, "\"") > 0 && substr($j,ixx,1) != "\"") {do {j++; myArray["Comment"] = myArray["Comment"] " " $j " "; if (index($j, "\"") > 0) break;} while (j <= NF)}}
 			else if ($j == "--reject-with")	{j++; myArray["Rej"] = $j " ";}
@@ -830,18 +880,18 @@ function myTBHL (chain) {
 
      END {
 	if(exitSwitch==1){exit 0;}
-	if (MySection == "-P") { 
-		print "<TR><TD COLSPAN=4 class=noborder>&nbsp;</TD></TR><TR><TH COLSPAN=4>CUSTOM CHAINS</TH></TR>"; 
+	if (MySection == "-P") {
+		print "<TR><TD COLSPAN=4 class=noborder>&nbsp;</TD></TR><TR><TH COLSPAN=4>CUSTOM CHAINS</TH></TR>";
 		inSubTable=1;
 		print "<FORM METHOD=POST ACTION=" myURL "?J=" JumpMark "#P" table ipv6 JumpMark "><TR><TD COLSPAN=2><INPUT TYPE=HIDDEN NAME=TABLE VALUE=" table "><INPUT TYPE=HIDDEN NAME=IPV6 VALUE=" ipv6 "><INPUT TYPE=TEXT NAME=CHAIN></TD><TD COLSPAN=2><INPUT TYPE=SUBMIT NAME=MODE VALUE=New></TD></TR></FORM>";
 		}
 	if (inSubTable ==1) {
-		 inSubTable=0; 
+		 inSubTable=0;
 			if (settingsPrinted == 0) {settingsPrinted=1;
-				print "</TABLE><P></TD><TD COLSPAN=6 class=noborder>" AdminIFC() "</TD><TD class=noborder></TD><TD COLSPAN=2 class=noborder>" AdminButtons() "</TD></TR>"; 
+				print "</TABLE><P></TD><TD COLSPAN=6 class=noborder>" AdminIFC() "</TD><TD class=noborder></TD><TD COLSPAN=2 class=noborder>" AdminButtons() "</TD></TR>";
 				inSubTable=0;
 				print "<FORM METHOD=POST ACTION=" myURL ">";
-				print "<TR><TH COLSPAN=\"2\">Experts only: /var/mod/root # </TH><TD COLSPAN=\"9\"><INPUT TYPE=TEXT NAME=EXPERT class=expert></TD><TD><INPUT TYPE=SUBMIT NAME=EXEC VALUE=execute></TD></TR></FORM>";			
+				print "<TR><TH COLSPAN=\"2\">Experts only: /var/mod/root # </TH><TD COLSPAN=\"9\"><INPUT TYPE=TEXT NAME=EXPERT class=expert></TD><TD><INPUT TYPE=SUBMIT NAME=EXEC VALUE=execute></TD></TR></FORM>";
 				} else {inSubTable=0; print "</TABLE><P></TD><TD CLASS=noborder COLSPAN=9></TD></TR>"}
 		 }
 	if (formPrinted == 1){
