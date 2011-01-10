@@ -1,0 +1,19 @@
+--- checkmaild.c.orig	2008-03-09 01:39:26.000000000 +0100
++++ checkmaild.c	2011-01-10 23:18:52.826070080 +0100
+@@ -2371,6 +2371,7 @@
+ 	}
+ 
+ #ifndef WIN32
++/*
+ 	// check for running daemon
+ 	if((fd_pid = fopen(PIDFILE, "r+")))
+ 	{
+@@ -2399,7 +2400,7 @@
+ 		fprintf(fd_pid, "%d", pid);
+ 		fclose(fd_pid);
+ 	}
+-
++*/
+ 	// install sighandler
+ 	if(signal(SIGTERM, SigHandler) == SIG_ERR)
+ 	{
