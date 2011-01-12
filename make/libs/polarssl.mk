@@ -21,11 +21,12 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		AR="$(TARGET_AR)" \
 		RANLIB="$(TARGET_RANLIB)" \
 		STRIP="$(TARGET_STRIP)" \
-		shared
+		shared static
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include
 	cp -a $(POLARSSL_DIR)/include/polarssl $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/
+	cp -a $(POLARSSL_DIR)/library/libpolarssl.a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
 	$(INSTALL_LIBRARY)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
