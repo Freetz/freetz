@@ -21,7 +21,7 @@ config FREETZ_PACKAGE_MC_INTERNAL_EDITOR
 		decativate it because you want to use vi or nano instead, F4 will
 		still work. By default, vi is called on the box, but exporting EDITOR
 		so it points to another editor of your choice will get you the
-		combination of file manager and editor you desire. :-)
+		combination of file manager and editor you desire.
 
 		Switching off this feature saves about 95 KB in the main binary.
 
@@ -32,6 +32,16 @@ config FREETZ_PACKAGE_MC_SUBSHELL
 	default n
 	help
 		MC subshell support (~15 KB + bash).
+
+config FREETZ_PACKAGE_MC_VFS
+	bool "Virtual filesystem support (VFS)"
+	depends on FREETZ_PACKAGE_MC
+	default n
+	help
+		With VFS mc is able to browse compressed archives. Bear in mind that
+		the archives are extracted to RAM!
+
+		Virtual filesystem support adds about 100 KB.
 
 config FREETZ_PACKAGE_MC_ONLINE_HELP
 	bool "Online help"

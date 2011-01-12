@@ -37,11 +37,14 @@ $(PKG)_CONFIGURE_OPTIONS += \
 		--disable-glibtest \
 		$(if $(FREETZ_PACKAGE_MC_FORCE_GLIB12),--with-glib12,--without-glib12) \
 		--without-x \
-		--with-vfs \
+		$(if $(FREETZ_PACKAGE_MC_VFS),--with-vfs,--without-vfs) \
 		--without-mcfs \
 		--without-samba \
 		--with-configdir=/etc \
 		--without-ext2undel \
+		--without-terminfo \
+		--without-termcap \
+		--without-slang \
 		$(if $(FREETZ_PACKAGE_MC_SUBSHELL),--with-subshell,--without-subshell) \
 		$(if $(FREETZ_PACKAGE_MC_WITH_NCURSES),--with-screen=ncurses,--with-screen=mcslang) \
 		$(if $(FREETZ_PACKAGE_MC_INTERNAL_EDITOR),--with-edit,--without-edit)
@@ -50,6 +53,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_INTERNAL_EDITOR
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_SUBSHELL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_WITH_NCURSES
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_FORCE_GLIB12
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_VFS
 
 # Workaround mc's packaging problems. Note that this code is mc-4.6.2 specific.
 # Revise it (remove if necessary) if you're about to update mc to a newer version.
