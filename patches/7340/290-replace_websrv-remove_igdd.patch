@@ -1,5 +1,5 @@
---- etc/init.d/rc.net.orig	2010-04-29 23:15:07.000000000 +0200
-+++ etc/init.d/rc.net	2010-04-29 23:15:08.000000000 +0200
+--- etc/init.d/rc.net.orig	2011-01-13 15:34:44.480905570 +0100
++++ etc/init.d/rc.net	2011-01-13 15:34:48.800905570 +0100
 @@ -59,9 +59,25 @@
     WLAN_TEST=0
  fi
@@ -26,7 +26,7 @@
     if [ "`pidof upnpd`" = "" ] ; then
        upnpd $VERBOSEPARAM
        sleep 1
-@@ -289,9 +305,9 @@
+@@ -300,9 +316,9 @@
     if [ "$CONFIG_DSL" ] ; then
       if [ "`pidof dsld`" = "" ] ; then
         if [ "$CONFIG_RAMSIZE" = 8 ] ; then

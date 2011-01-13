@@ -1,5 +1,5 @@
---- usr/www/avme/html/de/home/home.js.orig	2010-04-13 16:40:31.000000000 +0200
-+++ usr/www/avme/html/de/home/home.js	2010-04-29 23:15:08.000000000 +0200
+--- usr/www/avme/html/de/home/home.js.orig	2010-10-29 15:42:53.000000000 +0200
++++ usr/www/avme/html/de/home/home.js	2011-01-13 15:40:17.490905570 +0100
 @@ -723,7 +723,7 @@
  var nPartTotal = Number(g_usbhost_data.part_count_total);
  if (isNaN(nPartTotal)) nPartTotal = 0;
@@ -13,10 +13,22 @@
  }
  else
  {
--strStor = "{?de.home.home.js:5308?} ";
--strStor += "<a href=\"javascript:syslog_jslSubmitFormEx(5);\">{?de.home.home.js:3744?}</a>";
+-strStor = "{?895:5106?} ";
+-strStor += "<a href=\"javascript:syslog_jslSubmitFormEx(5);\">{?895:8842?}</a>";
 -strStor = strStor.fontcolor("#cc0000");
-+strStor = "Es wurden " + nStor + " von " + nPartTotal + " Partitionen eingebunden.";
++strStor = "Mounted " + nStor + " of " + nPartTotal + " partitions.";
  }
  strArr.push(strStor);
+ }
+--- usr/www/avme/html/de/usb/status.js.orig	2010-10-29 15:42:40.000000000 +0200
++++ usr/www/avme/html/de/usb/status.js	2011-01-13 15:40:17.490905570 +0100
+@@ -481,8 +481,7 @@
+ }
+ else
+ {
+-str += "<font color=\"#cc0000\">";
+-str += "{?2798:8143?}";
++strStor = "Mounted " + nStor + " of " + nPartTotal + " partitions.";
+ str += "</font>";
+ str += "<a href=\"javascript:goto_syslog_usb();\">{?2798:9581?}</a>";
  }
