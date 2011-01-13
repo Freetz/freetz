@@ -25,7 +25,7 @@ echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_72* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7240
 
 echo2 "patching rc.S and rc.conf"
-	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/${FREETZ_TYPE_LANG_STRING}/7240_7270_rc.S_piglet.patch || exit 2
+modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/${FREETZ_TYPE_LANG_STRING}/7240_7270_rc.S_piglet.patch || exit 2
 
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7240\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_CAPI_POTS=.*$/CONFIG_CAPI_POTS=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
@@ -42,7 +42,7 @@ modsed "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ur8_16MB_xilinx_4eth_2ab
 echo2 "applying install patch"
 modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_61056/ur8_16MB_xilinx_4eth_2ab_dect_isdn_pots_wlan_33906/g" "${FIRMWARE_MOD_DIR}/var/install"
 # set OEM to avme for international firmware
-if ! isFreetzType LANG_DE; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-7240_7270.patch" || exit 2
+if isFreetzType LANG_EN; then
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/en/install-7240_7270.patch" || exit 2
 fi
 

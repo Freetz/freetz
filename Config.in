@@ -342,8 +342,7 @@ choice
 			( \
 			FREETZ_TYPE_FON_5010 || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
-			FREETZ_TYPE_FON_WLAN_7170 || \
-			FREETZ_TYPE_FON_WLAN_7270_V2 \
+			FREETZ_TYPE_FON_WLAN_7170 \
 			)
 
 	config FREETZ_TYPE_LANG_EN
@@ -2005,8 +2004,6 @@ config FREETZ_DL_SITE
 											FREETZ_TYPE_LANG_DE
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v2/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
 											FREETZ_TYPE_LANG_DE
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch_a-ch"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
-											FREETZ_TYPE_LANG_A_CH
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/firmware/english"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
 											FREETZ_TYPE_LANG_EN
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v3/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
@@ -2171,8 +2168,8 @@ config FREETZ_DL_SOURCE_MD5
 								FREETZ_TYPE_ANNEX_B
 	default "da50dd9f04206cd3c2c4d750e62cb678"	if	FREETZ_TYPE_FON_WLAN_7240
 	default "516cde9ed5f928a581337ccf04b78c63"	if	FREETZ_TYPE_FON_WLAN_7270_V1
-	default "a5f56166aa8ce2b9862e8e01db0e3c8d"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_LANG_DE
-	default "1655a40df6916452b6317213e188e688"	if	FREETZ_TYPE_FON_WLAN_7270_V2 &&   FREETZ_TYPE_LANG_DE
+	default "a5f56166aa8ce2b9862e8e01db0e3c8d"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LANG_EN
+	default "1655a40df6916452b6317213e188e688"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LANG_DE
 	default "8d930887dd96a0c9812c9519c47f9a64"	if	FREETZ_TYPE_FON_WLAN_7270_V3
 	default "cbb72f8aef7a3a356fee5a819f77da73"	if	FREETZ_TYPE_FON_WLAN_7320
 	default "9923b51c2d315e389c455bbd5fdb96de"	if	FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_DE
