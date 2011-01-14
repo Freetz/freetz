@@ -571,30 +571,6 @@ config FREETZ_KERNEL_REF
 		FREETZ_TYPE_FON_WLAN_7390
 	default "8mb"
 
-config FREETZ_KERNEL_LAYOUT
-	string "Kernel ref"		if FREETZ_TYPE_CUSTOM
-	default "ar7"			if \
-		FREETZ_TYPE_300IP_AS_FON || \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_FON_5010 || \
-		FREETZ_TYPE_FON_5050 || \
-		FREETZ_TYPE_FON_WLAN || \
-		FREETZ_TYPE_FON_WLAN_7050 || \
-		FREETZ_TYPE_WLAN_3020 || \
-		FREETZ_TYPE_WLAN_3030
-	default "ar9"			if \
-		FREETZ_TYPE_FON_WLAN_7320
-	default "ur8"			if \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7570 || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3
-	default "iks"		if \
-		FREETZ_TYPE_FON_WLAN_7340 || \
-		FREETZ_TYPE_FON_WLAN_7390
-	default "ohio"
-
 config FREETZ_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if FREETZ_TYPE_CUSTOM
 	default 119			if \
