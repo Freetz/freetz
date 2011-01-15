@@ -198,9 +198,10 @@ config FREETZ_MODULE_usbmon
 	bool "usbmon.ko"
 	default n
 
-#config FREETZ_MODULE_usbcore
-#	bool "usbcore.ko"
-#	default n
+config FREETZ_MODULE_usbcore
+	bool "usbcore.ko"
+	depends on FREETZ_REPLACE_KERNEL
+	default n
 
 config FREETZ_MODULE_usbip
 	bool "usbip.ko"
