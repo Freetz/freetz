@@ -213,7 +213,8 @@ else
 	MKSQUASHFS_OPTIONS+=" -be"
 fi
 
-if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || [ "$FREETZ_KERNEL_VERSION_2_6_19_2" ]; then
+if [ "$FREETZ_REPLACE_KERNEL" == "y" ] || \
+	[ "$FREETZ_KERNEL_VERSION_2_6_19_2" -o "$FREETZ_KERNEL_VERSION_2_6_28" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 else
