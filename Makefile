@@ -116,12 +116,12 @@ endif
 
 # We don't like cygwin
 ifeq ($(shell uname -o),Cygwin)
-$(error Cygwin is not supported! Please use a real Linux environment.)
+$(error Cygwin is not supported! Please use a real Linux environment)
 endif
 
 # git-svn removes empty directories, check for one of them
 ifneq (OK,$(shell [ -d make/mod/files/root/sys ] && echo OK ))
-$(error The empty directory root/sys is missing! Please do a clean checkout.)
+$(error The empty directory root/sys is missing! Please do a clean checkout)
 endif
 
 # Run svn version update if building in working copy
@@ -138,6 +138,11 @@ ifneq ($(shell $(CHECK_PREREQ_TOOL) \
 ),OK)
 $(error Some build prerequisites are missing! Please install the missing packages before trying again)
 endif
+endif
+
+# There are known problems with mksquashfs3 and SUSE's gcc-4.5.0
+ifeq ($(shell gcc --version | grep -q "gcc (SUSE Linux) 4.5.0 20100604" && echo y),y)
+$(error gcc (SUSE Linux) 4.5.0 has known bugs. Please install and use a different version)
 endif
 
 all: step
