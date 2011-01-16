@@ -1,5 +1,5 @@
---- networking/httpd.c.orig	2010-12-20 01:41:27.000000000 +0100
-+++ networking/httpd.c	2011-01-04 16:56:18.092164713 +0100
+--- networking/httpd.c.orig	2011-01-16 19:32:44.000000000 +0100
++++ networking/httpd.c	2011-01-16 20:42:11.505524002 +0100
 @@ -93,6 +93,7 @@
   */
   /* TODO: use TCP_CORK, parse_config() */
@@ -8,7 +8,7 @@
  #include "libbb.h"
  #if ENABLE_FEATURE_HTTPD_USE_SENDFILE
  # include <sys/sendfile.h>
-@@ -2320,6 +2321,7 @@
+@@ -2321,6 +2322,7 @@
  	IF_FEATURE_HTTPD_BASIC_AUTH(    r_opt_realm     ,)
  	IF_FEATURE_HTTPD_AUTH_MD5(      m_opt_md5       ,)
  	IF_FEATURE_HTTPD_SETUID(        u_opt_setuid    ,)
@@ -16,7 +16,7 @@
  	p_opt_port      ,
  	p_opt_inetd     ,
  	p_opt_foreground,
-@@ -2331,6 +2333,7 @@
+@@ -2332,6 +2334,7 @@
  	OPT_REALM       = IF_FEATURE_HTTPD_BASIC_AUTH(    (1 << r_opt_realm     )) + 0,
  	OPT_MD5         = IF_FEATURE_HTTPD_AUTH_MD5(      (1 << m_opt_md5       )) + 0,
  	OPT_SETUID      = IF_FEATURE_HTTPD_SETUID(        (1 << u_opt_setuid    )) + 0,
@@ -24,7 +24,7 @@
  	OPT_PORT        = 1 << p_opt_port,
  	OPT_INETD       = 1 << p_opt_inetd,
  	OPT_FOREGROUND  = 1 << p_opt_foreground,
-@@ -2344,6 +2347,7 @@
+@@ -2345,6 +2348,7 @@
  	int server_socket = server_socket; /* for gcc */
  	unsigned opt;
  	char *url_for_decode;
@@ -32,7 +32,7 @@
  	IF_FEATURE_HTTPD_ENCODE_URL_STR(const char *url_for_encode;)
  	IF_FEATURE_HTTPD_SETUID(const char *s_ugid = NULL;)
  	IF_FEATURE_HTTPD_SETUID(struct bb_uidgid_t ugid;)
-@@ -2367,12 +2371,14 @@
+@@ -2368,12 +2372,14 @@
  			IF_FEATURE_HTTPD_BASIC_AUTH("r:")
  			IF_FEATURE_HTTPD_AUTH_MD5("m:")
  			IF_FEATURE_HTTPD_SETUID("u:")
@@ -47,7 +47,7 @@
  			, &bind_addr_or_port
  			, &verbose
  		);
-@@ -2454,6 +2460,8 @@
+@@ -2455,6 +2461,8 @@
  #if BB_MMU
  	if (!(opt & OPT_FOREGROUND))
  		bb_daemonize(0); /* don't change current directory */

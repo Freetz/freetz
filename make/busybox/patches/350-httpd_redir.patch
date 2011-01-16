@@ -1,5 +1,5 @@
---- include/usage.src.h.orig	2011-01-04 16:56:17.692164713 +0100
-+++ include/usage.src.h	2011-01-04 16:56:18.492164712 +0100
+--- include/usage.src.h.orig	2011-01-16 20:42:11.469524002 +0100
++++ include/usage.src.h	2011-01-16 20:42:11.601524002 +0100
 @@ -1622,7 +1622,8 @@
  	IF_FEATURE_HTTPD_SETUID(" [-u USER[:GRP]]") \
  	IF_FEATURE_HTTPD_BASIC_AUTH(" [-r REALM]") \
@@ -19,8 +19,8 @@
  
  #define hwclock_trivial_usage \
  	IF_FEATURE_HWCLOCK_LONG_OPTIONS( \
---- networking/httpd.c.orig	2011-01-04 16:56:18.092164713 +0100
-+++ networking/httpd.c	2011-01-04 16:56:18.492164712 +0100
+--- networking/httpd.c.orig	2011-01-16 20:42:11.505524002 +0100
++++ networking/httpd.c	2011-01-16 20:42:11.605524002 +0100
 @@ -244,6 +244,8 @@
  
  	const char *found_mime_type;
@@ -52,7 +52,7 @@
  				(g_query ? "?" : ""),
  				(g_query ? g_query : ""));
  	}
-@@ -1956,8 +1963,12 @@
+@@ -1957,8 +1964,12 @@
  	} while (*++tptr);
  	*++urlp = '\0';       /* terminate after last character */
  
@@ -66,7 +66,7 @@
  		if (is_directory(urlcopy + 1, 1, NULL)) {
  			found_moved_temporarily = urlcopy;
  		}
-@@ -2314,7 +2325,9 @@
+@@ -2315,7 +2326,9 @@
  }
  
  enum {
@@ -77,7 +77,7 @@
  	d_opt_decode_url,
  	h_opt_home_httpd,
  	IF_FEATURE_HTTPD_ENCODE_URL_STR(e_opt_encode_url,)
-@@ -2366,13 +2379,14 @@
+@@ -2367,13 +2380,14 @@
  	/* We do not "absolutize" path given by -h (home) opt.
  	 * If user gives relative path in -h,
  	 * $SCRIPT_FILENAME will not be set. */
