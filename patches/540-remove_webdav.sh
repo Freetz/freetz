@@ -5,12 +5,13 @@ for files in \
 	lib/libexpat.so* \
 	lib/libneon.so* \
 	sbin/*mount.davfs \
-	usr/share/ctlmgr/libctlwebdav.so \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
-# TODO: Remove "Online-Speicher" from webinterface
-
-echo1 "patching rc.conf"
-modsed "s/CONFIG_WEBDAV=.*$/CONFIG_WEBDAV=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+if [ ! "$FREETZ_PACKAGE_DAVFS2" == "y" ]; then
+	# TODO: Remove "Online-Speicher" from webinterface
+	rm_files "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libctlwebdav.so"
+	echo1 "patching rc.conf"
+	modsed "s/CONFIG_WEBDAV=.*$/CONFIG_WEBDAV=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+fi
