@@ -221,9 +221,10 @@ config FREETZ_TARGET_BINUTILS_VERSION
 
 config FREETZ_TARGET_UCLIBC_REF
 	string
-	default "mod"		if FREETZ_TARGET_UCLIBC_CONFIG_MOD || FREETZ_DOWNLOAD_TOOLCHAIN
 	default "orig-4mb"	if FREETZ_TARGET_UCLIBC_CONFIG_4MB
 	default "orig-8mb"	if FREETZ_TARGET_UCLIBC_CONFIG_8MB
+	default "orig-16mb"	if FREETZ_TARGET_UCLIBC_CONFIG_16MB
+	default "mod"
 
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"
