@@ -164,71 +164,10 @@ config FREETZ_TYPE_FON_WLAN_7270_16MB
 	bool "16 MB flash"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7270
-	select FREETZ_AVMPLUGINS_ENABLED if FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_LABOR_NAS
+	select FREETZ_AVMPLUGINS_ENABLED if FREETZ_TYPE_LANG_DE
 	default n
 	help
 		Enable this to build an image for boxes with 16 MB flash.
-
-config FREETZ_TYPE_LABOR
-#	bool "Beta/Labor"
-	bool
-	depends on \
-		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7270_V3
-	default n
-	help
-		Enable this to compile the mod based on an AVM "beta/labor" firmware.
-
-choice
-
-	prompt "Labor version"
-		depends on FREETZ_TYPE_LABOR
-		default FREETZ_TYPE_LABOR_DSL
-
-	config FREETZ_TYPE_LABOR_CORE
-		bool "Streaming Stick"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
-		help
-			Labor Streaming Stick
-
-	config FREETZ_TYPE_LABOR_DSL
-		bool "DSL"
-		depends on \
-			( \
-			FREETZ_TYPE_FON_WLAN_7170 || \
-			FREETZ_TYPE_FON_WLAN_7270 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3 \
-			)
-		help
-			FRITZ!Lab DSL: This release optimizes the DSL (Digital Subscriber
-			Line) software and adds related graphs.
-
-#	config FREETZ_TYPE_LABOR_IPV6
-#		bool "IPv6"
-#		depends on \
-#			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
-#		select FREETZ_TARGET_IPV6_SUPPORT
-#		help
-#			FRITZ!Lab IPV6: This release adds native IPv6 over PPP
-#			(Internet Protocol Version 6) and 6to4 tunnels.
-
-	config FREETZ_TYPE_LABOR_NAS
-		bool "NAS"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270_16MB || FREETZ_TYPE_FON_WLAN_7270_V3
-		help
-			Labor NAS
-
-	config FREETZ_TYPE_LABOR_PHONE
-		bool "Phone"
-		depends on \
-			FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3
-		help
-			Labor Phone
-
-endchoice
 
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for \"alien\" hardware"
@@ -307,7 +246,6 @@ choice
 	config FREETZ_TYPE_LANG_A_CH
 		bool "a-ch - deutsch"
 		depends on \
-			! FREETZ_TYPE_LABOR && \
 			! FREETZ_TYPE_ALIEN_HARDWARE && \
 			( \
 			FREETZ_TYPE_FON_5010 || \
@@ -319,7 +257,6 @@ choice
 	config FREETZ_TYPE_LANG_EN
 		bool "en - international"
 		depends on \
-			! FREETZ_TYPE_LABOR && \
 			! FREETZ_TYPE_ALIEN_HARDWARE && \
 			( \
 			FREETZ_TYPE_FON || \
@@ -379,21 +316,10 @@ config FREETZ_TYPE_STRING
 	default "7140"						if FREETZ_TYPE_FON_WLAN_7140
 	default "7141"						if FREETZ_TYPE_FON_WLAN_7141
 	default "7150"						if FREETZ_TYPE_FON_7150
-	default "7170"						if FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR
-	default "7170_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LABOR_DSL
+	default "7170"						if FREETZ_TYPE_FON_WLAN_7170
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240
-	default "7270"						if FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR
-	default "7270_labor_core"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_CORE
-	default "7270_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_DSL
-	default "7270_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_IPV6
-	default "7270_labor_nas"				if FREETZ_TYPE_FON_WLAN_7270_16MB && FREETZ_TYPE_LABOR_NAS
-	default "7270_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PHONE
-	default "7270_v3"					if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR
-	default "7270_v3_labor_core"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_CORE
-	default "7270_v3_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_DSL
-	default "7270_v3_labor_ipv6"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_IPV6
-	default "7270_v3_labor_nas"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_NAS
-	default "7270_v3_labor_phone"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_PHONE
+	default "7270"						if FREETZ_TYPE_FON_WLAN_7270
+	default "7270_v3"					if FREETZ_TYPE_FON_WLAN_7270_V3
 	default "7570"						if FREETZ_TYPE_FON_WLAN_7570
 	default "W501V"						if FREETZ_TYPE_SPEEDPORT_W501V
 	default "custom"					if FREETZ_TYPE_CUSTOM
@@ -401,8 +327,8 @@ config FREETZ_TYPE_STRING
 config FREETZ_TYPE_STRING2
 	string
 	default "W500V_"					if FREETZ_TYPE_SINUS_W500V_7150
-	default "W701V_"                                        if FREETZ_TYPE_SPEEDPORT_W701V_7170
-	default "W900V_"                                        if FREETZ_TYPE_SPEEDPORT_W900V_7170
+	default "W701V_"					if FREETZ_TYPE_SPEEDPORT_W701V_7170
+	default "W900V_"					if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "W920V_"					if FREETZ_TYPE_SPEEDPORT_W920V_7570
 
 comment "Custom options -------------------------"
@@ -440,7 +366,6 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		FREETZ_SHOW_ADVANCED && \
-		! ((FREETZ_TYPE_LABOR_DSL || FREETZ_TYPE_LABOR_CORE || FREETZ_TYPE_LABOR_IPV6 || FREETZ_TYPE_LABOR_PHONE) && (FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3)) && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
 	default y
 
@@ -1175,7 +1100,6 @@ config FREETZ_PATCH_ATA
 config FREETZ_PATCH_DSL_EXPERT
 	bool "Patch extended DSL settings"
 	depends on \
-		! FREETZ_TYPE_LABOR_DSL && \
 		! FREETZ_REMOVE_DSLD && \
 		FREETZ_TYPE_LANG_DE && \
 		(FREETZ_TYPE_FON_WLAN_7170 || FREETZ_TYPE_FON_WLAN_7240 || FREETZ_TYPE_FON_WLAN_7270 || FREETZ_TYPE_FON_WLAN_7270_V3)
@@ -1186,7 +1110,6 @@ config FREETZ_PATCH_DSL_EXPERT
 config FREETZ_PATCH_VCC
 	bool "Patch 2nd VCC"
 	depends on FREETZ_HAS_PHONE && \
-		! FREETZ_TYPE_LABOR && \
 		(FREETZ_TYPE_FON_WLAN_7141 || FREETZ_TYPE_FON_WLAN_7170)
 	default n
 	help
@@ -1769,14 +1692,16 @@ config FREETZ_DL_SITE
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7170/firmware/english/annex_b" if	FREETZ_TYPE_FON_WLAN_7170 && \
 											FREETZ_TYPE_LANG_EN && \
 											FREETZ_TYPE_ANNEX_B
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7240/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7240
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7270 && \
+	default "ftp://service.avm.de/Downgrade/FRITZ!Box%20Fon%20WLAN%207240/"	if	FREETZ_TYPE_FON_WLAN_7240
+	default "ftp://service.avm.de/Downgrade/FRITZ!Box%20Fon%20WLAN%207270/FRITZ!Box%20Fon%20WLAN%207270%20v2" if \
+											FREETZ_TYPE_FON_WLAN_7270 && \
 											FREETZ_TYPE_LANG_DE
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/firmware/deutsch_a-ch"	if	FREETZ_TYPE_FON_WLAN_7270 && \
 											FREETZ_TYPE_LANG_A_CH
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270/firmware/english"	if	FREETZ_TYPE_FON_WLAN_7270 && \
 											FREETZ_TYPE_LANG_EN
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v3/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
+	default "ftp://service.avm.de/Downgrade/FRITZ!Box%20Fon%20WLAN%207270/FRITZ!Box%20Fon%20WLAN%207270%20v3" if \
+											FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LANG_DE
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7570/firmware/english"	if	FREETZ_TYPE_FON_WLAN_7570
 	default "@AVM/fritz.box/fritzbox.sl_wlan/firmware"			if	FREETZ_TYPE_WLAN_3020
@@ -1836,7 +1761,6 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.76.image"			if	FREETZ_TYPE_FON_WLAN_7141
 	default "fritz.fon_7150.annexb.38.04.71.image"				if	FREETZ_TYPE_FON_7150
 	default "FRITZ.Box_Fon_WLAN_7170.29.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7170 && \
-											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexA.58.04.76.image"			if	FREETZ_TYPE_FON_WLAN_7170 && \
 											FREETZ_TYPE_LANG_A_CH
@@ -1846,40 +1770,13 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7170.AnnexB.en.29.04.82.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
 											FREETZ_TYPE_LANG_EN && \
 											FREETZ_TYPE_ANNEX_B
-	default "FRITZ.Box_Fon_WLAN_7170.Labor.29.04.99-14119.image"		if	FREETZ_TYPE_FON_WLAN_7170 && \
-											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7240.73.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7240 && \
-											! FREETZ_TYPE_LABOR
-	default "Labor_FRITZ.Box_Fon_WLAN_7240.73.04.85-18145.image"		if	FREETZ_TYPE_FON_WLAN_7240 && \
-											FREETZ_TYPE_PREVIEW
+	default "FRITZ.Box_Fon_WLAN_7240.73.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7240
 	default "FRITZ.Box_Fon_WLAN_7270.54.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7270 && \
-											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it-fr.54.04.81.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
 											! FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7270_LabStreaming_54.04.80-16540.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_LABOR_CORE
-	default "FRITZ.Box_Fon_WLAN_7270_LabDSL.AnnexB.54.04.80-16750.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_16_LabIPV6.AnnexB.54.04.80-17603.image"	if	FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_LABOR_IPV6
-	default "FRITZ.Box_Fon_WLAN_7270_16_LabNAS.AnnexB.54.04.80-16561.image"	if	FREETZ_TYPE_FON_WLAN_7270_16MB && \
-											FREETZ_TYPE_LABOR_NAS
-	default "Labor_FRITZ.Box_Fon_WLAN_7270_v2.54.04.85-18145.image"		if	FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_PREVIEW
 	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.80.image"			if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabStreaming_74.04.80-16540.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_LABOR_CORE
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabDSL.AnnexB.74.04.80-16750.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_LABOR_DSL
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabIPV6.AnnexB.74.04.80-17603.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_LABOR_IPV6
-	default "FRITZ.Box_Fon_WLAN_7270_v3_LabNAS.AnnexB.74.04.80-16561.image"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_LABOR_NAS
-	default "Labor_FRITZ.Box_Fon_WLAN_7270_v3.74.04.85-18145.image"		if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
-											FREETZ_TYPE_PREVIEW
 	default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.82.image"		if	FREETZ_TYPE_FON_WLAN_7570
 	default "fritz.box_sl_wlan.09.04.34.image"				if	FREETZ_TYPE_WLAN_3020
 	default "fritz.box_wlan_3030.21.04.34.image"				if	FREETZ_TYPE_WLAN_3030
@@ -1923,19 +1820,16 @@ config FREETZ_DL_SOURCE_MD5
 								FREETZ_TYPE_ANNEX_B
 	default "b612f315216adf3b230e4d99430194a8"	if	FREETZ_TYPE_FON_WLAN_7141
 	default "5c5ff2e39056220007f145b672d0adc8"	if	FREETZ_TYPE_FON_7150
-	default "72b48986aa26a6f0a16b2a4a2bfb7bb0"	if	FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR && \
-								FREETZ_TYPE_LANG_DE
+	default "72b48986aa26a6f0a16b2a4a2bfb7bb0"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE
 	default "b81376dcd3efd5f996491132b5e7c833"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_A_CH
 	default "9097a25bcb39f067766888036a28844a"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && \
 								FREETZ_TYPE_ANNEX_A
 	default "642eea123e85d1f6cde4481c6d8bd9a1"	if	FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_EN && \
 								FREETZ_TYPE_ANNEX_B
 	default "9e61cf4fabb67c6a2871ddada2f2306c"	if	FREETZ_TYPE_FON_WLAN_7240
-	default "4ea997dce6bbf72202ae80cb572ab1fe"	if	FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LABOR && \
-								FREETZ_TYPE_LANG_DE
+	default "4ea997dce6bbf72202ae80cb572ab1fe"	if	FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
 	default "a5f56166aa8ce2b9862e8e01db0e3c8d"	if	FREETZ_TYPE_FON_WLAN_7270 && ! FREETZ_TYPE_LANG_DE
-	default "12fb134d01f6bd5e99cdab2104184380"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR && \
-								FREETZ_TYPE_LANG_DE
+	default "12fb134d01f6bd5e99cdab2104184380"	if	FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LANG_DE
 	default "6cfef46ebae2c6d173e266d8f75b72f7"	if	FREETZ_TYPE_FON_WLAN_7570
 	default "f483cfab8da97207248f5e0703993a72"	if	FREETZ_TYPE_WLAN_3020
 	default "31653fb1ba044375ab389474951c1cf4"	if	FREETZ_TYPE_WLAN_3030
@@ -2226,7 +2120,7 @@ config FREETZ_STATUS_STYLE
 
 config FREETZ_AVMPLUGINS_ENABLED
 	bool "Integrate AVM Plugins into image"
-	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE && ! FREETZ_TYPE_LABOR_NAS
+	depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LANG_DE
 	default n
 	help
 		This feature disables AVM's plugin download and handling.
