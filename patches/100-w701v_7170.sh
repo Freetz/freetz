@@ -19,9 +19,8 @@ for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb driver
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i"
 done
 for i in bin/pause bin/reinit_jffs2 bin/usbhostchanged etc/hotplug \
-	sbin/smbd sbin/smbpasswd sbin/mediasrv sbin/start_mediasrv sbin/stop_mediasrv \
-	etc/samba_config.tar etc/usb_class.tab etc/usb_device.tab etc/samba_control \
-	usr/www/all/html/de/usb	sbin/lsusb sbin/printserv etc/hotplug sbin/ftpd;do
+	etc/usb_class.tab etc/usb_device.tab etc/samba_control \
+	usr/www/all/html/de/usb	sbin/lsusb etc/hotplug;do
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 

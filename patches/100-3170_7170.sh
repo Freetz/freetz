@@ -11,14 +11,15 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESY
 
 echo2 "deleting obsolete files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
-for i in bin/mini* bin/playerd_tables bin/reinit_jffs2 bin/showvoipdstat bin/telephon.plugin bin/voip* etc/init.d/rc.voip etc/minid \
-	lib/libcapi* lib/libfon* lib/libmscodex* lib/libosip* lib/libphone* lib/librtp* lib/libsip* lib/libspeex* \
-	lib/libavmaudio* lib/libconverttopdf* lib/libavcodec* lib/libavformat* lib/libmedia* \
-	lib/modules/2.6.13.1-ohio/kernel/drivers/char/audio lib/modules/2.6.13.1-ohio/kernel/drivers/isdn \
-	lib/modules/2.6.13.1-ohio/kernel/drivers/net/rfcntl lib/modules/2.6.13.1-ohio/kernel/fs/jffs2 \
-	lib/modules/2.6.13.1-ohio/kernel/fs/isofs  usr/bin/capiotcp_server usr/bin/faxd usr/bin/pbd usr/bin/resettam \
-	usr/share/tam usr/share/telefon usr/share/ctlmgr/libfon.so usr/share/ctlmgr/libmini.so \
-	usr/share/ctlmgr/libtamconf.so usr/share/ctlmgr/libtelcfg.so; do
+for i in bin/reinit_jffs2 etc/init.d/rc.voip etc/minid \
+	lib/libmscodex* lib/libphone* lib/libspeex* \
+	lib/libavmaudio* lib/libconverttopdf* lib/libmedia* \
+	lib/modules/2.6.13.1-ohio/kernel/drivers/char/audio \
+	lib/modules/2.6.13.1-ohio/kernel/drivers/net/rfcntl \
+	lib/modules/2.6.13.1-ohio/kernel/fs/jffs2 \
+	lib/modules/2.6.13.1-ohio/kernel/fs/isofs \
+	usr/bin/faxd usr/bin/resettam \
+	usr/share/tam usr/share/telefon usr/share/ctlmgr/libtamconf.so; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 

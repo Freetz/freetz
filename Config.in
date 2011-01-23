@@ -251,6 +251,13 @@ choice
 	config FREETZ_TYPE_SPEEDPORT_W701V_7170
 		bool "W701V"
 		depends on FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_LABOR_PREVIEW
+		select FREETZ_REMOVE_AURA_USB
+		select FREETZ_REMOVE_FTPD
+		select FREETZ_REMOVE_MEDIASRV
+		select FREETZ_REMOVE_MINID
+		select FREETZ_REMOVE_PRINTSERV
+		select FREETZ_REMOVE_PRINTSERV_MODULE
+		select FREETZ_REMOVE_SMBD
 		help
 			Enable this to compile a mod image for T-Com Speedport W701V based
 			on a 7170 image.
@@ -272,6 +279,10 @@ choice
 	config FREETZ_TYPE_3170_7170
 		bool "3170"
 		depends on FREETZ_TYPE_FON_WLAN_7170
+		select FREETZ_REMOVE_MINID
+		select FREETZ_REMOVE_VOIP
+		select FREETZ_REMOVE_VOIP_ISDN
+		select FREETZ_REMOVE_CAPIOVERTCP
 		help
 			Enable this to compile a mod image for FritzBox FON WLAN 3170 based
 			on a 7170 image.
@@ -1564,8 +1575,7 @@ config FREETZ_REMOVE_MINID
 			FREETZ_TYPE_FON_WLAN_7270_V3 || \
 			FREETZ_TYPE_WLAN_3270 || \
 			FREETZ_TYPE_WLAN_3270_V3 \
-		) && \
-		! FREETZ_TYPE_SPEEDPORT_W701V_7170
+		)
 	help
 		Remove the mini-daemon (minid) and some other related files. This patch
 		removes Fritz!Mini and MT-D/F support and all Web UI entrys.
