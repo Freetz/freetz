@@ -197,6 +197,7 @@ config FREETZ_TYPE_LABOR
 	bool "Beta/Labor"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7390
 	default n
 	help
@@ -210,6 +211,7 @@ choice
 	config FREETZ_TYPE_LABOR_DSL
 		bool "DSL"
 		depends on \
+			FREETZ_TYPE_FON_WLAN_7270 || \
 			FREETZ_TYPE_FON_WLAN_7390
 		help
 			FRITZ!Lab DSL: This release optimizes the DSL (Digital Subscriber
@@ -428,8 +430,10 @@ config FREETZ_TYPE_STRING
 	default "7270_v1"					if FREETZ_TYPE_FON_WLAN_7270_V1 && ! FREETZ_TYPE_LABOR
 #	default "7270_v1_preview"				if FREETZ_TYPE_FON_WLAN_7270_V1 && FREETZ_TYPE_LABOR_PREVIEW
 	default "7270_v2"					if FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_LABOR
+	default "7270_v2_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LABOR_DSL
 #	default "7270_v2_preview"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LABOR_PREVIEW
 	default "7270_v3"					if FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR
+	default "7270_v3_labor_dsl"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_DSL
 #	default "7270_v3_preview"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR_PREVIEW
 	default "7320"						if FREETZ_TYPE_FON_WLAN_7320
 	default "7340"						if FREETZ_TYPE_FON_WLAN_7340 && ! FREETZ_TYPE_LABOR
@@ -2133,6 +2137,8 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270_v2.54.04.88.image"			if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
 											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7270_v2.54.04.88-18956.image"		if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
+											FREETZ_TYPE_LABOR_DSL
 	default "Labor_FRITZ.Box_Fon_WLAN_7270_v2.54.04.86-18708.image"		if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
 											FREETZ_TYPE_LABOR_PREVIEW
 	default "FRITZ.Box_Fon_WLAN_7270_16.AnnexB.en-de-es-it-fr.54.04.81.image"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
@@ -2140,6 +2146,8 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.88.image"			if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_Fon_WLAN_7270_v2.54.04.88-18956.image"		if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
+											FREETZ_TYPE_LABOR_DSL
 	default "Labor_FRITZ.Box_Fon_WLAN_7270_v3.74.04.86-18708.image"		if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_PREVIEW
 	default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.82.image"		if	FREETZ_TYPE_FON_WLAN_7570
