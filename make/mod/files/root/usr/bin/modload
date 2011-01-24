@@ -40,10 +40,6 @@ lnmod() {
 	fi
 }
 
-lnmod -d /etc/default.mod
-lnmod -d /usr/lib/cgi-bin/mod
-lnmod -x /usr/lib/cgi-bin/mod.cgi
-
 echo -n 'Loading users, groups and passwords ... '
 /usr/bin/modusers load
 echo 'done.'
@@ -53,9 +49,8 @@ echo -n 'Loading hosts ... '
 echo 'done.'
 
 echo -n 'Loading config ... '
-/usr/bin/modconf load mod
 if [ -e /etc/static.pkg ]; then
-	for pkg in $(cat /etc/static.pkg); do
+	for pkg in $(cat /etc/static.pkg) avm; do
 		[ -e "/mod/pkg/$pkg" ] || ln -s / "/mod/pkg/$pkg"
 		lnmod -d "/etc/default.$pkg"
 		lnmod -d "/usr/lib/cgi-bin/$pkg"

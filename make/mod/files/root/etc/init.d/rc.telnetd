@@ -2,8 +2,8 @@
 
 DAEMON=telnetd
 DAEMON_LONG_NAME="AVM telnetd"
-CONF_NAME=mod
-CONF_ENABLED=MOD_TELNETD
+CONF_NAME=avm
+CONF_ENABLED=AVM_TELNETD
 . /etc/init.d/modlibrc
 
 start() {
@@ -17,7 +17,7 @@ stop() {
 case $1 in
 	""|load)
 		modreg daemon -p avm telnetd
-		modlib_start $MOD_TELNETD
+		modlib_start $AVM_TELNETD
 		;;
 	unload)
 		modlib_stop
