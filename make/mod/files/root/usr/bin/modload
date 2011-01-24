@@ -59,6 +59,7 @@ if [ -e /etc/static.pkg ]; then
 		[ -r "/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
 	done
 fi
+/usr/bin/modconf load avm
 echo 'done.'
 
 echo -n 'Loading modules ... '
