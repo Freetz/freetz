@@ -1,12 +1,12 @@
-CCACHE_VERSION:=3.1.3
+CCACHE_VERSION:=3.1.4
 CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.bz2
-CCACHE_MD5:=1fd1cde402ebd6d3404981ffb0394528
+CCACHE_MD5:=676fda8a9a5e02574435c32b22942abd
 CCACHE_SITE:=http://samba.org/ftp/ccache
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
 CCACHE_BINARY:=ccache
 CCACHE_TARGET_BINARY:=usr/bin/ccache
 
-ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_SOURCE)))
+ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_MD5)
 endif
@@ -51,21 +51,24 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_
 		ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
 		ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc; \
 	)
-	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc ] && \
+	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc -a \
+		! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc ] && \
 		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/
+				$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/ || true
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
 			ln -fs ccache $(GNU_TARGET_NAME)-cc; \
 			ln -fs ccache $(GNU_TARGET_NAME)-gcc; \
 			ln -fs ccache $(REAL_GNU_TARGET_NAME)-cc; \
 			ln -fs ccache $(REAL_GNU_TARGET_NAME)-gcc; \
 	)
-	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++ ] && \
+	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++ -a \
+		! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++ ] && \
 		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++ \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/
-	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++ ] && \
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/ || true
+	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++ -a \
+		! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++ ] && \
 		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++ \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/
+			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/ || true
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
 		ln -fs ccache $(GNU_TARGET_NAME)-c++; \
 		ln -fs ccache $(GNU_TARGET_NAME)-g++;\
