@@ -1,5 +1,5 @@
---- configure.ac
-+++ configure.ac
+--- configure.ac.orig	2010-12-15 14:49:10.000000000 +0100
++++ configure.ac	2011-01-08 18:16:04.400764929 +0100
 @@ -1498,18 +1498,6 @@
      ])
    fi
@@ -41,9 +41,28 @@
      fi
  
    fi dnl GNUTLS not disabled
---- configure
-+++ configure
-@@ -19787,16 +19787,6 @@
+@@ -1819,18 +1792,6 @@
+ 
+       CURL_LIBS="$CURL_LIBS -lpolarssl"
+       LIBS="$LIBS -lpolarssl"
+-
+-      if test -n "$polarssllib"; then
+-        dnl when shared libs were found in a path that the run-time
+-        dnl linker doesn't search through, we need to add it to
+-        dnl LD_LIBRARY_PATH to prevent further configure tests to fail
+-        dnl due to this
+-
+-        LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$polarssllib"
+-        export LD_LIBRARY_PATH
+-        AC_MSG_NOTICE([Added $polarssllib to LD_LIBRARY_PATH])
+-      fi
+-
+     fi
+ 
+   fi dnl PolarSSL not disabled
+--- configure.orig	2010-12-15 15:01:16.000000000 +0100
++++ configure	2011-01-08 18:17:04.560763553 +0100
+@@ -19787,16 +19805,6 @@
  rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
    fi
  
@@ -60,7 +79,7 @@
  fi
  
  
-@@ -20254,19 +20244,6 @@
+@@ -20254,19 +20262,6 @@
  fi
  
  
@@ -75,6 +94,22 @@
 -          { $as_echo "$as_me:${as_lineno-$LINENO}: Added $gtlslib to LD_LIBRARY_PATH" >&5
 -$as_echo "$as_me: Added $gtlslib to LD_LIBRARY_PATH" >&6;}
 -        fi
+-      fi
+-
+     fi
+ 
+   fi
+@@ -20460,15 +20455,6 @@
+ 
+       CURL_LIBS="$CURL_LIBS -lpolarssl"
+       LIBS="$LIBS -lpolarssl"
+-
+-      if test -n "$polarssllib"; then
+-
+-        LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$polarssllib"
+-        export LD_LIBRARY_PATH
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: Added $polarssllib to LD_LIBRARY_PATH" >&5
+-$as_echo "$as_me: Added $polarssllib to LD_LIBRARY_PATH" >&6;}
 -      fi
 -
      fi

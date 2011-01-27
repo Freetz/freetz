@@ -17,6 +17,13 @@ config FREETZ_PACKAGE_CURL_WITH_SSL
 	help
 		This option enables SSL support in curl.
 
+config FREETZ_PACKAGE_CURL_USE_POLARSSL
+	bool "Use polarssl instead of openssl"
+	depends on FREETZ_PACKAGE_CURL_WITH_SSL
+	default n
+	help
+		Use lightweight PolarSSL as SSL library.
+
 config FREETZ_PACKAGE_CURL_WITH_ZLIB
 	bool "build with zlib support"
 	depends on FREETZ_PACKAGE_CURL
@@ -35,3 +42,4 @@ config FREETZ_PACKAGE_CURL_STATIC
 		- libcurl.so
 		- libcrypto.so
 		- libssl.so
+		- libpolarssl.so
