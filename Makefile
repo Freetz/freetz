@@ -404,6 +404,7 @@ distclean: $(TOOLS_DISTCLEAN) common-distclean
 endif
 
 tools: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLS)
+tools-dirclean: $(TOOLS_DIRCLEAN)
 tools-distclean: $(TOOLS_DISTCLEAN)
 
 push-firmware:
