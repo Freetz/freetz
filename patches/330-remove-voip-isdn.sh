@@ -13,5 +13,7 @@ rm_files $(find ${FILESYSTEM_MOD_DIR} -name '*capi*' -o -name '*tam*' | grep -Ev
 	 $(find ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr -name 'libfon*' -o -name 'libtelcfg*') \
 	 $(find ${FILESYSTEM_MOD_DIR} -name 'voipd' -o -name 'telefon' -o -name 'pbd' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/')
 
+rm_files ${FILESYSTEM_MOD_DIR}/usr/bin/faxd
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
