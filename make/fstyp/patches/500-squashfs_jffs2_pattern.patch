@@ -1,0 +1,69 @@
+--- src/linux_fs.h.orig	2001-11-19 06:48:12.000000000 +0100
++++ src/linux_fs.h	2010-03-07 11:02:42.000000000 +0100
+@@ -206,3 +206,28 @@
+ #define sysvmagic(s)	((uint) s.s_magic[0] + (((uint) s.s_magic[1]) << 8) + \
+ 			 (((uint) s.s_magic[2]) << 16) + \
+ 			 (((uint) s.s_magic[3]) << 24))
++
++#define SQUASHFS_SUPER_MAGIC 0x73717368
++struct squashfs_super_block {
++    u_char    s_magic[4];
++};
++
++#define squashfsmagic(s)	((uint) s.s_magic[0] + (((uint) s.s_magic[1]) << 8) + \
++			 (((uint) s.s_magic[2]) << 16) + \
++			 (((uint) s.s_magic[3]) << 24))
++
++#define JFFS2_SUPER_MAGIC 0x1985
++struct jffs2_super_block {
++    u_char    s_magic[2];
++};
++#define jffs2magic(s)	((uint) s.s_magic[0] + (((uint) s.s_magic[1]) << 8))
++
++#define EVA_SUPER_MAGIC 0xfeed1281
++struct eva_super_block {
++    u_char    s_magic[4];
++};
++
++#define evamagic(s)	((uint) s.s_magic[0] + (((uint) s.s_magic[1]) << 8) + \
++			 (((uint) s.s_magic[2]) << 16) + \
++			 (((uint) s.s_magic[3]) << 24))
++
+--- src/mount_guess_fstype.c.orig	2010-03-07 10:59:26.000000000 +0100
++++ src/mount_guess_fstype.c	2010-03-07 10:58:02.000000000 +0100
+@@ -87,9 +87,9 @@
+ static char
+ *magic_known[] = {
+ 	"adfs", "bfs", "cramfs", "ext", "ext2", "ext3",
+-	"hfs", "hpfs", "iso9660", "jfs", "minix", "ntfs",
+-	"qnx4", "reiserfs", "romfs", "swap", "sysv", "udf", "ufs",
+-	"vxfs", "xfs", "xiafs"
++	"hfs", "hpfs", "iso9660", "jfs", "jffs2", "minix", "ntfs",
++	"qnx4", "reiserfs", "romfs", "squashfs", "swap", "sysv", 
++	"udf", "ufs", "vxfs", "xfs", "xiafs", "eva"
+ };
+ 
+ /* udf magic - I find that trying to mount garbage as an udf fs
+@@ -158,6 +158,9 @@
+ 	struct fat_super_block fatsb;
+ 	struct xfs_super_block xfsb;
+ 	struct cramfs_super_block cramfssb;
++	struct jffs2_super_block jffs2sb;
++	struct squashfs_super_block squashfssb;
++	struct eva_super_block evasb;
+     } xsb;
+     struct ufs_super_block ufssb;
+     union {
+@@ -255,6 +258,12 @@
+ 	      type = "ntfs";
+ 	 else if(cramfsmagic(xsb.cramfssb) == CRAMFS_SUPER_MAGIC)
+ 	      type = "cramfs";
++	else if (squashfsmagic(xsb.squashfssb) == SQUASHFS_SUPER_MAGIC)
++		type = "squashfs";
++	else if (jffs2magic(xsb.jffs2sb) == JFFS2_SUPER_MAGIC)
++		type = "jffs2";
++	else if (evamagic(xsb.evasb) == EVA_SUPER_MAGIC)
++		type = "EVA kernel";
+ 	 else if ((!strncmp(xsb.fatsb.s_fs, "FAT12   ", 8) ||
+ 		      !strncmp(xsb.fatsb.s_fs, "FAT16   ", 8) ||
+ 		      !strncmp(xsb.fatsb.s_fs2, "FAT32   ", 8)))
