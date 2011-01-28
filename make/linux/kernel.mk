@@ -29,7 +29,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 	@KERNEL_SOURCE_CONTENT=` \
 		tar \
 			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
-			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
+			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) 2>/dev/null | \
 		grep -m 1 -e '^.*\/\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-2\.6\...\..\/\)$$'`; \
 	if [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
 		$(call ERROR,1,KERNEL_SOURCE_CONTENT is empty) \
