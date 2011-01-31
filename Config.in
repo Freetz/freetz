@@ -1051,6 +1051,7 @@ config FREETZ_PATCH_MAXDEVCOUNT
 config FREETZ_PATCH_MULTIPLE_PRINTERS
 	bool "Add support for multiple printers"
 	depends on FREETZ_TYPE_LANG_DE && \
+		! FREETZ_TYPE_LABOR && \
 		( \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_WLAN_3131 || \
