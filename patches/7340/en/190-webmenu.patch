@@ -1,19 +1,19 @@
---- usr/www/avme/templates/menu_page_end.html.orig	2010-12-17 13:38:45.000000000 +0100
-+++ usr/www/avme/templates/menu_page_end.html	2010-12-20 09:19:27.762899462 +0100
+--- usr/www/avme/templates/menu_page_end.html.orig	2011-02-01 15:36:17.000000000 +0100
++++ usr/www/avme/templates/menu_page_end.html	2011-02-01 23:02:37.391242001 +0100
 @@ -15,7 +15,8 @@
- box.out("<a href='http://www.avm.de/en/fritzclips' target='_blank'>{?22:958?}</a> | ")
+ box.out([[<a href='http://www.avm.de/en/fritzclips' target='_blank'>{?22:958?}</a> | ]])
  end
- box.out("<a href='"..href.get("/menus/programs.lua").."' >{?22:2?}</a> | ")
--box.out("<a href='http://www.avm.de' target='_blank' style='margin-right:0px;'>www.avm.de</a> ")
-+box.out("<a href='http://www.avm.de' target='_blank'>www.avm.de</a> | ")
-+box.out("<a href='http://www.freetz.org' target='_blank' style='margin-right:0px;'>www.freetz.org</a> ")
+ box.out([[<a href=']]..href.get("/menus/programs.lua")..[[' >{?22:2?}</a> | ]])
+-box.out([[<a href='http://www.avm.de' target='_blank' style='margin-right:0px;'>www.avm.de</a> ]])
++box.out([[<a href='http://www.avm.de' target='_blank'>www.avm.de</a> | ]])
++box.out([[<a href='http://www.freetz.org' target='_blank' style='margin-right:0px;'>www.freetz.org</a> ]])
  end
  ?>
  </div>
---- usr/www/avme/templates/menu_page_head.html.orig	2010-12-17 13:38:53.000000000 +0100
-+++ usr/www/avme/templates/menu_page_head.html	2010-12-20 09:19:27.762899462 +0100
-@@ -97,4 +97,23 @@
- box.out("</div>")
+--- usr/www/avme/templates/menu_page_head.html.orig	2011-02-01 15:36:14.000000000 +0100
++++ usr/www/avme/templates/menu_page_head.html	2011-02-01 23:02:37.391242001 +0100
+@@ -99,4 +99,23 @@
+ end
  end
  ?>
 +<div class="clear_float"></div>
@@ -36,8 +36,8 @@
 +</div>
 +</div>
  </div>
---- usr/www/avme/menus/menu_freetz.lua.orig	2010-12-20 09:19:27.762899462 +0100
-+++ usr/www/avme/menus/menu_freetz.lua	2010-12-20 09:19:27.762899462 +0100
+--- usr/www/avme/menus/menu_freetz.lua.orig	2011-02-01 23:02:37.391242001 +0100
++++ usr/www/avme/menus/menu_freetz.lua	2011-02-01 23:02:37.391242001 +0100
 @@ -0,0 +1,16 @@
 +menu.add_item{
 +page = "/cgi-bin/freetz_status",
