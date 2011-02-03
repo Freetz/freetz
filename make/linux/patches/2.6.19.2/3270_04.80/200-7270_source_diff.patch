@@ -1,0 +1,161 @@
+--- linux-2.6.19.2.orig/drivers/net/avm_cpmac/cpphy_adm6996.c	2009-11-06 13:42:22.000000000 +0100
++++ linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_adm6996.c	2009-12-21 13:34:18.000000000 +0100
+@@ -2378,3 +2378,89 @@
+     return CPMAC_ERR_NOERR;
+ }
+ 
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++cpmac_err_t adm_add_port_to_wan(cpphy_mdio_t *mdio, unsigned char port, unsigned short vid) {
++    unsigned int group, found = 12345;
++    unsigned char wanport = mdio->switch_config[mdio->cpmac_config.cpmac_mode].wanport;
++
++    /* Check port */
++    if(port > 3) {
++        DEB_ERR("[%s] Illegal port %u given\n", __FUNCTION__, port);
++        return CPMAC_ERR_EXCEEDS_LIMIT;
++    }
++    /* This function is only intended for a kind of ATA mode */
++    if(wanport == 0xff) {
++        DEB_ERR("[%s] No WAN port defined!\n", __FUNCTION__);
++        return CPMAC_ERR_ILL_CONTROL;
++    }
++    /* Find group for this VID */
++    for(group = 0; group < AVM_CPMAC_MAX_VLAN_GROUPS; group++) {
++        if(!mdio->switch_status.vlan[group].VFL.Bits.VV)
++            continue;
++        /* VID == 0 => Use first VLAN group that includes the WAN port */
++        if((vid == 0) && (mdio->switch_status.vlan[group].VFH.Bits.M & (1 << wanport))) {
++            vid = mdio->switch_status.vlan[group].VFL.Bits.VID;
++        }
++        if(mdio->switch_status.vlan[group].VFL.Bits.VID != vid) 
++            continue;
++        found = group;
++        DEB_TRC("[%s] Found group %u for VID %u\n", __FUNCTION__, group, vid);
++        break;
++    }
++    if(found == 12345) {
++        DEB_ERR("[%s] Unknown VID %u given!\n", __FUNCTION__, vid);
++        return CPMAC_ERR_EXCEEDS_LIMIT;
++    }
++
++    /* Remove port from generic ethernet VLAN */
++    for(group = 0; group < AVM_CPMAC_MAX_VLAN_GROUPS; group++) {
++        unsigned int bit, count = 0;
++
++        /* Only valid groups are interesting */
++        if(!mdio->switch_status.vlan[group].VFL.Bits.VV)
++            continue;
++
++        /* Group should include port and exclude wanport */
++        if(   !(mdio->switch_status.vlan[group].VFH.Bits.M & (1 << port))
++           ||  (mdio->switch_status.vlan[group].VFH.Bits.M & (1 << wanport))) {
++            continue;
++        }
++
++        /* Group should include more than two ports */
++        for(bit = 0; bit < 16; bit++) {
++            if(mdio->switch_status.vlan[group].VFH.Bits.M & (1 << port))
++                count++;
++        }
++        if(count < 3)
++            continue;
++
++        /* Remove port from portmasks */
++        mdio->switch_status.vlan[group].VFH.Bits.M  &= ~(1 << port);
++        mdio->switch_status.vlan[group].VFH.Bits.TM &= ~(1 << port);
++        mdio->switch_status.vlan[group].written = 0;
++        DEB_TRC("[%s] VID group %u after port removal: M = %#x, TM = %#x\n",
++                __FUNCTION__, group,
++                mdio->switch_status.vlan[group].VFH.Bits.M,
++                mdio->switch_status.vlan[group].VFH.Bits.TM);
++    }
++
++    /* Add port to given VID */
++    mdio->switch_status.vlan[found].VFH.Bits.M |= 1 << port;
++    mdio->switch_status.vlan[found].written = 0;
++    DEB_TRC("[%s] VID group %u after port addition: M = %#x, TM = %#x\n",
++            __FUNCTION__, found,
++            mdio->switch_status.vlan[found].VFH.Bits.M,
++            mdio->switch_status.vlan[found].VFH.Bits.TM);
++
++    /* Change default VID for the given port */
++    mdio->switch_status.port[port].written = 0;
++    mdio->switch_status.port[port].vid = vid;
++    mdio->switch_status.port[port].keep_tag_outgoing = 0;
++    DEB_TRC("[%s] Setting default VID %u for port %u\n", __FUNCTION__, vid, port);
++
++    adm_vlan_config(mdio);
++
++    return CPMAC_ERR_NOERR;
++}
++
+--- linux-2.6.19.2.orig/drivers/net/avm_cpmac/cpphy_if.c	2009-12-01 12:23:56.000000000 +0100
++++ linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_if.c	2009-12-21 13:34:18.000000000 +0100
+@@ -634,6 +634,18 @@
+                                         break;
+                                 }
+                                 break;
++                            case AVM_CPMAC_IOCTL_CONFIG_ADD_PORT_TO_WAN:
++                                switch(mdio->cpmac_switch) {
++                                    case AVM_CPMAC_SWITCH_TANTOS:
++                                        ret = adm_add_port_to_wan(mdio, 
++                                                                  ioctl_struct->u.config_port_vlan.port,
++                                                                  ioctl_struct->u.config_port_vlan.vid);
++                                        break;
++                                    default:
++                                        ret = CPMAC_ERR_ILL_CONTROL;
++                                        break;
++                                }
++                                break;
+                             case AVM_CPMAC_IOCTL_CONFIG_SET_PPPOA:
+                                 ret = adm_set_mode_pppoa(mdio, ioctl_struct->u.value);
+                                 break;
+--- linux-2.6.19.2.orig/drivers/net/avm_cpmac/linux_avm_cpmac.h	2009-04-03 17:13:14.000000000 +0200
++++ linux-2.6.19.2/drivers/net/avm_cpmac/linux_avm_cpmac.h	2009-12-21 13:34:18.000000000 +0100
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,2007,2008,2009 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -168,6 +168,8 @@
+  *                                                                                          *
+  *   phy_power_setup - Configuration of the power policy for the switch PHYs                *
+  *                                                                                          *
++ *   config_port_vlan - Add LAN port to the VLAN of the WAN                                 *
++ *                                                                                          *
+ \*------------------------------------------------------------------------------------------*/
+ 
+ #define AVM_CPMAC_IOCTL_CONFIG_GET_INFO                 0x01
+@@ -188,6 +190,7 @@
+ #define AVM_CPMAC_IOCTL_CONFIG_GET_BYTES_IN_WAN         0x10
+ #define AVM_CPMAC_IOCTL_CONFIG_SET_PPPOA                0x11
+ #define AVM_CPMAC_IOCTL_SUPPORT_DATA                    0x12
++#define AVM_CPMAC_IOCTL_CONFIG_ADD_PORT_TO_WAN          0x13
+ 
+ 
+ struct avm_cpmac_ioctl_struct {
+@@ -206,6 +209,10 @@
+         unsigned int result;                        /* GET_WAN_KEEPTAG, GET_BYTES_IN_WAN */
+         unsigned short port_out_vid_map[4];         /* GET_PORT_OUT_VID_MAP */
+         unsigned int value;                         /* GET_SWITCH_REGISTER_DUMP, SET_PPPOA */
++        struct {
++            unsigned char port;
++            unsigned short vid;
++        } config_port_vlan;                         /* ADD_PORT_TO_WAN */
+     } u;
+ };
+ 
+--- linux-2.6.19.2.orig/include/linux/tffs.h	2009-08-04 19:38:07.000000000 +0200
++++ linux-2.6.19.2/include/linux/tffs.h	2010-01-12 18:11:13.000000000 +0100
+@@ -408,7 +408,7 @@
+ /*--- !!! alphabetisch sortiert -> !!! ---*/
+ {
+     /*--- neuer Versionseintrag ---*/
+-    { FLASH_FS_TABLE_VERSION,     "@10" },
++    { FLASH_FS_TABLE_VERSION,     "@G" },
+ 
+     /*--- grosser erster Buchstaben ---*/
+     { FLASH_FS_AUTO_MDIX,         "AutoMDIX" },
