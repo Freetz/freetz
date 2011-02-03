@@ -180,7 +180,7 @@ config FREETZ_MODULE_slhc
 
 config FREETZ_MODULE_musb_hdrc
 	bool "musb_hdrc.ko"
-	depends on FREETZ_KERNEL_LAYOUT_UR8
+	depends on FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_LAYOUT_UR8
 	default n
 
 config FREETZ_MODULE_usblp
@@ -201,6 +201,7 @@ config FREETZ_MODULE_usbmon
 config FREETZ_MODULE_usbcore
 	bool "usbcore.ko"
 	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_MODULE_musb_hdrc if FREETZ_KERNEL_LAYOUT_UR8
 	default n
 
 config FREETZ_MODULE_usbip
