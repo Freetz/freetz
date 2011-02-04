@@ -10,6 +10,7 @@ elif $readonly; then
 	)'
 fi
 
+eval "$CONFIG_PREPARE"
 case $CONFIG_TYPE in
 	text)
 		echo "<form method='post'>"

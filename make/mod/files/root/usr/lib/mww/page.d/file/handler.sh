@@ -17,6 +17,7 @@ fi
 
 # Defaults
 TEXT_ROWS=18
+CONFIG_PREPARE=
 
 # Load config
 [ -r "$def" ] && . "$def"
