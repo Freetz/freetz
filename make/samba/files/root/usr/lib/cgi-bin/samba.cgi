@@ -87,7 +87,7 @@ sec_begin '$(lang de:"Samba" en:"Samba")'
 cat << EOF
 <p><label for="s1">$(lang de:"Benutzername" en:"User name"):</label>
 <input id="s1" type="text" name="user" size="40" maxlength="255" value="$(html "$SAMBA_USER")"></p>
-<p>$(lang de:"Netzwerkschnittstelle" en:"Network interface"):
+<p>$(lang de:"IP-Adresse" en:"IP address"):
 <input type="text" name="interfaces" size="40" maxlength="255" value="$(html "$SAMBA_INTERFACES")"><br>
 <font size="-2">$(lang de:"z.B.: 192.168.178.1/255.255.255.0 oder leer lassen f&uuml;r alle" en:"For example: 192.168.178.1/255.255.255.0 or leave blank for all")</font></P>
 <p>$(lang de:"Netbios Name" en:"Netbios Name"): <input type="text" name="netbios_name" size="20" maxlength="255" value="$(html "$SAMBA_NETBIOS_NAME")"></p>
