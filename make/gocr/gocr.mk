@@ -1,9 +1,10 @@
-$(call PKG_INIT_BIN, 0.48)
+$(call PKG_INIT_BIN, 0.49)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www-e.uni-magdeburg.de/jschulen/ocr/
+$(PKG)_SOURCE_MD5:=4e527bc4bdd97c2be15fdd818857507f
+$(PKG)_SITE:=http://www-e.uni-magdeburg.de/jschulen/ocr
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
-$(PKG)_SOURCE_MD5:=9882ba9a93fcb18ab704a10da80c228c
 
 $(PKG)_DEPENDS_ON := netpbm
 
