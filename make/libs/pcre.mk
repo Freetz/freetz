@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 8.10)
+$(call PKG_INIT_LIB, 8.12)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=780867a700e9d4e4b9cb47aa5453e4b2
+$(PKG)_SOURCE_MD5:=f14a9fef3c92f3fc6c5ac92d7a2c7eb3
 $(PKG)_SITE:=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 
 $(PKG)_LIB_VERSION:=0.0.1
