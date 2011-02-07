@@ -205,10 +205,12 @@ EOF
 		fi
 	} > "$dir/status.sub"
 
+	# put mod and avm package in front
 	echo "mod" > "$dir/packages"
+	echo "avm" >> "$dir/packages"
 	for i in "$p"/*.sub; do
 		pkg=${i##*/}; pkg=${pkg%.sub}
-		[ "$pkg" = mod ] && continue
+		[ "$pkg" = mod -o "$pkg" = avm ] && continue
 		title=$pkg
 		if [ -r "$p/$pkg.meta" ]; then
 			source "$p/$pkg.meta"
