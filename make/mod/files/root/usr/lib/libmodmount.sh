@@ -41,19 +41,28 @@ remove_swap ()
 		retval=21 # swap devices found
 		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio
 		do
-			if [ $swap_type == "partition" ]
-			then
+			if [ $swap_type == "partition" ]; then
 				/etc/init.d/rc.swap autostop $swap_dev
 				retval=$?
 				echo $retval > ${tmpret}
-				if [ $retval ]
-				then
-					eventadd 141 "SWAP Partition ($swap_dev)"
-					log_freetz notice "SWAP Partition ($swap_dev) removed"
-				else
-					eventadd 135 "SWAP Partition ($swap_dev)"
-					log_freetz err "SWAP Partition ($swap_dev) could not be removed"
-				fi
+				case "$retval" in
+					0)
+						eventadd 141 "SWAP Partition ($swap_dev)"
+						log_freetz notice "SWAP Partition ($swap_dev) removed."
+						;;
+					2)
+						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
+						log_freetz notice "SWAP Partition ($swap_dev) not removed, not the defined swap-partition."
+						;;
+					3)
+						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
+						log_freetz notice "SWAP Partition ($swap_dev) not removed, auto-mode is disabled."
+						;;
+					default)
+						eventadd 135 "SWAP Partition ($swap_dev)"
+						log_freetz err "SWAP Partition ($swap_dev) could not be removed."
+						;;
+				esac
 			fi
 		done
 		retval=$(($(cat ${tmpret} 2>/dev/null)))
@@ -126,7 +135,7 @@ mount_fs ()
 	;;
 	swap)
 		/etc/init.d/rc.swap autostart $dev_node
-		[ $?==0 ] && err_mo=17 || err_mo=18
+		err_mo=$((17+$?))
 	;;
 	*) # fs type unknown
 		mount $dev_node $mnt_path
@@ -215,18 +224,29 @@ do_mount ()
 			;;
 			esac
 		fi
-		if [ "$fs_type" == "swap" ]
-		then
-			if [ $err_fs_mount -eq 17 ]
-			then
-				mnt_failure=0
-				eventadd 140 "SWAP ($mnt_dev)"
-				log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was mounted successfully"
-			else
-				mnt_failure=1
-				eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-				log_freetz err "SWAP Partition $mnt_name ($mnt_dev) could not be mounted"
-			fi
+		if [ "$fs_type" == "swap" ]; then
+			case "$err_fs_mount" in
+				17)
+					mnt_failure=0
+					eventadd 140 "SWAP ($mnt_dev)"
+					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was mounted successfully."
+					;;
+				19)
+					mnt_failure=0
+					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
+					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was not mounted, not the defined swap-partition."
+					;;
+				20)
+					mnt_failure=0
+					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
+					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was not mounted, auto-mode is disabled."
+					;;
+				default)
+					mnt_failure=1
+					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
+					log_freetz err "SWAP Partition $mnt_name ($mnt_dev) could not be mounted."
+					;;
+			esac
 		else
 			[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_mount_failure
 			eventadd 142 "$mnt_name ($mnt_dev)" $fs_type # not supported file system or wrong partition table
