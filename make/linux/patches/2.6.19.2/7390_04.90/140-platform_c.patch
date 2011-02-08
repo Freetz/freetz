@@ -1,0 +1,11 @@
+--- linux-2.6.19.2/arch/mips/ikan_mips/platform.c	2010-03-15 18:02:46.000000000 +0100
++++ linux-2.6.19.2/arch/mips/ikan_mips/platform.c	2010-03-15 17:58:30.000000000 +0100
+@@ -147,7 +147,7 @@ static struct direct_avm_nand_platdata d
+ #endif /*--- #if defined(CONFIG_MTD_NAND_DIRECT_AVM_GPIO) ---*/
+     .adjust_parts = direct_avm_nand_adjust_partitions,
+ 	.parts = direct_avm_nand_partitions,
+-	.num_parts ARRAY_SIZE(direct_avm_nand_partitions),
++	.num_parts = ARRAY_SIZE(direct_avm_nand_partitions),
+ 	.options = 0, /*--- NAND_USE_FLASH_BBT | NAND_BBT_SCANALLPAGES | NAND_BBT_SCANEMPTY, ---*/
+ 	.chip_delay = 0
+ };

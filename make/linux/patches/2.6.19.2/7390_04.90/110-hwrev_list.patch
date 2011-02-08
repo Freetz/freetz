@@ -1,0 +1,32 @@
+--- linux-2.6.19.2/drivers/char/avm_new/Makefile.26.orig	2010-06-02 14:38:22.000000000 +0200
++++ linux-2.6.19.2/drivers/char/avm_new/Makefile.26	2010-10-13 22:01:06.000000000 +0200
+@@ -114,3 +114,4 @@
+ 
+ EXTRA_CFLAGS	+= -Wall -Wextra
+ # EXTRA_CFLAGS	+= -g -ggdb -save-temps
++EXTRA_CFLAGS	+= -DAVM_NEW_HWREV_LIST="\" 118 117 110 114 159 129 162 155 156 171 115 108 94 127 174 137 168 122 139 145 167 150 152 165 154 141 135 146 153 143 101 144 136 160 164 170 161 175 172 173 134 120 102 121 104 103 105 95 107 106 128 79 112 131 140 147 148 149 \""
+--- linux-2.6.19.2/drivers/net/avm_cpmac/Makefile.26.orig	2010-07-21 14:54:50.000000000 +0200
++++ linux-2.6.19.2/drivers/net/avm_cpmac/Makefile.26	2010-10-13 22:01:06.000000000 +0200
+@@ -6,7 +6,12 @@
+ 
+ EXTRA_CFLAGS := -DCPMAC_SIGNAL_CONGESTION -DCPPHY_USE_SWITCH
+ EXTRA_CFLAGS += -Wall -Wextra -Werror
+-EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"`svn info $(src) | grep URL | sed -e "s/^.*\/\([0-9.]\+\)-[^\/]*/\1/g"`  -  Revision `svnversion -cn $(src)`  -  `date +\"%a  %e.%m.%Y  %H:%M:%S\"` \""
++EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"1.108.1.53  -  Revision 811:1136  -  Do  23.09.2010  16:32:19\""
++EXTRA_CFLAGS  += -DAVM_CPMAC_SWITCH_HWREV_LIST="\"79 84 94 95 101 102 103 104 105 107 110 111 115 117 119 120 121 122 125 126 127 131 134 135 136 137 139 140 141 144 145 146 147 148 152 153 156 160 161 164 165 167 168 170 174 175\""
++EXTRA_CFLAGS  += -DAVM_CPMAC_VINAX_HWREV_LIST="\"105 134 135 146 153 \""
++EXTRA_CFLAGS  += -DAVM_CPMAC_NO_PHY0_HWREV_LIST="\"79 84 138 154\""
++EXTRA_CFLAGS  += -DAVM_CPMAC_NO_PHY1_HWREV_LIST="\"K 58 60 61 64 65 66 71 78 122 135 136 137 139 141 143 144 145 146 147 148 149 153 160 164 168 170 \""
++EXTRA_CFLAGS  += -DAVM_CPMAC_NQOS_HWREV_LIST="\" 136 \""
+ 
+ # declare multi-module main driver.
+ obj-$(CONFIG_AVM_CPMAC)	+= avm_cpmac.o
+@@ -17,7 +22,7 @@ avm_cpmac-y := cpmac_main.o cpmac_if.o c
+ 			   cpphy_entry.o cpphy_ar8216_ar.o cpphy_mgmt.o \
+ 			   cpmac_fusiv_if.o cpmac_puma_if.o cpphy_switch.o cpmac_product_conf.o
+ 			
+-$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c DO_COPY FORCE
++$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c FORCE
+ 
+ DO_COPY:
+ 	mkdir -p $(FRITZ_BOX_BUILD_DIR)/$(KERNEL_BUILD)/filesystem/include/linux 
