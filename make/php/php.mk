@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 5.2.10)
 $(PKG)_SOURCE:=php-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=http://de.php.net/distributions
+$(PKG)_SITE:=http://museum.php.net/php5
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
 $(PKG)_TARGET_BINARY:=$(APACHE_TARGET_DIR)/cgi-bin/php
 
