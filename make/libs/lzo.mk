@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.03)
+$(call PKG_INIT_LIB, 2.04)
 $(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0c3d078c2e8ea5a88971089a2f02a726
+$(PKG)_SOURCE_MD5:=a383c7055a310e2a71b9ecd19cfea238
 $(PKG)_SITE:=http://www.oberhumer.com/opensource/lzo/download/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/liblzo2.so.$($(PKG)_LIB_VERSION)
