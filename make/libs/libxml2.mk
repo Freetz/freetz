@@ -69,6 +69,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxml2.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/xml2-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libxml-2.0.pc
+		ln -sf libxml2/libxml $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libxml
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/xml2Conf.sh
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
@@ -83,7 +84,7 @@ $(pkg)-clean:
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxml2* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/xml2-config \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libxml2 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libxml* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libxml-2.0.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/libxml.m4
 
