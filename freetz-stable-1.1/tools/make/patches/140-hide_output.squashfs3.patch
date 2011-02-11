@@ -1,0 +1,31 @@
+--- squashfs-tools/unsquashfs.c.orig	2008-12-17 10:55:37.000000000 +0100
++++ squashfs-tools/unsquashfs.c	2008-12-17 10:56:05.000000000 +0100
+@@ -255,7 +255,7 @@
+ 	struct winsize winsize;
+ 
+ 	if(ioctl(1, TIOCGWINSZ, &winsize) == -1) {
+-		ERROR("TIOCGWINSZ ioctl failed, defaulting to 80 columns\n");
++		// ERROR("TIOCGWINSZ ioctl failed, defaulting to 80 columns\n");
+ 		columns = 80;
+ 	} else
+ 		columns = winsize.ws_col;
+@@ -2367,7 +2367,7 @@
+ 	struct winsize winsize;
+ 
+ 	if(ioctl(1, TIOCGWINSZ, &winsize) == -1) {
+-		ERROR("TIOCGWINZ ioctl failed, defaulting to 80 columns\n");
++		// ERROR("TIOCGWINZ ioctl failed, defaulting to 80 columns\n");
+ 		columns = 80;
+ 	} else
+ 		columns = winsize.ws_col;
+@@ -2451,8 +2451,8 @@
+ 			EXIT_UNSQUASH("Failed to create thread\n");
+ 	}
+ 
+-	printf("Parallel unsquashfs: Using %d processor%s\n", processors,
+-			processors == 1 ? "" : "s");
++	// printf("Parallel unsquashfs: Using %d processor%s\n", processors,
++	//		processors == 1 ? "" : "s");
+ 
+ 	if(sigprocmask(SIG_SETMASK, &old_mask, NULL) == -1)
+ 		EXIT_UNSQUASH("Failed to set signal mask in intialise_threads\n");

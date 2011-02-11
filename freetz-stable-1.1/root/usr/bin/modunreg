@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Usage: modunreg cgi <pkg>
+#        modunreg extra <pkg> [<cgi-name>]
+#        modunreg file <id>
+#        modunreg status <pkg> [<cgi-name>]
+
+char=$(echo -ne '\01')
+
+delete() {
+	local regexp=$1 file=$2
+	[ -e "$file" ] || touch "$file"
+
+	sed -i "\\${char}$regexp${char}d" "$file"
+}
+
+case "$1" in
+	cgi)
+		delete "^$2|" /mod/etc/reg/cgi.reg
+		rm -f /mod/var/cache/menu_packages
+		;;
+	extra)
+		delete "^$2|.*|${3:-.*}\$" /mod/etc/reg/extra.reg
+		rm -f /mod/var/cache/extras
+		;;
+	file)
+		delete "^$2|" /mod/etc/reg/file.reg
+		rm -f /mod/var/cache/menu_settings
+		;;
+	status)
+		delete "^$2|.*|${3:-.*}\$" /mod/etc/reg/status.reg
+		rm -f /mod/var/cache/menu_status
+		;;
+	*)
+		echo "Usage: $0 cgi <pkg>" 1>&2
+		echo "       $0 extra <pkg> [<cgi-name>]" 1>&2
+		echo "       $0 file <id>" 1>&2
+		echo "       $0 status <pkg> [<cgi-name>]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

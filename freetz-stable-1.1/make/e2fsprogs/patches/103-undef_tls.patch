@@ -1,0 +1,10 @@
+--- lib/uuid/gen_uuid.c.orig	2008-10-07 16:22:39.000000000 +0200
++++ lib/uuid/gen_uuid.c	2009-02-25 21:27:52.000000000 +0100
+@@ -95,6 +95,7 @@
+ #define rand() 		random()
+ #endif
+ 
++#undef TLS
+ #ifdef TLS
+ #define THREAD_LOCAL static TLS
+ #else

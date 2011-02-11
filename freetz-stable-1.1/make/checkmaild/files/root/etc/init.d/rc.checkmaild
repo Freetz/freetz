@@ -1,0 +1,123 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=checkmaild
+#OPTIONS=-path /mod/etc/checkmaild.conf
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+start() {
+	
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+
+	
+	echo -n 'Starting Checkmaild...'
+	
+	# create /var/tmp/checkmaild
+	if [ ! -d "/var/tmp/checkmaild" ]; then
+		mkdir /var/tmp/checkmaild
+	fi
+
+	$DAEMON -daemon -path /mod/etc/ $OPTIONS > /dev/null 2>&1
+		
+	exitval=$?
+	
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping Checkmaild...'
+
+	if [ ! -z "$(pidof "$DAEMON")" ]; then
+		killall -15 $DAEMON > /dev/null 2>&1
+		exitval=$?
+	fi
+	
+	sleep 1
+	
+	if [ ! -z "$(pidof "$DAEMON")" ]; then
+		killall -9 $DAEMON > /dev/null 2>&1
+		exitval=$?
+	fi
+	
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+
+		if type modreg > /dev/null; then
+			modreg cgi $DAEMON 'Checkmail'
+		fi
+
+		if [ "$CHECKMAILD_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ ! -z "$(pidof $DAEMON)" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		modunreg cgi $DAEMON
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" ]; then
+		    echo 'stopped'
+		else
+		    echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

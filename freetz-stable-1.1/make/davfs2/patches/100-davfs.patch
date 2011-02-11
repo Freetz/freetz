@@ -1,0 +1,130 @@
+--- src/defaults.h	2009-06-12 11:57:08.000000000 +0200
++++ src/defaults.h	2009-12-21 00:00:00.000000000 +0100
+@@ -73,7 +73,8 @@
+ /* Cache size in MiByte.
+    May be overridden by system config file and user config file.
+    (1 MiByte = 1,048,576 Byte; Mi = Mebi = Mega Binary according to IEC) */
+-#define DAV_CACHE_SIZE 50
++//#define DAV_CACHE_SIZE 50
++#define DAV_CACHE_SIZE 1
+ 
+ /* Size of the hash table to store nodes. Should be a power of 2.
+    May be overridden by system config file and user config file. */
+--- src/mount_davfs.c	2009-10-18 17:34:19.000000000 +0200
++++ src/mount_davfs.c	2009-12-21 00:00:00.000000000 +0100
+@@ -29,7 +29,7 @@
+ #ifdef HAVE_FCNTL_H
+ #include <fcntl.h>
+ #endif
+-#include <fstab.h>
++//#include <fstab.h>
+ #include <getopt.h>
+ #include <grp.h>
+ #ifdef HAVE_LIBINTL_H
+@@ -98,6 +98,7 @@
+ 
+ /* The mointpoint as taken from the command line. */
+ static char *mpoint;
++static char mpoint_canonicalized_buf[PATH_MAX+1];
+ 
+ /* The type of the kernel file system used. */
+ static char *kernel_fs;
+@@ -132,8 +133,10 @@
+ static char *
+ check_double_mounts(dav_args *args);
+ 
++/*
+ static void
+ check_fstab(const dav_args *args);
++*/
+ 
+ static void
+ check_mountpoint(dav_args *args);
+@@ -244,8 +247,10 @@
+     if (seteuid(getuid()) != 0)
+         error(EXIT_FAILURE, errno, _("can't change effective user id"));
+ 
++/*
+     if (getuid() != 0)
+         check_fstab(args);
++*/
+ 
+     parse_config(argv, args);
+ 
+@@ -674,6 +679,7 @@
+    and compares the values in args with the values in fstab.
+    If there is no such entry, or this entry does not allow user-mount, or the
+    values differ, an error message is printed and the program terminates. */
++/*
+ static void
+ check_fstab(const dav_args *args)
+ {
+@@ -734,7 +740,7 @@
+     endfsent();
+     delete_args(n_args);
+ }
+-
++*/
+ 
+ /* Checks if a valid mountpoint is specified.
+    For non root users this must meet the additional conditions:
+@@ -754,7 +760,7 @@
+     struct passwd *pw;
+ 
+     if (*mpoint != '/') {
+-        char *mp = canonicalize_file_name(mpoint);
++        char *mp = realpath(mpoint, mpoint_canonicalized_buf);
+         if (!mp)
+             error(EXIT_FAILURE, 0,
+                   _("can't evaluate path of mount point %s"), mpoint);
+@@ -1799,11 +1805,14 @@
+     args->header = NULL;
+ 
+     args->sys_cache = ne_strdup(DAV_SYS_CACHE);
++/*
+     if (getuid() != 0) {
+         args->cache_dir = ne_concat(user_dir, "/", DAV_CACHE, NULL);
+     } else {
+         args->cache_dir = NULL;
+     }
++*/
++    args->cache_dir = NULL;
+     args->backup_dir = ne_strdup(DAV_BACKUP_DIR);
+     args->cache_size = DAV_CACHE_SIZE;
+     args->table_size = DAV_TABLE_SIZE;
+@@ -1826,11 +1835,13 @@
+ {
+     size_t len;
+     char *cmdline;
++/*
+     if (argz_create(argv, &cmdline, &len) == 0) {
+         argz_stringify(cmdline, len, ' ');
+         syslog(LOG_MAKEPRI(LOG_DAEMON, LOG_DEBUG), cmdline);
+         free(cmdline);
+     }
++*/
+ }
+ 
+ 
+--- src/umount_davfs.c	2009-06-04 20:30:32.000000000 +0200
++++ src/umount_davfs.c	2009-12-21 00:00:00.000000000 +0100
+@@ -50,6 +50,9 @@
+ #define bindtextdomain(Domainname, Dirname)
+ #endif
+ 
++#ifdef HAVE_LIMITS_H
++#include <limits.h>
++#endif
+ 
+ /* This is lazy programming. All the dirty work is left to the real umount
+    program, while we just sit and wait for mount.davfs to terminate.
+@@ -120,7 +123,8 @@
+     if (optind < (argc - 1))
+         error(EXIT_FAILURE, 0, _("too many arguments"));
+ 
+-    char *mpoint = canonicalize_file_name(argv[optind]);
++    char mpoint_canonicalized_buf[PATH_MAX+1];
++    char *mpoint = realpath(argv[optind], mpoint_canonicalized_buf);
+     if (!mpoint)
+         mpoint = argv[optind];
+     if (!mpoint || *mpoint != '/')

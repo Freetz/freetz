@@ -1,0 +1,13 @@
+config FREETZ_PACKAGE_USBUTILS
+	bool "usbutils 0.73 (binary only)"
+	select FREETZ_LIB_libusb
+	default n
+	help
+		USB devices listing utilities
+
+config FREETZ_PACKAGE_USBUTILS_IDS
+	bool "usb.ids"
+	depends on FREETZ_PACKAGE_USBUTILS
+	default y
+	help
+		Add usb.ids file (~170 KB)

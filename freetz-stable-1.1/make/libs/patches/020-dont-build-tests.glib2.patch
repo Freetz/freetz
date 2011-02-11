@@ -1,0 +1,50 @@
+diff -urN gio/Makefile.in gio/Makefile.in
+--- gio/Makefile.in	2008-10-03 23:13:00.000000000 +0200
++++ gio/Makefile.in	2008-10-03 23:15:25.000000000 +0200
+@@ -180,7 +180,7 @@
+   distclean-recursive maintainer-clean-recursive
+ ETAGS = etags
+ CTAGS = ctags
+-DIST_SUBDIRS = xdgmime inotify fen win32 . fam tests
++DIST_SUBDIRS = xdgmime inotify fen . fam
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ ACLOCAL = @ACLOCAL@
+ ALLOCA = @ALLOCA@
+diff -urN glib/Makefile.in glib/Makefile.in
+--- glib/Makefile.in	2008-10-03 23:12:28.000000000 +0200
++++ glib/Makefile.in	2008-10-03 23:14:46.000000000 +0200
+@@ -412,8 +412,8 @@
+ @ENABLE_REGEX_TRUE@gregex_c = gregex.c
+ @ENABLE_REGEX_FALSE@gregex_h = 
+ @ENABLE_REGEX_TRUE@gregex_h = gregex.h
+-SUBDIRS = libcharset $(PRINTF_SUBDIR) $(MAYBE_PCRE) update-pcre . tests
+-DIST_SUBDIRS = libcharset gnulib pcre update-pcre tests
++SUBDIRS = libcharset $(PRINTF_SUBDIR) $(MAYBE_PCRE) update-pcre .
++DIST_SUBDIRS = libcharset gnulib pcre update-pcre
+ AM_CPPFLAGS = \
+ 	-I$(top_srcdir) 		\
+ 	$(pcre_inc) 			\
+diff -urN gobject/Makefile.in gobject/Makefile.in
+--- gobject/Makefile.in	2008-10-03 23:12:46.000000000 +0200
++++ gobject/Makefile.in	2008-10-03 23:16:12.000000000 +0200
+@@ -341,7 +341,7 @@
+ # GObject - GLib Type, Object, Parameter and Signal Library
+ # Copyright (C) 1997,98,99,2000 Tim Janik and Red Hat, Inc.
+ #
+-SUBDIRS = . tests
++SUBDIRS = .
+ AM_CPPFLAGS = \
+ 	-DG_LOG_DOMAIN=\"GLib-GObject\"		\
+ 	-I$(top_srcdir)				\
+diff -urN Makefile.in Makefile.in
+--- Makefile.in	2008-10-03 23:12:28.000000000 +0200
++++ Makefile.in	2008-10-03 23:14:14.000000000 +0200
+@@ -340,7 +340,7 @@
+ 	gio-2.0-uninstalled.pc.in gio-unix-2.0-uninstalled.pc.in
+ TEST_PROGS = 
+ AUTOMAKE_OPTIONS = 1.7
+-SUBDIRS = . m4macros glib gmodule gthread gobject gio tests po docs
++SUBDIRS = . m4macros glib gmodule gthread gobject gio po docs
+ DIST_SUBDIRS = $(SUBDIRS) build
+ bin_SCRIPTS = glib-gettextize
+ AM_CPPFLAGS = \

@@ -1,0 +1,42 @@
+--- linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
++++ linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
+@@ -1135,15 +1135,11 @@
+  	if (hashsize) {
+  		ip_conntrack_htable_size = hashsize;
+  	} else {
+-		ip_conntrack_htable_size
+-			= (((num_physpages << PAGE_SHIFT) / 16384)
+-			   / sizeof(struct list_head));
+-		if (num_physpages > (1024 * 1024 * 1024 / PAGE_SIZE))
+-			ip_conntrack_htable_size = 8192;
+-		if (ip_conntrack_htable_size < 16)
+-			ip_conntrack_htable_size = 16;
++		/* according to http://www.netfilter.org/documentation/FAQ/netfilter-faq.html#toc3.7 */
++		/* an even hash bucket count (and esp. a value of power of two) is a bad choice      */
++		ip_conntrack_htable_size = 509; /* 1st prime number less than 512 */
+ 	}
+-	ip_conntrack_max = 8 * ip_conntrack_htable_size;
++	ip_conntrack_max = 4 * ip_conntrack_htable_size;
+ 
+ 	printk("ip_conntrack version %s (%u buckets, %d max)"
+ 	       " - %Zd bytes per conntrack\n", IP_CONNTRACK_VERSION,
+--- linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
++++ linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_proto_tcp.c
+@@ -50,7 +50,7 @@
+ /* "Be conservative in what you do, 
+     be liberal in what you accept from others." 
+     If it's non-zero, we mark only out of window RST segments as INVALID. */
+-int ip_ct_tcp_be_liberal = 0;
++int ip_ct_tcp_be_liberal = 1;
+ 
+ /* When connection is picked up from the middle, how many packets are required
+    to pass in each direction when we assume we are in sync - if any side uses
+@@ -87,7 +87,7 @@
+ 
+ unsigned long ip_ct_tcp_timeout_syn_sent =      2 MINS;
+ unsigned long ip_ct_tcp_timeout_syn_recv =     60 SECS;
+-unsigned long ip_ct_tcp_timeout_established =   5 DAYS;
++unsigned long ip_ct_tcp_timeout_established =  60 MINS;
+ unsigned long ip_ct_tcp_timeout_fin_wait =      2 MINS;
+ unsigned long ip_ct_tcp_timeout_close_wait =   60 SECS;
+ unsigned long ip_ct_tcp_timeout_last_ack =     30 SECS;

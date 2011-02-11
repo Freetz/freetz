@@ -1,0 +1,1000 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" type="text/css" href="@default-cgi@send-stylesheet">
+  <title>Privoxy@@my-hostname@: Edit actions</title>
+<style type="text/css">
+td.action    { font-weight: bold;
+               font-style: italic;
+               white-space: nowrap       }
+td.subaction { font-style: italic        }
+th           { font-weight: bold;        }
+tr.hdr       { background-color: #999999 }
+tr.bg1       { background-color: #eeeeee }
+td.en1       { background-color: #ddffdd }
+td.dis1      { background-color: #ffdddd }
+td.noc1      { background-color: #ddddff }
+th.enh       { background-color: #99ff99 }
+th.dish      { background-color: #ff9999 }
+th.noch      { background-color: #9999ff }
+table.wide   { padding: 5px; }
+td.green     { border: solid black 1px; background-color: #ddffdd; }
+</style>
+<!--
+border-color: white;
+               border-style: solid;
+               border-left-width: 10px;
+               border-right-width: 10px;
+               border-top-width: 0px;
+               border-bottom-width: 0px  }
+-->
+<script type="text/javascript">
+<!--
+function hide_from_header_param_disable(tf)
+{
+    if (document.getElementById) {
+    	// NS6 or IE5
+        document.getElementById("hide_from_header_param").disabled = tf;
+    } else if (document.all) {
+        // IE4
+        document.myform.hide_from_header_param.disabled = tf;
+    }
+}
+function hide_referrer_param_disable(tf)
+{
+    if (document.getElementById) {
+        document.getElementById("hide_referrer_param").disabled = tf;
+    } else if (document.all) {
+        document.myform.hide_referrer_param.disabled = tf;
+    }
+}
+function set_image_blocker_param_disable(tf)
+{
+    if (document.getElementById) {
+        document.getElementById("set_image_blocker_param").disabled = tf;
+    } else if (document.all) {
+        document.myform.set_image_blocker_param.disabled = tf;
+    }
+}
+function show_add_header_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("add_header_opts");
+    } else if (document.all) {
+        target = document.add_header_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+function show_deanimate_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("deanimate_opts");
+    } else if (document.all) {
+        target = document.deanimate_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+function show_hide_from_header_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("hide_from_header_opts");
+    } else if (document.all) {
+        target = document.hide_from_header_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+function show_hide_referrer_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("hide_referrer_opts");
+    } else if (document.all) {
+        target = document.hide_referrer_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+function show_user_agent_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("user_agent_opts");
+    } else if (document.all) {
+        target = document.user_agent_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+function show_set_image_blocker_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("set_image_blocker_opts");
+    } else if (document.all) {
+        target = document.set_image_blocker_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+function show_limit_connect_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("limit_connect_opts");
+    } else if (document.all) {
+        target = document.limit_connect_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+function show_send_wafer_opts(tf)
+{
+    if (document.getElementById) {
+        target = document.getElementById("send_wafer_opts");
+    } else if (document.all) {
+        target = document.send_wafer_opts;
+    } else {
+        return;
+    }
+    target.style.display = (tf ? "" : "none");
+}
+//-->
+</script>
+</head>
+<body>
+<form method="GET" action="edit-actions-submit" id="myform" name="myform">
+  <table cellpadding="20" cellspacing="10" border="0" width="100%">
+    <tr>
+      <td class="title">
+#include mod-title
+      </td>
+    </tr>
+<!-- @if-unstable-start -->
+    <tr>
+      <td class="warning">
+#include mod-unstable-warning
+      </td>
+    </tr>
+<!-- if-unstable-end@ -->
+    <tr>
+      <td class="box">
+        <h2>Edit Actions
+          <input type="hidden" name="f" value="@f@">
+          <input type="hidden" name="v" value="@v@">
+          <input type="hidden" name="s" value="@s@">
+        </h2>
+      </td>
+    </tr>
+    <tr>
+      <td class="green" align="center">
+        <p><input type="submit" value="Submit" name="Submit"></p>
+      </td>
+    </tr>
+<tr><td class="wrapbox">
+  <table border="0" cellspacing="2" width="100%" class="wide">
+    <tr class="hdr" align="left">
+      <th class="enh" align="center">Enable</th>
+      <th class="dish" align="center">Disable</th>
+      <th class="noch" align="center">No Change</th>
+      <th>Action</th>
+      <th>Description</th>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="add_header" id="add_header_y" value="Y" @add-header-y@
+        onclick="show_add_header_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="add_header" value="N" @add-header-n@
+        onclick="show_add_header_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="add_header" value="X" @add-header-x@
+        onclick="show_add_header_opts(false)"></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@ADD-HEADER">add-header</a></td>
+      <td>Adds HTTP headers.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="add_header_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>Editing the settings for this option, or turning
+        it on if it was off, is not yet supported using this web-based
+        editor.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="block" value="Y" @block-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="block" value="N" @block-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="block" value="X" @block-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@BLOCK">block</a></td>
+      <td>Block the request</td>
+    </tr>
+   <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="content_type_overwrite" value="Y" @content-type-overwrite-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="content_type_overwrite" value="N" @content-type-overwrite-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="content_type_overwrite" value="X" @content-type-overwrite-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@CONTENT_TYPE_OVERWRITE">content-type-overwrite</a></td>
+      <td>Replace Content-Type header. By default it only applies to
+	 text documents, but if you know what you're doing you
+	 can enable force-text-mode to modify binary content types as well.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="content_type_overwrite_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>New Content-Type:<br>
+        <input type="text" name="content_type_overwrite_mode" size="40"
+        value="@content-type-overwrite-param@"></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="crunch_client_header" id="crunch_client_header_y" value="Y" @crunch-client-header-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="crunch_client_header" value="N" @crunch-client-header-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="crunch_client_header" value="X" @crunch-client-header-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@CRUNCH-CLIENT-HEADER">crunch-client-header</a></td>
+      <td>Remove header(s) matching the supplied pattern.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="crunch_client_header_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>Header string to suppress:<br>
+        <input type="text" name="crunch_client_header_mode" size="40"
+        value="@crunch-client-header-param@"></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="crunch_if_none_match" value="Y" @crunch-if-none-match-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="crunch_if_none_match" value="N" @crunch-if-none-match-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="crunch_if_none_match" value="X" @crunch-if-none-match-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@CRUNCH_IF_NONE_MATCH">crunch-if-none-match</a></td>
+      <td>Remove If-None-Match header. Useful for filter testing
+         and to make sure the header can't be used to track your visits.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="crunch_incoming_cookies" value="Y" @crunch-incoming-cookies-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="crunch_incoming_cookies" value="N" @crunch-incoming-cookies-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="crunch_incoming_cookies" value="X" @crunch-incoming-cookies-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@CRUNCH-INCOMING-COOKIES">crunch-incoming-cookies</a></td>
+      <td>Prevent the website from setting cookies on your system.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="crunch_outgoing_cookies" value="Y" @crunch-outgoing-cookies-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="crunch_outgoing_cookies" value="N" @crunch-outgoing-cookies-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="crunch_outgoing_cookies" value="X" @crunch-outgoing-cookies-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@CRUNCH-OUTGOING-COOKIES">crunch-outgoing-cookies</a></td>
+      <td>Prevent the website from reading cookies from your system.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="crunch_server_header" id="crunch_server_header_y" value="Y" @crunch-server-header-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="crunch_server_header" value="N" @crunch-server-header-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="crunch_server_header" value="X" @crunch-server-header-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@CRUNCH-SERVER-HEADER">crunch-server-header</a></td>
+      <td>Remove server header(s) matching the supplied pattern.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="crunch_server_header_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>Header string to suppress:<br>
+        <input type="text" name="crunch_server_header_mode" size="40"
+        value="@crunch-server-header-param@"></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="deanimate_gifs" id="deanimate_gifs_y" value="Y" @deanimate-gifs-y@
+        onclick="show_deanimate_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="deanimate_gifs" value="N" @deanimate-gifs-n@
+        onclick="show_deanimate_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="deanimate_gifs" value="X" @deanimate-gifs-x@
+        onclick="show_deanimate_opts(false)"></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@DEANIMATE-GIFS">deanimate-gifs</a></td>
+      <td>Replace animated GIFs with their (first/last) frame.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="deanimate_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>Use the <input type="radio" name="deanimate_gifs_mode"
+        value="first" id="deanimate_first" @deanimate-gifs-param-first@><label
+        for="deanimate_first">first frame</label>&nbsp;&nbsp; <input
+        type="radio" name="deanimate_gifs_mode" value="last" 
+        id="deanimate_last" @deanimate-gifs-param-last@><label
+        for="deanimate_last">last frame</label></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="downgrade_http_version" value="Y" @downgrade-http-version-y@></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="downgrade_http_version" value="N" @downgrade-http-version-n@></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="downgrade_http_version" value="X" @downgrade-http-version-x@></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@DOWNGRADE-HTTP-VERSION"
+       >downgrade-http-version</a></td>
+      <td>Change HTTP/1.1 requests to HTTP/1.0.  Only change if you know
+        what you're doing!</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="fast_redirects" value="Y" @fast-redirects-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="fast_redirects" value="N" @fast-redirects-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="fast_redirects" value="X" @fast-redirects-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@FAST-REDIRECTS">fast-redirects</a></td>
+      <td>Bypass some click-tracking URLs.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="fast-redirects_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>
+       <input type="radio" name="fast_redirects_mode"
+        value="simple-check" id="fast_redirects_simple_check" @fast-redirects-param-simple-check@><label
+        for="fast_redirects_simple_check">Simple check.</label>
+       <br>
+       <input type="radio" name="fast_redirects_mode" value="check-decoded-url" 
+        id="fast_redirects_check_decoded_url" @fast-redirects-param-check-decoded-url@><label
+        for="fast_redirects_check_decoded_url">Decode URL before checking.</label></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="filter_all" id="filter_all_n" value="N" @filter-all-n@ ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="filter_all" id="filter_all_x" value="X" @filter-all-x@ ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@FILTER">filter</a> *</td>
+      <td>Filter the website through regular expression
+        filters.  You can use the radio buttons on this line to disable
+        all filters applied by previous rules, and/or you can enable or
+        disable the filters individually below.</td>
+    </tr>
+@filter-params@
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="filter_client_headers" value="Y" @filter-client-headers-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="filter_client_headers" value="N" @filter-client-headers-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="filter_client_headers" value="X" @filter-client-headers-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@FILTER-CLIENT-HEADERS">filter-client-headers</a></td>
+      <td>Apply filters to the client headers as well. Only enable this if you know what you're doing.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="filter_server_headers" value="Y" @filter-server-headers-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="filter_server_headers" value="N" @filter-server-headers-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="filter_server_headers" value="X" @filter-server-headers-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@FILTER-SERVER-HEADERS">filter-server-headers</a></td>
+      <td>Apply filters to the server headers as well. Only enable this if you know what you're doing.</td>
+    </tr>
+   <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="force_text_mode" value="Y" @force-text-mode-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="force_text_mode" value="N" @force-text-mode-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="force_text_mode" value="X" @force-text-mode-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@FORCE_TEXT_MODE">force-text-mode</a></td>
+      <td>
+       Enable filtering on documents whose Content-Type wasn't recognized as text.
+       Do think twice, nothing is alright.
+     </td>
+    </tr>
+   <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="handle_as_empty_document" value="Y" @handle-as-empty-document-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="handle_as_empty_document" value="N" @handle-as-empty-document-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="handle_as_empty_document" value="X" @handle-as-empty-document-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HANDLE_AS_EMPTY_DOCUMENT">handle-as-empty-document</a></td>
+      <td>
+       Block with an <em>empty</em> document instead of an Image or HTML message.
+       The <em>empty</em> document contains only a space and can safely be parsed
+       as JavaScript or Style Sheet. Use content-type-overwrite to specify the
+       Content-Type, default is <q>text/html</q>.
+     </td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="handle_as_image" value="Y" @handle-as-image-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="handle_as_image" value="N" @handle-as-image-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="handle_as_image" value="X" @handle-as-image-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HANDLE-AS-IMAGE">handle-as-image</a></td>
+      <td>Request is for an image (only useful in conjunction with the <i><b><a href="@user-manual@@actions-help-prefix@BLOCK">block</a></b></i>
+        and <i><b><a href="@user-manual@@actions-help-prefix@SET-IMAGE-BLOCKER">set-image-blocker</a></b></i> actions).</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="hide_accept_language" id="hide_accept_language_y" value="Y" @hide-accept-language-y@
+        onclick="show_hide_accept_language_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="hide_accept_language" id="hide_accept_language_n" value="N" @hide-accept-language-n@
+        onclick="show_hide_accept_language_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="hide_accept_language" id="hide_accept_language_x" value="X" @hide-accept-language-x@
+        onclick="show_hide_accept_language_opts(false)"
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HIDE-ACCEPT-LANGUAGE">hide-accept-language</a></td>
+      <td>Pretend to have different language settings. (Makes a fake User-Agent more believable,
+          but can lead to foreign content.)</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="hide_accept-language_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="radio" name="hide_accept_language_mode" value="block"
+        onclick="hide_accept_language_param_disable(true)"
+        @hide-accept-language-param-block@ id="hide_accept_language_mode_block"><label
+        for="hide_accept_language_mode_block">Remove Accept-Language header without replacement.</label>
+        <br>
+        <input type="radio" name="hide_accept_language_mode" value="CUSTOM"
+        onclick="hide_accept_language_param_disable(false)"
+        @hide-accept-language-param-custom@ id="hide_accept_language_mode_set"><label
+        for="hide_accept_language_mode_set">Fake these language settings:</label><br>
+        <input type="text" name="hide_accept_language_param" 
+        id="hide_accept_language_param" size="40"
+        value="@hide-accept-language-param@"><br>
+     </td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="hide_content_disposition" id="hide_content_disposition_y" value="Y" @hide-content-disposition-y@
+        onclick="show_hide_content_disposition_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="hide_content_disposition" id="hide_content_disposition_n" value="N" @hide-content-disposition-n@
+        onclick="show_hide_content_disposition_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="hide_content_disposition" id="hide_content_disposition_x" value="X" @hide-content-disposition-x@
+        onclick="show_hide_content_disposition_opts(false)"
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HIDE-CONTENT-DISPOSITION">hide-content-disposition</a></td>
+      <td>Block or overwrite the content-disposition header. Useful to view a document inside the browser,
+       even if you were supposed to save it first, or to change the suggested file name.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="hide_content_disposition_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="radio" name="hide_content_disposition_mode" value="block"
+        onclick="hide_content_disposition_param_disable(true)"
+        @hide-content-disposition-param-block@ id="hide_content_disposition_mode_block"><label
+        for="hide_content_disposition_mode_block">Remove content-disposition header without replacement.</label>
+        <br>
+        <input type="radio" name="hide_content_disposition_mode" value="CUSTOM"
+        onclick="hide_content_disposition_param_disable(false)"
+        @hide-content-disposition-param-custom@ id="hide_content_disposition_mode_set"><label
+        for="hide_content_disposition_mode_set">Overwrite content-dispostion header with:</label><br>
+        <input type="text" name="hide_content_disposition_param" 
+        id="hide_content_disposition_param" size="40"
+        value="@hide-content-disposition-param@"><br>
+     </td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="hide_forwarded_for_headers" value="Y" @hide-forwarded-for-headers-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="hide_forwarded_for_headers" value="N" @hide-forwarded-for-headers-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="hide_forwarded_for_headers" value="X" @hide-forwarded-for-headers-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HIDE-FORWARDED-FOR-HEADERS">hide-forwarded-for-headers</a></td>
+      <td>Block any existing X-Forwarded-for header, and do not add a new one.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="hide_from_header" id="hide_from_header_y" value="Y" @hide-from-header-y@
+        onclick="show_hide_from_header_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="hide_from_header" value="N" @hide-from-header-n@
+        onclick="show_hide_from_header_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="hide_from_header" value="X" @hide-from-header-x@
+        onclick="show_hide_from_header_opts(false)"></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HIDE-FROM-HEADER">hide-from-header</a></td>
+      <td>Stop old web browsers from sending the user's e-mail address with
+        every request.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="hide_from_header_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="radio" name="hide_from_header_mode" value="block"
+        onclick="hide_from_header_param_disable(true);"
+        @hide-from-header-param-block@ id="hide_from_header_mode_block"><label
+        for="hide_from_header_mode_block">Remove completely</label><br>
+        <input type="radio" name="hide_from_header_mode" value="CUSTOM" 
+        onclick="hide_from_header_param_disable(false);"
+        @hide-from-header-param-custom@ id="hide_from_header_mode_set"><label
+        for="hide_from_header_mode_set">Fake e-mail address:</label><br>
+        <input type="text" name="hide_from_header_param" id="hide_from_header_param"
+        size="40" value="@hide-from-header-param@"></td>
+    </tr>
+   <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="hide_if_modified_since" value="Y" @hide-if-modified-since-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="hide_if_modified_since" value="N" @hide-if-modified-since-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="hide_if_modified_since" value="X" @hide-if-modified-since-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HIDE_IF_MODIFIED_SINCE">hide-if-modified-since</a></td>
+      <td>Remove or randomize If-Modified-Since header.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="hide_if-modifed-since_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="radio" name="hide_if_modified_since_mode" value="block"
+        onclick="hide_if_modified_since_param_disable(true)"
+        @hide-if-modified-since-param-block@ id="hide_if_modified_since_mode_block"><label
+        for="hide_if_modified_since_mode_block">Remove without replacement.</label>
+        Useful for filter testing.<br>
+        <input type="radio" name="hide_if_modified_since_mode" value="CUSTOM"
+        onclick="hide_if_modified_since_param_disable(true)"
+        @hide-if-modified-since-param-custom@ id="hide_if_modified_since_mode_set"><label
+        for="hide_if_modified_since_mode_set">Add random amount of seconds in the range of</label>
+        <input type="text" name="hide_if_modified_since_param" 
+        id="hide_if_modified_since_param" size="4"
+        value="@hide-if-modified-since-param@"> minute(s).
+        To appreciate this option a small amount of paranoia is required,
+        but at least in theory the If-Modified-Since header could be used
+	to keep track of your visits.
+     </td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="hide_referrer" id="hide_referrer_y" value="Y" @hide-referrer-y@
+        onclick="show_hide_referrer_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="hide_referrer" id="hide_referrer_n" value="N" @hide-referrer-n@
+        onclick="show_hide_referrer_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="hide_referrer" id="hide_referrer_x" value="X" @hide-referrer-x@
+        onclick="show_hide_referrer_opts(false)"
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HIDE-REFERRER">hide-referrer</a></td>
+      <td>Helps prevent tracking by not sending the URL of the previous web
+        page.&nbsp;</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="hide_referrer_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="radio" name="hide_referrer_mode" value="block"
+        onclick="hide_referrer_param_disable(true)"
+        @hide-referrer-param-block@ id="hide_referrer_mode_block"><label
+        for="hide_referrer_mode_block">Remove completely</label> (breaks images
+        on some free web hosts).<br>
+        <input type="radio" name="hide_referrer_mode" value="forge"
+        onclick="hide_referrer_param_disable(true)"
+        @hide-referrer-param-forge@ id="hide_referrer_mode_forge"><label
+        for="hide_referrer_mode_forge">Fake as the root directory of the
+        site</label> (fools checks for in-site links.)<br>
+        <input type="radio" name="hide_referrer_mode" value="CUSTOM"
+        onclick="hide_referrer_param_disable(false)"
+        @hide-referrer-param-custom@ id="hide_referrer_mode_set"><label
+        for="hide_referrer_mode_set">Fake as this web address:</label><br>
+        <input type="text" name="hide_referrer_param" 
+        id="hide_referrer_param" size="40"
+        value="@hide-referrer-param@"><br>
+        <input type="radio" name="hide_referrer_mode" value="conditional-block"
+        onclick="hide_referrer_param_disable(true)"
+        @hide-referrer-param-conditional-block@ id="hide_referrer_mode_conditional-block"><label
+        for="hide_referrer_mode_conditional-block">Remove completely if host has changed,
+        but don't touch in-site referrers.
+        Less suspicious than the options above.</label><br></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="hide_user_agent" id="hide_user_agent_y" value="Y" @hide-user-agent-y@
+        onclick="show_user_agent_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="hide_user_agent" value="N" @hide-user-agent-n@
+        onclick="show_user_agent_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="hide_user_agent" value="X" @hide-user-agent-x@
+        onclick="show_user_agent_opts(false)"></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@HIDE-USER-AGENT">hide-user-agent</a></td>
+      <td>Pretend to be using a different web browser.&nbsp; (Breaks many web
+        sites).</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="user_agent_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>User Agent string to send:<br>
+        <input type="text" name="hide_user_agent_mode" size="40"
+        value="@hide-user-agent-param@"></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="inspect_jpegs" value="Y" @inspect-jpegs-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="inspect_jpegs" value="N" @inspect-jpegs-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="inspect_jpegs" value="X" @inspect-jpegs-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@INSPECT-JPEGS">inspect-jpegs</a></td>
+      <td>Checks jpeg images for malicious content.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="kill_popups" value="Y" @kill-popups-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="kill_popups" value="N" @kill-popups-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="kill_popups" value="X" @kill-popups-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@KILL-POPUPS">kill-popups</a></td>
+      <td>Filter the website through a built-in filter to disable many JavaScript
+        pop-up windows.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="limit_connect" id="limit_connect_y" value="Y" @limit-connect-y@
+        onclick="show_limit_connect_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="limit_connect" value="N" @limit-connect-n@
+        onclick="show_limit_connect_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="limit_connect" value="X" @limit-connect-x@
+        onclick="show_limit_connect_opts(false)"></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@LIMIT-CONNECT">limit-connect</a></td>
+      <td>Specify which ports are allowed for SSL (HTTP CONNECT) access.
+        Note that this allows arbitrary tunnelling, so opening all
+        ports would be a security hole.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="limit_connect_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>Legal SSL ports (comma separated, ranges allowed):<br>
+        <input type="text" name="limit_connect_mode" size="40"
+        value="@limit-connect-param@"></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="overwrite_last_modified" value="Y" @overwrite-last-modified-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="overwrite_last_modified" value="N" @overwrite-last-modified-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="overwrite_last_modified" value="X" @overwrite-last-modified-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@OVERWRITE_LAST_MODIFIED">overwrite-last-modified</a></td>
+      <td>Remove or randomize If-Modified-Since header.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="overwrite_last_modified_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="radio" name="overwrite_last_modified_mode" value="block"
+        onclick="overwrite_last_modified_param_disable(true)"
+        @overwrite-last-modified-param-block@ id="overwrite_last_modified_mode_block"><label
+        for="overwrite_last_modified_mode_block">Remove without replacement.</label>
+        <br>
+        <input type="radio" name="overwrite_last_modified_mode" value="reset-to-request-time"
+        onclick="overwrite_last_modified_param_disable(true)"
+        @overwrite-last-modified-param-reset-to-request-time@
+         id="overwrite_last_modified_mode_reset-to-request-time"><label
+        for="overwrite_last_modified_mode_reset-to-request-time">Reset to the time of the request.</label>
+        <br>
+        <input type="radio" name="overwrite_last_modified_mode" value="randomize"
+        onclick="overwrite_last_modified_param_disable(true)"
+        @overwrite-last-modified-param-randomize@
+         id="overwrite_last_modified_mode_randomize"><label
+        for="overwrite_last_modified_mode_randomize">Overwrite with random value
+        between original header value and the time of the request.</label>
+     </td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="prevent_compression" value="Y" @prevent-compression-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="prevent_compression" value="N" @prevent-compression-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="prevent_compression" value="X" @prevent-compression-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@PREVENT-COMPRESSION">prevent-compression</a></td>
+      <td>Disables compression.  Compressed web pages are faster to
+        download, but cannot be filtered with <a href="@user-manual@@actions-help-prefix@FILTER"><b>filter</b></a>
+        or <a href="@user-manual@@actions-help-prefix@KILL-POPUPS"><b>kill-popups</b></a>.
+        This setting only affects the few web sites which support
+        compression.</td>
+    </tr>
+   <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="redirect" value="Y" @redirect-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="redirect" value="N" @redirect-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="redirect" value="X" @redirect-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@REDIRECT">redirect</a></td>
+      <td>Redirect to another address.
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="redirect_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>Address to redirect to:<br>
+        <input type="text" name="redirect_mode" size="40"
+        value="@redirect-param@"></td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="send_vanilla_wafer" value="Y" @send-vanilla-wafer-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="send_vanilla_wafer" value="N" @send-vanilla-wafer-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="send_vanilla_wafer" value="X" @send-vanilla-wafer-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@SEND-VANILLA-WAFER">send-vanilla-wafer</a></td>
+      <td>Adds a special wafer (standard cookie) to all your requests.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="send_wafer" id="send_wafer_y" value="Y" @send-wafer-y@
+        onclick="show_send_wafer_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="send_wafer" id="send_wafer_n" value="N" @send-wafer-n@
+        onclick="show_send_wafer_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="send_wafer" id="send_wafer_x" value="X" @send-wafer-x@
+        onclick="show_send_wafer_opts(false)"></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@SEND-WAFER">send-wafer</a></td>
+      <td>Adds user-specified cookies.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="send_wafer_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>Editing the settings for this option, or turning
+        it on if it was off, is not yet supported using this web-based
+        editor.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="session_cookies_only" value="Y" @session-cookies-only-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="session_cookies_only" value="N" @session-cookies-only-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="session_cookies_only" value="X" @session-cookies-only-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@SESSION-COOKIES-ONLY">session-cookies-only</a></td>
+      <td>Any cookies set by the website are changed to temporary
+        ("per-session") ones, which only last until you close your web
+        browser.  This will allow you to use sites that require cookies, but
+        sites will not be able to track you across sessions.  For this to
+        be useful, you should disable 
+        <a href="@user-manual@@actions-help-prefix@CRUNCH-OUTGOING-COOKIES"><b>crunch-outgoing-cookies</b></a> and
+        <a href="@user-manual@@actions-help-prefix@CRUNCH-INCOMING-COOKIES"><b>crunch-incoming-cookies</b></a>.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="set_image_blocker" id="set_image_blocker_y" value="Y" @set-image-blocker-y@
+        onclick="show_set_image_blocker_opts(true)"></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="set_image_blocker" value="N" @set-image-blocker-n@
+        onclick="show_set_image_blocker_opts(false)"></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="set_image_blocker" value="X" @set-image-blocker-x@
+        onclick="show_set_image_blocker_opts(false)"></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@SET-IMAGE-BLOCKER">set-image-blocker</a></td>
+      <td>Specifies how to block images.</td>
+    </tr>
+    <tr class="bg1" align="left" valign="top" id="set_image_blocker_opts">
+      <td class="en1">&nbsp;</td>
+      <td class="dis1">&nbsp;</td>
+      <td class="noc1">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="radio" name="set_image_blocker_mode"
+        onclick="set_image_blocker_param_disable(true)"
+        value="pattern" id="set_image_blocker_mode_pattern"
+        @set-image-blocker-param-pattern@><label
+        for="set_image_blocker_mode_pattern">Send a pattern (<img
+        src="send-banner?type=p" width="12" height="12"
+        alt="pattern">)</label><br>
+        <input type="radio" name="set_image_blocker_mode" value="blank"
+        onclick="set_image_blocker_param_disable(true)"
+        id="set_image_blocker_mode_blank" @set-image-blocker-param-blank@><label 
+        for="set_image_blocker_mode_blank">Send a 1x1 transparent GIF</label><br>
+        <input type="radio" name="set_image_blocker_mode" value="CUSTOM"
+        onclick="set_image_blocker_param_disable(false)"
+        id="set_image_blocker_mode_set" @set-image-blocker-param-custom@><label
+        for="set_image_blocker_mode_set">Redirect
+        the browser to this image URL:</label><br>
+        <input type="text" name="set_image_blocker_param" id="set_image_blocker_param"
+        size="40" value="@set-image-blocker-param@"></td>
+    </tr>
+   <tr class="bg1" align="left" valign="top">
+      <td class="en1" align="center" valign="middle"><input type="radio"
+        name="treat_forbidden_connects_like_blocks" value="Y" @treat-forbidden-connects-like-blocks-y@
+        ></td>
+      <td class="dis1" align="center" valign="middle"><input type="radio"
+        name="treat_forbidden_connects_like_blocks" value="N" @treat-forbidden-connects-like-blocks-n@
+        ></td>
+      <td class="noc1" align="center" valign="middle"><input type="radio"
+        name="treat_forbidden_connects_like_blocks" value="X" @treat-forbidden-connects-like-blocks-x@
+        ></td>
+      <td class="action"><a href="@user-manual@@actions-help-prefix@TREAT_FORBIDDEN_CONNECTS_LIKE_BLOCKS">treat-forbidden-connects-like-blocks</a></td>
+      <td>
+       Answer forbidden Connect requests with the usual block message.
+       Makes unblocking easier, but the <q>go there anyway</q> link will not work
+       as expected.
+     </td>
+    </tr>
+  </table>
+</td></tr>
+    <tr>
+      <td class="green" align="center">
+        <p><input type="submit" value="Submit" name="Submit"></p>
+      </td>
+    </tr>
+    <tr>
+      <td class="box">
+        <h2>More Privoxy:</h2>
+        <ul>@menu@<li><a href="@user-manual@">Documentation</a></li></ul>
+      </td>
+    </tr>
+    <tr>
+      <td class="info">
+#include mod-support-and-service
+      </td>
+    </tr>
+<!-- @if-have-help-info-start -->
+    <tr>
+      <td class="info">
+#include mod-local-help
+      </td>
+    </tr>
+<!-- if-have-help-info-end@ -->
+    <tr>
+      <td>
+        <small><small>Valid <a href="http://validator.w3.org/">HTML 4.01 Strict</a></small></small>
+      </td>
+    </tr>
+  </table>
+</form>
+<script type="text/javascript">
+<!--
+if (document.getElementById) {
+    // alert("Netscape 6 or IE5");
+    document.getElementById("hide_from_header_param").disabled = !(document.getElementById("hide_from_header_mode_set").checked);
+    document.getElementById("hide_referrer_param").disabled = !(document.getElementById("hide_referrer_mode_set").checked);
+    document.getElementById("set_image_blocker_param").disabled = !(document.getElementById("set_image_blocker_mode_set").checked);
+    show_add_header_opts    (document.getElementById("add_header_y").checked);
+    show_deanimate_opts     (document.getElementById("deanimate_gifs_y").checked);
+    show_hide_from_header_opts(document.getElementById("hide_from_header_y").checked);
+    show_hide_referrer_opts (document.getElementById("hide_referrer_y").checked);
+    show_user_agent_opts    (document.getElementById("hide_user_agent_y").checked);
+    show_set_image_blocker_opts (document.getElementById("set_image_blocker_y").checked);
+    show_limit_connect_opts (document.getElementById("limit_connect_y").checked);
+    show_send_wafer_opts    (document.getElementById("send_wafer_y").checked);
+} else if (document.all) {
+    // alert("IE4");
+    document.myform.hide_from_header_param.disabled = !(document.myform.hide_from_header_mode_set.checked);
+    document.myform.hide_referrer_param.disabled = !(document.myform.hide_referrer_mode_set.checked);
+    document.myform.set_image_blocker_param.disabled = !(document.myform.set_image_blocker_mode_set.checked);
+    show_add_header_opts    (document.myform.add_header_y.checked);
+    show_deanimate_opts     (document.myform.deanimate_gifs_y.checked);
+    show_hide_from_header_opts (document.myform.hide_from_header_y.checked);
+    show_hide_referrer_opts (document.myform.hide_referrer_y.checked);
+    show_user_agent_opts    (document.myform.hide_user_agent_y.checked);
+    show_set_image_blocker_opts (document.myform.set_image_blocker_y.checked);
+    show_limit_connect_opts (document.myform.limit_connect_y.checked);
+    show_send_wafer_opts    (document.myform.send_wafer_y.checked);
+} else if (document.layers) {
+    // alert("Netscape 4");
+}
+//-->
+</script>
+</body>
+</html>

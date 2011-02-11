@@ -1,0 +1,98 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=swap
+
+case "$1" in
+	""|load|unload|start|stop|restart)
+		if [ ! -r /mod/etc/conf/mod.cfg ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/mod.cfg
+		;;
+esac
+
+
+has_swap () {
+	sed '1d' /proc/swaps | grep -q ''
+}
+
+start () {
+	echo -n "Starting $DAEMON..."
+
+	ii=0
+	# wait for
+	# - usb device to settle
+	# - filesysem to mount (swapfile)
+	if ! grep -q "^$MOD_SWAP_FILE " /proc/swaps; then
+		while [ 40 -gt $ii ]; do
+			swapon "$MOD_SWAP_FILE" 2>/dev/null && break
+			let ii=$ii+1
+			sleep 1
+		done
+	fi
+
+	if has_swap; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit 1
+	fi
+}
+
+stop () {
+	echo -n "Stopping $DAEMON... "
+
+	sed '1d' /proc/swaps |
+		while read swap _; do
+			swapoff $swap
+		done
+
+	if has_swap; then
+		echo 'failed.'
+		exit 1
+	else
+		echo 'done.'
+	fi
+}
+
+case "$1" in
+	""|load)
+		if [ "$MOD_SWAP" != yes ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1
+		fi
+		start
+		;;
+	unload)
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if has_swap; then
+			echo 'running'
+		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

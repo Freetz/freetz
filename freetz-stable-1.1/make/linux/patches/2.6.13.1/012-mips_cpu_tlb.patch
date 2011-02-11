@@ -1,0 +1,19 @@
+--- linux-2.6.13.1/arch/mips/mm/tlbex.c	2006-06-18 03:49:35.000000000 +0200
++++ linux-2.6.13.1/arch/mips/mm/tlbex.c	2006-06-18 12:48:27.000000000 +0200
+@@ -846,7 +846,6 @@
+ 
+ 	case CPU_R10000:
+ 	case CPU_R12000:
+-	case CPU_4KC:
+ 	case CPU_SB1:
+ 	case CPU_4KSC:
+ 	case CPU_20KC:
+@@ -873,6 +872,7 @@
+ 		tlbw(p);
+ 		break;
+ 
++	case CPU_4KC:
+ 	case CPU_4KEC:
+ 	case CPU_24K:
+ 		i_ehb(p);
+

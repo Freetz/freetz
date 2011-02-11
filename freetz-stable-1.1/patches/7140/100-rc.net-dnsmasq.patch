@@ -1,0 +1,14 @@
+--- etc/init.d/rc.net.orig	2009-09-02 19:38:34.039948888 +0200
++++ etc/init.d/rc.net	2009-09-02 19:38:34.099951848 +0200
+@@ -10,6 +10,11 @@
+ 
+ PATH=/bin:/usr/bin:/sbin:/usr/sbin
+ 
++# allow wrapper
++PKG=dnsmasq
++BASE=/mod/pkg/$PKG
++PATH=$BASE/usr/lib/$PKG/bin:$PATH
++
+ case "`uname -r`" in
+   2.6* ) KERNEL_26=yes; ;;
+   *    ) KERNEL_26=no; ;;

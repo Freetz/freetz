@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Usage: moduninstall {freetz|all-mods}
+
+if [ "$1" != "freetz" -a "$1" != "all-mods" ]; then
+	echo "Usage: $0 {freetz|all-mods}" 1>&2
+	echo '       freetz:    deletes freetz config files' 1>&2
+	echo '       all-mods:  deletes freetz and m*.* config files' 1>&2
+	echo '                  (including debug.cfg)' 1>&2
+	exit 1
+fi
+
+echo -n 'Clearing freetz...'
+echo "clear_id $((0x3c))" > /proc/tffs
+echo 'done.'
+
+if [ "$1" = "all-mods" ]; then
+	echo -n 'Clearing other mods...'
+	echo "clear_id $((0x62))" > /proc/tffs
+	echo "clear_id $((0x3b))" > /proc/tffs
+	echo "clear_id $((0x90))" > /proc/tffs
+	echo "clear_id $((0x91))" > /proc/tffs
+	echo 'done.'
+fi
+
+echo ''
+echo 'The next time you save or reboot /var/flash/freetz will be created again.'
+
+exit 0

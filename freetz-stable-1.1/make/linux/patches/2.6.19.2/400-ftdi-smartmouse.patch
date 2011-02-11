@@ -1,0 +1,35 @@
+--- linux-2.6.19.2/drivers/usb/serial/ftdi_sio.h.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/usb/serial/ftdi_sio.h	2008-05-08 22:35:29.000000000 +0200
+@@ -65,6 +65,15 @@
+ #define FTDI_XF_635_PID 0xFC0D	/* 635: 20x4 Character Display */
+ #define FTDI_XF_640_PID 0xFC0E	/* 640: Two line Display */
+ #define FTDI_XF_642_PID 0xFC0F	/* 642: Two line Display */
++#define WBE_VID                      0x104F
++//#define WBE_SMARTMOUSE_PID   0x0002  /* Smartmouse USB */
++#define WBE_SMARTMOUSE_PID2   0x0002  /* Smartmouse USB */
++#define WBE_SMARTMOUSE_PID3   0x0003  /* Smartmouse USB */
++#define WBE_SMARTMOUSE_PID4   0x0004  /* Smartmouse USB */
++//#define FTDI_8U232AM_PID 0x6002 /* FTDI USB2Serial */
++#define FTDI_8U232AM_PID2 0x6002 /* FTDI USB2Serial */
++#define FTDI_8U232AM_PID3 0x6003 /* FTDI USB2Serial */
++#define FTDI_8U232AM_PID4 0x6004 /* FTDI USB2Serial */
+ 
+ /* Video Networks Limited / Homechoice in the UK use an ftdi-based device for their 1Mb */
+ /* broadband internet service.  The following PID is exhibited by the usb device supplied */
+--- linux-2.6.19.2/drivers/usb/serial/ftdi_sio.c.orig	2008-05-08 22:33:33.000000000 +0200
++++ linux-2.6.19.2/drivers/usb/serial/ftdi_sio.c	2008-05-08 22:35:29.000000000 +0200
+@@ -511,6 +511,14 @@
+ 	{ USB_DEVICE(FTDI_VID, FTDI_TACTRIX_OPENPORT_13M_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_TACTRIX_OPENPORT_13S_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_TACTRIX_OPENPORT_13U_PID) },
++//	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID) },
++ 	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID2) },
++ 	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID3) },
++ 	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID4) },
++//	{ USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID) },
++ 	{ USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID2) },
++ 	{ USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID3) },
++ 	{ USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID3) },
+ 	{ },					/* Optional parameter entry */
+ 	{ }					/* Terminating entry */
+ };

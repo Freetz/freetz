@@ -1,0 +1,11 @@
+--- tools/Rules.in.orig	2004-08-19 11:15:36.000000000 +0200
++++ tools/Rules.in	2008-02-11 17:07:01.000000000 +0100
+@@ -19,7 +19,7 @@
+ all-dirs:=$(static-dirs) $(dynamic-dirs) $(client-dirs) $(doc-dirs)
+ clean-dirs:=$(all-dirs) proto sysdep
+ 
+-CPPFLAGS=-I$(root-rel) -I$(srcdir) @CPPFLAGS@
++CPPFLAGS=-D_XOPEN_SOURCE=600 -I$(root-rel) -I$(srcdir) @CPPFLAGS@ 
+ CFLAGS=$(CPPFLAGS) @CFLAGS@
+ LDFLAGS=@LDFLAGS@
+ LIBS=@LIBS@

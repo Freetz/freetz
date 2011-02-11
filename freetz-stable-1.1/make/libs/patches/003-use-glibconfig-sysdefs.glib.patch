@@ -1,0 +1,29 @@
+--- glib.h.orig	2001-02-27 04:44:38.000000000 +0100
++++ glib.h	2007-11-13 22:44:04.000000000 +0100
+@@ -63,6 +63,7 @@
+  *    exist.  The prototype looks like the above, give or take a const,
+  *    or size_t.
+  */
++#include <glibconfig-sysdefs.h>
+ #include <glibconfig.h>
+ 
+ /* include varargs functions for assertment macros
+--- configure.orig	2007-11-13 22:44:04.000000000 +0100
++++ configure	2007-11-13 22:44:04.000000000 +0100
+@@ -736,16 +736,6 @@
+ # Save this value here, since automake will set cflags later
+ cflags_set=${CFLAGS+set}
+ 
+-# we rewrite this file
+-rm -f glibconfig-sysdefs.h
+-
+-
+-
+-
+-
+-
+-
+-
+ 
+ # libtool versioning
+ LT_RELEASE=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION

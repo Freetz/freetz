@@ -1,0 +1,29 @@
+--- Makefile.orig	2008-11-19 21:36:12.000000000 +0100
++++ Makefile	2008-12-11 12:03:40.000000000 +0100
+@@ -20,7 +20,7 @@
+ # $Id: Makefile 312 2008-06-15 18:09:42Z Joerg Mayer $
+ 
+ DESTDIR=
+-PREFIX=/usr/local
++PREFIX=/usr
+ ETCDIR=/etc/vpnc
+ BINDIR=$(PREFIX)/bin
+ SBINDIR=$(PREFIX)/sbin
+@@ -51,14 +51,11 @@
+ #OPENSSLLIBS = -lcrypto
+ 
+ CC=gcc
+-CFLAGS ?= -O3 -g
+-CFLAGS += -W -Wall -Wmissing-declarations -Wwrite-strings
+-CFLAGS +=  $(shell libgcrypt-config --cflags)
++CFLAGS += $(EXTRA_CFLAGS) -W -Wall -Wmissing-declarations -Wwrite-strings
+ CPPFLAGS += -DVERSION=\"$(VERSION)\" $(OPENSSL_GPL_VIOLATION)
+-LDFLAGS ?= -g
+-LDFLAGS += $(shell libgcrypt-config --libs) $(OPENSSLLIBS)
++LDFLAGS = $(EXTRA_LDFLAGS) -lgcrypt -lgpg-error
+ 
+-ifeq ($(shell uname -s), SunOS)
++ifeq ($(OS), SunOS)
+ LDFLAGS += -lnsl -lresolv -lsocket
+ endif
+ ifneq (,$(findstring Apple,$(shell $(CC) --version)))

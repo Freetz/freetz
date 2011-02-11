@@ -1,0 +1,15 @@
+#!/bin/sh
+
+. /usr/lib/libmodredir.sh
+. /mod/etc/conf/mod.cfg
+
+log=
+show_log() {
+	[ -n "$log" ] && echo "$log<br>"
+}
+  
+status=$(/mod/etc/init.d/rc.webcfg status)
+[ "$status" = "running" -o "$status" = "inetd" ] || \
+	log="$(/mod/etc/init.d/rc.webcfg start 2>&1)"
+
+redirect "http://$(self_host):$MOD_HTTPD_PORT/" "Freetz" show_log

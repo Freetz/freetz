@@ -1,0 +1,40 @@
+--- tools/sane-backends.pc.in	2010-04-14 02:52:59.000000000 +0200
++++ tools/sane-backends.pc.in	2010-04-26 21:10:42.404653655 +0200
+@@ -2,13 +2,13 @@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ includedir=@includedir@
+-ldflags=@LDFLAGS@ @GPHOTO2_LDFLAGS@
+-libs=@LIBS@ @DL_LIBS@ @LIBV4L_LIBS@ @MATH_LIB@ @TIFF_LIBS@ @JPEG_LIBS@ @GPHOTO2_LIBS@ @SOCKET_LIBS@ @AVAHI_LIBS@ @USB_LIBS@ @SCSI_LIBS@ @RESMGR_LIBS@
++ldflags=@LDFLAGS@
++libs=@LIBS@
+ 
+ Name: SANE Backends
+ Description: Backends for SANE, the universal scanner interface
+ Version: @VERSION@
+ Requires:
+-Libs: -L$(libdir) -lsane
+-Libs.private: $(ldflags) $(libs)
+-Cflags: -I$(includedir)
++Libs: -L${libdir} -lsane
++Libs.private: ${ldflags} $(libs)
++Cflags: -I${includedir}
+--- tools/sane-config.in	2010-04-26 02:52:48.000000000 +0200
++++ tools/sane-config.in	2010-04-26 21:08:36.000000000 +0200
+@@ -7,13 +7,13 @@
+ PACKAGE="@PACKAGE@"
+ scriptname="sane-config"
+ 
+-LINKER_RPATH="@LINKER_RPATH@"
++LINKER_RPATH=""
+ 
+ prefix="@prefix@"
+ exec_prefix="@exec_prefix@"
+ 
+-LDFLAGS="@LDFLAGS@ @GPHOTO2_LDFLAGS@"
+-LIBS="@LIBS@ @DL_LIBS@ @LIBV4L_LIBS@ @MATH_LIB@ @TIFF_LIBS@ @JPEG_LIBS@ @GPHOTO2_LIBS@ @SOCKET_LIBS@ @AVAHI_LIBS@ @USB_LIBS@ @SCSI_LIBS@ @RESMGR_LIBS@"
++LDFLAGS="@LDFLAGS@"
++LIBS="@LIBS@"
+ pkgincludedir="@pkgincludedir@"
+ pkglibdir="@pkglibdir@"
+ includedir="@includedir@"

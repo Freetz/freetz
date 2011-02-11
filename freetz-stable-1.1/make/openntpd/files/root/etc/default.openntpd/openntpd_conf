@@ -1,0 +1,28 @@
+#!/bin/sh
+
+ethmode=$(echo 'ar7cfg.ethmode' | ar7cfgctl -s)
+case "$ethmode" in
+    ethmode_bridge)
+	    devname=lan
+	    break
+	    ;;
+    ethmode_router)
+	    devname=eth0
+	    break
+	    ;;
+    *)
+	    devname=eth0
+esac
+
+if [ ! -e "/tmp/flash/ntpd.conf" ]; then
+cat > /tmp/flash/ntpd.conf << EOF
+# Addresses to listen on (ntpd does not listen by default)
+# Use '*' to listen on every local interface
+listen on $(ifconfig $devname | head -n 2 | tail -n 1 | cut -d: -f2 | cut -d" " -f 1)
+
+# use a random selection of 8 public stratum 2 servers
+# see http://twiki.ntp.org/bin/view/Servers/NTPPoolServers
+servers pool.ntp.org
+EOF
+fi
+

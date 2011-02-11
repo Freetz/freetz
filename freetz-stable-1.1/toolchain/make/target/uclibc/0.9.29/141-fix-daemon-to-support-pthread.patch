@@ -1,0 +1,56 @@
+--- libc/unistd/daemon.c.orig	2009-04-21 18:20:20.000000000 +0200
++++ libc/unistd/daemon.c	2009-04-21 18:24:19.000000000 +0200
+@@ -48,35 +48,33 @@
+ 
+ #if defined __USE_BSD || (defined __USE_XOPEN && !defined __USE_UNIX98)
+ 
+-libc_hidden_proto(open)
+-libc_hidden_proto(close)
+-libc_hidden_proto(_exit)
+-libc_hidden_proto(dup2)
+-libc_hidden_proto(setsid)
+-libc_hidden_proto(chdir)
+-libc_hidden_proto(fork)
++/* libc_hidden_proto(open) */
++/* libc_hidden_proto(close) */
++/* libc_hidden_proto(_exit) */
++/* libc_hidden_proto(dup2) */
++/* libc_hidden_proto(setsid) */
++/* libc_hidden_proto(chdir) */
++/* libc_hidden_proto(fork) */
++
++static inline pid_t fork_parent(void)
++{
++	switch (fork()) {
++		case -1: return -1;
++		case 0:  return 0;
++		default: _exit(0);
++	}
++}
+ 
+ int daemon( int nochdir, int noclose )
+ {
+ 	int fd;
+ 
+-	switch (fork()) {
+-		case -1:
+-			return(-1);
+-		case 0:
+-			break;
+-		default:
+-			_exit(0);
+-	}
++	if (fork_parent() == -1)
++		return -1;
+ 
+ 	if (setsid() == -1)
+ 		return(-1);
+ 
+-	/* Make certain we are not a session leader, or else we
+-	 * might reacquire a controlling terminal */
+-	if (fork())
+-		_exit(0);
+-
+ 	if (!nochdir)
+ 		chdir("/");
+ 

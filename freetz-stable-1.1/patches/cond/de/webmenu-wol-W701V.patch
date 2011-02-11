@@ -1,0 +1,83 @@
+--- usr/www/all/html/de/menus/menu2_fon.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_fon.html	2007-10-24 18:10:06.000000000 +0200
+@@ -71,5 +71,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2007-10-24 18:10:06.000000000 +0200
+@@ -51,5 +51,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_homekonfig.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-10-24 18:10:06.000000000 +0200
+@@ -13,5 +13,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2.inc.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.inc	2007-10-24 18:10:06.000000000 +0200
+@@ -11,7 +11,8 @@
+ <? setvariable var:menuSystem "System" ?>
+ <? setvariable var:menuSoftware "Programme" ?>
+ <? setvariable var:menuHilfe "Hilfe" ?>
+-<? setvariable var:menuFreetz "Freetz" ?>
++<? setvariable var:menuFreetz "Freetz Config" ?>
++<? setvariable var:menuFreetzWOL "Freetz WOL" ?>
+ <? setvariable var:evtxt01 "Anrufliste" ?>
+ <? setvariable var:evtxt02 "Telefonbuch" ?>
+ <? setvariable var:evtxt03 "Kindersicherung" ?>
+--- usr/www/all/html/de/menus/menu2_internet.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_internet.html	2007-10-24 18:10:06.000000000 +0200
+@@ -95,4 +95,5 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_software.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_software.html	2007-10-24 18:10:06.000000000 +0200
+@@ -13,5 +13,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_system.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_system.html	2007-10-24 18:10:06.000000000 +0200
+@@ -93,5 +93,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_usb.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_usb.html	2007-10-24 18:10:06.000000000 +0200
+@@ -33,5 +33,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2_wlan.html.orig	2007-10-24 18:10:06.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_wlan.html	2007-10-24 18:10:06.000000000 +0200
+@@ -49,5 +49,6 @@
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
+ ` ?>
+ 	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ 	<li class="LMenubottom"></li>
+ </ul>

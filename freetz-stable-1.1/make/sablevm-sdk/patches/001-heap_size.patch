@@ -1,0 +1,15 @@
+diff -ruN sablevm-sdk-1.13-old/sablevm/src/libsablevm/system.h sablevm-sdk-1.13-new/sablevm/src/libsablevm/system.h
+--- sablevm/src/libsablevm/system.h	2007-03-30 03:57:54.000000000 +0200
++++ sablevm/src/libsablevm/system.h	2007-04-11 02:25:06.000000000 +0200
+@@ -279,9 +279,9 @@
+ 
+ #elif defined (_SABLEVM_COPY_GC) || (_SABLEVM_GENCOPY_GC)
+ 
+-#define SVM_HEAP_DEFAULT_MIN_SIZE 16777216
++#define SVM_HEAP_DEFAULT_MIN_SIZE 1048576
+ #define SVM_HEAP_DEFAULT_MAX_SIZE 0
+-#define SVM_HEAP_DEFAULT_ALLOCATION_INCREMENT 1048576
++#define SVM_HEAP_DEFAULT_ALLOCATION_INCREMENT 65536
+ 
+ #if defined (_SABLEVM_GENCOPY_GC)
+ 

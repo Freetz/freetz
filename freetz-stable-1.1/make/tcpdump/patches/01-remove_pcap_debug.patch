@@ -1,0 +1,23 @@
+--- tcpdump.c.orig	2006-02-01 15:39:56.000000000 +0100
++++ tcpdump.c	2007-07-29 04:30:14.000000000 +0200
+@@ -765,20 +765,6 @@
+ 				error("invalid data link type %s", gndo->ndo_dltname);
+ 			break;
+ 
+-#if defined(HAVE_PCAP_DEBUG) || defined(HAVE_YYDEBUG)
+-		case 'Y':
+-			{
+-			/* Undocumented flag */
+-#ifdef HAVE_PCAP_DEBUG
+-			extern int pcap_debug;
+-			pcap_debug = 1;
+-#else
+-			extern int yydebug;
+-			yydebug = 1;
+-#endif
+-			}
+-			break;
+-#endif
+ 		case 'Z':
+ 			if (optarg) {
+ 				username = strdup(optarg);

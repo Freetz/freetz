@@ -1,0 +1,43 @@
+--- var/install.orig	2010-04-26 17:12:31.000000000 +0200
++++ var/install	2010-05-18 09:02:55.272435254 +0200
+@@ -217,28 +217,20 @@
+ export ANNEX=`cat ${CONFIG_ENVIRONMENT_PATH}/annex`
+ if [ -z "${ANNEX}" ] ; then echo ANNEX=${ANNEX} not supported ; exit $INSTALL_WRONG_HARDWARE ; fi
+ echo ANNEX=$ANNEX
+-# Fritz_Box_7570
++# Fritz_Box_7570 / W920V / getestet auf orig FW W920 und Freetz FW 7570 / "for i in  avme ; do " to make fwmod happy *g*
++hwrev="$(echo $(grep HWRevision < /proc/sys/urlader/environment) | cut -d' ' -f2)"
++case "$hwrev" in
++	135.* | 146.* | 153.* ) korrekt_version=1 ;;
++esac
++
+ if [ -z "$DISABLE_Fritz_Box_7570" ] ; then
+    echo testing acceptance for device Fritz_Box_7570 ...
+-   if /etc/version --install=ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_mimo_usb_host_dect_multiannex_13589 ; then
+-       echo device has installtype ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_mimo_usb_host_dect_multiannex_13589
+-           # passt der OEM ?
+-           if [ ! -z "${OEM}" ] ; then
+-               oem_found=0
+-               for i in  avme ; do
+-                   if [ "$i" = "${OEM}" ] ; then
+-                       echo "OK - OEM ${OEM} is supported"
+-                       oem_found=1
+-                       break
+-                   fi
+-               done
+-               if [ "$oem_found" = "0" ] ; then 
+-                   echo "OEM ${OEM} not supported"
+-                   exit $INSTALL_WRONG_HARDWARE
+-               fi
+-           fi
+-           echo OK - accept this update for device Fritz_Box_7570 ...
+-           korrekt_version=1
++   if [ "$korrekt_version" = 1 ] ; then
++	# set this only if we have matching hardware
++      echo firmware_version avme > /proc/sys/urlader/environment
++   else
++      echo "HWRevision $hwrev not supported"
++      exit $INSTALL_WRONG_HARDWARE
+    fi
+    echo testing acceptance for device Fritz_Box_7570 done
+ fi

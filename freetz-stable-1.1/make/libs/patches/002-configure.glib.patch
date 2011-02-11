@@ -1,0 +1,25 @@
+--- configure.in.orig	2001-03-15 16:37:37.000000000 +0100
++++ configure.in	2007-11-11 17:26:08.000000000 +0100
+@@ -17,7 +17,10 @@
+ 
+ dnl we need to AC_DIVERT_PUSH/AC_DIVERT_POP these variable definitions so they
+ dnl are available for $ac_help expansion (don't we all *love* autoconf?)
+-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
++ifdef([AC_DIVERSION_NOTICE],
++             [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
++         [AC_DIVERT_PUSH(NOTICE)])dnl
++
+ #
+ # The following version number definitions apply to GLib, GModule and GThread
+ # as a whole, so if changes occoured in any of them, they are all
+@@ -81,7 +84,9 @@
+ 
+ dnl figure debugging default, prior to $ac_help setup
+ dnl
+-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
++ifdef([AC_DIVERSION_NOTICE],
++             [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
++         [AC_DIVERT_PUSH(NOTICE)])dnl
+ if test `expr $GLIB_MINOR_VERSION \% 2` = 1 ; then
+ 	debug_default=yes
+ else

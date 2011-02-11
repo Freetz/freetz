@@ -1,0 +1,15 @@
+--- Makefile.in.orig	2008-02-17 11:10:43.000000000 +0100
++++ Makefile.in	2009-07-31 00:17:46.000000000 +0200
+@@ -70,9 +70,9 @@
+ CLEANFILES = *~ comperr
+ MAINTAINERCLEANFILES = configure aclocal.m4 Makefile.in config.h.in 			  stamp-h.in comperr
+ 
+-INCLUDES = -I../capi20 $(all_includes)
+-CFLAGS = -Wall -O2
+-LDFLAGS = -L../capi20/.libs -L../capi20 $(all_libraries)
++INCLUDES = $(all_includes)
++CFLAGS = @CFLAGS@
++LDFLAGS = $(all_libraries)
+ LDADD = -lcapi20
+ 
+ sbin_PROGRAMS = rcapid

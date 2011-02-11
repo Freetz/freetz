@@ -1,0 +1,30 @@
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2008-05-21 23:35:55.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2008-05-21 23:35:55.000000000 +0200
+@@ -48,5 +48,6 @@
+ <? if eq $var:pagename syslog `<? setvariable var:classname 'LStatusMenuitemaktivTop' ?>` ?>
+ <li class="<? echo $var:classname ?>"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('home','syslog')"><? echo $var:TextMenuEvent ?></a><span class="PTextOnly"><? echo $var:TextMenuEvent ?></span></li>
+ <li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitemTop"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>
+--- usr/www/all/html/de/menus/menu2.inc.orig	2008-05-21 23:35:55.000000000 +0200
++++ usr/www/all/html/de/menus/menu2.inc	2008-05-21 23:35:55.000000000 +0200
+@@ -13,7 +13,8 @@
+ <? setvariable var:TextMenuSystem "System" ?>
+ <? setvariable var:TextMenuSoftware "Programme" ?>
+ <? setvariable var:TextMenuHilfe "Hilfe" ?>
+-<? setvariable var:menuFreetz "Freetz" ?>
++<? setvariable var:menuFreetz "Freetz Config" ?>
++<? setvariable var:menuFreetzWOL "Freetz WOL" ?>
+ <? setvariable var:TextMenuAnrufliste "Anrufe" ?>
+ <? setvariable var:TextMenuTelefonbuch "Telefonbuch" ?>
+ <? setvariable var:TextMenuEvent "Ereignisse" ?>
+--- usr/www/all/html/de/menus/menu2_konfig.html.orig	2008-05-21 23:35:55.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_konfig.html	2008-05-21 23:35:55.000000000 +0200
+@@ -58,5 +58,6 @@
+ ` ?>
+ ` ?>
+ <li class="LMenuitemTop" style="margin-top:24px"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_status" target="_blank"><? echo $var:menuFreetz ?></a></li>
++<li class="LMenuitemTop"><img src="<? echo $var:pfeil ?>"> <a href="/cgi-bin/freetz_wol" target="_blank"><? echo $var:menuFreetzWOL ?></a></li>
+ <li class="LMenubottom">&nbsp;</li>
+ </ul>

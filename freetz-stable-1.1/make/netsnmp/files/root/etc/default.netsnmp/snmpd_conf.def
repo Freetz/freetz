@@ -1,0 +1,5 @@
+CAPTION='snmpd.conf (Net-SNMP)'
+DESCRIPTION='$(lang de:"Konfigurationsdatei für den Net-SNMP Daemon." en:"Config file for the Net-SNMP Daemon.")'
+CONFIG_FILE='/tmp/flash/snmpd.conf'
+CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof snmpd)" ]; then echo ""; /mod/etc/init.d/rc.netsnmp restart; fi'
+CONFIG_TYPE='text'

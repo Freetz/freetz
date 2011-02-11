@@ -1,0 +1,50 @@
+debootstrap Freetz package
+
+This is a package for Freetz:
+http://www.freetz.org/
+
+This package may contain a binary distribution of
+debootstrap (see COPYING for license terms).
+
+debootstrap sources are available at:
+http://packages.debian.org/unstable/source/debootstrap
+
+-------------------------------------------------------------------------
+
+How to build or update this package
+
+The original version of this package consisted of a multi-stage build script
+which first extracted and modified a Debian udeb package and then injected a
+self-built binary. We decided to refrain from having a "Debian to Freetz
+converter" in our build script in order to get a cleaner makefile
+(debootstrap.mk) which only builds a binary and injects it into a prepared
+package, as usual in Freetz. If you want to update the package, please read
+the following description:
+
+- Download debootstrap sources and Debian udeb package of the same version
+  (1.0.10 at the time of writing this)
+- Extract data.tar.gz (using 'ar' utility) from Debian udeb package
+- Extract data.tar.gz to package/debootstrap-<version>/root
+- Remove unwanted or unneeded scripts from extracted file structure (e.g.
+  usr/share/debootstrap/scripts/{breezy,hoary,warty,woody}
+- Apply patches, if necessary (see below for a patch used in 1.0.10)
+- Compile 'pkgdetails' binary using Freetz makefile. The binary can be
+  found in old debian 'debootstrap' source or in newer 'baseinstaller'
+  source packages. At the time of writing this, the debootstrap version
+  0.3.3.2etch1 is sufficient.
+
+-------------------------------------------------------------------------
+
+Patch used to build debootstrap 1.0.10 package
+
+--- usr/lib/debootstrap/functions.orig      2008-07-02 17:44:00.000000000 +0200
++++ usr/lib/debootstrap/functions   2008-09-03 20:37:31.000000000 +0200
+@@ -1121,7 +1121,7 @@
+   N_EXIT_THINGS=0
+ }
+ 
+-trap "exit_function" 0
++#trap "exit_function" 0
+ trap "exit 129" 1
+ trap "error 130 INTERRUPTED \"Interrupt caught ... exiting\"" 2
+ trap "exit 131" 3

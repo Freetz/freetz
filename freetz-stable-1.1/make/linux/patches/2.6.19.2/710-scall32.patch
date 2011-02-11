@@ -1,0 +1,40 @@
+--- linux-2.6.19.2/arch/mips/kernel/scall32-o32.S
++++ linux-2.6.19.2/arch/mips/kernel/scall32-o32.S
+@@ -89,14 +89,25 @@
+ /* ------------------------------------------------------------------------ */
+ 
+ syscall_trace_entry:
+-	SAVE_STATIC
+-	move	s0, t2
+ 	move	a0, sp
+ 	li	a1, 0
+ 	jal	do_syscall_trace
+ 
+-	move	t0, s0
+-	RESTORE_STATIC
++# v0 may have been changed by do_syscall_trace
++	lw	v0, PT_R2(sp)		# Restore syscall number
++#if defined(CONFIG_BINFMT_IRIX)
++	sltiu	t0, v0, MAX_SYSCALL_NO + 1 # check syscall number
++#else
++	subu	v0, v0, __NR_O32_Linux	# check syscall number
++	sltiu	t0, v0, __NR_O32_Linux_syscalls + 1
++#endif
++	beqz	t0, illegal_syscall
++
++	sll	t0, v0, 3
++	la	t1, sys_call_table
++	addu	t1, t0
++	lw	t0, (t1)		# syscall routine
++
+ 	lw	a0, PT_R4(sp)		# Restore argument registers
+ 	lw	a1, PT_R5(sp)
+ 	lw	a2, PT_R6(sp)
+@@ -113,6 +124,7 @@
+ 					# restarting
+ 1:	sw	v0, PT_R2(sp)		# result
+ 
++	SAVE_STATIC
+ 	j	syscall_exit
+ 
+ /* ------------------------------------------------------------------------ */

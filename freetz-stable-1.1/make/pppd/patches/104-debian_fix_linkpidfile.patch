@@ -1,0 +1,12 @@
+--- pppd/main.c.orig	2007-07-29 03:52:39.000000000 +0200
++++ pppd/main.c	2007-07-29 03:52:40.000000000 +0200
+@@ -768,8 +768,7 @@
+ 	/* update pid files if they have been written already */
+ 	if (pidfilename[0])
+ 	    create_pidfile(pid);
+-	if (linkpidfile[0])
+-	    create_linkpidfile(pid);
++	create_linkpidfile(pid);
+ 	exit(0);		/* parent dies */
+     }
+     setsid();

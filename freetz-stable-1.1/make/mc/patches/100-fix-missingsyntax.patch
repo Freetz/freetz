@@ -1,0 +1,17 @@
+--- edit/syntax.c	2007-07-26 17:35:14.000000000 +0200
++++ edit/syntax.c	2007-07-26 17:35:14.000000000 +0200
+@@ -1113,13 +1113,8 @@
+     f = catstrs (home_dir, SYNTAX_FILE, (char *) NULL);
+     r = edit_read_syntax_file (edit, names, f, edit ? edit->filename : 0,
+ 			       get_first_editor_line (edit), type);
+-    if (r == -1) {
+-	edit_free_syntax_rules (edit);
+-	message (D_ERROR, _(" Load syntax file "),
+-		 _(" Cannot open file %s \n %s "), f,
+-		 unix_error_string (errno));
++    if (r == -1) 
+ 	return;
+-    }
+     if (r) {
+ 	edit_free_syntax_rules (edit);
+ 	message (D_ERROR, _(" Load syntax file "),

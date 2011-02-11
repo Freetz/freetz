@@ -1,0 +1,31 @@
+From fd3fb3e1109b3c0ba63358a17d1ebd845ceebdb0 Mon Sep 17 00:00:00 2001
+From: Stephen Hemminger <shemminger@osdl.org>
+Date: Tue, 20 Sep 2005 13:39:47 -0700
+Subject: [PATCH] [PATCH] tcp: set default congestion control correctly for incoming connections
+
+Patch from Joel Sing to fix the default congestion control algorithm for incoming connections. If a new congestion control handler is added (via module),
+it should become the default for new connections. Instead, the incoming
+connections use reno. The cause is incorrect
+initialisation causes the tcp_init_congestion_control() function to return
+after the initial if test fails.
+
+Signed-off-by: Stephen Hemminger <shemminger@osdl.org>
+Acked-by: "David S. Miller" <davem@davemloft.net>
+Signed-off-by: Chris Wright <chrisw@osdl.org>
+---
+ net/ipv4/tcp_minisocks.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git linux-2.6.13.1/net/ipv4/tcp_minisocks.c linux-2.6.13.1/net/ipv4/tcp_minisocks.c
+index f42a284..58377e7 100644
+--- linux-2.6.13.1/net/ipv4/tcp_minisocks.c
++++ linux-2.6.13.1/net/ipv4/tcp_minisocks.c
+@@ -774,7 +774,7 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
+ 		newtp->frto_counter = 0;
+ 		newtp->frto_highmark = 0;
+ 
+-		newtp->ca_ops = &tcp_reno;
++		newtp->ca_ops = &tcp_init_congestion_ops;
+ 
+ 		tcp_set_ca_state(newtp, TCP_CA_Open);
+ 		tcp_init_xmit_timers(newsk);

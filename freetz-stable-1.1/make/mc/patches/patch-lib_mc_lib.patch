@@ -1,0 +1,378 @@
+$FreeWRT$
+$MirOS: ports/misc/mc/patches/patch-lib_mc_lib,v 1.9 2007/03/01 23:56:43 tg Exp $
+--- lib/mc.lib	2004-09-10 09:23:44.000000000 +0000
++++ lib/mc.lib	2007-03-20 13:32:10.000000000 +0000
+@@ -1,8 +1,27 @@
++# $MirOS: ports/misc/mc/patches/patch-lib_mc_lib,v 1.9 2007/03/01 23:56:43 tg Exp $
++#-
++# Copyright (c) 2003, 2004, 2005, 2006
++#	Thorsten Glaser <tg@mirbsd.de>
++#
++# Provided that these terms and disclaimer and all copyright notices
++# are retained or reproduced in an accompanying document, permission
++# is granted to deal in this work without restriction, including un-
++# limited rights to use, publicly perform, distribute, sell, modify,
++# merge, give away, or sublicence.
++#
++# This work is provided "AS IS" and WITHOUT WARRANTY of any kind, to
++# the utmost extent permitted by applicable law, neither express nor
++# implied; without malicious intent or gross negligence. In no event
++# may a licensor, author or contributor be held liable for indirect,
++# direct, other damage, loss, or other issues arising in any way out
++# of dealing in the work, even if advised of the possibility of such
++# damage or existence of a defect, except proven that it results out
++# of said person's immediate fault when using the work as intended.
++
+ [Special dirs]
+ list=/afs,/coda,/:,/...,/net,/#smb
+ 
+ [terminal:console]
+-insert=\e[2~
+ f11=\e[23~
+ f12=\e[24~
+ f13=\e[25~
+@@ -13,25 +32,25 @@ f17=\e[31~
+ f18=\e[32~
+ f19=\e[33~
+ f20=\e[34~
+-kpleft=\eOt
+-kpright=\eOv
+-kpup=\eOx
++insert=\e[2~
++kpasterix=\eOR
++kpdelete=\eOn
+ kpdown=\eOr
+-kphome=\eOw
+ kpend=\eOq
++kpenter=\eOM
++kphome=\eOw
++kpinsert=\eOp
++kpleft=\eOt
++kpminus=\eOS
+ kpnpage=\eOs
+-kpppage=\eOy
++kpnumlock=\eOP
+ kpplus=\eOl
+-kpminus=\eOS
+-kpasterix=\eOR
+-kpinsert=\eOp
+-kpdelete=\eOn
+-kpenter=\eOM
++kpppage=\eOy
++kpright=\eOv
+ kpslash=\eOQ
+-kpnumlock=\eOP
++kpup=\eOx
+ 
+ [terminal:linux]
+-insert=\e[2~
+ f11=\e[23~
+ f12=\e[24~
+ f13=\e[25~
+@@ -42,25 +61,31 @@ f17=\e[31~
+ f18=\e[32~
+ f19=\e[33~
+ f20=\e[34~
+-kpleft=\eOt
+-kpright=\eOv
+-kpup=\eOx
++insert=\e[2~
++kpasterix=\eOR
++kpdelete=\eOn
+ kpdown=\eOr
+-kphome=\eOw
+ kpend=\eOq
++kpenter=\eOM
++kphome=\eOw
++kpinsert=\eOp
++kpleft=\eOt
++kpminus=\eOS
+ kpnpage=\eOs
+-kpppage=\eOy
++kpnumlock=\eOP
+ kpplus=\eOl
+-kpminus=\eOS
+-kpasterix=\eOR
+-kpinsert=\eOp
+-kpdelete=\eOn
+-kpenter=\eOM
++kpppage=\eOy
++kpright=\eOv
+ kpslash=\eOQ
+-kpnumlock=\eOP
++kpup=\eOx
+ 
+ [terminal:xterm]
+-insert=\e[2~
++bs=
++delete=\e[3~
++end=\eOF
++end=\e[4~
++end=\e[8~
++end=\e[F
+ f11=\e[23~
+ f12=\e[24~
+ f13=\e[25~
+@@ -71,27 +96,22 @@ f17=\e[31~
+ f18=\e[32~
+ f19=\e[33~
+ f20=\e[34~
+-kpleft=\eOt
+-kpright=\eOv
+-kpup=\eOx
++home=\eOH
++home=\e[1~
++home=\e[7~
++home=\e[H
++insert=\e[2~
++kpasterix=\eOj
+ kpdown=\eOr
+-kphome=\eOw
+ kpend=\eOq
++kphome=\eOw
++kpleft=\eOt
++kpminus=\eOm
+ kpnpage=\eOs
+-kpppage=\eOy
+ kpplus=\eOk
+-kpminus=\eOm
+-kpasterix=\eOj
+-delete=\e[3~
+-bs=
+-home=\e[1~
+-home=\e[7~
+-end=\eOF
+-end=\e[F
+-end=\e[4~
+-end=\e[8~
+-home=\eOH
+-home=\e[H
++kpppage=\eOy
++kpright=\eOv
++kpup=\eOx
+ pgdn=\e[6~
+ pgup=\e[5~
+ 
+@@ -108,14 +128,14 @@ f19=\e[20;2~
+ f20=\e[21;2~
+ 
+ # Arrows for both keypad modes (application and normal).
+-up=\e[A
+-up=\eOA
+-down=\e[B
+ down=\eOB
+-right=\e[C
+-right=\eOC
+-left=\e[D
++down=\e[B
+ left=\eOD
++left=\e[D
++right=\eOC
++right=\e[C
++up=\eOA
++up=\e[A
+ 
+ [terminal:gnome]
+ copy=xterm
+@@ -126,8 +146,15 @@ copy=xterm
+ [terminal:xterm-new]
+ copy=xterm
+ 
++[terminal:xterm-xfree86]
++copy=xterm
++
+ [terminal:xterm-color]
+-insert=\e[2~
++bs=
++delete=\e[3~
++end=\eOF
++end=\e[4~
++end=\e[8~
+ f11=\e[23~
+ f12=\e[24~
+ f13=\e[25~
+@@ -138,29 +165,27 @@ f17=\e[31~
+ f18=\e[32~
+ f19=\e[33~
+ f20=\e[34~
+-kpleft=\eOt
+-kpright=\eOv
+-kpup=\eOx
++home=\eOH
++home=\e[1~
++home=\e[7~
++insert=\e[2~
++kpasterix=\eOj
+ kpdown=\eOr
+-kphome=\eOw
+ kpend=\eOq
++kphome=\eOw
++kpleft=\eOt
++kpminus=\eOm
+ kpnpage=\eOs
+-kpppage=\eOy
+ kpplus=\eOk
+-kpminus=\eOm
+-kpasterix=\eOj
+-delete=\e[3~
+-bs=
+-home=\e[1~
+-home=\e[7~
+-home=\eOH
+-end=\e[4~
+-end=\e[8~
+-end=\eOF
++kpppage=\eOy
++kpright=\eOv
++kpup=\eOx
+ pgdn=\e[6~
+ pgup=\e[5~
+ 
+ [terminal:ibmpc3]
++bs=^h
++end=\e[F
+ f11=\e[Y
+ f12=\e[Z
+ f13=\e[a
+@@ -171,11 +196,9 @@ f17=\e[e
+ f18=\e[f
+ f19=\e[g
+ f20=\e[h
+-bs=^h
+-end=\e[F
+-kpplus=\e[+
+-kpminus=\e[-
+ kpasterix=\e[*
++kpminus=\e[-
++kpplus=\e[+
+ 
+ [terminal:cons25]
+ f11=\e[Y
+@@ -188,3 +211,127 @@ f17=\e[e
+ f18=\e[f
+ f19=\e[g
+ f20=\e[h
++
++# Sequences below are used in OpenBSD wscons, also via remote login
++
++[terminal:vt220]
++bs=
++end=\e[8~
++f1=\e[11~
++f2=\e[12~
++f3=\e[13~
++f4=\e[14~
++f5=\e[15~
++f6=\e[17~
++f7=\e[18~
++f8=\e[19~
++f9=\e[20~
++f10=\e[21~
++f11=\e[23~
++f12=\e[24~
++home=\e[7~
++
++[terminal:wsvt25]
++bs=
++end=\e[8~
++f1=\e[11~
++f2=\e[12~
++f3=\e[13~
++f4=\e[14~
++f5=\e[15~
++f6=\e[17~
++f7=\e[18~
++f8=\e[19~
++f9=\e[20~
++f10=\e[21~
++f11=\e[23~
++f12=\e[24~
++home=\e[7~
++
++[terminal:wsvtg]
++bs=
++end=\e[8~
++f1=\e[11~
++f2=\e[12~
++f3=\e[13~
++f4=\e[14~
++f5=\e[15~
++f6=\e[17~
++f7=\e[18~
++f8=\e[19~
++f9=\e[20~
++f10=\e[21~
++f11=\e[23~
++f12=\e[24~
++home=\e[7~
++
++# Not a real vt100, but NetBSD wscons in vt220 mode with
++# $TERM set to vt100. Except F5-F9, this matches screen.
++
++[terminal:vt100]
++bs=
++complete=‰
++delete=\e[3~
++end=\e[8~
++f1=\e[11~
++f2=\e[12~
++f3=\e[13~
++f4=\e[14~
++f5=\e[15~
++f6=\e[17~
++f7=\e[18~
++f8=\e[19~
++f9=\e[20~
++f10=\e[21~
++f11=\e[23~
++f12=\e[24~
++home=\e[7~
++insert=\e[2~
++pgdn=\e[6~
++pgup=\e[5~
++
++# GNU screen - depending on its environment, here: wsvt25
++[terminal:screen]
++end=\e[8~
++f10=\e[20~
++f1=\e[11~
++f2=\e[12~
++f3=\e[13~
++f4=\e[14~
++f5=\e[15~
++f6=\e[15~
++f7=\e[17~
++f8=\e[18~
++f9=\e[19~
++home=\e[7~
++
++# PuTTY
++[terminal:ansi]
++bs=^h
++down=\eOB
++f1=\eOP
++f2=\eOQ
++f3=\eOR
++f4=\eOS
++left=\eOD
++right=\eOC
++up=\eOA
++
++# Windows 3.1 TELNET.EXE
++# (not really useful. The F-Keys, INS etc. don't work.)
++[terminal:ansi-nt]
++f1=\eOP
++f2=\eOQ
++f3=\eOR
++f4=\eOS
++bs=^h
++up=\e[A
++down=\e[B
++left=\e[D
++right=\e[C
++delete=
++
++# Microsoft Services for Unix 3.5 (native terminal, xterm see above)
++[terminal:interix]
++home=\e[H
++delete=

@@ -1,0 +1,12 @@
+config FREETZ_PACKAGE_PPTPD
+	bool "pptpd 1.3.4"
+	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_PACKAGE_PPPD
+	select FREETZ_LIB_libutil
+	default n
+	help
+		Poptop is an open source implementation of a PPTP server.
+		Running under x86 or embedded Motorola ColdFire architectures
+		Poptop provides full interoperability with the Microsoft PPTP
+		VPN client.
+

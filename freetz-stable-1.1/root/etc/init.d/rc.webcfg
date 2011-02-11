@@ -1,0 +1,96 @@
+#!/bin/sh
+
+. /etc/init.d/modlibrc
+
+DAEMON=httpd
+DAEMON_LONG_NAME="Freetz webinterface"
+PID_FILE=/var/run/webcfg.pid
+
+case $1 in
+	""|load|start|restart|status)
+		if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/mod.cfg
+		;;
+esac
+
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.mod/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+start() {
+	config
+
+	echo -n "Starting $DAEMON_LONG_NAME..."
+	homedir=/usr/mww/
+	httpd -P "$PID_FILE" -p "$MOD_HTTPD_PORT" -c /mod/etc/$DAEMON.conf -h "$homedir" -r "Freetz"
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		rm -f $PID_FILE
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	modlib_stop
+}
+
+case "$1" in
+	""|load)
+		config
+		if [ "$MOD_HTTPD" != "yes" ]; then
+			if [ "$MOD_HTTPD" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
+			exit 1
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		if [ "$MOD_HTTPD" == "inetd" ]; then
+			echo 'inetd'
+		else
+			modlib_status
+		fi
+		;;
+	config)
+		config
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,56 @@
+config FREETZ_PACKAGE_QUAGGA
+	bool "quagga 0.99.6"
+	default n
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libreadline
+	select FREETZ_LIB_libhistory
+	select FREETZ_BUSYBOX_START_STOP_DAEMON
+	select FREETZ_BUSYBOX_SEQ
+	help
+	    The Quagga Software Routing Suite
+
+	    A routing software package that provides TCP/IP based routing services
+	    with routing protocols support such as RIPv1, RIPv2, RIPng, OSPFv2,
+	    OSPFv3, BGP-4, and BGP-4+.
+
+	    This package does not provide any configuration help yet, though you
+	    can edit the configuration file(s) via the web interface. You can
+	    find the documentation at http://www.quagga.net/.
+	    YOU SHOULD NOT SELECT THIS PACKAGE (I.E. YOU DO NOT NEED IT)
+	    IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS!
+	    (However: a guided/safe config interface is on the todo list ;-)
+
+config FREETZ_PACKAGE_QUAGGA_BGPD
+        bool "bgpd"
+	depends on FREETZ_PACKAGE_QUAGGA
+	default n
+
+config FREETZ_PACKAGE_QUAGGA_RIPD
+        bool "ripd"
+	depends on FREETZ_PACKAGE_QUAGGA
+	default n
+
+config FREETZ_PACKAGE_QUAGGA_RIPNGD
+# This depends on IPv6 support in uclibc.
+# Adapt this lines when we can 'select' something.
+#        bool "ripngd"
+	bool
+	depends on FREETZ_PACKAGE_QUAGGA
+	default n
+
+config FREETZ_PACKAGE_QUAGGA_OSPFD
+        bool "ospfd"
+	depends on FREETZ_PACKAGE_QUAGGA
+	default n
+
+config FREETZ_PACKAGE_QUAGGA_OSPF6D
+# This depends on IPv6. See above.
+#        bool "ospf6d"
+	bool
+	depends on FREETZ_PACKAGE_QUAGGA
+	default n
+
+config FREETZ_PACKAGE_QUAGGA_ISISD
+        bool "isisd"
+	depends on FREETZ_PACKAGE_QUAGGA
+	default n

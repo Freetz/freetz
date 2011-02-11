@@ -1,0 +1,88 @@
+#!/bin/sh
+
+DAEMON=knock
+
+. /etc/init.d/modlibrc
+
+start() {
+	if [ ! -e "/tmp/flash/knockd.conf" ]; then
+		echo "Creating knockd.conf"
+		cat /usr/share/doc/knock/knockd.conf > /tmp/flash/knockd.conf
+		/usr/bin/modsave flash
+	fi
+
+	echo -n 'Starting port-knock server...'
+	set -o noglob
+	local countdown=10
+	while [ $((countdown--)) -gt 0 ] && ! ifconfig dsl > /dev/null 2>&1; do
+		sleep 2
+	done
+	knockd -d -c /tmp/flash/knockd.conf -i "$KNOCK_INTERFACE"
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n 'Stopping port-knock server...'
+	killall knockd > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		[ -d "/tmp/flash/.ssh" ] || mkdir /tmp/flash/.ssh
+
+		modreg cgi 'knock' 'Knock'
+
+		deffile='/mod/etc/default.knock/knockd_conf.def'
+		[ -r "/tmp/flash/knock_conf.def" ] && deffile='/tmp/flash/knockd_conf.def'
+		modreg file 'knockd_conf' 'Knockd config' 0 "$deffile"
+
+		if [ "$KNOCK_ENABLED" != "yes" ]; then
+			echo "knockd is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'knockd_conf'
+		modunreg cgi 'knock'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "knockd")" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

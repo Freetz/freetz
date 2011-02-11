@@ -1,0 +1,18 @@
+--- syshead.h.orig	2009-12-02 17:09:33.000000000 +0100
++++ syshead.h	2009-12-02 17:13:19.000000000 +0100
+@@ -393,6 +393,15 @@
+  */
+ #if defined(ENABLE_MULTIHOME) && defined(HAVE_IN_PKTINFO) && defined(IP_PKTINFO) && defined(HAVE_MSGHDR) && defined(HAVE_CMSGHDR) && defined(HAVE_IOVEC) && defined(CMSG_FIRSTHDR) && defined(CMSG_NXTHDR) && defined(HAVE_RECVMSG) && defined(HAVE_SENDMSG)
+ #define ENABLE_IP_PKTINFO 1
++# if defined(IPV6_PKTINFO)
++# include <linux/version.h>
++#  if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
++#    if defined IPV6_PKTINFO && defined IPV6_2292PKTINFO
++#     undef IPV6_PKTINFO
++#     define IPV6_PKTINFO IPV6_2292PKTINFO
++#    endif
++#  endif
++# endif
+ #else
+ #define ENABLE_IP_PKTINFO 0
+ #endif

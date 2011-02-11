@@ -1,0 +1,152 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=pptp
+PPPD=pppd
+
+case "$1" in
+	""|load|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+
+start() {
+	if [ -n "$(pidof pptp)" ]; then
+		echo 'pptp is already running'
+		exit 1
+	fi
+	echo -n 'Starting pptp ...'
+	set -o noglob
+
+	rm -f /mod/etc/ppp/peers/pptp
+	rm -f /mod/etc/ppp/ip-up
+	rm -f /mod/etc/ppp/ip-down
+	[ -x /tmp/flash/ppp/peers/pptp_peer ] && /tmp/flash/ppp/peers/pptp_peer > /mod/etc/ppp/peers/pptp
+	[ ! -e /mod/etc/ppp/peers/pptp ] && /etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
+	[ -x /tmp/flash/ppp/pppd_ip-up ] && /tmp/flash/ppp/pppd_ip-up > /mod/etc/ppp/ip-up
+	[ ! -e /mod/etc/ppp/ip-up ] && /etc/default.${PPPD}/pppd_ip-up > /mod/etc/ppp/ip-up
+	[ -x /tmp/flash/ppp/pppd_ip-down ] && /tmp/flash/ppp/pppd_ip-down > /mod/etc/ppp/ip-down
+	[ ! -e /mod/etc/ppp/ip-down ] && /etc/default.${PPPD}/pppd_ip-down > /mod/etc/ppp/ip-down
+	chmod 755 /mod/etc/ppp/ip-up
+	chmod 755 /mod/etc/ppp/ip-down
+	
+	modprobe arc4
+	modprobe sha1
+	modprobe ppp_generic
+	modprobe ppp_async
+	modprobe ppp_deflate
+	modprobe ppp_mppe_mppc
+
+	if [ ! -z "$PPTP_PRECONN" ]; then
+		echo "$PPTP_PRECONN" > /tmp/pptp_preconn
+		chmod +x /tmp/pptp_preconn
+		/tmp/pptp_preconn
+		rm /tmp/pptp_preconn
+	fi
+
+	$PPPD call pptp $PPTP_OPTIONS
+	sleep 3
+	if [ -n "$(pidof pptp)" ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		if [ "$PPTP_RESTART" == "yes" -a -z "$(pidof pptp_restart)" ]; then
+			echo -n 'Starting restart script ...'
+			if [ -x /var/tmp/flash/ppp/pptp_restart ]; then
+				/var/tmp/flash/ppp/pptp_restart &
+			else
+				/etc/default.pptp/pptp_restart &
+			fi
+			exitval=$?
+			if [ "$exitval" -eq 0 ]; then
+				echo 'done.'
+			else
+				echo 'failed.'
+				exit $exitval
+			fi
+		fi;
+	fi
+}
+
+stop() {
+	echo -n 'Stopping pptp ...'
+
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+	fi
+	sleep 3
+	if [ -n "$(pidof pptp_restart)" ]; then
+		echo -n 'Stopping restart script ...'
+		killall pptp_restart > /dev/null 2>&1
+		exitrest=$?
+		if [ "$exitrest" -eq 0 ]; then
+			echo 'done.'
+		else
+			echo 'failed.'
+		fi
+	fi
+	rm -f /mod/etc/ppp/peers/pptp
+}
+
+case "$1" in
+	""|load)
+		[ ! -d /tmp/flash/ppp ] && mkdir -p /tmp/flash/ppp
+		[ ! -d /mod/etc/ppp/peers ] && mkdir -p /mod/etc/ppp/peers
+
+		[ ! -e /tmp/flash/ppp/options.pptp ] && /etc/default.${DAEMON}/pptp_options > /tmp/flash/ppp/options.pptp
+		[ -e /tmp/flash/ppp/options.pptp ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
+
+		modreg cgi 'pptp' 'PPTP'
+
+		deffile='/mod/etc/default.pptp/pptp_options.def'
+		[ -r /tmp/flash/pptp_options.def ] && deffile='/tmp/flash/pptp_options.def'
+		modreg file 'pptp_options' 'PPTP: options.pptp' 0 "$deffile"
+
+		if [ "$PPTP_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg cgi 'pptp'
+		modunreg file 'pptp_options'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof "$DAEMON")" -a -z "$(pidof pptp_restart)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

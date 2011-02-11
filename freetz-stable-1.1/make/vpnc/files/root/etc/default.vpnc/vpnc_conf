@@ -1,0 +1,36 @@
+#!/bin/sh
+
+cat << EOF
+IPSec gateway $VPNC_IPSECGATEWAY
+IPSec ID $VPNC_IPSECID
+IPSec secret $VPNC_IPSECSECRET
+Xauth username $VPNC_XAUTHUSERNAME
+Xauth password $VPNC_XAUTHPASSWORD
+Local Port $VPNC_LOCALPORT
+IKE DH Group $VPNC_IKEDHGROUP
+Perfect Forward Secrecy $VPNC_PERFECTFORWARDSECRECY
+Debug 0
+Interface name tun0
+Pidfile /var/run/vpnc.pid
+EOF
+if [ "$VPNC_UDPENCAPSULATE" = "yes" ]; then
+	echo "UDP Encapsulate"
+fi
+if [ "$VPNC_ENABLESINGLEDES" = "yes" ]; then
+	echo "Enable Single DES"
+fi
+if [ "$VPNC_DISABLENATTRAVERSAL" = "yes" ]; then
+	echo "Disable NAT Traversal"
+fi
+if [ -n "$VPNC_DOMAIN" ]; then
+	echo "Domain $VPNC_DOMAIN"
+fi
+if [ -n "$VPNC_VENDOR" ]; then
+	echo "VENDOR $VPNC_VENDOR"
+fi
+if [ -n "$VPNC_NETWORK" ]; then
+	echo "#network $VPNC_NETWORK"
+fi
+if [ -n "$VPNC_MASK" ]; then
+	echo "#mask $VPNC_MASK"
+fi

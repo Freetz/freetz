@@ -1,0 +1,48 @@
+#!/bin/sh
+
+if [ "$VSFTPD_ENABLED" != "inetd" ]; then
+	LISTEN="yes"
+else
+	LISTEN="no"
+fi
+
+cat << EOF
+background=yes
+check_shell=no
+listen=$LISTEN
+anonymous_enable=$VSFTPD_ANONYMOUS
+local_enable=$VSFTPD_USERS_ENABLED
+local_umask=022
+chroot_local_user=$VSFTPD_CHROOT
+passwd_chroot_enable=$VSFTPD_CHROOT
+write_enable=yes
+banner_file=/etc/motd
+nopriv_user=root
+secure_chroot_dir=/var/run/vsftpd
+listen_port=$VSFTPD_PORT
+userlist_enable=yes
+anon_root=$VSFTPD_ANON_ROOT
+xferlog_std_format=no
+xferlog_enable=$VSFTPD_LOG_ENABLE
+vsftpd_log_file=$VSFTPD_LOG_FILE
+log_ftp_protocol=$VSFTPD_LOG_PROTOC
+syslog_enable=$VSFTPD_LOG_SYSLOG
+max_clients=$VSFTPD_MAX_CLIENTS
+max_per_ip=$VSFTPD_MAX_PER_IP
+pasv_min_port=$VSFTPD_PASV_MIN
+pasv_max_port=$VSFTPD_PASV_MAX
+pasv_promiscuous=$VSFTPD_PROMISCUOUS
+delay_failed_login=$VSFTPD_DELAY_FAILED_LOGIN
+chroot_list_enable=yes
+ssl_enable=$VSFTPD_ENABLE_SSL
+ssl_sslv2=$VSFTPD_ENABLE_SSLV2
+ssl_sslv3=$VSFTPD_ENABLE_SSLV3
+ssl_tlsv1=$VSFTPD_ENABLE_TLSV1
+force_local_data_ssl=$VSFTPD_FORCE_DATA_SSL
+force_local_logins_ssl=$VSFTPD_FORCE_LOGIN_SSL
+EOF
+if [ "$VSFTPD_PASV_ADDRESS" = "yes" ]; then echo "pasv_address=`/usr/bin/get_ip -e`"; fi
+echo "$VSFTPD_ADD_SETTINGS" | grep -v "^#" | while read -r line; do
+	[ -n "$line" ] && echo "$line"
+done
+

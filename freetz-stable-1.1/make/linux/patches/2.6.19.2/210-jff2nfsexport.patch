@@ -1,0 +1,29 @@
+--- linux-2.6.19.2/fs/jffs2/super.c.orig	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/fs/jffs2/super.c	2009-03-02 23:49:37.000000000 +0100
+@@ -79,6 +79,10 @@
+ 	.sync_fs =	jffs2_sync_fs,
+ };
+ 
++/* Just declare a void structure as A NULL value implies the default */
++static struct export_operations jffs2_export_ops;
++
++
+ static int jffs2_sb_compare(struct super_block *sb, void *data)
+ {
+ 	struct jffs2_sb_info *p = data;
+@@ -150,6 +154,7 @@
+ 	spin_lock_init(&c->inocache_lock);
+ 
+ 	sb->s_op = &jffs2_super_operations;
++	sb->s_export_op = &jffs2_export_ops;
+ 	sb->s_flags = flags | MS_NOATIME;
+ 	sb->s_xattr = jffs2_xattr_handlers;
+ #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+@@ -321,6 +326,7 @@
+ 	.name =		"jffs2",
+ 	.get_sb =	jffs2_get_sb,
+ 	.kill_sb =	jffs2_kill_sb,
++	.fs_flags = FS_REQUIRES_DEV,
+ };
+ 
+ static int __init init_jffs2_fs(void)

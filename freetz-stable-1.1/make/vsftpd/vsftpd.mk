@@ -1,0 +1,48 @@
+$(call PKG_INIT_BIN, 2.2.2)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=ftp://vsftpd.beasts.org/users/cevans
+$(PKG)_BINARY:=$($(PKG)_DIR)/vsftpd
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/vsftpd
+$(PKG)_STARTLEVEL=40
+$(PKG)_SOURCE_MD5:=6d6bc136af14c23f8fef6f1a51f55418
+
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_VSFTPD_STATIC
+$(PKG)_CONFIG_SUBOPTS += FREETZ_PACKAGE_VSFTPD_WITH_SSL
+
+VSFTPD_LDFLAGS = ""
+
+ifeq ($(strip $(FREETZ_PACKAGE_VSFTPD_WITH_SSL)),y)
+$(PKG)_DEPENDS_ON := openssl
+VSFTPD_CFLAGS = -DFREETZ_PACKAGE_VSFTPD_WITH_SSL
+VSFTPD_LDFLAGS += -lssl -lcrypto -ldl
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_VSFTPD_STATIC)),y)
+VSFTPD_LDFLAGS += -static
+endif
+
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
+
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	PATH="$(TARGET_PATH)" \
+		$(MAKE) -C $(VSFTPD_DIR) \
+		CC="$(TARGET_CC)" \
+		CFLAGS="$(TARGET_CFLAGS) $(VSFTPD_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS) $(VSFTPD_LDFLAGS)"
+
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+$(pkg):
+
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
+$(pkg)-clean:
+	-$(MAKE) -C $(VSFTPD_DIR) clean
+
+$(pkg)-uninstall:
+	$(RM) $(VSFTPD_TARGET_BINARY)
+
+$(PKG_FINISH)

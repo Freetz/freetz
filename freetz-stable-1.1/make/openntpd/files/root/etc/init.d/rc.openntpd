@@ -1,0 +1,128 @@
+#!/bin/sh
+
+DAEMON=openntpd
+
+MULTIDUPNPPARAM=`multid -? 2>&1 | grep "upnp" | sed 's/^[ \t]*//' |cut -c 1-3`
+MULTIDNTPPARAM=`multid -? 2>&1 | grep "NTP" | sed 's/^[ \t]*//' |cut -c 1-3`
+
+. /etc/init.d/modlibrc
+
+start() {
+	modlib_adduser ntp -G users -D -S -g "NTP daemon"
+
+	# Setting permissions
+	chown root /mod/home/ntp -R
+	chmod 0700 /mod/home/ntp -R
+
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+
+	echo 'Starting ntp server...'
+
+	if [ "$OPENNTPD_MULTID" = "no" ]; then
+		echo ' * Restarting multid without ntp client...'
+		multid -s > /dev/null 2>&1
+		
+		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
+			multid $MULTIDUPNPPARAM $MULTIDNTPPARAM > /dev/null 2>&1
+		else
+			multid $MULTIDNTPPARAM > /dev/null 2>&1
+		fi
+	fi
+
+	if [ ! -e "/var/db" ]; then
+		mkdir -p /var/db
+	fi
+
+	if [ ! -e "/mod/etc/ntpd.conf" ]; then
+		echo "Creating needed ntpd.conf links"
+		ln -s /tmp/flash/ntpd.conf /mod/etc/ntpd.conf
+	fi
+	
+	ntpd -s -f /mod/etc/ntpd.conf
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop () {
+	echo -n 'Stopping ntp server...'
+	kill -USR1 $(pidof -s ntpd) > /dev/null 2>&1
+	exitval=$?
+	
+	# Restart multid without "-t" option
+	multid -s > /dev/null 2>&1
+	if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
+		multid $MULTIDUPNPPARAM > /dev/null 2>&1
+	else
+		multid > /dev/null 2>&1
+	fi
+
+	rm -f /mod/etc/$DAEMON.conf
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		modreg cgi 'openntpd' 'Openntpd'
+
+		deffile='/mod/etc/default.openntpd/openntpd_conf.def'
+		[ -r '/tmp/flash/openntpd_conf.def' ] && deffile='/tmp/flash/openntpd_conf.def'
+		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file 'openntpd_conf' 'Openntpd config' 0 "$deffile"
+		
+		if [ "$OPENNTPD_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg file 'openntpd_conf'
+		modunreg cgi 'openntpd'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "$(pidof ntpd)" ]; then
+			echo 'stopped'
+		else
+			echo 'running'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,10 @@
+--- console-tools/setconsole.c.orig	2008-06-25 14:51:18.000000000 +0200
++++ console-tools/setconsole.c	2008-07-30 11:35:21.000000000 +0200
+@@ -34,6 +34,6 @@
+ 			device = DEV_CONSOLE;
+ 	}
+ 
+-	xioctl(xopen(device, O_RDONLY), TIOCCONS, NULL);
++	xioctl(xopen(device, O_RDWR), TIOCCONS, NULL);
+ 	return EXIT_SUCCESS;
+ }

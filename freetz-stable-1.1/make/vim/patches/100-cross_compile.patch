@@ -1,0 +1,763 @@
+diff -Nur src/auto/configure.orig src/auto/configure
+--- src/auto/configure.orig	2007-05-12 13:49:09.000000000 +0200
++++ src/auto/configure	2008-03-12 18:50:49.000000000 +0100
+@@ -2796,14 +2796,6 @@
+   fi
+ fi
+ 
+-if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot compile a simple program, check CC and CFLAGS
+-  (cross compiling doesn't work)" >&5
+-echo "$as_me: error: cannot compile a simple program, check CC and CFLAGS
+-  (cross compiling doesn't work)" >&2;}
+-   { (exit 1); exit 1; }; }
+-fi
+-
+ test "$GCC" = yes && CPP_MM=M;
+ 
+ if test -f ./toolcheck; then
+@@ -3410,27 +3402,6 @@
+ 
+ 
+ 
+-have_local_include=''
+-have_local_lib=''
+-if test "$GCC" = yes; then
+-  echo 'void f(){}' > conftest.c
+-    have_local_include=`${CC-cc} -no-cpp-precomp -c -v conftest.c 2>&1 | grep '/usr/local/include'`
+-  have_local_lib=`${CC-cc} -c -v conftest.c 2>&1 | grep '/usr/local/lib'`
+-  rm -f conftest.c conftest.o
+-fi
+-if test -z "$have_local_lib" -a -d /usr/local/lib; then
+-  tt=`echo "$LDFLAGS" | sed -e 's+-L/usr/local/lib ++g' -e 's+-L/usr/local/lib$++g'`
+-  if test "$tt" = "$LDFLAGS"; then
+-    LDFLAGS="$LDFLAGS -L/usr/local/lib"
+-  fi
+-fi
+-if test -z "$have_local_include" -a -d /usr/local/include; then
+-  tt=`echo "$CPPFLAGS" | sed -e 's+-I/usr/local/include ++g' -e 's+-I/usr/local/include$++g'`
+-  if test "$tt" = "$CPPFLAGS"; then
+-    CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+-  fi
+-fi
+-
+ echo "$as_me:$LINENO: checking --with-vim-name argument" >&5
+ echo $ECHO_N "checking --with-vim-name argument... $ECHO_C" >&6
+ 
+@@ -9287,9 +9258,8 @@
+ echo "$as_me:$LINENO: checking quality of toupper" >&5
+ echo $ECHO_N "checking quality of toupper... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
+-   { (exit 1); exit 1; }; }
++  { echo "$as_me:$LINENO: WARNING: failed to compile test program" >&5
++echo "$as_me: WARNING: failed to compile test program" >&2;}
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -11762,9 +11732,12 @@
+ echo "$as_me:$LINENO: checking whether we talk terminfo" >&5
+ echo $ECHO_N "checking whether we talk terminfo... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program." >&5
+-echo "$as_me: error: failed to compile test program." >&2;}
+-   { (exit 1); exit 1; }; }
++  { echo "$as_me:$LINENO: WARNING: failed to compile test program." >&5
++echo "$as_me: WARNING: failed to compile test program." >&2;}
++          cat >>confdefs.h <<\_ACEOF
++#define TERMINFO 1
++_ACEOF
++
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -12327,9 +12300,8 @@
+ echo $ECHO_N "checking default tty permissions/group... $ECHO_C" >&6
+ rm -f conftest_grp
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
+-   { (exit 1); exit 1; }; }
++  { echo "$as_me:$LINENO: WARNING: failed to compile test program" >&5
++echo "$as_me: WARNING: failed to compile test program" >&2;}
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -12556,9 +12528,8 @@
+ echo "$as_me:$LINENO: checking getcwd implementation" >&5
+ echo $ECHO_N "checking getcwd implementation... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
+-   { (exit 1); exit 1; }; }
++  { echo "$as_me:$LINENO: WARNING: failed to compile test program" >&5
++echo "$as_me: WARNING: failed to compile test program" >&2;}
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -12819,10 +12790,12 @@
+ 
+ echo "$as_me:$LINENO: checking whether stat() ignores a trailing slash" >&5
+ echo $ECHO_N "checking whether stat() ignores a trailing slash... $ECHO_C" >&6
+-if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
+-   { (exit 1); exit 1; }; }
++if test "${ac_cv_func_stat_ignores_trailing_slash+set}" = set; then
++  echo $ECHO_N "(cached) $ECHO_C" >&6
++else
++  if test "$cross_compiling" = yes; then
++  ac_cv_func_stat_ignores_trailing_slash=no
++
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -12845,22 +12818,27 @@
+   ac_status=$?
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; }; then
+-  echo "$as_me:$LINENO: result: yes" >&5
+-echo "${ECHO_T}yes" >&6; cat >>confdefs.h <<\_ACEOF
+-#define STAT_IGNORES_SLASH 1
+-_ACEOF
+-
++  ac_cv_func_stat_ignores_trailing_slash=yes
+ else
+   echo "$as_me: program exited with status $ac_status" >&5
+ echo "$as_me: failed program was:" >&5
+ sed 's/^/| /' conftest.$ac_ext >&5
+ 
+ ( exit $ac_status )
+-echo "$as_me:$LINENO: result: no" >&5
+-echo "${ECHO_T}no" >&6
++ac_cv_func_stat_ignores_trailing_slash=no
+ fi
+ rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+ fi
++fi
++echo "$as_me:$LINENO: result: $ac_cv_func_stat_ignores_trailing_slash" >&5
++echo "${ECHO_T}$ac_cv_func_stat_ignores_trailing_slash" >&6
++
++if X"$ac_cv_func_stat_ignores_trailing_slash" = Xyes; then
++       cat >>confdefs.h <<\_ACEOF
++#define STAT_IGNORES_SLASH 1
++_ACEOF
++
++fi
+ 
+ echo "$as_me:$LINENO: checking for iconv_open()" >&5
+ echo $ECHO_N "checking for iconv_open()... $ECHO_C" >&6
+@@ -13813,15 +13791,341 @@
+ fi
+ rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+ 
++echo "$as_me:$LINENO: checking for int" >&5
++echo $ECHO_N "checking for int... $ECHO_C" >&6
++if test "${ac_cv_type_int+set}" = set; then
++  echo $ECHO_N "(cached) $ECHO_C" >&6
++else
++  cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++$ac_includes_default
++int
++main ()
++{
++if ((int *) 0)
++  return 0;
++if (sizeof (int))
++  return 0;
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext
++if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest.$ac_objext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  ac_cv_type_int=yes
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++ac_cv_type_int=no
++fi
++rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
++fi
++echo "$as_me:$LINENO: result: $ac_cv_type_int" >&5
++echo "${ECHO_T}$ac_cv_type_int" >&6
+ 
+ echo "$as_me:$LINENO: checking size of int" >&5
+ echo $ECHO_N "checking size of int... $ECHO_C" >&6
+ if test "${ac_cv_sizeof_int+set}" = set; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
++  if test "$ac_cv_type_int" = yes; then
++  # The cast to unsigned long works around a bug in the HP C Compiler
++  # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
++  # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
++  # This bug is HP SR number 8606223364.
+   if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
++  # Depending upon the size, compute the lo and hi bounds.
++cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++$ac_includes_default
++int
++main ()
++{
++static int test_array [1 - 2 * !(((long) (sizeof (int))) >= 0)];
++test_array [0] = 0
++
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext
++if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest.$ac_objext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  ac_lo=0 ac_mid=0
++  while :; do
++    cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++$ac_includes_default
++int
++main ()
++{
++static int test_array [1 - 2 * !(((long) (sizeof (int))) <= $ac_mid)];
++test_array [0] = 0
++
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext
++if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest.$ac_objext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  ac_hi=$ac_mid; break
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++ac_lo=`expr $ac_mid + 1`
++		    if test $ac_lo -le $ac_mid; then
++		      ac_lo= ac_hi=
++		      break
++		    fi
++		    ac_mid=`expr 2 '*' $ac_mid + 1`
++fi
++rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
++  done
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++$ac_includes_default
++int
++main ()
++{
++static int test_array [1 - 2 * !(((long) (sizeof (int))) < 0)];
++test_array [0] = 0
++
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext
++if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest.$ac_objext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  ac_hi=-1 ac_mid=-1
++  while :; do
++    cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++$ac_includes_default
++int
++main ()
++{
++static int test_array [1 - 2 * !(((long) (sizeof (int))) >= $ac_mid)];
++test_array [0] = 0
++
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext
++if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest.$ac_objext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  ac_lo=$ac_mid; break
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++ac_hi=`expr '(' $ac_mid ')' - 1`
++		       if test $ac_mid -le $ac_hi; then
++			 ac_lo= ac_hi=
++			 break
++		       fi
++		       ac_mid=`expr 2 '*' $ac_mid`
++fi
++rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
++  done
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++ac_lo= ac_hi=
++fi
++rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
++fi
++rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
++# Binary search between lo and hi bounds.
++while test "x$ac_lo" != "x$ac_hi"; do
++  ac_mid=`expr '(' $ac_hi - $ac_lo ')' / 2 + $ac_lo`
++  cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++$ac_includes_default
++int
++main ()
++{
++static int test_array [1 - 2 * !(((long) (sizeof (int))) <= $ac_mid)];
++test_array [0] = 0
++
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext
++if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest.$ac_objext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  ac_hi=$ac_mid
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++ac_lo=`expr '(' $ac_mid ')' + 1`
++fi
++rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
++done
++case $ac_lo in
++?*) ac_cv_sizeof_int=$ac_lo;;
++'') { { echo "$as_me:$LINENO: error: cannot compute sizeof (int), 77
++See \`config.log' for more details." >&5
++echo "$as_me: error: cannot compute sizeof (int), 77
++See \`config.log' for more details." >&2;}
++   { (exit 1); exit 1; }; } ;;
++esac
++else
++  if test "$cross_compiling" = yes; then
++  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++See \`config.log' for more details." >&5
++echo "$as_me: error: cannot run test program while cross compiling
++See \`config.log' for more details." >&2;}
+    { (exit 1); exit 1; }; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+@@ -13830,14 +14134,37 @@
+ cat confdefs.h >>conftest.$ac_ext
+ cat >>conftest.$ac_ext <<_ACEOF
+ /* end confdefs.h.  */
++$ac_includes_default
++long longval () { return (long) (sizeof (int)); }
++unsigned long ulongval () { return (long) (sizeof (int)); }
+ #include <stdio.h>
+-		main()
+-		{
+-		  FILE *f=fopen("conftestval", "w");
+-		  if (!f) exit(1);
+-		  fprintf(f, "%d\n", (int)sizeof(int));
+-		  exit(0);
+-		}
++#include <stdlib.h>
++int
++main ()
++{
++
++  FILE *f = fopen ("conftest.val", "w");
++  if (! f)
++    exit (1);
++  if (((long) (sizeof (int))) < 0)
++    {
++      long i = longval ();
++      if (i != ((long) (sizeof (int))))
++	exit (1);
++      fprintf (f, "%ld\n", i);
++    }
++  else
++    {
++      unsigned long i = ulongval ();
++      if (i != ((long) (sizeof (int))))
++	exit (1);
++      fprintf (f, "%lu\n", i);
++    }
++  exit (ferror (f) || fclose (f) != 0);
++
++  ;
++  return 0;
++}
+ _ACEOF
+ rm -f conftest$ac_exeext
+ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+@@ -13850,19 +14177,27 @@
+   ac_status=$?
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; }; then
+-  ac_cv_sizeof_int=`cat conftestval`
++  ac_cv_sizeof_int=`cat conftest.val`
+ else
+   echo "$as_me: program exited with status $ac_status" >&5
+ echo "$as_me: failed program was:" >&5
+ sed 's/^/| /' conftest.$ac_ext >&5
+ 
+ ( exit $ac_status )
+-ac_cv_sizeof_int=0
++{ { echo "$as_me:$LINENO: error: cannot compute sizeof (int), 77
++See \`config.log' for more details." >&5
++echo "$as_me: error: cannot compute sizeof (int), 77
++See \`config.log' for more details." >&2;}
++   { (exit 1); exit 1; }; }
+ fi
+ rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+ fi
+ fi
+-
++rm -f conftest.val
++else
++  ac_cv_sizeof_int=0
++fi
++fi
+ echo "$as_me:$LINENO: result: $ac_cv_sizeof_int" >&5
+ echo "${ECHO_T}$ac_cv_sizeof_int" >&6
+ cat >>confdefs.h <<_ACEOF
+@@ -13870,6 +14205,7 @@
+ _ACEOF
+ 
+ 
++
+ echo "$as_me:$LINENO: checking whether memmove/bcopy/memcpy handle overlaps" >&5
+ echo $ECHO_N "checking whether memmove/bcopy/memcpy handle overlaps... $ECHO_C" >&6
+ bcopy_test_prog='
+@@ -13888,9 +14224,8 @@
+ 
+ 
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
+-   { (exit 1); exit 1; }; }
++  { echo "$as_me:$LINENO: WARNING: failed to compile test program" >&5
++echo "$as_me: WARNING: failed to compile test program" >&2;}
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -13923,9 +14258,8 @@
+ 
+ ( exit $ac_status )
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
+-   { (exit 1); exit 1; }; }
++  { echo "$as_me:$LINENO: WARNING: failed to compile test program" >&5
++echo "$as_me: WARNING: failed to compile test program" >&2;}
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -13958,9 +14292,8 @@
+ 
+ ( exit $ac_status )
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: failed to compile test program" >&5
+-echo "$as_me: error: failed to compile test program" >&2;}
+-   { (exit 1); exit 1; }; }
++  { echo "$as_me:$LINENO: WARNING: failed to compile test program" >&5
++echo "$as_me: WARNING: failed to compile test program" >&2;}
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+diff -Nur src/configure.in.orig vim71/src/configure.in
+--- src/configure.in.orig	2007-05-12 11:19:27.000000000 +0200
++++ src/configure.in	2008-03-12 18:50:49.000000000 +0100
+@@ -47,13 +47,6 @@
+   fi
+ fi
+ 
+-dnl If configure thinks we are cross compiling, there is probably something
+-dnl wrong with the CC or CFLAGS settings, give an understandable error message
+-if test "$cross_compiling" = yes; then
+-  AC_MSG_ERROR([cannot compile a simple program, check CC and CFLAGS
+-  (cross compiling doesn't work)])
+-fi
+-
+ dnl gcc-cpp has the wonderful -MM option to produce nicer dependencies.
+ dnl But gcc 3.1 changed the meaning!  See near the end.
+ test "$GCC" = yes && CPP_MM=M; AC_SUBST(CPP_MM)
+@@ -183,31 +176,6 @@
+ AC_SUBST(OS_EXTRA_SRC)
+ AC_SUBST(OS_EXTRA_OBJ)
+ 
+-dnl Add /usr/local/lib to $LDFLAGS and /usr/local/include to CFLAGS.
+-dnl Only when the directory exists and it wasn't there yet.
+-dnl For gcc don't do this when it is already in the default search path.
+-have_local_include=''
+-have_local_lib=''
+-if test "$GCC" = yes; then
+-  echo 'void f(){}' > conftest.c
+-  dnl -no-cpp-precomp is needed for OS X 10.2 (Ben Fowler)
+-  have_local_include=`${CC-cc} -no-cpp-precomp -c -v conftest.c 2>&1 | grep '/usr/local/include'`
+-  have_local_lib=`${CC-cc} -c -v conftest.c 2>&1 | grep '/usr/local/lib'`
+-  rm -f conftest.c conftest.o
+-fi
+-if test -z "$have_local_lib" -a -d /usr/local/lib; then
+-  tt=`echo "$LDFLAGS" | sed -e 's+-L/usr/local/lib ++g' -e 's+-L/usr/local/lib$++g'`
+-  if test "$tt" = "$LDFLAGS"; then
+-    LDFLAGS="$LDFLAGS -L/usr/local/lib"
+-  fi
+-fi
+-if test -z "$have_local_include" -a -d /usr/local/include; then
+-  tt=`echo "$CPPFLAGS" | sed -e 's+-I/usr/local/include ++g' -e 's+-I/usr/local/include$++g'`
+-  if test "$tt" = "$CPPFLAGS"; then
+-    CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+-  fi
+-fi
+-
+ AC_MSG_CHECKING(--with-vim-name argument)
+ AC_ARG_WITH(vim-name, [  --with-vim-name=NAME    what to call the Vim executable],
+ 	VIMNAME="$withval"; AC_MSG_RESULT($VIMNAME),
+@@ -1990,7 +1958,7 @@
+ AC_TRY_RUN([#include <ctype.h>
+ main() { exit(toupper('A') == 'A' && tolower('z') == 'z'); }],
+ 	AC_DEFINE(BROKEN_TOUPPER) AC_MSG_RESULT(bad),
+-	AC_MSG_RESULT(good), AC_MSG_ERROR(failed to compile test program))
++	AC_MSG_RESULT(good), AC_MSG_WARN(failed to compile test program))
+ 
+ AC_MSG_CHECKING(whether __DATE__ and __TIME__ work)
+ AC_TRY_COMPILE(, [printf("(" __DATE__ " " __TIME__ ")");],
+@@ -2211,7 +2179,8 @@
+ {char *s; s=(char *)tgoto("%p1%d", 0, 1); exit(!strcmp(s==0 ? "" : s, "1")); }],
+ 	  AC_MSG_RESULT([no -- we are in termcap land]),
+ 	  AC_MSG_RESULT([yes -- terminfo spoken here]); AC_DEFINE(TERMINFO),
+-	  AC_MSG_ERROR(failed to compile test program.))
++	  AC_MSG_WARN(failed to compile test program.)
++          AC_DEFINE(TERMINFO))
+ 
+ if test "x$olibs" != "x$LIBS"; then
+   AC_MSG_CHECKING(what tgetent() returns for an unknown terminal)
+@@ -2374,7 +2343,7 @@
+     fi
+ ],
+     AC_MSG_RESULT([can't determine - assume ptys are world accessable]),
+-    AC_MSG_ERROR(failed to compile test program))
++    AC_MSG_WARN(failed to compile test program))
+ rm -f conftest_grp
+ 
+ dnl Checks for library functions. ===================================
+@@ -2417,7 +2386,7 @@
+ 	AC_MSG_RESULT(it is usable),
+ 	AC_MSG_RESULT(it stinks)
+ 		AC_DEFINE(BAD_GETCWD),
+-	AC_MSG_ERROR(failed to compile test program))
++	AC_MSG_WARN(failed to compile test program))
+ 
+ dnl Check for functions in one big call, to reduce the size of configure
+ AC_CHECK_FUNCS(bcmp fchdir fchown fseeko fsync ftello getcwd getpseudotty \
+@@ -2441,13 +2410,20 @@
+ 	AC_MSG_RESULT(yes); AC_DEFINE(HAVE_ST_BLKSIZE),
+ 	AC_MSG_RESULT(no))
+ 
+-AC_MSG_CHECKING(whether stat() ignores a trailing slash)
++AC_CACHE_CHECK([whether stat() ignores a trailing slash],
++              [ac_cv_func_stat_ignores_trailing_slash],
+ AC_TRY_RUN(
+ [#include <sys/types.h>
+ #include <sys/stat.h>
+ main() {struct stat st;  exit(stat("configure/", &st) != 0); }],
+-	AC_MSG_RESULT(yes); AC_DEFINE(STAT_IGNORES_SLASH),
+-	AC_MSG_RESULT(no), AC_MSG_ERROR(failed to compile test program))
++       ac_cv_func_stat_ignores_trailing_slash=yes,
++       ac_cv_func_stat_ignores_trailing_slash=no,
++       ac_cv_func_stat_ignores_trailing_slash=no
++))
++
++if X"$ac_cv_func_stat_ignores_trailing_slash" = Xyes; then
++       AC_DEFINE(STAT_IGNORES_SLASH)
++fi
+ 
+ dnl Link with iconv for charset translation, if not found without library.
+ dnl check for iconv() requires including iconv.h
+@@ -2622,24 +2598,7 @@
+ 	AC_MSG_RESULT(yes); AC_DEFINE(HAVE_SYSCONF),
+ 	AC_MSG_RESULT(not usable))
+ 
+-dnl Our own version of AC_CHECK_SIZEOF(int); fixes a bug when sizeof() can't
+-dnl be printed with "%d", and avoids a warning for cross-compiling.
+-
+-AC_MSG_CHECKING(size of int)
+-AC_CACHE_VAL(ac_cv_sizeof_int,
+-	[AC_TRY_RUN([#include <stdio.h>
+-		main()
+-		{
+-		  FILE *f=fopen("conftestval", "w");
+-		  if (!f) exit(1);
+-		  fprintf(f, "%d\n", (int)sizeof(int));
+-		  exit(0);
+-		}],
+-	    ac_cv_sizeof_int=`cat conftestval`,
+-	    ac_cv_sizeof_int=0,
+-	    AC_MSG_ERROR(failed to compile test program))])
+-AC_MSG_RESULT($ac_cv_sizeof_int)
+-AC_DEFINE_UNQUOTED(SIZEOF_INT, $ac_cv_sizeof_int)
++AC_CHECK_SIZEOF(int)
+ 
+ AC_MSG_CHECKING(whether memmove/bcopy/memcpy handle overlaps)
+ [bcopy_test_prog='
+@@ -2665,9 +2624,9 @@
+ 	AC_DEFINE(USEBCOPY) AC_MSG_RESULT(bcopy does),
+ 	AC_TRY_RUN([#define mch_memmove(s,d,l) memcpy(d,s,l) $bcopy_test_prog],
+ 	    AC_DEFINE(USEMEMCPY) AC_MSG_RESULT(memcpy does), AC_MSG_RESULT(no),
+-	    AC_MSG_ERROR(failed to compile test program)),
+-	AC_MSG_ERROR(failed to compile test program)),
+-    AC_MSG_ERROR(failed to compile test program))
++	    AC_MSG_WARN(failed to compile test program)),
++	AC_MSG_WARN(failed to compile test program)),
++    AC_MSG_WARN(failed to compile test program))
+ 
+ dnl Check for multibyte locale functions
+ dnl Find out if _Xsetlocale() is supported by libX11.

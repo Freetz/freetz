@@ -1,0 +1,108 @@
+#!/bin/sh
+
+DAEMON=bftpd
+
+. /etc/init.d/modlibrc
+
+pre_config() {
+	modlib_adduser ftp -G users -D -S -g "FTP account"
+
+	mkdir -p /var/run/bftpd
+
+	if [ ! -e "/var/tmp/ftp" ]; then
+		ln -sf /mod/home/ftp /var/tmp/ftp
+	fi
+}
+
+write_config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$DAEMON/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > /mod/etc/$DAEMON.conf
+}
+
+start() {
+	echo -n 'Starting ftp server...'
+	write_config
+	$DAEMON -d $BFTPD_OPTIONS
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop () {
+	echo -n 'Stopping ftp server...'
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+
+	rm -f /mod/etc/$DAEMON.conf
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'bftpd' 'Bftpd'
+		
+		if [ "$BFTPD_ENABLED" != "yes" ]; then
+			if [ "$BFTPD_ENABLED" != "inetd" ]; then
+				echo "$DAEMON is disabled" 1>&2
+			else
+				echo "$DAEMON is started via inetd" 1>&2
+			fi
+			exit 1;
+		fi
+
+		start
+		;;
+	unload)
+		stop
+		modunreg cgi 'bftpd'
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ "$BFTPD_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+ 		else
+			if [ ! -z "$(pidof $DAEMON)" ]; then
+				echo 'running'
+			else
+				echo 'stopped'
+			fi
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,11 @@
+config FREETZ_PACKAGE_BLUEZ_UTILS
+	bool "bluez-utils 2.25 (binary only)"
+	select FREETZ_LIB_libbluetooth
+	select FREETZ_MODULE_hci_usb
+	select FREETZ_MODULE_bnep
+	select FREETZ_MODULE_rfcomm
+	#select FREETZ_PACKAGE_PPPD
+	default n
+	help
+		This package contains utilities for configuring bluetooth
+		connections.

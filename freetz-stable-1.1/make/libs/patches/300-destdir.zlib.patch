@@ -1,0 +1,66 @@
+--- Makefile.in.orig	2009-04-30 17:30:14.000000000 +0200
++++ Makefile.in	2009-04-30 17:30:14.000000000 +0200
+@@ -28,7 +28,8 @@
+ LDSHARED=$(CC)
+ CPP=$(CC) -E
+ 
+-LIBS=libz.a
++LIBS=
++STATICLIB=libz.a
+ SHAREDLIB=libz.so
+ SHAREDLIBV=libz.so.1.2.3
+ SHAREDLIBM=libz.so.1
+@@ -40,6 +41,8 @@
+ SHELL=/bin/sh
+ EXE=
+ 
++DESTDIR =
++
+ prefix = /usr/local
+ exec_prefix = ${prefix}
+ libdir = ${exec_prefix}/lib
+@@ -68,7 +71,7 @@
+ 	  echo '		*** zlib test FAILED ***'; \
+ 	fi
+ 
+-libz.a: $(OBJS) $(OBJA)
++$(STATICLIB): $(OBJS) $(OBJA)
+ 	$(AR) $(ARFLAGS) $@ $(OBJS) $(OBJA)
+ 	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+ 
+@@ -91,23 +94,23 @@
+ 	$(CC) $(CFLAGS) -o $@ minigzip.o $(LDFLAGS)
+ 
+ install: $(LIBS)
+-	-@if [ ! -d $(exec_prefix) ]; then mkdir -p $(exec_prefix); fi
+-	-@if [ ! -d $(includedir)  ]; then mkdir -p $(includedir); fi
+-	-@if [ ! -d $(libdir)      ]; then mkdir -p $(libdir); fi
+-	-@if [ ! -d $(man3dir)     ]; then mkdir -p $(man3dir); fi
+-	cp zlib.h zconf.h $(includedir)
+-	chmod 644 $(includedir)/zlib.h $(includedir)/zconf.h
+-	cp $(LIBS) $(libdir)
+-	cd $(libdir); chmod 755 $(LIBS)
+-	-@(cd $(libdir); $(RANLIB) libz.a || true) >/dev/null 2>&1
+-	cd $(libdir); if test -f $(SHAREDLIBV); then \
++	-@if [ ! -d $(DESTDIR)$(exec_prefix) ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi
++	-@if [ ! -d $(DESTDIR)$(includedir)  ]; then mkdir -p $(DESTDIR)$(includedir); fi
++	-@if [ ! -d $(DESTDIR)$(libdir)      ]; then mkdir -p $(DESTDIR)$(libdir); fi
++	-@if [ ! -d $(DESTDIR)$(man3dir)     ]; then mkdir -p $(DESTDIR)$(man3dir); fi
++	cp zlib.h zconf.h $(DESTDIR)$(includedir)
++	chmod 644 $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
++	cp $(STATICLIB) $(SHAREDLIBV) $(DESTDIR)$(libdir)
++	cd $(DESTDIR)$(libdir); chmod 755 $(LIBS)
++	-@(cd $(DESTDIR)$(libdir); $(RANLIB) libz.a || true) >/dev/null 2>&1
++	cd $(DESTDIR)$(libdir); if test -f $(SHAREDLIBV); then \
+ 	  rm -f $(SHAREDLIB) $(SHAREDLIBM); \
+ 	  ln -s $(SHAREDLIBV) $(SHAREDLIB); \
+ 	  ln -s $(SHAREDLIBV) $(SHAREDLIBM); \
+ 	  (ldconfig || true)  >/dev/null 2>&1; \
+ 	fi
+-	cp zlib.3 $(man3dir)
+-	chmod 644 $(man3dir)/zlib.3
++	cp zlib.3 $(DESTDIR)$(man3dir)
++	chmod 644 $(DESTDIR)$(man3dir)/zlib.3
+ # The ranlib in install is needed on NeXTSTEP which checks file times
+ # ldconfig is for Linux
+ 

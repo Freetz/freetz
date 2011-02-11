@@ -1,0 +1,12 @@
+--- etc/fstab.orig	2008-04-15 20:25:11.000000000 +0200
++++ etc/fstab	2008-04-15 20:27:10.000000000 +0200
+@@ -1,6 +1,6 @@
+ # /etc/fstab: static file system information.
+ #
+ # <file system> <mount point>   <type>  <options>               <dump>  <pass>
+-/dev/root        /              auto    defaults,errors=continue  0       0
+-proc             /proc          proc    defaults                  0       0
+-ramfs		     /var		    ramfs	defaults			      0       0
++proc            /proc           proc    nosuid,nodev,noexec     0       0
++tmpfs           /var            tmpfs   defaults                0       0
++sysfs           /sys            sysfs   nosuid,nodev,noexec     0       0

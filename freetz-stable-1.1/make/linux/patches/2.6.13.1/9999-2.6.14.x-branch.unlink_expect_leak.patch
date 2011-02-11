@@ -1,0 +1,27 @@
+From 37012f7fd326eb3c959428a4fe7e203e6304fe43 Mon Sep 17 00:00:00 2001
+From: Pablo Neira Ayuso <pablo@eurodev.net>
+Date: Tue, 9 Aug 2005 20:06:11 -0700
+Subject: [PATCH] [NETFILTER]: fix conntrack refcount leak in unlink_expect()
+
+In unlink_expect(), the expectation is removed from the list so the
+refcount must be dropped as well.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@eurodev.net>
+Signed-off-by: Harald Welte <laforge@netfilter.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ net/ipv4/netfilter/ip_conntrack_core.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
+index dace93e..9261388 100644
+--- linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
++++ linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
+@@ -144,6 +144,7 @@ static void unlink_expect(struct ip_conntrack_expect *exp)
+ 	list_del(&exp->list);
+ 	CONNTRACK_STAT_INC(expect_delete);
+ 	exp->master->expecting--;
++	ip_conntrack_expect_put(exp);
+ }
+ 
+ static void expectation_timed_out(unsigned long ul_expect)

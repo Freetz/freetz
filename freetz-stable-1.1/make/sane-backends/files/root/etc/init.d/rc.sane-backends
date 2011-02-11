@@ -1,0 +1,69 @@
+#!/bin/sh
+
+DAEMON=sane-backends
+. /etc/init.d/modlibrc
+
+PKG=sane-backends
+DAEMON=saned
+CONFDIR=/mod/etc/sane.d
+
+pre_config() {
+	[ ! -d $CONFDIR/dll.d ] && mkdir -p $CONFDIR/dll.d
+	for conf in /etc/default.$PKG/*.conf; do
+		[ -e $conf ] && ln -s $conf $CONFDIR/$(basename $conf);
+	done
+	for conf in /etc/default.$PKG/dll.d/*; do
+		[ -e $conf ] && cp $conf $CONFDIR/dll.d/;
+	done
+}
+
+config() {
+	(
+		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
+			/tmp/flash/${DAEMON}_conf
+		else
+			/mod/etc/default.$PKG/${DAEMON}_conf
+		fi
+
+		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
+			cat /tmp/flash/${DAEMON}.extra
+		fi
+	) > $CONFDIR/$DAEMON.conf
+}
+
+case "$1" in
+	""|load)
+		pre_config
+
+		modreg cgi 'sane-backends' 'SANE'
+			
+		if [ "$SANE_BACKENDS_SANED_ENABLED" != inetd ]; then
+			echo "$DAEMON is disabled" 1>&2
+		else
+			echo "$DAEMON is started via inetd" 1>&2
+			config
+		fi
+		;;
+	unload)
+		modunreg cgi 'sane-backends'
+		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		if [ "$SANE_BACKENDS_SANED_ENABLED" == "inetd" ]; then
+			echo 'inetd'
+ 		else
+			echo 'stopped'
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

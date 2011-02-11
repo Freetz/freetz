@@ -1,0 +1,7 @@
+CAPTION='Exports (nfsd)'
+DESCRIPTION='Syntax: &lt;path&gt; &lt;ip/subnet&gt; [&lt;mount options&gt;]<br>
+(z.B.: /var * (rw,anonuid=0,anongid=0,insecure,async,fsid=0,no_subtree_check)'
+
+CONFIG_FILE='/tmp/flash/nfsd/exports'
+CONFIG_SAVE='modsave flash; if [ -n "$(pidof mountd)" ]; then /mod/etc/init.d/rc.nfsd reload; fi'
+CONFIG_TYPE='text'

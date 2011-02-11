@@ -1,0 +1,36 @@
+--- tunables.c.orig	2009-05-06 13:11:29.385294308 +0200
++++ tunables.c	2009-05-06 13:21:02.697858053 +0200
+@@ -242,19 +242,19 @@
+   /* -rw------- */
+   tunable_chown_upload_mode = 0600;
+ 
+-  install_str_setting("/usr/share/empty", &tunable_secure_chroot_dir);
++  install_str_setting("/var/run/vsftpd", &tunable_secure_chroot_dir);
+   install_str_setting("ftp", &tunable_ftp_username);
+   install_str_setting("root", &tunable_chown_username);
+   install_str_setting("/var/log/xferlog", &tunable_xferlog_file);
+   install_str_setting("/var/log/vsftpd.log", &tunable_vsftpd_log_file);
+   install_str_setting(".message", &tunable_message_file);
+-  install_str_setting("nobody", &tunable_nopriv_user);
++  install_str_setting("root", &tunable_nopriv_user);
+   install_str_setting(0, &tunable_ftpd_banner);
+-  install_str_setting("/etc/vsftpd.banned_emails", &tunable_banned_email_file);
+-  install_str_setting("/etc/vsftpd.chroot_list", &tunable_chroot_list_file);
++  install_str_setting("/mod/etc/vsftpd.banned_emails", &tunable_banned_email_file);
++  install_str_setting("/mod/etc/vsftpd.chroot_list", &tunable_chroot_list_file);
+   install_str_setting("ftp", &tunable_pam_service_name);
+   install_str_setting("ftp", &tunable_guest_username);
+-  install_str_setting("/etc/vsftpd.user_list", &tunable_userlist_file);
++  install_str_setting("/mod/etc/vsftpd.user_list", &tunable_userlist_file);
+   install_str_setting(0, &tunable_anon_root);
+   install_str_setting(0, &tunable_local_root);
+   install_str_setting(0, &tunable_banner_file);
+@@ -269,7 +269,7 @@
+   install_str_setting(0, &tunable_user_sub_token);
+   install_str_setting("/etc/vsftpd.email_passwords",
+                       &tunable_email_password_file);
+-  install_str_setting("/usr/share/ssl/certs/vsftpd.pem",
++  install_str_setting("/var/tmp/flash/vsftpd.pem",
+                       &tunable_rsa_cert_file);
+   install_str_setting(0, &tunable_dsa_cert_file);
+   install_str_setting("DES-CBC3-SHA", &tunable_ssl_ciphers);

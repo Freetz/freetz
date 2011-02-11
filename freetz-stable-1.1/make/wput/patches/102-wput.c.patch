@@ -1,0 +1,76 @@
+*** src/wput.c.orig	2007-12-12 18:30:04.000000000 +0100
+--- src/wput.c	2008-07-07 14:22:37.000000000 +0200
+***************
+*** 582,589 ****
+  		{"output-file", 1, 0, 'o'},     
+  		{"port-mode", 0, 0, 'p'},       
+  		{"proxy", 1, 0, 'Y'},           
+! 		{"proxy-user", 1, 0, 0},
+! 		{"proxy-pass", 1, 0, 0},         //20
+  		{"quiet", 0, 0, 'q'},           
+  		{"random-wait", 0, 0, 0},       
+  		{"remove-source-files", 0, 0, 'R'},
+--- 582,589 ----
+  		{"output-file", 1, 0, 'o'},     
+  		{"port-mode", 0, 0, 'p'},       
+  		{"proxy", 1, 0, 'Y'},           
+! 		{"proxy_user", 1, 0, 0},
+! 		{"proxy_pass", 1, 0, 0},         //20
+  		{"quiet", 0, 0, 'q'},           
+  		{"random-wait", 0, 0, 0},       
+  		{"remove-source-files", 0, 0, 'R'},
+***************
+*** 601,607 ****
+  		{"version", 0, 0, 'V'},          //35
+  		{"wait", 1, 0, 'w'},            
+  		{"waitretry", 1, 0, 0},         
+! 		{0, 0, 0, 0}                    
+        };
+      while (1)
+      {
+--- 601,609 ----
+  		{"version", 0, 0, 'V'},          //35
+  		{"wait", 1, 0, 'w'},            
+  		{"waitretry", 1, 0, 0},         
+! 		{"proxy_host", 1, 0, 0},
+! 		{"proxy_port", 1, 0, 0},
+! 		{0, 0, 0, 0}
+        };
+      while (1)
+      {
+***************
+*** 656,661 ****
+--- 658,667 ----
+                  opt.basename = optarg;                              break;
+              case 37: //waitretry
+                  opt.retry_interval = atoi(optarg);                  break;
++             case 38: //proxy_host
++ 				set_option("proxy_host", optarg);    break;
++             case 39: //proxy_port
++ 				set_option("proxy_port", optarg);    break;
+              default:
+                  fprintf(stderr, _("Option %s should not appear here :|\n"), long_options[option_index].name);
+              }
+***************
+*** 762,769 ****
+  "  -l,  --limit-rate=RATE       limit upload rate to RATE\n"
+  "  -nd, --no-directories        do not create any directories\n"
+  "  -Y,  --proxy=http/socks/off  set proxy type or turn off\n"
+! "       --proxy-user=NAME       set the proxy-username to NAME\n"
+! "       --proxy-pass=PASS       set the proxy-password to PASS\n"
+  "\n"));
+  			fprintf(stderr, _(
+  "FTP-Options:\n"
+--- 768,778 ----
+  "  -l,  --limit-rate=RATE       limit upload rate to RATE\n"
+  "  -nd, --no-directories        do not create any directories\n"
+  "  -Y,  --proxy=http/socks/off  set proxy type or turn off\n"
+! "       --proxy_user=NAME       set the proxy-username to NAME\n"
+! "       --proxy_pass=PASS       set the proxy-password to PASS\n"
+! "       --proxy_port=PORT       set the proxy port to PORT\n"
+! "       --proxy_host=HOST       set the proxy host to HOST\n"
+! 
+  "\n"));
+  			fprintf(stderr, _(
+  "FTP-Options:\n"
+

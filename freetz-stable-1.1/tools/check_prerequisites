@@ -1,0 +1,118 @@
+#!/bin/bash
+
+LDCONFIG=/sbin/ldconfig
+
+error() {
+	echo $* >&2
+}
+
+check_program() {
+	which $1 > /dev/null && [ -x $(which $1) ]
+	return $?
+}
+
+check_lib() {
+	/sbin/ldconfig -p | grep "^[[:space:]]*$1 " > /dev/null
+	return $?
+}
+
+check_header() {
+	[ "" != "$(find /usr/include/ /usr/local/include/ -name "$1")" ]
+	return $?
+}
+
+check_requisite() {
+	case "$2" in
+		program)
+			check_program "$@"
+			return $?
+			;;
+		lib)
+			check_lib "$@"
+			return $?
+			;;
+		header)
+			check_header "$@"
+			return $?
+			;;
+		*)
+			error "Unknown requisite type: $2"
+			exit 1
+			;;
+	esac
+}
+
+failed_requisite() {
+	local required
+	if $3; then
+		required="WARNING"
+	else
+		required="ERROR"
+	fi
+	case "$2" in
+	        program)
+			echo "$required: The program $1 was not found in path."
+		        ;;
+		lib)
+			echo "$required: The library $1 was not found in /etc/ld.so.cache."
+		        ;;
+		header)
+			echo "$required: The header file $1 was not found in /usr/(local/)include."
+			;;
+		*)
+		        error "Unknown requisite type: $2"
+			exit 1
+			;;
+	esac
+}
+
+declare -a req
+parser=
+warn=false
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-h|--header)
+			parser=header
+			warn=false
+			;;
+		-l|--lib)
+			parser=lib
+			warn=false
+			;;
+		-p|--program)
+			parser=program
+			warn=false
+			;;
+		-w|--warn)
+			if [ "" != "$parser" ]; then
+				warn=true
+			fi
+			;;
+		*)
+			if [ "" != "$parser" ]; then
+				req[${#req[*]}]="$1"
+				req[${#req[*]}]=$parser
+				req[${#req[*]}]=$warn
+			else
+				error "Invalid argument: $1"
+				exit 1
+			fi
+			warn=false
+	esac
+	shift
+done
+
+err=0
+i=0
+while [ $i -lt ${#req[*]} ]; do
+	if ! check_requisite "${req[$i]}" ${req[$((i+1))]} ${req[$((i+2))]}; then
+		failed_requisite "${req[$i]}" ${req[$((i+1))]} ${req[$((i+2))]}
+		if ! ${req[$((i+2))]}; then
+			err=1
+		fi
+	fi
+	i=$((i+3))
+done
+
+exit $err

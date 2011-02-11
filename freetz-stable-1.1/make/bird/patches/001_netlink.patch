@@ -1,0 +1,12 @@
+diff -urN bird-1.0.11~/sysdep/linux/netlink/netlink.c bird-1.0.11/sysdep/linux/netlink/netlink.c
+--- sysdep/linux/netlink/netlink.c	2004-06-05 11:58:23.000000000 +0200
++++ sysdep/linux/netlink/netlink.c	2006-07-10 02:36:42.000000000 +0200
+@@ -12,6 +12,8 @@
+ #include <sys/socket.h>
+ #include <sys/uio.h>
+ #include <errno.h>
++#include <strings.h>
++#include <linux/if.h>
+ 
+ #undef LOCAL_DEBUG
+ 

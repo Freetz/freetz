@@ -1,0 +1,17 @@
+$FreeWRT$
+$MirOS: ports/misc/mc/patches/patch-lib_mc_menu,v 1.9 2007/03/01 23:56:43 tg Exp $
+--- lib/mc.menu	2004-08-17 08:31:16.000000000 +0000
++++ lib/mc.menu	2007-03-20 13:32:10.000000000 +0000
+@@ -1,4 +1,12 @@
+ shell_patterns=0
+++ t r & ! t t
++u       Diff file against opposite
++	diff -dupa %f %D/%F 2>&1 | less
++
++= t d
++U       Diff dir against opposite
++	diff -pdu . %D 2>&1 | grep -v "^Only in " | less
++
+ + ! t t
+ @       Do something on the current file
+ 	CMD=%{Enter command}

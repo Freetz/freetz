@@ -1,0 +1,17 @@
+Index: nfs-utils-1.1.2/support/nfs/svc_socket.c
+===================================================================
+--- /support/nfs/svc_socket.c	2008-04-13 10:38:24.000000000 +0200
++++ support/nfs/svc_socket.c	2008-04-13 10:38:24.000000000 +0200
+@@ -67,8 +67,10 @@
+   memset (&addr, 0, sizeof (addr));
+   addr.sin_family = AF_INET;
+ 
+-  ret = getrpcbynumber_r (number, &rpcbuf, rpcdata, sizeof rpcdata,
+-			  &rpcp);
++//  ret = getrpcbynumber_r (number, &rpcbuf, rpcdata, sizeof rpcdata,
++//			  &rpcp);
++  rpcp = getrpcbynumber (number);
++  ret = 0;
+   if (ret == 0 && rpcp != NULL)
+     {
+       /* First try name.  */

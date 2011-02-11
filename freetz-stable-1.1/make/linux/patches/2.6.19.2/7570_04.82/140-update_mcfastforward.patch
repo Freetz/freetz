@@ -1,0 +1,837 @@
+--- linux-2.6.19.2/include/linux/mcfastforward.h	2007-11-16 13:44:30.000000000 +0100
++++ linux-2.6.19.2/include/linux/mcfastforward.h	2009-06-24 14:33:03.000000000 +0200
+@@ -1,7 +1,7 @@
+ /*
+  * Multicast Fastforward from multicast source to destination ports
+  *
+- * Copyright (C) 2006 AVM GmbH
++ * Copyright (C) 2006-2009 AVM GmbH
+  *
+  * Interface for network drivers that will transmit fast forwarded
+  * multicast streams:
+@@ -164,26 +164,100 @@
+ 
+ /* kdsld */
+ 
++#define MCFW_VERSION	2
++int mcfw_get_version(void);
++
+ int mcfw_multicast_forward_ethernet_del(int sourceid, 
+                                         unsigned char mac[ETH_ALEN]);
+ int mcfw_multicast_forward_ethernet_add(int sourceid,
+                                         unsigned char mac[ETH_ALEN],
+                                         unsigned short vlanid,
+-									    unsigned short pppoesid);
++									    unsigned short pppoesid,
++										void *iface);
+ 
++/*
++ * returns:
++ *   0 - not handled
++ *   1 - forwarded
++ *   2 - dropped
++ */
+ int mcfw_multicast_forward_ethernet(int sourceid, struct sk_buff *skb);
+ int mcfw_multicast_forward_ip(int sourceid, struct sk_buff *skb);
+ 
++struct mcfw_counter {
++   u64 npkts;
++   u64 nbytes;
++};
++
++static inline void mcfw_counter_add(struct sk_buff *skb,
++                                    struct mcfw_counter *p)
++{
++   p->npkts++;
++   p->nbytes += skb->len;
++}
++
++struct mcfw_iface_rx_statistic {
++   struct mcfw_counter forwarded;
++   struct mcfw_counter dropped;
++};
++
++int mcfw_multicast_get_iface_statistic(int sourceid,
++                                       void *iface,
++							           struct mcfw_iface_rx_statistic *stat);
++
++
+ struct mcfw_statistic {
+-   __u64 pkt_dropped;
+-   __u64 pkt_forwarded;
+-   __u64 bytes_dropped;
+-   __u64 bytes_forwarded;
+-   __u64 pkt_no_memory;
+-   __u64 bytes_no_memory;
++   struct mcfw_counter forwarded;
++   struct mcfw_counter dropped;
++   struct mcfw_counter no_memory;
+ };
+ 
+ void mcfw_multicast_get_statistic(struct mcfw_statistic *p, int reset);
+ 
++
++struct mcgroupacct {
++   u32                 group;
++   struct timeval      jointime;
++   struct timeval      starttime;
++   struct timeval      endtime;
++   struct mcfw_counter forwarded;
++   struct mcfw_counter dropped;
++   struct mcfw_counter no_memory;
++};
++
++enum mcsourceacct_reason {
++   mcsourceacct_reason_start = 0,
++   mcsourceacct_reason_stop = 1,
++   mcsourceacct_reason_ssrc = 2,
++   mcsourceacct_reason_update = 3
++};
++
++#define MCFW_MAX_LOG2GAP	10
++
++struct mcsourceacct {
++   u32                      group;
++   u32                      source;
++   u32                      ssrc;
++   enum mcsourceacct_reason reason;
++   struct timeval           starttime;
++   struct timeval           endtime;
++   u32                      seqmatch;
++   u32                      seqduplicate;
++   u32                      seqtoolate;
++   u32                      seqwrong;
++   u32                      lost;
++   u32                      maxlost;
++   u32                      mingap;  /* minimum gap */
++   u32                      maxgap;  /* maximum gap */
++   u32                      sumgap;  /* sum of gaps */
++   u32                      sumgap2; /* sum of gap*gap */
++   u32                      log2gap[MCFW_MAX_LOG2GAP];
++   struct mcfw_counter      forwarded;
++};
++
++void mcfw_register_group_acct_cb(void (*cb)(struct mcgroupacct *p));
++void mcfw_register_source_acct_cb(void (*cb)(struct mcsourceacct *p));
++void mcfw_report_source_acct(void);
++
+ #endif /* __KERNEL */
+ #endif /* __MCFORWARD_H */
+--- linux-2.6.19.2/net/ipv4/mcfastforward.c	2009-03-23 18:24:10.000000000 +0100
++++ linux-2.6.19.2/net/ipv4/mcfastforward.c	2009-10-02 12:09:46.000000000 +0200
+@@ -19,6 +19,8 @@
+ #include <linux/compiler.h>
+ #include <linux/mcfastforward.h>
+ 
++/* #define MCFASTFORWARD_DEBUG */
++
+ #ifndef LOCALAREA_MCAST
+ #define LOCALAREA_MCAST(x)  (((x) & htonl(0xFFFF0000)) == htonl(0xEFFF0000))
+ #endif
+@@ -27,7 +29,31 @@
+ /* --------------------------------------------------------------------- */
+ /* --------------------------------------------------------------------- */
+ 
+-#undef GROUP_INTERVAL_IGNORES_ROBUSTNESS
++#define RTP_HDR_MAX_CSRC   16
++
++struct rtphdr {
++#if defined (__BIG_ENDIAN_BITFIELD)
++   u8    version:2,
++	     padbit:1,
++	     extbit:1,
++	     cc:4;
++   u8    markbit:1,
++	     paytype:7;
++#elif defined(__LITTLE_ENDIAN_BITFIELD)
++   u8    cc:4,
++	     extbit:1,
++	     padbit:1,
++	     version:2;
++   u8    paytype:7,
++         markbit:1;
++#else
++#error	"Please fix <asm/byteorder.h>"
++#endif
++   u16   seq_number;
++   u32   timestamp;
++   u32   ssrc;
++   u32   csrc[RTP_HDR_MAX_CSRC];
++};
+ 
+ /* --------------------------------------------------------------------- */
+ 
+@@ -35,13 +61,8 @@
+ #define DEFAULT_QUERY_INTERVAL                  125
+ #define DEFAULT_QUERY_RESPONSE_INTERVAL         10
+ 
+-#ifdef GROUP_INTERVAL_IGNORES_ROBUSTNESS
+-#define DEFAULT_GROUP_INTERVAL  \
+-  (1*DEFAULT_QUERY_INTERVAL)+DEFAULT_QUERY_RESPONSE_INTERVAL
+-#else
+ #define DEFAULT_GROUP_INTERVAL  \
+ 	(DEFAULT_ROBUSTNESS*DEFAULT_QUERY_INTERVAL)+DEFAULT_QUERY_RESPONSE_INTERVAL
+-#endif
+ 
+ /* --------------------------------------------------------------------- */
+ 
+@@ -88,6 +109,14 @@
+    int              forward;
+    int              nroutes;
+    struct mcroute   routes[MAX_NETDRIVER];
++   /* acct */
++   int                 no_rtp;
++   int                 running;
++   int                 errcnt;
++   u16                 seq;
++   u32                 ssrc;
++   u32                 msecs;
++   struct mcsourceacct acct;
+ };
+ 
+ struct mcgroup {
+@@ -98,6 +127,7 @@
+    unsigned long         group_interval; /* in jiffies */
+    struct mcgroupmember *members;
+    struct mcsource      *sources;
++   struct mcgroupacct    acct;
+ };
+ 
+ /* --------------------------------------------------------------------- */
+@@ -113,6 +143,8 @@
+    struct mcfw_netdriver *drivers[MAX_NETDRIVER];
+    struct mcfw_statistic  stat;
+    struct mcsource       *source_for_delete;
++   void (*group_acct_cb)(struct mcgroupacct *p);
++   void (*source_acct_cb)(struct mcsourceacct *p);
+ } mcfwglob = {
+    group_lock: SPIN_LOCK_UNLOCKED,
+    robustness: DEFAULT_ROBUSTNESS,
+@@ -386,9 +418,11 @@
+ {
+    mcfilter_reset(&p->filter);
+    del_timer(&p->timer);
++#ifdef MCFASTFORWARD_DEBUG
+    printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %u.%u.%u.%u (%s:%d) %s\n",
+ 	                 NIPQUAD(grp->group), NIPQUAD(p->ipaddr),
+ 	                 p->drv->name, p->port, append);
++#endif
+    kfree(p);
+ }
+ 
+@@ -398,8 +432,10 @@
+    unsigned long flags;
+    int i;
+ 
++#ifdef MCFASTFORWARD_DEBUG
+    printk(KERN_DEBUG "mcfw: member %u.%u.%u.%u: timer elapsed\n",
+ 					NIPQUAD(needle->ipaddr));
++#endif
+ 
+    spin_lock_irqsave(&mcfwglob.group_lock, flags);
+    for (i = 0; i < MCGROUP_HASHSIZ; i++) {
+@@ -439,14 +475,18 @@
+    for (pp = &grp->members; (p = *pp) != 0;  pp = &p->next) {
+ 	  if (p->drv == drv && memcmp(p->ethaddr, ethaddr, ETH_ALEN) == 0) {
+ 		 if (p->port != port) {
++#ifdef MCFASTFORWARD_DEBUG
+ 	        printk(KERN_DEBUG "mcfw: %u.%u.%u.%u now on other port %s:%d->%d\n",
+ 			                   NIPQUAD(p->ipaddr), drv->name, p->port, port);
++#endif
+ 			p->port = port;
+ 		 }
+ 		 if (p->ipaddr != ipaddr) {
++#ifdef MCFASTFORWARD_DEBUG
+ 	        printk(KERN_DEBUG "mcfw: %u.%u.%u.%u changes ip address to %u.%u.%u.%u (%s:%d)\n",
+ 			                   NIPQUAD(p->ipaddr), NIPQUAD(ipaddr),
+ 							   drv->name, p->port);
++#endif
+ 		    p->ipaddr = ipaddr;
+ 		 }
+ 		 break;
+@@ -475,8 +515,10 @@
+ 	  }
+ 
+ 	  if (mode == MCAST_INCLUDE && n == 0) {
++#ifdef MCFASTFORWARD_DEBUG
+ 	     printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %u.%u.%u.%u (%s:%d) already deleted\n",
+ 					   NIPQUAD(grp->group), NIPQUAD(ipaddr), drv->name, port);
++#endif
+ 		 return 0;
+ 	  }
+ 		 
+@@ -497,9 +539,11 @@
+ 	  p->timer.function = mcgroupmember_timer_handler;
+ 	  p->timer.data = (unsigned long)p;
+ 	  *pp = p;
++#ifdef MCFASTFORWARD_DEBUG
+ 	  printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %u.%u.%u.%u (%s:%d) added %s\n",
+ 			      NIPQUAD(grp->group), NIPQUAD(ipaddr), drv->name, port,
+ 				  mcfilter2str(&p->filter, buf, sizeof(buf)));
++#endif
+    } else {
+ 
+ 	  switch (subtype) {
+@@ -526,9 +570,11 @@
+ 			}
+ 			break;
+ 	  }
++#ifdef MCFASTFORWARD_DEBUG
+ 	  printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %u.%u.%u.%u (%s:%d) refresh %s\n",
+ 			      NIPQUAD(grp->group), NIPQUAD(ipaddr), drv->name, port,
+ 				  mcfilter2str(&p->filter, buf, sizeof(buf)));
++#endif
+    }
+ 
+    if (p->filter.mode == MCAST_INCLUDE && p->filter.n == 0) {
+@@ -546,9 +592,11 @@
+ 	  calc_routes(grp);
+ 	  grp->group_interval = mcfwglob.group_interval*HZ;
+ 	  mod_timer(&p->timer, jiffies + grp->group_interval);
++#ifdef MCFASTFORWARD_DEBUG
+ 	  printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %u.%u.%u.%u: setup timer (%lusecs)\n",
+ 				 NIPQUAD(grp->group), NIPQUAD(p->ipaddr),
+ 				 grp->group_interval/HZ);
++#endif
+    }
+ 
+    return 0;
+@@ -619,6 +667,27 @@
+ /* -------- struct mcsource -------------------------------------------- */
+ /* --------------------------------------------------------------------- */
+ 
++static inline void mcsource_reset_acct(struct mcsource *p)
++{
++   memset(&p->acct.seqmatch, 0,
++		  sizeof(struct mcsourceacct)-offsetof(struct mcsourceacct, seqmatch));
++   p->acct.mingap = 0xffffffff;
++}
++
++static void mcsource_gen_report(struct mcsource *p,
++                                enum mcsourceacct_reason reason,
++							    struct timeval *now)
++{
++   if (mcfwglob.source_acct_cb) {
++	  p->acct.endtime = *now;
++	  p->acct.ssrc = p->ssrc;
++	  p->acct.reason = reason;
++	  (*mcfwglob.source_acct_cb)(&p->acct);
++	  mcsource_reset_acct(p);
++	  p->acct.starttime = *now;
++   }
++}
++
+ static void calc_for_source(struct mcgroup *grp, struct mcsource *source)
+ {
+    struct mcgroupmember *member;
+@@ -639,9 +708,11 @@
+ 	  }
+    }
+ 
++#ifdef MCFASTFORWARD_DEBUG
+    printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: source %u.%u.%u.%u: %sforward\n",
+ 					NIPQUAD(grp->group), NIPQUAD(source->ipaddr),
+ 					source->nroutes ? "" : "NO ");
++#endif
+    if (source->nroutes) {
+ 	  for (i=0; i < MAX_NETDRIVER; i++) {
+ 		 if (mcfwglob.drivers[i]) {
+@@ -652,11 +723,14 @@
+ 			if (route->n == 0)
+ 			   continue;
+ 
++#ifdef MCFASTFORWARD_DEBUG
+ 			printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %s: %u member(s) (%s)\n",
+ 							  NIPQUAD(grp->group),
+ 							  mcfwglob.drivers[i]->name, route->n,
+ 							  portset2str(&route->portset, buf, sizeof(buf)));
++#endif
+ 			for (j=0; j < route->n; j++) {
++#ifdef MCFASTFORWARD_DEBUG
+ 				printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %s: %02x:%02x:%02x:%02x:%02x:%02x\n",
+ 							  NIPQUAD(grp->group),
+ 							  mcfwglob.drivers[i]->name,
+@@ -666,6 +740,7 @@
+ 							  route->members[j].ethaddr[3],
+ 							  route->members[j].ethaddr[4],
+ 							  route->members[j].ethaddr[5]);
++#endif
+ 			}
+ 		 }
+ 	  }
+@@ -675,6 +750,7 @@
+ static struct mcsource *mcsource_find_or_add(struct mcgroup *grp, u32 srcip)
+ {
+    struct mcsource **pp, *p;
++   struct timeval tv;
+    for (pp = &grp->sources; *pp; pp = &(*pp)->next) {
+ 	  if ((*pp)->ipaddr == srcip)
+ 		 return *pp;
+@@ -685,23 +761,116 @@
+ 						NIPQUAD(grp->group), NIPQUAD(srcip));
+ 	  return 0;
+    }
++   do_gettimeofday(&tv);
++   if (grp->sources == 0)
++	  grp->acct.starttime = tv;
+    memset(p, 0, sizeof(struct mcsource));
+    p->grp = grp;
+    p->ipaddr = srcip;
++   p->acct.group = grp->group;
++   p->acct.source = srcip;
++   p->acct.starttime = tv;
++   if (grp->sources == 0)
++	  do_gettimeofday(&grp->acct.starttime);
+    *pp = p;
++   mcsource_gen_report(p, mcsourceacct_reason_start, &tv);
+    calc_for_source(grp, p);
+    return p;
+ }
+ 
+ static void mcsource_free(struct mcsource *p)
+ {
++   struct timeval tv;
+    int i;
+    for (i=0; i < MAX_NETDRIVER; i++) {
+ 	  mcroute_reset(&p->routes[i]);
+    }
++   do_gettimeofday(&tv);
++   mcsource_gen_report(p, mcsourceacct_reason_stop, &tv);
+    kfree(p);
+ }
+ 
++static inline int after(u16 seq1, u16 seq2)
++{
++   return (s16)(seq2 - seq1) < 0;
++}
++
++#define TIMOFFSET	1242833119
++
++static inline void mcsource_check_skb(struct mcsource *p, struct sk_buff *skb)
++{
++   struct iphdr *iph;
++   struct rtphdr *rtph;
++   struct timeval tv;
++   size_t iphlen;
++   u32 msecs, gap = 0;
++   u16 seq;
++   unsigned off;
++
++   skb_get_timestamp(skb, &tv);
++   msecs = (tv.tv_sec-TIMOFFSET) * 1000 + tv.tv_usec / 1000;
++   if (p->msecs)
++	  gap = msecs-p->msecs;
++   if (gap < p->acct.mingap) p->acct.mingap = gap;
++   if (gap > p->acct.maxgap) p->acct.maxgap = gap;
++   off = fls(gap);
++   if (off >= MCFW_MAX_LOG2GAP)
++	  off = MCFW_MAX_LOG2GAP-1;
++   mcfw_counter_add(skb, &p->acct.forwarded);
++   p->acct.sumgap += gap;
++   p->acct.sumgap2 += gap*gap;
++   p->acct.log2gap[off]++;
++   p->msecs = msecs;
++
++   if (p->no_rtp)
++	  return;
++
++   iph = (struct iphdr *)(skb->data+14);
++   rtph = (struct rtphdr *)(((u8 *)iph)+(iph->ihl<<2)+8);
++
++   if (rtph->version != 2)
++	  goto no_rtp;
++
++   seq = ntohs(rtph->seq_number);
++   if (p->running == 0) {
++	  p->ssrc = rtph->ssrc;
++	  p->seq = (u16)(seq-1);
++	  p->running = 1;
++   } else if (rtph->ssrc != p->ssrc) {
++	  mcsource_gen_report(p, mcsourceacct_reason_ssrc, &tv);
++	  p->ssrc = rtph->ssrc;
++	  p->seq = (u16)(seq-1);
++   }
++
++   if (seq == p->seq) { /* duplicate packet */
++	  p->acct.seqduplicate++;
++	  return;
++   }
++   if (!after(seq, p->seq)) { /* old packet */
++	  p->acct.seqtoolate++;
++	  return;
++   }
++   if (seq != (u16)(p->seq + 1)) { /* packets lost */
++	  u32 lost = (s16)(seq - p->seq);
++	  p->acct.seqwrong++;
++	  p->acct.lost += lost;
++	  if (lost > p->acct.maxlost)
++		 p->acct.maxlost = lost;
++	  p->seq = seq;
++	  return;
++   }
++   p->acct.seqmatch++;
++   p->seq = seq;
++   return;
++
++no_rtp:
++   p->no_rtp = 1;
++#ifdef MCFASTFORWARD_DEBUG
++   printk(KERN_INFO "mcfw: %u.%u.%u.%u from %u.%u.%u.%u is no rtp\n",
++					NIPQUAD(p->grp->group), NIPQUAD(p->ipaddr));
++#endif
++}
++
+ static void mcgroupsource_delete_all(struct mcgroup *grp)
+ {
+    struct mcsource *p;
+@@ -718,6 +887,29 @@
+ 
+ /* --------------------------------------------------------------------- */
+ 
++void mcfw_report_source_acct(void)
++{
++   if (mcfwglob.source_acct_cb) {
++	  struct timeval tv;
++	  unsigned long flags;
++	  int i;
++
++	  do_gettimeofday(&tv);
++	  spin_lock_irqsave(&mcfwglob.group_lock, flags);
++	  for (i = 0; i < MCGROUP_HASHSIZ; i++) {
++		 struct mcgroup *grp;
++		 for (grp = mcfwglob.grouphashtab[i]; grp; grp = grp->link) {
++			struct mcsource *p;
++			for (p = grp->sources; p; p = p->next)
++			   mcsource_gen_report(p, mcsourceacct_reason_update, &tv);
++		 }
++	  }
++	  spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
++   }
++}
++
++/* --------------------------------------------------------------------- */
++
+ static inline int grouphashval(u32 group)
+ {
+ #ifdef __BIG_ENDIAN
+@@ -741,8 +933,10 @@
+    unsigned long flags;
+    int changed = 0;
+ 
++#ifdef MCFASTFORWARD_DEBUG
+    printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: checking timer elapsed\n",
+ 					NIPQUAD(arg));
++#endif
+ 
+    spin_lock_irqsave(&mcfwglob.group_lock, flags);
+    if ((grp = *find_mcgroup((u32)arg)) != 0) {
+@@ -798,11 +992,29 @@
+ 	  p->checking_timer.function = mcgroup_checking_timer_handler;
+ 	  p->checking_timer.data = group;
+ 	  p->group_interval = mcfwglob.group_interval*HZ;
++	  p->acct.group = group;
++      do_gettimeofday(&p->acct.jointime);
+ 	  *pp = p;
+    }
+    return p;
+ }
+ 
++static inline void mcgroup_report_acct(struct mcgroup *grp)
++{
++   if (mcfwglob.group_acct_cb)
++      (*mcfwglob.group_acct_cb)(&grp->acct);
++}
++
++void mcfw_register_group_acct_cb(void (*cb)(struct mcgroupacct *p))
++{
++   mcfwglob.group_acct_cb = cb;
++}
++
++void mcfw_register_source_acct_cb(void (*cb)(struct mcsourceacct *p))
++{
++   mcfwglob.source_acct_cb = cb;
++}
++
+ static void mcgroup_del(u32 group, int fast)
+ {
+    struct mcgroup **pp, *grp;
+@@ -813,8 +1025,12 @@
+ 	  del_timer(&grp->checking_timer);
+ 	  mcgroupmember_delete_all(grp);
+ 	  mcgroupsource_delete_all(grp);
++#ifdef MCFASTFORWARD_DEBUG
+ 	  printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: %sleave\n",
+ 					   NIPQUAD(group), fast ? "fast " : "");
++#endif
++      do_gettimeofday(&grp->acct.endtime);
++	  mcgroup_report_acct(grp);
+       kfree(grp);
+    }
+ }
+@@ -879,7 +1095,7 @@
+    struct mcgroup *grp;
+    unsigned long flags;
+ 
+-#if 1
++#ifdef MCFASTFORWARD_DEBUG
+    {
+ 	  char buf[128];
+ 	  printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: query %s:%s %lusec\n",
+@@ -896,8 +1112,10 @@
+ 		 for (p = grp->members; p; p = p->next)
+ 			p->checking = 1;
+ 		 mod_timer(&grp->checking_timer, jiffies + maxdelay + 1);
++#ifdef MCFASTFORWARD_DEBUG
+ 		 printk(KERN_DEBUG "mcfw: group %u.%u.%u.%u: setup checking timer (%lusecs)\n",
+ 						  NIPQUAD(group), maxdelay/HZ);
++#endif
+ 	  }
+       spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
+    }
+@@ -1108,13 +1326,8 @@
+ 		 }
+ 	  }
+ 	  if (!suppress && group == 0) {
+-#ifdef GROUP_INTERVAL_IGNORES_ROBUSTNESS
+-		 mcfwglob.group_interval = 
+-			 (1 * mcfwglob.query_interval) + maxdelay/10 + 1;
+-#else
+ 		 mcfwglob.group_interval = 
+ 			 (mcfwglob.robustness * mcfwglob.query_interval) + maxdelay/10 + 1;
+-#endif
+ 	  }
+ 	  mcfw_query_sent(drv, portset, group, maxdelay*(HZ/IGMP_TIMER_SCALE));
+    }
+@@ -1127,12 +1340,15 @@
+    u8                mac[ETH_ALEN];
+    unsigned short    vlanid;        /* hostorder */
+    u16               pppoesid;      /* netorder */
++   struct mcfw_iface_rx_statistic  stat;
++   void                           *iface;
+ };
+ 
+ static struct mcsourcedata {
+    char             name[MCFW_MAXSOURCENAME];
+    atomic_t         index;
+    struct encapdesc *descs;
++   struct mcfw_iface_rx_statistic  stat;
+ } mcsourcedata[MCFW_MAXSOURCE];
+ 
+ /* --------------------------------------------------------------------- */
+@@ -1212,8 +1428,10 @@
+ 	  }
+       spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
+ 	  if (p) {
++#ifdef MCFASTFORWARD_DEBUG
+ 		 printk(KERN_DEBUG "mcfw: forward disabled (%s)\n",
+ 							encapdesc2str(dp->name, p, buf, sizeof(buf)));
++#endif
+ 		 kfree(p);
+       }
+ 	  return 0;
+@@ -1225,7 +1443,8 @@
+ int mcfw_multicast_forward_ethernet_add(int id,
+                                         unsigned char mac[ETH_ALEN],
+                                         unsigned short vlanid,
+-										unsigned short pppoesid)
++										unsigned short pppoesid,
++										void *iface)
+ {
+    unsigned long flags;
+    char buf[128];
+@@ -1243,22 +1462,27 @@
+ 	  memcpy(p->mac, mac, ETH_ALEN);
+ 	  p->vlanid = vlanid;
+ 	  p->pppoesid = htons(pppoesid);
++	  p->iface = iface;
+       spin_lock_irqsave(&mcfwglob.group_lock, flags);
+ 	  for (pp = &dp->descs; *pp; pp = &(*pp)->next) {
+ 	 	 if (memcmp((*pp)->mac, mac, ETH_ALEN) == 0) {
+ 			(*pp)->vlanid = vlanid;
+ 			(*pp)->pppoesid = htons(pppoesid);
+             spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
++#ifdef MCFASTFORWARD_DEBUG
+ 			printk(KERN_DEBUG "mcfw: forward changed (%s)\n",
+ 							  encapdesc2str(dp->name, p, buf, sizeof(buf)));
++#endif
+ 			kfree(p);
+ 			return 0;
+ 		 }
+ 	  }
+ 	  *pp = p;
+       spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
++#ifdef MCFASTFORWARD_DEBUG
+ 	  printk(KERN_DEBUG "mcfw: forward enabled (%s)\n",
+ 						encapdesc2str(dp->name, p, buf, sizeof(buf)));
++#endif
+ 	  return 0;
+    }
+    printk(KERN_ERR "mcfw: forward add: id %d out of range\n", id);
+@@ -1336,7 +1560,10 @@
+    }
+ }
+ 
+-int mcfw_multicast_forward(int sourceid, struct sk_buff *skb, struct iphdr *iph)
++static int mcfw_multicast_forward(int sourceid,
++                                  struct sk_buff *skb,
++								  struct iphdr *iph,
++								  struct mcfw_iface_rx_statistic *statp)
+ {
+    struct mcsource *source;
+    struct mcgroup *grp;
+@@ -1356,11 +1583,11 @@
+    if (grp == 0)
+ 	  goto drop;
+    source = mcsource_find_or_add(grp, iph->saddr);
+-   if (source == 0)
+-	  goto drop;
+-   if (source->nroutes == 0)
++   if (source == 0 || source->nroutes == 0)
+ 	  goto drop;
+ 
++   mcfw_counter_add(skb, &statp->forwarded);
++
+    /*
+ 	* prepare skb
+ 	*/
+@@ -1386,13 +1613,15 @@
+    ethh->h_proto = __constant_htons(ETH_P_IP);
+    memcpy(ethh->h_dest, grp->groupmac, ETH_ALEN);
+ 
+-   mcfwglob.stat.pkt_forwarded++;
+-   mcfwglob.stat.bytes_forwarded += len;
++   mcfw_counter_add(skb, &mcfwglob.stat.forwarded);
++   mcfw_counter_add(skb, &grp->acct.forwarded);
+ 
+    source->inuse++; 
+    count = source->nroutes;
+    spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
+ 
++   mcsource_check_skb(source, skb);
++
+    for (i = 0; count && i < MAX_NETDRIVER; i++) {
+ 	  struct mcroute *route = &source->routes[i];
+ 	  struct mcfw_netdriver *drv;
+@@ -1406,8 +1635,8 @@
+ 	        struct sk_buff *tskb = skb;
+ 			if (--count) {
+ 			   if ((tskb = skb_copy(skb, GFP_ATOMIC)) == 0) {
+-			      mcfwglob.stat.pkt_no_memory++;
+-			      mcfwglob.stat.bytes_no_memory += skb->len;
++				  mcfw_counter_add(skb, &grp->acct.no_memory);
++				  mcfw_counter_add(skb, &mcfwglob.stat.no_memory);
+ 				  continue;
+ 			   }
+ 			}
+@@ -1422,8 +1651,8 @@
+ 		 struct sk_buff *tskb = skb;
+ 		 if (--count) {
+ 			if ((tskb = skb_copy(skb, GFP_ATOMIC)) == 0) {
+-			   mcfwglob.stat.pkt_no_memory++;
+-			   mcfwglob.stat.bytes_no_memory += skb->len;
++			   mcfw_counter_add(skb, &grp->acct.no_memory);
++			   mcfw_counter_add(skb, &mcfwglob.stat.no_memory);
+ 			   continue;
+ 			}
+ 		 }
+@@ -1448,16 +1677,15 @@
+    return 1;
+ 
+ drop:
+-   mcfwglob.stat.pkt_dropped++;
+-   mcfwglob.stat.bytes_dropped += skb->len;
++   mcfw_counter_add(skb, &statp->dropped);
++   if (grp) mcfw_counter_add(skb, &grp->acct.dropped);
++   mcfw_counter_add(skb, &mcfwglob.stat.dropped);
+    spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
+    dev_kfree_skb_any(skb);
+    return 2;
+ }
+ 
+-static inline int _mcfw_multicast_forward_ethernet(int id, struct sk_buff *skb, 
+-                                                   unsigned short *vlanid, 
+-                                                   unsigned short *pppoesid)
++int mcfw_multicast_forward_ethernet(int id, struct sk_buff *skb)
+ {
+    struct mcsourcedata *dp;
+    struct encapdesc *p;
+@@ -1473,29 +1701,49 @@
+    }
+    if (!iph)
+ 	  return 0;
+-   if (vlanid) *vlanid = p->vlanid;
+-   if (pppoesid) *pppoesid = p->pppoesid;
+-   return mcfw_multicast_forward(id, skb, iph);
++   return mcfw_multicast_forward(id, skb, iph, &p->stat);
+ }
+ 
+-int mcfw_multicast_forward_ethernet(int id, struct sk_buff *skb)
++int mcfw_multicast_forward_ip(int id, struct sk_buff *skb)
+ {
+-   return _mcfw_multicast_forward_ethernet(id, skb, 0, 0);
++   struct iphdr *iph = (struct iphdr *)skb->data;
++   struct mcsourcedata *dp;
++
++   if (id < 0 || id >= MCFW_MAXSOURCE)
++	  return 0;
++
++   dp = &mcsourcedata[id];
++   return mcfw_multicast_forward(id, skb, iph, &dp->stat);
+ }
+ 
+-/* Attention: No declaration in mcastforward.h, we use
+-   forward-Deklaration in kdsld.c because of the use of "weak"-declaration */
+-int mcfw_multicast_forward_ethernet_adv(int id, struct sk_buff *skb, 
+-                                        unsigned short *vlanid, 
+-                                        unsigned short *pppoesid)
++int mcfw_multicast_get_iface_statistic(int id,
++                                       void *iface,
++							           struct mcfw_iface_rx_statistic *stat)
+ {
+-   return _mcfw_multicast_forward_ethernet(id, skb, vlanid, pppoesid);
++   struct mcsourcedata *dp;
++   struct encapdesc *p;
++   unsigned long flags;
++
++   if (id < 0 || id >= MCFW_MAXSOURCE)
++	  return -1;
++   
++   spin_lock_irqsave(&mcfwglob.group_lock, flags);
++   dp = &mcsourcedata[id];
++   for (p = dp->descs; p; p = p->next) {
++	  if (p->iface == iface) {
++		 *stat = p->stat;
++		 break;
++	  }
++   }
++   if (p == 0)
++	  *stat = dp->stat;
++   spin_unlock_irqrestore(&mcfwglob.group_lock, flags);
++   return 0;
+ }
+ 
+-int mcfw_multicast_forward_ip(int sourceid, struct sk_buff *skb)
++int mcfw_get_version(void)
+ {
+-   struct iphdr *iph = (struct iphdr *)skb->data;
+-   return mcfw_multicast_forward(sourceid, skb, iph);
++   return MCFW_VERSION;
+ }
+ 
+ EXPORT_SYMBOL(mcfw_netdriver_register);
+@@ -1506,10 +1754,14 @@
+ EXPORT_SYMBOL(mcfw_multicast_forward_free_id);
+ EXPORT_SYMBOL(mcfw_multicast_forward_ethernet_add);
+ EXPORT_SYMBOL(mcfw_multicast_forward_ethernet_del);
++EXPORT_SYMBOL(mcfw_multicast_get_iface_statistic);
+ EXPORT_SYMBOL(mcfw_multicast_get_statistic);
+ EXPORT_SYMBOL(mcfw_multicast_forward_ethernet);
+ EXPORT_SYMBOL(mcfw_multicast_forward_ip);
+-EXPORT_SYMBOL(mcfw_multicast_forward_ethernet_adv);
++EXPORT_SYMBOL(mcfw_register_group_acct_cb);
++EXPORT_SYMBOL(mcfw_register_source_acct_cb);
++EXPORT_SYMBOL(mcfw_report_source_acct);
++EXPORT_SYMBOL(mcfw_get_version);
+ 
+ static int __init mcfw_init_module(void)
+ {

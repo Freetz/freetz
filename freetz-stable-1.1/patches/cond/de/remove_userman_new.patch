@@ -1,0 +1,70 @@
+--- usr/www/all/html/de/internet/inetstat.js.orig	2007-10-09 14:37:18.000000000 +0200
++++ usr/www/all/html/de/internet/inetstat.js	2007-10-09 14:37:18.000000000 +0200
+@@ -379,7 +379,4 @@
+ 	jslDisplay("uiCounter", n==1);
+ 	jslSetValue("uiPostTab", n);
+ }
+-function uiDoNutzung() {
+-	jslGoTo("", "userlist");
+-}
+ </script>
+--- usr/www/all/html/de/internet/internet.frm.orig	2007-03-12 15:47:00.000000000 +0100
++++ usr/www/all/html/de/internet/internet.frm	2007-10-09 14:37:18.000000000 +0200
+@@ -8,5 +8,4 @@
+ 	` ?>
+ ` ?>
+ ` ?>
+-<? if eq <? query connection0:settings/type ?> 'pppoe' `<? setvariable var:name 'userlist' ?>` ?>
+ <? include ../html/$var:lang/internet/$var:name.frm ?>
+--- usr/www/all/html/de/internet/internet.html.orig	2007-10-09 14:37:18.000000000 +0200
++++ usr/www/all/html/de/internet/internet.html	2007-10-09 14:37:18.000000000 +0200
+@@ -8,5 +8,4 @@
+ 	` ?>
+ ` ?>
+ ` ?>
+-<? if eq <? query connection0:settings/type ?> 'pppoe' `<? setvariable var:name 'userlist' ?>` ?>
+ <? include ../html/$var:lang/internet/$var:name.html ?>
+--- usr/www/all/html/de/internet/internet.js.orig	2007-10-09 14:37:18.000000000 +0200
++++ usr/www/all/html/de/internet/internet.js	2007-10-09 14:37:18.000000000 +0200
+@@ -8,5 +8,4 @@
+ 	` ?>
+ ` ?>
+ ` ?>
+-<? if eq <? query connection0:settings/type ?> 'pppoe' `<? setvariable var:name 'userlist' ?>` ?>
+ <? include ../html/$var:lang/internet/$var:name.js ?>
+--- usr/www/all/html/de/menus/menu2_homehome.html.orig	2007-10-09 14:37:18.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_homehome.html	2007-10-09 14:37:18.000000000 +0200
+@@ -14,13 +14,6 @@
+ <? if eq $var:pagename dialbuch `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ 	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','fonbuch')"><? echo $var:evtxt02 ?></a></li>
+ <? setvariable var:classname 'LSubitem' ?>
+-<? if eq $var:pagename userlist `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename useradd1 `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename useradd2 `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+-<? if eq '<? query connection0:settings/type ?>' 'pppoe' `
+-	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','userlist')"><? echo '$var:evtxt03' ?></a></li>
+-` ?>
+-<? setvariable var:classname 'LSubitem' ?>
+ <? if eq $var:pagename inetstat `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename budget `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
+ <? if eq '<? query connection0:settings/type ?>' 'pppoe' `
+--- usr/www/all/html/de/menus/menu2_internet.html.orig	2007-10-09 14:37:18.000000000 +0200
++++ usr/www/all/html/de/menus/menu2_internet.html	2007-10-09 14:37:18.000000000 +0200
+@@ -35,9 +35,6 @@
+ <? if eq $var:pagename dyndns `<? setvariable var:class6 'LSubitemaktiv' ?>` ?>
+ <? if eq $var:pagename vpn `<? setvariable var:class6 'LSubitemaktiv' ?>` ?>
+ <? setvariable var:class7 'LSubitem' ?>
+-<? if eq $var:pagename userlist `<? setvariable var:class7 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename useradd1 `<? setvariable var:class7 'LSubitemaktiv' ?>` ?>
+-<? if eq $var:pagename useradd2 `<? setvariable var:class7 'LSubitemaktiv' ?>` ?>
+ <? if eq <? query connection0:settings/type ?> pppoe `
+ <? if eq $var:pagename internet `<? setvariable var:class7 'LSubitemaktiv' ?>` ?>
+ ` ?>
+@@ -59,7 +56,6 @@
+ <? if eq '<? query sar:settings/encapsulation ?>' 'dslencap_ipraw' `<? setvariable var:showPortfreigabe 1 ?>` ?>
+ <? if eq $var:showsubmenu 1 `
+ 	<? if eq '<? query connection0:settings/type ?>' 'pppoe' `
+-		<li class="<? echo $var:class7 ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('internet','userlist')">$var:txt06</a></li>
+ 		<li class="<? echo $var:class4 ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('internet','inetstat')">$var:txt00</a></li>
+ 	` ?>
+ <li class="<? echo '$var:class1' ?>"><img src="<? echo '$var:subpfeil' ?>"> <a href="<? echo '$var:pagepath' ?>var:menu=internet&var:pagename=pppoe&var:activtype=<? query connection0:settings/type ?>"><? echo '$var:txt01' ?></a></li>

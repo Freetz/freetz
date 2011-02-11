@@ -1,0 +1,146 @@
+#! /usr/bin/perl -w
+
+use bytes;
+
+# MC extfs for (possibly compressed) Berkeley style mailbox files
+# Peter Daum <gator@cs.tu-berlin.de> (Jan 1998, mc-4.1.24)
+
+$zcat="zcat";                 # gunzip to stdout
+$bzcat="bzip2 -dc";           # bunzip2 to stdout
+$file="file";                 # "file" command
+$TZ='GMT';                    # default timezone (for Date module)
+
+if (eval "require Date::Manip") {
+    import Date::Manip;
+    $parse_date=
+	sub {
+	    return UnixDate($_[0], "%l"); # "ls -l" format
+	}
+} elsif (eval "require Date::Parse") {
+    import Date::Parse;
+    $parse_date=
+	sub {
+	    local $_ =localtime(str2time($_[0],$TZ));
+	    s/^... (.+) (\d\d:\d\d):\d\d (\d\d\d\d)$/$1 $3 $2/;
+	    return $_;
+	}
+} else {			# use "light" version
+    $parse_date= sub {
+	# assumes something like: Mon, 5 Jan 1998 16:08:19 +0200 (GMT+0200)
+	# if you have mails with another date format, add it here
+	if (/(\d\d?) ([A-Z][a-z][a-z]) (\d\d\d\d) (\d\d?:\d\d)/) {
+	    return "$2 $1 $3 $4";
+	}
+	# Y2K bug.
+	# Date: Mon, 27 Mar 100 16:30:47 +0000 (GMT)
+	if (/(\d\d?) ([A-Z][a-z][a-z]) (1?\d\d) (\d\d?:\d\d)/) {
+	    $correct_year = 1900 + $3;
+	    if ($correct_year < 1970) {
+		$correct_year += 100;
+	    }
+	    return "$2 $1 $correct_year $4";
+	}
+	# AOLMail(SM).
+	# Date: Sat Jul 01 10:06:06 2000
+	if (/([A-Z][a-z][a-z]) (\d\d?) (\d\d?:\d\d)(:\d\d)? (\d\d\d\d)/) {
+	    return "$1 $2 $5 $3";
+	}
+	# Fallback
+	return localtime(time);
+    }
+}
+
+sub process_header {
+    while (<IN>) {
+	$size+=length;
+	s/\r$//;
+	last if /^$/;
+	die "unexpected EOF\n" if eof;
+	if (/^Date:\s(.*)$/) {
+	    $date=&$parse_date($1);
+	} elsif (/^Subject:\s(.*)$/) {
+	    $subj=lc($1);
+	    $subj=~ s/^(re:\s?)+//gi;  # no leading Re:
+	    $subj=~ tr/a-zA-Z0-9//cd; # strip all "special" characters
+	} elsif (/^From:\s.*?(\w+)\@/) {
+	    $from=$1;
+	} elsif (/^To:\s.*?(\w+)\@/) {
+	    $to=lc($1);
+	}
+    }
+}
+
+sub print_dir_line {
+    $from=$to if ($from eq $user); # otherwise, it would look pretty boring
+    $date=localtime(time) if (!defined $date);
+    printf "-r-------- 1 $< $< %d %s %3.3d_%.25s\n",
+    $size, $date, $msg_nr, "${from}_${subj}";
+
+}
+
+sub mailfs_list {
+    my $blank = 1;
+    $user=$ENV{USER}||getlogin||getpwuid($<) || "nobody";
+
+    while(<IN>) {
+	s/\r$//;
+	if($blank && /^From /) { # Start of header
+	    print_dir_line unless (!$msg_nr);
+	    $size=length;
+	    $msg_nr++;
+	    ($from,$to,$subj,$date)=("none","none","none", "01-01-80");
+	    process_header;
+	    $line=$blank=0;
+	} else {
+	    $size+=length;
+	    $line++;
+	    $blank= /^$/;
+	}
+    }
+    print_dir_line unless (!$msg_nr);
+    exit 0;
+}
+
+sub mailfs_copyout {
+    my($source,$dest)=@_;
+    exit 1 unless (open STDOUT, ">$dest");
+    ($nr)= ($source =~ /^(\d+)/); # extract message number from "filename"
+
+    my $blank = 1;
+    while(<IN>) {
+	s/\r$//;
+	if($blank && /^From /) {
+	    $msg_nr++;
+	    exit(0) if ($msg_nr > $nr);
+	    $blank= 0;
+	} else {
+	    $blank= /^$/;
+	}
+	print if ($msg_nr == $nr);
+    }
+}
+
+# main {
+exit 1 unless ($#ARGV >= 1);
+$msg_nr=0;
+$cmd=shift;
+$mbox_name=shift;
+my $mbox_qname = quotemeta ($mbox_name);
+$_=`$file $mbox_qname`;
+
+if (/gzip/) {
+    exit 1 unless (open IN, "$zcat $mbox_qname|");
+} elsif (/bzip/) {
+    exit 1 unless (open IN, "$bzcat $mbox_qname|");
+} else {
+    exit 1 unless (open IN, "<$mbox_name");
+}
+
+umask 077;
+
+if($cmd eq "list") { &mailfs_list; exit 0; }
+elsif($cmd eq "copyout") { &mailfs_copyout(@ARGV); exit 0; }
+
+exit 1;
+
+

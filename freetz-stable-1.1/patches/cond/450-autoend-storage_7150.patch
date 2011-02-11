@@ -1,0 +1,13 @@
+--- etc/hotplug/storage.orig	2009-09-05 11:42:08.000000000 +0000
++++ etc/hotplug/storage	2009-09-05 11:42:21.000000000 +0000
+@@ -42,6 +42,10 @@
+ local DEVICE=$1
+ local MPOINT=$2
+ local MPNAME=$3
++AUTOEND=$MPOINT/autoend.sh
++if [ -x $AUTOEND ]; then
++$AUTOEND
++fi
+ passeeren
+ if [ -p "/var/tam/mount" ]; then
+ echo "u$MPOINT" > /var/tam/mount

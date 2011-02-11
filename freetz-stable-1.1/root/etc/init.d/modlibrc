@@ -1,0 +1,147 @@
+# Shell functions for the scripts in /etc/init.d
+
+# If $DAEMON is defined before including this file, some additional preparations is performed
+# other environment variables:
+# DAEMON_LONG_NAME	service name to display in start/stop message, default $DAEMON
+# PID_FILE		pid-file for DAEMON, default /var/run/$DAEMON.pid
+
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+
+
+# modlib_addgroup:
+#   check for group name, create group if not found.
+#   No check is done for a change in the optional arguments!
+#	$1: group name
+#	$2-n: optional arguments for addgroup
+modlib_addgroup()
+{
+	local group="$1"
+	shift
+	if grep -q "^$group:" /etc/group; then
+		return 0
+	fi
+	echo -n "Looking for group '$group' ... "
+	if addgroup "$@" $group; then
+		echo -n "created - now saving to data buffer ... "
+		modusers save && echo "done" || echo "failed"
+	else
+		echo "not created - error occurred"
+	fi
+}
+
+# modlib_adduser:
+#   check for user name, create user if not found.
+#   No check is done for a change in the optional arguments!
+#	$1: user name
+#	$2-n: optional arguments for adduser
+modlib_adduser()
+{
+	local user="$1"
+	shift
+	if grep -q "^$user:" /etc/passwd; then
+		return 0
+	fi
+	echo -n "Looking for user '$user' ... "
+	local msg=$(adduser "$@" $user 2>&1)
+	if [ "$?" = 0 ]; then
+		echo -n "created - now saving to data buffer ... "
+		modusers save && echo "done" || echo "failed"
+	else
+		echo "not created - error occurred: $msg"
+		exit 1
+	fi
+}
+
+# modlib_check_running
+#   check whether daemon is running. return status
+modlib_check_running()
+{
+	local fn=${PID_FILE-/var/run/$DAEMON.pid}
+	[ ! -s "$fn" ] && return 1
+	kill -0 $(cat "$fn") 2> /dev/null
+	local status="$?"
+	[ "$status" != "0" ] && rm -f "$fn"
+	return "$status"
+}
+
+# modlib_stop
+#   stop daemon
+modlib_stop()
+{
+	local fn=${PID_FILE-/var/run/$DAEMON.pid}
+	echo -n "Stopping ${DAEMON_LONG_NAME-$DAEMON}..."
+	if ! modlib_check_running; then
+		echo 'not running.'
+		return 0
+	fi
+	kill $(cat "$fn") 2> /dev/null
+	local status=$?
+	rm -f "$fn"
+	if [ "$status" -eq 0 ]; then
+		echo 'done.'
+		return 0
+	else
+		echo 'failed.'
+		return 1
+	fi
+}
+
+# modlib_reload
+#   reload daemon (send signal SIGHUP)
+modlib_reload()
+{
+	local fn=${PID_FILE-/var/run/$DAEMON.pid}
+	echo -n "Reloading ${DAEMON_LONG_NAME-$DAEMON}..."
+	if ! modlib_check_running; then
+		echo 'not running.'
+		return 0
+	fi
+	kill -HUP $(cat "$fn") 2> /dev/null
+	local status=$?
+	if [ "$status" -eq 0 ]; then
+		echo 'done.'
+		return 0
+	else
+		rm -f "$fn"
+		echo 'failed.'
+		return 1
+	fi
+}
+
+# modlib_restart
+#   restart daemon
+#   function "start" must be defined in the calling script
+modlib_restart()
+{
+	modlib_stop
+	sleep 1
+	start
+}
+
+# modlib_status
+#   check whether daemon is running
+modlib_status()
+{
+	if modlib_check_running; then
+		echo 'running'
+		return 0
+	else
+		echo 'stopped'
+		return 3
+	fi
+}
+
+# load config
+[ -n "$DAEMON" ] && case "$1" in
+	""|config|load|reload|restart|start|status)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		. /mod/etc/conf/$DAEMON.cfg
+		;;
+esac
+

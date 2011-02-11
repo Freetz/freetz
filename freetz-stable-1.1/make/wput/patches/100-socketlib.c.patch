@@ -1,0 +1,34 @@
+*** src/socketlib.c.orig	2007-12-12 18:30:04.000000000 +0100
+--- src/socketlib.c	2008-07-07 22:26:05.000000000 +0200
+***************
+*** 390,404 ****
+  wput_socket * socket_timeout_connect(wput_socket * sock, struct sockaddr *remote_addr, size_t size, int timeout) {
+    int c = 0;
+    printout(vDEBUG, "initiating timeout connect (%d)\n", timeout);
+- #ifdef WIN32
+    /* reset errno before connecting. otherwise connection might "fail" for:
+     * no such file or directory ;) */
+    errno = 0;
+! #endif
+!   socket_set_blocking(sock->fd, 0);
+    c = connect(sock->fd,remote_addr,size);
+    if(errno > 0 && errno != 115 && errno != 36) {
+! 	printout(vMORE, "[%s]", strerror(errno));
+  	return NULL;
+    }
+    /* DEBUG if(c == -1) perror("connect"); */
+--- 390,402 ----
+  wput_socket * socket_timeout_connect(wput_socket * sock, struct sockaddr *remote_addr, size_t size, int timeout) {
+    int c = 0;
+    printout(vDEBUG, "initiating timeout connect (%d)\n", timeout);
+    /* reset errno before connecting. otherwise connection might "fail" for:
+     * no such file or directory ;) */
+    errno = 0;
+!   socket_set_blocking(sock->fd, 1);
+    c = connect(sock->fd,remote_addr,size);
+    if(errno > 0 && errno != 115 && errno != 36) {
+! 	printout(vMORE, "[%d:%s] ", errno, strerror(errno));
+  	return NULL;
+    }
+    /* DEBUG if(c == -1) perror("connect"); */
+

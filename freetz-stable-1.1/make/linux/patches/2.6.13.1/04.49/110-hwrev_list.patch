@@ -1,0 +1,21 @@
+--- linux-2.6.13.1/drivers/char/avm_new/Makefile.26.orig	2007-06-05 15:23:33.000000000 +0200
++++ linux-2.6.13.1/drivers/char/avm_new/Makefile.26	2007-12-21 22:18:54.000000000 +0100
+@@ -97,3 +97,5 @@
+ obj-$(CONFIG_AVM_SAMMEL) += avm.o 
+ 
+ # EXTRA_CFLAGS	+= -g -ggdb -save-temps
++EXTRA_CFLAGS    += -DAVM_NEW_HWREV_LIST="\" 118 117 110 114 129 115 108 94 127 122 101 120 102 121 104 103 105 95 107 106 128 79 112 111 \""
++
+--- linux-2.6.13.1/drivers/net/avm_cpmac/Makefile.26.orig	2007-06-05 15:23:33.000000000 +0200
++++ linux-2.6.13.1/drivers/net/avm_cpmac/Makefile.26	2007-12-21 22:18:54.000000000 +0100
+@@ -16,5 +16,9 @@
+ 
+ $(obj)/dummy.o: $(src)/linux_avm_cpmac.h
+ 	touch $(obj)/dummy.o
+-	cp -f $(src)/linux_avm_cpmac.h $(FRITZ_BOX_BUILD_DIR)/$(KERNEL_BUILD)/filesystem/include/linux/avm_cpmac.h 
+ 
++EXTRA_CFLAGS  += -DAVM_CPMAC_SWITCH_HWREV_LIST="\"94 95 101 102 107 111 117 119 \""
++EXTRA_CFLAGS  += -DAVM_CPMAC_VDSL_HWREV_LIST="\" \""
++EXTRA_CFLAGS  += -DAVM_CPMAC_NO_PHY0_HWREV_LIST="\"79 84 \""
++EXTRA_CFLAGS  += -DAVM_CPMAC_NO_PHY1_HWREV_LIST="\"K 58 60 61 64 65 66 78 \""
++EXTRA_CFLAGS  += -DAVM_CPMAC_NQOS_HWREV_LIST="\" \""

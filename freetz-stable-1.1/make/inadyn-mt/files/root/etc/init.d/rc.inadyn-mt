@@ -1,0 +1,139 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=inadyn-mt
+
+. /etc/init.d/modlibrc
+
+ivalueof () {
+	eval "echo -n \$${1}${2}"
+}
+
+escvalue () {
+	echo "$@" | sed 's,\([\ ]\),\\\1,g'
+}
+
+configure () {
+	local ii value
+
+	echo background
+	echo verbose $INADYN_MT_VERBOSE
+	[ -x /etc/init.d/rc.syslogd ] && running=$(/etc/init.d/rc.syslogd status)
+	if [ "$running" = "running" ]; then
+		echo syslog
+	else
+		echo log_file /var/log/${DAEMON}.log
+	fi
+	echo pid_file /var/run/${DAEMON}.pid
+
+	ii=0
+	# inadyn-mt -> dyndns.h can maintain maximal 5 servers
+	while [ 5 -gt $ii ]; do
+		if [ yes = "$(ivalueof INADYN_MT_ACTIVE $ii)" ]; then
+
+			value=$(ivalueof INADYN_MT_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,')
+			case "$(ivalueof INADYN_MT_SERVICE $ii)" in
+				dyndns.org)
+					echo -e '\ndyndns_system dyndns@dyndns.org'
+					;;
+				dyndns.org-statdns)
+					echo -e '\ndyndns_system statdns@dyndns.org'
+					;;
+				dyndns.org-custom)
+					echo -e '\ndyndns_system custom@dyndns.org'
+					;;
+				afraid.org)
+					echo -e '\ndyndns_system default@freedns.afraid.org'
+					;;
+				zoneedit.com)
+					echo -e '\ndyndns_system default@zoneedit.com'
+					;;
+				no-ip.com)
+					echo -e '\ndyndns_system default@no-ip.com'
+					;;
+				custom|benutzerdefiniert)
+					[ -z "$value" ] && continue
+					echo -e '\ndyndns_system custom@http_svr_basic_auth'
+					;;
+			esac
+
+			if [ -n "$value" ]; then
+				echo dyndns_server_name $(echo $value | cut -d\  -f1)
+				echo dyndns_server_url $(echo $value | cut -d\  -f2)
+			fi
+			for value in $(ivalueof INADYN_MT_ALIAS $ii); do
+				echo "alias $value"
+			done
+			value=$(ivalueof INADYN_MT_USER $ii)
+			[ -n "$value" ] && echo "username $value"
+			value="$(ivalueof INADYN_MT_PASS $ii)"
+			[ -n "$value" ] && echo "password $(escvalue $value)"
+			value=$(ivalueof INADYN_MT_OPTIONS $ii)
+			[ -n "$value" ] && echo "$value"
+		fi
+		let ii++
+	done
+}
+
+start() {
+	echo -n 'Starting Inadyn Client ...'
+
+	configure >/mod/etc/$DAEMON.conf
+	if [ 5 -gt `cat /mod/etc/$DAEMON.conf | wc -l` ]; then
+		echo -n 'failed: not configured.' >&2
+		exit 1
+	fi
+
+	$DAEMON --input_file /mod/etc/$DAEMON.conf >/dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'daemon failed.'
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	""|load)
+
+		if type modreg > /dev/null; then
+			modreg cgi $DAEMON 'Inadyn-mt'
+		fi
+
+		if [ "$INADYN_MT_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		if [ -s "/var/run/$DAEMON.pid" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		modlib_stop
+		modunreg cgi $DAEMON
+		;;
+	start)
+		start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,40 @@
+--- lib/ext2fs/llseek.c	2008-10-07 16:22:39.000000000 +0200
++++ lib/ext2fs/llseek.c	2008-10-31 16:46:44.000000000 +0100
+@@ -58,7 +58,7 @@ extern long long llseek (int fd, long lo
+ #define __NR__llseek            140
+ #endif
+ 
+-#ifndef __i386__
++#if !defined __i386__ && !defined __UCLIBC__
+ static int _llseek (unsigned int, unsigned long,
+ 		   unsigned long, ext2_loff_t *, unsigned int);
+ 
+@@ -72,7 +72,7 @@ static ext2_loff_t my_llseek (int fd, ex
+ 	ext2_loff_t result;
+ 	int retval;
+ 
+-#ifndef __i386__
++#if !defined __i386__ && !defined __UCLIBC__
+ 	retval = _llseek(fd, ((unsigned long long) offset) >> 32,
+ #else
+ 	retval = syscall(__NR__llseek, fd, (unsigned long long) (offset >> 32),
+--- lib/blkid/llseek.c	2008-08-28 05:07:00.000000000 +0200
++++ lib/blkid/llseek.c	2008-10-31 16:54:23.000000000 +0100
+@@ -57,7 +57,7 @@
+ #define __NR__llseek            140
+ #endif
+ 
+-#ifndef __i386__
++#if !defined __i386__ && !defined __UCLIBC__
+ static int _llseek(unsigned int, unsigned long, unsigned long,
+ 		   blkid_loff_t *, unsigned int);
+ 
+@@ -71,7 +71,7 @@
+ 	blkid_loff_t result;
+ 	int retval;
+ 
+-#ifndef __i386__
++#if !defined __i386__ && !defined __UCLIBC__
+ 	retval = _llseek(fd, ((unsigned long long) offset) >> 32,
+ 			 ((unsigned long long)offset) & 0xffffffff,
+ 			 &result, origin);

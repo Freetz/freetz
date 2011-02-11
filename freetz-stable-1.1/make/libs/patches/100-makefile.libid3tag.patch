@@ -1,0 +1,27 @@
+--- Makefile.in.orig	2004-02-17 03:34:38.000000000 +0100
++++ Makefile.in	2008-05-17 02:09:27.000000000 +0200
+@@ -269,12 +269,10 @@
+ 	esac;
+ 
+ $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+-	$(SHELL) ./config.status --recheck
+ 
+-$(top_srcdir)/configure:  $(am__configure_deps)
+-	cd $(srcdir) && $(AUTOCONF)
++$(top_srcdir)/configure: 
++
+ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
+-	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+ 
+ config.h: stamp-h1
+ 	@if test ! -f $@; then \
+@@ -285,8 +283,7 @@
+ stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
+ 	@rm -f stamp-h1
+ 	cd $(top_builddir) && $(SHELL) ./config.status config.h
+-$(srcdir)/config.h.in:  $(am__configure_deps) 
+-	cd $(top_srcdir) && $(AUTOHEADER)
++$(srcdir)/config.h.in:
+ 	rm -f stamp-h1
+ 	touch $@
+ 

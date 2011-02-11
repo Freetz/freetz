@@ -1,0 +1,15 @@
+--- src/dnsmasq.h.orig	2010-04-02 17:46:54.000000000 +0200
++++ src/dnsmasq.h	2010-04-02 17:46:54.000000000 +0200
+@@ -16,12 +16,6 @@
+ 
+ #define COPYRIGHT "Copyright (c) 2000-2010 Simon Kelley" 
+ 
+-#ifndef NO_LARGEFILE
+-/* Ensure we can use files >2GB (log files may grow this big) */
+-#  define _LARGEFILE_SOURCE 1
+-#  define _FILE_OFFSET_BITS 64
+-#endif
+-
+ /* Get linux C library versions and define _GNU_SOURCE for kFreeBSD. */
+ #if defined(__linux__) || defined(__GLIBC__)
+ #  define _GNU_SOURCE

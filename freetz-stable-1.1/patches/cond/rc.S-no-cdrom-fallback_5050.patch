@@ -1,0 +1,11 @@
+--- etc/init.d/rc.S.orig	2007-11-16 06:41:52.000000000 +0100
++++ etc/init.d/rc.S	2007-11-16 06:41:52.000000000 +0100
+@@ -451,7 +451,7 @@
+ #file "stdin", 30
+ #file "./arch/etc/init.d/rc.usb.sh", 0
+  tmp_iso_path=/lib/modules/cdrom.iso
+- modprobe avalanche_usb use_cdrom=1 iso_path=${tmp_iso_path} cdrom_fallback=1
++ modprobe avalanche_usb use_cdrom=0
+  echo "usb client: CDROM Fallback=$CONFIG_CDROM_FALLBACK ISO=${tmp_iso_path}"
+ #file "stdin", 34
+ #file "./arch/etc/init.d/rc.hostname.sh", 0
