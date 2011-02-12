@@ -2,5 +2,9 @@ if [ "$EXTERNAL_FREETZ_PACKAGE_CLASSPATH" == "y" ]; then
 	for lib in io langmanagement langreflect lang net nio util; do
 		EXTERNAL_FILES+=" /usr/lib/classpath/libjava${lib}.so.0.0.0"
 	done
-	EXTERNAL_FILES+=" /usr/share/classpath/mini.jar"
+	if [ "$FREETZ_PACKAGE_CLASSPATH_MINI" == "y" ]; then
+		EXTERNAL_FILES+=" /usr/share/classpath/mini.jar"
+	else
+		EXTERNAL_FILES+=" /usr/share/classpath/glibj.zip"
+	fi
 fi

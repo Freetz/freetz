@@ -6,3 +6,11 @@ config FREETZ_PACKAGE_CLASSPATH
 		GNU Classpath, Essential Libraries for Java, is a GNU project to create
 		free core class libraries for use with virtual machines and compilers
 		for the java programming language.
+
+config FREETZ_PACKAGE_CLASSPATH_MINI
+	bool "use mini classlist"
+	depends on FREETZ_PACKAGE_CLASSPATH
+	default n
+	help
+		Use minimalistic (400 KB) instead of full featured classlist (9.6 MB).
+		Warning: this option doesn't work now, list of classes needs to be updated
