@@ -1,0 +1,65 @@
+--- configure
++++ configure
+@@ -90,7 +90,7 @@
+ #define HAVE_VIS
+ EOF
+ 	cat <<EOF >>$CONFIG_MK
+-LIBS+= -lcurses -lutil -levent
++LIBS+= -lcurses -lutil -lpthread -levent
+ SRCS+= osdep-openbsd.c
+ EOF
+ 	;;
+@@ -114,7 +114,7 @@
+ EOF
+ 	cat <<EOF >>$CONFIG_MK
+ CFLAGS+= -std=c99 -D_GNU_SOURCE -D_POSIX_SOURCE
+-LIBS+= -lncurses -lutil -levent -lrt
++LIBS+= -lncurses -lutil -lpthread -levent -lrt
+ SRCS+= osdep-linux.c \
+ 	compat/closefrom.c \
+ 	compat/fgetln.c \
+@@ -135,7 +135,7 @@
+ #define HAVE_STDINT_H
+ EOF
+ 	cat <<EOF >>$CONFIG_MK
+-LIBS+= -lcurses -levent
++LIBS+= -lcurses -lpthread -levent
+ SRCS+= osdep-unknown.c \
+ 	compat/asprintf.c \
+ 	compat/closefrom.c \
+@@ -163,7 +163,7 @@
+ EOF
+ 	cat <<EOF >>$CONFIG_MK
+ CFLAGS+= -D_XPG4_2 -D__EXTENSIONS__ -D_POSIX_PTHREAD_SEMANTICS
+-LIBS+= -lcurses -lsocket -lnsl -levent
++LIBS+= -lcurses -lsocket -lnsl -lpthread -levent
+ SRCS+= osdep-sunos.c \
+ 	compat/asprintf.c \
+ 	compat/daemon.c \
+@@ -208,7 +208,7 @@
+ 	cat <<EOF >>$CONFIG_MK
+ CPPFLAGS+= -I/opt/local/include
+ LDFLAGS+= -L/opt/local/lib
+-LIBS+= -lcurses -levent
++LIBS+= -lcurses -lpthread -levent
+ SRCS+= osdep-darwin.c \
+ 	compat/closefrom.c \
+ 	compat/strtonum.c \
+@@ -243,7 +243,7 @@
+ #define HAVE_U_INT
+ EOF
+ 	cat <<EOF >>$CONFIG_MK
+-LIBS+= -lcurses -lutil -levent
++LIBS+= -lcurses -lutil -lpthread -levent
+ SRCS+= osdep-freebsd.c \
+ 	compat/vis.c \
+ 	compat/unvis.c \
+@@ -289,7 +289,7 @@
+ EOF
+ 	fi
+ 	cat <<EOF >>$CONFIG_MK
+-LIBS+= -lutil -levent
++LIBS+= -lutil -lpthread -levent
+ SRCS+= osdep-netbsd.c \
+ 	compat/strtonum.c \
+ 	compat/vis.c \

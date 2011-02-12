@@ -1,0 +1,29 @@
+--- configure
++++ configure
+@@ -20763,12 +20763,12 @@
+         owd=`pwd`
+         if cd $withval; then withval=`pwd`; cd $owd; fi
+         EVENTINC="-I$withval/include"
+-        EVENTLIB="-L$withval/lib -levent"
++        EVENTLIB="-L$withval/lib -lpthread -levent"
+      elif test -f $withval/event.h -a -f $withval/libevent.a; then
+         owd=`pwd`
+         if cd $withval; then withval=`pwd`; cd $owd; fi
+         EVENTINC="-I$withval"
+-        EVENTLIB="-L$withval -levent"
++        EVENTLIB="-L$withval -lpthread -levent"
+      else
+         { { echo "$as_me:$LINENO: error: event.h or libevent.a not found in $withval" >&5
+ echo "$as_me: error: event.h or libevent.a not found in $withval" >&2;}
+@@ -20780,9 +20780,9 @@
+    if test -f ${prefix}/include/event.h -a -f ${prefix}/lib/libevent.a;
+ then
+      EVENTINC="-I${prefix}/include"
+-     EVENTLIB="-L${prefix}/lib -levent"
++     EVENTLIB="-L${prefix}/lib -lpthread -levent"
+   elif test -f /usr/include/event.h; then
+-     EVENTLIB="-levent"
++     EVENTLIB="-lpthread -levent"
+   else
+      echo "$as_me:$LINENO: result: no" >&5
+ echo "${ECHO_T}no" >&6

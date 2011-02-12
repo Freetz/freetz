@@ -1,0 +1,32 @@
+--- Makefile.in
++++ Makefile.in
+@@ -431,7 +431,7 @@
+ # series won't be binary-compatible.
+ dist_bin_SCRIPTS = event_rpcgen.py
+ pkgconfigdir = $(libdir)/pkgconfig
+-pkgconfig_DATA = libevent.pc $(am__append_2) $(am__append_4)
++pkgconfig_DATA = libevent.pc
+ 
+ # These sources are conditionally added by configure.in or conditionally
+ # included from other files.
+@@ -448,9 +448,8 @@
+ 	Makefile.nmake test/Makefile.nmake \
+ 	$(PLATFORM_DEPENDENT_SRC)
+ 
+-lib_LTLIBRARIES = libevent.la libevent_core.la libevent_extra.la \
+-	$(am__append_1) $(am__append_3)
+-SUBDIRS = . include sample test
++lib_LTLIBRARIES = libevent.la
++SUBDIRS = . include
+ @BUILD_WIN32_FALSE@SYS_LIBS = 
+ @BUILD_WIN32_TRUE@SYS_LIBS = -lws2_32
+ @BUILD_WIN32_FALSE@SYS_SRC = $(am__append_5) $(am__append_6) \
+@@ -1130,7 +1129,7 @@
+ 
+ install-dvi-am:
+ 
+-install-exec-am: install-dist_binSCRIPTS install-libLTLIBRARIES
++install-exec-am: install-libLTLIBRARIES
+ 
+ install-html: install-html-recursive
+ 

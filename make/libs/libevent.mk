@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.4.14b-stable)
-$(PKG)_MAJOR_VERSION:=1.4
-$(PKG)_SHLIB_VERSION:=2.2.0
+$(call PKG_INIT_LIB, 2.0.10-stable)
+$(PKG)_MAJOR_VERSION:=2.0
+$(PKG)_SHLIB_VERSION:=5.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a00e037e4d3f9e4fe9893e8a2d27918c
+$(PKG)_SOURCE_MD5:=a37401d26cbbf28185211d582741a3d4
 $(PKG)_SITE:=http://www.monkey.org/~provos
 
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
@@ -12,6 +12,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-openssl
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -25,14 +26,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-strip
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.la
-	# As we don't (want to) include libevent_{core,extra} into the firmware
-	# remove them from the staging dir to prevent other applications
-	# from being occasionally linked against them.
-	# NB: libevent_{core,extra} is just a split-up of libevent. Everything
-	# provided by libevent_{core,extra} is also provided by single libevent.
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent_core*
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent_extra*
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libevent.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO)
@@ -43,17 +38,15 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBEVENT_DIR) clean
-	$(RM) \
+	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libevent* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/event-config.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libevent.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/event2 \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/event.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evdns.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evhttp.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evrpc.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evutil.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/event_rpcgen.py \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/event.? \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/evdns.?
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/evutil.h
 
 $(pkg)-uninstall:
 	$(RM) $(LIBEVENT_TARGET_DIR)/libevent*.so*

@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.13)
+$(call PKG_INIT_BIN, 2.21)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=eb126ae88b80487f2840896939019421
+$(PKG)_SOURCE_MD5:=65a00e3423834121c274717bde2b4dd9
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
@@ -41,6 +41,7 @@ endif
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
+$(PKG)_CONFIGURE_OPTIONS += --enable-lightweight
 
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_STATIC)),y)
 $(PKG)_LDFLAGS := -all-static
