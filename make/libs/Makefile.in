@@ -298,3 +298,7 @@ endif
 ifeq ($(strip $(FREETZ_LIB_liboping)),y)
 LIBS+=liboping
 endif
+
+ifneq (,$(strip $(filter y,$(FREETZ_LIB_librrd) $(FREETZ_LIB_librrd_th))))
+LIBS+=rrdtool
+endif

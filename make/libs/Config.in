@@ -763,6 +763,29 @@ config FREETZ_LIB_libpopt
 	help
 		The popt library exists essentially for parsing command line options.
 
+config FREETZ_LIB_librrd
+	bool "librrd (librrd.so)"
+	select FREETZ_LIB_libart_lgpl_2
+	select FREETZ_LIB_libfreetype
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpng12
+	select FREETZ_LIB_libz
+	default n
+	help
+		Library implementing most of the functionality of RRDTool.
+
+config FREETZ_LIB_librrd_th
+	bool "librrd_th (librrd_th.so)"
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libart_lgpl_2
+	select FREETZ_LIB_libfreetype
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpng12
+	select FREETZ_LIB_libz
+	default n
+	help
+		Threaded version of librrd library.
+
 config FREETZ_LIB_libslang
 	bool "libslang"
 	select FREETZ_LIB_libdl
