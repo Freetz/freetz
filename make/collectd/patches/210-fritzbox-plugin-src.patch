@@ -1,0 +1,729 @@
+--- src/fritzbox.c
++++ src/fritzbox.c
+@@ -0,0 +1,709 @@
++
++//collectd includes
++#include "collectd.h"
++#include "common.h"
++#include "plugin.h"
++
++#include <fcntl.h>
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++static const char* CONFIG_KEYS[] =
++{
++	"RecordEnergyUsage",
++	"RecordDSLErrors",
++	"RecordDSLLineInfo",
++	"RecordDSLRateInfo"
++};
++
++static int CONFIG_KEYS_COUNT = STATIC_ARRAY_SIZE(CONFIG_KEYS);
++
++static char record_energy = 1;
++static char record_dsl_errors = 1;
++static char record_dsl_line_info = 1;
++static char record_dsl_rate_info = 1;
++
++const char* WEBCM_CMD = "/usr/www/cgi-bin/webcm nextpage=%s";
++const char* TMP_FILE_TEMPLATE = "/tmp/statsXXXXXX";
++static char* tmp_file_name;
++
++/* energy consumption information */
++const char* POWER_PARAM_DSL = "<? query power:status/rate_dspact ?>\n";
++const char* POWER_PARAM_PHONE = "<? query power:status/rate_abact ?>\n";
++const char* POWER_PARAM_PROCESSOR = "<? query power:status/rate_systemact ?>\n";
++const char* POWER_PARAM_TOTAL = "<? query power:status/rate_sumact ?>\n";
++const char* POWER_PARAM_USB = "<? query power:status/rate_usbhostact ?>\n";
++const char* POWER_PARAM_WLAN = "<? query power:status/rate_wlanact ?>\n";
++
++/* dsl downstream rate information */
++const char* DSL_PARAM_DS_DSLAM_MAX = "<? query sar:status/exp_ds_max_rate ?>\n";
++const char* DSL_PARAM_DS_DSLAM_MIN = "<? query sar:status/exp_ds_min_rate ?>\n";
++const char* DSL_PARAM_DS_LINE_CAPACITY = "<? query sar:status/ds_attainable ?>\n";
++const char* DSL_PARAM_DS_RATE = "<? query sar:status/dsl_ds_rate ?>\n";
++
++/* dsl upstream rate information */
++const char* DSL_PARAM_US_DSLAM_MAX = "<? query sar:status/exp_us_max_rate ?>\n";
++const char* DSL_PARAM_US_DSLAM_MIN = "<? query sar:status/exp_us_min_rate ?>\n";
++const char* DSL_PARAM_US_LINE_CAPACITY = "<? query sar:status/us_attainable ?>\n";
++const char* DSL_PARAM_US_RATE = "<? query sar:status/dsl_us_rate ?>\n";
++
++/* dsl downstream error information */
++const char* DSL_PARAM_DS_ERROR_CRC = "<? query sar:status/ds_crc_minute ?>\n";
++const char* DSL_PARAM_DS_ERROR_FEC = "<? query sar:status/ds_fec_minute ?>\n";
++
++/* dsl upstream errror information */
++const char* DSL_PARAM_US_ERROR_CRC = "<? query sar:status/us_crc_minute ?>\n";
++const char* DSL_PARAM_US_ERROR_FEC = "<? query sar status/us_fec_minute ?>\n";
++
++/* dsl downstream signal information */
++const char* DSL_PARAM_DS_ATTENUATION = "<? query sar:status/ds_attenuation ?>\n";
++const char* DSL_PARAM_DS_SNR = "<? query sar:status/ds_margin ?>\n";
++
++/* dsl upstream signal information */
++const char* DSL_PARAM_US_ATTENUATION = "<? query sar:status/us_attenuation ?>\n";
++const char* DSL_PARAM_US_SNR = "<? query sar:status/us_margin ?>\n";
++
++#define CHECK_WRITE(fd, cstring, cstringlen) \
++	{ \
++		int write_count = 0; \
++		do { \
++			int write_val = write(fd, cstring + write_count, cstringlen - write_count); \
++			if(write_val == -1) { \
++				ERROR("Error writing webcm command %s at %s:%d, reason: %s", \
++					cstring, __FUNCTION__, __LINE__, strerror(errno)); \
++				close(fd); \
++				return -1; \
++			} \
++			write_count += write_val; \
++		} while(write_count < cstringlen); \
++	}
++
++static void dispatch_dsl_ds_rate_information(long input[4])
++{
++	value_t values[4];
++	value_list_t vl = VALUE_LIST_INIT;
++	values[0].gauge = input[0] * 1000;
++	values[1].gauge = input[1] * 1000;
++	values[2].gauge = input[2] * 1000;
++	values[3].gauge = input[3] * 1000;
++
++	if(values[0].gauge < 0)
++	{
++		ERROR("Couldn't read DSL DSLAM downstream max rate");
++		return;
++	}
++	
++	if(values[1].gauge < 0)
++	{
++		ERROR("Couldn't read DSL DSLAM downstream min rate");
++		return;
++	}
++
++	if(values[2].gauge < 0)
++	{
++		ERROR("Couldn't read DSL downstream line capacity");
++		return;
++	}
++
++	if(values[3].gauge < 0)
++	{
++		ERROR("Couldn't read DSL downstream current rate");
++		return;
++	}
++
++	vl.values = values;
++	vl.values_len = 4;
++	sstrncpy(vl.host, hostname_g, sizeof (vl.host));
++	sstrncpy(vl.plugin, "fritzbox", sizeof (vl.plugin));
++	sstrncpy(vl.type, "dsl_rates", sizeof (vl.type));
++	sstrncpy(vl.type_instance, "downstream", sizeof(vl.type));
++
++	plugin_dispatch_values (&vl);
++}
++
++static void dispatch_dsl_us_rate_information(long input[4])
++{
++	value_t values[4];
++	value_list_t vl = VALUE_LIST_INIT;
++
++	values[0].gauge = input[0] * 1000;
++	values[1].gauge = input[1] * 1000;
++	values[2].gauge = input[2] * 1000;
++	values[3].gauge = input[3] * 1000;
++
++	if(values[0].gauge < 0)
++	{
++		ERROR("Couldn't read DSL DSLAM upstream max rate");
++		return;
++	}
++	
++	if(values[1].gauge < 0)
++	{
++		ERROR("Couldn't read DSL DSLAM upstream min rate");
++		return;
++	}
++
++	if(values[2].gauge < 0)
++	{
++		ERROR("Couldn't read DSL upstream line capacity");
++		return;
++	}
++
++	if(values[3].gauge < 0)
++	{
++		ERROR("Couldn't read DSL upstream current rate");
++		return;
++	}
++
++	vl.values = values;
++	vl.values_len = 4;
++	sstrncpy(vl.host, hostname_g, sizeof (vl.host));
++	sstrncpy(vl.plugin, "fritzbox", sizeof (vl.plugin));
++	sstrncpy(vl.type, "dsl_rates", sizeof (vl.type));
++	sstrncpy(vl.type_instance, "upstream", sizeof(vl.type));
++
++	plugin_dispatch_values (&vl);
++}
++
++static void dispatch_dsl_ds_errors(long input[2])
++{
++	value_t values[2];
++	value_list_t vl = VALUE_LIST_INIT;
++
++	values[0].gauge = input[0];
++	values[1].gauge = input[1];
++
++	if(values[0].gauge < 0)
++	{
++		WARNING("Couldn't read DSL downstream CRC error rate");
++		return;
++	}
++	
++	if(values[1].gauge < 0)
++	{
++		WARNING("Couldn't read DSL DSLAM downstream FEC error rate");
++		return;
++	}
++
++	vl.values = values;
++	vl.values_len = 2;
++	sstrncpy(vl.host, hostname_g, sizeof (vl.host));
++	sstrncpy(vl.plugin, "fritzbox", sizeof (vl.plugin));
++	sstrncpy(vl.type, "dsl_errors", sizeof (vl.type));
++	sstrncpy(vl.type_instance, "downstream", sizeof(vl.type));
++
++	plugin_dispatch_values (&vl);
++}
++
++static void dispatch_dsl_us_errors(long input[2])
++{
++	value_t values[2];
++	value_list_t vl = VALUE_LIST_INIT;
++
++	values[0].gauge = input[0];
++	values[1].gauge = input[1];
++
++	if(values[0].gauge < 0)
++	{
++		WARNING("Couldn't read DSL upstream CRC error rate");
++		return;
++	}
++	
++	if(values[1].gauge < 0)
++	{
++		WARNING("Couldn't read DSL DSLAM upstream FEC error rate");
++		return;
++	}
++
++	vl.values = values;
++	vl.values_len = 2;
++	sstrncpy(vl.host, hostname_g, sizeof (vl.host));
++	sstrncpy(vl.plugin, "fritzbox", sizeof (vl.plugin));
++	sstrncpy(vl.type, "dsl_errors", sizeof (vl.type));
++	sstrncpy(vl.type_instance, "upstream", sizeof(vl.type));
++
++	plugin_dispatch_values (&vl);
++}
++
++static void dispatch_dsl_ds_line_info(long input[2])
++{
++	value_t values[2];
++	value_list_t vl = VALUE_LIST_INIT;
++
++	values[0].gauge = input[0];
++	values[1].gauge = input[1];
++
++	if(values[0].gauge < 0)
++	{
++		WARNING("Couldn't read DSL downstream attenuation value");
++		return;
++	}
++	
++	if(values[1].gauge < 0)
++	{
++		WARNING("Couldn't read DSL downstream SNR value");
++		return;
++	}
++
++	vl.values = values;
++	vl.values_len = 2;
++	sstrncpy(vl.host, hostname_g, sizeof (vl.host));
++	sstrncpy(vl.plugin, "fritzbox", sizeof (vl.plugin));
++	sstrncpy(vl.type, "dsl_line", sizeof (vl.type));
++	sstrncpy(vl.type_instance, "downstream", sizeof(vl.type));
++
++	plugin_dispatch_values (&vl);
++}
++
++static void dispatch_dsl_us_line_info(long input[2])
++{
++	value_t values[2];
++	value_list_t vl = VALUE_LIST_INIT;
++
++	values[0].gauge = input[0];
++	values[1].gauge = input[1];
++
++	if(values[0].gauge < 0)
++	{
++		WARNING("Couldn't read DSL upstream attenuation value");
++		return;
++	}
++	
++	if(values[1].gauge < 0)
++	{
++		WARNING("Couldn't read DSL upstream SNR value");
++		return;
++	}
++
++	vl.values = values;
++	vl.values_len = 2;
++	sstrncpy(vl.host, hostname_g, sizeof (vl.host));
++	sstrncpy(vl.plugin, "fritzbox", sizeof (vl.plugin));
++	sstrncpy(vl.type, "dsl_line", sizeof (vl.type));
++	sstrncpy(vl.type_instance, "upstream", sizeof(vl.type));
++
++	plugin_dispatch_values (&vl);
++}
++
++void dispatch_power_values(long input[6])
++{
++	value_t values[6];
++	value_list_t vl = VALUE_LIST_INIT;
++	values[0].gauge = input[0];
++	values[1].gauge = input[1];
++	values[2].gauge = input[2];
++	values[3].gauge = input[3];
++	values[4].gauge = input[4];
++	values[5].gauge = input[5];
++
++	if(values[0].gauge < 0)
++	{
++		WARNING("Couldn't read DSL power information");
++		return;
++	}
++	else if(values[0].gauge > 100)
++		values[0].gauge = 100;
++	
++	if(values[1].gauge < 0)
++	{
++		WARNING("Couldn't read phone power information");
++		return;
++	}
++	else if(values[1].gauge > 100)
++		values[1].gauge = 100;
++
++	if(values[2].gauge < 0)
++	{
++		WARNING("Couldn't read processor power information");
++		return;
++	}
++	else if(values[2].gauge > 100)
++		values[2].gauge = 100;
++
++	if(values[3].gauge < 0)
++	{
++		WARNING("Couldn't read total power information");
++		return;
++	}
++	else if(values[3].gauge > 100)
++		values[3].gauge = 100;
++
++	if(values[4].gauge < 0)
++	{
++		WARNING("Couldn't read USB power information");
++		return;
++	}
++	else if(values[4].gauge > 100)
++		values[4].gauge = 100;
++
++	if(values[5].gauge < 0)
++	{
++		WARNING("Couldn't read WLAN power information");
++		return;
++	}
++	else if(values[5].gauge > 100)
++		values[5].gauge = 100;
++
++	vl.values = values;
++	vl.values_len = 6;
++	sstrncpy (vl.host, hostname_g, sizeof (vl.host));
++	sstrncpy (vl.plugin, "fritzbox", sizeof (vl.plugin));
++	sstrncpy (vl.type, "fritzbox_energy", sizeof (vl.type));
++
++	plugin_dispatch_values (&vl);
++}
++
++static int read_webcm_values(const char* filename)
++{
++	FILE *cmd_pipe;
++	char line[1024];	
++	int ret_val = -1;	
++
++	char cmd[strlen(WEBCM_CMD)+strlen(filename)];	
++
++	ssnprintf(cmd, sizeof(cmd), WEBCM_CMD, filename);
++
++	if( !(cmd_pipe = popen(cmd, "r")) )
++	{
++		ERROR("could not open pipe");
++		return 1;
++	} 
++	
++	while( fgets(line, sizeof(line), cmd_pipe) )
++	{		
++		if(strncmp(line, "Energy", strlen("Energy")) == 0)
++		{
++			long val[6];
++			int i;
++			ret_val = 0;
++			
++			for(i = 0; i < 6; i++)
++			{
++				if(fgets(line, sizeof(line), cmd_pipe))
++				{
++					val[i] = strtol(line, NULL, 10);
++				}
++				else
++				{
++					ERROR("Error reading energy output line from webcm output");
++					ret_val = -1;
++					break;
++				}
++			}
++			
++			if(ret_val)
++				break;
++
++			dispatch_power_values(val);			
++		}
++		else if(strncmp(line, "DSLRateDown", strlen("DSLRateDown")) == 0)
++		{
++			long values[4];
++			int i;
++			ret_val = 0;
++			
++			for(i = 0; i < 4; i++)
++			{
++
++				if(fgets(line, sizeof(line), cmd_pipe))
++				{
++					values[i] = strtol(line, NULL, 10);
++				}
++				else
++				{
++					ERROR("Error reading dsl rate downstream line from webcm output");
++					ret_val = -1;
++					break;
++				}
++			}
++			
++			if(ret_val)
++				break;
++
++			dispatch_dsl_ds_rate_information(values);			
++		}
++		else if(strncmp(line, "DSLRateUp", strlen("DSLRateUp")) == 0)
++		{
++			long values[4];
++			int i;
++			ret_val = 0;
++			
++			for(i = 0; i < 4; i++)
++			{
++
++				if(fgets(line, sizeof(line), cmd_pipe))
++				{
++					values[i] = strtol(line, NULL, 10);
++				}
++				else
++				{
++					ERROR("Error reading dsl rate upstream line from webcm output");
++					ret_val = -1;
++					break;
++				}
++			}
++			
++			if(ret_val)
++				break;
++
++			dispatch_dsl_us_rate_information(values);
++		}
++		else if(strncmp(line, "DSLErrorDown", strlen("DSLErrorDown")) == 0)
++		{
++			long values[2];
++			int i;
++			ret_val = 0;
++			
++			for(i = 0; i < 2; i++)
++			{
++
++				if(fgets(line, sizeof(line), cmd_pipe))
++				{
++					values[i] = strtol(line, NULL, 10);
++				}
++				else
++				{
++					ERROR("Error reading dsl error downstream line from webcm output");
++					ret_val = -1;
++					break;
++				}
++			}
++			
++			if(ret_val)
++				break;
++
++			dispatch_dsl_ds_errors(values);
++		}
++		else if(strncmp(line, "DSLErrorUp", strlen("DSLErrorUp")) == 0)
++		{
++			long values[2];
++			int i;
++			ret_val = 0;
++			
++			for(i = 0; i < 2; i++)
++			{
++
++				if(fgets(line, sizeof(line), cmd_pipe))
++				{
++					values[i] = strtol(line, NULL, 10);
++				}
++				else
++				{
++					ERROR("Error reading upstream line from webcm output");
++					ret_val = -1;
++					break;
++				}
++			}
++			
++			if(ret_val)
++				break;
++
++			dispatch_dsl_us_errors(values);
++		}
++		else if(strncmp(line, "DSLLineDown", strlen("DSLLineDown")) == 0)
++		{
++			long values[2];
++			int i;
++			ret_val = 0;
++			
++			for(i = 0; i < 2; i++)
++			{
++
++				if(fgets(line, sizeof(line), cmd_pipe))
++				{
++					values[i] = strtol(line, NULL, 10);
++				}
++				else
++				{
++					ERROR("Error reading upstream line from webcm output");
++					ret_val = -1;
++					break;
++				}
++			}
++			
++			if(ret_val)
++				break;
++
++			dispatch_dsl_ds_line_info(values);
++		}
++		else if(strncmp(line, "DSLLineUp", strlen("DSLLineUp")) == 0)
++		{
++			long values[2];
++			int i;
++			ret_val = 0;
++			
++			for(i = 0; i < 2; i++)
++			{
++
++				if(fgets(line, sizeof(line), cmd_pipe))
++				{
++					values[i] = strtol(line, NULL, 10);
++				}
++				else
++				{
++					ERROR("Error reading upstream line from webcm output");
++					ret_val = -1;
++					break;
++				}
++			}
++			
++			if(ret_val)
++				break;
++
++			dispatch_dsl_us_line_info(values);
++		}
++		else
++		{
++			ERROR("Invalid output generated by webcm %s", line);
++			ret_val = -1;
++			break;
++		}
++
++	} 
++
++	pclose(cmd_pipe);
++	return ret_val;
++}
++
++static int fritzbox_read()
++{
++	int fd;
++	
++	fd = open(tmp_file_name, O_CREAT | O_TRUNC | O_WRONLY);
++	if(fd == -1)
++	{
++		ERROR("Could not open temporary file for writing %s %s", tmp_file_name, strerror(errno));
++		return -1;
++	}
++
++	if(record_energy)
++	{
++		CHECK_WRITE(fd, "Energy\n", strlen("Energy\n"));		
++		CHECK_WRITE(fd, POWER_PARAM_DSL, strlen(POWER_PARAM_DSL));
++		CHECK_WRITE(fd, POWER_PARAM_PHONE, strlen(POWER_PARAM_PHONE));
++		CHECK_WRITE(fd, POWER_PARAM_PROCESSOR, strlen(POWER_PARAM_PROCESSOR));
++		CHECK_WRITE(fd, POWER_PARAM_TOTAL, strlen(POWER_PARAM_TOTAL));
++		CHECK_WRITE(fd, POWER_PARAM_USB, strlen(POWER_PARAM_USB));
++		CHECK_WRITE(fd, POWER_PARAM_WLAN, strlen(POWER_PARAM_WLAN));
++	}
++
++	if(record_dsl_rate_info)
++	{	
++		CHECK_WRITE(fd, "DSLRateDown\n", strlen("DSLRateDown\n"));		
++		CHECK_WRITE(fd, DSL_PARAM_DS_DSLAM_MAX, strlen(DSL_PARAM_DS_DSLAM_MAX));
++		CHECK_WRITE(fd, DSL_PARAM_DS_DSLAM_MAX, strlen(DSL_PARAM_DS_DSLAM_MAX));
++		CHECK_WRITE(fd, DSL_PARAM_DS_LINE_CAPACITY, strlen(DSL_PARAM_DS_LINE_CAPACITY));
++		CHECK_WRITE(fd, DSL_PARAM_DS_RATE, strlen(DSL_PARAM_DS_RATE));
++
++		CHECK_WRITE(fd, "DSLRateUp\n", strlen("DSLRateUp\n"));
++		CHECK_WRITE(fd, DSL_PARAM_US_DSLAM_MAX, strlen(DSL_PARAM_US_DSLAM_MAX));
++		CHECK_WRITE(fd, DSL_PARAM_US_DSLAM_MIN, strlen(DSL_PARAM_US_DSLAM_MIN));
++		CHECK_WRITE(fd, DSL_PARAM_US_LINE_CAPACITY, strlen(DSL_PARAM_US_LINE_CAPACITY));
++		CHECK_WRITE(fd, DSL_PARAM_US_RATE, strlen(DSL_PARAM_US_RATE));
++
++	}
++
++	if(record_dsl_errors)
++	{
++		CHECK_WRITE(fd, "DSLErrorDown\n", strlen("DSLErrorDown\n"));
++		CHECK_WRITE(fd, DSL_PARAM_DS_ERROR_CRC, strlen(DSL_PARAM_DS_ERROR_CRC));
++		CHECK_WRITE(fd, DSL_PARAM_DS_ERROR_FEC, strlen(DSL_PARAM_DS_ERROR_FEC));
++
++		CHECK_WRITE(fd, "DSLErrorUp\n", strlen("DSLErrorUp\n"));
++		CHECK_WRITE(fd, DSL_PARAM_US_ERROR_CRC, strlen(DSL_PARAM_US_ERROR_CRC));
++		CHECK_WRITE(fd, DSL_PARAM_US_ERROR_FEC, strlen(DSL_PARAM_US_ERROR_FEC));
++	}
++
++	if(record_dsl_line_info)
++	{
++		CHECK_WRITE(fd, "DSLLineDown\n", strlen("DSLLineDown\n"));
++		CHECK_WRITE(fd, DSL_PARAM_DS_ATTENUATION, strlen(DSL_PARAM_DS_ATTENUATION));
++		CHECK_WRITE(fd, DSL_PARAM_DS_SNR, strlen(DSL_PARAM_DS_SNR));
++
++		CHECK_WRITE(fd, "DSLLineUp\n", strlen("DSLLineUp\n"));
++		CHECK_WRITE(fd, DSL_PARAM_US_ATTENUATION, strlen(DSL_PARAM_US_ATTENUATION));
++		CHECK_WRITE(fd, DSL_PARAM_US_SNR, strlen( DSL_PARAM_US_SNR));
++	}
++
++	close(fd);
++
++	return read_webcm_values(tmp_file_name);
++}
++
++static int fritzbox_config(const char* key, const char* value)
++{
++	char val = 0;
++	if(strncasecmp(value,"true", sizeof("true")) == 0)
++		val = 1;
++	else if(strncasecmp(value,"false", sizeof("false")) == 0)
++		val = 0;
++	else
++		return -1;
++
++	if(strncasecmp(key,"RecordEnergyUsage", sizeof("RecordEnergyUsage")) == 0)
++	{
++		record_energy = val;
++		return 0;	
++	}
++	
++	if(strncasecmp(key,"RecordDSLErrors", sizeof("RecordDSLErrors")) == 0)
++	{
++		record_dsl_errors = val;
++		return 0;	
++	}
++
++	if(strncasecmp(key,"RecordDSLLineInfo", sizeof("RecordDSLLineInfo")) == 0)
++	{
++		record_dsl_line_info = val;
++		return 0;	
++	}
++
++	if(strncasecmp(key,"RecordDSLRateInfo", sizeof("RecordDSLRateInfo")) == 0)
++	{
++		record_dsl_rate_info = val;
++		return 0;	
++	}
++
++	return -1;
++}
++
++static int fritzbox_init()
++{	
++	tmp_file_name = (char *) malloc(strlen(TMP_FILE_TEMPLATE)+1);	
++	if(!tmp_file_name)
++	{
++		ERROR("Could not allocate memory for temp file name");
++		return -1;
++	}
++	
++	ssnprintf(tmp_file_name, strlen(TMP_FILE_TEMPLATE)+1, TMP_FILE_TEMPLATE);
++	
++	if(!mktemp(tmp_file_name))
++	{
++		ERROR("Could not create temp file name, reason %s", strerror(errno));
++		return -1;
++	}
++
++	return 0;
++}
++
++static int fritzbox_shutdown()
++{
++	remove(tmp_file_name);
++	free(tmp_file_name);
++	return 0;
++}
++
++void module_register (void)
++{
++	plugin_register_config("fritzbox", fritzbox_config, CONFIG_KEYS, CONFIG_KEYS_COUNT);
++	plugin_register_init("fritzbox", fritzbox_init);
++	plugin_register_read("fritzbox", fritzbox_read);
++	plugin_register_shutdown("fritzbox", fritzbox_shutdown);
++}
++
+--- src/types.db
++++ src/types.db
+@@ -53,10 +53,14 @@
+ dns_transfer		value:COUNTER:0:65535
+ dns_update		value:COUNTER:0:65535
+ dns_zops		value:COUNTER:0:65535
++dsl_errors		crc:GAUGE:0:U, forward:GAUGE:0:U
++dsl_line		attenuation:GAUGE:0:U, snr:GAUGE:0:U
++dsl_rates		dslam_max:GAUGE:0:U, dslam_min:GAUGE:0:U, line_capacity:GAUGE:0:U, line_rate:GAUGE:0:U
+ email_check		value:GAUGE:0:U
+ email_count		value:GAUGE:0:U
+ email_size		value:GAUGE:0:U
+ entropy			entropy:GAUGE:0:4294967295
++fritzbox_energy		dsl:GAUGE:0:U, phone:GAUGE:0:U, processor:GAUGE:0:U, total:GAUGE:0:U, usb:GAUGE:0:U, wlan:GAUGE:0:U 
+ fanspeed		value:GAUGE:0:U
+ file_size		bytes:GAUGE:0:U
+ files			value:GAUGE:0:U

@@ -68,6 +68,7 @@ $(PKG)_PLUGINS_SUPPORTED := \
     contextswitch cpu \
     disk df \
     entropy exec \
+    fritzbox \
     interface irq \
     load \
     memory \
