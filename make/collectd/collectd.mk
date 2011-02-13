@@ -19,6 +19,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ltdl-lib=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/
 $(PKG)_CONFIGURE_PRE_CMDS += sed -i -r -e 's,-Werror,,g' ./configure ./src/Makefile.in ./src/libcollectdclient/Makefile.in ./src/owniptc/Makefile.in;
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_oping_h header_rrd_h)
 
 $(PKG)_CONFIGURE_OPTIONS += --with-nan-emulation
 $(PKG)_CONFIGURE_OPTIONS += --with-fp-layout=$(if $(FREETZ_TARGET_ARCH_BE),endianflip,nothing)
@@ -47,14 +48,42 @@ $(PKG)_FEATURES_DISABLED := \
     perl-bindings python
 $(PKG)_CONFIGURE_OPTIONS += $(foreach feature,$($(PKG)_FEATURES_DISABLED),--with-$(feature)=no)
 
+ifeq ($(strip $(FREETZ_PACKAGE_COLLECTD_PLUGIN_apache)),y)
+$(PKG)_DEPENDS_ON += curl
+$(PKG)_CONFIGURE_OPTIONS += --with-libcurl=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_COLLECTD_PLUGIN_ping)),y)
+$(PKG)_DEPENDS_ON += liboping
+$(PKG)_CONFIGURE_OPTIONS += --with-liboping=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_COLLECTD_PLUGIN_rrdtool)),y)
+$(PKG)_DEPENDS_ON += rrdtool
+$(PKG)_CONFIGURE_OPTIONS += --with-librrd=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
+endif
+
 # plugins
 $(PKG)_CONFIGURE_OPTIONS += --disable-all-plugins
-$(PKG)_PLUGINS_ENABLED := syslog
+$(PKG)_PLUGINS_SUPPORTED := \
+    apache \
+    contextswitch cpu \
+    disk df \
+    entropy exec \
+    interface irq \
+    load \
+    memory \
+    network \
+    ping \
+    rrdtool \
+    syslog \
+    uptime
+$(PKG)_PLUGINS_ENABLED := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_PLUGINS_SUPPORTED),PLUGIN)
 $(PKG)_CONFIGURE_OPTIONS += $(foreach plugin,$($(PKG)_PLUGINS_ENABLED),--enable-$(plugin))
 
 $(PKG)_PLUGINS_DIR := $(FREETZ_LIBRARY_PATH)/$(pkg)
 $(PKG)_PLUGINS_BUILD_DIR := $($(PKG)_PLUGINS_ENABLED:%=$($(PKG)_DIR)/src/.libs/%.so)
 $(PKG)_PLUGINS_TARGET_DIR := $($(PKG)_PLUGINS_ENABLED:%=$($(PKG)_DEST_DIR)$($(PKG)_PLUGINS_DIR)/%.so)
+
+$(PKG)_REBUILD_SUBOPTS += $(foreach plugin,$($(PKG)_PLUGINS_SUPPORTED),FREETZ_PACKAGE_COLLECTD_PLUGIN_$(plugin))
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

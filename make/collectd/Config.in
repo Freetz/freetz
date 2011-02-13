@@ -4,6 +4,8 @@ config FREETZ_PACKAGE_COLLECTD
 	select FREETZ_LIB_libltdl
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
+	select FREETZ_PACKAGE_COLLECTD_PLUGIN_rrdtool
+	select FREETZ_PACKAGE_COLLECTD_PLUGIN_syslog
 	default n
 	help
 		Collectd collects information about the system it is running on and
@@ -12,3 +14,59 @@ config FREETZ_PACKAGE_COLLECTD
 		predict future system load (i. e. capacity planning). Or if you just
 		want pretty graphs of your private server and are fed up with some
 		homegrown solution you're at the right place, too.
+
+menu "plugins"
+	depends FREETZ_PACKAGE_COLLECTD
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_apache
+	bool "apache"
+	select FREETZ_LIB_libcurl
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_contextswitch
+	bool "contextswitch"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_cpu
+	bool "cpu"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_disk
+	bool "disk"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_df
+	bool "df"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_entropy
+	bool "entropy"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_exec
+	bool "exec"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_interface
+	bool "interface"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_irq
+	bool "irq"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_load
+	bool "load"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_memory
+	bool "memory"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_network
+	bool "network"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_ping
+	bool "ping"
+	select FREETZ_LIB_liboping
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_rrdtool
+	bool "rrdtool"
+	select FREETZ_LIB_librrd_th
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_syslog
+	bool "syslog"
+
+config FREETZ_PACKAGE_COLLECTD_PLUGIN_uptime
+	bool "uptime"
+
+endmenu
