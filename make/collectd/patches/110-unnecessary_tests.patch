@@ -1,0 +1,47 @@
+--- configure
++++ configure
+@@ -22580,14 +22580,15 @@
+ # }}}
+ 
+ # pkg-config --exists 'libxml-2.0'; pkg-config --exists libvirt {{{
+-with_libxml2="no (pkg-config isn't available)"
++#with_libxml2="no (pkg-config isn't available)"
+ with_libxml2_cflags=""
+ with_libxml2_ldflags=""
+-with_libvirt="no (pkg-config isn't available)"
++#with_libvirt="no (pkg-config isn't available)"
+ with_libvirt_cflags=""
+ with_libvirt_ldflags=""
+ if test "x$PKG_CONFIG" != "x"
+ then
++	if test "${with_libxml2+set}" != set; then
+ 	pkg-config --exists 'libxml-2.0' 2>/dev/null
+ 	if test "$?" = "0"
+ 	then
+@@ -22595,7 +22596,9 @@
+ 	else
+ 		with_libxml2="no (pkg-config doesn't know library)"
+ 	fi
++	fi
+ 
++	if test "${with_libvirt+set}" != set; then
+ 	pkg-config --exists libvirt 2>/dev/null
+ 	if test "$?" = "0"
+ 	then
+@@ -22603,6 +22606,7 @@
+ 	else
+ 		with_libvirt="no (pkg-config doesn't know library)"
+ 	fi
++	fi
+ fi
+ if test "x$with_libxml2" = "xyes"
+ then
+@@ -22797,7 +22801,7 @@
+ # }}}
+ 
+ # $PKG_CONFIG --exists OpenIPMIpthread {{{
+-with_libopenipmipthread="yes"
++#with_libopenipmipthread="yes"
+ with_libopenipmipthread_cflags=""
+ with_libopenipmipthread_libs=""
+ 
