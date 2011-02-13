@@ -266,7 +266,7 @@ PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC = $(SED) -i -r $(foreach var,$1,-e 's/(
 # Change prefix of all ac_cv_* variables in $1 to $(pkg).
 #  $1 is allowed to be a space separated list of variables or a ready to be used sed pattern
 #  $2 (optional) is the file to be patched, default ./configure
-PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = $(SED) -i -r -e 's/ac(_cv_('"$(shell echo "$(strip $1)" | tr " " "|")"'))/'"$(shell echo $(pkg) | tr '[\-\+]' '[_x]')"'\1/g' $(if $2,$2,./configure);
+PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = $(SED) -i -r -e 's/ac(_cv_('"$(shell echo "$(strip $1)" | tr " " "|")"'))/'"$(shell echo $(pkg) | tr '[\-\+]' '[_x]')"'\2/g' $(if $2,$2,./configure);
 # alternate Version, changes ac_cv_var to $(PKG)_ac_cv_var, not to $(pkg)_cv_var
 ###PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,$(foreach var,$1,ac_cv_$(var)),$2)
 
