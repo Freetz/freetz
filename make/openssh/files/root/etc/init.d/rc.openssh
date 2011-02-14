@@ -27,13 +27,26 @@ check_key_file() {
 	/usr/bin/modsave flash
 }
 
-config() {
-	[ -d "/tmp/flash/.ssh" ] && mv /tmp/flash/.ssh /tmp/flash/openssh
-	[ -d /openssh ] || mkdir -p /tmp/flash/openssh
-	[ -d /var/empty ] || mkdir -p /var/empty
+# BEGIN compat
+convert_compat()
+{
+	if [ -d "/tmp/flash/.ssh" ]; then
+		rm -rf /tmp/flash/openssh
+		mv /tmp/flash/.ssh /tmp/flash/openssh
+	fi
 	[ -e /tmp/flash/rsa_host_key ] && mv /tmp/flash/rsa_host_key /tmp/flash/openssh/rsa_host_key
 	[ -e /tmp/flash/dsa_host_key ] && mv /tmp/flash/dsa_host_key /tmp/flash/openssh/dsa_host_key
 	[ -e /tmp/flash/host_key ] && mv /tmp/flash/host_key /tmp/flash/openssh/host_key
+}
+# END compat
+
+config() {
+	mkdir -p /tmp/flash/openssh
+	mkdir -p /var/empty
+
+	# BEGIN compat
+	convert_compat
+	# END compat
 
 	check_key_file "/tmp/flash/openssh/rsa_host_key" "rsa"
 	check_key_file "/tmp/flash/openssh/dsa_host_key" "dsa"
@@ -66,26 +79,18 @@ start() {
 	modlib_startdaemon /usr/sbin/sshd -p "$OPENSSH_PORT" -f $CONFFILE $OPENSSH_OPTIONS
 }
 
-#really needed? modlib_check_running and inherits will fail if .pid is not correct ...
-stop() {
-	killall sshd > /dev/null 2>&1
-}
-
 case $1 in
 	""|load)
 		modreg cgi 'openssh' 'OpenSSH sshd'
 		modreg daemon $DAEMON
-		modreg file openssh "dsa_key" "dsa_key" 0 "dsa_key"
-		modreg file openssh "rsa_key" "rsa_key" 0 "rsa_key"
 
-		mkdir /tmp/openssh
+		mkdir -p /tmp/openssh
 		modlib_addgroup sshd
 		modlib_adduser sshd -G sshd -s /bin/false -H -D -h /tmp/openssh -g "sshd account"
 
 		modlib_start $OPENSSH_ENABLED
 		;;
 	unload)
-		modunreg file openssh
 		modunreg daemon $DAEMON
 		modunreg cgi openssh
 		modlib_stop
