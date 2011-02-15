@@ -65,7 +65,7 @@ endif
 $(PKG)_CONFIGURE_OPTIONS += --disable-all-plugins
 $(PKG)_PLUGINS_SUPPORTED := \
     apache \
-    contextswitch cpu \
+    contextswitch cpu csv \
     disk df \
     entropy exec \
     fritzbox \
