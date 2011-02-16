@@ -1,0 +1,25 @@
+--- etc/init.d/rc.S.orig	2010-09-15 13:39:19.000000000 +0200
++++ etc/init.d/rc.S	2010-10-24 16:40:32.027936633 +0200
+@@ -1,15 +1,15 @@
+ #! /bin/sh
+ ##########################################################################################
+ ##########################################################################################
+-mount -t proc proc /proc
+-mount -t tmpfs tmpfs /var
++mount -a
+ tar xf var.tar
+ tar cf /var/devices.tar /dev
+-mount -t tmpfs tmpfs /dev
+-tar xf /var/devices.tar
+-rm /var/devices.tar
+-mount -t sysfs sysfs /sys
+-mount -t devpts devpts /dev/pts
++if [ ! -f /dev/.hotplug-cache ]; then
++	mount -o nosuid -t tmpfs dev /dev
++	tar xf /var/devices.tar
++	rm /var/devices.tar
++	mount -t devpts devpts /dev/pts
++fi
+ ##########################################################################################
+ ## Festlegung des Dateinamens:
+ ## [Kennbuchstabe][GruppenId][SubGruppeId]-<name>
