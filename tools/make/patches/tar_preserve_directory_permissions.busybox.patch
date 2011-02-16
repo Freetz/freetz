@@ -1,0 +1,19 @@
+--- archival/libarchive/data_extract_all.c.orig	2011-02-04 14:12:02.000000000 +0100
++++ archival/libarchive/data_extract_all.c	2011-02-14 14:55:59.958947092 +0100
+@@ -115,6 +115,7 @@
+ 			);
+ 		bb_copyfd_exact_size(archive_handle->src_fd, dst_fd, file_header->size);
+ 		close(dst_fd);
++		res = 0;
+ 		break;
+ 	}
+ 	case S_IFDIR:
+@@ -155,7 +156,7 @@
+ 		bb_error_msg_and_die("unrecognized file type");
+ 	}
+ 
+-	if (!S_ISLNK(file_header->mode)) {
++	if (res == 0 && !S_ISLNK(file_header->mode)) {
+ 		if (!(archive_handle->ah_flags & ARCHIVE_DONT_RESTORE_OWNER)) {
+ 			uid_t uid = file_header->uid;
+ 			gid_t gid = file_header->gid;
