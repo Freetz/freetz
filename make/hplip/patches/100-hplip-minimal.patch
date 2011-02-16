@@ -1,8 +1,8 @@
---- configure.in.orig	2010-02-25 00:08:31.000000000 +0100
-+++ configure.in	2010-04-14 23:41:50.000000000 +0200
+--- configure.in.orig	2011-01-19 06:19:05.000000000 +0100
++++ configure.in	2011-02-16 23:02:25.362188054 +0100
 @@ -37,15 +37,13 @@
- AC_PROG_CC
  AC_PROG_INSTALL
+ AC_PROG_LIBTOOL
  
 -# Checks for required libraries, don't set global -lpthread, -lm, -ljpeg, ... here, set in Makefile.
 +# Checks for required libraries, don't set global -lpthread, -lm, ... here, set in Makefile.
@@ -26,8 +26,8 @@
     AC_CHECK_LIB([usb], [usb_init], [LIBS="$LIBS"], [AC_MSG_ERROR([cannot find libusb support], 2)])
     AC_CHECK_HEADERS(usb.h, ,[AC_MSG_ERROR([cannot find libusb-devel support], 11)])
  fi
---- hplip.conf.in.orig	2010-02-25 00:07:55.000000000 +0100
-+++ hplip.conf.in	2010-04-14 23:41:50.000000000 +0200
+--- hplip.conf.in.orig	2011-01-19 06:18:26.000000000 +0100
++++ hplip.conf.in	2011-02-16 23:02:25.362188054 +0100
 @@ -5,14 +5,6 @@
  
  [dirs]
@@ -43,9 +43,9 @@
  
  # Following values are determined at configure time and cannot be changed.
  [configure]
---- scan/sane/hpaio.c.orig	2010-02-25 00:05:59.000000000 +0100
-+++ scan/sane/hpaio.c	2010-04-14 23:41:50.000000000 +0200
-@@ -39,7 +39,6 @@
+--- scan/sane/hpaio.c.orig	2011-01-19 06:16:27.000000000 +0100
++++ scan/sane/hpaio.c	2011-02-16 23:02:25.370188054 +0100
+@@ -40,7 +40,6 @@
  #include <sys/stat.h>
  #include <fcntl.h>
  #include <ctype.h>
@@ -53,7 +53,7 @@
  #include "sane.h"
  #include "saneopts.h"
  #include "common.h"
-@@ -112,45 +111,6 @@
+@@ -114,45 +113,6 @@
     return 0;
  }
  
@@ -99,7 +99,7 @@
  /* Parse URI record from buf. Assumes one record per line. All returned strings are zero terminated. */
  static int GetUriLine(char *buf, char *uri, char **tail)
  {
-@@ -183,58 +143,6 @@
+@@ -185,58 +145,6 @@
     return i;
  }
  
@@ -158,7 +158,7 @@
  static int DevDiscovery(int localOnly)
  {
     struct hpmud_model_attributes ma;
-@@ -243,7 +151,6 @@
+@@ -245,7 +153,6 @@
     char model[HPMUD_LINE_SIZE];
     char *tail;
     int i, scan_type, cnt=0, total=0, bytes_read;  
@@ -166,7 +166,7 @@
     enum HPMUD_RESULT stat;
  
     stat = hpmud_probe_devices(HPMUD_BUS_ALL, message, sizeof(message), &cnt, &bytes_read);
-@@ -270,26 +177,6 @@
+@@ -272,26 +179,6 @@
        }
     }
  
@@ -193,8 +193,8 @@
  bugout:
     return total;
  }
---- Makefile.am.orig	2010-02-25 00:07:55.000000000 +0100
-+++ Makefile.am	2010-04-14 23:52:03.000000000 +0200
+--- Makefile.am.orig	2011-01-19 06:18:26.000000000 +0100
++++ Makefile.am	2011-02-16 23:02:25.366188054 +0100
 @@ -8,10 +8,6 @@
  
  hplipdir = $(datadir)/hplip
@@ -220,7 +220,7 @@
  # hpaio sane backend
  if SCAN_BUILD
  libsane_hpaiodir = $(libdir)/sane
-@@ -55,7 +44,7 @@
+@@ -56,7 +45,7 @@
  libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
  endif
  # The following is a interlibrary dependency that must be compiled first.
@@ -229,7 +229,7 @@
  #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
  libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS)
  endif # SCAN_BUILD
-@@ -82,36 +71,10 @@
+@@ -83,36 +72,10 @@
  	ip/xbi2gray.c ip/xcolrspc.c ip/xfakemono.c ip/xgray2bi.c ip/xinvert.c ip/xjpg_enc.c ip/xmatrix.c ip/xpnm.c ip/xscale.c ip/xthumb.c ip/xyxtract.c \
  	ip/hpip.h ip/ipdefs.h ip/xform.h ip/xjpg_dct.h ip/xjpg_huf.h ip/xjpg_mrk.h
  
