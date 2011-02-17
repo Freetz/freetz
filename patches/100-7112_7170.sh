@@ -7,15 +7,16 @@ fi
 
 echo1 "adapt firmware for 7112"
 
+echo2 "deleting obsolete files"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon4"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet/"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit*"
+
 echo2 "copying 7112 files"
 cp "${DIR}/.tk/original/filesystem/lib/modules/bitfile.bit" "${FILESYSTEM_MOD_DIR}/lib/modules/"
 cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules/"
 cp -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon3" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/"
 cp -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
-
-echo2 "deleting obsolete files"
-rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon4"
-rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet/"
 
 echo2 "moving default config dir"
 mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7112"

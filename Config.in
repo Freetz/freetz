@@ -297,8 +297,6 @@ choice
 		select FREETZ_REMOVE_AURA_USB
 		select FREETZ_REMOVE_PRINTSERV
 		select FREETZ_REMOVE_PRINTSERV_MODULE
-		select FREETZ_REMOVE_PIGLET_V1
-		select FREETZ_REMOVE_PIGLET_V2
 		help
 			Enable this to compile a mod image for FritzBox Fon WLAN 7112 based
 			on a 7170 image.
@@ -1107,7 +1105,7 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 
 menu "Remove piglet file"
 	depends on FREETZ_SHOW_ADVANCED && \
-		(FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_3170_7170)
+		(FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_ FREETZ_TYPE_ALIEN_HARDWARE)
 
 	config FREETZ_REMOVE_PIGLET_V1
 	bool "Remove 7170 v1 piglet file"
