@@ -1,11 +1,11 @@
---- lib/Makefile.in.orig	2008-10-24 23:27:36.000000000 +0200
-+++ lib/Makefile.in	2008-10-24 23:26:13.000000000 +0200
+--- lib/Makefile.in	2011-02-02 13:22:52.000000000 +0100
++++ lib/Makefile.in	2011-02-17 20:09:56.000000000 +0100
 @@ -73,7 +73,7 @@
  am__installdirs = "$(DESTDIR)$(libdir)"
  libLTLIBRARIES_INSTALL = $(INSTALL)
- LTLIBRARIES = $(lib_LTLIBRARIES)
+ LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 -libcurl_la_LIBADD =
 +libcurl_la_LIBADD = -ldl
- am__objects_1 = file.lo timeval.lo base64.lo hostip.lo progress.lo \
- 	formdata.lo cookie.lo http.lo sendf.lo ftp.lo url.lo dict.lo \
- 	if2ip.lo speedcheck.lo ldap.lo ssluse.lo version.lo getenv.lo \
+ am__objects_1 = libcurl_la-file.lo libcurl_la-timeval.lo \
+ 	libcurl_la-base64.lo libcurl_la-hostip.lo \
+ 	libcurl_la-progress.lo libcurl_la-formdata.lo \
