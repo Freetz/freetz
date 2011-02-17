@@ -6,6 +6,8 @@ CCACHE_KERNEL_DIR:=$(KERNEL_TOOLCHAIN_DIR)/ccache-$(CCACHE_KERNEL_VERSION)
 CCACHE_KERNEL_BINARY:=ccache
 CCACHE_KERNEL_TARGET_BINARY:=usr/bin/ccache
 
+CCACHE_KERNEL_BIN_DIR:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache 
+
 ifneq ($(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_SOURCE)))
 $(DL_DIR)/$(CCACHE_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(CCACHE_KERNEL_SOURCE) $(CCACHE_KERNEL_SITE) $(CCACHE_KERNEL_MD5)
@@ -16,7 +18,7 @@ $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOO
 	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
-	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache\",g" \
+	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_KERNEL_BIN_DIR)\",g" \
 		$(CCACHE_KERNEL_DIR)/execute.c
 	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(KERNEL_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 		$(CCACHE_KERNEL_DIR)/ccache.c
@@ -45,24 +47,17 @@ $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY): $(CCACHE_KERNEL_
 	cp $(CCACHE_KERNEL_DIR)/$(CCACHE_KERNEL_BINARY) $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
 	# Keep the actual toolchain binaries in a directory at the same level.
 	# Otherwise, relative paths for include dirs break.
-	mkdir -p $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache
-	(cd $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache; \
-		ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-gcc; \
-		ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
-		ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(REAL_GNU_KERNEL_NAME)-cc);
+	mkdir -p $(CCACHE_KERNEL_BIN_DIR)
 	[ -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc -a \
 		! -h $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc ] && \
-		mv $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache/ || true
-		( cd $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache; \
-			ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-gcc; \
-			ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
-			ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc \
-		); \
-		( cd $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin; \
-			ln -fs ../usr/bin/ccache $(GNU_TARGET_NAME)-cc; \
-			ln -fs ../usr/bin/ccache $(GNU_TARGET_NAME)-gcc; \
-			ln -fs ../usr/bin/ccache $(REAL_GNU_KERNEL_NAME)-cc; \
-			ln -fs ../usr/bin/ccache $(REAL_GNU_KERNEL_NAME)-gcc);
+		mv $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc $(CCACHE_KERNEL_BIN_DIR)/ || true
+	( cd $(CCACHE_KERNEL_BIN_DIR); \
+		ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-gcc; \
+		ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
+		ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc \
+	); \
+	( cd $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin; \
+		ln -fs ../usr/bin/ccache $(REAL_GNU_KERNEL_NAME)-gcc )
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 ccache-kernel: gcc-kernel $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
@@ -71,18 +66,12 @@ ccache-kernel: $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
 endif
 
 ccache-kernel-clean:
-	rm -rf  $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-cc
-	rm -rf  $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(GNU_TARGET_NAME)-gcc
-	rm -rf  $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-cc
-	rm -rf  $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
-	if [ -f $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_KERNEL_NAME)-gcc ] ; then \
-		mv $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_KERNEL_NAME)-gcc $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/; \
-		(cd $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin; \
-		    ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(REAL_GNU_KERNEL_NAME)-cc; \
-		    ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
-		    ln -fs $(REAL_GNU_KERNEL_NAME)-gcc $(GNU_TARGET_NAME)-gcc); \
-	fi;
-	rm -rf  $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache/*
+	if [ -f $(CCACHE_KERNEL_BIN_DIR)/$(REAL_GNU_KERNEL_NAME)-gcc ] ; then \
+		$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc
+		mv $(CCACHE_KERNEL_BIN_DIR)/$(REAL_GNU_KERNEL_NAME)-gcc $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/; \
+	fi
+	$(RM) -r $(CCACHE_KERNEL_BIN_DIR)
+	$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
 	-$(MAKE) -C $(CCACHE_KERNEL_DIR) clean
 
 ccache-kernel-dirclean: ccache-kernel-clean

@@ -6,6 +6,8 @@ CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
 CCACHE_BINARY:=ccache
 CCACHE_TARGET_BINARY:=usr/bin/ccache
 
+CCACHE_BIN_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
+
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) .config $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_MD5)
@@ -16,7 +18,7 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(CCACHE_SOURCE)
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
-	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache\",g" \
+	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_BIN_DIR)\",g" \
 		$(CCACHE_DIR)/execute.c
 	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 		$(CCACHE_DIR)/ccache.c
@@ -45,39 +47,23 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_
 	cp $(CCACHE_DIR)/$(CCACHE_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 	# Keep the actual toolchain binaries in a directory at the same level.
 	# Otherwise, relative paths for include dirs break.
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-gcc; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc; \
-	)
-	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc -a \
-		! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc ] && \
-		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc \
-				$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/ || true
+	mkdir -p $(CCACHE_BIN_DIR)
+	for i in gcc g++; do \
+		[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i -a \
+			! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i ] && \
+			mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i \
+					$(CCACHE_BIN_DIR)/ || true; \
+	done
 	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
-			ln -fs ccache $(GNU_TARGET_NAME)-cc; \
-			ln -fs ccache $(GNU_TARGET_NAME)-gcc; \
-			ln -fs ccache $(REAL_GNU_TARGET_NAME)-cc; \
-			ln -fs ccache $(REAL_GNU_TARGET_NAME)-gcc; \
-	)
-	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++ -a \
-		! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++ ] && \
-		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++ \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/ || true
-	[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++ -a \
-		! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++ ] && \
-		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++ \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/ || true
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
-		ln -fs ccache $(GNU_TARGET_NAME)-c++; \
-		ln -fs ccache $(GNU_TARGET_NAME)-g++;\
-		ln -fs ccache $(REAL_GNU_TARGET_NAME)-c++; \
+		ln -fs ccache $(REAL_GNU_TARGET_NAME)-gcc; \
 		ln -fs ccache $(REAL_GNU_TARGET_NAME)-g++; \
 	)
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-c++ $(GNU_TARGET_NAME)-c++; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(GNU_TARGET_NAME)-g++; \
+	(cd $(CCACHE_BIN_DIR); \
+		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(REAL_GNU_TARGET_NAME)-c++; \
+		ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc; \
+		for i in gcc g++ cc c++; do \
+			ln -fs $(REAL_GNU_TARGET_NAME)-$$i $(GNU_TARGET_NAME)-$$i; \
+		done; \
 	)
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
@@ -87,35 +73,15 @@ ccache: $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 endif
 
 ccache-clean:
-	rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(GNU_TARGET_NAME)-cc
-	rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(GNU_TARGET_NAME)-gcc
-	rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-cc
-	rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-gcc
-	if [ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-gcc ] ; then \
-		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-gcc \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
-		(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
-		    ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc; \
-		    ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-cc; \
-		    ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(GNU_TARGET_NAME)-gcc; \
-		); \
-	fi
-	if [ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-c++ ] ; then \
-		rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-c++; \
-		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-c++ \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
-	fi;
-	if [ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-g++ ] ; then \
-		rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++; \
-		mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/$(REAL_GNU_TARGET_NAME)-g++ \
-			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
-	fi;
-	rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache/*
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(GNU_TARGET_NAME)-c++; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(GNU_TARGET_NAME)-g++; \
-		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(REAL_GNU_TARGET_NAME)-c++; \
-	)
+	for i in gcc g++; do \
+		if [ -f $(CCACHE_BIN_DIR)/$(REAL_GNU_TARGET_NAME)-$$i ] ; then \
+			rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i; \
+			mv $(CCACHE_BIN_DIR)/$(REAL_GNU_TARGET_NAME)-$$i \
+				$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
+		fi; \
+	done
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 	-$(MAKE) -C $(CCACHE_DIR) clean
 
 ccache-dirclean: ccache-clean
