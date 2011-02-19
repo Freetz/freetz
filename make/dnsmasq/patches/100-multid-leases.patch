@@ -1,5 +1,5 @@
---- src/dnsmasq.h.orig	2011-01-18 23:23:57.000000000 +0100
-+++ src/dnsmasq.h	2011-02-15 01:33:57.218188054 +0100
+--- src/dnsmasq.h.orig	2011-02-17 16:30:15.000000000 +0100
++++ src/dnsmasq.h	2011-02-19 11:19:56.428342858 +0100
 @@ -439,6 +439,7 @@
  #endif
    int hwaddr_len, hwaddr_type;
@@ -8,7 +8,7 @@
    struct in_addr addr, override, giaddr;
    unsigned char *extradata;
    unsigned int extradata_len, extradata_size;
-@@ -885,6 +886,7 @@
+@@ -870,6 +871,7 @@
  void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth);
@@ -16,8 +16,8 @@
  void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
  void lease_set_interface(struct dhcp_lease *lease, int interface);
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
---- src/lease.c.orig	2011-01-18 23:23:57.000000000 +0100
-+++ src/lease.c	2011-02-15 01:33:57.222188054 +0100
+--- src/lease.c.orig	2011-02-17 16:30:15.000000000 +0100
++++ src/lease.c	2011-02-19 11:19:56.428342858 +0100
 @@ -179,11 +179,16 @@
  
    if (file_dirty != 0 && daemon->lease_stream)
@@ -99,9 +99,9 @@
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth)
  {
    struct dhcp_lease *lease_tmp;
---- src/rfc2131.c.orig	2011-01-18 23:23:57.000000000 +0100
-+++ src/rfc2131.c	2011-02-15 01:33:57.226188054 +0100
-@@ -528,6 +528,7 @@
+--- src/rfc2131.c.orig	2011-02-17 16:30:15.000000000 +0100
++++ src/rfc2131.c	2011-02-19 11:19:56.428342858 +0100
+@@ -466,6 +466,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
  		lease_set_hostname(lease, hostname, 1); 
@@ -109,7 +109,7 @@
  	      /* infinite lease unless nailed in dhcp-host line. */
  	      lease_set_expires(lease,  
  				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
-@@ -1317,7 +1318,7 @@
+@@ -1255,7 +1256,7 @@
  
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, hostname_auth);

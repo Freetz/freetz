@@ -1,5 +1,5 @@
---- src/config.h.orig	2010-10-27 12:45:46.000000000 +0200
-+++ src/config.h	2010-10-27 13:11:28.000000000 +0200
+--- src/config.h.orig	2011-02-18 11:18:39.000000000 +0100
++++ src/config.h	2011-02-19 11:19:56.048342858 +0100
 @@ -39,7 +39,7 @@
  #else
  #  define RESOLVFILE "/etc/resolv.conf"
@@ -9,16 +9,16 @@
  
  #ifndef LEASEFILE
  #   if defined(__FreeBSD__) || defined (__OpenBSD__) || defined(__DragonFly__) || defined(__NetBSD__)
-@@ -47,7 +47,7 @@
- #   elif defined(__sun__) || defined (__sun)
- #      define LEASEFILE "/var/cache/dnsmasq.leases"
+@@ -49,7 +49,7 @@
+ #   elif defined(__ANDROID__)
+ #      define LEASEFILE "/data/misc/dhcp/dnsmasq.leases"
  #   else
 -#      define LEASEFILE "/var/lib/misc/dnsmasq.leases"
 +#      define LEASEFILE "/var/tmp/dnsmasq.leases"
  #   endif
  #endif
  
-@@ -55,7 +55,7 @@
+@@ -57,7 +57,7 @@
  #   if defined(__FreeBSD__)
  #      define CONFFILE "/usr/local/etc/dnsmasq.conf"
  #   else
@@ -27,7 +27,7 @@
  #   endif
  #endif
  
-@@ -212,9 +212,9 @@
+@@ -199,9 +199,9 @@
  #endif
  #undef HAVE_ARC4RANDOM
  #undef HAVE_SOCKADDR_SA_LEN
