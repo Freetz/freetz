@@ -84,6 +84,9 @@ case $1 in
 		modreg cgi 'openssh' 'OpenSSH sshd'
 		modreg daemon $DAEMON
 
+		modreg file openssh "dsa_key" "dsa_key" 0 "dsa_key"
+		modreg file openssh "rsa_key" "rsa_key" 0 "rsa_key"
+
 		mkdir -p /tmp/openssh
 		modlib_addgroup sshd
 		modlib_adduser sshd -G sshd -s /bin/false -H -D -h /tmp/openssh -g "sshd account"
