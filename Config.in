@@ -799,6 +799,14 @@ config FREETZ_HAS_TAM
 	help
 		Select this if you have a box with TAM (Telephone Answering Machine) support.
 
+config FREETZ_HAS_UDEV
+	bool "udev"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_FON_WLAN_7320
+	default n
+	help
+		Select this if you have a box with udev.
+
 config FREETZ_HAS_USB_CLIENT
 	bool "USB client"		if FREETZ_TYPE_CUSTOM
 	default y				if \
