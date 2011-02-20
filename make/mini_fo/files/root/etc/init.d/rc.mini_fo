@@ -64,7 +64,7 @@ jffs2_mount() {
 	done
 	if [ $jffs2_size -gt 0 ]; then
 		echo "[jffs2] load jffs2 module"
-		if modprobe jffs2; then
+		if grep -q "jffs2" /proc/filesystems || modprobe jffs2; then
 			echo "[jffs2] mount jffs "
 			mount -t jffs2 /dev/mtdblock${jffs2_pat} /sto
 			jffs2_ok=$?
