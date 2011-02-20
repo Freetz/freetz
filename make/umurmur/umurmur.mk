@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.5)
+$(call PKG_INIT_BIN, 0.2.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c31fd72c0ac563cf75961ae4e49909d7
+$(PKG)_SOURCE_MD5:=06dc224be5160e172574c9248682140b
 $(PKG)_SITE:=http://$(pkg).googlecode.com/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)d
