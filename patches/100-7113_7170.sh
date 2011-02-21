@@ -7,11 +7,16 @@ fi
 
 echo1 "adapt firmware for 7113"
 
-echo2 "copying 7113 files"
-cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESYSTEM_MOD_DIR}/lib/modules"
-
 echo2 "deleting obsolete files"
-rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon4"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet/"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit*"
+
+echo2 "copying 7113 files"
+cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip*top.bit "${FILESYSTEM_MOD_DIR}/lib/modules"
+cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules/"
+cp -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon3" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/"
+cp -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
 
 #echo2 "patching webmenu"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7113_7170.patch"
@@ -20,8 +25,9 @@ echo2 "moving default config dir"
 mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7113"
 
 echo2 "patching rc.S and rc.conf"
-
-modsed "s/piglet_bitfile_offset=0/piglet_bitfile_offset=0x4d/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+modsed "/modprobe Piglet piglet_bitfile.*$/i \
+piglet_potsbitfile=/lib/modules/microvoip_top.bit${HWRevision_BitFileCount}" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+modsed "s/modprobe Piglet piglet_bitfile=.*$/modprobe Piglet_noemif piglet_bitfile=\$piglet_bitfile piglet_potsbitfile=\$piglet_potsbitfile piglet_bitfilemode=0/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
 modsed "s/CONFIG_AB_COUNT=.*$/CONFIG_AB_COUNT=\"2\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_CAPI_NT=.*$/CONFIG_CAPI_NT=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
