@@ -17,6 +17,9 @@ if [ ! -x "$rcfile" ]; then
 	exit 1
 fi
 
+# redirect stderr to stdout so we see output in webif
+exec 2>&1
+
 case $SERVICE_CMD in
 	start)   message="$(lang de:"Starte" en:"Starting") $description" ;;
 	stop)    message="$(lang de:"Stoppe" en:"Stopping") $description" ;;
