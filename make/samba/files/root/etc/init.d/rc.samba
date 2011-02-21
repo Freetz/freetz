@@ -53,7 +53,7 @@ case $1 in
 		mkdir -p /tmp/flash/samba
 		mkdir -p /var/locks
 
-		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftp user"
+		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftpuser"
 
 		modreg cgi samba "Samba"
 		modreg file samba shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
