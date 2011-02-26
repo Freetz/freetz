@@ -1104,6 +1104,13 @@ config FREETZ_LIB_libuClibc__
 		The uClibc++ library is my implementation of the C++ standard library.
 		It is designed for use in embedded systems.
 
+config FREETZ_LIB_libuClibc__WITH_WCHAR
+	depends FREETZ_LIB_libuClibc__
+	bool "enable wchar support"
+	default n
+	help
+		Enables wchar-support in uClibc++.
+
 #config FREETZ_LIB_libpjsip
 #	bool "libpjsip (libpjsip.so)
 #	default n
