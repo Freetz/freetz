@@ -1,0 +1,14 @@
+--- library/Makefile
++++ library/Makefile
+@@ -42,9 +42,9 @@
+ 
+ libpolarssl.a: $(OBJS)
+ 	echo "  AR    $@"
+-	ar r $@ $(OBJS)
++	$(AR) r $@ $(OBJS)
+ 	echo "  RL    $@"
+-	ranlib $@
++	$(RANLIB) $@
+ 
+ $(LIB_SO_VERSION): $(OBJS)
+ 	echo "  LD    $@"

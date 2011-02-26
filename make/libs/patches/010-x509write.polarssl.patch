@@ -1,5 +1,13 @@
 --- include/polarssl/x509.h
 +++ include/polarssl/x509.h
+@@ -122,6 +122,7 @@
+ #define OID_CN                  "\x55\x04\x03"
+ #define OID_PKCS1               "\x2A\x86\x48\x86\xF7\x0D\x01\x01"
+ #define OID_PKCS1_RSA           "\x2A\x86\x48\x86\xF7\x0D\x01\x01\x01"
++#define OID_PKCS1_RSA_SHA       "\x2A\x86\x48\x86\xF7\x0D\x01\x01\x05"
+ #define OID_RSA_SHA_OBS         "\x2B\x0E\x03\x02\x1D"
+ #define OID_PKCS9               "\x2A\x86\x48\x86\xF7\x0D\x01\x09"
+ #define OID_PKCS9_EMAIL         "\x2A\x86\x48\x86\xF7\x0D\x01\x09\x01"
 @@ -437,6 +437,229 @@
   */
  int x509_self_test( int verbose );
