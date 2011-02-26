@@ -1,0 +1,134 @@
+--- taglib/mpeg/id3v1/id3v1tag.cpp
++++ taglib/mpeg/id3v1/id3v1tag.cpp
+@@ -207,8 +207,9 @@
+     // some initial sanity checking
+     if(data.size() == 128 && data.startsWith("TAG"))
+       parse(data);
+-    else
++    else {
+       debug("ID3v1 tag is not valid or could not be read at the specified offset.");
++    }
+   }
+ }
+ 
+--- taglib/mpeg/id3v2/id3v2tag.cpp
++++ taglib/mpeg/id3v2/id3v2tag.cpp
+@@ -432,8 +432,9 @@
+     // portion of the frame data.
+ 
+     if(data.at(frameDataPosition) == 0) {
+-      if(d->header.footerPresent())
++      if(d->header.footerPresent()) {
+         debug("Padding *and* a footer found.  This is not allowed by the spec.");
++      }
+ 
+       d->paddingSize = frameDataLength - frameDataPosition;
+       return;
+--- taglib/ogg/flac/oggflacfile.cpp
++++ taglib/ogg/flac/oggflacfile.cpp
+@@ -256,8 +256,9 @@
+       d->hasXiphComment = true;
+       d->commentPacket = ipacket;
+     }
+-    else if(blockType > 5)
++    else if(blockType > 5) {
+       debug("Ogg::FLAC::File::scan() -- Unknown metadata block");
++    }
+ 
+   }
+ 
+--- taglib/ogg/oggpage.cpp
++++ taglib/ogg/oggpage.cpp
+@@ -153,8 +153,9 @@
+     for(; it != packetSizes.end(); ++it)
+       l.append(d->file->readBlock(*it));
+   }
+-  else
++  else {
+     debug("Ogg::Page::packets() -- attempting to read packets from an invalid page.");
++  }
+ 
+   return l;
+ }
+@@ -175,8 +176,9 @@
+       d->file->seek(d->packetOffset);
+       data.append(d->file->readBlock(d->dataSize));
+     }
+-    else
++    else {
+       debug("Ogg::Page::render() -- this page is empty!");
++    }
+   }
+   else {
+     ByteVectorList::ConstIterator it = d->packets.begin();
+--- taglib/ogg/speex/speexproperties.cpp
++++ taglib/ogg/speex/speexproperties.cpp
+@@ -161,10 +161,12 @@
+ 
+     if(start >= 0 && end >= 0 && d->sampleRate > 0)
+       d->length = (int) ((end - start) / (long long) d->sampleRate);
+-    else
++    else {
+       debug("Speex::Properties::read() -- Either the PCM values for the start or "
+             "end of this file was incorrect or the sample rate is zero.");
++    }
+   }
+-  else
++  else {
+     debug("Speex::Properties::read() -- Could not find valid first and last Ogg pages.");
++  }
+ }
+--- taglib/ogg/vorbis/vorbisproperties.cpp
++++ taglib/ogg/vorbis/vorbisproperties.cpp
+@@ -174,10 +174,12 @@
+ 
+     if(start >= 0 && end >= 0 && d->sampleRate > 0)
+       d->length = (end - start) / (long long) d->sampleRate;
+-    else
++    else {
+       debug("Vorbis::Properties::read() -- Either the PCM values for the start or "
+             "end of this file was incorrect or the sample rate is zero.");
++    }
+   }
+-  else
++  else {
+     debug("Vorbis::Properties::read() -- Could not find valid first and last Ogg pages.");
++  }
+ }
+--- taglib/toolkit/tfile.cpp
++++ taglib/toolkit/tfile.cpp
+@@ -114,8 +114,9 @@
+   else
+     file = fopen(name, "rb");
+ 
+-  if(!file)
++  if(!file) {
+     debug("Could not open file " + String((const char *) name));
++  }
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////
+--- taglib/toolkit/tstring.cpp
++++ taglib/toolkit/tstring.cpp
+@@ -232,8 +232,9 @@
+                                 &target, targetBuffer + outputBufferSize,
+                                 Unicode::lenientConversion);
+ 
+-  if(result != Unicode::conversionOK)
++  if(result != Unicode::conversionOK) {
+     debug("String::to8Bit() - Unicode conversion error.");
++  }
+ 
+   int newSize = target - targetBuffer;
+   s.resize(newSize);
+@@ -758,8 +759,9 @@
+                                   &target, targetBuffer + bufferSize,
+                                   Unicode::lenientConversion);
+ 
+-    if(result != Unicode::conversionOK)
++    if(result != Unicode::conversionOK) {
+       debug("String::prepare() - Unicode conversion error.");
++    }
+ 
+ 
+     int newSize = target != targetBuffer ? target - targetBuffer - 1 : 0;

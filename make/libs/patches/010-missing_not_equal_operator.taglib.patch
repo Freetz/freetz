@@ -1,0 +1,49 @@
+--- taglib/toolkit/tlist.h
++++ taglib/toolkit/tlist.h
+@@ -226,6 +226,7 @@
+      * the same.
+      */
+     bool operator==(const List<T> &l) const;
++    bool operator!=(const List<T> &l) const;
+ 
+   protected:
+     /*
+--- taglib/toolkit/tlist.tcc
++++ taglib/toolkit/tlist.tcc
+@@ -300,6 +300,12 @@
+   return d->list == l.d->list;
+ }
+ 
++template <class T>
++bool List<T>::operator!=(const List<T> &l) const
++{
++  return !operator==(l);
++}
++
+ ////////////////////////////////////////////////////////////////////////////////
+ // protected members
+ ////////////////////////////////////////////////////////////////////////////////
+--- taglib/toolkit/tstring.h
++++ taglib/toolkit/tstring.h
+@@ -342,6 +342,7 @@
+      * returns true if the strings match.
+      */
+     bool operator==(const String &s) const;
++    bool operator!=(const String &s) const;
+ 
+     /*!
+      * Appends \a s to the end of the String.
+--- taglib/toolkit/tstring.cpp
++++ taglib/toolkit/tstring.cpp
+@@ -546,6 +546,11 @@
+   return d == s.d || d->data == s.d->data;
+ }
+ 
++bool String::operator!=(const String &s) const
++{
++  return !operator==(s);
++}
++
+ String &String::operator+=(const String &s)
+ {
+   detach();

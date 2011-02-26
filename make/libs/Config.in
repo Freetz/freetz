@@ -525,6 +525,18 @@ config FREETZ_LIB_libmad
 		so-called MPEG 2.5 format. All three audio layers (Layer I, Layer II,
 		and Layer III a.k.a. MP3) are fully implemented.
 
+config FREETZ_LIB_libtag
+	bool "taglib (libtag.so)"
+	select FREETZ_LIB_libuClibc__
+	select FREETZ_LIB_libuClibc__WITH_WCHAR
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libz
+	default n
+	help
+		TagLib is a library for reading and editing the meta-data of several
+		popular audio formats. Currently it supports both ID3v1 and ID3v2
+		for MP3 files, Ogg Vorbis comments and ID3 tags and Vorbis comments
+		in FLAC, MPC, Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.
 endmenu
 
 config FREETZ_LIB_libatm

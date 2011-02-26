@@ -1,0 +1,11 @@
+--- taglib/Makefile.in
++++ taglib/Makefile.in
+@@ -407,7 +407,7 @@
+ 	  rm -f "$${dir}/so_locations"; \
+ 	done
+ libtag.la: $(libtag_la_OBJECTS) $(libtag_la_DEPENDENCIES) 
+-	$(libtag_la_LINK) -rpath $(libdir) $(libtag_la_OBJECTS) $(libtag_la_LIBADD) $(LIBS)
++	$(libtag_la_LINK) -rpath $(libdir) $(libtag_la_OBJECTS) $(libtag_la_LIBADD) $(LIBS) -lm
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
