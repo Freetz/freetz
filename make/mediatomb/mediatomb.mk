@@ -24,6 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-ffmpeg
 $(PKG)_CONFIGURE_OPTIONS += --enable-inotify
 $(PKG)_CONFIGURE_OPTIONS += --enable-libexif
 $(PKG)_CONFIGURE_OPTIONS += --enable-sqlite3
+$(PKG)_CONFIGURE_OPTIONS += --enable-taglib
 $(PKG)_CONFIGURE_OPTIONS += --enable-youtube
 $(PKG)_CONFIGURE_OPTIONS += --enable-zlib
 
@@ -44,7 +45,6 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-libextractor
 $(PKG)_CONFIGURE_OPTIONS += --disable-libmagic
 $(PKG)_CONFIGURE_OPTIONS += --disable-libmp4v2
 $(PKG)_CONFIGURE_OPTIONS += --disable-mysql
-$(PKG)_CONFIGURE_OPTIONS += --disable-taglib
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
