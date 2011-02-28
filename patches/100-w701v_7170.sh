@@ -8,13 +8,8 @@ if [ -z "$FIRMWARE2" ]; then
 fi
 echo1 "adapt firmware for W701V"
 
-echo2 "copying W701V files"
-cp "${DIR}/.tk/original/filesystem/etc/led.conf" "${FILESYSTEM_MOD_DIR}/etc/led.conf"
-cp "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet/Piglet.ko" \
-	"${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet"
-cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit"* "${FILESYSTEM_MOD_DIR}/lib/modules"
-
 echo2 "deleting obsolete files"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit*"
 for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb drivers/scsi; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i"
 done
@@ -24,8 +19,18 @@ for i in bin/pause bin/reinit_jffs2 bin/usbhostchanged etc/hotplug \
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 
+echo2 "copying W701V files"
+cp "${DIR}/.tk/original/filesystem/etc/led.conf" "${FILESYSTEM_MOD_DIR}/etc/led.conf"
+cp "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet/Piglet.ko" \
+	"${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet"
+cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYSTEM_MOD_DIR}/lib/modules"
+
 echo2 "patching webmenu"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch"
+if isFreetzType LABOR_PREVIEW; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170_labor_preview.patch" || exit 2
+else
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch" || exit 2
+fi
 
 echo2 "moving default config dir, creating tcom and congstar symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
@@ -43,8 +48,12 @@ modsed "/piglet_irq=9.*$/d" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_SpeedportW701V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-modsed "s/CONFIG_CAPI_NT=\"y\"/CONFIG_CAPI_NT=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ar7_8MB_xilinx_4eth_2ab_isdn_pots_wlan_13200\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
+for var in CONFIG_CAPI_NT CONFIG_USB_STORAGE CONFIG_USB_PRINT_SERV CONFIG_USB_WLAN_AUTH CONFIG_USB_HOST_AVM CONFIG_USB_STORAGE_SPINDOWN; do
+	modsed "s/$var=.*$/$var=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+done
+
 
 echo2 "patching webinterface"
 modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/sip1.js"
@@ -83,4 +92,8 @@ fi
 
 # patch install script to accept firmware from FBF or Speedport
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170.patch" || exit 2
+if isFreetzType LABOR_PREVIEW; then
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170_labor_preview.patch" || exit 2
+else
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170.patch" || exit 2
+fi

@@ -1,0 +1,243 @@
+diff -burN usr/www/all/html/de/enhsettings/enhsettings.js usr/www/all/html/de/enhsettings/enhsettings.js
+--- usr/www/all/html/de/enhsettings/enhsettings.js	2011-01-31 17:16:09.000000000 +0100
++++ usr/www/all/html/de/enhsettings/enhsettings.js	2011-02-24 00:12:22.000000000 +0100
+@@ -40,7 +40,7 @@
+ ` ?>
+ ` ?>
+ <? setvariable var:showUsb 0 ?>
+-<? setvariable var:showUsb 1 ?>
++<? setvariable var:showUsb 0 ?>
+ <? setvariable var:showNAS 0 ?>
+ <? setvariable var:showWlan 0 ?>
+ <? setvariable var:showWlan 1 ?>
+diff -burN usr/www/all/html/de/fon/fon1fxi.html usr/www/all/html/de/fon/fon1fxi.html
+--- usr/www/all/html/de/fon/fon1fxi.html	2011-01-31 17:16:11.000000000 +0100
++++ usr/www/all/html/de/fon/fon1fxi.html	2011-02-24 00:12:23.000000000 +0100
+@@ -69,11 +69,6 @@
+ <? include ../html/de/home/mail_config.html ?>
+ <!-- ************************************************* -->
+ <p class="mb5 mt5 ml20">
+-<input type="checkbox" id="uiViewSaveFax">&nbsp;
+-<label for="uiViewSaveFax">{?9601:7166?}</label>
+-</p>
+-<p class="mb5" style="margin-left:50px;">
+-<span id="uiSpanUsbDiskPath">&nbsp;</span>
+ </p>
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="secforebuttons">
+diff -burN usr/www/all/html/de/fon_config/fon_config_3fxi.html usr/www/all/html/de/fon_config/fon_config_3fxi.html
+--- usr/www/all/html/de/fon_config/fon_config_3fxi.html	2011-01-31 17:16:11.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_3fxi.html	2011-02-24 00:12:22.000000000 +0100
+@@ -22,11 +22,6 @@
+ <span id="uiSpanMailError">{?8604:7383?}</span>
+ </p>
+ <p class="mb5">
+-<input type="checkbox" id="uiViewSaveFax" />&nbsp;
+-<label for="uiViewSaveFax">{?8604:9569?}</label>
+-</p>
+-<p class="mb10 pLeft25">
+-<span id="uiSpanUsbDiskPath">&nbsp;</span>
+ </p>
+ </div>
+ </div></div></div></div></div></div>
+diff -burN usr/www/all/html/de/fon_config/fon_config_3fxi.js usr/www/all/html/de/fon_config/fon_config_3fxi.js
+--- usr/www/all/html/de/fon_config/fon_config_3fxi.js	2011-01-31 17:16:03.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_3fxi.js	2011-02-24 00:12:22.000000000 +0100
+@@ -86,7 +86,7 @@
+ var usbCount = Number("<? query ctlusb:settings/storage-part/count ?>");
+ if (isNaN(usbCount) || usbCount < 1)
+ {
+-if ("<? query aura:settings/aura4storage ?>" == "1")
++if ("1" == "0")
+ str = g_txtFaxAuraAn;
+ else
+ str = g_txtFaxNoUsb;
+diff -burN usr/www/all/html/de/home/fon1fxi.html usr/www/all/html/de/home/fon1fxi.html
+--- usr/www/all/html/de/home/fon1fxi.html	2011-01-31 17:16:11.000000000 +0100
++++ usr/www/all/html/de/home/fon1fxi.html	2011-02-24 00:12:23.000000000 +0100
+@@ -69,11 +69,6 @@
+ <? include ../html/de/home/mail_config.html ?>
+ <!-- ************************************************* -->
+ <p class="mb5 mt5 ml20">
+-<input type="checkbox" id="uiViewSaveFax">&nbsp;
+-<label for="uiViewSaveFax">{?9601:7166?}</label>
+-</p>
+-<p class="mb5" style="margin-left:50px;">
+-<span id="uiSpanUsbDiskPath">&nbsp;</span>
+ </p>
+ </div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="secforebuttons">
+diff -burN usr/www/all/html/de/home/sitemap.html usr/www/all/html/de/home/sitemap.html
+--- usr/www/all/html/de/home/sitemap.html	2011-01-31 17:16:13.000000000 +0100
++++ usr/www/all/html/de/home/sitemap.html	2011-02-24 00:12:22.000000000 +0100
+@@ -122,7 +122,7 @@
+ <? setvariable var:showVpn 0 ?>
+ ` ?>
+ <? setvariable var:showUsbfreigabe 0 ?>
+-<? setvariable var:showUsbfreigabe 1 ?>
++<? setvariable var:showUsbfreigabe 0 ?>
+ <? if eq $var:ipClient 1 `
+ <? setvariable var:showUsbfreigabe 0 ?>
+ ` ?>
+@@ -130,7 +130,7 @@
+ <? setvariable var:showUsbfreigabe 0 ?>
+ ` ?>
+ <? if eq $var:umtsOn 1 `
+-<? setvariable var:showUsbfreigabe 1 ?>
++<? setvariable var:showUsbfreigabe 0 ?>
+ ` ?>
+ <? if neq <? query box:settings/expertmode/activated ?> 1 `
+ <? setvariable var:showUsbfreigabe 0 ?>
+@@ -205,12 +205,10 @@
+ </td>
+ <td class="gelb">
+ <div class="gelb">
+-<p class="mb5 fett"><a href="javascript:jslGoTo('usb', 'status');">{?txtUSBDevices?}</a></p>
+-<p class="ml10"><a href="javascript:jslGoTo('usb', 'status');">{?739:9902?}</a></p>
+-<? setvariable var:showdisk 1 ?>
++<? setvariable var:showdisk 0 ?>
+ <? if eq '<? query aura:settings/enabled ?>' '1' `
+ <? if eq '<? query aura:settings/aura4storage ?>' '1' `
+-<? setvariable var:showdisk 1 ?>` ?>
++<? setvariable var:showdisk 0 ?>` ?>
+ ` ?>
+ <? if eq $var:showdisk 1 `
+ <p class="ml10"><a href="javascript:jslGoTo('usb', 'usbdisk');">{?739:7792?}</a></p>
+diff -burN usr/www/all/html/de/js/basis.js usr/www/all/html/de/js/basis.js
+--- usr/www/all/html/de/js/basis.js	2011-01-31 17:15:50.000000000 +0100
++++ usr/www/all/html/de/js/basis.js	2011-02-24 00:12:48.000000000 +0100
+@@ -167,7 +167,7 @@
+ var menu = readCookie("menu");
+ var page = readCookie("page");
+ if (menu == "konfig") {
+-jslGoTo("konfig", "home");
++jslGoTo("enhsettings", "enhsettings");
+ }
+ else if (menu == "software") {
+ jslGoTo("software", "extern");
+@@ -176,7 +176,7 @@
+ jslGoTo("enhsettings", "enhsettings");
+ }
+ else {
+-jslGoTo("konfig", "home");
++jslGoTo("enhsettings", "enhsettings");
+ }
+ }
+ function GoToSitemap()
+diff -burN usr/www/all/html/de/konfig/update_OnClick_1.js usr/www/all/html/de/konfig/update_OnClick_1.js
+--- usr/www/all/html/de/konfig/update_OnClick_1.js	2011-01-31 17:16:00.000000000 +0100
++++ usr/www/all/html/de/konfig/update_OnClick_1.js	2011-02-24 00:12:50.000000000 +0100
+@@ -13,7 +13,7 @@
+ function uiDoOnLoad() {
+ document.title = "{?257:8680?}";
+ SetSpanText("uiStatus", " ");
+-Tabs(0);
++Tabs(1);
+ <? if eq $var:OEM freenet `
+ var usePstn = "<? query telcfg:settings/UsePSTN ?>";
+ if (usePstn == "0") alert(g_mldfreenet);
+diff -burN usr/www/all/html/de/menus/menu2_internet.html usr/www/all/html/de/menus/menu2_internet.html
+--- usr/www/all/html/de/menus/menu2_internet.html	2011-01-31 17:15:51.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_internet.html	2011-02-24 00:12:22.000000000 +0100
+@@ -141,7 +141,7 @@
+ <? setvariable var:showVpn 0 ?>
+ ` ?>
+ <? setvariable var:showUsbfreigabe 0 ?>
+-<? setvariable var:showUsbfreigabe 1 ?>
++<? setvariable var:showUsbfreigabe 0 ?>
+ <? if eq '<? query ctlusb:settings/storage-part/count ?>' '0' `
+ <? setvariable var:showUsbfreigabe 0 ?>
+ ` ?>
+@@ -152,7 +152,7 @@
+ <? setvariable var:showUsbfreigabe 0 ?>
+ ` ?>
+ <? if eq $var:umtsOn 1 `
+-<? setvariable var:showUsbfreigabe 1 ?>
++<? setvariable var:showUsbfreigabe 0 ?>
+ ` ?>
+ <? if neq <? query box:settings/expertmode/activated ?> 1 `
+ <? setvariable var:showUsbfreigabe 0 ?>
+diff -burN usr/www/all/html/de/menus/menu2_konfig.html usr/www/all/html/de/menus/menu2_konfig.html
+--- usr/www/all/html/de/menus/menu2_konfig.html	2011-01-31 17:16:01.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_konfig.html	2011-02-24 00:12:22.000000000 +0100
+@@ -44,10 +44,10 @@
+ ` `
+ <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('fon','foncalls')">{?txtTelephony?}</a><span class="PTextOnly">{?txtTelephony?}</span></li>
+ ` ?>
+-<? if eq `$var:menu` 'usb' `
++<? if eq '1' 'nousb' `
+ <? include ../html/de/menus/menu2_usb.html ?>
+ ` `
+-<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('usb','status')">{?txtUSBDevices?}</a><span class="PTextOnly">{?txtUSBDevices?}</span></li>
++<!-- nousb -->
+ ` ?>
+ <? if eq `$var:menu` 'wlan' `
+ <? include ../html/de/menus/menu2_wlan.html ?>
+diff -burN usr/www/all/html/de/menus/menu2_system.html usr/www/all/html/de/menus/menu2_system.html
+--- usr/www/all/html/de/menus/menu2_system.html	2011-01-31 17:16:06.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_system.html	2011-02-24 00:12:51.000000000 +0100
+@@ -60,5 +60,4 @@
+ <? setvariable var:classname 'LSubitem' ?>
+ <? if eq $var:pagename timeZone `<? setvariable var:classname 'selected' ?>` ?>
+ <? if eq $var:OEM avme `
+-<li class="<? echo $var:classname ?>"><a href="javascript:jslGoTo('system','timeZone')">{?732:2150?}</a><span class="PTextOnly">{?732:2290?}</span></li>
+ ` ?>
+diff -burN usr/www/all/lua/usb_devices.lua usr/www/all/lua/usb_devices.lua
+--- usr/www/all/lua/usb_devices.lua	2011-01-31 17:15:56.000000000 +0100
++++ usr/www/all/lua/usb_devices.lua	2011-02-24 00:12:32.000000000 +0100
+@@ -66,7 +66,7 @@
+ if accessable then
+ count = tonumber(usb_dev_tab.log_dev_list_count)
+ --TODO: da die Liste die man hier nutzt ein wenig langsam ist wird zur Kontrolle noch die alte benutzt sollte die 0 sein so wird der count genullt.
+-if tonumber(usb_dev_tab.part_count) == 0 then
++if 0 == 0 then
+ count = 0
+ end
+ else
+@@ -147,10 +147,10 @@
+ count = 1
+ if tmp_tab2 ~= nil then
+ for j, val in ipairs(tmp_tab2) do
+-if v[1]==("physmedium"..tonumber(val[5])-1) then
++if 1 == 0 then
+ ret_tab[i].any_log = true
+ --TODO: weil die Liste hier immer ein wenig langsam ist kann es sein, dass die Liste noch aufgebaut wird obwohl die leer sein sollte. deshalb hier der fix
+-if tonumber(usb_dev_tab.part_count) == 0 then
++if 0 == 0 then
+ ret_tab[i].any_log = false
+ end
+ ret_tab[i].log_vol[count] = {}
+diff -burN usr/www/all/menus/menu_show.lua usr/www/all/menus/menu_show.lua
+--- usr/www/all/menus/menu_show.lua	2011-01-31 17:16:14.000000000 +0100
++++ usr/www/all/menus/menu_show.lua	2011-02-24 00:12:50.000000000 +0100
+@@ -165,7 +165,7 @@
+ end
+ local dect_enabled = box.query('dect:settings/enabled') == "1"
+ local dect_with_mtd = dect_enabled and any_avm_handset()
+-menu.exists_submenu['dect'] = config.DECT or config.DECT2
++menu.exists_submenu['dect'] = false
+ menu.show_page["/dect/handset.lua"] = dect_enabled
+ local show_dect_moni = false
+ if dect_enabled then
+@@ -205,7 +205,8 @@
+ menu.show_page["/system/ring_block.lua"] = config.FON or box.query("mini:settings/enabled") == "1"
+ menu.exists_page["/system/imexport.lua"] = config.STOREUSRCFG
+ menu.show_page["/system/update_file.lua"] = expert_mode
+-menu.exists_page["/system/timezone.lua"] = box.query("env:status/OEM") == 'avme'
++menu.show_page["/system/update.lua"] = false
++menu.exists_page["/system/timezone.lua"] = false
+ menu.exists_page["/system/language.lua"] = config.MULTI_LANGUAGE
+ menu.show_page["/fon_num/dial.lua"]=config.CAPI_TE or config.CAPI_POTS or config.AB_COUNT > 0
+ menu.show_page["/fon_num/dialbuch.lua"]=config.CAPI_TE or config.CAPI_POTS or config.AB_COUNT > 0
+diff -burN usr/www/all/tools/update_result.html usr/www/all/tools/update_result.html
+--- usr/www/all/tools/update_result.html	2011-01-31 17:16:14.000000000 +0100
++++ usr/www/all/tools/update_result.html	2011-02-24 00:12:55.000000000 +0100
+@@ -14,7 +14,7 @@
+ function uiDoOnMainFormSubmit() {
+ jxl.setHtml("uiStatus", "{?197:584?}");
+ jxl.disable("uiUpdate");
+-jxl.disable("uiReboot");
++jxl.disable("uiInstall");
+ jxl.setStyle("uiMainForm", "cursor", "wait");
+ return true;
+ }
