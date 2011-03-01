@@ -1,12 +1,15 @@
 #!/bin/sh -e
 
-VERSION='1.0.10'
+VERSION='1.0.28'
 
 unset TMP TEMP TMPDIR || true
 
+# might not be exported if we're running from init=/bin/sh or similar
+export PATH
+
 ###########################################################################
 
-if [ "$DEBOOTSTRAP_DIR" = "" ]; then
+if [ -z "$DEBOOTSTRAP_DIR" ]; then
 	if [ -x /debootstrap/debootstrap ]; then
 		DEBOOTSTRAP_DIR=/debootstrap
 	else
@@ -14,16 +17,11 @@ if [ "$DEBOOTSTRAP_DIR" = "" ]; then
 	fi
 fi
 
-if [ -x "/usr/bin/gettext" ]; then
-	USE_GETTEXT_INTERACTION=yes
-fi
-
 DEVICES_TARGZ=$DEBOOTSTRAP_DIR/devices.tar.gz
 
 . $DEBOOTSTRAP_DIR/functions
 exec 4>&1
 
-GETTEXT_LANG=$LANG
 LANG=C
 USE_COMPONENTS=main
 KEYRING=""
@@ -81,7 +79,8 @@ usage()
       --components=A,B,C     use packages from the listed components of the
                              archive
       --variant=X            use variant X of the bootstrap scripts
-                             (currently supported variants: buildd, fakechroot)
+                             (currently supported variants: buildd, fakechroot,
+                              scratchbox)
       --keyring=K            check Release files against keyring K
       --no-resolve-deps      don't try to resolve dependencies automatically
 
@@ -91,14 +90,19 @@ usage()
                              Run second stage in a subdirectory instead of root
                                (can be used to create a foreign chroot)
                                (requires --second-stage)
+      --extractor=TYPE       override automatic .deb extractor selection
+                               (supported: $EXTRACTORS_SUPPORTED)
       --boot-floppies        used for internal purposes by boot-floppies
       --debian-installer     used for internal purposes by debian-installer
+      --private-key=file     read the private key from file
+      --certificate=file     use the client certificate stored in file (PEM)
+      --no-check-certificate do not check certificate against certificate authorities
 EOF
 }
 
 ###########################################################################
 
-if [ "$PKGDETAILS" = "" ]; then
+if [ -z "$PKGDETAILS" ]; then
 	error 1 NO_PKGDETAILS "No pkgdetails available; either install perl, or build pkgdetails.c from source"
 fi
 
@@ -123,7 +127,6 @@ if [ $# != 0 ] ; then
 			error 1 ARG_BFBYHAND "If running debootstrap by hand, don't use --boot-floppies"
 		fi
 		USE_BOOTFLOPPIES_INTERACTION=yes
-		unset USE_GETTEXT_INTERACTION
 		shift
 		;;
 	    --debian-installer)
@@ -172,15 +175,15 @@ if [ $# != 0 ] ; then
 		if [ "$1" = "--make-tarball" -a -n "$2" ] ; then
 			MAKE_TARBALL="$2"
 			shift 2
-		elif [ "$1" != "${1#--mnake-tarball=}" ]; then
-			MAKE_TARBALL="${1#--mnake-tarball=}"
+		elif [ "$1" != "${1#--make-tarball=}" ]; then
+			MAKE_TARBALL="${1#--make-tarball=}"
 			shift
 		else
 			error 1 NEEDARG "option requires an argument %s" "$1"
 		fi
 		;;
 	    --resolve-deps)
-		# redundant, but avoids breaking compatability
+		# redundant, but avoids breaking compatibility
 		RESOLVE_DEPS=true
 		shift
 		;;
@@ -203,15 +206,36 @@ if [ $# != 0 ] ; then
 			error 1 NEEDARG "option requires an argument %s" "$1"
 		fi
 		;;
-	    --unpack-tarball)
-		if [ -n "$2" ] ; then
-			if [ ! -f "$2" ] ; then
-				error 1 NOTARBALL "%s: No such file or directory" "$2"
-			fi
-			UNPACK_TARBALL="$2"
+	    --extractor|--extractor=?*)
+		if [ "$1" = "--extractor" -a -n "$2" ] ; then
+			EXTRACTOR_OVERRIDE="$2"
 			shift 2
+		elif [ "$1" != "${1#--extractor=}" ]; then
+			EXTRACTOR_OVERRIDE="${1#--extractor=}"
+			shift
 		else
 			error 1 NEEDARG "option requires an argument %s" "$1"
+		fi
+		if valid_extractor "$EXTRACTOR_OVERRIDE"; then
+			if ! type "$EXTRACTOR_OVERRIDE" >/dev/null 2>&1; then
+				error 1 MISSINGEXTRACTOR "The selected extractor cannot be found: %s" "$EXTRACTOR_OVERRIDE"
+			fi
+		else
+			error 1 BADEXTRACTOR "%s: unknown extractor" "$EXTRACTOR_OVERRIDE"
+		fi
+		;;
+	    --unpack-tarball|--unpack-tarball=?*)
+		if [ "$1" = "--unpack-tarball" -a -n "$2" ] ; then
+			UNPACK_TARBALL="$2"
+			shift 2
+		elif [ "$1" != "${1#--unpack-tarball=}" ]; then
+			UNPACK_TARBALL="${1#--unpack-tarball=}"
+			shift
+		else
+			error 1 NEEDARG "option requires an argument %s" "$1"
+		fi
+		if [ ! -f "$UNPACK_TARBALL" ] ; then
+			error 1 NOTARBALL "%s: No such file or directory" "$UNPACK_TARBALL"
 		fi
 		;;
 	    --include|--include=?*)
@@ -280,6 +304,32 @@ if [ $# != 0 ] ; then
 			error 1 NEEDARG "option requires an argument %s" "$1"
 		fi
 		;;
+	    --certificate|--certificate=?*)
+		if [ "$1" = "--certificate" -a -n "$2" ]; then
+			CERTIFICATE="--certificate=$2"
+			shift 2
+		elif [ "$1" != "${1#--certificate=}" ]; then
+			CERTIFICATE="--certificate=${1#--certificate=}" 
+			shift 1
+		else
+		       error 1 NEEDARG "option requires an argument %s" "$1" 
+		fi
+		;;
+	    --private-key|--private-key=?*)
+		if [ "$1" = "--private-key" -a -n "$2" ]; then
+			PRIVATEKEY="--private-key=$2"
+			shift 2
+		elif [ "$1" != "${1#--private-key=}" ]; then
+			PRIVATEKEY="--private-key=${1#--private-key=}" 
+			shift 1
+		else
+		       error 1 NEEDARG "option requires an argument %s" "$1" 
+		fi
+		;;
+	    --no-check-certificate)
+		CHECKCERTIF="--no-check-certificate"
+		shift
+		;;
 	    --*)
 		error 1 BADARG "unrecognized or invalid option %s" "$1"
 		;;
@@ -299,14 +349,14 @@ if [ "$SECOND_STAGE_ONLY" = "true" ]; then
 		VARIANT=$(cat $DEBOOTSTRAP_DIR/variant)
 		SUPPORTED_VARIANTS="$VARIANT"
 	fi
-	if [ "$CHROOTDIR" = "" ]; then
+	if [ -z "$CHROOTDIR" ]; then
 		TARGET=/
 	else
 		TARGET=$CHROOTDIR
 	fi
 	SCRIPT=$DEBOOTSTRAP_DIR/suite-script
 else
-	if [ "$1" = "" ] || [ "$2" = "" ]; then
+	if [ -z "$1" ] || [ -z "$2" ]; then
 		usage_err 1 NEEDSUITETARGET "You must specify a suite and a target."
 	fi
 	SUITE="$1"
@@ -335,8 +385,8 @@ fi
 if [ "$ARCH" != "" ]; then
 	true
 elif [ -x /usr/bin/dpkg ] && \
-     /usr/bin/dpkg --print-installation-architecture >/dev/null 2>&1; then
-	ARCH=`/usr/bin/dpkg --print-installation-architecture`
+     /usr/bin/dpkg --print-architecture >/dev/null 2>&1; then
+	ARCH=`/usr/bin/dpkg --print-architecture`
 elif type udpkg >/dev/null 2>&1 && \
      udpkg --print-architecture >/dev/null 2>&1; then
 	ARCH=`/usr/bin/udpkg --print-architecture`
@@ -346,7 +396,32 @@ else
 	error 1 WHATARCH "Couldn't work out current architecture"
 fi
 
-export ARCH SUITE TARGET
+if [ "$TARGET" = "/" ]; then
+	CHROOT_CMD=""
+elif doing_variant scratchbox; then
+	for config in ~/.scratchbox2/*/sb2.config;
+	do
+		export `grep ^SBOX_TARGET_ROOT= $config`
+		if [ "x$SBOX_TARGET_ROOT" = "x$TARGET" ]; then
+			SB2_TARGET=$(basename $(dirname $config))
+		fi
+	done
+	[ "x$SB2_TARGET" != "x" ] || error 1 SBOXTARGETREQ "No scratchbox target configured for $TARGET"
+	CHROOT_CMD="sb2 -eR -t $SB2_TARGET"
+else
+	CHROOT_CMD="chroot $TARGET"
+fi
+
+if [ -z "$SHA_SIZE" ]; then
+	SHA_SIZE=256
+fi
+if ! [ -x "/usr/bin/sha${SHA_SIZE}sum" ] && \
+   ! [ -x "/bin/sha${SHA_SIZE}sum" ]; then
+	SHA_SIZE=1
+fi
+DEBOOTSTRAP_CHECKSUM_FIELD="SHA$SHA_SIZE"
+
+export ARCH SUITE TARGET CHROOT_CMD SHA_SIZE DEBOOTSTRAP_CHECKSUM_FIELD
 
 if am_doing_phase first_stage second_stage; then
 	if [ -x /usr/bin/id ] && [ `id -u` -ne 0 ]; then
@@ -459,7 +534,6 @@ if am_doing_phase finddebs; then
 
 		if [ "$baseU" != "" ]; then
 			info REDUNDANTBASE "Found packages in base already in required: %s" "$baseU"
-			sleep 5
 		fi
 
 		info RESOLVEREQ "Resolving dependencies of required packages..."
@@ -472,11 +546,9 @@ if am_doing_phase finddebs; then
 		baseX=$(without "$base" "$baseX")
 		if [ "$requiredX" != "" ]; then
 			info NEWREQUIRED "Found additional required dependencies: %s" "$requiredX"
-			sleep 5
 		fi
 		if [ "$baseX" != "" ]; then
 			info NEWBASE "Found additional base dependencies: %s" "$baseX"
-			sleep 5
 		fi
 	fi
 
@@ -500,6 +572,8 @@ if am_doing_phase maketarball; then
 fi
 
 if am_doing_phase first_stage; then
+	choose_extractor
+
 	# first stage sets up the chroot -- no calls should be made to
 	# "chroot $TARGET" here; but they should be possible by the time it's
 	# finished
@@ -538,7 +612,7 @@ if am_doing_phase second_stage; then
 	if [ -e "$TARGET/etc/apt/sources.list" ]; then
 		rm -f "$TARGET/etc/apt/sources.list"
 	fi
-	if [ "${MIRRORS#http://}" != "$MIRRORS" ]; then
+	if [ "${MIRRORS#http*://}" != "$MIRRORS" ]; then
 		setup_apt_sources "${MIRRORS%% *}"
 		mv_invalid_to "${MIRRORS%% *}"
 	else
