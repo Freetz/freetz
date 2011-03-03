@@ -209,5 +209,5 @@
 +		$(PERL) Makefile.PL INSTALLDIRS=vendor; \
 +		sed -i -e '/^LD_RUN_PATH/s/^/#/' Makefile Makefile.[a-z]*
  
- swig-pl_DEPS = autogen-swig-pl libsvn_swig_perl \
-   $(SWIG_PL_DIR)/native/Makefile
+ # There is a "readlink -f" command on some systems for the same purpose,
+ # but it's not as portable (e.g. Mac OS X doesn't have it).  These should
