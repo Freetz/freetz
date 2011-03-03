@@ -1,0 +1,31 @@
+config FREETZ_PACKAGE_BIND
+	bool "BIND 9.7.2-P3"
+        select FREETZ_LIB_libuClibc__
+	default n
+	help
+		BIND is an implementation of the Domain Name System (DNS) protocols.
+		The name BIND stands for "Berkeley Internet Name Daemon".
+		You have to provide the config and needed zone files yourself.
+		WARNING!: adds 1724KB to the Image, externalize if possible!
+
+config FREETZ_PACKAGE_BIND_RNDC
+	bool "rndc (binary only)"
+        depends on FREETZ_PACKAGE_BIND
+	default n
+	help
+		Adds the rndc name server control utility binary.
+		Adds 287KB to the Image.
+
+
+config FREETZ_PACKAGE_BIND_NSUPDATE
+	bool "nsupdate (binary only)"
+        depends on FREETZ_PACKAGE_BIND
+	default n
+	help
+		Adds the nsupdate binary for manipulation dynamic Zones.
+		WARNING!: Adds 1351KB to the Image, externalize if possible!
+
+config FREETZ_PACKAGE_BIND_IPV6
+        bool "Enable IPv6"
+        depends on FREETZ_TARGET_IPV6_SUPPORT && FREETZ_PACKAGE_BIND
+        default n

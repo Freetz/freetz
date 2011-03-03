@@ -1,0 +1,35 @@
+config EXTERNAL_FREETZ_PACKAGE_BIND
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_BIND
+	bool "bind"
+	default n
+	help
+		externals these file(s):
+		 /usr/sbin/named
+		 /usr/sbin/rndc
+		 /usr/bin/nsupdate
+
+
+config EXTERNAL_FREETZ_PACKAGE_BIND_NAMED
+	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND
+	boolean "named"
+	default n
+	help
+		externals these file(s):
+		 /usr/sbin/named
+
+config EXTERNAL_FREETZ_PACKAGE_BIND_RNDC
+	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND_RNDC
+	boolean "rndc"
+	default n
+	help
+		externals these file(s):
+		 /usr/sbin/rndc
+
+config EXTERNAL_FREETZ_PACKAGE_BIND_NSUPDATE
+	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND_NSUPDATE
+	boolean "nsupdate"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/nsupdate
+

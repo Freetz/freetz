@@ -1,0 +1,34 @@
+#!/bin/sh
+
+cat <<EOF
+
+options {
+	directory "/var/media/ftp/uStor01/bind";
+	forwarders { 192.168.180.1; 192.168.180.2; };
+	#forward first;
+	listen-on port 53 { 127.0.0.1; 192.168.178.1; };
+	allow-query { 127.0.0.1/8; 192.168.178.0/24; };
+	notify no;
+};
+
+#zone "." in {
+#	type hint;
+#	file "root.hint";
+#};
+
+#zone "127.in-addr.arpa" in {
+#	type master;
+#	file "ptr/127";
+#};
+
+#zone "178.168.192.in-addr.arpa" in {
+#	type master;
+#	file "ptr/192.168.178";
+#};
+
+#zone "box" in {
+#	type master;
+#	file "zone/box";
+#};
+
+EOF

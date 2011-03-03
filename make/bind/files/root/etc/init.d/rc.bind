@@ -1,0 +1,66 @@
+#!/bin/sh
+
+DAEMON=bind
+DAEMON_BIN=named
+DAEMON_CONFIG=/tmp/flash/${DAEMON}/${DAEMON_BIN}.conf
+PID_FILE=/var/run/${DAEMON_BIN}/${DAEMON_BIN}.pid
+. /etc/init.d/modlibrc
+
+if [ "$BIND_MULTID" != "yes" ]; then
+	nomultid=y
+else
+	[ "$(/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
+fi
+
+start() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	modlib_startdaemon $DAEMON_BIN $BIND_CMDLINE
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	return 0
+}
+
+stop() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	kill $(cat $PID_FILE) 2>/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	return 0
+}
+
+case $1 in
+	""|load)
+		mkdir -p "/tmp/flash/${DAEMON}"
+
+		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/${DAEMON_BIN}_conf > $DAEMON_CONFIG
+
+		modreg cgi "$DAEMON" "Bind"
+		modreg daemon $DAEMON
+		modreg file $DAEMON conf '$(lang de:"Konfiguration" en:"Configuration")' 0 named_conf
+
+		modlib_start $BIND_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_check_running && nomultid=y
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
