@@ -1,5 +1,5 @@
---- options.h.orig	2008-11-11 15:13:50.000000000 +0100
-+++ options.h	2008-11-10 16:17:50.000000000 +0100
+--- options.h	2011-03-02 14:23:36.000000000 +0100
++++ options.h	2011-03-03 15:27:40.000000000 +0100
 @@ -21,10 +21,10 @@
  
  /* Default hostkey paths - these can be specified on the command line */
@@ -13,8 +13,12 @@
  #endif
  
  /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
-@@ -51,7 +51,7 @@
- #define DROPBEAR_SMALL_CODE
+@@ -49,10 +49,10 @@
+ several kB in binary size however will make the symmetrical ciphers and hashes
+ slower, perhaps by 50%. Recommended for small systems that aren't doing
+ much traffic. */
+-/*#define DROPBEAR_SMALL_CODE*/
++#define DROPBEAR_SMALL_CODE
  
  /* Enable X11 Forwarding - server only */
 -#define ENABLE_X11FWD
@@ -22,7 +26,7 @@
  
  /* Enable TCP Fowarding */
  /* 'Local' is "-L" style (client listening port forwarded via server)
-@@ -227,12 +227,12 @@
+@@ -243,12 +243,12 @@
   * OpenSSH), set the path below. If the path isn't defined, sftp will not
   * be enabled */
  #ifndef SFTPSERVER_PATH
