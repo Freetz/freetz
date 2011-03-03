@@ -5,6 +5,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dropbearmulti
 $(PKG)_STARTLEVEL=30
 $(PKG)_SOURCE_MD5:=0284ea239083f04c8b874e08e1aca243
+
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dropbearkey" MULTI=1
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,ssh scp)
