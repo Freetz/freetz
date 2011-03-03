@@ -1079,18 +1079,20 @@ config FREETZ_PATCH_MAXDEVCOUNT
 config FREETZ_PATCH_MULTIPLE_PRINTERS
 	bool "Add support for multiple printers"
 	depends on FREETZ_TYPE_LANG_DE && \
-		! FREETZ_TYPE_LABOR && \
+		! FREETZ_REMOVE_PRINTSERV && \
 		( \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
-		FREETZ_TYPE_FON_WLAN_7170 \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7270 \
 		)
 	default n
 	help
 		Use this patch if you want to use more than one printer.
+
 endif
 
 comment "Removings -------------------------------"
