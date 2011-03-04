@@ -16,7 +16,6 @@ config FREETZ_PACKAGE_BIND_RNDC
 		Adds the rndc name server control utility binary.
 		Adds 287KB to the Image.
 
-
 config FREETZ_PACKAGE_BIND_NSUPDATE
 	bool "nsupdate (binary only)"
         depends on FREETZ_PACKAGE_BIND
@@ -25,7 +24,3 @@ config FREETZ_PACKAGE_BIND_NSUPDATE
 		Adds the nsupdate binary for manipulation dynamic Zones.
 		WARNING!: Adds 1351KB to the Image, externalize if possible!
 
-config FREETZ_PACKAGE_BIND_IPV6
-        bool "Enable IPv6"
-        depends on FREETZ_TARGET_IPV6_SUPPORT && FREETZ_PACKAGE_BIND
-        default n
