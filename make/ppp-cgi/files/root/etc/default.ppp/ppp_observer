@@ -36,7 +36,7 @@ reanimiert () {
 			sleep $SLEEPTIME
 		fi
 		NEXTCHK=$(( $(date +%s)+$PPP_CHECKINTERVAL ))
-		ping -c 1 -W 2 -w 2 -q $ALIVEIP 2>&1 >/dev/null
+		ping -c 1 -W 2 -w 2 -q $ALIVEIP >/dev/null 2>&1
 		[ $? -eq 0 ] && BACKONLINE=1
 	done
 	[ -n "$ALIVEIP" ] && route del $ALIVEIP 2>/dev/null
@@ -46,7 +46,7 @@ reanimiert () {
 pinger() {
 for SINGLEHOST in $PPP_CHECKHOSTS; do
 	echo -n "$(date): checking $SINGLEHOST" >> $PPP_FABALOG
-	ping -c 1 -W 2 -w 2 -q $SINGLEHOST 2>&1 >/dev/null
+	ping -c 1 -W 2 -w 2 -q $SINGLEHOST >/dev/null 2>&1
 	if [ $? -eq 0 ]; then
 		echo " OKAY" >> $PPP_FABALOG
 		if [ -z "$ALIVEIP" ]; then

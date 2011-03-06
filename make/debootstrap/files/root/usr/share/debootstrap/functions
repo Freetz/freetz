@@ -64,10 +64,10 @@ wgetprogress () {
 	[ ! "$verbose" ] && QSWITCH="-q"
 	local ret=0
 	if [ "$USE_DEBIANINSTALLER_INTERACTION" ] && [ "$PROGRESS_NEXT" ]; then
-		wget "$@" 2>&1 >/dev/null | $PKGDETAILS "WGET%" $PROGRESS_NOW $PROGRESS_NEXT $PROGRESS_END >&3
+		wget "$@" >/dev/null 2>&1 | $PKGDETAILS "WGET%" $PROGRESS_NOW $PROGRESS_NEXT $PROGRESS_END >&3
 		ret=$?
 	elif [ "$USE_BOOTFLOPPIES_INTERACTION" ] && [ "$PROGRESS_NEXT" ]; then
-		wget "$@" 2>&1 >/dev/null | $PKGDETAILS "WGET%" $PROGRESS_NOW $PROGRESS_NEXT $PROGRESS_END "$PROGRESS_WHAT" >&3
+		wget "$@" >/dev/null 2>&1 | $PKGDETAILS "WGET%" $PROGRESS_NOW $PROGRESS_NEXT $PROGRESS_END "$PROGRESS_WHAT" >&3
 		ret=$?
 	else
 		wget $QSWITCH "$@"
