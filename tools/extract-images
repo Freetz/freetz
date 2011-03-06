@@ -16,7 +16,7 @@ extract_bootloader()
 {
 	echo -e "\nExtracting bootloader (urlader.image) ..."
 	n=1
-	for offs in $(tools/hexgrep "$BOOTLOADER_MAGIC" "$input_file" | sed 's/:.*//'); do
+	for offs in $($mod_base/tools/hexgrep "$BOOTLOADER_MAGIC" "$input_file" | sed 's/:.*//'); do
 		output_file="$output_dir/urlader.image-$((n++))"
 		echo "    $output_file - loader @ $offs"
 		dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=$offs count=65536 2> /dev/null
@@ -37,10 +37,10 @@ extract_kernel_filesystem()
 {
 	echo -e "\nExtracting hidden root kernel + filesystem (kernel.image) ..."
 	n=1
-	squashfs_lines="$(tools/hexgrep "$SQUASHFS_MAGIC" "$input_file")"
+	squashfs_lines="$($mod_base/tools/hexgrep "$SQUASHFS_MAGIC" "$input_file")"
 	squashfs_offs=($(echo "$squashfs_lines" | sed 's/:.*//'))
 	squashfs_length=($(hex2dec "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
-	kernel_lines="$(tools/hexgrep "$KERNEL_MAGIC" "$input_file")"
+	kernel_lines="$($mod_base/tools/hexgrep "$KERNEL_MAGIC" "$input_file")"
 	kernel_offs=($(echo "$kernel_lines" | sed 's/:.*//'))
 	kernel_length=($(hex2dec "$(echo "$kernel_lines" | sed -r 's/^[0-9]+:.{12}(.*)/\1/')"))
 	k=0
