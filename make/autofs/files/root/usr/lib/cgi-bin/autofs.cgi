@@ -4,6 +4,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 check "$AUTOFS_ENABLED" yes:auto "*":man
+check "$AUTOFS_DAVFS2_CONF" yes:davfs2_conf
 check "$AUTOFS_EXTERNAL" yes:external
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
