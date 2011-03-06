@@ -7,16 +7,18 @@ fi
 
 echo1 "adapt firmware for 7240"
 
+echo2 "deleting obsolete files"
+for i in dectfw_firstlevel.hex dectfw_secondlevel.hex microvoip_isdn_top.bit; do
+	rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/$i
+done
+
 echo2 "copying 7240 files"
 for i in bitfile_isdn.bit bitfile_pots.bit c55fw.hex dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex wlan_eeprom_hw0.bin \
 		2.6.19.2/kernel/drivers/char/led_module.ko; do
 	cp "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules"
 done
-
-echo2 "deleting obsolete files"
-for i in dectfw_firstlevel.hex dectfw_secondlevel.hex microvoip_isdn_top.bit; do
-	rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/$i
-done
+cp "${DIR}/.tk/original/filesystem/usr/www/avm/css/default/images/kopfbalken_mitte.gif" \
+	"${FILESYSTEM_MOD_DIR}/usr/www/avm/css/default/images/"
 
 #echo2 "patching webmenu"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7240_7270.patch"

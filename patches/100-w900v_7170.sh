@@ -20,6 +20,10 @@ cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYS
 #cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules"
 #cp "${DIR}/.tk/original/filesystem/etc/init.d/rc.init" "${FILESYSTEM_MOD_DIR}/etc/init.d"
 
+echo2 "patching webmenu"
+isFreetzType LABOR_PREVIEW && \
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/kopfbalken_mitte_alien_7170_labor_preview.patch"
+
 if [ ! "$FREETZ_REMOVE_DECT" == "y" ];then
 	echo2 "Add dect sites to webmenu"
 	if isFreetzType LABOR_PREVIEW; then

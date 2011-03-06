@@ -23,8 +23,9 @@ for i in bin/reinit_jffs2 etc/init.d/rc.voip etc/minid \
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 
-#echo2 "patching webmenu"
-#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/3170_7170.patch"
+echo2 "patching webmenu"
+isFreetzType LABOR_PREVIEW && \
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/kopfbalken_mitte_alien_7170_labor_preview.patch"
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170

@@ -13,7 +13,9 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESY
 echo2 "deleting obsolete files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
 
-#echo2 "patching webmenu"
+echo2 "patching webmenu"
+isFreetzType LABOR_PREVIEW && \
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/kopfbalken_mitte_alien_7170_labor_preview.patch"  || exit 2
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7140_7170.patch"
 
 echo2 "moving default config dir"

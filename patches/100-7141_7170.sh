@@ -6,13 +6,15 @@ if [ -z "$FIRMWARE2" ]; then
 fi
 echo1 "adapt firmware for 7141"
 
-echo2 "copying 7141 files"
-cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESYSTEM_MOD_DIR}/lib/modules"
-
 echo2 "deleting obsolete files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
 
-#echo2 "patching webmenu"
+echo2 "copying 7141 files"
+cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESYSTEM_MOD_DIR}/lib/modules"
+
+echo2 "patching webmenu"
+isFreetzType LABOR_PREVIEW && \
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/kopfbalken_mitte_alien_7170_labor_preview.patch"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7141_7170.patch"
 
 echo2 "moving default config dir"
