@@ -8,7 +8,6 @@ _services=`cat /etc/external.pkg 2>/dev/null`
 [ -z "$_services" ] && _services=$(lang de:"-keine-" en:"-none-")
 cat << EOF
 
-<h1>$(lang de:"Automatisch Dienste starten/stoppen beim ein-/aush&auml;ngen" en:"Automatically start/stop services at (un)mount")</h1>
 <p>
 $(lang de:"Verzeichnis von external" en:"Directory of external"):
 <input type="text" name="external_directory" size="55" maxlength="250" value="$(html "$MOD_EXTERNAL_DIRECTORY")">
