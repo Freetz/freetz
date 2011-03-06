@@ -23,7 +23,7 @@ cp -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/c
 
 echo2 "patching webmenu"
 isFreetzType LABOR_PREVIEW && \
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/kopfbalken_mitte_alien_7170_labor_preview.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170_labor_preview.patch"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7113_7170.patch"
 
 echo2 "moving default config dir"
