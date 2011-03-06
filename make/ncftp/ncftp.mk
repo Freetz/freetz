@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3.2.4)
-$(PKG)_SOURCE:=ncftp-$($(PKG)_VERSION)-src.tar.gz
-$(PKG)_SOURCE_MD5:=31cf9c221ff97a0da480590f751850b2
-$(PKG)_SITE:=ftp://ftp.ncftp.com/ncftp/
+$(call PKG_INIT_BIN, 3.2.5)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.bz2
+$(PKG)_SOURCE_MD5:=b05c7a6d5269c04891f02f43d4312b30
+$(PKG)_SITE:=ftp://ftp.$(pkg).com/$(pkg)/
 
 $(PKG)_BINARIES_ALL := ncftp ncftpget ncftpput ncftpbatch ncftpls
 # ncftp is always included
