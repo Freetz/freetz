@@ -383,9 +383,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Fix some permissions
 	chmod -R u+w "$FILESYSTEM_MOD_DIR"
-	find "${FILESYSTEM_MOD_DIR}" -maxdepth 1 -type d -exec chmod +rx {} ';'
-	# o-users should be allowed to access files in /etc/default.049
-	find "${FILESYSTEM_MOD_DIR}/etc" -maxdepth 1 -type d -name default.0* -exec chmod o+x {} ';'
+	find "${FILESYSTEM_MOD_DIR}" "${VARTAR_MOD_DIR}" -type d -exec chmod 755 {} '+'
+	# Give all users write permissions to /var/tmp to allow it to be used as a temp-directory.
+	# Set sticky bit to prevent users from deleting/renaming files they are not the owners of.
+	# NB: The permissions set are the regular temp-directory permissions on Unix-like systems.
+	chmod 1777 "${VARTAR_MOD_DIR}/var/tmp"
 
 	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
 	for webdir in ${FILESYSTEM_MOD_DIR}/usr/www ${FILESYSTEM_MOD_DIR}/usr/www.nas; do
@@ -619,14 +621,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 		chmod 644 "${VARTAR_MOD_DIR}/var/tmp/hosts" "${VARTAR_MOD_DIR}/var/tmp/resolv.conf"
 		touch "${VARTAR_MOD_DIR}/var/tmp/onlinechanged"
 		chmod +x "${VARTAR_MOD_DIR}/var/tmp/onlinechanged"
-		for dir in /var /var/log /var/lock /var/run /var/tmp; do
-			chmod +x "${VARTAR_MOD_DIR}${dir}"
-		done
-		# Give all users write permissions to /var/tmp to allow it to be used as a temp-directory.
-		# Set sticky bit to prevent users from deleting/renaming files they are not the owners of.
-		# NB: The permissions set are the regular temp-directory permissions on Unix-like systems.
-		chmod a+w+t "${VARTAR_MOD_DIR}/var/tmp"
-
 		ln -s ../var/tmp/ethers "${FILESYSTEM_MOD_DIR}/etc/ethers"
 		ln -s ../var/tmp/exports "${FILESYSTEM_MOD_DIR}/etc/exports"
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"
