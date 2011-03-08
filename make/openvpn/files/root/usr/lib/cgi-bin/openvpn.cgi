@@ -166,11 +166,11 @@ cat << EOF
 	  &nbsp;
 	</td>
 	<td>
-	  <input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); $([ $HASBRCTL ] && echo "document.getElementById('div_add_tap').style.display=(this.checked)? 'none' : 'block';") changeval();'>
+	  <input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); $([ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "none" : "block";') changeval();'>
 	  <label for="id_act_tun">Tunnel (TUN)</label>
 	</td>
 	<td>
-	  <input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); $([ $HASBRCTL ] && echo "document.getElementById('div_add_tap').style.display=(this.checked)? 'block' : 'none';") changeval();'>
+	  <input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); $([ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "block" : "none";') changeval();'>
 	  <label for="id_act_tap">$(lang de:"Br&uuml;cke" en:"Bridge") (TAP)</label>
 	</td>
 </tr>
