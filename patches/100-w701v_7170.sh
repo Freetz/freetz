@@ -15,6 +15,7 @@ for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb driver
 done
 for i in bin/pause bin/reinit_jffs2 bin/usbhostchanged etc/hotplug \
 	etc/usb_class.tab etc/usb_device.tab etc/samba_control \
+	lib/libusbcfg* usr/share/ctlmgr/libctlusb.so \
 	usr/www/all/html/de/usb	sbin/lsusb etc/hotplug;do
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done

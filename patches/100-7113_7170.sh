@@ -14,6 +14,9 @@ for i in $files; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i"
 done
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit*"
+rm_files "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libctlusb.so"
+rm_files "${FILESYSTEM_MOD_DIR}/lib/libusbcfg*"
+rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug"
 
 echo2 "copying 7113 files"
 cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip*top.bit "${FILESYSTEM_MOD_DIR}/lib/modules"
