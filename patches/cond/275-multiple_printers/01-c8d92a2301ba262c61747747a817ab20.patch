@@ -1,5 +1,5 @@
---- etc/hotplug/printer.orig	2010-01-22 18:01:43.000000000 +0100
-+++ etc/hotplug/printer	2010-01-31 13:34:16.000000000 +0100
+--- etc/hotplug/printer.orig	2009-06-24 15:54:14.000000000 +0000
++++ etc/hotplug/printer	2009-08-08 16:39:21.000000000 +0000
 @@ -13,9 +13,15 @@
  
  # no K2.4 support
@@ -147,13 +147,4 @@
  		eventadd 151
  	fi
  	;;
---- usr/www/avm/html/de/usb/status.js.orig	2010-01-31 13:34:14.000000000 +0100
-+++ usr/www/avm/html/de/usb/status.js	2010-01-31 13:34:16.000000000 +0100
-@@ -437,6 +437,7 @@
- if (str != "")
- str += " ";
- str += name;
-+str += name.replace(/^\s+|\s+$/g, "").replace(/\t/g, "<br />");
- if (comment != "") {
- if (str != "") str += " ";
- str += "("+comment+")";
+

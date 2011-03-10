@@ -1,10 +1,7 @@
 [ "$FREETZ_PATCH_MULTIPLE_PRINTERS" == "y" ] || return 0
 	echo1 "adding support for multiple printers"
-
-	if isFreetzType 7170 && ! isFreetzType LABOR_PREVIEW; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/275-multiple_printers_7170.patch"
-	elif isFreetzType 3270 3270_V3 7170 7240 7270 7340 7390; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/275-multiple_printers_fw86.patch"
-	else
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/275-multiple_printers.patch"
-	fi
+	modsed 's/\(str += name\);/\1.replace(\/^\\s+|\\s+$\/g, "").replace(\/\\t\/g, "<br \/>");/g' \
+	 "${FILESYSTEM_MOD_DIR}/usr/www/avm/html/de/usb/status.js"
+	modsed 's/\(\.tAura {width: .*; table-layout: \)fixed\(.*$\)/\1auto\2/g' \
+	 "${FILESYSTEM_MOD_DIR}/usr/www/avm/html/de/usb/status.js"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/275-multiple_printers/"
