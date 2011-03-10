@@ -11,6 +11,7 @@
 # Freetz's 'fwmod' script (cf. copyright information there).
 # The additional auto-fix feature for self-healing patches was developed by
 # Alexander Kriegisch (kriegaex), 2007-06-25.
+# MD5 extension added by cuma, 2011
 
 
 helpmsg()
@@ -19,18 +20,23 @@ cat >&2 << EOF
 
 $freetz_patch_name - Freetz patch tool with optional auto-fix feature
 
-Usage: $freetz_patch_name <target-dir> <patch-file>
+Usage: $freetz_patch_name <target-dir> <patch-file|md5-dir> [md5-source]
     target-dir   - target directory to apply patch to
     patch-file   - patch file name (unified context diff, patch level -p0)
+    md5-dir      - directory with patch files, named "*<MD5>*.patch"
+    md5-source   - from which file md5 is computed (optional)
+	               if this is not set, the first file in .patch is used
 
 Examples:
     $freetz_patch_name source/my-package patches/my.patch
     $freetz_patch_name another/package another.patch 2
+    $freetz_patch_name third/package patches-directory/
+    $freetz_patch_name fourth/package patches-directory/ somewhere/file_for_md5
 
 Environment variables changing behaviour:
     FREETZ_VERBOSITY_LEVEL  - verbose output, if >= 2
-    VERBOSE             - verbose output, if == '-v'
-    AUTO_FIX_PATCHES    - try to auto-fix fuzzy patches, if == 'y'
+    VERBOSE                 - verbose output, if == '-v'
+    AUTO_FIX_PATCHES        - try to auto-fix fuzzy non-md5 patches, if == 'y'
 
 EOF
 }
@@ -38,7 +44,7 @@ EOF
 
 modpatch()
 {
-	if [ $# -ne 2 ]; then
+	if [ $# -ne 2 -a $# -ne 3 ]; then
 		helpmsg
 		return 1
 	fi
@@ -46,11 +52,34 @@ modpatch()
 	if [ "$FREETZ_VERBOSITY_LEVEL" ] && [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
 		is_verbose="y"
 	fi
+	local _auto_fix_patches="$AUTO_FIX_PATCHES"
+	local target_dir="$1"
+	local patch_file="$2"
+	## md5 start
+	if [ -d "$patch_file" ]; then
+		_auto_fix_patches=""
+		local patch_target="$3"
+		if [ -z "$patch_target" ]; then
+			patch_target="$(grep -m1 '^+++ ' $patch_file/*.patch 2>/dev/null | sed -n 's/.*patch:+++ \(.*\)\t.*/\1/p' | sort -u)"
+			echo "$patch_target" | grep -q " " && patch_target=""
+			[ -z "$patch_target" ] && error 2 "modpatch: Could not determine target file"
+		fi
+		[ -e "$target_dir"/"$patch_target" ] || error 2 "modpatch: Target file $patch_target does not exist"
+		local target_md5="$(md5sum "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
+		local md5_patch="$(find "$patch_file" -name *${target_md5}*.patch)"
+		if [ -z "$md5_patch" ]; then
+			[ -n "$target_md5" ] && local md5_error="for $patch_target (MD5: $target_md5)"
+			error 2 "modpatch: No matching patch found in $patch_file $md5_error"
+		else
+			patch_file="$md5_patch"
+		fi
+	fi
+	## md5 end
 	local backup
 	local do_fix
 	local files
-	if [ "$AUTO_FIX_PATCHES" == "y" ]; then
-		local output=$(patch --dry-run -d "$1" -p0 < "$2" 2> /dev/null)
+	if [ "$_auto_fix_patches" == "y" ]; then
+		local output=$(patch --dry-run -d "$target_dir" -p0 < "$patch_file" 2> /dev/null)
 		if [ $? -eq 0 ] && echo "$output" | grep -E '^Hunk ' > /dev/null 2>&1; then
 			do_fix="y"
 			backup="-b "
@@ -59,21 +88,21 @@ modpatch()
 	fi
 	local STATUS
 	if [ "$is_verbose" ]; then
-		echo2 "applying patch file $2"
-		patch --force ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" 2>&1 | sed -e "s/^/${L2}/g"
+		echo2 "applying patch file $patch_file"
+		patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch < "$patch_file" 2>&1 | sed -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
 		echo2 "----------------------------------------------------------------------"
 	else
-		patch --force ${backup}-d "$1" -p0 --no-backup-if-mismatch < "$2" > /dev/null
+		patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch < "$patch_file" > /dev/null
 		STATUS=$?
 	fi
 	if [ $STATUS -gt 0 ]; then
-		error 2 "modpatch: Error in patch-file $2"
-	elif [ "$AUTO_FIX_PATCHES" == "y" ] && [ "$do_fix" == "y" ]; then
-		echo2 "auto-fixing fuzzy patch file $2"
-		local patch_file=$(realpath "$2")
+		error 2 "modpatch: Error in patch-file $patch_file"
+	elif [ "$_auto_fix_patches" == "y" ] && [ "$do_fix" == "y" ]; then
+		echo2 "auto-fixing fuzzy patch file $patch_file"
+		local patch_file=$(realpath "$patch_file")
 		mv -f "$patch_file" "$patch_file.orig"
-		cd "$1"
+		cd "$target_dir"
 		for file in $files; do
 			# If backup exists, but is unreadable and has a size of zero, it
 			# was created as a placeholder by 'patch -b' previously and can be
