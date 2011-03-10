@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_BIND
 	bool "BIND 9.7.2-P3"
-        select FREETZ_LIB_libuClibc__
+	select FREETZ_LIB_libuClibc__
 	default n
 	help
 		BIND is an implementation of the Domain Name System (DNS) protocols.
@@ -8,9 +8,16 @@ config FREETZ_PACKAGE_BIND
 		You have to provide the config and needed zone files yourself.
 		WARNING!: adds 1724KB to the Image, externalize if possible!
 
+config FREETZ_PACKAGE_BIND_WRAPPER
+	bool "multid wrapper"
+	depends on FREETZ_PACKAGE_BIND && ! FREETZ_PACKAGE_DNSMASQ_WRAPPER
+	default n
+	help
+		Replaces multid by a wrapper to start named before multid.
+
 config FREETZ_PACKAGE_BIND_RNDC
 	bool "rndc (binary only)"
-        depends on FREETZ_PACKAGE_BIND
+	depends on FREETZ_PACKAGE_BIND
 	default n
 	help
 		Adds the rndc name server control utility binary.
@@ -18,7 +25,7 @@ config FREETZ_PACKAGE_BIND_RNDC
 
 config FREETZ_PACKAGE_BIND_NSUPDATE
 	bool "nsupdate (binary only)"
-        depends on FREETZ_PACKAGE_BIND
+	depends on FREETZ_PACKAGE_BIND
 	default n
 	help
 		Adds the nsupdate binary for manipulation dynamic Zones.
