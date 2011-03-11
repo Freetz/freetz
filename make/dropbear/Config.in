@@ -51,3 +51,12 @@ config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 		Without this option selected, the ssh server performs a DNS
 		reverse lookup of the client's IP address.
 
+config FREETZ_PACKAGE_DROPBEAR_STATIC
+	bool "Build static binary"
+	depends on FREETZ_PACKAGE_DROPBEAR
+	default n
+
+config FREETZ_PACKAGE_DROPBEAR_STANDALONE
+	bool "Standalone binary (for use w/o freetz; paths set to /var/tmp/)"
+	depends on FREETZ_PACKAGE_DROPBEAR_STATIC
+	default n
