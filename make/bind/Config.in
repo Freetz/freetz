@@ -1,16 +1,23 @@
 config FREETZ_PACKAGE_BIND
-	bool "BIND 9.7.2-P3"
+	bool "BIND 9.8.0"
 	select FREETZ_LIB_libuClibc__
 	default n
 	help
 		BIND is an implementation of the Domain Name System (DNS) protocols.
 		The name BIND stands for "Berkeley Internet Name Daemon".
 		You have to provide the config and needed zone files yourself.
-		WARNING!: adds 1724KB to the Image, externalize if possible!
+
+config FREETZ_PACKAGE_BIND_NAMED
+	bool "named"
+	depends on FREETZ_PACKAGE_BIND
+	default y
+	help
+		Adds named, a internet domain name server.
+		WARNING!: Adds 1724KB to the Image, externalize if possible!
 
 config FREETZ_PACKAGE_BIND_WRAPPER
 	bool "multid wrapper"
-	depends on FREETZ_PACKAGE_BIND && ! FREETZ_PACKAGE_DNSMASQ_WRAPPER
+	depends on FREETZ_PACKAGE_BIND_NAMED && ! FREETZ_PACKAGE_DNSMASQ_WRAPPER
 	default n
 	help
 		Replaces multid by a wrapper to start named before multid.
