@@ -54,13 +54,21 @@ rm_files()
 #another little helper
 modsed()
 {
-#modsed <expression> <file>
+#modsed <sed-expression> <file> [grep-expression-to-verify-sed]
 #should be used instead of sed -i -e in patch scripts
+	[ $# -le 1 ] && error 1 "modsed failed, not enough parameters."
 	if [ -f "$2" ]; then
 		echo2 "patching $2"
 		sed -i -e "$1" "$2"
+		if [ $# -ge 3 ]; then
+			grep -q "$3" "$2" || error 1 "modsed failed editing $2"
+		fi
 	else
-		warn "$2 not found, skipping"
+		if [ $# -lt 3 ]; then
+			warn "$2 not found, skipping."
+		else
+			error 1 "$2 not found, aborting."
+		fi
 	fi
 }
 
