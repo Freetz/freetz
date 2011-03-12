@@ -33,3 +33,11 @@ config EXTERNAL_FREETZ_PACKAGE_BIND_NSUPDATE
 		externals these file(s):
 		 /usr/bin/nsupdate
 
+config EXTERNAL_FREETZ_PACKAGE_BIND_DIG
+	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND_DIG
+	boolean "dig"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/dig
+

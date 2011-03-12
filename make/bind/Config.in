@@ -31,3 +31,11 @@ config FREETZ_PACKAGE_BIND_NSUPDATE
 		Adds the nsupdate binary for manipulation dynamic Zones.
 		WARNING!: Adds 1351KB to the Image, externalize if possible!
 
+config FREETZ_PACKAGE_BIND_DIG
+	bool "dig (binary only)"
+	depends on FREETZ_PACKAGE_BIND
+	default n
+	help
+		Adds the dig DNS lookup utility.
+		WARNING!: Adds 1604KB to the Image, externalize if possible!
+

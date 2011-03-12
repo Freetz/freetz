@@ -10,6 +10,8 @@ $(PKG)_BINARY_RNDC:=$($(PKG)_DIR)/bin/rndc/rndc
 $(PKG)_TARGET_BINARY_RNDC:=$($(PKG)_DEST_DIR)/usr/sbin/rndc
 $(PKG)_BINARY_NSUPDATE:=$($(PKG)_DIR)/bin/nsupdate/nsupdate
 $(PKG)_TARGET_BINARY_NSUPDATE:=$($(PKG)_DEST_DIR)/usr/bin/nsupdate
+$(PKG)_BINARY_DIG:=$($(PKG)_DIR)/bin/dig/dig
+$(PKG)_TARGET_BINARY_DIG:=$($(PKG)_DEST_DIR)/usr/bin/dig
 
 $(PKG)_DEPENDS_ON := uclibcxx
 
@@ -30,7 +32,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY_BIND) $($(PKG)_BINARY_RNDC) $($(PKG)_BINARY_NSUPDATE): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY_BIND) $($(PKG)_BINARY_RNDC) $($(PKG)_BINARY_NSUPDATE) $($(PKG)_BINARY_DIG): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BIND_DIR)/lib/dns \
 		BUILD_CC="$(HOSTCC)" \
 		CC="$(HOSTCC)" \
@@ -59,17 +61,24 @@ else
 	$(RM) $@
 endif
 
+$($(PKG)_TARGET_BINARY_DIG): $($(PKG)_BINARY_DIG)
+ifeq ($(strip $(FREETZ_PACKAGE_BIND_DIG)),y)
+	$(INSTALL_BINARY_STRIP)
+else
+	$(RM) $@
+endif
+
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY_BIND) $($(PKG)_TARGET_BINARY_RNDC) $($(PKG)_TARGET_BINARY_NSUPDATE)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY_BIND) $($(PKG)_TARGET_BINARY_RNDC) $($(PKG)_TARGET_BINARY_NSUPDATE) $($(PKG)_TARGET_BINARY_DIG)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(BIND_DIR) clean
 	$(RM) $(BIND_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(BIND_TARGET_BINARY) $(BIND_TARGET_BINARY_RNDC) $(BIND_TARGET_BINARY_NSUPDATE)
+	$(RM) $(BIND_TARGET_BINARY) $(BIND_TARGET_BINARY_RNDC) $(BIND_TARGET_BINARY_NSUPDATE) $(BIND_TARGET_BINARY_DIG)
 
 
 $(PKG_FINISH)
