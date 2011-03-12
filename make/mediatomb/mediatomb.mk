@@ -8,7 +8,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mediatomb
 $(PKG)_SHARE_DIR:=/usr/share/mediatomb
 $(PKG)_TARGET_WEBIF:=$($(PKG)_DEST_DIR)$($(PKG)_SHARE_DIR)/web/index.html
 
-$(PKG)_DEPENDS_ON += uclibcxx curl expat ffmpeg libexif sqlite zlib
+$(PKG)_DEPENDS_ON += uclibcxx curl expat ffmpeg libexif sqlite taglib zlib
 ifeq ($(strip $(FREETZ_PACKAGE_MEDIATOMB_WITH_PLAYLIST_SUPPORT)),y)
 $(PKG)_DEPENDS_ON += js
 endif
@@ -52,7 +52,11 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MEDIATOMB_DIR) \
-	$(if $(FREETZ_PACKAGE_MEDIATOMB_STATIC),LDFLAGS="-static" STATIC_LINKING_LIBS="-lavcodec -lavutil -lssl -lcrypto -ldl -lz -lm")
+	$(if $(FREETZ_PACKAGE_MEDIATOMB_STATIC),\
+		CURL_LIBS="$$($(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl-config --static-libs)" \
+		LDFLAGS="-static" \
+		STATIC_LINKING_LIBS="-lavcodec -lavutil -ldl -lz -lm" \
+	)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
