@@ -8,24 +8,24 @@ usage() {
 	echo >&2 "Usage: $(basename $0) FUNCTION OPERATION ARGUMENTs OPTIONs"
 	echo >&2 " "
 	echo >&2 " FUNCTION (one of):"
-	echo >&2 " -f, --function                functions, subroutines between {...}" 
-	echo >&2 " -t, --option                  an option of case in between )...;;" 
+	echo >&2 " -f, --function                functions, subroutines between {...}"
+	echo >&2 " -t, --option                  an option of case in between )...;;"
 	echo >&2 " "
 	echo >&2 " OPERATION (one of):"
-	echo >&2 " -c, --cut                     cut found section" 
-	echo >&2 " -d, --delete                  delete found section" 
-	echo >&2 " -r, --replace                 replace found section" 
+	echo >&2 " -c, --cut                     cut found section"
+	echo >&2 " -d, --delete                  delete found section"
+	echo >&2 " -r, --replace                 replace found section"
 	echo >&2 " "
 	echo >&2 " required ARGUMENTs:"
-	echo >&2 " -i, --input-file FILENAME     name of input shell script file" 
-	echo >&2 " -s, --section-name SECTION    name of section for the search (keyword)" 
-	echo >&2 " -n, --new-string NEWSTRING    new string to replace instead of old section (only for replacement)" 
+	echo >&2 " -i, --input-file FILENAME     name of input shell script file"
+	echo >&2 " -s, --section-name SECTION    name of section for the search (keyword)"
+	echo >&2 " -n, --new-string NEWSTRING    new string to replace instead of old section (only for replacement)"
 	echo >&2 " "
 	echo >&2 " optional ARGUMENTs:"
-	echo >&2 " -o, --output-file FILENAME    name of output shell script file" 
-	echo >&2 "                               otherwise filtered output to STDOUT" 
-	echo >&2 " -h, --help                    show this help" 
-	echo >&2 " -------------" 
+	echo >&2 " -o, --output-file FILENAME    name of output shell script file"
+	echo >&2 "                               otherwise filtered output to STDOUT"
+	echo >&2 " -h, --help                    show this help"
+	echo >&2 " -------------"
 	echo >&2 " "
 	return $err_arg
 }
@@ -92,9 +92,9 @@ cut_section() # cut sections (functions, subroutines)
 	local sec_end_number
 	check_args $*
 	exval=$?
-	[ $exval -eq 0 ] && { find_section $1 $2 $3 ; exval=$? ; } 
+	[ $exval -eq 0 ] && { find_section $1 $2 $3 ; exval=$? ; }
 	[ $exval -eq 0 ] && { sed -n $sec_begin_number','$sec_end_number' p' "$1" > ${OUTSTRING}; exval=$? ; }
-	[ $exval -eq 0 ] && { [ $# -ge 4 -a -n $4 ] && write_to_file $1 ${OUTSTRING} $4 || cat ${OUTSTRING} ; } 
+	[ $exval -eq 0 ] && { [ $# -ge 4 -a -n $4 ] && write_to_file $1 ${OUTSTRING} $4 || cat ${OUTSTRING} ; }
 	rm -f ${OUTSTRING}
 	return $exval
 }
@@ -106,7 +106,7 @@ delete_section() # deletes sections (functions, subroutines)
 	exval=$?
 	[ $exval -eq 0 ] && { find_section $1 $2 $3 ; exval=$? ; }
 	[ $exval -eq 0 ] && { sed $sec_begin_number','$sec_end_number' d' "$1" > ${OUTSTRING}; exval=$? ; }
-	[ $exval -eq 0 ] && { [ $# -ge 4 -a -n $4 ] && write_to_file $1 ${OUTSTRING} $4 || cat ${OUTSTRING} ; } 
+	[ $exval -eq 0 ] && { [ $# -ge 4 -a -n $4 ] && write_to_file $1 ${OUTSTRING} $4 || cat ${OUTSTRING} ; }
 	rm -f ${OUTSTRING}
 	return $exval
 }
@@ -124,14 +124,15 @@ replace_section() # replaces sections (functions, subroutines)
 	[ $exval -eq 0 ] && { find_section $1 $2 $3 ; exval=$? ; }
 	[ $exval -eq 0 ] && { sed $sec_begin_number','$sec_end_number' d' "$1" \
 	| sed $sec_begin_number'i'"$replaced_string" > ${OUTSTRING} ; exval=$? ; }
-	[ $exval -eq 0 ] && { [ $# -ge 5 -a -n $5 ] && write_to_file $1 ${OUTSTRING} $5 || cat ${OUTSTRING} ; } 
+	[ $exval -eq 0 ] && { [ $# -ge 5 -a -n $5 ] && write_to_file $1 ${OUTSTRING} $5 || cat ${OUTSTRING} ; }
 	rm -f ${OUTSTRING}
 	return $exval
 }
 
 VERSION="1.0"
-FILTSTRING='/tmp/filtered_string'
-OUTSTRING='/tmp/patcher_outstring'
+RAND="$(cat /dev/urandom | tr -cd "[:alnum:]" | head -c 17)"
+FILTSTRING="/tmp/filtered_string_$RAND"
+OUTSTRING="/tmp/patcher_outstring_$RAND"
 unset input_file
 unset output_file
 unset section_name
