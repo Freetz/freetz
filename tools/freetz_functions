@@ -180,11 +180,16 @@ modlang()
 		    	warn "modlang: $2 does not exist"
 			return
 		fi
+		local dot_exclude="$(echo $FREETZ_BASE_DIR/$1 | sed 's/language$/exclude/')"
 		for i in $(modlangconf "files" "$conffile"); do
 			if [ -e "${i}" ]; then
 				modlangsubst "$lang" "${i}"
 			else
-				warn "modlang: ${2}/${i} not found"
+				do_excluded=n
+				while read l; do
+					echo $i | grep -q $l && do_excluded=y
+				done 2>/dev/null < "$dot_exclude"
+				[ "$do_excluded" != "y" ] && warn "modlang: ${2}/${i} not found"
 			fi
 		done
 	)
