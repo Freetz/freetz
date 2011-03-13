@@ -85,7 +85,7 @@ case $1 in
 		set_cron
 		;;
 	cron)
-		[ "$OPENDD_ENABLED" != "yes" ] && exit
+		[ "$OPENDD_ENABLED" != "yes" ] && return
 		logger -t info Run OpenDD by cron.
  		run
 		;;
