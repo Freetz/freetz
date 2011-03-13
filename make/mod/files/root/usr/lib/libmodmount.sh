@@ -146,8 +146,9 @@ mount_fs ()
 	return $err_mo
 }
 
-do_mount ()
+do_mount_locked ()
 { # mount function, used by /etc/hotplug/run_mount
+  # seperated from do_mount since fw 04.89
 	local mnt_failure=1
 	local rcftpd="/etc/init.d/rc.ftpd"
 	local tammnt="/var/tam/mount"
@@ -160,10 +161,8 @@ do_mount ()
 	local mnt_name
 	local mnt_path
 	local fs_type
-	passeeren # semaphore on
 	if mount | grep "$mnt_dev on /var/media/" > /dev/null
 	then # device already mounted
-		vrijgeven # semaphore off
 		return 0
 	fi
 	while [ $mnt_med_num -le 9 ] # sda1...sda9
@@ -265,7 +264,6 @@ do_mount ()
 			mv -f /var/dev-$$.map $DEVMAP
 		fi
 	fi
-	vrijgeven # semaphore off
 	return $mnt_failure
 }
 
@@ -337,6 +335,20 @@ do_umount_locked ()
 	[ $samba_needs_start -eq 0 ] && [ -x /etc/samba_control ] && /etc/samba_control reconfig $mnt_path
 	return $err_code
 }
+
+do_mount ()
+{ # mount function, used by /etc/hotplug/storage
+	local device=$1
+	local mnt_dev=$2
+	local mnt_part_num=$3
+	local err_code=0
+	passeeren # semaphore on
+	do_mount_locked $device $mnt_dev $mnt_part_num
+	err_code=$?
+	vrijgeven # semaphore off
+	return $err_code
+}
+
 
 do_umount ()
 { # ummount function, used by /etc/hotplug/storage
