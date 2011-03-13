@@ -428,13 +428,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ -z "$HTML_LANG_MOD_DIR" ] && error 1 "No HTML directory given."
 
 	# Apply (general, version specific, language specific) patches
-	shopt -s nullglob; \
+	shopt -s nullglob
 	for i in "${PATCHES_DIR}/"*.patch \
 		"${PATCHES_DIR}/${FREETZ_TYPE_STRING}/"*.patch \
 		"${PATCHES_DIR}/${FREETZ_TYPE_STRING}/${FREETZ_TYPE_LANG_STRING}/"*.patch
 	do
 		modpatch "$FILESYSTEM_MOD_DIR" "$i"
 	done
+	shopt -u nullglob
 
 	echo1 "creating symlinks /tmp, /mod and /home"
 	[ -e "$FILESYSTEM_MOD_DIR"/tmp ] && rm -rf "$FILESYSTEM_MOD_DIR"/tmp
