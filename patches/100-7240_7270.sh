@@ -16,15 +16,12 @@ fi
 rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/bitfile.bit
 
 echo2 "copying 7240 files"
-if isFreetzType LANG_EN; then
-	files="bitfile_isdn.bit bitfile_pots.bit c55fw.hex dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex wlan_eeprom_hw0.bin \
-		2.6.19.2/kernel/drivers/char/led_module.ko"
-else
-	files="bitfile_isdn.bit bitfile_pots.bit c55fw.hex wlan_eeprom_hw0.bin 2.6.19.2/kernel/drivers/char/led_module.ko"
-fi
-	for i in $files; do
-		cp "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules"
-	done
+files="bitfile_isdn.bit bitfile_pots.bit c55fw.hex wlan_eeprom_hw0.bin 2.6.19.2/kernel/drivers/char/led_module.ko"
+isFreetzType LANG_EN && \
+	files+="dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex"
+for i in $files; do
+	cp -a "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules"
+done
 
 isFreetzType LANG_DE && \
 	cp "${DIR}/.tk/original/filesystem/usr/www/avm/css/default/images/kopfbalken_mitte.gif" \

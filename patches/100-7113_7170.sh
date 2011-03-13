@@ -19,10 +19,10 @@ rm_files "${FILESYSTEM_MOD_DIR}/lib/libusbcfg*"
 rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug"
 
 echo2 "copying 7113 files"
-cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip*top.bit "${FILESYSTEM_MOD_DIR}/lib/modules"
-cp "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules/"
-cp -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon3" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/"
-cp -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
+cp -a ${DIR}/.tk/original/filesystem/lib/modules/microvoip*top.bit "${FILESYSTEM_MOD_DIR}/lib/modules"
+cp -a "${DIR}/.tk/original/filesystem/lib/modules/microvoip-dsl.bin" "${FILESYSTEM_MOD_DIR}/lib/modules/"
+cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon3" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/"
+cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
 
 echo2 "patching webmenu"
 isFreetzType LABOR_PREVIEW && \
