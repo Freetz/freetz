@@ -73,7 +73,17 @@ else
 endif
 
 
-$(pkg):
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_BIND_NAMED)" != "y" ] \
+		&& echo "usr/lib/bind" >> $@ \
+		&& echo "usr/lib/cgi-bin/bind.cgi" >> $@ \
+		&& echo "etc/default.bind" >> $@ \
+		&& echo "etc/init.d/rc.bind" >> $@; \
+	touch $@
+
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY_NAMED) $($(PKG)_TARGET_BINARY_RNDC) $($(PKG)_TARGET_BINARY_NSUPDATE) $($(PKG)_TARGET_BINARY_DIG)
 
