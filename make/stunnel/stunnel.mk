@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN,4.34)
+$(call PKG_INIT_BIN,4.35)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=bbd274e8364ea3ceca0ee5190e13edd1
-$(PKG)_SITE:=http://www.stunnel.org/download/stunnel/src
+$(PKG)_SOURCE_MD5:=2c8e153caee9d954fb7d00980968b50d
+$(PKG)_SITE:=ftp://ftp.stunnel.org/stunnel
 
 $(PKG)_STARTLEVEL=81
 

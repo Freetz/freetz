@@ -1,5 +1,5 @@
---- src/options.c
-+++ src/options.c
+--- src/options.c.orig	2011-03-16 00:52:06.872829740 +0100
++++ src/options.c	2011-03-16 00:52:07.282829740 +0100
 @@ -57,8 +57,10 @@
  static int print_socket_options(void);
  static void print_option(char *, int, OPT_UNION *);
@@ -27,7 +27,7 @@
  
      /* options */
      switch(cmd) {
-@@ -2052,6 +2056,7 @@
+@@ -2072,6 +2076,7 @@
  
  /**************************************** OCSP */
  
@@ -35,7 +35,7 @@
  static char *parse_ocsp_url(SERVICE_OPTIONS *section, char *arg) {
      char *host, *port, *path;
      int ssl;
-@@ -2098,6 +2103,7 @@
+@@ -2118,6 +2123,7 @@
              return option->value;
      return 0; /* FAILED */
  }
@@ -43,8 +43,8 @@
  
  /**************************************** fatal error */
  
---- src/verify.c
-+++ src/verify.c
+--- src/verify.c.orig	2011-01-24 22:44:03.000000000 +0100
++++ src/verify.c	2011-03-16 00:52:07.282829740 +0100
 @@ -48,7 +48,9 @@
  static int verify_callback(int, X509_STORE_CTX *);
  static int cert_check(CLI *c, X509_STORE_CTX *, int);
@@ -77,7 +77,7 @@
  static int ocsp_check(CLI *c, X509_STORE_CTX *callback_ctx) {
      int error, retval=0;
      SOCKADDR_UNION addr;
-@@ -441,6 +446,7 @@
+@@ -436,6 +441,7 @@
      c->fd=-1; /* avoid double close on cleanup */
      return retval;
  }

@@ -1,5 +1,5 @@
---- src/Makefile.in
-+++ src/Makefile.in
+--- src/Makefile.in.orig	2011-01-24 22:47:28.000000000 +0100
++++ src/Makefile.in	2011-03-16 00:52:06.872829740 +0100
 @@ -253,7 +253,7 @@
  INCLUDES = -I/usr/kerberos/include
  
@@ -8,9 +8,9 @@
 +AM_CPPFLAGS = -DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"/mod/etc"' -DPIDFILE='"/var/run/stunnel.pid"'
  
  # Win32 executable
- EXTRA_DIST = stunnel.exe make.bat mingw.mak makece.bat evc.mak vc.mak nogui.c os2.mak
---- src/options.c
-+++ src/options.c
+ EXTRA_DIST = stunnel.exe make.bat mingw.mak makece.bat evc.mak vc.mak makew32.bat version.rc nogui.c os2.mak
+--- src/options.c.orig	2011-01-24 23:30:07.000000000 +0100
++++ src/options.c	2011-03-16 00:52:06.872829740 +0100
 @@ -620,7 +620,7 @@
      /* cert */
      switch(cmd) {
