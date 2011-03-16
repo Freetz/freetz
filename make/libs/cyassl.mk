@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 1.6.5)
+$(call PKG_INIT_LIB, 1.9.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=98c2c6350acf1d089756a1de9ccb9903
+$(PKG)_SOURCE_MD5:=3b6189e06220ca70607f6802cad4ec9c
 $(PKG)_SITE:=http://yassl.com
 
 $(PKG)_LIBNAME:=libcyassl.so.0.0.0
@@ -28,6 +28,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
 	cp -a $(CYASSL_DIR)/include/openssl/*.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
+	cp -a $(CYASSL_DIR)/ctaocrypt/include/os_settings.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
 	$(INSTALL_LIBRARY_INCLUDE_STATIC)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
