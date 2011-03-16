@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 check "$XRELAYD_ENABLED" yes:auto_c "*":man_c
 
 for i in 0 1 2 3 4 5 6 7; do
-	select "$XRELAYD_VERBOSE" ${i}:verbose${i}_sel
+	select "$XRELAYD_VERBOSE" "$i":verbose${i}
 done
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'

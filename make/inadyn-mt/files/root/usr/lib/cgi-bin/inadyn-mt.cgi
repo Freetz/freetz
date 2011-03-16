@@ -21,7 +21,7 @@ for i in 0 1 2 3 4; do
 done
 
 for i in 0 1 2 3 4 5; do
-    	select "$INADYN_MT_VERBOSE" "$i":verbose${i}_sel
+	select "$INADYN_MT_VERBOSE" "$i":verbose${i}
 done
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
