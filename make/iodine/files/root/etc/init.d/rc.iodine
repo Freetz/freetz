@@ -1,0 +1,60 @@
+#!/bin/sh
+
+DAEMON=iodine
+DAEMON_BIN=iodined
+. /etc/init.d/modlibrc
+
+start() {
+	mkdir -p /tmp/$DAEMON_BIN
+	chown nobody /tmp/$DAEMON_BIN
+
+	modlib_startdaemon $DAEMON_BIN \
+	-c \
+	-u nobody \
+	-t /tmp/$DAEMON_BIN \
+	-F /var/run/$DAEMON_BIN.pid \
+	-p $IODINE_DNSPORT \
+	-P $IODINE_PASSWORD \
+	$IODINE_EXTRA \
+	$IODINE_TUNIP $IODINE_DOMAIN
+}
+
+stop() {
+	killall $DAEMON_BIN >/dev/null 2>&1
+	rm -rf /tmp/$DAEMON_BIN
+}
+
+case $1 in
+	""|load)
+		modlib_addgroup nobody
+		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
+		modreg cgi 'iodine' 'iodine'
+		modreg daemon $DAEMON
+
+		modlib_start $IODINE_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi 'iodine'
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
