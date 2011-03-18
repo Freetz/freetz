@@ -56,6 +56,10 @@ ifeq ($(strip $(FREETZ_LIB_libjpeg)),y)
 LIBS+=jpeg
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libopenjpeg)),y)
+LIBS+=openjpeg
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libgcrypt)),y)
 LIBS+=libgcrypt
 endif
