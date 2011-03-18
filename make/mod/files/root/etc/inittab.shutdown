@@ -1,0 +1,74 @@
+#!/bin/sh
+
+reverse_order() {
+	local _line
+	while read -r _line ; do
+		reverse_order
+		echo "$_line"
+		break
+	done
+}
+
+final_umount() {
+	[ -f /proc/sysrq-trigger ] && {
+		echo sync
+		echo umount
+	} > /proc/sysrq-trigger
+
+	reverse_order < /proc/mounts | \
+	while read des fs type other; do
+		case "$type" in
+			proc | sys | tmpfs )
+				;;
+			* )
+				if [ "$fs" != "/" ]; then
+					echo "Unmounting '$type' on '$fs'"
+					if ! umount -f $fs; then
+						log "umount $des (on $fs) failed, trying to remount readonly..."
+						mount -o remount,ro $fs
+					fi
+				else
+					log "umount $des (on $fs) failed, trying to remount readonly..."
+					mount -n -o remount,ro $fs
+				fi
+			;;
+		esac
+	done
+
+	echo
+	(
+		set -x
+		cat /proc/mounts
+	)
+	echo
+
+	sync
+	sleep 3
+
+}
+
+log() {
+	logger -t SHUTDOWN "$*"
+}
+
+execnlog() {
+	[ -x $1 ] || return
+	log "executing $*"
+	$*
+}
+
+
+log initiated
+
+execnlog /tmp/flash/mod/shutdown
+execnlog /etc/init.d/rc.mod stop
+execnlog /var/post_install
+
+final_umount
+
+while read des fs type modi other; do
+	log "still ${modi%%,*} mounted: $des (on $fs)"
+done < /proc/mounts
+
+log finished
+

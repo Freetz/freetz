@@ -7,6 +7,6 @@ cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/etc/inittab"
 /dev/ttyS1::askfirst:-/bin/sh
 
 # Stuff to do before rebooting
-::shutdown:/bin/sh -c /var/post_install
+::shutdown:/bin/sh -c /etc/inittab.shutdown
 
 EOF

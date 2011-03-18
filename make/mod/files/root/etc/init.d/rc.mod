@@ -11,7 +11,7 @@ start() {
 	echo "rc.mod version $(cat /etc/.freetz-version)"
 
 	# Basic Packages
-	for pkg in crond swap telnetd webcfg external websrv dsld ftpd smbd multid; do
+	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv smbd; do
 		local pkg_default=/etc/default.$pkg
 		[ -d "$pkg_default" -a ! -e "/mod${pkg_default}" ] && ln -s "$pkg_default" "/mod${pkg_default}"
 		local rc="/etc/init.d/rc.$pkg"
@@ -20,7 +20,7 @@ start() {
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
-	for pkg in crond telnetd webcfg swap external dsld multid ftpd; do
+	for pkg in crond telnetd webcfg dsld ftpd multid swap external; do
 		local rc="/etc/init.d/rc.$pkg"
 		[ -x "$rc" ] && "$rc"
 	done
@@ -31,11 +31,12 @@ start() {
 	fi
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		[ "$pkg" = mod ] && continue
-		if [ -x "/etc/init.d/rc.$pkg" ]; then
+		local rc="/etc/init.d/rc.$pkg"
+		if [ -x "$rc" ]; then
 			if echo "$EXTERNAL_SERVICES" | grep -q " $pkg "; then
 				echo "$pkg will be started by external."
 			else
-				"/etc/init.d/rc.$pkg"
+				"$rc"
 			fi
 		fi
 	done
@@ -61,6 +62,32 @@ start() {
 	/usr/lib/mod/menu-update
 }
 
+stop_helper() {
+	for pkg in $*; do
+		[ "$pkg" = mod ] && continue
+		local rc="/etc/init.d/rc.$pkg"
+		#[ -x "$rc" ] && "$rc" stop
+		[ -x "$rc" ] && logger -t FREETZMOD "$pkg: $($rc stop)"
+	done
+}
+
+stop() {
+	echo "Stopping all packages ..."
+
+	[ -n "$MOD_SHUTDOWN_FIRST" ] && stop_helper $MOD_SHUTDOWN_FIRST
+
+	local all_packages=""
+	for pkg in $(cat /etc/static.pkg 2>/dev/null) crond telnetd webcfg dsld ftpd multid; do
+		if ! echo " $MOD_SHUTDOWN_FIRST $MOD_SHUTDOWN_IGNORE $MOD_SHUTDOWN_LAST " | grep -q " $pkg "; then
+			all_packages="$all_packages $pkg"
+		fi
+	done
+	stop_helper $all_packages
+
+	[ -n "$MOD_SHUTDOWN_LAST" ] && stop_helper $MOD_SHUTDOWN_LAST
+
+}
+
 modreg_file() {
 	local file=$1 sec_level=$2
 	local basename=${file//./_}
@@ -76,6 +103,7 @@ register() {
 	modreg_file  hosts       1
 	modreg_file  modules     0
 	modreg_file  rc.custom   0
+	modreg_file  shutdown    0
 
 	/usr/lib/mod/reg-status start
 }
@@ -88,8 +116,12 @@ case $1 in
 	start)
 		start
 		;;
+	stop)
+		shift
+		stop $*
+		;;
 	*)
-		echo "Usage: $0 [start]" 1>&2
+		echo "Usage: $0 [start|stop]" 1>&2
 		exit 1
 		;;
 esac
