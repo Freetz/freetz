@@ -4,6 +4,9 @@ $(PKG)_SOURCE_MD5:=36c1045f013f6e8bac33a6200f1f554f
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
 $(PKG)_DEPENDS_ON := zlib
+ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg)),y)
+$(PKG)_DEPENDS_ON += openjpeg
+endif
 
 $(PKG)_BINARIES_ALL        := ffmpeg ffserver
 $(PKG)_BINARIES            := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
@@ -21,7 +24,7 @@ $(PKG)_LIBS_STAGING_DIR    := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGIN
 $(PKG)_LIBS_TARGET_DIR     := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
 $(PKG)_ENCODERS  := ac3 jpegls mjpeg mpeg1video mpeg2video mpeg4 pcm_s16be pcm_s16le png vorbis zlib
-$(PKG)_DECODERS  := aac ac3 atrac3 gif h264 jpegls mjpeg mjpegb mp2 mp3 mpeg1video mpeg2video mpeg4 mpeg4aac mpegvideo pcm_s16be pcm_s16le png vorbis wmav1 wmav2 zlib
+$(PKG)_DECODERS  := aac ac3 atrac3 gif h264 jpegls libopenjpeg mjpeg mjpegb mp2 mp3 mpeg1video mpeg2video mpeg4 mpeg4aac mpegvideo pcm_s16be pcm_s16le png vorbis wmav1 wmav2 zlib
 $(PKG)_MUXERS    := ac3 avi ffm flv h264 matroska mjpeg mp3 mp4 mpeg1video mpeg2video mpegts ogg oss rtp
 $(PKG)_DEMUXERS  := ac3 avi ffm flv h264 image2 matroska mjpeg mp3 mpegps mpegts mpegvideo ogg rm rtsp sdp v4l2
 $(PKG)_PARSERS   := aac ac3 h264 mjpeg mpegaudio mpegvideo mpeg4video
@@ -58,6 +61,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-postproc
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffmpeg),--enable-ffmpeg,--disable-ffmpeg)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffserver),--enable-ffserver,--disable-ffserver)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_IPV6),--enable-ipv6,--disable-ipv6)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),--enable-libopenjpeg,--disable-libopenjpeg)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-bsfs
 $(PKG)_CONFIGURE_OPTIONS += --disable-devices

@@ -136,6 +136,10 @@ config FREETZ_PACKAGE_FFMPEG_DECODER_h264
 config FREETZ_PACKAGE_FFMPEG_DECODER_jpegls
 	bool "JPEG-LS"
 
+config FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
+	bool "JPEG-2000"
+	select FREETZ_LIB_libopenjpeg
+
 config FREETZ_PACKAGE_FFMPEG_DECODER_mjpeg
 	bool "MJPEG"
 
@@ -266,6 +270,8 @@ config FREETZ_PACKAGE_FFMPEG_DEMUXER_image2
 	select FREETZ_PACKAGE_FFMPEG_DECODER_mjpeg
 	select FREETZ_PACKAGE_FFMPEG_DECODER_mjpegb
 	select FREETZ_PACKAGE_FFMPEG_DECODER_png
+	# optional because of an extra library
+	# select FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
 
 config FREETZ_PACKAGE_FFMPEG_DEMUXER_matroska
 	bool "MATROSKA"
