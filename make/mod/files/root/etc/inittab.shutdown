@@ -64,8 +64,8 @@ execnlog /tmp/flash/mod/shutdown
 execnlog /etc/init.d/rc.mod stop
 execnlog /var/post_install
 
+log unmounting
 final_umount
-
 while read des fs type modi other; do
 	log "still ${modi%%,*} mounted: $des (on $fs)"
 done < /proc/mounts
