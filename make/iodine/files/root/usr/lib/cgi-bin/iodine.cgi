@@ -18,10 +18,10 @@ sec_end
 sec_begin '$(lang de:"Server" en:"Server")'
 cat << EOF
 <p>$(lang de:"DNS Domain Name" en:"DNS Domain name"): <input type="text" name="domain" size="20" maxlength="255" value="$(html "$IODINE_DOMAIN")"></p>
-<p>$(lang de:"DNS Port Nummer" en:"DNS port number"): <input type="text" name="dnsport" size="10" maxlength="5" value="$(html "$IODINE_DNSPORT")"></p>
-<p>$(lang de:"Server Tunnel IP" en:"Server tunnel IP"): <input type="text" name="tunip"  size="20" maxlength="20" value="$(html "$IODINE_TUNIP")"></p>
-<p>$(lang de:"Tunnel Passwort" en:"Tunnel password"): <input type="password" name="password" size="20" maxlength="32" value="$(html "$IODINE_PASSWORD")"></p>
-<p>$(lang de:"Erweiterte Optionen" en:"Exta options"): <input type="text" name="extra" size="40" maxlength="255" value="$(html "$IODINE_EXTRA")"></p>
+<p>$(lang de:"DNS Portnummer" en:"DNS port number"): <input type="text" name="dnsport" size="10" maxlength="5" value="$(html "$IODINE_DNSPORT")"></p>
+<p>$(lang de:"Server Tunnel-IP" en:"Server tunnel IP"): <input type="text" name="tunip"  size="20" maxlength="20" value="$(html "$IODINE_TUNIP")"></p>
+<p>$(lang de:"Tunnel-Passwort" en:"Tunnel password"): <input type="password" name="password" size="20" maxlength="32" value="$(html "$IODINE_PASSWORD")"></p>
+<p>$(lang de:"Erweiterte Optionen" en:"Extra options"): <input type="text" name="extra" size="40" maxlength="255" value="$(html "$IODINE_EXTRA")"></p>
 EOF
 
 sec_end
