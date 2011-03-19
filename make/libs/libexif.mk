@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.6.19)
-$(PKG)_LIB_VERSION:=12.3.1
+$(call PKG_INIT_LIB, 0.6.20)
+$(PKG)_LIB_VERSION:=12.3.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=56144a030a4c875c600b1ccf713f69f7
+$(PKG)_SOURCE_MD5:=19844ce6b5d075af16f0d45de1e8a6a3
 $(PKG)_SITE:=@SF/libexif
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libexif/.libs/libexif.so.$($(PKG)_LIB_VERSION)
