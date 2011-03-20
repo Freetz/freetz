@@ -9,6 +9,7 @@ log_freetz ()
 	local log_prio="user.notice"
 	[ "$1" == "err" ] && log_prio="user.err"
 	logger -p "$log_prio" -t FREETZMOUNT "$2"
+	echo "FREETZMOUNT: $2" > /dev/console
 	return 0
 }
 
@@ -190,7 +191,9 @@ do_mount_locked ()
 		umask $old_umask
 		eventadd 140 "$mnt_name ($mnt_dev)"
 		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully"
-		[ -x $rcftpd ] && [ "$($rcftpd status)" != "running" ] && $rcftpd start # start ftpd, if not started
+		if [ -x $rcftpd ]; then	# start/enable ftpd
+			[ -x "$(which inetdctl)" ] && inetdctl enable ftpd || $rcftpd start
+		fi
 		/etc/init.d/rc.swap autostart $mnt_path
 		local autorun="$mnt_path/autorun.sh"
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun & # run autostart shell script
