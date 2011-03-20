@@ -1,17 +1,23 @@
 --- genconfig.sh
 +++ genconfig.sh
-@@ -14,8 +14,8 @@
+@@ -27,12 +27,12 @@
+ # Database path
  DB_PATH="/tmp/minidlna"
+ # Log path
+-LOG_PATH="${DB_PATH}"
++LOG_PATH="/var/log"
  
  # detecting the OS name and version
 -OS_NAME=`uname -s`
 -OS_VERSION=`uname -r`
+-TIVO="/*#define TIVO_SUPPORT*/"
 +OS_NAME="FRITZ!Box"
 +OS_URL="http://sourceforge.net/projects/minidlna/"
- TIVO="/*#define TIVO_SUPPORT*/"
++TIVO="#define TIVO_SUPPORT"
  NETGEAR="/*#define NETGEAR*/"
  READYNAS="/*#define READYNAS*/"
-@@ -24,22 +24,22 @@
+ PNPX="#define PNPX 0"
+@@ -41,22 +41,22 @@
  
  # Detect if there are missing headers
  # NOTE: This check only works with a normal distro
@@ -50,123 +56,51 @@
  if [ -n "$MISSING" ]; then
  	echo -e "\nERROR!  Cannot continue."
  	echo -e "The following required libraries are either missing, or are missing development headers:\n"
-@@ -55,90 +55,7 @@
- echo "#define $CONFIGMACRO" >> ${CONFIGFILE}
+@@ -73,6 +73,7 @@
  echo "" >> ${CONFIGFILE}
  
--# OS Specific stuff
--case $OS_NAME in
--	OpenBSD)
--		MAJORVER=`echo $OS_VERSION | cut -d. -f1`
--		MINORVER=`echo $OS_VERSION | cut -d. -f2`
--		#echo "OpenBSD majorversion=$MAJORVER minorversion=$MINORVER"
--		# rtableid was introduced in OpenBSD 4.0
--		if [ $MAJORVER -ge 4 ]; then
--			echo "#define PFRULE_HAS_RTABLEID" >> ${CONFIGFILE}
--		fi
--		# from the 3.8 version, packets and bytes counters are double : in/out
--		if [ \( $MAJORVER -ge 4 \) -o \( $MAJORVER -eq 3 -a $MINORVER -ge 8 \) ]; then
--			echo "#define PFRULE_INOUT_COUNTS" >> ${CONFIGFILE}
--		fi
--		OS_URL=http://www.openbsd.org/
--		;;
--	FreeBSD)
--		VER=`grep '#define __FreeBSD_version' /usr/include/sys/param.h | awk '{print $3}'`
--		if [ $VER -ge 700049 ]; then
--			echo "#define PFRULE_INOUT_COUNTS" >> ${CONFIGFILE}
--		fi
--		OS_URL=http://www.freebsd.org/
--		;;
--	pfSense)
--		# we need to detect if PFRULE_INOUT_COUNTS macro is needed
--		OS_URL=http://www.pfsense.com/
--		;;
--	NetBSD)
--		OS_URL=http://www.netbsd.org/
--		;;
--	SunOS)
--		echo "#define USE_IPF 1" >> ${CONFIGFILE}
--		echo "#define LOG_PERROR 0" >> ${CONFIGFILE}
--		echo "#define SOLARIS_KSTATS 1" >> ${CONFIGFILE}
--		echo "typedef uint64_t u_int64_t;" >> ${CONFIGFILE}
--		echo "typedef uint32_t u_int32_t;" >> ${CONFIGFILE}
--		echo "typedef uint16_t u_int16_t;" >> ${CONFIGFILE}
--		echo "typedef uint8_t u_int8_t;" >> ${CONFIGFILE}
--		OS_URL=http://www.sun.com/solaris/
--		;;
--	Linux)
--		OS_URL=http://www.kernel.org/
--		KERNVERA=`echo $OS_VERSION | awk -F. '{print $1}'`
--		KERNVERB=`echo $OS_VERSION | awk -F. '{print $2}'`
--		KERNVERC=`echo $OS_VERSION | awk -F. '{print $3}'`
--		KERNVERD=`echo $OS_VERSION | awk -F. '{print $4}'`
--		#echo "$KERNVERA.$KERNVERB.$KERNVERC.$KERNVERD"
--		# NETGEAR ReadyNAS special case
--		if [ -f /etc/raidiator_version ]; then
--			OS_NAME=$(awk -F'!!|=' '{ print $1 }' /etc/raidiator_version)
--			OS_VERSION=$(awk -F'!!|[=,.]' '{ print $3"."$4 }' /etc/raidiator_version)
--			OS_URL="http://www.readynas.com/"
--			DB_PATH="/var/cache/minidlna"
--			TIVO="#define TIVO_SUPPORT"
--			NETGEAR="#define NETGEAR"
--			READYNAS="#define READYNAS"
--		# Debian GNU/Linux special case
--		elif [ -f /etc/debian_version ]; then
--			OS_NAME=Debian
--			OS_VERSION=`cat /etc/debian_version`
--			OS_URL=http://www.debian.org/
--			# use lsb_release (Linux Standard Base) when available
--			LSB_RELEASE=`which lsb_release 2>/dev/null`
--			if [ 0 -eq $? ]; then
--				OS_NAME=`${LSB_RELEASE} -i -s`
--				OS_VERSION=`${LSB_RELEASE} -r -s`
--			fi
--		else
--			# use lsb_release (Linux Standard Base) when available
--			LSB_RELEASE=`which lsb_release 2>/dev/null`
--			if [ 0 -eq $? ]; then
--				OS_NAME=`${LSB_RELEASE} -i -s`
--				OS_VERSION=`${LSB_RELEASE} -r -s`
--			fi
--		fi
--		;;
--	*)
--		echo "Unknown OS : $OS_NAME"
--		exit 1
--		;;
--esac
--
- echo "#define OS_NAME		\"$OS_NAME\"" >> ${CONFIGFILE}
--echo "#define OS_VERSION	\"$OS_NAME/$OS_VERSION\"" >> ${CONFIGFILE}
- echo "#define OS_URL		\"${OS_URL}\"" >> ${CONFIGFILE}
+ # OS Specific stuff
++if false; then
+ case $OS_NAME in
+ 	OpenBSD)
+ 		MAJORVER=`echo $OS_VERSION | cut -d. -f1`
+@@ -156,9 +157,9 @@
+ 		exit 1
+ 		;;
+ esac
++fi
+ 
+ echo "#define OS_NAME			\"$OS_NAME\"" >> ${CONFIGFILE}
+-echo "#define OS_VERSION		\"$OS_NAME/$OS_VERSION\"" >> ${CONFIGFILE}
+ echo "#define OS_URL			\"${OS_URL}\"" >> ${CONFIGFILE}
  echo "" >> ${CONFIGFILE}
  
-@@ -152,7 +69,7 @@
+@@ -176,7 +177,7 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system inotify.h exists.  Otherwise our own inotify.h will be used. */" >> ${CONFIGFILE}
 -if [ -f /usr/include/sys/inotify.h ]; then
-+if [ -f ${CROSS_TOOLCHAIN_SYSROOT}/usr/include/sys/inotify.h ]; then
++if [ -f "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/sys/inotify.h" ]; then
  echo "#define HAVE_INOTIFY_H" >> ${CONFIGFILE}
  else
  echo "/*#define HAVE_INOTIFY_H*/" >> ${CONFIGFILE}
-@@ -160,7 +77,7 @@
+@@ -184,7 +185,7 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system iconv.h exists.  ID3 tag reading in various character sets will not work properly otherwise. */" >> ${CONFIGFILE}
 -if [ -f /usr/include/iconv.h ]; then
-+if [ -f ${CROSS_TOOLCHAIN_SYSROOT}/usr/include/iconv.h ]; then
++if [ -f "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/iconv.h" ]; then
  echo "#define HAVE_ICONV_H" >> ${CONFIGFILE}
  else
  echo -e "\nWARNING!!  Iconv support not found.  ID3 tag reading may not work."
-@@ -169,11 +86,11 @@
+@@ -193,11 +194,11 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system libintl.h exists for NLS support. */" >> ${CONFIGFILE}
 -if [ -f /usr/include/libintl.h ]; then
 -echo "#define ENABLE_NLS" >> ${CONFIGFILE}
 -else
-+#if [ -f ${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libintl.h ]; then
++#if [ -f "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libintl.h" ]; then
 +#echo "#define ENABLE_NLS" >> ${CONFIGFILE}
 +#else
  echo "/*#define ENABLE_NLS*/" >> ${CONFIGFILE}
@@ -177,7 +111,7 @@
  echo "/* Enable NETGEAR-specific tweaks. */" >> ${CONFIGFILE}
 --- Makefile
 +++ Makefile
-@@ -10,13 +10,9 @@
+@@ -10,14 +10,8 @@
  # or :
  # $ make install
  #
@@ -187,41 +121,40 @@
 -	 -I/usr/include/ffmpeg \
 -	 -I/usr/include/libavutil -I/usr/include/libavcodec -I/usr/include/libavformat \
 -	 -I/usr/include/ffmpeg/libavutil -I/usr/include/ffmpeg/libavcodec -I/usr/include/ffmpeg/libavformat
+-#STATIC_LINKING: CFLAGS += -DSTATIC
 -#STATIC_LINKING: LDFLAGS = -static
 +CFLAGS = -Wall -D_GNU_SOURCE -pthread
 +CPPFLAGS = -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavutil -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavcodec -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavformat
-+
  CC = gcc
  RM = rm -f
  INSTALL = install
-@@ -34,16 +30,20 @@
+@@ -35,16 +29,19 @@
             tagutils/textutils.o tagutils/misc.o tagutils/tagutils.o \
             playlist.o image_utils.o albumart.o log.o
  
 -ALLOBJS = $(BASEOBJS) $(LNXOBJS)
 +ALLOBJS = $(BASEOBJS)
  
--LIBS = -lpthread -lexif -ljpeg -lsqlite3 -lavformat -lid3tag -lFLAC -lvorbis
+-LIBS = -lpthread -lexif -ljpeg -lsqlite3 -lavformat -lavutil -lavcodec -lid3tag -lFLAC -logg -lvorbis
 -#STATIC_LINKING: LIBS = -lvorbis -logg -lm -lsqlite3 -lpthread -lexif -ljpeg -lFLAC -lm -lid3tag -lz -lavformat -lavutil -lavcodec -lm
++LIBS = -lavformat -lavcodec -lavutil -lexif -lFLAC $(ICONV_LIB) -lid3tag -ljpeg -lsqlite3 -lvorbis -logg -lpthread
 +ifeq ($(strip $(LINK_STATICALLY)),yes)
 +LDFLAGS = -static
-+LIBS = -lvorbis -logg -lsqlite3 -lexif -ljpeg -lFLAC -lid3tag -lavformat -lavcodec -lavutil -lpthread -lz -lm -ldl $(ICONV_LIB)
-+else
-+LIBS = -lpthread -lexif -ljpeg -lsqlite3 -lavformat -lid3tag -lFLAC -lvorbis $(ICONV_LIB)
++LIBS += $(FFMPEG_EXTRA_LIBS) -lz -lm -ldl
 +endif
  
  TESTUPNPDESCGENOBJS = testupnpdescgen.o upnpdescgen.o
  
  EXECUTABLES = minidlna testupnpdescgen
  
--.PHONY:	all clean install depend
-+.PHONY:	all clean install
+-.PHONY:	all clean distclean install depend
++.PHONY:	all clean distclean install
  
  all:	$(EXECUTABLES)
  
-@@ -52,27 +52,17 @@
- 	$(RM) $(EXECUTABLES)
- 	$(RM) testupnpdescgen.o
+@@ -56,27 +53,17 @@
+ distclean: clean
+ 	$(RM) config.h
  
 -install:	minidlna
 +install: minidlna
@@ -233,7 +166,9 @@
 -minidlna:	$(BASEOBJS) $(LNXOBJS) $(LIBS)
 -	@echo Linking $@
 -	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(BASEOBJS) $(LNXOBJS) $(LIBS)
--
++minidlna: $(BASEOBJS)
++	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $(BASEOBJS) $(LIBS)
+ 
 -
 -testupnpdescgen:	$(TESTUPNPDESCGENOBJS)
 -	@echo Linking $@
@@ -241,9 +176,7 @@
 -
 -config.h:	genconfig.sh
 -	./genconfig.sh
-+minidlna: $(BASEOBJS)
-+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $(BASEOBJS) $(LIBS)
- 
+-
 -depend:	config.h
 -	makedepend -f$(MAKEFILE_LIST) -Y \
 -	$(ALLOBJS:.o=.c) $(TESTUPNPDESCGENOBJS:.o=.c) 2>/dev/null
@@ -252,7 +185,7 @@
  
  # DO NOT DELETE
  
-@@ -122,8 +112,4 @@
+@@ -126,8 +113,4 @@
  .SUFFIXES: .c .o
  
  .c.o:
@@ -264,7 +197,7 @@
 +	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 --- upnphttp.h
 +++ upnphttp.h
-@@ -14,7 +14,7 @@
+@@ -36,7 +36,7 @@
  #include "config.h"
  
  /* server: HTTP header returned in all HTTP responses : */

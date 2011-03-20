@@ -1,7 +1,6 @@
-$(call PKG_INIT_BIN, 1.0.18)
-$(PKG)_DIR:=$(subst -$($(PKG)_VERSION),,$($(PKG)_DIR))
+$(call PKG_INIT_BIN, 1.0.19)
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION)_src.tar.gz
-$(PKG)_SOURCE_MD5:=8681b100242f0a2fef93cab7cdef061e
+$(PKG)_SOURCE_MD5:=8bb5f2c0abc009e16039d7deecf09cf6
 $(PKG)_SITE:=@SF/minidlna
 
 $(PKG)_BINARY := $($(PKG)_DIR)/minidlna
@@ -28,6 +27,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -Wall -D_GNU_SOURCE -pthread" \
 		LINK_STATICALLY="$(if $(FREETZ_PACKAGE_MINIDLNA_STATIC),yes,no)" \
+		FFMPEG_EXTRA_LIBS="$(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),-lopenjpeg)" \
 		ICONV_LIB="$(MINIDLNA_ICONV_LIB)" \
 		CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)"
 
