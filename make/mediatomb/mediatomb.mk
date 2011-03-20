@@ -55,7 +55,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(if $(FREETZ_PACKAGE_MEDIATOMB_STATIC),\
 		CURL_LIBS="$$($(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl-config --static-libs)" \
 		LDFLAGS="-static" \
-		STATIC_LINKING_LIBS="-lavcodec -lavutil -ldl -lz -lm" \
+		STATIC_LINKING_LIBS="-lavcodec -lavutil $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),-lopenjpeg) -ldl -lz -lm" \
 	)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
