@@ -5,8 +5,10 @@ DAEMON_LONG_NAME=MiniDLNA
 . /etc/init.d/modlibrc
 
 config() {
-	mkdir $MINIDLNA_DB_DIR 2>/dev/null
-	[ -d $MINIDLNA_DB_DIR ] || return 1
+	mkdir "$MINIDLNA_DB_DIR" 2>/dev/null
+	[ -d "$MINIDLNA_DB_DIR" ] || return 1
+	mkdir "$MINIDLNA_LOG_DIR" 2>/dev/null
+	[ -d "$MINIDLNA_LOG_DIR" ] || return 1
 	modlib_config
 }
 

@@ -242,10 +242,7 @@ config FREETZ_TYPE_LABOR
 	bool "Beta/Labor"
 	depends on \
 		FREETZ_TYPE_LANG_DE && \
-		( \
-			FREETZ_TYPE_FON_WLAN_7170 || \
-			FREETZ_TYPE_FON_WLAN_7390 \
-		)
+			FREETZ_TYPE_FON_WLAN_7170
 	default n
 	help
 		Enable this to compile the mod based on an AVM "beta/labor" firmware.
@@ -831,7 +828,6 @@ config FREETZ_HAS_USB_CLIENT
 config FREETZ_HAS_USB_HOST
 	bool "USB host"		if FREETZ_TYPE_CUSTOM
 	default n		if \
-		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_FON_5010 || \
@@ -855,6 +851,7 @@ config FREETZ_HAS_USB_HOST
 config FREETZ_HAS_WLAN
 	bool "Has WLAN"		if FREETZ_TYPE_CUSTOM
 	default n		if \
+		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5050 || \
