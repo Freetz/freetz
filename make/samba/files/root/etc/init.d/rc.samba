@@ -19,7 +19,7 @@ config() {
 	local USERS_MAP=/mod/etc/samba/users.map
 
 	mkdir -p /mod/etc/samba
-	/mod/etc/default.samba/samba_conf > $DAEMON_CONFIG
+	modlib_config
 
 	# create users.map, if needed
 	if [ -z "$SAMBA_USER" -o "$SAMBA_SYSTEMUSER" == "$SAMBA_USER" ]; then
