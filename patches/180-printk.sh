@@ -6,8 +6,11 @@ if isFreetzType 5010 5050 7050 7140 7141 7150 7170; then
 #	modsed "s/AVM_PRINTK/STD_PRINTK/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
 fi
 
-if isFreetzType 7320; then
-	modsed "/^cat \/dev\/debug.*$/ s/^/: #/g" "$FILESYSTEM_MOD_DIR/etc/init.d/S17-isdn"
+if isFreetzType 7320 || (isFreetzType 7390 && isFreetzType LABOR_PREVIEW); then
+	file="$FILESYSTEM_MOD_DIR/etc/init.d/S17-isdn"
+elif isFreetzType LABOR_PREVIEW && isFreetzType 7270; then
+	file="$FILESYSTEM_MOD_DIR/etc/init.d/S11-piglet"
 else
-	modsed "/^cat \/dev\/debug.*$/ s/^/: #/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
+	file="$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
 fi
+modsed "/^cat \/dev\/debug.*$/ s/^/: #/g" $file
