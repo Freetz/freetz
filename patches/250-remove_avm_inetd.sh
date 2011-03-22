@@ -6,11 +6,13 @@ rm_files "${FILESYSTEM_MOD_DIR}/bin/inetdctl" # AVM wrapper / starter script for
 rm_files "${FILESYSTEM_MOD_DIR}/etc/inetd.conf" # AVM Symlink to /var/tmp/inetd.conf
 
 # don't start inetd in rc.S
-count=$(grep "usr/sbin/inetd" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S" | wc -l)
-if [ $count -gt 1 ]; then
-	modsed '/if \[ \-x \/usr\/sbin\/inetd \] \; then/!b;:x1;/fi/!{N;bx1;};d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+if (isFreetzType 7320 || (isFreetzType 7270 7390 && isFreetzType LABOR_PREVIEW)); then
+	rm_files "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd"
 else
-	modsed '\@^/usr/sbin/inetd.*$@d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	count=$(grep "usr/sbin/inetd" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S" | wc -l)
+	if [ $count -gt 1 ]; then
+		modsed '/if \[ \-x \/usr\/sbin\/inetd \] \; then/!b;:x1;/fi/!{N;bx1;};d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	else
+		modsed '\@^/usr/sbin/inetd.*$@d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	fi
 fi
-
-isFreetzType 7320 && rm_files "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd"
