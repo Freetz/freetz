@@ -5,7 +5,7 @@ DAEMON=phpxmail
 
 config() {
 	if [ ! -e /tmp/flash/${DAEMON}/config.php ]; then
-		echo -n 'Creating $DAEMON configuration ... '
+		echo -n "Creating $DAEMON configuration ... "
 		cat /mod/etc/default.${DAEMON}/config.php.default > /tmp/flash/${DAEMON}/config.php
 		echo 'done.'
 	fi
