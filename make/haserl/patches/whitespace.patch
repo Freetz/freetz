@@ -1,0 +1,34 @@
+--- src/Makefile.in.orig	2008-12-17 02:48:26.000000000 +0100
++++ src/Makefile.in	2011-03-22 20:26:35.424680144 +0100
+@@ -469,10 +469,10 @@
+ @USE_LUA_TRUE@h_lua_common.c : haserl_lualib.inc
+ 
+ install-strip:
+-        $(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+-          install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
+-          `test -z '$(STRIP)' || \
+-            echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
++	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
++	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
++	  `test -z '$(STRIP)' || \
++	   echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+ 
+ #---------  Unit Tests ----------------------
+ #TESTS = utest_common
+--- src/Makefile.am.orig	2008-12-17 02:23:01.000000000 +0100
++++ src/Makefile.am	2011-03-22 20:27:02.364682813 +0100
+@@ -49,10 +49,10 @@
+ 		 $(BASHSOURCE) $(LUASOURCE) haserl.c haserl.h
+ 
+ install-strip:
+-        $(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+-          install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
+-          `test -z '$(STRIP)' || \
+-            echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
++	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
++	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
++	  `test -z '$(STRIP)' || \
++	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+ 
+ 
+ #---------  Unit Tests ----------------------
