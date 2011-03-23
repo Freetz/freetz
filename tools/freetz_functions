@@ -72,18 +72,31 @@ modsed()
 	fi
 }
 
-
+#parameter -n: no new-line
+#parameter -l: no spaces at beginning
+echoX()
+{
+	local tabl="$1"
+	local newl=""
+	shift
+	while [ "$1" == "-n" -o "$1" == "-l" ]; do
+		[ "$1" == "-n" ] && newl="-n"
+		[ "$1" == "-l" ] && tabl=""
+		shift
+	done
+	echo -e $newl "$tabl$*"
+}
 echo0()
 {
-        [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echo -e "${L0}$1"
+        [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX "${L0}" "$@"
 }
 echo1()
 {
-        [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo -e "${L1}$1"
+        [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX "${L1}" "$@"
 }
 echo2()
 {
-        [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echo -e "${L2}$1"
+        [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX "${L2}" "$@"
 }
 # error exit-code error-message
 error()
