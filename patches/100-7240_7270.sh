@@ -28,9 +28,15 @@ if isFreetzType LANG_DE; then
 else
 	OEM="avme"
 fi
-cp "${DIR}/.tk/original/filesystem/usr/www/avm/css/default/images/kopfbalken_mitte.gif" \
-		"${FILESYSTEM_MOD_DIR}/usr/www/$OEM/css/default/images/"
+files="css/default/images/kopfbalken_mitte.gif"
+files+=" html/de/images/kopfbalken.gif"
+files+=" html/de/images/DectFBoxIcon.png"
+for i in $files; do
+	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" \
+		"${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
+done
 
+exit 1
 #echo2 "patching webmenu"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7240_7270.patch"
 
