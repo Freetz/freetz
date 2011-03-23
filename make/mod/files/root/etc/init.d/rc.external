@@ -9,32 +9,48 @@ local EXTERNAL_LINK=/mod/external
 local EXTERNAL_DIRECTORY=`echo $MOD_EXTERNAL_DIRECTORY|sed 's/\/*$//'`
 local EXTERNAL_CUSTOM_FILE=/tmp/flash/mod/rc.external
 
+#parameter -n: no new-line at line end
+#parameter -l: additional new-line
+log() {
+	local addl=""
+	local newl=""
+	while [ "$1" == "-n" -o "$1" == "-x" ]; do
+		[ "$1" == "-n" ] && newl="-n"
+		[ "$1" == "-x" ] && addl="\n"
+		shift
+	done
+	echo $newl -e "$addl$*" | tee -a $LOG_FILE
+	[ "$*" == "" -o "$*" == "." -o "$*" == " ." ] && return
+	echo "EXTERNAL: $*" > /dev/console
+	logger -t EXTERNAL "$*"
+}
+
 check_date() {
-	echo -n "Waiting for time-synchronisation:" | tee -a $LOG_FILE
+	log -n "Waiting for time-synchronisation:"
 	counter=225
 	spaceit=" "
 	while [ `date +%Y` -lt 2010 -a $counter -ne 0 ]; do
-		echo -n "$spaceit." | tee -a $LOG_FILE
+		log -n "$spaceit."
 		spaceit=
 		[ "$MOD_EXTERNAL_WAIT_INFINITE" == "yes" ] || let counter=$counter-1
 		sleep 4
 	done
 	if [ `date +%Y` -lt 2010 ]; then
-		echo " timeout, failed." | tee -a $LOG_FILE
+		log " timeout, failed."
 		exit 1
 	fi
 	if [ `date +%Y` -gt $MOD_EXTERNAL_YEAR_MAX ]; then
-		echo " error, failed." | tee -a $LOG_FILE
+		log " error, failed."
 		[ -f /tmp/flash/mod/external.year ] && . /tmp/flash/mod/external.year
 		exit 1
 	fi
-	echo " done." | tee -a $LOG_FILE
+	log " done."
 }
 
 exec_rcs() {
 	if [ "$MOD_EXTERNAL_FREETZ_SERVICES" != "yes" ]; then
 		if [ -z "$MOD_EXTERNAL_OWN_SERVICES" ]; then
-			echo "No services selected, failed." | tee -a $LOG_FILE
+			log "No services selected, failed."
 			exit 1
 		fi
 		EXTERNAL_SERVICES="$MOD_EXTERNAL_OWN_SERVICES"
@@ -43,30 +59,30 @@ exec_rcs() {
 	fi
 	if [ ! -d "$EXTERNAL_DIRECTORY" ]; then
 		rm -rf "$EXTERNAL_LINK" 2>/dev/null
-		echo "Directory could not be found, failed." | tee -a $LOG_FILE
+		log "Directory could not be found, failed."
 		exit 1
 	fi
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		if echo " $EXTERNAL_SERVICES " | grep -q " $pkg "; then
-			[ -x /etc/init.d/rc.$pkg ] && /etc/init.d/rc.$pkg $1 2>&1 | tee -a $LOG_FILE
+			[ -x /etc/init.d/rc.$pkg ] && log "$(/etc/init.d/rc.$pkg $1 2>&1)"
 		fi
 	done
-	[ -f $EXTERNAL_CUSTOM_FILE ] && . $EXTERNAL_CUSTOM_FILE $1 2>&1 | tee -a $LOG_FILE
+	[ -f $EXTERNAL_CUSTOM_FILE ] && log "$(. $EXTERNAL_CUSTOM_FILE $1 2>&1)"
 }
 
 
 start() {
-	echo -e "\nStarting external ($EXTERNAL_DIRECTORY):" | tee -a $LOG_FILE
+	log -x "Starting external ($EXTERNAL_DIRECTORY):"
 
 	if [ ! -e /tmp/.modstarted ]; then
-		echo -n "Waiting for mod-startup:" | tee -a $LOG_FILE
+		log -n "Waiting for mod-startup:"
 		spaceit=" "
 		while [ ! -e /tmp/.modstarted ]; do
-			echo -n "$spaceit." | tee -a $LOG_FILE
+			log -n "$spaceit."
 			spaceit=
 			sleep 1
 		done
-		echo " done." | tee -a $LOG_FILE
+		log " done."
 	fi
 	[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && check_date
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
@@ -76,7 +92,7 @@ start() {
 }
 
 stop() {
-	echo -e "\nStopping external ($EXTERNAL_DIRECTORY):" | tee -a $LOG_FILE
+	log -x "Stopping external ($EXTERNAL_DIRECTORY):"
 
 	exec_rcs unload
 

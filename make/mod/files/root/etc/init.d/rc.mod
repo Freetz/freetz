@@ -7,8 +7,15 @@ env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | se
 DAEMON=mod
 . /etc/init.d/modlibrc
 
+log() {
+	[ "$*" == "" ] && return
+	echo "$*"
+	echo "FREETZMOD: $*" > /dev/console
+	logger -t FREETZMOD "$*"
+}
+
 start() {
-	echo "rc.mod version $(cat /etc/.freetz-version)"
+	log "rc.mod version $(cat /etc/.freetz-version)"
 
 	# Basic Packages
 	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv smbd; do
@@ -22,7 +29,7 @@ start() {
 
 	for pkg in crond telnetd webcfg dsld ftpd multid swap external; do
 		local rc="/etc/init.d/rc.$pkg"
-		[ -x "$rc" ] && "$rc"
+		[ -x "$rc" ] && log "$($rc)"
 	done
 
 	# Static Packages
@@ -34,9 +41,9 @@ start() {
 		local rc="/etc/init.d/rc.$pkg"
 		if [ -x "$rc" ]; then
 			if echo "$EXTERNAL_SERVICES" | grep -q " $pkg "; then
-				echo "$pkg will be started by external."
+				log "$pkg will be started by external."
 			else
-				"$rc"
+				log "$($rc)"
 			fi
 		fi
 	done
@@ -55,7 +62,7 @@ start() {
 
 	#compat (may be removed later):
 	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom
-	[ -r /tmp/flash/mod/rc.custom ] && . /tmp/flash/mod/rc.custom
+	[ -r /tmp/flash/mod/rc.custom ] && log "$(. /tmp/flash/mod/rc.custom)"
 
 	[ -x /etc/init.d/rc.external ] && touch /tmp/.modstarted
 
@@ -66,13 +73,12 @@ stop_helper() {
 	for pkg in $*; do
 		[ "$pkg" = mod ] && continue
 		local rc="/etc/init.d/rc.$pkg"
-		#[ -x "$rc" ] && "$rc" stop
-		[ -x "$rc" ] && logger -t FREETZMOD "$pkg: $($rc stop)"
+		[ -x "$rc" ] && log "$pkg: $($rc stop)"
 	done
 }
 
 stop() {
-	echo "Stopping all packages ..."
+	log "Stopping all packages:"
 
 	[ -n "$MOD_SHUTDOWN_FIRST" ] && stop_helper $MOD_SHUTDOWN_FIRST
 
