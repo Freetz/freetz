@@ -1,0 +1,34 @@
+--- usr/www/avme/html/de/home/home.js.orig	2010-11-09 11:33:56.000000000 +0100
++++ usr/www/avme/html/de/home/home.js	2011-03-22 17:35:25.478267117 +0100
+@@ -770,7 +770,7 @@
+ var nPartTotal = Number(g_usbhost_data.part_count_total);
+ if (isNaN(nPartTotal)) nPartTotal = 0;
+ var unplugOk = parseInt(g_usbhost_data.unplug_ok, 10) == 1;
+-if (nPartTotal > nStor)
++if (nPartTotal > 0)
+ {
+ if (unplugOk)
+ {
+@@ -778,9 +778,7 @@
+ }
+ else
+ {
+-strStor = "{?895:5106?} ";
+-strStor += "<a href=\"javascript:syslog_jslSubmitFormEx(5);\">{?895:8842?}</a>";
+-strStor = strStor.fontcolor("#cc0000");
++strStor = "Mounted " + nStor + " of " + nPartTotal + " partitions.";
+ }
+ strArr.push(strStor);
+ }
+--- usr/www/avme/html/de/usb/status.js.orig	2010-11-09 11:33:39.000000000 +0100
++++ usr/www/avme/html/de/usb/status.js	2011-03-22 17:35:25.478267117 +0100
+@@ -481,8 +481,7 @@
+ }
+ else
+ {
+-str += "<font color=\"#cc0000\">";
+-str += "{?2798:8143?}";
++strStor = "Mounted " + nStor + " of " + nPartTotal + " partitions.";
+ str += "</font>";
+ str += "<a href=\"javascript:goto_syslog_usb();\">{?2798:9581?}</a>";
+ }

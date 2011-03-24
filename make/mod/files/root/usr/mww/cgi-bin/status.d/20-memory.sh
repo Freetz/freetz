@@ -1,5 +1,5 @@
 has_swap() {
-	free | awk '/Swap:/ { if ($2 == 0) exit 1; else exit 0 }'
+	[ "$(/mod/etc/init.d/rc.swap status)" == "running" ] || return 1
 }
 
 read_meminfo() {

@@ -5,7 +5,7 @@ CONF_NAME=mod
 . /etc/init.d/modlibrc
 
 has_swap() {
-	sed '1d' /proc/swaps | grep -q ''
+	sed '1d' /proc/swaps | grep -v /dev/ramzswap0 | grep -q ''
 }
 
 start() {
@@ -35,7 +35,7 @@ stop() {
 		exit 1
 	fi
 
-	sed '1d' /proc/swaps | while read swap _; do
+	sed '1d' /proc/swaps | grep -v /dev/ramzswap0 | while read swap _; do
 		swapoff $swap
 	done
 

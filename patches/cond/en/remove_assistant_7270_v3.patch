@@ -1,0 +1,65 @@
+--- usr/www/avme/templates/menu_page_head.html.orig	2011-03-22 17:35:25.158267117 +0100
++++ usr/www/avme/templates/menu_page_head.html	2011-03-22 17:35:33.318267116 +0100
+@@ -61,24 +61,6 @@
+ </div>
+ </div>
+ <div class="clear_float"></div>
+-<div style="position:relative;top:-21px">
+-<div class="small_bar_left_head"></div>
+-<div class="small_bar_right_head"></div>
+-<div class="small_bar_back_head">
+-<div id="MainWizardhead" style="padding-top:2px;">
+-<?lua
+-menu.write_menu('wizards')
+-?>
+-</div>
+-</div>
+-<div class="small_bar_left_bottom"></div>
+-<div class="small_bar_right_bottom"></div>
+-<div class="small_bar_back_bottom">
+-<div id="MainWizardbottom">
+-</div>
+-</div>
+-</div>
+-<div class="clear_float"></div>
+ <?lua
+ if box.glob.script=="/home/home.lua" then
+ box.out("<div style=\"position:relative;top:-21px\">")
+--- usr/www/avme/html/de/menus/menu2.html.orig	2011-03-22 17:35:32.478267117 +0100
++++ usr/www/avme/html/de/menus/menu2.html	2011-03-22 17:35:33.318267116 +0100
+@@ -163,35 +163,6 @@
+ </div>
+ </div>
+ <div class="clear_float"></div>
+-<div style="position:relative;top:-21px">
+-<div class="small_bar_left_head"></div>
+-<div class="small_bar_right_head"></div>
+-<div class="small_bar_back_head">
+-<div id="MainWizardhead" style="padding-top:2px;">
+-<ul>
+-<? and <? eq $var:menu konfig ?> <? eq $var:pagename home ?> `
+-<li class="selected" style="position:relative;left:-12px; width:160px;top:2px;padding:3px">
+-<a style="margin-left:8px;" href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a>
+-</li>
+-` `
+-<li>
+-<a href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a>
+-</li>
+-` ?>
+-<li class="explain">
+-{?660:285?}
+-</li>
+-</ul>
+-</div>
+-</div>
+-<div class="small_bar_left_bottom"></div>
+-<div class="small_bar_right_bottom"></div>
+-<div class="small_bar_back_bottom">
+-<div id="MainWizardbottom">
+-</div>
+-</div>
+-</div>
+-<div class="clear_float"></div>
+ ` ?>
+ </div>
+ </td>

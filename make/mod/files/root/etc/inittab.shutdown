@@ -48,6 +48,7 @@ final_umount() {
 }
 
 log() {
+	echo "$*"
 	echo "SHUTDOWN: $*" > /dev/console
 	logger -t SHUTDOWN "$*"
 }
