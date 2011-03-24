@@ -20,6 +20,13 @@ UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DEVEL_DIR)
 
 UCLIBC_DEVEL_SUBDIR:=uClibc_dev
 
+# uClibc 0.9.31 allows parallel building
+ifeq ($(strip $(UCLIBC_VERSION)),0.9.31)
+UCLIBC_MAKE:=$(MAKE)
+else
+UCLIBC_MAKE:=$(MAKE1)
+endif
+
 # uClibc pregenerated locale data
 UCLIBC_LOCALE_DATA_SITE:=http://www.uclibc.org/downloads
 # TODO: FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET is a REBUILD_SUBOPT
@@ -74,7 +81,7 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/include
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/usr/lib
 	mkdir -p $(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/lib
-	$(MAKE1) -C $(UCLIBC_DIR) \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
@@ -84,7 +91,7 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
 	touch $@
 
 $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config | $(UCLIBC_KERNEL_HEADERS_DIR)/include/linux/version.h
-	$(MAKE1) -C $(UCLIBC_DIR) \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
@@ -94,7 +101,7 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config | $(UCLIBC_KERNEL_HEADERS_DIR)/
 	touch $@
 
 uclibc-menuconfig: $(UCLIBC_DIR)/.config
-	$(MAKE1) -C $(UCLIBC_DIR) \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
@@ -105,7 +112,7 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 	touch $^
 
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(GCC_BUILD_DIR1)/.installed
-	$(MAKE1) -C $(UCLIBC_DIR) \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX= \
 		DEVEL_PREFIX=/ \
@@ -127,7 +134,7 @@ endif
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 UCLIBC_PREREQ=$(GCC_BUILD_DIR1)/.installed
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
-	$(MAKE1) -C $(UCLIBC_DIR) \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=/ \
 		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
@@ -145,7 +152,7 @@ endif
 	# Build the host utils.
 	# Note: in order the host utils to work the __ELF_NATIVE_CLASS (= __WORDSIZE) of the host
 	# must match that of the target. That's the reason we hardcode the "-m32" option here.
-	$(MAKE1) -C $(UCLIBC_DIR)/utils \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR)/utils \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS) -m32" \
@@ -160,7 +167,7 @@ endif
 	touch -c $@
 
 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
-	$(MAKE1) -C $(UCLIBC_DIR) \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX="$(FREETZ_BASE_DIR)/$(TARGET_SPECIFIC_ROOT_DIR)" \
 		DEVEL_PREFIX=/usr/ \
@@ -204,7 +211,7 @@ uclibc-dirclean:
 #############################################################
 
 $(TARGET_UTILS_DIR)/usr/lib/libc.a: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
-	$(MAKE1) -C $(UCLIBC_DIR) \
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_UTILS_DIR) \
 		DEVEL_PREFIX=/usr/ \
