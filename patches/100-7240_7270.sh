@@ -16,9 +16,12 @@ echo2 "deleting obsolete files"
 rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/bitfile.bit
 
 echo2 "copying 7240 files"
-files="bitfile_isdn.bit bitfile_pots.bit c55fw.hex wlan_eeprom_hw0.bin 2.6.19.2/kernel/drivers/char/led_module.ko"
-isFreetzType LANG_EN && \
-	files+=" dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex"
+files="bitfile_isdn.bit bitfile_pots.bit c55fw.hex wlan_eeprom_hw0.bin"
+
+isFreetzType LABOR_PREVIEW || files+=" 2.6.19.2/kernel/drivers/char/led_module.ko"
+
+#isFreetzType LANG_EN && \
+#	files+=" dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex"
 for i in $files; do
 	cp -a "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules/$i"
 done
@@ -36,7 +39,6 @@ for i in $files; do
 		"${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
 done
 
-exit 1
 #echo2 "patching webmenu"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7240_7270.patch"
 
@@ -46,13 +48,17 @@ mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_72* ${FILESYSTEM_MOD_DIR}/etc/def
 echo2 "patching rc.S and rc.conf"
 #if isFreetzType LANG_EN; then
 #	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/en/7240_7270_rc.S_piglet.patch
-#else
-modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-modsed '/piglet_bitfile=\/lib\/modules\/.*$/a \
-	piglet_potsbitfile=\/lib\/modules\/bitfile_pots\.bit\${HWRevision_BitFileCount}\
-	piglet_bitfilemode=`\/bin\/testvalue \/var\/flash\/telefon_misc 4 2638`' \
-	"${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-#fi
+if isFreetzType LABOR_PREVIEW; then
+	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet"
+	modsed 's#^\(modprobe .*\)#\1 piglet_potsbitfile=/lib/modules/bitfile_pots\.bit\${HWRevision_BitFileCount} piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`#g' \
+		"${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet"
+else
+	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	modsed '/piglet_bitfile=\/lib\/modules\/.*$/a \
+		piglet_potsbitfile=\/lib\/modules\/bitfile_pots\.bit\${HWRevision_BitFileCount}\
+		piglet_bitfilemode=`\/bin\/testvalue \/var\/flash\/telefon_misc 4 2638`' \
+		"${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+fi
 
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7240\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_CAPI_POTS=.*$/CONFIG_CAPI_POTS=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
