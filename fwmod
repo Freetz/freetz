@@ -439,7 +439,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	shopt -u nullglob
 
 	echo1 "creating symlinks /tmp, /mod and /home"
-	[ -e "$FILESYSTEM_MOD_DIR"/tmp ] && rm -rf "$FILESYSTEM_MOD_DIR"/tmp
+	rm -rf "$FILESYSTEM_MOD_DIR"/tmp
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
 	ln -s var/mod/home "$FILESYSTEM_MOD_DIR"/
 
@@ -447,7 +447,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	mkdir -p "$FILESYSTEM_MOD_DIR"/mnt
 	# 7390 labor preview: /opt is symlink to /var/InternerSpeicher/opt
 	[ ! -L "$FILESYSTEM_MOD_DIR"/opt ] && mkdir -p "$FILESYSTEM_MOD_DIR"/opt
-
 
 	# Set version and options
 	SUBVERSION_FILE="${BASE_DIR}/.version"
