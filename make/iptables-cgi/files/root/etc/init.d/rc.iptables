@@ -10,21 +10,14 @@ MODULES="iptable_nat iptable_filter \
 		x_tables \
 		xt_state xt_mark xt_MARK xt_tcpudp"
 
-if [ $(uname -r) = 2.6.19.2  ]; then
-  MODULES="$MODULES xt_state xt_mac xt_multiport"
+if [ $(uname -r) = 2.6.19.2 ]; then
+	MODULES="$MODULES xt_state xt_mac xt_multiport"
 else
-  MODULES="$MODULES ipt_state ipt_mac ipt_multiport"
+	MODULES="$MODULES ipt_state ipt_mac ipt_multiport"
 fi
 
 start() {
-
-	if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-		echo "Error[$DAEMON]: not configured" 1>&2
-		exit 1
-	fi
-
-	lsmod | grep iptable_filter > /dev/null
-	if [ $? -eq 1 ]; then
+	if ! lsmod | grep iptable_filter > /dev/null; then
 		echo 'Loading modules ...'
 		for MODUL in $MODULES; do
 			modprobe $MODUL > /dev/null 2>&1
@@ -104,7 +97,6 @@ start() {
 			fi
 
 			# Apply rule
-			echo "<br>"
 			echo "rule $IPTABLES_RULE"
 			echo "chain $IPTABLES_CHAIN"
 			echo "position $IPTABLES_POSITION"
@@ -117,7 +109,6 @@ start() {
 			echo "output-interface $IPTABLES_OUTPUT_INTERFACE"
 			echo "action $IPTABLES_ACTION"
 			echo "nat $IPTABLES_NAT"
-			echo "<br>"
 			echo "iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL"
 			iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL > /dev/null 2>&1
 
@@ -205,21 +196,17 @@ save () {
 stop () {
 	cat /mod/etc/conf/iptables.cfg | grep "*gui*" > /dev/null
 	[ $? -ne 1 ] && return
-	lsmod | grep ip_tables > /dev/null
-	if [ $? -eq 0 ]; then
-		echo 'Unloading modules ...'
-		iptables -F
-		# remove modules in reverse order
-		reverse_list=
-		for MODUL in $MODULES; do
-			reverse_list="$MODUL $reverse_list"
-		done
-		for MODUL in $reverse_list; do
-			rmmod $MODUL
-		done
-	else
-		echo 'Modules not loaded.'
-	fi
+
+	echo 'Unloading modules ...'
+	iptables -F
+	# remove modules in reverse order
+	reverse_list=
+	for MODUL in $MODULES; do
+		reverse_list="$MODUL $reverse_list"
+	done
+	for MODUL in $reverse_list; do
+		rmmod $MODUL > /dev/null 2>&1
+	done
 }
 
 case $1 in
@@ -235,10 +222,6 @@ case $1 in
 		modlib_start $IPTABLES_ENABLED
 		;;
 	start)
-		if lsmod | grep ip_tables >/dev/null; then
-			echo "$DAEMON is already running."
-			exit 1
-		fi
 		start
 		;;
 	stop)
@@ -271,7 +254,7 @@ case $1 in
 		stop
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|save]" 1>&2
 		exit 1
 		;;
 esac
