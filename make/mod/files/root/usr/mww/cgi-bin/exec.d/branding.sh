@@ -6,7 +6,7 @@ echo -n '<pre>set branding to '"'$MOD_CGI_BRANDING'"' ... '
 success=0
 for i in $(ls /usr/www/); do
 	case $i in
-		all|cgi-bin|html|kids)
+		all|cgi-bin|css|html|js|kids)
 			;;
 		*)
 			if [ "$i" = "$MOD_CGI_BRANDING" ]; then
