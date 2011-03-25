@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.4.0)
-$(PKG)_LIB_VERSION:=0.2.3
+$(call PKG_INIT_LIB, 1.6.1)
+$(PKG)_LIB_VERSION:=0.2.7
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=b3d3ef82c8b963266e0ce8db1509cac4
+$(PKG)_SOURCE_MD5:=748554a18e1771913f4f402ee9f957c9
 $(PKG)_SITE:=http://verplant.org/liboping/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
