@@ -15,7 +15,7 @@ if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
 		SPECIAL='-t nat '
 	fi
 	iptables $SPECIAL-D $IPTABLES_DELETE_CHAIN $IPTABLES_DELETE_RULE
-	/var/mod/etc/init.d/rc.iptables save	
+	/var/mod/etc/init.d/rc.iptables save
 fi
 
 check "$IPTABLES_ENABLED" yes:auto "*":man
@@ -45,7 +45,7 @@ CHAINTABLE=$(iptables --list | grep "Chain" | sed -e "s/Chain //g" | sed -e "s/ 
 CHAINTABLE=$CHAINTABLE" $(iptables -t nat --list | grep "Chain" | sed -e "s/Chain //g" | sed -e "s/ .*//g" | sed -e "s/OUTPUT//g")"
 echo "###"$CHAINTABLE"###"
 for CHAIN in $CHAINTABLE; do
-	echo '<option title="'$CHAIN'" value="'$CHAIN'">'$CHAIN'</option>' 
+	echo '<option title="'$CHAIN'" value="'$CHAIN'">'$CHAIN'</option>'
 done
 
 cat << EOF
@@ -88,7 +88,7 @@ for OUTPUT_INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 	echo '<option title="'$OUTPUT_INTERFACE'" value="'$OUTPUT_INTERFACE'">'$OUTPUT_INTERFACE'</option>'
 done
 
-cat << EOF  
+cat << EOF
 
 </select></td></tr>
 <tr><td>NAT</td><td colspan="2"><select name="nat">
@@ -146,12 +146,12 @@ else
 			echo "<th bgcolor="#bae3ff">Action</th>"
 			echo "<th bgcolor="#bae3ff">in</th>"
 			echo "<th bgcolor="#bae3ff">out</th>"
-			echo "<th bgcolor="#bae3ff">Configure</th>" 
+			echo "<th bgcolor="#bae3ff">Configure</th>"
 			echo "</tr>"
 			i=i+1
 		else
 			echo ${IPTABLES_LINE} | grep "^[1-9]" > /dev/null
-			if [ $? = 0 ]; then 
+			if [ $? = 0 ]; then
 				echo "<tr>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $1}')</td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $9}')</td>"
@@ -180,7 +180,7 @@ else
 				fi
 
 				IMAGE=$(echo ${IPTABLES_LINE} | awk '{print $4}')
-				echo "<td align='center'><img src='../images/"$IMAGE".gif' title='"$IMAGE"'></td>"
+				echo "<td align='center'><img src='/images/"$IMAGE".gif' title='"$IMAGE"'></td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $7}')</td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $8}')</td>"
 				echo "<td align='center'><a href='$(href cgi iptables "chain=${CHAIN}" "remove=$(echo ${IPTABLES_LINE} | awk '{print $1}')")'>remove</a></td>"
