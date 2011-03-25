@@ -36,7 +36,7 @@ for i in $files; do
 		"${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
 done
 
-exit 1
+#exit 1
 #echo2 "patching webmenu"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7240_7270.patch"
 
