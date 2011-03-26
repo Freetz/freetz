@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.2.2)
+$(call PKG_INIT_BIN, 2.2.3)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=974437602a781cfe92ab61433dd16d03
+$(PKG)_SOURCE_MD5:=17e1864de999ae9535a9f7350a010427
 $(PKG)_SITE:=ftp://space.mit.edu/pub/davis/slang/v2.2
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/elfobjs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -9,7 +9,7 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib$(pkg).so.$($(
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_MODULES_DIR:=$(FREETZ_LIBRARY_PATH)/$(pkg)
-$(PKG)_MODULES:=fcntl fork iconv pcre rand select slsmg socket sysconf termios varray zlib
+$(PKG)_MODULES:=csv fcntl fork iconv pcre rand select slsmg socket sysconf termios varray zlib
 $(PKG)_MODULES_LONG:=$($(PKG)_MODULES:%=%-module.so)
 $(PKG)_MODULES_STAGING_DIR:=$($(PKG)_MODULES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)$($(PKG)_MODULES_DIR)/%)
 $(PKG)_MODULES_TARGET_DIR:=$($(PKG)_MODULES_LONG:%=$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%)
@@ -21,8 +21,6 @@ ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 endif
 
-$(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --without-onig
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="$(TARGET_TOOLCHAIN_STAGING_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --without-png
@@ -41,7 +39,7 @@ $($(PKG)_STAGING_BINARY) $($(PKG)_MODULES_STAGING_DIR): $($(PKG)_BINARY)
 	$(SUBMAKE1) -C $(SLANG_DIR) $(SLANG_MAKE_PARAMS) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
-	$(call PKG_FIX_LIBTOOL_LA,prefix) \
+	$(call PKG_FIX_LIBTOOL_LA,prefix libdir includedir) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/slang.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)

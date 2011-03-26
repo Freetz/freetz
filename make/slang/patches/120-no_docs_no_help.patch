@@ -1,17 +1,17 @@
 --- slsh/Makefile.in
 +++ slsh/Makefile.in
-@@ -139,7 +139,7 @@
+@@ -146,7 +146,7 @@
  	done
- 
+ #
  install: slsh install_directories install_lib_files install_rline_files \
 - install_scripts install_help install_docs
 + install_scripts
- 	$(INSTALL) slsh $(DEST_BIN_DIR)/
+ 	$(INSTALL) $(OBJDIR)/slsh $(DEST_BIN_DIR)/
  	$(INSTALL_DATA) etc/slsh.rc $(DEST_SLSH_CONF_DIR)/
  	echo 'prepend_to_slang_load_path("$(SLSH_LOCALLIB_DIR)");' >> $(DEST_SLSH_CONF_DIR)/slsh.rc
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -186,7 +186,7 @@
+@@ -187,7 +187,7 @@
  		echo $(INSTALL_DATA) $$i $(DEST_DOCDIR)/; \
  		$(INSTALL_DATA) $$i $(DEST_DOCDIR)/; \
  	done
@@ -20,7 +20,7 @@
  	@echo installing $(OBJDIR_NORMAL_LIB) in $(DEST_LIBDIR)/
  	$(INSTALL_DATA) $(OBJDIR_NORMAL_LIB) $(DEST_LIBDIR)/
  	$(RANLIB) $(DEST_LIBDIR)/$(NORMAL_LIB)
-@@ -207,7 +207,7 @@
+@@ -208,7 +208,7 @@
  	$(INSTALL_DATA) $(ELFDIR_DLL_LIB) $(DEST_LIBDIR)/
  	$(MKINSDIR) $(DEST_BINDIR)
  	$(INSTALL) $(ELFDIR_ELF_LIB) $(DEST_BINDIR)/
