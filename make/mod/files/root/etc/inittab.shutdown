@@ -22,7 +22,7 @@ final_umount() {
 				;;
 			* )
 				if [ "$fs" != "/" ]; then
-					echo "Unmounting '$type' on '$fs'"
+					log "unmounting '$type' on '$fs'"
 					if ! umount -f $fs; then
 						log "umount $des (on $fs) failed, trying to remount readonly..."
 						mount -o remount,ro $fs
@@ -35,21 +35,13 @@ final_umount() {
 		esac
 	done
 
-	echo
-	(
-		set -x
-		cat /proc/mounts
-	)
-	echo
-
 	sync
 	sleep 3
 
 }
 
 log() {
-	echo "$*"
-	echo "SHUTDOWN: $*" > /dev/console
+	echo "SHUTDOWN: $*"
 	logger -t SHUTDOWN "$*"
 }
 
