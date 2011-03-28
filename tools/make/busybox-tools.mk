@@ -37,7 +37,7 @@ $(BUSYBOX_TOOLS_TARGET_BINARY): $(BUSYBOX_TOOLS_BINARY)
 	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
 	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
 	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/tar
-	@ln -fs busyobx $(BUSYBOX_TOOLS_TARGET_DIR)/unzip
+	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/unzip
 
 busybox-tools: $(BUSYBOX_TOOLS_TARGET_BINARY)
 
