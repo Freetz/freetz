@@ -762,7 +762,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo2 "${bn}"
 			dn="$(dirname "$i")"
 			[ -d "${MODULES_DIR}/kernel/${dn}" ] || mkdir -p "${MODULES_DIR}/kernel/${dn}"
-			cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
+			cp -a "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
 		fi
 	done
 
