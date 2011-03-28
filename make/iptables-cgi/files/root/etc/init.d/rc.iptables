@@ -16,117 +16,7 @@ else
 	MODULES="$MODULES ipt_state ipt_mac ipt_multiport"
 fi
 
-start() {
-	if ! lsmod | grep iptable_filter > /dev/null; then
-		echo 'Loading modules ...'
-		for MODUL in $MODULES; do
-			modprobe $MODUL > /dev/null 2>&1
-		done
-		echo 'Loading table list ...'
-		while read LINE; do
-			iptables $LINE
-		done < $SAVEFILE
-	else
-		if grep -q "*gui*" /mod/etc/conf/iptables.cfg; then
-			sed -e "s/\*gui\*//g" /mod/etc/conf/iptables.cfg > /var/tmp/iptables_tmp
-			cat /var/tmp/iptables_tmp > /mod/etc/conf/iptables.cfg
-			rm /var/tmp/iptables_tmp
-			echo -n 'Modules are already loaded. Starting rule script ... '
-			CONFFILE="iptables.cfg"
-			CONFPATH="/mod/etc/conf"
-
-			. $CONFPATH/$CONFFILE
-
-			# Source Address
-			if [ "$IPTABLES_SOURCE" = "anywhere" -o -z "$IPTABLES_SOURCE" ]; then
-				IPTABLES_SOURCE=''
-			else
-				IPTABLES_SOURCE='-s '$IPTABLES_SOURCE
-			fi
-
-			if [ "$IPTABLES_SPORT" = "ANY" -o -z "$IPTABLES_SPORT" ]; then
-				IPTABLES_SPORT=''
-			else
-				IPTABLES_SPORT="--sport "$IPTABLES_SPORT
-			fi
-
-			# Destination Address
-			if [ "$IPTABLES_DESTINATION" = "anywhere" -o -z "$IPTABLES_DESTINATION" ]; then
-				IPTABLES_DESTINATION=''
-			else
-				IPTABLES_DESTINATION='-d '$IPTABLES_DESTINATION
-			fi
-
-			if [ "$IPTABLES_DPORT" = "ANY" -o -z "$IPTABLES_DPORT" ]; then
-				IPTABLES_DPORT=''
-			else
-				IPTABLES_DPORT=$(grep "^"$IPTABLES_DPORT: /tmp/flash/iptables_services | sed -e "s/.*://g")
-				IPTABLES_DPORT='--dport '$IPTABLES_DPORT
-			fi
-
-			# Input-Interface
-			if [ "$IPTABLES_INPUT_INTERFACE" = "ANY" -o -z "$IPTABLES_INPUT_INTERFACE" ]; then
-				IPTABLES_INPUT_INTERFACE=''
-			else
-				if [ "$IPTABLES_CHAIN" != "OUTPUT" ]; then
-					IPTABLES_INPUT_INTERFACE='-i '$IPTABLES_INPUT_INTERFACE
-				else
-					IPTABLES_INPUT_INTERFACE=''
-				fi
-			fi
-			# Output-Interface
-			if [ "$IPTABLES_OUTPUT_INTERFACE" = "ANY" -o -z "$IPTABLES_OUTPUT_INTERFACE" ]; then
-				IPTABLES_OUTPUT_INTERFACE=''
-			else
-				if [ "$IPTABLES_CHAIN" != "INPUT" ]; then
-					IPTABLES_OUTPUT_INTERFACE='-o '$IPTABLES_OUTPUT_INTERFACE
-				else
-					IPTABLES_OUTPUT_INTERFACE=''
-				fi
-			fi
-
-			# NAT
-			if [ "$IPTABLES_NAT" != "None" ]; then
-				IPTABLES_RULE="-t nat "$IPTABLES_RULE
-				IPTABLES_ACTION=$IPTABLES_NAT
-				IPTABLES_INPUT_INTERFACE="-o ${IPTABLES_INPUT_INTERFACE//-i /}"
-				if [ "$IPTABLES_NAT" != "Normal" ]; then
-					SPECIAL="--to ${IPTABLES_DESTINATION//-d /}"
-					IPTABLES_DESTINATION=''
-				fi
-			fi
-
-			# Apply rule
-			echo "rule $IPTABLES_RULE"
-			echo "chain $IPTABLES_CHAIN"
-			echo "position $IPTABLES_POSITION"
-			echo "source $IPTABLES_SOURCE"
-			echo "destination $IPTABLES_DESTINATION"
-			echo "proto $IPTABLES_PROTOKOLL"
-			echo "sport $IPTABLES_SPORT"
-			echo "dport $IPTABLES_DPORT"
-			echo "input-interface $IPTABLES_INPUT_INTERFACE"
-			echo "output-interface $IPTABLES_OUTPUT_INTERFACE"
-			echo "action $IPTABLES_ACTION"
-			echo "nat $IPTABLES_NAT"
-			echo "iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL"
-			iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL > /dev/null 2>&1
-
-			exitval=$?
-			if [ "$exitval" -eq 0 ]; then
-				echo 'Rule setting done.'
-				save
-			else
-				echo 'Rule setting failed.'
-				exit $exitval
-			fi
-		else
-			echo 'Modules are already loaded'
-		fi
-	fi
-}
-
-save () {
+save_rules() {
 	rm $SAVEFILE
 	touch $SAVEFILE
 	iptables -vnL --line-numbers >/tmp/test
@@ -190,14 +80,116 @@ save () {
 	done </var/tmp/iptables_tmp
 	rm /var/tmp/iptables_tmp
 	echo 'Saving list done.'
-	exit 1
+}
+
+start() {
+	echo -n 'Loading modules ... '
+	for MODUL in $MODULES; do
+		modprobe $MODUL > /dev/null 2>&1
+	done
+	echo 'done.'
+	echo -n 'Loading table list ... '
+	while read LINE; do
+		iptables $LINE
+	done < $SAVEFILE
+	echo 'done.'
+}
+
+save () {
+	if grep -q "*gui*" /mod/etc/conf/iptables.cfg; then
+	sed -e "s/\*gui\*//g" /mod/etc/conf/iptables.cfg > /var/tmp/iptables_tmp
+	cat /var/tmp/iptables_tmp > /mod/etc/conf/iptables.cfg
+	rm /var/tmp/iptables_tmp
+
+	if [ -z "$IPTABLES_RULE" ]; then
+		save_rules
+		exit 0
+	fi
+
+	echo 'Starting rule script ... '
+	CONFFILE="iptables.cfg"
+	CONFPATH="/mod/etc/conf"
+
+	. $CONFPATH/$CONFFILE
+
+	# Source Address
+	if [ "$IPTABLES_SOURCE" = "anywhere" -o -z "$IPTABLES_SOURCE" ]; then
+		IPTABLES_SOURCE=''
+	else
+		IPTABLES_SOURCE='-s '$IPTABLES_SOURCE
+	fi
+
+	if [ "$IPTABLES_SPORT" = "ANY" -o -z "$IPTABLES_SPORT" ]; then
+		IPTABLES_SPORT=''
+	else
+		IPTABLES_SPORT="--sport "$IPTABLES_SPORT
+	fi
+
+	# Destination Address
+	if [ "$IPTABLES_DESTINATION" = "anywhere" -o -z "$IPTABLES_DESTINATION" ]; then
+		IPTABLES_DESTINATION=''
+	else
+		IPTABLES_DESTINATION='-d '$IPTABLES_DESTINATION
+	fi
+
+	if [ "$IPTABLES_DPORT" = "ANY" -o -z "$IPTABLES_DPORT" ]; then
+		IPTABLES_DPORT=''
+	else
+		IPTABLES_DPORT=$(grep "^"$IPTABLES_DPORT: /tmp/flash/iptables_services | sed -e "s/.*://g")
+		IPTABLES_DPORT='--dport '$IPTABLES_DPORT
+	fi
+
+	# Input-Interface
+	if [ "$IPTABLES_INPUT_INTERFACE" = "ANY" -o -z "$IPTABLES_INPUT_INTERFACE" ]; then
+		IPTABLES_INPUT_INTERFACE=''
+	else
+		if [ "$IPTABLES_CHAIN" != "OUTPUT" ]; then
+			IPTABLES_INPUT_INTERFACE='-i '$IPTABLES_INPUT_INTERFACE
+		else
+			IPTABLES_INPUT_INTERFACE=''
+		fi
+	fi
+	# Output-Interface
+	if [ "$IPTABLES_OUTPUT_INTERFACE" = "ANY" -o -z "$IPTABLES_OUTPUT_INTERFACE" ]; then
+		IPTABLES_OUTPUT_INTERFACE=''
+	else
+		if [ "$IPTABLES_CHAIN" != "INPUT" ]; then
+			IPTABLES_OUTPUT_INTERFACE='-o '$IPTABLES_OUTPUT_INTERFACE
+		else
+			IPTABLES_OUTPUT_INTERFACE=''
+		fi
+	fi
+	# NAT
+	if [ "$IPTABLES_NAT" != "None" ]; then
+		IPTABLES_RULE="-t nat "$IPTABLES_RULE
+		IPTABLES_ACTION=$IPTABLES_NAT
+		IPTABLES_INPUT_INTERFACE="-o ${IPTABLES_INPUT_INTERFACE//-i /}"
+		if [ "$IPTABLES_NAT" != "Normal" ]; then
+			SPECIAL="--to ${IPTABLES_DESTINATION//-d /}"
+			IPTABLES_DESTINATION=''
+		fi
+	fi
+
+	# Apply rule
+	echo "iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL"
+	iptables $IPTABLES_RULE $IPTABLES_CHAIN $IPTABLES_POSITION $IPTABLES_SOURCE $IPTABLES_DESTINATION -p $IPTABLES_PROTOKOLL $IPTABLES_SPORT $IPTABLES_DPORT $IPTABLES_INPUT_INTERFACE $IPTABLES_OUTPUT_INTERFACE -j $IPTABLES_ACTION $SPECIAL > /dev/null 2>&1
+
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'Rule setting done.'
+		save_rules
+	else
+		echo 'Rule setting failed.'
+		exit $exitval
+	fi
+	else
+		echo "ERROR: Can only be used by GUI."
+		exit 1
+	fi
 }
 
 stop () {
-	cat /mod/etc/conf/iptables.cfg | grep "*gui*" > /dev/null
-	[ $? -ne 1 ] && return
-
-	echo 'Unloading modules ...'
+	echo -n 'Flushing rules and unloading modules ... '
 	iptables -F
 	# remove modules in reverse order
 	reverse_list=
@@ -207,12 +199,14 @@ stop () {
 	for MODUL in $reverse_list; do
 		rmmod $MODUL > /dev/null 2>&1
 	done
+	echo 'done.'
 }
 
 case $1 in
 	""|load)
 		modreg cgi 'iptables' 'Iptables'
 		modreg daemon $DAEMON
+		modreg extra iptables "" 2 controller
 		modreg file iptables rules 'Rules' 0 "iptables"
 		modreg file iptables services 'Services' 0 "services"
 
@@ -222,10 +216,14 @@ case $1 in
 		modlib_start $IPTABLES_ENABLED
 		;;
 	start)
+		if lsmod | grep -q ip_tables; then
+			echo "$DAEMON is already running."
+			exit 1
+		fi
 		start
 		;;
 	stop)
-		if ! lsmod | grep ip_tables >/dev/null; then
+		if ! lsmod | grep -q ip_tables; then
 			echo "$DAEMON is not running."
 			exit 1
 		fi
@@ -237,13 +235,14 @@ case $1 in
 		start
 		;;
 	status)
-		if lsmod | grep ip_tables >/dev/null; then
+		if lsmod | grep -q ip_tables; then
 			echo 'running'
 		else
 			echo 'stopped'
 		fi
 		;;
 	save)
+		lsmod | grep -q ip_tables || start
 		save
 		;;
 
@@ -254,9 +253,10 @@ case $1 in
 		stop
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|save]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
 
 exit 0
+
