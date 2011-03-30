@@ -1,4 +1,4 @@
-if isFreetzType 7320; then
+if (isFreetzType 7320 || (isFreetzType 7270 7390 && isFreetzType LABOR_PREVIEW)); then
 
 # Emergency stop switch for execution of debug.cfg
 sed -i -r 's#(\. /var/flash/debug\.cfg)#[ "$dbg_off" == "y" ] || \1#g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh"
