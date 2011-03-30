@@ -151,15 +151,41 @@ mount_usbroot() {
 		return 1
 	fi
 
-	# cache hotplug events
-	hotplugging defer
+	case "$(uname -r)" in
+		2.6.28.10 )
+			# no need to cache hotplug events, udev does it
+			mount dev /oldroot -t tmpfs -o nosuid
 
-	case "$HWRevision" in
-		105 | 122 | 135 | 137 | 139 | 144 | 145 | 146 | 153 | 165 | 168 )
-		# 7540,7270,W920V,3270,5125,7240,7270v3,7570,IAD,7541,3270v3
-			load_usb_modules_2_6_19_2 ;;
+			# touch .hotplug-cache to prevent /dev mount in rc.S
+			touch /oldroot/$HOTPLUGCACHE
+
+			cp -a /dev/* /oldroot
+			mount -t tmpfs tmpfs /dev
+
+			# create sd* devices
+			makedevs -d /etc/usbroot_device.table /
+
+			load_modules_2_6_28_10
+			;;
+
+		2.6.19.2 )
+			# cache hotplug events
+			hotplugging defer
+
+			load_modules_2_6_19_2
+			;;
+
+		2.6.13.1 )
+			# cache hotplug events
+			hotplugging defer
+
+			load_modules_2_6_13_1
+			;;
+
 		* )
-			load_usb_modules ;;
+			echo "Unknown kernel version. Exiting"
+			return 1
+			;;
 	esac
 
 	for i in $FSTYPE usb-storage sd_mod; do
@@ -185,7 +211,7 @@ mount_usbroot() {
 	done
 
 	echo "found"
-	
+
 	# check fs if e2fsck is available
 	if [ -x /usr/sbin/e2fsck ]; then
 		echo "*** Checking filesystem on $DEVICE. ***"
@@ -212,7 +238,7 @@ mount_usbroot() {
 }
 
 # Load piglet module (hardware specific)
-load_usb_modules() {
+load_modules_2_6_13_1() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	piglet_load_params=" \
 	piglet_width_running=1 \
@@ -273,7 +299,7 @@ load_usb_modules() {
 	fi
 }
 
-load_usb_modules_2_6_19_2() {
+load_modules_2_6_19_2() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
 	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
@@ -317,9 +343,16 @@ load_usb_modules_2_6_19_2() {
 	fi
 }
 
+load_modules_2_6_28_10() {
+	if modprobe usbcore; then
+		mount -t usbfs usbfs /proc/bus/usb
+		modprobe ifxusb_host
+	fi
+}
+
 # Unmount stuff before pivot_root
 unmount_virtualfs() {
-	for i in /proc/bus/usb /proc $SYSFS; do
+	for i in /dev /proc/bus/usb /proc $SYSFS; do
 		umount "$i"
 	done
 }
@@ -328,7 +361,7 @@ rmmodules() {
 	# disable hotplug
 	hotplugging disable
 
-	for i in sd_mod scsi_mod usb-storage usbahcicore musb_hdrc usbcore Piglet; do
+	for i in sd_mod scsi_mod usb-storage usbahcicore ifxusb_host musb_hdrc usbcore Piglet; do
 		rmmod $i
 	done
 
