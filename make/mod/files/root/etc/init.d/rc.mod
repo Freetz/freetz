@@ -10,7 +10,6 @@ DAEMON=mod
 log() {
 	[ "$*" == "" ] && return
 	echo "$*"
-	echo "FREETZMOD: $*" > /dev/console
 	logger -t FREETZMOD "$*"
 }
 
