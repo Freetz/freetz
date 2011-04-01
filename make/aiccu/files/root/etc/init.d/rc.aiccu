@@ -23,6 +23,7 @@ start() {
 	[ -d /proc/sys/net/ipv6 ] || modprobe ipv6 2>/dev/null
 	modlib_startdaemon $DAEMON start /mod/etc/$DAEMON.conf
 	retval=$?
+	echo 0 2>/dev/null >/proc/sys/net/ipv6/conf/${AICCU_INTERFACE}/disable_ipv6
 	if [ "$AICCU_RUNSCRIPT" == "yes" ]; then
 		/tmp/flash/aiccu/aiccu.sh $AICCU_INTERFACE
 		[ "$?" -ne 0 ] && retval=$?
