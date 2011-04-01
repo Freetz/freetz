@@ -30,7 +30,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 		tar \
 			-t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
-		grep -e '^.*\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-2\.6\.../\)$$'|head -n1`; \
+		grep -e '^.*\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-2\.6\..*/\)$$'|head -n1`; \
 	if [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
 		$(call ERROR,1,KERNEL_SOURCE_CONTENT is empty) \
 	else \
@@ -42,12 +42,12 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 				--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
 			tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 				-xz \
-				--transform="s|^.*\(linux-2\.6\.../\)|\1|g" --show-transformed; \
+				--transform="s|^.*\(linux-2\.6\..*/\)|\1|g" --show-transformed; \
 		else \
 			tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-				--transform="s|^.*\(linux-2\.6\...\..\/\)|\1|g" --show-transformed \
+				--transform="s|^.*\(linux-2\.6\..*\/\)|\1|g" --show-transformed \
 				"$$KERNEL_SOURCE_CONTENT"; \
 		fi \
 	fi
