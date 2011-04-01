@@ -303,15 +303,17 @@ load_modules_2_6_19_2() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
 	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
-	piglet_enable_button=2
 	piglet_load_params=""
 
 	case "$HWRevision" in
+		122 | 139 ) # 7270 v1, v2
+			piglet_load_params="piglet_enable_button=2"
+			;;
 		135 | 146 | 153 ) # W920V, IAD, 7570
 			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
-			piglet_enable_button=3
+			piglet_load_params="piglet_enable_button=3"
 			;;
-		144 )# 7240
+		144 ) # 7240
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
@@ -321,25 +323,31 @@ load_modules_2_6_19_2() {
 				piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount} \
 				piglet_bitfilemode=$piglet_bitfilemode \
 				piglet_use_pll3_clk=1 \
+				piglet_enable_button=2 \
 			"
 			;;
-		145 ) # 7270v3
+		145 | 156 ) # 7270v3, 7390
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
+			[ $HWRevision = 145 ] && piglet_load_params="piglet_enable_button=3"
 			;;
 	esac
 
 	modprobe Piglet_noemif \
 		piglet_bitfile=$piglet_bitfile \
-		piglet_enable_button=$piglet_enable_button \
 		dect_firstlevelfile=$dect_firstlevelfile \
 		dect_secondlevelfile=$dect_secondlevelfile \
 		$piglet_load_params
 
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
-		modprobe musb_hdrc
+		if [ $HWRevision = 156 ]; then # 7390
+			modprobe ehci_hcd
+			modprobe ohci_hcd
+		else
+			modprobe musb_hdrc
+		fi
 	fi
 }
 
@@ -361,7 +369,7 @@ rmmodules() {
 	# disable hotplug
 	hotplugging disable
 
-	for i in sd_mod scsi_mod usb-storage usbahcicore ifxusb_host musb_hdrc usbcore Piglet; do
+	for i in sd_mod scsi_mod usb-storage usbahcicore ehci_hcd ifxusb_host musb_hdrc ohci_hcd usbcore Piglet; do
 		rmmod $i
 	done
 
