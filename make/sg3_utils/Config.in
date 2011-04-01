@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_SG3UTILS
-	requires FREETZ_PACKAGE_SPINDOWN_CGI
-	bool "sg3_utils"
+	bool "sg3_utils (binary only)"
+	depends on FREETZ_PACKAGE_SPINDOWN_CGI
 	default n
 	help
 		The sg3_utils package contains utilities that send SCSI commands to devices.
@@ -9,6 +9,6 @@ config FREETZ_PACKAGE_SG3UTILS
 		Interface(SPI)) many other devices use SCSI command sets. ATAPI cd/dvd drives
 		and SATA disks that connect via a translation layer or a bridge device are
 		examples of devices that use SCSI command sets.
-		
+
 		This package is primarly used by the spindown cgi package. Note also that
 		currently only sg_start is built and used, other tools may follow as needed.

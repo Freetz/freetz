@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_NANO
-	bool "Nano 2.2.5 text editor"
+	bool "Nano 2.2.5 text editor (binary only)"
 	select FREETZ_LIB_libncurses
 	default n
 	help
@@ -8,7 +8,7 @@ config FREETZ_PACKAGE_NANO
 		GNU nano is a small and friendly text editor. Besides basic text
 		editing, nano offers many extra features like an interactive search
 		and replace, go to line and column number, auto-indentation, feature
-		toggles and filename tab completion. 
+		toggles and filename tab completion.
 
 		The original goal for nano was a complete bug-for-bug compatible
 		emulation of Pico, but nano's current goal is to be as compatible as
@@ -23,7 +23,7 @@ config FREETZ_PACKAGE_NANO
 		2.) Please also be aware of the fact that changing any feature options
 		results in an automatic rebuild of the package - just in case you were
 		wondering.
-		
+
 		3.) Note that UTF8 support and spell checking is disabled by default.
 
 menu "Nano additional features"
@@ -160,14 +160,14 @@ config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 		including nanorc support.
 
 		IMPORTANT NOTES:
-		
+
 		If you want to include any syntax definition files by yourself
 		(look for *.nanorc in the nano source package (doc/systax), define
 		or download your own files), you are advised to copy them into
 		make/nano/files/root/usr/share/nano/ before compiling Freetz.
 		This way your snytax files are enabled automatically when saving
 		your customized nanorc via WebIf or on startup.
-		
+
 		You can select some of nano's default syntax highlighting files
 		to be integrated into the firmware image by the "Nano syntax
 		highlighting files" menu below (visible if this option is selected).
@@ -240,5 +240,5 @@ config FREETZ_PACKAGE_NANO_SYNTAX_FILE_XML
 		enable syntax highlighting for .xml files.
 
 endmenu
-	
+
 endmenu
