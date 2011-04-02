@@ -8,6 +8,12 @@ config() {
 }
 
 start_ipv6_interface() {
+	local disable_ipv6="/proc/sys/net/ipv6/conf/${RADVD_INTERFACE}/disable_ipv6"
+	if [ -e $disable_ipv6 -a "$(cat $disable_ipv6 2>/dev/null)" != "0" ]; then
+		ifconfig ${RADVD_INTERFACE} down
+		echo 0 > $disable_ipv6
+		ifconfig ${RADVD_INTERFACE} up
+	fi
 	if [ "$RADVD_SETIPV6" == "yes" ]; then
 		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
@@ -17,15 +23,10 @@ start_ipv6_interface() {
 		fi
 	fi
 	[ "$RADVD_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
-	if [ -e /proc/sys/net/ipv6/conf/${RADVD_INTERFACE}/disable_ipv6 ]; then
-		ifconfig ${RADVD_INTERFACE} down
-		echo 0 >/proc/sys/net/ipv6/conf/${RADVD_INTERFACE}/disable_ipv6
-		ifconfig ${RADVD_INTERFACE} up
-	fi
 }
 
 stop_ipv6_interface() {
-	if [ "$RADVD_DELIPV6" == "yes" ]; then
+	if [ "$RADVD_SETIPV6" == "yes" ]; then
 		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 			ip -6 addr del $RADVD_ADDRESS dev $RADVD_INTERFACE

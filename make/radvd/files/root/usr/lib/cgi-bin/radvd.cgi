@@ -6,7 +6,6 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 check "$RADVD_ENABLED" yes:auto "*":man
 check "$RADVD_FORWARD" yes:forward
 check "$RADVD_SETIPV6" yes:setipv6
-check "$RADVD_DELIPV6" yes:delipv6
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -45,12 +44,7 @@ cat << EOF
 <p>
 <input type="hidden" name="setipv6" value="no">
 <input id="c2" type="checkbox" name="setipv6" value="yes"$setipv6_chk>
-<label for="c2">$(lang de:"IPv6 Adresse der Schnittstelle beim Starten setzen." en:"Set on start the IPv6 address of the interface.")</label>
-</p>
-<p>
-<input type="hidden" name="delipv6" value="no">
-<input id="c3" type="checkbox" name="delipv6" value="yes"$delipv6_chk>
-<label for="c3">$(lang de:"IPv6 Adresse der Schnittstelle beim Stoppen entfernen." en:"Unset on stop the IPv6 address of the interface.")</label>
+<label for="c2">$(lang de:"IPv6 Adresse der Schnittstelle setzen beim Starten bzw. entfernen beim Stoppen." en:"Set on start resp. unset on stop the IPv6 address of the interface.")</label> 
 </p>
 EOF
 
