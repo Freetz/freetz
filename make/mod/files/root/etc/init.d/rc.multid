@@ -17,7 +17,7 @@ start() {
 	if [ -e $TMPFILE_IGD ]; then
 		DAEMON_CMD_IGD=$(cat $TMPFILE_IGD)
 	else
-		if [ ! -e /sbin/igdd -a "(" "$(du -k /sbin/upnpd | sed 's/^\([0-9]*\).*/\1/')" == "0" -o ! -e /sbin/upnpd ")" ]; then
+		if [ ! -e /sbin/igdd -a ! -s /sbin/upnpd ]; then
 			DAEMON_CMD_IGD="$(multid -? 2>&1 | grep "upnp" | sed 's/^[ \t]*//' | cut -c 1-3)"
 		fi
 		echo "$DAEMON_CMD_IGD" > $TMPFILE_IGD
