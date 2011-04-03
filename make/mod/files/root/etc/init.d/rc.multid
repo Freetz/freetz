@@ -32,11 +32,29 @@ start() {
 		echo "$DAEMON_CMD_NTP" > $TMPFILE_NTP
 	fi
 
+	#save ipv6 for 'lan' (since fw 04.86)
+	if [ -e /proc/sys/net/ipv6/conf/lan/disable_ipv6 ]; then
+		local addresses_ipv6_lan="$(ip -6 addr show dev lan | sed -n 's/.*inet6 \(.*\)scope global.*/\1/p')"
+		local disable_ipv6_lan="$(cat /proc/sys/net/ipv6/conf/lan/disable_ipv6)"
+	fi
+
 	rm -rf /var/tmp/avm-resolv.conf /var/tmp/resolv.conf 2>/dev/null
 	$DAEMON $DAEMON_CMD_IGD $DAEMON_CMD_NTP
 	exitval=$?
 	sleep 1
 	[ -f /tmp/flash/mod/multid.start ] && . /tmp/flash/mod/multid.start
+
+	#load ipv6 for 'lan' (since fw 04.86)
+	if [ -n "$disable_ipv6_lan" ]; then
+		if [ "$(cat /proc/sys/net/ipv6/conf/lan/disable_ipv6)" != "$disable_ipv6_lan" ]; then
+			ifconfig lan down
+			echo $disable_ipv6_lan > /proc/sys/net/ipv6/conf/lan/disable_ipv6
+			ifconfig lan up
+		fi
+		for address_ipv6_lan in $addresses_ipv6_lan; do
+			ip -6 addr add $address_ipv6_lan dev lan 2>/dev/null
+		done
+	fi
 
 	# overwrite upstream-dnsserver for avm-daemons like multid (dnsserver) or voipd
 	if [ -n "$AVM_MULTID_DNS" ]; then
