@@ -1,6 +1,7 @@
 if [ -r /usr/lib/libmodmount.sh ]; then
 check "$MOD_STOR_USELABEL" yes:stor_uselabel
 check "$MOD_STOR_AUTORUNEND" yes:stor_autorunend
+check "$MOD_STOR_KILLBLOCKER" yes:stor_killblocker
 
 sec_begin 'Automount'
 if [ -x /usr/sbin/blkid ]; then
@@ -15,6 +16,10 @@ cat << EOF
 <p>
 <input type="hidden" name="stor_autorunend" value="no">
 <input id="m2" type="checkbox" name="stor_autorunend" value="yes"$stor_autorunend_chk><label for="m2">$(lang de:"Automatisch autorun.sh und autoend.sh ausführen." en:"Run autorun.sh and autoend.sh automatically.")</label>
+</p>
+<p>
+<input type="hidden" name="stor_killblocker" value="no">
+<input id="m3" type="checkbox" name="stor_killblocker" value="yes"$stor_killblocker_chk><label for="m3">$(lang de:"Alle Programme beenden die das Aush&auml;ngen verhindern." en:"Kill all programms blocking unmount.")</label>
 </p>
 <p>
 $(lang de:"Pr&auml;fix f&uuml;r Mountpoints" en:"Prefix for mountpoints") (uStor) : <input type="text" name="stor_prefix" size="20" maxlength="20" value="$(html "$MOD_STOR_PREFIX")"></p>

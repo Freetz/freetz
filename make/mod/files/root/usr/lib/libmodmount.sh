@@ -4,45 +4,44 @@
 
 parent_process=$PPID
 
-log_freetz ()
-{ # FREETZ Syslog
+# Log to Syslog & Console
+log_freetz() {
 	local log_prio="user.notice"
-	[ "$1" == "err" ] && log_prio="user.err"
+	local c_prefix=""
+	[ "$1" == "err" ] && log_prio="user.err" && c_prefix='[ERROR] '
 	logger -p "$log_prio" -t FREETZMOUNT "$2"
-	echo "FREETZMOUNT: $2" > /dev/console
+	echo "FREETZMOUNT: $c_prefix$2" > /dev/console
 	return 0
 }
 
-check_parent ()
-{ # check, if ctlmgr is parent process for storage unplug
+#XXX
+# check, if ctlmgr is parent process for storage unplug
+check_parent() {
 	local parent_pid=$1
 	local retval=1
 	local top_filtered="$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')"
-	local ctlmgr_pids=`echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p'` # pids of all ctlmgr instancies
+	local ctlmgr_pids=`echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p'` # pids of all ctlmgr instances
 	local shc_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c'
 	local matched_pid=`echo "$ctlmgr_pids" | grep "$shc_parent_pid"` # is ctlmgr a parent process of 'sh -c /etc/hotplug/storage unplug' ?
 	[ -n "$matched_pid" ] && retval=0 # unplug was initiated via AVM-WebIF
 	return $retval
 }
 
-remove_swap ()
-{ # remove swap partition
-	if [ "${2:1:4}" == "proc" ]
-	then # new parameter style
-		local mnt_dev_name=$3	# sda
-	else # old parameter style
-		local mnt_dev_name=$4	# sda
+# remove swap partition
+remove_swap() {
+	if [ "${2:1:4}" == "proc" ]; then
+		local mnt_dev_name=$3                                                 # new parameter style
+	else
+		local mnt_dev_name=$4                                                 # old parameter style
 	fi
 	local tmpret='/tmp/remove_swap.tmp'
-	local retval=20	# no swap devices found
+	local retval=20                                                           # no swap devices found
 	local swap_map="/proc/swaps"
 	local swap_devs=`grep "^/dev/$mnt_dev_name" $swap_map | sed 's/\t[\t]*/ /g;s/ [ ]*/ /g'`
-	if [ -n "$swap_devs" ]
-	then
-		retval=21 # swap devices found
-		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio
-		do
-			if [ $swap_type == "partition" ]; then
+	if [ -n "$swap_devs" ]; then
+		retval=21                                                             # swap devices found
+		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio; do
+			if [ "$swap_type" == "partition" ]; then
 				/etc/init.d/rc.swap autostop $swap_dev
 				retval=$?
 				echo $retval > ${tmpret}
@@ -66,23 +65,21 @@ remove_swap ()
 				esac
 			fi
 		done
-		retval=$(($(cat ${tmpret} 2>/dev/null)))
+		retval="$(cat ${tmpret} 2>/dev/null)"
 		rm -f ${tmpret} > /dev/null 2>&1
 	fi
 	return $retval
 }
 
-find_mnt_name ()
-{ # modified name generation for automatic mount point
+# modified name generation for automatic mount point
+find_mnt_name() {
 	local blkid_bin="/usr/sbin/blkid"
 	local retfind=0
 	local mnt_name=""
 	[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
-	local storage_prefix="$MOD_STOR_PREFIX"
-	[ -z "$storage_prefix" ] && storage_prefix="uStor"
+	local storage_prefix="${MOD_STOR_PREFIX-uStor}"
 	[ "$MOD_STOR_PREFIX"=="$storage_prefix" ] || retfind=10 # User defined prefix
-	if [ "$MOD_STOR_USELABEL" == "yes" ]
-	then
+	if [ "$MOD_STOR_USELABEL" == "yes" ]; then
 		[ -x $blkid_bin ] && mnt_name=$($blkid_bin -s LABEL -o value $mnt_device | sed 's/ /_/g')
 	fi
 	if [ -z "$mnt_name" ]
@@ -95,62 +92,65 @@ find_mnt_name ()
 	return $retfind
 }
 
-mount_fs ()
-{ # mount according to type of filesystem
-  # return exit code: true - all went well; other - something went wrong
-	local dev_node=$1 # device node
-	local mnt_path=$2 # mount path
-	[ $# -ge 3 ] && local rw_mode=$3 || local rw_mode=rw # read/write mode
-	[ $# -ge 4 ] && local ftp_uid=$4 || local ftp_uid=0 # ftp user id
-	[ $# -ge 5 ] && local ftp_gid=$5 || local ftp_gid=0 # ftp group id
+# mount according to type of filesystem
+# return code:
+#  true - all went well
+#  other - something went wrong
+mount_fs() {
+	local dev_node=$1                                                         # device node
+	local mnt_path=$2                                                         # mount path
+	[ $# -ge 3 ] && local rw_mode=$3 || local rw_mode=rw                      # read/write mode
+	[ $# -ge 4 ] && local ftp_uid=$4 || local ftp_uid=0                       # ftp user id
+	[ $# -ge 5 ] && local ftp_gid=$5 || local ftp_gid=0                       # ftp group id
 	local blkid_bin="/usr/sbin/blkid"
 	local fstyp_bin="/usr/bin/fstyp"
 	local ntfs_bin="/bin/ntfs-3g"
-	local err_mo=1 # set mount error as default
-	local err_fst=1 # set file system detection error as default
+	local err_mo=1                                                            # set mount error as default
+	local err_fst=1                                                           # set file system detection error as default
 	if [ -x $fstyp_bin ]; then
-		local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null) # fs type detection using fstyp binary
+		local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null)                      # fs type detection using fstyp binary
 	elif [ -x $blkid_bin ]; then
 		local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
 	fi
-	[ -z "$fs_type" ] && local fs_type="unknown" # set unknown file system type if detection failed
+	[ -z "$fs_type" ] && local fs_type="unknown"                              # set unknown file system type if detection failed
 	case $fs_type in
-	vfat)
-		mount -t vfat -o $rw_mode,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node $mnt_path
-		err_mo=$?
-	;;
-	ext2)
-		mount -t ext2 $dev_node $mnt_path -o noatime,nodiratime,rw,async
-		err_mo=$?
-	;;
-	ext3)
-		mount -t ext3 $dev_node $mnt_path -o noatime,nodiratime,rw,async
-		err_mo=$?
-	;;
-	ntfs)
-		[ -n "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
-	;;
-	reiserfs)
-		mount -t reiserfs $dev_node $mnt_path -o noatime,nodiratime,rw,async
-		err_mo=$?
-	;;
-	swap)
-		/etc/init.d/rc.swap autostart $dev_node
-		err_mo=$((17+$?))
-	;;
-	*) # fs type unknown
-		mount $dev_node $mnt_path
-		err_mo=$?
-	;;
+		vfat)
+			mount -t vfat -o $rw_mode,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node $mnt_path
+			err_mo=$?
+			;;
+		ext2)
+			mount -t ext2 $dev_node $mnt_path -o noatime,nodiratime,rw,async
+			err_mo=$?
+			;;
+		ext3)
+			mount -t ext3 $dev_node $mnt_path -o noatime,nodiratime,rw,async
+			err_mo=$?
+			;;
+		ntfs)
+			[ -n "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
+			;;
+		reiserfs)
+			mount -t reiserfs $dev_node $mnt_path -o noatime,nodiratime,rw,async
+			err_mo=$?
+			;;
+		swap)
+			/etc/init.d/rc.swap autostart $dev_node
+			err_mo=$((17+$?))
+			;;
+		*)                                                                    # fs type unknown
+			mount $dev_node $mnt_path
+			err_mo=$?
+			;;
 	esac
 	echo -n "$fs_type"
 	return $err_mo
 }
 
-do_mount_locked ()
-{ # mount function, used by /etc/hotplug/run_mount
-  # seperated from do_mount since fw 04.89
-	local mnt_failure=1
+# mount function
+# used by /etc/hotplug/run_mount
+# seperated from do_mount since fw 04.89
+do_mount_locked() {
+	local mnt_failure=0
 	local rcftpd="/etc/init.d/rc.ftpd"
 	local tammnt="/var/tam/mount"
 	local mnt_rw=rw
@@ -162,107 +162,94 @@ do_mount_locked ()
 	local mnt_name
 	local mnt_path
 	local fs_type
-	if mount | grep "$mnt_dev on /var/media/" > /dev/null
-	then # device already mounted
-		return 0
-	fi
-	while [ $mnt_med_num -le 9 ] # sda1...sda9
-	do
-		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_med_num $mnt_part_num) # find name
+	mount | grep -q "$mnt_dev on /var/media/" && return 0                     # device already mounted
+	while [ $mnt_med_num -le 9 ]; do                                          # sda1...sda9
+		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_med_num $mnt_part_num)    # find name
 		mnt_path=$FTPDIR/$mnt_name
-		if [ ! -d $mnt_path ]
-		then
-			echo "Mounting $mnt_name to device $mnt_dev ... " > /dev/console
+		if [ ! -d $mnt_path ]; then
 			log_freetz notice "Mounting $mnt_name to device $mnt_dev ... "
 			mkdir -p $mnt_path
 			break
-		else
-			let mnt_med_num++
 		fi
+		let mnt_med_num++
 	done
-	chmod 755 $FTPDIR # chmod for ftp top directory
-	local old_umask=$(umask) # store actual mask
+	chmod 755 $FTPDIR                                                         # chmod for ftp top directory
+	local old_umask=$(umask)                                                  # store actual mask
 	umask 0
-	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID) # FREETZ mount
+	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID)            # FREETZ mount
 	local err_fs_mount=$?
-	if [ $err_fs_mount -eq 0 ]
-	then
-		mnt_failure=0
+	if [ $err_fs_mount -eq 0 ]; then
 		umask $old_umask
 		eventadd 140 "$mnt_name ($mnt_dev)"
 		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully"
-		if [ -x $rcftpd ]; then	# start/enable ftpd
+		if [ -x $rcftpd ]; then                                               # start/enable ftpd
 			[ -x "$(which inetdctl)" ] && inetdctl enable ftpd || $rcftpd start
 		fi
-		/etc/init.d/rc.swap autostart $mnt_path
+		/etc/init.d/rc.swap autostart $mnt_path                               # swap
 		local autorun="$mnt_path/autorun.sh"
-		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun & # run autostart shell script
-		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &
-		[ -x $TR069START ] && $TR069START $mnt_name # run tr069
-		[ -x /etc/samba_control ] && /etc/samba_control reconfig # SAMBA reconfiguration
-		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt
-		rm -f /var/media/NEW_LINK && ln -f -s $mnt_path /var/media/NEW_LINK # mark last mounted partition
-		msgsend multid update_usb_infos # upnp
-		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done
+		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &      # autorun
+		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path & # external
+		[ -x $TR069START ] && $TR069START $mnt_name                           # tr069
+		[ -x /etc/samba_control ] && /etc/samba_control reconfig              # SAMBA reconfiguration
+		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                         # tam
+		rm -f /var/media/NEW_LINK && ln -f -s $mnt_path /var/media/NEW_LINK   # mark last mounted partition
+		msgsend multid update_usb_infos                                       # upnp
+		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done                 # led
 	else
-		if [ "$fs_type" == "ntfs" ]
-		then
+		case "$fs_type" in
+		"ntfs")
 			case $err_fs_mount in
-			15 ) # NTFS unclean unmount
-				eventadd 144 "$mnt_name ($mnt_dev)" # NTFS Volume was unclean unmount. Please unmount
+			15)                                                               # unclean unmount
+				eventadd 144 "$mnt_name ($mnt_dev)"
 				log_freetz err "Partition $mnt_name ($mnt_dev): NTFS Volume was unclean unmount. Please unmount"
-				mnt_failure=0
-			;;
-			111 )
-				echo "ntfs binary not found -> mount later" > /dev/console
-				eventadd 145 "$mnt_name ($mnt_dev)" "ntfs binary not found" # NTFS mount error (binary not found)
+				;;
+			111)                                                              # binary not found
+				eventadd 145 "$mnt_name ($mnt_dev)" "ntfs binary not found"
 				log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error (binary not found)"
-				mnt_failure=0
-			;;
-			* ) # general NTFS mount error
-				eventadd 145 "$mnt_name ($mnt_dev)" $err_fs_mount # NTFS mount error (error code)
+				mnt_failure=1
+				;;
+			*)                                                                # general error
+				eventadd 145 "$mnt_name ($mnt_dev)" $err_fs_mount
 				log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error ($err_fs_mount)"
-				mnt_failure=0
-			;;
+				mnt_failure=1
+				;;
 			esac
-		fi
-		if [ "$fs_type" == "swap" ]; then
+			;;
+		"swap")
 			case "$err_fs_mount" in
-				17)
-					mnt_failure=0
+				17)                                                           # fine
 					eventadd 140 "SWAP ($mnt_dev)"
 					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was mounted successfully."
 					;;
-				19)
-					mnt_failure=0
+				19)                                                           # other partition
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
 					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was not mounted, not the defined swap-partition."
 					;;
-				20)
-					mnt_failure=0
+				20)                                                           # disabled
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
 					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was not mounted, auto-mode is disabled."
 					;;
-				default)
-					mnt_failure=1
+				*)                                                            # error
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
 					log_freetz err "SWAP Partition $mnt_name ($mnt_dev) could not be mounted."
+					mnt_failure=1
 					;;
 			esac
-		else
+			;;
+		*)
 			[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_mount_failure
-			eventadd 142 "$mnt_name ($mnt_dev)" $fs_type # not supported file system or wrong partition table
+			eventadd 142 "$mnt_name ($mnt_dev)" $fs_type
 			log_freetz err "Partition $mnt_name ($mnt_dev): Not supported file system or wrong partition table"
-		fi
+			mnt_failure=1
+			;;
+		esac
 		umask $old_umask
 		rmdir $mnt_path
 	fi
 
-	if grep $mnt_path /proc/mounts > /dev/null
-	then
-		if [ -f "$1" ]
-		then
-			cat $DEVMAP | grep -v "^$1=$2:" > /var/dev-$$.map
+	if grep -q $mnt_path /proc/mounts; then
+		if [ -f "$1" ]; then
+			grep -v "^$1=$2:" $DEVMAP > /var/dev-$$.map
 			echo "$1=$2:$mnt_name" >> /var/dev-$$.map
 			mv -f /var/dev-$$.map $DEVMAP
 		fi
@@ -270,170 +257,199 @@ do_mount_locked ()
 	return $mnt_failure
 }
 
-do_umount_locked ()
-{ # ummount function, used by /etc/hotplug/storage
-  # separated from do_umount since FW XX.04.86
+# ummount function
+# used by /etc/hotplug/storage
+# separated from do_umount() since FW XX.04.86
+do_umount_locked() {
 	local rcftpd="/etc/init.d/rc.ftpd"
 	local rcsmbd="/etc/init.d/rc.smbd"
 	local kill_daemon=""
-	local kill_ftpd=0
-	local kill_smbd=0
 	local ftpd_needs_start=0
-	local samba_needs_start=0
-	local mnt_path=$1	# /var/media/ftp/uStorMN
-	local mnt_name=$2	# uStorMN or LABEL
+	local smbd_needs_start=0
+	local mnt_path=$1                                                         # /var/media/ftp/uStorMN
+	local mnt_name=$2                                                         # uStorMN or LABEL
 	local err_code=0
 	local autoend="$mnt_path/autoend.sh"
-	local mnt_dev=`grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//'` # /dev/sdXY
-	[ "$MOD_STOR_AUTORUNEND" == "yes" -a  -x $autoend ] && $autoend
-	[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path
-	/etc/init.d/rc.swap autostop $mnt_path
-	mount "$mnt_path" -o remount,ro
-	[ -p "/var/tam/mount" ] && echo "u$mnt_path" > /var/tam/mount # TAM
-	if ! $(umount $mnt_path > /dev/null 2>&1)
-	then # 2
-		samba_needs_start=1
-		[ -x $rcsmbd ] && $rcsmbd stop || kill_smbd=1 # stop smbd
-		if ! $(umount $mnt_path > /dev/null 2>&1)
-		then # 3
-			ftpd_needs_start=1
-			[ -x $rcftpd ] && $rcftpd stop || kill_ftpd=1 # stop ftpd
-			if ! $(umount $mnt_path > /dev/null 2>&1)
-			then # 4
-				[ $kill_ftpd -eq 1 ] && kill_daemon="ftpd"
-				[ $kill_smbd -eq 1 ] && kill_daemon="$kill_daemon smbd"
-				if [ -n "$kill_daemon" ]
-				then
-					for pid in $(pidof $kill_daemon)
-					do
-						ls -l /proc/$pid/cwd /proc/$pid/fd | grep $mnt_path > /dev/null 2>&1 && kill $pid
-					done
-					sleep 5
-				fi
-				if ! $(umount $mnt_path)
-				then # last attempt: force
-					sleep 1
-					umount -f $mnt_path
-					err_code=$?
-				fi
-			fi
+	local mnt_dev=`grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//'`        # /dev/sdXY
+	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
+	[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path        # external
+	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
+	[ -p "/var/tam/mount" ] && echo "u$mnt_path" > /var/tam/mount             # TAM
+
+	umount $mnt_path > /dev/null 2>&1                                         # umount
+
+	if grep -q " $mnt_path " /proc/mounts; then                               # stop smbd
+		if [ -x $rcsmbd ]; then
+			if [ "$($rcsmbd status)" != "stopped" ]; then
+				smbd_needs_start=1
+			 	$rcsmbd stop
+			 	umount $mnt_path > /dev/null 2>&1
+			 fi
 		fi
 	fi
-	if grep " $mnt_path " /proc/mounts > /dev/null 2>&1
-	then ## still mounted
+
+	if grep -q " $mnt_path " /proc/mounts; then                               # stop ftpd
+		if [ -x $rcftpd ]; then
+			if [ "$($rcftpd status)" != "stopped" ]; then
+				ftpd_needs_start=1
+			 	$rcftpd stop
+			 	umount $mnt_path > /dev/null 2>&1
+			 fi
+		fi
+	fi
+
+	if [ "$MOD_STOR_KILLBLOCKER" == "yes" ]; then                              # kill blocker
+		for SIGN in TERM KILL; do
+			if grep -q " $mnt_path " /proc/mounts; then
+				for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do
+					umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
+					if [ -n "$umount_files" ]; then
+						umount_blocker="$mnt_path ($mnt_dev) - sending SIG$SIGN to [$pid] $(realpath /proc/$pid/exe):"
+						for umount_file in $umount_files; do
+							log_freetz notice "$umount_blocker $umount_file"
+						done
+						kill -$SIGN $pid >/dev/null 2>&1
+					fi
+				done
+				sync
+				umount $mnt_path > /dev/null 2>&1
+			fi
+		done
+	fi
+
+	if grep -v " hfsplus " /proc/mounts | grep -q " $mnt_path "; then         # mount ro
+		log_freetz notice "$mnt_path ($mnt_dev) - mounting read-only"
+		mount "$mnt_path" -o remount,ro
+	 	umount $mnt_path > /dev/null 2>&1
+	fi
+
+	if grep -q " $mnt_path " /proc/mounts; then                               # force umount
+		log_freetz notice "$mnt_path ($mnt_dev) - forcing unmount"
+		umount -f $mnt_path
+		err_code=$?
+	fi
+
+	if grep -q " $mnt_path " /proc/mounts; then                               # umount failed
+		for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do                        # log blocker
+			umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
+			if [ -n "$umount_files" ]; then
+				umount_blocker="$mnt_path ($mnt_dev) - still used by $(realpath /proc/$pid/exe):"
+				for umount_file in $umount_files; do
+					log_freetz err "$umount_blocker $umount_file"
+				done
+			fi
+		done
 		eventadd 135 "$mnt_path ($mnt_dev)"
-		echo "ERROR: Partition $mnt_name could not be unmount" > /dev/console
-		log_freetz err "Partition $mnt_name ($mnt_dev) could not be unmount"
-	else
+		log_freetz err "$mnt_path ($mnt_dev) - could not be unmounted"
+	else                                                                      # umount sucessfully
 		grep -v ":$mnt_name$" $DEVMAP > /var/dev-$$.map
 		mv -f /var/dev-$$.map $DEVMAP
 		rmdir $mnt_path
-		[ -d "$mnt_path" ] && echo "ERROR: Directory $mnt_path could not be removed" > /dev/console
+		[ -d "$mnt_path" ] && log_freetz err "Directory $mnt_path could not be removed"
 		eventadd 141 "Partition $mnt_name ($mnt_dev)"
-		log_freetz notice "Partition $mnt_name ($mnt_dev) removed"
+		log_freetz notice "$mnt_path ($mnt_dev) - unmounted successfully"
 	fi
-	sleep 1
-	[ $samba_needs_start -eq 1 ] && [ -x $rcsmbd ] && $rcsmbd start # start smbd
-	[ $ftpd_needs_start -eq 1 ] && [ -x $rcftpd ] && $rcftpd start # start ftpd
-	[ $samba_needs_start -eq 0 ] && [ -x /etc/samba_control ] && /etc/samba_control reconfig $mnt_path
+
+	if [ $smbd_needs_start -eq 1 ]; then                                      # start smbd
+		$rcsmbd start
+	else
+		[ -x /etc/samba_control ] && /etc/samba_control reconfig $mnt_path
+	fi
+	[ $ftpd_needs_start -eq 1 ] && $rcftpd start                              # start ftpd
+
 	return $err_code
 }
 
-do_mount ()
-{ # mount function, used by /etc/hotplug/storage
+# mount function
+# used by /etc/hotplug/storage
+do_mount() {
 	local device=$1
 	local mnt_dev=$2
 	local mnt_part_num=$3
 	local err_code=0
-	passeeren # semaphore on
+	passeeren                                                                 # semaphore on
 	do_mount_locked $device $mnt_dev $mnt_part_num
 	err_code=$?
-	vrijgeven # semaphore off
+	vrijgeven                                                                 # semaphore off
 	return $err_code
 }
 
-
-do_umount ()
-{ # ummount function, used by /etc/hotplug/storage
+# ummount function
+# used by /etc/hotplug/storage
+do_umount() {
 	if [ "${1:1:3}" == "dev" ]
-	then # old parameter style
-		local mnt_path=$2	# /var/media/ftp/uStorMN
-		local mnt_name=$3	# uStorMN or LABEL
-	else # new parameter style
-		local mnt_path=$1	# /var/media/ftp/uStorMN
-		local mnt_name=$2	# uStorMN or LABEL
+	then                                                                      # old parameter style
+		local mnt_path=$2                                                     # /var/media/ftp/uStorMN
+		local mnt_name=$3                                                     # uStorMN or LABEL
+	else                                                                      # new parameter style
+		local mnt_path=$1                                                     # /var/media/ftp/uStorMN
+		local mnt_name=$2                                                     # uStorMN or LABEL
 	fi
 	local err_code=0
-	passeeren # semaphore on
+	passeeren                                                                 # semaphore on
 	do_umount_locked "$mnt_path" "$mnt_name"
 	err_code=$?
-	vrijgeven # semaphore off
+	vrijgeven                                                                 # semaphore off
 	return $err_code
 }
 
-hd_spindown_control ()
-{ # spindown control function, used by /etc/hotplug/storage
+# spindown control function
+# used by /etc/hotplug/storage
+hd_spindown_control() {
 	local err_code=0
-	if [ $CONFIG_USB_STORAGE_SPINDOWN = "y" ]
-	then
-		if [ "$1" = "force" ]
-		then
-			echo "force hd-idle for all sd[a-z] devices">/dev/console
-			log_freetz notice "force hd-idle for all sd[a-z] devices"
-			for spin_dev in $(ls $SYSFS/block/ | grep -o "sd." )
-			do
-				hd-idle -t $spin_dev 2> /dev/console
-				err_code=$?
-			done
+	[ $CONFIG_USB_STORAGE_SPINDOWN != "y" ] && return $err_code
+	if [ "$1" = "force" ]; then
+		log_freetz notice "force hd-idle for all sd[a-z] devices"
+		for spin_dev in $(ls $SYSFS/block/ | grep -o "sd." ); do
+			hd-idle -t $spin_dev 2> /dev/console
+			err_code=$?
+		done
+	else
+		local idle_time=0
+		if [ "$1" = "loadconfig" ]; then
+			if [ "$(echo usbhost.spindown_enabled | usbcfgctl -s)" = "yes" ]; then
+				idle_time=$(echo usbhost.spindown_time | usbcfgctl -s)
+			fi
 		else
-			if [ "$1" = "loadconfig" ]
-			then
-				local idle_time=0
-				local spindown_allowed=$(echo usbhost.spindown_enabled | usbcfgctl -s)
-				[ "$spindown_allowed" = "yes" ] && idle_time=$(echo usbhost.spindown_time | usbcfgctl -s)
-			else
-				local idle_time=$1
-			fi
-			if pidof hd-idle > /dev/null
-			then
-				echo "stopping hd-idle" > /dev/console
-				log_freetz notice "stopping hd-idle"
-				killall hd-idle
-				sleep 1
-			fi
-			if [ "$idle_time" -gt 0 ]
-			then
-				echo "starting hd-idle with $idle_time seconds">/dev/console
-				log_freetz notice "starting hd-idle with $idle_time seconds"
-				hd-idle -i $idle_time 2> /dev/console
-				err_code=$?
-			fi
+			local idle_time=$1
+		fi
+		if pidof hd-idle > /dev/null; then
+			log_freetz notice "stopping hd-idle"
+			killall hd-idle
+			sleep 1
+		fi
+		if [ "$idle_time" -gt 0 ]; then
+			log_freetz notice "starting hd-idle with $idle_time seconds"
+			hd-idle -i $idle_time 2> /dev/console
+			err_code=$?
 		fi
 	fi
 	return $err_code
 }
 
-storage_reload ()
-{ # patched section reload) of /etc/hotplug/storage
-  # reload storage media
+# patched section reload)
+# of /etc/hotplug/storage
+# reload storage media
+storage_reload() {
 	local rcftpd="/etc/init.d/rc.ftpd"
 	[ -d /var/media ] || return 0
-	[ -x $rcftpd ] && $rcftpd restart # restart ftpd
+	[ -x $rcftpd ] && $rcftpd restart
 	hd_spindown_control loadconfig
 	return 0
 }
 
-storage_unplug ()
-{ # patched section unplug) of /etc/hotplug/storage
-  # User initiated software-only unplug with sync
-	[ -z "$2" ] && return 11 # not enough arguments
+# patched section unplug)
+# of /etc/hotplug/storage
+# User initiated software-only unplug with sync
+storage_unplug() {
+	[ $# -lt 2 ] && return 11                                                 # not enough arguments
 	MOUNT=$(grep " $2 " /proc/mounts)
-	[ -z "$MOUNT" ] && return 2 # none mounts found
+	[ -z "$MOUNT" ] && return 2                                               # no mounts found
 	set $MOUNT
-	local mnt_dev=$1	# /dev/sda1
-	local mnt_path=$2	# /var/media/ftp/uStorXY or LABEL
-	local mnt_name="${mnt_path##*/}"	# uStorXY or LABEL
-	local mnt_main_dev=${mnt_dev:5:3}	# sda
+	local mnt_dev=$1                                                          # /dev/sda1
+	local mnt_path=$2                                                         # /var/media/ftp/uStorXY or LABEL
+	local mnt_name="${mnt_path##*/}"                                          # uStorXY or LABEL
+	local mnt_main_dev=${mnt_dev:5:3}                                         # sda
 	local mserver_start="/sbin/start_mediasrv"
 	local mserver_stop="/sbin/stop_mediasrv"
 	local webdav_control="/etc/webdav_control"
@@ -442,10 +458,11 @@ storage_unplug ()
 	[ -x $mserver_stop ] && $mserver_stop
 	mount "$mnt_path" -o remount,ro
 	[ -x $webdav_control ] && $webdav_control lost_all_partitions
-	do_umount "$mnt_path" "$mnt_name" # unmount device
+	do_umount "$mnt_path" "$mnt_name"                                         # unmount device
 	unplug_ret=$?
-	remained_devs=`grep "$mnt_main_dev" /proc/mounts` # check for remained partitions on main device
-	[ -z "$remained_devs" ] && check_parent $parent_process && remove_swap dummy /proc "$mnt_main_dev" # remove swap partition if required
-	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start # restart media_serv if MP available
+	remained_devs=`grep "$mnt_main_dev" /proc/mounts`                         # check for remained partitions on main device
+	[ -z "$remained_devs" ] && check_parent $parent_process && remove_swap dummy /proc "$mnt_main_dev"     # remove swap partition if required
+	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start      # restart media_serv if MP available
 	return $unplug_ret
 }
+
