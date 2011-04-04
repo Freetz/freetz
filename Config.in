@@ -551,6 +551,8 @@ config FREETZ_TARGET_IPV6_SUPPORT
 		(FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL_AVAILABLE)
 	select FREETZ_REPLACE_KERNEL if ! (FREETZ_HAS_AVM_IPV6)
 	select FREETZ_MODULE_ipv6 if FREETZ_REPLACE_KERNEL
+	select FREETZ_BUSYBOX_IP
+	select FREETZ_BUSYBOX_FEATURE_IP_ADDRESS
 	default n
 	help
 		Copies the ipv6 kernel module to the firmware and enables ipv6 support
