@@ -879,6 +879,7 @@ config FREETZ_HAS_WLAN
 	default n		if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5050 || \
 		FREETZ_TYPE_FON_5124 || \
@@ -1539,6 +1540,7 @@ config FREETZ_REMOVE_CHRONYD
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
 		FREETZ_TYPE_FON_WLAN_7390
+	default y if FREETZ_TYPE_FON_WLAN_7390
 	default n
 	help
 		Removes AVM's time synchronization tool (chrony) and related files.

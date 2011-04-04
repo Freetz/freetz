@@ -3,20 +3,7 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
 . /usr/lib/libmodcgi.sh
 
-VERSION="1.0.5"
-
-# HTML QUERY STRING for remove option
-IPTABLES_DELETE_CHAIN=$(cgi_param chain)
-IPTABLES_DELETE_RULE=$(cgi_param remove)
-
-# Deleting Rule
-if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
-	if [ $IPTABLES_DELETE_CHAIN = "PREROUTING" ] || [ $IPTABLES_DELETE_CHAIN = "POSTROUTING" ]; then
-		SPECIAL='-t nat '
-	fi
-	iptables $SPECIAL-D $IPTABLES_DELETE_CHAIN $IPTABLES_DELETE_RULE
-	/var/mod/etc/init.d/rc.iptables save	
-fi
+VERSION="1.1"
 
 check "$IPTABLES_ENABLED" yes:auto "*":man
 
@@ -34,6 +21,7 @@ sec_begin 'iptables add/remove rule'
 cat << EOF
 <p>
 <input type="hidden" name="gui" value="*gui*">
+<input type="hidden" name="rule" value="" checked>
 <input type="radio" name="rule" value="-A"> Add
 <input type="radio" name="rule" value="-I"> Insert
 <br>
@@ -45,7 +33,7 @@ CHAINTABLE=$(iptables --list | grep "Chain" | sed -e "s/Chain //g" | sed -e "s/ 
 CHAINTABLE=$CHAINTABLE" $(iptables -t nat --list | grep "Chain" | sed -e "s/Chain //g" | sed -e "s/ .*//g" | sed -e "s/OUTPUT//g")"
 echo "###"$CHAINTABLE"###"
 for CHAIN in $CHAINTABLE; do
-	echo '<option title="'$CHAIN'" value="'$CHAIN'">'$CHAIN'</option>' 
+	echo '<option title="'$CHAIN'" value="'$CHAIN'">'$CHAIN'</option>'
 done
 
 cat << EOF
@@ -88,7 +76,7 @@ for OUTPUT_INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 	echo '<option title="'$OUTPUT_INTERFACE'" value="'$OUTPUT_INTERFACE'">'$OUTPUT_INTERFACE'</option>'
 done
 
-cat << EOF  
+cat << EOF
 
 </select></td></tr>
 <tr><td>NAT</td><td colspan="2"><select name="nat">
@@ -113,7 +101,6 @@ sec_end
 
 
 sec_begin 'iptables rules'
-
 iptables -vL --line-numbers >/var/tmp/test
 iptables -t nat -vL --line-numbers >>/var/tmp/test
 # Check if table can be listed
@@ -124,7 +111,6 @@ else
 	sed -e "s/\*/x/g" /var/tmp/test > /var/tmp/iptables_tmp
 	rm /var/tmp/test
 	i=0
-
 	while read IPTABLES_LINE
 	do
 		if [[ $(echo ${IPTABLES_LINE} | grep -c "Chain") = 1 ]]; then
@@ -133,7 +119,6 @@ else
 			if (( i > 0 )); then
 				echo "</table>"
 			fi
-			echo "<br>"
 			echo "<table width='100%' class='center' border='1' cellpadding='4' cellspacing='0'>"
 			echo "<tr><td align='left' colspan='10'>${IPTABLES_LINE}</td>"
 			echo "</tr><tr>"
@@ -146,12 +131,14 @@ else
 			echo "<th bgcolor="#bae3ff">Action</th>"
 			echo "<th bgcolor="#bae3ff">in</th>"
 			echo "<th bgcolor="#bae3ff">out</th>"
-			echo "<th bgcolor="#bae3ff">Configure</th>" 
+			echo "<th bgcolor="#bae3ff">Configure</th>"
 			echo "</tr>"
+			echo "<br>"
 			i=i+1
+
 		else
 			echo ${IPTABLES_LINE} | grep "^[1-9]" > /dev/null
-			if [ $? = 0 ]; then 
+			if [ $? = 0 ]; then
 				echo "<tr>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $1}')</td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $9}')</td>"
@@ -163,6 +150,7 @@ else
 				else
 					PORT=$(echo ${IPTABLES_LINE} | awk '{print $12}' | sed -e "s/.*://g")
 					SERVICE=$(cat /tmp/flash/iptables_services | grep :$PORT$ | sed -e "s/:.*//g")
+					[ -z "$SERVICE" ] && SERVICE="$PORT"
 					echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $12}' | sed -e "s/:.*//g"):$SERVICE</td>"
 				fi
 
@@ -173,6 +161,7 @@ else
 					if [ $? -eq 1 ]; then
 						PORT=$(echo ${IPTABLES_LINE} | awk '{print $13}' | sed -e "s/.*://g")
 						SERVICE=$(cat /tmp/flash/iptables_services | grep :$PORT$ | sed -e "s/:.*//g")
+						[ -z "$SERVICE" ] && SERVICE="$PORT"
 						echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $13}' | sed -e "s/:.*//g"):$SERVICE</td>"
 					else
 						echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $13}')</td>"
@@ -180,10 +169,10 @@ else
 				fi
 
 				IMAGE=$(echo ${IPTABLES_LINE} | awk '{print $4}')
-				echo "<td align='center'><img src='../images/"$IMAGE".gif' title='"$IMAGE"'></td>"
+				echo "<td align='center'><img src='/images/"$IMAGE".gif' title='"$IMAGE"'></td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $7}')</td>"
 				echo "<td align='center'>$(echo ${IPTABLES_LINE} | awk '{print $8}')</td>"
-				echo "<td align='center'><a href='$(href cgi iptables "chain=${CHAIN}" "remove=$(echo ${IPTABLES_LINE} | awk '{print $1}')")'>remove</a></td>"
+				echo "<td align='center'><a href='$(href extra iptables controller)?chain=${CHAIN}&amp;remove=$(echo ${IPTABLES_LINE} | awk '{print $1}')'>remove</a></td>"
 				echo "</tr>"
 			fi
 		fi
@@ -191,5 +180,3 @@ else
 	echo "</table>"
 	rm /var/tmp/iptables_tmp
 fi
-
-sec_end

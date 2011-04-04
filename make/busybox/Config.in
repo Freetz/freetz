@@ -59,6 +59,13 @@ config FREETZ_BUSYBOX_FEATURE_DD_IBS_OBS
 	help
 		Enables ibs, obs and conv options in busybox dd
 
+config FREETZ_BUSYBOX_DNSD
+	bool "dnsd"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'dnsd' tool in busybox
+
 config FREETZ_BUSYBOX_DIFF
 	bool "diff"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -82,7 +89,7 @@ config FREETZ_BUSYBOX_DOS2UNIX
 config FREETZ_BUSYBOX_ETHER_WAKE
 	bool "ether-wake"
 	depends on FREETZ_REPLACE_BUSYBOX
-	default n
+	default y
 	help
 		Include 'ether-wake' tool in busybox
 

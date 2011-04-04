@@ -744,9 +744,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# ar7 (FON WLAN) and ohio (7170) modules dir is 2.6.13.1-ar7/ohio
 	# ur8 (7270) and iks (7390) modules dir is 2.6.19.2
 	# ar9 (7320) modules dir is 2.6.28.10
-	if [ "$FREETZ_KERNEL_LAYOUT" = "ar7" ] || [ "$FREETZ_KERNEL_LAYOUT" = "ohio" ]; then
+	if [ "$FREETZ_KERNEL_VERSION" = "2.6.13.1" ]; then
 		MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
-	elif [ "$FREETZ_KERNEL_LAYOUT" = "ar9" ]; then
+	elif [ "$FREETZ_KERNEL_VERSION" = "2.6.28" ]; then
 		MODULES_DIR="${MODULES_DIR}.10"
 	fi
 
@@ -763,7 +763,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo2 "${bn}"
 			dn="$(dirname "$i")"
 			[ -d "${MODULES_DIR}/kernel/${dn}" ] || mkdir -p "${MODULES_DIR}/kernel/${dn}"
-			cp "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
+			cp -a "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
 		fi
 	done
 

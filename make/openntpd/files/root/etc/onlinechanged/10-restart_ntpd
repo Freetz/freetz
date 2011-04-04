@@ -4,5 +4,5 @@
 
 if [ "$1" = "online" ]; then
 	logger -t info Restart NTPD due to online status change
-	(sleep 5; /etc/init.d/rc.openntpd reload)&
+	/etc/init.d/rc.openntpd restart
 fi

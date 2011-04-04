@@ -1,0 +1,33 @@
+--- src/liboping.c
++++ src/liboping.c
+@@ -539,12 +539,14 @@
+ 			if (cmsg->cmsg_level != IPPROTO_IPV6)
+ 				continue;
+ 
++#if defined(IPV6_TCLASS)
+ 			if (cmsg->cmsg_type == IPV6_TCLASS)
+ 			{
+ 				memcpy (&recv_qos, CMSG_DATA (cmsg),
+ 						sizeof (recv_qos));
+ 				dprintf ("TOSv6 = 0x%02"PRIx8";\n", recv_qos);
+ 			} else
++#endif /* defined(IPV6_TCLASS) */
+ 			if (cmsg->cmsg_type == IPV6_HOPLIMIT)
+ 			{
+ 				memcpy (&recv_ttl, CMSG_DATA (cmsg),
+@@ -980,6 +982,7 @@
+ 			dprintf ("Setting TP_TOS failed: %s\n", errbuf);
+ 		}
+ 	}
++#if defined(IPV6_TCLASS)
+ 	else if (ph->addrfamily == AF_INET6)
+ 	{
+ 		/* IPV6_TCLASS requires an "int". */
+@@ -996,6 +999,7 @@
+ 			dprintf ("Setting IPV6_TCLASS failed: %s\n", errbuf);
+ 		}
+ 	}
++#endif /* defined(IPV6_TCLASS) */
+ 
+ 	return (ret);
+ }

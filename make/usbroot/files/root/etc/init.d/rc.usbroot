@@ -151,76 +151,94 @@ mount_usbroot() {
 		return 1
 	fi
 
-	# cache hotplug events
-	hotplugging defer
+	case "$(uname -r)" in
+		2.6.28.10 )
+			# no need to cache hotplug events, udev does it
+			mount dev /oldroot -t tmpfs -o nosuid
 
-	case "$HWRevision" in
-		105 | 122 | 135 | 137 | 139 | 144 | 145 | 146 | 153 | 165 | 168 )
-		# 7540,7270,W920V,3270,5125,7240,7270v3,7570,IAD,7541,3270v3
-			load_usb_modules_2_6_19_2 ;;
+			# touch .hotplug-cache to prevent /dev mount in rc.S
+			touch /oldroot/$HOTPLUGCACHE
+
+			cp -a /dev/* /oldroot
+			mount -t tmpfs tmpfs /dev
+
+			# create sd* devices
+			makedevs -d /etc/usbroot_device.table /
+
+			load_modules_2_6_28_10
+			;;
+
+		2.6.19.2 )
+			# cache hotplug events
+			hotplugging defer
+
+			load_modules_2_6_19_2
+			;;
+
+		2.6.13.1 )
+			# cache hotplug events
+			hotplugging defer
+
+			load_modules_2_6_13_1
+			;;
+
 		* )
-			load_usb_modules ;;
+			echo "Unknown kernel version. Exiting"
+			return 1
+			;;
 	esac
 
 	for i in $FSTYPE usb-storage sd_mod; do
 		modprobe $i
 	done
 
-	echo 'waiting 15 seconds for usb to come up'
+	echo -n "Waiting for usb to come up "
 	sleep 15
 
-	for US in /proc/scsi/usb-storage/*; do
-		if grep "Path: $DEVPATH" $US > /dev/null 2>&1; then
-			HOST=$(cat $US | sed -n "s/.* scsi\([0-9]*\): usb.*/\1/p")
+	LOOP=0
+	while ! dd if=$DEVICE of=/dev/null bs=1 count=1 2>/dev/null; do
+		echo -n "."
+		let LOOP=LOOP+1
+		if [ $LOOP -gt 10 ]; then
+			echo
+			echo 'storage: SCSI device not responding!'
+			# discard hotplug cache
+			hotplugging discard
+			# return with failure code
+			return 1
 		fi
+		sleep 2
 	done
 
-	# Some devices are veeery slow (e.g. Transcend StoreJet 40GB), let's
-	# try to find it up to 10 times before giving up:
-	LOOP=0
-	while [ $LOOP -lt 10 ]; do
-		ls $SYSFS/block/sd* 2> /dev/null && \
-		for SD in $SYSFS/block/sd*; do
-			if ls -la $SD/device | grep "host$HOST/target" > /dev/null 2>&1; then
-				sleep 2
-				# check fs if e2fsck is available
-				if [ -x /usr/sbin/e2fsck ]; then
-					echo "*** Checking filesystem on $DEVICE. ***"
-					e2fsck -p $DEVICE
-					FSCKCODE=$?
-					echo "*** e2fsck returned with exit code: $FSCKCODE ***"
-					if [ "$FSCKCODE" -gt 3 ]; then
-						echo "*** USB root rejected: filesystem contains errors. ***"
-						# discard hotplug cache
-						hotplugging discard
-						return 1
-					elif [ "$FSCKCODE" -gt 1 ]; then
-						echo "*** Filesystem errors corrected, rebooting ... ***"
-						# do not cleanup (e.g. hotplug), just reboot without init
-						# to be as quickly as possible alive again
-						reboot -f
-					fi
-				fi
-				# now mount the partition
-				mount $DEVICE $MNTPOINT \
-					${FSTYPE:+-t} $FSTYPE ${MNTOPTIONS:+-o} $MNTOPTIONS
-				# reenable hotplug
-				hotplugging enable
-				# return with success
-				return 0
-			fi
-		done
-		[ $LOOP -lt 99 ] && echo "storage: SCSI device not responding!" && sleep 2
-		let LOOP=LOOP+1
-	done
-	# discard hotplug cache
-	hotplugging discard
-	# return with failure code
-	return 1
+	echo "found"
+
+	# check fs if e2fsck is available
+	if [ -x /usr/sbin/e2fsck ]; then
+		echo "*** Checking filesystem on $DEVICE. ***"
+		e2fsck -p $DEVICE
+		FSCKCODE=$?
+		echo "*** e2fsck returned with exit code: $FSCKCODE ***"
+		if [ "$FSCKCODE" -gt 3 ]; then
+			echo "*** USB root rejected: filesystem contains errors. ***"
+			# discard hotplug cache
+			hotplugging discard
+			return 1
+		elif [ "$FSCKCODE" -gt 1 ]; then
+			# no need to reboot
+			echo "*** Filesystem errors corrected. ***"
+		fi
+	fi
+	# now mount the partition
+	mount $DEVICE $MNTPOINT \
+		${FSTYPE:+-t} $FSTYPE ${MNTOPTIONS:+-o} $MNTOPTIONS
+	# reenable hotplug
+	hotplugging enable
+	# return with success
+	return 0
 }
 
 # Load piglet module (hardware specific)
-load_usb_modules() {
+load_modules_2_6_13_1() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	piglet_load_params=" \
 	piglet_width_running=1 \
@@ -281,19 +299,21 @@ load_usb_modules() {
 	fi
 }
 
-load_usb_modules_2_6_19_2() {
+load_modules_2_6_19_2() {
 	piglet_bitfile=/lib/modules/microvoip_isdn_top.bit${HWRevision_BitFileCount}
 	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
 	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
-	piglet_enable_button=2
 	piglet_load_params=""
 
 	case "$HWRevision" in
+		122 | 139 ) # 7270 v1, v2
+			piglet_load_params="piglet_enable_button=2"
+			;;
 		135 | 146 | 153 ) # W920V, IAD, 7570
 			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
-			piglet_enable_button=3
+			piglet_load_params="piglet_enable_button=3"
 			;;
-		144 )# 7240
+		144 ) # 7240
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
@@ -303,31 +323,44 @@ load_usb_modules_2_6_19_2() {
 				piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount} \
 				piglet_bitfilemode=$piglet_bitfilemode \
 				piglet_use_pll3_clk=1 \
+				piglet_enable_button=2 \
 			"
 			;;
-		145 ) # 7270v3
+		145 | 156 ) # 7270v3, 7390
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
+			[ $HWRevision = 145 ] && piglet_load_params="piglet_enable_button=3"
 			;;
 	esac
 
 	modprobe Piglet_noemif \
 		piglet_bitfile=$piglet_bitfile \
-		piglet_enable_button=$piglet_enable_button \
 		dect_firstlevelfile=$dect_firstlevelfile \
 		dect_secondlevelfile=$dect_secondlevelfile \
 		$piglet_load_params
 
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
-		modprobe musb_hdrc
+		if [ $HWRevision = 156 ]; then # 7390
+			modprobe ehci_hcd
+			modprobe ohci_hcd
+		else
+			modprobe musb_hdrc
+		fi
+	fi
+}
+
+load_modules_2_6_28_10() {
+	if modprobe usbcore; then
+		mount -t usbfs usbfs /proc/bus/usb
+		modprobe ifxusb_host
 	fi
 }
 
 # Unmount stuff before pivot_root
 unmount_virtualfs() {
-	for i in /proc/bus/usb /proc $SYSFS; do
+	for i in /dev /proc/bus/usb /proc $SYSFS; do
 		umount "$i"
 	done
 }
@@ -336,7 +369,7 @@ rmmodules() {
 	# disable hotplug
 	hotplugging disable
 
-	for i in sd_mod scsi_mod usb-storage usbahcicore musb_hdrc usbcore Piglet; do
+	for i in sd_mod scsi_mod usb-storage usbahcicore ehci_hcd ifxusb_host musb_hdrc ohci_hcd usbcore Piglet; do
 		rmmod $i
 	done
 

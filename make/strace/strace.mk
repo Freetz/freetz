@@ -1,11 +1,10 @@
-$(call PKG_INIT_BIN, 4.5.20)
-$(PKG)_SOURCE:=strace-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=64dfe10d9db0c1e34030891695ffca4b
-$(PKG)_SITE:=@SF/strace
+$(call PKG_INIT_BIN, 4.6)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=e537b2b1afeec70c0e6e27a0d0fd671e
+$(PKG)_SITE:=@SF/$(pkg)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/strace
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/strace
-
-$(PKG)_CONFIGURE_PRE_CMDS += autoreconf;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

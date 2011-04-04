@@ -1,0 +1,47 @@
+#!/bin/sh
+
+DAEMON=dnsd
+DAEMON_CONFIG=/tmp/flash/${DAEMON}/${DAEMON}.conf
+. /etc/init.d/modlibrc
+
+start() {
+	modlib_startdaemon $DAEMON_BIN -c $DAEMON_CONFIG -t $DNSD_TTL -p $DNSD_PORT -i $DNSD_ADDR -d $DNSD_EXTRA
+}
+
+case $1 in
+	""|load)
+		mkdir -p "/tmp/flash/${DAEMON}"
+
+		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/${DAEMON}_conf > $DAEMON_CONFIG
+
+		modreg cgi 'dnsd' 'dnsd'
+		modreg daemon $DAEMON
+		modreg file $DAEMON conf '$(lang de:"Konfiguration" en:"Configuration")' 0 dnsd_conf
+
+		modlib_start $DNSD_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

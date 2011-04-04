@@ -22,7 +22,7 @@ sec_begin 'Port Status'
 cat << EOF
 <br>
 <p><center>
-<table background="../images/avm-hinten.jpg" width="468" height="89" cellpadding="0" border="0">
+<table background="/images/avm-hinten.jpg" width="468" height="89" cellpadding="0" border="0">
 <tr><td width="150">&nbsp;</td><td width="318">
 <table border="0" cellspacing="4" cellpadding="4" style="border: 1px solid black;background-color:#6C726E" align="center">
 <tr>
@@ -147,7 +147,7 @@ if [ $CPMACCFG_VLAN2 = "eth1" -o $CPMACCFG_VLAN2 = "eth1" -o $CPMACCFG_VLAN3 = "
 	echo -n ' Subnet: <input type="text" name="eth1_subnet" value="'$(html "$CPMACCFG_ETH1_SUBNET")'">'
 	echo -n '</p>'
 else
-	SetToNull=$SetToNull'<input type="hidden" name="eth1_ip" value="">'   
+	SetToNull=$SetToNull'<input type="hidden" name="eth1_ip" value="">'
 fi
 
 if [ $CPMACCFG_VLAN2 = "eth2" -o $CPMACCFG_VLAN2 = "eth2" -o $CPMACCFG_VLAN3 = "eth2" -o $CPMACCFG_VLAN4 = "eth2" ]; then

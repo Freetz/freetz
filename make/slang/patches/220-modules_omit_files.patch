@@ -1,8 +1,8 @@
 --- modules/Makefile.in
 +++ modules/Makefile.in
-@@ -123,24 +123,30 @@
- 		echo $(INSTALL_MODULE) $$i $(DEST_MODULEDIR); \
- 		$(INSTALL_MODULE) $$i $(DEST_MODULEDIR); \
+@@ -143,24 +143,30 @@
+ 		echo $(INSTALL_MODULE) $(OBJDIR)/$$i $(DEST_MODULEDIR); \
+ 		$(INSTALL_MODULE) $(OBJDIR)/$$i $(DEST_MODULEDIR); \
  	done
 +ifdef INSTALL_MODULES_SHELL_RELATED_FILES
  	-$(MKINSDIR) $(DEST_SLSH_DIR)
@@ -29,5 +29,5 @@
  	done
 +endif
  clean:
- 	-/bin/rm -f $(MODULES) *~
- distclean: clean
+ 	-cd $(OBJDIR) && /bin/rm -f $(MODULES)
+ 	-/bin/rm -f *~

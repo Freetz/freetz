@@ -44,7 +44,7 @@ cat << EOF
 <p>
 <input type="hidden" name="setipv6" value="no">
 <input id="c2" type="checkbox" name="setipv6" value="yes"$setipv6_chk>
-<label for="c2">$(lang de:"IPv6 Adresse der Schnittstelle setzen beim Starten bzw. entfernen beim Stoppen." en:"Set on start resp. unset on stop the IPv6 address of the interface.")</label>
+<label for="c2">$(lang de:"IPv6 Adresse der Schnittstelle setzen beim Starten bzw. entfernen beim Stoppen." en:"Set on start resp. unset on stop the IPv6 address of the interface.")</label> 
 </p>
 EOF
 

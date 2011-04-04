@@ -37,6 +37,7 @@ $(BUSYBOX_TOOLS_TARGET_BINARY): $(BUSYBOX_TOOLS_BINARY)
 	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
 	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
 	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/tar
+	@ln -fs busybox $(BUSYBOX_TOOLS_TARGET_DIR)/unzip
 
 busybox-tools: $(BUSYBOX_TOOLS_TARGET_BINARY)
 
@@ -46,7 +47,7 @@ busybox-tools-clean:
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/tar
-
+	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/unzip
 busybox-tools-dirclean:
 	$(RM) -r $(BUSYBOX_TOOLS_DIR)
 
@@ -55,3 +56,4 @@ busybox-tools-distclean: busybox-tools-dirclean
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/makedevs
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/md5sum
 	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/tar
+	$(RM) $(BUSYBOX_TOOLS_TARGET_DIR)/unzip

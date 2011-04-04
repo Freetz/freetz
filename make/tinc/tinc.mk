@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.0.12)
+$(call PKG_INIT_BIN, 1.0.13)
 $(PKG)_SOURCE:=tinc-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=51dc4a2e5bcbc0ff7dd1a420635c614e
+$(PKG)_SOURCE_MD5:=86263994d38c750431efd17e9a91a248
 $(PKG)_SITE:=http://www.tinc-vpn.org/packages/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/tincd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tincd
@@ -10,7 +10,7 @@ $(PKG)_DEPENDS_ON := lzo openssl zlib
 $(PKG)_LIBS := -lssl -lcrypto -llzo2 -lz -ldl
 
 ifeq ($(strip $(FREETZ_PACKAGE_TINC_STATIC)),y)
-$(PKG)_LDFLAGS := -static 
+$(PKG)_LDFLAGS := -static
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TINC_STATIC

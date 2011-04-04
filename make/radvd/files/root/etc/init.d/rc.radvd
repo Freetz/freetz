@@ -7,7 +7,13 @@ config() {
 	modlib_config
 }
 
-setup_ipv6_interface() {
+start_ipv6_interface() {
+	local disable_ipv6="/proc/sys/net/ipv6/conf/${RADVD_INTERFACE}/disable_ipv6"
+	if [ -e $disable_ipv6 -a "$(cat $disable_ipv6 2>/dev/null)" != "0" ]; then
+		ifconfig ${RADVD_INTERFACE} down
+		echo 0 > $disable_ipv6
+		ifconfig ${RADVD_INTERFACE} up
+	fi
 	if [ "$RADVD_SETIPV6" == "yes" ]; then
 		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
@@ -19,7 +25,7 @@ setup_ipv6_interface() {
 	[ "$RADVD_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 }
 
-shut_ipv6_interface() {
+stop_ipv6_interface() {
 	if [ "$RADVD_SETIPV6" == "yes" ]; then
 		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
@@ -32,12 +38,12 @@ shut_ipv6_interface() {
 }
 
 start() {
-	setup_ipv6_interface
+	start_ipv6_interface
 	modlib_startdaemon $DAEMON -C /mod/etc/$DAEMON.conf
 }
 
 stop() {
-	shut_ipv6_interface
+	stop_ipv6_interface
 	return 127
 }
 
@@ -66,7 +72,7 @@ case $1 in
 		modlib_status
 		;;
 	remove)
-		shut_ipv6_interface
+		stop_ipv6_interface
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|remove|restart|status]" 1>&2
