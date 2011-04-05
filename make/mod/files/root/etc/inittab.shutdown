@@ -27,7 +27,7 @@ final_umount() {
 			proc | sys | tmpfs )
 				;;
 			* )
-				if [ "$fs" != "/" -a "$fs" != "/oldroot"]; then
+				if [ "$fs" != "/" -a "$fs" != "/oldroot" ]; then
 					log "unmounting '$type' on '$fs'"
 					umount -f $fs || final_umount_ro "$des" "$fs" "$modi"
 				else
@@ -39,7 +39,6 @@ final_umount() {
 
 	sync
 	sleep 3
-
 }
 
 log() {
