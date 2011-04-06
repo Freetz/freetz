@@ -257,6 +257,7 @@ choice
 	config FREETZ_TYPE_LANG_EN
 		bool "en - international"
 		depends on \
+			FREETZ_TYPE_FON_WLAN_7570 || \
 			! FREETZ_TYPE_ALIEN_HARDWARE && \
 			( \
 			FREETZ_TYPE_FON || \
@@ -265,8 +266,7 @@ choice
 			FREETZ_TYPE_FON_WLAN || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
 			FREETZ_TYPE_FON_WLAN_7170 || \
-			FREETZ_TYPE_FON_WLAN_7270 || \
-			FREETZ_TYPE_FON_WLAN_7570 \
+			FREETZ_TYPE_FON_WLAN_7270 \
 			)
 
 endchoice
