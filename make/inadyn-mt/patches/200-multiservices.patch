@@ -1,6 +1,6 @@
-diff -ur inadyn-mt.v.02.24.36/man/inadyn.8 inadyn-mt.v.02.24.36-new/man/inadyn.8
+diff -ur inadyn-mt.v.02.24.36/man/inadyn.8 inadyn-mt.v.02.24.36-pid-new/man/inadyn.8
 --- man/inadyn.8	2011-03-31 17:18:47.000000000 -0400
-+++ man/inadyn.8	2011-03-31 15:15:37.000000000 -0400
++++ man/inadyn.8	2011-04-02 17:03:08.395703039 -0400
 @@ -142,6 +142,9 @@
  myip.dk /, dhis.org /, among others.  And, of course, dynamic dns server should be
  set to one that supports IPv6.
@@ -20,9 +20,19 @@ diff -ur inadyn-mt.v.02.24.36/man/inadyn.8 inadyn-mt.v.02.24.36-new/man/inadyn.8
  .TP
  .I \-\-proxy_server[:port]
  An http proxy server name and port. The default is none.
-diff -ur inadyn-mt.v.02.24.36/man/inadyn-mt.8 inadyn-mt.v.02.24.36-new/man/inadyn-mt.8
+@@ -183,6 +188,9 @@
+ .I \-\-log_file
+ The name, including the full path, of a log file.
+ .TP
++.I \-\-pid_file
++The name, including the full path, of a pid file.
++.TP
+ .I \-\-cache_dir
+ Directory to which ip, and time update files are written.  Defaults to /tmp on **NIX systems.
+ .TP
+diff -ur inadyn-mt.v.02.24.36/man/inadyn-mt.8 inadyn-mt.v.02.24.36-pid-new/man/inadyn-mt.8
 --- man/inadyn-mt.8	2011-03-31 17:18:47.000000000 -0400
-+++ man/inadyn-mt.8	2011-03-31 15:15:37.000000000 -0400
++++ man/inadyn-mt.8	2011-04-02 17:03:08.409702477 -0400
 @@ -142,6 +142,9 @@
  myip.dk /, dhis.org /, among others.  And, of course, dynamic dns server should be
  set to one that supports IPv6.
@@ -42,15 +52,25 @@ diff -ur inadyn-mt.v.02.24.36/man/inadyn-mt.8 inadyn-mt.v.02.24.36-new/man/inady
  .TP
  .I \-\-proxy_server[:port]
  An http proxy server name and port. The default is none.
-diff -ur inadyn-mt.v.02.24.36/readme.html inadyn-mt.v.02.24.36-new/readme.html
+@@ -183,6 +188,9 @@
+ .I \-\-log_file
+ The name, including the full path, of a log file.
+ .TP
++.I \-\-pid_file
++The name, including the full path, of a pid file.
++.TP
+ .I \-\-cache_dir
+ Directory to which ip, and time update files are written.  Defaults to /tmp on **NIX systems.
+ .TP
+diff -ur inadyn-mt.v.02.24.36/readme.html inadyn-mt.v.02.24.36-pid-new/readme.html
 --- readme.html	2011-03-31 17:18:47.000000000 -0400
-+++ readme.html	2011-03-31 17:46:59.393337932 -0400
++++ readme.html	2011-04-06 02:37:02.216971556 -0400
 @@ -6,7 +6,7 @@
  <body>
  <p><b>inadyn-mt - Simple DYNAMIC DNS client.<br>
  </b></p>
 -<p><b>Version 02.24.36, March 2011<br>
-+<p><b>Version 02.24.36-ms_patch, March 2011<br>
++<p><b>Version 02.24.36-ms_pid_02_patch, April 2011<br>
  </b></p>
  <p><b>INADYN Advanced Help<br>
  </b></p>
@@ -77,24 +97,39 @@ diff -ur inadyn-mt.v.02.24.36/readme.html inadyn-mt.v.02.24.36-new/readme.html
  </p>
  
  <p style="margin-left: 20px;">
-@@ -482,10 +489,12 @@
+@@ -333,6 +340,7 @@
+ '--update_period_sec &#60;#&#62;': how often the IP is checked. The period is in [sec]. 30..864000.  Default is about 10 min. Max is 10 days<br>
+ '--forced_update_period &#60;#&#62;': how often, in seconds, the IP is updated even if it is not changed. 30 sec..30 days, default, 30 days.<br>
+ '--log_file &#60;path/file&#62;': log file path and name<br>
++'--pid_file &#60;path/file&#62;': pid file path and name<br>
+ '--background': runs in background.&nbsp; Output to syslog or to log file [if specified].<br>
+ '--verbose &#60;#&#62;': set dbg level. 0 to 5<br>
+ '--iterations &#60;#&#62;': set the number of DNS updates. Default is 0, which means infinity.<br>
+@@ -482,6 +490,21 @@
  <br>
  </b>
  
--Ver.&nbsp; inadyn-mt 2.24.36 - March 2011<br>
-+Ver.&nbsp; inadyn-mt 2.24.36-ms_patch - March 2011<br>
++Ver.&nbsp; inadyn-mt 2.24.36-ms_pid_patch_02 - April 2011<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - pid file related variable inits<br><br>
++
++Ver.&nbsp; inadyn-mt 2.24.36-ms_pid_patch_01 - April 2011<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - unicode pid file name and path<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - pid file related snprintf return check<br><br>
++
++Ver.&nbsp; inadyn-mt 2.24.36-ms_pid_patch - April 2011<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - multiple update servers, single program instance<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added defaults override option, ip_server_name_global<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added pid file name and path option, pid_file<br><br>
++
+ Ver.&nbsp; inadyn-mt 2.24.36 - March 2011<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - fix debug output out of bounds array index bug<br>
--&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - fail on partial "coupled" address update attempt<br><br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - fail on partial "coupled" address update attempt<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - multiple update servers, single program instance<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added defaults override option, ip_server_name_global<br><br>
- 
- Ver.&nbsp; inadyn-mt 2.24.34 - March 2011<br>
- &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
+diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-pid-new/src/dyndns.c
 --- src/dyndns.c	2011-03-31 17:18:47.000000000 -0400
-+++ src/dyndns.c	2011-03-31 15:15:37.000000000 -0400
++++ src/dyndns.c	2011-04-06 02:36:54.204828488 -0400
 @@ -143,7 +143,9 @@
  static volatile	BOOL		global_is_online=true;
  static volatile BOOL		is_online_thread_exit=false;
@@ -777,15 +812,15 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
 +		/*reset forced update period*/
 +		p_self->forced_update_counter=p_self->forced_update_period_sec_orig/p_self->cmd_check_period;
 +		p_self->forced_update_period_sec=p_self->forced_update_period_sec_orig;			
++
++		if ((fp=utf_fopen(p_self->time_cache, "w"))) {
  
 -			if ((fp=utf_fopen(p_self->ip_cache, "w"))) {
-+		if ((fp=utf_fopen(p_self->time_cache, "w"))) {
++			fprintf(fp,"%ld",time(NULL));
  
 -				int			i;
 -				DYNDNS_IPV	ip_enum;
 -				BOOL		is_dyndns_dual;
-+			fprintf(fp,"%ld",time(NULL));
-+
 +			fclose(fp);
 +		}
 +
@@ -798,16 +833,16 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  				
 -				for (i=0;i<p_self->alias_info.count;i++) {
 +			for (ii=0;ii<p_self->srv_cnt;ii++) {
- 
--					is_dyndns_dual=(NULL!=strstr(p_self->alias_info.names[i].ip_v,DUAL_LIST));
++
 +				for (i=0;i<p_self->info[ii].alias_info.count;i++) {
  
--					ip_enum=p_self->alias_info.names[i].ip_v_enum;
+-					is_dyndns_dual=(NULL!=strstr(p_self->alias_info.names[i].ip_v,DUAL_LIST));
 +					is_dyndns_dual=(NULL!=strstr(p_self->info[ii].alias_info.names[i].ip_v,DUAL_LIST));
  
--					if (p_self->alias_info.update_succeeded[i]) { 						
+-					ip_enum=p_self->alias_info.names[i].ip_v_enum;
 +					ip_enum=p_self->info[ii].alias_info.names[i].ip_v_enum;
-+
+ 
+-					if (p_self->alias_info.update_succeeded[i]) { 						
 +					if (p_self->info[ii].alias_info.update_succeeded[i]) { 						
  
  						if (!(is_dyndns_dual))
@@ -1430,13 +1465,15 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  	if (p_self->external_command != NULL)
  	{
-@@ -1975,41 +2012,6 @@
+@@ -1975,40 +2012,9 @@
  		p_self->external_command=NULL;
  	}
  
 -	if (p_self->info.proxy_server_name.name[ip_store] != NULL)
 -	{
--
++	free(p_self->p_pidfilename);
++	p_self->p_pidfilename = NULL;
+ 
 -		free(p_self->info.proxy_server_name.name[ip_store]);
 -		p_self->info.proxy_server_name.name[ip_store]=NULL;
 -	}
@@ -1468,11 +1505,10 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
 -		free(p_self->info.my_ip_address.name[ip_6]);
 -		p_self->info.my_ip_address.name[ip_6]=NULL;
 -	}
--
+ 
  	free(p_self);
  	p_self = NULL;
- 
-@@ -2080,12 +2082,12 @@
+@@ -2080,12 +2086,12 @@
  	return RC_OK;
  }
  
@@ -1487,7 +1523,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  		DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "\n"\
  					ERROR_FLAG \
-@@ -2093,7 +2095,7 @@
+@@ -2093,7 +2099,7 @@
  					"fatal dyndns server update error for "\
  					"alias, %s.\nThis client should be stopped and corrected for "\
  					"configuration errors, and restarted...\n" \
@@ -1496,7 +1532,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  	else
  
  		DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "\n"\
-@@ -2107,21 +2109,21 @@
+@@ -2107,21 +2113,21 @@
  	return RC_ERROR;
  }
  
@@ -1522,7 +1558,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  }
  
  /*
-@@ -2134,7 +2136,7 @@
+@@ -2134,7 +2140,7 @@
  		- get the current DYN DNS address from DYN DNS server
  		- compare and update if neccessary
  */
@@ -1531,7 +1567,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  {
  
  	RC_TYPE		rc=RC_ERROR;
-@@ -2149,9 +2151,9 @@
+@@ -2149,9 +2155,9 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -1543,7 +1579,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  	do
  	{
-@@ -2164,7 +2166,7 @@
+@@ -2164,7 +2170,7 @@
  
  				if ((is_exit=(p_self->net_retries<net_attempts++))) {
  
@@ -1552,7 +1588,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  					break;
  				}
-@@ -2174,7 +2176,7 @@
+@@ -2174,7 +2180,7 @@
  			else {
  
  				/*ask IP server something so will respond and give me my IP */
@@ -1561,7 +1597,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  				if (rc==RC_OK)
  
-@@ -2184,7 +2186,7 @@
+@@ -2184,7 +2190,7 @@
  
  				if (p_self->net_retries<ip_attempts++) {
  
@@ -1570,7 +1606,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  					break;
  				}
-@@ -2211,7 +2213,7 @@
+@@ -2211,7 +2217,7 @@
  			DBG_PRINTF((LOG_INFO,"I:DYNDNS: dyn_dns_update_ip checking alias table...\n"));
  
  			/*step through aliases list, resolve them and check if they point to my IP*/
@@ -1579,7 +1615,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  			if (rc != RC_OK)
  			{
  				break;
-@@ -2227,7 +2229,7 @@
+@@ -2227,7 +2233,7 @@
  
  					if (p_self->net_retries<net_attempts++) {
  
@@ -1588,7 +1624,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  						break;
  					}
-@@ -2237,11 +2239,13 @@
+@@ -2237,11 +2243,13 @@
  				else {
  
  					/*update IPs marked as not identical with my IP*/
@@ -1604,7 +1640,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  						break;
  					}
-@@ -2250,14 +2254,18 @@
+@@ -2250,14 +2258,18 @@
  
  					if (p_self->net_retries<ip_attempts++) {
  
@@ -1625,7 +1661,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  						break;
  					}
-@@ -2875,7 +2883,7 @@
+@@ -2875,7 +2887,7 @@
  
  
  	*p_ras_thread_data=construct_and_launch_trap_ras_events(dyn_dns_update_ip_handler,p_dyndns,p_dyndns->\
@@ -1634,7 +1670,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  		                   p_dyndns->dbg.level);
  
  	if (*p_ras_thread_data) {
-@@ -2913,20 +2921,6 @@
+@@ -2913,20 +2925,6 @@
  	*src+=inc;
  }
  
@@ -1655,7 +1691,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  /*find the alias given by parameter alias in list of p_dyndns structure alias names and set
    correponding update state boolean to parameter is_updated
  
-@@ -2939,6 +2933,7 @@
+@@ -2939,6 +2937,7 @@
  {
  
  	int		i;
@@ -1663,7 +1699,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  	char	*alias_in=NULL;
  	char	*alias_ip_v=alias;
  	char	*p_alias_ip_v=NULL;
-@@ -2973,39 +2968,42 @@
+@@ -2973,39 +2972,42 @@
  		is_auto=true;
  	}
  
@@ -1709,24 +1745,24 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
 -				}
 -		}
 +						p_dyndns->info[ii].alias_info.update_succeeded[i]=is_updated;
- 
--		free(alias_cmp_src);
++
 +						is_found=true;
 +					}
 +			}
  
--		if (is_found)
+-		free(alias_cmp_src);
 +			free(alias_cmp_src);
  
--			break;
+-		if (is_found)
 +			if (is_found)
-+
+ 
+-			break;
 +				break;
 +		}
  	}
  
  	free(p_alias_ip_v);
-@@ -3129,6 +3127,20 @@
+@@ -3129,6 +3131,20 @@
  	return rc;
  }
  
@@ -1747,7 +1783,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  /*  Record the last ip as per that in ip cache file.  Report it via log output.
  
  	Set update need for each space separated ip, alias pair line read.  
-@@ -3145,6 +3157,7 @@
+@@ -3145,6 +3161,7 @@
  
  	fp=utf_fopen(p_dyndns->ip_cache,"r");
  
@@ -1755,7 +1791,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  	if (fp)	{
  
  		char	ch;
-@@ -3183,11 +3196,11 @@
+@@ -3183,11 +3200,11 @@
  
  					if (strstr(in_str,".")) {
  
@@ -1769,7 +1805,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  					}
  				}
  				else { /*alias*/
-@@ -3209,17 +3222,17 @@
+@@ -3209,17 +3226,17 @@
  			}
  		}
  
@@ -1792,7 +1828,43 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  		free(in_str);
  	}
-@@ -3444,7 +3457,18 @@
+@@ -3412,6 +3429,35 @@
+ 		}
+ 	}
+ 
++	/*if pid-file wanted, create it*/
++	if (p_dyndns->p_pidfilename) {
++		
++		if (strlen(p_dyndns->p_pidfilename) != 0)
++		{
++			FILE *fp=NULL;
++			int obj=0;
++			char pid[7];
++
++
++			if ((fp = utf_fopen(p_dyndns->p_pidfilename, "w")))
++			{
++
++#ifndef _WIN32
++				if (0<snprintf(pid, 7, "%d\n", getpid()))
++#else
++				if (0<_snprintf(pid, 7, "%d\n", _getpid()))
++#endif
++					obj = fwrite(pid, strlen(pid), 1, fp);
++
++				fclose(fp);
++			}
++			if (!fp || obj != 1)
++			{
++				return RC_FILE_IO_OPEN_ERROR;
++			}
++		}
++	}
++
+ 	dyn_dns_print_hello(NULL);
+ 
+ 	/*  now that log is open, report any command line errors eventhough registry params made up for them --
+@@ -3444,7 +3490,18 @@
  
  	if (rc==RC_OK) {
  
@@ -1812,7 +1884,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  #ifdef _WIN32
  
-@@ -3492,6 +3516,9 @@
+@@ -3492,6 +3549,9 @@
  	RC_TYPE				rc=RC_OK;
  	BOOL				init_flag=FALSE;
  	int					current_iteration=0;
@@ -1822,7 +1894,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  #ifdef _WIN32
  
-@@ -3513,23 +3540,45 @@
+@@ -3513,23 +3573,45 @@
  
  		do
  		{
@@ -1842,25 +1914,25 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
 -			else {
 +					break;
- 
--				DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
--					        errorcode_get_name(rc), rc, current_iteration));
++
 +				if (((rc=dyn_dns_update_ip(p_dyndns,i))==RC_OK))
- 
--				p_dyndns->is_bad_config=(rc==RC_DYNDNS_RSP_CONFIG);
++
 +					success_count++;
 +
 +				else {
- 
--				rc=dyn_dns_reinit(p_dyndns);
++
 +					DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
 +								errorcode_get_name(rc), rc, current_iteration));
-+
+ 
+-				DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
+-					        errorcode_get_name(rc), rc, current_iteration));
 +					if (p_dyndns->info[i].is_bad_config)
-+
+ 
+-				p_dyndns->is_bad_config=(rc==RC_DYNDNS_RSP_CONFIG);
 +						bad_config_count++;
 +				}
-+
+ 
+-				rc=dyn_dns_reinit(p_dyndns);
 +				is_global_in_proc_update_pending=(is_global_in_proc_update_pending || p_dyndns->info[i].is_update_pending);
  			}
  
@@ -1877,7 +1949,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  #ifdef USE_SNDFILE
  
  #ifndef USE_THREADS
-@@ -3539,8 +3588,7 @@
+@@ -3539,8 +3621,7 @@
  
  #endif
  
@@ -1887,7 +1959,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  				DBG_PRINTF((LOG_DEBUG,"D:" MODULE_TAG "STOP command received. Exiting.\n"));
  
-@@ -3553,15 +3601,6 @@
+@@ -3553,15 +3634,6 @@
  
  				break;
  			} 
@@ -1903,7 +1975,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  
  			/* sleep the time set in the ->sleep_sec data memeber*/
  			dyn_dns_wait_for_cmd(p_dyndns);
-@@ -3570,8 +3609,8 @@
+@@ -3570,8 +3642,8 @@
  			inc_update_times(p_dyndns,&(p_dyndns->times_since_last_update),1);
  
  			/*reset the command*/
@@ -1914,7 +1986,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  				p_dyndns->cmd=NO_CMD;
  			}
  			else {
-@@ -3602,8 +3641,8 @@
+@@ -3602,8 +3674,8 @@
  #endif
  
  
@@ -1925,15 +1997,15 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.c inadyn-mt.v.02.24.36-new/src/dyndns.c
  		/* dyn_dns_shutdown object */
  		rc = dyn_dns_shutdown(p_dyndns);
  	}
-diff -ur inadyn-mt.v.02.24.36/src/dyndns.h inadyn-mt.v.02.24.36-new/src/dyndns.h
+diff -ur inadyn-mt.v.02.24.36/src/dyndns.h inadyn-mt.v.02.24.36-pid-new/src/dyndns.h
 --- src/dyndns.h	2011-03-31 17:18:47.000000000 -0400
-+++ src/dyndns.h	2011-03-31 17:44:50.550884014 -0400
++++ src/dyndns.h	2011-04-06 02:36:54.212826829 -0400
 @@ -75,7 +75,7 @@
  
  #endif
  
 -#define	DYNDNS_EXTRA_VERSION
-+#define	DYNDNS_EXTRA_VERSION	"-ms_patch"
++#define	DYNDNS_EXTRA_VERSION	"-ms_pid_patch_02"
  
  #define DYNDNS_VERSION_STRING	"02.24.36" DYNDNS_VERSION_SND DYNDNS_VERSION_THD DYNDNS_EXTRA_VERSION
  #define DYNDNS_AGENT_NAME		"inadyn-mt/" DYNDNS_VERSION_STRING
@@ -2057,7 +2129,7 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.h inadyn-mt.v.02.24.36-new/src/dyndns.h
  	HTTP_TRANSACTION	http_tr;
  	char				*p_work_buffer;		/* for HTTP responses*/
  	int					work_buffer_size;
-@@ -544,19 +562,23 @@
+@@ -544,20 +562,25 @@
  	char				*time_cache;
  	char				*ip_cache;
  
@@ -2084,9 +2156,11 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.h inadyn-mt.v.02.24.36-new/src/dyndns.h
 +
 +	DYNDNS_SERVER_NAME ip_server_name_global;
  
++	char *p_pidfilename;
  	/*dbg*/
  	DBG_TYPE			dbg;
-@@ -633,7 +655,7 @@
+ } DYN_DNS_CLIENT;
+@@ -633,7 +656,7 @@
  		- compare and update if neccessary
  */
  
@@ -2095,9 +2169,9 @@ diff -ur inadyn-mt.v.02.24.36/src/dyndns.h inadyn-mt.v.02.24.36-new/src/dyndns.h
  
  /* MAIN - Dyn DNS update entry point.*/
  
-diff -ur inadyn-mt.v.02.24.36/src/errorcode.c inadyn-mt.v.02.24.36-new/src/errorcode.c
+diff -ur inadyn-mt.v.02.24.36/src/errorcode.c inadyn-mt.v.02.24.36-pid-new/src/errorcode.c
 --- src/errorcode.c	2011-03-31 17:18:47.000000000 -0400
-+++ src/errorcode.c	2011-03-31 15:15:37.000000000 -0400
++++ src/errorcode.c	2011-04-02 17:02:59.681008290 -0400
 @@ -56,6 +56,7 @@
          {RC_HTTP_OBJECT_NOT_INITIALIZED,"RC_HTTP_OBJECT_NOT_INITIALIZED"},
          {RC_HTTP_BAD_PARAMETER,"RC_HTTP_BAD_PARAMETER"},
@@ -2106,9 +2180,9 @@ diff -ur inadyn-mt.v.02.24.36/src/errorcode.c inadyn-mt.v.02.24.36-new/src/error
  		{RC_DYNDNS_INVALID_IP_ADDR,"RC_DYNDNS_INVALID_IP_ADDR"},
          {RC_DYNDNS_BUFFER_TOO_SMALL,"RC_DYNDNS_BUFFER_TOO_SMALL"},
          {RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE,"RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE"},
-diff -ur inadyn-mt.v.02.24.36/src/errorcode.h inadyn-mt.v.02.24.36-new/src/errorcode.h
+diff -ur inadyn-mt.v.02.24.36/src/errorcode.h inadyn-mt.v.02.24.36-pid-new/src/errorcode.h
 --- src/errorcode.h	2011-03-31 17:18:47.000000000 -0400
-+++ src/errorcode.h	2011-03-31 15:15:37.000000000 -0400
++++ src/errorcode.h	2011-04-02 17:02:59.684008183 -0400
 @@ -46,6 +46,7 @@
      RC_HTTP_OBJECT_NOT_INITIALIZED				= 0x30,
      RC_HTTP_BAD_PARAMETER						= 0x31,
@@ -2117,9 +2191,9 @@ diff -ur inadyn-mt.v.02.24.36/src/errorcode.h inadyn-mt.v.02.24.36-new/src/error
  	RC_DYNDNS_INVALID_IP_ADDR					= 0x39,
      RC_DYNDNS_BUFFER_TOO_SMALL					= 0x40,
      RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE	= 0x41,
-diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inadyn_cmd.c
+diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-pid-new/src/inadyn_cmd.c
 --- src/inadyn_cmd.c	2011-03-31 17:18:47.000000000 -0400
-+++ src/inadyn_cmd.c	2011-03-31 15:15:37.000000000 -0400
++++ src/inadyn_cmd.c	2011-04-02 17:18:32.171813043 -0400
 @@ -72,6 +72,7 @@
  static RC_TYPE get_dns_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
  static RC_TYPE get_dns_server_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
@@ -2128,7 +2202,15 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  static RC_TYPE get_online_check_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
  static RC_TYPE get_dyndns_system_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
  static RC_TYPE get_update_period_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
-@@ -120,6 +121,13 @@
+@@ -85,6 +86,7 @@
+ #endif
+ 
+ static RC_TYPE get_logfile_name(CMD_DATA *p_cmd, int current_nr, void *p_context);
++static RC_TYPE get_pidfile_name(CMD_DATA *p_cmd, int current_nr, void *p_context);
+ static RC_TYPE set_silent_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
+ static RC_TYPE set_verbose_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
+ static RC_TYPE get_proxy_server_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
+@@ -120,6 +122,13 @@
  
  #endif
  
@@ -2142,7 +2224,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  static CMD_DESCRIPTION_TYPE cmd_options_table[] =
      {
          {"--help",		0,	{help_handler, NULL,0},	"help" },
-@@ -160,6 +168,10 @@
+@@ -160,6 +169,10 @@
           "<srv_name[:port] local_url> - local IP is detected by parsing the response after returned by this server and URL.  "\
           "The first IP in found http response is considered 'my IP'."},
  
@@ -2153,7 +2235,38 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
          {"--online_check_url",	2,	{get_online_check_url_handler, NULL,0},
           "<srv_name[:port] local_url> - URL to reach to confirm online status.  "\
           "Default value:  " DYNDNS_MY_ONLINE_CHECK " /"},
-@@ -398,15 +410,15 @@
+@@ -203,6 +216,7 @@
+ #endif
+ 
+         {"--log_file",	1,	{get_logfile_name, NULL,0},		"<path/file> - log file path and name"},
++        {"--pid_file",	1,	{get_pidfile_name, NULL,0},		"pid file path and name"},
+         {"--background", 0,	{set_silent_handler, NULL,0},		"run in background. output to log file or to syslog"},
+ 
+ 		{"--verbose",	1,	{set_verbose_handler, NULL,0},	"<#> - set dbg level. 0 to 5"},
+@@ -257,6 +271,22 @@
+         {NULL,		0,	{0, NULL,0},	"" }
+     };
+ 
++static RC_TYPE get_pidfile_name(CMD_DATA *p_cmd, int current_nr, void *p_context)
++{
++	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
++	if (p_self == NULL)
++	{
++		return RC_INVALID_POINTER;
++	}
++
++	p_self->p_pidfilename = (char *) safe_malloc(strlen(p_cmd->argv[current_nr]) + 1);
++	if (p_self->p_pidfilename == NULL)
++	{
++		return  RC_OUT_OF_MEMORY;
++	}
++	strcpy(p_self->p_pidfilename, p_cmd->argv[current_nr]);
++	return RC_OK;
++}
+ 
+ void print_help_page(void)
+ {
+@@ -398,15 +428,15 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2173,7 +2286,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  
  	return RC_OK;
  }
-@@ -419,14 +431,14 @@
+@@ -419,14 +449,14 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2192,7 +2305,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  	return RC_OK;
  }
  
-@@ -452,7 +464,8 @@
+@@ -452,7 +482,8 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2202,7 +2315,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  
  		return RC_DYNDNS_TOO_MANY_ALIASES;
  	}
-@@ -462,42 +475,46 @@
+@@ -462,42 +493,46 @@
  
  	if (p_hash)	{
  
@@ -2261,7 +2374,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  		}
  		else {
  
-@@ -510,7 +527,7 @@
+@@ -510,7 +545,7 @@
  			}
  			else {
  
@@ -2270,7 +2383,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  
  				if (strcmp(ip_ver_str,"auto")) {
  
-@@ -518,24 +535,24 @@
+@@ -518,24 +553,24 @@
  
  						if (strcmp(ip_ver_str,"ip4"))
  
@@ -2301,7 +2414,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  
  
  	return RC_OK;
-@@ -550,13 +567,13 @@
+@@ -550,13 +585,13 @@
  
  	if (!(current_nr+1<p_cmd->argc)) {
  
@@ -2317,7 +2430,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  		}
  		else {
  
-@@ -583,7 +600,7 @@
+@@ -583,7 +618,7 @@
  
  		if ((RC_OK==(rc=do_get_alias_handler(p_cmd,current_nr,p_context,"ip6"))))
  
@@ -2326,7 +2439,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  	}
  
  	return rc;
-@@ -629,7 +646,7 @@
+@@ -629,7 +664,7 @@
  /** Returns the svr name and port if the format is :
   * name[:port] url.
   */
@@ -2335,7 +2448,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  {
  	RC_TYPE rc;
      int port = -1;
-@@ -640,22 +657,22 @@
+@@ -640,22 +675,22 @@
  	}
  
  	/*user*/
@@ -2365,7 +2478,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  
      return rc;
  }
-@@ -663,7 +680,34 @@
+@@ -663,7 +698,34 @@
  static RC_TYPE get_ip_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
  
@@ -2401,7 +2514,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  }
  
  static RC_TYPE get_online_check_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
-@@ -672,26 +716,112 @@
+@@ -672,26 +734,112 @@
      return set_url_param(p_cmd,current_nr,&(((DYN_DNS_CLIENT *) (p_context))->info_online_status));
  }
  
@@ -2521,7 +2634,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  RC_TYPE get_dns_server_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
  	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
-@@ -700,14 +830,14 @@
+@@ -700,14 +848,14 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2540,7 +2653,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  
  	return RC_OK;
  }
-@@ -726,11 +856,11 @@
+@@ -726,11 +874,11 @@
  	}
  
  	/*user*/
@@ -2555,7 +2668,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
      }                                   
  	return rc;    
  }
-@@ -995,43 +1125,6 @@
+@@ -995,43 +1143,6 @@
  	return RC_OK;
  }
  
@@ -2599,7 +2712,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  static RC_TYPE get_debug_level_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
  
-@@ -2223,8 +2316,7 @@
+@@ -2223,8 +2334,7 @@
  			rc = get_cmd_parse_data_with_error_handling(argv, argc, cmd_options_table,pf_err_handler);
  		}
  
@@ -2609,7 +2722,7 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  		{
  			break;
  		}
-@@ -2232,52 +2324,61 @@
+@@ -2232,52 +2342,61 @@
  		/*settings that may change due to cmd line options*/
  		{
  			int	len=0;
@@ -2625,12 +2738,12 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
 +			{
 +				p_self->info_online_status.name=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK)+1);
 +				strcpy(p_self->info_online_status.name,DYNDNS_MY_ONLINE_CHECK);
++
++				p_self->info_online_status.url=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK_URL)+1);
++				strcpy(p_self->info_online_status.url,DYNDNS_MY_ONLINE_CHECK_URL);
  
 -				p_self->info.ip_server_url=safe_malloc(strlen(p_self->info.p_dns_system->p_ip_server_url)+1);
 -				strcpy(p_self->info.ip_server_url, p_self->info.p_dns_system->p_ip_server_url);				
-+				p_self->info_online_status.url=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK_URL)+1);
-+				strcpy(p_self->info_online_status.url,DYNDNS_MY_ONLINE_CHECK_URL);
-+
 +				p_self->info_online_status.port=80;
              }
  
@@ -2647,23 +2760,27 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
 -				p_self->info_online_status.ip_server_name.port=80;
 -            }
 +			for (i=0;i<p_self->srv_cnt;i++) {
-+
-+    			/*dyndns server*/
-+				if (!(p_self->info[i].dyndns_server_name.name))
-+				{
-+					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_name)))) {
  
 -    		/*dyndns server*/
 -            if (!(p_self->info.dyndns_server_name.name[ip_store]))
 -            {
 -				if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_name)))) {
-+						p_self->info[i].dyndns_server_name.name=safe_malloc(len+1);
-+        				strcpy(p_self->info[i].dyndns_server_name.name, p_self->info[i].p_dns_system->p_dyndns_server_name);
-+					}				
-+				}
++    			/*dyndns server*/
++				if (!(p_self->info[i].dyndns_server_name.name))
++				{
++					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_name)))) {
  
 -					p_self->info.dyndns_server_name.name[ip_store]=safe_malloc(len+1);
 -        			strcpy(p_self->info.dyndns_server_name.name[ip_store], p_self->info.p_dns_system->p_dyndns_server_name);
++						p_self->info[i].dyndns_server_name.name=safe_malloc(len+1);
++        				strcpy(p_self->info[i].dyndns_server_name.name, p_self->info[i].p_dns_system->p_dyndns_server_name);
++					}				
+ 				}
+-			}
+ 
+-			if (!(p_self->info.dyndns_server_url)) 
+-			{
+-				if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_url)))) {
 + 				/*ip server*/
 +				if (!(p_self->info[i].ip_server_name.name))
 +				{
@@ -2672,15 +2789,11 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
 +				
 +					p_self->info[i].ip_server_name.url=safe_malloc(strlen(p_self->info[i].p_dns_system->p_ip_server_url)+1);
 +					strcpy(p_self->info[i].ip_server_name.url, p_self->info[i].p_dns_system->p_ip_server_url);				
- 				}
--			}
- 
--			if (!(p_self->info.dyndns_server_url)) 
--			{
--				if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_url)))) {
++				}
  
 -					p_self->info.dyndns_server_url=safe_malloc(len+1);
 -      				strcpy(p_self->info.dyndns_server_url, p_self->info.p_dns_system->p_dyndns_server_url);
++
 +				if (!(p_self->info[i].dyndns_server_name.url)) 
 +				{
 +					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_url)))) {
@@ -2700,9 +2813,9 @@ diff -ur inadyn-mt.v.02.24.36/src/inadyn_cmd.c inadyn-mt.v.02.24.36-new/src/inad
  
  		{
  			rc = RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS;
-diff -ur inadyn-mt.v.02.24.36/src/lang.c inadyn-mt.v.02.24.36-new/src/lang.c
+diff -ur inadyn-mt.v.02.24.36/src/lang.c inadyn-mt.v.02.24.36-pid-new/src/lang.c
 --- src/lang.c	2011-03-31 17:18:47.000000000 -0400
-+++ src/lang.c	2011-03-31 15:15:37.000000000 -0400
++++ src/lang.c	2011-04-02 17:02:59.741006185 -0400
 @@ -659,14 +659,20 @@
  	RC_TYPE				rc=RC_OK;
  
@@ -2727,9 +2840,9 @@ diff -ur inadyn-mt.v.02.24.36/src/lang.c inadyn-mt.v.02.24.36-new/src/lang.c
  
  
  	rc=do_init_lang_strings(pLOG_FILE,lang_file_and_path);
-diff -ur inadyn-mt.v.02.24.36/src/path.c inadyn-mt.v.02.24.36-new/src/path.c
+diff -ur inadyn-mt.v.02.24.36/src/path.c inadyn-mt.v.02.24.36-pid-new/src/path.c
 --- src/path.c	2011-03-31 17:18:47.000000000 -0400
-+++ src/path.c	2011-03-31 15:15:37.000000000 -0400
++++ src/path.c	2011-04-02 17:02:59.807003867 -0400
 @@ -635,7 +635,7 @@
  	FILE    *fp=NULL;
  
