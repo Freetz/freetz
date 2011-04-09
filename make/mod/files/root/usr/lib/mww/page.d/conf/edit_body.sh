@@ -1,6 +1,6 @@
 frm_begin() {
 	cat << EOF
-<form method="post">
+<form method="post" action="$SCRIPT_NAME$PATH_INFO">
 EOF
 }
 
