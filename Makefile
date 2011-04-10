@@ -91,6 +91,11 @@ define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
 endef
 
+# check for proper make version
+ifneq ($(filter 3.7% 3.80,$(MAKE_VERSION)),)
+$(error Your make ($(MAKE_VERSION)) is too old. Go get at least 3.81)
+endif
+
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
 $(error Running makefile as root is prohibited! Please build Freetz as normal user)
