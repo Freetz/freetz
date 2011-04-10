@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_SISPMCTL
-	bool "sispmctl 2.7 (binary only)"
+	bool "sispmctl 3.0"
 	select FREETZ_LIB_libusb
 	default n
 	help
@@ -7,6 +7,19 @@ config FREETZ_PACKAGE_SISPMCTL
 		SiS-PM (sispm) USB-controlled power-outlet device under Linux.
 		Note that the device is also sold under different names, i.e. as
 		"IntelliPlug" in Germany.
+
+config FREETZ_SISPMCTL_CGI
+	bool "freetz specific cgi, rc script and parameter configuration"
+	depends FREETZ_PACKAGE_SISPMCTL
+	default n
+	help
+		This option integrates freetz specific cgi for configuration
+		of sispmctl and definition of start parameters for
+		integrated web server. Also freetz adapted rc script with all
+		required configuration files is integrated into image.
+		If this option is deactivated, only sispmctl binary without
+		freetz specific adaptation will be integrated into image.
+		In this case user must start and handle the binary manually.
 
 config FREETZ_SISPMCTL_WEB
 	bool "enable internal web server"
@@ -16,3 +29,22 @@ config FREETZ_SISPMCTL_WEB
 		This option enables sispmctl's internal web server and
 		installs the standard skin.
 
+config FREETZ_SISPMCTL_SKIN2
+	bool "install alternative GOOGLE skin for web interface"
+	depends FREETZ_PACKAGE_SISPMCTL
+	depends FREETZ_SISPMCTL_WEB
+	default n
+	help
+		This option installs the second alternative skin
+		(GOOGLE) for internal web interface
+		additionaly to standard skin.
+
+config FREETZ_SISPMCTL_SKIN3
+	bool "install alternative SMARTPHONE skin for web interface"
+	depends FREETZ_PACKAGE_SISPMCTL
+	depends FREETZ_SISPMCTL_WEB
+	default n
+	help
+		This option installs the third alternative skin
+		(SMARTPHONE) for internal web interface
+		additionaly to standard skin.
