@@ -13,11 +13,12 @@ RUN_LIBMODMOUNT="[ -x /usr/lib/libmodmount.sh ] && . /usr/lib/libmodmount.sh$PAT
 
 # first of all old usbstorage stuff
 
-# load ext2 and ext3 modules
-modsed '/modprobe vfat/a \
-modprobe ext2 \
-modprobe ext3 \
-modprobe reiserfs' "${STORAGE_FILE}"
+# load filesystem modules
+modsed 's!modprobe vfat! \
+for fsmod in fat vfat  mbcache ext2  jbd ext3  reiserfs  nls_utf8 hfsplus; do \
+grep -q "^$fsmod " /proc/modules \&\& continue; \
+[ -e /lib/modules/*/kernel/fs/*/$fsmod.ko ] \&\& modprobe $fsmod; \
+done!' "${STORAGE_FILE}"
 
 # replace rm -rf $dir with rmdir $dir
 # remove all lines with "chmod 000"
