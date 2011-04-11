@@ -25,7 +25,7 @@
  /* Support for SGI-ish mips targets.  */
  #define TARGET_LITTLE_SYM		bfd_elf32_littlemips_vec
  #define TARGET_LITTLE_NAME		"elf32-littlemips"
-@@ -1789,6 +1800,7 @@ mips_vxworks_final_write_processing (bfd
+@@ -1820,6 +1831,7 @@ mips_vxworks_final_write_processing (bfd
  #undef elf_backend_additional_program_headers
  #undef elf_backend_modify_segment_map
  #undef elf_backend_symbol_processing
@@ -125,7 +125,7 @@
  	  }
  
        /* See if this reloc would need to refer to a MIPS16 hard-float stub,
-@@ -12609,7 +12631,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
+@@ -12612,7 +12634,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
  	  break;
  	}
      }
@@ -166,7 +166,7 @@
  {
 --- gas/config/tc-mips.c
 +++ gas/config/tc-mips.c
-@@ -1908,6 +1908,12 @@ md_begin (void)
+@@ -1907,6 +1907,12 @@ md_begin (void)
  	as_bad (_("-G may not be used in position-independent code"));
        g_switch_value = 0;
      }
@@ -179,7 +179,7 @@
  
    if (! bfd_set_arch_mach (stdoutput, bfd_arch_mips, file_mips_arch))
      as_warn (_("Could not set architecture and machine"));
-@@ -11268,6 +11274,7 @@
+@@ -11370,6 +11376,7 @@
      OPTION_PDR,
      OPTION_NO_PDR,
      OPTION_MVXWORKS_PIC,
@@ -187,7 +187,7 @@
  #endif /* OBJ_ELF */
      OPTION_END_OF_ENUM    
    };
-@@ -11375,6 +11382,7 @@ struct option md_longopts[] =
+@@ -11477,6 +11484,7 @@ struct option md_longopts[] =
    {"mpdr", no_argument, NULL, OPTION_PDR},
    {"mno-pdr", no_argument, NULL, OPTION_NO_PDR},
    {"mvxworks-pic", no_argument, NULL, OPTION_MVXWORKS_PIC},
@@ -195,7 +195,7 @@
  #endif /* OBJ_ELF */
  
    {NULL, no_argument, NULL, 0}
-@@ -11823,6 +11831,11 @@ md_parse_option (int c, char *arg)
+@@ -11925,6 +11933,11 @@ md_parse_option (int c, char *arg)
      case OPTION_MVXWORKS_PIC:
        mips_pic = VXWORKS_PIC;
        break;

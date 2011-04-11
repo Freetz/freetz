@@ -1,0 +1,18 @@
+From: Nick Clifton <nickc@redhat.com>
+Date: Fri, 25 Mar 2011 17:18:54 +0000
+Subject: [PATCH] 	* ar.c (write_archive): Plug memory leak.
+
+diff --git binutils/ar.c binutils/ar.c
+index 263795f..206c7a9 100644
+--- binutils/ar.c
++++ binutils/ar.c
+@@ -1069,7 +1069,6 @@ write_archive (bfd *iarch)
+ 
+   if (smart_rename (new_name, old_name, 0) != 0)
+     xexit (1);
+-  free (old_name);
+ }
+ 
+ /* Return a pointer to the pointer to the entry which should be rplacd'd
+--
+1.7.3.4

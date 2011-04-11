@@ -1,6 +1,6 @@
 --- ld/emultempl/elf32.em
 +++ ld/emultempl/elf32.em
-@@ -1271,6 +1271,8 @@
+@@ -1275,6 +1275,8 @@
  	      && command_line.rpath == NULL)
  	    {
  	      lib_path = (const char *) getenv ("LD_RUN_PATH");
@@ -9,7 +9,7 @@
  	      if (gld${EMULATION_NAME}_search_needed (lib_path, &n,
  						      force))
  		break;
-@@ -1498,6 +1500,8 @@
+@@ -1502,6 +1504,8 @@
    rpath = command_line.rpath;
    if (rpath == NULL)
      rpath = (const char *) getenv ("LD_RUN_PATH");
