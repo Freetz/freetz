@@ -7,10 +7,10 @@ case $1 in
 	""|load)
 		modreg file onlinechanged conf 'Onlinechanged' 0 "onlinechanged"
 		modreg daemon --hide onlinechanged
-		
+
 		echo -n 'Setting up onlinechanged scripting ... '
 		[ ! -f /tmp/flash/$DAEMON-cgi ] && cp /etc/default.$DAEMON/$DAEMON-cgi /tmp/flash/
-		( sh /tmp/flash/$DAEMON-cgi start )&
+		sh /tmp/flash/$DAEMON-cgi start
 		echo 'done.'
 		;;
 	unload)
@@ -26,7 +26,7 @@ case $1 in
 	status)
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac

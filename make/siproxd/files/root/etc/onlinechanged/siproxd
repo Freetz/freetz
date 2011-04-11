@@ -1,0 +1,10 @@
+#!/bin/sh
+
+[ "$(/etc/init.d/rc.siproxd status)" != "running" ] && exit 0
+
+case "$1" in
+	online)
+		logger -t ONLINECHANGED "Reloading SIPROXD"
+		/etc/init.d/rc.siproxd reload
+		;;
+esac

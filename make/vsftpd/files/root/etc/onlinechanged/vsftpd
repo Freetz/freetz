@@ -1,0 +1,10 @@
+#!/bin/sh
+. /mod/etc/conf/vsftpd.cfg
+[ "$VSFTPD_ENABLE_RELOAD_SCRIPT" != "yes" ] && exit 0
+
+case "$1" in
+	online)
+		logger -t ONLINECHANGED "Reloading VSFTPD"
+		/etc/init.d/rc.vsftpd reload
+		;;
+esac

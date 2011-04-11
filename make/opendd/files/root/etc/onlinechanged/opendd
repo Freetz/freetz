@@ -1,0 +1,10 @@
+#!/bin/sh
+. /mod/etc/conf/opendd.cfg
+[ "$OPENDD_ENABLED" != "yes" ] && exit 0
+
+case "$1" in
+	online)
+		logger -t ONLINECHANGED "Running OpenDD"
+		/etc/init.d/rc.opendd run
+		;;
+esac

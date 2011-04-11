@@ -1,0 +1,10 @@
+#!/bin/sh
+
+[ "$(/etc/init.d/rc.knock status)" != "running" ] && exit 0
+
+case "$1" in
+	online)
+		logger -t ONLINECHANGED "Restarting KNOCK"
+		/etc/init.d/rc.knock restart
+		;;
+esac
