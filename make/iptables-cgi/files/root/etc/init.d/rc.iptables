@@ -16,69 +16,9 @@ else
 fi
 
 save_rules() {
-	rm $SAVEFILE
-	touch $SAVEFILE
-	iptables -vnL --line-numbers >/tmp/test
-	iptables -t nat -vnL --line-numbers >>/tmp/test
-	sed -e "s/\*/x/g" /var/tmp/test > /var/tmp/iptables_tmp
-	rm /var/tmp/test
-	i=0
-	while read LINE; do
-		if [[ $(echo $LINE | grep -c "Chain") = 1 ]]; then
-			CHAIN=$(echo $LINE | sed -e "s/Chain //g" | sed -e "s/ (policy.*//g")
-			if [ $CHAIN = "PREROUTING" ] || [ $CHAIN = "POSTROUTING" ]; then
-				N="-t nat "
-			fi
-			i=i+1
-		else
-			echo ${LINE} | grep "^[1-9]" > /dev/null
-			if [ $? = 0 ]; then
-				SPORT=''; DPORT=''
-				A=$(echo $LINE | awk '{print $4}')
-				P="-p $(echo $LINE | awk '{print $5}')"
-				PORT1=$(echo $LINE | awk '{print $12}')
-				echo $PORT1 | grep "spt:" > /dev/null
-				if [ $? -eq 0 ]; then
-					SPORT="--sport ${PORT1//spt:/}"
-				fi
-				echo $PORT1 | grep "dpt:" > /dev/null
-				if [ $? -eq 0 ]; then
-					DPORT="--dport ${PORT1//dpt:/}"
-				fi
-				PORT2=$(echo $LINE | awk '{print $13}')
-				echo $PORT2 | grep "spt:" > /dev/null
-				if [ $? -eq 0 ]; then
-					SPORT="--sport ${PORT2//spt:/}"
-				fi
-				echo $PORT2 | grep "dpt:" > /dev/null
-				if [ $? -eq 0 ]; then
-					DPORT="--dport ${PORT2//dpt:/}"
-				fi
-
-				S="-s $(echo $LINE | awk '{print $9}')"
-				D="-d $(echo $LINE | awk '{print $10}')"
-				I="-i $(echo $LINE | awk '{print $7}')"
-				O="-o $(echo $LINE | awk '{print $8}')"
-
-				# Check if input interface is available
-				echo $I | grep x > /dev/null
-				if [ $? -eq 0 ]; then
-					I=""
-				fi
-
-				# Check if output interface is available
-				echo $O | grep x > /dev/null
-				if [ $? -eq 0 ]; then
-					O=""
-				fi
-
-
-				echo "$N-A $CHAIN $S $D $P $SPORT $DPORT $I $O -j $A" >> $SAVEFILE
-			fi
-		fi
-	done </var/tmp/iptables_tmp
-	rm /var/tmp/iptables_tmp
-	echo 'Saving list done.'
+	echo 'Saving list ... '
+	iptables-save > $SAVEFILE
+	echo ' done.'
 }
 
 start() {
@@ -88,9 +28,7 @@ start() {
 	done
 	echo 'done.'
 	echo -n 'Loading table list ... '
-	while read LINE; do
-		iptables $LINE
-	done < $SAVEFILE
+	iptables-restore < $SAVEFILE
 	echo 'done.'
 }
 
@@ -190,6 +128,11 @@ save () {
 stop () {
 	echo -n 'Flushing rules and unloading modules ... '
 	iptables -F
+	iptables -X
+	for t in $(cat /proc/net/ip_tables_names 2>/dev/null); do
+		iptables -t $t -F
+		iptables -t $t -X
+	done
 	# remove modules in reverse order
 	reverse_list=
 	for MODUL in $MODULES; do
