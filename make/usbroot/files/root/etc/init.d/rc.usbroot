@@ -151,8 +151,9 @@ mount_usbroot() {
 		return 1
 	fi
 
-	case "$(uname -r)" in
-		2.6.28.10 )
+	kver="$(uname -r)"
+	case "$kver" in
+		2.6.28.10 | 2.6.32.21 )
 			# no need to cache hotplug events, udev does it
 			mount dev /oldroot -t tmpfs -o nosuid
 
@@ -165,7 +166,12 @@ mount_usbroot() {
 			# create sd* devices
 			makedevs -d /etc/usbroot_device.table /
 
-			load_modules_2_6_28_10
+			if [ "$kver" = "2.6.28.10" ]; then
+				load_modules_2_6_28_10
+			else
+				# no need to load any modules for 2.6.32.21
+				mount -t usbfs usbfs /proc/bus/usb
+			fi
 			;;
 
 		2.6.19.2 )
@@ -354,9 +360,21 @@ load_modules_2_6_19_2() {
 load_modules_2_6_28_10() {
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
-		modprobe ifxusb_host
+		case "$HWRevision" in
+			156 ) # 7390
+				modprobe ehci_hcd
+				modprobe ohci_hcd
+				;;
+			172 ) # 7320
+				modprobe ifxusb_host
+				;;
+			* )
+				echo "HWRevision $HWRevision not supported here."
+				;;
+		esac
 	fi
 }
+
 
 # Unmount stuff before pivot_root
 unmount_virtualfs() {
