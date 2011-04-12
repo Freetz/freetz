@@ -35,22 +35,10 @@ config() { :; }
 #   dummy function if "stop_pre" is not defined in parent-script
 stop_pre() { :; }
 
-# stop:
-#   dummy function if "stop" is not defined in parent-script
-stop() {
-	return 127
-}
-
 # stop_post:
 #   dummy function if "stop_post" is not defined in parent-script
 #   parameter $1: return-value of stop(), 0=sucessfully
 stop_post() { :; }
-
-# reload:
-#   dummy function if "reload" is not defined in parent-script
-reload() {
-	return 127
-}
 
 
 # modlib_addgroup:
@@ -220,6 +208,34 @@ modlib_force_start() {
 	modlib_start
 }
 
+# stop
+#   could be overwritten in parent script
+stop() {
+	local retval=0
+	case "$1" in
+		0)
+			local id=$(cat "$PID_FILE" 2>/dev/null)
+			local cnt=9
+			while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
+				kill $id 2>/dev/null
+				local retval=$?
+				sleep 1
+				let cnt--
+			done
+			if kill -0 $id 2>/dev/null; then
+				kill -9 $id 2>/dev/null
+				local retval=$?
+				sleep 1
+				kill -0 $id 2>/dev/null || local retval=0
+			fi
+			;;
+		5)
+			killall $DAEMON_BIN 2>/dev/null
+			;;
+	esac
+	return $retval
+}
+
 # modlib_stop
 #   stops the daemon
 #	kills daemon with "stop" of rc.$DAEMON if available
@@ -231,26 +247,8 @@ modlib_stop() {
 	case $? in
 		0)
 			stop_pre
-			stop
+			stop 0
 			local retval=$?
-			if [ "$retval" -ne 127 ]; then
-				sleep 1
-			else
-				local retval=0
-				local cnt=9
-				while [ $cnt -ge 0 ] && kill -0 $id 2>/dev/null; do
-					kill $id 2>/dev/null
-					local retval=$?
-					sleep 1
-					let cnt--
-				done
-				if kill -0 $id 2>/dev/null; then
-					kill -9 $id 2>/dev/null
-					local retval=$?
-					sleep 1
-					kill -0 $id 2>/dev/null || local retval=0
-				fi
-			fi
 			stop_post $retval
 			if ! kill -0 $id 2>/dev/null && [ "$retval" -eq 0 ]; then
 				rm -f "$fn"
@@ -264,7 +262,7 @@ modlib_stop() {
 			echo 'not running.'
 			;;
 		5)
-			killall $DAEMON_BIN 2>/dev/null
+			stop 5
 			echo 'inetd instances killed, done.'
 			;;
 		*)
@@ -272,6 +270,7 @@ modlib_stop() {
 			return 1
 			;;
 	esac
+	return 0
 }
 
 # modlib_force_stop
@@ -302,6 +301,23 @@ modlib_force_restart() {
 	modlib_force_start
 }
 
+# reload
+#   could be overwritten in parent script
+reload() {
+	local retval=1
+	case "$1" in
+		0)
+			kill -HUP $(cat "$PID_FILE") 2> /dev/null
+			local retval=$?
+			;;
+		5)
+			killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
+			local retval=0
+			;;
+	esac
+	return $retval
+}
+
 # modlib_reload
 #   reloads the daemon with SIGHUP
 #   if available runs "config" of rc.$DAEMON
@@ -313,16 +329,8 @@ modlib_reload() {
 	case $? in
 		0)
 			config
-
 			reload 0
 			local retval=$?
-			if [ $retval -ne 127 ]; then
-				sleep 1
-			else
-				kill -HUP $(cat "$fn") 2> /dev/null
-				local retval=$?
-			fi
-
 			if [ $retval -eq 0 ]; then
 				echo 'done.'
 				return 0
@@ -334,20 +342,18 @@ modlib_reload() {
 			;;
 		3)
 			echo 'not running.'
-			return 0
 			;;
 		5)
 			config
 			reload 5
-			[ $? -eq 127 ] && killall -HUP $DAEMON_BIN 2>/dev/null 1>&2
 			echo 'inetd.'
-			return 0
 			;;
 		*)
 			echo 'status unknown, failed.'
 			return 1
 			;;
 		esac
+		return 0
 }
 
 # modlib_status
