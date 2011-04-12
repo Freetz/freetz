@@ -15,9 +15,8 @@ start() {
 	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf
 }
 
-stop() {
+stop_post() {
 	/etc/init.d/rc.multid ntp_enable >/dev/null
-	return 127
 }
 
 case $1 in

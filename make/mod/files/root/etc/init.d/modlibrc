@@ -248,6 +248,7 @@ modlib_stop() {
 					kill -9 $id 2>/dev/null
 					local retval=$?
 					sleep 1
+					kill -0 $id 2>/dev/null || local retval=0
 				fi
 			fi
 			stop_post $retval
