@@ -6,8 +6,13 @@ PID_FILE=/var/run/$DAEMON.pid
 . /etc/init.d/modlibrc
 
 start() {
+	mkdir -p /tmp/$DAEMON_BIN
 	[ -z "$PINGTUNNEL_EXTRA" ] && PINGTUNNEL_EXTRA="-c lan -syslog"
-	modlib_startdaemon start-stop-daemon -S -b -q -m -p $PID_FILE -n ptunnel -a $DAEMON_BIN -- $PINGTUNNEL_EXTRA -x $PINGTUNNEL_PASSWORD
+	modlib_startdaemon $DAEMON_BIN $PINGTUNNEL_EXTRA -x $PINGTUNNEL_PASSWORD -daemon $PID_FILE -chroot /tmp/$DAEMON_BIN
+}
+
+stop_post() {
+	[ "$1" == "0" ] && rm -rf /tmp/$DAEMON_BIN 2>/dev/null
 }
 
 case $1 in
