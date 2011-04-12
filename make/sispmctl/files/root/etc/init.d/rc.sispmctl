@@ -3,12 +3,34 @@
 DAEMON=sispmctl
 DAEMON_LONG_NAME="SIS-PM"
 
-[ -n "$SISPMCTL_PORT" ] && DEFAULTPORT="$SISPMCTL_PORT" || DEFAULTPORT="2638"
 MODSHAREDIR="/var/mod/usr/share"
 SISPMCTL_DEFAULT_WEBDIR="/usr/share/$DAEMON"
 SISPMCTL_WEBDIR="$MODSHAREDIR/$DAEMON"
 
 . /etc/init.d/modlibrc
+
+[ -n "$SISPMCTL_PORT" ] && DEFAULTPORT="$SISPMCTL_PORT" || DEFAULTPORT="2638"
+
+sis_error_reporter()
+{
+	# printing error messages finalising it with 'done' or 'failed'
+	# $1: Error code
+	# $2: Error message (optional)
+	retval=$1
+	case $retval in
+		0)	echo "done." && return $retval;;
+		1)	echo "failed." && return $retval;;
+		11)	echo -n "none SIS-PM device connected on USB port ... ";;
+		12)	echo -n "web directory with actual skin not found ... ";;
+		13)	echo -n "can not create working directory for web interface ... ";;
+		21)	echo -n "PID verification fault ... ";;
+		*)
+			[ -z "$2" ] && echo -n "unknown error #$1 ... " || echo -n "$2 ... "
+			;;
+	esac
+	echo "failed."
+	return $retval
+}
 
 sis_pid()
 {
@@ -27,53 +49,55 @@ sis_pid()
 	return $retval
 }
 
-
 sispmctl_daemon()
 {
-	# daemon simulation for integrated webinterface
-	# $1: device number (0...9) in freetz configuration (required for name conversion)  
-	[ -n "$1" ] && out_number=$1 || out_number=1
-	eval sis_id="\$SISPMCTL_D${jj}_ID"
+	# daemon start for integrated web interface
+	# $1: device number (1...9) in freetz configuration (required for name conversion) 
+	# $1=0: special case for binding device #0 on default port
+	[ -n "$1" ] && out_number=$1 || out_number=0
+	eval sis_id="\$SISPMCTL_D${out_number}_ID"
 	eval sis_name="\$SISPMCTL_D${out_number}_NAME"
 	eval sis_webport="\$SISPMCTL_D${out_number}_PORT"
 	[ -z "$sis_name" ] && sis_name="SIS-PM-$out_number" 
 	[ -z "$sis_webport" ] && sis_webport="$DEFAULTPORT" 
-	WEBDIR_PORT="$SISPMCTL_WEBDIR-$sis_webport"
+	[ $out_number -eq 0 ] && sis_id=$(echo "$IDs" | head -n 1) # special case: use first ID
+
+	WEBDIR_PORT="$SISPMCTL_WEBDIR-$sis_webport" # separate web directory for current port
 	PID_FILE_PORT="${PID_FILE%.pid}-$sis_webport.pid" # separate PID file for current port
 
-	echo -n "  Binding web interface for $sis_name [$sis_id] on port $sis_webport ... "
 	config
-	
-	if [ -z "$sis_id" ]
+
+	par_D=""
+	[ -n "$sis_id" ] && par_D="-D $sis_id" # option -D for ID definition
+	echo -n "  Binding web interface for $sis_name [$sis_id] on port $sis_webport ... "
+	sispmctl -q $par_D -p $sis_webport -u "$WEBDIR_PORT" -l 1>/dev/null 2>/tmp/sispmerror
+	siserrcode=$?
+	if [ $siserrcode -ne 0 ]
 	then
-		sispmctl -q -p $sis_webport -u "$WEBDIR_PORT" -l 1>/dev/null 2>/tmp/sispmerror &
-	else
-		sispmctl -q -D "$sis_id" -p $sis_webport -u "$WEBDIR_PORT" -l 1>/dev/null 2>/tmp/sispmerror &
+		sis_error="$(cat /tmp/sispmerror)" # cat error messages
+		retval=20 # error during starting of sispmctl
+		sis_error_reporter $retval "$sis_error"
+		return $retval
 	fi
-	sis_error="$(sed '/now comparing/d' /tmp/sispmerror)"
-	if [ -n "$sis_error" ]
+	sis_pid $sis_webport > ${PID_FILE_PORT} # find PID for actual process an save it in separate PID file
+	if [ $? -ne 0 ]
 	then
-		echo -n "$sis_error ... "
-		echo 'failed.'
-		return 1
-	fi
-	if sis_pid $sis_webport >${PID_FILE_PORT}
-	then
-		if [ -e ${PID_FILE} ]
-		then
-			old_pids="$(cat ${PID_FILE})"
-			new_pid="$(cat ${PID_FILE_PORT})"
-			echo "$old_pids $new_pid" > ${PID_FILE} 2>/dev/null # global PID file consists all the PIDs separated by spaces (like pidof)
-		else
-			cp ${PID_FILE_PORT} ${PID_FILE} >/dev/null 2>&1 
-		fi
-	else
-		echo "failed."
+		retval=21 # error: PID verification fault
 		rm -f ${PID_FILE_PORT} >/dev/null 2>&1
-		return 1
+		sis_error_reporter $retval
+		return $retval
 	fi
-	echo "done."
-	return 0
+	if [ -e ${PID_FILE} ]
+	then
+		old_pids="$(cat ${PID_FILE})"
+		new_pid="$(cat ${PID_FILE_PORT})"
+		echo "$old_pids $new_pid" > ${PID_FILE} 2>/dev/null # global PID file consists all the PIDs separated by spaces (like pidof)
+	else
+		cp ${PID_FILE_PORT} ${PID_FILE} >/dev/null 2>&1 
+	fi
+	retval=0
+	sis_error_reporter $retval
+	return $retval
 }
 
 prepare_webdir()
@@ -81,6 +105,7 @@ prepare_webdir()
 	# preparation of web directories for internal integrated web interface
 	# standard names for outlets are replaced with user defined values
 	# $1: device number (0...9) in freetz configuration (required for name conversion)  
+	retval=0
 	[ -n "$1" ] && out_number=$1 || out_number=1
 	eval sis_name="\$SISPMCTL_D${out_number}_NAME"
 	eval sis_webport="\$SISPMCTL_D${out_number}_PORT"
@@ -88,10 +113,9 @@ prepare_webdir()
 	[ -z "$sis_webport" ] && sis_webport="$DEFAULTPORT" 
 	kk=1
 	while [ $kk -le 4 ]
-	# Names for outlets 1...4
-	do
+	do # reading names for outlets 1...4 from FREETZ configuration
 		eval NAME_O_curr="\$SISPMCTL_D${out_number}_O${kk}"
-		[ -z "$NAME_O_curr" ] && NAME_O_curr="Socket ${kk}"
+		[ -z "$NAME_O_curr" ] && NAME_O_curr="Socket ${kk}" 
 		eval NAME_O${kk}="\$NAME_O_curr"
 		kk=$(($kk + 1))
 	done
@@ -100,85 +124,80 @@ prepare_webdir()
 	WEBDIR_PORT="$SISPMCTL_WEBDIR-$sis_webport"
 	[ -d "$WEBDIR_PORT" ] || mkdir "$WEBDIR_PORT" >/dev/null 2>&1
 	retval=$?
-	if [ $retval -eq 0 ]
+	[ $retval -eq 0 ] || return 13 # can't create web directory
+	[ -n "$WEBDIR_PORT" -a -d "$WEBDIR_PORT" ] && rm -R -f ${WEBDIR_PORT}/* >/dev/null 2>&1
+	if [ -n "$SISPMCTL_SKIN" -a -d "/usr/share/sispmctl-${SISPMCTL_SKIN}" ]
 	then
-		[ -n "$WEBDIR_PORT" -a -d "$WEBDIR_PORT" ] && rm -R -f ${WEBDIR_PORT}/* >/dev/null 2>&1
-		if [ -n "$SISPMCTL_SKIN" -a -d "/usr/share/sispmctl-$SISPMCTL_SKIN" ]
-		then
-			WEB_SOURCE_DIR="/usr/share/sispmctl-${SISPMCTL_SKIN}"
-		else
-			[ -d "$SISPMCTL_DEFAULT_WEBDIR" ] && WEB_SOURCE_DIR="$SISPMCTL_DEFAULT_WEBDIR" || WEB_SOURCE_DIR=""
-		fi
-		if [ -n "$WEB_SOURCE_DIR" ]
-		then
-			ls -1 "$WEB_SOURCE_DIR" | while read file_name
-			do
-				if [ "$file_name" = "index.html" ]
-				then
-					# index.html is parced for user defined name conversion
-					cat /usr/share/sispmctl-${SISPMCTL_SKIN}/index.html \
-					| sed -e "s/<title>\([^\<]*\)<\/title>/<title>*** \1 *** $sis_name ***<\/title>/" \
-					| sed -e "s/<TITLE>sispmctl_http<\/TITLE>/<TITLE>*** $sis_name ***<\/TITLE>/" \
-					| sed -e "s/<H1> Power Management <\/H1>/<H1> $sis_name <\/H1>/" \
-					| sed -e "s/Power<BR>Management/$sis_name/" \
-					| sed -e "s/Socket 1/$NAME_O1/g;s/Socket 2/$NAME_O2/g;s/Socket 3/$NAME_O3/g;s/Socket 4/$NAME_O4/g;" \
-					> ${WEBDIR_PORT}/index.html
-				else
-					# all other files are symbolic linked
-					ln -s /usr/share/sispmctl-${SISPMCTL_SKIN}/${file_name} ${WEBDIR_PORT}/${file_name}
-				fi
-			done 
-		else
-			echo "Starting ${DAEMON_LONG_NAME} ... web directory not found ... failed"
-			retval=1
-		fi
+		WEB_SOURCE_DIR="/usr/share/sispmctl-${SISPMCTL_SKIN}"
 	else
-		echo "Starting ${DAEMON_LONG_NAME} ... Can not create $SISPMCTL_WEBDIR ... failed"
+		echo -n "skin ${SISPMCTL_SKIN} not found. Use default skin ... "
+		[ -d "$SISPMCTL_DEFAULT_WEBDIR" ] && WEB_SOURCE_DIR="$SISPMCTL_DEFAULT_WEBDIR" || WEB_SOURCE_DIR=""
 	fi
+	[ -z "$WEB_SOURCE_DIR" ] && return 12 # can't find source directory with actual skin for web interface
+	ls -1 "$WEB_SOURCE_DIR" | while read file_name
+	do # linking and copying of actual skin
+		if [ "$file_name" = "index.html" ]
+		then # index.html is parsed for user defined name conversion
+			cat /usr/share/sispmctl-${SISPMCTL_SKIN}/index.html \
+			| sed -e "s/<title>\([^\<]*\)<\/title>/<title>*** \1 *** $sis_name ***<\/title>/" \
+			| sed -e "s/<TITLE>sispmctl_http<\/TITLE>/<TITLE>*** $sis_name ***<\/TITLE>/" \
+			| sed -e "s/<H1> Power Management <\/H1>/<H1> $sis_name <\/H1>/" \
+			| sed -e "s/Power<BR>Management/$sis_name/" \
+			| sed -e "s/Socket 1/$NAME_O1/g;s/Socket 2/$NAME_O2/g;s/Socket 3/$NAME_O3/g;s/Socket 4/$NAME_O4/g;" \
+			> ${WEBDIR_PORT}/index.html
+		else # all other files are symbolic linked
+			ln -s /usr/share/sispmctl-${SISPMCTL_SKIN}/${file_name} ${WEBDIR_PORT}/${file_name}
+		fi
+	done 
 	return $retval
-}
-
-pre_config()
-{
-	return 0
 }
 
 start()
 {
-	sispmss="$(sispmctl -s)"
+	retstat=0
+	retval=0
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
+	sispmss="$(sispmctl -s 2>/dev/null)"
 	IDs="$(echo "$sispmss" | sed -n -e '/serial number/s/serial number\:[[:space:]]*//p')"
 	if [ -n "$IDs" ]
-	then
-		echo "Starting ${DAEMON_LONG_NAME}:"
-		NUMB_DEV=$(echo "$IDs" | wc -l)
+	then # something is located by sispmctl
+		NUMB_DEV=$(echo "$IDs" | wc -l) # number of located devices
 		ii=1
+		matched_devices=0
 		while [ $ii -le $NUMB_DEV ]
-		do
+		do # outer loop: located devices
 			curr_id="$(echo "$IDs" | sed -n "${ii}p")"
 			jj=1
 			ll=0
-			# search for found devices in freetz configuration
 			while [ $jj -le $((SISPMCTL_NUMOFDEV)) ]
-			do
+			do # inner loop: configurated devices
 				eval ID_GLOBAL=\$SISPMCTL_D${jj}_ID
-				if [ "$curr_id" = "$ID_GLOBAL" ]
-				then
-					if [ $ll -eq 0 ]
-					then
-						ll=$jj
-						prepare_webdir ${jj} && sispmctl_daemon ${jj}
-						retval=$?
-					fi
+				if [ "$curr_id" = "$ID_GLOBAL" -a $ll -eq 0 ]
+				then # matching
+					ll=$jj
+					[ $matched_devices -eq 0 ] && echo ""
+					matched_devices=$(($matched_devices + 1))
+					prepare_webdir ${jj} && sispmctl_daemon ${jj}
+					retval=$?
 				fi
 				jj=$(($jj + 1))
 			done
 			ii=$(($ii + 1))
+			[ $retstat -eq 0 -o $retval -ne 0 ] && retstat=$retval
 		done
+		if [ $matched_devices -eq 0 ]
+		then # none from located devices found in freetz configuration
+			echo "use default settings ... "
+			prepare_webdir 0 && sispmctl_daemon 0 # binding found devices using default settings
+			retstat=$?
+		fi
 	else
-		echo "Starting ${DAEMON_LONG_NAME} ... none SIS-PM device found! ... failed"
-		retval=1
+		retstat=11 # none device connected on USB port
 	fi
-	return $retval
+	[ $retstat -eq 0 -o $retstat -ge 20 ] && echo -n "Starting operations ... "
+	[ $retstat -ge 20 ] && retstat=1 # reset error code for already reported errors
+	sis_error_reporter $retstat
+	return $retstat
 }
 
 stop()
@@ -207,11 +226,8 @@ stop()
 
 case $1 in
 	""|load)
-		pre_config
-
 		modreg cgi 'sispmctl' 'SIS-PM'
 		modreg daemon $DAEMON
-
 		modlib_start $SISPMCTL_ENABLED
 		;;
 	unload)

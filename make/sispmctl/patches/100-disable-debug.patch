@@ -1,0 +1,20 @@
+--- src/main.c.orig	2011-03-30 19:31:12.000000000 +0200
++++ src/main.c	2011-04-12 01:38:01.000000000 +0200
+@@ -53,7 +55,7 @@
+ 
+ char* homedir=0;
+ extern int errno;
+-int debug=1;
++int debug=0;
+ int verbose=1;
+ 
+ 
+@@ -484,7 +486,7 @@
+       case 'D': // by serial number
+         for (j=0; j < count; j++) {
+           if (debug)
+-            fprintf(stderr, "now comparing %s and %s\n", usbdevsn[j], optarg);
++            printf("now comparing %s and %s\n", usbdevsn[j], optarg);
+           if (strcasecmp(usbdevsn[j], optarg) == 0) {
+             if (udev != NULL)
+               usb_close(udev);
