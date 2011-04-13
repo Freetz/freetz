@@ -1,0 +1,55 @@
+#!/bin/sh
+
+cat << EOF
+#global settings
+Hostname    "fritz.box"
+BaseDir     "/var/lib/collectd"
+PIDFile     "/var/run/collectd.pid"
+PluginDir   "/usr/lib/freetz/collectd"
+TypesDB     "/usr/share/collectd/types.db"
+Interval     10
+
+#enable logging before other plugins
+LoadPlugin syslog
+<Plugin syslog>
+	LogLevel info
+</Plugin>
+
+#plugins
+LoadPlugin contextswitch
+LoadPlugin cpu
+LoadPlugin disk
+LoadPlugin df
+LoadPlugin entropy
+#LoadPlugin exec
+LoadPlugin fritzbox
+LoadPlugin interface
+#LoadPlugin iptables
+#LoadPlugin irq
+LoadPlugin load
+LoadPlugin memory
+#LoadPlugin network
+#LoadPlugin openvpn
+#LoadPlugin ping
+LoadPlugin rrdtool
+LoadPlugin uptime
+
+<Plugin disk>
+	Disk "/^[hs]d[a-f][0-9]?$/"
+	IgnoreSelected false
+</Plugin>
+
+<Plugin fritzbox>
+	RecordEnergyUsage "true"
+	RecordDSLErrors "true"
+	RecordDSLLineInfo "true"
+	RecordDSLRateInfo "true"
+</Plugin>
+
+<Plugin rrdtool>
+#Change the DataDir to your USB disk! Otherwise it wastes precious RAM.
+	DataDir "/var/lib/collectd"
+	CacheTimeout 120
+	CacheFlush   900
+</Plugin>
+EOF

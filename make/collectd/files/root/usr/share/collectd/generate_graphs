@@ -1,0 +1,916 @@
+#!/bin/sh
+# This script is responsible for actually generating the graphs for each known plugin type
+# call flow is graph_plugin -> graph_plugin_intervals -> actual function for graphing the plugin
+# Copyright (c) 2010 - 2011 Brian Jensen (Jensen.J.Brian@googlemail.com) 
+
+RED=#FF0000
+YELLOW=#ECD748
+GREEN=#00CC00
+BLUE=#0066B3
+DARK_BLUE=#330099
+RED_D=#CC3118
+ORANGE=#FF8000
+BLACK=#000000
+PURPLE=#800080
+DEFAULT_COLORS="--color SHADEA#ffffff --color SHADEB#ffffff --color BACK#ffffff --color CANVAS#eeeeee80"
+
+DATE="$(date -R)"
+NICE="$(which nice)"
+
+[ -n "$_cgi_width" ] && let WIDTH=_cgi_width-145 || let WIDTH=500
+let HEIGHT=$WIDTH*$COLLECTD_DIMENSIONY/$COLLECTD_DIMENSIONX
+
+interval_text()
+{
+	INTERVAL_TEXT=$(echo $1 | sed 's/h$/ hour(s)/g;s/d$/ day(s)/g;s/w$/ week(s)/g;s/m$/ month(s)/g;s/y$/ year(s)/g')
+}
+
+graph_apache()
+{
+	$NICE rrdtool graph $2/apache-bytes-$3.png --title "$HOST - Apache traffic last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Bytes / second" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:bytes=$1/apache_bytes.rrd:count:AVERAGE \
+		\
+		LINE2:bytes$BLUE:"Bytes / s\:" \
+		GPRINT:bytes:LAST:"%3.0lf%s Cur /" \
+		GPRINT:bytes:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:bytes:MIN:"%3.0lf%s Min /" \
+		GPRINT:bytes:MAX:"%3.0lf%s Max\n" > /dev/null
+		
+		display_graph "apache-bytes-$3.png"
+	
+	$NICE rrdtool graph $2/apache-requests-$3.png --title "$HOST - Apache requests last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Requests / second" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:requests=$1/apache_requests.rrd:count:AVERAGE \
+		\
+		LINE2:requests$ORANGE:"Requests / s\:" \
+		GPRINT:requests:LAST:"%3.0lf%s Cur /" \
+		GPRINT:requests:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:requests:MIN:"%3.0lf%s Min /" \
+		GPRINT:requests:MAX:"%3.0lf%s Max\n" > /dev/null
+
+	display_graph "apache-requests-$3.png"		
+}
+
+graph_apple_sensors()
+{
+	$NICE rrdtool graph $2/apple_temperature-$3.png --title "$HOST - Temperature last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Degrees [celsius]" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:battery=$1/temperature-battery.rrd:value:AVERAGE \
+		DEF:cpu=$1/temperature-cpu_bottomside.rrd:value:AVERAGE \
+		DEF:gpu=$1/temperature-gpu_bottomside.rrd:value:AVERAGE \
+		DEF:memory=$1/temperature-pwr_memory_bottomside.rrd:value:AVERAGE \
+		\
+		LINE2:memory$ORANGE:"Memory\t[Celsius]\:" \
+		GPRINT:memory:LAST:"%3.0lf%s Cur /" \
+		GPRINT:memory:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:memory:MIN:"%3.0lf%s Min /" \
+		GPRINT:memory:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:battery$YELLOW:"Battery\t[Celsius]\:" \
+		GPRINT:battery:LAST:"%3.0lf%s Cur /" \
+		GPRINT:battery:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:battery:MIN:"%3.0lf%s Min /" \
+		GPRINT:battery:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:gpu$BLUE:"GPU\t\t[Celsius]\:" \
+		GPRINT:gpu:LAST:"%3.0lf%s Cur /" \
+		GPRINT:gpu:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:gpu:MIN:"%3.0lf%s Min /" \
+		GPRINT:gpu:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:cpu$RED:"CPU\t\t[Celsius]\:" \
+		GPRINT:cpu:LAST:"%3.0lf%s Cur /" \
+		GPRINT:cpu:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:cpu:MIN:"%3.0lf%s Min /" \
+		GPRINT:cpu:MAX:"%3.0lf%s Max\n" > /dev/null
+		
+	$NICE rrdtool graph $2/apple_fanspeed-$3.png --title "$HOST - Fan speed last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Speed [rpm]" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:rear=$1/fanspeed-rear_main_enclosure.rrd:value:AVERAGE \
+		\
+		LINE2:rear$BLUE:"Rear enclosure\t[RPM]\:" \
+		GPRINT:rear:LAST:"%3.0lf%s Cur /" \
+		GPRINT:rear:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:rear:MIN:"%3.0lf%s Min /" \
+		GPRINT:rear:MAX:"%3.0lf%s Max\n" > /dev/null
+		
+	display_graph "apple_temperature-$3.png"
+	display_graph "apple_fanspeed-$3.png"
+
+}
+
+graph_contextswitch()
+{
+
+	$NICE rrdtool graph $2/contextswitch-$3.png --title "$HOST - Context switches last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Context switches per second" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:switches=$1/contextswitch.rrd:contextswitches:AVERAGE \
+		\
+		LINE2:switches$ORANGE:"Switches\t[per second]\:" \
+		GPRINT:switches:LAST:"%3.0lf%s Cur /" \
+		GPRINT:switches:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:switches:MIN:"%3.0lf%s Min /" \
+		GPRINT:switches:MAX:"%3.0lf%s Max\n" > /dev/null
+	
+	display_graph "contextswitch-$3.png"
+}
+
+graph_cpu()
+{	
+	CATEGORIES_COUNT="$(ls $1 | wc -w)"
+	if [  $CATEGORIES_COUNT -eq 4 ]; then	
+		$NICE rrdtool graph $2/cpu-$3.png --title "$HOST - CPU usage last $4" \
+			--width $WIDTH --height $HEIGHT --vertical-label "CPU Usage [%]" \
+			$DEFAULT_COLORS -l 0 -u 100 -r -W "Generated on: $DATE" \
+			--end now --start end-$3 --font TITLE:10: \
+			DEF:nice=$1/cpu-nice.rrd:value:AVERAGE \
+			DEF:system=$1/cpu-system.rrd:value:AVERAGE \
+			DEF:user=$1/cpu-user.rrd:value:AVERAGE \
+			CDEF:total=nice,system,user,+,+ \
+			\
+			AREA:system$GREEN:"system\t[%]\:" \
+			GPRINT:system:LAST:"%2.1lf Cur /" \
+			GPRINT:system:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:system:MIN:"%2.1lf Min /" \
+			GPRINT:system:MAX:"%2.1lf Max\n" \
+			\
+			AREA:user$BLUE:"user\t[%]\:":STACK \
+			GPRINT:user:LAST:"%2.1lf Cur /" \
+			GPRINT:user:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:user:MIN:"%2.1lf Min /" \
+			GPRINT:user:MAX:"%2.1lf Max\n" \
+			\
+			AREA:nice$ORANGE:"nice\t[%]\:":STACK \
+			GPRINT:nice:LAST:"%2.1lf Cur /" \
+			GPRINT:nice:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:nice:MIN:"%2.1lf Min /" \
+			GPRINT:nice:MAX:"%2.1lf Max\n" \
+			\
+			LINE1:total$BLACK:"total\t[%]\:" \
+			GPRINT:total:LAST:"%2.1lf Cur /" \
+			GPRINT:total:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:total:MIN:"%2.1lf Min /" \
+			GPRINT:total:MAX:"%2.1lf Max\n" > /dev/null
+	
+	elif [ $CATEGORIES_COUNT -eq 8 ]; then
+		$NICE rrdtool graph $2/cpu-$3.png --title "$HOST - CPU usage last $4" \
+			--width $WIDTH --height $HEIGHT --vertical-label "CPU Usage [%]" \
+			$DEFAULT_COLORS -l 0 -u 100 -r -W "Generated on: $DATE" \
+			--end now --start end-$3 --font TITLE:10: \
+			DEF:interrupt=$1/cpu-interrupt.rrd:value:AVERAGE \
+			DEF:nice=$1/cpu-nice.rrd:value:AVERAGE \
+			DEF:softirq=$1/cpu-softirq.rrd:value:AVERAGE \
+			DEF:steal=$1/cpu-steal.rrd:value:AVERAGE \
+			DEF:system=$1/cpu-system.rrd:value:AVERAGE \
+			DEF:user=$1/cpu-user.rrd:value:AVERAGE \
+			DEF:wait=$1/cpu-wait.rrd:value:AVERAGE \
+			CDEF:total=interrupt,nice,softirq,steal,system,user,wait,+,+,+,+,+,+ \
+			\
+			AREA:system$GREEN:"system\t[%]\:" \
+			GPRINT:system:LAST:"%2.1lf Cur /" \
+			GPRINT:system:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:system:MIN:"%2.1lf Min /" \
+			GPRINT:system:MAX:"%2.1lf Max\n" \
+			\
+			AREA:user$BLUE:"user\t[%]\:":STACK \
+			GPRINT:user:LAST:"%2.1lf Cur /" \
+			GPRINT:user:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:user:MIN:"%2.1lf Min /" \
+			GPRINT:user:MAX:"%2.1lf Max\n" \
+			\
+			AREA:nice$ORANGE:"nice\t[%]\:":STACK \
+			GPRINT:nice:LAST:"%2.1lf Cur /" \
+			GPRINT:nice:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:nice:MIN:"%2.1lf Min /" \
+			GPRINT:nice:MAX:"%2.1lf Max\n" \
+			\
+			AREA:wait$RED:"wait\t[%]\:":STACK \
+			GPRINT:wait:LAST:"%2.1lf Cur /" \
+			GPRINT:wait:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:wait:MIN:"%2.1lf Min /" \
+			GPRINT:wait:MAX:"%2.1lf Max\n" \
+			\
+			AREA:interrupt$YELLOW:"interrupt\t[%]\:":STACK \
+			GPRINT:interrupt:LAST:"%2.1lf Cur /" \
+			GPRINT:interrupt:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:interrupt:MIN:"%2.1lf Min /" \
+			GPRINT:interrupt:MAX:"%2.1lf Max\n" \
+			\
+			AREA:softirq$PURPLE:"softirq\t[%]\:":STACK \
+			GPRINT:softirq:LAST:"%2.1lf Cur /" \
+			GPRINT:softirq:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:softirq:MIN:"%2.1lf Min /" \
+			GPRINT:softirq:MAX:"%2.1lf Max\n" \
+			\
+			AREA:steal$DARK_BLUE:"steal\t[%]\:":STACK \
+			GPRINT:steal:LAST:"%2.1lf Cur /" \
+			GPRINT:steal:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:steal:MIN:"%2.1lf Min /" \
+			GPRINT:steal:MAX:"%2.1lf Max\n" \
+			\
+			LINE1:total$BLACK:"total\t[%]\:" \
+			GPRINT:total:LAST:"%2.1lf Cur /" \
+			GPRINT:total:AVERAGE:"%2.1lf Avg /" \
+			GPRINT:total:MIN:"%2.1lf Min /" \
+			GPRINT:total:MAX:"%2.1lf Max\n" > /dev/null
+	
+	fi
+	
+	display_graph "cpu-$3.png"
+}
+
+graph_disk_io()
+{
+	DEVICE_NAME="$(basename $1 | sed 's/disk\-\(.*\)/\1/')"
+
+	$NICE rrdtool graph $2/disk_io-$DEVICE_NAME-$3.png --title "$HOST - Disk IO $DEVICE_NAME last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Write (-) / Read (+) [bytes/s]" \
+		$DEFAULT_COLORS -W "Generated on: $DATE" --units=si \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:read=$1/disk_octets.rrd:read:AVERAGE \
+		DEF:write=$1/disk_octets.rrd:write:AVERAGE \
+		CDEF:negwrite=write,-1,* \
+		\
+		LINE2:read$GREEN:"Read\t[bytes/s]\:" \
+		GPRINT:read:LAST:"%3.0lf%s Cur /" \
+		GPRINT:read:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:read:MIN:"%3.0lf%s Min /" \
+		GPRINT:read:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:negwrite$ORANGE:"Write\t[bytes/s]\:" \
+		GPRINT:write:LAST:"%3.0lf%s Cur /" \
+		GPRINT:write:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:write:MIN:"%3.0lf%s Min /" \
+		GPRINT:write:MAX:"%3.0lf%s Max\n" > /dev/null
+	
+	display_graph "disk_io-$DEVICE_NAME-$3.png"
+}
+
+graph_df()
+{
+	VOLUMES="$(ls $1 | grep df-*)"
+	
+	for VOLUME in $VOLUMES
+	do
+		VOLUME_NAME="${VOLUME#df-}"
+		VOLUME_NAME="${VOLUME_NAME%.rrd}"
+		
+		$NICE rrdtool graph $2/df_$VOLUME_NAME-$3.png --title "$HOST - Disk $VOLUME_NAME usage last $4" \
+			--width $WIDTH --height $HEIGHT --vertical-label "Usage [bytes]" \
+			$DEFAULT_COLORS -l 0 -W "Generated on: $DATE" --units=si \
+			--end now --start end-$3 --font TITLE:10: \
+			DEF:used=$1/$VOLUME:used:AVERAGE \
+			DEF:free=$1/$VOLUME:free:AVERAGE \
+			\
+			AREA:used$BLUE:"Used\t[bytes]\:" \
+			GPRINT:used:LAST:"%3.0lf%s Cur /" \
+			GPRINT:used:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:used:MIN:"%3.0lf%s Min /" \
+			GPRINT:used:MAX:"%3.0lf%s Max\n" \
+			\
+			AREA:free$GREEN:"Free\t[bytes]\:":STACK \
+			GPRINT:free:LAST:"%3.0lf%s Cur /" \
+			GPRINT:free:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:free:MIN:"%3.0lf%s Min /" \
+			GPRINT:free:MAX:"%3.0lf%s Max\n" > /dev/null
+		
+		display_graph "df_$VOLUME_NAME-$3.png"
+	done
+
+}
+
+graph_entropy()
+{
+
+	$NICE rrdtool graph $2/entropy-$3.png --title "Entropy available last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Entropy [bytes]" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:entropy=$1/entropy.rrd:entropy:AVERAGE \
+		\
+		LINE2:entropy$BLUE:"Entropy \t[bytes]\:" \
+		GPRINT:entropy:LAST:"%3.0lf%s Cur /" \
+		GPRINT:entropy:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:entropy:MIN:"%3.0lf%s Min /" \
+		GPRINT:entropy:MAX:"%3.0lf%s Max\n" > /dev/null
+	
+	display_graph "entropy-$3.png"
+}
+
+graph_fritzbox()
+{
+	$NICE rrdtool graph $2/fritzbox_energy-$3.png --title "$HOST - Energy usage last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Usage [%]" \
+		$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE" --base 1024 --units=si  \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:dsl=$1/fritzbox_energy.rrd:dsl:AVERAGE \
+		DEF:phone=$1/fritzbox_energy.rrd:phone:AVERAGE \
+		DEF:processor=$1/fritzbox_energy.rrd:processor:AVERAGE \
+		DEF:total=$1/fritzbox_energy.rrd:total:AVERAGE \
+		DEF:usb=$1/fritzbox_energy.rrd:usb:AVERAGE \
+		DEF:wlan=$1/fritzbox_energy.rrd:wlan:AVERAGE \
+		\
+		AREA:total$BLUE:"Total\t[%]\:" \
+		GPRINT:total:LAST:"%3.0lf%s Cur /" \
+		GPRINT:total:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:total:MIN:"%3.0lf%s Min /"  \
+		GPRINT:total:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:processor$RED:"CPU\t\t[%]\:" \
+		GPRINT:processor:LAST:"%3.0lf%s Cur /" \
+		GPRINT:processor:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:processor:MIN:"%3.0lf%s Min /"  \
+		GPRINT:processor:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:dsl$ORANGE:"DSL\t\t[%]\:" \
+		GPRINT:dsl:LAST:"%3.0lf%s Cur /" \
+		GPRINT:dsl:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:dsl:MIN:"%3.0lf%s Min /"  \
+		GPRINT:dsl:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:phone$YELLOW:"Phones\t[%]\:" \
+		GPRINT:phone:LAST:"%3.0lf%s Cur /" \
+		GPRINT:phone:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:phone:MIN:"%3.0lf%s Min /"  \
+		GPRINT:phone:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:usb$PURPLE:"USB\t\t[%]\:" \
+		GPRINT:usb:LAST:"%3.0lf%s Cur /" \
+		GPRINT:usb:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:usb:MIN:"%3.0lf%s Min /"  \
+		GPRINT:usb:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE2:wlan$GREEN:"WLAN\t[%]\:" \
+		GPRINT:wlan:LAST:"%3.0lf%s Cur /" \
+		GPRINT:wlan:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:wlan:MIN:"%3.0lf%s Min /"  \
+		GPRINT:wlan:MAX:"%3.0lf%s Max\n"  > /dev/null
+	
+	display_graph "fritzbox_energy-$3.png"
+
+	local modes="downstream upstream"
+	for mode in $modes
+	do
+		if [ -e "$1/dsl_rates-$mode.rrd" ]; then
+			
+			$NICE rrdtool graph $2/dsl_rates-$mode-$3.png --title "$HOST - DSL $mode rates last $4" \
+				--width $WIDTH --height $HEIGHT --vertical-label "Rate [bits/s]" \
+				$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE" --units=si  \
+				--end now --start end-$3 --font TITLE:10: \
+				DEF:dslammax=$1/dsl_rates-$mode.rrd:dslam_max:AVERAGE \
+				DEF:dslammin=$1/dsl_rates-$mode.rrd:dslam_min:AVERAGE \
+				DEF:capacity=$1/dsl_rates-$mode.rrd:line_capacity:AVERAGE \
+				DEF:current=$1/dsl_rates-$mode.rrd:line_rate:AVERAGE \
+				\
+				AREA:current$GREEN:"Current\t[bytes/s]\:" \
+				GPRINT:current:LAST:"%3.1lf%s Cur /" \
+				GPRINT:current:AVERAGE:"%3.1lf%s Avg /" \
+				GPRINT:current:MIN:"%3.1lf%s Min /"  \
+				GPRINT:current:MAX:"%3.1lf%s Max\n" \
+				\
+				LINE2:capacity$BLUE:"Capacity\t[bytes/s]\:" \
+				GPRINT:capacity:LAST:"%3.1lf%s Cur /" \
+				GPRINT:capacity:AVERAGE:"%3.1lf%s Avg /" \
+				GPRINT:capacity:MIN:"%3.1lf%s Min /"  \
+				GPRINT:capacity:MAX:"%3.1lf%s Max\n" \
+				\
+				LINE2:dslammax$RED:"DSLAM Max\t[bytes/s]\:" \
+				GPRINT:dslammax:LAST:"%3.1lf%s Cur /" \
+				GPRINT:dslammax:AVERAGE:"%3.1lf%s Avg /" \
+				GPRINT:dslammax:MIN:"%3.1lf%s Min /"  \
+				GPRINT:dslammax:MAX:"%3.1lf%s Max\n" \
+				\
+				LINE2:dslammin$YELLOW:"DSLAM Min\t[bytes/s]\:" \
+				GPRINT:dslammin:LAST:"%3.1lf%s Cur /" \
+				GPRINT:dslammin:AVERAGE:"%3.1lf%s Avg /" \
+				GPRINT:dslammin:MIN:"%3.1lf%s Min /"  \
+				GPRINT:dslammin:MAX:"%3.1lf%s Max\n" > /dev/null
+			
+			display_graph "dsl_rates-$mode-$3.png"
+		fi
+	
+		if [ -e "$1/dsl_errors-$mode.rrd" ]; then
+				
+			$NICE rrdtool graph $2/dsl_errors-$mode-$3.png --title "$HOST - DSL $mode errors last $4" \
+				--width $WIDTH --height $HEIGHT --vertical-label "Rate [errors/min]" \
+				$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE"  \
+				--end now --start end-$3 --font TITLE:10: \
+				DEF:crc=$1/dsl_errors-$mode.rrd:crc:AVERAGE \
+				DEF:forward=$1/dsl_errors-$mode.rrd:forward:AVERAGE \
+				\
+				LINE2:crc$RED:"CRC\t\t[errors/min]\:" \
+				GPRINT:crc:LAST:"%3.1lf Cur /" \
+				GPRINT:crc:AVERAGE:"%3.1lf Avg /" \
+				GPRINT:crc:MIN:"%3.1lf Min /"  \
+				GPRINT:crc:MAX:"%3.1lf Max\n" \
+				\
+				LINE2:forward$BLUE:"Forward\t[errors/min]\:" \
+				GPRINT:forward:LAST:"%3.1lf Cur /" \
+				GPRINT:forward:AVERAGE:"%3.1lf Avg /" \
+				GPRINT:forward:MIN:"%3.1lf Min /"  \
+				GPRINT:forward:MAX:"%3.1lf Max\n" > /dev/null
+			
+			display_graph "dsl_errors-$mode-$3.png"
+		fi
+		
+		if [ -e "$1/dsl_line-$mode.rrd" ]; then
+		
+			$NICE rrdtool graph $2/dsl_line-$mode-$3.png --title "$HOST - DSL $mode signal quality last $4" \
+				--width $WIDTH --height $HEIGHT --vertical-label "Quality [db]" \
+				$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE"  \
+				--end now --start end-$3 --font TITLE:10: \
+				DEF:attenuation=$1/dsl_line-$mode.rrd:attenuation:AVERAGE \
+				DEF:snr=$1/dsl_line-$mode.rrd:snr:AVERAGE \
+				\
+				AREA:attenuation$RED:"Attenuation\t[db]\:" \
+				GPRINT:attenuation:LAST:"%3.0lf Cur /" \
+				GPRINT:attenuation:AVERAGE:"%3.0lf Avg /" \
+				GPRINT:attenuation:MIN:"%3.0lf Min /"  \
+				GPRINT:attenuation:MAX:"%3.0lf Max\n" \
+				\
+				AREA:snr$BLUE:"SNR\t\t\t[db]\:" \
+				GPRINT:snr:LAST:"%3.0lf Cur /" \
+				GPRINT:snr:AVERAGE:"%3.0lf Avg /" \
+				GPRINT:snr:MIN:"%3.0lf Min /"  \
+				GPRINT:snr:MAX:"%3.0lf Max\n" > /dev/null
+			
+			display_graph "dsl_line-$mode-$3.png"
+		fi
+	done
+}
+
+graph_interface()
+{
+	INTERFACES="$(ls $1 | grep if_octets-*)"
+	
+	for INTERFACE in $INTERFACES
+	do
+		INTERFACE_NAME="${INTERFACE#if_octets-}"
+		INTERFACE_NAME="${INTERFACE_NAME%.rrd}"
+		
+		$NICE rrdtool graph $2/interface_$INTERFACE_NAME-$3.png --title "$HOST - Interface $INTERFACE_NAME usage last $4" \
+			--width $WIDTH --height $HEIGHT --vertical-label "Out (-) / In (+) [bytes/s]" \
+			$DEFAULT_COLORS -W "Generated on: $DATE" --units=si \
+			--end now --start end-$3 --font TITLE:10: \
+			DEF:received=$1/$INTERFACE:rx:AVERAGE \
+			DEF:transmitted=$1/$INTERFACE:tx:AVERAGE \
+			CDEF:negtransmitted=transmitted,-1,* \
+			\
+			LINE2:received$GREEN:"In\t[bytes/s]\:" \
+			GPRINT:received:LAST:"%3.0lf%s Cur /" \
+			GPRINT:received:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:received:MIN:"%3.0lf%s Min /" \
+			GPRINT:received:MAX:"%3.0lf%s Max\n" \
+			\
+			LINE2:negtransmitted$ORANGE:"Out\t[bytes/s]\:" \
+			GPRINT:transmitted:LAST:"%3.0lf%s Cur /" \
+			GPRINT:transmitted:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:transmitted:MIN:"%3.0lf%s Min /" \
+			GPRINT:transmitted:MAX:"%3.0lf%s Max\n" > /dev/null
+		
+		display_graph "interface_$INTERFACE_NAME-$3.png"
+		
+		if [ -n "$SHOW_INTERFACE_ERRORS" ]; then
+			
+			$NICE rrdtool graph $2/interface_errors_$INTERFACE_NAME-$3.png --title "$HOST - Interface errors $INTERFACE_NAME last $4" \
+				--width $WIDTH --height $HEIGHT --vertical-label "Out (-) / In (+) [bytes/s]" \
+				$DEFAULT_COLORS -W "Generated on: $DATE" --units=si \
+				--end now --start end-$3 --font TITLE:10: \
+				DEF:received=$1/if_errors-$INTERFACE_NAME.rrd:rx:AVERAGE \
+				DEF:transmitted=$1/if_errors-$INTERFACE_NAME.rrd:tx:AVERAGE \
+				CDEF:negtransmitted=transmitted,-1,* \
+				\
+				LINE2:received$RED:"In\t[bytes/s]\:" \
+				GPRINT:received:LAST:"%3.0lf%s Cur /" \
+				GPRINT:received:AVERAGE:"%3.0lf%s Avg /" \
+				GPRINT:received:MIN:"%3.0lf%s Min /" \
+				GPRINT:received:MAX:"%3.0lf%s Max\n" \
+				\
+				LINE2:negtransmitted$RED_D:"Out\t[bytes/s]\:" \
+				GPRINT:transmitted:LAST:"%3.0lf%s Cur /" \
+				GPRINT:transmitted:AVERAGE:"%3.0lf%s Avg /" \
+				GPRINT:transmitted:MIN:"%3.0lf%s Min /" \	
+				GPRINT:transmitted:MAX:"%3.0lf%s Max\n" > /dev/null
+			
+			display_graph "interface_errors_$INTERFACE_NAME-$3.png"
+		fi
+	done
+}
+
+graph_load()
+{
+	$NICE rrdtool graph $2/load-$3.png --title "$HOST - Load last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Processes in the run queue" \
+		$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE"  \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:shortterm=$1/load.rrd:shortterm:AVERAGE \
+		DEF:midterm=$1/load.rrd:midterm:AVERAGE \
+		DEF:longterm=$1/load.rrd:longterm:AVERAGE \
+		CDEF:total=shortterm,midterm,longterm,+,+ \
+		\
+		AREA:shortterm$YELLOW:"Load last 1 min \:" \
+		GPRINT:shortterm:LAST:"%2.2lf Cur /" \
+		GPRINT:shortterm:AVERAGE:"%2.2lf Avg /" \
+		GPRINT:shortterm:MIN:"%2.2lf Min /"  \
+		GPRINT:shortterm:MAX:"%2.2lf Max\n" \
+		\
+		AREA:midterm$ORANGE:"Load last 5 min \:":STACK \
+		GPRINT:midterm:LAST:"%2.2lf Cur /" \
+		GPRINT:midterm:AVERAGE:"%2.2lf Avg /" \
+		GPRINT:midterm:MIN:"%2.2lf Min /"  \
+		GPRINT:midterm:MAX:"%2.2lf Max\n" \
+		\
+		AREA:longterm$RED:"Load last 15 min\:":STACK \
+		GPRINT:longterm:LAST:"%2.2lf Cur /" \
+		GPRINT:longterm:AVERAGE:"%2.2lf Avg /" \
+		GPRINT:longterm:MIN:"%2.2lf Min /"  \
+		GPRINT:longterm:MAX:"%2.2lf Max\n"  \
+		LINE:total$BLACK > /dev/null
+	
+	display_graph "load-$3.png"
+}
+
+graph_memory()
+{
+	MAC_MEM="$(ls $1 | grep wired)"
+	if [ -z "$MAC_MEM" ]; then
+		$NICE rrdtool graph $2/memory-$3.png --title "$HOST - Memory usage last $4" \
+			--width $WIDTH --height $HEIGHT --vertical-label "Memory Usage [bytes]" \
+			$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE" --base 1024 --units=si  \
+			--end now --start end-$3 --font TITLE:10: \
+			DEF:buffered=$1/memory-buffered.rrd:value:AVERAGE \
+			DEF:cached=$1/memory-cached.rrd:value:AVERAGE \
+			DEF:free=$1/memory-free.rrd:value:AVERAGE \
+			DEF:used=$1/memory-used.rrd:value:AVERAGE \
+			\
+			AREA:used$RED:"Used\t[bytes]\:" \
+			GPRINT:used:LAST:"%3.0lf%s Cur /" \
+			GPRINT:used:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:used:MIN:"%3.0lf%s Min /"  \
+			GPRINT:used:MAX:"%3.0lf%s Max\n" \
+			\
+			AREA:buffered$ORANGE:"Buffered\t[bytes]\:":STACK \
+			GPRINT:buffered:LAST:"%3.0lf%s Cur /" \
+			GPRINT:buffered:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:buffered:MIN:"%3.0lf%s Min /"  \
+			GPRINT:buffered:MAX:"%3.0lf%s Max\n" \
+			\
+			AREA:cached$YELLOW:"Cached\t[bytes]\:":STACK \
+			GPRINT:cached:LAST:"%3.0lf%s Cur /" \
+			GPRINT:cached:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:cached:MIN:"%3.0lf%s Min /"  \
+			GPRINT:cached:MAX:"%3.0lf%s Max\n" \
+			\
+			AREA:free$GREEN:"Free\t[bytes]\:":STACK \
+			GPRINT:free:LAST:"%3.0lf%s Cur /" \
+			GPRINT:free:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:free:MIN:"%3.0lf%s Min /"  \
+			GPRINT:free:MAX:"%3.0lf%s Max\n" > /dev/null
+	else
+		$NICE rrdtool graph $2/memory-$3.png --title "$HOST - Memory usage last $4" \
+			--width $WIDTH --height $HEIGHT --vertical-label "Memory Usage [bytes]" \
+			$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE" --base 1024 --units=si  \
+			--end now --start end-$3 --font TITLE:10: \
+			DEF:active=$1/memory-active.rrd:value:AVERAGE \
+			DEF:free=$1/memory-free.rrd:value:AVERAGE \
+			DEF:inactive=$1/memory-inactive.rrd:value:AVERAGE \
+			DEF:wired=$1/memory-wired.rrd:value:AVERAGE \
+			\
+			AREA:wired$BLUE:"Wired\t[bytes]\:" \
+			GPRINT:wired:LAST:"%3.0lf%s Cur /" \
+			GPRINT:wired:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:wired:MIN:"%3.0lf%s Min /"  \
+			GPRINT:wired:MAX:"%3.0lf%s Max\n" \
+			\
+			AREA:active$RED:"Active\t[bytes]\:":STACK \
+			GPRINT:active:LAST:"%3.0lf%s Cur /" \
+			GPRINT:active:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:active:MIN:"%3.0lf%s Min /"  \
+			GPRINT:active:MAX:"%3.0lf%s Max\n" \
+			\
+			AREA:inactive$ORANGE:"Inactive\t[bytes]\:":STACK \
+			GPRINT:inactive:LAST:"%3.0lf%s Cur /" \
+			GPRINT:inactive:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:inactive:MIN:"%3.0lf%s Min /"  \
+			GPRINT:inactive:MAX:"%3.0lf%s Max\n" \
+			\
+			AREA:free$GREEN:"Free\t[bytes]\:":STACK \
+			GPRINT:free:LAST:"%3.0lf%s Cur /" \
+			GPRINT:free:AVERAGE:"%3.0lf%s Avg /" \
+			GPRINT:free:MIN:"%3.0lf%s Min /"  \
+			GPRINT:free:MAX:"%3.0lf%s Max\n" > /dev/null
+	fi
+	
+	display_graph "memory-$3.png"
+}
+
+graph_mysql()
+{
+	DATABASE="$(basename $1 | sed 's/mysql\-\(.*\)/\1/')"
+	$NICE rrdtool graph "$2/mysql_queries_$DATABASE-$3.png" --title "$HOST - Mysql queries last $4" \
+		 --width $WIDTH --height $HEIGHT --vertical-label "Queries / second" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:createdb="$1/mysql_commands-create_db.rrd":value:AVERAGE \
+		DEF:createtable="$1/mysql_commands-create_table.rrd":value:AVERAGE \
+		DEF:createuser="$1/mysql_commands-create_user.rrd":value:AVERAGE \
+		DEF:delete="$1/mysql_commands-delete.rrd":value:AVERAGE \
+		DEF:insert="$1/mysql_commands-insert.rrd":value:AVERAGE \
+		DEF:select="$1/mysql_commands-select.rrd":value:AVERAGE \
+		DEF:update="$1/mysql_commands-update.rrd":value:AVERAGE \
+		CDEF:create=createdb,createtable,createuser,+,+ \
+		CDEF:total=create,delete,insert,select,update,+,+,+,+ \
+		\
+		AREA:select$GREEN:"Select\t[Queries/s]\:":STACK \
+		GPRINT:select:LAST:"%3.0lf%s Cur /" \
+		GPRINT:select:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:select:MIN:"%3.0lf%s Min /" \
+		GPRINT:select:MAX:"%3.0lf%s Max\n" \
+		\
+		AREA:update$ORANGE:"Update\t[Queries/s]\:":STACK \
+		GPRINT:update:LAST:"%3.0lf%s Cur /" \
+		GPRINT:update:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:update:MIN:"%3.0lf%s Min /" \
+		GPRINT:update:MAX:"%3.0lf%s Max\n" \
+		\
+		AREA:insert$BLUE:"Insert\t[Queries/s]\:":STACK \
+		GPRINT:insert:LAST:"%3.0lf%s Cur /" \
+		GPRINT:insert:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:insert:MIN:"%3.0lf%s Min /" \
+		GPRINT:insert:MAX:"%3.0lf%s Max\n" \
+		\
+		AREA:create$YELLOW:"Create\t[Queries/s]\:":STACK \
+		GPRINT:create:LAST:"%3.0lf%s Cur /" \
+		GPRINT:create:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:create:MIN:"%3.0lf%s Min /" \
+		GPRINT:create:MAX:"%3.0lf%s Max\n" \
+		\
+		AREA:delete$RED:"Delete\t[Queries/s]\:":STACK \
+		GPRINT:delete:LAST:"%3.0lf%s Cur /" \
+		GPRINT:delete:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:delete:MIN:"%3.0lf%s Min /" \
+		GPRINT:delete:MAX:"%3.0lf%s Max\n" \
+		\
+		LINE:total$BLACK:"Total\t[Queries/s]\:" \
+		GPRINT:total:LAST:"%3.0lf%s Cur /" \
+		GPRINT:total:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:total:MIN:"%3.0lf%s Min /" \
+		GPRINT:total:MAX:"%3.0lf%s Max\n" > /dev/null
+		
+	display_graph "mysql_queries_$DATABASE-$3.png"
+
+	$NICE rrdtool graph "$2/mysql_threads_$DATABASE-$3.png" --title "$HOST - Mysql threads last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "threads" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:cached="$1/mysql_threads.rrd":cached:AVERAGE \
+		DEF:created="$1/mysql_threads.rrd":created:AVERAGE \
+		DEF:connected="$1/mysql_threads.rrd":connected:AVERAGE \
+		DEF:running="$1/mysql_threads.rrd":running:AVERAGE \
+		\
+		AREA:connected$BLUE:"Connected\t[threads]\:" \
+		GPRINT:connected:LAST:"%3.0lf%s Cur /" \
+		GPRINT:connected:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:connected:MIN:"%3.0lf%s Min /" \
+		GPRINT:connected:MAX:"%3.0lf%s Max \n" \
+		\
+		LINE2:cached$GREEN:"Cached\t[threads]\:" \
+		GPRINT:cached:LAST:"%3.0lf%s Cur /" \
+		GPRINT:cached:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:cached:MIN:"%3.0lf%s Min /" \
+		GPRINT:cached:MAX:"%3.0lf%s Max \n" \
+		\
+		LINE2:created$RED:"Created\t[threads]\:" \
+		GPRINT:created:LAST:"%3.0lf%s Cur /" \
+		GPRINT:created:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:created:MIN:"%3.0lf%s Min /" \
+		GPRINT:created:MAX:"%3.0lf%s Max \n" \
+		\
+		LINE2:running$ORANGE:"Running\t[threads]\:" \
+		GPRINT:running:LAST:"%3.0lf%s Cur /" \
+		GPRINT:running:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:running:MIN:"%3.0lf%s Min /" \
+		GPRINT:running:MAX:"%3.0lf%s Max \n" > /dev/null
+
+	display_graph "mysql_threads_$DATABASE-$3.png"
+
+        $NICE rrdtool graph "$2/mysql_throughput_$DATABASE-$3.png" --title "$HOST - Mysql throughput last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Out (-)  In (+) [Bytes/s]" \
+		$DEFAULT_COLORS  -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:rx="$1/mysql_octets.rrd":rx:AVERAGE \
+		DEF:tx="$1/mysql_octets.rrd":tx:AVERAGE \
+		CDEF:negtx=tx,-1,* \
+		\
+		LINE2:rx$GREEN:"In\t[Bytes/s]\:" \
+		GPRINT:rx:LAST:"%3.0lf%s Cur /" \
+		GPRINT:rx:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:rx:MIN:"%3.0lf%s Min /" \
+		GPRINT:rx:MAX:"%3.0lf%s Max \n" \
+		\
+		LINE2:negtx$ORANGE:"Out\t[Bytes/s]\:" \
+		GPRINT:tx:LAST:"%3.0lf%s Cur /" \
+		GPRINT:tx:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:tx:MIN:"%3.0lf%s Min /" \
+		GPRINT:tx:MAX:"%3.0lf%s Max" > /dev/null
+
+	display_graph "mysql_throughput_$DATABASE-$3.png"
+
+}
+
+graph_ping()
+{
+	PINGED_HOSTS="$(ls $1/ | grep 'ping--*')"
+		
+	for PINGED_HOST in $PINGED_HOSTS
+	do
+		HOST_NAME="$(echo $PINGED_HOST | sed 's/ping\(\-\)\(.*\)\.rrd/\2/')"
+		
+		$NICE rrdtool graph "$2/ping_$HOST_NAME-$3.png" --title "$HOST - Ping time $HOST_NAME last $4" \
+			--width $WIDTH --height $HEIGHT --vertical-label "Time [ms]" \
+			$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+			--end now --start end-$3 --font TITLE:10: \
+			"DEF:ping=$1/$PINGED_HOST:ping:AVERAGE" \
+			\
+			LINE2:ping$BLUE:"Ping\t[ms]\:" \
+			GPRINT:ping:LAST:"%4.0lf Cur /" \
+			GPRINT:ping:AVERAGE:"%4.0lf Avg /" \
+			GPRINT:ping:MIN:"%4.0lf Min /" \
+			GPRINT:ping:MAX:"%4.0lf Max\n" > /dev/null
+		
+		display_graph "ping_$HOST_NAME-$3.png"
+	done
+}
+
+graph_swap()
+{
+	$NICE rrdtool graph $2/swap-$3.png --title "$HOST - Swap usage last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Swap [bytes]" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" --units=si \
+		--end now --start end-$3 --font TITLE:10: --base 1024 \
+		DEF:swap=$1/swap-used.rrd:value:AVERAGE \
+		\
+		AREA:swap$RED:"Swap\t[bytes]\:" \
+		GPRINT:swap:LAST:"%3.0lf%s Cur /" \
+		GPRINT:swap:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:swap:MIN:"%3.0lf%s Min /" \
+		GPRINT:swap:MAX:"%3.0lf%s Max\n" \
+		LINE:swap$BLACK > /dev/null
+
+	display_graph "swap-$3.png"
+}
+
+graph_uptime()
+{
+	$NICE rrdtool graph $2/uptime-$3.png --title "$HOST - Uptime last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Uptime [days]" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:uptime=$1/uptime.rrd:value:AVERAGE \
+		CDEF:uptimehours=uptime,86400,/ \
+		\
+		AREA:uptimehours$YELLOW:"Uptime\t[days]\:" \
+		GPRINT:uptimehours:LAST:"%3.2lf Cur /" \
+		GPRINT:uptimehours:AVERAGE:"%3.2lf Avg /" \
+		GPRINT:uptimehours:MIN:"%3.2lf Min /" \
+		GPRINT:uptimehours:MAX:"%3.2lf Max\n" \
+		LINE:uptimehours$BLACK > /dev/null
+	
+	display_graph "uptime-$3.png"
+}
+
+graph_users()
+{
+	$NICE rrdtool graph $2/users-$3.png --title "$HOST - Users last $4" \
+		--width $WIDTH --height $HEIGHT --vertical-label "Users logged in" \
+		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
+		--end now --start end-$3 --font TITLE:10: \
+		DEF:users=$1/users.rrd:users:AVERAGE \
+		\
+		AREA:users$BLUE:"Users\t\:" \
+		GPRINT:users:LAST:"%3.0lf%s Cur /" \
+		GPRINT:users:AVERAGE:"%3.0lf%s Avg /" \
+		GPRINT:users:MIN:"%3.0lf%s Min /" \
+		GPRINT:users:MAX:"%3.0lf%s Max\n" \
+		LINE:users$BLACK > /dev/null
+	
+	display_graph "users-$3.png"
+}
+
+graph_plugin_intervals()
+{
+	for interval in $PERIOD
+	do
+		interval_text $interval
+		$1 $PLUGINDIR $PLUGIN_GRAPHDIR $interval "$INTERVAL_TEXT"
+		PLUGIN_GRAPHS="$PLUGIN_GRAPHS $GRAPH_NAME"
+	done
+}
+
+graph_plugin()
+{
+	case $PLUGIN in
+		apache-*)                                                                                                
+			INSTANCE="$(basename $PLUGIN | sed 's/apache\-\(.*\)/\1/')"
+			display_begin "Apache $INSTANCE"
+			graph_plugin_intervals graph_apache
+			display_end
+			;;
+		apple_sensors)
+			display_begin "Apple Sensors"
+			graph_plugin_intervals graph_apple_sensors
+			display_end
+			;;
+		contextswitch)
+			display_begin "Context Switches"
+			graph_plugin_intervals graph_contextswitch
+			display_end
+			;;
+		cpu*)
+			display_begin "CPU"
+			graph_plugin_intervals graph_cpu
+			display_end
+			;;
+		disk-[0-9]*)
+			display_begin "Disk IO $PLUGIN"
+			graph_plugin_intervals graph_disk_io
+			display_end
+			;;
+		disk*[0-9])
+			;;
+		disk*)
+			display_begin "Disk IO $PLUGIN"
+			graph_plugin_intervals graph_disk_io
+			display_end
+			;;	
+		df)
+			display_begin "Disk Usage"
+			graph_plugin_intervals graph_df
+			display_end
+			;;
+		entropy)
+			display_begin "Entropy"
+			graph_plugin_intervals graph_entropy
+			display_end
+			;;			
+		fritzbox)
+			display_begin "FritzBox"
+			graph_plugin_intervals graph_fritzbox
+			display_end
+			;;			
+		interface)
+			display_begin "Interfaces"
+			graph_plugin_intervals graph_interface
+			display_end
+			;;
+		load)
+			display_begin "Load"
+			graph_plugin_intervals graph_load
+			display_end
+			;;
+		memory)
+			display_begin "Memory"
+			graph_plugin_intervals graph_memory
+			display_end
+			;;
+		mysql-*)
+			DATABASE="$(basename $PLUGIN | sed 's/mysql\-\(.*\)/\1/')" 
+			display_begin "Mysql $DATABASE"
+			graph_plugin_intervals graph_mysql
+			display_end
+			;;
+		ping)
+			display_begin "Ping"
+			graph_plugin_intervals graph_ping
+			display_end
+			;;
+		swap)
+			display_begin "Swap"
+			graph_plugin_intervals graph_swap
+			display_end
+			;;
+		uptime)
+			display_begin "Uptime"
+			graph_plugin_intervals graph_uptime
+			display_end
+			;;
+		users)
+			display_begin "Users"
+			graph_plugin_intervals graph_users
+			display_end
+			;;
+	esac
+	
+}
+

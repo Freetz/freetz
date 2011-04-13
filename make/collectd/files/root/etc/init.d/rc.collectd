@@ -1,0 +1,73 @@
+#!/bin/sh
+
+DAEMON=collectd
+DAEMON_CONFIG="/tmp/flash/collectd/collectd.conf"
+DAEMON_LONG_NAME="Collectd daemon"
+
+. /etc/init.d/modlibrc
+
+COLLECTDOPTS=""
+
+check_collectd_conf() {
+	if [ ! -e "$CFGFILE" ]; then
+		mkdir -p /tmp/flash/collectd
+		modlib_config
+	fi
+}
+
+config() {
+	mkdir -p /var/lib/collectd
+	rm /var/mod/etc/graph 2>/dev/null
+
+	if [ -z "$COLLECTD_GRAPHDIR" ]; then
+		echo "Error: Collectd graph dir is not set, aborting..."
+		exit 255
+	fi
+
+	ln -s $(echo "$COLLECTD_GRAPHDIR" | sed 's/\/*$//g') /var/mod/etc/graph 2>/dev/null
+}
+
+start() {
+	modreg status collectd Statistics view
+	modlib_startdaemon $DAEMON -C $CFGFILE -P $PID_FILE $COLLECTDOPTS
+}
+
+stop() {
+	modunreg status collectd view
+	kill "$(cat $PID_FILE 2>/dev/null)" 2>/dev/null
+}
+
+case $1 in
+	""|load)
+		modreg cgi 'collectd' 'Collectd'
+		modreg daemon collectd
+		modreg file collectd conf 'collectd.conf' 1 "collectd_conf"
+
+		check_collectd_conf
+		modlib_start $COLLECTD_ENABLED
+		;;
+	unload)
+		modunreg daemon collectd
+		modunreg file collectd
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+
+esac
+
+exit 0
