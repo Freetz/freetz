@@ -3,17 +3,7 @@
 DAEMON=collectd
 DAEMON_CONFIG="/tmp/flash/collectd/collectd.conf"
 DAEMON_LONG_NAME="Collectd daemon"
-
 . /etc/init.d/modlibrc
-
-COLLECTDOPTS=""
-
-check_collectd_conf() {
-	if [ ! -e "$CFGFILE" ]; then
-		mkdir -p /tmp/flash/collectd
-		modlib_config
-	fi
-}
 
 config() {
 	mkdir -p /var/lib/collectd
@@ -29,21 +19,22 @@ config() {
 
 start() {
 	modreg status collectd Statistics view
-	modlib_startdaemon $DAEMON -C $DAEMON_CONFIG -P $PID_FILE $COLLECTDOPTS
+	modlib_startdaemon $DAEMON -C $DAEMON_CONFIG -P $PID_FILE
 }
 
-stop() {
-	modunreg status collectd view
-	kill "$(cat $PID_FILE 2>/dev/null)" 2>/dev/null
+stop_post() {
+	[ "$1" == "0" ] && modunreg status collectd view
 }
 
 case $1 in
 	""|load)
+		mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "$DAEMON_CONFIG" ] && modlib_config
+
 		modreg cgi 'collectd' 'Collectd'
 		modreg daemon collectd
 		modreg file collectd conf 'collectd.conf' 1 "collectd_conf"
 
-		check_collectd_conf
 		modlib_start $COLLECTD_ENABLED
 		;;
 	unload)
