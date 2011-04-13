@@ -1,0 +1,13 @@
+--- configure
++++ configure
+@@ -2527,8 +2527,8 @@
+   "") enable_ltdl_convenience=yes
+       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
+   esac
+-  LIBLTDL='${top_builddir}/''libltdl'/libltdlc.la
+-  LTDLINCL='-I${top_srcdir}/''libltdl'
++  LIBLTDL="${LIBLTDL_PREFIX}/lib/libltdl.la"
++  LTDLINCL="-I${LIBLTDL_PREFIX}/include"
+   # For backwards non-gettext consistent compatibility...
+   INCLTDL="$LTDLINCL"
+ 

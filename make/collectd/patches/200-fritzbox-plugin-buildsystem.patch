@@ -1,23 +1,15 @@
 --- configure
 +++ configure
-@@ -917,6 +917,8 @@
- BUILD_PLUGIN_GMOND_TRUE
- BUILD_PLUGIN_FSCACHE_FALSE
+@@ -1098,6 +1098,8 @@
+ BUILD_PLUGIN_FILECOUNT_FALSE
  BUILD_PLUGIN_FSCACHE_TRUE
+ BUILD_PLUGIN_FSCACHE_FALSE
 +BUILD_PLUGIN_FRITZBOX_FALSE
 +BUILD_PLUGIN_FRITZBOX_TRUE
- BUILD_PLUGIN_FILECOUNT_FALSE
- BUILD_PLUGIN_FILECOUNT_TRUE
- BUILD_PLUGIN_EXEC_FALSE
-@@ -1340,6 +1342,7 @@
- enable_entropy
- enable_exec
- enable_filecount
-+enable_fritzbox
- enable_fscache
- enable_gmond
- enable_hddtemp
-@@ -2099,6 +2102,7 @@
+ BUILD_PLUGIN_GMOND_TRUE
+ BUILD_PLUGIN_GMOND_FALSE
+ BUILD_PLUGIN_HDDTEMP_TRUE
+@@ -1907,6 +1909,7 @@
    --enable-entropy        Entropy statistics
    --enable-exec           Execution of external programs
    --enable-filecount      Count files in directories
@@ -25,7 +17,7 @@
    --enable-fscache        fscache statistics
    --enable-gmond          Ganglia plugin
    --enable-hddtemp        Query hddtempd
-@@ -24710,6 +24714,66 @@
+@@ -47007,6 +47010,68 @@
  
      enable_plugin="no"
      force="no"
@@ -64,7 +56,9 @@
 +	    if test "xyes" = "xyes" || test "x$force" = "xyes"
 +	    then
 +
-+$as_echo "#define HAVE_PLUGIN_FRITZBOX 1" >>confdefs.h
++cat >>confdefs.h <<\_ACEOF
++#define HAVE_PLUGIN_FRITZBOX 1
++_ACEOF
 +
 +		    if test "xyes" != "xyes"
 +		    then
@@ -90,20 +84,41 @@
 +    enable_plugin="no"
 +    force="no"
      # Check whether --enable-fscache was given.
- if test "${enable_fscache+set}" = set; then :
+ if test "${enable_fscache+set}" = set; then
    enableval=$enable_fscache;
-@@ -29818,6 +29882,10 @@
-   as_fn_error $? "conditional \"BUILD_PLUGIN_FILECOUNT\" was never defined.
- Usually this means the macro was only invoked conditionally." "$LINENO" 5
+@@ -52605,6 +52670,13 @@
+ Usually this means the macro was only invoked conditionally." >&2;}
+    { (exit 1); exit 1; }; }
  fi
 +if test -z "${BUILD_PLUGIN_FRITZBOX_TRUE}" && test -z "${BUILD_PLUGIN_FRITZBOX_FALSE}"; then
-+  as_fn_error $? "conditional \"BUILD_PLUGIN_FRITZBOX\" was never defined.
-+Usually this means the macro was only invoked conditionally." "$LINENO" 5
++  { { echo "$as_me:$LINENO: error: conditional \"BUILD_PLUGIN_FRITZBOX\" was never defined.
++Usually this means the macro was only invoked conditionally." >&5
++echo "$as_me: error: conditional \"BUILD_PLUGIN_FRITZBOX\" was never defined.
++Usually this means the macro was only invoked conditionally." >&2;}
++   { (exit 1); exit 1; }; }
 +fi
  if test -z "${BUILD_PLUGIN_FSCACHE_TRUE}" && test -z "${BUILD_PLUGIN_FSCACHE_FALSE}"; then
-   as_fn_error $? "conditional \"BUILD_PLUGIN_FSCACHE\" was never defined.
- Usually this means the macro was only invoked conditionally." "$LINENO" 5
-@@ -32602,6 +32670,7 @@
+   { { echo "$as_me:$LINENO: error: conditional \"BUILD_PLUGIN_FSCACHE\" was never defined.
+ Usually this means the macro was only invoked conditionally." >&5
+@@ -54128,6 +54200,8 @@
+ BUILD_PLUGIN_EXEC_FALSE!$BUILD_PLUGIN_EXEC_FALSE$ac_delim
+ BUILD_PLUGIN_FILECOUNT_TRUE!$BUILD_PLUGIN_FILECOUNT_TRUE$ac_delim
+ BUILD_PLUGIN_FILECOUNT_FALSE!$BUILD_PLUGIN_FILECOUNT_FALSE$ac_delim
++BUILD_PLUGIN_FRITZBOX_TRUE!$BUILD_PLUGIN_FRITZBOX_TRUE$ac_delim
++BUILD_PLUGIN_FRITZBOX_FALSE!$BUILD_PLUGIN_FRITZBOX_FALSE$ac_delim
+ BUILD_PLUGIN_FSCACHE_TRUE!$BUILD_PLUGIN_FSCACHE_TRUE$ac_delim
+ BUILD_PLUGIN_FSCACHE_FALSE!$BUILD_PLUGIN_FSCACHE_FALSE$ac_delim
+ BUILD_PLUGIN_GMOND_TRUE!$BUILD_PLUGIN_GMOND_TRUE$ac_delim
+@@ -54190,7 +54264,7 @@
+ BUILD_PLUGIN_NGINX_FALSE!$BUILD_PLUGIN_NGINX_FALSE$ac_delim
+ _ACEOF
+ 
+-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
++  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 99; then
+     break
+   elif $ac_last_try; then
+     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
+@@ -55254,6 +55328,7 @@
      entropy . . . . . . . $enable_entropy
      exec  . . . . . . . . $enable_exec
      filecount . . . . . . $enable_filecount
@@ -113,7 +128,7 @@
      hddtemp . . . . . . . $enable_hddtemp
 --- src/config.h.in
 +++ src/config.h.in
-@@ -625,6 +625,9 @@
+@@ -561,6 +561,9 @@
  /* Define to 1 if the filecount plugin is enabled. */
  #undef HAVE_PLUGIN_FILECOUNT
  
@@ -125,7 +140,7 @@
  
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -423,6 +423,9 @@
+@@ -425,6 +425,9 @@
  @BUILD_PLUGIN_ZFS_ARC_TRUE@am__append_377 = zfs_arc.la
  @BUILD_PLUGIN_ZFS_ARC_TRUE@am__append_378 = "-dlopen" zfs_arc.la
  @BUILD_PLUGIN_ZFS_ARC_TRUE@am__append_379 = zfs_arc.la
@@ -135,22 +150,20 @@
  subdir = src
  DIST_COMMON = $(dist_man_MANS) $(srcdir)/Makefile.am \
  	$(srcdir)/Makefile.in $(srcdir)/collectd.conf.in \
-@@ -672,6 +675,14 @@
- 	$(filecount_la_LDFLAGS) $(LDFLAGS) -o $@
+@@ -593,6 +596,12 @@
+ filecount_la_OBJECTS = $(am_filecount_la_OBJECTS)
  @BUILD_PLUGIN_FILECOUNT_TRUE@am_filecount_la_rpath = -rpath \
  @BUILD_PLUGIN_FILECOUNT_TRUE@	$(pkglibdir)
 +fritzbox_la_LIBADD =
 +am__fritzbox_la_SOURCES_DIST = fritzbox.c
 +@BUILD_PLUGIN_FRITZBOX_TRUE@am_fritzbox_la_OBJECTS = fritzbox.lo
 +fritzbox_la_OBJECTS = $(am_fritzbox_la_OBJECTS)
-+fritzbox_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-+	$(fritzbox_la_LDFLAGS) $(LDFLAGS) -o $@
-+@BUILD_PLUGIN_FRITZBOX_TRUE@am_fritzbox_la_rpath = -rpath $(pkglibdir)
++@BUILD_PLUGIN_FRITZBOX_TRUE@am_fritzbox_la_rpath = -rpath \
++@BUILD_PLUGIN_FRITZBOX_TRUE@	$(pkglibdir)
  fscache_la_LIBADD =
  am__fscache_la_SOURCES_DIST = fscache.c
  @BUILD_PLUGIN_FSCACHE_TRUE@am_fscache_la_OBJECTS = fscache.lo
-@@ -1458,6 +1469,7 @@
+@@ -1281,6 +1290,7 @@
  	$(curl_xml_la_SOURCES) $(dbi_la_SOURCES) $(df_la_SOURCES) \
  	$(disk_la_SOURCES) $(dns_la_SOURCES) $(email_la_SOURCES) \
  	$(entropy_la_SOURCES) $(exec_la_SOURCES) \
@@ -158,7 +171,7 @@
  	$(filecount_la_SOURCES) $(fscache_la_SOURCES) \
  	$(gmond_la_SOURCES) $(hddtemp_la_SOURCES) \
  	$(interface_la_SOURCES) $(ipmi_la_SOURCES) \
-@@ -1508,6 +1520,7 @@
+@@ -1331,6 +1341,7 @@
  	$(am__dns_la_SOURCES_DIST) $(am__email_la_SOURCES_DIST) \
  	$(am__entropy_la_SOURCES_DIST) $(am__exec_la_SOURCES_DIST) \
  	$(am__filecount_la_SOURCES_DIST) \
@@ -166,7 +179,7 @@
  	$(am__fscache_la_SOURCES_DIST) $(am__gmond_la_SOURCES_DIST) \
  	$(am__hddtemp_la_SOURCES_DIST) \
  	$(am__interface_la_SOURCES_DIST) $(am__ipmi_la_SOURCES_DIST) \
-@@ -1902,7 +1915,7 @@
+@@ -1957,7 +1968,7 @@
  	$(am__append_346) $(am__append_350) $(am__append_355) \
  	$(am__append_358) $(am__append_361) $(am__append_364) \
  	$(am__append_367) $(am__append_370) $(am__append_375) \
@@ -175,7 +188,7 @@
  collectd_DEPENDENCIES = $(am__append_16) $(am__append_24) \
  	$(am__append_28) $(am__append_31) $(am__append_34) \
  	$(am__append_38) $(am__append_41) $(am__append_44) \
-@@ -1936,7 +1949,7 @@
+@@ -1991,7 +2002,7 @@
  	$(am__append_347) $(am__append_351) $(am__append_356) \
  	$(am__append_359) $(am__append_362) $(am__append_365) \
  	$(am__append_368) $(am__append_373) $(am__append_376) \
@@ -184,7 +197,7 @@
  collectdmon_SOURCES = collectdmon.c
  collectdmon_CPPFLAGS = $(AM_CPPFLAGS)
  collectd_nagios_SOURCES = collectd-nagios.c
-@@ -1975,7 +1988,8 @@
+@@ -2030,7 +2041,8 @@
  	$(am__append_338) $(am__append_341) $(am__append_345) \
  	$(am__append_348) $(am__append_352) $(am__append_357) \
  	$(am__append_360) $(am__append_363) $(am__append_366) \
@@ -194,7 +207,7 @@
  BUILT_SOURCES = $(am__append_249)
  CLEANFILES = $(am__append_250)
  @BUILD_PLUGIN_APACHE_TRUE@apache_la_SOURCES = apache.c
-@@ -2359,6 +2373,8 @@
+@@ -2414,6 +2426,8 @@
  @BUILD_PLUGIN_ZFS_ARC_TRUE@zfs_arc_la_CFLAGS = $(AM_CFLAGS)
  @BUILD_PLUGIN_ZFS_ARC_TRUE@zfs_arc_la_LDFLAGS = -module -avoid-version
  @BUILD_PLUGIN_ZFS_ARC_TRUE@zfs_arc_la_LIBADD = -lkstat
@@ -203,16 +216,16 @@
  dist_man_MANS = collectd.1 \
  		collectd.conf.5 \
  		collectd-email.5 \
-@@ -2508,6 +2524,8 @@
- 	$(exec_la_LINK) $(am_exec_la_rpath) $(exec_la_OBJECTS) $(exec_la_LIBADD) $(LIBS)
+@@ -2558,6 +2572,8 @@
+ 	$(LINK) $(am_exec_la_rpath) $(exec_la_LDFLAGS) $(exec_la_OBJECTS) $(exec_la_LIBADD) $(LIBS)
  filecount.la: $(filecount_la_OBJECTS) $(filecount_la_DEPENDENCIES) 
- 	$(filecount_la_LINK) $(am_filecount_la_rpath) $(filecount_la_OBJECTS) $(filecount_la_LIBADD) $(LIBS)
+ 	$(LINK) $(am_filecount_la_rpath) $(filecount_la_LDFLAGS) $(filecount_la_OBJECTS) $(filecount_la_LIBADD) $(LIBS)
 +fritzbox.la: $(fritzbox_la_OBJECTS) $(fritzbox_la_DEPENDENCIES) 
-+	$(fritzbox_la_LINK) $(am_fritzbox_la_rpath) $(fritzbox_la_OBJECTS) $(fritzbox_la_LIBADD) $(LIBS)
++	$(LINK) $(am_fritzbox_la_rpath) $(fritzbox_la_LDFLAGS) $(fritzbox_la_OBJECTS) $(fritzbox_la_LIBADD) $(LIBS)
  fscache.la: $(fscache_la_OBJECTS) $(fscache_la_DEPENDENCIES) 
- 	$(fscache_la_LINK) $(am_fscache_la_rpath) $(fscache_la_OBJECTS) $(fscache_la_LIBADD) $(LIBS)
+ 	$(LINK) $(am_fscache_la_rpath) $(fscache_la_LDFLAGS) $(fscache_la_OBJECTS) $(fscache_la_LIBADD) $(LIBS)
  gmond.la: $(gmond_la_OBJECTS) $(gmond_la_DEPENDENCIES) 
-@@ -2806,6 +2824,7 @@
+@@ -2826,6 +2842,7 @@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entropy.Plo@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exec.Plo@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filecount.Plo@am__quote@

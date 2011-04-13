@@ -1,6 +1,6 @@
---- src/plugin.c	2010-11-27 11:10:38.000000000 +0100
-+++ src/plugin.c	2011-02-12 12:05:06.000000000 +0100
-@@ -631,12 +631,6 @@
+--- src/plugin.c
++++ src/plugin.c
+@@ -641,12 +641,6 @@
  					sstrerror (errno, errbuf, sizeof (errbuf)));
  			continue;
  		}
@@ -10,6 +10,6 @@
 -			WARNING ("stat %s: not a regular file", filename);
 -			continue;
 -		}
-
+ 
  		if (plugin_load_file (filename, flags) == 0)
  		{
