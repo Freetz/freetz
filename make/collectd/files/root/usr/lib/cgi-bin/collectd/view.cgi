@@ -20,7 +20,7 @@ RRDTOOL=`which rrdtool`
 if [ -d "$HOSTS_DIR" -a -n "$RRDTOOL" ]; then
 
 	HOSTS=`ls $HOSTS_DIR`
-	CGI_HOST=$(cgi_param host) 
+	CGI_HOST=$(cgi_param host)
 	CGI_PLUGIN=$(cgi_param plugin)
 	CGI_REFRESH=$(cgi_param refresh)
 	SHOW_INTERFACE_ERRORS=$(cgi_param iferrors)
@@ -47,7 +47,7 @@ if [ -d "$HOSTS_DIR" -a -n "$RRDTOOL" ]; then
 		else
 			echo "<li class=\"open\"><a href=\"$SCRIPT_NAME?host=$HOST\">$HOST</a><ul>"
 		fi
-	
+
 		PLUGINS=`ls $HOSTS_DIR/$HOST/`
 		for PLUGIN in $PLUGINS;
 		do
@@ -98,9 +98,9 @@ process_plugin()
 	if [ ! -e "$PLUGIN_GRAPHDIR" ]; then
 		mkdir -p "$PLUGIN_GRAPHDIR"
 	fi
-	
+
 	graph_plugin
-	
+
 }
 
 process_host()
@@ -109,9 +109,9 @@ process_host()
 		mkdir -p "$COLLECTD_GRAPHDIR/$HOST"
 	fi
 	PLUGINS=`ls $HOSTS_DIR/$HOST/`
-	
+
 	echo "<center><h1>$HOST</h1></center>"
-	
+
 	if [ -n "$CGI_PLUGIN" -a "y" == $(echo $PLUGINS | sed  "s/.*$CGI_PLUGIN.*/y/") ];
 	then
 		PLUGIN="$CGI_PLUGIN"

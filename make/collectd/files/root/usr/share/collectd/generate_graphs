@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script is responsible for actually generating the graphs for each known plugin type
 # call flow is graph_plugin -> graph_plugin_intervals -> actual function for graphing the plugin
-# Copyright (c) 2010 - 2011 Brian Jensen (Jensen.J.Brian@googlemail.com) 
+# Copyright (c) 2010 - 2011 Brian Jensen (Jensen.J.Brian@googlemail.com)
 
 RED=#FF0000
 YELLOW=#ECD748
@@ -38,9 +38,9 @@ graph_apache()
 		GPRINT:bytes:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:bytes:MIN:"%3.0lf%s Min /" \
 		GPRINT:bytes:MAX:"%3.0lf%s Max\n" > /dev/null
-		
+
 		display_graph "apache-bytes-$3.png"
-	
+
 	$NICE rrdtool graph $2/apache-requests-$3.png --title "$HOST - Apache requests last $4" \
 		--width $WIDTH --height $HEIGHT --vertical-label "Requests / second" \
 		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
@@ -53,7 +53,7 @@ graph_apache()
 		GPRINT:requests:MIN:"%3.0lf%s Min /" \
 		GPRINT:requests:MAX:"%3.0lf%s Max\n" > /dev/null
 
-	display_graph "apache-requests-$3.png"		
+	display_graph "apache-requests-$3.png"
 }
 
 graph_apple_sensors()
@@ -90,7 +90,7 @@ graph_apple_sensors()
 		GPRINT:cpu:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:cpu:MIN:"%3.0lf%s Min /" \
 		GPRINT:cpu:MAX:"%3.0lf%s Max\n" > /dev/null
-		
+
 	$NICE rrdtool graph $2/apple_fanspeed-$3.png --title "$HOST - Fan speed last $4" \
 		--width $WIDTH --height $HEIGHT --vertical-label "Speed [rpm]" \
 		$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
@@ -102,7 +102,7 @@ graph_apple_sensors()
 		GPRINT:rear:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:rear:MIN:"%3.0lf%s Min /" \
 		GPRINT:rear:MAX:"%3.0lf%s Max\n" > /dev/null
-		
+
 	display_graph "apple_temperature-$3.png"
 	display_graph "apple_fanspeed-$3.png"
 
@@ -122,14 +122,14 @@ graph_contextswitch()
 		GPRINT:switches:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:switches:MIN:"%3.0lf%s Min /" \
 		GPRINT:switches:MAX:"%3.0lf%s Max\n" > /dev/null
-	
+
 	display_graph "contextswitch-$3.png"
 }
 
 graph_cpu()
-{	
+{
 	CATEGORIES_COUNT="$(ls $1 | wc -w)"
-	if [  $CATEGORIES_COUNT -eq 4 ]; then	
+	if [  $CATEGORIES_COUNT -eq 4 ]; then
 		$NICE rrdtool graph $2/cpu-$3.png --title "$HOST - CPU usage last $4" \
 			--width $WIDTH --height $HEIGHT --vertical-label "CPU Usage [%]" \
 			$DEFAULT_COLORS -l 0 -u 100 -r -W "Generated on: $DATE" \
@@ -162,7 +162,7 @@ graph_cpu()
 			GPRINT:total:AVERAGE:"%2.1lf Avg /" \
 			GPRINT:total:MIN:"%2.1lf Min /" \
 			GPRINT:total:MAX:"%2.1lf Max\n" > /dev/null
-	
+
 	elif [ $CATEGORIES_COUNT -eq 8 ]; then
 		$NICE rrdtool graph $2/cpu-$3.png --title "$HOST - CPU usage last $4" \
 			--width $WIDTH --height $HEIGHT --vertical-label "CPU Usage [%]" \
@@ -224,9 +224,9 @@ graph_cpu()
 			GPRINT:total:AVERAGE:"%2.1lf Avg /" \
 			GPRINT:total:MIN:"%2.1lf Min /" \
 			GPRINT:total:MAX:"%2.1lf Max\n" > /dev/null
-	
+
 	fi
-	
+
 	display_graph "cpu-$3.png"
 }
 
@@ -253,19 +253,19 @@ graph_disk_io()
 		GPRINT:write:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:write:MIN:"%3.0lf%s Min /" \
 		GPRINT:write:MAX:"%3.0lf%s Max\n" > /dev/null
-	
+
 	display_graph "disk_io-$DEVICE_NAME-$3.png"
 }
 
 graph_df()
 {
 	VOLUMES="$(ls $1 | grep df-*)"
-	
+
 	for VOLUME in $VOLUMES
 	do
 		VOLUME_NAME="${VOLUME#df-}"
 		VOLUME_NAME="${VOLUME_NAME%.rrd}"
-		
+
 		$NICE rrdtool graph $2/df_$VOLUME_NAME-$3.png --title "$HOST - Disk $VOLUME_NAME usage last $4" \
 			--width $WIDTH --height $HEIGHT --vertical-label "Usage [bytes]" \
 			$DEFAULT_COLORS -l 0 -W "Generated on: $DATE" --units=si \
@@ -284,7 +284,7 @@ graph_df()
 			GPRINT:free:AVERAGE:"%3.0lf%s Avg /" \
 			GPRINT:free:MIN:"%3.0lf%s Min /" \
 			GPRINT:free:MAX:"%3.0lf%s Max\n" > /dev/null
-		
+
 		display_graph "df_$VOLUME_NAME-$3.png"
 	done
 
@@ -304,7 +304,7 @@ graph_entropy()
 		GPRINT:entropy:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:entropy:MIN:"%3.0lf%s Min /" \
 		GPRINT:entropy:MAX:"%3.0lf%s Max\n" > /dev/null
-	
+
 	display_graph "entropy-$3.png"
 }
 
@@ -356,14 +356,14 @@ graph_fritzbox()
 		GPRINT:wlan:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:wlan:MIN:"%3.0lf%s Min /"  \
 		GPRINT:wlan:MAX:"%3.0lf%s Max\n"  > /dev/null
-	
+
 	display_graph "fritzbox_energy-$3.png"
 
 	local modes="downstream upstream"
 	for mode in $modes
 	do
 		if [ -e "$1/dsl_rates-$mode.rrd" ]; then
-			
+
 			$NICE rrdtool graph $2/dsl_rates-$mode-$3.png --title "$HOST - DSL $mode rates last $4" \
 				--width $WIDTH --height $HEIGHT --vertical-label "Rate [bits/s]" \
 				$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE" --units=si  \
@@ -396,12 +396,12 @@ graph_fritzbox()
 				GPRINT:dslammin:AVERAGE:"%3.1lf%s Avg /" \
 				GPRINT:dslammin:MIN:"%3.1lf%s Min /"  \
 				GPRINT:dslammin:MAX:"%3.1lf%s Max\n" > /dev/null
-			
+
 			display_graph "dsl_rates-$mode-$3.png"
 		fi
-	
+
 		if [ -e "$1/dsl_errors-$mode.rrd" ]; then
-				
+
 			$NICE rrdtool graph $2/dsl_errors-$mode-$3.png --title "$HOST - DSL $mode errors last $4" \
 				--width $WIDTH --height $HEIGHT --vertical-label "Rate [errors/min]" \
 				$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE"  \
@@ -420,12 +420,12 @@ graph_fritzbox()
 				GPRINT:forward:AVERAGE:"%3.1lf Avg /" \
 				GPRINT:forward:MIN:"%3.1lf Min /"  \
 				GPRINT:forward:MAX:"%3.1lf Max\n" > /dev/null
-			
+
 			display_graph "dsl_errors-$mode-$3.png"
 		fi
-		
+
 		if [ -e "$1/dsl_line-$mode.rrd" ]; then
-		
+
 			$NICE rrdtool graph $2/dsl_line-$mode-$3.png --title "$HOST - DSL $mode signal quality last $4" \
 				--width $WIDTH --height $HEIGHT --vertical-label "Quality [db]" \
 				$DEFAULT_COLORS -r -l 0 -W "Generated on: $DATE"  \
@@ -444,7 +444,7 @@ graph_fritzbox()
 				GPRINT:snr:AVERAGE:"%3.0lf Avg /" \
 				GPRINT:snr:MIN:"%3.0lf Min /"  \
 				GPRINT:snr:MAX:"%3.0lf Max\n" > /dev/null
-			
+
 			display_graph "dsl_line-$mode-$3.png"
 		fi
 	done
@@ -453,12 +453,12 @@ graph_fritzbox()
 graph_interface()
 {
 	INTERFACES="$(ls $1 | grep if_octets-*)"
-	
+
 	for INTERFACE in $INTERFACES
 	do
 		INTERFACE_NAME="${INTERFACE#if_octets-}"
 		INTERFACE_NAME="${INTERFACE_NAME%.rrd}"
-		
+
 		$NICE rrdtool graph $2/interface_$INTERFACE_NAME-$3.png --title "$HOST - Interface $INTERFACE_NAME usage last $4" \
 			--width $WIDTH --height $HEIGHT --vertical-label "Out (-) / In (+) [bytes/s]" \
 			$DEFAULT_COLORS -W "Generated on: $DATE" --units=si \
@@ -478,11 +478,11 @@ graph_interface()
 			GPRINT:transmitted:AVERAGE:"%3.0lf%s Avg /" \
 			GPRINT:transmitted:MIN:"%3.0lf%s Min /" \
 			GPRINT:transmitted:MAX:"%3.0lf%s Max\n" > /dev/null
-		
+
 		display_graph "interface_$INTERFACE_NAME-$3.png"
-		
+
 		if [ -n "$SHOW_INTERFACE_ERRORS" ]; then
-			
+
 			$NICE rrdtool graph $2/interface_errors_$INTERFACE_NAME-$3.png --title "$HOST - Interface errors $INTERFACE_NAME last $4" \
 				--width $WIDTH --height $HEIGHT --vertical-label "Out (-) / In (+) [bytes/s]" \
 				$DEFAULT_COLORS -W "Generated on: $DATE" --units=si \
@@ -500,9 +500,9 @@ graph_interface()
 				LINE2:negtransmitted$RED_D:"Out\t[bytes/s]\:" \
 				GPRINT:transmitted:LAST:"%3.0lf%s Cur /" \
 				GPRINT:transmitted:AVERAGE:"%3.0lf%s Avg /" \
-				GPRINT:transmitted:MIN:"%3.0lf%s Min /" \	
+				GPRINT:transmitted:MIN:"%3.0lf%s Min /" \
 				GPRINT:transmitted:MAX:"%3.0lf%s Max\n" > /dev/null
-			
+
 			display_graph "interface_errors_$INTERFACE_NAME-$3.png"
 		fi
 	done
@@ -537,7 +537,7 @@ graph_load()
 		GPRINT:longterm:MIN:"%2.2lf Min /"  \
 		GPRINT:longterm:MAX:"%2.2lf Max\n"  \
 		LINE:total$BLACK > /dev/null
-	
+
 	display_graph "load-$3.png"
 }
 
@@ -611,7 +611,7 @@ graph_memory()
 			GPRINT:free:MIN:"%3.0lf%s Min /"  \
 			GPRINT:free:MAX:"%3.0lf%s Max\n" > /dev/null
 	fi
-	
+
 	display_graph "memory-$3.png"
 }
 
@@ -667,7 +667,7 @@ graph_mysql()
 		GPRINT:total:AVERAGE:"%3.0lf%s Avg /" \
 		GPRINT:total:MIN:"%3.0lf%s Min /" \
 		GPRINT:total:MAX:"%3.0lf%s Max\n" > /dev/null
-		
+
 	display_graph "mysql_queries_$DATABASE-$3.png"
 
 	$NICE rrdtool graph "$2/mysql_threads_$DATABASE-$3.png" --title "$HOST - Mysql threads last $4" \
@@ -732,11 +732,11 @@ graph_mysql()
 graph_ping()
 {
 	PINGED_HOSTS="$(ls $1/ | grep 'ping--*')"
-		
+
 	for PINGED_HOST in $PINGED_HOSTS
 	do
 		HOST_NAME="$(echo $PINGED_HOST | sed 's/ping\(\-\)\(.*\)\.rrd/\2/')"
-		
+
 		$NICE rrdtool graph "$2/ping_$HOST_NAME-$3.png" --title "$HOST - Ping time $HOST_NAME last $4" \
 			--width $WIDTH --height $HEIGHT --vertical-label "Time [ms]" \
 			$DEFAULT_COLORS -l 0 -r -W "Generated on: $DATE" \
@@ -748,7 +748,7 @@ graph_ping()
 			GPRINT:ping:AVERAGE:"%4.0lf Avg /" \
 			GPRINT:ping:MIN:"%4.0lf Min /" \
 			GPRINT:ping:MAX:"%4.0lf Max\n" > /dev/null
-		
+
 		display_graph "ping_$HOST_NAME-$3.png"
 	done
 }
@@ -786,7 +786,7 @@ graph_uptime()
 		GPRINT:uptimehours:MIN:"%3.2lf Min /" \
 		GPRINT:uptimehours:MAX:"%3.2lf Max\n" \
 		LINE:uptimehours$BLACK > /dev/null
-	
+
 	display_graph "uptime-$3.png"
 }
 
@@ -804,7 +804,7 @@ graph_users()
 		GPRINT:users:MIN:"%3.0lf%s Min /" \
 		GPRINT:users:MAX:"%3.0lf%s Max\n" \
 		LINE:users$BLACK > /dev/null
-	
+
 	display_graph "users-$3.png"
 }
 
@@ -821,7 +821,7 @@ graph_plugin_intervals()
 graph_plugin()
 {
 	case $PLUGIN in
-		apache-*)                                                                                                
+		apache-*)
 			INSTANCE="$(basename $PLUGIN | sed 's/apache\-\(.*\)/\1/')"
 			display_begin "Apache $INSTANCE"
 			graph_plugin_intervals graph_apache
@@ -853,7 +853,7 @@ graph_plugin()
 			display_begin "Disk IO $PLUGIN"
 			graph_plugin_intervals graph_disk_io
 			display_end
-			;;	
+			;;
 		df)
 			display_begin "Disk Usage"
 			graph_plugin_intervals graph_df
@@ -863,12 +863,12 @@ graph_plugin()
 			display_begin "Entropy"
 			graph_plugin_intervals graph_entropy
 			display_end
-			;;			
+			;;
 		fritzbox)
 			display_begin "FritzBox"
 			graph_plugin_intervals graph_fritzbox
 			display_end
-			;;			
+			;;
 		interface)
 			display_begin "Interfaces"
 			graph_plugin_intervals graph_interface
@@ -885,7 +885,7 @@ graph_plugin()
 			display_end
 			;;
 		mysql-*)
-			DATABASE="$(basename $PLUGIN | sed 's/mysql\-\(.*\)/\1/')" 
+			DATABASE="$(basename $PLUGIN | sed 's/mysql\-\(.*\)/\1/')"
 			display_begin "Mysql $DATABASE"
 			graph_plugin_intervals graph_mysql
 			display_end
@@ -911,6 +911,5 @@ graph_plugin()
 			display_end
 			;;
 	esac
-	
-}
 
+}
