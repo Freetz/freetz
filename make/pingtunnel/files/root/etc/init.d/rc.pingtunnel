@@ -8,7 +8,13 @@ PID_FILE=/var/run/$DAEMON.pid
 start() {
 	mkdir -p /tmp/$DAEMON_BIN
 	[ -z "$PINGTUNNEL_EXTRA" ] && PINGTUNNEL_EXTRA="-c lan -syslog"
-	modlib_startdaemon $DAEMON_BIN $PINGTUNNEL_EXTRA -x $PINGTUNNEL_PASSWORD -daemon $PID_FILE -chroot /tmp/$DAEMON_BIN
+	modlib_startdaemon $DAEMON_BIN \
+		$PINGTUNNEL_EXTRA \
+		-x $PINGTUNNEL_PASSWORD \
+		-daemon $PID_FILE \
+		-chroot /tmp/$DAEMON_BIN \
+		-setuid nobody \
+		-setgid nobody
 }
 
 stop_post() {
@@ -17,6 +23,9 @@ stop_post() {
 
 case $1 in
 	""|load)
+		modlib_addgroup nobody
+		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
 		modreg cgi 'pingtunnel' 'pingtunnel'
 		modreg daemon $DAEMON
 
