@@ -757,6 +757,14 @@ config FREETZ_HAS_LIBSSL
 	help
 		Select this if you have a box with libssl.
 
+config FREETZ_HAS_LSOF
+	bool "Has lsof"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_FON_WLAN_7320
+	default n
+	help
+		Select this if you have a box with lsof binary.
+
 config FREETZ_HAS_NAS
 	bool "Has NAS"		if FREETZ_TYPE_CUSTOM
 	select FREETZ_BUSYBOX_TAR_OLDGNU_COMPATIBILITY
@@ -789,6 +797,14 @@ config FREETZ_HAS_PHONE
 	default y
 	help
 		Select this if you have a box with phone support.
+
+config FREETZ_HAS_STRACE
+	bool "Has strace"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_FON_WLAN_7320
+	default n
+	help
+		Select this if you have a box with strace binary.
 
 config FREETZ_HAS_TAM
 	bool "Has TAM"		if FREETZ_TYPE_CUSTOM
@@ -1632,6 +1648,14 @@ config FREETZ_REMOVE_HELP
 	help
 		Removes the (offline) help pages from the web menu.
 
+config FREETZ_REMOVE_LSOF
+	bool "Remove lsof"
+	depends on FREETZ_HAS_LSOF
+	default n
+	help
+		Remove /bin/lsof binary.
+		This saves about 48 KB compressed space in kernel.image.
+
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
 	depends on \
@@ -1723,6 +1747,14 @@ config FREETZ_REMOVE_SMBD
 		Remove Samba daemon (smbd)
 		This patch removes only the daemon. The regular options in AVM's webinterface
 		are still present.
+
+config FREETZ_REMOVE_STRACE
+	bool "Remove strace"
+	depends on FREETZ_HAS_STRACE
+	default n
+	help
+		Remove /usr/bin/strace binary.
+		This saves about 72 KB compressed space in kernel.image.
 
 config FREETZ_REMOVE_SUPPORT
 	bool "Remove the support-files"
