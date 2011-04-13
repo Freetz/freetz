@@ -29,7 +29,7 @@ config() {
 
 start() {
 	modreg status collectd Statistics view
-	modlib_startdaemon $DAEMON -C $CFGFILE -P $PID_FILE $COLLECTDOPTS
+	modlib_startdaemon $DAEMON -C $DAEMON_CONFIG -P $PID_FILE $COLLECTDOPTS
 }
 
 stop() {
