@@ -1,0 +1,41 @@
+From: Nick Clifton <nickc@redhat.com>
+Date: Fri, 25 Mar 2011 17:17:03 +0000
+Subject: [PATCH] 	* ar.c (delete_members): Plug memory leak.
+
+diff --git binutils/ar.c binutils/ar.c
+index 6320a28..263795f 100644
+--- binutils/ar.c
++++ binutils/ar.c
+@@ -1118,7 +1118,6 @@ delete_members (bfd *arch, char **files_to_delete)
+   bfd_boolean found;
+   bfd_boolean something_changed = FALSE;
+   int match_count;
+-  const char * tmp = NULL;
+ 
+   for (; *files_to_delete != NULL; ++files_to_delete)
+     {
+@@ -1140,10 +1139,8 @@ delete_members (bfd *arch, char **files_to_delete)
+       current_ptr_ptr = &(arch->archive_next);
+       while (*current_ptr_ptr)
+ 	{
+-	  if (tmp != NULL)
+-	    free ((char *) tmp);
+-	  tmp = normalize (*files_to_delete, arch);
+-	  if (FILENAME_CMP (tmp, (*current_ptr_ptr)->filename) == 0)
++	  if (FILENAME_CMP (normalize (*files_to_delete, arch),
++			    (*current_ptr_ptr)->filename) == 0)
+ 	    {
+ 	      ++match_count;
+ 	      if (counted_name_mode
+@@ -1180,9 +1177,6 @@ delete_members (bfd *arch, char **files_to_delete)
+     write_archive (arch);
+   else
+     output_filename = NULL;
+-
+-  if (tmp != NULL)
+-    free ((char *) tmp);
+ }
+ 
+ 
+--
+1.7.3.4

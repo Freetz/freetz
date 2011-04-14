@@ -9,7 +9,7 @@ cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 for i in /etc/onlinechanged/* /tmp/onlinechanged /tmp/flash/onlinechanged/*; do
-    test -f "$i" && sh "$i" "$@"
+	[ -f "$i" ] && sh "$i" "$@"
 done
 EOF
 

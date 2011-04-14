@@ -42,9 +42,8 @@ start() {
 	modlib_startdaemon $DAEMON -C /mod/etc/$DAEMON.conf
 }
 
-stop() {
+stop_post() {
 	stop_ipv6_interface
-	return 127
 }
 
 case $1 in

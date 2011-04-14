@@ -1,0 +1,50 @@
+--- libc/sysdeps/linux/mips/crtn.S
++++ libc/sysdeps/linux/mips/crtn.S
+@@ -23,6 +23,7 @@
+ 	.set	reorder
+ 
+ 	.end	_init
++	.size	_init,.-.init
+ #APP
+ 	
+ 	.section .fini
+@@ -42,6 +43,7 @@
+ 	.set	reorder
+ 
+ 	.end	_fini
++	.size	_fini,.-.fini
+ #APP
+ 	
+ 	.ident	"GCC: (GNU) 3.3.2"
+@@ -70,6 +73,7 @@
+ 	.set	reorder
+ 
+ 	.end	_init
++	.size	_init,.-.init
+ #APP
+ 	
+ 	.section .fini
+@@ -90,6 +94,7 @@
+ 	.set	reorder
+ 
+ 	.end	_fini
++	.size	_fini,.-.fini
+ #APP
+ 	
+ 	.ident	"GCC: (GNU) 3.4.3"
+@@ -119,6 +125,7 @@
+ 	.set	reorder
+ 
+ 	.end	_init
++	.size	_init,.-.init
+ #APP
+ 	
+ 	.section .fini
+@@ -139,6 +145,7 @@
+ 	.set	reorder
+ 
+ 	.end	_fini
++	.size	_fini,.-.fini
+ #APP
+ 	
+ 	.ident	"GCC: (GNU) 3.3.2"

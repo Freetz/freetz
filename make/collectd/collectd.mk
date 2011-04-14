@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.10.2)
+$(call PKG_INIT_BIN, 4.10.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=85d9d8d0a1327782661e3c89800aa70e
+$(PKG)_SOURCE_MD5:=5f17bfd7342af4f97f78c608f1d1eb1d
 $(PKG)_SITE:=http://collectd.org/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
@@ -12,8 +12,7 @@ $(PKG)_TARGET_TYPES_DB:=$($(PKG)_DEST_DIR)/usr/share/$(pkg)/types.db
 $(PKG)_DEPENDS_ON := libtool
 # ensure system libltdl is used and not the included one
 $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r libltdl; sed -i -r -e '/SUBDIRS/ s/libltdl//g' ./Makefile.in;
-$(PKG)_CONFIGURE_OPTIONS += --with-ltdl-include=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include
-$(PKG)_CONFIGURE_OPTIONS += --with-ltdl-lib=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
+$(PKG)_CONFIGURE_ENV += LIBLTDL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 # remove -Werror flag
 $(PKG)_CONFIGURE_PRE_CMDS += sed -i -r -e 's,-Werror,,g' ./configure ./src/Makefile.in ./src/libcollectdclient/Makefile.in ./src/owniptc/Makefile.in;

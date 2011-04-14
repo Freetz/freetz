@@ -1,0 +1,10 @@
+#!/bin/sh
+
+[ "$(/etc/init.d/rc.openntpd status)" != "running" ] && exit 0
+
+case "$1" in
+	online)
+		logger -t ONLINECHANGED "Restaring OpenNTPD"
+		/etc/init.d/rc.openntpd restart
+		;;
+esac

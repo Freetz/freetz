@@ -1,0 +1,57 @@
+#!/bin/sh
+
+DAEMON=pingtunnel
+DAEMON_BIN=ptunnel
+PID_FILE=/var/run/$DAEMON.pid
+. /etc/init.d/modlibrc
+
+start() {
+	mkdir -p /tmp/$DAEMON_BIN
+	[ -z "$PINGTUNNEL_EXTRA" ] && PINGTUNNEL_EXTRA="-c lan -syslog"
+	modlib_startdaemon $DAEMON_BIN \
+		$PINGTUNNEL_EXTRA \
+		-x $PINGTUNNEL_PASSWORD \
+		-daemon $PID_FILE \
+		-chroot /tmp/$DAEMON_BIN \
+		-setuid nobody \
+		-setgid nobody
+}
+
+stop_post() {
+	[ "$1" == "0" ] && rm -rf /tmp/$DAEMON_BIN 2>/dev/null
+}
+
+case $1 in
+	""|load)
+		modlib_addgroup nobody
+		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
+		modreg cgi 'pingtunnel' 'pingtunnel'
+		modreg daemon $DAEMON
+
+		modlib_start $PINGTUNNEL_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi 'pingtunnel'
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -104,4 +104,4 @@ if isFreetzType LABOR_PREVIEW; then
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W900V_7170_labor_preview.patch" || exit 2
 else
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W900V_7170.patch" || exit 2
-exit
+fi

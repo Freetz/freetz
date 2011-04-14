@@ -27,7 +27,6 @@
 #--------------------------------------------------------------
 TOPDIR=.
 CONFIG_CONFIG_IN=Config.in
-CONFIG_DEFCONFIG=.defconfig
 CONFIG=tools/config
 
 SHELL:=/bin/bash
@@ -90,6 +89,11 @@ endef
 define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
 endef
+
+# check for proper make version
+ifneq ($(filter 3.7% 3.80,$(MAKE_VERSION)),)
+$(error Your make ($(MAKE_VERSION)) is too old. Go get at least 3.81)
+endif
 
 # Current user == root? -> Error
 ifeq ($(shell echo $$UID),0)
@@ -455,16 +459,10 @@ recover:
 	fi
 
 $(CONFIG)/conf:
-	$(MAKE) $(QUIET) -C $(CONFIG) conf
-	-@if [ ! -f .config ] ; then \
-		cp $(CONFIG_DEFCONFIG) .config; \
-	fi
+	@$(MAKE) $(QUIET) -C $(CONFIG) conf
 
 $(CONFIG)/mconf:
-	$(MAKE) $(QUIET) -C $(CONFIG) ncurses conf mconf
-	-@if [ ! -f .config ] ; then \
-		cp $(CONFIG_DEFCONFIG) .config; \
-	fi
+	@$(MAKE) $(QUIET) -C $(CONFIG) ncurses conf mconf
 
 menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
 	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
@@ -476,7 +474,8 @@ oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(CONFIG)/conf -o $(CONFIG_CONFIG_IN)
 
 defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf -d $(CONFIG_CONFIG_IN)
+	@$(RM) .config; \
+	$(CONFIG)/conf -d $(CONFIG_CONFIG_IN)
 
 config-clean-deps:
 	@{ \

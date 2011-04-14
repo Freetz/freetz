@@ -18,42 +18,37 @@ start() {
 
 		case $SYSLOGD_LOGGING in
 		circular_buffer)
-			if [ ! -z "$SYSLOGD_BUFFER_MAXSIZE" ]; then
-				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C$SYSLOGD_BUFFER_MAXSIZE"
-			else
-				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C"
+			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -C"
+			if [ -n "$SYSLOGD_BUFFER_MAXSIZE" ] && [ "$SYSLOGD_BUFFER_MAXSIZE" -gt "0" ]; then
+				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS$SYSLOGD_BUFFER_MAXSIZE"
 			fi
 		;;
 		log_to_file)
-
-			if [ ! -z "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
-				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -O $SYSLOGD_ALTERNATIVE_LOGFILE "
+			if [ -n "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
+				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -O $SYSLOGD_ALTERNATIVE_LOGFILE"
 				#create a symbolic link to /var/log but only if path to alternative logfile is not /var/log
 				[ $(dirname $SYSLOGD_ALTERNATIVE_LOGFILE) != /var/log ] && \
 					[ ! -e "/var/log/$(basename $SYSLOGD_ALTERNATIVE_LOGFILE)" ] && \
 					ln -sf "$SYSLOGD_ALTERNATIVE_LOGFILE" /var/log/
 			fi
-			if [ "$SYSLOGD_MAXFILES" -ge "1" ]; then
-				if [ ! -z "$SYSLOGD_MAXSIZE" ]; then
-					SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES -s $SYSLOGD_MAXSIZE "
-				else
-					SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES"
-				fi
+			if [ -n "$SYSLOGD_MAXFILES" ] && [ "$SYSLOGD_MAXFILES" -gt "1" ]; then
+				SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -b $SYSLOGD_MAXFILES"
+				[ -n "$SYSLOGD_MAXSIZE" ] && \
+					SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -s $SYSLOGD_MAXSIZE"
 			fi
 		;;
 		esac
 	fi
 
 	if [ "$SYSLOGD_NETWORK" = "yes" ]; then
-		if [ ! -z "$SYSLOGD_PORT" -a "$SYSLOGD_PORT" -ne "514" ]; then
-			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST:$SYSLOGD_PORT"
-		else
-			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST"
+		SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -R $SYSLOGD_HOST"
+		if [ -n "$SYSLOGD_PORT" ] && [ "$SYSLOGD_PORT" -ne "514" ]; then
+			SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS:$SYSLOGD_PORT"
 		fi
 	fi
 
 	#fallback
-	if [ -z "$SYSLOGD_OPTIONS" ] && [ -z "$SYSLOGD_EXPERT_OPTIONS" ]; then
+	if [ -z "$SYSLOGD_OPTIONS" -a -z "$SYSLOGD_EXPERT_OPTIONS" ]; then
 		SYSLOGD_OPTIONS="-b 1 -s 16"
 	fi
 

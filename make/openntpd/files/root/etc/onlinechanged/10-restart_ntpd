@@ -1,8 +1,0 @@
-#!/bin/sh
-
-[ "$(/etc/init.d/rc.openntpd status)" == "stopped" ] && exit 0
-
-if [ "$1" = "online" ]; then
-	logger -t info Restart NTPD due to online status change
-	/etc/init.d/rc.openntpd restart
-fi

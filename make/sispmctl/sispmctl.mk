@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.7)
+$(call PKG_INIT_BIN, 3.0)
 $(PKG)_SOURCE:=sispmctl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=2457f76cd129f880634f3381be0aeb76
+$(PKG)_SOURCE_MD5:=eca3d5803a29617432ef9f609be59bad
 $(PKG)_SITE:=@SF/sispmctl
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sispmctl
@@ -22,11 +22,25 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 ifeq ($(strip $(FREETZ_SISPMCTL_WEB)),y)
-	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl
-	cp $(SISPMCTL_DIR)/src/web1/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl
+	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web1
+	ln -s /usr/share/sispmctl-web1 $(SISPMCTL_DEST_DIR)/usr/share/sispmctl
+	cp $(SISPMCTL_DIR)/src/web1/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web1
+ifeq ($(strip $(FREETZ_SISPMCTL_SKIN2)),y)
+	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web2
+	cp $(SISPMCTL_DIR)/src/web2/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web2
+endif
+ifeq ($(strip $(FREETZ_SISPMCTL_SKIN3)),y)
+	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web3
+	cp $(SISPMCTL_DIR)/src/web3/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web3
+endif
 endif
 
-$(pkg):
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+# List all files that are optional with their dependecies
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	[ ! "$(FREETZ_SISPMCTL_CGI)" == "y" ] && echo -e "usr/lib/cgi-bin/sispmctl.cgi\netc/init.d/rc.sispmctl\netc/default.sispmctl/sispmctl.cfg\netc/default.sispmctl" > $@; \
+	touch $@
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 

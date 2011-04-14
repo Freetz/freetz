@@ -537,14 +537,9 @@ int main(int ac, char **av)
 	switch (input_mode) {
 	case set_default:
 		if (!defconfig_file)
-			defconfig_file = conf_get_default_confname();
-		if (conf_read(defconfig_file)) {
-			printf("***\n"
-				"*** Can't find default configuration \"%s\"!\n"
-				"***\n", defconfig_file);
-			exit(1);
-		}
-		break;
+			/* Freetz: We don't have .defconfig file, create config from defaults */
+			/* defconfig_file = conf_get_default_confname(); */
+			break;
 	case ask_silent:
 		if (stat(".config", &tmpstat)) {
 			printf("***\n"

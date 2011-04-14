@@ -106,7 +106,11 @@ echo "<p>$(lang
 ) ... </p>"
 pre_begin
 untar() {
-	tar -f "$1" -C / -xv 2>&1
+	(
+		tar -C / -xv 2>&1
+		cat > /dev/null # prevent SIGPIPE if tar fails
+	) < "$1"
+
 }
 html_do untar "$1"
 result=$?

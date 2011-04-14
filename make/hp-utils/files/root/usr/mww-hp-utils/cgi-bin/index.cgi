@@ -102,7 +102,7 @@ health_text() {
 	    *) echo "unknown" ;;
 	esac
 }
-        
+
 cgi_begin 'hp-utils'
 
 sel=' style="background-color: #bae3ff;"'
@@ -125,8 +125,8 @@ else
 	    3) echo "<p>$(lang de:"Drucker nicht gefunden." en:"Printer not found.")</p>" ;;
 	    4) echo "<p>$(lang de:"Nicht unterst&uuml;tzter Drucker." en:"Unsupported on this printer.")</p>" ;;
 	    5) echo "<p>$(lang de:"F&uuml;r diesen Drucker (noch) nicht implementiert." en:"Not (yet) implemented for this printer.")</p>" ;;
-	    0) echo "<p>$(lang de:"I/O-Fehler." en:"I/O-Error.")</p>" ;;
-	    *) echo -n "$(status_text $((status)))" ;;
+	    0) echo -n "$(status_text $((status)))" ;;
+	    *) echo "<p>$(lang de:"I/O-Fehler." en:"I/O-Error.")</p>" ;;
 	esac
 fi
 sec_end
@@ -140,12 +140,11 @@ else
 	"
 	levels=$(hp-levels --device "$HP_UTILS_URI" --web-interface 2>/dev/null)
 	ret=$?
-	case $ret in 
+	case $ret in
 	    3) echo "<p>$(lang de:"Drucker nicht gefunden." en:"Printer not found.")</p>" ;;
 	    4) echo "<p>$(lang de:"Nicht unterst&uuml;tzter Drucker." en:"Unsupported on this printer.")</p>" ;;
 	    5) echo "<p>$(lang de:"F&uuml;r diesen Drucker (noch) nicht implementiert." en:"Not (yet) implemented for this printer.")</p>" ;;
-	    0) echo "<p>$(lang de:"I/O-Fehler." en:"I/O-Error.")</p>" ;;
-	    *)  IFS=" "
+	    0) IFS=" "
 		echo "<table>"
 		echo $levels | while read id type kind level trigger health; do
 			echo "<tr>"
@@ -172,6 +171,7 @@ else
 		done
 		echo "</table>"
 	    ;;
+	    *) echo "<p>$(lang de:"I/O-Fehler." en:"I/O-Error.")</p>" ;;
 	esac
 	IFS=$_IFS
 fi

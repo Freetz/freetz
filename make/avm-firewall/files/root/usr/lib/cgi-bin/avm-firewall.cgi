@@ -173,6 +173,7 @@ cat << EOF
 	<option title="tcp" value="tcp">tcp</option>
 	<option title="udp" value="udp">udp</option>
 	<option title="gre" value="gre">gre</option>
+	<option title="icmp" value="icmp">icmp</option>
 </select> </td> 
 <td></td>
 <td><div id="div_fwdsport">
@@ -213,7 +214,7 @@ $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln 
         <tr> <th bgcolor="#bae3ff">$(lang en:"Aktive" de:"Aktiv")</th> <th bgcolor="#bae3ff">$(lang en:"Protocol" de:"Protokoll")</th> <th bgcolor="#bae3ff">$(lang en:"Source Port" de:"Quell-Port")</th> <th bgcolor="#bae3ff">$(lang en:"Address" de:"Adresse")</th>
         <th bgcolor="#bae3ff">$(lang en:"Dest. Port" de:"Ziel-Port")</th> <th bgcolor="#bae3ff">$(lang en:"Description" de:"Beschreibung")</th> <th bgcolor="#bae3ff">$(lang en:"Configure" de:"Bearbeiten")</th> </tr>
         <tr style="display:none"><td bgcolor="#CDCDCD" width="40" align="center"><input type="checkbox" onclick='fwddisable[ (this.parentNode.parentNode.rowIndex -3)] = ! this.checked ; rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3));'></td><td><select>
-        <option value="gre">gre</option><option value="tcp">tcp</option><option value="udp">udp</option>
+        <option value="icmp">icmp</option><option value="gre">gre</option><option value="tcp">tcp</option><option value="udp">udp</option>
         </select> </td><td><input type="text" size="10" title="SPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdsport", this.value)'>
         </td><td><input type="text" size="24" title="Destination" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddest", this.value)'>
         </td><td><input type="text" size="10" title="DPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddport", this.value)'>
@@ -293,7 +294,7 @@ function split_fwdrules(){
             splitrules=actrule.split(" ");
             if (splitrules[0]=="#") {fwddisable[count]=true ; next=1 } else {fwddisable[count]=false ; next=0 } ;
             fwdproto[count]=splitrules[next];
-            if ( fwdproto[count] != "gre" ) {fwdsport[count]=splitrules[(next+1)].split(":")[1]; fwddport[count]=splitrules[(next+2)].split(":")[1];}
+            if ( fwdproto[count] != "gre" && fwdproto[count] != "icmp" ) {fwdsport[count]=splitrules[(next+1)].split(":")[1]; fwddport[count]=splitrules[(next+2)].split(":")[1];}
             	else {fwdsport[count]=""; fwddport[count]=""};
             fwddest[count]=splitrules[(next+2)].split(":")[0];
             if (fwdname[count]=splitrules.slice(next+5).join(" ")){}else {fwdname[count]=""};
@@ -302,15 +303,15 @@ function split_fwdrules(){
     fwdrulescount=count;
 }
 function build_new_fwdrule(){
- document.getElementById("div_fwddport").style.display = ( fdprot != "gre" )? "inline" : "none";
- document.getElementById("div_fwdsport").style.display= ( fdprot != "gre" )? "inline" : "none";
+ document.getElementById("div_fwddport").style.display = ( fdprot != "gre" && fdprot != "icmp" )? "inline" : "none";
+ document.getElementById("div_fwdsport").style.display= ( fdprot != "gre" && fdprot != "icmp" )? "inline" : "none";
  document.getElementById("id_fwddest").disabled= ( fddtype != "fritz" )? "" : "disabled";
 
  var tmp=fdprot + " 0.0.0.0";
  if (fddtype == "fritz") {document.getElementById("id_fwddest").value="0.0.0.0"; fddest="0.0.0.0"};
- if ( fdprot != "gre" ){ tmp +=":"+fdsport; if (fdeport > fdsport) {tmp+="+" + ((fdeport-fdsport)+1) } };
+ if ( fdprot != "gre" && fdprot != "icmp" ){ tmp +=":"+fdsport; if (fdeport > fdsport) {tmp+="+" + ((fdeport-fdsport)+1) } };
  tmp += " "+fddest;
- if ( fdprot != "gre" ){tmp +=":"+fdoport;};
+ if ( fdprot != "gre" && fdprot != "icmp" ){tmp +=":"+fdoport;};
  if ( fdname != "" ){tmp +=" 0 # "+fdname;};
  document.getElementById("id_new_fwdrule").value = tmp;
 }
@@ -323,7 +324,7 @@ function rebuild_fwdrule(num, name , val){
   if (name) { tmp=name +"[" + num + "] = '" + val +"'" ; eval (tmp)}
   allfwdrules[num]= (fwddisable[num]) ? "# " : "" ;
   allfwdrules[num]+=fwdproto[num]+" 0.0.0.0";
-  allfwdrules[num]+= (fwdproto[num] == "gre") ? " "+fwddest[num] : ":"+fwdsport[num]+" "+fwddest[num]+":"+fwddport[num];
+  allfwdrules[num]+= (fwdproto[num] == "gre" || fwdproto[num] == "icmp") ? " "+fwddest[num] : ":"+fwdsport[num]+" "+fwddest[num]+":"+fwddport[num];
   if (fwdname[num]){ allfwdrules[num] +=" 0 # "+fwdname[num] ;}
   showfwdrules();
 }
@@ -344,13 +345,13 @@ function Init_FWDTable(){
         var el_dport=cn[4].firstChild;
         var el_name=cn[5].firstChild;
         var lastel=cn[6].childNodes;
-        var is_gre=(fwdproto[j-3] == "gre");
+        var has_no_port=(fwdproto[j-3] == "gre" || fwdproto[j-3] == "icmp");
         el_active.checked=( !fwddisable[(j-3)] ) ? true : false;
         el_prot.value=fwdproto[j-3];
-        el_sport.disabled=is_gre;
+        el_sport.disabled=has_no_port;
         el_sport.value=fwdsport[j-3];
         el_dest.value=fwddest[j-3];
-        el_dport.disabled=is_gre;
+        el_dport.disabled=has_no_port;
         el_dport.value=fwddport[j-3];
         el_name.value=fwdname[j-3];
         for (i=0; i< lastel.length ; i++){ 

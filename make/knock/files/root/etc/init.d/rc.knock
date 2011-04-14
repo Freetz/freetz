@@ -7,16 +7,14 @@ DAEMON_BIN=knockd
 
 config() {
 	if [ ! -e "/tmp/flash/knock/knockd.conf" ]; then
-		echo "Creating knockd.conf"
 		cat /usr/share/doc/knock/knockd.conf > /tmp/flash/knock/knockd.conf
-		/usr/bin/modsave flash
 	fi
 }
 
 start() {
 	set -o noglob
 	local countdown=10
-	while [ $((countdown--)) -gt 0 ] && ! ifconfig dsl > /dev/null 2>&1; do
+	while [ $((countdown--)) -gt 0 ] && ! ifconfig $KNOCK_INTERFACE > /dev/null 2>&1; do
 		sleep 2
 	done
 	modlib_startdaemon $DAEMON_BIN -d -c /tmp/flash/knock/knockd.conf -i "$KNOCK_INTERFACE"
@@ -30,6 +28,7 @@ case $1 in
 	""|load)
 		[ -d "/tmp/flash/knock" ] || mkdir /tmp/flash/knock
 		[ -r /tmp/flash/knockd.conf ] && mv /tmp/flash/knockd.conf /tmp/flash/knock/knockd.conf
+		config
 
 		modreg cgi 'knock' 'Knock'
 		modreg daemon $DAEMON

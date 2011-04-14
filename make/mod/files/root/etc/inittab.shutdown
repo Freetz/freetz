@@ -9,6 +9,12 @@ reverse_order() {
 	done
 }
 
+final_umount_ro() { # 3 paramters: des fs modi
+	[ "${3%%,*}" == "ro" ] && return
+	log "umount $1 (on $2) failed, trying to remount readonly..."
+	mount -n -o remount,ro $2
+}
+
 final_umount() {
 	[ -f /proc/sysrq-trigger ] && {
 		echo sync
@@ -16,20 +22,16 @@ final_umount() {
 	} > /proc/sysrq-trigger
 
 	reverse_order < /proc/mounts | \
-	while read des fs type other; do
+	while read des fs type modi other; do
 		case "$type" in
 			proc | sys | tmpfs )
 				;;
 			* )
-				if [ "$fs" != "/" ]; then
+				if [ "$fs" != "/" -a "$fs" != "/oldroot" ]; then
 					log "unmounting '$type' on '$fs'"
-					if ! umount -f $fs; then
-						log "umount $des (on $fs) failed, trying to remount readonly..."
-						mount -o remount,ro $fs
-					fi
+					umount -f $fs || final_umount_ro "$des" "$fs" "$modi"
 				else
-					log "umount $des (on $fs) failed, trying to remount readonly..."
-					mount -n -o remount,ro $fs
+					final_umount_ro "$des" "$fs" "$modi"
 				fi
 			;;
 		esac
@@ -37,7 +39,6 @@ final_umount() {
 
 	sync
 	sleep 3
-
 }
 
 log() {
