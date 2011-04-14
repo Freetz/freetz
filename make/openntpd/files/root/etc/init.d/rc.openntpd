@@ -11,12 +11,14 @@ config() {
 }
 
 start() {
-	[ "$OPENNTPD_MULTID" == "no" ] && /etc/init.d/rc.multid ntp_disable  >/dev/null
+	if [ "$OPENNTPD_MULTID" == "no" -a "$_OPENNTPD_RELOADING" != "yes" ]; then
+		 /etc/init.d/rc.multid ntp_disable >/dev/null
+	fi
 	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf
 }
 
 stop_post() {
-	/etc/init.d/rc.multid ntp_enable >/dev/null
+	[ "$_OPENNTPD_RELOADING" != "yes" ] && /etc/init.d/rc.multid ntp_enable >/dev/null
 }
 
 case $1 in
@@ -49,6 +51,7 @@ case $1 in
 		modlib_stop
 		;;
 	restart)
+		[ "$(/etc/init.d/rc.multid status)" == "running" ] && _OPENNTPD_RELOADING="yes"
 		modlib_restart
 		;;
 	status)
