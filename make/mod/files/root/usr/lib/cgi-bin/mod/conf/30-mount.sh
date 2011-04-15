@@ -3,7 +3,7 @@ check "$MOD_STOR_USELABEL" yes:stor_uselabel
 check "$MOD_STOR_AUTORUNEND" yes:stor_autorunend
 check "$MOD_STOR_KILLBLOCKER" yes:stor_killblocker
 
-sec_begin 'Automount'
+sec_begin 'Freetzmount'
 if [ -x /usr/sbin/blkid ]; then
 cat << EOF
 <p>
