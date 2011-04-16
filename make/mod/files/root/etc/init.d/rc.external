@@ -48,6 +48,7 @@ check_date() {
 }
 
 exec_rcs() {
+	eventadd 1 "Running external: $1"
 	if [ "$MOD_EXTERNAL_FREETZ_SERVICES" != "yes" ]; then
 		if [ -z "$MOD_EXTERNAL_OWN_SERVICES" ]; then
 			log "No services selected, failed."
@@ -74,10 +75,11 @@ exec_rcs() {
 start() {
 	log -x "Starting external ($EXTERNAL_DIRECTORY):"
 
-	if [ ! -e /tmp/.modstarted ]; then
+	if [ ! -e /tmp/.modstarted -o -e /var/run/onlinechanged ]; then
 		log -n "Waiting for mod-startup:"
 		spaceit=" "
-		while [ ! -e /tmp/.modstarted ]; do
+		while [ true ]; do
+			[ -e /tmp/.modstarted -a ! -e /var/run/onlinechanged ] && break
 			log -n "$spaceit."
 			spaceit=
 			sleep 1

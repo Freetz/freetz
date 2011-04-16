@@ -63,7 +63,7 @@ start() {
 	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom
 	[ -r /tmp/flash/mod/rc.custom ] && log "$(. /tmp/flash/mod/rc.custom)"
 
-	[ -x /etc/init.d/rc.external ] && touch /tmp/.modstarted
+	touch /tmp/.modstarted
 
 	/usr/lib/mod/menu-update
 }
