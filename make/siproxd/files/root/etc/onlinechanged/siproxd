@@ -4,6 +4,6 @@
 
 case "$1" in
 	online)
-		/etc/init.d/rc.siproxd reload
+		[ "$(/etc/init.d/rc.siproxd status)" != "stopped" ] && /etc/init.d/rc.siproxd restart
 		;;
 esac

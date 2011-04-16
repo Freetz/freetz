@@ -24,7 +24,11 @@ run() {
 	if modlib_check_running; then
 		echo 'already running.'
 		exit 0
-	 fi
+	fi
+	if [ "$OPENDD_ENABLED" == "yes" ]; then
+		echo 'is disabled.'
+		exit 0
+	fi
 
 	modlib_config
 	chmod 600 /mod/etc/$DAEMON.conf

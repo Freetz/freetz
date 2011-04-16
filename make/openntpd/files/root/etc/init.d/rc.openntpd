@@ -21,6 +21,11 @@ stop_post() {
 	[ "$_OPENNTPD_RELOADING" != "yes" ] && /etc/init.d/rc.multid ntp_enable >/dev/null
 }
 
+reload() {
+	[ "$(/etc/init.d/rc.multid status)" == "running" ] && _OPENNTPD_RELOADING="yes"
+	modlib_restart >/dev/null
+}
+
 case $1 in
 	""|load)
 		mkdir -p /tmp/flash/openntpd
@@ -51,14 +56,16 @@ case $1 in
 		modlib_stop
 		;;
 	restart)
-		[ "$(/etc/init.d/rc.multid status)" == "running" ] && _OPENNTPD_RELOADING="yes"
 		modlib_restart
+		;;
+	reload)
+		modlib_reload
 		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
