@@ -1,0 +1,13 @@
+--- ptunnel_org.c	2009-06-22 10:41:21.000000000 +0200
++++ ptunnel.c	2011-04-13 13:03:10.000000000 +0200
+@@ -1051,8 +1051,8 @@ void		handle_packet(char *buf, int bytes
+ 				//	until it has been authenticated. The packet resend mechanism
+ 				//	insures that this isn't problematic.
+ 				if (type_flag == kProxy_flag && password && cur && !cur->authenticated) {
+-					pt_log(kLog_debug, "Ignoring packet with seq-no %d - not authenticated yet.\n", pt_pkt->seq_no);
+-					return;
++					pt_log(kLog_debug, "#Ignoring packet with seq-no %d - not authenticated yet.\n", pt_pkt->seq_no);
++				//	return;
+ 				}
+ 				
+ 				if (cur && cur->sock) {
