@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_DROPBEAR
-	bool "Dropbear 0.52"
+	bool "Dropbear 0.53.1"
 	select FREETZ_LIB_libutil
 	select FREETZ_REPLACE_KERNEL if FREETZ_TYPE_SPEEDPORT_W501V
 	default n
@@ -38,6 +38,17 @@ config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
 	default n
 	help
 		ZLIB Compression for SSH Traffic
+
+config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
+	bool "Disable DNS reverse-lookup of the client"
+	depends on FREETZ_PACKAGE_DROPBEAR 
+	default y
+	help
+		With this option, a connection between the client and
+		the server is established faster.	
+
+		Without this option selected, the ssh server performs a DNS
+		reverse lookup of the client's IP address.
 
 config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
 	bool "Add SFTP support"
