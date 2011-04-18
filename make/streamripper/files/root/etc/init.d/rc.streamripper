@@ -7,29 +7,27 @@ DAEMON_CHECK=streamripper
 STREAMRIPPER_FLASH_DIR=/tmp/flash/$DAEMON
 
 start() {
-	mkdir -p $STREAMRIPPER_FLASH_DIR
-
 	echo "Starting streamripper..."
+	exitval=0
+	haverip=0
 	for i in 1 2 3 4 5 ; do
 		eval STREAMRIPPER_SERVER=\$STREAMRIPPER_SERVER$i
-		if [ -n "$STREAMRIPPER_SERVER" ]; then
-			eval STREAMRIPPER_SERVER_ENABLED=\$STREAMRIPPER_SERVER${i}_ENABLED
-			eval STREAMRIPPER_NAME=\$STREAMRIPPER_NAME$i
+		[ -z "$STREAMRIPPER_SERVER" ] && continue
 
-			[ -z "$STREAMRIPPER_NAME" ] && STREAMRIPPER_NAME=$STREAMRIPPER_SERVER   # in case Name is not set
+		eval STREAMRIPPER_SERVER_ENABLED=\$STREAMRIPPER_SERVER${i}_ENABLED
+		[ "$STREAMRIPPER_SERVER_ENABLED" != "yes" ] && continue
+		eval STREAMRIPPER_NAME=\$STREAMRIPPER_NAME$i
+		[ -z "$STREAMRIPPER_NAME" ] && STREAMRIPPER_NAME=$STREAMRIPPER_SERVER   # in case Name is not set
+		haverip=1
 
-			if [ "$STREAMRIPPER_SERVER_ENABLED" == "yes" ]; then
-				echo "Connecting to $STREAMRIPPER_NAME..."
-				COMMAND_LINE="nohup streamripper $STREAMRIPPER_SERVER $STREAMRIPPER_STARTOPTIONS -d $STREAMRIPPER_MUSICDIR"
-				[ -s $STREAMRIPPER_FLASH_DIR/filter ] && COMMAND_LINE="$COMMAND_LINE -w  $STREAMRIPPER_FLASH_DIR/filter"
-				COMMAND_LINE="$COMMAND_LINE &"
-				eval $COMMAND_LINE
-				[ "$exitval" != "0" ] && exitval=$?
-			fi
-		fi
+		echo "Connecting to $STREAMRIPPER_NAME..."
+		OPTIONS="$STREAMRIPPER_SERVER $STREAMRIPPER_STARTOPTIONS -d $STREAMRIPPER_MUSICDIR"
+		[ -s $STREAMRIPPER_FLASH_DIR/filter ] && FILTER="-w  $STREAMRIPPER_FLASH_DIR/filter"
+		start-stop-daemon -S -b -q -m -p $PID_FILE$i -n $DAEMON$i -a $DAEMON $OPTIONS $FILTER
+		[ "$?" != "0" ] && exitval=$?
 	done
 
-	if [ "$exitval" -eq 0 ]; then
+	if [ "$exitval" -eq 0 -a "$haverip" -ne 0 ]; then
 		echo 'done.'
 	else
 		echo 'failed.'
@@ -43,6 +41,8 @@ stop() {
 
 case "$1" in
 	""|load)
+		mkdir -p $STREAMRIPPER_FLASH_DIR
+
 		modreg cgi $DAEMON Streamripper
 		modreg daemon $DAEMON
 		modreg file $DAEMON filter 'Filter' 1 "filter"
