@@ -201,6 +201,10 @@ choice
 	config FREETZ_TARGET_COMPILER_GCC_4_5_2
 		bool "gcc-4.5.2"
 		depends on FREETZ_BUILD_TOOLCHAIN
+
+	config FREETZ_TARGET_COMPILER_GCC_4_6_0
+		bool "gcc-4.6.0"
+		depends on FREETZ_BUILD_TOOLCHAIN
 endchoice
 
 config FREETZ_TARGET_UCLIBC_VERSION
@@ -214,6 +218,7 @@ config FREETZ_TARGET_GCC_VERSION
 	string
 	default "4.4.5"		if FREETZ_TARGET_COMPILER_GCC_4_4_5
 	default "4.5.2"		if FREETZ_TARGET_COMPILER_GCC_4_5_2
+	default "4.6.0"		if FREETZ_TARGET_COMPILER_GCC_4_6_0
 
 config FREETZ_TARGET_BINUTILS_VERSION
 	string
@@ -268,7 +273,7 @@ config FREETZ_TARGET_LFS
 config FREETZ_TARGET_TOOLCHAIN
 	select FREETZ_LIB_libgmp
 	select FREETZ_LIB_libmpfr
-	select FREETZ_LIB_libmpc if FREETZ_TARGET_COMPILER_GCC_4_5_2
+	select FREETZ_LIB_libmpc if (FREETZ_TARGET_COMPILER_GCC_4_5_2 || FREETZ_TARGET_COMPILER_GCC_4_6_0)
 	bool "Build binutils and gcc for target" if FREETZ_BUILD_TOOLCHAIN
 	default n
 	help
