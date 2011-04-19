@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=rrdstats
-PID_FILE=/var/run/${DAEMON}.pid
 . /etc/init.d/modlibrc
 
 HTTPD_PID_RRD=/var/run/webcfg-rrd.pid
@@ -38,14 +37,7 @@ start() {
 
 	stop_status
 
-	modlib_startdaemon start-stop-daemon -n rrdstats -a /etc/default.rrdstats/rrdstats $RRDSTATS_INTERVAL -b -q -S
-	#wait for the correct pid
-	local DAEMON_PID="$(pidof -s rrdstats)"
-	while [ "$(pidof rrdstats)" != "${DAEMON_PID}" ]; do
-		sleep 1
-		local DAEMON_PID="$(pidof -s rrdstats)"
-	done
-	[ -n "$DAEMON_PID" ] && echo $DAEMON_PID >${PID_FILE}
+	modlib_startdaemon start-stop-daemon -S -b -q -m -p $PID_FILE -n $DAEMON -a /etc/default.rrdstats/rrdstats -- $RRDSTATS_INTERVAL
 
 	if [ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" != "yes" ]; then
 		webcfg-rrd -P "$HTTPD_PID_RRD"
