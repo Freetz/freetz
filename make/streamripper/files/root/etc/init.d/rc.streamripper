@@ -7,7 +7,7 @@ DAEMON_CHECK=streamripper
 STREAMRIPPER_FLASH_DIR=/tmp/flash/$DAEMON
 
 start() {
-	echo "Starting streamripper..."
+	echo "Starting streamripper ..."
 	exitval=0
 	haverip=0
 	for i in 1 2 3 4 5 ; do
@@ -20,10 +20,10 @@ start() {
 		[ -z "$STREAMRIPPER_NAME" ] && STREAMRIPPER_NAME=$STREAMRIPPER_SERVER   # in case Name is not set
 		haverip=1
 
-		echo "Connecting to $STREAMRIPPER_NAME..."
+		echo "Connecting to $STREAMRIPPER_NAME ..."
 		OPTIONS="$STREAMRIPPER_SERVER $STREAMRIPPER_STARTOPTIONS -d $STREAMRIPPER_MUSICDIR"
 		[ -s $STREAMRIPPER_FLASH_DIR/filter ] && FILTER="-w  $STREAMRIPPER_FLASH_DIR/filter"
-		start-stop-daemon -S -b -q -m -p $PID_FILE$i -n $DAEMON$i -a $DAEMON $OPTIONS $FILTER
+		start-stop-daemon -S -b -q -m -p $PID_FILE$i -n $DAEMON$i -a $DAEMON "$OPTIONS $FILTER"
 		[ "$?" != "0" ] && exitval=$?
 	done
 
