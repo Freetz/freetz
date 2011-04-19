@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.21.4)
+$(call PKG_INIT_BIN, 7.21.5)
 $(PKG)_LIB_VERSION:=4.2.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=e2dd20c88a7d01c745af9d788545ab2a
+$(PKG)_SOURCE_MD5:=dadd6353c9407161ddd62c0943718d59
 $(PKG)_SITE:=http://curl.haxx.se/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src$(if $(FREETZ_PACKAGE_CURL_STATIC),,/.libs)/curl
@@ -55,6 +55,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_USE_OPENSSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_USE_POLARSSL),--with-polarssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-polarssl)
 $(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
+$(PKG)_CONFIGURE_OPTIONS += --without-cyassl
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CURL_WITH_ZLIB),--with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-zlib)
