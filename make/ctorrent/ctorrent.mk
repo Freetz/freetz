@@ -12,7 +12,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ssl=no
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
-		
+
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(CTORRENT_DIR) all
 

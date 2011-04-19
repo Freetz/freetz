@@ -19,7 +19,7 @@ config FREETZ_PACKAGE_VTUN_STATIC
 
 config FREETZ_PACKAGE_VTUN_WITH_LZO
 	bool "With lzo Compression"
-	depends on FREETZ_PACKAGE_VTUN 
+	depends on FREETZ_PACKAGE_VTUN
 	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_VTUN_STATIC
 	default y
 	help

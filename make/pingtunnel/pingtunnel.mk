@@ -29,5 +29,5 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(PINGTUNNEL_TARGET_BINARY)
-	
+
 $(PKG_FINISH)

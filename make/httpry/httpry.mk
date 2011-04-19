@@ -29,5 +29,5 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(HTTPRY_TARGET_BINARY)
-	
+
 $(PKG_FINISH)

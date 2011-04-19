@@ -72,7 +72,7 @@ $(PKG)_TARGET_CONF:
 	$(call MESSAGE,HPLIP: Strip down models.dat to $(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE))
 	@awk 'BEGIN { found=0 } /^\[.*\]/ || /^$$/ { found=0 } /^\['$(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE)'\]/ { found=1 } \
 		{ if (found) { print $$0 } }' < $(HPLIP_DIR)/data/models/models.dat \
-		> $(HPLIP_DEST_DIR)/usr/share/hplip/data/models/models.dat	
+		> $(HPLIP_DEST_DIR)/usr/share/hplip/data/models/models.dat
 
 .PHONY: $(PKG)_TARGET_CONF
 

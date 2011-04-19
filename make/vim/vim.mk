@@ -11,7 +11,7 @@ $(PKG)_DEPENDS_ON := ncurses
 $(PKG)_CONFIGURE_OPTIONS += --disable-gui
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtktest
 $(PKG)_CONFIGURE_OPTIONS += --disable-xim
-ifeq ($(strip $(FREETZ_PACKAGE_VIM_HUGE)),y) 
+ifeq ($(strip $(FREETZ_PACKAGE_VIM_HUGE)),y)
 $(PKG)_CONFIGURE_OPTIONS += --with-features=huge
 else
 ifeq ($(strip $(FREETZ_PACKAGE_VIM_NORMAL)),y)
