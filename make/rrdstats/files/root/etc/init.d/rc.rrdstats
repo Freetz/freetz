@@ -49,16 +49,12 @@ start() {
 	modreg status rrdstats RRDstats stats
 }
 
-stop() {
+stop_pre() {
 	stop_status
-	local PID=$(cat "$fn" 2>/dev/null)
-	kill "$PID" 2>/dev/null
-	sleep 1
-	if kill -0 "$PID" 2>/dev/null; then
-		kill -9 "$PID" 2>/dev/null
-		sleep 1
-	fi
-	[ "$RRDSTATS_SAVEBACKUP" = yes -a "$RRDSTATS_END_BACKUP" = yes ] && backup silent
+}
+
+stop_post() {
+	[ "$1" == 0 -a "$RRDSTATS_SAVEBACKUP" = yes -a "$RRDSTATS_END_BACKUP" = yes ] && backup silent
 }
 
 stop_status() {
