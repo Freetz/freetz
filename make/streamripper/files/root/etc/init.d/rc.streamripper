@@ -23,7 +23,7 @@ start() {
 		echo "Connecting to $STREAMRIPPER_NAME ..."
 		OPTIONS="$STREAMRIPPER_SERVER $STREAMRIPPER_STARTOPTIONS -d $STREAMRIPPER_MUSICDIR"
 		[ -s $STREAMRIPPER_FLASH_DIR/filter ] && FILTER="-w  $STREAMRIPPER_FLASH_DIR/filter"
-		start-stop-daemon -S -b -q -m -p $PID_FILE$i -n $DAEMON$i -a $DAEMON "$OPTIONS $FILTER"
+		start-stop-daemon -S -b -q -m -p $PID_FILE$i -n $DAEMON$i -a $DAEMON -- $OPTIONS $FILTER
 		[ "$?" != "0" ] && exitval=$?
 	done
 
@@ -36,7 +36,13 @@ start() {
 }
 
 stop() {
-	killall $DAEMON > /dev/null 2>&1
+	local kills=0
+	while pidof $DAEMON >/dev/null; do
+		let kills++
+		[ $kills -gt 10 ] && local sigkill="-9"
+		killall $sigkill $DAEMON > /dev/null 2>&1
+		sleep 1
+	done
 }
 
 case "$1" in
