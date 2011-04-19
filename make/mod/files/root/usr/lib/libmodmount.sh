@@ -111,7 +111,7 @@ mount_fs() {
 		local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null)                      # fs type detection using fstyp binary
 	elif [ -x $blkid_bin ]; then
 		local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
-	elif
+	else
 		local fs_type="cantdetect"                                            # fstyp and blkid are not available
 	fi
 	[ -z "$fs_type" ] && local fs_type="unknown"                              # set unknown file system type if detection failed
