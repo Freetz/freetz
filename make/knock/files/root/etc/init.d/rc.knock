@@ -15,13 +15,9 @@ start() {
 	set -o noglob
 	local countdown=10
 	while [ $((countdown--)) -gt 0 ] && ! ifconfig $KNOCK_INTERFACE > /dev/null 2>&1; do
-		sleep 2
+		sleep 1
 	done
 	modlib_startdaemon $DAEMON_BIN -d -c /tmp/flash/knock/knockd.conf -i "$KNOCK_INTERFACE"
-}
-
-stop() {
-	killall knockd > /dev/null 2>&1
 }
 
 case $1 in

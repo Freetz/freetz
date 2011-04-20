@@ -4,7 +4,6 @@
 
 case "$1" in
 	online)
-		logger -t ONLINECHANGED "Reloading SIPROXD"
-		/etc/init.d/rc.siproxd reload
+		[ "$(/etc/init.d/rc.siproxd status)" != "stopped" ] && /etc/init.d/rc.siproxd restart
 		;;
 esac

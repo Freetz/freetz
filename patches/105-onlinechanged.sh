@@ -3,14 +3,10 @@ echo1 "patching /bin/onlinechanged"
 
 rm -f "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
+# run in background, multid terminates the script
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 #!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
-
-for i in /etc/onlinechanged/* /tmp/onlinechanged /tmp/flash/onlinechanged/*; do
-	[ -f "$i" ] && sh "$i" "$@"
-done
+/bin/onlinechanged.sh "$@" &
 EOF
 
 chmod +x "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"

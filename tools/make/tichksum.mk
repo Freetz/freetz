@@ -16,7 +16,7 @@ $(TOOLS_DIR)/tichksum: $(TI_CHKSUM_DIR)/tichksum
 
 tichksum: $(TOOLS_DIR)/tichksum
 
-tichksum-source: $(TI_CHKSUM_DIR)/.unpacked 
+tichksum-source: $(TI_CHKSUM_DIR)/.unpacked
 
 tichksum-clean:
 	-$(MAKE) -C $(TI_CHKSUM_DIR) clean

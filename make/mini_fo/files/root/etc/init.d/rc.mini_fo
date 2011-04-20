@@ -38,6 +38,8 @@ EOF
 }
 
 MINI_FO_ENV_VAR=kernel_args1
+STORAGE=/sto
+MOUNT_POINT=/opt
 
 jffs2_mount() {
 	xx=$(cat /proc/mtd | grep \"jffs2\")
@@ -74,7 +76,7 @@ jffs2_mount() {
 				echo "copying image ..."
 				rm /var/jffs2.image
 				echo "done."
-				mount -t jffs2 /dev/mtdblock${jffs2_pat} /sto
+				mount -t jffs2 /dev/mtdblock${jffs2_pat} $STORAGE
 				jffs2_ok=$?
 			fi
 			if [ $jffs2_ok -eq 0 ]; then
@@ -83,7 +85,7 @@ jffs2_mount() {
 			fi
 		fi
 	fi
-	if ! grep -q " /sto jffs2 " /proc/mounts; then
+	if ! grep -q " $STORAGE jffs2 " /proc/mounts; then
 		return 1
 	fi
 }
@@ -113,20 +115,18 @@ start() {
 		return
 	fi
 
-	echo "*** Switching to mini_fo-root ... ***"
 	modprobe mini_fo
-	mount -t tmpfs none /var
 	if [ "$mini_fo" == "jffs2" ]; then
-		echo "*** Mounting jffs2 to /sto ... ***"
+		echo "*** Mounting jffs2 to $STORAGE ... ***"
 		if ! jffs2_mount; then
 			echo "*** Mounting jffs2 failed. Mounting tmpfs instead ... ***"
-			mount -t tmpfs none /sto
+			mount -t tmpfs none $STORAGE
 		fi
 	else
-		mount -t tmpfs none /sto
+		mount -t tmpfs none $STORAGE
 	fi
-	mkdir -p /sto/mini_fo
-	if ! mount -t mini_fo -o base=/,sto=/sto/mini_fo / /var; then
+	mkdir -p $STORAGE/mini_fo
+	if ! mount -t mini_fo -o base=/,sto=$STORAGE/mini_fo / $MOUNT_POINT; then
 		echo "*** mini_fo mount failed, exiting. ***" >&2
 		rmmod mini_fo
 		return
@@ -134,12 +134,10 @@ start() {
 
 	echo "*** Pivoting to mini_fo root ... ***"
 	umount proc
-	cd /var
-	mkdir -p rom
-	if pivot_root . rom; then
+	cd $MOUNT_POINT
+	if pivot_root . oldroot; then
 		# clean up
-		mount -o move /rom/sto /sto
-		umount /rom/var
+		mount -o move /oldroot/sto $STORAGE
 		echo "*** mini_fo root pivoting succeeded, done. ***"
 	else
 		echo "*** mini_fo root pivoting failed, exiting. ***" >&2

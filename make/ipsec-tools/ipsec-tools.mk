@@ -60,7 +60,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-dpd
 $(PKG)_CONFIGURE_OPTIONS += --enable-frag
 $(PKG)_CONFIGURE_OPTIONS += --enable-natt
 $(PKG)_CONFIGURE_OPTIONS += --enable-hybrid
-$(PKG)_CONFIGURE_OPTIONS += --enable-security-context=no 
+$(PKG)_CONFIGURE_OPTIONS += --enable-security-context=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-adminport
 $(PKG)_CONFIGURE_OPTIONS += --without-libradius
 $(PKG)_CONFIGURE_OPTIONS += --without-libpam

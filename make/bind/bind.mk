@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 9.8.0) 
+$(call PKG_INIT_BIN, 9.8.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 $(PKG)_SOURCE_MD5:=e802ac97ca419c2ddfc043509bcb17bc
@@ -42,7 +42,7 @@ $($(PKG)_BINARY_NAMED) $($(PKG)_BINARY_RNDC) $($(PKG)_BINARY_NSUPDATE) $($(PKG)_
 	$(SUBMAKE) -C $(BIND_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)"
-		
+
 
 $($(PKG)_TARGET_BINARY_NAMED): $($(PKG)_BINARY_NAMED)
 ifeq ($(strip $(FREETZ_PACKAGE_BIND_NAMED)),y)

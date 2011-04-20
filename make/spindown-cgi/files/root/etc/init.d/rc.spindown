@@ -28,7 +28,8 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON $SPINDOWN_DEVICE $SPINDOWN_IDLETIME $SPINDOWN_MODE &
+	modlib_startdaemon start-stop-daemon -S -b -q -m -p $PID_FILE -n $DAEMON$SPINDOWN_DEVICE -a \
+	    $DAEMON_BIN -- $SPINDOWN_DEVICE $SPINDOWN_IDLETIME $SPINDOWN_MODE
 }
 
 stop() {

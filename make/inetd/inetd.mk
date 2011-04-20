@@ -5,7 +5,7 @@ $(PKG)_STARTLEVEL=14
 
 $(PKG_UNPACKED)
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude 
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
 $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	@echo -n "" > $@; \
 	[ ! "$(FREETZ_HAS_USB_HOST)" == "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo -e "etc/default.ftpd/\nbin/inetdftp" >> $@; \

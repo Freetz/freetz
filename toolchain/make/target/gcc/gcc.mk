@@ -24,8 +24,9 @@ GCC_SITE:=@GNU/gcc/gcc-$(GCC_VERSION)
 GCC_DIR:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)
 GCC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gcc
 
-GCC_MD5_4.4.5 := 44b3192c4c584b9be5243d9e8e7e0ed1
+GCC_MD5_4.4.6 := ab525d429ee4425050a554bc9247d6c4
 GCC_MD5_4.5.2 := d6559145853fbaaa0fd7556ed93bce9a
+GCC_MD5_4.6.0 := 93d1c436bf991564524701259b6285a2
 GCC_MD5       := $(GCC_MD5_$(GCC_VERSION))
 
 GCC_INITIAL_PREREQ=
@@ -62,7 +63,8 @@ GCC_TARGET_PREREQ+=$(GMP_TARGET_BINARY) $(MPFR_TARGET_BINARY)
 GCC_WITH_HOST_GMP=--with-gmp=$(GMP_HOST_DIR)
 GCC_WITH_HOST_MPFR=--with-mpfr=$(MPFR_HOST_DIR)
 
-ifeq ($(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION),4.5)
+# equals to "if (gcc-4.5 OR gcc-4.6)"
+ifneq (,$(strip $(filter 4.5 4.6,$(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION))))
 GCC_INITIAL_PREREQ+=$(MPC_HOST_BINARY)
 GCC_TARGET_PREREQ+=$(MPC_TARGET_BINARY)
 GCC_WITH_HOST_MPC=--with-mpc=$(MPC_HOST_DIR)
@@ -257,6 +259,7 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 		--enable-languages=c,c++ \
 		--enable-shared \
 		--enable-threads \
+		--disable-libstdcxx-pch \
 		$(GCC_COMMON_CONFIGURE_OPTIONS) \
 	);
 	touch $@

@@ -74,7 +74,7 @@ $($(PKG)_TARGET_SYNTAX_FILES): $($(PKG)_SYNTAX_FILES)
 	cp $^ $(dir $@)
 
 $(pkg):
- 
+
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_SYNTAX_FILES)
 
 $(pkg)-clean:

@@ -25,7 +25,7 @@ config FREETZ_PACKAGE_DROPBEAR
 		  - The server, client, keygen, and key converter can be compiled into a
 		    single binary (a la busybox)
 		  - Features can easily be disabled when compiling to save space
-		    TCP forwarding support 
+		    TCP forwarding support
 
 config FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
 	bool "Without scp & ssh client"
@@ -42,11 +42,11 @@ config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
 
 config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 	bool "Disable DNS reverse-lookup of the client"
-	depends on FREETZ_PACKAGE_DROPBEAR 
+	depends on FREETZ_PACKAGE_DROPBEAR
 	default y
 	help
 		With this option, a connection between the client and
-		the server is established faster.	
+		the server is established faster.
 
 		Without this option selected, the ssh server performs a DNS
 		reverse lookup of the client's IP address.
