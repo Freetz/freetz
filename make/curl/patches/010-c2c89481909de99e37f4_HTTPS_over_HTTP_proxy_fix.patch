@@ -1,0 +1,11 @@
+--- lib/http.c
++++ lib/http.c
+@@ -1305,7 +1305,7 @@
+   }
+ #endif /* CURL_DISABLE_PROXY */
+ 
+-  if(conn->handler->protocol & CURLPROTO_HTTPS) {
++  if(conn->given->protocol & CURLPROTO_HTTPS) {
+     /* perform SSL initialization */
+     if(data->state.used_interface == Curl_if_multi) {
+       result = https_connecting(conn, done);
