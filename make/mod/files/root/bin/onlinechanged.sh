@@ -8,29 +8,40 @@ log() {
 	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
 }
 
-# do nothing while shutdown
+# shutdown: do nothing
 if [ -e /var/run/shutdown ]; then
 	log "disabled"
 	exit 0
 fi
 
-# quit if another onlinechanged is yet running
 if [ -e $PID_FILE ]; then
-	[ "$OC_STATE" == "offline" ] && rm -rf $PID_FILE 2>/dev/null
-	log "rejected"
-	exit 0
+	if [ ! -e /tmp/.modstarted ]; then
+		# startup: quit if another onlinechanged is yet running
+		[ "$OC_STATE" == "offline" ] && rm -rf $PID_FILE 2>/dev/null
+		log "rejected"
+		exit 0
+	else
+		# no startup/shutdown: wait for other onlinechanged to finish
+		log "waiting"
+		while [ -e $PID_FILE ]; do
+			sleep 1
+		done
+	fi
 fi
 
-# wait for rc.mod, abort if status changes to "offline"
 touch $PID_FILE
-[ ! -e /tmp/.modstarted ] && log "sleeping"
-while [ ! -e /tmp/.modstarted ]; do
-	if [ ! -e $PID_FILE ]; then
-		log "aborted"
-		exit 0
-	fi
-	sleep 1
-done
+
+# startup: wait for rc.mod, abort if status changes to "offline"
+if [ ! -e /tmp/.modstarted ]; then
+	log "sleeping"
+	while [ ! -e /tmp/.modstarted ]; do
+		if [ ! -e $PID_FILE ]; then
+			log "aborted"
+			exit 0
+		fi
+		sleep 1
+	done
+fi
 
 #execute onlinechanged scripts
 eventadd 1 "Running onlinechanged: $OC_STATE"
