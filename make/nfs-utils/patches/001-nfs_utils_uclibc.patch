@@ -1,6 +1,6 @@
---- utils/mountd/cache.c	2009-03-05 12:42:56.000000000 +0100
-+++ utils/mountd/cache.c	2009-04-07 16:11:09.000000000 +0200
-@@ -142,6 +142,7 @@
+--- utils/mountd/cache.c.orig	2010-09-28 14:24:16.000000000 +0200
++++ utils/mountd/cache.c	2011-04-26 17:53:26.111300281 +0200
+@@ -149,6 +149,7 @@
  	pw = getpwuid(uid);
  	if (!pw)
  		rv = -1;
@@ -8,16 +8,16 @@
  	else {
  		rv = getgrouplist(pw->pw_name, pw->pw_gid, groups, &ngroups);
  		if (rv == -1 && ngroups >= 100) {
-@@ -153,6 +154,7 @@
+@@ -160,6 +161,7 @@
  						  groups, &ngroups);
  		}
  	}
 +#endif /* __UCLIBC__ */
- 	qword_printint(f, uid);
- 	qword_printint(f, time(0)+30*60);
+ 	qword_printuint(f, uid);
+ 	qword_printuint(f, time(0)+30*60);
  	if (rv >= 0) {
---- support/nfs/svc_socket.c	2009-03-05 12:42:56.000000000 +0100
-+++ support/nfs/svc_socket.c	2009-04-07 17:33:07.307458029 +0200
+--- support/nfs/svc_socket.c.orig	2010-09-28 14:24:16.000000000 +0200
++++ support/nfs/svc_socket.c	2011-04-26 17:53:26.111300281 +0200
 @@ -66,9 +66,13 @@
  
    memset (&addr, 0, sizeof (addr));

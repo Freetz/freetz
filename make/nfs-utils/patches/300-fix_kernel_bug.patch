@@ -1,20 +1,20 @@
---- support/nfs/nfssvc.c.orig	2009-06-02 14:43:05.000000000 +0000
-+++ support/nfs/nfssvc.c	2010-02-01 10:49:18.000000000 +0000
-@@ -93,7 +93,7 @@
+--- utils/nfsd/nfssvc.c.orig	2010-09-28 14:24:16.000000000 +0200
++++ utils/nfsd/nfssvc.c	2011-04-26 17:59:51.211298936 +0200
+@@ -218,7 +218,7 @@
+ 		}
+ 
+ 		snprintf(buf, sizeof(buf), "%d\n", sockfd); 
+-		if (write(fd, buf, strlen(buf)) != (ssize_t)strlen(buf)) {
++		if (write(fd, buf, strlen(buf)) < 0 ) {
+ 			/*
+ 			 * this error may be common on older kernels that don't
+ 			 * support IPv6, so turn into a debug message.
+@@ -288,7 +288,7 @@
  	}
- 	if (udpfd >= 0) {
- 		snprintf(buf, BUFSIZ,"%d\n", udpfd); 
--		if (write(fd, buf, strlen(buf)) != strlen(buf)) {
-+		if (write(fd, buf, strlen(buf)) < 0) {
- 			syslog(LOG_ERR, 
- 			       "nfssvc: writing fds to kernel failed: errno %d (%s)", 
- 			       errno, strerror(errno));
-@@ -105,7 +105,7 @@
- 		if (fd < 0)
- 			fd = open(NFSD_PORTS_FILE, O_WRONLY);
- 		snprintf(buf, BUFSIZ,"%d\n", tcpfd); 
--		if (write(fd, buf, strlen(buf)) != strlen(buf)) {
-+		if (write(fd, buf, strlen(buf)) < 0) {
- 			syslog(LOG_ERR, 
- 			       "nfssvc: writing fds to kernel failed: errno %d (%s)", 
- 			       errno, strerror(errno));
+ 	xlog(D_GENERAL, "Writing version string to kernel: %s", buf);
+ 	snprintf(ptr+off, sizeof(buf) - off, "\n");
+-	if (write(fd, buf, strlen(buf)) != (ssize_t)strlen(buf))
++	if (write(fd, buf, strlen(buf)) < 0)
+ 		xlog(L_ERROR, "Setting version failed: errno %d (%m)", errno);
+ 
+ 	close(fd);
