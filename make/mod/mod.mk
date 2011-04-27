@@ -21,6 +21,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_REMOVE_DSLD)" == "y" ] && echo "etc/init.d/rc.dsld" >> $@; \
 	[ ! "$(FREETZ_HAS_USB_HOST)" == "y" -o "$(FREETZ_REMOVE_SMBD)" == "y" ] && [ ! "$(FREETZ_PACKAGE_SAMBA)" == "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
 	[ "$(FREETZ_PACKAGE_MDEV)" == "y" -o "$(FREETZ_HAS_UDEV)" == "y" ] && echo "etc/device.table" >> $@; \
+	[ ! "$(FREETZ_PACKAGE_MOD_ETCSERVICES)" == "y" ] && echo "etc/services" >> $@; \
 	touch $@
 
 $(pkg)-precompiled:
