@@ -20,6 +20,8 @@ start() {
 	exitval=$?
 
 	if [ "$exitval" -eq 0 ]; then
+		[ -z "$MOD_SWAP_SWAPPINESS" ] && MOD_SWAP_SWAPPINESS=60
+		echo $MOD_SWAP_SWAPPINESS >/proc/sys/vm/swappiness
 		echo 'done.'
 	else
 		echo 'failed.'
