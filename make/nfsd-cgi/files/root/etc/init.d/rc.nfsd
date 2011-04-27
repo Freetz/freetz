@@ -21,7 +21,7 @@ start() {
 	mount -t nfsd nfsd $PROCNFSD_DIR > /dev/null 2>&1
 
 	# set max rsize/wsize supported by server to 64kb
-	[ -e $PROCNFSD_DIR/max_block_size ] && echo 65536 > $PROCNFSD_DIR/max_block_size > /dev/null
+	[ -e $PROCNFSD_DIR/max_block_size ] && echo 65536 > $PROCNFSD_DIR/max_block_size
 
 	local NFS_DIR=/var/lib/nfs
 	mkdir -p $NFS_DIR
@@ -33,7 +33,7 @@ start() {
  	exitval1=$?
 	/usr/sbin/exportfs -r > /dev/null 2>&1
  	exitval2=$?
-	/usr/sbin/nfsd -p 2047
+	/usr/sbin/nfsd
  	exitval3=$?
 	/usr/sbin/mountd
 	exitval4=$?

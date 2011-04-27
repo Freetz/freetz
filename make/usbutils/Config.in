@@ -1,13 +1,15 @@
 config FREETZ_PACKAGE_USBUTILS
-	bool "usbutils 0.73 (binary only)"
+	bool "usbutils 0.86 (binary only)"
 	select FREETZ_LIB_libusb
 	default n
 	help
 		USB devices listing utilities
+
+		To avoid name conflicts with AVM's lsusb the binary is renamed to listusb.
 
 config FREETZ_PACKAGE_USBUTILS_IDS
 	bool "usb.ids"
 	depends on FREETZ_PACKAGE_USBUTILS
 	default y
 	help
-		Add usb.ids file (~170 KB)
+		Add usb.ids file (~438 KB)

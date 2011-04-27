@@ -4,7 +4,7 @@ cat << EOF
 
 <h2>
 $(lang de:"Beenden von Packages beim herunterfahren" en:"Stop of packages at shutdown")
-$(lang de:" (mit Leerzeichen trennen)" en:" (seperat by spaces)")
+$(lang de:" (mit Leerzeichen trennen)" en:" (separate by spaces)")
 </h2>
 
 <p>$(lang de:"Zuerst beenden" en:"Stop at first"): <input type="text" id="shutdown_first" name="shutdown_first" size="50" maxlength="255" value="$(html "$MOD_SHUTDOWN_FIRST")"></p>

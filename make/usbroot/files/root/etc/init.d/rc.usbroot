@@ -319,7 +319,7 @@ load_modules_2_6_19_2() {
 			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
 			piglet_load_params="piglet_enable_button=3"
 			;;
-		144 ) # 7240
+		144 | 171 ) # 7240, 7340
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
@@ -328,9 +328,13 @@ load_modules_2_6_19_2() {
 			piglet_load_params=" \
 				piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount} \
 				piglet_bitfilemode=$piglet_bitfilemode \
-				piglet_use_pll3_clk=1 \
-				piglet_enable_button=2 \
 			"
+			if [ $HWRevision = 144 ]; then
+				piglet_load_params="$piglet_load_params \
+					piglet_use_pll3_clk=1 \
+					piglet_enable_button=2 \
+				"
+			fi
 			;;
 		145 | 156 ) # 7270v3, 7390
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
@@ -348,12 +352,15 @@ load_modules_2_6_19_2() {
 
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
-		if [ $HWRevision = 156 ]; then # 7390
-			modprobe ehci_hcd
-			modprobe ohci_hcd
-		else
-			modprobe musb_hdrc
-		fi
+		case "$HWRevision" in
+			156 | 171 ) # 7390, 7340
+				modprobe ehci_hcd
+				modprobe ohci_hcd
+				;;
+			* )
+				modprobe musb_hdrc
+				;;
+		esac
 	fi
 }
 

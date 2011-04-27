@@ -5,6 +5,7 @@ config FREETZ_PACKAGE_LIGHTTPD
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESS
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_INDEXFILE
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_STATICFILE
+	select FREETZ_PACKAGE_LIGHTTPD_MOD_DIRLISTING
 	select FREETZ_BUSYBOX_MD5SUM
 	default n
 	help
@@ -70,6 +71,15 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESS
 		This option adds mod_access.so to the image.
 		This is a required module, it cannot be deselected.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModAccess
+		for more information on this module.
+
+config FREETZ_PACKAGE_LIGHTTPD_MOD_DIRLISTING
+	bool "include mod_dirlisting (required module)"
+	depends on FREETZ_PACKAGE_LIGHTTPD
+	default y
+	help
+		This option adds mod_dirlisting.so to the image.
+		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModDirListing
 		for more information on this module.
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_INDEXFILE
@@ -145,15 +155,6 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS
 	help
 		This option adds mod_compress.so to the image.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModCompress
-		for more information on this module.
-
-config FREETZ_PACKAGE_LIGHTTPD_MOD_DIRLISTING
-	bool "include mod_dirlisting (adds about 19kb)"
-	depends on FREETZ_PACKAGE_LIGHTTPD
-	default y
-	help
-		This option adds mod_dirlisting.so to the image.
-		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModDirListing
 		for more information on this module.
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_EVASIVE

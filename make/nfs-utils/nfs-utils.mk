@@ -1,6 +1,8 @@
-$(call PKG_INIT_BIN,1.2.0)
+$(call PKG_INIT_BIN,1.2.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=1131dc5f27c4f3905a6e7ee0d594fd4d
 $(PKG)_SITE:=@SF/nfs
+
 $(PKG)_EXPORTFS_BINARY:=$($(PKG)_DIR)/utils/exportfs/exportfs
 $(PKG)_EXPORTFS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/exportfs
 $(PKG)_MOUNTD_BINARY:=$($(PKG)_DIR)/utils/mountd/mountd
@@ -9,9 +11,18 @@ $(PKG)_NFSD_BINARY:=$($(PKG)_DIR)/utils/nfsd/nfsd
 $(PKG)_NFSD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/nfsd
 $(PKG)_SHOWMOUNT_BINARY:=$($(PKG)_DIR)/utils/showmount/showmount
 $(PKG)_SHOWMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/showmount
-$(PKG)_SOURCE_MD5:=779cf81044e92cb51ad590960e7b3671
+
 
 $(PKG)_DEPENDS_ON := tcp_wrappers
+
+# IPv6 support requires TIRPC
+#$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+#ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
+#$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6=yes
+#else
+$(PKG)_CONFIGURE_OPTIONS += --enable-ipv6=no
+$(PKG)_CONFIGURE_OPTIONS += --disable-tirpc
+#endif
 
 $(PKG)_CONFIGURE_ENV += ac_cv_type_getgroups=gid_t
 $(PKG)_CONFIGURE_ENV += ac_cv_func_getgroups_works=yes
