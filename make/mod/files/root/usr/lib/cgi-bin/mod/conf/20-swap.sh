@@ -11,7 +11,7 @@ cat << EOF
 <h2>$(lang de:"Swap-Datei" en:"Swap file")</h2>
 <p>$(lang de:"Pfad" en:"Path"): <input type="text" id="swap_file" name="swap_file" size="50" maxlength="255" value="$(html "$MOD_SWAP_FILE")"><br>($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</p>
 <p>$(lang de:"Gr&ouml;&szlig;e" en:"Size"): <input type="text" id="swap_size" name="swap_size" size="3" maxlength="4" value=""> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swap file")" onclick="window.open('/cgi-bin/exec.cgi/create-swap?swap_file='+encodeURIComponent(document.getElementById('swap_file').value)+'&amp;swap_size='+encodeURIComponent(document.getElementById('swap_size').value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')"></p>
-<p><a href="http://lwn.net/Articles/83588/">$(lang de:"Swappiness" en:"Swappiness")</a>: <input type="text" id="swap_swappiness" name="swap_swappiness" size="3" maxlength="4" value="$(html "$MOD_SWAP_SWAPPINESS")"></p>
+<p><a href="http://lwn.net/Articles/83588/">$(lang de:"Swappiness" en:"Swappiness")</a> (0-100): <input type="text" id="swap_swappiness" name="swap_swappiness" size="3" maxlength="4" value="$(html "$MOD_SWAP_SWAPPINESS")"></p>
 EOF
 
 sec_end
