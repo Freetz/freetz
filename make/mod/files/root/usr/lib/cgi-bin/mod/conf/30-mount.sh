@@ -19,7 +19,7 @@ cat << EOF
 </p>
 <p>
 <input type="hidden" name="stor_killblocker" value="no">
-<input id="m3" type="checkbox" name="stor_killblocker" value="yes"$stor_killblocker_chk><label for="m3">$(lang de:"Alle Programme beenden die das Aush&auml;ngen verhindern." en:"Kill all programms blocking unmount.")</label>
+<input id="m3" type="checkbox" name="stor_killblocker" value="yes"$stor_killblocker_chk><label for="m3">$(lang de:"Alle Programme beenden die das Aush&auml;ngen verhindern." en:"Kill all programs blocking unmount.")</label>
 </p>
 <p>
 $(lang de:"Pr&auml;fix f&uuml;r Mountpoints" en:"Prefix for mountpoints") (uStor) : <input type="text" name="stor_prefix" size="20" maxlength="20" value="$(html "$MOD_STOR_PREFIX")"></p>
