@@ -1486,65 +1486,74 @@ config FREETZ_BACKUP_CONFIG_CACHE
 		This might simplify searching for a missing/wrong config.cache entry.
 endmenu
 
-config FREETZ_SECURITY_LEVEL
-	int "Default security level (0-2)"
-	default 1
-	help
-		There are several security levels.
-		0 : no restrictions
-		1 : only configuration files without shell commands might be edited
-		2 : no configuration files might be edited.
+menu "Freetz customisation"
+	config FREETZ_OPTIONS_ETCSERVICES
+		bool "add /etc/services"
+		default y
+		select FREETZ_PACKAGE_MOD_ETCSERVICES
+		help
+			Adds /etc/services file.
+			Used eg by netstat to display names of IP-ports.
 
-menu "Look and feel"
-choice
-	prompt "Freetz Style"
-	default FREETZ_STYLE_COLORED
-	help
-		Changes the style sheet file for Freetz web interface.
-		For example, look of the Freetz status-bars can be changed
-		from colored to grey by change of the Freetz style.
+	config FREETZ_SECURITY_LEVEL
+		int "Default security level (0-2)"
+		default 1
+		help
+			There are several security levels.
+			0 : no restrictions
+			1 : only configuration files without shell commands might be edited
+			2 : no configuration files might be edited.
 
-	config FREETZ_STYLE_COLORED
-		bool "Default - green status-bars"
+	choice
+		prompt "Freetz Style"
+		default FREETZ_STYLE_COLORED
+		help
+			Changes the style sheet file for Freetz web interface.
+			For example, look of the Freetz status-bars can be changed
+			from colored to grey by change of the Freetz style.
 
-	config FREETZ_STYLE_GREY
-		bool "Alternative - grey status-bars"
-endchoice
+		config FREETZ_STYLE_COLORED
+			bool "Default - green status-bars"
 
-config FREETZ_STYLE
-	string
-	default "colored" if FREETZ_STYLE_COLORED
-	default "grey"    if FREETZ_STYLE_GREY
+		config FREETZ_STYLE_GREY
+			bool "Alternative - grey status-bars"
+	endchoice
 
-choice
-	prompt "Favicon"
-	default FREETZ_FAVICON_NONE
-	help
-		Adds small favicons to the document root.
+	config FREETZ_STYLE
+		string
+		default "colored" if FREETZ_STYLE_COLORED
+		default "grey"    if FREETZ_STYLE_GREY
 
-	config FREETZ_FAVICON_NONE
-		bool "none"
+	choice
+		prompt "Favicon"
+		default FREETZ_FAVICON_NONE
+		help
+			Adds small favicons to the document root.
 
-	config FREETZ_FAVICON_ATOMPHIL
-		bool "atomphil's favicon"
+		config FREETZ_FAVICON_NONE
+			bool "none"
 
-	config FREETZ_FAVICON_CUMA
-		bool "cuma's favicons"
+		config FREETZ_FAVICON_ATOMPHIL
+			bool "atomphil's favicon"
 
-	config FREETZ_FAVICON_DSL123
-		bool "dsl123's favicons"
+		config FREETZ_FAVICON_CUMA
+			bool "cuma's favicons"
 
-	config FREETZ_FAVICON_HANSOLO
-		bool "han-solo's favicons"
-endchoice
+		config FREETZ_FAVICON_DSL123
+			bool "dsl123's favicons"
 
-config FREETZ_FAVICON_STRING
-	string
-	default "none"			if FREETZ_FAVICON_NONE
-	default "atomphil"		if FREETZ_FAVICON_ATOMPHIL
-	default "cuma"			if FREETZ_FAVICON_CUMA
-	default "dsl123"		if FREETZ_FAVICON_DSL123
-	default "hansolo"		if FREETZ_FAVICON_HANSOLO
+		config FREETZ_FAVICON_HANSOLO
+			bool "han-solo's favicons"
+	endchoice
+
+	config FREETZ_FAVICON_STRING
+		string
+		default "none"			if FREETZ_FAVICON_NONE
+		default "atomphil"		if FREETZ_FAVICON_ATOMPHIL
+		default "cuma"			if FREETZ_FAVICON_CUMA
+		default "dsl123"		if FREETZ_FAVICON_DSL123
+		default "hansolo"		if FREETZ_FAVICON_HANSOLO
+
 endmenu
 
 menu "Additional image/box information"
