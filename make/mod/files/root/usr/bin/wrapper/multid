@@ -1,0 +1,18 @@
+#!/bin/sh
+
+multid_mode=start
+while [ $# -gt 0 ]; do
+	[ "$1" == "-s" ] && multid_mode="stop"
+	shift
+done
+
+if [ "$multid_mode" != "stop" ]; then
+	for dns_pkg in dnsmasq bind; do
+		if [ "$(/mod/etc/init.d/rc.$dns_pkg status 2>/dev/null)" == "stopped" ]; then
+			/mod/etc/init.d/rc.$dns_pkg multid >> /var/log/mod_net.log
+		fi
+	done
+fi
+
+/etc/init.d/rc.multid $multid_mode >> /var/log/mod_net.log
+

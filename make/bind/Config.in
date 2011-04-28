@@ -15,13 +15,6 @@ config FREETZ_PACKAGE_BIND_NAMED
 		Adds named, a internet domain name server.
 		WARNING!: Adds 1724KB to the Image, externalize if possible!
 
-config FREETZ_PACKAGE_BIND_WRAPPER
-	bool "multid wrapper"
-	depends on FREETZ_PACKAGE_BIND_NAMED && ! FREETZ_PACKAGE_DNSMASQ_WRAPPER
-	default n
-	help
-		Replaces multid by a wrapper to start named before multid.
-
 config FREETZ_PACKAGE_BIND_RNDC
 	bool "rndc (binary only)"
 	depends on FREETZ_PACKAGE_BIND
