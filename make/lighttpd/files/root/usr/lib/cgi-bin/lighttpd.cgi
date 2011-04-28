@@ -267,13 +267,6 @@ EOF
 virthost_conf "limitvirt" "$LIGHTTPD_LIMITVIRT" '$(lang de:"Drosselung der Datentransferrate" en:"limitation of data transfer rate")'
 sec_end
 
-sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
-
-cat << EOF
-<p style="font-size:10px;">$(lang de:"Zus&auml;tzliche Konfigurationsoptionen k&ouml;nnen <a href=\"$(href file lighttpd add)\">hier</a> eingetragen werden." en:"Additional configuration options can be added <a TARGET=\"_blank\" href=\"$(href file lighttpd add)\">here</a>.")</p>
-EOF
-sec_end
-
 sec_begin '$(lang de:"Server Logdateien" en:"Server log files")'
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Bitte beachte, dass die Logdateien wertvollen RAM Speicher belegen falls das Standardverzeichnis f&uuml;r die Logdateien verwendet wird (siehe unten). Nutze das Logging nur f&uuml;r Fehlersuche und schalten es f&uuml;r den normalen Betrieb ab." en:"Please note that the log files use precious RAM memory if the standard directory for the log files is used (see below). Use logging only for debugging and disable it for regular operation.")</p>
