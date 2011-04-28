@@ -15,6 +15,6 @@ if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
 fi
 
 echo "Status: 302 Found"
-echo "Location: $(href cgi iptables)"
+echo "Location: $(href cgi iptables/editor)"
 echo
 exit
