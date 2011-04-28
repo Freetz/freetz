@@ -12,6 +12,7 @@ if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
 		SPECIAL='-t nat '
 	fi
 	iptables $SPECIAL-D $IPTABLES_DELETE_CHAIN $IPTABLES_DELETE_RULE > /dev/null 2>&1
+	iptables-save > /var/tmp/flash/iptables_rules
 fi
 
 echo "Status: 302 Found"
