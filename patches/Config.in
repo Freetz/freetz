@@ -1,4 +1,3 @@
-
 comment "Web menu patches ------------------------"
 
 config FREETZ_PATCH_VCC
@@ -628,14 +627,7 @@ config FREETZ_REMOVE_CAPIOVERTCP
 
 config FREETZ_REMOVE_CHRONYD
 	bool "Remove chronyd"
-	depends on \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3 || \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7340 || \
-		FREETZ_TYPE_FON_WLAN_7390
+	depends on FREETZ_HAS_CHRONYD
 	default y if FREETZ_TYPE_FON_WLAN_7390
 	default n
 	help
@@ -1120,4 +1112,3 @@ config FREETZ_PATCH_GETCONS
 		Patch /etc/profile so that console messages are redirected to
 		the last opened console.
 
-endmenu
