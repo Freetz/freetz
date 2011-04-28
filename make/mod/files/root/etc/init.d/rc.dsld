@@ -30,7 +30,13 @@ start() {
 		DAEMON_OPT=" -n"
 		echo "$DAEMON_OPT" > $TMPFILE_OPT
 	fi
-	
+
+	# dsld could not start without eth0
+	local countdown=20
+	while [ $((countdown--)) -gt 0 ] && ! ifconfig eth0 > /dev/null 2>&1; do
+		sleep 1
+	done
+
 	#remove duplicate arguments
 	DAEMON_ARGS="$(for arg in $DAEMON_CMD $DAEMON_OPT; do [ "$arg" != "dsld" ] && echo " $arg"; done |sort -u)"
 	dsld $DAEMON_ARGS
@@ -62,7 +68,7 @@ set_options() {
 	if [ " $(cat $TMPFILE_OPT 2>/dev/null)" != "$DAEMON_OPT_NEW" ]; then
 		DAEMON_STATUS="$(modlib_status)"
 		[ "$DAEMON_STATUS" != "stopped" ] && modlib_stop
-		echo "$DAEMON_OPT_NEW" > $TMPFILE_OPT	
+		echo "$DAEMON_OPT_NEW" > $TMPFILE_OPT
 		[ "$DAEMON_STATUS" != "stopped" ] && modlib_start
 	fi
 }
