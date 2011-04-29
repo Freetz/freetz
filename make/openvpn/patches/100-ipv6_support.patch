@@ -1,123 +1,32 @@
---- README.ipv6	1970-01-01 01:00:00.000000000 +0100
-+++ README.ipv6	2010-02-22 00:35:18.000000000 +0100
-@@ -0,0 +1,81 @@
-+[ Last updated: 16-Nov-2009. ]
-+
-+OpenVPN-2.1 over UDP6/TCP6 README for ipv6-0.4.x patch releases:
-+( --udp6 and --tcp6-{client,server} )
-+
-+* Availability
-+  Source code under GPLv2 from http://github.com/jjo/openvpn-ipv6
-+
-+  Distro ready repos/packages:
-+  o Debian sid official repo, by Alberto Gonzalez Iniesta,
-+    starting from openvpn_2.1~rc20-2
-+  o Gentoo official portage tree, by Marcel Pennewiss:
-+    - https://bugs.gentoo.org/show_bug.cgi?id=287896
-+  o Ubuntu package, by Bernhard Schmidt:
-+    - https://launchpad.net/~berni/+archive/ipv6/+packages
-+  o Freetz.org, milestone freetz-1.2
-+    - http://trac.freetz.org/milestone/freetz-1.2
-+
-+* Status:
-+  o OK:
-+    - upd6,tcp6: GNU/Linux, win32, openbsd-4.6
-+    - udp4->upd6,tcp4->tcp6 (ipv4/6 mapped): GNU/Linux
-+      (gives a warning on local!=remote proto matching)
-+  o NOT:
-+    - win32: tcp4->tcp6 (ipv4/6 mapped) fails w/connection refused
-+  o NOT tested:
-+    - mgmt console
-+
-+* Build setup:
-+  ./configure --enable-ipv6        (by default)
-+
-+* Usage:
-+  For IPv6 just specify "-p upd6" an proper IPv6 hostnames, adapting the example
-+  from man page ...
-+
-+  On may:
-+    openvpn --proto udp6 --remote <june_IPv6_addr> --dev tun1 \
-+      --ifconfig 10.4.0.1 10.4.0.2 --verb 5 --secret key
-+
-+  On june:
-+    openvpn --proto udp6 --remote <may_IPv6_addr>  --dev tun1 \
-+      --ifconfig 10.4.0.2 10.4.0.1 --verb 5 --secret key
-+
-+  Same for --proto tcp6-client, tcp6-server.
-+
-+* Main code changes summary:
-+  - socket.h: New struct openvpn_sockaddr type that holds sockaddrs and pktinfo,
-+    (here I omitted #ifdef USE_PF_xxxx, see socket.h )
-+
-+    struct openvpn_sockaddr {
-+    	union {
-+    		struct sockaddr sa;
-+    		struct sockaddr_in in;
-+    		struct sockaddr_in6 in6;
-+    	} addr;
-+    };
-+
-+    struct link_socket_addr
-+    {
-+            struct openvpn_sockaddr local;
-+            struct openvpn_sockaddr remote;
-+            struct openvpn_sockaddr actual;
-+    };
-+
-+    PRO: allows simple type overloading: local.addr.sa, local.addr.in, local.addr.in6 ... etc
-+    (also local.pi.in and local.pi.in6)
-+
-+  - several function prototypes moved from sockaddr_in to openvpn_sockaddr
-+  - several new sockaddr functions needed to "generalize" AF_xxxx operations:
-+    addr_copy(), addr_zero(), ...etc
-+    proto_is_udp(), proto_is_dgram(), proto_is_net()
-+
-+* TODO: See TODO.ipv6
-+
-+--
-+JuanJo Ciarlante   jjo () google () com ............................
-+:                                                                  :
-+.                                         Linux IP Aliasing author .
-+.   Modular algo (AES et all) support for FreeSWAN/OpenSWAN author .
-+.                                        OpenVPN over IPv6 support .
-+:......     plus other scattered free software bits in the wild ...:
---- TODO.ipv6	1970-01-01 01:00:00.000000000 +0100
-+++ TODO.ipv6	2010-02-22 00:35:18.000000000 +0100
-@@ -0,0 +1,30 @@
-+[ Last updated: 11-Nov-2009. ]
-+
-+* All platforms:
-+  o mgmt console: as currently passes straight in_addr_t bits around
-+
-+  o make possible to get AF from getaddrinfo() answer, ie allow openvpn to
-+    use ipv4/6 if DNS returns A/AAAA without specifying protocol.
-+    Hard: requires deep changes in initialization/calling logic
-+
-+  o use AI_PASSIVE
-+
-+  o the getaddr()/getaddr6() interface is not prepared for handling socktype
-+    "tagging", currently I abuse the sockflags bits for getting the ai_socktype
-+    downstream.
-+
-+  o implement comparison for mapped addesses: server in dual stack
-+    listening IPv6 must permit incoming streams from allowed IPv4 peer,
-+    currently you need to pass eg:  --remote ffff::1.2.3.4
-+
-+  o do something with multi mode learn routes, for now just ignoring
-+    ipv6 addresses seems the most sensible thing to do, because there's
-+    no support for intra-tunnel ipv6 stuff.
-+
-+* win32:
-+  o find out about mapped addresses, as I can't make it work
-+    with bound at ::1 and connect to 127.0.0.1
-+
-+* N/A:
-+  o this is ipv6 *endpoint* support, so don't expect "ifconfig6"-like
-+    support in this patch 
---- buffer.c	2009-10-01 20:02:18.000000000 +0200
-+++ buffer.c	2010-02-22 00:35:18.000000000 +0100
-@@ -215,6 +215,23 @@
+--- acinclude.m4.orig	2011-04-06 18:05:52.000000000 +0200
++++ acinclude.m4	2011-04-29 10:50:30.933970001 +0200
+@@ -123,5 +123,9 @@
+       AC_DEFINE_UNQUOTED(socklen_t, $curl_cv_socklen_t_equiv,
+ 			[type to use in place of socklen_t if not defined])],
+       [#include <sys/types.h>
+-#include <sys/socket.h>])
++#ifdef WIN32
++#include <ws2tcpip.h>
++#else
++#include <sys/socket.h>
++#endif])
+ ])
+--- aclocal.m4.orig	2011-04-21 21:29:33.000000000 +0200
++++ aclocal.m4	2011-04-29 10:50:30.933970001 +0200
+@@ -13,8 +13,8 @@
+ 
+ m4_ifndef([AC_AUTOCONF_VERSION],
+   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
+-m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.66],,
+-[m4_warning([this file was generated for autoconf 2.66.
++m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.67],,
++[m4_warning([this file was generated for autoconf 2.67.
+ You have another version of autoconf.  It may work, but is not guaranteed to.
+ If you have problems, you may need to regenerate the build system entirely.
+ To do so, use the procedure documented by the package, typically `autoreconf'.])])
+--- buffer.c.orig	2011-04-21 21:13:34.000000000 +0200
++++ buffer.c	2011-04-29 10:50:30.937970001 +0200
+@@ -214,6 +214,23 @@
    return ret;
  }
  
@@ -141,9 +50,9 @@
  /*
   * This is necessary due to certain buggy implementations of snprintf,
   * that don't guarantee null termination for size > 0.
---- buffer.h	2009-10-01 20:02:18.000000000 +0200
-+++ buffer.h	2010-02-22 00:35:18.000000000 +0100
-@@ -278,6 +278,11 @@
+--- buffer.h.orig	2011-04-06 18:05:52.000000000 +0200
++++ buffer.h	2011-04-29 10:50:30.941970001 +0200
+@@ -277,6 +277,11 @@
      ;
  
  /*
@@ -155,9 +64,9 @@
   * Like snprintf but guarantees null termination for size > 0
   */
  int openvpn_snprintf(char *str, size_t size, const char *format, ...)
---- config.h.in	2009-12-12 00:27:04.000000000 +0100
-+++ config.h.in	2010-02-22 00:35:26.000000000 +0100
-@@ -526,6 +526,9 @@
+--- config.h.in.orig	2011-04-21 21:29:34.000000000 +0200
++++ config.h.in	2011-04-29 10:50:30.941970001 +0200
+@@ -531,6 +531,9 @@
  /* Use LZO compression library */
  #undef USE_LZO
  
@@ -167,17 +76,17 @@
  /* Enable PKCS11 capability */
  #undef USE_PKCS11
  
---- configure	2009-12-12 00:27:03.000000000 +0100
-+++ configure	2010-02-22 00:35:26.000000000 +0100
-@@ -774,6 +774,7 @@
- enable_profiling
- enable_strict_options
- enable_selinux
+--- configure.orig	2011-04-21 21:29:34.000000000 +0200
++++ configure	2011-04-29 10:50:30.957970001 +0200
+@@ -715,6 +715,7 @@
+ enable_http
+ enable_fragment
+ enable_multihome
 +enable_ipv6
- with_ssl_headers
- with_ssl_lib
- with_lzo_headers
-@@ -1439,6 +1440,7 @@
+ enable_port_share
+ enable_debug
+ enable_small
+@@ -1383,6 +1384,7 @@
    --disable-http          Disable HTTP proxy support
    --disable-fragment      Disable internal fragmentation support (--fragment)
    --disable-multihome     Disable multi-homed UDP server support (--multihome)
@@ -185,12 +94,12 @@
    --disable-port-share    Disable TCP server port-share support (--port-share)
    --disable-debug         Disable debugging support (disable gremlin and verb 7+ messages)
    --enable-small          Enable smaller executable size (disable OCC, usage message, and verb 4 parm list)
-@@ -2724,6 +2726,15 @@
+@@ -3184,6 +3186,15 @@
  fi
  
  
 +# Check whether --enable-ipv6 was given.
-+if test "${enable_ipv6+set}" = set; then
++if test "${enable_ipv6+set}" = set; then :
 +  enableval=$enable_ipv6; PF_INET6="$enableval"
 +else
 +  PF_INET6="yes"
@@ -199,74 +108,32 @@
 +
 +
  # Check whether --enable-port-share was given.
- if test "${enable_port_share+set}" = set; then
+ if test "${enable_port_share+set}" = set; then :
    enableval=$enable_port_share; PORT_SHARE="$enableval"
-@@ -11082,6 +11093,73 @@
+@@ -5518,7 +5529,11 @@
+ 
+ 
+    ac_fn_c_check_type "$LINENO" "socklen_t" "ac_cv_type_socklen_t" "#include <sys/types.h>
++#ifdef WIN32
++#include <ws2tcpip.h>
++#else
+ #include <sys/socket.h>
++#endif
+ "
+ if test "x$ac_cv_type_socklen_t" = x""yes; then :
+ 
+@@ -6861,6 +6876,19 @@
  
  LDFLAGS="$OLDLDFLAGS"
  
 +if test "$PF_INET6" = "yes"; then
-+  { $as_echo "$as_me:$LINENO: checking for struct sockaddr_in6 for IPv6 support..." >&5
++  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for struct sockaddr_in6 for IPv6 support..." >&5
 +$as_echo "$as_me: checking for struct sockaddr_in6 for IPv6 support..." >&6;}
-+  { $as_echo "$as_me:$LINENO: checking for struct sockaddr_in6" >&5
-+$as_echo $ECHO_N "checking for struct sockaddr_in6... $ECHO_C" >&6; }
-+if test "${ac_cv_type_struct_sockaddr_in6+set}" = set; then
-+  $as_echo $ECHO_N "(cached) $ECHO_C" >&6
-+else
-+  cat >conftest.$ac_ext <<_ACEOF
-+/* confdefs.h.  */
-+_ACEOF
-+cat confdefs.h >>conftest.$ac_ext
-+cat >>conftest.$ac_ext <<_ACEOF
-+/* end confdefs.h.  */
-+#include "syshead.h"
++  ac_fn_c_check_type "$LINENO" "struct sockaddr_in6" "ac_cv_type_struct_sockaddr_in6" "#include \"syshead.h\"
++"
++if test "x$ac_cv_type_struct_sockaddr_in6" = x""yes; then :
 +
-+typedef struct sockaddr_in6 ac__type_new_;
-+int
-+main ()
-+{
-+if ((ac__type_new_ *) 0)
-+  return 0;
-+if (sizeof (ac__type_new_))
-+  return 0;
-+  ;
-+  return 0;
-+}
-+_ACEOF
-+rm -f conftest.$ac_objext
-+if { (ac_try="$ac_compile"
-+case "(($ac_try" in
-+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-+  *) ac_try_echo=$ac_try;;
-+esac
-+eval "$as_echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-+  (eval "$ac_compile") 2>conftest.er1
-+  ac_status=$?
-+  grep -v '^ *+' conftest.er1 >conftest.err
-+  rm -f conftest.er1
-+  cat conftest.err >&5
-+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-+  (exit $ac_status); } && {
-+	 test -z "$ac_c_werror_flag" ||
-+	 test ! -s conftest.err
-+       } && test -s conftest.$ac_objext; then
-+  ac_cv_type_struct_sockaddr_in6=yes
-+else
-+  $as_echo "$as_me: failed program was:" >&5
-+sed 's/^/| /' conftest.$ac_ext >&5
-+
-+	ac_cv_type_struct_sockaddr_in6=no
-+fi
-+
-+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-+fi
-+{ $as_echo "$as_me:$LINENO: result: $ac_cv_type_struct_sockaddr_in6" >&5
-+$as_echo "${ECHO_T}$ac_cv_type_struct_sockaddr_in6" >&6; }
-+if test $ac_cv_type_struct_sockaddr_in6 = yes; then
-+
-+cat >>confdefs.h <<\_ACEOF
-+#define USE_PF_INET6 1
-+_ACEOF
++$as_echo "#define USE_PF_INET6 1" >>confdefs.h
 +
 +fi
 +
@@ -274,10 +141,10 @@
 +
  
  if test "$MEMCHECK" = "valgrind"; then
-    { $as_echo "$as_me:$LINENO: checking for valgrind tool and Header files..." >&5
---- configure.ac	2009-10-01 20:02:18.000000000 +0200
-+++ configure.ac	2010-02-22 00:35:18.000000000 +0100
-@@ -135,6 +135,12 @@
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for valgrind tool and Header files..." >&5
+--- configure.ac.orig	2011-04-14 23:30:08.000000000 +0200
++++ configure.ac	2011-04-29 10:50:30.961970001 +0200
+@@ -146,6 +146,12 @@
     [MULTIHOME="yes"]
  )
  
@@ -290,7 +157,7 @@
  AC_ARG_ENABLE(port-share,
     [  --disable-port-share    Disable TCP server port-share support (--port-share)],
     [PORT_SHARE="$enableval"],
-@@ -550,6 +556,16 @@
+@@ -566,6 +572,16 @@
  AC_CHECK_FUNC(epoll_create, AC_DEFINE(HAVE_EPOLL_CREATE, 1, [epoll_create function is defined]))
  LDFLAGS="$OLDLDFLAGS"
  
@@ -307,8 +174,8 @@
  dnl
  dnl check for valgrind tool
  dnl
---- init.c	2009-10-01 20:02:18.000000000 +0200
-+++ init.c	2010-02-22 00:35:18.000000000 +0100
+--- init.c.orig	2011-04-21 21:13:34.000000000 +0200
++++ init.c	2011-04-29 10:50:30.965970001 +0200
 @@ -96,7 +96,7 @@
     */
    if (options->pull
@@ -318,7 +185,7 @@
      {
        options->ping_rec_timeout = PRE_PULL_INITIAL_PING_RESTART;
        options->ping_rec_timeout_action = PING_RESTART;
-@@ -1151,7 +1151,12 @@
+@@ -1150,7 +1150,12 @@
        const char *detail = "SUCCESS";
        if (c->c1.tuntap)
  	tun_local = c->c1.tuntap->local;
@@ -332,7 +199,7 @@
        if (flags & ISC_ERRORS)
  	detail = "ERROR";
        management_set_state (management,
-@@ -1567,7 +1572,7 @@
+@@ -1566,7 +1571,7 @@
  #ifdef ENABLE_OCC
    if (found & OPT_P_EXPLICIT_NOTIFY)
      {
@@ -341,7 +208,7 @@
  	{
  	  msg (D_PUSH, "OPTIONS IMPORT: --explicit-exit-notify can only be used with --proto udp");
  	  c->options.explicit_exit_notification = 0;
-@@ -1662,13 +1667,22 @@
+@@ -1661,13 +1666,22 @@
    switch (c->options.ce.proto)
      {
      case PROTO_UDPv4:
@@ -415,8 +282,8 @@
      do_event_set_init (dest, false);
  }
  
---- manage.c	2009-10-01 22:30:21.000000000 +0200
-+++ manage.c	2010-02-22 00:35:18.000000000 +0100
+--- manage.c.orig	2011-04-21 21:13:34.000000000 +0200
++++ manage.c	2011-04-29 10:50:30.969970002 +0200
 @@ -1957,9 +1957,9 @@
  	  /*
  	   * Initialize socket address
@@ -448,8 +315,8 @@
        man_connection_init (man);
      }
  
---- mroute.c	2009-10-01 20:02:18.000000000 +0200
-+++ mroute.c	2010-02-22 00:35:18.000000000 +0100
+--- mroute.c.orig	2011-04-06 18:05:52.000000000 +0200
++++ mroute.c	2011-04-29 10:50:30.969970002 +0200
 @@ -226,25 +226,47 @@
  				      const struct openvpn_sockaddr *osaddr,
  				      bool use_port)
@@ -502,9 +369,9 @@
    return false;
  }
  
---- mtcp.c	2009-10-01 20:02:18.000000000 +0200
-+++ mtcp.c	2010-02-22 00:35:18.000000000 +0100
-@@ -153,6 +153,11 @@
+--- mtcp.c.orig	2011-04-06 18:05:52.000000000 +0200
++++ mtcp.c	2011-04-29 10:50:30.973970002 +0200
+@@ -150,6 +150,11 @@
    ASSERT (mi->context.c2.link_socket);
    ASSERT (mi->context.c2.link_socket->info.lsa);
    ASSERT (mi->context.c2.link_socket->mode == LS_MODE_TCP_ACCEPT_FROM);
@@ -516,9 +383,9 @@
    if (!mroute_extract_openvpn_sockaddr (&mi->real, &mi->context.c2.link_socket->info.lsa->actual.dest, true))
      {
        msg (D_MULTI_ERRORS, "MULTI TCP: TCP client address is undefined");
---- multi.c	2009-10-25 01:17:29.000000000 +0200
-+++ multi.c	2010-02-22 00:35:18.000000000 +0100
-@@ -1066,8 +1066,8 @@
+--- multi.c.orig	2011-04-21 21:13:34.000000000 +0200
++++ multi.c	2011-04-29 10:50:30.977970002 +0200
+@@ -1058,8 +1058,8 @@
    struct mroute_addr addr;
  
    CLEAR (remote_si);
@@ -541,7 +408,7 @@
 +  saddr.addr.in4.sin_port = htons (port);
    if (mroute_extract_openvpn_sockaddr (&maddr, &saddr, true))
      {
-       hash_iterator_init (m->iter, &hi, true);
+       hash_iterator_init (m->iter, &hi);
 @@ -2675,16 +2675,24 @@
  {
    ASSERT (top->options.mode == MODE_SERVER);
@@ -577,8 +444,8 @@
  }
  
  #else
---- occ.c	2009-10-01 20:02:18.000000000 +0200
-+++ occ.c	2010-02-22 00:35:18.000000000 +0100
+--- occ.c.orig	2011-04-06 18:04:54.000000000 +0200
++++ occ.c	2011-04-29 10:50:30.981970002 +0200
 @@ -369,7 +369,7 @@
  	       c->c2.max_send_size_remote,
  	       c->c2.max_recv_size_local);
@@ -588,9 +455,9 @@
  	      && c->c2.max_send_size_local > TUN_MTU_MIN
  	      && (c->c2.max_recv_size_remote < c->c2.max_send_size_local
  		  || c->c2.max_recv_size_local < c->c2.max_send_size_remote))
---- openvpn.8	2009-12-11 09:04:24.000000000 +0100
-+++ openvpn.8	2010-02-22 00:35:18.000000000 +0100
-@@ -5360,13 +5360,16 @@
+--- openvpn.8.orig	2011-04-21 21:13:51.000000000 +0200
++++ openvpn.8	2011-04-29 10:50:30.993970002 +0200
+@@ -5450,13 +5450,16 @@
  script execution.
  .\"*********************************************************
  .TP
@@ -598,9 +465,9 @@
 +.B trusted_ip (or trusted_ip6)
  Actual IP address of connecting client or peer which has been authenticated.
  Set prior to execution of
- .B --ipchange, --client-connect,
+ .B \-\-ipchange, \-\-client-connect,
  and
- .B --client-disconnect
+ .B \-\-client-disconnect
  scripts.
 +If using ipv6 endpoints (udp6, tcp6),
 +.B trusted_ip6
@@ -608,7 +475,7 @@
  .\"*********************************************************
  .TP
  .B trusted_port
-@@ -5378,7 +5381,7 @@
+@@ -5468,7 +5471,7 @@
  scripts.
  .\"*********************************************************
  .TP
@@ -617,9 +484,9 @@
  Actual IP address of connecting client or peer which has not been authenticated
  yet.  Sometimes used to
  .B nmap
-@@ -5390,6 +5393,9 @@
+@@ -5480,6 +5483,9 @@
  and
- .B --auth-user-pass-verify
+ .B \-\-auth-user-pass-verify
  scripts.
 +If using ipv6 endpoints (udp6, tcp6),
 +.B untrusted_ip6
@@ -627,13 +494,13 @@
  .\"*********************************************************
  .TP
  .B untrusted_port
---- options.c	2009-12-11 09:09:39.000000000 +0100
-+++ options.c	2010-02-22 00:35:18.000000000 +0100
-@@ -73,6 +73,12 @@
- #ifdef ENABLE_PKCS11
-   " [PKCS11]"
+--- options.c.orig	2011-04-21 21:13:34.000000000 +0200
++++ options.c	2011-04-29 10:50:31.001970002 +0200
+@@ -79,6 +79,12 @@
+ #ifdef ENABLE_EUREPHIA
+   " [eurephia]"
  #endif
-+#ifdef ENABLE_IP_PKTINFO
++#if ENABLE_IP_PKTINFO
 +  " [MH]"
 +#endif
 +#ifdef USE_PF_INET6
@@ -642,17 +509,17 @@
    " built on " __DATE__
  ;
  
-@@ -94,6 +100,9 @@
-   "--mode m        : Major mode, m = 'p2p' (default, point-to-point) or 'server'.\n"
+@@ -101,6 +107,9 @@
    "--proto p       : Use protocol p for communicating with peer.\n"
    "                  p = udp (default), tcp-server, or tcp-client\n"
+   "--proto-force p : only consider protocol p in list of connection profiles.\n"
 +#ifdef USE_PF_INET6
 +  "                  p = udp6, tcp6-server, or tcp6-client (ipv6)\n"
 +#endif
    "--connect-retry n : For --proto tcp-client, number of seconds to wait\n"
    "                    between connection retries (default=%d).\n"
    "--connect-timeout n : For --proto tcp-client, connection timeout (in seconds).\n"
-@@ -1685,11 +1694,27 @@
+@@ -1706,11 +1715,27 @@
     * Sanity check on TCP mode options
     */
  
@@ -685,7 +552,7 @@
  
    /*
     * Sanity check on MTU parameters
-@@ -1698,7 +1723,7 @@
+@@ -1719,7 +1744,7 @@
      msg (M_USAGE, "only one of --tun-mtu or --link-mtu may be defined (note that --ifconfig implies --link-mtu %d)", LINK_MTU_DEFAULT);
  
  #ifdef ENABLE_OCC
@@ -694,7 +561,7 @@
      msg (M_USAGE, "--mtu-test only makes sense with --proto udp");
  #endif
  
-@@ -1711,7 +1736,8 @@
+@@ -1732,7 +1757,8 @@
     * Sanity check on --local, --remote, and --ifconfig
     */
  
@@ -704,7 +571,7 @@
        && ce->local_port == ce->remote_port)
      msg (M_USAGE, "--remote and --local addresses are the same");
    
-@@ -1776,16 +1802,20 @@
+@@ -1797,16 +1823,20 @@
     */
  
  #ifdef ENABLE_FRAGMENT
@@ -728,7 +595,7 @@
      msg (M_USAGE, "--remote MUST be used in TCP Client mode");
  
  #ifdef ENABLE_HTTP_PROXY
-@@ -1803,7 +1833,12 @@
+@@ -1824,7 +1854,12 @@
      msg (M_USAGE, "--socks-proxy can not be used in TCP Server mode");
  #endif
  
@@ -742,7 +609,7 @@
      msg (M_USAGE, "TCP server mode allows at most one --remote address");
  
  #if P2MP_SERVER
-@@ -1817,11 +1852,28 @@
+@@ -1838,11 +1873,28 @@
  	msg (M_USAGE, "--mode server only works with --dev tun or --dev tap");
        if (options->pull)
  	msg (M_USAGE, "--pull cannot be used with --mode server");
@@ -775,7 +642,7 @@
  #endif
        if (!options->tls_server)
  	msg (M_USAGE, "--mode server requires --tls-server");
-@@ -1849,9 +1901,17 @@
+@@ -1870,9 +1922,17 @@
  	msg (M_USAGE, "--inetd cannot be used with --mode server");
        if (options->ipchange)
  	msg (M_USAGE, "--ipchange cannot be used with --mode server (use --client-connect instead)");
@@ -796,7 +663,7 @@
  	msg (M_USAGE, "--connect-freq only works with --mode server --proto udp.  Try --max-clients instead.");
        if (!(dev == DEV_TYPE_TAP || (dev == DEV_TYPE_TUN && options->topology == TOP_SUBNET)) && options->ifconfig_pool_netmask)
  	msg (M_USAGE, "The third parameter to --ifconfig-pool (netmask) is only valid in --dev tap mode");
-@@ -1944,7 +2004,7 @@
+@@ -1963,7 +2023,7 @@
    /*
     * Check consistency of replay options
     */
@@ -805,7 +672,7 @@
        && (options->replay_window != defaults.replay_window
  	  || options->replay_time != defaults.replay_time))
      msg (M_USAGE, "--replay-window only makes sense with --proto udp");
-@@ -2116,6 +2176,10 @@
+@@ -2136,6 +2196,10 @@
      {
        if (ce->proto == PROTO_TCPv4)
  	ce->proto = PROTO_TCPv4_CLIENT;
@@ -816,9 +683,9 @@
      }
  #endif
  
---- ps.c	2009-10-01 20:02:18.000000000 +0200
-+++ ps.c	2010-02-22 00:35:18.000000000 +0100
-@@ -332,9 +332,9 @@
+--- ps.c.orig	2011-04-14 17:01:43.000000000 +0200
++++ ps.c	2011-04-29 10:50:31.005970002 +0200
+@@ -320,9 +320,9 @@
  	       const int port)
  {
    CLEAR (*osaddr);
@@ -831,9 +698,93 @@
  }
  
  static inline void
---- route.c	2009-10-01 20:02:18.000000000 +0200
-+++ route.c	2010-02-22 00:35:18.000000000 +0100
-@@ -601,13 +601,23 @@
+--- README.ipv6.orig	2011-04-29 10:50:31.005970002 +0200
++++ README.ipv6	2011-04-29 10:50:31.005970002 +0200
+@@ -0,0 +1,81 @@
++[ Last updated: 25-Mar-2011. ]
++
++OpenVPN-2.1 over UDP6/TCP6 README for ipv6-0.4.x patch releases:
++( --udp6 and --tcp6-{client,server} )
++
++* Availability
++  Source code under GPLv2 from http://github.com/jjo/openvpn-ipv6
++
++  Distro ready repos/packages:
++  o Debian sid official repo, by Alberto Gonzalez Iniesta,
++    starting from openvpn_2.1~rc20-2
++  o Gentoo official portage tree, by Marcel Pennewiss:
++    - https://bugs.gentoo.org/show_bug.cgi?id=287896
++  o Ubuntu package, by Bernhard Schmidt:
++    - https://launchpad.net/~berni/+archive/ipv6/+packages
++  o Freetz.org, milestone freetz-1.2
++    - http://trac.freetz.org/milestone/freetz-1.2
++
++* Status:
++  o OK:
++    - upd6,tcp6: GNU/Linux, win32, openbsd-4.7, freebsd-8.1
++    - udp4->upd6,tcp4->tcp6 (ipv4/6 mapped): GNU/Linux
++      (gives a warning on local!=remote proto matching)
++  o NOT:
++    - win32: tcp4->tcp6 (ipv4/6 mapped) fails w/connection refused
++  o NOT tested:
++    - mgmt console
++
++* Build setup:
++  ./configure --enable-ipv6        (by default)
++
++* Usage:
++  For IPv6 just specify "-p upd6" an proper IPv6 hostnames, adapting the example
++  from man page ...
++
++  On may:
++    openvpn --proto udp6 --remote <june_IPv6_addr> --dev tun1 \
++      --ifconfig 10.4.0.1 10.4.0.2 --verb 5 --secret key
++
++  On june:
++    openvpn --proto udp6 --remote <may_IPv6_addr>  --dev tun1 \
++      --ifconfig 10.4.0.2 10.4.0.1 --verb 5 --secret key
++
++  Same for --proto tcp6-client, tcp6-server.
++
++* Main code changes summary:
++  - socket.h: New struct openvpn_sockaddr type that holds sockaddrs and pktinfo,
++    (here I omitted #ifdef USE_PF_xxxx, see socket.h )
++
++    struct openvpn_sockaddr {
++    	union {
++    		struct sockaddr sa;
++    		struct sockaddr_in in;
++    		struct sockaddr_in6 in6;
++    	} addr;
++    };
++
++    struct link_socket_addr
++    {
++            struct openvpn_sockaddr local;
++            struct openvpn_sockaddr remote;
++            struct openvpn_sockaddr actual;
++    };
++
++    PRO: allows simple type overloading: local.addr.sa, local.addr.in, local.addr.in6 ... etc
++    (also local.pi.in and local.pi.in6)
++
++  - several function prototypes moved from sockaddr_in to openvpn_sockaddr
++  - several new sockaddr functions needed to "generalize" AF_xxxx operations:
++    addr_copy(), addr_zero(), ...etc
++    proto_is_udp(), proto_is_dgram(), proto_is_net()
++
++* TODO: See TODO.ipv6
++
++--
++JuanJo Ciarlante   jjo () google () com ............................
++:                                                                  :
++.                                         Linux IP Aliasing author .
++.   Modular algo (AES et all) support for FreeSWAN/OpenSWAN author .
++.                                        OpenVPN over IPv6 support .
++:......     plus other scattered free software bits in the wild ...:
+--- route.c.orig	2011-04-06 18:05:52.000000000 +0200
++++ route.c	2011-04-29 10:50:31.009970002 +0200
+@@ -581,13 +581,23 @@
  	  if (!local)
  	    {
  	      /* route remote host to original default gateway */
@@ -864,9 +815,9 @@
  	    }
  
  	  /* route DHCP/DNS server traffic through original default gateway */
---- socket.c	2010-07-26 08:15:03.000000000 +0200
-+++ socket.c	2010-08-24 18:30:17.000000000 +0200
-@@ -37,23 +37,28 @@
+--- socket.c.orig	2011-04-21 21:13:34.000000000 +0200
++++ socket.c	2011-04-29 10:50:31.017970002 +0200
+@@ -36,10 +36,16 @@
  #include "memdbg.h"
  
  const int proto_overhead[] = { /* indexed by PROTO_x */
@@ -885,24 +836,7 @@
  };
  
  /*
-  * Convert sockflags/getaddr_flags into getaddr_flags
-  */
- static unsigned int
--sf2gaf(const unsigned int getaddr_flags,
-+sf2gaf(unsigned int getaddr_flags,
-        const unsigned int sockflags)
- {
--  if (sockflags & SF_HOST_RANDOMIZE)
--    return getaddr_flags | GETADDR_RANDOMIZE;
--  else
--    return getaddr_flags;
-+  getaddr_flags |= (sockflags & SF_GETADDRINFO_DGRAM) ? GETADDR_DGRAM : 0;
-+  getaddr_flags |= (sockflags & SF_HOST_RANDOMIZE) ? GETADDR_RANDOMIZE : 0;
-+  return getaddr_flags;
- }
- 
- /*
-@@ -277,6 +282,201 @@
+@@ -276,6 +282,201 @@
    return (flags & GETADDR_HOST_ORDER) ? ntohl (ia.s_addr) : ia.s_addr;
  }
  
@@ -1104,7 +1038,7 @@
  /*
   * We do our own inet_aton because the glibc function
   * isn't very good about error checking.
-@@ -411,20 +611,53 @@
+@@ -410,20 +611,53 @@
  	       bool *changed,
  	       const unsigned int sockflags)
  {
@@ -1169,10 +1103,27 @@
  }
  
  static int
-@@ -617,6 +850,44 @@
-   return sd;
- }
- 
+@@ -610,12 +844,62 @@
+   else if (flags & SF_USE_IP_PKTINFO)
+     {
+       int pad = 1;
+-      setsockopt (sd, SOL_IP, IP_PKTINFO, (void*)&pad, sizeof(pad));
++#ifdef IP_PKTINFO
++      if (setsockopt (sd, SOL_IP, IP_PKTINFO,
++		      (void*)&pad, sizeof(pad)) < 0)
++        msg(M_SOCKERR, "UDP: failed setsockopt for IP_PKTINFO");
++#elif defined(IP_RECVDSTADDR)
++      if (setsockopt (sd, IPPROTO_IP, IP_RECVDSTADDR,
++		      (void*)&pad, sizeof(pad)) < 0)
++        msg(M_SOCKERR, "UDP: failed setsockopt for IP_RECVDSTADDR");
++#else
++#error ENABLE_IP_PKTINFO is set without IP_PKTINFO xor IP_RECVDSTADDR (fix syshead.h)
++#endif
++    }
++#endif
++  return sd;
++}
++
 +#ifdef USE_PF_INET6
 +static socket_descriptor_t
 +create_socket_udp6 (const unsigned int flags)
@@ -1185,12 +1136,14 @@
 +  else if (flags & SF_USE_IP_PKTINFO)
 +    {
 +      int pad = 1;
-+      setsockopt (sd, IPPROTO_IPV6, IPV6_PKTINFO, (void*)&pad, sizeof(pad));
-+    }
-+#endif
-+  return sd;
-+}
-+
++      if (setsockopt (sd, IPPROTO_IPV6, IPV6_PKTINFO,
++		      (void*)&pad, sizeof(pad)) < 0)
++	msg(M_SOCKERR, "UDP: failed setsockopt for IPV6_PKTINFO");
+     }
+ #endif
+   return sd;
+ }
+ 
 +static socket_descriptor_t
 +create_socket_tcp6 (void)
 +{
@@ -1214,7 +1167,7 @@
  static void
  create_socket (struct link_socket *sock)
  {
-@@ -624,6 +895,7 @@
+@@ -623,6 +907,7 @@
    if (sock->info.proto == PROTO_UDPv4)
      {
        sock->sd = create_socket_udp (sock->sockflags);
@@ -1222,7 +1175,7 @@
  
  #ifdef ENABLE_SOCKS
        if (sock->socks_proxy)
-@@ -635,6 +907,18 @@
+@@ -634,6 +919,18 @@
      {
        sock->sd = create_socket_tcp ();
      }
@@ -1241,7 +1194,7 @@
    else
      {
        ASSERT (0);
-@@ -672,7 +956,12 @@
+@@ -671,7 +968,12 @@
  		  struct link_socket_actual *act,
  		  const bool nowait)
  {
@@ -1255,7 +1208,7 @@
    socket_descriptor_t new_sd = SOCKET_UNDEFINED;
  
    CLEAR (*act);
-@@ -680,7 +969,7 @@
+@@ -679,7 +981,7 @@
  #ifdef HAVE_GETPEERNAME
    if (nowait)
      {
@@ -1264,7 +1217,7 @@
  
        if (!socket_defined (new_sd))
  	msg (D_LINK_ERRORS | M_ERRNO_SOCK, "TCP: getpeername() failed");
-@@ -693,7 +982,7 @@
+@@ -692,7 +994,7 @@
  #endif
    else
      {
@@ -1273,7 +1226,7 @@
      }
  
  #if 0 /* For debugging only, test the effect of accept() failures */
-@@ -709,7 +998,8 @@
+@@ -708,7 +1010,8 @@
      {
        msg (D_LINK_ERRORS | M_ERRNO_SOCK, "TCP: accept(%d) failed", sd);
      }
@@ -1283,7 +1236,7 @@
      {
        msg (D_LINK_ERRORS, "TCP: Received strange incoming connection with unknown address length=%d", remote_len);
        openvpn_close_socket (new_sd);
-@@ -810,7 +1100,7 @@
+@@ -809,7 +1112,7 @@
  {
    struct gc_arena gc = gc_new ();
  
@@ -1292,7 +1245,7 @@
      {
        const int errnum = openvpn_errno_socket ();
        msg (M_FATAL, "%s: Socket bind failed on local address %s: %s",
-@@ -831,7 +1121,7 @@
+@@ -830,7 +1133,7 @@
  
  #ifdef CONNECT_NONBLOCK
    set_nonblock (sd);
@@ -1301,7 +1254,7 @@
    if (status)
      status = openvpn_errno_socket ();
    if (status == EINPROGRESS)
-@@ -889,7 +1179,7 @@
+@@ -888,7 +1191,7 @@
  	}
      }
  #else
@@ -1310,7 +1263,7 @@
    if (status)
      status = openvpn_errno_socket ();
  #endif
-@@ -967,7 +1257,20 @@
+@@ -966,7 +1269,20 @@
        if (*signal_received)
  	goto done;
  
@@ -1332,7 +1285,7 @@
        if (bind_local)
          socket_bind (*sd, local, "TCP Client");
        update_remote (remote_dynamic, remote, remote_changed, sockflags);
-@@ -1032,15 +1335,54 @@
+@@ -1031,15 +1347,54 @@
    /* resolve local address if undefined */
    if (!addr_defined (&sock->info.lsa->local))
      {
@@ -1393,7 +1346,7 @@
      }
    
    /* bind to local address/port */
-@@ -1063,14 +1405,32 @@
+@@ -1062,14 +1417,32 @@
  		volatile int *signal_received)
  {
    struct gc_arena gc = gc_new ();
@@ -1428,7 +1381,7 @@
  
  	  if (sock->remote_host)
  	    {
-@@ -1113,13 +1473,31 @@
+@@ -1112,13 +1485,31 @@
  		  ASSERT (0);
  		}
  
@@ -1467,7 +1420,7 @@
  	      dmsg (D_SOCKET_DEBUG, "RESOLVE_REMOTE flags=0x%04x phase=%d rrs=%d sig=%d status=%d",
  		   flags,
  		   phase,
-@@ -1139,8 +1517,19 @@
+@@ -1138,8 +1529,19 @@
  		  goto done;
  		}
  	    }
@@ -1489,7 +1442,7 @@
  	}
    
        /* should we re-use previous active remote address? */
-@@ -1257,7 +1646,11 @@
+@@ -1256,7 +1658,11 @@
    if (mode == LS_MODE_TCP_ACCEPT_FROM)
      {
        ASSERT (accept_from);
@@ -1502,7 +1455,64 @@
        ASSERT (!sock->inetd);
        sock->sd = accept_from->sd;
      }
-@@ -1385,7 +1778,11 @@
+@@ -1313,7 +1719,11 @@
+   /* were we started by inetd or xinetd? */
+   if (sock->inetd)
+     {
+-      ASSERT (sock->info.proto != PROTO_TCPv4_CLIENT);
++      ASSERT (sock->info.proto != PROTO_TCPv4_CLIENT
++#ifdef USE_PF_INET6
++	      && sock->info.proto != PROTO_TCPv6_CLIENT
++#endif
++      );
+       ASSERT (socket_defined (inetd_socket_descriptor));
+       sock->sd = inetd_socket_descriptor;
+     }
+@@ -1362,7 +1772,34 @@
+   /* were we started by inetd or xinetd? */
+   if (sock->inetd)
+     {
+-      if (sock->info.proto == PROTO_TCPv4_SERVER)
++      if (sock->info.proto == PROTO_TCPv4_SERVER
++#ifdef USE_PF_INET6
++	  || sock->info.proto == PROTO_TCPv6_SERVER
++#endif
++      ) {
++	/* AF_INET as default (and fallback) for inetd */
++	sock->info.lsa->actual.dest.addr.sa.sa_family = AF_INET;
++#ifdef USE_PF_INET6
++#ifdef HAVE_GETSOCKNAME
++	  {
++	    /* inetd: hint family type for dest = local's */
++	    struct openvpn_sockaddr local_addr;
++	    socklen_t addrlen = sizeof(local_addr);
++	    if (getsockname (sock->sd, (struct sockaddr *)&local_addr, &addrlen) == 0) {
++	      sock->info.lsa->actual.dest.addr.sa.sa_family = local_addr.addr.sa.sa_family;
++	      dmsg (D_SOCKET_DEBUG, "inetd(%s): using sa_family=%d from getsockname(%d)",
++		    proto2ascii(sock->info.proto, false), local_addr.addr.sa.sa_family,
++		    sock->sd);
++	    } else
++	      msg (M_WARN, "inetd(%s): getsockname(%d) failed, using AF_INET",
++		   proto2ascii(sock->info.proto, false), sock->sd);
++	  }
++#else
++	msg (M_WARN, "inetd(%s): this OS does not provide the getsockname() "
++	     "function, using AF_INET",
++	     proto2ascii(sock->info.proto, false));
++#endif
++#endif
+ 	sock->sd =
+ 	  socket_listen_accept (sock->sd,
+ 				&sock->info.lsa->actual,
+@@ -1372,6 +1809,7 @@
+ 				false,
+ 				sock->inetd == INETD_NOWAIT,
+ 				signal_received);
++      }
+       ASSERT (!remote_changed);
+       if (*signal_received)
+ 	goto done;
+@@ -1384,7 +1822,11 @@
  	goto done;
  
        /* TCP client/server */
@@ -1515,7 +1525,7 @@
  	{
  	  switch (sock->mode)
  	    {
-@@ -1420,7 +1817,11 @@
+@@ -1419,7 +1861,11 @@
  	      ASSERT (0);
  	    }
  	}
@@ -1528,7 +1538,7 @@
  	{
  
  #ifdef GENERAL_PROXY_SUPPORT
-@@ -1507,8 +1908,8 @@
+@@ -1506,8 +1952,8 @@
  	  sock->remote_port = sock->proxy_dest_port;
  	  sock->did_resolve_remote = false;
  
@@ -1539,7 +1549,7 @@
  
  	  resolve_remote (sock, 1, NULL, signal_received);
  
-@@ -1523,7 +1924,7 @@
+@@ -1522,7 +1968,7 @@
        if (remote_changed)
  	{
  	  msg (M_INFO, "TCP/UDP: Dynamic remote address changed during TCP connection establishment");
@@ -1548,7 +1558,7 @@
  	}
      }
  
-@@ -1709,13 +2110,20 @@
+@@ -1708,13 +2154,20 @@
  {
    struct gc_arena gc = gc_new ();
  
@@ -1575,7 +1585,7 @@
    gc_free (&gc);
  }
  
-@@ -1730,10 +2138,25 @@
+@@ -1729,10 +2182,25 @@
  {
    const struct link_socket_addr *lsa = info->lsa;
  
@@ -1603,7 +1613,7 @@
    else
      return 0;
  }
-@@ -1960,28 +2383,61 @@
+@@ -1959,26 +2427,61 @@
  		   const unsigned int flags,
  		   struct gc_arena *gc)
  {
@@ -1624,22 +1634,20 @@
 +	{
 +	  const int port= ntohs (addr->addr.in4.sin_port);
 +	  buf_puts (&out, "[AF_INET]");
-+	  mutex_lock_static (L_INET_NTOA);
-+	  buf_puts (&out, (addr_is_defined ? inet_ntoa (addr->addr.in4.sin_addr) : "[undef]"));
-+	  mutex_unlock_static (L_INET_NTOA);
  
--      mutex_lock_static (L_INET_NTOA);
 -      if (!(flags & PS_DONT_SHOW_ADDR))
 -	buf_printf (&out, "%s", (addr_defined (addr) ? inet_ntoa (addr->sa.sin_addr) : "[undef]"));
--      mutex_unlock_static (L_INET_NTOA);
-+	  if (((flags & PS_SHOW_PORT) || (addr_is_defined && (flags & PS_SHOW_PORT_IF_DEFINED)))
++	  if (!(flags & PS_DONT_SHOW_ADDR))
++	    buf_printf (&out, "%s", (addr_defined (addr) ? inet_ntoa (addr->addr.in4.sin_addr) : "[undef]"));
+ 
+-      if (((flags & PS_SHOW_PORT) || (addr_defined (addr) && (flags & PS_SHOW_PORT_IF_DEFINED)))
+-	  && port)
++	  if (((flags & PS_SHOW_PORT) || (addr_defined (addr) && (flags & PS_SHOW_PORT_IF_DEFINED)))
 +	      && port)
 +	    {
 +	      if (separator)
 +		buf_printf (&out, "%s", separator);
- 
--      if (((flags & PS_SHOW_PORT) || (addr_defined (addr) && (flags & PS_SHOW_PORT_IF_DEFINED)))
--	  && port)
++
 +	      buf_printf (&out, "%d", port);
 +	    }
 +	}
@@ -1680,7 +1688,22 @@
  }
  
  const char *
-@@ -2001,12 +2457,40 @@
+@@ -1987,6 +2490,10 @@
+   return print_link_socket_actual_ex (act, ":", PS_SHOW_PORT|PS_SHOW_PKTINFO, gc);
+ }
+ 
++#ifndef IF_NAMESIZE
++#define IF_NAMESIZE 16
++#endif
++
+ const char *
+ print_link_socket_actual_ex (const struct link_socket_actual *act,
+ 			     const char *separator,
+@@ -1995,15 +2502,54 @@
+ {
+   if (act)
+     {
++      char ifname[IF_NAMESIZE] = "[undef]";
        struct buffer out = alloc_buf_gc (128, gc);
        buf_printf (&out, "%s", print_sockaddr_ex (&act->dest, separator, flags, gc));
  #if ENABLE_IP_PKTINFO
@@ -1699,8 +1722,19 @@
 +		{
 +		  struct openvpn_sockaddr sa;
 +		  CLEAR (sa);
++		  sa.addr.in4.sin_family = AF_INET;
++#ifdef IP_PKTINFO
 +		  sa.addr.in4.sin_addr = act->pi.in4.ipi_spec_dst;
-+		  buf_printf (&out, " (via %s)", print_sockaddr_ex (&sa, separator, 0, gc));
++		  if_indextoname(act->pi.in4.ipi_ifindex, ifname);
++#elif defined(IP_RECVDSTADDR)
++		  sa.addr.in4.sin_addr = act->pi.in4;
++		  ifname[0]=0;
++#else
++#error ENABLE_IP_PKTINFO is set without IP_PKTINFO xor IP_RECVDSTADDR (fix syshead.h)
++#endif
++		  buf_printf (&out, " (via %s%%%s)",
++			      print_sockaddr_ex (&sa, separator, 0, gc),
++			      ifname);
 +		}
 +#ifdef USE_PF_INET6
 +	      break;
@@ -1711,13 +1745,12 @@
 +		  CLEAR(sin6);
 +		  sin6.sin6_family = AF_INET6;
 +		  sin6.sin6_addr = act->pi.in6.ipi6_addr;
-+		    {
-+		      if (getnameinfo((struct sockaddr *)&sin6, sizeof (struct sockaddr_in6),
-+				      buf, sizeof (buf), NULL, 0, NI_NUMERICHOST) == 0)
-+			buf_printf (&out, " (via %s)", buf);
-+		      else
-+			buf_printf (&out, " (via [getnameinfo() err])");
-+		    }
++		  if_indextoname(act->pi.in6.ipi6_ifindex, ifname);
++		  if (getnameinfo((struct sockaddr *)&sin6, sizeof (struct sockaddr_in6),
++				  buf, sizeof (buf), NULL, 0, NI_NUMERICHOST) == 0)
++		    buf_printf (&out, " (via %s%%%s)", buf, ifname);
++		  else
++		    buf_printf (&out, " (via [getnameinfo() err]%%%s)", ifname);
 +		}
 +	      break;
 +	    }
@@ -1726,7 +1759,7 @@
  	}
  #endif
        return BSTR (&out);
-@@ -2043,20 +2527,39 @@
+@@ -2038,18 +2584,40 @@
  {
    char name_buf[256];
  
@@ -1745,13 +1778,13 @@
 +      else
 +	openvpn_snprintf (name_buf, sizeof (name_buf), "%s", name_prefix);
  
--  mutex_lock_static (L_INET_NTOA);
 -  setenv_str (es, name_buf, inet_ntoa (addr->sa.sin_addr));
--  mutex_unlock_static (L_INET_NTOA);
-+      mutex_lock_static (L_INET_NTOA);
 +      setenv_str (es, name_buf, inet_ntoa (addr->addr.in4.sin_addr));
-+      mutex_unlock_static (L_INET_NTOA);
-+
+ 
+-  if ((flags & SA_IP_PORT) && addr->sa.sin_port)
+-    {
+-      openvpn_snprintf (name_buf, sizeof (name_buf), "%s_port", name_prefix);
+-      setenv_int (es, name_buf, ntohs (addr->sa.sin_port));
 +      if ((flags & SA_IP_PORT) && addr->addr.in4.sin_port)
 +	{
 +	  openvpn_snprintf (name_buf, sizeof (name_buf), "%s_port", name_prefix);
@@ -1764,19 +1797,19 @@
 +      getnameinfo(&addr->addr.sa, sizeof (struct sockaddr_in6),
 +		  buf, sizeof(buf), NULL, 0, NI_NUMERICHOST);
 +      setenv_str (es, name_buf, buf);
- 
--  if ((flags & SA_IP_PORT) && addr->sa.sin_port)
--    {
-       openvpn_snprintf (name_buf, sizeof (name_buf), "%s_port", name_prefix);
--      setenv_int (es, name_buf, ntohs (addr->sa.sin_port));
-+      setenv_int (es, name_buf, ntohs (addr->addr.in6.sin6_port));
++
++      if ((flags & SA_IP_PORT) && addr->addr.in6.sin6_port)
++	{
++	  openvpn_snprintf (name_buf, sizeof (name_buf), "%s_port", name_prefix);
++	  setenv_int (es, name_buf, ntohs (addr->addr.in6.sin6_port));
++	}
 +      break;
      }
 +#endif
  }
  
  void
-@@ -2066,7 +2569,8 @@
+@@ -2059,7 +2627,8 @@
      {
        struct openvpn_sockaddr si;
        CLEAR (si);
@@ -1786,7 +1819,7 @@
        setenv_sockaddr (es, name_prefix, &si, flags);
      }
  }
-@@ -2087,16 +2591,63 @@
+@@ -2080,16 +2649,63 @@
  struct proto_names {
    const char *short_form;
    const char *display_form;
@@ -1855,7 +1888,7 @@
  int
  ascii2proto (const char* proto_name)
  {
-@@ -2136,6 +2687,45 @@
+@@ -2129,6 +2745,45 @@
    return BSTR (&out);
  }
  
@@ -1901,7 +1934,7 @@
  /*
   * Given a local proto, return local proto
   * if !remote, or compatible remote proto
-@@ -2150,10 +2740,15 @@
+@@ -2143,10 +2798,15 @@
    ASSERT (proto >= 0 && proto < PROTO_N);
    if (remote)
      {
@@ -1921,34 +1954,39 @@
      }
    return proto;
  }
-@@ -2212,10 +2807,24 @@
+@@ -2205,10 +2865,29 @@
  #if ENABLE_IP_PKTINFO
  
  #pragma pack(1) /* needed to keep structure size consistent for 32 vs. 64-bit architectures */
 -struct openvpn_pktinfo
 +struct openvpn_in4_pktinfo
- {
-   struct cmsghdr cmsghdr;
--  struct in_pktinfo in_pktinfo;
-+  struct in_pktinfo pi;
++{
++  struct cmsghdr cmsghdr;
++#ifdef HAVE_IN_PKTINFO
++  struct in_pktinfo pi4;
++#endif
++#ifdef IP_RECVDSTADDR
++  struct in_addr pi4;
++#endif
 +};
 +#ifdef USE_PF_INET6
 +struct openvpn_in6_pktinfo
-+{
-+  struct cmsghdr cmsghdr;
+ {
+   struct cmsghdr cmsghdr;
+-  struct in_pktinfo in_pktinfo;
 +  struct in6_pktinfo pi6;
 +};
 +#endif
 +
 +union openvpn_pktinfo {
-+	struct openvpn_in4_pktinfo cmsgpi;
++	struct openvpn_in4_pktinfo msgpi4;
 +#ifdef USE_PF_INET6
-+	struct openvpn_in6_pktinfo cmsgpi6;
++	struct openvpn_in6_pktinfo msgpi6;
 +#endif
  };
  #pragma pack()
  
-@@ -2226,15 +2835,15 @@
+@@ -2219,18 +2898,18 @@
  				    struct link_socket_actual *from)
  {
    struct iovec iov;
@@ -1966,16 +2004,39 @@
 +  mesg.msg_name = &from->dest.addr;
    mesg.msg_namelen = fromlen;
    mesg.msg_control = &opi;
-   mesg.msg_controllen = sizeof (opi);
-@@ -2251,9 +2860,21 @@
- 	  && cmsg->cmsg_len >= sizeof (opi))
+-  mesg.msg_controllen = sizeof (opi);
++  mesg.msg_controllen = sizeof opi;
+   buf->len = recvmsg (sock->sd, &mesg, 0);
+   if (buf->len >= 0)
+     {
+@@ -2239,14 +2918,39 @@
+       cmsg = CMSG_FIRSTHDR (&mesg);
+       if (cmsg != NULL
+ 	  && CMSG_NXTHDR (&mesg, cmsg) == NULL
++#ifdef IP_PKTINFO
+ 	  && cmsg->cmsg_level == SOL_IP 
+ 	  && cmsg->cmsg_type == IP_PKTINFO
+-	  && cmsg->cmsg_len >= sizeof (opi))
++#elif defined(IP_RECVDSTADDR)
++	  && cmsg->cmsg_level == IPPROTO_IP
++	  && cmsg->cmsg_type == IP_RECVDSTADDR
++#else
++#error ENABLE_IP_PKTINFO is set without IP_PKTINFO xor IP_RECVDSTADDR (fix syshead.h)
++#endif
++	  && cmsg->cmsg_len >= sizeof (struct openvpn_in4_pktinfo))
  	{
++#ifdef IP_PKTINFO
  	  struct in_pktinfo *pkti = (struct in_pktinfo *) CMSG_DATA (cmsg);
 -	  from->pi.ipi_ifindex = pkti->ipi_ifindex;
 -	  from->pi.ipi_spec_dst = pkti->ipi_spec_dst;
 +	  from->pi.in4.ipi_ifindex = pkti->ipi_ifindex;
 +	  from->pi.in4.ipi_spec_dst = pkti->ipi_spec_dst;
-+	}
++#elif defined(IP_RECVDSTADDR)
++	  from->pi.in4 = *(struct in_addr*) CMSG_DATA (cmsg);
++#else
++#error ENABLE_IP_PKTINFO is set without IP_PKTINFO xor IP_RECVDSTADDR (fix syshead.h)
++#endif
+ 	}
 +#ifdef USE_PF_INET6
 +      else if (cmsg != NULL
 +	  && CMSG_NXTHDR (&mesg, cmsg) == NULL
@@ -1986,12 +2047,12 @@
 +	  struct in6_pktinfo *pkti6 = (struct in6_pktinfo *) CMSG_DATA (cmsg);
 +	  from->pi.in6.ipi6_ifindex = pkti6->ipi6_ifindex;
 +	  from->pi.in6.ipi6_addr = pkti6->ipi6_addr;
- 	}
++	}
 +#endif
      }
    return fromlen;
  }
-@@ -2265,18 +2886,20 @@
+@@ -2258,18 +2962,20 @@
  			    int maxsize,
  			    struct link_socket_actual *from)
  {
@@ -2018,7 +2079,7 @@
    return buf->len;
  }
  
-@@ -2313,26 +2936,54 @@
+@@ -2306,26 +3012,64 @@
    struct iovec iov;
    struct msghdr mesg;
    struct cmsghdr *cmsg;
@@ -2046,35 +2107,45 @@
 +    {
 +    case AF_INET:
 +      {
-+        struct openvpn_in4_pktinfo opi;
-+        struct in_pktinfo *pkti;
++        struct openvpn_in4_pktinfo msgpi4;
 +        mesg.msg_name = &to->dest.addr.sa;
 +        mesg.msg_namelen = sizeof (struct sockaddr_in);
-+        mesg.msg_control = &opi;
-+        mesg.msg_controllen = sizeof (opi);
++        mesg.msg_control = &msgpi4;
++        mesg.msg_controllen = sizeof msgpi4;
 +        mesg.msg_flags = 0;
 +        cmsg = CMSG_FIRSTHDR (&mesg);
-+        cmsg->cmsg_len = sizeof (opi);
++        cmsg->cmsg_len = sizeof (struct openvpn_in4_pktinfo);
++#ifdef HAVE_IN_PKTINFO
 +        cmsg->cmsg_level = SOL_IP;
 +        cmsg->cmsg_type = IP_PKTINFO;
++	{
++        struct in_pktinfo *pkti;
 +        pkti = (struct in_pktinfo *) CMSG_DATA (cmsg);
 +        pkti->ipi_ifindex = to->pi.in4.ipi_ifindex;
 +        pkti->ipi_spec_dst = to->pi.in4.ipi_spec_dst;
 +        pkti->ipi_addr.s_addr = 0;
++	}
++#elif defined(IP_RECVDSTADDR)
++        cmsg->cmsg_level = IPPROTO_IP;
++        cmsg->cmsg_type = IP_RECVDSTADDR;
++        *(struct in_addr *) CMSG_DATA (cmsg) = to->pi.in4;
++#else
++#error ENABLE_IP_PKTINFO is set without IP_PKTINFO xor IP_RECVDSTADDR (fix syshead.h)
++#endif
 +        break;
 +      }
 +#ifdef USE_PF_INET6
 +    case AF_INET6:
 +      {
-+        struct openvpn_in6_pktinfo opi6;
++        struct openvpn_in6_pktinfo msgpi6;
 +        struct in6_pktinfo *pkti6;
 +        mesg.msg_name = &to->dest.addr.sa;
 +        mesg.msg_namelen = sizeof (struct sockaddr_in6);
-+        mesg.msg_control = &opi6;
-+        mesg.msg_controllen = sizeof (opi6);
++        mesg.msg_control = &msgpi6;
++        mesg.msg_controllen = sizeof msgpi6;
 +        mesg.msg_flags = 0;
 +        cmsg = CMSG_FIRSTHDR (&mesg);
-+        cmsg->cmsg_len = sizeof (opi6);
++        cmsg->cmsg_len = sizeof (struct openvpn_in6_pktinfo);
 +        cmsg->cmsg_level = IPPROTO_IPV6;
 +        cmsg->cmsg_type = IPV6_PKTINFO;
 +        pkti6 = (struct in6_pktinfo *) CMSG_DATA (cmsg);
@@ -2088,7 +2159,7 @@
    return sendmsg (sock->sd, &mesg, 0);
  }
  
-@@ -2353,11 +3004,11 @@
+@@ -2346,11 +3090,11 @@
        int status;
  
        /* reset buf to its initial state */
@@ -2102,7 +2173,7 @@
  	{
  	  stream_buf_get_next (&sock->stream_buf, &sock->reads.buf);
  	}
-@@ -2377,10 +3028,15 @@
+@@ -2370,10 +3114,15 @@
        ASSERT (ResetEvent (sock->reads.overlapped.hEvent));
        sock->reads.flags = 0;
  
@@ -2120,7 +2191,7 @@
  	  status = WSARecvFrom(
  			       sock->sd,
  			       wsabuf,
-@@ -2392,7 +3048,7 @@
+@@ -2385,7 +3134,7 @@
  			       &sock->reads.overlapped,
  			       NULL);
  	}
@@ -2129,7 +2200,7 @@
  	{
  	  sock->reads.addr_defined = false;
  	  status = WSARecv(
-@@ -2412,8 +3068,14 @@
+@@ -2405,8 +3154,14 @@
  
        if (!status) /* operation completed immediately? */
  	{
@@ -2144,7 +2215,7 @@
  
  	  sock->reads.iostate = IOSTATE_IMMEDIATE_RETURN;
  
-@@ -2472,12 +3134,22 @@
+@@ -2465,12 +3220,22 @@
        ASSERT (ResetEvent (sock->writes.overlapped.hEvent));
        sock->writes.flags = 0;
  
@@ -2170,7 +2241,7 @@
  
  	  status = WSASendTo(
  			       sock->sd,
-@@ -2490,7 +3162,7 @@
+@@ -2483,7 +3248,7 @@
  			       &sock->writes.overlapped,
  			       NULL);
  	}
@@ -2179,7 +2250,7 @@
  	{
  	  /* destination address for TCP writes was established on connection initiation */
  	  sock->writes.addr_defined = false;
-@@ -2629,13 +3301,44 @@
+@@ -2622,13 +3387,44 @@
    if (from)
      {
        if (ret >= 0 && io->addr_defined)
@@ -2226,8 +2297,8 @@
      }
    
    if (buf)
---- socket.h	2010-07-12 03:54:09.000000000 +0200
-+++ socket.h	2010-08-24 18:30:17.000000000 +0200
+--- socket.h.orig	2011-04-06 18:04:54.000000000 +0200
++++ socket.h	2011-04-29 10:50:31.021970002 +0200
 @@ -70,7 +70,13 @@
  struct openvpn_sockaddr
  {
@@ -2243,13 +2314,18 @@
  };
  
  /* actual address of remote, based on source address of received packets */
-@@ -79,7 +85,12 @@
+@@ -79,7 +85,17 @@
    /*int dummy;*/ /* add offset to force a bug if dest not explicitly dereferenced */
    struct openvpn_sockaddr dest;
  #if ENABLE_IP_PKTINFO
 -  struct in_pktinfo pi;
 +  union {
++#ifdef HAVE_IN_PKTINFO
 +    struct in_pktinfo in4;
++#endif
++#ifdef IP_RECVDSTADDR
++    struct in_addr in4;
++#endif
 +#ifdef USE_PF_INET6
 +    struct in6_pktinfo in6;
 +#endif
@@ -2257,7 +2333,7 @@
  #endif
  };
  
-@@ -199,6 +210,7 @@
+@@ -199,6 +215,7 @@
  # define SF_TCP_NODELAY (1<<1)
  # define SF_PORT_SHARE (1<<2)
  # define SF_HOST_RANDOMIZE (1<<3)
@@ -2265,7 +2341,7 @@
    unsigned int sockflags;
  
    /* for stream sockets */
-@@ -371,6 +383,12 @@
+@@ -371,6 +388,12 @@
  
  void bad_address_length (int actual, int expected);
  
@@ -2278,7 +2354,7 @@
  in_addr_t link_socket_current_remote (const struct link_socket_info *info);
  
  void link_socket_connection_initiated (const struct buffer *buf,
-@@ -410,6 +428,14 @@
+@@ -410,6 +433,14 @@
  socket_descriptor_t socket_do_accept (socket_descriptor_t sd,
  				      struct link_socket_actual *act,
  				      const bool nowait);
@@ -2293,7 +2369,7 @@
  
  #if UNIX_SOCK_SUPPORT
  
-@@ -455,6 +481,11 @@
+@@ -455,6 +486,11 @@
  #define GETADDR_UPDATE_MANAGEMENT_STATE (1<<8)
  #define GETADDR_RANDOMIZE             (1<<9)
  
@@ -2305,7 +2381,7 @@
  in_addr_t getaddr (unsigned int flags,
  		   const char *hostname,
  		   int resolve_retry_seconds,
-@@ -472,23 +503,38 @@
+@@ -472,23 +508,38 @@
   * Transport protocol naming and other details.
   */
  
@@ -2350,7 +2426,7 @@
  
  extern const int proto_overhead[];
  
-@@ -512,7 +558,7 @@
+@@ -518,7 +569,7 @@
  static inline bool
  link_socket_proto_connection_oriented (int proto)
  {
@@ -2359,7 +2435,7 @@
  }
  
  static inline bool
-@@ -527,7 +573,31 @@
+@@ -533,7 +584,36 @@
  static inline bool
  addr_defined (const struct openvpn_sockaddr *addr)
  {
@@ -2379,7 +2455,12 @@
 +#if ENABLE_IP_PKTINFO
 +  if (!lsa) return 0;
 +  switch (lsa->dest.addr.sa.sa_family) {
++#ifdef HAVE_IN_PKTINFO
 +    case AF_INET: return lsa->pi.in4.ipi_spec_dst.s_addr != 0;
++#endif
++#ifdef IP_RECVDSTADDR
++    case AF_INET: return lsa->pi.in4.s_addr != 0;
++#endif
 +#ifdef USE_PF_INET6
 +    case AF_INET6: return !IN6_IS_ADDR_UNSPECIFIED(&lsa->pi.in6.ipi6_addr);
 +#endif
@@ -2392,7 +2473,7 @@
  }
  
  static inline bool
-@@ -539,20 +609,50 @@
+@@ -545,20 +625,50 @@
  static inline bool
  addr_match (const struct openvpn_sockaddr *a1, const struct openvpn_sockaddr *a2)
  {
@@ -2448,7 +2529,7 @@
  }
  
  static inline bool
-@@ -565,6 +665,74 @@
+@@ -571,6 +681,74 @@
      : addr_port_match (a1, a2);
  }
  
@@ -2523,7 +2604,7 @@
  static inline bool
  link_socket_actual_match (const struct link_socket_actual *a1, const struct link_socket_actual *a2)
  {
-@@ -621,14 +789,18 @@
+@@ -627,14 +805,18 @@
  {
    if (buf->len > 0)
      {
@@ -2550,7 +2631,7 @@
      }
    return false;
  }
-@@ -734,7 +906,7 @@
+@@ -740,7 +922,7 @@
  		  int maxsize,
  		  struct link_socket_actual *from)
  {
@@ -2559,7 +2640,7 @@
      {
        int res;
  
-@@ -745,10 +917,10 @@
+@@ -751,10 +933,10 @@
  #endif
        return res;
      }
@@ -2572,7 +2653,7 @@
        return link_socket_read_tcp (sock, buf);
      }
    else
-@@ -803,13 +975,14 @@
+@@ -809,13 +991,14 @@
  					   struct buffer *buf,
  					   struct link_socket_actual *to);
  
@@ -2590,7 +2671,7 @@
  }
  
  static inline int
-@@ -840,11 +1013,11 @@
+@@ -846,11 +1029,11 @@
  		   struct buffer *buf,
  		   struct link_socket_actual *to)
  {
@@ -2604,9 +2685,9 @@
      {
        return link_socket_write_tcp (sock, buf, to);
      }
---- socks.c	2009-10-01 20:02:18.000000000 +0200
-+++ socks.c	2010-02-22 00:35:18.000000000 +0100
-@@ -174,9 +174,9 @@
+--- socks.c.orig	2011-04-06 18:05:52.000000000 +0200
++++ socks.c	2011-04-29 10:50:31.025970002 +0200
+@@ -299,9 +299,9 @@
  
    if (addr != NULL)
      {
@@ -2619,7 +2700,7 @@
      }
  
    while (len < 4 + alen + 2)
-@@ -263,8 +263,8 @@
+@@ -388,8 +388,8 @@
    /* ATYP == 1 (IP V4 address) */
    if (atyp == '\x01' && addr != NULL)
      {
@@ -2630,7 +2711,7 @@
      }
  
  
-@@ -382,8 +382,8 @@
+@@ -507,8 +507,8 @@
    if (atyp != 1)		/* ATYP == 1 (IP V4) */
      goto error;
  
@@ -2641,7 +2722,7 @@
  
    return;
  
-@@ -415,8 +415,8 @@
+@@ -540,8 +540,8 @@
    buf_write_u16 (&head, 0);	/* RSV = 0 */
    buf_write_u8 (&head, 0);	/* FRAG = 0 */
    buf_write_u8 (&head, '\x01'); /* ATYP = 1 (IP V4) */
@@ -2652,8 +2733,8 @@
  
    return 10;
  }
---- syshead.h	2009-10-01 20:02:18.000000000 +0200
-+++ syshead.h	2010-02-22 00:35:18.000000000 +0100
+--- syshead.h.orig	2011-04-21 21:13:34.000000000 +0200
++++ syshead.h	2011-04-29 10:50:31.025970002 +0200
 @@ -28,6 +28,10 @@
  /*
   * Only include if not during configure
@@ -2663,9 +2744,9 @@
 +#define WINVER 0x0501
 +#endif
  #ifndef PACKAGE_NAME
- #ifdef _MSC_VER
- #include "config-win32.h"
-@@ -338,6 +342,9 @@
+ #include "config.h"
+ #endif
+@@ -339,6 +343,9 @@
  #ifdef WIN32
  #include <iphlpapi.h>
  #include <wininet.h>
@@ -2675,9 +2756,55 @@
  #endif
  
  #ifdef HAVE_SYS_MMAN_H
---- tun.c	2009-11-20 14:09:14.000000000 +0100
-+++ tun.c	2010-02-22 00:35:18.000000000 +0100
-@@ -1605,7 +1605,9 @@
+@@ -383,9 +390,10 @@
+ #endif
+ 
+ /*
+- * Does this platform support linux-style IP_PKTINFO?
++ * Does this platform support linux-style IP_PKTINFO
++ * or bsd-style IP_RECVDSTADDR ?
+  */
+-#if defined(ENABLE_MULTIHOME) && defined(HAVE_IN_PKTINFO) && defined(IP_PKTINFO) && defined(HAVE_MSGHDR) && defined(HAVE_CMSGHDR) && defined(HAVE_IOVEC) && defined(CMSG_FIRSTHDR) && defined(CMSG_NXTHDR) && defined(HAVE_RECVMSG) && defined(HAVE_SENDMSG)
++#if defined(ENABLE_MULTIHOME) && ((defined(HAVE_IN_PKTINFO)&&defined(IP_PKTINFO)) || defined(IP_RECVDSTADDR)) && defined(HAVE_MSGHDR) && defined(HAVE_CMSGHDR) && defined(HAVE_IOVEC) && defined(CMSG_FIRSTHDR) && defined(CMSG_NXTHDR) && defined(HAVE_RECVMSG) && defined(HAVE_SENDMSG)
+ #define ENABLE_IP_PKTINFO 1
+ #else
+ #define ENABLE_IP_PKTINFO 0
+--- TODO.ipv6.orig	2011-04-29 10:50:31.033970002 +0200
++++ TODO.ipv6	2011-04-29 10:50:31.033970002 +0200
+@@ -0,0 +1,30 @@
++[ Last updated: 11-Nov-2009. ]
++
++* All platforms:
++  o mgmt console: as currently passes straight in_addr_t bits around
++
++  o make possible to get AF from getaddrinfo() answer, ie allow openvpn to
++    use ipv4/6 if DNS returns A/AAAA without specifying protocol.
++    Hard: requires deep changes in initialization/calling logic
++
++  o use AI_PASSIVE
++
++  o the getaddr()/getaddr6() interface is not prepared for handling socktype
++    "tagging", currently I abuse the sockflags bits for getting the ai_socktype
++    downstream.
++
++  o implement comparison for mapped addesses: server in dual stack
++    listening IPv6 must permit incoming streams from allowed IPv4 peer,
++    currently you need to pass eg:  --remote ffff::1.2.3.4
++
++  o do something with multi mode learn routes, for now just ignoring
++    ipv6 addresses seems the most sensible thing to do, because there's
++    no support for intra-tunnel ipv6 stuff.
++
++* win32:
++  o find out about mapped addresses, as I can't make it work
++    with bound at ::1 and connect to 127.0.0.1
++
++* N/A:
++  o this is ipv6 *endpoint* support, so don't expect "ifconfig6"-like
++    support in this patch 
+--- tun.c.orig	2011-04-06 18:05:52.000000000 +0200
++++ tun.c	2011-04-29 10:50:31.041970002 +0200
+@@ -1697,7 +1697,9 @@
  	  strerror(errno));
        }
  
@@ -2687,8 +2814,8 @@
  
        if (ioctl (tt->fd, TUNSIFINFO, &info) < 0) {
  	msg (M_WARN | M_ERRNO, "Can't set interface info: %s",
---- win32.h	2009-11-20 14:09:14.000000000 +0100
-+++ win32.h	2010-02-22 00:35:18.000000000 +0100
+--- win32.h.orig	2011-04-14 21:10:29.000000000 +0200
++++ win32.h	2011-04-29 10:50:31.045970002 +0200
 @@ -195,7 +195,10 @@
    DWORD flags;
    int status;
