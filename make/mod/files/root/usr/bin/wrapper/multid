@@ -9,10 +9,10 @@ done
 if [ "$multid_mode" != "stop" ]; then
 	for dns_pkg in dnsmasq bind; do
 		if [ "$(/mod/etc/init.d/rc.$dns_pkg status 2>/dev/null)" == "stopped" ]; then
-			/mod/etc/init.d/rc.$dns_pkg multid >> /var/log/mod_net.log
+			/mod/etc/init.d/rc.$dns_pkg multid >> /var/log/mod_net.log 2>&1
 		fi
 	done
 fi
 
-/etc/init.d/rc.multid $multid_mode >> /var/log/mod_net.log
+/etc/init.d/rc.multid $multid_mode >> /var/log/mod_net.log 2>&1
 
