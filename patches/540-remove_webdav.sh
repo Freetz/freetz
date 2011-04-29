@@ -5,6 +5,8 @@ for files in \
 	lib/libexpat.so* \
 	lib/libneon.so* \
 	sbin/*mount.davfs \
+	etc/onlinechanged/webdav_net \
+	etc/webdav_control \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
