@@ -1,13 +1,17 @@
-$(call PKG_INIT_BIN, 2011.1.15)
-$(PKG)_SOURCE:=ntfs-3g-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=15a5cf5752012269fa168c24191f00e2
+$(call PKG_INIT_BIN, 2011.4.12)
+$(PKG)_TARBALL_DIRNAME:=$(pkg)-3g_ntfsprogs-$($(PKG)_VERSION)
+$(PKG)_SOURCE:=$($(PKG)_TARBALL_DIRNAME).tgz
+$(PKG)_SOURCE_MD5:=9c4ce318373b15332239a77a9d2a39fe
 $(PKG)_SITE:=http://tuxera.com/opensource
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/ntfs-3g-$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_TARBALL_DIRNAME)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/ntfs-3g
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/ntfs-3g
 
 $(PKG)_DEPENDS_ON := fuse
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-ntfsprogs
+$(PKG)_CONFIGURE_OPTIONS += --disable-crypto
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
