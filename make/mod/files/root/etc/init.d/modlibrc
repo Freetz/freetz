@@ -141,6 +141,11 @@ modlib_startdaemon() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	config
 
+	if [ ! -x "$(which $1)" ]; then
+		echo "could not execute $1, failed."
+		exit 1
+	fi
+
 	env - PATH="$PATH" $DAEMON_ENV "$@" 1>&2
 	local rv=$?
 
