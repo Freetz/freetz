@@ -3,6 +3,7 @@
 DAEMON=lighttpd
 DAEMON_LONG_NAME="lighttpd web server"
 DAEMON_CONFIG="/mod/etc/$DAEMON/$DAEMON.conf"
+DAEMON_ENV='LD_PRELOAD='
 . /etc/init.d/modlibrc
 
 [ -r /etc/options.cfg ] && . /etc/options.cfg
@@ -19,7 +20,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon LD_PRELOAD= $DAEMON -f $DAEMON_CONFIG
+	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG
 }
 
 case $1 in
