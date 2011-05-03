@@ -14,7 +14,7 @@ EOF
 brands_cnt=0
 for i in $(ls /usr/www/); do
 	case $i in
-		all|cgi-bin|html|kids)
+		all|cgi-bin|css|html|js|kids)
 			;;
 		*)
 			BRANDS="$BRANDS $i"
