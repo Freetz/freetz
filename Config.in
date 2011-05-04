@@ -785,7 +785,9 @@ config FREETZ_HAS_LIBSSL
 config FREETZ_HAS_LSOF
 	bool "Has lsof"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_FON_WLAN_7320
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PREVIEW) || \
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LABOR_PREVIEW)
 	default n
 	help
 		Select this if you have a box with lsof binary.
@@ -826,7 +828,9 @@ config FREETZ_HAS_PHONE
 config FREETZ_HAS_STRACE
 	bool "Has strace"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_FON_WLAN_7320
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PREVIEW) || \
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LABOR_PREVIEW)
 	default n
 	help
 		Select this if you have a box with strace binary.
@@ -850,11 +854,9 @@ config FREETZ_HAS_TAM
 config FREETZ_HAS_UDEV
 	bool "udev"		if FREETZ_TYPE_CUSTOM
 	default y		if \
+		(FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PREVIEW) || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
-		(FREETZ_TYPE_LABOR_PREVIEW && \
-			(FREETZ_TYPE_FON_WLAN_7270 || \
-			 FREETZ_TYPE_FON_WLAN_7390) \
-		)
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LABOR_PREVIEW)
 	default n
 	help
 		Select this if you have a box with udev.
