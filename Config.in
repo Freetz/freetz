@@ -374,6 +374,25 @@ choice
 		help
 			Enable this to compile a mod image for FritzBox FON WLAN 7240 based
 			on a 7270 image.
+
+	config FREETZ_TYPE_7270_7270
+		bool "7270 v1 (experimental)"
+		depends on FREETZ_TYPE_FON_WLAN_7270
+		#select FREETZ_REMOVE_AVM_VPN
+		#select FREETZ_REMOVE_CAPIOVERTCP
+		#select FREETZ_REMOVE_NTFS
+		#select FREETZ_REMOVE_SMBD
+		#select FREETZ_REMOVE_UMTSD
+		#select FREETZ_REMOVE_VOIPD
+		#select FREETZ_REMOVE_VOIP_ISDN
+		#select FREETZ_REMOVE_WEBDAV
+		help
+			Enable this to compile a mod image for FritzBox FON WLAN 7270 v1 based
+			on a 7270 v2 image.
+
+			Caution: To fit into 8MB ROM some AVM components (e.g. telephony) have
+			to be removed. Please use usbroot for a full featured image.
+
 endchoice
 
 config FREETZ_AVM_VERSION_STRING
@@ -441,13 +460,13 @@ config FREETZ_TYPE_STRING
 	default "7240"						if FREETZ_TYPE_FON_WLAN_7240 && ! FREETZ_TYPE_LABOR
 	default "7270_v1"					if FREETZ_TYPE_FON_WLAN_7270_V1 && ! FREETZ_TYPE_LABOR
 #	default "7270_v1_preview"				if FREETZ_TYPE_FON_WLAN_7270_V1 && FREETZ_TYPE_LABOR_PREVIEW
-	default "7270_v2"					if ( FREETZ_TYPE_FON_WLAN_7270_V2 && \
-									! FREETZ_TYPE_LABOR && ! FREETZ_TYPE_ALIEN_HARDWARE ) || \
-									( FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LANG_EN )
+	default "7270_v2"					if ( ( FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+									FREETZ_TYPE_7270_7270 ) && \
+									! FREETZ_TYPE_LABOR
 #	default "7270_v2_preview"				if FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LABOR_PREVIEW
-	default "7270_v3"					if (FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_LABOR) || \
-									( FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_ALIEN_HARDWARE ) || \
-									( FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LANG_EN )
+	default "7270_v3"					if ( ( FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+									FREETZ_TYPE_7240_7270 ) && \
+									! FREETZ_TYPE_LABOR
 #	default "7270_v3_preview"				if FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LABOR
 	default "7320"						if FREETZ_TYPE_FON_WLAN_7320 && ! FREETZ_TYPE_LABOR
 	default "7340"						if FREETZ_TYPE_FON_WLAN_7340 && ! FREETZ_TYPE_LABOR
@@ -666,7 +685,8 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		(FREETZ_TYPE_FON_WLAN_7170 && ! FREETZ_TYPE_3170_7170) || \
-		FREETZ_TYPE_FON_WLAN_7270_V1
+		FREETZ_TYPE_FON_WLAN_7270_V1 || \
+		FREETZ_TYPE_7270_7270
 	default 238 			if \
 		FREETZ_TYPE_FON_WLAN_7340 || \
 		FREETZ_TYPE_FON_WLAN_7390
@@ -1156,23 +1176,25 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_LANG_DE
 	default "Labor_FRITZ.Box_Fon_WLAN_7270_v1.54.04.86-18582.image"		if	FREETZ_TYPE_FON_WLAN_7270_V1 && \
 											FREETZ_TYPE_LABOR_PREVIEW
-	default "FRITZ.Box_Fon_WLAN_7270_v2.54.04.88.image"			if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
+	default "FRITZ.Box_Fon_WLAN_7270_v2.54.04.88.image"			if	( ( FREETZ_TYPE_FON_WLAN_7270_V2 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7270_7270 ) && \
 											! FREETZ_TYPE_LABOR && \
-											! FREETZ_TYPE_ALIEN_HARDWARE && \
 											FREETZ_TYPE_LANG_DE
 	default "Labor_FRITZ.Box_Fon_WLAN_7270_v2.54.04.86-18708.image"		if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
 											FREETZ_TYPE_LABOR_PREVIEW
-	default "FRITZ.Box_Fon_WLAN_7270_v2.en-de-es-it-fr.54.04.90.image"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
-											! FREETZ_TYPE_ALIEN_HARDWARE && \
+	default "FRITZ.Box_Fon_WLAN_7270_v2.en-de-es-it-fr.54.04.90.image"	if	( ( FREETZ_TYPE_FON_WLAN_7270_V2 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7270_7270 ) && \
 											FREETZ_TYPE_LANG_EN
-	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.88.image"			if	( FREETZ_TYPE_FON_WLAN_7270_V3 || \
-											( FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_ALIEN_HARDWARE ) ) && \
+	default "FRITZ.Box_Fon_WLAN_7270_v3.74.04.88.image"			if	( ( FREETZ_TYPE_FON_WLAN_7270_V3 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7240_7270 ) && \
 											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
-	default "FRITZ.Box_Fon_WLAN_7270_v3.en-de-es-it-fr.74.04.90.image"	if	( FREETZ_TYPE_FON_WLAN_7270_V3 || \
-											( FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_ALIEN_HARDWARE ) ) && \
+	default "FRITZ.Box_Fon_WLAN_7270_v3.en-de-es-it-fr.74.04.90.image"	if	( ( FREETZ_TYPE_FON_WLAN_7270_V3 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7240_7270 ) && \
 											FREETZ_TYPE_LANG_EN
 	default "Labor_FRITZ.Box_Fon_WLAN_7270_v3.74.04.86-18708.image"		if	FREETZ_TYPE_FON_WLAN_7270_V3 && \
 											FREETZ_TYPE_LABOR_PREVIEW
