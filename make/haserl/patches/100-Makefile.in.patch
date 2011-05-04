@@ -1,0 +1,28 @@
+--- src/Makefile.in.orig	2011-05-02 09:54:24.000000000 +0200
++++ src/Makefile.in	2011-05-02 10:02:10.657930064 +0200
+@@ -493,16 +493,16 @@
+ 
+ 
+ # lua2c_LIBS ?= -llua -ldl -lm
+-@USE_LUA_TRUE@lua2c_LDFLAGS ?= -Wl,-E
+-@USE_LUA_TRUE@lua2c:	lua2c.c
+-@USE_LUA_TRUE@	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) $(lua2c_LDFLAGS) \
+-@USE_LUA_TRUE@		-o $@ $^ $(LIBS)
++#lua2c_LDFLAGS ?= -Wl,-E
++#lua2c:	lua2c.c
++#	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) $(lua2c_LDFLAGS) \
++#		-o $@ $^ $(LIBS)
+ 
+-@USE_LUA_TRUE@haserl_lualib.inc : haserl_lualib.lua lua2c
+-@USE_LUA_TRUE@	if ! ./lua2c haserl_lualib haserl_lualib.lua >$@; then \
+-@USE_LUA_TRUE@		rm $@; \
+-@USE_LUA_TRUE@		exit 1 ;\
+-@USE_LUA_TRUE@	fi
++#haserl_lualib.inc : haserl_lualib.lua lua2c
++#	if ! ./lua2c haserl_lualib haserl_lualib.lua >$@; then \
++#		rm $@; \
++#		exit 1 ;\
++#	fi
+ 
+ @USE_LUA_TRUE@h_lua_common.c : haserl_lualib.inc
+ 
