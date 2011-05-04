@@ -1,6 +1,6 @@
 #!/bin/sh
  
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
  
 check "$SER2NET_ENABLED" yes:auto "*":man

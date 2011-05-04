@@ -1,7 +1,7 @@
 #!/bin/sh
 #by cuma
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /mod/etc/conf/vnstat.cfg
 
 _NICE=$(which nice)

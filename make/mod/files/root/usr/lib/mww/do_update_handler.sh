@@ -1,6 +1,5 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 . /usr/lib/libmodcgi.sh
 
 footer() {

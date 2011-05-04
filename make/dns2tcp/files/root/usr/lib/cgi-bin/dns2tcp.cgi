@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 check "$DNS2TCP_ENABLED" yes:auto "*":man

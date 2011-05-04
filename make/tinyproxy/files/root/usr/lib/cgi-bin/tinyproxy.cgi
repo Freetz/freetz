@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 BUILDIN_SUPPORT=$(tinyproxy -h | sed -n "/proxy support/ s/^[ ]*// ; s/ proxy support// p" | tr '\n' ' ')

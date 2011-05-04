@@ -1,6 +1,6 @@
 #!/usr/bin/haserl -u 200 -U /var/tmp
 <%
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 cgi --id=do_restore
 cgi_begin '$(lang de:"Konfiguration wiederherstellen (Restore)" en:"Restore configuration")'

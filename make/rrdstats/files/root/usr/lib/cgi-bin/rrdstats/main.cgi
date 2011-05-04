@@ -2,7 +2,7 @@
 
 # initially by ramik, extended by cuma
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /mod/etc/conf/rrdstats.cfg
 
 DATESTRING=$(date -R)

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 check "$XRELAYD_ENABLED" yes:auto_c "*":man_c

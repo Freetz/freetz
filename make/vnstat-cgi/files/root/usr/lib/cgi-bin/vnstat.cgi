@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 check "$VNSTAT_ENABLED" yes:auto "*":man

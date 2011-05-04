@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
+
 . /usr/lib/libmodcgi.sh
 
 sec_begin 'iptables add/remove rule'
