@@ -1,18 +1,14 @@
-#!/usr/bin/haserl -u 100000 -U /var/tmp -H /usr/lib/mww/do_external_handler.sh
+#!/usr/bin/haserl -u 30000 -U /var/tmp -H /usr/lib/mww/do_external_handler.sh
+
+<%
+if [ -e /tmp/ex_update.done ]; then
+	rm -f /tmp/ex_update.done
+	exit
+fi
+%>
 
 <%
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
-cgi_begin '$(lang de:"external-Update" en:"external-update")'
+cgi_error '$(lang de:"External-Update fehlgeschlagen." en:"external update failed.")'
 %>
-
-<h1>$(lang de:"Dateien extrahieren" en:"Extract files")</h1>
-
-<pre><%
-cat /tmp/ex_update.log
-rm -f /tmp/ex_update.log
-%></pre>
-
-<p>
-<% back_button --title="$(lang de:"Zur&uuml;ck zum Update" en:"Back to update")" mod update %>
-<% cgi_end %>
