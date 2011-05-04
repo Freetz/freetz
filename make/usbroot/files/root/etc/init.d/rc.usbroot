@@ -151,7 +151,8 @@ mount_usbroot() {
 		return 1
 	fi
 
-	case "$(uname -r)" in
+	kver="$(uname -r)"
+	case "$kver" in
 		2.6.28.10 )
 			# no need to cache hotplug events, udev does it
 			mount dev /oldroot -t tmpfs -o nosuid
@@ -175,7 +176,7 @@ mount_usbroot() {
 			load_modules_2_6_19_2
 			;;
 
-		2.6.13.1 )
+		2.6.13* )
 			# cache hotplug events
 			hotplugging defer
 
@@ -183,7 +184,7 @@ mount_usbroot() {
 			;;
 
 		* )
-			echo "Unknown kernel version. Exiting"
+			echo "Unknown kernel version ($kver). Exiting"
 			return 1
 			;;
 	esac
