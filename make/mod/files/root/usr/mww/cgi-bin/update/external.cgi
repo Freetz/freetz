@@ -22,6 +22,9 @@ function CheckInput(form) {
 	if (delete_chk.checked) {
 		file_selector.name += "/delete_oldfiles";
 	}
+	if (ex_start.checked) {
+		file_selector.name += "/external_start";
+	}
 	return true;
 }
 </script>
@@ -38,6 +41,7 @@ $(lang de:"hochgeladen werden." en:"upload the appropriate firmware afterwards."
 	<p>$(lang de:"external-Datei" en:"External-file") <input type=file size=50 id="ex_file"></p>
 	<p>$(lang de:"Zielverzeichnis" en:"Target directory") <input type="textfield" size=50 name="the_target" value="$MOD_EXTERNAL_DIRECTORY"></p>
 	<p><input type="checkbox" name="delete" value="delete">$(lang de:"Alte External-Dateien löschen" en:"Delete old external files")</p>
+	<p><input type="checkbox" name="ex_start" value="ex_start">$(lang de:"External Dienste nach Update starten" en:"Start external services after update")</p>
 	<input type=submit value="$(lang de:"Datei hochladen" en:"Upload file")" style="width:200px">
 </form>
 EOF

@@ -47,6 +47,9 @@ delete=false
 case $NAME in
 	*/delete_oldfiles*) delete=true ;;
 esac
+case $NAME in
+	*/external_start*) external_start=true ;;
+esac
 
 cgi_begin '$(lang de:"external-Update" en:"external-update")'
 
@@ -55,16 +58,12 @@ echo "<p>$(lang de:"Ziel-Verzeichnis" en:"Target directory"): $EXTERNAL_TARGET</
 kill() {
 	echo "<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
 	pre_begin
-	for FILE in $(find "$EXTERNAL_TARGET" -type f); do
-		FILES="$FILES $(basename $FILE)"
-	done
-	if [ -n "$FILES" ]; then
-		echo "Killing running services:$FILES"
-		killall "$FILES" 2>/dev/null
-		sleep 2
-		killall -9 "$FILES" 2>/dev/null
+	echo -n "Stopping external services ... "
+	if [ "$(/mod/etc/init.d/rc.external status 2>/dev/null)" == "running" ]; then
+		/mod/etc/init.d/rc.external stop >/dev/null
+		echo "done."
 	else
-		echo "No services to kill."
+		echo "not running."
 	fi
 	if $delete; then
 		echo -n "Removing old stuff ... "
@@ -107,5 +106,12 @@ if [ $result -ne 0 ]; then
 fi
 
 status "done"
+
+if [ -e /mod/etc/init.d/rc.external ] && $external_start; then
+	echo "<h1>$(lang de:"External-Dienste starten" en:"Starting external services")</h1>"
+	pre_begin
+	/mod/etc/init.d/rc.external start
+	pre_end
+fi
 
 footer
