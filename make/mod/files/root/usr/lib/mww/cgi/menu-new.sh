@@ -12,7 +12,7 @@ _cgi_submenu() {
 	local id=$1
 	case $id in
 		status*|daemons) sub=status ;;
-		system|avmwif_*|rudi_*|firmware_*|backup_*) sub=system ;;
+		system|avmwif_*|rudi_*|firmware_*|backup_*|support_*) sub=system ;;
 		*:*) sub=${id#*:}; sub="pkg:${sub%%:*}" ;;
 	esac
 	echo "$sub"
@@ -190,6 +190,7 @@ new_menu_prepare() {
 		cat << EOF
 <li><a id="backup_restore" href="/cgi-bin/backup/index.cgi">$(lang de:"Sichern &amp; Wiederherstellen" en:"Backup &amp; restore")</a></li>
 <li><a id="firmware_update" href="$(href mod update)">$(lang de:"Firmware-Update" en:"Firmware update")</a></li>
+<li><a id="support_file" href="/cgi-bin/support/index.cgi">$(lang de:"Supportdatei erstellen" en:"Create support file")</a></li>
 <li><a id="rudi_shell" href="/cgi-bin/shell/index.cgi" target="_blank">$(lang de:"Rudi-Shell" en:"Rudi shell")</a></li>
 <li><a id="avmwif_link" href="http://$(self_host)/" target="_blank">$(lang de:"AVM-Webinterface" en:"AVM web interface")</a></li>
 EOF
