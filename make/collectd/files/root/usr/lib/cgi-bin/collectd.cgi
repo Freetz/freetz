@@ -2,7 +2,7 @@
 # This is the cgi for configuring collectd
 # Copyright 2010, 2011 Brian Jensen (Jensen.J.Brian@googlemail.com)
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 check "$COLLECTD_ENABLED" yes:auto "*":man

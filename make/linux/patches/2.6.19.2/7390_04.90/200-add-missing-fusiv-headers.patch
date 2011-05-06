@@ -1,0 +1,460 @@
+diff -uaNr linux-2.6.19.2.orig/include/netpro/apconf.h linux-2.6.19.2/include/netpro/apconf.h
+--- linux-2.6.19.2.orig/include/netpro/apconf.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/include/netpro/apconf.h	2011-03-24 13:18:38.000000000 +0100
+@@ -0,0 +1,98 @@
++// ===========================================================================
++//
++// Copyright (C) 2002 Analog Devices Inc. All rights reserved
++//
++// The information and source code contained herein is the exclusive property
++// of Analog Devices and may not be disclosed, examined or reproduced in whole
++// or in part without the explicit written authorization from Analog Devices.
++//
++// ===========================================================================
++
++// ===========================================================================
++//
++// File name    : $RCSfile: apconf.h
++// Author       : $Author: sreeni
++// Version      : $Revision:
++// Description  : Modules configuration to build AP binaries
++// ===========================================================================
++
++#ifndef _APCONF_H_
++#define _APCONF_H_
++
++#include <sysconf.h>
++#define   BRIDGE                1
++
++#define   STATISTICS            1
++#define   PORT_MONITORING       0
++#define   WLAN_ETH_8023         1
++#define   POLICY_BASED_VLAN     1
++
++#define UBR_PLUS_FEATURE    	1
++
++#if IS_VX180
++#define IPCQOS	                0
++#else
++#define IPCQOS		        0
++#endif
++
++#if IS_VX180
++#define PACKET_TAGGING 		0
++#else
++#define PACKET_TAGGING 		0
++#endif
++#define FASTPATH_FOR_FRAGMENTS  0
++
++#if IS_VX180
++#define   AP_FRAGMENTATION      1
++#define   VENDOR_TAG            1
++#define   IPV6                  1
++#else
++#define   AP_FRAGMENTATION      0
++#define   VENDOR_TAG            0
++#define   IPV6                  1
++#define   ETH_NO_CLASSIFICATION	1
++#define   PERI_INQ2_ADDR	0x191A0610
++#endif
++
++#if VENDOR_TAG
++#define   MARVELL             0
++#define   REALTEK             1
++
++#if MARVELL && REALTEK
++  Only one type of switch can be enabled.
++#endif
++#endif
++
++#if IPV6
++    #define   IPV4_INTO_IPV6        1
++#endif
++
++#define   BM_SPECIAL_STATS      1
++
++#if IS_VX180
++#define VDSL_PMEM_SHORT		        0
++#define AP2AP_PPPOERELAY_FASTPATH       1
++#else
++#define VDSL_PMEM_SHORT		        0
++#if ETH_NO_CLASSIFICATION
++#define AP2AP_PPPOERELAY_FASTPATH       1
++#else
++#define AP2AP_PPPOERELAY_FASTPATH       0
++#endif
++#endif
++
++
++#if !(IS_VX180)
++#if IPV4_INTO_IPV6 && VENDOR_TAG
++ Flow entry address calculation is not correct for this combination
++#endif
++
++#if IPV6 &&  WLAN_ETH_8023
++#endif
++
++#if POLICY_BASED_VLAN && VENDOR_TAG
++ Cannot coexist .pmem and .dmem is in shortage for both options to be enabled.
++#endif
++#endif
++
++#endif /* _APCONF_H_ */
+diff -uaNr linux-2.6.19.2.orig/include/netpro/apload.h linux-2.6.19.2/include/netpro/apload.h
+--- linux-2.6.19.2.orig/include/netpro/apload.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/include/netpro/apload.h	2011-03-24 13:18:38.000000000 +0100
+@@ -0,0 +1,134 @@
++/* Copyright (C) 2006 Ikanos Communications
++ * See IKANOS_PROP_LICENSE.txt for license information. */
++
++// ===========================================================================
++//
++// File name    : apload.h
++// Description  : Information for AP load from Host
++// ===========================================================================
++
++#ifndef _APLOAD_H_
++#define _APLOAD_H_
++
++typedef enum
++{
++    SIM_OK = 0,         
++    SIM_PMEM_ADDR,     
++    SIM_DMEM_ADDR,    
++    SIM_DMEM_ALIGN,  
++    SIM_IO_NOPORT,  
++    SIM_IO_BADPORT,
++    SIM_DEC_BADINST,    
++    SIM_STK_FULL,       
++    SIM_STK_EMPTY,      
++    SIM_AP_ID,          
++    SIM_AP_EVENT_ERR,   
++    SIM_ALLOC_ERR,      
++    SIM_SLAVEMEM_ALLOC_ERR, 
++    SIM_RAMQ_WRONG_PARAMS,  
++    SIM_MAX_BM_CLUSTERS_TOO_SMALL, 
++    SIM_PARAM_INITIALIZED_ALREADY, 
++    SIM_EGRESS_TYPE,    
++    SIM_QUEUE_NUM,      
++    SIM_QUEUE_SIZE,     
++    SIM_ALREADY_USED_QUEUE, 
++    SIM_BAD_HASH_MASK,  
++    SIM_WRONG_FUNCTION, 
++    SIM_PARAM_NOT_INITIALIZED, 
++    SIM_ALREADY_DISABLED_ENTRY,  
++    SIM_ENTRY_COLLISION, 
++    SIM_ENTRY_DOESNT_EXIST, 
++    SIM_MATCHING_ENTRY, 
++    SIM_WRONG_FEATURE,  
++    SIM_MAC_LIST_FULL,  
++    SIM_MAC_LIST_EMPTY,     
++    SIM_WRONG_MAC_ADDR,     
++    SIM_PRELIMINARY_CALL,   
++    SIM_LATE_CALL,   
++    SIM_AP_SUSPENSION_ACTION, 
++    SIM_PPPOE_MATCHING_ENTRY,  
++    SIM_UNCOMPATIBLE_OPERATIONS_ERR,       
++    SIM_AP_INPUT_QUEUE_ALMOST_FULL, 
++    SIM_WRONG_PARAMS_ERR,       
++    SIM_ETHERTYPE_LIST_FULL,    
++    SIM_INCORRECT_MTU_SIZE,     
++
++    SIM_AHB_BADADDR = 0x1000,   
++    SIM_AHB_ALIGN,      
++    SIM_AHB_ACTIVE,     
++    SIM_AHB_UNDERRUN,   
++    SIM_AHB_OVERRUN,    
++} simResult_t;
++
++#define _codeSectionLength(pref)		pref ## _codeSectionLength
++#define _dataSectionLength(pref)        pref ## _dataSectionLength
++#define _sDataSectionLength(pref)       pref ## _sDataSectionLength
++#define _codeSection(pref)		        pref ## _codeSection
++#define _dataSection(pref)      		pref ## _dataSection
++#define _sDataSection(pref)       		pref ## _sDataSection
++#define _startData(pref)		        pref ## _startData
++#define _endData(pref)			        pref ## _endData
++#define _startSData(pref)		        pref ## _startSData
++#define _endSData(pref)			        pref ## _endSData
++#define _startBSS(pref)			        pref ## _startBSS
++#define _endBSS(pref)		    	    pref ## _endBSS
++#define _startSBSS(pref)		        pref ## _startSBSS
++#define _endSBSS(pref)		        	pref ## _endSBSS
++
++
++// Code and data information from assembled program for AP
++
++#define extern_declaration_ap_vars( ap_prefix ) \
++extern unsigned long    _codeSectionLength( ap_prefix );\
++extern unsigned long    _dataSectionLength( ap_prefix );\
++extern unsigned long    _sDataSectionLength( ap_prefix );\
++extern unsigned char    _codeSection( ap_prefix )[];\
++extern unsigned char    _dataSection( ap_prefix )[];\
++extern unsigned char    _sDataSection( ap_prefix )[];\
++extern unsigned long    _startData( ap_prefix );\
++extern unsigned long    _endData( ap_prefix );\
++extern unsigned long    _startSData( ap_prefix );\
++extern unsigned long    _endSData( ap_prefix );\
++extern unsigned long    _startBSS( ap_prefix );\
++extern unsigned long    _endBSS( ap_prefix );\
++extern unsigned long    _startSBSS( ap_prefix );\
++extern unsigned long    _endSBSS( ap_prefix );
++
++
++
++#define APUInit( apId, ap_prefix, pConfigStruct)    loadAPCode(  apId,\
++                         _codeSectionLength(ap_prefix),\
++                         _dataSectionLength(ap_prefix),\
++                         _sDataSectionLength(ap_prefix),\
++                         (unsigned long)_codeSection(ap_prefix),\
++                         (unsigned long)_dataSection(ap_prefix),\
++                         (unsigned long)_sDataSection(ap_prefix),\
++                         _startData(ap_prefix),\
++                         _endData(ap_prefix),\
++                         _startSData(ap_prefix),\
++                         _endSData(ap_prefix),\
++                         _startBSS(ap_prefix),\
++                         _endBSS(ap_prefix),\
++                         _startSBSS(ap_prefix),\
++                         _endSBSS(ap_prefix),\
++                         pConfigStruct );
++
++
++simResult_t loadAPCode( unsigned char  apId,
++                        unsigned long codeSectionLength,
++                        unsigned long _dataSectionLength,
++                        unsigned long _sDataSectionLength,
++                        unsigned long codeSection,
++                        unsigned long _dataSection,
++                        unsigned long _sDataSection,
++                        unsigned long startData,
++                        unsigned long _endData,
++                        unsigned long startSData,
++                        unsigned long _endSData,
++                        unsigned long startBSS,
++                        unsigned long _endBSS,
++                        unsigned long startSBSS,
++                        unsigned long _endSBSS,
++                        void *pConfigStruct );
++#endif /* _APLOAD_H_ */
++
+diff -uaNr linux-2.6.19.2.orig/include/netpro/apprehdr.h linux-2.6.19.2/include/netpro/apprehdr.h
+--- linux-2.6.19.2.orig/include/netpro/apprehdr.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/include/netpro/apprehdr.h	2011-03-24 13:18:38.000000000 +0100
+@@ -0,0 +1,80 @@
++/* Copyright (C) 2006 Ikanos Communications
++ * See IKANOS_PROP_LICENSE.txt for license information. */
++
++// ===========================================================================
++//
++// File name    : $RCSfile: apprehdr.h,v $
++// Description  : This describes the pre-header that exists at the start
++//                of each data buffer.
++// ===========================================================================
++#ifndef _APPREHDR_H_
++#define _APPREHDR_H_
++
++#include <netpro/apconf.h>
++
++#define AP_PRE_LEAD_UNUSED_LEN      128     
++#define AP_PRE_TRAIL_UNUSED_LEN     128    
++typedef struct
++{
++    void        *pEgress;       
++    void        *pFlowID;      
++} apEgressPort_t;
++
++typedef struct apPreHeader_s
++{
++    struct apPreHeader_s        *pNext;
++    unsigned short      flags1;
++#define AP_FLAG1_IS_ETH_BIT     0       
++#define AP_FLAG1_IS_802_BIT     1       
++#define AP_FLAG1_IS_VLAN_BIT    2       
++#define AP_FLAG1_IS_IP_BIT      3       
++#define AP_FLAG1_IP_VER_4_BIT   8       
++#define AP_FLAG1_IP_VER_6_BIT   9       
++#define AP_FLAG1_TTL_ZERO_BIT   4       
++#define AP_FLAG1_IP_FRAG_BIT    10      
++#define AP_FLAG1_IP_CSUM_BIT    11      
++#define AP_DECAPSULATED_PACKET_BIT      12      
++#define AP_FLAG1_IS_POLICY_VLAN_BIT     13   
++#define AP_FLAG1_IS_TCP_UDP_BIT 5       
++#define AP_FLAG1_IS_IPSEC_BIT   6       
++#define AP_FLAG1_IS_IPSEC_DECRYPTED_BIT   7 
++#define AP_FLAG1_BRIDGE_ROUTE_BIT  14   
++#define AP_FLAG1_CLASSIFIED_BIT 15      
++   unsigned short      flags2;
++#define AP_FLAG2_SRC_MAC_BIT    0       
++#define AP_FLAG2_DST_MAC_BIT    1       
++#define AP_FLAG2_SRC_MOD_BIT    2       
++#define AP_FLAG2_DST_MOD_BIT    3       
++#define AP_FLAG2_BRIDGE_PKT_BIT 4       
++#define AP_MULTICAST_PKT_BIT    5       
++#define AP_MCAST_SMAC_MOD_BIT   6       
++#define AP_EGGRESS_PPPOE_BIT    7        
++#define AP_FLAG2_BAD_HOP_LIMIT_BIT    8       
++#define AP_FLAG2_ZERO_FLOW_LABEL_BIT  9       
++#if defined(VENDOR_TAG) && (VENDOR_TAG)
++#define AP_VENDOR_TXTAG_BIT           11      
++#define AP_VENDOR_RXTAG_BIT           12      
++#endif
++#if defined(PORT_MONITORING) && (PORT_MONITORING)
++#define AP_CLASSIFY_AFTER_TX_BIT     10      
++#endif
++#define AP_HOST_INDICATION_BIT  13      
++#define AP_TX_STATUS_BIT        14      
++#define AP_TX_DONE_BIT          15      
++#define HOST_PKT_PROCESSED_BIT          AP_TX_DONE_BIT
++    unsigned short      hash;
++    unsigned short      start;          
++    unsigned short      end;            
++    unsigned short      l2HeaderLen;
++    unsigned short      totalLength;
++
++    void                *pRxPortId;
++#define AP_MAX_EGRESS_PORTS     4
++    apEgressPort_t      egressList[AP_MAX_EGRESS_PORTS];
++    unsigned short      specInfoElement;
++    unsigned short      ingressVLAN;
++#define  NO_MATCHED_ENTRY_FOUND         0
++    unsigned int        matchedEntryAddr;
++} apPreHeader_t;
++
++#endif /* _APPREHDR_H_ */
+diff -uaNr linux-2.6.19.2.orig/include/sysconf.h linux-2.6.19.2/include/sysconf.h
+--- linux-2.6.19.2.orig/include/sysconf.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.19.2/include/sysconf.h	2011-03-24 13:18:38.000000000 +0100
+@@ -0,0 +1,132 @@
++/* Copyright (C) 2006 Ikanos Communications 
++ * See IKANOS_PROP_LICENSE.txt for license information. */
++
++
++#ifndef  SYSCONF_E_E_R_H
++#define  SYSCONF_E_E_R_H
++#include <linux/autoconf.h>
++#define AP_BUFFER_SIZE  2304    
++#define YES		1
++#define NO		0
++#define IS_NETPRO         YES      
++#define CHIP_NAME         ad6843   
++#define USE_RTOS				NO	
++#define BRIDGE_THRU_AP  NO      
++#define BUF_CPY_THRU_DMA  YES      
++#define AP_IPQOS        YES
++#define AVDSL_NO_MODULE			0
++#define AVDSL_ADSL_MODULE		1
++#define AVDSL_VDSL_MODULE		2
++#define NUM_NETPRO_ATM_VCC_SUPPORTED 12 
++#if defined(CONFIG_ATM) && (CONFIG_ATM)
++#define IS_EAGLEPLUS			YES	
++#define MUXED_BUS_EAGLEPLUS		YES	
++#define ADSL            YES 
++#define ATM             YES
++#define SNDCP           YES
++#define ATM_AP          YES     
++#define ATM_UPSTREAM_THRU_HOST NO 
++#define ATM_UPSTREAM_THRU_HOST_NETFILTER_BYPASS YES 
++#define PCR_LIMIT_IN_UBR	1
++#define UBR_RR_PCR          1
++#define MINIMUM_CELL_RATE_UBR_PLUS  	1
++#define OPTN_VALUES	   YES 	   DSL_MO
++#define ANNEX_A            YES     
++#define ADIEAGLE_FW_VER    42E2EA14_A 
++#define EAGLE_VER_42E2EA14_A  YES
++#define ITU_VENDOR_ID_STR  "ANDV"  
++#define DYING_GASP_ENABLE    NO    
++#define DEFAULT_ADSL_MODE   YES
++  #if defined(DEFAULT_ADSL_MODE) && (DEFAULT_ADSL_MODE)
++    #define ADSL_MODE   1        
++  #endif
++#endif 
++#if defined(CONFIG_FUSIV_AT300)
++#define VENDOR_NAME     KILIMANJARO
++#define IS_AT200        YES
++#define IS_AT300        YES
++#define NUM_EMAC_PORTS  1       
++#endif
++#if defined(CONFIG_FUSIV_KERNEL_PERI_AP) || defined(CONFIG_FUSIV_KERNEL_PERI_AP_MODULE)
++#define ETH_WLAN_HDR_CONVERT 1
++#endif
++#if defined(CONFIG_FUSIV_VX160)
++#define VENDOR_NAME     VOX160
++#define IS_AT200        YES
++#define IS_VX160        YES
++#define WRITE_BACK_CACHE      0    
++#define WRITE_THROUGH_CACHE   1    
++#define CACHE_LINE_SIZE       32   
++#define NUM_EMAC_PORTS  2       
++#endif
++#if defined(CONFIG_FUSIV_VX200)
++#define VENDOR_NAME     VOX200          
++#define WRITE_BACK_CACHE      0    
++#define WRITE_THROUGH_CACHE   1    
++#define CACHE_LINE_SIZE       32   
++#define NUM_EMAC_PORTS  2       
++#endif
++#if defined(CONFIG_FUSIV_VX180)
++#if defined(CONFIG_FUSIV_VX180_WRITE_BACK) && (CONFIG_FUSIV_VX180_WRITE_BACK)
++#define WRITE_BACK_CACHE    1       
++#else
++#define WRITE_THROUGH_CACHE   1    
++#endif
++#define CACHE_LINE_SIZE     32      
++#define VENDOR_NAME     VOX180          
++#define NUM_EMAC_PORTS  2       
++#define IS_VX180        YES
++
++#if defined(CONFIG_ATM)
++#if !defined (CONFIG_FUSIV_KERNEL_VX180_AVDSL_MODULE)
++#define VX180A          1
++#define IS_AT200        YES
++#endif
++#endif
++
++#if defined(CONFIG_FUSIV_KERNEL_BME_DRIVER_VX180) || defined(CONFIG_FUSIV_KERNEL_BME_DRIVER_VX180_MODULE)
++#define VDSL_AP         YES
++#endif
++#endif
++
++#if defined(IS_VX160)						
++
++#if defined(CONFIG_FUSIV_KERNEL_ACL) || defined(CONFIG_FUSIV_KERNEL_ACL_MODULE)
++#define ACL_AP					1	
++#endif
++#if defined(ACL_AP)						
++	#undef CONFIG_ATM
++	#if defined(ATM_AP)
++		#undef  ATM_AP			
++		#define ATM_AP 			0
++	#endif
++	#define ACL_USING_ATM	1	
++	#ifndef ACL_USING_ATM
++		#error "You need to change the interrupt in acl_ap_driver.c 'dev->irq = EMAC3_INT' to correct interrupt!"
++		#error "You will likely have to change acl_ap_driver.c acl_ap_probe() as it inits the ATM AP clocks"
++	#endif
++#endif 
++#endif
++
++#if defined(IS_VX180)
++#if defined(CONFIG_FUSIV_KERNEL_ACL) || defined(CONFIG_FUSIV_KERNEL_ACL_MODULE)
++#define ACL_AP          1
++
++#endif
++
++#if defined(ACL_AP) && (ACL_AP)
++
++#if defined(CONFIG_FUSIV_KERNEL_ACL_EMAC3)
++#define ACL_USING_Vx180_EMAC3  1
++#elif defined(CONFIG_FUSIV_KERNEL_ACL_SPA) 
++#define ACL_USING_Vx180_SPA    1
++#endif 
++
++#endif 
++
++#endif 
++#define SECAP_NO_MODULE			0
++#define SECAP_MODULE			1
++
++#endif 
++

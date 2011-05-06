@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 
 . /mod/etc/conf/bluez-utils.cfg
 

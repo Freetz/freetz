@@ -646,6 +646,7 @@ config FREETZ_LIB_libftdi
 
 config FREETZ_LIB_libfreetz
 	bool "libfreetz (libfreetz.so)"
+	depends on FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_WLAN_7140
 	default n
 	help
 		This is Freetz compatibility library which overwrites functions of AVM's

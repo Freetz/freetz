@@ -6,6 +6,8 @@ DAEMON_CONFIG=/tmp/flash/${DAEMON}/${DAEMON_BIN}.conf
 PID_FILE=/var/run/${DAEMON_BIN}/${DAEMON_BIN}.pid
 . /etc/init.d/modlibrc
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 if [ "$BIND_MULTID" != "yes" ]; then
 	nomultid=y
 else
@@ -27,7 +29,13 @@ stop() {
 }
 
 case $1 in
-	""|load)
+	""|load|multid)
+		if [ "$1" == "multid" ]; then
+			[ "$BIND_WRAPPER" != "yes" -o "$EXTERNAL_FREETZ_PACKAGE_BIND_NAMED" == "y" ] && exit
+		else
+			[ "$BIND_WRAPPER" == "yes" -a "$EXTERNAL_FREETZ_PACKAGE_BIND_NAMED" != "y" ] && exit
+		fi
+
 		mkdir -p "/tmp/flash/${DAEMON}"
 
 		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/${DAEMON_BIN}_conf > $DAEMON_CONFIG

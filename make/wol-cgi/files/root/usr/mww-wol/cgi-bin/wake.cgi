@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 
 cgi_width=560
 . /usr/lib/libmodcgi.sh

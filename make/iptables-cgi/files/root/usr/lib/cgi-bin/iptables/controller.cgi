@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
+
 . /usr/lib/libmodcgi.sh
 
 # HTML QUERY STRING for remove option
@@ -12,9 +12,10 @@ if [ $IPTABLES_DELETE_CHAIN ] && [ $IPTABLES_DELETE_RULE ]; then
 		SPECIAL='-t nat '
 	fi
 	iptables $SPECIAL-D $IPTABLES_DELETE_CHAIN $IPTABLES_DELETE_RULE > /dev/null 2>&1
+	iptables-save > /var/tmp/flash/iptables_rules
 fi
 
 echo "Status: 302 Found"
-echo "Location: $(href cgi iptables)"
+echo "Location: $(href cgi iptables/editor)"
 echo
 exit

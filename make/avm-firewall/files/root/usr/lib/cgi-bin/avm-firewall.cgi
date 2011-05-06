@@ -1,7 +1,7 @@
 #!/bin/sh
 VERSION="2.0.4_rc5"
 FWVER=$(sed -n '/FIRMWARE_VERSION=/ s/export.*\.04\.// p' /etc/version)
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/var/mod/sbin
+
 CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
 . /mod/etc/conf/avm-firewall.cfg

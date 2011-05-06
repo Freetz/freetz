@@ -24,7 +24,10 @@ save_rules() {
 start() {
 	echo -n 'Loading modules ... '
 	for MODUL in $MODULES; do
-		modprobe $MODUL > /dev/null 2>&1
+		modprobe $MODUL
+		if [ "$MODUL" = "ip_conntrack" ] && [ -n "$IPTABLES_IP_CONNTRACK_HASHSIZE" ]; then
+			echo $IPTABLES_IP_CONNTRACK_HASHSIZE > /sys/module/ip_conntrack/parameters/hashsize
+		fi
 	done
 	echo 'done.'
 	echo -n 'Loading table list ... '
@@ -139,7 +142,7 @@ stop () {
 		reverse_list="$MODUL $reverse_list"
 	done
 	for MODUL in $reverse_list; do
-		rmmod $MODUL > /dev/null 2>&1
+		rmmod $MODUL
 	done
 	echo 'done.'
 }
@@ -149,7 +152,8 @@ case $1 in
 		modreg cgi 'iptables' 'Iptables'
 		modreg daemon $DAEMON
 		modreg extra iptables "" 2 controller
-		modreg file iptables rules 'Rules' 0 "iptables"
+		modreg conf iptables editor 'Editor'
+		modreg file iptables rules '$(lang de:"Regeln" en:"Rules")' 0 "iptables"
 		modreg file iptables services 'Services' 0 "services"
 
 		[ ! -r "/var/tmp/flash/iptables_services" ] && cp /mod/etc/default.iptables/iptables_services /var/tmp/flash/iptables_services
@@ -191,6 +195,7 @@ case $1 in
 	unload)
 		modunreg cgi iptables
 		modunreg daemon $DAEMON
+		modunreg conf iptables editor
 		modunreg file iptables
 		stop
 		;;

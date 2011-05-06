@@ -1,7 +1,7 @@
 #!/bin/sh
 # Generically handle pages that are called like /cgi-bin/type/package/id
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 source /usr/lib/libmodcgi.sh
 
 TYPE=${0##*/}

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 check "$DNSMASQ_ENABLED" yes:auto "*":man
@@ -11,12 +11,17 @@ check "$DNSMASQ_DHCP_BOOT" yes:dhcp_boot_yes "*":dhcp_boot_no
 check "$DNSMASQ_STOP_DNS_REBIND" yes:stop_dns_rebind
 check "$DNSMASQ_TFTP" yes:tftp_yes "*":tftp_no
 check "$DNSMASQ_AVM_DNS" yes:avm_dns
+check "$DNSMASQ_WRAPPER" yes:wrapper
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
 <p>
 <input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
+</p>
+<p>
+<input type="hidden" name="wrapper" value="no">
+<input id="e1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="w1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>
 </p>
 EOF
 sec_end
@@ -37,7 +42,7 @@ cat << EOF
 <input id="d1" type="checkbox" name="avm_dns" value="yes"$avm_dns_chk><label for="d1"> $(lang de:"Durch AVM/Provider zugewiesene Upstream Nameserver nutzen." en:"Use the upstream nameservers of your provider/AVM.")</label>
 <br>$(lang de:"momentan: " en:"at the moment: ")
 EOF
-echo 'servercfg.dns1' | ar7cfgctl -s 
+echo 'servercfg.dns1' | ar7cfgctl -s
 cat << EOF
 $(lang de:" und " en:" and ")
 EOF

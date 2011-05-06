@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/mod/bin:/mod/usr/bin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
+
 . /etc/freetz_info.cfg
 
 divstyle="style='margin-top:6px;'"

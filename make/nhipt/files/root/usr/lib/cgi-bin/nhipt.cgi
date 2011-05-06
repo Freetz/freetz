@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 auto_chk=''; man_chk=''; log_sys=''; log_int=''; cgi_auto=''; cgi_man=''; log_auto=''; log_man=''; boot_flash=''; boot_usb=''; boot_freetz=''; boot_debug=''

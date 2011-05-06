@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/var/mod/bin:/var/mod/usr/bin:/var/mod/sbin:/var/mod/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
@@ -265,13 +265,6 @@ cat << EOF
 <p> $(lang de:"Maximale Datenrate aller Verbindungen" en:"Maximum throughput for all connections"): <input type="text" name="limitsrv" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITSRV")"> kBytes/s</p>
 EOF
 virthost_conf "limitvirt" "$LIGHTTPD_LIMITVIRT" '$(lang de:"Drosselung der Datentransferrate" en:"limitation of data transfer rate")'
-sec_end
-
-sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
-
-cat << EOF
-<p style="font-size:10px;">$(lang de:"Zus&auml;tzliche Konfigurationsoptionen k&ouml;nnen <a href=\"$(href file lighttpd add)\">hier</a> eingetragen werden." en:"Additional configuration options can be added <a TARGET=\"_blank\" href=\"$(href file lighttpd add)\">here</a>.")</p>
-EOF
 sec_end
 
 sec_begin '$(lang de:"Server Logdateien" en:"Server log files")'

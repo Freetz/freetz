@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 storage=$(/mod/etc/init.d/rc.mini_fo store | grep "mini_fo=" | sed -e "s/mini_fo=//")
 boot=$(/mod/etc/init.d/rc.mini_fo bootstatus)

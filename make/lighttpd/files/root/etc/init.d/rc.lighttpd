@@ -3,6 +3,7 @@
 DAEMON=lighttpd
 DAEMON_LONG_NAME="lighttpd web server"
 DAEMON_CONFIG="/mod/etc/$DAEMON/$DAEMON.conf"
+DAEMON_ENV='LD_PRELOAD='
 . /etc/init.d/modlibrc
 
 [ -r /etc/options.cfg ] && . /etc/options.cfg
@@ -19,7 +20,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon LD_PRELOAD= $DAEMON -f $DAEMON_CONFIG
+	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG
 }
 
 case $1 in
@@ -46,11 +47,11 @@ case $1 in
 		fi
 
 		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH" = "y" ]; then
-			modreg file lighttpd user 'Accounts' 0 "lighttpd_user"
-			modreg file lighttpd rights 'Rights' 0 "lighttpd_rights"
+			modreg file lighttpd user '$(lang de:"Benutzerkonten" en:"Accounts")' 0 "lighttpd_user"
+			modreg file lighttpd rights '$(lang de:"Zugriffsrechte" en:"Access rights")' 0 "lighttpd_rights"
 		fi
 
-		modreg file lighttpd add 'Additional' 0 "lighttpd_add"
+		modreg file lighttpd add '$(lang de:"Erweitert" en:"Additional")' 0 "lighttpd_add"
 
 		modlib_start $LIGHTTPD_ENABLED
 		;;

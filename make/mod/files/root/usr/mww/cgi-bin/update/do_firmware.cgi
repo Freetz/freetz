@@ -7,7 +7,7 @@ fi
 %>
 
 <%
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 cgi_error '$(lang de:"Keine Firmware hochgeladen" en:"No firmware has been uploaded")'
 %>

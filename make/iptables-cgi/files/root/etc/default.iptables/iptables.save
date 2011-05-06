@@ -1,11 +1,15 @@
 pkg_apply_save()
 {
-	/mod/etc/init.d/rc.iptables save
+	if grep -q "*gui*" /mod/etc/conf/iptables.cfg; then
+		/mod/etc/init.d/rc.iptables save
+	fi
 }
 
 pkg_apply_def()
 {
-	/mod/etc/init.d/rc.iptables stop
+	if grep -q "*gui*" /mod/etc/conf/iptables.cfg; then
+		/mod/etc/init.d/rc.iptables stop
+	fi
 }
 
 apply_changes() { :; }

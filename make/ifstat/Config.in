@@ -1,0 +1,17 @@
+config FREETZ_PACKAGE_IFSTAT
+	bool "ifstat 1.1 (binary only)"
+	default n
+	help
+		 ifstat is a tool to report network interfaces bandwith
+		 just like vmstat/iostat do for other system counters.
+		 ifstat gathers these statistics from the kernel internal
+		 counters, which is highly operating system dependent.
+		 If the net-snmp (or ucd-snmp) library is available,
+		 ifstat can use it to gather statistics from remote equipments
+		 (hosts, routers, switches...) or even the local host if a SNMP
+		 daemon is running. ifstat's functionnalities can also be
+		 included in a static library for use in other applications.
+		 To use it, you just have to pass --enable-library while
+		 configuring ifstat
+		 WWW: http://gael.roualland.free.fr/ifstat/
+

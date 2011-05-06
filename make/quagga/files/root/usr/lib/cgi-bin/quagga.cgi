@@ -1,6 +1,6 @@
 #!/bin/sh
  
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
 . /usr/lib/libmodcgi.sh
 
 daemonlist="bgpd ripd ripngd ospfd ospf6d isisd"
