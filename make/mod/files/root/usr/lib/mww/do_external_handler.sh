@@ -67,12 +67,8 @@ kill() {
 	fi
 	if $delete; then
 		echo -n "Removing old stuff ... "
-		if [ ! -e $EXTERNAL_TARGET/.external ]; then
-			echo "$EXTERNAL_TARGET is not an external dir."
-		else
-			rm -rf "$EXTERNAL_TARGET"
-			[ $? -ne 0 ] && echo "failed." || echo "done."
-		fi
+		rm -rf "$EXTERNAL_TARGET"
+		[ $? -ne 0 ] && echo "failed." || echo "done."
 	else
 		echo "Not deleting old external stuff."
 	fi
