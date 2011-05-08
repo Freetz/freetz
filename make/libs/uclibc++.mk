@@ -28,13 +28,13 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(UCLIBCXX_DIR) \
-		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
+		CPU_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(UCLIBCXX_DIR) \
-		ARCH_CFLAGS="$(TARGET_CFLAGS)" \
+		CPU_CFLAGS="$(TARGET_CFLAGS)" \
 		CROSS="$(TARGET_CROSS)" \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
