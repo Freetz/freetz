@@ -10,6 +10,9 @@ modsed "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_7270\"/g" "${FILESYSTEM_
 modsed "s/CONFIG_ROM_SIZE=.*$/CONFIG_ROM_SIZE=\"8\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ur8_8MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_05265\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
-# patch install script to accept firmware from 7270
+# patch install script to accept firmware from 7270 v2
 echo2 "applying install patch"
 modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_61056/ur8_8MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_05265/g" "${FIRMWARE_MOD_DIR}/var/install"
+modsed 's/kernel_start=0x90020000/kernel_start=0x90010000/' "${FIRMWARE_MOD_DIR}/var/install"
+modsed 's/kernel_size=16121856/kernel_size=7798784/' "${FIRMWARE_MOD_DIR}/var/install"
+modsed 's/urlader_size=131072/urlader_size=65536/' "${FIRMWARE_MOD_DIR}/var/install"
