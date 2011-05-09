@@ -93,7 +93,6 @@ untar() {
 			cat > /dev/null # prevent SIGPIPE if tar fails
 			return 1
 		fi < "$1"
-		touch $EXTERNAL_TARGET/.external
 	fi
 }
 
