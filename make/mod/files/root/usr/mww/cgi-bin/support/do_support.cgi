@@ -1,8 +1,11 @@
 #!/bin/sh
+# include environment variables
+[ -r /var/env.cache ] && . /var/env.cache
 
+fname=$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}${CONFIG_SUBVERSION}$(date '+_%Y-%m-%d_%H%M_support.tgz') | tr ' !' '_.')
 CR=$'\r'
 echo "Content-Type: application/x-gzip${CR}"
-echo "Content-Disposition: attachment; filename=\"/tmp/support.tgz\"${CR}"
+echo "Content-Disposition: attachment; filename=\"$fname\"${CR}"
 echo "${CR}"
 
 # Make sure that no command accidentally writes stdout or stderr stuff into the
