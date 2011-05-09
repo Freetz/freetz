@@ -34,7 +34,7 @@ config() {
 }
 
 start() {
-	echo -n "Starting ${DAEMON_LONG_NAME} ..."
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	config
 	[ -f $DAEMON_STORAGE/secret_id_key ] && savetimer=no
 	$DAEMON --runasdaemon 1 --log "notice syslog" --pidfile $PID_FILE > /dev/null 2>&1
@@ -50,10 +50,10 @@ start() {
 			done
 			if [ $count -le 99 ]; then
 				cp $TOR_DATADIRECTORY/keys/secret_id_key $DAEMON_STORAGE/secret_id_key
-				echo -n "secret id_key saved ..."
+				echo -n "secret id_key saved ... "
 				modsave flash >/dev/null
 			else
-				echo -n "secret id_key not found ..."
+				echo -n "secret id_key not found ... "
 			fi
 		fi
 		echo "done."
