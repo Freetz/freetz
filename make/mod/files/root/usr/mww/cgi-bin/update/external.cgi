@@ -14,6 +14,7 @@ function CheckInput(form) {
 	file_selector=form.elements[0];
 	target_text=form.elements[1];
 	delete_chk=form.elements[2];
+	ex_start=form.elements[3];
 	if (file_selector.value=="") {
 		alert("$(lang de:"Keine external-Datei angegeben!" en:"No external-file provided!")");
 		return false;
