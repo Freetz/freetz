@@ -21,10 +21,10 @@ function CheckInput(form) {
 	}
 	file_selector.name=target_text.value;
 	if (delete_chk.checked) {
-		file_selector.name += "/delete_oldfiles";
+		file_selector.name += ":delete_oldfiles";
 	}
 	if (ex_start.checked) {
-		file_selector.name += "/external_start";
+		file_selector.name += ":external_start";
 	}
 	return true;
 }
