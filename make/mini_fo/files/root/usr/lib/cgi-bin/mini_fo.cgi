@@ -10,11 +10,15 @@ check "$boot" enabled:boot "*":noboot
 
 sec_begin '$(lang de:"Speicherort" en:"Storage location")'
 
+if ! $(grep -q jffs2 /proc/mtd); then
+	jffs2_disabled=" disabled"
+fi
+
 cat << EOF
 <p>
 <input id="l1" type="radio" name="storage" value=""$none_chk><label for="l1"> $(lang de:"Nicht konfiguriert" en:"Not configured")</label>
-<input id="l2" type="radio" name="storage" value="ram"$ram_chk><label for="l2"> RAM</label>
-<input id="l3" type="radio" name="storage" value="jffs2"$jffs2_chk><label for="l2"> JFFS2</label>
+<input id="l2" type="radio" name="storage" value="ram"$ram_chk><label for="l2"> RAM ($(lang de:"fl&uuml;chtiger Speicher" en:"volatile memory"))</label>
+<input id="l3" type="radio" name="storage" value="jffs2"$jffs2_chk$jffs2_disabled><label for="l2"> JFFS2 ($(lang de:"persitenter Speicher" en:"persitent storage"))</label>
 </p>
 EOF
 
