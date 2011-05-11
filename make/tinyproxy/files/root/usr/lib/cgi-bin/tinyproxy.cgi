@@ -38,7 +38,7 @@ cat << EOF
 <tr><td>Timeout: </td><td><input id="id_timeout" type=text size=8 name="timeout" value="$TINYPROXY_TIMEOUT"></td><td>&nbsp; &nbsp;</td><td>MaxRequestsPerChild: </td><td><input id="id_maxrequestsperchild" type=text size=8 name="maxrequestsperchild" value="$TINYPROXY_MAXREQUESTSPERCHILD"></td></tr>
 <tr><td>MaxClients: </td><td><input id="id_maxclients" type=text size=8 name="maxclients" value="$TINYPROXY_MAXCLIENTS"></td><td>&nbsp; &nbsp;</td><td>StartServers: </td><td><input id="id_startservers" type=text size=8 name="startservers" value="$TINYPROXY_STARTSERVERS"></td></tr>
 <tr><td>MinSpareServers: </td><td><input id="id_minspareservers" type=text size=8 name="minspareservers" value="$TINYPROXY_MINSPARESERVERS"></td><td>&nbsp; &nbsp;</td><td>MaxSpareServers: </td><td><input id="id_maxspareservers" type=text size=8 name="maxspareservers" value="$TINYPROXY_MAXSPARESERVERS"></td></tr>
-<tr><td>ViaProxyName: </td><td><input id="id_viaproxyname" type=text size=8 name="viaproxyname" value="$TINYPROXY_VIAPROXYNAME"></td><td>&nbsp; &nbsp;</td><td>DisableViaHeader: </td><td><input type="hidden" name="disableviaheader" value="no"><input id="id_disableviaheader"  type="checkbox" name="disableviaheader" value="yes"$disableviaheader_chk"></td></tr>
+<tr><td>ViaProxyName: </td><td><input id="id_viaproxyname" type=text size=8 name="viaproxyname" value="$TINYPROXY_VIAPROXYNAME"></td><td>&nbsp; &nbsp;</td><td>DisableViaHeader: </td><td><input type="hidden" name="disableviaheader" value="no"><input id="id_disableviaheader"  type="checkbox" name="disableviaheader" value="yes"$disableviaheader_chk></td></tr>
 
 
 <tr><td>ConnectPort (*): </td><td><input id="id_connectport" type=text size=8 name="connectport" value="$TINYPROXY_CONNECTPORT"></td><td>&nbsp; &nbsp;</td>
@@ -49,8 +49,8 @@ cat << EOF
 
 
 EOF
-/usr/sbin/iptables -t nat -A PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port 8080 --help > /dev/null 2>&1    
-if  [ 0 -eq $? ] && echo "$BUILDIN_SUPPORT" | grep -q -i transparent ; then 
+/usr/sbin/iptables -t nat -A PREROUTING -i lan -p tcp --dport 80 -j REDIRECT --to-port 8080 --help > /dev/null 2>&1
+if  [ 0 -eq $? ] && echo "$BUILDIN_SUPPORT" | grep -q -i transparent ; then
 cat << EOF
 <p><input id="catchall1" type="hidden" name="catchall" value="no" />
 <input id="catchall2" type="checkbox" name="catchall" value="yes"$catchall_chk><label for="catchall2">
@@ -82,10 +82,10 @@ cat << EOF
 <textarea id="id_filter" style="width: 550px;" name="filter" rows="15" cols="80" wrap="off" >$TINYPROXY_FILTER</textarea></p>
 
 <table>
-<tr><td>FilterDefaultDeny: </td><td><input type=hidden name="filterdefaultdeny" value="no"> <input id="id_filterdefaultdeny" type=checkbox name="filterdefaultdeny" value="yes"$filterdefaultdeny_chk"></td><td>&nbsp; &nbsp;</td><td>FilterCaseSensitive: </td><td><input type=hidden name="filtercasesensitive" value="no"> <input id="id_filtercasesensitive" type=checkbox name="filtercasesensitive" value="yes"$filtercasesensitive_chk"></td></tr>
+<tr><td>FilterDefaultDeny: </td><td><input type=hidden name="filterdefaultdeny" value="no"><input id="id_filterdefaultdeny" type="checkbox" name="filterdefaultdeny" value="yes"$filterdefaultdeny_chk></td><td>&nbsp; &nbsp;</td><td>FilterCaseSensitive: </td><td><input type=hidden name="filtercasesensitive" value="no"><input id="id_filtercasesensitive" type="checkbox" name="filtercasesensitive" value="yes"$filtercasesensitive_chk></td></tr>
 <tr><td>
-FilterExtended:  </td><td><input type=hidden name="filterextended" value="no"> <input id="id_filterextended" type=checkbox name="filterextended" value="yes"$filterextended_chk"></td><td>&nbsp; &nbsp;</td>
-<td>FilterURLs:  </td><td><input type=hidden name="filterurls" value="no"> <input id="id_filterurls" type=checkbox name="filterurls" value="yes"$filterurls_chk"></td>
+FilterExtended:  </td><td><input type=hidden name="filterextended" value="no"><input id="id_filterextended" type="checkbox" name="filterextended" value="yes"$filterextended_chk></td><td>&nbsp; &nbsp;</td>
+<td>FilterURLs:  </td><td><input type=hidden name="filterurls" value="no"><input id="id_filterurls" type="checkbox" name="filterurls" value="yes"$filterurls_chk></td>
 </tr>
 </table>
 EOF
@@ -95,7 +95,7 @@ sec_begin '$(lang de:"weitere Proxy Konfiguration" en:"Extended proxy configurat
 
 cat << EOF
 <table>
-<tr><td>Bind: </td><td><input id="id_bind" type=text size=8 name="bind" value="$TINYPROXY_BIND"></td><td>&nbsp; &nbsp;</td><td>BindSame: </td><td><input type="hidden" name="bindsame" value="no"><input id="id_bindsame" type="checkbox" name="bindsame" value="yes"$bindsame_chk"> </td></tr>
+<tr><td>Bind: </td><td><input id="id_bind" type=text size=8 name="bind" value="$TINYPROXY_BIND"></td><td>&nbsp; &nbsp;</td><td>BindSame: </td><td><input type="hidden" name="bindsame" value="no"><input id="id_bindsame" type="checkbox" name="bindsame" value="yes"$bindsame_chk></td></tr>
 EOF
 
 if echo "$BUILDIN_SUPPORT" | grep -q -i upstream ; then
@@ -108,8 +108,8 @@ if echo "$BUILDIN_SUPPORT" | grep -q -i reverse ; then
 cat << EOF
 <tr><td>ReversePath: </td><td colspan="4"><input id="id_reversepath" type=text size=45 name="reversepath" value='$TINYPROXY_REVERSEPATH'></td></tr>
 <tr><td>ReverseBaseURL: </td><td colspan="4"><input id="id_reversebaseurl" type=text size=45 name="reversebaseurl" value='$TINYPROXY_REVERSEBASEURL'></td></tr>
-<tr><td>ReverseOnly: </td><td><input type=hidden name="reverseonly" value="no"> <input id="id_reverseonly" type=checkbox name="reverseonly" value="yes"$reverseonly_chk"></td><td>&nbsp; &nbsp;</td>
-<td>ReverseMagic:</td><td><input type=hidden name="reversemagic" value="no"> <input id="id_reversemagic" type=checkbox name="reversemagic" value="yes"$reversemagic_chk"></td>
+<tr><td>ReverseOnly: </td><td><input type=hidden name="reverseonly" value="no"><input id="id_reverseonly" type="checkbox" name="reverseonly" value="yes"$reverseonly_chk></td><td>&nbsp; &nbsp;</td>
+<td>ReverseMagic:</td><td><input type=hidden name="reversemagic" value="no"><input id="id_reversemagic" type="checkbox" name="reversemagic" value="yes"$reversemagic_chk></td>
 </tr>
 EOF
 fi
@@ -124,11 +124,10 @@ cat << EOF
 <tr><td>AddHeader: </td><td colspan="4"><input id="id_addheader" type=text size=45 name="addheader" value="$TINYPROXY_ADDHEADER"></td></tr>
 
 <tr><td>LogFile: </td><td colspan="4"><input id="id_logfile" type=text size=45 name="logfile" value="$TINYPROXY_LOGFILE"></td></tr>
-<tr><td>Use Syslog: </td><td colspan="4"><input type=hidden name="syslog" value="no"> <input id="id_syslog" type=checkbox name="syslog" value="yes"$syslog_chk"> &nbsp; &nbsp;<small>$(lang de:"Hinweis: Datei-Log wird abgeschaltet" en:"Note: Disables logging to file")</small></td>
+<tr><td>Use Syslog: </td><td colspan="4"><input type=hidden name="syslog" value="no"><input id="id_syslog" type="checkbox" name="syslog" value="yes"$syslog_chk> &nbsp; &nbsp;<small>$(lang de:"Hinweis: Datei-Log wird abgeschaltet" en:"Note: Disables logging to file")</small></td>
 </tr>
-<tr><td>LogLevel: </td><td colspan="4"><select id="id_loglevel" name="loglevel" value="$TINYPROXY_LOGLEVEL"> <option value="Critical">Critical(least verbose)</option> <option value="Error">Error</option> <option value="Warning">Warning</option> <option value="Notice">Notice</option> <option value="Connect">Connect (log connections without Info's noise)</option> <option value="Info">Info (most verbose)</option> </select></td></tr>
+<tr><td>LogLevel: </td><td colspan="4"><select id="id_loglevel" name="loglevel" value="$TINYPROXY_LOGLEVEL"><option value="Critical">Critical(least verbose)</option><option value="Error">Error</option><option value="Warning">Warning</option><option value="Notice">Notice</option><option value="Connect">Connect (log connections without Info's noise)</option><option value="Info">Info (most verbose)</option></select></td></tr>
 </table>
 <script>document.getElementById("id_loglevel").value = "$TINYPROXY_LOGLEVEL";</script>
-<p>$(lang de:"PID-Pfad (nur zur Vollst&auml;ndigkeit): /var/run/tinyproxy.pid" en:"PID file (just to be complete): /var/run/tinyproxy.pid")</p>
 EOF
 sec_end

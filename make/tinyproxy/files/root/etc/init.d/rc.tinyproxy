@@ -5,14 +5,6 @@ PID_FILE=/var/run/tinyproxy.pid
 . /etc/init.d/modlibrc
 
 config() {
-	if [ ! -r /tmp/flash/tinyproxy.conf ]; then
-		echo "Copying /etc/default.tinyproxy/default.conf to flash"
-		cp /mod/etc/default.tinyproxy/default.conf /tmp/flash/tinyproxy.conf
-	fi
-	if [ ! -r /tmp/flash/tinyproxy.filter ]; then
-		echo "Copying /etc/default.tinyproxy/default.filter to flash"
-		cp /mod/etc/default.tinyproxy/default.filter /tmp/flash/tinyproxy.filter
-	fi
 	modlib_config
 }
 
@@ -45,7 +37,7 @@ start_addons() {
 
 	fi
 }
-	
+
 stop_addons() {
 	if [ "$TINYPROXY_CATCHALL" == "yes" ] &&  iptables -t nat -S PREROUTING | grep -q "to-ports $TINYPROXY_PORT" ; then
 		echo -n " -- Removing tinyproxy IPTABLES rules ... "
@@ -72,9 +64,6 @@ case $1 in
 	""|load)
 		modreg cgi 'tinyproxy' 'tinyproxy'
 		modreg daemon $DAEMON
-
-		modreg file tinyproxy conf 'tinyproxy conf' 0 "tinyproxy_conf"
-		modreg file tinyproxy filter 'tinyproxy filter' 0 "tinyproxy_filter"
 
 		modlib_start $TINYPROXY_ENABLED
 		;;
