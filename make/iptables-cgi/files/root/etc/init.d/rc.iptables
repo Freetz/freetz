@@ -3,6 +3,7 @@
 DAEMON=iptables
 . /etc/init.d/modlibrc
 
+STATUSPID=/var/run/iptables-cgi.pid
 SAVEFILE=/var/tmp/flash/iptables_rules
 MODULES="iptable_nat iptable_filter \
 		ip_tables ip_nat ip_conntrack ip_conntrack_ftp \
@@ -32,6 +33,7 @@ start() {
 	echo 'done.'
 	echo -n 'Loading table list ... '
 	iptables-restore < $SAVEFILE
+	touch $STATUSPID
 	echo 'done.'
 }
 
@@ -144,6 +146,7 @@ stop () {
 	for MODUL in $reverse_list; do
 		rmmod $MODUL
 	done
+	rm -rf $STATUSPID 2>/dev/null
 	echo 'done.'
 }
 
@@ -162,14 +165,14 @@ case $1 in
 		modlib_start $IPTABLES_ENABLED
 		;;
 	start)
-		if lsmod | grep -q ip_tables; then
+		if [ -e $STATUSPID ]; then
 			echo "$DAEMON is already running."
 			exit 1
 		fi
 		start
 		;;
 	stop)
-		if ! lsmod | grep -q ip_tables; then
+		if [ ! -e $STATUSPID ]; then
 			echo "$DAEMON is not running."
 			exit 1
 		fi
@@ -181,14 +184,10 @@ case $1 in
 		start
 		;;
 	status)
-		if lsmod | grep -q ip_tables; then
-			echo 'running'
-		else
-			echo 'stopped'
-		fi
+		[ -e $STATUSPID ] && echo 'running' || echo 'stopped'
 		;;
 	save)
-		lsmod | grep -q ip_tables || start
+		[ -e $STATUSPID ] || start
 		save
 		;;
 
