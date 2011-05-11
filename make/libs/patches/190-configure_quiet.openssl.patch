@@ -1,8 +1,17 @@
---- Configure.orig	2011-02-09 21:42:29.000000000 +0100
-+++ Configure	2011-02-09 21:42:29.000000000 +0100
-@@ -866,6 +866,10 @@
+--- Configure.orig	2011-05-10 10:26:05.028131742 +0200
++++ Configure	2011-05-10 10:26:06.287485902 +0200
+@@ -664,7 +664,7 @@
+ my $processor="";
+ my $default_ranlib;
+ my $perl;
+-
++my $quiet;
+
+ # All of the following is disabled by default (RC5 was enabled before 0.9.8):
+
+@@ -858,6 +858,10 @@
  				{
- 				$baseaddr="$1";
+ 				$cross_compile_prefix=$1;
  				}
 +			elsif (/^--quiet$/)
 +				{
