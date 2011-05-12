@@ -1,7 +1,117 @@
-config EXTERNAL_FREETZ_PACKAGE_NTFS
-	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_NTFS && FREETZ_SHOW_ADVANCED
-	bool "ntfs"
+ config EXTERNAL_FREETZ_PACKAGE_NTFS
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_NTFS
+	boolean "ntfs"
 	default n
 	help
-		externals these file(s):
-		 /usr/bin/ntfs-3g
+		external ntfs tools
+
+menu ntfs
+	depends on EXTERNAL_FREETZ_PACKAGE_NTFS
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFS3G
+	boolean "ntfs-3g"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		externals these file(s)
+			/usr/usr/bin/ntfs-3g
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_MKNTFS
+	boolean "mkntfs"
+	depends on FREETZ_PACKAGE_NTFS_MKNTFS
+	default n
+	help
+		externals these file(s)
+			/usr/usr/bin/mkntfs
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSCAT
+	boolean "ntfscat"
+	depends on FREETZ_PACKAGE_NTFS_NTFSCAT
+	default n
+	help
+		externals these file(s)
+			/usr/usr/bin/ntfscat
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSCLONE
+	boolean "ntfsclone"
+	depends on FREETZ_PACKAGE_NTFS_NTFSCLONE
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfsclone
+
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSCLUSTER
+	boolean "ntfscluster"
+	depends on FREETZ_PACKAGE_NTFS_NTFSCLUSTER
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfscluster
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSCMP
+	boolean "ntfscmp"
+	depends on FREETZ_PACKAGE_NTFS_NTFSCMP
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfscmp
+
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSCP
+	boolean "ntfscp"
+	depends on FREETZ_PACKAGE_NTFS_NTFSCP
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfscp
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSFIX
+	boolean "ntfsfix"
+	depends on FREETZ_PACKAGE_NTFS_NTFSFIX
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfsfix
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSINFO
+	boolean "ntfsinfo"
+	depends on FREETZ_PACKAGE_NTFS_NTFSINFO
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfsinfo
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSLABEL
+	boolean "ntfslabel"
+	depends on FREETZ_PACKAGE_NTFS_NTFSLABEL
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfslabel
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSLS
+	boolean "ntfsls"
+	depends on FREETZ_PACKAGE_NTFS_NTFSLS
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfsls
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSRESIZE
+	boolean "ntfsresize"
+	depends on FREETZ_PACKAGE_NTFS_NTFSRESIZE
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfsresize
+
+config EXTERNAL_FREETZ_PACKAGE_NTFS_NTFSUNDELETE
+	boolean "ntfsundelete"
+	depends on FREETZ_PACKAGE_NTFS_NTFSUNDELETE
+	default n
+	help
+		externals these file(s)
+			/usr/bin/ntfsundelete
+
+endmenu

@@ -12,4 +12,6 @@ done
 if [ "$FREETZ_REMOVE_NTFS" == "y" ]; then
 	echo1 "patching rc.conf"
 	modsed "s/CONFIG_NTFS=.*$/CONFIG_NTFS=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+else
+	ln -s /usr/bin/ntfs-3g ${FILESYSTEM_MOD_DIR}/bin/ntfs-3g
 fi

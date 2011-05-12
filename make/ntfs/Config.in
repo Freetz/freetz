@@ -1,6 +1,7 @@
 config FREETZ_PACKAGE_NTFS
 	bool "NTFS-3G 2011.4.12 (binary only)"
 	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libntfs
 	select FREETZ_MODULE_fuse
 	default n
 	help
@@ -12,3 +13,93 @@ config FREETZ_PACKAGE_NTFS
 		support.
 		This binary is needed for ntfs automount feature thus there is no
 		webinterface.
+
+menu ntfsprogs
+	depends on FREETZ_PACKAGE_NTFS
+
+config FREETZ_PACKAGE_NTFS_MKNTFS
+	bool "mkntfs"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Create an NTFS filesystem.
+
+config FREETZ_PACKAGE_NTFS_NTFSCAT
+	bool "ntfscat"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Dump a file's content to the standard output.
+
+config FREETZ_PACKAGE_NTFS_ntfsclone
+	bool "ntfsclone"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Efficiently clone, backup, restore or rescue NTFS.
+
+config FREETZ_PACKAGE_NTFS_ntfscluster
+	bool "ntfscluster"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Locate the files which use the given sectors or  clusters.
+
+config FREETZ_PACKAGE_NTFS_ntfscmp
+	bool "ntfscmp"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Compare two NTFS filesystems and tell the differences.
+
+config FREETZ_PACKAGE_NTFS_ntfscp
+	bool "ntfscp"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Copy a file to an NTFS volume.
+
+config FREETZ_PACKAGE_NTFS_ntfsfix
+	bool "ntfsfix"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Check  and fix some common errors, clear the LogFile and make Windows perform
+		a thorough check next time it boots.
+
+config FREETZ_PACKAGE_NTFS_ntfsinfo
+	bool "ntfsinfo"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Show information about NTFS or one of the files or directories within it.
+
+config FREETZ_PACKAGE_NTFS_ntfslabel
+	bool "ntfslabel"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Show, or set, an NTFS filesystem's volume label.
+
+config FREETZ_PACKAGE_NTFS_ntfsls
+	bool "ntfsls"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		List information about files in a directory residing on an NTFS.
+
+config FREETZ_PACKAGE_NTFS_ntfsresize
+	bool "ntfsresize"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Resize NTFS without losing data.
+
+config FREETZ_PACKAGE_NTFS_ntfsundelete
+	bool "ntfsundelete"
+	depends on FREETZ_PACKAGE_NTFS
+	default n
+	help
+		Recover deleted files from NTFS.
+
+endmenu
