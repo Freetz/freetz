@@ -2,7 +2,8 @@
 
 DAEMON=xmail
 DAEMON_LONG_NAME="XMail SMTP/POP3 server"
-PID_FILE=/var/run/XMail.pid
+DAEMON_BIN=XMail
+PID_FILE=/var/run/$DAEMON_BIN.pid
 . /etc/init.d/modlibrc
 
 CMDOPTS="-F- -MM -Ms /mod/etc/$DAEMON/"
@@ -14,13 +15,23 @@ cleanup() {
 
 configure() {
 	cleanup
+
+	case $(fstyp $(df $XMAIL_MAILLOCATION | tail -n 1 | awk '{print $1}') 2>/dev/null) in
+		vfat|ntfs)
+			fat=1
+			;;
+		""|*)
+			fat=0
+			;;
+	esac
+
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	mkdir -p /mod/etc/$DAEMON
 
 	if [ "$XMAIL_UNPRIV" = "yes" ]; then
 		modlib_addgroup xmail
 		modlib_adduser xmail -G xmail -s /bin/false -H -D -g "XMail account"
-		chmod 700 $XMAIL_MAILLOCATION
+		[ "$fat" = "0" ] && chmod 700 $XMAIL_MAILLOCATION || chmod 777 $XMAIL_MAILLOCATION
 		chmod 700 /mod/etc/$DAEMON
 		chown xmail:xmail /mod/etc/$DAEMON
 
@@ -42,7 +53,7 @@ configure() {
 	[ -e "$XMAIL_MAILLOCATION/tmp" ] || mkdir $XMAIL_MAILLOCATION/tmp
 	ln -s $XMAIL_MAILLOCATION/* /mod/etc/$DAEMON/
 	ln -sf /usr/lib/MailRoot/bin /mod/etc/$DAEMON/
-	[ "$XMAIL_UNPRIV" = "yes" ] && chown -hR xmail:xmail $XMAIL_MAILLOCATION
+	[ "$XMAIL_UNPRIV" = "yes" -a "$fat" = "0" ] && chown -hR xmail:xmail $XMAIL_MAILLOCATION
 
 	[ ! -z "$XMAIL_SPECIAL" ] && CMDOPTS="$CMDOPTS $XMAIL_SPECIAL"
 	if [ "$XMAIL_POP3" = "yes" ]; then
@@ -103,7 +114,7 @@ start() {
 
 	compartment=""
 	[ "$XMAIL_UNPRIV" = "yes" ] && compartment="/usr/lib/MailRoot/bin/compartment --user xmail --group xmail"
-	$compartment /usr/lib/MailRoot/bin/XMail $CMDOPTS
+	$compartment /usr/lib/MailRoot/bin/$DAEMON_BIN $CMDOPTS
 	exitval=$?
 
 	if [ "$exitval" -eq 0 ]; then
