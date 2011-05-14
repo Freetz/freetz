@@ -64,6 +64,6 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(NTFS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(NTFS_BINARIES_ALL:%=$(NTFS_DEST_DIR)/usr/bin/%)
+	$(RM) $(NTFS_BINARIES_ALL:%=$(NTFS_DEST_DIR)/usr/bin/%) $(NTFS_TARGET_LIBDIR)/libntfs-3g.so.*
 
 $(PKG_FINISH)
