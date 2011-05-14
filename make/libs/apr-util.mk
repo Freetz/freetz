@@ -1,9 +1,10 @@
-$(call PKG_INIT_LIB, 1.3.10)
+$(call PKG_INIT_LIB, 1.3.11)
 $(PKG)_MAJOR_VERSION:=1
-$(PKG)_LIB_VERSION:=0.3.10
+$(PKG)_LIB_VERSION:=0.3.11
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=6a6f501a1b2a45166b8ffd6df29204bb
-$(PKG)_SITE:=http://apache.mirroring.de/apr/
+$(PKG)_SOURCE_MD5:=2aeddb384b03f3f73107770724d5c97b
+$(PKG)_SITE:=http://www.eu.apache.org/dist/apr
+
 $(PKG)_MAJOR_LIBNAME=libaprutil-$(APR_UTIL_MAJOR_VERSION)
 $(PKG)_LIBNAME=$($(PKG)_MAJOR_LIBNAME).so.$($(PKG)_LIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
