@@ -11,9 +11,13 @@ logfile privoxy.log
 debug   8192
 EOF
 
-[ -r "/tmp/flash/privoxy/user.action" ] && echo "actionsfile /tmp/flash/privoxy/user.action"
-
-[ -r "/tmp/flash/privoxy/user.filter" ] && echo "filterfile /tmp/flash/privoxy/user.filter"
+if [ -n "${PRIVOXY_ALT_PATH// /}" ]; then
+	MYPATH=${PRIVOXY_ALT_PATH}
+else
+	MYPATH="/tmp/flash/privoxy"
+fi
+[ -r "${MYPATH}/user.action" ] && echo "actionsfile ${MYPATH}/user.action"
+[ -r "${MYPATH}/user.filter" ] && echo "filterfile ${MYPATH}/user.filter"
 
 echo "toggle $PRIVOXY_TOGGLE"
 echo "enable-remote-toggle $PRIVOXY_ENABLE_REMOTE_TOGGLE"

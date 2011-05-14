@@ -1,0 +1,17 @@
+pkg_apply_save() {
+. /mod/etc/conf/privoxy.cfg 
+if [ -n "${PRIVOXY_ALT_PATH// /}" ]; then
+	MYPATH=${PRIVOXY_ALT_PATH}
+else
+	MYPATH="/tmp/flash/privoxy"
+fi
+
+ln -sf ${MYPATH}/user.filter /tmp/flash/privoxy/user.filter.link
+ln -sf ${MYPATH}/user.action /tmp/flash/privoxy/user.action.link
+}
+
+pkg_apply_def() {
+ln -sf user.filter /tmp/flash/privoxy/user.filter.link
+ln -sf user.action /tmp/flash/privoxy/user.action.link
+}
+
