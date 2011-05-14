@@ -60,7 +60,7 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 		fi
 		#move file
 		if [ `ls "$EXTERNAL_TEMP" 2>/dev/null | wc -l` -gt 0 ]; then
-			[ -e "$EXTERNAL_TARGETDIR/$FILENAME" ] && error 1 "The file $EXTERNAL_TARGETDIR/$FILENAME is yet there"
+			[ -e "$EXTERNAL_TARGETDIR/$FILENAME" ] && error 1 "The file $EXTERNAL_TARGETDIR/$FILENAME already exists"
 			mv "$EXTERNAL_TEMP" "$EXTERNAL_TARGETDIR/"
 			EXTERNAL_MSG="moved"
 			[ "$EXTERNAL_DOWNLOADER" == "y" ] && echo "$FILENAME $FILEPERM /mod/external$EXTERNAL_LINKSUBDIR" >> $OUT_DIR/$OUT_CONF
@@ -74,7 +74,7 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 done
 [ $(find $EXTERNAL_MOD_DIR -type f | wc -l) -gt 0 ] && touch "${EXTERNAL_MOD_DIR}/.external"
 if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
-	echo "  NOTE: Please upload gezipped Downloader files from"
+	echo "  NOTE: Please upload zipped Downloader files from"
 	echo "        \"$(pwd)/$OUT_DIR\" to your http or ftp server"
 	echo "        and copy the Downloader configuration from"
 	echo "        \"$(pwd)/$OUT_DIR/$OUT_CONF\" into Downloader WEBUI."
