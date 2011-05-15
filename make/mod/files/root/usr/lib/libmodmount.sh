@@ -120,20 +120,12 @@ mount_fs() {
 			mount -t vfat -o $rw_mode,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node $mnt_path
 			err_mo=$?
 			;;
-		ext2)
-			mount -t ext2 $dev_node $mnt_path -o noatime,nodiratime,rw,async
-			err_mo=$?
-			;;
-		ext3)
-			mount -t ext3 $dev_node $mnt_path -o noatime,nodiratime,rw,async
+		ext2|ext3|ext4|reiserfs)
+			mount -t $fs_type $dev_node $mnt_path -o noatime,nodiratime,rw,async
 			err_mo=$?
 			;;
 		ntfs)
-			[ -n "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
-			;;
-		reiserfs)
-			mount -t reiserfs $dev_node $mnt_path -o noatime,nodiratime,rw,async
-			err_mo=$?
+			[ -x "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
 			;;
 		swap)
 			/etc/init.d/rc.swap autostart $dev_node
