@@ -58,7 +58,7 @@ remove_swap() {
 						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
 						log_freetz notice "SWAP Partition ($swap_dev) not removed, auto-mode is disabled."
 						;;
-					default)
+					*)
 						eventadd 135 "SWAP Partition ($swap_dev)"
 						log_freetz err "SWAP Partition ($swap_dev) could not be removed."
 						;;
