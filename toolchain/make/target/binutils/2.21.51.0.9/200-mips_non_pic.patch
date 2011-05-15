@@ -57,7 +57,7 @@
  /* True if NAME is the recognized name of any SHT_MIPS_OPTIONS section.
     Some IRIX system files do not use MIPS_ELF_OPTIONS_SECTION_NAME.  */
  #define MIPS_ELF_OPTIONS_SECTION_NAME_P(NAME) \
-@@ -7689,7 +7697,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7693,7 +7701,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
  	      /* We need a stub, not a plt entry for the undefined
  		 function.  But we record it as if it needs plt.  See
@@ -68,7 +68,7 @@
  	      h->needs_plt = 1;
  	      h->type = STT_FUNC;
  	    }
-@@ -7796,6 +7806,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7800,6 +7810,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_32:
  	case R_MIPS_REL32:
  	case R_MIPS_64:
@@ -77,7 +77,7 @@
  	  /* In VxWorks executables, references to external symbols
  	     are handled using copy relocs or PLT stubs, so there's
  	     no need to add a .rela.dyn entry for this relocation.  */
-@@ -7851,11 +7863,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7855,11 +7867,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_GPREL16:
  	case R_MIPS_LITERAL:
  	case R_MIPS_GPREL32:
@@ -99,7 +99,7 @@
  	  /* This relocation describes the C++ object vtable hierarchy.
  	     Reconstruct it for later use during GC.  */
  	case R_MIPS_GNU_VTINHERIT:
-@@ -7878,20 +7900,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7882,20 +7904,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
        /* We must not create a stub for a symbol that has relocations
  	 related to taking the function's address.  This doesn't apply to
@@ -125,7 +125,7 @@
  	  }
  
        /* See if this reloc would need to refer to a MIPS16 hard-float stub,
-@@ -12612,7 +12634,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
+@@ -12616,7 +12638,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
  	  break;
  	}
      }
@@ -166,7 +166,7 @@
  {
 --- gas/config/tc-mips.c
 +++ gas/config/tc-mips.c
-@@ -1907,6 +1907,12 @@ md_begin (void)
+@@ -1911,6 +1911,12 @@ md_begin (void)
  	as_bad (_("-G may not be used in position-independent code"));
        g_switch_value = 0;
      }
@@ -179,7 +179,7 @@
  
    if (! bfd_set_arch_mach (stdoutput, bfd_arch_mips, file_mips_arch))
      as_warn (_("Could not set architecture and machine"));
-@@ -11370,6 +11376,7 @@
+@@ -11573,6 +11579,7 @@
      OPTION_PDR,
      OPTION_NO_PDR,
      OPTION_MVXWORKS_PIC,
@@ -187,7 +187,7 @@
  #endif /* OBJ_ELF */
      OPTION_END_OF_ENUM    
    };
-@@ -11477,6 +11484,7 @@ struct option md_longopts[] =
+@@ -11680,6 +11687,7 @@ struct option md_longopts[] =
    {"mpdr", no_argument, NULL, OPTION_PDR},
    {"mno-pdr", no_argument, NULL, OPTION_NO_PDR},
    {"mvxworks-pic", no_argument, NULL, OPTION_MVXWORKS_PIC},
@@ -195,7 +195,7 @@
  #endif /* OBJ_ELF */
  
    {NULL, no_argument, NULL, 0}
-@@ -11925,6 +11933,11 @@ md_parse_option (int c, char *arg)
+@@ -12128,6 +12136,11 @@ md_parse_option (int c, char *arg)
      case OPTION_MVXWORKS_PIC:
        mips_pic = VXWORKS_PIC;
        break;
