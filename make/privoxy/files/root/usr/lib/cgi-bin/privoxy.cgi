@@ -45,8 +45,8 @@ cat << EOF
 <p>
 </font>
 </li>
-<li>$(lang de:"Filterlisten von" en:"Get an convert filters from") <a href="http://adblockplus.org/de/" target=_blank>AdBlockPlus</a> $(lang de:" holen und umwandeln" en:"") <input type="button" value="$(lang en:"Get file now" de:"Datei jetzt Holen")" onclick='tmp="$(href cgi privoxy load_easylist=yes alt_path=)"+document.getElementById("e11").value; location.href=tmp'><br>
-<input type="hidden" name="get_easylist" value=""> 
+<li>$(lang de:"Filterlisten von" en:"Get and convert filters from") <a href="http://adblockplus.org/de/" target=_blank>AdBlockPlus</a> $(lang de:" holen und umwandeln" en:"") <input type="button" value="$(lang en:"Get file now" de:"Datei jetzt holen")" onclick='tmp="$(href cgi privoxy load_easylist=yes alt_path=)"+document.getElementById("e11").value; location.href=tmp'><br>
+<input type="hidden" name="get_easylist" value="">
 <input id="e10" type="checkbox" name="get_easylist" value="yes" $geteasylist_chk><label for="e10"> $(lang de:"Diese Dateien beim Starten laden (wartet bis zu 15 Sekunden auf die Verf&uuml;gbarkeit des Internets; wegen der Gr&ouml;&szlig;e nur mit alternativem Pfad m&ouml;glich)" en:"Load file during box startup (will delay up to 15 seconds waiting for availibility of internet; because of the size only possible to alternate path)")</label>
 </li>
 <li>enable-remote-toggle  <input id="e5" type="radio" name="enable_remote_toggle" value="1"$remote_toggle_yes_chk><label for="e5"> $(lang de:"Ja" en:"set")</label> <input id="e6" type="radio" name="enable_remote_toggle" value="0"$remote_toggle_no_chk><label for="e6"> $(lang de:"Nein" en:"unset")</label>
