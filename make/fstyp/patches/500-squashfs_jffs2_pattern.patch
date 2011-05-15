@@ -1,6 +1,6 @@
---- src/linux_fs.h.orig	2001-11-19 06:48:12.000000000 +0100
-+++ src/linux_fs.h	2010-03-07 11:02:42.000000000 +0100
-@@ -206,3 +206,28 @@
+--- src/linux_fs.h.orig	2011-05-13 19:57:39.015029499 +0200
++++ src/linux_fs.h	2011-05-13 19:57:39.484788592 +0200
+@@ -233,3 +233,28 @@
  #define sysvmagic(s)	((uint) s.s_magic[0] + (((uint) s.s_magic[1]) << 8) + \
  			 (((uint) s.s_magic[2]) << 16) + \
  			 (((uint) s.s_magic[3]) << 24))
@@ -29,8 +29,8 @@
 +			 (((uint) s.s_magic[2]) << 16) + \
 +			 (((uint) s.s_magic[3]) << 24))
 +
---- src/mount_guess_fstype.c.orig	2010-03-07 10:59:26.000000000 +0100
-+++ src/mount_guess_fstype.c	2010-03-07 10:58:02.000000000 +0100
+--- src/mount_guess_fstype.c.orig	2011-05-13 19:57:39.015029499 +0200
++++ src/mount_guess_fstype.c	2011-05-13 19:57:39.484788592 +0200
 @@ -87,9 +87,9 @@
  static char
  *magic_known[] = {
@@ -54,7 +54,7 @@
      } xsb;
      struct ufs_super_block ufssb;
      union {
-@@ -255,6 +258,12 @@
+@@ -262,6 +265,12 @@
  	      type = "ntfs";
  	 else if(cramfsmagic(xsb.cramfssb) == CRAMFS_SUPER_MAGIC)
  	      type = "cramfs";
