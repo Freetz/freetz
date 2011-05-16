@@ -63,6 +63,7 @@ _cgi_location() {
 				system)    "$out" "/cgi-bin/system.cgi" ;;
 				conf)      _cgi_location "$out" cgi mod ;;
 				update)    "$out" "/cgi-bin/update/firmware.cgi" ;;
+				support)   "$out" "/cgi-bin/support/index.cgi" ;;
 			esac
 			;;
 		*)    "$out" "/error/unknown-type" "$type" ;;

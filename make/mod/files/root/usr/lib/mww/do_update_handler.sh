@@ -55,14 +55,14 @@ cat << EOF
 )</h1>
 EOF
 
-stop=${NAME%/*}
+stop=${NAME%%:*}
 downgrade=false
 delete_jffs2=false
 case $NAME in
-	*/downgrade*) downgrade=true ;;
+	*:downgrade*) downgrade=true ;;
 esac
 case $NAME in
-	*/delete_jffs2*) delete_jffs2=true ;;
+	*:delete_jffs2*) delete_jffs2=true ;;
 esac
 
 

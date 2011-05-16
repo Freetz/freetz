@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 2.0.10-stable)
+$(call PKG_INIT_LIB, 2.0.11-stable)
 $(PKG)_MAJOR_VERSION:=2.0
-$(PKG)_SHLIB_VERSION:=5.0.1
+$(PKG)_SHLIB_VERSION:=5.1.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a37401d26cbbf28185211d582741a3d4
+$(PKG)_SOURCE_MD5:=bd7ef33c08aa6401c8d67dbc88679ded
 $(PKG)_SITE:=http://www.monkey.org/~provos
 
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)

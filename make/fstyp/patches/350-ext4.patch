@@ -1,0 +1,52 @@
+--- src/mount_guess_fstype.c.orig	2011-05-13 19:57:38.805137139 +0200
++++ src/mount_guess_fstype.c	2011-05-13 19:57:39.015029499 +0200
+@@ -199,6 +199,13 @@
+ 	      & EXT3_FEATURE_COMPAT_HAS_JOURNAL) &&
+ 	     assemble4le(sb.e2s.s_journal_inum) != 0)
+ 		 type = "ext3";
++
++	/* or even ext4? */
++	if ((assemble4le(sb.e2s.s_feature_incompat)
++		& EXT3_FEATURE_INCOMPAT_UNSUPPORTED) ||
++		(assemble4le(sb.e2s.s_feature_ro_compat)
++		& EXT3_FEATURE_RO_COMPAT_UNSUPPORTED))
++		 type = "ext4";
+     }
+ 
+     else if (minixmagic(sb.ms) == MINIX_SUPER_MAGIC
+--- src/linux_fs.h.orig	2001-11-19 06:48:12.000000000 +0100
++++ src/linux_fs.h	2011-05-13 19:57:39.015029499 +0200
+@@ -49,6 +49,33 @@
+ #define EXT2_PRE_02B_MAGIC  0xEF51
+ #define EXT2_SUPER_MAGIC    0xEF53
+ #define EXT3_FEATURE_COMPAT_HAS_JOURNAL 0x0004
++
++/* ext4 */
++#define EXT2_FLAGS_TEST_FILESYS                 0x0004
++#define EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER     0x0001
++#define EXT2_FEATURE_RO_COMPAT_LARGE_FILE       0x0002
++#define EXT2_FEATURE_RO_COMPAT_BTREE_DIR        0x0004
++#define EXT2_FEATURE_INCOMPAT_FILETYPE          0x0002
++#define EXT2_FEATURE_INCOMPAT_META_BG           0x0010
++#define EXT3_FEATURE_INCOMPAT_JOURNAL_DEV       0x0008
++#define EXT3_FEATURE_INCOMPAT_RECOVER           0x0004
++
++#define EXT3_FEATURE_INCOMPAT_EXTENTS           0x0040
++#define EXT4_FEATURE_INCOMPAT_64BIT             0x0080
++#define EXT4_FEATURE_INCOMPAT_MMP               0x0100
++
++
++#define EXT3_FEATURE_RO_COMPAT_SUPP     (EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER| \
++                                         EXT2_FEATURE_RO_COMPAT_LARGE_FILE| \
++                                         EXT2_FEATURE_RO_COMPAT_BTREE_DIR)
++#define EXT3_FEATURE_RO_COMPAT_UNSUPPORTED      ~EXT3_FEATURE_RO_COMPAT_SUPP
++#define EXT3_FEATURE_INCOMPAT_SUPP      (EXT2_FEATURE_INCOMPAT_FILETYPE| \
++                                         EXT3_FEATURE_INCOMPAT_RECOVER| \
++                                         EXT2_FEATURE_INCOMPAT_META_BG)
++#define EXT3_FEATURE_INCOMPAT_UNSUPPORTED       ~EXT3_FEATURE_INCOMPAT_SUPP
++
++
++
+ struct ext2_super_block {
+ 	u_char 	s_dummy1[56];
+ 	u_char 	s_magic[2];

@@ -65,7 +65,7 @@ filter_form() {
 <form id="filter" onsubmit="filter(this.regexp.value); return false;"
 style="display: none">
 	Filter:
-	<select name="select" onchange="grep(this.value)"></select>
+	<select name="select" onchange="grep(this.value)" onkeyup="grep(this.value)"></select>
 	<input type="text" name="regexp">
 </form>
 EOF

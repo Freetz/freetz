@@ -8,8 +8,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 $(PKG)_PEM:=$($(PKG)_DIR)/$(pkg).pem
 $(PKG)_TARGET_PEM:=$($(PKG)_DEST_DIR)/etc/default.$(pkg)/$(pkg).pem
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-
 ifeq ($(strip $(FREETZ_PACKAGE_OPENDD_WITH_SSL)),y)
 $(PKG)_LIBS := -lcrypto -lssl
 $(PKG)_OPTS := -DUSE_SOCKET_SSL

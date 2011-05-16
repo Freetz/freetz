@@ -1,0 +1,42 @@
+#!/bin/sh
+MYPATH=$1
+unset HAVENET
+count=0
+if [ "$2" != "dowait" ]; then
+	ping -c 1 adblockplus.mozdev.org  > /dev/null 2>&1 && HAVENET=yes 
+else
+	while [ ! "$HAVENET" -a $count -lt 15 ]; do
+		sleep 1
+		ping -c 1 adblockplus.mozdev.org  > /dev/null 2>&1 && HAVENET=yes
+		[ "$HAVENET" ] || count=$(( $count + 1 ))
+	done
+fi
+
+if [  "$HAVENET" -a "$MYPATH" ]; then
+	URL="http://adblockplus.mozdev.org/easylist/easylist.txt"
+	mkdir -p $MYPATH 2> /dev/null || exit
+	ACTION=${MYPATH}/user.action
+	FILTER=${MYPATH}/user.filter
+	FILE=$(basename ${URL})
+	LIST=${FILE%\.*}
+	FILE=/tmp/${FILE}
+	rm -f ${FILE}
+	wget -qO ${FILE} ${URL}
+	if [ $(cat ${FILE} | wc -l) -gt 100 ]; then
+		echo -e "{ +block{${LIST}} }" > ${ACTION}
+		sed '/^!.*/d;1,1 d;/^@@.*/d;/\$.*/d;/#/d;s/\./\\./g;s/\?/\\?/g;s/\*/.*/g;s/(/\\(/g;s/)/\\)/g;s/\[/\\[/g;s/\]/\\]/g;s/\^/[\/\&:\?=_]/g;s/^||/\./g;s/^|/^/g;s/|$/\$/g;/|/d' ${FILE} >> ${ACTION}
+		echo "FILTER: ${LIST} Tag filter of ${LIST}" > ${FILTER}
+		sed '/^#/!d;s/^##//g;s/^#\(.*\)\[.*\]\[.*\]*/s|<([a-zA-Z0-9]+)\\s+.*id=.?\1.*>.*<\/\\1>||g/g;s/^#\(.*\)/s|<([a-zA-Z0-9]+)\\s+.*id=.?\1.*>.*<\/\\1>||g/g;s/^\.\(.*\)/s|<([a-zA-Z0-9]+)\\s+.*class=.?\1.*>.*<\/\\1>||g/g;s/^a\[\(.*\)\]/s|<a.*\1.*>.*<\/a>||g/g;s/^\([a-zA-Z0-9]*\)\.\(.*\)\[.*\]\[.*\]*/s|<\1.*class=.?\2.*>.*<\/\1>||g/g;s/^\([a-zA-Z0-9]*\)#\(.*\):.*[:[^:]]*[^:]*/s|<\1.*id=.?\2.*>.*<\/\1>||g/g;s/^\([a-zA-Z0-9]*\)#\(.*\)/s|<\1.*id=.?\2.*>.*<\/\1>||g/g;s/^\[\([a-zA-Z]*\).=\(.*\)\]/s|\1^=\2>||g/g;s/\^/[\/\&:\?=_]/g;s/\.\([a-zA-Z0-9]\)/\\.\1/g' ${FILE} >> ${FILTER}
+		echo "{ +filter{${LIST}} }" >> ${ACTION}
+		echo "*" >> ${ACTION}
+		echo "{ -block }" >> ${ACTION}
+		sed '/^@@.*/!d;s/^@@//g;/\$.*/d;/#/d;s/\./\\./g;s/\?/\\?/g;s/\*/.*/g;s/(/\\(/g;s/)/\\)/g;s/\[/\\[/g;s/\]/\\]/g;s/\^/[\/\&:\?=_]/g;s/^||/\./g;s/^|/^/g;s/|$/\$/g;/|/d' ${FILE} >> ${ACTION}
+		echo "{ -block +handle-as-image }" >> ${ACTION}
+		sed '/^@@.*/!d;s/^@@//g;/\$.*image.*/!d;s/\$.*image.*//g;/#/d;s/\./\\./g;s/\?/\\?/g;s/\*/.*/g;s/(/\\(/g;s/)/\\)/g;s/\[/\\[/g;s/\]/\\]/g;s/\^/[\/\&:\?=_]/g;s/^||/\./g;s/^|/^/g;s/|$/\$/g;/|/d' ${FILE} >> ${ACTION}
+		rm -f ${FILE}
+	else
+		echo "Fetching files for filter failed".
+	fi
+else
+	echo "Fetching files for filter failed".
+fi

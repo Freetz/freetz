@@ -30,10 +30,10 @@ function CheckInput(form) {
 		file_selector.name="nostop_avm";
 	}
 	if (downgrade.checked) {
-		file_selector.name += "/downgrade";
+		file_selector.name += ":downgrade";
 	}
 	if (delete_jffs2.checked) {
-		file_selector.name += "/delete_jffs2";
+		file_selector.name += ":delete_jffs2";
 	}
 
 	return true;

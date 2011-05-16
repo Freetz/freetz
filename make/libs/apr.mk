@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 1.4.2)
+$(call PKG_INIT_LIB, 1.4.4)
 $(PKG)_MAJOR_VERSION:=1
-$(PKG)_LIB_VERSION:=0.4.2
+$(PKG)_LIB_VERSION:=0.4.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=4b00e8f70c067893d075577962656b35
-$(PKG)_SITE:=http://apache.mirroring.de/apr/
+$(PKG)_SOURCE_MD5:=daf5487c82dd7bec9c005c96f8cb01b1
+$(PKG)_SITE:=http://www.eu.apache.org/dist/apr
 
 $(PKG)_MAJOR_LIBNAME=libapr-$(APR_MAJOR_VERSION)
 $(PKG)_LIBNAME=$($(PKG)_MAJOR_LIBNAME).so.$($(PKG)_LIB_VERSION)

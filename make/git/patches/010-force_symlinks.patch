@@ -1,6 +1,6 @@
 --- Makefile
 +++ Makefile
-@@ -1694,7 +1694,6 @@
+@@ -1692,7 +1692,6 @@
  
  $(BUILT_INS): git$X
  	$(QUIET_BUILT_IN)$(RM) $@ && \
@@ -8,7 +8,7 @@
  	ln -s git$X $@ 2>/dev/null || \
  	cp git$X $@
  
-@@ -2016,7 +2015,6 @@
+@@ -2014,7 +2013,6 @@
  
  $(REMOTE_CURL_ALIASES): $(REMOTE_CURL_PRIMARY)
  	$(QUIET_LNCP)$(RM) $@ && \
@@ -16,7 +16,7 @@
  	ln -s $< $@ 2>/dev/null || \
  	cp $< $@
  
-@@ -2183,9 +2181,9 @@
+@@ -2197,9 +2195,9 @@
  install: all
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)'
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(gitexec_instdir_SQ)'
@@ -28,7 +28,7 @@
  	$(MAKE) -C templates DESTDIR='$(DESTDIR_SQ)' install
  ifndef NO_PERL
  	$(MAKE) -C perl prefix='$(prefix_SQ)' DESTDIR='$(DESTDIR_SQ)' install
-@@ -2214,20 +2212,17 @@
+@@ -2228,20 +2226,17 @@
  	} && \
  	for p in $(filter $(install_bindir_programs),$(BUILT_INS)); do \
  		$(RM) "$$bindir/$$p" && \

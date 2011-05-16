@@ -4,10 +4,16 @@
 . /usr/lib/libmodcgi.sh
 
 check "$PRIVOXY_ENABLED" yes:auto "*":man
+check "$PRIVOXY_GET_EASYLIST" yes:geteasylist "*":nix
 check "$PRIVOXY_TOGGLE" 1:toggle "*":neutral
 check "$PRIVOXY_ENABLE_REMOTE_TOGGLE" 1:remote_toggle_yes "*":remote_toggle_no
 check "$PRIVOXY_ENFORCE_BLOCKS" 1:enforce_blocks_yes "*":enforce_blocks_no
 check "$PRIVOXY_CGI_CRUNCH" 1:cgi_crunch_yes "*":cgi_crunch_no
+
+if [ "$(cgi_param load_easylist)" == "yes" -a -n "$(cgi_param alt_path)" ]; then
+	PRIVOXY_ALT_PATH=$(cgi_param alt_path)
+	/mod/etc/default.privoxy/privoxy_loadeasylist ${PRIVOXY_ALT_PATH}
+fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -33,6 +39,16 @@ cat << EOF
 <p><input id="e3" type="radio" name="toggle" value="1"$toggle_chk><label for="e3"> $(lang de:"Ja" en:"Yes")</label> <input id="e4" type="radio" name="toggle" value="0"$neutral_chk><label for="e4"> $(lang de:"Nein" en:"No")</label><br />
 <p>$(lang de:"Weitere Optionen:" en:"More options:")<br>
 <ul>
+<li>$(lang de:"Alternativer Pfad zu den Filterdateien" en:"Alternate path to filter files outside box flash memory")<input id="e11" type="text" name="alt_path" value="$PRIVOXY_ALT_PATH">
+<font size="-2">
+<br>$(lang de:"Der Flashspeicher der Box ist begrenzt und aktuelle Filterdateien teilweise gro&szlig;. Mit diese Option werden die Dateien <i>user.action</i> und <i>user.filter</i> in diesem Verzeichnis genutzt (meist wohl au&szlig;erhalb des Flashs der Box)." en:"Flashmemory is limited. This option enables to us an alternate (bigger) files <i>user.action</i> and <i>user.filter</i> in the given directory (usually outside the flash memory of the box).")
+<p>
+</font>
+</li>
+<li>$(lang de:"Filterlisten von" en:"Get and convert filters from") <a href="http://adblockplus.org/de/" target=_blank>AdBlockPlus</a> $(lang de:" holen und umwandeln" en:"") <input type="button" value="$(lang en:"Get file now" de:"Datei jetzt holen")" onclick='tmp="$(href cgi privoxy load_easylist=yes alt_path=)"+document.getElementById("e11").value; location.href=tmp'><br>
+<input type="hidden" name="get_easylist" value="">
+<input id="e10" type="checkbox" name="get_easylist" value="yes" $geteasylist_chk><label for="e10"> $(lang de:"Diese Dateien beim Starten laden (wartet bis zu 15 Sekunden auf die Verf&uuml;gbarkeit des Internets; wegen der Gr&ouml;&szlig;e nur mit alternativem Pfad m&ouml;glich)" en:"Load file during box startup (will delay up to 15 seconds waiting for availibility of internet; because of the size only possible to alternate path)")</label>
+</li>
 <li>enable-remote-toggle  <input id="e5" type="radio" name="enable_remote_toggle" value="1"$remote_toggle_yes_chk><label for="e5"> $(lang de:"Ja" en:"set")</label> <input id="e6" type="radio" name="enable_remote_toggle" value="0"$remote_toggle_no_chk><label for="e6"> $(lang de:"Nein" en:"unset")</label>
 <font size="-2">
 <br>$(lang de:"Web-based Toggle Feature: Wenn die Option aktiviert ist, kann jeder Nutzer die Privoxy-Filterfunktionen &uuml;ber die Web-Schnittstelle ausschalten, siehe" en:"Whether or not the web-based toggle feature may be used, see") <a href="http://www.privoxy.org/user-manual/config.html#ENABLE-REMOTE-TOGGLE" target=_blank>$(lang de:"hier" en:"here")</a>

@@ -14,16 +14,17 @@ function CheckInput(form) {
 	file_selector=form.elements[0];
 	target_text=form.elements[1];
 	delete_chk=form.elements[2];
+	ex_start=form.elements[3];
 	if (file_selector.value=="") {
 		alert("$(lang de:"Keine external-Datei angegeben!" en:"No external-file provided!")");
 		return false;
 	}
 	file_selector.name=target_text.value;
 	if (delete_chk.checked) {
-		file_selector.name += "/delete_oldfiles";
+		file_selector.name += ":delete_oldfiles";
 	}
 	if (ex_start.checked) {
-		file_selector.name += "/external_start";
+		file_selector.name += ":external_start";
 	}
 	return true;
 }

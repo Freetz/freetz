@@ -58,7 +58,7 @@ remove_swap() {
 						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
 						log_freetz notice "SWAP Partition ($swap_dev) not removed, auto-mode is disabled."
 						;;
-					default)
+					*)
 						eventadd 135 "SWAP Partition ($swap_dev)"
 						log_freetz err "SWAP Partition ($swap_dev) could not be removed."
 						;;
@@ -120,20 +120,12 @@ mount_fs() {
 			mount -t vfat -o $rw_mode,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node $mnt_path
 			err_mo=$?
 			;;
-		ext2)
-			mount -t ext2 $dev_node $mnt_path -o noatime,nodiratime,rw,async
-			err_mo=$?
-			;;
-		ext3)
-			mount -t ext3 $dev_node $mnt_path -o noatime,nodiratime,rw,async
+		ext2|ext3|ext4|reiserfs)
+			mount -t $fs_type $dev_node $mnt_path -o noatime,nodiratime,rw,async
 			err_mo=$?
 			;;
 		ntfs)
-			[ -n "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
-			;;
-		reiserfs)
-			mount -t reiserfs $dev_node $mnt_path -o noatime,nodiratime,rw,async
-			err_mo=$?
+			[ -x "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
 			;;
 		swap)
 			/etc/init.d/rc.swap autostart $dev_node
@@ -201,20 +193,20 @@ do_mount_locked() {
 		case "$fs_type" in
 		"ntfs")
 			case $err_fs_mount in
-			15)                                                               # unclean unmount
-				eventadd 144 "$mnt_name ($mnt_dev)"
-				log_freetz err "Partition $mnt_name ($mnt_dev): NTFS Volume was unclean unmount. Please unmount"
-				;;
-			111)                                                              # binary not found
-				eventadd 145 "$mnt_name ($mnt_dev)" "ntfs binary not found"
-				log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error (binary not found)"
-				mnt_failure=1
-				;;
-			*)                                                                # general error
-				eventadd 145 "$mnt_name ($mnt_dev)" $err_fs_mount
-				log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error ($err_fs_mount)"
-				mnt_failure=1
-				;;
+				15)                                                           # unclean unmount
+					eventadd 144 "$mnt_name ($mnt_dev)"
+					log_freetz err "Partition $mnt_name ($mnt_dev): NTFS Volume was unclean unmount. Please unmount"
+					;;
+				111)                                                          # binary not found
+					eventadd 145 "$mnt_name ($mnt_dev)" "ntfs binary not found"
+					log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error (binary not found)"
+					mnt_failure=1
+					;;
+				*)                                                            # general error
+					eventadd 145 "$mnt_name ($mnt_dev)" $err_fs_mount
+					log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error ($err_fs_mount)"
+					mnt_failure=1
+					;;
 			esac
 			;;
 		"swap")

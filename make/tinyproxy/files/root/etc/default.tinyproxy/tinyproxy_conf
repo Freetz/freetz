@@ -11,10 +11,8 @@ BUILDIN_SUPPORT=$(tinyproxy -h | sed -n "/proxy support/ s/^[ ]*// ; s/ proxy su
 [ -n "${TINYPROXY_BIND// /}" ] && echo "Bind $TINYPROXY_BIND"
 [ "$TINYPROXY_BINDSAME" = "yes" ] && echo "BindSame $TINYPROXY_BINDSAME"
 [ -n "${TINYPROXY_TIMEOUT// /}" ] && echo "Timeout $TINYPROXY_TIMEOUT"
-[ -n "${TINYPROXY_ERRORFILE// /}" ] && echo  "ErrorFile ${TINYPROXY_ERRORFILE//\"/}" | sed  's%[ ]*;[ ]*%\nErrorFile %' |sed 's% [ ]*/% "/%g' | sed 's%[ ]*$%"%g'
+[ -n "${TINYPROXY_ERRORFILE// /}" ] && echo  "ErrorFile ${TINYPROXY_ERRORFILE//\"/}" | sed 's%[ ]*;[ ]*%\nErrorFile %' |sed 's% [ ]*/% "/%g' | sed 's%[ ]*$%"%g'
 [ -n "${TINYPROXY_DEFAULTERRORFILE// /}" ] && echo "DefaultErrorFile \"$TINYPROXY_DEFAULTERRORFILE\""
-[ -n "${TINYPROXY_STATHOST// /}" ] && echo "StatHost $TINYPROXY_STATHOST"
-[ -n "${TINYPROXY_STATFILE// /}" ] && echo "StatFile \"$TINYPROXY_STATFILE\""
 [ -n "${TINYPROXY_LOGFILE// /}" -a "${TINYPROXY_SYSLOG}" != "yes" ] && echo "LogFile \"$TINYPROXY_LOGFILE\""
 [ "$TINYPROXY_SYSLOG" = "yes" ] && echo "Syslog $TINYPROXY_SYSLOG"
 [ -n "${TINYPROXY_LOGLEVEL// /}" ] && echo "LogLevel $TINYPROXY_LOGLEVEL"
@@ -31,7 +29,7 @@ fi
 [ -n "${TINYPROXY_MAXREQUESTSPERCHILD// /}" ] && echo "MaxRequestsPerChild $TINYPROXY_MAXREQUESTSPERCHILD"
 [ -n "${TINYPROXY_ALLOW// /}" ] && echo "Allow $TINYPROXY_ALLOW" | sed 's/[[:space:]]*;[[:space:]]*/;Allow /g' | tr ';' '\n'
 [ -n "${TINYPROXY_DENY// /}" ] && echo "Deny $TINYPROXY_DENY" | sed 's/[[:space:]]*;[[:space:]]*/;Deny /g' | tr ';' '\n'
-[ -n "${TINYPROXY_ADDHEADER// /}" ] && echo "AddHeader $TINYPROXY_ADDHEADER"
+[ -n "${TINYPROXY_ADDHEADER_NAME// /}" ] && echo "AddHeader \"$TINYPROXY_ADDHEADER_NAME\" \"$TINYPROXY_ADDHEADER_VALUE\""
 [ -n "${TINYPROXY_VIAPROXYNAME// /}" ] && echo "ViaProxyName \"$TINYPROXY_VIAPROXYNAME\""
 [ "$TINYPROXY_DISABLEVIAHEADER" = "yes" ] && echo "DisableViaHeader $TINYPROXY_DISABLEVIAHEADER"
 [ -n "${TINYPROXY_FILTER// /}" ] && echo "$TINYPROXY_FILTER" > /var/tmp/tinyproxy.filter

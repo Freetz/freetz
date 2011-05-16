@@ -21,6 +21,10 @@ stop() {
 	rm -rf /mod/etc/$DAEMON/config
 }
 
+load_easylist() {
+	/mod/etc/default.privoxy/privoxy_loadeasylist ${PRIVOXY_ALT_PATH} dowait
+}
+
 case $1 in
 	""|load)
 		mkdir -p /tmp/flash/privoxy
@@ -30,10 +34,19 @@ case $1 in
 		[ -r "/tmp/flash/privoxy/user.filter" ] || cp -f /etc/privoxy/user.filter /tmp/flash/privoxy/user.filter
 		[ -r "/tmp/flash/privoxy/user.action" ] || cp -f /etc/privoxy/user.action /tmp/flash/privoxy/user.action
 
+		if [ "${PRIVOXY_ALT_PATH// /}" ]; then
+			ln -sf ${PRIVOXY_ALT_PATH}/user.filter /tmp/flash/privoxy/user.filter.link
+			ln -sf ${PRIVOXY_ALT_PATH}/user.action /tmp/flash/privoxy/user.action.link
+		else
+			ln -sf user.filter /tmp/flash/privoxy/user.filter.link
+			ln -sf user.action /tmp/flash/privoxy/user.action.link
+		fi
+
 		modreg file privoxy user_filter 'user.filter' 0 "filter"
 		modreg file privoxy user_action 'user.actions' 0 "action"
 		modreg cgi 'privoxy' 'Privoxy'
 		modreg daemon $DAEMON
+		[ "$PRIVOXY_GET_EASYLIST" -a -n "${PRIVOXY_ALT_PATH// /}" ] && load_easylist
 
 		modlib_start $PRIVOXY_ENABLED
 		;;

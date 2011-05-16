@@ -5,6 +5,7 @@ $(PKG)_SITE:=@SF/linux-usb
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsusb
 $(PKG)_IDS:=$($(PKG)_DIR)/usb.ids
+$(PKG)_IDS_SITE:=http://linux-usb.sourceforge.net
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/listusb
 $(PKG)_TARGET_IDS:=$($(PKG)_DEST_DIR)/usr/share/usb.ids
 ifneq ($(strip $(FREETZ_PACKAGE_USBUTILS_IDS)),y)
@@ -13,9 +14,9 @@ endif
 
 $(PKG)_DEPENDS_ON := libusb
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-zlib
+$(PKD)_REBUILD_SUBOPTS += FREETZ_PACKAGE_USBUTILS_IDS_UPDATE
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,@usbids@,$($(PKG)_IDS),g' update-usbids.sh.in;
+$(PKG)_CONFIGURE_OPTIONS += --disable-zlib
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -24,13 +25,18 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(USBUTILS_DIR)
 
+$($(PKG)_IDS): $($(PKG)_DIR)/.configured
+ifeq ($(strip $(FREETZ_PACKAGE_USBUTILS_IDS_UPDATE)),y)
+	mv $@ $@.old
+	$(DL_TOOL) $(USBUTILS_DIR) .config usb.ids $(USBUTILS_IDS_SITE) $(SILENT)
+endif
+	touch $@
+
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_IDS): $($(PKG)_IDS)
-	$(USBUTILS_DIR)/update-usbids.sh
-	mkdir -p $(dir $@)
-	cp $^ $@
+	$(INSTALL_FILE)
 
 $(pkg):
 

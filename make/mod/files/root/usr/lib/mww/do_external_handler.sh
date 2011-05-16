@@ -42,13 +42,14 @@ status() {
 }
 
 EXTERNAL_FILE=$1
-EXTERNAL_TARGET=${NAME%/*}
+EXTERNAL_TARGET=${NAME%%:*}
 delete=false
 case $NAME in
-	*/delete_oldfiles*) delete=true ;;
+	*:delete_oldfiles*) delete=true ;;
 esac
+external_start=false
 case $NAME in
-	*/external_start*) external_start=true ;;
+	*:external_start*) external_start=true ;;
 esac
 
 cgi_begin '$(lang de:"external-Update" en:"external-update")'
@@ -93,7 +94,6 @@ untar() {
 			cat > /dev/null # prevent SIGPIPE if tar fails
 			return 1
 		fi < "$1"
-		touch $EXTERNAL_TARGET/.external
 	fi
 }
 

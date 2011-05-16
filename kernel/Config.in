@@ -288,14 +288,21 @@ config FREETZ_MODULE_coda
 	bool "coda.ko"
 	default n
 
+config FREETZ_MODULE_ext2
+	bool "ext2.ko"
+	select FREETZ_MODULE_mbcache
+	default n
+
 config FREETZ_MODULE_ext3
 	bool "ext3.ko"
 	select FREETZ_MODULE_jbd
 	select FREETZ_MODULE_mbcache
 	default n
 
-config FREETZ_MODULE_ext2
-	bool "ext2.ko"
+config FREETZ_MODULE_ext4
+	bool "ext4.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
+	select FREETZ_MODULE_jbd2
 	select FREETZ_MODULE_mbcache
 	default n
 
@@ -318,6 +325,11 @@ config FREETZ_MODULE_fuse
 
 config FREETZ_MODULE_jbd
 	bool "jbd.ko"
+	default n
+
+config FREETZ_MODULE_jbd2
+	bool "jbd2.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	default n
 
 config FREETZ_MODULE_lockd

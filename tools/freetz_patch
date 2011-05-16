@@ -86,6 +86,7 @@ modpatch()
 			files=$(echo "$output" | sed -n -r 's/^patching file (.*)/\1/p')
 		fi
 	fi
+	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
 	local STATUS
 	if [ "$is_verbose" ]; then
 		echo2 "applying patch file $patch_file"
