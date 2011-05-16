@@ -114,7 +114,7 @@ if [ "$MODE" == "server" ]; then
 		echo "push \"dhcp-option WINS $PUSH_WINS\"" >> $CONFFILE
 	fi
 	if [ "$REDIRECT" ]; then
-		echo "push \"redirect-gateway\"" >> $CONFFILE
+		echo "push \"redirect-gateway def1\"" >> $CONFFILE
 	fi
 	if [ "$DHCP_RANGE" -a "$AUTH_TYPE" == "certs" ]; then
 		echo "mode server" >> $CONFFILE
@@ -244,7 +244,7 @@ else
 		echo "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
 	fi
 	if [ "$REDIRECT" ]; then
-		echo "redirect-gateway" >> $CONFFILE
+		echo "redirect-gateway def1" >> $CONFFILE
 	fi
 	if [ "$DHCP_CLIENT" != "yes" ]; then
 		if [ "$TYPE" == "tun" ]; then 
