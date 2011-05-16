@@ -1,0 +1,79 @@
+diff -burN linux-2.6.28/arch/mips/fusiv/fusiv_mips32/prom.c linux-2.6.28/arch/mips/fusiv/fusiv_mips32/prom.c
+--- linux-2.6.28/arch/mips/fusiv/fusiv_mips32/prom.c	2010-06-15 16:06:46.000000000 +0200
++++ linux-2.6.28/arch/mips/fusiv/fusiv_mips32/prom.c	2011-03-31 10:50:42.000000000 +0200
+@@ -25,6 +25,9 @@
+ //AVMbk
+ unsigned int xtensa_mem_start = 0;
+ unsigned int xtensa_mem_size  = 0;
++#ifdef CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY
++unsigned int wlan_mem_start = 0;
++#endif
+ //end AVMbk
+ int board_memsize=0;
+ int board_flash_size;
+@@ -65,6 +68,11 @@
+         if(xtensa_mem_start + xtensa_mem_size  > board_memsize) {
+            panic("xtensa memory not in avalible memory space, update boot loader\n");
+         }
++
++#ifdef CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY
++        wlan_mem_start = (xtensa_mem_start - (CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY_SIZE << 10)) & PAGE_MASK;
++        printk("wlan_mem_start = 0x%08x\n", wlan_mem_start);
++#endif
+ #else
+         board_memsize = simple_strtoul((const char*)arg_env, NULL, 0);
+         printk("memsize  board_memsize = %d\n",board_memsize);
+@@ -109,7 +117,11 @@
+ 	mips_machtype = 0x5678;
+ 
+ #if defined(CONFIG_FUSIV_KERNEL_BME_DRIVER_VX180_MODULE) || defined(CONFIG_FUSIV_KERNEL_BME_DRIVER_VX180)
++#ifdef CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY
++	add_memory_region(0, wlan_mem_start, BOOT_MEM_RAM);
++#else
+ 	add_memory_region(0, xtensa_mem_start, BOOT_MEM_RAM);
++#endif
+     if(xtensa_mem_start + xtensa_mem_size < board_memsize) {
+         add_memory_region(xtensa_mem_start + xtensa_mem_size, 
+                           board_memsize - (xtensa_mem_start + xtensa_mem_size), BOOT_MEM_RAM); /*--- normal RAM ---*/
+@@ -484,10 +496,25 @@
+ 
+ }
+ 
++#ifdef CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++int prom_wlan_get_base_memory(unsigned int *base, unsigned int *len) {
++    if(base)
++        *base = wlan_mem_start;
++    if(len)
++        *len = (CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY_SIZE << 10);
++    return 0;
++}
++#endif
++
+ EXPORT_SYMBOL(copy_wlan_dect_config2user);
+ EXPORT_SYMBOL(test_wlan_dect_config);
+ EXPORT_SYMBOL(set_wlan_dect_config_address);
+ EXPORT_SYMBOL(get_wlan_dect_config);
++#ifdef CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY
++EXPORT_SYMBOL(prom_wlan_get_base_memory);
++#endif
+ //AVMbk
+ EXPORT_SYMBOL(xtensa_mem_start);
+ EXPORT_SYMBOL(xtensa_mem_size);
+--- linux-2.6.28/arch/Kconfig	2009-10-13 12:25:03.000000000 +0200
++++ linux-2.6.28/arch/Kconfig	2011-03-31 10:50:42.000000000 +0200
+@@ -104,3 +104,13 @@
+ 	  The <linux/clk.h> calls support software clock gating and
+ 	  thus are a key power management tool on many systems.
+ 
++config AVM_ARCH_STATIC_WLAN_MEMORY
++	bool "Use static memory for WLAN subsystem"
++	depends on MACH_FUSIV
++        default n
++
++config AVM_ARCH_STATIC_WLAN_MEMORY_SIZE
++        hex "Static WLAN memory size (kbytes)"
++	depends on AVM_ARCH_STATIC_WLAN_MEMORY
++        default 0
++
