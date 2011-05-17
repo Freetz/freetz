@@ -110,6 +110,18 @@ start() {
 	fi
 	[ "$TRANSMISSION_USEBLOCKLIST" = "yes" ] && OPTIONS="$OPTIONS -b" || OPTIONS="$OPTIONS -B"
 	[ "$TRANSMISSION_USEDHT" = "yes" ] && OPTIONS="$OPTIONS --dht" || OPTIONS="$OPTIONS --no-dht"
+	if [ "$TRANSMISSION_USEUTP" = "yes" ]; then
+		OPTIONS="$OPTIONS --utp"
+		# NB: the values here must correspond to those from libtransmission/tr-udp.c
+		local RECV_BUFFER_SIZE=$((2 * 1024 * 1024))
+		local SEND_BUFFER_SIZE=$((     512 * 1024))
+		echo $RECV_BUFFER_SIZE > /proc/sys/net/core/rmem_max
+		echo $RECV_BUFFER_SIZE > /proc/sys/net/core/rmem_default
+		echo $SEND_BUFFER_SIZE > /proc/sys/net/core/wmem_max
+		echo $SEND_BUFFER_SIZE > /proc/sys/net/core/wmem_default
+	else
+		OPTIONS="$OPTIONS --no-utp"
+	fi
 
 	if [ -n "$TRANSMISSION_RPCUSERNAME" -a -n "$TRANSMISSION_RPCPASSWORD" ]; then
 		OPTIONS="$OPTIONS --auth --username $TRANSMISSION_RPCUSERNAME --password $TRANSMISSION_RPCPASSWORD"

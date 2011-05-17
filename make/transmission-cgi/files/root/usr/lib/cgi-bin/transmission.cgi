@@ -11,6 +11,7 @@ select "$TRANSMISSION_PEERENCRYPTIONMODE" \
 	"*":noencryption
 check "$TRANSMISSION_USEBLOCKLIST" yes:useblocklist
 check "$TRANSMISSION_USEDHT" yes:usedht
+check "$TRANSMISSION_USEUTP" yes:useutp
 
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
@@ -179,6 +180,12 @@ en:"Seeding torrents will be stopped when they reach this ratio and moved to the
 <label for='usedht'>$(lang de:"DHT verwenden:" en:"Use DHT:") </label>
 <input type="hidden" name="usedht" value="no">
 <input type='checkbox' id='usedht' name='usedht' value='yes'$usedht_chk>
+</p>
+
+<p>
+<label for='useutp'>$(lang de:"&mu;TP verwenden:" en:"Use &mu;TP:") </label>
+<input type="hidden" name="useutp" value="no">
+<input type='checkbox' id='useutp' name='useutp' value='yes'$useutp_chk>
 </p>
 EOF
 
