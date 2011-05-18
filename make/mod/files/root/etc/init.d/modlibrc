@@ -146,7 +146,7 @@ modlib_startdaemon() {
 		exit 1
 	fi
 
-	env - PATH="$PATH" $DAEMON_ENV "$@" 1>&2
+	env - PATH="$PATH" LD_LIBRARY_PATH="$LD_LIBRARY_PATH" $DAEMON_ENV "$@" 1>&2
 	local rv=$?
 
 	if [ $rv -ne 0 ]; then
