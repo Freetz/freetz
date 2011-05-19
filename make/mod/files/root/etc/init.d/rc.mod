@@ -61,7 +61,11 @@ start() {
 
 	#compat (may be removed later):
 	[ -r /tmp/flash/rc.custom ] && mv /tmp/flash/rc.custom /tmp/flash/mod/rc.custom
-	[ -r /tmp/flash/mod/rc.custom ] && log "$(. /tmp/flash/mod/rc.custom)"
+	if [ -r /tmp/flash/mod/rc.custom ]; then
+		echo -n"Starting rc.custom ... "
+		sh /tmp/flash/mod/rc.custom 0<&- 1>/var/log/rc_custom.log 2>&1
+		echo "done."
+	fi
 
 	touch /tmp/.modstarted
 
