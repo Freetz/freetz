@@ -4,8 +4,12 @@
 
 BUILDIN_SUPPORT=$(tinyproxy -h | sed -n "/proxy support/ s/^[ ]*// ; s/ proxy support// p" | tr '\n' ' ')
 
-[ -n "${TINYPROXY_USER// /}" ] && echo "User $TINYPROXY_USER"
-[ -n "${TINYPROXY_GROUP// /}" ] && echo "Group $TINYPROXY_GROUP"
+cat << EOF
+User nobody
+Group nobody
+PidFile "/var/run/tinyproxy/tinyproxy.pid"
+EOF
+
 [ -n "${TINYPROXY_PORT// /}" ] && echo "Port $TINYPROXY_PORT"
 [ -n "${TINYPROXY_LISTEN// /}" ] && echo "Listen $TINYPROXY_LISTEN"
 [ -n "${TINYPROXY_BIND// /}" ] && echo "Bind $TINYPROXY_BIND"
@@ -16,7 +20,6 @@ BUILDIN_SUPPORT=$(tinyproxy -h | sed -n "/proxy support/ s/^[ ]*// ; s/ proxy su
 [ -n "${TINYPROXY_LOGFILE// /}" -a "${TINYPROXY_SYSLOG}" != "yes" ] && echo "LogFile \"$TINYPROXY_LOGFILE\""
 [ "$TINYPROXY_SYSLOG" = "yes" ] && echo "Syslog $TINYPROXY_SYSLOG"
 [ -n "${TINYPROXY_LOGLEVEL// /}" ] && echo "LogLevel $TINYPROXY_LOGLEVEL"
-[ -n "${TINYPROXY_PIDFILE// /}" ] && echo "PidFile \"$TINYPROXY_PIDFILE\""
 [ "$TINYPROXY_XTINYPROXY" = "yes"  ] && echo "XTinyproxy $TINYPROXY_XTINYPROXY"
 if echo "$BUILDIN_SUPPORT" | grep -q -i upstream ; then
 	[ -n "${TINYPROXY_UPSTREAM// /}" ] && echo "Upstream $TINYPROXY_UPSTREAM" | sed 's/[[:space:]]*;[[:space:]]*/;Upstream /g' | tr ';' '\n'

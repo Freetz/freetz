@@ -27,4 +27,5 @@ do_log /var/log/mod_net.log
 do_log /var/log/mod_voip.log
 do_log /var/log/mod.log
 do_log /var/log/mod_swap.log
+do_log /var/log/rc_custom.log
 do_log /var/log/external.log

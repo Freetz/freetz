@@ -18,7 +18,7 @@ cat << EOF
 <p>
 <input id="l1" type="radio" name="storage" value=""$none_chk><label for="l1"> $(lang de:"Nicht konfiguriert" en:"Not configured")</label>
 <input id="l2" type="radio" name="storage" value="ram"$ram_chk><label for="l2"> RAM ($(lang de:"fl&uuml;chtiger Speicher" en:"volatile memory"))</label>
-<input id="l3" type="radio" name="storage" value="jffs2"$jffs2_chk$jffs2_disabled><label for="l2"> JFFS2 ($(lang de:"persitenter Speicher" en:"persitent storage"))</label>
+<input id="l3" type="radio" name="storage" value="jffs2"$jffs2_chk$jffs2_disabled><label for="l2"> JFFS2 ($(lang de:"dauerhafter Speicher" en:"persistent storage"))</label>
 </p>
 EOF
 

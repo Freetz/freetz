@@ -16,21 +16,20 @@ cleanup() {
 configure() {
 	cleanup
 
-	case $(fstyp $(df $XMAIL_MAILLOCATION | tail -n 1 | awk '{print $1}') 2>/dev/null) in
-		vfat|ntfs)
-			fat=1
-			;;
-		""|*)
-			fat=0
-			;;
-	esac
-
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	mkdir -p /mod/etc/$DAEMON
 
 	if [ "$XMAIL_UNPRIV" = "yes" ]; then
 		modlib_addgroup xmail
 		modlib_adduser xmail -G xmail -s /bin/false -H -D -g "XMail account"
+
+		#do a simple test if a linux filesystem is present
+		touch $XMAIL_MAILLOCATION/.filesystemtest 2>/dev/null
+		chown xmail:xmail $XMAIL_MAILLOCATION/.filesystemtest 2>/dev/null
+		exitval=$?
+		[ "$exitval" -eq 0 ] && fat=0 || fat=1
+		rm $XMAIL_MAILLOCATION/.filesystemtest 2>/dev/null
+
 		[ "$fat" = "0" ] && chmod 700 $XMAIL_MAILLOCATION || chmod 777 $XMAIL_MAILLOCATION
 		chmod 700 /mod/etc/$DAEMON
 		chown xmail:xmail /mod/etc/$DAEMON
@@ -53,7 +52,9 @@ configure() {
 	[ -e "$XMAIL_MAILLOCATION/tmp" ] || mkdir $XMAIL_MAILLOCATION/tmp
 	ln -s $XMAIL_MAILLOCATION/* /mod/etc/$DAEMON/
 	ln -sf /usr/lib/MailRoot/bin /mod/etc/$DAEMON/
-	[ "$XMAIL_UNPRIV" = "yes" -a "$fat" = "0" ] && chown -hR xmail:xmail $XMAIL_MAILLOCATION
+	if [ "$XMAIL_UNPRIV" = "yes" ]; then
+		[ "$fat" = "0" ] && chown -hR xmail:xmail $XMAIL_MAILLOCATION || chmod -R 777 $XMAIL_MAILLOCATION
+	fi
 
 	[ ! -z "$XMAIL_SPECIAL" ] && CMDOPTS="$CMDOPTS $XMAIL_SPECIAL"
 	if [ "$XMAIL_POP3" = "yes" ]; then

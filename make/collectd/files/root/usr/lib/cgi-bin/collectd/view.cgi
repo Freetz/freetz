@@ -22,36 +22,73 @@ if [ -d "$HOSTS_DIR" -a -n "$RRDTOOL" ]; then
 	CGI_REFRESH=$(cgi_param refresh)
 	SHOW_INTERFACE_ERRORS=$(cgi_param iferrors)
 
-	if [ -n "$CGI_PLUGIN" ]; then
+	if [ -n "$CGI_PLUGIN" -a ! "$CGI_PLUGIN" == "All" ]; then
 		PERIOD=$COLLECTD_PERIODSSUB
 	else
 		PERIOD=$COLLECTD_PERIODMAIN
 		GRAPH_MAINPAGE="yes"
 	fi
 
-	echo "<div style=\"clear: both; float: right; margin: 10px -225px 10px 20px; width: 190px;\">"
-	echo "<ul class=\"menu new\">"
-	for HOST in $HOSTS; do
-		if [ "$CGI_HOST" == "$HOST" -a -z "$CGI_PLUGIN" ]; then
-			echo "<li class=\"open\"><a class=\"active\" href=\"$SCRIPT_NAME?host=$HOST\">$HOST</a><ul>"
-		else
-			echo "<li class=\"open\"><a href=\"$SCRIPT_NAME?host=$HOST\">$HOST</a><ul>"
-		fi
+	#navigation form
+	echo "<form name=\"nav\" type=\"GET\"><center>"
+	echo "Host: <select name=\"host\" onChange=\"selectedHostChanged(document.forms.nav.plugin.value);\"></select>"
+	echo "&nbsp; Plugin: <select name=\"plugin\"></select>"
+	echo "&nbsp; <input type=\"submit\" value=\"Go\">"
+	echo "</center></form>"
 
+	#script for filling out the combobox options
+	echo "<script type=\"text/javascript\">"
+	echo "var Hosts = [];"
+	echo "var Plugins  = [];"
+
+	#always have to refresh the available plugins on a per host basis
+	echo "function selectedHostChanged(defaultPlugin) {"
+	echo "var newIndex = document.nav.host.selectedIndex;"
+
+	#index zero is the special All option
+	echo "if(newIndex == 0) {"
+	echo "document.forms.nav.plugin.options.length = 1;"
+	echo "document.forms.nav.plugin.options[0] = new Option('All');"
+	echo "return;"
+	echo "}"
+
+	echo "document.forms.nav.plugin.options.length = Plugins[newIndex].length;"
+	echo "for ( var i = 0; i < Plugins[newIndex].length; i++) {"
+	echo "document.forms.nav.plugin.options[i] = new Option(Plugins[newIndex][i]);"
+	echo "if(defaultPlugin == Plugins[newIndex][i]) document.forms.nav.plugin.selectedIndex = i;"
+	echo "}"
+	echo "}"
+
+	echo "Hosts[0]='All';"
+	i=1
+
+	#fill out the available host and plugin arrays
+	for HOST in $HOSTS; do
+		echo "Hosts[$i]='$HOST';"
 		PLUGINS=$(ls $HOSTS_DIR/$HOST/)
+
+		echo "Plugins[$i] = [];"
+		echo "Plugins[$i][0] = 'All';"
+		j=1
 		for PLUGIN in $PLUGINS; do
-			if [ "$CGI_HOST" == "$HOST" -a "$CGI_PLUGIN" == "$PLUGIN" ]; then
-				echo "<li><a class=\"active\" href=\"$SCRIPT_NAME?host=$HOST&plugin=$PLUGIN\">$PLUGIN</a></li>"
-			else
-				echo "<li><a href=\"$SCRIPT_NAME?host=$HOST&plugin=$PLUGIN\">$PLUGIN</a></li>"
-			fi
+			echo "Plugins[$i][$j] = '$PLUGIN';"
+			j=$(( $j + 1 ))
 		done
-		echo "</ul></li>"
+		i=$(( $i + 1 ))
 	done
-	echo "</ul></div>"
 
 	mkdir -p "$COLLECTD_GRAPHDIR"
 
+	#set the initial values
+	echo "document.forms.nav.host.options  = [];"
+	echo "for(var i = 0; i < Hosts.length; i++) {"
+	echo "document.forms.nav.host.options[i] = new Option(Hosts[i]);"
+	if [ -n "$CGI_HOST" ]; then
+		echo "if(Hosts[i] == '$CGI_HOST') document.forms.nav.host.selectedIndex = i;"
+	fi
+	echo "}"
+	echo "selectedHostChanged('$CGI_PLUGIN');"
+	echo "</script>"
 fi
 
 display_begin()

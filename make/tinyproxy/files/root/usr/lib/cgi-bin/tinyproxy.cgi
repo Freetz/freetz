@@ -121,8 +121,6 @@ EOF
 fi
 
 cat << EOF
-<tr><td>User:</td><td><input id="id_user" type="text" size="8" name="user" value="$TINYPROXY_USER"></td>
-<td>&nbsp; &nbsp;</td><td>Group:</td><td><input id="id_group" type="text" size="8" name="group" value="$TINYPROXY_GROUP"></td></tr>
 <tr><td>DefaultErrorFile:</td><td colspan="4"><input id="id_defaulterrorfile" type="text" size="45" name="defaulterrorfile" value='$TINYPROXY_DEFAULTERRORFILE'></td></tr>
 <tr><td>ErrorFile (*):</td><td colspan="4"><input id="id_errorfile" type="text" size="45" name="errorfile" value='$TINYPROXY_ERRORFILE'></td></tr>
 
