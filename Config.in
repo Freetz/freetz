@@ -897,6 +897,22 @@ config FREETZ_HAS_USB_HOST
 	help
 		Select this if your USB port is a host adapter.
 
+config FREETZ_HAS_USB_HOST_AVM
+	bool "AVM USB host"	if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_HAS_USB_HOST
+	default y		if \
+		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_FON_5124 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_WLAN_3130 || \
+		FREETZ_TYPE_WLAN_3131 || \
+		FREETZ_TYPE_WLAN_3170
+	default n
+	help
+		Select this if you have a box with AVM USB host.
+
 config FREETZ_HAS_WLAN
 	bool "Has WLAN"		if FREETZ_TYPE_CUSTOM
 	default n		if \
