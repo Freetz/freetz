@@ -124,7 +124,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ssize_t=4
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ptrdiff_t=4
-$(PKG)_CONFIGURE_ENV += ac_cv_c_bigendian_php=no
+$(PKG)_CONFIGURE_ENV += ac_cv_c_bigendian_php=$(if $(FREETZ_TARGET_ARCH_BE),yes,no)
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_intmax_t=8
 $(PKG)_CONFIGURE_ENV += ac_cv_func_getaddrinfo=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_c_stack_direction=-1
