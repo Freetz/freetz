@@ -186,7 +186,6 @@ new_menu_prepare() {
 
 	# system menu
 	{
-		. /usr/lib/libmodredir.sh
 		cat << EOF
 <li><a id="backup_restore" href="/cgi-bin/backup/index.cgi">$(lang de:"Sichern &amp; Wiederherstellen" en:"Backup &amp; restore")</a></li>
 <li><a id="firmware_update" href="$(href mod update)">$(lang de:"Firmware-Update" en:"Firmware update")</a></li>
