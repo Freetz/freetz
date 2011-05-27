@@ -1,0 +1,38 @@
+#!/bin/sh
+
+KERNEL_TOOLCHAIN_VERSION=0.4
+KERNEL_TOOLCHAIN_FILENAME_SUFFIX=freetz-${KERNEL_TOOLCHAIN_VERSION}-shared-glibc
+TARGET_TOOLCHAIN_VERSION=0.4
+TARGET_TOOLCHAIN_FILENAME_SUFFIX=freetz-${TARGET_TOOLCHAIN_VERSION}-shared-glibc
+
+TOOL_CONF=tools/config/conf
+DOT_CONFIG=.config
+
+miniconfig() {
+cat << EOF
+$1=y
+FREETZ_SHOW_ADVANCED=y
+FREETZ_BUILD_TOOLCHAIN=y
+FREETZ_BUILD_32BIT_TOOLCHAIN=y
+FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET=y
+# FREETZ_TARGET_TOOLCHAIN is not set
+# FREETZ_TARGET_CCACHE is not set
+EOF
+}
+
+#                                        kernel                  target
+# FREETZ_TYPE_FON_WLAN                mipsel-gcc3.x      mipsel-gcc4.x-uClibc0.9.28
+# FREETZ_TYPE_FON_WLAN_7270_V3        mipsel-gcc3.x      mipsel-gcc4.x-uClibc0.9.29
+# FREETZ_TYPE_FON_WLAN_7390           mips-gcc3.x        mips-gcc4.x-uClibc0.9.29
+# FREETZ_TYPE_FON_WLAN_7320           mips-gcc4.x        mips-gcc4.x-uClibc0.9.30
+
+for fb in FREETZ_TYPE_FON_WLAN FREETZ_TYPE_FON_WLAN_7270_V3 FREETZ_TYPE_FON_WLAN_7390 FREETZ_TYPE_FON_WLAN_7320; do
+	echo "Building toolchains for $fb"
+	make distclean
+	ln -s ../dl
+	make $TOOL_CONF
+	miniconfig $fb > $DOT_CONFIG
+	$TOOL_CONF -D $DOT_CONFIG Config.in
+	cp -a $DOT_CONFIG $DOT_CONFIG.$fb
+	make KTV=${KERNEL_TOOLCHAIN_FILENAME_SUFFIX} TTV=${TARGET_TOOLCHAIN_FILENAME_SUFFIX} toolchain
+done
