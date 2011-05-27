@@ -1080,18 +1080,23 @@ config FREETZ_DL_SITE
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7240/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7240
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v1/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7270_V1 && \
 											FREETZ_TYPE_LANG_DE
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v2/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
-											FREETZ_TYPE_LANG_DE && \
-											! FREETZ_TYPE_ALIEN_HARDWARE
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v2/firmware/english"	if	FREETZ_TYPE_FON_WLAN_7270_V2 && \
-											FREETZ_TYPE_LANG_EN
-	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v3/firmware/deutsch"	if	( FREETZ_TYPE_FON_WLAN_7270_V3 || \
-											( FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_ALIEN_HARDWARE ) ) &&\
+	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v2/firmware/deutsch"	if	( ( FREETZ_TYPE_FON_WLAN_7270_V2 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7270_7270 ) && \
+											! FREETZ_TYPE_LABOR && \
 											FREETZ_TYPE_LANG_DE
-	default "@AVM//fritz.box/fritzbox.fon_wlan_7270_v3/firmware/english"	if	( FREETZ_TYPE_FON_WLAN_7270_V3 || \
-											( FREETZ_TYPE_FON_WLAN_7270 && \
-											FREETZ_TYPE_ALIEN_HARDWARE ) ) &&\
+	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v2/firmware/english"	if	( ( FREETZ_TYPE_FON_WLAN_7270_V2 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7270_7270 ) && \
+											FREETZ_TYPE_LANG_EN
+	default "@AVM/fritz.box/fritzbox.fon_wlan_7270_v3/firmware/deutsch"	if	( ( FREETZ_TYPE_FON_WLAN_7270_V3 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7240_7270 ) && \
+											! FREETZ_TYPE_LABOR && \
+											FREETZ_TYPE_LANG_DE
+	default "@AVM//fritz.box/fritzbox.fon_wlan_7270_v3/firmware/english"	if	( ( FREETZ_TYPE_FON_WLAN_7270_V3 && \
+											! FREETZ_TYPE_ALIEN_HARDWARE ) || \
+											FREETZ_TYPE_7240_7270 ) && \
 											FREETZ_TYPE_LANG_EN
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7320/firmware/deutsch"	if	FREETZ_TYPE_FON_WLAN_7320
 	default "@AVM/fritz.box/fritzbox.fon_wlan_7340/firmware/english"	if	FREETZ_TYPE_FON_WLAN_7340
