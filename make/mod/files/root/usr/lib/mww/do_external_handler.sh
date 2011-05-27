@@ -2,6 +2,9 @@
 
 . /usr/lib/libmodcgi.sh
 
+# link FIFO to stdin
+exec < $1
+
 footer() {
 	echo "<p>"
 
@@ -28,6 +31,7 @@ html_do() {
 
 do_exit() {
 	footer
+	cat > /dev/null # consume stdin until FIFO is empty
 	exit "$@"
 }
 status() {
@@ -41,7 +45,6 @@ status() {
 	echo "</p>"
 }
 
-EXTERNAL_FILE=$1
 EXTERNAL_TARGET=${NAME%%:*}
 delete=false
 case $NAME in
@@ -54,9 +57,18 @@ esac
 
 cgi_begin '$(lang de:"external-Update" en:"external-update")'
 
+if [ "${FILENAME##*.}" != "external" ]; then
+	echo "<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
+	pre_begin
+	echo "$FILENAME is not a valid external file."
+	pre_end
+	status "failed"
+	do_exit 1
+fi
+
 echo "<p>$(lang de:"Ziel-Verzeichnis" en:"Target directory"): $EXTERNAL_TARGET</p>"
 
-kill() {
+prepare() {
 	echo "<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
 	pre_begin
 	echo -n "Stopping external services ... "
@@ -81,7 +93,7 @@ kill() {
 	status "done"
 }
 
-[ -d "$EXTERNAL_TARGET" ] && kill
+[ -d "$EXTERNAL_TARGET" ] && prepare
 
 cat << EOF
 <h1>$(lang de:"Dateien extrahieren" en:"Extract files")</h1>
@@ -90,14 +102,11 @@ EOF
 pre_begin
 untar() {
 	if mkdir -p "$EXTERNAL_TARGET"; then
-		if ! tar -C "$EXTERNAL_TARGET" -xv 2>&1; then
-			cat > /dev/null # prevent SIGPIPE if tar fails
-			return 1
-		fi < "$1"
+		tar -C "$EXTERNAL_TARGET" -xv 2>&1
 	fi
 }
 
-html_do untar "$EXTERNAL_FILE"
+html_do untar
 result=$?
 pre_end
 if [ $result -ne 0 ]; then
@@ -114,4 +123,4 @@ if [ -e /mod/etc/init.d/rc.external ] && $external_start; then
 	pre_end
 fi
 
-footer
+do_exit 0
