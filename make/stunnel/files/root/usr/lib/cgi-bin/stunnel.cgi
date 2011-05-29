@@ -33,6 +33,7 @@ cat << EOF
 <option value="info"$verbose_info_sel>4</option>
 <option value="debug"$verbose_debug_sel>5</option>
 </select>
+</p>
 EOF
 sec_end
 sec_begin '$(lang de:"Dienste" en:"Services")'
