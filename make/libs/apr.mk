@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.4.4)
+$(call PKG_INIT_LIB, 1.4.5)
 $(PKG)_MAJOR_VERSION:=1
-$(PKG)_LIB_VERSION:=0.4.4
+$(PKG)_LIB_VERSION:=0.4.5
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=daf5487c82dd7bec9c005c96f8cb01b1
+$(PKG)_SOURCE_MD5:=8b53f5a5669d0597f2da889a2f576eb6
 $(PKG)_SITE:=http://www.eu.apache.org/dist/apr
 
 $(PKG)_MAJOR_LIBNAME=libapr-$(APR_MAJOR_VERSION)

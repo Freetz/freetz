@@ -1,17 +1,16 @@
-$(call PKG_INIT_LIB, 2.04)
+$(call PKG_INIT_LIB, 2.05)
 $(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a383c7055a310e2a71b9ecd19cfea238
-$(PKG)_SITE:=http://www.oberhumer.com/opensource/lzo/download/
+$(PKG)_SOURCE_MD5:=c67cda5fa191bab761c7cb06fe091e36
+$(PKG)_SITE:=http://www.oberhumer.com/opensource/lzo/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/liblzo2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/liblzo2.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --disable-libtool-lock
-$(PKG)_CONFIGURE_OPTIONS += --disable-asm
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-asm
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -36,7 +35,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LZO_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2*
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzo2* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/lzo \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/doc/lzo
 
 $(pkg)-uninstall:
 	$(RM) $(LZO_TARGET_DIR)/liblzo2*.so*

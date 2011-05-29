@@ -3,11 +3,14 @@
 DAEMON=checkmaild
 . /etc/init.d/modlibrc
 
-#OPTIONS=-path /mod/etc/checkmaild.conf
+FLASH_DIR=/tmp/flash/checkmaild
+SOCKET_DIR=/var/tmp/checkmaild
+MAILACTIONS_FILE=$FLASH_DIR/mailactions
 
 config() {
 	modlib_config
-	mkdir -p /var/tmp/checkmaild
+	mkdir -p $SOCKET_DIR
+	ln -s $MAILACTIONS_FILE /mod/etc/maillog.cfg
 }
 
 start() {
@@ -16,8 +19,12 @@ start() {
 
 case $1 in
 	""|load)
+		mkdir -p $FLASH_DIR
+		[ ! -e $MAILACTIONS_FILE ] && cat /mod/etc/default.checkmaild/mailactions.default > $MAILACTIONS_FILE
+
 		modreg cgi $DAEMON 'Checkmail'
 		modreg daemon $DAEMON
+		modreg file checkmaild mailactions 'MailActions' 0 mailactions
 
 		modlib_start $CHECKMAILD_ENABLED
 		;;

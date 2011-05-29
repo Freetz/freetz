@@ -207,10 +207,10 @@ fi
 # Load config
 . "$DOT_CONFIG"
 
-if [ "$FREETZ_TARGET_ARCH_LE" == "y" ]; then
-	MKSQUASHFS_OPTIONS+=" -le"
-else
+if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
 	MKSQUASHFS_OPTIONS+=" -be"
+else
+	MKSQUASHFS_OPTIONS+=" -le"
 fi
 
 if [ "$FREETZ_KERNEL_VERSION_2_6_13_1" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then

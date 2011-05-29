@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.7.5.1)
+$(call PKG_INIT_BIN, 1.7.5.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=a49291116e3b0564e069ae989e4db6fb
+$(PKG)_SOURCE_MD5:=5b5a5e6c1c5c05db6b8dd33e6f3acea4
 $(PKG)_SITE:=@KERNEL/software/scm/$(pkg)
 
 # files to be moved from /usr/lib/git-core to /usr/bin

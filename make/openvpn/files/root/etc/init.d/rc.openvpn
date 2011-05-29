@@ -32,6 +32,7 @@ case $1 in
 		modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
 		mkdir -p /tmp/openvpn/etc
 		cp -f /etc/resolv.conf /tmp/openvpn/etc
+		cp -f /etc/TZ /tmp/openvpn/etc
 		;;
 esac
 
@@ -49,7 +50,7 @@ start() {
 	fi
 
 	if [ -r "/tmp/flash/openvpn/own_${DAEMON}.conf" ]; then
-		cp /tmp/flash/openvpn/own_${DAEMON}.conf /mod/etc/${DAEMON}.conf 
+		cp /tmp/flash/openvpn/own_${DAEMON}.conf /mod/etc/${DAEMON}.conf
 	else
 		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
 			/tmp/flash/${DAEMON}_conf /mod/etc/${DAEMON}.conf

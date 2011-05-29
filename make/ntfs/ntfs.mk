@@ -24,6 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-crypto
 $(PKG)_CONFIGURE_OPTIONS += --with-fuse=internal
+$(PKG)_CONFIGURE_OPTIONS += --without-uuid
 
 $(call REPLACE_LIBTOOL)
 

@@ -2,6 +2,9 @@
 
 . /usr/lib/libmodcgi.sh
 
+# link FIFO to stdin
+exec < $1
+
 footer() {
 	echo "<p>"
 
@@ -33,6 +36,7 @@ html_do() {
 
 do_exit() {
 	footer
+	cat > /dev/null # consume stdin until FIFO is empty
 	exit "$@"
 }
 status() {
@@ -47,6 +51,15 @@ status() {
 }
 
 cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
+
+if [ "${FILENAME##*.}" != "image" ]; then
+	"<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
+	pre_begin
+	echo "$FILENAME is not a valid image file."
+	pre_end
+	status "failed"
+	do_exit 1
+fi
 
 cat << EOF
 <h1>$(lang
@@ -105,12 +118,9 @@ echo "<p>$(lang
 ) ... </p>"
 pre_begin
 untar() {
-	if ! tar -C / -xv 2>&1; then
-		cat > /dev/null # prevent SIGPIPE if tar fails
-		return 1
-	fi < "$1"
+	tar -C / -xv 2>&1
 }
-html_do untar "$1"
+html_do untar
 result=$?
 pre_end
 if [ $result -ne 0 ]; then
@@ -216,4 +226,4 @@ the rest of the extracted firmware components."
 </p>
 EOF
 
-footer
+do_exit 0

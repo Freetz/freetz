@@ -7,7 +7,7 @@ error() {
 }
 
 check_program() {
-	which $1 > /dev/null && [ -x $(which $1) ]
+	which $1 > /dev/null 2>&1 && [ -x $(which $1) ]
 	return $?
 }
 
