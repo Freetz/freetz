@@ -1,4 +1,4 @@
-#!/var/tmp/sh
+#!/bin/sh
 . ./dtmfbox_cfg.cgi
 
 if [ ! -z "$(pidof 'dtmfbox')" ]; 

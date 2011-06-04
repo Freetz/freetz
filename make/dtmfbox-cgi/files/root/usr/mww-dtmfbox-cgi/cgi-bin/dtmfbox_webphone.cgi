@@ -1,4 +1,4 @@
-#!/var/tmp/sh
+#!/bin/sh
 
 EVENT="$1"
 REMOTE_ADDR="$2"

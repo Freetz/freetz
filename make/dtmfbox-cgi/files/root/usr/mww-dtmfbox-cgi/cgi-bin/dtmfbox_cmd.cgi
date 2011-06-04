@@ -1,4 +1,4 @@
-#!/var/tmp/sh
+#!/bin/sh
 . ./dtmfbox_cfg.cgi
 
 script=$(echo $QUERY_STRING | grep 'script=' | sed -e 's/.*script\=//' -e 's/\&.*//g')

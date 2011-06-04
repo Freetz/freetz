@@ -1,37 +1,53 @@
 #!/bin/sh
 DTMFBOX_VERSION="v0.5.0"
 
-FREETZ="1"									# USB/Standalone=0 | Freetz=1
+if [ -d "/etc/default.dtmfbox" ]; then FREETZ="1"; else FREETZ="0"; fi		# USB/Standalone=0 | Freetz=1
 
 let DTMFBOX_MAX_ACCOUNTS=10							# Max. accounts
 let DTMFBOX_MAX_SAVE_LIMIT=61440						# Max. size of /var/flash/debug.cfg
 PATH=$PATH:/var/dtmfbox
 
 if [ -f /var/dtmfbox/script.cfg ]; then						# Load script configuration
-	. /var/dtmfbox/script.cfg
-
-	if [ "$DTMFBOX_VERSION" != "$DTMFBOX_SCRIPT_VERSION" ]; then
-		VERSION_DIFFER_TEXT="<p><font color='red'><b>Achtung:<br>Die aktuellen Einstellungen und Skripte sollten zurueckgesetzt werden, da sie nicht mehr aktuell sind!<p>dtmfbox: $DTMFBOX_VERSION<br>Einstellungen: $DTMFBOX_SCRIPT_VERSION<br></b></font>"
+	. /var/dtmfbox/script.cfg						
+	
+	if [ "$DTMFBOX_VERSION" != "$DTMFBOX_SCRIPT_VERSION" ];
+	then
+	    VERSION_DIFFER_TEXT="<p><font color='red'><b>Achtung:<br>Die aktuellen Einstellungen und Skripte sollten zurueckgesetzt werden, da sie nicht mehr aktuell sind!<p>dtmfbox: $DTMFBOX_VERSION<br>Einstellungen: $DTMFBOX_SCRIPT_VERSION<br></b></font>"
 	fi
 else
-	DU="du"									# Required busybox commands (first time install, when no script.cfg exist)
-	FTPPUT="ftpput"
-	GZIP="gzip"
-	GUNZIP="gunzip"
-	HEAD="head"
-	HTTPD="httpd"
-	MKFIFO="mkfifo"
-	NC="nc"
-	TAIL="tail"
-	TAR="tar"
-	UUDECODE="uudecode"
-	UUENCODE="uuencode"
+	DU="/var/tmp/busybox-tools du"						# Required busybox commands (first time install, when no script.cfg exist)
+	FTPPUT="/var/tmp/busybox-tools ftpput"
+	GZIP="/var/tmp/busybox-tools gzip"
+	GUNZIP="/var/tmp/busybox-tools gunzip"
+	HEAD="/var/tmp/busybox-tools head"
+	HTTPD="/var/tmp/busybox-httpd httpd"
+	MKFIFO="/var/tmp/busybox-tools mkfifo"
+	NC="/var/tmp/busybox-tools nc"
+	TAIL="/var/tmp/busybox-tools tail"
+	TAR="/var/tmp/busybox-tools tar"
+	UUDECODE="/var/tmp/busybox-tools uudecode"
+	UUENCODE="/var/tmp/busybox-tools uuencode"	
 fi
 
+# first, try to get real path with realpath command ..
 export DTMFBOX_PATH="`realpath /var/dtmfbox 2>/dev/null`"
 # .. when this does not work, try to extract realpath with 'ls' command and sed ...
-if [ -z "$DTMFBOX_PATH" ] || [ ! -d "$DTMFBOX_PATH" ]; then
-	export DTMFBOX_PATH=""
+if [ -z "$DTMFBOX_PATH" ] || [ ! -d "$DTMFBOX_PATH" ];
+then
+	export DTMFBOX_PATH="`ls -l /var/dtmfbox 2>/dev/null | sed 's/^.*->.\(.*\)$/\1/g' 2>/dev/null`"
+	if [ -z "$DTMFBOX_PATH" ] || [ ! -d "$DTMFBOX_PATH" ];
+	then 		
+		if [ "$FREETZ" = "1" ];
+		then
+			# Freetz does not need a manual installation.
+			# The initial directory is /var/dtmfbox-bin
+			export DTMFBOX_PATH=""
+		else
+			# USB/Standalone needs a manual installation, because rc.dtmfbox script cannot be found.
+			# Output an error at the end of this script
+			DTMFBOX_INSTALL_ERROR="1"
+		fi
+	fi
 fi
 
 # USB or RAM?
@@ -46,7 +62,7 @@ else
 			ADDITIONAL_CAPTION="(APACHE"
 			DTMFBOX_APACHE="1"
 		else
-			ADDITIONAL_CAPTION="(USB"
+			ADDITIONAL_CAPTION="(USB"			
 		fi
 		DTMFBOX_USB="1";
 	else
@@ -56,12 +72,19 @@ else
 fi
 
 # Stylesheet
-STYLE_CSS="./dtmfbox_style.css";
-ADDITIONAL_CAPITION="$ADDITIONAL_CAPTION - Freetz)"
-MAIN_CGI="pkgconf.cgi?pkg=dtmfbox"
+#if [ "$FREETZ" = "0" ]; then
+	STYLE_CSS="../dtmfbox_style.css";
+	ADDITIONAL_CAPITION="$ADDITIONAL_CAPTION)"
+	MAIN_CGI="dtmfbox.cgi?pkg=dtmfbox"
+#else
+#	STYLE_CSS="./dtmfbox_style.css";
+#	ADDITIONAL_CAPITION="$ADDITIONAL_CAPTION - Freetz)"
+#	MAIN_CGI="pkgconf.cgi?pkg=dtmfbox"
+#fi
 
 # When no DTMFBOX_PATH was set, show the page, to setup the path
-if [ -z "$DTMFBOX_PATH" ] || [ ! -d "$DTMFBOX_PATH" ]; then
+if [ -z "$DTMFBOX_PATH" ] || [ ! -d "$DTMFBOX_PATH" ];
+then
 	RESET=$($HTTPD -d "`echo ${QUERY_STRING} | sed -n 's/.*reset_type=\(.*\)/\1/p' | sed -e 's/&.*//g'`")
 	if [ "$RESET" != "path" ]; then
 		QUERY_STRING="$MAIN_CGI&page=reset_path_only"
@@ -73,6 +96,7 @@ fi
 ########################################################################################################################
 
 head_begin() {
+#if [ "$FREETZ" = "0" ] || [ "$0" = "dtmfbox.cgi" ]; then
 if [ "$0" = "dtmfbox.cgi" ]; then
 cat << EOF
 Content-Type: text/html
@@ -89,11 +113,11 @@ Content-Type: text/html
   <title>$1</title>
   <style type="text/css">
 EOF
-else
-cat << EOF
-  </form>
-  <style type="text/css">
-EOF
+#else
+#cat << EOF
+#  </form>
+#  <style type="text/css">
+#EOF
 fi
 
 cat "$STYLE_CSS"
@@ -127,6 +151,7 @@ cat << EOF
   <td valign="top">
 EOF
 
+#if [ "$FREETZ" = "0" ] && [ "$FULLSCREEN" != "1" ]; then echo "<br>"; fi
 if [ "$FULLSCREEN" != "1" ]; then echo "<br>"; fi
 }
 
@@ -137,6 +162,36 @@ head_end() {
 echo "$VERSION_DIFFER_TEXT"
 
 if [ -f "../sWebPhone.jar" ]; then WEBPHONE="<tr><td><a href=\"$MAIN_CGI&page=webphone\">Webphone</a></td></tr>"; fi
+
+#if [ "$FREETZ" = "0" ]; then
+echo "</td><td valign='top' width='16%'><br>"
+cat << EOF
+	  <table class="menu" width="95%">
+	  <tr><td><a href="$MAIN_CGI&page=status">Status</a></td></tr>	  
+	  <tr><td><a href="$MAIN_CGI&page=dtmfbox_cfg">Basiseinstellungen</a></td></tr>
+	  <tr><td><a href="$MAIN_CGI&page=script_cfg">Skripteinstellungen</a></td></tr>
+	  <tr><td><a href="$MAIN_CGI&page=menu_cfg">Menü bearbeiten</a></td></tr>
+	  <tr><td><a href="$MAIN_CGI&page=scripts">Skripte bearbeiten</a></td></tr>
+	  <tr><td><a href="$MAIN_CGI&page=am_messages">Nachrichten</a></td></tr>
+	  $WEBPHONE
+	  <tr><td><a href="$MAIN_CGI&page=help" target="_new">Hilfe</a></td></tr>
+	  </table><br>
+EOF
+if [ "$DTMFBOX_APACHE" != "1" ]; then
+cat << EOF
+	  <table class="menu" width="95%">
+	  <tr><td><a href="$MAIN_CGI&page=reset">Pfad, Reset, Uninstall ...</a></td></tr>	
+	  </table>
+EOF
+fi
+cat << EOF
+  </td></tr></table>
+  </body>
+  </html>
+EOF
+#else
+#  echo "</td></tr></table>"
+#fi
 }
 
 ########################################################################################################################

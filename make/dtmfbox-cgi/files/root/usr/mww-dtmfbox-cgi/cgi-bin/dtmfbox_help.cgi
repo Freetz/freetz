@@ -4,13 +4,13 @@
 cat << EOF
 <script>
 if(document.location.href.indexOf('pkgconf.cgi?') >= 0) {
-	window.open('dtmfbox.cgi?page=help');
+        window.open('dtmfbox.cgi?page=help');
 	document.location.href = '$MAIN_CGI&page=status';
 }
 </script>
 EOF
 
-[ "$HELPPAGE" = "" ] && HELPPAGE="vorwort";
+if [ "$HELPPAGE" = "" ]; then HELPPAGE="vorwort"; fi
 MAIN_CGI="dtmfbox.cgi?pkg=dtmfbox"
 
 #
@@ -51,7 +51,7 @@ cat << EOF
 	<li>Telefonie-Befehle lassen sich über die Kommandozeile, per Skript oder über eine Funktion ausführen</li>
 	</ul>
 	Ohne Skripte und Plugins lässt sich die dtmfbox rein als CAPI-/SIP-Phone nutzen.
-	Dabei wird der Rufaufbau entweder über den angebundenen SIP-Client ausgelöst (Registrar-Mode), bzw. manuell von der Konsole ausgeführt (<font class='code'>dtmfbox 0 -call ...</font>).
+	Dabei wird der Rufaufbau entweder über den angebundenen SIP-Client ausgelöst (Registrar-Mode), bzw. manuell von der Konsole ausgeführt (<font class='code'>dtmfbox 0 -call ...</font>).  	
 	<br><br>
 
 	Mithife von Shell-Skripten und Plugins lässt sich jedoch der Funktionsumfang erweitern.<br>
@@ -60,7 +60,7 @@ cat << EOF
 	<li>ein Gespräch automatisch annehmen, aufzeichnen und eine Wave-Datei abspielen (Anrufbeantworter)
 	<li>ein weiteres Gespräch aufbauen und mit dem bestehenden Gespräch "verbinden" (Callthrough)
 	<li>nach dem Auflegen einer bestimmten Nummer, einen Rückruf veranlassen (Callback)
-	<li>Benutzerdefinierte (Sprach-)Menüs (libmenu.plugin.so)
+	<li>Benutzerdefinierte (Sprach-)Menüs (libmenu.plugin.so)	
 	<li>usw...
 	</ul>
 	Die <a href="$MAIN_CGI&page=help&help=ereignisse" target="_new">Telefonie-Ereignisse</a> werden als Parameter an die Skripte und Plugins übergeben.<br>
@@ -69,14 +69,14 @@ cat << EOF
 
 	Das Webinterface der dtmfbox besteht aus einem Plugin und mehreren Skripten:<br><br>
 	<i>libmenu.plugin.so</i> dient dazu, eine komfortable Menüschnittstelle zu bieten, welche sich über die Datei <a href="$MAIN_CGI&page=menu_cfg" target="_new">menu.cfg</a> anpassen lässt.
-	In dieser Konfiguration wird das <a href="$MAIN_CGI&page=help&help=menu_start" target="_new">Menü</a> festgelegt.
-	Zudem lassen sich <a href="$MAIN_CGI&page=help&help=menu_action">Aktionen</a> (<a href="$MAIN_CGI&page=help&help=ereignisse">Ereignisse</a>) hinterlegen.
+	In dieser Konfiguration wird das <a href="$MAIN_CGI&page=help&help=menu_start" target="_new">Menü</a> festgelegt.	
+	Zudem lassen sich <a href="$MAIN_CGI&page=help&help=menu_action">Aktionen</a> (<a href="$MAIN_CGI&page=help&help=ereignisse">Ereignisse</a>) hinterlegen.	
 	<br><br>
 
 	Im Standard gibt es folgende Funktionen:
 	<ul>
 		<li><b>Anrufbeantworter</b></li>
-		    <i>Ansage/Endansage, Aufnahme-/Ansagemodus, Mailversand/FTP-Streaming, Schedule</i>
+		    <i>Ansage/Endansage, Aufnahme-/Ansagemodus, Mailversand/FTP-Streaming, Schedule</i>		
 		</li><p></p>
 
 		<li><b>Anrufbeantworter Fernabfrage und interne Abfrage</b><br>
@@ -93,11 +93,11 @@ cat << EOF
 
 		<li><b>Sonstiges</b><br>
 		    <i>Fritz!Box Infos, Wettervorhersage (Podcast), Web-Radio, CheckMailD abfragen</i>
-		</li>
+		</li>		
 	</ul>
 	Das Menü ist hierarchisch aufgebaut (siehe <a href="$MAIN_CGI&page=help&help=menu_start" target="_new">hier</a>).
 	<a href="$MAIN_CGI&page=menu_cfg" target="_new">Menü</a> und <a href="$MAIN_CGI&page=scripts" target="_new">Skripte</a> lassen sich nach belieben erweitern und bearbeiten.<br><br>
-
+	 	
 	Einstellungen werden bei der Standalone-Version in der <i>/var/flash/debug.cfg</i> gespeichert (komprimiert). <br>
 	Bei der USB-Version wird nur ein Start-Skript in die <i>/var/flash/debug.cfg</i> geschrieben.<br>
 	Bei der Apache-Installation werden die Daten unkomprimiert, unter <i>/usr/bin/dtmfbox-apache</i> abgelegt.<br><br>
@@ -228,7 +228,7 @@ capi_controller_out=4			// Standardcontroller für ausgehende Verbindungen
 		<li><b>ISDN/Analog (über SIP-Registrar)</b><p></p>
 		Analog/ISDN-Telefone können optional über SIP angemeldet werden.<br>
 		Dazu muss der Registrar-Modus der dtmfbox aktiviert und die Anmeldedaten des Clients hinterlegt werden:<p></p>
-
+		
 <i>Beispiel (Analog):</i><br>
 <pre class='code'>
 [voip]
@@ -253,7 +253,7 @@ registrar_pass=secret			// Passwort
 
 		Im AVM-WebIf wird nun ein Internettelefonie-Account angelegt.<br>
 		In diesem Beispiel würde man als Registrar "127.0.0.1:5061" oder "fritz.box:5061" angeben mit dem Usernamen "1234567" und dem Passwort "secret".<br><br>
-		Bei erfolgreicher Anmeldung wird der Client unter <a href="$MAIN_CGI&page=status" target="_new">Status</a> angezeigt.<br>
+		Bei erfolgreicher Anmeldung wird der Client unter <a href="$MAIN_CGI&page=status" target="_new">Status</a> angezeigt.<br>		
 		</li><p></p>
 
 		<a name="m3" href="#m3"></a>
@@ -270,7 +270,7 @@ number=0#1234567			// 0# = Erster Account, 1234567=Internetrufnummer
 type=capi				// type=capi
 capi_controller_out=5			// Standardcontroller für ausgehende Verbindungen
 </pre>
-
+		
 <i>Beispiel (4. Internettelefonie-Account):</i><br>
 <pre class='code'>
 [acc1]
@@ -486,7 +486,7 @@ Hauptmenü
    |- 4 = Radio
       |
       |- X = Radiostream 1-9
-      |- * = Zurück
+      |- * = Zurück	
 </pre>
 
 EOF
@@ -733,28 +733,28 @@ Alle Skripte binden diese Datei ein, wie auch das Webinterface, um Einstellungen
 <ul>
 	<li><b>Autostart</b><p>
 	Gibt an, ob die dtmfbox beim Booten automatisch gestartet werden soll.</li><br>
-
+	
 	<li><b>Anrufbeantworter</b<p>
 	Die Einstellungen für den Anrufbeantworter. Diese gelten für alle Accounts gleichermaßen.<br>
-	Um accountspezifische Einstellungen zu hinterlegen, muss man im <a href="$MAIN_CGI?pkg=dtmfbox&page=script_cfg&direct_edit=1" target="_new">Text-Editor</a> die jeweiligen Einträge hinzufügen, mit dem Präfix <font class='code'>ACCX_</font> (X=Account ID). Globale Einstellungen fangen mit dem Präfix <font class='code'>GLOBAL_</font> an.<br>
+	Um accountspezifische Einstellungen zu hinterlegen, muss man im <a href="$MAIN_CGI?pkg=dtmfbox&page=script_cfg&direct_edit=1" target="_new">Text-Editor</a> die jeweiligen Einträge hinzufügen, mit dem Präfix <font class='code'>ACCX_</font> (X=Account ID). Globale Einstellungen fangen mit dem Präfix <font class='code'>GLOBAL_</font> an.<br>	
 	Um z.B. die Ansage von Account 5 zu ändern, folgende Zeile hinzufügen:<br>
-<pre class='code'><font class='code'>ACC5_AM_ANNOUNCEMENT_START=/var/dtmfbox/play/ansage.wav  # Ansage für Account Nr. 5</font></pre>
+<pre class='code'><font class='code'>ACC5_AM_ANNOUNCEMENT_START=/var/dtmfbox/play/ansage.wav  # Ansage für Account Nr. 5</font></pre>	
 	Als Ansage und Endansage kann man auch eine URL angeben, wie z.B. http://www.url.de/ansage.wav oder ftp://www.url.de/ansage.wav.<br>
 	Wichtig ist, dass die PCM-Wave vom Format 8000hz, 16bit, Mono ist.<br>
 	<br>
 	Aufnahmen können per eMail verschickt oder auf einen FTP-Server abgelegt werden.<br>
 	Beim eMail-Versand werden die Aufnahme als Wave-Datei versendet. Beim FTP-Streaming werden PCM-Dateien ohne Wave-Header geschrieben, welche ebenfalls über das AB-Menü abgehört werden können (RAW 8000hz, 16bit, Mono).
 	</li><br>
-
-	<li><b>Callthrough</b><p>
-	Callthrough Regeln bestehen aus max. zwei Teilen, welche durch Schrägstriche getrennt werden:<br>
+	
+	<li><b>Callthrough</b><p>	
+	Callthrough Regeln bestehen aus max. zwei Teilen, welche durch Schrägstriche getrennt werden:<br>	
 	<pre class='code'><font class='code'>Trigger-Nr./[Trigger-Accout]</font></pre>
 	Die Trigger-Nr. muss angegeben werden. Sie ist die Nummer, die den Callthrough auslösen soll. Als Trigger-Nummer kann man eine Regular-Expression verwenden, um z.B. beliebigen Nummern den Zugang zum Callthrough zu ermöglichen.<br>
 	Der Trigger-Account ist optional. Dies kann die Account-ID oder die Nummer des Accounts sein, welcher auf Callthroughs reagieren soll.<br>
 	Wenn kein Trigger-Account angegeben wird, ist die Callthrough-Regel für alle Accounts aktiv.<br>
 	<br>
-	<i>Beispiel:</i><br>
-	Account 1 soll bei einem Anruf der Nummer 004922112345 das Gespräch annehmen und an das Callthrough Menü weiterleiten:<br>
+	<i>Beispiel:</i><br>	
+	Account 1 soll bei einem Anruf der Nummer 004922112345 das Gespräch annehmen und an das Callthrough Menü weiterleiten:<br>	
 <pre class='code'>
 004922112345/1          # Mit Angabe der Account-ID
 004922112345/322423     # Mit Angabe der Account-Nummer
@@ -768,10 +768,10 @@ Alle Skripte binden diese Datei ein, wie auch das Webinterface, um Einstellungen
 	<li>Die Callthrough-Regeln werden nacheinander abgearbeitet. Sobald eine leere Callthrough-Regel gefunden wird, bricht das Skript die weitere Prüfung ab.
 	</ul>
 	</li>
-
-	<li><b>Callback</b><p>
-	Callback Regeln bestehen aus zwei bis fünf Teilen, welche ebenfalls durch Schrägstriche getrennt werden:<br>
-	<pre class='code'><font class='code'>Trigger-Nr./Rückruf-Nr./[Trigger-Account]/[Rückruf-Account]/[CAPI-Controller]</font></pre>
+	
+	<li><b>Callback</b><p>	
+	Callback Regeln bestehen aus zwei bis fünf Teilen, welche ebenfalls durch Schrägstriche getrennt werden:<br>	
+	<pre class='code'><font class='code'>Trigger-Nr./Rückruf-Nr./[Trigger-Account]/[Rückruf-Account]/[CAPI-Controller]</font></pre>	
 	Die Trigger- und Rückruf-Nr. muss angegeben werden. Die Trigger-Nr. ist die Nummer, welche den Callback auslösen soll. Rückruf-Nr. ist die Nummer, auf welche nach dem Auflegen zurückgerufen werden soll.<br>
 	Optional können noch Trigger- und Rückruf-Account und ein CAPI Controller angegeben werden. Trigger-Account ist, wie beim Callthrough auch, die Einschränkung des Callbacks auf einen bestimmten Account.<br>
 	Rückruf-Account ist der Account, welcher den Rückruf durchführen soll. Hier kann die Account-ID, aber auch die Nummer angegeben werden. Der CAPI-Controller bestimmt den ausgehenden Controller für den Callback und sollte bei VoIP-Accounts nicht angegeben werden.<br>
@@ -785,7 +785,7 @@ Alle Skripte binden diese Datei ein, wie auch das Webinterface, um Einstellungen
 .*22112345/0160555555555                # Rückruf mithilfe von RegEx.
 \(.*22112345\)/\1                       # Rückruf mithilfe von RegEx auf Trigger-Nr.
                                         # Trigger-Nr wird als Rückrufnummer verwendet. Nicht 0160555555555
-</pre>
+</pre>	
 	<i>Hinweis:</i><br>
 	<ul>
 	<li>Bei ISDN ist es ratsam, unter den <a href='$MAIN_CGI?pkg=dtmfbox&page=dtmfbox_cfg' target='_new'>Basiseinstellungen</a> die Landes und Ortsvorwahl zu hinterlegen.
@@ -793,13 +793,13 @@ Alle Skripte binden diese Datei ein, wie auch das Webinterface, um Einstellungen
 	<li>Die Callback-Regeln werden nacheinander abgearbeitet. Sobald eine leere Callback-Regel gefunden wird, bricht das Skript die weitere Prüfung ab.
 	</ul>
 	</li>
-
-	<li><b>Webradio</b><p>
+	
+	<li><b>Webradio</b><p>	
 	Das Webradio kann man im Menü unter "(4) Sonstiges -> (4) Radio" erreichen. Vorraussetzung für das Abspielen von MP3-Streams ist das Programm 'madplay' (siehe auch: "Programme & Pfade").<br><br>
 	Es können bis zu neun MP3-Streams hinterlegt werden (URLs). Durch eine entsprechende <a href='$MAIN_CGI?pkg=dtmfbox&page=menu_cfg' target='_new'>Menüänderung</a> lassen sich aber mehr Streams einfügen.<br>
 	<br>
-	<i>Beispiel:</i><br>
-
+	<i>Beispiel:</i><br>	
+	
 <pre class='code'>[menu:misc_radio]
 say=Radio
 1#=script:misc_radio(1)
@@ -814,9 +814,9 @@ say=Radio
 	</li><br>
 
 	<li><b>Rückwärtssuche</b><p>
-	Die Rückwärtssuche ermöglicht das Anzeigen von Name und Adresse auf dem ISDN-Telefon als Display-Message.<br>
+	Die Rückwärtssuche ermöglicht das Anzeigen von Name und Adresse auf dem ISDN-Telefon als Display-Message.<br>	
 	Den Accounts wird dabei eine Pseudo-MSN zugeordnet. Im Telefon wird die original Empfangs-MSN durch die Pseudo-MSN ersetzt. Die Sende-MSN bleibt unverändert!<p>
-
+	
 	<i>Hinweise:</i>
 	<ul>
 		<li>Die Rückwärtssuche funktioniert nur mit Telefonen, die am internen S0-Bus angeschlossen sind.<br>Fon1-3 und das interne DECT der FB werden nicht unterstützt!</li>
@@ -824,14 +824,14 @@ say=Radio
 		Wird kein Eintrag ausgegeben, so wird die Funktion <i>revers_lookup2()</i> aufgerufen, welche eine Rückwärtssuche über "dasoertliche.de" durchführt.</li>
 	</ul>
 	</li><br>
-
+	
 	<li><b>Anti-Callcenter</b><p>
 	Das Anti-Callcenter Skript dient dazu, unbekannte Anrufer direkt anzunehmen und zur Rufnummerneingabe aufzufordern.<p>
 	Jedem Account kann eine Weiterleitungs-Rufnummer hinterlegt werden:<br>
 	Bei ISDN ist es die MSN (bei aktiver Rückwärtssuche, die Pseudo-MSN).<br>
 	Bei Analog und VoIP kann eine SIP-Adresse angegeben werden, wie z.B. 12345@fritz.box (siehe auch <a href='$MAIN_CGI&page=help&help=accounts'>Accounts einrichten /  SIP-Registrar</a>).<br><br>
 	Es wird das Skript <i>action_anticallcenter.sh</i> aufgerufen.<p>
-
+	
 	<i>Hinweis:</i><br>
 	Analog-Telefone müssen nicht unbedingt per SIP angebunden werden. Es reicht aus, im AVM-Webif einen Internet-Telefonieaccount anzulegen und einem FON-Anschluss zuzuordnen.
 	Die Einstellungen des Internet-Telefonieaccount könnten folgendermaßen aussehen:<br>
@@ -852,17 +852,17 @@ say=Radio
 	<ul>
 		<li><b>Installiert</b><br>
 		eSpeak ist installiert. Entweder auf USB oder im Flash (Einstellungen zur Pfadangabe unten beachten!)</li><br>
-
+		
 		<li><b>Webstream</b><br>
 		eSpeak über Webstream abrufen. Eine Installation von eSpeak ist nicht nötig.</li><br>
-
+		
 		<li><b>Beep</b><br>
-		eSpeak deaktivieren. Nur Beep.</li>
+		eSpeak deaktivieren. Nur Beep.</li>	
 	</ul>
 	<i>Hinweis:</i><br>
 	Der Typ: f5 und m5 (mbrola) ist nur als Webstream verfügbar.<br>
 	</li><br>
-
+	
 	<li><b>Programme & Pfadangaben</b><p>
         Bei der USB-Version finden sich espeak, madplay usw. unter <font class='code'>/var/dtmfbox/extras</font>, sodass dieser Pfad hier voreingestellt ist.<br>
 	Bei Freetz liegen die Programme an anderen Orten: <br>
@@ -872,8 +872,8 @@ say=Radio
 		<li>checkmaild: <font class='code'>/mod/etc</font>
 	</ul>
 	</li><br>
-
-	<li><b>Webinterface</b><p>
+	
+	<li><b>Webinterface</b><p>	
 	Das Speicherverhalten kann auf "Diff + Patch + GZip" oder nur "GZip" eingestellt werden. Erstere Methode spart etwas Flash-Speicher, falls die dtmfbox im RAM installiert wurde.<br>
 	</li><br>
 </ul>
@@ -980,7 +980,7 @@ Dies trifft hauptsächlich auf die Dateien <i>dtmfbox.cfg</i> und <i>script.cfg</
 <br>
 Jeder Einstellung wird im Text-Editor ein Kommentar zugewiesen:<br>
 <ul>
-<li><b>dtmfbox.cfg:</b> <font class='code'>Einstellung=Wert // Kommentar</font>
+<li><b>dtmfbox.cfg:</b> <font class='code'>Einstellung=Wert // Kommentar</font> 
 <li><b>script.cfg:</b> <font class='code'>Einstellung="Wert" # Kommentar</font>
 </ul>
 Dieser Kommentar wird als Bezeichnung für die Einstellung verwendet. Klickt man nun auf "Speichern" und verlässt den Text-Editor, stellt man fest, das die Einstellung mit dem jeweiligen Kommentar, als Textbox, angezeigt wird.<br><br>
@@ -1044,7 +1044,7 @@ Zudem können Ereignisse genutzt werden, um Skripte bei bestimmten Verbindungszus
 </pre>
 <ul>
 <li><font class='code'>%event%</font> ist der aktuelle Verbindungsstatus:
-<ul>
+<ul> 
 	<li><font class='code'>DDI</font> tritt beim Wählen auf, bevor die Verbindung aufgebaut wird</li>
 	<li><font class='code'>EARLY</font> tritt bei ausgehenden Verbindungen auf, nachdem gewählt wurde</li>
 	<li><font class='code'>CONNECT</font> signalisiert einen neuen ankommenden, bzw. ausgehenden Anruf</li>
@@ -1075,18 +1075,18 @@ cat << EOF
 <b>Hilfe</b>
 <hr color="black">
   <ul>
-	<li><a href="$MAIN_CGI&page=help&help=vorwort">Vorwort</a></li>
+	<li><a href="$MAIN_CGI&page=help&help=vorwort">Vorwort</a></li>	
 	<li><a href="$MAIN_CGI&page=help&help=getting_started">Getting started...</a></li>
 	<br>
-	<li><a href="$MAIN_CGI&page=help&help=status">Status</a></li>
+	<li><a href="$MAIN_CGI&page=help&help=status">Status</a></li>	
 	<li><a href="$MAIN_CGI&page=help&help=basiseinstellungen">Basiseinstellungen</a></li>
 	<ul>
-		<li><a href="$MAIN_CGI&page=help&help=accounts">Accounts einrichten</a></li>
+		<li><a href="$MAIN_CGI&page=help&help=accounts">Accounts einrichten</a></li>		
 		<li><a href="$MAIN_CGI&page=help&help=internes_menu">Kurzwahlen einrichten</a></li>
 	</ul>
-
+	
 	<li><a href="$MAIN_CGI&page=help&help=skripteinstellungen">Skripteinstellungen</a></li>
-	<br>
+	<br>	
 	<li><a href="$MAIN_CGI&page=help&help=menu_start">Das Menü</a></li>
 	<li><a href="$MAIN_CGI&page=help&help=menu">Menü bearbeiten</a></li>
 	<ul>
@@ -1095,7 +1095,7 @@ cat << EOF
 		<li><a href="$MAIN_CGI&page=help&help=menu_lib">lib:</a></li>
 		<li><a href="$MAIN_CGI&page=help&help=menu_action">action:</a></li>
 	</ul>
-
+		
 	<li><a href="$MAIN_CGI&page=help&help=skripte_bearbeiten">Skripte bearbeiten</a></li>
 	<br>
 	<li><a href="$MAIN_CGI&page=help&help=nachrichten">Nachrichten</a></li>

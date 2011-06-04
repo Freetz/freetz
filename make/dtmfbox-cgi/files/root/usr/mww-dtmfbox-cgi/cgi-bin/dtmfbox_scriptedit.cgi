@@ -45,7 +45,8 @@ if [ \"\$DTMFBOX_PATH\" = \"\" ] || [ \"\$DTMFBOX_PATH\" = \"/var/dtmfbox\" ]; t
 #####################################################################
 
 FILE_START_PING="
-if [ \"\$DTMFBOX_PATH\" = \"/var/dtmfbox-bin\" ] || [ ! -f \"\$DTMFBOX_PATH/rc.dtmfbox\" ]; then
+if [ \"\$DTMFBOX_PATH\" = \"/var/dtmfbox-bin\" ] || [ ! -f \"\$DTMFBOX_PATH/rc.dtmfbox\" ];
+then
 	mkdir -p \"\$DTMFBOX_PATH\"
 	cd \"\$DTMFBOX_PATH\"
 
@@ -84,7 +85,12 @@ sleep 30; sh \"$BOOT_CFG\""
 
 #####################################################################
 
-RC_PREFIX="/etc/init.d"
+if [ "$FREETZ" = "0" ];
+then
+	RC_PREFIX="."
+else
+	RC_PREFIX="/etc/init.d"
+fi
 
 FILE_START="
 mkdir -p \$DTMFBOX_PATH
@@ -101,14 +107,14 @@ then
 	# decode/unpack configuration...
 	$UUDECODE "/var/tmp/$FILE_UUE" | $GUNZIP -f -c | $TAR xv -C / -f -
 	rm /var/tmp/$FILE_UUE 2>/dev/null
-
-	# patch config and scripts
+	
+	# patch config and scripts	
 	if [ -f /var/dtmfbox/cfg.patch ]; then
 		cp /var/dtmfbox/default/cfg/* /var/dtmfbox
 		$PATCH < /var/dtmfbox/cfg.patch;
-		rm /var/dtmfbox/cfg.patch
-	fi
-
+		rm /var/dtmfbox/cfg.patch	
+	fi		
+	
 	cd \$DTMFBOX_PATH/script
 	if [ -f /var/dtmfbox/script.patch ]; then
 		cp /var/dtmfbox/default/script/* /var/dtmfbox/script
@@ -117,7 +123,7 @@ then
 	fi
 	chmod +x /var/dtmfbox/script/*
 	cd \$DTMFBOX_PATH
-
+	
 	# start webinterface (set password)
 	if [ ! -z \"\$DTMFBOX_WEBIF_PASS\" ]; then echo \"\$DTMFBOX_WEBIF_PASS\" > /var/dtmfbox/httpd/httpd.conf; fi
 	$RC_PREFIX/rc.dtmfbox start_httpd
@@ -133,9 +139,9 @@ do_compress() {
 
   if [ "$PATCHDIFF" = "1" ];
   then
-	# does busybox have patch and diff?
+	# does busybox have patch and diff?	
 	HAS_DIFF=`$DIFF --help 2>&1 | $HEAD -n 1 | grep "not found"`
-	HAS_PATCH=`$PATCH --help 2>&1 | $HEAD -n 1 | grep "not found"`
+        HAS_PATCH=`$PATCH --help 2>&1 | $HEAD -n 1 | grep "not found"`
   else
 	HAS_DIFF="NO"
 	HAS_PATCH="NO"
@@ -156,7 +162,7 @@ do_compress() {
 	  $TAR c -O /var/dtmfbox/script.patch /var/dtmfbox/cfg.patch 2>/dev/null | $GZIP -f - | $UUENCODE - > "/var/tmp/$FILE_UUE"
 	  rm /var/dtmfbox/script.patch /var/dtmfbox/cfg.patch 2>/dev/null
   else
-	# save GZipped (ALL_FILES --> TAR --> GZ --> UUE)
+	# save GZipped (ALL_FILES --> TAR --> GZ --> UUE)	
 	$TAR c -O $CONFIG_FILES $SCRIPT_FILES 2>/dev/null | $GZIP -f - | $UUENCODE - > "/var/tmp/$FILE_UUE"
   fi
 
@@ -259,40 +265,42 @@ do_compress() {
   let FILE_SIZE_DEBUG="`$DU $DEBUG_CFG_TMP | sed -r 's/(.*)\t.*/\1/g'`"
   let FILE_SIZE_DEBUG=$FILE_SIZE_DEBUG*1024
 
-  if [ $FILE_SIZE_DEBUG -ge $DTMFBOX_MAX_SAVE_LIMIT ]; then
-	# maximum file size reached! Abort!
-	FILE_STATUS="<font color='red'><b>Fehler! Maximale Größe der /var/flash/debug.cfg erreicht! Erlaubt: $DTMFBOX_MAX_SAVE_LIMIT Bytes, Aktuell: $FILE_SIZE_DEBUG Bytes</b></font>"
+  if [ $FILE_SIZE_DEBUG -ge $DTMFBOX_MAX_SAVE_LIMIT ];
+  then
+    	  # maximum file size reached! Abort!
+          FILE_STATUS="<font color='red'><b>Fehler! Maximale Größe der /var/flash/debug.cfg erreicht! Erlaubt: $DTMFBOX_MAX_SAVE_LIMIT Bytes, Aktuell: $FILE_SIZE_DEBUG Bytes</b></font>"
   else
-	# check for changes in /var/flash/debug.cfg
-	F1="`cat $DEBUG_CFG_TMP`"
-	F2="`cat $DEBUG_CFG`"
-
-	FILE_STATUS="$FILE_STATUS<br>"
-
-	if [ "$F1" != "$F2" ]; then
-		# save new debug.cfg ...
+	  # check for changes in /var/flash/debug.cfg
+	  F1="`cat $DEBUG_CFG_TMP`"
+	  F2="`cat $DEBUG_CFG`"
+	
+	  FILE_STATUS="$FILE_STATUS<br>"
+	
+	  if [ "$F1" != "$F2" ];
+	  then
+	  	# save new debug.cfg ...
 		cat "$DEBUG_CFG_TMP" > "$DEBUG_CFG"
 		FILE_STATUS="$FILE_STATUS <font size=1>$DEBUG_CFG gespeichert!</font><br>"
-
+		
 		if [ "$GOT_USB" = "1" ]; then
-			FILE_STATUS="$FILE_STATUS <font size=1>$BOOT_CFG gespeichert!</font><br>"
+			FILE_STATUS="$FILE_STATUS <font size=1>$BOOT_CFG gespeichert!</font><br>"		
 		fi
-	else
-		# no changes ...
+	  else
+	        # no changes ...
 		if [ "$GOT_USB" = "1" ]; then
-			FILE_STATUS="$FILE_STATUS <font size=1>$BOOT_CFG gespeichert!</font><br>"
-		else
-			FILE_STATUS="$FILE_STATUS <font size=1>$DEBUG_CFG unverändert!</font><br>"
+			FILE_STATUS="$FILE_STATUS <font size=1>$BOOT_CFG gespeichert!</font><br>"		
+		else	
+			FILE_STATUS="$FILE_STATUS <font size=1>$DEBUG_CFG unverändert!</font><br>"		
 		fi
-	fi
+	  fi	  	
   fi
-
+	
   # ... and remove temporary files
   rm "$DEBUG_CFG_TMP" 2>/dev/null
   rm "/var/tmp/$FILE_UUE" 2>/dev/null
 
   else
-	FILE_STATUS="<font color='red'><b>Fehler! $FILE_UUE kann nicht erzeugt werden!</font>"
+    FILE_STATUS="<font color='red'><b>Fehler! $FILE_UUE kann nicht erzeugt werden!</font>"
   fi
 }
 
@@ -307,8 +315,10 @@ do_uninstall() {
   # search for start-tag/end-tag and remove data
   let START_FOUND=0
   let END_FOUND=0
-  while read line; do
-	if [ $START_FOUND -eq 0 ]; then
+  while read line;
+  do
+	if [ $START_FOUND -eq 0 ];
+	then
 		if [ "$FILE_START_TAG" = "$line" ]; then
 			# start tag found! stop writing!
 			let START_FOUND=1;
@@ -318,7 +328,8 @@ do_uninstall() {
 		fi
 	fi
 
-	if [ $START_FOUND -eq 1 ]; then
+	if [ $START_FOUND -eq 1 ];
+	then
 		if [ "$FILE_END_TAG" = "$line" ]; then
 			# resume writing...
 			let START_FOUND=0
@@ -332,32 +343,32 @@ do_uninstall() {
 #####################################################################
 
 do_save() {
-	# save required variables, that gets overwritten by script.cfg
-	TMP_DIRECT_EDIT="$DIRECT_EDIT"
-	TMP_DTMFBOX_PATH="$DTMFBOX_PATH"
+      # save required variables, that gets overwritten by script.cfg
+      TMP_DIRECT_EDIT="$DIRECT_EDIT"
+      TMP_DTMFBOX_PATH="$DTMFBOX_PATH"
+      
+      # Reload (webinterface) settings
+      if [ "$FILE_EDIT" = "/var/dtmfbox/script.cfg" ]; then
+	. $FILE_EDIT
+      fi
 
-	# Reload (webinterface) settings
-	if [ "$FILE_EDIT" = "/var/dtmfbox/script.cfg" ]; then
-		. $FILE_EDIT
-	fi
+      # restore dtmfbox path!!
+      DTMFBOX_PATH="$TMP_DTMFBOX_PATH"
 
-	# restore dtmfbox path!!
-	DTMFBOX_PATH="$TMP_DTMFBOX_PATH"
+      if [ "$DTMFBOX_APACHE" != "1" ]; then
 
-	if [ "$DTMFBOX_APACHE" != "1" ]; then
+	      # generate text for bootfile
+	      generate_bootfile
+	
+	      # compress data and save to flash
+	      do_compress;
 
-		# generate text for bootfile
-		generate_bootfile
+      else
+	      FILE_STATUS="Einstellungen gespeichert!"
+      fi
 
-		# compress data and save to flash
-		do_compress;
-
-	else
-		FILE_STATUS="Einstellungen gespeichert!"
-	fi
-
-	# restore edit mode!!
-	DIRECT_EDIT="$TMP_DIRECT_EDIT"
+      # restore edit mode!!
+      DIRECT_EDIT="$TMP_DIRECT_EDIT"
 }
 
 # read post variables
@@ -383,7 +394,7 @@ for var in $recv_data; do
 		SECT_SELECT=$(echo $var | grep 'fsect_sel=' | sed -e 's/fsect_sel\=//' -e 's/\&.*//g')
 		SECT_SELECT=$(echo "$SECT_SELECT" | sed -e "s/%0D//g" -e "s/%0A/\n/g")
 		SECT_SELECT=$($HTTPD -d "$SECT_SELECT")
-	fi
+	fi	
 
 	# restart dtmfbox?
 	if [ "$DTMFBOX_REBOOT" != "dtmfbox_reboot" ];
@@ -416,21 +427,22 @@ if [ "$FILE_STATUS" = "" ]; then FILE_STATUS="$FILE_EDIT"; fi
 
 # save changes
 for var in $recv_data; do
-	if [ "$FILE_DATA" = "" ]; then
+  if [ "$FILE_DATA" = "" ]; then
 
-		# convert data
-		FILE_DATA=$(echo $var | grep 'edit=' | sed -e 's/edit\=//' -e 's/\&.*//g')
-		FILE_DATA=$(echo "$FILE_DATA" | sed -e "s/%0D//g" -e "s/%0A/\n/g")
-		FILE_DATA=$($HTTPD -d "$FILE_DATA")
+    # convert data
+    FILE_DATA=$(echo $var | grep 'edit=' | sed -e 's/edit\=//' -e 's/\&.*//g')
+    FILE_DATA=$(echo "$FILE_DATA" | sed -e "s/%0D//g" -e "s/%0A/\n/g")
+    FILE_DATA=$($HTTPD -d "$FILE_DATA")
 
-		if [ "$FILE_DATA" != "" ]; then
-			# save modifications to file
-			echo "$FILE_DATA" > "$FILE_EDIT"
-			chmod +x "$FILE_EDIT"
+    if [ "$FILE_DATA" != "" ];
+    then
+      # save modifications to file
+      echo "$FILE_DATA" > "$FILE_EDIT"
+      chmod +x "$FILE_EDIT"
 
-			do_save
-		fi
-	fi
+      do_save
+    fi
+  fi
 done
 
 #####################################################################
@@ -451,7 +463,8 @@ fi
 
 #####################################################################
 
-if [ "$FULLSCREEN" != "1" ]; then
+if [ "$FULLSCREEN" != "1" ];
+then
 	echo "<table border='0' cellpadding='3' cellspacing='0' width='95%' bordercolor='#005588'>"
 	echo "  <tr><td style='background-color:#005588'><font size='2' color='white'><b>$FILE_STATUS</b></font></td></tr>"
 	echo "</table>"
@@ -468,7 +481,7 @@ cat << EOF
 	}
 
 	function comment_opts(comment, opt, remove_comment)
-	{
+	{		
 		var regex="/(.*)(\\\[" + opt + ":([^\\\]]+)\\\])(.*)/g";
 		var retval = '';
 
@@ -496,39 +509,39 @@ cat << EOF
 		comment_prefix = comment_prefix.replace(/\//g, "\\\/");	// escape comment
 
 		document.write("<div id='sections_div'><table border='0' width='95%'><tr><td width='85px'><b>Bereich </b></td> <td><select id='sections' name='sections' onchange='javascript:on_section_change(this)'></select></td></tr></table><br></div>");
-
+		
 		for(i=0; i<lines.length; i++)				// walkthrough rows
-		{
-		  var comment = '';
-
+		{		  		
+	  	  var comment = '';
+		  		  		
 		  lines[i] = lines[i].replace(/\r/g, "");		// remove 0x13
-
+	
 		  // [SECTION:...]
 		  var groupsection = comment_opts(trim(lines[i]), "SECTION", false);
-
-		  // [HTML:...]
+ 		
+ 		  // [HTML:...]
 		  var html = comment_opts(trim(lines[i]), "HTML", false);
-		  if(html.length) {
+ 		  if(html.length) {		  	
 			lines[i] = comment_opts(trim(lines[i]), "HTML", true);
 
 			// The only line? Then show directly obove setting. Otherwise show html right after the setting
 			if(trim(lines[i].replace(eval('/.*' + comment_prefix + '/'), "")).length == 0) {
 				document.write(html);
-				html = '';
+				html = '';			
 			}
 		  }
-
-		  // remove comments!
+				
+	 	  // remove comments!
 		  if(lines[i].match(eval('/' + comment_prefix + '/')))
-		  {
-			comment = lines[i].replace(eval('/.*' + comment_prefix + '/'), "");
+		  {			
+			comment = lines[i].replace(eval('/.*' + comment_prefix + '/'), "");						
 			lines[i] = lines[i].replace(eval('/' + comment_prefix + '.*/'), "");
-
+			
 		  }
-
-		  // [section], [SECTION:section] or EOF found?
+	
+ 		  // [section], [SECTION:section] or EOF found?
 		  if(lines[i].match(/\[.*\]/) || groupsection.length || i == lines.length-1)
-		  {
+		  {	
 			if(trim(lines[i]).length != 0 || groupsection.length)
 			{
 				in_section = trim(lines[i]);
@@ -547,33 +560,29 @@ cat << EOF
 				document.write("<input type='button' style='font-size:10px' name='ADDMEN_" + i + "' style='width:78px' value='[menu:X]' onclick='javascript:on_sec_add(this, 0)'> ");
 				document.write("<input type='button' style='font-size:10px' name='ADDSCR_" + i + "' style='width:78px' value='[script:X]' onclick='javascript:on_sec_add(this, 1)'> ");
 				document.write("<input type='button' style='font-size:10px' name='ADDLIB_" + i + "' style='width:78px' value='[lib:X]' onclick='javascript:on_sec_add(this, 2)'> ");
-				document.write("<input type='button' style='font-size:10px' name='ADDACT_" + i + "' style='width:78px' value='[action:X]' onclick='javascript:on_sec_add(this, 3)'> ");
-				document.write("</td><td align='right'>");
+				document.write("<input type='button' style='font-size:10px' name='ADDACT_" + i + "' style='width:78px' value='[action:X]' onclick='javascript:on_sec_add(this, 3)'> ");				
+				document.write("</td><td align='right'>");			
 				document.write("<input type='button' style='font-size:10px' name='SECDEL_" + i + "' style='width:150px' value='Delete " + (lines[last_value_pos].length > 13 ? lines[last_value_pos].substr(0, 10) + '...' : lines[last_value_pos]) + "' onclick='javascript:on_sec_del(this, " + last_value_pos + ")'><p>");
 				document.write("<input type='button' style='font-size:10px' name='ADD_" + last_value_pos + "' style='width:150px' value='Add key=value' onclick='javascript:on_text_add(this, " + add_quotes + ")'>");
 				document.write("</td></tr></table>");
-			}
-
-			document.write("</div>");
+			}		
+									
+			document.write("</div>");			
 			document.write("<div id='" + in_section + "' style='display:none'>");
-
+						
 			firstSection = false;
 			last_value_pos=i;
 		  }
-
+	
 		  document.write("<table border='0' cellpadding='3' cellspacing='0' width='95%'>");
-
+	
 		  // key=value found!
 		  if(!lines[i].match(/\[.*\]/))
-		  {
+		  {			
 			if(lines[i].length != 0)
 			{
 				var key = lines[i].replace(/=.*/g, "");
-				if("$SHOW_ADD_REMOVE" == "1")
-					var val = lines[i].replace(/.*=/g, "");
-				else
-					var val = lines[i].replace(eval("/.*" + trim(key) + "=/"), "");
-
+				var val = lines[i].replace(/.*=/g, "");				
 				val = trim(val); key = trim(key);
 
 				if(add_quotes)
@@ -585,54 +594,57 @@ cat << EOF
 				// [ONCANGE:function()]
 				var option_change = comment_opts(comment, "ONCHANGE", false);
 				if(option_change.length) comment = comment_opts(comment, "ONCHANGE", true);
-
+				
 				// [HIDE]
 				var hide = comment_opts(comment, "HIDE", false);
-
+								
 				// [TYPE:xxx]
 				var type  = comment_opts(comment, "TYPE", false);
 				if(type.length) comment = comment_opts(comment, "TYPE", true);
 				else type = 'text';
-
+				
 				// [WIDTH:xxx]
 				var width = comment_opts(comment, "WIDTH", false);
 				if(width.length) comment = comment_opts(comment, "WIDTH", true);
 				else width = '85%';
-
+				
 				if(!comment.length)
-					comment = key;
-
-				col1_width='180px';
-
+					comment = key;					
+				
+				// if("$FREETZ" == "1")
+				//    col1_width='180px';
+				// else
+    				    col1_width='300px';
+				
 				var ctrl_id = (section.length > 0 ? section + "_" + key : key)
-
+				
 				if(hide!='1' && options.length)
-				{
+				{					
 					comment = comment_opts(comment, "OPTION", true);
-
+					
 					document.write("<tr>");
 					document.write("<td width='" + col1_width + "'>" + comment + "</td> <td>");
 					document.write("<select id='" + ctrl_id + "' name='" + key + "_CFGLINE_" + i + "' onchange=\"javascript:on_text_change(this, '" + comment_prefix + "', " + add_quotes + ");" + option_change + "\">");
-
+	
 					var opts = options.split(",");
 					var j;
-
-					for(j=0; j<opts.length; j++) {
+	
+					for(j=0; j<opts.length; j++) {					
 						var opts2 = opts[j].split("|");
 						val_selected = "";
 						if(opts2[0] == val) val_selected = "selected";
-
+	
 						document.write("<option value='" + opts2[0] + "' " + val_selected + ">" + opts2[1] + "</option>");
 					}
 					document.write("</select>" + html + "</td><td></td>");
-					document.write("</tr>");
+					document.write("</tr>");										
 				}
-
+	
 				else if(hide!='1') {
-
+				
 					if("$SHOW_ADD_REMOVE" == "1")
 						col1_width="100px"
-
+				
 					document.write("<tr>");
 					document.write("<td width='" + col1_width + "'>" + comment +  "</td>");
 					document.write("<td><input type='" + type + "' id='" + ctrl_id + "' name='" + key + "_CFGLINE_" + i + "' value='" + val + "' onchange=\"javascript:on_text_change(this, '" + comment_prefix + "'," + add_quotes + ");" + option_change + "\" style='width:" + width + "'>");
@@ -648,14 +660,14 @@ cat << EOF
 						document.write("<td></td>");
 					}
 
-					document.write("</tr>");
+					document.write("</tr>");							
 				}
 			}
 		  }
-
-		  document.write("</table>");
+				  			
+		  document.write("</table>");		
 		}
-
+							
 		document.write("</div>");
 	}
 
@@ -670,9 +682,9 @@ cat << EOF
 
 		new_val=prompt('Ändern:', lines[line]);
 		if(new_val == null) return;
-
+		
 		lines[line] = new_val;
-		text = lines.join("\n");
+		text = lines.join("\n");		
 		document.forms.feditor.edit.value = text;
 		//document.forms.feditor.submit();
 		do_submit();
@@ -690,7 +702,7 @@ cat << EOF
 		if(confirm(lines[line] + '\n\n' + 'löschen?'))
 		{
 			lines.splice(line, 1);				// remove line from array
-			text = lines.join("\n");
+			text = lines.join("\n");		
 			document.forms.feditor.edit.value = text;
 			//document.forms.feditor.submit();
 			do_submit();
@@ -714,7 +726,7 @@ cat << EOF
 		{
 			lines[line] = lines[line] + '\n' + new_key;
 
-			text = lines.join("\n");
+			text = lines.join("\n");		
 			document.forms.feditor.edit.value = text;
 			//document.forms.feditor.submit();
 			do_submit();
@@ -730,9 +742,9 @@ cat << EOF
 		var lines = text.split("\n");					 // split rows
 
 		if(confirm(lines[lastPos] + '\n\n' + 'löschen?'))
-		{
+		{				
 			lines.splice(lastPos, parseInt(line)-parseInt(lastPos)); // remove line from array
-			text = lines.join("\n");
+			text = lines.join("\n");		
 			document.forms.feditor.edit.value = text;
 			do_submit();
 		}
@@ -754,7 +766,7 @@ cat << EOF
 
 		new_key=prompt('Namen eingeben:');
 		if(new_key == null) return;
-
+		
 		if(confirm('[' + prefix + new_key + ']\n\n' + 'hinzufügen?'))
 		{
 			// [menu:X]
@@ -773,16 +785,16 @@ cat << EOF
 			if(type==3)
 				lines[line] = '[' + prefix + new_key + ']\naction=\n\n' + lines[line];
 
-			text = lines.join("\n");
+			text = lines.join("\n");		
 			document.forms.feditor.edit.value = text;
-
+			
 			// Preselect
 			var newOption = document.createElement("option");
 			newOption.appendChild(document.createTextNode(prefix + new_key));
 			newOption.value = '[' + prefix + new_key + ']';
 			document.feditor2.sections.appendChild(newOption);
 			document.getElementById('sections').value =  '[' + prefix + new_key + ']';
-
+			
 			// Submit
 			do_submit();
 		}
@@ -801,7 +813,7 @@ cat << EOF
 		comment_prefix_escaped = comment_prefix.replace(/\//g, "\\\/"); // escape comment
 
 		// Re-Add comment
-		if(lines[line].match(eval('/' + comment_prefix_escaped + '/')))
+		if(lines[line].match(eval('/' + comment_prefix_escaped + '/')))	
 		{
 		  var tmp = lines[line];
 		  var i;
@@ -833,18 +845,18 @@ cat << EOF
 					endFound = i;
 					break;
 				}
-			}
+			}								
 		  }
 
-		  if(endFound != 0)
+		  if(endFound != 0)		
 			  comment = tmp.substr(endFound, tmp.length - endFound);
 		}
 
 		// Modify key=value, paste comment
 		if(add_quotes)
 		{
-			var new_obj_val = obj.value.replace(eval('/' + comment_prefix_escaped + '.*/'), "");
-			new_obj_val = new_obj_val.replace(/\\\"/g, '"').replace(/"/g, "\\\\\"");	// escape " character
+			var new_obj_val = obj.value.replace(eval('/' + comment_prefix_escaped + '.*/'), "");						
+			new_obj_val = new_obj_val.replace(/\\\"/g, '"').replace(/"/g, "\\\\\"");	// escape " character	
 			lines[line] = key + "=\"" + new_obj_val + "\"" + comment;
 		}
 		else
@@ -853,7 +865,7 @@ cat << EOF
 		}
 
 		// Join text and modify textarea
-		text = lines.join("\n");
+		text = lines.join("\n");		
 		document.forms.feditor.edit.value = text;
 	}
 
@@ -862,7 +874,7 @@ cat << EOF
 		var secdiv = document.getElementById(obj.value);
 
 		if(secdiv) {
-			for(i=0; i<obj.options.length; i++) {
+			for(i=0; i<obj.options.length; i++) {				
 				var tmpdiv = document.getElementById(obj.options[i].value);
 				if(tmpdiv) tmpdiv.style.display = 'none';
 			}
@@ -874,10 +886,10 @@ cat << EOF
 EOF
 
 if [ "$SHOW_FILE_SELECTION" != "0" ];
-then
+then	
 	echo "<table border='0' cellpadding='0' cellspacing='0' width='95%'><tr><td>"
 	echo "<select name='ffile_sel' onChange='javascript:submit()' style='width:100%'>"
-
+	
 	if [ "$SHOW_CONFIG_FILES" != "0" ];
 	then
 	  for var in $CONFIG_FILES; do
@@ -888,7 +900,7 @@ then
 		fi
 	  done
 	fi
-
+	
 	if [ "$SHOW_SCRIPT_FILES" != "0" ];
 	then
 	  for var in $SCRIPT_FILES; do
@@ -903,7 +915,7 @@ then
 	echo "<input type='button' style='font-size:10px;width:60px' value='Neu' onclick=\"javascript:prompt_file=prompt('Dateiname (ohne Endung):', 'scriptfile'); if(prompt_file == null) return; prompt_file = prompt_file.replace(/ /g, '_').replace(/'/g, '') + '.sh'; location.href='$MAIN_CGI&page=$PAGE&pid=$$&run_cmd=touch%20/var/dtmfbox/script/' + (prompt_file) + ' chmod%20%2Bx%20/var/dtmfbox/script/' + (prompt_file)\"> "
 	echo "<input type='button' style='font-size:10px;width:60px' value='Löschen' onclick=\"javascript:if(confirm('$FILE_EDIT löschen?')) { location.href='$MAIN_CGI&page=$PAGE&pid=$$&run_cmd=rm%20$FILE_EDIT' } \">"
 	echo "</td></tr></table>"
-
+	
 else
 	echo "<input type='hidden' name='ffile_sel' id='ffile_sel' value='$FILE_SELECT'>"
 	echo "<input type='hidden' name='fsect_sel' value='$SECT_SELECT'>"
@@ -933,7 +945,7 @@ if [ "$DIRECT_EDIT" = "0" ];
 then
 cat << EOF
 <form name="feditor2">
-<script language="javascript">
+<script language="javascript">	
 
 	if("$COMMENT_PREFIX" == "#") parse_text("$COMMENT_PREFIX", true);
 	if("$COMMENT_PREFIX" == "//") parse_text("$COMMENT_PREFIX", false);
@@ -947,10 +959,10 @@ cat << EOF
 			else
 				obj.selectedIndex = 0;
 
-			on_section_change(obj)
+			on_section_change(obj)	
 		} catch(e) {}
 	} else {
-		document.getElementById('sections_div').style.display = 'none';
+		document.getElementById('sections_div').style.display = 'none';	
 	}
 </script>
 </form>
@@ -962,7 +974,7 @@ cat << EOF
 EOF
 else
 cat << EOF
-<script language="javascript">
+<script language="javascript">	
 	document.getElementById('edit_div').style.display = 'block';
 </script>
 <table border='0' width='95%'><tr><td>
@@ -995,16 +1007,18 @@ EOF
 
 echo "<table border='0' width='95%'><tr>"
 echo "<td align='left'><input type='button' value='Speichern' style='width:100px' onclick=\"javascript:do_submit();\"></td>"
-if [ "$SHOW_REBOOT" != "0" ]; then
-	if [ "$CHECK_REBOOT" = "1" ]; then dtmfbox_reboot="checked"; else dtmfbox_reboot=""; fi
-	if [ -z "$(pidof "dtmfbox")" ]; then dtmfbox_reboot=""; dtmfbox_status="<font color='red' size='1'><br><b>stopped</b></font>"; else dtmfbox_status="<font color='green' size='1'><br><b>running</b></font>"; fi
-	echo "<td align='right'><input type='checkbox' id='check_reboot' name='check_reboot' value='dtmfbox_reboot' $dtmfbox_reboot>dtmfbox neu starten $dtmfbox_status</td>"
+if [ "$SHOW_REBOOT" != "0" ];
+then
+  if [ "$CHECK_REBOOT" = "1" ]; then dtmfbox_reboot="checked"; else dtmfbox_reboot=""; fi
+  if [ -z "$(pidof "dtmfbox")" ]; then dtmfbox_reboot=""; dtmfbox_status="<font color='red' size='1'><br><b>stopped</b></font>"; else dtmfbox_status="<font color='green' size='1'><br><b>running</b></font>"; fi
+  echo "<td align='right'><input type='checkbox' id='check_reboot' name='check_reboot' value='dtmfbox_reboot' $dtmfbox_reboot>dtmfbox neu starten $dtmfbox_status</td>"
 fi
 echo "</tr></table>"
 echo "<input type='hidden' name='dummy3' value='0'>"
 
 # restart dtmfbox?
-if [ "$DTMFBOX_REBOOT" = "dtmfbox_reboot" ]; then
+if [ "$DTMFBOX_REBOOT" = "dtmfbox_reboot" ];
+then
 	echo -n "<pre>"
 	/var/dtmfbox/rc.dtmfbox restart
 	echo -n "</pre>"
