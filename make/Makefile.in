@@ -502,7 +502,7 @@ endef
 define PKG_FINISH__INT
 $(pkg)-dirclean: $(pkg)-dirclean--int
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-build-prereq
-$(pkg)-precompiled--int: $(pkg)-build-prereq uclibc $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-precompiled--int: $(pkg)-build-prereq $(TOOLCHAIN) $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 $(pkg)-precompiled:
 	@$(call _ECHO_DONE)
 $(pkg)-build-prereq: $($(PKG)_DIR)/.build-prereq-checked
