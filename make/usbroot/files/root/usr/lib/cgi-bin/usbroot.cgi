@@ -14,9 +14,9 @@ fi
 # radio group unmound old root
 check "$USBROOT_UNMOUNTOLDROOT" yes:y1 "*":n1
 
-# check if kernel modules are available
+# check if build into kernel or if modules are available
 for i in ext2 ext3; do
-	if [ -f "/lib/modules/$(uname -r)/kernel/fs/$i/$i.ko" ]; then
+	if grep -q "$i" /proc/filesystems || [ -f "/lib/modules/$(uname -r)/kernel/fs/$i/$i.ko" ]; then
 		eval $i=y
 	else
 		eval $i=n

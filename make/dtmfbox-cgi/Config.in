@@ -1,0 +1,23 @@
+config FREETZ_PACKAGE_DTMFBOX_CGI
+	depends on FREETZ_PACKAGE_DTMFBOX
+	bool "dtmfbox-cgi"
+	default n
+	help
+		Web configuration interface for DTMFBOX
+
+config FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE
+        bool "Webphone Applet (beta)"
+        depends on FREETZ_PACKAGE_DTMFBOX_CGI
+        default y
+        help
+                Java Applet to make phone calls over webinterface.
+                Beta!!
+
+                + 64 kb (Binary only)
+
+config FREETZ_PACKAGE_DTMFBOX_WITH_HELP
+        bool "Help"
+        depends on FREETZ_PACKAGE_DTMFBOX_CGI
+        default y
+        help
+                Include online help
