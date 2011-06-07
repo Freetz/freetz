@@ -1,0 +1,31 @@
+--- src/create.c.orig	2004-10-04 11:21:31.000000000 +0200
++++ src/create.c	2011-05-07 09:59:29.607493801 +0200
+@@ -434,7 +434,10 @@ write_gnu_long_link (struct tar_stat_inf
+   GNAME_TO_CHARS (tmpname, header->header.gname);
+   free (tmpname);
+   
+-  strcpy (header->header.magic, OLDGNU_MAGIC);
++  /* OLDGNU_MAGIC is string with 7 chars + NULL */
++  strncpy (header->header.magic, OLDGNU_MAGIC, sizeof(header->header.magic));
++  strncpy (header->header.version, OLDGNU_MAGIC+sizeof(header->header.magic),
++           sizeof(header->header.version));
+   header->header.typeflag = type;
+   finish_header (st, header, -1);
+ 
+@@ -709,9 +712,13 @@ start_header (struct tar_stat_info *st)
+       break;
+ 
+     case OLDGNU_FORMAT:
+-    case GNU_FORMAT:   /*FIXME?*/
+-      /* Overwrite header->header.magic and header.version in one blow.  */
+-      strcpy (header->header.magic, OLDGNU_MAGIC);
++    case GNU_FORMAT:
++      /* OLDGNU_MAGIC is string with 7 chars + NULL */
++      strncpy (header->header.magic, OLDGNU_MAGIC,
++               sizeof(header->header.magic));
++      strncpy (header->header.version,
++               OLDGNU_MAGIC+sizeof(header->header.magic),
++               sizeof(header->header.version));
+       break;
+ 
+     case POSIX_FORMAT:

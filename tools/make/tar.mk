@@ -3,12 +3,16 @@ TAR_SOURCE:=tar-$(TAR_VERSION).tar.bz2
 TAR_SOURCE_MD5:=57da3c38f8e06589699548a34d5a5d07
 TAR_SITE:=http://ftp.gnu.org/gnu/tar
 TAR_DIR:=$(SOURCE_DIR)/tar-$(TAR_VERSION)
+TAR_MAKE_DIR:=$(TOOLS_DIR)/make
 
 $(DL_DIR)/$(TAR_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TOOLS_DOT_CONFIG) $(TAR_SOURCE) $(TAR_SITE) $(TAR_SOURCE_MD5)
 
 $(TAR_DIR)/.unpacked: $(DL_DIR)/$(TAR_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(TAR_SOURCE)
+	for i in $(TAR_MAKE_DIR)/patches/*.tar.patch; do \
+                $(PATCH_TOOL) $(TAR_DIR) $$i; \
+        done
 	touch $@
 
 $(TAR_DIR)/.configured: $(TAR_DIR)/.unpacked
