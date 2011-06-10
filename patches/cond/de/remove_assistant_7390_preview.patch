@@ -1,0 +1,62 @@
+--- usr/www/all/templates/menu_page_head.html.orig	2011-03-20 22:15:07.941810001 +0100
++++ usr/www/all/templates/menu_page_head.html	2011-03-20 22:15:19.611810000 +0100
+@@ -30,22 +30,6 @@
+ </div>
+ </div>
+ <div class="clear_float"></div>
+-<div id="MainWizardheadBox">
+-<div class="small_bar_left_head"></div>
+-<div class="small_bar_right_head"></div>
+-<div class="small_bar_back_head"></div>
+-<div id="MainWizardhead">
+-<?lua
+-menu.write_menu('wizards')
+-?>
+-</div>
+-<div id="MainWizardbottom">
+-<div class="small_bar_left_bottom"></div>
+-<div class="small_bar_right_bottom"></div>
+-<div class="small_bar_back_bottom"></div>
+-</div>
+-</div>
+-<div class="clear_float"></div>
+ <?lua
+ if (config.NAS) then
+ --if box.glob.script=="/home/home.lua" then
+--- usr/www/all/html/de/menus/menu2.html.orig	2011-03-20 22:15:18.731810001 +0100
++++ usr/www/all/html/de/menus/menu2.html	2011-03-20 22:15:19.611810000 +0100
+@@ -164,34 +164,6 @@
+ </div>
+ </div>
+ <div class="clear_float"></div>
+-<div style="position:relative;top:-21px">
+-<div class="small_bar_left_head"></div>
+-<div class="small_bar_right_head"></div>
+-<div class="small_bar_back_head">
+-<div id="MainWizardhead" style="padding-top:2px;">
+-<ul>
+-<? and <? eq $var:menu konfig ?> <? eq $var:pagename home ?> `
+-<li class="selected" style="position:relative;left:-12px; width:160px;top:2px;padding:3px">
+-<a style="margin-left:8px;" href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a>
+-</li>
+-` `
+-<li>
+-<a href="javascript:jslGoTo('konfig','home')">{?txtAssi?}</a>
+-</li>
+-` ?>
+-<li class="explain">
+-{?660:285?}
+-</li>
+-</ul>
+-</div>
+-</div>
+-<div class="small_bar_left_bottom"></div>
+-<div class="small_bar_right_bottom"></div>
+-<div class="small_bar_back_bottom">
+-<div id="MainWizardbottom">
+-</div>
+-</div>
+-</div>
+ <? or <? eq $var:IsNas 1 ?> <? eq $var:isNas 1 ?> `
+ <div class="clear_float"></div>
+ <div style="position:relative;top:-21px">

@@ -1,4 +1,4 @@
-if isFreetzType 7320; then
+if (isFreetzType 7320 || (isFreetzType 7240 7270 7390 && isFreetzType LABOR_PREVIEW)); then
 
 rcfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh"
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/etc/init.d/S99-zzz-rcmod"

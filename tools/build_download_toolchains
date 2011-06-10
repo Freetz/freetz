@@ -9,8 +9,9 @@ TOOL_CONF=tools/config/conf
 DOT_CONFIG=.config
 
 miniconfig() {
+local i
+for i in "$@"; do echo "$i=y"; done
 cat << EOF
-$1=y
 FREETZ_SHOW_ADVANCED=y
 FREETZ_BUILD_TOOLCHAIN=y
 FREETZ_BUILD_32BIT_TOOLCHAIN=y
@@ -25,14 +26,27 @@ EOF
 # FREETZ_TYPE_FON_WLAN_7270_V3        mipsel-gcc3.x      mipsel-gcc4.x-uClibc0.9.29
 # FREETZ_TYPE_FON_WLAN_7390           mips-gcc3.x        mips-gcc4.x-uClibc0.9.29
 # FREETZ_TYPE_FON_WLAN_7320           mips-gcc4.x        mips-gcc4.x-uClibc0.9.30
+#
+# labor versions
+# FREETZ_TYPE_FON_WLAN_7270_V3        mipsel-gcc4.x      mipsel-gcc4.x-uClibc0.9.31
+# FREETZ_TYPE_FON_WLAN_7390           mips-gcc4.x        mips-gcc4.x-uClibc0.9.31
 
-for fb in FREETZ_TYPE_FON_WLAN FREETZ_TYPE_FON_WLAN_7270_V3 FREETZ_TYPE_FON_WLAN_7390 FREETZ_TYPE_FON_WLAN_7320; do
-	echo "Building toolchains for $fb"
+for options in \
+	FREETZ_TYPE_FON_WLAN \
+	FREETZ_TYPE_FON_WLAN_7270_V3 \
+	FREETZ_TYPE_FON_WLAN_7390 \
+	FREETZ_TYPE_FON_WLAN_7320 \
+	"FREETZ_TYPE_FON_WLAN_7270_V3 FREETZ_TYPE_LABOR" \
+	"FREETZ_TYPE_FON_WLAN_7390 FREETZ_TYPE_LABOR" \
+; do
+	optionsCommaSep=$(echo $options | sed -e 's| |,|g')
+	optionsUnderscoreSep=$(echo $options | sed -e 's| |_|g')
+	echo "Building toolchains for $optionsCommaSep"
 	make distclean
 	ln -s ../dl
 	make $TOOL_CONF
-	miniconfig $fb > $DOT_CONFIG
+	miniconfig $options > $DOT_CONFIG
 	$TOOL_CONF -D $DOT_CONFIG Config.in
-	cp -a $DOT_CONFIG $DOT_CONFIG.$fb
+	cp -a $DOT_CONFIG $DOT_CONFIG.$optionsUnderscoreSep
 	make KTV=${KERNEL_TOOLCHAIN_FILENAME_SUFFIX} TTV=${TARGET_TOOLCHAIN_FILENAME_SUFFIX} toolchain
 done
