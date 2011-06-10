@@ -586,13 +586,13 @@ PKG_UNPACK__INT_.bz2:=j
 PKG_UNPACK__INT_.tbz:=j
 PKG_UNPACK__INT_.lzma:=a
 PKG_UNPACK__INT_.tlz:=a
-PKG_UNPACK__INT_.xz:=J
+PKG_UNPACK__INT_.xz:=v
 PKG_UNPACK__INT_.zip:=dummy
 # $1: package name
 define PKG_UNPACK__INT
 	$(if $(PKG_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
 	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
-		tar -C $($(PKG)_SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
+		tools/tar -C $($(PKG)_SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
 		unzip $(QUIETSHORT) -u $(strip $1) -d $($(PKG)_SOURCE_DIR)
 	)
 endef
