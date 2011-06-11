@@ -1,0 +1,18 @@
+--- configure
++++ configure
+@@ -12282,6 +12282,7 @@
+ 
+ 
+ 
++if test "$enable_openssl" = "yes"; then
+ for ac_header in openssl/bio.h
+ do :
+   ac_fn_c_check_header_mongrel "$LINENO" "openssl/bio.h" "ac_cv_header_openssl_bio_h" "$ac_includes_default"
+@@ -12295,7 +12296,6 @@
+ done
+ 
+ 
+-if test "$enable_openssl" = "yes"; then
+ save_LIBS="$LIBS"
+ LIBS=""
+ OPENSSL_LIBS=""
