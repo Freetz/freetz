@@ -44,7 +44,7 @@ $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE): | $(DL_DIR)
 download-toolchain: $(KERNEL_CROSS_COMPILER) kernel-configured \
 			$(TARGET_CROSS_COMPILER) target-toolchain-kernel-headers \
 			$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1 \
-			$(CCACHE) uclibcxx libtool-host
+			$(CCACHE) uclibcxx libtool-host gdb
 
 gcc-kernel: $(KERNEL_CROSS_COMPILER)
 $(KERNEL_CROSS_COMPILER): $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \
