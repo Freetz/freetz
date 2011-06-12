@@ -13,9 +13,7 @@ $(PKG)_TARGET_BINARY_NSUPDATE:=$($(PKG)_DEST_DIR)/usr/bin/nsupdate
 $(PKG)_BINARY_DIG:=$($(PKG)_DIR)/bin/dig/dig
 $(PKG)_TARGET_BINARY_DIG:=$($(PKG)_DEST_DIR)/usr/bin/dig
 
-$(PKG)_DEPENDS_ON := uclibcxx
-
-$(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(TARGET_CC)"
+$(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-epoll=yes
@@ -33,16 +31,8 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY_NAMED) $($(PKG)_BINARY_RNDC) $($(PKG)_BINARY_NSUPDATE) $($(PKG)_BINARY_DIG): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(BIND_DIR)/lib/dns \
-		BUILD_CC="$(HOSTCC)" \
-		CC="$(HOSTCC)" \
-		CFLAGS="-O2" \
-		LIBS="" \
-		gen
-	$(SUBMAKE) -C $(BIND_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)"
-
+	$(SUBMAKE) -C $(BIND_DIR)/lib/dns gen
+	$(SUBMAKE) -C $(BIND_DIR)
 
 $($(PKG)_TARGET_BINARY_NAMED): $($(PKG)_BINARY_NAMED)
 ifeq ($(strip $(FREETZ_PACKAGE_BIND_NAMED)),y)
