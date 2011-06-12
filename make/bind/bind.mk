@@ -22,6 +22,8 @@ $(PKG)_CONFIGURE_OPTIONS += --with-libtool
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
 $(PKG)_CONFIGURE_OPTIONS += --without-libxml2
 $(PKG)_CONFIGURE_OPTIONS += --disable-threads
+$(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
+$(PKG)_CONFIGURE_OPTIONS += --disable-symtable
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
