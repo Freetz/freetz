@@ -51,7 +51,6 @@ GDB_TARGET_CONFIGURE_VARS := \
 	bash_cv_func_sigsetjmp=present \
 	bash_cv_have_mbstate_t=yes
 
-#TODO: ENABLE_LOCALE & DISABLE_GDBMI are never set
 $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 	mkdir -p $(GDB_TARGET_DIR)
 	(cd $(GDB_TARGET_DIR); PATH=$(TARGET_PATH) \
@@ -68,7 +67,6 @@ $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 		--prefix=/usr \
 		$(DISABLE_NLS) \
 		--without-uiout \
-		$(DISABLE_GDBMI) \
 		--disable-tui \
 		--disable-gdbtk \
 		--without-x \
@@ -79,9 +77,6 @@ $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 		--disable-werror \
 		$(QUIET) \
 	);
-ifeq ($(ENABLE_LOCALE),true)
-	-$(SED) "s,^INTL *=.*,INTL = -lintl,g;" $(GDB_DIR)/gdb/Makefile
-endif
 	touch $@
 
 $(GDB_TARGET_BINARY_BUILDDIR): $(GDB_TARGET_DIR)/.configured
@@ -140,7 +135,6 @@ $(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.unpacked
 		--includedir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include \
 		$(DISABLE_NLS) \
 		--without-uiout \
-		$(DISABLE_GDBMI) \
 		--disable-tui \
 		--disable-gdbtk \
 		--without-x \
@@ -189,7 +183,7 @@ $(GDB_HOST_DIR)/.configured: $(GDB_DIR)/.unpacked
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_TARGET_NAME) \
 		$(DISABLE_NLS) \
-		--without-uiout $(DISABLE_GDBMI) \
+		--without-uiout \
 		--disable-tui --disable-gdbtk --without-x \
 		--without-included-gettext \
 		--enable-threads \
