@@ -1,9 +1,5 @@
-ifeq ($(strip $(FREETZ_PACKAGE_GDB)),y)
+ifneq (,$(strip $(filter y,$(FREETZ_PACKAGE_GDB) $(FREETZ_PACKAGE_GDB_SERVER))))
 GDB_TARGETS+=gdbtarget
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_GDB_SERVER)),y)
-GDB_TARGETS+=gdbserver
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_GDB_HOST)),y)

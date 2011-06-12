@@ -33,12 +33,14 @@ $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 
 ######################################################################
 #
-# gdb for target
+# gdb/gdbserver for target
 #
 ######################################################################
 GDB_TARGET_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdb-$(GDB_VERSION)-target
 GDB_TARGET_BINARY_BUILDDIR:=$(GDB_TARGET_DIR)/gdb/gdb
 GDB_TARGET_BINARY_DESTDIR:=$(GDB_DESTDIR)/gdb
+GDB_SERVER_BINARY_BUILDDIR:=$(GDB_TARGET_DIR)/gdb/gdbserver/gdbserver
+GDB_SERVER_BINARY_DESTDIR:=$(GDB_DESTDIR)/gdbserver
 
 GDB_TARGET_CONFIGURE_ENV := \
 	bash_cv_func_strcoll_broken=no \
@@ -55,62 +57,6 @@ $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 		CPPFLAGS_FOR_TARGET="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS_FOR_TARGET="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		$(GDB_DIR)/configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(REAL_GNU_TARGET_NAME) \
-		--target=$(REAL_GNU_TARGET_NAME) \
-		--prefix=/usr \
-		$(DISABLE_NLS) \
-		--without-uiout \
-		--disable-tui \
-		--disable-gdbtk \
-		--without-x \
-		--disable-sim \
-		--enable-gdbserver \
-		--without-included-gettext \
-		--enable-threads \
-		--disable-werror \
-		$(QUIET) \
-	);
-	touch $@
-
-$(GDB_TARGET_BINARY_BUILDDIR): $(GDB_TARGET_DIR)/.configured
-	$(MAKE_ENV) \
-		$(MAKE) -C $(GDB_TARGET_DIR) \
-		CC=$(TARGET_CC) \
-		MT_CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS=""
-
-$(GDB_TARGET_BINARY_DESTDIR): $(GDB_TARGET_BINARY_BUILDDIR) | $(GDB_DESTDIR)
-	$(INSTALL_BINARY_STRIP)
-
-gdbtarget: ncurses-precompiled $(GDB_TARGET_BINARY_DESTDIR)
-
-gdbtarget-source: $(DL_DIR)/$(GDB_SOURCE)
-
-gdbtarget-clean:
-	-$(MAKE) -C $(GDB_DIR) clean
-
-gdbtarget-uninstall:
-	$(RM) $(GDB_TARGET_BINARY_DESTDIR)
-
-gdbtarget-dirclean: gdbtarget-uninstall
-	$(RM) -r $(GDB_DIR)
-
-######################################################################
-#
-# gdbserver for target
-#
-######################################################################
-GDB_SERVER_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdbserver-$(GDB_VERSION)
-GDB_SERVER_BINARY_BUILDDIR:=$(GDB_SERVER_DIR)/gdbserver
-GDB_SERVER_BINARY_DESTDIR:=$(GDB_DESTDIR)/gdbserver
-
-$(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.unpacked
-	mkdir -p $(GDB_SERVER_DIR)
-	(cd $(GDB_SERVER_DIR); PATH=$(TARGET_PATH) \
-		$(TARGET_CONFIGURE_ENV) \
-		$(GDB_TARGET_CONFIGURE_ENV) \
-		$(GDB_DIR)/gdb/gdbserver/configure \
 		--cache-file=/dev/null \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(REAL_GNU_TARGET_NAME) \
@@ -125,35 +71,50 @@ $(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.unpacked
 		--localstatedir=/var \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
-		--includedir=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include \
+		--enable-gdbserver \
+		--enable-threads \
 		$(DISABLE_NLS) \
 		--without-uiout \
 		--disable-tui \
 		--disable-gdbtk \
+		--disable-sim \
+		--disable-werror \
 		--without-x \
 		--without-included-gettext \
+		$(QUIET) \
 	);
 	touch $@
 
-$(GDB_SERVER_BINARY_BUILDDIR): $(GDB_SERVER_DIR)/.configured
+$(GDB_TARGET_BINARY_BUILDDIR) $(GDB_SERVER_BINARY_BUILDDIR): $(GDB_TARGET_DIR)/.configured
 	$(MAKE_ENV) \
-		$(MAKE) -C $(GDB_SERVER_DIR) \
+		$(MAKE) -C $(GDB_TARGET_DIR) \
 		CC=$(TARGET_CC) \
 		MT_CFLAGS="$(TARGET_CFLAGS)"
 
-$(GDB_SERVER_BINARY_DESTDIR): $(GDB_SERVER_BINARY_BUILDDIR) | $(GDB_DESTDIR)
+$(GDB_TARGET_BINARY_DESTDIR): $(GDB_TARGET_BINARY_BUILDDIR) | $(GDB_DESTDIR)
+ifeq ($(strip $(FREETZ_PACKAGE_GDB)),y)
 	$(INSTALL_BINARY_STRIP)
+else
+	$(RM) $@
+endif
 
-gdbserver: $(GDB_SERVER_BINARY_DESTDIR)
+$(GDB_SERVER_BINARY_DESTDIR): $(GDB_SERVER_BINARY_BUILDDIR) | $(GDB_DESTDIR)
+ifeq ($(strip $(FREETZ_PACKAGE_GDB_SERVER)),y)
+	$(INSTALL_BINARY_STRIP)
+else
+	$(RM) $@
+endif
 
-gdbserver-clean:
-	-$(MAKE) -C $(GDB_SERVER_DIR) clean
+gdbtarget: ncurses-precompiled $(GDB_TARGET_BINARY_DESTDIR) $(GDB_SERVER_BINARY_DESTDIR)
 
-gdbserver-uninstall:
-	$(RM) $(GDB_SERVER_BINARY_DESTDIR)
+gdbtarget-clean:
+	-$(MAKE) -C $(GDB_DIR) clean
 
-gdbserver-dirclean: gdbserver-uninstall
-	$(RM) -r $(GDB_SERVER_DIR)
+gdbtarget-uninstall:
+	$(RM) $(GDB_TARGET_BINARY_DESTDIR) $(GDB_SERVER_BINARY_DESTDIR)
+
+gdbtarget-dirclean: gdbtarget-uninstall
+	$(RM) -r $(GDB_DIR)
 
 ######################################################################
 #
@@ -203,12 +164,11 @@ gdbhost-dirclean: gdbhost-uninstall
 
 gdb: uclibc $(GDB_TARGETS)
 
-gdb-clean: gdbhost-clean gdbserver-clean gdbtarget-clean
+gdb-clean: gdbhost-clean gdbtarget-clean
 
-gdb-dirclean: gdbhost-dirclean gdbserver-dirclean gdbtarget-dirclean
+gdb-dirclean: gdbhost-dirclean gdbtarget-dirclean
 
 .PHONY: \
 	gdb gdb-source gdb-unpacked gdb-patched \
 	gdbtarget gdbtarget-clean gdbtarget-uninstall gdbtarget-dirclean \
-	gdbserver gdbserver-clean gdbserver-uninstall gdbserver-dirclean \
 	gdbhost gdbhost-clean gdbhost-uninstall gdbhost-dirclean
