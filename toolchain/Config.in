@@ -389,9 +389,6 @@ choice
 	help
 		Select the version of gdb you wish to use.
 
-	config FREETZ_GDB_VERSION_6_6
-		bool "gdb 6.6"
-
 	config FREETZ_GDB_VERSION_6_8
 		bool "gdb 6.8"
 
@@ -401,6 +398,5 @@ endchoice
 
 config FREETZ_GDB_VERSION
 	string
-	default "6.6"	if FREETZ_GDB_VERSION_6_6
 	default "6.8"	if FREETZ_GDB_VERSION_6_8
 	default "7.2"	if FREETZ_GDB_VERSION_7_2
