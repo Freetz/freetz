@@ -25,7 +25,6 @@ gdb-unpacked: $(GDB_DIR)/.unpacked
 $(GDB_DIR)/.unpacked: $(DL_DIR)/$(GDB_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -r $(GDB_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GDB_SOURCE)
-
 	set -e; \
 	for i in $(GDB_MAKE_DIR)/$(GDB_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GDB_DIR) $$i; \
@@ -41,11 +40,7 @@ GDB_TARGET_DIR:=$(TARGET_TOOLCHAIN_DIR)/gdb-$(GDB_VERSION)-target
 GDB_TARGET_BINARY_BUILDDIR:=$(GDB_TARGET_DIR)/gdb/gdb
 GDB_TARGET_BINARY_DESTDIR:=$(GDB_DESTDIR)/gdb
 
-GDB_TARGET_CONFIGURE_VARS := \
-	ac_cv_type_uintptr_t=yes \
-	gt_cv_func_gettext_libintl=yes \
-	ac_cv_func_dcgettext=yes \
-	gdb_cv_func_sigsetjmp=yes \
+GDB_TARGET_CONFIGURE_ENV := \
 	bash_cv_func_strcoll_broken=no \
 	bash_cv_must_reinstall_sighandlers=no \
 	bash_cv_func_sigsetjmp=present \
@@ -54,12 +49,11 @@ GDB_TARGET_CONFIGURE_VARS := \
 $(GDB_TARGET_DIR)/.configured: $(GDB_DIR)/.unpacked
 	mkdir -p $(GDB_TARGET_DIR)
 	(cd $(GDB_TARGET_DIR); PATH=$(TARGET_PATH) \
-		gdb_cv_func_sigsetjmp=yes \
 		$(TARGET_CONFIGURE_ENV) \
+		$(GDB_TARGET_CONFIGURE_ENV) \
 		CFLAGS_FOR_TARGET="$(TARGET_CFLAGS)" \
 		CPPFLAGS_FOR_TARGET="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
 		LDFLAGS_FOR_TARGET="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
-		$(GDB_TARGET_CONFIGURE_VARS) \
 		$(GDB_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(REAL_GNU_TARGET_NAME) \
@@ -115,8 +109,7 @@ $(GDB_SERVER_DIR)/.configured: $(GDB_DIR)/.unpacked
 	mkdir -p $(GDB_SERVER_DIR)
 	(cd $(GDB_SERVER_DIR); PATH=$(TARGET_PATH) \
 		$(TARGET_CONFIGURE_ENV) \
-		gdb_cv_func_sigsetjmp=yes \
-		bash_cv_have_mbstate_t=yes \
+		$(GDB_TARGET_CONFIGURE_ENV) \
 		$(GDB_DIR)/gdb/gdbserver/configure \
 		--cache-file=/dev/null \
 		--build=$(GNU_HOST_NAME) \
@@ -174,8 +167,6 @@ GDB_HOST_BINARY_DESTDIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(TARGET_CROSS)
 $(GDB_HOST_DIR)/.configured: $(GDB_DIR)/.unpacked
 	mkdir -p $(GDB_HOST_DIR)
 	(cd $(GDB_HOST_DIR); PATH=$(TARGET_PATH) \
-		gdb_cv_func_sigsetjmp=yes \
-		bash_cv_have_mbstate_t=yes \
 		$(GDB_DIR)/configure \
 		--cache-file=/dev/null \
 		--prefix=$(TARGET_TOOLCHAIN_STAGING_DIR) \
