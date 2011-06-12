@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 2.3.20)
+$(call PKG_INIT_LIB, 2.3.21)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=d0ce67f2ebcef1e51a83136c69242a73
-$(PKG)_SITE:=http://ftp.gnome.org/pub/gnome/sources/libart_lgpl/2.3/
+$(PKG)_SOURCE_MD5:=08559ff3c67fd95d57b0c5e91a6b4302
+$(PKG)_SITE:=http://ftp.gnome.org/pub/gnome/sources/libart_lgpl/2.3
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libart_lgpl_2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libart_lgpl_2.so.$($(PKG)_LIB_VERSION)
@@ -13,8 +13,6 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(LIBART_LGPL_DIR) gen_art_config \
-		HOSTCC="$(HOSTCC)"
 	$(SUBMAKE) -C $(LIBART_LGPL_DIR) all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
