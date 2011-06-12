@@ -12,7 +12,6 @@ include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
-include $(TOOLCHAIN_DIR)/make/target/gdb/gdb.mk
 
 TARGET_TOOLCHAIN := binutils gcc uclibcxx
 
@@ -24,7 +23,7 @@ ifeq ($(strip $(FREETZ_TARGET_TOOLCHAIN)),y)
 	TARGET_TOOLCHAIN += binutils_target gcc_target uclibc_target
 endif
 
-TARGET_TOOLCHAIN += libtool-host gdb
+TARGET_TOOLCHAIN += libtool-host $(if $(FREETZ_PACKAGE_GDB_HOST),gdbhost)
 
 $(TARGET_TOOLCHAIN_DIR):
 	@mkdir -p $@

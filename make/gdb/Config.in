@@ -1,0 +1,50 @@
+config FREETZ_PACKAGE_GDB
+	bool "GNU debugger gdb"
+
+menu "binaries"
+	depends FREETZ_PACKAGE_GDB
+
+config FREETZ_PACKAGE_GDB_GDB
+	bool "Build gdb for target"
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libncurses
+	default n
+	help
+		Build the full gdb debugger to run on the target.
+
+config FREETZ_PACKAGE_GDB_GDBSERVER
+	bool "Build gdb server for target"
+	select FREETZ_LIB_libthread_db
+	default n
+	help
+		Build the gdbserver stub to run on the target.
+		Full gdb is needed to debug a program.
+
+config FREETZ_PACKAGE_GDB_HOST
+	bool "Build gdb for host"
+	default n
+	help
+		Build gdb to run on the host to debug programs run on the target.
+
+endmenu
+
+choice
+depends on FREETZ_PACKAGE_GDB
+	prompt "version"
+	default FREETZ_GDB_VERSION_6_8
+	help
+		Select the version of gdb you wish to use.
+
+	config FREETZ_GDB_VERSION_6_8
+		bool "gdb 6.8"
+
+	config FREETZ_GDB_VERSION_7_2
+		bool "gdb 7.2"
+endchoice
+
+config FREETZ_GDB_VERSION
+	depends on FREETZ_PACKAGE_GDB
+	string
+	default "6.8"	if FREETZ_GDB_VERSION_6_8
+	default "7.2"	if FREETZ_GDB_VERSION_7_2
