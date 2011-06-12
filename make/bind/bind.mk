@@ -2,16 +2,20 @@ $(call PKG_INIT_BIN, 9.8.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 $(PKG)_SOURCE_MD5:=e802ac97ca419c2ddfc043509bcb17bc
+
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
 
-$(PKG)_BINARY_NAMED:=$($(PKG)_DIR)/bin/named/named
-$(PKG)_TARGET_BINARY_NAMED:=$($(PKG)_DEST_DIR)/usr/sbin/named
-$(PKG)_BINARY_RNDC:=$($(PKG)_DIR)/bin/rndc/rndc
-$(PKG)_TARGET_BINARY_RNDC:=$($(PKG)_DEST_DIR)/usr/sbin/rndc
-$(PKG)_BINARY_NSUPDATE:=$($(PKG)_DIR)/bin/nsupdate/nsupdate
-$(PKG)_TARGET_BINARY_NSUPDATE:=$($(PKG)_DEST_DIR)/usr/bin/nsupdate
-$(PKG)_BINARY_DIG:=$($(PKG)_DIR)/bin/dig/dig
-$(PKG)_TARGET_BINARY_DIG:=$($(PKG)_DEST_DIR)/usr/bin/dig
+define $(PKG)_DEFS
+$(PKG)_BINARIES_ALL_$(1)            := $(2)
+$(PKG)_BINARIES_$(1)                := $$(call PKG_SELECTED_SUBOPTIONS,$$($(PKG)_BINARIES_ALL_$(1)))
+$(PKG)_BINARIES_BUILD_DIR_$(1)      := $$(addprefix $$($(PKG)_DIR)/bin/, $$(join $$(addsuffix /,$$($(PKG)_BINARIES_$(1))),$$($(PKG)_BINARIES_$(1))))
+$(PKG)_BINARIES_ALL_TARGET_DIR_$(1) := $$($(PKG)_BINARIES_ALL_$(1):%=$$($(PKG)_DEST_DIR)/usr/$(1)/%)
+$(PKG)_BINARIES_TARGET_DIR_$(1)     := $$($(PKG)_BINARIES_$(1):%=$$($(PKG)_DEST_DIR)/usr/$(1)/%)
+$(PKG)_NOT_INCLUDED                 += $$(filter-out $$($(PKG)_BINARIES_TARGET_DIR_$(1)),$$($(PKG)_BINARIES_ALL_TARGET_DIR_$(1)))
+endef
+
+$(eval $(call $(PKG)_DEFS,sbin,named rndc))
+$(eval $(call $(PKG)_DEFS,bin,nsupdate dig))
 
 $(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
@@ -32,38 +36,12 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY_NAMED) $($(PKG)_BINARY_RNDC) $($(PKG)_BINARY_NSUPDATE) $($(PKG)_BINARY_DIG): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR_sbin) $($(PKG)_BINARIES_BUILD_DIR_bin): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BIND_DIR)/lib/dns gen
 	$(SUBMAKE) -C $(BIND_DIR)
 
-$($(PKG)_TARGET_BINARY_NAMED): $($(PKG)_BINARY_NAMED)
-ifeq ($(strip $(FREETZ_PACKAGE_BIND_NAMED)),y)
-	$(INSTALL_BINARY_STRIP)
-else
-	$(RM) $@
-endif
-
-$($(PKG)_TARGET_BINARY_RNDC): $($(PKG)_BINARY_RNDC)
-ifeq ($(strip $(FREETZ_PACKAGE_BIND_RNDC)),y)
-	$(INSTALL_BINARY_STRIP)
-else
-	$(RM) $@
-endif
-
-$($(PKG)_TARGET_BINARY_NSUPDATE): $($(PKG)_BINARY_NSUPDATE)
-ifeq ($(strip $(FREETZ_PACKAGE_BIND_NSUPDATE)),y)
-	$(INSTALL_BINARY_STRIP)
-else
-	$(RM) $@
-endif
-
-$($(PKG)_TARGET_BINARY_DIG): $($(PKG)_BINARY_DIG)
-ifeq ($(strip $(FREETZ_PACKAGE_BIND_DIG)),y)
-	$(INSTALL_BINARY_STRIP)
-else
-	$(RM) $@
-endif
-
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR_sbin),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR_bin),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
 
 $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 
@@ -76,15 +54,13 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 		&& echo "etc/init.d/rc.bind" >> $@; \
 	touch $@
 
-
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY_NAMED) $($(PKG)_TARGET_BINARY_RNDC) $($(PKG)_TARGET_BINARY_NSUPDATE) $($(PKG)_TARGET_BINARY_DIG)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR_sbin) $($(PKG)_BINARIES_TARGET_DIR_bin)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(BIND_DIR) clean
 	$(RM) $(BIND_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(BIND_TARGET_BINARY_NAMED) $(BIND_TARGET_BINARY_RNDC) $(BIND_TARGET_BINARY_NSUPDATE) $(BIND_TARGET_BINARY_DIG)
-
+	$(RM) $(BIND_BINARIES_ALL_TARGET_DIR_sbin) $(BIND_BINARIES_ALL_TARGET_DIR_bin)
 
 $(PKG_FINISH)
