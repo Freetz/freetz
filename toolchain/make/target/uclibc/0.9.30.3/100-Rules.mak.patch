@@ -1,10 +1,11 @@
 --- Rules.mak.orig	2010-03-12 20:32:42.000000000 +0100
 +++ Rules.mak	2010-06-11 15:57:18.514873530 +0200
-@@ -290,6 +290,7 @@
+@@ -290,6 +290,8 @@
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_3)+=-mips3 -mtune=mips3
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_4)+=-mips4 -mtune=mips4
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32)+=-mips32 -mtune=mips32
-+	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32_4KC)+=-mips32 -march=4kc -mtune=4kc
++	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32_4KC)+=-march=4kc -mtune=4kc
++	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32_24KC)+=-march=24kc -mtune=24kc
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32R2)+=-march=mips32r2 -mtune=mips32r2
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS64)+=-mips64 -mtune=mips32
  	ifeq ($(strip $(ARCH_BIG_ENDIAN)),y)

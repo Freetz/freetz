@@ -40,16 +40,19 @@ GCC_STAGING_PREREQ+=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 GCC_COMMON_CONFIGURE_OPTIONS := \
 	--with-gnu-ld \
 	--disable-__cxa_atexit \
-	--enable-target-optspace \
 	--disable-libgomp \
 	--disable-libmudflap \
 	--disable-multilib \
 	--disable-tls \
 	--disable-fixed-point \
 	--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp \
+	$(if $(FREETZ_TARGET_ARCH_LE),--with-march=4kc) \
+	$(if $(FREETZ_TARGET_ARCH_BE),--with-march=24kc) \
 	$(DISABLE_NLS) \
 	$(DISABLE_LARGEFILE) \
 	$(QUIET)
+
+TOOLCHAIN_TARGET_CFLAGS:=$(TARGET_CFLAGS) -msoft-float
 
 # enable non-PIC for mips* targets
 GCC_COMMON_CONFIGURE_OPTIONS += --with-mips-plt
@@ -127,6 +130,8 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked $(GCC_INITIAL_PREREQ) | targ
 		PATH=$(TARGET_PATH) \
 		CC="$(TOOLCHAIN_HOSTCC)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
+		CFLAGS_FOR_TARGET="$(TOOLCHAIN_TARGET_CFLAGS)" \
+		CXXFLAGS_FOR_TARGET="$(TOOLCHAIN_TARGET_CFLAGS)" \
 		$(GCC_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_PREFIX) \
 		--with-sysroot=$(TARGET_TOOLCHAIN_DEVEL_SYSROOT) \
@@ -186,6 +191,8 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ)
 		PATH=$(TARGET_PATH) \
 		CC="$(TOOLCHAIN_HOSTCC)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
+		CFLAGS_FOR_TARGET="$(TOOLCHAIN_TARGET_CFLAGS)" \
+		CXXFLAGS_FOR_TARGET="$(TOOLCHAIN_TARGET_CFLAGS)" \
 		$(GCC_DIR)/configure \
 		--prefix=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase) \
 		--with-sysroot=$(TARGET_TOOLCHAIN_SYSROOT) \
