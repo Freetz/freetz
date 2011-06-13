@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,$(strip $(subst ",, $(FREETZ_GDB_VERSION))))
+$(call PKG_INIT_BIN,$(strip $(subst ",,$(FREETZ_GDB_VERSION))))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_MD5_6.8 := c9da266b884fb8fa54df786dfaadbc7a
 $(PKG)_MD5_7.2 := 64260e6c56979ee750a01055f16091a5
