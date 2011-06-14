@@ -1,0 +1,22 @@
+--- linux-2.6.19.2/arch/mips/mips-boards/ur8/ur8_mtd.c.orig	2009-11-09 15:08:04.000000000 +0100
++++ linux-2.6.19.2/arch/mips/mips-boards/ur8/ur8_mtd.c	2011-06-06 15:44:07.000000000 +0200
+@@ -603,7 +603,7 @@
+                 mtd[i].Name = (char*)"tffs (2)";
+                 break;
+             case 5:
+-                p = prom_getenv("mtd0");
++                p = prom_getenv("mtd5");
+                 mtd[i].Name = (char*)"reserved";
+                 break;
+         }
+@@ -626,6 +626,10 @@
+     for(i = 0 ; i < MAX_FLASH_MTD ; i++) {
+         ur8_partitions[i].name		 = mtd[i].Name;
+         ur8_partitions[i].offset	 = mtd[i].start;
++	if ( (i == 1) && (mtd[5].end != 0)){
++		printk("[ur8_mtd_init] set mtd1 to full size: 0x%08x - 0x%08x\n", mtd[5].start, mtd[5].end);
++		mtd[1].end = mtd[5].end ;
++	}
+         ur8_partitions[i].size		 = mtd[i].end - mtd[i].start;
+         ur8_partitions[i].mask_flags = 0;
+     }

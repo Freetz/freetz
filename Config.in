@@ -146,6 +146,8 @@ choice
 	config FREETZ_TYPE_FON_WLAN_7570_IAD
 		bool "build firmware for Alice IAD 7570"
 		depends on FREETZ_TYPE_FON_WLAN_7570
+	comment "Hint: Use replace kernel to get max filesystem size"
+		depends on FREETZ_TYPE_FON_WLAN_7570_IAD
 
 	config FREETZ_TYPE_WLAN_3020
 		select FREETZ_AVM_VERSION_04_33
@@ -707,10 +709,12 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_FON_WLAN_7270_V1 || \
 		FREETZ_TYPE_7270_7270
 	default 122			if \
-		FREETZ_TYPE_FON_WLAN_7570_IAD
+		FREETZ_TYPE_FON_WLAN_7570_IAD && ! FREETZ_REPLACE_KERNEL
 	default 238 			if \
 		FREETZ_TYPE_FON_WLAN_7340 || \
 		FREETZ_TYPE_FON_WLAN_7390
+	default 244			if \
+		FREETZ_TYPE_FON_WLAN_7570_IAD && FREETZ_REPLACE_KERNEL
 	default 246			if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
