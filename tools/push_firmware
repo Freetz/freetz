@@ -7,6 +7,7 @@
 #
 # Copyright (c) 2007 Michael Hampicke	 (mike@mhampicke.de)
 #		2007 Alexander Kriegisch (kriegaex, ip-phone-forum.de)
+#		2011 extended for ALICE 7570 by MaxMuster
 #
 # Cygwin users note:
 #   1. There is NO guarantee whatsoever that this will work on Cygwin, even
@@ -36,11 +37,8 @@
 function push_fw() {
 	trap 'echo ; echo "aborted" ; exit 1' TERM INT
 
-	local ip=192.168.178.1
-	[ -n "$2" ] && ip="$2"
-
 	echo
-	echo " * You should now reboot your box."
+	echo " * You should now reboot your box ($ip)."
 	echo "	 Waiting for box to shut down."
 	echo "	 Tip: switch off, if reboot is not detected because it happens too quickly"
 	echo -n "   "
@@ -51,7 +49,7 @@ function push_fw() {
 	echo
 
 	echo
-	echo " * No reply from box. Assuming switch-off or restart."
+	echo " * No reply from box ($ip). Assuming switch-off or restart."
 	echo "	 Trying to re-detect box."
 	echo -n "   "
 	while ! eval "ping $ping_params $ip > /dev/null"; do
@@ -66,7 +64,33 @@ function push_fw() {
 	echo "	 Tip: switch off/on box several times, if FTP client cannot log in ..."
 	echo
 
+	if [ $ISALICE ]; then 
+		echo "$basename: Trying to flash an image to an \"Alice\" 7570 FritzBox." 
+		[ $(which telnet) ] || { echo "$basename: Error finding required binary \"telnet\"." ; exit 1 ;}
+		VALUES="$(telnet_hn | telnet | grep -e '^mtd[1\|5]\|^HWRevision')" || { echo "$basename: Error trying to get values from \"Alice\" FritzBox."; exit 1; }
+		HWR=$(echo "$VALUES" | sed -n '/^HWRev/ s/HWRevision[^0-9]*//p')
+		[ "153" = "$HWR" ] || { echo "$basename: Error veryfing HWRevision=153 as required for \"Alice\" FritzBox. Found: HWRevision=$HWR." ; exit 1 ;}
+		MTD= echo "$VALUES" | sed -n '/^mtd/ s/mtd.[^0]*// p' 
+		[ $(echo $MTD | tr -d '\n' | grep  '0x90040000,0x907E0000' | grep -q '0x907E0000,0x90F80000') ] || \
+			{ echo -e "$basename: Error veryfing mtd values for \"Alice\" box. Found values:\n$MTD" ; exit 1 ;}
+		kernel_mtd1=$(mktemp -t freetz_mtd1_XXX) || { echo "$basename: Error creating temporary file for mtd1."; exit 1; }
+		kernel_mtd5=$(mktemp -t freetz_mtd5_XXX) || { echo "$basename: Error creating temporary file for mtd5."; exit 1; }
+		dd if=${arg1} of=${kernel_mtd1} bs=1k count=7808 || { echo "$basename: Error creating image part for mtd1."; exit 1; }
+		dd if=${arg1} of=${kernel_mtd5} bs=1k skip=7808 || { echo "$basename: Error creating image part for mtd5."; exit 1; }
+	else
+		kernel_mtd1=$1
+	fi
+
 	if [ $FOUND_NCFTP ]; then
+		[ $ISALICE ] && ncftpput \
+			-d stdout \
+			-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+			-W "quote MEDIA FLSH" \
+			-Y "quote QUIT" \
+			-u adam2 -p adam2 \
+			-C $ip \
+			${kernel_mtd5} mtd5 
+
 		ncftpput \
 			-d stdout \
 			-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
@@ -74,7 +98,8 @@ function push_fw() {
 			-Y "quote REBOOT" \
 			-u adam2 -p adam2 \
 			-C $ip \
-			$1 mtd1
+			${kernel_mtd1} mtd1
+
   elif [ $FOUND_FTP ]; then
 		ftp -n -p <<EOT
 open $ip
@@ -82,7 +107,8 @@ user adam2 adam2
 debug
 bin
 quote MEDIA FLSH
-put $1 mtd1
+put ${kernel_mtd1} mtd1
+$([ $ISALICE ] && echo put ${kernel_mtd5} mtd5 )
 quote REBOOT
 quit
 EOT
@@ -90,13 +116,31 @@ EOT
 	return 0
 }
 
+telnet_hn () {
+	echo open $ip 21
+	sleep 1
+	echo USER adam2
+	sleep 1
+	echo PASS adam2
+	sleep 1
+	echo GETENV mtd1
+	sleep 1
+	echo GETENV mtd5
+	sleep 1	
+	echo GETENV HWRevision
+	sleep 1	
+	echo QUIT
+}
+
+
 if [ -z "$1" ]; then
 	echo
-	echo "Usage: $0 <firmware> [ -f ] [ <ip> ]"
+	echo "Usage: $0 <firmware> [ -f ] [ <ip> ] [ -hn ]"
 	echo ""
 	echo "firmware	  firmware file to flash (mostly kernel.image)"
 	echo "-f	  disable safety prompt"
 	echo "ip	  bootloader IP address (default: 192.168.178.1)"
+	echo "-hn	  flash image to an \"Alice/HanseNet\" Version of 7570"
 	echo
 	exit 1
 fi
@@ -109,6 +153,8 @@ basename=$(basename $0)
 
 function cleanup() {
 	[ -n "$tmpimg" -a -f "$tmpimg" ] && rm -rf "$tmpimg";
+	[ -n "${kernel_mtd1}" -a -f "${kernel_mtd1}" ] && rm -rf "${kernel_mtd1}";
+	[ -n "${kernel_mtd5}" -a -f "${kernel_mtd5}" ] && rm -rf "${kernel_mtd5}";	
 	exit 1
 }
 
@@ -137,6 +183,11 @@ while [ -z "$img" ]; do
 	fi
 done
 
+ip=$(echo "$@" | grep -o -e "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+")
+[ -z "$ip" ] && ip=192.168.178.1
+ISFORCE=$( $(echo "$@" | grep -q "\-f")  && echo true )
+ISALICE=$( $(echo "$@" | grep -q "\-hn")  && echo true )
+
 ping_params="-c1 -w1"
 if [ "$(uname -s)" == "Darwin" ]; then
 	ping_params="-c1 -t1"
@@ -155,8 +206,8 @@ else
   echo "you have to install 'ftp' or 'ncftp' in order to use this script."
 fi
 
-if [ "$2" = "-f" ]; then
-	push_fw "$img" "$3"
+if [ $ISFORCE ]; then
+	push_fw "$img"
 else
 	echo
 	echo		"!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!" 
@@ -173,7 +224,7 @@ else
 	echo
 
 	if [ "$PROCEED" = "y" ]; then
-		push_fw "$img" "$2"
+		push_fw "$img"
 	else
 		echo
 		echo "aborted"
