@@ -35,7 +35,7 @@
  #include "elf32-target.h"
 --- bfd/elfxx-mips.c
 +++ bfd/elfxx-mips.c
-@@ -713,6 +713,11 @@ static bfd *reldyn_sorting_bfd;
+@@ -714,6 +714,11 @@ static bfd *reldyn_sorting_bfd;
  /* Nonzero if ABFD is using NewABI conventions.  */
  #define NEWABI_P(abfd) (ABI_N32_P (abfd) || ABI_64_P (abfd))
  
@@ -47,7 +47,7 @@
  /* The IRIX compatibility level we are striving for.  */
  #define IRIX_COMPAT(abfd) \
    (get_elf_backend_data (abfd)->elf_backend_mips_irix_compat (abfd))
-@@ -725,6 +730,9 @@ static bfd *reldyn_sorting_bfd;
+@@ -726,6 +731,9 @@ static bfd *reldyn_sorting_bfd;
  #define MIPS_ELF_OPTIONS_SECTION_NAME(abfd) \
    (NEWABI_P (abfd) ? ".MIPS.options" : ".options")
  
@@ -57,7 +57,7 @@
  /* True if NAME is the recognized name of any SHT_MIPS_OPTIONS section.
     Some IRIX system files do not use MIPS_ELF_OPTIONS_SECTION_NAME.  */
  #define MIPS_ELF_OPTIONS_SECTION_NAME_P(NAME) \
-@@ -7693,7 +7701,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7699,7 +7707,9 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
  	      /* We need a stub, not a plt entry for the undefined
  		 function.  But we record it as if it needs plt.  See
@@ -68,7 +68,7 @@
  	      h->needs_plt = 1;
  	      h->type = STT_FUNC;
  	    }
-@@ -7800,6 +7810,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7805,6 +7815,8 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_32:
  	case R_MIPS_REL32:
  	case R_MIPS_64:
@@ -77,7 +77,7 @@
  	  /* In VxWorks executables, references to external symbols
  	     are handled using copy relocs or PLT stubs, so there's
  	     no need to add a .rela.dyn entry for this relocation.  */
-@@ -7855,11 +7867,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7860,11 +7872,21 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  	case R_MIPS_GPREL16:
  	case R_MIPS_LITERAL:
  	case R_MIPS_GPREL32:
@@ -99,7 +99,7 @@
  	  /* This relocation describes the C++ object vtable hierarchy.
  	     Reconstruct it for later use during GC.  */
  	case R_MIPS_GNU_VTINHERIT:
-@@ -7882,20 +7904,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
+@@ -7887,20 +7909,20 @@ _bfd_mips_elf_check_relocs (bfd *abfd, s
  
        /* We must not create a stub for a symbol that has relocations
  	 related to taking the function's address.  This doesn't apply to
@@ -125,7 +125,7 @@
  	  }
  
        /* See if this reloc would need to refer to a MIPS16 hard-float stub,
-@@ -12616,7 +12638,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
+@@ -12621,7 +12643,9 @@ _bfd_mips_elf_merge_private_bfd_data (bf
  	  break;
  	}
      }
