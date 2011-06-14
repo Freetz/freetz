@@ -71,7 +71,6 @@ sed -i -e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
 	-e 's|DEF info,3 = 99,32,16,info|DEF info,3 = 2,6,1,info|' \
 	-e 's|DEF info,4 = 99,32,16,info|DEF info,4 = 2,6,1,info|' "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
-echo "DEF tam,0 = 99,32,21,tam" >> "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 # map tam info to power
 echo "MAP tam,0 TO power,1" >> "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
