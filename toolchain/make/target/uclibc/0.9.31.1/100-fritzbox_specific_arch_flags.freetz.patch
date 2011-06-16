@@ -1,6 +1,21 @@
---- Rules.mak.orig	2010-03-12 20:32:42.000000000 +0100
-+++ Rules.mak	2010-06-11 15:57:18.514873530 +0200
-@@ -290,6 +290,8 @@
+--- extra/Configs/Config.mips
++++ extra/Configs/Config.mips
+@@ -64,6 +64,12 @@
+ config CONFIG_MIPS_ISA_MIPS32
+ 	bool "MIPS32"
+ 
++config CONFIG_MIPS_ISA_MIPS32_4KC
++	bool "MIPS32 4KC (FRITZ!Box based on SoCs like AR7 or UR8)"
++
++config CONFIG_MIPS_ISA_MIPS32_24KC
++	bool "MIPS32 24KC (FRITZ!Box based on SoCs like AR9, IKS or VR9)"
++
+ config CONFIG_MIPS_ISA_MIPS32R2
+ 	bool "MIPS32r2"
+ 
+--- Rules.mak
++++ Rules.mak
+@@ -352,6 +352,8 @@
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_3)+=-mips3 -mtune=mips3
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_4)+=-mips4 -mtune=mips4
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32)+=-mips32 -mtune=mips32
