@@ -1,3 +1,33 @@
+menu "C++"
+
+config FREETZ_LIB_libstdc__
+	bool "libstdc++ (libstdc++-6.0.x.so)"
+	select FREETZ_LIB_libm
+	default n
+	help
+		GNU implementation of the Standard C++ Library.
+
+		Note: at the moment no freetz package require this library.
+		The option is provided only for the convenience of the people
+		who manually link their programs against this library and
+		want to minimize the effort required to include it into
+		the image.
+
+config FREETZ_LIB_libuClibc__
+	bool "uClibc++ (libuClibc++-0.2.3.so)"
+	default n
+	help
+		An implementation of the Standard C++ Library optimized for embedded systems.
+
+config FREETZ_LIB_libuClibc__WITH_WCHAR
+	depends FREETZ_LIB_libuClibc__
+	bool "enable wchar support"
+	default n
+	help
+		Enables wchar-support in uClibc++.
+
+endmenu
+
 menu "Crypto & SSL"
 
 comment "Math -----------------------------------"
@@ -1188,17 +1218,3 @@ config FREETZ_LIB_libatm
 	default n
 	help
 		Libatm is a library for accessing the Linux ATM subsystem.
-
-config FREETZ_LIB_libuClibc__
-	bool "uClibc++ (libuClibc++-0.2.3.so)"
-	default n
-	help
-		The uClibc++ library is my implementation of the C++ standard library.
-		It is designed for use in embedded systems.
-
-config FREETZ_LIB_libuClibc__WITH_WCHAR
-	depends FREETZ_LIB_libuClibc__
-	bool "enable wchar support"
-	default n
-	help
-		Enables wchar-support in uClibc++.

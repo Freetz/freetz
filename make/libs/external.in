@@ -648,6 +648,14 @@ config EXTERNAL_FREETZ_LIB_libssl
 		externals these file(s):
 		 /usr/lib/freetz/libssl.so.0.9.8
 
+config EXTERNAL_FREETZ_LIB_libstdc__
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libstdc__
+	bool "libstdc++"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libstdc++.so.6.0.x
+
 config EXTERNAL_FREETZ_LIB_libsysfs
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libsysfs
 	bool "libsysfs"

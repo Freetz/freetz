@@ -4,6 +4,10 @@ ifeq ($(strip $(FREETZ_LIB_libuClibc__)),y)
 LIBS+=uclibcxx
 endif
 
+ifeq ($(strip $(FREETZ_LIB_libstdc__)),y)
+LIBS+=libstdcxx
+endif
+
 ifeq ($(strip $(FREETZ_LIB_libgcc_s)),y)
 LIBS+=libgcc_s
 endif
