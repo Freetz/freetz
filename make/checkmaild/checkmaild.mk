@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.4.6)
+$(call PKG_INIT_BIN, 0.4.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=5dce4e4fd27f5ab363a7b071593f1380
+$(PKG)_SOURCE_MD5:=0a32db8fa9d7407049cac3574c09a6d9
 $(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/checkmaild
