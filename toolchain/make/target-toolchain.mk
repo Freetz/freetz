@@ -8,7 +8,6 @@ TARGET_TOOLCHAIN_SYSROOT=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase)/usr/
 
 include $(TOOLCHAIN_DIR)/make/target/binutils/binutils.mk
 include $(TOOLCHAIN_DIR)/make/target/gcc/gcc.mk
-include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk

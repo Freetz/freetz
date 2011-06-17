@@ -1,6 +1,5 @@
 include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
-include $(TOOLCHAIN_DIR)/make/target/gcc/libgcc.mk
 include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
@@ -42,7 +41,7 @@ $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE): | $(DL_DIR)
 
 download-toolchain: $(KERNEL_CROSS_COMPILER) kernel-configured \
 			$(TARGET_CROSS_COMPILER) target-toolchain-kernel-headers \
-			$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0 $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so.1 \
+			$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0 \
 			$(CCACHE) uclibcxx libtool-host $(if $(FREETZ_PACKAGE_GDB_HOST),gdbhost)
 
 gcc-kernel: $(KERNEL_CROSS_COMPILER)
