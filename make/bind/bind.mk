@@ -20,7 +20,7 @@ $(eval $(call $(PKG)_DEFS,bin,nsupdate dig))
 $(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += --enable-epoll=yes
+$(PKG)_CONFIGURE_OPTIONS += --enable-epoll=no
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/urandom"
 $(PKG)_CONFIGURE_OPTIONS += --with-libtool
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
