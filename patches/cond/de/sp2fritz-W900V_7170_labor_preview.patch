@@ -1,6 +1,6 @@
-diff -burN usr/www/avm/html/de/dect/setting.frm usr/www/avm/html/de/dect/setting.frm
---- usr/www/avm/html/de/dect/setting.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/dect/setting.frm usr/www/all/html/de/dect/setting.frm
+--- usr/www/all/html/de/dect/setting.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/dect/setting.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,7 @@
 +<input type="hidden" name="dect:settings/enabled" value="<? query dect:settings/enabled ?>" id="uiPost_DectActivated">
 +<input type="hidden" name="dect:command/Unsubscribe" value="0" id="uiPostUnsubscribe" disabled>
@@ -9,9 +9,9 @@ diff -burN usr/www/avm/html/de/dect/setting.frm usr/www/avm/html/de/dect/setting
 +<input type="hidden" name="var:DeviceType" value="<? echo $var:DeviceType ?>" id="uiDeviceType">
 +<input type="hidden" name="var:TechType" value="<? echo $var:TechType ?>" id="uiTechType">
 +<input type="hidden" id="uiPostVarName" name="">
-diff -burN usr/www/avm/html/de/dect/setting.html usr/www/avm/html/de/dect/setting.html
---- usr/www/avm/html/de/dect/setting.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/dect/setting.html usr/www/all/html/de/dect/setting.html
+--- usr/www/all/html/de/dect/setting.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/dect/setting.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,33 @@
 +<? include ../html/de/dect/setting.js ?>
 +<div id="content">
@@ -46,9 +46,9 @@ diff -burN usr/www/avm/html/de/dect/setting.html usr/www/avm/html/de/dect/settin
 +<p class="ac"><input type="button" onclick="uiReboot()" value="Neustart" class=Pushbutton style="width: 360px"></p>
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/dect/setting.js usr/www/avm/html/de/dect/setting.js
---- usr/www/avm/html/de/dect/setting.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/dect/setting.js	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/dect/setting.js usr/www/all/html/de/dect/setting.js
+--- usr/www/all/html/de/dect/setting.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/dect/setting.js	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,52 @@
 +<!-- ../dect/setting.js -->
 +<style type="text/css">
@@ -102,9 +102,9 @@ diff -burN usr/www/avm/html/de/dect/setting.js usr/www/avm/html/de/dect/setting.
 +document.getElementById("uiPostForm").submit();
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon/buchsend.html usr/www/avm/html/de/fon/buchsend.html
---- usr/www/avm/html/de/fon/buchsend.html	2011-01-31 17:15:55.000000000 +0100
-+++ usr/www/avm/html/de/fon/buchsend.html	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/fon/buchsend.html usr/www/all/html/de/fon/buchsend.html
+--- usr/www/all/html/de/fon/buchsend.html	2011-01-31 17:15:55.000000000 +0100
++++ usr/www/all/html/de/fon/buchsend.html	2011-02-24 10:41:36.000000000 +0100
 @@ -14,10 +14,10 @@
  <select id="handset">
  <? setvariable var:handsetfound 0 ?>
@@ -126,9 +126,9 @@ diff -burN usr/www/avm/html/de/fon/buchsend.html usr/www/avm/html/de/fon/buchsen
  <input type="button" onclick="uiDoCancel()" value="{?txtCancel?}" class="Pushbutton" id="buttonCancel">
  <input type="button" onclick="uiDoHelp()" value="{?txtHelp?}" class=Pushbutton>
  </div></div></div></div></div></div>
-diff -burN usr/www/avm/html/de/fon/dect0.frm usr/www/avm/html/de/fon/dect0.frm
---- usr/www/avm/html/de/fon/dect0.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect0.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/dect0.frm usr/www/all/html/de/fon/dect0.frm
+--- usr/www/all/html/de/fon/dect0.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/dect0.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,32 @@
 +<input type="hidden" name="var:FonNr" value="<? echo $var:FonNr ?>" id="uiPostFonNr">
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
@@ -162,9 +162,9 @@ diff -burN usr/www/avm/html/de/fon/dect0.frm usr/www/avm/html/de/fon/dect0.frm
 +
 +<input type="hidden" name="dect:command/PageHandsets" id="uiPostPageHandsets" disabled>
 +<input type="hidden" name="dect:command/DateTime" id="uiPostHandsetsTime" disabled>
-diff -burN usr/www/avm/html/de/fon/dect0.html usr/www/avm/html/de/fon/dect0.html
---- usr/www/avm/html/de/fon/dect0.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect0.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/dect0.html usr/www/all/html/de/fon/dect0.html
+--- usr/www/all/html/de/fon/dect0.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/dect0.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,47 @@
 +<div id="content">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -213,9 +213,9 @@ diff -burN usr/www/avm/html/de/fon/dect0.html usr/www/avm/html/de/fon/dect0.html
 +<input type="button" onclick="uiDoHelp()" value="Hilfe" class="Pushbutton" id="buttonHilfe">
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon/dect0.js usr/www/avm/html/de/fon/dect0.js
---- usr/www/avm/html/de/fon/dect0.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/dect0.js	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/dect0.js usr/www/all/html/de/fon/dect0.js
+--- usr/www/all/html/de/fon/dect0.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/dect0.js	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,152 @@
 +<!--		../fon/dect0.js		-->
 +<style type="text/css">
@@ -369,9 +369,9 @@ diff -burN usr/www/avm/html/de/fon/dect0.js usr/www/avm/html/de/fon/dect0.js
 +alert("Uhrzeit wurde nur bei allen angemldeten Swiss-Voice comaptiblen Handteilen gesetzt!");
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon/fon1dect.frm usr/www/avm/html/de/fon/fon1dect.frm
---- usr/www/avm/html/de/fon/fon1dect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fon1dect.frm usr/www/all/html/de/fon/fon1dect.frm
+--- usr/www/all/html/de/fon/fon1dect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fon1dect.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,23 @@
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/MSN" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/MSN ?>" id="uiPostThisMSN">
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/CLIR" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/CLIR ?>" id="uiPostCLIR">
@@ -396,9 +396,9 @@ diff -burN usr/www/avm/html/de/fon/fon1dect.frm usr/www/avm/html/de/fon/fon1dect
 +<input type="hidden" name="dect:settings/Handset$0/Type" value="<? query dect:settings/Handset$0/Type ?>" id="uiPostType$0" disabled>
 +<input type="hidden" name="dect:settings/Handset$0/Name" value="<? query dect:settings/Handset$0/Name ?>" id="uiPostDectDeviceName$0" disabled>
 +` ?>
-diff -burN usr/www/avm/html/de/fon/fon1dect.html usr/www/avm/html/de/fon/fon1dect.html
---- usr/www/avm/html/de/fon/fon1dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fon1dect.html usr/www/all/html/de/fon/fon1dect.html
+--- usr/www/all/html/de/fon/fon1dect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fon1dect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,43 @@
 +
 +<div id="content">
@@ -443,9 +443,9 @@ diff -burN usr/www/avm/html/de/fon/fon1dect.html usr/www/avm/html/de/fon/fon1dec
 +<input type="button" onclick="uiDoHelp()" value="Hilfe" class="Pushbutton" id="buttonHilfe">
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon/fon1dect.js usr/www/avm/html/de/fon/fon1dect.js
---- usr/www/avm/html/de/fon/fon1dect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1dect.js	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fon1dect.js usr/www/all/html/de/fon/fon1dect.js
+--- usr/www/all/html/de/fon/fon1dect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fon1dect.js	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,168 @@
 +<!--		../fon/fon1dect.js		-->
 +<style type="text/css">
@@ -615,17 +615,17 @@ diff -burN usr/www/avm/html/de/fon/fon1dect.js usr/www/avm/html/de/fon/fon1dect.
 +return g_Index[Number(nr)];
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon/fon1Mini.frm usr/www/avm/html/de/fon/fon1Mini.frm
---- usr/www/avm/html/de/fon/fon1Mini.frm	2011-01-31 17:15:52.000000000 +0100
-+++ usr/www/avm/html/de/fon/fon1Mini.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fon1Mini.frm usr/www/all/html/de/fon/fon1Mini.frm
+--- usr/www/all/html/de/fon/fon1Mini.frm	2011-01-31 17:15:52.000000000 +0100
++++ usr/www/all/html/de/fon/fon1Mini.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -28,3 +28,4 @@
  <? include ../html/de/home/fonbuchBasis.frm ?>
  <Input type="hidden" name="telcfg:settings/Foncontrol/<? echo $var:MiniUser ?>/Phonebook" value="<? query telcfg:settings/Foncontrol/<? echo $var:MiniUser ?>/Phonebook ?>" id="uiPostUserPhonebook" disabled>
  ` ?>
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
-diff -burN usr/www/avm/html/de/fon/fonbuch.html usr/www/avm/html/de/fon/fonbuch.html
---- usr/www/avm/html/de/fon/fonbuch.html	2011-01-31 17:16:06.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonbuch.html	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonbuch.html usr/www/all/html/de/fon/fonbuch.html
+--- usr/www/all/html/de/fon/fonbuch.html	2011-01-31 17:16:06.000000000 +0100
++++ usr/www/all/html/de/fon/fonbuch.html	2011-02-24 10:41:36.000000000 +0100
 @@ -85,6 +85,12 @@
  </div>
  <? include ../html/de/home/error.html ?>
@@ -639,9 +639,9 @@ diff -burN usr/www/avm/html/de/fon/fonbuch.html usr/www/avm/html/de/fon/fonbuch.
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
  <input type="button" onclick="uiDoHelp()" value="{?txtHelp?}" class="Pushbutton">
  </div></div></div></div></div></div>
-diff -burN usr/www/avm/html/de/fon/fonbuch.js usr/www/avm/html/de/fon/fonbuch.js
---- usr/www/avm/html/de/fon/fonbuch.js	2011-01-31 17:16:05.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonbuch.js	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonbuch.js usr/www/all/html/de/fon/fonbuch.js
+--- usr/www/all/html/de/fon/fonbuch.js	2011-01-31 17:16:05.000000000 +0100
++++ usr/www/all/html/de/fon/fonbuch.js	2011-02-24 10:41:36.000000000 +0100
 @@ -619,4 +619,7 @@
  }
  return deviceName;
@@ -650,9 +650,9 @@ diff -burN usr/www/avm/html/de/fon/fonbuch.js usr/www/avm/html/de/fon/fonbuch.js
 +jslGoTo("<? print $var:menu ?>", "buchsend");
 +}
  </script>
-diff -burN usr/www/avm/html/de/fon/fondevices.frm usr/www/avm/html/de/fon/fondevices.frm
---- usr/www/avm/html/de/fon/fondevices.frm	2011-01-31 17:15:54.000000000 +0100
-+++ usr/www/avm/html/de/fon/fondevices.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fondevices.frm usr/www/all/html/de/fon/fondevices.frm
+--- usr/www/all/html/de/fon/fondevices.frm	2011-01-31 17:15:54.000000000 +0100
++++ usr/www/all/html/de/fon/fondevices.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -138,3 +138,18 @@
  <? multiquery voipextension:settings/extension/list '
  <Input type="hidden" name="voipextension:command/$1" value="delete" id="uiPostDelete$1" disabled>
@@ -672,9 +672,9 @@ diff -burN usr/www/avm/html/de/fon/fondevices.frm usr/www/avm/html/de/fon/fondev
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
 +<input type="hidden" name="dect:command/Unsubscribe" value="0" id="uiPostUnsubscribe" disabled>
 +<input type="hidden" name="dect:command/PIN" value="" id="uiPostDectPIN" disabled>
-diff -burN usr/www/avm/html/de/fon/fondevices.html usr/www/avm/html/de/fon/fondevices.html
---- usr/www/avm/html/de/fon/fondevices.html	2011-01-31 17:16:05.000000000 +0100
-+++ usr/www/avm/html/de/fon/fondevices.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fondevices.html usr/www/all/html/de/fon/fondevices.html
+--- usr/www/all/html/de/fon/fondevices.html	2011-01-31 17:16:05.000000000 +0100
++++ usr/www/all/html/de/fon/fondevices.html	2011-02-24 10:41:33.000000000 +0100
 @@ -18,6 +18,7 @@
  <ul class="tabs">
  <li class="tabs_on"><div class="activtab">{?1947:7480?}</div></li>
@@ -683,9 +683,9 @@ diff -burN usr/www/avm/html/de/fon/fondevices.html usr/www/avm/html/de/fon/fonde
  </ul>
  ` ?>
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-diff -burN usr/www/avm/html/de/fon/fondevices.js usr/www/avm/html/de/fon/fondevices.js
---- usr/www/avm/html/de/fon/fondevices.js	2011-01-31 17:16:14.000000000 +0100
-+++ usr/www/avm/html/de/fon/fondevices.js	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fondevices.js usr/www/all/html/de/fon/fondevices.js
+--- usr/www/all/html/de/fon/fondevices.js	2011-01-31 17:16:14.000000000 +0100
++++ usr/www/all/html/de/fon/fondevices.js	2011-02-24 10:41:36.000000000 +0100
 @@ -33,7 +33,9 @@
  var g_txt_Type_AB_Id = "Tam";
  var g_txt_Type_Fax_Id = "Fax";
@@ -807,9 +807,9 @@ diff -burN usr/www/avm/html/de/fon/fondevices.js usr/www/avm/html/de/fon/fondevi
 +}
 +}
  </script>
-diff -burN usr/www/avm/html/de/fon/foneditdect.frm usr/www/avm/html/de/fon/foneditdect.frm
---- usr/www/avm/html/de/fon/foneditdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
+--- usr/www/all/html/de/fon/foneditdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditdect.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,9 @@
 +<input type="hidden" name="dect:command/StartSubscription" id="uiPostStartSubscription" disabled>
 +<input type="hidden" name="dect:command/Unsubscribe" id="uiPostUnsubscribe" disabled>
@@ -820,9 +820,9 @@ diff -burN usr/www/avm/html/de/fon/foneditdect.frm usr/www/avm/html/de/fon/foned
 +<input type="hidden" name="dect:settings/Handset$0/Type" value="<? query dect:settings/Handset$0/Type ?>" id="uiPostType$0" disabled>
 +<input type="hidden" name="dect:settings/Handset$0/Name" value="<? query dect:settings/Handset$0/Name ?>" id="uiPostDectDeviceName$0" disabled>
 +` ?>
-diff -burN usr/www/avm/html/de/fon/foneditdect.html usr/www/avm/html/de/fon/foneditdect.html
---- usr/www/avm/html/de/fon/foneditdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/foneditdect.html usr/www/all/html/de/fon/foneditdect.html
+--- usr/www/all/html/de/fon/foneditdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditdect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,58 @@
 +
 +<div id="content">
@@ -882,9 +882,9 @@ diff -burN usr/www/avm/html/de/fon/foneditdect.html usr/www/avm/html/de/fon/fone
 +<input type="button" onclick="uiDoCancel()" value="Abbrechen" class="Pushbutton" id="buttonCancel">
 +<input type="button" onclick="uiDoHelp()" value="Hilfe" class="Pushbutton" id="buttonHilfe">
 +</div></div></div></div></div></div>
-diff -burN usr/www/avm/html/de/fon/foneditdect.js usr/www/avm/html/de/fon/foneditdect.js
---- usr/www/avm/html/de/fon/foneditdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/foneditdect.js	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/foneditdect.js usr/www/all/html/de/fon/foneditdect.js
+--- usr/www/all/html/de/fon/foneditdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/foneditdect.js	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,98 @@
 +<!--		../fon/foneditdect.js		-->
 +<style type="text/css">
@@ -984,9 +984,9 @@ diff -burN usr/www/avm/html/de/fon/foneditdect.js usr/www/avm/html/de/fon/fonedi
 +jslSubmitFormEx("fon", "", "");
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon/fonlistdect.frm usr/www/avm/html/de/fon/fonlistdect.frm
---- usr/www/avm/html/de/fon/fonlistdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonlistdect.frm usr/www/all/html/de/fon/fonlistdect.frm
+--- usr/www/all/html/de/fon/fonlistdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonlistdect.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,6 @@
 +<input type="hidden" name="var:IsdnNr" value="<? echo $var:IsdnNr ?>" id="uiPostIsdnNr">
 +<input type="hidden" name="var:parent" value="<? echo $var:parent ?>" id="uiPostParent">
@@ -994,9 +994,9 @@ diff -burN usr/www/avm/html/de/fon/fonlistdect.frm usr/www/avm/html/de/fon/fonli
 +<input type="hidden" name="telcfg:settings/NTHotDialList/Name$0" value="<? query telcfg:settings/NTHotDialList/Name$0 ?>" id="uiPostName$0" disabled>
 +<input type="hidden" name="telcfg:settings/NTHotDialList/Number$0" value="<? query telcfg:settings/NTHotDialList/Number$0 ?>" id="uiPostNummer$0" disabled>
 +` ?>
-diff -burN usr/www/avm/html/de/fon/fonlistdect.html usr/www/avm/html/de/fon/fonlistdect.html
---- usr/www/avm/html/de/fon/fonlistdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonlistdect.html usr/www/all/html/de/fon/fonlistdect.html
+--- usr/www/all/html/de/fon/fonlistdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonlistdect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,44 @@
 +<? include ../html/de/fon/fonlistdect.inc ?>
 +<div id="content">
@@ -1042,9 +1042,9 @@ diff -burN usr/www/avm/html/de/fon/fonlistdect.html usr/www/avm/html/de/fon/fonl
 +</div></div></div></div></div></div>
 +</div></div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon/fonlistdect.js usr/www/avm/html/de/fon/fonlistdect.js
---- usr/www/avm/html/de/fon/fonlistdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlistdect.js	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonlistdect.js usr/www/all/html/de/fon/fonlistdect.js
+--- usr/www/all/html/de/fon/fonlistdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonlistdect.js	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,69 @@
 +<!--		../fon/fonlistdect.js		-->
 +<style type="text/css">
@@ -1115,9 +1115,9 @@ diff -burN usr/www/avm/html/de/fon/fonlistdect.js usr/www/avm/html/de/fon/fonlis
 +jslSubmitFormEx("fon", "fon1isdn", jslGetValue("uiPostPageName"));
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon/fonlist.html usr/www/avm/html/de/fon/fonlist.html
---- usr/www/avm/html/de/fon/fonlist.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonlist.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonlist.html usr/www/all/html/de/fon/fonlist.html
+--- usr/www/all/html/de/fon/fonlist.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonlist.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,46 @@
 +
 +<div id="content">
@@ -1165,9 +1165,9 @@ diff -burN usr/www/avm/html/de/fon/fonlist.html usr/www/avm/html/de/fon/fonlist.
 +</div></div></div></div></div></div></div>
 +` ?>
 +</div>
-diff -burN usr/www/avm/html/de/fon/fonsetupdect.frm usr/www/avm/html/de/fon/fonsetupdect.frm
---- usr/www/avm/html/de/fon/fonsetupdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonsetupdect.frm usr/www/all/html/de/fon/fonsetupdect.frm
+--- usr/www/all/html/de/fon/fonsetupdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,9 @@
 +<input type="hidden" name="var:MsnNr" value="<? echo $var:MsnNr ?>" id="uiPostMsnNr">
 +<input type="hidden" name="dect:settings/RingOnAllMSNs" value="<? query dect:settings/RingOnAllMSNs ?>" id="uiPostRingOnAllMSNs" disabled>
@@ -1178,9 +1178,9 @@ diff -burN usr/www/avm/html/de/fon/fonsetupdect.frm usr/www/avm/html/de/fon/fons
 +<input type="hidden" name="dect:settings/MSN$0/BusyOnBusy" value="<? query dect:settings/MSN$0/BusyOnBusy ?>" id="uiPostBusyOnBusy$0" disabled>
 +<input type="hidden" name="dect:settings/MSN$0/Handsets" value="<? query dect:settings/MSN$0/Handsets ?>" id="uiPostHandsets$0" disabled>
 +` ?>
-diff -burN usr/www/avm/html/de/fon/fonsetupdect.html usr/www/avm/html/de/fon/fonsetupdect.html
---- usr/www/avm/html/de/fon/fonsetupdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonsetupdect.html usr/www/all/html/de/fon/fonsetupdect.html
+--- usr/www/all/html/de/fon/fonsetupdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,54 @@
 +
 +<div id="content">
@@ -1236,9 +1236,9 @@ diff -burN usr/www/avm/html/de/fon/fonsetupdect.html usr/www/avm/html/de/fon/fon
 +</div></div></div></div></div></div>
 +</div></div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon/fonsetupdect.js usr/www/avm/html/de/fon/fonsetupdect.js
---- usr/www/avm/html/de/fon/fonsetupdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon/fonsetupdect.js	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon/fonsetupdect.js usr/www/all/html/de/fon/fonsetupdect.js
+--- usr/www/all/html/de/fon/fonsetupdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon/fonsetupdect.js	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,125 @@
 +<!--		../fon/fonsetupdect.js		-->
 +<style type="text/css">
@@ -1365,17 +1365,17 @@ diff -burN usr/www/avm/html/de/fon/fonsetupdect.js usr/www/avm/html/de/fon/fonse
 +return list;
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon1Mini.frm usr/www/avm/html/de/fon_config/fon1Mini.frm
---- usr/www/avm/html/de/fon_config/fon1Mini.frm	2011-01-31 17:15:52.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon1Mini.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon1Mini.frm usr/www/all/html/de/fon_config/fon1Mini.frm
+--- usr/www/all/html/de/fon_config/fon1Mini.frm	2011-01-31 17:15:52.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon1Mini.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -28,3 +28,4 @@
  <? include ../html/de/home/fonbuchBasis.frm ?>
  <Input type="hidden" name="telcfg:settings/Foncontrol/<? echo $var:MiniUser ?>/Phonebook" value="<? query telcfg:settings/Foncontrol/<? echo $var:MiniUser ?>/Phonebook ?>" id="uiPostUserPhonebook" disabled>
  ` ?>
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
-diff -burN usr/www/avm/html/de/fon_config/fon_config_1.js usr/www/avm/html/de/fon_config/fon_config_1.js
---- usr/www/avm/html/de/fon_config/fon_config_1.js	2011-01-31 17:15:55.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_1.js	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_1.js usr/www/all/html/de/fon_config/fon_config_1.js
+--- usr/www/all/html/de/fon_config/fon_config_1.js	2011-01-31 17:15:55.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_1.js	2011-02-24 10:41:36.000000000 +0100
 @@ -27,6 +27,7 @@
  var g_txtIPPhone = "{?9084:8537?}";
  var g_txtIPPhoneOnly = "{?gIPhone?}";
@@ -1384,9 +1384,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_1.js usr/www/avm/html/de/fo
  var g_txt_Device_Fax = "{?9084:4905?}";
  var g_txt_Device_Fon = "{?9084:8935?} ";
  var g_mldNoPort = "{?9084:8633?}";
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.frm usr/www/avm/html/de/fon_config/fon_config_Dect_1.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_1.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_1.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_1.frm usr/www/all/html/de/fon_config/fon_config_Dect_1.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_1.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_1.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,8 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<? repeat [ 0 5 ] `
@@ -1396,9 +1396,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.frm usr/www/avm/html
 +` ?>
 +<input type="hidden" name="telcfg:settings/DialPort" value="<? query telcfg:settings/DialPort ?>" id="uiPostDialPort" disabled>
 +<input type="hidden" name="telcfg:command/Dial" value="" id="uiPostDial" disabled>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.html usr/www/avm/html/de/fon_config/fon_config_Dect_1.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_1.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_1.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_1.html usr/www/all/html/de/fon_config/fon_config_Dect_1.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_1.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_1.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,29 @@
 +<div id="content">
 +<div class="backtitelkonfig"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -1429,9 +1429,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.html usr/www/avm/htm
 +</div></div></div></div></div></div>
 +<? include ../html/de/fon_config/rbb_backokcancel.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.inc usr/www/avm/html/de/fon_config/fon_config_Dect_1.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_1.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_1.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_1.inc usr/www/all/html/de/fon_config/fon_config_Dect_1.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_1.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_1.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,13 @@
 +<? include ../html/de/global.inc ?>
 +<? setvariable var:Txt1 "Schnurlostelefon (DECT) einrichten" ?>
@@ -1446,9 +1446,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.inc usr/www/avm/html
 +<? setvariable var:Txt12 "Die maximale Anzahl von angemeldeten Schnurlostelefonen ist erreicht. Es können keine weiteren Geräte angemeldet werden." ?>
 +<? setvariable var:Txt14 "angemeldete Schnurlostelefone" ?>
 +<? setvariable var:Txt5 "Typ" ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.js usr/www/avm/html/de/fon_config/fon_config_Dect_1.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_1.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_1.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_1.js usr/www/all/html/de/fon_config/fon_config_Dect_1.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_1.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_1.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,155 @@
 +<!-- ../fon_config/fc_fon_1.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_1.inc ?>
@@ -1605,9 +1605,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_1.js usr/www/avm/html/
 +return null;
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.frm usr/www/avm/html/de/fon_config/fon_config_Dect_2.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_2.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_2.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_2.frm usr/www/all/html/de/fon_config/fon_config_Dect_2.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_2.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_2.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,24 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<input type="hidden" name="dect:settings/MSN0/MSN" value="<? query dect:settings/MSN0/MSN ?>" id="uiPostDectMsn0" disabled>
@@ -1633,9 +1633,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.frm usr/www/avm/html
 +<input type="hidden" name="sip:settings/$1/displayname" value="$2" id="ui$1" disabled>
 +<input type="hidden" name="sip:settings/$1/ID" value="$3" id="ui$1ID" disabled>
 +' ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.html usr/www/avm/html/de/fon_config/fon_config_Dect_2.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_2.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_2.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_2.html usr/www/all/html/de/fon_config/fon_config_Dect_2.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_2.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_2.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,29 @@
 +<div id="content">
 +<div class="backtitelkonfig"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -1666,9 +1666,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.html usr/www/avm/htm
 +</div></div></div></div></div></div>
 +<? include ../html/de/fon_config/rbb_backokcancel.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.inc usr/www/avm/html/de/fon_config/fon_config_Dect_2.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_2.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_2.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_2.inc usr/www/all/html/de/fon_config/fon_config_Dect_2.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_2.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_2.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,10 @@
 +<? include ../html/de/global.inc ?>
 +<? setvariable var:Txt1 "Schnurlostelefon (DECT) für ausgehende Gespräche einrichten" ?>
@@ -1680,9 +1680,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.inc usr/www/avm/html
 +<? setvariable var:Txt5 "Festnetz" ?>
 +<? setvariable var:Txt6 " führen" ?>
 +<? setvariable var:Txt7 "Wählen Sie aus, über welche Rufnummer die Gespräche geführt werden sollen." ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.js usr/www/avm/html/de/fon_config/fon_config_Dect_2.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_2.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_2.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_2.js usr/www/all/html/de/fon_config/fon_config_Dect_2.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_2.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_2.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,271 @@
 +<!-- ../fon_config/fon_config_Dect_2.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_2.inc ?>
@@ -1955,9 +1955,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_2.js usr/www/avm/html/
 +}
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.frm usr/www/avm/html/de/fon_config/fon_config_Dect_3.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_3.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_3.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_3.frm usr/www/all/html/de/fon_config/fon_config_Dect_3.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_3.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_3.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,25 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPostPots">
@@ -1984,9 +1984,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.frm usr/www/avm/html
 +<input type="hidden" name="sip:settings/$1/displayname" value="$2" id="uiPost$1" disabled>
 +<input type="hidden" name="sip:settings/$1/ID" value="$3" id="ui$1ID" disabled>
 +` ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.html usr/www/avm/html/de/fon_config/fon_config_Dect_3.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_3.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_3.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_3.html usr/www/all/html/de/fon_config/fon_config_Dect_3.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_3.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_3.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,41 @@
 +<div id="content">
 +<div class="backtitelkonfig"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -2029,9 +2029,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.html usr/www/avm/htm
 +<input type="button" onclick="uiDoCancel()" value="Abbrechen" class="Pushbutton" id="uiBtnCancel">
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.inc usr/www/avm/html/de/fon_config/fon_config_Dect_3.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_3.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_3.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_3.inc usr/www/all/html/de/fon_config/fon_config_Dect_3.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_3.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_3.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,20 @@
 +<? include ../html/de/global.inc ?>
 +<? setvariable var:Txt1 "Schnurlostelefon (DECT) für ankommende Gespräche einrichten" ?>
@@ -2053,9 +2053,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.inc usr/www/avm/html
 +<? setvariable var:TextAlleAnnehmen "alle Anrufe annehmen" ?>
 +<? setvariable var:TextInternet "Internet" ?>
 +<? setvariable var:TextFestnetz "Festnetz" ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.js usr/www/avm/html/de/fon_config/fon_config_Dect_3.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_3.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_3.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_3.js usr/www/all/html/de/fon_config/fon_config_Dect_3.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_3.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_3.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,255 @@
 +<!-- ../fon_config/fon_config_Dect_3.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_3.inc ?>
@@ -2312,18 +2312,18 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_3.js usr/www/avm/html/
 +}
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_check.frm usr/www/avm/html/de/fon_config/fon_config_Dect_check.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_check.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_check.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_check.frm usr/www/all/html/de/fon_config/fon_config_Dect_check.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_check.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_check.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,5 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<input type="hidden" name="telcfg:settings/DialPort" value="<? query telcfg:settings/DialPort ?>" id="uiPostDialPort" disabled>
 +<input type="hidden" name="telcfg:command/Dial" value="" id="uiPostDial" disabled>
 +<input type="hidden" name="telcfg:command/Hangup" value="" id="uiPostHangup" disabled>
 +<input type="hidden" name="telcfg:settings/MSN/Port0/Fax" value="<? query telcfg:settings/MSN/Port0/Fax ?>" id="uiPostPort0Fax" disabled>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_check.html usr/www/avm/html/de/fon_config/fon_config_Dect_check.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_check.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_check.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_check.html usr/www/all/html/de/fon_config/fon_config_Dect_check.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_check.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_check.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,28 @@
 +<div id="content">
 +<div class="backtitelkonfig"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -2353,9 +2353,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_check.html usr/www/avm
 +<input type="button" onclick="uiDoCancel()" value="<? echo $var:txtCancel ?>" class="Pushbutton" id="uiCancelBtn" style="display: none;">
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_check.inc usr/www/avm/html/de/fon_config/fon_config_Dect_check.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_check.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_check.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_check.inc usr/www/all/html/de/fon_config/fon_config_Dect_check.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_check.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_check.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,25 @@
 +<? include ../html/de/global.inc ?>
 +<? if eq $var:FonTestNo '2' `
@@ -2382,9 +2382,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_check.inc usr/www/avm/
 +` ?>
 +<? setvariable var:Txt11 "zum Telefon-Test" ?>
 +<? setvariable var:Txt12 'Nähere Informationen dazu finden Sie in der Dokumentation zu Ihrem Telefon.' ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_check.js usr/www/avm/html/de/fon_config/fon_config_Dect_check.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_check.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_check.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_check.js usr/www/all/html/de/fon_config/fon_config_Dect_check.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_check.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_check.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,91 @@
 +<!-- ../fon_config/fon_config_Dect_check.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_check.inc ?>
@@ -2477,9 +2477,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_check.js usr/www/avm/h
 +return rc;
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_name.frm usr/www/avm/html/de/fon_config/fon_config_Dect_name.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_name.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_name.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_name.frm usr/www/all/html/de/fon_config/fon_config_Dect_name.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_name.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_name.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,7 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<? repeat [ 0 5 ] `
@@ -2488,9 +2488,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_name.frm usr/www/avm/h
 +<? repeat [ 0 5 ] `
 +<input type="hidden" name="dect:settings/Handset$0/Name" value="<? query dect:settings/Handset$0/Name ?>" id="uiPostHandset$0Notation" disabled>
 +` ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_name.html usr/www/avm/html/de/fon_config/fon_config_Dect_name.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_name.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_name.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_name.html usr/www/all/html/de/fon_config/fon_config_Dect_name.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_name.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_name.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,14 @@
 +<div id="content">
 +<div class="backtitelkonfig"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -2506,16 +2506,16 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_name.html usr/www/avm/
 +<input type="button" onclick="uiDoCancel()" value="Abbrechen" class="Pushbutton" id="uiBtnCancel">
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_name.inc usr/www/avm/html/de/fon_config/fon_config_Dect_name.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_name.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_name.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_name.inc usr/www/all/html/de/fon_config/fon_config_Dect_name.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_name.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_name.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,3 @@
 +<? include ../html/de/global.inc ?>
 +<? setvariable var:TextHinweis "Schnurlostelefon (DECT) Bezeichnung angeben" ?>
 +<? setvariable var:TextName "Geben Sie für das Telefon eine Bezeichnung ein, wie z.B. Wohnzimmer oder Annas Telefon:" ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_name.js usr/www/avm/html/de/fon_config/fon_config_Dect_name.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_name.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_name.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_name.js usr/www/all/html/de/fon_config/fon_config_Dect_name.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_name.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_name.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,84 @@
 +<!-- ../fon_config/fon_config_Dect_name.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_name.inc ?>
@@ -2601,15 +2601,15 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_name.js usr/www/avm/ht
 +return null;
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.frm usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_1.frm usr/www/all/html/de/fon_config/fon_config_Dect_register_1.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_1.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_1.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,2 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<input type="hidden" name="dect:command/StartSubscription" value="1" id="uiPostStartSubcription" disabled>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.html usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_1.html usr/www/all/html/de/fon_config/fon_config_Dect_register_1.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_1.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_1.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,17 @@
 +<div id="content">
 +<div class="backtitelkonfig"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -2628,9 +2628,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.html usr/ww
 +<input type="button" onclick="uiDoCancel()" value="<? echo $var:txtCancel ?>" class="Pushbutton" id="uiCancelBtn" >
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.inc usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_1.inc usr/www/all/html/de/fon_config/fon_config_Dect_register_1.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_1.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_1.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,14 @@
 +<? include ../html/de/global.inc ?>
 +<? setvariable var:Txt1 "Schnurlostelefon (DECT) anmelden" ?>
@@ -2646,9 +2646,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.inc usr/www
 +<? setvariable var:Txt12 'Die Beschreibung dazu finden Sie in der Dokumentation des Schnurlostelefons.' ?>
 +<? setvariable var:Txt13 "Sie werden aufgefordert, die Basis und die Handgeräte-ID auszuwählen und die System-PIN (bei Auslieferung:0000) einzugeben." ?>
 +<? setvariable var:Txt14 'Wie die Schritte im Einzelnen aussehen, hängt von Ihrem Schnurlostelefon ab.' ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.js usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_1.js usr/www/all/html/de/fon_config/fon_config_Dect_register_1.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_1.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_1.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,57 @@
 +<!-- ../fon_config/fon_config_Dect_register_1.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_register_1.inc ?>
@@ -2707,9 +2707,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_1.js usr/www/
 +}
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.frm usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_2.frm usr/www/all/html/de/fon_config/fon_config_Dect_register_2.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_2.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_2.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,9 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<input type="hidden" name="var:RegisterRepeat" value="<? echo $var:RegisterRepeat ?>" id="uiRegisterRepeat">
@@ -2720,9 +2720,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.frm usr/www
 +<input type="hidden" name="telcfg:settings/DialPort" value="<? query telcfg:settings/DialPort ?>" id="uiPostDialPort" disabled>
 +<input type="hidden" name="telcfg:command/Dial" value="" id="uiPostDial" disabled>
 +<input type="hidden" name="dect:command/StartSubscription" value="0" id="uiPostStartSubcription" disabled>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.html usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_2.html usr/www/all/html/de/fon_config/fon_config_Dect_register_2.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_2.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_2.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,23 @@
 +<? setvariable var:picture1 '../html/de/images/wait.gif' ?>
 +<? setvariable var:picture1Text '$var:text21' ?>
@@ -2747,9 +2747,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.html usr/ww
 +<input type="button" onclick="uiDoCancel()" value="<? echo $var:txtCancel ?>" class="Pushbutton" id="uiBtnCancel">
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.inc usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_2.inc usr/www/all/html/de/fon_config/fon_config_Dect_register_2.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_2.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_2.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,6 @@
 +<? include ../html/de/global.inc ?>
 +<? setvariable var:Text1 'Schnurlostelefon (DECT) führt Anmeldung durch' ?>
@@ -2757,9 +2757,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.inc usr/www
 +<? setvariable var:Text20 'Die Anmeldung an der DECT-Basisstation war erfolgreich.' ?>
 +<? setvariable var:Text21 'Die Anmeldung an der DECT-Basisstation läuft ...' ?>
 +<? setvariable var:Text22 'Die Anmeldung an der DECT-Basisstation ist fehlgeschlagen.' ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.js usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_register_2.js usr/www/all/html/de/fon_config/fon_config_Dect_register_2.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_register_2.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_register_2.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,97 @@
 +<!-- ../first/fon_config_Dect_register_2.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_register_2.inc ?>
@@ -2858,15 +2858,15 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_register_2.js usr/www/
 +jslGoToEx("fon_config", "fon_config_Dect_register_2");
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_test.frm usr/www/avm/html/de/fon_config/fon_config_Dect_test.frm
---- usr/www/avm/html/de/fon_config/fon_config_Dect_test.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_test.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_test.frm usr/www/all/html/de/fon_config/fon_config_Dect_test.frm
+--- usr/www/all/html/de/fon_config/fon_config_Dect_test.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_test.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,2 @@
 +<? include ../html/de/fon_config/fon_config.frm ?>
 +<input type="hidden" name="telcfg:command/Hangup" value="" id="uiPostHangup" disabled>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_test.html usr/www/avm/html/de/fon_config/fon_config_Dect_test.html
---- usr/www/avm/html/de/fon_config/fon_config_Dect_test.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_test.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_test.html usr/www/all/html/de/fon_config/fon_config_Dect_test.html
+--- usr/www/all/html/de/fon_config/fon_config_Dect_test.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_test.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,19 @@
 +<div id="content">
 +<div class="backtitelkonfig"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">
@@ -2887,9 +2887,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_test.html usr/www/avm/
 +<input type="button" onclick="uiDoCancel()" value="<? echo $var:txtCancel ?>" class="Pushbutton" id="uiCancelBtn" style="display: none;">
 +</div></div></div></div></div></div>
 +</div>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_test.inc usr/www/avm/html/de/fon_config/fon_config_Dect_test.inc
---- usr/www/avm/html/de/fon_config/fon_config_Dect_test.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_test.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_test.inc usr/www/all/html/de/fon_config/fon_config_Dect_test.inc
+--- usr/www/all/html/de/fon_config/fon_config_Dect_test.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_test.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,14 @@
 +<? include ../html/de/global.inc ?>
 +<? setvariable var:Txt1 "Verbindung zum Schnurlostelefon (DECT) testen" ?>
@@ -2905,9 +2905,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_test.inc usr/www/avm/h
 +<? setvariable var:Txt11 "< Zurück" ?>
 +<? setvariable var:Txt12 "Nein" ?>
 +<? setvariable var:Txt13 "Ja" ?>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_test.js usr/www/avm/html/de/fon_config/fon_config_Dect_test.js
---- usr/www/avm/html/de/fon_config/fon_config_Dect_test.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_Dect_test.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_Dect_test.js usr/www/all/html/de/fon_config/fon_config_Dect_test.js
+--- usr/www/all/html/de/fon_config/fon_config_Dect_test.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_Dect_test.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1,57 @@
 +<!-- ../fon_config/fc_fon_1.js -->
 +<? include ../html/de/fon_config/fon_config_Dect_test.inc ?>
@@ -2966,9 +2966,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_Dect_test.js usr/www/avm/ht
 +}
 +}
 +</script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_End.frm usr/www/avm/html/de/fon_config/fon_config_End.frm
---- usr/www/avm/html/de/fon_config/fon_config_End.frm	2011-01-31 17:16:09.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_End.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_End.frm usr/www/all/html/de/fon_config/fon_config_End.frm
+--- usr/www/all/html/de/fon_config/fon_config_End.frm	2011-01-31 17:16:09.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_End.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -63,6 +63,12 @@
  <input type="hidden" name="telcfg:settings/NTHotDialList/Number$10" value="<? query telcfg:settings/NTHotDialList/Number$10 ?>" id="uiPostIsdnNumber$10" disabled>
  ` ?>
@@ -2982,9 +2982,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_End.frm usr/www/avm/html/de
  <!-- end of neq ConfigSaved else -->
  ` ?>
  <input type="hidden" name="var:ISDNTKBackFlag" value="<? echo $var:ISDNTKBackFlag ?>" id="uiISDNTKBackFlag">
-diff -burN usr/www/avm/html/de/fon_config/fon_config_End.js usr/www/avm/html/de/fon_config/fon_config_End.js
---- usr/www/avm/html/de/fon_config/fon_config_End.js	2011-01-31 17:15:53.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_End.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_End.js usr/www/all/html/de/fon_config/fon_config_End.js
+--- usr/www/all/html/de/fon_config/fon_config_End.js	2011-01-31 17:15:53.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_End.js	2011-02-24 10:41:32.000000000 +0100
 @@ -560,9 +560,9 @@
  }
  }
@@ -3073,9 +3073,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_End.js usr/www/avm/html/de/
 +return newHandset;
 +}
  </script>
-diff -burN usr/www/avm/html/de/fon_config/fon_config_fondevices.frm usr/www/avm/html/de/fon_config/fon_config_fondevices.frm
---- usr/www/avm/html/de/fon_config/fon_config_fondevices.frm	2011-01-31 17:15:55.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_fondevices.frm	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_fondevices.frm usr/www/all/html/de/fon_config/fon_config_fondevices.frm
+--- usr/www/all/html/de/fon_config/fon_config_fondevices.frm	2011-01-31 17:15:55.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_fondevices.frm	2011-02-24 10:41:32.000000000 +0100
 @@ -101,3 +101,15 @@
  <? multiquery voipextension:settings/extension/list '
  <input type="hidden" name="voipextension:command/$1" value="delete" id="uiPostDelete$1" disabled/>
@@ -3092,9 +3092,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_fondevices.frm usr/www/avm/
 +<input type="hidden" name="dect:settings/RingOnAllMSNs" value="<? query dect:settings/RingOnAllMSNs ?>" id="uiPostDectRingAllMsns" disabled>
 +<input type="hidden" name="dect:command/Unsubscribe" value="" id="uiPostUnsubscribeDect" disabled>
 +<Input type="hidden" name="var:DectID" value="<? echo $var:DectID ?>" id="uiPostDectID">
-diff -burN usr/www/avm/html/de/fon_config/fon_config_fondevices.js usr/www/avm/html/de/fon_config/fon_config_fondevices.js
---- usr/www/avm/html/de/fon_config/fon_config_fondevices.js	2011-01-31 17:15:55.000000000 +0100
-+++ usr/www/avm/html/de/fon_config/fon_config_fondevices.js	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/fon_config/fon_config_fondevices.js usr/www/all/html/de/fon_config/fon_config_fondevices.js
+--- usr/www/all/html/de/fon_config/fon_config_fondevices.js	2011-01-31 17:15:55.000000000 +0100
++++ usr/www/all/html/de/fon_config/fon_config_fondevices.js	2011-02-24 10:41:36.000000000 +0100
 @@ -31,7 +31,9 @@
  var g_txt_Type_AB_Id = "Tam";
  var g_txt_Type_Fax_Id = "Fax";
@@ -3120,9 +3120,9 @@ diff -burN usr/www/avm/html/de/fon_config/fon_config_fondevices.js usr/www/avm/h
  if ("<? query telcfg:settings/MSN/Port$0/AllIncomingCalls ?>"=="1")
  ReactOnAllNumbers=true;
  ` ?>
-diff -burN usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html
---- usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/help/hilfe_fon_dect_festnetzrufnummer.html usr/www/all/html/de/help/hilfe_fon_dect_festnetzrufnummer.html
+--- usr/www/all/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_dect_festnetzrufnummer.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,12 @@
 +<div class="Hilfe">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Festnetzrufnummern</div></div></div></div></div></div>
@@ -3136,9 +3136,9 @@ diff -burN usr/www/avm/html/de/help/hilfe_fon_dect_festnetzrufnummer.html usr/ww
 +</div></div></div></div></div></div>
 +<? include ../html/de/help/rback.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html
---- usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/help/hilfe_fon_dect_fon1isdn.html usr/www/all/html/de/help/hilfe_fon_dect_fon1isdn.html
+--- usr/www/all/html/de/help/hilfe_fon_dect_fon1isdn.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_dect_fon1isdn.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,23 @@
 +<div class="Hilfe">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Interne Nummer</div></div></div></div></div></div>
@@ -3163,9 +3163,9 @@ diff -burN usr/www/avm/html/de/help/hilfe_fon_dect_fon1isdn.html usr/www/avm/htm
 +</div></div></div></div></div></div>
 +<? include ../html/de/help/rback.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/help/hilfe_fon_dect.html usr/www/avm/html/de/help/hilfe_fon_dect.html
---- usr/www/avm/html/de/help/hilfe_fon_dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_dect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/help/hilfe_fon_dect.html usr/www/all/html/de/help/hilfe_fon_dect.html
+--- usr/www/all/html/de/help/hilfe_fon_dect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_dect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,25 @@
 +<div class="Hilfe">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">DECT-Endgeräte</div></div></div></div></div></div>
@@ -3192,9 +3192,9 @@ diff -burN usr/www/avm/html/de/help/hilfe_fon_dect.html usr/www/avm/html/de/help
 +</div></div></div></div></div></div>
 +<? include ../html/de/help/rback.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/help/hilfe_fon_editdect.html usr/www/avm/html/de/help/hilfe_fon_editdect.html
---- usr/www/avm/html/de/help/hilfe_fon_editdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_editdect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/help/hilfe_fon_editdect.html usr/www/all/html/de/help/hilfe_fon_editdect.html
+--- usr/www/all/html/de/help/hilfe_fon_editdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_editdect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
@@ -3215,9 +3215,9 @@ diff -burN usr/www/avm/html/de/help/hilfe_fon_editdect.html usr/www/avm/html/de/
 +</div></div></div></div></div></div>
 +<? include ../html/de/help/rback.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/help/hilfe_fon_fon1dect.html usr/www/avm/html/de/help/hilfe_fon_fon1dect.html
---- usr/www/avm/html/de/help/hilfe_fon_fon1dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_fon1dect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/help/hilfe_fon_fon1dect.html usr/www/all/html/de/help/hilfe_fon_fon1dect.html
+--- usr/www/all/html/de/help/hilfe_fon_fon1dect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_fon1dect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
@@ -3238,9 +3238,9 @@ diff -burN usr/www/avm/html/de/help/hilfe_fon_fon1dect.html usr/www/avm/html/de/
 +</div></div></div></div></div></div>
 +<? include ../html/de/help/rback.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/help/hilfe_fon_listdect.html usr/www/avm/html/de/help/hilfe_fon_listdect.html
---- usr/www/avm/html/de/help/hilfe_fon_listdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_listdect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/help/hilfe_fon_listdect.html usr/www/all/html/de/help/hilfe_fon_listdect.html
+--- usr/www/all/html/de/help/hilfe_fon_listdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_listdect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Interne Nummern</div></div></div></div></div></div>
@@ -3263,9 +3263,9 @@ diff -burN usr/www/avm/html/de/help/hilfe_fon_listdect.html usr/www/avm/html/de/
 +</div></div></div></div></div></div>
 +<? include ../html/de/help/rback.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/help/hilfe_fon_setupdect.html usr/www/avm/html/de/help/hilfe_fon_setupdect.html
---- usr/www/avm/html/de/help/hilfe_fon_setupdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/help/hilfe_fon_setupdect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/help/hilfe_fon_setupdect.html usr/www/all/html/de/help/hilfe_fon_setupdect.html
+--- usr/www/all/html/de/help/hilfe_fon_setupdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/help/hilfe_fon_setupdect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 +<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Rufnummernzuordnung</div></div></div></div></div></div>
@@ -3288,9 +3288,9 @@ diff -burN usr/www/avm/html/de/help/hilfe_fon_setupdect.html usr/www/avm/html/de
 +</div></div></div></div></div></div>
 +<? include ../html/de/help/rback.html ?>
 +</div>
-diff -burN usr/www/avm/html/de/home/buchsend.html usr/www/avm/html/de/home/buchsend.html
---- usr/www/avm/html/de/home/buchsend.html	2011-01-31 17:15:55.000000000 +0100
-+++ usr/www/avm/html/de/home/buchsend.html	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/home/buchsend.html usr/www/all/html/de/home/buchsend.html
+--- usr/www/all/html/de/home/buchsend.html	2011-01-31 17:15:55.000000000 +0100
++++ usr/www/all/html/de/home/buchsend.html	2011-02-24 10:41:36.000000000 +0100
 @@ -14,10 +14,10 @@
  <select id="handset">
  <? setvariable var:handsetfound 0 ?>
@@ -3312,57 +3312,57 @@ diff -burN usr/www/avm/html/de/home/buchsend.html usr/www/avm/html/de/home/buchs
  <input type="button" onclick="uiDoCancel()" value="{?txtCancel?}" class="Pushbutton" id="buttonCancel">
  <input type="button" onclick="uiDoHelp()" value="{?txtHelp?}" class=Pushbutton>
  </div></div></div></div></div></div>
-diff -burN usr/www/avm/html/de/home/dect0.frm usr/www/avm/html/de/home/dect0.frm
---- usr/www/avm/html/de/home/dect0.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/dect0.frm	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/dect0.frm usr/www/all/html/de/home/dect0.frm
+--- usr/www/all/html/de/home/dect0.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/dect0.frm	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/dect0.frm ?>
-diff -burN usr/www/avm/html/de/home/dect0.html usr/www/avm/html/de/home/dect0.html
---- usr/www/avm/html/de/home/dect0.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/dect0.html	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/dect0.html usr/www/all/html/de/home/dect0.html
+--- usr/www/all/html/de/home/dect0.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/dect0.html	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/dect0.html ?>
-diff -burN usr/www/avm/html/de/home/dect0.inc usr/www/avm/html/de/home/dect0.inc
---- usr/www/avm/html/de/home/dect0.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/dect0.inc	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/dect0.inc usr/www/all/html/de/home/dect0.inc
+--- usr/www/all/html/de/home/dect0.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/dect0.inc	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/dect0.inc ?>
-diff -burN usr/www/avm/html/de/home/dect0.js usr/www/avm/html/de/home/dect0.js
---- usr/www/avm/html/de/home/dect0.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/dect0.js	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/dect0.js usr/www/all/html/de/home/dect0.js
+--- usr/www/all/html/de/home/dect0.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/dect0.js	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/dect0.js ?>
-diff -burN usr/www/avm/html/de/home/fon1dect.frm usr/www/avm/html/de/home/fon1dect.frm
---- usr/www/avm/html/de/home/fon1dect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fon1dect.frm	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fon1dect.frm usr/www/all/html/de/home/fon1dect.frm
+--- usr/www/all/html/de/home/fon1dect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fon1dect.frm	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fon1dect.frm ?>
-diff -burN usr/www/avm/html/de/home/fon1dect.html usr/www/avm/html/de/home/fon1dect.html
---- usr/www/avm/html/de/home/fon1dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fon1dect.html	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fon1dect.html usr/www/all/html/de/home/fon1dect.html
+--- usr/www/all/html/de/home/fon1dect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fon1dect.html	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fon1dect.html ?>
-diff -burN usr/www/avm/html/de/home/fon1dect.inc usr/www/avm/html/de/home/fon1dect.inc
---- usr/www/avm/html/de/home/fon1dect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fon1dect.inc	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fon1dect.inc usr/www/all/html/de/home/fon1dect.inc
+--- usr/www/all/html/de/home/fon1dect.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fon1dect.inc	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fon1dect.inc ?>
-diff -burN usr/www/avm/html/de/home/fon1dect.js usr/www/avm/html/de/home/fon1dect.js
---- usr/www/avm/html/de/home/fon1dect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fon1dect.js	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fon1dect.js usr/www/all/html/de/home/fon1dect.js
+--- usr/www/all/html/de/home/fon1dect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fon1dect.js	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fon1dect.js ?>
-diff -burN usr/www/avm/html/de/home/fon1Mini.frm usr/www/avm/html/de/home/fon1Mini.frm
---- usr/www/avm/html/de/home/fon1Mini.frm	2011-01-31 17:15:52.000000000 +0100
-+++ usr/www/avm/html/de/home/fon1Mini.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/home/fon1Mini.frm usr/www/all/html/de/home/fon1Mini.frm
+--- usr/www/all/html/de/home/fon1Mini.frm	2011-01-31 17:15:52.000000000 +0100
++++ usr/www/all/html/de/home/fon1Mini.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -28,3 +28,4 @@
  <? include ../html/de/home/fonbuchBasis.frm ?>
  <Input type="hidden" name="telcfg:settings/Foncontrol/<? echo $var:MiniUser ?>/Phonebook" value="<? query telcfg:settings/Foncontrol/<? echo $var:MiniUser ?>/Phonebook ?>" id="uiPostUserPhonebook" disabled>
  ` ?>
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
-diff -burN usr/www/avm/html/de/home/fonbuch.html usr/www/avm/html/de/home/fonbuch.html
---- usr/www/avm/html/de/home/fonbuch.html	2011-01-31 17:16:06.000000000 +0100
-+++ usr/www/avm/html/de/home/fonbuch.html	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonbuch.html usr/www/all/html/de/home/fonbuch.html
+--- usr/www/all/html/de/home/fonbuch.html	2011-01-31 17:16:06.000000000 +0100
++++ usr/www/all/html/de/home/fonbuch.html	2011-02-24 10:41:36.000000000 +0100
 @@ -85,6 +85,12 @@
  </div>
  <? include ../html/de/home/error.html ?>
@@ -3376,9 +3376,9 @@ diff -burN usr/www/avm/html/de/home/fonbuch.html usr/www/avm/html/de/home/fonbuc
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
  <input type="button" onclick="uiDoHelp()" value="{?txtHelp?}" class="Pushbutton">
  </div></div></div></div></div></div>
-diff -burN usr/www/avm/html/de/home/fonbuch.js usr/www/avm/html/de/home/fonbuch.js
---- usr/www/avm/html/de/home/fonbuch.js	2011-01-31 17:16:05.000000000 +0100
-+++ usr/www/avm/html/de/home/fonbuch.js	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonbuch.js usr/www/all/html/de/home/fonbuch.js
+--- usr/www/all/html/de/home/fonbuch.js	2011-01-31 17:16:05.000000000 +0100
++++ usr/www/all/html/de/home/fonbuch.js	2011-02-24 10:41:36.000000000 +0100
 @@ -619,4 +619,7 @@
  }
  return deviceName;
@@ -3387,9 +3387,9 @@ diff -burN usr/www/avm/html/de/home/fonbuch.js usr/www/avm/html/de/home/fonbuch.
 +jslGoTo("<? print $var:menu ?>", "buchsend");
 +}
  </script>
-diff -burN usr/www/avm/html/de/home/fondevices.frm usr/www/avm/html/de/home/fondevices.frm
---- usr/www/avm/html/de/home/fondevices.frm	2011-01-31 17:15:54.000000000 +0100
-+++ usr/www/avm/html/de/home/fondevices.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/home/fondevices.frm usr/www/all/html/de/home/fondevices.frm
+--- usr/www/all/html/de/home/fondevices.frm	2011-01-31 17:15:54.000000000 +0100
++++ usr/www/all/html/de/home/fondevices.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -138,3 +138,18 @@
  <? multiquery voipextension:settings/extension/list '
  <Input type="hidden" name="voipextension:command/$1" value="delete" id="uiPostDelete$1" disabled>
@@ -3409,9 +3409,9 @@ diff -burN usr/www/avm/html/de/home/fondevices.frm usr/www/avm/html/de/home/fond
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
 +<input type="hidden" name="dect:command/Unsubscribe" value="0" id="uiPostUnsubscribe" disabled>
 +<input type="hidden" name="dect:command/PIN" value="" id="uiPostDectPIN" disabled>
-diff -burN usr/www/avm/html/de/home/fondevices.html usr/www/avm/html/de/home/fondevices.html
---- usr/www/avm/html/de/home/fondevices.html	2011-01-31 17:16:05.000000000 +0100
-+++ usr/www/avm/html/de/home/fondevices.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/home/fondevices.html usr/www/all/html/de/home/fondevices.html
+--- usr/www/all/html/de/home/fondevices.html	2011-01-31 17:16:05.000000000 +0100
++++ usr/www/all/html/de/home/fondevices.html	2011-02-24 10:41:33.000000000 +0100
 @@ -18,6 +18,7 @@
  <ul class="tabs">
  <li class="tabs_on"><div class="activtab">{?1947:7480?}</div></li>
@@ -3420,17 +3420,17 @@ diff -burN usr/www/avm/html/de/home/fondevices.html usr/www/avm/html/de/home/fon
  </ul>
  ` ?>
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
-diff -burN usr/www/avm/html/de/home/fondevices.inc usr/www/avm/html/de/home/fondevices.inc
---- usr/www/avm/html/de/home/fondevices.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fondevices.inc	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/home/fondevices.inc usr/www/all/html/de/home/fondevices.inc
+--- usr/www/all/html/de/home/fondevices.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fondevices.inc	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,4 @@
 +<? setvariable var:Text27 'DECT-Handteile' ?>
 +<? setvariable var:Text30 'Name' ?>
 +<? setvariable var:TextDectPin 'DECT-Basisstation PIN' ?>
 +<? setvariable var:TextDectSetPin 'PIN setzen' ?>
-diff -burN usr/www/avm/html/de/home/fondevices.js usr/www/avm/html/de/home/fondevices.js
---- usr/www/avm/html/de/home/fondevices.js	2011-01-31 17:16:14.000000000 +0100
-+++ usr/www/avm/html/de/home/fondevices.js	2011-02-24 10:41:36.000000000 +0100
+diff -burN usr/www/all/html/de/home/fondevices.js usr/www/all/html/de/home/fondevices.js
+--- usr/www/all/html/de/home/fondevices.js	2011-01-31 17:16:14.000000000 +0100
++++ usr/www/all/html/de/home/fondevices.js	2011-02-24 10:41:36.000000000 +0100
 @@ -33,7 +33,9 @@
  var g_txt_Type_AB_Id = "Tam";
  var g_txt_Type_Fax_Id = "Fax";
@@ -3552,69 +3552,69 @@ diff -burN usr/www/avm/html/de/home/fondevices.js usr/www/avm/html/de/home/fonde
 +}
 +}
  </script>
-diff -burN usr/www/avm/html/de/home/foneditdect.frm usr/www/avm/html/de/home/foneditdect.frm
---- usr/www/avm/html/de/home/foneditdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/foneditdect.frm	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/foneditdect.frm usr/www/all/html/de/home/foneditdect.frm
+--- usr/www/all/html/de/home/foneditdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/foneditdect.frm	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/foneditdect.frm ?>
-diff -burN usr/www/avm/html/de/home/foneditdect.html usr/www/avm/html/de/home/foneditdect.html
---- usr/www/avm/html/de/home/foneditdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/foneditdect.html	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/foneditdect.html usr/www/all/html/de/home/foneditdect.html
+--- usr/www/all/html/de/home/foneditdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/foneditdect.html	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/foneditdect.html ?>
-diff -burN usr/www/avm/html/de/home/foneditdect.inc usr/www/avm/html/de/home/foneditdect.inc
---- usr/www/avm/html/de/home/foneditdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/foneditdect.inc	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/foneditdect.inc usr/www/all/html/de/home/foneditdect.inc
+--- usr/www/all/html/de/home/foneditdect.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/foneditdect.inc	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/foneditdect.inc ?>
-diff -burN usr/www/avm/html/de/home/foneditdect.js usr/www/avm/html/de/home/foneditdect.js
---- usr/www/avm/html/de/home/foneditdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/foneditdect.js	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/foneditdect.js usr/www/all/html/de/home/foneditdect.js
+--- usr/www/all/html/de/home/foneditdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/foneditdect.js	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/foneditdect.js ?>
-diff -burN usr/www/avm/html/de/home/fonlistdect.frm usr/www/avm/html/de/home/fonlistdect.frm
---- usr/www/avm/html/de/home/fonlistdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonlistdect.frm	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonlistdect.frm usr/www/all/html/de/home/fonlistdect.frm
+--- usr/www/all/html/de/home/fonlistdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonlistdect.frm	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonlistdect.frm ?>
-diff -burN usr/www/avm/html/de/home/fonlistdect.html usr/www/avm/html/de/home/fonlistdect.html
---- usr/www/avm/html/de/home/fonlistdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonlistdect.html	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonlistdect.html usr/www/all/html/de/home/fonlistdect.html
+--- usr/www/all/html/de/home/fonlistdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonlistdect.html	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonlistdect.html ?>
-diff -burN usr/www/avm/html/de/home/fonlistdect.inc usr/www/avm/html/de/home/fonlistdect.inc
---- usr/www/avm/html/de/home/fonlistdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonlistdect.inc	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonlistdect.inc usr/www/all/html/de/home/fonlistdect.inc
+--- usr/www/all/html/de/home/fonlistdect.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonlistdect.inc	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonlistdect.inc ?>
-diff -burN usr/www/avm/html/de/home/fonlistdect.js usr/www/avm/html/de/home/fonlistdect.js
---- usr/www/avm/html/de/home/fonlistdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonlistdect.js	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonlistdect.js usr/www/all/html/de/home/fonlistdect.js
+--- usr/www/all/html/de/home/fonlistdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonlistdect.js	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonlistdect.js ?>
-diff -burN usr/www/avm/html/de/home/fonsetupdect.frm usr/www/avm/html/de/home/fonsetupdect.frm
---- usr/www/avm/html/de/home/fonsetupdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonsetupdect.frm	2011-02-24 10:41:31.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonsetupdect.frm usr/www/all/html/de/home/fonsetupdect.frm
+--- usr/www/all/html/de/home/fonsetupdect.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonsetupdect.frm	2011-02-24 10:41:31.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonsetupdect.frm ?>
-diff -burN usr/www/avm/html/de/home/fonsetupdect.html usr/www/avm/html/de/home/fonsetupdect.html
---- usr/www/avm/html/de/home/fonsetupdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonsetupdect.html	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonsetupdect.html usr/www/all/html/de/home/fonsetupdect.html
+--- usr/www/all/html/de/home/fonsetupdect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonsetupdect.html	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonsetupdect.html ?>
-diff -burN usr/www/avm/html/de/home/fonsetupdect.inc usr/www/avm/html/de/home/fonsetupdect.inc
---- usr/www/avm/html/de/home/fonsetupdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonsetupdect.inc	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonsetupdect.inc usr/www/all/html/de/home/fonsetupdect.inc
+--- usr/www/all/html/de/home/fonsetupdect.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonsetupdect.inc	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonsetupdect.inc ?>
-diff -burN usr/www/avm/html/de/home/fonsetupdect.js usr/www/avm/html/de/home/fonsetupdect.js
---- usr/www/avm/html/de/home/fonsetupdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/home/fonsetupdect.js	2011-02-24 10:41:32.000000000 +0100
+diff -burN usr/www/all/html/de/home/fonsetupdect.js usr/www/all/html/de/home/fonsetupdect.js
+--- usr/www/all/html/de/home/fonsetupdect.js	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/home/fonsetupdect.js	2011-02-24 10:41:32.000000000 +0100
 @@ -0,0 +1 @@
 +<? include ../html/de/fon/fonsetupdect.js ?>
-diff -burN usr/www/avm/html/de/home/home.html usr/www/avm/html/de/home/home.html
---- usr/www/avm/html/de/home/home.html	2011-01-31 17:16:00.000000000 +0100
-+++ usr/www/avm/html/de/home/home.html	2011-02-24 10:41:41.000000000 +0100
+diff -burN usr/www/all/html/de/home/home.html usr/www/all/html/de/home/home.html
+--- usr/www/all/html/de/home/home.html	2011-01-31 17:16:00.000000000 +0100
++++ usr/www/all/html/de/home/home.html	2011-02-24 10:41:41.000000000 +0100
 @@ -33,6 +33,11 @@
  <td><div id="dsl_info"></div></td>
  </tr>
@@ -3627,9 +3627,9 @@ diff -burN usr/www/avm/html/de/home/home.html usr/www/avm/html/de/home/home.html
  <td class="tdName"><div id="wlan_title"><a href="">{?272:6028?}</a></div></td>
  <td class="tdLed"><div id="wlan_led"><script type="text/javascript">document.write(StateLed());</script></div></td>
  <td><div id="wlan_info"></div></td>
-diff -burN usr/www/avm/html/de/home/home.js usr/www/avm/html/de/home/home.js
---- usr/www/avm/html/de/home/home.js	2011-01-31 17:16:03.000000000 +0100
-+++ usr/www/avm/html/de/home/home.js	2011-02-24 10:41:41.000000000 +0100
+diff -burN usr/www/all/html/de/home/home.js usr/www/all/html/de/home/home.js
+--- usr/www/all/html/de/home/home.js	2011-01-31 17:16:03.000000000 +0100
++++ usr/www/all/html/de/home/home.js	2011-02-24 10:41:41.000000000 +0100
 @@ -85,6 +85,7 @@
  var g_Fon50 = "{?895:9721?}";
  var g_FonAll = "{?895:8055?}";
@@ -3682,9 +3682,9 @@ diff -burN usr/www/avm/html/de/home/home.js usr/www/avm/html/de/home/home.js
  function RufumleitungDisplay() {
  isAllIncoming=0;
  <? multiquery telcfg:settings/CallerIDActions/list(CallerID) `
-diff -burN usr/www/avm/html/de/js/basis.js usr/www/avm/html/de/js/basis.js
---- usr/www/avm/html/de/js/basis.js	2011-01-31 17:15:50.000000000 +0100
-+++ usr/www/avm/html/de/js/basis.js	2011-02-24 10:41:41.000000000 +0100
+diff -burN usr/www/all/html/de/js/basis.js usr/www/all/html/de/js/basis.js
+--- usr/www/all/html/de/js/basis.js	2011-01-31 17:15:50.000000000 +0100
++++ usr/www/all/html/de/js/basis.js	2011-02-24 10:41:41.000000000 +0100
 @@ -167,7 +167,7 @@
  var menu = readCookie("menu");
  var page = readCookie("page");
@@ -3703,9 +3703,9 @@ diff -burN usr/www/avm/html/de/js/basis.js usr/www/avm/html/de/js/basis.js
  }
  }
  function GoToSitemap()
-diff -burN usr/www/avm/html/de/konfig/update_OnClick_1.js usr/www/avm/html/de/konfig/update_OnClick_1.js
---- usr/www/avm/html/de/konfig/update_OnClick_1.js	2011-01-31 17:16:00.000000000 +0100
-+++ usr/www/avm/html/de/konfig/update_OnClick_1.js	2011-02-24 10:41:42.000000000 +0100
+diff -burN usr/www/all/html/de/konfig/update_OnClick_1.js usr/www/all/html/de/konfig/update_OnClick_1.js
+--- usr/www/all/html/de/konfig/update_OnClick_1.js	2011-01-31 17:16:00.000000000 +0100
++++ usr/www/all/html/de/konfig/update_OnClick_1.js	2011-02-24 10:41:42.000000000 +0100
 @@ -13,7 +13,7 @@
  function uiDoOnLoad() {
  document.title = "{?257:8680?}";
@@ -3715,14 +3715,14 @@ diff -burN usr/www/avm/html/de/konfig/update_OnClick_1.js usr/www/avm/html/de/ko
  <? if eq $var:OEM freenet `
  var usePstn = "<? query telcfg:settings/UsePSTN ?>";
  if (usePstn == "0") alert(g_mldfreenet);
-diff -burN usr/www/avm/html/de/menus/klingelsperre_mimi.frm usr/www/avm/html/de/menus/klingelsperre_mimi.frm
---- usr/www/avm/html/de/menus/klingelsperre_mimi.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/klingelsperre_mimi.frm	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/menus/klingelsperre_mimi.frm usr/www/all/html/de/menus/klingelsperre_mimi.frm
+--- usr/www/all/html/de/menus/klingelsperre_mimi.frm	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/menus/klingelsperre_mimi.frm	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1 @@
 +<input type="hidden" name="var:FromMenuDect" value="<? echo :FromMenuDect ?>" id="uiFromMenuDect">
-diff -burN usr/www/avm/html/de/menus/menu2_dect.html usr/www/avm/html/de/menus/menu2_dect.html
---- usr/www/avm/html/de/menus/menu2_dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_dect.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/menus/menu2_dect.html usr/www/all/html/de/menus/menu2_dect.html
+--- usr/www/all/html/de/menus/menu2_dect.html	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_dect.html	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,13 @@
 +<? include ../html/de/menus/menu2_$var:menu.inc ?>
 +<li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:aktivpfeil ?>"><a href="javascript:jslGoTo('dect','setting')">DECT</a><span class="PTextOnly">DECT</span></li>
@@ -3737,9 +3737,9 @@ diff -burN usr/www/avm/html/de/menus/menu2_dect.html usr/www/avm/html/de/menus/m
 +<? if eq $var:showDect 0 `
 +<li class="$var:classsetting"><img class="LMenuPfeil" src="$var:subpfeil"><a href="javascript:jslGoTo('dect','setting')">DECT-Einstellungen</a><span class="PTextOnly">DECT-Einstellungen</span></li>
 +` ?>
-diff -burN usr/www/avm/html/de/menus/menu2_fon.html usr/www/avm/html/de/menus/menu2_fon.html
---- usr/www/avm/html/de/menus/menu2_fon.html	2011-01-31 17:16:04.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_fon.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/menus/menu2_fon.html usr/www/all/html/de/menus/menu2_fon.html
+--- usr/www/all/html/de/menus/menu2_fon.html	2011-01-31 17:16:04.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_fon.html	2011-02-24 10:41:33.000000000 +0100
 @@ -58,6 +58,13 @@
  ` ?>
  <li class="<? echo $var:classname ?>"><a href="javascript:jslGoTo('fon','fondevices')">{?txtDevices?}</a><span class="PTextOnly">{?txtDevices?}</span></li>
@@ -3754,14 +3754,14 @@ diff -burN usr/www/avm/html/de/menus/menu2_fon.html usr/www/avm/html/de/menus/me
  <? if eq $var:pagename siplist `<? setvariable var:classname 'selected' ?>` ?>
  <? if eq $var:pagename sip1 `<? setvariable var:classname 'selected' ?>` ?>
  <? if eq $var:pagename sipoptionen `<? setvariable var:classname 'selected' ?>` ?>
-diff -burN usr/www/avm/html/de/menus/menu2.inc usr/www/avm/html/de/menus/menu2.inc
---- usr/www/avm/html/de/menus/menu2.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2.inc	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/menus/menu2.inc usr/www/all/html/de/menus/menu2.inc
+--- usr/www/all/html/de/menus/menu2.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/menus/menu2.inc	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1 @@
 +<? setvariable var:TextMenuDECT "DECT" ?>
-diff -burN usr/www/avm/html/de/menus/menu2_konfig.html usr/www/avm/html/de/menus/menu2_konfig.html
---- usr/www/avm/html/de/menus/menu2_konfig.html	2011-01-31 17:16:01.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_konfig.html	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/menus/menu2_konfig.html usr/www/all/html/de/menus/menu2_konfig.html
+--- usr/www/all/html/de/menus/menu2_konfig.html	2011-01-31 17:16:01.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_konfig.html	2011-02-24 10:41:33.000000000 +0100
 @@ -54,6 +54,17 @@
  ` `
  <li class="LMenuitem"><img class="LMenuPfeil" src="<? echo $var:pfeil ?>"><a href="javascript:jslGoTo('wlan','wlan')">{?txtWlan?}</a><span class="PTextOnly">{?txtWlan?}</span></li>
@@ -3780,15 +3780,15 @@ diff -burN usr/www/avm/html/de/menus/menu2_konfig.html usr/www/avm/html/de/menus
  <? if eq `$var:menu` 'system' `
  <? include ../html/de/menus/menu2_system.html ?>
  ` `
-diff -burN usr/www/avm/html/de/menus/menu2_konfig.inc usr/www/avm/html/de/menus/menu2_konfig.inc
---- usr/www/avm/html/de/menus/menu2_konfig.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_konfig.inc	2011-02-24 10:41:33.000000000 +0100
+diff -burN usr/www/all/html/de/menus/menu2_konfig.inc usr/www/all/html/de/menus/menu2_konfig.inc
+--- usr/www/all/html/de/menus/menu2_konfig.inc	1970-01-01 01:00:00.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_konfig.inc	2011-02-24 10:41:33.000000000 +0100
 @@ -0,0 +1,2 @@
 +<? setvariable var:TextSetting "setting" ?>
 +<? setvariable var:TextHandset "handset" ?>
-diff -burN usr/www/avm/html/de/menus/menu2_system.html usr/www/avm/html/de/menus/menu2_system.html
---- usr/www/avm/html/de/menus/menu2_system.html	2011-01-31 17:16:06.000000000 +0100
-+++ usr/www/avm/html/de/menus/menu2_system.html	2011-02-24 10:41:42.000000000 +0100
+diff -burN usr/www/all/html/de/menus/menu2_system.html usr/www/all/html/de/menus/menu2_system.html
+--- usr/www/all/html/de/menus/menu2_system.html	2011-01-31 17:16:06.000000000 +0100
++++ usr/www/all/html/de/menus/menu2_system.html	2011-02-24 10:41:42.000000000 +0100
 @@ -60,5 +60,4 @@
  <? setvariable var:classname 'LSubitem' ?>
  <? if eq $var:pagename timeZone `<? setvariable var:classname 'selected' ?>` ?>
