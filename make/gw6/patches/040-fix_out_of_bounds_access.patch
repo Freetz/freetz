@@ -1,0 +1,12 @@
+--- tspc-advanced/src/tsp/tsp_cap.c
++++ tspc-advanced/src/tsp/tsp_cap.c
+@@ -141,9 +141,7 @@
+ char* tspFormatCapabilities( char* szBuffer, const size_t bufLen, const tCapability cap )
+ {
+   static const char* authTab[] = { "Any, ", 
+-#ifndef NO_OPENSSL
+                                    "Passdss-3des-1, ",
+-#endif
+                                    "Digest MD5, ",
+                                    "Anonymous, ",
+                                    "Plain, " };
