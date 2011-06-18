@@ -12,6 +12,8 @@ $(PKG)_DEPENDS_ON += libiconv
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-cfg-dir=/var/tmp/flash/minicom/
+$(PKG)_CONFIGURE_OPTIONS += --enable-dfl-port=$(FREETZ_PACKAGE_MINICOM_PORT)
+$(PKG)_CONFIGURE_OPTIONS += --enable-dfl-baud=$(FREETZ_PACKAGE_MINICOM_BAUD)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

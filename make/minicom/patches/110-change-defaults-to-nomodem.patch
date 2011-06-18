@@ -1,0 +1,31 @@
+--- src/rwconf.c	2011-06-09 18:34:41.000000000 +0200
++++ src/rwconf.c	2011-06-09 18:37:04.000000000 +0200
+@@ -117,8 +117,8 @@
+   /* The script program */
+   { "runscript",	0,   "scriptprog" },
+   /* Modem parameters */
+-  { "~^M~AT S7=45 S0=0 L1 V1 X4 &c1 E1 Q0^M",   0,   "minit" },
+-  { "^M~ATZ^M~",	0,   "mreset" },
++  { "",			0,   "minit" },
++  { "",			0,   "mreset" },
+   { "ATDT",		0,   "mdialpre" },
+   { "^M",		0,   "mdialsuf" },
+   { "ATDP",		0,   "mdialpre2" },
+@@ -130,7 +130,7 @@
+   { "BUSY",		0,   "mnocon2" },
+   { "NO DIALTONE",	0,   "mnocon3" },
+   { "VOICE",		0,   "mnocon4" },
+-  { "~~+++~~ATH^M",	0,   "mhangup" },
++  { "",			0,   "mhangup" },
+   { "^M",		0,   "mdialcan" },
+   { "45",		0,   "mdialtime" },
+   { "2",		0,   "mrdelay" },
+@@ -145,7 +145,7 @@
+   { "BS",		0,   "backspace" },
+   { N_("enabled"),	0,   "statusline" },
+   { N_("Yes"),		0,   "hasdcd" },
+-  { N_("Yes"),		0,   "rtscts" },
++  { N_("No"),		0,   "rtscts" },
+   { N_("No"),		0,   "xonxoff" },
+   { "D",		0,   "zauto" },
+ 
