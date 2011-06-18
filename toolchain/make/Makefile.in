@@ -75,7 +75,6 @@ $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE): $(TOPDIR)/.config
 $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP): $(TOPDIR)/.config | gcc
 	@$(RM) $(TARGET_CXX_CROSS_COMPILER_SYMLINK)
 	@ln -fs $(REAL_GNU_TARGET_NAME)-g++$(if $(FREETZ_STDCXXLIB_USE_UCLIBCXX),-uc) $(TARGET_CXX_CROSS_COMPILER_SYMLINK)
-	@chmod 755 $(TARGET_CXX_CROSS_COMPILER_SYMLINK)
 	@touch $@
 
 toolchain-dirclean: kernel-toolchain-dirclean target-toolchain-dirclean
