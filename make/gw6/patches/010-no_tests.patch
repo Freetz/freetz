@@ -1,0 +1,22 @@
+--- gw6c-config/Makefile
++++ gw6c-config/Makefile
+@@ -44,7 +44,7 @@
+ 	  $(MAKE) target=$(target) all-real ;\
+ 	fi
+ 
+-all-real: $(TARGET) $(BIN_DIR) test_targets
++all-real: $(TARGET) $(BIN_DIR)
+ 
+ export:
+ 	@if [ "$(target)" = "windows" ]; then \
+--- gw6c-messaging/Makefile
++++ gw6c-messaging/Makefile
+@@ -54,7 +54,7 @@
+ 	  $(MAKE) target=$(target) ADDITIONAL_LDFLAGS="-lrt -lpthread" all-real ;\
+ 	fi
+ 
+-all-real: $(TARGET) $(BIN_DIR) $(TEST_IPCLAYER) $(TEST_MESSAGING) $(TEST_GW6CEMUL8OR)
++all-real: $(TARGET) $(BIN_DIR)
+ 
+ export:
+ 	@if [ "$(target)" = "windows" ]; then \

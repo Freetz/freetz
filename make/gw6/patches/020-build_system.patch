@@ -1,0 +1,160 @@
+--- gw6c-config/Makefile
++++ gw6c-config/Makefile
+@@ -17,16 +17,16 @@
+ BIN_DIR=bin
+ LIB_DIR=lib
+ INC_DIR=gw6cconfig
+-C_COMPILER=gcc -c
+-COMPILER=g++ -c
+-LINKER=g++
+-C_LINKER=gcc
++C_COMPILER=$(CC) -c
++COMPILER=$(CXX) -c
++LINKER=$(CXX)
++C_LINKER=$(CC)
+ RANLIB=ranlib
+ ARCHIVER=ar
+-CPP_FLAGS=-I. -O2 -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
+-C_FLAGS=-I. -O2 -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
++CPP_FLAGS=-I. -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
++C_FLAGS=-I. -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
+ TARGET=$(LIB_DIR)/libgw6cconfig.a
+-LD_FLAGS=-O2 -L$(LIB_DIR) -lgw6cconfig $(ADDITIONAL_LDFLAGS)
++LD_FLAGS=-L$(LIB_DIR) -lgw6cconfig $(ADDITIONAL_LDFLAGS)
+ 
+ 
+ .PHONY=all export clean
+--- gw6c-messaging/Makefile
++++ gw6c-messaging/Makefile
+@@ -17,14 +17,14 @@
+ BIN_DIR=bin
+ LIB_DIR=lib
+ INC_DIR=gw6cmessaging
+-C_COMPILER=gcc -c -O2 -DNDEBUG
+-COMPILER=g++ -c -O2 -DNDEBUG 
+-LINKER=g++ -O2
+-C_LINKER=gcc -O2
++C_COMPILER=$(CC) -c
++COMPILER=$(CXX) -c
++LINKER=$(CXX)
++C_LINKER=$(CC)
+ RANLIB=ranlib
+ ARCHIVER=ar
+-CPP_FLAGS=-I. -Wall $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
+-C_FLAGS=-I. -Wall $(HAP6_DEFINES)
++CPP_FLAGS=-I. -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
++C_FLAGS=-I. -Wall -DNDEBUG $(ADDITIONAL_CPPFLAGS) $(HAP6_DEFINES)
+ TEST_IPCLAYER=$(BIN_DIR)/test_ipclayer
+ TEST_MESSAGING=$(BIN_DIR)/test_messaging
+ TEST_GW6CEMUL8OR=$(BIN_DIR)/test_gw6cemulator
+--- tspc-advanced/platform/linux/Makefile
++++ tspc-advanced/platform/linux/Makefile
+@@ -14,12 +14,11 @@
+ OBJDIR=../../objs
+ OBJ=$(OBJDIR)/tsp_local.o $(OBJDIR)/tsp_tun.o
+ OBJLINK=$(OBJDIR)/*.o
+-LDFLAGS=-L../../gw6cconfig -lcrypto -lpthread -lgw6cconfig -lstdc++
++LDFLAGS=-L../../gw6cconfig -lcrypto -lpthread -lgw6cconfig
+ BIN=../../bin
+ TSPC=gw6c
+ 
+-CFLAGS=-O2 -Wall -I../.. -I../../include -I../../platform/$(target)
+-CC=gcc
++CFLAGS=-Wall -DNDEBUG -I../.. -I../../include -I../../platform/$(target) $(ADDITIONAL_CPPFLAGS)
+ 
+ all: $(OBJ) $(wildcard $(OBJLINK)) $(BIN)/$(TSPC)
+ 
+@@ -29,7 +28,7 @@
+ 	$(CC) $(CFLAGS) -c tsp_tun.c -o $(OBJDIR)/tsp_tun.o $(DEFINES)
+ 
+ $(BIN)/$(TSPC): $(OBJ) $(wildcard $(OBJLINK))
+-	$(CC) $(CFLAGS) -o $(BIN)/$(TSPC) $(OBJLINK) $(LDFLAGS)
++	$(CXX) $(CFLAGS) -o $(BIN)/$(TSPC) $(OBJLINK) $(LDFLAGS)
+ 
+ clean:
+ 	rm -f $(OBJDIR)/*.o $(BIN)/$(TSPC)
+--- tspc-advanced/platform/openwrt/Makefile
++++ tspc-advanced/platform/openwrt/Makefile
+@@ -14,11 +14,11 @@
+ OBJDIR=../../objs
+ OBJ=$(OBJDIR)/tsp_local.o $(OBJDIR)/tsp_tun.o
+ OBJLINK=$(OBJDIR)/*.o
+-EXTRALIBS=-nodefaultlibs -luClibc++ -lc -lgcc -lpthread -lgw6cconfig -lgw6cmessaging
++LDFLAGS=-L../../gw6cconfig -L../../gw6cmessaging -lpthread -lgw6cconfig -lgw6cmessaging
+ BIN=../../bin
+ TSPC=gw6c
+ 
+-CFLAGS=-O2 -Wall -I../../include -I../../platform/$(target)
++CFLAGS=-Wall -DNDEBUG -I../.. -I../../include -I../../platform/$(target) $(ADDITIONAL_CPPFLAGS)
+ 
+ all: $(OBJ) $(wildcard $(OBJLINK)) $(BIN)/$(TSPC)
+ 
+@@ -28,7 +28,7 @@
+ 	$(CC) $(CFLAGS) -c tsp_tun.c -o $(OBJDIR)/tsp_tun.o $(DEFINES)
+ 
+ $(BIN)/$(TSPC): $(OBJ) $(wildcard $(OBJLINK))
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(BIN)/$(TSPC) $(OBJLINK) $(EXTRALIBS)
++	$(CXX) $(CFLAGS) $(LDFLAGS) -o $(BIN)/$(TSPC) $(OBJLINK) $(LDFLAGS)
+ 
+ clean:
+ 	rm -f $(OBJDIR)/*.o $(BIN)/$(TSPC)
+--- tspc-advanced/platform/unix-common/Makefile
++++ tspc-advanced/platform/unix-common/Makefile
+@@ -16,8 +16,7 @@
+ OBJ=$(OBJDIR)/unix-main.o $(OBJDIR)/unix-echo-request.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -Wall -I../../include -I../../platform/$(target)
+-CC=gcc
++CFLAGS=-Wall -DNDEBUG -I../../include -I../../platform/$(target) $(ADDITIONAL_CPPFLAGS)
+ 
+ all: $(OBJ)
+ 
+--- tspc-advanced/src/lib/Makefile
++++ tspc-advanced/src/lib/Makefile
+@@ -16,8 +16,7 @@
+ HAP6_OBJ=$(OBJDIR)/hap6.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -Wall -I../.. -I../../include -I../../platform/$(target) $(extraincludedir)
+-CC=gcc
++CFLAGS=-Wall -DNDEBUG -I../.. -I../../include -I../../platform/$(target) $(extraincludedir) $(ADDITIONAL_CPPFLAGS)
+ 
+ all: $(OBJ) $(HAP6_OBJ)
+ 
+--- tspc-advanced/src/net/Makefile
++++ tspc-advanced/src/net/Makefile
+@@ -15,8 +15,7 @@
+ OBJ=$(OBJDIR)/net.o $(OBJDIR)/net_rudp.o $(OBJDIR)/net_rudp6.o $(OBJDIR)/net_tcp.o $(OBJDIR)/net_udp.o $(OBJDIR)/net_ka.o $(OBJDIR)/net_cksm.o $(OBJDIR)/net_tcp6.o $(OBJDIR)/net_echo_request.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -Wall -I../../include -I../../platform/$(target)
+-CC=gcc
++CFLAGS=-Wall -DNDEBUG -I../../include -I../../platform/$(target) $(ADDITIONAL_CPPFLAGS)
+ 
+ all: $(OBJ) 
+ 
+--- tspc-advanced/src/tsp/Makefile
++++ tspc-advanced/src/tsp/Makefile
+@@ -15,8 +15,7 @@
+ OBJ=$(OBJDIR)/tsp_auth.o $(OBJDIR)/tsp_cap.o $(OBJDIR)/tsp_client.o $(OBJDIR)/tsp_net.o $(OBJDIR)/tsp_setup.o $(OBJDIR)/tsp_auth_passdss.o $(OBJDIR)/tsp_lease.o $(OBJDIR)/tsp_redirect.o $(OBJDIR)/tsp_tun_mgt.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -Wall -I../.. -I../../include -I../../platform/$(target) $(extraincludedir)
+-CC=gcc
++CFLAGS=-Wall -DNDEBUG -I../.. -I../../include -I../../platform/$(target) $(extraincludedir) $(ADDITIONAL_CPPFLAGS)
+ 
+ all: $(OBJ)
+ 
+--- tspc-advanced/src/xml/Makefile
++++ tspc-advanced/src/xml/Makefile
+@@ -15,8 +15,7 @@
+ OBJ=$(OBJDIR)/xmlparse.o $(OBJDIR)/xml_req.o $(OBJDIR)/xml_tun.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -Wall -I../../include -I../../platform/$(target)
+-CC=gcc
++CFLAGS=-Wall -DNDEBUG -I../../include -I../../platform/$(target) $(ADDITIONAL_CPPFLAGS)
+ 
+ all: $(OBJ) 
+ 
