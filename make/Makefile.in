@@ -599,7 +599,7 @@ define PKG_UNPACK__INT
 	$(if $(PKG_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
 	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
 		tools/tar -C $($(PKG)_SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
-		unzip $(QUIETSHORT) -u $(strip $1) -d $($(PKG)_SOURCE_DIR)
+		tools/unzip $(QUIETSHORT) $(strip $1) -d $($(PKG)_SOURCE_DIR)
 	)
 endef
 
