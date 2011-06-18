@@ -374,9 +374,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
 	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
 	for webdir in ${FILESYSTEM_MOD_DIR}/usr/www ${FILESYSTEM_MOD_DIR}/usr/www.nas; do
-		if [ -d ${webdir}/avm ]; then
+		if [ -d ${webdir}/avm* ]; then
 			echo0 -n -l " ${webdir#${FILESYSTEM_MOD_DIR}/}"
-			mv ${webdir}/avm ${webdir}/all
+			mv ${webdir}/avm* ${webdir}/all
 			for i in $oems; do
 				rm -rf ${webdir}/$i
 				ln -s all ${webdir}/$i
@@ -402,7 +402,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 
 	# Now we are in place to check html directory
-	for i in all avme/en avme; do
+	for i in all/en all; do
 		if [ -d "${HTML_MOD_DIR}/$i" ]; then
 			HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/$i"
 			break
