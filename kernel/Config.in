@@ -22,6 +22,7 @@ config FREETZ_MODULE_block2mtd
 	bool "block2mtd.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
+
 endmenu
 
 menu "crypto"
@@ -275,7 +276,6 @@ endmenu
 
 menu "fs"
 
-
 config FREETZ_MODULE_autofs4
 	bool "autofs4.ko"
 	default n
@@ -466,6 +466,14 @@ config FREETZ_MODULE_bnep
 	select FREETZ_MODULE_l2cap
 	default n
 
+config FREETZ_MODULE_cls_u32
+	bool "cls_u32.ko"
+	default n
+	help
+		The u32 filter allows you to match on any bit field within a
+		packet, so it is in some ways the most powerful filter provided
+		by the Linux traffic control engine.
+
 config FREETZ_MODULE_ipv6
 	bool "ipv6.ko"
 	depends on FREETZ_TARGET_IPV6_SUPPORT && ! FREETZ_HAS_AVM_IPV6
@@ -479,12 +487,6 @@ config FREETZ_MODULE_ipv6
 		For Linux IPv6 development information, see <http://www.linux-ipv6.org>.
 		For specific information about IPv6 under Linux, read the HOWTO at
 		<http://www.bieringer.de/linux/IPv6/>.
-
-config FREETZ_MODULE_sit
-	bool "sit.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
-	depends on FREETZ_MODULE_ipv6
-	default n
 
 config FREETZ_MODULE_l2cap
 	bool "l2cap.ko"
@@ -510,12 +512,9 @@ config FREETZ_MODULE_sch_cbq
 		classes. The classes can be based upon a variety of parameters, such
 		as priority, interface, or originating program.
 
-config FREETZ_MODULE_cls_u32
-	bool "cls_u32.ko"
+config FREETZ_MODULE_sit
+	bool "sit.ko"
+	depends on FREETZ_MODULE_ipv6 && ! FREETZ_KERNEL_VERSION_2_6_13_1
 	default n
-	help
-		The u32 filter allows you to match on any bit field within a
-		packet, so it is in some ways the most powerful filter provided
-		by the Linux traffic control engine.
 
 endmenu
