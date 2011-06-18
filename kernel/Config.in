@@ -493,15 +493,7 @@ config FREETZ_MODULE_l2cap
 	select FREETZ_MODULE_bluetooth
 	default n
 
-config FREETZ_MODULE_rfcomm
-	bool "rfcomm.ko"
-	select FREETZ_MODULE_l2cap
-	default n
-
-config FREETZ_MODULE_sunrpc
-	bool "sunrpc.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 || FREETZ_KERNEL_VERSION_2_6_28
-	default n
+menu "network scheduler"
 
 config FREETZ_MODULE_sch_cbq
 	bool "sch_cbq.ko"
@@ -512,9 +504,61 @@ config FREETZ_MODULE_sch_cbq
 		classes. The classes can be based upon a variety of parameters, such
 		as priority, interface, or originating program.
 
+config FREETZ_MODULE_sch_htb
+	bool "sch_htb.ko"
+	default n
+	help
+		Hierarchical Token Buckets (HTB) is a packet scheduling algorithm
+		for some of your network devices.
+		See <http://luxik.cdi.cz/~devik/qos/htb/> for complete manual and
+		in-depth articles.
+
+		HTB is very similar to the CBQ regarding its goals however it has
+		different properties and different algorithm.
+
+config FREETZ_MODULE_sch_llq
+	bool "sch_llq.ko"
+	default n
+	help
+		With LLQ Queue (CBWFQ with strict priorities) you will be able to
+		schedule packets with strict priorities and weight.
+		(Class-Bases Weighted Fair Queuing with strict priorities)
+
+config FREETZ_MODULE_sch_sfq
+	bool "sch_sfq.ko"
+	default n
+	help
+		The Stochastic Fairness Queueing (SFQ) packet scheduling algorithm
+		can be used for some of your network devices or as a leaf discipline
+		for the CBQ scheduling algorithm.
+		See the top of <file:net/sched/sch_sfq.c> for details and references
+		about the SFQ algorithm.
+
+config FREETZ_MODULE_sch_tbf
+	bool "sch_tbf.ko"
+	default n
+	help
+		Simple Token Bucket Filter (TBF) is a packet scheduling algorithm
+		for some of your network devices or as a leaf discipline for the
+		CBQ scheduling algorithm.
+		See the top of <file:net/sched/sch_tbf.c> for a description of the
+		TBF algorithm.
+
+endmenu
+
+config FREETZ_MODULE_rfcomm
+	bool "rfcomm.ko"
+	select FREETZ_MODULE_l2cap
+	default n
+
 config FREETZ_MODULE_sit
 	bool "sit.ko"
 	depends on FREETZ_MODULE_ipv6 && ! FREETZ_KERNEL_VERSION_2_6_13_1
+	default n
+
+config FREETZ_MODULE_sunrpc
+	bool "sunrpc.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 || FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 endmenu
