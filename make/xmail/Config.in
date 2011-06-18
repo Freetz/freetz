@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_XMAIL
 	bool "XMail 1.27"
-	select FREETZ_LIB_libuClibc__
+	select FREETZ_LIB_STDCXXLIB if ! FREETZ_PACKAGE_XMAIL_STATIC
 	default n
 	help
 		XMail is an Internet and Intranet mail server featuring an SMTP server,

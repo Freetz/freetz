@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://ftp.yars.free.net/pub/source/lftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lftp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lftp
 
-$(PKG)_DEPENDS_ON := ncurses readline uclibcxx expat
+$(PKG)_DEPENDS_ON := ncurses readline $(STDCXXLIB) expat
 
 ifeq ($(strip $(FREETZ_PACKAGE_LFTP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
@@ -28,6 +28,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_LFTP_WITH_SSL),--with-openssl,--without-openssl)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LFTP_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LFTP_WITH_SSL
 

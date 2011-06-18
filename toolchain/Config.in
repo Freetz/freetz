@@ -245,6 +245,35 @@ choice
 		depends on FREETZ_BUILD_TOOLCHAIN
 endchoice
 
+choice
+
+	prompt "Standard C++ Library"
+	default FREETZ_STDCXXLIB_USE_UCLIBCXX
+	help
+		Library to be used as the implementation of the Standard C++ Library.
+
+	config FREETZ_STDCXXLIB_USE_UCLIBCXX
+		bool "uClibc++"
+		help
+			uClibc++ is an implementation of the Standard C++ Library optimized
+			for embedded systems (primarily for size). Its size is ~160KB.
+			It however lacks a complete support for wchar type. It also has some
+			performance deficiencies, e.g. std::map::find requires O(n), bubble
+			sort O(n^2) is used as sort algorithm, and etc.
+
+	config FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+		bool "GNU libstdc++"
+		help
+			GNU libstdc++ is an implementation of the Standard C++ Library from
+			the developers of the GNU Compiler Collection (GCC). It provides
+			a full support for all features defined in the 2nd edition of the
+			C++ Standard (ISO/IEC 14882:2003) and for many features of the
+			upcoming version of the Standard. The only disadvantage it has
+			compared to uClibc++ is its size - upto 900KB depending on the
+			compiler version.
+
+endchoice
+
 config FREETZ_TARGET_UCLIBC_VERSION
 	string
 	default "0.9.28"	if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
@@ -258,11 +287,16 @@ config FREETZ_TARGET_GCC_VERSION
 	default "4.5.3"		if FREETZ_TARGET_COMPILER_GCC_4_5_3
 	default "4.6.0"		if FREETZ_TARGET_COMPILER_GCC_4_6_0
 
-config FREETZ_LIBSTDCXX_VERSION
+config FREETZ_GNULIBSTDCXX_VERSION
 	string
 	default "6.0.13"	if FREETZ_TARGET_COMPILER_GCC_4_4_6
 	default "6.0.14"	if FREETZ_TARGET_COMPILER_GCC_4_5_3
 	default "6.0.15"	if FREETZ_TARGET_COMPILER_GCC_4_6_0
+
+config FREETZ_STDCXXLIB
+	string
+	default "uclibcxx"	if FREETZ_STDCXXLIB_USE_UCLIBCXX
+	default "libstdcxx"	if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 
 config FREETZ_TARGET_BINUTILS_VERSION
 	string

@@ -26,7 +26,7 @@ $(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TOOLS_SOURCE
 	done; \
 	touch $@
 
-$(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked
+$(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked | $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP)
 	(cd $(LIBTOOL_HOST_DIR); rm -rf config.cache; \
 		CC=$(TARGET_CC) \
 		CXX=$(TARGET_CXX) \
@@ -58,7 +58,7 @@ $(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
 		install
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 
-libtool-host: uclibcxx $(LIBTOOL_HOST_TARGET_SCRIPT)
+libtool-host: $(STDCXXLIB) $(LIBTOOL_HOST_TARGET_SCRIPT)
 
 libtool-host-source: $(LIBTOOL_HOST_DIR)/.unpacked
 

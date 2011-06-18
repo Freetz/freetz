@@ -1,0 +1,86 @@
+--- gw6c-config/src/gw6cconfig.cc
++++ gw6c-config/src/gw6cconfig.cc
+@@ -25,6 +25,8 @@
+ #include <gw6cconfig/gw6cuistrings.h>
+ #include <assert.h>
+ #include <string>
++#include <cstdlib>
++#include <cstring>
+ 
+ 
+ // Configuration data variable NAMES
+--- gw6c-config/src/gw6c_c_wrapper.cc
++++ gw6c-config/src/gw6c_c_wrapper.cc
+@@ -23,6 +23,9 @@
+ using namespace gw6cconfig;
+ #include <assert.h>
+ 
++#include <cstdlib>
++#include <cstring>
++
+ #ifdef WIN32
+ #define strcasecmp      _stricmp
+ #define strdup          _strdup
+--- gw6c-config/src/gw6cvalidation.cc
++++ gw6c-config/src/gw6cvalidation.cc
+@@ -37,6 +37,8 @@
+ #define INET_PTON(A, B, C)                inet_pton(A,B,C)
+ #endif
+ 
++#include <cstdlib>
++#include <cstring>
+ 
+ // Definition of valid characters for different strings.
+ #define CFG_SERVER_CHRS                   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.:[]"
+--- gw6c-config/src/hap6devicemappingconfig.cc
++++ gw6c-config/src/hap6devicemappingconfig.cc
+@@ -23,6 +23,7 @@
+ #include <gw6cconfig/gw6cuistrings.h>
+ #include <assert.h>
+ 
++#include <cstring>
+ 
+ #ifdef WIN32
+ #include <direct.h>
+--- gw6c-config/src/hap6_devmap_c_wrap.cc
++++ gw6c-config/src/hap6_devmap_c_wrap.cc
+@@ -20,6 +20,8 @@
+ #include <gw6cconfig/hap6_devmap_c_wrap.h>
+ #include <gw6cconfig/hap6devicemappingconfig.h>
+ #include <gw6cconfig/gw6cuistrings.h>
++#include <cstdlib>
++#include <cstring>
+ using namespace gw6cconfig;
+ #include <assert.h>
+ 
+--- gw6c-config/src/namevalueparser.cc
++++ gw6c-config/src/namevalueparser.cc
+@@ -23,6 +23,7 @@
+ #include <gw6cconfig/gw6cuistrings.h>
+ #include <iostream>
+ #include <fstream>
++#include <cstring>
+ #include <time.h>
+ #include <assert.h>
+ 
+--- gw6c-messaging/src/clientmsgsender.cc
++++ gw6c-messaging/src/clientmsgsender.cc
+@@ -18,6 +18,7 @@
+ // __________________________________________________________________________
+ // **************************************************************************
+ #include <gw6cmessaging/clientmsgsender.h>
++#include <cstring>
+ #include <assert.h>
+ 
+ 
+--- gw6c-messaging/src/servermsgsender.cc
++++ gw6c-messaging/src/servermsgsender.cc
+@@ -18,6 +18,8 @@
+ // __________________________________________________________________________
+ // **************************************************************************
+ #include <gw6cmessaging/servermsgsender.h>
++#include <cstdlib>
++#include <cstring>
+ #include <assert.h>
+ 
+ 

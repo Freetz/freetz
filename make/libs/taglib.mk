@@ -8,7 +8,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/taglib/.libs/libtag.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libtag.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libtag.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DEPENDS_ON := uclibcxx zlib
+$(PKG)_DEPENDS_ON := $(STDCXXLIB) zlib
+$(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 
 # touch some autotools' files to prevent configure from being regenerated
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 configure.in.in configure.in subdirs acinclude.m4 aclocal.m4 admin/acinclude.m4.in admin/libtool.m4.in;

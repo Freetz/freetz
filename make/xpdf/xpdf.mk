@@ -11,7 +11,8 @@ $(PKG)_LIBS_BUILD_DIR := $($(PKG)_DIR)/xpdf/libxpdf.so.1
 $(PKG)_LIBS_TARGET_DIR := $($(PKG)_DEST_LIBDIR)/libxpdf.so.1
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
-$(PKG)_DEPENDS_ON := uclibcxx
+$(PKG)_DEPENDS_ON := $(STDCXXLIB)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 
 $(PKG)_CONFIGURE_OPTIONS += \
 	--enable-a4-paper \

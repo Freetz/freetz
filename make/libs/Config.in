@@ -1,5 +1,16 @@
 menu "C++"
 
+config FREETZ_LIB_STDCXXLIB
+	bool
+	select FREETZ_LIB_libuClibc__ if FREETZ_STDCXXLIB_USE_UCLIBCXX
+	select FREETZ_LIB_libstdc__ if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	default n
+
+config FREETZ_LIB_STDCXXLIB_WITH_WCHAR
+	bool
+	select FREETZ_LIB_libuClibc__WITH_WCHAR if FREETZ_STDCXXLIB_USE_UCLIBCXX
+	default n
+
 config FREETZ_LIB_libstdc__
 	bool "libstdc++ (libstdc++-6.0.x.so)"
 	select FREETZ_LIB_libm
@@ -500,8 +511,8 @@ config FREETZ_LIB_libmad
 
 config FREETZ_LIB_libtag
 	bool "taglib (libtag.so)"
-	select FREETZ_LIB_libuClibc__
-	select FREETZ_LIB_libuClibc__WITH_WCHAR
+	select FREETZ_LIB_STDCXXLIB
+	select FREETZ_LIB_STDCXXLIB_WITH_WCHAR
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libz
 	default n

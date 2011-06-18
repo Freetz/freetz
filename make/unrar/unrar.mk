@@ -7,7 +7,8 @@ $(PKG)_SITE:=http://www.rarlab.com/rar/
 $(PKG)_BINARY:=$($(PKG)_DIR)/unrar
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/unrar
 
-$(PKG)_DEPENDS_ON := uclibcxx
+$(PKG)_DEPENDS_ON := $(STDCXXLIB)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_UNRAR_STATIC
 ifeq ($(strip $(FREETZ_PACKAGE_UNRAR_STATIC)),y)

@@ -40,6 +40,17 @@ Latest changes:
    * move config.cache to this subdir too
   * move tools source dir to source/host-tools
 
+- Toolchain:
+  * Add support for the GNU libstdc++. From now on user can specify (he/she has
+    a choice between uClibc++ and libstdc++) the library to be used as the
+    implementation of the Standard C++ Library. uClibc++ is still the default one.
+    The option affects all packages using C++ compiler to compile. In one of the
+    next releases it will be possible to select the library on a per-package-basis.
+    The reason we add support for libstdc++ is some performance deficiencies
+    of uClibc++ causing us either to get stuck with old versions of the packages
+    we already support (e.g. nmap) or making it impossible to add support for
+    the new ones (e.g. truecrypt).
+
 - New tools and hooks:
     * Add patch that enhances possibilities of /bin/onlinechanged:
       Based on changes by AVM we execute 3 locations on a call to /bin/onlinechanged:
@@ -131,6 +142,7 @@ Latest changes:
     * liboping 1.6.1
     * libosip2 3.3.0
     * libpolarssl 0.14.3
+    * libstdc++ 6.0.x
     * libsynce 0.10.0
     * libtasn1 2.9
     * libusb1 1.0.8

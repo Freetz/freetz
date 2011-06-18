@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, $(strip $(subst ",,$(FREETZ_LIBSTDCXX_VERSION))), libstdcxx)
+$(call PKG_INIT_LIB, $(strip $(subst ",,$(FREETZ_GNULIBSTDCXX_VERSION))), libstdcxx)
 
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libstdc++.so.$($(PKG)_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libstdc++.so.$($(PKG)_VERSION)

@@ -8,11 +8,12 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mediatomb
 $(PKG)_SHARE_DIR:=/usr/share/mediatomb
 $(PKG)_TARGET_WEBIF:=$($(PKG)_DEST_DIR)$($(PKG)_SHARE_DIR)/web/index.html
 
-$(PKG)_DEPENDS_ON += uclibcxx curl expat ffmpeg libexif sqlite taglib zlib
+$(PKG)_DEPENDS_ON += $(STDCXXLIB) curl expat ffmpeg libexif sqlite taglib zlib
 ifeq ($(strip $(FREETZ_PACKAGE_MEDIATOMB_WITH_PLAYLIST_SUPPORT)),y)
 $(PKG)_DEPENDS_ON += js
 endif
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MEDIATOMB_WITH_PLAYLIST_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MEDIATOMB_STATIC
 

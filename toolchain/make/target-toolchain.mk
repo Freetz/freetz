@@ -12,7 +12,7 @@ include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
 
-TARGET_TOOLCHAIN := binutils gcc uclibcxx
+TARGET_TOOLCHAIN := binutils gcc $(STDCXXLIB)
 
 ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
 	TARGET_TOOLCHAIN += ccache
@@ -38,6 +38,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 
 target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
 			$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) \
+			$(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP) \
 			kernel-configured uclibc-configured target-toolchain-kernel-headers \
 			$(TARGET_TOOLCHAIN)
 

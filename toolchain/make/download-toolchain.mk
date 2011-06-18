@@ -42,7 +42,7 @@ $(DL_DIR)/$(TARGET_TOOLCHAIN_SOURCE): | $(DL_DIR)
 download-toolchain: $(KERNEL_CROSS_COMPILER) kernel-configured \
 			$(TARGET_CROSS_COMPILER) target-toolchain-kernel-headers \
 			$(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0 \
-			$(CCACHE) uclibcxx libtool-host $(if $(FREETZ_PACKAGE_GDB_HOST),gdbhost)
+			$(CCACHE) $(STDCXXLIB) $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP) libtool-host $(if $(FREETZ_PACKAGE_GDB_HOST),gdbhost)
 
 gcc-kernel: $(KERNEL_CROSS_COMPILER)
 $(KERNEL_CROSS_COMPILER): $(DL_DIR)/$(KERNEL_TOOLCHAIN_SOURCE) | \

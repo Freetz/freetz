@@ -5,7 +5,8 @@ $(PKG)_SITE:=http://www.squid-cache.org/Versions/v$(firstword $(subst ., ,$($(PK
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/squid
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/squid
 
-$(PKG)_DEPENDS_ON := uclibcxx
+$(PKG)_DEPENDS_ON := $(STDCXXLIB)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SQUID_TRANSPARENT
 
