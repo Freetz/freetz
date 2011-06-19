@@ -1,0 +1,48 @@
+--- nsock/src/configure
++++ nsock/src/configure
+@@ -594,6 +594,7 @@
+ ac_subst_vars='LTLIBOBJS
+ LIBOBJS
+ NBASEDIR
++PCAPINCDIR
+ LIBNBASE_LIBS
+ OPENSSL_LIBS
+ EGREP
+@@ -659,7 +660,7 @@
+ ac_user_opts='
+ enable_option_checking
+ with_localdirs
+-with_pcap
++with_libpcap
+ with_openssl
+ with_libnbase
+ '
+@@ -2244,10 +2245,14 @@
+ fi
+ 
+ pcap_enabled=yes
++PCAPINCDIR="../../libpcap"
+ 
+-# Check whether --with-pcap was given.
+-if test "${with_pcap+set}" = set; then :
+-  withval=$with_pcap;  pcap_enabled="$withval"
++# Check whether --with-libpcap was given.
++if test "${with_libpcap+set}" = set; then :
++  withval=$with_libpcap;  pcap_enabled="$withval"
++  if test "$with_libpcap" != "included"; then
++    PCAPINCDIR="$with_libpcap/include/pcap"
++  fi
+ fi
+ 
+ 
+--- nsock/src/Makefile.in
++++ nsock/src/Makefile.in
+@@ -14,7 +14,7 @@
+ DEFS = @DEFS@ -DNSOCK_VERSION=\"$(NSOCK_VERSION)\"
+ # With GCC, add extra security checks to source code.
+ DEFS += -D_FORTIFY_SOURCE=2
+-INCLS = -I../include -I../../libpcap
++INCLS = -I../include -I@PCAPINCDIR@
+ CFLAGS = @CFLAGS@ $(CCOPT)
+ # CFLAGS = -g -Wall $(DEFS) $(INCLS)
+ CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCLS)
