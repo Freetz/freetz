@@ -55,4 +55,11 @@ config FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE
 	help
 		Causes system (dynamic) libpcre to be used instead of the bundled one.
 
+config FREETZ_PACKAGE_NMAP_STATIC
+	bool "create statically linked binary"
+	depends on FREETZ_PACKAGE_NMAP
+	default n
+	help
+		Causes all libraries nmap depends on to be linked in statically.
+
 endmenu
