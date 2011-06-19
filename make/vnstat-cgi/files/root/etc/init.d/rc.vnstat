@@ -97,9 +97,7 @@ case $1 in
 		modlib_stop
 		;;
 	restart)
-		modlib_stop
-		sleep 3		#vnstatd needs more time to write dbs
-		modlib_start
+		modlib_restart
 		;;
 	status)
 		modlib_status
