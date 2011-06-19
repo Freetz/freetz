@@ -52,6 +52,8 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	"Libs: -L\$${libdir} -llua\n"\
 	"Cflags: -I\$${includedir}\n"\
 	>$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/lua.pc
+	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib && \
+	cp $(LUA_DIR)/src/liblua.a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 	$(INSTALL_LIBRARY)
 
 $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
