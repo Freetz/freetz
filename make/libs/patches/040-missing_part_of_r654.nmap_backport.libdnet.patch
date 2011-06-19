@@ -1,0 +1,16 @@
+--- src/addr.c
++++ src/addr.c
+@@ -395,12 +395,9 @@
+ 		len = 0;
+ 	else if (len > IP_ADDR_LEN)
+ 		len = IP_ADDR_LEN;
+-	#else
++#else
+ 		len = IP_ADDR_LEN;
+-
+ #endif
+-		len = IP_ADDR_LEN;
+-		p = (u_char *)&so->sin.sin_addr.s_addr;
+ 	}
+ 	for (n = i = 0; i < len; i++, n += 8) {
+ 		if (p[i] != 0xff)

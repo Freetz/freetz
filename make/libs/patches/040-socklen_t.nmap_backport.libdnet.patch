@@ -1,0 +1,23 @@
+--- src/intf.c
++++ src/intf.c
+@@ -629,7 +629,7 @@
+ intf_get_dst(intf_t *intf, struct intf_entry *entry, struct addr *dst)
+ {
+ 	struct sockaddr_in sin;
+-	int n;
++	socklen_t n;
+ 	
+ 	if (dst->addr_type != ADDR_TYPE_IP) {
+ 		errno = EINVAL;
+--- src/ip.c
++++ src/ip.c
+@@ -26,7 +26,8 @@
+ ip_open(void)
+ {
+ 	ip_t *i;
+-	int n, len;
++	int n;
++	socklen_t len;
+ 
+ 	if ((i = calloc(1, sizeof(*i))) == NULL)
+ 		return (NULL);
