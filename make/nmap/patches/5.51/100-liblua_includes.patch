@@ -1,0 +1,29 @@
+--- configure
++++ configure
+@@ -6455,7 +6455,7 @@
+     no_lua="yes"
+   ;;
+   *)
+-    CPPFLAGS="-I$with_liblua/include $CPPFLAGS"
++    CPPFLAGS="-I$with_liblua/include/lua $CPPFLAGS"
+     LDFLAGS="-L$with_liblua/lib $LDFLAGS"
+   ;;
+   esac
+@@ -6638,7 +6638,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lua_lua_call" >&5
+ $as_echo "$ac_cv_lib_lua_lua_call" >&6; }
+ if test "x$ac_cv_lib_lua_lua_call" = x""yes; then :
+-  have_lua=yes; LIBLUA_LIBS="-llua"; CPPFLAGS="-I/usr/include/lua $CPPFLAGS"; break
++  have_lua=yes; LIBLUA_LIBS="-llua"; break
+ fi
+ 
+       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for lua_call in -llua5.1" >&5
+@@ -6678,7 +6678,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lua5_1_lua_call" >&5
+ $as_echo "$ac_cv_lib_lua5_1_lua_call" >&6; }
+ if test "x$ac_cv_lib_lua5_1_lua_call" = x""yes; then :
+-  have_lua=yes; LIBLUA_LIBS="-llua5.1"; CPPFLAGS="-I/usr/include/lua5.1 $CPPFLAGS"; break
++  have_lua=yes; LIBLUA_LIBS="-llua5.1"; break
+ fi
+ 
+ 

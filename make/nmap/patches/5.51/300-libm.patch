@@ -1,0 +1,11 @@
+--- Makefile.in
++++ Makefile.in
+@@ -47,7 +47,7 @@
+ # CFLAGS = $(DEFS) $(INCLS)
+ STATIC =
+ LDFLAGS = @LDFLAGS@ $(DBGFLAGS) $(STATIC)
+-LIBS =  @LIBNBASE_LIBS@ @LIBNSOCK_LIBS@ @LIBPCRE_LIBS@ @LIBPCAP_LIBS@ $(OPENSSL_LIBS) libnetutil/libnetutil.a @LIBDNET_LIBS@ @LIBLUA_LIBS@ @LIBS@
++LIBS =  @LIBNBASE_LIBS@ @LIBNSOCK_LIBS@ @LIBPCRE_LIBS@ @LIBPCAP_LIBS@ $(OPENSSL_LIBS) libnetutil/libnetutil.a @LIBDNET_LIBS@ @LIBLUA_LIBS@ @LIBS@ -lm
+ OPENSSL_LIBS = @OPENSSL_LIBS@
+ # LIBS =  -lefence @LIBS@
+ # LIBS =  -lrmalloc @LIBS@
