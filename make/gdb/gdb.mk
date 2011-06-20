@@ -1,8 +1,8 @@
 $(call PKG_INIT_BIN,$(strip $(subst ",,$(FREETZ_GDB_VERSION))))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_MD5_6.8 := c9da266b884fb8fa54df786dfaadbc7a
-$(PKG)_MD5_7.2 := 64260e6c56979ee750a01055f16091a5
-$(PKG)_MD5     := $($(PKG)_MD5_$($(PKG)_VERSION))
+$(PKG)_SOURCE_MD5_6.8 := c9da266b884fb8fa54df786dfaadbc7a
+$(PKG)_SOURCE_MD5_7.2 := 64260e6c56979ee750a01055f16091a5
+$(PKG)_SOURCE_MD5     := $($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=@GNU/gdb
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
