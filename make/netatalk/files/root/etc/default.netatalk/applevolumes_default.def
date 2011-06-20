@@ -1,0 +1,11 @@
+CAPTION='Netatalk: $(lang de:"Freigaben" en:"Shares")'
+DESCRIPTION='<a href="http://netatalk.sourceforge.net/2.1/htmldocs/AppleVolumes.default.5.html" target="_blank">$(lang de:"Syntax siehe Dokumentation von AppleVolumes.default" en:"Syntax see documentation of AppleVolumes.default")</a><br><br>
+<i>$(lang de:"Beispiel" en:"Example"):</i><br>
+:DEFAULT: options:upriv,usedots<br>
+/var/media/ftp/uStor01 "Time Machine" allow:ftpuser options:tm volsizelimit:100000'
+
+CONFIG_FILE='/tmp/flash/netatalk/applevolumes_default'
+CONFIG_SAVE='modsave flash; if pidof afpd > /dev/null; then echo ""; /mod/etc/init.d/rc.netatalk restart; fi'
+CONFIG_TYPE='text'
+
+TEXT_ROWS=10

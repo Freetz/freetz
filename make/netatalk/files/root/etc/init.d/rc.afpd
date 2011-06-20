@@ -1,0 +1,54 @@
+#!/bin/sh
+
+DAEMON=netatalk
+DAEMON_LONG_NAME="Netatalk-afpd"
+DAEMON_BIN=afpd
+DAEMON_CONFIG=/mod/etc/netatalk/afpd.conf
+. /etc/init.d/modlibrc
+
+start() {
+	modlib_startdaemon $DAEMON_BIN \
+	  -F $DAEMON_CONFIG \
+	  -f /mod/etc/netatalk/AppleVolumes.default \
+	  -P /var/run/$DAEMON_BIN.pid \
+	  -c $NETATALK_MAX_CLIENTS
+}
+
+case $1 in
+	""|load)
+		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
+			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
+		fi
+		modreg daemon -h -n netatalk-afpd -r rc.$DAEMON_BIN -p netatalk afpd
+
+		modlib_start $NETATALK_ENABLED
+		;;
+	unload)
+		modunreg daemon netatalk afpd
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	reload)
+		modlib_reload
+		;;
+	status)
+		modlib_status
+		;;
+	config)
+		/etc/init.d/rc.netatalk config
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status|config]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
