@@ -24,8 +24,7 @@ for i in bin/reinit_jffs2 etc/init.d/rc.voip etc/minid \
 done
 
 echo2 "patching webmenu"
-isFreetzType LABOR_PREVIEW && \
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170_labor_preview.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170.patch"
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170
@@ -37,9 +36,7 @@ RC_S_FILE="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 ${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "copy_telefonie_defaults" -o ${RC_S_FILE}
 ${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "link_telefonie_defaults" -o ${RC_S_FILE}
 
-if isFreetzType LABOR_PREVIEW; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170_preview.patch" || exit 2
-elif isFreetzType LANG_DE || isFreetzType ANNEX_B; then
+if isFreetzType LANG_DE || isFreetzType ANNEX_B; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170.patch" || exit 2
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/rc.S-3170_7170_a_ch.patch" || exit 2
