@@ -28,7 +28,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_IDS): $($(PKG)_DIR)/.configured
 ifeq ($(strip $(FREETZ_PACKAGE_USBUTILS_IDS_UPDATE)),y)
 	mv $@ $@.old
-	$(DL_TOOL) $(USBUTILS_DIR) .config usb.ids $(USBUTILS_IDS_SITE) $(SILENT)
+	$(DL_TOOL) $(USBUTILS_DIR) usb.ids $(USBUTILS_IDS_SITE) $(SILENT)
 endif
 	touch $@
 

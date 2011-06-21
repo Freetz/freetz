@@ -1451,103 +1451,6 @@ config FREETZ_DL_SOURCE2_CONTAINER_MD5
 	depends on FREETZ_TYPE_SINUS_W500V_7150
 	default "e13231dcfba56505ebf7bac4ee72af75"
 
-menu "Freetz package download sites"
-
-# This is a fixed entry, it is invisible and cannot be changed by the user
-config FREETZ_MOD_DL_NUM_SITES
-	string
-	default "5"
-
-comment "Download site #1 - default: http://freetz.3dfxatwork.de"
-
-config FREETZ_MOD_DL_SITE_1
-	string ""
-	default "http://freetz.3dfxatwork.de"
-	help
-		Download site #1 for Freetz packages like 'mc-4.5.0-freetz-0.2.tar.bz2',
-		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
-		build process, all mirrors defined here are triggered on a random basis,
-		so as not to always use a certain mirror first. This is a cheap kind of
-		load balancing.
-
-		Note: We recommend you to only set #5 to a user-defined value, if
-		necessary. Necessary means that #1 - #4 are currently unavailable or
-		the desired package cannot be found on either of them. In addition to
-		the default servers #1 and #2, many packages have another server name
-		in their make file, so a user-defined mirror should rarely be necessary.
-
-comment "Download site #2 - default: http://freetz.wirsind.info"
-
-config FREETZ_MOD_DL_SITE_2
-	string ""
-	default "http://freetz.wirsind.info"
-	help
-		Download site #2 for Freetz packages like 'mc-4.5.0-freetz-0.2.tar.bz2',
-		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
-		build process, all mirrors defined here are triggered on a random basis,
-		so as not to always use a certain mirror first. This is a cheap kind of
-		load balancing.
-
-		Note: We recommend you to only set #5 to a user-defined value, if
-		necessary. Necessary means that #1 - #4 are currently unavailable or
-		the desired package cannot be found on either of them. In addition to
-		the default servers #1 and #2, many packages have another server name
-		in their make file, so a user-defined mirror should rarely be necessary.
-
-comment "Download site #3 - default: http://freetz.magenbrot.net"
-
-config FREETZ_MOD_DL_SITE_3
-	string ""
-	default "http://freetz.magenbrot.net"
-	help
-		Download site #3 for Freetz packages like 'mc-4.5.0-freetz-0.2.tar.bz2',
-		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
-		build process, all mirrors defined here are triggered on a random basis,
-		so as not to always use a certain mirror first. This is a cheap kind of
-		load balancing.
-
-		Note: We recommend you to only set #5 to a user-defined value, if
-		necessary. Necessary means that #1 - #4 are currently unavailable or
-		the desired package cannot be found on either of them. In addition to
-		the default servers #1 and #2, many packages have another server name
-		in their make file, so a user-defined mirror should rarely be necessary.
-
-comment "Download site #4 - default: empty (reserved for later use)"
-
-config FREETZ_MOD_DL_SITE_4
-	string ""
-	help
-		Download site #4 for Freetz packages like 'mc-4.5.0-freetz-0.2.tar.bz2',
-		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
-		build process, all mirrors defined here are triggered on a random basis,
-		so as not to always use a certain mirror first. This is a cheap kind of
-		load balancing.
-
-		Note: We recommend you to only set #5 to a user-defined value, if
-		necessary. Necessary means that #1 - #4 are currently unavailable or
-		the desired package cannot be found on either of them. In addition to
-		the default servers #1 and #2, many packages have another server name
-		in their make file, so a user-defined mirror should rarely be necessary.
-
-comment "Download site #5 - user-defined"
-
-config FREETZ_MOD_DL_SITE_5
-	string ""
-	help
-		Download site #5 for Freetz packages like 'mc-4.5.0-freetz-0.2.tar.bz2',
-		*not* for original software packages like 'mc-4.5.0.tar.gz'. During the
-		build process, all mirrors defined here are triggered on a random basis,
-		so as not to always use a certain mirror first. This is a cheap kind of
-		load balancing.
-
-		Note: We recommend you to only set #5 to a user-defined value, if
-		necessary. Necessary means that #1 - #4 are currently unavailable or
-		the desired package cannot be found on either of them. In addition to
-		the default servers #1 and #2, many packages have another server name
-		in their make file, so a user-defined mirror should rarely be necessary.
-
-endmenu
-
 menu "Build system options"
 config FREETZ_VERBOSITY_LEVEL
 	int "Verbosity level (0-2)"
@@ -1576,6 +1479,15 @@ config FREETZ_BACKUP_CONFIG_CACHE
 		This is a developer only option.
 		It causes config.cache to be backed up before calling package configure script and after that.
 		This might simplify searching for a missing/wrong config.cache entry.
+
+config FREETZ_DL_SITE_USER
+	string "User-defined download site"
+	help
+		User-defined download site for Freetz packages and source files.
+
+		Note: We recommend you to only set a user-defined value here, if necessary.
+		Necessary means that the regular Freetz mirrors are currently unavailable
+		or the desired package cannot be found on either of them.
 endmenu
 
 menu "Freetz customisation"

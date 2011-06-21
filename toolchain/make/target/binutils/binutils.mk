@@ -16,7 +16,7 @@ endif
 binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(BINUTILS_SOURCE)), $(strip $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)))
 $(DL_DIR)/$(BINUTILS_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) .config $(BINUTILS_SOURCE) $(BINUTILS_SITE) $(BINUTILS_MD5)
+	$(DL_TOOL) $(DL_DIR) $(BINUTILS_SOURCE) $(BINUTILS_SITE) $(BINUTILS_MD5)
 endif
 
 binutils-unpacked: $(BINUTILS_DIR)/.unpacked

@@ -261,7 +261,7 @@ else
 	@echo "downloading firmware image"
 	@if [ -n "$(DL_SOURCE_CONTAINER)" ]; then \
 		if [ ! -r $(DL_FW_DIR)/$(DL_SOURCE_CONTAINER) ]; then \
-			if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE_CONTAINER) $(DL_SITE) $(DL_SOURCE_CONTAINER_MD5) $(SILENT); then \
+			if ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE_CONTAINER) $(DL_SITE) $(DL_SOURCE_CONTAINER_MD5) $(SILENT); then \
 				$(call ERROR,3,Could not download Firmwareimage.) \
 			fi; \
 		fi; \
@@ -272,7 +272,7 @@ else
 				fi \
 				;; \
 		esac \
-	elif ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5) $(SILENT); then \
+	elif ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5) $(SILENT); then \
 		$(call ERROR,3,Could not download Firmwareimage.) \
 	fi
 endif
@@ -291,7 +291,7 @@ ifeq ($(strip $(DL_SITE2)),)
 else
 	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
 		if [ ! -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ]; then \
-			if ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) $(SILENT); then \
+			if ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) $(SILENT); then \
 				$(call ERROR,3,Could not download Firmwareimage.) \
 			fi; \
 		fi; \
@@ -302,7 +302,7 @@ else
 				fi \
 				;; \
 		esac \
-	elif ! $(DL_TOOL) $(DL_FW_DIR) .config $(DL_SOURCE2) $(DL_SITE2) $(DL_SOURCE2_MD5) $(SILENT); then \
+	elif ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE2) $(DL_SITE2) $(DL_SOURCE2_MD5) $(SILENT); then \
 		$(call ERROR,3,Could not download Firmwareimage.) \
 	fi
 	@echo "done."

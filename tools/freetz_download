@@ -1,39 +1,39 @@
 #!/bin/bash
 
-# Download Freetz packages from a randomly chosen mirror server. There are
-# predefined servers in 'make menuconfig' which can be edited, but there is
-# also an empty input field for a user-defined server. Additionally, another
-# download source maybe specified on the command line as $2. $1 is the name
+# Download Freetz packages from a randomly chosen mirror server. There is
+# an empty input field for a user-defined server in 'menuconfig'. Additionally,
+# another download source maybe specified on the command line as $3. $2 is the name
 # of the file to be downloaded.
 #
 # This script is designed to be called by makefile includes (*.mk), but can
 # also be called directly. It expects to find a file with necessary variables
 # at a relative location '../.config' to this script. The variables are:
-#   - FREETZ_MOD_DL_NUM_SITES  (numeric value, e.g. 3)
-#   - FREETZ_MOD_DL_SITE_1     (URL, e.g. http://freetz.3dfxatwork.de)
-#   - ...
-#   - FREETZ_MOD_DL_SITE_n     (n = FREETZ_MOD_DL_NUM_SITES)
+#   - FREETZ_DL_SITE_USER     (URL, e.g. http://my.server.org)
+
+DOT_CONFIG=$FREETZ_BASE_DIR/.config
+FREETZ_DL_SITE_1="http://freetz.magenbrot.net"
+FREETZ_DL_SITE_2="http://freetz.3dfxatwork.de"
+FREETZ_DL_SITE_3="http://freetz.wirsind.info"
 
 helpmsg()
 {
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | ( (<download-dir> | check) <dot-config> <filename> [<main-url>] [<md5>])
+Usage: freetz_download (-?|--help) | ( (<download-dir> | check) <filename> [<main-url>] [<md5>])
     check         - check download
     download-dir  - target directory for download file
-    dot-config    - path to .config for Freetz
     filename      - download file name
     main-url      - url without filename for primary download
     md5           - md5 of file
     -?, --help    - print this help text
 
 Examples:
-    freetz_download dl .config package.tar.bz2
-    freetz_download dl .config package.tar.bz2 http://myserver.com/freetz
+    freetz_download dl package.tar.bz2
+    freetz_download dl package.tar.bz2 http://myserver.com/freetz
 
 Debugging: just set DEBUG=1, like this:
-    DEBUG=1 freetz_download dl .config package.tar.bz2
+    DEBUG=1 freetz_download dl package.tar.bz2
 EOF
 }
 
@@ -100,24 +100,23 @@ if [ "$1" == "-?" -o "$1" == "--help" ]; then
 fi
 
 # Wrong number of parameters -> exit with error
-if [ $# -lt 3 -o $# -gt 5 ]; then
+if [ $# -lt 2 -o $# -gt 4 ]; then
   helpmsg >&2
   exit 1
 fi
 
 DL_DIR="$1"
-DOT_CONFIG="$2"
-DL_FILE="$3"
-MAIN_URL="$4"
-MD5="$5"
+DL_FILE="$2"
+MAIN_URL="$3"
+MD5="$4"
 
 # Import Freetz config variables
-. $DOT_CONFIG
+[ -e $DOT_CONFIG ] && . $DOT_CONFIG
 
 if [ "$DEBUG" == "1" ]; then
   echo "freetz_download parameters:"
   echo "  DL_DIR=$1"
-  echo "  DOT_CONFIG=$2"
+  echo "  DOT_CONFIG=$DOT_CONFIG"
   echo "  DL_FILE=$3"
   echo "  MAIN_URL=$4"
   echo "  MD5=$5"
@@ -164,10 +163,16 @@ fi
 
 # Get Freetz mirror sites in array
 FREETZ_SITES=( $(
-	for (( i=1; i <= FREETZ_MOD_DL_NUM_SITES ; i++ )); do
-	  eval "echo \$FREETZ_MOD_DL_SITE_$i"
+	for (( i=1; i <= 3 ; i++ )); do
+	  eval "echo \$FREETZ_DL_SITE_$i"
 	done
 	) )
+
+# Add user-defined mirror
+if [ -n "$FREETZ_DL_SITE_USER" ]; then
+	FREETZ_SITES[3]=$FREETZ_DL_SITE_USER
+fi
+
 # Fill array 'sites' with download server URLs, add Freetz Mirrors, in random order
 for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
   p=$(( RANDOM % n ))
