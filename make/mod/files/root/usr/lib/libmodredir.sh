@@ -5,13 +5,19 @@
 self_host() {
 	local TARGET_HOST
 
-	# Use HTTP_REFERER to determine target host (could be a name or an IP)
+	# Use HTTP_REFERER to determine target host (could be a name, an
+	# IP(v4), or an IPv6 literal in brackets)
 	TARGET_HOST=$(echo "$HTTP_REFERER" |
-		sed -n -r 's#^[^:]+://([^/:]+).*$#\1#p')
+		sed -n -r 's#^[^:]+://(\[[0-9a-fA-F:.]+\]|[^[/:]*).*$#\1#p')
 
 	# Try HTTP_HOST
 	if [ -z "$TARGET_HOST" ]; then
-		TARGET_HOST=${HTTP_HOST%:*}
+		case $HTTP_HOST in
+			"["*) # IPv6 literal
+				TARGET_HOST="${HTTP_HOST%]*}]" ;;
+			*) # decimal IPv4 or name
+				TARGET_HOST=${HTTP_HOST%:*} ;;
+		esac
 	fi
 
 	# Use fritz.box as fallback
