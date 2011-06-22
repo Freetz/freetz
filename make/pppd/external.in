@@ -1,0 +1,17 @@
+config EXTERNAL_FREETZ_PACKAGE_PPPD
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_PPPD
+	bool "pppd"
+	default n
+	help
+		externals these file(s):
+		 /usr/sbin/pppd
+
+config EXTERNAL_FREETZ_PACKAGE_PPPD_CHAT
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_PPPD_CHAT
+	select EXTERNAL_FREETZ_PACKAGE_PPP_CGI
+	bool "pppd chat"
+	default n
+	help
+		externals these file(s):
+		 /usr/sbin/chat
+
