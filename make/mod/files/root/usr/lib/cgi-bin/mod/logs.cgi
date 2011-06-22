@@ -2,7 +2,7 @@
 
 show_log() {
 	local log=$1
-	if [ -r "$log" ]; then
+	if [ -s "$log" ]; then
 		echo "<h1><a href='$SCRIPT_NAME$log'>$log</a></h1>"
 		echo "<pre class='log${class+ $class}'>"
 		html < "$log" | highlight
