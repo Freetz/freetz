@@ -190,6 +190,17 @@ fi
 # Load config
 . "$DOT_CONFIG"
 
+# ar7 (FON WLAN) and ohio (7170) modules dir is 2.6.13.1-ar7/ohio
+# ur8 (7270) and iks (7390) modules dir is 2.6.19.2
+# ar9 (7320) modules dir is 2.6.28.10
+MODULES_SUBDIR="lib/modules/${FREETZ_KERNEL_VERSION}"
+if [ "$FREETZ_KERNEL_VERSION" = "2.6.13.1" ]; then
+	MODULES_SUBDIR="$MODULES_SUBDIR-${FREETZ_KERNEL_LAYOUT}"
+elif [ "$FREETZ_KERNEL_VERSION" = "2.6.28" ]; then
+	MODULES_SUBDIR="${MODULES_SUBDIR}.10"
+fi
+
+
 if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
 	MKSQUASHFS_OPTIONS+=" -be"
 else
@@ -345,7 +356,7 @@ TARGET_SPECIFIC_ROOT_DIR="${PACKAGES_DIR}/root"
 
 HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
 # HTML_LANG_MOD_DIR can't be defined here
-MODULES_DIR="${FILESYSTEM_MOD_DIR}/lib/modules/${FREETZ_KERNEL_VERSION}"
+MODULES_DIR="${FILESYSTEM_MOD_DIR}/${MODULES_SUBDIR}"
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo "${BOLD}STEP 2: MODIFY${NORM}"
@@ -724,15 +735,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	echo0 "installing modules"
-	# ar7 (FON WLAN) and ohio (7170) modules dir is 2.6.13.1-ar7/ohio
-	# ur8 (7270) and iks (7390) modules dir is 2.6.19.2
-	# ar9 (7320) modules dir is 2.6.28.10
-	if [ "$FREETZ_KERNEL_VERSION" = "2.6.13.1" ]; then
-		MODULES_DIR="$MODULES_DIR-${FREETZ_KERNEL_LAYOUT}"
-	elif [ "$FREETZ_KERNEL_VERSION" = "2.6.28" ]; then
-		MODULES_DIR="${MODULES_DIR}.10"
-	fi
-
 	for i in \
 	$( \
 		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}" && \
