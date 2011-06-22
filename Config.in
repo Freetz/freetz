@@ -84,7 +84,7 @@ choice
 		bool "Fon WLAN 7050"
 
 	config FREETZ_TYPE_FON_WLAN_7112
-		select FREETZ_AVM_VERSION_04_80
+		select FREETZ_AVM_VERSION_04_87
 		bool "Fon WLAN 7112"
 
 	config FREETZ_TYPE_FON_WLAN_7113
@@ -108,8 +108,8 @@ choice
 
 	config FREETZ_TYPE_FON_WLAN_7170
 		select FREETZ_AVM_VERSION_04_76 if FREETZ_TYPE_LANG_A_CH
-		select FREETZ_AVM_VERSION_04_80 if ! FREETZ_TYPE_LANG_A_CH
-		#select FREETZ_AVM_VERSION_04_87 if FREETZ_TYPE_LANG_DE
+		select FREETZ_AVM_VERSION_04_80 if FREETZ_TYPE_LANG_EN
+		select FREETZ_AVM_VERSION_04_87 if FREETZ_TYPE_LANG_DE
 		bool "Fon WLAN 7170"
 
 	config FREETZ_TYPE_FON_WLAN_7240
@@ -554,8 +554,6 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
-		! FREETZ_TYPE_FON_WLAN_7112 && \
-		! FREETZ_TYPE_FON_WLAN_7170 && \
 		! (FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR_PREVIEW) && \
 		! (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_LABOR_PREVIEW) && \
 		! (FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LABOR_PREVIEW)
@@ -1053,7 +1051,7 @@ config FREETZ_DL_KERNEL_SOURCE
 	default "fritzbox-source-files-04.70.tar.gz"		if	FREETZ_AVM_VERSION_04_70
 	default "fritzbox7170-source-files-04.76.tar.gz"	if	FREETZ_AVM_VERSION_04_76
 	default "fritzbox7170-source-files-04.80.tar.gz"	if	FREETZ_AVM_VERSION_04_80
-	default "fritzbox7170-source-files-04.87.tar.gz"	if	FREETZ_AVM_VERSION_04_80
+	default "fritzbox7170-source-files-04.87.tar.gz"	if	FREETZ_AVM_VERSION_04_87
 	default "fritzbox7270-source-files-04.86.tar.gz"	if	FREETZ_AVM_VERSION_7270_04_86
 	default "freetz-source-files-05.01.tar.bz2"		if	FREETZ_AVM_VERSION_7270_05_01
 	default "fritzbox7320-source-files-04.86.tar.gz"	if	FREETZ_AVM_VERSION_7320_04_86
@@ -1072,7 +1070,7 @@ config FREETZ_DL_KERNEL_SOURCE_MD5
 	default "855d4ad80fc894d9dff52fcaf55d3c12"		if	FREETZ_AVM_VERSION_04_70
 	default "4ffc088502c896c11931ba81536fa0e6"		if	FREETZ_AVM_VERSION_04_76
 	default "6bf92b81b48a3a05efd3aae6c05fe3e2"		if	FREETZ_AVM_VERSION_04_80
-	default "xxx"						if	FREETZ_AVM_VERSION_04_80
+	default "cad33bda041910e2aae01f027465162b"		if	FREETZ_AVM_VERSION_04_80
 	default "55a11af7dcfd617c39e75877045ab468"		if	FREETZ_AVM_VERSION_7270_04_86
 	default "aba3246eceef9a0d41be601b6b636366"		if	FREETZ_AVM_VERSION_7270_05_01
 	default "0e2ddf32808eb329efc4b486c6de0011"		if	FREETZ_AVM_VERSION_7320_04_86
