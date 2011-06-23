@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,$(strip $(subst ",,$(FREETZ_GDB_VERSION))))
+$(call PKG_INIT_BIN, $(if $(FREETZ_GDB_VERSION_7_2),7.2,6.8))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5_6.8 := c9da266b884fb8fa54df786dfaadbc7a
 $(PKG)_SOURCE_MD5_7.2 := 64260e6c56979ee750a01055f16091a5
@@ -14,6 +14,9 @@ $(PKG)_BINARIES               := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIE
 $(PKG)_BINARIES_BUILD_DIR     := $(addprefix $($(PKG)_DIR)/, $(join $($(PKG)_BINARIES_BUILD_SUBDIRS),$($(PKG)_BINARIES_ALL)))
 $(PKG)_BINARIES_TARGET_DIR    := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_NOT_INCLUDED           := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_GDB_VERSION_6_8
+$(PKG)_REBUILD_SUBOPTS += FREETZ_GDB_VERSION_7_2
 
 $(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
 $(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
