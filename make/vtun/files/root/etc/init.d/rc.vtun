@@ -9,7 +9,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON -f /mod/etc/vtun.conf $VTUN_STARTPARAMS
+	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG $VTUN_STARTPARAMS
 }
 
 stop() {
