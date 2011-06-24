@@ -5,6 +5,8 @@ config FREETZ_PACKAGE_NMAP
 	select FREETZ_LIB_libdnet   if ! FREETZ_PACKAGE_NMAP_STATIC
 	select FREETZ_LIB_libm      if ! FREETZ_PACKAGE_NMAP_STATIC
 	select FREETZ_LIB_libdl     if ! FREETZ_PACKAGE_NMAP_STATIC
+	select FREETZ_PACKAGE_NMAP_services
+	select FREETZ_PACKAGE_NMAP_payloads if FREETZ_PACKAGE_NMAP_VERSION_5
 	default n
 	help
 		Nmap ("Network Mapper") is a free and open source (license) utility for network
@@ -33,6 +35,37 @@ choice
 		bool "nmap 5.51"
 		depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 endchoice
+
+menu "databases"
+	config FREETZ_PACKAGE_NMAP_mac_prefixes
+	bool "MAC-address to manufacturer mapping"
+	default n
+
+	config FREETZ_PACKAGE_NMAP_os_db
+	bool "OS fingerprinting DB"
+	default n
+
+	config FREETZ_PACKAGE_NMAP_payloads
+	depends on FREETZ_PACKAGE_NMAP_VERSION_5
+	bool "Payload DB"
+	default y
+
+	config FREETZ_PACKAGE_NMAP_protocols
+	bool "Protocol list"
+	default n
+
+	config FREETZ_PACKAGE_NMAP_rpc
+	bool "RPC grinding DB"
+	default n
+
+	config FREETZ_PACKAGE_NMAP_service_probes
+	bool "Service detection probe list"
+	default n
+
+	config FREETZ_PACKAGE_NMAP_services
+	bool "Service list"
+	default y
+endmenu
 
 config FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA
 	bool "Use system (shared) liblua"

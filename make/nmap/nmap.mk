@@ -7,10 +7,18 @@ $(PKG)_SITE:=http://nmap.org/dist
 
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/nmap
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/nmap
-$(PKG)_SERVICES_LIST:=$($(PKG)_DIR)/nmap-services
-$(PKG)_TARGET_SERVICES_LIST:=$($(PKG)_DEST_DIR)/usr/share/nmap/nmap-services
+$(PKG)_BINARY         := $($(PKG)_DIR)/nmap
+$(PKG)_TARGET_BINARY  := $($(PKG)_DEST_DIR)/usr/sbin/nmap
+
+$(PKG)_DATADIR        := /usr/share/nmap
+
+$(PKG)_DBS_ALL        := mac-prefixes os-db payloads protocols rpc service-probes services
+$(PKG)_DBS            := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_DBS_ALL))
+
+$(PKG)_DBS_BUILD_DIR  := $($(PKG)_DBS:%=$($(PKG)_DIR)/nmap-%)
+$(PKG)_DBS_TARGET_DIR := $($(PKG)_DBS:%=$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%)
+
+$(PKG)_NOT_INCLUDED   := $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%,$(filter-out $($(PKG)_DBS),$($(PKG)_DBS_ALL)))
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_VERSION_4
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_VERSION_5
@@ -55,25 +63,27 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY) $($(PKG)_SERVICES_LIST): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(NMAP_DIR) $(if $(FREETZ_PACKAGE_NMAP_STATIC),STATIC="-static")
-	touch $(NMAP_SERVICES_LIST)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PKG)_TARGET_SERVICES_LIST): $($(PKG)_SERVICES_LIST)
+$($(PKG)_DBS_BUILD_DIR): $($(PKG)_DIR)/.configured
+	touch $@
+
+$($(PKG)_DBS_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%: $($(PKG)_DIR)/nmap-%
 	$(INSTALL_FILE)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_SERVICES_LIST)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_DBS_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NMAP_DIR) clean
 	$(RM) $(NMAP_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(NMAP_TARGET_BINARY)
+	$(RM) -r $(NMAP_TARGET_BINARY) $(NMAP_DEST_DIR)$(NMAP_DATADIR)
 
 $(PKG_FINISH)
