@@ -267,7 +267,7 @@ else
 		fi; \
 		case "$(DL_SOURCE_CONTAINER_SUFFIX)" in \
 			.zip) \
-				if ! tools/unzip $(QUIETSHORT) $(DL_FW_DIR)/$(DL_SOURCE_CONTAINER) $(DL_SOURCE) -d $(DL_FW_DIR); then \
+				if ! unzip $(QUIETSHORT) $(DL_FW_DIR)/$(DL_SOURCE_CONTAINER) $(DL_SOURCE) -d $(DL_FW_DIR); then \
 					$(call ERROR,3,Could not unzip Firmwareimage.) \
 				fi \
 				;; \
@@ -297,7 +297,7 @@ else
 		fi; \
 		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
 			.zip) \
-				if ! tools/unzip $(QUIETSHORT) $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_FW_DIR); then \
+				if ! unzip $(QUIETSHORT) $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_FW_DIR); then \
 					$(call ERROR,3,Could not unzip Firmwareimage.) \
 				fi \
 				;; \
