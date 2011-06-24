@@ -10,7 +10,7 @@ sub write_config_in {
 menu SANE
 
 config FREETZ_PACKAGE_SANE_BACKENDS
-	bool "SANE $version"
+	bool "SANE $version (unstable)"
 	select FREETZ_PACKAGE_INETD
 	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
 	select FREETZ_LIB_libm
@@ -94,12 +94,81 @@ EOF
 	close($out);
 }
 
-@ARGV == 4 or die "Usage: $0 VERSION CONFIGURE CONFIG_IN SANE_BACKENDS_IN";
+sub write_external_in {
+	my ($file, $version, @backends) = @_;
+
+	open(my $out, ">", $file) or die "Can't open $file for writing: $!";
+	print $out <<EOF;
+config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_SANE_BACKENDS
+	bool "SANE"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libsane.so.$version
+		 /usr/sbin/saned
+
+config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
+	depends on EXTERNAL_ENABLED && EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS && FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
+	bool "sane-find-scanner"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/sane-find-scanner
+
+config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_scanimage
+	depends on EXTERNAL_ENABLED && EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS && FREETZ_PACKAGE_SANE_BACKENDS_scanimage
+	bool "scanimage"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/scanimage
+
+EOF
+
+	foreach my $backend (@backends) {
+		print $out <<EOF;
+config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
+	depends on EXTERNAL_ENABLED && EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS && FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
+	bool "$backend backend"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/sane/libsane-$backend.so.$version
+
+EOF
+	}
+
+	close($out);
+}
+
+sub write_external_files {
+	my ($file, $version, @backends) = @_;
+
+	open(my $out, ">", $file) or die "Can't open $file for writing: $!";
+	print $out <<EOF;
+[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS" == "y" ] && EXTERNAL_FILES+=" /usr/lib/freetz/libsane.so.$version /usr/sbin/saned"
+[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner" == "y" ] && EXTERNAL_FILES+=" /usr/bin/sane-find-scanner"
+[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_scanimage" == "y" ] && EXTERNAL_FILES+=" /usr/bin/scanimage"
+EOF
+
+	foreach my $backend (@backends) {
+		print $out <<EOF;
+[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend" == "y" ] && EXTERNAL_FILES+=" /usr/lib/freetz/sane/libsane-$backend.so.$version"
+EOF
+	}
+
+	close($out);
+}
+
+@ARGV == 6 or die "Usage: $0 VERSION CONFIGURE CONFIG_IN SANE_BACKENDS_IN EXTERNAL_IN EXTERNAL_FILES";
 
 my $version = $ARGV[0];
 my $configure = $ARGV[1];
 my $config_in = $ARGV[2];
 my $sane_backends_in = $ARGV[3];
+my $external_in = $ARGV[4];
+my $external_files = $ARGV[5];
 
 open(my $in, "<", $configure) or die "Can't open $configure for reading: $!";
 
@@ -141,3 +210,5 @@ foreach (@backends) {
 
 write_config_in($config_in, $version, @backends);
 write_sane_backends_in($sane_backends_in, @backends);
+write_external_in($external_in, $version, @backends);
+write_external_files($external_files, $version, @backends);
