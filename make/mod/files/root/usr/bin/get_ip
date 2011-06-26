@@ -25,7 +25,7 @@ case $1 in
 	-e|--extquery)
 		#if supported by wget(-gnu), don't wait forever:
 		SHORTWAIT="-T 30 -t 1"
-		if which wget-gnu; then
+		if which wget-gnu >/dev/null; then
 			WGET="wget-gnu $SHORTWAIT"
 		else
 			wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
