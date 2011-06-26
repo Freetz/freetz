@@ -143,16 +143,23 @@ collect_thg() {
 			RRA:LAST:0.1:24:732 \
 			RRA:LAST:0.1:144:1460
 	fi
-	wget --version >/dev/null 2>&1 && SHORTWAIT="-T 2 -t 1"
-	uptdatBL=N$(wget http://192.168.100.1/BasicLan.htm -O - -q $SHORTWAIT | grep -E "Power|Ratio|Computers" | sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/' | tr -d "\n")
+	#if supported by wget(-gnu), don't wait forever:
+	SHORTWAIT="-T 2 -t 1"
+	if which wget-gnu; then
+		WGET="wget-gnu $SHORTWAIT"
+	else
+		wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
+	fi
+
+	uptdatBL=N$($WGET http://192.168.100.1/BasicLan.htm -O - -q | grep -E "Power|Ratio|Computers" | sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/' | tr -d "\n")
 	[ $uptdatBL = N ] && return
 	if [ "$RRDSTATS_THOMSONADV" = yes ]; then
-		tX=$(wget http://192.168.100.1/BasicLan.htm -O - -q $SHORTWAIT | grep "System uptime")
+		tX=$($WGET http://192.168.100.1/BasicLan.htm -O - -q | grep "System uptime")
 		tH=$(( $(echo $tX | sed 's/.*<td>//;s/ .*//') *24+ $(echo $tX | sed -r 's/.* 0{0,1}//;s/h.*//') ))
 		tM=$(( ( $(echo $tX | sed -r 's/.*h:0{0,1}//;s/m:.*//') *100)/60 ))
 		case $tM in ?) tM=0$tM ;; esac
 		uptdatUP=:$tH.$tM
-		uptdatIS=:$(wget http://192.168.100.1/InitialScan.htm -O - -q | grep -E "mCmInfoDsFreq1|mCmInfoUsId1" | sed 's/.*ue="//;s/".*//;s/000000/:/' | tr -d "\n")
+		uptdatIS=:$($WGET http://192.168.100.1/InitialScan.htm -O - -q | grep -E "mCmInfoDsFreq1|mCmInfoUsId1" | sed 's/.*ue="//;s/".*//;s/000000/:/' | tr -d "\n")
 		templateADD=:up:if:uc
 	fi
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdatBL$uptdatUP$uptdatIS --template rx:sn:tx:ip$templateADD

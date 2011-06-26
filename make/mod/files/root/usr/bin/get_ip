@@ -23,9 +23,14 @@ case $1 in
 		retval=$?
 		;;
 	-e|--extquery)
-		#if supported by wget, don't wait forever:
-		wget --version >/dev/null 2>&1 && SHORTWAIT="-T 30 -t 1"
-		ip=$(wget $SHORTWAIT -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+		#if supported by wget(-gnu), don't wait forever:
+		SHORTWAIT="-T 30 -t 1"
+		if which wget-gnu; then
+			WGET="wget-gnu $SHORTWAIT"
+		else
+			wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
+		fi
+		ip=$($WGET -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
 		retval=$?
 		;;
 	""|-w|--webcm)
