@@ -3,9 +3,9 @@
 @@ -41,7 +41,7 @@
  bin_SCRIPTS = curl-config
  
- SUBDIRS = lib src
--DIST_SUBDIRS = $(SUBDIRS) tests include packages docs
-+DIST_SUBDIRS = $(SUBDIRS) tests include packages
+ SUBDIRS = lib src include
+-DIST_SUBDIRS = $(SUBDIRS) tests packages docs
++DIST_SUBDIRS = $(SUBDIRS) packages
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
@@ -31,33 +31,18 @@
  
  clean-local:
  	@(cd tests; $(MAKE) clean)
-@@ -141,12 +141,12 @@
- # We extend the standard install with a custom hook:
- install-data-hook:
- 	cd include && $(MAKE) install
--	cd docs && $(MAKE) install
-+	#cd docs && $(MAKE) install
- 
- # We extend the standard uninstall with a custom hook:
- uninstall-hook:
- 	cd include && $(MAKE) uninstall
--	cd docs && $(MAKE) uninstall
-+	#cd docs && $(MAKE) uninstall
- 
- ca-bundle: lib/mk-ca-bundle.pl
- 	@echo "generate a fresh ca-bundle.crt"
 --- Makefile.in
 +++ Makefile.in
-@@ -322,7 +322,7 @@
+@@ -326,7 +326,7 @@
  
  bin_SCRIPTS = curl-config
- SUBDIRS = lib src
--DIST_SUBDIRS = $(SUBDIRS) tests include packages docs
-+DIST_SUBDIRS = $(SUBDIRS) tests include packages
+ SUBDIRS = lib src include
+-DIST_SUBDIRS = $(SUBDIRS) tests packages docs
++DIST_SUBDIRS = $(SUBDIRS) packages
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -804,10 +804,10 @@
+@@ -808,10 +808,10 @@
  	done)
  
  html:
@@ -70,7 +55,7 @@
  
  check: test examples
  
-@@ -827,7 +827,7 @@
+@@ -831,7 +831,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
@@ -79,7 +64,7 @@
  
  clean-local:
  	@(cd tests; $(MAKE) clean)
-@@ -884,12 +884,12 @@
+@@ -888,12 +888,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
