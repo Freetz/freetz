@@ -1113,6 +1113,15 @@ config FREETZ_MODULE_ip6t_owner
 		Packet owner matching allows you to match locally-generated packets
 		based on who created them: the user, group, process or session.
 
+config FREETZ_MODULE_ip6t_REJECT
+	depends on FREETZ_MODULE_ip6_tables
+	bool "ip6t_REJECT.ko"
+	default n
+	help
+		The REJECT target allows a filtering rule to specify that an ICMPv6
+		error should be issued in response to an incoming packet, rather
+		than silently being dropped.
+
 config FREETZ_MODULE_ip6t_rt
 	depends on FREETZ_MODULE_ip6_tables
 	bool "ip6t_rt.ko"
