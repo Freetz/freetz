@@ -1,0 +1,33 @@
+--- linux-2.6.32.21/include/linux/atm.h	2010-08-27 01:42:20.000000000 +0200
++++ linux-2.6.32.21/include/linux/atm.h	2010-06-10 16:41:12.000000000 +0200
+@@ -128,7 +128,17 @@
+ #define ATM_CBR		2
+ #define ATM_VBR		3
+ #define ATM_ABR		4
+-#define ATM_ANYCLASS	5		/* compatible with everything */
++// bk Adding support for the VBR for TI DSL chips
++#ifdef CONFIG_MIPS_UR8
++
++    #define ATM_VBR_NRT    ATM_VBR
++    #define ATM_VBR_RT     5
++    #define ATM_ANYCLASS   6        /* compatible with everything */
++
++#else
++    #define ATM_ANYCLASS	5		/* compatible with everything */ 
++#endif
++// end bk
+ 
+ #define ATM_MAX_PCR	-1		/* maximum available PCR */
+ 
+@@ -154,6 +164,11 @@
+ 	unsigned int adtf      :10;     /* ACR Decrease Time Factor (10-bit) */
+ 	unsigned int cdf       :3;      /* Cutoff Decrease Factor (3-bit) */
+         unsigned int spare     :9;      /* spare bits */ 
++// bk Adding support for the VBR for TI DSL chips which support this QoS
++#ifdef CONFIG_MIPS_UR8
++        unsigned int scr;
++#endif
++// end bk
+ };
+ 
+ struct atm_qos {
