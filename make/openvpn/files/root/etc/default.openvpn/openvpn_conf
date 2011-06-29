@@ -73,6 +73,13 @@ else
 	echo "dev tun" >> $CONFFILE
 fi
 
+DEV=$(find /dev -type c -name tun 2>/dev/null)
+if [ "$DEV" ]; then
+	echo "dev-node $DEV" >> $CONFFILE
+else
+	echo -e "\n\tWarning: No tunnel device found."
+fi
+
 if [ "$OWN_KEYS" != "" -a $count -gt 1 ]; then
 	keypath="/tmp/flash/openvpn/${CONFIG_NAMES}_"
 else
