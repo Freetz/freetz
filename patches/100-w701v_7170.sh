@@ -13,10 +13,12 @@ rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit*"
 for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb drivers/scsi; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i"
 done
-for i in bin/pause bin/reinit_jffs2 bin/usbhostchanged etc/hotplug \
-	etc/usb_class.tab etc/usb_device.tab etc/samba_control \
-	lib/libusbcfg* usr/share/ctlmgr/libctlusb.so \
-	usr/www/all/html/de/usb	sbin/lsusb etc/hotplug;do
+for i in bin/pause bin/reinit_jffs2 \
+	bin/*usb* sbin/*usb* usr/bin/*usb* usr/sbin/*usb* \
+	etc/hotplug etc/samba_control \
+	etc/default.*/*/*usb* etc/init.d/rc.*usb* etc/*usb*.tab \
+	lib/lib*usb*.so* usr/share/*/lib*usb*.so* \
+	usr/www/all/*usb* usr/www/all/html/*usb* usr/www/all/html/*/*usb* usr/www/all/html/*/*/*usb* ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 
