@@ -1,6 +1,6 @@
 --- daemon/daemon.c
 +++ daemon/daemon.c
-@@ -90,6 +90,8 @@
+@@ -89,6 +89,8 @@
      { 'C', "no-watch-dir", "Disable the watch-dir", "C", 0, NULL },
      { 941, "incomplete-dir", "Where to store new torrents until they're complete", NULL, 1, "<directory>" },
      { 942, "no-incomplete-dir", "Don't store incomplete torrents in a different location", NULL, 0, NULL },
@@ -9,7 +9,7 @@
      { 'd', "dump-settings", "Dump the settings and exit", "d", 0, NULL },
      { 'e', "logfile", "Dump the log messages to this filename", "e", 1, "<filename>" },
      { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
-@@ -376,6 +378,11 @@
+@@ -375,6 +377,11 @@
                        break;
              case 942: tr_bencDictAddBool( &settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, false );
                        break;
@@ -89,10 +89,10 @@
     "encryption"                     | string     | "required", "preferred", "tolerated"
 +   "finish-dir"                     | string     | path for torrents reached their seed limit, when enabled
 +   "finish-dir-enabled"             | boolean    | true means move torrents reached their seed ratio to finish-dir
-    "idle-seeding-limit"             | number     | the default seed inactivity limit for torrents to use
+    "idle-seeding-limit"             | number     | torrents we're seeding will be stopped if they're idle for this long
     "idle-seeding-limit-enabled"     | boolean    | true if the seeding inactivity limit is honored by default
     "incomplete-dir"                 | string     | path for incomplete torrents, when enabled
-@@ -664,3 +666,5 @@
+@@ -662,3 +664,5 @@
     13    | 2.30    | yes       | session-get    | new arg "isUTP" to the "peers" list
           |         | yes       | torrent-add    | new arg "cookies"
           |         |        NO | torrent-get    | removed arg "peersKnown"
@@ -100,7 +100,7 @@
 +         |         | yes       | session-set    | new arg "finish-dir-enabled"
 --- libtransmission/rpcimpl.c
 +++ libtransmission/rpcimpl.c
-@@ -1471,6 +1471,10 @@
+@@ -1469,6 +1469,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( args_in, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -111,7 +111,7 @@
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_GLOBAL, &i ) )
          tr_sessionSetPeerLimit( session, i );
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_TORRENT, &i ) )
-@@ -1604,6 +1608,8 @@
+@@ -1602,6 +1606,8 @@
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT, tr_sessionGetPeerLimitPerTorrent( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR, tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, tr_sessionIsIncompleteDirEnabled( s ) );
@@ -129,18 +129,18 @@
 +    tr_bencDictAddStr ( d, TR_PREFS_KEY_FINISH_DIR,               tr_getDefaultDownloadDir( ) );
 +    tr_bencDictAddBool( d, TR_PREFS_KEY_FINISH_DIR_ENABLED,       false );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                 TR_MSG_INF );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_OPEN_FILE_LIMIT,          atoi( TR_DEFAULT_OPEN_FILE_LIMIT_STR ) );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_GLOBAL,        atoi( TR_DEFAULT_PEER_LIMIT_GLOBAL_STR ) );
-@@ -382,6 +384,8 @@
+     tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT,       atoi( TR_DEFAULT_PEER_LIMIT_TORRENT_STR ) );
+@@ -381,6 +383,8 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,       tr_sessionIsIdleLimited( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR,           tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,   tr_sessionIsIncompleteDirEnabled( s ) );
 +    tr_bencDictAddStr ( d, TR_PREFS_KEY_FINISH_DIR,               tr_sessionGetFinishDir( s ) );
 +    tr_bencDictAddBool( d, TR_PREFS_KEY_FINISH_DIR_ENABLED,       tr_sessionIsFinishDirEnabled( s ) );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                 tr_getMessageLevel( ) );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_OPEN_FILE_LIMIT,          tr_fdGetFileLimit( s ) );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_GLOBAL,        tr_sessionGetPeerLimit( s ) );
-@@ -790,6 +794,10 @@
+     tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_GLOBAL,        s->peerLimit );
+     tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT,       s->peerLimitPerTorrent );
+@@ -788,6 +792,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -151,7 +151,7 @@
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_RENAME_PARTIAL_FILES, &boolVal ) )
          tr_sessionSetIncompleteFileNamingEnabled( session, boolVal );
  
-@@ -1008,6 +1016,49 @@
+@@ -1003,6 +1011,49 @@
  ****
  ***/
  
@@ -201,7 +201,7 @@
  void
  tr_sessionLock( tr_session * session )
  {
-@@ -1846,6 +1897,7 @@
+@@ -1841,6 +1892,7 @@
      tr_free( session->torrentDir );
      tr_free( session->downloadDir );
      tr_free( session->incompleteDir );
@@ -219,7 +219,7 @@
      bool                         pauseAddedTorrent;
      bool                         deleteSourceTorrent;
  
-@@ -169,6 +170,7 @@
+@@ -170,6 +171,7 @@
      char *                       resumeDir;
      char *                       torrentDir;
      char *                       incompleteDir;
@@ -244,16 +244,16 @@
              tor->ratio_limit_hit_func( tor, tor->ratio_limit_hit_func_user_data );
 --- libtransmission/transmission.h
 +++ libtransmission/transmission.h
-@@ -179,6 +179,8 @@
+@@ -178,6 +178,8 @@
  #define TR_PREFS_KEY_IDLE_LIMIT_ENABLED           "idle-seeding-limit-enabled"
  #define TR_PREFS_KEY_INCOMPLETE_DIR               "incomplete-dir"
  #define TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED       "incomplete-dir-enabled"
 +#define TR_PREFS_KEY_FINISH_DIR                   "finish-dir"
 +#define TR_PREFS_KEY_FINISH_DIR_ENABLED           "finish-dir-enabled"
  #define TR_PREFS_KEY_MSGLEVEL                     "message-level"
- #define TR_PREFS_KEY_OPEN_FILE_LIMIT              "open-file-limit"
  #define TR_PREFS_KEY_PEER_LIMIT_GLOBAL            "peer-limit-global"
-@@ -399,6 +401,27 @@
+ #define TR_PREFS_KEY_PEER_LIMIT_TORRENT           "peer-limit-per-torrent"
+@@ -397,6 +399,27 @@
  
  
  /**

@@ -1,7 +1,13 @@
-$(call PKG_INIT_BIN, 2.31)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=2785016d74bbecf842cef04883e56400
-$(PKG)_SITE:=http://download.m0k.org/transmission/files
+$(call PKG_INIT_BIN, 2.32)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-tar-ustar-format.tar.bz2
+$(PKG)_SOURCE_MD5:=5ab81af85994ba3d432af6100ce42a80
+# Since revision 12527 (s. https://trac.transmissionbt.com/changeset/12527)
+# official transmission tarballs are created using tar-pax format (the previous
+# versions used tar-ustar format). Unfortunately busybox' tar used in freetz
+# doesn't support this format. That's the reason we use a repacked version
+# of official tarball. The tar-format is the only change made.
+#$(PKG)_SITE:=http://download.m0k.org/transmission/files
+$(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
 $(PKG)_BINARIES_BUILD_SUBDIRS := cli/ daemon/ daemon/ utils/  utils/ utils/
