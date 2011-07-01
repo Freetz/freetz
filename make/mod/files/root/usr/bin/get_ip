@@ -7,7 +7,7 @@ helpmsg()
 	echo "Usage: $0 [option]"
 	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
 	echo "    -e, --extquery - use external site query method"
-	echo "    -w, --webcm    - use webcm CGI handler method [default]"
+	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method [default]"
 	echo "    -?, --help     - print this help message"
 	echo
 }
@@ -34,13 +34,18 @@ case $1 in
 		retval=$?
 		;;
 	""|-w|--webcm)
-		if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
-			querystring="var:n[0]=connection0:pppoe:status/ip"
+		if which ctlmgr_ctl >/dev/null; then
+			ip=$(ctlmgr_ctl r connection0 pppoe:status/ip)
+			retval=$?
 		else
-			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
+			if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
+				querystring="var:n[0]=connection0:pppoe:status/ip"
+			else
+				querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
+			fi
+			ip=$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")
+			retval=$?
 		fi
-		ip=$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")
-		retval=$?
 		;;
 	-?|--help)
 		helpmsg
@@ -52,7 +57,7 @@ case $1 in
 		;;
 esac
 
-if [ $retval == 0 ]; then
+if [ $retval == 0 -o $retval == 176 ]; then
 	echo "$ip"
 	exit 0
 fi
