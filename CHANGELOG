@@ -6,10 +6,7 @@ Latest changes:
 
 - Build system:
   * fakeroot: bump version to 1.15.1
-  * xdelta: Disable build because we don't make use of it
   * kernel-toolchain:
-   + Fix failure with newer host gccs
-   + Fix failure on some machines
    + Bump binutils version to 2.18
    + Add gcc version 4.4.6
    + Add binutils version 2.21.52.0.2
@@ -32,7 +29,6 @@ Latest changes:
    + Add option to build uClibc with a reduced set of locales (saves > 200 KB)
    + Remove many unused symbols from libgcc_s (saves ~ 100 KB)
   * Bump ccache version to 3.1.5
-  * Bump squashfs3 version to 3.4
   * patch-system: use shell-fuction isFreetzType (by kriegaex)
   * replace tar with busybox tar
   * patch-system: use shell function modsed
@@ -52,13 +48,6 @@ Latest changes:
     the new ones (e.g. truecrypt).
 
 - New tools and hooks:
-    * Add patch that enhances possibilities of /bin/onlinechanged:
-      Based on changes by AVM we execute 3 locations on a call to /bin/onlinechanged:
-      1. /var/tmp/onlinechanged (compatibility to old behaviour)
-      2. /etc/onlinechanged/*   (new AVM behaviour)
-      3. /tmp/flash/onlinechanged/*
-      If a package needs actions on changes of online status create a script
-      make/$package/files/root/etc/onlinechanged/$action_$package.
     * New hook to add files/directories to var.tar
      * Put desired files/directories into make/{package}/files/var.tar
     * modlibrc:
@@ -71,14 +60,7 @@ Latest changes:
         this is triggered if the 2nd parameter is a directory and not a (patch-) file
 
 - New patches (read online help for more info):
-    * 7270:
-     * Option to add Annex A firmware into image
-     * Fix flashing of firmwares > 8 MB over webinterface
-     * AVM Plugins can be reintegrated into firmware (7270 v1 only)
-    * Fix wrong usb mounts status message in AVM webinterface (7170, 7270)
-    * Add new status bar design (optional)
     * Add support for multiple printers
-    * split tr069-remove-patches
     * add additional image-infopage and .config in firmware image (by herman72pb)
     * remove ntfs-support
     * remove umts-support
@@ -211,9 +193,7 @@ Latest changes:
      * added automatic start/stop of services on (un)mount (now configurable via webinterface)
 
 - Updated patches:
-    * add reiserfs to automountable filesystems
-    * change nice names for USB devices (sdax > uStor0x, sdby > uStor1y, ...)
-    * Update usbstorage patches
+    * Update many patches to support actual firmwares (e.g. changed paths)
 
 - Updated packages and libs:
     * avm-firewall 2.0.4_rc5
@@ -233,10 +213,7 @@ Latest changes:
     * debootstrap 1.0.28
     * dns2tcp 0.5.2
     * dnsmasq 2.57
-    * dropbear 0.53.1
-    * dtmfbox 0.5.0
     * e2fsprogs 1.41.14
-    * eSpeak 1.40.02
     * freetype 2.3.12
     * fuse 2.7.6
     * glib 2.22.5
@@ -271,7 +248,6 @@ Latest changes:
     * lynx 2.8.7
     * mc 4.6.2
     * mcabber 0.9.10
-    * microperl 5.10.1
     * mpfr 2.4.2
     * mtr 0.80
     * nano 2.2.5
@@ -284,14 +260,10 @@ Latest changes:
     * pciutils 3.1.7
     * php 5.3.6
     * pingtunnel 0.71 (and webif added)
-    * pjproject 1.0.1
-    * pptp 1.7.2
     * privoxy 3.0.17
     * quagga 0.99.17
     * readline 6.1
-    * ruby 1.8.6-p368
     * rrdstats 0.7.1 (inetd support for webservers)
-    * rrdtool 1.2.30
     * samba 3.0.37 (inetd support for smbd)
     * sispmctl 3.0
     * socat 1.7.1.3
@@ -306,9 +278,7 @@ Latest changes:
     * uClibc++ 0.2.3pre (git snapshot)
     * usbutils 0.86
     * vim 7.3
-    * vpnc 0.5.3
     * vsftpd 2.3.4: add SSL support
-    * wget 1.12
     * zlib 1.2.5
 
 - Remove packages, patches, libs, modules, tools:
@@ -336,34 +306,117 @@ Latest changes:
 - Other stuff:
     * add reiserfs to automountable filesystems
     * add IPv6
-    * fix strip library function for 3170
-    * tune behaviour of freetz_download (retries: 3, timeout: 20s)
-    * Integrate new AVM open source packages (04.70 and 7270_04.70)
-    * rudishell:
-      + show it only with security level 0
-      + don't allow to execute any code by clicking on a wrong url
     * Remove MOD_LIMIT variable
       + compressed size of freetz config file must not be greater than 32 KB
       + this is a tffs2 restriction
 
-
 === Freetz-1.1-stable ===
 
-- Build system:
-  * toolchains:
-    - add menuconfig option to adjust HOSTCC variable
-    - add ccache for download- and kernel-toolchain
+- Build system::
+ * Fix buffer overflow in tar
+ 
+See svn log for more details.
 
-- New tools and hooks:
-  * external
-  * new make targets:
-    - check-downloads: checks all downloads for availability (also
-      $(pkg)-check-downloads)
-    - mirror: downloads all package downloads into dl/mirror (also
-      $(pkg)-download-mirror). This makes hardlinks for dupes in dl/ and
-      dl/mirror to save disk space.
+=== Freetz-1.1.4 ===
+
+- Updated packages and libs:
+    * callmonitor 1.15.2 (Adds features up to 1.18.5)
+    * sane-backends 1.0.21
+    * tor 0.2.1.26
+
+- Firmware updates:
+   * Please see FIRMWARES for the list of currently supported boxes and firmwares.
+
+See svn log for more details.
+
+=== Freetz-1.1.3 ===
+
+- Web interface:
+    * added favicon by atomphil (Freetz-Webinterface only)
+
+- Updated packages and libs:
+    * bip 0.8.4
+    * php 5.2.10 (download for 5.2.9 was removed)
+    * davfs 1.4.5 (older versions have problems with gmx)
+    * dnsmasq 2.55
+    * dropbear 0.53.1
+    * openssl 0.9.8n (security issues)
+    * openvpn 2.1.1
+    * stunnel 4.33
+    * tor 0.2.1.25
+    * vsftpd 2.2.2
+    * wget 1.12
+
+- Firmware updates
+    * Please see FIRMWARES for the list of currently supported boxes and firmwares.
+
+=== Freetz-1.1.2 ===
+
+- Updated packages and libs:
+    * microperl 5.10.1
+
+- Firmware updates
+    * Please see FIRMWARES for the list of currently supported boxes and firmwares.
+
+=== Freetz-1.1.1 ===
+
+- Build system:
+  * patch-system: use shell-fuction isFreetzType (by kriegaex)
+  * patch-system: use shell function modsed
 
 - New patches (read online help for more info):
+    * split tr069-remove-patches
+
+    * Update usbstorage patches
+- Updated packages and libs:
+    * callmonitor 1.15.1
+
+- Firmware updates
+    * Please see FIRMWARES for the list of currently supported boxes and firmwares.
+
+=== Freetz-1.1 ===
+
+- Build system:
+    * fakeroot: bump version to 1.12.2
+    * xdelta: Disable build because we don't make use of it
+    * toolchains:
+      - add menuconfig option to adjust HOSTCC variable
+      - add ccache for download- and kernel-toolchain
+      - add two patches for gcc-3.4.6
+        + Fix failure with newer host gccs
+        + Fix failure on some machines
+    * uClibc-0.9.29: Add 2 patches from openwrt
+    * kernel-toolchain: Add two patches for gcc-3.4.6
+      + Fix failure with newer host gccs
+      + Fix failure on some machines
+    * Bump squashfs3 version to 3.4
+
+- New tools and hooks:
+    * external
+    * new make targets:
+      - check-downloads: checks all downloads for availability (also
+        $(pkg)-check-downloads)
+      - mirror: downloads all package downloads into dl/mirror (also
+        $(pkg)-download-mirror). This makes hardlinks for dupes in dl/ and
+        dl/mirror to save disk space.
+    * Add patch that enhances posibilities of /bin/onlinechanged:
+      Based on changes by AVM we execute 3 locations on a call to /bin/onlinechanged:
+      1. /var/tmp/onlinechanged (compatibility to old behaviour)
+      2. /etc/onlinechanged/*   (new AVM behaviour)
+      3. /tmp/flash/onlinechanged/*
+      If a package needs actions on changes of online status create a script
+      make/$package/files/root/etc/onlinechanged/$action_$package.
+
+
+- New patches (read online help for more info):
+    * 7270:
+      * Option to add Annex A firmware into image
+      * Fix flashing of firmwares > 8 MB over webinterface
+      * Add volume counter (7240, 7270)
+      * AVM Plugins can be reintegrated into firmware
+    * Fix wrong usb mounts status message in AVM webinterface (7170, 7270)
+    * Add new status bar design (optional)
+
 
 - New packages, libs, modules:
     * bfusb 3-18-39 (firmware for bluetooth stick)
@@ -374,8 +427,8 @@ Latest changes:
     * httptunnel 3.3
     * libtool 1.5.26
     * linux-atm 2.4.1
-    * mcabber 0.9.7
-    * microperl 5.8.8
+    * mcabber 0.9.9
+    * microperl 5.10.0
     * nagios 2.11
     * nano 2.0.9
     * nfs-utils 1.1.3
@@ -384,9 +437,8 @@ Latest changes:
     * pciutils 3.0.0
     * portmap 6.0
     * sablevm-sdk
-    * sane-backends 1.0.22
     * socat 1.6.0.1
-    * squid 3.0.STABLE24
+    * squid 3.0.STABLE9
     * tcp_wrappers 7.6
     * tinc 1.0.8
     * tree 1.5.1.2
@@ -399,16 +451,52 @@ Latest changes:
 - Updated tools and hooks:
 
 - Updated patches:
+    * add reiserfs to automountable filesystems
+    * change nice names for USB devices (sdax > uStor0x, sdby > uStor1y, ...)
+    * 3131: Remove "remove cdrom.iso" patch
 
 - Updated packages and libs:
-    * bip 0.7.5
+    * bash 3.2.48
+    * bftpd 2.3
+    * bip 0.8.0
+    * callmonitor 1.13
     * classpath 0.97.2
+    * curl 7.19.4
+    * cyassl 0.9.9
     * devmapper 1.02.27
+    * dropbear: fixed init script not to start dropbear a second time when already running
     * dns2tcp 0.4.3
-    * dtmfbox 0.5.0_rc1
+    * dnsmasq 2.47
+    * dtmfbox 0.5.0
+    * e2fsprogs 1.41.3
+    * espeak 1.40.02
     * expat 2.0.1
+    * glib 2.18.2
+    * haserl 0.9.25
+    * iodine 0.5.0
     * jamvm 1.5.1
-    * pjproject 1.0
+    * libpopt 1.14
+    * lsof 4.81
+    * ltrace 0.5 svn 81
+    * mcabber 0.9.9
+    * ntfs-3g 2009.4.4: adds UTF-8 support
+    * openssl 0.9.8k
+    * openvpn 2.1_rc15
+    * php 5.2.9
+    * pingtunnel 0.70
+    * pjproject 1.0.1
+    * popt 1.14
+    * pptp 1.7.2
+    * ruby 1.8.6-p368
+    * rrdtool 1.2.30
+    * strace 4.5.18
+    * streamripper 1.64.0
+    * Stunnel 4.26
+    * tor 0.2.0.34
+    * transmission 1.60
+    * usbip 0.1.7
+    * vpnc 0.5.3
+    * vsftpd 2.0.7: add SSL support
     * tree 1.5.2.1
 
 - Remove packages, libs, modules, tools:
@@ -417,12 +505,17 @@ Latest changes:
     * Please see FIRMWARES for the list of currently supported boxes and firmwares.
 
 - BusyBox:
-    * updated to 1.12.2
+    * updated to 1.12.4
 
 - Web interface:
 
 - Other stuff:
-
+    + fix strip library function for 3170
+    + tune behaviour of freetz_download (retries: 3, timeout: 20s)
+    + Integrate new AVM open source packages (04.70 and 7270_04.70)
+    + rudishell:
+      * show it only with security level 0
+      * don't allow to execute any code by clicking on a wrong url
 
 === release Freetz-1.0.1 ===
 
@@ -497,6 +590,7 @@ Latest changes:
 - Remove packages, libs, modules, tools:
 
 - Firmware updates:
+    * Please see FIRMWARES for the list of currently supported boxes and firmwares.
 
 - BusyBox:
     * updated to 1.11.3
