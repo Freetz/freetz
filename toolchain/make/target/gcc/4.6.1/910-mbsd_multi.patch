@@ -113,7 +113,7 @@
  Wfloat-equal
  C ObjC C++ ObjC++ Var(warn_float_equal) Warning
  Warn if testing floating point numbers for equality
-@@ -790,6 +794,9 @@
+@@ -794,6 +798,9 @@
  fhonor-std
  C++ ObjC++ Ignore Warn(switch %qs is no longer supported)
  
@@ -125,7 +125,7 @@
  Assume normal C execution environment
 --- gcc/common.opt
 +++ gcc/common.opt
-@@ -511,6 +511,10 @@
+@@ -520,6 +520,10 @@
  Common Joined
  Treat specified warning as error
  
@@ -136,7 +136,7 @@
  Wextra
  Common Var(extra_warnings) Warning
  Print extra (possibly unwanted) warnings
-@@ -1147,6 +1151,9 @@
+@@ -1156,6 +1160,9 @@
  Common Report Var(flag_guess_branch_prob) Optimization
  Enable guessing of branch probabilities
  
@@ -201,7 +201,7 @@
 --- gcc/doc/invoke.texi
 +++ gcc/doc/invoke.texi
 @@ -240,7 +240,7 @@
- -Wconversion  -Wcoverage-mismatch  -Wcpp  -Wno-deprecated  @gol
+ -Wconversion  -Wcoverage-mismatch  -Wno-cpp  -Wno-deprecated  @gol
  -Wno-deprecated-declarations -Wdisabled-optimization  @gol
  -Wno-div-by-zero -Wdouble-promotion -Wempty-body  -Wenum-compare @gol
 --Wno-endif-labels -Werror  -Werror=* @gol
@@ -209,7 +209,7 @@
  -Wfatal-errors  -Wfloat-equal  -Wformat  -Wformat=2 @gol
  -Wno-format-contains-nul -Wno-format-extra-args -Wformat-nonliteral @gol
  -Wformat-security  -Wformat-y2k @gol
-@@ -4488,6 +4488,22 @@
+@@ -4495,6 +4495,22 @@
  @option{-Wall} and by @option{-pedantic}, which can be disabled with
  @option{-Wno-pointer-sign}.
  
@@ -232,7 +232,7 @@
  @item -Wstack-protector
  @opindex Wstack-protector
  @opindex Wno-stack-protector
-@@ -6310,7 +6326,7 @@
+@@ -6317,7 +6333,7 @@
  second branch or a point immediately following it, depending on whether
  the condition is known to be true or false.
  
