@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.4)
+$(call PKG_INIT_LIB, 0.5)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=50709e1b9916c63ef39e60ffc245d977
+$(PKG)_SOURCE_MD5:=f3a57d9db2eeae3a7a5d399defe9787e
 $(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
