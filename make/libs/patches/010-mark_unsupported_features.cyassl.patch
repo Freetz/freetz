@@ -1,0 +1,79 @@
+--- include/openssl/dh.h
++++ include/openssl/dh.h
+@@ -1,2 +1,8 @@
+ /* dh.h for openssl */
+ 
++#ifndef CYASSL_DH_H
++#define CYASSL_DH_H
++
++#define OPENSSL_NO_DH
++
++#endif
+--- include/openssl/dsa.h
++++ include/openssl/dsa.h
+@@ -1,2 +1,8 @@
+ /* dsa.h for openssl */
+ 
++#ifndef CYASSL_DSA_H
++#define CYASSL_DSA_H
++
++#define OPENSSL_NO_DSA
++
++#endif
+--- include/openssl/ecdsa.h
++++ include/openssl/ecdsa.h
+@@ -1,2 +1,8 @@
+ /* ecdsa.h for openssl */
+ 
++#ifndef CYASSL_ECDSA_H
++#define CYASSL_ECDSA_H
++
++#define OPENSSL_NO_ECDSA
++
++#endif
+--- include/openssl/ec.h
++++ include/openssl/ec.h
+@@ -1,2 +1,8 @@
+ /* ec.h for openssl */
+ 
++#ifndef CYASSL_EC_H
++#define CYASSL_EC_H
++
++#define OPENSSL_NO_EC
++
++#endif
+--- include/openssl/lhash.h
++++ include/openssl/lhash.h
+@@ -1,2 +1,8 @@
+ /* lhash.h for openSSL */
+ 
++#ifndef CYASSL_LHASH_H
++#define CYASSL_LHASH_H
++
++#define OPENSSL_NO_LHASH
++
++#endif
+--- include/openssl/md4.h
++++ include/openssl/md4.h
+@@ -1 +1,10 @@
+ /* md4.h for libcurl */
++
++#ifndef CYASSL_MD4_H
++#define CYASSL_MD4_H
++
++#ifdef NO_MD4
++#define OPENSSL_NO_MD4
++#endif
++
++#endif
+--- include/openssl/ocsp.h
++++ include/openssl/ocsp.h
+@@ -1 +1,8 @@
+ /* ocsp.h for libcurl */
++
++#ifndef CYASSL_OCSP_H
++#define CYASSL_OCSP_H
++
++#define OPENSSL_NO_OCSP
++
++#endif
