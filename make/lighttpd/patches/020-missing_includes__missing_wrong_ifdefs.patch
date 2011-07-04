@@ -1,0 +1,55 @@
+--- src/network.c
++++ src/network.c
+@@ -25,6 +25,9 @@
+ # include <openssl/ssl.h>
+ # include <openssl/err.h>
+ # include <openssl/rand.h>
++# include <openssl/bio.h>
++# include <openssl/bn.h>
++# include <openssl/dh.h>
+ #endif
+ 
+ static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
+@@ -480,11 +483,14 @@
+ 	network_backend_t backend;
+ 
+ #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
++#if !defined(OPENSSL_NO_EC) && !defined(OPENSSL_NO_ECDH)
+ 	EC_KEY *ecdh;
+ 	int nid;
+ #endif
++#endif
+ 
+ #ifdef USE_OPENSSL
++#if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
+ 	DH *dh;
+ 	BIO *bio;
+ 
+@@ -527,6 +533,7 @@
+ 		0x85,0x5E,0x6E,0xEB,0x22,0xB3,0xB2,0xE5,
+ 	};
+ #endif
++#endif
+ 
+ 	struct nb_map {
+ 		network_backend_t nb;
+@@ -613,6 +620,7 @@
+ 			}
+ 		}
+ 
++#if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
+ 		/* Support for Diffie-Hellman key exchange */
+ 		if (!buffer_is_empty(s->ssl_dh_file)) {
+ 			/* DH parameters from file */
+@@ -646,9 +654,10 @@
+ 		SSL_CTX_set_tmp_dh(s->ssl_ctx,dh);
+ 		SSL_CTX_set_options(s->ssl_ctx,SSL_OP_SINGLE_DH_USE);
+ 		DH_free(dh);
++#endif
+ 
+ #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
+-#ifndef OPENSSL_NO_ECDH
++#if !defined(OPENSSL_NO_EC) && !defined(OPENSSL_NO_ECDH)
+ 		/* Support for Elliptic-Curve Diffie-Hellman key exchange */
+ 		if (!buffer_is_empty(s->ssl_ec_curve)) {
+ 			/* OpenSSL only supports the "named curves" from RFC 4492, section 5.1.1. */

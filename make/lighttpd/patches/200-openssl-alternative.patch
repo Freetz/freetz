@@ -1,12 +1,12 @@
 --- configure
 +++ configure
-@@ -13235,51 +13235,24 @@
+@@ -14030,51 +14030,24 @@
  done
  
      OLDLIBS="$LIBS"
 -    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BIO_f_base64 in -lcrypto" >&5
 -$as_echo_n "checking for BIO_f_base64 in -lcrypto... " >&6; }
--if test "${ac_cv_lib_crypto_BIO_f_base64+set}" = set; then :
+-if ${ac_cv_lib_crypto_BIO_f_base64+:} false; then :
 -  $as_echo_n "(cached) " >&6
 -else
 -  ac_check_lib_save_LIBS=$LIBS
@@ -40,11 +40,11 @@
 -fi
 -{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_BIO_f_base64" >&5
 -$as_echo "$ac_cv_lib_crypto_BIO_f_base64" >&6; }
--if test "x$ac_cv_lib_crypto_BIO_f_base64" = x""yes; then :
+-if test "x$ac_cv_lib_crypto_BIO_f_base64" = xyes; then :
 -
 -      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
 -$as_echo_n "checking for SSL_new in -lssl... " >&6; }
--if test "${ac_cv_lib_ssl_SSL_new+set}" = set; then :
+-if ${ac_cv_lib_ssl_SSL_new+:} false; then :
 +    if [ -n "$OPENSSL_ALTERNATIVE" ]; then
 +	SSL_NEW_LIB="$OPENSSL_ALTERNATIVE"
 +	SSL_NEW_EXTRALIBS="$OPENSSL_ALTERNATIVE_EXTRALIBS"
@@ -67,7 +67,7 @@
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -13299,25 +13272,24 @@
+@@ -14094,25 +14067,24 @@
  }
  _ACEOF
  if ac_fn_c_try_link "$LINENO"; then :
@@ -83,7 +83,7 @@
  fi
 -{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_new" >&5
 -$as_echo "$ac_cv_lib_ssl_SSL_new" >&6; }
--if test "x$ac_cv_lib_ssl_SSL_new" = x""yes; then :
+-if test "x$ac_cv_lib_ssl_SSL_new" = xyes; then :
 -   SSL_LIB="-lssl -lcrypto"
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $(eval echo \$ac_cv_lib_${SSL_NEW_LIB}_SSL_new)" >&5
 +$as_echo "$(eval echo \$ac_cv_lib_${SSL_NEW_LIB}_SSL_new)" >&6; }
@@ -101,9 +101,9 @@
  
 --- src/network.c
 +++ src/network.c
-@@ -554,6 +554,15 @@
- 			}
- 		}
+@@ -681,6 +681,15 @@
+ #endif
+ #endif
  
 +#if (defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
 +#	warning client verification is not available when linking against cyassl
@@ -117,7 +117,7 @@
  		if (!buffer_is_empty(s->ssl_ca_file)) {
  			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
-@@ -585,6 +594,7 @@
+@@ -712,6 +721,7 @@
  				"SSL: You specified ssl.verifyclient.activate but no ca_file"
  			);
  		}
