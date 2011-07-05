@@ -874,13 +874,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 		mklibs || error 1 "mklibs returned an error. Please see mklibs.log."
 	fi
 
-	echo0 "stripping leftover unstripped binaries"
-	for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
-		\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p'`; do
-		echo2 $i
-		chmod u+r $i
-		${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip -p --remove-section={.comment,.note,.pdr} $i
-	done
+	if [ "$FREETZ_STRIP_BINARIES" == "y" ]; then
+		echo0 "stripping leftover unstripped binaries"
+		for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
+			\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p'`; do
+			echo2 $i
+			chmod u+r $i
+			${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip -p --remove-section={.comment,.note,.pdr} $i
+		done
+	fi
 
 	# external should run after modifying and stripping and so on
 	# only run, if packaging is enabled
