@@ -1,47 +1,52 @@
---- iptables/Makefile.am.ori	2011-06-27 19:38:47.000000000 +0200
-+++ iptables/Makefile.am	2011-06-27 19:38:16.000000000 +0200
-@@ -14,7 +14,10 @@
+--- iptables/Makefile.am
++++ iptables/Makefile.am
+@@ -14,7 +14,7 @@
  libxtables_la_LIBADD  =
  endif
  
 -xtables_multi_SOURCES  = xtables-multi.c iptables-xml.c
 +xtables_multi_SOURCES  = xtables-multi.c
-+if ENABLE_XML
-+xtables_multi_SOURCES += iptables-xml.c
-+endif
  xtables_multi_CFLAGS   = ${AM_CFLAGS} -DIPTABLES_MULTI
  xtables_multi_LDFLAGS  = -rdynamic
  xtables_multi_LDADD    = ../extensions/libext.a
-@@ -22,14 +25,24 @@
+@@ -22,32 +22,53 @@
  xtables_multi_CFLAGS  += -DALL_INCLUSIVE
  endif
-+if ENABLE_XML
-+xtables_multi_CFLAGS  += -DENABLE_XML
-+endif
  if ENABLE_IPV4
 -xtables_multi_SOURCES += iptables-save.c iptables-restore.c \
 -                         iptables-standalone.c iptables.c
 +xtables_multi_SOURCES += iptables-standalone.c iptables.c
-+if ENABLE_SAVE_RESTORE
-+xtables_multi_SOURCES += iptables-save.c iptables-restore.c
-+endif
  xtables_multi_CFLAGS  += -DENABLE_IPV4
  xtables_multi_LDADD   += ../libiptc/libip4tc.la ../extensions/libext4.a
  endif
-+if ENABLE_SAVE_RESTORE
-+xtables_multi_CFLAGS  += -DENABLE_SAVE_RESTORE
-+endif
  if ENABLE_IPV6
 -xtables_multi_SOURCES += ip6tables-save.c ip6tables-restore.c \
 -                          ip6tables-standalone.c ip6tables.c
 +xtables_multi_SOURCES += ip6tables-standalone.c ip6tables.c
-+if ENABLE_SAVE_RESTORE
-+xtables_multi_SOURCES += ip6tables-save.c ip6tables-restore.c
-+endif
  xtables_multi_CFLAGS  += -DENABLE_IPV6
  xtables_multi_LDADD   += ../libiptc/libip6tc.la ../extensions/libext6.a
  endif
-@@ -42,12 +49,20 @@
+ xtables_multi_SOURCES += xshared.c
+ xtables_multi_LDADD   += libxtables.la -lm
+ 
++if ENABLE_XML
++xtables_multi_CFLAGS  += -DENABLE_XML
++xtables_multi_SOURCES += iptables-xml.c
++endif
++
++if ENABLE_SAVE_RESTORE
++xtables_multi_CFLAGS  += -DENABLE_SAVE_RESTORE
++if ENABLE_IPV4
++xtables_multi_SOURCES += iptables-save.c iptables-restore.c
++endif
++if ENABLE_IPV6
++xtables_multi_SOURCES += ip6tables-save.c ip6tables-restore.c
++endif
++endif
++
+ sbin_PROGRAMS    = xtables-multi
+ man_MANS         = iptables.8 iptables-restore.8 iptables-save.8 \
+                    iptables-xml.1 ip6tables.8 ip6tables-restore.8 \
                     ip6tables-save.8
  CLEANFILES       = iptables.8 ip6tables.8
  
@@ -64,8 +69,94 @@
  endif
  
  iptables.8: ${srcdir}/iptables.8.in ../extensions/matches4.man ../extensions/targets4.man
---- iptables/xtables-multi.c.ori	2011-06-27 19:39:57.000000000 +0200
-+++ iptables/xtables-multi.c	2011-06-27 19:43:20.000000000 +0200
+--- iptables/Makefile.in
++++ iptables/Makefile.in
+@@ -38,17 +38,20 @@
+ build_triplet = @build@
+ host_triplet = @host@
+ @ENABLE_STATIC_TRUE@am__append_1 = -DALL_INCLUSIVE
+-@ENABLE_IPV4_TRUE@am__append_2 = iptables-save.c iptables-restore.c \
+-@ENABLE_IPV4_TRUE@                         iptables-standalone.c iptables.c
+-
++@ENABLE_IPV4_TRUE@am__append_2 = iptables-standalone.c iptables.c
+ @ENABLE_IPV4_TRUE@am__append_3 = -DENABLE_IPV4
+ @ENABLE_IPV4_TRUE@am__append_4 = ../libiptc/libip4tc.la ../extensions/libext4.a
+-@ENABLE_IPV6_TRUE@am__append_5 = ip6tables-save.c ip6tables-restore.c \
+-@ENABLE_IPV6_TRUE@                          ip6tables-standalone.c ip6tables.c
+-
++@ENABLE_IPV6_TRUE@am__append_5 = ip6tables-standalone.c ip6tables.c
+ @ENABLE_IPV6_TRUE@am__append_6 = -DENABLE_IPV6
+ @ENABLE_IPV6_TRUE@am__append_7 = ../libiptc/libip6tc.la ../extensions/libext6.a
++@ENABLE_XML_TRUE@am__append_8 = -DENABLE_XML
++@ENABLE_XML_TRUE@am__append_9 = iptables-xml.c
++@ENABLE_SAVE_RESTORE_TRUE@am__append_10 = -DENABLE_SAVE_RESTORE
++@ENABLE_IPV4_TRUE@@ENABLE_SAVE_RESTORE_TRUE@am__append_11 = iptables-save.c iptables-restore.c
++@ENABLE_IPV6_TRUE@@ENABLE_SAVE_RESTORE_TRUE@am__append_12 = ip6tables-save.c ip6tables-restore.c
+ sbin_PROGRAMS = xtables-multi$(EXEEXT)
++@ENABLE_IPV4_TRUE@@ENABLE_SAVE_RESTORE_TRUE@am__append_13 = iptables-restore iptables-save
++@ENABLE_IPV6_TRUE@@ENABLE_SAVE_RESTORE_TRUE@am__append_14 = ip6tables-restore ip6tables-save
+ subdir = iptables
+ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+ 	$(srcdir)/xtables.pc.in
+@@ -101,18 +104,19 @@
+ 	iptables.c ip6tables-save.c ip6tables-restore.c \
+ 	ip6tables-standalone.c ip6tables.c xshared.c
+ @ENABLE_IPV4_TRUE@am__objects_1 =  \
+-@ENABLE_IPV4_TRUE@	xtables_multi-iptables-save.$(OBJEXT) \
+-@ENABLE_IPV4_TRUE@	xtables_multi-iptables-restore.$(OBJEXT) \
+ @ENABLE_IPV4_TRUE@	xtables_multi-iptables-standalone.$(OBJEXT) \
+ @ENABLE_IPV4_TRUE@	xtables_multi-iptables.$(OBJEXT)
+-@ENABLE_IPV6_TRUE@am__objects_2 =  \
+-@ENABLE_IPV6_TRUE@	xtables_multi-ip6tables-save.$(OBJEXT) \
+-@ENABLE_IPV6_TRUE@	xtables_multi-ip6tables-restore.$(OBJEXT) \
+-@ENABLE_IPV6_TRUE@	xtables_multi-ip6tables-standalone.$(OBJEXT) \
++@ENABLE_IPV6_TRUE@am__objects_2 = xtables_multi-ip6tables-standalone.$(OBJEXT) \
+ @ENABLE_IPV6_TRUE@	xtables_multi-ip6tables.$(OBJEXT)
++@ENABLE_XML_TRUE@am__objects_3 = xtables_multi-iptables-xml.$(OBJEXT)
++@ENABLE_IPV4_TRUE@@ENABLE_SAVE_RESTORE_TRUE@am__objects_4 = xtables_multi-iptables-save.$(OBJEXT) \
++@ENABLE_IPV4_TRUE@@ENABLE_SAVE_RESTORE_TRUE@	xtables_multi-iptables-restore.$(OBJEXT)
++@ENABLE_IPV6_TRUE@@ENABLE_SAVE_RESTORE_TRUE@am__objects_5 = xtables_multi-ip6tables-save.$(OBJEXT) \
++@ENABLE_IPV6_TRUE@@ENABLE_SAVE_RESTORE_TRUE@	xtables_multi-ip6tables-restore.$(OBJEXT)
+ am_xtables_multi_OBJECTS = xtables_multi-xtables-multi.$(OBJEXT) \
+-	xtables_multi-iptables-xml.$(OBJEXT) $(am__objects_1) \
+-	$(am__objects_2) xtables_multi-xshared.$(OBJEXT)
++	$(am__objects_1) $(am__objects_2) \
++	xtables_multi-xshared.$(OBJEXT) $(am__objects_3) \
++	$(am__objects_4) $(am__objects_5)
+ xtables_multi_OBJECTS = $(am_xtables_multi_OBJECTS)
+ xtables_multi_DEPENDENCIES = ../extensions/libext.a $(am__append_4) \
+ 	$(am__append_7) libxtables.la
+@@ -281,10 +285,12 @@
+ @ENABLE_SHARED_TRUE@libxtables_la_CFLAGS = ${AM_CFLAGS}
+ @ENABLE_SHARED_FALSE@libxtables_la_LIBADD = 
+ @ENABLE_SHARED_TRUE@libxtables_la_LIBADD = -ldl
+-xtables_multi_SOURCES = xtables-multi.c iptables-xml.c $(am__append_2) \
+-	$(am__append_5) xshared.c
++xtables_multi_SOURCES = xtables-multi.c $(am__append_2) \
++	$(am__append_5) xshared.c $(am__append_9) $(am__append_11) \
++	$(am__append_12)
+ xtables_multi_CFLAGS = ${AM_CFLAGS} -DIPTABLES_MULTI $(am__append_1) \
+-	$(am__append_3) $(am__append_6)
++	$(am__append_3) $(am__append_6) $(am__append_8) \
++	$(am__append_10)
+ xtables_multi_LDFLAGS = -rdynamic
+ xtables_multi_LDADD = ../extensions/libext.a $(am__append_4) \
+ 	$(am__append_7) libxtables.la -lm
+@@ -293,9 +299,9 @@
+                    ip6tables-save.8
+ 
+ CLEANFILES = iptables.8 ip6tables.8
+-vx_bin_links = iptables-xml
+-@ENABLE_IPV4_TRUE@v4_sbin_links = iptables iptables-restore iptables-save
+-@ENABLE_IPV6_TRUE@v6_sbin_links = ip6tables ip6tables-restore ip6tables-save
++@ENABLE_XML_TRUE@vx_bin_links = iptables-xml
++@ENABLE_IPV4_TRUE@v4_sbin_links = iptables $(am__append_13)
++@ENABLE_IPV6_TRUE@v6_sbin_links = ip6tables $(am__append_14)
+ pkgconfig_DATA = xtables.pc
+ all: all-am
+ 
+--- iptables/xtables-multi.c
++++ iptables/xtables-multi.c
 @@ -3,7 +3,9 @@
  #include <string.h>
  #include "xshared.h"
@@ -104,8 +195,8 @@
  	{NULL},
  };
  
---- configure.ac.ori	2011-06-27 19:51:04.000000000 +0200
-+++ configure.ac	2011-06-27 19:58:06.000000000 +0200
+--- configure.ac
++++ configure.ac
 @@ -48,6 +48,10 @@
  	[enable_devel="$enableval"], [enable_devel="yes"])
  AC_ARG_ENABLE([libipq],
@@ -126,8 +217,8 @@
  
  PKG_CHECK_MODULES([libnfnetlink], [libnfnetlink >= 1.0],
  	[nfnetlink=1], [nfnetlink=0])
---- configure.ori	2011-06-27 20:37:06.000000000 +0200
-+++ configure	2011-06-27 20:39:37.000000000 +0200
+--- configure
++++ configure
 @@ -775,6 +775,10 @@
  ENABLE_SHARED_TRUE
  ENABLE_STATIC_FALSE
@@ -168,36 +259,6 @@
  
  libiptc_LDFLAGS2="";
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts -Wl,--no-as-needed" >&5
-@@ -10725,23 +10744,23 @@
- 
- blacklist_modules="";
- 
--ac_fn_c_check_header_mongrel "$LINENO" "linux/dccp.h" "ac_cv_header_linux_dccp_h" "$ac_includes_default"
--if test "x$ac_cv_header_linux_dccp_h" = x""yes; then :
-+ac_fn_c_check_header_mongrel "$LINENO" "linux/dccp.h" "do_not_cache_me_header_linux_dccp_h" "$ac_includes_default"
-+if test "x$do_not_cache_me_header_linux_dccp_h" = x""yes; then :
- 
- fi
- 
- 
--if test "$ac_cv_header_linux_dccp_h" != "yes"; then
-+if test "$do_not_cache_me_header_linux_dccp_h" != "yes"; then
- 	blacklist_modules="$blacklist_modules dccp";
- fi;
- 
--ac_fn_c_check_header_mongrel "$LINENO" "linux/ip_vs.h" "ac_cv_header_linux_ip_vs_h" "$ac_includes_default"
--if test "x$ac_cv_header_linux_ip_vs_h" = x""yes; then :
-+ac_fn_c_check_header_mongrel "$LINENO" "linux/ip_vs.h" "do_not_cache_me_header_linux_ip_vs_h" "$ac_includes_default"
-+if test "x$do_not_cache_me_header_linux_ip_vs_h" = x""yes; then :
- 
- fi
- 
- 
--if test "$ac_cv_header_linux_ip_vs_h" != "yes"; then
-+if test "$do_not_cache_me_header_linux_ip_vs_h" != "yes"; then
- 	blacklist_modules="$blacklist_modules ipvs";
- fi;
- 
 @@ -10803,6 +10822,22 @@
    ENABLE_LIBIPQ_FALSE=
  fi

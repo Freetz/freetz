@@ -47,6 +47,9 @@ endif
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,ac_cv(_header_linux),do_not_cache_me\1,g' configure;
 
+# touch some patched files to prevent auto*-tools from being executed
+$(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac;
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
