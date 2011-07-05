@@ -1,0 +1,33 @@
+From bc3be18145e4d57e7268506f123c0f0f373a15e2 Mon Sep 17 00:00:00 2001
+From: Natanael Copa <natanael.copa@gmail.com>
+Date: Sun, 12 Jun 2011 12:09:04 +0000
+Subject: [PATCH] getaddrinfo: allow numeric service without any hints
+
+This appears to correspond to what glibc does and this fixes an
+issue with iptables-1.4.11 with udp and raw port numbers.
+
+(see http://bugzilla.netfilter.org/show_bug.cgi?id=721)
+
+This fixes #3841
+https://bugs.busybox.net/show_bug.cgi?id=3841
+
+Signed-off-by: Natanael Copa <natanael.copa@gmail.com>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+
+--- libc/inet/getaddrinfo.c.ori	2011-06-28 08:33:45.714616698 +0200
++++ libc/inet/getaddrinfo.c	2011-06-28 08:34:56.424616660 +0200
+@@ -794,13 +794,6 @@
+ 	gaih_service.num = strtoul (gaih_service.name, &c, 10);
+ 	if (*c)
+ 	    gaih_service.num = -1;
+-	else
+-	    /*
+-	     * Can't specify a numerical socket unless a protocol
+-	     * family was given.
+-	     */
+-	    if (hints->ai_socktype == 0 && hints->ai_protocol == 0)
+-		return EAI_SERVICE;
+ 	pservice = &gaih_service;
+     }
+     else
