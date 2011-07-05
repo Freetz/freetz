@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 2.3.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=2ea5d19978710527bb7444d93b67767a
-$(PKG)_SITE:=ftp://vsftpd.beasts.org/users/cevans
+$(PKG)_SITE:=https://security.appspot.com/downloads
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/vsftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/vsftpd
