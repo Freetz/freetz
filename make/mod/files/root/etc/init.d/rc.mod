@@ -69,6 +69,14 @@ start() {
 
 	touch /tmp/.modstarted
 
+	# 7390: external hook for nand flash
+	if [ "$CONFIG_NAND" = 'y' ]; then
+		INTERNAL_REALPATH="$(realpath "/var/$(echo internalflash.mountpoint | usbcfgctl -s | tr -d '" ')")"
+		case "$MOD_EXTERNAL_DIRECTORY" in
+			"$INTERNAL_REALPATH"* ) [ -f "$MOD_EXTERNAL_DIRECTORY"/.external ] && /etc/init.d/rc.external start ;;
+		esac
+	fi
+
 	/usr/lib/mod/menu-update
 }
 
