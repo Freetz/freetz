@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_IPTABLES
-	bool "Iptables 1.4.1.1 (binary only, unstable)"
+	bool "Iptables 1.4.11.1 (binary only, unstable)"
 	depends on ! FREETZ_TYPE_SPEEDPORT_W501V && \
 			! FREETZ_TYPE_FON_5140
 	default n
@@ -27,6 +27,13 @@ config FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
 	default n
 	help
 		iptables-save & iptables-restore
+
+config FREETZ_PACKAGE_IPTABLES_XML
+	bool "Iptables-xml"
+	depends on FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
+	default n
+	help
+		Include iptables-xml to convert saved rules to xml.
 
 # Include here for a cleaner menu structure (list packages before modules/libs)
 source make/iptables-cgi/Config.in
@@ -1282,12 +1289,6 @@ config FREETZ_LIB_libipt_NETMAP
 		This target allows you to statically map a whole network of addresses onto
 		another network of addresses.
 
-config FREETZ_LIB_libipt_policy
-	bool "libipt_policy.so"
-	default n
-	help
-		This modules matches the policy used by IPsec for handling a packet.
-
 config FREETZ_LIB_libipt_realm
 	bool "libipt_realm.so"
 	select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19_2
@@ -1319,19 +1320,6 @@ config FREETZ_LIB_libipt_SAME
 		Similar to SNAT/DNAT depending on chain: it takes a range of addresses
 		(`--to 1.2.3.4-1.2.3.7') and gives a client the same
 		source-/destination-address for each connection.
-
-config FREETZ_LIB_libipt_set
-	bool "libipt_set.so"
-	default n
-	help
-		This modules matches IP sets which can be defined by ipset(8).
-
-config FREETZ_LIB_libipt_SET
-	bool "libipt_SET.so"
-	default n
-	help
-		This modules adds and/or deletes entries from IP sets which can be
-		defined	by ipset(8).
 
 config FREETZ_LIB_libipt_SNAT
 	bool "libipt_SNAT.so"
@@ -1775,12 +1763,6 @@ config FREETZ_LIB_libip6t_mh
 	help
 		This extension is loaded if `--protocol ipv6-mh' or `--protocol mh' is
 		specified.
-
-config FREETZ_LIB_libip6t_policy
-	bool "libip6t_policy.so"
-	default n
-	help
-		This modules matches the policy used by IPsec for handling a packet.
 
 config FREETZ_LIB_libip6t_REJECT
 	bool "libip6t_REJECT.so"

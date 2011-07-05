@@ -1,0 +1,223 @@
+--- iptables/Makefile.am.ori	2011-06-27 19:38:47.000000000 +0200
++++ iptables/Makefile.am	2011-06-27 19:38:16.000000000 +0200
+@@ -14,7 +14,10 @@
+ libxtables_la_LIBADD  =
+ endif
+ 
+-xtables_multi_SOURCES  = xtables-multi.c iptables-xml.c
++xtables_multi_SOURCES  = xtables-multi.c
++if ENABLE_XML
++xtables_multi_SOURCES += iptables-xml.c
++endif
+ xtables_multi_CFLAGS   = ${AM_CFLAGS} -DIPTABLES_MULTI
+ xtables_multi_LDFLAGS  = -rdynamic
+ xtables_multi_LDADD    = ../extensions/libext.a
+@@ -22,14 +25,24 @@
+ xtables_multi_CFLAGS  += -DALL_INCLUSIVE
+ endif
++if ENABLE_XML
++xtables_multi_CFLAGS  += -DENABLE_XML
++endif
+ if ENABLE_IPV4
+-xtables_multi_SOURCES += iptables-save.c iptables-restore.c \
+-                         iptables-standalone.c iptables.c
++xtables_multi_SOURCES += iptables-standalone.c iptables.c
++if ENABLE_SAVE_RESTORE
++xtables_multi_SOURCES += iptables-save.c iptables-restore.c
++endif
+ xtables_multi_CFLAGS  += -DENABLE_IPV4
+ xtables_multi_LDADD   += ../libiptc/libip4tc.la ../extensions/libext4.a
+ endif
++if ENABLE_SAVE_RESTORE
++xtables_multi_CFLAGS  += -DENABLE_SAVE_RESTORE
++endif
+ if ENABLE_IPV6
+-xtables_multi_SOURCES += ip6tables-save.c ip6tables-restore.c \
+-                          ip6tables-standalone.c ip6tables.c
++xtables_multi_SOURCES += ip6tables-standalone.c ip6tables.c
++if ENABLE_SAVE_RESTORE
++xtables_multi_SOURCES += ip6tables-save.c ip6tables-restore.c
++endif
+ xtables_multi_CFLAGS  += -DENABLE_IPV6
+ xtables_multi_LDADD   += ../libiptc/libip6tc.la ../extensions/libext6.a
+ endif
+@@ -42,12 +49,20 @@
+                    ip6tables-save.8
+ CLEANFILES       = iptables.8 ip6tables.8
+ 
++if ENABLE_XML
+ vx_bin_links   = iptables-xml
++endif
+ if ENABLE_IPV4
+-v4_sbin_links  = iptables iptables-restore iptables-save
++v4_sbin_links  = iptables
++if ENABLE_SAVE_RESTORE
++v4_sbin_links +=  iptables-restore iptables-save
++endif
+ endif
+ if ENABLE_IPV6
+-v6_sbin_links  = ip6tables ip6tables-restore ip6tables-save
++v6_sbin_links  = ip6tables
++if ENABLE_SAVE_RESTORE
++v6_sbin_links  += ip6tables-restore ip6tables-save
++endif
+ endif
+ 
+ iptables.8: ${srcdir}/iptables.8.in ../extensions/matches4.man ../extensions/targets4.man
+--- iptables/xtables-multi.c.ori	2011-06-27 19:39:57.000000000 +0200
++++ iptables/xtables-multi.c	2011-06-27 19:43:20.000000000 +0200
+@@ -3,7 +3,9 @@
+ #include <string.h>
+ #include "xshared.h"
+ 
++#ifdef ENABLE_XML
+ #include "xtables-multi.h"
++#endif
+ 
+ #ifdef ENABLE_IPV4
+ #include "iptables-multi.h"
+@@ -17,21 +19,27 @@
+ #ifdef ENABLE_IPV4
+ 	{"iptables",            iptables_main},
+ 	{"main4",               iptables_main},
++#ifdef ENABLE_SAVE_RESTORE
+ 	{"iptables-save",       iptables_save_main},
+ 	{"save4",               iptables_save_main},
+ 	{"iptables-restore",    iptables_restore_main},
+ 	{"restore4",            iptables_restore_main},
+ #endif
++#endif
++#ifdef ENABLE_XML
+ 	{"iptables-xml",        iptables_xml_main},
+ 	{"xml",                 iptables_xml_main},
++#endif
+ #ifdef ENABLE_IPV6
+ 	{"ip6tables",           ip6tables_main},
+ 	{"main6",               ip6tables_main},
++#ifdef ENABLE_SAVE_RESTORE
+ 	{"ip6tables-save",      ip6tables_save_main},
+ 	{"save6",               ip6tables_save_main},
+ 	{"ip6tables-restore",   ip6tables_restore_main},
+ 	{"restore6",            ip6tables_restore_main},
+ #endif
++#endif
+ 	{NULL},
+ };
+ 
+--- configure.ac.ori	2011-06-27 19:51:04.000000000 +0200
++++ configure.ac	2011-06-27 19:58:06.000000000 +0200
+@@ -48,6 +48,10 @@
+ 	[enable_devel="$enableval"], [enable_devel="yes"])
+ AC_ARG_ENABLE([libipq],
+ 	AS_HELP_STRING([--enable-libipq], [Build and install libipq]))
++AC_ARG_ENABLE([xml],
++	AS_HELP_STRING([--enable-xml], [Build with xml support]))
++AC_ARG_ENABLE([save-restore],
++	AS_HELP_STRING([--enable-save-restore], [Build with save/restore support]))
+ AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=PATH],
+ 	[Path to the pkgconfig directory [[LIBDIR/pkgconfig]]]),
+ 	[pkgconfigdir="$withval"], [pkgconfigdir='${libdir}/pkgconfig'])
+@@ -78,6 +82,8 @@
+ AM_CONDITIONAL([ENABLE_LARGEFILE], [test "$enable_largefile" = "yes"])
+ AM_CONDITIONAL([ENABLE_DEVEL], [test "$enable_devel" = "yes"])
+ AM_CONDITIONAL([ENABLE_LIBIPQ], [test "$enable_libipq" = "yes"])
++AM_CONDITIONAL([ENABLE_XML], [test "$enable_xml" = "yes"])
++AM_CONDITIONAL([ENABLE_SAVE_RESTORE], [test "$enable_save_restore" = "yes"])
+ 
+ PKG_CHECK_MODULES([libnfnetlink], [libnfnetlink >= 1.0],
+ 	[nfnetlink=1], [nfnetlink=0])
+--- configure.ori	2011-06-27 20:37:06.000000000 +0200
++++ configure	2011-06-27 20:39:37.000000000 +0200
+@@ -775,6 +775,10 @@
+ ENABLE_SHARED_TRUE
+ ENABLE_STATIC_FALSE
+ ENABLE_STATIC_TRUE
++ENABLE_XML_FALSE
++ENABLE_XML_TRUE
++ENABLE_SAVE_RESTORE_FALSE
++ENABLE_SAVE_RESTORE_TRUE
+ blacklist_modules
+ libiptc_LDFLAGS2
+ CPP
+@@ -901,6 +905,8 @@
+ enable_largefile
+ enable_devel
+ enable_libipq
++enable_xml
++enable_save_restore
+ with_pkgconfigdir
+ '
+       ac_precious_vars='build_alias
+@@ -10681,6 +10687,19 @@
+   pkgconfigdir='${libdir}/pkgconfig'
+ fi
+ 
++# Check whether --enable-xml was given.
++if test "${enable_xml+set}" = set; then :
++  enableval=$enable_xml; enable_xml="$enableval"
++else
++  enable_xml="yes"
++fi
++
++# Check whether --enable-save-restore was given.
++if test "${enable_save_restore+set}" = set; then :
++  enableval=$enable_save_restore; enable_ipv4="$enableval"
++else
++  enable_save_restore="yes"
++fi
+ 
+ libiptc_LDFLAGS2="";
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts -Wl,--no-as-needed" >&5
+@@ -10725,23 +10744,23 @@
+ 
+ blacklist_modules="";
+ 
+-ac_fn_c_check_header_mongrel "$LINENO" "linux/dccp.h" "ac_cv_header_linux_dccp_h" "$ac_includes_default"
+-if test "x$ac_cv_header_linux_dccp_h" = x""yes; then :
++ac_fn_c_check_header_mongrel "$LINENO" "linux/dccp.h" "do_not_cache_me_header_linux_dccp_h" "$ac_includes_default"
++if test "x$do_not_cache_me_header_linux_dccp_h" = x""yes; then :
+ 
+ fi
+ 
+ 
+-if test "$ac_cv_header_linux_dccp_h" != "yes"; then
++if test "$do_not_cache_me_header_linux_dccp_h" != "yes"; then
+ 	blacklist_modules="$blacklist_modules dccp";
+ fi;
+ 
+-ac_fn_c_check_header_mongrel "$LINENO" "linux/ip_vs.h" "ac_cv_header_linux_ip_vs_h" "$ac_includes_default"
+-if test "x$ac_cv_header_linux_ip_vs_h" = x""yes; then :
++ac_fn_c_check_header_mongrel "$LINENO" "linux/ip_vs.h" "do_not_cache_me_header_linux_ip_vs_h" "$ac_includes_default"
++if test "x$do_not_cache_me_header_linux_ip_vs_h" = x""yes; then :
+ 
+ fi
+ 
+ 
+-if test "$ac_cv_header_linux_ip_vs_h" != "yes"; then
++if test "$do_not_cache_me_header_linux_ip_vs_h" != "yes"; then
+ 	blacklist_modules="$blacklist_modules ipvs";
+ fi;
+ 
+@@ -10803,6 +10822,22 @@
+   ENABLE_LIBIPQ_FALSE=
+ fi
+ 
++ if test "$enable_xml" = "yes"; then
++  ENABLE_XML_TRUE=
++  ENABLE_XML_FALSE='#'
++else
++  ENABLE_XML_TRUE='#'
++  ENABLE_XML_FALSE=
++fi
++
++ if test "$enable_save_restore" = "yes"; then
++  ENABLE_SAVE_RESTORE_TRUE=
++  ENABLE_SAVE_RESTORE_FALSE='#'
++else
++  ENABLE_SAVE_RESTORE_TRUE='#'
++  ENABLE_SAVE_RESTORE_FALSE=
++fi
++
+ 
+ 
+ 

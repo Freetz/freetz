@@ -1,22 +1,22 @@
---- extensions/libxt_multiport.c	2008-07-29 10:50:33.000000000 +0200
-+++ extensions/libxt_multiport.c	2008-07-29 10:52:43.000000000 +0200
-@@ -512,13 +512,13 @@
- 	.name		= "multiport",
- 	.revision	= 0,
- 	.version	= XTABLES_VERSION,
--	.size		= XT_ALIGN(sizeof(struct xt_multiport)),
--	.userspacesize	= XT_ALIGN(sizeof(struct xt_multiport)),
--	.help		= multiport_help,
--	.parse		= multiport_parse,
-+	.size		= XT_ALIGN(sizeof(struct xt_multiport_v1)),
-+	.userspacesize	= XT_ALIGN(sizeof(struct xt_multiport_v1)),
-+	.help		= multiport_help_v1,
-+	.parse		= multiport_parse_v1,
- 	.final_check	= multiport_check,
--	.print		= multiport_print,
--	.save		= multiport_save,
-+	.print		= multiport_print_v1,
-+	.save		= multiport_save_v1,
- 	.extra_opts	= multiport_opts,
- };
- 
+--- extensions/libxt_multiport.c	2011-06-25 13:13:32.984906257 +0200
++++ extensions/libxt_multiport.c	2011-06-25 13:19:19.964906453 +0200
+@@ -474,13 +474,13 @@
+ 		.name          = "multiport",
+ 		.revision      = 0,
+ 		.version       = XTABLES_VERSION,
+-		.size          = XT_ALIGN(sizeof(struct xt_multiport)),
+-		.userspacesize = XT_ALIGN(sizeof(struct xt_multiport)),
+-		.help          = multiport_help,
+-		.x6_parse      = multiport_parse,
++		.size          = XT_ALIGN(sizeof(struct xt_multiport_v1)),
++		.userspacesize = XT_ALIGN(sizeof(struct xt_multiport_v1)),
++		.help          = multiport_help_v1,
++		.x6_parse      = multiport_parse_v1,
+ 		.x6_fcheck     = multiport_check,
+-		.print         = multiport_print,
+-		.save          = multiport_save,
++		.print         = multiport_print_v1,
++		.save          = multiport_save_v1,
+ 		.x6_options    = multiport_opts,
+ 	},
+ 	{

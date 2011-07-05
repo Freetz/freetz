@@ -1,0 +1,30 @@
+--- iptables/xtables.c.ori	2011-06-27 21:23:51.000000000 +0200
++++ iptables/xtables.c	2011-06-27 21:26:09.000000000 +0200
+@@ -1409,6 +1409,7 @@
+ 	}
+ }
+ 
++#ifdef ENABLE_IPV6
+ const char *xtables_ip6addr_to_numeric(const struct in6_addr *addrp)
+ {
+ 	/* 0000:0000:0000:0000:0000:0000:000.000.000.000
+@@ -1717,6 +1718,7 @@
+ 			}
+ 	}
+ }
++#endif
+ 
+ void xtables_save_string(const char *value)
+ {
+--- iptables/Makefile.am.old	2011-06-28 15:49:19.000000000 +0200
++++ iptables/Makefile.am	2011-06-28 15:53:05.000000000 +0200
+@@ -13,6 +13,9 @@
+ libxtables_la_CFLAGS  = ${AM_CFLAGS} -DNO_SHARED_LIBS=1
+ libxtables_la_LIBADD  =
+ endif
++if ENABLE_IPV6
++libxtables_la_CFLAGS  += -DENABLE_IPV6
++endif
+ 
+ xtables_multi_SOURCES  = xtables-multi.c
+ if ENABLE_XML
