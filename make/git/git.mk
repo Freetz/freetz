@@ -16,6 +16,8 @@ ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 endif
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_GIT_WITH_PCRE
+
 $(PKG)_CONFIGURE_ENV += ac_cv_c_c99_format=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_fread_reads_directories=no
 $(PKG)_CONFIGURE_ENV += ac_cv_snprintf_returns_bogus=no
@@ -26,6 +28,9 @@ $(PKG)_CONFIGURE_OPTIONS += --with-curl
 $(PKG)_CONFIGURE_OPTIONS += --with-expat
 $(PKG)_CONFIGURE_OPTIONS += --with-iconv
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl
+ifeq ($(strip $(FREETZ_PACKAGE_GIT_WITH_PCRE)),y)
+$(PKG)_CONFIGURE_OPTIONS += --with-libpcre="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+endif
 $(PKG)_CONFIGURE_OPTIONS += --with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-perl
 $(PKG)_CONFIGURE_OPTIONS += --without-python

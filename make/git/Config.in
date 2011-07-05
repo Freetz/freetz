@@ -12,3 +12,15 @@ config FREETZ_PACKAGE_GIT
 		Git is a fast, scalable, distributed revision control system with an
 		unusually rich command set that provides both high-level operations
 		and full access to internals.
+
+config FREETZ_PACKAGE_GIT_WITH_PCRE
+	bool "build with pcre support"
+	depends on FREETZ_PACKAGE_GIT
+	select FREETZ_LIB_libpcre
+	default n
+	help
+		With this option enabled git-grep will be able to use
+		Perl-compatible regular expressions (pcre).
+
+		Note: git supports all kinds of POSIX regular expressions
+		without libpcre. Most users want say no here.

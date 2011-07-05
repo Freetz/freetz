@@ -43,6 +43,15 @@
  
  ifdef NO_LIBGEN_H
  	COMPAT_CFLAGS += -DNO_LIBGEN_H
+@@ -1268,7 +1268,7 @@
+ 	BASIC_CFLAGS += -DUSE_LIBPCRE
+ 	ifdef LIBPCREDIR
+ 		BASIC_CFLAGS += -I$(LIBPCREDIR)/include
+-		EXTLIBS += -L$(LIBPCREDIR)/$(lib) $(CC_LD_DYNPATH)$(LIBPCREDIR)/$(lib)
++		EXTLIBS += -L$(LIBPCREDIR)/$(lib)
+ 	endif
+ 	EXTLIBS += -lpcre
+ endif
 @@ -1282,7 +1273,7 @@
  	ifdef CURLDIR
  		# Try "-Wl,-rpath=$(CURLDIR)/$(lib)" in such a case.
