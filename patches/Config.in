@@ -1051,6 +1051,20 @@ config FREETZ_REMOVE_WLAN
 
 		EXPERMINTAL FEATURE, USE AT OWN RISK!
 
+comment "Replacement patches --------------------"
+
+config FREETZ_REPLACE_SSL_LIBS
+	bool "Replace AVM SSL libraries"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_LIBSSL
+	default n
+	help
+		Use this option only if you are running out of space and if you
+		really know, what you are doing.
+		Activating this option may cause an unstable system, uncontrolled reboots
+		and other side effects.
+
+		Activating this option saves about 400KB in the image.
+
 comment "Adds -----------------------------------"
 
 config FREETZ_ADD_ANNEX_A_FIRMWARE

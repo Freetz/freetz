@@ -1783,20 +1783,7 @@ menu "BusyBox options"
 	source make/busybox/Config.in
 endmenu
 
-menu "Shared libraries"
-config FREETZ_REPLACE_SSL_LIBS
-	bool "Replace AVM ssl-libs"
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_LIBSSL
-	default n
-	help
-		Use this option only if you are running out of space and if you
-		really know, what you are doing.
-		Activating this option may cause an unstable system, uncontrolled reboots
-		and other side effects.
-
-		Activating this option saves about 400KB in the image.
-
-	comment "Libraries -------------------------------"
+menu "Shared Libraries"
 	source make/libs/Config.in
 endmenu
 
