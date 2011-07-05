@@ -792,7 +792,7 @@ config FREETZ_HAS_DECT
 	help
 		Select this if you have a box with DECT.
 
-config FREETZ_HAS_LIBSSL
+config FREETZ_HAS_OPENSSL_LIBS
 	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_300IP_AS_FON || \
@@ -802,12 +802,13 @@ config FREETZ_HAS_LIBSSL
 		FREETZ_TYPE_FON_5140 || \
 		FREETZ_TYPE_FON_WLAN || \
 		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_WLAN_3020 || \
 		FREETZ_TYPE_WLAN_3030
 	default y
 	help
-		Select this if you have a box with libssl.
+		Select this if you have a box with AVM libcrypto and libssl.
 
 config FREETZ_HAS_LSOF
 	bool "Has lsof"		if FREETZ_TYPE_CUSTOM
@@ -1802,7 +1803,7 @@ config FREETZ_STRIP_LIBRARIES
 	help
 		Recompiles all the shared libraries to only include the
 		symbols actually needed to run the binaries on the target.
-		
+
 		Note that this will make the system libraries incompatible
 		with most of the packages that are not selected during the
 		build process.
