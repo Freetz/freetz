@@ -80,7 +80,6 @@ $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARY) $($(PKG)_SYMLINKS
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(IPTABLES_DIR) clean
-	$(RM) $(IPTABLES_LIB_STAGING_DIR)
 
 $(pkg)-uninstall:
 	$(RM) -r \
