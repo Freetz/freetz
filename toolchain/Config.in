@@ -376,7 +376,7 @@ config FREETZ_TARGET_TOOLCHAIN
 		Files are installed into toolchain/target/target-utils.
 
 comment "Both kernel and target toolchain related options ----------"
-config FREETZ_STATIC_TOOLCHAIN
+config FREETZ_TOOLCHAIN_STATIC
 	bool "Build static toolchains" if FREETZ_BUILD_TOOLCHAIN
 	default n
 	help
@@ -387,8 +387,8 @@ config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
 	bool
 	default y
 
-config FREETZ_BUILD_32BIT_TOOLCHAIN
-	bool "Build 32-bit toolchain" if FREETZ_BUILD_TOOLCHAIN
+config FREETZ_TOOLCHAIN_32BIT
+	bool "Build 32-bit toolchains" if FREETZ_BUILD_TOOLCHAIN
 	default n
 	help
 		This option causes a 32-bit toolchain to be built even on 64-bit systems.

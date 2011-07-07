@@ -76,7 +76,7 @@ endif
 endif
 
 GCC_EXTRA_MAKE_OPTIONS := MAKEINFO=true
-ifeq ($(strip $(FREETZ_STATIC_TOOLCHAIN)),y)
+ifeq ($(strip $(FREETZ_TOOLCHAIN_STATIC)),y)
 GCC_EXTRA_MAKE_OPTIONS += LDFLAGS="-static"
 endif
 
