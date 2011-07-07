@@ -3,7 +3,7 @@ include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
-ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
+ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
 	CCACHE:=ccache-kernel ccache
 endif
 

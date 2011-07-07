@@ -4,7 +4,7 @@ include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
 
 KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel
 
-ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
+ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
 	KERNEL_TOOLCHAIN+=ccache-kernel
 endif
 

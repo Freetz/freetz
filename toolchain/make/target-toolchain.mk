@@ -14,7 +14,7 @@ include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
 
 TARGET_TOOLCHAIN := binutils gcc $(STDCXXLIB)
 
-ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
+ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
 	TARGET_TOOLCHAIN += ccache
 endif
 
@@ -57,7 +57,7 @@ target-toolchain-clean:
 	$(RM) -r $(GCC_BUILD_DIR1)
 	$(RM) -r $(GCC_BUILD_DIR2)
 	$(RM) -r $(GCC_BUILD_DIR3)
-ifeq ($(strip $(FREETZ_TARGET_CCACHE)),y)
+ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)*
 	-$(MAKE) -C $(CCACHE_DIR) clean
 endif
