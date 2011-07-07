@@ -1,0 +1,41 @@
+--- gcc/Makefile.in
++++ gcc/Makefile.in
+@@ -2641,7 +2641,8 @@
+ #
+ # Remake the info files.
+ 
+-doc: $(BUILD_INFO) $(GENERATED_MANPAGES) gccbug
++doc:
++doc-orig: $(BUILD_INFO) $(GENERATED_MANPAGES) gccbug
+ 
+ INFOFILES = doc/cpp.info doc/gcc.info doc/gccint.info \
+             doc/gccinstall.info doc/cppinternals.info
+@@ -2710,7 +2711,8 @@
+ 
+ generated-manpages: man 
+ 
+-man: $(MANFILES) lang.man @GENINSRC@ srcman lang.srcman
++man:
++man-orig: $(MANFILES) lang.man @GENINSRC@ srcman lang.srcman
+ 
+ srcman: $(MANFILES)
+ 	-cp -p $^ $(srcdir)/doc
+@@ -2937,7 +2939,7 @@
+ 	    rm -f $(DESTDIR)$(bindir)/$(GCOV_INSTALL_NAME)$(exeext); \
+ 	    $(INSTALL_PROGRAM) gcov$(exeext) $(DESTDIR)$(bindir)/$(GCOV_INSTALL_NAME)$(exeext); \
+ 	fi
+-	$(INSTALL_SCRIPT) gccbug $(DESTDIR)$(bindir)/$(GCCBUG_INSTALL_NAME)
++#	$(INSTALL_SCRIPT) gccbug $(DESTDIR)$(bindir)/$(GCCBUG_INSTALL_NAME)
+ 
+ # Install the driver program as $(target_noncanonical)-gcc, 
+ # $(target_noncanonical)-gcc-$(version)
+@@ -2986,7 +2988,8 @@
+ 	else true; fi;
+ 
+ # Install the man pages.
+-install-man: installdirs lang.install-man \
++install-man:
++install-man-orig: installdirs lang.install-man \
+ 	$(DESTDIR)$(man1dir)/$(GCC_INSTALL_NAME)$(man1ext) \
+ 	$(DESTDIR)$(man1dir)/$(CPP_INSTALL_NAME)$(man1ext) \
+ 	$(DESTDIR)$(man1dir)/$(GCOV_INSTALL_NAME)$(man1ext) \

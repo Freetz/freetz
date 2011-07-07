@@ -1,0 +1,175 @@
+--- configure
++++ configure
+@@ -1834,18 +1834,18 @@
+ build_libs="build-libiberty"
+ 
+ # these tools are built for the build environment
+-build_tools="build-texinfo build-byacc build-flex build-bison build-m4 build-fixincludes"
++build_tools="build-byacc build-flex build-bison build-m4 build-fixincludes"
+ 
+ # these libraries are used by various programs built for the host environment
+ #
+-host_libs="intl mmalloc libiberty opcodes bfd readline tcl tk itcl libgui zlib libcpp libdecnumber gmp mpfr"
++host_libs="mmalloc libiberty opcodes bfd readline tcl tk itcl libgui zlib libcpp libdecnumber gmp mpfr"
+ 
+ # these tools are built for the host environment
+ # Note, the powerpc-eabi build depends on sim occurring before gdb in order to
+ # know that we are building the simulator.
+ # binutils, gas and ld appear in that order because it makes sense to run
+ # "make check" in that particular order.
+-host_tools="texinfo byacc flex bison binutils gas ld fixincludes gcc sid sim gdb make patch prms send-pr gprof etc expect dejagnu ash bash bzip2 m4 autoconf automake libtool diff rcs fileutils shellutils time textutils wdiff find uudecode hello tar gzip indent recode release sed utils guile perl gawk findutils gettext zip fastjar gnattools"
++host_tools="byacc flex bison binutils gas ld fixincludes gcc sid sim gdb make patch prms send-pr gprof etc expect dejagnu ash bash bzip2 m4 autoconf automake libtool diff rcs fileutils shellutils time textutils wdiff find uudecode hello tar gzip indent recode release sed utils guile perl gawk findutils gettext zip fastjar gnattools"
+ 
+ # libgcj represents the runtime libraries only used by gcj.
+ libgcj="target-libffi \
+--- bfd/Makefile.in
++++ bfd/Makefile.in
+@@ -271,7 +271,7 @@
+ INCDIR = $(srcdir)/../include
+ CSEARCH = -I. -I$(srcdir) -I$(INCDIR)
+ MKDEP = gcc -MM
+-SUBDIRS = doc po
++SUBDIRS =
+ bfddocdir = doc
+ bfdlib_LTLIBRARIES = libbfd.la
+ AM_CFLAGS = $(WARN_CFLAGS)
+--- binutils/Makefile.in
++++ binutils/Makefile.in
+@@ -354,7 +354,7 @@
+ target_vendor = @target_vendor@
+ AUTOMAKE_OPTIONS = cygnus dejagnu
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = doc po
++SUBDIRS =
+ tooldir = $(exec_prefix)/$(target_alias)
+ YFLAGS = -d
+ AM_CFLAGS = $(WARN_CFLAGS)
+--- gas/Makefile.in
++++ gas/Makefile.in
+@@ -258,7 +258,7 @@
+ te_file = @te_file@
+ AUTOMAKE_OPTIONS = 1.8 cygnus dejagnu
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = doc po
++SUBDIRS =
+ # Automake should figure this out on its own.  It doesn't, because
+ # of the "cygnus" option.  But distclean still wants it.
+ DIST_SUBDIRS = $(SUBDIRS)
+--- gprof/Makefile.in
++++ gprof/Makefile.in
+@@ -90,14 +90,14 @@
+ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+ SOURCES = $(gprof_SOURCES)
+-INFO_DEPS = gprof.info
++INFO_DEPS =
+ TEXINFO_TEX = $(top_srcdir)/../texinfo/texinfo.tex
+ am__TEXINFO_TEX_DIR = $(top_srcdir)/../texinfo
+-DVIS = gprof.dvi
+-PDFS = gprof.pdf
+-PSS = gprof.ps
+-HTMLS = gprof.html
+-TEXINFOS = gprof.texi
++DVIS =
++PDFS =
++PSS =
++HTMLS =
++TEXINFOS =
+ TEXI2PDF = $(TEXI2DVI) --pdf --batch
+ MAKEINFOHTML = $(MAKEINFO) --html
+ AM_MAKEINFOHTMLFLAGS = $(AM_MAKEINFOFLAGS)
+@@ -240,7 +240,7 @@
+ AUTOMAKE_OPTIONS = cygnus
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+ SUFFIXES = .m
+-SUBDIRS = po
++SUBDIRS =
+ BASEDIR = $(srcdir)/..
+ BFDDIR = $(BASEDIR)/bfd
+ INCDIR = $(BASEDIR)/include
+@@ -269,9 +269,9 @@
+ MANCONF = -Dman
+ TEXI2POD = perl $(srcdir)/../etc/texi2pod.pl $(AM_MAKEINFOFLAGS)
+ POD2MAN = pod2man --center="GNU" --release="binutils-$(VERSION)" --section=1
+-info_TEXINFOS = gprof.texi
+-gprof_TEXINFOS = config.texi
+-man_MANS = gprof.1
++info_TEXINFOS =
++gprof_TEXINFOS =
++man_MANS =
+ AM_MAKEINFOFLAGS = -I "$(srcdir)" -I "$(top_srcdir)/../bfd/doc" -I ../bfd/doc
+ TEXI2DVI = texi2dvi -I "$(srcdir)" -I "$(top_srcdir)/../bfd/doc" -I ../bfd/doc
+ html__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+--- ld/Makefile.in
++++ ld/Makefile.in
+@@ -98,14 +98,14 @@
+ 	$(AM_YFLAGS)
+ YLWRAP = $(top_srcdir)/../ylwrap
+ SOURCES = $(ld_new_SOURCES) $(EXTRA_ld_new_SOURCES)
+-INFO_DEPS = ld.info
++INFO_DEPS =
+ TEXINFO_TEX = $(top_srcdir)/../texinfo/texinfo.tex
+ am__TEXINFO_TEX_DIR = $(top_srcdir)/../texinfo
+-DVIS = ld.dvi
+-PDFS = ld.pdf
+-PSS = ld.ps
+-HTMLS = ld.html
+-TEXINFOS = ld.texinfo
++DVIS =
++PDFS =
++PSS =
++HTMLS =
++TEXINFOS =
+ TEXI2PDF = $(TEXI2DVI) --pdf --batch
+ MAKEINFOHTML = $(MAKEINFO) --html
+ AM_MAKEINFOHTMLFLAGS = $(AM_MAKEINFOFLAGS)
+@@ -279,7 +279,7 @@
+ use_sysroot = @use_sysroot@
+ AUTOMAKE_OPTIONS = cygnus dejagnu
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = po
++SUBDIRS =
+ tooldir = $(exec_prefix)/$(target_alias)
+ YFLAGS = -d
+ AM_CFLAGS = $(WARN_CFLAGS)
+@@ -339,10 +339,10 @@
+     fi; \
+   fi`
+ 
+-info_TEXINFOS = ld.texinfo
+-ld_TEXINFOS = configdoc.texi
+-noinst_TEXINFOS = ldint.texinfo
+-man_MANS = ld.1
++info_TEXINFOS =
++ld_TEXINFOS =
++noinst_TEXINFOS =
++man_MANS =
+ AM_MAKEINFOFLAGS = -I $(srcdir) -I $(BFDDIR)/doc -I ../bfd/doc \
+ 		   -I $(top_srcdir)/../libiberty
+ 
+@@ -2689,12 +2689,12 @@
+ # cygnus option.
+ install-data-local: install-info
+ diststuff: info $(EXTRA_DIST)
+-all: info ld.1
++all: info
+ 
+ # Both info (ld.info) and ld.1 depend on configdoc.texi.
+ # But info isn't a direct target. Make info-recursive to depend on
+ # ld.1 to support parallel build.
+-info-recursive: ld.1
++info-recursive:
+ distclean-local:
+ 	rm -rf ldscripts
+ 
+--- opcodes/Makefile.in
++++ opcodes/Makefile.in
+@@ -241,7 +241,7 @@
+ target_vendor = @target_vendor@
+ AUTOMAKE_OPTIONS = 1.9 cygnus
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = po
++SUBDIRS =
+ INCDIR = $(srcdir)/../include
+ BFDDIR = $(srcdir)/../bfd
+ MKDEP = gcc -MM
