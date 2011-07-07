@@ -43,6 +43,7 @@ mklibs() {
 		-L toolchain/target/lib \
 		-L ${FILESYSTEM_MOD_DIR}/usr/lib/freetz \
 		-L ${FILESYSTEM_MOD_DIR}/lib \
+		-L ${FILESYSTEM_MOD_DIR}/usr/lib \
 		--ldlib ${FILESYSTEM_MOD_DIR}/lib/ld-uClibc.so.0 \
 		--target ${REAL_GNU_TARGET_NAME} \
 		$(cat ${MOD_DIR}/mklibs-progs) \
