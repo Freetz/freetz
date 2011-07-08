@@ -932,7 +932,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Remove left over Subversion directories
 	echo1 "checking for left over Subversion directories"
-	find "$MOD_DIR" -type d -name .svn | xargs rm -rf
+	find "$MOD_DIR" \( -type d -name '.svn' \) -o -name '.gitignore' | xargs rm -rf
 
 	# Delete all files that we are going to re-create now
 	rm -f "$VARTAR_MOD"
