@@ -1,0 +1,38 @@
+From e1420eca7374cd8f583e9d774c890645a205aaee Mon Sep 17 00:00:00 2001
+From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+Date: Tue, 14 Jun 2011 16:31:00 +0200
+Subject: [PATCH] resolv: try next server on SERVFAIL
+
+in bug 3637 Andrey Kovalev aka pxe.ru writes:
+getaddrinfo does NOT add domain to query when receive SERVFAIL
+
+RFC1035 7.2 suggests that
+   - If a resolver gets a server error or other bizarre response
+     from a name server, it should remove it from SLIST, and may
+     wish to schedule an immediate transmission to the next
+     candidate server address.
+
+So let's try the next server upon SERVFAIL even if it's not strictly
+required.
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ libc/inet/resolv.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git libc/inet/resolv.c libc/inet/resolv.c
+index 021d5bf..e8b7f2b 100644
+--- libc/inet/resolv.c
++++ libc/inet/resolv.c
+@@ -1461,7 +1461,7 @@ int attribute_hidden __dns_lookup(const char *name,
+ 		/* bug 660 says we treat negative response as an error
+ 		 * and retry, which is, eh, an error. :)
+ 		 * We were incurring long delays because of this. */
+-		if (h.rcode == NXDOMAIN) {
++		if (h.rcode == NXDOMAIN || h.rcode == SERVFAIL) {
+ 			/* if possible, try next search domain */
+ 			if (!ends_with_dot) {
+ 				DPRINTF("variant:%d sdomains:%d\n", variant, sdomains);
+-- 
+1.7.5.4
+

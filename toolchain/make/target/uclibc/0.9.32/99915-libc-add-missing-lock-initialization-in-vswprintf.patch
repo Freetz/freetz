@@ -1,0 +1,38 @@
+From 9152c4d67c763fde5712e2d181d92c0d7e1e2ab9 Mon Sep 17 00:00:00 2001
+From: Maksim Rayskiy <mrayskiy@broadcom.com>
+Date: Thu, 16 Jun 2011 18:14:01 -0700
+Subject: [PATCH] libc: add missing lock initialization in vswprintf
+
+Unlike vsnprintf, vswprintf does not properly initialize locking
+elements of FILE structure, which in some unfortunate cases can result
+in lockups in _vfwprintf_internal.
+Interesting, the initialization code was removed in
+2a915734a32c5aec9a6a76c13bcb074d30e64171 at the same time as it was added
+to vsnprintf.
+
+Signed-off-by: Maksim Rayskiy <mrayskiy@broadcom.com>
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ libc/stdio/vswprintf.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git libc/stdio/vswprintf.c libc/stdio/vswprintf.c
+index e509216..2195248 100644
+--- libc/stdio/vswprintf.c
++++ libc/stdio/vswprintf.c
+@@ -39,6 +39,11 @@ int vswprintf(wchar_t *__restrict buf, size_t size,
+ 	__INIT_MBSTATE(&(f.__state));
+ #endif /* __STDIO_MBSTATE */
+ 
++#ifdef __UCLIBC_HAS_THREADS__
++	f.__user_locking = 1;		/* Set user locking. */
++	STDIO_INIT_MUTEX(f.__lock);
++#endif /* __UCLIBC_HAS_THREADS__ */
++
+ 	f.__nextopen = NULL;
+ 
+ 	if (size > ((SIZE_MAX - (size_t) buf)/sizeof(wchar_t))) {
+-- 
+1.7.5.4
+
