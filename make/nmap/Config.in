@@ -67,6 +67,20 @@ menu "databases"
 	default y
 endmenu
 
+config FREETZ_PACKAGE_NMAP_ncat
+	bool "include ncat"
+	depends on FREETZ_PACKAGE_NMAP && FREETZ_PACKAGE_NMAP_VERSION_5
+	default n
+	help
+		Include ncat (a much-improved reimplementation of Netcat)
+
+config FREETZ_PACKAGE_NMAP_nping
+	bool "include nping"
+	depends on FREETZ_PACKAGE_NMAP && FREETZ_PACKAGE_NMAP_VERSION_5
+	default n
+	help
+		Include nping (a network packet generation tool / ping utility)
+
 config FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA
 	bool "Use system (shared) liblua"
 	depends on FREETZ_PACKAGE_NMAP
@@ -84,10 +98,10 @@ config FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE
 		Causes system (dynamic) libpcre to be used instead of the bundled one.
 
 config FREETZ_PACKAGE_NMAP_STATIC
-	bool "create statically linked binary"
+	bool "create statically linked binaries"
 	depends on FREETZ_PACKAGE_NMAP
 	default n
 	help
-		Causes all libraries nmap depends on to be linked in statically.
+		Causes all libraries to be linked in statically.
 
 endmenu

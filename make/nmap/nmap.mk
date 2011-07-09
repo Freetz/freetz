@@ -7,8 +7,15 @@ $(PKG)_SITE:=http://nmap.org/dist
 
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
-$(PKG)_BINARY         := $($(PKG)_DIR)/nmap
-$(PKG)_TARGET_BINARY  := $($(PKG)_DEST_DIR)/usr/sbin/nmap
+ifeq ($(strip $(FREETZ_PACKAGE_NMAP_VERSION_5)),y)
+$(PKG)_BINARIES5_ALL       := ncat nping
+$(PKG)_BINARIES5           := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES5_ALL))
+$(PKG)_BINARIES5_BUILD_DIR := $(addprefix $($(PKG)_DIR)/, $(join $($(PKG)_BINARIES5), $(addprefix /,$($(PKG)_BINARIES5))))
+endif
+$(PKG)_BINARIES_ALL        := nmap $($(PKG)_BINARIES5_ALL)
+$(PKG)_BINARIES            := nmap $($(PKG)_BINARIES5)
+$(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_DIR)/nmap $($(PKG)_BINARIES5_BUILD_DIR)
+$(PKG)_BINARIES_TARGET_DIR := $(addprefix $($(PKG)_DEST_DIR)/usr/bin/,$($(PKG)_BINARIES))
 
 $(PKG)_DATADIR        := /usr/share/nmap
 
@@ -18,7 +25,8 @@ $(PKG)_DBS            := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_DBS_ALL))
 $(PKG)_DBS_BUILD_DIR  := $($(PKG)_DBS:%=$($(PKG)_DIR)/nmap-%)
 $(PKG)_DBS_TARGET_DIR := $($(PKG)_DBS:%=$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%)
 
-$(PKG)_NOT_INCLUDED   := $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%,$(filter-out $($(PKG)_DBS),$($(PKG)_DBS_ALL)))
+$(PKG)_NOT_INCLUDED   := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_NOT_INCLUDED   += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%,$(filter-out $($(PKG)_DBS),$($(PKG)_DBS_ALL)))
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_VERSION_4
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_VERSION_5
@@ -45,9 +53,9 @@ $(PKG)_CONFIGURE_OPTIONS += --without-openssl
 $(PKG)_CONFIGURE_OPTIONS += --without-zenmap
 
 ifeq ($(strip $(FREETZ_PACKAGE_NMAP_VERSION_5)),y)
-$(PKG)_CONFIGURE_OPTIONS += --without-ncat
+$(PKG)_CONFIGURE_OPTIONS += --with-ncat
 $(PKG)_CONFIGURE_OPTIONS += --without-ndiff
-$(PKG)_CONFIGURE_OPTIONS += --without-nping
+$(PKG)_CONFIGURE_OPTIONS += --with-nping
 else
 # FREETZ_PACKAGE_NMAP_VERSION_4
 $(PKG)_CONFIGURE_OPTIONS += --with-nmapfe=no
@@ -63,11 +71,10 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(NMAP_DIR) $(if $(FREETZ_PACKAGE_NMAP_STATIC),STATIC="-static")
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	$(INSTALL_BINARY_STRIP)
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
 
 $($(PKG)_DBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	touch $@
@@ -77,13 +84,13 @@ $($(PKG)_DBS_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%: $($(PKG)_D
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_DBS_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_DBS_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NMAP_DIR) clean
 	$(RM) $(NMAP_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) -r $(NMAP_TARGET_BINARY) $(NMAP_DEST_DIR)$(NMAP_DATADIR)
+	$(RM) -r $(NMAP_BINARIES_ALL:%=$(NMAP_DEST_DIR)/usr/bin/%) $(NMAP_DEST_DIR)$(NMAP_DATADIR)
 
 $(PKG_FINISH)

@@ -1,7 +1,9 @@
 if [ "$EXTERNAL_FREETZ_PACKAGE_NMAP" == "y" ]; then
-	EXTERNAL_FILES+=" /usr/sbin/nmap"
+	EXTERNAL_FILES+=" /usr/bin/nmap"
 	for i in mac-prefixes os-db payloads protocols rpc service-probes services; do
 		varname="FREETZ_PACKAGE_NMAP_$i"
 		[ "$(eval echo \${${varname/-/_}})" == "y" ] && EXTERNAL_FILES+=" /usr/share/nmap/nmap-$i"
 	done
+	[ "$FREETZ_PACKAGE_NMAP_ncat" == "y" ] && EXTERNAL_FILES+=" /usr/bin/ncat"
+	[ "$FREETZ_PACKAGE_NMAP_nping" == "y" ] && EXTERNAL_FILES+=" /usr/bin/nping"
 fi
