@@ -8,21 +8,9 @@ mypidof() {
 	ps -w | sed -n "/\/m[o]d\/etc\/${1}.conf/ s/^[ ]*\([0-9]*\)[ ].*/\1/ p"
 }
 
-# TODO: Remove compat section in future
-compat () {
-mkdir -p /tmp/flash/openvpn
-for x in $(find /tmp/flash/ -name ca.crt -o -name box.crt -o -name box.key -o -name dh.pem -o -name crl.pem -o -name static.key ); do
-	mv $x /tmp/flash/openvpn/$(echo $x | sed 's%^.*flash/\(openvpn_\)*%%'| tr '/' '_')
-	echo "moved $x to /tmp/flash/openvpn/$(echo $x | sed 's%^.*flash/\(openvpn_\)*%%'| tr '/' '_')"
-done
-rmdir /tmp/flash/openvpn_* 2> /dev/null
-/usr/bin/modsave flash >/dev/null
-}
-
 if [ ! -e /var/tmp/.openvpnfirstrun ]; then
 	touch /var/tmp/.openvpnfirstrun
 	/mod/etc/default.openvpn/openvpn_dynamic_conf
-	[ -r /var/tmp/flash/openvpn/static.key ] || compat
 fi
 [ -x /mod/sbin/$DAEMON ] || ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
 

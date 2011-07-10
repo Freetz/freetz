@@ -47,9 +47,6 @@ case $1 in
 		touch /var/tmp/hosts
 		touch /var/tmp/ethers
 
-		# compat: remove in future versions
-		[ -r /tmp/flash/exhosts ] && mv /tmp/flash/exhosts /tmp/flash/mod/hosts
-
 		if [ -r /tmp/flash/mod/hosts ]; then
 			egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts |
 				while read -r ip mac interface host desc; do

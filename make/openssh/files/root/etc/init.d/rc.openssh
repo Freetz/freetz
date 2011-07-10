@@ -27,26 +27,9 @@ check_key_file() {
 	/usr/bin/modsave flash
 }
 
-# BEGIN compat
-convert_compat()
-{
-	if [ -d "/tmp/flash/.ssh" ]; then
-		rm -rf /tmp/flash/openssh
-		mv /tmp/flash/.ssh /tmp/flash/openssh
-	fi
-	[ -e /tmp/flash/rsa_host_key ] && mv /tmp/flash/rsa_host_key /tmp/flash/openssh/rsa_host_key
-	[ -e /tmp/flash/dsa_host_key ] && mv /tmp/flash/dsa_host_key /tmp/flash/openssh/dsa_host_key
-	[ -e /tmp/flash/host_key ] && mv /tmp/flash/host_key /tmp/flash/openssh/host_key
-}
-# END compat
-
 config() {
 	mkdir -p /tmp/flash/openssh
 	mkdir -p /var/empty
-
-	# BEGIN compat
-	convert_compat
-	# END compat
 
 	check_key_file "/tmp/flash/openssh/rsa_host_key" "rsa"
 	check_key_file "/tmp/flash/openssh/dsa_host_key" "dsa"

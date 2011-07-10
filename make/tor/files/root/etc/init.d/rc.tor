@@ -71,9 +71,6 @@ start() {
 
 case $1 in
 	""|load)
-		#For compatiblity!
-		[ -d /tmp/flash/.tor ] && mv /tmp/flash/.tor $DAEMON_STORAGE
-
 		modlib_addgroup $DAEMON_GROUP
 		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
 		mkdir -p ${PID_FILE%/*}

@@ -12,8 +12,6 @@ start() {
 case $1 in
 	""|load)
 		mkdir -p /tmp/flash/$DAEMON
-		#for compatibility reason only, may be removed later
-		rm /tmp/flash/inetd.conf 2>/dev/null
 		modreg cgi 'inetd' 'Inetd'
 		modreg daemon $DAEMON
 		modreg file inetd conf '$(lang en:"Inetd config" de:"Konfiguration")' 2 "inetd_conf"

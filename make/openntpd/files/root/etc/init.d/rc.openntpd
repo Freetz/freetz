@@ -29,8 +29,6 @@ reload() {
 case $1 in
 	""|load)
 		mkdir -p /tmp/flash/openntpd
-		#for compatibility reason only, may be removed later
-		[ -e /tmp/flash/ntpd.conf ] && mv /tmp/flash/ntpd.conf /tmp/flash/openntpd/ntpd.conf
 
 		modlib_adduser ntp -G users -D -S -g "NTP daemon"
 		mkdir -p /mod/home/ntp
