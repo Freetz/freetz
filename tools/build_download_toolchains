@@ -1,8 +1,8 @@
 #!/bin/sh
 
-KERNEL_TOOLCHAIN_VERSION=0.4
+KERNEL_TOOLCHAIN_VERSION=0.5
 KERNEL_TOOLCHAIN_FILENAME_SUFFIX=freetz-${KERNEL_TOOLCHAIN_VERSION}-shared-glibc
-TARGET_TOOLCHAIN_VERSION=0.4
+TARGET_TOOLCHAIN_VERSION=0.5
 TARGET_TOOLCHAIN_FILENAME_SUFFIX=freetz-${TARGET_TOOLCHAIN_VERSION}-shared-glibc
 
 TOOL_CONF=tools/config/conf
@@ -23,20 +23,20 @@ EOF
 
 #                                        kernel                  target
 # FREETZ_TYPE_FON_WLAN                mipsel-gcc3.x      mipsel-gcc4.x-uClibc0.9.28
-# FREETZ_TYPE_FON_WLAN_7270_V3        mipsel-gcc3.x      mipsel-gcc4.x-uClibc0.9.29
+# FREETZ_TYPE_FON_WLAN_7170+IPv6      mipsel-gcc3.x      mipsel-gcc4.x-uClibc0.9.29
+# FREETZ_TYPE_FON_WLAN_7270_V3        mipsel-gcc4.x      mipsel-gcc4.x-uClibc0.9.31.1
 # FREETZ_TYPE_FON_WLAN_7390           mips-gcc3.x        mips-gcc4.x-uClibc0.9.29
-# FREETZ_TYPE_FON_WLAN_7320           mips-gcc4.x        mips-gcc4.x-uClibc0.9.30
+# FREETZ_TYPE_FON_WLAN_7320           mips-gcc4.x        mips-gcc4.x-uClibc0.9.30.3
 #
 # labor versions
-# FREETZ_TYPE_FON_WLAN_7270_V3        mipsel-gcc4.x      mipsel-gcc4.x-uClibc0.9.31
-# FREETZ_TYPE_FON_WLAN_7390           mips-gcc4.x        mips-gcc4.x-uClibc0.9.31
+# FREETZ_TYPE_FON_WLAN_7390           mips-gcc4.x        mips-gcc4.x-uClibc0.9.31.1
 
 for options in \
 	FREETZ_TYPE_FON_WLAN \
+	"FREETZ_TYPE_FON_WLAN_7170 FREETZ_TARGET_IPV6_SUPPORT" \
 	FREETZ_TYPE_FON_WLAN_7270_V3 \
 	FREETZ_TYPE_FON_WLAN_7390 \
 	FREETZ_TYPE_FON_WLAN_7320 \
-	"FREETZ_TYPE_FON_WLAN_7270_V3 FREETZ_TYPE_LABOR" \
 	"FREETZ_TYPE_FON_WLAN_7390 FREETZ_TYPE_LABOR" \
 ; do
 	optionsCommaSep=$(echo $options | sed -e 's| |,|g')
