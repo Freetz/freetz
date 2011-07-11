@@ -3,6 +3,8 @@
 DAEMON=aiccu
 . /etc/init.d/modlibrc
 
+AICCU_SH=/tmp/flash/$DAEMON/aiccu.sh
+
 config() {
 	modlib_config
 }
@@ -33,7 +35,7 @@ start() {
 		sleep 1
 	done
 	if [ "$AICCU_RUNSCRIPT" == "yes" ]; then
-		/tmp/flash/aiccu/aiccu.sh $AICCU_INTERFACE
+		$AICCU_SH $AICCU_INTERFACE
 		[ "$?" -ne 0 ] && retval=$?
 	fi
 	return $retval
@@ -45,14 +47,20 @@ stop () {
 
 case $1 in
 	""|load)
-		modreg cgi 'aiccu' 'aiccu'
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e $AICCU_SH ] && cat /mod/etc/default.$DAEMON/aiccu_sh.conf > $AICCU_SH
+		[ ! -x $AICCU_SH ] && chmod +x $AICCU_SH
+
+		modreg cgi $DAEMON 'aiccu'
 		modreg daemon $DAEMON
+		modreg file $DAEMON aiccu_sh 'aiccu.sh' 1 "aiccu_sh"
 
 		modlib_start $AICCU_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
-		modunreg cgi 'aiccu'
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
 		modlib_stop
 		;;
 	start)
