@@ -1,0 +1,14 @@
+--- linux-2.6.32/net/netfilter/nf_conntrack_core.c.orig	2011-07-12 17:55:43.000000000 +0200
++++ linux-2.6.32/net/netfilter/nf_conntrack_core.c	2011-07-12 20:16:58.321287310 +0200
+@@ -503,10 +503,10 @@
+ 	struct net *net = nf_ct_net(ignored_conntrack);
+ 	struct nf_conntrack_tuple_hash *h;
+ 	struct hlist_nulls_node *n;
+-	unsigned int hash = hash_conntrack(tuple);
+ #ifdef CONFIG_ATHRS_HW_NAT
+         int (*athr_tuple_taken)(const struct nf_conntrack_tuple *,
+                                 const struct nf_conn *);
++#endif
+ 	unsigned int hash = hash_conntrack(net, tuple);
+ 
+ 	/* Disable BHs the entire time since we need to disable them at
