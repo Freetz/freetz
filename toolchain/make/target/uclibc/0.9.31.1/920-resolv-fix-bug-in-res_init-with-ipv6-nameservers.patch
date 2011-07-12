@@ -1,0 +1,38 @@
+From f27a6d9125c7e93f2f38a23fba04395527bfd02a Mon Sep 17 00:00:00 2001
+From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+Date: Fri, 17 Jun 2011 20:27:51 +0200
+Subject: [PATCH] resolv: fix bug in res_init with ipv6 nameservers
+
+Thanks to Christian Krause <chkr plauener.de> for finding and fixing
+this!
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ libc/inet/resolv.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git libc/inet/resolv.c libc/inet/resolv.c
+index e8b7f2b..dc8a752 100644
+--- libc/inet/resolv.c
++++ libc/inet/resolv.c
+@@ -2980,7 +2980,7 @@ int res_init(void)
+ 		if (__nameserver[i].sa.sa_family == AF_INET6
+ 		 && m < ARRAY_SIZE(rp->_u._ext.nsaddrs)
+ 		) {
+-			struct sockaddr_in6 *sa6 = malloc(sizeof(sa6));
++			struct sockaddr_in6 *sa6 = malloc(sizeof(*sa6));
+ 			if (sa6) {
+ 				*sa6 = __nameserver[i].sa6; /* struct copy */
+ 				rp->_u._ext.nsaddrs[m] = sa6;
+@@ -2997,7 +2997,7 @@ int res_init(void)
+ 
+ #else /* IPv6 only */
+ 	while (m < ARRAY_SIZE(rp->_u._ext.nsaddrs) && i < __nameservers) {
+-		struct sockaddr_in6 *sa6 = malloc(sizeof(sa6));
++		struct sockaddr_in6 *sa6 = malloc(sizeof(*sa6));
+ 		if (sa6) {
+ 			*sa6 = __nameserver[i].sa6; /* struct copy */
+ 			rp->_u._ext.nsaddrs[m] = sa6;
+-- 
+1.7.5.4
+

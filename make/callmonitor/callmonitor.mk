@@ -28,7 +28,9 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(CALLMONITOR_DIR) clean
 
-$(pkg) $(pkg)-precompiled: $($(PKG)_TARGET_DIR)/.packaged
+$(pkg):
+
+$(pkg)-precompiled: $($(PKG)_TARGET_DIR)/.packaged
 
 $($(PKG)_TARGET_DIR)/.packaged: $($(PKG)_DIR)/.configured $($(PKG)_TARGET_BINARY)
 	tar -c -C $(CALLMONITOR_DIR)/root --files-from=$(CALLMONITOR_DIR)/.files | tar -x -C $(CALLMONITOR_DEST_DIR)

@@ -111,7 +111,7 @@ modpatch()
 			# error because it is unreadable.
 			[ -f "$file.orig" ] && [ ! -r "$file.orig" ] && [ ! -s "$file.orig" ] \
 				&& rm -f "$file.orig"
-			diff -Naur "$file.orig" "$file" >> "$patch_file"
+			diff -Naur --label "$file" --label "$file" "$file.orig" "$file" >> "$patch_file"
 			rm -f "$file.orig"
 		done
 		cd - > /dev/null

@@ -29,12 +29,7 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char
 cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYSTEM_MOD_DIR}/lib/modules"
 
 echo2 "patching webmenu"
-if isFreetzType LABOR_PREVIEW; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170_labor_preview.patch"
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170_labor_preview.patch" || exit 2
-else
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch" || exit 2
-fi
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch" || exit 2
 
 echo2 "moving default config dir, creating tcom and congstar symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
@@ -95,8 +90,4 @@ fi
 
 # patch install script to accept firmware from FBF or Speedport
 echo1 "applying install patch"
-if isFreetzType LABOR_PREVIEW; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170_labor_preview.patch" || exit 2
-else
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170.patch" || exit 2
-fi
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170.patch" || exit 2

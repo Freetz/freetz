@@ -21,16 +21,11 @@ cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYS
 #cp "${DIR}/.tk/original/filesystem/etc/init.d/rc.init" "${FILESYSTEM_MOD_DIR}/etc/init.d"
 
 echo2 "patching webmenu"
-isFreetzType LABOR_PREVIEW && \
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170_labor_preview.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170.patch"
 
 if [ ! "$FREETZ_REMOVE_DECT" == "y" ];then
 	echo2 "Add dect sites to webmenu"
-	if isFreetzType LABOR_PREVIEW; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170_labor_preview.patch" || exit 2
-	else
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch" || exit 2
-	fi
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W900V_7170.patch" || exit 2
 	cp "${DIR}/.tk/original/filesystem/usr/share/ctlmgr/libdect.so" "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr"
 fi
 
@@ -100,8 +95,4 @@ fi
 
 # patch install script to accept firmware from FBF on Speedport
 echo1 "applying install patch"
-if isFreetzType LABOR_PREVIEW; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W900V_7170_labor_preview.patch" || exit 2
-else
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W900V_7170.patch" || exit 2
-fi
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W900V_7170.patch" || exit 2

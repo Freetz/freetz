@@ -1,0 +1,63 @@
+--- gcc/Makefile.in
++++ gcc/Makefile.in
+@@ -3808,7 +3808,8 @@
+ #
+ # Remake the info files.
+ 
+-doc: $(BUILD_INFO) $(GENERATED_MANPAGES) gccbug
++doc:
++doc-orig: $(BUILD_INFO) $(GENERATED_MANPAGES) gccbug
+ 
+ INFOFILES = doc/cpp.info doc/gcc.info doc/gccint.info \
+             doc/gccinstall.info doc/cppinternals.info
+@@ -3948,7 +3949,8 @@
+ 
+ generated-manpages: man
+ 
+-man: $(MANFILES) lang.man @GENINSRC@ srcman lang.srcman
++man:
++man-orig: $(MANFILES) lang.man @GENINSRC@ srcman lang.srcman
+ 
+ srcman: $(MANFILES)
+ 	-cp -p $^ $(srcdir)/doc
+@@ -4159,7 +4161,7 @@
+ 	    rm -f $(DESTDIR)$(bindir)/$(GCOV_INSTALL_NAME)$(exeext); \
+ 	    $(INSTALL_PROGRAM) gcov$(exeext) $(DESTDIR)$(bindir)/$(GCOV_INSTALL_NAME)$(exeext); \
+ 	fi
+-	$(INSTALL_SCRIPT) gccbug $(DESTDIR)$(bindir)/$(GCCBUG_INSTALL_NAME)
++#	$(INSTALL_SCRIPT) gccbug $(DESTDIR)$(bindir)/$(GCCBUG_INSTALL_NAME)
+ 
+ # Install the driver program as $(target_noncanonical)-gcc,
+ # $(target_noncanonical)-gcc-$(version)
+@@ -4240,7 +4242,8 @@
+ 	done
+ 
+ # Install the man pages.
+-install-man: lang.install-man \
++install-man:
++install-man-orig: lang.install-man \
+ 	$(DESTDIR)$(man1dir)/$(GCC_INSTALL_NAME)$(man1ext) \
+ 	$(DESTDIR)$(man1dir)/$(CPP_INSTALL_NAME)$(man1ext) \
+ 	$(DESTDIR)$(man1dir)/$(GCOV_INSTALL_NAME)$(man1ext) \
+--- libjava/classpath/Makefile.in
++++ libjava/classpath/Makefile.in
+@@ -367,7 +367,7 @@
+ vm_classes = @vm_classes@
+ 
+ # lib first, to compile .class files before native code, last examples
+-SUBDIRS = lib doc external include native resource scripts tools $(EXAMPLESDIR)
++SUBDIRS = lib external include native resource scripts tools $(EXAMPLESDIR)
+ DIST_SUBDIRS = lib doc external include native resource scripts tools examples
+ 
+ # Allow users to pass site-specific flags to autoreconf via an env var. 
+--- libstdc++-v3/Makefile.in
++++ libstdc++-v3/Makefile.in
+@@ -309,7 +309,7 @@
+ 
+ # -I/-D flags to pass when compiling.
+ AM_CPPFLAGS = $(GLIBCXX_INCLUDES)
+-@GLIBCXX_HOSTED_TRUE@hosted_source = doc src po testsuite
++@GLIBCXX_HOSTED_TRUE@hosted_source = src po testsuite
+ SUBDIRS = include libsupc++ $(hosted_source)
+ ACLOCAL_AMFLAGS = -I . -I .. -I ../config
+ 

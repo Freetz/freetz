@@ -38,7 +38,7 @@ for var in $vars; do
 	eval $tmp=\$uebergabe
 done
 
-if [ "openvpn_$CONFIG_NAMES" == "$prefix" ] || [ "$prefix" == "openvpn" -a  $count -eq 1 ]; then
+if [ "openvpn_$CONFIG_NAMES" = "$prefix" ] || [ "$prefix" = "openvpn" -a  $count -eq 1 ]; then
 
 if [ $1 ]; then
 	CONFFILE=$1
@@ -46,36 +46,26 @@ else
 	CONFFILE=/mod/etc/${prefix}.conf
 fi
 
+[ "${TYPE}_${CLIENT_INFO}_${AUTH_TYPE}" = "tun_yes_certs" ] && TUNSUBNET=true || TUNSUBNET=""
+
 echo "#  OpenVPN 2.1 Config, $(date)" > $CONFFILE
 
-if [ "$LOCAL" ];then
-	echo "local $LOCAL"  >> $CONFFILE
-fi
-
-if [ "$PROTO" == "tcp" ]; then
-	if [ "$IPV6" == yes ]; then
-		echo "proto tcp6-$MODE" >> $CONFFILE
-	else
-		echo "proto tcp-$MODE" >> $CONFFILE
-	fi
+[ "$IPV6" = yes ] && V6=6 || V6=""
+if [ "$PROTO" = "tcp" ]; then
+	echo "proto tcp${V6}-$MODE" >> $CONFFILE
 else
-	if [ "$IPV6" == yes ]; then
-		echo "proto udp6" >> $CONFFILE
-	else
-		echo "proto udp" >> $CONFFILE
-	fi
+	echo "proto udp${V6}" >> $CONFFILE
 fi
 
-if [ "$TYPE" == "tap" ]; then
+if [ "$TYPE" = "tap" ]; then
 	echo "dev tap$(( $count -1))" >> $CONFFILE
-	[ "$TAP2LAN" == yes ] && echo "#Helperline for rc.openvpn to add tap$(( $count -1)) to lan bridge" >> $CONFFILE
+	[ "$TAP2LAN" = yes ] && echo "#Helperline for rc.openvpn to add tap$(( $count -1)) to lan bridge" >> $CONFFILE
 else
 	echo "dev tun" >> $CONFFILE
 fi
-
 DEV=$(find /dev -type c -name tun 2>/dev/null)
 if [ "$DEV" ]; then
-	echo "dev-node $DEV" >> $CONFFILE
+	[ "$DEV" = "/dev/net/tun" ] || echo "dev-node $DEV" >> $CONFFILE
 else
 	echo -e "\n\tWarning: No tunnel device found."
 fi
@@ -86,175 +76,123 @@ else
 	keypath="/tmp/flash/openvpn/"
 fi
 
-if [ "$AUTH_TYPE" == "certs" ]; then
+if [ "$AUTH_TYPE" = "certs" ]; then
 	echo "ca ${keypath}ca.crt" >> $CONFFILE
 	echo "cert ${keypath}box.crt" >> $CONFFILE
 	echo "key ${keypath}box.key" >> $CONFFILE
-	if [ "$MODE" == "server" ]; then
+	if [ "$MODE" = "server" ]; then
 		echo "dh ${keypath}dh.pem" >> $CONFFILE
-		if [ -r "${keypath}crl.pem" -a "$(sed 's/[ \t]*//g' ${keypath}crl.pem)" ]; then
-			echo "crl-verify ${keypath}crl.pem" >> $CONFFILE
-		fi
+		[ -r "${keypath}crl.pem" -a "$(sed 's/[ \t]*//g' ${keypath}crl.pem)" ] && echo "crl-verify ${keypath}crl.pem" >> $CONFFILE
 		echo "tls-server" >> $CONFFILE
-		if [ "$TLS_AUTH" == "yes" ]; then
-			echo "tls-auth ${keypath}static.key 0" >> $CONFFILE
-		fi
+		[ "$TLS_AUTH" = "yes" ] && echo "tls-auth ${keypath}static.key 0" >> $CONFFILE
 	else
 		echo "tls-client" >> $CONFFILE
 		[ "yes" != "$NO_CERTTYPE" ] && echo "ns-cert-type server" >> $CONFFILE
-		if [ "$TLS_AUTH" == "yes" ]; then
-			echo "tls-auth ${keypath}static.key 1" >> $CONFFILE
-		fi
-
+		[ "$TLS_AUTH" = "yes" ] && echo "tls-auth ${keypath}static.key 1" >> $CONFFILE
 	fi 
 else
 	echo "secret ${keypath}static.key" >> $CONFFILE
 fi
 
-if [ "$MODE" == "server" ]; then
+
+if [ "$MODE" = "server" ]; then
+	[ "$LOCAL" ] && echo "local $LOCAL"  >> $CONFFILE
 	echo "port $PORT" >> $CONFFILE
 
-	if [ "$PUSH_DNS" ]; then
-		echo "push \"dhcp-option DNS $PUSH_DNS\"" >> $CONFFILE
-	fi
-	if [ "$PUSH_WINS" ]; then
-		echo "push \"dhcp-option WINS $PUSH_WINS\"" >> $CONFFILE
-	fi
-	if [ "$REDIRECT" ]; then
-		echo "push \"redirect-gateway def1\"" >> $CONFFILE
-	fi
-	if [ "$DHCP_RANGE" -a "$AUTH_TYPE" == "certs" ]; then
-		echo "mode server" >> $CONFFILE
-		echo "ifconfig-pool $DHCP_RANGE" >> $CONFFILE
-		if [ "$CLIENT2CLIENT" == "yes" ]; then
-			echo "push \"route ${DHCP_RANGE%.* *}.0 255.255.255.0\"" >> $CONFFILE		
-		else
-			echo "push \"route $BOX_IP\"" >> $CONFFILE
-		fi
-		echo "route ${DHCP_RANGE%.* *}.0 255.255.255.0" >> $CONFFILE
-	fi
-
-	if [ "$CLIENT_INFO" == "yes" ] && [ "$AUTH_TYPE" == "certs" ]; then 
-		if [ ! -d $CCD ]; then
-			mkdir -p $CCD
-		else
-			rm $CCD/*	
-		fi
+	if [ "$TYPE" = "tap" ] || [ $TUNSUBNET ]; then
 		echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
 		echo "push \"route-gateway $BOX_IP\"" >> $CONFFILE
-		if [ ! "$DHCP_RANGE" ]; then 
+		[ $TUNSUBNET ] && echo -e 'topology subnet\npush "topology subnet"' >> $CONFFILE
+		[ "$LOCAL_NET" ] && echo "push \"route $LOCAL_NET\"" | sed 's/[[:space:]]*;[[:space:]]*/\"\npush \"route /g' >> $CONFFILE
+		[ "$REMOTE_NET" ] && echo  "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
+		[ "$MAXCLIENTS" ] && echo "max-clients $MAXCLIENTS" >> $CONFFILE
+	else  # TUN and Point2Point
+		echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
+		[ "$REMOTE_NET" ] && echo  "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
+		[ "$LOCAL_NET" -a "$AUTH_TYPE" = "certs" ] && echo "push \"route $LOCAL_NET\"" | sed 's/[[:space:]]*;[[:space:]]*/\"\npush \"route /g' >> $CONFFILE
+	fi
+
+
+	if [ "$AUTH_TYPE" = "certs" ]; then
+		if [ "$DHCP_RANGE" ]; then
 			echo "mode server" >> $CONFFILE
-		fi 
-		echo "client-config-dir $CCD_REL" >> $CONFFILE
-		echo "topology subnet" >> $CONFFILE
-		echo 'push "topology subnet"' >> $CONFFILE
-		echo "max-clients  $MAXCLIENTS" >> $CONFFILE
-		if [ "$LOCAL_NET" ]; then
-			tmp=$(echo $LOCAL_NET | sed 's/[[:space:]]*;[[:space:]]*/;/g')
-			IFS=";"
-			for i in $tmp; do
-				echo "push \"route $i $BOX_IP\"" >> $CONFFILE
+			echo "ifconfig-pool $DHCP_RANGE" >> $CONFFILE
+			if [ "$CLIENT2CLIENT" = "yes" ]; then
+				echo "push \"route ${DHCP_RANGE%.* *}.0 255.255.255.0\"" >> $CONFFILE		
+			else
+				echo "push \"route $BOX_IP\"" >> $CONFFILE
+			fi
+			echo "route ${DHCP_RANGE%.* *}.0 255.255.255.0" >> $CONFFILE
+		fi
+
+		if [ "$CLIENT_INFO" = "yes" ]; then 
+			mkdir -p $CCD
+			rm -f $CCD/*	
+			[ ! "$DHCP_RANGE" ] && echo "mode server" >> $CONFFILE
+			echo "client-config-dir $CCD_REL" >> $CONFFILE
+			client=1
+			actcip=${CLIENT_IPS%%:*}
+			restip=${CLIENT_IPS#*:}
+			actcname=${CLIENT_NAMES%%:*}
+			restname=${CLIENT_NAMES#*:}
+			actcnet=${CLIENT_NETS%%:*}
+			restnet=${CLIENT_NETS#*:}
+
+			while [ $client -le "$CLIENTS_DEFINED" ]
+			do	
+				eval C_IP$client=$actcip
+				eval C_NAME$client=$actcname
+				eval C_NET$client=\"$actcnet\"
+				actcip=${restip%%:*}
+				restip=${restip#*:}
+				actcname=${restname%%:*}
+				restname=${restname#*:}
+				actcnet=${restnet%%:*}
+				restnet=${restnet#*:}
+				let client++
 			done
-			unset IFS
-		fi			
-		client=1
-		actcip=${CLIENT_IPS%%:*}
-		restip=${CLIENT_IPS#*:}
-		actcname=${CLIENT_NAMES%%:*}
-		restname=${CLIENT_NAMES#*:}
-		actcnet=${CLIENT_NETS%%:*}
-		restnet=${CLIENT_NETS#*:}
 
-		while [ $client -le "$CLIENTS_DEFINED" ]
-		do	
-			eval C_IP$client=$actcip
-			eval C_NAME$client=$actcname
-			eval C_NET$client=\"$actcnet\"
-			actcip=${restip%%:*}
-			restip=${restip#*:}
-			actcname=${restname%%:*}
-			restname=${restname#*:}
-			actcnet=${restnet%%:*}
-			restnet=${restnet#*:}
-			let client++
-		done
+			client=1
 
-		client=1
-
-		while [ $client -le "$CLIENTS_DEFINED" ]
-		do
-			eval net=\$C_NET$client
-			eval name=\$C_NAME$client
-			eval ip=\$C_IP$client
-			echo "ifconfig-push $ip $BOX_MASK"  > $CCD/$name
-			if [ "$net" != "-" ]; then
-				#echo "route $net $mask $ip" >> $CONFFILE
-				echo -e "route $net $ip" | sed "s/[[:space:]]*;[[:space:]]*/ ${ip}\nroute /g" >> $CONFFILE
-				#echo "iroute  $net $mask" >> $CCD/$name
-				echo -e "iroute $net" | sed "s/[[:space:]]*;[[:space:]]*/\niroute /g" >> $CCD/$name
-			fi
-			if [ "$CLIENT2CLIENT" == "yes" ]; then
-				i=1
-				while [ $i -le $CLIENTS_DEFINED ]; do
-					if [ $i -ne $client ]; then
-						eval cnet=\$C_NET$i 
-						eval cip=\$C_IP$i
-						if [ "$cnet" != "-"  ]; then
-							#echo "push \"route $cnet $cip \"" >> $CCD/$name
-							echo -e "push \"route $cnet $cip\"" | sed "s/[[:space:]]*;[[:space:]]*/ ${cip}\"\npush \"route /g" >> $CCD/$name
+			while [ $client -le "$CLIENTS_DEFINED" ]
+			do
+				eval net=\$C_NET$client
+				eval name=\$C_NAME$client
+				eval ip=\$C_IP$client
+				echo "ifconfig-push $ip $BOX_MASK"  > $CCD/$name
+				if [ "$net" != "-" ]; then
+					echo -e "route $net $ip" | sed "s/[[:space:]]*;[[:space:]]*/ ${ip}\nroute /g" >> $CONFFILE
+					echo -e "iroute $net" | sed "s/[[:space:]]*;[[:space:]]*/\niroute /g" >> $CCD/$name
+				fi
+				if [ "$CLIENT2CLIENT" = "yes" ]; then
+					i=1
+					while [ $i -le $CLIENTS_DEFINED ]; do
+						if [ $i -ne $client ]; then
+							eval cnet=\$C_NET$i 
+							eval cip=\$C_IP$i
+							[ "$cnet" != "-"  ] && echo -e "push \"route $cnet $cip\"" | sed "s/[[:space:]]*;[[:space:]]*/ ${cip}\"\npush \"route /g" >> $CCD/$name
 						fi
-					fi
-					i=$((1+$i))
-				done
-			fi
-			let client++
-		done
-	fi
+						i=$((1+$i))
+					done
+				fi
+				let client++
+			done
+		fi
+	fi # of CERTS
 
-	if [ "$TYPE" == "tap" ]; then
-		echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
-		echo "push \"route-gateway $BOX_IP\"" >> $CONFFILE
-		if [ "$LOCAL_NET" ]; then
-			#echo "push \"route $LOCAL_NET\"" >> $CONFFILE
-			echo "push \"route $LOCAL_NET\"" | sed 's/[[:space:]]*;[[:space:]]*/\"\npush \"route /g' >> $CONFFILE
-		fi
-		if [ "$REMOTE_NET" ]; then
-			#echo "route $REMOTE_NET" >> $CONFFILE
-			echo  "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
-		fi
-		if [ "$MAXCLIENTS" ]; then
-			echo "max-clients $MAXCLIENTS" >> $CONFFILE
-		fi
-	else 
-		if [ "$CLIENT_INFO" != "yes" ] || [ "$AUTH_TYPE" == "static" ]; then 
-			echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
-			if [ "$REMOTE_NET" ]; then
-				#echo "route $REMOTE_NET" >> $CONFFILE
-				echo  "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
-			fi
-			if [ "$LOCAL_NET" -a "$AUTH_TYPE" == "certs" ]; then
-				#echo "push \"route $LOCAL_NET\"" >> $CONFFILE
-				echo "push \"route $LOCAL_NET\"" | sed 's/[[:space:]]*;[[:space:]]*/\"\npush \"route /g' >> $CONFFILE
-			fi
-		fi
-	fi
-	[ "$CLIENT2CLIENT" == "yes" ] && echo "client-to-client" >> $CONFFILE
+	[ "$CLIENT2CLIENT" = "yes" ] && echo "client-to-client" >> $CONFFILE
+	[ "$PUSH_DNS" ] && echo "push \"dhcp-option DNS $PUSH_DNS\"" >> $CONFFILE
+	[ "$PUSH_WINS" ] && echo "push \"dhcp-option WINS $PUSH_WINS\"" >> $CONFFILE
+	[ "$REDIRECT" ] && echo "push \"redirect-gateway\"" >> $CONFFILE
 
-else
+else # Client
 	echo "remote $REMOTE" >> $CONFFILE
 	echo "nobind" >> $CONFFILE
-	if [ "$PULL" == "yes" ]; then
-		echo "pull" >> $CONFFILE
-	fi
-	if [ "$REMOTE_NET" ]; then
-		#echo "route $REMOTE_NET" >> $CONFFILE
-		echo "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
-	fi
-	if [ "$REDIRECT" ]; then
-		echo "redirect-gateway def1" >> $CONFFILE
-	fi
+	[ "$PULL" = "yes" ] && echo "pull" >> $CONFFILE
+	[ "$REMOTE_NET" ] && echo "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g' >> $CONFFILE
+	[ "$REDIRECT" ] && echo "redirect-gateway" >> $CONFFILE
 	if [ "$DHCP_CLIENT" != "yes" ]; then
-		if [ "$TYPE" == "tun" ]; then 
+		if [ "$TYPE" = "tun" ]; then 
 			echo "ifconfig $BOX_IP $REMOTE_IP" >> $CONFFILE
 		else
 			echo "ifconfig $BOX_IP $BOX_MASK" >> $CONFFILE
@@ -265,11 +203,9 @@ fi
 
 echo "tun-mtu $MTU" >> $CONFFILE
 echo "mssfix" >> $CONFFILE
-if [ "$UDP_FRAGMENT" != "" ] && [ "$UDP_FRAGMENT" != "0" ]; then
-	echo "fragment $UDP_FRAGMENT" >> $CONFFILE
-fi
+[ "$UDP_FRAGMENT" != ""  -a "$UDP_FRAGMENT" != "0" ] && echo "fragment $UDP_FRAGMENT" >> $CONFFILE
 df=/var/tmp/debug_${prefix}.out
-if [ "$DEBUG" == "yes" ]; then
+if [ "$DEBUG" = "yes" ]; then
 	echo "log $df" >> $CONFFILE
 else
 	rm -f $df
@@ -279,27 +215,15 @@ echo "daemon" >> $CONFFILE
 
 echo "cipher $CIPHER" >> $CONFFILE
 
-if [ "$SHAPER" ]; then
-	echo "shaper $SHAPER" >> $CONFFILE
-fi
-if [ "$COMPLZO" == "yes" ]; then
-	echo "comp-lzo" >> $CONFFILE
-fi
-if [ "$FLOAT" == "yes" ]; then
-	echo "float" >> $CONFFILE
-fi
-if [ "$KEEPALIVE" == "yes" ]; then
+[ "$SHAPER" ] && echo "shaper $SHAPER" >> $CONFFILE
+[ "$COMPLZO" = "yes" ] && echo "comp-lzo" >> $CONFFILE
+[ "$FLOAT" = "yes" ] && echo "float" >> $CONFFILE
+if [ "$KEEPALIVE" = "yes" ]; then
 	echo "keepalive $KEEPALIVE_PING $KEEPALIVE_TIMEOUT" >> $CONFFILE
-	if [ "$MODE" == "client" ]; then
-		echo "resolv-retry infinite" >> $CONFFILE
-	fi
+	[ "$MODE" = "client" ] && echo "resolv-retry infinite" >> $CONFFILE
 fi
-if [ "$OPENVPN_MGMNT" == "yes" ]; then
-	echo "management $OPENVPN_MGMNT" >> $CONFFILE
-fi
-if [ "$LOGFILE" == "yes" ]; then
-	echo "status /var/log/$prefix.log" >> $CONFFILE
-fi
+[ "$OPENVPN_MGMNT" = "yes" ] && echo "management $OPENVPN_MGMNT" >> $CONFFILE
+[ "$LOGFILE" = "yes" ] && echo "status /var/log/$prefix.log" >> $CONFFILE
 
 echo "chroot /tmp/openvpn" >> $CONFFILE
 echo "user openvpn" >> $CONFFILE
@@ -307,9 +231,7 @@ echo "group openvpn" >> $CONFFILE
 echo "persist-tun" >> $CONFFILE
 echo "persist-key" >> $CONFFILE
 
-if [ "$ADDITIONAL" != "" ]; then
-	echo  "$ADDITIONAL" | sed 's/[[:space:]]*;[[:space:]]*/\n/g' >> $CONFFILE
-fi
+[ "$ADDITIONAL" != "" ] && echo  "$ADDITIONAL" | sed 's/[[:space:]]*;[[:space:]]*/\n/g' >> $CONFFILE
 
 
 fi
