@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 5.7)
+$(call PKG_INIT_LIB, 5.9)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=cce05daf61a64501ef6cd8da1f727ec6
+$(PKG)_SOURCE_MD5:=8cb9c412e5f2d96bc6f459aa8c6282a1
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_LIBNAMES_SHORT := ncurses form menu panel
@@ -22,26 +22,26 @@ $(PKG)_TERMINFO_TARGET_DIR := $($(PKG)_DEST_DIR)$($(PKG)_TERMINFO_DIR)
 
 $(PKG)_CONFIGURE_ENV += cf_cv_func_nanosleep=yes
 $(PKG)_CONFIGURE_ENV += cf_cv_link_dataonly=yes
-#evaluated by running test program on target platform
+# evaluated by running test program on target platform
 $(PKG)_CONFIGURE_ENV += cf_cv_type_of_bool='unsigned char'
-# NB: The test actually says that poll()-function works.
-# Setting cf_cv_working_poll to 'yes' would however activate
-# a code branch that has not been extensively tested in
-# freetz environment. That's the reason we set it to 'no' here
-# and keep on using ncurses' select-branch used until now.
-# TODO: remove this comment as soon as poll-branch has been tested.
+# Even though the test says that poll()-function works we prefer
+# ncurses' select-based branch and set cf_cv_working_poll to 'no'
 $(PKG)_CONFIGURE_ENV += cf_cv_working_poll=no
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-echo
 $(PKG)_CONFIGURE_OPTIONS += --enable-const
 $(PKG)_CONFIGURE_OPTIONS += --enable-overwrite
+$(PKG)_CONFIGURE_OPTIONS += --enable-pc-files
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath-hack
 $(PKG)_CONFIGURE_OPTIONS += --without-ada
 $(PKG)_CONFIGURE_OPTIONS += --without-cxx
 $(PKG)_CONFIGURE_OPTIONS += --without-cxx-binding
 $(PKG)_CONFIGURE_OPTIONS += --without-debug
 $(PKG)_CONFIGURE_OPTIONS += --without-profile
 $(PKG)_CONFIGURE_OPTIONS += --without-progs
+$(PKG)_CONFIGURE_OPTIONS += --without-manpages
+$(PKG)_CONFIGURE_OPTIONS += --without-tests
 $(PKG)_CONFIGURE_OPTIONS += --with-normal
 $(PKG)_CONFIGURE_OPTIONS += --with-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-terminfo-dirs="$($(PKG)_TERMINFO_DIR)"
@@ -61,6 +61,7 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 		install.libs
 	$(PKG_FIX_LIBTOOL_LA) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
 	$(call PKG_FIX_LIBTOOL_LA,bindir datadir mandir) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config
+	$(PKG_FIX_LIBTOOL_LA) $(NCURSES_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/%.pc)
 
 $($(PKG)_TABSET_STAGING_DIR)/$($(PKG)_TABSET_MARKER_FILE): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NCURSES_DIR)/misc \
@@ -98,6 +99,7 @@ $(pkg)-clean: $(pkg)-terminfo-clean
 	-$(SUBMAKE) -C $(NCURSES_DIR) clean
 	$(RM) \
 		$(NCURSES_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%*) \
+		$(NCURSES_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/%.pc) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurses* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{ncurses,ncurses_dll,term,curses,unctrl,termcap,eti,menu,form,panel}.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/ncurses5-config

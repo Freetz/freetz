@@ -1,0 +1,33 @@
+Author: Neil Williams <codehelp@debian.org>
+Description: Ensure <wchar.h> is available for make_keys
+ Ensure <wchar.h> is available for make_keys via gcc when cross-building
+ the rest of the package (otherwise it picks up the config.h for the
+ cross-build).
+Forwarded: no
+Last-Update: 2010-10-22
+
+---
+ ncurses/tinfo/comp_hash.c |    1 +
+ ncurses/tinfo/make_keys.c |    1 +
+ 2 files changed, 2 insertions(+)
+
+--- ncurses/tinfo/comp_hash.c
++++ ncurses/tinfo/comp_hash.c
+@@ -39,6 +39,7 @@
+  */
+ 
+ #define USE_TERMLIB 1
++#include <wchar.h>
+ #include <curses.priv.h>
+ 
+ #include <tic.h>
+--- ncurses/tinfo/make_keys.c
++++ ncurses/tinfo/make_keys.c
+@@ -37,6 +37,7 @@
+  */
+ 
+ #define USE_TERMLIB 1
++#include <wchar.h>
+ #include <build.priv.h>
+ 
+ MODULE_ID("$Id: make_keys.c,v 1.19 2010/06/05 22:08:00 tom Exp $")
