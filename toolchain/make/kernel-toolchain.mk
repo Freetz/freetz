@@ -36,8 +36,4 @@ endif
 
 kernel-toolchain-dirclean:
 	rm -rf $(KERNEL_TOOLCHAIN_DIR)
-	rm -rf $(TOOLCHAIN_BUILD_DIR)/$(KERNEL_TOOLCHAIN_COMPILER)
-	rm -f $(TOOLCHAIN_DIR)/kernel
-
-kernel-toolchain-distclean: kernel-toolchain-dirclean
 
