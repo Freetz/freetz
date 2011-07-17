@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.2.0)
+$(call PKG_INIT_BIN, 2.2.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4f440603eac45fec7be218b87d570834
+$(PKG)_SOURCE_MD5:=500bee5449b29906150569aaf2eb2730
 $(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
