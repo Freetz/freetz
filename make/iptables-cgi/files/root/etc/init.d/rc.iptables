@@ -5,16 +5,27 @@ DAEMON=iptables
 
 STATUSPID=/var/run/iptables-cgi.pid
 SAVEFILE=/var/tmp/flash/iptables_rules
-MODULES="iptable_nat iptable_filter \
-		ip_tables ip_nat ip_conntrack ip_conntrack_ftp \
+MODULES="iptable_nat iptable_filter ip_tables \
 		ipt_LOG ipt_iprange ipt_MASQUERADE ipt_REDIRECT ipt_REJECT"
 
-# TODO: What's with 2.6.28 and 2.6.32?
-if [ $(uname -r) = 2.6.19.2 ]; then
-	MODULES="$MODULES x_tables xt_state xt_mac xt_mark xt_MARK xt_multiport xt_tcpudp"
-else
-	MODULES="$MODULES ipt_state ipt_mac ipt_multiport"
-fi
+kver="$(uname -r)"
+case "$kver" in
+	2.6.28.10 | 2.6.32.21 )
+		MODULES="$MODULES x_tables xt_state xt_mac xt_mark xt_MARK xt_multiport xt_tcpudp"
+		;;
+	2.6.19.2 )
+		MODULES="$MODULES ip_nat ip_conntrack ip_conntrack_ftp"
+		MODULES="$MODULES x_tables xt_state xt_mac xt_mark xt_MARK xt_multiport xt_tcpudp"
+		;;
+	2.6.13.1 )
+		MODULES="$MODULES ip_nat ip_conntrack ip_conntrack_ftp"
+		MODULES="$MODULES ipt_state ipt_mac ipt_multiport"
+		;;
+	* )
+		echo "Unknown kernel version ($kver). Exiting"
+		return 1
+		;;
+esac
 
 save_rules() {
 	echo 'Saving list ... '
