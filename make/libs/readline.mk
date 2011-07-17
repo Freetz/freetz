@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 6.1)
+$(call PKG_INIT_LIB, 6.2)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=fc2f7e714fe792db1ce6ddc4c9fb4ef3
+$(PKG)_SOURCE_MD5:=67948acb2ca081f23359d0256e9a271c
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/shlib/libreadline.so.$($(PKG)_LIB_VERSION)
@@ -13,7 +13,10 @@ $(PKG)_TARGET_HISTORY_BINARY:=$($(PKG)_TARGET_DIR)/libhistory.so.$($(PKG)_LIB_VE
 
 $(PKG)_DEPENDS_ON := ncurses
 
+$(PKG)_CONFIGURE_ENV += bash_cv_func_ctype_nonascii=no
 $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present
+$(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
+$(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -22,8 +25,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_READLINE_BINARY) $($(PKG)_HISTORY_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(READLINE_DIR)
 
-$($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY): \
-		$($(PKG)_READLINE_BINARY) $($(PKG)_HISTORY_BINARY)
+$($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY): $($(PKG)_READLINE_BINARY) $($(PKG)_HISTORY_BINARY)
 	$(SUBMAKE) -C $(READLINE_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
@@ -39,7 +41,10 @@ $(pkg): $($(PKG)_STAGING_READLINE_BINARY) $($(PKG)_STAGING_HISTORY_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_READLINE_BINARY) $($(PKG)_TARGET_HISTORY_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" -C $(READLINE_DIR) uninstall
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libreadline* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libhistory* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/readline
 	-$(SUBMAKE) -C $(READLINE_DIR) clean
 
 $(pkg)-uninstall:
