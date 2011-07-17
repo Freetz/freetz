@@ -6,7 +6,7 @@ $(PKG)_SOURCE_MD5     := $($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=@GNU/gdb
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
-$(PKG)_DEPENDS_ON += ncurses
+$(PKG)_DEPENDS_ON += ncurses readline
 
 $(PKG)_BINARIES_ALL           := gdb  gdbserver
 $(PKG)_BINARIES_BUILD_SUBDIRS := gdb/ gdb/gdbserver/
@@ -33,9 +33,17 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-tui
 $(PKG)_CONFIGURE_OPTIONS += --disable-gdbtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-sim
 $(PKG)_CONFIGURE_OPTIONS += --disable-werror
+
+$(PKG)_CONFIGURE_OPTIONS += --with-system-readline=yes
+$(PKG)_CONFIGURE_OPTIONS += --without-expat
+$(PKG)_CONFIGURE_OPTIONS += --without-included-gettext
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-python
+$(PKG)_CONFIGURE_OPTIONS += --without-tcl
+$(PKG)_CONFIGURE_OPTIONS += --without-tk
 $(PKG)_CONFIGURE_OPTIONS += --without-uiout
 $(PKG)_CONFIGURE_OPTIONS += --without-x
-$(PKG)_CONFIGURE_OPTIONS += --without-included-gettext
+$(PKG)_CONFIGURE_OPTIONS += --without-zlib
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
