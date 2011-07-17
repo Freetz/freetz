@@ -57,8 +57,8 @@ config FREETZ_MODULE_aes
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
 	select FREETZ_MODULE_crypto_algapi if \
-						FREETZ_KERNEL_VERSION_2_6_19_2 || \
-						FREETZ_KERNEL_VERSION_2_6_28
+		FREETZ_KERNEL_VERSION_2_6_19_2 || \
+		FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_blkcipher
@@ -97,13 +97,15 @@ config FREETZ_MODULE_sha256
 config FREETZ_MODULE_sha1_generic
 	bool "sha1_generic.ko"
 	select FREETZ_MODULE_crypto_algapi if \
-						FREETZ_KERNEL_VERSION_2_6_28
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32
 	default n
 
 config FREETZ_MODULE_sha256_generic
 	bool "sha256_generic.ko"
 	select FREETZ_MODULE_crypto_algapi if \
-						FREETZ_KERNEL_VERSION_2_6_28
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32
 	default n
 
 endmenu
