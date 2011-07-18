@@ -16,7 +16,11 @@ echo2 "deleting obsolete files"
 rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/bitfile.bit
 
 echo2 "copying 7240 files"
-files="bitfile_isdn.bit bitfile_pots.bit c55fw.hex wlan_eeprom_hw0.bin"
+if isFreetzType LANG_DE; then
+	files="bitfile.bit wlan_eeprom_hw0.bin"
+else
+	files="bitfile_isdn.bit bitfile_pots.bit c55fw.hex wlan_eeprom_hw0.bin"
+fi
 
 #isFreetzType LANG_EN && \
 #	files+=" dectfw_firstlevel_488.hex dectfw_secondlevel_488.hex"
@@ -44,12 +48,11 @@ echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_72* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7240
 
 echo2 "patching rc.S and rc.conf"
-#if isFreetzType LANG_EN; then
-#	modpatch ${FILESYSTEM_MOD_DIR} ${PATCHES_DIR}/cond/en/7240_7270_rc.S_piglet.patch
-
-modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet"
-modsed 's#^\(modprobe .*\)#\1 piglet_potsbitfile=/lib/modules/bitfile_pots\.bit\${HWRevision_BitFileCount} piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`#g' \
+if isFreetzType LANG_EN; then 
+	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet"
+	modsed 's#^\(modprobe .*\)#\1 piglet_potsbitfile=/lib/modules/bitfile_pots\.bit\${HWRevision_BitFileCount} piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`#g' \
 		"${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet"
+fi
 
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7240\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_CAPI_POTS=.*$/CONFIG_CAPI_POTS=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
