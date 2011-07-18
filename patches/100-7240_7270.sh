@@ -49,9 +49,9 @@ mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_72* ${FILESYSTEM_MOD_DIR}/etc/def
 
 echo2 "patching rc.S and rc.conf"
 if isFreetzType LANG_EN; then 
-	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet"
+	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 	modsed 's#^\(modprobe .*\)#\1 piglet_potsbitfile=/lib/modules/bitfile_pots\.bit\${HWRevision_BitFileCount} piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`#g' \
-		"${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet"
+		"${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
 
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7240\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
