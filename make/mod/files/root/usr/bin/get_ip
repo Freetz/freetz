@@ -1,53 +1,85 @@
 #!/bin/sh
 
-helpmsg()
-{
-	echo "get_ip - determine external IP address"
+local ip=""
+local retval=""
+
+helpmsg() {
+echo "get_ip - determine external IP address"
 	echo
 	echo "Usage: $0 [option]"
+	echo "                   - use all methods (order: webcm, extquery, dsld)"
 	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
 	echo "    -e, --extquery - use external site query method"
-	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method [default]"
+	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method"
 	echo "    -?, --help     - print this help message"
 	echo
 }
 
-local ip=""
-local queryfile="/usr/www/all/html/query.txt"
-local querystring=""
-local retval=0
+via_dsld() {
+	ip="$(/sbin/showdsldstat | grep "0: ip" | cut -d\/ -f1 | cut -d ' ' -f3)"
+	retval=$?
+	[ -z "$ip" ] && retval=2
+}
+
+via_extquery() {
+	#if supported by wget(-gnu), don't wait forever:
+	SHORTWAIT="-t 1"
+	if which wget-gnu >/dev/null; then
+		WGET="wget-gnu $SHORTWAIT"
+	else
+		wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
+	fi
+	for turn in 1 2 3; do
+		ip="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
+		retval=$?
+		[ $retval -eq 0 ] && break
+	done
+}
+
+via_webcm() {
+	local queryfile="/usr/www/all/html/query.txt"
+	local querystring=""
+	if which ctlmgr_ctl >/dev/null; then
+		ip=$(ctlmgr_ctl r connection0 pppoe:status/ip)
+		retval=$?
+	else
+		if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
+			querystring="var:n[0]=connection0:pppoe:status/ip"
+		else
+			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
+		fi
+		ip="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
+		retval=$?
+	fi
+	[ $retval -eq 176 ] && retval=0 	# fix return-value of webcm
+	#do not return a local ip:
+	for local_ip in $(ifconfig | sed -n 's/.*inet addr:\([0-9\.]*\) .*/\1/p'); do
+		if [ "$local_ip" == "$ip" ]; then
+			ip=""
+			retval=3
+			break
+		fi
+	done
+}
+
 
 case $1 in
 	-d|--dsld)
-		ip=$(/sbin/showdsldstat | grep "0: ip" | cut -d\/ -f1 | cut -d ' ' -f3)
-		retval=$?
+		via_dsld
 		;;
 	-e|--extquery)
-		#if supported by wget(-gnu), don't wait forever:
-		SHORTWAIT="-t 1"
-		if which wget-gnu >/dev/null; then
-			WGET="wget-gnu $SHORTWAIT"
-		else
-			wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
-		fi
-		ip=$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-		retval=$?
+		via_extquery
 		;;
-	""|-w|--webcm)
-		if which ctlmgr_ctl >/dev/null; then
-			ip=$(ctlmgr_ctl r connection0 pppoe:status/ip)
-			retval=$?
-		else
-			if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
-				querystring="var:n[0]=connection0:pppoe:status/ip"
-			else
-				querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
-			fi
-			ip=$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")
-			retval=$?
-		fi
+	-w|--webcm)
+		via_webcm
 		;;
-	-?|--help)
+	"")
+		for mode in webcm extquery dsld; do
+			via_$mode
+			[ $retval -eq 0 ] && break
+		done
+		;;
+	-?|-h|--help)
 		helpmsg
 		exit 0
 		;;
@@ -57,7 +89,7 @@ case $1 in
 		;;
 esac
 
-if [ $retval == 0 -o $retval == 176 ]; then
+if [ $retval -eq 0 ]; then
 	echo "$ip"
 	exit 0
 fi
