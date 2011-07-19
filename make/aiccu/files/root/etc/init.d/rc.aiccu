@@ -43,6 +43,15 @@ start() {
 
 stop () {
 	$DAEMON stop /mod/etc/$DAEMON.conf
+	local retval=$?
+	#aiccu terminates slow, so wait for it:
+	local tries=0
+	while pidof aiccu >/dev/null; do
+		let tries++
+		[ $tries -gt 9 ] && break
+		sleep 1
+	done
+	return $retval
 }
 
 case $1 in
