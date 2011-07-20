@@ -273,9 +273,11 @@ cat << EOF
 EOF
 
 if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
+if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" = "y" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
 cat << EOF
 <p style="font-size:10px;"><a href="$(href status lighttpd lighttpd-log)">$(lang de:"Logdateien anzeigen" en:"Show logfiles")</a></p>
 EOF
+fi
 fi
 
 cat << EOF
