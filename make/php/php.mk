@@ -6,6 +6,8 @@ $(PKG)_SITE:=http://de.php.net/distributions
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/php-cgi
 
+$(PKG)_STARTLEVEL=90 # before lighttpd
+
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_STATIC)),y)
 $(PKG)_STATIC := -all-static
 endif

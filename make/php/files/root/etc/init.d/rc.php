@@ -2,44 +2,21 @@
 
 DAEMON=php
 
-. /etc/init.d/modlibrc
-
-start() {
-	[ ! -d /tmp/flash/php ] && mkdir /tmp/flash/php && mod_save=true
-	if [ ! -f /tmp/flash/php.ini ]; then
-		echo -n 'Setting up PHP ... '
-		cp /etc/default.php/php.ini /tmp/flash/php.ini && mod_save=true
-		pidof lighttpd >/dev/null && /etc/init.d/rc.lighttpd restart
-		echo 'done.'
-	else
-		echo 'Nothing to do here.'
-	fi
-	[ "$mod_save" == "true" ] && modsave flash >/dev/null
-}
 
 case $1 in
 	""|load)
-		modreg daemon --disable $DAEMON
-		modreg file php config 'php.ini' 0 "php_config"
+		[ ! -d /tmp/flash/$DAEMON ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e /tmp/flash/$DAEMON/php.ini ] && cat /etc/default.$DAEMON/php.ini > /tmp/flash/php.ini
+
+		modreg daemon --hide $DAEMON
+		modreg file $DAEMON config 'php.ini' 0 "php_config"
 		;;
 	unload)
-		modunreg file php
+		modunreg file $DAEMON
 		modunreg daemon $DAEMON
-		modlib_stop
-		;;
-	start)
-		start
-		;;
-	stop)
-		;;
-	restart)
-		modlib_restart
-		;;
-	status)
-		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|reload|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload]" 1>&2
 		exit 1
 		;;
 esac
