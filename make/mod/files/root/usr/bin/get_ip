@@ -7,7 +7,7 @@ helpmsg() {
 echo "get_ip - determine external IP address"
 	echo
 	echo "Usage: $0 [option]"
-	echo "                   - use all methods (order: webcm, extquery, dsld)"
+	echo "    -a, --all      - use all methods (order: webcm, extquery, dsld) [default]"
 	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
 	echo "    -e, --extquery - use external site query method"
 	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method"
@@ -64,6 +64,12 @@ via_webcm() {
 
 
 case $1 in
+	-a|--all|"")
+		for mode in webcm extquery dsld; do
+			via_$mode
+			[ $retval -eq 0 ] && break
+		done
+		;;
 	-d|--dsld)
 		via_dsld
 		;;
@@ -72,12 +78,6 @@ case $1 in
 		;;
 	-w|--webcm)
 		via_webcm
-		;;
-	"")
-		for mode in webcm extquery dsld; do
-			via_$mode
-			[ $retval -eq 0 ] && break
-		done
 		;;
 	-?|-h|--help)
 		helpmsg
