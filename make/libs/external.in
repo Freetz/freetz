@@ -1,34 +1,7 @@
-config EXTERNAL_FREETZ_LIB_libapr
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libapr
-	bool "libapr"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libapr-1.so.0.4.5
-
-config EXTERNAL_FREETZ_LIB_libaprutil
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libaprutil
-	bool "libaprutil"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libaprutil-1.so.0.3.12
-
-config EXTERNAL_FREETZ_LIB_libart_lgpl_2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libart_lgpl_2
-	bool "libart_lgpl_2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libart_lgpl_2.so.2.3.21
-
-config EXTERNAL_FREETZ_LIB_libatm
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libatm
-	bool "libatm"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libatm.so.1.0.0
+source make/apr/external.in
+source make/apr-util/external.in
+source make/libart_lgpl/external.in
+source make/linux-atm/external.in
 
 config EXTERNAL_FREETZ_LIB_libavcodec
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libavcodec
@@ -62,37 +35,10 @@ config EXTERNAL_FREETZ_LIB_libavutil
 		externals these file(s):
 		 /usr/lib/freetz/libavutil.so.49.15.0
 
-config EXTERNAL_FREETZ_LIB_libbluetooth
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libbluetooth
-	bool "libbluetooth"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libbluetooth.so.1.0.25
-
-config EXTERNAL_FREETZ_LIB_libcapi20
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcapi20
-	bool "libcapi20"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libcapi20.so.3.0.4
-
-config EXTERNAL_FREETZ_LIB_libconfig
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libconfig
-	bool "libconfig"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libconfig.so.9.0.4
-
-config EXTERNAL_FREETZ_LIB_libcrypto
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcrypto
-	bool "libcrypto"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libcrypto.so.0.9.8
+source make/bluez-libs/external.in
+source make/libcap/external.in
+source make/libconfig/external.in
+source make/openssl/external.in
 
 config EXTERNAL_FREETZ_LIB_libcurl
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcurl
@@ -102,77 +48,15 @@ config EXTERNAL_FREETZ_LIB_libcurl
 		externals these file(s):
 		 /usr/lib/freetz/libcurl.so.4.2.0
 
-config EXTERNAL_FREETZ_LIB_libcyassl
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libcyassl
-	bool "libcyassl"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libcyassl.so.0.0.0
-
-config EXTERNAL_FREETZ_LIB_libdaemon
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdaemon
-	bool "libdaemon"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libdaemon.so.0.5.0
-
-config EXTERNAL_FREETZ_LIB_libdb
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdb
-	bool "libdb"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libdb-4.8.so
-
-config EXTERNAL_FREETZ_LIB_libdevmapper
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdevmapper
-	bool "libdevmapper"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libdevmapper.so.1.02
-
-config EXTERNAL_FREETZ_LIB_libdnet
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libdnet
-	bool "libdnet"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libdnet.so.1.0.1
-
-config EXTERNAL_FREETZ_LIB_libelf
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libelf
-	bool "libelf"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libelf.so.0.8.13
-
-config EXTERNAL_FREETZ_LIB_libevent
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libevent
-	bool "libevent"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libevent-2.0.so.5.1.1
-
-config EXTERNAL_FREETZ_LIB_libexif
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libexif
-	bool "libexif"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libexif.so.12.3.2
-
-config EXTERNAL_FREETZ_LIB_libexpat
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libexpat
-	bool "libexpat"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libexpat.so.1.5.2
+source make/cyassl/external.in
+source make/libdaemon/external.in
+source make/db/external.in
+source make/devmapper/external.in
+source make/libdnet/external.in
+source make/libelf/external.in
+source make/libevent/external.in
+source make/libexif/external.in
+source make/expat/external.in
 
 config EXTERNAL_FREETZ_LIB_libexslt
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libexslt
@@ -182,45 +66,11 @@ config EXTERNAL_FREETZ_LIB_libexslt
 		externals these file(s):
 		 /usr/lib/freetz/libexslt.so.0.8.15
 
-config EXTERNAL_FREETZ_LIB_libFLAC
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libFLAC
-	bool "libFLAC"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libFLAC.so.8.2.0
-
-config EXTERNAL_FREETZ_LIB_libffi
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libffi
-	bool "libffi"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libffi.so.4.0.1
-
-config EXTERNAL_FREETZ_LIB_libform
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libform
-	bool "libform"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libform.so.5.9
-
-config EXTERNAL_FREETZ_LIB_libfreetype
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libfreetype
-	bool "libfreetype"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libfreetype.so.6.4.0
-
-config EXTERNAL_FREETZ_LIB_libftdi
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libftdi
-	bool "libftdi"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libftdi.so.1.18.0
+source make/flac/external.in
+source make/libffi-sable/external.in
+source make/ncurses/external.in
+source make/freetype/external.in
+source make/libftdi/external.in
 
 config EXTERNAL_FREETZ_LIB_libfuse
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libfuse
@@ -230,61 +80,11 @@ config EXTERNAL_FREETZ_LIB_libfuse
 		externals these file(s):
 		 /usr/lib/freetz/libfuse.so.2.7.6
 
-config EXTERNAL_FREETZ_LIB_libgcrypt
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgcrypt
-	bool "libgcrypt"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgcrypt.so.11.6.0
-
-config EXTERNAL_FREETZ_LIB_libgd
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgd
-	bool "libgd"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgd.so.2.0.0
-
-config EXTERNAL_FREETZ_LIB_libgio_2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgio_2
-	bool "libgio2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgio-2.0.so.0.2200.5
-
-config EXTERNAL_FREETZ_LIB_libglib_1
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libglib_1
-	bool "libglib"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libglib-1.2.so.0.0.10
-
-config EXTERNAL_FREETZ_LIB_libglib_2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libglib_2
-	bool "libglib2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libglib-2.0.so.0.2200.5
-
-config EXTERNAL_FREETZ_LIB_libgmodule_2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgmodule_2
-	bool "libgmodule2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgmodule-2.0.so.0.2200.5
-
-config EXTERNAL_FREETZ_LIB_libgmp
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgmp
-	bool "libgmp"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgmp.so.10.0.1
+source make/libgcrypt/external.in
+source make/gd/external.in
+source make/glib/external.in
+source make/glib2/external.in
+source make/gmp/external.in
 
 config EXTERNAL_FREETZ_LIB_libgnutls
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgnutls
@@ -310,85 +110,14 @@ config EXTERNAL_FREETZ_LIB_libgnutls_openssl
 		externals these file(s):
 		 /usr/lib/freetz/libgnutls-openssl.so.26.16.14
 
-config EXTERNAL_FREETZ_LIB_libgobject_2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgobject_2
-	bool "libgobject2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgobject-2.0.so.0.2200.5
-
-config EXTERNAL_FREETZ_LIB_libgpg_error
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgpg_error
-	bool "libgpg-error"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgpg-error.so.0.8.0
-
-config EXTERNAL_FREETZ_LIB_libgthread_2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libgthread_2
-	bool "libgthread2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libgthread-2.0.so.0.2200.5
-
-config EXTERNAL_FREETZ_LIB_libhistory
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libhistory && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
-	bool "libhistory"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libhistory.so.6.2
-
-config EXTERNAL_FREETZ_LIB_libiconv
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libiconv
-	bool "libiconv"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libiconv.so.2.5.0
-
-config EXTERNAL_FREETZ_LIB_libid3tag
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libid3tag
-	bool "libid3tag"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libid3tag.so.0.3.0
-
-config EXTERNAL_FREETZ_LIB_libintl
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libintl
-	bool "libintl"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libintl.so.8.0.1
-
-config EXTERNAL_FREETZ_LIB_libjpeg
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libjpeg
-	bool "libjpeg"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libjpeg.so.62.0.0
-
-config EXTERNAL_FREETZ_LIB_libjs
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libjs
-	bool "libjs"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libjs.so.1.0.6
-
-config EXTERNAL_FREETZ_LIB_libltdl
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libltdl
-	bool "libltdl (libtool)"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libltdl.so.3.1.6
+source make/libgpg-error/external.in
+source make/readline/external.in
+source make/libiconv/external.in
+source make/libid3tag/external.in
+source make/gettext/external.in
+source make/jpeg/external.in
+source make/js/external.in
+source make/libtool/external.in
 
 config EXTERNAL_FREETZ_LIB_liblua
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_liblua && \
@@ -399,69 +128,12 @@ config EXTERNAL_FREETZ_LIB_liblua
 		externals these file(s):
 		 /usr/lib/freetz/liblua.so.5.1.4
 
-config EXTERNAL_FREETZ_LIB_liblzo2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_liblzo2
-	bool "liblzo2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/liblzo2.so.2.0.0
-
-config EXTERNAL_FREETZ_LIB_libmad
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmad
-	bool "libmad"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libmad.so.0.2.1
-
-config EXTERNAL_FREETZ_LIB_libmenu
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmenu
-	bool "libmenu"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libmenu.so.5.9
-
-config EXTERNAL_FREETZ_LIB_libmpc
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmpc
-	bool "libmpc"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libmpc.so.2.0.0
-
-config EXTERNAL_FREETZ_LIB_libmpfr
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libmpfr
-	bool "libmpfr"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libmpfr.so.1.2.2
-
-config EXTERNAL_FREETZ_LIB_libncurses
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libncurses && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
-	bool "libncurses"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libncurses.so.5.9
-
-config EXTERNAL_FREETZ_LIB_libneon
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libneon
-	bool "libneon"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libneon.so.27.2.6
-
-config EXTERNAL_FREETZ_LIB_libnet
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libnet
-	bool "libnet"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libnet.so.1.5.0
+source make/lzo/external.in
+source make/libmad/external.in
+source make/mpc/external.in
+source make/mpfr/external.in
+source make/neon/external.in
+source make/libnet/external.in
 
 config EXTERNAL_FREETZ_LIB_libnetpbm
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libnetpbm
@@ -479,53 +151,11 @@ config EXTERNAL_FREETZ_LIB_libntfs
 		externals these file(s):
 		 /usr/lib/freetz/libntfs-3g.so.81.0.0
 
-config EXTERNAL_FREETZ_LIB_libogg
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libogg
-	bool "libogg"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libogg.so.0.7.1
-
-config EXTERNAL_FREETZ_LIB_libopenjpeg
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libopenjpeg
-	bool "libopenjpeg"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libopenjpeg.so.1.4.0
-
-config EXTERNAL_FREETZ_LIB_libopenobex
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libopenobex
-	bool "libopenobex"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libopenobex.so.1.3.0
-
-config EXTERNAL_FREETZ_LIB_liboping
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_liboping
-	bool "liboping"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/liboping.so.0.2.7
-
-config EXTERNAL_FREETZ_LIB_libosip2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libosip2
-	bool "libosip2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libosip2.so.4.2.0
-
-config EXTERNAL_FREETZ_LIB_libosipparser2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libosipparser2
-	bool "libosipparser2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libosipparser2.so.4.2.0
+source make/libogg/external.in
+source make/openjpeg/external.in
+source make/openobex/external.in
+source make/liboping/external.in
+source make/libosip2/external.in
 
 config EXTERNAL_FREETZ_LIB_librrd
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_librrd
@@ -543,61 +173,11 @@ config EXTERNAL_FREETZ_LIB_librrd_th
 		externals these file(s):
 		 /usr/lib/freetz/librrd_th.so.2.0.13
 
-config EXTERNAL_FREETZ_LIB_libpanel
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpanel
-	bool "libpanel"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libpanel.so.5.9
-
-config EXTERNAL_FREETZ_LIB_libpcap
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpcap
-	bool "libpcap"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libpcap.so.1.0.0
-
-config EXTERNAL_FREETZ_LIB_libpcre
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpcre
-	bool "libpcre"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libpcre.so.0.0.1
-
-config EXTERNAL_FREETZ_LIB_libpcreposix
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpcreposix
-	bool "libpcreposix"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libpcreposix.so.0.0.0
-
-config EXTERNAL_FREETZ_LIB_libpng12
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpng12
-	bool "libpng12"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libpng12.so.0.44.0
-
-config EXTERNAL_FREETZ_LIB_libpolarssl
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpolarssl
-	bool "libpolarssl"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libpolarssl.so.0.14.3
-
-config EXTERNAL_FREETZ_LIB_libpopt
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpopt
-	bool "libpopt"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libpopt.so.0.0.0
+source make/libpcap/external.in
+source make/pcre/external.in
+source make/libpng/external.in
+source make/polarssl/external.in
+source make/popt/external.in
 
 config EXTERNAL_FREETZ_LIB_libpostproc
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libpostproc
@@ -614,14 +194,6 @@ config EXTERNAL_FREETZ_LIB_libresolv
 	help
 		externals these file(s):
 		 /lib/libresolv-0.9.x.so
-
-config EXTERNAL_FREETZ_LIB_libreadline
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libreadline && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
-	bool "libreadline"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libreadline.so.6.2
 
 config EXTERNAL_FREETZ_LIB_libslang
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libslang
@@ -640,101 +212,15 @@ config EXTERNAL_FREETZ_LIB_libsqlite3
 		externals these file(s):
 		 /usr/lib/freetz/libsqlite3.so.0.8.6
 
-config EXTERNAL_FREETZ_LIB_libssl
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libssl
-	bool "libssl"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libssl.so.0.9.8
-
-config EXTERNAL_FREETZ_LIB_libstdc__
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libstdc__
-	bool "libstdc++"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libstdc++.so.6.0.x
-
-config EXTERNAL_FREETZ_LIB_libsysfs
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libsysfs
-	bool "libsysfs"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libsysfs.so.2.0.1
-
-config EXTERNAL_FREETZ_LIB_libtasn1
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libtasn1
-	bool "libtasn1"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libtasn1.so.3.1.11
-
-config EXTERNAL_FREETZ_LIB_libtag
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libtag
-	bool "libtag"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libtag.so.1.9.0
-
-config EXTERNAL_FREETZ_LIB_libusb
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libusb
-	bool "libusb"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libusb-0.1.so.4.4.4
-
-config EXTERNAL_FREETZ_LIB_libuClibc__
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libuClibc__
-	bool "libuClibc++"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libuClibc++-0.2.3.so
-
-config EXTERNAL_FREETZ_LIB_libvorbis
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libvorbis
-	bool "libvorbis"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libvorbis.so.0.4.5
-
-config EXTERNAL_FREETZ_LIB_libvorbisenc
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libvorbisenc
-	bool "libvorbisenc"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libvorbisenc.so.2.0.8
-
-config EXTERNAL_FREETZ_LIB_libvorbisfile
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libvorbisfile
-	bool "libvorbisfile"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libvorbisfile.so.3.3.4
-
-config EXTERNAL_FREETZ_LIB_libwx_baseu
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libwx_baseu
-	bool "libwx_baseu"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libwx_baseu-2.8.so.0.8.0
-
-config EXTERNAL_FREETZ_LIB_libxml2
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libxml2
-	bool "libxml2"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libxml2.so.2.7.8
+source make/libstdc++/external.in
+source make/sysfsutils/external.in
+source make/bash/external.in
+source make/libtasn1/external.in
+source make/libusb/external.in
+source make/uClibc++/external.in
+source make/libvorbis/external.in
+source make/wxWidgets/external.in
+source make/libxml2/external.in
 
 config EXTERNAL_FREETZ_LIB_libxslt
 	depends on EXTERNAL_ENABLED && FREETZ_LIB_libxslt
@@ -744,10 +230,4 @@ config EXTERNAL_FREETZ_LIB_libxslt
 		externals these file(s):
 		 /usr/lib/freetz/libxslt.so.1.1.26
 
-config EXTERNAL_FREETZ_LIB_libz
-	depends on EXTERNAL_ENABLED && FREETZ_LIB_libz
-	bool "libz"
-	default n
-	help
-		externals these file(s):
-		 /usr/lib/freetz/libz.so.1.2.5
+source make/zlib/external.in

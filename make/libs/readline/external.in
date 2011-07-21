@@ -1,0 +1,15 @@
+config EXTERNAL_FREETZ_LIB_libhistory
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libhistory && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
+	bool "libhistory"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libhistory.so.6.2
+
+config EXTERNAL_FREETZ_LIB_libreadline
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libreadline && (!FREETZ_PACKAGE_BASH_READLINE || EXTERNAL_FREETZ_PACKAGE_BASH)
+	bool "libreadline"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libreadline.so.6.2

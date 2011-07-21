@@ -234,6 +234,7 @@ TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
 ALL_PACKAGES:=
 LOCALSOURCE_PACKAGES:=
+include $(sort $(wildcard $(MAKE_DIR)/libs/*/*.mk))
 include $(sort $(wildcard $(MAKE_DIR)/*/*.mk))
 NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
 PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
