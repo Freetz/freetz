@@ -11,8 +11,8 @@ html() {
 		'
 	else
 		case $* in
-			*[\&\<\>\'\"]*|-*) httpd -e "$*" ;; #'
-			*) echo "$*" ;;
+			*[\&\<\>\'\"]*) httpd -e "$*" ;; #'
+			*) printf "%s" "$*" ;;
 		esac
 	fi
 }
