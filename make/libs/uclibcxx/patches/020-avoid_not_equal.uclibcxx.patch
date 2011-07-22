@@ -1,0 +1,58 @@
+--- include/algorithm
++++ include/algorithm
+@@ -46,7 +46,7 @@
+ 	template<class InputIterator, class T> _UCXXEXPORT
+ 		InputIterator find(InputIterator first, InputIterator last, const T& value)
+ 	{
+-		while(first !=last && *first != value){
++		while(first !=last && !(*first == value)){
+ 			++first;
+ 		}
+ 		return first;
+@@ -70,7 +70,7 @@
+ 			ForwardIterator1 temp1(first1);
+ 			ForwardIterator2 temp2(first2);
+ 			while(temp2!=last2 && temp1!= last1){
+-				if(*temp1 != *temp2){
++				if(!(*temp1 == *temp2)){
+ 					break;		//Exit while loop
+ 				}
+ 				++temp1;
+@@ -208,7 +208,7 @@
+ 		mismatch(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2)
+ 	{
+ 		while(first1 != last1){
+-			if(*first1 != *first2){
++			if(!(*first1 == *first2)){
+ 				break;
+ 			}
+ 			++first1;
+@@ -245,7 +245,7 @@
+ 		equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2)
+ 	{
+ 		while(first1 !=last1){
+-			if(*first1 != *first2){
++			if(!(*first1 == *first2)){
+ 				return false;
+ 			}
+ 			++first1;
+@@ -579,7 +579,7 @@
+ 			OutputIterator result, const T& value)
+ 	{
+ 		while(first !=last){
+-			if(*first != value){
++			if(!(*first == value)){
+ 				*result = *first;
+ 				++result;
+ 			}
+--- include/set
++++ include/set
+@@ -318,7 +318,7 @@
+ 		typename multiset<Key,Compare,Allocator>::const_iterator last2 = y.end();
+ 
+ 		while(first1 != last1 && first2 != last2){
+-			if( *first1 != *first2 ){
++			if( !(*first1 == *first2) ){
+ 				return true;
+ 			}
+ 			++first1;

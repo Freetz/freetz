@@ -1,0 +1,299 @@
+--- include/ostream
++++ include/ostream
+@@ -130,22 +130,22 @@
+ 		}
+ 
+ 		_UCXXEXPORT void printout(const char_type* s, streamsize n){
+-			streamsize extra = ios::width() - n;
+-			if ((ios::flags()&ios::adjustfield) == ios::right){
++			streamsize extra = basic_ios<charT>::width() - n;
++			if ((basic_ios<charT>::flags()&basic_ios<charT>::adjustfield) == basic_ios<charT>::right){
+ 				while (extra > 0) {
+ 					--extra;
+-					put(ios::fill());
++					put(basic_ios<charT>::fill());
+ 				}
+ 			}
+ 			write(s, n);
+-			if ((ios::flags()&ios::adjustfield) == ios::left) {
++			if ((basic_ios<charT>::flags()&basic_ios<charT>::adjustfield) == basic_ios<charT>::left) {
+ 				while (extra > 0) {
+ 					--extra;
+-					put(ios::fill());
++					put(basic_ios<charT>::fill());
+ 				}
+ 			}
+ 			// Width value only applies for the next output operation.  Reset to zero.
+-			ios::width(0);
++			basic_ios<charT>::width(0);
+ 		}
+ 
+ 	protected:
+--- include/istream_helpers
++++ include/istream_helpers
+@@ -373,6 +373,265 @@
+ 		}
+ 	};
+ 
++#ifdef __UCLIBCXX_HAS_WCHAR__
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, bool>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, bool & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			temp = _readToken( stream);
++			if(temp == L"true" || temp == L"True" || temp == L"TRUE" || temp == L"1"){
++				var = true;
++			}else{
++				var = false;
++			}
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, short>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, short & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%hd", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%ho", (unsigned short int *)(&var) );
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%hX", (unsigned short int *)(&var) );
++					}else{
++						swscanf(temp.c_str(), L"%hx", (unsigned short int *)(&var) );
++					}
++				}else{
++					swscanf(temp.c_str(), L"%hi", &var);
++				}
++			}
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, unsigned short>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, unsigned short & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%hu", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%ho", &var);
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%hX", &var );
++					}else{
++						swscanf(temp.c_str(), L"%hx", &var);
++					}
++				}else{
++					swscanf(temp.c_str(), L"%hi", (signed short int*)(&var) );
++				}
++			}
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, int>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, int & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%d", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%o", (unsigned int *)(&var) );
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%X", (unsigned int *)(&var) );
++					}else{
++						swscanf(temp.c_str(), L"%x", (unsigned int *)(&var) );
++					}
++				}else{
++					swscanf(temp.c_str(), L"%i", &var);
++				}
++			}
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, unsigned int>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, unsigned int & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%u", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%o", &var );
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%X", &var );
++					}else{
++						swscanf(temp.c_str(), L"%x", &var );
++					}
++				}else{
++					swscanf(temp.c_str(), L"%i", (int *)(&var) );
++				}
++			}
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, long int>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, long int & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%ld", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%lo", (unsigned long int *)(&var) );
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%lX", (unsigned long int *)(&var) );
++					}else{
++						swscanf(temp.c_str(), L"%lx", (unsigned long int *)(&var) );
++					}
++				}else{
++					swscanf(temp.c_str(), L"%li", &var );
++				}
++			}
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, unsigned long int>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, unsigned long int & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%lu", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%lo", &var );
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%lX", &var );
++					}else{
++						swscanf(temp.c_str(), L"%lx", &var);
++					}
++				}else{
++					swscanf(temp.c_str(), L"%li", (long int *)(&var) );
++				}
++			}
++		}
++	};
++
++#ifndef __STRICT_ANSI__
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, long long int>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, long long int & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%lld", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%llo", (unsigned long long int *)(&var) );
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%llX", (unsigned long long int *)(&var) );
++					}else{
++						swscanf(temp.c_str(), L"%llx", (unsigned long long int *)(&var) );
++					}
++				}else{
++					swscanf(temp.c_str(), L"%lli", &var );
++				}
++			}
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, unsigned long long int>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, unsigned long long int & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			if(stream.flags() & ios_base::dec){
++				temp = _readTokenDecimal( stream);
++				swscanf(temp.c_str(), L"%llu", &var );
++			}else{
++				temp = _readToken( stream);
++				if( stream.flags() & ios_base::oct){
++					swscanf(temp.c_str(), L"%llo", &var );
++				}else if(stream.flags() & ios_base::hex){
++					if(stream.flags() & ios_base::uppercase){
++						swscanf(temp.c_str(), L"%llX", &var );
++					}else{
++						swscanf(temp.c_str(), L"%llx", &var);
++					}
++				}else{
++					swscanf(temp.c_str(), L"%lli", (long long int *)(&var) );
++				}
++			}
++		}
++	};
++#endif // __STRICT_ANSI__
++
++#ifdef __UCLIBCXX_HAS_FLOATS__
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, float>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, float & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			temp = _readTokenDecimal( stream);
++			swscanf(temp.c_str(), L"%g", &var);
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, double>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, double & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			temp = _readTokenDecimal( stream);
++			swscanf(temp.c_str(), L"%lg", &var);
++		}
++	};
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, long double>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, long double & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			temp = _readTokenDecimal( stream);
++			swscanf(temp.c_str(), L"%Lg", &var);
++		}
++	};
++#endif // __UCLIBCXX_HAS_FLOATS__
++
++	template <class traits> class _UCXXEXPORT __istream_readin<traits, wchar_t, void*>{
++	public:
++		inline static void readin(basic_istream<wchar_t, traits >& stream, void* & var)
++		{
++			basic_string<wchar_t, traits > temp;
++			temp = _readToken( stream);
++			swscanf(temp.c_str(), L"%p", &var);
++		}
++	};
++#endif // __UCLIBCXX_HAS_WCHAR__
+ 
+ 	template<class charT, class traits> void __skipws(basic_istream<charT,traits>& is){
+ 		const typename basic_istream<charT,traits>::int_type eof = traits::eof();

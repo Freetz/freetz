@@ -11,31 +11,33 @@ config FREETZ_LIB_STDCXXLIB_WITH_WCHAR
 	select FREETZ_LIB_libuClibc__WITH_WCHAR if FREETZ_STDCXXLIB_USE_UCLIBCXX
 	default n
 
-source make/libstdc++/Config.in
-source make/uClibc++/Config.in
+source make/libs/libstdcxx/Config.in
+source make/libs/uclibcxx/Config.in
 
 endmenu
+
+
 
 menu "Crypto & SSL"
 
 comment "Math -----------------------------------"
 
-source make/gmp/Config.in
-source make/mpfr/Config.in
-source make/mpc/Config.in
+source make/libs/gmp/Config.in
+source make/libs/mpfr/Config.in
+source make/libs/mpc/Config.in
 
 comment "GnuPG ----------------------------------"
 
-source make/libgpg-error/Config.in
-source make/libgcrypt/Config.in
+source make/libs/libgpg-error/Config.in
+source make/libs/libgcrypt/Config.in
 
 comment "SSL ------------------------------------"
 
-source make/cyassl/Config.in
-source make/matrixssl/Config.in
-source make/polarssl/Config.in
-source make/openssl/Config.in
-source make/libavmhmac/Config.in
+source make/libs/cyassl/Config.in
+source make/libs/matrixssl/Config.in
+source make/libs/polarssl/Config.in
+source make/libs/openssl/Config.in
+source make/libs/libavmhmac/Config.in
 
 comment "GnuTLS ---------------------------------"
 config FREETZ_LIB_libgnutls
@@ -64,14 +66,14 @@ config FREETZ_LIB_libgnutls_openssl
 	help
 		GnuTLS OpenSSL compatibility layer library
 
-source make/libtasn1/Config.in
+source make/libs/libtasn1/Config.in
 
 endmenu
 
 menu "Data compression"
 
-source make/lzo/Config.in
-source make/zlib/Config.in
+source make/libs/lzo/Config.in
+source make/libs/zlib/Config.in
 
 endmenu
 
@@ -80,20 +82,20 @@ source make/e2fsprogs/libraries-Config.in
 
 menu "GLib"
 
-source make/glib/Config.in
-source make/glib2/Config.in
+source make/libs/glib/Config.in
+source make/libs/glib2/Config.in
 
 endmenu
 
 menu "Graphics & fonts"
 
-source make/freetype/Config.in
-source make/libart_lgpl/Config.in
-source make/libexif/Config.in
-source make/jpeg/Config.in
-source make/libpng/Config.in
-source make/gd/Config.in
-source make/openjpeg/Config.in
+source make/libs/freetype/Config.in
+source make/libs/libart_lgpl/Config.in
+source make/libs/libexif/Config.in
+source make/libs/jpeg/Config.in
+source make/libs/libpng/Config.in
+source make/libs/gd/Config.in
+source make/libs/openjpeg/Config.in
 
 config FREETZ_LIB_libnetpbm
 	bool "libnetpbm (libnetpbm.so)"
@@ -109,27 +111,27 @@ source make/ffmpeg/libraries-Config.in
 
 menu Ogg/Vorbis
 
-source make/libogg/Config.in
-source make/libvorbis/Config.in
+source make/libs/libogg/Config.in
+source make/libs/libvorbis/Config.in
 
 endmenu
 
-source make/flac/Config.in
-source make/libid3tag/Config.in
-source make/libmad/Config.in
-source make/taglib/Config.in
+source make/libs/flac/Config.in
+source make/libs/libid3tag/Config.in
+source make/libs/libmad/Config.in
+source make/libs/taglib/Config.in
 
 endmenu
 
 menu "ncurses"
 
-source make/ncurses/Config.in
+source make/libs/ncurses/Config.in
 
 endmenu
 
 menu "Readline"
 
-source make/readline/Config.in
+source make/libs/readline/Config.in
 
 endmenu
 
@@ -314,8 +316,8 @@ endmenu
 
 menu "XML/XSLT"
 
-source make/expat/Config.in
-source make/libxml2/Config.in
+source make/libs/expat/Config.in
+source make/libs/libxml2/Config.in
 
 config FREETZ_LIB_libxslt
 	bool "libxslt (libxslt.so)"
@@ -342,13 +344,13 @@ config FREETZ_LIB_libexslt
 		EXSLT itself is a community initiative to provide extensions to XSLT.
 endmenu
 
-source make/apr/Config.in
-source make/apr-util/Config.in
-source make/db/Config.in
-source make/bluez-libs/Config.in
-source make/libcapi/Config.in
-source make/libgcc_s/Config.in
-source make/libconfig/Config.in
+source make/libs/apr/Config.in
+source make/libs/apr-util/Config.in
+source make/libs/db/Config.in
+source make/libs/bluez-libs/Config.in
+source make/libs/libcapi/Config.in
+source make/libs/libgcc_s/Config.in
+source make/libs/libconfig/Config.in
 
 config FREETZ_LIB_libcurl
 	bool "libcurl (libcurl.so)"
@@ -358,14 +360,14 @@ config FREETZ_LIB_libcurl
 	help
 		A client-side URL transfer library.
 
-source make/libdaemon/Config.in
-source make/devmapper/Config.in
-source make/libdnet/Config.in
-source make/libelf/Config.in
-source make/libevent/Config.in
-source make/libffi-sable/Config.in
-source make/libfreetz/Config.in
-source make/libftdi/Config.in
+source make/libs/libdaemon/Config.in
+source make/libs/devmapper/Config.in
+source make/libs/libdnet/Config.in
+source make/libs/libelf/Config.in
+source make/libs/libevent/Config.in
+source make/libs/libffi-sable/Config.in
+source make/libs/libfreetz/Config.in
+source make/libs/libftdi/Config.in
 
 config FREETZ_LIB_libfuse
 	bool "libfuse (libfuse.so)"
@@ -373,10 +375,10 @@ config FREETZ_LIB_libfuse
 	help
 		Filesystem in USErspace library
 
-source make/libiconv/Config.in
-source make/gettext/Config.in
-source make/js/Config.in
-source make/libtool/Config.in
+source make/libs/libiconv/Config.in
+source make/libs/gettext/Config.in
+source make/libs/js/Config.in
+source make/libs/libtool/Config.in
 
 config FREETZ_LIB_liblua
 	bool "liblua (liblua.so)"
@@ -384,8 +386,8 @@ config FREETZ_LIB_liblua
 	help
 		LUA library
 
-source make/neon/Config.in
-source make/libnet/Config.in
+source make/libs/neon/Config.in
+source make/libs/libnet/Config.in
 
 config FREETZ_LIB_libntfs
 	bool "libntfs (libntfs-3g.so)"
@@ -393,13 +395,13 @@ config FREETZ_LIB_libntfs
 	help
 		NTFS-3G library
 
-source make/openobex/Config.in
-source make/liboping/Config.in
-source make/libosip2/Config.in
-source make/libpcap/Config.in
-source make/pcre/Config.in
-source make/pjproject/Config.in
-source make/popt/Config.in
+source make/libs/openobex/Config.in
+source make/libs/liboping/Config.in
+source make/libs/libosip2/Config.in
+source make/libs/libpcap/Config.in
+source make/libs/pcre/Config.in
+source make/libs/pjproject/Config.in
+source make/libs/popt/Config.in
 
 config FREETZ_LIB_librrd
 	bool "librrd (librrd.so)"
@@ -445,9 +447,9 @@ config FREETZ_LIB_libsqlite3
 		embeddable, zero-configuration SQL database engine.
 		This is just the Library.
 
-source make/libsynce/Config.in
-source make/sysfsutil/Config.in
-source make/libusb/Config.in
-source make/libusb1/Config.in
-source make/linux-atm/Config.in
-source make/wxWidgets/Config.in
+source make/libs/libsynce/Config.in
+source make/libs/sysfsutils/Config.in
+source make/libs/libusb/Config.in
+source make/libs/libusb1/Config.in
+source make/libs/linux-atm/Config.in
+source make/libs/wxWidgets/Config.in
