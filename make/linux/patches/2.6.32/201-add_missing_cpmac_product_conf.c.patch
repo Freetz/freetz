@@ -1,11 +1,31 @@
---- /dev/null	2011-07-02 12:26:21.572750115 +0200
-+++ linux-2.6.32/drivers/net/avm_cpmac/cpmac_product_conf.c	2011-03-24 13:18:38.000000000 +0100
-@@ -0,0 +1,567 @@
+--- /dev/null	2011-07-20 21:38:32.699339587 +0200
++++ linux-2.6.28/drivers/net/avm_cpmac/cpmac_product_conf.c	2011-07-19 17:12:52.000000000 +0200
+@@ -0,0 +1,647 @@
 +#include "cpphy_types.h"
 +
 +cpmac_product_struct cpmac_products = {
 +    33,
 +    {
++        { /* Fritz_Box_DECT_W920V */
++            "135 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    65535,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
 +        { /* Fritz_Box_SpeedportW503V */
 +            "136 ",
 +            2,
@@ -126,6 +146,26 @@
 +                }
 +            }
 +        },
++        { /* Fritz_Box_7570 */
++            "146 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    65535,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
 +        { /* Fritz_Box_EasyboxA802R */
 +            "147 ",
 +            2,
@@ -195,6 +235,46 @@
 +                    CPMAC_PHY_MODE_AR8216,
 +                    0x1f,
 +                    15,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7570_HN */
++            "153 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    65535,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7212 */
++            "154 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_ADM7001,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    65535,
 +                    0x0
 +                },
 +                {
