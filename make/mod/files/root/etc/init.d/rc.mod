@@ -67,6 +67,12 @@ start() {
 
 	touch /tmp/.modstarted
 
+	# 7390: external hook for nand flash, if NAND exists it is mounted under /var/media/ftp
+	if [ "$CONFIG_NAND" = 'y' -a -f "$MOD_EXTERNAL_DIRECTORY"/.external ] &&
+		df -P "$MOD_EXTERNAL_DIRECTORY" | tail -n1 | grep -q "/var/media/ftp "; then
+		/etc/init.d/rc.external start
+	 fi
+
 	/usr/lib/mod/menu-update
 }
 
@@ -103,7 +109,7 @@ modreg_file() {
 
 register() {
 	modreg cgi mod "Freetz"
-	modreg conf mod webcfg "$(lang de:"Weboberfläche" en:"Web interface")"
+	modreg conf mod webcfg "$(lang de:"Weboberflï¿½che" en:"Web interface")"
 	modreg cgi avm "$(lang de:"AVM-Dienste" en:"AVM services")"
 
 	modreg_file  .profile    0
