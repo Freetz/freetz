@@ -8,7 +8,30 @@ $(PKG)_BINARY_NAME_NOLFS:=target-tester-nolfs
 $(PKG)_BINARY_NOLFS:=$($(PKG)_DIR)/$($(PKG)_BINARY_NAME_NOLFS)
 $(PKG)_TARGET_BINARY_NOLFS:=$($(PKG)_DEST_DIR)/usr/bin/$($(PKG)_BINARY_NAME_NOLFS)
 
-$(PKG)_BINARIES:=ac_cv_func_mmap_fixed_mapped gt_cv_int_divbyzero_sigfpe ac_cv_libnet_endianess ac_cv_lbl_unaligned_fail libnet_cv_have_packet_socket ettercap-nsget32 tst_nl_langinfo realpath_test
+$(PKG)_BINARIES:= \
+	ac_cv_func_mmap_fixed_mapped \
+	ac_cv_lbl_unaligned_fail \
+	ac_cv_libnet_endianess \
+	bash_cv_dup2_broken \
+	bash_cv_getcwd_malloc \
+	bash_cv_getenv_redef \
+	bash_cv_func_sigsetjmp \
+	bash_cv_must_reinstall_sighandlers \
+	bash_cv_opendir_not_robust \
+	bash_cv_pgrp_pipe \
+	bash_cv_printf_a_format \
+	bash_cv_ulimit_maxfds \
+	bash_cv_unusable_rtsigs \
+	ettercap-nsget32 \
+	gt_cv_int_divbyzero_sigfpe \
+	libnet_cv_have_packet_socket \
+	realpath_test \
+	tst_nl_langinfo
+
+# doesn't compile
+#	bash_cv_sys_siglist		-> no
+#	bash_cv_under_sys_siglist	-> no
+
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 

@@ -5,7 +5,7 @@ Latest changes:
 === Freetz-1.2-stable ===
 
 - Build system:
-  * fakeroot: bump version to 1.15.1
+  * fakeroot: bump version to 1.16
   * kernel-toolchain:
    + Bump binutils version to 2.18
    + Add gcc version 4.4.6
@@ -30,7 +30,7 @@ Latest changes:
    + Remove many unused symbols from libgcc_s (saves ~ 100 KB)
   * Bump ccache version to 3.1.5
   * patch-system: use shell-fuction isFreetzType (by kriegaex)
-  * replace tar with busybox tar
+  * use host tar to unpack packages again as busybox' tar doesn't support pax (aka POSIX 1003.1-2001) tar format
   * patch-system: use shell function modsed
   * move packages and libs source dir to source/target-$(arch)_uClibc-$(version)
    * move config.cache to this subdir too
@@ -191,6 +191,9 @@ Latest changes:
     * external:
      * Move external files out of tools/external into separate files for each package
      * added automatic start/stop of services on (un)mount (now configurable via webinterface)
+     * get_ip:
+        + default method could be set via webif
+        + cache for extquery (1 minunte)
 
 - Updated patches:
     * Update many patches to support actual firmwares (e.g. changed paths)
@@ -256,7 +259,7 @@ Latest changes:
     * ntfs-3g 2011.4.12
     * openssh 5.6p1
     * openssl 0.9.8r
-    * openvpn 2.2.0
+    * openvpn 2.2.1
     * pciutils 3.1.7
     * php 5.3.6
     * pingtunnel 0.71 (and webif added)
@@ -274,7 +277,7 @@ Latest changes:
     * tinc 1.0.14
     * tinyproxy 1.8.2
     * tor 0.2.1.30
-    * transmission 2.32
+    * transmission 2.33
     * uClibc++ 0.2.3pre (git snapshot)
     * usbutils 0.86
     * vim 7.3

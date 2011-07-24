@@ -1,5 +1,5 @@
---- acinclude.m4.orig	2011-04-06 18:05:52.000000000 +0200
-+++ acinclude.m4	2011-04-29 10:50:30.933970001 +0200
+--- acinclude.m4
++++ acinclude.m4
 @@ -123,5 +123,9 @@
        AC_DEFINE_UNQUOTED(socklen_t, $curl_cv_socklen_t_equiv,
  			[type to use in place of socklen_t if not defined])],
@@ -11,8 +11,8 @@
 +#include <sys/socket.h>
 +#endif])
  ])
---- aclocal.m4.orig	2011-04-21 21:29:33.000000000 +0200
-+++ aclocal.m4	2011-04-29 10:50:30.933970001 +0200
+--- aclocal.m4
++++ aclocal.m4
 @@ -13,8 +13,8 @@
  
  m4_ifndef([AC_AUTOCONF_VERSION],
@@ -24,8 +24,8 @@
  You have another version of autoconf.  It may work, but is not guaranteed to.
  If you have problems, you may need to regenerate the build system entirely.
  To do so, use the procedure documented by the package, typically `autoreconf'.])])
---- buffer.c.orig	2011-04-21 21:13:34.000000000 +0200
-+++ buffer.c	2011-04-29 10:50:30.937970001 +0200
+--- buffer.c
++++ buffer.c
 @@ -214,6 +214,23 @@
    return ret;
  }
@@ -50,8 +50,8 @@
  /*
   * This is necessary due to certain buggy implementations of snprintf,
   * that don't guarantee null termination for size > 0.
---- buffer.h.orig	2011-04-06 18:05:52.000000000 +0200
-+++ buffer.h	2011-04-29 10:50:30.941970001 +0200
+--- buffer.h
++++ buffer.h
 @@ -277,6 +277,11 @@
      ;
  
@@ -64,8 +64,8 @@
   * Like snprintf but guarantees null termination for size > 0
   */
  int openvpn_snprintf(char *str, size_t size, const char *format, ...)
---- config.h.in.orig	2011-04-21 21:29:34.000000000 +0200
-+++ config.h.in	2011-04-29 10:50:30.941970001 +0200
+--- config.h.in
++++ config.h.in
 @@ -531,6 +531,9 @@
  /* Use LZO compression library */
  #undef USE_LZO
@@ -76,8 +76,8 @@
  /* Enable PKCS11 capability */
  #undef USE_PKCS11
  
---- configure.orig	2011-04-21 21:29:34.000000000 +0200
-+++ configure	2011-04-29 10:50:30.957970001 +0200
+--- configure
++++ configure
 @@ -715,6 +715,7 @@
  enable_http
  enable_fragment
@@ -142,8 +142,8 @@
  
  if test "$MEMCHECK" = "valgrind"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for valgrind tool and Header files..." >&5
---- configure.ac.orig	2011-04-14 23:30:08.000000000 +0200
-+++ configure.ac	2011-04-29 10:50:30.961970001 +0200
+--- configure.ac
++++ configure.ac
 @@ -146,6 +146,12 @@
     [MULTIHOME="yes"]
  )
@@ -174,8 +174,8 @@
  dnl
  dnl check for valgrind tool
  dnl
---- init.c.orig	2011-04-21 21:13:34.000000000 +0200
-+++ init.c	2011-04-29 10:50:30.965970001 +0200
+--- init.c
++++ init.c
 @@ -96,7 +96,7 @@
     */
    if (options->pull
@@ -282,8 +282,8 @@
      do_event_set_init (dest, false);
  }
  
---- manage.c.orig	2011-04-21 21:13:34.000000000 +0200
-+++ manage.c	2011-04-29 10:50:30.969970002 +0200
+--- manage.c
++++ manage.c
 @@ -1957,9 +1957,9 @@
  	  /*
  	   * Initialize socket address
@@ -315,8 +315,8 @@
        man_connection_init (man);
      }
  
---- mroute.c.orig	2011-04-06 18:05:52.000000000 +0200
-+++ mroute.c	2011-04-29 10:50:30.969970002 +0200
+--- mroute.c
++++ mroute.c
 @@ -226,25 +226,47 @@
  				      const struct openvpn_sockaddr *osaddr,
  				      bool use_port)
@@ -369,8 +369,8 @@
    return false;
  }
  
---- mtcp.c.orig	2011-04-06 18:05:52.000000000 +0200
-+++ mtcp.c	2011-04-29 10:50:30.973970002 +0200
+--- mtcp.c
++++ mtcp.c
 @@ -150,6 +150,11 @@
    ASSERT (mi->context.c2.link_socket);
    ASSERT (mi->context.c2.link_socket->info.lsa);
@@ -383,8 +383,8 @@
    if (!mroute_extract_openvpn_sockaddr (&mi->real, &mi->context.c2.link_socket->info.lsa->actual.dest, true))
      {
        msg (D_MULTI_ERRORS, "MULTI TCP: TCP client address is undefined");
---- multi.c.orig	2011-04-21 21:13:34.000000000 +0200
-+++ multi.c	2011-04-29 10:50:30.977970002 +0200
+--- multi.c
++++ multi.c
 @@ -1058,8 +1058,8 @@
    struct mroute_addr addr;
  
@@ -444,8 +444,8 @@
  }
  
  #else
---- occ.c.orig	2011-04-06 18:04:54.000000000 +0200
-+++ occ.c	2011-04-29 10:50:30.981970002 +0200
+--- occ.c
++++ occ.c
 @@ -369,7 +369,7 @@
  	       c->c2.max_send_size_remote,
  	       c->c2.max_recv_size_local);
@@ -455,9 +455,9 @@
  	      && c->c2.max_send_size_local > TUN_MTU_MIN
  	      && (c->c2.max_recv_size_remote < c->c2.max_send_size_local
  		  || c->c2.max_recv_size_local < c->c2.max_send_size_remote))
---- openvpn.8.orig	2011-04-21 21:13:51.000000000 +0200
-+++ openvpn.8	2011-04-29 10:50:30.993970002 +0200
-@@ -5450,13 +5450,16 @@
+--- openvpn.8
++++ openvpn.8
+@@ -5463,13 +5463,16 @@
  script execution.
  .\"*********************************************************
  .TP
@@ -475,7 +475,7 @@
  .\"*********************************************************
  .TP
  .B trusted_port
-@@ -5468,7 +5471,7 @@
+@@ -5481,7 +5484,7 @@
  scripts.
  .\"*********************************************************
  .TP
@@ -484,7 +484,7 @@
  Actual IP address of connecting client or peer which has not been authenticated
  yet.  Sometimes used to
  .B nmap
-@@ -5480,6 +5483,9 @@
+@@ -5493,6 +5496,9 @@
  and
  .B \-\-auth-user-pass-verify
  scripts.
@@ -494,8 +494,8 @@
  .\"*********************************************************
  .TP
  .B untrusted_port
---- options.c.orig	2011-04-21 21:13:34.000000000 +0200
-+++ options.c	2011-04-29 10:50:31.001970002 +0200
+--- options.c
++++ options.c
 @@ -79,6 +79,12 @@
  #ifdef ENABLE_EUREPHIA
    " [eurephia]"
@@ -519,7 +519,7 @@
    "--connect-retry n : For --proto tcp-client, number of seconds to wait\n"
    "                    between connection retries (default=%d).\n"
    "--connect-timeout n : For --proto tcp-client, connection timeout (in seconds).\n"
-@@ -1706,11 +1715,27 @@
+@@ -1707,11 +1716,27 @@
     * Sanity check on TCP mode options
     */
  
@@ -552,7 +552,7 @@
  
    /*
     * Sanity check on MTU parameters
-@@ -1719,7 +1744,7 @@
+@@ -1720,7 +1745,7 @@
      msg (M_USAGE, "only one of --tun-mtu or --link-mtu may be defined (note that --ifconfig implies --link-mtu %d)", LINK_MTU_DEFAULT);
  
  #ifdef ENABLE_OCC
@@ -561,7 +561,7 @@
      msg (M_USAGE, "--mtu-test only makes sense with --proto udp");
  #endif
  
-@@ -1732,7 +1757,8 @@
+@@ -1733,7 +1758,8 @@
     * Sanity check on --local, --remote, and --ifconfig
     */
  
@@ -571,7 +571,7 @@
        && ce->local_port == ce->remote_port)
      msg (M_USAGE, "--remote and --local addresses are the same");
    
-@@ -1797,16 +1823,20 @@
+@@ -1798,16 +1824,20 @@
     */
  
  #ifdef ENABLE_FRAGMENT
@@ -595,7 +595,7 @@
      msg (M_USAGE, "--remote MUST be used in TCP Client mode");
  
  #ifdef ENABLE_HTTP_PROXY
-@@ -1824,7 +1854,12 @@
+@@ -1825,7 +1855,12 @@
      msg (M_USAGE, "--socks-proxy can not be used in TCP Server mode");
  #endif
  
@@ -609,7 +609,7 @@
      msg (M_USAGE, "TCP server mode allows at most one --remote address");
  
  #if P2MP_SERVER
-@@ -1838,11 +1873,28 @@
+@@ -1839,11 +1874,28 @@
  	msg (M_USAGE, "--mode server only works with --dev tun or --dev tap");
        if (options->pull)
  	msg (M_USAGE, "--pull cannot be used with --mode server");
@@ -642,7 +642,7 @@
  #endif
        if (!options->tls_server)
  	msg (M_USAGE, "--mode server requires --tls-server");
-@@ -1870,9 +1922,17 @@
+@@ -1871,9 +1923,17 @@
  	msg (M_USAGE, "--inetd cannot be used with --mode server");
        if (options->ipchange)
  	msg (M_USAGE, "--ipchange cannot be used with --mode server (use --client-connect instead)");
@@ -663,7 +663,7 @@
  	msg (M_USAGE, "--connect-freq only works with --mode server --proto udp.  Try --max-clients instead.");
        if (!(dev == DEV_TYPE_TAP || (dev == DEV_TYPE_TUN && options->topology == TOP_SUBNET)) && options->ifconfig_pool_netmask)
  	msg (M_USAGE, "The third parameter to --ifconfig-pool (netmask) is only valid in --dev tap mode");
-@@ -1963,7 +2023,7 @@
+@@ -1964,7 +2024,7 @@
    /*
     * Check consistency of replay options
     */
@@ -672,7 +672,7 @@
        && (options->replay_window != defaults.replay_window
  	  || options->replay_time != defaults.replay_time))
      msg (M_USAGE, "--replay-window only makes sense with --proto udp");
-@@ -2136,6 +2196,10 @@
+@@ -2137,6 +2197,10 @@
      {
        if (ce->proto == PROTO_TCPv4)
  	ce->proto = PROTO_TCPv4_CLIENT;
@@ -683,8 +683,8 @@
      }
  #endif
  
---- ps.c.orig	2011-04-14 17:01:43.000000000 +0200
-+++ ps.c	2011-04-29 10:50:31.005970002 +0200
+--- ps.c
++++ ps.c
 @@ -320,9 +320,9 @@
  	       const int port)
  {
@@ -698,8 +698,8 @@
  }
  
  static inline void
---- README.ipv6.orig	2011-04-29 10:50:31.005970002 +0200
-+++ README.ipv6	2011-04-29 10:50:31.005970002 +0200
+--- README.ipv6
++++ README.ipv6
 @@ -0,0 +1,81 @@
 +[ Last updated: 25-Mar-2011. ]
 +
@@ -782,8 +782,8 @@
 +.   Modular algo (AES et all) support for FreeSWAN/OpenSWAN author .
 +.                                        OpenVPN over IPv6 support .
 +:......     plus other scattered free software bits in the wild ...:
---- route.c.orig	2011-04-06 18:05:52.000000000 +0200
-+++ route.c	2011-04-29 10:50:31.009970002 +0200
+--- route.c
++++ route.c
 @@ -581,13 +581,23 @@
  	  if (!local)
  	    {
@@ -815,8 +815,8 @@
  	    }
  
  	  /* route DHCP/DNS server traffic through original default gateway */
---- socket.c.orig	2011-04-21 21:13:34.000000000 +0200
-+++ socket.c	2011-04-29 10:50:31.017970002 +0200
+--- socket.c
++++ socket.c
 @@ -36,10 +36,16 @@
  #include "memdbg.h"
  
@@ -2297,8 +2297,8 @@
      }
    
    if (buf)
---- socket.h.orig	2011-04-06 18:04:54.000000000 +0200
-+++ socket.h	2011-04-29 10:50:31.021970002 +0200
+--- socket.h
++++ socket.h
 @@ -70,7 +70,13 @@
  struct openvpn_sockaddr
  {
@@ -2685,8 +2685,8 @@
      {
        return link_socket_write_tcp (sock, buf, to);
      }
---- socks.c.orig	2011-04-06 18:05:52.000000000 +0200
-+++ socks.c	2011-04-29 10:50:31.025970002 +0200
+--- socks.c
++++ socks.c
 @@ -299,9 +299,9 @@
  
    if (addr != NULL)
@@ -2733,8 +2733,8 @@
  
    return 10;
  }
---- syshead.h.orig	2011-04-21 21:13:34.000000000 +0200
-+++ syshead.h	2011-04-29 10:50:31.025970002 +0200
+--- syshead.h
++++ syshead.h
 @@ -28,6 +28,10 @@
  /*
   * Only include if not during configure
@@ -2769,8 +2769,8 @@
  #define ENABLE_IP_PKTINFO 1
  #else
  #define ENABLE_IP_PKTINFO 0
---- TODO.ipv6.orig	2011-04-29 10:50:31.033970002 +0200
-+++ TODO.ipv6	2011-04-29 10:50:31.033970002 +0200
+--- TODO.ipv6
++++ TODO.ipv6
 @@ -0,0 +1,30 @@
 +[ Last updated: 11-Nov-2009. ]
 +
@@ -2802,9 +2802,9 @@
 +* N/A:
 +  o this is ipv6 *endpoint* support, so don't expect "ifconfig6"-like
 +    support in this patch 
---- tun.c.orig	2011-04-06 18:05:52.000000000 +0200
-+++ tun.c	2011-04-29 10:50:31.041970002 +0200
-@@ -1697,7 +1697,9 @@
+--- tun.c
++++ tun.c
+@@ -1688,7 +1688,9 @@
  	  strerror(errno));
        }
  
@@ -2814,8 +2814,8 @@
  
        if (ioctl (tt->fd, TUNSIFINFO, &info) < 0) {
  	msg (M_WARN | M_ERRNO, "Can't set interface info: %s",
---- win32.h.orig	2011-04-14 21:10:29.000000000 +0200
-+++ win32.h	2011-04-29 10:50:31.045970002 +0200
+--- win32.h
++++ win32.h
 @@ -195,7 +195,10 @@
    DWORD flags;
    int status;
