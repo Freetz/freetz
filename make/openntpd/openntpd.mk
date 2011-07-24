@@ -11,6 +11,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ntpd
 
 $(PKG)_STARTLEVEL=60 # before aiccu
 
+$(PKG)_CONFIGURE_PRE_CMDS += chmod +x ./configure;
+
 $(PKG)_CONFIGURE_OPTIONS += --with-builtin-arc4random
 $(PKG)_CONFIGURE_OPTIONS += --with-privsep-user=ntp
 $(PKG)_CONFIGURE_OPTIONS += --with-builtin-md5
