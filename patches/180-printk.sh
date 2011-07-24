@@ -6,7 +6,7 @@ if isFreetzType 5010 5050 7050 7140 7141 7150 7170; then
 elif isFreetzType 7320 || (isFreetzType 7390 && isFreetzType LABOR_PREVIEW); then
 	file="$FILESYSTEM_MOD_DIR/etc/init.d/S17-isdn"
 	modsed "s/AVM_PRINTK/STD_PRINTK/g" $file
-elif isFreetzType 7240 7270_V2 7270_V3 && isFreetzType LANG_DE; then
+elif isFreetzType 7240 7270_V2 7270_V3; then
 	file="$FILESYSTEM_MOD_DIR/etc/init.d/S11-piglet"
 	modsed "s/AVM_PRINTK/STD_PRINTK/g" $file
 else
