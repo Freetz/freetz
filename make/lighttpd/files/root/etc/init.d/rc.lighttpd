@@ -14,7 +14,7 @@ config() {
 	modunreg status lighttpd lighttpd-log
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
 		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" = "y" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
-			modreg status lighttpd lighttpd-log lighttpd-log
+			modreg status lighttpd lighttpd lighttpd-log
 		fi
 	fi
 }
