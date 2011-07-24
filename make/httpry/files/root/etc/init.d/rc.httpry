@@ -1,0 +1,45 @@
+#!/bin/sh
+
+DAEMON=httpry
+. /etc/init.d/modlibrc
+
+start() {
+	modlib_startdaemon $DAEMON -d -u nobody -i $HTTPRY_INTERFACE -o $HTTPRY_LOGFILE $HTTPRY_CMDLINE "$HTTPRY_CAPFILTER" 2>/dev/null
+}
+
+case $1 in
+	""|load)
+		modlib_addgroup nobody
+		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
+		modreg cgi $DAEMON httpry
+		modreg daemon $DAEMON
+		modreg status $DAEMON httpry httpry_log
+
+		modlib_start $HTTPRY_ENABLED
+		;;
+	unload)
+		modunreg status $DAEMON httpry_log
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

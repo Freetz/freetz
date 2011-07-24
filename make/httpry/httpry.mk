@@ -20,6 +20,17 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_HTTPRY_REMOVE_WEBIF)" == "y" ] \
+		&& echo "usr/lib/cgi-bin/httpry.cgi" >> $@ \
+		&& echo "usr/lib/cgi-bin/httpry" >> $@ \
+		&& echo "etc/default.httpry" >> $@ \
+		&& echo "etc/init.d/rc.httpry" >> $@; \
+	touch $@
+
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
