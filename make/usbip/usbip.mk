@@ -50,7 +50,7 @@ $($(PKG)_MOD_TARGET_BINARY): $($(PKG)_MOD_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) \
-	$(if $(FREETZ_KERNEL_VERSION_2_6_28),,$($(PKG)_MOD_TARGET_BINARY))
+	$(if $(or $(FREETZ_KERNEL_VERSION_2_6_28),$(FREETZ_KERNEL_VERSION_2_6_32)),,$($(PKG)_MOD_TARGET_BINARY))
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(USBIP_DIR)/src clean
