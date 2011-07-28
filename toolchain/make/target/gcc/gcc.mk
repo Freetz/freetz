@@ -54,8 +54,10 @@ GCC_COMMON_CONFIGURE_OPTIONS := \
 
 TOOLCHAIN_TARGET_CFLAGS:=$(TARGET_CFLAGS) -msoft-float
 
+ifneq ($(strip $(FREETZ_TARGET_TOOLCHAIN_AVM_COMPATIBLE)),y)
 # enable non-PIC for mips* targets
 GCC_COMMON_CONFIGURE_OPTIONS += --with-mips-plt
+endif
 
 ifndef TARGET_TOOLCHAIN_NO_MPFR
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-decimal-float
