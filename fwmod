@@ -401,16 +401,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	echo0 "applying patches"
 
-	echo1 "applying patches (${FREETZ_TYPE_STRING}-${FREETZ_TYPE_LANG_STRING})"
+	echo1 "applying patches (${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_LANGUAGE})"
 
 	# Apply patches
-	if [ ! -d "${PATCHES_DIR}/${FREETZ_TYPE_STRING}" ]; then
-		error 1 "missing ${PATCHES_DIR}/${FREETZ_TYPE_STRING}"
+	if [ ! -d "${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}" ]; then
+		error 1 "missing ${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}"
 	fi
 
 	# Execute version specific patch scripts
-	for i in "${PATCHES_DIR}/${FREETZ_TYPE_STRING}/${FREETZ_TYPE_LANG_STRING}/"*.sh \
-		"${PATCHES_DIR}/${FREETZ_TYPE_STRING}/"*.sh; do
+	for i in "${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/${FREETZ_TYPE_LANGUAGE}/"*.sh \
+		"${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/"*.sh; do
 		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
 		. $i
@@ -429,8 +429,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Apply (general, version specific, language specific) patches
 	shopt -s nullglob
 	for i in "${PATCHES_DIR}/"*.patch \
-		"${PATCHES_DIR}/${FREETZ_TYPE_STRING}/"*.patch \
-		"${PATCHES_DIR}/${FREETZ_TYPE_STRING}/${FREETZ_TYPE_LANG_STRING}/"*.patch
+		"${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/"*.patch \
+		"${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/${FREETZ_TYPE_LANGUAGE}/"*.patch
 	do
 		modpatch "$FILESYSTEM_MOD_DIR" "$i"
 	done
@@ -951,7 +951,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
-	modbaseimagename="${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANG_STRING}"
+	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
 		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
 	else
@@ -974,10 +974,10 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Create freetz-info
 	echo1 "integrate freetz info file into image"
 	freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
-	echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_STRING2}${FREETZ_TYPE_STRING}'" > "$freetz_info_file"
+	echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX}'" > "$freetz_info_file"
 	echo "export FREETZ_INFO_FIRMWAREVERSION='${FIRMWAREVERSION}'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_SUBVERSION='${SUBVERSION}'" >> "$freetz_info_file"
-	echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANG_STRING}'" >> "$freetz_info_file"
+	echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANGUAGE}'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_MAKEDATE='$modmakedate'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_COMMENT='${FREETZ_USER_DEFINED_COMMENT}'" >> "$freetz_info_file"
