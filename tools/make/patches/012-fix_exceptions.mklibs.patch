@@ -1,5 +1,5 @@
---- src/mklibs.orig	2010-09-20 22:33:22.000000000 +0200
-+++ src/mklibs	2010-09-21 15:03:28.604621874 +0200
+--- src/mklibs
++++ src/mklibs
 @@ -85,7 +85,7 @@
  
  def elf_header(obj):
@@ -18,7 +18,7 @@
      return command("mklibs-readelf", "--print-needed", obj)
  
  # Return a list of libraries the passed objects depend on. The
-@@ -139,7 +139,7 @@
+@@ -136,7 +136,7 @@
  # Return undefined symbols in an object as a set of tuples (name, weakness)
  def undefined_symbols(obj):
      if not os.access(obj, os.F_OK):
@@ -27,7 +27,7 @@
  
      output = command("mklibs-readelf", "--print-symbols-undefined", obj)
  
-@@ -194,7 +194,7 @@
+@@ -192,7 +192,7 @@
  # Return a set of symbols provided by a library
  def provided_symbols(obj):
      if not os.access(obj, os.F_OK):
