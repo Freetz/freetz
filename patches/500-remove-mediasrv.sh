@@ -1,9 +1,12 @@
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
 echo1 "remove mediasrv files"
 for files in \
+	bin/showfritznasdbstart \
+	lib/libavmdb.so* \
 	lib/libpng.so* \
 	lib/libmediasrv.so* \
 	lib/libsqlite3*.so* \
+	sbin/fritznasdb \
 	sbin/mediasrv \
 	sbin/start_mediasrv \
 	sbin/stop_mediasrv \
