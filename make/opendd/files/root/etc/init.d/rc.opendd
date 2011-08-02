@@ -32,6 +32,10 @@ run() {
 		echo 'is disabled.'
 		exit 0
 	fi
+	if [ ! -x "$(which $DAEMON_BIN)" ]; then
+		echo "binary not found, skipped."
+		exit 1
+	fi
 
 	modlib_config
 	chmod 600 /mod/etc/$DAEMON.conf
@@ -76,9 +80,15 @@ case $1 in
 		if [ "$OPENDD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled." 1>&2
 			exit 1
+		else
+			set_cron
+			#check if this script is executed by rc.external
+			if [ "$(ps | sed -rn "s/^ *$PPID .*(rc.external).*/y/p")" != "y" ]; then
+				echo "$DAEMON is enabled." 1>&2
+			else
+				run
+			fi
 		fi
-		echo "$DAEMON is enabled." 1>&2
-		set_cron
 		;;
 	unload)
 		modunreg cgi 'opendd'

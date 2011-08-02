@@ -69,6 +69,12 @@ start() {
 
 	touch /tmp/.modstarted
 
+	# 7390: external hook for nand flash, if NAND exists it is mounted under /var/media/ftp
+	if [ "$CONFIG_NAND" = 'y' -a -f "$MOD_EXTERNAL_DIRECTORY"/.external ] &&
+		df -P "$MOD_EXTERNAL_DIRECTORY" | tail -n1 | grep -q "/var/media/ftp "; then
+		/etc/init.d/rc.external start
+	 fi
+
 	/usr/lib/mod/menu-update
 }
 

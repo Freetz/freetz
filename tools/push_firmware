@@ -71,7 +71,7 @@ function push_fw() {
 		HWR=$(echo "$VALUES" | sed -n '/^HWRev/ s/HWRevision[^0-9]*//p')
 		[ "153" = "$HWR" ] || { echo "$basename: Error veryfing HWRevision=153 as required for \"Alice\" FritzBox. Found: HWRevision=$HWR." ; exit 1 ;}
 		MTD=$(echo "$VALUES" | sed -n '/^mtd/ s/mtd.[^0]*// p')
-		[ $(echo $MTD | tr -d '\n' | grep  '0x90040000,0x907E0000' | grep -q '0x907E0000,0x90F80000') ] || \
+		$(echo $MTD | tr -d '\n' | grep '0x90040000,0x907E0000' | grep -q '0x907E0000,0x90F80000') || \
 			{ echo -e "$basename: Error veryfing mtd values for \"Alice\" box. Found values:\n$MTD" ; exit 1 ;}
 		kernel_mtd1=$(mktemp -t freetz_mtd1_XXX) || { echo "$basename: Error creating temporary file for mtd1."; exit 1; }
 		kernel_mtd5=$(mktemp -t freetz_mtd5_XXX) || { echo "$basename: Error creating temporary file for mtd5."; exit 1; }

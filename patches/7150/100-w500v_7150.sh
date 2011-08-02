@@ -54,7 +54,7 @@ sed -i -e "s/VERSION_MAJOR=27/VERSION_MAJOR=38/g" \
 	-e "s/MAILER=.*$/MAILER=y/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init"
 
 echo2 "patching webinterface"
-HTML_DIR="${HTML_LANG_MOD_DIR}/html/${FREETZ_TYPE_LANG_STRING}"
+HTML_DIR="${HTML_LANG_MOD_DIR}/html/${FREETZ_TYPE_LANGUAGE}"
 sed -i -e "s/g_txtmld_/g_txtMld_/g" "${HTML_DIR}/fon/foncalls.js"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_DIR}/fon/sip1.js"
 sed -i -e "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_DIR}/fon/siplist.js"
