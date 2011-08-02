@@ -8,13 +8,6 @@ config FREETZ_PACKAGE_PPPD
 	select FREETZ_MODULE_ppp_deflate
 	select FREETZ_MODULE_ppp_generic
 	select FREETZ_MODULE_ppp_mppe_mppc
-	select FREETZ_MODULE_arc4
-	select FREETZ_MODULE_sha1 if \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
-		FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_sha1_generic if \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
 	default n
 	help
 		An implementation of the Point-to-point protocol.
