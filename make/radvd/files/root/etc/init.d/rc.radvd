@@ -22,7 +22,7 @@ start_ipv6_interface() {
 			ip -6 addr add $RADVD_ADDRESS dev $RADVD_INTERFACE
 		fi
 	fi
-	[ "$RADVD_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+	[ "$RADVD_FORWARD" == "yes" ] && echo 2>/dev/null 1 > /proc/sys/net/ipv6/conf/all/forwarding
 }
 
 stop_ipv6_interface() {
@@ -34,7 +34,7 @@ stop_ipv6_interface() {
 			echo -n 'IPv6 address already unset ... '
 		fi
 	fi
-	[ "$RADVD_FORWARD" == "yes" ] && echo 0 > /proc/sys/net/ipv6/conf/all/forwarding
+	[ "$RADVD_FORWARD" == "yes" ] && echo 2>/dev/null 0 > /proc/sys/net/ipv6/conf/all/forwarding
 }
 
 start() {
