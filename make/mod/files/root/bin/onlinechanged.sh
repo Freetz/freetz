@@ -9,7 +9,7 @@ log() {
 		addline="\n"
 		shift
 	done
-	echo "[$$]: [$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
+	echo -e "[$$]: [$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
 	echo "ONLINECHANGED[$$]: [$OC_STATE] $*" >/dev/console
 	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
 }
