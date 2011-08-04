@@ -32,20 +32,9 @@ case $1 in
 		#modunreg file 'pap_secrets'
 		#modunreg file 'pppd_options'
 		;;
-	start)
-		echo "pppd is only used by pptp, pptpd and ppp-cgi."
-		exit 1
-		;;
-	stop)
-		echo "pppd is only used by pptp, pptpd and ppp-cgi."
-		exit 1
-		;;
-	restart)
-		echo "pppd is only used by pptp, pptpd and ppp-cgi."
-		exit 1
-		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart]" 1>&2
+		echo "pppd is only used by pptp, pptpd and ppp-cgi." 1>&2
+		echo "Usage: $0 [load|unload]" 1>&2
 		exit 1
 		;;
 esac
