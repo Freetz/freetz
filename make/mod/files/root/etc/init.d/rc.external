@@ -10,7 +10,7 @@ local EXTERNAL_DIRECTORY=`echo $MOD_EXTERNAL_DIRECTORY|sed 's/\/*$//'`
 local EXTERNAL_CUSTOM_FILE=/tmp/flash/mod/rc.external
 
 #parameter -n: no new-line at line end
-#parameter -l: additional new-line
+#parameter -x: additional new-line
 log() {
 	local addl=""
 	local newl=""
@@ -19,8 +19,9 @@ log() {
 		[ "$1" == "-x" ] && addl="\n"
 		shift
 	done
+	[ -z "$*" ] && return
 	echo $newl -e "$addl$*" | tee -a $LOG_FILE
-	[ "$*" == "" -o "$*" == "." -o "$*" == " ." ] && return
+	[ "$*" == "." -o "$*" == " ." ] && return
 	echo "EXTERNAL: $*" > /dev/console
 	logger -t EXTERNAL "$*"
 }
@@ -91,6 +92,8 @@ start() {
 	ln -s "$EXTERNAL_DIRECTORY" "$EXTERNAL_LINK"
 
 	exec_rcs load
+
+	log "Starting external finished."
 }
 
 stop() {
@@ -99,6 +102,8 @@ stop() {
 	exec_rcs unload
 
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
+
+	log "Stopping external finished."
 }
 
 

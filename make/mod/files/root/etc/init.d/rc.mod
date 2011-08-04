@@ -74,6 +74,8 @@ start() {
 	 fi
 
 	/usr/lib/mod/menu-update
+
+	log "rc.mod finished."
 }
 
 stop_helper() {
@@ -99,6 +101,7 @@ stop() {
 
 	[ -n "$MOD_SHUTDOWN_LAST" ] && stop_helper $MOD_SHUTDOWN_LAST
 
+	log "Stopping all packages finished."
 }
 
 modreg_file() {

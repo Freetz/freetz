@@ -51,6 +51,6 @@ for i in /etc/onlinechanged/* /tmp/onlinechanged/* /tmp/flash/onlinechanged/*; d
 	log "executing $i"
 	sh "$i" "$OC_STATE" 2>&1 | while read line; do [ -n "$line" ] && log " * $line"; done
 done
-log "done"
+log "finished"
 
 rm -rf $PID_FILE 2>/dev/null
