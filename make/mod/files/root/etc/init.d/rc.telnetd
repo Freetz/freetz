@@ -17,11 +17,31 @@ stop() {
 case $1 in
 	""|load)
 		modreg daemon -p avm telnetd
+		;;
+	unload)
+		modunreg daemon avm telnetd
+		;;
+	start|stop|restart|status)
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+
+modlib_check_running
+if [ $? -eq 3 ] && pidof telnetd >/dev/null; then
+	echo "$DAEMON_LONG_NAME is started by phone, failed."
+	exit
+fi
+
+case $1 in
+	""|load)
 		modlib_start $AVM_TELNETD
 		;;
 	unload)
 		modlib_stop
-		modunreg daemon avm telnetd
 		;;
 	start)
 		modlib_start
@@ -34,10 +54,6 @@ case $1 in
 		;;
 	status)
 		modlib_status
-		;;
-	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
-		exit 1
 		;;
 esac
 
