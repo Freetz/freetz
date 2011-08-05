@@ -1063,6 +1063,14 @@ config FREETZ_REPLACE_SSL_LIBS
 
 		Activating this option saves about 400KB in the image.
 
+config FREETZ_REPLACE_DTRACE
+	bool "Replace dtrace"
+	depends on FREETZ_REMOVE_DTRACE
+	default n
+	help
+		Dtrace will be replace by a link to /tmp/flash/mod/dtrace, so you
+		could execute a custom action by phone with #97*3*.
+
 comment "Additional patches ---------------------"
 
 config FREETZ_ADD_ANNEX_A_FIRMWARE

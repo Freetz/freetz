@@ -121,6 +121,7 @@ register() {
 	modreg_file  modules     0
 	modreg_file  rc.custom   0
 	modreg_file  shutdown    0
+	[ -h /usr/bin/dtrace ] && modreg_file dtrace 0
 
 	/usr/lib/mod/reg-status start
 }
