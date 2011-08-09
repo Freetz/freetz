@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.1.5)
-$(PKG)_SOURCE := $(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5 := 6034d3f2206e4cc85426e7088b439c97
-$(PKG)_SITE := @SF/netatalk
+$(call PKG_INIT_BIN, 2.2.0)
+$(PKG)_SOURCE := $(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5 := acac2b5f2d9f43bfd5ea2a5cf4c71fe5
+$(PKG)_SITE := @SF/$(pkg)
 
 $(PKG)_LIBS := uams_guest uams_dhx2_passwd
 $(PKG)_LIBS_BUILD_DIR := $($(PKG)_LIBS:%=$($(PKG)_DIR)/etc/uams/.libs/%.so)
@@ -17,8 +17,6 @@ $(PKG)_BINS_DBD_TARGET_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DEST_DIR)/sbin/%)
 
 $(PKG)_DEPENDS_ON := db libgcrypt
 
-$(PKG)_PTHREAD_LDFLAGS := -lpthread
-
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-a2boot
@@ -30,14 +28,18 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-timelord
 $(PKG)_CONFIGURE_OPTIONS += --disable-admin-group
 $(PKG)_CONFIGURE_OPTIONS += --disable-shell-check
 $(PKG)_CONFIGURE_OPTIONS += --disable-tcp-wrappers
+$(PKG)_CONFIGURE_OPTIONS += --disable-zeroconf
 $(PKG)_CONFIGURE_OPTIONS += --with-cnid-default-backend=dbd
 $(PKG)_CONFIGURE_OPTIONS += --with-cnid-dbd-backend
 $(PKG)_CONFIGURE_OPTIONS += --with-cnid-tdb-backend
+$(PKG)_CONFIGURE_OPTIONS += --without-acls
 $(PKG)_CONFIGURE_OPTIONS += --without-cnid-cdb-backend
 $(PKG)_CONFIGURE_OPTIONS += --without-cnid-last-backend
+$(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --with-uams-path="$(FREETZ_LIBRARY_PATH)"
 $(PKG)_CONFIGURE_OPTIONS += --with-bdb="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-libgcrypt-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl-dir=no
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir="/mod/etc"
 $(PKG)_CONFIGURE_OPTIONS += --disable-debugging
 
@@ -46,8 +48,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINS_AFPD_BUILD_DIR) $($(PKG)_BINS_DBD_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(NETATALK_DIR) \
-	LDFLAGS="$(TARGET_LDFLAGS) $(NETATALK_PTHREAD_LDFLAGS)"
+	$(SUBMAKE) -C $(NETATALK_DIR)
 
 $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/etc/uams/.libs/%
 	$(INSTALL_LIBRARY_STRIP)
@@ -65,7 +66,6 @@ $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINS_AFPD_TARGET_DIR) $($
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NETATALK_DIR) clean
-	$(RM) $(NETATALK_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(NETATALK_LIBS_TARGET_DIR) $(NETATALK_BINS_AFPD_TARGET_DIR) $(NETATALK_BINS_DBD_TARGET_DIR)
