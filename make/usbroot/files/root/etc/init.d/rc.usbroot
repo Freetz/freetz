@@ -447,7 +447,7 @@ get_env_var() {
 	# garbage can be part of the value if the user defines the variable via
 	# Putty directly at the Eva console prompt via copy & paste.
 	usbroot=$(sed -rn "s/^$USBROOT_ENV_VAR[[:space:]]+([^[:space:]]+).*/\1/p" /proc/sys/urlader/environment)
-	usbroot=${usbroot#usbroot=}
+	usbroot=${usbroot#usbroot_arg=}
 	DEVICE=${usbroot%%:*}
 	USBPATH=${usbroot##*:}
 	fstype=${usbroot#*:}; fstype=${fstype%:*}
@@ -616,7 +616,7 @@ case $1 in
 		;;
 	store)
 		if [ -n "$2" ]; then
-			echo "$USBROOT_ENV_VAR usbroot=$2 $3" > /proc/sys/urlader/environment
+			echo "$USBROOT_ENV_VAR usbroot_arg=$2 $3" > /proc/sys/urlader/environment
 			echo "USB device name added to bootloader environment"
 		else
 			usbroot=$(sed -nr "s/^$USBROOT_ENV_VAR[[:space:]]+(.*)/\1/p" /proc/sys/urlader/environment)
