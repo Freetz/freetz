@@ -17,6 +17,15 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck
 			/usr/sbin/e2fsck
 			(use at your own risk, e2fsck is needed to check an uncleanly umounted filesystem)
 
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_fsck
+	boolean "fsck"
+	depends on FREETZ_PACKAGE_E2FSPROGS_E2FSCK 
+	default n
+	help
+		externals these file(s)
+			/usr/sbin/fsck
+			(use at your own risk, e2fsck is needed to check an uncleanly umounted filesystem)
+
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_mke2fs
 	boolean "mke2fs"
 	depends on FREETZ_PACKAGE_E2FSPROGS_E2MAKING
@@ -105,6 +114,14 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_badblocks
 		externals these file(s)
 			/usr/sbin/badblocks
 
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_resize2fs
+	boolean "resize2fs"
+	depends on FREETZ_PACKAGE_E2FSPROGS_E2RESIZE
+	default n
+	help
+		externals these file(s)
+			/usr/sbin/resize2fs
+
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_filefrag
 	boolean "filefrag"
 	depends on FREETZ_PACKAGE_E2FSPROGS_E2FIXING
@@ -112,6 +129,14 @@ config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_filefrag
 	help
 		externals these file(s)
 			/usr/sbin/filefrag
+
+config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2freefrag
+	boolean "e2freefrag"
+	depends on FREETZ_PACKAGE_E2FSPROGS_E2FIXING
+	default n
+	help
+		externals these file(s)
+			/usr/sbin/e2freefrag
 
 config EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid
 	boolean "blkid"
