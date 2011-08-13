@@ -34,6 +34,9 @@ start() {
 		fi
 	fi
 
+	cp -f /etc/resolv.conf /tmp/openvpn/etc
+	cp -f /etc/TZ /tmp/openvpn/etc
+
 	$DAEMON --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
@@ -77,13 +80,6 @@ if [ ! -e /var/tmp/.openvpnfirstrun ]; then
 	/mod/etc/default.openvpn/openvpn_dynamic_conf
 fi
 [ -x /mod/sbin/$DAEMON ] || ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
-
-case $1 in
-	""|load|start|restart)
-		cp -f /etc/resolv.conf /tmp/openvpn/etc
-		cp -f /etc/TZ /tmp/openvpn/etc
-		;;
-esac
 
 case $1 in
 	""|load)
