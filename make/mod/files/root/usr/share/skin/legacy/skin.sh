@@ -17,13 +17,9 @@ EOF
 
 skin_body_begin() {
 	local title=$1 id=$2
-	local help_links=""
-	if [ -n "$_CGI_WIKI$_CGI_WHMF" ]; then
-		help_links="&nbsp;<span class='help'>("
-		[ -n "$_CGI_WIKI" ] && help_links="${help_links}<a href='$(html "$_CGI_WIKI")' target='_blank'>Wiki</a>"
-		[ -n "$_CGI_WIKI" -a -n "$_CGI_WHMF" ] && help_links="${help_links}/"
-		[ -n "$_CGI_WHMF" ] && help_links="${help_links}<a href='$(html "$_CGI_WHMF")' target='_blank'>WHMF</a>"
-		help_links="${help_links})</span>"
+	local help=""
+	if [ -n "$_CGI_HELP" ]; then
+		help="&nbsp;<span class='help'>(<a href='$(html "$_CGI_HELP")' target='_blank'>$(lang de:"Hilfe" en:"Help")</a>)</span>"
 	fi
 	cat << EOF
 <table id="edge" border="0" cellspacing="0" cellpadding="0" width="$_cgi_total_width">
@@ -32,7 +28,7 @@ skin_body_begin() {
 <td id="edge-top-left"></td>
 <td id="edge-top">
 <div class="version">$(html < /etc/.freetz-version)</div>
-<div class="titlebar"><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a>&nbsp;<span class="title">$title</span>$help_links</div>
+<div class="titlebar"><a href="/cgi-bin/index.cgi" class="logo">Freetz</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a>&nbsp;<span class="title">$title</span>$help</div>
 </td>
 <td id="edge-top-right"></td>
 </tr>
