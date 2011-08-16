@@ -4,7 +4,6 @@ source make/bash/external.in
 source make/bip/external.in
 source make/bittwist/external.in
 source make/bluez-utils/external.in
-source make/cifsmount/external.in
 source make/classpath/external.in
 source make/comgt/external.in
 source make/ctorrent/external.in
@@ -56,7 +55,6 @@ source make/nmap/external.in
 source make/ntfs/external.in
 source make/obexftp/external.in
 source make/oidentd/external.in
-source make/opendd/external.in
 source make/owfs/external.in
 source make/php/external.in
 source make/polipo/external.in
@@ -100,12 +98,12 @@ source make/autofs/external.in
 source make/bind/external.in
 source make/checkmaild/external.in
 source make/collectd/external.in
-source make/davfs2/external.in
 source make/dropbear/external.in
 source make/gw6/external.in
 source make/knock/external.in
 source make/lighttpd/external.in
 source make/minidlna/external.in
+source make/opendd/external.in
 source make/openssh/external.in
 source make/openvpn/external.in
 source make/pingtunnel/external.in
@@ -124,6 +122,11 @@ source make/usbip/external.in
 source make/vsftpd/external.in
 source make/vtun/external.in
 source make/xmail/external.in
+comment "other"
+	depends on EXTERNAL_ENABLED
+source make/cifsmount/external.in
+source make/davfs2/external.in
+source make/httpry/external.in
 comment "libraries"
 	depends on EXTERNAL_ENABLED
 source make/libs/external.in

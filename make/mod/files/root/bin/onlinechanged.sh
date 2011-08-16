@@ -2,8 +2,14 @@
 PID_FILE=/var/run/onlinechanged
 OC_STATE="$@"
 
+#parameter -e: additional new-line at line end
 log() {
-	echo "[$$]: [$OC_STATE] $*" >>/var/log/onlinechanged.log
+	local addline=""
+	while [ "$1" == "-e" ]; do
+		addline="\n"
+		shift
+	done
+	echo -e "[$$]: [$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
 	echo "ONLINECHANGED[$$]: [$OC_STATE] $*" >/dev/console
 	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
 }
@@ -46,11 +52,11 @@ fi
 #execute onlinechanged scripts
 eventadd 1 "Running onlinechanged: $OC_STATE"
 log "approved"
-for i in /etc/onlinechanged/* /tmp/onlinechanged /tmp/flash/onlinechanged/*; do
+for i in /etc/onlinechanged/* /tmp/onlinechanged/* /tmp/flash/onlinechanged/*; do
 	[ ! -s "$i" ] && continue
 	log "executing $i"
 	sh "$i" "$OC_STATE" 2>&1 | while read line; do [ -n "$line" ] && log " * $line"; done
 done
-log "done"
+log -e "finished"
 
 rm -rf $PID_FILE 2>/dev/null

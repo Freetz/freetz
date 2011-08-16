@@ -1,5 +1,8 @@
 config FREETZ_PACKAGE_CPMACCFG
 	bool "Cpmaccfg 0.6 (binary only)"
+	depends on \
+		FREETZ_KERNEL_LAYOUT_OHIO || \
+		FREETZ_KERNEL_LAYOUT_UR8
 	default n
 	help
 		With a patched kernel and this tool it is possible to

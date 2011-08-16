@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.2.3)
+$(call PKG_INIT_BIN, 2.2.4)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=17e1864de999ae9535a9f7350a010427
+$(PKG)_SOURCE_MD5:=7fcfd447e378f07dd0c0bae671fe6487
 $(PKG)_SITE:=ftp://space.mit.edu/pub/davis/slang/v2.2
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/elfobjs/lib$(pkg).so.$($(PKG)_LIB_VERSION)

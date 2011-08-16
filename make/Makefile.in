@@ -584,28 +584,29 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 # Naming conventions for patches are different for library vs. binary packages,
 # therefore we have two different macros.
 
-# tar options for uncompression by file extension
-PKG_UNPACK__INT_.tar:=
-PKG_UNPACK__INT_.gz:=z
-PKG_UNPACK__INT_.tgz:=z
-PKG_UNPACK__INT_.bz2:=j
-PKG_UNPACK__INT_.tbz:=j
-PKG_UNPACK__INT_.lzma:=a
-PKG_UNPACK__INT_.tlz:=a
-PKG_UNPACK__INT_.xz:=v
-PKG_UNPACK__INT_.zip:=dummy
-# $1: package name
-define PKG_UNPACK__INT
-	$(if $(PKG_UNPACK__INT_$(suffix $(strip $1))),,$(error Unknown filetype in "$(strip $1)"))
-	$(if $(patsubst %.zip,%,$(suffix $(strip $1))),
-		tools/tar -C $($(PKG)_SOURCE_DIR) $(VERBOSE) -x$(PKG_UNPACK__INT_$(suffix $(strip $1)))f $(strip $1),
-		unzip $(QUIETSHORT) -u $(strip $1) -d $($(PKG)_SOURCE_DIR)
-	)
+# $1: path to the file to be unpacked
+# $2: directory files to be unpacked to
+# $3: file extension
+define UNPACK_CMD__INT
+	$(if $(filter .gz .tgz .taz,$(3)),gzip -dc $(1)) \
+	$(if $(filter .bzip2 .bz2 .bz .tbz2 .tbz .tz2,$(3)),bzip2 -dc $(1)) \
+	$(if $(filter .xz .txz,$(3)),xz -dc $(1)) \
+	$(if $(filter .lzma .tlz,$(3)),lzma -dc $(1)) \
+	$(if $(filter .Z .taZ,$(3)),compress -dc $(1)) \
+	$(if $(filter .tar,$(3)),cat $(1)) \
+	$(if $(filter .zip,$(3)),unzip $(QUIETSHORT) -u $(1) -d $(2)) \
+	$(if $(filter .gz .tgz .taz .bzip2 .bz2 .bz .tbz2 .tbz .tz2 .xz .txz .lzma .tlz .Z .taZ .tar,$(3)),| tar -C $(2) $(VERBOSE) -x)
+endef
+
+# $1: path to the file to be unpacked
+# $2: directory files to be unpacked to
+define UNPACK_CMD
+	$(strip $(call UNPACK_CMD__INT,$(strip $(1)),$(strip $(2)),$(suffix $(strip $(1)))))
 endef
 
 # Unpack, without patch, but only if source package is defined
 define PKG_UNPACK
-	$(if $($(PKG)_SOURCE),$(call PKG_UNPACK__INT, $(DL_DIR)/$($(PKG)_SOURCE)))
+	$(if $($(PKG)_SOURCE),$(call UNPACK_CMD,$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR)))
 endef
 
 ### PKG_PATCH - apply patches
@@ -652,7 +653,7 @@ endef
 
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR busybox-tools
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(PKG)_SOURCE_DIR
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)

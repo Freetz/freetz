@@ -13,10 +13,20 @@ files+=" drivers/isdn/isdn_fon4 drivers/char/Piglet"
 for i in $files; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i"
 done
+
+# no internal S0
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit*"
-rm_files "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libctlusb.so"
-rm_files "${FILESYSTEM_MOD_DIR}/lib/libusbcfg*"
-rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug"
+# USB
+for i in bin/pause bin/reinit_jffs2 \
+	bin/*usb* sbin/*usb* usr/bin/*usb* usr/sbin/*usb* \
+	etc/hotplug etc/samba_control \
+	etc/default.*/*/*usb* etc/init.d/rc.*usb* etc/*usb*.tab \
+	lib/lib*usb*.so* usr/share/*/lib*usb*.so* \
+	usr/www/all/*usb* usr/www/all/html/*usb* usr/www/all/html/*/*usb* usr/www/all/html/*/*/*usb* ; do
+		rm_files "${FILESYSTEM_MOD_DIR}/$i"
+done
+
+
 
 echo2 "copying 7112 files"
 cp -a "${DIR}/.tk/original/filesystem/lib/modules/bitfile.bit" "${FILESYSTEM_MOD_DIR}/lib/modules/"
@@ -25,7 +35,8 @@ cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/driver
 cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
 
 echo2 "patching webmenu"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && \
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170.patch"
 
 echo2 "moving default config dir"
 mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7112"

@@ -1,25 +1,29 @@
-$(call PKG_INIT_BIN, 3.9p1)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/
+$(call PKG_INIT_BIN, 4.9)
+$(PKG)_SOURCE:=$(pkg)_portable_pre$($(PKG)_VERSION).tgz
+$(PKG)_SOURCE_MD5:=f37a13f8a44f9b38802e7d9fbe758c0e
+
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_portable_pre$($(PKG)_VERSION)
+#$(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/
+# We are using our own openntpd port by TIK
+$(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/ntpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ntpd
-$(PKG)_SOURCE_MD5:=afc34175f38d08867c1403d9008600b3
 
 $(PKG)_STARTLEVEL=60 # before aiccu
 
+$(PKG)_CONFIGURE_PRE_CMDS += chmod +x ./configure;
+
 $(PKG)_CONFIGURE_OPTIONS += --with-builtin-arc4random
 $(PKG)_CONFIGURE_OPTIONS += --with-privsep-user=ntp
-$(PKG)_CONFIGURE_OPTIONS += --with-adjtimex
+$(PKG)_CONFIGURE_OPTIONS += --with-builtin-md5
+$(PKG)_CONFIGURE_OPTIONS += --with-report-signal=SIGUSR1
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(OPENNTPD_DIR) \
-		$(TARGET_CONFIGURE_ENV) \
-		CFLAGS="$(TARGET_CFLAGS) -DUSE_ADJTIMEX" \
-		LDFLAGS=""
+	$(SUBMAKE) -C $(OPENNTPD_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

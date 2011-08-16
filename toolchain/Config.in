@@ -13,10 +13,8 @@ config FREETZ_KERNEL_VERSION_2_6_19_2
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_FON_WLAN_7270_V1 || \
-		(FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LANG_EN) || \
-		(FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LANG_EN) || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
-		(FREETZ_TYPE_FON_WLAN_7390 && ! FREETZ_TYPE_LABOR_PREVIEW) || \
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_EN) || \
 		FREETZ_TYPE_FON_WLAN_7570
 	default n
 
@@ -24,7 +22,7 @@ config FREETZ_KERNEL_VERSION_2_6_28
 	bool
 	default y if \
 		FREETZ_TYPE_FON_WLAN_7320 || \
-		(FREETZ_TYPE_LABOR_PREVIEW && FREETZ_TYPE_FON_WLAN_7390)
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_DE)
 	default n
 
 
@@ -32,8 +30,8 @@ config FREETZ_KERNEL_VERSION_2_6_32
 	bool
 	default y if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
-		(FREETZ_TYPE_FON_WLAN_7270_V2 && FREETZ_TYPE_LANG_DE) || \
-		(FREETZ_TYPE_FON_WLAN_7270_V3 && FREETZ_TYPE_LANG_DE)
+		FREETZ_TYPE_FON_WLAN_7270_V2 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3
 	default n
 
 config FREETZ_KERNEL_VERSION
@@ -115,13 +113,14 @@ config FREETZ_UCLIBC_0_9_29_BASED_BOX
 		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_WLAN_7112 || \
+		FREETZ_TYPE_FON_WLAN_7113 && FREETZ_TYPE_LANG_EN || \
 		(FREETZ_TYPE_FON_WLAN_7140 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_A_CH)) || \
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7270_V1 || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
-		(FREETZ_TYPE_FON_WLAN_7390 && ! FREETZ_TYPE_LABOR_PREVIEW) || \
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_EN) || \
 		FREETZ_TYPE_FON_WLAN_7570
 	default n
 
@@ -136,7 +135,7 @@ config FREETZ_UCLIBC_0_9_31_BASED_BOX
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		(FREETZ_TYPE_LABOR_PREVIEW && FREETZ_TYPE_FON_WLAN_7390)
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_DE)
 	default n
 
 comment "Kernel toolchain options ----------------------------------"
@@ -165,7 +164,7 @@ config FREETZ_KERNEL_GCC_VERSION
 
 config FREETZ_KERNEL_BINUTILS_VERSION
 	string
-	default "2.21.52.0.2" if FREETZ_KERNEL_COMPILER_GCC_4_4_6
+	default "2.21.53.0.2" if FREETZ_KERNEL_COMPILER_GCC_4_4_6
 	default "2.18"
 
 comment "Target toolchain options ----------------------------------"
@@ -302,7 +301,7 @@ config FREETZ_STDCXXLIB
 
 config FREETZ_TARGET_BINUTILS_VERSION
 	string
-	default "2.21.52.0.2"
+	default "2.21.53.0.2"
 
 config FREETZ_TARGET_UCLIBC_REF
 	string
@@ -314,6 +313,25 @@ config FREETZ_TARGET_UCLIBC_REF
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"
 	default "-Os -pipe -Wa,--trap"
+
+config FREETZ_TARGET_TOOLCHAIN_AVM_COMPATIBLE
+	bool "Create toolchain compatible with original firmware"
+	depends on FREETZ_BUILD_TOOLCHAIN && (FREETZ_UCLIBC_0_9_28_BASED_BOX || FREETZ_UCLIBC_0_9_29_BASED_BOX)
+	default n
+	help
+		In order to produce smaller binaries freetz toolchain is compiled
+		with mips-plt optimizations enabled. Because of the missing support
+		for the required relocation types in uClibc versions prior to 0.9.30
+		the binaries produced with a toolchain optimized this way could not
+		be run on boxes with original firmware.
+
+		This option causes mips-plt optimizations to be disabled.
+		The binaries compiled with such toolchain could be run on boxes
+		with unmodified firmware.
+
+		Note: mips-plt optimizations affect only dynamically linked binaries.
+		In case all binaries you want to run on an unmodified box will be
+		linked statically it is safe to say 'no' here.
 
 config FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET
 	bool "Use reduced set of locales" if FREETZ_BUILD_TOOLCHAIN && \

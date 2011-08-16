@@ -6,6 +6,7 @@ for files in \
 	bin/cjpeg \
 	bin/djpeg \
 	bin/email.plugin \
+	bin/ffmpegconv \
 	bin/music.plugin \
 	bin/playerd \
 	bin/playerd_tables \
@@ -22,6 +23,7 @@ for files in \
 	lib/libexif.so* \
 	lib/libflashclient.so* \
 	lib/libhttp.so* \
+	lib/libimageutils.so* \
 	lib/libmediacli.so* \
 	lib/libnetpbm.so* \
 	usr/share/ctlmgr/libmini.so \

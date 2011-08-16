@@ -5,12 +5,17 @@ Latest changes:
 === devel ===
 
 - Build system:
+  * binutils: bump version to 2.21.53.0.2
+  * ccache: Use external cache dir (~/.freetz-ccache)
   * fakeroot: bump version to 1.16
+  * use host tar to unpack packages again as busybox' tar doesn't support pax (aka POSIX 1003.1-2001) tar format
   * Move each library-package into separate subdirectory (#1093)
+
 
 - New tools and hooks:
 
 - New patches (read online help for more info):
+	* replace dtrace: execute a custom action by phone
 
 - New packages, libs, modules:
 
@@ -23,19 +28,27 @@ Latest changes:
 
 - Updated packages and libs:
     * git 1.7.6
+    * httpry: 0.1.6 and webinterface added
     * iptables 1.4.11.1
+    * libevent 2.0.13
     * libfreetz 0.5
+    * libpng 1.2.46
     * lighttpd 1.4.29
     * minidlna 1.0.21
     * ncurses 5.9
+    * netatalk 2.2.0
+    * openntpd 4.9
     * openvpn 2.2.1
     * readline 6.2
     * ser2net 2.7
+    * slang 2.2.4
     * sqlite 3.7.7.1
     * tinc 1.0.15
     * tmux 1.5
+    * transmission 2.33
 
 - Remove packages, libs, modules, tools:
+    * Remove getcons patch (see #1026 for details)
 
 - Firmware updates:
     * Please see FIRMWARES for the list of currently supported boxes and firmwares.

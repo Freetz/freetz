@@ -211,6 +211,12 @@ kernel-configured: $(KERNEL_DIR)/.prepared
 
 kernel-modules: $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 
+kernel-help:
+	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		ARCH="$(KERNEL_ARCH)" \
+		help
+
 kernel-menuconfig: $(KERNEL_DIR)/.configured
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
@@ -218,6 +224,16 @@ kernel-menuconfig: $(KERNEL_DIR)/.configured
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		menuconfig
+	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE) && \
+	touch $(KERNEL_DIR)/.configured
+
+kernel-xconfig: $(KERNEL_DIR)/.configured
+	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
+		ARCH="$(KERNEL_ARCH)" \
+		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
+		xconfig
 	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE) && \
 	touch $(KERNEL_DIR)/.configured
 
@@ -234,6 +250,17 @@ kernel-clean:
 		ARCH="$(KERNEL_ARCH)" \
 		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
 		clean
+
+kernel-mrproper:
+	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE)
+	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
+		CROSS_COMPILE="$(KERNEL_CROSS)" \
+		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
+		ARCH="$(KERNEL_ARCH)" \
+		KERNEL_LAYOUT="$(KERNEL_BOARD_REF)" \
+		mrproper
+	-cp -f  $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_ROOT_DIR)/.config
+		kernel-oldconfig
 
 kernel-dirclean:
 	$(RM) -r $(SOURCE_DIR_ROOT)/kernel

@@ -14,7 +14,7 @@ $(PKG)_KERNEL_VERSION := $(shell echo $(KERNEL_VERSION) | $(SED) 's/\.[^.]*$$//'
 
 $(PKG)_DEPENDS_ON := e2fsprogs
 
-$(PKG)_REBUILD_SUBOPTS := FREETZ_TYPE_STRING
+$(PKG)_REBUILD_SUBOPTS := FREETZ_TYPE_PREFIX
 
 $(PKG_UNPACKED)
 
@@ -27,12 +27,12 @@ $($(PKG)_TARGET_MODPROBE_CONF): $($(PKG)_MODPROBE_CONF) \
 	@touch $@
 
 $($(PKG)_TARGET_DIR)/.patch_model: $($(PKG)_TARGET_MODPROBE_CONF)
-	@freetz_type=$$(echo $(FREETZ_TYPE_STRING) | $(SED) 's/_.*//'); \
+	@freetz_type=$$(echo $(FREETZ_TYPE_PREFIX) | $(SED) 's/_.*//'); \
 	for f in $(MDEV_MAKE_DIR)/patches/hardware/$${freetz_type}_*.patch; do \
 		if [ -r $$f ]; then \
 			set -e; $(PATCH_TOOL) $(MDEV_TARGET_DIR) $$f; \
 		else \
-			echo unsupported model $(FREETZ_TYPE_STRING) 2>&1; \
+			echo unsupported model $(FREETZ_TYPE_PREFIX) 2>&1; \
 			exit 1; \
 		fi \
 	done

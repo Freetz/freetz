@@ -12,7 +12,7 @@ html() {
 	else
 		case $* in
 			*[\&\<\>\'\"]*) httpd -e "$*" ;; #'
-			*) echo "$*" ;;
+			*) printf "%s" "$*" ;;
 		esac
 	fi
 }

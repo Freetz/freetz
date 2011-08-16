@@ -23,7 +23,8 @@ stop_post() {
 
 reload() {
 	[ "$(/etc/init.d/rc.multid status)" == "running" ] && _OPENNTPD_RELOADING="yes"
-	modlib_restart >/dev/null
+	modlib_check_running
+	[ $? -ne 3 ] && modlib_restart >/dev/null
 }
 
 case $1 in

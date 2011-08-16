@@ -50,8 +50,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GETTEXT_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgettext*
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl*
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgettext* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libintl.h
 
 $(pkg)-uninstall:
 	$(RM) $(GETTEXT_TARGET_DIR)/libintl*.so*

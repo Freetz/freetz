@@ -48,7 +48,8 @@ config FREETZ_PATCH_ENUM
 		Patches the enum configuration pages into the web menu.
 
 config FREETZ_PATCH_DSL_EXPERT
-	bool "Patch extended DSL settings"
+	bool
+#	bool "Patch extended DSL settings"
 	depends on \
 		! FREETZ_TYPE_LABOR_DSL && \
 		! FREETZ_REMOVE_DSLD && \
@@ -57,8 +58,7 @@ config FREETZ_PATCH_DSL_EXPERT
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7390 \
+		FREETZ_TYPE_FON_WLAN_7320 \
 		)
 	default n
 	help
@@ -95,7 +95,7 @@ config FREETZ_PATCH_ALARMCLOCK
 		FREETZ_TYPE_FON_WLAN_7270_V1 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
-		(FREETZ_TYPE_FON_WLAN_7390 && ! FREETZ_TYPE_LABOR_PREVIEW) || \
+		(FREETZ_TYPE_FON_WLAN_7390 && ! FREETZ_TYPE_LANG_DE) || \
 		FREETZ_TYPE_FON_WLAN_7570 \
 		)
 	default n
@@ -217,7 +217,7 @@ config FREETZ_PATCH_MULTIPLE_PRINTERS
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7270_V1 || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
-		(FREETZ_TYPE_FON_WLAN_7390 && ! FREETZ_TYPE_LABOR_PREVIEW) || \
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_EN) || \
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_WLAN_3270_V3 \
 		)
@@ -1063,6 +1063,15 @@ config FREETZ_REPLACE_SSL_LIBS
 
 		Activating this option saves about 400KB in the image.
 
+config FREETZ_REPLACE_DTRACE
+	bool "Replace dtrace"
+	depends on FREETZ_REMOVE_DTRACE
+	default n
+	help
+		Dtrace will be replaced by a symlink to /tmp/flash/mod/dtrace.
+		Activating this option lets you execute a custom action via
+		phone using #97*3* keycode sequence.
+
 comment "Additional patches ---------------------"
 
 config FREETZ_ADD_ANNEX_A_FIRMWARE
@@ -1121,12 +1130,4 @@ config FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
 	help
 		If Y is choosen, this changes the semantics of the LEDs on the front
 		panel of your 7570/W920V box fitting the descriptions of the W920V.
-
-config FREETZ_PATCH_GETCONS
-	bool
-#	bool "Redirect console messages"
-	default n
-	help
-		Patch /etc/profile so that console messages are redirected to
-		the last opened console.
 

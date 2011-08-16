@@ -1,5 +1,5 @@
 [ "$FREETZ_PATCH_MAXDEVCOUNT" == "y" ] || return 0
-if isFreetzType 7320 7240 7270_V2 7270_V3 || ( isFreetzType 7390 && isFreetzType LABOR_PREVIEW); then
+if isFreetzType 7320 7240 7270_V2 7270_V3 || ( isFreetzType 7390 && isFreetzType LANG_DE); then
 	file="create_handle.sh"
 else
 	file="usb.pandu"

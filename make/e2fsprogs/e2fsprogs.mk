@@ -43,19 +43,20 @@ $(PKG)_LIBS_STAGING_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_D
 $(PKG)_MAKE_ALL_EXTRAS	:= && ln -fsT et $($(PKG)_DIR)/lib/com_err
 
 $(PKG)_BINARIES_ALL := \
-	e2fsck \
-	mke2fs mklost+found \
+	e2fsck fsck fsck.ext2 fsck.ext3 fsck.ext4 fsck.ext4dev \
+	mke2fs mklost+found mkfs.ext2 mkfs.ext3 \
 	tune2fs dumpe2fs chattr lsattr \
 	e2image e2undo debugfs logsave \
-	badblocks filefrag uuidd uuidgen \
+	badblocks filefrag e2freefrag uuidd uuidgen \
+	resize2fs \
 	blkid
 $(PKG)_BINARIES :=
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2FSCK)),y)
-$(PKG)_BINARIES += e2fsck
+$(PKG)_BINARIES += e2fsck fsck fsck.ext2 fsck.ext3 fsck.ext4 fsck.ext4dev
 $(PKG)_MAKE_ALL_EXTRAS += && cp $($(PKG)_DIR)/e2fsck/e2fsck $($(PKG)_DIR)/misc/
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2MAKING)),y)
-$(PKG)_BINARIES += mke2fs mklost+found
+$(PKG)_BINARIES += mke2fs mklost+found mkfs.ext2 mkfs.ext3 
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2TUNING)),y)
 $(PKG)_BINARIES += tune2fs dumpe2fs chattr lsattr
@@ -65,7 +66,11 @@ $(PKG)_BINARIES += e2image e2undo debugfs logsave
 $(PKG)_MAKE_ALL_EXTRAS += && cp $($(PKG)_DIR)/debugfs/debugfs $($(PKG)_DIR)/misc/
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2FIXING)),y)
-$(PKG)_BINARIES += badblocks filefrag uuidd uuidgen
+$(PKG)_BINARIES += badblocks filefrag e2freefrag uuidd uuidgen
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2RESIZE)),y)
+$(PKG)_BINARIES += resize2fs
+$(PKG)_MAKE_ALL_EXTRAS += && cp $($(PKG)_DIR)/resize/resize2fs $($(PKG)_DIR)/misc/
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_BLKID)),y)
 $(PKG)_BINARIES += blkid
@@ -145,7 +150,9 @@ endif
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(E2FSPROGS_DIR) clean
-	$(RM) $(E2FSPROGS_DIR)/lib/com_err $(E2FSPROGS_DIR)/misc/e2fsck $(E2FSPROGS_DIR)/misc/debugfs
+	$(RM) \
+		$(E2FSPROGS_DIR)/lib/com_err $(E2FSPROGS_DIR)/misc/e2fsck \
+		$(E2FSPROGS_DIR)/misc/debugfs $(E2FSPROGS_DIR)/misc/resize2fs
 	$(RM) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.so*) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.a) \

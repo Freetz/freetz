@@ -8,6 +8,8 @@ CCACHE_TARGET_BINARY:=usr/bin/ccache
 
 CCACHE_BIN_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 
+CCACHE_CACHE_DIR=$(HOME)/.freetz-ccache
+
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_MD5)
@@ -20,8 +22,9 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	# Should probably patch things to use a relative path.
 	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_BIN_DIR)\",g" \
 		$(CCACHE_DIR)/execute.c
-	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
-		$(CCACHE_DIR)/ccache.c
+#	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
+#		$(CCACHE_DIR)/ccache.c
+	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_DIR)/ccache.c
 	mkdir -p $(CCACHE_DIR)/cache
 	touch $@
 
@@ -42,8 +45,8 @@ $(CCACHE_DIR)/$(CCACHE_BINARY): $(CCACHE_DIR)/.configured
 	$(MAKE) -C $(CCACHE_DIR)
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_BINARY)
+	mkdir -p $(CCACHE_CACHE_DIR)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache
 	cp $(CCACHE_DIR)/$(CCACHE_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 	# Keep the actual toolchain binaries in a directory at the same level.
 	# Otherwise, relative paths for include dirs break.

@@ -1,0 +1,22 @@
+--- etc/cnid_dbd/pack.h
++++ etc/cnid_dbd/pack.h
+@@ -10,6 +10,11 @@
+ #include <db.h>
+ #include <atalk/cnid_dbd_private.h>
+ 
++#if 0
++/*
++ * Wrong implementation as it assumes a little endian arch.
++ * Correct implementation is provided in include/atalk/util.h
++ */
+ #define ntoh64(x)       (((uint64_t)(x) << 56) | \
+                         (((uint64_t)(x) << 40) & 0xff000000000000ULL) | \
+                         (((uint64_t)(x) << 24) & 0xff0000000000ULL) | \
+@@ -18,6 +23,7 @@
+                         (((uint64_t)(x) >> 24) & 0xff0000ULL) | \
+                         (((uint64_t)(x) >> 40) & 0xff00ULL) | \
+                         ((uint64_t)(x)  >> 56))
++#endif
+ 
+ extern unsigned char *pack_cnid_data(struct cnid_dbd_rqst *);
+ extern int didname(DB *dbp, const DBT *pkey, const DBT *pdata, DBT *skey);

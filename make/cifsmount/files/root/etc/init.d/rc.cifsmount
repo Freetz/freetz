@@ -1,7 +1,8 @@
 #!/bin/sh
 
+[ $(uname -r|sed 's/^2\.6\.//;s/\..*$//') -le 19 ] && cifsd_suffix="notifyd"
 DAEMON=cifsmount
-DAEMON_CHECK="cifsoplockd cifsdnotifyd"
+DAEMON_CHECK="cifsoplockd cifsd$cifsd_suffix"
 . /etc/init.d/modlibrc
 
 # works only with applet seq enabled:
