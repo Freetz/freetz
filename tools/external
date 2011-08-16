@@ -25,7 +25,7 @@ if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 fi
 
 #start/stop external services
-for EXTERNAL_SERVICE in $(find make -maxdepth 2 -name external.services); do
+for EXTERNAL_SERVICE in $(find make make/libs -maxdepth 2 -name external.files); do
 	. $EXTERNAL_SERVICE
 done
 echo $EXTERNAL_SERVICES > "${FILESYSTEM_MOD_DIR}/etc/external.pkg"
