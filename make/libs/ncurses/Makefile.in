@@ -1,0 +1,7 @@
+ifeq ($(strip $(FREETZ_LIB_libncurses)),y)
+LIBS+=ncurses
+endif
+
+ifeq ($(strip $(FREETZ_SHARE_terminfo)),y)
+LIBS+=ncurses-terminfo
+endif

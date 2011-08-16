@@ -1,237 +1,17 @@
-# order is important, uclibcxx should be built first
-
-ifeq ($(strip $(FREETZ_LIB_libuClibc__)),y)
-LIBS+=uclibcxx
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libstdc__)),y)
-LIBS+=libstdcxx
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libgcc_s)),y)
-LIBS+=libgcc_s
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libapr)),y)
-LIBS+=apr
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libaprutil)),y)
-LIBS+=apr-util
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libatm)),y)
-LIBS+=linux-atm
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libavmhmac)),y)
-LIBS+=libavmhmac
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libbluetooth)),y)
-LIBS+=bluez-libs
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libconfig)),y)
-LIBS+=libconfig
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libopenobex)),y)
-LIBS+=openobex
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libsysfs)),y)
-LIBS+=sysfsutils
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libcapi20)),y)
-LIBS+=libcapi
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libffi)),y)
-LIBS+=libffi-sable
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libfreetz)),y)
-LIBS+=libfreetz
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libgpg_error)),y)
-LIBS+=libgpg-error
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libjpeg)),y)
-LIBS+=jpeg
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libopenjpeg)),y)
-LIBS+=openjpeg
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libgcrypt)),y)
-LIBS+=libgcrypt
-endif
-
-ifeq ($(strip $(FREETZ_LIB_liblzo2)),y)
-LIBS+=lzo
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libevent)),y)
-LIBS+=libevent
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libmad)),y)
-LIBS+=libmad
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libncurses)),y)
-LIBS+=ncurses
-endif
-
-ifeq ($(strip $(FREETZ_SHARE_terminfo)),y)
-LIBS+=ncurses-terminfo
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libpcap)),y)
-LIBS+=libpcap
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libdnet)),y)
-LIBS+=libdnet
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libosipparser2)),y)
-# libosip2 depends on libosipparser2
-LIBS+=libosip2
-endif
-
-#ifeq ($(strip $(FREETZ_LIB_libpjsip)),y)
-#LIBS+=libpjsip
-#endif
-
-ifeq ($(strip $(FREETZ_LIB_libcrypto)),y)
-# libssl depends on libcrypto
-LIBS+=openssl
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libz)),y)
-LIBS+=zlib
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libreadline)),y)
-LIBS+=readline
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libmatrixssl)),y)
-LIBS+=matrixssl
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libpolarssl)),y)
-LIBS+=polarssl
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libusb)),y)
-LIBS+=libusb
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libusb_1)),y)
-LIBS+=libusb1
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libpng12)),y)
-LIBS+=libpng
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libart_lgpl_2)),y)
-LIBS+=libart_lgpl
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libfreetype)),y)
-LIBS+=freetype
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libelf)),y)
-LIBS+=libelf
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libglib_1)),y)
-LIBS+=glib
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libglib_2)),y)
-LIBS+=glib2
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libintl)),y)
-LIBS+=gettext
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libiconv)),y)
-LIBS+=libiconv
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libftdi)),y)
-LIBS+=libftdi
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libid3tag)),y)
-LIBS+=libid3tag
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libtag)),y)
-LIBS+=taglib
-endif
-
 ifeq ($(strip $(FREETZ_LIB_libcurl)),y)
 LIBS+=curl
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libpopt)),y)
-LIBS+=popt
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libdevmapper)),y)
-LIBS+=devmapper
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libltdl)),y)
-LIBS+=libtool
 endif
 
 ifeq ($(strip $(FREETZ_LIB_liblua)),y)
 LIBS+=lua
 endif
 
-ifeq ($(strip $(FREETZ_LIB_libpcre)),y)
-LIBS+=pcre
-endif
-
 ifeq ($(strip $(FREETZ_LIB_libsqlite3)),y)
 LIBS+=sqlite
 endif
 
-ifeq ($(strip $(FREETZ_LIB_libexpat)),y)
-LIBS+=expat
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libneon)),y)
-LIBS+=neon
-endif
-
 ifeq ($(strip $(FREETZ_LIB_libnetpbm)),y)
 LIBS+=netpbm
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libcyassl)),y)
-LIBS+=cyassl
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libsynce)),y)
-LIBS+=libsynce
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libgmp)),y)
-LIBS+=gmp
 endif
 
 # NB: the following simulates logical OR
@@ -247,76 +27,16 @@ ifeq ($(strip $(FREETZ_LIB_libfuse)),y)
 LIBS+=fuse
 endif
 
-ifeq ($(strip $(FREETZ_LIB_libgd)),y)
-LIBS+=gd
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libdb)),y)
-LIBS+=db
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libxml2)),y)
-LIBS+=libxml2
-endif
-
 ifeq ($(strip $(FREETZ_LIB_libxslt)),y)
 LIBS+=xsltproc
-endif
-
-ifeq ($(strip $(FREETZ_LIB_ogg)),y)
-LIBS+=libogg
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libvorbis)),y)
-LIBS+=libvorbis
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libtasn1)),y)
-LIBS+=libtasn1
 endif
 
 ifeq ($(strip $(FREETZ_LIB_libgnutls)),y)
 LIBS+=gnutls
 endif
 
-ifeq ($(strip $(FREETZ_LIB_libosipparser2)),y)
-LIBS+=libosip2
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libnet)),y)
-LIBS+=libnet
-endif
-
 ifeq ($(strip $(FREETZ_LIB_libslang)),y)
 LIBS+=slang
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libdaemon)),y)
-LIBS+=libdaemon
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libmpfr)),y)
-LIBS+=mpfr
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libmpc)),y)
-LIBS+=mpc
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libexif)),y)
-LIBS+=libexif
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libFLAC)),y)
-LIBS+=flac
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libjs)),y)
-LIBS+=js
-endif
-
-ifeq ($(strip $(FREETZ_LIB_liboping)),y)
-LIBS+=liboping
 endif
 
 ifneq (,$(strip $(filter y,$(FREETZ_LIB_librrd) $(FREETZ_LIB_librrd_th))))
@@ -325,8 +45,4 @@ endif
 
 ifeq ($(strip $(FREETZ_LIB_libntfs)),y)
 LIBS+=ntfs
-endif
-
-ifeq ($(strip $(FREETZ_LIB_libwx_baseu)),y)
-LIBS+=wxWidgets
 endif

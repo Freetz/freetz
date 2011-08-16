@@ -446,7 +446,7 @@ endef
 # Stage 2b: initialise other package-specific variables for library packages
 define PKG_INIT_LIB__INT
 PKG_TYPE:=LIB
-$(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs/$(pkg)
 $(PKG)_TARGET_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)$(FREETZ_LIBRARY_PATH)
 $(PKG)_TARGET_LIBDIR:=$($(PKG)_TARGET_DIR)
 $(PKG)_DEST_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)
@@ -614,6 +614,9 @@ endef
 # $1: list of directories containing the patches
 # $2: directory to apply the patches to
 # $3: optional name for library patches
+
+#TODO: Update
+
 define PKG_PATCH__INT
 	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*$(strip $3).patch)); do \
 		$(PATCH_TOOL) $(strip $2) $$$$i; \

@@ -11,226 +11,33 @@ config FREETZ_LIB_STDCXXLIB_WITH_WCHAR
 	select FREETZ_LIB_libuClibc__WITH_WCHAR if FREETZ_STDCXXLIB_USE_UCLIBCXX
 	default n
 
-config FREETZ_LIB_libstdc__
-	bool "libstdc++ (libstdc++-6.0.x.so)"
-	select FREETZ_LIB_libm
-	default n
-	help
-		GNU implementation of the Standard C++ Library.
-
-config FREETZ_LIB_libuClibc__
-	bool "uClibc++ (libuClibc++-0.2.3.so)"
-	default n
-	help
-		An implementation of the Standard C++ Library optimized for embedded systems.
-
-config FREETZ_LIB_libuClibc__WITH_WCHAR
-	depends FREETZ_LIB_libuClibc__
-	bool "enable wchar support"
-	default n
-	help
-		Enables wchar-support in uClibc++.
+source make/libs/libstdcxx/Config.in
+source make/libs/uclibcxx/Config.in
 
 endmenu
+
+
 
 menu "Crypto & SSL"
 
 comment "Math -----------------------------------"
 
-config FREETZ_LIB_libgmp
-	bool "GNU MP Bignum Library (libgmp.so)"
-	default n
-	help
-		GNU MP Bignum Library
-
-		The GMP library provides arbitrary precision arithmetic, operating on
-		signed integers, rational numbers, and floating point numbers.
-		It can be used to implement cryptographic algorithms.
-
-config FREETZ_LIB_libmpfr
-	select FREETZ_LIB_libgmp
-	bool "GNU MPFR Library (libmpfr.so)"
-	default n
-	help
-		MPFR provides a library for multiple-precision floating-point
-		computation with correct rounding. The computation is both
-		efficient and has a well-defined semantics. It copies the good
-		ideas from the ANSI/IEEE-754 standard for double-precision
-		floating-point arithmetic (53-bit mantissa).
-
-config FREETZ_LIB_libmpc
-	select FREETZ_LIB_libgmp
-	select FREETZ_LIB_libmpfr
-	bool "GNU MPC Library (libmpc.so)"
-	default n
-	help
-		MPC is a C library for the arithmetic of complex numbers with
-		arbitrarily high precision and correct rounding of the result. It is
-		built upon and follows the same principles as MPFR.
+source make/libs/gmp/Config.in
+source make/libs/mpfr/Config.in
+source make/libs/mpc/Config.in
 
 comment "GnuPG ----------------------------------"
 
-config FREETZ_LIB_libgpg_error
-	bool "GnuPG error library (libgpg-error.so)"
-	default n
-	help
-		Libgpg-error is a small library that defines common error values for all
-		GnuPG components. Among these are GPG, GPGSM, GPGME, GPG-Agent,
-		libgcrypt, Libksba, DirMngr, Pinentry, SmartCard Daemon and possibly
-		more in the future.
-
-config FREETZ_LIB_libgcrypt
-	bool "GnuPG crypto library (libgcrypt.so)"
-	select FREETZ_LIB_libgpg_error
-	select FREETZ_LIB_libgcrypt_WITH_DIGEST_md5
-	select FREETZ_LIB_libgcrypt_WITH_DIGEST_rmd160
-	select FREETZ_LIB_libgcrypt_WITH_DIGEST_sha1
-	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_aes
-	select FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_rsa
-	default n
-	help
-		Libgcrypt is a general-purpose cryptographic library based on the code
-		from GnuPG. It provides functions for all cryptographic building blocks:
-		symmetric ciphers (AES, DES, Blowfish, CAST5, Twofish, and Arcfour),
-		hash algorithms (MD4, MD5, RIPE-MD160, SHA-1, and TIGER-192), MACs
-		(HMAC for all hash algorithms), public key algorithms (RSA, ElGamal,
-		and DSA), large integer functions, random numbers, and a lot of
-		supporting functions.
-
-menu "Configuration"
-	depends on FREETZ_LIB_libgcrypt
-comment "Digests ---"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_crc
-	bool "CRC"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_md4
-	bool "MD4"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_md5
-	bool "MD5"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_rmd160
-	bool "RMD160"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha1
-	bool "SHA1"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha256
-	bool "SHA256"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha512
-	bool "SHA512"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_tiger
-	bool "TIGER"
-config FREETZ_LIB_libgcrypt_WITH_DIGEST_whirlpool
-	bool "Whirlpool"
-comment "Symmetric ciphers ---"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_aes
-	bool "AES"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_arcfour
-	bool "Arcfour"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_blowfish
-	bool "Blowfish"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_camellia
-	bool "Camellia"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_cast5
-	bool "CAST5"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_des
-	bool "DES"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_rfc2268
-	bool "RFC2268"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_seed
-	bool "SEED"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_serpent
-	bool "Serpent"
-config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_twofish
-	bool "Twofish"
-comment "Asymmetric ciphers ---"
-config FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_dsa
-	bool "DSA"
-config FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_ecc
-	bool "ECC"
-config FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_elgamal
-	bool "Elgamal"
-config FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_rsa
-	bool "RSA"
-endmenu
+source make/libs/libgpg-error/Config.in
+source make/libs/libgcrypt/Config.in
 
 comment "SSL ------------------------------------"
 
-config FREETZ_LIB_libcyassl
-	bool "CyaSSL (libcyassl.so)"
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libz
-	default n
-	help
-		The yaSSL software package is a fast, open source, dual licensed
-		implementation of SSL (SSLv3 and TLSv1). It includes SSL client
-		libraries and an SSL server implementation. yaSSL supports multiple
-		API's, including those defined by SSL and TLS. yaSSL also supports an
-		OpenSSL compatibility interface.
-
-config FREETZ_LIB_libmatrixssl
-	bool "MatrixSSL (libmatrixssl.so)"
-	select FREETZ_LIB_libpthread
-	default n
-	help
-		MatrixSSL is an open source embedded SSL implementation designed for
-		small footprint applications and devices. There are existing open-source
-		SSL implementations available and there are existing embedded SSL
-		implementations, but there was a notable absence of packages that offer
-		both.
-
-		In Freetz, matrixtunnel depends on MatrixSSL.
-
-config FREETZ_LIB_libpolarssl
-	bool "PolarSSL (libpolarssl.so)"
-	default n
-	help
-		The aim of the PolarSSL project is to provide a quality, open-source
-		cryptographic library written in C and targeted at embedded systems.
-		PolarSSL is licensed accoring to the dual licensing model. This means
-		that PolarSSL is available under the open source GPL version 2 license
-		as well as a commercial license for closed source projects. More
-		information about licensing is available on the Licensing page:
-		http://polarssl.org/?page=licensing
-
-		For more information about this project, please contact:
-		http://polarssl.org/?page=contact
-		Web site: http://polarssl.org/
-
-config FREETZ_LIB_libcrypto
-	bool "OpenSSL cryptographic library (libcrypto.so)"
-	select FREETZ_LIB_libssl if FREETZ_REPLACE_SSL_LIBS
-	default n
-	help
-		crypto - OpenSSL cryptographic library
-
-		The OpenSSL crypto library implements a wide range of cryptographic
-		algorithms used in various Internet standards. The services provided by
-		this library are used by the OpenSSL implementations of SSL, TLS and
-		S/MIME, and they have also been used to implement SSH, OpenPGP, and
-		other cryptographic standards.
-
-		libcrypto consists of a number of sub-libraries that implement the
-		individual algorithms. The functionality includes symmetric encryption,
-		public key cryptography and key agreement, certificate handling,
-		cryptographic hash functions and a cryptographic pseudo-random number
-		generator.
-
-config FREETZ_LIB_libssl
-	bool "OpenSSL SSL/TLS library (libssl.so)"
-	depends on FREETZ_LIB_libcrypto
-	default n
-	help
-		SSL - OpenSSL SSL/TLS library
-
-		The OpenSSL ssl library implements the Secure Sockets Layer (SSL v2/v3)
-		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
-
-		In Freetz, e.g. Tor, sTunnel and OpenVPN depend on libssl.
-
-config FREETZ_LIB_libavmhmac
-	bool "Replace libavmhmac - EXPERIMENTAL"
-	depends on FREETZ_REPLACE_SSL_LIBS
-	default n
-	help
-		Our libavmhmac only forwards functions to openssl's libcrypto where AVM
-		wrote their own implementations. We have no clue why they did this.
+source make/libs/cyassl/Config.in
+source make/libs/matrixssl/Config.in
+source make/libs/polarssl/Config.in
+source make/libs/openssl/Config.in
+source make/libs/libavmhmac/Config.in
 
 comment "GnuTLS ---------------------------------"
 config FREETZ_LIB_libgnutls
@@ -259,171 +66,36 @@ config FREETZ_LIB_libgnutls_openssl
 	help
 		GnuTLS OpenSSL compatibility layer library
 
-config FREETZ_LIB_libtasn1
-	bool "GNU ASN1 library (libtasn1.so)"
-	default n
-	help
-		A small ASN.1 library.
+source make/libs/libtasn1/Config.in
 
 endmenu
 
 menu "Data compression"
 
-config FREETZ_LIB_liblzo2
-	bool "LZO (liblzo2.so)"
-	default n
-	help
-		LZO is a portable lossless data compression library written in ANSI C.
-		It offers pretty fast compression and *very* fast decompression.
-		Decompression requires no memory. In addition there are slower
-		compression levels achieving a quite competitive compression ratio
-		while still decompressing at this very high speed.
-
-config FREETZ_LIB_libz
-	bool "Zlib (libz.so)"
-	default n
-	help
-		zlib is a lossless data-compression library for use on virtually any
-		computer hardware and operating system. The zlib data format is itself
-		portable across platforms.
-
-		In Freetz, e.g. Tor, Bftpd and Stunnel depend on zlib.
+source make/libs/lzo/Config.in
+source make/libs/zlib/Config.in
 
 endmenu
 
+# e2fsprogs menu
 source make/e2fsprogs/libraries-Config.in
 
 menu "GLib"
 
-config FREETZ_LIB_libglib_1
-	bool "GLib 1.2 (libglib-1.2.so)"
-	select FREETZ_LIB_libpthread
-	default n
-	help
-		GLib is a library containing many useful C routines for things such as
-		trees, hashes, and lists.
-
-		GLib 1.2 is needed by MC 4.6.1
-
-config FREETZ_LIB_libglib_2
-	bool "GLib2 (libglib-2.0.so)"
-	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-	select FREETZ_LIB_libpcre
-	default n
-	help
-		GLib is a library containing many useful C routines for things such as
-		trees, hashes, and lists.
-
-		GLib2 is needed by Irssi
-
-config FREETZ_LIB_libgio_2
-	bool "libgio-2.0.so"
-	select FREETZ_LIB_libglib_2
-	select FREETZ_LIB_libgmodule_2
-	select FREETZ_LIB_libgobject_2
-	select FREETZ_LIB_libresolv
-	default n
-	help
-		Input, output and streaming API of GLib.
-
-config FREETZ_LIB_libgobject_2
-	bool "libgobject-2.0.so"
-	select FREETZ_LIB_libglib_2
-	default n
-	help
-		If your application uses Glib2 GObjects, select this library.
-
-config FREETZ_LIB_libgmodule_2
-	bool "libgmodule-2.0.so"
-	select FREETZ_LIB_libglib_2
-	default n
-	help
-		If your application uses Glib2 modules (plug-ins), select this library.
-		E.g. Irssi needs this library and auto-selects it.
-
-config FREETZ_LIB_libgthread_2
-	bool "libgthread-2.0.so"
-	select FREETZ_LIB_libglib_2
-	default n
-	help
-		If your application uses Glib2 threads, select this library.
+source make/libs/glib/Config.in
+source make/libs/glib2/Config.in
 
 endmenu
 
 menu "Graphics & fonts"
 
-config FREETZ_LIB_libfreetype
-	bool "FreeType 2 font engine (freetype.so)"
-	default n
-	help
-		FreeType 2 is a software font engine that is designed to be small,
-		efficient, highly customizable, and portable while capable of producing
-		high-quality output (glyph images). It can be used in graphics
-		libraries, display servers, font conversion tools, text image generation
-		tools, and many other products as well.
-
-		In Freetz, rrdtool and vnstati depends on freetype.
-
-config FREETZ_LIB_libart_lgpl_2
-	bool "Libart 2D graphics (libart.so)"
-	default n
-	help
-		Libart is a library for high-performance 2D graphics. It supports a very
-		powerful imaging model, basically the same as SVG and the Java 2D API.
-		It includes all PostScript imaging operations, and adds antialiasing and
-		alpha-transparency. It is also highly tuned for incremental rendering.
-		It contains data structures and algorithms suited to rapid, precise
-		computation of Region of Interest, and a two-phase rendering pipeline
-		optimized for interactive display.
-
-		In Freetz, rrdtool depends on libart.
-
-config FREETZ_LIB_libexif
-	bool "EXIF library (libexif.so)"
-	select FREETZ_LIB_libm
-	default n
-	help
-		libexif is a library for parsing, editing, and saving EXIF data.
-
-config FREETZ_LIB_libjpeg
-	bool "JPEG library (libjpeg.so)"
-	default n
-	help
-		libjpeg is a library for handling the JPEG (JFIF) image format
-
-config FREETZ_LIB_libpng12
-	bool "PNG library (libpng.so)"
-	select FREETZ_LIB_libz
-	default n
-	help
-		libpng is the official PNG reference library. It supports almost all PNG
-		features, is extensible, and has been extensively tested for over 12
-		years. The home site for development versions (i.e., may be buggy or
-		subject to change or include experimental features) is
-		http://libpng.sourceforge.net/, and the place to go for questions about
-		the library is the png-mng-implement mailing list.
-
-		In Freetz, rrdtool depends on libpng.
-
-config FREETZ_LIB_libgd
-	bool "libgd (libgd.so)"
-	default n
-	select FREETZ_LIB_libjpeg
-	select FREETZ_LIB_libfreetype
-	select FREETZ_LIB_libpng12
-	help
-		GD is an open source code library for the dynamic creation of images by
-		programmers. GD creates PNG, JPEG and GIF images, among other formats.
-		GD is commonly used to generate charts, graphics, thumbnails, and most
-		anything else, on the fly.
-
-config FREETZ_LIB_libopenjpeg
-	bool "libopenjpeg (libopenjpeg.so)"
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libz
-	default n
-	help
-		JPEG 2000 image compression/decompression library
+source make/libs/freetype/Config.in
+source make/libs/libart_lgpl/Config.in
+source make/libs/libexif/Config.in
+source make/libs/jpeg/Config.in
+source make/libs/libpng/Config.in
+source make/libs/gd/Config.in
+source make/libs/openjpeg/Config.in
 
 config FREETZ_LIB_libnetpbm
 	bool "libnetpbm (libnetpbm.so)"
@@ -434,168 +106,32 @@ config FREETZ_LIB_libnetpbm
 endmenu
 
 menu Multimedia
+
 source make/ffmpeg/libraries-Config.in
 
 menu Ogg/Vorbis
 
-config FREETZ_LIB_libogg
-	bool "libogg (libogg.so)"
-	default n
-	help
-		Libogg is a library for manipulating ogg bitstreams. It handles both
-		making ogg bitstreams and getting packets from ogg bitstreams.
+source make/libs/libogg/Config.in
+source make/libs/libvorbis/Config.in
 
-config FREETZ_LIB_libvorbis
-	bool "libvorbis (libvorbis.so)"
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libogg
-	default n
-	help
-		Vorbis is the name of a specific audio compression scheme that's
-		designed to be contained in Ogg. libvorbis is a BSD-style license
-		software implementation of the Vorbis specification by the Xiph.Org
-		Foundation.
-
-config FREETZ_LIB_libvorbisenc
-	bool "libvorbisenc (libvorbisenc.so)"
-	select FREETZ_LIB_libvorbis
-	default n
-	help
-		Libvorbisenc is an encoding convenience library intended to encapsulate
-		the elaborate setup that libvorbis requires for encoding. Libvorbisenc
-		gives easy access to all high-level adjustments an application may
-		require when encoding and also exposes some low-level tuning parameters
-		to allow applications to make detailed adjustments to the encoding
-		process.
-
-config FREETZ_LIB_libvorbisfile
-	bool "libvorbisfile (libvorbisfile.so)"
-	select FREETZ_LIB_libvorbis
-	default n
-	help
-		The Vorbisfile library provides a convenient high-level API for decoding
-		and basic manipulation of all Vorbis I audio streams.
-		Libvorbisfile is implemented as a layer on top of Xiph.org's reference
-		libogg and libvorbis libraries.
 endmenu
 
-config FREETZ_LIB_libFLAC
-	bool "FLAC (libFLAC.so)"
-	select FREETZ_LIB_libm
-	default n
-	help
-		Free Lossless Audio Codec library.
+source make/libs/flac/Config.in
+source make/libs/libid3tag/Config.in
+source make/libs/libmad/Config.in
+source make/libs/taglib/Config.in
 
-config FREETZ_LIB_libid3tag
-	bool "libid3tag (libid3tag.so)"
-	select FREETZ_LIB_libz
-	default n
-	help
-		ID3 tag manipulation library
-
-config FREETZ_LIB_libmad
-	bool "libmad (libmad.so)"
-	default n
-	help
-		MAD is a high-quality MPEG audio decoder. It currently supports MPEG-1
-		and the MPEG-2 extension to Lower Sampling Frequencies, as well as the
-		so-called MPEG 2.5 format. All three audio layers (Layer I, Layer II,
-		and Layer III a.k.a. MP3) are fully implemented.
-
-config FREETZ_LIB_libtag
-	bool "taglib (libtag.so)"
-	select FREETZ_LIB_STDCXXLIB
-	select FREETZ_LIB_STDCXXLIB_WITH_WCHAR
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libz
-	default n
-	help
-		TagLib is a library for reading and editing the meta-data of several
-		popular audio formats. Currently it supports both ID3v1 and ID3v2
-		for MP3 files, Ogg Vorbis comments and ID3 tags and Vorbis comments
-		in FLAC, MPC, Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.
 endmenu
 
 menu "ncurses"
 
-config FREETZ_LIB_libncurses
-	bool "ncurses (libncurses.so)"
-	select FREETZ_SHARE_terminfo
-	default n
-	help
-		ncurses is a programming library providing an API, allowing the
-		programmer to write text user interfaces in a terminal-independent
-		manner. It also optimizes screen changes, in order to reduce the
-		latency experienced when using remote shells.
+source make/libs/ncurses/Config.in
 
-		Ncurses stands for "new curses", and is a replacement for the
-		discontinued 4.4 BSD classic curses.
-
-		In Freetz, e.g. Lua, Bird, Mc, Lynx and Screen use libncurses.
-
-source make/libs/ncurses-Config.in
-
-config FREETZ_LIB_libform
-	bool "libform (libform.so)"
-	default n
-	select FREETZ_LIB_libncurses
-	help
-		The form library is a curses extension that supports easy programming of
-		on-screen forms for data entry and program control.
-
-		In Freetz, there is currently no package which depends on this library.
-
-config FREETZ_LIB_libmenu
-	bool "libmenu (libmenu.so)"
-	default n
-	select FREETZ_LIB_libncurses
-	help
-		The menu library is a curses extension that supports easy programming of
-		menu hierarchies with a uniform but flexible interface.
-
-		In Freetz, there is currently no package which depends on this library.
-
-config FREETZ_LIB_libpanel
-	bool "libpanel (libpanel.so)"
-	default n
-	select FREETZ_LIB_libncurses
-	help
-		The ncurses library by itself provides good support for screen displays
-		in which the windows are tiled (non-overlapping).
-		When your interface design is such that windows may dive deeper into
-		the visibility stack or pop to the top at runtime, the resulting book-
-		keeping can be tedious and difficult to get right. Hence the panels
-		library.
 endmenu
 
 menu "Readline"
 
-config FREETZ_LIB_libreadline
-	bool "libreadline.so"
-	default n
-	help
-		The Readline library provides a set of functions for use by applications
-		that allow users to edit command lines as they are typed in. Both Emacs
-		and vi editing modes are available. The Readline library includes
-		additional functions to maintain a list of previously-entered command
-		lines, to recall and perhaps reedit those lines, and perform csh-like
-		history expansion on previous commands.
-
-		In Freetz, e.g. Lua and Bird depend on libreadline.
-
-config FREETZ_LIB_libhistory
-	bool "libhistory.so"
-	default n
-	select FREETZ_LIB_libreadline
-	help
-		The Readline library provides a set of functions for use by applications
-		that allow users to edit command lines as they are typed in. Both Emacs
-		and vi editing modes are available. The Readline library includes
-		additional functions to maintain a list of previously-entered command
-		lines, to recall and perhaps reedit those lines, and perform csh-like
-		history expansion on previous commands.
-
-		In Freetz, e.g. Lua and Bird depend on libhistory.
+source make/libs/readline/Config.in
 
 endmenu
 
@@ -779,34 +315,9 @@ config FREETZ_LIB_libutil
 endmenu
 
 menu "XML/XSLT"
-config FREETZ_LIB_libexpat
-	bool "libexpat (libexpat.so)"
-	default n
-	help
-		This is Expat, a C library for parsing XML, written by James Clark.
-		Expat is a stream-oriented XML parser. This means that you register
-		handlers with the parser before starting the parse. These handlers
-		are called when the parser discovers the associated structures in the
-		document being parsed. A start tag is an example of the kind of
-		structures for which you may register handlers.
 
-config FREETZ_LIB_libxml2
-	bool "libxml2 (libxml2.so)"
-	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libz
-	default n
-	help
-		XML toolkit from the GNOME project
-
-config FREETZ_LIB_libxml2_WITH_HTML
-	bool "build libxml2 with html support"
-	depends on FREETZ_LIB_libxml2
-	default n
-	help
-		Adds html parsing capability to libxml2. This increases the size of
-		libxml2 by 120kB. Html parsing is required to build libxslt.
+source make/libs/expat/Config.in
+source make/libs/libxml2/Config.in
 
 config FREETZ_LIB_libxslt
 	bool "libxslt (libxslt.so)"
@@ -833,88 +344,13 @@ config FREETZ_LIB_libexslt
 		EXSLT itself is a community initiative to provide extensions to XSLT.
 endmenu
 
-config FREETZ_LIB_libapr
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
-	bool "Apache Portable Runtime Library (libapr-1.so)"
-	default n
-	help
-		APR is Apache's Portable Runtime Library, designed to be a support
-		library that provides a predictable and consistent interface to
-		underlying platform-specific implementations.
-
-config FREETZ_LIB_libapr_WITH_DSO
-	depends FREETZ_LIB_libapr
-	select FREETZ_LIB_libdl
-	bool "Build with DSO support"
-	default n
-	help
-		This option enables DSO support in libapr.
-
-config FREETZ_LIB_libaprutil
-	select FREETZ_LIB_libapr
-	select FREETZ_LIB_libexpat
-	select FREETZ_LIB_libsqlite3
-	bool "Apache Portable Runtime Utility Library (libaprutil-1.so)"
-	default n
-	help
-		APR Util is a utilities library implemented on top of APR, providing
-		database access, xml parsing, and other useful functionality.
-
-config FREETZ_LIB_libaprutil_WITH_LIBDB
-	depends FREETZ_LIB_libaprutil
-	select FREETZ_LIB_libdb
-	bool "Build with Berkeley-DB support"
-	default n
-	help
-		This option enables Berkeley-DB support in libaprutil.
-
-config FREETZ_LIB_libdb
-	bool "Berkeley DB library (libdb.so)"
-	select FREETZ_LIB_libpthread
-	default n
-	help
-		The Berkeley database library.
-
-config FREETZ_LIB_libbluetooth
-	bool "bluez-libs (libbluetooth.so)"
-	default n
-	help
-		The overall goal of the bluez project is to make an implementation of
-		the Bluetooth wireless standards specifications for Linux.
-
-config FREETZ_LIB_libcapi20
-	bool "CAPI 2.0 (libcapi20.so)"
-	default n
-	help
-		COMMON-ISDN-API (CAPI) 2.0 Library
-
-config FREETZ_LIB_libgcc_s
-	bool "GCC low-level runtime library (libgcc_s.so)"
-	default n
-	help
-		GCC low-level runtime library
-
-		GCC provides a low-level runtime library, `libgcc.a' or `libgcc_s.so.1'
-		on some platforms. GCC generates calls to routines in this library
-		automatically, whenever it needs to perform some operation that is too
-		complicated to emit inline code for.
-
-		Most of the routines in libgcc handle arithmetic operations that the
-		target processor cannot perform directly. This includes integer multiply
-		and divide on some machines, and all floating-point operations on other
-		machines. libgcc also includes routines for exception handling, and a
-		handful of miscellaneous operations.
-
-config FREETZ_LIB_libconfig
-	bool "libconfig (libconfig.so)"
-	default n
-	help
-		Libconfig is a simple library for processing structured configuration
-		files. Libconfig is very compact - just 46K for the stripped C shared
-		library. This makes it well-suited for memory-constrained systems.
+source make/libs/apr/Config.in
+source make/libs/apr-util/Config.in
+source make/libs/db/Config.in
+source make/libs/bluez-libs/Config.in
+source make/libs/libcapi/Config.in
+source make/libs/libgcc_s/Config.in
+source make/libs/libconfig/Config.in
 
 config FREETZ_LIB_libcurl
 	bool "libcurl (libcurl.so)"
@@ -924,87 +360,14 @@ config FREETZ_LIB_libcurl
 	help
 		A client-side URL transfer library.
 
-config FREETZ_LIB_libdaemon
-	bool "libdaemon (libdaemon.so)"
-	default n
-	help
-		Libdaemon is a lightweight C library that eases the writing of UNIX daemons.
-
-config FREETZ_LIB_libdevmapper
-	bool "libdevmapper (libdevmapper.so)"
-	default n
-	help
-		Device-mapper library.
-
-config FREETZ_LIB_libdnet
-	bool "libdnet (libdnet)"
-	default n
-	help
-		libdnet provides a simplified, portable interface to several low-level
-		networking routines, including:
-		* network address manipulation
-		* kernel arp(4) cache and route(4) table lookup and manipulation
-		* network firewalling (IP filter, ipfw, ipchains, pf, PktFilter, ...)
-		* network interface lookup and manipulation
-		* IP tunnelling (BSD/Linux tun, Universal TUN/TAP device)
-		* raw IP packet and Ethernet frame transmission
-		http://libdnet.sourceforge.net/
-		dnet is a simple test program for the dnet(3) library. It can be used
-		to compose and transmit network datagrams as a Unix-style filter (e.g.
-		reading from or writing to files and pipes) or modify the local system
-		network configuration (including the ARP cache, firewall ruleset,
-		network interfaces, and routing table).
-		http://libdnet.sourceforge.net/dnet.8.txt
-
-config FREETZ_LIB_libelf
-	bool "libelf (libelf.so)"
-	default n
-	help
-		libelf - ELF object file access library
-
-config FREETZ_LIB_libevent
-	bool "libevent (libevent.so)"
-	default n
-	select FREETZ_LIB_libpthread
-	help
-		libevent is an asynchronous event notification software library.
-
-		The libevent API provides a mechanism to execute a callback function
-		when a specific event occurs on a file descriptor or after a timeout
-		has been reached. Furthermore, libevent also support callbacks due to
-		signals or regular timeouts.
-
-		libevent is meant to replace the event loop found in event-driven
-		network servers. An application just needs to call event_dispatch() and
-		then add or remove events dynamically without having to change the event
-		loop.
-
-config FREETZ_LIB_libffi
-	bool "libffi-sable (libffi.so)"
-	help
-		libffi is a library that really only provides the lowest, machine
-		dependent layer of a fully featured foreign function interface. A layer
-		must exist above libffi that handles type conversions for values passed
-		between the two languages. ffi stands for Foreign Function Interface.
-		A foreign function interface is the popular name for the interface that
-		allows code written in one language to call code written in another
-		language.
-
-config FREETZ_LIB_libftdi
-	bool "libftdi (libftdi.so)"
-	select FREETZ_LIB_libusb
-	default n
-	help
-		A library (using libusb) to talk to FTDI's FT232BM/245BM, FT2232C/D and
-		FT232/245R type chips including the popular bitbang mode.
-
-config FREETZ_LIB_libfreetz
-	bool "libfreetz (libfreetz.so)"
-	depends on FREETZ_HAS_USB_HOST && ! FREETZ_TYPE_FON_WLAN_7140
-	default n
-	help
-		This is Freetz compatibility library which overwrites functions of AVM's
-		libraries, e.g. write_etc_passwd.
+source make/libs/libdaemon/Config.in
+source make/libs/devmapper/Config.in
+source make/libs/libdnet/Config.in
+source make/libs/libelf/Config.in
+source make/libs/libevent/Config.in
+source make/libs/libffi-sable/Config.in
+source make/libs/libfreetz/Config.in
+source make/libs/libftdi/Config.in
 
 config FREETZ_LIB_libfuse
 	bool "libfuse (libfuse.so)"
@@ -1012,32 +375,10 @@ config FREETZ_LIB_libfuse
 	help
 		Filesystem in USErspace library
 
-config FREETZ_LIB_libiconv
-	bool "libiconv (libiconv.so)"
-	default n
-	help
-		This library provides an iconv() implementation, for use on systems
-		which don't have one, or whose implementation cannot convert from/to
-		Unicode.
-
-config FREETZ_LIB_libintl
-	bool "libintl (libintl.so)"
-	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-	default n
-	help
-		GNU Internationalization library
-
-config FREETZ_LIB_libjs
-	bool "libjs (libjs.so)"
-	default n
-	help
-		OSSP js - Mozilla JavaScript Engine
-
-config FREETZ_LIB_libltdl
-	bool "libltdl (libltdl.so)"
-	default n
-	help
-		A generic dynamic object loading library
+source make/libs/libiconv/Config.in
+source make/libs/gettext/Config.in
+source make/libs/js/Config.in
+source make/libs/libtool/Config.in
 
 config FREETZ_LIB_liblua
 	bool "liblua (liblua.so)"
@@ -1045,46 +386,8 @@ config FREETZ_LIB_liblua
 	help
 		LUA library
 
-config FREETZ_LIB_libneon
-	bool "libneon (libneon.so)"
-	select FREETZ_LIB_libexpat
-	default n
-	help
-		neon is an HTTP and WebDAV client library, with a C language API.
-
-config FREETZ_LIB_libneon_WITH_SSL
-	bool "build with SSL support"
-	depends on FREETZ_LIB_libneon
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
-	default n
-	help
-		This option enables SSL support for neon.
-
-config FREETZ_LIB_libneon_WITH_ZLIB
-	bool "build with zlib support"
-	depends on FREETZ_LIB_libneon
-	select FREETZ_LIB_libz
-	default n
-	help
-		This option enables zlib support for neon.
-
-config FREETZ_LIB_libnet
-	bool "libnet (libnet.so)"
-	default n
-	help
-		A C library for portable packet creation and injection.
-		Libnet is an API to help with the construction and handling of network
-		packets.  It provides a portable framework for low-level network
-		packet writing and handling (use libnet in conjunction with libpcap and
-		you can write some really cool stuff).  Libnet includes packet creation
-		at the IP layer and at the link layer as well as a host of supplementary
-		and complementary functionality.  Libnet is very handy with which to
-		write network tools and network test code.  See the manpage and sample
-		test code for more detailed information.
-		http://github.com/sam-github/libnet
-		Contact Sam Roberts <vieuxtech@gmail.com> if you have patches or have
-		found bugs.
+source make/libs/neon/Config.in
+source make/libs/libnet/Config.in
 
 config FREETZ_LIB_libntfs
 	bool "libntfs (libntfs-3g.so)"
@@ -1092,69 +395,13 @@ config FREETZ_LIB_libntfs
 	help
 		NTFS-3G library
 
-config FREETZ_LIB_libopenobex
-	bool "libopenobex (libopenobex.so)"
-	select FREETZ_LIB_libbluetooth
-	default n
-	help
-		The overall goal of this project is to make an open source
-		implementation of the Object Exchange (OBEX) protocol.
-
-config FREETZ_LIB_liboping
-	bool "liboping (liboping.so)"
-	default n
-	help
-		A simple library for creating ICMP echo (ping) packets.
-
-config FREETZ_LIB_libosip2
-	bool "libosip2 (libosip2.so)"
-	select FREETZ_LIB_libosipparser2
-	default n
-	help
-		GNU oSIP library, a Session Initiation Protocol (SIP) implementation.
-
-config FREETZ_LIB_libosipparser2
-	bool "libosipparser2 (libosipparser2.so)"
-	default n
-	help
-		GNU oSIP library, a Session Initiation Protocol (SIP) implementation.
-
-config FREETZ_LIB_libpcap
-	bool "libpcap (libpcap.so)"
-	default n
-	help
-		libpcap is a system-independent interface for user-level packet capture.
-		libpcap provides a portable framework for low-level network monitoring.
-		Applications include network statistics collection, security monitoring,
-		network debugging, etc.
-
-		In Freetz, e.g. tcpdump, knock and pingtunnel depend on libpcap.
-
-config FREETZ_LIB_libpcre
-	bool "libpcre (libpcre.so)"
-	default n
-	help
-		A Perl Compatible Regular Expression library
-
-config FREETZ_LIB_libpcreposix
-	bool "libpcreposix (libpcreposix.so)"
-	select FREETZ_LIB_libpcre
-	default n
-	help
-		A POSIX wrapper interface to the Perl Compatible Regular Expression
-		library
-
-#config FREETZ_LIB_libpjsip
-#	bool "libpjsip (libpjsip.so)
-#	default n
-#	help
-#		PJSIP is a SIP stack supporting many SIP extensions/features
-
-config FREETZ_LIB_libpopt
-	bool "libpopt (libpopt.so)"
-	default n
-	help
-		The popt library exists essentially for parsing command line options.
+source make/libs/openobex/Config.in
+source make/libs/liboping/Config.in
+source make/libs/libosip2/Config.in
+source make/libs/libpcap/Config.in
+source make/libs/pcre/Config.in
+source make/libs/pjproject/Config.in
+source make/libs/popt/Config.in
 
 config FREETZ_LIB_librrd
 	bool "librrd (librrd.so)"
@@ -1200,42 +447,9 @@ config FREETZ_LIB_libsqlite3
 		embeddable, zero-configuration SQL database engine.
 		This is just the Library.
 
-config FREETZ_LIB_libsynce
-	bool "libsynce (libsynce.so)"
-	default n
-	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-	help
-		A helper library for SynCE, a framework to sync WinCE devices
-
-config FREETZ_LIB_libsysfs
-	bool "libsysfs (libsysfs.so)"
-	default n
-	help
-		The library's purpose is to provide a consistant and stable interface
-		for querying system device information exposed through sysfs.
-
-config FREETZ_LIB_libusb
-	bool "libusb (libusb.so)"
-	default n
-	help
-		A library for accessing Linux USB devices.
-
-config FREETZ_LIB_libusb_1
-	bool "libusb1 (libusb-1.0.so)"
-	default n
-	help
-		A library for accessing Linux USB devices (new API).
-
-config FREETZ_LIB_libatm
-	bool "linux-atm (libatm.so)"
-	select FREETZ_LIB_libresolv
-	default n
-	help
-		Libatm is a library for accessing the Linux ATM subsystem.
-
-config FREETZ_LIB_libwx_baseu
-	bool "wxWidgets base (libwx_baseu.so)"
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_STDCXXLIB
-	select FREETZ_LIB_STDCXXLIB_WITH_WCHAR
-	default n
+source make/libs/libsynce/Config.in
+source make/libs/sysfsutils/Config.in
+source make/libs/libusb/Config.in
+source make/libs/libusb1/Config.in
+source make/libs/linux-atm/Config.in
+source make/libs/wxWidgets/Config.in

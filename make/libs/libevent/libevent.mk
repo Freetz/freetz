@@ -2,8 +2,8 @@ $(call PKG_INIT_LIB, 2.0.13-stable)
 $(PKG)_MAJOR_VERSION:=2.0
 $(PKG)_SHLIB_VERSION:=5.1.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=af786b4b3f790c9d3279792edf7867fc
-$(PKG)_SITE:=@SF/levent
+$(PKG)_SOURCE_MD5:=42986228baf95e325778ed328a93e070
+$(PKG)_SITE:=http://www.monkey.org/~provos
 
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)

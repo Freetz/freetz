@@ -1,0 +1,42 @@
+config FREETZ_LIB_libglib_2
+	bool "GLib2 (libglib-2.0.so)"
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	select FREETZ_LIB_libpcre
+	default n
+	help
+		GLib is a library containing many useful C routines for things such as
+		trees, hashes, and lists.
+
+		GLib2 is needed by Irssi
+
+config FREETZ_LIB_libgio_2
+	bool "libgio-2.0.so"
+	select FREETZ_LIB_libglib_2
+	select FREETZ_LIB_libgmodule_2
+	select FREETZ_LIB_libgobject_2
+	select FREETZ_LIB_libresolv
+	default n
+	help
+		Input, output and streaming API of GLib.
+
+config FREETZ_LIB_libgobject_2
+	bool "libgobject-2.0.so"
+	select FREETZ_LIB_libglib_2
+	default n
+	help
+		If your application uses Glib2 GObjects, select this library.
+
+config FREETZ_LIB_libgmodule_2
+	bool "libgmodule-2.0.so"
+	select FREETZ_LIB_libglib_2
+	default n
+	help
+		If your application uses Glib2 modules (plug-ins), select this library.
+		E.g. Irssi needs this library and auto-selects it.
+
+config FREETZ_LIB_libgthread_2
+	bool "libgthread-2.0.so"
+	select FREETZ_LIB_libglib_2
+	default n
+	help
+		If your application uses Glib2 threads, select this library.

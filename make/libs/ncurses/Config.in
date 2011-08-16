@@ -1,0 +1,49 @@
+config FREETZ_LIB_libncurses
+	bool "ncurses (libncurses.so)"
+	select FREETZ_SHARE_terminfo
+	default n
+	help
+		ncurses is a programming library providing an API, allowing the
+		programmer to write text user interfaces in a terminal-independent
+		manner. It also optimizes screen changes, in order to reduce the
+		latency experienced when using remote shells.
+
+		Ncurses stands for "new curses", and is a replacement for the
+		discontinued 4.4 BSD classic curses.
+
+		In Freetz, e.g. Lua, Bird, Mc, Lynx and Screen use libncurses.
+
+source make/libs/ncurses/ncurses-Config.in
+
+config FREETZ_LIB_libform
+	bool "libform (libform.so)"
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		The form library is a curses extension that supports easy programming of
+		on-screen forms for data entry and program control.
+
+		In Freetz, there is currently no package which depends on this library.
+
+config FREETZ_LIB_libmenu
+	bool "libmenu (libmenu.so)"
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		The menu library is a curses extension that supports easy programming of
+		menu hierarchies with a uniform but flexible interface.
+
+		In Freetz, there is currently no package which depends on this library.
+
+config FREETZ_LIB_libpanel
+	bool "libpanel (libpanel.so)"
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		The ncurses library by itself provides good support for screen displays
+		in which the windows are tiled (non-overlapping).
+		When your interface design is such that windows may dive deeper into
+		the visibility stack or pop to the top at runtime, the resulting book-
+		keeping can be tedious and difficult to get right. Hence the panels
+		library.
+

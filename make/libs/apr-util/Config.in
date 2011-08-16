@@ -1,0 +1,17 @@
+config FREETZ_LIB_libaprutil
+	select FREETZ_LIB_libapr
+	select FREETZ_LIB_libexpat
+	select FREETZ_LIB_libsqlite3
+	bool "Apache Portable Runtime Utility Library (libaprutil-1.so)"
+	default n
+	help
+		APR Util is a utilities library implemented on top of APR, providing
+		database access, xml parsing, and other useful functionality.
+
+config FREETZ_LIB_libaprutil_WITH_LIBDB
+	depends FREETZ_LIB_libaprutil
+	select FREETZ_LIB_libdb
+	bool "Build with Berkeley-DB support"
+	default n
+	help
+		This option enables Berkeley-DB support in libaprutil.

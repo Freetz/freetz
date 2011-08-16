@@ -1,0 +1,30 @@
+config FREETZ_LIB_libcrypto
+	bool "OpenSSL cryptographic library (libcrypto.so)"
+	select FREETZ_LIB_libssl if FREETZ_REPLACE_SSL_LIBS
+	default n
+	help
+		crypto - OpenSSL cryptographic library
+
+		The OpenSSL crypto library implements a wide range of cryptographic
+		algorithms used in various Internet standards. The services provided by
+		this library are used by the OpenSSL implementations of SSL, TLS and
+		S/MIME, and they have also been used to implement SSH, OpenPGP, and
+		other cryptographic standards.
+
+		libcrypto consists of a number of sub-libraries that implement the
+		individual algorithms. The functionality includes symmetric encryption,
+		public key cryptography and key agreement, certificate handling,
+		cryptographic hash functions and a cryptographic pseudo-random number
+		generator.
+
+config FREETZ_LIB_libssl
+	bool "OpenSSL SSL/TLS library (libssl.so)"
+	depends on FREETZ_LIB_libcrypto
+	default n
+	help
+		SSL - OpenSSL SSL/TLS library
+
+		The OpenSSL ssl library implements the Secure Sockets Layer (SSL v2/v3)
+		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
+
+		In Freetz, e.g. Tor, sTunnel and OpenVPN depend on libssl.

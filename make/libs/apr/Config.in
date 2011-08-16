@@ -1,0 +1,19 @@
+config FREETZ_LIB_libapr
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	bool "Apache Portable Runtime Library (libapr-1.so)"
+	default n
+	help
+		APR is Apache's Portable Runtime Library, designed to be a support
+		library that provides a predictable and consistent interface to
+		underlying platform-specific implementations.
+
+config FREETZ_LIB_libapr_WITH_DSO
+	depends FREETZ_LIB_libapr
+	select FREETZ_LIB_libdl
+	bool "Build with DSO support"
+	default n
+	help
+		This option enables DSO support in libapr.

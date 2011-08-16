@@ -1,0 +1,113 @@
+--- configure
++++ configure
+@@ -8676,6 +8676,7 @@
+ 
+ 
+ 
++if false; then
+    for ac_header in locale.h
+ do :
+   ac_fn_c_check_header_mongrel "$LINENO" "locale.h" "ac_cv_header_locale_h" "$ac_includes_default"
+@@ -9388,6 +9389,7 @@
+ fi
+ 
+ LIBS="$INTLLIBS $LIBS"
++fi
+ 
+ GETTEXT_PACKAGE=glib20
+ 
+@@ -9397,6 +9399,7 @@
+ _ACEOF
+ 
+ 
++if false; then
+ glib_save_prefix="$prefix"
+ glib_save_exec_prefix="$exec_prefix"
+ glib_save_datarootdir="$datarootdir"
+@@ -9415,6 +9418,7 @@
+ cat >>confdefs.h <<_ACEOF
+ #define GLIB_LOCALE_DIR "$localedir"
+ _ACEOF
++fi
+ 
+ 
+ 
+--- glib/gi18n.h
++++ glib/gi18n.h
+@@ -22,7 +22,7 @@
+ 
+ #include <glib.h>
+ 
+-#include <libintl.h>
++//#include <libintl.h>
+ #include <string.h>
+ 
+ #define  _(String) gettext (String)
+--- glib/gi18n-lib.h
++++ glib/gi18n-lib.h
+@@ -22,7 +22,7 @@
+ 
+ #include <glib.h>
+ 
+-#include <libintl.h>
++//#include <libintl.h>
+ #include <string.h>
+ 
+ #ifndef GETTEXT_PACKAGE
+--- glib/gstrfuncs.c
++++ glib/gstrfuncs.c
+@@ -3207,10 +3207,10 @@
+ g_dgettext (const gchar *domain,
+             const gchar *msgid)
+ {
+-  if (domain && G_UNLIKELY (!_g_dgettext_should_translate ()))
++  //if (domain && G_UNLIKELY (!_g_dgettext_should_translate ()))
+     return msgid;
+ 
+-  return dgettext (domain, msgid);
++  //return dgettext (domain, msgid);
+ }
+ 
+ /**
+@@ -3238,10 +3238,10 @@
+              const gchar *msgid_plural,
+ 	     gulong       n)
+ {
+-  if (domain && G_UNLIKELY (!_g_dgettext_should_translate ()))
++  //if (domain && G_UNLIKELY (!_g_dgettext_should_translate ()))
+     return n == 1 ? msgid : msgid_plural;
+ 
+-  return dngettext (domain, msgid, msgid_plural, n);
++  //return dngettext (domain, msgid, msgid_plural, n);
+ }
+ 
+ 
+--- glib/gutils.c
++++ glib/gutils.c
+@@ -3429,6 +3429,7 @@
+ G_CONST_RETURN gchar *
+ glib_gettext (const gchar *str)
+ {
++#if 0
+   static gboolean _glib_gettext_initialized = FALSE;
+ 
+   if (!_glib_gettext_initialized)
+@@ -3445,6 +3446,7 @@
+ #    endif
+       _glib_gettext_initialized = TRUE;
+     }
++#endif
+   
+   return g_dgettext (GETTEXT_PACKAGE, str);
+ }
+--- Makefile.in
++++ Makefile.in
+@@ -401,7 +401,7 @@
+ 	gio-2.0-uninstalled.pc.in gio-unix-2.0-uninstalled.pc.in
+ TEST_PROGS = 
+ AUTOMAKE_OPTIONS = 1.7
+-SUBDIRS = . m4macros glib gmodule gthread gobject gio po
++SUBDIRS = . m4macros glib gmodule gthread gobject gio
+ DIST_SUBDIRS = $(SUBDIRS) build
+ bin_SCRIPTS = glib-gettextize
+ AM_CPPFLAGS = \
