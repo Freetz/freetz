@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://0pointer.de/lennart/projects/libdaemon/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libdaemon/.libs/libdaemon.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libdaemon.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/libdaemon.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libdaemon.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setpgrp_void=yes
@@ -47,6 +47,6 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/share/doc/libdaemon
 
 $(pkg)-uninstall:
-	$(RM) $(LIBDAEMON_DEST_LIB)/libdaemon*.so*
+	$(RM) $(LIBDAEMON_TARGET_DIR)/libdaemon*.so*
 
 $(PKG_FINISH)

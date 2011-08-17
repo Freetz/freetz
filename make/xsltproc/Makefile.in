@@ -1,3 +1,7 @@
+ifeq ($(strip $(FREETZ_LIB_libxslt)),y)
+LIBS+=xsltproc
+endif
+
 ifeq ($(strip $(FREETZ_PACKAGE_XSLTPROC)),y)
 PACKAGES+=xsltproc
 endif

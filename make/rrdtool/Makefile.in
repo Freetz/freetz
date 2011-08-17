@@ -1,3 +1,7 @@
+ifneq (,$(strip $(filter y,$(FREETZ_LIB_librrd) $(FREETZ_LIB_librrd_th))))
+LIBS+=rrdtool
+endif
+
 ifeq ($(strip $(FREETZ_PACKAGE_RRDTOOL)),y)
 PACKAGES+=rrdtool
 endif

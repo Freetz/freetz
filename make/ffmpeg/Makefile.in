@@ -1,3 +1,7 @@
+ifneq (,$(strip $(filter y,$(FREETZ_LIB_libavcodec) $(FREETZ_LIB_libavdevice) $(FREETZ_LIB_libavformat) $(FREETZ_LIB_libavutil) $(FREETZ_LIB_libpostproc))))
+LIBS+=ffmpeg
+endif
+
 ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG)),y)
 PACKAGES+=ffmpeg
 endif

@@ -212,6 +212,7 @@ step: world tools firmware
 
 include $(TOOLCHAIN_DIR)/make/Makefile.in
 include $(MAKE_DIR)/Makefile.in
+include $(sort $(wildcard $(MAKE_DIR)/libs/*/Makefile.in))
 include $(sort $(wildcard $(MAKE_DIR)/*/Makefile.in))
 
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
