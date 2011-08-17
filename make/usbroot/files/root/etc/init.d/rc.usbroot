@@ -413,8 +413,11 @@ cleanup_on_failure() {
 
 get_fstype() {
 	# check if kernel modules are available
+	# or if filesystem support is already built-in and available
 	for i in ext2 ext3; do
 		if [ -f "/lib/modules/$(uname -r)/kernel/fs/$i/$i.ko" ]; then
+			eval $i=y
+		elif [ -n "$(grep $i /proc/filesystems)" ]; then
 			eval $i=y
 		else
 			eval $i=n
