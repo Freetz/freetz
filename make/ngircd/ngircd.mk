@@ -1,9 +1,10 @@
-$(call PKG_INIT_BIN,17.1)
-$(PKG)_SOURCE:=ngircd-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://ftp.berlios.de/pub/ngircd
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/ngircd/ngircd
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ngircd
-$(PKG)_SOURCE_MD5:=b4ad0b1f18875ff3f2e92f076e64496b
+$(call PKG_INIT_BIN,18)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=4958c8b2d128cf3e9888af3f782892a1
+$(PKG)_SITE:=ftp://ftp.berlios.de/pub/$(pkg)
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)/$(pkg)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
@@ -30,17 +31,15 @@ endif
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_TCP_WRAPPERS),--with-tcp-wrappers,--without-tcp-wrappers)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_ZLIB),--with-zlib,--without-zlib)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NGIRCD_WITH_SSL),--with-openssl,--without-openssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --with-syslog
 $(PKG)_CONFIGURE_OPTIONS += --without-ident
-$(PKG)_CONFIGURE_OPTIONS += --without-zeroconf
 $(PKG)_CONFIGURE_OPTIONS += --without-kqueue
 $(PKG)_CONFIGURE_OPTIONS += --with-pam=no
 $(PKG)_CONFIGURE_OPTIONS += --with-gnutls=no
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 #$(PKG)_CONFIGURE_OPTIONS += --enable-sniffer
 #$(PKG)_CONFIGURE_OPTIONS += --enable-debug
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
