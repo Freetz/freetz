@@ -1,0 +1,7 @@
+config FREETZ_LIB_libcurl
+	bool "libcurl (libcurl.so)"
+	default n
+	select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_CURL_WITH_SSL && ! FREETZ_PACKAGE_CURL_USE_POLARSSL
+	select FREETZ_LIB_libpolarssl if FREETZ_PACKAGE_CURL_USE_POLARSSL
+	help
+		A client-side URL transfer library.

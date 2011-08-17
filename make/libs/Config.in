@@ -17,7 +17,6 @@ source make/libs/uclibcxx/Config.in
 endmenu
 
 
-
 menu "Crypto & SSL"
 
 comment "Math -----------------------------------"
@@ -40,32 +39,8 @@ source make/libs/openssl/Config.in
 source make/libs/libavmhmac/Config.in
 
 comment "GnuTLS ---------------------------------"
-config FREETZ_LIB_libgnutls
-	bool "GnuTLS library (libgnutls.so)"
-	select FREETZ_LIB_libgpg_error
-	select FREETZ_LIB_libgcrypt
-	select FREETZ_LIB_libtasn1
-	select FREETZ_LIB_libz
-	default n
-	help
-		GnuTLS is a project that aims to develop a library which provides a
-		secure layer, over a reliable transport layer. Currently the GnuTLS
-		library implements the SSL 3.0, TLS 1.0, and TLS 1.1 protocols.
 
-config FREETZ_LIB_libgnutls_extra
-	bool "GnuTLS extra library (libgnutls-extra.so)"
-	depends on FREETZ_LIB_libgnutls
-	default n
-	help
-		GnuTLS extra library
-
-config FREETZ_LIB_libgnutls_openssl
-	bool "GnuTLS openssl compatibility library (libgnutls-openssl.so)"
-	depends on FREETZ_LIB_libgnutls
-	default n
-	help
-		GnuTLS OpenSSL compatibility layer library
-
+source make/gnutls/Config.in.libs
 source make/libs/libtasn1/Config.in
 
 endmenu
@@ -77,8 +52,7 @@ source make/libs/zlib/Config.in
 
 endmenu
 
-# e2fsprogs menu
-source make/e2fsprogs/libraries-Config.in
+source make/e2fsprogs/Config.in.libs
 
 menu "GLib"
 
@@ -96,18 +70,13 @@ source make/libs/jpeg/Config.in
 source make/libs/libpng/Config.in
 source make/libs/gd/Config.in
 source make/libs/openjpeg/Config.in
+source make/netpbm/Config.in.libs
 
-config FREETZ_LIB_libnetpbm
-	bool "libnetpbm (libnetpbm.so)"
-	select FREETZ_LIB_libm
-	default n
-	help
-		netpbm is a toolkit for manipulation of graphic images.
 endmenu
 
 menu Multimedia
 
-source make/ffmpeg/libraries-Config.in
+source make/ffmpeg/Config.in.libs
 
 menu Ogg/Vorbis
 
@@ -318,30 +287,8 @@ menu "XML/XSLT"
 
 source make/libs/expat/Config.in
 source make/libs/libxml2/Config.in
+source make/xsltproc/Config.in.libs
 
-config FREETZ_LIB_libxslt
-	bool "libxslt (libxslt.so)"
-	select FREETZ_LIB_libxml2
-	select FREETZ_LIB_libxml2_WITH_HTML
-	default n
-	help
-		Libxslt is the XSLT C library developed for the GNOME project.
-
-		XSLT itself is a an XML language to define transformation for XML.
-		Libxslt is based on libxml2 the XML C library developed for the GNOME
-		project. It also implements most of the EXSLT set of processor-portable
-		extensions functions and some of Saxon's evaluate and expressions
-		extensions.
-
-config FREETZ_LIB_libexslt
-	bool "libexslt (libexslt.so)"
-	select FREETZ_LIB_libxslt
-	default n
-	help
-		Libexslt is the EXSLT C library developed for libxslt (a part of the
-		Gnome project). Much of the initial work on the library was done by
-		Thomas Broyer.
-		EXSLT itself is a community initiative to provide extensions to XSLT.
 endmenu
 
 source make/libs/apr/Config.in
@@ -351,15 +298,7 @@ source make/libs/bluez-libs/Config.in
 source make/libs/libcapi/Config.in
 source make/libs/libgcc_s/Config.in
 source make/libs/libconfig/Config.in
-
-config FREETZ_LIB_libcurl
-	bool "libcurl (libcurl.so)"
-	default n
-	select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_CURL_WITH_SSL && ! FREETZ_PACKAGE_CURL_USE_POLARSSL
-	select FREETZ_LIB_libpolarssl if FREETZ_PACKAGE_CURL_USE_POLARSSL
-	help
-		A client-side URL transfer library.
-
+source make/curl/Config.in.libs
 source make/libs/libdaemon/Config.in
 source make/libs/devmapper/Config.in
 source make/libs/libdnet/Config.in
@@ -368,33 +307,15 @@ source make/libs/libevent/Config.in
 source make/libs/libffi-sable/Config.in
 source make/libs/libfreetz/Config.in
 source make/libs/libftdi/Config.in
-
-config FREETZ_LIB_libfuse
-	bool "libfuse (libfuse.so)"
-	default n
-	help
-		Filesystem in USErspace library
-
+source make/fuse/Config.in.libs
 source make/libs/libiconv/Config.in
 source make/libs/gettext/Config.in
 source make/libs/js/Config.in
 source make/libs/libtool/Config.in
-
-config FREETZ_LIB_liblua
-	bool "liblua (liblua.so)"
-	default n
-	help
-		LUA library
-
+source make/lua/Config.in.libs
 source make/libs/neon/Config.in
 source make/libs/libnet/Config.in
-
-config FREETZ_LIB_libntfs
-	bool "libntfs (libntfs-3g.so)"
-	default n
-	help
-		NTFS-3G library
-
+source make/ntfs/Config.in.libs
 source make/libs/openobex/Config.in
 source make/libs/liboping/Config.in
 source make/libs/libosip2/Config.in
@@ -402,51 +323,9 @@ source make/libs/libpcap/Config.in
 source make/libs/pcre/Config.in
 source make/libs/pjproject/Config.in
 source make/libs/popt/Config.in
-
-config FREETZ_LIB_librrd
-	bool "librrd (librrd.so)"
-	select FREETZ_LIB_libart_lgpl_2
-	select FREETZ_LIB_libfreetype
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpng12
-	select FREETZ_LIB_libz
-	default n
-	help
-		Library implementing most of the functionality of RRDTool.
-
-config FREETZ_LIB_librrd_th
-	bool "librrd_th (librrd_th.so)"
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libart_lgpl_2
-	select FREETZ_LIB_libfreetype
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpng12
-	select FREETZ_LIB_libz
-	default n
-	help
-		Threaded version of librrd library.
-
-config FREETZ_LIB_libslang
-	bool "libslang"
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libm
-	default n
-	help
-		S-Lang is a multi-platform programmer's library designed to allow a developer
-		to create robust multi-platform software. It provides facilities required
-		by interactive applications such as display/screen management, keyboard input,
-		keymaps, and so on.
-
-config FREETZ_LIB_libsqlite3
-	bool "libsqlite (libsqlite3.so)"
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libpthread
-	default n
-	help
-		SQLite is a small C library that implements a self-contained,
-		embeddable, zero-configuration SQL database engine.
-		This is just the Library.
-
+source make/rrdtool/Config.in.libs
+source make/slang/Config.in.libs
+source make/sqlite/Config.in.libs
 source make/libs/libsynce/Config.in
 source make/libs/sysfsutils/Config.in
 source make/libs/libusb/Config.in
