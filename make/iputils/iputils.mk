@@ -26,6 +26,6 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(IPUTILS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $($(PKG)_TARGET_BINARY)
+	$(RM) $(IPUTILS_TARGET_BINARY)
 
 $(PKG_FINISH)

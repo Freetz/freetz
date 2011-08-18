@@ -43,9 +43,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(DIGITEMP_DIR) clean
-	$(RM) $(DIGITEMP_TARGET_BINARY)
 
 $(pkg)-uninstall:
-	$(RM) $($(PKG)_TARGET_BINARY)
+	$(RM) $(DIGITEMP_TARGET_BINARY)
 
 $(PKG_FINISH)
