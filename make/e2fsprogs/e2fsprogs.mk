@@ -43,8 +43,8 @@ $(PKG)_LIBS_STAGING_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_D
 $(PKG)_MAKE_ALL_EXTRAS	:= && ln -fsT et $($(PKG)_DIR)/lib/com_err
 
 $(PKG)_BINARIES_ALL := \
-	e2fsck fsck fsck.ext2 fsck.ext3 fsck.ext4 fsck.ext4dev \
-	mke2fs mklost+found mkfs.ext2 mkfs.ext3 \
+	e2fsck fsck \
+	mke2fs mklost+found \
 	tune2fs dumpe2fs chattr lsattr \
 	e2image e2undo debugfs logsave \
 	badblocks filefrag e2freefrag uuidd uuidgen \
@@ -52,11 +52,11 @@ $(PKG)_BINARIES_ALL := \
 	blkid
 $(PKG)_BINARIES :=
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2FSCK)),y)
-$(PKG)_BINARIES += e2fsck fsck fsck.ext2 fsck.ext3 fsck.ext4 fsck.ext4dev
+$(PKG)_BINARIES += e2fsck fsck
 $(PKG)_MAKE_ALL_EXTRAS += && cp $($(PKG)_DIR)/e2fsck/e2fsck $($(PKG)_DIR)/misc/
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2MAKING)),y)
-$(PKG)_BINARIES += mke2fs mklost+found mkfs.ext2 mkfs.ext3 
+$(PKG)_BINARIES += mke2fs mklost+found
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2TUNING)),y)
 $(PKG)_BINARIES += tune2fs dumpe2fs chattr lsattr
@@ -140,7 +140,14 @@ endif
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/misc/%
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg):
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_E2FSPROGS_E2FSCK)"   != "y" ] && echo -e "usr/sbin/fsck.ext2\nusr/sbin/fsck.ext3\nusr/sbin/fsck.ext4\nusr/sbin/fsck.ext4dev" >> $@; \
+	[ "$(FREETZ_PACKAGE_E2FSPROGS_E2MAKING)" != "y" ] && echo -e "usr/sbin/mkfs.ext2\nusr/sbin/mkfs.ext3" >> $@; \
+	[ "$(FREETZ_PACKAGE_E2FSPROGS_BLKID)"    != "y" ] && echo "sbin/blkid" >> $@; \
+	touch $@
 
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 $(pkg)-precompiled: $($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_TARGET_DIR)
