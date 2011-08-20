@@ -1,0 +1,83 @@
+--- nping/common_modified.cc
++++ nping/common_modified.cc
+@@ -219,7 +219,9 @@
+ 
+   int octet;
+   struct sockaddr_in *sin = (struct sockaddr_in *) ss;
++#ifdef HAVE_IPV6
+   struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) ss;
++#endif
+ 
+   /* CHANGE: Commented out. See note at the end of the method */
+   //startover: /* to handle nmap --resume where I have already
+--- nping/EchoServer.cc
++++ nping/EchoServer.cc
+@@ -211,7 +211,9 @@
+   int one=1;                 /**< Dummy var for setsockopt() call      */
+   int master_sd=-1;          /**< Master socket. Server listens on it  */
+   struct sockaddr_in server_addr4;  /**< For our own IPv4 address      */
++#ifdef HAVE_IPV6
+   struct sockaddr_in6 server_addr6; /**< For our own IPv6 address      */
++#endif
+   int port = o.getEchoPort();
+ 
+   /* Ignore SIGPIPE signal, received when a client disconnects suddenly and
+@@ -220,6 +222,7 @@
+     signal(SIGPIPE, SIG_IGN);
+   #endif
+ 
++#ifdef HAVE_IPV6
+   /* AF_INET6 */
+   if( o.ipv6() ){
+ 
+@@ -258,7 +261,9 @@
+ 
+ 
+   /* AF_INET */
+-  }else{
++  }else
++#endif
++  {
+ 
+     /* Obtain a regular TCP socket for IPv4 */
+     if( (master_sd=socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))<0 )
+--- nping/NpingOps.cc
++++ nping/NpingOps.cc
+@@ -1471,7 +1471,9 @@
+  * sockaddr_in6 struct.  */
+ struct sockaddr_storage *NpingOps::getSourceSockAddr(struct sockaddr_storage *ss){
+   struct sockaddr_in *s4 = (struct sockaddr_in*)ss;
++#ifdef HAVE_IPV6
+   struct sockaddr_in6 *s6 = (struct sockaddr_in6*)ss;
++#endif
+   memset(ss, 0, sizeof(struct sockaddr_storage));
+   if( this->getIPVersion() == IP_VERSION_4){
+     if(this->spoofSource())
+@@ -1483,6 +1485,7 @@
+         s4->sin_port=htons(this->getSourcePort());
+     else
+         s4->sin_port=0;
++#ifdef HAVE_IPV6
+   }
+   else if (this->getIPVersion() == IP_VERSION_6){
+     if(this->spoofSource())
+@@ -1495,6 +1498,7 @@
+         s6->sin6_port=htons(this->getSourcePort());
+     else
+         s6->sin6_port=0;
++#endif
+   }else{
+     outFatal(QT_3, "NpingOps::getSourceSockAddr(): IP version unset.");
+   }
+--- TargetGroup.cc
++++ TargetGroup.cc
+@@ -426,7 +426,9 @@
+ 
+   int octet;
+   struct sockaddr_in *sin = (struct sockaddr_in *) ss;
++#ifdef HAVE_IPV6
+   struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) ss;
++#endif
+   startover: /* to handle nmap --resume where I have already
+               * scanned many of the IPs */  
+   assert(ss);
