@@ -75,8 +75,7 @@ config FREETZ_MODULE_ip_conntrack
 		below).
 
 config FREETZ_MODULE_nf_conntrack
-	bool
-#	bool "nf_conntrack.ko"
+	bool "nf_conntrack.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	default n
 	help
@@ -100,8 +99,7 @@ config FREETZ_MODULE_ip_conntrack_ftp
 		of Network Address Translation on them.
 
 config FREETZ_MODULE_nf_conntrack_ftp
-	bool
-#	bool "nf_conntrack_ftp.ko"
+	bool "nf_conntrack_ftp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_nf_conntrack
 	default n
@@ -130,8 +128,7 @@ config FREETZ_MODULE_ip_conntrack_h323
 		visit http://nath323.sourceforge.net/.
 
 config FREETZ_MODULE_nf_conntrack_h323
-	bool
-#	bool "nf_conntrack_h323.ko"
+	bool "nf_conntrack_h323.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_nf_conntrack
 	default n
@@ -165,8 +162,7 @@ config FREETZ_MODULE_ip_conntrack_irc
 		initiate chats, or everything else in IRC.
 
 config FREETZ_MODULE_nf_conntrack_irc
-	bool
-#	bool "nf_conntrack_irc.ko"
+	bool "nf_conntrack_irc.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_nf_conntrack
 	default n
@@ -181,8 +177,7 @@ config FREETZ_MODULE_nf_conntrack_irc
 		initiate chats, or everything else in IRC.
 
 config FREETZ_MODULE_nf_conntrack_ipv4
-	bool
-#	bool "nf_conntrack_ipv4.ko"
+	bool "nf_conntrack_ipv4.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	default n
 
@@ -204,8 +199,7 @@ config FREETZ_MODULE_ip_conntrack_pptp
 		net/ipv4/netfilter/ip_conntrack_pptp.c
 
 config FREETZ_MODULE_nf_conntrack_pptp
-	bool
-#	bool "nf_conntrack_pptp.ko"
+	bool "nf_conntrack_pptp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_nf_conntrack
 	select FREETZ_MODULE_nf_conntrack_proto_gre
@@ -218,8 +212,7 @@ config FREETZ_MODULE_nf_conntrack_pptp
 		box, you may want to enable this feature.
 
 config FREETZ_MODULE_nf_conntrack_proto_gre
-	bool
-#	bool "nf_conntrack_proto_gre.ko"
+	bool "nf_conntrack_proto_gre.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	default n
 	help
@@ -245,8 +238,7 @@ config FREETZ_MODULE_ip_conntrack_tftp
 		you will need this.
 
 config FREETZ_MODULE_nf_conntrack_tftp
-	bool
-#	bool "nf_conntrack_tftp.ko"
+	bool "nf_conntrack_tftp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_nf_conntrack
 	default n
@@ -266,8 +258,7 @@ config FREETZ_MODULE_ip_conntrack_proto_sctp
 		be able to do state tracking on SCTP connections.
 
 config FREETZ_MODULE_nf_defrag_ipv4
-	bool
-#	bool "nf_defrag_ipv4.ko"
+	bool "nf_defrag_ipv4.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	default n
 
@@ -303,8 +294,7 @@ config FREETZ_MODULE_ip_nat_ftp
 	default n
 
 config FREETZ_MODULE_nf_nat_ftp
-	bool
-#	bool "nf_nat_ftp.ko"
+	bool "nf_nat_ftp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_nf_nat
 	select FREETZ_MODULE_nf_conntrack_ftp
@@ -373,8 +363,7 @@ config FREETZ_MODULE_ip_nat_tftp
 	default n
 
 config FREETZ_MODULE_nf_nat_tftp
-	bool
-#	bool "nf_nat_tftp.ko"
+	bool "nf_nat_tftp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_nf_nat
 	select FREETZ_MODULE_nf_conntrack_tftp
@@ -400,11 +389,13 @@ config FREETZ_MODULE_iptable_mangle
 
 config FREETZ_MODULE_iptable_nat
 	bool "iptable_nat.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 || FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_13_1 || FREETZ_KERNEL_VERSION_2_6_19_2 || \
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_13_1 || FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_ip_tables
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
-#	select FREETZ_MODULE_nf_nat if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_nf_nat if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_iptable_raw
