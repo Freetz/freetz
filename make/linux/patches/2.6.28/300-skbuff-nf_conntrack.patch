@@ -1,7 +1,7 @@
---- linux-2.6.28/include/linux/skbuff.h~	2010-06-29 12:08:17.000000000 +0200
-+++ linux-2.6.28/include/linux/skbuff.h	2011-08-20 00:55:19.000000000 +0200
-@@ -469,10 +469,6 @@
- 	__be16			protocol;
+--- linux-2.6.28/include/linux/skbuff.h
++++ linux-2.6.28/include/linux/skbuff.h
+@@ -488,10 +488,6 @@
+ #endif
  
  	void			(*destructor)(struct sk_buff *skb);
 -#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
@@ -11,7 +11,7 @@
  #ifdef CONFIG_BRIDGE_NETFILTER
  	struct nf_bridge_info	*nf_bridge;
  #endif
-@@ -540,6 +536,10 @@
+@@ -563,6 +559,10 @@
  				*data;
  	unsigned int		truesize;
  	atomic_t		users;
@@ -22,8 +22,8 @@
  };
  
  #ifdef __KERNEL__
---- linux-2.6.28/net/core/skbuff.c~	2010-06-29 12:08:17.000000000 +0200
-+++ linux-2.6.28/net/core/skbuff.c	2011-08-20 00:58:09.000000000 +0200
+--- linux-2.6.28/net/core/skbuff.c
++++ linux-2.6.28/net/core/skbuff.c
 @@ -197,6 +197,11 @@
  	 * the tail pointer in struct sk_buff!
  	 */
