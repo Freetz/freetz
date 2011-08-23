@@ -14,18 +14,18 @@ Parameters:
             later use with 'mount'. This setting must be configured at least
             once before USB root can be used. If called without parameter,
             this option prints the current values.
-	    Syntax of first parameter 'usb_device' is:
-	    mass-storage-device-name:[filesystem-type:]root-directory
-	    The second parameter 'mount_options' is optional and stores
-	    options which are passed to the mount call when mounting the
-	    USB mass storage device.
+            Syntax of first parameter 'usb_device' is:
+            mass-storage-device-name:[filesystem-type:]root-directory
+            The second parameter 'mount_options' is optional and stores
+            options which are passed to the mount call when mounting the
+            USB mass storage device.
   nostore - remove USB storage name from bootloader environment. Even though it
             does no harm to have the USB variable around in the environment all
             the time, you may optionally remove it again using this option.
   on      - activate replacing 'init' by 'rc.usbroot' -> boot with USB root,
             adds something like 'init=/etc/init.d/rc.usbroot' to bootloader
-	    environment variable 'kernel_args',
-	    'store' has to been setup before
+            environment variable 'kernel_args',
+            'store' has to been setup before
   off     - deactivate replacing 'init' by 'rc.usbroot' -> boot without
             USB root. Removes 'init' from bootloader environment variable
             'kernel_args'.
@@ -55,9 +55,8 @@ USBROOT_ENV_VAR=kernel_args1
 USBPATH=
 FSTYPE=
 MNTOPTIONS=
-HOST=
-HWREVISION=
-HWREVISION_BitFileCount=
+HWRevision=
+HWRevision_BitFileCount=
 SYSFS=/sys
 MNTPOINT=/data
 OLDROOT=oldroot
@@ -365,6 +364,30 @@ load_modules_2_6_19_2() {
 }
 
 load_modules_2_6_28_10() {
+	piglet_dectmode="0x0"
+	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
+	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
+	piglet_load_params=""
+
+	case "$HWRevision" in
+		156 ) # 7390
+			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
+			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
+			piglet_load_params="piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}"
+			;;
+		172 ) # 7320
+			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_441.hex
+			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_441.hex
+			piglet_dectmode="0x101"
+			;;
+	esac
+
+	modprobe Piglet_noemif \
+		piglet_dectmode=$piglet_dectmode \
+		dect_firstlevelfile=$dect_firstlevelfile \
+		dect_secondlevelfile=$dect_secondlevelfile \
+		$piglet_load_params
+
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
 		case "$HWRevision" in
