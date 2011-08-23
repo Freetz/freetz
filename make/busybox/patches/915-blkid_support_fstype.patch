@@ -21,21 +21,32 @@
  config DMESG
  	bool "dmesg"
  	default y
---- util-linux/blkid.c.orig	2010-12-21 05:29:45.000000000 +0100
-+++ util-linux/blkid.c	2011-01-04 17:05:20.266666393 +0100
-@@ -11,8 +11,13 @@
- #include "volume_id.h"
- 
+--- util-linux/blkid.c.orig	2011-08-01 16:51:45.000000000 +0200
++++ util-linux/blkid.c	2011-08-23 21:53:16.490041162 +0200
+@@ -13,11 +13,23 @@
  int blkid_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
--int blkid_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
-+int blkid_main(int argc UNUSED_PARAM, char **argv)
+ int blkid_main(int argc UNUSED_PARAM, char **argv)
  {
-+	while (*++argv) {
-+		/* Note: bogus device names don't cause any error messages */
-+		add_to_uuid_cache(*argv);
-+	}
++	char with_arg;
++	int part_found;
 +
- 	display_uuid_cache();
++	with_arg = 0;
++	part_found = 0;
+ 	while (*++argv) {
+ 		/* Note: bogus device names don't cause any error messages */
+-		add_to_uuid_cache(*argv);
++		with_arg = 1;
++		if ((add_to_uuid_cache(*argv)) && (part_found == 0))
++		{
++			part_found = 1; // at least data for one partition found
++		}
+ 	}
+ 
+-	display_uuid_cache();
++	if ((with_arg == 0) || (part_found))
++	{ // show all partitions only, if blkid called without arguments
++		display_uuid_cache();	// or if uuidCache not empty
++	}
  	return 0;
  }
 --- util-linux/volume_id/cramfs.c.orig	2010-12-20 01:41:27.000000000 +0100

@@ -1,0 +1,117 @@
+--- util-linux/findfs.c.orig	2011-03-13 02:45:06.000000000 +0100
++++ util-linux/findfs.c	2011-04-22 23:21:48.112840007 +0200
+@@ -19,17 +19,10 @@
+ 	if (!dev)
+ 		bb_show_usage();
+ 
+-	if (strncmp(dev, "/dev/", 5) == 0) {
+-		/* Just pass any /dev/xxx name right through.
+-		 * This might aid in some scripts being able
+-		 * to call this unconditionally */
+-		dev = NULL;
+-	} else {
+ 		/* Otherwise, handle LABEL=xxx and UUID=xxx,
+ 		 * fail on anything else */
+ 		if (!resolve_mount_spec(argv))
+ 			bb_show_usage();
+-	}
+ 
+ 	if (*argv != dev) {
+ 		puts(*argv);
+--- include/volume_id.h.orig	2011-04-22 23:20:01.000000000 +0200
++++ include/volume_id.h	2011-04-22 23:22:26.102838619 +0200
+@@ -20,6 +20,8 @@
+ 
+ char *get_devname_from_label(const char *spec);
+ char *get_devname_from_uuid(const char *spec);
++char *get_label_from_devname(const char *spec);
++char *get_type_from_devname(const char *spec);
+ void display_uuid_cache(void);
+ 
+ /* Returns:
+--- util-linux/volume_id/get_devname.c.orig	2011-06-04 08:39:32.085224403 +0200
++++ util-linux/volume_id/get_devname.c	2011-06-04 04:55:27.000000000 +0200
+@@ -39,7 +39,7 @@
+ 	int rv = 1;
+ 	uint64_t size;
+ 	struct volume_id *vid;
+-
++	
+ 	/* fd is owned by vid now */
+ 	vid = volume_id_open_node(fd);
+ 
+@@ -49,13 +49,16 @@
+ 	if (volume_id_probe_all(vid, /*0,*/ size) != 0)
+ 		goto ret;
+ 
+-	if (vid->label[0] != '\0' || vid->uuid[0] != '\0') {
++#if ENABLE_FEATURE_BLKID_TYPE
++	if (vid->label[0] != '\0' || vid->uuid[0] != '\0' || vid->type != NULL) {
+ 		*label = xstrndup(vid->label, sizeof(vid->label));
+ 		*uuid  = xstrndup(vid->uuid, sizeof(vid->uuid));
+-#if ENABLE_FEATURE_BLKID_TYPE
+ 		*type = vid->type;
+ 		dbg("found label '%s', uuid '%s', type '%s'", *label, *uuid, *type);
+ #else
++	if (vid->label[0] != '\0' || vid->uuid[0] != '\0') {
++		*label = xstrndup(vid->label, sizeof(vid->label));
++		*uuid  = xstrndup(vid->uuid, sizeof(vid->uuid));
+ 		dbg("found label '%s', uuid '%s'", *label, *uuid);
+ #endif
+ 		rv = 0;
+@@ -295,6 +298,41 @@
+ 	return NULL;
+ }
+ 
++char *get_label_from_devname(const char *spec)
++{
++	struct uuidCache_s *uc;
++
++	add_to_uuid_cache(spec);
++	uc = uuidCache;
++	if (uc != NULL)
++	{
++		if (strcasecmp(spec, uc->device) == 0)
++		{
++			return xstrdup(uc->label);
++		}
++		uc = uc->next;
++	}
++	return NULL;
++}
++
++#if ENABLE_FEATURE_BLKID_TYPE
++char *get_type_from_devname(const char *spec)
++{
++	struct uuidCache_s *uc;
++
++	add_to_uuid_cache(spec);
++	uc = uuidCache;
++	if (uc != NULL)
++	{
++		if (strcasecmp(spec, uc->device) == 0)
++		{
++			return xstrdup(uc->type);
++		}
++	}
++	return NULL;
++}
++#endif
++
+ int resolve_mount_spec(char **fsname)
+ {
+ 	char *tmp = *fsname;
+@@ -303,7 +341,12 @@
+ 		tmp = get_devname_from_uuid(*fsname + 5);
+ 	else if (strncmp(*fsname, "LABEL=", 6) == 0)
+ 		tmp = get_devname_from_label(*fsname + 6);
+-
++	else if (strncmp(*fsname, "DEVL=", 5) == 0)
++		tmp = get_label_from_devname(*fsname + 5);
++#if ENABLE_FEATURE_BLKID_TYPE
++	else if (strncmp(*fsname, "DEVT=", 5) == 0)
++		tmp = get_type_from_devname(*fsname + 5);
++#endif
+ 	if (tmp == *fsname)
+ 		return 0; /* no UUID= or LABEL= prefix found */
+ 

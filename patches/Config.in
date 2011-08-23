@@ -113,7 +113,16 @@ comment "USB storage patches --------------------"
 config FREETZ_PATCH_FREETZMOUNT
 	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
 	select FREETZ_USBSTORAGE_AUTOMOUNT
-	select FREETZ_PACKAGE_FSTYP if ! FREETZ_PATCH_FREETZMOUNT_BLKID
+    select FREETZ_BUSYBOX_BLKID
+    select FREETZ_BUSYBOX_BLKID_TYPE
+    select FREETZ_BUSYBOX_FINDFS
+    select FREETZ_BUSYBOX_VOLUMEID
+    select FREETZ_BUSYBOX_VOLUMEID_EXT
+    select FREETZ_BUSYBOX_VOLUMEID_FAT
+    select FREETZ_BUSYBOX_VOLUMEID_HFS
+    select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
+    select FREETZ_BUSYBOX_VOLUMEID_NTFS
+    select FREETZ_BUSYBOX_VOLUMEID_REISERFS
 	default y
 	help
 		1. Replaces and deselects usb-storage patch.
@@ -127,19 +136,9 @@ config FREETZ_PATCH_FREETZMOUNT
 		   and FTP users to actually write to their own home directories.
 		4. Avoid deleting whole filesystems on USB devices.
 		5. Enhanced behaviour during mounting and unmounting.
+		6. Provides mount-by-label feature.
 
 		It is highly recommended to select this patch.
-
-config FREETZ_PATCH_FREETZMOUNT_BLKID
-	bool "Provide mount-by-label feature"
-	depends on FREETZ_PATCH_FREETZMOUNT
-	select FREETZ_PACKAGE_E2FSPROGS
-	select FREETZ_PACKAGE_E2FSPROGS_BLKID
-	default n
-	help
-		This option selects blkid binary from e2fsprogs which provides the mount-by-label feature.
-
-		NOTE: fstyp is not needed in this case and could be deselected in Package-Selection->Testing.
 
 config FREETZ_USBSTORAGE_AUTOMOUNT
 	bool "Automount filesystems"

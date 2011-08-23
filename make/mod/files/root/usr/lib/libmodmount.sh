@@ -73,17 +73,14 @@ remove_swap() {
 
 # modified name generation for automatic mount point
 find_mnt_name() {
-	local blkid_bin="/usr/sbin/blkid"
+	local findfs_bin="/sbin/findfs"
 	local retfind=0
 	local mnt_name=""
 	[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
 	local storage_prefix="${MOD_STOR_PREFIX-uStor}"
 	[ "$MOD_STOR_PREFIX"=="$storage_prefix" ] || retfind=10 # User defined prefix
-	if [ "$MOD_STOR_USELABEL" == "yes" ]; then
-		[ -x $blkid_bin ] && mnt_name=$($blkid_bin -s LABEL -o value $mnt_device | sed 's/ /_/g')
-	fi
-	if [ -z "$mnt_name" ]
-	then # Name was generated using prefix and numbers like uStorXY
+	[ "$MOD_STOR_USELABEL" == "yes" ] && mnt_name=$($findfs_bin DEVL=$mnt_device | sed 's/ /_/g')
+	if [ -z "$mnt_name" ]; then # Name was generated using prefix and numbers like uStorXY
 		mnt_name="$storage_prefix$(echo $1 | sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/')$3"
 	else # Name was generated using LABEL
 		retfind=20
@@ -131,7 +128,7 @@ mount_fs() {
 			/etc/init.d/rc.swap autostart $dev_node
 			err_mo=$((17+$?))
 			;;
-		*)                                                                    # fs type unknown
+		*)                                                                # fs type unknown
 			mount $dev_node $mnt_path
 			err_mo=$?
 			;;
