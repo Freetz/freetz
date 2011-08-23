@@ -107,10 +107,10 @@ mount_fs() {
 	local ntfs_bin="/bin/ntfs-3g"
 	local err_mo=1                                                            # set mount error as default
 	local err_fst=1                                                           # set file system detection error as default
-	if [ -x $fstyp_bin ]; then
-		local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null)                      # fs type detection using fstyp binary
-	elif [ -x $blkid_bin ]; then
+	if [ -x $blkid_bin ]; then
 		local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
+	elif [ -x $fstyp_bin ]; then
+		local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null)                      # fs type detection using fstyp binary
 	else
 		local fs_type="cantdetect"                                            # fstyp and blkid are not available
 	fi
