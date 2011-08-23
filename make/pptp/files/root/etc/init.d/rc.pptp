@@ -24,8 +24,9 @@ start() {
 	chmod 755 /mod/etc/ppp/ip-up
 	chmod 755 /mod/etc/ppp/ip-down
 
+	kver="$(uname -r)"
 	modprobe arc4
-	modprobe sha1
+	[ "${kver:4:2}" -lt 28 ] && modprobe sha1 || modprobe sha1_generic
 	modprobe ppp_generic
 	modprobe ppp_async
 	modprobe ppp_deflate

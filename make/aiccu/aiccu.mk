@@ -7,7 +7,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_SOURCE_MD5:=c9bcc83644ed788e22a7c3f3d4021350
 
 
-$(PKG)_STARTLEVEL=61 # before RRDstats, before vnstat-cgi, after opnenntp
+$(PKG)_STARTLEVEL=61 # before RRDstats, before vnstat-cgi, after openntpd
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -29,6 +29,6 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(AICCU_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $($(PKG)_TARGET_BINARY)
+	$(RM) $(AICCU_TARGET_BINARY)
 
 $(PKG_FINISH)

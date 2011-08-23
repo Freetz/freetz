@@ -17,11 +17,44 @@ stop() {
 case $1 in
 	""|load)
 		modreg daemon -p avm telnetd
+		;;
+	unload)
+		modunreg daemon avm telnetd
+		;;
+	start|stop|restart|status)
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+
+modlib_check_running
+case $? in
+	3)
+		pidof telnetd >/dev/null && telnetd_phone=y
+		;;
+	5)
+		if [ "$(/etc/init.d/rc.inetd status)" != "running" ]; then
+			pidof telnetd >/dev/null && telnetd_phone=y
+		else
+			netstat -apn 2>&1 | grep -q ":23 .*LISTEN .*inetd$" || telnetd_phone=y
+		fi
+		;;
+esac
+if [ "$telnetd_phone" == "y" ]; then
+	echo "$DAEMON_LONG_NAME is started by phone, failed."
+	exit 1
+fi
+
+
+case $1 in
+	""|load)
 		modlib_start $AVM_TELNETD
 		;;
 	unload)
 		modlib_stop
-		modunreg daemon avm telnetd
 		;;
 	start)
 		modlib_start
@@ -34,10 +67,6 @@ case $1 in
 		;;
 	status)
 		modlib_status
-		;;
-	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
-		exit 1
 		;;
 esac
 

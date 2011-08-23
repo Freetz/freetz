@@ -43,15 +43,16 @@ $(PKG)_LIBS_STAGING_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_D
 $(PKG)_MAKE_ALL_EXTRAS	:= && ln -fsT et $($(PKG)_DIR)/lib/com_err
 
 $(PKG)_BINARIES_ALL := \
-	e2fsck \
+	e2fsck fsck \
 	mke2fs mklost+found \
 	tune2fs dumpe2fs chattr lsattr \
 	e2image e2undo debugfs logsave \
-	badblocks filefrag uuidd uuidgen \
+	badblocks filefrag e2freefrag uuidd uuidgen \
+	resize2fs \
 	blkid
 $(PKG)_BINARIES :=
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2FSCK)),y)
-$(PKG)_BINARIES += e2fsck
+$(PKG)_BINARIES += e2fsck fsck
 $(PKG)_MAKE_ALL_EXTRAS += && cp $($(PKG)_DIR)/e2fsck/e2fsck $($(PKG)_DIR)/misc/
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2MAKING)),y)
@@ -65,7 +66,11 @@ $(PKG)_BINARIES += e2image e2undo debugfs logsave
 $(PKG)_MAKE_ALL_EXTRAS += && cp $($(PKG)_DIR)/debugfs/debugfs $($(PKG)_DIR)/misc/
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2FIXING)),y)
-$(PKG)_BINARIES += badblocks filefrag uuidd uuidgen
+$(PKG)_BINARIES += badblocks filefrag e2freefrag uuidd uuidgen
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_E2RESIZE)),y)
+$(PKG)_BINARIES += resize2fs
+$(PKG)_MAKE_ALL_EXTRAS += && cp $($(PKG)_DIR)/resize/resize2fs $($(PKG)_DIR)/misc/
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_BLKID)),y)
 $(PKG)_BINARIES += blkid
@@ -135,7 +140,14 @@ endif
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/misc/%
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg):
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_E2FSPROGS_E2FSCK)"   != "y" ] && echo -e "usr/sbin/fsck.ext2\nusr/sbin/fsck.ext3\nusr/sbin/fsck.ext4\nusr/sbin/fsck.ext4dev" >> $@; \
+	[ "$(FREETZ_PACKAGE_E2FSPROGS_E2MAKING)" != "y" ] && echo -e "usr/sbin/mkfs.ext2\nusr/sbin/mkfs.ext3" >> $@; \
+	[ "$(FREETZ_PACKAGE_E2FSPROGS_BLKID)"    != "y" ] && echo "sbin/blkid" >> $@; \
+	touch $@
 
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 $(pkg)-precompiled: $($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_TARGET_DIR)
@@ -145,7 +157,9 @@ endif
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(E2FSPROGS_DIR) clean
-	$(RM) $(E2FSPROGS_DIR)/lib/com_err $(E2FSPROGS_DIR)/misc/e2fsck $(E2FSPROGS_DIR)/misc/debugfs
+	$(RM) \
+		$(E2FSPROGS_DIR)/lib/com_err $(E2FSPROGS_DIR)/misc/e2fsck \
+		$(E2FSPROGS_DIR)/misc/debugfs $(E2FSPROGS_DIR)/misc/resize2fs
 	$(RM) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.so*) \
 		$(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.a) \

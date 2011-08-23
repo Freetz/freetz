@@ -18,24 +18,6 @@ done
 rmdir /tmp/flash/openvpn_* 2> /dev/null
 /usr/bin/modsave flash >/dev/null
 }
-
-if [ ! -e /var/tmp/.openvpnfirstrun ]; then
-	touch /var/tmp/.openvpnfirstrun
-	/mod/etc/default.openvpn/openvpn_dynamic_conf
-	[ -r /var/tmp/flash/openvpn/static.key ] || compat
-fi
-[ -x /mod/sbin/$DAEMON ] || ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
-
-case $1 in
-	""|load|start|restart)
-		modlib_addgroup openvpn
-		modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
-		mkdir -p /tmp/openvpn/etc
-		cp -f /etc/resolv.conf /tmp/openvpn/etc
-		cp -f /etc/TZ /tmp/openvpn/etc
-		;;
-esac
-
 start() {
 	echo -n "Starting $DAEMON ... "
 	if [ -n "$(mypidof $DAEMON)" ]; then
@@ -61,6 +43,9 @@ start() {
 			cat /tmp/flash/${DAEMON}.extra >> /mod/etc/${DAEMON}.conf
 		fi
 	fi
+
+	cp -f /etc/resolv.conf /tmp/openvpn/etc
+	cp -f /etc/TZ /tmp/openvpn/etc
 
 	$DAEMON --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid
 	exitval=$?
@@ -99,6 +84,14 @@ stop() {
 	rm -f /var/run/${DAEMON}.pid
 }
 
+
+if [ ! -e /var/tmp/.openvpnfirstrun ]; then
+	touch /var/tmp/.openvpnfirstrun
+	/mod/etc/default.openvpn/openvpn_dynamic_conf
+	[ -r /var/tmp/flash/openvpn/static.key ] || compat
+fi
+[ -x /mod/sbin/$DAEMON ] || ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
+
 case $1 in
 	""|load)
 		if [ "$DAEMON" = "openvpn" ]; then
@@ -110,6 +103,10 @@ case $1 in
 			modreg file openvpn 'crl_pem' 'CRL' 0 "crl_pem"
 			modreg file openvpn 'dh_pem' 'DH Param' 0 "dh_pem"
 			modreg file openvpn 'static_key' 'Static Key' 0 "static_key"
+			modlib_addgroup openvpn
+			modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
+			mkdir -p /tmp/openvpn/etc
+			mkdir -p /tmp/flash/openvpn
 		fi
 		d_BU="$DAEMON"
 		as="${OPENVPN_AUTOSTART#*#}"

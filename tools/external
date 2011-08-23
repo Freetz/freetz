@@ -35,7 +35,7 @@ EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
 for EXT_FILES in $(find make -maxdepth 2 -name external.files) kernel/external.files; do
 	. $EXT_FILES
 done
-EXTERNAL_FILES="`echo $EXTERNAL_FILES|sed 's/ / \//g;s/\/\/*/\//g'`"
+EXTERNAL_FILES=$(echo $EXTERNAL_FILES | sed -e 's| |\n/|g;s|//\+|/|g' | sort)
 
 for EXTERNAL_FILE in $EXTERNAL_FILES; do
 	FILENAME=$(basename $EXTERNAL_FILE)

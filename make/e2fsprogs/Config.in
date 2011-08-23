@@ -25,7 +25,7 @@ config FREETZ_PACKAGE_E2FSPROGS_STATIC
 		this option, if e2fsck is the only tool you actually include in the image.
 
 config FREETZ_PACKAGE_E2FSPROGS_E2FSCK
-	bool "e2fsck"
+	bool "Checking Tools"
 	default n
 	depends FREETZ_PACKAGE_E2FSPROGS
 	select FREETZ_LIB_libblkid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
@@ -34,7 +34,7 @@ config FREETZ_PACKAGE_E2FSPROGS_E2FSCK
 	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
-		Copy e2fsck to image
+		Copy e2fsck, fsck and the fsck.ext* symlinks to image
 
 config FREETZ_PACKAGE_E2FSPROGS_E2MAKING
 	bool "Making tools"
@@ -46,7 +46,7 @@ config FREETZ_PACKAGE_E2FSPROGS_E2MAKING
 	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
-		Copy mke2fs and mklost+found to image
+		Copy mke2fs, the mkfs.ext* symlinks and mklost+found to image
 
 config FREETZ_PACKAGE_E2FSPROGS_E2TUNING
 	bool "Tuning tools"
@@ -91,4 +91,14 @@ config FREETZ_PACKAGE_E2FSPROGS_E2FIXING
 	select FREETZ_LIB_libcom_err if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
 	help
-		Copy badblocks, filefrag, uuidd and uuidgen to image
+		Copy badblocks, filefrag, e2freefrag, uuidd and uuidgen to image
+
+config FREETZ_PACKAGE_E2FSPROGS_E2RESIZE
+	bool "Resize tools"
+	default n
+	depends FREETZ_PACKAGE_E2FSPROGS
+	select FREETZ_LIB_libe2p if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libext2fs if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libcom_err if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	help
+		Copy resize2fs to image

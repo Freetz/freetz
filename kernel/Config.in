@@ -49,7 +49,7 @@ config FREETZ_MODULE_aes
 
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2 || FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_blkcipher
@@ -60,34 +60,36 @@ config FREETZ_MODULE_blkcipher
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2 || FREETZ_KERNEL_VERSION_2_6_28
-	select FREETZ_MODULE_crypto_algapi
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_cryptomgr
 	bool "cryptomgr.ko"
-	select FREETZ_MODULE_crypto_algapi
 	depends on FREETZ_KERNEL_VERSION_2_6_19_2 || FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_sha1
 	bool "sha1.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 
 config FREETZ_MODULE_sha256
 	bool "sha256.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_19_2
 	default n
 
 config FREETZ_MODULE_sha1_generic
 	bool "sha1_generic.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_sha256_generic
 	bool "sha256_generic.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
@@ -153,6 +155,12 @@ config FREETZ_MODULE_pppox
 config FREETZ_MODULE_ppp_mppe_mppc
 	bool "ppp_mppe_mppc.ko"
 	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_arc4
+	select FREETZ_MODULE_sha1 if \
+		FREETZ_KERNEL_VERSION_2_6_13_1 || \
+		FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_sha1_generic if \
+		FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_scsi_mod
