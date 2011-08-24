@@ -14,7 +14,7 @@ start() {
 	if [ "$OPENNTPD_MULTID" == "no" -a "$_OPENNTPD_RELOADING" != "yes" ]; then
 		 /etc/init.d/rc.multid ntp_disable >/dev/null
 	fi
-	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf
+	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf $OPENNTPD_OPTIONS
 }
 
 stop_post() {
@@ -36,7 +36,7 @@ case $1 in
 		chown root /mod/home/ntp -R
 		chmod 0700 /mod/home/ntp -R
 
-		modreg cgi 'openntpd' 'Openntpd'
+		modreg cgi 'openntpd' 'Portable OpenNTPD'
 		modreg daemon $DAEMON
 		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf '$(lang de:"Konfiguration" en:"Configuration")' 0 "openntpd_conf"
 
