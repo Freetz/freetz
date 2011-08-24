@@ -135,6 +135,8 @@ AVMPLUGINS_SUBDIR="plugins.image"
 EXTERNAL_SUBDIR="external"
 KERNEL_SUBDIR="kernel"
 VARTAR_SUBDIR="var.tar"
+HTML_SUBDIR="usr/www"
+GRAPHICS_SUBDIR="graphics"
 
 KERNEL_IMAGE="var/tmp/kernel.image"
 
@@ -173,7 +175,9 @@ PATCHES_DIR="${BASE_DIR}/patches"
 ROOT_DIR="${BASE_DIR}/root"
 KERNEL_REP_DIR="${BASE_DIR}/kernel"
 ADDON_DIR="${BASE_DIR}/addon"
-FAVICON_DIR="${BASE_DIR}/favicon"
+GRAPHICS_DIR="${BASE_DIR}/${GRAPHICS_SUBDIR}"
+FAVICON_DIR="${GRAPHICS_DIR}/favicon"
+TAGGING_DIR="${GRAPHICS_DIR}/tagging"
 
 STATIC_PACKAGES_FILE="${BASE_DIR}/.static"
 DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
@@ -249,6 +253,7 @@ FILESYSTEM_DIR="${ORG_DIR}/${FILESYSTEM_SUBDIR}"
 KERNEL_DIR="${ORG_DIR}/${KERNEL_SUBDIR}"
 AVMPLUGINS_DIR="${KERNEL_DIR}/${AVMPLUGINS_SUBDIR}"
 VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
+HTML_DIR="${FILESYSTEM_DIR}/${HTML_SUBDIR}"
 
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
 
@@ -357,7 +362,7 @@ VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
 PACKAGES_DIR="${PACKAGES_DIR_ROOT}/target-${FREETZ_TARGET_ARCH}_uClibc-${FREETZ_TARGET_UCLIBC_VERSION}"
 TARGET_SPECIFIC_ROOT_DIR="${PACKAGES_DIR}/root"
 
-HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/www"
+HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/${HTML_SUBDIR}"
 # HTML_LANG_MOD_DIR can't be defined here
 MODULES_DIR="${FILESYSTEM_MOD_DIR}/${MODULES_SUBDIR}"
 
@@ -868,6 +873,30 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo1 "integrating stripped .config file into image"
 			dot_config_file="$MOD_DIR/filesystem/etc/.config"
 			cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
+		fi
+		# tagging
+		if [ "$FREETZ_TAG_AVMWEBIF" != "none" ]; then
+			echo1 "tagging avm webif (tag by ${FREETZ_TAGGING_STRING})"
+			# newer (small logo @left)
+			if [ -z "$tagging_files" ]; then
+				tagging_files="$(find ${HTML_MOD_DIR} -name kopfbalken_links.gif)"
+				tagging_position="center"
+				tagging_picture="newer"
+			fi
+			# older (big header @top)
+			if [ -z "$tagging_files" ]; then
+				tagging_files="$(find ${HTML_MOD_DIR} -name fw_header980.gif)"
+				tagging_position="west"
+				tagging_picture="older"
+			fi
+			# tagging
+			[ -z "$tagging_files" ] && error 1 "tagging failed, no files to tag found."
+			tagging_picture="${TAGGING_DIR}/${FREETZ_TAGGING_STRING}/${tagging_picture}.png"
+			for tagging_file in $tagging_files; do
+				echo2 "${tagging_file}"
+				composite -dissolve 100% -gravity $tagging_position -quality 100 $tagging_picture $tagging_file $tagging_file
+				[ $? -ne 0 ] && error 1 "tagging failed while processing ${tagging_file#${FILESYSTEM_MOD_DIR}/}"
+			done
 		fi
 	fi
 

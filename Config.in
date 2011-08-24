@@ -1550,6 +1550,26 @@ menu "Freetz customisation"
 		default "dsl123"		if FREETZ_FAVICON_DSL123
 		default "hansolo"		if FREETZ_FAVICON_HANSOLO
 
+	choice
+		prompt "Tagging"
+		default FREETZ_TAGGING_NONE
+		help
+			Adds a tag to the AVM web-interface, so it is obvious to
+			everybody that this box was modified by Freetz.
+
+		config FREETZ_TAGGING_NONE
+			bool "none"
+
+		config FREETZ_TAGGING_CUMA
+			bool "cuma's tagging"
+
+	endchoice
+
+	config FREETZ_TAGGING_STRING
+		string
+		default "none"			if FREETZ_TAGGING_NONE
+		default "cuma"			if FREETZ_TAGGING_CUMA
+
 endmenu
 
 menu "Additional image/box information"
