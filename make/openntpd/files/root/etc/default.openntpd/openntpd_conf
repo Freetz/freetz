@@ -17,8 +17,14 @@ esac
 if [ ! -e "/tmp/flash/openntpd/ntpd.conf" ]; then
 cat > /tmp/flash/openntpd/ntpd.conf << EOF
 # Addresses to listen on (ntpd does not listen by default)
-# Use '0.0.0.0' to listen on every local interface
+#listen on *
+#listen on 127.0.0.1
+#listen on ::1
 listen on $(ifconfig $devname | head -n 2 | tail -n 1 | cut -d: -f2 | cut -d" " -f 1)
+
+# sync to a single server
+#server 10.0.0.2 weight 5
+#server ntp.example.org weight 1
 
 # use a random selection of 8 public stratum 2 servers
 # see http://twiki.ntp.org/bin/view/Servers/NTPPoolServers
