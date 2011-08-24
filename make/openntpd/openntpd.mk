@@ -1,17 +1,15 @@
-$(call PKG_INIT_BIN, 4.9)
-$(PKG)_SOURCE:=$(pkg)_portable_pre$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=f37a13f8a44f9b38802e7d9fbe758c0e
+$(call PKG_INIT_BIN, 4.9.1)
+$(PKG)_SOURCE:=portable_$(pkg)_v$($(PKG)_VERSION).tgz
+$(PKG)_SOURCE_MD5:=aeed0fd9084cd99a7d5f8bf6ba13ce7d
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_portable_pre$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/portable_$(pkg)_v$($(PKG)_VERSION)
 #$(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/
 # We are using our own openntpd port by TIK
 $(PKG)_SITE:=http://freetz.magenbrot.net
-$(PKG)_BINARY:=$($(PKG)_DIR)/ntpd
+$(PKG)_BINARY:=$($(PKG)_DIR)/pntpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ntpd
 
 $(PKG)_STARTLEVEL=60 # before aiccu
-
-$(PKG)_CONFIGURE_PRE_CMDS += chmod +x ./configure;
 
 $(PKG)_CONFIGURE_OPTIONS += --with-builtin-arc4random
 $(PKG)_CONFIGURE_OPTIONS += --with-privsep-user=ntp
