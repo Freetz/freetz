@@ -117,12 +117,6 @@ config FREETZ_PATCH_FREETZMOUNT
     select FREETZ_BUSYBOX_BLKID_TYPE
     select FREETZ_BUSYBOX_FINDFS
     select FREETZ_BUSYBOX_VOLUMEID
-    select FREETZ_BUSYBOX_VOLUMEID_EXT
-    select FREETZ_BUSYBOX_VOLUMEID_FAT
-    select FREETZ_BUSYBOX_VOLUMEID_HFS
-    select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
-    select FREETZ_BUSYBOX_VOLUMEID_NTFS
-    select FREETZ_BUSYBOX_VOLUMEID_REISERFS
 	default y
 	help
 		1. Replaces and deselects usb-storage patch.
@@ -145,13 +139,14 @@ config FREETZ_USBSTORAGE_AUTOMOUNT
 	depends on FREETZ_PATCH_FREETZMOUNT
 	default y
 	help
-		ext2, ext3, ext4, reiserfs, fat and ntfs filesystems are mounted automatically.
-		Detection is done by fstyp utility (adds about 8KB uncompressed size). It
+		ext2, ext3, ext4, fat, hfs+, ntfs and reiserfs and swap filesystems are mounted automatically.
+		Detection is done by fstyp (adds about 8KB uncompressed size) and/or blkid utility . It
 		depends on the original firmware which of the following points you have to select.
 
 if FREETZ_USBSTORAGE_AUTOMOUNT
 config FREETZ_AUTOMOUNT_EXT2
 	bool "ext2"
+    select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext2
 	default n
 	help
@@ -159,6 +154,7 @@ config FREETZ_AUTOMOUNT_EXT2
 
 config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
+    select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext3
 	default n
 	help
@@ -167,31 +163,50 @@ config FREETZ_AUTOMOUNT_EXT3
 config FREETZ_AUTOMOUNT_EXT4
 	bool "ext4"
 	depends on FREETZ_KERNEL_VERSION_2_6_28
+    select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext4
 	default n
 	help
 		This adds ext4 module to your firmware.
 
+config FREETZ_AUTOMOUNT_FAT
+	bool "fat"
+    select FREETZ_BUSYBOX_VOLUMEID_FAT
+	default n
+	help
+		This enables detection of fat partitions.
+
+config FREETZ_AUTOMOUNT_HFS_PLUS
+	bool "HFS+"
+    select FREETZ_BUSYBOX_VOLUMEID_HFS
+	select FREETZ_MODULE_hfsplus
+	default n
+	help
+		This adds hfs+ module to your firmware.
+
 config FREETZ_AUTOMOUNT_NTFS
 	bool "NTFS"
-	select FREETZ_PACKAGE_NTFS
+	select FREETZ_PACKAGE_NTFS if ! FREETZ_HAS_AVM_NTFS
+    select FREETZ_BUSYBOX_VOLUMEID_NTFS
 	default n
 	help
 		This adds ntfs-3g mount helper to your firmware.
 
 config FREETZ_AUTOMOUNT_REISER_FS
 	bool "ReiserFS"
+    select FREETZ_BUSYBOX_VOLUMEID_REISERFS
 	select FREETZ_MODULE_reiserfs
 	default n
 	help
 		This adds reiserfs module to your firmware.
 
-config FREETZ_AUTOMOUNT_HFS_PLUS
-	bool "HFS+"
-	select FREETZ_MODULE_hfsplus
+config FREETZ_AUTOMOUNT_LINUXSWAP
+	bool "swap"
+    select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
 	default n
 	help
-		This adds hfs+ module to your firmware.
+		This enables detection of linux-swap partitions.
+
 endif
 
 config FREETZ_PATCH_MAXDEVCOUNT
@@ -781,15 +796,9 @@ config FREETZ_REMOVE_MINID
 config FREETZ_REMOVE_NTFS
 	bool "Remove NTFS support"
 	depends on \
+			FREETZ_HAS_AVM_NTFS && \
 			! FREETZ_PACKAGE_NTFS && \
-			( \
-			FREETZ_TYPE_FON_WLAN_7240 || \
-			FREETZ_TYPE_FON_WLAN_7270_V2 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3 || \
-			FREETZ_TYPE_FON_WLAN_7320 || \
-			FREETZ_TYPE_FON_WLAN_7390 || \
-			FREETZ_TYPE_FON_WLAN_7570 \
-			)
+			! FREETZ_AUTOMOUNT_NTFS
 	default n
 	help
 		Remove NTFS support

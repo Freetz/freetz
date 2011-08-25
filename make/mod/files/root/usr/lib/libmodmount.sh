@@ -100,16 +100,13 @@ mount_fs() {
 	[ $# -ge 4 ] && local ftp_uid=$4 || local ftp_uid=0                       # ftp user id
 	[ $# -ge 5 ] && local ftp_gid=$5 || local ftp_gid=0                       # ftp group id
 	local blkid_bin="/usr/sbin/blkid"
-	local fstyp_bin="/usr/bin/fstyp"
 	local ntfs_bin="/bin/ntfs-3g"
 	local err_mo=1                                                            # set mount error as default
 	local err_fst=1                                                           # set file system detection error as default
 	if [ -x $blkid_bin ]; then
 		local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
-	elif [ -x $fstyp_bin ]; then
-		local fs_type=$($fstyp_bin $mnt_dev 2>/dev/null)                      # fs type detection using fstyp binary
 	else
-		local fs_type="cantdetect"                                            # fstyp and blkid are not available
+		local fs_type="cantdetect"                                            # blkid are not available
 	fi
 	[ -z "$fs_type" ] && local fs_type="unknown"                              # set unknown file system type if detection failed
 	case $fs_type in
@@ -128,7 +125,7 @@ mount_fs() {
 			/etc/init.d/rc.swap autostart $dev_node
 			err_mo=$((17+$?))
 			;;
-		*)                                                                # fs type unknown
+		*)                                                                    # fs type unknown
 			mount $dev_node $mnt_path
 			err_mo=$?
 			;;
