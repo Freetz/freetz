@@ -408,6 +408,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Execute version specific patch scripts
 	for i in "${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/${FREETZ_TYPE_LANGUAGE}/"*.sh \
 		"${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/"*.sh; do
+		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
 		. $i
 	done
