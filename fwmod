@@ -881,17 +881,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 			if [ -z "$tagging_files" ]; then
 				tagging_files="$(find ${HTML_MOD_DIR} -name kopfbalken_links.gif)"
 				tagging_position="center"
-				tagging_picture="newer"
 			fi
 			# older (big header @top)
 			if [ -z "$tagging_files" ]; then
 				tagging_files="$(find ${HTML_MOD_DIR} -name fw_header980.gif)"
 				tagging_position="west"
-				tagging_picture="older"
 			fi
 			# tagging
 			[ -z "$tagging_files" ] && error 1 "tagging failed, no files to tag found."
-			tagging_picture="${TAGGING_DIR}/${FREETZ_TAGGING_STRING}/${tagging_picture}.png"
+			tagging_picture="${TAGGING_DIR}/${FREETZ_TAGGING_STRING}.png"
 			for tagging_file in $tagging_files; do
 				echo2 "${tagging_file}"
 				composite -dissolve 100% -gravity $tagging_position -quality 100 $tagging_picture $tagging_file $tagging_file
