@@ -1143,3 +1143,11 @@ config FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
 		If Y is choosen, this changes the semantics of the LEDs on the front
 		panel of your 7570/W920V box fitting the descriptions of the W920V.
 
+config FREETZ_DISABLE_SERIAL_CONSOLE
+	bool "Disable console on serial port"
+	default n
+	help
+		Choose this if you do not want your Box to start a console/shell on
+		its serial port (/dev/ttyS0). This is particularly helpful if you
+		want to use the serial port exclusively with another application,
+		e.g. minicom.
