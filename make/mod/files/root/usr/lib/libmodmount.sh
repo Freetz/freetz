@@ -7,10 +7,11 @@ parent_process=$PPID
 # Log to Syslog & Console
 log_freetz() {
 	local log_prio="user.notice"
-	local c_prefix=""
-	[ "$1" == "err" ] && log_prio="user.err" && c_prefix='[ERROR] '
+	local c_prefix='[INFO]'
+	[ "$1" == "err" ] && log_prio="user.err" && c_prefix='[FAIL]'
 	logger -p "$log_prio" -t FREETZMOUNT "$2"
-	echo "FREETZMOUNT: $c_prefix$2" > /dev/console
+	echo "FREETZMOUNT: $c_prefix $2" > /dev/console
+	echo "$c_prefix $2" >> /var/log/mod_mount.log
 	return 0
 }
 
@@ -169,7 +170,7 @@ do_mount_locked() {
 	if [ $err_fs_mount -eq 0 ]; then
 		umask $old_umask
 		eventadd 140 "$mnt_name ($mnt_dev)"
-		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully"
+		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully ($fs_type)"
 		if [ -x $rcftpd ]; then                                               # start/enable ftpd
 			[ -x "$(which inetdctl)" ] && inetdctl enable ftpd || $rcftpd start
 		fi
@@ -189,16 +190,16 @@ do_mount_locked() {
 			case $err_fs_mount in
 				15)                                                           # unclean unmount
 					eventadd 144 "$mnt_name ($mnt_dev)"
-					log_freetz err "Partition $mnt_name ($mnt_dev): NTFS Volume was unclean unmount. Please unmount"
+					log_freetz err "NTFS partition $mnt_name ($mnt_dev): Volume was unclean unmount. Please unmount"
 					;;
 				111)                                                          # binary not found
 					eventadd 145 "$mnt_name ($mnt_dev)" "ntfs binary not found"
-					log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error (binary not found)"
+					log_freetz err "NTFS partition $mnt_name ($mnt_dev) was not mounted, binary not found"
 					mnt_failure=1
 					;;
 				*)                                                            # general error
 					eventadd 145 "$mnt_name ($mnt_dev)" $err_fs_mount
-					log_freetz err "Partition $mnt_name ($mnt_dev): NTFS mount error ($err_fs_mount)"
+					log_freetz err "NTFS partition $mnt_name ($mnt_dev) was not mounted, error $err_fs_mount"
 					mnt_failure=1
 					;;
 			esac
@@ -207,19 +208,19 @@ do_mount_locked() {
 			case "$err_fs_mount" in
 				17)                                                           # fine
 					eventadd 140 "SWAP ($mnt_dev)"
-					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was mounted successfully."
+					log_freetz notice "SWAP partition $mnt_name ($mnt_dev) was mounted successfully"
 					;;
 				19)                                                           # other partition
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was not mounted, not the defined swap-partition."
+					log_freetz notice "SWAP partition $mnt_name ($mnt_dev) was not mounted, not the defined swap-partition"
 					;;
 				20)                                                           # disabled
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz notice "SWAP Partition $mnt_name ($mnt_dev) was not mounted, auto-mode is disabled."
+					log_freetz notice "SWAP partition $mnt_name ($mnt_dev) was not mounted, auto-mode is disabled"
 					;;
 				*)                                                            # error
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz err "SWAP Partition $mnt_name ($mnt_dev) could not be mounted."
+					log_freetz err "SWAP partition $mnt_name ($mnt_dev) could not be mounted"
 					mnt_failure=1
 					;;
 			esac
