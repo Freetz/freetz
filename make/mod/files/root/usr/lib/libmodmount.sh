@@ -103,7 +103,7 @@ mount_fs() {
 	local err_mo=1                                                            # set mount error as default
 	local err_fst=1                                                           # set file system detection error as default
 	if [ -x "$blkid_bin" ]; then
-		local fs_type=$($blkid_bin -s TYPE $mnt_dev 2>/dev/null | sed -e 's/.*TYPE="//;s/".*//') # fs type detection using blkid binary
+		local fs_type="$($blkid_bin | sed -n "s!^$dev_node:.*TYPE=\"\(.*\)\"!\1!p")" # fs type detection using blkid
 	else
 		local fs_type="cantdetect"                                            # blkid is not available
 	fi
