@@ -80,7 +80,9 @@ find_mnt_name() {
 	[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
 	local storage_prefix="${MOD_STOR_PREFIX-uStor}"
 	[ "$MOD_STOR_PREFIX"=="$storage_prefix" ] || retfind=10 # User defined prefix
-	[ "$MOD_STOR_USELABEL" == "yes" ] && mnt_name=$($findfs_bin DEVL=$mnt_device | sed 's/ /_/g')
+	if [ "$MOD_STOR_USELABEL" == "yes" ]; then
+		[ -x $findfs_bin ] && mnt_name="$($findfs_bin DEVL=$mnt_device | sed 's/ /_/g')"
+	fi
 	if [ -z "$mnt_name" ]; then # Name was generated using prefix and numbers like uStorXY
 		mnt_name="$storage_prefix$(echo $1 | sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/')$3"
 	else # Name was generated using LABEL
