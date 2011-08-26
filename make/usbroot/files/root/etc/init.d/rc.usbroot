@@ -556,16 +556,17 @@ start()
 	# To flush the hotplug cache finally we have to save the cache file in a location from
 	# where it is read later. The /dev filesystem is the only one which can be mounted
 	# conditionally (in /etc/init.d/rc.S), all other fs are mounted via a "mount -a" call.
-	# /dev would be mounted as tmpfs so we prepared it above an move it now to its final
+	# /dev would be mounted as tmpfs so we prepared it above and move it now to its final
 	# place.
-	# Note: some avm daemons seems to grab the first mounted tmpfs to store some mmap files,
+	# Note: some avm daemons seem to grab the first mounted tmpfs to store some mmap files,
 	#       this is why we can't use an additional tmpfs and have to 're-use' our tmpfs for /dev
 	mount --move /oldroot "$MNTPOINT/dev"
+
 	# some cleanup before pivot_root
 	unmount_virtualfs
 
 	if pivot_root . "$OLDROOT"; then
-		# explicite chdir to new root as advised by 'man pivot_root'
+		# explicitly chdir to new root as advised by 'man pivot_root'
 		cd /
 		echo "*** USB root pivoting succeeded, done. ***"
 	else
