@@ -171,11 +171,11 @@ choice
 		bool "WLAN 3170"
 
 	config FREETZ_TYPE_WLAN_3270
-		select FREETZ_AVM_VERSION_7270_04_86
+		select FREETZ_AVM_VERSION_7270_05_05
 		bool "WLAN 3270 (v1 and v2 only)"
 
 	config FREETZ_TYPE_WLAN_3270_V3
-		select FREETZ_AVM_VERSION_7270_04_86
+		select FREETZ_AVM_VERSION_7270_05_05
 		bool "WLAN 3270 (v3 only)"
 
 	config FREETZ_TYPE_SPEEDPORT_W501V
@@ -732,7 +732,9 @@ config FREETZ_HAS_AVM_NTFS
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7390 || \
-		FREETZ_TYPE_FON_WLAN_7570
+		FREETZ_TYPE_FON_WLAN_7570 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default n
 	help
 		Select this if your original firmware has ntfs support.
@@ -823,7 +825,9 @@ config FREETZ_HAS_LSOF
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default n
 	help
 		Select this if you have a box with lsof binary.
@@ -867,7 +871,9 @@ config FREETZ_HAS_STRACE
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default n
 	help
 		Select this if you have a box with strace binary.
@@ -894,7 +900,9 @@ config FREETZ_HAS_UDEV
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default n
 	help
 		Select this if you have a box with udev.
@@ -961,7 +969,9 @@ config FREETZ_HAS_UTIL_LINUX
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default n
 	help
 		Select this if you have a firmware with blkid, fsck and mkfs.
@@ -1290,8 +1300,8 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_wlan_3130.44.04.34.image"				if	FREETZ_TYPE_WLAN_3130
 	default "fritz.box_wlan_3131.50.04.57.image"				if	FREETZ_TYPE_WLAN_3131
 	default "fritz.box_wlan_3170.49.04.58.image"				if	FREETZ_TYPE_WLAN_3170
-	default "fritz.box_wlan_3270.67.04.86.image"				if	FREETZ_TYPE_WLAN_3270
-	default "fritz.box_wlan_3270_v3.96.04.87.image"				if	FREETZ_TYPE_WLAN_3270_V3
+	default "fritz.box_wlan_3270.67.05.05.image"				if	FREETZ_TYPE_WLAN_3270
+	default "fritz.box_wlan_3270_v3.96.05.05.image"				if	FREETZ_TYPE_WLAN_3270_V3
 	default "fw_Speedport_W501V_v_28.04.38.image"				if	FREETZ_TYPE_SPEEDPORT_W501V
 	default "fritz.box..."							if	FREETZ_TYPE_CUSTOM
 
@@ -1356,8 +1366,8 @@ config FREETZ_DL_SOURCE_MD5
 	default "1c8dcee29f84c96648aa4b96271c9a16"	if	FREETZ_TYPE_WLAN_3130
 	default "a34a8d4f7af511d5dd6fff5f3c4e8276"	if	FREETZ_TYPE_WLAN_3131
 	default "f08942a9679002e21c29bb2cad9ded3e"	if	FREETZ_TYPE_WLAN_3170
-	default "fb944df940f8967464df7a7123d4c6cd"	if	FREETZ_TYPE_WLAN_3270
-	default "2e482c87a0c756d90e4d4e5993c10097"	if	FREETZ_TYPE_WLAN_3270_V3
+	default "2874722e1c55bb397e6ddce7bc990d2e"	if	FREETZ_TYPE_WLAN_3270
+	default "8fb87e292ffd89ff22a95ac7a56d6473"	if	FREETZ_TYPE_WLAN_3270_V3
 	default "f64d17124ba354427a1710d12b35e00f"	if	FREETZ_TYPE_SPEEDPORT_W501V
 
 config FREETZ_DL_SITE2

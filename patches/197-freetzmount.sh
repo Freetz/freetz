@@ -4,7 +4,7 @@ echo1 "applying FREETZMOUNT patch"
 PATCHED_BY_FREETZ=" # patched by FREETZ"
 SCRIPTPATCHER="${TOOLS_DIR}/scriptpatcher.sh"
 STORAGE_FILE="${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
-if isFreetzType 7240 7270_V2 7270_V3 7320 7390; then
+if isFreetzType 3270 3270_V3 7240 7270_V2 7270_V3 7320 7390; then
 	RUN_MOUNT_FILE="${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mount-sd"
 else
 	RUN_MOUNT_FILE="${FILESYSTEM_MOD_DIR}/etc/hotplug/run_mount"
