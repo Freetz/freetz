@@ -192,7 +192,7 @@ do_mount_locked() {
 			case $err_fs_mount in
 				15)                                                           # unclean unmount
 					eventadd 144 "$mnt_name ($mnt_dev)"
-					log_freetz err "NTFS partition $mnt_name ($mnt_dev): Volume was unclean unmount. Please unmount"
+					log_freetz err "NTFS partition $mnt_name ($mnt_dev) was unclean unmounted, please check filesystem"
 					;;
 				111)                                                          # binary not found
 					eventadd 145 "$mnt_name ($mnt_dev)" "ntfs binary not found"
