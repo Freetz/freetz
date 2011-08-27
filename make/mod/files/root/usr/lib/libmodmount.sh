@@ -192,11 +192,11 @@ do_mount_locked() {
 			case $err_fs_mount in
 				15)                                                           # unclean unmount
 					eventadd 144 "$mnt_name ($mnt_dev)"
-					log_freetz err "NTFS partition $mnt_name ($mnt_dev) was unclean unmounted, please check filesystem"
+					log_freetz err "NTFS partition $mnt_name ($mnt_dev) was not cleanly unmounted, please check the filesystem on it"
 					;;
 				111)                                                          # binary not found
 					eventadd 145 "$mnt_name ($mnt_dev)" "ntfs binary not found"
-					log_freetz err "NTFS partition $mnt_name ($mnt_dev) was not mounted, binary not found"
+					log_freetz err "NTFS partition $mnt_name ($mnt_dev) was not mounted, ntfs binary not found"
 					mnt_failure=1
 					;;
 				*)                                                            # general error
@@ -230,7 +230,7 @@ do_mount_locked() {
 		*)
 			[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_mount_failure
 			eventadd 142 "$mnt_name ($mnt_dev)" $fs_type
-			log_freetz err "Partition $mnt_name ($mnt_dev): Not supported file system or wrong partition table ($fs_type)"
+			log_freetz err "Partition $mnt_name ($mnt_dev): Unsupported filesystem or wrong partition table ($fs_type)"
 			mnt_failure=1
 			;;
 		esac
@@ -456,4 +456,3 @@ storage_unplug() {
 	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start      # restart media_serv if MP available
 	return $unplug_ret
 }
-
