@@ -1,0 +1,96 @@
+--- libgcc/Makefile.in
++++ libgcc/Makefile.in
+@@ -106,7 +106,7 @@
+ all-multi:
+ 	# If this is the top-level multilib, build all the other
+ 	# multilibs.
+-	@: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
+ 
+ .PHONY: check installcheck
+ check:
+@@ -949,7 +949,7 @@
+ 	done
+ 
+ install: install-leaf
+-	@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
+ 
+ .PHONY: install install-shared install-libunwind
+ 
+--- libiberty/Makefile.in
++++ libiberty/Makefile.in
+@@ -101,7 +101,7 @@
+ 
+ # FIXME: add @BUILD_INFO@ once we're sure it works for everyone.
+ all: stamp-picdir $(TARGETLIB) needed-list required-list all-subdir
+-	@: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
+ 
+ .PHONY: check installcheck
+ check: check-subdir
+@@ -368,14 +368,14 @@
+ 	    ${INSTALL_DATA} $$h $(DESTDIR)$${thd}; \
+ 	  done; \
+ 	fi
+-	@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
+ 
+ install_to_tooldir: all
+ 	${mkinstalldirs} $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)
+ 	$(INSTALL_DATA) $(TARGETLIB) $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)n
+ 	( cd $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR) ; chmod 644 $(TARGETLIB)n; $(RANLIB) $(TARGETLIB)n )
+ 	mv -f $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)n $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)
+-	@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
+ 
+ # needed-list is used by libstdc++.  NEEDED is the list of functions
+ # to include there.  Do not add anything LGPL to this list; libstdc++
+--- libjava/Makefile.am
++++ libjava/Makefile.am
+@@ -1350,9 +1350,9 @@
+ maintainer-clean-recursive: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
+ mostlyclean-multi:
+ 	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
+ clean-multi:
+--- libjava/Makefile.in
++++ libjava/Makefile.in
+@@ -12461,9 +12462,9 @@
+ maintainer-clean-recursive: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	: $(MAKE) ; $(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
+ mostlyclean-multi:
+ 	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
+ clean-multi:
+--- libobjc/Makefile.in
++++ libobjc/Makefile.in
+@@ -140,7 +140,7 @@
+ 	"tooldir=$(tooldir)"
+ 
+ all: libobjc$(libsuffix).la $(OBJC_BOEHM_GC)
+-	: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
+ 
+ # User-visible header files.
+ 
+@@ -346,7 +346,7 @@
+ 	  $(LIBTOOL_INSTALL) $(INSTALL) libobjc_gc$(libsuffix).la \
+ 				$(DESTDIR)$(toolexeclibdir);\
+ 	fi
+-	$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
+ 	@-$(LIBTOOL) --mode=finish $(DESTDIR)$(toolexeclibdir)
+ 
+ # Copy Objective C headers to installation include directory.
