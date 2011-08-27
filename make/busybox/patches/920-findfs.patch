@@ -31,15 +31,6 @@
  /* Returns:
 --- util-linux/volume_id/get_devname.c.orig	2011-06-04 08:39:32.085224403 +0200
 +++ util-linux/volume_id/get_devname.c	2011-06-04 04:55:27.000000000 +0200
-@@ -39,7 +39,7 @@
- 	int rv = 1;
- 	uint64_t size;
- 	struct volume_id *vid;
--
-+	
- 	/* fd is owned by vid now */
- 	vid = volume_id_open_node(fd);
- 
 @@ -49,13 +49,16 @@
  	if (volume_id_probe_all(vid, /*0,*/ size) != 0)
  		goto ret;
