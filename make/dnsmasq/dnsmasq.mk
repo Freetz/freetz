@@ -1,8 +1,10 @@
-$(call PKG_INIT_BIN, 2.57)
+$(call PKG_INIT_BIN, 2.58)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d10faeb409717eae94718d7716ca63a4
+$(PKG)_SOURCE_MD5:=14c5c81debb324adc261db971730f4c6
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
+
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/dnsmasq
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dnsmasq
 
