@@ -73,10 +73,14 @@ define MESSAGE
 printf "%s\n" "$(1)" $(SILENT)
 endef
 
-
 # Print yellow error message and exit
 define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
+endef
+
+# strip quotes and then whitespaces
+define qstrip
+$(strip $(subst ",,$(1)))
 endef
 
 # check for proper make version
