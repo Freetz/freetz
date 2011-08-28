@@ -14,9 +14,16 @@ config FREETZ_LIB_libavdevice
 	default n
 	select FREETZ_LIB_libpthread
 
+config FREETZ_LIB_libavfilter
+	bool "libavfilter.so"
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavutil
+	default n
+
 config FREETZ_LIB_libavformat
 	bool "libavformat.so"
 	select FREETZ_LIB_libm
+	select FREETZ_LIB_libz
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libavcodec
 	select FREETZ_LIB_libavutil
@@ -33,5 +40,12 @@ config FREETZ_LIB_libpostproc
 	default n
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libavutil
+
+config FREETZ_LIB_libswscale
+	bool "libswscale.so"
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavutil
+	default n
 
 endmenu

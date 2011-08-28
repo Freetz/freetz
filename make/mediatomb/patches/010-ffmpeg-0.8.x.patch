@@ -1,0 +1,55 @@
+--- src/metadata/ffmpeg_handler.cc
++++ src/metadata/ffmpeg_handler.cc
+@@ -57,6 +57,7 @@
+ //#endif
+ 
+ #include AVFORMAT_INCLUDE
++#include <libavutil/dict.h>
+ 
+ //#ifdef FFMPEG_NEEDS_EXTERN_C
+ } // extern "C"
+@@ -89,6 +90,18 @@
+ 
+ 	Ref<StringConverter> sc = StringConverter::m2i();
+     
++#if LIBAVUTIL_VERSION_INT >= ((51<<16)+(8<<8)+0)
++	static const char* tagKeys[]        = { "title", "author", "album", "year", "genre",     "comment",       "track" };
++	static const unsigned int mtKeys[]  = { M_TITLE, M_ARTIST, M_ALBUM, M_DATE, M_GENRE, M_DESCRIPTION, M_TRACKNUMBER };
++
++	for (int i=0; i<7; i++) {
++		AVDictionaryEntry *tag = av_dict_get(pFormatCtx->metadata, tagKeys[i], NULL, 0);
++		if (tag && strlen(tag->value)>0) {
++			log_debug("Added metadata %s: %s\n", tagKeys[i], tag->value);
++			item->setMetadata(MT_KEYS[mtKeys[i]].upnp, sc->convert(tag->value));
++		}
++	}
++#else
+ 	if (strlen(pFormatCtx->title) > 0) 
+     {
+ 	    log_debug("Added metadata title: %s\n", pFormatCtx->title);
+@@ -131,6 +144,7 @@
+         item->setMetadata(MT_KEYS[M_TRACKNUMBER].upnp, 
+                           sc->convert(String::from(pFormatCtx->track)));
+ 	}
++#endif
+ }
+ 
+ // ffmpeg library calls
+@@ -178,7 +192,7 @@
+ 	for(i=0; i<pFormatCtx->nb_streams; i++) 
+     {
+ 		AVStream *st = pFormatCtx->streams[i];
+-		if((st != NULL) && (videoset == false) && (st->codec->codec_type == CODEC_TYPE_VIDEO))
++		if((st != NULL) && (videoset == false) && (st->codec->codec_type == AVMEDIA_TYPE_VIDEO))
+         {
+             if (st->codec->codec_tag > 0)
+             {
+@@ -209,7 +223,7 @@
+                 *y = st->codec->height;
+ 			}
+ 		} 
+-		if(st->codec->codec_type == CODEC_TYPE_AUDIO) 
++		if(st->codec->codec_type == AVMEDIA_TYPE_AUDIO) 
+         {
+ 			// Increase number of audiochannels
+ 			audioch++;

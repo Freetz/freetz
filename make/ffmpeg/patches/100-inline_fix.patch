@@ -1,0 +1,14 @@
+--- configure
++++ configure
+@@ -3422,9 +3422,9 @@
+ if enabled small || disabled optimizations; then
+     echo "#undef  av_always_inline"  >> $TMPH
+     if enabled small; then
+-        echo "#define av_always_inline inline"  >> $TMPH
+-    else
+         echo "#define av_always_inline av_unused"  >> $TMPH
++    else
++        echo "#define av_always_inline inline"  >> $TMPH
+     fi
+ fi
+ 
