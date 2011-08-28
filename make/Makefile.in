@@ -53,6 +53,12 @@ FPIC:=-fPIC
 TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
 KERNEL_ARCH:=mips
 KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
+
+ifneq ($(filter -march=% -mcpu=% -mtune=%,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
+$(error Please remove any CPU and architecture related flags (-march/-mcpu/-mtune) \
+	from target compiler flags (FREETZ_TARGET_CFLAGS variable). \
+	These flags are automatically set by freetz build environment)
+endif
 TARGET_CFLAGS:=$(CFLAGS_MARCH) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(CFLAGS_LARGEFILE)
 
 TARGET_SPECIFIC_SUBDIR:=target-$(TARGET_ARCH)_uClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION)
