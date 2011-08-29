@@ -5,9 +5,28 @@ config FREETZ_MODULES_ALL
 
 menu "block"
 
+config FREETZ_MODULE_mtdblk
+	bool "mtdblk.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_13_1
+	default n
+
+config FREETZ_MODULE_block2mtd
+	bool "block2mtd.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_13_1 || \
+		FREETZ_KERNEL_VERSION_2_6_19_2 || \
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32
+	default n
+
 config FREETZ_MODULE_ramzswap
 	bool "ramzswap.ko"
-	depends on FREETZ_REPLACE_KERNEL
+	depends on FREETZ_REPLACE_KERNEL && ( \
+			FREETZ_KERNEL_VERSION_2_6_19_2 || \
+			FREETZ_KERNEL_VERSION_2_6_28 || \
+			FREETZ_KERNEL_VERSION_2_6_32 \
+		)
 	select FREETZ_MODULE_xvmalloc
 	select FREETZ_MODULE_lzo_compress
 	select FREETZ_MODULE_lzo_decompress
@@ -15,15 +34,11 @@ config FREETZ_MODULE_ramzswap
 
 config FREETZ_MODULE_xvmalloc
 	bool "xvmalloc.ko"
-	depends on FREETZ_REPLACE_KERNEL
-	default n
-
-config FREETZ_MODULE_block2mtd
-	bool "block2mtd.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_2 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+	depends on FREETZ_REPLACE_KERNEL && ( \
+			FREETZ_KERNEL_VERSION_2_6_19_2 || \
+			FREETZ_KERNEL_VERSION_2_6_28 || \
+			FREETZ_KERNEL_VERSION_2_6_32 \
+		)
 	default n
 
 endmenu
@@ -505,10 +520,18 @@ config FREETZ_MODULE_crc_ccitt
 
 config FREETZ_MODULE_lzo_compress
 	bool "lzo_compress.ko"
+	depends on FREETZ_REPLACE_KERNEL && ( \
+		FREETZ_KERNEL_VERSION_2_6_19_2 || \
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32 )
 	default n
 
 config FREETZ_MODULE_lzo_decompress
 	bool "lzo_decompress.ko"
+	depends on FREETZ_REPLACE_KERNEL && ( \
+		FREETZ_KERNEL_VERSION_2_6_19_2 || \
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32 )
 	default n
 
 endmenu
