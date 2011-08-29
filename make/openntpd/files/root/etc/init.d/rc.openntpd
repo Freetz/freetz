@@ -14,7 +14,7 @@ start() {
 	if [ "$OPENNTPD_MULTID" == "no" -a "$_OPENNTPD_RELOADING" != "yes" ]; then
 		 /etc/init.d/rc.multid ntp_disable >/dev/null
 	fi
-	DAEMON_ENV="TZ=$TZ"
+	DAEMON_ENV="TZ=$(cat /etc/TZ)"
 	modlib_startdaemon $DAEMON_BIN -s -f /mod/etc/ntpd.conf $OPENNTPD_OPTIONS
 }
 
