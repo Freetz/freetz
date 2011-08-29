@@ -1,0 +1,15 @@
+This patch removes options POTS and ISDN external
+
+--- usr/www/avm/html/de/home/fondevices.html.orig	2011-06-15 13:23:39.000000000 +0200
++++ usr/www/avm/html/de/home/fondevices.html	2011-08-14 22:51:57.000000000 +0200
+@@ -1,10 +1,4 @@
+ <? setvariable var:ShowFestnetzTab 0 ?>
+-<? if eq '<? query box:settings/expertmode/activated ?>' '1' `
+-<? setvariable var:ShowFestnetzTab 1 ?>
+-` ?>
+-<? if eq '<? query telcfg:settings/UsePSTN ?>' '1'`
+-<? setvariable var:ShowFestnetzTab 1 ?>
+-` ?>
+ <div id="content">
+ <? if eq '$var:menu' 'home' `
+ <div class="backtitelstatus"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">

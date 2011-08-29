@@ -407,6 +407,18 @@ choice
 			Caution: To fit into 8MB ROM some AVM components (e.g. telephony) have
 			to be removed. Please use usbroot for a full featured image.
 
+	config FREETZ_TYPE_IAD_3331_7170
+		bool "Alice IAD 3331"
+		depends on FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE
+		select FREETZ_REMOVE_PIGLET_V1
+		select FREETZ_ENFORCE_URLADER_SETTINGS
+		help
+			Enable this to compile a mod image for Alice IAD 3331 based
+			on a 7170 image.
+			The firmware_version has to be enforced, because this variable is unset
+			in the 7170_HN bootloader.
+			Initial flashing might only be possible via ./tools/push_firmware
+
 endchoice
 
 config FREETZ_AVM_VERSION_STRING

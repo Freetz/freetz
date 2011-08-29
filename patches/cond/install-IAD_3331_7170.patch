@@ -1,0 +1,52 @@
+--- var/install.orig	2011-06-15 13:24:42.000000000 +0200
++++ var/install	2011-08-14 22:00:16.106095402 +0200
+@@ -123,37 +123,19 @@
+ export ANNEX=`cat ${CONFIG_ENVIRONMENT_PATH}/annex`
+ if [ -z "${ANNEX}" ] ; then echo ANNEX=${ANNEX} not supported ; exit $INSTALL_WRONG_HARDWARE ; fi
+ echo ANNEX=$ANNEX
+-# Fritz_Box_7170
+-if [ -z "$DISABLE_Fritz_Box_7170" ] ; then
+-   echo testing acceptance for device Fritz_Box_7170 ...
+-   if /etc/version --install=ar7_8MB_xilinx_4eth_3ab_isdn_nt_te_pots_wlan_usb_host_25762 ; then
+-       echo device has installtype ar7_8MB_xilinx_4eth_3ab_isdn_nt_te_pots_wlan_usb_host_25762
+-       # passt der ANNEX ?
+-       accept_annex=B
+-       echo assumed ANNEX ${accept_annex} -- found ANNEX "${ANNEX}"
+-       if [ "${accept_annex}" = "${ANNEX}" ] ; then
+-           echo device has ANNEX ${ANNEX}
+-           # passt der OEM ?
+-           if [ ! -z "${OEM}" ] ; then
+-               oem_found=0
+-               for i in  avm 1und1 ; do
+-                   if [ "$i" = "${OEM}" ] ; then
+-                       echo "OK - OEM ${OEM} is supported"
+-                       oem_found=1
+-                       break
+-                   fi
+-               done
+-               if [ "$oem_found" = "0" ] ; then 
+-                   echo "OEM ${OEM} not supported"
+-                   exit $INSTALL_WRONG_HARDWARE
+-               fi
+-           fi
+-           echo OK - accept this update for device Fritz_Box_7170 ...
+-           korrekt_version=1
+-       fi
+-   fi
+-   echo testing acceptance for device Fritz_Box_7170 done
++# Fritz_Box_7170_HN / Alice IAD 3331 / hence install type not known do it the dirty way
++# Fritz_Box_7170_HN / "for i in  avme ; do " to make fwmo
++hwrev="$(IFS="$IFS."; set $(grep HWRevision /proc/sys/urlader/environment); echo $2)"
++korrekt_version=
++case "$hwrev" in
++   174 ) korrekt_version=1 ;;
++esac
++echo testing acceptance for device Fritz_Box_7170 ...
++if [ ! "$korrekt_version" = 1 ] ; then
++   echo "HWRevision $hwrev not supported"
++   exit $INSTALL_WRONG_HARDWARE
+ fi
++echo testing acceptance for device Fritz_Box_7170 done
+ 
+ kernel_start=0x90010000
+ kernel_size=7798784

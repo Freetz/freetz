@@ -1118,7 +1118,7 @@ config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
 config FREETZ_ENFORCE_URLADER_SETTING_FIRMWARE_VERSION
 	depends on FREETZ_ENFORCE_URLADER_SETTINGS
 	string "Enforce firmware_version variable"
-	default ""
+	default "avm" if FREETZ_TYPE_IAD_3331_7170
 	help
 		Choose wisely. Your image beeing built must support this.
 		Typical settings are eg.: avm, avme, tcom, 1und1, ...
