@@ -43,6 +43,7 @@ case "$1" in
 		modreg file siproxd conf 'conf' 0 "siproxd_conf"
 		modreg file siproxd reg 'reg' 0 "siproxdreg_conf"
 		modreg file siproxd pwd 'pwd' 0 "siproxdpwd_conf"
+		modreg daemon $DAEMON
 
 		modlib_start $SIPROXD_ENABLED
 		;;
