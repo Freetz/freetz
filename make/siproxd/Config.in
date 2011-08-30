@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_SIPROXD
-	bool "siproxd 0.8.0"
+	bool "siproxd 0.8.1"
 	default n
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libresolv
@@ -8,43 +8,42 @@ config FREETZ_PACKAGE_SIPROXD
 	select FREETZ_LIB_libosip2
 	help
 		Siproxd is a proxy/masquerading daemon for the SIP protocol.
-		Uses static compiled-in libosip2.
-		See http://siproxd.sourceforge.net
+		See http://siproxd.sourceforge.net for more information.
 
 config FREETZ_PACKAGE_SIPROXD_PLUGIN_DEFAULTTARGET
 	bool "include defaulttarget plugin"
 	depends on FREETZ_PACKAGE_SIPROXD
 	default n
-	help
-		include defaulttarget plugin
 
 config FREETZ_PACKAGE_SIPROXD_PLUGIN_FIX_BOGUS_VIA
 	bool "include fix_bogus_via plugin"
 	depends on FREETZ_PACKAGE_SIPROXD
 	default n
-	help
-		include fix_bogus_via plugin
 
 config FREETZ_PACKAGE_SIPROXD_PLUGIN_LOGCALL
 	bool "include logcall plugin"
 	depends on FREETZ_PACKAGE_SIPROXD
 	default n
-	help
-		include logcall plugin
+
+config FREETZ_PACKAGE_SIPROXD_PLUGIN_PREFIX
+	bool "include prefix plugin"
+	depends on FREETZ_PACKAGE_SIPROXD
+	default n
+
+config FREETZ_PACKAGE_SIPROXD_PLUGIN_REGEX
+	bool "include regex plugin"
+	depends on FREETZ_PACKAGE_SIPROXD
+	default n
 
 config FREETZ_PACKAGE_SIPROXD_PLUGIN_SHORTDIAL
 	bool "include shortdial plugin"
 	depends on FREETZ_PACKAGE_SIPROXD
 	default n
-	help
-		include shortdial plugin
 
 config FREETZ_PACKAGE_SIPROXD_PLUGIN_STUN
 	bool "include stun plugin"
 	depends on FREETZ_PACKAGE_SIPROXD
 	default n
-	help
-		include stun plugin
 
 config FREETZ_PACKAGE_SIPROXD_PLUGIN_DEMO
 	bool "include demo plugin"
