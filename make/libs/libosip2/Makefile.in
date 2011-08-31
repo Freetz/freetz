@@ -1,9 +1,3 @@
-ifeq ($(strip $(FREETZ_LIB_libosipparser2)),y)
+ifneq (,$(strip $(filter y,$(FREETZ_LIB_libosipparser2) $(FREETZ_LIB_libosip2))))
 LIBS+=libosip2
 endif
-
-# TODO
-#ifeq ($(strip $(FREETZ_LIB_libosipparser2)),y)
-# libosip2 depends on libosipparser2
-#LIBS+=libosip2
-#endif
