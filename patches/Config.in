@@ -129,7 +129,7 @@ config FREETZ_PATCH_FREETZMOUNT
 		   and FTP users to actually write to their own home directories.
 		4. Avoid deleting whole filesystems on USB devices.
 		5. Enhanced behaviour during mounting and unmounting.
-		
+
 		It is highly recommended to select this patch.
 
 config FREETZ_USBSTORAGE_AUTOMOUNT
@@ -207,13 +207,13 @@ config FREETZ_AUTOMOUNT_LINUXSWAP
 
 endif
 
-config FREETZ_PATCH_FREETZMOUNT_FINDFS 
-	bool "Provide mount-by-label feature" 
-	depends on FREETZ_PATCH_FREETZMOUNT 
+config FREETZ_PATCH_FREETZMOUNT_FINDFS
+	bool "Provide mount-by-label feature"
+	depends on FREETZ_PATCH_FREETZMOUNT
 	select FREETZ_BUSYBOX_FINDFS
-	default n 
-	help 
-		This option selects findfs which is required for the optional mount-by-label feature. 
+	default n
+	help
+		This option selects findfs which is required for the optional mount-by-label feature.
 
 config FREETZ_PATCH_MAXDEVCOUNT
 	bool "Raise the count of connectable usb device to 9"
@@ -951,6 +951,7 @@ config FREETZ_REMOVE_UPNP
 		FREETZ_TYPE_WLAN_3030 || \
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_SPEEDPORT_W501V
+	select FREETZ_REMOVE_TR069
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd/upnpd' and some more files used by
