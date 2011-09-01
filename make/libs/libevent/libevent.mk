@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 2.0.13-stable)
+$(call PKG_INIT_LIB, 2.0.14-stable)
 $(PKG)_MAJOR_VERSION:=2.0
-$(PKG)_SHLIB_VERSION:=5.1.2
+$(PKG)_SHLIB_VERSION:=5.1.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=af786b4b3f790c9d3279792edf7867fc
+$(PKG)_SOURCE_MD5:=cac0f379da35d3b98f83ac16fcfe1df4
 $(PKG)_SITE:=@SF/levent
 
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
