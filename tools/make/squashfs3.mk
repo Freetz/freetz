@@ -14,7 +14,6 @@ SQUASHFS3_LZMA_VERSION:=443
 SQUASHFS3_LZMA_DIR:=$(TOOLS_SOURCE_DIR)/lzma$(SQUASHFS3_LZMA_VERSION)
 SQUASHFS3_EXTERNAL_LZMA_DIR:=../../lzma$(SQUASHFS3_LZMA_VERSION)
 
-
 $(DL_DIR)/$(SQUASHFS3_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(SQUASHFS3_SOURCE) $(SQUASHFS3_SITE) $(SQUASHFS3_SOURCE_MD5)
 
@@ -26,23 +25,33 @@ $(SQUASHFS3_DIR)/.unpacked: $(DL_DIR)/$(SQUASHFS3_SOURCE) | $(TOOLS_SOURCE_DIR)
 	done
 	touch $@
 
-$(MKSQUASHFS3_DIR)/mksquashfs3-lzma: $(SQUASHFS3_DIR)/.unpacked
+$(MKSQUASHFS3_DIR)/mksquashfs3 \
+	$(MKSQUASHFS3_DIR)/unsquashfs3 \
+	$(MKSQUASHFS3_DIR)/mksquashfs3-lzma \
+	$(UNSQUASHFS3_DIR)/unsquashfs3-lzma: \
+	$(SQUASHFS3_DIR)/.unpacked
 	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(SQUASHFS3_EXTERNAL_LZMA_DIR)" \
-		-C $(MKSQUASHFS3_DIR) mksquashfs3-lzma
+		-C $(MKSQUASHFS3_DIR) all
 	touch -c $@
 
-$(UNSQUASHFS3_DIR)/unsquashfs3-lzma: $(SQUASHFS3_DIR)/.unpacked
-	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(SQUASHFS3_EXTERNAL_LZMA_DIR)" \
-		-C $(MKSQUASHFS3_DIR) unsquashfs3-lzma
-	touch -c $@
+$(TOOLS_DIR)/mksquashfs3: $(MKSQUASHFS3_DIR)/mksquashfs3
+	cp $^ $@
+	strip $@
+
+$(TOOLS_DIR)/unsquashfs3: $(MKSQUASHFS3_DIR)/unsquashfs3
+	cp $^ $@
+	strip $@
 
 $(TOOLS_DIR)/mksquashfs3-lzma: $(MKSQUASHFS3_DIR)/mksquashfs3-lzma
-	cp $(MKSQUASHFS3_DIR)/mksquashfs3-lzma $(TOOLS_DIR)/mksquashfs3-lzma
+	cp $^ $@
+	strip $@
 
 $(TOOLS_DIR)/unsquashfs3-lzma: $(UNSQUASHFS3_DIR)/unsquashfs3-lzma
-	cp $(UNSQUASHFS3_DIR)/unsquashfs3-lzma $(TOOLS_DIR)/unsquashfs3-lzma
+	cp $^ $@
+	strip $@
 
-squashfs3: $(TOOLS_DIR)/mksquashfs3-lzma $(TOOLS_DIR)/unsquashfs3-lzma
+squashfs3: $(TOOLS_DIR)/mksquashfs3 $(TOOLS_DIR)/mksquashfs3-lzma \
+	   $(TOOLS_DIR)/unsquashfs3 $(TOOLS_DIR)/unsquashfs3-lzma
 
 squashfs3-source: $(SQUASHFS3_DIR)/.unpacked
 
