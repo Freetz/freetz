@@ -9,19 +9,11 @@
  
  # declare multi-module main driver.
  obj-$(CONFIG_AVM_CPMAC)	+= avm_cpmac.o
-@@ -23,13 +23,13 @@
- 			   cpphy_entry.o cpphy_ar8216_ar.o cpphy_mgmt.o \
- 			   cpmac_fusiv_if.o cpmac_puma_if.o cpphy_switch.o cpmac_product_conf.o
- 			
--$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c DO_COPY FORCE
-+$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c FORCE
- 
- DO_COPY:
- 	mkdir -p $(FRITZ_BOX_BUILD_DIR)/$(KERNEL_BUILD)/filesystem/include/linux 
- 	cp -f $(src)/linux_avm_cpmac.h $(FRITZ_BOX_BUILD_DIR)/$(KERNEL_BUILD)/filesystem/include/linux/avm_cpmac.h
- 
+@@ -99,7 +99,7 @@
+ # Create source files on demand
+ EXTRACT_SOURCE: $(SOURCE_FILES:%=$(src)/%)
+
 -extra-y	+= cpmacconfig
 +#extra-y	+= cpmacconfig
- 
- cpmacconfig-objs	:= cpmacconfig.o
- 
+
+ cpmacconfig-objs       := cpmacconfig.o
