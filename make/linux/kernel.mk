@@ -1,6 +1,6 @@
 comma:=,
 space:=$(empty) $(empty)
-AVM_SOURCE:=$(strip $(subst ",, $(subst $(space),\ ,$(FREETZ_DL_KERNEL_SOURCE))))
+AVM_SOURCE:=$(call qstrip,$(subst $(space),\ ,$(FREETZ_DL_KERNEL_SOURCE)))
 
 AVM_UNPACK__INT_.gz:=z
 AVM_UNPACK__INT_.bz2:=j

@@ -99,7 +99,11 @@ start() {
 stop() {
 	log -x "Stopping external ($EXTERNAL_DIRECTORY):"
 
-	exec_rcs unload
+	if [ -e /var/run/shutdown ]; then
+		log -x "Stopping external is skipped because of system shutdown."
+	else
+		exec_rcs unload
+	fi
 
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
 
