@@ -18,6 +18,7 @@ config FREETZ_KERNEL_VERSION_2_6_19_2
 config FREETZ_KERNEL_VERSION_2_6_28
 	bool
 	default y if \
+		FREETZ_TYPE_WLAN_3370 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7390
 	default n
@@ -89,6 +90,10 @@ config FREETZ_KERNEL_LAYOUT_UR8
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_WLAN_3270_V3
 
+config FREETZ_KERNEL_LAYOUT_VR9
+	bool
+	default y if FREETZ_TYPE_WLAN_3370
+
 config FREETZ_KERNEL_LAYOUT
 	string
 	default "ar7" if FREETZ_KERNEL_LAYOUT_AR7
@@ -96,6 +101,7 @@ config FREETZ_KERNEL_LAYOUT
 	default "iks" if FREETZ_KERNEL_LAYOUT_IKS
 	default "ohio" if FREETZ_KERNEL_LAYOUT_OHIO
 	default "ur8" if FREETZ_KERNEL_LAYOUT_UR8
+	default "vr9" if FREETZ_KERNEL_LAYOUT_VR9
 
 config FREETZ_UCLIBC_0_9_28_BASED_BOX
 	bool
@@ -122,18 +128,20 @@ config FREETZ_UCLIBC_0_9_29_BASED_BOX
 
 config FREETZ_UCLIBC_0_9_30_BASED_BOX
 	bool
-	default y if FREETZ_TYPE_FON_WLAN_7320
+	default y if \
+			FREETZ_TYPE_FON_WLAN_7320
 	default n
 
 config FREETZ_UCLIBC_0_9_31_BASED_BOX
 	bool
 	default y if \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
+		FREETZ_TYPE_WLAN_3370
 	default n
 
 comment "Kernel toolchain options ----------------------------------"

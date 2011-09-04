@@ -139,6 +139,8 @@ HTML_SUBDIR="usr/www"
 GRAPHICS_SUBDIR="graphics"
 
 KERNEL_IMAGE="var/tmp/kernel.image"
+FILESYSTEM_IMAGE="var/tmp/filesystem.image"
+FILESYSTEM_CORE_IMAGE="filesystem_core.squashfs"
 
 AVMPLUGINS_FILE="var/tmp/plugins.update"
 RAW_KERNEL_FILE="kernel.raw"
@@ -221,6 +223,11 @@ else
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 fi
 
+if [ "$FREETZ_TYPE_WLAN_3370" == "y" ]; then
+	UNSQUASHFS_TOOL="unsquashfs3"
+	MKSQUASHFS_TOOL="mksquashfs3"
+fi
+
 # Dot-include 'modpatch' shell function
 . "${TOOLS_DIR}/freetz_patch"
 
@@ -256,9 +263,9 @@ VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
 HTML_DIR="${FILESYSTEM_DIR}/${HTML_SUBDIR}"
 
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
-
+FILESYSTEM="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
-FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
+RAW_FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
 AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
@@ -273,30 +280,38 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	"$UNTAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
 
 	# Do the images exist ?
-	if [ ! -r "${FIRMWARE_DIR}/${KERNEL_IMAGE}" ]; then
-		error 1 "cannot find kernel.image"
-	fi
+	[ ! -r "${KERNEL}" ] && error 1 "cannot find kernel.image"
+	[ ! -r "${FILESYSTEM}" ] && error 1 "cannot find filesystem.image"
 
 	# Do we have the tool ?
-	if [ ! -x "$RMTICHKSUM" ]; then
-		error 1 "cannot find the tool $RMTICHKSUM_TOOL"
-	fi
-	if [ ! -x "$UNSQUASHFS" ]; then
-		error 1 "cannot find the tool $UNSQUASHFS_TOOL"
-	fi
-	if [ ! -x "$FINDSQUASHFS" ]; then
-		error 1 "cannot find the very useful tool $FINDSQUASHFS_TOOL"
+	for tool in "$RMTICHKSUM" "$UNSQUASHFS" "$FINDSQUASHFS"; do
+		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
+	done
+
+	"$RMTICHKSUM" -f "${KERNEL}" > /dev/null
+	"$RMTICHKSUM" -f "${FILESYSTEM}" > /dev/null
+
+	mkdir -p "$KERNEL_DIR"
+
+	filesystem_size=$(stat -c%s ${FILESYSTEM})
+	if [ $filesystem_size -ne 0 ]; then
+		RAW_KERNEL="${KERNEL}"
+
+		echo "unpacking update firmware"
+		modunsqfs "${KERNEL_DIR}/squashfs" "$FILESYSTEM"
+		if [ -e "${KERNEL_DIR}/squashfs/${FILESYSTEM_CORE_IMAGE}" ]; then
+			FILESYSTEM="${KERNEL_DIR}/squashfs/${FILESYSTEM_CORE_IMAGE}"
+		else
+			error 1 "cannot find filesystem_core.squashfs"
+		fi
+	else
+		FILESYSTEM="${RAW_FILESYSTEM}"
+
+		echo "splitting kernel image"
+		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
 	fi
 
-	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${KERNEL_IMAGE}" > /dev/null
-
-	echo "splitting kernel image"
-	mkdir "$KERNEL_DIR"
-	( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
-
-	if [ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ]; then
-		error 1 "kernel splitting failed"
-	fi
+	[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "kernel splitting failed"
 
 	echo "unpacking filesystem image"
 	modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
