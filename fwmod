@@ -131,6 +131,7 @@ TOOLS_SUBDIR="tools"
 SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
 FILESYSTEM_SUBDIR="filesystem"
+FILESYSTEM_CORE_SUBDIR="filesystem_core"
 AVMPLUGINS_SUBDIR="plugins.image"
 EXTERNAL_SUBDIR="external"
 KERNEL_SUBDIR="kernel"
@@ -151,7 +152,8 @@ FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 RMTICHKSUM_TOOL="rmtichksum"
 MAKEDEVS_TOOL="makedevs"
-UNSQUASHFS_TOOL="unsquashfs3-lzma"
+UNSQUASHFS_TOOL="unsquashfs3"
+UNSQUASHFS_LZMA_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
 
 MKSQUASHFS_OPTIONS="-noappend -all-root -info"
@@ -162,8 +164,10 @@ TAR_TOOL="tar"
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
 EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
 UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
+UNSQUASHFS_LZMA="${TOOLS_DIR}/${UNSQUASHFS_LZMA_TOOL}"
 FINDSQUASHFS="${TOOLS_DIR}/${FINDSQUASHFS_TOOL}"
 MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL}"
+MKSQUASHFS_LZMA="${TOOLS_DIR}/${MKSQUASHFS_LZMA_TOOL}"
 TICHKSUM="${TOOLS_DIR}/${TICHKSUM_TOOL}"
 RMTICHKSUM="${TOOLS_DIR}/${RMTICHKSUM_TOOL}"
 MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
@@ -223,11 +227,6 @@ else
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 fi
 
-if [ "$FREETZ_TYPE_WLAN_3370" == "y" ]; then
-	UNSQUASHFS_TOOL="unsquashfs3"
-	MKSQUASHFS_TOOL="mksquashfs3"
-fi
-
 # Dot-include 'modpatch' shell function
 . "${TOOLS_DIR}/freetz_patch"
 
@@ -257,6 +256,7 @@ fi
 ORG_DIR="${DIR}/original"
 FIRMWARE_DIR="${ORG_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_DIR="${ORG_DIR}/${FILESYSTEM_SUBDIR}"
+FILESYSTEM_CORE_DIR="${ORG_DIR}/${FILESYSTEM_CORE_SUBDIR}"
 KERNEL_DIR="${ORG_DIR}/${KERNEL_SUBDIR}"
 AVMPLUGINS_DIR="${KERNEL_DIR}/${AVMPLUGINS_SUBDIR}"
 VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
@@ -293,28 +293,28 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	mkdir -p "$KERNEL_DIR"
 
-	filesystem_size=$(stat -c%s ${FILESYSTEM})
-	if [ $filesystem_size -ne 0 ]; then
+	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		RAW_KERNEL="${KERNEL}"
 
-		echo "unpacking update firmware"
-		modunsqfs "${KERNEL_DIR}/squashfs" "$FILESYSTEM"
-		if [ -e "${KERNEL_DIR}/squashfs/${FILESYSTEM_CORE_IMAGE}" ]; then
-			FILESYSTEM="${KERNEL_DIR}/squashfs/${FILESYSTEM_CORE_IMAGE}"
-		else
-			error 1 "cannot find filesystem_core.squashfs"
-		fi
+		echo "unpacking update image"
+		modunsqfs "$FILESYSTEM_CORE_DIR" "$FILESYSTEM"
+		FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
+
+		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "kernel splitting failed"
+
+		echo "unpacking filesystem image"
+		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
 	else
 		FILESYSTEM="${RAW_FILESYSTEM}"
 
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
+
+		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "kernel splitting failed"
+
+		echo "unpacking filesystem image"
+		modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM"
 	fi
-
-	[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "kernel splitting failed"
-
-	echo "unpacking filesystem image"
-	modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
 
 	if [ -r "$AVMPLUGINS" ]; then
 		echo0 "unpacking AVM plugins"

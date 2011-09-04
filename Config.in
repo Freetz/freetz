@@ -844,6 +844,14 @@ config FREETZ_HAS_DECT
 	help
 		Select this if you have a box with DECT.
 
+config FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE
+	bool "Has update filesystem image"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_WLAN_3370
+	default n
+	help
+		Select this if you have a box with an update filesystem image.
+
 config FREETZ_HAS_OPENSSL_LIBS
 	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
 	default n		if \
@@ -1119,7 +1127,7 @@ config FREETZ_DL_KERNEL_SOURCE
 	default "fritzbox7320-source-files-04.86.tar.gz"	if	FREETZ_AVM_VERSION_7320_04_86
 	default "fritz_box_fon_wlan_7390_source_files.04.91.tar.gz"	if	FREETZ_AVM_VERSION_7390_04_90
 	default "fritz_box_fon_wlan_7390_source_files.05.05.tar.gz"	if	FREETZ_AVM_VERSION_7390_05_05
-	default "fritzbox3370-source-files-05.06.tar.gz"	if	FREETZ_AVM_VERSION_3370_05_06
+	default "fritz_box_wlan_3370_source_files.05.06.tar.gz"	if	FREETZ_AVM_VERSION_3370_05_06
 	default "GPL-r7203-4mb_26-tar.bz2"			if	FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_KERNEL_SOURCE_MD5
@@ -1990,7 +1998,8 @@ config FREETZ_TARGET_ARCH_BE
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_WLAN_3370
 
 config FREETZ_TARGET_ARCH
 	string
