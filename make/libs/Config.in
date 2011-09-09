@@ -1,3 +1,10 @@
+menu "Apache Portable Runtime libs"
+
+source make/libs/apr/Config.in
+source make/libs/apr-util/Config.in
+
+endmenu ### "Apache Portable Runtime libs"
+
 menu "C++"
 
 config FREETZ_LIB_STDCXXLIB
@@ -14,52 +21,62 @@ config FREETZ_LIB_STDCXXLIB_WITH_WCHAR
 source make/libs/libstdcxx/Config.in
 source make/libs/uclibcxx/Config.in
 
-endmenu
+endmenu ### "C++"
 
+menu "Charsets & Internationalization"
+
+source make/libs/libiconv/Config.in
+source make/libs/gettext/Config.in
+
+endmenu ### "Charsets & Internationalization"
 
 menu "Crypto & SSL"
 
-comment "Math -----------------------------------"
-
-source make/libs/gmp/Config.in
-source make/libs/mpfr/Config.in
-source make/libs/mpc/Config.in
-
 comment "GnuPG ----------------------------------"
-
 source make/libs/libgpg-error/Config.in
 source make/libs/libgcrypt/Config.in
 
-comment "SSL ------------------------------------"
+comment "GnuTLS ---------------------------------"
+source make/gnutls/Config.in.libs
+source make/libs/libtasn1/Config.in
 
+comment "SSL ------------------------------------"
 source make/libs/cyassl/Config.in
 source make/libs/matrixssl/Config.in
 source make/libs/polarssl/Config.in
 source make/libs/openssl/Config.in
 source make/libs/libavmhmac/Config.in
 
-comment "GnuTLS ---------------------------------"
-
-source make/gnutls/Config.in.libs
-source make/libs/libtasn1/Config.in
-
-endmenu
+endmenu ### "Crypto & SSL"
 
 menu "Data compression"
 
 source make/libs/lzo/Config.in
 source make/libs/zlib/Config.in
 
-endmenu
+endmenu ### "Data compression"
+
+menu "Database"
+
+source make/libs/db/Config.in
+source make/sqlite/Config.in.libs
+
+endmenu ### "Database"
+
+menu "File systems"
 
 source make/e2fsprogs/Config.in.libs
+source make/fuse/Config.in.libs
+source make/ntfs/Config.in.libs
+
+endmenu ### "File systems"
 
 menu "GLib"
 
 source make/libs/glib/Config.in
 source make/libs/glib2/Config.in
 
-endmenu
+endmenu ### "GLib"
 
 menu "Graphics & fonts"
 
@@ -72,91 +89,128 @@ source make/libs/gd/Config.in
 source make/libs/openjpeg/Config.in
 source make/netpbm/Config.in.libs
 
-endmenu
+endmenu ### "Graphics & fonts"
 
-menu Multimedia
+menu "Multi precision arithmetic libs"
+
+source make/libs/gmp/Config.in
+source make/libs/mpfr/Config.in
+source make/libs/mpc/Config.in
+
+endmenu ### "Multi precision arithmetic libs"
+
+menu "Multimedia"
+
+menu "Audio and video codecs"
+
+menu "Audio codecs"
+source make/libs/flac/Config.in
+source make/libs/libmad/Config.in
+source make/libs/libogg/Config.in
+endmenu
 
 source make/ffmpeg/Config.in.libs
 
-menu Ogg/Vorbis
-
-source make/libs/libogg/Config.in
+menu "Video codecs"
+comment "Vorbis video codec ---------------------"
 source make/libs/libvorbis/Config.in
-
 endmenu
 
-source make/libs/flac/Config.in
+endmenu ## "Audio and video codecs"
+
+menu "ID3 tag reading libs"
+
 source make/libs/libid3tag/Config.in
-source make/libs/libmad/Config.in
 source make/libs/taglib/Config.in
 
-endmenu
+endmenu ## "ID3 tag reading libs"
+
+endmenu ### "Multimedia"
 
 menu "ncurses"
 
 source make/libs/ncurses/Config.in
 
-endmenu
+endmenu ### "ncurses"
+
+menu "Networking"
+
+comment "ATM ------------------------------------"
+source make/libs/linux-atm/Config.in
+
+comment "Bluetooth ------------------------------"
+source make/libs/bluez-libs/Config.in
+source make/libs/openobex/Config.in
+
+comment "ISDN & CAPI ----------------------------"
+source make/libs/libcapi/Config.in
+
+comment "Misc networking ------------------------"
+source make/libs/libdnet/Config.in
+source make/libs/libpcap/Config.in
+source make/libs/libnet/Config.in
+source make/libs/liboping/Config.in
+source make/libs/libosip2/Config.in
+
+endmenu ### "Networking"
 
 menu "Readline"
 
 source make/libs/readline/Config.in
 
-endmenu
+endmenu ### "Readline"
+
+menu "Regular expressions"
+
+source make/libs/pcre/Config.in
+
+endmenu ### "Regular expressions"
 
 menu "uClibc"
 
 source make/libs/uclibc/Config.in
 
-endmenu
+endmenu ### "uClibc"
 
-menu "XML/XSLT"
+menu "USB & FTDI"
+
+source make/libs/libusb/Config.in
+source make/libs/libusb1/Config.in
+source make/libs/libftdi/Config.in
+
+endmenu ### "USB & FTDI"
+
+menu "Web and WebDAV"
+
+source make/curl/Config.in.libs
+source make/libs/js/Config.in
+source make/libs/neon/Config.in
+
+endmenu ### "Web and WebDAV"
+
+menu "XML & XSLT"
 
 source make/libs/expat/Config.in
 source make/libs/libxml2/Config.in
 source make/xsltproc/Config.in.libs
 
-endmenu
+endmenu ### "XML & XSLT"
 
-source make/libs/apr/Config.in
-source make/libs/apr-util/Config.in
-source make/libs/db/Config.in
-source make/libs/bluez-libs/Config.in
-source make/libs/libcapi/Config.in
 source make/libs/libgcc_s/Config.in
 source make/libs/libconfig/Config.in
-source make/curl/Config.in.libs
 source make/libs/libdaemon/Config.in
 source make/libs/devmapper/Config.in
-source make/libs/libdnet/Config.in
 source make/libs/libelf/Config.in
 source make/libs/libevent/Config.in
 source make/libs/libffi-sable/Config.in
 source make/libs/libfreetz/Config.in
-source make/libs/libftdi/Config.in
-source make/fuse/Config.in.libs
-source make/libs/libiconv/Config.in
-source make/libs/gettext/Config.in
-source make/libs/js/Config.in
 source make/libs/libtool/Config.in
 source make/lua/Config.in.libs
-source make/libs/neon/Config.in
-source make/libs/libnet/Config.in
-source make/ntfs/Config.in.libs
-source make/libs/openobex/Config.in
-source make/libs/liboping/Config.in
-source make/libs/libosip2/Config.in
-source make/libs/libpcap/Config.in
-source make/libs/pcre/Config.in
 source make/libs/pjproject/Config.in
 source make/libs/popt/Config.in
 source make/libs/protobuf-c/Config.in
 source make/rrdtool/Config.in.libs
 source make/slang/Config.in.libs
-source make/sqlite/Config.in.libs
 source make/libs/libsynce/Config.in
 source make/libs/sysfsutils/Config.in
-source make/libs/libusb/Config.in
-source make/libs/libusb1/Config.in
-source make/libs/linux-atm/Config.in
 source make/libs/wxWidgets/Config.in
