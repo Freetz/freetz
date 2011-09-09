@@ -20,4 +20,3 @@ mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
 modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-IAD_3331_7170.patch" || exit 2
-
