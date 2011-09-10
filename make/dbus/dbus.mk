@@ -15,6 +15,18 @@ $(PKG)_DEPENDS_ON := expat
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-abstract-sockets
+$(PKG)_CONFIGURE_OPTIONS += --disable-ansi
+$(PKG)_CONFIGURE_OPTIONS += --disable-asserts
+$(PKG)_CONFIGURE_OPTIONS += --disable-console-owner-file
+$(PKG)_CONFIGURE_OPTIONS += --disable-doxygen-docs
+$(PKG)_CONFIGURE_OPTIONS += --disable-compiler_coverage
+$(PKG)_CONFIGURE_OPTIONS += --disable-selinux
+$(PKG)_CONFIGURE_OPTIONS += --disable-tests
+$(PKG)_CONFIGURE_OPTIONS += --disable-verbose-mode
+$(PKG)_CONFIGURE_OPTIONS += --disable-xml-docs
 $(PKG)_CONFIGURE_OPTIONS += --with-x=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-silent-rules
 $(PKG)_CONFIGURE_OPTIONS += --disable-option-checking
