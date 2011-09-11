@@ -40,7 +40,7 @@ $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(DBUS_DIR)
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
-	$(SUBMAKE) -C $(DBUS_DIR) \
+	$(SUBMAKE) -C $(DBUS_DIR)/dbus \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
