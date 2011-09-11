@@ -1,0 +1,17 @@
+<!--
+Use this, if you want to announce a afp server sitting on a remote
+network. Announcements will be made on your local network. Be sure
+that "remotehostname.local" is a resolveable name for your local
+network. It will not work using IP-addresses.
+
+<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+ <name replace-wildcards="no">Remote Hostname</name>
+ <service>
+  <type>_afpovertcp._tcp</type>
+  <host-name>remotehostname.local</host-name>
+  <port>548</port>
+ </service>
+</service-group>
+-->

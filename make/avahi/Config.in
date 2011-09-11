@@ -1,0 +1,18 @@
+config FREETZ_PACKAGE_AVAHI
+	bool "Avahi 0.6.30"
+	select FREETZ_LIB_libexpat
+	select FREETZ_LIB_libdaemon
+	select FREETZ_LIB_libpthread
+	select FREETZ_PACKAGE_DBUS
+	select FREETZ_LIB_libdbus
+	default n
+	help
+		An mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf) implementation
+		(library).  Avahi is a system which facilitates service
+		discovery on a local network -- this means that you can plug
+		your laptop or computer into a network and instantly be able
+		to view other people who you can chat with, find printers to
+		print to or find files being shared. This kind of technology
+		is already found in MacOS X (branded 'Rendezvous', 'Bonjour'
+		and sometimes 'ZeroConf') and is very convenient.
+
