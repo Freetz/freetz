@@ -82,7 +82,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON --input_file /mod/etc/$DAEMON.conf 2>/dev/null
+	modlib_startdaemon $DAEMON --pid_file $PID_FILE --input_file /mod/etc/$DAEMON.conf 2>/dev/null
 }
 
 case $1 in
