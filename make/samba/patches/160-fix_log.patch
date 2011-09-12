@@ -5,7 +5,18 @@
  		pname++;
  
 -	pstr_sprintf(logfile, "%s/log.%s", arg, pname);
-+	pstr_sprintf(logfile, "%s/log/%s.log", arg, pname);
++	pstr_sprintf(logfile, "%s/%s.log", arg, pname);
  	lp_set_logfile(logfile);
  }
  
+--- source/nmbd/nmbd.c	2009-09-30 14:21:56.000000000 +0200
++++ source/nmbd/nmbd.c	2011-09-12 11:43:07.000000000 +0200
+@@ -680,7 +680,7 @@
+ 	sys_srandom(time(NULL) ^ sys_getpid());
+ 	
+ 	if (!override_logfile) {
+-		slprintf(logfile, sizeof(logfile)-1, "%s/log.nmbd", dyn_LOGFILEBASE);
++		slprintf(logfile, sizeof(logfile)-1, "%s/nmbd.log", dyn_LOGFILEBASE);
+ 		lp_set_logfile(logfile);
+ 	}
+ 	
