@@ -186,7 +186,8 @@ choice
 		bool "Custom"
 		depends on FREETZ_SHOW_ADVANCED
 		select FREETZ_DL_OVERRIDE
-endchoice
+
+endchoice # "Hardware type" #
 
 config FREETZ_TYPE_FON_WLAN_7270
 	depends on \
@@ -239,7 +240,8 @@ choice
 			FREETZ_TYPE_FON_WLAN_7390 || \
 			FREETZ_TYPE_FON_WLAN_7570 \
 			)
-endchoice
+
+endchoice # "Firmware language" #
 
 config FREETZ_TYPE_LANGUAGE
 	string
@@ -273,7 +275,8 @@ config FREETZ_TYPE_LANGUAGE
 #			FREETZ_TYPE_FON_WLAN_7390
 #		help
 #			Labor Preview
-#endchoice
+#
+#endchoice # "Labor version" #
 
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for \"alien\" hardware"
@@ -290,17 +293,17 @@ config FREETZ_TYPE_ALIEN_HARDWARE
 choice
 	prompt "Alien hardware type"
 	depends on FREETZ_TYPE_ALIEN_HARDWARE
-	#default FREETZ_TYPE_SINUS_W500V_7150 if FREETZ_TYPE_FON_7150
+#	default FREETZ_TYPE_SINUS_W500V_7150 if FREETZ_TYPE_FON_7150
 	default FREETZ_TYPE_SPEEDPORT_W701V_7170 if FREETZ_TYPE_FON_WLAN_7170
 	default FREETZ_TYPE_FON_WLAN_7240_7270 if FREETZ_TYPE_FON_WLAN_7270
 
-	#config FREETZ_TYPE_SINUS_W500V_7150
-	#	bool "Sinus W500V"
-	#	depends on FREETZ_TYPE_FON_7150
-	#	select FREETZ_MODULE_jffs2
-	#	help
-	#		Enable this to compile a mod image for T-Com Sinus W500V based
-	#		on a 7150 image.
+#	config FREETZ_TYPE_SINUS_W500V_7150
+#		bool "Sinus W500V"
+#		depends on FREETZ_TYPE_FON_7150
+#		select FREETZ_MODULE_jffs2
+#		help
+#			Enable this to compile a mod image for T-Com Sinus W500V based
+#			on a 7150 image.
 
 	config FREETZ_TYPE_SPEEDPORT_W701V_7170
 		bool "W701V"
@@ -392,14 +395,14 @@ choice
 		bool "7270 v1"
 		depends on FREETZ_TYPE_FON_WLAN_7270 && FREETZ_REPLACE_KERNEL_AVAILABLE
 		select FREETZ_REPLACE_KERNEL
-		#select FREETZ_REMOVE_AVM_VPN
-		#select FREETZ_REMOVE_CAPIOVERTCP
-		#select FREETZ_REMOVE_NTFS
-		#select FREETZ_REMOVE_SMBD
-		#select FREETZ_REMOVE_UMTSD
-		#select FREETZ_REMOVE_VOIPD
-		#select FREETZ_REMOVE_VOIP_ISDN
-		#select FREETZ_REMOVE_WEBDAV
+#		select FREETZ_REMOVE_AVM_VPN
+#		select FREETZ_REMOVE_CAPIOVERTCP
+#		select FREETZ_REMOVE_NTFS
+#		select FREETZ_REMOVE_SMBD
+#		select FREETZ_REMOVE_UMTSD
+#		select FREETZ_REMOVE_VOIPD
+#		select FREETZ_REMOVE_VOIP_ISDN
+#		select FREETZ_REMOVE_WEBDAV
 		help
 			Enable this to compile a mod image for FritzBox FON WLAN 7270 v1 based
 			on a 7270 v2 image.
@@ -419,7 +422,7 @@ choice
 			in the 7170_HN bootloader.
 			Initial flashing might only be possible via ./tools/push_firmware
 
-endchoice
+endchoice # "Alien hardware type" #
 
 config FREETZ_AVM_VERSION_STRING
 	string
@@ -456,7 +459,8 @@ choice
 
 	config FREETZ_TYPE_ANNEX_B
 		bool "B"
-endchoice
+
+endchoice # prompt "Annex" #
 
 config FREETZ_TYPE_PREFIX
 	string
@@ -555,6 +559,7 @@ config FREETZ_SHOW_ADVANCED
 		for experienced users who really know what they are doing
 
 if FREETZ_SHOW_ADVANCED
+
 comment "Replace kernel (currently not available)"
 	depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
 
@@ -582,7 +587,8 @@ config FREETZ_REPLACE_KERNEL
 	default n
 	help
 		Replace AVM kernel with self-built kernel.
-endif
+
+endif # FREETZ_SHOW_ADVANCED #
 
 config FREETZ_TARGET_IPV6_SUPPORT
 	bool "Enable IPv6 support"
@@ -1015,7 +1021,8 @@ choice
 
 	config FREETZ_LANG_EN
 		bool "en - english"
-endchoice
+
+endchoice # "Freetz Language" #
 
 config FREETZ_LANG_STRING
 	string
@@ -1026,7 +1033,7 @@ menu "Patches"
 
 source patches/Config.in
 
-endmenu
+endmenu # "Patches" #
 
 menu "Package selection"
 
@@ -1039,7 +1046,7 @@ menu "Package selection"
 
 source make/Config.in
 
-endmenu
+endmenu # "Package selection" #
 
 menu "Advanced options"
 
@@ -1478,6 +1485,7 @@ config FREETZ_DL_SOURCE2_CONTAINER_MD5
 	default "e13231dcfba56505ebf7bac4ee72af75"
 
 menu "Build system options"
+
 config FREETZ_VERBOSITY_LEVEL
 	int "Verbosity level (0-2)"
 	default 2
@@ -1514,9 +1522,11 @@ config FREETZ_DL_SITE_USER
 		Note: We recommend you to only set a user-defined value here, if necessary.
 		Necessary means that the regular Freetz mirrors are currently unavailable
 		or the desired package cannot be found on either of them.
-endmenu
+
+endmenu # "Build system options" #
 
 menu "Freetz customisation"
+
 	config FREETZ_OPTIONS_ETCSERVICES
 		bool "add /etc/services"
 		default y
@@ -1547,7 +1557,8 @@ menu "Freetz customisation"
 
 		config FREETZ_STYLE_GREY
 			bool "Alternative - grey status-bars"
-	endchoice
+
+	endchoice # "Freetz Style" #
 
 	config FREETZ_STYLE
 		string
@@ -1574,7 +1585,8 @@ menu "Freetz customisation"
 
 		config FREETZ_FAVICON_HANSOLO
 			bool "han-solo's favicons"
-	endchoice
+	
+	endchoice # "Favicon" #
 
 	config FREETZ_FAVICON_STRING
 		string
@@ -1597,14 +1609,14 @@ menu "Freetz customisation"
 		config FREETZ_TAGGING_CUMA
 			bool "cuma's tagging"
 
-	endchoice
+	endchoice # "Tagging" #
 
 	config FREETZ_TAGGING_STRING
 		string
 		default "none"			if FREETZ_TAGGING_NONE
 		default "cuma"			if FREETZ_TAGGING_CUMA
 
-endmenu
+endmenu # "Freetz customisation" #
 
 menu "Additional image/box information"
 
@@ -1710,7 +1722,8 @@ config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
 		When checked causes options.cfg to be created as a separate file containing
 		a much smaller subset of options included in .config. This increases image
 		size by about 160 bytes but reduces memory footprint at run-time.
-endmenu
+
+endmenu # "Additional image/box information" #
 
 config FREETZ_AVMPLUGINS_ENABLED
 	bool "Integrate AVM Plugins into image"
@@ -1723,6 +1736,7 @@ config FREETZ_AVMPLUGINS_ENABLED
 		copied into RAM nor mounted with loop-devices.
 
 menu "Plugin selection"
+	
 	depends on FREETZ_AVMPLUGINS_ENABLED
 
 	comment "Select plugin(s) for insertion"
@@ -1771,7 +1785,8 @@ menu "Plugin selection"
 		default n
 		help
 			Integrates AVM's webdav
-endmenu
+
+endmenu # "Plugin selection" #
 
 
 comment "CAUTION: SQUASHFS blocksizes greater than 64 KB can cause extensive memory usage and lead to an unstable box."
@@ -1824,23 +1839,32 @@ if FREETZ_SHOW_ADVANCED \
 
 	config FREETZ_SQUASHFS_BLOCKSIZE_1048576
 		bool "1024 KB (EXPERIMENTAL)"
-endif
-endchoice
+
+endif # FREETZ_SHOW_ADVANCED #
+
+endchoice # "SquashFS block size" #
 
 menu "Kernel modules"
+
 	source kernel/Config.in
-endmenu
+
+endmenu # "Kernel modules" #
 
 menu "BusyBox options"
+
 	depends on FREETZ_REPLACE_BUSYBOX
 	source make/busybox/Config.in
-endmenu
+
+endmenu # "BusyBox options"#
 
 menu "Shared Libraries"
+	
 	source make/libs/Config.in
-endmenu
+
+endmenu # "Shared Libraries" #
 
 menu "Strip binaries and libs"
+
 config FREETZ_STRIP_BINARIES
 	bool "Strip leftover unstripped binaries"
 	default y
@@ -1859,9 +1883,11 @@ config FREETZ_STRIP_LIBRARIES
 		Note that this will make the system libraries incompatible
 		with most of the packages that are not selected during the
 		build process.
-endmenu
 
-menu External
+endmenu # "Strip binaries and libs" #
+
+menu "External"
+
 config EXTERNAL_ENABLED
 	bool "Enable external processing"
 	default n
@@ -1916,7 +1942,7 @@ config EXTERNAL_OWN_FILES
 source make/external.in
 source kernel/external.in
 
-endmenu
+endmenu # "External" #
 
 config FREETZ_TARGET_ARCH_LE
 	bool
@@ -1981,7 +2007,6 @@ config FREETZ_KERNEL_MAKE_PATH
 	string
 	default "toolchain/kernel/bin"
 
-
 menu "Toolchain options"
 
 choice
@@ -1996,10 +2021,11 @@ choice
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build toolchain (requires 4GB diskspace)"
-endchoice
+
+endchoice # "Toolchains" #
 
 source toolchain/Config.in
 
-endmenu
+endmenu # "Toolchain options" # 
 
-endmenu
+endmenu # "Advanced options" #
