@@ -148,6 +148,12 @@ if [ -n "$MAIN_URL" ]; then
     sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
     sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
     num_sites=2
+  elif [ ${MAIN_URL:0:8} == "@TELEKOM" ]; then
+    MAIN_URL=${MAIN_URL/@TELEKOM\//}
+    sites[0]=http://www.telekom.de/dlp/eki/downloads/$MAIN_URL
+    sites[1]=http://www.t-home.de/dlp/eki/downloads/$MAIN_URL
+    sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$MAIN_URL
+    num_sites=3
   else
     supportedVCSs="cvs|svn|git|bzr|hg|darcs"
     VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
