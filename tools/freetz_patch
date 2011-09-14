@@ -110,15 +110,16 @@ modpatch()
 		cd "$target_dir"
 		local timestamp="$(date --rfc-3339=seconds)"
 		for (( i=0; i<$file_count; i++ )); do
-			file="${files[i]}"
+			local _file="${files[i]}"
 			# If backup exists, but is unreadable and has a size of zero, it
 			# was created as a placeholder by 'patch -b' previously and can be
 			# safely deleted. It even must be deleted in order to avoid a diff
 			# error because it is unreadable.
-			[ -f "$file.orig" ] && [ ! -r "$file.orig" ] && [ ! -s "$file.orig" ] \
-				&& rm -f "$file.orig"
-			diff -Naur --label "$file	$timestamp" --label "$file	$timestamp" "$file.orig" "$file" >> "$patch_file"
-			rm -f "$file.orig"
+			[ -f "$_file.orig" ] && [ ! -r "$_file.orig" ] && [ ! -s "$_file.orig" ] \
+				&& rm -f "$_file.orig"
+			# Auto-fix possibly fuzzy patch by re-diffing patched file against original
+			diff -Naur --label "$_file	$timestamp" --label "$_file	$timestamp" "$_file.orig" "$_file" >> "$patch_file"
+			rm -f "$_file.orig"
 		done
 		cd - > /dev/null
 		echo2 "----------------------------------------------------------------------"
