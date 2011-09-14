@@ -4,15 +4,11 @@ check "$MOD_STOR_AUTORUNEND" yes:stor_autorunend
 check "$MOD_STOR_KILLBLOCKER" yes:stor_killblocker
 
 sec_begin 'Freetzmount'
-if [ -x "$(which findfs)" ]; then 
 cat << EOF
 <p>
 <input type="hidden" name="stor_uselabel" value="no">
 <input id="m1" type="checkbox" name="stor_uselabel" value="yes"$stor_uselabel_chk><label for="m1">$(lang de:"Partitionsname (falls vorhanden) als Mountpoint nutzen." en:"Use partition label (if defined) as mount point.")</label>
 </p>
-EOF
-fi
-cat << EOF
 <p>
 <input type="hidden" name="stor_autorunend" value="no">
 <input id="m2" type="checkbox" name="stor_autorunend" value="yes"$stor_autorunend_chk><label for="m2">$(lang de:"Automatisch autorun.sh und autoend.sh ausführen." en:"Run autorun.sh and autoend.sh automatically.")</label>

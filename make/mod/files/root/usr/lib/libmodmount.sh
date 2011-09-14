@@ -74,15 +74,12 @@ remove_swap() {
 
 # modified name generation for automatic mount point
 find_mnt_name() {
-	local findfs_bin="/sbin/findfs"
 	local retfind=0
 	local mnt_name=""
 	[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
 	local storage_prefix="${MOD_STOR_PREFIX-uStor}"
 	[ "$MOD_STOR_PREFIX"=="$storage_prefix" ] || retfind=10 # User defined prefix
-	if [ "$MOD_STOR_USELABEL" == "yes" ]; then
-		[ -x $findfs_bin ] && mnt_name="$($findfs_bin DEVL=$mnt_device | sed 's/ /_/g')"
-	fi
+	[ "$MOD_STOR_USELABEL" == "yes" ] && mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
 	if [ -z "$mnt_name" ]; then # Name was generated using prefix and numbers like uStorXY
 		mnt_name="$storage_prefix$(echo $1 | sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/')$3"
 	else # Name was generated using LABEL
@@ -102,14 +99,9 @@ mount_fs() {
 	[ $# -ge 3 ] && local rw_mode=$3 || local rw_mode=rw                      # read/write mode
 	[ $# -ge 4 ] && local ftp_uid=$4 || local ftp_uid=0                       # ftp user id
 	[ $# -ge 5 ] && local ftp_gid=$5 || local ftp_gid=0                       # ftp group id
-	local blkid_bin="$(which blkid)"
 	local err_mo=1                                                            # set mount error as default
 	local err_fst=1                                                           # set file system detection error as default
-	if [ -x "$blkid_bin" ]; then
-		local fs_type="$($blkid_bin $dev_node | sed -nr 's!.*TYPE="(.*)"!\1!p')" # fs type detection using blkid
-	else
-		local fs_type="cantdetect"                                            # blkid is not available
-	fi
+	local fs_type="$(blkid $dev_node | sed -nr 's!.*TYPE="(.*)"!\1!p')"       # fs type detection
 	[ -z "$fs_type" ] && local fs_type="unknown"                              # set unknown file system type if detection failed
 	case $fs_type in
 		vfat)

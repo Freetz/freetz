@@ -129,6 +129,7 @@ config FREETZ_PATCH_FREETZMOUNT
 		   and FTP users to actually write to their own home directories.
 		4. Avoid deleting whole filesystems on USB devices.
 		5. Enhanced behaviour during mounting and unmounting.
+		6. Provides mount-by-label feature.
 
 		It is highly recommended to select this patch.
 
@@ -206,14 +207,6 @@ config FREETZ_AUTOMOUNT_LINUXSWAP
 		This enables detection of linux-swap partitions.
 
 endif
-
-config FREETZ_PATCH_FREETZMOUNT_FINDFS
-	bool "Provide mount-by-label feature"
-	depends on FREETZ_PATCH_FREETZMOUNT
-	select FREETZ_BUSYBOX_FINDFS
-	default n
-	help
-		This option selects findfs which is required for the optional mount-by-label feature.
 
 config FREETZ_PATCH_MAXDEVCOUNT
 	bool "Raise the count of connectable usb device to 9"
