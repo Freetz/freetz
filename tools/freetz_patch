@@ -108,6 +108,7 @@ modpatch()
 		local patch_file="$(realpath "$patch_file")"
 		mv -f "$patch_file" "$patch_file.orig"
 		cd "$target_dir"
+		local timestamp="$(date --rfc-3339=seconds)"
 		for (( i=0; i<$file_count; i++ )); do
 			file="${files[i]}"
 			# If backup exists, but is unreadable and has a size of zero, it
@@ -116,7 +117,7 @@ modpatch()
 			# error because it is unreadable.
 			[ -f "$file.orig" ] && [ ! -r "$file.orig" ] && [ ! -s "$file.orig" ] \
 				&& rm -f "$file.orig"
-			diff -Naur --label "$file" --label "$file" "$file.orig" "$file" >> "$patch_file"
+			diff -Naur --label "$file	$timestamp" --label "$file	$timestamp" "$file.orig" "$file" >> "$patch_file"
 			rm -f "$file.orig"
 		done
 		cd - > /dev/null
