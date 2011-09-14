@@ -189,6 +189,7 @@ for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
 done
 
 # Loop over servers until a download succeeds or all requests have failed.
+IFS=$'\n'
 for i in ${sites[@]}; do
   if [ ${DL_DIR:0:5} == "check" ]; then
     do_check "$i/$DL_FILE"
@@ -213,6 +214,7 @@ for i in ${sites[@]}; do
   fi
   exit 0
 done
+unset IFS
 
 if [ -n "$VCS" ]; then
   echo
