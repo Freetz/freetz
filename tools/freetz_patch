@@ -78,12 +78,16 @@ modpatch()
 	local backup
 	local do_fix
 	local files
+	local file_count
 	if [ "$_auto_fix_patches" == "y" ]; then
 		local output=$(patch --dry-run -d "$target_dir" -p0 < "$patch_file" 2> /dev/null)
 		if [ $? -eq 0 ] && echo "$output" | grep -E '^Hunk ' > /dev/null 2>&1; then
 			do_fix="y"
 			backup="-b "
-			files=$(echo "$output" | sed -n -r 's/^patching file (.*)/\1/p')
+			IFS=$'\n'
+			files=( $(lsdiff -n "$patch_file" | sed -r 's/^[0-9]+[[:space:]]+(.*)/\1/') )
+			unset IFS
+			file_count=${#files[@]}
 		fi
 	fi
 	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
@@ -101,10 +105,11 @@ modpatch()
 		error 2 "modpatch: Error in patch-file $patch_file"
 	elif [ "$_auto_fix_patches" == "y" ] && [ "$do_fix" == "y" ]; then
 		echo2 "auto-fixing fuzzy patch file $patch_file"
-		local patch_file=$(realpath "$patch_file")
+		local patch_file="$(realpath "$patch_file")"
 		mv -f "$patch_file" "$patch_file.orig"
 		cd "$target_dir"
-		for file in $files; do
+		for (( i=0; i<$file_count; i++ )); do
+			file="${files[i]}"
 			# If backup exists, but is unreadable and has a size of zero, it
 			# was created as a placeholder by 'patch -b' previously and can be
 			# safely deleted. It even must be deleted in order to avoid a diff
