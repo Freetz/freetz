@@ -77,17 +77,11 @@ modpatch()
 	## md5 end
 	local backup
 	local do_fix
-	local files
-	local file_count
 	if [ "$_auto_fix_patches" == "y" ]; then
 		local output=$(patch --dry-run -d "$target_dir" -p0 < "$patch_file" 2> /dev/null)
 		if [ $? -eq 0 ] && echo "$output" | grep -E '^Hunk ' > /dev/null 2>&1; then
 			do_fix="y"
 			backup="-b "
-			IFS=$'\n'
-			files=( $(lsdiff -n "$patch_file" | sed -r 's/^[0-9]+[[:space:]]+(.*)/\1/') )
-			unset IFS
-			file_count=${#files[@]}
 		fi
 	fi
 	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
@@ -104,12 +98,38 @@ modpatch()
 	if [ $STATUS -gt 0 ]; then
 		error 2 "modpatch: Error in patch-file $patch_file"
 	elif [ "$_auto_fix_patches" == "y" ] && [ "$do_fix" == "y" ]; then
+		# Create (temporary) clean patch file copy without any comments in between change sets
+		filtered_file="$(mktemp _filtered_patch.XXXXXXXX)" || exit 1
+		filterdiff "$patch_file" > "$filtered_file"
+		# Arrays of files to be patched and lines where patches begin in orginal and clean patch file
+		IFS=$'\n'
+		local files=( $(lsdiff -n "$patch_file" | sed -r 's/^[0-9]+[[:space:]]+(.*)/\1/') )
+		local patch_lines=( $(lsdiff -n "$patch_file" | grep -Eo '^[0-9]+') )
+		local filtered_lines=( $(lsdiff -n "$filtered_file" | grep -Eo '^[0-9]+') )
+		unset IFS
+		rm -f "$filtered_file"
+		# Number of files to be patched should be the same in original and clean patch file
+		local file_count=${#files[@]}
+		test $file_count = ${#patch_lines[@]} -a $file_count = ${#filtered_lines[@]} || exit 1
 		echo2 "auto-fixing fuzzy patch file $patch_file"
+		#echo2 "    file_count     = $file_count"
+		#echo2 "    files          = ${files[*]}"
+		#echo2 "    patch_lines    = ${patch_lines[*]}"
+		#echo2 "    filtered_lines = ${filtered_lines[*]}"
 		local patch_file="$(realpath "$patch_file")"
 		mv -f "$patch_file" "$patch_file.orig"
 		cd "$target_dir"
 		local timestamp="$(date --rfc-3339=seconds)"
 		for (( i=0; i<$file_count; i++ )); do
+			# Locate patch comment for each file
+			local delta=$(( patch_lines[i] - filtered_lines[i] ))
+			local hdr_len=$(( delta - delta_old ))
+			local from=$(( patch_lines[i] - hdr_len ))
+			local to=$(( from + hdr_len - 1 ))
+			local delta_old=$delta
+			#echo2 "    $delta, $hdr_len, $from, $to"
+			# Cut & paste comment from original into auto-fixed patch file
+			eval "sed -n '$from,${to}p' \"\$patch_file.orig\" >> \"\$patch_file\""
 			local _file="${files[i]}"
 			# If backup exists, but is unreadable and has a size of zero, it
 			# was created as a placeholder by 'patch -b' previously and can be
