@@ -206,6 +206,13 @@ config FREETZ_AUTOMOUNT_LINUXSWAP
 	help
 		This enables detection of linux-swap partitions.
 
+config FREETZ_AUTOMOUNT_LUKS
+	bool "luks"
+    select FREETZ_BUSYBOX_VOLUMEID_LUKS
+	default n
+	help
+		This enables detection (not mounting) of luks partitions.
+
 endif
 
 config FREETZ_PATCH_MAXDEVCOUNT

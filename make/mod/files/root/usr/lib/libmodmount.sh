@@ -180,6 +180,10 @@ do_mount_locked() {
 		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done                 # led
 	else
 		case "$fs_type" in
+		"crypto_LUKS")
+				eventadd 140 "LUKS ($mnt_dev) detected/erkannt, NOT/NICHT"
+				log_freetz notice "LUKS partition $mnt_dev was detected"
+			;;
 		"ntfs")
 			case $err_fs_mount in
 				15)                                                           # unclean unmount
@@ -202,19 +206,19 @@ do_mount_locked() {
 			case "$err_fs_mount" in
 				17)                                                           # fine
 					eventadd 140 "SWAP ($mnt_dev)"
-					log_freetz notice "SWAP partition $mnt_name ($mnt_dev) was mounted successfully"
+					log_freetz notice "SWAP partition $mnt_dev was mounted successfully"
 					;;
 				19)                                                           # other partition
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz notice "SWAP partition $mnt_name ($mnt_dev) was not mounted, not the defined swap-partition"
+					log_freetz notice "SWAP partition $mnt_dev was not mounted, not the defined swap-partition"
 					;;
 				20)                                                           # disabled
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz notice "SWAP partition $mnt_name ($mnt_dev) was not mounted, auto-mode is disabled"
+					log_freetz notice "SWAP partition $mnt_dev was not mounted, auto-mode is disabled"
 					;;
 				*)                                                            # error
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz err "SWAP partition $mnt_name ($mnt_dev) could not be mounted"
+					log_freetz err "SWAP partition $mnt_dev could not be mounted"
 					mnt_failure=1
 					;;
 			esac
