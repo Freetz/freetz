@@ -145,7 +145,7 @@ config FREETZ_USBSTORAGE_AUTOMOUNT
 if FREETZ_USBSTORAGE_AUTOMOUNT
 config FREETZ_AUTOMOUNT_EXT2
 	bool "ext2"
-    select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext2
 	default n
 	help
@@ -153,7 +153,7 @@ config FREETZ_AUTOMOUNT_EXT2
 
 config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
-    select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext3
 	default n
 	help
@@ -162,7 +162,7 @@ config FREETZ_AUTOMOUNT_EXT3
 config FREETZ_AUTOMOUNT_EXT4
 	bool "ext4"
 	depends on FREETZ_KERNEL_VERSION_2_6_28
-    select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext4
 	default n
 	help
@@ -170,30 +170,37 @@ config FREETZ_AUTOMOUNT_EXT4
 
 config FREETZ_AUTOMOUNT_FAT
 	bool "fat"
-    select FREETZ_BUSYBOX_VOLUMEID_FAT
+	select FREETZ_BUSYBOX_VOLUMEID_FAT
 	default n
 	help
 		This enables detection of fat partitions.
 
 config FREETZ_AUTOMOUNT_HFS_PLUS
 	bool "HFS+"
-    select FREETZ_BUSYBOX_VOLUMEID_HFS
+	select FREETZ_BUSYBOX_VOLUMEID_HFS
 	select FREETZ_MODULE_hfsplus
 	default n
 	help
 		This adds hfs+ module to your firmware.
 
+config FREETZ_AUTOMOUNT_LUKS
+	bool "luks"
+	select FREETZ_BUSYBOX_VOLUMEID_LUKS
+	default n
+	help
+		This enables detection (not mounting) of luks partitions.
+
 config FREETZ_AUTOMOUNT_NTFS
 	bool "NTFS"
 	select FREETZ_PACKAGE_NTFS if ! FREETZ_HAS_AVM_NTFS
-    select FREETZ_BUSYBOX_VOLUMEID_NTFS
+	select FREETZ_BUSYBOX_VOLUMEID_NTFS
 	default n
 	help
 		This adds ntfs-3g mount helper to your firmware.
 
 config FREETZ_AUTOMOUNT_REISER_FS
 	bool "ReiserFS"
-    select FREETZ_BUSYBOX_VOLUMEID_REISERFS
+	select FREETZ_BUSYBOX_VOLUMEID_REISERFS
 	select FREETZ_MODULE_reiserfs
 	default n
 	help
@@ -201,17 +208,10 @@ config FREETZ_AUTOMOUNT_REISER_FS
 
 config FREETZ_AUTOMOUNT_LINUXSWAP
 	bool "swap"
-    select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
+	select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
 	default n
 	help
 		This enables detection of linux-swap partitions.
-
-config FREETZ_AUTOMOUNT_LUKS
-	bool "luks"
-    select FREETZ_BUSYBOX_VOLUMEID_LUKS
-	default n
-	help
-		This enables detection (not mounting) of luks partitions.
 
 endif
 
