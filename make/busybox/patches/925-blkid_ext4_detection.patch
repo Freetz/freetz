@@ -1,0 +1,27 @@
+--- util-linux/volume_id/ext.c.orig	2011-09-15 14:12:38.000000000 +0200
++++ util-linux/volume_id/ext.c	2011-09-15 15:16:24.000000000 +0200
+@@ -39,6 +39,10 @@
+ 	uint8_t	volume_name[16];
+ } PACKED;
+ 
++#define EXT4_FEATURE_INCOMPAT_64BIT		0x0080
++#define EXT4_FEATURE_INCOMPAT_MMP		0x0100
++#define EXT3_FEATURE_INCOMPAT_EXTENTS		0x0040
++
+ #define EXT3_FEATURE_COMPAT_HAS_JOURNAL		0x00000004
+ #define EXT3_FEATURE_INCOMPAT_JOURNAL_DEV	0x00000008
+ #define EXT_SUPERBLOCK_OFFSET			0x400
+@@ -66,6 +70,13 @@
+ 	dbg("ext: label '%s' uuid '%s'", id->label, id->uuid);
+ 
+ #if ENABLE_FEATURE_BLKID_TYPE
++
++	if ((le32_to_cpu(es->feature_incompat) & EXT3_FEATURE_INCOMPAT_EXTENTS) != 0 ||
++	    (le32_to_cpu(es->feature_incompat) & EXT4_FEATURE_INCOMPAT_64BIT) != 0 ||
++	    (le32_to_cpu(es->feature_incompat) & EXT4_FEATURE_INCOMPAT_MMP) != 0)
++		id->type = "ext4";
++	else
++
+ 	if ((le32_to_cpu(es->feature_compat) & EXT3_FEATURE_COMPAT_HAS_JOURNAL) != 0)
+ 		id->type = "ext3";
+ 	else
