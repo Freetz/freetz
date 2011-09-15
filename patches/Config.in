@@ -113,9 +113,9 @@ comment "USB storage patches --------------------"
 config FREETZ_PATCH_FREETZMOUNT
 	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
 	select FREETZ_USBSTORAGE_AUTOMOUNT
-    select FREETZ_BUSYBOX_BLKID
-    select FREETZ_BUSYBOX_BLKID_TYPE
-    select FREETZ_BUSYBOX_VOLUMEID
+	select FREETZ_BUSYBOX_BLKID if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
+	select FREETZ_BUSYBOX_BLKID_TYPE
+	select FREETZ_BUSYBOX_VOLUMEID
 	default y
 	help
 		1. Replaces and deselects usb-storage patch.
