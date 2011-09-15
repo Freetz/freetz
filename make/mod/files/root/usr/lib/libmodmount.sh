@@ -112,6 +112,10 @@ mount_fs() {
 			mount -t $fs_type $dev_node $mnt_path -o noatime,nodiratime,rw,async
 			err_mo=$?
 			;;
+		hfs|hfsplus)
+			mount -t $fs_type $dev_node $mnt_path
+			err_mo=$?
+			;;
 		ntfs)
 			local ntfs_bin="/bin/ntfs-3g"
 			[ -x "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111

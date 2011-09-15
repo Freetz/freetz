@@ -1,0 +1,10 @@
+--- util-linux/volume_id/hfs.c	2011-09-15 14:12:38.000000000 +0200
++++ util-linux/volume_id/hfs.c	2011-09-15 17:15:34.000000000 +0200
+@@ -287,6 +287,7 @@
+  found:
+ //	volume_id_set_usage(id, VOLUME_ID_FILESYSTEM);
+ //	id->type = "hfsplus";
++	IF_FEATURE_BLKID_TYPE(id->type = "hfsplus";)
+ 
+ 	return 0;
+ }
