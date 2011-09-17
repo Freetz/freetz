@@ -1052,6 +1052,17 @@ config FREETZ_REMOVE_WLAN
 
 comment "Adds -----------------------------------"
 
+config FREETZ_REPLACE_DTRACE
+	bool "Replace dtrace"
+	depends on FREETZ_REMOVE_DTRACE
+	default n
+	help
+		Dtrace will be replaced by a symlink to /tmp/flash/mod/dtrace.
+		Activating this option lets you execute a custom action via
+		phone using #97*3* keycode sequence.
+
+comment "Additional patches ---------------------"
+
 config FREETZ_ADD_ANNEX_A_FIRMWARE
 	bool "Add Annex A firmware file"
 	depends on \
