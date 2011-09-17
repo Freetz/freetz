@@ -1,0 +1,43 @@
+#!/bin/sh
+
+DAEMON=avahi
+DAEMON_BIN=avahi-daemon
+
+. /etc/init.d/modlibrc
+
+DAEMON_USER=nobody
+DAEMON_GROUP=nobody
+
+start() {
+	modlib_startdaemon $DAEMON_BIN -D
+}
+
+case $1 in
+	load)
+		modreg daemon $DAEMON
+		if [ ! -d /tmp/flash/avahi ]; then
+			mkdir -p /tmp/flash/avahi
+			cp -a /etc/default.avahi/* /tmp/flash/avahi/
+		fi
+		
+		modlib_start $AVAHI_ENABLED 
+		;;
+	start)
+		start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [start|stop|restart|load|status]" 1>&2
+		exit 1
+                ;;
+esac
+
+exit 0

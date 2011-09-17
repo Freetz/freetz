@@ -1,4 +1,4 @@
 _cgi_help_url() {
 	local path=$1
-	echo "http://trac.freetz.org/wiki${path}"
+	echo "http://freetz.org/wiki${path}"
 }

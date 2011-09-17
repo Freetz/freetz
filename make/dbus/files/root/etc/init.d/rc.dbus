@@ -1,0 +1,48 @@
+#!/bin/sh
+
+DAEMON=dbus
+DAEMON_BIN=dbus-daemon
+
+. /etc/init.d/modlibrc
+
+DAEMON_USER=nobody
+DAEMON_GROUP=nobody
+
+start() {
+	modlib_startdaemon $DAEMON_BIN --system
+}
+
+case $1 in
+	load)
+		modlib_addgroup nobody
+		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
+		modreg daemon $DAEMON
+
+		if [ ! -d /tmp/flash/dbus-1 ]; then
+			mkdir -p /tmp/flash/dbus-1
+			cp -a /etc/default.dbus/* /tmp/flash/dbus-1/
+		fi
+		mkdir -p /var/run/dbus
+
+		modlib_start $DBUS_ENABLED
+		;;
+	start)
+		start
+		;;
+	stop)
+		modlib_stop
+                ;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [start|stop|restart|load|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

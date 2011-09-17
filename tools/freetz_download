@@ -41,16 +41,16 @@ do_download()
 {
   # $1 = target directory, $2 = full download URL
   echo
-  if [ "$DEBUG" == "1" ]; then echo "wget -nd -T 20 -t 3 --no-check-certificate --passive-ftp -P $1 $2"; fi
+  if [ "$DEBUG" == "1" ]; then echo "wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P \"$1\" \"$2\""; fi
   wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P "$1" "$2"
   wget_result=$?
   if [ "$wget_result" != "0" ]; then
-    echo "Download failed - $2  ->  error code $wget_result" >&2
+    echo "Download failed - \"$2\"  ->  error code $wget_result" >&2
     fname=$(basename $2)
     rm -f $1/$fname
     return $wget_result
   fi
-  echo "Download succeeded - $2  ->  saved to folder $1"
+  echo "Download succeeded - \"$2\"  ->  saved to folder \"$1\""
 }
 
 do_check()
@@ -115,11 +115,11 @@ MD5="$4"
 
 if [ "$DEBUG" == "1" ]; then
   echo "freetz_download parameters:"
-  echo "  DL_DIR=$1"
+  echo "  DL_DIR=$DL_DIR"
   echo "  DOT_CONFIG=$DOT_CONFIG"
-  echo "  DL_FILE=$3"
-  echo "  MAIN_URL=$4"
-  echo "  MD5=$5"
+  echo "  DL_FILE=$DL_FILE"
+  echo "  MAIN_URL=$MAIN_URL"
+  echo "  MD5=$MD5"
 fi
 
 num_sites=0
@@ -134,10 +134,10 @@ if [ -n "$MAIN_URL" ]; then
     done
   elif [ ${MAIN_URL:0:4} == "@AVM" ]; then
     MAIN_URL=${MAIN_URL/@AVM\//}
-    sites[0]=ftp://ftp.avm.de/$MAIN_URL
-    sites[1]=http://download.avm.de/$MAIN_URL
-    sites[2]=ftp://service.avm.de/$MAIN_URL
-    num_sites=3
+    sites[0]=ftp://ftp.avm.de/fritz.box/$MAIN_URL
+    sites[1]=http://download.avm.de/fritz.box/$MAIN_URL
+    #sites[2]=ftp://service.avm.de/$MAIN_URL # URL has no more a fritz.box sub-dir
+    num_sites=2
   elif [ ${MAIN_URL:0:4} == "@GNU" ]; then
     MAIN_URL=${MAIN_URL/@GNU\//}
     sites[0]=http://ftpmirror.gnu.org/$MAIN_URL # automatically chooses a nearby and up-to-date mirror
@@ -148,6 +148,12 @@ if [ -n "$MAIN_URL" ]; then
     sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
     sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
     num_sites=2
+  elif [ ${MAIN_URL:0:8} == "@TELEKOM" ]; then
+    MAIN_URL=${MAIN_URL/@TELEKOM\//}
+    sites[0]=http://www.telekom.de/dlp/eki/downloads/$MAIN_URL
+    sites[1]=http://www.t-home.de/dlp/eki/downloads/$MAIN_URL
+    sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$MAIN_URL
+    num_sites=3
   else
     supportedVCSs="cvs|svn|git|bzr|hg|darcs"
     VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
@@ -183,6 +189,7 @@ for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
 done
 
 # Loop over servers until a download succeeds or all requests have failed.
+IFS=$'\n'
 for i in ${sites[@]}; do
   if [ ${DL_DIR:0:5} == "check" ]; then
     do_check "$i/$DL_FILE"
@@ -195,7 +202,7 @@ for i in ${sites[@]}; do
       continue
     fi
     if [ -n "$MD5" ]; then
-      FILE_MD5=( $(md5sum "$DL_DIR/$DL_FILE") )
+      FILE_MD5=$(md5sum "$DL_DIR/$DL_FILE" | sed 's/ .*//')
       if [ "$(echo $MD5 | tr A-Z a-z)" != "$FILE_MD5" ]; then
         echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
         rm -f "$DL_DIR/$DL_FILE"
@@ -207,6 +214,7 @@ for i in ${sites[@]}; do
   fi
   exit 0
 done
+unset IFS
 
 if [ -n "$VCS" ]; then
   echo

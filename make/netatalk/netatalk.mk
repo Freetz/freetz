@@ -16,6 +16,11 @@ $(PKG)_BINS_DBD_BUILD_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DIR)/etc/cnid_dbd/%)
 $(PKG)_BINS_DBD_TARGET_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DEST_DIR)/sbin/%)
 
 $(PKG)_DEPENDS_ON := db libgcrypt
+ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF)),y)
+$(PKG)_DEPENDS_ON += avahi
+endif
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
@@ -28,7 +33,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-timelord
 $(PKG)_CONFIGURE_OPTIONS += --disable-admin-group
 $(PKG)_CONFIGURE_OPTIONS += --disable-shell-check
 $(PKG)_CONFIGURE_OPTIONS += --disable-tcp-wrappers
-$(PKG)_CONFIGURE_OPTIONS += --disable-zeroconf
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF),--enable-zeroconf,--disable-zeroconf)
 $(PKG)_CONFIGURE_OPTIONS += --with-cnid-default-backend=dbd
 $(PKG)_CONFIGURE_OPTIONS += --with-cnid-dbd-backend
 $(PKG)_CONFIGURE_OPTIONS += --with-cnid-tdb-backend

@@ -1,5 +1,5 @@
---- src/ctype.c	1970-01-01 01:00:00.000000000 +0100
-+++ src/ctype.c	2008-10-10 23:28:20.000000000 +0200
+--- src/ctype.c
++++ src/ctype.c
 @@ -0,0 +1,546 @@
 +/*
 + Static ctype data for IFC-7.1 / RedHat-9 workaround.
@@ -547,9 +547,9 @@
 +const uint32_t *__ctype32_tolower = b (uint32_t, tolower, 128);
 +const uint32_t *__ctype32_toupper = b (uint32_t, toupper, 128);
 +
---- src/Makefile.in	2008-10-10 23:21:48.000000000 +0200
-+++ src/Makefile.in	2008-10-11 00:31:13.000000000 +0200
-@@ -5483,6 +5483,10 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -5685,6 +5685,10 @@
  	true
  
  cf_parser.h: cf.data cf_gen$(EXEEXT)

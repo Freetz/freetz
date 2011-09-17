@@ -1,6 +1,6 @@
-[ "$FREETZ_REMOVE_UTIL_LINUX" == "y" ] || return 0
+[ "$FREETZ_REMOVE_AVM_E2FSPROGS" == "y" ] || return 0
 
-echo1 "remove AVM's blikd, fsck, mkfs"
+echo1 "remove AVM's e2fsprogs files"
 for files in \
 	usr/sbin/blkid \
 	usr/sbin/e2fsck \

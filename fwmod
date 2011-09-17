@@ -892,22 +892,30 @@ if [ "$DO_MOD" -gt 0 ]; then
 		# tagging
 		if [ "$FREETZ_TAGGING_STRING" != "none" ]; then
 			echo1 "tagging avm webif (tag by ${FREETZ_TAGGING_STRING})"
-			# newer (small logo @left)
+			# newer (small logo @left, eg 7270 04.88)
 			if [ -z "$tagging_files" ]; then
 				tagging_files="$(find ${HTML_MOD_DIR} -name kopfbalken_links.gif)"
 				tagging_position="center"
+				tagging_geometry="+0+0"
 			fi
-			# older (big header @top)
+			# older (big header @top, eg 7141 04.76)
 			if [ -z "$tagging_files" ]; then
 				tagging_files="$(find ${HTML_MOD_DIR} -name fw_header980.gif)"
 				tagging_position="west"
+				tagging_geometry="+0+0"
+			fi
+			# even older (big header @top, eg 7050 04.03)
+			if [ -z "$tagging_files" ]; then
+				tagging_files="$(find ${HTML_MOD_DIR} -name fw_header.gif)"
+				tagging_position="west"
+				tagging_geometry="+0-5"
 			fi
 			# tagging
 			[ -z "$tagging_files" ] && error 1 "tagging failed, no files to tag found."
 			tagging_picture="${TAGGING_DIR}/${FREETZ_TAGGING_STRING}.png"
 			for tagging_file in $tagging_files; do
 				echo2 "${tagging_file}"
-				composite -dissolve 100% -gravity $tagging_position -quality 100 $tagging_picture $tagging_file $tagging_file
+				composite -dissolve 100% -gravity $tagging_position -geometry $tagging_geometry -quality 100 $tagging_picture $tagging_file $tagging_file
 				[ $? -ne 0 ] && error 1 "tagging failed while processing ${tagging_file#${FILESYSTEM_MOD_DIR}/}"
 			done
 		fi

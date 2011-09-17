@@ -87,6 +87,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-krb5=no
 $(PKG)_CONFIGURE_OPTIONS += --with-included-popt=no
 $(PKG)_CONFIGURE_OPTIONS += --with-privatedir=/mod/etc/samba
 $(PKG)_CONFIGURE_OPTIONS += --with-configdir=/mod/etc/samba
+$(PKG)_CONFIGURE_OPTIONS += --with-logfilebase=/var/log
 $(PKG)_CONFIGURE_OPTIONS += --with-piddir=/var/run
 $(PKG)_CONFIGURE_OPTIONS += --with-syslog
 

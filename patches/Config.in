@@ -113,9 +113,9 @@ comment "USB storage patches --------------------"
 config FREETZ_PATCH_FREETZMOUNT
 	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
 	select FREETZ_USBSTORAGE_AUTOMOUNT
-    select FREETZ_BUSYBOX_BLKID
-    select FREETZ_BUSYBOX_BLKID_TYPE
-    select FREETZ_BUSYBOX_VOLUMEID
+	select FREETZ_BUSYBOX_BLKID if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
+	select FREETZ_BUSYBOX_BLKID_TYPE
+	select FREETZ_BUSYBOX_VOLUMEID
 	default y
 	help
 		1. Replaces and deselects usb-storage patch.
@@ -129,6 +129,7 @@ config FREETZ_PATCH_FREETZMOUNT
 		   and FTP users to actually write to their own home directories.
 		4. Avoid deleting whole filesystems on USB devices.
 		5. Enhanced behaviour during mounting and unmounting.
+		6. Provides mount-by-label feature.
 
 		It is highly recommended to select this patch.
 
@@ -137,14 +138,14 @@ config FREETZ_USBSTORAGE_AUTOMOUNT
 	depends on FREETZ_PATCH_FREETZMOUNT
 	default y
 	help
-		The filesystems ext2, ext3, ext4, fat, hfs+, ntfs and reiserfs and swap are mounted
+		The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted
 		automatically. Detection is done by blkid utility . It depends on the original firmware
 		which of the following points you have to select.
 
 if FREETZ_USBSTORAGE_AUTOMOUNT
 config FREETZ_AUTOMOUNT_EXT2
 	bool "ext2"
-    select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext2
 	default n
 	help
@@ -152,7 +153,7 @@ config FREETZ_AUTOMOUNT_EXT2
 
 config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
-    select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext3
 	default n
 	help
@@ -160,8 +161,9 @@ config FREETZ_AUTOMOUNT_EXT3
 
 config FREETZ_AUTOMOUNT_EXT4
 	bool "ext4"
-	depends on FREETZ_KERNEL_VERSION_2_6_28
-    select FREETZ_BUSYBOX_VOLUMEID_EXT
+	depends on FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext4
 	default n
 	help
@@ -169,30 +171,45 @@ config FREETZ_AUTOMOUNT_EXT4
 
 config FREETZ_AUTOMOUNT_FAT
 	bool "fat"
-    select FREETZ_BUSYBOX_VOLUMEID_FAT
+	select FREETZ_BUSYBOX_VOLUMEID_FAT
 	default n
 	help
 		This enables detection of fat partitions.
 
+config FREETZ_AUTOMOUNT_HFS
+	bool "HFS"
+	select FREETZ_BUSYBOX_VOLUMEID_HFS
+	select FREETZ_MODULE_hfs
+	default n
+	help
+		This adds hfs module to your firmware.
+
 config FREETZ_AUTOMOUNT_HFS_PLUS
 	bool "HFS+"
-    select FREETZ_BUSYBOX_VOLUMEID_HFS
+	select FREETZ_BUSYBOX_VOLUMEID_HFS
 	select FREETZ_MODULE_hfsplus
 	default n
 	help
 		This adds hfs+ module to your firmware.
 
+config FREETZ_AUTOMOUNT_LUKS
+	bool "luks"
+	select FREETZ_BUSYBOX_VOLUMEID_LUKS
+	default n
+	help
+		This enables detection (not mounting) of luks partitions.
+
 config FREETZ_AUTOMOUNT_NTFS
 	bool "NTFS"
 	select FREETZ_PACKAGE_NTFS if ! FREETZ_HAS_AVM_NTFS
-    select FREETZ_BUSYBOX_VOLUMEID_NTFS
+	select FREETZ_BUSYBOX_VOLUMEID_NTFS
 	default n
 	help
 		This adds ntfs-3g mount helper to your firmware.
 
 config FREETZ_AUTOMOUNT_REISER_FS
 	bool "ReiserFS"
-    select FREETZ_BUSYBOX_VOLUMEID_REISERFS
+	select FREETZ_BUSYBOX_VOLUMEID_REISERFS
 	select FREETZ_MODULE_reiserfs
 	default n
 	help
@@ -200,20 +217,12 @@ config FREETZ_AUTOMOUNT_REISER_FS
 
 config FREETZ_AUTOMOUNT_LINUXSWAP
 	bool "swap"
-    select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
+	select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
 	default n
 	help
 		This enables detection of linux-swap partitions.
 
 endif
-
-config FREETZ_PATCH_FREETZMOUNT_FINDFS
-	bool "Provide mount-by-label feature"
-	depends on FREETZ_PATCH_FREETZMOUNT
-	select FREETZ_BUSYBOX_FINDFS
-	default n
-	help
-		This option selects findfs which is required for the optional mount-by-label feature.
 
 config FREETZ_PATCH_MAXDEVCOUNT
 	bool "Raise the count of connectable usb device to 9"
@@ -990,13 +999,13 @@ config FREETZ_REMOVE_USERMAN
 	help
 		Remove userman files (Kindersicherung)
 
-config FREETZ_REMOVE_UTIL_LINUX
-	bool "Remove util-linux files (blkid, fsck, mkfs)"
+config FREETZ_REMOVE_AVM_E2FSPROGS
+	bool "Remove AVM e2fsprogs binaries (blkid, fsck, mkfs)"
 	depends on \
-		FREETZ_HAS_UTIL_LINUX
+		FREETZ_HAS_AVM_E2FSPROGS
 	default n
 	help
-		Removes the util-linux files (blkid, fsck, mkfs) and
+		Removes the e2fsprogs files (blkid, fsck, mkfs) and
 		libraries. Saves about 220KB of compressed space.
 
 config FREETZ_REMOVE_VOIPD
