@@ -1558,6 +1558,26 @@ menu "Freetz customisation"
 		default "dsl123"		if FREETZ_FAVICON_DSL123
 		default "hansolo"		if FREETZ_FAVICON_HANSOLO
 
+	choice
+		prompt "Tagging"
+		default FREETZ_TAGGING_NONE
+		help
+			Adds a tag to the AVM web-interface, so it is obvious to
+			everybody that this box was modified by Freetz.
+
+		config FREETZ_TAGGING_NONE
+			bool "none"
+
+		config FREETZ_TAGGING_CUMA
+			bool "cuma's tagging"
+
+	endchoice
+
+	config FREETZ_TAGGING_STRING
+		string
+		default "none"			if FREETZ_TAGGING_NONE
+		default "cuma"			if FREETZ_TAGGING_CUMA
+
 endmenu
 
 menu "Additional image/box information"
@@ -1761,7 +1781,12 @@ choice
 
 			64 KB is the default for kernel 2.6 firmwares.
 
-if FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL
+if FREETZ_SHOW_ADVANCED \
+	&& FREETZ_REPLACE_KERNEL \
+	&& ( \
+		FREETZ_KERNEL_VERSION_2_6_13_1 \
+		|| FREETZ_KERNEL_VERSION_2_6_19_2 \
+	)	 
 	config FREETZ_SQUASHFS_BLOCKSIZE_131072
 		bool "128 KB (EXPERIMENTAL)"
 
