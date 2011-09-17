@@ -570,7 +570,8 @@ comment "Replace kernel (currently not available)"
 config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
-		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
+		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
+		! FREETZ_TYPE_LABOR
 	default y
 
 config FREETZ_REPLACE_KERNEL
