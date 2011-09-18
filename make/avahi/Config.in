@@ -16,3 +16,13 @@ config FREETZ_PACKAGE_AVAHI
 		is already found in MacOS X (branded 'Rendezvous', 'Bonjour'
 		and sometimes 'ZeroConf') and is very convenient.
 
+config FREETZ_PACKAGE_AVAHI_WITH_DNSCONFD
+	bool "with Avahi Dnsconfd"
+	depends on FREETZ_PACKAGE_AVAHI
+	default n
+	help
+		This tool listens on the network for announced DNS servers 
+		and passes them to resolvconf so it can use them. This is 
+		very useful on autoconfigured IPv6 networks. Adds 4KB of
+		compressed squashfs.
+	
