@@ -41,6 +41,25 @@ config FREETZ_MODULE_xvmalloc
 		)
 	default n
 
+menu "ndas"
+
+config FREETZ_MODULE_ndas_block
+	bool "ndas_block.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+config FREETZ_MODULE_ndas_core
+	bool "ndas_core.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+config FREETZ_MODULE_ndas_sal
+	bool "ndas_sal.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+endmenu
+
 endmenu
 
 menu "crypto"
@@ -377,6 +396,10 @@ config FREETZ_MODULE_fuse
 	bool "fuse.ko"
 	default n
 
+config FREETZ_MODULE_iso9660
+	bool "iso9660.ko"
+	default n
+
 config FREETZ_MODULE_jbd
 	bool "jbd.ko"
 	depends on \
@@ -407,25 +430,6 @@ config FREETZ_MODULE_mini_fo
 config FREETZ_MODULE_minix
 	bool "minix.ko"
 	default n
-
-menu "ndas"
-
-config FREETZ_MODULE_ndas_block
-	bool "ndas_block.ko"
-	depends on FREETZ_TARGET_ARCH_LE
-	default n
-
-config FREETZ_MODULE_ndas_core
-	bool "ndas_core.ko"
-	depends on FREETZ_TARGET_ARCH_LE
-	default n
-
-config FREETZ_MODULE_ndas_sal
-	bool "ndas_sal.ko"
-	depends on FREETZ_TARGET_ARCH_LE
-	default n
-
-endmenu
 
 config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"
