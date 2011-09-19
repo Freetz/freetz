@@ -9,9 +9,10 @@ helpmsg() {
 echo "get_ip - determine external IP address"
 	echo
 	echo "Usage: $0 [option]"
-	echo "    -a, --all      - use all methods (order: webcm, extquery, dsld) [recommended]"
+	echo "    -a, --all      - use all methods (order: ostat, webcm, extquery, dsld) [recommended]"
 	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
 	echo "    -e, --extquery - use external site query method (checkip.dyndns.org)"
+	echo "    -o, --ostat    - use onlinestat method (since firmware 04.87)"
 	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method"
 	echo "    -?, --help     - print this help message"
 	echo
@@ -65,6 +66,13 @@ via_extquery() {
 	[ $retval -eq 0 ] && echo "$ip" > /tmp/get_ip.cache
 }
 
+via_ostat() {
+	ip="$(cat /var/run/onlinestat 2>/dev/null | sed -rn 's!^IPADDR ([0-9.]+)!\1!p')"
+	retval=$?
+	[ -z "$ip" ] && retval=2
+	check_local_ip
+}
+
 via_webcm() {
 	local queryfile="/usr/www/all/html/query.txt"
 	local querystring=""
@@ -93,7 +101,7 @@ fi
 
 case $get_method in
 	-a|--all|"")
-		for mode in webcm extquery dsld; do
+		for mode in ostat webcm extquery dsld; do
 			via_$mode
 			[ $retval -eq 0 ] && break
 		done
@@ -103,6 +111,9 @@ case $get_method in
 		;;
 	-e|--extquery)
 		via_extquery
+		;;
+	-o|--ostat)
+		via_ostat
 		;;
 	-w|--webcm)
 		via_webcm
