@@ -63,10 +63,12 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(DBUS_DIR) clean
 	 $(RM) -r \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdbus-1*
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdbus-1* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/dbus-1.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/dbus-1.0 \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/dbus-1.0
 
 $(pkg)-uninstall:
-	$(RM) $(DBUS_TARGET_BINARY)
-	$(RM) $(DBUS_TARGET_LIBDIR)/libdbus-1*.so*
+	$(RM) $(DBUS_TARGET_BINARY) $(DBUS_TARGET_LIBDIR)/libdbus-1*.so*
 
 $(PKG_FINISH)
