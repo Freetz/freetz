@@ -8,9 +8,11 @@ config FREETZ_PACKAGE_NETATALK
 		Netatalk is a kernel level implementation of the AppleTalk
 		Protocol Suite which contains the AppleShare file server (AFP).
 
+menu "netatalk options"
+depends on FREETZ_PACKAGE_NETATALK
+
 config FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF
 	bool "build with zeroconf support"
-	depends on FREETZ_PACKAGE_NETATALK
 	select FREETZ_LIB_libdbus
 	select FREETZ_PACKAGE_DBUS
 	select FREETZ_PACKAGE_AVAHI
@@ -25,23 +27,32 @@ config FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF
 
 config FREETZ_PACKAGE_NETATALK_DBD
 	bool "build with cnid database repair tool"
-	depends on FREETZ_PACKAGE_NETATALK
 	default n
 	help
-		This option adds the dbd utility, the CNID database and 
+		This option adds the dbd utility, the CNID database and
 		volume maintanance and intergrity check utility. Adds
 		another 80KB to the squashfs.
 
+config FREETZ_PACKAGE_NETATALK_DHX
+	bool "build with uams_dhx"
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_libcrypto
+	default n
+	help
+		This option enables the uams_dhx.so module for authentication purposes. See
+		http://netatalk.sourceforge.net/2.2/htmldocs/configuration.html#id4167131
+		for further details.
+
 config FREETZ_PACKAGE_NETATALK_DHX2
 	bool "build with uams_dhx2"
-	depends on FREETZ_PACKAGE_NETATALK
+	select FREETZ_LIB_libcrypt
 	select FREETZ_LIB_libgcrypt
 	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_cast5
 	default n
 	help
-		This option enables the uams_dhx2.so module for authentication
-		purposes. It requires to build libgcrypt (add 114 to squashfs).
-		See http://netatalk.sourceforge.net/2.0/htmldocs/configuration.html#id4076411
-		for further readings. Please keep in mind, that uams_dhx already
-		builds with netatalk.
+		This option enables the uams_dhx2.so module for authentication purposes.
+		It requires libgcrypt to build (adds 114KB to the squashfs). See
+		http://netatalk.sourceforge.net/2.2/htmldocs/configuration.html#id4167131
+		for further details.
 
+endmenu

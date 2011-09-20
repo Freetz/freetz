@@ -3,7 +3,10 @@ $(PKG)_SOURCE := $(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5 := acac2b5f2d9f43bfd5ea2a5cf4c71fe5
 $(PKG)_SITE := @SF/$(pkg)
 
-$(PKG)_LIBS := uams_guest uams_dhx_passwd
+$(PKG)_LIBS := uams_guest
+ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_DHX)),y)
+$(PKG)_LIBS += uams_dhx_passwd
+endif
 ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_DHX2)),y)
 $(PKG)_LIBS += uams_dhx2_passwd
 endif
@@ -22,16 +25,20 @@ endif
 $(PKG)_BINS_DBD_BUILD_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DIR)/etc/cnid_dbd/%)
 $(PKG)_BINS_DBD_TARGET_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DEST_DIR)/sbin/%)
 
-$(PKG)_DEPENDS_ON := db 
+$(PKG)_DEPENDS_ON := db
 ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF)),y)
 $(PKG)_DEPENDS_ON += avahi
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_DHX)),y)
+$(PKG)_DEPENDS_ON += openssl
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_DHX2)),y)
 $(PKG)_DEPENDS_ON += libgcrypt
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NETATALK_DHX
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NETATALK_DHX2
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
@@ -54,8 +61,8 @@ $(PKG)_CONFIGURE_OPTIONS += --without-cnid-last-backend
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --with-uams-path="$(FREETZ_LIBRARY_PATH)"
 $(PKG)_CONFIGURE_OPTIONS += --with-bdb="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
-$(PKG)_CONFIGURE_OPTIONS += --with-libgcrypt-dir=$(if $(FREETZ_PACKAGE_NETATALK_DHX),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-libgcrypt-dir=$(if $(FREETZ_PACKAGE_NETATALK_DHX2),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl-dir=$(if $(FREETZ_PACKAGE_NETATALK_DHX),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir="/mod/etc"
 $(PKG)_CONFIGURE_OPTIONS += --disable-debugging
 
@@ -82,7 +89,6 @@ $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINS_AFPD_TARGET_DIR) $($
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NETATALK_DIR) clean
-	$(RM) $(NETATALK_LIBS_TARGET_DIR)
 
 $(pkg)-uninstall:
 	$(RM) $(NETATALK_LIBS_TARGET_DIR) $(NETATALK_BINS_AFPD_TARGET_DIR) $(NETATALK_BINS_DBD_TARGET_DIR)
