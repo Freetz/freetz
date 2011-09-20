@@ -22,16 +22,14 @@ config FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF
 		afpd to register its shares via dbus-daemon at avahi-daemon.
 		You want to select this option, if you want your afpd shares
 		and Time Machine shares being visible on the Apple/Finder and the
-		Time Machine Menu. Adds 7KB for libdaemon 110KB for libdbus,
-		120KB for avahi-daemon, 136KB for dbus-daemon (370 KB in sum).
+		Time Machine Menu.
 
 config FREETZ_PACKAGE_NETATALK_DBD
 	bool "build with cnid database repair tool"
 	default n
 	help
 		This option adds the dbd utility, the CNID database and
-		volume maintanance and intergrity check utility. Adds
-		another 80KB to the squashfs.
+		volume maintanance and intergrity check utility.
 
 config FREETZ_PACKAGE_NETATALK_DHX
 	bool "build with uams_dhx"
@@ -50,8 +48,7 @@ config FREETZ_PACKAGE_NETATALK_DHX2
 	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_cast5
 	default n
 	help
-		This option enables the uams_dhx2.so module for authentication purposes.
-		It requires libgcrypt to build (adds 114KB to the squashfs). See
+		This option enables the uams_dhx2.so module for authentication purposes. See
 		http://netatalk.sourceforge.net/2.2/htmldocs/configuration.html#id4167131
 		for further details.
 
