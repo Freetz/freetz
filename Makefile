@@ -274,7 +274,7 @@ else
 	@if [ -n "$$(DL_SOURCE$(1)_CONTAINER)" ]; then \
 		if [ ! -r $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) ]; then \
 			if ! $$(DL_TOOL) $$(DL_FW_DIR) "$$(DL_SOURCE$(1)_CONTAINER)" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
-				$$(call ERROR,3,Could not download Firmwareimage.) \
+				$$(call ERROR,3,Could not download firmware image. See http://trac.freetz.org/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 			fi; \
 		fi; \
 		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
