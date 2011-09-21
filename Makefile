@@ -280,15 +280,15 @@ else
 		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
 			.zip) \
 				if ! unzip $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) $$(DL_SOURCE$(1)) -d $$(DL_FW_DIR); then \
-					$$(call ERROR,3,Could not unzip Firmwareimage.) \
+					$$(call ERROR,3,Could not unzip firmware image.) \
 				fi \
 				;; \
 			*) \
-				$$(call ERROR,3,Could not extract Firmwareimage.) \
+				$$(call ERROR,3,Could not extract firmware image.) \
 				;; \
 		esac \
 	elif ! $$(DL_TOOL) $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
-		$$(call ERROR,3,Could not download Firmwareimage.) \
+		$$(call ERROR,3,Could not download firmware image. See http://trac.freetz.org/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 	fi
 endif
 endif
