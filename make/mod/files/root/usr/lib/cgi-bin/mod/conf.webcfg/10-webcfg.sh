@@ -5,6 +5,10 @@ check "$MOD_MOUNTED_MAIN" yes:mounted_main
 check "$MOD_MOUNTED_SUB" yes:mounted_sub
 check "$MOD_MOUNTED_UMOUNT" yes:mounted_umount
 check "$MOD_SHOW_MEMORY_USAGE" yes:show_memory_usage
+skins="$(ls /usr/share/skin)"
+for skin in $skins; do
+	check "$MOD_SKIN" $skin:${skin}
+done
 
 sec_begin '$(lang de:"Weboberfl&auml;che" en:"Web interface")'
 
@@ -52,8 +56,16 @@ fi
 if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
 	echo "</p>"
 fi
+
 cat << EOF
-<p><a href="/cgi-bin/skin.cgi" target="_blank">$(lang de:"Aussehen einstellen (Skins)" en:"Change look (skins)")</a></p>
+<p>$(lang de:"Skinauswahl" en:"Skin selection"):
+EOF
+for skin in $skins; do
+	skin_nice_name="$(echo -n "${skin:0:1}" | tr [:lower:] [:upper:])${skin:1}"
+	echo "<input id=\""$skin"\" type=\"radio\" name=\"skin\" value=\""$skin"\" "$(eval echo \$${skin}_chk)"><label for=\""$skin"\"> "$skin_nice_name"</label>"
+done
+
+cat << EOF
 <p>$(lang de:"Breite des Hauptinhalts" en:"Width of the main content area"): <input type="text" name="cgi_width" size="4" maxlength="4" value="$(html "$MOD_CGI_WIDTH")"></p>
 <p><input type="hidden" name="show_memory_usage" value="no">
 <input id="u1" type="checkbox" name="show_memory_usage" value="yes"$show_memory_usage_chk><label for="u1">$(lang de:"Zeige Speicherverbrauch" en:"Show memory usage")</label></p>
