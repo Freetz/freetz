@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 1.7.6.1)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=d1e00772cc9dc6c571999feb9e8771ab
-$(PKG)_SITE:=@KERNEL/software/scm/$(pkg)
+$(call PKG_INIT_BIN, 1.7.6.3)
+$(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
+$(PKG)_SOURCE_MD5:=c8f9390f970079495085d343671d6646
+#$(PKG)_SITE:=@KERNEL/software/scm/$(pkg)
+$(PKG)_SITE:=http://ftp.debian.org/debian/pool/main/g/git
 
 # files to be moved from /usr/lib/git-core to /usr/bin
 $(PKG)_FILES_TO_MOVE := git-daemon
