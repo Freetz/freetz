@@ -49,7 +49,11 @@ case $? in
 		;;
 esac
 if [ "$telnetd_phone" == "y" ]; then
-	echo "$DAEMON_LONG_NAME is started by phone, failed."
+	if [ "$1" == "status" ]; then
+		echo "byphone"
+	else
+		echo "$DAEMON_LONG_NAME is started by phone, failed."
+	fi
 	exit 1
 fi
 
