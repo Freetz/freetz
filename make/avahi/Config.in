@@ -6,6 +6,8 @@ config FREETZ_PACKAGE_AVAHI
 	select FREETZ_LIB_libdaemon
 	select FREETZ_PACKAGE_DBUS
 	select FREETZ_LIB_libdbus
+	select FREETZ_LIB_libavahi_common
+	select FREETZ_LIB_libavahi_core
 	default n
 	help
 		An mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf) implementation
@@ -21,6 +23,9 @@ config FREETZ_PACKAGE_AVAHI_WITH_DNSCONFD
 	bool "with Avahi Dnsconfd"
 	depends on FREETZ_PACKAGE_AVAHI
 	default n
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libdaemon
+	select FREETZ_LIB_libavahi_common
 	help
 		This tool listens on the network for announced DNS servers
 		and passes them to resolvconf so it can use them. This is

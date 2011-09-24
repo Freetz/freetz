@@ -12,8 +12,7 @@ $(PKG)_LIBNAMES_SHORT := avahi-common avahi-core avahi-client
 $(PKG)_LIBNAMES_LONG := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%),$($(PKG)_LIB_VERSIONS:%=.so.%))
 $(PKG)_LIBS_BUILD_DIR := $(join $($(PKG)_LIBNAMES_SHORT:%=$($(PKG)_DIR)/%/.libs/),$($(PKG)_LIBNAMES_LONG))
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
-$(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DEST_LIBDIR)/%)
-#$(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
+$(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
 $(PKG)_DEPENDS_ON := dbus expat libdaemon
 
@@ -71,7 +70,7 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/avahi-core.pc
 
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
-$(foreach library,$($(PKG)_LIBS_STAGING_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH))))
+$(foreach library,$($(PKG)_LIBS_STAGING_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH),$(TARGET_SPECIFIC_ROOT_DIR))))
 
 $(pkg):
 
