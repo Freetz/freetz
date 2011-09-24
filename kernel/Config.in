@@ -5,6 +5,11 @@ config FREETZ_MODULES_ALL
 
 menu "block"
 
+config FREETZ_MODULE_block2mtd
+	bool "block2mtd.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	default n
+
 config FREETZ_MODULE_ramzswap
 	bool "ramzswap.ko"
 	depends on FREETZ_REPLACE_KERNEL
@@ -18,10 +23,24 @@ config FREETZ_MODULE_xvmalloc
 	depends on FREETZ_REPLACE_KERNEL
 	default n
 
-config FREETZ_MODULE_block2mtd
-	bool "block2mtd.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+menu "ndas"
+
+config FREETZ_MODULE_ndas_block
+	bool "ndas_block.ko"
+	depends on FREETZ_TARGET_ARCH_LE
 	default n
+
+config FREETZ_MODULE_ndas_core
+	bool "ndas_core.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+config FREETZ_MODULE_ndas_sal
+	bool "ndas_sal.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+endmenu
 
 endmenu
 
@@ -332,6 +351,10 @@ config FREETZ_MODULE_fuse
 	bool "fuse.ko"
 	default n
 
+config FREETZ_MODULE_iso9660
+	bool "iso9660.ko"
+	default n
+
 config FREETZ_MODULE_jbd
 	bool "jbd.ko"
 	default n
@@ -354,22 +377,6 @@ config FREETZ_MODULE_mini_fo
 config FREETZ_MODULE_minix
 	bool "minix.ko"
 	default n
-
-menu "ndas"
-
-config FREETZ_MODULE_ndas_block
-	bool "ndas_block.ko"
-	default n
-
-config FREETZ_MODULE_ndas_core
-	bool "ndas_core.ko"
-	default n
-
-config FREETZ_MODULE_ndas_sal
-	bool "ndas_sal.ko"
-	default n
-
-endmenu
 
 config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"

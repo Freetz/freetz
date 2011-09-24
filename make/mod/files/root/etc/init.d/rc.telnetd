@@ -36,15 +36,24 @@ case $? in
 		pidof telnetd >/dev/null && telnetd_phone=y
 		;;
 	5)
-		if [ "$(/etc/init.d/rc.inetd status)" != "running" ]; then
+		if [ "$(/etc/init.d/rc.inetd status)" == "running" ]; then
+			# Note negative grep doesn't necessarily mean that telnetd is started by phone.
+			# We could be in the process of switching telnetd to inetd-mode: the (old) inetd
+			# instance might still be running, the config it uses has however no telnetd entry,
+			# thus no ":23 LISTEN inetd"-entry.
+			netstat -apn 2>&1 | grep -q ":23 .*LISTEN .*inetd$" && telnetd_phone=n
+		fi
+		if [ -z "$telnetd_phone" ]; then
 			pidof telnetd >/dev/null && telnetd_phone=y
-		else
-			netstat -apn 2>&1 | grep -q ":23 .*LISTEN .*inetd$" || telnetd_phone=y
 		fi
 		;;
 esac
 if [ "$telnetd_phone" == "y" ]; then
-	echo "$DAEMON_LONG_NAME is started by phone, failed."
+	if [ "$1" == "status" ]; then
+		echo "byphone"
+	else
+		echo "$DAEMON_LONG_NAME is started by phone, failed."
+	fi
 	exit 1
 fi
 
