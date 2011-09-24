@@ -3,9 +3,11 @@
 usage()
 {
 	cat << 'EOF'
-usage: extract-images [<freetz base directory>] [-any|-be|-le] <input file>
-    - freetz base directory defaults to '.'
-    - input file (e.g. recover exe or mtdblock dump) is to be searched for
+usage: extract-images [<Freetz base directory>] [-any|-be|-le] <input file>
+    - Freetz base directory defaults to '.'
+    - SquashFS and boot loader encoding can be '-be' (big endian) or '-le'
+      (little endian). Default is '-any' (try both types).
+    - Input file (e.g. recover exe or mtdblock dump) to be searched for
       kernel.image and/or urlader.image
 EOF
 }
@@ -25,6 +27,22 @@ hex2dec()
 	echo "$1" | gawk '{ printf "%d\n", strtonum("0x" $4 $3 $2 $1) }'
 }
 
+# Parametrised helper function for 'extract_bootloader' doing the actual work
+do_extract_bl()
+{
+	local BOOTLOADER_MAGIC="$1"
+	local ENDIAN_TYPE="$2"
+	for offs in $($mod_base/tools/hexgrep "$BOOTLOADER_MAGIC" "$input_file" | sed 's/:.*//'); do
+		output_file="$output_dir/urlader.image-$((n++))"
+		echo "    $output_file - loader @ $offs"
+		dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=$offs count=65536 2> /dev/null
+		grep -iq 'entering passive mode' "$output_file" \
+			&& grep -iq 'ftp.\? server ready' "$output_file" \
+			&& echo "        File is a possible $ENDIAN_TYPE endian bootloader candidate" \
+			|| echo "        File is probably not a $ENDIAN_TYPE endian bootloader"
+	done
+}
+
 # Extracts urlader.image candidates from input file, based on bootloader magic
 # string. Applies heuristic check for typical strings occurring in AVM
 # bootloaders. Detects older ADAM as well as newer EVA bootloaders.
@@ -33,28 +51,42 @@ extract_bootloader()
 	echo -e "\nExtracting bootloader (urlader.image) ..."
 	n=1
 	if [ "$endian" == "-any" ] || [ "$endian" == "-le" ]; then
-		for offs in $($mod_base/tools/hexgrep "$BOOTLOADER_MAGIC_LE" "$input_file" | sed 's/:.*//'); do
-			output_file="$output_dir/urlader.image-$((n++))"
-			echo "    $output_file - loader @ $offs"
-			dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=$offs count=65536 2> /dev/null
-			grep -iq 'entering passive mode' "$output_file" \
-				&& grep -iq 'ftp.\? server ready' "$output_file" \
-				&& echo "        file is a possible little endian bootloader candidate" \
-				|| echo "        file is probably not a little endian bootloader"
-		done
+		do_extract_bl "$BOOTLOADER_MAGIC_LE" "little"
 	fi
 	if [ "$endian" == "-any" ] || [ "$endian" == "-be" ]; then
-		for offs in $($mod_base/tools/hexgrep "$BOOTLOADER_MAGIC_BE" "$input_file" | sed 's/:.*//'); do
-			output_file="$output_dir/urlader.image-$((n++))"
-			echo "    $output_file - loader @ $offs"
-			dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=$offs count=65536 2> /dev/null
-			grep -iq 'entering passive mode' "$output_file" \
-				&& grep -iq 'ftp.\? server ready' "$output_file" \
-				&& echo "        file is a possible big endian bootloader candidate" \
-				|| echo "        file is probably not a big endian bootloader"
-		done
+		do_extract_bl "$BOOTLOADER_MAGIC_BE" "big"
 	fi
 	[ $n -eq 1 ] && echo "    No bootloader candidate found in input file"
+}
+
+
+# Parametrised helper function for 'extract_kernel_filesystem' doing the actual work
+do_extract_kfs()
+{
+	local SQUASHFS_MAGIC="$1"
+	local ENDIAN_TYPE="$2"
+	squashfs_lines="$($mod_base/tools/hexgrep "$SQUASHFS_MAGIC" "$input_file")"
+	squashfs_offs=($(echo "$squashfs_lines" | sed 's/:.*//'))
+	squashfs_length=($(hex2dec "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
+	kernel_lines="$($mod_base/tools/hexgrep "$KERNEL_MAGIC" "$input_file")"
+	kernel_offs=($(echo "$kernel_lines" | sed 's/:.*//'))
+	kernel_length=($(hex2dec "$(echo "$kernel_lines" | sed -r 's/^[0-9]+:.{12}(.*)/\1/')"))
+	k=0
+	while [ $k -lt ${#kernel_offs[*]} ]; do
+		s=0
+		while [ $s -lt ${#squashfs_offs[*]} ]; do
+			delta=$((squashfs_offs[s] - kernel_length[k] - kernel_offs[k]))
+			[ $delta -le 0 -o $delta -gt 1024 ] && s=$((s+1)) && continue
+			squashfs_pad=$(((4096 - squashfs_length[s] % 4096) % 4096))
+			dd_count=$((squashfs_offs[s] - kernel_offs[k] + squashfs_length[s] + squashfs_pad))
+			output_file="$output_dir/kernel.image-$((n++))"
+			echo "    $output_file - kernel @ ${kernel_offs[k]}, $ENDIAN_TYPE endian SquashFS @ ${squashfs_offs[s]}, total length = $dd_count"
+			dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=${kernel_offs[k]} count=$dd_count 2> /dev/null
+			"$mod_base/tools/tichksum" "$output_file" | sed 's/^/        /'
+			break
+		done
+		k=$((k+1))
+	done
 }
 
 # Extracts kernel.image  candidates from input file, based on kernel and
@@ -67,52 +99,10 @@ extract_kernel_filesystem()
 	echo -e "\nExtracting hidden root kernel + filesystem (kernel.image) ..."
 	n=1
 	if [ "$endian" == "-any" ] || [ "$endian" == "-le" ]; then
-		squashfs_lines="$($mod_base/tools/hexgrep "$SQUASHFS_MAGIC_LE" "$input_file")"
-		squashfs_offs=($(echo "$squashfs_lines" | sed 's/:.*//'))
-		squashfs_length=($(hex2dec "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
-		kernel_lines="$($mod_base/tools/hexgrep "$KERNEL_MAGIC" "$input_file")"
-		kernel_offs=($(echo "$kernel_lines" | sed 's/:.*//'))
-		kernel_length=($(hex2dec "$(echo "$kernel_lines" | sed -r 's/^[0-9]+:.{12}(.*)/\1/')"))
-		k=0
-		while [ $k -lt ${#kernel_offs[*]} ]; do
-			s=0
-			while [ $s -lt ${#squashfs_offs[*]} ]; do
-				delta=$((squashfs_offs[s] - kernel_length[k] - kernel_offs[k]))
-				[ $delta -le 0 -o $delta -gt 1024 ] && s=$((s+1)) && continue
-				squashfs_pad=$(((4096 - squashfs_length[s] % 4096) % 4096))
-				dd_count=$((squashfs_offs[s] - kernel_offs[k] + squashfs_length[s] + squashfs_pad))
-				output_file="$output_dir/kernel.image-$((n++))"
-				echo "    $output_file - kernel @ ${kernel_offs[k]}, little endian SquashFS @ ${squashfs_offs[s]}, total length = $dd_count"
-				dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=${kernel_offs[k]} count=$dd_count 2> /dev/null
-				"$mod_base/tools/tichksum" "$output_file" | sed 's/^/        /'
-				break
-			done
-			k=$((k+1))
-		done
+		do_extract_kfs "$SQUASHFS_MAGIC_LE" "little"
 	fi
 	if [ "$endian" == "-any" ] || [ "$endian" == "-be" ]; then
-		squashfs_lines="$($mod_base/tools/hexgrep "$SQUASHFS_MAGIC_BE" "$input_file")"
-		squashfs_offs=($(echo "$squashfs_lines" | sed 's/:.*//'))
-		squashfs_length=($(hex2dec "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
-		kernel_lines="$($mod_base/tools/hexgrep "$KERNEL_MAGIC" "$input_file")"
-		kernel_offs=($(echo "$kernel_lines" | sed 's/:.*//'))
-		kernel_length=($(hex2dec "$(echo "$kernel_lines" | sed -r 's/^[0-9]+:.{12}(.*)/\1/')"))
-		k=0
-		while [ $k -lt ${#kernel_offs[*]} ]; do
-			s=0
-			while [ $s -lt ${#squashfs_offs[*]} ]; do
-				delta=$((squashfs_offs[s] - kernel_length[k] - kernel_offs[k]))
-				[ $delta -le 0 -o $delta -gt 1024 ] && s=$((s+1)) && continue
-				squashfs_pad=$(((4096 - squashfs_length[s] % 4096) % 4096))
-				dd_count=$((squashfs_offs[s] - kernel_offs[k] + squashfs_length[s] + squashfs_pad))
-				output_file="$output_dir/kernel.image-$((n++))"
-				echo "    $output_file - kernel @ ${kernel_offs[k]}, big endian SquashFS @ ${squashfs_offs[s]}, total length = $dd_count"
-				dd if="$input_file" of="$output_file" ibs=1 obs=8192 skip=${kernel_offs[k]} count=$dd_count 2> /dev/null
-				"$mod_base/tools/tichksum" "$output_file" | sed 's/^/        /'
-				break
-			done
-			k=$((k+1))
-		done
+		do_extract_kfs "$SQUASHFS_MAGIC_BE" "big"
 	fi
 	[ $n -eq 1 ] && echo "    No hidden root kernel + filesystem candidate found in input file"
 }
