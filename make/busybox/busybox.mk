@@ -14,7 +14,9 @@ $(PKG)_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/Config.$($(PKG)_REF)
 $(PKG)_CUSTOM_CONFIG_FILE:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.custom
 $(PKG)_CUSTOM_CONFIG_TEMP:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.temp
 
+ifneq ($(strip $(DL_DIR)/$(BUSYBOX_SOURCE)), $(strip $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
+endif
 $(PKG_UNPACKED)
 
 $($(PKG)_CUSTOM_CONFIG_FILE): $(TOPDIR)/.config $($(PKG)_CONFIG_FILE)
