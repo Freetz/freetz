@@ -10,12 +10,8 @@ BUSYBOX_TOOLS_CONFIG_FILE:=$(BUSYBOX_TOOLS_MAKE_DIR)/Config.busybox
 BUSYBOX_TOOLS_TARGET_DIR:=$(TOOLS_DIR)
 BUSYBOX_TOOLS_TARGET_BINARY:=$(TOOLS_DIR)/busybox
 
-# Activate on demand to avoid collision with identical target for regular
-# busybox package
-ifneq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
 $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(BUSYBOX_TOOLS_SOURCE) $(BUSYBOX_TOOLS_SITE) $(BUSYBOX_TOOLS_SOURCE_MD5)
-endif
 
 $(BUSYBOX_TOOLS_DIR)/.unpacked: $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE)
