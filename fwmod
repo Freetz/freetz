@@ -366,6 +366,75 @@ HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/${HTML_SUBDIR}"
 # HTML_LANG_MOD_DIR can't be defined here
 MODULES_DIR="${FILESYSTEM_MOD_DIR}/${MODULES_SUBDIR}"
 
+
+if [ "$FREETZ_SQUASHFS_BLOCKSIZE_ORIG" == "y" ]; then
+	FILESYSTEM_BLOCKSIZE="$((1<<$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)))"
+else
+	FILESYSTEM_BLOCKSIZE=$(set | sed -rn 's/FREETZ_SQUASHFS_BLOCKSIZE_([^=]+)=y/\1/p')
+fi
+
+if [ "$FREETZ_SIZEINFO_COMPRESSED" == "y" ]; then
+	let FILESYSTEM_BLOCKSIZE_KB=$FILESYSTEM_BLOCKSIZE/1024
+	SIZEINFO_CACHEDIR=${PACKAGES_DIR}/freetzcachedsizes
+	mkdir -p ${SIZEINFO_CACHEDIR}
+fi
+function sizeinfo()
+{
+	[ "$FREETZ_VERBOSITY_LEVEL" -lt 1 ] && return
+	#formated output
+	if [ $# -eq 1 ]; then
+		if [ "$FREETZ_SIZEINFO_COMPRESSED" != "y" ]; then
+			echo1 "$1"
+		else
+			echo1 -n "$(printf "%-23s " "$1" | sed 's/ /\./g;s/\.\./ ./;s/\.(addon)/ (addon)/')"
+		fi
+		return
+	fi
+	[ "$FREETZ_SIZEINFO_COMPRESSED" != "y" ] && return
+
+	#cache file
+	local sizeinfo_mode=$1
+	shift
+	case $sizeinfo_mode in
+		lib)	#libraries: multiple files
+			local shash="$(ls -l $@ | sort | md5sum)"
+			local sfile="${SIZEINFO_CACHEDIR}/$(echo $@ | sed -rn 's!.*/(.*)\.so.*!\1!p').sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
+			;;
+		mod)	#modules: one .ko file
+			local shash="$(ls -l $1 | md5sum)"
+			local sfile="${SIZEINFO_CACHEDIR}/${1##*/}.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
+			;;
+		pkg)	#packages: one directory
+			local sfile="${1}/../.sizeinfo.BS_${FILESYSTEM_BLOCKSIZE_KB}"
+			;;
+		add)	#addons: one directory
+			local shash="$(find $1 -type f -exec ls -l {} ';' | md5sum)"
+			local sfile="${SIZEINFO_CACHEDIR}/${1##*/}.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
+			;;
+		*)
+			echo "invalid"
+			return
+			;;
+	esac
+
+	#compressed size
+	if [ ! -s "$sfile" ]; then
+		local tempf=/tmp/freetz-sizeinfo-$$.tmp
+		$TOOLS_DIR/$MKSQUASHFS_TOOL $@ $tempf $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE | grep -A1 ^Filesystem \
+			| sed -n 'N;s!Filesystem size \(.*\)ytes (.*\n.*(\(.*\)ytes.*$!\1 \2!p' \
+			| awk '{printf "%8s%3s (uncompressed:%8s%3s)",$1,$2,$3,$4}' > ${sfile}
+		rm -rf $tempf 2>/dev/null
+	fi
+
+	#uncompressed size
+	if [ "$FREETZ_SIZEINFO_UNCOMPRESSED" = "y" ]; then
+		cat ${sfile}
+	else
+		cat ${sfile} | sed 's/(uncompressed.*//'
+	fi
+	echo
+}
+
 if [ "$DO_MOD" -gt 0 ]; then
 	echo "${BOLD}STEP 2: MODIFY${NORM}"
 
@@ -635,12 +704,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo1 "installing libs"
 		for i in $(set | grep ^FREETZ_LIB_.*=y | grep -v ^FREETZ_LIB_STDCXXLIB); do
+			all_files=""
 			found=0
 			conf=${i%%=*}
 			[ "$conf" != "${conf%%_WITH_*}" ] && continue # skip suboptions
 			bn=${conf#FREETZ_LIB_}
 			fn=${bn//_/[-+._]}
-			echo2 "$bn"
+			sizeinfo "$bn"
 			for dn in lib usr/lib usr/lib/freetz usr/lib/xtables; do
 				files=$(shopt -s nullglob; echo ${TARGET_SPECIFIC_ROOT_DIR}/$dn/$fn[-.]*so*)
 				if [ -z "$files" ]; then
@@ -649,9 +719,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 				found=1
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a $files "${FILESYSTEM_MOD_DIR}/${dn}/"
+				all_files="$all_files $files"
 			done
 			if [ "$found" = 0 ]; then
 				warn "Library $bn selected, but no files found"
+			else
+				sizeinfo lib "$all_files"
 			fi
 		done
 		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
@@ -753,10 +826,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		mod="${bn%\.ko}"
 
 		if [ "$FREETZ_MODULES_ALL" = "y" -o "$(eval "echo \"\$FREETZ_MODULE_$(echo "$mod" | tr '\-+' '_x')\"")" == "y" ]; then
-			echo2 "${bn}"
+			sizeinfo "$bn"
+			ko_file="${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}"
 			dn="$(dirname "$i")"
 			[ -d "${MODULES_DIR}/kernel/${dn}" ] || mkdir -p "${MODULES_DIR}/kernel/${dn}"
-			cp -a "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}/${i}" "${MODULES_DIR}/kernel/${dn}/"
+			cp -a $ko_file "${MODULES_DIR}/kernel/${dn}/"
+			sizeinfo mod "$ko_file"
 		fi
 	done
 
@@ -770,7 +845,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	echo0 "installing packages"
 	for pkg in $(static_packages); do
-		echo1 "${pkg}"
+		sizeinfo "$pkg"
 		pkg_name=$(pkg_name "$pkg")
 
 		"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
@@ -790,9 +865,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
 
 		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
+		sizeinfo pkg "${PACKAGES_DIR}/${pkg}/root"
 	done
 	for pkg in $(static_addons); do
-		echo1 "${pkg} (addon)"
+		sizeinfo "$pkg (addon)"
 		pkg_name=$(pkg_name "$pkg")
 
 		if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
@@ -817,6 +893,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
+		sizeinfo add "${ADDON_DIR}/${pkg}"
 	done
 
 	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
@@ -977,12 +1054,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 	rm -f "$KERNEL_MOD"
 	rm -f "$FILESYSTEM_MOD"
 	rm -f "${DIR}/*.image"
-
-	if [ "$FREETZ_SQUASHFS_BLOCKSIZE_ORIG" == "y" ]; then
-		FILESYSTEM_BLOCKSIZE="$((1<<$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)))"
-	else
-		FILESYSTEM_BLOCKSIZE=$(set | sed -rn 's/FREETZ_SQUASHFS_BLOCKSIZE_([^=]+)=y/\1/p')
-	fi
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
 	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"

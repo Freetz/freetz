@@ -1498,6 +1498,19 @@ config FREETZ_VERBOSITY_LEVEL
 		Verbosity level of the fwmod script and tar.
 		0 is the least and 2 the most information.
 
+config FREETZ_SIZEINFO_COMPRESSED
+	bool "Show compressed sizes during build"
+	default y
+	help
+		Show compressed sizes of libs, packages & modules during build"
+
+config FREETZ_SIZEINFO_UNCOMPRESSED
+	bool "Show uncompressed sizes too"
+	depends on FREETZ_SIZEINFO_COMPRESSED
+	default n
+	help
+		Show uncompressed sizes of libs, packages & modules too"
+
 config FREETZ_JLEVEL
 	int "Number of jobs to run simultaneously"
 	default 2
@@ -1590,7 +1603,7 @@ menu "Freetz customisation"
 
 		config FREETZ_FAVICON_HANSOLO
 			bool "han-solo's favicons"
-	
+
 	endchoice # "Favicon" #
 
 	config FREETZ_FAVICON_STRING
@@ -1741,7 +1754,7 @@ config FREETZ_AVMPLUGINS_ENABLED
 		copied into RAM nor mounted with loop-devices.
 
 menu "Plugin selection"
-	
+
 	depends on FREETZ_AVMPLUGINS_ENABLED
 
 	comment "Select plugin(s) for insertion"
@@ -1832,7 +1845,7 @@ if FREETZ_SHOW_ADVANCED \
 	&& ( \
 		FREETZ_KERNEL_VERSION_2_6_13_1 \
 		|| FREETZ_KERNEL_VERSION_2_6_19_2 \
-	)	 
+	)
 	config FREETZ_SQUASHFS_BLOCKSIZE_131072
 		bool "128 KB (EXPERIMENTAL)"
 
@@ -1863,7 +1876,7 @@ menu "BusyBox options"
 endmenu # "BusyBox options" #
 
 menu "Shared Libraries"
-	
+
 	source make/libs/Config.in
 
 endmenu # "Shared Libraries" #
@@ -2031,6 +2044,6 @@ endchoice # "Toolchains" #
 
 source toolchain/Config.in
 
-endmenu # "Toolchain options" # 
+endmenu # "Toolchain options" #
 
 endmenu # "Advanced options" #
