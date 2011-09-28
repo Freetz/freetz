@@ -20,11 +20,20 @@ fi
 
 # Converts little endian 4-byte unsigned integer given as spaced hex string
 # into decimal number (e.g. "00 D0 4C 00" -> 5033984)
-hex2dec()
+hex2dec_le()
 {
 	# ATTENTION, 'strtonum' is gawk-specific, other awk versions like mawk
 	# probably do not know it.
 	echo "$1" | gawk '{ printf "%d\n", strtonum("0x" $4 $3 $2 $1) }'
+}
+
+# Converts big endian 4-byte unsigned integer given as spaced hex string
+# into decimal number (e.g. "00 D0 4C 00" -> 13650944)
+hex2dec_be()
+{
+	# ATTENTION, 'strtonum' is gawk-specific, other awk versions like mawk
+	# probably do not know it.
+	echo "$1" | gawk '{ printf "%d\n", strtonum("0x" $1 $2 $3 $4) }'
 }
 
 # Parametrised helper function for 'extract_bootloader' doing the actual work
@@ -67,10 +76,14 @@ do_extract_kfs()
 	local ENDIAN_TYPE="$2"
 	squashfs_lines="$($mod_base/tools/hexgrep "$SQUASHFS_MAGIC" "$input_file")"
 	squashfs_offs=($(echo "$squashfs_lines" | sed 's/:.*//'))
-	squashfs_length=($(hex2dec "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
+	if [ "$ENDIAN_TYPE" == "big" ]; then
+		squashfs_length=($(hex2dec_be "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
+	else
+		squashfs_length=($(hex2dec_le "$(echo "$squashfs_lines" | sed -r 's/^[0-9]+:.{24}(.*)/\1/')"))
+	fi
 	kernel_lines="$($mod_base/tools/hexgrep "$KERNEL_MAGIC" "$input_file")"
 	kernel_offs=($(echo "$kernel_lines" | sed 's/:.*//'))
-	kernel_length=($(hex2dec "$(echo "$kernel_lines" | sed -r 's/^[0-9]+:.{12}(.*)/\1/')"))
+	kernel_length=($(hex2dec_le "$(echo "$kernel_lines" | sed -r 's/^[0-9]+:.{12}(.*)/\1/')"))
 	k=0
 	while [ $k -lt ${#kernel_offs[*]} ]; do
 		s=0
