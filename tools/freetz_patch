@@ -128,8 +128,9 @@ modpatch()
 			local to=$(( from + hdr_len - 1 ))
 			local delta_old=$delta
 			#echo2 "    $delta, $hdr_len, $from, $to"
-			# Cut & paste comment from original into auto-fixed patch file
-			eval "sed -n '$from,${to}p' \"\$patch_file.orig\" >> \"\$patch_file\""
+			# Cut & paste comment (if any) from original into auto-fixed patch file
+			[ $to -ge $from ] && \
+				eval "sed -n '$from,${to}p' \"\$patch_file.orig\" >> \"\$patch_file\""
 			local _file="${files[i]}"
 			# If backup exists, but is unreadable and has a size of zero, it
 			# was created as a placeholder by 'patch -b' previously and can be
