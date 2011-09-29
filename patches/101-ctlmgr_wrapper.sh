@@ -9,3 +9,5 @@ exec $CTLMGR_BINARY "$@"
 EOF
 
 chmod 755 "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr"
+
+modsed "s!ctlmgr!ctlmgr.bin!g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.dsl.sh"
