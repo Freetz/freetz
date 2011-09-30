@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# ATTENTION!
+# This file was used by tools/extract-images until r7691.
+# As of r7692 it is replaced by the much quicker binary package sfk (Swiss File Knife).
+# TODO: Remove this OBSOLETE(?) file from SVN, if nobody else needs it.
+
 [ $# -ne 2 ] && { echo "usage: `basename $0` pattern file" >&2; exit 1; }
 BUFMAX=2048
 EXPR=$(echo "$1" | tr '[A-F]' '[a-f]')
