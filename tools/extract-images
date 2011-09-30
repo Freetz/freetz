@@ -3,10 +3,10 @@
 usage()
 {
 	cat << 'EOF'
-usage: extract-images [<Freetz base directory>] [-any|-be|-le] <input file>
+usage: extract-images [<Freetz base directory>] [-be|-le] <input file>
     - Freetz base directory defaults to '.'
     - SquashFS and boot loader encoding can be '-be' (big endian) or '-le'
-      (little endian). Default is '-any' (try both types).
+      (little endian). Default is to try both types.
     - Input file (e.g. recover exe or mtdblock dump) to be searched for
       kernel.image and/or urlader.image
 EOF
@@ -47,12 +47,10 @@ extract_bootloader()
 {
 	echo -e "\nExtracting bootloader (urlader.image) ..."
 	n=1
-	if [ "$endian" == "-any" ] || [ "$endian" == "-le" ]; then
+	[ "$endian" == "-any" -o "$endian" == "-le" ] && \
 		do_extract_bl "$BOOTLOADER_MAGIC_LE" "little"
-	fi
-	if [ "$endian" == "-any" ] || [ "$endian" == "-be" ]; then
+	[ "$endian" == "-any" -o "$endian" == "-be" ] && \
 		do_extract_bl "$BOOTLOADER_MAGIC_BE" "big"
-	fi
 	[ $n -eq 1 ] && echo "    No bootloader candidate found in input file"
 }
 
@@ -117,12 +115,10 @@ extract_kernel_filesystem()
 {
 	echo -e "\nExtracting hidden root kernel + filesystem (kernel.image) ..."
 	n=1
-	if [ "$endian" == "-any" ] || [ "$endian" == "-le" ]; then
+	[ "$endian" == "-any" -o "$endian" == "-le" ] && \
 		do_extract_kfs "$SQUASHFS_MAGIC_LE" "little"
-	fi
-	if [ "$endian" == "-any" ] || [ "$endian" == "-be" ]; then
+	[ "$endian" == "-any" -o "$endian" == "-be" ] && \
 		do_extract_kfs "$SQUASHFS_MAGIC_BE" "big"
-	fi
 	[ $n -eq 1 ] && echo "    No hidden root kernel + filesystem candidate found in input file"
 }
 
@@ -134,21 +130,12 @@ case $# in
 		input_file="$1"
 		;;
 	2)
-		if [ "$1" == "-any" ] || [ "$1" == "-be" ] || [ "$1" == "-le" ]; then
-			endian="$1"
-		else
-			mod_base="$1"
-		fi
+		[ "$1" == "-be" -o "$1" == "-le" ] && endian="$1" || mod_base="$1"
 		input_file="$2"
 		;;
 	3)
 		mod_base="$1"
-		if [ "$2" == "-any" ] || [ "$2" == "-be" ] || [ "$2" == "-le" ]; then
-			endian="$2"
-		else
-			usage >&2
-			exit 1
-		fi
+		[ "$2" == "-be" -o "$2" == "-le" ] && endian="$2" || { usage >&2; exit 1; }
 		input_file="$3"
 		;;
 	*)
