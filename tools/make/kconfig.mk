@@ -15,6 +15,9 @@ kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
 
 $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(KCONFIG_SOURCE)
+	for i in $(KCONFIG_MAKE_DIR)/patches/*.kconfig.patch; do \
+		$(PATCH_TOOL) $(KCONFIG_DIR) $$i; \
+	done
 	touch $@
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
