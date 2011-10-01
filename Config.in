@@ -215,19 +215,14 @@ choice
 	config FREETZ_TYPE_LANG_A_CH
 		bool "a-ch - deutsch"
 		depends on \
-			! FREETZ_TYPE_LABOR && \
-			( \
 			FREETZ_TYPE_FON_5010 || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
 			FREETZ_TYPE_FON_WLAN_7170 \
-			)
 
 	config FREETZ_TYPE_LANG_EN
 		bool "en - international"
 		depends on \
 			FREETZ_TYPE_FON_WLAN_7340 || \
-			! FREETZ_TYPE_LABOR && \
-			( \
 			FREETZ_TYPE_FON || \
 			FREETZ_TYPE_300IP_AS_FON || \
 			FREETZ_TYPE_FON_5124 || \
@@ -239,7 +234,6 @@ choice
 			FREETZ_TYPE_FON_WLAN_7270_V3 || \
 			FREETZ_TYPE_FON_WLAN_7390 || \
 			FREETZ_TYPE_FON_WLAN_7570 \
-			)
 
 endchoice # "Firmware language" #
 
