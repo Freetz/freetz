@@ -430,16 +430,10 @@ recover:
 		done; \
 	fi
 
-$(CONFIG)/conf:
-	@$(MAKE) $(QUIET) -C $(CONFIG) conf
-
-$(CONFIG)/mconf:
-	@$(MAKE) $(QUIET) -C $(CONFIG) ncurses conf mconf
-
-menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
+menuconfig: $(CONFIG_CONFIG_IN) kconfig
 	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
 
-config: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
+config: $(CONFIG_CONFIG_IN) kconfig
 	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
 
 oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf

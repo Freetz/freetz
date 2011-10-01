@@ -1,7 +1,7 @@
 Introduction
 ------------
 
-The configuration database is collection of configuration options
+The configuration database is a collection of configuration options
 organized in a tree structure:
 
 	+- Code maturity level options
@@ -24,12 +24,12 @@ visible if its parent entry is also visible.
 Menu entries
 ------------
 
-Most entries define a config option, all other entries help to organize
+Most entries define a config option; all other entries help to organize
 them. A single configuration option is defined like this:
 
 config MODVERSIONS
 	bool "Set version information on all module symbols"
-	depends MODULES
+	depends on MODULES
 	help
 	  Usually, modules have to be recompiled whenever you switch to a new
 	  kernel.  ...
@@ -48,9 +48,9 @@ Menu attributes
 A menu entry can have a number of attributes. Not all of them are
 applicable everywhere (see syntax).
 
-- type definition: "bool"/"tristate"/"string"/"hex"/"integer"
+- type definition: "bool"/"tristate"/"string"/"hex"/"int"
   Every config option must have a type. There are only two basic types:
-  tristate and string, the other types are based on these two. The type
+  tristate and string; the other types are based on these two. The type
   definition optionally accepts an input prompt, so these two examples
   are equivalent:
 
@@ -67,19 +67,24 @@ applicable everywhere (see syntax).
 - default value: "default" <expr> ["if" <expr>]
   A config option can have any number of default values. If multiple
   default values are visible, only the first defined one is active.
-  Default values are not limited to the menu entry, where they are
-  defined, this means the default can be defined somewhere else or be
+  Default values are not limited to the menu entry where they are
+  defined. This means the default can be defined somewhere else or be
   overridden by an earlier definition.
   The default value is only assigned to the config symbol if no other
   value was set by the user (via the input prompt above). If an input
   prompt is visible the default value is presented to the user and can
   be overridden by him.
-  Optionally dependencies only for this default value can be added with
+  Optionally, dependencies only for this default value can be added with
   "if".
 
-- dependencies: "depends on"/"requires" <expr>
+- type definition + default value:
+	"def_bool"/"def_tristate" <expr> ["if" <expr>]
+  This is a shorthand notation for a type definition plus a value.
+  Optionally dependencies for this default value can be added with "if".
+
+- dependencies: "depends on" <expr>
   This defines a dependency for this menu entry. If multiple
-  dependencies are defined they are connected with '&&'. Dependencies
+  dependencies are defined, they are connected with '&&'. Dependencies
   are applied to all other options within this menu entry (which also
   accept an "if" expression), so these two examples are equivalent:
 
@@ -98,9 +103,18 @@ applicable everywhere (see syntax).
   times, the limit is set to the largest selection.
   Reverse dependencies can only be used with boolean or tristate
   symbols.
+  Note:
+	select should be used with care. select will force
+	a symbol to a value without visiting the dependencies.
+	By abusing select you are able to select a symbol FOO even
+	if FOO depends on BAR that is not set.
+	In general use select only for non-visible symbols
+	(no prompts anywhere) and for symbols with no dependencies.
+	That will limit the usefulness but on the other hand avoid
+	the illegal configurations all over.
 
 - numerical ranges: "range" <symbol> <symbol> ["if" <expr>]
-  This allows to limit the range of possible input values for integer
+  This allows to limit the range of possible input values for int
   and hex symbols. The user can only input a value which is larger than
   or equal to the first symbol and smaller than or equal to the second
   symbol.
@@ -113,6 +127,27 @@ applicable everywhere (see syntax).
   used to help visually separate configuration logic from help within
   the file as an aid to developers.
 
+- misc options: "option" <symbol>[=<value>]
+  Various less common options can be defined via this option syntax,
+  which can modify the behaviour of the menu entry and its config
+  symbol. These options are currently possible:
+
+  - "defconfig_list"
+    This declares a list of default entries which can be used when
+    looking for the default configuration (which is used when the main
+    .config doesn't exists yet.)
+
+  - "modules"
+    This declares the symbol to be used as the MODULES symbol, which
+    enables the third modular state for all config symbols.
+
+  - "env"=<value>
+    This imports the environment variable into Kconfig. It behaves like
+    a default, except that the value comes from the environment, this
+    also means that the behaviour when mixing it with normal defaults is
+    undefined at this point. The symbol is currently not exported back
+    to the build environment (if this is desired, it can be done via
+    another symbol).
 
 Menu dependencies
 -----------------
@@ -145,15 +180,15 @@ Expressions are listed in decreasing order of precedence.
 (7) Returns the result of max(/expr/, /expr/).
 
 An expression can have a value of 'n', 'm' or 'y' (or 0, 1, 2
-respectively for calculations). A menu entry becomes visible when it's
+respectively for calculations). A menu entry becomes visible when its
 expression evaluates to 'm' or 'y'.
 
-There are two types of symbols: constant and nonconstant symbols.
-Nonconstant symbols are the most common ones and are defined with the
-'config' statement. Nonconstant symbols consist entirely of alphanumeric
+There are two types of symbols: constant and non-constant symbols.
+Non-constant symbols are the most common ones and are defined with the
+'config' statement. Non-constant symbols consist entirely of alphanumeric
 characters or underscores.
 Constant symbols are only part of expressions. Constant symbols are
-always surrounded by single or double quotes. Within the quote any
+always surrounded by single or double quotes. Within the quote, any
 other character is allowed and the quotes can be escaped using '\'.
 
 Menu structure
@@ -163,7 +198,7 @@ The position of a menu entry in the tree is determined in two ways. First
 it can be specified explicitly:
 
 menu "Network device support"
-	depends NET
+	depends on NET
 
 config NETDEVICES
 	...
@@ -188,10 +223,10 @@ config MODULES
 
 config MODVERSIONS
 	bool "Set version information on all module symbols"
-	depends MODULES
+	depends on MODULES
 
 comment "module support disabled"
-	depends !MODULES
+	depends on !MODULES
 
 MODVERSIONS directly depends on MODULES, this means it's only visible if
 MODULES is different from 'n'. The comment on the other hand is always
@@ -226,18 +261,18 @@ menuconfig:
 	"menuconfig" <symbol>
 	<config options>
 
-This is similiar to the simple config entry above, but it also gives a
+This is similar to the simple config entry above, but it also gives a
 hint to front ends, that all suboptions should be displayed as a
 separate list of options.
 
 choices:
 
-	"choice"
+	"choice" [symbol]
 	<choice options>
 	<choice block>
 	"endchoice"
 
-This defines a choice group and accepts any of above attributes as
+This defines a choice group and accepts any of the above attributes as
 options. A choice can only be of type bool or tristate, while a boolean
 choice only allows a single config entry to be selected, a tristate
 choice also allows any number of config entries to be set to 'm'. This
@@ -246,6 +281,10 @@ single driver can be compiled/loaded into the kernel, but all drivers
 can be compiled as modules.
 A choice accepts another option "optional", which allows to set the
 choice to 'n' and no entry needs to be selected.
+If no [symbol] is associated with a choice, then you can not have multiple
+definitions of that choice. If a [symbol] is associated to the choice,
+then you may define the same choice (ie. with the same entries) in another
+place.
 
 comment:
 
@@ -280,3 +319,65 @@ source:
 	"source" <prompt>
 
 This reads the specified configuration file. This file is always parsed.
+
+mainmenu:
+
+	"mainmenu" <prompt>
+
+This sets the config program's title bar if the config program chooses
+to use it. It should be placed at the top of the configuration, before any
+other statement.
+
+
+Kconfig hints
+-------------
+This is a collection of Kconfig tips, most of which aren't obvious at
+first glance and most of which have become idioms in several Kconfig
+files.
+
+Adding common features and make the usage configurable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+It is a common idiom to implement a feature/functionality that are
+relevant for some architectures but not all.
+The recommended way to do so is to use a config variable named HAVE_*
+that is defined in a common Kconfig file and selected by the relevant
+architectures.
+An example is the generic IOMAP functionality.
+
+We would in lib/Kconfig see:
+
+# Generic IOMAP is used to ...
+config HAVE_GENERIC_IOMAP
+
+config GENERIC_IOMAP
+	depends on HAVE_GENERIC_IOMAP && FOO
+
+And in lib/Makefile we would see:
+obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
+
+For each architecture using the generic IOMAP functionality we would see:
+
+config X86
+	select ...
+	select HAVE_GENERIC_IOMAP
+	select ...
+
+Note: we use the existing config option and avoid creating a new
+config variable to select HAVE_GENERIC_IOMAP.
+
+Note: the use of the internal config variable HAVE_GENERIC_IOMAP, it is
+introduced to overcome the limitation of select which will force a
+config option to 'y' no matter the dependencies.
+The dependencies are moved to the symbol GENERIC_IOMAP and we avoid the
+situation where select forces a symbol equals to 'y'.
+
+Build as module only
+~~~~~~~~~~~~~~~~~~~~
+To restrict a component build to module-only, qualify its config symbol
+with "depends on m".  E.g.:
+
+config FOO
+	depends on BAR && m
+
+limits FOO to module (=m) or disabled (=n).
+
