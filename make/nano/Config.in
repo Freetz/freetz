@@ -27,7 +27,7 @@ config FREETZ_PACKAGE_NANO
 		3.) Note that UTF8 support and spell checking is disabled by default.
 
 menu "Nano additional features"
-	depends FREETZ_PACKAGE_NANO
+	depends on REETZ_PACKAGE_NANO
 
 config FREETZ_PACKAGE_NANO_TINY
 	bool "Tiny binary"
@@ -45,7 +45,7 @@ config FREETZ_PACKAGE_NANO_TINY
 
 config FREETZ_PACKAGE_NANO_HELP
 	bool "Online help"
-	depends ! FREETZ_PACKAGE_NANO_TINY
+	depends on FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Show a list of available keyboard commands via Ctrl-G or F1. As the
@@ -58,7 +58,7 @@ config FREETZ_PACKAGE_NANO_HELP
 
 config FREETZ_PACKAGE_NANO_TABCOMP
 	bool "Tab completion for file names"
-	depends ! FREETZ_PACKAGE_NANO_TINY
+	depends on FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		When opening or saving files, you get tab completion for directory and
@@ -70,7 +70,7 @@ config FREETZ_PACKAGE_NANO_TABCOMP
 
 config FREETZ_PACKAGE_NANO_BROWSER
 	bool "File browser"
-	depends ! FREETZ_PACKAGE_NANO_TINY
+	depends on FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Browse the directory structure in a multi-line area showing
@@ -83,7 +83,7 @@ config FREETZ_PACKAGE_NANO_BROWSER
 
 config FREETZ_PACKAGE_NANO_OPERATINGDIR
 	bool "Set operating directory"
-	depends ! FREETZ_PACKAGE_NANO_TINY
+	depends on FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Set operating directory. Makes Nano set up something
@@ -94,7 +94,7 @@ config FREETZ_PACKAGE_NANO_OPERATINGDIR
 
 config FREETZ_PACKAGE_NANO_JUSTIFY
 	bool "Justify/unjustify functions"
-	depends ! FREETZ_PACKAGE_NANO_TINY
+	depends on FREETZ_PACKAGE_NANO_TINY
 	default n
 	help
 		Support for (un-)justifying paragraphs of text, e.g. program code.
@@ -103,7 +103,7 @@ config FREETZ_PACKAGE_NANO_JUSTIFY
 		of Nano's non-tiny binary.
 
 config FREETZ_PACKAGE_NANO_WRAPPING
-	depends ! FREETZ_PACKAGE_NANO_TINY
+	depends on FREETZ_PACKAGE_NANO_TINY
 	bool "Long line wrapping"
 	default n
 	help
@@ -114,7 +114,7 @@ config FREETZ_PACKAGE_NANO_WRAPPING
 		of Nano's non-tiny binary.
 
 config FREETZ_PACKAGE_NANO_WRAPPING_ROOT
-	depends FREETZ_PACKAGE_NANO_WRAPPING
+	depends on REETZ_PACKAGE_NANO_WRAPPING
 	bool "Disable long line wrapping for root"
 	default n
 	help
@@ -174,7 +174,7 @@ config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 		Files selected in the menu are also enabled automatically.
 
 menu "Nano syntax highlighting files"
-	depends FREETZ_PACKAGE_NANO_COLOR_SYNTAX
+	depends on REETZ_PACKAGE_NANO_COLOR_SYNTAX
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_SH
 	bool "Syntax highlighting for .sh files"

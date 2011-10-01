@@ -11,7 +11,7 @@ config FREETZ_PACKAGE_SISPMCTL
 
 config FREETZ_SISPMCTL_CGI
 	bool "freetz specific cgi, rc script and parameter configuration"
-	depends FREETZ_PACKAGE_SISPMCTL
+	depends on REETZ_PACKAGE_SISPMCTL
 	default n
 	help
 		This option integrates freetz specific cgi for configuration
@@ -24,7 +24,7 @@ config FREETZ_SISPMCTL_CGI
 
 config FREETZ_SISPMCTL_WEB
 	bool "enable internal web server"
-	depends FREETZ_PACKAGE_SISPMCTL
+	depends on REETZ_PACKAGE_SISPMCTL
 	default n
 	help
 		This option enables sispmctl's internal web server and
@@ -32,8 +32,8 @@ config FREETZ_SISPMCTL_WEB
 
 config FREETZ_SISPMCTL_SKIN2
 	bool "install alternative GOOGLE skin for web interface"
-	depends FREETZ_PACKAGE_SISPMCTL
-	depends FREETZ_SISPMCTL_WEB
+	depends on REETZ_PACKAGE_SISPMCTL
+	depends on REETZ_SISPMCTL_WEB
 	default n
 	help
 		This option installs the second alternative skin
@@ -42,8 +42,8 @@ config FREETZ_SISPMCTL_SKIN2
 
 config FREETZ_SISPMCTL_SKIN3
 	bool "install alternative SMARTPHONE skin for web interface"
-	depends FREETZ_PACKAGE_SISPMCTL
-	depends FREETZ_SISPMCTL_WEB
+	depends on REETZ_PACKAGE_SISPMCTL
+	depends on REETZ_SISPMCTL_WEB
 	default n
 	help
 		This option installs the third alternative skin

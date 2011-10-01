@@ -250,7 +250,7 @@ config FREETZ_BUSYBOX_MDEV_CONF
 		permissions of the device nodes.
 
 config FREETZ_BUSYBOX_MDEV_RENAME
-	bool " Support subdirs/symlinks"
+	bool "Support subdirs/symlinks"
 	depends on FREETZ_BUSYBOX_MDEV_CONF
 	default n
 	help
@@ -529,7 +529,7 @@ config FREETZ_BUSYBOX_WHOAMI
 		Include the 'whoami' tool in busybox
 
 menu "IPv6 Options"
-	requires FREETZ_TARGET_IPV6_SUPPORT
+	depends on FREETZ_TARGET_IPV6_SUPPORT
 
 config FREETZ_BUSYBOX_FEATURE_PREFER_IPV4_ADDRESS
 	bool "Prefer IPv4 addresses"
