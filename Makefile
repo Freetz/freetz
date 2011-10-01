@@ -33,6 +33,8 @@ FW_IMAGES_DIR:=images
 MIRROR_DIR:=$(DL_DIR)/mirror
 BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
 BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
+CONVERT_DOT_CONFIG_BEFOR=@\[ -e .config \] && grep -qE '^CONFIG_' .config || sed -i -e 's/^\# \(.* is not set$$\)/\# CONFIG_\1/g;/^$$\|^\#/!s/\(.*\)/CONFIG_\1/g' .config
+CONVERT_DOT_CONFIG_AFTER=@\[ -e .config \] && grep -qE '^CONFIG_' .config && sed -i -e 's/^CONFIG_//g;s/^\# CONFIG_/\# /g' .config
 
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
@@ -430,20 +432,25 @@ recover:
 		done; \
 	fi
 
-menuconfig: $(CONFIG_CONFIG_IN) kconfig
-	@[ -e .config ] && grep -qE "^CONFIG_" .config || sed -i -e 's/^# \(.* is not set$$\)/# CONFIG_\1/g;/^$$\|^#/!s/\(.*\)/CONFIG_\1/g' .config
+menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
+	$(CONVERT_DOT_CONFIG_BEFOR)
 	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
-	@[ -e .config ] && grep -qE "^CONFIG_" .config && sed -i -e "s/^CONFIG_//g;s/^# CONFIG_/# /g" .config
+	$(CONVERT_DOT_CONFIG_AFTER)
 
-config: $(CONFIG_CONFIG_IN) kconfig
+config: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
+	$(CONVERT_DOT_CONFIG_BEFOR)
 	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
+	$(CONVERT_DOT_CONFIG_AFTER)
 
 oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
+	$(CONVERT_DOT_CONFIG_BEFOR)
 	@$(CONFIG)/conf --oldconfig $(CONFIG_CONFIG_IN)
+	$(CONVERT_DOT_CONFIG_AFTER)
 
 defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(RM) .config; \
 	$(CONFIG)/conf --defconfig $(CONFIG_CONFIG_IN)
+	$(CONVERT_DOT_CONFIG_AFTER)
 
 config-clean-deps:
 	@{ \
