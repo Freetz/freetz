@@ -437,11 +437,11 @@ config: $(CONFIG_CONFIG_IN) kconfig
 	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
 
 oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf -o $(CONFIG_CONFIG_IN)
+	@$(CONFIG)/conf --oldconfig $(CONFIG_CONFIG_IN)
 
 defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(RM) .config; \
-	$(CONFIG)/conf -d $(CONFIG_CONFIG_IN)
+	$(CONFIG)/conf --defconfig $(CONFIG_CONFIG_IN)
 
 config-clean-deps:
 	@{ \
