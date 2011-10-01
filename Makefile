@@ -152,7 +152,7 @@ noconfig_targets:=menuconfig config oldconfig defconfig tools \
 		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
 
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
--include $(TOPDIR)/.config
+-include $(TOPDIR)/.freetzconfig
 
 #ifeq ($(filter dirclean,$(MAKECMDGOALS)),)
 #Simple test if wrong uclibc is used
@@ -431,7 +431,9 @@ recover:
 	fi
 
 menuconfig: $(CONFIG_CONFIG_IN) kconfig
+	@[ -e .freetzconfig ] && sed -e 's/^# \(.* is not set$$\)/# CONFIG_\1/g;/^$$\|^#/!s/\(.*\)/CONFIG_\1/g' .freetzconfig >.config
 	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
+	@[ -e .config ] && sed -e "s/^CONFIG_//g;s/^# CONFIG_/# /g" .config >.freetzconfig
 
 config: $(CONFIG_CONFIG_IN) kconfig
 	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
@@ -445,16 +447,16 @@ defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 
 config-clean-deps:
 	@{ \
-	cp .config .config_tmp; \
+	cp .freetzconfig .freetzconfig_tmp; \
 	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
-	sed -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
+	sed -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .freetzconfig; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
 	make oldconfig < /dev/null > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
-	$(RM) .config_tmp; \
+	diff -U 0 .freetzconfig_tmp .freetzconfig | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	$(RM) .freetzconfig_tmp; \
 	}
 
 common-clean:
@@ -497,7 +499,7 @@ dist: distclean
 
 # Check if last build was with older svn version
 check-builddir-version:
-	@if [ 	-e .config -a \
+	@if [ -e .config -a \
 		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
 		.svn -nt .config ]; then \
 		echo -n -e $(_Y); \
