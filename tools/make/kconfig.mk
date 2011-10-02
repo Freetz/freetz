@@ -6,6 +6,7 @@ KCONFIG_SITE:=https://github.com/lacombar/kconfig/tarball
 KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/lacombar-kconfig-03a72ba
 KCONFIG_MAKE_DIR:=$(TOOLS_DIR)/make
 KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
+KCONFIG_HOSTCFLAGS=-Wall -Wno-char-subscripts -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -DCONFIG_=\"\"
 
 $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE_TMP) $(KCONFIG_SITE) $(KCONFIG_SOURCE_MD5)
@@ -21,10 +22,10 @@ $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	touch $@
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
-	$(MAKE) -C $(KCONFIG_DIR) config
+	$(MAKE) -C $(KCONFIG_DIR) HOSTCFLAGS='$(KCONFIG_HOSTCFLAGS)' config
 
 $(KCONFIG_DIR)/scripts/kconfig/mconf: $(KCONFIG_DIR)/.unpacked
-	$(MAKE) -C $(KCONFIG_DIR) menuconfig
+	$(MAKE) -C $(KCONFIG_DIR) HOSTCFLAGS='$(KCONFIG_HOSTCFLAGS)' menuconfig
 
 $(KCONFIG_TARGET_DIR)/conf: $(KCONFIG_DIR)/scripts/kconfig/conf
 	cp $(KCONFIG_DIR)/scripts/kconfig/conf $(KCONFIG_TARGET_DIR)/conf
