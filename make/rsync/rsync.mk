@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.0.8)
+$(call PKG_INIT_BIN, 3.0.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0ee8346ce16bdfe4c88a236e94c752b4
+$(PKG)_SOURCE_MD5:=5ee72266fe2c1822333c407e1761b92b
 $(PKG)_SITE:=http://samba.anu.edu.au/ftp/rsync
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/rsync

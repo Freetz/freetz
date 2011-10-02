@@ -202,7 +202,7 @@ for i in ${sites[@]}; do
       continue
     fi
     if [ -n "$MD5" ]; then
-      FILE_MD5=$(md5sum "$DL_DIR/$DL_FILE" | sed 's/ .*//')
+      FILE_MD5=$($(dirname $0)/md5sum "$DL_DIR/$DL_FILE" | sed 's/ .*//')
       if [ "$(echo $MD5 | tr A-Z a-z)" != "$FILE_MD5" ]; then
         echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
         rm -f "$DL_DIR/$DL_FILE"

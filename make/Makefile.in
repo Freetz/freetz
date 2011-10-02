@@ -594,13 +594,13 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 # $2: directory files to be unpacked to
 # $3: file extension
 define UNPACK_CMD__INT
-	$(if $(filter .gz .tgz .taz,$(3)),gzip -dc $(1)) \
-	$(if $(filter .bzip2 .bz2 .bz .tbz2 .tbz .tz2,$(3)),bzip2 -dc $(1)) \
-	$(if $(filter .xz .txz,$(3)),xz -dc $(1)) \
-	$(if $(filter .lzma .tlz,$(3)),lzma -dc $(1)) \
-	$(if $(filter .Z .taZ,$(3)),compress -dc $(1)) \
+	$(if $(filter .gz .tgz .taz,$(3)),$(TOOLS_DIR)/gunzip -c $(1)) \
+	$(if $(filter .bzip2 .bz2 .bz .tbz2 .tbz .tz2,$(3)),$(TOOLS_DIR)/bunzip2 -c $(1)) \
+	$(if $(filter .xz .txz,$(3)),$(TOOLS_DIR)/unxz -c $(1)) \
+	$(if $(filter .lzma .tlz,$(3)),$(TOOLS_DIR)/unlzma -c $(1)) \
+	$(if $(filter .Z .taZ,$(3)),$(TOOLS_DIR)/uncompress -c $(1)) \
 	$(if $(filter .tar,$(3)),cat $(1)) \
-	$(if $(filter .zip,$(3)),unzip $(QUIETSHORT) -u $(1) -d $(2)) \
+	$(if $(filter .zip,$(3)),$(TOOLS_DIR)/unzip $(QUIETSHORT) $(1) -d $(2)) \
 	$(if $(filter .gz .tgz .taz .bzip2 .bz2 .bz .tbz2 .tbz .tz2 .xz .txz .lzma .tlz .Z .taZ .tar,$(3)),| tar -C $(2) $(VERBOSE) -x)
 endef
 
@@ -745,26 +745,23 @@ endef
 ## check for changed files in files and patches folder
 define PKG_UNPACKED_CHECK_CHANGES__INT1
 $(PKG)_FREETZ_CHANGES_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_changes
-$(PKG)_FREETZ_PATCHES_BIN_SEARCH:=patches/.*\|$(pkg)\.mk\|Makefile\.in\|Config\.in\|Config\.in\.libs
-$(PKG)_FREETZ_PATCHES_LIB_SEARCH:=patches/.*\.$(pkg).patch\|$(pkg).mk
-$(PKG)_FREETZ_SRC_BIN_SEARCH:=src/.*
-$(PKG)_FREETZ_FILES_BIN_SEARCH:=files/.*
+$(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH:=patches/.*\|src/.*\|$(pkg)\.mk\|Makefile\.in\|Config\.in\|Config\.in\.libs
+$(PKG)_FREETZ_CHANGES_REPACK_SEARCH:=files/.*
 endef
 define PKG_UNPACKED_CHECK_CHANGES__INT2
 $(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
 	@find $($(PKG)_MAKE_DIR) \
-		-regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_PATCHES_$(PKG_TYPE)_SEARCH)\|$($(PKG)_FREETZ_SRC_$(PKG_TYPE)_SEARCH)\|$($(PKG)_FREETZ_FILES_$(PKG_TYPE)_SEARCH)\)" \
+		-regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH)\|$($(PKG)_FREETZ_CHANGES_REPACK_SEARCH)\)" \
 		! -wholename '*/.svn*' -printf '%TY-%Tm-%Td %TH:%TM:%TS\t%P\n' 2>/dev/null | sort -k 3 >$($(PKG)_FREETZ_CHANGES_FILE).temp
 	@if [ -e $($(PKG)_FREETZ_CHANGES_FILE) ]; then \
-		for i in 1 2 3; do \
+		for i in 1 2; do \
 			PATTERN=; \
-			[ $$$$i = 1 ] && PATTERN='$($(PKG)_FREETZ_PATCHES_$(PKG_TYPE)_SEARCH)'; \
-			[ $$$$i = 2 ] && PATTERN='$($(PKG)_FREETZ_SRC_$(PKG_TYPE)_SEARCH)'; \
-			[ $$$$i = 3 ] && PATTERN='$($(PKG)_FREETZ_FILES_$(PKG_TYPE)_SEARCH)'; \
+			[ $$$$i = 1 ] && PATTERN='$($(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH)'; \
+			[ $$$$i = 2 ] && PATTERN='$($(PKG)_FREETZ_CHANGES_REPACK_SEARCH)'; \
 			if [ ! -z "$$$$PATTERN" ]; then \
 				if [ "`grep -e "$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE)`" != "`grep -e "$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE).temp`" ]; then \
 					mv $($(PKG)_FREETZ_CHANGES_FILE).temp $($(PKG)_FREETZ_CHANGES_FILE); \
-					[ $$$$i != 3 ] && $(RM) -r $($(PKG)_DIR); \
+					[ $$$$i == 1 ] && $(RM) -r $($(PKG)_DIR); \
 					$($(PKG)_CLEAN_TARGET_DIR__INT) \
 					break; \
 				fi \

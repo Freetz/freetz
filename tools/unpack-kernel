@@ -29,4 +29,4 @@ esac
 	dd if=/dev/zero bs=1 count=4
 	# Jump to compressed data, pipe into output stream
 	dd if="$1" bs=36 skip=1
-) | $(dirname "$0")/busybox unlzma > "$2"
+) | $(dirname "$0")/unlzma > "$2"

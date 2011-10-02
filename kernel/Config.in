@@ -41,6 +41,26 @@ config FREETZ_MODULE_xvmalloc
 		)
 	default n
 
+menu "ndas"
+	depends on FREETZ_TARGET_ARCH_LE
+
+config FREETZ_MODULE_ndas_block
+	bool "ndas_block.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+config FREETZ_MODULE_ndas_core
+	bool "ndas_core.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+config FREETZ_MODULE_ndas_sal
+	bool "ndas_sal.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+endmenu
+
 endmenu
 
 menu "crypto"
@@ -277,8 +297,13 @@ config FREETZ_MODULE_cp2101
 	depends on \
 		( FREETZ_KERNEL_VERSION_2_6_13_1 && ( FREETZ_AVM_VERSION_04_80 || FREETZ_AVM_VERSION_04_87 ) ) || \
 		FREETZ_KERNEL_VERSION_2_6_19_2 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+		FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_usbserial
+	default n
+
+config FREETZ_MODULE_cp210x
+	bool "cp210x.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_usbserial
 	default n
 
@@ -377,6 +402,10 @@ config FREETZ_MODULE_fuse
 	bool "fuse.ko"
 	default n
 
+config FREETZ_MODULE_iso9660
+	bool "iso9660.ko"
+	default n
+
 config FREETZ_MODULE_jbd
 	bool "jbd.ko"
 	depends on \
@@ -407,25 +436,6 @@ config FREETZ_MODULE_mini_fo
 config FREETZ_MODULE_minix
 	bool "minix.ko"
 	default n
-
-menu "ndas"
-
-config FREETZ_MODULE_ndas_block
-	bool "ndas_block.ko"
-	depends on FREETZ_TARGET_ARCH_LE
-	default n
-
-config FREETZ_MODULE_ndas_core
-	bool "ndas_core.ko"
-	depends on FREETZ_TARGET_ARCH_LE
-	default n
-
-config FREETZ_MODULE_ndas_sal
-	bool "ndas_sal.ko"
-	depends on FREETZ_TARGET_ARCH_LE
-	default n
-
-endmenu
 
 config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"

@@ -1,0 +1,48 @@
+--- configure
++++ configure
+@@ -18674,6 +18674,7 @@
+ 
+ 
+ 
++if test "${enable_nls}" = "yes"; then
+ case "$am__api_version" in
+     1.01234)
+ 	as_fn_error $? "Automake 1.5 or newer is required to use intltool" "$LINENO" 5
+@@ -19929,6 +19930,7 @@
+ 
+ 
+ avahilocaledir='${prefix}/${DATADIRNAME}/locale'
++fi
+ 
+ 
+ # Check for pkg-config manually first, as if its not installed the
+--- avahi-common/i18n.h
++++ avahi-common/i18n.h
+@@ -20,12 +20,12 @@
+   USA.
+ ***/
+ 
++#ifdef ENABLE_NLS
++
+ #if !defined(GETTEXT_PACKAGE)
+ #error "Something is very wrong here, config.h needs to be included first"
+ #endif
+ 
+-#ifdef ENABLE_NLS
+-
+ #include <libintl.h>
+ 
+ #define _(String) dgettext(GETTEXT_PACKAGE, String)
+--- avahi-common/i18n.c
++++ avahi-common/i18n.c
+@@ -31,8 +31,10 @@
+     static int done = 0;
+ 
+     if (!done) {
++#ifdef ENABLE_NLS
+         bindtextdomain(GETTEXT_PACKAGE, AVAHI_LOCALEDIR);
+         bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
++#endif
+         done = 1;
+     }
+ }

@@ -194,9 +194,6 @@ TOOLS_SOURCE:=$(patsubst %,%-source,$(TOOLS))
 
 include $(sort $(wildcard $(TOOLS_DIR)/make/*.mk))
 
-$(DL_DIR): $(DL_FW_DIR)
-$(MIRROR_DIR): $(DL_DIR)
-
 $(DL_DIR) \
 $(DL_FW_DIR) \
 $(MIRROR_DIR) \
@@ -210,7 +207,7 @@ $(FW_IMAGES_DIR):
 
 ifeq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
 
-step: world tools firmware
+step: image world tools firmware
 
 -include .config.cmd
 
@@ -256,69 +253,49 @@ else
 include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
 
-IMAGE:=$(DL_FW_DIR)/$(DL_SOURCE)
-DL_IMAGE:=$(IMAGE)
+DL_IMAGE:=
+image:
 
-$(DL_FW_DIR)/$(DL_SOURCE):
-ifeq ($(strip $(FREETZ_TYPE_LABOR)),y)
+# Download Firmware Image
+#  $(1) Suffix
+define DOWNLOAD_FIRMWARE
+ifneq ($(strip $(DL_SOURCE$(1))),)
+IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1))
+DL_IMAGE+=$$(IMAGE$(1))
+image: $$(IMAGE$(1))
+$$(DL_FW_DIR)/$$(DL_SOURCE$(1)): | $(DL_FW_DIR)
+ifeq ($$(strip $$(DL_SITE$(1))),)
 	@echo
-	@echo "Please copy the following file into the '$(DL_FW_DIR)' sub-directory manually:"
-	@echo "$(DL_SOURCE)"
+	@echo "Please copy the following file into the '$$(DL_FW_DIR)' sub-directory manually:"
+	@echo "$$(DL_SOURCE$(1))"
 	@echo
 	@exit 3
 else
-	@echo -e "\033[1mSTEP 0: DOWNLOAD\033[0m"
-	@echo "downloading firmware image"
-	@if [ -n "$(DL_SOURCE_CONTAINER)" ]; then \
-		if [ ! -r $(DL_FW_DIR)/$(DL_SOURCE_CONTAINER) ]; then \
-			if ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE_CONTAINER) $(DL_SITE) $(DL_SOURCE_CONTAINER_MD5) $(SILENT); then \
-				$(call ERROR,3,Could not download Firmwareimage.) \
+	@if [ -n "$$(DL_SOURCE$(1)_CONTAINER)" ]; then \
+		if [ ! -r $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) ]; then \
+			if ! $$(DL_TOOL) $$(DL_FW_DIR) "$$(DL_SOURCE$(1)_CONTAINER)" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
+				$$(call ERROR,3,Could not download firmware image. See http://trac.freetz.org/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 			fi; \
 		fi; \
-		case "$(DL_SOURCE_CONTAINER_SUFFIX)" in \
+		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
 			.zip) \
-				if ! unzip $(QUIETSHORT) $(DL_FW_DIR)/$(DL_SOURCE_CONTAINER) $(DL_SOURCE) -d $(DL_FW_DIR); then \
-					$(call ERROR,3,Could not unzip Firmwareimage.) \
+				if ! unzip $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) $$(DL_SOURCE$(1)) -d $$(DL_FW_DIR); then \
+					$$(call ERROR,3,Could not unzip firmware image.) \
 				fi \
 				;; \
-		esac \
-	elif ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE) $(DL_SITE) $(DL_SOURCE_MD5) $(SILENT); then \
-		$(call ERROR,3,Could not download Firmwareimage.) \
-	fi
-endif
-
-ifneq ($(strip $(DL_SOURCE2)),)
-IMAGE2:=$(DL_FW_DIR)/$(DL_SOURCE2)
-DL_IMAGE+=$(IMAGE2)
-
-$(DL_FW_DIR)/$(DL_SOURCE2):
-ifeq ($(strip $(DL_SITE2)),)
-	@echo
-	@echo "Please copy the following file into the '$(DL_FW_DIR)' sub-directory manually:"
-	@echo "$(DL_SOURCE2)"
-	@echo
-	@exit 3
-else
-	@if [ -n "$(DL_SOURCE2_CONTAINER)" ]; then \
-		if [ ! -r $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) ]; then \
-			if ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE2_CONTAINER) $(DL_SITE2) $(DL_SOURCE2_CONTAINER_MD5) $(SILENT); then \
-				$(call ERROR,3,Could not download Firmwareimage.) \
-			fi; \
-		fi; \
-		case "$(DL_SOURCE2_CONTAINER_SUFFIX)" in \
-			.zip) \
-				if ! unzip $(QUIETSHORT) $(DL_FW_DIR)/$(DL_SOURCE2_CONTAINER) $(DL_SOURCE2) -d $(DL_FW_DIR); then \
-					$(call ERROR,3,Could not unzip Firmwareimage.) \
-				fi \
+			*) \
+				$$(call ERROR,3,Could not extract firmware image.) \
 				;; \
 		esac \
-	elif ! $(DL_TOOL) $(DL_FW_DIR) $(DL_SOURCE2) $(DL_SITE2) $(DL_SOURCE2_MD5) $(SILENT); then \
-		$(call ERROR,3,Could not download Firmwareimage.) \
+	elif ! $$(DL_TOOL) $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
+		$$(call ERROR,3,Could not download firmware image. See http://trac.freetz.org/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 	fi
-	@echo "done."
-	@echo
 endif
 endif
+endef
+
+$(eval $(call DOWNLOAD_FIRMWARE))
+$(eval $(call DOWNLOAD_FIRMWARE,2))
 
 package-list: package-list-clean $(PACKAGES_LIST)
 	@touch .static
@@ -453,12 +430,6 @@ recover:
 		done; \
 	fi
 
-$(CONFIG)/conf:
-	@$(MAKE) $(QUIET) -C $(CONFIG) conf
-
-$(CONFIG)/mconf:
-	@$(MAKE) $(QUIET) -C $(CONFIG) ncurses conf mconf
-
 menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
 	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
 
@@ -466,23 +437,23 @@ config: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
 
 oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf -o $(CONFIG_CONFIG_IN)
+	@$(CONFIG)/conf --oldconfig $(CONFIG_CONFIG_IN)
 
 defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(RM) .config; \
-	$(CONFIG)/conf -d $(CONFIG_CONFIG_IN)
+	$(CONFIG)/conf --defconfig $(CONFIG_CONFIG_IN)
 
 config-clean-deps:
 	@{ \
 	cp .config .config_tmp; \
 	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
-	sed -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
+	$(SED) -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
 	make oldconfig < /dev/null > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+).*/  \1/p'; \
 	$(RM) .config_tmp; \
 	}
 
@@ -508,13 +479,13 @@ common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclea
 dist: distclean
 	version="$$(cat .version)"; \
 	curdir="$$(basename $$(pwd))"; \
-	dir="$$(cat .version | sed -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
+	dir="$$(cat .version | $(SED) -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
 	( \
 		cd ../; \
 		[ "$$curdir" == "$$dir" ] || mv "$$curdir" "$$dir"; \
 		( \
 			find "$$dir" -type d -name .svn -prune; \
-			sed -e "s/\(.*\)/$$dir\/\1/" "$$dir/.exclude-dist"; \
+			$(SED) -e "s/\(.*\)/$$dir\/\1/" "$$dir/.exclude-dist"; \
 			echo "$${dir}/.exclude-dist"; \
 			echo "$${dir}/.exclude-dist-tmp"; \
 		) > "$$dir/.exclude-dist-tmp"; \
@@ -526,7 +497,7 @@ dist: distclean
 
 # Check if last build was with older svn version
 check-builddir-version:
-	@if [ 	-e .config -a \
+	@if [ -e .config -a \
 		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
 		.svn -nt .config ]; then \
 		echo -n -e $(_Y); \

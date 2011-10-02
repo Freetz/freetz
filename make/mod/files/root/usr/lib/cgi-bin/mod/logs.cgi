@@ -1,9 +1,13 @@
 . /usr/lib/cgi-bin/mod/modlibcgi
 
 show_log() {
-	local log=$1
+	local log=$1 title
+	case $log in
+		/var/log/*) title=${log#/var/log/} ;;
+		*) title=$log ;;
+	esac
 	if [ -s "$log" ]; then
-		echo "<h1><a href='$SCRIPT_NAME$log'>$log</a></h1>"
+		echo "<h1><a href='$SCRIPT_NAME$log'>$title</a></h1>"
 		echo "<pre class='log${class+ $class}'>"
 		html < "$log" | highlight
 		echo '</pre>'

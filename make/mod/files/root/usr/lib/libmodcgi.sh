@@ -33,16 +33,7 @@ include error
 include request
 include validation
 include width
+include skin
 
 include_module menu
 include_module help
-
-#
-# Load the desired skin (very rough cookie parsing at the moment)
-#
-case $HTTP_COOKIE in
-	*skin=*) skin=${HTTP_COOKIE##*skin=}; skin=${skin%%[^A-Za-z0-9_]*} ;;
-	*) skin=legacy ;;
-esac
-[ -r "/usr/share/skin/$skin/skin.sh" ] || skin=legacy
-source "/usr/share/skin/$skin/skin.sh"

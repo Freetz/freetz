@@ -1,0 +1,67 @@
+--- usr/www/all/templates/menu_page_end.html.orig	2011-03-24 15:28:23.000000000 +0100
+--- usr/www/all/templates/menu_page_end.html	2011-09-17 18:13:07+02:00
++++ usr/www/all/templates/menu_page_end.html	2011-09-17 18:13:07+02:00
+@@ -15,7 +15,8 @@
+ box.out([[<a href='http://www.avm.de/en/fritzclips' target='_blank'>{?22:958?}</a> | ]])
+ end
+ box.out([[<a href=']]..href.get("/menus/programs.lua")..[[' >{?22:2?}</a> | ]])
+-box.out([[<a href='http://www.avm.de' target='_blank' style='margin-right:0px;'>www.avm.de</a> ]])
++box.out([[<a href='http://www.avm.de' target='_blank'>www.avm.de</a> | ]])
++box.out([[<a href='http://www.freetz.org' target='_blank' style='margin-right:0px;'>www.freetz.org</a> ]])
+ end
+ ?>
+ </div>
+--- usr/www/all/templates/menu_page_head.html.orig	2011-03-24 15:28:18.000000000 +0100
+--- usr/www/all/templates/menu_page_head.html	2011-09-17 18:13:07+02:00
++++ usr/www/all/templates/menu_page_head.html	2011-09-17 18:13:07+02:00
+@@ -50,7 +50,7 @@
+ <?lua
+ if (config.NAS) then
+ --if box.glob.script=="/home/home.lua" then
+-box.out("<div id='MainNasheadBox'>")
++box.out("<div id='MainNasheadBox' style='margin-bottom:20px;'>")
+ box.out(" <div class=\"small_bar_left_head\"></div>")
+ box.out(" <div class=\"small_bar_right_head\"></div>")
+ box.out(" <div class=\"small_bar_back_head\">")
+@@ -67,4 +67,21 @@
+ --end
+ end
+ ?>
++<div class="clear_float"></div>
++<div id="MainWizardheadBox">
++<div class="small_bar_left_head"></div>
++<div class="small_bar_right_head"></div>
++<div class="small_bar_back_head"></div>
++<div id="MainWizardhead">
++<?lua
++<?include "menus/menu_freetz.lua" ?>
++menu.write_menu('freetz')
++?>
++</div>
++<div id="MainWizardbottom">
++<div class="small_bar_left_bottom"></div>
++<div class="small_bar_right_bottom"></div>
++<div class="small_bar_back_bottom"></div>
++</div>
++</div>
+ </div>
+--- usr/www/all/menus/menu_freetz.lua.orig	2011-03-25 23:49:12.325435007 +0100
+--- usr/www/all/menus/menu_freetz.lua	2011-09-17 18:13:07+02:00
++++ usr/www/all/menus/menu_freetz.lua	2011-09-17 18:13:07+02:00
+@@ -0,0 +1,16 @@
++menu.add_item{
++page = "/cgi-bin/freetz_status",
++target = "_blank",
++text = "Freetz",
++menu = "freetz",
++explain = "Freetz Webinterface",
++subpages = {}
++}
++menu.add_item{
++page = "/cgi-bin/freetz_wol",
++target = "_blank",
++text = "Freetz WOL",
++menu = "freetz-wol",
++explain = "Freetz WOL Webinterface",
++subpages = {}
++}

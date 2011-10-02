@@ -1,25 +1,57 @@
 config FREETZ_PACKAGE_NETATALK
-	bool "Netatalk 2.2.0"
+	bool "Netatalk 2.2.1"
 	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libdb
-	select FREETZ_LIB_libgcrypt
-	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_cast5
 	default n
 	help
 		Netatalk is a kernel level implementation of the AppleTalk
 		Protocol Suite which contains the AppleShare file server (AFP).
 
+menu "netatalk options"
+depends on FREETZ_PACKAGE_NETATALK
+
 config FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF
 	bool "build with zeroconf support"
-	depends on FREETZ_PACKAGE_NETATALK
 	select FREETZ_LIB_libdbus
 	select FREETZ_PACKAGE_DBUS
 	select FREETZ_PACKAGE_AVAHI
-	default y
+	select FREETZ_LIB_libavahi_common
+	select FREETZ_LIB_libavahi_client
+	default n
 	help
 		This option enables Zeroconf support for netatalk. Thus enables
 		afpd to register its shares via dbus-daemon at avahi-daemon.
 		You want to select this option, if you want your afpd shares
 		and Time Machine shares being visible on the Apple/Finder and the
 		Time Machine Menu.
+
+config FREETZ_PACKAGE_NETATALK_DBD
+	bool "build with cnid database repair tool"
+	default n
+	help
+		This option adds the dbd utility, the CNID database and
+		volume maintanance and intergrity check utility.
+
+config FREETZ_PACKAGE_NETATALK_DHX
+	bool "build with uams_dhx"
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_libcrypto
+	default n
+	help
+		This option enables the uams_dhx.so module for authentication purposes. See
+		http://netatalk.sourceforge.net/2.2/htmldocs/configuration.html#id4167131
+		for further details.
+
+config FREETZ_PACKAGE_NETATALK_DHX2
+	bool "build with uams_dhx2"
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_libgcrypt
+	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_cast5
+	default n
+	help
+		This option enables the uams_dhx2.so module for authentication purposes. See
+		http://netatalk.sourceforge.net/2.2/htmldocs/configuration.html#id4167131
+		for further details.
+
+endmenu

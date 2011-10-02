@@ -1,0 +1,18 @@
+config FREETZ_LIB_libavahi_common
+	bool "libavahi-common.so"
+	default n
+	select FREETZ_LIB_libpthread
+
+config FREETZ_LIB_libavahi_core
+	bool "libavahi-core.so"
+	default n
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavahi_common
+
+config FREETZ_LIB_libavahi_client
+	bool "libavahi-client.so"
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavahi_common
+	select FREETZ_LIB_libdbus
+	default n

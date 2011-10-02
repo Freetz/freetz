@@ -16,6 +16,7 @@ start() {
 
 case $1 in
 	""|load)
+		mkdir -p /mod/etc/netatalk
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
 			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi

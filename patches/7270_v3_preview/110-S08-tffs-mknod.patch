@@ -1,0 +1,14 @@
+--- etc/init.d/S08-tffs.orig	2011-05-04 15:24:23.000000000 +0200
+--- etc/init.d/S08-tffs	2011-09-17 20:30:09+02:00
++++ etc/init.d/S08-tffs	2011-09-17 20:30:09+02:00
+@@ -111,6 +111,10 @@
+ tffs_nodes_list="$tffs_nodes_list $((0xCA)),websrv_ssl_cert.pem"
+ tffs_nodes_list="$tffs_nodes_list $((0xE0)),smartmeter.cfg"
+ #########################################################################
++## Freetz
++#########################################################################
++tffs_nodes_list="$tffs_nodes_list $((0x3C)),freetz"
++#########################################################################
+ ## NODES anlegen, wenn nicht als _file_ existent
+ #########################################################################
+ for node in ${tffs_nodes_list} ; do

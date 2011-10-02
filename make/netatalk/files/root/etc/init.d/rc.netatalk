@@ -20,6 +20,7 @@ config() {
 
 case $1 in
 	""|load)
+		mkdir -p /mod/etc/netatalk
 		mkdir -p /tmp/flash/netatalk
 		mkdir -p /var/run
 
@@ -30,8 +31,9 @@ case $1 in
 		modreg file netatalk afpd_conf '$(lang de:"Virtuelle Datei-Server" en:"Virtual Fileservers")' 1 "afpd_conf"
 		modreg daemon netatalk
 
-		do_cnid_metad
-		do_afpd
+		config
+		do_cnid_metad $1
+		do_afpd $1
 		;;
 	unload)
 		modunreg daemon $DAEMON

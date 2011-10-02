@@ -1,10 +1,13 @@
 config FREETZ_PACKAGE_AVAHI
 	bool "Avahi 0.6.30"
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libexpat
 	select FREETZ_LIB_libdaemon
-	select FREETZ_LIB_libpthread
 	select FREETZ_PACKAGE_DBUS
 	select FREETZ_LIB_libdbus
+	select FREETZ_LIB_libavahi_common
+	select FREETZ_LIB_libavahi_core
 	default n
 	help
 		An mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf) implementation
@@ -16,3 +19,15 @@ config FREETZ_PACKAGE_AVAHI
 		is already found in MacOS X (branded 'Rendezvous', 'Bonjour'
 		and sometimes 'ZeroConf') and is very convenient.
 
+config FREETZ_PACKAGE_AVAHI_WITH_DNSCONFD
+	bool "with Avahi Dnsconfd"
+	depends on FREETZ_PACKAGE_AVAHI
+	default n
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libdaemon
+	select FREETZ_LIB_libavahi_common
+	help
+		This tool listens on the network for announced DNS servers
+		and passes them to resolvconf so it can use them. This is
+		very useful on autoconfigured IPv6 networks. Adds 4KB of
+		compressed squashfs.
