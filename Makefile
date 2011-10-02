@@ -33,8 +33,6 @@ FW_IMAGES_DIR:=images
 MIRROR_DIR:=$(DL_DIR)/mirror
 BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
 BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
-CONVERT_DOT_CONFIG_BEFOR=@\[ -e .config \] && grep -qE '^CONFIG_' .config || sed -i -e 's/^\# \(.* is not set$$\)/\# CONFIG_\1/g;/^$$\|^\#/!s/\(.*\)/CONFIG_\1/g' .config
-CONVERT_DOT_CONFIG_AFTER=@\[ -e .config \] && grep -qE '^CONFIG_' .config && sed -i -e 's/^CONFIG_//g;s/^\# CONFIG_/\# /g' .config
 
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
@@ -433,36 +431,29 @@ recover:
 	fi
 
 menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
-	$(CONVERT_DOT_CONFIG_BEFOR)
 	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
-	$(CONVERT_DOT_CONFIG_AFTER)
 
 config: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	$(CONVERT_DOT_CONFIG_BEFOR)
 	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
-	$(CONVERT_DOT_CONFIG_AFTER)
 
 oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	$(CONVERT_DOT_CONFIG_BEFOR)
 	@$(CONFIG)/conf --oldconfig $(CONFIG_CONFIG_IN)
-	$(CONVERT_DOT_CONFIG_AFTER)
 
 defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(RM) .config; \
 	$(CONFIG)/conf --defconfig $(CONFIG_CONFIG_IN)
-	$(CONVERT_DOT_CONFIG_AFTER)
 
 config-clean-deps:
 	@{ \
 	cp .config .config_tmp; \
 	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
-	sed -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
+	$(SED) -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
 	make oldconfig < /dev/null > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -U 0 .config_tmp .config | sed -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+).*/  \1/p'; \
 	$(RM) .config_tmp; \
 	}
 
@@ -488,13 +479,13 @@ common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclea
 dist: distclean
 	version="$$(cat .version)"; \
 	curdir="$$(basename $$(pwd))"; \
-	dir="$$(cat .version | sed -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
+	dir="$$(cat .version | $(SED) -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
 	( \
 		cd ../; \
 		[ "$$curdir" == "$$dir" ] || mv "$$curdir" "$$dir"; \
 		( \
 			find "$$dir" -type d -name .svn -prune; \
-			sed -e "s/\(.*\)/$$dir\/\1/" "$$dir/.exclude-dist"; \
+			$(SED) -e "s/\(.*\)/$$dir\/\1/" "$$dir/.exclude-dist"; \
 			echo "$${dir}/.exclude-dist"; \
 			echo "$${dir}/.exclude-dist-tmp"; \
 		) > "$$dir/.exclude-dist-tmp"; \
