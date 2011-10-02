@@ -151,11 +151,12 @@ RMTICHKSUM_TOOL="rmtichksum"
 MAKEDEVS_TOOL="makedevs"
 UNSQUASHFS_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
+TAR_TOOL="tar"
+MD5SUM_TOOL="md5sum"
 
 MKSQUASHFS_OPTIONS="-noappend -all-root -info"
 UNSQUASHFS_OPTIONS="-no-progress"
 
-TAR_TOOL="tar"
 
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
 EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
@@ -167,8 +168,10 @@ RMTICHKSUM="${TOOLS_DIR}/${RMTICHKSUM_TOOL}"
 MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
 MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
+MD5SUM="${TOOLS_DIR}/${MD5SUM_TOOL}"
 #temporarily use system tar to unpack avm images
-UNTAR="$(which tar)"
+#UNTAR="$(which tar)"
+UNTAR="$TAR"
 
 PACKAGES_DIR_ROOT="${BASE_DIR}/packages"
 PATCHES_DIR="${BASE_DIR}/patches"
@@ -397,18 +400,18 @@ function sizeinfo()
 	shift
 	case $sizeinfo_mode in
 		lib)	#libraries: multiple files
-			local shash="$(ls -l $@ | sort | md5sum)"
+			local shash="$(ls -l $@ | sort | $MD5SUM)"
 			local sfile="${SIZEINFO_CACHEDIR}/$(echo $@ | sed -rn 's!.*/(.*)\.so.*!\1!p').sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			;;
 		mod)	#modules: one .ko file
-			local shash="$(ls -l $1 | md5sum)"
+			local shash="$(ls -l $1 | $MD5SUM)"
 			local sfile="${SIZEINFO_CACHEDIR}/${1##*/}.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			;;
 		pkg)	#packages: one directory
 			local sfile="${1}/../.sizeinfo.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			;;
 		add)	#addons: one directory
-			local shash="$(find $1 -type f -exec ls -l {} ';' | md5sum)"
+			local shash="$(find $1 -type f -exec ls -l {} ';' | $MD5SUM)"
 			local sfile="${SIZEINFO_CACHEDIR}/${1##*/}.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			;;
 		*)

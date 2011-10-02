@@ -65,7 +65,7 @@ modpatch()
 			[ -z "$patch_target" ] && error 2 "modpatch: Could not determine target file"
 		fi
 		[ -e "$target_dir"/"$patch_target" ] || error 2 "modpatch: Target file $patch_target does not exist"
-		local target_md5="$(md5sum "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
+		local target_md5="$($(dirname $0)/md5sum "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
 		local md5_patch="$(find "$patch_file" -name *${target_md5}*.patch)"
 		if [ -z "$md5_patch" ]; then
 			[ -n "$target_md5" ] && local md5_error="for $patch_target (MD5: $target_md5)"

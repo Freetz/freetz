@@ -594,13 +594,13 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 # $2: directory files to be unpacked to
 # $3: file extension
 define UNPACK_CMD__INT
-	$(if $(filter .gz .tgz .taz,$(3)),gzip -dc $(1)) \
-	$(if $(filter .bzip2 .bz2 .bz .tbz2 .tbz .tz2,$(3)),bzip2 -dc $(1)) \
-	$(if $(filter .xz .txz,$(3)),xz -dc $(1)) \
-	$(if $(filter .lzma .tlz,$(3)),lzma -dc $(1)) \
-	$(if $(filter .Z .taZ,$(3)),compress -dc $(1)) \
+	$(if $(filter .gz .tgz .taz,$(3)),$(TOOLS_DIR)/gunzip -c $(1)) \
+	$(if $(filter .bzip2 .bz2 .bz .tbz2 .tbz .tz2,$(3)),$(TOOLS_DIR)/bunzip2 -c $(1)) \
+	$(if $(filter .xz .txz,$(3)),$(TOOLS_DIR)/unxz -c $(1)) \
+	$(if $(filter .lzma .tlz,$(3)),$(TOOLS_DIR)/unlzma -c $(1)) \
+	$(if $(filter .Z .taZ,$(3)),$(TOOLS_DIR)/uncompress -c $(1)) \
 	$(if $(filter .tar,$(3)),cat $(1)) \
-	$(if $(filter .zip,$(3)),unzip $(QUIETSHORT) -u $(1) -d $(2)) \
+	$(if $(filter .zip,$(3)),$(TOOLS_DIR)/unzip $(QUIETSHORT) $(1) -d $(2)) \
 	$(if $(filter .gz .tgz .taz .bzip2 .bz2 .bz .tbz2 .tbz .tz2 .xz .txz .lzma .tlz .Z .taZ .tar,$(3)),| tar -C $(2) $(VERBOSE) -x)
 endef
 
