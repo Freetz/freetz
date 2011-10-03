@@ -10,6 +10,10 @@
 # at a relative location '../.config' to this script. The variables are:
 #   - FREETZ_DL_SITE_USER     (URL, e.g. http://my.server.org)
 
+# XXX: Temporarily use system's md5sum if busybox applet is not yet build (see #1535)
+MD5SUM=$(dirname $0)/md5sum
+[ ! -x $MD5SUM ] && MD5SUM="$(which md5sum)"
+
 DOT_CONFIG=$FREETZ_BASE_DIR/.config
 FREETZ_DL_SITE_1="http://freetz.magenbrot.net"
 FREETZ_DL_SITE_2="http://freetz.3dfxatwork.de"
@@ -202,7 +206,7 @@ for i in ${sites[@]}; do
       continue
     fi
     if [ -n "$MD5" ]; then
-      FILE_MD5=$($(dirname $0)/md5sum "$DL_DIR/$DL_FILE" | sed 's/ .*//')
+      FILE_MD5=$($MD5SUM "$DL_DIR/$DL_FILE" | sed 's/ .*//')
       if [ "$(echo $MD5 | tr A-Z a-z)" != "$FILE_MD5" ]; then
         echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
         rm -f "$DL_DIR/$DL_FILE"
