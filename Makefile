@@ -151,19 +151,7 @@ include $(TOOLS_DIR)/make/Makefile.in
 noconfig_targets:=menuconfig config oldconfig defconfig tools \
 		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
 
-ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
-
-#ifeq ($(filter dirclean,$(MAKECMDGOALS)),)
-#Simple test if wrong uclibc is used
-#ifneq ($(NO_UCLIBC_CHECK),y)
-#ifneq ($(shell $(CHECK_UCLIBC_VERSION) && echo OK), OK)
-#$(error Error: uClibc-version changed. Please type "make dirclean")
-#endif
-#endif
-#endif
-
-endif
 
 VERBOSE:=
 QUIET:=--quiet
