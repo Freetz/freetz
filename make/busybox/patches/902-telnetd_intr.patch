@@ -1,10 +1,10 @@
---- networking/telnetd.c.orig	2011-01-04 16:56:17.682164713 +0100
-+++ networking/telnetd.c	2011-01-04 16:56:19.992164713 +0100
-@@ -313,6 +313,7 @@
+--- networking/telnetd.c	2011-10-05 21:09:06+02:00
++++ networking/telnetd.c	2011-10-05 21:09:06+02:00
+@@ -330,6 +330,7 @@
  
  	/* Restore default signal handling ASAP */
  	bb_signals((1 << SIGCHLD) + (1 << SIGPIPE), SIG_DFL);
 +	signal(SIGINT, SIG_DFL);
  
- 	if (ENABLE_FEATURE_UTMP) {
- 		len_and_sockaddr *lsa = get_peer_lsa(sock);
+ 	pid = getpid();
+ 
