@@ -189,7 +189,7 @@ $($(PKG)_TARGET_BINARY).links: $($(PKG)_BINARY).links
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 
 $(pkg)-menuconfig: $($(PKG)_DIR)/.unpacked $($(PKG)_CONFIG_FILE)
-	#cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
+	cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
 	$(SUBMAKE) CC="$(TARGET_CC)" \
 		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
