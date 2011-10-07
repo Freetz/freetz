@@ -148,7 +148,9 @@ world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-noconfig_targets:=menuconfig config oldconfig defconfig tools \
+KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig defconfig allnoconfig allyesconfig randconfig listnewconfig
+
+noconfig_targets:=$(KCONFIG_TARGETS) tools \
 		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
 
 -include $(TOPDIR)/.config
@@ -421,15 +423,14 @@ recover:
 menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
 	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
 
+menuconfig-single: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
+	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_CONFIG_IN)
+
 config: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
 	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
 
-oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf --oldconfig $(CONFIG_CONFIG_IN)
-
-defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(RM) .config; \
-	$(CONFIG)/conf --defconfig $(CONFIG_CONFIG_IN)
+oldconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
+	@$(CONFIG)/conf --$@ $(CONFIG_CONFIG_IN)
 
 config-clean-deps:
 	@{ \
@@ -497,7 +498,7 @@ check-builddir-version:
 	fi; 
 	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version
 
-.PHONY: all world step menuconfig config oldconfig defconfig tools recover \
+.PHONY: all world step $(KCONFIG_TARGETS) tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	$(CHECK_BUILD_DIR_VERSION)
