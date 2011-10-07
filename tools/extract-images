@@ -126,6 +126,10 @@ extract_kernel_filesystem()
 mod_base="."
 endian="-any"
 case $# in
+	0)
+		usage
+		exit 0
+		;;
 	1)
 		input_file="$1"
 		;;
