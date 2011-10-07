@@ -765,7 +765,7 @@ config FREETZ_KERNEL_MTD_SIZE
 		Number of 64K blocks in the kernel mtd device.
 
 config FREETZ_HAS_AVM_NTFS
-	bool "HAS AVM NTFS"	if FREETZ_TYPE_CUSTOM
+	bool "Has AVM NTFS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
@@ -780,7 +780,7 @@ config FREETZ_HAS_AVM_NTFS
 		Select this if your original firmware has ntfs support.
 
 config FREETZ_HAS_AVM_IPV6
-	bool "HAS AVM IPv6"	if FREETZ_TYPE_CUSTOM
+	bool "Has AVM IPv6"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_TARGET_IPV6_SUPPORT
 	default y		if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
@@ -796,8 +796,23 @@ config FREETZ_HAS_AVM_IPV6
 	help
 		Select this if your original firmware has IPv6 support.
 
+config FREETZ_HAS_AVM_WEBDAV
+	bool "Has AVM WebDAV"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270_V2 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3 || \
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_FON_WLAN_7570 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
+	default n
+	help
+		Select this if your original firmware has WebDAV support.
+
 config FREETZ_HAS_AVM_INETD
-	bool "HAS AVM inetd"	if FREETZ_TYPE_CUSTOM
+	bool "Has AVM inetd"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_PACKAGE_INETD
 	default y		if \
 		FREETZ_TYPE_WLAN_3270 || \
