@@ -86,6 +86,7 @@ case $1 in
 		if [ "$DAEMON" = "openvpn" ]; then
 			modreg cgi 'openvpn' 'OpenVPN'
 			modreg daemon openvpn
+			modreg extra openvpn '$(lang de:"Verbundene Clients" en:"connected clients")' 2 "openvpn_clients"
 			modreg file openvpn 'box_crt' 'Box Cert' 0 "box_crt"
 			modreg file openvpn 'box_key' 'Private Key' 0 "box_key"
 			modreg file openvpn 'ca_crt' 'CA Cert' 0 "ca_crt"
@@ -116,6 +117,7 @@ case $1 in
 			modunreg file openvpn
 			modunreg daemon openvpn
 			modunreg cgi openvpn
+			modunreg extra openvpn
 		fi
 		;;
 	start)
