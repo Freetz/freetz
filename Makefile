@@ -442,7 +442,7 @@ config-clean-deps:
 	make oldnoconfig; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+) is not set$$/  \1/p'; \
 	$(RM) .config_tmp; \
 	}
 
