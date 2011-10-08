@@ -439,7 +439,7 @@ config-clean-deps:
 	$(SED) -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
-	make oldconfig < /dev/null > /dev/null; \
+	make oldconfig < /dev/null > /dev/null 2>&1; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
 	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+).*/  \1/p'; \
