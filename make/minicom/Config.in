@@ -26,6 +26,11 @@ config FREETZ_PACKAGE_MINICOM_PORT_S0
 	help
 		Use internal serial port (/dev/ttyS0) as default port
 
+config FREETZ_PACKAGE_MINICOM_PORT_S1
+	bool "/dev/ttyS1"
+	help
+		Use internal serial port (/dev/ttyS0) as default port
+
 config FREETZ_PACKAGE_MINICOM_PORT_USB0
 	bool "/dev/ttyUSB0"
 	help
@@ -98,6 +103,7 @@ config FREETZ_PACKAGE_MINICOM_BAUD
 config FREETZ_PACKAGE_MINICOM_PORT
 	string
 	default "/dev/ttyS0"	if FREETZ_PACKAGE_MINICOM_PORT_S0
+	default "/dev/ttyS1"	if FREETZ_PACKAGE_MINICOM_PORT_S1
 	default "/dev/ttyUSB0"	if FREETZ_PACKAGE_MINICOM_PORT_USB0
 	default "/dev/ttyUSB1"	if FREETZ_PACKAGE_MINICOM_PORT_USB1
 	default "/dev/ttyUSB2"	if FREETZ_PACKAGE_MINICOM_PORT_USB2
