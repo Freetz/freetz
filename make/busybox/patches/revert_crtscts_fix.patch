@@ -1,3 +1,12 @@
+Revert upstream commit because of http://freetz.org/ticket/1163
+
+From f2657a9968d2f5282f9a7f2e8b93a8d5a57e04fd Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Sun, 24 Oct 2010 00:04:10 +0000
+Subject: init: do not clear CRTSCTS (fix from Debian bug 528560)
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
 --- init/init.c	2011-10-05 21:16:05+02:00
 +++ init/init.c	2011-10-05 21:16:05+02:00
 @@ -329,11 +329,7 @@
