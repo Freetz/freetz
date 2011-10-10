@@ -25,43 +25,43 @@ cat << 'EOF'
 freetz_download - download Freetz packages
 
 Usage: freetz_download (-?|--help) | ( (<download-dir> | check) <filename> [<main-url>] [<md5>])
-    check         - check download
-    download-dir  - target directory for download file
-    filename      - download file name
-    main-url      - url without filename for primary download
-    md5           - md5 of file
-    -?, --help    - print this help text
+	check         - check download
+	download-dir  - target directory for download file
+	filename      - download file name
+	main-url      - url without filename for primary download
+	md5           - md5 of file
+	-?, --help    - print this help text
 
 Examples:
-    freetz_download dl package.tar.bz2
-    freetz_download dl package.tar.bz2 http://myserver.com/freetz
+	freetz_download dl package.tar.bz2
+	freetz_download dl package.tar.bz2 http://myserver.com/freetz
 
 Debugging: just set DEBUG=1, like this:
-    DEBUG=1 freetz_download dl package.tar.bz2
+	DEBUG=1 freetz_download dl package.tar.bz2
 EOF
 }
 
 do_download()
 {
-  # $1 = target directory, $2 = full download URL
-  echo
-  if [ "$DEBUG" == "1" ]; then echo "wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P \"$1\" \"$2\""; fi
-  wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P "$1" "$2"
-  wget_result=$?
-  if [ "$wget_result" != "0" ]; then
-    echo "Download failed - \"$2\"  ->  error code $wget_result" >&2
-    fname=$(basename $2)
-    rm -f $1/$fname
-    return $wget_result
-  fi
-  echo "Download succeeded - \"$2\"  ->  saved to folder \"$1\""
+	# $1 = target directory, $2 = full download URL
+	echo
+	if [ "$DEBUG" == "1" ]; then echo "wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P \"$1\" \"$2\""; fi
+	wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P "$1" "$2"
+	wget_result=$?
+	if [ "$wget_result" != "0" ]; then
+		echo "Download failed - \"$2\"  ->  error code $wget_result" >&2
+		fname=$(basename $2)
+		rm -f $1/$fname
+		return $wget_result
+	fi
+	echo "Download succeeded - \"$2\"  ->  saved to folder \"$1\""
 }
 
 do_check()
 {
-  wget --quiet -t3 --timeout=20 --no-check-certificate --passive-ftp --spider "$1"
-  wget_result=$?
-  return $wget_result
+	wget --quiet -t3 --timeout=20 --no-check-certificate --passive-ftp --spider "$1"
+	wget_result=$?
+	return $wget_result
 }
 
 # $1 - url
@@ -69,44 +69,44 @@ do_check()
 # $3 - version
 do_checkout_cvs()
 {
-  local module_name
-  module_name="${2/-$3/}"
-  (cvs -d:"$1" export -D "$3" "$module_name" || cvs -d:"$1" export -r "$3" "$module_name") && mv "$module_name" "$2"
+	local module_name
+	module_name="${2/-$3/}"
+	(cvs -d:"$1" export -D "$3" "$module_name" || cvs -d:"$1" export -r "$3" "$module_name") && mv "$module_name" "$2"
 }
 do_checkout_svn()
 {
-  local extra_flags
-  svn help export | grep -q trust-server-cert && extra_flags="--trust-server-cert"
-  svn export --non-interactive $extra_flags -r$3 "$1" "$2"
+	local extra_flags
+	svn help export | grep -q trust-server-cert && extra_flags="--trust-server-cert"
+	svn export --non-interactive $extra_flags -r$3 "$1" "$2"
 }
 do_checkout_git()
 {
-  git clone "$1" "$2" && (cd "$2" && git checkout "$3" && rm -rf .git)
+	git clone "$1" "$2" && (cd "$2" && git checkout "$3" && rm -rf .git)
 }
 do_checkout_bzr()
 {
-  bzr export -r"$3" "$2" "$1"
+	bzr export -r"$3" "$2" "$1"
 }
 do_checkout_hg()
 {
-  hg clone -r "$3" "$1" "$2" && (cd "$2" && rm -rf .hg .hgignore .hgtags)
+	hg clone -r "$3" "$1" "$2" && (cd "$2" && rm -rf .hg .hgignore .hgtags)
 }
 do_checkout_darcs()
 {
-  darcs get -t "$3" "$1" "$2" && (cd "$2" && rm -rf _darcs)
+	darcs get -t "$3" "$1" "$2" && (cd "$2" && rm -rf _darcs)
 }
 
 
 # Regular use: help parameter -> exit without error
 if [ "$1" == "-?" -o "$1" == "--help" ]; then
-  helpmsg
-  exit 0
+	helpmsg
+	exit 0
 fi
 
 # Wrong number of parameters -> exit with error
 if [ $# -lt 2 -o $# -gt 4 ]; then
-  helpmsg >&2
-  exit 1
+	helpmsg >&2
+	exit 1
 fi
 
 DL_DIR="$1"
@@ -118,64 +118,64 @@ MD5="$4"
 [ -e $DOT_CONFIG ] && . $DOT_CONFIG
 
 if [ "$DEBUG" == "1" ]; then
-  echo "freetz_download parameters:"
-  echo "  DL_DIR=$DL_DIR"
-  echo "  DOT_CONFIG=$DOT_CONFIG"
-  echo "  DL_FILE=$DL_FILE"
-  echo "  MAIN_URL=$MAIN_URL"
-  echo "  MD5=$MD5"
+	echo "freetz_download parameters:"
+	echo "  DL_DIR=$DL_DIR"
+	echo "  DOT_CONFIG=$DOT_CONFIG"
+	echo "  DL_FILE=$DL_FILE"
+	echo "  MAIN_URL=$MAIN_URL"
+	echo "  MD5=$MD5"
 fi
 
 num_sites=0
 # Fill array 'sites' with download server URLs, first primary site (if specified)
 if [ -n "$MAIN_URL" ]; then
-  # give sourceforge a few more tries, because it redirects to different mirrors
-  if [ ${MAIN_URL:0:3} == "@SF" ]; then
-    MAIN_URL=${MAIN_URL/@SF\//}
-    for (( n=0; n < 5; n++ )); do
-      sites[$num_sites]=http://downloads.sourceforge.net/$MAIN_URL
-      (( num_sites++ ))
-    done
-  elif [ ${MAIN_URL:0:4} == "@AVM" ]; then
-    MAIN_URL=${MAIN_URL/@AVM\//}
-    sites[0]=ftp://ftp.avm.de/fritz.box/$MAIN_URL
-    sites[1]=http://download.avm.de/fritz.box/$MAIN_URL
-    sites[2]=ftp://service.avm.de/$MAIN_URL
-    num_sites=3
-  elif [ ${MAIN_URL:0:4} == "@GNU" ]; then
-    MAIN_URL=${MAIN_URL/@GNU\//}
-    sites[0]=http://ftpmirror.gnu.org/$MAIN_URL # automatically chooses a nearby and up-to-date mirror
-    sites[1]=http://ftp.gnu.org/gnu/$MAIN_URL
-    num_sites=2
-  elif [ ${MAIN_URL:0:7} == "@KERNEL" ]; then
-    MAIN_URL=${MAIN_URL/@KERNEL\//}
-    sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
-    sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
-    num_sites=2
-  elif [ ${MAIN_URL:0:8} == "@TELEKOM" ]; then
-    MAIN_URL=${MAIN_URL/@TELEKOM\//}
-    sites[0]=http://www.telekom.de/dlp/eki/downloads/$MAIN_URL
-    sites[1]=http://www.t-home.de/dlp/eki/downloads/$MAIN_URL
-    sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$MAIN_URL
-    num_sites=3
-  else
-    supportedVCSs="cvs|svn|git|bzr|hg|darcs"
-    VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
-    if [ -n "${VCS}" ]; then
-      MAIN_URL="$(echo "${MAIN_URL}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
-      num_sites=0
-      MD5=""
-    else
-      sites[$num_sites]=$MAIN_URL
-      (( num_sites++ ))
-    fi
-  fi
+	# give sourceforge a few more tries, because it redirects to different mirrors
+	if [ ${MAIN_URL:0:3} == "@SF" ]; then
+		MAIN_URL=${MAIN_URL/@SF\//}
+		for (( n=0; n < 5; n++ )); do
+			sites[$num_sites]=http://downloads.sourceforge.net/$MAIN_URL
+			(( num_sites++ ))
+		done
+	elif [ ${MAIN_URL:0:4} == "@AVM" ]; then
+		MAIN_URL=${MAIN_URL/@AVM\//}
+		sites[0]=ftp://ftp.avm.de/fritz.box/$MAIN_URL
+		sites[1]=http://download.avm.de/fritz.box/$MAIN_URL
+		sites[2]=ftp://service.avm.de/$MAIN_URL
+		num_sites=3
+	elif [ ${MAIN_URL:0:4} == "@GNU" ]; then
+		MAIN_URL=${MAIN_URL/@GNU\//}
+		sites[0]=http://ftpmirror.gnu.org/$MAIN_URL # automatically chooses a nearby and up-to-date mirror
+		sites[1]=http://ftp.gnu.org/gnu/$MAIN_URL
+		num_sites=2
+	elif [ ${MAIN_URL:0:7} == "@KERNEL" ]; then
+		MAIN_URL=${MAIN_URL/@KERNEL\//}
+		sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
+		sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
+		num_sites=2
+	elif [ ${MAIN_URL:0:8} == "@TELEKOM" ]; then
+		MAIN_URL=${MAIN_URL/@TELEKOM\//}
+		sites[0]=http://www.telekom.de/dlp/eki/downloads/$MAIN_URL
+		sites[1]=http://www.t-home.de/dlp/eki/downloads/$MAIN_URL
+		sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$MAIN_URL
+		num_sites=3
+	else
+		supportedVCSs="cvs|svn|git|bzr|hg|darcs"
+		VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
+		if [ -n "${VCS}" ]; then
+			MAIN_URL="$(echo "${MAIN_URL}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
+			num_sites=0
+			MD5=""
+		else
+			sites[$num_sites]=$MAIN_URL
+			(( num_sites++ ))
+		fi
+	fi
 fi
 
 # Get Freetz mirror sites in array
 FREETZ_SITES=( $(
 	for (( i=1; i <= 3 ; i++ )); do
-	  eval "echo \$FREETZ_DL_SITE_$i"
+		eval "echo \$FREETZ_DL_SITE_$i"
 	done
 	) )
 
@@ -186,68 +186,68 @@ fi
 
 # Fill array 'sites' with download server URLs, add Freetz Mirrors, in random order
 for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
-  p=$(( RANDOM % n ))
-  sites[$num_sites]=${FREETZ_SITES[$p]}
-  (( num_sites++ ))
-  FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
+	p=$(( RANDOM % n ))
+	sites[$num_sites]=${FREETZ_SITES[$p]}
+	(( num_sites++ ))
+	FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
 done
 
 # Loop over servers until a download succeeds or all requests have failed.
 IFS=$'\n'
 for i in ${sites[@]}; do
-  if [ ${DL_DIR:0:5} == "check" ]; then
-    do_check "$i/$DL_FILE"
-    if [ "$?" != "0" ]; then
-      continue
-    fi
-  else
-    do_download "$DL_DIR" "$i/$DL_FILE"
-    if [ "$?" != "0" ]; then
-      continue
-    fi
-    if [ -n "$MD5" -a -x "$MD5SUM" ]; then
-      FILE_MD5=$($MD5SUM "$DL_DIR/$DL_FILE" | sed 's/ .*//')
-      if [ "$(echo $MD5 | tr A-Z a-z)" != "$FILE_MD5" ]; then
-        echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
-        rm -f "$DL_DIR/$DL_FILE"
-        continue;
-      else
-        echo "MD5 verified for $DL_DIR/$DL_FILE: $FILE_MD5"
-      fi
-    fi
-  fi
-  exit 0
+	if [ ${DL_DIR:0:5} == "check" ]; then
+		do_check "$i/$DL_FILE"
+		if [ "$?" != "0" ]; then
+			continue
+		fi
+	else
+		do_download "$DL_DIR" "$i/$DL_FILE"
+		if [ "$?" != "0" ]; then
+			continue
+		fi
+		if [ -n "$MD5" -a -x "$MD5SUM" ]; then
+			FILE_MD5=$($MD5SUM "$DL_DIR/$DL_FILE" | sed 's/ .*//')
+			if [ "$(echo $MD5 | tr A-Z a-z)" != "$FILE_MD5" ]; then
+				echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
+				rm -f "$DL_DIR/$DL_FILE"
+				continue;
+			else
+				echo "MD5 verified for $DL_DIR/$DL_FILE: $FILE_MD5"
+			fi
+		fi
+	fi
+	exit 0
 done
 unset IFS
 
 if [ -n "$VCS" ]; then
-  echo
-  case "$DL_FILE" in
-    *.tar.gz) COMPRESSION_FLAG=z ;;
-    *.tar.bz2) COMPRESSION_FLAG=j ;;
-    *) { echo "Failed to detect compression method from $DL_FILE"; exit 1; } ;;
-  esac
+	echo
+	case "$DL_FILE" in
+		*.tar.gz) COMPRESSION_FLAG=z ;;
+		*.tar.bz2) COMPRESSION_FLAG=j ;;
+		*) { echo "Failed to detect compression method from $DL_FILE"; exit 1; } ;;
+	esac
 
-  SUBDIR=$(echo "$DL_FILE" | sed -r -e 's,(.*)[.]tar[.](gz|bz2)$,\1,')
-  VERSION=$(echo "$SUBDIR" | sed -r -e 's,.*-([^-]+),\1,')
-  [ -n "$VERSION" ] || { echo "Failed to detect version from $DL_FILE"; exit 1; }
+	SUBDIR=$(echo "$DL_FILE" | sed -r -e 's,(.*)[.]tar[.](gz|bz2)$,\1,')
+	VERSION=$(echo "$SUBDIR" | sed -r -e 's,.*-([^-]+),\1,')
+	[ -n "$VERSION" ] || { echo "Failed to detect version from $DL_FILE"; exit 1; }
 
-  TMP_DIR=$(mktemp -d -t freetzXXX) || { echo "Error creating temporary dir."; exit 1; }
-  echo "Checking out files from the $VCS repository..." \
-  && ( \
-    cd "$TMP_DIR" \
-    && rm -rf "$SUBDIR" \
-    && [ ! -d "$SUBDIR" ] \
-    && do_checkout_"$VCS" "$MAIN_URL" "$SUBDIR" "$VERSION" \
-    && echo "Packing checkout..." \
-    && tar c${COMPRESSION_FLAG}f "$DL_FILE" "$SUBDIR" \
-  ) \
-  && mv "$TMP_DIR/$DL_FILE" "$DL_DIR/" \
-  && rm -rf "$TMP_DIR" \
-  && exit 0
+	TMP_DIR=$(mktemp -d -t freetzXXX) || { echo "Error creating temporary dir."; exit 1; }
+	echo "Checking out files from the $VCS repository..." \
+	&& ( \
+		cd "$TMP_DIR" \
+		&& rm -rf "$SUBDIR" \
+		&& [ ! -d "$SUBDIR" ] \
+		&& do_checkout_"$VCS" "$MAIN_URL" "$SUBDIR" "$VERSION" \
+		&& echo "Packing checkout..." \
+		&& tar c${COMPRESSION_FLAG}f "$DL_FILE" "$SUBDIR" \
+	) \
+	&& mv "$TMP_DIR/$DL_FILE" "$DL_DIR/" \
+	&& rm -rf "$TMP_DIR" \
+	&& exit 0
 
-  rm -f "$DL_DIR/$DL_FILE"
-  rm -rf "$TMP_DIR"
+	rm -f "$DL_DIR/$DL_FILE"
+	rm -rf "$TMP_DIR"
 fi
 
 exit 1
