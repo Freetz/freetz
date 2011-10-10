@@ -140,8 +140,8 @@ if [ -n "$MAIN_URL" ]; then
     MAIN_URL=${MAIN_URL/@AVM\//}
     sites[0]=ftp://ftp.avm.de/fritz.box/$MAIN_URL
     sites[1]=http://download.avm.de/fritz.box/$MAIN_URL
-    #sites[2]=ftp://service.avm.de/$MAIN_URL # URL has no more a fritz.box sub-dir
-    num_sites=2
+    sites[2]=ftp://service.avm.de/$MAIN_URL
+    num_sites=3
   elif [ ${MAIN_URL:0:4} == "@GNU" ]; then
     MAIN_URL=${MAIN_URL/@GNU\//}
     sites[0]=http://ftpmirror.gnu.org/$MAIN_URL # automatically chooses a nearby and up-to-date mirror
