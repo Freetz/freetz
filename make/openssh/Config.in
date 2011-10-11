@@ -66,13 +66,6 @@ config FREETZ_PACKAGE_OPENSSH_SFTP
 	help
 		Build the OpenSSH SFTP server (e.g. to use with dropbear as SFTP server)
 
-config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
-	bool "Add SFTP support to dropbear"
-	depends on FREETZ_PACKAGE_DROPBEAR && FREETZ_PACKAGE_OPENSSH_SFTP
-	default n
-	help
-		This option adds the SFTP support to dropbear by using
-
 comment "Build statically linked binaries ---"
 	depends on FREETZ_PACKAGE_OPENSSH
 
