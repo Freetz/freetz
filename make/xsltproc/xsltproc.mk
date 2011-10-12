@@ -65,4 +65,5 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(XSLTPROC_BINARY_TARGET_DIR) $(XSLTPROC_LIBNAMES_SHORT:%=$(XSLTPROC_TARGET_LIBDIR)/%.so*)
 
+$(call PKG_ADD_LIB,libxslt)
 $(PKG_FINISH)

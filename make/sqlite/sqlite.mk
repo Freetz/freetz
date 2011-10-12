@@ -51,4 +51,5 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(SQLITE_TARGET_BINARY) $(SQLITE_TARGET_LIBDIR)/libsqlite3*.so*
 
+$(call PKG_ADD_LIB,libsqlite3)
 $(PKG_FINISH)

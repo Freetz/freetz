@@ -83,4 +83,5 @@ $(pkg)-uninstall:
 		$(NETPBM_BINARIES_ALL:%=$(NETPBM_DEST_DIR)/usr/bin/%) \
 		$(NETPBM_TARGET_LIBDIR)/libnetpbm*
 
+$(call PKG_ADD_LIB,libnetpbm)
 $(PKG_FINISH)

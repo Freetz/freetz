@@ -74,4 +74,5 @@ $(pkg)-uninstall:
 	$(RM) $(LUA_TARGET_BINARY)
 	$(RM) $(LUA_TARGET_LIBDIR)/liblua*.so*
 
+$(call PKG_ADD_LIB,liblua)
 $(PKG_FINISH)

@@ -92,4 +92,5 @@ $(pkg)-uninstall:
 		$(FUSE_MOD_TARGET_BINARY) \
 		$(FUSE_TARGET_LIBDIR)/libfuse*.so*
 
+$(call PKG_ADD_LIB,libfuse)
 $(PKG_FINISH)
