@@ -31,8 +31,6 @@ TOOLS_DIR:=tools
 DL_FW_DIR:=$(DL_DIR)/fw
 FW_IMAGES_DIR:=images
 MIRROR_DIR:=$(DL_DIR)/mirror
-BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
-BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
@@ -486,8 +484,11 @@ dist: distclean
 
 # Check if last build was with older svn version
 check-builddir-version:
-	@if [ -e .config -a \
-		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
+	@\
+	BUILD_DIR_VERSION=$$(svnversion | grep -v exported 2> /dev/null); \
+	BUILD_LAST_VERSION=$$(cat .lastbuild-version 2> /dev/null); \
+	if [ -e .config -a \
+		"$$BUILD_DIR_VERSION" != "$$BUILD_LAST_VERSION" -a \
 		.svn -nt .config ]; then \
 		echo -n -e $(_Y); \
 		echo "ERROR: You have updated to newer svn version since last modifying your config."; \
@@ -495,8 +496,8 @@ check-builddir-version:
 		echo "       building again."; \
 		echo -n -e $(_N); \
 		exit 3; \
-	fi; 
-	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version
+	fi; \
+	echo "$$BUILD_DIR_VERSION" > .lastbuild-version
 
 .PHONY: all world step $(KCONFIG_TARGETS) tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
