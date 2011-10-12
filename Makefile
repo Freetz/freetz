@@ -206,6 +206,14 @@ include $(MAKE_DIR)/Makefile.in
 include $(sort $(wildcard $(MAKE_DIR)/libs/*/Makefile.in))
 include $(sort $(wildcard $(MAKE_DIR)/*/Makefile.in))
 
+ALL_PACKAGES:=
+LOCALSOURCE_PACKAGES:=
+include $(sort $(wildcard $(MAKE_DIR)/libs/*/*.mk))
+include $(sort $(wildcard $(MAKE_DIR)/*/*.mk))
+NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
+PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
+PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(NON_LOCALSOURCE_PACKAGES))
+
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
 TARGETS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TARGETS))
 TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
@@ -227,14 +235,6 @@ TOOLCHAIN_CLEAN:=$(patsubst %,%-clean,$(TOOLCHAIN))
 TOOLCHAIN_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLCHAIN))
 TOOLCHAIN_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLCHAIN))
 TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
-
-ALL_PACKAGES:=
-LOCALSOURCE_PACKAGES:=
-include $(sort $(wildcard $(MAKE_DIR)/libs/*/*.mk))
-include $(sort $(wildcard $(MAKE_DIR)/*/*.mk))
-NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
-PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
-PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(NON_LOCALSOURCE_PACKAGES))
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
