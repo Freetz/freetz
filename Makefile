@@ -11,7 +11,7 @@
 # You shouldn't need to mess with anything beyond this point...
 #--------------------------------------------------------------
 TOPDIR=.
-CONFIG_CONFIG_IN=Config.in
+CONFIG_IN=Config.in
 CONFIG=tools/config
 
 SHELL:=/bin/bash
@@ -420,17 +420,17 @@ recover:
 		done; \
 	fi
 
-menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
-	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
+menuconfig: $(CONFIG_IN) $(CONFIG)/mconf
+	@$(CONFIG)/mconf $(CONFIG_IN)
 
-menuconfig-single: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
-	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_CONFIG_IN)
+menuconfig-single: $(CONFIG_IN) $(CONFIG)/mconf
+	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN)
 
-config: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
+config: $(CONFIG_IN) $(CONFIG)/conf
+	@$(CONFIG)/conf $(CONFIG_IN)
 
-oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf --$@ $(CONFIG_CONFIG_IN)
+oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: $(CONFIG_IN) $(CONFIG)/conf
+	@$(CONFIG)/conf --$@ $(CONFIG_IN)
 
 config-clean-deps:
 	@{ \
