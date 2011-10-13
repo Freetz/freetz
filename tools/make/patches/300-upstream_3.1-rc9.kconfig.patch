@@ -904,6 +904,73 @@
  
  #ifdef __cplusplus
  }
+--- scripts/kconfig/kxgettext.c	2011-06-06 00:57:46.000000000 +0200
++++ scripts/kconfig/kxgettext.c	2011-10-10 04:53:11.000000000 +0200
+@@ -7,7 +7,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#define LKC_DIRECT_LINK
+ #include "lkc.h"
+ 
+ static char *escape(const char* text, char *bf, int len)
+--- scripts/kconfig/lkc.h	2011-06-06 00:57:46.000000000 +0200
++++ scripts/kconfig/lkc.h	2011-10-10 04:53:11.000000000 +0200
+@@ -21,12 +21,7 @@
+ extern "C" {
+ #endif
+ 
+-#ifdef LKC_DIRECT_LINK
+ #define P(name,type,arg)	extern type name arg
+-#else
+-#include "lkc_defs.h"
+-#define P(name,type,arg)	extern type (*name ## _p) arg
+-#endif
+ #include "lkc_proto.h"
+ #undef P
+ 
+@@ -68,9 +63,7 @@
+ 	enum symbol_type stype;
+ };
+ 
+-#ifdef YYDEBUG
+ extern int zconfdebug;
+-#endif
+ 
+ int zconfparse(void);
+ void zconfdump(FILE *out);
+@@ -81,9 +74,6 @@
+ int zconf_lineno(void);
+ const char *zconf_curname(void);
+ 
+-/* conf.c */
+-void xfgets(char *str, int size, FILE *in);
+-
+ /* confdata.c */
+ const char *conf_get_configname(void);
+ const char *conf_get_autoconfig_name(void);
+@@ -92,6 +82,11 @@
+ void sym_add_change_count(int count);
+ void conf_set_all_new_symbols(enum conf_def_mode mode);
+ 
++struct conf_printer {
++	void (*print_symbol)(FILE *, struct symbol *, const char *, void *);
++	void (*print_comment)(FILE *, const char *, void *);
++};
++
+ /* confdata.c and expr.c */
+ static inline void xfwrite(const void *str, size_t len, size_t count, FILE *out)
+ {
+@@ -99,9 +94,6 @@
+ 		fprintf(stderr, "\nError in writing or end of file.\n");
+ }
+ 
+-/* kconfig_load.c */
+-void kconfig_load(void);
+-
+ /* menu.c */
+ void _menu_init(void);
+ void menu_warn(struct menu *menu, const char *fmt, ...);
 --- scripts/kconfig/lkc_proto.h	2011-06-06 00:57:46.000000000 +0200
 +++ scripts/kconfig/lkc_proto.h	2011-10-10 04:53:11.000000000 +0200
 @@ -31,6 +31,7 @@
