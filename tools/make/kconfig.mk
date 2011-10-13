@@ -9,17 +9,20 @@ KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
 KCONFIG_HOSTCFLAGS=-Wall -Wno-char-subscripts -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -DCONFIG_=\"\"
 
 $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE_TMP) $(KCONFIG_SITE) $(KCONFIG_SOURCE_MD5)
+	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE_TMP) $(KCONFIG_SITE) $(KCONFIG_SOURCE_MD5); \
 	mv "$(DL_DIR)/$(KCONFIG_SOURCE_TMP)" "$(DL_DIR)/$(KCONFIG_SOURCE)"
 
 kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
 
 $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(KCONFIG_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(KCONFIG_SOURCE); \
+	mv $(KCONFIG_DIR)/scripts/kconfig/lex.zconf.c_shipped $(KCONFIG_DIR)/scripts/kconfig/zconf.lex.c_shipped; \
+	rm $(KCONFIG_DIR)/scripts/kconfig/kconfig_load.c; \
 	for i in $(KCONFIG_MAKE_DIR)/patches/*.kconfig.patch; do \
 		$(PATCH_TOOL) $(KCONFIG_DIR) $$i; \
-	done
+	done; \
 	touch $@
+	find $(KCONFIG_DIR) > find_kconfig_before
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
 	$(MAKE) -C $(KCONFIG_DIR) HOSTCFLAGS='$(KCONFIG_HOSTCFLAGS)' config
@@ -36,21 +39,22 @@ $(KCONFIG_TARGET_DIR)/mconf: $(KCONFIG_DIR)/scripts/kconfig/mconf
 kconfig: $(KCONFIG_TARGET_DIR)/conf $(KCONFIG_TARGET_DIR)/mconf
 
 kconfig-clean:
-	$(RM) $(KCONFIG_DIR)/scripts/basic/.*.cmd
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/.*.cmd
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/lxdialog/.*.cmd
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/*.o
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/lxdialog/*.o
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/zconf.tab.c
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/lex.zconf.c
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/zconf.hash.c
-	$(RM) $(KCONFIG_DIR)/scripts/basic/fixdep
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/conf
-	$(RM) $(KCONFIG_DIR)/scripts/kconfig/mconf
+	$(RM) \
+		$(KCONFIG_DIR)/scripts/basic/.*.cmd \
+		$(KCONFIG_DIR)/scripts/kconfig/.*.cmd \
+		$(KCONFIG_DIR)/scripts/kconfig/lxdialog/.*.cmd \
+		$(KCONFIG_DIR)/scripts/kconfig/*.o \
+		$(KCONFIG_DIR)/scripts/kconfig/lxdialog/*.o \
+		$(KCONFIG_DIR)/scripts/kconfig/zconf.*.c \
+		$(KCONFIG_DIR)/scripts/basic/fixdep \
+		$(KCONFIG_DIR)/scripts/kconfig/conf \
+		$(KCONFIG_DIR)/scripts/kconfig/mconf
+	find $(KCONFIG_DIR) > find_kconfig_after
 
 kconfig-dirclean:
 	$(RM) -r $(KCONFIG_DIR)
 
 kconfig-distclean:
-	$(RM) $(KCONFIG_TARGET_DIR)/conf
-	$(RM) $(KCONFIG_TARGET_DIR)/mconf
+	$(RM) \
+		$(KCONFIG_TARGET_DIR)/conf \
+		$(KCONFIG_TARGET_DIR)/mconf
