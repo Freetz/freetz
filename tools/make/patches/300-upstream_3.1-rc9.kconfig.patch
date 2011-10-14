@@ -23,9 +23,10 @@ Dependent patches >300 seem to survive source code changes quite well because
 they have been auto-fixed easily during the upgrade from 2.36.9 to 3.1.-rc9.
 
 The final goal is to get rid of this patch by finding a better maintained
-kconfig-only repository, either at lacombar's site or somewhere else. As a
-matter of fact, currently there is not separate kconfig version outside Linux
-kernel development, so we have to live with this compromise for the time being.
+stand-alone kconfig repository, either at lacombar's site or somewhere else.
+As a matter of fact, currently there is not separate kconfig version outside
+Linux kernel development, so we have to live with this compromise for the
+time being.
 
 FYI: The original patch (before manual editing) can be re-generated like this
 (copy & paste from a Freetz Trac comment by dileks + adding another line):
@@ -37,7 +38,7 @@ cd ..
 tar -xf linux-3.1-rc9.tar.bz2
 tar -xf /path/to/freetz-trunk/dl/kconfig-sa-2.6.39.tar.gz
 diff -uprN --exclude=.gitignore lacombar-kconfig-03a72ba/scripts/kconfig linux-3.1-rc9/scripts/kconfig > kconfig.diff
-diff -uprN --exclude=.gitignore lacombar-kconfig-03a72ba/scripts/kconfig linux-3.1-rc9/scripts/basic >> kconfig.diff
+diff -uprN --exclude=.gitignore lacombar-kconfig-03a72ba/scripts/basic linux-3.1-rc9/scripts/basic >> kconfig.diff
 
 --- scripts/basic/fixdep.c	2011-06-06 00:57:46.000000000 +0200
 +++ scripts/basic/fixdep.c	2011-10-10 04:53:11.000000000 +0200
