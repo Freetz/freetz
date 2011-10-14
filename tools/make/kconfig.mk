@@ -9,7 +9,7 @@ KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
 KCONFIG_HOSTCFLAGS=-Wall -Wno-char-subscripts -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -DCONFIG_=\"\"
 
 $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE_TMP) $(KCONFIG_SITE) $(KCONFIG_SOURCE_MD5); \
+	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE_TMP) $(KCONFIG_SITE) $(KCONFIG_SOURCE_MD5)
 	mv "$(DL_DIR)/$(KCONFIG_SOURCE_TMP)" "$(DL_DIR)/$(KCONFIG_SOURCE)"
 
 kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
