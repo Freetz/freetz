@@ -1,28 +1,29 @@
-KCONFIG_VERSION:=2.6.39
-KCONFIG_SOURCE_TMP:=kconfig-sa-$(KCONFIG_VERSION)
-KCONFIG_SOURCE:=$(KCONFIG_SOURCE_TMP).tar.gz
-KCONFIG_SOURCE_MD5:=609c3981f2466620ee42fe0bfa33388b
-KCONFIG_SITE:=https://github.com/lacombar/kconfig/tarball
-KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/lacombar-kconfig-03a72ba
+KCONFIG_VERSION:=3.1-rc9
+KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.gz
+# Cannot check MD5 because URL produces slightly different archives even
+# though unpacked contents are identical.
+#KCONFIG_SOURCE_MD5:=xxx
+KCONFIG_SITE:=http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=snapshot;h=0efcb507b7f49a4d022a43b7309e2146fdb13b03;sf=tgz
+KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
 KCONFIG_MAKE_DIR:=$(TOOLS_DIR)/make
 KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
 KCONFIG_HOSTCFLAGS=-Wall -Wno-char-subscripts -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -DCONFIG_=\"\"
 
+# TODO: Replace by normal use of $(DL_TOOL) as soon as it supports saving
+# files from URLs under another name with '-O'
 $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE_TMP) $(KCONFIG_SITE) $(KCONFIG_SOURCE_MD5)
-	mv "$(DL_DIR)/$(KCONFIG_SOURCE_TMP)" "$(DL_DIR)/$(KCONFIG_SOURCE)"
+	wget -O $(DL_DIR)/$(KCONFIG_SOURCE) "$(KCONFIG_SITE)"
 
 kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
 
 $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(KCONFIG_SOURCE); \
-	mv $(KCONFIG_DIR)/scripts/kconfig/lex.zconf.c_shipped $(KCONFIG_DIR)/scripts/kconfig/zconf.lex.c_shipped; \
-	rm $(KCONFIG_DIR)/scripts/kconfig/kconfig_load.c; \
+	mkdir -p $(KCONFIG_DIR)/scripts
+	tar -C $(KCONFIG_DIR)/scripts $(VERBOSE) --wildcards --strip-components=1 \
+		-xzf $(DL_DIR)/$(KCONFIG_SOURCE) */basic */kconfig */Makefile.{build,host,lib} */Kbuild.include
 	for i in $(KCONFIG_MAKE_DIR)/patches/*.kconfig.patch; do \
 		$(PATCH_TOOL) $(KCONFIG_DIR) $$i; \
-	done; \
+	done;
 	touch $@
-	find $(KCONFIG_DIR) > find_kconfig_before
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
 	$(MAKE) -C $(KCONFIG_DIR) HOSTCFLAGS='$(KCONFIG_HOSTCFLAGS)' config
@@ -49,7 +50,6 @@ kconfig-clean:
 		$(KCONFIG_DIR)/scripts/basic/fixdep \
 		$(KCONFIG_DIR)/scripts/kconfig/conf \
 		$(KCONFIG_DIR)/scripts/kconfig/mconf
-	find $(KCONFIG_DIR) > find_kconfig_after
 
 kconfig-dirclean:
 	$(RM) -r $(KCONFIG_DIR)
