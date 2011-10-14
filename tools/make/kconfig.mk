@@ -7,7 +7,6 @@ KCONFIG_SITE:=http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=sna
 KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
 KCONFIG_MAKE_DIR:=$(TOOLS_DIR)/make
 KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
-KCONFIG_HOSTCFLAGS=-Wall -Wno-char-subscripts -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -DCONFIG_=\"\"
 
 # TODO: Replace by normal use of $(DL_TOOL) as soon as it supports saving
 # files from URLs under another name with '-O'
@@ -26,10 +25,10 @@ $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	touch $@
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
-	$(MAKE) -C $(KCONFIG_DIR) HOSTCFLAGS='$(KCONFIG_HOSTCFLAGS)' config
+	$(MAKE) -C $(KCONFIG_DIR) config
 
 $(KCONFIG_DIR)/scripts/kconfig/mconf: $(KCONFIG_DIR)/.unpacked
-	$(MAKE) -C $(KCONFIG_DIR) HOSTCFLAGS='$(KCONFIG_HOSTCFLAGS)' menuconfig
+	$(MAKE) -C $(KCONFIG_DIR) menuconfig
 
 $(KCONFIG_TARGET_DIR)/conf: $(KCONFIG_DIR)/scripts/kconfig/conf
 	cp $(KCONFIG_DIR)/scripts/kconfig/conf $(KCONFIG_TARGET_DIR)/conf

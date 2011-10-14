@@ -2,14 +2,17 @@ This patch replaces the main Linux kernel makefile, removing lots of clutter
 which keep kconfig from being built stand-alone. It was taken from
 https://github.com/lacombar/kconfig/blob/kconfig-sa-2.6.39/Makefile
 
+The only manual change: -DCONFIG_=\"\" was added to HOSTCFLAGS because we need
+it that way for Freetz.
+
 --- Makefile	2011-10-14 03:04:56.940000000 +0200
 +++ Makefile	2011-06-06 00:57:46.000000000 +0200
 @@ -0,0 +1,100 @@
-+VERSION = 2
-+PATCHLEVEL = 6
-+SUBLEVEL = 34
-+EXTRAVERSION =
-+NAME = Sheep on Meth
++VERSION = 3
++PATCHLEVEL = 1
++SUBLEVEL = 0
++EXTRAVERSION = -rc9
++NAME = "Divemaster Edition"
 +
 +# To put more focus on warnings, be less verbose as default
 +# Use 'make V=1' to see the full commands
@@ -32,7 +35,7 @@ https://github.com/lacombar/kconfig/blob/kconfig-sa-2.6.39/Makefile
 +
 +HOSTCC       = gcc
 +HOSTCXX      = g++
-+HOSTCFLAGS   = -Wall -Wno-char-subscripts -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
++HOSTCFLAGS   = -Wall -Wno-char-subscripts -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -DCONFIG_=\"\"
 +HOSTCXXFLAGS = -O2
 +
 +export CONFIG_SHELL HOSTCC HOSTCXX HOSTCFLAGS HOSTCXXFLAGS
