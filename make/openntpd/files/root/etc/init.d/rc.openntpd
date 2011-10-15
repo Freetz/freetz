@@ -37,7 +37,7 @@ case $1 in
 		chown root /mod/home/ntp -R
 		chmod 0700 /mod/home/ntp -R
 
-		modreg cgi 'openntpd' 'Portable OpenNTPD'
+		modreg cgi 'openntpd' 'OpenNTPD'
 		modreg daemon $DAEMON
 		[ "$CONFIG_FILE" != '/etc/ntpd.conf' ] && modreg file openntpd conf '$(lang de:"Konfiguration" en:"Configuration")' 0 "openntpd_conf"
 
