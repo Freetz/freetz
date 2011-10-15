@@ -38,7 +38,7 @@ cat << EOF
 <input type="hidden" name="stop_dns_rebind" value="no">
 <input id="c1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="c1"> $(lang de:"Adressen von Upstream Nameservern ablehnen, wenn sie in privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in private IP ranges.")</label><br>
 <input type="hidden" name="log_queries" value="no">
-<input id="f1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="f1"> $(lang de:"Namensauflösung loggen." en:"Log name resolution.")</label><br>
+<input id="f1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="f1"> $(lang de:"Namensaufl&ouml;sung loggen." en:"Log name resolution.")</label><br>
 </p>
 <p>
 <input type="hidden" name="avm_dns" value="no">
