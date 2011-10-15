@@ -79,11 +79,8 @@ backup() {
 	cp -pP $RRDSTATS_RRDDATA/*.rrd $_BACKUPNAME/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
-		if [ "$1" != "silent" ]; then
-			echo "Starting RRDstats ... failed, not able to backup files."
-		else
-			echo 'backup failed, abort.'
-		fi
+		[ "$1" != "silent" ] && echo -n "Starting RRDstats ... not able to backup files, "
+		echo "failed."
 		exit $exitval
 	fi
 	_BACKUPLOG=$RRDSTATS_RRDBACKUP/backup.log
@@ -109,11 +106,8 @@ restore() {
 
 	[ "$1" != "silent" ] && echo -n 'RRDstats is restoring files ... '
 	if [ $(ls $RRDSTATS_RRDBACKUP/* 2>/dev/null | wc -w) -le 0 ]; then
-		if [ "$1" != "silent" ]; then
-			echo 'skipped, no files found.'
-		else
-			echo 'Starting RRDstats ... failed, no files to restore.'
-		fi
+		[ "$1" != "silent" ] || echo -n "Starting RRDstats ... "
+		echo -n "no files to restore, failed."
 		exit 1
 	fi
 
@@ -121,11 +115,8 @@ restore() {
 	cp -pP $RRDSTATS_RRDBACKUP/$(echo $(tail -n1 $RRDSTATS_RRDBACKUP/backup.log))/*.rrd $RRDSTATS_RRDDATA/ 2>/dev/null
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
-		if [ "$1" != "silent" ]; then
-			echo 'failed.'
-		else
-			echo "Starting RRDstats ... failed, not able to restore files."
-		fi
+		[ "$1" != "silent" ] || echo -n "Starting RRDstats ... not able to restore files, "
+		echo "failed."
 		exit $exitval
 	else
 		[ "$1" != "silent" ] && echo 'done.'
