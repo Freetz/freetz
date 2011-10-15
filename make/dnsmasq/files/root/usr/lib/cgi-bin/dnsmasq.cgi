@@ -12,6 +12,7 @@ check "$DNSMASQ_STOP_DNS_REBIND" yes:stop_dns_rebind
 check "$DNSMASQ_TFTP" yes:tftp_yes "*":tftp_no
 check "$DNSMASQ_AVM_DNS" yes:avm_dns
 check "$DNSMASQ_WRAPPER" yes:wrapper
+check "$DNSMASQ_LOG_QUERIES" yes:log_queries
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -36,6 +37,8 @@ cat << EOF
 <input id="b1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="b1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
 <input type="hidden" name="stop_dns_rebind" value="no">
 <input id="c1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="c1"> $(lang de:"Adressen von Upstream Nameservern ablehnen, wenn sie in privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in private IP ranges.")</label><br>
+<input type="hidden" name="log_queries" value="no">
+<input id="f1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="f1"> $(lang de:"Namensauflösung loggen." en:"Log name resolution.")</label><br>
 </p>
 <p>
 <input type="hidden" name="avm_dns" value="no">
