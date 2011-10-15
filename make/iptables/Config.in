@@ -1274,7 +1274,7 @@ config FREETZ_LIB_libipt_icmp
 
 config FREETZ_LIB_libipt_ipp2p
 	bool "libipt_ipp2p.so"
-	select FREETZ_MODULE_ipt_ipp2p
+	depends on FREETZ_MODULE_ipt_ipp2p
 	default n
 	help
 		This extension can be used to match p2p protocols such as
