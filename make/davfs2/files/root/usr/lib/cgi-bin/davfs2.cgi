@@ -18,12 +18,18 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Tempor&auml;res Verzeichnis" en:"Temporary directory")'
+sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 cat << EOF
 <p>
-<input id="e3" type="text" name="tmppath" value='$(html "$DAVFS2_TMPPATH")'>
-</p>
+$(lang de:"Tempor&auml;res Verzeichnis" en:"Temporary directory")
+<input id="e3" type="text" name="tmppath" value='$(html "$DAVFS2_TMPPATH")'><br>
 <font size=-2>$(lang de:"Hinweis: Um gr&ouml;&szlig;ere Dateien zu kopieren, das Verzeichnis auf einen USB-Stick legen und sicherstellen, da&szlig; dieser nicht entfernt wird (oder external-services nutzen)." en:"Hint: Use a USB-device for larger files but don't remove it (or use external-services).")</font>
+</p>
+<p>
+$(lang de:"Cachegr&ouml;&szlig;e" en:"Cache size")
+<input id="e4" type="text" size='5' maxlength='5' name="cache_size" value='$(html "$DAVFS2_CACHE_SIZE")'><br>
+<font size=-2>$(lang de:"Vorsicht: Es wird ledigleich eine Warnung bei &Uuml;berchreitung der Cashegr&ouml;&szlig;e ausgegeben." en:"Attention: Only a warning is been showing on overrunning the limitation.")</font>
+</p>
 EOF
 sec_end
 
