@@ -800,8 +800,7 @@ config FREETZ_HAS_AVM_WEBDAV
 	bool "Has AVM WebDAV"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270_V2 || \
-		FREETZ_TYPE_FON_WLAN_7270_V3 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7390 || \
 		FREETZ_TYPE_FON_WLAN_7570 || \
@@ -1840,7 +1839,7 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_WEBDAV
 		bool "WEBDAV"
-		depends on ! FREETZ_PACKAGE_DAVFS2
+		depends on ! FREETZ_PACKAGE_DAVFS2 && ! FREETZ_REMOVE_WEBDAV
 		default n
 		help
 			Integrates AVM's webdav
