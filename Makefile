@@ -485,7 +485,7 @@ dist: distclean
 # Check if last build was with older svn version
 check-builddir-version:
 	@\
-	BUILD_DIR_VERSION=$$(svnversion | grep -v exported 2> /dev/null); \
+	BUILD_DIR_VERSION=$$(LC_ALL=C svn info | sed -n 's/Revision: //p' 2> /dev/null); \
 	BUILD_LAST_VERSION=$$(cat .lastbuild-version 2> /dev/null); \
 	if [ -e .config -a \
 		"$$BUILD_DIR_VERSION" != "$$BUILD_LAST_VERSION" -a \
