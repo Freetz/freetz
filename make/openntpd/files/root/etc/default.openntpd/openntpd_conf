@@ -23,6 +23,30 @@ listen on $(ifconfig $devname | head -n 2 | tail -n 1 | cut -d: -f2 | cut -d" " 
 # use a random selection of 8 public stratum 2 servers
 # see http://twiki.ntp.org/bin/view/Servers/NTPPoolServers
 servers pool.ntp.org
+
+# sync to a single server
+#server ntp.example.org
+
+# sync with all NTP servers on time, violates OpenNTPD philosophy
+# format: [H]H:MM[:SS] [...]
+#sync at 0:01 2:01 3:01 4:01
+
+# add randomized offset (max. 90s) to each "sync at"
+#sync at randomize
+
+# sync using custom (randomized) interval T, violates OpenNTPD philosophy
+# format: T[s|m|h] (default suffix is s)
+#sync every 5m
+
+# retry on error (NTP server communication) using next time delay T
+# sequence is maintained per NTP server
+# format: T[s|m|h] [...] [r|rN]
+#         T  -> time delay (default suffix is s) or special value *
+#         *  -> at next regular sync
+#         r  -> repeat sequence from beginning
+#         rN -> repeat last N entries from sequence
+# default repeat is r1, on success sequence is repeated from the beginning
+#error retry 30 30 30 1m 1m 2m 5m 1h 30 * 30 r2
 EOF
 fi
 
