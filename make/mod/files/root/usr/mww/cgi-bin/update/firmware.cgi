@@ -58,20 +58,20 @@ automatically after 30 seconds."
 
 <form action="do_firmware.cgi" method="POST" enctype="multipart/form-data" onsubmit="return CheckInput(document.forms[0]);">
 	<p>
-	$(lang de:"Firmware-Image" en:"Firmware image")
+	<label for="fw_file">$(lang de:"Firmware-Image" en:"Firmware image")</label>
 	<input type=file size=50 id="fw_file">
 	</p>
 	<p>
-	<input type="radio" name="do_prepare" value="stop_avm">
-	$(lang de:"AVM-Dienste stoppen (bei Speichermangel)" en:"Stop AVM services (less memory available)")<br>
-	<input type="radio" name="do_prepare" value="semistop_avm">
-	$(lang de:"Einen Teil der AVM-Dienste stoppen (bei Remote-Update)" en:"Stop some of the AVM services (remote firmware update)")<br>
-	<input type="radio" name="do_prepare" value="nostop_avm" checked>
-	$(lang de:"AVM-Dienste nicht stoppen (bei gen&uuml;gend Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop any AVM services (sufficient memory available or pseudo update without reboot)")
+	<input type="radio" name="do_prepare" id="stop_avm" value="stop_avm">
+	<label for="stop_avm">$(lang de:"AVM-Dienste stoppen (bei Speichermangel)" en:"Stop AVM services (less memory available)")</label><br>
+	<input type="radio" name="do_prepare" id="semistop_avm" value="semistop_avm">
+	<label for="semistop_avm">$(lang de:"Einen Teil der AVM-Dienste stoppen (bei Remote-Update)" en:"Stop some of the AVM services (remote firmware update)")</label><br>
+	<input type="radio" name="do_prepare" id="nostop_avm" value="nostop_avm" checked>
+	<label for="nostop_avm">$(lang de:"AVM-Dienste nicht stoppen (bei gen&uuml;gend Speicher bzw. Pseudo-Update ohne Reboot)" en:"Do not stop any AVM services (sufficient memory available or pseudo update without reboot)")</label>
 	</p>
 	<p>
-	<input type="checkbox" name="downgrade" value="yes">
-	$(lang de:"Downgrade auf &auml;ltere Version zulassen" en:"Allow downgrade to older version")
+	<input type="checkbox" name="downgrade" id="downgrade" value="yes">
+	<label for="downgrade">$(lang de:"Downgrade auf &auml;ltere Version zulassen" en:"Allow downgrade to older version")</label>
 	</p>
 EOF
 
