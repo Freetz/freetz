@@ -362,12 +362,14 @@ config FREETZ_REMOVE_ASSISTANT
 		Removes the installation assistant from the web menu.
 
 config FREETZ_REMOVE_AURA_USB
-	bool "Remove aura usb"
+	bool "Remove Aura USB (remote USB connection)"
 	default n
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_USB_HOST
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_AURA_USB
 	help
-		Remove the aura-usb-daemon (USB-Fernanschluss) and some related files.
-		This patch only removes the files, not the settings in AVM's webinterface
+		Remove the aura-usb-daemon (USB-Fernanschluss, remote USB connection) and some
+		related files.
+
+		This patch only removes the files, not the settings in AVM's web interface.
 
 config FREETZ_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko"

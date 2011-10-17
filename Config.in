@@ -247,9 +247,11 @@ config FREETZ_TYPE_LABOR
 	bool "Beta/Labor"
 	depends on \
 		FREETZ_TYPE_LANG_DE && \
-		(FREETZ_TYPE_FON_WLAN_7390 || \
-		FREETZ_TYPE_FON_WLAN_7270_V2 || \
-		FREETZ_TYPE_FON_WLAN_7270_V3)
+		( \
+			FREETZ_TYPE_FON_WLAN_7390 || \
+			FREETZ_TYPE_FON_WLAN_7270_V2 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 \
+		)
 	default n
 	help
 		Enable this to compile the mod based on an AVM "beta/labor" firmware.
@@ -264,7 +266,7 @@ choice
 #		help
 #			FRITZ!Lab DSL: This release optimizes the DSL (Digital Subscriber
 #			Line) software and adds related graphs.
-#
+
 	config FREETZ_TYPE_LABOR_PREVIEW
 		bool "Preview"
 		depends on \
@@ -282,7 +284,6 @@ config FREETZ_TYPE_ALIEN_HARDWARE
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
 		FREETZ_TYPE_FON_WLAN_7570
-
 	default n
 	help
 		Enable this to compile the mod image for another hardware type
@@ -306,7 +307,6 @@ choice
 	config FREETZ_TYPE_SPEEDPORT_W701V_7170
 		bool "W701V"
 		depends on FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE
-		select FREETZ_REMOVE_AURA_USB
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
 		select FREETZ_REMOVE_MINID
@@ -345,7 +345,6 @@ choice
 	config FREETZ_TYPE_7112_7170
 		bool "7112"
 		depends on FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_REMOVE_AURA_USB
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
 		select FREETZ_REMOVE_MINID
@@ -359,7 +358,6 @@ choice
 	config FREETZ_TYPE_7113_7170
 		bool "7113"
 		depends on FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_REMOVE_AURA_USB
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
 		select FREETZ_REMOVE_MINID
@@ -763,6 +761,19 @@ config FREETZ_KERNEL_MTD_SIZE
 	default 59
 	help
 		Number of 64K blocks in the kernel mtd device.
+
+config FREETZ_HAS_AVM_AURA_USB
+	bool "Has AVM Aura USB (Fernanschluss)"	if FREETZ_TYPE_CUSTOM
+	select FREETZ_REMOVE_AURA_USB if ! FREETZ_HAS_USB_HOST
+	default y		if \
+		FREETZ_HAS_USB_HOST || \
+		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
+		FREETZ_TYPE_7112_7170 || \
+		FREETZ_TYPE_7113_7170
+	default n
+	help
+		Select this if your original firmware has an aura-usb-daemon
+		(USB-Fernanschluss)
 
 config FREETZ_HAS_AVM_NTFS
 	bool "Has AVM NTFS"	if FREETZ_TYPE_CUSTOM
