@@ -1,38 +1,29 @@
-#!/usr/bin/perl
+#!/usr/bin/awk -f
 
-use strict;
-use warnings;
+# Consolidate a hierarchy of kconfig menu config files (Config.in) into one big file
 
-my $fh_deps;
-
-sub expand {
-  my $file = shift;
-  print "# INCLUDE_BEGIN $file\n";
-
-  open(my $fh, '<', $file) or die $!;
-  print $fh_deps " \\\n\t$file";
-  while (<$fh>) {
-    if (/^source\s+(.+)$/) {
-      # For each kconfig "source" statement, recursively read sub-file
-      expand($1);
-    } else {
-      # Print all other lines normally
-      print;
-    }
-  }
-  close($fh) or die $!;
-
-  # Avoid kconfig "prompt redefined" warning on missing LF at EOF
-  print "\n";
-  print "# INCLUDE_END $file\n";
+BEGIN {
+	# Get script name from command line
+	getline cmdline < "/proc/self/cmdline"
+	split(cmdline, c, "\0")
+	script_name=c[3]
+	print "\n# INCLUDE_BEGIN " ARGV[1] "\n"
 }
-
-my $deps_name = 'deps_config_cache';
-my $deps_file = 'include/config/cache.conf.cmd';
-
-open ($fh_deps, '>', $deps_file) or die $!;
-print $fh_deps "$deps_name :=";
-expand($_, $fh_deps) for @ARGV;
-print $fh_deps "\n\n\$($deps_name): ;\n";
-close ($fh_deps) or die $!;
-
+/^source[ \t]/ {
+	# For each kconfig "source" statement, recursively read sub-file
+	sub_file=gensub(/^source[ \t]+(.+)$/, "\\1", 1)
+	sub_cmd="xargs " script_name
+	print sub_file | sub_cmd
+	# Make sure to close pipe before continuing, otherwise output on stdout will be garbled
+	close(sub_cmd)
+	next
+}
+{
+	# Print all other lines normally
+	print
+}
+END {
+	# Avoid kconfig "prompt redefined" warning on missing LF at EOF
+	print ""
+	print "\n# INCLUDE_END " ARGV[1]
+}
