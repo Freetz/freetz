@@ -1,29 +1,42 @@
-#! /usr/bin/perl
-# Consolidate a hierarchy of kconfig menu config files (Config.in) into one big
-# file
+#!/usr/bin/perl
+# Consolidate a hierarchy of kconfig menu config files (Config.in) into one file
+# Record list of files for make
 
 use strict;
 use warnings;
 
+# Macro name for file list
+my $deps_name = 'deps_config_cache';
+# File name for file list
+my $deps_file = 'include/config/cache.conf.cmd';
+
+my $fh_deps;
+
 sub expand {
-	my $file = shift;
-	print "\n# INCLUDE_BEGIN $file\n\n";
+  my $file = shift;
+  print "# INCLUDE_BEGIN $file\n";
 
-	open(my $fh, '<', $file) or die $!;
-	while (<$fh>) {
-	if (/^source\s+(.+)$/) {
-		# For each kconfig "source" statement, recursively read sub-file
-		expand($1);
-	} else {
-		# Print all other lines normally
-		print;
-	}
-	}
-	close($fh) or die $!;
+  open(my $fh, '<', $file) or die $!;
+  print $fh_deps " \\\n\t$file";
+  while (<$fh>) {
+    if (/^source\s+(.+)$/) {
+      # For each kconfig "source" statement, recursively read sub-file
+      expand($1);
+    } else {
+      # Print all other lines normally
+      print;
+    }
+  }
+  close($fh) or die $!;
 
-	# Avoid kconfig "prompt redefined" warning on missing LF at EOF
-	print "\n";
-	print "\n# INCLUDE_END $file\n";
+  # Avoid kconfig "prompt redefined" warning on missing LF at EOF
+  print "\n";
+  print "# INCLUDE_END $file\n";
 }
 
-expand($_) for @ARGV;
+open ($fh_deps, '>', $deps_file) or die $!;
+print $fh_deps "$deps_name :=";
+expand($_, $fh_deps) for @ARGV;
+print $fh_deps "\n\n\$($deps_name): ;\n";
+close ($fh_deps) or die $!;
+

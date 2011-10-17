@@ -434,20 +434,11 @@ oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfi
 
 config-cache: $(CONFIG_IN_CACHE)
 
-$(CONFIG_IN_CACHE): \
-	$(CONFIG_IN) \
-		patches/Config.in \
-		make/Config.in \
-			$(sort $(wildcard $(MAKE_DIR)/*/Config.in)) \
-				$(sort $(wildcard $(MAKE_DIR)/*/*/Config.in)) \
-				$(MAKE_DIR)/iptables/standard-modules.in \
-		make/external.in \
-			$(sort $(wildcard $(MAKE_DIR)/*/external.in)) \
-				$(sort $(wildcard $(MAKE_DIR)/libs/*/external.in)) \
-			$(sort $(wildcard $(MAKE_DIR)/*/external.in.libs)) \
-		kernel/external.in \
-		toolchain/Config.in
-	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $@
+-include include/config/cache.conf.cmd
+
+$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(deps_config_cache)
+	@mkdir -p include/config include/generated
+	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 
 config-clean-deps:
 	@{ \
@@ -474,7 +465,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclean)
-	$(RM) .config .config.old .config.cmd .tmpconfig.h
+	$(RM) .config .config.old .config.cmd .tmpconfig.h include/config include/generated
 	$(RM) -r $(DL_DIR)
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(SOURCE_DIR_ROOT)
@@ -501,13 +492,10 @@ dist: distclean
 	$(RM) .exclude-dist-tmp
 
 # Check if last build was with older svn version
-check-builddir-version:
+check-builddir-version: $(CONFIG_IN_CACHE)
 	@\
-	BUILD_DIR_VERSION=$$(LC_ALL=C svn info | sed -n 's/Revision: //p' 2> /dev/null); \
-	BUILD_LAST_VERSION=$$(cat .lastbuild-version 2> /dev/null); \
 	if [ -e .config -a \
-		"$$BUILD_DIR_VERSION" != "$$BUILD_LAST_VERSION" -a \
-		.svn -nt .config ]; then \
+		$(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
 		echo "ERROR: You have updated to newer svn version since last modifying your config."; \
 		echo "       You have to run 'make oldconfig' or 'make menuconfig' once before"; \
@@ -515,7 +503,6 @@ check-builddir-version:
 		echo -n -e $(_N); \
 		exit 3; \
 	fi; \
-	echo "$$BUILD_DIR_VERSION" > .lastbuild-version
 
 .PHONY: all world step $(KCONFIG_TARGETS) config-cache config-clean-deps tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
