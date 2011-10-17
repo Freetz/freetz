@@ -65,7 +65,12 @@ modpatch()
 			[ -z "$patch_target" ] && error 2 "modpatch: Could not determine target file"
 		fi
 		[ -e "$target_dir"/"$patch_target" ] || error 2 "modpatch: Target file $patch_target does not exist"
-		local target_md5="$($(dirname $0)/md5sum "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
+
+		# XXX: Temporarily use system's md5sum if busybox applet is not yet build (see #1535)
+		local MD5SUM=$(dirname $0)/md5sum
+		[ ! -x $MD5SUM ] && MD5SUM="$(which md5sum)"
+		local target_md5="$($MD5SUM "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
+
 		local md5_patch="$(find "$patch_file" -name *${target_md5}*.patch)"
 		if [ -z "$md5_patch" ]; then
 			[ -n "$target_md5" ] && local md5_error="for $patch_target (MD5: $target_md5)"
