@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Simulate make for the given target(s) (can also be empty), printing the
+# resulting "big makefile" to stdout.
+#
+# Use this script if you want to see what is going during complex builds
+# without having to browse dozens of included sub-makefiles. Now you get it
+# all in one place and are even able to re-run make with the big makefile.
+#
+# How to use:
+#
+# Simulate "make" (default target) in current directory and write resulting
+# big makefile to 'Makefile.big'. Then re-run with another target, using big
+# makefile as input.
+#
+# tools/developer/big-makefile > Makefile.big
+# make -f Makefile.big config-cache
+
+# Print cleaned-up version of big makefile, i.e.
+#   - use LC_ALL=C to avoid some German "Konnte nicht geöffnet werden" messages
+#     on stdout which should actually go to stderr. This bug does not happen
+#     for LC_ALL=C in GNU make 3.81.
+#   - remove consecutive lines which are empty or contain only whitespace,
+#     leaving only one empty line per block
+#   - remove some Make variables possibly blocking a later re-run
+LC_ALL=C make --print-data-base --question $@ 2> /dev/null \
+	| sed -r 's/^[[:space:]]+$//' \
+	| grep -Ev '^[[:space:]]*#|MAKEFLAGS|MFLAGS|MAKECMDGOALS' \
+	| cat -s
