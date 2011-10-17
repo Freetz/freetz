@@ -12,6 +12,7 @@
 #--------------------------------------------------------------
 TOPDIR=.
 CONFIG_IN=Config.in
+CONFIG_IN_CACHE=$(CONFIG_IN).cache
 CONFIG=tools/config
 
 SHELL:=/bin/bash
@@ -46,6 +47,7 @@ MAKE=make -j$(FREETZ_JLEVEL)
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 FAKEROOT_TOOL:=$(TOOLS_DIR)/$(BUILD_DIR)/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
+PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
@@ -418,17 +420,34 @@ recover:
 		done; \
 	fi
 
-menuconfig: $(CONFIG_IN) $(CONFIG)/mconf
-	@$(CONFIG)/mconf $(CONFIG_IN)
+menuconfig: config-cache $(CONFIG)/mconf
+	@$(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-single: $(CONFIG_IN) $(CONFIG)/mconf
-	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN)
+menuconfig-single: config-cache $(CONFIG)/mconf
+	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-config: $(CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf $(CONFIG_IN)
+config: config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
-oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: $(CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf --$@ $(CONFIG_IN)
+oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE)
+
+config-cache: $(CONFIG_IN_CACHE)
+
+$(CONFIG_IN_CACHE): \
+	$(CONFIG_IN) \
+		patches/Config.in \
+		make/Config.in \
+			$(sort $(wildcard $(MAKE_DIR)/*/Config.in)) \
+				$(sort $(wildcard $(MAKE_DIR)/*/*/Config.in)) \
+				$(MAKE_DIR)/iptables/standard-modules.in \
+		make/external.in \
+			$(sort $(wildcard $(MAKE_DIR)/*/external.in)) \
+				$(sort $(wildcard $(MAKE_DIR)/libs/*/external.in)) \
+			$(sort $(wildcard $(MAKE_DIR)/*/external.in.libs)) \
+		kernel/external.in \
+		toolchain/Config.in
+	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $@
 
 config-clean-deps:
 	@{ \
@@ -446,9 +465,8 @@ config-clean-deps:
 
 common-clean:
 	./fwmod_custom clean
-	$(RM) .static .dynamic .exclude-dist-tmp
+	$(RM) .static .dynamic .exclude-dist-tmp $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
-	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
@@ -499,7 +517,7 @@ check-builddir-version:
 	fi; \
 	echo "$$BUILD_DIR_VERSION" > .lastbuild-version
 
-.PHONY: all world step $(KCONFIG_TARGETS) tools recover \
+.PHONY: all world step $(KCONFIG_TARGETS) config-cache config-clean-deps tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	$(CHECK_BUILD_DIR_VERSION)

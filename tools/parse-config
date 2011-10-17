@@ -1,0 +1,29 @@
+#!/usr/bin/awk -f
+
+# Consolidate a hierarchy of kconfig menu config files (Config.in) into one big file
+
+BEGIN {
+	# Get script name from command line
+	getline cmdline < "/proc/self/cmdline"
+	split(cmdline, c, "\0")
+	script_name=c[3]
+	print "\n# INCLUDE_BEGIN " ARGV[1] "\n"
+}
+/^source[ \t]/ {
+	# For each kconfig "source" statement, recursively read sub-file
+	sub_file=gensub(/^source[ \t]+(.+)$/, "\\1", 1)
+	sub_cmd="xargs " script_name
+	print sub_file | sub_cmd
+	# Make sure to close pipe before continuing, otherwise output on stdout will be garbled
+	close(sub_cmd)
+	next
+}
+{
+	# Print all other lines normally
+	print
+}
+END {
+	# Avoid kconfig "prompt redefined" warning on missing LF at EOF
+	print ""
+	print "\n# INCLUDE_END " ARGV[1]
+}
