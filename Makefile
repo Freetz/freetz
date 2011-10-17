@@ -436,7 +436,7 @@ config-cache: $(CONFIG_IN_CACHE)
 
 -include include/config/cache.conf.cmd
 
-$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(deps_config_cache)
+$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(PARSE_CONFIG_TOOL) $(deps_config_cache)
 	@mkdir -p include/config include/generated
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 

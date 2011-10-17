@@ -9,6 +9,8 @@ use warnings;
 my $deps_name = 'deps_config_cache';
 # File name for file list
 my $deps_file = 'include/config/cache.conf.cmd';
+# Temporary file name for file list
+my $deps_file_tmp = '.tmpcache.conf.cmd';
 
 my $fh_deps;
 
@@ -19,7 +21,7 @@ sub expand {
   open(my $fh, '<', $file) or die $!;
   print $fh_deps " \\\n\t$file";
   while (<$fh>) {
-    if (/^source\s+(.+)$/) {
+    if (/^\s*source\s+(.+)$/) {
       # For each kconfig "source" statement, recursively read sub-file
       expand($1);
     } else {
@@ -34,9 +36,9 @@ sub expand {
   print "# INCLUDE_END $file\n";
 }
 
-open ($fh_deps, '>', $deps_file) or die $!;
+open ($fh_deps, '>', $deps_file_tmp) or die $!;
 print $fh_deps "$deps_name :=";
 expand($_) for @ARGV;
 print $fh_deps "\n\n\$($deps_name): ;\n";
 close ($fh_deps) or die $!;
-
+rename ($deps_file_tmp, $deps_file) or die $!;
