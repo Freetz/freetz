@@ -1766,10 +1766,20 @@ config FREETZ_REMOVE_FREETZ_INFO
 		from your image. But usualy it is not necessary: The size of FREETZ-Info
 		is very small (2-3 kByte).
 
+config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
+	bool "Create options.cfg as a separate file"
+	depends on FREETZ_SHOW_ADVANCED
+	default y
+	help
+		When unchecked causes options.cfg to be created as a symbolic link to .config
+
+		When checked causes options.cfg to be created as a separate file containing
+		a much smaller subset of options included in .config. This increases image
+		size by about 160 bytes but reduces memory footprint at run-time.
+
 config FREETZ_REMOVE_DOT_CONFIG
 	bool "Remove .config from image"
-	depends on FREETZ_SHOW_ADVANCED
-	select FREETZ_CREATE_SEPARATE_OPTIONS_CFG
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_CREATE_SEPARATE_OPTIONS_CFG
 	default n
 	help
 		Usually, a stripped version of the FREETZ configuration file .config
@@ -1779,18 +1789,6 @@ config FREETZ_REMOVE_DOT_CONFIG
 		but if you want to save a few bytes in your image and
 		you are sure that removing this file is the last chance to have
 		a working image, you can do it on your own risk!
-
-config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
-	bool "Create options.cfg as a separate file"
-	depends on FREETZ_SHOW_ADVANCED
-	depends on ! FREETZ_REMOVE_DOT_CONFIG
-	default y
-	help
-		When unchecked causes options.cfg to be created as a symbolic link to .config
-
-		When checked causes options.cfg to be created as a separate file containing
-		a much smaller subset of options included in .config. This increases image
-		size by about 160 bytes but reduces memory footprint at run-time.
 
 endmenu # "Additional image/box information" #
 
