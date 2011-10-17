@@ -36,7 +36,7 @@ sub expand {
 
 open ($fh_deps, '>', $deps_file) or die $!;
 print $fh_deps "$deps_name :=";
-expand($_, $fh_deps) for @ARGV;
+expand($_) for @ARGV;
 print $fh_deps "\n\n\$($deps_name): ;\n";
 close ($fh_deps) or die $!;
 
