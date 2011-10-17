@@ -1,0 +1,24 @@
+--- util-linux/blkid.c_	2011-08-22 04:57:50.000000000 +0200
++++ util-linux/blkid.c	2011-10-17 16:27:31.000000000 +0200
+@@ -20,11 +20,20 @@
+ int blkid_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+ int blkid_main(int argc UNUSED_PARAM, char **argv)
+ {
++	char with_arg;
++	int part_found;
++
++	with_arg = 0;
++	part_found = 0;
+ 	while (*++argv) {
+ 		/* Note: bogus device names don't cause any error messages */
+-		add_to_uuid_cache(*argv);
++		with_arg = 1;
++		if ((add_to_uuid_cache(*argv)) && (part_found == 0))
++			part_found = 1; // at least data for one partition found
+ 	}
+ 
++	// show all partitions only, if blkid called without arguments or if uuidCache not empty
++	if ((with_arg == 0) || (part_found))
+ 	display_uuid_cache();
+ 	return 0;
+ }
