@@ -465,7 +465,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclean)
-	$(RM) .config .config.old .config.cmd .tmpconfig.h include/config include/generated
+	$(RM) -r .config .config.old .config.cmd .tmpconfig.h include/config include/generated
 	$(RM) -r $(DL_DIR)
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(SOURCE_DIR_ROOT)
