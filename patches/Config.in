@@ -153,7 +153,7 @@ config FREETZ_AUTOMOUNT_EXT2
 config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
 	select FREETZ_BUSYBOX_VOLUMEID_EXT
-	select FREETZ_MODULE_ext3
+	select FREETZ_MODULE_ext3 if ! FREETZ_HAS_AVM_EXT3
 	default n
 	help
 		This adds ext3 module to your firmware.

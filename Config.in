@@ -838,6 +838,17 @@ config FREETZ_HAS_AVM_INETD
 	help
 		Select this if your original firmware has inetd support.
 
+config FREETZ_HAS_AVM_EXT3
+	bool "Has AVM ext3 built into the kernel"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		FREETZ_TYPE_FON_WLAN_7270_V2 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3 || \
+		FREETZ_TYPE_FON_WLAN_7390
+	default n
+	help
+		Select this if your original firmware has ext3 support into the kernel.
+
 config FREETZ_HAS_AVM_TR069
 	bool "Has AVM tr069"	if FREETZ_TYPE_CUSTOM
 	default y		if \
