@@ -139,6 +139,7 @@ mount_fs() {
 do_mount_locked() {
 	local mnt_failure=0
 	local rcftpd="/etc/init.d/rc.ftpd"
+	local fritznasdb_control="/etc/fritznasdb_control"
 	local tammnt="/var/tam/mount"
 	local mnt_rw=rw
 	[ $# -ge 2 ] && local mnt_dev=$2 || return 1
@@ -181,6 +182,8 @@ do_mount_locked() {
 		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                         # tam
 		rm -f /var/media/NEW_LINK && ln -f -s $mnt_path /var/media/NEW_LINK   # mark last mounted partition
 		msgsend multid update_usb_infos                                       # upnp
+		msgsend upnpd plugin force_notify libmediasrv.so new_partition        # mediasrv
+		[ -x $fritznasdb_control ] && $fritznasdb_control new_partition "$mnt_path" # fritznasdb
 		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done                 # led
 	else
 		case "$fs_type" in
@@ -254,6 +257,7 @@ do_mount_locked() {
 do_umount_locked() {
 	local rcftpd="/etc/init.d/rc.ftpd"
 	local rcsmbd="/etc/init.d/rc.smbd"
+	local fritznasdb_control="/etc/fritznasdb_control"
 	local kill_daemon=""
 	local ftpd_needs_start=0
 	local smbd_needs_start=0
@@ -265,6 +269,8 @@ do_umount_locked() {
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
 	[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path        # external
 	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
+	[ -x $fritznasdb_control ] && $fritznasdb_control lost_partition $mnt_path # fritznasdb
+	msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path"     # medisrv
 	[ -p "/var/tam/mount" ] && echo "u$mnt_path" > /var/tam/mount             # TAM
 
 	umount $mnt_path > /dev/null 2>&1                                         # umount
