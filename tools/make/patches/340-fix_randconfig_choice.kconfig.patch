@@ -1,0 +1,17 @@
+Origin:  http://www.spinics.net/lists/linux-kbuild/msg05612.html
+
+This patch fixes the problem that "conf --randconfig" does handle choices as
+expected. As of 3.1-rc9 this patch for rc4 ist still not available upstream.
+
+--- scripts/kconfig/confdata.c	2011-10-18 14:49:53.847731391 +0200
++++ scripts/kconfig/confdata.c	2011-10-18 14:50:18.408302685 +0200
+@@ -1045,6 +1045,9 @@
+ 		else {
+ 			sym->def[S_DEF_USER].tri = no;
+ 		}
++		sym->flags |= SYMBOL_DEF_USER;
++		/* clear VALID to get value calculated */
++		sym->flags &= ~(SYMBOL_VALID);
+ 	}
+ 	csym->flags |= SYMBOL_DEF_USER;
+ 	/* clear VALID to get value calculated */
