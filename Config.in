@@ -763,7 +763,7 @@ config FREETZ_KERNEL_MTD_SIZE
 		Number of 64K blocks in the kernel mtd device.
 
 config FREETZ_HAS_AVM_AURA_USB
-	bool "Has AVM Aura USB (Fernanschluss)"	if FREETZ_TYPE_CUSTOM
+	bool "Has remote USB connection (AURA = AVM USB Remote-Architcture)"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_REMOVE_AURA_USB if ! FREETZ_HAS_USB_HOST
 	default y		if \
 		FREETZ_HAS_USB_HOST || \
@@ -772,8 +772,8 @@ config FREETZ_HAS_AVM_AURA_USB
 		FREETZ_TYPE_7113_7170
 	default n
 	help
-		Select this if your original firmware has an aura-usb-daemon
-		(USB-Fernanschluss)
+		Select this if your original firmware has an aura-usb-daemon (remote USB
+		connection, USB-Fernanschluss)
 
 config FREETZ_HAS_AVM_NTFS
 	bool "Has AVM NTFS"	if FREETZ_TYPE_CUSTOM
