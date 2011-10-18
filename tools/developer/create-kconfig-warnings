@@ -13,6 +13,8 @@ warn_file=conf-warnings.log
 # Create output directory and refresh config cache
 mkdir -p $warn_dir
 make config-cache > /dev/null
+# Deactivate default box 7270_v2 which always overrides other choices
+sed -i -r 's/^([[:space:]]+default FREETZ_TYPE_FON_WLAN_7270_V2)/#\1/' Config.in.cache
 
 # Create <rounds> random configurations + warning logs and move them
 # to separate subdirectories (keep existing ones!)
