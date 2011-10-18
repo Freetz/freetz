@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# If $1 is an integer >= 0, assign it to <rounds>, otherwise default to 50
+# Trick: use 0 to just print a report of previously existing logs again
+[ "$1" -eq "$1" -a $1 -ge 0 ] > /dev/null 2>&1 \
+	&& rounds=$1 \
+	|| rounds=50
+
+warn_dir=kconfig-warnings
+conf_file=.config
+warn_file=conf-warnings.log
+
+# Create output directory and refresh config cache
+mkdir -p $warn_dir
+make config-cache > /dev/null
+
+# Create <rounds> random configurations + warning logs and move them
+# to separate subdirectories (keep existing ones!)
+while ((i++ < rounds)); do
+	tools/config/conf --randconfig Config.in.cache > /dev/null 2> $warn_file
+	[ $? -eq 0 ] || continue
+	tmp_dir=$(mktemp -d --tmpdir=$warn_dir "XXXXXXXX")
+	mv $conf_file $warn_file $tmp_dir
+done
+
+# Dump unique warnings
+find kconfig-warnings -type f -name conf-warnings.log | xargs cat | sort | uniq
