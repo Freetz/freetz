@@ -3,8 +3,6 @@
 
 . /usr/lib/libmodcgi.sh
 
-check "$SAMBA_ENABLED" yes:auto inetd "*":man
-check "$SAMBA_NMBD_ENABLED" yes:nmbd_auto "*":nmbd_man
 check "$SAMBA_MASTER" yes:master
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
@@ -14,33 +12,30 @@ cat << EOF
 <p>
 EOF
 if [ -L "$NMBD" -o -x "$NMBD" ]; then
-cat << EOF
-$(lang de:"Dateifreigabe (smbd)" en:"Filesharing (smbd) "):&nbsp;
-EOF
+    smbd_label="$(lang de:"Dateifreigabe (smbd)" en:"Filesharing (smbd) "):&nbsp;"
+else
+    smbd_label=
 fi
-cat << EOF
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1">$(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2">$(lang de:"Manuell" en:"Manual")</label>
-EOF
 if [ -e /mod/etc/default.inetd/inetd.cfg ]; then
-cat << EOF
-<input id="e3" type="radio" name="enabled" value="inetd"$inetd_chk><label for="e3"> $(lang de:"Inetd" en:"Inetd")</label>
-EOF
+    opt_inetd="inetd::$(lang de:"Inetd" en:"Inetd")"
+else
+    opt_inetd=
 fi
-cat << EOF
-</p>
-EOF
+
+cgi_print_radiogroup \
+    "smbd_enabled" "$SAMBA_ENABLED" "$smbd_label" \
+    "yes::$(lang de:"Automatisch" en:"Automatic")" \
+    "no::$(lang de:"Manuell" en:"Manual")" \
+    $opt_inetd
+
+fi
 
 if [ -L "$NMBD" -o -x "$NMBD" ]; then
-cat << EOF
-<p>
-$(lang de:"Namensaufl&ouml;sung (nmbd)" en:"Nameservices (nmbd) "):&nbsp;
-<input id="n1" type="radio" name="nmbd_enabled" value="yes"$nmbd_auto_chk><label for="n1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="n2" type="radio" name="nmbd_enabled" value="no"$nmbd_man_chk><label for="n2"> $(lang de:"Manuell" en:"Manual")</label>
-EOF
-cat << EOF
-</p>
-EOF
+    cgi_print_radiogroup \
+	"nmbd_enabled" "$SAMBA_NMBD_ENABLED" "$(lang de:"Namensaufl&ouml;sung (nmbd)" en:"Nameservices (nmbd) "):&nbsp;" \
+	"yes::$(lang de:"Automatisch" en:"Automatic")" \
+	"no::$(lang de:"Manuell" en:"Manual")" 
+
 fi
 
 sec_end
@@ -83,6 +78,11 @@ sec_end
 fi
 
 sec_begin '$(lang de:"Samba" en:"Samba")'
+
+cgi_print_radiogroup \
+    "smbd_security" "$SAMBA_SMBD_SECURITY" "$(lang de:"Samba security" en:"Samba security"):&nbsp;" \
+    "share::$(lang de:"Share" en:"Share")" \
+    "user::$(lang de:"User" en:"User")"
 
 cat << EOF
 <p><label for="s1">$(lang de:"Benutzername" en:"User name"):</label>
