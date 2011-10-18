@@ -122,9 +122,10 @@ $(error The empty directory root/sys is missing! Please do a clean checkout)
 endif
 
 # Run svn version update if building in working copy
-ifneq ($(BUILD_DIR_VERSION),)
+# TODO: Please check this, BUILD_DIR_VERSION is always empty
+#ifneq ($(BUILD_DIR_VERSION),)
 CHECK_BUILD_DIR_VERSION:=check-builddir-version
-endif
+#endif
 
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
