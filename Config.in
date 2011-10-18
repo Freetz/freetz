@@ -838,6 +838,32 @@ config FREETZ_HAS_AVM_INETD
 	help
 		Select this if your original firmware has inetd support.
 
+config FREETZ_HAS_AVM_TR069
+	bool "Has AVM tr069"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_5124 || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_FON_WLAN_7050 || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270 || \
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		FREETZ_TYPE_FON_WLAN_7340 || \
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_FON_WLAN_7570 || \
+		FREETZ_TYPE_WLAN_3020 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
+	default n
+	help
+		Select this if your original firmware has tr069 support (libtr069, libtr064).
+
 config FREETZ_HAS_CHRONYD
 	bool "Has chronyd"	if FREETZ_TYPE_CUSTOM
 	default y		if \
