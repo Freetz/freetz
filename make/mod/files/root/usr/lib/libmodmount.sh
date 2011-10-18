@@ -182,8 +182,10 @@ do_mount_locked() {
 		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                         # tam
 		rm -f /var/media/NEW_LINK && ln -f -s $mnt_path /var/media/NEW_LINK   # mark last mounted partition
 		msgsend multid update_usb_infos                                       # upnp
-		msgsend upnpd plugin force_notify libmediasrv.so new_partition        # mediasrv
-		[ -x $fritznasdb_control ] && $fritznasdb_control new_partition "$mnt_path" # fritznasdb
+		if [ -x $fritznasdb_control ]; then
+			msgsend upnpd plugin force_notify libmediasrv.so new_partition    # mediasrv
+			$fritznasdb_control new_partition "$mnt_path"                     # fritznasdb
+		fi
 		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done                 # led
 	else
 		case "$fs_type" in
@@ -269,8 +271,10 @@ do_umount_locked() {
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
 	[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path        # external
 	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
-	[ -x $fritznasdb_control ] && $fritznasdb_control lost_partition $mnt_path # fritznasdb
-	msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path"     # medisrv
+	if [ -x $fritznasdb_control ]; then
+		$fritznasdb_control lost_partition $mnt_path                          # fritznasdb
+		msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path" # medisrv
+	fi
 	[ -p "/var/tam/mount" ] && echo "u$mnt_path" > /var/tam/mount             # TAM
 
 	umount $mnt_path > /dev/null 2>&1                                         # umount
