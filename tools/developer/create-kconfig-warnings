@@ -24,4 +24,4 @@ while ((i++ < rounds)); do
 done
 
 # Dump unique warnings
-find kconfig-warnings -type f -name conf-warnings.log | xargs cat | sort | uniq
+find $warn_dir -type f -name $warn_file | xargs cat | sort | uniq
