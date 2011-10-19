@@ -8,40 +8,35 @@ check "$SAMBA_MASTER" yes:master
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
 NMBD=$(which nmbd)
-cat << EOF
-<p>
-EOF
 if [ -L "$NMBD" -o -x "$NMBD" ]; then
-    smbd_label="$(lang de:"Dateifreigabe (smbd)" en:"Filesharing (smbd) "):&nbsp;"
+	smbd_label="$(lang de:"Dateifreigabe (smbd)" en:"Filesharing (smbd) "):&nbsp;"
 else
-    smbd_label=
+	smbd_label=
 fi
 if [ -e /mod/etc/default.inetd/inetd.cfg ]; then
-    opt_inetd="inetd::$(lang de:"Inetd" en:"Inetd")"
+	opt_inetd="inetd::$(lang de:"Inetd" en:"Inetd")"
 else
-    opt_inetd=
+	opt_inetd=
 fi
 
 cgi_print_radiogroup \
-    "smbd_enabled" "$SAMBA_ENABLED" "$smbd_label" \
-    "yes::$(lang de:"Automatisch" en:"Automatic")" \
-    "no::$(lang de:"Manuell" en:"Manual")" \
-    $opt_inetd
-
-fi
+	"smbd_enabled" "$SAMBA_ENABLED" "$smbd_label" \
+	"yes::$(lang de:"Automatisch" en:"Automatic")" \
+	"no::$(lang de:"Manuell" en:"Manual")" \
+	$opt_inetd
 
 if [ -L "$NMBD" -o -x "$NMBD" ]; then
-    cgi_print_radiogroup \
+	cgi_print_radiogroup \
 	"nmbd_enabled" "$SAMBA_NMBD_ENABLED" "$(lang de:"Namensaufl&ouml;sung (nmbd)" en:"Nameservices (nmbd) "):&nbsp;" \
 	"yes::$(lang de:"Automatisch" en:"Automatic")" \
-	"no::$(lang de:"Manuell" en:"Manual")" 
-
+	"no::$(lang de:"Manuell" en:"Manual")"
 fi
 
 sec_end
 
 if [ -d /var/media/ftp ]; then
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+
 . /etc/default.samba/modlibsamba
 if [ "$MODLIBSAMBA_ENABLED" == "yes" ]; then
 	SAMBACONF_ENABLED="$(lang de:"an" en:"on")"
@@ -74,15 +69,16 @@ $(lang de:"Optionen" en:"Options"):
 </ul>
 </p>
 EOF
+
 sec_end
 fi
 
 sec_begin '$(lang de:"Samba" en:"Samba")'
 
 cgi_print_radiogroup \
-    "smbd_security" "$SAMBA_SMBD_SECURITY" "$(lang de:"Samba security" en:"Samba security"):&nbsp;" \
-    "share::$(lang de:"Share" en:"Share")" \
-    "user::$(lang de:"User" en:"User")"
+	"smbd_security" "$SAMBA_SMBD_SECURITY" "$(lang de:"Samba security" en:"Samba security"):&nbsp;" \
+	"share::$(lang de:"Share" en:"Share")" \
+	"user::$(lang de:"User" en:"User")"
 
 cat << EOF
 <p><label for="s1">$(lang de:"Benutzername" en:"User name"):</label>
