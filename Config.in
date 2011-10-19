@@ -414,7 +414,7 @@ choice
 	config FREETZ_TYPE_IAD_3331_7170
 		bool "Alice IAD 3331"
 		depends on FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE
-		select FREETZ_REMOVE_PIGLET_V1
+		select FREETZ_REMOVE_PIGLET_V1 if FREETZ_SHOW_ADVANCED
 		select FREETZ_ENFORCE_URLADER_SETTINGS
 		help
 			Enable this to compile a mod image for Alice IAD 3331 based
