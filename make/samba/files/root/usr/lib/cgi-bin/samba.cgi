@@ -27,9 +27,9 @@ cgi_print_radiogroup \
 
 if [ -L "$NMBD" -o -x "$NMBD" ]; then
 	cgi_print_radiogroup \
-	"nmbd_enabled" "$SAMBA_NMBD_ENABLED" "$(lang de:"Namensaufl&ouml;sung (nmbd)" en:"Nameservices (nmbd) "):&nbsp;" \
-	"yes::$(lang de:"Automatisch" en:"Automatic")" \
-	"no::$(lang de:"Manuell" en:"Manual")"
+		"nmbd_enabled" "$SAMBA_NMBD_ENABLED" "$(lang de:"Namensaufl&ouml;sung (nmbd)" en:"Nameservices (nmbd) "):&nbsp;" \
+		"yes::$(lang de:"Automatisch" en:"Automatic")" \
+		"no::$(lang de:"Manuell" en:"Manual")"
 fi
 
 sec_end
