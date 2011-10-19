@@ -966,6 +966,7 @@ config FREETZ_MODULE_ip6_queue
 		email: <fanton@it.uc3m.es>.
 
 config FREETZ_MODULE_ip6_tables
+	select FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 	select FREETZ_LIB_libxt_standard
 	bool "ip6_tables.ko"
 	default n
