@@ -19,6 +19,7 @@ make config-cache > /dev/null
 while ((i++ < rounds)); do
 	tools/config/conf --randconfig Config.in.cache > /dev/null 2> $warn_file
 	[ $? -eq 0 ] || continue
+	[ $(stat -c%s $warn_file) -eq 0 ] && rm $conf_file && continue
 	tmp_dir=$(mktemp -d --tmpdir=$warn_dir "XXXXXXXX")
 	mv $conf_file $warn_file $tmp_dir
 done
