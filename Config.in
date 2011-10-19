@@ -309,7 +309,6 @@ choice
 		depends on FREETZ_TYPE_FON_WLAN_7170 && FREETZ_TYPE_LANG_DE
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
-		select FREETZ_REMOVE_MINID
 		select FREETZ_REMOVE_PRINTSERV
 		select FREETZ_REMOVE_PRINTSERV_MODULE if ! FREETZ_MODULE_usblp
 		select FREETZ_REMOVE_SMBD
@@ -334,7 +333,6 @@ choice
 	config FREETZ_TYPE_3170_7170
 		bool "3170"
 		depends on FREETZ_TYPE_FON_WLAN_7170
-		select FREETZ_REMOVE_MINID
 		select FREETZ_REMOVE_VOIPD
 		select FREETZ_REMOVE_VOIP_ISDN
 		select FREETZ_REMOVE_CAPIOVERTCP
@@ -347,7 +345,6 @@ choice
 		depends on FREETZ_TYPE_FON_WLAN_7170
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
-		select FREETZ_REMOVE_MINID
 		select FREETZ_REMOVE_PRINTSERV
 		select FREETZ_REMOVE_PRINTSERV_MODULE if ! FREETZ_MODULE_usblp
 		select FREETZ_REMOVE_SMBD
@@ -360,7 +357,6 @@ choice
 		depends on FREETZ_TYPE_FON_WLAN_7170
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
-		select FREETZ_REMOVE_MINID
 		select FREETZ_REMOVE_PRINTSERV
 		select FREETZ_REMOVE_PRINTSERV_MODULE if ! FREETZ_MODULE_usblp
 		select FREETZ_REMOVE_SMBD
@@ -774,6 +770,25 @@ config FREETZ_HAS_AVM_AURA_USB
 	help
 		Select this if your original firmware has an aura-usb-daemon (remote USB
 		connection, USB-Fernanschluss)
+
+config FREETZ_HAS_AVM_MINID
+	bool "Has mini-daemon (minid)"	if FREETZ_TYPE_CUSTOM
+	select FREETZ_REMOVE_MINID if \
+		FREETZ_TYPE_7113_7170 || \
+		FREETZ_TYPE_7112_7170 || \
+		FREETZ_TYPE_3170_7170 || \
+		FREETZ_TYPE_SPEEDPORT_W701V_7170
+	default y		if \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270_V2 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
+	default n
+	help
+		Select this if your original firmware has a mini-daemon (minid)
 
 config FREETZ_HAS_AVM_NTFS
 	bool "Has AVM NTFS"	if FREETZ_TYPE_CUSTOM

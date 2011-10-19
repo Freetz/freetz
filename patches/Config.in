@@ -791,14 +791,7 @@ config FREETZ_REMOVE_MEDIASRV
 config FREETZ_REMOVE_MINID
 	bool "Remove minid and MT-D/F" if FREETZ_SHOW_ADVANCED 
 	default n
-	depends on \
-		FREETZ_TYPE_FON_WLAN_7141 || \
-		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270_V2 || \
-		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3
+	depends on FREETZ_HAS_AVM_MINID
 	help
 		Remove the mini-daemon (minid) and some other related files. This patch
 		removes Fritz!Mini and MT-D/F support and all Web UI entrys.
@@ -1006,7 +999,7 @@ config FREETZ_REMOVE_VOIP_ISDN
 	select FREETZ_REMOVE_VOIPD
 	select FREETZ_REMOVE_DTRACE
 	select FREETZ_REMOVE_CAPIOVERTCP
-	select FREETZ_REMOVE_MINID
+	select FREETZ_REMOVE_MINID if FREETZ_HAS_AVM_MINID
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
