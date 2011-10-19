@@ -1,7 +1,6 @@
 config FREETZ_PACKAGE_IPTABLES
 	bool "Iptables 1.4.11.1 (binary only, unstable)"
-	depends on ! FREETZ_TYPE_SPEEDPORT_W501V && \
-			! FREETZ_TYPE_FON_5140
+	depends on FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
 	default n
 	help
 		Netfilter/iptables
@@ -20,6 +19,15 @@ config FREETZ_PACKAGE_IPTABLES
 		to the entire infrastructure, including netfilter, connection tracking
 		and NAT, as well as the tool itself. iptables is a standard part of all
 		modern Linux distributions.
+
+config FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
+	bool "Is Iptables selectable for your custom configuration?"	if FREETZ_TYPE_CUSTOM
+	default y if \
+		!FREETZ_TYPE_SPEEDPORT_W501V && \
+		!FREETZ_TYPE_FON_5140
+	default n
+	help
+		Select this if you are sure that Iptables should work on your box
 
 config FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
 	bool "Iptables-save / iptables-restore"
