@@ -498,9 +498,8 @@ check-builddir-version: $(CONFIG_IN_CACHE)
 	if [ -e .config -a \
 		$(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
-		echo "ERROR: You have updated to newer svn version since last modifying your config."; \
-		echo "       You have to run 'make oldconfig' or 'make menuconfig' once before"; \
-		echo "       building again."; \
+		echo "ERROR: You have updated to a newer svn version since last modifying your"; \
+		echo "       config. You have to run 'make oldconfig' once before building again."; \
 		echo -n -e $(_N); \
 		exit 3; \
 	fi; \
