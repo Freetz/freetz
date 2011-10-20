@@ -3,8 +3,6 @@ comment "Without 'replace kernel' you can not use mppe/mppc."
 
 config FREETZ_PACKAGE_PPPD
 	bool "pppd 2.4.5"
-	depends on \
-		(FREETZ_PACKAGE_PPPD_CHAT || FREETZ_PACKAGE_PPTP || FREETZ_PACKAGE_PPTPD || FREETZ_PACKAGE_SYNCE_SERIAL)
 	select FREETZ_LIB_libcrypt
 	select FREETZ_LIB_libdl
 	select FREETZ_MODULE_ppp_async
