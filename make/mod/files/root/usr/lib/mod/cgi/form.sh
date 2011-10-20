@@ -156,6 +156,55 @@ cgi_print_checkbox_p()
 # See cgi_print_checkbox
 cgi_print_checkbox_br()
 {
-	cgi_print_checkbox "$1" "$2" "$3" "$4"
-	echo "<br>"
+	cgi_print_checkbox "$1" "$2" "$3" "$4<br>"
 }
+
+# Print a one line text input field
+#   $1: Name of the variable
+#   $2: current value
+#   $3: Length, int or size/maxlength
+#   $4: Label, optional
+#   $5: Text after input field, optional
+cgi_print_textline()
+{
+	local name=$1
+	local value=$2
+	local len=$3
+	local label=$4
+	local post_text=$5
+	local size maxlength
+
+	if [ "${len%/*}" = "$len" ]; then
+		size=$len
+		maxlength=$len
+	else
+		size=${len%/*}
+		maxlength=${len#*/}
+	fi
+	if [ -n "$label" ]; then
+		label="<label for=\"$name\">$label</label>"
+	fi
+	if [ -n "$size" ]; then
+		size=" size=\"$size\""
+	fi
+	if [ -n "$maxlength" ]; then
+		maxlength=" maxlength=\"$maxlength\""
+	fi
+	if [ -n "$value" ]; then
+		value=" value=\"$(html "$value")\""
+	fi
+	echo "$label<input type=\"text\" name=\"$name\"$size$maxlength$value>$post_text"
+}
+
+cgi_print_textline_p()
+{
+	echo "<p>"
+	cgi_print_textline "$1" "$2" "$3" "$4" "$5"
+	echo "</p>"
+}
+
+cgi_print_textline_br()
+{
+	cgi_print_textline "$1" "$2" "$3" "$4" "$5<br>"
+}
+
