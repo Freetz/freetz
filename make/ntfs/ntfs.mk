@@ -67,4 +67,5 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(NTFS_BINARIES_ALL:%=$(NTFS_DEST_DIR)/usr/bin/%) $(NTFS_TARGET_LIBDIR)/libntfs-3g.so.*
 
+$(call PKG_ADD_LIB,libntfs)
 $(PKG_FINISH)

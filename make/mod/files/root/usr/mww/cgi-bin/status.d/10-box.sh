@@ -47,7 +47,7 @@ fi
 cat << EOF
 
 </td>
-<td align="right">$(lang de:"Uptime" en:"Uptime"): $(uptime | sed -r 's/.* up (.*), load .*/\1/')</td></tr>
+<td align="right">$(lang de:"Uptime" en:"Uptime"): $(uptime | sed -r 's/.* up (.*), *load .*/\1/')</td></tr>
 </table>
 EOF
 

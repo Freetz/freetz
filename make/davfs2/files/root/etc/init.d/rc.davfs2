@@ -70,6 +70,7 @@ start() {
 		[ "$uselocks" == "yes" ] && echo "use_locks 0" >> $cfile
 		[ "$ifmatchbug" == "yes" ] && echo "if_match_bug 1" >> $cfile
 		echo "ask_auth 0" >> $cfile
+		echo "cache_size $DAVFS2_CACHE_SIZE" >> $cfile
 		chmod 600 $CONF_DIR/secrets_${i}
 		mkdir $point 2>/dev/null
 		mount -t davfs $host $point -o conf=$cfile,uid=ftpuser

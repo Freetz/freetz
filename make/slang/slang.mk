@@ -65,4 +65,5 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) -r $(SLANG_TARGET_LIBDIR)/libslang*.so* $(SLANG_DEST_DIR)$(SLANG_MODULES_DIR)
 
+$(call PKG_ADD_LIB,libslang)
 $(PKG_FINISH)

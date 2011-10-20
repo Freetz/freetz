@@ -89,4 +89,5 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(GNUTLS_BINARIES_ALL:%=$(GNUTLS_DEST_DIR)/usr/bin/%) $(GNUTLS_TARGET_LIBDIR)/libgnutls*
 
+$(call PKG_ADD_LIB,libgnutls)
 $(PKG_FINISH)

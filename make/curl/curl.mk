@@ -98,4 +98,5 @@ $(pkg)-uninstall:
 	$(RM) $(CURL_TARGET_BINARY)
 	$(RM) $(CURL_TARGET_LIBDIR)/libcurl*.so*
 
+$(call PKG_ADD_LIB,libcurl)
 $(PKG_FINISH)

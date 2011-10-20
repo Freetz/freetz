@@ -11,7 +11,8 @@
 # You shouldn't need to mess with anything beyond this point...
 #--------------------------------------------------------------
 TOPDIR=.
-CONFIG_CONFIG_IN=Config.in
+CONFIG_IN=Config.in
+CONFIG_IN_CACHE=$(CONFIG_IN).cache
 CONFIG=tools/config
 
 SHELL:=/bin/bash
@@ -31,8 +32,6 @@ TOOLS_DIR:=tools
 DL_FW_DIR:=$(DL_DIR)/fw
 FW_IMAGES_DIR:=images
 MIRROR_DIR:=$(DL_DIR)/mirror
-BUILD_DIR_VERSION:=$(shell svnversion | grep -v exported 2> /dev/null)
-BUILD_LAST_VERSION:=$(shell cat .lastbuild-version 2> /dev/null)
 
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
@@ -48,6 +47,7 @@ MAKE=make -j$(FREETZ_JLEVEL)
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 FAKEROOT_TOOL:=$(TOOLS_DIR)/$(BUILD_DIR)/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
+PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
@@ -122,9 +122,10 @@ $(error The empty directory root/sys is missing! Please do a clean checkout)
 endif
 
 # Run svn version update if building in working copy
-ifneq ($(BUILD_DIR_VERSION),)
+# TODO: Please check this, BUILD_DIR_VERSION is always empty
+#ifneq ($(BUILD_DIR_VERSION),)
 CHECK_BUILD_DIR_VERSION:=check-builddir-version
-endif
+#endif
 
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
@@ -148,22 +149,12 @@ world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-noconfig_targets:=menuconfig config oldconfig defconfig tools \
+KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig
+
+noconfig_targets:=$(KCONFIG_TARGETS) tools \
 		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
 
-ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
 -include $(TOPDIR)/.config
-
-#ifeq ($(filter dirclean,$(MAKECMDGOALS)),)
-#Simple test if wrong uclibc is used
-#ifneq ($(NO_UCLIBC_CHECK),y)
-#ifneq ($(shell $(CHECK_UCLIBC_VERSION) && echo OK), OK)
-#$(error Error: uClibc-version changed. Please type "make dirclean")
-#endif
-#endif
-#endif
-
-endif
 
 VERBOSE:=
 QUIET:=--quiet
@@ -216,6 +207,14 @@ include $(MAKE_DIR)/Makefile.in
 include $(sort $(wildcard $(MAKE_DIR)/libs/*/Makefile.in))
 include $(sort $(wildcard $(MAKE_DIR)/*/Makefile.in))
 
+ALL_PACKAGES:=
+LOCALSOURCE_PACKAGES:=
+include $(sort $(wildcard $(MAKE_DIR)/libs/*/*.mk))
+include $(sort $(wildcard $(MAKE_DIR)/*/*.mk))
+NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
+PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
+PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(NON_LOCALSOURCE_PACKAGES))
+
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
 TARGETS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TARGETS))
 TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
@@ -237,14 +236,6 @@ TOOLCHAIN_CLEAN:=$(patsubst %,%-clean,$(TOOLCHAIN))
 TOOLCHAIN_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLCHAIN))
 TOOLCHAIN_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLCHAIN))
 TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
-
-ALL_PACKAGES:=
-LOCALSOURCE_PACKAGES:=
-include $(sort $(wildcard $(MAKE_DIR)/libs/*/*.mk))
-include $(sort $(wildcard $(MAKE_DIR)/*/*.mk))
-NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
-PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
-PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(NON_LOCALSOURCE_PACKAGES))
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
@@ -430,18 +421,25 @@ recover:
 		done; \
 	fi
 
-menuconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/mconf
-	@$(CONFIG)/mconf $(CONFIG_CONFIG_IN)
+menuconfig: config-cache $(CONFIG)/mconf
+	@$(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-config: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf $(CONFIG_CONFIG_IN)
+menuconfig-single: config-cache $(CONFIG)/mconf
+	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-oldconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(CONFIG)/conf --oldconfig $(CONFIG_CONFIG_IN)
+config: config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
-defconfig: $(CONFIG_CONFIG_IN) $(CONFIG)/conf
-	@$(RM) .config; \
-	$(CONFIG)/conf --defconfig $(CONFIG_CONFIG_IN)
+oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE)
+
+config-cache: $(CONFIG_IN_CACHE)
+
+-include include/config/cache.conf.cmd
+
+$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(PARSE_CONFIG_TOOL) $(deps_config_cache)
+	@mkdir -p include/config include/generated
+	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 
 config-clean-deps:
 	@{ \
@@ -450,18 +448,17 @@ config-clean-deps:
 	$(SED) -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
-	make oldconfig < /dev/null > /dev/null; \
+	make oldnoconfig; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+).*/  \1/p'; \
+	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+) is not set$$/  \1/p'; \
 	$(RM) .config_tmp; \
 	}
 
 common-clean:
 	./fwmod_custom clean
-	$(RM) .static .dynamic .exclude-dist-tmp
+	$(RM) .static .dynamic .exclude-dist-tmp $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
-	-$(MAKE) -C $(CONFIG) clean
 
 common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
@@ -469,7 +466,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclean)
-	$(RM) .config .config.old .config.cmd .tmpconfig.h
+	$(RM) -r .config .config.old .config.cmd .tmpconfig.h include/config include/generated
 	$(RM) -r $(DL_DIR)
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(SOURCE_DIR_ROOT)
@@ -496,20 +493,19 @@ dist: distclean
 	$(RM) .exclude-dist-tmp
 
 # Check if last build was with older svn version
-check-builddir-version:
-	@if [ -e .config -a \
-		"$(BUILD_DIR_VERSION)" != "$(BUILD_LAST_VERSION)" -a \
-		.svn -nt .config ]; then \
+check-builddir-version: $(CONFIG_IN_CACHE)
+	@\
+	if [ -e .config -a \
+		$(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
 		echo "ERROR: You have updated to newer svn version since last modifying your config."; \
 		echo "       You have to run 'make oldconfig' or 'make menuconfig' once before"; \
 		echo "       building again."; \
 		echo -n -e $(_N); \
 		exit 3; \
-	fi; 
-	@echo "$(BUILD_DIR_VERSION)" > .lastbuild-version
+	fi; \
 
-.PHONY: all world step menuconfig config oldconfig defconfig tools recover \
+.PHONY: all world step $(KCONFIG_TARGETS) config-cache config-clean-deps tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	$(CHECK_BUILD_DIR_VERSION)

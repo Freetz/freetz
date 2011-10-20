@@ -1,5 +1,5 @@
---- modutils/insmod.c.orig	2010-12-20 01:41:27.000000000 +0100
-+++ modutils/insmod.c	2011-01-04 16:56:19.292164714 +0100
+--- modutils/insmod.c	2011-10-05 21:09:05+02:00
++++ modutils/insmod.c	2011-10-05 21:09:05+02:00
 @@ -11,6 +11,99 @@
  
  #include "libbb.h"
@@ -100,16 +100,16 @@
  
  /* 2.6 style insmod has no options and required filename
   * (not module name - .ko can't be omitted) */
-@@ -59,9 +152,15 @@
+@@ -58,9 +151,15 @@
  	if (!filename)
  		bb_show_usage();
  
--	rc = bb_init_module(filename, parse_cmdline_module_options(argv));
+-	rc = bb_init_module(filename, parse_cmdline_module_options(argv, /*quote_spaces:*/ 0));
 +	rc = find_module(filename);
 +	if (rc || (g_filename == NULL))
 +			goto done;
 +
-+	rc = bb_init_module(g_filename, parse_cmdline_module_options(argv));
++	rc = bb_init_module(g_filename, parse_cmdline_module_options(argv, /*qoute_spaces:*/ 0));
  	if (rc)
  		bb_error_msg("can't insert '%s': %s", filename, moderror(rc));
 +	free (g_filename);
@@ -117,9 +117,9 @@
 +done:
  	return rc;
  }
---- modutils/Config.src.orig	2010-12-20 01:41:27.000000000 +0100
-+++ modutils/Config.src	2011-01-04 16:56:19.292164714 +0100
-@@ -229,7 +229,7 @@
+--- modutils/Config.src	2011-10-05 21:09:05+02:00
++++ modutils/Config.src	2011-10-05 21:09:05+02:00
+@@ -247,7 +247,7 @@
  config DEFAULT_MODULES_DIR
  	string "Default directory containing modules"
  	default "/lib/modules"

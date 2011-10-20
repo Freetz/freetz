@@ -174,8 +174,11 @@ SUBST_MAP = $(strip		\
 	$(foreach s,$2,		\
 		$(eval __tmp := $(subst $(word 1,$(subst :, ,$s)),$(word 2,$(subst :, ,$s)),$(__tmp))))	\
 	$(__tmp))
-SUBST_MAP_TOUPPER = a:A b:B c:C d:D e:E f:F g:G h:H i:I j:J k:K l:L m:M n:N o:O p:P q:Q r:R s:S t:T u:U v:V w:W x:X y:Y z:Z
-SUBST_MAP_TOUPPER_NAME = $(SUBST_MAP_TOUPPER) -:_
+SUBST_MAP_TOLOWER := A:a B:b C:c D:d E:e F:f G:g H:h I:i J:j K:k L:l M:m N:n O:o P:p Q:q R:r S:s T:t U:u V:v W:w X:x Y:y Z:z
+SUBST_MAP_TOUPPER := a:A b:B c:C d:D e:E f:F g:G h:H i:I j:J k:K l:L m:M n:N o:O p:P q:Q r:R s:S t:T u:U v:V w:W x:X y:Y z:Z
+SUBST_MAP_NAME := -:_
+SUBST_MAP_TOUPPER_NAME := $(SUBST_MAP_TOUPPER) $(SUBST_MAP_NAME)
+SUBST_MAP_TOLOWER_NAME := $(SUBST_MAP_TOLOWER) $(SUBST_MAP_NAME)
 
 # TOUPPER_NAME
 # Convert letters to uppercase, minus to underline
@@ -488,7 +491,29 @@ define PKG_INIT_LIB
 $(eval $(call PKG_INIT_LIB__INTV,$1,$2,$3))
 endef
 
+# PKG_ADD_BIN
+#  $1 PKG FREETZ_PACKAGE_ Config Symbol
+#  $2 pkg Name (optional)
+define PKG_ADD_BIN__INT
+ifeq ($(FREETZ_PACKAGE_$1),y)
+PACKAGES+=$(if $(strip $2),$2,$(pkg))
+endif
+endef
+define PKG_ADD_BIN
+$(eval $(call PKG_ADD_BIN__INT,$1,$2))
+endef
 
+# PKG_ADD_LIB
+#  $1 PKG FREETZ_LIB_ Config Symbol
+#  $2 pkg Name (optional)
+define PKG_ADD_LIB__INT
+ifeq ($(FREETZ_LIB_$1),y)
+LIBS+=$(if $(strip $2),$2,$(pkg))
+endif
+endef
+define PKG_ADD_LIB
+$(eval $(call PKG_ADD_LIB__INT,$1,$2))
+endef
 
 ### PKG_FINISH - package finalisation
 
@@ -501,9 +526,10 @@ $(pkg)-dirclean--int:
 	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 	$($(PKG)_CLEAN_TARGET_DIR__INT)
 $(PKG_LIST)
+$(call PKG_ADD_BIN__INT,$(PKG))
 endef
 
-# Finalise library packages (currently empty)
+# Finalise library packages
 define PKG_FINISH_LIB__INT
 # Library dirclean
 $(pkg)-dirclean--int:
@@ -590,6 +616,7 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 # Naming conventions for patches are different for library vs. binary packages,
 # therefore we have two different macros.
 
+# XXX: Temporarily use system's unzip and not from busybox-tools (see #1535, r7199)
 # $1: path to the file to be unpacked
 # $2: directory files to be unpacked to
 # $3: file extension
@@ -600,7 +627,7 @@ define UNPACK_CMD__INT
 	$(if $(filter .lzma .tlz,$(3)),$(TOOLS_DIR)/unlzma -c $(1)) \
 	$(if $(filter .Z .taZ,$(3)),$(TOOLS_DIR)/uncompress -c $(1)) \
 	$(if $(filter .tar,$(3)),cat $(1)) \
-	$(if $(filter .zip,$(3)),$(TOOLS_DIR)/unzip $(QUIETSHORT) $(1) -d $(2)) \
+	$(if $(filter .zip,$(3)),unzip $(QUIETSHORT) -u $(1) -d $(2)) \
 	$(if $(filter .gz .tgz .taz .bzip2 .bz2 .bz .tbz2 .tbz .tz2 .xz .txz .lzma .tlz .Z .taZ .tar,$(3)),| tar -C $(2) $(VERBOSE) -x)
 endef
 

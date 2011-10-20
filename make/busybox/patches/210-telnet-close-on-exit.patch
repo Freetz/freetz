@@ -1,6 +1,17 @@
 --- networking/telnetd.c.orig	2010-12-21 05:29:45.000000000 +0100
 +++ networking/telnetd.c	2011-01-04 16:56:17.682164713 +0100
-@@ -533,7 +533,7 @@
+@@ -28,8 +28,8 @@
+ //usage:	IF_NOT_FEATURE_TELNETD_STANDALONE(" via inetd") "\n"
+ //usage:     "\n	-l LOGIN	Exec LOGIN on connect"
+ //usage:     "\n	-f ISSUE_FILE	Display ISSUE_FILE instead of /etc/issue"
+-//usage:     "\n	-K		Close connection as soon as login exits"
+-//usage:     "\n			(normally wait until all programs close slave pty)"
++//usage:     "\n	-K		Do not close connection as soon as login exits,"
++//usage:     "\n			but wait until all programs close slave pty"
+ //usage:	IF_FEATURE_TELNETD_STANDALONE(
+ //usage:     "\n	-p PORT		Port to listen on"
+ //usage:     "\n	-b ADDR[:PORT]	Address to bind to"
+@@ -551,7 +551,7 @@
  	/* We don't want to die if just one session is broken */
  	signal(SIGPIPE, SIG_IGN);
  
@@ -9,16 +20,3 @@
  		signal(SIGCHLD, handle_sigchld);
  	else /* prevent dead children from becoming zombies */
  		signal(SIGCHLD, SIG_IGN);
---- include/usage.src.h.orig	2010-12-21 05:29:45.000000000 +0100
-+++ include/usage.src.h	2011-01-04 16:56:17.692164713 +0100
-@@ -3915,8 +3915,8 @@
-      "\nOptions:" \
-      "\n	-l LOGIN	Exec LOGIN on connect" \
-      "\n	-f ISSUE_FILE	Display ISSUE_FILE instead of /etc/issue" \
--     "\n	-K		Close connection as soon as login exits" \
--     "\n			(normally wait until all programs close slave pty)" \
-+     "\n	-K		Do not close connection as soon as login exits," \
-+     "\n			but wait until all programs close slave pty" \
- 	IF_FEATURE_TELNETD_STANDALONE( \
-      "\n	-p PORT		Port to listen on" \
-      "\n	-b ADDR[:PORT]	Address to bind to" \

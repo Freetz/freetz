@@ -1,0 +1,15 @@
+This is a temporary fix until a new download toolchain for uClibc-0.9.31 ist built.
+See http://git.uclibc.org/uClibc/commit/?h=0.9.31&id=793bd006e27e25e9f95a32afc2de8b0de075534f
+for upstream fix in uClibc.
+---
+--- include/platform.h.orig	2011-08-28 12:59:56.000000000 +0200
++++ include/platform.h	2011-10-06 07:14:58.052821616 +0200
+@@ -366,7 +366,7 @@
+ #if defined(__UCLIBC_MAJOR__)
+ # if __UCLIBC_MAJOR__ == 0 \
+   && (   __UCLIBC_MINOR__ < 9 \
+-     || (__UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ < 31) \
++     || (__UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ < 32) \
+      )
+ #  undef HAVE_STRVERSCMP
+ # endif

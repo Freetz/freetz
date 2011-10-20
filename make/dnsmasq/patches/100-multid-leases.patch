@@ -1,5 +1,5 @@
---- src/dnsmasq.h
-+++ src/dnsmasq.h
+--- src/dnsmasq.h	2011-10-19 08:29:50+02:00
++++ src/dnsmasq.h	2011-10-19 08:29:50+02:00
 @@ -440,6 +440,7 @@
  #endif
    int hwaddr_len, hwaddr_type;
@@ -8,7 +8,7 @@
    struct in_addr addr, override, giaddr;
    unsigned char *extradata;
    unsigned int extradata_len, extradata_size;
-@@ -874,6 +875,7 @@
+@@ -875,6 +876,7 @@
  void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth);
@@ -16,8 +16,8 @@
  void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
  void lease_set_interface(struct dhcp_lease *lease, int interface);
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
---- src/lease.c
-+++ src/lease.c
+--- src/lease.c	2011-10-19 08:29:50+02:00
++++ src/lease.c	2011-10-19 08:29:50+02:00
 @@ -179,11 +179,16 @@
  
    if (file_dirty != 0 && daemon->lease_stream)
@@ -99,8 +99,8 @@
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth)
  {
    struct dhcp_lease *lease_tmp;
---- src/rfc2131.c
-+++ src/rfc2131.c
+--- src/rfc2131.c	2011-10-19 08:29:50+02:00
++++ src/rfc2131.c	2011-10-19 08:29:50+02:00
 @@ -491,6 +491,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0);
  	      if (hostname)
