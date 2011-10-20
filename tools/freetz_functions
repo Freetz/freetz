@@ -45,10 +45,10 @@ isFreetzType()
 # little helper function used by many patches (maybe this should be sourced out)
 rm_files()
 {
-        for file in "$@"; do
-        echo2 "rm $file"
-        rm -rf $file
-        done
+	for file in "$@"; do
+	echo2 "rm $file"
+	rm -rf $file
+	done
 }
 
 #another little helper
@@ -88,15 +88,15 @@ echoX()
 }
 echo0()
 {
-        [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX "${L0}" "$@"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX "${L0}" "$@"
 }
 echo1()
 {
-        [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX "${L1}" "$@"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX "${L1}" "$@"
 }
 echo2()
 {
-        [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX "${L2}" "$@"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX "${L2}" "$@"
 }
 # error exit-code error-message
 error()

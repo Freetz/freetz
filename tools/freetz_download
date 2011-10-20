@@ -25,19 +25,19 @@ cat << 'EOF'
 freetz_download - download Freetz packages
 
 Usage: freetz_download (-?|--help) | ( (<download-dir> | check) <filename> [<main-url>] [<md5>])
-	check         - check download
-	download-dir  - target directory for download file
-	filename      - download file name
-	main-url      - url without filename for primary download
-	md5           - md5 of file
-	-?, --help    - print this help text
+    check         - check download
+    download-dir  - target directory for download file
+    filename      - download file name
+    main-url      - url without filename for primary download
+    md5           - md5 of file
+    -?, --help    - print this help text
 
 Examples:
-	freetz_download dl package.tar.bz2
-	freetz_download dl package.tar.bz2 http://myserver.com/freetz
+    freetz_download dl package.tar.bz2
+    freetz_download dl package.tar.bz2 http://myserver.com/freetz
 
 Debugging: just set DEBUG=1, like this:
-	DEBUG=1 freetz_download dl package.tar.bz2
+    DEBUG=1 freetz_download dl package.tar.bz2
 EOF
 }
 
@@ -119,11 +119,11 @@ MD5="$4"
 
 if [ "$DEBUG" == "1" ]; then
 	echo "freetz_download parameters:"
-	echo "  DL_DIR=$DL_DIR"
-	echo "  DOT_CONFIG=$DOT_CONFIG"
-	echo "  DL_FILE=$DL_FILE"
-	echo "  MAIN_URL=$MAIN_URL"
-	echo "  MD5=$MD5"
+	echo "    DL_DIR=$DL_DIR"
+	echo "    DOT_CONFIG=$DOT_CONFIG"
+	echo "    DL_FILE=$DL_FILE"
+	echo "    MAIN_URL=$MAIN_URL"
+	echo "    MD5=$MD5"
 fi
 
 num_sites=0

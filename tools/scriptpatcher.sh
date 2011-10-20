@@ -168,22 +168,22 @@ done
 [ -z "$section_name" ] && { echo "ERROR: Section name is not defined!\n" ; usage ; exit 5 ; }
 
 case $operation in
-c)
-	[ -n "$output_file" ] && cut_section $input_file $section_name $search_function $output_file || cut_section $input_file $section_name $search_function
-	exit $?
-;;
-d)
-	[ -n "$output_file" ] && delete_section $input_file $section_name $search_function $output_file || delete_section $input_file $section_name $search_function
-	exit $?
-;;
-r)
-	[ -z "$new_string" ] && { echo "ERROR: New string must be defined!\n" ; usage ; exit 7 ; }
-	[ -n "$output_file" ] && replace_section $input_file $section_name $search_function "$new_string" $output_file || replace_section $input_file $section_name $search_function "$new_string"
-	exit $?
-;;
-*)
-	echo "ERROR: Wrong argument!\n"
-	usage
-	exit 9
-;;
+	c)
+		[ -n "$output_file" ] && cut_section $input_file $section_name $search_function $output_file || cut_section $input_file $section_name $search_function
+		exit $?
+		;;
+	d)
+		[ -n "$output_file" ] && delete_section $input_file $section_name $search_function $output_file || delete_section $input_file $section_name $search_function
+		exit $?
+		;;
+	r)
+		[ -z "$new_string" ] && { echo "ERROR: New string must be defined!\n" ; usage ; exit 7 ; }
+		[ -n "$output_file" ] && replace_section $input_file $section_name $search_function "$new_string" $output_file || replace_section $input_file $section_name $search_function "$new_string"
+		exit $?
+		;;
+	*)
+		echo "ERROR: Wrong argument!\n"
+		usage
+		exit 9
+		;;
 esac
