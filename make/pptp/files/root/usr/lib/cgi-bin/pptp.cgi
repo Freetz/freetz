@@ -17,7 +17,7 @@ cat << EOF
 EOF
 sec_end
 
-if [ "$FREETZ_REPLACE_KERNEL" != "yes" ]; then
+if [ "$FREETZ_REPLACE_KERNEL" != "y" ]; then
 sec_begin '$(lang de:"Warnung" en:"Attention")'
 cat << EOF
 $(lang de:"Ohne 'replace kernel' kann mppe und mppc nicht genutzt werden." en:"Without 'replace kernel' you can not use mppe and mppc.")
