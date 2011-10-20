@@ -68,17 +68,13 @@ cgi_print_radiogroup \
 	"share::$(lang de:"Share" en:"Share")" \
 	"user::$(lang de:"User" en:"User")"
 
-cat << EOF
-<p><label for="s1">$(lang de:"Benutzername" en:"User name"):</label>
-<input id="s1" type="text" name="user" size="40" maxlength="255" value="$(html "$SAMBA_USER")"></p>
-<p>$(lang de:"IP-Adresse" en:"IP address"):
-<input type="text" name="interfaces" size="40" maxlength="255" value="$(html "$SAMBA_INTERFACES")"><br>
-<font size="-2">$(lang de:"z.B.: 192.168.178.1/255.255.255.0 oder leer lassen f&uuml;r alle" en:"For example: 192.168.178.1/255.255.255.0 or leave blank for all")</font></P>
-<p>$(lang de:"Netbios Name" en:"Netbios Name"): <input type="text" name="netbios_name" size="20" maxlength="255" value="$(html "$SAMBA_NETBIOS_NAME")"></p>
-<p>$(lang de:"Arbeitsgruppe" en:"Workgroup"): <input type="text" name="workgroup" size="20" maxlength="255" value="$(html "$SAMBA_WORKGROUP")"></p>
-<p>$(lang de:"Beschreibung" en:"Description"):<br><input type="text" name="server_string" size="40" maxlength="255" value="$(html "$SAMBA_SERVER_STRING")"></p>
-<p>$(lang de:"OS Level f&uuml;r Election" en:"OS level election"): <input type="text" name="os_level" size="5" maxlength="5" value="$(html "$SAMBA_OS_LEVEL")"></p>
-EOF
+cgi_print_textline_p "user" "$SAMBA_USER" 40/255 "$(lang de:"Benutzername" en:"User name"):"
+cgi_print_textline_p "interfaces" "$SAMBA_INTERFACES" 40/255 "$(lang de:"IP-Adresse" en:"IP address"):" \
+	"<br><font size="-2">$(lang de:"z.B.: 192.168.178.1/255.255.255.0 oder leer lassen f&uuml;r alle" en:"For example: 192.168.178.1/255.255.255.0 or leave blank for all")</font>"
+cgi_print_textline_p "netbios_name" "$SAMBA_NETBIOS_NAME" 20/255 "$(lang de:"Netbios Name" en:"Netbios Name"):"
+cgi_print_textline_p "workgroup" "$SAMBA_WORKGROUP" 20/255 "$(lang de:"Arbeitsgruppe" en:"Workgroup"):"
+cgi_print_textline_p "server_string" "$SAMBA_SERVER_STRING" 40/255 "$(lang de:"Beschreibung" en:"Description"):"
+cgi_print_textline_p "os_level" "$SAMBA_OS_LEVEL" 5 "$(lang de:"OS Level f&uuml;r Election" en:"OS level election"):"
 
 cgi_print_checkbox_p "master" "$SAMBA_MASTER" "$(lang de:"Bevorzugter Master" en:"Preferred Master")"
 
