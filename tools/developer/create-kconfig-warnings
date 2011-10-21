@@ -16,13 +16,46 @@ make config-cache > /dev/null
 
 # Create <rounds> random configurations + warning logs and move them
 # to separate subdirectories (keep existing ones!)
-while ((i++ < rounds)); do
-	tools/config/conf --randconfig Config.in.cache > /dev/null 2> $warn_file
+while ((r++ < rounds)); do
+
+	# Capture stderr (=warnings) in buffer
+	IFS=$'\n'
+	warn_buf=($(tools/config/conf --randconfig Config.in.cache 2>&1 > /dev/null))
+	unset IFS
+
+	# On error in 'conf --randconfig' skip this round
 	[ $? -eq 0 ] || continue
-	[ $(stat -c%s $warn_file) -eq 0 ] && rm $conf_file && continue
-	tmp_dir=$(mktemp -d --tmpdir=$warn_dir "XXXXXXXX")
-	mv $conf_file $warn_file $tmp_dir
+	# If no warnings were detected skip this round
+	[ ${#warn_buf[@]} -eq 0 ] && rm $conf_file && continue
+
+	# Compare warnings found in this round with warnings collected so far.
+	# Each previously unknown warning is added to the list of all warnings.
+	tmp_dir_created=n
+	for (( i=0; i<${#warn_buf[@]}; i++ )); do
+		found=n
+		for (( j=0; j<${#warn_all[@]}; j++ )); do
+			if [ "${warn_buf[i]}" == "${warn_all[j]}" ]; then
+				# Warning was already known -> no need to search further
+				found=y
+				break
+			fi
+		done
+		# Skip the rest of this loop for previously known warnings
+		[ "$found" == "y" ] && continue
+
+		# Add new warning to collection
+		warn_all[${#warn_all[@]}]=${warn_buf[i]}
+		# Create <tmp_dir> for this round and move <conf_file> to it
+		if [ "$tmp_dir_created" == "n" ]; then
+			tmp_dir=$(mktemp -d --tmpdir=$warn_dir "XXXXXXXX")
+			tmp_dir_created=y
+			mv $conf_file $tmp_dir
+		fi
+		# Log new warning to console and corresponding <warn_file>
+		echo "${warn_buf[i]}"
+		echo "${warn_buf[i]}" >> $tmp_dir/$warn_file 
+	done
 done
 
-# Dump unique warnings
-find $warn_dir -type f -name $warn_file | xargs cat | sort | uniq
+# Dump unique warnings stored in <warn_dir> for <rounds>==0
+[ $rounds -eq 0 ] && find $warn_dir -type f -name $warn_file | xargs cat | sort | uniq

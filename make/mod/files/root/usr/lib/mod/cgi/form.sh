@@ -33,52 +33,178 @@ select() suffix=_sel checked=" selected" _check "$@"
 # Print a radiogroup
 #   $1: Name of the variable
 #   $2: current value, selects checked entry
-#   $3: Heading, any HTML text
-#   $4..$n: Liste of radio entries as val:id:text
+#   $3: Heading inside <h2>, optional
+#   $4: HTML text inside <p>
+#   $5..$n: Liste of radio entries as val:id:text
 #     val: value for this entry, leading '+' for default entry
 #     id: HTML id for this entry, can be empty
 #     text: HTML text for this entry
 cgi_print_radiogroup()
 {
-    local name=$1
-    local value=$2
-    local head=$3
-    local nr nr_chk val chk id text
-    shift 3
+	local name=$1
+	local value=$2
+	local h2=$3
+	local p=$4
+	local nr nr_chk val chk id text
+	shift 4
 
-    echo "<p>"
-    echo "$head"
-    nr_chk=0
-    nr=1
-    for i; do
-	val="${i%%:*}"
-	if [ "$val" != ${val#+} ]; then
-	    nr_chk=$nr
+	if [ -n "$head" ]; then
+		echo "<h2>$h2</h2>"
 	fi
-	if [ "$value" = "$val" ]; then
-	    nr_chk=$nr
-	    break;
-	fi
-	nr=$((nr+1))
-    done
-    nr=1
-    for i; do
-	val="${i%%:*}"
-	i="${i#*:}"
-	id="${i%%:*}"
-	i="${i#*:}"
-	text=$i
-	val=${val#+}
-	if [ -z "$id" ]; then
-	    id="${name}_${val}"
-	fi
-	if [ $nr = $nr_chk ]; then
-	    chk=" checked"
-	else
-	    chk=
-	fi
-	echo "<input id=\"$id\" type=\"radio\" name=\"$name\" value=\"$val\"$chk><label for=\"$id\">$text</label>"
-	nr=$((nr+1))
-    done
-    echo "</p>"
+	echo "<p>"
+	echo "$p"
+	nr_chk=0
+	nr=1
+	for i; do
+		val="${i%%:*}"
+		if [ "$val" != ${val#+} ]; then
+			nr_chk=$nr
+		fi
+		if [ "$value" = "$val" ]; then
+			nr_chk=$nr
+			break;
+		fi
+		nr=$((nr+1))
+	done
+	nr=1
+	for i; do
+		val="${i%%:*}"
+		i="${i#*:}"
+		id="${i%%:*}"
+		i="${i#*:}"
+		text=$i
+		val=${val#+}
+		if [ -z "$id" ]; then
+			id="${name}_${val}"
+		fi
+		if [ $nr = $nr_chk ]; then
+			chk=" checked"
+		else
+			chk=
+		fi
+		echo "<input id=\"$id\" type=\"radio\" name=\"$name\" value=\"$val\"$chk><label for=\"$id\">$text</label>"
+		nr=$((nr+1))
+	done
+	echo "</p>"
 }
+
+# Print a radiogroup for the starttype of a service
+#   $1: Name of the variable
+#   $2: current value, selects checked entry
+#   $3: Heading in <h2>, optional
+#   $4: HTML text inside <p>
+#   $5: show inetd, if available (0/1)
+cgi_print_radiogroup_service_starttype()
+{
+	local opt_inetd=
+	if [ "0$5" -gt 0 -a -e /mod/etc/default.inetd/inetd.cfg ]; then
+		opt_inetd="inetd::$(lang de:"Inetd" en:"Inetd")"
+	fi
+	cgi_print_radiogroup \
+		"$1" "$2" "$3" "$4" \
+		"yes::$(lang de:"Automatisch" en:"Automatic")" \
+		"no::$(lang de:"Manuell" en:"Manual")" \
+		$opt_inetd
+}
+
+# Print a radiogroup for "Activated"/"Deactivated"
+#   $1: Name of the variable
+#   $2: current value, selects checked entry
+#   $3: Heading in <h2>, optional
+#   $4: HTML text inside <p>
+cgi_print_radiogroup_active()
+{
+	cgi_print_radiogroup \
+		"$1" "$2" "$3" "$4" \
+		"yes::$(lang de:"Aktiviert" en:"Activated")" \
+		"no::$(lang de:"Deaktiviert" en:"Deactivated")"
+}
+
+
+# Print a checkbox
+#   $1: Name of the variable
+#   $2: current value, selects checked entry
+#   $3: text inside label
+#   $4: text after label, optional
+cgi_print_checkbox()
+{
+	local name=$1
+	local value=$2
+	local text1=$3
+	local text2=$4
+	local chk
+
+	if [ "$value" = "yes" ]; then
+		chk=" checked"
+	else
+		chk=
+	fi
+	echo "<input type=\"hidden\" name=\"$name\" value=\"no\">"
+	echo "<input id=\"${name}_yes\" type=\"checkbox\" name=\"$name\" value=\"yes\"$chk><label for=\"${name}_yes\">$text1</label>$text2"
+}
+
+# Print a checkbox inside <p>
+# See cgi_print_checkbox
+cgi_print_checkbox_p()
+{
+	echo "<p>"
+	cgi_print_checkbox "$1" "$2" "$3" "$4"
+	echo "</p>"
+}
+
+# Print a checkbox, terminate with <br>
+# See cgi_print_checkbox
+cgi_print_checkbox_br()
+{
+	cgi_print_checkbox "$1" "$2" "$3" "$4<br>"
+}
+
+# Print a one line text input field
+#   $1: Name of the variable
+#   $2: current value
+#   $3: Length, int or size/maxlength
+#   $4: Label, optional
+#   $5: Text after input field, optional
+cgi_print_textline()
+{
+	local name=$1
+	local value=$2
+	local len=$3
+	local label=$4
+	local post_text=$5
+	local size maxlength
+
+	if [ "${len%/*}" = "$len" ]; then
+		size=$len
+		maxlength=$len
+	else
+		size=${len%/*}
+		maxlength=${len#*/}
+	fi
+	if [ -n "$label" ]; then
+		label="<label for=\"$name\">$label</label>"
+	fi
+	if [ -n "$size" ]; then
+		size=" size=\"$size\""
+	fi
+	if [ -n "$maxlength" ]; then
+		maxlength=" maxlength=\"$maxlength\""
+	fi
+	if [ -n "$value" ]; then
+		value=" value=\"$(html "$value")\""
+	fi
+	echo "$label<input type=\"text\" name=\"$name\"$size$maxlength$value>$post_text"
+}
+
+cgi_print_textline_p()
+{
+	echo "<p>"
+	cgi_print_textline "$1" "$2" "$3" "$4" "$5"
+	echo "</p>"
+}
+
+cgi_print_textline_br()
+{
+	cgi_print_textline "$1" "$2" "$3" "$4" "$5<br>"
+}
+
