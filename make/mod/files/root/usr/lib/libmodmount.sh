@@ -154,7 +154,7 @@ do_mount_locked() {
 		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_med_num $mnt_part_num)    # find name
 		mnt_path=$FTPDIR/$mnt_name
 		if [ ! -d $mnt_path ]; then
-			log_freetz notice "Mounting $mnt_name to device $mnt_dev ... "
+			log_freetz notice "Mounting device $mnt_dev ... "
 			mkdir -p $mnt_path
 			break
 		fi

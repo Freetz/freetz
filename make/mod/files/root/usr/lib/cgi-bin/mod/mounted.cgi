@@ -59,8 +59,8 @@ print_mountpoints() {
 
 print_mp() {
 	case "$fstyp=$device" in
-		fuse=http*) fstyp="davfs" ;;
-		fuseblk=*)  fstyp="ntfs" ;;
+		fuse=http*)	fstyp="davfs" ;;
+		fuseblk=*)	fstyp="$(blkid $device | sed -nr 's!.*TYPE="([^"]*).*!\1!p')" ;;
 	esac
 	total=$(format_size "$total")
 	used=$(format_size "$used")

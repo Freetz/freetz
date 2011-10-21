@@ -1,11 +1,12 @@
 [ "$FREETZ_LIB_libfreetz" == "y" ] || return 0
 
-mv "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr" "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr.bin"
+mkdir -p "$FILESYSTEM_MOD_DIR/usr/bin/avm/"
+mv "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr" "$FILESYSTEM_MOD_DIR/usr/bin/avm/ctlmgr"
+
 cat << 'EOF' >> "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr"
 #!/bin/sh
 export LD_PRELOAD=libfreetz.so.1.0.0
-CTLMGR_BINARY="/usr/bin/ctlmgr.bin"
-exec $CTLMGR_BINARY "$@"
+exec /usr/bin/avm/ctlmgr "$@"
 EOF
 
 chmod 755 "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr"

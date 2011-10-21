@@ -93,6 +93,7 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_LIBS += "-ldl"
 endif
 
 $(PKG)_SYSVIPC_SUPPORT:=$(if $(FREETZ_PACKAGE_PHP_WITH_SYSVIPC),enable,disable)
@@ -161,7 +162,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(PHP_DIR) \
-		PHP_STATIC="$(PHP_STATIC)"
+		PHP_STATIC="$(PHP_STATIC)" \
+		ZEND_EXTRA_LIBS="$(PHP_LIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
