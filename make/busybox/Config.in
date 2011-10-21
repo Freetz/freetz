@@ -38,6 +38,20 @@ config FREETZ_BUSYBOX_BRCTL_SHOW
 		Add support for extended brctl options like:
 		show, showmacs, and showstp.
 
+config FREETZ_BUSYBOX_BLKID
+	bool "blkid"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'blkid' tool in busybox.
+
+config FREETZ_BUSYBOX_BLKID_TYPE
+	bool "add blkid fstype detection"
+	depends on FREETZ_BUSYBOX_BLKID
+	default n
+	help
+		Add fstype detection to blkid applet.
+
 config FREETZ_BUSYBOX_BZIP2
 	bool "bzip2"
 	depends on FREETZ_REPLACE_BUSYBOX
@@ -58,6 +72,13 @@ config FREETZ_BUSYBOX_FEATURE_DD_IBS_OBS
 	default n
 	help
 		Enables ibs, obs and conv options in busybox dd
+
+config FREETZ_BUSYBOX_FINDFS
+	bool "findfs"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'findfs' tool in busybox.
 
 config FREETZ_BUSYBOX_DNSD
 	bool "dnsd"
@@ -444,12 +465,26 @@ config FREETZ_BUSYBOX_VOLUMEID_FAT
 	help
 		fat filesystem.
 
+config FREETZ_BUSYBOX_VOLUMEID_HFS
+	bool "volumeid hfs"
+	depends on FREETZ_BUSYBOX_VOLUMEID
+	default n
+	help
+		hfs filesystem.
+
 config FREETZ_BUSYBOX_VOLUMEID_LINUXRAID
 	bool "volumeid linuxraid"
 	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_MOUNT_HELPERS
 	default n
 	help
 		linuxraid filesystem.
+
+config FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
+	bool "volumeid linuxswap"
+	depends on FREETZ_BUSYBOX_VOLUMEID
+	default n
+	help
+		Detect linux swap devices.
 
 config FREETZ_BUSYBOX_VOLUMEID_LUKS
 	bool "volumeid luks"
@@ -460,10 +495,17 @@ config FREETZ_BUSYBOX_VOLUMEID_LUKS
 
 config FREETZ_BUSYBOX_VOLUMEID_NTFS
 	bool "volumeid ntfs"
-	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_MOUNT_HELPERS
+	depends on FREETZ_BUSYBOX_VOLUMEID
 	default n
 	help
 		ntfs filesystem.
+
+config FREETZ_BUSYBOX_VOLUMEID_REISERFS
+	bool "volumeid reiserfs"
+	depends on FREETZ_BUSYBOX_VOLUMEID
+	default n
+	help
+		reiserfs filesystem.
 
 config FREETZ_BUSYBOX_WGET
 	bool "wget"

@@ -1,7 +1,5 @@
 #!/bin/sh
 ERRORFILE=/tmp/mounted.err
-DEBUG_PATH=
-# DEBUG_PATH=/mod/root/
 
 eval "$(modcgi cmd:path mounted)"
 
@@ -117,8 +115,8 @@ print_mp() {
 }
 
 disabledbtn="disabled='disabled' "
-DFOUT=$("$DEBUG_PATH"df -h | sed -n '1d; :a; $!N; $!ba; s/\n  */ /g;p')
-mfilt=$("$DEBUG_PATH"mount |
+DFOUT=$(df -hP)
+mfilt=$(mount |
 	sed -rn '
 		\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (jffs|fuse|cifs|yaffs)|^.*:/.* on .* type nfs# {
 			s/^([^ ]+) on (.*) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/; p
