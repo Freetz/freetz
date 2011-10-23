@@ -1,4 +1,4 @@
-if isFreetzType 3270 3270_V3 7240 7270_V2 7270_V3 7320 7340 7390; then
+if isFreetzType 3270 3270_V3 7240 7270_V2 7270_V3 7320 7330 7340 7390; then
 
 rcfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh"
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/etc/init.d/S99-zzz-rcmod"
