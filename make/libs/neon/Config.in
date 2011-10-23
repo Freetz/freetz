@@ -6,8 +6,7 @@ config FREETZ_LIB_libneon
 		neon is an HTTP and WebDAV client library, with a C language API.
 
 config FREETZ_LIB_libneon_WITH_SSL
-	bool "build with SSL support"
-	depends on FREETZ_LIB_libneon
+	bool "build with SSL support" if FREETZ_LIB_libneon
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
 	default n
@@ -15,8 +14,7 @@ config FREETZ_LIB_libneon_WITH_SSL
 		This option enables SSL support for neon.
 
 config FREETZ_LIB_libneon_WITH_ZLIB
-	bool "build with zlib support"
-	depends on FREETZ_LIB_libneon
+	bool "build with zlib support" if FREETZ_LIB_libneon
 	select FREETZ_LIB_libz
 	default n
 	help
