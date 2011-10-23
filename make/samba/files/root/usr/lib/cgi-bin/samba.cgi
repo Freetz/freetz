@@ -13,7 +13,7 @@ else
 fi
 
 cgi_print_radiogroup_service_starttype \
-	"smbd_enabled" "$SAMBA_ENABLED" "" "$smbd_label" 1
+	"enabled" "$SAMBA_ENABLED" "" "$smbd_label" 1
 
 if [ -L "$NMBD" -o -x "$NMBD" ]; then
 	cgi_print_radiogroup_service_starttype \
