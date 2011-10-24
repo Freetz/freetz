@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.3.41)
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://archive.apache.org/dist/httpd
+$(PKG)_SITE:=@APACHE/httpd
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/apache
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/apache-1.3.41/bin/apache
