@@ -1,16 +1,5 @@
 --- linux-2.6.28/drivers/net/avm_cpmac/Makefile.26
 +++ linux-2.6.28/drivers/net/avm_cpmac/Makefile.26
-@@ -85,8 +85,8 @@
- #$(SOURCE_FILES:%=$(src)/%): $(NW_FILES:%.nw=$(src)/%.nw) FORCE
- #	$(NOTANGLE) -R$(@F) -L $(NW_FILES:%.nw=$(src)/%.nw) | cpif $@
- 
--$(src)/cpmac_product_conf.c: $(src)/cpmac_product_conf.h $(FRITZ_BOX_BUILD_DIR)/arch/Produkt.init $(src)/prepare_config.pl
--	cd $(src) ; ./prepare_config.pl
-+#$(src)/cpmac_product_conf.c: $(src)/cpmac_product_conf.h $(FRITZ_BOX_BUILD_DIR)/arch/Produkt.init $(src)/prepare_config.pl
-+#	cd $(src) ; ./prepare_config.pl
- 
- # The objects depend on the existence of the source code
- # This is an "order only" dependency!
 @@ -99,7 +99,7 @@
  # Create source files on demand
  EXTRACT_SOURCE: $(SOURCE_FILES:%=$(src)/%)
