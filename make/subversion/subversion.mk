@@ -123,7 +123,16 @@ ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	done
 endif
 
-$(pkg):
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF)" == "y" ] \
+	  && echo "etc/init.d/rc.subversion" >> $@ \
+	  && echo "etc/default.subversion/" >> $@ \
+	  && echo "etc/lib/cgi-bin/subversion/" >> $@ \
+	  && echo "usr/lib/cgi-bin/subversion.cgi" >> $@; \
+	touch $@
 
 $(pkg)-precompiled: $(pkg)-keep-required-files-only
 
