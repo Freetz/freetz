@@ -130,7 +130,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF)" == "y" ] \
 	  && echo "etc/init.d/rc.subversion" >> $@ \
 	  && echo "etc/default.subversion/" >> $@ \
-	  && echo "etc/lib/cgi-bin/subversion/" >> $@ \
+	  && echo "usr/lib/cgi-bin/subversion/" >> $@ \
 	  && echo "usr/lib/cgi-bin/subversion.cgi" >> $@; \
 	touch $@
 
