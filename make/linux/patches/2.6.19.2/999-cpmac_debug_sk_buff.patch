@@ -1,12 +1,12 @@
 diff -ua linux-2.6.19.2.orig/drivers/net/avm_cpmac/cpphy_entry.c linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_entry.c
 --- linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_entry.c	2010-07-21 14:57:47.000000000 +0200
 +++ linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_entry.c	2011-05-02 16:02:37.532790545 +0200
-@@ -397,6 +397,8 @@
+@@ -86,6 +86,8 @@
      /* Print driver version */
      DEB_ERR("Version: %s\n", AVM_CPMAC_VERSION);
  
-+	printk(KERN_INFO "cpmac: compiled with sizeof(struct sk_buff) = %d\n", sizeof(struct sk_buff));
++    printk(KERN_INFO "cpmac: compiled with sizeof(struct sk_buff) = %d\n", sizeof(struct sk_buff));
 +
      /* Initialize administrative array */
-     memset(&cpmac_global, 0, sizeof(cpmac_global_t));
      for(instance = 0; instance < CPMAC_MAX_PHY; instance++) {
+         cpmac_global.cpphy[instance].is_used = 0;

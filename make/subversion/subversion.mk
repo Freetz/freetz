@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 1.6.17)
+$(call PKG_INIT_BIN, 1.7.1)
 $(PKG)_MAJOR_VERSION:=1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=81e5dc5beee4b3fc025ac70c0b6caa14
-$(PKG)_SITE:=http://subversion.tigris.org/downloads
+$(PKG)_SOURCE_MD5:=8a4fa74385df85a9702141b6b68b8307
+$(PKG)_SITE:=@APACHE/subversion
 
 ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 $(PKG)_LIB_SUFFIX:=a
@@ -24,7 +24,7 @@ $(PKG)_LIBS_STAGING_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGI
 $(PKG)_LIBS_TARGET_DIR := $(SUBVERSION_LIBNAMES_LONG:%=$($(PKG)_DEST_LIBDIR)/%.$(SUBVERSION_LIB_SUFFIX))
 
 # Executables
-$(PKG)_BINARIES_ALL := svn svnadmin svndumpfilter svnlook svnserve svnsync svnversion
+$(PKG)_BINARIES_ALL := svn svnadmin svndumpfilter svnlook svnrdump svnserve svnsync svnversion
 $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $(join $(SUBVERSION_BINARIES:%=$($(PKG)_DIR)/subversion/%/$(SUBVERSION_BINARY_BUILD_SUBDIR)/),$(SUBVERSION_BINARIES))
 $(PKG)_BINARIES_STAGING_DIR := $(SUBVERSION_BINARIES:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/%)
@@ -46,14 +46,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-
-# Rename ac_cv_path_(PERL|PYTHON|RUBY) variables to ensure that only subversion
-# uses the values we set (the values are cached in config.cache).
-# Not doing so might break the compilation of other packages that do require perl/python/ruby at build-time.
-# Setting them to "none" is the simplest way to prevent subversion from building perl/python/ruby-bindings.
-$(PKG)_AC_VARIABLES := path_PERL path_PYTHON path_RUBY
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
-$(PKG)_CONFIGURE_ENV += $(foreach ac_variable,$($(PKG)_AC_VARIABLES),subversion_cv_$(ac_variable)=none)
 
 $(PKG)_CONFIGURE_OPTIONS += --with-apr="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-1-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-apr-util="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apu-1-config"
@@ -81,6 +73,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-gnome-keyring=no
 $(PKG)_CONFIGURE_OPTIONS += --with-jdk=no
 $(PKG)_CONFIGURE_OPTIONS += --with-kwallet=no
 $(PKG)_CONFIGURE_OPTIONS += --with-sasl=no
+$(PKG)_CONFIGURE_OPTIONS += --with-serf=no
 $(PKG)_CONFIGURE_OPTIONS += --with-swig=no
 
 $(PKG_SOURCE_DOWNLOAD)

@@ -1,0 +1,132 @@
+This is a patch for Pygments 1.4 (Debian package 'python-pygments').
+Tested with Ubuntu Oneiric (11.10), package version 1.4+dfsg-1ubuntu1.
+Tested in Trac on freetz.org (2001-10-27)
+
+Purpose: enable Pygments (and our freetz.org Trac system, respectively) to
+syntax-highlight Kconfig files. More details are in the Python code comments
+within the patch itself.
+
+How to apply:
+  - Install Pygments
+  - Apply patch with sudo or as root (attention: your pygments location might
+    be somewhere else, so you might have to adjust the -p parameter and the
+    working directory):
+    sudo patch -p 0 < kconfig.pygments.patch
+  - Update the Pygments lexer database:
+    sudo sh -c "cd /usr/share/pyshared/pygments/lexers; python /usr/share/pyshared/pygments/lexers/_mapping.py"
+  - Add this to /etc/mime.types (necessary for Trac):
+    text/x-kconfig
+  - Do this for every Kconfig file in your SVN repository (necessary for Trac):
+    svn propset svn:mime-type text/x-kconfig <file_name>
+    svn commit <file_name>
+
+How to test:
+  - Smaller sample HTML output:
+    pygmentize -O full -o Config.html Config.in
+  - Bigger sample HTML output:
+    pygmentize -O full -o Config.html Config.in.cache
+  - Then view the result in a web browser. If this works, feel free to install
+    the new lexer in Trac (which also uses Pygments for syntax highlighting)
+  - If you performed the last two steps for Trac, make sure your corresponding
+    SVN repository files also look okay in the web browser.
+
+
+--- /usr/share/pyshared/pygments/lexers/other.py	2011-01-03 16:57:54.000000000 +0100
++++ /usr/share/pyshared/pygments/lexers/other.py	2011-10-26 16:03:14.000000000 +0200
+@@ -19,7 +19,7 @@
+ from pygments.lexers.web import HtmlLexer
+ 
+ 
+-__all__ = ['SqlLexer', 'MySqlLexer', 'SqliteConsoleLexer', 'BrainfuckLexer',
++__all__ = ['KconfigLexer', 'SqlLexer', 'MySqlLexer', 'SqliteConsoleLexer', 'BrainfuckLexer',
+            'BashLexer', 'BatchLexer', 'BefungeLexer', 'RedcodeLexer',
+            'MOOCodeLexer', 'SmalltalkLexer', 'TcshLexer', 'LogtalkLexer',
+            'GnuplotLexer', 'PovrayLexer', 'AppleScriptLexer',
+@@ -30,6 +30,87 @@
+ 
+ line_re  = re.compile('.*?\n')
+ 
++class KconfigLexer(RegexLexer):
++	name = 'Kconfig'
++	aliases = ['kconfig', 'kbuild', 'menuconfig', 'linux-config', 'kernel-config']
++	# Adjust this if new kconfig file names appear in your environment
++	filenames = ['*Config.in*', 'external.in*', 'standard-modules.in']
++	mimetypes = ['text/x-kconfig']
++
++	# No re.MULTILINE here, we need to treat line breaks manually because of indentation-aware help texts
++	flags = 0;
++	tokens = {
++		'root': [
++			(r'\s+', Text),
++			(r'#.*?\n', Comment.Single),
++			(r'(mainmenu|config|menuconfig|choice|endchoice|comment|menu|endmenu|visible if|if|endif|source|prompt|select|depends on|default|range|option)\b', Keyword),
++			# Help texts are special because their end is determined by their
++			# indentation level. For more information see lexer state 'help'
++			# further below.
++			(r'(---help---|help)[\t ]*\n', Keyword, 'help'),
++			(r'(bool|tristate|string|hex|int|defconfig_list|modules|env)\b', Name.Builtin),
++			(r'[!=&|]', Operator),
++			(r'[()]', Punctuation),
++			(r'[0-9]+', Number.Integer),
++			(r"'(''|[^'])*'", String.Single),
++			(r'"(""|[^"])*"', String.Double),
++			(r'\S+', Text),
++		],
++		# Determine the first help line's indentation level.
++		# Attention: this is just a heuristic thing, not a perfect solution.
++		# Limitations: a maximum indentation level of 7 can be detected and
++		# not all combinations of spaces and tabs are handled perfectly. But
++		# for 99% of all "normally" formatted files it should be okay.
++		'help': [
++			(r'\s*\n', Text),
++			(r'(?:\t| {1,7}\t| {8}| ){7}.*\n', String.Doc, 'indent7'),
++			(r'(?:\t| {1,7}\t| {8}| ){6}.*\n', String.Doc, 'indent6'),
++			(r'(?:\t| {1,7}\t| {8}| ){5}.*\n', String.Doc, 'indent5'),
++			(r'(?:\t| {1,7}\t| {8}| ){4}.*\n', String.Doc, 'indent4'),
++			(r'(?:\t| {1,7}\t| {8}| ){3}.*\n', String.Doc, 'indent3'),
++			(r'(?:\t| {1,7}\t| {8}| ){2}.*\n', String.Doc, 'indent2'),
++			(r'(?:\t| {1,7}\t| {8}| ){1}.*\n', String.Doc, 'indent1'),
++		],
++		# These two lines detect blank lines and unindented lines following
++		# indented ones, causing the lexer stack to pop down to zero,
++		# effectively ending 'help' + 'indent{n}' states. These lines are
++		# defined as a separate dummy state just to be included by 'indent{n}'
++		# and avoid a little bit of code duplication.
++		'unindent': [
++			(r'\s*\n', Text),
++			(r'', Generic, '#pop:2'),
++		],
++		# From indentation level 7 down to 1, determine where we are in our
++		# help text and format it as String.Doc.
++		'indent7': [
++			(r'(?:\t| {1,7}\t| {8}| ){7}.*\n', String.Doc),
++			include('unindent')
++		],
++		'indent6': [
++			(r'(?:\t| {1,7}\t| {8}| ){6}.*\n', String.Doc),
++			include('unindent')
++		],
++		'indent5': [
++			(r'(?:\t| {1,7}\t| {8}| ){5}.*\n', String.Doc),
++			include('unindent')
++		],
++		'indent4': [
++			(r'(?:\t| {1,7}\t| {8}| ){4}.*\n', String.Doc),
++			include('unindent')
++		],
++		'indent3': [
++			(r'(?:\t| {1,7}\t| {8}| ){3}.*\n', String.Doc),
++			include('unindent')
++		],
++		'indent2': [
++			(r'(?:\t| {1,7}\t| {8}| ){2}.*\n', String.Doc),
++			include('unindent')
++		],
++		'indent1': [
++			(r'(?:\t| {1,7}\t| {8}| ){1}.*\n', String.Doc),
++			include('unindent')
++		],
++	}
+ 
+ class SqlLexer(RegexLexer):
+     """

@@ -11,9 +11,8 @@ config FREETZ_LIB_libapr
 		underlying platform-specific implementations.
 
 config FREETZ_LIB_libapr_WITH_DSO
-	depends on FREETZ_LIB_libapr
 	select FREETZ_LIB_libdl
-	bool "Build with DSO support"
+	bool "Build with DSO support" if FREETZ_LIB_libapr
 	default n
 	help
 		This option enables DSO support in libapr.

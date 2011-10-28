@@ -3,7 +3,7 @@ $(PKG)_MAJOR_VERSION:=1
 $(PKG)_LIB_VERSION:=0.4.5
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=8b53f5a5669d0597f2da889a2f576eb6
-$(PKG)_SITE:=http://www.eu.apache.org/dist/apr
+$(PKG)_SITE:=@APACHE/apr
 
 $(PKG)_MAJOR_LIBNAME=libapr-$(APR_MAJOR_VERSION)
 $(PKG)_LIBNAME=$($(PKG)_MAJOR_LIBNAME).so.$($(PKG)_LIB_VERSION)

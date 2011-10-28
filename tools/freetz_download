@@ -158,6 +158,13 @@ if [ -n "$MAIN_URL" ]; then
 		sites[1]=http://www.t-home.de/dlp/eki/downloads/$MAIN_URL
 		sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$MAIN_URL
 		num_sites=3
+	elif [ ${MAIN_URL:0:7} == "@APACHE" ]; then
+		MAIN_URL=${MAIN_URL/@APACHE\//}
+		sites[0]=http://www.eu.apache.org/dist/$MAIN_URL
+		sites[1]=http://www.apache.org/dist/$MAIN_URL
+		sites[2]=http://apache.openmirror.de/$MAIN_URL
+		sites[3]=http://archive.apache.org/dist/$MAIN_URL
+		num_sites=4
 	else
 		supportedVCSs="cvs|svn|git|bzr|hg|darcs"
 		VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
