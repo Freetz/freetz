@@ -22,7 +22,7 @@ diff --git linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c linux-2.6.13.1/
 index e23e8ca..babce30 100644
 --- linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
 +++ linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
-@@ -734,6 +734,9 @@ void ip_conntrack_unexpect_related(struct ip_conntrack_expect *exp)
+@@ -741,6 +741,9 @@ void ip_conntrack_unexpect_related(struct ip_conntrack_expect *exp)
  	write_unlock_bh(&ip_conntrack_lock);
  }
  
@@ -32,7 +32,7 @@ index e23e8ca..babce30 100644
  struct ip_conntrack_expect *ip_conntrack_expect_alloc(struct ip_conntrack *me)
  {
  	struct ip_conntrack_expect *new;
-@@ -744,17 +747,14 @@ struct ip_conntrack_expect *ip_conntrack_expect_alloc(struct ip_conntrack *me)
+@@ -751,17 +754,14 @@ struct ip_conntrack_expect *ip_conntrack_expect_alloc(struct ip_conntrack *me)
  		return NULL;
  	}
  	new->master = me;

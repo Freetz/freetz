@@ -902,7 +902,7 @@
  	  To compile it as a module, choose M here.  If unsure, say N.
  
 +config IP_NF_MATCH_IPP2P
-+	tristate "Peer2Perr match support (EXPERIMENTAL)"
++	tristate "Peer2Peer match support (EXPERIMENTAL)"
 +	depends on IP_NF_IPTABLES && IP_NF_CT_ACCT && IP_NF_CONNTRACK && EXPERIMENTAL
 +	help
 +	  Say Y if you want to be able to classify P2P connections (and their
@@ -910,15 +910,15 @@
 +
 +	  To compile it as a module, choose M here.  If unsure, say N.
 +
- config IP_NF_MATCH_LAYER7
- 	tristate "Layer 7 match support (EXPERIMENTAL)"
- 	depends on IP_NF_IPTABLES && IP_NF_CT_ACCT && IP_NF_CONNTRACK && EXPERIMENTAL
+ config IP_NF_MATCH_TOS
+ 	tristate "TOS match support"
+ 	depends on IP_NF_IPTABLES
 --- linux-2.6.19.2/net/ipv4/netfilter/Makefile.orig	2010-06-20 14:10:45.816550828 +0200
 +++ linux-2.6.19.2/net/ipv4/netfilter/Makefile	2010-06-20 14:10:45.886535212 +0200
-@@ -70,6 +70,7 @@
+@@ -68,6 +68,7 @@
+ obj-$(CONFIG_IP_NF_MATCH_TTL) += ipt_ttl.o
+ obj-$(CONFIG_IP_NF_MATCH_ADDRTYPE) += ipt_addrtype.o
  obj-$(CONFIG_IP_NF_MATCH_STEALTH) += ipt_stealth.o
- 
- obj-$(CONFIG_IP_NF_MATCH_LAYER7) += ipt_layer7.o
 +obj-$(CONFIG_IP_NF_MATCH_IPP2P) += ipt_ipp2p.o
  
  # targets
