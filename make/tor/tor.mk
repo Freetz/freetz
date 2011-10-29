@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.2.33)
+$(call PKG_INIT_BIN, 0.2.2.34)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ea99aba49694bb982d2fccc57a70d58e
+$(PKG)_SOURCE_MD5:=0f1bbb8e086ea2aba41ff7f898fcf3bd
 $(PKG)_SITE:=http://www.torproject.org/dist
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
