@@ -1,0 +1,108 @@
+This is a patch for Trac 0.12.2 (Debian package 'trac').
+Tested with Ubuntu Oneiric (11.10), package version 0.12.2-1
+Also tested in Trac 0.12.3dev-r10806 on freetz.org (2011-10-30)
+
+(C) 2011 Alexander Kriegisch (http://scrum-master.de)
+
+Purpose: enable Trac to determine MIME types for syntax highlighting not just
+simply by file extension, but more powerfully by regex file name matching.
+This is done by introducing a new trac.ini parameter 'mime_map_patterns' in
+section [mimeviewer].
+
+How to apply:
+  - Install Trac and connect it with a source code repository (e.g. SVN)
+  - Apply patch with sudo or as root (attention: your Trac location might
+    be somewhere else, so you might have to adjust the -p parameter and the
+    working directory):
+    sudo patch -p 0 < mime_map_patterns.trac.patch
+
+How to test:
+  - Add this to trac.ini, section [mimeviewer]:
+    mime_map_patterns = text/x-python:.*_py_.*
+  - Add a Python source file to your source code repository, but rename it to
+    something containing '_py_' *without* the defauly '.py' extension, e.g.
+    'test_py_file'
+  - Restart Trac
+  - Check in a web browser if your new repository file is correctly highlighted
+    as a Python file
+
+This patch was initially developed for the Freetz project (http://freetz.org)
+in order to enable its Trac system to easier highlight Kconfig files by adding
+this to trac.ini in connection with a Pygments patch (Kconfig lexer):
+
+mime_map_patterns = text/x-kconfig:.*Config.in.*|external.in.*|standard-modules.in
+
+The patch helps us get rid of manually setting svn:mime-type for each Kconfig
+file in order to get syntax highlighting. We want highlighting to be
+independent of the SCM system underneath (svn, git or whatever). Now it is. :)
+
+
+--- /usr/share/pyshared/trac/mimeview/api.py	2011-01-31 23:05:46.000000000 +0100
++++ /usr/share/pyshared/trac/mimeview/api.py	2011-10-30 14:46:11.000000000 +0100
+@@ -389,7 +389,7 @@
+     | vim:.*?(?:syntax|filetype|ft)=(\w+)   # 4. look for VIM's syntax=<n>
+     """, re.VERBOSE)
+ 
+-def get_mimetype(filename, content=None, mime_map=MIME_MAP):
++def get_mimetype(filename, content=None, mime_map=MIME_MAP, mime_map_patterns={}):
+     """Guess the most probable MIME type of a file with the given name.
+ 
+     `filename` is either a filename (the lookup will then use the suffix)
+@@ -421,6 +421,10 @@
+                 if is_binary(content):
+                     # 4) mimetype from the content, using`is_binary`
+                     return 'application/octet-stream'
++        # 5) mimetype from filename pattern
++        for type, pattern in mime_map_patterns.iteritems():
++            if pattern.match(filename):
++                return type
+         return mimetype
+ 
+ def ct_mimetype(content_type):
+@@ -625,6 +629,12 @@
+         there's a colon (":") separated list of associated keywords
+         or file extensions. (''since 0.10'')""")
+ 
++    mime_map_patterns = ListOption('mimeviewer', 'mime_map_patterns',
++        'text/plain:README|INSTALL|COPYING.*',
++        doc="""List of additional MIME types and regex(!) filename patterns.
++        Mappings are comma-separated, and for each MIME type,
++        there's a colon (":") separated regex filename pattern (''since 0.12.###'')""")
++
+     treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
+         'application/octet-stream,application/pdf,application/postscript,'
+         'application/msword,application/rtf,',
+@@ -633,6 +643,7 @@
+ 
+     def __init__(self):
+         self._mime_map = None
++        self._mime_map_patterns = None
+ 
+     # Public API
+ 
+@@ -904,7 +915,7 @@
+         or `None` if detection failed.
+         """
+ 
+-        mimetype = get_mimetype(filename, content, self.mime_map)
++        mimetype = get_mimetype(filename, content, self.mime_map, self.mime_map_patterns)
+         charset = None
+         if mimetype:
+             charset = self.get_charset(content, mimetype)
+@@ -912,6 +923,16 @@
+             mimetype += '; charset=' + charset
+         return mimetype
+ 
++    @property
++    def mime_map_patterns(self):
++        if not self._mime_map_patterns:
++            self._mime_map_patterns = {}
++            for mapping in self.config['mimeviewer'].getlist('mime_map_patterns'):
++                if ':' in mapping:
++                    assocations = mapping.split(':')
++                    self._mime_map_patterns[assocations[0]] = re.compile((r'%s' % assocations[1]))
++        return self._mime_map_patterns
++
+     def is_binary(self, mimetype=None, filename=None, content=None):
+         """Check if a file must be considered as binary."""
+         if not mimetype and filename:

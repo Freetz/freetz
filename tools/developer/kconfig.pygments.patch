@@ -1,6 +1,8 @@
 This is a patch for Pygments 1.4 (Debian package 'python-pygments').
 Tested with Ubuntu Oneiric (11.10), package version 1.4+dfsg-1ubuntu1.
-Tested in Trac 0.12.3dev-r10806 on freetz.org (2001-10-28)
+Tested in Trac 0.12.3dev-r10806 on freetz.org (2011-10-28)
+
+(C) 2011 Alexander Kriegisch (http://scrum-master.de)
 
 Purpose: enable Pygments (and our freetz.org Trac system, respectively) to
 syntax-highlight Kconfig files. More details are in the Python code comments
@@ -21,6 +23,10 @@ How to apply:
       * Do this for every Kconfig file in your SVN repository:
         svn propset svn:mime-type text/x-kconfig <file_name>
         svn commit <file_name>
+      * As an alternative to the previous step and in order to stay independent
+        of SVN-specific properties, apply this patch to your Trac installation:
+        tools/development/mime_map_patterns.trac.patch
+        Then follow the configuration instructions in the patch header.
       * Add this to trac.ini, section [mimeviewer]:
         mime_map = (...),text/x-kconfig:kconfig
         pygments_modes = (...),text/x-kconfig:kconfig:7
@@ -44,6 +50,8 @@ How to test:
     #!kconfig
     ...
     }}}
+
+This patch was initially developed for the Freetz project (http://freetz.org)
 
 
 --- /usr/share/pyshared/pygments/lexers/other.py	2011-01-03 16:57:54.000000000 +0100
