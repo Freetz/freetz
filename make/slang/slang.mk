@@ -23,6 +23,7 @@ endif
 
 $(PKG)_CONFIGURE_OPTIONS += --without-onig
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="$(TARGET_TOOLCHAIN_STAGING_DIR)"
+$(PKG)_CONFIGURE_OPTIONS += --with-z="$(TARGET_TOOLCHAIN_STAGING_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --without-png
 $(PKG)_CONFIGURE_OPTIONS += --with-readline=slang
 
