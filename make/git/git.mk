@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.7.6.4)
+$(call PKG_INIT_BIN, 1.7.7.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e0b7afcc0e5e43bbb82f85598ae34bd8
+$(PKG)_SOURCE_MD5:=7cfb3e7ea585037272a7ad8e35f4ac0a
 #$(PKG)_SITE:=@KERNEL/software/scm/$(pkg)
 $(PKG)_SITE:=http://git-core.googlecode.com/files
 

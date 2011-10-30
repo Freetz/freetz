@@ -3,6 +3,7 @@ config FREETZ_PACKAGE_SUBVERSION_LIBRARIES
 
 config FREETZ_PACKAGE_SUBVERSION
 	bool "Subversion 1.7.1"
+	select FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF if ! FREETZ_PACKAGE_SUBVERSION_SVNSERVE
 	select FREETZ_PACKAGE_SUBVERSION_LIBRARIES if ! FREETZ_PACKAGE_SUBVERSION_STATIC
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_LIB_libapr if ! FREETZ_PACKAGE_SUBVERSION_STATIC
@@ -113,3 +114,10 @@ config FREETZ_PACKAGE_SUBVERSION_STATIC
 	help
 		Activating this switch causes all libraries subversion tools
 		depend on to be linked in statically.
+
+config FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF
+	bool "remove webinterface"
+	depends on FREETZ_PACKAGE_SUBVERSION
+	default n
+	help
+		This option removes the webinterface
