@@ -10,9 +10,6 @@ within the patch itself.
 
 How to apply:
   - Install Pygments
-  - If you intend to use Trac which uses tab expansion before highlighting
-    files or wiki code blocks, make sure that the value of 'tab_width' in the
-    patch (function 'rx_indent') is in sync with the value in trac.ini.
   - Apply patch with sudo or as root (attention: your pygments location might
     be somewhere else, so you might have to adjust the -p parameter and the
     working directory):
@@ -30,7 +27,13 @@ How to apply:
       * Add this to trac.ini, section [mimeviewer]:
         mime_map = (...),text/x-kconfig:kconfig
         pygments_modes = (...),text/x-kconfig:kconfig:7
-        tab_width = 4    (or whatever you have in your patch)
+        tab_width = 4    (or whatever you like)
+      * Note: Trac uses tab expansion before highlighting. Because tab_width is
+        user-configurable and function 'rx_indent' must know about the value
+        for semantic reasons, I am using a dirty hack here: introspection as a
+        way to find out Trac's tab_width and adjust KconfigLexer's tab_width to
+        it. But at least this way we do not need to manually edit other.py each
+        time the Trac setting is changed by an admin unaware of this patch.
 
 How to test:
   - Smaller sample HTML output:
@@ -55,7 +58,7 @@ This patch was initially developed for the Freetz project (http://freetz.org)
 
 
 --- /usr/share/pyshared/pygments/lexers/other.py	2011-01-03 16:57:54.000000000 +0100
-+++ /usr/share/pyshared/pygments/lexers/other.py	2011-10-28 13:06:04.000000000 +0200
++++ /usr/share/pyshared/pygments/lexers/other.py	2011-10-31 03:36:03.000000000 +0100
 @@ -19,7 +19,7 @@
  from pygments.lexers.web import HtmlLexer
  
@@ -65,17 +68,26 @@ This patch was initially developed for the Freetz project (http://freetz.org)
             'BashLexer', 'BatchLexer', 'BefungeLexer', 'RedcodeLexer',
             'MOOCodeLexer', 'SmalltalkLexer', 'TcshLexer', 'LogtalkLexer',
             'GnuplotLexer', 'PovrayLexer', 'AppleScriptLexer',
-@@ -30,6 +30,77 @@
+@@ -30,6 +30,87 @@
  
  line_re  = re.compile('.*?\n')
  
++import inspect
++
 +def rx_indent(level):
 +	# Kconfig *always* interprets a tab as 8 spaces, so this is the default.
 +	# Edit this if you are in an environment where KconfigLexer gets expanded
-+	# input (tabs expanded to spaces) and the expansion tab width is != 8,
-+	# e.g. in connection with Trac (trac.ini, [mimeviewer], tab_width).
++	# input (tabs expanded to spaces) and the expansion tab width is != 8.
 +	# Value range here is 2 <= {tab_width} <= 8.
-+	tab_width = 4;
++	tab_width = 8;
++	# Special case: Pygments is called by Trac.
++	# Inspect call-stack and find out the value of Mimeviewer.tab_width which
++	# has previously been read from trac.ini, [mimeviewer], tab_width.
++	for frame in inspect.stack():
++		if frame[1].endswith('/trac/mimeview/api.py'):
++			tab_width=inspect.getargvalues(frame[0]).locals['self'].tab_width
++			#print "Detected by introspection: tab_width =", tab_width
++			break
 +	# Regex matching a given indentation {level}, assuming that indentation is
 +	# a multiple of {tab_width}. In other cases there might be problems.
 +	return r'(?:\t| {1,%s}\t| {%s}){%s}.*\n' % (tab_width-1, tab_width, level);
@@ -90,7 +102,9 @@ This patch was initially developed for the Freetz project (http://freetz.org)
 +	flags = 0;
 +
 +	def call_indent(level):
-+		# If indentation >= {level} is detected, enter state 'indent{level}'
++		# If indentation >= {level} is detected, enter state 'indent{level}'.
++		# Attention: This heuristic is not perfect, but should work for 99% of
++		# files with clean indentation (i.e. multiples of {tab_width}).
 +		return (rx_indent(level), String.Doc, 'indent%s' % level);
 +
 +	def do_indent(level):
@@ -120,9 +134,8 @@ This patch was initially developed for the Freetz project (http://freetz.org)
 +		'help': [
 +			# Skip blank lines after help token, if any
 +			(r'\s*\n', Text),
-+			# Determine the first help line's indentation level heuristically(!).
-+			# Attention: this is not perfect, but works for 99% of "normal"
-+			# indentation schemes up to a max. indentation level of 7.
++			# Determine first help text line's indentation level (max. 7) and
++			# enter corresponding lexer state to handle the rest
 +			call_indent(7),
 +			call_indent(6),
 +			call_indent(5),
@@ -131,7 +144,7 @@ This patch was initially developed for the Freetz project (http://freetz.org)
 +			call_indent(2),
 +			call_indent(1),
 +		],
-+		# Handle text for indentation levels 7 to 1
++		# Handle help text for indentation levels 7 to 1
 +		'indent7' : do_indent(7),
 +		'indent6' : do_indent(6),
 +		'indent5' : do_indent(5),
