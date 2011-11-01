@@ -22,7 +22,6 @@ config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	default n
 	help
 		Torrent client (interactive)
-		Adds ~440KB to the firmware (uncompressed)
 
 		Note: transmission client is deprecated (see http://trac.transmissionbt.com/ticket/2983)
 		and will be removed in one of the next releases. Consider using web-interface controlled
@@ -34,8 +33,6 @@ config FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	default y
 	help
 		Torrent client (daemon)
-		Adds ~445KB to the firmware (uncompressed).
-		It also selects busybox's start-stop-daemon.
 
 config FREETZ_PACKAGE_TRANSMISSION_REMOTE
 	bool "Transmission remote"
@@ -43,7 +40,6 @@ config FREETZ_PACKAGE_TRANSMISSION_REMOTE
 	default n
 	help
 		A remote control utility for transmission-daemon
-		Adds ~474KB to the firmware (uncompressed)
 
 config FREETZ_PACKAGE_TRANSMISSION_CREATE
 	bool "transmission-create"
@@ -51,7 +47,6 @@ config FREETZ_PACKAGE_TRANSMISSION_CREATE
 	default n
 	help
 		A command-line utility to create .torrent files
-		Adds ~440KB to the firmware (uncompressed)
 
 config FREETZ_PACKAGE_TRANSMISSION_EDIT
 	bool "transmission-edit"
@@ -59,7 +54,6 @@ config FREETZ_PACKAGE_TRANSMISSION_EDIT
 	default n
 	help
 		A command-line utility to modify .torrent files' announce URLs
-		Adds ~435KB to the firmware (uncompressed)
 
 config FREETZ_PACKAGE_TRANSMISSION_SHOW
 	bool "transmission-show"
@@ -67,7 +61,6 @@ config FREETZ_PACKAGE_TRANSMISSION_SHOW
 	default n
 	help
 		A command-line utility to show .torrent file metadata
-		Adds ~435KB to the firmware (uncompressed)
 
 config FREETZ_PACKAGE_TRANSMISSION_STATIC
 	bool "Statically link libraries"
@@ -81,5 +74,4 @@ config FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	depends on FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	default y
 	help
-		An official web interface for transmission called clutch
-		Adds ~380KB(uncompressed)/~130KB(compressed) to the firmware
+		The official web interface for transmission called clutch
