@@ -5,8 +5,7 @@ config FREETZ_LIB_libuClibc__
 		An implementation of the Standard C++ Library optimized for embedded systems.
 
 config FREETZ_LIB_libuClibc__WITH_WCHAR
-	depends on FREETZ_LIB_libuClibc__
-	bool "enable wchar support"
+	bool "enable wchar support" if FREETZ_LIB_libuClibc__
 	default n
 	help
 		Enables wchar-support in uClibc++.
