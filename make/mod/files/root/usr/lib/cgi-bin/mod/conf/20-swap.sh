@@ -1,17 +1,19 @@
-check "$MOD_SWAP" yes:swap_auto "*":swap_man
-
 sec_begin 'Swap'
 
+cgi_print_radiogroup_active \
+	"swap" "$MOD_SWAP" "$(lang de:"Starttyp von swap" en:"swap start type")" ""
+
 cat << EOF
-<h2>$(lang de:"Starttyp von swap" en:"swap start type")</h2>
-<p>
-<input id="s1" type="radio" name="swap" value="yes"$swap_auto_chk><label for="s1"> $(lang de:"Aktiviert" en:"Activated")</label>
-<input id="s2" type="radio" name="swap" value="no"$swap_man_chk><label for="s2"> $(lang de:"Deaktiviert" en:"Deactivated")</label>
-</p>
 <h2>$(lang de:"Swap-Datei" en:"Swap file")</h2>
-<p>$(lang de:"Pfad" en:"Path"): <input type="text" id="swap_file" name="swap_file" size="50" maxlength="255" value="$(html "$MOD_SWAP_FILE")"><br>($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)</p>
-<p>$(lang de:"Gr&ouml;&szlig;e" en:"Size"): <input type="text" id="swap_size" name="swap_size" size="3" maxlength="4" value=""> MB <input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swap file")" onclick="window.open('/cgi-bin/exec.cgi/create-swap?swap_file='+encodeURIComponent(document.getElementById('swap_file').value)+'&amp;swap_size='+encodeURIComponent(document.getElementById('swap_size').value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')"></p>
-<p><a href="http://lwn.net/Articles/83588/">$(lang de:"Swappiness" en:"Swappiness")</a> (0-100): <input type="text" id="swap_swappiness" name="swap_swappiness" size="3" maxlength="4" value="$(html "$MOD_SWAP_SWAPPINESS")"></p>
 EOF
+cgi_print_textline_p "swap_file" "$MOD_SWAP_FILE" 50/255 "$(lang de:"Pfad" en:"Path"):" \
+	'<br>($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)'
+echo "<p>"
+cgi_print_textline "swap_size" "" "" "$(lang de:"Gr&ouml;&szlig;e" en:"Size"):" "MB"
+cat << EOF
+<input type="button" value="$(lang de:"Swap-Datei anlegen" en:"Create swap file")" onclick="window.open('/cgi-bin/exec.cgi/create-swap?swap_file='+encodeURIComponent(document.getElementById('swap_file').value)+'&amp;swap_size='+encodeURIComponent(document.getElementById('swap_size').value),'swapfilepopup','menubar=no,width=800,height=600,toolbar=no,resizable=yes,scrollbars=yes')">
+</p>
+EOF
+cgi_print_textline_p "swap_swappiness" "$MOD_SWAP_SWAPPINESS" 3/4 '<a href="http://lwn.net/Articles/83588/">$(lang de:"Swappiness" en:"Swappiness")</a> (0-100):'
 
 sec_end

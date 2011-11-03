@@ -228,7 +228,7 @@ kernel-oldconfig: $(KERNEL_DIR)/.configured
 kernel-source: $(KERNEL_DIR)/.unpacked
 
 kernel-clean:
-	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
+	-$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
 		KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)" \
 		ARCH="$(KERNEL_ARCH)" \
