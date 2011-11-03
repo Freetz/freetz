@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 10.35.79)
+$(call PKG_INIT_BIN, 10.35.82)
 $(PKG)_LIB_VERSION:=10.35
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=9fd228e14a69a8d783edc1d033e08761
+$(PKG)_SOURCE_MD5:=fcae2fc7928ad7d31b0540ec0c3e710b
 $(PKG)_SITE:=@SF/netpbm/super_stable/$($(PKG)_VERSION)
 
 $(PKG)_LIBNAME := libnetpbm.so.$($(PKG)_LIB_VERSION)
