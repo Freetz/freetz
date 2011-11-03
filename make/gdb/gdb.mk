@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_GDB_VERSION_7_2),7.2,6.8))
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)a.tar.bz2
+$(call PKG_INIT_BIN, $(if $(FREETZ_GDB_VERSION_7_3),7.3.1,6.8a))
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5_6.8 := da20d043e6729f74b909bd507bcae5c9
-$(PKG)_SOURCE_MD5_7.2 := ae6c7c98de35dc14b6720c9c321e4d94
+$(PKG)_SOURCE_MD5_7.3 := b89a5fac359c618dda97b88645ceab47
 $(PKG)_SOURCE_MD5     := $($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=@GNU/gdb
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
@@ -16,7 +16,7 @@ $(PKG)_BINARIES_TARGET_DIR    := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/
 $(PKG)_NOT_INCLUDED           := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_GDB_VERSION_6_8
-$(PKG)_REBUILD_SUBOPTS += FREETZ_GDB_VERSION_7_2
+$(PKG)_REBUILD_SUBOPTS += FREETZ_GDB_VERSION_7_3
 
 $(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
 $(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
