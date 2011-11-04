@@ -17,12 +17,12 @@ check "$DNSMASQ_LOG_QUERIES" yes:log_queries
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
 <p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
+<input id="ena1" type="radio" name="enabled" value="yes"$auto_chk><label for="ena1"> $(lang de:"Automatisch" en:"Automatic")</label>
+<input id="ena2" type="radio" name="enabled" value="no"$man_chk><label for="ena2"> $(lang de:"Manuell" en:"Manual")</label>
 </p>
 <p>
 <input type="hidden" name="wrapper" value="no">
-<input id="e1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="w1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>
+<input id="wrap1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="wrap1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>
 </p>
 EOF
 sec_end
@@ -34,15 +34,15 @@ cat << EOF
 <p>$(lang de:"Domain" en:"Domain"): <input type="text" name="domain" size="20" maxlength="255" value="$(html "$DNSMASQ_DOMAIN")"></p>
 <p>
 <input type="hidden" name="boguspriv" value="no">
-<input id="b1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="b1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
+<input id="bogus1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="bogus1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
 <input type="hidden" name="stop_dns_rebind" value="no">
-<input id="c1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="c1"> $(lang de:"Adressen von Upstream Nameservern ablehnen, wenn sie in privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in private IP ranges.")</label><br>
+<input id="dnsrebind1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="dnsrebind1"> $(lang de:"Adressen von Upstream Nameservern ablehnen, wenn sie in privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in private IP ranges.")</label><br>
 <input type="hidden" name="log_queries" value="no">
-<input id="f1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="f1"> $(lang de:"Namensaufl&ouml;sung loggen." en:"Log name resolution.")</label><br>
+<input id="logq1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="logq1"> $(lang de:"Namensaufl&ouml;sung loggen." en:"Log name resolution.")</label><br>
 </p>
 <p>
 <input type="hidden" name="avm_dns" value="no">
-<input id="d1" type="checkbox" name="avm_dns" value="yes"$avm_dns_chk><label for="d1"> $(lang de:"Durch AVM/Provider zugewiesene Upstream Nameserver nutzen." en:"Use the upstream nameservers of your provider/AVM.")</label>
+<input id="avmdns1" type="checkbox" name="avm_dns" value="yes"$avm_dns_chk><label for="avmdns1"> $(lang de:"Durch AVM/Provider zugewiesene Upstream Nameserver nutzen." en:"Use the upstream nameservers of your provider/AVM.")</label>
 <br>$(lang de:"momentan: " en:"at the moment: ")
 EOF
 echo 'servercfg.dns1' | ar7cfgctl -s
@@ -61,14 +61,14 @@ sec_end
 sec_begin '$(lang de:"DHCP Server" en:"DHCP server")'
 cat << EOF
 <p>
-<input id="d1" type="radio" name="dhcp" value="yes"$dhcp_yes_chk><label for="d1"> $(lang de:"Aktiviert" en:"Enabled")</label>
-<input id="d2" type="radio" name="dhcp" value="no"$dhcp_no_chk><label for="d2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
+<input id="dhcp1" type="radio" name="dhcp" value="yes"$dhcp_yes_chk><label for="dhcp1"> $(lang de:"Aktiviert" en:"Enabled")</label>
+<input id="dhcp2" type="radio" name="dhcp" value="no"$dhcp_no_chk><label for="dhcp2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
 <h2>$(lang de:"DHCP Range (eine pro Zeile)" en:"DHCP range (one per line)")</h2>
 <p><textarea name="dhcp_range" rows="3" cols="50" maxlength="255">$(html "$DNSMASQ_DHCP_RANGE")</textarea></p>
 <p>
 <input type="hidden" name="ethers" value="no">
-<input id="s1" type="checkbox" name="ethers" value="yes"$ethers_chk><label for="s1"> $(lang de:"Statische DHCP Leases aus" en:"Static DHCP leases from") <a href="$(href file mod hosts)">hosts</a> (MAC &lt;-&gt; IP)</label><br>
+<input id="ethers1" type="checkbox" name="ethers" value="yes"$ethers_chk><label for="ethers1"> $(lang de:"Statische DHCP Leases aus" en:"Static DHCP leases from") <a href="$(href file mod hosts)">hosts</a> (MAC &lt;-&gt; IP)</label><br>
 <span style="font-size:10px;">($(lang de:"nur Eintr&auml;ge, die eine g&uuml;ltige IP und MAC aufweisen" en:"items with valid IP and MAC addresses only"))</span>
 </p>
 EOF
@@ -77,8 +77,8 @@ sec_end
 sec_begin '$(lang de:"DHCP Boot" en:"DHCP Boot")'
 cat <<EOF
 <p>
-<input id="p1" type="radio" name="dhcp_boot" value="yes"$dhcp_boot_yes_chk><label for="p1"> $(lang de:"Aktiviert" en:"Enabled")</label>
-<input id="p2" type="radio" name="dhcp_boot" value="no"$dhcp_boot_no_chk><label for="p2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
+<input id="dhcpboot1" type="radio" name="dhcp_boot" value="yes"$dhcp_boot_yes_chk><label for="dhcpboot1"> $(lang de:"Aktiviert" en:"Enabled")</label>
+<input id="dhcpboot2" type="radio" name="dhcp_boot" value="no"$dhcp_boot_no_chk><label for="dhcpboot2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
 <p>$(lang de:"boot file" en:"boot file"): <input type="text" name="dhcp_bootfile" size="20" maxlength="255" value="$(html "$DNSMASQ_DHCP_BOOTFILE")"></p>
 EOF
@@ -87,8 +87,8 @@ sec_end
 sec_begin '$(lang de:"TFTP Server" en:"TFTP server")'
 cat <<EOF
 <p>
-<input id="p1" type="radio" name="tftp" value="yes"$tftp_yes_chk><label for="p1"> $(lang de:"Aktiviert" en:"Enabled")</label>
-<input id="p2" type="radio" name="tftp" value="no"$tftp_no_chk><label for="p2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
+<input id="tftp1" type="radio" name="tftp" value="yes"$tftp_yes_chk><label for="tftp1"> $(lang de:"Aktiviert" en:"Enabled")</label>
+<input id="tftp2" type="radio" name="tftp" value="no"$tftp_no_chk><label for="tftp2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
 </p>
 <p>$(lang de:"tftp root" en:"tftp root"): <input type="text" name="tftp_tftproot" size="40" maxlength="255" value="$(html "$DNSMASQ_TFTP_TFTPROOT")"></p>
 EOF
