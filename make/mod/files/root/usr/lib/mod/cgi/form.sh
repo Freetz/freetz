@@ -193,7 +193,7 @@ cgi_print_textline()
 	if [ -n "$value" ]; then
 		value=" value=\"$(html "$value")\""
 	fi
-	echo "$label<input type=\"text\" name=\"$name\"$size$maxlength$value>$post_text"
+	echo "$label<input type=\"text\" name=\"$name\" id=\"$name\"$size$maxlength$value>$post_text"
 }
 
 cgi_print_textline_p()
