@@ -222,7 +222,10 @@ else
 	MKSQUASHFS_OPTIONS+=" -le"
 fi
 
-if [ "$FREETZ_KERNEL_VERSION_2_6_13_1" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then
+# TODO: Add new symbols for squashfs version and lzma compression to Config.in
+if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	MKSQUASHFS_TOOL="mksquashfs"
+elif [ "$FREETZ_KERNEL_VERSION_2_6_13_1" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 	MKSQUASHFS_TOOL="mksquashfs-lzma"
 else
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
@@ -294,15 +297,14 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	"$RMTICHKSUM" -f "${FILESYSTEM}" > /dev/null
 
 	mkdir -p "$KERNEL_DIR"
-
 	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-		RAW_KERNEL="${KERNEL}"
+		cp "${KERNEL}" "${RAW_KERNEL}"
 
 		echo "unpacking update image"
 		modunsqfs "$FILESYSTEM_CORE_DIR" "$FILESYSTEM"
 		FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
 
-		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "kernel splitting failed"
+		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
 		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
@@ -365,6 +367,7 @@ fi
 MOD_DIR="${DIR}/modified"
 FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
+FILESYSTEM_CORE_MOD_DIR="${MOD_DIR}/${FILESYSTEM_CORE_SUBDIR}"
 EXTERNAL_MOD_DIR="${MOD_DIR}/${EXTERNAL_SUBDIR}"
 KERNEL_MOD_DIR="${MOD_DIR}/${KERNEL_SUBDIR}"
 AVMPLUGINS_MOD_DIR="${KERNEL_MOD_DIR}/${AVMPLUGINS_SUBDIR}"
@@ -372,9 +375,16 @@ AVMPLUGINS_FILESYSTEM_MOD_DIR="${FILESYSTEM_MOD_DIR}/usr/share/avmplugins"
 VARTAR_MOD_DIR="${KERNEL_MOD_DIR}/${VARTAR_SUBDIR}"
 
 KERNEL_MOD="${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}"
+FILESYSTEM_MOD="${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}"
+
 
 RAW_KERNEL_MOD="${KERNEL_MOD_DIR}/${RAW_KERNEL_FILE}"
-FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
+if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	RAW_FILESYSTEM_MOD="${FILESYSTEM_CORE_MOD_DIR}/${FILESYSTEM_CORE_IMAGE}"
+else
+	RAW_FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
+fi
+
 VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
 PACKAGES_DIR="${PACKAGES_DIR_ROOT}/target-${FREETZ_TARGET_ARCH}_uClibc-${FREETZ_TARGET_UCLIBC_VERSION}"
 TARGET_SPECIFIC_ROOT_DIR="${PACKAGES_DIR}/root"
@@ -1110,47 +1120,47 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo0 "packing var.tar"
 	"$TAR" -c -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
 
-	if [ ! -s "$VARTAR_MOD" ]; then
-		error 1 "packing of var.tar failed"
-	fi
+	[ ! -s "$VARTAR_MOD" ] && error 1 "packing of var.tar failed"
+
 	# Do we have the tool ?
-	if [ ! -x "$MKSQUASHFS" ]; then
-		error 1 "cannot find $MKSQUASHFS_TOOL"
-	fi
+	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS_TOOL"
 
 	echo0 "creating filesystem image"
 	echo1 "squashfs blocksize: $FILESYSTEM_BLOCKSIZE"
 	[ "$FREETZ_HAS_UDEV" == "y" ] || \
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
-	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
+	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
-	if [ ! -s "$FILESYSTEM_MOD" ]; then
-		error 1 "creation of filesystem failed"
-	fi
+	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
-	echo0 "merging kernel image"
-	dd if="$RAW_KERNEL_MOD" of="$KERNEL_MOD" bs=256 conv=sync 2> /dev/null
-	cat "$FILESYSTEM_MOD" >> "$KERNEL_MOD"
+		[ ! -s "$FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
 
-	if [ ! -s "$KERNEL_MOD" ]; then
-		error 1 "kernel merging failed"
-	fi
+		echo0 "copying kernel image"
+		cp "$RAW_KERNEL_MOD" "$KERNEL_MOD"
 
-	# Check size of kernel image
-	let KERNEL_LIMIT="$FREETZ_KERNEL_MTD_SIZE*65536"
-	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
-	let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
+		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
+	else
+		[ ! -s "$FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
 
-	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
+		echo0 "merging kernel image"
+		dd if="$RAW_KERNEL_MOD" of="$KERNEL_MOD" bs=256 conv=sync 2> /dev/null
+		cat "$FILESYSTEM_MOD" >> "$KERNEL_MOD"
 
-	if [ "$KERNEL_SIZE" -eq 0 ]; then
-		error 1 "kernel image is empty"
-	fi
-	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-		error 1 "kernel image is $DIFF bytes too big. See http://trac.freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
+		[ ! -s "$KERNEL_MOD" ] && error 1 "kernel merging failed"
+
+		# Check size of kernel image
+		let KERNEL_LIMIT="$FREETZ_KERNEL_MTD_SIZE*65536"
+		let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
+		let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
+
+		echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
+		[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
+		[ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ] && \
+			error 1 "kernel image is $DIFF bytes too big. See http://trac.freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$FREETZ_HAS_TAM" = "y" ]; then
+		if [ "$FREETZ_HAS_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
 			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
@@ -1162,17 +1172,14 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 	# Do we have the tool ?
-	if [ ! -x "$TICHKSUM" ]; then
-		error 1 "cannot find wonderful tool $TICHKSUM_TOOL"
-	fi
+	[ ! -x "$TICHKSUM" ] &&	error 1 "cannot find wonderful tool $TICHKSUM_TOOL"
 
 	# Write checksum
 	"$TICHKSUM" "$KERNEL_MOD" > "${MOD_DIR}/kernelchksum.log"
 
 	# Consistency check
 	if [ -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ] || \
-		[ ! -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ]
-	then
+		[ ! -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ];	then
 		error 1 "inconsistency comparing size of old and new kernel.image"
 	fi
 
