@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,1.12)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=141461b9c04e454dc8933c9d1f2abf83
+$(call PKG_INIT_BIN,1.13.4)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=12115c3750a4d92f9c6ac62bac372e85
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
@@ -15,6 +15,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-libssl-prefix
 $(PKG)_LIBS := -lgnutls -ltasn1 -lgcrypt -lgpg-error -lz
 else
 $(PKG)_DEPENDS_ON += openssl
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-libgnutls-prefix
 $(PKG)_LIBS := -lssl -lcrypto -ldl

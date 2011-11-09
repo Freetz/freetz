@@ -202,6 +202,10 @@ fi
 # Load config
 . "$DOT_CONFIG"
 
+# After load config, needs FREETZ_TARGET_CROSS
+NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
+STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
+
 # ar7 (FON WLAN) and ohio (7170) modules dir is 2.6.13.1-ar7/ohio
 # ur8 (3270) and iks (7390) modules dir is 2.6.19.2
 # ar9 (7320) modules dir is 2.6.28.10
@@ -863,8 +867,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 
 	echo1 "generating modules.dep"
-	${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
-		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map 2> /dev/null
+	NM=$NM ${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
+		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map
 	# add plugin kernel modules for 7270 if plugins are not enabled
 	if [ "$FREETZ_TYPE_FON_WLAN_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
 		echo -e "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko\nkernel/drivers/char/audio/avm_audio.ko:\n" >> $MODULES_DIR/modules.dep
@@ -1022,7 +1026,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			\( -perm +100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p'`; do
 			echo2 $i
 			chmod u+r $i
-			${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip -p --remove-section={.comment,.note,.pdr} $i
+			$STRIP -p --remove-section={.comment,.note,.pdr} $i
 		done
 	fi
 
