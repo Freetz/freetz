@@ -43,8 +43,8 @@ configuration. Please remember to double-check all settings afterwards!"
 
 <form action="do_restore.cgi" method="POST" enctype="multipart/form-data">
 <p><input type=file name="uploadfile"></p>
-<p><input type=checkbox name="freetz_only">$(lang de:"Nur Freetz-Einstellungen wiederherstellen" en:"Restore Freetz settings only")<br>
-<input type=checkbox name="restart" checked>$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")</p>
+<p><input type=checkbox name="freetz_only" id="freetz_only"><label for="freetz_only">$(lang de:"Nur Freetz-Einstellungen wiederherstellen" en:"Restore Freetz settings only")</label><br>
+<input type=checkbox name="restart" id="restart" checked><label for="restart">$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")</label></p>
 <p><input type=submit value="$(lang de:"Wiederherstellen" en:"Restore")" style="width:150px"></p>
 </form>
 EOF
