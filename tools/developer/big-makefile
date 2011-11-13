@@ -23,7 +23,7 @@
 #   - remove consecutive lines which are empty or contain only whitespace,
 #     leaving only one empty line per block
 #   - remove some Make variables possibly blocking a later re-run
-LC_ALL=C make --print-data-base --question $@ 2> /dev/null \
+LC_ALL=C make --print-data-base --question $@ \
 	| sed -r 's/^[[:space:]]+$//' \
 	| grep -Ev '^[[:space:]]*#|MAKEFLAGS|MFLAGS|MAKECMDGOALS' \
 	| cat -s
