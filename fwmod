@@ -334,7 +334,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 			AVMPLUGIN="${i##*/plugin-}"
 			AVMPLUGIN="${AVMPLUGIN%\.image}"
 			echo2 "$AVMPLUGIN image"
-			modunsqfs "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
+			modunsqfs_lzma "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
 		done
 		chmod -R +w "$AVMPLUGINS_DIR"
 	fi
