@@ -16,14 +16,15 @@ my $fh_deps;
 
 sub expand {
   my $file = shift;
+  my $parent_file = shift;
   print "# INCLUDE_BEGIN $file\n";
 
-  open(my $fh, '<', $file) or die $!;
+  open(my $fh, '<', $file) or die "Cannot open include file $file in $parent_file\n$!";
   print $fh_deps " \\\n\t$file";
   while (<$fh>) {
     if (/^\s*source\s+(.+)$/) {
       # For each kconfig "source" statement, recursively read sub-file
-      expand($1);
+      expand($1, $file);
     } else {
       # Print all other lines normally
       print;
@@ -38,7 +39,7 @@ sub expand {
 
 open ($fh_deps, '>', $deps_file_tmp) or die $!;
 print $fh_deps "$deps_name :=";
-expand($_) for @ARGV;
+expand($_, $0) for @ARGV;
 print $fh_deps "\n\n\$($deps_name): ;\n";
 close ($fh_deps) or die $!;
 rename ($deps_file_tmp, $deps_file) or die $!;

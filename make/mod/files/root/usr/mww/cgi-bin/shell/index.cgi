@@ -58,18 +58,18 @@ cat << EOF
 	<form action="/cgi-bin/shell/cmd.cgi?pid=$$" target="shellcmd" method=POST enctype="multipart/form-data">
 		<div class="textwrapper"><textarea id="script_code" name="script" rows="10" cols="80"></textarea></div><p>
 		<input type=submit value="$(lang de:"Skript ausf&uuml;hren" en:"Run script")">&nbsp;&nbsp;
-		$(lang de:"Historie" en:"History") <select id="history" onChange="historySelected(this.selectedIndex)"></select>
+		<label for="history">$(lang de:"Historie" en:"History")</label> <select id="history" onChange="historySelected(this.selectedIndex)"></select>
 		<input type=button value="$(lang de:"Hist. l&ouml;schen" en:"Delete hist.")" onClick="cleanHistory()">&nbsp;&nbsp;
-		<input type="checkbox" name="display_mode" value="binary">Download
-		(<input type="checkbox" name="tar" value="true">.tar
-		<input type="checkbox" name="gz" value="true">.gz )
+		<input type="checkbox" name="display_mode" value="binary" id="binary"><label for="binary">Download</label>
+		(<input type="checkbox" name="tar" value="true" id="tar"><label for="tar">.tar</label>
+		<input type="checkbox" name="gz" value="true" id="gz"><label for="gz">.gz</label> )
 	</form>
 	<table>
 		<form action="/cgi-bin/shell/upload.cgi?pid=$$" target="shellcmd" method=POST enctype="multipart/form-data">
-			<tr><td>$(lang de:"Quelldatei" en:"Source file")</td><td><input type=file name="source" size=50></td></tr>
-			<tr><td>$(lang de:"Zieldatei" en:"Target file")</td><td><input type="text" name="target" value="/var/tmp/rudi_upload" size=50> <input type=submit value="$(lang de:"Hochladen" en:"Upload")"></td></tr>
+			<tr><td><label for="source">$(lang de:"Quelldatei" en:"Source file")</label></td><td><input type=file name="source" id="source" size=50></td></tr>
+			<tr><td><label for="target">$(lang de:"Zieldatei" en:"Target file")</label></td><td><input type="text" name="target" id="target" value="/var/tmp/rudi_upload" size=50> <input type=submit value="$(lang de:"Hochladen" en:"Upload")"></td></tr>
 		</form>
-		<tr><td>$(lang de:"Rudi-Edit" en:"Rudi edit")</td><td> <input type="text" id="file2edit" value="/var/tmp/tmp.txt" size=50> <input type=button value="$(lang de:"Datei editieren" en:"Edit file")" onClick="RudiEdit()"></td></tr>
+		<tr><td><label for="file2edit">$(lang de:"Rudi-Edit" en:"Rudi edit")</label></td><td> <input type="text" id="file2edit" value="/var/tmp/tmp.txt" size=50> <input type=button value="$(lang de:"Datei editieren" en:"Edit file")" onClick="RudiEdit()"></td></tr>
 	</table>
 	<iframe name="shellcmd" style="width: 0; height: 0; border: 0"></iframe>
 	<pre id="shell_output">---</pre>

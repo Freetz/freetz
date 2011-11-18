@@ -63,9 +63,8 @@ start() {
 	modreg status vnstat vnstat stats
 }
 
-stop() {
+stop_pre() {
 	stop_status
-	killall $DAEMON_BIN 2>/dev/null
 }
 
 case $1 in
