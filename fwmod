@@ -228,7 +228,8 @@ fi
 
 # TODO: Add new symbols for squashfs version and lzma compression to Config.in
 if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	MKSQUASHFS_TOOL="mksquashfs"
+	MKSQUASHFS_TOOL="mksquashfs3"
+	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 elif [ "$FREETZ_KERNEL_VERSION_2_6_13_1" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 	MKSQUASHFS_TOOL="mksquashfs-lzma"
 else
@@ -381,12 +382,11 @@ VARTAR_MOD_DIR="${KERNEL_MOD_DIR}/${VARTAR_SUBDIR}"
 KERNEL_MOD="${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}"
 FILESYSTEM_MOD="${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}"
 
-
 RAW_KERNEL_MOD="${KERNEL_MOD_DIR}/${RAW_KERNEL_FILE}"
 if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	RAW_FILESYSTEM_MOD="${FILESYSTEM_CORE_MOD_DIR}/${FILESYSTEM_CORE_IMAGE}"
 else
-	RAW_FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
+	RAW_FILESYSTEM_MOD="$FILESYSTEM_MOD"
 fi
 
 VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
@@ -1139,11 +1139,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 		[ ! -s "$FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
+		let FILESYSTEM_SIZE="$(wc -c < "$FILESYSTEM_MOD")"
+		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
 
 		echo0 "copying kernel image"
-		cp "$RAW_KERNEL_MOD" "$KERNEL_MOD"
+		cp -a "$RAW_KERNEL_MOD" "$KERNEL_MOD"
 
-		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
 	else
 		[ ! -s "$FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
 
