@@ -52,6 +52,6 @@
 +		return DROPBEAR_FAILURE;
 +	}
 +
- 	/* check for an empty password */
- 	if (ses.authstate.pw_passwd[0] == '\0') {
- 		TRACE(("leave checkusername: empty pword"))
+ 	TRACE(("shell is %s", ses.authstate.pw_shell))
+ 
+ 	/* check that the shell is set */
