@@ -17,25 +17,3 @@
  		svr-authpasswd.o svr-authpubkey.o svr-authpubkeyoptions.o svr-session.o svr-service.o \
  		svr-chansession.o svr-runopts.o svr-agentfwd.o svr-main.o svr-x11fwd.o\
  		svr-tcpfwd.o svr-authpam.o
---- sshpty.c	2011-03-10 21:04:53.000000000 +0100
-+++ sshpty.c	2011-03-10 21:05:52.000000000 +0100
-@@ -398,15 +398,19 @@
- 
- 	if ((st.st_mode & (S_IRWXU|S_IRWXG|S_IRWXO)) != mode) {
- 		if (chmod(tty_name, mode) < 0) {
-+#ifndef DB_NONFREETZ
- 			if (errno == EROFS &&
- 			    (st.st_mode & (S_IRGRP | S_IROTH)) == 0) {
-+#endif
- 				dropbear_log(LOG_ERR,
- 					"chmod(%.100s, 0%o) failed: %.100s",
- 					tty_name, mode, strerror(errno));
-+#ifndef DB_NONFREETZ
- 			} else {
- 				dropbear_exit("chmod(%.100s, 0%o) failed: %.100s",
- 				    tty_name, mode, strerror(errno));
- 			}
-+#endif
- 		}
- 	}
- }
