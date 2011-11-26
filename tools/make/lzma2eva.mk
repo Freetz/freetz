@@ -1,9 +1,13 @@
 LZMA2EVA_SOURCE:=lzma2eva.tar.bz2
 LZMA2EVA_DIR:=$(SOURCE_DIR)/lzma2eva
+LZMA2EVA_MAKE_DIR:=$(TOOLS_DIR)/make
 
 
 $(LZMA2EVA_DIR)/.unpacked: $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
 	tar -C $(SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
+	for i in $(LZMA2EVA_MAKE_DIR)/patches/*.lzma2eva.patch; do \
+		$(PATCH_TOOL) $(LZMA2EVA_DIR) $$i; \
+	done
 	touch $@
 
 $(LZMA2EVA_DIR)/lzma2eva: $(LZMA2EVA_DIR)/.unpacked
