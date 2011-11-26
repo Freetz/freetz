@@ -1,6 +1,6 @@
 --- Makefile
 +++ Makefile
-@@ -1767,7 +1767,6 @@
+@@ -1768,7 +1768,6 @@
  
  $(BUILT_INS): git$X
  	$(QUIET_BUILT_IN)$(RM) $@ && \
@@ -8,7 +8,7 @@
  	ln -s git$X $@ 2>/dev/null || \
  	cp git$X $@
  
-@@ -2067,7 +2066,6 @@
+@@ -2068,7 +2067,6 @@
  
  $(REMOTE_CURL_ALIASES): $(REMOTE_CURL_PRIMARY)
  	$(QUIET_LNCP)$(RM) $@ && \
@@ -16,7 +16,7 @@
  	ln -s $< $@ 2>/dev/null || \
  	cp $< $@
  
-@@ -2278,9 +2276,9 @@
+@@ -2279,9 +2277,9 @@
  install: all
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)'
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(gitexec_instdir_SQ)'
@@ -28,7 +28,7 @@
  	$(MAKE) -C templates DESTDIR='$(DESTDIR_SQ)' install
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(mergetools_instdir_SQ)'
  	(cd mergetools && $(TAR) cf - .) | \
-@@ -2312,20 +2310,17 @@
+@@ -2313,20 +2311,17 @@
  	} && \
  	for p in $(filter $(install_bindir_programs),$(BUILT_INS)); do \
  		$(RM) "$$bindir/$$p" && \
