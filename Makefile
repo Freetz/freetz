@@ -455,6 +455,20 @@ config-clean-deps:
 	$(RM) .config_tmp; \
 	}
 
+config-clean-deps-keep-busybox:
+	@{ \
+	cp .config .config_tmp; \
+	echo -n "Step 1: temporarily deactivate all kernel modules and shared libraries ... "; \
+	$(SED) -i -r 's/^(FREETZ_(LIB|MODULE|SHARE)_)/# \1/' .config; \
+	echo "DONE"; \
+	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
+	make oldnoconfig; \
+	echo "DONE"; \
+	echo "The following elements have been deactivated:"; \
+	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+) is not set$$/  \1/p'; \
+	$(RM) .config_tmp; \
+	}
+
 common-clean:
 	./fwmod_custom clean
 	$(RM) .static .dynamic .exclude-dist-tmp $(CONFIG_IN_CACHE)
@@ -506,7 +520,7 @@ check-builddir-version: $(CONFIG_IN_CACHE)
 		exit 3; \
 	fi; \
 
-.PHONY: all world step $(KCONFIG_TARGETS) config-cache config-clean-deps tools recover \
+.PHONY: all world step $(KCONFIG_TARGETS) config-cache config-clean-deps config-clean-deps-keep-busybox tools recover \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	$(CHECK_BUILD_DIR_VERSION)
