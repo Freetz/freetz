@@ -20,10 +20,8 @@ for files in \
 	lib/libavcodec.so* \
 	lib/libavformat.so* \
 	lib/libavutil.so* \
-	lib/libexif.so* \
 	lib/libflashclient.so* \
 	lib/libhttp.so* \
-	lib/libimageutils.so* \
 	lib/libmediacli.so* \
 	lib/libnetpbm.so* \
 	usr/share/ctlmgr/libmini.so \
