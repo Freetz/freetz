@@ -23,17 +23,21 @@ echo "get_ip - determine external IP address"
 # Detect private (RFC 1918) or link-local (RFC 5735) IPs
 check_local_ip() {
 	[ $retval -ne 0 ] && return
-	# 10.0.0.0/8 (private)
-	[ "$ip" != "${ip#10.}" ] && return
-	# 192.168.0.0/16 (private)
-	[ "$ip" != "${ip#192.168.}" ] && return
-	# 169.254.0.0/16 (link-local)
-	[ "$ip" != "${ip#169.254.}" ] && return
+	# 10.0.0.0/8 (private), 192.168.0.0/16 (private), 169.254.0.0/16 (link-local), 
+	if [ "$ip" != "${ip#10.}" ] || [ "$ip" != "${ip#192.168.}" ] || [ "$ip" != "${ip#169.254.}" ]; then
+		retval=3
+		ip=""
+		return
+	fi
 	# 172.16.0.0/12 (private)
-	[ "$ip" == "${ip#172.}" ] && retval=3 && return
-	local ip_part=$(echo $ip | cut -d '.' -f 2)
-	[ $ip_part -ge 16 ] && [ $ip_part -le 31 ] && return
-	retval=3
+	if [ "$ip" != "${ip#172.}" ]; then
+		local ip_part=$(echo $ip | cut -d '.' -f 2)
+		if [ $ip_part -ge 16 ] && [ $ip_part -le 31 ]; then
+			retval=3
+			ip=""
+			return
+		fi
+	fi
 }
 
 via_dsld() {
