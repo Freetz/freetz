@@ -251,6 +251,14 @@ config FREETZ_PATCH_MULTIPLE_PRINTERS
 
 endif
 
+config FREETZ_MODIFY_UMTSD
+	bool "Modify umtsd: only for known modems"
+	depends on FREETZ_HAS_UDEV && ! FREETZ_REMOVE_UMTSD
+	default n
+	help
+		AVM's umtsd will only be started if a *known* umts modem is
+		detected. So your /dev/ttyUSB? could be used by other programs.
+
 comment "Removal patches ------------------------"
 
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
