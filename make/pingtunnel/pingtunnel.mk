@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.71)
+$(call PKG_INIT_BIN, 0.72)
 $(PKG)_SOURCE:=PingTunnel-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=9b04771d4fa50abc15a6af690b81c71a
+$(PKG)_SOURCE_MD5:=c5f0c36d1a48d84ce7b5217f1ba52dd0
 $(PKG)_SITE:=http://www.cs.uit.no/~daniels/PingTunnel
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/PingTunnel
 $(PKG)_BINARY:=$($(PKG)_DIR)/ptunnel
