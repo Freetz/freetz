@@ -1,0 +1,84 @@
+--- smusbutil.c	2005-11-30 23:38:48.000000000 +0100
++++ smusbutil.c	2011-09-01 02:58:02.000000000 +0200
+@@ -23,6 +23,7 @@
+ static void print_usage(void)
+ {
+   fprintf(stderr, "Usage: smusbutil clockrate mode\n\n");
++  fprintf(stderr, "  <0 | 1 | 2 | 3>  Select USB device\n");
+   fprintf(stderr, "  <3580 | 3680 | 6000>     Set smartcard clock in kHz\n");
+   fprintf(stderr, "  <phoenix | smartmouse>   Set operation mode\n");
+   fprintf(stderr, "\n");
+@@ -34,18 +35,38 @@
+ {
+   struct ftdi_context ftdic;
+   int f,i,e;
++  int vendor=0x104f;
++  int reader;
+   char buf[1];
+   buf[0] = 0;
+   e = 0;
+   char frq, opmode;
+
+-  if (argc != 3)
++  if (argc != 4)
+   {
+     print_usage();
+     exit(-1);
+   }
+
+   switch(atoi(argv[1]))  {
++    case 0:
++      reader = 0x0001;
++      break;
++    case 1:
++      reader = 0x0002;
++      break;
++    case 2:
++      reader = 0x0003;
++      break;
++    case 3:
++      reader = 0x0004;
++      break;
++    default:
++       print_usage();
++       exit(-1);
++  }
++
++  switch(atoi(argv[2]))  {
+     case 3580:                     //3,58 = 10 = 2
+       frq = 2;
+       break;
+@@ -62,12 +80,12 @@
+
+   buf[0] |= frq<<4;
+
+-  if(strcmp(argv[2], "smartmouse") == 0)  {
++  if(strcmp(argv[3], "smartmouse") == 0)  {
+     buf[0] |= 1<<6;
+     e = 1;
+   }
+
+-  if(strcmp(argv[2], "phoenix") == 0)  {
++  if(strcmp(argv[3], "phoenix") == 0)  {
+     e = 1;
+   }
+
+@@ -78,9 +96,9 @@
+
+   ftdi_init(&ftdic);
+
+-  f = ftdi_usb_open(&ftdic, 0x104f, 0x0002);
++  f = ftdi_usb_open(&ftdic, vendor, reader);
+   if(f < 0 && f != -5) {
+-    fprintf(stderr, "can't find any Smartmouse USB (VID:0x104f/PID:0x0002): %d\n",f);
++    fprintf(stderr, "can't find any Smartmouse USB (VID:%#x/PID:%#x)\n",vendor,reader);
+     exit(-1);
+   }
+   printf("Smartmouse USB found: %d\n",f);
+@@ -105,4 +123,6 @@
+
+   ftdi_usb_close(&ftdic);
+   ftdi_deinit(&ftdic);
++
++  exit(0);
+ }
