@@ -6,11 +6,11 @@ diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.h linux-2.6.13.1/drivers/u
  #define FTDI_XF_640_PID 0xFC0E	/* 640: Two line Display */
  #define FTDI_XF_642_PID 0xFC0F	/* 642: Two line Display */
 +#define WBE_VID                      0x104F
-+//#define WBE_SMARTMOUSE_PID   0x0002  /* Smartmouse USB */
++#define WBE_SMARTMOUSE_PID1   0x0001  /* Smartmouse USB */
 +#define WBE_SMARTMOUSE_PID2   0x0002  /* Smartmouse USB */
 +#define WBE_SMARTMOUSE_PID3   0x0003  /* Smartmouse USB */
 +#define WBE_SMARTMOUSE_PID4   0x0004  /* Smartmouse USB */
-+//#define FTDI_8U232AM_PID 0x6002 /* FTDI USB2Serial */
++#define FTDI_8U232AM_PID1 0x6001 /* FTDI USB2Serial */
 +#define FTDI_8U232AM_PID2 0x6002 /* FTDI USB2Serial */
 +#define FTDI_8U232AM_PID3 0x6003 /* FTDI USB2Serial */
 +#define FTDI_8U232AM_PID4 0x6004 /* FTDI USB2Serial */
@@ -33,11 +33,11 @@ diff -burN linux-2.6.13.1/drivers/usb/serial/ftdi_sio.c linux-2.6.13.1/drivers/u
  	{ USB_DEVICE(FTDI_VID, FTDI_MHAM_Y6_PID) },
  	{ USB_DEVICE(FTDI_VID, FTDI_MHAM_Y8_PID) },
  	{ USB_DEVICE(EVOLUTION_VID, EVOLUTION_ER1_PID) },
-+//	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID) },
++	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID1) },
 +	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID2) },
 +	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID3) },
 +	{ USB_DEVICE(WBE_VID, WBE_SMARTMOUSE_PID4) },
-+// { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID) },
++ { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID1) },
 + { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID2) },
 + { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID3) },
 + { USB_DEVICE(FTDI_VID, FTDI_8U232AM_PID4) },
