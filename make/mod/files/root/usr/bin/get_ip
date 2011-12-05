@@ -2,8 +2,8 @@
 
 [ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
 
-local ip=""
-local retval=""
+# Global result
+IP=""
 
 helpmsg() {
 echo "get_ip - determine external IP address"
@@ -21,97 +21,83 @@ echo "get_ip - determine external IP address"
 }
 
 # Detect private (RFC 1918) or link-local (RFC 5735) IPs
-check_local_ip() {
-	[ $retval -ne 0 ] && return
-	# 10.0.0.0/8 (private), 192.168.0.0/16 (private), 169.254.0.0/16 (link-local), 
-	if [ "$ip" != "${ip#10.}" ] || [ "$ip" != "${ip#192.168.}" ] || [ "$ip" != "${ip#169.254.}" ]; then
-		retval=3
-		ip=""
-		return
-	fi
+ip_private()
+{
+	local ip=$1
+	# 10.0.0.0/8 (private), 192.168.0.0/16 (private), 169.254.0.0/16 (link-local)
+	(
+		[ "$ip" != "${ip#10.}" ] ||
+		[ "$ip" != "${ip#192.168.}" ] ||
+		[ "$ip" != "${ip#169.254.}" ]
+	) && return 0
 	# 172.16.0.0/12 (private)
-	if [ "$ip" != "${ip#172.}" ]; then
-		local ip_part=$(echo $ip | cut -d '.' -f 2)
-		if [ $ip_part -ge 16 ] && [ $ip_part -le 31 ]; then
-			retval=3
-			ip=""
-			return
-		fi
-	fi
+	[ "$ip" == "${ip#172.}" ] && return 1
+	ip=$(echo $ip | cut -d '.' -f 2)
+	[ $ip -ge 16  ] && [ $ip -le 31 ] && return 0
+	return 1
 }
 
 via_dsld() {
-	ip="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
-	retval=$?
-	[ -z "$ip" ] && retval=2
-	check_local_ip
+	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
+	[ -n "$IP" ] && return 0
+	return 1
 }
 
 via_extquery() {
 	# Read cache file (max. age 1 minute)
-	ip=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
-	if [ -n "$ip" ]; then
-		retval=0
-		return
-	fi
-
-	# If supported by wget(-gnu), don't wait forever
+	IP=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
+	[ -n "$IP" ] && return 0
+	# If supported by wget(-gnu), don't wait forever:
 	SHORTWAIT="-t 1"
 	if which wget-gnu >/dev/null; then
 		WGET="wget-gnu $SHORTWAIT"
 	else
 		wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
 	fi
-
 	# Get IP from external web site, max. 3 tries
 	for turn in 1 2 3; do
-		ip="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
-		retval=$?
-		[ $retval -eq 0 ] && break
+		IP="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
+		if [ $? -eq 0 ] && [ -n "$IP" ]; then
+			echo "$IP" > /tmp/get_ip.cache
+			return 0
+		fi
 	done
-
-	# Save IP to cache file
-	[ $retval -eq 0 ] && echo "$ip" > /tmp/get_ip.cache
+	return 1
 }
 
 via_ostat() {
-	ip="$(cat /var/run/onlinestat 2>/dev/null | sed -rn 's!^IPADDR ([0-9.]+)!\1!p')"
-	retval=$?
-	[ -z "$ip" ] && retval=2
-	check_local_ip
+	IP="$(cat /var/run/onlinestat 2>/dev/null | sed -rn 's!^IPADDR ([0-9.]+)!\1!p')"
+	[ -n "$IP" ] && return
+	return 1
 }
 
 via_webcm() {
 	local queryfile="/usr/www/all/html/query.txt"
 	local querystring=""
 	if which ctlmgr_ctl >/dev/null; then
-		ip=$(ctlmgr_ctl r connection0 pppoe:status/ip)
-		retval=$?
+		IP=$(ctlmgr_ctl r connection0 pppoe:status/ip)
 	else
 		if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
 			querystring="var:n[0]=connection0:pppoe:status/ip"
 		else
 			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
 		fi
-		ip="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
-		retval=$?
+		IP="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
 	fi
-	[ $retval -ge 170 ] && retval=0 	# i get [box=val]: 7170=176, 7270=177, 7141=172
-	check_local_ip
+	# ctlmgr_ctl return values [box=val]: 7170=176, 7270=177, 7141=172
+	# Caveat: must use "-o" instead of "||", otherwise "$?" would be reset
+	[ $? -eq 0 -o $? -ge 170 ] && return 0
+	return 1
 }
 
-# Use user-defined method if no argument is given
-if [ $# -eq 0 ]; then
-	get_method="$MOD_GET_IP_METHOD"
-else
-	get_method="$1"
-fi
+# Set user-defined method (e.g. via web UI) if no argument is given
+[ $# -eq 0 ] && get_method="$MOD_GET_IP_METHOD" || get_method="$1"
 
 case $get_method in
 	-a|--all|"")
 		for mode in dsld webcm extquery ostat; do
 			via_$mode
-			[ $retval -eq 0 ] && break
+			[ $? -eq 0 ] && ! ip_private "$IP" && break
 		done
 		;;
 	-d|--dsld)
@@ -136,9 +122,10 @@ case $get_method in
 		;;
 esac
 
-if [ $retval -eq 0 ]; then
-	echo "$ip"
+if [ $? -eq 0 ] && ! ip_private "$IP"; then
+	echo "$IP"
+	exit 0
 else
-	echo "get_ip error (exit code $retval)" >&2
+	echo "get_ip error" >&2
+	exit 1
 fi
-exit $retval
