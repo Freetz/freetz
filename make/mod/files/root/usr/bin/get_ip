@@ -20,16 +20,20 @@ echo "get_ip - determine external IP address"
 	echo
 }
 
-# dont return local-ips like 192.168.178.1
+# Detect private (RFC 1918) or link-local (RFC 5735) IPs
 check_local_ip() {
 	[ $retval -ne 0 ] && return
-	for local_ip in $(ifconfig | sed -n 's/.*inet addr:\([0-9\.]*\) .*/\1/p'); do
-		if [ "$local_ip" == "$ip" ]; then
-			ip=""
-			retval=3
-			break
-		fi
-	done
+	# 10.0.0.0/8 (private)
+	[ "$ip" != "${ip#10.}" ] && return
+	# 192.168.0.0/16 (private)
+	[ "$ip" != "${ip#192.168.}" ] && return
+	# 169.254.0.0/16 (link-local)
+	[ "$ip" != "${ip#169.254.}" ] && return
+	# 172.16.0.0/12 (private)
+	[ "$ip" == "${ip#172.}" ] && retval=3 && return
+	local ip_part=$(echo $ip | cut -d '.' -f 2)
+	[ $ip_part -ge 16 ] && [ $ip_part -le 31 ] && return
+	retval=3
 }
 
 via_dsld() {
