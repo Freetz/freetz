@@ -19,8 +19,7 @@ start() {
 	$IODINE_TUNIP $IODINE_DOMAIN
 }
 
-stop() {
-	killall $DAEMON_BIN >/dev/null 2>&1
+stop_post() {
 	rm -rf /tmp/$DAEMON_BIN
 }
 
