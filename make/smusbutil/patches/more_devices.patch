@@ -17,15 +17,15 @@
    char buf[1];
    buf[0] = 0;
    e = 0;
-   char frq, opmode;
-
+   char frq, opmode; 
+ 
 -  if (argc != 3)
 +  if (argc != 4)
    {
      print_usage();
      exit(-1);
    }
-
+ 
    switch(atoi(argv[1]))  {
 +    case 0:
 +      reader = 0x0001;
@@ -48,26 +48,26 @@
      case 3580:                     //3,58 = 10 = 2
        frq = 2;
        break;
-@@ -62,12 +80,12 @@
-
+@@ -62,12 +83,12 @@
+ 
    buf[0] |= frq<<4;
-
+ 
 -  if(strcmp(argv[2], "smartmouse") == 0)  {
 +  if(strcmp(argv[3], "smartmouse") == 0)  {
      buf[0] |= 1<<6;
      e = 1;
    }
-
+ 
 -  if(strcmp(argv[2], "phoenix") == 0)  {
 +  if(strcmp(argv[3], "phoenix") == 0)  {
      e = 1;
    }
-
-@@ -78,9 +96,9 @@
-
+ 
+@@ -78,9 +99,9 @@
+ 
    ftdi_init(&ftdic);
-
--  f = ftdi_usb_open(&ftdic, 0x104f, 0x0002);
+ 
+-  f = ftdi_usb_open(&ftdic, 0x104f, 0x0002); 
 +  f = ftdi_usb_open(&ftdic, vendor, reader);
    if(f < 0 && f != -5) {
 -    fprintf(stderr, "can't find any Smartmouse USB (VID:0x104f/PID:0x0002): %d\n",f);
@@ -75,8 +75,8 @@
      exit(-1);
    }
    printf("Smartmouse USB found: %d\n",f);
-@@ -105,4 +123,6 @@
-
+@@ -105,4 +126,6 @@
+ 
    ftdi_usb_close(&ftdic);
    ftdi_deinit(&ftdic);
 +
