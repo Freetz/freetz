@@ -44,14 +44,14 @@ via_dsld() {
 }
 
 via_extquery() {
-	#read cache-file (max age 1 minute)
+	# Read cache file (max. age 1 minute)
 	ip=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
 	if [ -n "$ip" ]; then
 		retval=0
 		return
 	fi
 
-	#if supported by wget(-gnu), don't wait forever:
+	# If supported by wget(-gnu), don't wait forever:
 	SHORTWAIT="-t 1"
 	if which wget-gnu >/dev/null; then
 		WGET="wget-gnu $SHORTWAIT"
@@ -59,14 +59,14 @@ via_extquery() {
 		wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
 	fi
 
-	#"download" ip, max 3 tries
+	# Get IP from external web site, max. 3 tries
 	for turn in 1 2 3; do
 		ip="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
 		retval=$?
 		[ $retval -eq 0 ] && break
 	done
 
-	#save ip to cache-file
+	# Save IP to cache file
 	[ $retval -eq 0 ] && echo "$ip" > /tmp/get_ip.cache
 }
 
@@ -96,7 +96,7 @@ via_webcm() {
 	check_local_ip
 }
 
-#use user-define method if no argument is given
+# Use user-defined method if no argument is given
 if [ $# -eq 0 ]; then
 	get_method="$MOD_GET_IP_METHOD"
 else
