@@ -6,18 +6,20 @@
 IP=""
 
 helpmsg() {
-echo "get_ip - determine external IP address"
-	echo
-	echo "Usage: $0 [option]"
-	echo "    -a, --all      - use all methods (order: dsld, webcm, extquery, ostat) [recommended]"
-	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
-	echo "    -e, --extquery - use external site query method (checkip.dyndns.org)"
-	echo "    -o, --ostat    - use onlinestat method (since firmware 04.87)"
-	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method"
-	echo "    -?, --help     - print this help message"
-	echo
-	echo "  current default method: $MOD_GET_IP_METHOD"
-	echo
+cat << EOF
+get_ip - determine external IP address"
+
+Usage: $0 [option]
+    -a, --all      - use all methods (order: dsld, webcm, extquery, ostat) [recommended]
+    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)
+    -e, --extquery - use external site query method (checkip.dyndns.org)
+    -o, --ostat    - use onlinestat method (since firmware 04.87)
+    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method
+    -?, --help     - print this help message
+
+  current default method: $MOD_GET_IP_METHOD
+
+EOF
 }
 
 # Detect private (RFC 1918) or link-local (RFC 5735) IPs
@@ -47,7 +49,7 @@ via_extquery() {
 	# Read cache file (max. age 1 minute)
 	IP=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
 	[ -n "$IP" ] && return 0
-	# If supported by wget(-gnu), don't wait forever:
+	# If supported by wget(-gnu), don't wait forever
 	SHORTWAIT="-t 1"
 	if which wget-gnu >/dev/null; then
 		WGET="wget-gnu $SHORTWAIT"
