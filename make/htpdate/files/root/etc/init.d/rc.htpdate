@@ -24,11 +24,7 @@ run() {
 	fi
 }
 
-config() {
-	#multid
-	[ "$HTPDATE_MULTID" != "yes" ] && local _htpdate_multid=enable || local _htpdate_multid=disable
-	/etc/init.d/rc.multid ntp_$_htpdate_multid >/dev/null
-	#cron
+set_cron() {
 	local HTPDATE_CRON_OLD="$(cat /tmp/cron.d/htpdate 2>/dev/null)"
 	if [ "$HTPDATE_ENABLED" == "yes" ]; then
 		local HTPDATE_CRON_NEW="$HTPDATE_CRON_INT  /etc/init.d/rc.htpdate cron"
@@ -38,7 +34,7 @@ config() {
 		echo "$HTPDATE_CRON_NEW" > /tmp/cron.d/htpdate
 		/etc/init.d/rc.crond reload
 	fi
-	#
+
 	run
 }
 
@@ -51,7 +47,7 @@ case $1 in
 			echo "$DAEMON is disabled." 1>&2
 			exit 1
 		fi
-		config 1>&2
+		set_cron 1>&2
 		;;
 	unload)
 		modunreg cgi 'htpdate'
@@ -61,7 +57,7 @@ case $1 in
 		run
 		;;
 	config)
-		config
+		set_cron
 		;;
 	cron)
 		[ "$HTPDATE_ENABLED" != "yes" ] && return

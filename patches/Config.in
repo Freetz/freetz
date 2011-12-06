@@ -884,8 +884,8 @@ config FREETZ_REMOVE_SUPPORT
 
 config FREETZ_REMOVE_TR069
 	bool "Remove tr069 stuff" if FREETZ_SHOW_ADVANCED
-	depends on \
-		FREETZ_HAS_AVM_TR069
+	depends on FREETZ_HAS_AVM_TR069
+	select FREETZ_AVMDAEMON_DISABLE_TR069
 	default n
 	help
 		Removes libtr069 to save space. This also removes libtr064.
@@ -932,6 +932,7 @@ config FREETZ_REMOVE_UMTSD
 
 config FREETZ_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd/upnpd)"
+	select FREETZ_AVMDAEMON_DISABLE_IGD
 	select FREETZ_REMOVE_UPNP_LIBS if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
@@ -1138,3 +1139,31 @@ config FREETZ_DISABLE_SERIAL_CONSOLE
 		its serial port (/dev/ttyS0). This is particularly helpful if you
 		want to use the serial port exclusively with another application,
 		e.g. minicom.
+
+comment "AVM daemons ----------------------------"
+
+config FREETZ_AVMDAEMON_DISABLE_IGD
+	bool "Disable igd/upnp"
+	default n
+	help
+		Disables dsld's IGD & multid's UPNP-device
+
+config FREETZ_AVMDAEMON_DISABLE_NTP
+	bool "Disable ntp client"
+	default n
+	help
+		Disables multid's basic NTP client
+
+config FREETZ_AVMDAEMON_DISABLE_IGM
+	bool "Disable IGMP"
+	default n
+	help
+		Disables multid's IGMP proxy
+
+config FREETZ_AVMDAEMON_DISABLE_TR069
+	bool "Disable tr069"
+	depends on FREETZ_HAS_AVM_TR069
+	default n
+	help
+		Disables multid's tr069discover
+

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+log() {
+	local _log="$(cat)" # save stdin to _log
+	[ -z "$_log" ] && return
+	echo "AVMDSLD: $_log" > /dev/console
+	echo "$_log" >> /var/log/mod_net.log
+	logger -t AVMDSLD "$_log"
+}
+
+dsld_mode=start
+while [ $# -gt 0 ]; do
+	[ "$1" == "-s" ] && dsld_mode="stop"
+	shift
+done
+
+/etc/init.d/rc.dsld $dsld_mode 2>&1 | log
+

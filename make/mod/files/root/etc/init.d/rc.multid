@@ -5,31 +5,49 @@ DAEMON_LONG_NAME="AVM multid"
 CONF_NAME=avm
 . /etc/init.d/modlibrc
 
-TMPFILE_IGD=/tmp/.multid.igd
-TMPFILE_NTP=/tmp/.multid.ntp
+TMPFILE="/tmp/.multid."
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 # include environment required for multid restart
 [ -r /var/env.cache ] && . /var/env.cache
 
 start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 
-	if [ -e $TMPFILE_IGD ]; then
-		DAEMON_CMD_IGD=$(cat $TMPFILE_IGD)
+	if [ -e ${TMPFILE}IGD ]; then
+		DAEMON_CMD_IGD=$(cat ${TMPFILE}IGD)
 	else
-		if [ ! -e /sbin/igdd -a ! -e /sbin/upnpd ]; then
-			DAEMON_CMD_IGD="$(multid -? 2>&1 | grep "upnp" | grep -v "plugins" | sed 's/^[ \t]*//' | cut -c 1-3)"
+		if [ "$FREETZ_AVMDAEMON_DISABLE_IGD" == "y" ]; then
+			DAEMON_CMD_IGD="$(multid -? 2>&1 | sed -nr 's/^[ \t]*([^ ]*).*upnp.[^p][^l][^u][^g].*/\1/p')"
 		fi
-		echo "$DAEMON_CMD_IGD" > $TMPFILE_IGD
+		echo "$DAEMON_CMD_IGD" > ${TMPFILE}IGD
 	fi
 
-	if [ -e $TMPFILE_NTP ]; then
-		DAEMON_CMD_NTP=$(cat $TMPFILE_NTP)
+	if [ -e ${TMPFILE}NTP ]; then
+		DAEMON_CMD_NTP=$(cat ${TMPFILE}NTP)
 	else
-		if [ -e "/usr/sbin/ntpd" -o -e "/sbin/chronyd" ]; then
-			DAEMON_CMD_NTP="$(multid -? 2>&1 | grep "NTP" | sed 's/^[ \t]*//' | cut -c 1-3 | sed 's/ //')"
+		if [ "$FREETZ_AVMDAEMON_DISABLE_NTP" == "y" ]; then
+			DAEMON_CMD_NTP="$(multid -? 2>&1 | sed -nr 's/^[ \t]*([^ ]*).*NTP client.*/\1/p')"
 		fi
-		echo "$DAEMON_CMD_NTP" > $TMPFILE_NTP
+		echo "$DAEMON_CMD_NTP" > ${TMPFILE}NTP
+	fi
+
+	if [ -e ${TMPFILE}IGM ]; then
+		DAEMON_CMD_IGM=$(cat ${TMPFILE}IGM)
+	else
+		if [ "$FREETZ_AVMDAEMON_DISABLE_IGM" == "y" ]; then
+			DAEMON_CMD_IGM="$(multid -? 2>&1 | sed -nr 's/^[ \t]*([^ ]*).*IGMP proxy.*/\1/p')"
+		fi
+		echo "$DAEMON_CMD_IGM" > ${TMPFILE}IGM
+	fi
+
+	if [ -e ${TMPFILE}069 ]; then
+		DAEMON_CMD_069=$(cat ${TMPFILE}069)
+	else
+		if [ "$FREETZ_AVMDAEMON_DISABLE_TR069" == "y" ]; then
+			DAEMON_CMD_069="$(multid -? 2>&1 | sed -nr 's/^[ \t]*([^ ]*).*without tr069.*/\1/p')"
+		fi
+		echo "$DAEMON_CMD_069" > ${TMPFILE}069
 	fi
 
 	#save ipv6 for 'lan' (since fw 04.86)
@@ -39,7 +57,7 @@ start() {
 	fi
 
 	rm -rf /var/tmp/avm-resolv.conf /var/tmp/resolv.conf 2>/dev/null
-	$DAEMON $DAEMON_CMD_IGD $DAEMON_CMD_NTP
+	$DAEMON $DAEMON_CMD_IGD $DAEMON_CMD_NTP $DAEMON_CMD_069 $DAEMON_CMD_IGM
 	exitval=$?
 	sleep 1
 	[ -f /tmp/flash/mod/multid.start ] && . /tmp/flash/mod/multid.start
@@ -82,15 +100,6 @@ stop() {
 	$DAEMON -s
 }
 
-ntp_mode() {
-	DAEMON_CMD_NTP_OLD="$(cat $TMPFILE_NTP 2>/dev/null)"
-	[ "$1" == "ntp_disable" ] && DAEMON_CMD_NTP_NEW="$(multid -? 2>&1 | grep "NTP" | sed 's/^[ \t]*//' | cut -c 1-3 | sed 's/ //')"
-	if [ "$DAEMON_CMD_NTP_OLD" != "$DAEMON_CMD_NTP_NEW" ]; then
-		echo "$DAEMON_CMD_NTP_NEW" > $TMPFILE_NTP
-		[ "$(modlib_status)" != "stopped" ] && modlib_restart
-	fi
-}
-
 case $1 in
 	""|load)
 		modreg daemon -p avm multid
@@ -110,11 +119,8 @@ case $1 in
 	status)
 		modlib_status
 		;;
-	ntp_*)
-		ntp_mode $1
-		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|status|ntp_enable|ntp_disable]" 1>&2
+		echo "Usage: $0 [start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
