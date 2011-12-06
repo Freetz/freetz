@@ -28,6 +28,7 @@ start() {
 		DAEMON_OPT="$(cat $TMPFILE_OPT)"
 	else
 		DAEMON_OPT=" -n"
+		[ "$CONFIG_RAMSIZE" == "8" ] && DAEMON_OPT="$DAEMON_OPT -r 600"
 		echo "$DAEMON_OPT" > $TMPFILE_OPT
 	fi
 
