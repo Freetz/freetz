@@ -14,6 +14,7 @@ Usage: $0 [option]
     -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)
     -e, --extquery - use external site query method (checkip.dyndns.org)
     -o, --ostat    - use onlinestat method (since firmware 04.87)
+    -r, --route    - use routing table
     -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method
     -?, --help     - print this help message
 
@@ -41,6 +42,12 @@ ip_private()
 
 via_dsld() {
 	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
+	[ -n "$IP" ] && return 0
+	return 1
+}
+
+via_route() {
+	IP="$(/sbin/showroutes | grep '/32 .* iface$' | cut -d '/' -f 1)"
 	[ -n "$IP" ] && return 0
 	return 1
 }
@@ -97,13 +104,16 @@ via_webcm() {
 
 case $get_method in
 	-a|--all|"")
-		for mode in dsld webcm extquery ostat; do
+		for mode in dsld webcm route extquery ostat; do
 			via_$mode
 			[ $? -eq 0 ] && ! ip_private "$IP" && break
 		done
 		;;
 	-d|--dsld)
 		via_dsld
+		;;
+	-r|--route)
+		via_route
 		;;
 	-e|--extquery)
 		via_extquery
