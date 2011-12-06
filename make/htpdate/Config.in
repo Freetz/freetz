@@ -1,11 +1,15 @@
 config FREETZ_PACKAGE_HTPDATE
 	bool "htpdate 1.0.4"
+	select FREETZ_REMOVE_CHRONYD if FREETZ_HAS_CHRONYD
 	default n
 	help
 		The HTTP Time Protocol (HTP) is used to synchronize a computer's time
 	        with web servers as reference time source. Htpdate will synchronize your
 	        computer's time by extracting timestamps from HTTP headers found
 	        in web server responses. Htpdate can be used as a daemon, to keep your
-	        computer synchronized.  
+	        computer synchronized.
 		WWW: http://www.clevervest.com/htp/
 		Manpage: http://linux.die.net/man/8/htpdate
+
+		This package automatically removes AVM'S chronyd if necessary.
+
