@@ -47,7 +47,7 @@ via_dsld() {
 }
 
 via_route() {
-	IP="$(/sbin/showroutes | grep '/32 .* iface$' | cut -d '/' -f 1)"
+	IP="$(/sbin/showroutes | sed -nr 's/(.*)\/32 .* iface$/\1/p')"
 	[ -n "$IP" ] && return 0
 	return 1
 }
