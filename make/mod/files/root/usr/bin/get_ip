@@ -24,38 +24,37 @@ EOF
 }
 
 # Detect private (RFC 1918) or link-local (RFC 5735) IPs
-ip_private()
+# Returns 0 for public IP, 1 for private IP, 2 if IP == ""
+ip_public()
 {
+	[ "$1" ] || return 2
 	local ip=$1
 	# 10.0.0.0/8 (private), 192.168.0.0/16 (private), 169.254.0.0/16 (link-local)
 	(
 		[ "$ip" != "${ip#10.}" ] ||
 		[ "$ip" != "${ip#192.168.}" ] ||
 		[ "$ip" != "${ip#169.254.}" ]
-	) && return 0
+	) && return 1
 	# 172.16.0.0/12 (private)
-	[ "$ip" == "${ip#172.}" ] && return 1
+	[ "$ip" == "${ip#172.}" ] && return 0
 	ip=$(echo $ip | cut -d '.' -f 2)
-	[ $ip -ge 16  ] && [ $ip -le 31 ] && return 0
-	return 1
+	[ $ip -ge 16  ] && [ $ip -le 31 ] && return 1 || return 0
 }
 
 via_dsld() {
 	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
-	[ -n "$IP" ] && return 0
-	return 1
+	ip_public "$IP" || return 1
 }
 
 via_route() {
 	IP="$(/sbin/showroutes | sed -nr 's/(.*)\/32 .* iface$/\1/p')"
-	[ -n "$IP" ] && return 0
-	return 1
+	ip_public "$IP" || return 1
 }
 
 via_extquery() {
 	# Read cache file (max. age 1 minute)
 	IP=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
-	[ -n "$IP" ] && return 0
+	[ "$IP" ] && return 0
 	# If supported by wget(-gnu), don't wait forever
 	SHORTWAIT="-t 1"
 	if which wget-gnu >/dev/null; then
@@ -66,27 +65,25 @@ via_extquery() {
 	# Get IP from external web site, max. 3 tries
 	for turn in 1 2 3; do
 		IP="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
-		if [ $? -eq 0 ] && [ -n "$IP" ]; then
-			echo "$IP" > /tmp/get_ip.cache
-			return 0
-		fi
+		[ $? -eq 0 ] && [ "$IP" ] && echo "$IP" > /tmp/get_ip.cache && return 0
 	done
 	return 1
 }
 
 via_ostat() {
-	IP="$(cat /var/run/onlinestat 2>/dev/null | sed -rn 's!^IPADDR ([0-9.]+)!\1!p')"
-	[ -n "$IP" ] && return
-	return 1
+	IP="$(cat /var/run/onlinestat 2>/dev/null | sed -nr 's!^IPADDR ([0-9.]+)!\1!p')"
+	ip_public "$IP" || return 1
 }
 
 via_webcm() {
 	local queryfile="/usr/www/all/html/query.txt"
 	local querystring=""
 	if which ctlmgr_ctl >/dev/null; then
+		# Firmware >= *.04.76
 		IP=$(ctlmgr_ctl r connection0 pppoe:status/ip)
 	else
-		if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
+		# Older firmware
+		if [ "$(sed -n '/var:n\[/p' $queryfile)" != "" ]; then
 			querystring="var:n[0]=connection0:pppoe:status/ip"
 		else
 			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
@@ -95,18 +92,17 @@ via_webcm() {
 	fi
 	# ctlmgr_ctl return values [box=val]: 7170=176, 7270=177, 7141=172
 	# Caveat: must use "-o" instead of "||", otherwise "$?" would be reset
-	[ $? -eq 0 -o $? -ge 170 ] && return 0
-	return 1
+	[ $? -eq 0 -o $? -ge 170 ] && ip_public "$IP" && return 0 || return 1
 }
 
 # Set user-defined method (e.g. via web UI) if no argument is given
-[ $# -eq 0 ] && get_method="$MOD_GET_IP_METHOD" || get_method="$1"
+[ $# -eq 0 ] && method="$MOD_GET_IP_METHOD" || method="$1"
 
-case $get_method in
+case $method in
 	-a|--all|"")
 		for mode in dsld webcm route extquery ostat; do
 			via_$mode
-			[ $? -eq 0 ] && ! ip_private "$IP" && break
+			[ $? -eq 0 ] && break
 		done
 		;;
 	-d|--dsld)
@@ -134,10 +130,5 @@ case $get_method in
 		;;
 esac
 
-if [ $? -eq 0 ] && ! ip_private "$IP"; then
-	echo "$IP"
-	exit 0
-else
-	echo "get_ip error" >&2
-	exit 1
-fi
+[ $? -ne 0 ] && echo "get_ip error" >&2 && exit 1
+echo "$IP"
