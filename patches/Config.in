@@ -266,10 +266,11 @@ config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_FON_WLAN_7320
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		FREETZ_TYPE_FON_WLAN_7330
 	default n
 	help
-		Remove lib/modules/dsp_ur8/ur8-A-dsl.bin. This saves about 400 KB of
+		Remove lib/modules/dsp_*/*-A-dsl.bin. This saves about 400 KB of
 		uncompressed data size.
 
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
@@ -277,10 +278,11 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7320
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		FREETZ_TYPE_FON_WLAN_7330
 	default n
 	help
-		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
+		Remove lib/modules/dsp_*/*-B-dsl.bin. This saves about 400 KB of
 		uncompressed data size.
 
 menu "Remove v1/v2 piglet file(s)"
