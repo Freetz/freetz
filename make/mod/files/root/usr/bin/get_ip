@@ -54,6 +54,9 @@ via_route() {
 		ip_public "$IP" || return 1
 	else
 		# Older firmware
+		# Commented version works without Busybox "route" applet, but emulates
+		# it. Keep it for now (even though it looks ugly) - just in case...
+		#for ip in $(cat /proc/net/route | sed -nr 's/^dsl[[:blank:]]+([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]]).*FFFFFFFF.*/0x\4 0x\3 0x\2 0x\1/p' | xargs printf '%u.%u.%u.%u\n'); do
 		for ip in $(route -n | sed -nr 's/^([1-9][0-9]*\.[0-9]+\.[0-9]+\.[0-9]+) +.* +dsl$/\1/p'); do
 			ip_public "$ip" && IP="$ip" && return 0
 		done
