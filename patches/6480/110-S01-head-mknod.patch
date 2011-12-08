@@ -1,0 +1,13 @@
+--- etc/init.d/S01-head	2011-12-08 09:11:19+01:00
++++ etc/init.d/S01-head	2011-12-08 09:11:19+01:00
+@@ -335,6 +335,10 @@
+ tffs_nodes_list="$tffs_nodes_list $((0xC9)),websrv_ssl_key.pem"
+ tffs_nodes_list="$tffs_nodes_list $((0xCA)),websrv_ssl_cert.pem"
+ #########################################################################
++## Freetz
++#########################################################################
++tffs_nodes_list="$tffs_nodes_list $((0x3C)),freetz"
++#########################################################################
+ ## NODES anlegen, wenn nicht als _file_ existent
+ #########################################################################
+ for node in ${tffs_nodes_list} ; do

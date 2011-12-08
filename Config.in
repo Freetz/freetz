@@ -55,7 +55,7 @@ choice
 		select FREETZ_AVM_VERSION_04_57
 		bool "2170"
 
-	config FREETZ_TYPE_6480_LTE
+	config FREETZ_TYPE_6480
 		select FREETZ_AVM_VERSION_3370_05_07
 		bool "6480 LTE"
 
@@ -462,7 +462,7 @@ config FREETZ_AVM_VERSION_STRING
 config FREETZ_FILESYSTEM_MTD_SIZE
 	int "FILESYSTEM (64K blocks)"	if FREETZ_TYPE_CUSTOM
 	default 768			if \
-		FREETZ_TYPE_6480_LTE || \
+		FREETZ_TYPE_6480 || \
 		FREETZ_TYPE_WLAN_3370
 	default 0
 	help
@@ -504,7 +504,7 @@ config FREETZ_TYPE_PREFIX
 	default "5124"						if FREETZ_TYPE_FON_5124
 	default "5140"						if FREETZ_TYPE_FON_5140
 	default "fon_wlan"					if FREETZ_TYPE_FON_WLAN
-	default "6480"						if FREETZ_TYPE_6480_LTE
+	default "6480"						if FREETZ_TYPE_6480
 	default "7050"						if FREETZ_TYPE_FON_WLAN_7050
 	default "7112"						if FREETZ_TYPE_FON_WLAN_7112
 	default "7113"						if FREETZ_TYPE_FON_WLAN_7113
@@ -703,7 +703,7 @@ config FREETZ_TARGET_REF_16MB
 config FREETZ_TARGET_REF_48MB
 	bool
 	default y			if \
-		FREETZ_TYPE_6480_LTE || \
+		FREETZ_TYPE_6480 || \
 		FREETZ_TYPE_WLAN_3370
 
 config FREETZ_TARGET_REF
@@ -718,7 +718,7 @@ config FREETZ_KERNEL_REF_4MB
 	default y			if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
-		FREETZ_TYPE_6480_LTE || \
+		FREETZ_TYPE_6480 || \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5050 || \
@@ -769,7 +769,7 @@ config FREETZ_KERNEL_REF
 config FREETZ_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if FREETZ_TYPE_CUSTOM
 	default 64			if \
-		FREETZ_TYPE_6480_LTE || \
+		FREETZ_TYPE_6480 || \
 		FREETZ_TYPE_WLAN_3370
 	default 119			if \
 		FREETZ_TYPE_FON_5124 || \
@@ -927,7 +927,7 @@ config FREETZ_DL_SITE
 											FREETZ_TYPE_FON) && \
 											FREETZ_TYPE_LANG_EN && \
 											FREETZ_TYPE_ANNEX_B
-	default "@AVM/fritzbox_6840_lte/firmware/deutsch"		if	FREETZ_TYPE_6480_LTE
+	default "@AVM/fritzbox_6840_lte/firmware/deutsch"		if	FREETZ_TYPE_6480
 	default "@AVM/fritzbox.fon_5010/firmware/deutsch_a-ch"		if	FREETZ_TYPE_FON_5010
 	default "@AVM/fritzbox.fon_5050/firmware"			if	FREETZ_TYPE_FON_5050
 	default "@AVM/fritzbox.fon_5124/firmware/english/annex_a"	if	FREETZ_TYPE_FON_5124 && \
@@ -1029,7 +1029,7 @@ config FREETZ_DL_SOURCE
 											FREETZ_TYPE_FON) && \
 											FREETZ_TYPE_LANG_EN && \
 											FREETZ_TYPE_ANNEX_B
-	default "FRITZ.Box_6840_LTE.105.05.07.image"				if	FREETZ_TYPE_6480_LTE
+	default "FRITZ.Box_6840_LTE.105.05.08.image"				if	FREETZ_TYPE_6480
 	default "fritz.box_fon_5010.annexa.48.04.43.image"			if	FREETZ_TYPE_FON_5010
 	default "fritz.box_fon_5050.12.04.31.image"				if	FREETZ_TYPE_FON_5050
 	default "FRITZ.Box_Fon_5124.AnnexA.en.57.04.76.image"			if	FREETZ_TYPE_FON_5124 && \
@@ -1140,7 +1140,7 @@ config FREETZ_DL_SOURCE_MD5
 								FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "d4f060e9f5b0f10f1b9bc38d58a35bb6"	if	(FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && \
 								FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
-	default "06d8ab46e67dbee3510ab019477325fb"	if	FREETZ_TYPE_6480_LTE
+	default "9cacc305ab56c9a3bde4d6fbfa7bbf3a"	if	FREETZ_TYPE_6480
 	default "cdea5c36f629ce85e1a1613342cfc9f3"	if	FREETZ_TYPE_FON_5010
 	default "8961ba722c8e0be5ece061d75a07cf65"	if	FREETZ_TYPE_FON_5050
 	default "e6907e496a8351fa484bc64ff9f63bf0"	if	FREETZ_TYPE_FON_5124 && FREETZ_TYPE_LANG_EN && \
@@ -1801,7 +1801,7 @@ config FREETZ_TARGET_ARCH_BE
 	bool
 	default y
 	depends on \
-		FREETZ_TYPE_6480_LTE || \
+		FREETZ_TYPE_6480 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7330 || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
