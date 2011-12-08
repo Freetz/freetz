@@ -24,6 +24,10 @@ cat << EOF
 <input type="hidden" name="wrapper" value="no">
 <input id="wrap1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="wrap1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>
 </p>
+<p>
+<input type="hidden" name="multid_restart" value="no">
+<input id="multid1" type="checkbox" name="multid_restart" value="yes"$multid_restart_chk><label for="multid1"> $(lang de:"multid restarten" en:"restart multid")</label><br>
+</p>
 EOF
 sec_end
 

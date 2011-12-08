@@ -7,7 +7,7 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 DAEMON_USER=nobody
 DAEMON_GROUP=nobody
 
-[ "$(/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
+[ "$(/etc/init.d/rc.multid status)" != "running" -o "$DNSMASQ_MULTID_RESTART" != "yes" ] && nomultid=y
 
 config() {
 	modlib_config
