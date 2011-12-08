@@ -12,6 +12,7 @@ check "$DNSMASQ_STOP_DNS_REBIND" yes:stop_dns_rebind
 check "$DNSMASQ_TFTP" yes:tftp_yes "*":tftp_no
 check "$DNSMASQ_AVM_DNS" yes:avm_dns
 check "$DNSMASQ_WRAPPER" yes:wrapper
+check "$DNSMASQ_MULTID_RESTART" yes:multid_restart
 check "$DNSMASQ_LOG_QUERIES" yes:log_queries
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
