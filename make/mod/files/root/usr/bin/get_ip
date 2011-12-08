@@ -42,13 +42,23 @@ ip_public()
 }
 
 via_dsld() {
+	# Firmware ca. 04.68 and newer should be safe, but some boxes had it since 04.31
 	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
 	ip_public "$IP" || return 1
 }
 
 via_route() {
-	IP="$(/sbin/showroutes | sed -nr 's/(.*)\/32 .* iface$/\1/p')"
-	ip_public "$IP" || return 1
+	if [ -f /sbin/showroutes ]; then
+		# Firmware ca. 04.67/68 (Fritz!Box) / 04.57 (Speedport) and newer
+		IP="$(/sbin/showroutes | sed -nr 's/(.*)\/32 .* iface$/\1/p')"
+		ip_public "$IP" || return 1
+	else
+		# Older firmware
+		for ip in $(route -n | sed -nr 's/^([1-9][0-9]*\.[0-9]+\.[0-9]+\.[0-9]+) +.* +dsl$/\1/p'); do
+			ip_public "$ip" && IP="$ip" && return 0
+		done
+		return 1
+	fi
 }
 
 via_extquery() {
@@ -79,7 +89,7 @@ via_webcm() {
 	local queryfile="/usr/www/all/html/query.txt"
 	local querystring=""
 	if which ctlmgr_ctl >/dev/null; then
-		# Firmware >= *.04.76
+		# Firmware ca. 04.76 and newer
 		IP=$(ctlmgr_ctl r connection0 pppoe:status/ip)
 	else
 		# Older firmware
