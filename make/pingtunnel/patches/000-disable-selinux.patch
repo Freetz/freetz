@@ -1,0 +1,20 @@
+--- Makefile	2011-12-05 14:40:07.375686531 +0100
++++ Makefile_	2011-12-05 14:39:24.368678630 +0100
+@@ -32,7 +32,7 @@
+ 	install ./ptunnel.8 $(mandir)/ptunnel.8
+
+ ptunnel: $(PT_OBJS)
+-	$(CC) -o $@ $^ $(LDOPTS) `[ -e /usr/include/selinux/selinux.h ] && echo -lselinux`
++	$(CC) -o $@ $^ $(LDOPTS)
+
+ ptunnel.exe: $(WIN32_PT_OBJS)
+ 	$(CC) -o $@ $^ $(WIN32_LDOPTS)
+@@ -47,7 +47,7 @@
+ 	$(CC) $(CFLAGS) -MM *.c > $@
+
+ %.o:%.c
+-	$(CC) $(CFLAGS) `[ -e /usr/include/selinux/selinux.h ] && echo -DHAVE_SELINUX` -c -o $@ $<
++	$(CC) $(CFLAGS)                                                                -c -o $@ $<
+
+ %.obj:%.c
+ 	$(WIN32_CC) $(WIN32_CFLAGS) -c -o $@ $<

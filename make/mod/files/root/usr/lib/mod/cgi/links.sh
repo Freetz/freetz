@@ -64,6 +64,7 @@ _cgi_location() {
 				conf)      _cgi_location "$out" cgi mod ;;
 				update)    "$out" "/cgi-bin/update/firmware.cgi" ;;
 				support)   "$out" "/cgi-bin/support/index.cgi" ;;
+				freetz)    "$out" "/cgi-bin/freetz.cgi" ;;
 			esac
 			;;
 		*)    "$out" "/error/unknown-type" "$type" ;;

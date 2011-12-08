@@ -7,8 +7,6 @@ REAL_GNU_KERNEL_NAME:=$(TARGET_ARCH)-unknown-linux-gnu
 GNU_TARGET_NAME:=$(TARGET_ARCH)-linux
 REAL_GNU_TARGET_NAME:=$(GNU_TARGET_NAME)-uclibc
 
-_empty:=
-_space:=$(_empty) $(_empty)
 define GET_MAJOR_VERSION
 $(strip $(subst $(_space),.,$(wordlist 1,$(if $(2),$(2),2),$(subst .,$(_space),$(1)))))
 endef

@@ -1,0 +1,78 @@
+--- etc/hotplug/udev-gsm-usb	2011-01-20 10:59:13.000000000 +0100
++++ etc/hotplug/udev-gsm-usb	2011-12-05 14:39:43.000000000 +0100
+@@ -37,9 +37,9 @@
+ ;;
+ 19d2) ## ZTE
+ sndusbmsg $DEVICE b 5553424312345678000000000000061b000000020000000000000000000000
++sndusbmsg $DEVICE b 5553424312345678000000000000061b000000020000000000000000000000
+ ;;
+ 1199) ## Sierra
+-echo sndusbmsg $DEVICE c 400b01 > /dev/console
+ sndusbmsg $DEVICE c 400b01
+ ;;
+ 12d1) ## Huawei
+--- etc/hotplug/udev-gsm-tty	2011-01-20 10:58:36.000000000 +0100
++++ etc/hotplug/udev-gsm-tty	2011-12-05 14:39:43.000000000 +0100
+@@ -1,19 +1,4 @@
+ #! /bin/sh
+-## USB GSM device handler
+-## Handles add and remove events -- one GSM Modem supported
+-##UDEV [4036.294373] add /class/tty/ttyUSB0 (tty)
+-##UDEV_LOG=3
+-##ACTION=add
+-##DEVPATH=/class/tty/ttyUSB0
+-##SUBSYSTEM=tty
+-##PHYSDEVPATH=/devices/platform/ifxusb_hcd/usb2/2-1/2-1:1.0/ttyUSB0
+-##PHYSDEVBUS=usb-serial
+-##PHYSDEVDRIVER=option1
+-##SEQNUM=953
+-##DEVNAME=/dev/ttyUSB0
+-##MAJOR=188
+-##MINOR=0
+-##DEVLINKS=/dev/char/188:0
+ CONSOLE=/dev/console
+ exec 2> /dev/null > /dev/null
+ if [ "$ACTION" = "" ]; then
+@@ -27,8 +12,9 @@
+ passeeren
+ case $ACTION in
+ add)
+-VID=`cat /sys/"$DEVPATH"/../../idVendor`
+-PID=`cat /sys/"$DEVPATH"/../../idProduct`
++local USBDEVPATH="/sys/$DEVPATH/device/../../"
++VID=`cat $USBDEVPATH/idVendor`
++PID=`cat $USBDEVPATH/idProduct`
+ ## prepare usb gsm modules...
+ killall umtsd
+ if [ "$CONFIG_USB_GSM_VOICE" = "y" ]; then
+@@ -36,7 +22,6 @@
+ fi
+ rm -f /var/gsm/tty*
+ TTYUSB=/dev/ttyUSB
+-test -c "$TTYUSB"0 || TTYUSB=/dev/tts/USB
+ test -d /var/gsm || mkdir /var/gsm
+ ln -f -s "$TTYUSB"0 /var/gsm/ttyDATA
+ case $VID in
+@@ -97,6 +82,10 @@
+ 0031)
+ ln -f -s "$TTYUSB"2 /var/gsm/ttyDATA
+ ;;
++0104)
++ln -f -s "$TTYUSB"1 /var/gsm/ttyCONTROL
++ln -f -s "$TTYUSB"3 /var/gsm/ttyDATA
++;;
+ 0117)
+ ln -f -s "$TTYUSB"2 /var/gsm/ttyDATA
+ ;;
+@@ -110,7 +99,9 @@
+ sleep 1
+ umtsd
+ if [ "$CONFIG_USB_GSM_VOICE" = "y" ]; then
+-csvd
++test -f /var/gsm/ttyVOICE && csvd
++else
++rm -f /var/gsm/ttyVOICE
+ fi
+ ;;
+ remove|stop)
+

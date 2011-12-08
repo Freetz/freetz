@@ -4,6 +4,7 @@
 . /usr/lib/libmodcgi.sh
 
 check "$MINIDLNA_ENABLED" yes:auto "*":man
+check "$MINIDLNA_RESCAN_ON_START" yes:rescan_on_start
 check "$MINIDLNA_INOTIFY" yes:inotify
 check "$MINIDLNA_ENABLE_TIVO" yes:enable_tivo
 check "$MINIDLNA_STRICT_DLNA" yes:strict_dlna
@@ -20,6 +21,11 @@ sec_end
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 local MINIDLNA_AVAILABLE_NIFS="$(ifconfig | sed -ne 's/^\([a-zA-Z.][a-zA-Z0-9]*\) .*/\1/p')"
 cat << EOF
+
+<p>
+<input type="hidden" name="rescan_on_start" value="no">
+<input id="c0" type="checkbox" name="rescan_on_start" value="yes"$rescan_on_start_chk><label for="c0">$(lang de:"kompletten Rescan beim Starten erzwingen" en:"force full rescan on start")</label>
+</p>
 
 <p>
 $(lang de:"Bezeichnung" en:"Description"):<br>
@@ -44,7 +50,7 @@ $(lang de:"Port" en:"Port"):&nbsp;
 
 <p>
 <input type="hidden" name="strict_dlna" value="no">
-<input id="c3" type="checkbox" name="strict_dlna" value="yes"$strict_dlna_chk><label for="c3">$(lang de:"serverseitiges Herunterrechnen von Bildern erlauben" en:"allow server-side downscaling of images")</label>
+<input id="c3" type="checkbox" name="strict_dlna" value="yes"$strict_dlna_chk><label for="c3">$(lang de:"serverseitiges Herunterrechnen von Bildern erlauben" en:"allow server side downscaling of images")</label>
 </p>
 
 <p>
@@ -58,17 +64,17 @@ $(lang de:"Benachrichtigungsintervall (Sekunden)" en:"Notify interval (seconds)"
 </p>
 
 <p>
-$(lang de:"Datenbankverzeichnis" en:"Database-Directory"):<br>
+$(lang de:"Datenbankverzeichnis" en:"Database directory"):<br>
 <input type="text" name="db_dir" size="55" maxlength="255" value="$(html "$MINIDLNA_DB_DIR")">
 </p>
 
 <p>
-$(lang de:"Log-Verzeichnis" en:"Logging-Directory"):<br>
+$(lang de:"Log-Verzeichnis" en:"Logging directory"):<br>
 <input type="text" name="log_dir" size="55" maxlength="255" value="$(html "$MINIDLNA_LOG_DIR")">
 </p>
 
 <p>
-$(lang de:"Dateinamen der Cover" en:"Album-art filenames"):<br>
+$(lang de:"Dateinamen der Cover" en:"Album art filenames"):<br>
 <input type="text" name="album_art_names" size="55" maxlength="255" value="$(html "$MINIDLNA_ALBUM_ART_NAMES")">
 </p>
 

@@ -52,6 +52,10 @@ CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
+_comma:= ,
+_empty:=
+_space:=$(_empty) $(_empty)
+
 export FW_IMAGES_DIR
 export FREETZ_BASE_DIR
 
@@ -441,19 +445,35 @@ $(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(PARSE_CONFIG_TOOL) $(deps_co
 	@mkdir -p include/config include/generated
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 
-config-clean-deps:
+# Macro to clean up config dependencies
+#   $(1) = target name to be defined
+#   $(2) = info text to be printed
+#   $(3) = sub-regex for removing symbols from .config
+define CONFIG_CLEAN_DEPS
+$(1):
 	@{ \
 	cp .config .config_tmp; \
-	echo -n "Step 1: temporarily deactivate all kernel modules, shared libraries and optional BusyBox applets ... "; \
-	$(SED) -i -r 's/^(FREETZ_(LIB|MODULE|BUSYBOX|SHARE)_)/# \1/' .config; \
+	echo -n "Step 1: temporarily deactivate all $(2) ... "; \
+	$$(SED) -i -r 's/^(FREETZ_($(3))_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
-	make oldnoconfig; \
+	make oldnoconfig > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
-	diff -U 0 .config_tmp .config | $(SED) -rn 's/^\+# ([^ ]+) is not set$$/  \1/p'; \
-	$(RM) .config_tmp; \
+	diff -U 0 .config_tmp .config | $$(SED) -rn 's/^\+# ([^ ]+) is not set$$$$/  \1/p'; \
+	$$(RM) .config_tmp; \
 	}
+endef
+
+# Decactivate optional stuff by category
+$(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-modules,kernel modules,MODULE))
+$(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-libs,shared libraries,LIB))
+$(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-busybox,BusyBox applets,BUSYBOX))
+$(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-terminfo,terminfos,SHARE_terminfo))
+# Deactivate all optional stuff
+$(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps,kernel modules$(_comma) shared libraries$(_comma) BusyBox applets and terminfos,MODULE|LIB|BUSYBOX|SHARE_terminfo))
+# Deactivate all optional stuff except for Busybox applets
+$(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_comma) shared libraries and terminfos,MODULE|LIB|SHARE_terminfo))
 
 common-clean:
 	./fwmod_custom clean
@@ -506,7 +526,8 @@ check-builddir-version: $(CONFIG_IN_CACHE)
 		exit 3; \
 	fi; \
 
-.PHONY: all world step $(KCONFIG_TARGETS) config-cache config-clean-deps tools recover \
+.PHONY: all world step $(KCONFIG_TARGETS) config-cache tools recover \
+	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	$(CHECK_BUILD_DIR_VERSION)

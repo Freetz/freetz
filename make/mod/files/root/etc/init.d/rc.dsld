@@ -5,30 +5,31 @@ DAEMON=dsld
 DAEMON_LONG_NAME="AVM dsld"
 PID_FILE=/var/run/${DAEMON}.pid
 
-TMPFILE_CMD=/tmp/.dsld.cmd
-TMPFILE_OPT=/tmp/.dsld.opt
+TMPFILE="/tmp/.dsld."
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 # include environment required for dsld restart
 [ -r /var/env.cache ] && . /var/env.cache
 
 start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 
-	if [ -e $TMPFILE_CMD ]; then
-		DAEMON_CMD="$(cat $TMPFILE_CMD)"
+	if [ -e ${TMPFILE}CMD ]; then
+		DAEMON_CMD="$(cat ${TMPFILE}CMD)"
 	else
-		if [ ! -e "/sbin/igdd" ] && [ ! -e "/sbin/upnpd" ]; then
-			DAEMON_CMD=" $(dsld -? 2>&1 | grep "igd" | sed 's/^[ \t]*//' | cut -c 1-3)"
+		if [ "$FREETZ_AVMDAEMON_DISABLE_IGD" == "y" ]; then
+			DAEMON_CMD=" $(dsld -? 2>&1 | sed -nr 's/^[ \t]*([^ ]*).*igd.*/\1/p')"
 		fi
 		DAEMON_CMD=" -i$DAEMON_CMD"
-		echo "$DAEMON_CMD" > $TMPFILE_CMD
+		echo "$DAEMON_CMD" > ${TMPFILE}CMD
 	fi
 
-	if [ -e $TMPFILE_OPT ]; then
-		DAEMON_OPT="$(cat $TMPFILE_OPT)"
+	if [ -e ${TMPFILE}OPT ]; then
+		DAEMON_OPT="$(cat ${TMPFILE}OPT)"
 	else
 		DAEMON_OPT=" -n"
-		echo "$DAEMON_OPT" > $TMPFILE_OPT
+		[ "$CONFIG_RAMSIZE" == "8" ] && DAEMON_OPT="$DAEMON_OPT -r 600"
+		echo "$DAEMON_OPT" > ${TMPFILE}OPT
 	fi
 
 	# dsld could not start without eth0

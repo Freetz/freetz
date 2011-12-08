@@ -2,112 +2,114 @@
 
 [ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
 
-local ip=""
-local retval=""
+# Global result
+IP=""
 
 helpmsg() {
-echo "get_ip - determine external IP address"
-	echo
-	echo "Usage: $0 [option]"
-	echo "    -a, --all      - use all methods (order: ostat, webcm, extquery, dsld) [recommended]"
-	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
-	echo "    -e, --extquery - use external site query method (checkip.dyndns.org)"
-	echo "    -o, --ostat    - use onlinestat method (since firmware 04.87)"
-	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method"
-	echo "    -?, --help     - print this help message"
-	echo
-	echo "  current default method: $MOD_GET_IP_METHOD"
-	echo
+cat << EOF
+get_ip - determine external IP address"
+
+Usage: $0 [option]
+    -a, --all      - use all methods (order: dsld, webcm, route, extquery, ostat) [recommended]
+    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)
+    -e, --extquery - use external site query method (checkip.dyndns.org)
+    -o, --ostat    - use onlinestat method (since firmware 04.87)
+    -r, --route    - use routing table
+    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method
+    -?, --help     - print this help message
+
+  current default method: $MOD_GET_IP_METHOD
+
+EOF
 }
 
-# dont return local-ips like 192.168.178.1
-check_local_ip() {
-	[ $retval -ne 0 ] && return
-	for local_ip in $(ifconfig | sed -n 's/.*inet addr:\([0-9\.]*\) .*/\1/p'); do
-		if [ "$local_ip" == "$ip" ]; then
-			ip=""
-			retval=3
-			break
-		fi
-	done
+# Detect private (RFC 1918) or link-local (RFC 5735) IPs
+# Returns 0 for public IP, 1 for private IP, 2 if IP == ""
+ip_public()
+{
+	[ "$1" ] || return 2
+	local ip=$1
+	# 10.0.0.0/8 (private), 192.168.0.0/16 (private), 169.254.0.0/16 (link-local)
+	(
+		[ "$ip" != "${ip#10.}" ] ||
+		[ "$ip" != "${ip#192.168.}" ] ||
+		[ "$ip" != "${ip#169.254.}" ]
+	) && return 1
+	# 172.16.0.0/12 (private)
+	[ "$ip" == "${ip#172.}" ] && return 0
+	ip=$(echo $ip | cut -d '.' -f 2)
+	[ $ip -ge 16  ] && [ $ip -le 31 ] && return 1 || return 0
 }
 
 via_dsld() {
-	ip="$(/sbin/showdsldstat | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
-	retval=$?
-	[ -z "$ip" ] && retval=2
-	check_local_ip
+	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
+	ip_public "$IP" || return 1
+}
+
+via_route() {
+	IP="$(/sbin/showroutes | sed -nr 's/(.*)\/32 .* iface$/\1/p')"
+	ip_public "$IP" || return 1
 }
 
 via_extquery() {
-	#read cache-file (max age 1 minute)
-	ip=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
-	if [ -n "$ip" ]; then
-		retval=0
-		return
-	fi
-
-	#if supported by wget(-gnu), don't wait forever:
+	# Read cache file (max. age 1 minute)
+	IP=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
+	[ "$IP" ] && return 0
+	# If supported by wget(-gnu), don't wait forever
 	SHORTWAIT="-t 1"
 	if which wget-gnu >/dev/null; then
 		WGET="wget-gnu $SHORTWAIT"
 	else
 		wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
 	fi
-
-	#"download" ip, max 3 tries
+	# Get IP from external web site, max. 3 tries
 	for turn in 1 2 3; do
-		ip="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
-		retval=$?
-		[ $retval -eq 0 ] && break
+		IP="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
+		[ $? -eq 0 ] && [ "$IP" ] && echo "$IP" > /tmp/get_ip.cache && return 0
 	done
-
-	#save ip to cache-file
-	[ $retval -eq 0 ] && echo "$ip" > /tmp/get_ip.cache
+	return 1
 }
 
 via_ostat() {
-	ip="$(cat /var/run/onlinestat 2>/dev/null | sed -rn 's!^IPADDR ([0-9.]+)!\1!p')"
-	retval=$?
-	[ -z "$ip" ] && retval=2
-	check_local_ip
+	IP="$(cat /var/run/onlinestat 2>/dev/null | sed -nr 's!^IPADDR ([0-9.]+)!\1!p')"
+	ip_public "$IP" || return 1
 }
 
 via_webcm() {
 	local queryfile="/usr/www/all/html/query.txt"
 	local querystring=""
 	if which ctlmgr_ctl >/dev/null; then
-		ip=$(ctlmgr_ctl r connection0 pppoe:status/ip)
-		retval=$?
+		# Firmware >= *.04.76
+		IP=$(ctlmgr_ctl r connection0 pppoe:status/ip)
 	else
-		if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
+		# Older firmware
+		if [ "$(sed -n '/var:n\[/p' $queryfile)" != "" ]; then
 			querystring="var:n[0]=connection0:pppoe:status/ip"
 		else
 			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
 		fi
-		ip="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
-		retval=$?
+		IP="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
 	fi
-	[ $retval -ge 170 ] && retval=0 	# i get [box=val]: 7170=176, 7270=177, 7141=172
-	check_local_ip
+	# ctlmgr_ctl return values [box=val]: 7170=176, 7270=177, 7141=172
+	# Caveat: must use "-o" instead of "||", otherwise "$?" would be reset
+	[ $? -eq 0 -o $? -ge 170 ] && ip_public "$IP" && return 0 || return 1
 }
 
-#use user-define method if no argument is given
-if [ $# -eq 0 ]; then
-	get_method="$MOD_GET_IP_METHOD"
-else
-	get_method="$1"
-fi
+# Set user-defined method (e.g. via web UI) if no argument is given
+[ $# -eq 0 ] && method="$MOD_GET_IP_METHOD" || method="$1"
 
-case $get_method in
+case $method in
 	-a|--all|"")
-		for mode in ostat webcm extquery dsld; do
+		for mode in dsld webcm route extquery ostat; do
 			via_$mode
-			[ $retval -eq 0 ] && break
+			[ $? -eq 0 ] && break
 		done
 		;;
 	-d|--dsld)
 		via_dsld
+		;;
+	-r|--route)
+		via_route
 		;;
 	-e|--extquery)
 		via_extquery
@@ -128,9 +130,5 @@ case $get_method in
 		;;
 esac
 
-if [ $retval -eq 0 ]; then
-	echo "$ip"
-else
-	echo "get_ip error (exit code $retval)" >&2
-fi
-exit $retval
+[ $? -ne 0 ] && echo "get_ip error" >&2 && exit 1
+echo "$IP"

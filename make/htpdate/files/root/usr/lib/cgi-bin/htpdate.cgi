@@ -4,7 +4,6 @@
 . /usr/lib/libmodcgi.sh
 
 check "$HTPDATE_ENABLED" yes:auto "*":man
-check "$HTPDATE_MULTID" yes:multid "*":nomultid
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -31,11 +30,3 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Multid NTP client deaktivieren" en:"Deactivate multid NTP client")'
-cat << EOF
-<p>
-<input id="f1" type="radio" name="multid" value="yes"$multid_chk><label for="f1"> $(lang de:"Nein" en:"No")</label>
-<input id="f2" type="radio" name="multid" value="no"$nomultid_chk><label for="f2"> $(lang de:"Ja" en:"Yes")</label>
-</p>
-EOF
-sec_end

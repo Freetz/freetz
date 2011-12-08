@@ -107,7 +107,7 @@ config FREETZ_PATCH_SIGNED
 		Hides the "unsupported changes" message from the web interface.
 
 if FREETZ_HAS_USB_HOST
-comment "USB storage patches --------------------"
+comment "USB patches --------------------"
 
 config FREETZ_PATCH_FREETZMOUNT
 	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
@@ -242,9 +242,7 @@ config FREETZ_PATCH_MULTIPLE_PRINTERS
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_7150 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
-		FREETZ_TYPE_FON_WLAN_7270_V1 || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3 \
+		FREETZ_TYPE_FON_WLAN_7270_V1 \
 		)
 		# no patch available atm: 7140_DE 2070 3070 3050 3130
 	default n
@@ -253,6 +251,14 @@ config FREETZ_PATCH_MULTIPLE_PRINTERS
 
 endif
 
+config FREETZ_MODIFY_UMTSD
+	bool "Modify umtsd: only for known modems"
+	depends on FREETZ_HAS_UDEV && ! FREETZ_REMOVE_UMTSD
+	default n
+	help
+		AVM's umtsd will only be started if a *known* umts modem is
+		detected. So your /dev/ttyUSB? could be used by other programs.
+
 comment "Removal patches ------------------------"
 
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
@@ -260,22 +266,24 @@ config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7270_V2 || \
 		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_FON_WLAN_7320
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		FREETZ_TYPE_FON_WLAN_7330
 	default n
 	help
-		Remove lib/modules/dsp_ur8/ur8-A-dsl.bin. This saves about 400 KB of
-		uncompressed data size.
+		Remove lib/modules/dsp_*/*-A-dsl.bin. This saves about
+		330-400 KB of uncompressed data size.
 
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7320
+		FREETZ_TYPE_FON_WLAN_7320 || \
+		FREETZ_TYPE_FON_WLAN_7330
 	default n
 	help
-		Remove lib/modules/dsp_ur8/ur8-B-dsl.bin. This saves about 400 KB of
-		uncompressed data size.
+		Remove lib/modules/dsp_*/*-B-dsl.bin. This saves about
+		330-400 KB of uncompressed data size.
 
 menu "Remove v1/v2 piglet file(s)"
 	depends on FREETZ_SHOW_ADVANCED && \
@@ -363,7 +371,7 @@ config FREETZ_REMOVE_ASSISTANT
 		Removes the installation assistant from the web menu.
 
 config FREETZ_REMOVE_AURA_USB
-	bool "Remove remote USB connection (AURA = AVM USB Remote-Architcture)" if FREETZ_SHOW_ADVANCED 
+	bool "Remove remote USB connection (AURA = AVM USB Remote-Architcture)" if FREETZ_SHOW_ADVANCED
 	default n
 	depends on FREETZ_HAS_AVM_AURA_USB
 	help
@@ -373,7 +381,7 @@ config FREETZ_REMOVE_AURA_USB
 		This patch only removes the files, not the settings in AVM's web interface.
 
 config FREETZ_REMOVE_USB_MODULE
-	bool "Remove avalanche_usb.ko" if FREETZ_SHOW_ADVANCED 
+	bool "Remove avalanche_usb.ko" if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_HAS_USB_CLIENT
 	default n
 	help
@@ -387,7 +395,7 @@ config FREETZ_REMOVE_NAS
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
 config FREETZ_REMOVE_AVM_VPN
-	bool "Remove AVM vpn" if FREETZ_SHOW_ADVANCED 
+	bool "Remove AVM vpn" if FREETZ_SHOW_ADVANCED
 	default n
 	depends on \
 		FREETZ_TYPE_2170 || \
@@ -700,7 +708,7 @@ config FREETZ_REMOVE_DECT_UPDATE
 		This will save about 32kB uncompressed size.
 
 config FREETZ_REMOVE_DSLD
-	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED 
+	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
 	default n
 	select FREETZ_REMOVE_UPNP
 	select FREETZ_REMOVE_USERMAN if ! \
@@ -752,7 +760,7 @@ config FREETZ_REMOVE_DTRACE
 		This will save about 87kB uncompressed size.
 
 config FREETZ_REMOVE_FTPD
-	bool "Remove ftpd" if FREETZ_SHOW_ADVANCED 
+	bool "Remove ftpd" if FREETZ_SHOW_ADVANCED
 	depends on \
 		FREETZ_HAS_USB_HOST || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
@@ -781,7 +789,7 @@ config FREETZ_REMOVE_LSOF
 		This saves about 48 KB compressed space in kernel.image.
 
 config FREETZ_REMOVE_MEDIASRV
-	bool "Remove mediasrv" if FREETZ_SHOW_ADVANCED 
+	bool "Remove mediasrv" if FREETZ_SHOW_ADVANCED
 	depends on \
 		FREETZ_HAS_USB_HOST && \
 		! FREETZ_TYPE_FON_WLAN_7270_V1 || \
@@ -796,7 +804,7 @@ config FREETZ_REMOVE_MEDIASRV
 		Saves compressed 230 KB on a 7270_V2 and 40 KB on a 7170.
 
 config FREETZ_REMOVE_MINID
-	bool "Remove minid and MT-D/F" if FREETZ_SHOW_ADVANCED 
+	bool "Remove minid and MT-D/F" if FREETZ_SHOW_ADVANCED
 	default n
 	depends on FREETZ_HAS_AVM_MINID
 	help
@@ -850,7 +858,7 @@ config FREETZ_REMOVE_RUNCLOCK
 		This saves about 5K compressed space in kernel.image.
 
 config FREETZ_REMOVE_SMBD
-	bool "Remove smbd" if FREETZ_SHOW_ADVANCED 
+	bool "Remove smbd" if FREETZ_SHOW_ADVANCED
 	depends on \
 		FREETZ_HAS_USB_HOST && \
 		! FREETZ_PACKAGE_SAMBA && \
@@ -880,9 +888,9 @@ config FREETZ_REMOVE_SUPPORT
 		Remove the support-files which can be taken by http://fritz.box/html/support.html
 
 config FREETZ_REMOVE_TR069
-	bool "Remove tr069 stuff" if FREETZ_SHOW_ADVANCED 
-	depends on \
-		FREETZ_HAS_AVM_TR069
+	bool "Remove tr069 stuff" if FREETZ_SHOW_ADVANCED
+	depends on FREETZ_HAS_AVM_TR069
+	select FREETZ_AVMDAEMON_DISABLE_TR069
 	default n
 	help
 		Removes libtr069 to save space. This also removes libtr064.
@@ -931,6 +939,7 @@ config FREETZ_REMOVE_UMTSD
 
 config FREETZ_REMOVE_UPNP
 	bool "Remove UPnP daemon (igdd/upnpd)"
+	select FREETZ_AVMDAEMON_DISABLE_IGD
 	select FREETZ_REMOVE_UPNP_LIBS if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
@@ -989,7 +998,7 @@ config FREETZ_REMOVE_AVM_E2FSPROGS
 		libraries. Saves about 220KB of compressed space.
 
 config FREETZ_REMOVE_VOIPD
-	bool "Remove VoIP files (for non-telephony boxes)" if FREETZ_SHOW_ADVANCED 
+	bool "Remove VoIP files (for non-telephony boxes)" if FREETZ_SHOW_ADVANCED
 	depends on \
 		FREETZ_HAS_PHONE
 	default n
@@ -1003,7 +1012,7 @@ config FREETZ_REMOVE_VOIPD
 		because the Web UI is also removed.
 
 config FREETZ_REMOVE_VOIP_ISDN
-	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED 
+	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
 	depends on \
 		FREETZ_HAS_PHONE
 	select FREETZ_REMOVE_DECT if FREETZ_HAS_DECT
@@ -1038,7 +1047,7 @@ config FREETZ_REMOVE_WEBDAV
 		On 7270v1 only scripts, links and a 10KB library.
 
 config FREETZ_REMOVE_WLAN
-	bool "Remove WLAN files (for non-wlan boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED 
+	bool "Remove WLAN files (for non-wlan boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
 	depends on \
 		FREETZ_HAS_WLAN
 	default n
@@ -1051,7 +1060,7 @@ config FREETZ_REMOVE_WLAN
 comment "Replacement patches --------------------"
 
 config FREETZ_REPLACE_SSL_LIBS
-	bool "Replace AVM SSL libraries" if FREETZ_SHOW_ADVANCED 
+	bool "Replace AVM SSL libraries" if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_HAS_OPENSSL_LIBS
 	default n
 	help
@@ -1084,7 +1093,7 @@ config FREETZ_ADD_ANNEX_A_FIRMWARE
 		plan to use Annex A.
 
 config FREETZ_ENFORCE_URLADER_SETTINGS
-	bool "Enforce urlader environment" if FREETZ_SHOW_ADVANCED 
+	bool "Enforce urlader environment" if FREETZ_SHOW_ADVANCED
 	default n
 	help
 		Enforce some urlader (Adam2/EVA) environment variables.
@@ -1137,3 +1146,31 @@ config FREETZ_DISABLE_SERIAL_CONSOLE
 		its serial port (/dev/ttyS0). This is particularly helpful if you
 		want to use the serial port exclusively with another application,
 		e.g. minicom.
+
+comment "AVM daemons ----------------------------"
+
+config FREETZ_AVMDAEMON_DISABLE_IGD
+	bool "Disable igd/upnp"
+	default n
+	help
+		Disables dsld's IGD & multid's UPNP-device
+
+config FREETZ_AVMDAEMON_DISABLE_NTP
+	bool "Disable ntp client"
+	default n
+	help
+		Disables multid's basic NTP client
+
+config FREETZ_AVMDAEMON_DISABLE_IGM
+	bool "Disable IGMP"
+	default n
+	help
+		Disables multid's IGMP proxy
+
+config FREETZ_AVMDAEMON_DISABLE_TR069
+	bool "Disable tr069"
+	depends on FREETZ_HAS_AVM_TR069
+	default n
+	help
+		Disables multid's tr069discover
+

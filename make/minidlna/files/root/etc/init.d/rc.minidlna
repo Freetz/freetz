@@ -13,7 +13,8 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG
+	[ "$MINIDLNA_RESCAN_ON_START" != "no" ] && local rescan_on_start='-R'
+	modlib_startdaemon $DAEMON $rescan_on_start -f $DAEMON_CONFIG
 }
 
 case $1 in

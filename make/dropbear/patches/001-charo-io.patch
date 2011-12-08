@@ -1,0 +1,22 @@
+getc and its ilk return an int. Using char truncates the value.
+
+From: Erik Hovland <erik@hovland.org>
+
+---
+
+ cli-kex.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git cli-kex.c cli-kex.c
+index 37de6e3..f03c473 100644
+--- cli-kex.c
++++ cli-kex.c
+@@ -116,7 +116,7 @@ static void ask_to_confirm(unsigned char* keyblob, unsigned int keybloblen) {
+ 
+ 	char* fp = NULL;
+ 	FILE *tty = NULL;
+-	char response = 'z';
++	int response = 'z';
+ 
+ 	fp = sign_key_fingerprint(keyblob, keybloblen);
+ 	if (cli_opts.always_accept_key) {
