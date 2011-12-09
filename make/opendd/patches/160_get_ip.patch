@@ -38,7 +38,7 @@
 -      *ip = strdup(inet_ntoa(((struct sockaddr_in *)&addr)->sin_addr));
 +  struct sockaddr_in addr;
 +  FILE *file;
-+  char buffer[16];
++  char buffer[20];
 +
 +  /* Get my IP from an /tmp/.opendd.ip */
 +  file = fopen("/tmp/.opendd.ip", "r");
@@ -46,7 +46,7 @@
 +    logmsg(LOG_ERR, "dyndns() : Can't read external IP file!");
 +    return 0;
 +  }
-+  fgets(buffer, 15, file);
++  fgets(buffer, sizeof(buffer), file);
 +  fclose (file);
 +  file = NULL;
 +  inet_aton(buffer, &addr.sin_addr);
