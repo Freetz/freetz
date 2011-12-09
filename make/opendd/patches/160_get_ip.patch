@@ -1,23 +1,6 @@
 --- opendd.c.orig	2010-09-17 21:10:03.000000000 +0200
 +++ opendd.c	2010-09-17 21:10:05.000000000 +0200
-@@ -519,6 +519,16 @@
-   return 0;
- }
- 
-+int is_valid_ip(const char *ip_str)
-+{
-+        unsigned int n1,n2,n3,n4;
-+
-+        if(sscanf(ip_str,"%u.%u.%u.%u", &n1, &n2, &n3, &n4) != 4) return 0;
-+
-+        if((n1 <= 255) && (n2 <= 255) && (n3 <= 255) && (n4 <= 255)) return 1;
-+        return 0;
-+}
-+
- int getifaceaddr(char **ip) {
- /* -----------------------------------------------------------------------------
-  * Get IP address from interface name, from config file
-@@ -527,32 +537,29 @@
+@@ -527,32 +527,28 @@
   * @return int
   * -------------------------------------------------------------------------- */
   
@@ -36,7 +19,7 @@
 -  case OPTION_STRING:     
 -    if (getaddrbyif((const char *)value, &addr)) {
 -      *ip = strdup(inet_ntoa(((struct sockaddr_in *)&addr)->sin_addr));
-+  struct sockaddr_in addr;
++  struct in_addr in;
 +  FILE *file;
 +  char buffer[20];
 +
@@ -49,9 +32,8 @@
 +  fgets(buffer, sizeof(buffer), file);
 +  fclose (file);
 +  file = NULL;
-+  inet_aton(buffer, &addr.sin_addr);
-+  if (is_valid_ip(buffer)) {
-+    *ip = strdup(inet_ntoa(addr.sin_addr));
++  if (inet_aton(buffer, &in)) {
++    *ip = strdup(inet_ntoa(in));
        if (*ip != NULL) {
          return 1;
        }
