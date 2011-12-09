@@ -14,9 +14,8 @@ $parser->parse($ARGV[0]);
 $gv = $parser->plot(
 	$ARGV[1],
 	trim_mode => true,
-	init_args => { rankdir => true,  },
-	exclude => [ "^\\|\$", "/[.](unpack|configur)ed\$" ],
-	end_with => [ "^[.]config\$", "^Config[.]in[.]cache\$", "^dl\$", "^download-toolchain\$", "^glib2-precompiled\$" ]
+	exclude => [ qw(|) ],
+	end_with => [ qw(.config) ]
 );
 
 # Save as PNG bitmap

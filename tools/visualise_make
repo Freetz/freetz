@@ -3,15 +3,6 @@
 # Visualise makefile dependencies using Perl module Makefile::GraphViz, see
 # http://search.cpan.org/~agent/Makefile-GraphViz/lib/Makefile/GraphViz.pm
 #
-# You might want to install the module and its dependencies using
-# Debian/Ubuntu package "cpanminus" and then issuing the shell command
-# sudo cpanm Makefile::GraphViz
-#
-# If tests fail for Makefile::GraphViz, retry this and force installation
-# after failed tests when prompted. In my case, the module worked flawlessly
-# anyway:
-# sudo cpanm Makefile::GraphViz --prompt
-#
 # Author: Alexander Kriegisch (http://scrum-master.de), 2008-02-10
 
 CMD=$(basename $0)
@@ -177,27 +168,26 @@ IMAGE_FILE=$(echo "$TARGET"  | sed -r 's#[_/. \t]+#_#g').png
 # Step 1: generate log file
 if [ "$DO_LOG" ]; then
 	echo -n "Creating make log '$LOG_FILE' from log target '$LOG_TARGET' ... "
-	LC_ALL=C make -j1 -pnsq $LOG_TARGET > "$LOG_FILE" 2> /dev/null
+	LC_ALL=C make -j1 -pns $LOG_TARGET > "$LOG_FILE" 2> /dev/null
 	echo "done."
 fi
 
 # Step 2: filter log file
 if [ "$DO_FILTER" ]; then
 	echo -n "Filtering make log '$LOG_FILE' into '$FILTER_FILE'... "
-	# Filter make log, removing stuff unnecessary for visualisation
-	cat "$LOG_FILE" |
-		# Remove everything above files section
-		sed -r '/^# GNU Make/,/^# Files$/d' |
-		# Remove comments
-		sed -r '/^#.*/d' |
-		# Remove indented lines (recipes)
-		sed -r '/^[[:space:]]+.*/d' |
-		# Remove everything else not containing a ":" (target definitions)
-		sed -r '/^[^:]*$/d' |
-		# Remove pipe ('|') characters used in order-only prerequisites,
-		# because the Makefile::GraphViz library would mistake the pipe for a
-		# target and show it in graphs
-		tr -d '|' \
+	# Number of lines in make.log
+	LOG_LINES=$(cat "$LOG_FILE" | wc -l)
+	# Line no. of top-level (i.e. last) make database in log file
+	MAKE_DB_LINE=$(grep -nE '^# Make data base' "$LOG_FILE" | tail -1 | cut -d: -f1)
+	# Number of lines at end of log file to use for visualisation
+	TAIL_LINES=$(( $LOG_LINES - $MAKE_DB_LINE + 1 ))
+	# Extract top-level make database, then remove everything but
+	# dependency declarations
+	tail "$LOG_FILE" -n $TAIL_LINES |
+		sed -r '/^# GNU Make/,/^# Make data base/d' |
+		sed -r '/^# Variables$/,/^# Files$/d' |
+		sed -r '/^#.*/d;/^[[:space:]]+.*/d' |
+		sed -r '/^[^:]*$/d' \
 		> "$FILTER_FILE"
 	echo "done."
 fi
@@ -205,9 +195,7 @@ fi
 # Step 3: visualise dependency graph as PNG image
 if [ "$DO_IMAGE" ]; then
 	echo -n "Creating dependency graph image '$IMAGE_FILE' for target '$TARGET' ... "
-	#perl $(dirname $0)/$CMD.pl "$FILTER_FILE" $TARGET "$IMAGE_FILE" #> /dev/null 2>&1
-	perl $(dirname $0)/$CMD.pl Makefile.makesimple $TARGET "$IMAGE_FILE" #> /dev/null 2>&1
-	[ $? -ne 0 ] && echo "FAILED" && exit 1
+	perl $(dirname $0)/$CMD.pl "$FILTER_FILE" $TARGET "$IMAGE_FILE" > /dev/null 2>&1
 	echo "done."
 fi
 
