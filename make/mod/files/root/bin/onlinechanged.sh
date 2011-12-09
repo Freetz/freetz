@@ -14,6 +14,15 @@ log() {
 	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
 }
 
+# semaphore older than 5 min -> kill waiting sibling scripts
+if [ "$(find $PID_FILE -prune -mmin +5 2>/dev/null)" == "$PID_FILE" ]; then
+	for pid in $(pidof onlinechanged.sh | sed "s/ \?$$//"); do
+		log "killing old process #$pid"
+		kill $pid
+	done
+	rm -rf $PID_FILE 2>/dev/null
+fi
+
 # shutdown: do nothing
 if [ -e /var/run/shutdown ]; then
 	log "disabled"
