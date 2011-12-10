@@ -95,10 +95,11 @@ via_webcm() {
 		# Firmware ca. 04.76 and newer
 		IP=$(ctlmgr_ctl r connection0 pppoe:status/ip)
 	else
-		# Older firmware
-		if [ "$(sed -n '/var:n\[/p' $queryfile)" != "" ]; then
+		if [ "$(sed -n '/var:n\[/p' $queryfile)" ]; then
+			# Firmware ca. 04.84 and newer (should never be used, see above)
 			querystring="var:n[0]=connection0:pppoe:status/ip"
 		else
+			# Older firmware
 			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
 		fi
 		IP="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
@@ -113,7 +114,11 @@ via_webcm() {
 
 case $method in
 	-a|--all|"")
-		for mode in dsld webcm route extquery ostat; do
+		ext_last="extquery"
+		# If extquery cache exists from previous call, assume we are on an
+		# IP client -> make extquery the default
+		[ -r /tmp/get_ip.cache ] && ext_first="extquery" && ext_last=""
+		for mode in $ext_first dsld webcm route $ext_last ostat; do
 			via_$mode
 			[ $? -eq 0 ] && break
 		done
