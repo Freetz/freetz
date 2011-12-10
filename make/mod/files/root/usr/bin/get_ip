@@ -115,12 +115,15 @@ via_webcm() {
 case $method in
 	-a|--all|"")
 		ext_last="extquery"
-		# If extquery cache exists from previous call, assume we are on an
-		# IP client -> make extquery the default
-		[ -r /tmp/get_ip.cache ] && ext_first="extquery" && ext_last=""
+		# IP client -> make extquery the method to try first
+		[ -r /var/run/ip_client ] && ext_first="extquery" && ext_last=""
 		for mode in $ext_first dsld webcm route $ext_last ostat; do
 			via_$mode
-			[ $? -eq 0 ] && break
+			if [ $? -eq 0 ]; then
+				# IP client? -> set semaphore
+				[ "$mode" == "extquery" ] && touch /var/run/ip_client
+				break
+			fi
 		done
 		;;
 	-d|--dsld)
