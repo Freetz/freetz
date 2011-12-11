@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.2)
+$(call PKG_INIT_BIN, 2.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=26e9206eb5169e87e6f95f54bc005a4f
+$(PKG)_SOURCE_MD5:=f72f12fda186dbd92382f70d25662ed3
 $(PKG)_SITE:=@SF/fuse
 $(PKG)_BINARY:=$($(PKG)_DIR)/sshfs
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sshfs

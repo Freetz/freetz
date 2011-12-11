@@ -12,6 +12,7 @@ check "$DNSMASQ_STOP_DNS_REBIND" yes:stop_dns_rebind
 check "$DNSMASQ_TFTP" yes:tftp_yes "*":tftp_no
 check "$DNSMASQ_AVM_DNS" yes:avm_dns
 check "$DNSMASQ_WRAPPER" yes:wrapper
+check "$DNSMASQ_MULTID_RESTART" yes:multid_restart
 check "$DNSMASQ_LOG_QUERIES" yes:log_queries
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
@@ -23,6 +24,10 @@ cat << EOF
 <p>
 <input type="hidden" name="wrapper" value="no">
 <input id="wrap1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="wrap1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>
+</p>
+<p>
+<input type="hidden" name="multid_restart" value="no">
+<input id="multid1" type="checkbox" name="multid_restart" value="yes"$multid_restart_chk><label for="multid1"> $(lang de:"multid restarten" en:"restart multid")</label><br>
 </p>
 EOF
 sec_end

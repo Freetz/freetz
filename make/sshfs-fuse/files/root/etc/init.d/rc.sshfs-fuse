@@ -1,0 +1,95 @@
+#!/bin/sh
+
+DAEMON=sshfs-fuse
+DAEMON_CHECK="sshfs"
+. /etc/init.d/modlibrc
+
+# works only with applet seq enabled:
+#SSHFS_FUSE_LIST=$(seq 1 $SSHFS_FUSE_COUNT)
+SSHFS_FUSE_LIST="1"
+i=1
+while [ "$i" -lt "$SSHFS_FUSE_COUNT" ]; do
+    let i++
+    SSHFS_FUSE_LIST="$SSHFS_FUSE_LIST $i"
+done
+
+start() {
+	echo -n 'Starting SSHFS ... '
+
+	exitval=0
+	SSHFSMNT_PATH=/usr/bin
+	modprobe fuse
+	[ "$?" -gt 0 ] && exitval=1
+
+	for i in $SSHFS_FUSE_LIST; do
+		eval SSHFS_FUSE_SHARE=\$SSHFS_FUSE_SHARE$i
+		eval SSHFS_FUSE_MOUNTPOINT=\$SSHFS_FUSE_MOUNTPOINT$i
+		eval SSHFS_FUSE_USER=\$SSHFS_FUSE_USER$i
+		eval SSHFS_FUSE_PASS=\$SSHFS_FUSE_PASS$i
+		eval SSHFS_FUSE_PORT=\$SSHFS_FUSE_PORT$i
+		if [ -n "$SSHFS_FUSE_MOUNTPOINT" ]; then
+			echo "mount $SSHFS_FUSE_SHARE ..."
+			mkdir -p "$SSHFS_FUSE_MOUNTPOINT"
+			if [ -n "$SSHFS_FUSE_PASS" ]; then
+				echo $SSHFS_FUSE_PASS | $SSHFSMNT_PATH/sshfs "$SSHFS_FUSE_USER"@$SSHFS_FUSE_SHARE $SSHFS_FUSE_MOUNTPOINT -o password_stdin,reconnect,ServerAliveInterval=15,allow_other,port=$SSHFS_FUSE_PORT,uid=0,gid=0,umask=000
+				else $SSHFSMNT_PATH/sshfs "$SSHFS_FUSE_USER"@$SSHFS_FUSE_SHARE $SSHFS_FUSE_MOUNTPOINT -o reconnect,ServerAliveInterval=15,allow_other,port=$SSHFS_FUSE_PORT,uid=0,gid=0,umask=000
+			fi
+			[ "$?" -gt 0 ] && exitval=1
+		fi
+	done
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	exitval=0
+	for i in $SSHFS_FUSE_LIST; do
+		eval SSHFS_FUSE_MOUNTPOINT=\$SSHFS_FUSE_MOUNTPOINT$i
+		if [ -n "$SSHFS_FUSE_MOUNTPOINT" ]; then
+			echo "unmount $SSHFS_FUSE_SHARE ..."
+			fusermount -u $SSHFS_FUSE_MOUNTPOINT
+			[ "$?" -gt 0 ] && exitval=1
+			#rmdir $SSHFS_FUSE_MOUNTPOINT
+		fi
+	done
+	rmmod fuse 2>/dev/null
+	return $exitval
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON 'SSHFS'
+		modreg daemon $DAEMON
+
+		modlib_start $SSHFS_FUSE_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
+
