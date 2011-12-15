@@ -26,6 +26,8 @@ config FREETZ_AVM_VERSION_04_80
 	bool
 config FREETZ_AVM_VERSION_04_87
 	bool
+config FREETZ_AVM_VERSION_3370_05_07
+	bool
 config FREETZ_AVM_VERSION_7270_04_86
 	bool
 config FREETZ_AVM_VERSION_7270_05_05
@@ -54,6 +56,10 @@ choice
 	config FREETZ_TYPE_2170
 		select FREETZ_AVM_VERSION_04_57
 		bool "2170"
+
+	config FREETZ_TYPE_6840
+		select FREETZ_AVM_VERSION_3370_05_07
+		bool "6840 LTE (experimental)"
 
 	config FREETZ_TYPE_FON
 		select FREETZ_AVM_VERSION_04_33 if FREETZ_TYPE_LANG_DE
@@ -183,6 +189,10 @@ choice
 	config FREETZ_TYPE_WLAN_3270_V3
 		select FREETZ_AVM_VERSION_7270_05_05
 		bool "WLAN 3270 (v3 only)"
+
+	config FREETZ_TYPE_WLAN_3370
+		select FREETZ_AVM_VERSION_3370_05_07
+		bool "WLAN 3370 (experimental)"
 
 	config FREETZ_TYPE_SPEEDPORT_W501V
 		select FREETZ_AVM_VERSION_r7203
@@ -452,6 +462,7 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.76"			if FREETZ_AVM_VERSION_04_76
 	default "04.80"			if FREETZ_AVM_VERSION_04_80
 	default "04.87"			if FREETZ_AVM_VERSION_04_87
+	default "3370_05.07"		if FREETZ_AVM_VERSION_3370_05_07
 	default "7270_04.86"		if FREETZ_AVM_VERSION_7270_04_86
 	default "7270_05.05"		if FREETZ_AVM_VERSION_7270_05_05
 	default "7320_04.86"		if FREETZ_AVM_VERSION_7320_04_86
@@ -460,6 +471,14 @@ config FREETZ_AVM_VERSION_STRING
 	default "7390_05.05"		if FREETZ_AVM_VERSION_7390_05_05
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 
+config FREETZ_FILESYSTEM_MTD_SIZE
+	int "FILESYSTEM (64K blocks)"	if FREETZ_TYPE_CUSTOM
+	default 768			if \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_WLAN_3370
+	default 0
+	help
+		Number of 64K blocks in the filesystem mtd device.
 
 choice
 	prompt "Annex"
@@ -490,12 +509,14 @@ config FREETZ_TYPE_PREFIX
 	default "3170"						if FREETZ_TYPE_WLAN_3170
 	default "3270"						if FREETZ_TYPE_WLAN_3270
 	default "3270_v3"					if FREETZ_TYPE_WLAN_3270_V3
+	default "3370"						if FREETZ_TYPE_WLAN_3370
 	default "fon"						if FREETZ_TYPE_FON
 	default "5010"						if FREETZ_TYPE_FON_5010
 	default "5050"						if FREETZ_TYPE_FON_5050
 	default "5124"						if FREETZ_TYPE_FON_5124
 	default "5140"						if FREETZ_TYPE_FON_5140
 	default "fon_wlan"					if FREETZ_TYPE_FON_WLAN
+	default "6840"						if FREETZ_TYPE_6840
 	default "7050"						if FREETZ_TYPE_FON_WLAN_7050
 	default "7112"						if FREETZ_TYPE_FON_WLAN_7112
 	default "7113"						if FREETZ_TYPE_FON_WLAN_7113
@@ -595,6 +616,7 @@ config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
 	select FREETZ_MODULE_fuse if ( \
+					FREETZ_AVM_VERSION_3370_05_07 || \
 					FREETZ_AVM_VERSION_7270_04_86 || \
 					FREETZ_AVM_VERSION_7270_05_05 || \
 					FREETZ_AVM_VERSION_7320_04_86 || \
@@ -692,17 +714,25 @@ config FREETZ_TARGET_REF_16MB
 		FREETZ_TYPE_WLAN_3270 || \
 		FREETZ_TYPE_WLAN_3270_V3
 
+config FREETZ_TARGET_REF_48MB
+	bool
+	default y			if \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_WLAN_3370
+
 config FREETZ_TARGET_REF
 	string "Target ref"		if FREETZ_TYPE_CUSTOM
 	default "4mb"			if FREETZ_TARGET_REF_4MB
 	default "8mb"			if FREETZ_TARGET_REF_8MB
 	default "16mb"			if FREETZ_TARGET_REF_16MB
+	default "48mb"			if FREETZ_TARGET_REF_48MB
 
 config FREETZ_KERNEL_REF_4MB
 	bool
 	default y			if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_6840 || \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_FON_5010 || \
 		FREETZ_TYPE_FON_5050 || \
@@ -714,7 +744,8 @@ config FREETZ_KERNEL_REF_4MB
 		FREETZ_TYPE_WLAN_3030 || \
 		FREETZ_TYPE_WLAN_3130 || \
 		FREETZ_TYPE_WLAN_3131 || \
-		FREETZ_TYPE_WLAN_3170
+		FREETZ_TYPE_WLAN_3170 || \
+		FREETZ_TYPE_WLAN_3370
 
 config FREETZ_KERNEL_REF_8MB
 	bool
@@ -751,6 +782,9 @@ config FREETZ_KERNEL_REF
 
 config FREETZ_KERNEL_MTD_SIZE
 	int "Kernel (64K blocks)"	if FREETZ_TYPE_CUSTOM
+	default 64			if \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_WLAN_3370
 	default 119			if \
 		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_7150 || \
@@ -851,6 +885,7 @@ config FREETZ_DL_KERNEL_SITE
 	default "@AVM/fritzbox.fon_wlan_7330/x_misc/opensrc"	if FREETZ_AVM_VERSION_7330_05_06
 	default "http://gpl.back2roots.org/source/fritzbox"		if FREETZ_AVM_VERSION_7390_04_90
 	default "@AVM/fritzbox.fon_wlan_7390/x_misc/opensrc"	if FREETZ_AVM_VERSION_7390_05_05
+	default "@AVM/fritzbox.wlan_3370/x_misc/opensrc"		if FREETZ_AVM_VERSION_3370_05_07
 	default "@TELEKOM/Speedport/Speedport_W501V"			if FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_KERNEL_SOURCE
@@ -871,6 +906,7 @@ config FREETZ_DL_KERNEL_SOURCE
 	default "fritz_box_fon_wlan_7330_source_files.05.06.tar.gz"	if FREETZ_AVM_VERSION_7330_05_06
 	default "fritz_box_fon_wlan_7390_source_files.04.91.tar.gz"	if FREETZ_AVM_VERSION_7390_04_90
 	default "fritz_box_fon_wlan_7390_source_files.05.05.tar.gz"	if FREETZ_AVM_VERSION_7390_05_05
+	default "fritz_box_wlan_3370_source_files.05.07.tar.gz"		if	FREETZ_AVM_VERSION_3370_05_07
 	default "GPL-r7203-4mb_26-tar.bz2"							if FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_KERNEL_SOURCE_MD5
@@ -891,6 +927,7 @@ config FREETZ_DL_KERNEL_SOURCE_MD5
 	default "baa047e62d316c765de1e2a4b051c11c"	if FREETZ_AVM_VERSION_7330_05_06
 	default "2cad066e0e57aa3e58bf784b396ee676"	if FREETZ_AVM_VERSION_7390_04_90
 	default "fbf515bd77f3d3a64a3095889777cc13"	if FREETZ_AVM_VERSION_7390_05_05
+	default "f85397c63febc0da208e501519cb4cfa"	if	FREETZ_AVM_VERSION_3370_05_07
 	default "582c74f0959a687c41c1bcfa599ace9c"	if FREETZ_AVM_VERSION_r7203
 
 config FREETZ_DL_SITE
@@ -900,6 +937,7 @@ config FREETZ_DL_SITE
 	default "@AVM/fritzbox.fon/firmware/deutsch"					if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 	default "@AVM/fritzbox.fon/firmware/english/annex_a"			if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "@AVM/fritzbox.fon/firmware/english/annex_b"			if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
+	default "@AVM/fritzbox_6840_lte/firmware/deutsch"			if FREETZ_TYPE_6840
 	default "@AVM/fritzbox.fon_5010/firmware/deutsch_a-ch"			if FREETZ_TYPE_FON_5010
 	default "@AVM/fritzbox.fon_5050/firmware"						if FREETZ_TYPE_FON_5050
 	default "@AVM/fritzbox.fon_5124/firmware/english/annex_a"		if FREETZ_TYPE_FON_5124 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -941,6 +979,7 @@ config FREETZ_DL_SITE
 	default "@AVM/fritzbox.wlan_3170/firmware/deutsch"				if FREETZ_TYPE_WLAN_3170
 	default "@AVM/fritzbox.wlan_3270/firmware/deutsch"				if FREETZ_TYPE_WLAN_3270
 	default "@AVM/fritzbox.wlan_3270_v3/firmware/deutsch"			if FREETZ_TYPE_WLAN_3270_V3
+	default "@AVM/fritzbox.wlan_3370/firmware/deutsch"				if FREETZ_TYPE_WLAN_3370
 	default "@TELEKOM/Speedport/Speedport_W501V"					if FREETZ_TYPE_SPEEDPORT_W501V
 	default "@AVM/..."												if FREETZ_TYPE_CUSTOM
 
@@ -950,6 +989,7 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_fon.06.04.33.image"									if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 	default "fritz.box_fon.annexa.en.06.04.49.image"						if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "fritz.box_fon.en.06.04.49.image"								if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
+	default "FRITZ.Box_6840_LTE.105.05.09.image"							if FREETZ_TYPE_6840
 	default "fritz.box_fon_5010.annexa.48.04.43.image"						if FREETZ_TYPE_FON_5010
 	default "fritz.box_fon_5050.12.04.31.image"								if FREETZ_TYPE_FON_5050
 	default "FRITZ.Box_Fon_5124.AnnexA.en.57.04.76.image"					if FREETZ_TYPE_FON_5124 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -996,6 +1036,7 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_wlan_3170.49.04.58.image"							if FREETZ_TYPE_WLAN_3170
 	default "fritz.box_wlan_3270.67.05.05.image"							if FREETZ_TYPE_WLAN_3270
 	default "fritz.box_wlan_3270_v3.96.05.05.image"							if FREETZ_TYPE_WLAN_3270_V3
+	default "fritz.box_wlan_3370.103.05.07.image"							if FREETZ_TYPE_WLAN_3370
 	default "fw_Speedport_W501V_v_28.04.38.image"							if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fritz.box..."													if FREETZ_TYPE_CUSTOM
 
@@ -1005,6 +1046,7 @@ config FREETZ_DL_SOURCE_MD5
 	default "57692fa45d7d8cfa9c97be2cbe3879ad"	if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 	default "8acd3c4d936b7ff8c5d2065ee7bc7f9b"	if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 	default "d4f060e9f5b0f10f1b9bc38d58a35bb6"	if (FREETZ_TYPE_300IP_AS_FON || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
+	default "7b589d81b5efa26ceed427d2155bc340"	if FREETZ_TYPE_6840
 	default "cdea5c36f629ce85e1a1613342cfc9f3"	if FREETZ_TYPE_FON_5010
 	default "8961ba722c8e0be5ece061d75a07cf65"	if FREETZ_TYPE_FON_5050
 	default "e6907e496a8351fa484bc64ff9f63bf0"	if FREETZ_TYPE_FON_5124 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -1046,6 +1088,7 @@ config FREETZ_DL_SOURCE_MD5
 	default "f08942a9679002e21c29bb2cad9ded3e"	if FREETZ_TYPE_WLAN_3170
 	default "2874722e1c55bb397e6ddce7bc990d2e"	if FREETZ_TYPE_WLAN_3270
 	default "8fb87e292ffd89ff22a95ac7a56d6473"	if FREETZ_TYPE_WLAN_3270_V3
+	default "a2773226c45f65a6d92004ce47197d04"	if FREETZ_TYPE_WLAN_3370
 	default "f64d17124ba354427a1710d12b35e00f"	if FREETZ_TYPE_SPEEDPORT_W501V
 
 config FREETZ_DL_SITE2
@@ -1076,7 +1119,7 @@ config FREETZ_DL_SITE2
 	default "@TELEKOM/Speedport/Speedport W 900V"				if FREETZ_TYPE_SPEEDPORT_W900V_7170
 	default "@AVM/fritzbox.fon_wlan_7240/firmware/deutsch"		if FREETZ_TYPE_7240_7270
 	default "@AVM/fritzbox.fon_wlan_7270_v2/firmware/english"	if FREETZ_TYPE_FON_WLAN_7270_V1
-	default "@TELEKOM/Speedport/Speedport W 920V" 				if 	FREETZ_TYPE_SPEEDPORT_W920V_7570 || FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
+	default "@TELEKOM/Speedport/Speedport W 920V" 				if FREETZ_TYPE_SPEEDPORT_W920V_7570 || FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
 
 
 config FREETZ_DL_SOURCE2
@@ -1656,10 +1699,12 @@ config FREETZ_TARGET_ARCH_BE
 	bool
 	default y
 	depends on \
+		FREETZ_TYPE_6840 || \
 		FREETZ_TYPE_FON_WLAN_7320 || \
 		FREETZ_TYPE_FON_WLAN_7330 || \
 		FREETZ_TYPE_FON_WLAN_7340 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		FREETZ_TYPE_FON_WLAN_7390 || \
+		FREETZ_TYPE_WLAN_3370
 
 config FREETZ_TARGET_ARCH
 	string
