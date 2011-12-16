@@ -253,7 +253,7 @@ endif
 
 config FREETZ_MODIFY_UMTSD
 	bool "Modify umtsd: only for known modems"
-	depends on FREETZ_HAS_UDEV && ! FREETZ_REMOVE_UMTSD
+	depends on FREETZ_HAS_UMTS && FREETZ_HAS_UDEV && ! FREETZ_REMOVE_UMTSD
 	default n
 	help
 		AVM's umtsd will only be started if a *known* umts modem is
@@ -922,15 +922,7 @@ config FREETZ_REMOVE_TR069_FWUPDATE
 
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS support (USB GSM)"
-	depends on \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7330 || \
-		FREETZ_TYPE_FON_WLAN_7390 || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3 || \
-		FREETZ_TYPE_WLAN_3370
+	depends on FREETZ_HAS_UMTS
 	default n
 	help
 		Remove UMTS support
