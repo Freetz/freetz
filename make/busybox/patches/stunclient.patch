@@ -1,0 +1,145 @@
+--- /dev/null	2011-11-28 10:13:54.172239931 +0100
++++ networking/stun-client.c	2011-12-15 23:38:25.657061247 +0100
+@@ -0,0 +1,142 @@
++/*
++ * Mini stun-client implementation for busybox
++ *
++ * Licensed under GPLv2 or later, see file LICENSE in this source tree.
++ */
++#include <net/if.h>
++#include "libbb.h"
++
++//config:config STUNCLIENT
++//config:	bool "stunclient"
++//config:	default n
++//config:	help
++//config:	  determine external IP address via STUN
++//config:
++
++/* Needs socket(AF_INET, SOCK_RAW, IPPROTO_ICMP), therefore BB_SUID_MAYBE: */
++//applet:IF_STUNCLIENT(APPLET(stunclient, BB_DIR_USR_BIN, BB_SUID_DROP))
++//applet:IF_STUNCLIENT(APPLET_ODDNAME(stun-client, stunclient, BB_DIR_USR_BIN, BB_SUID_DROP, stunclient))
++
++//kbuild:lib-$(CONFIG_STUNCLIENT)  += stun-client.o
++
++//usage:#define stunclient_trivial_usage
++//usage:       "HOST"
++//usage:#define stunclient_full_usage "\n\n"
++//usage:       "discover external address via STUN"
++
++
++// support for IPv6 is incomplete, and it is uncertain whether it is useful
++#define ENABLE_STUN_IPV6 0
++
++#if ENABLE_STUN_IPV6
++#define OPT_STRING_IPV6	"46"
++#else
++#define OPT_STRING_IPV6	""
++#endif
++
++#define OPT_STRING (OPT_STRING_IPV6)
++enum {
++	OPT_IPV4 = 1 << 0,
++	OPT_IPV6 = (1 << 1),
++};
++
++struct stun_header {
++	uint16_t		type;
++	uint16_t		length;	// data without header
++	uint32_t		id[16 / sizeof (uint32_t)];
++};
++struct stun_attr {
++	uint16_t		type;
++	uint16_t		length;	// data without header
++	char			data[0];
++};
++struct stun_message {
++	struct stun_header	header;
++	struct stun_attr	data[0];
++};
++
++struct stun_address {
++	uint8_t			unused_0;
++	uint8_t			family;
++	uint16_t		port;
++	union {
++		struct in_addr	addr4;
++		struct in6_addr	addr6;
++	};
++	
++};
++
++int stunclient_main(int argc UNUSED_PARAM, char **argv);
++int stunclient_main(int argc UNUSED_PARAM, char **argv)
++{
++	int opt;
++	sa_family_t af;
++	u_short port = 3478;	// nat-stun-port
++	int arg;
++
++	//port = bb_lookup_port("nat-stun-port", "udp", 3478);
++
++	opt_complementary = "-1";
++	opt = getopt32(argv, OPT_STRING);
++	if (ENABLE_STUN_IPV6) {
++		af = AF_UNSPEC;
++		if (opt & OPT_IPV4)
++			af = AF_INET;
++		if (opt & OPT_IPV6)
++			af = AF_INET6;
++	}
++	(void)af;		// Avoid compiler warning
++	for (arg = optind; arg < argc; arg++) {
++		int fd, i, ret;
++		len_and_sockaddr *lsa;
++		char *hostname = argv[arg];
++		struct pollfd pfd[1];
++		long buf[0x1000 / sizeof (long)];
++		char *cp = (char *)buf, *ep;
++		size_t buf_len;
++		struct stun_message *stun_msg = (struct stun_message *)buf;
++		struct stun_header *stun_hdr = &stun_msg->header;
++
++		lsa = xhost_and_af2sockaddr(hostname, port, af);
++
++		fd = xsocket(lsa->u.sa.sa_family, SOCK_DGRAM, 0);
++		stun_hdr->type = htons (0x0001);
++		stun_hdr->length = htons (0);
++		for (i = 0; i < sizeof (stun_hdr->id) / sizeof (*stun_hdr->id); i++)
++			stun_hdr->id[i] = random ();
++		buf_len = sizeof (*stun_hdr);
++		xsendto (fd, buf, buf_len, &lsa->u.sa, lsa->len);
++		pfd[0].fd = fd;
++		pfd[0].events = POLLIN;
++		ret = poll (pfd, 1, 10 * 1000);
++		if (ret <= 0) {
++			//perror ("select");
++			goto end;
++		}
++		ret = recv (fd, buf, sizeof (buf), 0);
++		if (ret <= 0) {
++			//perror ("recv");
++			goto end;
++		}
++		buf_len = ret;
++		ret = 0;
++		cp = (char *)&stun_msg->data;
++		ep = (char *)buf + buf_len;
++		for (;;) {
++			struct stun_attr *stun_attr = (struct stun_attr *)cp;
++			u_short type = ntohs (stun_attr->type);
++			u_short length = ntohs (stun_attr->length);
++			cp += sizeof (struct stun_attr) + ((length + 3) & ~3);
++			if (cp > ep)
++				break;
++			if (type == 0x0001 && length == 8) {
++				struct stun_address *stun_addr = (struct stun_address *)stun_attr->data;
++				printf ("%s\n", inet_ntoa (stun_addr->addr4));
++				return 0;
++			}
++		}
++	end:
++		close (fd);
++	}
++	return 1;
++}
