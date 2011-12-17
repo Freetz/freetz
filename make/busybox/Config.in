@@ -381,6 +381,17 @@ config FREETZ_BUSYBOX_START_STOP_DAEMON
 		This feature adds about 1.9 KB to BusyBox.
 		The 'Support additional arguments' sub-feature is automatically selected.
 
+config FREETZ_BUSYBOX_STUNCLIENT
+	bool "stun-client (get external IP)"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default y
+	help
+		Determine external IP address from behind a NAT via STUN protocol.
+
+		This feature can be used by /usr/bin/get_ip and should always be enabled
+		(especially on IP clients [ATA mode]) because it is significantly quicker
+		than querying an external web server like checkip.dyndns.org via HTTP.
+
 config FREETZ_BUSYBOX_TAC
 	bool "tac"
 	depends on FREETZ_REPLACE_BUSYBOX
