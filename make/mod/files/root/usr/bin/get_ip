@@ -84,6 +84,7 @@ via_extquery() {
 }
 
 via_ostat() {
+	# Firmware ca. 04.87 and newer
 	IP="$(cat /var/run/onlinestat 2>/dev/null | sed -nr 's!^IPADDR ([0-9.]+)!\1!p')"
 	ip_public "$IP" || return 1
 }
