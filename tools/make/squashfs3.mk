@@ -62,5 +62,7 @@ squashfs3-dirclean:
 	$(RM) -r $(SQUASHFS3_DIR)
 
 squashfs3-distclean: squashfs3-dirclean
+	$(RM) $(TOOLS_DIR)/mksquashfs3
 	$(RM) $(TOOLS_DIR)/mksquashfs3-lzma
+	$(RM) $(TOOLS_DIR)/unsquashfs3
 	$(RM) $(TOOLS_DIR)/unsquashfs3-lzma
