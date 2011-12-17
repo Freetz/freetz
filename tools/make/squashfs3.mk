@@ -2,67 +2,43 @@ SQUASHFS3_VERSION:=3.4
 SQUASHFS3_SOURCE:=squashfs$(SQUASHFS3_VERSION).tar.gz
 SQUASHFS3_SOURCE_MD5:=2a4d2995ad5aa6840c95a95ffa6b1da6
 SQUASHFS3_SITE:=@SF/squashfs
+
+SQUASHFS3_MAKE_DIR:=$(TOOLS_DIR)/make
 SQUASHFS3_DIR:=$(TOOLS_SOURCE_DIR)/squashfs$(SQUASHFS3_VERSION)
+SQUASHFS3_BUILD_DIR:=$(SQUASHFS3_DIR)/squashfs-tools
 
-MKSQUASHFS3_DIR:=$(SQUASHFS3_DIR)/squashfs-tools
-MKSQUASHFS3_MAKE_DIR:=$(TOOLS_DIR)/make
-
-UNSQUASHFS3_DIR:=$(SQUASHFS3_DIR)/squashfs-tools
-UNSQUASHFS3_MAKE_DIR:=$(TOOLS_DIR)/make
-
-SQUASHFS3_LZMA_VERSION:=443
-SQUASHFS3_LZMA_DIR:=$(TOOLS_SOURCE_DIR)/lzma$(SQUASHFS3_LZMA_VERSION)
-SQUASHFS3_EXTERNAL_LZMA_DIR:=../../lzma$(SQUASHFS3_LZMA_VERSION)
+SQUASHFS3_TOOLS:=mksquashfs3 unsquashfs3 mksquashfs3-lzma unsquashfs3-lzma
+SQUASHFS3_TOOLS_BUILD_DIR:=$(addprefix $(SQUASHFS3_BUILD_DIR)/,$(SQUASHFS3_TOOLS))
+SQUASHFS3_TOOLS_TARGET_DIR:=$(addprefix $(TOOLS_DIR)/,$(SQUASHFS3_TOOLS))
 
 $(DL_DIR)/$(SQUASHFS3_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(SQUASHFS3_SOURCE) $(SQUASHFS3_SITE) $(SQUASHFS3_SOURCE_MD5)
 
-
 $(SQUASHFS3_DIR)/.unpacked: $(DL_DIR)/$(SQUASHFS3_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(SQUASHFS3_SOURCE)
-	for i in $(MKSQUASHFS3_MAKE_DIR)/patches/*.squashfs3.patch; do \
+	for i in $(SQUASHFS3_MAKE_DIR)/patches/*.squashfs3.patch; do \
 		$(PATCH_TOOL) $(SQUASHFS3_DIR) $$i; \
 	done
 	touch $@
 
-$(MKSQUASHFS3_DIR)/mksquashfs3 \
-	$(MKSQUASHFS3_DIR)/unsquashfs3 \
-	$(MKSQUASHFS3_DIR)/mksquashfs3-lzma \
-	$(UNSQUASHFS3_DIR)/unsquashfs3-lzma: \
-	$(SQUASHFS3_DIR)/.unpacked
-	$(MAKE) CXX="$(TOOLS_CXX)" LZMA_DIR="$(SQUASHFS3_EXTERNAL_LZMA_DIR)" \
-		-C $(MKSQUASHFS3_DIR) all
+$(SQUASHFS3_TOOLS_BUILD_DIR): $(SQUASHFS3_DIR)/.unpacked $(LZMA_DIR)/liblzma.a
+	$(MAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" LZMA_DIR="$(abspath $(LZMA_DIR))" \
+		-C $(SQUASHFS3_BUILD_DIR) all
 	touch -c $@
 
-$(TOOLS_DIR)/mksquashfs3: $(MKSQUASHFS3_DIR)/mksquashfs3
+$(SQUASHFS3_TOOLS_TARGET_DIR): $(TOOLS_DIR)/%: $(SQUASHFS3_BUILD_DIR)/%
 	cp $^ $@
 	strip $@
 
-$(TOOLS_DIR)/unsquashfs3: $(MKSQUASHFS3_DIR)/unsquashfs3
-	cp $^ $@
-	strip $@
-
-$(TOOLS_DIR)/mksquashfs3-lzma: $(MKSQUASHFS3_DIR)/mksquashfs3-lzma
-	cp $^ $@
-	strip $@
-
-$(TOOLS_DIR)/unsquashfs3-lzma: $(UNSQUASHFS3_DIR)/unsquashfs3-lzma
-	cp $^ $@
-	strip $@
-
-squashfs3: $(TOOLS_DIR)/mksquashfs3 $(TOOLS_DIR)/mksquashfs3-lzma \
-	   $(TOOLS_DIR)/unsquashfs3 $(TOOLS_DIR)/unsquashfs3-lzma
+squashfs3: $(SQUASHFS3_TOOLS_TARGET_DIR)
 
 squashfs3-source: $(SQUASHFS3_DIR)/.unpacked
 
 squashfs3-clean:
-	-$(MAKE) -C $(MKSQUASHFS3_DIR) clean
+	-$(MAKE) -C $(SQUASHFS3_BUILD_DIR) clean
 
 squashfs3-dirclean:
 	$(RM) -r $(SQUASHFS3_DIR)
 
 squashfs3-distclean: squashfs3-dirclean
-	$(RM) $(TOOLS_DIR)/mksquashfs3
-	$(RM) $(TOOLS_DIR)/mksquashfs3-lzma
-	$(RM) $(TOOLS_DIR)/unsquashfs3
-	$(RM) $(TOOLS_DIR)/unsquashfs3-lzma
+	$(RM) $(SQUASHFS3_TOOLS_TARGET_DIR)
