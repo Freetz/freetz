@@ -51,11 +51,11 @@ start() {
 }
 
 stop() {
-	[ -e $TMPFILE_OPT ] || echo " -n" > $TMPFILE_OPT
+	[ -e ${TMPFILE}OPT ] || echo " -n" > ${TMPFILE}OPT
 	#save current arguments
 	local DAEMON_PID=$(cat $PID_FILE 2>/dev/null)
 	if [ -n "$DAEMON_PID" ]; then
-		for arg in $(xargs -0 < /proc/${DAEMON_PID}/cmdline); do grep -q " $arg" $TMPFILE_OPT 2>/dev/null || echo " $arg"; done > $TMPFILE_CMD
+		for arg in $(xargs -0 < /proc/${DAEMON_PID}/cmdline); do grep -q " $arg" ${TMPFILE}OPT 2>/dev/null || echo " $arg"; done > ${TMPFILE}CMD
 	fi
 	dsld -s
 }
@@ -66,10 +66,10 @@ reload() {
 
 set_options() {
 	DAEMON_OPT_NEW=" $*"
-	if [ " $(cat $TMPFILE_OPT 2>/dev/null)" != "$DAEMON_OPT_NEW" ]; then
+	if [ " $(cat ${TMPFILE}OPT 2>/dev/null)" != "$DAEMON_OPT_NEW" ]; then
 		DAEMON_STATUS="$(modlib_status)"
 		[ "$DAEMON_STATUS" != "stopped" ] && modlib_stop
-		echo "$DAEMON_OPT_NEW" > $TMPFILE_OPT
+		echo "$DAEMON_OPT_NEW" > ${TMPFILE}OPT
 		[ "$DAEMON_STATUS" != "stopped" ] && modlib_start
 	fi
 }
