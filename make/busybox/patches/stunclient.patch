@@ -1,12 +1,15 @@
 --- /dev/null	2011-11-28 10:13:54.172239931 +0100
-+++ networking/stun-client.c	2011-12-15 23:38:25.657061247 +0100
-@@ -0,0 +1,142 @@
++++ networking/stunclient.c	2011-12-15 23:38:25.657061247 +0100
+@@ -0,0 +1,164 @@
 +/*
-+ * Mini stun-client implementation for busybox
++ * Mini stun client implementation for busybox
++ * detect external address by doing a STUN request
++ * no attempt to detect NAT properties
++ *
++ * Copyright (C) 2011 by Ralf Friedl <Ralf.Friedl at online.de>
 + *
 + * Licensed under GPLv2 or later, see file LICENSE in this source tree.
 + */
-+#include <net/if.h>
 +#include "libbb.h"
 +
 +//config:config STUNCLIENT
@@ -16,16 +19,15 @@
 +//config:	  determine external IP address via STUN
 +//config:
 +
-+/* Needs socket(AF_INET, SOCK_RAW, IPPROTO_ICMP), therefore BB_SUID_MAYBE: */
-+//applet:IF_STUNCLIENT(APPLET(stunclient, BB_DIR_USR_BIN, BB_SUID_DROP))
-+//applet:IF_STUNCLIENT(APPLET_ODDNAME(stun-client, stunclient, BB_DIR_USR_BIN, BB_SUID_DROP, stunclient))
++//applet://IF_STUNCLIENT(APPLET(stunclient, BB_DIR_USR_BIN, BB_SUID_DROP))
++//applet:IF_STUNCLIENT(APPLET_ODDNAME(stun-ip, stunclient, BB_DIR_USR_BIN, BB_SUID_DROP, stunclient))
 +
-+//kbuild:lib-$(CONFIG_STUNCLIENT)  += stun-client.o
++//kbuild:lib-$(CONFIG_STUNCLIENT)  += stunclient.o
 +
 +//usage:#define stunclient_trivial_usage
 +//usage:       "HOST"
 +//usage:#define stunclient_full_usage "\n\n"
-+//usage:       "discover external address via STUN"
++//usage:       "discover external address"
 +
 +
 +// support for IPv6 is incomplete, and it is uncertain whether it is useful
@@ -42,6 +44,13 @@
 +	OPT_IPV4 = 1 << 0,
 +	OPT_IPV6 = (1 << 1),
 +};
++
++#define STUN_METHOD_BINDING		0x001
++
++#define STUN_ATTRIBUTE_MAPPEDADDRESS	0x0001
++
++#define STUN_AF_IPV4	0x01
++#define STUN_AF_IPV6	0x02
 +
 +struct stun_header {
 +	uint16_t		type;
@@ -75,56 +84,61 @@
 +	int opt;
 +	sa_family_t af;
 +	u_short port = 3478;	// nat-stun-port
-+	int arg;
++	int retry, max_retry = 3;
++	int i, fd;
++	int delay, max_delay, poll_delay;
++	struct stun_header	stun_req; // header with no extra data
++	struct pollfd pfd[1];
++	len_and_sockaddr *lsa;
 +
 +	//port = bb_lookup_port("nat-stun-port", "udp", 3478);
++	port = 3478;	// nat-stun-port
++	max_delay = 1000; // in ms
++	poll_delay = 100; // in ms
 +
-+	opt_complementary = "-1";
++	opt_complementary = "=1";
 +	opt = getopt32(argv, OPT_STRING);
++	af = AF_UNSPEC;
 +	if (ENABLE_STUN_IPV6) {
-+		af = AF_UNSPEC;
 +		if (opt & OPT_IPV4)
 +			af = AF_INET;
 +		if (opt & OPT_IPV6)
 +			af = AF_INET6;
 +	}
 +	(void)af;		// Avoid compiler warning
-+	for (arg = optind; arg < argc; arg++) {
-+		int fd, i, ret;
-+		len_and_sockaddr *lsa;
-+		char *hostname = argv[arg];
-+		struct pollfd pfd[1];
-+		long buf[0x1000 / sizeof (long)];
-+		char *cp = (char *)buf, *ep;
-+		size_t buf_len;
-+		struct stun_message *stun_msg = (struct stun_message *)buf;
-+		struct stun_header *stun_hdr = &stun_msg->header;
 +
-+		lsa = xhost_and_af2sockaddr(hostname, port, af);
++	// create stun request
++	stun_req.type = htons (STUN_METHOD_BINDING);
++	stun_req.length = htons (0);	// no extra data
++	for (i = 0; i < sizeof (stun_req.id) / sizeof (*stun_req.id); i++)
++		stun_req.id[i] = random ();
++	//
++	lsa = xhost_and_af2sockaddr(argv[optind], port, af);
++	fd = xsocket(lsa->u.sa.sa_family, SOCK_DGRAM, 0);
++	for (delay = 0, retry = 0; delay < max_delay; delay += poll_delay) {
++		union {
++			struct stun_message	stun_msg;
++			char			data[0x1000];
++		} stun_resp;
++		char *cp, *ep;
++		int ret;
 +
-+		fd = xsocket(lsa->u.sa.sa_family, SOCK_DGRAM, 0);
-+		stun_hdr->type = htons (0x0001);
-+		stun_hdr->length = htons (0);
-+		for (i = 0; i < sizeof (stun_hdr->id) / sizeof (*stun_hdr->id); i++)
-+			stun_hdr->id[i] = random ();
-+		buf_len = sizeof (*stun_hdr);
-+		xsendto (fd, buf, buf_len, &lsa->u.sa, lsa->len);
++		if (retry < max_retry)
++			xsendto (fd, &stun_req, sizeof (stun_req), &lsa->u.sa, lsa->len);
 +		pfd[0].fd = fd;
 +		pfd[0].events = POLLIN;
-+		ret = poll (pfd, 1, 10 * 1000);
++		ret = poll (pfd, 1, poll_delay);
 +		if (ret <= 0) {
 +			//perror ("select");
-+			goto end;
++			continue;
 +		}
-+		ret = recv (fd, buf, sizeof (buf), 0);
++		ret = recv (fd, stun_resp.data, sizeof (stun_resp), 0);
 +		if (ret <= 0) {
 +			//perror ("recv");
-+			goto end;
++			continue;
 +		}
-+		buf_len = ret;
-+		ret = 0;
-+		cp = (char *)&stun_msg->data;
-+		ep = (char *)buf + buf_len;
++		cp = (char *)&stun_resp.stun_msg.data; // start of data
++		ep = (char *)stun_resp.data + ret;     // end of data
 +		for (;;) {
 +			struct stun_attr *stun_attr = (struct stun_attr *)cp;
 +			u_short type = ntohs (stun_attr->type);
@@ -132,14 +146,22 @@
 +			cp += sizeof (struct stun_attr) + ((length + 3) & ~3);
 +			if (cp > ep)
 +				break;
-+			if (type == 0x0001 && length == 8) {
++			if (type == STUN_ATTRIBUTE_MAPPEDADDRESS) {
 +				struct stun_address *stun_addr = (struct stun_address *)stun_attr->data;
-+				printf ("%s\n", inet_ntoa (stun_addr->addr4));
-+				return 0;
++				if (stun_addr->family == STUN_AF_IPV4) {
++					printf ("%s\n", inet_ntoa (stun_addr->addr4));
++					return 0;
++				}
++				if (ENABLE_STUN_IPV6 && stun_addr->family == STUN_AF_IPV6) {
++					char straddr[INET6_ADDRSTRLEN];
++					inet_ntop(AF_INET6, &stun_addr->addr6, straddr, sizeof(straddr));
++					printf ("%s\n", straddr);
++					return 0;
++				}
 +			}
 +		}
-+	end:
-+		close (fd);
 +	}
++	if (ENABLE_FEATURE_CLEAN_UP)
++		close (fd);
 +	return 1;
 +}
