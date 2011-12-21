@@ -13,20 +13,12 @@ config FREETZ_MODULE_mtdblk
 
 config FREETZ_MODULE_block2mtd
 	bool "block2mtd.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
-		FREETZ_KERNEL_VERSION_2_6_19_2 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
 	default n
 
 config FREETZ_MODULE_ramzswap
 	bool "ramzswap.ko"
-	depends on FREETZ_REPLACE_KERNEL && ( \
-			FREETZ_KERNEL_VERSION_2_6_19_2 || \
-			FREETZ_KERNEL_VERSION_2_6_28 || \
-			FREETZ_KERNEL_VERSION_2_6_32 \
-		)
+	depends on FREETZ_REPLACE_KERNEL && \
+			FREETZ_KERNEL_VERSION_2_6_19_MIN
 	select FREETZ_MODULE_xvmalloc
 	select FREETZ_MODULE_lzo_compress
 	select FREETZ_MODULE_lzo_decompress
@@ -34,11 +26,8 @@ config FREETZ_MODULE_ramzswap
 
 config FREETZ_MODULE_xvmalloc
 	bool "xvmalloc.ko"
-	depends on FREETZ_REPLACE_KERNEL && ( \
-			FREETZ_KERNEL_VERSION_2_6_19_2 || \
-			FREETZ_KERNEL_VERSION_2_6_28 || \
-			FREETZ_KERNEL_VERSION_2_6_32 \
-		)
+	depends on FREETZ_REPLACE_KERNEL && \
+			FREETZ_KERNEL_VERSION_2_6_19_MIN
 	default n
 
 menu "ndas"
@@ -102,9 +91,7 @@ config FREETZ_MODULE_blkcipher
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_2 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+		FREETZ_KERNEL_VERSION_2_6_19_MIN
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19_2
 	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28
@@ -121,30 +108,24 @@ config FREETZ_MODULE_cryptomgr
 config FREETZ_MODULE_sha1
 	bool "sha1.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
-		FREETZ_KERNEL_VERSION_2_6_19_2
+		FREETZ_KERNEL_VERSION_2_6_19_2_MAX
 	default n
 
 config FREETZ_MODULE_sha256
 	bool "sha256.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
-		FREETZ_KERNEL_VERSION_2_6_19_2
+		FREETZ_KERNEL_VERSION_2_6_19_MAX
 	default n
 
 config FREETZ_MODULE_sha1_generic
 	bool "sha1_generic.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_sha256_generic
 	bool "sha256_generic.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
@@ -211,12 +192,8 @@ config FREETZ_MODULE_ppp_mppe_mppc
 	bool "ppp_mppe_mppc.ko"
 	select FREETZ_MODULE_ppp_generic
 	select FREETZ_MODULE_arc4
-	select FREETZ_MODULE_sha1 if \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
-		FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_sha1_generic if \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+	select FREETZ_MODULE_sha1 if FREETZ_KERNEL_VERSION_2_6_19_MAX
+	select FREETZ_MODULE_sha1_generic if FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 config FREETZ_MODULE_scsi_mod
@@ -378,9 +355,7 @@ config FREETZ_MODULE_ext3
 
 config FREETZ_MODULE_ext4
 	bool "ext4.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_crc16
 	select FREETZ_MODULE_jbd2
 	select FREETZ_MODULE_mbcache
@@ -409,16 +384,12 @@ config FREETZ_MODULE_iso9660
 
 config FREETZ_MODULE_jbd
 	bool "jbd.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
-		FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 	default n
 
 config FREETZ_MODULE_jbd2
 	bool "jbd2.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 config FREETZ_MODULE_lockd
@@ -520,9 +491,7 @@ menu "lib"
 
 config FREETZ_MODULE_crc16
 	bool "crc16.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 config FREETZ_MODULE_crc_ccitt
