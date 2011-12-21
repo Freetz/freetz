@@ -1,0 +1,14 @@
+--- sablevm/configure
++++ sablevm/configure
+@@ -20397,8 +20397,9 @@
+   echo ***ERROR: libpopt is missing; exit 1
+ fi
+ 
+-		LIBSVMADD="$LIBSVMADD -lpopt";;
+-	no2)	LIBSVMADD="$LIBSVMADD -lpopt";;	yes)	ac_configure_args="$ac_configure_args --enable-convenience-only-libpopt"
++		LIBSVMADD="$LIBSVMADD -lpopt"; SVMADD="$SVMADD -lpopt";;
++	no2)	LIBSVMADD="$LIBSVMADD -lpopt"; SVMADD="$SVMADD -lpopt";;
++	yes)	ac_configure_args="$ac_configure_args --enable-convenience-only-libpopt"
+ 		SVMADD="$LIBSVMADD ../libpopt/libpopt_convenience.la"
+ 		SVMINCLUDE='-I../libpopt -I$(srcdir)/../libpopt'
+ 	;;
