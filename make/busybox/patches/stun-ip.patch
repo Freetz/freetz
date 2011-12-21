@@ -1,6 +1,6 @@
 --- /dev/null	2011-11-28 10:13:54.172239931 +0100
-+++ networking/stunclient.c	2011-12-15 23:38:25.657061247 +0100
-@@ -0,0 +1,164 @@
++++ networking/stun-ip.c	2011-12-15 23:38:25.657061247 +0100
+@@ -0,0 +1,162 @@
 +/*
 + * Mini stun client implementation for busybox
 + * detect external address by doing a STUN request
@@ -12,21 +12,19 @@
 + */
 +#include "libbb.h"
 +
-+//config:config STUNCLIENT
-+//config:	bool "stunclient"
++//config:config STUN_IP
++//config:	bool "stunc-ip"
 +//config:	default n
 +//config:	help
 +//config:	  determine external IP address via STUN
 +//config:
 +
-+//applet://IF_STUNCLIENT(APPLET(stunclient, BB_DIR_USR_BIN, BB_SUID_DROP))
-+//applet:IF_STUNCLIENT(APPLET_ODDNAME(stun-ip, stunclient, BB_DIR_USR_BIN, BB_SUID_DROP, stunclient))
++//applet:IF_STUN_IP(APPLET_ODDNAME(stun-ip, stun_ip, BB_DIR_USR_BIN, BB_SUID_DROP, stun_ip))
++//kbuild:lib-$(CONFIG_STUN_IP)  += stun-ip.o
 +
-+//kbuild:lib-$(CONFIG_STUNCLIENT)  += stunclient.o
-+
-+//usage:#define stunclient_trivial_usage
++//usage:#define stun_ip_trivial_usage
 +//usage:       "HOST"
-+//usage:#define stunclient_full_usage "\n\n"
++//usage:#define stun_ip_full_usage "\n\n"
 +//usage:       "discover external address"
 +
 +
@@ -78,8 +76,8 @@
 +	
 +};
 +
-+int stunclient_main(int argc UNUSED_PARAM, char **argv);
-+int stunclient_main(int argc UNUSED_PARAM, char **argv)
++int stun_ip_main(int argc UNUSED_PARAM, char **argv);
++int stun_ip_main(int argc UNUSED_PARAM, char **argv)
 +{
 +	int opt;
 +	sa_family_t af;
