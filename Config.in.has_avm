@@ -151,7 +151,7 @@ config FREETZ_HAS_AVM_TR069
 	help
 		Select this if your original firmware has tr069 support (libtr069, libtr064).
 
-config FREETZ_HAS_CHRONYD
+config FREETZ_HAS_AVM_CHRONYD
 	bool "Has chronyd"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_AVMDAEMON_DISABLE_NTP if ! FREETZ_REMOVE_CHRONYD
 	default y		if \
@@ -171,7 +171,7 @@ config FREETZ_HAS_CHRONYD
 	help
 		Select this if you have a box with chronyd.
 
-config FREETZ_HAS_DECT
+config FREETZ_HAS_AVM_DECT
 	bool "Has DECT"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6840 || \
@@ -188,7 +188,7 @@ config FREETZ_HAS_DECT
 	help
 		Select this if you have a box with DECT.
 
-config FREETZ_HAS_OPENSSL_LIBS
+config FREETZ_HAS_AVM_OPENSSL_LIBS
 	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_300IP_AS_FON || \
@@ -204,7 +204,7 @@ config FREETZ_HAS_OPENSSL_LIBS
 	help
 		Select this if you have a box with AVM libcrypto and libssl.
 
-config FREETZ_HAS_LSOF
+config FREETZ_HAS_AVM_LSOF
 	bool "Has lsof"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6840 || \
@@ -222,7 +222,7 @@ config FREETZ_HAS_LSOF
 	help
 		Select this if you have a box with lsof binary.
 
-config FREETZ_HAS_NAS
+config FREETZ_HAS_AVM_NAS
 	bool "Has NAS"		if FREETZ_TYPE_CUSTOM
 	select FREETZ_BUSYBOX_TAR_OLDGNU_COMPATIBILITY
 	default y		if \
@@ -243,7 +243,7 @@ config FREETZ_HAS_NAS
 	help
 		Select this if you have a box with NAS support.
 
-config FREETZ_HAS_PHONE
+config FREETZ_HAS_AVM_PHONE
 	bool "Has Phone"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_2170 || \
@@ -258,7 +258,7 @@ config FREETZ_HAS_PHONE
 	help
 		Select this if you have a box with phone support.
 
-config FREETZ_HAS_STRACE
+config FREETZ_HAS_AVM_STRACE
 	bool "Has strace"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6840 || \
@@ -276,7 +276,7 @@ config FREETZ_HAS_STRACE
 	help
 		Select this if you have a box with strace binary.
 
-config FREETZ_HAS_TAM
+config FREETZ_HAS_AVM_TAM
 	bool "Has TAM"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6840 || \
@@ -294,7 +294,7 @@ config FREETZ_HAS_TAM
 	help
 		Select this if you have a box with TAM (Telephone Answering Machine) support.
 
-config FREETZ_HAS_UDEV
+config FREETZ_HAS_AVM_UDEV
 	bool "udev"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6840 || \
@@ -393,7 +393,7 @@ config FREETZ_HAS_AVM_E2FSPROGS
 	help
 		Select this if you have a firmware with blkid, fsck and mkfs.
 
-config FREETZ_HAS_WLAN
+config FREETZ_HAS_AVM_WLAN
 	bool "Has WLAN"		if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_2170 || \
@@ -407,7 +407,7 @@ config FREETZ_HAS_WLAN
 	help
 		Select this if you have a box with WLAN.
 
-config FREETZ_HAS_UMTS
+config FREETZ_HAS_AVM_UMTS
 	bool "Has UMTS"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_FON_WLAN_7240 || \

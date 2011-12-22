@@ -481,7 +481,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Copy the unpacked directory
 	mkdir -p "$MOD_DIR"
-	[ "$FREETZ_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
+	[ "$FREETZ_HAS_AVM_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
 	"$TAR" -c -C "$ORG_DIR" $exclude_dev . | "$TAR" -x -C "$MOD_DIR" || exit 1
 
 	# Fix some permissions
@@ -1133,7 +1133,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	echo0 "creating filesystem image"
 	echo1 "squashfs blocksize: $FILESYSTEM_BLOCKSIZE"
-	[ "$FREETZ_HAS_UDEV" == "y" ] || \
+	[ "$FREETZ_HAS_AVM_UDEV" == "y" ] || \
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
@@ -1171,7 +1171,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 			error 1 "kernel image is $DIFF bytes too big. See http://trac.freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$FREETZ_HAS_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
+		if [ "$FREETZ_HAS_AVM_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
 			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))

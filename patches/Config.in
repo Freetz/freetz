@@ -2,7 +2,7 @@ comment "Web menu patches -----------------------"
 
 config FREETZ_PATCH_VCC
 	bool "Patch 2nd VCC"
-	depends on FREETZ_HAS_PHONE && FREETZ_TYPE_LANG_DE
+	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
 	default n
 	help
 		Patches the setting for 2nd VCC into web menu. It also adds two additional
@@ -80,7 +80,7 @@ config FREETZ_ADD_REGEXT_GUI
 
 #config FREETZ_PATCH_INTERNATIONAL
 #	bool "Patch international"
-#	depends on FREETZ_HAS_PHONE && FREETZ_TYPE_LANG_DE
+#	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
 #	default y
 #	help
 #		Reveals some options from the international firmware in the web menu.
@@ -252,7 +252,7 @@ endif
 
 config FREETZ_MODIFY_UMTSD
 	bool "Modify umtsd: only for known modems"
-	depends on FREETZ_HAS_UMTS && FREETZ_HAS_UDEV && ! FREETZ_REMOVE_UMTSD
+	depends on FREETZ_HAS_AVM_UMTS && FREETZ_HAS_AVM_UDEV && ! FREETZ_REMOVE_UMTSD
 	default n
 	help
 		AVM's umtsd will only be started if a *known* umts modem is
@@ -389,7 +389,7 @@ config FREETZ_REMOVE_USB_MODULE
 config FREETZ_REMOVE_NAS
 	bool "Remove AVM NAS Webinterface"
 	default n
-	depends on FREETZ_HAS_NAS && FREETZ_TYPE_LANG_DE
+	depends on FREETZ_HAS_AVM_NAS && FREETZ_TYPE_LANG_DE
 	help
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
@@ -662,7 +662,7 @@ endmenu
 
 config FREETZ_REMOVE_CAPIOVERTCP
 	bool "Remove CAPIoverTCP (used for Fritz!Fax)"
-	depends on FREETZ_HAS_PHONE
+	depends on FREETZ_HAS_AVM_PHONE
 	default n
 	help
 		Remove CAPIoverTCP (capiotcp_server). Use this if you don't want to use
@@ -672,7 +672,7 @@ config FREETZ_REMOVE_CAPIOVERTCP
 
 config FREETZ_REMOVE_CHRONYD
 	bool "Remove chronyd"
-	depends on FREETZ_HAS_CHRONYD
+	depends on FREETZ_HAS_AVM_CHRONYD
 	default n
 	help
 		Removes AVM's time synchronization tool (chrony) and related files.
@@ -693,7 +693,7 @@ config FREETZ_REMOVE_CDROM_ISO
 
 config FREETZ_REMOVE_DECT
 	bool "Remove DECT files"
-	depends on FREETZ_HAS_DECT
+	depends on FREETZ_HAS_AVM_DECT
 	default n
 	help
 		Remove dect files (modules, dect_manager and dect related Web UI).
@@ -785,7 +785,7 @@ config FREETZ_REMOVE_HELP
 
 config FREETZ_REMOVE_LSOF
 	bool "Remove lsof"
-	depends on FREETZ_HAS_LSOF
+	depends on FREETZ_HAS_AVM_LSOF
 	default n
 	help
 		Remove /bin/lsof binary.
@@ -878,7 +878,7 @@ config FREETZ_REMOVE_SMBD
 
 config FREETZ_REMOVE_STRACE
 	bool "Remove strace"
-	depends on FREETZ_HAS_STRACE
+	depends on FREETZ_HAS_AVM_STRACE
 	default n
 	help
 		Remove /usr/bin/strace binary.
@@ -926,7 +926,7 @@ config FREETZ_REMOVE_TR069_FWUPDATE
 
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS support (USB GSM)"
-	depends on FREETZ_HAS_UMTS
+	depends on FREETZ_HAS_AVM_UMTS
 	default n
 	help
 		Remove UMTS support
@@ -996,7 +996,7 @@ config FREETZ_REMOVE_AVM_E2FSPROGS
 config FREETZ_REMOVE_VOIPD
 	bool "Remove VoIP files (for non-telephony boxes)" if FREETZ_SHOW_ADVANCED
 	depends on \
-		FREETZ_HAS_PHONE
+		FREETZ_HAS_AVM_PHONE
 	default n
 	help
 		This removes the integrated sip-client and -server and the releated Web menu,
@@ -1010,8 +1010,8 @@ config FREETZ_REMOVE_VOIPD
 config FREETZ_REMOVE_VOIP_ISDN
 	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
 	depends on \
-		FREETZ_HAS_PHONE
-	select FREETZ_REMOVE_DECT if FREETZ_HAS_DECT
+		FREETZ_HAS_AVM_PHONE
+	select FREETZ_REMOVE_DECT if FREETZ_HAS_AVM_DECT
 	select FREETZ_REMOVE_VOIPD
 	select FREETZ_REMOVE_DTRACE
 	select FREETZ_REMOVE_CAPIOVERTCP
@@ -1045,7 +1045,7 @@ config FREETZ_REMOVE_WEBDAV
 config FREETZ_REMOVE_WLAN
 	bool "Remove WLAN files (for non-wlan boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
 	depends on \
-		FREETZ_HAS_WLAN
+		FREETZ_HAS_AVM_WLAN
 	default n
 	help
 		Radically remove a lot of wlan-related files. This patch saves about
@@ -1057,7 +1057,7 @@ comment "Replacement patches --------------------"
 
 config FREETZ_REPLACE_SSL_LIBS
 	bool "Replace AVM SSL libraries" if FREETZ_SHOW_ADVANCED
-	depends on FREETZ_HAS_OPENSSL_LIBS
+	depends on FREETZ_HAS_AVM_OPENSSL_LIBS
 	default n
 	help
 		Use this option only if you are running out of space and if you
