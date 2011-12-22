@@ -1,7 +1,7 @@
 --- linux-2.6.28/include/linux/skbuff.h
 +++ linux-2.6.28/include/linux/skbuff.h
-@@ -469,10 +469,6 @@
- 	__be16			protocol;
+@@ -488,10 +488,6 @@
+ #endif
  
  	void			(*destructor)(struct sk_buff *skb);
 -#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
@@ -11,7 +11,7 @@
  #ifdef CONFIG_BRIDGE_NETFILTER
  	struct nf_bridge_info	*nf_bridge;
  #endif
-@@ -540,6 +540,10 @@
+@@ -563,6 +559,10 @@
  				*data;
  	unsigned int		truesize;
  	atomic_t		users;
