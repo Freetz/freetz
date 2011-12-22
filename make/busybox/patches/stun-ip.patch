@@ -113,7 +113,7 @@
 +	//
 +	lsa = xhost_and_af2sockaddr(argv[optind], port, af);
 +	fd = xsocket(lsa->u.sa.sa_family, SOCK_DGRAM, 0);
-+	for (delay = 0, retry = 0; delay < max_delay; delay += poll_delay) {
++	for (delay = 0, retry = 0; delay < max_delay; delay += poll_delay, retry++) {
 +		union {
 +			struct stun_message	stun_msg;
 +			char			data[0x1000];
