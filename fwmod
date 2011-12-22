@@ -206,19 +206,9 @@ fi
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
-# ar7 (FON WLAN) and ohio (7170) modules dir is 2.6.13.1-ar7/ohio
-# ur8 (3270) and iks (7390) modules dir is 2.6.19.2
-# ar9 (7320) modules dir is 2.6.28.10
-# ur8 (7240, 7270) modules dir is 2.6.32.21
-MODULES_SUBDIR="lib/modules/${FREETZ_KERNEL_VERSION}"
-if [ "$FREETZ_KERNEL_VERSION" = "2.6.13.1" ]; then
-	MODULES_SUBDIR="$MODULES_SUBDIR-${FREETZ_KERNEL_LAYOUT}"
-elif [ "$FREETZ_KERNEL_VERSION" = "2.6.28" ]; then
-	MODULES_SUBDIR="${MODULES_SUBDIR}.10"
-elif [ "$FREETZ_KERNEL_VERSION" = "2.6.32" ]; then
-	MODULES_SUBDIR="${MODULES_SUBDIR}.21"
-fi
-
+# Use FREETZ_MODULES_KVER to determine MODULES_SUBDIR
+# More details see kernel/Config.in
+MODULES_SUBDIR="lib/modules/${FREETZ_MODULES_KVER}"
 
 if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
 	MKSQUASHFS_OPTIONS+=" -be"
