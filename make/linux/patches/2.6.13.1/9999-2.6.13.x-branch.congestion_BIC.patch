@@ -33,37 +33,3 @@ index ec38d45..a721085 100644
  		else
  			/* linear increase */
  			ca->cnt = cwnd / max_increment;
-
-From 75be5e47479abaac50295fa846cb91edb0424c3a Mon Sep 17 00:00:00 2001
-From: Stephen Hemminger <shemminger@osdl.org>
-Date: Wed, 9 Nov 2005 10:22:10 -0800
-Subject: [PATCH] [PATCH] tcp: BIC max increment too large
-
-The max growth of BIC TCP is too large. Original code was based on
-BIC 1.0 and the default there was 32. Later code (2.6.13) included
-compensation for delayed acks, and should have reduced the default
-value to 16; since normally TCP gets one ack for every two packets sent.
-
-The current value of 32 makes BIC too aggressive and unfair to other
-flows.
-
-Submitted-by: Injong Rhee <rhee@eos.ncsu.edu>
-Signed-off-by: Stephen Hemminger <shemminger@osdl.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
----
- net/ipv4/tcp_bic.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git linux-2.6.13.1/net/ipv4/tcp_bic.c linux-2.6.13.1/net/ipv4/tcp_bic.c
-index 6d80e06..ae35e06 100644
---- linux-2.6.13.1/net/ipv4/tcp_bic.c
-+++ linux-2.6.13.1/net/ipv4/tcp_bic.c
-@@ -27,7 +27,7 @@
- 					  */
- 
- static int fast_convergence = 1;
--static int max_increment = 32;
-+static int max_increment = 16;
- static int low_window = 14;
- static int beta = 819;		/* = 819/1024 (BICTCP_BETA_SCALE) */
- static int low_utilization_threshold = 153;

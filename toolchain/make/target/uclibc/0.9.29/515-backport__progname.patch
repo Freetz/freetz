@@ -64,36 +64,3 @@ index 91c8a39..c9c16e1 100644
  #endif
  
  #ifdef __UCLIBC_CTOR_DTOR__
-
-
-From 63342ff906c121b36440ae7a41449e87f5b5f689 Mon Sep 17 00:00:00 2001
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 27 Jun 2008 19:12:50 +0000
-Subject: if argv[0] is NULL, dont try to parse it and subsequently crash ... found by running execve05 ltp test on blackfin ([#4194])
-
----
-diff --git libc/misc/internals/__uClibc_main.c libc/misc/internals/__uClibc_main.c
-index 3511615..6c0dab7 100644
---- libc/misc/internals/__uClibc_main.c
-+++ libc/misc/internals/__uClibc_main.c
-@@ -339,12 +339,14 @@ void __uClibc_main(int (*main)(int, char **, char **), int argc,
- 
-     __uclibc_progname = *argv;
- #ifdef __UCLIBC_HAS_PROGRAM_INVOCATION_NAME__
--    program_invocation_name = *argv;
--    program_invocation_short_name = strrchr(*argv, '/');
--    if (program_invocation_short_name != NULL)
--	++program_invocation_short_name;
--    else
--	program_invocation_short_name = program_invocation_name;
-+    if (*argv != NULL) {
-+	program_invocation_name = *argv;
-+	program_invocation_short_name = strrchr(*argv, '/');
-+	if (program_invocation_short_name != NULL)
-+	    ++program_invocation_short_name;
-+	else
-+	    program_invocation_short_name = program_invocation_name;
-+    }
- #endif
- 
- #ifdef __UCLIBC_CTOR_DTOR__
