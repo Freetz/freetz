@@ -84,9 +84,20 @@ modpatch()
 	local do_fix
 	if [ "$_auto_fix_patches" == "y" ]; then
 		local output=$(patch --dry-run -d "$target_dir" -p0 < "$patch_file" 2> /dev/null)
-		if [ $? -eq 0 ] && echo "$output" | grep -E '^Hunk ' > /dev/null 2>&1; then
-			do_fix="y"
-			backup="-b "
+		if [ $? -eq 0 ] && echo "$output" | grep -sqE '^Hunk '; then
+			# Is any target file patched more than once per patch? -> skip auto-fix
+			local multi_patch_files="$(lsdiff "$patch_file" | sort | uniq -cd)"
+			if [ "$multi_patch_files" ]; then
+				# Developer note: If you encounter this warning and want to make
+				# a patch auto-fix-friendly, either split it into two patch files
+				# (recommended because a patch should not contain multiple change
+				# sets for one file) or consolidate multiple change sets into one.
+				echo2 "warning: cannot auto-fix $patch_file, multiple change sets found for the following file(s):" >&2
+				echo2 "$multi_patch_files" >&2
+			else
+				do_fix="y"
+				backup="-b "
+			fi
 		fi
 	fi
 	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
