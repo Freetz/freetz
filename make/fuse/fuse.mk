@@ -29,7 +29,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-mtab
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 $(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
 
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13_1)),y)
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13)),y)
 $(PKG)_CONFIGURE_OPTIONS += --enable-kernel-module
 $(PKG)_CONFIGURE_OPTIONS += --disable-auto-modprobe
 else
@@ -75,7 +75,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY) \
-		$(if $(FREETZ_KERNEL_VERSION_2_6_13_1),$($(PKG)_MOD_TARGET_BINARY))
+		$(if $(FREETZ_KERNEL_VERSION_2_6_13),$($(PKG)_MOD_TARGET_BINARY))
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(FUSE_DIR) clean

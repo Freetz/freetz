@@ -142,7 +142,7 @@ $(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
 	touch $@
 
 $(KERNEL_HEADERS_DEVEL_DIR)/include/linux/version.h: $(KERNEL_DIR)/.prepared
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13_1)),y)
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13)),y)
 	$(call COPY_KERNEL_HEADERS,$(KERNEL_BUILD_ROOT_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(comma)asm-generic$(comma)linux$(comma)mtd$(comma)scsi$(comma)video})
 else
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \

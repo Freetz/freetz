@@ -52,7 +52,7 @@ source make/iptables/standard-modules.in
 comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
 	depends on FREETZ_PACKAGE_IPTABLES && \
 		FREETZ_MODULE_ip_conntrack && \
-		FREETZ_KERNEL_VERSION_2_6_13_1
+		FREETZ_KERNEL_VERSION_2_6_13
 
 config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	bool "Iptables kernel modules"
@@ -118,7 +118,7 @@ config FREETZ_MODULE_nf_conntrack_ftp
 
 config FREETZ_MODULE_ip_conntrack_h323
 	bool "ip_conntrack_h323.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack
 	default n
 	help
@@ -192,7 +192,7 @@ config FREETZ_MODULE_nf_conntrack_ipv4
 
 config FREETZ_MODULE_ip_conntrack_pptp
 	bool "ip_conntrack_pptp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack
 	default n
 	help
@@ -258,7 +258,7 @@ config FREETZ_MODULE_nf_conntrack_tftp
 
 config FREETZ_MODULE_ip_conntrack_proto_sctp
 	bool "ip_conntrack_proto_sctp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_conntrack
 	default n
 	help
@@ -272,7 +272,7 @@ config FREETZ_MODULE_nf_defrag_ipv4
 
 config FREETZ_MODULE_ip_nat
 	bool "ip_nat.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack
 	default n
 	help
@@ -296,8 +296,8 @@ config FREETZ_MODULE_nf_nat
 config FREETZ_MODULE_ip_nat_ftp
 	bool "ip_nat_ftp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_ftp
 	default n
 
@@ -310,8 +310,8 @@ config FREETZ_MODULE_nf_nat_ftp
 
 config FREETZ_MODULE_ip_nat_h323
 	bool "ip_nat_h323.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_h323
 	default n
 
@@ -326,9 +326,9 @@ config FREETZ_MODULE_nf_nat_h323
 config FREETZ_MODULE_ip_nat_irc
 	bool "ip_nat_irc.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 
 config FREETZ_MODULE_nf_nat_irc
@@ -341,7 +341,7 @@ config FREETZ_MODULE_nf_nat_irc
 
 config FREETZ_MODULE_ip_nat_pptp
 	bool "ip_nat_pptp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_nat
 	select FREETZ_MODULE_ip_conntrack_pptp
 	default n
@@ -357,17 +357,17 @@ config FREETZ_MODULE_nf_nat_pptp
 config FREETZ_MODULE_ip_nat_rtsp
 	bool "ip_nat_rtsp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_rtsp
 	default n
 
 config FREETZ_MODULE_ip_nat_tftp
 	bool "ip_nat_tftp.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 
 config FREETZ_MODULE_nf_nat_tftp
@@ -399,7 +399,7 @@ config FREETZ_MODULE_iptable_nat
 	bool "iptable_nat.ko"
 	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_ip_tables
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_nf_nat if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
@@ -420,7 +420,7 @@ config FREETZ_MODULE_ip_tables
 
 config FREETZ_MODULE_ipt_connmark
 	bool "ipt_connmark.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
@@ -432,7 +432,7 @@ config FREETZ_MODULE_ipt_connmark
 
 config FREETZ_MODULE_ipt_CONNMARK
 	bool "ipt_CONNMARK.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
@@ -443,14 +443,14 @@ config FREETZ_MODULE_ipt_CONNMARK
 
 config FREETZ_MODULE_ipt_conntrack
 	bool "ipt_conntrack.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
 
 config FREETZ_MODULE_ipt_helper
 	bool "ipt_helper.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
@@ -461,8 +461,8 @@ config FREETZ_MODULE_ipt_helper
 config FREETZ_MODULE_ipt_iprange
 	bool "ipt_iprange.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This option makes possible to match IP addresses against IP address
@@ -471,8 +471,8 @@ config FREETZ_MODULE_ipt_iprange
 config FREETZ_MODULE_ipt_layer7
 	bool "ipt_layer7.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		Say Y if you want to be able to classify connections (and their
@@ -483,9 +483,9 @@ config FREETZ_MODULE_ipt_layer7
 
 config FREETZ_MODULE_ipt_ipp2p
 	bool "ipt_ipp2p.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This option makes possible to match some P2P packets
@@ -493,7 +493,7 @@ config FREETZ_MODULE_ipt_ipp2p
 
 config FREETZ_MODULE_ipt_length
 	bool "ipt_length.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_tables
 	default n
 	help
@@ -502,7 +502,7 @@ config FREETZ_MODULE_ipt_length
 
 config FREETZ_MODULE_ipt_limit
 	bool "ipt_limit.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_tables
 	default n
 	help
@@ -529,7 +529,7 @@ config FREETZ_MODULE_ipt_comment
 
 config FREETZ_MODULE_ipt_mac
 	bool "ipt_mac.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_tables
 	default n
 	help
@@ -538,7 +538,7 @@ config FREETZ_MODULE_ipt_mac
 
 config FREETZ_MODULE_ipt_mark
 	bool "ipt_mark.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_tables
 	default n
 	help
@@ -548,7 +548,7 @@ config FREETZ_MODULE_ipt_mark
 
 config FREETZ_MODULE_ipt_MARK
 	bool "ipt_MARK.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_tables
 	default n
 	help
@@ -562,9 +562,9 @@ config FREETZ_MODULE_ipt_MARK
 config FREETZ_MODULE_ipt_MASQUERADE
 	bool "ipt_MASQUERADE.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		Masquerading is a special case of NAT: all outgoing connections are
@@ -575,7 +575,7 @@ config FREETZ_MODULE_ipt_MASQUERADE
 
 config FREETZ_MODULE_ipt_multiport
 	bool "ipt_multiport.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_tables
 	default n
 	help
@@ -586,8 +586,8 @@ config FREETZ_MODULE_ipt_multiport
 config FREETZ_MODULE_ipt_owner
 	bool "ipt_owner.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		Packet owner matching allows you to match locally-generated packets
@@ -597,8 +597,8 @@ config FREETZ_MODULE_ipt_REDIRECT
 	bool "ipt_REDIRECT.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MAX
 	select FREETZ_MODULE_iptable_nat
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2 || FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_KERNEL_VERSION_2_6_28
 	default n
 	help
 		REDIRECT is a special case of NAT: all incoming connections are
@@ -608,7 +608,7 @@ config FREETZ_MODULE_ipt_REDIRECT
 
 config FREETZ_MODULE_ipt_REJECT
 	bool "ipt_REJECT.ko"
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
 	default n
 	help
@@ -618,7 +618,7 @@ config FREETZ_MODULE_ipt_REJECT
 
 config FREETZ_MODULE_ipt_state
 	bool "ipt_state.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_conntrack
 	select FREETZ_MODULE_ip_tables
 	default n
@@ -629,7 +629,7 @@ config FREETZ_MODULE_ipt_state
 
 config FREETZ_MODULE_ipt_tcpmss
 	bool "ipt_tcpmss.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_tables
 	default n
 	help
@@ -640,8 +640,8 @@ config FREETZ_MODULE_ipt_tcpmss
 config FREETZ_MODULE_ipt_TCPMSS
 	bool "ipt_TCPMSS.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This option adds a `TCPMSS' target, which allows you to alter the
@@ -667,8 +667,8 @@ config FREETZ_MODULE_ipt_TCPMSS
 config FREETZ_MODULE_ipt_tos
 	bool "ipt_tos.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		TOS matching allows you to match packets based on the Type Of
@@ -677,8 +677,8 @@ config FREETZ_MODULE_ipt_tos
 config FREETZ_MODULE_ipt_TOS
 	bool "ipt_TOS.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This option adds a `TOS' target, which allows you to create rules in
@@ -687,7 +687,7 @@ config FREETZ_MODULE_ipt_TOS
 
 config FREETZ_MODULE_ipt_ttl
 	bool "ipt_ttl.ko"
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
 	default n
 	help
@@ -711,7 +711,7 @@ config FREETZ_MODULE_x_tables
 
 config FREETZ_MODULE_xt_helper
 	bool "xt_helper.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_x_tables
 	select FREETZ_MODULE_ip_conntrack
 	default n
@@ -740,7 +740,7 @@ config FREETZ_MODULE_xt_comment
 
 config FREETZ_MODULE_xt_conntrack
 	bool "xt_conntrack.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_x_tables
 	select FREETZ_MODULE_ip_conntrack
 	default n
@@ -827,7 +827,7 @@ config FREETZ_MODULE_xt_NFQUEUE
 
 config FREETZ_MODULE_xt_NOTRACK
 	bool "xt_NOTRACK.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_x_tables
 	select FREETZ_MODULE_ip_conntrack
 	default n
@@ -886,7 +886,7 @@ config FREETZ_MODULE_xt_realm
 
 config FREETZ_MODULE_xt_state
 	bool "xt_state.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_x_tables
 	select FREETZ_MODULE_ip_conntrack
 	default n
@@ -991,7 +991,7 @@ config FREETZ_MODULE_ip6t_ah
 		This module allows one to match AH and ESP packets.
 
 config FREETZ_MODULE_ip6t_dst
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_dst.ko"
 	default n
 	help
@@ -1001,7 +1001,7 @@ config FREETZ_MODULE_ip6t_dst
 		and destination options headers of a packet.
 
 config FREETZ_MODULE_ip6t_esp
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_esp.ko"
 	default n
 	help
@@ -1061,7 +1061,7 @@ config FREETZ_MODULE_ip6t_ipv6header
 		the ipv6 extension headers.
 
 config FREETZ_MODULE_ip6t_length
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_length.ko"
 	default n
 	help
@@ -1071,7 +1071,7 @@ config FREETZ_MODULE_ip6t_length
 		specific value or range of values.
 
 config FREETZ_MODULE_ip6t_limit
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_limit.ko"
 	default n
 	help
@@ -1092,7 +1092,7 @@ config FREETZ_MODULE_ip6t_LOG
 		any iptables table which records the packet header to the syslog.
 
 config FREETZ_MODULE_ip6t_mac
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_mac.ko"
 	default n
 	help
@@ -1102,7 +1102,7 @@ config FREETZ_MODULE_ip6t_mac
 		Ethernet address of the packet.
 
 config FREETZ_MODULE_ip6t_mark
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_mark.ko"
 	default n
 	help
@@ -1113,7 +1113,7 @@ config FREETZ_MODULE_ip6t_mark
 		(see below).
 
 config FREETZ_MODULE_ip6t_multiport
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_multiport.ko"
 	default n
 	help
@@ -1124,7 +1124,7 @@ config FREETZ_MODULE_ip6t_multiport
 		match a single range of ports.
 
 config FREETZ_MODULE_ip6t_owner
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_owner.ko"
 	default n
 	help
@@ -1164,7 +1164,7 @@ config FREETZ_MODULE_ip6table_mangle
 		which can effect how the packet is routed.
 
 config FREETZ_MODULE_ip6t_MARK
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1 && FREETZ_MODULE_ip6_tables
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_MODULE_ip6_tables
 	bool "ip6t_MARK.ko"
 	default n
 	help
@@ -1305,7 +1305,7 @@ config FREETZ_LIB_libipt_NETMAP
 
 config FREETZ_LIB_libipt_realm
 	bool "libipt_realm.so"
-	select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This matches the routing realm. Routing realms are used in complex
@@ -1386,7 +1386,7 @@ config FREETZ_LIB_libxt_CLASSIFY
 
 config FREETZ_LIB_libxt_comment
 	bool "libxt_comment.so"
-	select FREETZ_MODULE_xt_comment if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_comment if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		Allows you to add comments (up to 256 characters) to any rule.
@@ -1430,7 +1430,7 @@ config FREETZ_LIB_libxt_CONNSECMARK
 
 config FREETZ_LIB_libxt_conntrack
 	bool "libxt_conntrack.so"
-	select FREETZ_MODULE_xt_conntrack if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_conntrack if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module, when combined with connection tracking, allows access to
@@ -1467,7 +1467,7 @@ config FREETZ_LIB_libxt_hashlimit
 
 config FREETZ_LIB_libxt_helper
 	bool "libxt_helper.so"
-	select FREETZ_MODULE_xt_helper if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_helper if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module matches packets related to a specific conntrack-helper.
@@ -1480,7 +1480,7 @@ config FREETZ_LIB_libxt_iprange
 
 config FREETZ_LIB_libxt_length
 	bool "libxt_length.so"
-	select FREETZ_MODULE_xt_length if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_length if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module matches the length of the layer-3 payload (e.g. layer-4
@@ -1488,7 +1488,7 @@ config FREETZ_LIB_libxt_length
 
 config FREETZ_LIB_libxt_limit
 	bool "libxt_limit.so"
-	select FREETZ_MODULE_xt_limit if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_limit if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module matches at a limited rate using a token bucket filter.
@@ -1498,14 +1498,14 @@ config FREETZ_LIB_libxt_limit
 
 config FREETZ_LIB_libxt_mac
 	bool "libxt_mac.so"
-	select FREETZ_MODULE_xt_mac if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_mac if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		Match source MAC address.
 
 config FREETZ_LIB_libxt_mark
 	bool "libxt_mark.so"
-	select FREETZ_MODULE_xt_mark if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_mark if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module matches the netfilter mark field associated with a packet
@@ -1513,7 +1513,7 @@ config FREETZ_LIB_libxt_mark
 
 config FREETZ_LIB_libxt_MARK
 	bool "libxt_MARK.so"
-	select FREETZ_MODULE_xt_MARK if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_MARK if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This target is used to set the Netfilter mark value associated with
@@ -1523,7 +1523,7 @@ config FREETZ_LIB_libxt_MARK
 
 config FREETZ_LIB_libxt_multiport
 	bool "libxt_multiport.so"
-	select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module matches a set of source or destination ports. Up to 15
@@ -1562,7 +1562,7 @@ config FREETZ_LIB_libxt_owner
 
 config FREETZ_LIB_libxt_physdev
 	bool "libxt_physdev.so"
-	select FREETZ_MODULE_xt_physdev if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_physdev if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module matches on the bridge port input and output devices
@@ -1570,7 +1570,7 @@ config FREETZ_LIB_libxt_physdev
 
 config FREETZ_LIB_libxt_pkttype
 	bool "libxt_pkttype.so"
-	select FREETZ_MODULE_xt_pkttype if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_pkttype if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module matches the link-layer packet type.
@@ -1611,7 +1611,7 @@ config FREETZ_LIB_libxt_standard
 
 config FREETZ_LIB_libxt_state
 	bool "libxt_state.so"
-	select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This module, when combined with connection tracking, allows access to
@@ -1625,7 +1625,7 @@ config FREETZ_LIB_libxt_statistic
 
 config FREETZ_LIB_libxt_string
 	bool "libxt_string.so"
-	select FREETZ_MODULE_xt_string if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_string if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This modules matches a given string by using some pattern matching
@@ -1633,7 +1633,7 @@ config FREETZ_LIB_libxt_string
 
 config FREETZ_LIB_libxt_tcpmss
 	bool "libxt_tcpmss.so"
-	select FREETZ_MODULE_xt_tcpmss if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_tcpmss if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		This matches the TCP MSS (maximum segment size) field of the TCP header.
@@ -1649,7 +1649,7 @@ config FREETZ_LIB_libxt_TCPMSS
 
 config FREETZ_LIB_libxt_tcp
 	bool "libxt_tcp.so"
-	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		These extensions can be used if `--protocol tcp' is specified.
@@ -1694,7 +1694,7 @@ config FREETZ_LIB_libxt_u32
 
 config FREETZ_LIB_libxt_udp
 	bool "libxt_udp.so"
-	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19_2
+	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19
 	default n
 	help
 		These extensions can be used if `--protocol udp' is specified.
