@@ -2,82 +2,68 @@ config EXTERNAL_FREETZ_PACKAGE_OPENSSH
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_OPENSSH
 	bool "OpenSSH"
 	default n
-	help
-		externals these file(s):
-			/usr/lib/sftp-server
-			/usr/sbin/sshd
-			/usr/bin/ssh-agent
-			/usr/bin/ssh-add
-			/usr/bin/ssh
-			/usr/bin/scp
-			/usr/bin/ssh-keysign
-			/usr/bin/ssh-rand-helper
-			/usr/bin/sftp
-			/usr/bin/ssh-keygen
-			/usr/bin/ssh-keyscan
 
 menu OpenSSH
 	depends on EXTERNAL_FREETZ_PACKAGE_OPENSSH
 
-config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SSHD
-	bool "OpenSSH Server"
-	depends on FREETZ_PACKAGE_OPENSSH_SSHD
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_sshd
+	bool "OpenSSH server (sshd)"
+	depends on FREETZ_PACKAGE_OPENSSH_sshd
 	default n
 	help
 		externals these file(s):
-			/usr/sbin/sshd
+		 /usr/sbin/sshd
 
-config EXTERNAL_FREETZ_PACKAGE_OPENSSH_CLIENT
-	bool "OpenSSH Client"
-	depends on FREETZ_PACKAGE_OPENSSH_CLIENT
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_ssh
+	bool "OpenSSH client (ssh)"
+	depends on FREETZ_PACKAGE_OPENSSH_ssh
 	default n
 	help
 		externals these file(s):
-			/usr/bin/ssh
+		 /usr/bin/ssh
 
-config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SCP
-	bool "OpenSSH SCP Client"
-	depends on FREETZ_PACKAGE_OPENSSH_SCP
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_scp
+	bool "OpenSSH secure copy utility (scp)"
+	depends on FREETZ_PACKAGE_OPENSSH_scp
 	default n
 	help
 		externals these file(s):
-			/usr/bin/scp
+		 /usr/bin/scp
 
 config EXTERNAL_FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
-	bool "OpenSSH Client Utilities (ssh-add, ssh-agent)"
+	bool "OpenSSH client utilities (ssh-add, ssh-agent)"
 	depends on FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
 	default n
 	help
 		externals these file(s):
-			/usr/bin/ssh-add
-			/usr/bin/ssh-agent
+		 /usr/bin/ssh-add
+		 /usr/bin/ssh-agent
 
 config EXTERNAL_FREETZ_PACKAGE_OPENSSH_KEYUTILS
-	bool "OpenSSH Key Utilities (ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)"
+	bool "OpenSSH key utilities (ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)"
 	depends on FREETZ_PACKAGE_OPENSSH_KEYUTILS
 	default n
 	help
 		externals these file(s):
-		(ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)
-			/usr/bin/ssh-keygen
-			/usr/bin/ssh-keysign
-			/usr/bin/ssh-keyscan
-			/usr/bin/ssh-rand-helper
+		 /usr/bin/ssh-keygen
+		 /usr/bin/ssh-keysign
+		 /usr/bin/ssh-keyscan
+		 /usr/bin/ssh-rand-helper
 
-config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTPCLIENT
-	bool "OpenSSH SFTP Client (sftp)"
-	depends on FREETZ_PACKAGE_OPENSSH_SFTPCLIENT
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_sftp
+	bool "OpenSSH SFTP client (sftp)"
+	depends on FREETZ_PACKAGE_OPENSSH_sftp
 	default n
 	help
 		externals these file(s):
-			/usr/bin/sftp
+		 /usr/bin/sftp
 
-config EXTERNAL_FREETZ_PACKAGE_OPENSSH_SFTP
-	bool "OpenSSH SFTP Server (sftp-server)"
-	depends on FREETZ_PACKAGE_OPENSSH_SFTP
+config EXTERNAL_FREETZ_PACKAGE_OPENSSH_sftp_server
+	bool "OpenSSH SFTP server (sftp-server)"
+	depends on FREETZ_PACKAGE_OPENSSH_sftp_server
 	default n
 	help
 		externals these file(s):
-			/usr/lib/sftp-server
+		 /usr/lib/sftp-server
 
 endmenu
