@@ -74,19 +74,9 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-wtmpx
 $(PKG)_CONFIGURE_OPTIONS += --without-bsd-auth
 $(PKG)_CONFIGURE_OPTIONS += --without-kerberos5
 
-$(PKG)_LDFLAGS := $(echo $(LDFLAGS)) -L. -Lopenbsd-compat/
-$(PKG)_LIBS := -lcrypto -lutil -lz -lcrypt -lresolv
-
-ifeq ($(strip $(FREETZ_PACKAGE_OPENSSH_STATIC)),y)
-$(PKG)_LDFLAGS += -static -all-static
-$(PKG)_LIBS += -ldl
-endif
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
-
-$($(pkg)-uninstall)
 
 $(OPENSSH_CLIENT_SSH_BINARY) \
 	$(OPENSSH_CLIENT_SCP_BINARY) \
@@ -99,7 +89,8 @@ $(OPENSSH_CLIENT_SSH_BINARY) \
 	$(OPENSSH_SSHSERVER_BINARY) \
 	$(OPENSSH_SFTP_BINARY) \
 	$(OPENSSH_SFTPCLIENT_BINARY) : $(OPENSSH_DIR)/.configured
-	$(SUBMAKE) -C $(OPENSSH_DIR) LDFLAGS="$(OPENSSH_LDFLAGS)" LIBS="$(OPENSSH_LIBS)" \
+	$(SUBMAKE) -C $(OPENSSH_DIR) \
+		EXTRA_LDFLAGS="$(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static)" \
 		all
 
 # Client binaries (ssh and scp)
