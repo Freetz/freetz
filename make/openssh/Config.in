@@ -44,12 +44,11 @@ config FREETZ_PACKAGE_OPENSSH_ssh_agent
 	bool
 
 config FREETZ_PACKAGE_OPENSSH_KEYUTILS
-	bool "Build OpenSSH key utilities (ssh-keygen, ssh-keysign, ssh-keyscan, ssh-rand-helper)"
+	bool "Build OpenSSH key utilities (ssh-keygen, ssh-keysign, ssh-keyscan)"
 	select FREETZ_PACKAGE_OPENSSH
 	select FREETZ_PACKAGE_OPENSSH_ssh_keygen
 	select FREETZ_PACKAGE_OPENSSH_ssh_keysign
 	select FREETZ_PACKAGE_OPENSSH_ssh_keyscan
-	select FREETZ_PACKAGE_OPENSSH_ssh_rand_helper
 	default n
 
 config FREETZ_PACKAGE_OPENSSH_ssh_keygen
@@ -57,8 +56,6 @@ config FREETZ_PACKAGE_OPENSSH_ssh_keygen
 config FREETZ_PACKAGE_OPENSSH_ssh_keysign
 	bool
 config FREETZ_PACKAGE_OPENSSH_ssh_keyscan
-	bool
-config FREETZ_PACKAGE_OPENSSH_ssh_rand_helper
 	bool
 
 config FREETZ_PACKAGE_OPENSSH_sftp
