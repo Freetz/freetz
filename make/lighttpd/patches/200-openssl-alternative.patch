@@ -1,52 +1,15 @@
 --- configure
 +++ configure
-@@ -14030,51 +14030,24 @@
+@@ -14030,13 +14030,25 @@
  done
  
      OLDLIBS="$LIBS"
 -    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BIO_f_base64 in -lcrypto" >&5
 -$as_echo_n "checking for BIO_f_base64 in -lcrypto... " >&6; }
 -if ${ac_cv_lib_crypto_BIO_f_base64+:} false; then :
--  $as_echo_n "(cached) " >&6
--else
--  ac_check_lib_save_LIBS=$LIBS
--LIBS="-lcrypto  $LIBS"
--cat confdefs.h - <<_ACEOF >conftest.$ac_ext
--/* end confdefs.h.  */
--
--/* Override any GCC internal prototype to avoid an error.
--   Use char because int might match the return type of a GCC
--   builtin and then its argument prototype would still apply.  */
--#ifdef __cplusplus
--extern "C"
--#endif
--char BIO_f_base64 ();
--int
--main ()
--{
--return BIO_f_base64 ();
--  ;
--  return 0;
--}
--_ACEOF
--if ac_fn_c_try_link "$LINENO"; then :
--  ac_cv_lib_crypto_BIO_f_base64=yes
--else
--  ac_cv_lib_crypto_BIO_f_base64=no
--fi
--rm -f core conftest.err conftest.$ac_objext \
--    conftest$ac_exeext conftest.$ac_ext
--LIBS=$ac_check_lib_save_LIBS
--fi
--{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_BIO_f_base64" >&5
--$as_echo "$ac_cv_lib_crypto_BIO_f_base64" >&6; }
--if test "x$ac_cv_lib_crypto_BIO_f_base64" = xyes; then :
--
--      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
--$as_echo_n "checking for SSL_new in -lssl... " >&6; }
--if ${ac_cv_lib_ssl_SSL_new+:} false; then :
 +    if [ -n "$OPENSSL_ALTERNATIVE" ]; then
 +	SSL_NEW_LIB="$OPENSSL_ALTERNATIVE"
++	SSL_NEW_FCT_PREFIX="$OPENSSL_ALTERNATIVE_FCT_PREFIX"
 +	SSL_NEW_EXTRALIBS="$OPENSSL_ALTERNATIVE_EXTRALIBS"
 +	CPPFLAGS="$CPPFLAGS -DUSE_OPENSSL_ALTERNATIVE=$OPENSSL_ALTERNATIVE"
 +    else
@@ -57,30 +20,80 @@
 +#     That's the reason we removed it. This also makes it possible to use alternative ssl implementations
 +#     which do not provide this function.
 +      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -l${SSL_NEW_LIB}" >&5
-+$as_echo_n "checking for SSL_new in -l${SSL_NEW_LIB}... " >&6; }
++$as_echo_n "checking for ${SSL_NEW_FCT_PREFIX}SSL_new in -l${SSL_NEW_LIB}... " >&6; }
 +if test "$(eval echo \${ac_cv_lib_${SSL_NEW_LIB}_SSL_new+set})" = set; then :
    $as_echo_n "(cached) " >&6
  else
    ac_check_lib_save_LIBS=$LIBS
--LIBS="-lssl  -lcrypto "$DL_LIB"  $LIBS"
+-LIBS="-lcrypto  $LIBS"
 +LIBS="-l${SSL_NEW_LIB} ${SSL_NEW_EXTRALIBS} "$DL_LIB"  $LIBS"
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -14094,25 +14067,24 @@
+@@ -14046,73 +14058,34 @@
+ #ifdef __cplusplus
+ extern "C"
+ #endif
+-char BIO_f_base64 ();
++char ${SSL_NEW_FCT_PREFIX}SSL_new ();
+ int
+ main ()
+ {
+-return BIO_f_base64 ();
++return ${SSL_NEW_FCT_PREFIX}SSL_new ();
+   ;
+   return 0;
  }
  _ACEOF
  if ac_fn_c_try_link "$LINENO"; then :
--  ac_cv_lib_ssl_SSL_new=yes
+-  ac_cv_lib_crypto_BIO_f_base64=yes
 +  eval ac_cv_lib_${SSL_NEW_LIB}_SSL_new=yes
  else
--  ac_cv_lib_ssl_SSL_new=no
+-  ac_cv_lib_crypto_BIO_f_base64=no
 +  eval ac_cv_lib_${SSL_NEW_LIB}_SSL_new=no
  fi
  rm -f core conftest.err conftest.$ac_objext \
      conftest$ac_exeext conftest.$ac_ext
  LIBS=$ac_check_lib_save_LIBS
  fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_BIO_f_base64" >&5
+-$as_echo "$ac_cv_lib_crypto_BIO_f_base64" >&6; }
+-if test "x$ac_cv_lib_crypto_BIO_f_base64" = xyes; then :
+-
+-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
+-$as_echo_n "checking for SSL_new in -lssl... " >&6; }
+-if ${ac_cv_lib_ssl_SSL_new+:} false; then :
+-  $as_echo_n "(cached) " >&6
+-else
+-  ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lssl  -lcrypto "$DL_LIB"  $LIBS"
+-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-/* Override any GCC internal prototype to avoid an error.
+-   Use char because int might match the return type of a GCC
+-   builtin and then its argument prototype would still apply.  */
+-#ifdef __cplusplus
+-extern "C"
+-#endif
+-char SSL_new ();
+-int
+-main ()
+-{
+-return SSL_new ();
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_ssl_SSL_new=yes
+-else
+-  ac_cv_lib_ssl_SSL_new=no
+-fi
+-rm -f core conftest.err conftest.$ac_objext \
+-    conftest$ac_exeext conftest.$ac_ext
+-LIBS=$ac_check_lib_save_LIBS
+-fi
 -{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_new" >&5
 -$as_echo "$ac_cv_lib_ssl_SSL_new" >&6; }
 -if test "x$ac_cv_lib_ssl_SSL_new" = xyes; then :

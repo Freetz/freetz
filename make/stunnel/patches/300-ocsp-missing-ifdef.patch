@@ -1,87 +1,89 @@
---- src/options.c.orig	2011-03-16 00:52:06.872829740 +0100
-+++ src/options.c	2011-03-16 00:52:07.282829740 +0100
-@@ -57,8 +57,10 @@
- static int print_socket_options(void);
- static void print_option(char *, int, OPT_UNION *);
+--- src/common.h
++++ src/common.h
+@@ -405,7 +405,7 @@
+ #endif
+ #endif /* HAVE_OSSL_ENGINE_H */
+ 
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
+ #include <openssl/ocsp.h>
+ #endif /* HAVE_OSSL_OCSP_H */
+ 
+--- src/options.c
++++ src/options.c
+@@ -60,7 +60,7 @@
+ static char *print_option(int, OPT_UNION *);
  static int parse_socket_option(char *);
-+#if SSLEAY_VERSION_NUMBER >= 0x00907000L
+ 
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
  static char *parse_ocsp_url(SERVICE_OPTIONS *, char *);
  static unsigned long parse_ocsp_flag(char *);
-+#endif
- 
- static void syntax(CONF_TYPE);
- static void config_error(int, const char *, const char *);
-@@ -971,6 +973,7 @@
+ #endif /* HAVE_OSSL_OCSP_H */
+@@ -988,7 +988,7 @@
          break;
      }
  
-+#if SSLEAY_VERSION_NUMBER >= 0x00907000L
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
+ 
      /* OCSP */
      switch(cmd) {
-     case CMD_INIT:
-@@ -1009,6 +1012,7 @@
-         s_log(LOG_NOTICE, "%-15s = OCSP server flags", "OCSPflag");
-         break;
-     }
-+#endif
- 
-     /* options */
-     switch(cmd) {
-@@ -2072,6 +2076,7 @@
+@@ -2157,7 +2157,7 @@
  
  /**************************************** OCSP */
  
-+#if SSLEAY_VERSION_NUMBER >= 0x00907000L
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
+ 
  static char *parse_ocsp_url(SERVICE_OPTIONS *section, char *arg) {
      char *host, *port, *path;
-     int ssl;
-@@ -2118,6 +2123,7 @@
-             return option->value;
-     return 0; /* FAILED */
- }
-+#endif
- 
- /**************************************** fatal error */
- 
---- src/verify.c.orig	2011-01-24 22:44:03.000000000 +0100
-+++ src/verify.c	2011-03-16 00:52:07.282829740 +0100
-@@ -48,7 +48,9 @@
+--- src/prototypes.h
++++ src/prototypes.h
+@@ -130,7 +130,7 @@
+     char *crl_file;                       /* file containing bunches of CRLs */
+     int verify_level;
+     X509_STORE *revocation_store;             /* cert store for CRL checking */
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
+     SOCKADDR_UNION ocsp_addr;
+     char *ocsp_path;
+     unsigned long ocsp_flags;
+@@ -207,7 +207,7 @@
+         unsigned int transparent_src:1;
+         unsigned int transparent_dst:1; /* endpoint: transparent destination */
+ #endif
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
+         unsigned int ocsp:1;
+ #endif
+     } option;
+--- src/verify.c
++++ src/verify.c
+@@ -48,7 +48,7 @@
  static int verify_callback(int, X509_STORE_CTX *);
  static int cert_check(CLI *c, X509_STORE_CTX *, int);
  static int crl_check(CLI *c, X509_STORE_CTX *);
-+#if SSLEAY_VERSION_NUMBER >= 0x00907000L
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
  static int ocsp_check(CLI *c, X509_STORE_CTX *);
-+#endif
+ #endif
  
- /* utility functions */
- static void log_time(const int, const char *, ASN1_TIME *);
-@@ -181,11 +183,13 @@
-             callback_ctx->error_depth, subject_name);
+@@ -185,7 +185,7 @@
+         OPENSSL_free(subject_name);
          return 0; /* reject connection */
      }
-+#if SSLEAY_VERSION_NUMBER >= 0x00907000L
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
      if(c->opt->option.ocsp && !ocsp_check(c, callback_ctx)) {
          s_log(LOG_WARNING, "OCSP check failed: depth=%d, %s",
              callback_ctx->error_depth, subject_name);
-         return 0; /* reject connection */
-     }
-+#endif
-     /* errnum=X509_STORE_CTX_get_error(ctx); */
-     s_log(LOG_NOTICE, "Certificate accepted: depth=%d, %s",
-         callback_ctx->error_depth, subject_name);
-@@ -317,6 +321,7 @@
+@@ -341,7 +341,7 @@
+     return 1; /* accept connection */
+ }
+ 
+-#ifdef HAVE_OSSL_OCSP_H
++#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
+ 
  /**************************************** OCSP checking */
  /* TODO: check OCSP server specified in the certificate */
- 
-+#if SSLEAY_VERSION_NUMBER >= 0x00907000L
- static int ocsp_check(CLI *c, X509_STORE_CTX *callback_ctx) {
-     int error, retval=0;
-     SOCKADDR_UNION addr;
-@@ -436,6 +441,7 @@
-     c->fd=-1; /* avoid double close on cleanup */
-     return retval;
- }
-+#endif
- 
- static void log_time(const int level, const char *txt, ASN1_TIME *t) {
-     char *cp;

@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 1.9.0)
+$(call PKG_INIT_LIB, 2.0.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=3b6189e06220ca70607f6802cad4ec9c
+$(PKG)_SOURCE_MD5:=2f51752207132c161155508eeb517e38
 $(PKG)_SITE:=http://yassl.com
 
-$(PKG)_LIBNAME:=libcyassl.so.0.0.0
+$(PKG)_LIBNAME:=libcyassl.so.3.0.0
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
@@ -26,9 +26,10 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(CYASSL_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
-	cp -a $(CYASSL_DIR)/include/openssl/*.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
-	cp -a $(CYASSL_DIR)/ctaocrypt/include/os_settings.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl/openssl; \
+	for d in cyassl cyassl/ctaocrypt cyassl/openssl; do \
+		mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/$$d; \
+		cp -a $(CYASSL_DIR)/$$d/*.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/$$d/; \
+	done; \
 	$(INSTALL_LIBRARY_INCLUDE_STATIC)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)

@@ -1,17 +1,15 @@
---- configure.orig	2011-03-16 00:54:36.882829739 +0100
-+++ configure	2011-03-16 00:54:37.182829739 +0100
-@@ -10950,8 +10950,8 @@
+--- configure
++++ configure
+@@ -11210,7 +11210,7 @@
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: **************************************** PTY device files" >&5
  $as_echo "$as_me: **************************************** PTY device files" >&6;}
--if test "$cross_compiling" = no
--then
-+#if test "$cross_compiling" = no
-+#then
+-if test "$cross_compiling" = "no"; then
++#if test "$cross_compiling" = "no"; then
      as_ac_File=`$as_echo "ac_cv_file_"/dev/ptmx"" | $as_tr_sh`
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for \"/dev/ptmx\"" >&5
  $as_echo_n "checking for \"/dev/ptmx\"... " >&6; }
-@@ -10996,16 +10996,16 @@
+@@ -11257,15 +11257,15 @@
  
  fi
  
@@ -27,14 +25,12 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: **************************************** entropy sources" >&5
  $as_echo "$as_me: **************************************** entropy sources" >&6;}
  
--if test "$cross_compiling" = no
--then
-+#if test "$cross_compiling" = no
-+#then
+-if test "$cross_compiling" = "no"; then
++#if test "$cross_compiling" = "no"; then
  
  # Check whether --with-egd-socket was given.
  if test "${with_egd_socket+set}" = set; then :
-@@ -11061,21 +11061,21 @@
+@@ -11322,20 +11322,22 @@
  _ACEOF
  
      fi
@@ -50,20 +46,14 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: **************************************** default group" >&5
  $as_echo "$as_me: **************************************** default group" >&6;}
  DEFAULT_GROUP=nobody
--if test "$cross_compiling" = no
--then
--    grep '^nogroup:' /etc/group >/dev/null && DEFAULT_GROUP=nogroup
--else
--    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming nogroup is not available" >&5
--$as_echo "$as_me: WARNING: cross-compilation: assuming nogroup is not available" >&2;}
--fi
-+#if test "$cross_compiling" = no
-+#then
-+#    grep '^nogroup:' /etc/group >/dev/null && DEFAULT_GROUP=nogroup
-+#else
-+#    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming nogroup is not available" >&5
-+#$as_echo "$as_me: WARNING: cross-compilation: assuming nogroup is not available" >&2;}
-+#fi
++if false; then
+ if test "$cross_compiling" = "no"; then
+     grep '^nogroup:' /etc/group >/dev/null && DEFAULT_GROUP=nogroup
+ else
+     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming nogroup is not available" >&5
+ $as_echo "$as_me: WARNING: cross-compilation: assuming nogroup is not available" >&2;}
+ fi
++fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for default group" >&5
  $as_echo_n "checking for default group... " >&6; }
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DEFAULT_GROUP" >&5

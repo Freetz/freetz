@@ -1,48 +1,53 @@
---- src/Makefile.in.orig	2011-01-24 22:47:28.000000000 +0100
-+++ src/Makefile.in	2011-03-16 00:52:06.872829740 +0100
-@@ -253,7 +253,7 @@
- INCLUDES = -I/usr/kerberos/include
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -271,8 +271,10 @@
  
- # Additional compiler flags
--AM_CPPFLAGS = -DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' -DPIDFILE='"$(localstatedir)/run/stunnel/stunnel.pid"'
-+AM_CPPFLAGS = -DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"/mod/etc"' -DPIDFILE='"/var/run/stunnel.pid"'
+ # Additional preprocesor definitions
+ stunnel_CPPFLAGS = -I$(SSLDIR)/include \
+-	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' \
+-	-DPIDFILE='"$(localstatedir)/run/stunnel/stunnel.pid"'
++	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"/mod/etc"' \
++	-DPIDFILE='"/var/run/stunnel.pid"' \
++	-DFREETZ_DEFAULT_CERT='"/tmp/flash/.stunnel/certs.pem"' \
++	-DFREETZ_DEFAULT_KEY='"/tmp/flash/.stunnel/key.pem"'
  
  # Win32 executable
- EXTRA_DIST = stunnel.exe make.bat mingw.mak makece.bat evc.mak vc.mak makew32.bat version.rc nogui.c os2.mak
---- src/options.c.orig	2011-01-24 23:30:07.000000000 +0100
-+++ src/options.c	2011-03-16 00:52:06.872829740 +0100
-@@ -620,7 +620,7 @@
+ EXTRA_DIST = nogui.c make.bat makece.bat makew32.bat mingw.mak evc.mak \
+--- src/options.c
++++ src/options.c
+@@ -634,7 +634,7 @@
      /* cert */
      switch(cmd) {
      case CMD_INIT:
 -        section->cert=NULL;
-+        section->cert="/tmp/flash/.stunnel/certs.pem";
++        section->cert=FREETZ_DEFAULT_CERT;
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "cert"))
-@@ -629,7 +629,7 @@
+@@ -642,7 +642,8 @@
+         section->cert=str_dup(arg);
          return NULL; /* OK */
      case CMD_DEFAULT:
- #ifdef CONFDIR
--        s_log(LOG_NOTICE, "%-15s = %s", "cert", CONFDIR CONFSEPARATOR "stunnel.pem");
-+        s_log(LOG_NOTICE, "%-15s = %s", "cert", "/tmp/flash/.stunnel/certs.pem");
- #else
-         s_log(LOG_NOTICE, "%-15s = %s", "cert", "stunnel.pem");
- #endif
-@@ -912,7 +912,7 @@
+-        break; /* no default certificate */
++        s_log(LOG_NOTICE, "%-15s = %s", "cert", FREETZ_DEFAULT_CERT);
++        break;
+     case CMD_HELP:
+         s_log(LOG_NOTICE, "%-15s = certificate chain", "cert");
+         break;
+@@ -926,7 +927,7 @@
      /* key */
      switch(cmd) {
      case CMD_INIT:
 -        section->key=NULL;
-+        section->key="/tmp/flash/.stunnel/key.pem";
++        section->key=FREETZ_DEFAULT_KEY;
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
-@@ -920,6 +920,7 @@
-         section->key=stralloc(arg);
+@@ -934,6 +935,7 @@
+         section->key=str_dup(arg);
          return NULL; /* OK */
      case CMD_DEFAULT:
-+        s_log(LOG_NOTICE, "%-15s = %s", "key", "/tmp/flash/.stunnel/key.pem");
++        s_log(LOG_NOTICE, "%-15s = %s", "key", FREETZ_DEFAULT_KEY);
          break;
      case CMD_HELP:
          s_log(LOG_NOTICE, "%-15s = certificate private key", "key");
