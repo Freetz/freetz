@@ -610,7 +610,7 @@ generate_graph() {
 					[ -z "$_COLOR" ] && _COLOR="#999999"
 					_SENSOR_GEN=" $_SENSOR_GEN \
 					 DEF:temp$_SENSOR_CUR=$FILE:temp:AVERAGE \
-					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[�${_SENSOR_UOM:0:1}] \
+					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[°${_SENSOR_UOM:0:1}] \
 					 GPRINT:temp$_SENSOR_CUR:MIN:\t%8.3lf \
 					 GPRINT:temp$_SENSOR_CUR:AVERAGE:%8.3lf \
 					 GPRINT:temp$_SENSOR_CUR:MAX:%8.3lf \
@@ -682,7 +682,7 @@ case $graph in
 		fi
 		echo "<center><font size=+1><br><b>$heading stats</b></font></center>"
 
-		if [ $(echo "$graph" | sed 's/^thg./yes/') = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
+		if [ $(echo "$graph" | sed 's/^thg./yes/') = yes -a "$RRDSTATS_THOMSON_ADV" = yes ]; then
 			echo "<br><center> \
 			<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg0')\" /> \
 			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg1')\" /> \
