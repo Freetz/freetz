@@ -13,9 +13,16 @@ RED=#EA644A
 YELLOW=#ECD748
 GREEN=#54EC48
 BLUE=#48C4EC
+LRED=#FF7F7F
+LYELLOW=#DCDC00
+LGREEN=#7FFF7F
+LBLUE=#7F7FFF
+PURPLE=#A349A4
+LPURPLE=#4A6997
 RED_D=#CC3118
 ORANGE_D=#CC7016
 BLACK=#000000
+GREY=#7F7F7F
 NOCACHE="?nocache=$(date -Iseconds | sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
 _NICE=$(which nice)
 DEFAULT_COLORS="--color SHADEA#ffffff --color SHADEB#ffffff --color BACK#ffffff --color CANVAS#eeeeee80"
@@ -121,7 +128,189 @@ generate_graph() {
 				GPRINT:uptime:LAST:"%3.2lf\n"                         > /dev/null
 			fi
 			;;
-		tt0)
+		epc0)
+			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                     \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
+				--title "$TITLE"                                         \
+				--start now-$PERIODE                                     \
+				--width $WIDTH --height $HEIGHT                          \
+				--vertical-label "values"                                \
+				$DEFAULT_COLORS                                          \
+				$LAZY                                                    \
+				-W "Generated on: $DATESTRING"                           \
+				DEF:txfq1=$FILE:txfq1:LAST                               \
+				DEF:txdb1=$FILE:txdb1:LAST                               \
+                                                                         \
+				DEF:rxsn1=$FILE:rxsn1:LAST                               \
+				DEF:rxsn2=$FILE:rxsn2:LAST                               \
+				DEF:rxsn3=$FILE:rxsn3:LAST                               \
+				DEF:rxsn4=$FILE:rxsn4:LAST                               \
+                                                                         \
+				DEF:rxdb1=$FILE:rxdb1:LAST                               \
+				DEF:rxdb2=$FILE:rxdb2:LAST                               \
+				DEF:rxdb3=$FILE:rxdb3:LAST                               \
+				DEF:rxdb4=$FILE:rxdb4:LAST                               \
+                                                                                    \
+				LINE3:rxsn1$GREEN:"Downstream SNR #1 (min/avg/max/cur)[dB]\:   "    \
+				GPRINT:rxsn1:MIN:"%4.1lf /"                                         \
+				GPRINT:rxsn1:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:rxsn1:MAX:"%4.1lf /"                                         \
+				GPRINT:rxsn1:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				LINE3:rxsn2$YELLOW:"Downstream SNR #2 (min/avg/max/cur)[dB]\:   "   \
+				GPRINT:rxsn2:MIN:"%4.1lf /"                                         \
+				GPRINT:rxsn2:AVERAGE:"%3.1lf /"                                     \
+				GPRINT:rxsn2:MAX:"%4.1lf /"                                         \
+				GPRINT:rxsn2:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				LINE3:rxsn3$RED:"Downstream SNR #3 (min/avg/max/cur)[dB]\:   "      \
+				GPRINT:rxsn3:MIN:"%4.1lf /"                                         \
+				GPRINT:rxsn3:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:rxsn3:MAX:"%4.1lf /"                                         \
+				GPRINT:rxsn3:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				LINE3:rxdb4$BLUE:"Downstream SNR #4 (min/avg/max/cur)[dB]\:   "     \
+				GPRINT:rxsn4:MIN:"%4.1lf /"                                         \
+				GPRINT:rxsn4:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:rxsn4:MAX:"%4.1lf /"                                         \
+				GPRINT:rxsn4:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				                                                                    \
+				LINE1:4$GREY:"Downstream SIG Optimum\: 4 dBmV              -------------------------------\n" \
+				                                                                    \
+				LINE3:rxdb1$LGREEN:"Downstream SIG #1 (min/avg/max/cur)[dBmV]\: "   \
+				GPRINT:rxdb1:MIN:"%4.1lf /"                                         \
+				GPRINT:rxdb1:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:rxdb1:MAX:"%4.1lf /"                                         \
+				GPRINT:rxdb1:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				LINE3:rxdb2$LYELLOW:"Downstream SIG #2 (min/avg/max/cur)[dBmV]\: "  \
+				GPRINT:rxdb2:MIN:"%4.1lf /"                                         \
+				GPRINT:rxdb2:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:rxdb2:MAX:"%4.1lf /"                                         \
+				GPRINT:rxdb2:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				LINE3:rxdb3$LRED:"Downstream SIG #3 (min/avg/max/cur)[dBmV]\: "     \
+				GPRINT:rxdb3:MIN:"%4.1lf /"                                         \
+				GPRINT:rxdb3:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:rxdb3:MAX:"%4.1lf /"                                         \
+				GPRINT:rxdb3:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				LINE3:rxdb4$LBLUE:"Downstream SIG #4 (min/avg/max/cur)[dBmV]\: "    \
+				GPRINT:rxdb4:MIN:"%4.1lf /"                                         \
+				GPRINT:rxdb4:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:rxdb4:MAX:"%4.1lf /"                                         \
+				GPRINT:rxdb4:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				                                                                    \
+				LINE:44$GREY:"Upstream SIG Optimum\: 44 dBmV               -------------------------------\n" \
+				                                                                    \
+				LINE3:txdb1$LPURPLE:"Upstream SIG (min/avg/max/cur)[dBmV]\:      "  \
+				GPRINT:txdb1:MIN:"%4.1lf /"                                         \
+				GPRINT:txdb1:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:txdb1:MAX:"%4.1lf /"                                         \
+				GPRINT:txdb1:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				                                                                    \
+				LINE2:txfq1$PURPLE:"Upstream Frequency (min/avg/max/cur)[MHz]\: "   \
+				GPRINT:txfq1:MIN:"%4.1lf /"                                         \
+				GPRINT:txfq1:AVERAGE:"%4.1lf /"                                     \
+				GPRINT:txfq1:MAX:"%4.1lf /"                                         \
+				GPRINT:txfq1:LAST:"%4.1lf\n"                                        \
+				                                                                    \
+				                                                                    > /dev/null 2>&1
+			fi
+			;;
+		epc1)
+			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                   \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                       \
+				--title "$TITLE"                                       \
+				--start now-$PERIODE                                   \
+				--width $WIDTH --height $HEIGHT                        \
+				--vertical-label "hours"                               \
+				$DEFAULT_COLORS                                        \
+				-l 0 $LAZY                                             \
+				-W "Generated on: $DATESTRING"                         \
+				                                                       \
+				DEF:up=$FILE:up:LAST                                   \
+				                                                       \
+				AREA:up$YELLOW:"System Uptime (avg/max/cur)[hours]\: " \
+				GPRINT:up:AVERAGE:"%3.2lf /"                           \
+				GPRINT:up:MAX:"%3.2lf /"                               \
+				GPRINT:up:LAST:"%3.2lf\n"                              > /dev/null
+			fi
+			;;
+		epc2)
+			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                                   \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                                       \
+				--title "$TITLE"                                                       \
+				--start now-$PERIODE                                                   \
+				--width $WIDTH --height $HEIGHT                                        \
+				--vertical-label "MHz"                                                 \
+				$DEFAULT_COLORS                                                        \
+				$LAZY                                                                  \
+				-W "Generated on: $DATESTRING"                                         \
+				                                                                       \
+				DEF:rxfq1=$FILE:rxfq1:LAST                                             \
+				DEF:rxfq2=$FILE:rxfq2:LAST                                             \
+				DEF:rxfq3=$FILE:rxfq3:LAST                                             \
+				DEF:rxfq4=$FILE:rxfq4:LAST                                             \
+				                                                                       \
+				LINE3:rxfq1$GREEN:"Downstream Frequency #1 (min/avg/max/cur)[MHz]\: "  \
+				GPRINT:rxfq1:MIN:"%3.0lf /"                                            \
+				GPRINT:rxfq1:AVERAGE:"%3.0lf /"                                        \
+				GPRINT:rxfq1:MAX:"%3.0lf /"                                            \
+				GPRINT:rxfq1:LAST:"%3.0lf\n"                                           \
+				                                                                       \
+				LINE3:rxfq2$YELLOW:"Downstream Frequency #2 (min/avg/max/cur)[MHz]\: " \
+				GPRINT:rxfq2:MIN:"%3.0lf /"                                            \
+				GPRINT:rxfq2:AVERAGE:"%3.0lf /"                                        \
+				GPRINT:rxfq2:MAX:"%3.0lf /"                                            \
+				GPRINT:rxfq2:LAST:"%3.0lf\n"                                           \
+				                                                                       \
+				LINE3:rxfq3$RED:"Downstream Frequency #3 (min/avg/max/cur)[MHz]\: "    \
+				GPRINT:rxfq3:MIN:"%3.0lf /"                                            \
+				GPRINT:rxfq3:AVERAGE:"%3.0lf /"                                        \
+				GPRINT:rxfq3:MAX:"%3.0lf /"                                            \
+				GPRINT:rxfq3:LAST:"%3.0lf\n"                                           \
+				                                                                       \
+				LINE3:rxfq4$BLUE:"Downstream Frequency #4 (min/avg/max/cur)[MHz]\: "   \
+				GPRINT:rxfq4:MIN:"%3.0lf /"                                            \
+				GPRINT:rxfq4:AVERAGE:"%3.0lf /"                                        \
+				GPRINT:rxfq4:MAX:"%3.0lf /"                                            \
+				GPRINT:rxfq4:LAST:"%3.0lf\n"                                           \
+				                                                                       > /dev/null 2>&1
+			fi
+			;;
+		epc3)
+			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                      \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                          \
+				--title "$TITLE"                                          \
+				--start now-$PERIODE                                      \
+				--width $WIDTH --height $HEIGHT                           \
+				--vertical-label "ID"                                     \
+				$DEFAULT_COLORS                                           \
+				-l 0 -u 5 $LAZY                                           \
+				-W "Generated on: $DATESTRING"                            \
+				                                                          \
+				DEF:uc=$FILE:uc:LAST                                      \
+				                                                          \
+				LINE3:uc$BLUE:"Upstream Channel (min/avg/max/cur)[ID]\: " \
+				GPRINT:uc:MIN:"%3.0lf   /"                                \
+				GPRINT:uc:AVERAGE:"%3.0lf   /"                            \
+				GPRINT:uc:MAX:"%3.0lf   /"                                \
+				GPRINT:uc:LAST:"%3.0lf\n"                                 > /dev/null
+			fi
+			;;
+		thg0)
 			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
 				$_NICE rrdtool graph                                     \
@@ -140,31 +329,31 @@ generate_graph() {
 				DEF:ip=$FILE:ip:LAST                                     \
 				                                                         \
 				LINE3:tx$GREEN:"Upstream    (min/avg/max/cur)[dBmV]\: "  \
-				GPRINT:tx:MIN:" %5.1lf%s"                               \
+				GPRINT:tx:MIN:" %5.1lf%s"                                \
 				GPRINT:tx:AVERAGE:"\t%5.1lf%s"                           \
 				GPRINT:tx:MAX:"\t%5.1lf%s"                               \
 				GPRINT:tx:LAST:"\t%5.1lf%s\n"                            \
 				                                                         \
 				LINE3:sn$YELLOW:"S-N Ratio   (min/avg/max/cur)[dB]\:   " \
-				GPRINT:sn:MIN:" %3.0lf%s  "                               \
-				GPRINT:sn:AVERAGE:"\t%3.0lf%s  "                           \
-				GPRINT:sn:MAX:"\t%3.0lf%s  "                               \
-				GPRINT:sn:LAST:"\t%3.0lf%s  \n"                            \
+				GPRINT:sn:MIN:" %3.0lf%s  "                              \
+				GPRINT:sn:AVERAGE:"\t%3.0lf%s  "                         \
+				GPRINT:sn:MAX:"\t%3.0lf%s  "                             \
+				GPRINT:sn:LAST:"\t%3.0lf%s  \n"                          \
 				                                                         \
 				LINE3:rx$RED:"Downstream  (min/avg/max/cur)[dBmV]\: "    \
-				GPRINT:rx:MIN:" %5.1lf%s"                               \
+				GPRINT:rx:MIN:" %5.1lf%s"                                \
 				GPRINT:rx:AVERAGE:"\t%5.1lf%s"                           \
 				GPRINT:rx:MAX:"\t%5.1lf%s"                               \
 				GPRINT:rx:LAST:"\t%5.1lf%s\n"                            \
 				                                                         \
 				LINE3:ip$BLUE:"Computers   (min/avg/max/cur)[count]\:"   \
-				GPRINT:ip:MIN:" %3.0lf%s  "                               \
-				GPRINT:ip:AVERAGE:"\t%3.0lf%s  "                           \
-				GPRINT:ip:MAX:"\t%3.0lf%s  "                               \
-				GPRINT:ip:LAST:"\t%3.0lf%s  \n"                            > /dev/null
+				GPRINT:ip:MIN:" %3.0lf%s  "                              \
+				GPRINT:ip:AVERAGE:"\t%3.0lf%s  "                         \
+				GPRINT:ip:MAX:"\t%3.0lf%s  "                             \
+				GPRINT:ip:LAST:"\t%3.0lf%s  \n"                          > /dev/null
 			fi
 			;;
-		tt1)
+		thg1)
 			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
 				$_NICE rrdtool graph                                   \
@@ -185,7 +374,7 @@ generate_graph() {
 				GPRINT:up:LAST:"%3.2lf\n"                              > /dev/null
 			fi
 			;;
-		tt2)
+		thg2)
 			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
 				$_NICE rrdtool graph                                    \
@@ -200,14 +389,14 @@ generate_graph() {
 				                                                        \
 				DEF:if=$FILE:if:LAST                                    \
 				                                                        \
-				LINE3:if$GREEN:"DS Frequency (min/avg/max/cur)[MHz]\: " \
+				LINE3:if$GREEN:"Downstream Frequency (min/avg/max/cur)[MHz]\: " \
 				GPRINT:if:MIN:"%3.0lf /"                                \
 				GPRINT:if:AVERAGE:"%3.0lf /"                            \
 				GPRINT:if:MAX:"%3.0lf /"                                \
 				GPRINT:if:LAST:"%3.0lf\n"                               > /dev/null
 			fi
 			;;
-		tt3)
+		thg3)
 			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
 				$_NICE rrdtool graph                                      \
@@ -421,7 +610,7 @@ generate_graph() {
 					[ -z "$_COLOR" ] && _COLOR="#999999"
 					_SENSOR_GEN=" $_SENSOR_GEN \
 					 DEF:temp$_SENSOR_CUR=$FILE:temp:AVERAGE \
-					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[°${_SENSOR_UOM:0:1}] \
+					 LINE3:temp$_SENSOR_CUR$_COLOR:$_ALIAS(min/avg/max/cur)[ï¿½${_SENSOR_UOM:0:1}] \
 					 GPRINT:temp$_SENSOR_CUR:MIN:\t%8.3lf \
 					 GPRINT:temp$_SENSOR_CUR:AVERAGE:%8.3lf \
 					 GPRINT:temp$_SENSOR_CUR:MAX:%8.3lf \
@@ -483,24 +672,33 @@ gen_main() {
 
 graph=$(cgi_param graph | tr -d .)
 case $graph in
-	cpu|mem|swap|upt|tt0|tt1|tt2|tt3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epc1|epc2|epc3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
 		GROUP_PERIOD=$(cgi_param group | tr -d .)
 		if [ -z "$GROUP_PERIOD" ]; then
-			heading=$(echo $graph | sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^tt0$/Thomson THG - basic/g;s/^tt1$/Thomson THG - System Uptime/;s/^tt2/Thomson THG - DS Frequency/;s/^tt3$/Thomson THG - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
+			heading=$(echo $graph | sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^thg0$/Thomson THG - basic/g;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;s/^epc0$/Cisco EPC - basic/g;s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;s/^epc3$/Cisco EPC - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
 		else
 			heading="$GROUP_PERIOD"
 		fi
 		echo "<center><font size=+1><br><b>$heading stats</b></font></center>"
 
-		if [ $(echo "$graph" | sed 's/^tt./yes/') = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
+		if [ $(echo "$graph" | sed 's/^thg./yes/') = yes -a "$RRDSTATS_THOMSONADV" = yes ]; then
 			echo "<br><center> \
-			<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=tt0')\" /> \
-			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=tt1')\" /> \
-			<input type=\"button\" value=\"DS Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=tt2')\" /> \
-			<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=tt3')\" /> \
+			<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg0')\" /> \
+			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg1')\" /> \
+			<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg2')\" /> \
+			<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg3')\" /> \
 			</center>"
 		fi
+		if [ $(echo "$graph" | sed 's/^epc./yes/') = yes ]; then
+			echo "<br><center>"
+			echo "<input type=\"button\" value=\"EPC basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc0')\" />"
+			[ "$RRDSTATS_CISCOEPC_UP" == "yes" ] && echo "<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc1')\" />"
+			echo "<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc2')\" />"
+			[ "$RRDSTATS_CISCOEPC_UC" == "yes" ] && echo "<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc3')\" />"
+			echo "</center>"
+		fi
+
 
 		for period in $RRDSTATS_PERIODSSUB; do
 			set_period $period
@@ -531,15 +729,16 @@ case $graph in
 				gen_main "mem" "Memory" "$periodnn"
 				[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
 				[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
-				[ "$RRDSTATS_THOMSONTHG" = yes ] && gen_main "tt0" "Thomson THG" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV1" ] && gen_main "diskio1" "$RRDSTATS_DISK_NAME1" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV2" ] && gen_main "diskio2" "$RRDSTATS_DISK_NAME2" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV3" ] && gen_main "diskio3" "$RRDSTATS_DISK_NAME3" "$periodnn"
-				[ ! -z "$RRDSTATS_DISK_DEV4" ] && gen_main "diskio4" "$RRDSTATS_DISK_NAME4" "$periodnn"
-				[ ! -z "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
-				[ ! -z "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
-				[ ! -z "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"
-				[ ! -z "$RRDSTATS_INTERFACE4" ] && gen_main "if4" "$RRDSTATS_NICE_NAME4" "$periodnn"
+				[ "$RRDSTATS_CABLE_MODEM" = thg ] && gen_main "thg0" "Thomson THG" "$periodnn"
+				[ "$RRDSTATS_CABLE_MODEM" = epc ] && gen_main "epc0" "Cisco EPC" "$periodnn"
+				[ -n "$RRDSTATS_DISK_DEV1" ] && gen_main "diskio1" "$RRDSTATS_DISK_NAME1" "$periodnn"
+				[ -n "$RRDSTATS_DISK_DEV2" ] && gen_main "diskio2" "$RRDSTATS_DISK_NAME2" "$periodnn"
+				[ -n "$RRDSTATS_DISK_DEV3" ] && gen_main "diskio3" "$RRDSTATS_DISK_NAME3" "$periodnn"
+				[ -n "$RRDSTATS_DISK_DEV4" ] && gen_main "diskio4" "$RRDSTATS_DISK_NAME4" "$periodnn"
+				[ -n "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
+				[ -n "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
+				[ -n "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"
+				[ -n "$RRDSTATS_INTERFACE4" ] && gen_main "if4" "$RRDSTATS_NICE_NAME4" "$periodnn"
 				;;
 		esac
 		;;

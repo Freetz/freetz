@@ -27,8 +27,10 @@ check "$RRDSTATS_UPTIME_ENB" yes:uptime_enb
 check "$RRDSTATS_WEBENABLED" yes:webenabled
 check "$RRDSTATS_WEB_INETD"  yes:web_inetd
 check "$RRDSTATS_WEB_AUTH"   yes:web_auth
-check "$RRDSTATS_THOMSONTHG" yes:thomsonthg
-check "$RRDSTATS_THOMSONADV" yes:thomsonadv
+check "$RRDSTATS_CABLE_MODEM" thg epc "*":no
+check "$RRDSTATS_THOMSON_ADV" yes:thomson_adv
+check "$RRDSTATS_CISCOEPC_UP" yes:ciscoepc_up
+check "$RRDSTATS_CISCOEPC_UC" yes:ciscoepc_uc
 check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
 check "$RRDSTATS_DIGITEMP_C" yes:digitemp_c "*":digitemp_f
 check "$RRDSTATS_DIGITEMP_RETRY85" yes:digitemp_retry85
@@ -153,22 +155,56 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin 'Thomson THG'
+sec_begin '$(lang de:"Kabelmodem" en:"Cable modem")'
 
 cat << EOF
-<br>
+<p>
+<input id="modem1" type="radio" name="cable_modem" value="no"$no_chk><label for="modem1">$(lang de:"Keins &uuml;berwachen" en:"Observe none")</label>
+</p>
 
-<input type="hidden" name="thomsonthg" value="no">
-<input id="t1" type="checkbox" name="thomsonthg" value="yes"$thomsonthg_chk>
-<label for="t1">$(lang de:"&Uuml;berwachung des Kabelmodems aktivieren" en:"Observe the cable-modem")</label>
-<br>
+<hr>
 
-<input type="hidden" name="thomsonadv" value="no">
-<input id="t2" type="checkbox" name="thomsonadv" value="yes"$thomsonadv_chk>
-<label for="t2">$(lang de:"Zus&auml;tzliche Parameter &uuml;berwachen" en:"Observe more parameters")</label>
-<br>
+<p>
+<input id="modem2" type="radio" name="cable_modem" value="thg"$thg_chk><label for="modem2">Thomson THG 520/540</label>
+EOF
+if [ "$RRDSTATS_CABLE_MODEM" == "thg" ]; then
+cat << EOF
+<ul>
+<p>
+<input type="hidden" name="thomson_adv" value="no">
+<input id="t1" type="checkbox" name="thomson_adv" value="yes"$thomson_adv_chk>
+<label for="t1">$(lang de:"Zus&auml;tzliche Parameter: Downstreamfrequenz, Upstreamkanal und Uptime" en:"More parameters: Downstream frequence, upstream channel and uptime")</label>
+</p>
+</ul>
+EOF
+fi
+cat << EOF
+</p>
 
-<br>
+<hr>
+
+<p>
+<input id="modem3" type="radio" name="cable_modem" value="epc"$epc_chk><label for="modem3">Cisco EPC 3212</label>
+EOF
+if [ "$RRDSTATS_CABLE_MODEM" == "epc" ]; then
+cat << EOF
+<ul>
+<p>
+<input type="hidden" name="ciscoepc_up" value="no">
+<input id="t2" type="checkbox" name="ciscoepc_up" value="yes"$ciscoepc_up_chk>
+<label for="t2">$(lang de:"&Uuml;berwache Uptime" en:"Observe uptime")</label>
+</p>
+<p>
+<input type="hidden" name="ciscoepc_uc" value="no">
+<input id="t3" type="checkbox" name="ciscoepc_uc" value="yes"$ciscoepc_uc_chk>
+<label for="t3">$(lang de:"&Uuml;berwache Upstream-ID" en:"Observe upstream id")</label>
+</p>
+</ul>
+</p>
+EOF
+fi
+cat << EOF
+</p>
 EOF
 
 sec_end
