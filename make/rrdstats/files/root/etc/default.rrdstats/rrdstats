@@ -154,7 +154,7 @@ collect_thg() {
 			RRA:LAST:0.1:24:732 \
 			RRA:LAST:0.1:144:1460
 	fi
-	[ -z "$WGET" ] && WGET="$((detect_wget))"
+	[ -z "$WGET" ] && WGET="$(detect_wget)"
 	uptdatBL=N$($WGET http://192.168.100.1/BasicLan.htm -O - -q -T 2 | grep -E "Power|Ratio|Computers" | sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/' | tr -d "\n")
 	[ $uptdatBL = N ] && return
 	if [ "$RRDSTATS_THOMSON_ADV" = yes ]; then
@@ -195,7 +195,7 @@ collect_epc() {
 			RRA:LAST:0.1:24:732 \
 			RRA:LAST:0.1:144:1460
 	fi
-	[ -z "$WGET" ] && WGET="$((detect_wget))"
+	[ -z "$WGET" ] && WGET="$(detect_wget)"
 	updateT=
 	updateD=N
 	local datWG=$($WGET http://192.168.100.1/Docsis_signal.htm -O - -q -T 2 |grep -E "vusch_freq|vdsch_freq|vch_pwr|vdsch_snr")
