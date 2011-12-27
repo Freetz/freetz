@@ -1,4 +1,4 @@
-[ "$FREETZ_HAS_USB_HOST" == "y" ] && \
+[ "$FREETZ_HAS_AVM_USB_HOST" == "y" ] && \
 [ "$FREETZ_PACKAGE_SAMBA" == "y" ] && \
 sed -i -e "/killall smbd*$/d" \
 	-e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"

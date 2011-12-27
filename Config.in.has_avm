@@ -1,9 +1,9 @@
 
 config FREETZ_HAS_AVM_AURA_USB
 	bool "Has remote USB connection (AURA = AVM USB Remote-Architcture)"	if FREETZ_TYPE_CUSTOM
-	select FREETZ_REMOVE_AURA_USB if ! FREETZ_HAS_USB_HOST
+	select FREETZ_REMOVE_AURA_USB if ! FREETZ_HAS_AVM_USB_HOST
 	default y		if \
-		FREETZ_HAS_USB_HOST || \
+		FREETZ_HAS_AVM_USB_HOST || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
 		FREETZ_TYPE_7112_7170 || \
 		FREETZ_TYPE_7113_7170
@@ -338,7 +338,7 @@ config FREETZ_HAS_USB_CLIENT
 	help
 		Select this if you have a box with USB.
 
-config FREETZ_HAS_USB_HOST
+ config FREETZ_HAS_AVM_USB_HOST
 	bool "USB host"		if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_300IP_AS_FON || \
@@ -359,15 +359,16 @@ config FREETZ_HAS_USB_HOST
 		FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default y
 	help
-		Select this if your USB port is a host adapter.
+		Select this if your USB port is a host adapter (which was not designed by AVM).
 
-config FREETZ_HAS_USB_HOST_AVM
-	bool "AVM USB host"	if FREETZ_TYPE_CUSTOM
-	depends on FREETZ_HAS_USB_HOST
+ config FREETZ_HAS_AVM_USB_HOST_AHCI
+	bool "AVM USB host (AHCI)"	if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_HAS_AVM_USB_HOST
 	default y		if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_FON_5124 || \
 		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7140 ||
 		FREETZ_TYPE_FON_WLAN_7141 || \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_WLAN_3130 || \
@@ -375,7 +376,9 @@ config FREETZ_HAS_USB_HOST_AVM
 		FREETZ_TYPE_WLAN_3170
 	default n
 	help
-		Select this if you have a box with AVM USB host.
+		Select this if your USB port is a host adapter
+		named AHCI (= AVM [USB] Host Controller Interface).
+		Hint: No support for "Low Speed" devices.
 
 config FREETZ_HAS_AVM_E2FSPROGS
 	bool "Has AVM e2fsprogs files"	if FREETZ_TYPE_CUSTOM
