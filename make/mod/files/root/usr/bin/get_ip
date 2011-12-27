@@ -7,15 +7,13 @@ IP=""
 
 helpmsg() {
 cat << EOF
-get_ip - determine external IP address"
+get_ip - determine external IP address
 
 Usage: $0 [option]
-    -a, --all      - use all methods (order: dsld, webcm, route, extquery, ostat) [recommended]
-    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)
-    -e, --extquery - use external site query method (checkip.dyndns.org)
-    -o, --ostat    - use onlinestat method (since firmware 04.87)
+    -a, --all      - use all methods [recommended]
+                     order: route, stun for DSL boxes, vice versa for IP clients (ATA, UMTS)
+    -s, --stun     - use STUN server (stun.1und1.de)
     -r, --route    - use routing table
-    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method
     -?, --help     - print this help message
 
   current default method: $MOD_GET_IP_METHOD
@@ -41,73 +39,25 @@ ip_public()
 	[ $ip -ge 16  ] && [ $ip -le 31 ] && return 1 || return 0
 }
 
-via_dsld() {
-	# Firmware ca. 04.68 and newer should be safe, but some boxes had it since 04.31
-	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
-	ip_public "$IP" || return 1
-}
-
 via_route() {
-	if [ -f /sbin/showroutes ]; then
-		# Firmware ca. 04.67/68 (Fritz!Box) / 04.57 (Speedport) and newer
-		IP="$(/sbin/showroutes | sed -nr 's/(.*)\/32 .* iface$/\1/p')"
-		ip_public "$IP" || return 1
-	else
-		# Older firmware
-		# Commented version works without Busybox "route" applet, but emulates
-		# it. Keep it for now (even though it looks ugly) - just in case...
-		#for ip in $(cat /proc/net/route | sed -nr 's/^dsl[[:blank:]]+([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]]).*FFFFFFFF.*/0x\4 0x\3 0x\2 0x\1/p' | xargs printf '%u.%u.%u.%u\n'); do
-		for ip in $(route -n | sed -nr 's/^([1-9][0-9]*\.[0-9]+\.[0-9]+\.[0-9]+) +.* +dsl$/\1/p'); do
-			ip_public "$ip" && IP="$ip" && return 0
-		done
-		return 1
-	fi
-}
-
-via_extquery() {
-	# Read cache file (max. age 1 minute)
-	IP=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
-	[ "$IP" ] && return 0
-	# If supported by wget(-gnu), don't wait forever
-	SHORTWAIT="-t 1"
-	if which wget-gnu >/dev/null; then
-		WGET="wget-gnu $SHORTWAIT"
-	else
-		wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
-	fi
-	# Get IP from external web site, max. 3 tries
-	for turn in 1 2 3; do
-		IP="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
-		[ $? -eq 0 ] && [ "$IP" ] && echo "$IP" > /tmp/get_ip.cache && return 0
+	# AVM's home-brew NAT does not expose the external IP on network interface
+	# "dsl", but sets a route to it. This method should work on all DSL boxes,
+	# in contrast to other methods which are dependent on the availability of
+	# certain AVM binaries or firmware features. Besides, this method is faster
+	# than the other ones anyway.
+	for ip in $(route -n | sed -nr 's/^([1-9][0-9]*\.[0-9]+\.[0-9]+\.[0-9]+) +.* +dsl$/\1/p'); do
+		ip_public "$ip" && IP="$ip" && return 0
 	done
 	return 1
 }
 
-via_ostat() {
-	# Firmware ca. 04.87 and newer
-	IP="$(cat /var/run/onlinestat 2>/dev/null | sed -nr 's!^IPADDR ([0-9.]+)!\1!p')"
-	ip_public "$IP" || return 1
-}
-
-via_webcm() {
-	local queryfile="/usr/www/all/html/query.txt"
-	local querystring=""
-	if which ctlmgr_ctl >/dev/null; then
-		# Firmware ca. 04.76 and newer
-		IP=$(ctlmgr_ctl r connection0 pppoe:status/ip)
-	else
-		if [ "$(sed -n '/var:n\[/p' $queryfile)" ]; then
-			# Firmware ca. 04.84 and newer (should never be used, see above)
-			querystring="var:n[0]=connection0:pppoe:status/ip"
-		else
-			# Older firmware
-			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
-		fi
-		IP="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
-	fi
-	# ctlmgr_ctl return values [box=val]: 7170=176, 7270=177, 7141=172
-	# Caveat: must use "-o" instead of "||", otherwise "$?" would be reset
-	[ $? -eq 0 -o $? -ge 170 ] && ip_public "$IP" && return 0 || return 1
+via_stun() {
+	# On IP clients (ATA mode or UMTS), we are behind a NAT and the only way to
+	# determine the external IP is to get the information from an external
+	# server. The most efficient method is STUN (stun-ip applet will try 3x).
+	IP=$(stun-ip stun.1und1.de)
+	[ $? -eq 0 ] && [ "$IP" ] && return 0
+	return 1
 }
 
 # Set user-defined method (e.g. via web UI) if no argument is given
@@ -115,32 +65,31 @@ via_webcm() {
 
 case $method in
 	-a|--all|"")
-		ext_last="extquery"
-		# IP client -> make extquery the method to try first
-		[ -r /var/run/ip_client ] && ext_first="extquery" && ext_last=""
-		for mode in $ext_first dsld webcm route $ext_last ostat; do
+		ext_last="stun"
+		# IP client? -> make STUN the method to try first
+		[ -r /var/run/ip_client ] && ext_first="stun" && ext_last=""
+		for mode in $ext_first route $ext_last; do
 			via_$mode
 			if [ $? -eq 0 ]; then
 				# IP client? -> set semaphore
-				[ "$mode" == "extquery" ] && touch /var/run/ip_client
+				[ "$mode" == "stun" ] && touch /var/run/ip_client
 				break
 			fi
 		done
 		;;
-	-d|--dsld)
-		via_dsld
-		;;
 	-r|--route)
 		via_route
 		;;
+	-s|--stun)
+		via_stun
+		;;
+	-d|--dsld|-o|--ostat|-w|--webcm)
+		echo "warning: method $method is obsolete, using --route instead" >&2
+		via_route
+		;;
 	-e|--extquery)
-		via_extquery
-		;;
-	-o|--ostat)
-		via_ostat
-		;;
-	-w|--webcm)
-		via_webcm
+		echo "warning: method $method is obsolete, using --stun instead" >&2
+		via_stun
 		;;
 	-?|-h|--help)
 		helpmsg
