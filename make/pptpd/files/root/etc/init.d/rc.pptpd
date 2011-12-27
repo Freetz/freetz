@@ -38,8 +38,8 @@ case $1 in
 		[ ! -e "/tmp/flash/ppp/options.pptpd" ] && /etc/default.${DAEMON}/pptpd_options > /tmp/flash/ppp/options.pptpd
 		[ ! -e "/tmp/flash/ppp/pptpd.conf" ] && /etc/default.${DAEMON}/pptpd_conf > /tmp/flash/ppp/pptpd.conf
 
-		[ -e "/tmp/flash/ppp/options.pptpd" ] && ln -s /tmp/flash/ppp/options.pptpd /mod/etc/ppp/options.pptpd
-		[ -e "/tmp/flash/ppp/pptpd.conf" ] && ln -s /tmp/flash/ppp/pptpd.conf /mod/etc/ppp/pptpd.conf
+		[ ! -e "/mod/etc/ppp/options.pptpd" ] && ln -s /tmp/flash/ppp/options.pptpd /mod/etc/ppp/options.pptpd
+		[ ! -e "/mod/etc/ppp/pptpd.conf" ] && ln -s /tmp/flash/ppp/pptpd.conf /mod/etc/ppp/pptpd.conf
 
 		modreg cgi 'pptpd' 'PPTPD'
 		modreg daemon $DAEMON
