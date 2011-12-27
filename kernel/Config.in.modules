@@ -1,0 +1,617 @@
+config FREETZ_MODULES_ALL
+	bool "All Modules"
+	depends on FREETZ_REPLACE_KERNEL
+	default n
+
+menu "block"
+
+config FREETZ_MODULE_mtdblk
+	bool "mtdblk.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13
+	default n
+
+config FREETZ_MODULE_block2mtd
+	bool "block2mtd.ko"
+	default n
+
+config FREETZ_MODULE_ramzswap
+	bool "ramzswap.ko"
+	depends on FREETZ_REPLACE_KERNEL && \
+			FREETZ_KERNEL_VERSION_2_6_19_MIN
+	select FREETZ_MODULE_xvmalloc
+	select FREETZ_MODULE_lzo_compress
+	select FREETZ_MODULE_lzo_decompress
+	default n
+
+config FREETZ_MODULE_xvmalloc
+	bool "xvmalloc.ko"
+	depends on FREETZ_REPLACE_KERNEL && \
+			FREETZ_KERNEL_VERSION_2_6_19_MIN
+	default n
+
+menu "ndas"
+	depends on FREETZ_TARGET_ARCH_LE
+
+config FREETZ_MODULE_ndas_block
+	bool "ndas_block.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+config FREETZ_MODULE_ndas_core
+	bool "ndas_core.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+config FREETZ_MODULE_ndas_sal
+	bool "ndas_sal.ko"
+	depends on FREETZ_TARGET_ARCH_LE
+	default n
+
+endmenu
+
+endmenu
+
+menu "crypto"
+
+config FREETZ_MODULE_crypto_algapi
+	bool "crypto_algapi.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+config FREETZ_MODULE_crypto_blkcipher
+	bool "crypto_blkcipher.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+config FREETZ_MODULE_crypto_hash
+	bool "crypto_hash.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+config FREETZ_MODULE_aes
+	bool "aes.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_13
+	default n
+
+config FREETZ_MODULE_arc4
+	bool "arc4.ko"
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+config FREETZ_MODULE_blkcipher
+	bool "blkcipher.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19
+	default n
+
+config FREETZ_MODULE_cbc
+	bool "cbc.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+config FREETZ_MODULE_cryptomgr
+	bool "cryptomgr.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+config FREETZ_MODULE_sha1
+	bool "sha1.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	default n
+
+config FREETZ_MODULE_sha256
+	bool "sha256.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	default n
+
+config FREETZ_MODULE_sha1_generic
+	bool "sha1_generic.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && ! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+config FREETZ_MODULE_sha256_generic
+	bool "sha256_generic.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	default n
+
+endmenu
+
+menu "drivers"
+
+config FREETZ_MODULE_loop
+	bool "loop.ko"
+	default n
+
+config FREETZ_MODULE_nbd
+	bool "nbd.ko"
+	default n
+
+config FREETZ_MODULE_cdrom
+	bool "cdrom.ko"
+	default n
+
+config FREETZ_MODULE_capiconn
+	bool "capiconn.ko"
+	default n
+
+config FREETZ_MODULE_nand
+	bool "nand.ko"
+	default n
+
+config FREETZ_MODULE_ohio_nand
+	bool "ohio_nand.ko"
+	default n
+
+config FREETZ_MODULE_dummy
+	bool "dummy.ko"
+	default n
+
+config FREETZ_MODULE_ppp_async
+	bool "ppp_async.ko"
+	depends on ! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_crc_ccitt
+	default n
+
+config FREETZ_MODULE_ppp_deflate
+	bool "ppp_deflate.ko"
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
+	default n
+
+config FREETZ_MODULE_ppp_generic
+	bool "ppp_generic.ko"
+	depends on ! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_slhc
+	default n
+
+config FREETZ_MODULE_pppoe
+	bool "pppoe.ko"
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_pppox
+	default n
+
+config FREETZ_MODULE_pppox
+	bool "pppox.ko"
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
+	default n
+
+config FREETZ_MODULE_ppp_mppe_mppc
+	bool "ppp_mppe_mppc.ko"
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_arc4
+	select FREETZ_MODULE_sha1 if FREETZ_KERNEL_VERSION_2_6_19_MAX
+	select FREETZ_MODULE_sha1_generic if FREETZ_KERNEL_VERSION_2_6_28_MIN  && ! FREETZ_TYPE_FON_WLAN_7390
+	default n
+
+config FREETZ_MODULE_scsi_mod
+	bool "scsi_mod.ko"
+	default n
+
+config FREETZ_MODULE_sd_mod
+	bool "sd_mod.ko"
+	select FREETZ_MODULE_scsi_mod
+	default n
+
+config FREETZ_MODULE_sg
+	bool "sg.ko"
+	select FREETZ_MODULE_scsi_mod
+	default n
+
+config FREETZ_MODULE_sr_mod
+	bool "sr_mod.ko"
+	select FREETZ_MODULE_scsi_mod
+	select FREETZ_MODULE_cdrom
+	default n
+
+config FREETZ_MODULE_slhc
+	bool "slhc.ko"
+	depends on ! FREETZ_TYPE_FON_WLAN_7390
+	default n
+
+config FREETZ_MODULE_musb_hdrc
+	bool "musb_hdrc.ko"
+	depends on \
+		FREETZ_REPLACE_KERNEL && \
+		FREETZ_KERNEL_LAYOUT_UR8 && \
+		FREETZ_AVM_VERSION_7270_04_86
+	default n
+
+config FREETZ_MODULE_usblp
+	bool "usblp.ko"
+#	select FREETZ_MODULE_usbcore
+	default n
+
+config FREETZ_MODULE_usb_storage
+	bool "usb-storage.ko"
+	select FREETZ_MODULE_scsi_mod
+#	select FREETZ_MODULE_usbcore
+	default n
+
+config FREETZ_MODULE_usbmon
+	bool "usbmon.ko"
+	default n
+
+config FREETZ_MODULE_usbcore
+	bool "usbcore.ko"
+	depends on FREETZ_REPLACE_KERNEL
+	select FREETZ_MODULE_musb_hdrc if \
+		FREETZ_KERNEL_LAYOUT_UR8 && \
+		FREETZ_AVM_VERSION_7270_04_86
+	default n
+
+config FREETZ_MODULE_usbip
+	bool "usbip.ko"
+	select FREETZ_MODULE_usbip_common_mod
+	default n
+
+config FREETZ_MODULE_usbip_common_mod
+	bool "usbip_common_mod.ko"
+	default n
+
+config FREETZ_MODULE_usbserial
+	bool "usbserial.ko"
+	default n
+
+config FREETZ_MODULE_ipaq
+	bool "ipaq.ko"
+	select FREETZ_MODULE_usbserial
+	default n
+
+config FREETZ_MODULE_cp2101
+	bool "cp2101.ko"
+	depends on \
+		( FREETZ_KERNEL_VERSION_2_6_13 && ( FREETZ_AVM_VERSION_04_80 || FREETZ_AVM_VERSION_04_87 ) ) || \
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_usbserial
+	default n
+
+config FREETZ_MODULE_cp210x
+	bool "cp210x.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_32
+	select FREETZ_MODULE_usbserial
+	default n
+
+config FREETZ_MODULE_pl2303
+	bool "pl2303.ko"
+	select FREETZ_MODULE_usbserial
+	default n
+
+config FREETZ_MODULE_ftdi_sio
+	bool "ftdi_sio.ko"
+	select FREETZ_MODULE_usbserial
+	default n
+
+config FREETZ_MODULE_hci_usb
+	bool "hci_usb.ko"
+#	select FREETZ_MODULE_usbcore
+	select FREETZ_MODULE_bluetooth
+	default n
+
+config FREETZ_MODULE_bfusb
+	bool "bfusb.ko"
+#	select FREETZ_MODULE_usbcore
+	select FREETZ_MODULE_bluetooth
+	select FREETZ_MODULE_firmware_class
+	default n
+
+config FREETZ_MODULE_firmware_class
+	bool "firmware_class.ko"
+	default n
+
+config FREETZ_MODULE_dm_mod
+	bool "dm-mod.ko"
+	default n
+
+config FREETZ_MODULE_dm_crypt
+	bool "dm-crypt.ko"
+	select FREETZ_MODULE_dm_mod
+	default n
+
+config FREETZ_MODULE_option
+	bool "option.ko"
+	select FREETZ_MODULE_usbserial
+	default n
+
+endmenu
+
+menu "fs"
+
+config FREETZ_MODULE_autofs4
+	bool "autofs4.ko"
+	default n
+
+config FREETZ_MODULE_cifs
+	bool "cifs.ko"
+	default n
+
+config FREETZ_MODULE_coda
+	bool "coda.ko"
+	default n
+
+config FREETZ_MODULE_ext2
+	bool "ext2.ko"
+	select FREETZ_MODULE_mbcache
+	default n
+
+config FREETZ_MODULE_ext3
+	bool "ext3.ko"
+	depends on ! FREETZ_HAS_AVM_EXT3
+	select FREETZ_MODULE_jbd if FREETZ_KERNEL_VERSION_2_6_19_MAX
+	select FREETZ_MODULE_mbcache
+	default n
+
+config FREETZ_MODULE_ext4
+	bool "ext4.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_crc16
+	select FREETZ_MODULE_jbd2
+	select FREETZ_MODULE_mbcache
+	default n
+
+config FREETZ_MODULE_fat
+	bool "fat.ko"
+	default n
+
+config FREETZ_MODULE_hfs
+	bool "hfs.ko"
+	default n
+
+config FREETZ_MODULE_hfsplus
+	bool "hfsplus.ko"
+	select FREETZ_MODULE_nls_utf8
+	default n
+
+config FREETZ_MODULE_fuse
+	bool "fuse.ko"
+	default n
+
+config FREETZ_MODULE_iso9660
+	bool "iso9660.ko"
+	default n
+
+config FREETZ_MODULE_jbd
+	bool "jbd.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	default n
+
+config FREETZ_MODULE_jbd2
+	bool "jbd2.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	default n
+
+config FREETZ_MODULE_lockd
+	bool "lockd.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_sunrpc
+	default n
+
+config FREETZ_MODULE_mini_fo
+	bool "mini_fo.ko"
+	default n
+
+config FREETZ_MODULE_minix
+	bool "minix.ko"
+	default n
+
+config FREETZ_MODULE_nfsd
+	bool "nfsd.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_lockd
+	select FREETZ_MODULE_exportfs
+	default n
+
+config FREETZ_MODULE_exportfs
+	bool "exportfs.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	default n
+
+config FREETZ_MODULE_nfs
+	bool "nfs.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_lockd
+	default n
+
+config FREETZ_MODULE_nls_cp437
+	bool "nls_cp437.ko"
+	default n
+
+config FREETZ_MODULE_nls_cp852
+	bool "nls_cp852.ko"
+	default n
+
+config FREETZ_MODULE_nls_iso8859_15
+	bool "nls_iso8859-15.ko"
+	default n
+
+config FREETZ_MODULE_nls_iso8859_1
+	bool "nls_iso8859-1.ko"
+	default n
+
+config FREETZ_MODULE_nls_utf8
+	bool "nls_utf8.ko"
+	default n
+
+config FREETZ_MODULE_reiserfs
+	bool "reiserfs.ko"
+	default n
+
+config FREETZ_MODULE_udf
+	bool "udf.ko"
+	default n
+
+config FREETZ_MODULE_unionfs
+	bool "unionfs.ko"
+	default n
+
+config FREETZ_MODULE_vfat
+	bool "vfat.ko"
+	select FREETZ_MODULE_fat
+	default n
+
+config FREETZ_MODULE_msdos
+	bool "msdos.ko"
+	default n
+
+config FREETZ_MODULE_jffs2
+	bool "jffs2.ko"
+	default n
+
+config FREETZ_MODULE_mbcache
+	bool "mbcache.ko"
+	default n
+
+endmenu
+
+menu "lib"
+
+config FREETZ_MODULE_crc16
+	bool "crc16.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	default n
+
+config FREETZ_MODULE_crc_ccitt
+	bool "crc_ccitt.ko"
+	default n
+
+config FREETZ_MODULE_lzo_compress
+	bool "lzo_compress.ko"
+	default n
+
+config FREETZ_MODULE_lzo_decompress
+	bool "lzo_decompress.ko"
+	default n
+
+endmenu
+
+menu "net"
+
+config FREETZ_MODULE_bluetooth
+	bool "bluetooth.ko"
+	default n
+
+config FREETZ_MODULE_bnep
+	bool "bnep.ko"
+	select FREETZ_MODULE_l2cap
+	default n
+
+config FREETZ_MODULE_cls_u32
+	bool "cls_u32.ko"
+	default n
+	help
+		The u32 filter allows you to match on any bit field within a
+		packet, so it is in some ways the most powerful filter provided
+		by the Linux traffic control engine.
+
+config FREETZ_MODULE_ipv6
+	bool "ipv6.ko"
+	depends on FREETZ_TARGET_IPV6_SUPPORT && ! FREETZ_HAS_AVM_IPV6
+	default n
+	help
+		This is complemental support for the IP version 6.
+		You will still be able to do traditional IPv4 networking as well.
+
+		For general information about IPv6, see
+		<http://playground.sun.com/pub/ipng/html/ipng-main.html>.
+		For Linux IPv6 development information, see <http://www.linux-ipv6.org>.
+		For specific information about IPv6 under Linux, read the HOWTO at
+		<http://www.bieringer.de/linux/IPv6/>.
+
+config FREETZ_MODULE_l2cap
+	bool "l2cap.ko"
+	select FREETZ_MODULE_bluetooth
+	default n
+
+menu "network scheduler"
+
+config FREETZ_MODULE_sch_cbq
+	bool "sch_cbq.ko"
+	default n
+	help
+		Class-based queueing (CBQ) is a network router queueing method that
+		allows traffic to share bandwidth equally, after being grouped by
+		classes. The classes can be based upon a variety of parameters, such
+		as priority, interface, or originating program.
+
+config FREETZ_MODULE_sch_htb
+	bool "sch_htb.ko"
+	default n
+	help
+		Hierarchical Token Buckets (HTB) is a packet scheduling algorithm
+		for some of your network devices.
+		See <http://luxik.cdi.cz/~devik/qos/htb/> for complete manual and
+		in-depth articles.
+
+		HTB is very similar to the CBQ regarding its goals however it has
+		different properties and different algorithm.
+
+config FREETZ_MODULE_sch_llq
+	bool "sch_llq.ko"
+	default n
+	help
+		With LLQ Queue (CBWFQ with strict priorities) you will be able to
+		schedule packets with strict priorities and weight.
+		(Class-Bases Weighted Fair Queuing with strict priorities)
+
+config FREETZ_MODULE_sch_sfq
+	bool "sch_sfq.ko"
+	default n
+	help
+		The Stochastic Fairness Queueing (SFQ) packet scheduling algorithm
+		can be used for some of your network devices or as a leaf discipline
+		for the CBQ scheduling algorithm.
+		See the top of <file:net/sched/sch_sfq.c> for details and references
+		about the SFQ algorithm.
+
+config FREETZ_MODULE_sch_tbf
+	bool "sch_tbf.ko"
+	default n
+	help
+		Simple Token Bucket Filter (TBF) is a packet scheduling algorithm
+		for some of your network devices or as a leaf discipline for the
+		CBQ scheduling algorithm.
+		See the top of <file:net/sched/sch_tbf.c> for a description of the
+		TBF algorithm.
+
+endmenu
+
+config FREETZ_MODULE_rfcomm
+	bool "rfcomm.ko"
+	select FREETZ_MODULE_l2cap
+	default n
+
+config FREETZ_MODULE_sit
+	bool "sit.ko"
+	depends on \
+		! FREETZ_HAS_AVM_IPV6 && \
+		FREETZ_KERNEL_VERSION_2_6_19 && \
+		FREETZ_MODULE_ipv6
+	default n
+
+config FREETZ_MODULE_sunrpc
+	bool "sunrpc.ko"
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	default n
+
+endmenu
