@@ -20,7 +20,7 @@ start() {
 	modprobe arc4
 	[ "${kver:4:2}" -lt 28 ] && modprobe sha1 || modprobe sha1_generic 2>/dev/null
 	modprobe ppp_generic
-	modprobe ppp_async
+	modprobe ppp_async 2>/dev/null
 	modprobe ppp_deflate
 	modprobe ppp_mppe_mppc
 	modlib_startdaemon $DAEMON -c /etc/ppp/$DAEMON.conf

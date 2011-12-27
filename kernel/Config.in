@@ -334,6 +334,7 @@ config FREETZ_MODULE_dummy
 
 config FREETZ_MODULE_ppp_async
 	bool "ppp_async.ko"
+	depends on ! FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_ppp_generic
 	select FREETZ_MODULE_crc_ccitt
 	default n
