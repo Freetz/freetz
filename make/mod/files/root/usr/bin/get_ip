@@ -39,22 +39,22 @@ ip_public()
 	[ $ip -ge 16  ] && [ $ip -le 31 ] && return 1 || return 0
 }
 
+# AVM's home-brew NAT does not expose the external IP on network interface
+# "dsl", but sets a route to it. This method should work on all DSL boxes,
+# in contrast to other methods which are dependent on the availability of
+# certain AVM binaries or firmware features. Besides, this method is faster
+# than the other ones anyway.
 via_route() {
-	# AVM's home-brew NAT does not expose the external IP on network interface
-	# "dsl", but sets a route to it. This method should work on all DSL boxes,
-	# in contrast to other methods which are dependent on the availability of
-	# certain AVM binaries or firmware features. Besides, this method is faster
-	# than the other ones anyway.
 	for ip in $(route -n | sed -nr 's/^([1-9][0-9]*\.[0-9]+\.[0-9]+\.[0-9]+) +.* +dsl$/\1/p'); do
 		ip_public "$ip" && IP="$ip" && return 0
 	done
 	return 1
 }
 
+# On IP clients (ATA mode or UMTS), we are behind a NAT and the only way to
+# determine the external IP is to get the information from an external
+# server. The most efficient method is STUN (stun-ip applet will try 3x).
 via_stun() {
-	# On IP clients (ATA mode or UMTS), we are behind a NAT and the only way to
-	# determine the external IP is to get the information from an external
-	# server. The most efficient method is STUN (stun-ip applet will try 3x).
 	IP=$(stun-ip stun.1und1.de)
 	[ $? -eq 0 ] && [ "$IP" ] && return 0
 	return 1
