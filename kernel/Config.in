@@ -341,28 +341,29 @@ config FREETZ_MODULE_ppp_async
 
 config FREETZ_MODULE_ppp_deflate
 	bool "ppp_deflate.ko"
-	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_ppp_generic
 	bool "ppp_generic.ko"
+	depends on ! FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_slhc
 	default n
 
 config FREETZ_MODULE_pppoe
 	bool "pppoe.ko"
-	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_pppox
 	default n
 
 config FREETZ_MODULE_pppox
 	bool "pppox.ko"
-	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_ppp_mppe_mppc
 	bool "ppp_mppe_mppc.ko"
-	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_arc4
 	select FREETZ_MODULE_sha1 if FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_sha1_generic if FREETZ_KERNEL_VERSION_2_6_28_MIN  && ! FREETZ_TYPE_FON_WLAN_7390
@@ -390,6 +391,7 @@ config FREETZ_MODULE_sr_mod
 
 config FREETZ_MODULE_slhc
 	bool "slhc.ko"
+	depends on ! FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_musb_hdrc

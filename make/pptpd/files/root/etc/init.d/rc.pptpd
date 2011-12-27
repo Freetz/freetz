@@ -19,7 +19,7 @@ start() {
 	kver="$(uname -r)"
 	modprobe arc4
 	[ "${kver:4:2}" -lt 28 ] && modprobe sha1 || modprobe sha1_generic 2>/dev/null
-	modprobe ppp_generic
+	modprobe ppp_generic 2>/dev/null
 	modprobe ppp_async 2>/dev/null
 	modprobe ppp_deflate
 	modprobe ppp_mppe_mppc

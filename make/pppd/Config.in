@@ -7,7 +7,7 @@ config FREETZ_PACKAGE_PPPD
 	select FREETZ_LIB_libdl
 	select FREETZ_MODULE_ppp_async if ! FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_ppp_deflate
-	select FREETZ_MODULE_ppp_generic
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_ppp_mppe_mppc
 	default n
 	help
