@@ -1,6 +1,7 @@
 [ "$FREETZ_REMOVE_NAS" == "y" ] || return 0
 
 echo1 "removing nas"
+rm -rf "${FILESYSTEM_MOD_DIR}/bin/showfritznasdbstat"
 rm -rf "${FILESYSTEM_MOD_DIR}/usr/www.nas"
 ln -sf www "${FILESYSTEM_MOD_DIR}/usr/www.nas"
 
