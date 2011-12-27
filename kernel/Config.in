@@ -280,19 +280,17 @@ config FREETZ_MODULE_cryptomgr
 
 config FREETZ_MODULE_sha1
 	bool "sha1.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 	default n
 
 config FREETZ_MODULE_sha256
 	bool "sha256.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 	default n
 
 config FREETZ_MODULE_sha1_generic
 	bool "sha1_generic.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && ! FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
@@ -366,7 +364,7 @@ config FREETZ_MODULE_ppp_mppe_mppc
 	select FREETZ_MODULE_ppp_generic
 	select FREETZ_MODULE_arc4
 	select FREETZ_MODULE_sha1 if FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_sha1_generic if FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_sha1_generic if FREETZ_KERNEL_VERSION_2_6_28_MIN  && ! FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_scsi_mod
