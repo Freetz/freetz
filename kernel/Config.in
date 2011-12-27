@@ -180,8 +180,7 @@ menu "block"
 
 config FREETZ_MODULE_mtdblk
 	bool "mtdblk.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	default n
 
 config FREETZ_MODULE_block2mtd
@@ -263,8 +262,7 @@ config FREETZ_MODULE_blkcipher
 
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_MIN
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28
@@ -523,7 +521,7 @@ config FREETZ_MODULE_ext2
 config FREETZ_MODULE_ext3
 	bool "ext3.ko"
 	depends on ! FREETZ_HAS_AVM_EXT3
-	select FREETZ_MODULE_jbd if FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_jbd if FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_mbcache
 	default n
 
@@ -570,8 +568,7 @@ config FREETZ_MODULE_lockd
 	bool "lockd.ko"
 	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_sunrpc
 	default n
 
@@ -587,8 +584,7 @@ config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"
 	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_lockd
 	select FREETZ_MODULE_exportfs
 	default n
@@ -597,16 +593,14 @@ config FREETZ_MODULE_exportfs
 	bool "exportfs.ko"
 	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 config FREETZ_MODULE_nfs
 	bool "nfs.ko"
 	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_lockd
 	default n
 
@@ -790,8 +784,7 @@ config FREETZ_MODULE_sunrpc
 	bool "sunrpc.ko"
 	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 endmenu
