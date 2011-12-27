@@ -11,7 +11,7 @@ get_ip - determine external IP address
 
 Usage: $0 [option]
     -a, --all      - use all methods [recommended]
-                     order: route, stun for DSL boxes, vice versa for IP clients (ATA, UMTS)
+                     order: route, stun for DSL boxes, vice versa for IP clients or UMTS
     -s, --stun     - use STUN server (stun.1und1.de)
     -r, --route    - use routing table
     -?, --help     - print this help message
@@ -51,7 +51,7 @@ via_route() {
 	return 1
 }
 
-# On IP clients (ATA mode or UMTS), we are behind a NAT and the only way to
+# On IP clients or UMTS, we are mostly behind a NAT and the only way to
 # determine the external IP is to get the information from an external
 # server. The most efficient method is STUN (stun-ip applet will try 3x).
 via_stun() {
