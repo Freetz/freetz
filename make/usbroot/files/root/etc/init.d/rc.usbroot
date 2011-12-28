@@ -376,7 +376,7 @@ load_modules_2_6_28_10() {
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_load_params="piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}"
 			;;
-		172 ) # 7320
+		172 | 179 ) # 7320, 7330
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_441.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_441.hex
 			piglet_dectmode="0x101"
@@ -396,7 +396,7 @@ load_modules_2_6_28_10() {
 				modprobe ehci_hcd
 				modprobe ohci_hcd
 				;;
-			172 | 175 ) # 7320, 3370
+			172 | 175 | 179 ) # 7320, 3370, 7330
 				modprobe ifxusb_host
 				;;
 			* )
