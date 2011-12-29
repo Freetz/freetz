@@ -71,6 +71,8 @@ set_options() {
 		[ "$DAEMON_STATUS" != "stopped" ] && modlib_stop
 		echo "$DAEMON_OPT_NEW" > ${TMPFILE}OPT
 		[ "$DAEMON_STATUS" != "stopped" ] && modlib_start
+	else
+		modlib_reload
 	fi
 }
 
