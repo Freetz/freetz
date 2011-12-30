@@ -34,6 +34,9 @@ $(PKG)_CONFIGURE_OPTIONS += --with-pgsql=no
 $(PKG)_CONFIGURE_OPTIONS += --without-sqlite2
 $(PKG)_CONFIGURE_OPTIONS += --with-sqlite3="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --includedir=$(APR_UTIL_INCLUDE_DIR)
+$(PKG)_CONFIGURE_OPTIONS += --with-crypto=no
+$(PKG)_CONFIGURE_OPTIONS += --with-openssl=no
+$(PKG)_CONFIGURE_OPTIONS += --with-nss=no
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -67,6 +70,7 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(APR_UTIL_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(APR_UTIL_MAJOR_LIBNAME)* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/apr-util-$(APR_UTIL_MAJOR_VERSION) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/apr-util-$(APR_UTIL_MAJOR_VERSION).pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apu-$(APR_UTIL_MAJOR_VERSION)-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/aprutil.exp \
