@@ -10,8 +10,7 @@ cat << EOF
 get_ip - determine external IP address
 
 Usage: $0 [option]
-    -a, --all      - use all methods [recommended]
-                     order: route, stun for DSL boxes, vice versa for IP clients or UMTS
+    -a, --all      - use all methods (order: stun, route) [recommended]
     -s, --stun     - use STUN server (stun.1und1.de)
     -r, --route    - use routing table
     -?, --help     - print this help message
@@ -40,14 +39,24 @@ ip_public()
 }
 
 # AVM's home-brew NAT does not expose the external IP on network interface
-# "dsl", but sets a route to it. This method should work on all DSL boxes,
-# in contrast to other methods which are dependent on the availability of
-# certain AVM binaries or firmware features. Besides, this method is faster
-# than the other ones anyway.
+# "dsl", but sets a route to it. This method should work on most DSL boxes,
+# with two known exceptions:
+#   a) DNS servers are configured manually to hosts with public IP address.
+#      In this case multiple candidate IPs would be found. In this case we
+#      return an error rather than trying to guess which IP might be correct.
+#   b) If the box does not connect to DSL via PPPoE but uses the DSL modem as a
+#      bridge to e.g. a public /21 network, the external IP is not listed in
+#      the routing table at all, but the /21 network instead.
+# There might be more exceptions in case of routing table manipulation (maybe
+# for VPNs or if for any reason a single external host IP is explicitly added
+# to the routing table).
 via_route() {
+	local candidate_count=0
 	for ip in $(route -n | sed -nr 's/^([1-9][0-9]*(\.[0-9]+){3}) +0(\.0){3} +255(\.255){3} +.* dsl$/\1/p'); do
-		ip_public "$ip" && IP="$ip" && return 0
+		ip_public "$ip" && IP="$ip" && candidate_count=$((candidate_count + 1))
 	done
+	[ $candidate_count -eq 1 ] && return 0
+	unset IP
 	return 1
 }
 
@@ -65,16 +74,9 @@ via_stun() {
 
 case $method in
 	-a|--all|"")
-		ext_last="stun"
-		# IP client? -> make STUN the method to try first
-		[ -r /var/run/ip_client ] && ext_first="stun" && ext_last=""
-		for mode in $ext_first route $ext_last; do
+		for mode in stun route; do
 			via_$mode
-			if [ $? -eq 0 ]; then
-				# IP client? -> set semaphore
-				[ "$mode" == "stun" ] && touch /var/run/ip_client
-				break
-			fi
+			[ $? -eq 0 ] && break
 		done
 		;;
 	-r|--route)
