@@ -20,7 +20,7 @@ for file in \
 		echo2 "patching $file"
 	fi
 done
-if isFreetzType 7170 7240 7270 7320; then
+if isFreetzType 7240 7270; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages_7270.patch"
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages_7170.patch"

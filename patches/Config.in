@@ -48,17 +48,14 @@ config FREETZ_PATCH_ENUM
 		Patches the enum configuration pages into the web menu.
 
 config FREETZ_PATCH_DSL_EXPERT
-	bool
-#	bool "Patch extended DSL settings"
+	bool "Patch extended DSL settings"
 	depends on \
 		! FREETZ_TYPE_LABOR_DSL && \
 		! FREETZ_REMOVE_DSLD && \
 		FREETZ_TYPE_LANG_DE && \
 		( \
-		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7320 \
+		FREETZ_TYPE_FON_WLAN_7270 \
 		)
 	default n
 	help
