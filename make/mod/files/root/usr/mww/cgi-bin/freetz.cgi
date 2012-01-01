@@ -30,11 +30,12 @@ derheimi
 hermann72pb
 hippie2000
 MaxMuster
+M66B
 sf3978
 </p>
 
 <p>
-<h1>Frestmen</h1>
+<h1>Freshmen</h1>
 dileks
 reiffert
 </p>
