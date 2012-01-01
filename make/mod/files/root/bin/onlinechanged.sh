@@ -2,7 +2,7 @@
 PID_FILE=/var/run/onlinechanged
 OC_STATE="$@"
 
-#parameter -e: additional new-line at line end
+# parameter -e: additional new-line at line end
 log() {
 	local addline=""
 	while [ "$1" == "-e" ]; do
@@ -58,7 +58,7 @@ if [ ! -e /tmp/.modstarted ]; then
 	done
 fi
 
-#execute onlinechanged scripts
+# execute onlinechanged scripts
 eventadd 1 "Running onlinechanged: $OC_STATE"
 log "approved"
 for i in /etc/onlinechanged/* /tmp/onlinechanged/* /tmp/flash/onlinechanged/*; do

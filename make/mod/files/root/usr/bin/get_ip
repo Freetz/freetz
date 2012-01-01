@@ -50,8 +50,8 @@ via_dsld() {
 # "dsl", but sets a route to it. This method should work on most DSL boxes,
 # with two known exceptions:
 #   a) DNS servers are configured manually to hosts with public IP address.
-#      In this case multiple candidate IPs would be found. In this case we
-#      return an error rather than trying to guess which IP might be correct.
+#      In this case multiple candidate IPs would be found. Thus we return an
+#      error rather than trying to guess which IP might be correct.
 #   b) If the box does not connect to DSL via PPPoE but uses the DSL modem as a
 #      bridge to e.g. a public /21 network, the external IP is not listed in
 #      the routing table at all, but the /21 network instead.
