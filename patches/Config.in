@@ -1073,6 +1073,38 @@ config FREETZ_REPLACE_DTRACE
 		Activating this option lets you execute a custom action via
 		phone using #97*3* keycode sequence.
 
+config FREETZ_REPLACE_ONLINECHANGED
+	bool "Replace onlinechanged (EXPERIMENTAL)"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		AVM's built-in onlinechanged is not reliably called on some DSL boxes for
+		unknown reasons (see http://www.ip-phone-forum.de/showthread.php?t=231873).
+		On boxes behind a NAT, e.g. on many IP clients, behind cable routers etc.,
+		onlinechanged is not triggered either because dsld is not responsible for the
+		connection. Thus, services on such boxes cannot be reinitialised automatically
+		after the external IP address has changed.
+
+		This is where this patch can be useful: It starts a shell script
+		/sbin/ip_watchdog via /etc/inittab and makes sure the script is automatically
+		restarted (via "respawn") in case it is terminated accidentally. The script
+		periodically (60 s) checks the external IP via /usr/bin/get_ip and calls AVM's
+		and Freetz's onlinechanged scripts via /bin/onlinechanged.sh if the IP has
+		changed. At the same time the patch ensures that AVM's master script
+		/bin/onlinechanged is empty, so the scripts are not called twice.
+
+		Who should use this patch? First of all users with boxes configured for NAT
+		who cannot profit from AVM onlinechanged at all. Secondly users having
+		problems with AVM onlinechanged being called unreliably on their DSL boxes.
+
+		Limitations: Environment variable IPADDR is set as usual, but no other
+		variables set by AVM multid in original onlinechanged such as NETMASK,
+		GATEWAY, DNS1, DNS2. They are currently not used by AVM or Freetz scripts
+		anyway, so this limitation should not be a problem. Another difference to AVM
+		onlinechanged is that this solution only calls "onlinechanged online",
+		never "onlinechanged offline". This also should not be a problem, but you
+		should be aware of it.
+
 comment "Additional patches ---------------------"
 
 config FREETZ_ADD_ANNEX_A_FIRMWARE
