@@ -42,7 +42,7 @@ function push_fw() {
 	echo "	 Waiting for box to shut down."
 	echo "	 Tip: switch off, if reboot is not detected because it happens too quickly"
 	echo -n "   "
-	while eval "ping $ping_params $ip > /dev/null"; do
+	while ping $ping_params $ip > /dev/null; do
 		echo -n "."
 		sleep 0.2
 	done
@@ -52,7 +52,7 @@ function push_fw() {
 	echo " * No reply from box ($ip). Assuming switch-off or restart."
 	echo "	 Trying to re-detect box."
 	echo -n "   "
-	while ! eval "ping $ping_params $ip > /dev/null"; do
+	while ! ping $ping_params $ip > /dev/null; do
 		echo -n "."
 		sleep 0.2
 	done
@@ -132,8 +132,8 @@ telnet_hn () {
 	echo QUIT
 }
 
-
-if [ -z "$1" ]; then
+usage()
+{
 	echo
 	echo "Usage: $0 <firmware> [ -f ] [ <ip> ] [ -hn ]"
 	echo ""
@@ -143,6 +143,10 @@ if [ -z "$1" ]; then
 	echo "-hn	  flash image to an \"Alice/HanseNet\" Version of 7570"
 	echo
 	exit 1
+}
+
+if [ -z "$1" ]; then
+    usage
 fi
 
 img=""
@@ -160,6 +164,7 @@ function cleanup() {
 
 trap cleanup EXIT SIGTERM SIGINT
 arg1=$1
+shift
 while [ -z "$img" ]; do
 	if [ "$(uname -s)" == "Darwin" ]; then
 		hexdump -n4 "$arg1" | grep -iq "81 12 ed fe" && img="$arg1"
@@ -183,10 +188,23 @@ while [ -z "$img" ]; do
 	fi
 done
 
-ip=$(echo "$@" | grep -o -e "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+")
-[ -z "$ip" ] && ip=192.168.178.1
-ISFORCE=$( $(echo "$@" | grep -q "\-f")  && echo true )
-ISALICE=$( $(echo "$@" | grep -q "\-hn")  && echo true )
+while [ $# -ge 1 ]; do
+	case "$1" in
+		(-f)
+			ISFORCE=true
+			;;
+		(-hn)
+			ISALICE=true
+			;;
+		(-*)
+			usage
+			;;
+		(*)
+			ip=$(echo "$1" | grep -o -e "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+")
+			;;
+	esac
+	shift
+done
 
 ping_params="-c1 -w1"
 if [ "$(uname -s)" == "Darwin" ]; then
