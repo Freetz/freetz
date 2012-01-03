@@ -17,7 +17,10 @@ Usage: $0 [option]
     -w, --webcm    - use webcm CGI handler / ctlmgr_ctl
     -?, --help     - print this help message
 
-  current default method: $MOD_GET_IP_METHOD
+Current default method: $MOD_GET_IP_METHOD
+
+Note: If environment variable IPADDR is set and contains a public IP (not from
+a private or link-local network), its value will be returned.
 
 EOF
 }
@@ -97,6 +100,9 @@ via_webcm() {
 	# Caveat: must use "-o" instead of "||", otherwise "$?" would be reset
 	[ $? -eq 0 -o $? -ge 170 ] && ip_public "$IP" && return 0 || return 1
 }
+
+# If multid (or whoever) has already determined the external IP, use it
+ip_public "$IPADDR" && echo "$IPADDR" && exit 0
 
 # Set user-defined method (e.g. via web UI) if no argument is given
 [ $# -eq 0 ] && method="$MOD_GET_IP_METHOD" || method="$1"
