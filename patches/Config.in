@@ -259,6 +259,13 @@ config FREETZ_MODIFY_UMTSD
 		AVM's umtsd will only be started if a *known* umts modem is
 		detected. So your /dev/ttyUSB? could be used by other programs.
 
+config FREETZ_CUSTOM_UDEV_RULES
+	bool "Enable custom UDEV rules"
+	depends on FREETZ_HAS_AVM_UDEV
+	default n
+	help
+		You could use own rules for UDEV.
+
 comment "Removal patches ------------------------"
 
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
