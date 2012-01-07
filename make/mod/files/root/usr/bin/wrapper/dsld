@@ -11,6 +11,7 @@ log() {
 dsld_mode=start
 while [ $# -gt 0 ]; do
 	[ "$1" == "-s" ] && dsld_mode="stop"
+	[ "$1" == "-I" ] && dsld_mode="reload"
 	shift
 done
 
