@@ -1,0 +1,62 @@
+Backport of http://git.uclibc.org/uClibc/commit/?id=82f8d0bce10403deab704871e638edc24e7933ee
+
+--- libc/stdlib/abort.c
++++ libc/stdlib/abort.c
+@@ -65,6 +65,7 @@
+ 
+ #ifdef __UCLIBC_HAS_STDIO_SHUTDOWN_ON_ABORT__
+ extern void weak_function _stdio_term(void);
++#include "_not_null_ptr.c"
+ #endif
+ extern void _exit __P((int __status)) __attribute__ ((__noreturn__));
+ static int been_there_done_that = 0;
+@@ -104,7 +105,7 @@
+ 			 * this will attemt to commit all buffered writes.  It may also
+ 			 * unboffer all writable files, or close them outright.
+ 			 * Check the stdio routines for details. */
+-			if (_stdio_term) {
++			if (not_null_ptr(_stdio_term)) {
+ 				_stdio_term();
+ 			}
+ #endif
+--- libc/stdlib/atexit.c
++++ libc/stdlib/atexit.c
+@@ -212,6 +212,7 @@
+ #endif
+ 
+ #ifdef L_exit
++#include "_not_null_ptr.c"
+ extern void weak_function _stdio_term(void);
+ void (*__exit_cleanup) (int) = 0;
+ #ifdef __UCLIBC_HAS_THREADS__
+@@ -230,7 +231,7 @@
+ {
+ 	/* Perform exit-specific cleanup (atexit and on_exit) */
+ 	LOCK;
+-	if (__exit_cleanup) {
++	if (not_null_ptr(__exit_cleanup)) {
+ 		__exit_cleanup(rv);
+ 	}
+ 	UNLOCK;
+@@ -248,7 +249,7 @@
+ 	 * this will attempt to commit all buffered writes.  It may also
+ 	 * unbuffer all writable files, or close them outright.
+ 	 * Check the stdio routines for details. */
+-	if (_stdio_term) 
++	if (not_null_ptr(_stdio_term)) 
+ 	    _stdio_term();
+ 
+ 	_exit(rv);
+--- libc/stdlib/_not_null_ptr.c
++++ libc/stdlib/_not_null_ptr.c
+@@ -0,0 +1,10 @@
++/* Defeat compiler optimization which assumes function addresses are never NULL */
++static __always_inline int not_null_ptr(const void *p)
++{
++	const void *q;
++	__asm__ (""
++		: "=r" (q) /* output */
++		: "0" (p) /* input */
++	);
++	return q != 0;
++}
