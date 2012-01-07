@@ -151,6 +151,7 @@ config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
 	select FREETZ_BUSYBOX_VOLUMEID_EXT
 	select FREETZ_MODULE_ext3 if ! FREETZ_HAS_AVM_EXT3
+	default y if FREETZ_HAS_AVM_EXT3
 	default n
 	help
 		This adds ext3 module to your firmware.
@@ -167,7 +168,7 @@ config FREETZ_AUTOMOUNT_EXT4
 config FREETZ_AUTOMOUNT_FAT
 	bool "fat"
 	select FREETZ_BUSYBOX_VOLUMEID_FAT
-	default n
+	default y
 	help
 		This enables detection of fat partitions.
 
@@ -196,8 +197,11 @@ config FREETZ_AUTOMOUNT_LUKS
 
 config FREETZ_AUTOMOUNT_NTFS
 	bool "NTFS"
-	select FREETZ_PACKAGE_NTFS if ! FREETZ_HAS_AVM_NTFS
+	select FREETZ_PACKAGE_NTFS if ! ( FREETZ_HAS_AVM_NTFS || FREETZ_AVMPLUGINS_NTFS )
 	select FREETZ_BUSYBOX_VOLUMEID_NTFS
+	default y if \
+	 	FREETZ_AVMPLUGINS_NTFS || \
+		( FREETZ_HAS_AVM_NTFS && ! FREETZ_REMOVE_NTFS )
 	default n
 	help
 		This adds ntfs-3g mount helper to your firmware.
