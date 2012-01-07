@@ -1,0 +1,73 @@
+From: pbrook <pbrook@138bc75d-0d04-0410-961f-82ee72b054a4>
+Date: Mon, 31 Oct 2011 14:26:38 +0000 (+0000)
+Subject: 2011-10-31  Paul Brook  <paul@codesourcery.com>
+X-Git-Url: http://gcc.gnu.org/git/?p=gcc.git;h=e54aa8a4b85c7f1e8ea0dd233a65c1daa5c816cb
+
+2011-10-31  Paul Brook  <paul@codesourcery.com>
+
+	gcc/
+	* cgraphunit.c: Don't mark clones as static constructors.
+
+	gcc/testsuite/
+	* gcc.dg/constructor-1.c: New test.
+
+---
+
+diff --git gcc/cgraphunit.c gcc/cgraphunit.c
+index 25d7561..83c47ab 100644
+--- gcc/cgraphunit.c
++++ gcc/cgraphunit.c
+@@ -2067,6 +2067,10 @@ cgraph_function_versioning (struct cgraph_node *old_version_node,
+   SET_DECL_ASSEMBLER_NAME (new_decl, DECL_NAME (new_decl));
+   SET_DECL_RTL (new_decl, NULL);
+ 
++  /* When the old decl was a con-/destructor make sure the clone isn't.  */
++  DECL_STATIC_CONSTRUCTOR(new_decl) = 0;
++  DECL_STATIC_DESTRUCTOR(new_decl) = 0;
++
+   /* Create the new version's call-graph node.
+      and update the edges of the new node. */
+   new_version_node =
+diff --git gcc/testsuite/gcc.dg/constructor-1.c gcc/testsuite/gcc.dg/constructor-1.c
+new file mode 100644
+index 0000000..1095a45
+--- /dev/null
++++ gcc/testsuite/gcc.dg/constructor-1.c
+@@ -0,0 +1,37 @@
++/* { dg-do run } */
++/* { dg-options "-O2" } */
++
++/* The ipa-split pass pulls the body of the if(!x) block
++   into a separate function to make foo a better inlining
++   candidate.  Make sure this new function isn't also run
++   as a static constructor.  */
++
++#include <stdlib.h>
++
++int x, y;
++
++void __attribute__((noinline))
++bar(void)
++{
++  y++;
++}
++
++void __attribute__((constructor))
++foo(void)
++{
++  if (!x)
++    {
++      bar();
++      y++;
++    }   
++} 
++
++int main()
++{
++  x = 1;
++  foo();
++  foo();
++  if (y != 2)
++    abort();
++  exit(0);
++}
