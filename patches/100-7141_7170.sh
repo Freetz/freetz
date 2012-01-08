@@ -13,11 +13,11 @@ echo2 "copying 7141 files"
 cp -a "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESYSTEM_MOD_DIR}/lib/modules"
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && \
+if isFreetzType LANG_DE; then
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170.patch"
-#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7141_7170.patch"
-
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove-FON3-7170-alien.patch" || exit 2
+	#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7141_7170.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove-FON3-7170-alien.patch" || exit 2
+fi
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7141 || exit 2
