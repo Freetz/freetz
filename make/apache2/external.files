@@ -1,1 +1,3 @@
-EXTERNAL_FILES+=" $( test -n "$PACKAGES_DIR" && cd "$PACKAGES_DIR/apache2-2.2.21/root" && find * -type f)"
+if [ "$FREETZ_PACKAGE_APACHE2" = y ]; then
+  EXTERNAL_FILES+=" $( test -d "$PACKAGES_DIR/apache2-2.2.21/root" && cd "$PACKAGES_DIR/apache2-2.2.21/root" && find * -type f)"
+fi
