@@ -9,7 +9,7 @@ Index: crypto/bio/bss_dgram.c
 ===================================================================
 --- crypto/bio/bss_dgram.c
 +++ crypto/bio/bss_dgram.c
-@@ -61,6 +61,12 @@
+@@ -60,6 +60,12 @@
  
  #include <stdio.h>
  #include <errno.h>
@@ -22,7 +22,7 @@ Index: crypto/bio/bss_dgram.c
  #define USE_SOCKETS
  #include "cryptlib.h"
  
-@@ -429,12 +435,14 @@ static long dgram_ctrl(BIO *b, int cmd,
+@@ -430,12 +436,14 @@ static long dgram_ctrl(BIO *b, int cmd,
  				&sockopt_val, sizeof(sockopt_val))) < 0)
  				perror("setsockopt");
  			break;
@@ -37,7 +37,7 @@ Index: crypto/bio/bss_dgram.c
  		default:
  			ret = -1;
  			break;
-@@ -470,6 +478,7 @@ static long dgram_ctrl(BIO *b, int cmd,
+@@ -471,6 +479,7 @@ static long dgram_ctrl(BIO *b, int cmd,
  				ret = data->mtu;
  				}
  			break;
@@ -45,7 +45,7 @@ Index: crypto/bio/bss_dgram.c
  		case AF_INET6:
  			if ((ret = getsockopt(b->num, IPPROTO_IPV6, IPV6_MTU, (void *)&sockopt_val,
  				&sockopt_len)) < 0 || sockopt_val < 0)
-@@ -485,6 +494,7 @@ static long dgram_ctrl(BIO *b, int cmd,
+@@ -486,6 +495,7 @@ static long dgram_ctrl(BIO *b, int cmd,
  				ret = data->mtu;
  				}
  			break;
