@@ -14,8 +14,8 @@ log() {
 	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
 }
 
-# semaphore older than 3 min -> kill waiting sibling scripts
-if [ "$(find $PID_FILE -prune -mmin +3 2>/dev/null)" == "$PID_FILE" ]; then
+# semaphore older than 3 min -> kill waiting sibling scripts (not during startup)
+if [ -e /tmp/.modstarted -a "$(find $PID_FILE -prune -mmin +3 2>/dev/null)" == "$PID_FILE" ]; then
 	for pid in $(pidof onlinechanged.sh | sed "s/ \?$$//"); do
 		log "killing old process #$pid"
 		kill $pid
