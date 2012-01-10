@@ -755,7 +755,6 @@ config FREETZ_REMOVE_SHOWDSLDSTAT
 		Removes the showdsldstat utility which shows you the cpmac mode, connect time,
 		external ip, route and dns servers. Also the state of IPv6, voip and tr069.
 		Unsure a.t.m. if this tool is required by other AVM programs!
-		AVM-WebDAV will be patched to not depend on showdsldstat (hopefully).
 
 config FREETZ_REMOVE_DTRACE
 	bool "Remove dtrace"
@@ -811,17 +810,12 @@ config FREETZ_REMOVE_JFFS2
 
 		Please note that every functionality based on JFFS2, such as telephone
 		answering machine (tam) storage without USB storage media, will no longer
-		work. But if you have space problems to begin with, JFFS would be to small
+		work. But if you have space problems to begin with, JFFS would be too small
 		to store anything anyway. In either case it is preferable to store phone
 		calls, fax documents etc. on a USB storage medium.
 
 		This patch does *not* change any scripts which might require JFFS, so use at
 		your own risk and test the firmware after flashing it onto your device.
-
-		ATTENTION: This patch *always* removes jffs2.ko from your firmware even if
-		the module (FREETZ_MODULE_jffs2) has been selected manually or automatically.
-		The only exception is FREETZ_PACKAGE_MINI_FO_JFFS2: If it is selected, this
-		patch is not available.
 
 config FREETZ_REMOVE_LSOF
 	bool "Remove lsof"
