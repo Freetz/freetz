@@ -709,8 +709,7 @@ config FREETZ_REMOVE_DECT
 
 config FREETZ_REMOVE_DECT_UPDATE
 	bool "Remove dect_update"
-	depends on \
-		FREETZ_TYPE_FON_7150
+	depends on FREETZ_TYPE_FON_7150
 	default n
 	help
 		Remove /usr/bin/dect_update. This utility is only needed to
@@ -747,6 +746,15 @@ config FREETZ_REMOVE_DSLD
 		stripped by this patch.
 
 		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+
+config FREETZ_REMOVE_SHOWDSLDSTAT
+	bool "Remove showdsldstat - EXPERIMENTAL"
+	default n
+	depends on FREETZ_SHOW_ADVANCED
+	help
+		Removes the showdsldstat utility which shows you the cpmac mode, connect time,
+		external ip, route and dns servers. Also the state of IPv6, voip and tr069.
+		Unsure a.t.m. if this tool is required by other AVM programs!
 
 config FREETZ_REMOVE_DTRACE
 	bool "Remove dtrace"
