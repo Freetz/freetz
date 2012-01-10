@@ -48,6 +48,12 @@ modpatch()
 		helpmsg
 		return 1
 	fi
+	# Check prerequisites for auto-fix
+	if [ "$AUTO_FIX_PATCHES" == "y" ]; then
+		for tool in lsdiff filterdiff realpath; do
+			which $tool > /dev/null || error 1 "$freetz_patch_name: tool $tool needed for auto-fix mode, please install"
+		done
+	fi
 	local is_verbose=""
 	if [ "$FREETZ_VERBOSITY_LEVEL" ] && [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
 		is_verbose="y"
