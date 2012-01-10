@@ -800,6 +800,29 @@ config FREETZ_REMOVE_HELP
 	help
 		Removes the (offline) help pages from the web menu.
 
+config FREETZ_REMOVE_JFFS2
+	bool "Remove jffs2.ko (EXPERIMENTAL)"
+	depends on FREETZ_SHOW_ADVANCED
+	default n
+	help
+		If your AVM firmware contains the JFFS2 kernel module (jffs2.ko), this patch
+		removes it, saving 144-192 kB of uncompressed firmware space. Use this patch
+		if you have space problems in your firmware ("image too big").
+
+		Please note that every functionality based on JFFS2, such as telephone
+		answering machine (tam) storage without USB storage media, will no longer
+		work. But if you have space problems to begin with, JFFS would be to small
+		to store anything anyway. In either case it is preferable to store phone
+		calls, fax documents etc. on a USB storage medium.
+
+		This patch does *not* change any scripts which might require JFFS, so use at
+		your own risk and test the firmware after flashing it onto your device.
+
+		ATTENTION: This patch *always* removes jffs2.ko from your firmware even if
+		the module (FREETZ_MODULE_jffs2) has been selected manually or automatically.
+		The only exception is FREETZ_PACKAGE_MINI_FO_JFFS2: If it is selected, this
+		patch is not available.
+
 config FREETZ_REMOVE_LSOF
 	bool "Remove lsof"
 	depends on FREETZ_HAS_AVM_LSOF
