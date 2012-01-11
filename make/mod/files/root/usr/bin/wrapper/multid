@@ -11,10 +11,11 @@ log() {
 multid_mode=start
 while [ $# -gt 0 ]; do
 	[ "$1" == "-s" ] && multid_mode="stop"
+	[ "$1" == "-I" ] && multid_mode="reload"
 	shift
 done
 
-if [ "$multid_mode" != "stop" ]; then
+if [ "$multid_mode" == "start" ]; then
 	for dns_pkg in dnsmasq bind; do
 		if [ "$(/mod/etc/init.d/rc.$dns_pkg status 2>/dev/null)" == "stopped" ]; then
 			/mod/etc/init.d/rc.$dns_pkg multid 2>&1 | log

@@ -57,7 +57,7 @@ start() {
 	fi
 
 	rm -rf /var/tmp/avm-resolv.conf /var/tmp/resolv.conf 2>/dev/null
-	$DAEMON $DAEMON_CMD_IGD $DAEMON_CMD_NTP $DAEMON_CMD_069 $DAEMON_CMD_IGM
+	$DAEMON_BIN $DAEMON_CMD_IGD $DAEMON_CMD_NTP $DAEMON_CMD_069 $DAEMON_CMD_IGM
 	exitval=$?
 	sleep 1
 	[ -f /tmp/flash/mod/multid.start ] && . /tmp/flash/mod/multid.start
@@ -97,7 +97,11 @@ start() {
 }
 
 stop() {
-	$DAEMON -s
+	$DAEMON_BIN -s
+}
+
+reload() {
+	$DAEMON_BIN -I
 }
 
 case $1 in
@@ -116,11 +120,14 @@ case $1 in
 	restart)
 		modlib_restart
 		;;
+	reload)
+		modlib_reload
+		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
