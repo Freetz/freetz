@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Uncompress LZA-packed firmware kernel. This is a functional, but
+# Uncompress LZMA-packed firmware kernel. This is a functional, but
 # quick & dirty version of the Perl script by Enrik Berkhan shown and explained
 # at http://www.wehavemorefun.de/fritzbox/index.php/EVA. There is no CRC
 # calculation for the time being and also no other kind of error checking,
@@ -8,7 +8,7 @@
 # that we do not need Perl and especially no exotic LZMA package which is
 # unavailable as a Debian image, for example. The opposite is true for unlzma
 # which is installed on most Linux systems in general and part of busybox-tools
-# as a part of ds26 in particular.
+# as a part of Freetz in particular.
 
 case $# in
 	2)
@@ -18,15 +18,28 @@ case $# in
 		echo "    kernel_img  - file starting with compressed kernel image," >&2
 		echo "                  e.g. kernel.image or kernel.raw" >&2
 		echo "    uncomp_file - uncompressed kernel output file name" >&2
+		echo >&2
+		echo "This tool also prints the kernel's load and entry addresses in a format which" >&2
+		echo "can be parsed and re-used as parameters for tools/lzma2eva:" >&2
+		echo "    load=0x94100000 entry=0x94411F50" >&2
 		exit 1
 esac
 
 (
 	# Get LZMA properties + dictionary size
-	dd if="$1" bs=1 count=5 skip=28
+	dd if="$1" bs=1 count=5 skip=28 2>/dev/null
 	# Get uncompressed length (32-bit little-endian), pad to 64-bit
-	dd if="$1" bs=1 count=4 skip=20
-	dd if=/dev/zero bs=1 count=4
+	dd if="$1" bs=1 count=4 skip=20 2>/dev/null
+	dd if=/dev/zero bs=1 count=4 2>/dev/null
 	# Jump to compressed data, pipe into output stream
-	dd if="$1" bs=36 skip=1
-) | $(dirname "$0")/unlzma > "$2"
+	dd if="$1" bs=36 skip=1 2>/dev/null
+) | $(dirname "$0")/unlzma > "$2" 2>/dev/null
+
+[ $? -ne 0 ] && echo "$(basename "$0") ERROR: could not unpack kernel image" >&2 && exit 1
+
+tmp=$(dd if="$1" bs=4 count=2 skip=1 2>/dev/null | hexdump -C | head -n 1)
+length=$(printf "%d" "0x${tmp:19:2}${tmp:16:2}${tmp:13:2}${tmp:10:2}")
+load_addr=$(printf "0x%X" "0x${tmp:31:2}${tmp:28:2}${tmp:25:2}${tmp:22:2}")
+tmp=$(dd if="$1" bs=1 count=4 skip=$((20+length)) 2>/dev/null | hexdump -C | head -n 1)
+entry_addr=$(printf "0x%X" "0x${tmp:19:2}${tmp:16:2}${tmp:13:2}${tmp:10:2}")
+echo "load=$load_addr entry=$entry_addr"
