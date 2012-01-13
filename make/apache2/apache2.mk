@@ -10,7 +10,13 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/httpd2
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_APACHE2_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_APACHE2_COMPILEINMODS
 
-$(PKG)_DEPENDS_ON := apr apr-util pcre zlib
+$(PKG)_DEPENDS_ON := apr apr-util pcre
+ifeq ($(strip $(FREETZ_PACKAGE_APACHE2_DEFLATE)),y)
+$(PKG)_DEPENDS_ON += zlib
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_APACHE2_SSL)),y)
+$(PKG)_DEPENDS_ON += openssl
+endif
 
 $(PKG)_CONFIGURE_ENV += ap_cv_void_ptr_lt_long=no
 
@@ -23,19 +29,19 @@ $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/etc/apache2
 $(PKG)_CONFIGURE_OPTIONS += --libexecdir=/usr/lib/apache2
 $(PKG)_CONFIGURE_OPTIONS += --with-program-name=httpd2
 $(PKG)_CONFIGURE_OPTIONS += --enable-substitute
-$(PKG)_CONFIGURE_OPTIONS += --enable-deflate
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_APACHE2_DEFLATE),--enable-deflate,--disable-deflate)
 $(PKG)_CONFIGURE_OPTIONS += --enable-expires
 $(PKG)_CONFIGURE_OPTIONS += --enable-headers
 $(PKG)_CONFIGURE_OPTIONS += --enable-unique-id
 $(PKG)_CONFIGURE_OPTIONS += --enable-proxy
-$(PKG)_CONFIGURE_OPTIONS += --enable-proxy-connect
-$(PKG)_CONFIGURE_OPTIONS += --enable-proxy-http
-$(PKG)_CONFIGURE_OPTIONS += --enable-ssl
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_APACHE2_SSL),--enable-ssl,--disable-ssl)
 $(PKG)_CONFIGURE_OPTIONS += --enable-dav
+$(PKG)_CONFIGURE_OPTIONS += --enable-dav-fs
 $(PKG)_CONFIGURE_OPTIONS += --enable-suexec
 $(PKG)_CONFIGURE_OPTIONS += --enable-rewrite
 $(PKG)_CONFIGURE_OPTIONS += --with-suexec-bin=/usr/sbin/suexec2
-$(PKG)_CONFIGURE_OPTIONS += --enable-ssl
+$(PKG)_CONFIGURE_OPTIONS += --enable-cgi
+$(PKG)_CONFIGURE_OPTIONS += --enable-cgid
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_APACHE2_COMPILEINMODS),--enable-modules=all --disable-so,--enable-mods-shared=all --enable-so)
 
 $(PKG_SOURCE_DOWNLOAD)
