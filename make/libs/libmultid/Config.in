@@ -1,0 +1,47 @@
+config FREETZ_LIB_libmultid
+	bool "libmultid (libmultid.so)"
+	default n
+	help
+		If this library is preloaded to multid,
+		some portbindings will be remapped.
+
+choice
+	prompt "Listen on"
+		depends on FREETZ_LIB_libmultid
+		default FREETZ_LIB_libmultid_WITH_ANYIP
+
+	config FREETZ_LIB_libmultid_WITH_ANYIP
+		bool "any ip"
+		help
+			Remapped ports listen on any ip.
+			This is multid's default.
+
+	config FREETZ_LIB_libmultid_WITH_LOCAL
+		bool "localhost"
+		help
+			Remapped ports listen on localhost.
+			This could be more secure.
+
+endchoice # "Listen on" #
+
+config FREETZ_LIB_libmultid_WITH_DNS
+	bool "Disable DNS"
+	depends on FREETZ_LIB_libmultid && FREETZ_AVMDAEMON_DISABLE_DNS
+	default n
+	help
+		Remapps port 53.
+
+config FREETZ_LIB_libmultid_WITH_DHCP
+	bool "Disable DHCP"
+	depends on FREETZ_LIB_libmultid && FREETZ_AVMDAEMON_DISABLE_DHCP
+	default n
+	help
+		Remapps port 67.
+
+config FREETZ_LIB_libmultid_WITH_LLMNR
+	bool "Disable LLMNR"
+	depends on FREETZ_LIB_libmultid && FREETZ_AVMDAEMON_DISABLE_LLMNR
+	default n
+	help
+		Remapps port 5353 and 5355.
+

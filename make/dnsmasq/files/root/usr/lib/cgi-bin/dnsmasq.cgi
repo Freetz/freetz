@@ -2,6 +2,7 @@
 
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$DNSMASQ_ENABLED" yes:auto "*":man
 check "$DNSMASQ_DHCP" yes:dhcp_yes "*":dhcp_no
@@ -25,11 +26,15 @@ cat << EOF
 <input type="hidden" name="wrapper" value="no">
 <input id="wrap1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="wrap1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>
 </p>
+EOF
+if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+cat << EOF
 <p>
 <input type="hidden" name="multid_restart" value="no">
 <input id="multid1" type="checkbox" name="multid_restart" value="yes"$multid_restart_chk><label for="multid1"> $(lang de:"multid restarten" en:"restart multid")</label><br>
 </p>
 EOF
+fi
 sec_end
 
 sec_begin '$(lang de:"DNS Server" en:"DNS server")'

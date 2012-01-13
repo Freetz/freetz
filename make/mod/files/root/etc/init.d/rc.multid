@@ -57,8 +57,10 @@ start() {
 	fi
 
 	rm -rf /var/tmp/avm-resolv.conf /var/tmp/resolv.conf 2>/dev/null
+	[ "$FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS" == "y" ] && export LD_PRELOAD=libmultid.so.1.0.0
 	$DAEMON_BIN $DAEMON_CMD_IGD $DAEMON_CMD_NTP $DAEMON_CMD_069 $DAEMON_CMD_IGM
 	exitval=$?
+	export LD_PRELOAD=
 	sleep 1
 	[ -f /tmp/flash/mod/multid.start ] && . /tmp/flash/mod/multid.start
 

@@ -31,9 +31,13 @@ cat << EOF
 $(lang de:"Optionale Parameter:" en:"Optional parameters:")
 <input type="text" name="cmdline" size="55" maxlength="250" value="$(html "$BIND_CMDLINE")">
 </p>
+EOF
+if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+cat << EOF
 <p>
 <input type="hidden" name="multid" value="no">
-<input id="m1" type="checkbox" name="multid" value="yes"$multid_chk><label for="m1">$(lang de:"Neustarten von multid um Port 53 nutzen zu können." en:"Restart multid to use port 53.")</label>
+<input id="m1" type="checkbox" name="multid" value="yes"$multid_chk><label for="m1">$(lang de:"Neustarten von multid um Port 53 nutzen zu k&ouml;nnen." en:"Restart multid to use port 53.")</label>
 </p>
 EOF
+fi
 sec_end

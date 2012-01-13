@@ -1,0 +1,63 @@
+$(call PKG_INIT_LIB, 0.3)
+$(PKG)_LIB_VERSION:=1.0.0
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=d4285b9d1726aa4b8e3b4f43121b6ccf
+$(PKG)_SITE:=http://cuma.hopto.org/share
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/$(pkg).so.$($(PKG)_LIB_VERSION)
+
+$(PKG)_REBUILD_SUBOPTS := FREETZ_TARGET_IPV6_SUPPORT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libmultid_WITH_LOCAL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libmultid_WITH_DNS
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libmultid_WITH_DHCP
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libmultid_WITH_LLMNR
+
+$(PKG)_COPTS := 
+ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
+$(PKG)_COPTS += -DD_IPV6
+endif
+ifeq ($(FREETZ_LIB_libmultid_WITH_LOCAL),y)
+$(PKG)_COPTS += -DD_LOCAL
+endif
+ifeq ($(FREETZ_LIB_libmultid_WITH_DNS),y)
+$(PKG)_COPTS += -DD_DNS
+endif
+ifeq ($(FREETZ_LIB_libmultid_WITH_DHCP),y)
+$(PKG)_COPTS += -DD_DHCP
+endif
+ifeq ($(FREETZ_LIB_libmultid_WITH_LLMNR),y)
+$(PKG)_COPTS += -DD_LLMNR
+endif
+
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_NOP)
+
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	$(SUBMAKE) -C $(LIBMULTID_DIR) \
+		CC="$(TARGET_CC)" \
+		CFLAGS="$(LIBMULTID_COPTS) $(TARGET_CFLAGS) -fPIC" \
+		all
+
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
+	$(SUBMAKE) -C $(LIBMULTID_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
+
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
+	$(INSTALL_LIBRARY_STRIP)
+
+$(pkg): $($(PKG)_STAGING_BINARY)
+
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
+$(pkg)-clean:
+	-$(SUBMAKE) -C $(LIBMULTID_DIR) clean
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libmultid*.so*
+
+$(pkg)-uninstall:
+	$(RM) $(LIBMULTID_DEST_LIB)/libmultid*.so*
+
+$(PKG_FINISH)
