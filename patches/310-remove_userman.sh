@@ -10,11 +10,19 @@ else
 	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
 
+# redirect on webif to prio settings
+for j in home.html menu2_internet.html; do
+	for i in $(find "${HTML_LANG_MOD_DIR}" -type f -name $j); do
+		modsed "s/'userlist'/'trafficprio'/g" $i
+	done
+done
+
 for j in userlist useradd; do
 	for i in $(find "${HTML_LANG_MOD_DIR}" -type f -name '*.html' | xargs grep -l $j); do
 		modsed "/$j/d" $i
 	done
 done
+
 if [ -e "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init" ]; then
 	modsed "s/KIDS=y/KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
 else
