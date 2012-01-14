@@ -1,6 +1,7 @@
 --- configure
 +++ configure
-@@ -14030,13 +14030,25 @@
+	2012-01-13 21:11:06.345273110 +0100
+@@ -14083,13 +14083,25 @@
  done
  
      OLDLIBS="$LIBS"
@@ -30,7 +31,7 @@
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -14046,73 +14058,34 @@
+@@ -14099,73 +14111,34 @@
  #ifdef __cplusplus
  extern "C"
  #endif
@@ -114,7 +115,33 @@
  
 --- src/network.c
 +++ src/network.c
-@@ -681,6 +681,15 @@
+@@ -31,6 +31,7 @@
+ #endif
+ 
+ #ifdef USE_OPENSSL
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ static void ssl_info_callback(const SSL *ssl, int where, int ret) {
+ 	UNUSED(ret);
+ 
+@@ -42,6 +43,7 @@
+ 	}
+ }
+ #endif
++#endif
+ 
+ static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
+ 	server_socket *srv_socket = (server_socket *)context;
+@@ -612,7 +614,9 @@
+ 		}
+ 
+ 		SSL_CTX_set_options(s->ssl_ctx, ssloptions);
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 		SSL_CTX_set_info_callback(s->ssl_ctx, ssl_info_callback);
++#endif
+ 
+ 		if (!s->ssl_use_sslv2) {
+ 			/* disable SSLv2 */
+@@ -706,6 +710,15 @@
  #endif
  #endif
  
@@ -130,7 +157,7 @@
  		if (!buffer_is_empty(s->ssl_ca_file)) {
  			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
-@@ -712,6 +721,7 @@
+@@ -737,6 +750,7 @@
  				"SSL: You specified ssl.verifyclient.activate but no ca_file"
  			);
  		}

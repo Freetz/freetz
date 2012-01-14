@@ -9,23 +9,24 @@
 +# include <openssl/dh.h>
  #endif
  
- static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
-@@ -480,11 +483,14 @@
+ #ifdef USE_OPENSSL
+@@ -493,13 +496,14 @@
  	network_backend_t backend;
  
  #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
+-#ifndef OPENSSL_NO_ECDH
 +#if !defined(OPENSSL_NO_EC) && !defined(OPENSSL_NO_ECDH)
  	EC_KEY *ecdh;
  	int nid;
  #endif
-+#endif
+ #endif
  
  #ifdef USE_OPENSSL
 +#if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
  	DH *dh;
  	BIO *bio;
  
-@@ -527,6 +533,7 @@
+@@ -542,6 +546,7 @@
  		0x85,0x5E,0x6E,0xEB,0x22,0xB3,0xB2,0xE5,
  	};
  #endif
@@ -33,7 +34,7 @@
  
  	struct nb_map {
  		network_backend_t nb;
-@@ -613,6 +620,7 @@
+@@ -640,6 +645,7 @@
  			}
  		}
  
@@ -41,7 +42,7 @@
  		/* Support for Diffie-Hellman key exchange */
  		if (!buffer_is_empty(s->ssl_dh_file)) {
  			/* DH parameters from file */
-@@ -646,9 +654,10 @@
+@@ -673,9 +679,10 @@
  		SSL_CTX_set_tmp_dh(s->ssl_ctx,dh);
  		SSL_CTX_set_options(s->ssl_ctx,SSL_OP_SINGLE_DH_USE);
  		DH_free(dh);
