@@ -1,3 +1,4 @@
+# 7570 firmware on Alice IAD 7570 hardware
 isFreetzType 7570_IAD || return 0
 
 echo1 "adapt firmware for 7570 IAD"
