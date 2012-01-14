@@ -17,3 +17,29 @@ modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_61056/ur8_
 modsed 's/kernel_start=0x90020000/kernel_start=0x90010000/' "${FIRMWARE_MOD_DIR}/var/install"
 modsed 's/kernel_size=16121856/kernel_size=7798784/' "${FIRMWARE_MOD_DIR}/var/install"
 modsed 's/urlader_size=131072/urlader_size=65536/' "${FIRMWARE_MOD_DIR}/var/install"
+
+[ "$FREETZ_REPLACE_KERNEL" == "y" ] && return 0
+
+# Fix cpmac hardware revision from 139 (7270_v2) to 122 (7270_v1).
+# This way we can avoid "replace kernel".
+echo2 "patching kernel HWRevision"
+
+echo2 "    step 1: unpack kernel"
+addr=($(${TOOLS_DIR}/unpack-kernel ${RAW_KERNEL_MOD} ${RAW_KERNEL_MOD}.unp)) || exit 1
+
+echo2 "    step 2: patch unpacked kernel"
+${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/3133392000000000/3132322000000000/" -yes >/dev/null 2>&1
+[ $? -eq 1 ] || exit 1
+
+echo2 "    step 3: re-pack kernel with LZMA"
+${TOOLS_DIR}/lzma e -lc1 -lp2 -pb2 ${RAW_KERNEL_MOD}.unp ${RAW_KERNEL_MOD}.lzma 2>/dev/null || exit 1
+
+echo2 "    step 4: convert packed kernel into format expected by EVA bootloader"
+load=${addr[0]##*=}
+entry=${addr[1]##*=}
+${TOOLS_DIR}/lzma2eva $load $entry ${RAW_KERNEL_MOD}.lzma ${RAW_KERNEL_MOD}.eva
+
+echo2 "    step 5: pad EVA kernel to multiple of 256 bytes"
+dd if=${RAW_KERNEL_MOD}.eva of=${RAW_KERNEL_MOD} bs=256 conv=sync 2>/dev/null || exit 1
+rm -f ${RAW_KERNEL_MOD}.*
+echo2 "    done"
