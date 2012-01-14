@@ -1,3 +1,4 @@
+# 7170 firmware on Alice IAD 3331 hardware
 isFreetzType IAD_3331_7170 || return 0
 
 echo1 "adapt firmware for IAD 3331"

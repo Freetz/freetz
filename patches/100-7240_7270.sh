@@ -1,3 +1,4 @@
+# 7270_v2/v3 firmware on 7240 hardware
 isFreetzType 7240_7270 || return 0
 
 if [ -z "$FIRMWARE2" ]; then

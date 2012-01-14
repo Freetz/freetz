@@ -1,3 +1,4 @@
+# 7570 firmware on W920V hardware
 isFreetzType W920V_7570 || isFreetzType SPEEDPORT_W920V_LED_MODULE || return 0
 
 if isFreetzType W920V_7570; then

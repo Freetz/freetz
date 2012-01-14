@@ -1,3 +1,4 @@
+# 7330 firmware on 7320 hardware
 isFreetzType 7320_7330 || return 0
 
 if [ -z "$FIRMWARE2" ]; then

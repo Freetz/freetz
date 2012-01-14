@@ -1,3 +1,4 @@
+# 7170 firmware on W900V hardware
 # Partially copied from sp-to-fritz by spirou & jpascher
 
 isFreetzType W900V_7170 || return 0

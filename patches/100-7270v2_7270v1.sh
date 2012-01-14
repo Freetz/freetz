@@ -1,3 +1,4 @@
+# 7270_v1 firmware on 7270_v2 hardware
 isFreetzType 72702_72701 || return 0
 
 echo1 "adapt firmware for 7270v2"

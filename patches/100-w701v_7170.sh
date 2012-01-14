@@ -1,3 +1,4 @@
+# 7170 firmware on W701V hardware
 # Partially copied from sp-to-fritz by spirou & jpascher
 
 isFreetzType W701V_7170 || return 0
