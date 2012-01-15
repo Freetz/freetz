@@ -309,7 +309,11 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
 
-		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "kernel splitting failed"
+		if [ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ]; then
+			[ -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && [ $(stat -c %s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}") -gt 0 ] \
+				&& _config_hint=" - maybe you should configure a firmware with FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE"
+			error 1 "kernel splitting failed${_config_hint}"
+		fi
 
 		echo "unpacking filesystem image"
 		modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM"
