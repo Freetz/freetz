@@ -82,7 +82,12 @@ if [ "$AUTH_TYPE" = "certs" ]; then
 	echo "key ${keypath}box.key" >> $CONFFILE
 	if [ "$MODE" = "server" ]; then
 		echo "dh ${keypath}dh.pem" >> $CONFFILE
-		[ -r "${keypath}crl.pem" -a "$(sed 's/[ \t]*//g' ${keypath}crl.pem)" ] && echo "crl-verify ${keypath}crl.pem" >> $CONFFILE
+		if [ -r "${keypath}crl.pem" -a "$(sed 's/[ \t]*//g' ${keypath}crl.pem)" ]; then
+			cp -f "${keypath}crl.pem" /tmp/openvpn/etc
+			echo "crl-verify /etc/${keypath##*openvpn/}crl.pem" >> $CONFFILE
+		else
+			rm -f "/tmp/openvpn/etc/${keypath##*openvpn/}crl.pem"
+		fi
 		echo "tls-server" >> $CONFFILE
 		[ "$TLS_AUTH" = "yes" ] && echo "tls-auth ${keypath}static.key 0" >> $CONFFILE
 	else
