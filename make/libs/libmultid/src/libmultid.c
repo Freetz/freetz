@@ -48,7 +48,6 @@
 #include <errno.h>
 
 int (*real_bind)(int, const struct sockaddr *, socklen_t);
-int (*real_connect)(int, const struct sockaddr *, socklen_t);
 
 struct sockaddr_in local_sockaddr_in[] = { 0 };
 #ifdef D_IPV6
