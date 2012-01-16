@@ -94,14 +94,19 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 #ifdef D_IPV6
 	static struct sockaddr_in6 *lsk_in6;
 	lsk_in6 = (struct sockaddr_in6 *)sk;
+#endif
+
+#ifdef DEBUG
+#ifdef D_IPV6
 	static char addr_buf[INET6_ADDRSTRLEN];
 #else
 	static char addr_buf[INET_ADDRSTRLEN];
 #endif
+#endif
 
 	if (lsk_in->sin_family == AF_INET) {
-		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(lsk_in->sin_addr));
 #ifdef DEBUG
+		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(lsk_in->sin_addr));
 		printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
 #endif
 		if (lsk_in->sin_addr.s_addr == INADDR_ANY)
@@ -141,8 +146,8 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 	}
 #ifdef D_IPV6
 	else if (lsk_in6->sin6_family == AF_INET6) {
-		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
 #ifdef DEBUG
+		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
 		printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
 #endif
 		if (memcmp(&lsk_in6->sin6_addr, &in6addr_any, sizeof(in6addr_any)) == 0)
