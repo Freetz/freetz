@@ -1,15 +1,11 @@
 $(call PKG_INIT_LIB, 0.5)
 $(PKG)_LIB_VERSION:=1.0.0
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=f3a57d9db2eeae3a7a5d399defe9787e
-$(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
-$(PKG_SOURCE_DOWNLOAD)
-$(PKG_UNPACKED)
+$(PKG_LOCALSOURCE_PACKAGE)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
