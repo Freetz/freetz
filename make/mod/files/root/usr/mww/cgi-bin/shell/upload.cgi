@@ -3,17 +3,12 @@
 %>Content-Type: text/html; charset=ISO-8859-1
 
 <html><body>
-	<pre id="cmd_output"><% if mv "$FORM_source" "$FORM_target"
-		then
-			echo "$(lang de:"Datei erfolgreich nach $FORM_target hochgeladen." en:"File successfully uploaded to $FORM_target.")"
-			echo "$(lang de:"Dateigr&ouml;&szlig;e:" en:"File size:") $(cat ""$FORM_target"" | wc -c) $(lang de:"Bytes" en:"bytes")"
-		else
-			echo
-			echo "$(lang de:"FEHLER: Entweder das Hochladen oder das Umbenennen nach" en:"ERROR: Either uploading or renaming to")"
-			echo "$FORM_target $(lang de:"war nicht m&ouml;glich." en:"has failed.")"
-		fi %>
-	</pre>
-	<script type="text/javascript">
-		window.parent.setShellOutput(document.getElementById("cmd_output").firstChild.data)
-	</script>
+	<script type="text/javascript"><%
+	if mv "$FORM_source" "$FORM_target"
+	then
+		echo 'window.parent.output.innerHTML="$(lang de:"Datei erfolgreich nach '$FORM_target' hochgeladen.\\nDateigr&ouml;&szlig;e:" en:"File successfully uploaded to '$FORM_target'.\\nFile size:") '$(cat $FORM_target | wc -c)' $(lang de:"Bytes" en:"bytes")";'
+	else
+		echo 'window.parent.output.innerHTML="$(lang de:"FEHLER: Entweder das Hochladen oder das Umbenennen nach" en:"ERROR: Either uploading or renaming to") '$FORM_target' $(lang de:"war nicht m&ouml;glich." en:"has failed.")";'
+	fi
+	%></script>
 </body></html>
