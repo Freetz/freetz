@@ -11,7 +11,7 @@ if [ "$FREETZ_REPLACE_ONLINECHANGED" == "y" ]; then
 
 while true; do
 	[ "$IP" ] && IP_OLD="$IP"
-	IP="$(/usr/bin/get_ip 2>/dev/null)"
+	IP="$(/usr/bin/get_ip)"
 	[ "$IP" ] && [ "$IP" != "$IP_OLD" ] &&
 		IPADDR=$IP /bin/onlinechanged.sh online &
 	sleep 60
