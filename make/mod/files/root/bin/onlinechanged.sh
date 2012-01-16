@@ -2,6 +2,9 @@
 PID_FILE=/var/run/onlinechanged
 OC_STATE="$@"
 
+# multid is preloaded with libmultid
+unset LD_PRELOAD
+
 # parameter -e: additional new-line at line end
 log() {
 	local addline=""

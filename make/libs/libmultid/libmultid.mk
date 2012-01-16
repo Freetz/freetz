@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 0.3)
+$(call PKG_INIT_LIB, 0.5)
 $(PKG)_LIB_VERSION:=1.0.0
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)

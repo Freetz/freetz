@@ -2,7 +2,7 @@ CC	= gcc
 COPTS   =
 CFLAGS	= -Os
 LFLAGS	=
-LIBS	=
+LIBS	= -ldl
 
 all: libmultid.so.1.0.0
 
@@ -13,8 +13,8 @@ libmultid.o: libmultid.c
 
 install:
 	install libmultid.so.1.0.0 $(DESTDIR)/lib/
-	ln -sf libmultid.so.1.0.0 $(DESTDIR)/lib/libmultid.so.3
-	ln -sf libmultid.so.3 $(DESTDIR)/lib/libmultid.so
+	ln -sf libmultid.so.1.0.0 $(DESTDIR)/lib/libmultid.so.5
+	ln -sf libmultid.so.5 $(DESTDIR)/lib/libmultid.so
 
 clean:
 	$(RM) libmultid.o libmultid.so*

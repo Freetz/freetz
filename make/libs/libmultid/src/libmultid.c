@@ -34,6 +34,7 @@
 	v2: only dns remap
 	v3: dhcp & llmnr remap
 	v4: localhost binding
+	v5: libdl added: need by multid to execute onlinechanged
 */
 
 // #define DEBUG
@@ -67,7 +68,7 @@ void _init (void)
 	//void * real_bind = dlsym (RTLD_NEXT, "bind");
 	// AVM fix:
 	void * uclibc = dlopen("/lib/libc.so.0", RTLD_LOCAL | RTLD_LAZY);
-	
+
 	real_bind = dlsym (uclibc , "bind");
 	if ((err = dlerror ()) != NULL)
 		fprintf (stderr, "dlsym (bind): %s\n", err);
@@ -174,7 +175,7 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 				default:
 					lsk_in6->sin6_addr = local_sockaddr_in6->sin6_addr;
 			}
-			
+
 #ifdef DEBUG
 			inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
 			printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
