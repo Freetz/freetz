@@ -5,7 +5,7 @@ mv "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr" "$FILESYSTEM_MOD_DIR/usr/bin/avm/ctlmgr"
 
 cat << 'EOF' >> "$FILESYSTEM_MOD_DIR/usr/bin/ctlmgr"
 #!/bin/sh
-export LD_PRELOAD=libfreetz.so.1.0.0
+export LD_PRELOAD=libfreetz.so
 exec /usr/bin/avm/ctlmgr "$@"
 EOF
 

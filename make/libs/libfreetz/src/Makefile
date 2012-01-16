@@ -1,20 +1,12 @@
-CC	= gcc
-CFLAGS	= -Os
-LFLAGS	=
-LIBS	=
+override CFLAGS     += -fPIC
+         LDFLAGS     = -shared
+         LIB_VERSION = 0.0.0
 
-all: libfreetz.so.1.0.0
+all: libfreetz.so.$(LIB_VERSION)
+	ln -sf libfreetz.so.$(LIB_VERSION) libfreetz.so
 
-libfreetz.so.1.0.0: libfreetz.o
-	$(CC) -o $@ -shared $< $(LFLAGS) $(LIBS)
-
-libfreetz.o: libfreetz.c
-
-install:
-	install libfreetz.so.1.0.0 $(DESTDIR)/lib/
-	ln -sf libfreetz.so.1.0.0 $(DESTDIR)/lib/libfreetz.so.1
-	ln -sf libfreetz.so.1 $(DESTDIR)/lib/libfreetz.so
+libfreetz.so.$(LIB_VERSION): libfreetz.o
+	$(CC) $(LDFLAGS) $(LIBS) -o $@ $<
 
 clean:
 	$(RM) libfreetz.o libfreetz.so*
-
