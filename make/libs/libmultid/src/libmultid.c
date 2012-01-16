@@ -89,18 +89,18 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 	printf("[libmultid::bind()]\n");
 #endif
 
-	static struct sockaddr_in *lsk_in;
+	struct sockaddr_in *lsk_in;
 	lsk_in = (struct sockaddr_in *)sk;
 #ifdef D_IPV6
-	static struct sockaddr_in6 *lsk_in6;
+	struct sockaddr_in6 *lsk_in6;
 	lsk_in6 = (struct sockaddr_in6 *)sk;
 #endif
 
 #ifdef DEBUG
 #ifdef D_IPV6
-	static char addr_buf[INET6_ADDRSTRLEN];
+	char addr_buf[INET6_ADDRSTRLEN];
 #else
-	static char addr_buf[INET_ADDRSTRLEN];
+	char addr_buf[INET_ADDRSTRLEN];
 #endif
 #endif
 
