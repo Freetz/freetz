@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2012 cuma
+	Copyright (C) 2012 cuma, er13
 	Copyright (C) 2011 Joerg Jungermann
 
 	This library is free software; you can redistribute it and/or
@@ -35,6 +35,7 @@
 	v3: dhcp & llmnr remap
 	v4: localhost binding
 	v5: libdl added: need by multid to execute onlinechanged
+	v6: optimizations
 */
 
 // #define DEBUG
@@ -48,11 +49,6 @@
 #include <errno.h>
 
 int (*real_bind)(int, const struct sockaddr *, socklen_t);
-
-struct sockaddr_in local_sockaddr_in[] = { 0 };
-#ifdef D_IPV6
-struct sockaddr_in6 local_sockaddr_in6[] = { 0 };
-#endif
 
 
 void _init (void)
@@ -71,17 +67,15 @@ void _init (void)
 	real_bind = dlsym (uclibc , "bind");
 	if ((err = dlerror ()) != NULL)
 		fprintf (stderr, "dlsym (bind): %s\n", err);
-
-	local_sockaddr_in->sin_family = AF_INET;
-	local_sockaddr_in->sin_port = htons (0);
-	inet_pton(AF_INET, "0.0.0.0", &local_sockaddr_in->sin_addr);
-#ifdef D_IPV6
-	local_sockaddr_in6->sin6_family = AF_INET6;
-	local_sockaddr_in6->sin6_port = htons (0);
-	local_sockaddr_in6->sin6_flowinfo = 0;
-	inet_pton(AF_INET6, "::", &local_sockaddr_in6->sin6_addr);
-#endif
 }
+
+#ifdef D_LOCAL
+#define BIND_TO_LOCAL4(_sin4_addr)	_sin4_addr = htonl(INADDR_LOOPBACK)
+#define BIND_TO_LOCAL6(_sin6_addr)	_sin6_addr = in6addr_loopback
+#else
+#define BIND_TO_LOCAL4(_sin4_addr)
+#define BIND_TO_LOCAL6(_sin6_addr)
+#endif
 
 int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 {
@@ -111,31 +105,32 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 #endif
 		if (lsk_in->sin_addr.s_addr == INADDR_ANY)
 		{
-#ifdef D_LOCAL
-			inet_pton(AF_INET, "127.0.0.1", &lsk_in->sin_addr.s_addr);
-#endif
 			switch (ntohs(lsk_in->sin_port))
 			{
 #ifdef D_DNS
 				case 53:
 					lsk_in->sin_port = htons(53004);
+					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
 					break;
 #endif
 #ifdef D_DHCP
 				case 67:
 					lsk_in->sin_port = htons(53674);
+					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
 					break;
 #endif
 #ifdef D_LLMNR
 				case 5353:
 					lsk_in->sin_port = htons(53534);
+					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
 					break;
 				case 5355:
 					lsk_in->sin_port = htons(53554);
+					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
 					break;
 #endif
 				default:
-					lsk_in->sin_addr.s_addr = local_sockaddr_in->sin_addr.s_addr;
+					break;
 			}
 
 #ifdef DEBUG
@@ -152,32 +147,32 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 #endif
 		if (memcmp(&lsk_in6->sin6_addr, &in6addr_any, sizeof(in6addr_any)) == 0)
 		{
-#ifdef D_LOCAL
-			inet_pton(AF_INET6, "::1", &lsk_in6->sin6_addr);
-#endif
-
 			switch (ntohs(lsk_in6->sin6_port))
 			{
 #ifdef D_DNS
 				case 53:
 					lsk_in6->sin6_port = htons(53006);
+					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
 					break;
 #endif
 #ifdef D_DHCP
 				case 67:
 					lsk_in6->sin6_port = htons(53676);
+					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
 					break;
 #endif
 #ifdef D_LLMNR
 				case 5353:
 					lsk_in6->sin6_port = htons(53536);
+					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
 					break;
 				case 5355:
 					lsk_in6->sin6_port = htons(53556);
+					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
 					break;
 #endif
 				default:
-					lsk_in6->sin6_addr = local_sockaddr_in6->sin6_addr;
+					break;
 			}
 
 #ifdef DEBUG
