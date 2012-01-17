@@ -308,7 +308,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
 
 		echo "unpacking update image"
-		modunsqfs "$FILESYSTEM_CORE_DIR" "{FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
+		modunsqfs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
