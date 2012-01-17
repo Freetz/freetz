@@ -7,10 +7,10 @@ $(PKG_LOCALSOURCE_PACKAGE)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(LIBFREETZ_DIR) \
+	$(SUBMAKE) -C $(LIBCTLMGR_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LIB_VERSION="$(LIBFREETZ_VERSION)" \
+		LIB_VERSION="$(LIBCTLMGR_VERSION)" \
 		all
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -21,9 +21,9 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(LIBFREETZ_DIR) clean
+	-$(SUBMAKE) -C $(LIBCTLMGR_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(LIBFREETZ_DEST_LIB)/libfreetz*.so*
+	$(RM) $(LIBCTLMGR_DEST_LIB)/libctlmgr*.so*
 
 $(PKG_FINISH)
