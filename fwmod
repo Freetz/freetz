@@ -628,7 +628,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		if [ ! -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 			AVM_SUBVERSION=`grep "SUBVERSION=" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" | sed -e "s/[^-0-9]//g"`
-			sed -i -e "s/SUBVERSION=\"$AVM_SUBVERSION\"/SUBVERSION=\"$SUBVERSION\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+			sed -i -e "s/SUBVERSION=\"$AVM_SUBVERSION\"/SUBVERSION=\"-$SUBVERSION\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 		fi
 	fi
 
@@ -1104,7 +1104,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	rm -f "${DIR}/*.image"
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
-	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX}_${FIRMWAREVERSION}${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"
+	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX}_${FIRMWAREVERSION}-${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
 		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
 	else

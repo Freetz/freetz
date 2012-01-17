@@ -6,7 +6,7 @@ sec_begin '$(lang de:"Box" en:"Box")'
 
 cat << EOF
 <p>
-$(lang de:"Firmware" en:"Firmware"): $(get_env firmware_info)$(cat /etc/.freetz-version)
+$(lang de:"Firmware" en:"Firmware"): $(get_env firmware_info)-$(cat /etc/.freetz-version)
 </p>
 <table width="100%"><tr><td>
 EOF
