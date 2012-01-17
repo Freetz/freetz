@@ -290,6 +290,16 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
 	done
 
+	# Remove AVM's special junk bytes from SquashFS
+	if [ "$FREETZ_HAS_AVM_JUNK_BYTES" == "y" ]; then
+		echo "removing AVM SquashFS junk bytes"
+		[ "$FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="{FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
+		"$TOOLS_DIR/sfk" replace "$JUNK_BYTES_FILE" -bin "/$FREETZ_AVM_JUNK_BYTES//" -yes > /dev/null
+		local _result=$1
+		[ $_result -eq 0 ] && error 1 "AVM SquashFS junk bytes not found"
+		[ $_result -gt 1 ] && error 1 "AVM SquashFS junk bytes matched $_result times (must be unique)"
+	fi
+
 	"$RMTICHKSUM" -f "${KERNEL}" > /dev/null
 	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
 
