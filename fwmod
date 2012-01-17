@@ -271,6 +271,19 @@ KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
 AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
+# If the current firmware image (incl. alien) has been unpacked before, do not
+# unpack it again to save some time. If the combination has changed, delete
+# the old marker file.
+#
+# Hint: If the unpack code further below has changed, just use
+# "make common-clean" or "rm -f build/.unpacked_*" to force a new unpack.
+# You may also just switch the box or alien type for the same effect.
+UNPACKED_FILE=".unpacked_$(basename "$FIRMWARE")_$(basename "$FIRMWARE2")"
+[ "$UNPACKED_FILE" == "$(cd "$DIR" && ls -1 .unpacked_* 2>/dev/null)" ] \
+	&& DO_UNPACK=0 \
+	|| rm -f "$DIR"/.unpacked_* 2>/dev/null
+UNPACKED_FILE="$DIR/$UNPACKED_FILE"
+
 if [ "$DO_UNPACK" -gt 0 ]; then
 	echo "${BOLD}STEP 1: UNPACK${NORM}"
 
@@ -290,6 +303,9 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
 	done
 
+	"$RMTICHKSUM" -f "${KERNEL}" > /dev/null
+	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
+
 	# Remove AVM's special junk bytes from SquashFS
 	if [ "$FREETZ_HAS_AVM_JUNK_BYTES" == "y" ]; then
 		echo "removing AVM SquashFS junk bytes"
@@ -299,9 +315,6 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ $_result -eq 0 ] && error 1 "AVM SquashFS junk bytes not found"
 		[ $_result -gt 1 ] && error 1 "AVM SquashFS junk bytes matched $_result times (must be unique)"
 	fi
-
-	"$RMTICHKSUM" -f "${KERNEL}" > /dev/null
-	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
 
 	mkdir -p "$KERNEL_DIR"
 	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
@@ -360,7 +373,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" > /dev/null
 	fi
 
-	touch "${DIR}/.unpacked"
+	touch "$UNPACKED_FILE"
 	echo "done."
 	echo
 fi
@@ -474,7 +487,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo "${BOLD}STEP 2: MODIFY${NORM}"
 
 	# Check if firmware is unpacked
-	if [ ! -r "${DIR}/.unpacked" ]; then
+	if [ ! -r "$UNPACKED_FILE" ]; then
 		error 1 "firmware image has to be unpacked before modifying"
 	fi
 
@@ -1066,7 +1079,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Check if firmware is unpacked
-	if [ ! -r "${DIR}/.unpacked" ]; then
+	if [ ! -r "$UNPACKED_FILE" ]; then
 		error 1 "firmware image has to be unpacked before packing"
 	fi
 
