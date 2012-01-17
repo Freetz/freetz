@@ -262,10 +262,12 @@ AVMPLUGINS_DIR="${KERNEL_DIR}/${AVMPLUGINS_SUBDIR}"
 VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
 HTML_DIR="${FILESYSTEM_DIR}/${HTML_SUBDIR}"
 
-KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
-FILESYSTEM="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
+KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
+[ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] \
+	&& FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE" \
+	|| FILESYSTEM="${RAW_FILESYSTEM}"
 AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
@@ -281,7 +283,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	# Do the images exist ?
 	[ ! -r "${KERNEL}" ] && error 1 "cannot find kernel.image"
-	[ ! -r "${FILESYSTEM}" ] && error 1 "cannot find filesystem.image"
+	[ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && error 1 "cannot find filesystem.image"
 
 	# Do we have the tool ?
 	for tool in "$RMTICHKSUM" "$UNSQUASHFS" "$FINDSQUASHFS"; do
@@ -289,23 +291,19 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	done
 
 	"$RMTICHKSUM" -f "${KERNEL}" > /dev/null
-	"$RMTICHKSUM" -f "${FILESYSTEM}" > /dev/null
+	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
 
 	mkdir -p "$KERNEL_DIR"
 	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
 
 		echo "unpacking update image"
-		modunsqfs "$FILESYSTEM_CORE_DIR" "$FILESYSTEM"
-		FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
-
+		modunsqfs "$FILESYSTEM_CORE_DIR" "{FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
 		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
 	else
-		FILESYSTEM="${RAW_FILESYSTEM}"
-
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
 
