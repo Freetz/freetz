@@ -41,7 +41,7 @@ force_local_data_ssl=$VSFTPD_FORCE_DATA_SSL
 force_local_logins_ssl=$VSFTPD_FORCE_LOGIN_SSL
 EOF
 if [ "$VSFTPD_SHOW_BANNER" = "yes" ]; then echo "banner_file=/etc/motd"; fi
-if [ "$VSFTPD_PASV_ADDRESS" = "yes" ]; then echo "pasv_address=$(/usr/bin/get_ip 2>/dev/null)"; fi
+if [ "$VSFTPD_PASV_ADDRESS" = "yes" ]; then echo "pasv_address=$(/usr/bin/get_ip)"; fi
 echo "$VSFTPD_ADD_SETTINGS" | grep -v "^#" | while read -r line; do
 	[ -n "$line" ] && echo "$line"
 done

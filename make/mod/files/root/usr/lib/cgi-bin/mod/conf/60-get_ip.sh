@@ -1,5 +1,5 @@
 
-current_ip="$(get_ip 2>/dev/null)"
+current_ip="$(get_ip)"
 [ -z "$current_ip" ] && current_ip="-$(lang de:"keine" en:"none")-"
 
 sec_begin 'get_ip'

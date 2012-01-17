@@ -40,7 +40,7 @@ run() {
 	modlib_config
 	chmod 600 /mod/etc/$DAEMON.conf
 
-	NEW_IP=$(get_ip 2>/dev/null)
+	NEW_IP=$(get_ip)
 	if [ -z "$NEW_IP" ]; then
 		echo 'failed.'
 		exit 1
