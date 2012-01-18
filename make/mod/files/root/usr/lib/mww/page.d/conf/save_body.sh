@@ -46,6 +46,7 @@ apply_changes() {
 				/etc/init.d/rc.webcfg force-restart 9 >/dev/null 2>&1 &
 			fi
 			/usr/lib/mod/reg-status reload
+			/usr/bin/modhosts load
 			;;
 		*)
 			start_stop $startORstop "$package" "$OLDSTATUS_PACKAGE"

@@ -37,7 +37,10 @@ case $1 in
 		_hostname=$(ar7hostname)
 		hostname $_hostname
 
-		echo "nameserver 127.0.0.1" > /etc/resolv.conf
+		_nameserver=$(cat /tmp/flash/mod.diff 2>/dev/null| sed -nr "s/.* MOD_RESOLV_DNS='(.*)'/\1/p")
+		[ -z "$_nameserver" ] && _nameserver="127.0.0.1"
+		echo "nameserver $_nameserver" > /etc/resolv.conf
+
 		_domain=$(echo $_hostname |cut -d "." -f2-)
 		[ -n "$_domain" ] && echo "domain $_domain" >> /etc/resolv.conf
 
