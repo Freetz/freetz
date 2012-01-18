@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2012 cuma, er13
+	Copyright (C) 2012 cuma
 	Copyright (C) 2011 Joerg Jungermann
 
 	This library is free software; you can redistribute it and/or
@@ -11,31 +11,6 @@
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 	Lesser General Public License for more details.
-*/
-
-/*
-	LD_PRELOAD library to make bind and connect to use a virtual
-	IP address as local address an tpc/udp ports.
-
-	If you remap the IP, note that you have to set up your server's
-	virtual IP first.
-
-	This version does only remaps port 53 (dns) to satisfy multid.
-	So another dns-server could be used, avm's dynamic-dns updater
-	and timesync are working correctly.
-
-	Example in bash to let multid not listen at port 53:
-	LD_PRELOAD=libmultid.so.1.0.0 /sbin/multid
-
-	Compile on Linux with:
-	gcc -nostartfiles -fpic -shared bind.c -o bind.so -ldl -D_GNU_SOURCE
-
-	v1: initial
-	v2: only dns remap
-	v3: dhcp & llmnr remap
-	v4: localhost binding
-	v5: libdl added: need by multid to execute onlinechanged
-	v6: optimizations
 */
 
 // #define DEBUG
@@ -61,7 +36,6 @@ void _init (void)
 
 	// better, but this does not work because AVM messes up the symboltable in libled.so
 	//void * real_bind = dlsym (RTLD_NEXT, "bind");
-	// AVM fix:
 	void * uclibc = dlopen("/lib/libc.so.0", RTLD_LOCAL | RTLD_LAZY);
 
 	real_bind = dlsym (uclibc , "bind");
@@ -102,10 +76,6 @@ change_port (u_short *pport)
 
 int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 {
-#ifdef DEBUG
-	printf("[libmultid::bind()]\n");
-#endif
-
 	switch (sk->sa_family) {
 	case AF_INET: {
 		struct sockaddr_in *lsk_in = (struct sockaddr_in *)sk;
