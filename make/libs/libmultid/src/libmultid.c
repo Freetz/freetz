@@ -48,7 +48,7 @@
 #include <dlfcn.h>
 #include <errno.h>
 
-int (*real_bind)(int, const struct sockaddr *, socklen_t);
+static int (*real_bind)(int, const struct sockaddr *, socklen_t);
 
 
 void _init (void)
@@ -77,6 +77,29 @@ void _init (void)
 #define BIND_TO_LOCAL6(_sin6_addr)
 #endif
 
+static int
+change_port (u_short *pport)
+{
+	u_short port = ntohs (*pport);
+	switch (port) {
+#ifdef D_DNS
+	case 53:
+#endif
+#ifdef D_DHCP
+	case 67:
+#endif
+#ifdef D_LLMNR
+	case 5353:
+	case 5355:
+#endif
+		port += 50000;
+		*pport = htons (port);
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 {
 #ifdef DEBUG
@@ -98,95 +121,39 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 #endif
 #endif
 
-	if (lsk_in->sin_family == AF_INET) {
+	switch (sk->sa_family) {
+	case AF_INET:
 #ifdef DEBUG
 		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(lsk_in->sin_addr));
 		printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
 #endif
-		if (lsk_in->sin_addr.s_addr == INADDR_ANY)
-		{
-			switch (ntohs(lsk_in->sin_port))
-			{
-#ifdef D_DNS
-				case 53:
-					lsk_in->sin_port = htons(53004);
-					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
-					break;
-#endif
-#ifdef D_DHCP
-				case 67:
-					lsk_in->sin_port = htons(53674);
-					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
-					break;
-#endif
-#ifdef D_LLMNR
-				case 5353:
-					lsk_in->sin_port = htons(53534);
-					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
-					break;
-				case 5355:
-					lsk_in->sin_port = htons(53554);
-					BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
-					break;
-#endif
-				default:
-					break;
-			}
-
+		if (change_port (&lsk_in->sin_port))
+			BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
 #ifdef DEBUG
-			inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(lsk_in->sin_addr));
-			printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
+		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(lsk_in->sin_addr));
+		printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
 #endif
-		}
-	}
+		break;
 #ifdef D_IPV6
-	else if (lsk_in6->sin6_family == AF_INET6) {
+	case AF_INET6:
 #ifdef DEBUG
 		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
 		printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
 #endif
-		if (memcmp(&lsk_in6->sin6_addr, &in6addr_any, sizeof(in6addr_any)) == 0)
-		{
-			switch (ntohs(lsk_in6->sin6_port))
-			{
-#ifdef D_DNS
-				case 53:
-					lsk_in6->sin6_port = htons(53006);
-					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
-					break;
-#endif
-#ifdef D_DHCP
-				case 67:
-					lsk_in6->sin6_port = htons(53676);
-					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
-					break;
-#endif
-#ifdef D_LLMNR
-				case 5353:
-					lsk_in6->sin6_port = htons(53536);
-					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
-					break;
-				case 5355:
-					lsk_in6->sin6_port = htons(53556);
-					BIND_TO_LOCAL6(lsk_in6->sin6_addr);
-					break;
-#endif
-				default:
-					break;
-			}
-
+		if (change_port (&lsk_in6->sin6_port))
+		//if (change_port (&lsk_in->sin_port))
+			BIND_TO_LOCAL6(lsk_in6->sin6_addr);
 #ifdef DEBUG
-			inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
-			printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
+		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
+		printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
 #endif
-		}
-
+		break;
+#endif
+#ifdef DEBUG
+	default:
+		printf("[libmultid::bind()] address familiy unknown af=%d fd=%d\n", sk_in->sa_family, fd);
+		beak;
+#endif
 	}
-#endif
-#ifdef DEBUG
-	else
-		printf("[libmultid::bind()] address familiy unknown IPv? af=%d fd=%d\n", fd, lsk_in->sin_family);
-#endif
-
 	return real_bind (fd, sk, sl);
 }
