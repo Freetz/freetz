@@ -81,13 +81,13 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 		struct sockaddr_in *lsk_in = (struct sockaddr_in *)sk;
 #ifdef DEBUG
 		char addr_buf[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(lsk_in->sin_addr));
+		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(addr_buf));
 		printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
 #endif
 		if (change_port (&lsk_in->sin_port))
 			BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
 #ifdef DEBUG
-		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(lsk_in->sin_addr));
+		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(addr_buf));
 		printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
 #endif
 		}
@@ -97,13 +97,13 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 		struct sockaddr_in6 *lsk_in6 = (struct sockaddr_in6 *)sk;
 #ifdef DEBUG
 		char addr_buf[INET6_ADDRSTRLEN];
-		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
+		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(addr_buf));
 		printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
 #endif
 		if (change_port (&lsk_in6->sin6_port))
 			BIND_TO_LOCAL6(lsk_in6->sin6_addr);
 #ifdef DEBUG
-		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(lsk_in6->sin6_addr));
+		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(addr_buf));
 		printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
 #endif
 		}
