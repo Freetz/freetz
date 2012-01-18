@@ -15,32 +15,48 @@
 
 // #define DEBUG
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <dlfcn.h>
-#include <errno.h>
+#include <stdio.h>      // printf, fprintf
+#include <stdarg.h>     // vprintf
+#include <stdlib.h>     // exit
+#include <arpa/inet.h>  // ntohs, htons, htonl
+#include <sys/types.h>  // socket...
+#include <sys/socket.h> // socket...
+#include <netinet/in.h> // in_addr, in6_addr, INADDR_LOOPBACK, in6addr_loopback
+#include <dlfcn.h>      // dlopen, dlsym
 
-static int (*real_bind)(int, const struct sockaddr *, socklen_t);
-
-
-void _init (void)
-{
+static void debug_printf(char *fmt, ...) {
 #ifdef DEBUG
-	printf("[_init()]\n");
+	va_list ap;
+	va_start(ap, fmt);
+	vfprintf(stdout, fmt, ap);
+	va_end(ap);
+	fflush(stdout);
 #endif
+}
 
+static int (*real_bind)(int, const struct sockaddr *, socklen_t) = NULL;
+
+static void _libmultid_init (void) __attribute__((constructor));
+static void _libmultid_init (void)
+{
 	const char *err;
 
-	// better, but this does not work because AVM messes up the symboltable in libled.so
-	//void * real_bind = dlsym (RTLD_NEXT, "bind");
-	void * uclibc = dlopen("/lib/libc.so.0", RTLD_LOCAL | RTLD_LAZY);
+#if defined(RTLD_NEXT) && 0 /* TODO: doesn't work as AVM messes up the symbol table in libled.so? */
+	void *libc_handle = RTLD_NEXT;
+#else
+	void *libc_handle = dlopen("/lib/libc.so.0", RTLD_LOCAL | RTLD_LAZY);
+#endif
+	if (!libc_handle || NULL != (err = dlerror())) {
+		fprintf(stderr, "[libmultid::_libmultid_init()] Unable to get libc-handle: %s\n", err);
+		exit(1);
+	}
 
-	real_bind = dlsym (uclibc , "bind");
-	if ((err = dlerror ()) != NULL)
-		fprintf (stderr, "dlsym (bind): %s\n", err);
+	real_bind = dlsym(libc_handle, "bind");
+	if (!real_bind || NULL != (err = dlerror ())) {
+		fprintf(stderr, "[libmultid::_libmultid_init()] Unable to get bind-handle: %s\n", err);
+		exit(1);
+	}
+	debug_printf("[libmultid::_libmultid_init()] successfully initialized\n");
 }
 
 #ifdef D_LOCAL
@@ -82,13 +98,13 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 #ifdef DEBUG
 		char addr_buf[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(addr_buf));
-		printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
+		debug_printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
 #endif
 		if (change_port (&lsk_in->sin_port))
 			BIND_TO_LOCAL4(lsk_in->sin_addr.s_addr);
 #ifdef DEBUG
 		inet_ntop(AF_INET, &lsk_in->sin_addr, addr_buf, sizeof(addr_buf));
-		printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
+		debug_printf("[libmultid::bind()] IPv4 fd=%d %s:%d\n", fd, addr_buf, ntohs (lsk_in->sin_port));
 #endif
 		}
 		break;
@@ -98,22 +114,20 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 #ifdef DEBUG
 		char addr_buf[INET6_ADDRSTRLEN];
 		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(addr_buf));
-		printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
+		debug_printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
 #endif
 		if (change_port (&lsk_in6->sin6_port))
 			BIND_TO_LOCAL6(lsk_in6->sin6_addr);
 #ifdef DEBUG
 		inet_ntop(AF_INET6, &lsk_in6->sin6_addr, addr_buf, sizeof(addr_buf));
-		printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
+		debug_printf("[libmultid::bind()] IPv6 fd=%d [%s]:%d\n", fd, addr_buf, ntohs (lsk_in6->sin6_port));
 #endif
 		}
 		break;
 #endif
-#ifdef DEBUG
 	default:
-		printf("[libmultid::bind()] address family unknown af=%d fd=%d\n", sk->sa_family, fd);
+		debug_printf("[libmultid::bind()] address family unknown af=%d fd=%d\n", sk->sa_family, fd);
 		break;
-#endif
 	}
 	return real_bind (fd, sk, sl);
 }
