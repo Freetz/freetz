@@ -109,6 +109,7 @@ ip_public "$IPADDR" && echo "$IPADDR" && exit 0
 
 case $method in
 	-a|--all|""|-e|--extquery|-o|--ostat)
+		# for compatibility reason only, may be removed later
 		[ "$method" ] && [ "$method" != "-a" ] && [ "$method" != "--all" ] &&
 			echo "warning: method $method is obsolete, using --all instead" >&2
 		# Why this order?
