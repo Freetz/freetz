@@ -151,8 +151,8 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 #endif
 #ifdef DEBUG
 	default:
-		printf("[libmultid::bind()] address familiy unknown af=%d fd=%d\n", sk_in->sa_family, fd);
-		beak;
+		printf("[libmultid::bind()] address familiy unknown af=%d fd=%d\n", sk->sa_family, fd);
+		break;
 #endif
 	}
 	return real_bind (fd, sk, sl);
