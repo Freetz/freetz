@@ -1,24 +1,26 @@
 #!/bin/bash
+
+# Freetz script to modify AVM FRITZ!Box firmware images
 #
-#   Script to modify AVM FRITZ!Box firmware images (Freetz)
-#
-#   Copyright (C) 2005-2006 Daniel Eiband <eiband@online.de>
-#   Copyright (C) 2006-2011 by the Freetz developers (http://freetz.org)
+# Copyright (C) 2005-2006 Daniel Eiband <eiband@online.de>
+# Copyright (C) 2006-2012 by the Freetz developers (http://freetz.org)
 #
 # Licensed under the GPL v2, see the file COPYING in this tarball.
-
+#
 # This script is based on Christian Volkmann's fritzbox mod-0.57.
 # Legacy URL: http://www.ip-phone-forum.de/showthread.php?t=65894
 #
-# Special Thanks to Andreas Buehmann, Christian Volkmann, Enrik Berkhan,
-# SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod
+# Special thanks to Andreas Buehmann, Christian Volkmann, Enrik Berkhan,
+# SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod.
+
 
 SHELL=$BASH
+SELF="$(basename "$0")"
 
 usage()
 {
-	cat << 'EOF'
-Usage: fwmod [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
+	cat << EOF
+Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
   actions
     -u         unpack firmware image
     -m         modify previously unpacked image
@@ -153,6 +155,7 @@ AVMPLUGINS_FILE="var/tmp/plugins.update"
 RAW_KERNEL_FILE="kernel.raw"
 RAW_HIDDEN_FILE="kernelsquashfs.raw"
 VARTAR_FILE="var.tar"
+UNPACKED_FILE="$DIR/.unpacked"
 
 FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
@@ -166,7 +169,6 @@ MD5SUM_TOOL="md5sum"
 
 MKSQUASHFS_OPTIONS="-noappend -all-root -info"
 UNSQUASHFS_OPTIONS="-no-progress"
-
 
 TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
 EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
@@ -254,10 +256,10 @@ if [ ! -e "$DIR" ]; then
 	mkdir -p "$DIR"
 fi
 
+
 ############################################
 ## Unpack and unsquash the firmware image ##
 ############################################
-
 
 ORG_DIR="${DIR}/original"
 FIRMWARE_DIR="${ORG_DIR}/${FIRMWARE_SUBDIR}"
@@ -376,7 +378,6 @@ fi
 # Lets copy and modify the unpacked firmware ##
 ###############################################
 
-
 MOD_DIR="${DIR}/modified"
 FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
@@ -480,7 +481,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo "${BOLD}STEP 2: MODIFY${NORM}"
 
 	# Check if firmware is unpacked
-	if [ ! -r "${DIR}/.unpacked" ]; then
+	if [ ! -r "$UNPACKED_FILE" ]; then
 		error 1 "firmware image has to be unpacked before modifying"
 	fi
 
@@ -1061,7 +1062,6 @@ fi
 ## Pack the modified firmware ##
 ################################
 
-
 if [ "$DO_PACK" -gt 0 ]; then
 	echo "${BOLD}STEP 3: PACK${NORM}"
 
@@ -1072,7 +1072,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Check if firmware is unpacked
-	if [ ! -r "${DIR}/.unpacked" ]; then
+	if [ ! -r "$UNPACKED_FILE" ]; then
 		error 1 "firmware image has to be unpacked before packing"
 	fi
 
