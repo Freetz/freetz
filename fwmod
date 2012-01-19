@@ -39,7 +39,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # If we are not running in a fakeroot context, provide one and re-run
-if [ $((FAKEROOTKEY)) -eq 0 ] || [ "$(whoami)" != "root" ]; then
+if [ $((FAKEROOTKEY)) -eq 0 ] || [ $UID -ne 0 ]; then
 	"$(dirname "$0")/tools/build/bin/fakeroot" '--' "$0" "$@"
 	exit $?
 fi
