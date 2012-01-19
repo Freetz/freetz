@@ -430,6 +430,9 @@ menuconfig: config-cache $(CONFIG)/mconf
 menuconfig-single: config-cache $(CONFIG)/mconf
 	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
+menuconfig-nocache: $(CONFIG)/mconf
+	@$(CONFIG)/mconf $(CONFIG_IN)
+
 config: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
