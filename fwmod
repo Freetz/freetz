@@ -361,12 +361,13 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	mkdir "$VARTAR_DIR"
 	"$UNTAR" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
-	# Unpacking second firmware image
-	if [ -n "$FIRMWARE2" ]; then
-		echo0 "unpacking tk image"
-		rm -rf "${DIR}/.tk"
-		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" > /dev/null
-	fi
+ 	# Unpacking second firmware image
+ 	if [ -n "$FIRMWARE2" ]; then
+		echo
+ 		rm -rf "${DIR}/.tk"
+		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" |
+			sed 's/^/    /;s/STEP 1: UNPACK/STEP 1B: UNPACK SECOND FIRMWARE/'
+ 	fi
 
 	touch "${DIR}/.unpacked"
 	echo "done."
