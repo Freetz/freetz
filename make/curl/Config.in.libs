@@ -1,7 +1,27 @@
 config FREETZ_LIB_libcurl
 	bool "libcurl (libcurl.so)"
 	default n
-	select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_CURL_WITH_SSL && ! FREETZ_PACKAGE_CURL_USE_POLARSSL
-	select FREETZ_LIB_libpolarssl if FREETZ_PACKAGE_CURL_USE_POLARSSL
+	select FREETZ_LIB_libcrypto   if FREETZ_LIB_libcurl_WITH_SSL && !FREETZ_LIB_libcurl_WITH_POLARSSL
+	select FREETZ_LIB_libpolarssl if FREETZ_LIB_libcurl_WITH_POLARSSL
+	select FREETZ_LIB_libz        if FREETZ_LIB_libcurl_WITH_ZLIB
 	help
 		A client-side URL transfer library.
+
+config FREETZ_LIB_libcurl_WITH_SSL
+	bool "build with SSL support" if FREETZ_LIB_libcurl || FREETZ_PACKAGE_CURL
+	default y                     if FREETZ_LIB_libcurl || FREETZ_PACKAGE_CURL
+	help
+		This option enables SSL support in curl.
+
+config FREETZ_LIB_libcurl_WITH_POLARSSL
+	bool "Use polarssl instead of openssl"
+	depends on FREETZ_LIB_libcurl_WITH_SSL
+	default n
+	help
+		Use lightweight PolarSSL as SSL library.
+
+config FREETZ_LIB_libcurl_WITH_ZLIB
+	bool "build with zlib support" if FREETZ_LIB_libcurl || FREETZ_PACKAGE_CURL
+	default n
+	help
+		This option enables zlib support in curl.
