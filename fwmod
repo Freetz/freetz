@@ -1081,7 +1081,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 		. ${TOOLS_DIR}/freetz_mklibs
 		mklibs || error 1 "mklibs returned an error. Please see mklibs.log."
 	fi
-
+	if  [ "$FREETZ_STRIP_MODULES" == "y" ]; then
+		echo0 "stripping kernel modules"
+		for i in `find ${MODULES_DIR} -name '*.ko'`; do
+			echo2 $i
+			${ABS_BASE_DIR}/toolchain/kernel/bin/${FREETZ_KERNEL_CROSS}strip -p --strip-unneeded \
+				--remove-section={.comment,.pdr,.mdebug.abi32,.note.gnu.build-id} $i
+		done
+	fi
 	if [ "$FREETZ_STRIP_BINARIES" == "y" ]; then
 		echo0 "stripping leftover unstripped binaries"
 		for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \

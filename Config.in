@@ -1581,7 +1581,7 @@ menu "Shared Libraries"
 
 endmenu # "Shared Libraries" #
 
-menu "Strip binaries and libs"
+menu "Strip binaries, libs and modules"
 
 config FREETZ_STRIP_BINARIES
 	bool "Strip leftover unstripped binaries"
@@ -1602,7 +1602,14 @@ config FREETZ_STRIP_LIBRARIES
 		with most of the packages that are not selected during the
 		build process.
 
-endmenu # "Strip binaries and libs" #
+config FREETZ_STRIP_MODULES
+	bool "Strip leftover unstripped modules"
+	default y
+	help
+		This option shrinks unstripped modules via fwmod script.
+		In case of problems, you can disable it (Default: enabled).
+
+endmenu # "Strip binaries, libs and modules" #
 
 menu "External"
 
