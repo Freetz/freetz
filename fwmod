@@ -40,11 +40,11 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
-# If we are not running in a fakeroot context, provide one and re-run
-if [ $((FAKEROOTKEY)) -eq 0 ] || [ $UID -ne 0 ]; then
-	"$(dirname "$0")/tools/build/bin/fakeroot" '--' "$0" "$@"
-	exit $?
-fi
+# Backup command line parameters [$0..$n] to save them from getopts eating them
+# away, because we need them again later for the recursive fakerooted call.
+for ((i=0; i<=$#; i++)); do
+	CMDLINE_ORIG[i]="${!i}"
+done
 
 L1='  '
 L2='    '
@@ -257,6 +257,54 @@ if [ ! -e "$DIR" ]; then
 fi
 
 
+#######################################
+## Initialise fakeroot incl. caching ##
+#######################################
+
+# Create id string based on MD5 hashes of firmware images
+if [ "$FIRMWARE2" ]; then
+	FIRMWARE_MD5="$("$MD5SUM" "$FIRMWARE2" | cut -d ' ' -f 1)"
+fi
+FIRMWARE_MD5="$("$MD5SUM" "$FIRMWARE" | cut -d ' ' -f 1)_$FIRMWARE_MD5"
+
+FAKEROOT="$TOOLS_DIR/build/bin/fakeroot"
+FAKEROOT_CACHE_DIR="$ABS_BASE_DIR/.fakeroot-cache"
+FAKEROOT_CACHE="$FAKEROOT_CACHE_DIR/$FIRMWARE_MD5"
+if [ ! -e "$FAKEROOT_CACHE_DIR" ]; then
+	mkdir -p "$FAKEROOT_CACHE_DIR"
+fi
+
+# Are we in a fakeroot context?
+if [ "$FAKEROOTKEY" ] && [ $UID -eq 0 ]; then
+	# Yes -> fakeroot is active
+	# Make sure fakeroot call came from ourselves so we can assume the cache settings to be correct
+	if [ $((FWMOD_RECURSIVE)) -eq 0 ] || [ "$SELF" != "$(sed -nr 's/^Name:[[:blank:]]+(.*)/\1/p' /proc/$FWMOD_RECURSIVE/status)" ]; then
+		error 1 "$SELF must not run in a fakeroot environment"
+	fi
+	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
+	if [ -s "$FAKEROOT_CACHE" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
+		# Yes -> skip unpack
+		[ $DO_UNPACK -gt 0 ] && SKIP_UNPACK="${BOLD}STEP 1: UNPACK (SKIPPED)${NORM}"
+		DO_UNPACK=0
+	else
+		# No -> force unpack
+		[ $DO_UNPACK -eq 0 ] && FORCE_UNPACK=" (FORCED)"
+		DO_UNPACK=1
+	fi
+else
+	# No -> fakeroot is inactive
+	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
+	if [ -s "$FAKEROOT_CACHE" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
+		# Yes -> use existing cache and firmwares (no unpack necessary)
+		FWMOD_RECURSIVE=$$ "$FAKEROOT" -i "$FAKEROOT_CACHE" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
+	else
+		# No -> create new fakeroot cache and unpack firmwares
+		FWMOD_RECURSIVE=$$ "$FAKEROOT" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
+	fi
+	exit $?
+fi
+
+
 ############################################
 ## Unpack and unsquash the firmware image ##
 ############################################
@@ -280,7 +328,7 @@ AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
-	echo "${BOLD}STEP 1: UNPACK${NORM}"
+	echo "${BOLD}STEP 1: UNPACK${FORCE_UNPACK}${NORM}"
 
 	rm -rf "$ORG_DIR"
 	mkdir "$ORG_DIR"
@@ -369,10 +417,12 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 			sed 's/^/    /;s/STEP 1: UNPACK/STEP 1B: UNPACK SECOND FIRMWARE/'
 	fi
 
-	touch "${DIR}/.unpacked"
+	# Create "unpacked" marker, recording exactly *what* was unpacked (MD5)
+	echo "$FIRMWARE_MD5" > "$UNPACKED_FILE"
 	echo "done."
 	echo
 fi
+echo "${SKIP_UNPACK}"
 
 
 ###############################################
