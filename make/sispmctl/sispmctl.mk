@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.0)
+$(call PKG_INIT_BIN, 3.1)
 $(PKG)_SOURCE:=sispmctl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=eca3d5803a29617432ef9f609be59bad
+$(PKG)_SOURCE_MD5:=24693cae30d77c957f34cfb2c8159661
 $(PKG)_SITE:=@SF/sispmctl
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sispmctl
@@ -28,10 +28,6 @@ ifeq ($(strip $(FREETZ_SISPMCTL_WEB)),y)
 ifeq ($(strip $(FREETZ_SISPMCTL_SKIN2)),y)
 	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web2
 	cp $(SISPMCTL_DIR)/src/web2/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web2
-endif
-ifeq ($(strip $(FREETZ_SISPMCTL_SKIN3)),y)
-	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web3
-	cp $(SISPMCTL_DIR)/src/web3/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web3
 endif
 endif
 

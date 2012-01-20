@@ -7,15 +7,10 @@ if [ "$SISPMCTL_SKIN" = "web2" ]
 then
 	[ -d /usr/share/sispmctl-web2 ] || SISPMCTL_SKIN="web1"
 fi
-if [ "$SISPMCTL_SKIN" = "web3" ]
-then
-	[ -d /usr/share/sispmctl-web3 ] || SISPMCTL_SKIN="web1"
-fi
 
-skin_web1=''; skin_web2=''; skin_web3=''
+skin_web1=''; skin_web2=''
 [ "$SISPMCTL_SKIN" = "web1" ] && skin_web1=' selected'
 [ "$SISPMCTL_SKIN" = "web2" ] && skin_web2=' selected'
-[ "$SISPMCTL_SKIN" = "web3" ] && skin_web3=' selected'
 
 
 check "$SISPMCTL_ENABLED" yes:auto inetd "*":man
@@ -33,7 +28,7 @@ sec_end
 
 sec_begin '$(lang de:"Integrierter WEB-Server" en:"Integrated WEB Server")'
 
-if [ -d /usr/share/sispmctl-web2 -o -d /usr/share/sispmctl-web3 ]
+if [ -d /usr/share/sispmctl-web2 ]
 then
 cat << EOF
 <p>Skin: 
@@ -43,13 +38,7 @@ EOF
 if [ -d /usr/share/sispmctl-web2 ]
 then
 cat << EOF
-<option title="Google" value="web2"$skin_web2>Google</option>
-EOF
-fi
-if [ -d /usr/share/sispmctl-web3 ]
-then
-cat << EOF
-<option title="Smartphone" value="web3"$skin_web3>Smartphone</option>
+<option title="Smartphone" value="web2"$skin_web2>Smartphone</option>
 EOF
 fi
 cat << EOF
