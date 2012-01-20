@@ -6,6 +6,10 @@ $(PKG)_SITE:=http://www.sqlite.org
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-autoconf-$($(PKG)_VERSION)
 
+ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
+$(PKG)_DEPENDS_ON += readline
+endif
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/sqlite3
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sqlite3
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/.libs/libsqlite3.so.$($(PKG)_LIB_VERSION)
