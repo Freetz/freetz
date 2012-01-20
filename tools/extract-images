@@ -35,7 +35,7 @@ do_extract_bl()
 		for candidate in "$output_file.64k" "$output_file.128k"; do
 			if [ $candidate_found -eq 1 ]; then
 				rm -f "$candidate"
-				break
+				continue
 			fi
 			if grep -iq 'entering passive mode' "$candidate" && grep -iq 'ftp.\? server ready' "$candidate"; then
 				mv "$candidate" "$output_file"
@@ -130,6 +130,7 @@ extract_kernel_filesystem()
 	[ "$endian" == "-any" -o "$endian" == "-be" ] && \
 		do_extract_kfs "$SQUASHFS_MAGIC_BE" "big"
 	[ $n -eq 1 ] && echo "    No hidden root kernel + filesystem candidate found in input file"
+	set +x
 }
 
 # Parameter handling
