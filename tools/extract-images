@@ -27,16 +27,26 @@ do_extract_bl()
 	for offs in $($mod_base/tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"); do
 		# For each bootloader candidate create a new numbered 'urlader.image' file
 		output_file="$output_dir/urlader.image-$n"
-		# Bootloader files are always exactly 64K long
-		tail -c +$(($offs+1)) "$input_file" | head -c +65536 > "$output_file"
+		# Bootloader files are either 64K or 128K long. Try both variants.
+		tail -c +$(($offs+1)) "$input_file" | head -c +65536 > "$output_file.64k"
+		tail -c +$(($offs+1)) "$input_file" | head -c +131072 > "$output_file.128k"
 		# Identify the right candidate by grepping for known bootloader text strings
-		if grep -iq 'entering passive mode' "$output_file" && grep -iq 'ftp.\? server ready' "$output_file"; then
-			echo "    $output_file - loader @ $offs, $ENDIAN_TYPE endian"
-			n=$((n+1))
-		else
-			# If candidate does not match, remove it
-			rm -f "$output_file"
-		fi
+		local candidate_found=0
+		for candidate in "$output_file.64k" "$output_file.128k"; do
+			if [ $candidate_found -eq 1 ]; then
+				rm -f "$candidate"
+				break
+			fi
+			if grep -iq 'entering passive mode' "$candidate" && grep -iq 'ftp.\? server ready' "$candidate"; then
+				mv "$candidate" "$output_file"
+				echo "    $output_file - loader @ $offs, $ENDIAN_TYPE endian"
+				n=$((n+1))
+				candidate_found=1
+			else
+				# If candidate does not match, remove it
+				rm -f "$candidate"
+			fi
+		done
 	done
 }
 
