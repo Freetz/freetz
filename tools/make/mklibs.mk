@@ -20,7 +20,7 @@ $(DL_DIR)/$(MKLIBS_SOURCE): | $(DL_DIR)
 mklibs-source: $(DL_DIR)/$(MKLIBS_SOURCE)
 
 $(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(MKLIBS_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(MKLIBS_SOURCE)
 	for i in $(MKLIBS_MAKE_DIR)/patches/*.mklibs.patch; do \
 		$(PATCH_TOOL) $(MKLIBS_DIR) $$i; \
 	done

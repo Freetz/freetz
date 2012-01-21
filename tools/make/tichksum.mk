@@ -4,7 +4,7 @@ TI_CHKSUM_DIR:=$(TOOLS_SOURCE_DIR)/TI-chksum-$(TI_CHKSUM_VERSION)
 
 
 $(TI_CHKSUM_DIR)/.unpacked: $(TOOLS_DIR)/source/$(TI_CHKSUM_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(TI_CHKSUM_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(TOOLS_DIR)/source/$(TI_CHKSUM_SOURCE)
 	touch $@
 
 $(TI_CHKSUM_DIR)/tichksum: $(TI_CHKSUM_DIR)/.unpacked

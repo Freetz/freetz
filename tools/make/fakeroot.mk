@@ -22,7 +22,7 @@ $(DL_DIR)/$(FAKEROOT_SOURCE): | $(DL_DIR)
 fakeroot-source: $(DL_DIR)/$(FAKEROOT_SOURCE)
 
 $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(FAKEROOT_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(FAKEROOT_SOURCE)
 	$(SED) -i "s,getopt --version,getopt --version 2>/dev/null," \
 		$(FAKEROOT_DIR)/scripts/fakeroot.in
 	for i in $(FAKEROOT_MAKE_DIR)/patches/*.fakeroot.patch; do \

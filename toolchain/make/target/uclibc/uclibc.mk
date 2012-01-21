@@ -60,7 +60,7 @@ $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -r $(UCLIBC_DIR)
-	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(UCLIBC_SOURCE)
+	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(UCLIBC_SOURCE)
 	set -e; \
 	for i in $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(UCLIBC_DIR) $$i; \

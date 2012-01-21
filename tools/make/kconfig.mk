@@ -18,7 +18,7 @@ kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
 $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	mkdir -p $(KCONFIG_DIR)/scripts
 	tar -C $(KCONFIG_DIR)/scripts $(VERBOSE) --wildcards --strip-components=1 \
-		-xzf $(DL_DIR)/$(KCONFIG_SOURCE) */basic */kconfig */Makefile.{build,host,lib} */Kbuild.include
+		-xf $(DL_DIR)/$(KCONFIG_SOURCE) */basic */kconfig */Makefile.{build,host,lib} */Kbuild.include
 	for i in $(KCONFIG_MAKE_DIR)/patches/*.kconfig.patch; do \
 		$(PATCH_TOOL) $(KCONFIG_DIR) $$i; \
 	done;

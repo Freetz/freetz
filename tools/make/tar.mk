@@ -8,7 +8,7 @@ $(DL_DIR)/$(TAR_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TAR_SOURCE) $(TAR_SITE) $(TAR_SOURCE_MD5)
 
 $(TAR_DIR)/.unpacked: $(DL_DIR)/$(TAR_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(TAR_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(TAR_SOURCE)
 	touch $@
 
 $(TAR_DIR)/.configured: $(TAR_DIR)/.unpacked

@@ -13,7 +13,7 @@ $(DL_DIR)/$(XDELTA_SOURCE): | $(DL_DIR)
 xdelta-source: $(DL_DIR)/$(XDELTA_SOURCE)
 
 $(XDELTA_DIR)/.unpacked: $(DL_DIR)/$(XDELTA_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(XDELTA_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(XDELTA_SOURCE)
 	touch $@
 
 $(XDELTA_DIR)/xdelta3: $(XDELTA_DIR)/.unpacked

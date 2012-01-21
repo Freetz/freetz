@@ -15,7 +15,7 @@ $(DL_DIR)/$(CCACHE_KERNEL_SOURCE): | $(DL_DIR)
 
 $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR)
 	$(RM) -r $(CCACHE_KERNEL_DIR)
-	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
+	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
 	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_KERNEL_BIN_DIR)\",g" \

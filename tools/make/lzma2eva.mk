@@ -4,7 +4,7 @@ LZMA2EVA_MAKE_DIR:=$(TOOLS_DIR)/make
 
 
 $(LZMA2EVA_DIR)/.unpacked: $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
 	for i in $(LZMA2EVA_MAKE_DIR)/patches/*.lzma2eva.patch; do \
 		$(PATCH_TOOL) $(LZMA2EVA_DIR) $$i; \
 	done

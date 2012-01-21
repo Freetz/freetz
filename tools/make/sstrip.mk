@@ -3,7 +3,7 @@ SSTRIP_SOURCE:=sstrip-$(SSTRIP_VERSION).tar.bz2
 SSTRIP_DIR:=$(TOOLS_SOURCE_DIR)/sstrip-$(SSTRIP_VERSION)
 
 $(SSTRIP_DIR)/.unpacked: $(TOOLS_DIR)/source/$(SSTRIP_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(TOOLS_DIR)/source/$(SSTRIP_SOURCE)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(TOOLS_DIR)/source/$(SSTRIP_SOURCE)
 	touch $@
 
 $(SSTRIP_DIR)/sstrip: $(SSTRIP_DIR)/.unpacked

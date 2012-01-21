@@ -111,7 +111,7 @@ endif
 gcc-unpacked: $(GCC_DIR)/.unpacked
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -r $(GCC_DIR)
-	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(GCC_SOURCE)
+	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(GCC_SOURCE)
 	set -e; \
 	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \

@@ -13,7 +13,7 @@ $(DL_DIR)/$(LZMA_SOURCE): | $(DL_DIR)
 
 $(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE) | $(TOOLS_SOURCE_DIR)
 	mkdir -p $(LZMA_DIR)
-	tar -C $(LZMA_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(LZMA_SOURCE)
+	tar -C $(LZMA_DIR) $(VERBOSE) -xf $(DL_DIR)/$(LZMA_SOURCE)
 	for i in $(LZMA_MAKE_DIR)/patches/*.lzma.patch; do \
 		$(PATCH_TOOL) $(LZMA_DIR) $$i; \
 	done
