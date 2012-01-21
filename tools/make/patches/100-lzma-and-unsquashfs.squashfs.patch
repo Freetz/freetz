@@ -870,12 +870,12 @@
 +	if(sBlk->s_magic != SQUASHFS_MAGIC) {
 +		if(sBlk->s_magic == SQUASHFS_MAGIC_SWAP) {
 +			squashfs_super_block sblk;
-+			ERROR("Reading a different endian SQUASHFS filesystem on %s\n", source);
++			ERROR("Reading a different endian SquashFS filesystem on %s\n", source);
 +			SQUASHFS_SWAP_SUPER_BLOCK(&sblk, sBlk);
 +			memcpy(sBlk, &sblk, sizeof(squashfs_super_block));
 +			swap = 1;
 +		} else  {
-+			ERROR("Can't find a SQUASHFS superblock on %s\n", source);
++			ERROR("Can't find a SquashFS superblock on %s\n", source);
 +			goto failed_mount;
 +		}
 +	}
@@ -889,9 +889,9 @@
 +	}
 +
 +#if __BYTE_ORDER == __BIG_ENDIAN
-+	TRACE("Found a valid %s endian SQUASHFS superblock on %s.\n", swap ? "little" : "big", source);
++	TRACE("Found a valid %s endian SquashFS superblock on %s.\n", swap ? "little" : "big", source);
 +#else
-+	TRACE("Found a valid %s endian SQUASHFS superblock on %s.\n", swap ? "big" : "little", source);
++	TRACE("Found a valid %s endian SquashFS superblock on %s.\n", swap ? "big" : "little", source);
 +#endif
 +
 +	TRACE("\tInodes are %scompressed\n", SQUASHFS_UNCOMPRESSED_INODES(sBlk->flags) ? "un" : "");
