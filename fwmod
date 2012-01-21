@@ -166,6 +166,7 @@ UNSQUASHFS_LZMA_TOOL="unsquashfs3-lzma"
 EXTERNAL_TOOL="external"
 TAR_TOOL="tar"
 MD5SUM_TOOL="md5sum"
+BUSYBOX_TOOL="busybox"
 
 MKSQUASHFS_OPTIONS="-noappend -all-root -info"
 UNSQUASHFS_OPTIONS="-no-progress"
@@ -183,6 +184,7 @@ MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
 MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
 MD5SUM="${TOOLS_DIR}/${MD5SUM_TOOL}"
+BUSYBOX="${TOOLS_DIR}/${BUSYBOX_TOOL}"
 # XXX: Temporarily use system's tar to unpack AVM firmware-images (see #1535)
 UNTAR="$(which tar)"
 
@@ -1087,6 +1089,26 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo2 $i
 			${ABS_BASE_DIR}/toolchain/kernel/bin/${FREETZ_KERNEL_CROSS}strip -p --strip-unneeded \
 				--remove-section={.comment,.pdr,.mdebug.abi32,.note.gnu.build-id} $i
+		done
+	fi
+	if [ "$FREETZ_STRIP_SCRIPTS" == "y" ]; then
+		echo0 "stripping shell scripts"
+		# This is (necessarily) slow because it checks *all* files
+		for f in $(find ${FILESYSTEM_MOD_DIR} -type f); do
+			# Syntax check. Use ash (not bash) because on target we also have ash.
+			# This is the first step because it is faster than 'file'.
+			$BUSYBOX ash -n "$f" 2>/dev/null &&
+			# Sometimes the ash syntax check succeeds on binaries.
+			# So we need to check we really have a text file here.
+			file -b --mime-type "$f" | grep -sq '^text/' &&
+			# Only strip scripts (possibly also stuff like awk or perl) with
+			# shebang. This excludes dot-included files without shebang, but
+			# anything else would be too unsafe. We do not want plain text
+			# files stripped.
+			grep -sq '#[^!]' "$f" &&
+			# Strip blank lines, shell comments (not shebangs) and indentation
+			sed -i '/^[ \t]*$/d;/^[ \t]*#[^!].*/d;s/^[ \t]*//g' "$f" &&
+			echo2 "${f##${FILESYSTEM_MOD_DIR}}"
 		done
 	fi
 	if [ "$FREETZ_STRIP_BINARIES" == "y" ]; then

@@ -1581,7 +1581,7 @@ menu "Shared Libraries"
 
 endmenu # "Shared Libraries" #
 
-menu "Strip binaries, libs and modules"
+menu "Strip binaries, libs, modules and scripts"
 
 config FREETZ_STRIP_BINARIES
 	bool "Strip leftover unstripped binaries"
@@ -1609,7 +1609,27 @@ config FREETZ_STRIP_MODULES
 		This option shrinks unstripped modules via fwmod script.
 		In case of problems, you can disable it (Default: enabled).
 
-endmenu # "Strip binaries, libs and modules" #
+config FREETZ_STRIP_SCRIPTS
+	bool "Strip comments from shell scripts - EXPERIMENTAL"
+	#depends on FREETZ_TARGET_REF_4MB || FREETZ_TARGET_REF_8MB
+	default n
+	help
+		Shrinks shell scripts by removing comments and whitespace. Saves up to
+		37K (compressed), depending on firmware and package selection.
+
+		DO NOT USE this option unless you absolutely have to because you are in
+		desparate need for some more space in your firmware image. This mostly
+		applies to hardware with just 4 MB flash memory, maybe 8 MB in some cases.
+
+		ATTENTION: This option has a runtime of 1 minute!
+
+		CAVEAT: The stripping code is a simple heuristic, so theoretically there
+		could be problems caused by mutilated scripts (unlikely, but possible).
+		In case of strange firmware behaviour you might want to disable this patch
+		and retry to see if that fixes the problem. If so, please report to the
+		Freetz team.
+
+endmenu # "Strip binaries, libs, modules and scripts" #
 
 menu "External"
 
