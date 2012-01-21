@@ -5,6 +5,6 @@ if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 	modsed "s/isAta 0/isAta 1/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 else
 	modsed 's/CONFIG_ATA=.*/CONFIG_ATA="y"/g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+	modsed 's/export HWRevision_ATA=.*/export HWRevision_ATA=1/g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 fi
-
 
