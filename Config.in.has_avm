@@ -426,6 +426,25 @@ config FREETZ_HAS_AVM_UMTS
 	help
 		Select this if you have a box with UMTS.
 
+config FREETZ_HAS_AVM_JFFS2
+	bool "Has jffs2.ko"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3 || \
+		(FREETZ_TYPE_FON_WLAN_7140 && !FREETZ_TYPE_LANG_DE) || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7240 || \
+		FREETZ_TYPE_FON_WLAN_7270_V1 || \
+		FREETZ_TYPE_FON_WLAN_7270_V2 || \
+		FREETZ_TYPE_FON_WLAN_7270_V3 || \
+		FREETZ_TYPE_FON_WLAN_7340 || \
+		FREETZ_TYPE_FON_WLAN_7570
+	default n
+	help
+		Select this if you have a box with optional JFFS2 filesystem (jffs2.ko).
+
 config FREETZ_HAS_AVM_JUNK_BYTES
 	bool "Has AVM junk bytes in SquashFS"		if FREETZ_TYPE_CUSTOM
 	default y		if \

@@ -805,7 +805,7 @@ config FREETZ_REMOVE_HELP
 
 config FREETZ_REMOVE_JFFS2
 	bool "Remove jffs2.ko (EXPERIMENTAL)"
-	depends on FREETZ_SHOW_ADVANCED
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_JFFS2
 	default n
 	help
 		If your AVM firmware contains the JFFS2 kernel module (jffs2.ko), this patch
