@@ -46,7 +46,6 @@ MAKE1=make
 MAKE=make -j$(FREETZ_JLEVEL)
 
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
-FAKEROOT_TOOL:=$(TOOLS_DIR)/$(BUILD_DIR)/bin/fakeroot
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
@@ -319,7 +318,7 @@ firmware-nocompile: tools $(DL_IMAGE) package-list
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
 endif
-	@$(FAKEROOT_TOOL) -- ./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
+	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
 ifneq ($(FWMOD_PATCH_TEST),y)
 ifneq ($(FWMOD_NOPACK),y)
 ifeq ($(strip $(FREETZ_CUSTOM_IMAGE_NAME_PREFIX)),y)

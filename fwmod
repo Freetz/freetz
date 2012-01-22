@@ -38,6 +38,12 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
+# If we are not running in a fakeroot context, provide one and re-run
+if [ $((FAKEROOTKEY)) -eq 0 ] || [ $UID -ne 0 ]; then
+	"$(dirname "$0")/tools/build/bin/fakeroot" '--' "$0" "$@"
+	exit $?
+fi
+
 L1='  '
 L2='    '
 BOLD=$(echo -e '\033[1m')
