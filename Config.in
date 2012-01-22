@@ -1603,11 +1603,11 @@ config FREETZ_STRIP_LIBRARIES
 		build process.
 
 config FREETZ_STRIP_MODULES
-	bool "Strip leftover unstripped modules"
-	default y
+	bool "Strip leftover unstripped modules - EXPERIMENTAL"
+	default n
 	help
-		This option shrinks unstripped modules via fwmod script.
-		In case of problems, you can disable it (Default: enabled).
+		This option shrinks unstripped modules via fwmod script. May
+		cause flashing all LEDs, see http://freetz.org/ticket/1249
 
 config FREETZ_STRIP_SCRIPTS
 	bool "Strip comments from shell scripts - EXPERIMENTAL"
