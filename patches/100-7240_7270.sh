@@ -31,6 +31,7 @@ else
 	OEM="avme"
 fi
 files="css/default/images/kopfbalken_mitte.gif"
+files+=" css/default/images/illu_box.gif"
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
 for i in $files; do
