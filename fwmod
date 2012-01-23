@@ -286,7 +286,7 @@ if [ "$FAKEROOTKEY" ] && [ $UID -eq 0 ]; then
 	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
 	if [ -s "$FAKEROOT_CACHE" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
 		# Yes -> skip unpack
-		[ $DO_UNPACK -gt 0 ] && SKIP_UNPACK="${BOLD}STEP 1: UNPACK (SKIPPED)${NORM}"
+		[ $DO_UNPACK -gt 0 ] && SKIP_UNPACK="${BOLD}STEP 1: UNPACK (SKIPPED)${NORM}\n\n"
 		DO_UNPACK=0
 	else
 		# No -> force unpack
@@ -330,7 +330,8 @@ AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
-	echo "${BOLD}STEP 1: UNPACK${FORCE_UNPACK}${NORM}"
+	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN"
+	echo "${BOLD}STEP 1${UNPACK_SUBSTEP}: UNPACK${UNPACK_MAIN}${FORCE_UNPACK}${NORM}"
 
 	rm -rf "$ORG_DIR"
 	mkdir "$ORG_DIR"
@@ -411,20 +412,19 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	mkdir "$VARTAR_DIR"
 	"$UNTAR" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
-	# Unpacking second firmware image
+	echo -e "done.\n"
+
+	# Unpack secondary firmware image
 	if [ -n "$FIRMWARE2" ]; then
-		echo
 		rm -rf "${DIR}/.tk"
 		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" |
-			sed 's/^/    /;s/STEP 1: UNPACK/STEP 1B: UNPACK SECOND FIRMWARE/'
+			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/"
 	fi
 
 	# Create "unpacked" marker, recording exactly *what* was unpacked (MD5)
 	echo "$FIRMWARE_MD5" > "$UNPACKED_FILE"
-	echo "done."
-	echo
 fi
-echo "${SKIP_UNPACK}"
+echo -ne "${SKIP_UNPACK}"
 
 
 ###############################################
@@ -1136,8 +1136,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	touch "${DIR}/.modified"
-	echo "done."
-	echo
+	echo -e "done.\n"
 fi
 
 
@@ -1274,7 +1273,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 	# Do we have the tool ?
-	[ ! -x "$TICHKSUM" ] &&	error 1 "cannot find wonderful tool $TICHKSUM_TOOL"
+	[ ! -x "$TICHKSUM" ] &&	error 1 "cannot find tool $TICHKSUM_TOOL"
 
 	# Write checksum
 	"$TICHKSUM" "$KERNEL_MOD" > "${MOD_DIR}/kernelchksum.log"
