@@ -57,15 +57,6 @@ FREETZ_VERBOSITY_LEVEL=0
 DOT_CONFIG="$(dirname "$0")/.config"
 CMDLINE_OPTS="umpafd:i:"
 
-# Default config override?
-# NOTE: Both 'getopts' must have an identical argument list!
-while getopts "$CMDLINE_OPTS" opt; do
-	if [ "$opt" == "i" ]; then
-		DOT_CONFIG="$OPTARG"
-		echo $DOT_CONFIG
-	fi
-done
-
 DO_UNPACK=0
 DO_MOD=0
 DO_PACK=0
@@ -106,7 +97,7 @@ while getopts "$CMDLINE_OPTS" opt; do
 			DIR="$OPTARG"
 			;;
 		i)
-			# Do nothing, DOT_CONFIG has been assigned already
+			DOT_CONFIG="$OPTARG"
 			;;
 		*)
 			usage >&2
@@ -337,6 +328,10 @@ VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 if [ "$DO_UNPACK" -gt 0 ]; then
 	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN"
 	echo "${BOLD}STEP 1${UNPACK_SUBSTEP}: UNPACK${UNPACK_MAIN}${FORCE_UNPACK}${NORM}"
+
+	# Remove old "unpacked" marker to avoid an undefined state in case of
+	# interruption before unpacking operation is finished
+	rm -f "$UNPACKED_FILE"
 
 	rm -rf "$ORG_DIR"
 	mkdir "$ORG_DIR"
@@ -1052,7 +1047,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		if [ ! "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
 			echo1 "integrating stripped .config file into image"
 			dot_config_file="$MOD_DIR/filesystem/etc/.config"
-			cat .config | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
+			cat "$DOT_CONFIG" | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
 		fi
 		# tagging
 		if [ "$FREETZ_TAGGING_STRING" != "none" ]; then
