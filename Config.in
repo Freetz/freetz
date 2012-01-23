@@ -1605,7 +1605,7 @@ config FREETZ_STRIP_LIBRARIES
 		build process.
 
 choice
-	prompt "Strip leftover unstripped modules"
+	prompt "Strip kernel modules"
 		default FREETZ_STRIP_MODULES_BUILD
 
 	config FREETZ_STRIP_MODULES_NONE
@@ -1614,12 +1614,12 @@ choice
 			Disable shrinking of modules.
 
 	config FREETZ_STRIP_MODULES_BUILD
-		bool "own"
+		bool "build"
 		help
 			Shrinks only modules added by Freetz.
 
 	config FREETZ_STRIP_MODULES_EVERY
-		bool "all - EXPERIMENTAL"
+		bool "every - EXPERIMENTAL"
 		help
 			Shrinks all modules. May cause wired things, like all
 			LEDs are flashing. See http://freetz.org/ticket/1249
