@@ -23,6 +23,7 @@ FREETZ_BASE_DIR:=$(shell pwd)
 ADDON_DIR:=addon
 BUILD_DIR:=build
 DL_DIR:=dl
+FAKEROOT_CACHE_DIR:=.fakeroot-cache
 INCLUDE_DIR:=include
 MAKE_DIR:=make
 PACKAGES_DIR_ROOT:=packages
@@ -481,6 +482,7 @@ common-clean:
 	./fwmod_custom clean
 	$(RM) .static .dynamic .exclude-dist-tmp $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
+	$(RM) -r $(FAKEROOT_CACHE_DIR)
 
 common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
