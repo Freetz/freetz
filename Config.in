@@ -1593,7 +1593,7 @@ config FREETZ_STRIP_BINARIES
 		In case of problems, you can disable it (Default: enabled).
 
 config FREETZ_STRIP_LIBRARIES
-	bool "Run mklibs on the built root filesystem (Experimental)"
+	bool "Run mklibs on the built root filesystem (EXPERIMENTAL)"
 	depends on FREETZ_SHOW_ADVANCED
 	default n
 	help
@@ -1605,24 +1605,25 @@ config FREETZ_STRIP_LIBRARIES
 		build process.
 
 choice
-	prompt "Strip kernel modules"
-		default FREETZ_STRIP_MODULES_BUILD
+	prompt "Strip kernel modules (EXPERIMENTAL)"
+		depends on FREETZ_SHOW_ADVANCED
+		default FREETZ_STRIP_MODULES_NONE
 
 	config FREETZ_STRIP_MODULES_NONE
 		bool "none"
 		help
-			Disable shrinking of modules.
+			Disables shrinking of modules.
 
-	config FREETZ_STRIP_MODULES_BUILD
-		bool "build"
+	config FREETZ_STRIP_MODULES_FREETZ
+		bool "modules built by Freetz only"
 		help
-			Shrinks only modules added by Freetz.
+			Shrinks modules added by Freetz only.
 
-	config FREETZ_STRIP_MODULES_EVERY
-		bool "every - EXPERIMENTAL"
+	config FREETZ_STRIP_MODULES_ALL
+		bool "all modules (Freetz & AVM)"
 		help
-			Shrinks all modules. May cause wired things, like all
-			LEDs are flashing. See http://freetz.org/ticket/1249
+			Shrinks all modules. May cause weird effects, like
+			all LEDs flashing. See http://freetz.org/ticket/1249
 
 endchoice
 
