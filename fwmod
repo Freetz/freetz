@@ -26,6 +26,7 @@ Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
     -m         modify previously unpacked image
     -p         pack firmware image
     -a         all: unpack, modify and pack firmware image (-u -m -p)
+    -f         force pack even if image is too big for flash (AVM SDK)
   input/output
     -i <cfg>   input file for configuration data (default: .config)
     -d <dir>   build directory (default: <orig_firmware>.mod)
@@ -54,7 +55,7 @@ NORM=$(echo -e '\033[0m')
 # Default values
 FREETZ_VERBOSITY_LEVEL=0
 DOT_CONFIG="$(dirname "$0")/.config"
-CMDLINE_OPTS="umpad:i:"
+CMDLINE_OPTS="umpafd:i:"
 
 # Default config override?
 # NOTE: Both 'getopts' must have an identical argument list!
@@ -68,6 +69,7 @@ done
 DO_UNPACK=0
 DO_MOD=0
 DO_PACK=0
+FORCE_PACK=0
 
 DIR=''
 _OPT=0
@@ -96,6 +98,9 @@ while getopts "$CMDLINE_OPTS" opt; do
 			DO_MOD=1
 			DO_PACK=1
 			_OPT=1
+			;;
+		f)
+			FORCE_PACK=1
 			;;
 		d)
 			DIR="$OPTARG"
@@ -1257,8 +1262,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 		echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
 		[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
-		[ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ] && \
-			error 1 "kernel image is $DIFF bytes too big. See http://trac.freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
+		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
+			TOO_BIG_MSG="${BOLD}kernel image is $DIFF bytes too big."
+			[ "$FORCE_PACK" -eq 0 ] \
+				&& error 1 "${TOO_BIG_MSG} See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details.${NORM}" \
+				|| echo0   "${TOO_BIG_MSG} Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware${NORM}"
+		fi
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		if [ "$FREETZ_HAS_AVM_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
