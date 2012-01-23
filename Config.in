@@ -1604,12 +1604,27 @@ config FREETZ_STRIP_LIBRARIES
 		with most of the packages that are not selected during the
 		build process.
 
-config FREETZ_STRIP_MODULES
-	bool "Strip leftover unstripped modules - EXPERIMENTAL"
-	default n
-	help
-		This option shrinks unstripped modules via fwmod script. May
-		cause flashing all LEDs, see http://freetz.org/ticket/1249
+choice
+	prompt "Strip leftover unstripped modules"
+		default FREETZ_STRIP_MODULES_BUILD
+
+	config FREETZ_STRIP_MODULES_NONE
+		bool "none"
+		help
+			Disable shrinking of modules.
+
+	config FREETZ_STRIP_MODULES_BUILD
+		bool "own"
+		help
+			Shrinks only modules added by Freetz.
+
+	config FREETZ_STRIP_MODULES_EVERY
+		bool "all - EXPERIMENTAL"
+		help
+			Shrinks all modules. May cause wired things, like all
+			LEDs are flashing. See http://freetz.org/ticket/1249
+
+endchoice
 
 config FREETZ_STRIP_SCRIPTS
 	bool "Strip comments from shell scripts - EXPERIMENTAL"
