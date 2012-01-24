@@ -1,10 +1,11 @@
 TI_CHKSUM_VERSION:=0.2
-TI_CHKSUM_SOURCE:=TI-chksum-$(TI_CHKSUM_VERSION).tar.bz2
+TI_CHKSUM_SRC:=$(TOOLS_DIR)/make/tichksum/src
 TI_CHKSUM_DIR:=$(TOOLS_SOURCE_DIR)/TI-chksum-$(TI_CHKSUM_VERSION)
 
 
-$(TI_CHKSUM_DIR)/.unpacked: $(TOOLS_DIR)/source/$(TI_CHKSUM_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(TOOLS_DIR)/source/$(TI_CHKSUM_SOURCE)
+$(TI_CHKSUM_DIR)/.unpacked: $(wildcard $(TI_CHKSUM_SRC)/*) | $(TOOLS_SOURCE_DIR)
+	$(RM) -r $(TI_CHKSUM_DIR)
+	cp -a $(VERBOSE) $(TI_CHKSUM_SRC) $(TI_CHKSUM_DIR)
 	touch $@
 
 $(TI_CHKSUM_DIR)/tichksum: $(TI_CHKSUM_DIR)/.unpacked
