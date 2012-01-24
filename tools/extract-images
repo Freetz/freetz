@@ -24,7 +24,7 @@ do_extract_bl()
 	local BOOTLOADER_MAGIC="$1"
 	local ENDIAN_TYPE="$2"
 	# Find bootloader candidates and isolate their offsets
-	for offs in $($mod_base/tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"); do
+	for offs in $($mod_base/tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ -quiet | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"); do
 		# For each bootloader candidate create a new numbered 'urlader.image' file
 		output_file="$output_dir/urlader.image${count}"
 		# Bootloader files are either 64K or 128K long. Try both variants.
@@ -74,9 +74,10 @@ do_extract_kfs()
 	local ENDIAN_TYPE="$2"
 
 	# Find SquashFS candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$SQUASHFS_MAGIC/)"
+	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$SQUASHFS_MAGIC/ -quiet)"
 	# Isolate arrays of SquashFS offset candidates (hex & dec)
 	squashfs_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
+	[ "$squashfs_offs_hex" ] || return
 	squashfs_offs=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"))
 	for (( i=0; i<${#squashfs_offs[@]}; i++ )); do
 		# Isolate array of SquashFS length candidates from hexdump lines, considering endian type
@@ -85,12 +86,17 @@ do_extract_kfs()
 		[ "$ENDIAN_TYPE" == "big" ] \
 			&& squashfs_length[i]=$(printf "%d" "0x$tmp") \
 			|| squashfs_length[i]=$(printf "%d" "0x${tmp:6:2}${tmp:4:2}${tmp:2:2}${tmp:0:2}")
+		# Special case: filesystem length 0 can happen if a raw (mtdblock) dump
+		# from the box is processed, because the box seems to erase the length
+		# info when flashing.
+		[ ${squashfs_length[i]} -eq 0 ] && squashfs_length[i]=$((input_file_size-squashfs_offs[i]))
 	done
 
 	# Find kernel candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$KERNEL_MAGIC/)"
+	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$KERNEL_MAGIC/ -quiet)"
 	# Isolate arrays of kernel offset candidates (hex & dec)
 	kernel_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
+	[ "$kernel_offs_hex" ] || return
 	kernel_offs=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"))
 	for (( i=0; i<${#kernel_offs[@]}; i++ )); do
 		# Isolate array of kernel length candidates from hexdump lines (always little endian)
@@ -105,10 +111,10 @@ do_extract_kfs()
 	# Check all combinations of kernel vs SquashFS offset candidates to find plausible ones
 	for (( k=0; k<${#kernel_offs[@]}; k++ )); do
 		# Sanity check #1: kernel offset + length must not exceed total file size
-		[ $((kernel_offs[k] + kernel_length[k])) -lt $input_file_size ] || continue
+		[ $((kernel_offs[k] + kernel_length[k])) -le $input_file_size ] || continue
 		for (( s=0; s<${#squashfs_offs[@]}; s++ )); do
 			# Sanity check #2: SquashFS offset + length must not exceed total file size
-			[ $((squashfs_offs[s] + squashfs_length[s])) -lt $input_file_size ] || continue
+			[ $((squashfs_offs[s] + squashfs_length[s])) -le $input_file_size ] || continue
 			# Sanity check #3: kernel + SquashFS lengths must be 85-100% of total file size
 			percentage=$(( (kernel_length[k] + squashfs_length[s]) * 100 / input_file_size ))
 			[ $percentage -ge 85 -a $percentage -le 100 ] || continue
@@ -193,7 +199,7 @@ BOOTLOADER_MAGIC_BE="40809000"
 
 input_file_size=$(stat -c %s "$input_file")
 
-output_dir="$(basename "$input_file" | sed -r 's/(.*)\.[^\.]*/\1/')"
+output_dir="$(basename "$input_file").unp"
 rm -rf "$output_dir"
 mkdir -p "$output_dir"
 
