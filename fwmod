@@ -966,7 +966,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			ko_path_dst="${MODULES_DIR}/kernel/$(dirname "$i")"
 			[ -d "$ko_path_dst" ] || mkdir -p "$ko_path_dst"
 			cp -a $ko_file_src "$ko_path_dst/"
-			if [ "$FREETZ_STRIP_MODULES_BUILD" == "y" ]; then
+			if [ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ]; then
 				${ABS_BASE_DIR}/toolchain/kernel/bin/${FREETZ_KERNEL_CROSS}strip -p --strip-unneeded \
 					--remove-section={.comment,.pdr,.mdebug.abi32,.note.gnu.build-id} "$ko_path_dst/$bn"
 			fi
