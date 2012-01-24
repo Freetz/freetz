@@ -1,0 +1,17 @@
+--- secutil.c
++++ secutil.c
+@@ -129,6 +129,7 @@
+   {
+     vsf_sysutil_set_no_procs();
+   }
++#if  0
+   /* Misconfiguration check: don't ever chroot() to a directory writable by
+    * the current user.
+    */
+@@ -139,5 +140,6 @@
+       die("vsftpd: refusing to run with writable root inside chroot()");
+     }
+   }
++#endif
+ }
+ 
