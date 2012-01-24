@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.3.4)
+$(call PKG_INIT_BIN, 2.3.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=2ea5d19978710527bb7444d93b67767a
+$(PKG)_SOURCE_MD5:=01398a5bef8e85b6cf2c213a4b011eca
 $(PKG)_SITE:=https://security.appspot.com/downloads
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/vsftpd
