@@ -121,6 +121,9 @@ fi
 FIRMWARE="$1"
 FIRMWARE2="$2"
 
+FIRMWARE_EXTENSION="${FIRMWARE##*.}"
+FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
+
 BASE_DIR="$(dirname "$0")"
 if [ -z "$DIR" ]; then
 	DIR="${FIRMWARE}.mod"
@@ -338,7 +341,45 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking firmware image"
 	mkdir "$FIRMWARE_DIR"
-	"$UNTAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || exit 1
+
+	if [ "$FIRMWARE_EXTENSION" != "exe" ]; then
+		# Unpack standard *.image file in tar format
+		"$UNTAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
+	fi
+	if [ "$FIRMWARE_EXTENSION" == "exe" ] || [ "$untar_failed" ]; then
+		# Unpack Windows recover.exe file or mtdblock dump
+		exe_images=($("${TOOLS_DIR}/extract-images" "$ABS_BASE_DIR" "$FIRMWARE" | sed -nr 's/^ *(.*\.image) - .*/\1/p'))
+		[ "$exe_images" ] || exit 1
+		mkdir -p "$FIRMWARE_DIR/var/tmp"
+		mkdir "$KERNEL_DIR"
+		unset exe_hr_mode
+		# NOTE: This loop is sensitive to the order and format of output of
+		# "tools/extract-images", e.g. a hidden root image is always listed
+		# before its parts.
+		for (( i=0; i<${#exe_images[@]}; i++ )); do
+			exe_image="${exe_images[i]}"
+			case "$exe_image" in
+				*/urlader.image)
+					mv "$exe_image" "$FIRMWARE_DIR/var/tmp"
+					;;
+				*/hr_kernel.image)
+					exe_hr_mode=1
+					mv "$exe_image" "$FIRMWARE_DIR/var/tmp/kernel.image"
+					touch "$FIRMWARE_DIR/var/tmp/filesystem.image"
+					;;
+				*/kernel.image)
+					[ "$exe_hr_mode" ] || cp "$exe_image" "$FIRMWARE_DIR/var/tmp/kernel.image"
+					mv "$exe_image" "$KERNEL_DIR/kernel.raw"
+					;;
+				*/filesystem.image)
+					[ "$exe_hr_mode" ] \
+						&& mv "$exe_image" "$KERNEL_DIR/kernelsquashfs.raw" \
+						|| mv "$exe_image" "$FIRMWARE_DIR/var/tmp/filesystem.image"
+					;;
+			esac
+		done
+		rm -r "$(dirname "$exe_image")"
+	fi
 
 	# Do the images exist ?
 	[ ! -r "${KERNEL}" ] && error 1 "cannot find kernel.image"
