@@ -2,17 +2,26 @@
 PID_FILE=/var/run/onlinechanged
 OC_STATE="$@"
 
-#parameter -e: additional new-line at line end
+# parameter -e: additional new-line at line end
 log() {
 	local addline=""
 	while [ "$1" == "-e" ]; do
 		addline="\n"
 		shift
 	done
-	echo -e "[$$]: [$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
+	echo -e "$(date '+%Y-%m-%d %H:%M:%S') [$$]: [$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
 	echo "ONLINECHANGED[$$]: [$OC_STATE] $*" >/dev/console
 	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
 }
+
+# semaphore older than 3 min -> kill waiting sibling scripts (not during startup)
+if [ -e /tmp/.modstarted -a "$(find $PID_FILE -prune -mmin +3 2>/dev/null)" == "$PID_FILE" ]; then
+	for pid in $(pidof onlinechanged.sh | sed "s/ \?$$//"); do
+		log "killing old process #$pid"
+		kill $pid
+	done
+	rm -rf $PID_FILE 2>/dev/null
+fi
 
 # shutdown: do nothing
 if [ -e /var/run/shutdown ]; then
@@ -49,7 +58,7 @@ if [ ! -e /tmp/.modstarted ]; then
 	done
 fi
 
-#execute onlinechanged scripts
+# execute onlinechanged scripts
 eventadd 1 "Running onlinechanged: $OC_STATE"
 log "approved"
 for i in /etc/onlinechanged/* /tmp/onlinechanged/* /tmp/flash/onlinechanged/*; do

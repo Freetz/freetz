@@ -75,6 +75,13 @@ Latest changes:
     * remove AVM's strace
     * remove chronyd
     * replace dtrace: execute a custom action by phone
+    * disable console on serial port: do not start a console/shell on serial
+      port
+    * replace onlinechanged: execute AVM, Freetz and user-defined scripts
+      whenever the external IP address changes. In opposite to AVM's original
+      this version also works on boxes behind a NAT (e.g. IP clients using an
+      existing internet connection) and on boxes where AVM onlinechanged is not
+      called reliably.
 
 - New packages, libs, modules:
     * aiccu 20070115
@@ -195,6 +202,12 @@ Latest changes:
      * get_ip:
         + default method could be set via webif
         + cache for extquery (1 minunte)
+
+- Updated tools and hooks:
+    * get_ip:
+     + default method can be set via web interface
+     + added new methods stun-ip (default) and route
+     + removed obsolete methods ostat and extquery
 
 - Updated patches:
     * Update many patches to support actual firmwares (e.g. changed paths)

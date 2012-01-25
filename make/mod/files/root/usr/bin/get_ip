@@ -2,107 +2,134 @@
 
 [ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
 
-local ip=""
-local retval=""
+# Global result
+IP=""
 
 helpmsg() {
-echo "get_ip - determine external IP address"
-	echo
-	echo "Usage: $0 [option]"
-	echo "    -a, --all      - use all methods (order: webcm, extquery, dsld) [recommended]"
-	echo "    -d, --dsld     - use showdsldstat method (use only with kernel 2.6 firmwares)"
-	echo "    -e, --extquery - use external site query method (checkip.dyndns.org)"
-	echo "    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl method"
-	echo "    -?, --help     - print this help message"
-	echo
-	echo "  current default method: $MOD_GET_IP_METHOD"
-	echo
+cat << EOF
+get_ip - determine external IP address
+
+Usage: $0 [option]
+    -a, --all      - use all methods (order: stun, route, dsld, webcm) [recommended]
+    -d, --dsld     - use showdsldstat (since firmware 04.86)
+    -r, --route    - use routing table
+    -s, --stun     - use STUN server (stun.1und1.de)
+    -w, --webcm    - use webcm CGI handler / ctlmgr_ctl
+    -?, --help     - print this help message
+
+Current default method: $MOD_GET_IP_METHOD
+
+Note: If environment variable IPADDR is set and contains a public IP (not from
+a private or link-local network), its value will be returned.
+
+EOF
 }
 
-# dont return local-ips like 192.168.178.1
-check_local_ip() {
-	[ $retval -ne 0 ] && return
-	for local_ip in $(ifconfig | sed -n 's/.*inet addr:\([0-9\.]*\) .*/\1/p'); do
-		if [ "$local_ip" == "$ip" ]; then
-			ip=""
-			retval=3
-			break
-		fi
-	done
+# Detect private (RFC 1918) or link-local (RFC 5735) IPs
+# Returns 0 for public IP, 1 for private IP, 2 if IP == ""
+ip_public()
+{
+	[ "$1" ] || return 2
+	local ip=$1
+	# 10.0.0.0/8 (private), 192.168.0.0/16 (private), 169.254.0.0/16 (link-local)
+	(
+		[ "$ip" != "${ip#10.}" ] ||
+		[ "$ip" != "${ip#192.168.}" ] ||
+		[ "$ip" != "${ip#169.254.}" ]
+	) && return 1
+	# 172.16.0.0/12 (private)
+	[ "$ip" == "${ip#172.}" ] && return 0
+	ip=$(echo $ip | cut -d '.' -f 2)
+	[ $ip -ge 16  ] && [ $ip -le 31 ] && return 1 || return 0
 }
 
 via_dsld() {
-	ip="$(/sbin/showdsldstat | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
-	retval=$?
-	[ -z "$ip" ] && retval=2
-	check_local_ip
+	# Firmware ca. 04.68 and newer should be safe, but some boxes had it since 04.31
+	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
+	ip_public "$IP" || return 1
 }
 
-via_extquery() {
-	#read cache-file (max age 1 minute)
-	ip=$(find /tmp/ -name get_ip.cache -maxdepth 1 -mmin 0 -exec cat {} ';')
-	if [ -n "$ip" ]; then
-		retval=0
-		return
-	fi
-
-	#if supported by wget(-gnu), don't wait forever:
-	SHORTWAIT="-t 1"
-	if which wget-gnu >/dev/null; then
-		WGET="wget-gnu $SHORTWAIT"
-	else
-		wget --version >/dev/null 2>&1 && WGET="wget $SHORTWAIT" || WGET="wget"
-	fi
-
-	#"download" ip, max 3 tries
-	for turn in 1 2 3; do
-		ip="$($WGET -T 30 -q -O - http://checkip.dyndns.org | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
-		retval=$?
-		[ $retval -eq 0 ] && break
+# AVM's home-brew NAT does not expose the external IP on network interface
+# "dsl", but sets a route to it. This method should work on most DSL boxes,
+# with two known exceptions:
+#   a) DNS servers are configured manually to hosts with public IP address.
+#      In this case multiple candidate IPs would be found. Thus we return an
+#      error rather than trying to guess which IP might be correct.
+#   b) If the box does not connect to DSL via PPPoE but uses the DSL modem as a
+#      bridge to e.g. a public /21 network, the external IP is not listed in
+#      the routing table at all, but the /21 network instead.
+# There might be more exceptions in case of routing table manipulation (maybe
+# for VPNs or if for any reason a single external host IP is explicitly added
+# to the routing table).
+via_route() {
+	local candidate_count=0
+	for ip in $(route -n | sed -nr 's/^([1-9][0-9]*(\.[0-9]+){3}) +0(\.0){3} +255(\.255){3} +.* dsl$/\1/p'); do
+		ip_public "$ip" && IP="$ip" && candidate_count=$((candidate_count + 1))
 	done
+	[ $candidate_count -eq 1 ] && return 0
+	unset IP
+	return 1
+}
 
-	#save ip to cache-file
-	[ $retval -eq 0 ] && echo "$ip" > /tmp/get_ip.cache
+# On IP clients or UMTS, we are mostly behind a NAT and the only way to
+# determine the external IP is to get the information from an external
+# server. The most efficient method is STUN (stun-ip applet will try 3x).
+via_stun() {
+	IP=$(stun-ip stun.1und1.de)
+	[ $? -eq 0 ] && [ "$IP" ] && return 0
+	return 1
 }
 
 via_webcm() {
 	local queryfile="/usr/www/all/html/query.txt"
 	local querystring=""
 	if which ctlmgr_ctl >/dev/null; then
-		ip=$(ctlmgr_ctl r connection0 pppoe:status/ip)
-		retval=$?
+		# Firmware ca. 04.76 and newer
+		IP=$(ctlmgr_ctl r connection0 pppoe:status/ip)
 	else
-		if [ "$(sed -ne '/var:n\[/p' $queryfile)" != "" ]; then
+		if [ "$(sed -n '/var:n\[/p' $queryfile)" ]; then
+			# Firmware ca. 04.84 and newer (should never be used, see above)
 			querystring="var:n[0]=connection0:pppoe:status/ip"
 		else
+			# Older firmware
 			querystring="var:cnt=1&var:n0=connection0:pppoe:status/ip"
 		fi
-		ip="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
-		retval=$?
+		IP="$(/usr/www/html/cgi-bin/webcm "getpage=${queryfile}&${querystring}")"
 	fi
-	[ $retval -ge 170 ] && retval=0 	# i get [box=val]: 7170=176, 7270=177, 7141=172
-	check_local_ip
+	# ctlmgr_ctl return values [box=val]: 7170=176, 7270=177, 7141=172
+	# Caveat: must use "-o" instead of "||", otherwise "$?" would be reset
+	[ $? -eq 0 -o $? -ge 170 ] && ip_public "$IP" && return 0 || return 1
 }
 
-#use user-define method if no argument is given
-if [ $# -eq 0 ]; then
-	get_method="$MOD_GET_IP_METHOD"
-else
-	get_method="$1"
-fi
+# If multid (or whoever) has already determined the external IP, use it
+ip_public "$IPADDR" && echo "$IPADDR" && exit 0
 
-case $get_method in
-	-a|--all|"")
-		for mode in webcm extquery dsld; do
+# Set user-defined method (e.g. via web UI) if no argument is given
+[ $# -eq 0 ] && method="$MOD_GET_IP_METHOD" || method="$1"
+
+case $method in
+	-a|--all|""|-e|--extquery|-o|--ostat)
+		# for compatibility reason only, may be removed later
+		[ "$method" ] && [ "$method" != "-a" ] && [ "$method" != "--all" ] &&
+			echo "warning: method $method is obsolete, using --all instead" >&2
+		# Why this order?
+		#   1.) STUN should always work and is fast
+		#   2.) route is fast, works in all firmwares, problematic routing configs are rare
+		#   3.) dsld is faster than ctlmgr/webcm, but not always available
+		#   4.) ctlmgr/webcm is slow, but should work in all firmwares on DSL boxes
+		for mode in stun route dsld webcm; do
 			via_$mode
-			[ $retval -eq 0 ] && break
+			[ $? -eq 0 ] && break
 		done
 		;;
 	-d|--dsld)
 		via_dsld
 		;;
-	-e|--extquery)
-		via_extquery
+	-r|--route)
+		via_route
+		;;
+	-s|--stun)
+		via_stun
 		;;
 	-w|--webcm)
 		via_webcm
@@ -117,9 +144,5 @@ case $get_method in
 		;;
 esac
 
-if [ $retval -eq 0 ]; then
-	echo "$ip"
-else
-	echo "get_ip error (exit code $retval)" >&2
-fi
-exit $retval
+[ $? -ne 0 ] && echo "get_ip error" >&2 && exit 1
+echo "$IP"
