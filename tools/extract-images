@@ -23,10 +23,17 @@ do_extract_bl()
 {
 	local BOOTLOADER_MAGIC="$1"
 	local ENDIAN_TYPE="$2"
+	# Find bootloader candidates ('sfk hexfind' dumps offsets and hexdump contexts)
+	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ -quiet)"
+	# Isolate arrays of bootloader offset candidates (hex & dec)
+	bootloader_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
+	[ "$bootloader_offs_hex" ] || return
+	bootloader_offs=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"))
 	# Find bootloader candidates and isolate their offsets
-	for offs in $($mod_base/tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ -quiet | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"); do
+	for (( i=0; i<${#bootloader_offs[@]}; i++ )); do
 		# For each bootloader candidate create a new numbered 'urlader.image' file
 		output_file="$output_dir/urlader.image${count}"
+		offs=${bootloader_offs[i]}
 		# Bootloader files are either 64K or 128K long. Try both variants.
 		tail -c +$(($offs+1)) "$input_file" | head -c +65536 > "$output_file.64k"
 		tail -c +$(($offs+1)) "$input_file" | head -c +131072 > "$output_file.128k"
