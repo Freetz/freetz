@@ -330,7 +330,7 @@ comment "WARNING: Both (v1 and v2) piglet files are selected for removal."
 		FREETZ_REMOVE_PIGLET_V1 && \
 		FREETZ_REMOVE_PIGLET_V2
 
-menu "Remove ISDN/POTS piglet file(s) (EXPERIMENTAL)"
+menu "Remove ISDN/POTS piglet file(s) - EXPERIMENTAL"
 	depends on FREETZ_SHOW_ADVANCED && \
 		( \
 			FREETZ_TYPE_FON_5113 || \
@@ -342,7 +342,7 @@ menu "Remove ISDN/POTS piglet file(s) (EXPERIMENTAL)"
 		)
 
 	config FREETZ_REMOVE_PIGLET_ISDN
-	bool "Remove ISDN piglet file(s) (EXPERIMENTAL)"
+	bool "Remove ISDN piglet file(s) - EXPERIMENTAL"
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -351,7 +351,7 @@ menu "Remove ISDN/POTS piglet file(s) (EXPERIMENTAL)"
 
 
 	config FREETZ_REMOVE_PIGLET_POTS
-	bool "Remove POTS piglet file(s) (EXPERIMENTAL)"
+	bool "Remove POTS piglet file(s) - EXPERIMENTAL"
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -804,7 +804,7 @@ config FREETZ_REMOVE_HELP
 		Removes the (offline) help pages from the web menu.
 
 config FREETZ_REMOVE_JFFS2
-	bool "Remove jffs2.ko (EXPERIMENTAL)"
+	bool "Remove jffs2.ko - EXPERIMENTAL"
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_JFFS2
 	default n
 	help
@@ -1114,7 +1114,7 @@ config FREETZ_REPLACE_DTRACE
 		phone using #97*3* keycode sequence.
 
 config FREETZ_REPLACE_ONLINECHANGED
-	bool "Replace onlinechanged (EXPERIMENTAL)"
+	bool "Replace onlinechanged - EXPERIMENTAL"
 	depends on FREETZ_SHOW_ADVANCED
 	default n
 	help

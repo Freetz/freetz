@@ -59,7 +59,7 @@ choice
 
 	config FREETZ_TYPE_6840
 		select FREETZ_AVM_VERSION_3370_05_08
-		bool "6840 LTE (experimental)"
+		bool "6840 LTE - EXPERIMENTAL"
 
 	config FREETZ_TYPE_FON
 		select FREETZ_AVM_VERSION_04_33 if FREETZ_TYPE_LANG_DE
@@ -192,7 +192,7 @@ choice
 
 	config FREETZ_TYPE_WLAN_3370
 		select FREETZ_AVM_VERSION_3370_05_08
-		bool "WLAN 3370 (experimental)"
+		bool "WLAN 3370 - EXPERIMENTAL"
 
 	config FREETZ_TYPE_SPEEDPORT_W501V
 		select FREETZ_AVM_VERSION_r7203
@@ -1549,16 +1549,16 @@ if FREETZ_SHOW_ADVANCED && \
 	FREETZ_KERNEL_VERSION_2_6_19_MAX
 
 	config FREETZ_SQUASHFS_BLOCKSIZE_131072
-		bool "128 KB (EXPERIMENTAL)"
+		bool "128 KB - EXPERIMENTAL"
 
 	config FREETZ_SQUASHFS_BLOCKSIZE_262144
-		bool "256 KB (EXPERIMENTAL)"
+		bool "256 KB - EXPERIMENTAL"
 
 	config FREETZ_SQUASHFS_BLOCKSIZE_524288
-		bool "512 KB (EXPERIMENTAL)"
+		bool "512 KB - EXPERIMENTAL"
 
 	config FREETZ_SQUASHFS_BLOCKSIZE_1048576
-		bool "1024 KB (EXPERIMENTAL)"
+		bool "1024 KB - EXPERIMENTAL"
 
 endif # FREETZ_SHOW_ADVANCED #
 
@@ -1593,7 +1593,7 @@ config FREETZ_STRIP_BINARIES
 		In case of problems, you can disable it (Default: enabled).
 
 config FREETZ_STRIP_LIBRARIES
-	bool "Run mklibs on the built root filesystem (EXPERIMENTAL)"
+	bool "Run mklibs on the built root filesystem - EXPERIMENTAL"
 	depends on FREETZ_SHOW_ADVANCED
 	default n
 	help
@@ -1605,7 +1605,8 @@ config FREETZ_STRIP_LIBRARIES
 		build process.
 
 choice
-	prompt "Strip kernel modules (EXPERIMENTAL)"
+
+	prompt "Strip kernel modules - EXPERIMENTAL"
 		depends on FREETZ_SHOW_ADVANCED
 		default FREETZ_STRIP_MODULES_NONE
 
@@ -1615,12 +1616,12 @@ choice
 			Disables shrinking of modules.
 
 	config FREETZ_STRIP_MODULES_FREETZ
-		bool "modules built by Freetz only"
+		bool "Freetz only"
 		help
 			Shrinks modules added by Freetz only.
 
 	config FREETZ_STRIP_MODULES_ALL
-		bool "all modules (Freetz & AVM)"
+		bool "Freetz & AVM"
 		help
 			Shrinks all modules. May cause weird effects, like
 			all LEDs flashing. See http://freetz.org/ticket/1249
