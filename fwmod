@@ -504,7 +504,10 @@ MODULES_DIR="${FILESYSTEM_MOD_DIR}/${MODULES_SUBDIR}"
 
 
 if [ "$FREETZ_SQUASHFS_BLOCKSIZE_ORIG" == "y" ]; then
-	FILESYSTEM_BLOCKSIZE="$((1<<$(od -i -N 1 -j 34 "$FILESYSTEM" | sed -n -e '1s#.* ##' -e 1p)))"
+	bytes="$(od -t x1 -N 4 -j 0x33 "$FILESYSTEM" | sed -nr 's/^[^ ]+ +(.*)/\1/p')"
+	[ "$FREETZ_TARGET_ARCH_BE" == "y" ] \
+		&& FILESYSTEM_BLOCKSIZE=$(printf "%d" "0x${bytes:0:2}${bytes:3:2}${bytes:6:2}${bytes:9:2}") \
+		|| FILESYSTEM_BLOCKSIZE=$(printf "%d" "0x${bytes:9:2}${bytes:6:2}${bytes:3:2}${bytes:0:2}")
 else
 	FILESYSTEM_BLOCKSIZE=$(set | sed -rn 's/FREETZ_SQUASHFS_BLOCKSIZE_([^=]+)=y/\1/p')
 fi
