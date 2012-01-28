@@ -101,7 +101,7 @@ diff -burN squashfs-tools/unsquashfs.c squashfs-tools/unsquashfs.c
  			s_ops.read_inode = read_inode_2;
  		}
 -	} else if(sBlk.s_major == 3 && sBlk.s_minor <= 1) {
-+	} else if(sBlk.s_major == 3 && sBlk.s_minor == SQUASHFS_MINOR) {
++	} else if(sBlk.s_major == 3 && sBlk.s_minor <= SQUASHFS_MINOR) {
  		s_ops.squashfs_opendir = squashfs_opendir;
  		s_ops.read_fragment = read_fragment;
  		s_ops.read_fragment_table = read_fragment_table;
