@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 2011.4.12)
-$(PKG)_LIB_VERSION:=81.0.0	# Don't forget to bump in make/libs/external.files, too.
+$(call PKG_INIT_BIN, 2012.1.15)
+$(PKG)_LIB_VERSION:=83.0.0	# Don't forget to bump in make/libs/external.files, too.
 $(PKG)_TARBALL_DIRNAME:=$(pkg)-3g_ntfsprogs-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$($(PKG)_TARBALL_DIRNAME).tgz
-$(PKG)_SOURCE_MD5:=9c4ce318373b15332239a77a9d2a39fe
+$(PKG)_SOURCE_MD5:=341acae00a290cab9b00464db65015cc
 $(PKG)_SITE:=http://tuxera.com/opensource
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_TARBALL_DIRNAME)
