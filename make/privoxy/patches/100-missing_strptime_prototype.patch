@@ -1,0 +1,26 @@
+--- GNUmakefile.in
++++ GNUmakefile.in
+@@ -243,7 +243,7 @@
+ # Add your flags here
+ OTHER_CFLAGS =
+ 
+-CFLAGS = @CFLAGS@ @CPPFLAGS@ $(OTHER_CFLAGS) $(SPECIAL_CFLAGS) -Wall \
++CFLAGS = @CFLAGS@ @CPPFLAGS@ -D_GNU_SOURCE $(OTHER_CFLAGS) $(SPECIAL_CFLAGS) -Wall \
+          @STATIC_PCRE_ONLY@ -Ipcre
+ 
+ LDFLAGS = @LDFLAGS@ $(DEBUG_CFLAGS) $(SPECIAL_CFLAGS)
+--- parsers.c
++++ parsers.c
+@@ -57,12 +57,6 @@
+ #include <assert.h>
+ #include <string.h>
+ 
+-#ifdef __GLIBC__
+-/*
+- * Convince GNU's libc to provide a strptime prototype.
+- */
+-#define __USE_XOPEN
+-#endif /*__GLIBC__ */
+ #include <time.h>
+ 
+ #ifdef FEATURE_ZLIB
