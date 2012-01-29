@@ -1,5 +1,5 @@
 $(call PKG_INIT_BIN, 2012.1.15)
-$(PKG)_LIB_VERSION:=83.0.0	# Don't forget to bump in make/libs/external.files, too.
+$(PKG)_LIB_VERSION:=83.0.0
 $(PKG)_TARBALL_DIRNAME:=$(pkg)-3g_ntfsprogs-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$($(PKG)_TARBALL_DIRNAME).tgz
 $(PKG)_SOURCE_MD5:=341acae00a290cab9b00464db65015cc
@@ -22,6 +22,11 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $(
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-ntfs-3g
+$(PKG)_CONFIGURE_OPTIONS += --enable-ntfsprogs
+# TODO: enabling extras causes the following extra programs to be compiled
+# ntfsck ntfsdump_logfile ntfsmftalloc ntfsmove ntfstruncate ntfswipe
+$(PKG)_CONFIGURE_OPTIONS += --disable-extras
 $(PKG)_CONFIGURE_OPTIONS += --disable-crypto
 $(PKG)_CONFIGURE_OPTIONS += --with-fuse=internal
 $(PKG)_CONFIGURE_OPTIONS += --without-uuid
@@ -63,9 +68,13 @@ $(pkg)-precompiled: $($(PKG)_LIB_TARGET_BINARY) $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NTFS_DIR) clean
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libntfs-3g.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ntfs-3g
 
 $(pkg)-uninstall:
-	$(RM) $(NTFS_BINARIES_ALL:%=$(NTFS_DEST_DIR)/usr/bin/%) $(NTFS_TARGET_LIBDIR)/libntfs-3g.so.*
+	$(RM) $(NTFS_BINARIES_ALL:%=$(NTFS_DEST_DIR)/usr/bin/%) $(NTFS_TARGET_LIBDIR)/libntfs-3g.so*
 
 $(call PKG_ADD_LIB,libntfs)
 $(PKG_FINISH)
