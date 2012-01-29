@@ -1,6 +1,6 @@
 --- genconfig.sh
 +++ genconfig.sh
-@@ -27,12 +27,12 @@
+@@ -26,12 +26,12 @@
  # Database path
  DB_PATH="/tmp/minidlna"
  # Log path
@@ -17,7 +17,7 @@
  NETGEAR="/*#define NETGEAR*/"
  READYNAS="/*#define READYNAS*/"
  PNPX="#define PNPX 0"
-@@ -41,22 +41,22 @@
+@@ -40,22 +40,22 @@
  
  # Detect if there are missing headers
  # NOTE: This check only works with a normal distro
@@ -56,7 +56,7 @@
  if [ -n "$MISSING" ]; then
  	echo -e "\nERROR!  Cannot continue."
  	echo -e "The following required libraries are either missing, or are missing development headers:\n"
-@@ -73,6 +73,7 @@
+@@ -72,6 +72,7 @@
  echo "" >> ${CONFIGFILE}
  
  # OS Specific stuff
@@ -64,7 +64,7 @@
  case $OS_NAME in
  	OpenBSD)
  		MAJORVER=`echo $OS_VERSION | cut -d. -f1`
-@@ -156,9 +157,9 @@
+@@ -155,9 +156,9 @@
  		exit 1
  		;;
  esac
@@ -75,7 +75,7 @@
  echo "#define OS_URL			\"${OS_URL}\"" >> ${CONFIGFILE}
  echo "" >> ${CONFIGFILE}
  
-@@ -176,7 +177,7 @@
+@@ -175,7 +176,7 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system inotify.h exists.  Otherwise our own inotify.h will be used. */" >> ${CONFIGFILE}
@@ -84,7 +84,7 @@
  echo "#define HAVE_INOTIFY_H" >> ${CONFIGFILE}
  else
  echo "/*#define HAVE_INOTIFY_H*/" >> ${CONFIGFILE}
-@@ -184,7 +185,7 @@
+@@ -183,7 +184,7 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system iconv.h exists.  ID3 tag reading in various character sets will not work properly otherwise. */" >> ${CONFIGFILE}
@@ -93,7 +93,7 @@
  echo "#define HAVE_ICONV_H" >> ${CONFIGFILE}
  else
  echo -e "\nWARNING!!  Iconv support not found.  ID3 tag reading may not work."
-@@ -193,11 +194,11 @@
+@@ -192,11 +193,11 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system libintl.h exists for NLS support. */" >> ${CONFIGFILE}
@@ -152,7 +152,7 @@
  
  all:	$(EXECUTABLES)
  
-@@ -56,27 +53,17 @@
+@@ -56,7 +53,7 @@
  distclean: clean
  	$(RM) config.h
  
@@ -160,6 +160,8 @@
 +install: minidlna
  	$(INSTALL) -d $(SBININSTALLDIR)
  	$(INSTALL) minidlna $(SBININSTALLDIR)
+ 
+@@ -64,21 +61,11 @@
  	$(INSTALL) -d $(ETCINSTALLDIR)
  	$(INSTALL) --mode=0644 minidlna.conf $(ETCINSTALLDIR)
  
@@ -185,7 +187,7 @@
  
  # DO NOT DELETE
  
-@@ -126,8 +113,4 @@
+@@ -128,8 +115,4 @@
  .SUFFIXES: .c .o
  
  .c.o:
