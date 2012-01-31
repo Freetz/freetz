@@ -59,7 +59,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_PACKAGE_OPENSSH_sshd)" != "y" ] \
 		&& echo "etc/default.openssh" >> $@ \
 		&& echo "etc/init.d/rc.openssh" >> $@ \
-		&& echo "etc/usr/lib/cgi-bin/openssh.cgi" >> $@; \
+		&& echo "usr/lib/cgi-bin/openssh.cgi" >> $@; \
 	touch $@
 
 $(pkg): $($(PKG)_TARGET_DIR)/.exclude
