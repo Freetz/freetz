@@ -206,6 +206,8 @@ while [ $# -ge 1 ]; do
 	shift
 done
 
+[ -z "$ip" ] && ip=192.168.178.1
+
 ping_params="-c1 -w1"
 if [ "$(uname -s)" == "Darwin" ]; then
 	ping_params="-c1 -t1"
