@@ -145,9 +145,9 @@ if [ "$MODE" = "server" ]; then
 
 			while [ $client -le "$CLIENTS_DEFINED" ]
 			do	
-				eval C_IP$client=$actcip
-				eval C_NAME$client=\"$actcname\"
-				eval C_NET$client=\"$actcnet\"
+				eval C_IP$client=\$actcip
+				eval C_NAME$client=\$actcname
+				eval C_NET$client=\$actcnet
 				actcip=${restip%%:*}
 				restip=${restip#*:}
 				actcname=${restname%%:*}
@@ -162,7 +162,7 @@ if [ "$MODE" = "server" ]; then
 			while [ $client -le "$CLIENTS_DEFINED" ]
 			do
 				eval net=\$C_NET$client
-				eval name=\"\$C_NAME$client\"
+				eval name=\$C_NAME$client
 				eval ip=\$C_IP$client
 				echo "ifconfig-push $ip $BOX_MASK"  > "$CCD/$name"
 				if [ "$net" != "-" ]; then
