@@ -145,9 +145,9 @@ if [ "$MODE" = "server" ]; then
 
 			while [ $client -le "$CLIENTS_DEFINED" ]
 			do	
-				eval C_IP$client=\$actcip
-				eval C_NAME$client=\$actcname
-				eval C_NET$client=\$actcnet
+				eval C_IP$client=$actcip
+				eval C_NAME$client=\"$actcname\"
+				eval C_NET$client=\"$actcnet\"
 				actcip=${restip%%:*}
 				restip=${restip#*:}
 				actcname=${restname%%:*}
@@ -162,12 +162,12 @@ if [ "$MODE" = "server" ]; then
 			while [ $client -le "$CLIENTS_DEFINED" ]
 			do
 				eval net=\$C_NET$client
-				eval name=\$C_NAME$client
+				eval name=\"\$C_NAME$client\"
 				eval ip=\$C_IP$client
-				echo "ifconfig-push $ip $BOX_MASK"  > $CCD/$name
+				echo "ifconfig-push $ip $BOX_MASK"  > "$CCD/$name"
 				if [ "$net" != "-" ]; then
 					echo -e "route $net $ip" | sed "s/[[:space:]]*;[[:space:]]*/ ${ip}\nroute /g" >> $CONFFILE
-					echo -e "iroute $net" | sed "s/[[:space:]]*;[[:space:]]*/\niroute /g" >> $CCD/$name
+					echo -e "iroute $net" | sed "s/[[:space:]]*;[[:space:]]*/\niroute /g" >> "$CCD/$name"
 				fi
 				if [ "$CLIENT2CLIENT" = "yes" ]; then
 					i=1
@@ -175,7 +175,7 @@ if [ "$MODE" = "server" ]; then
 						if [ $i -ne $client ]; then
 							eval cnet=\$C_NET$i 
 							eval cip=\$C_IP$i
-							[ "$cnet" != "-"  ] && echo -e "push \"route $cnet $cip\"" | sed "s/[[:space:]]*;[[:space:]]*/ ${cip}\"\npush \"route /g" >> $CCD/$name
+							[ "$cnet" != "-"  ] && echo -e "push \"route $cnet $cip\"" | sed "s/[[:space:]]*;[[:space:]]*/ ${cip}\"\npush \"route /g" >> "$CCD/$name"
 						fi
 						i=$((1+$i))
 					done

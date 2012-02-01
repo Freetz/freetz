@@ -666,7 +666,7 @@ function init_configs() {
 
 function add_config() {
 	value=local_config_count + 1;
-	tmpname=document.getElementById("id_act_config_name").value || "Config"+value;
+	tmpname=document.getElementById("id_act_config_name").value.replace(/\s/g, "_") || "Config"+value;
 	x=1;
 	usednames=local_config_names.join("#");
 	usednames=usednames+"#";
@@ -678,7 +678,7 @@ function add_config() {
 		tmp='usednames.search(/#'+tmpname+'#/)';
 		found=eval(tmp);
 	}
-	Neu = new Option(tmpname.replace(/\s/g, "_"));
+	Neu = new Option(tmpname);
 	document.getElementById("id_act_config").options[document.getElementById("id_act_config").length] = Neu;
 	Neu.value = value;
 	Neu.selected="selected";
