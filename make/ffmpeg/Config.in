@@ -10,6 +10,7 @@ menu "Configuration"
 
 config FREETZ_PACKAGE_FFMPEG_ffmpeg
 	bool "Include ffmpeg"
+	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libavcodec
@@ -18,6 +19,7 @@ config FREETZ_PACKAGE_FFMPEG_ffmpeg
 	select FREETZ_LIB_libavformat
 	select FREETZ_LIB_libavutil
 	select FREETZ_LIB_libpostproc
+	select FREETZ_LIB_libswresample
 	select FREETZ_LIB_libswscale
 	default n
 
@@ -32,6 +34,7 @@ config FREETZ_PACKAGE_FFMPEG_ffserver
 	select FREETZ_LIB_libavformat
 	select FREETZ_LIB_libavutil
 	select FREETZ_LIB_libpostproc
+	select FREETZ_LIB_libswresample
 	select FREETZ_LIB_libswscale
 	select FREETZ_PACKAGE_FFMPEG_MUXER_ffm
 	select FREETZ_PACKAGE_FFMPEG_DEMUXER_ffm

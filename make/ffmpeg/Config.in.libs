@@ -41,6 +41,13 @@ config FREETZ_LIB_libpostproc
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libavutil
 
+config FREETZ_LIB_libswresample
+	bool "libswresample.so"
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libavutil
+	default n
+
 config FREETZ_LIB_libswscale
 	bool "libswscale.so"
 	select FREETZ_LIB_libm
