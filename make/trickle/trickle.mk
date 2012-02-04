@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 1.07)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.monkey.org/~marius/trickle
 $(PKG)_SOURCE_MD5:=860ebc4abbbd82957c20a28bd9390d7d
+$(PKG)_SITE:=http://www.monkey.org/~marius/trickle
 
 $(PKG)_BINARIES:=$(pkg) $(pkg)ctl $(pkg)d
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)

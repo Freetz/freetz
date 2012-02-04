@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,2.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://alioth.debian.org/frs/download.php/3487
 $(PKG)_SOURCE_MD5:=a5117d4d21e2c9e825edb586ee2fe8d2
+$(PKG)_SITE:=http://alioth.debian.org/frs/download.php/3487
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/minicom
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/minicom
