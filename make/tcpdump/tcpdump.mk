@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 4.1.1)
 $(PKG)_SOURCE:=tcpdump-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=d0dd58bbd6cd36795e05c6f1f74420b0
 $(PKG)_SITE:=http://www.tcpdump.org/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpdump
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tcpdump
-$(PKG)_SOURCE_MD5:=d0dd58bbd6cd36795e05c6f1f74420b0
 
 $(PKG)_DEPENDS_ON := libpcap
 

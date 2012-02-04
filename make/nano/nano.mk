@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 2.2.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=77a10a49589f975ce98350a4527a2ebf
 $(PKG)_SITE:=http://www.nano-editor.org/dist/v2.2
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nano
-$(PKG)_SOURCE_MD5:=77a10a49589f975ce98350a4527a2ebf
 
 $(PKG)_SYNTAX_FILES_DIR:=$($(PKG)_DIR)/doc/syntax/
 $(PKG)_TARGET_SYNTAX_FILES_DIR:=$($(PKG)_DEST_DIR)/usr/share/nano/

@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 2.17.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=@KERNEL/linux/utils/$(pkg)/v2.17
 $(PKG)_SOURCE_MD5:=4635725a3eef1c57090bac8ea5e082e6
+$(PKG)_SITE:=@KERNEL/linux/utils/$(pkg)/v2.17
 
 $(PKG)_BINARIES:=blkid findfs
 # misc-utils/.libs when building dynamically linked binaries

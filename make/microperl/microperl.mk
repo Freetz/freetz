@@ -1,6 +1,7 @@
 # partly taken from www.buildroot.org
 $(call PKG_INIT_BIN, 5.10.1)
 $(PKG)_SOURCE:=perl-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=82400c6d34f7b7b43d0196c76cd2bbb1
 $(PKG)_SITE:=ftp://ftp.mpi-sb.mpg.de/pub/perl/CPAN/src/5.0
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/perl-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/microperl
@@ -9,7 +10,6 @@ $(PKG)_TARGET_SYMLINK:=$($(PKG)_DEST_DIR)/usr/bin/perl
 $(PKG)_TARGET_MODULES:=$($(PKG)_TARGET_DIR)/.modules_installed
 $(PKG)_TARGET_MODULES_DIR:=$($(PKG)_DEST_DIR)/usr/lib/perl5/$($(PKG)_VERSION)
 $(PKG)_TARGET_MODS:=$(subst ",,$(FREETZ_PACKAGE_MICROPERL_MODULES))
-$(PKG)_SOURCE_MD5:=82400c6d34f7b7b43d0196c76cd2bbb1
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

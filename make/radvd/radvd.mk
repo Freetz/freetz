@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 1.8.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=http://www.litech.org/radvd/dist
 $(PKG)_SOURCE_MD5:=73d533b7b20f5554c8d3e33643945442
+$(PKG)_SITE:=http://www.litech.org/radvd/dist
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)

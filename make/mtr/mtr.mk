@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 0.80)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=fa68528eaec1757f52bacf9fea8c68a9
 $(PKG)_SITE:=ftp://ftp.bitwizard.nl/mtr
 $(PKG)_BINARY:=$($(PKG)_DIR)/mtr
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mtr
-$(PKG)_SOURCE_MD5:=fa68528eaec1757f52bacf9fea8c68a9
 
 $(PKG)_DEPENDS_ON := ncurses
 

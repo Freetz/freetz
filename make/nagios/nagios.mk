@@ -1,11 +1,11 @@
 $(call PKG_INIT_BIN, 2.11)
 $(PKG)_SOURCE:=nagios-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=058c1f4829de748b42da1b584cccc941
 $(PKG)_SITE:=@SF/nagios
 $(PKG)_BINARY:=$($(PKG)_DIR)/base/nagios
 $(PKG)_STATS_BINARY:=$($(PKG)_DIR)/base/nagiostats
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nagios
 $(PKG)_STATS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nagiostats
-$(PKG)_SOURCE_MD5:=058c1f4829de748b42da1b584cccc941
 
 $(PKG)_DEPENDS_ON := microperl
 

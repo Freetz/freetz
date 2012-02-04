@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 4.0.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=8506fd205028a96c741e4037de6e3c42
 $(PKG)_SITE:=http://ftp.uni-erlangen.de/pub/utilities/screen
 $(PKG)_BINARY:=$($(PKG)_DIR)/screen
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/screen.bin
-$(PKG)_SOURCE_MD5:=8506fd205028a96c741e4037de6e3c42
 
 $(PKG)_DEPENDS_ON := ncurses
 

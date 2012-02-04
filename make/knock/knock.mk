@@ -1,11 +1,11 @@
 $(call PKG_INIT_BIN, 0.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=ca09d61458974cff90a700aba6120891
 $(PKG)_SITE:=http://www.zeroflux.org/proj/knock/files
 $(PKG)_KNOCK_BINARY:=$($(PKG)_DIR)/knock
 $(PKG)_KNOCKD_BINARY:=$($(PKG)_DIR)/knockd
 $(PKG)_TARGET_KNOCK_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/knock
 $(PKG)_TARGET_KNOCKD_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/knockd
-$(PKG)_SOURCE_MD5:=ca09d61458974cff90a700aba6120891
 
 $(PKG)_DEPENDS_ON := libpcap
 

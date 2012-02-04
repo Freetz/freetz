@@ -1,8 +1,8 @@
 $(call PKG_INIT_BIN,1.0.22)
 $(PKG)_LIB_VERSION:=1.0.22
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SITE:=ftp://ftp3.sane-project.org/pub/sane/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_SOURCE_MD5:=fadf56a60f4776bfb24491f66b617cf5
+$(PKG)_SITE:=ftp://ftp3.sane-project.org/pub/sane/$(pkg)-$($(PKG)_VERSION)
 
 # saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned

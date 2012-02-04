@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 1.7.1.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=2081987fb0cb0290b8105574058cb329
 $(PKG)_SITE:=http://www.dest-unreach.org/socat/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/socat
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/socat
-$(PKG)_SOURCE_MD5:=2081987fb0cb0290b8105574058cb329
 
 $(PKG)_DEPENDS_ON := openssl
 

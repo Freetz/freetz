@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 0.7.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=c2fa9d7e771134ac8c89d56b8197d4ca
 $(PKG)_SITE:=@SF/wake-on-lan
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
-$(PKG)_SOURCE_MD5:=c2fa9d7e771134ac8c89d56b8197d4ca
 
 $(PKG)_CONFIGURE_ENV := jm_cv_func_working_malloc=yes
 

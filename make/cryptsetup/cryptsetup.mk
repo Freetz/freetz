@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, 1.0.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=00d452eb7a76e39f5749545d48934a10
 $(PKG)_SITE:=http://cryptsetup.googlecode.com/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/cryptsetup
-$(PKG)_SOURCE_MD5:=00d452eb7a76e39f5749545d48934a10
 
 $(PKG)_DEPENDS_ON := devmapper e2fsprogs popt
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
