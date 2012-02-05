@@ -1504,8 +1504,8 @@ menu "Plugin selection"
 endmenu # "Plugin selection" #
 
 
-comment "CAUTION: SQUASHFS blocksizes greater than 64 KB can cause extensive memory usage and lead to an unstable box."
-	depends on !(FREETZ_SQUASHFS_BLOCKSIZE_ORIG||FREETZ_SQUASHFS_BLOCKSIZE_65536)
+comment "CAUTION: SquashFS block sizes >64 KB can cause an unstable box due to extensive memory usage"
+	depends on ! (FREETZ_SQUASHFS_BLOCKSIZE_ORIG || FREETZ_SQUASHFS_BLOCKSIZE_65536)
 
 choice
 	prompt "SquashFS block size"
@@ -1556,6 +1556,19 @@ if FREETZ_SHOW_ADVANCED && \
 endif # FREETZ_SHOW_ADVANCED #
 
 endchoice # "SquashFS block size" #
+
+config FREETZ_SQUASHFS_BLOCKSIZE
+	int
+	help
+		Numeric SquashFS block size in bytes
+
+	default 16384 if FREETZ_SQUASHFS_BLOCKSIZE_16384
+	default 32768 if FREETZ_SQUASHFS_BLOCKSIZE_32768
+	default 65536 if FREETZ_SQUASHFS_BLOCKSIZE_65536
+	default 131072 if FREETZ_SQUASHFS_BLOCKSIZE_131072
+	default 262144 if FREETZ_SQUASHFS_BLOCKSIZE_262144
+	default 524288 if FREETZ_SQUASHFS_BLOCKSIZE_524288
+	default 1048576 if FREETZ_SQUASHFS_BLOCKSIZE_1048576
 
 menu "Kernel and modules options"
 

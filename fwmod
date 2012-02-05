@@ -502,12 +502,11 @@ HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/${HTML_SUBDIR}"
 # HTML_LANG_MOD_DIR can't be defined here
 MODULES_DIR="${FILESYSTEM_MOD_DIR}/${MODULES_SUBDIR}"
 
-[ "$FREETZ_SQUASHFS_BLOCKSIZE_ORIG" == "y" ] \
-	&& FILESYSTEM_BLOCKSIZE=$("$UNSQUASHFS_LZMA" -s "$FILESYSTEM" 2>/dev/null | sed -nr 's/Block size ([0-9]+)/\1/p') \
-	|| FILESYSTEM_BLOCKSIZE=$(set | sed -rn 's/FREETZ_SQUASHFS_BLOCKSIZE_([^=]+)=y/\1/p' | head -n 1)
+[ "$FREETZ_SQUASHFS_BLOCKSIZE" ] ||
+	FREETZ_SQUASHFS_BLOCKSIZE=$("$UNSQUASHFS_LZMA" -s "$FILESYSTEM" 2>/dev/null | sed -nr 's/Block size ([0-9]+)/\1/p')
 
 if [ "$FREETZ_SIZEINFO_COMPRESSED" == "y" ]; then
-	let FILESYSTEM_BLOCKSIZE_KB=$FILESYSTEM_BLOCKSIZE/1024
+	let FILESYSTEM_BLOCKSIZE_KB=$FREETZ_SQUASHFS_BLOCKSIZE/1024
 	SIZEINFO_CACHEDIR=${PACKAGES_DIR}/freetzcachedsizes
 	mkdir -p ${SIZEINFO_CACHEDIR}
 fi
@@ -553,7 +552,7 @@ function sizeinfo()
 	#compressed size
 	if [ ! -s "$sfile" ]; then
 		local tempf=/tmp/freetz-sizeinfo-$$.tmp
-		$TOOLS_DIR/$MKSQUASHFS_TOOL $@ $tempf $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE | grep -A1 ^Filesystem \
+		$TOOLS_DIR/$MKSQUASHFS_TOOL $@ $tempf $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE | grep -A1 ^Filesystem \
 			| sed -n 'N;s!Filesystem size \(.*\)ytes (.*\n.*(\(.*\)ytes.*$!\1 \2!p' \
 			| awk '{printf "%8s%3s (uncompressed:%8s%3s)",$1,$2,$3,$4}' > ${sfile}
 		rm -rf $tempf 2>/dev/null
@@ -1260,13 +1259,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS_TOOL"
 
 	echo0 "creating filesystem image"
-	echo1 "squashfs blocksize: $FILESYSTEM_BLOCKSIZE"
+	echo1 "squashfs blocksize: $FREETZ_SQUASHFS_BLOCKSIZE ($(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB)"
 	[ "$FREETZ_HAS_AVM_UDEV" == "y" ] || \
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
-	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
+	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FILESYSTEM_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
+		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
 		let FILESYSTEM_SIZE="$(wc -c < "$RAW_FILESYSTEM_MOD")"
