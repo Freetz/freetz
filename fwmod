@@ -53,7 +53,6 @@ BOLD=$(echo -e '\033[1m')
 NORM=$(echo -e '\033[0m')
 
 # Default values
-FREETZ_VERBOSITY_LEVEL=0
 DOT_CONFIG="$(dirname "$0")/.config"
 CMDLINE_OPTS="umpafd:i:"
 
@@ -208,8 +207,15 @@ if [ ! -r "$DOT_CONFIG" ]; then
 	exit 1
 fi
 
-# Load config
-. "$DOT_CONFIG"
+# Include config file, but do not override variables which are already defined
+# the environment, e.g. via "make FREETZ_SOMETHING=y"
+sed -nr 's/^([^=]+)=(.*)/: ${\1:=\2}/p' "$DOT_CONFIG" > "$DOT_CONFIG.fwmod"
+. "$DOT_CONFIG.fwmod"
+rm "$DOT_CONFIG.fwmod"
+
+# Set default verbosity level, just in case none was defined in the (possibly
+# user-defined and minimal) config file
+: ${FREETZ_VERBOSITY_LEVEL:=0}
 
 # After load config, needs FREETZ_TARGET_CROSS
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
