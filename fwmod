@@ -26,7 +26,10 @@ Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
     -m         modify previously unpacked image
     -p         pack firmware image
     -a         all: unpack, modify and pack firmware image (-u -m -p)
+  special actions
     -f         force pack even if image is too big for flash (AVM SDK)
+    -z         zip file system into archive for USB/NFS root
+    -c <dir>   copy file system to target directory for NFS/USB root (implies -z)
   input/output
     -i <cfg>   input file for configuration data (default: .config)
     -d <dir>   build directory (default: <orig_firmware>.mod)
@@ -54,12 +57,14 @@ NORM=$(echo -e '\033[0m')
 
 # Default values
 DOT_CONFIG="$(dirname "$0")/.config"
-CMDLINE_OPTS="umpafd:i:"
+CMDLINE_OPTS="umpafzc:i:d:"
 
 DO_UNPACK=0
 DO_MOD=0
 DO_PACK=0
 FORCE_PACK=0
+DO_ZIP=0
+COPY_FS_DIR=''
 
 DIR=''
 _OPT=0
@@ -92,11 +97,18 @@ while getopts "$CMDLINE_OPTS" opt; do
 		f)
 			FORCE_PACK=1
 			;;
-		d)
-			DIR="$OPTARG"
+		z)
+			DO_ZIP=1
+			;;
+		c)
+			COPY_FS_DIR="$OPTARG"
+			[ "$COPY_FS_DIR" ] && DO_ZIP=1
 			;;
 		i)
 			DOT_CONFIG="$OPTARG"
+			;;
+		d)
+			DIR="$OPTARG"
 			;;
 		*)
 			usage >&2
@@ -217,6 +229,16 @@ rm "$DOT_CONFIG.fwmod"
 # user-defined and minimal) config file
 : ${FREETZ_VERBOSITY_LEVEL:=0}
 
+# If FREETZ_FWMOD_* options have been defined via config file or command line,
+# they overrule(!) normal command line options -u, -m, -p, -a, -f, -z, -c.
+[ "$FREETZ_FWMOD_SKIP_UNPACK" == "y" ] && DO_UNPACK=0
+[ "$FREETZ_FWMOD_SKIP_MODIFY" == "y" ] && DO_MOD=0
+[ "$FREETZ_FWMOD_SKIP_PACK"   == "y" ] && DO_PACK=0
+[ "$FREETZ_FWMOD_SDK"         == "y" ] && FORCE_PACK=1
+[ "$FREETZ_FWMOD_USBROOT"     == "y" ] && DO_ZIP=1
+[ "$FREETZ_FWMOD_SDK"         == "y" ] && FORCE_PACK=1
+[ "$FREETZ_FWMOD_NFSROOT_DIR"        ] && COPY_FS_DIR="$FREETZ_FWMOD_NFSROOT_DIR" && DO_ZIP=1
+
 # After load config, needs FREETZ_TARGET_CROSS
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
@@ -308,7 +330,24 @@ else
 		# No -> create new fakeroot cache and unpack firmwares
 		FWMOD_RECURSIVE=$$ "$FAKEROOT" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
 	fi
-	exit $?
+	retval=$?
+	[ $retval -eq 0 ] || exit $retval
+
+	# ------------------------------------------------------------------
+	# -- Copy file system to target folder (NFS root, maybe USB root) --
+	# ------------------------------------------------------------------
+
+	if [ "$COPY_FS_DIR" ]; then
+		echo0 "copying root file system to directory $COPY_FS_DIR"
+		rootfs_archive="$(cat "${DIR}/.rootfs_archive")" || exit 1
+		[ -d "$COPY_FS_DIR" ] && sudo rm -rf "$COPY_FS_DIR"/* || exit 1
+		mkdir -p "$COPY_FS_DIR" || exit 1
+		sudo "$TAR" -C "$COPY_FS_DIR" -xf "$rootfs_archive" || exit 1
+		echo -e "done.\n"
+		echo "${BOLD}FINISHED${NORM}"
+	fi
+
+	exit 0
 fi
 
 
@@ -1167,15 +1206,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 	fi
 
-	# external should run after modifying and stripping and so on
-	# only run, if packaging is enabled
-
-	if [ "$DO_PACK" -gt 0 ]; then
-		if [ "$EXTERNAL_ENABLED" == "y" ]; then
-			echo0 "processing external"
-			[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
-			. "${EXTERNAL}"
-		fi
+	# External should run after modifying, stripping etc.
+	if [ "$EXTERNAL_ENABLED" == "y" ]; then
+		echo0 "processing external"
+		[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
+		. "${EXTERNAL}"
 	fi
 
 	touch "${DIR}/.modified"
@@ -1183,12 +1218,21 @@ if [ "$DO_MOD" -gt 0 ]; then
 fi
 
 
-################################
-## Pack the modified firmware ##
-################################
+###########################################
+## Pack, zip, copy the modified firmware ##
+###########################################
 
-if [ "$DO_PACK" -gt 0 ]; then
-	echo "${BOLD}STEP 3: PACK${NORM}"
+[ "$DO_PACK" -gt 0 ] && action_names+="/PACK"
+[ "$DO_ZIP"  -gt 0 ] && action_names+="/ZIP"
+[ "$COPY_FS_DIR"   ] && action_names+="/COPY"
+action_names=${action_names##/}
+
+# ------------------------------------------------
+# -- Common initial actions for pack, zip, copy --
+# ------------------------------------------------
+
+if [ "$action_names" ]; then
+	echo "${BOLD}STEP 3: ${action_names}${NORM}"
 
 	if [ ! "$DO_MOD" -gt 0 ]; then
 		echo "WARNING: Modifications (STEP 2) and this step should never" 1>&2
@@ -1240,7 +1284,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 		modimagenameprefix=""
 		modimagenamesuffix=""
 	fi
-	modimage="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.image"
+	modstring="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate"
+	modimage="${modstring}.image"
 
 	# Create freetz-info
 	echo1 "integrate freetz info file into image"
@@ -1257,17 +1302,42 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack var.tar (use old tar for compatibility)
 	echo0 "packing var.tar"
-	"$TAR" -c -C "$VARTAR_MOD_DIR" . > "$VARTAR_MOD" || exit 1
+	"$TAR" -C "$VARTAR_MOD_DIR" -cf "$VARTAR_MOD" . || exit 1
 
 	[ ! -s "$VARTAR_MOD" ] && error 1 "packing of var.tar failed"
 
+	[ "$FREETZ_HAS_AVM_UDEV" == "y" ] || \
+		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
+fi
+
+# ------------------------------------------------------------------
+# -- Zip file system to tar.gz archive (USB root, maybe NFS root) --
+# ------------------------------------------------------------------
+
+if [ "$DO_ZIP" -gt 0 ]; then
+	[ "$FW_IMAGES_DIR" ] \
+		&& zip_name="${FW_IMAGES_DIR}/${modstring}_rootfs.tar.gz" \
+		|| zip_name="${DIR}/${modstring}_rootfs.tar.gz"
+	echo0 "zipping root file system to $zip_name"
+	"$TAR" -C "$FILESYSTEM_MOD_DIR" -czf "$zip_name" . || exit 1
+	if [ ! -s "$zip_name" ]; then
+		rm -f "$zip_name"
+		error 1 "zipping of root file system failed"
+	fi
+	echo "$zip_name" > "${DIR}/.rootfs_archive"
+fi
+
+# -------------------------
+# -- Pack firmware image --
+# -------------------------
+
+if [ "$DO_PACK" -gt 0 ]; then
 	# Do we have the tool ?
 	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS_TOOL"
 
 	echo0 "creating filesystem image"
 	echo1 "SquashFS block size: $FREETZ_SQUASHFS_BLOCKSIZE ($(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB)"
-	[ "$FREETZ_HAS_AVM_UDEV" == "y" ] || \
-		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
+
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
@@ -1338,34 +1408,43 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
 	# Pack firmware image (use old tar for compatibility)
-	echo0 "packing ${modimage}"
-	"$TAR" -c -C "$FIRMWARE_MOD_DIR" . > "${DIR}/${modimage}" || exit 1
-
-	if [ ! -s "${DIR}/${modimage}" ]; then
-		rm -f "${DIR}/${modimage}"
+	[ "$FW_IMAGES_DIR" ] \
+		&& img_name="${FW_IMAGES_DIR}/${modimage}" \
+		|| img_name="${DIR}/${modimage}"
+	echo0 "packing $img_name"
+	"$TAR" -C "$FIRMWARE_MOD_DIR" -cf "$img_name" . || exit 1
+	if [ ! -s "$img_name" ]; then
+		rm -f "$img_name"
 		error 1 "packing of firmware image failed"
 	fi
+fi
 
+# ----------------------------------------------
+# -- Common final actions for pack, zip, copy --
+# ----------------------------------------------
+
+if [ "$action_names" ]; then
+	# Pack externalised files
 	if [ "$EXTERNAL_CREATEPAK" == "y" ] && [ -n "$externalised_files" ]; then
 		modexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.external"
+		[ "$FW_IMAGES_DIR" ] \
+			&& modexternal="${FW_IMAGES_DIR}/${modexternal}" \
+			|| modexternal="${DIR}/${modexternal}"
 		echo "packing ${modexternal}"
-		"$TAR" -c -C "$EXTERNAL_MOD_DIR" . > "${DIR}/${modexternal}" || exit 1
-
-		if [ ! -s "${DIR}/${modexternal}" ]; then
-			rm -f "${DIR}/${modexternal}"
+		"$TAR" -C "$EXTERNAL_MOD_DIR" -cf "$modexternal" . || exit 1
+		if [ ! -s "$modexternal" ]; then
+			rm -f "$modexternal"
 			error 1 "packing of external tar failed"
 		fi
 	fi
-	if [ -s "${DIR}/${modimage}" ]; then
-		echo0 "Image files can be found in the ./${FW_IMAGES_DIR}/ subfolder"
-		if [ "$FREETZ_REPLACE_SSL_LIBS" == "y" ]; then
-			[ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ] && echo "Caution: Replacing libcrypto or libssl may cause an unusable image. See http://trac.freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
-		fi
-	fi
-	echo0 "done."
-	echo
 
-	echo "${BOLD}FINISHED${NORM}"
+	if [ "$FREETZ_REPLACE_SSL_LIBS" == "y" ] && [ "$FREETZ_LIB_libcrypto" == "y" -o "$FREETZ_LIB_libssl" == "y" ]; then
+		echo "Caution: Replacing libcrypto or libssl may cause an unusable image."
+		echo "See http://freetz.org/wiki/FAQ#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar for details."
+	fi
+
+	[ "$COPY_FS_DIR" ] || echo -e "done.\n"
 fi
 
+[ "$COPY_FS_DIR" ] || echo "${BOLD}FINISHED${NORM}"
 exit 0

@@ -303,8 +303,14 @@ package-list: package-list-clean $(PACKAGES_LIST)
 package-list-clean:
 	@$(RM) .static .dynamic
 
-ifeq ($(FWMOD_NOPACK),y)
-FWMOD_OPTS:=-u -m
+# compat: TODO remove
+ifdef FWMOD_NOPACK
+$(error FWMOD_NOPACK is obsolete, please use FREETZ_FWMOD_SKIP_PACK=y or the corresponding menuconfig option instead)
+endif
+
+# compat: TODO remove
+ifdef FWMOD_OPTS
+$(error FWMOD_OPTS is obsolete, please use FREETZ_FWMOD_* or the corresponding menuconfig options instead)
 endif
 
 ifeq ($(strip $(PACKAGES)),)
@@ -316,18 +322,9 @@ firmware-nocompile: tools $(DL_IMAGE) package-list
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
 endif
-	@./fwmod $(FWMOD_OPTS) -d $(BUILD_DIR) $(DL_IMAGE)
-ifneq ($(FWMOD_PATCH_TEST),y)
-ifneq ($(FWMOD_NOPACK),y)
-ifeq ($(strip $(FREETZ_CUSTOM_IMAGE_NAME_PREFIX)),y)
-	@mv $(BUILD_DIR)/*_$(FREETZ_TYPE_PREFIX_ALIEN_HARDWARE)$(FREETZ_TYPE_PREFIX)* ./$(FW_IMAGES_DIR)
-else
-	@mv $(BUILD_DIR)/$(FREETZ_TYPE_PREFIX_ALIEN_HARDWARE)$(FREETZ_TYPE_PREFIX)* ./$(FW_IMAGES_DIR)
-endif
-endif
-endif
+	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
 
-firmware: precompiled firmware-nocompile 
+firmware: precompiled firmware-nocompile
 
 test: $(BUILD_DIR)/modified
 	@echo "no tests defined"

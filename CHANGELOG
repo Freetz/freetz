@@ -10,7 +10,8 @@ Latest changes:
     + Bump to version 3.1.6
     + Use external cache dir (~/.freetz-ccache)
   * fakeroot: bump version to 1.18.1
-  * use host tar to unpack packages again as busybox' tar doesn't support pax (aka POSIX 1003.1-2001) tar format
+  * use host tar to unpack packages again as busybox' tar doesn't support pax
+    (aka POSIX 1003.1-2001) tar format
   * Move each library-package into separate subdirectory (#1093)
   * Readd unsquashfs and mksquashfs without lzma support (needed for 3370)
   * stripping of kernel modules added
@@ -20,7 +21,22 @@ Latest changes:
   * target-toolchain:
     + Update gcc-4.6.x version to 4.6.2
     + Update uClibc-0.9.32.x version to 0.9.32.1
-  * fwmod: new parameter -f (force pack even if image is too big for flash [AVM SDK])
+  * menuconfig: firmware packaging (fwmod) special options FREETZ_FWMOD_*
+    + unpack, modify, pack can be freely combined now
+    + AVM SDK firmware can be packed now, even if images is too big for flash
+    + USB/NFS root can be packed into tar.gz image with correct user/group and
+      special file flags for devices
+    + NFS/USB root can be sudo-unpacked to user-specified target folder, ready
+      to be mounted
+  * fwmod: new parameters to support FREETZ_FWMOD_* menuconfig options (also
+    works stand-alone)
+    + -f         force pack even if image is too big for flash (AVM SDK)
+    + -z         zip file system into archive for USB/NFS root
+    + -c <dir>   copy file system to target directory for NFS/USB root (implies -z)
+  * Makefile: obsolete variables FWMOD_OPTS, FWMOD_NOPACK because of
+    FREETZ_FWMOD_* menuconfig options
+  * externals: packed externals archive is now stored in folder "images", just
+    like the regular firmware
 
 - New tools and hooks:
 
