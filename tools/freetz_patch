@@ -172,7 +172,7 @@ modpatch()
 
 # Include freetz_functions if not already done by fwmod
 if ! declare -F | cut -d ' ' -f 3 | grep -q echoX; then
-	. "$(dirname "$0")"/freetz_functions
+	. "$(dirname "$0")"/tools/freetz_functions
 fi
 
 # Direct script call? -> delegate parameters to shell function
