@@ -257,11 +257,12 @@ else
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 fi
 
-# Dot-include 'modpatch' shell function
-. "${TOOLS_DIR}/freetz_patch"
-
 # Dot-include some helper shell function (isFreetzType, rm_files)
 . "${TOOLS_DIR}/freetz_functions"
+
+# Dot-include 'modpatch' shell function (make sure to include it after
+# freetz_functions because it needs some of it it)
+. "${TOOLS_DIR}/freetz_patch"
 
 if [ -z "$FIRMWARE" ]; then
 	error 1 "no firmware filename supplied"
