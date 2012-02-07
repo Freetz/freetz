@@ -78,7 +78,8 @@ echoX()
 	local indent no_indent prefix no_newline bold unbold colour uncolour
 
 	OPTIND=0
-	while getopts i:p:lnbc opt; do
+	# Leading colon means: silent error handling, no getopts errors on console
+	while getopts :i:p:lnbc opt; do
 		case $opt in
 			i)
 				indent="$OPTARG" ;;
@@ -93,8 +94,23 @@ echoX()
 			c)
 				# ANSI brown (yellow if combined with bold)
 				colour='\033[33m'; uncolour='\033[m' ;;
-			*)
-				;;
+			?)
+				# If an error occurs because a parameter starting with "-", but
+				# not one of the predefined letters above, is detected, we just
+				# heuristically stop option parsing, assuming that the caller
+				# wants to print a string like "----" or "-blah", accidentally
+				# starting with a dash/hyphen character. In most cases this
+				# will work, but there are a few exceptions: Parameters with
+				# additional arguments (here "-i" and "-p", see above) will
+				# lead to conflicts. E.g. if the caller wants to print "-index"
+				# it will be interpreted like "-i ndex", i.e. "ndex" will be
+				# treated as an indentation string. If you want to print
+				# something like this you have to play be the rules of getopts,
+				# i.e. you can use an additional separator "--" in between real
+				# paramaters and function arguments, like this:
+				#     echoX -bc -- "-index"
+				#     echo2 -c -p "NOTE: " -- "-print this"
+				break ;;
 		esac
 	done
 	shift $((OPTIND-1))
