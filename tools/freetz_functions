@@ -72,44 +72,66 @@ modsed()
 	fi
 }
 
-#parameter -n: no new-line
-#parameter -l: no spaces at beginning
+# General printing (info messages, warnings and errors)
 echoX()
 {
-	local tabl="$1"
-	local newl=""
-	shift
-	while [ "$1" == "-n" -o "$1" == "-l" ]; do
-		[ "$1" == "-n" ] && newl="-n"
-		[ "$1" == "-l" ] && tabl=""
-		shift
+	local indent no_indent prefix no_newline bold unbold colour uncolour
+
+	OPTIND=0
+	while getopts i:p:lnbc opt; do
+		case $opt in
+			i)
+				indent="$OPTARG" ;;
+			l)
+				no_indent=1 ;;
+			p)
+				prefix="$OPTARG" ;;
+			n)
+				no_newline=-n ;;
+			b)
+				bold='\033[1m'; unbold='\033[0m' ;;
+			c)
+				# ANSI brown (yellow if combined with bold)
+				colour='\033[33m'; uncolour='\033[m' ;;
+			*)
+				;;
+		esac
 	done
-	echo -e $newl "$tabl$*"
+	shift $((OPTIND-1))
+
+	[ $no_indent ] && indent=
+	echo -e $no_newline "${indent}${bold}${colour}${prefix}$*${uncolour}${unbold}"
 }
+
+# Verbosity-level-dependent, indented printing
 echo0()
 {
-	[ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX "${L0}" "$@"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX -i "$L0" "$@"
 }
 echo1()
 {
-	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX "${L1}" "$@"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX -i "$L1" "$@"
 }
 echo2()
 {
-	[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX "${L2}" "$@"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@"
 }
-# error exit-code error-message
-error()
-{
-	if [ "$1" -gt 0 ]; then
-		echo -e "${__Y}ERROR: $2${__N}" 1>&2
-		exit $1
-	fi
-}
-# warn warn-message
+
+# Warning message
 warn()
 {
-	echo -e "WARNING: $1" 1>&2
+	echoX -p "WARNING: " "$@" >&2
+}
+
+# Error message + exit with specified error code
+error()
+{
+	local err_no=$1
+	[ $err_no -eq 0 ] && return
+	shift
+	# Coloured (can be combined with bold)
+	echoX -c -p "ERROR: " "$@" >&2
+	exit $err_no
 }
 
 modunsqfs()

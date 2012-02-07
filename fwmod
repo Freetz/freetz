@@ -25,7 +25,7 @@ Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
     -u         unpack firmware image
     -m         modify previously unpacked image
     -p         pack firmware image
-    -a         all: unpack, modify and pack firmware image (-u -m -p)
+    -a         all: unpack, modify and pack firmware image (-u -m -p, default)
   special actions
     -f         force pack even if image is too big for flash (AVM SDK)
     -z         zip file system into archive for USB/NFS root
@@ -52,8 +52,6 @@ done
 
 L1='  '
 L2='    '
-BOLD=$(echo -e '\033[1m')
-NORM=$(echo -e '\033[0m')
 
 # Default values
 DOT_CONFIG="$(dirname "$0")/.config"
@@ -69,11 +67,6 @@ COPY_FS_DIR=''
 DIR=''
 _OPT=0
 
-# Reset command line option counter
-OPTIND=0
-
-# Get other options besides '-i <file>'
-# NOTE: Both 'getopts' must have an identical argument list!
 while getopts "$CMDLINE_OPTS" opt; do
 	case "$opt" in
 		u)
@@ -116,7 +109,7 @@ while getopts "$CMDLINE_OPTS" opt; do
 			;;
 	esac
 done
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 
 if [ $# -ne 1 -a $# -ne 2 ]; then
 	usage >&2
@@ -313,7 +306,7 @@ if [ "$FAKEROOTKEY" ] && [ $UID -eq 0 ]; then
 	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
 	if [ -s "$FAKEROOT_CACHE" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
 		# Yes -> skip unpack
-		[ $DO_UNPACK -gt 0 ] && SKIP_UNPACK="${BOLD}STEP 1: UNPACK (SKIPPED)${NORM}\n\n"
+		[ $DO_UNPACK -gt 0 ] && SKIP_UNPACK="STEP 1: UNPACK (SKIPPED)\n\n"
 		DO_UNPACK=0
 	else
 		# No -> force unpack
@@ -337,6 +330,7 @@ else
 	# -- Copy file system to target folder (NFS root, maybe USB root) --
 	# ------------------------------------------------------------------
 
+	# This cannot be done in the pack/zip section (needs real sudo, not fakeroot)
 	if [ "$COPY_FS_DIR" ]; then
 		echo0 "copying root file system to directory $COPY_FS_DIR"
 		rootfs_archive="$(cat "${DIR}/.rootfs_archive")" || exit 1
@@ -344,7 +338,7 @@ else
 		mkdir -p "$COPY_FS_DIR" || exit 1
 		sudo "$TAR" -C "$COPY_FS_DIR" -xf "$rootfs_archive" || exit 1
 		echo -e "done.\n"
-		echo "${BOLD}FINISHED${NORM}"
+		echo0 -b "FINISHED"
 	fi
 
 	exit 0
@@ -375,7 +369,7 @@ VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
 	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN"
-	echo "${BOLD}STEP 1${UNPACK_SUBSTEP}: UNPACK${UNPACK_MAIN}${FORCE_UNPACK}${NORM}"
+	echo0 -b "STEP 1${UNPACK_SUBSTEP}: UNPACK${UNPACK_MAIN}${FORCE_UNPACK}"
 
 	# Remove old "unpacked" marker to avoid an undefined state in case of
 	# interruption before unpacking operation is finished
@@ -510,7 +504,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	# Create "unpacked" marker, recording exactly *what* was unpacked (MD5)
 	echo "$FIRMWARE_MD5" > "$UNPACKED_FILE"
 fi
-echo -ne "${SKIP_UNPACK}"
+echo0 -n -b "$SKIP_UNPACK"
 
 
 ###############################################
@@ -613,7 +607,7 @@ function sizeinfo()
 }
 
 if [ "$DO_MOD" -gt 0 ]; then
-	echo "${BOLD}STEP 2: MODIFY${NORM}"
+	echo0 -b "STEP 2: MODIFY"
 
 	# Check if firmware is unpacked
 	if [ ! -r "$UNPACKED_FILE" ]; then
@@ -640,7 +634,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
 	for webdir in ${FILESYSTEM_MOD_DIR}/usr/www ${FILESYSTEM_MOD_DIR}/usr/www.nas; do
 		if [ -d ${webdir}/avm* ]; then
-			echo0 -n -l " ${webdir#${FILESYSTEM_MOD_DIR}/}"
+			echo0 -n " ${webdir#${FILESYSTEM_MOD_DIR}/}"
 			mv ${webdir}/avm* ${webdir}/all
 			for i in $oems; do
 				rm -rf ${webdir}/$i
@@ -648,7 +642,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			done
 		fi
 	done
-	echo0 -l
+	echo0
 
 	echo0 "applying patches"
 
@@ -773,7 +767,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# stop execution if in patch test mode
 	if [ "$FWMOD_PATCH_TEST" == "y" ]; then
-		echo "${BOLD}Patch test mode: exiting without error.${NORM}"
+		echo0 -b "Patch test mode: exiting without error."
 		exit
 	fi
 
@@ -1232,7 +1226,7 @@ action_names=${action_names##/}
 # ------------------------------------------------
 
 if [ "$action_names" ]; then
-	echo "${BOLD}STEP 3: ${action_names}${NORM}"
+	echo0 -b "STEP 3: ${action_names}"
 
 	if [ ! "$DO_MOD" -gt 0 ]; then
 		echo "WARNING: Modifications (STEP 2) and this step should never" 1>&2
@@ -1371,10 +1365,10 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
 		[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
 		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-			TOO_BIG_MSG="${BOLD}kernel image is $DIFF bytes too big."
+			TOO_BIG_MSG="kernel image is $DIFF bytes too big."
 			[ "$FORCE_PACK" -eq 0 ] \
-				&& error 1 "${TOO_BIG_MSG} See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details.${NORM}" \
-				|| echo0   "${TOO_BIG_MSG} Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware${NORM}"
+				&& error 1 -b "${TOO_BIG_MSG} See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details." \
+				|| echo0   -b "${TOO_BIG_MSG} Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware"
 		fi
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
@@ -1446,5 +1440,5 @@ if [ "$action_names" ]; then
 	[ "$COPY_FS_DIR" ] || echo -e "done.\n"
 fi
 
-[ "$COPY_FS_DIR" ] || echo "${BOLD}FINISHED${NORM}"
+[ "$COPY_FS_DIR" ] || echo0 -b "FINISHED"
 exit 0
