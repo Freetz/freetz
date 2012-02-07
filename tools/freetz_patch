@@ -172,7 +172,18 @@ modpatch()
 
 # Include freetz_functions if not already done by fwmod
 if ! declare -F | cut -d ' ' -f 3 | grep -q echoX; then
-	. "$(dirname "$0")"/freetz_functions
+	# Let's hope we find the right file no matter if we are sourced or
+	# stand-alone
+	if [ "$(basename "$0")" == "freetz_patch" ] && [ -f "$(dirname "$0")/freetz_functions" ]; then
+		. "$(dirname "$0")/freetz_functions"
+	elif [ "$TOOLS_DIR" ] && [ -f "$TOOLS_DIR/freetz_functions" ]; then
+		. "$TOOLS_DIR/freetz_functions"
+	elif [ -f tools/freetz_functions ]; then
+		. tools/freetz_functions
+	else
+		echo "tools/freetz_functions not found" >&2
+		exit 1
+	fi
 fi
 
 # Direct script call? -> delegate parameters to shell function
