@@ -112,7 +112,7 @@ modpatch()
 		echo2 "applying patch file $patch_file"
 		patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch < "$patch_file" 2>&1 | sed -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
-		echo2 "----------------------------------------------------------------------"
+		echo2 -- "----------------------------------------------------------------------"
 	else
 		patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch < "$patch_file" > /dev/null
 		STATUS=$?
@@ -165,7 +165,7 @@ modpatch()
 			rm -f "$_file.orig"
 		done
 		cd - > /dev/null
-		echo2 "----------------------------------------------------------------------"
+		echo2 -- "----------------------------------------------------------------------"
 	fi
 }
 
