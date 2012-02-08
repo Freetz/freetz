@@ -115,12 +115,12 @@ echoX()
 [ ! "$L2" ] && L0= && L1="  " && L2="    "
 
 # Verbosity-level-dependent, indented printing
-echo0() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX -i "$L0" "$@" }
-echo1() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX -i "$L1" "$@" }
-echo2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@" }
+echo0() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX -i "$L0" "$@"; }
+echo1() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX -i "$L1" "$@"; }
+echo2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@"; }
 
 # Warning message
-warn() { echoX -p "WARNING: " "$@" >&2 }
+#warn() { echoX -p "WARNING: " "$@" >&2; }
 
 # Error message + exit with specified error code
 error()
