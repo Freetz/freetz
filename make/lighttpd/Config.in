@@ -260,6 +260,7 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_REWRITE
 config FREETZ_PACKAGE_LIGHTTPD_MOD_RRDTOOL
 	bool "include mod_rrdtool (adds about 48kb)"
 	depends on FREETZ_PACKAGE_LIGHTTPD
+	select FREETZ_PACKAGE_RRDTOOL
 	default y
 	help
 		This option adds mod_rrdtool.so to the image.
