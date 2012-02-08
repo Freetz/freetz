@@ -51,11 +51,10 @@ rm_files()
 	done
 }
 
-#another little helper
-modsed()
-{
 #modsed <sed-expression> <file> [grep-expression-to-verify-sed]
 #should be used instead of sed -i -e in patch scripts
+modsed()
+{
 	[ $# -le 1 ] && error 1 "modsed failed, not enough parameters."
 	if [ -f "$2" ]; then
 		echo2 "patching $2"
@@ -75,42 +74,31 @@ modsed()
 # General printing (info messages, warnings and errors)
 echoX()
 {
-	local indent no_indent prefix no_newline bold unbold colour uncolour
+	# If an error occurs because a parameter starting with "-" (but none of the
+	# predefined letters below) is detected, we heuristically stop option parsing,
+	# assuming the caller wants to print a string like "----" or "-blah",
+	# accidentally starting with a dash/hyphen. In most cases this will work, but
+	# there are a few exceptions: Parameters with additional arguments (here "-i"
+	# and "-p", see below) will lead to conflicts. E.g. if the caller wants to
+	# print "-index" it will be interpreted as "-i ndex" ("ndex" will be used as
+	# an indentation string). If you want to print something like this you have
+	# to play by getopts's rules, i.e. you can use an additional separator "--"
+	# in between real paramaters and function arguments, like this:
+	#     echoX -bc -- "-index"
+	#     echo2 -c -p "NOTE: " -- "-print this"
 
+	local indent no_indent prefix no_newline bold unbold colour uncolour
 	OPTIND=0
 	# Leading colon means: silent error handling, no getopts errors on console
 	while getopts :i:p:lnbc opt; do
 		case $opt in
-			i)
-				indent="$OPTARG" ;;
-			l)
-				no_indent=1 ;;
-			p)
-				prefix="$OPTARG" ;;
-			n)
-				no_newline=-n ;;
-			b)
-				bold='\033[1m'; unbold='\033[0m' ;;
-			c)
-				# ANSI brown (yellow if combined with bold)
-				colour='\033[33m'; uncolour='\033[m' ;;
-			?)
-				# If an error occurs because a parameter starting with "-", but
-				# not one of the predefined letters above, is detected, we just
-				# heuristically stop option parsing, assuming that the caller
-				# wants to print a string like "----" or "-blah", accidentally
-				# starting with a dash/hyphen character. In most cases this
-				# will work, but there are a few exceptions: Parameters with
-				# additional arguments (here "-i" and "-p", see above) will
-				# lead to conflicts. E.g. if the caller wants to print "-index"
-				# it will be interpreted like "-i ndex", i.e. "ndex" will be
-				# treated as an indentation string. If you want to print
-				# something like this you have to play by the rules of getopts,
-				# i.e. you can use an additional separator "--" in between real
-				# paramaters and function arguments, like this:
-				#     echoX -bc -- "-index"
-				#     echo2 -c -p "NOTE: " -- "-print this"
-				break ;;
+			i) indent="$OPTARG" ;;
+			l) no_indent=1 ;;
+			p) prefix="$OPTARG" ;;
+			n) no_newline=-n ;;
+			b) bold='\033[1m'; unbold='\033[0m' ;;
+			c) colour='\033[33m'; uncolour='\033[m' ;; # ANSI brown/yellow
+			?) break ;; # unknown parameter -> stop option parsing
 		esac
 	done
 	shift $((OPTIND-1))
@@ -127,24 +115,12 @@ echoX()
 [ ! "$L2" ] && L0= && L1="  " && L2="    "
 
 # Verbosity-level-dependent, indented printing
-echo0()
-{
-	[ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX -i "$L0" "$@"
-}
-echo1()
-{
-	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX -i "$L1" "$@"
-}
-echo2()
-{
-	[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@"
-}
+echo0() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX -i "$L0" "$@" }
+echo1() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX -i "$L1" "$@" }
+echo2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@" }
 
 # Warning message
-warn()
-{
-	echoX -p "WARNING: " "$@" >&2
-}
+warn() { echoX -p "WARNING: " "$@" >&2 }
 
 # Error message + exit with specified error code
 error()
