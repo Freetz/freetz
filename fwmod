@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Freetz script to modify AVM FRITZ!Box firmware images
+# Freetz script to modify AVM FRITZ!Box and OEM firmware images
 #
 # Copyright (C) 2005-2006 Daniel Eiband <eiband@online.de>
 # Copyright (C) 2006-2012 by the Freetz developers (http://freetz.org)
@@ -13,9 +13,6 @@
 # Special thanks to Andreas Buehmann, Christian Volkmann, Enrik Berkhan,
 # SpeedyBZ and all members on ip-phone-forum.de who contributed to this mod.
 
-
-SHELL=$BASH
-SELF="$(basename "$0")"
 
 usage()
 {
@@ -38,11 +35,16 @@ Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
 EOF
 }
 
-# Print usage info to stdout (no error, just info)
-if [ $# -eq 0 ]; then
-	usage
-	exit 0
-fi
+
+##################################################
+## Initialise and check command line parameters ##
+##################################################
+
+# This script's name ("fwmod" if not linked/renamed)
+SELF="$(basename "$0")"
+
+# No parameters -> print usage info to stdout
+[ $# -eq 0 ] && usage && exit 0
 
 # Backup command line parameters [$0..$n] to save them from getopts eating them
 # away, because we need them again later for the recursive fakerooted call.
@@ -50,95 +52,70 @@ for ((i=0; i<=$#; i++)); do
 	CMDLINE_ORIG[i]="${!i}"
 done
 
-L1='  '
-L2='    '
-
-# Default values
+# Default values for unset command line parameters
 DOT_CONFIG="$(dirname "$0")/.config"
-CMDLINE_OPTS="umpafzc:i:d:"
+DO_UNPACK=0; DO_MOD=0; DO_PACK=0; FORCE_PACK=0; DO_ZIP=0; _OPT=0
+COPY_FS_DIR=; DIR=
 
-DO_UNPACK=0
-DO_MOD=0
-DO_PACK=0
-FORCE_PACK=0
-DO_ZIP=0
-COPY_FS_DIR=''
-
-DIR=''
-_OPT=0
-
-while getopts "$CMDLINE_OPTS" opt; do
+# Parse command line parameters
+while getopts umpafzc:i:d: opt; do
 	case "$opt" in
-		u)
-			DO_UNPACK=1
-			_OPT=1
-			;;
-		m)
-			DO_MOD=1
-			_OPT=1
-			;;
-		p)
-			DO_PACK=1
-			_OPT=1
-			;;
-		a)
-			DO_UNPACK=1
-			DO_MOD=1
-			DO_PACK=1
-			_OPT=1
-			;;
-		f)
-			FORCE_PACK=1
-			;;
-		z)
-			DO_ZIP=1
-			;;
-		c)
-			COPY_FS_DIR="$OPTARG"
-			[ "$COPY_FS_DIR" ] && DO_ZIP=1
-			;;
-		i)
-			DOT_CONFIG="$OPTARG"
-			;;
-		d)
-			DIR="$OPTARG"
-			;;
-		*)
-			usage >&2
-			exit 1
-			;;
+		u) DO_UNPACK=1; _OPT=1 ;;
+		m) DO_MOD=1; _OPT=1 ;;
+		p) DO_PACK=1; _OPT=1 ;;
+		a) DO_UNPACK=1; DO_MOD=1; DO_PACK=1; _OPT=1 ;;
+		f) FORCE_PACK=1 ;;
+		z) DO_ZIP=1 ;;
+		c) COPY_FS_DIR="$OPTARG"; [ "$COPY_FS_DIR" ] && DO_ZIP=1 ;;
+		i) DOT_CONFIG="$OPTARG" ;;
+		d) DIR="$OPTARG" ;;
+		*) usage >&2; exit 1 ;;
 	esac
 done
-shift $((OPTIND - 1))
+shift $((OPTIND-1))
 
-if [ $# -ne 1 -a $# -ne 2 ]; then
-	usage >&2
-	exit 1
-fi
+# At least one (non-empty) firmware image name must be specified
+[ $# -ne 1 -a $# -ne 2 -o ! "$1" ] && usage >&2 && exit 1
 
-if [ "$_OPT" -eq 0 ]; then
-	DO_UNPACK=1
-	DO_MOD=1
-	DO_PACK=1
-fi
+# Freetz base + tools directories
+BASE_DIR="$(dirname "$0")"
+ABS_BASE_DIR="$(readlink -f "$BASE_DIR")"
+TOOLS_DIR="${ABS_BASE_DIR}/tools"
 
+# Include common helper functions (isFreetzType, echo*, error, modunsqfs* etc.)
+. "${TOOLS_DIR}/freetz_functions" ||
+	(echo "cannot find script freetz_functions" >&2; exit 1)
+
+# Initialise firmware image names
 FIRMWARE="$1"
 FIRMWARE2="$2"
-
 FIRMWARE_EXTENSION="${FIRMWARE##*.}"
 FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
 
-BASE_DIR="$(dirname "$0")"
-if [ -z "$DIR" ]; then
-	DIR="${FIRMWARE}.mod"
-fi
+# Given firmware image(s) must exist
+[ -r "$FIRMWARE" ] ||
+	error 1 "firmware image $(basename "$FIRMWARE") not found"
+[ "$FIRMWARE2" -a ! -r "$FIRMWARE2" ] &&
+	error 1 "firmware image $(basename "$FIRMWARE2") not found"
 
-ABS_BASE_DIR="$BASE_DIR"
-if [[ "$ABS_BASE_DIR" != /* ]]; then
-	ABS_BASE_DIR="$(pwd)/$ABS_BASE_DIR"
-fi
+# Config file must exist
+[ -r "$DOT_CONFIG" ] ||
+	error 1 "not configured"
 
-TOOLS_SUBDIR="tools"
+# No -u/-m/-p/-a options = default = -a = -ump
+[ "$_OPT" -eq 0 ] && DO_UNPACK=1 && DO_MOD=1 && DO_PACK=1
+
+# Set default output directory, if not specified on command line
+: ${DIR:=$FIRMWARE.mod}
+# Create output directory if necessary
+mkdir -p "$DIR"
+
+
+#################################
+## Initialise script variables ##
+#################################
+
+# Relative subdirectories
 SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
 FILESYSTEM_SUBDIR="filesystem"
@@ -150,16 +127,22 @@ VARTAR_SUBDIR="var.tar"
 HTML_SUBDIR="usr/www"
 GRAPHICS_SUBDIR="graphics"
 
+# Kernel/SquashFS images contained in firmware
 KERNEL_IMAGE="var/tmp/kernel.image"
 FILESYSTEM_IMAGE="var/tmp/filesystem.image"
 FILESYSTEM_CORE_IMAGE="filesystem_core.squashfs"
 
+# More files created during firmware unpacking
 AVMPLUGINS_FILE="var/tmp/plugins.update"
 RAW_KERNEL_FILE="kernel.raw"
 RAW_HIDDEN_FILE="kernelsquashfs.raw"
 VARTAR_FILE="var.tar"
 UNPACKED_FILE="$DIR/.unpacked"
 
+# Path to bash (shell required by fwmod)
+SHELL=$BASH
+
+# Tools used by fwmod
 FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 RMTICHKSUM_TOOL="rmtichksum"
@@ -171,10 +154,11 @@ TAR_TOOL="tar"
 MD5SUM_TOOL="md5sum"
 BUSYBOX_TOOL="busybox"
 
+# Options for (un)packing SquashFS
 MKSQUASHFS_OPTIONS="-noappend -all-root -info"
 UNSQUASHFS_OPTIONS="-no-progress"
 
-TOOLS_DIR="${ABS_BASE_DIR}/${TOOLS_SUBDIR}"
+# Absolute tools paths
 EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
 UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 UNSQUASHFS_LZMA="${TOOLS_DIR}/${UNSQUASHFS_LZMA_TOOL}"
@@ -188,29 +172,31 @@ MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
 MD5SUM="${TOOLS_DIR}/${MD5SUM_TOOL}"
 BUSYBOX="${TOOLS_DIR}/${BUSYBOX_TOOL}"
-# XXX: Temporarily use system's tar to unpack AVM firmware-images (see #1535)
+# Temporarily use system's tar to unpack AVM firmware-images (see #1535)
 UNTAR="$(which tar)"
 
+# Freetz directores relative to base dir
 PACKAGES_DIR_ROOT="${BASE_DIR}/packages"
 PATCHES_DIR="${BASE_DIR}/patches"
 ROOT_DIR="${BASE_DIR}/root"
 KERNEL_REP_DIR="${BASE_DIR}/kernel"
 ADDON_DIR="${BASE_DIR}/addon"
 GRAPHICS_DIR="${BASE_DIR}/${GRAPHICS_SUBDIR}"
+
+# Freetz branding directories relative to graphics subdirectory
 FAVICON_DIR="${GRAPHICS_DIR}/favicon"
 TAGGING_DIR="${GRAPHICS_DIR}/tagging"
 
+# Package files
 STATIC_PACKAGES_FILE="${BASE_DIR}/.static"
 DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
 STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
 DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
 
 
-# Config file readable?
-if [ ! -r "$DOT_CONFIG" ]; then
-	echo -e "ERROR: not configured" 1>&2
-	exit 1
-fi
+##########################################################
+## Include config file + initialise some more variables ##
+##########################################################
 
 # Include config file, but do not override variables which are already defined
 # in the environment, e.g. via "make FREETZ_SOMETHING=y"
@@ -232,20 +218,21 @@ rm "$DOT_CONFIG.fwmod"
 [ "$FREETZ_FWMOD_SDK"         == "y" ] && FORCE_PACK=1
 [ "$FREETZ_FWMOD_NFSROOT_DIR"        ] && COPY_FS_DIR="$FREETZ_FWMOD_NFSROOT_DIR" && DO_ZIP=1
 
-# After load config, needs FREETZ_TARGET_CROSS
+# Use FREETZ_TARGET_CROSS to determine build tool paths
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
-# Use FREETZ_MODULES_KVER to determine MODULES_SUBDIR
-# More details see kernel/Config.in
+# Use FREETZ_MODULES_KVER to determine MODULES_SUBDIR (see kernel/Config.in for details)
 MODULES_SUBDIR="lib/modules/${FREETZ_MODULES_KVER}"
 
+# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
 if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
 	MKSQUASHFS_OPTIONS+=" -be"
 else
 	MKSQUASHFS_OPTIONS+=" -le"
 fi
 
+# Use FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE etc. to determine correct mksquashfs tool
 # TODO: Add new symbols for SquashFS version and LZMA compression to Config.in
 if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3"
@@ -255,27 +242,6 @@ elif [ "$FREETZ_KERNEL_VERSION_2_6_13" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; t
 else
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
-fi
-
-# Dot-include some helper shell function (isFreetzType, rm_files)
-. "${TOOLS_DIR}/freetz_functions"
-
-# Dot-include 'modpatch' shell function
-. "${TOOLS_DIR}/freetz_patch"
-
-if [ -z "$FIRMWARE" ]; then
-	error 1 "no firmware filename supplied"
-fi
-
-# Does the firmware image exist ?
-if [ -n "$FIRMWARE" -a ! -r "$FIRMWARE" ]; then
-	error 1 "firmware image $(basename "$FIRMWARE") not found"
-fi
-if [ -n "$FIRMWARE2" -a ! -r "$FIRMWARE2" ]; then
-	error 1 "firmware image $(basename "$FIRMWARE2") not found"
-fi
-if [ ! -e "$DIR" ]; then
-	mkdir -p "$DIR"
 fi
 
 
@@ -333,10 +299,14 @@ else
 	# This cannot be done in the pack/zip section (needs real sudo, not fakeroot)
 	if [ "$COPY_FS_DIR" ]; then
 		echo0 "copying root file system to directory $COPY_FS_DIR"
-		rootfs_archive="$(cat "${DIR}/.rootfs_archive")" || exit 1
-		[ -d "$COPY_FS_DIR" ] && sudo rm -rf "$COPY_FS_DIR"/* || exit 1
-		mkdir -p "$COPY_FS_DIR" || exit 1
-		sudo "$TAR" -C "$COPY_FS_DIR" -xf "$rootfs_archive" || exit 1
+		rootfs_archive="$(cat "${DIR}/.rootfs_archive")" ||
+			error 1 "cannot determine root file system archive name"
+		[ -d "$COPY_FS_DIR" ] && (sudo rm -rf "$COPY_FS_DIR"/* ||
+			error 1 "cannot clean up directory $COPY_FS_DIR")
+		mkdir -p "$COPY_FS_DIR" ||
+			error 1 "cannot create directory $COPY_FS_DIR"
+		sudo "$TAR" -C "$COPY_FS_DIR" -xf "$rootfs_archive" ||
+			error 1 "cannot unpack root file system"
 		echo -e "done.\n"
 		echo0 -b "FINISHED"
 	fi
@@ -645,6 +615,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo0
 
 	echo0 "applying patches"
+
+	# Include patching helper function (modpatch)
+	. "${TOOLS_DIR}/freetz_patch" || error 1 "cannot find script freetz_patch"
 
 	echo1 "applying patches (${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_LANGUAGE})"
 
@@ -1010,7 +983,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 
 	echo1 "generating modules.dep"
-	NM=$NM ${TOOLS_SUBDIR}/depmod.pl -b "$MODULES_DIR" \
+	NM=$NM ${TOOLS_DIR}/depmod.pl -b "$MODULES_DIR" \
 		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map
 	# add plugin kernel modules for 7270 if plugins are not enabled
 	if [ "$FREETZ_TYPE_FON_WLAN_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
