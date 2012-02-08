@@ -50,7 +50,7 @@ modpatch()
 	fi
 	# Check prerequisites for auto-fix
 	if [ "$AUTO_FIX_PATCHES" == "y" ]; then
-		for tool in lsdiff filterdiff realpath; do
+		for tool in lsdiff filterdiff; do
 			which $tool > /dev/null || error 1 "$freetz_patch_name: tool $tool needed for auto-fix mode, please install"
 		done
 	fi
@@ -138,7 +138,8 @@ modpatch()
 		#echo2 "    files          = ${files[*]}"
 		#echo2 "    patch_lines    = ${patch_lines[*]}"
 		#echo2 "    filtered_lines = ${filtered_lines[*]}"
-		local patch_file="$(realpath "$patch_file")"
+		# Because we are going 'cd' soon, we need an absolute path to the patch file now
+		local patch_file="$(readlink -f "$patch_file")"
 		mv -f "$patch_file" "$patch_file.orig"
 		cd "$target_dir"
 		local timestamp="$(date --rfc-3339=seconds)"
