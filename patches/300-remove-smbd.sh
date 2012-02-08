@@ -2,7 +2,7 @@ if [ "$FREETZ_HAS_AVM_USB_HOST" == "y" -a "$FREETZ_PACKAGE_SAMBA" == "y" ]; then
 	sed -i -e "/killall smbd*$/d" -e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 fi
 
-if [ "$FREETZ_PACKAGE_SAMBA" == "y" || "$FREETZ_REMOVE_SMBD" == "y" ]; then
+if [ "$FREETZ_PACKAGE_SAMBA" == "y" -o "$FREETZ_REMOVE_SMBD" == "y" ]; then
 	echo1 "remove AVM samba config"
 	rm_files \
 		"${FILESYSTEM_MOD_DIR}/bin/inetdsamba" \
