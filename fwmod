@@ -401,12 +401,13 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	# Remove AVM's special junk bytes from SquashFS
 	if [ "$FREETZ_HAS_AVM_JUNK_BYTES" == "y" ]; then
-		echo "removing AVM SquashFS junk bytes"
+		echo0 "removing AVM SquashFS junk bytes"
 		[ "$FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="{FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
-		"$TOOLS_DIR/sfk" replace "$JUNK_BYTES_FILE" -bin "/$FREETZ_AVM_JUNK_BYTES//" -yes > /dev/null
-		_result=$?
-		[ $_result -eq 0 ] && error 1 "AVM SquashFS junk bytes not found"
-		[ $_result -gt 1 ] && error 1 "AVM SquashFS junk bytes matched $_result times (must be unique)"
+		[ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ] \
+			&& "$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk" >/dev/null 2>&1 \
+			|| "$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk"
+		[ $? -eq 0 ] || error 1 "AVM SquashFS junk bytes not found"
+		mv -f "$JUNK_BYTES_FILE.nojunk" "$JUNK_BYTES_FILE"
 	fi
 
 	"$RMTICHKSUM" -f "${KERNEL}" > /dev/null

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Remove junk bytes from AVM image files (http://freetz.org/ticket/1614)
+# Author: Alexander Kriegisch (http://scrum-master.de)
+
+INPUT_FILE="$1"
+OUTPUT_FILE="$2"
+SFK_TOOL="$(dirname "$0")/sfk"
+HEADER_MAGIC_HEX="3C1A8000375A038003400008"
+INTRA_MAGIC_TXT="NMI Boot"
+
+hexdumps="$("$SFK_TOOL" hexfind "$INPUT_FILE" -bin /$HEADER_MAGIC_HEX/ -quiet -context=32)"
+offsets=($(echo "$hexdumps" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
+
+count=${#offsets[@]}
+case $count in
+	0) echo "No junk header found" >&2; exit 1 ;;
+	1) echo "Junk header found, inspecting ..." ;;
+	*) echo "Multiple junk headers found, inspecting ..." ;;
+esac
+
+for (( i=0; i<count; i++ )); do
+	offs=${offsets[i]}
+	[ "$offs" == "BE0000" ] || prefix="un"
+	echo "Junk header found at ${prefix}expected offset 0x$offs"
+	img_size_junk=$(echo "${hexdumps[i]}" | sed -rn "s/^.(.{8}).*${INTRA_MAGIC_TXT}.*/\1/p")
+	img_size_file=$(printf "%08X\n" $(( $(stat -c %s "$INPUT_FILE") - 256 - 8 )))
+	if [ "$img_size_junk" != "$img_size_file" ]; then
+		echo "Image size encoded in junk block does not match real file size"
+		continue
+	fi
+	echo "Image size encoded in junk block matches real file size"
+	echo "Sanity checks OK, removing junk bytes ..."
+	head -c $((0x$offs)) "$INPUT_FILE" > "$OUTPUT_FILE"
+	tail -c $((0x${img_size_file} - 0x$offs + 8)) "$INPUT_FILE" >> "$OUTPUT_FILE"
+	echo "Done"
+	exit 0
+done
+
+echo "No junk bytes found" >&2
+exit 1
