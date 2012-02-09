@@ -41,6 +41,8 @@ SED:=sed
 
 # Don't go parallel
 .NOTPARALLEL:
+# We don't use suffixes in the main make, don't waste time searching for files
+.SUFFIXES:
 
 MAKE1=make
 MAKE=make -j$(FREETZ_JLEVEL)
