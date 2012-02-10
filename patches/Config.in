@@ -309,6 +309,24 @@ config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE
 		Select this only if you don't use the the DSL modem. See
 		http://www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
 
+config FREETZ_REMOVE_DSL_CONTROL
+	bool "Remove dsl_control - EXPERIMENTAL"
+	depends on \
+		( \
+			FREETZ_REMOVE_ANNEX_A_FIRMWARE || \
+			FREETZ_REMOVE_ANNEX_B_FIRMWARE || \
+			FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE \
+		) && ( \
+			FREETZ_TARGET_SOC_AR9 || \
+			FREETZ_TARGET_SOC_VR9 \
+		)
+	default n
+	help
+		Removes /usr/sbin/dsl_control. This saves about
+		540-669 KB of uncompressed data size.
+		Select this only if you don't use the the DSL modem. See
+		http://wehavemorefun.de/fritzbox/Dsl_control
+
 menu "Remove v1/v2 piglet file(s)"
 	depends on FREETZ_SHOW_ADVANCED && \
 		( \
