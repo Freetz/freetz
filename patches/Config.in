@@ -273,11 +273,13 @@ comment "Removal patches ------------------------"
 
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 	bool "Remove Annex A firmware file"
-	depends on \
-		FREETZ_TYPE_FON_WLAN_7270_V2 || \
-		FREETZ_TYPE_FON_WLAN_7270_V3 || \
-		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7330
+	depends on ! FREETZ_HAS_AVM_MULTI_ANNEX && \
+		( \
+			FREETZ_TYPE_FON_WLAN_7270_V2 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 || \
+			FREETZ_TYPE_FON_WLAN_7320 || \
+			FREETZ_TYPE_FON_WLAN_7330 \
+		)
 	default n
 	help
 		Remove lib/modules/dsp_*/*-A-dsl.bin. This saves about
@@ -285,15 +287,27 @@ config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
-	depends on \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7320 || \
-		FREETZ_TYPE_FON_WLAN_7330
+	depends on ! FREETZ_HAS_AVM_MULTI_ANNEX && \
+		( \
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270 || \
+			FREETZ_TYPE_FON_WLAN_7320 || \
+			FREETZ_TYPE_FON_WLAN_7330 \
+		)
 	default n
 	help
 		Remove lib/modules/dsp_*/*-B-dsl.bin. This saves about
 		330-400 KB of uncompressed data size.
+
+config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE
+	bool "Remove Multi-Annex firmware files"
+	depends on FREETZ_HAS_AVM_MULTI_ANNEX
+	default n
+	help
+		Remove lib/modules/dsp_*/*-?-dsl.bin*. This saves about
+		420-600 KB of uncompressed data size.
+		Select this only if you don't use the the DSL modem. See
+		http://www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
 
 menu "Remove v1/v2 piglet file(s)"
 	depends on FREETZ_SHOW_ADVANCED && \
