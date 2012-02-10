@@ -37,6 +37,15 @@ Latest changes:
     FREETZ_FWMOD_* menuconfig options
 
 - New tools and hooks:
+  * fmake: wrapper script for "make", located in Freetz root directory,
+    including sample code for a post-build hook sending an e-mail message with
+    timing and build log data to a predefined recipient. This makes life easier
+    for both users and developers in two ways:
+      1) Get actively notified about long-running build processes instead of
+         having to look after them (push vs. pull principle).
+      2) Make life easier for Freetz developers supporting users who keep
+         asking: "How do I create a build log?" No we can just tell them to run
+         "fmake" and then send/upload fmake.log (plus .config) afterwards.
 
 - New patches (read online help for more info):
     * replace dtrace: execute a custom action by phone

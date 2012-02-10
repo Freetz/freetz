@@ -1,0 +1,142 @@
+#!/bin/bash
+
+# Author: Alexander Kriegisch (http://scrum-master.de)
+
+usage()
+{
+cat << EOF
+
+$SELF - Make wrapper for calling additional commands before/after build
+
+Usage: $SELF [options] [<target>]
+    -l <log-file> - write output to <log-file> (default: fmake.log)
+    -t            - append time stamp to log file name
+                    (e.g. fmake_2012-02-10_12-25-20.log)
+    -n            - no log file
+    -c            - log to console (default: no)
+    -h            - display this help text
+    -x            - display sample fmake_post code (e-mail message)
+    <target>      - make target(s) (optional)
+
+Examples:
+    $SELF
+        call "make" (default target), log to fmake.log, no console output
+    $SELF -l my.log -c precompiled
+        call "make precompiled", log to my.log and to console in parallel
+    $SELF -n -c
+        no log file, console output only
+    $SELF -n
+        no log file, no console output (silent make)
+    $SELF -t mc-dirclean mc-precompiled
+        make two targets, log to fmake_<timestamp>.log
+
+In all modes, the build will be timed (via "time") and the result printed
+to the chosen output channels.
+
+User-specified pre/post-make actions such as sending an e-mail notification
+after a long build can be specified in files named fmake_pre and fmake_post.
+The files are optional, but have to be executable if they exist. They may be
+of any type, e.g. Bash/Perl/Python/Lua scripts or even compiled executables.
+In fmake_post you may use the following environment variables:
+
+    FMAKE_TARGET - make target(s)
+    FMAKE_RESULT - make exit code (0=OK)
+    FMAKE_TIME   - duration of build process
+    FMAKE_LOG    - log file name, if any
+
+EOF
+}
+
+fmake_post_sample()
+{
+cat << 'EOF'
+#!/bin/bash
+
+# Send e-mail with build info, using SendEmail lightweight Perl client
+# Debian package name: sendemail
+# See also http://caspian.dotconf.net/menu/Software/SendEmail
+
+sendemail \
+    -f "Freetz make <sender@mydomain.org>" \
+    -t "John Doe <recipient@mydomain.org>" \
+    -u "Freetz build finished (result: $FMAKE_RESULT)" \
+    -s mail.mydomain.org \
+    -xu smtp_user \
+    -xp smtp_password \
+    -o tls=yes \
+    -m "make $FMAKE_TARGET\n    exit code $FMAKE_RESULT\n    duration $FMAKE_TIME" \
+    -a "$FMAKE_LOG" \
+>/dev/null
+EOF
+}
+
+# Set constant file names
+SELF="$(basename "$0")"
+PRE="./fmake_pre"
+POST="./fmake_post"
+
+# Bash built-in "time" should return duration (real) only, not user/sys
+TIMEFORMAT='%lR'
+
+# Initialise command line parameters
+FMAKE_LOG=fmake.log
+TIMESTAMP=
+DO_LOG=1
+DO_CONS=0
+
+# Parse parameters
+while getopts l:tnchx opt; do
+	case $opt in
+		l) [ "$OPTARG" ] && FMAKE_LOG="$OPTARG" ;;
+		t) TIMESTAMP=$(date '+%Y-%m-%d_%H-%M-%S') ;;
+		n) DO_LOG=0 ;;
+		c) DO_CONS=1 ;;
+		h) usage; exit 0 ;;
+		x) fmake_post_sample; exit 0 ;;
+		*) usage >&2; exit 1 ;;
+	esac
+done
+shift $((OPTIND-1))
+
+# Remaining parameter(s) must be make target(s)
+FMAKE_TARGET="$@"
+
+[ $DO_LOG -eq 0 ] && FMAKE_LOG=
+[ "$TIMESTAMP" -a "$FMAKE_LOG" == "fmake.log" ] && FMAKE_LOG="fmake_${TIMESTAMP}.log"
+
+# Run pre-build script
+[ -f "$PRE" -a -x "$PRE" ] && "$PRE"
+
+# Run build, measuring execution time
+{
+	if [ $DO_LOG -eq 1 ]; then
+		if [ $DO_CONS -eq 1 ]; then
+			# Log file + console
+			time make "$@" 2>&1 | tee "$FMAKE_LOG" 
+		else
+			# Log file only
+			time make "$@" 2>&1 >"$FMAKE_LOG"
+		fi
+	else
+		if [ $DO_CONS -eq 1 ]; then
+			# Console only
+			time make "$@" 2>&1
+		else
+			# Silent make (no output)
+			time make "$@" 2>&1 >/dev/null
+		fi
+	fi
+} 2>fmake.time;
+
+FMAKE_RESULT=$?
+FMAKE_TIME="$(cat fmake.time)"
+rm -f fmake.time
+
+# Print result to console
+echo -e "make $FMAKE_TARGET\n    exit code $FMAKE_RESULT\n    duration $FMAKE_TIME"
+
+# Run post-build script, providing enviromnment
+export FMAKE_TARGET FMAKE_RESULT FMAKE_TIME FMAKE_LOG
+[ -f "$POST" -a -x "$POST" ] && "$POST"
+
+exit $FMAKE_RESULT
