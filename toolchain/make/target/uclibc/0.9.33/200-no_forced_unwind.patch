@@ -1,0 +1,10 @@
+--- Rules.mak
++++ Rules.mak
+@@ -709,7 +709,6 @@
+ ifeq ($(UCLIBC_HAS_THREADS),y)
+ ifeq ($(UCLIBC_HAS_THREADS_NATIVE),y)
+ 	PTNAME := nptl
+-	CFLAGS += -DHAVE_FORCED_UNWIND
+ else
+ ifeq ($(LINUXTHREADS_OLD),y)
+ 	PTNAME := linuxthreads.old

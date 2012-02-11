@@ -1,0 +1,10 @@
+--- libc/inet/resolv.c
++++ libc/inet/resolv.c
+@@ -1634,6 +1634,7 @@
+ 	 * struct in[6]_addr
+ 	 * char line_buffer[BUFSZ+];
+ 	 */
++	memset(buf, 0, buflen);
+ 	parser->data = buf;
+ 	parser->data_len = aliaslen;
+ 	parser->line_len = buflen - aliaslen;

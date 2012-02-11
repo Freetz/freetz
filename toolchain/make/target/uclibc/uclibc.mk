@@ -2,31 +2,22 @@ UCLIBC_VERSION:=$(TARGET_TOOLCHAIN_UCLIBC_VERSION)
 UCLIBC_DIR:=$(TARGET_TOOLCHAIN_DIR)/uClibc-$(UCLIBC_VERSION)
 UCLIBC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/uclibc
 UCLIBC_SOURCE:=uClibc-$(UCLIBC_VERSION).tar.bz2
-UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads
-ifeq ($(strip $(UCLIBC_VERSION)),0.9.28)
-UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads/old-releases
-endif
-ifeq ($(strip $(UCLIBC_VERSION)),0.9.29)
-UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads/old-releases
-endif
+UCLIBC_SOURCE_SITE:=http://www.uclibc.org/downloads$(if $(or $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28),$(FREETZ_TARGET_UCLIBC_VERSION_0_9_29)),/old-releases)
 
-UCLIBC_MD5_0.9.28 = 1ada58d919a82561061e4741fb6abd29
-UCLIBC_MD5_0.9.29 = 61dc55f43b17a38a074f347e74095b20
+UCLIBC_MD5_0.9.28   = 1ada58d919a82561061e4741fb6abd29
+UCLIBC_MD5_0.9.29   = 61dc55f43b17a38a074f347e74095b20
 UCLIBC_MD5_0.9.30.3 = 73a4bf4a0fa508b01a7a3143574e3d21
 UCLIBC_MD5_0.9.31.1 = c86d7665ce9653e5335d76871f46747d
 UCLIBC_MD5_0.9.32.1 = ade6e441242be5cdd735fec97954a54a
+UCLIBC_MD5_0.9.33   = cf9d25e4b3c87af1a99d33a6b959fbf1
 UCLIBC_MD5=$(UCLIBC_MD5_$(UCLIBC_VERSION))
 
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DEVEL_DIR)
 
 UCLIBC_DEVEL_SUBDIR:=uClibc_dev
 
-# uClibc 0.9.31/32 allows parallel building
-ifeq ($(or $(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_31)),$(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_32))),y)
-UCLIBC_MAKE:=$(MAKE)
-else
-UCLIBC_MAKE:=$(MAKE1)
-endif
+# uClibc >= 0.9.31 supports parallel building
+UCLIBC_MAKE:=$(if $(or $(FREETZ_TARGET_UCLIBC_VERSION_0_9_31),$(FREETZ_TARGET_UCLIBC_VERSION_0_9_32),$(FREETZ_TARGET_UCLIBC_VERSION_0_9_33)),$(MAKE),$(MAKE1))
 
 # uClibc pregenerated locale data
 UCLIBC_LOCALE_DATA_SITE:=http://www.uclibc.org/downloads
@@ -39,7 +30,7 @@ endif
 UCLIBC_COMMON_BUILD_FLAGS := LOCALE_DATA_FILENAME=$(UCLIBC_LOCALE_DATA_FILENAME)
 
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_32)),y)
+ifeq ($(or $(FREETZ_TARGET_UCLIBC_VERSION_0_9_32),$(FREETZ_TARGET_UCLIBC_VERSION_0_9_33)),y)
 # Changed with uClibc-0.9.32-rc3: "V=1 is quiet plus defines. V=2 are verbatim commands."
 # For more details see <http://lists.uclibc.org/pipermail/uclibc/2011-March/045005.html>
 UCLIBC_COMMON_BUILD_FLAGS += V=2
@@ -128,7 +119,7 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(GCC_BUILD_DIR1)/.installed
 		RUNTIME_PREFIX=/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
 		all
-ifeq ($(or $(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_30)),$(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_31)),$(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_32))),y)
+ifeq ($(or $(FREETZ_TARGET_UCLIBC_VERSION_0_9_30),$(FREETZ_TARGET_UCLIBC_VERSION_0_9_31),$(FREETZ_TARGET_UCLIBC_VERSION_0_9_32),$(FREETZ_TARGET_UCLIBC_VERSION_0_9_33)),y)
 	# At this point uClibc is compiled and there is no reason for us to recompile it.
 	# Remove some FORCE rule dependencies causing parts of uClibc to be recompiled (without a need)
 	# over and over again each time make is invoked within uClibc dir (the actual target doesn't matter).

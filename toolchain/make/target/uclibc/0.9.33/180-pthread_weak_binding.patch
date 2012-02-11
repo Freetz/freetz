@@ -1,0 +1,22 @@
+--- include/unistd.h.orig	2011-06-08 21:35:20.000000000 +0200
++++ include/unistd.h	2011-06-14 23:26:27.185030794 +0200
+@@ -767,7 +767,7 @@
+    Return -1 for errors, 0 to the new process,
+    and the process ID of the new process to the old process.  */
+ extern __pid_t fork (void) __THROW;
+-libc_hidden_proto(fork)
++//libc_hidden_proto(fork)
+ #endif
+ 
+ #if defined __USE_BSD || defined __USE_XOPEN_EXTENDED
+--- libc/sysdeps/linux/common/fork.c.orig	2011-06-08 21:35:20.000000000 +0200
++++ libc/sysdeps/linux/common/fork.c	2011-06-14 23:26:27.185030794 +0200
+@@ -17,7 +17,7 @@
+ extern __typeof(fork) __libc_fork;
+ _syscall0(pid_t, __libc_fork)
+ weak_alias(__libc_fork,fork)
+-libc_hidden_weak(fork)
++//libc_hidden_weak(fork)
+ #endif
+ 
+ #endif
