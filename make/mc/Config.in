@@ -1,77 +1,95 @@
 config FREETZ_PACKAGE_MC
-	bool "Midnight Commander (mc) 4.6.2 (binary only)"
-	depends on FREETZ_LANG_DE || FREETZ_LANG_EN || ! FREETZ_SELECTED_LANG_ONLY
+	bool "Midnight Commander (mc) 4.8.1"
 	select FREETZ_SHARE_terminfo
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
-	select FREETZ_LIB_libglib_2 if ! FREETZ_PACKAGE_MC_FORCE_GLIB12
+	select FREETZ_LIB_libglib_2
 	default n
-	help
-		GNU Midnight Commander (MC) is probably the best known Norton Commander
-		clone for free operating systems and definitely one of the most
-		powerful. If you are looking for something smaller, feel free to give
-		Deco a try, but don't expect as much comfort and power there as you
-		will get here.
 
-config FREETZ_PACKAGE_MC_INTERNAL_EDITOR
-	bool "Internal editor"
+menu "Configuration"
 	depends on FREETZ_PACKAGE_MC
-	default y
-	help
-		MC features an internal editor which can be started by F4. If you
-		decativate it because you want to use vi or nano instead, F4 will
-		still work. By default, vi is called on the box, but exporting EDITOR
-		so it points to another editor of your choice will get you the
-		combination of file manager and editor you desire.
 
-		Switching off this feature saves about 95 KB in the main binary.
+choice
+	prompt "Widget library"
+	default FREETZ_PACKAGE_MC_WITH_NCURSES
 
-config FREETZ_PACKAGE_MC_SUBSHELL
-	bool "Subshell support"
-	depends on FREETZ_PACKAGE_MC
-	select FREETZ_PACKAGE_BASH
-	default n
-	help
-		MC subshell support (~15 KB + bash).
-
-config FREETZ_PACKAGE_MC_VFS
-	bool "Virtual filesystem support (VFS)"
-	depends on FREETZ_PACKAGE_MC
-	default n
-	help
-		With VFS mc is able to browse compressed archives. Bear in mind that
-		the archives are extracted to RAM!
-
-		Virtual filesystem support adds about 100 KB.
-
-config FREETZ_PACKAGE_MC_ONLINE_HELP
-	bool "Online help"
-	depends on FREETZ_PACKAGE_MC
-	default y
-	help
-		MC comes with an online help file which can be viewed via 'F1'.
-
-		Switching off this feature saves about 115 KB in the file system.
-
-config FREETZ_PACKAGE_MC_WITH_NCURSES
-	bool "Use ncurses library instead of internal mcslang"
-	depends on FREETZ_PACKAGE_MC
+	config FREETZ_PACKAGE_MC_WITH_NCURSES
+	bool "Ncurses"
 	select FREETZ_LIB_libncurses
-	default n
-	help
-		If mc is linked against libncurses (200 KB) the size of the mc binary
-		is reduced by about 50 KB, but if you do not need libncurses for any
-		other package, those 50 KB are a good investment in order to remove
-		libncurses from the firmware image and save (200 - 50) KB = 150 KB.
 
-config FREETZ_PACKAGE_MC_FORCE_GLIB12
-	bool "Use glib-1.2 instead of glib-2"
-	depends on FREETZ_PACKAGE_MC
-	select FREETZ_LIB_libglib_1
-	default n
-	help
-		Activating this option forces mc to use the old glib-1.2 library.
-		This was the default freetz behaviour until version 1.2.
+	config FREETZ_PACKAGE_MC_WITH_SLANG
+	bool "S-Lang"
+	select FREETZ_LIB_libslang
+endchoice
 
-		Activating the option might save space/RAM on "small" boxes.
-		But if you already have some other package requiring glib-2
-		it's probably better not to activate it.
+config FREETZ_PACKAGE_MC_WITH_BACKGROUND
+	bool "Background file operations support"
+	default n
+
+config FREETZ_PACKAGE_MC_WITH_CHARSET
+	bool "Charset selection and conversion support"
+	default n
+
+config FREETZ_PACKAGE_MC_WITH_EDIT
+	bool "Internal editor support"
+	default y
+
+config FREETZ_PACKAGE_MC_WITH_DIFF_VIEWER
+	bool "Diff-viewer support"
+	default n
+
+config FREETZ_PACKAGE_MC_WITH_SUBSHELL
+	bool "Subshell support"
+	select FREETZ_PACKAGE_BASH
+	default y
+
+config FREETZ_PACKAGE_MC_WITH_VFS
+	bool "Virtual filesystem support"
+	default n
+
+config FREETZ_PACKAGE_MC_WITH_VFS_CPIO
+	depends on FREETZ_PACKAGE_MC_WITH_VFS
+	bool "cpio"
+
+config FREETZ_PACKAGE_MC_WITH_VFS_EXTFS
+	depends on FREETZ_PACKAGE_MC_WITH_VFS
+	bool "extfs"
+	default y
+
+config FREETZ_PACKAGE_MC_WITH_VFS_FTP
+	depends on FREETZ_PACKAGE_MC_WITH_VFS
+	bool "ftp"
+	default n
+
+config FREETZ_PACKAGE_MC_WITH_VFS_SFS
+	depends on FREETZ_PACKAGE_MC_WITH_VFS
+	bool "sfs"
+	default n
+
+config FREETZ_PACKAGE_MC_WITH_VFS_TAR
+	depends on FREETZ_PACKAGE_MC_WITH_VFS
+	bool "tar"
+	default y
+
+# TODO
+#config FREETZ_PACKAGE_MC_WITH_VFS_FISH
+#	depends on FREETZ_PACKAGE_MC_WITH_VFS
+#	bool "fish"
+#	default n
+#config FREETZ_PACKAGE_MC_WITH_VFS_SMB
+#	depends on FREETZ_PACKAGE_MC_WITH_VFS
+#	bool "smb"
+#	default n
+#config FREETZ_PACKAGE_MC_WITH_VFS_UNDELFS
+#	depends on FREETZ_PACKAGE_MC_WITH_VFS
+#	bool "undelfs"
+#	default n
+
+config FREETZ_PACKAGE_MC_WITH_HELP
+	bool "Include online help"
+	default y
+
+config FREETZ_PACKAGE_MC_WITH_SYNTAX
+	bool "Include syntax files"
+	default y
+
+endmenu
