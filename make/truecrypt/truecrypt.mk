@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 7.1)
+$(call PKG_INIT_BIN, 7.1a)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.tar.gz
-$(PKG)_SOURCE_MD5:=a8268630a870faff07af940f63fb29eb
+$(PKG)_SOURCE_MD5:=102d9652681db11c813610882332ae48
 $(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
