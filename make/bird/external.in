@@ -1,0 +1,20 @@
+menu bird
+    depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_BIRD
+
+config EXTERNAL_FREETZ_PACKAGE_BIRD
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_BIRD
+	bool "bird"
+	default n
+	help
+		externals these file(s):
+		 /usr/sbin/bird
+
+config EXTERNAL_FREETZ_PACKAGE_BIRDC
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_BIRDC
+	bool "birdc"
+	default n
+	help
+		externals these file(s):
+		 /usr/sbin/birdc
+
+endmenu
