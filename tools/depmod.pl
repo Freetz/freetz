@@ -61,6 +61,7 @@ GetOptions(
 	"verbose|v"         => \$verbose,
 	"symbol-prefix|P=s" => \$symprefix,
 	"all|a"             => \$all,
+	"errsyms|e"         => \$errsyms,
 	# unsupported options
 	"quick|A"           => \$quick,
 	# ignored options (for historical usage)
@@ -146,7 +147,7 @@ foreach my $module (keys %$dep) {
             next if $exp->{$_} =~ /vmlinux/;
             $mod->{$module}{$exp->{$_}} = 1;
         } else {
-            warn "unresolved symbol $_ in file $module\n";
+            warn "unresolved symbol $_ in file $module\n" if $errsyms;
         }
     }
 }
