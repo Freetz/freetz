@@ -24,7 +24,7 @@ modsed "/^<p.*uiViewUseMusik.*<\/p>$/ {
 	D }" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/nas/einstellungen.html"
 fi
 
-if isFreetzType 3270 3270_V3 3370 7240 7270_V2 7270_V3 7340 7390; then
+if isFreetzType 3270 3270_V3 3370 7240 7270_V2 7270_V3 7340 7360 7390; then
 	# see http://freetz.org/ticket/1391 for details
 	modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/storage/settings.lua"
 fi
