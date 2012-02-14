@@ -36,6 +36,8 @@ config FREETZ_AVM_VERSION_7320_04_86
 	bool
 config FREETZ_AVM_VERSION_7330_05_06
 	bool
+config FREETZ_AVM_VERSION_7360_05_08
+	bool
 config FREETZ_AVM_VERSION_7390_05_05
 	bool
 config FREETZ_AVM_VERSION_r7203
@@ -151,7 +153,7 @@ choice
 		bool "Fon WLAN 7340"
 
 	config FREETZ_TYPE_FON_WLAN_7360
-		select FREETZ_AVM_VERSION_7330_05_06
+		select FREETZ_AVM_VERSION_7360_05_08
 		bool "Fon WLAN 7360 SL (Experimental)"
 
 	config FREETZ_TYPE_FON_WLAN_7390
@@ -473,6 +475,7 @@ config FREETZ_AVM_VERSION_STRING
 	default "7270_05.05"		if FREETZ_AVM_VERSION_7270_05_05
 	default "7320_04.86"		if FREETZ_AVM_VERSION_7320_04_86
 	default "7330_05.06"		if FREETZ_AVM_VERSION_7330_05_06
+	default "7360_05.08"		if FREETZ_AVM_VERSION_7360_05_08
 	default "7390_05.05"		if FREETZ_AVM_VERSION_7390_05_05
 	default "r7203"			if FREETZ_AVM_VERSION_r7203
 
@@ -630,12 +633,17 @@ config FREETZ_REPLACE_KERNEL
 			FREETZ_AVM_VERSION_7270_05_05 || \
 			FREETZ_AVM_VERSION_7320_04_86 || \
 			FREETZ_AVM_VERSION_7330_05_06 || \
+			FREETZ_AVM_VERSION_7360_05_08 || \
 			FREETZ_AVM_VERSION_7390_05_05 \
 		) && \
 		! (FREETZ_REMOVE_NTFS && FREETZ_REMOVE_WEBDAV)
 	select FREETZ_MODULE_jffs2 if \
 		! FREETZ_REMOVE_JFFS2 && \
-		(FREETZ_AVM_VERSION_7320_04_86  || FREETZ_AVM_VERSION_7330_05_06)
+		( \
+			FREETZ_AVM_VERSION_7320_04_86 || \
+			FREETZ_AVM_VERSION_7330_05_06 || \
+			FREETZ_AVM_VERSION_7360_05_08 \
+		)
 	select FREETZ_MODULE_msdos if FREETZ_AVM_VERSION_7270_05_05
 	select FREETZ_MODULE_usbcore if \
 		FREETZ_KERNEL_LAYOUT_UR8 && FREETZ_AVM_VERSION_7270_04_86
@@ -897,6 +905,7 @@ config FREETZ_DL_KERNEL_SITE
 	default "@AVM/fritzbox.fon_wlan_7270_v3/x_misc/opensrc"	if FREETZ_AVM_VERSION_7270_05_05
 	default "@AVM/fritzbox.fon_wlan_7320/x_misc/opensrc"	if FREETZ_AVM_VERSION_7320_04_86
 	default "@AVM/fritzbox.fon_wlan_7330/x_misc/opensrc"	if FREETZ_AVM_VERSION_7330_05_06
+	default "@AVM/fritzbox.fon_wlan_7360_sl/x_misc/opensrc"	if FREETZ_AVM_VERSION_7360_05_08
 	default "@AVM/fritzbox.fon_wlan_7390/x_misc/opensrc"	if FREETZ_AVM_VERSION_7390_05_05
 	default "@AVM/fritzbox.wlan_3370/x_misc/opensrc"		if FREETZ_AVM_VERSION_3370_05_08
 	default "@TELEKOM/Speedport/Speedport_W501V"			if FREETZ_AVM_VERSION_r7203
@@ -917,6 +926,7 @@ config FREETZ_DL_KERNEL_SOURCE
 	default "fritzbox-source-files-05.05.tar.gz"				if FREETZ_AVM_VERSION_7270_05_05
 	default "fritzbox7320-source-files-04.86.tar.gz"			if FREETZ_AVM_VERSION_7320_04_86
 	default "fritz_box_fon_wlan_7330_source_files.05.06.tar.gz"	if FREETZ_AVM_VERSION_7330_05_06
+	default "fritz_box_7360SL_source_files.05.08.tar.gz"		if FREETZ_AVM_VERSION_7360_05_08
 	default "fritz_box_fon_wlan_7390_source_files.05.05.tar.gz"	if FREETZ_AVM_VERSION_7390_05_05
 	default "fritz_box_wlan_3370_source_files.05.08.tar.gz"		if FREETZ_AVM_VERSION_3370_05_08
 	default "GPL-r7203-4mb_26-tar.bz2"							if FREETZ_AVM_VERSION_r7203
@@ -937,6 +947,7 @@ config FREETZ_DL_KERNEL_SOURCE_MD5
 	default "19280ad861a7e88698d41211996c5ac6"	if FREETZ_AVM_VERSION_7270_05_05
 	default "0e2ddf32808eb329efc4b486c6de0011"	if FREETZ_AVM_VERSION_7320_04_86
 	default "baa047e62d316c765de1e2a4b051c11c"	if FREETZ_AVM_VERSION_7330_05_06
+	default "08f3255b811476861096286fc00ea548"	if FREETZ_AVM_VERSION_7360_05_08
 	default "fbf515bd77f3d3a64a3095889777cc13"	if FREETZ_AVM_VERSION_7390_05_05
 	default "8ba23637fa361367e0fd055893c9c0ec"	if FREETZ_AVM_VERSION_3370_05_08
 	default "582c74f0959a687c41c1bcfa599ace9c"	if FREETZ_AVM_VERSION_r7203
