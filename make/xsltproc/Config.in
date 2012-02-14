@@ -1,10 +1,17 @@
 config FREETZ_PACKAGE_XSLTPROC
 	bool "xsltproc 1.1.26 (binary only)"
-	select FREETZ_LIB_libxslt
-	select FREETZ_LIB_libexslt
+	select FREETZ_LIB_libxslt  if !FREETZ_PACKAGE_XSLTPROC_STATIC
+	select FREETZ_LIB_libexslt if !FREETZ_PACKAGE_XSLTPROC_STATIC
 	default n
 	help
 		xsltproc is a command line tool for applying XSLT stylesheets to XML
 		documents. It is part of libxslt, the XSLT C library for GNOME.
 		While it was developed as part of the GNOME project, it can operate
 		independently of the GNOME desktop.
+
+config FREETZ_PACKAGE_XSLTPROC_STATIC
+	bool "create statically linked binary"
+	depends on FREETZ_PACKAGE_XSLTPROC
+	default n
+	help
+		Causes all libraries xsltproc depends on to be linked in statically

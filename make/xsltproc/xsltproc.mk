@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=libxslt-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=e61d0364a30146aaa3001296f853b2b9
 $(PKG)_SITE:=ftp://xmlsoft.org/libxslt
 
-$(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/$(pkg)/.libs/$(pkg)
+$(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/$(pkg)$(if $(FREETZ_PACKAGE_XSLTPROC_STATIC),,/.libs)/$(pkg)
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
 $(PKG)_LIBNAMES_SHORT := libxslt libexslt
@@ -15,6 +15,8 @@ $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_D
 $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
 $(PKG)_DEPENDS_ON += libxml2
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_XSLTPROC_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
@@ -32,6 +34,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY_BUILD_DIR) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(XSLTPROC_DIR) \
+		$(if $(FREETZ_PACKAGE_XSLTPROC_STATIC),xsltproc_LDFLAGS="-all-static") \
 		all
 
 $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
