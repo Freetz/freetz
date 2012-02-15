@@ -24,7 +24,7 @@ helpmsg()
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | ( (<download-dir> | check) <filename> [<main-url>] [<md5>])
+Usage: freetz_download (-?|--help) | [--no-append-servers] ( (<download-dir> | check) <filename> [<main-url>] [<md5>])
     check         - check download
     download-dir  - target directory for download file
     filename      - download file name
@@ -102,6 +102,19 @@ if [ "$1" == "-?" -o "$1" == "--help" ]; then
 	helpmsg
 	exit 0
 fi
+
+opt_append_servers=y
+while [ $# -gt 1 ]; do
+	case "$1" in
+		--no-append-servers)
+			opt_append_servers=n
+			shift
+			;;
+		*)
+			break
+			;;
+	esac
+done
 
 # Wrong number of parameters -> exit with error
 if [ $# -lt 2 -o $# -gt 4 ]; then
@@ -192,12 +205,14 @@ if [ -n "$FREETZ_DL_SITE_USER" ]; then
 fi
 
 # Fill array 'sites' with download server URLs, add Freetz Mirrors, in random order
-for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
-	p=$(( RANDOM % n ))
-	sites[$num_sites]=${FREETZ_SITES[$p]}
-	(( num_sites++ ))
-	FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
-done
+if [ "$opt_append_servers" = y ]; then
+	for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
+		p=$(( RANDOM % n ))
+		sites[$num_sites]=${FREETZ_SITES[$p]}
+		(( num_sites++ ))
+		FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
+	done
+fi
 
 # Loop over servers until a download succeeds or all requests have failed.
 IFS=$'\n'
