@@ -1,0 +1,11 @@
+--- libtransmission/session.c
++++ libtransmission/session.c
+@@ -346,7 +346,7 @@
+     tr_bencDictAddBool( d, TR_PREFS_KEY_RPC_WHITELIST_ENABLED,           true );
+     tr_bencDictAddInt ( d, TR_PREFS_KEY_RPC_PORT,                        atoi( TR_DEFAULT_RPC_PORT_STR ) );
+     tr_bencDictAddStr ( d, TR_PREFS_KEY_RPC_URL,                         TR_DEFAULT_RPC_URL_STR );
+-    tr_bencDictAddBool( d, TR_PREFS_KEY_SCRAPE_PAUSED_TORRENTS,          true );
++    tr_bencDictAddBool( d, TR_PREFS_KEY_SCRAPE_PAUSED_TORRENTS,          false );
+     tr_bencDictAddStr ( d, TR_PREFS_KEY_SCRIPT_TORRENT_DONE_FILENAME,    "" );
+     tr_bencDictAddBool( d, TR_PREFS_KEY_SCRIPT_TORRENT_DONE_ENABLED,     false );
+     tr_bencDictAddInt ( d, TR_PREFS_KEY_SEED_QUEUE_SIZE,                 10 );

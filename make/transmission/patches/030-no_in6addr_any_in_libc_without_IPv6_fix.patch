@@ -1,0 +1,16 @@
+--- third-party/miniupnp/miniupnpc.c
++++ third-party/miniupnp/miniupnpc.c
+@@ -393,11 +393,12 @@
+ 	/* reception */
+ 	memset(&sockudp_r, 0, sizeof(struct sockaddr_storage));
+ 	if(ipv6) {
++		static const struct in6_addr my_in6addr_any = IN6ADDR_ANY_INIT;
+ 		struct sockaddr_in6 * p = (struct sockaddr_in6 *)&sockudp_r;
+ 		p->sin6_family = AF_INET6;
+ 		if(sameport)
+ 			p->sin6_port = htons(PORT);
+-		p->sin6_addr = in6addr_any; /* in6addr_any is not available with MinGW32 3.4.2 */
++		p->sin6_addr = my_in6addr_any; /* in6addr_any is not available with MinGW32 3.4.2 */
+ 	} else {
+ 		struct sockaddr_in * p = (struct sockaddr_in *)&sockudp_r;
+ 		p->sin_family = AF_INET;
