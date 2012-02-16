@@ -199,12 +199,12 @@
 +	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 --- upnphttp.h
 +++ upnphttp.h
-@@ -36,7 +36,7 @@
+@@ -56,7 +56,7 @@
  #include "config.h"
  
  /* server: HTTP header returned in all HTTP responses : */
--#define MINIDLNA_SERVER_STRING	OS_VERSION " DLNADOC/1.50 UPnP/1.0 MiniDLNA/1.0"
-+#define MINIDLNA_SERVER_STRING	"DLNADOC/1.50 UPnP/1.0 MiniDLNA/1.0"
+-#define MINIDLNA_SERVER_STRING	OS_VERSION " DLNADOC/1.50 UPnP/1.0 " SERVER_NAME "/" MINIDLNA_VERSION
++#define MINIDLNA_SERVER_STRING	"DLNADOC/1.50 UPnP/1.0 " SERVER_NAME "/" MINIDLNA_VERSION
  
  /*
   states :
