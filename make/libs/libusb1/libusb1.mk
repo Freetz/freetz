@@ -37,7 +37,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBUSB1_DIR) clean
-	$(RM) \
+	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libusb-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libusb-1.*\
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-1.* \
