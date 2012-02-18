@@ -145,10 +145,9 @@ $($(PKG)_CODEPAGES_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_CODEPAGES_DIR)/%: $($
 $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 
 $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-        @echo -n "" > $@; \
-        [ "$(FREETZ_PACKAGE_NMBD)" != "y" ] \
-                && echo "sbin/nmbd" >> $@; \
-        touch $@
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_NMBD)" != "y" ] && echo "sbin/nmbd" >> $@; \
+	touch $@
 
 $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_SYMLINKS_TARGET_DIR) $($(PKG)_CODEPAGES_TARGET_DIR)
 
