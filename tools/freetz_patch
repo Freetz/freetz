@@ -72,7 +72,7 @@ modpatch()
 		fi
 		[ -e "$target_dir"/"$patch_target" ] || error 2 "modpatch: Target file $patch_target does not exist"
 
-		# XXX: Temporarily use system's md5sum if busybox applet is not yet build (see #1535)
+		# System's md5sum is used if busybox applet is not available, eg while download of busybox (see #1535)
 		local MD5SUM=$(dirname $0)/md5sum
 		[ ! -x $MD5SUM ] && MD5SUM="$(which md5sum)"
 		local target_md5="$($MD5SUM "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
