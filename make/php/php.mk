@@ -8,8 +8,10 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/php-cgi
 
 $(PKG)_STARTLEVEL=90 # before lighttpd
 
+$(PKG)_EXTRA_CFLAGS  := -ffunction-sections -fdata-sections
+$(PKG)_EXTRA_LDFLAGS := -Wl,--gc-sections
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_STATIC)),y)
-$(PKG)_STATIC := -all-static
+$(PKG)_EXTRA_LDFLAGS += -all-static
 endif
 
 $(PKG)_DEPENDS_ON += pcre
@@ -95,7 +97,7 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
-$(PKG)_LIBS += "-ldl"
+$(PKG)_LIBS += -ldl
 endif
 
 $(PKG)_SYSVIPC_SUPPORT:=$(if $(FREETZ_PACKAGE_PHP_WITH_SYSVIPC),enable,disable)
@@ -169,7 +171,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(PHP_DIR) \
-		PHP_STATIC="$(PHP_STATIC)" \
+		EXTRA_CFLAGS="$(PHP_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS_PROGRAM="$(PHP_EXTRA_LDFLAGS)" \
 		ZEND_EXTRA_LIBS="$(PHP_LIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
