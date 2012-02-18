@@ -111,8 +111,24 @@ cat << EOF
 EOF
 fi
 if echo "$BUILDIN_SUPPORT" | grep -q -i reverse ; then
+i=0
+j=0
+while [ $j -lt 10 ]; do
+REVERSE_PATH=$(eval echo '$TINYPROXY_REVERSEPATH'_$j)
+if [ -n "$REVERSE_PATH" ]; then
 cat << EOF
-<tr><td>ReversePath:</td><td colspan="4"><input id="id_reversepath" type="text" size="45" name="reversepath" value='$TINYPROXY_REVERSEPATH'></td></tr>
+<tr><td>ReversePath ($i):</td><td colspan="4"><input id="id_reversepath_$i" type="text" size="45" name="reversepath_$i" value='$REVERSE_PATH'</td></tr>
+EOF
+let i++
+fi
+let j++
+done
+if [ $i -lt 10 -a -z "$REVERSE_PATH" ]; then
+cat << EOF
+<tr><td>ReversePath ($i):</td><td colspan="4"><input id="id_reversepath_$i" type="text" size="45" name="reversepath_$i" value='$REVERSE_PATH'</td></tr>
+EOF
+fi
+cat << EOF
 <tr><td>ReverseBaseURL:</td><td colspan="4"><input id="id_reversebaseurl" type="text" size="45" name="reversebaseurl" value='$TINYPROXY_REVERSEBASEURL'></td></tr>
 <tr><td>ReverseOnly:</td><td><input type="hidden" name="reverseonly" value="no"><input id="id_reverseonly" type="checkbox" name="reverseonly" value="yes"$reverseonly_chk></td>
 <td>&nbsp; &nbsp;</td><td>ReverseMagic:</td><td><input type="hidden" name="reversemagic" value="no"><input id="id_reversemagic" type="checkbox" name="reversemagic" value="yes"$reversemagic_chk></td>
