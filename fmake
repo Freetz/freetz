@@ -8,7 +8,7 @@ cat << EOF
 
 $SELF - Make wrapper for calling additional commands before/after build
 
-Usage: $SELF [options] [<target>]
+Usage: $SELF [options] [--] [make-options] [<target>]
     -l <log-file> - write output to <log-file> (default: fmake.log)
     -t            - append time stamp to log file name
                     (e.g. fmake_2012-02-10_12-25-20.log)
@@ -16,6 +16,7 @@ Usage: $SELF [options] [<target>]
     -c            - log to console (default: no)
     -h            - display this help text
     -x            - display sample fmake_post code (e-mail message)
+    --            - separate $SELF options from make options
     <target>      - make target(s) (optional)
 
 Examples:
@@ -29,6 +30,8 @@ Examples:
         no log file, no console output (silent make)
     $SELF -t mc-dirclean mc-precompiled
         make two targets, log to fmake_<timestamp>.log
+    $SELF -c -- FREETZ_FWMOD_SKIP_PACK=y -k firmware-nocompile
+        log + console output, call make with environment variable + parameter
 
 In all modes, the build will be timed (via "time") and the result printed
 to the chosen output channels.
@@ -87,6 +90,7 @@ DO_CONS=0
 # Parse parameters
 while getopts l:tnchx opt; do
 	case $opt in
+		-) break ;;
 		l) [ "$OPTARG" ] && FMAKE_LOG="$OPTARG" ;;
 		t) TIMESTAMP=$(date '+%Y-%m-%d_%H-%M-%S') ;;
 		n) DO_LOG=0 ;;
