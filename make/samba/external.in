@@ -1,18 +1,15 @@
 config EXTERNAL_FREETZ_PACKAGE_SAMBA
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_SAMBA
 	bool "Samba"
+	select EXTERNAL_FREETZ_PACKAGE_SAMBA_samba_multicall if FREETZ_SAMBA_VERSION_3_6
 	default n
-	help
-		externals these file(s):
-		 /sbin/smbd
-		 /sbin/nmbd
-		 /sbin/smbpasswd
 
 menu Samba
 	depends on EXTERNAL_FREETZ_PACKAGE_SAMBA
 
 config EXTERNAL_FREETZ_PACKAGE_SAMBA_nmbd
 	boolean "nmbd"
+	depends on FREETZ_PACKAGE_NMBD && FREETZ_SAMBA_VERSION_3_0
 	default n
 	help
 		externals these file(s)
@@ -20,6 +17,7 @@ config EXTERNAL_FREETZ_PACKAGE_SAMBA_nmbd
 
 config EXTERNAL_FREETZ_PACKAGE_SAMBA_smbd
 	boolean "smbd"
+	depends on FREETZ_SAMBA_VERSION_3_0
 	default n
 	help
 		externals these file(s)
@@ -27,9 +25,18 @@ config EXTERNAL_FREETZ_PACKAGE_SAMBA_smbd
 
 config EXTERNAL_FREETZ_PACKAGE_SAMBA_smbpasswd
 	boolean "smbpasswd"
+	depends on FREETZ_SAMBA_VERSION_3_0
 	default n
 	help
 		externals these file(s)
 		 /sbin/smbpasswd
+
+config EXTERNAL_FREETZ_PACKAGE_SAMBA_samba_multicall
+	boolean "samba multi-binary"
+	depends on FREETZ_SAMBA_VERSION_3_6
+	default n
+	help
+		externals these file(s)
+		 /sbin/samba_multicall
 
 endmenu

@@ -1,0 +1,24 @@
+--- source3/configure
++++ source3/configure
+@@ -8655,6 +8655,7 @@
+     *linux*)
+         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LFS support" >&5
+ $as_echo_n "checking for LFS support... " >&6; }
++if false; then
+         old_CPPFLAGS="$CPPFLAGS"
+         CPPFLAGS="-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE $CPPFLAGS"
+        if test "$cross_compiling" = yes; then :
+@@ -8710,8 +8711,12 @@
+ fi
+ 
+ 	CPPFLAGS="$old_CPPFLAGS"
++fi
+ 	if test x$LINUX_LFS_SUPPORT = xyes ; then
+-		CPPFLAGS="-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE $CPPFLAGS"
++		CPPFLAGS="-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE $CPPFLAGS"
++
++$as_echo "#define _LARGEFILE_SOURCE 1" >>confdefs.h
++
+ 
+ $as_echo "#define _LARGEFILE64_SOURCE 1" >>confdefs.h
+ 

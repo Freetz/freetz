@@ -1,22 +1,38 @@
 config FREETZ_PACKAGE_SAMBA
-	bool "Samba 3.0.37 smbd (Filesharing)"
-	depends on FREETZ_LANG_DE || ! FREETZ_SELECTED_LANG_ONLY
+	bool "Samba smbd (Filesharing)"
+	select FREETZ_LIB_libcrypt    if FREETZ_SAMBA_VERSION_3_6
+	select FREETZ_LIB_libdl       if FREETZ_SAMBA_VERSION_3_6
 	select FREETZ_LIB_libresolv
 	select FREETZ_LIB_libpopt
+	select FREETZ_LIB_libz        if FREETZ_SAMBA_VERSION_3_6
 	default n
 	help
 		Provides the Samba SMB server (smbd). This is what you need if you would
 		like your router's file system to be accessible from Windows or from
 		other UNIX/Linux machines via smbmount, smbclient, cifsmount or similar.
-		Adds ~2.1 MB to the firmware (uncompressed).
 
 config FREETZ_PACKAGE_NMBD
-	bool "Samba 3.0.37 nmbd (Nameservices)"
+	bool "Samba nmbd (Nameservices)"
 	depends on FREETZ_PACKAGE_SAMBA
 	default n
 	help
 		Provides the Samba NetBIOS nameserver (nmbd). This is what you need if you
 		would like to see your Fritzbox in the network neighbourhood or act as a
 		masterbrowser.
-		Adds ~1.1 MB to the firmware (uncompressed).
 
+choice
+	depends on FREETZ_PACKAGE_SAMBA
+	prompt "version"
+	default FREETZ_SAMBA_VERSION_3_0
+
+	config FREETZ_SAMBA_VERSION_3_0
+		bool "samba 3.0.37"
+
+	config FREETZ_SAMBA_VERSION_3_6
+		bool "samba 3.6.3"
+endchoice
+
+config FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL
+	int "Maximum level of compiled-in debug messages"
+	depends on FREETZ_PACKAGE_SAMBA && FREETZ_SAMBA_VERSION_3_6
+	default -1

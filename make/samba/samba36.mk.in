@@ -1,0 +1,160 @@
+$(PKG)_BUILD_SUBDIR:=source3
+
+$(PKG)_BINARY:=samba_multicall
+$(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/$($(PKG)_BUILD_SUBDIR)/bin/$($(PKG)_BINARY)
+$(PKG)_BINARY_TARGET_DIR:=$($(PKG)_DEST_DIR)/sbin/$($(PKG)_BINARY)
+
+$(PKG)_SYMLINKS:=smbd nmbd smbpasswd
+$(PKG)_SYMLINKS_TARGET_DIR:=$($(PKG)_SYMLINKS:%=$($(PKG)_DEST_DIR)/sbin/%)
+
+$(PKG)_CODEPAGES:=lowcase.dat upcase.dat valid.dat
+$(PKG)_CODEPAGES_DIR:=/etc/samba
+$(PKG)_CODEPAGES_BUILD_DIR:=$($(PKG)_CODEPAGES:%=$($(PKG)_DIR)/codepages/%)
+$(PKG)_CODEPAGES_TARGET_DIR:=$($(PKG)_CODEPAGES:%=$($(PKG)_DEST_DIR)$($(PKG)_CODEPAGES_DIR)/%)
+
+$(PKG)_DEPENDS_ON += popt zlib
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_LFS
+
+$(PKG)_CONFIGURE_ENV += ac_cv_$(PKG)_path_PYTHON=""
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,path_PYTHON)
+
+$(PKG)_CONFIGURE_ENV += \
+	ac_cv_file__proc_sys_kernel_core_pattern=yes \
+	libreplace_cv_HAVE_C99_VSNPRINTF=yes \
+	libreplace_cv_HAVE_GETADDRINFO=no \
+	libreplace_cv_HAVE_GETTIMEOFDAY_TZ=yes \
+	libreplace_cv_HAVE_IFACE_AIX=no \
+	libreplace_cv_HAVE_IFACE_GETIFADDRS=no \
+	libreplace_cv_HAVE_IFACE_IFCONF=yes \
+	libreplace_cv_HAVE_IPV6=$(if $(FREETZ_TARGET_IPV6_SUPPORT),yes,no) \
+	libreplace_cv_HAVE_MMAP=yes \
+	libreplace_cv_HAVE_SECURE_MKSTEMP=yes \
+	libreplace_cv_REPLACE_INET_NTOA=no \
+	LINUX_LFS_SUPPORT=$(if $(FREETZ_TARGET_LFS),yes,no) \
+	samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
+	samba_cv_HAVE_errwarn=no \
+	samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes \
+	samba_cv_HAVE_qhalt=no \
+	samba_cv_have_setresgid=yes \
+	samba_cv_have_setresuid=yes \
+	samba_cv_HAVE_w2=no \
+	samba_cv_HAVE_Wdeclaration_after_statement=yes \
+	samba_cv_HAVE_Werror_implicit_function_declaration=yes \
+	samba_cv_HAVE_Werror=yes \
+	samba_cv_HAVE_WRFILE_KEYTAB=no \
+	samba_cv_USE_SETRESUID=yes \
+	samba_cv_USE_SETREUID=yes \
+	\
+	samba_cv_linux_getgrouplist_ok=no \
+	samba_cv_have_longlong=yes \
+	samba_cv_SIZEOF_TIME_T=no \
+	samba_cv_TIME_T_MAX=no \
+	samba_cv_SIZEOF_OFF_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
+	samba_cv_HAVE_OFF64_T=no \
+	samba_cv_SIZEOF_INO_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
+	samba_cv_HAVE_INO64_T=no \
+	samba_cv_SIZEOF_DEV_T=yes \
+	samba_cv_HAVE_DEV64_T=no \
+	samba_cv_HAVE_DEVICE_MAJOR_FN=yes \
+	samba_cv_HAVE_DEVICE_MINOR_FN=yes \
+	samba_cv_HAVE_MAKEDEV=yes \
+	samba_cv_HAVE_UNSIGNED_CHAR=no \
+	samba_cv_HAVE_BROKEN_READDIR_NAME=no \
+	samba_cv_HAVE_KERNEL_CHANGE_NOTIFY=no \
+	samba_cv_HAVE_KERNEL_SHARE_MODES=yes \
+	samba_cv_HAVE_FTRUNCATE_EXTEND=yes \
+	samba_cv_HAVE_BROKEN_GETGROUPS=no \
+	samba_cv_HAVE_FCNTL_LOCK=yes \
+	samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
+	samba_cv_HAVE_STRUCT_FLOCK64=yes \
+	samba_cv_REALPATH_TAKES_NULL=yes \
+	samba_cv_HAVE_TRUNCATED_SALT=no \
+	fu_cv_sys_stat_statvfs64=$(if $(FREETZ_TARGET_LFS),yes,no) \
+	samba_cv_HAVE_BROKEN_READLINK=no \
+	vfsfileid_cv_statfs=yes
+
+$(PKG)_CONFIGURE_OPTIONS += \
+	--exec-prefix=/usr \
+	--prefix=/ \
+	--disable-avahi \
+	--disable-cups \
+	--disable-pie \
+	--disable-relro \
+	--disable-static \
+	--disable-swat \
+	--disable-shared-libs \
+	--with-codepagedir=$(SAMBA_CODEPAGES_DIR) \
+	--with-configdir=/mod/etc/samba \
+	--with-included-iniparser \
+	--with-included-popt=no \
+	--with-lockdir=/var/lock \
+	--with-logfilebase=/var/log \
+	--with-nmbdsocketdir=/var/nmbd \
+	--with-piddir=/var/run \
+	--with-privatedir=/mod/etc/samba \
+	--with-sendfile-support \
+	--without-cluster-support \
+	--without-ads \
+	--without-krb5 \
+	--without-ldap \
+	--without-pam \
+	--without-winbind \
+	--without-libtdb \
+	--without-libtalloc \
+	--without-libnetapi \
+	--without-libsmbclient \
+	--without-libsmbsharemodes \
+	--without-libaddns \
+	--with-shared-modules=pdb_tdbsam,pdb_wbc_sam,idmap_nss,nss_info_template,auth_winbind,auth_wbc,auth_domain \
+	\
+	--with-syslog
+
+$(PKG)_TARGET_CFLAGS   += -ffunction-sections -fdata-sections
+$(PKG)_TARGET_CPPFLAGS += -DMAX_DEBUG_LEVEL=$(FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL) -D__location__=\\\"\\\"
+$(PKG)_TARGET_LDFLAGS += -Wl,--gc-sections
+
+$(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="$(SAMBA_TARGET_CFLAGS)"
+$(PKG)_MAKE_FLAGS += EXTRA_CPPFLAGS="$(SAMBA_TARGET_CPPFLAGS)"
+$(PKG)_MAKE_FLAGS += EXTRA_LDFLAGS="$(SAMBA_TARGET_LDFLAGS)"
+$(PKG)_MAKE_FLAGS += DYNEXP= PICFLAG= MODULES=
+
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
+
+$($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured
+	$(SUBMAKE) \
+		-C $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR) \
+		$(SAMBA_MAKE_FLAGS)
+
+$($(PKG)_CODEPAGES_BUILD_DIR): $($(PKG)_DIR)/.unpacked
+	@touch $@
+
+$($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_SYMLINKS_TARGET_DIR): $($(PKG)_BINARY_TARGET_DIR)
+	ln -sf $(SAMBA_BINARY) $@
+
+$($(PKG)_CODEPAGES_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_CODEPAGES_DIR)/%: $($(PKG)_DIR)/codepages/%
+	$(INSTALL_FILE)
+
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+        @echo -n "" > $@; \
+        [ "$(FREETZ_PACKAGE_NMBD)" != "y" ] \
+                && echo "sbin/nmbd" >> $@; \
+        touch $@
+
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_SYMLINKS_TARGET_DIR) $($(PKG)_CODEPAGES_TARGET_DIR)
+
+$(pkg)-clean:
+	-$(SUBMAKE) -C $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR) clean
+	$(RM) -r $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR)/bin
+
+$(pkg)-uninstall:
+	$(RM) $(SAMBA_BINARY_TARGET_DIR) $(SAMBA_SYMLINKS_TARGET_DIR) $(SAMBA_CODEPAGES_TARGET_DIR)

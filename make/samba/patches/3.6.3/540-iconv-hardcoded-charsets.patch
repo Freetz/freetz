@@ -1,0 +1,27 @@
+--- source3/configure
++++ source3/configure
+@@ -22346,6 +22346,7 @@
+ 
+ fi
+ 
++if false; then
+ ICONV_LOOK_DIRS="/usr /usr/local /sw /opt"
+ 
+ # Check whether --with-libiconv was given.
+@@ -22828,6 +22829,16 @@
+ _ACEOF
+ 
+ fi
++fi
++
++cat >>confdefs.h <<_ACEOF
++#define HAVE_ICONV 1
++#define HAVE_NATIVE_ICONV 1
++#define DEFAULT_DOS_CHARSET "CP850"
++#define DEFAULT_DISPLAY_CHARSET "ASCII"
++#define DEFAULT_UNIX_CHARSET "UTF-8"
++_ACEOF
++
+ 
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Linux kernel oplocks" >&5
