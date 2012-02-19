@@ -1,0 +1,82 @@
+--- xrelayd.c
++++ xrelayd.c
+@@ -240,7 +240,8 @@
+     if(res>0) return 0;
+     
+     switch( res ) {
+-        case POLARSSL_ERR_NET_TRY_AGAIN:
++        case POLARSSL_ERR_NET_WANT_READ:
++        case POLARSSL_ERR_NET_WANT_WRITE:
+             DLOG( "%s operation on %s connection would block",op,conn);
+         case 0:
+             return 0;
+@@ -285,7 +286,7 @@
+         if( ssl->timeout != 0 && t - prv->start > ssl->timeout )
+             continue;
+ 
+-        if( ssl->session->cipher != prv->cipher ||
++        if( ssl->session->ciphersuite != prv->ciphersuite ||
+             ssl->session->length != prv->length )
+             continue;
+ 
+@@ -334,13 +335,13 @@
+     return( 0 );
+ }
+ 
+-inline int proxy_send_all( int (*f_send)(void *, unsigned char *, int),
++inline int proxy_send_all( int (*f_send)(void *, const unsigned char *, size_t),
+                            void *ctx, unsigned char *buf, int len, int *eof)
+ {
+     int     ret=0;
+     while(len) {
+         if ((ret = f_send(ctx,buf,len)) <= 0) {
+-            if( ret == POLARSSL_ERR_NET_TRY_AGAIN ) continue;
++            if( ret == POLARSSL_ERR_NET_WANT_READ || ret == POLARSSL_ERR_NET_WANT_WRITE ) continue;
+             break;
+         }
+         len-=ret;
+@@ -350,7 +351,7 @@
+     return ret;
+ }
+ 
+-inline int proxy_recv_available( int (*f_recv)(void *, unsigned char *, int),
++inline int proxy_recv_available( int (*f_recv)(void *, unsigned char *, size_t),
+                                  void *ctx, unsigned char *buf, int len, int *eof)
+ {
+     int     ret=0;
+@@ -394,7 +395,7 @@
+     /* random number generation */
+     havege_state hs;
+     havege_init( &hs );
+-    ssl_set_rng( &ssl, havege_rand, &hs );
++    ssl_set_rng( &ssl, havege_random, &hs );
+     
+     /* io */
+     int     *ssl_fd = sslserver ? &client_fd : &server_fd;
+@@ -403,7 +404,7 @@
+                        net_send, ssl_fd );
+     
+     /* ciphers */
+-    ssl_set_ciphers( &ssl, xrly_ciphers );
++    ssl_set_ciphersuites( &ssl, xrly_ciphers );
+     
+     if(cert && key) {
+         ssl_set_ca_chain( &ssl, cert->next, NULL, NULL );
+@@ -432,7 +433,7 @@
+     if(sslserver) {
+         ILOG("Performing ssl handshake");
+         while( ( ret = ssl_handshake( &ssl ) ) != 0 ) {
+-            if( ret != POLARSSL_ERR_NET_TRY_AGAIN ) {
++            if( ret != POLARSSL_ERR_NET_WANT_READ && ret != POLARSSL_ERR_NET_WANT_WRITE ) {
+                 ELOG("SSL handshake failed: %08x", ret);
+                 return;
+             }
+@@ -721,7 +722,7 @@
+         ILOG("Generating private key");
+         havege_init( &hs );
+         rsa_init( &key, RSA_PKCS_V15, 0);
+-        ret = rsa_gen_key( &key, havege_rand, &hs , keysize, EXPONENT);
++        ret = rsa_gen_key( &key, havege_random, &hs , keysize, EXPONENT);
+         if(ret) {
+             ELOG("Failed to generate private key: %08x",ret);
+             goto fail;

@@ -1,14 +1,43 @@
 --- include/polarssl/x509.h
 +++ include/polarssl/x509.h
-@@ -122,6 +122,7 @@
- #define OID_CN                  "\x55\x04\x03"
+@@ -62,6 +62,8 @@
+ #define POLARSSL_ERR_X509_INVALID_INPUT                    -0x2A00  /**< Input invalid. */
+ #define POLARSSL_ERR_X509_MALLOC_FAILED                    -0x2A80  /**< Allocation of memory failed. */
+ #define POLARSSL_ERR_X509_FILE_IO_ERROR                    -0x2B00  /**< Read/write of file failed. */
++#define POLARSSL_ERR_X509_POINT_ERROR                      -0x2C00
++#define POLARSSL_ERR_X509_VALUE_TO_LENGTH                  -0x2C80
+ /* \} name */
+ 
+ 
+@@ -102,6 +102,7 @@
+ 
  #define OID_PKCS1               "\x2A\x86\x48\x86\xF7\x0D\x01\x01"
- #define OID_PKCS1_RSA           "\x2A\x86\x48\x86\xF7\x0D\x01\x01\x01"
-+#define OID_PKCS1_RSA_SHA       "\x2A\x86\x48\x86\xF7\x0D\x01\x01\x05"
+ #define OID_PKCS1_RSA           OID_PKCS1 "\x01"
++#define OID_PKCS1_RSA_SHA       OID_PKCS1 "\x05"
+ 
  #define OID_RSA_SHA_OBS         "\x2B\x0E\x03\x02\x1D"
- #define OID_PKCS9               "\x2A\x86\x48\x86\xF7\x0D\x01\x09"
- #define OID_PKCS9_EMAIL         "\x2A\x86\x48\x86\xF7\x0D\x01\x09\x01"
-@@ -437,6 +437,229 @@
+ 
+@@ -372,11 +373,9 @@
+ 
+ /**
+  * \name Structures for writing X.509 certificates.
+- * XvP: commented out as they are not used.
+  * - <tt>typedef struct _x509_node x509_node;</tt>
+  * - <tt>typedef struct _x509_raw x509_raw;</tt>
+  */
+-/*
+ typedef struct _x509_node
+ {
+     unsigned char *data;
+@@ -404,7 +403,6 @@
+     x509_node sign;
+ }
+ x509_raw;
+-*/
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -719,6 +717,229 @@
   */
  int x509_self_test( int verbose );
  
@@ -240,15 +269,15 @@
  #endif
 --- library/Makefile
 +++ library/Makefile
-@@ -25,7 +25,7 @@
- 	sha1.o		sha2.o		sha4.o		\
- 	ssl_cli.o	ssl_srv.o	ssl_tls.o	\
- 	timing.o	x509parse.o	xtea.o		\
--	camellia.o  version.o
-+	camellia.o  version.o	x509write.o
+@@ -39,7 +39,7 @@
+ 		rsa.o		sha1.o		sha2.o			\
+ 		sha4.o		ssl_cli.o	ssl_srv.o		\
+ 		ssl_tls.o	timing.o	version.o		\
+-		x509parse.o	xtea.o
++		x509parse.o	x509write.o	xtea.o
+ 	
  
  .SILENT:
- 
 --- library/x509write.c
 +++ library/x509write.c
 @@ -0,0 +1,1135 @@
@@ -1232,7 +1261,7 @@
 +    if (sign == NULL)
 +        return 1;
 +
-+    if ((ret = rsa_pkcs1_sign(privkey, RSA_PRIVATE, SIG_RSA_SHA1, 20, hash,
++    if ((ret = rsa_pkcs1_sign(privkey, NULL, NULL, RSA_PRIVATE, SIG_RSA_SHA1, 20, hash,
 +                    sign)) != 0)
 +        return ret;
 +

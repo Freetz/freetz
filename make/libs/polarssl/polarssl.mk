@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 0.14.3)
+$(call PKG_INIT_LIB, 1.1.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-gpl.tgz
-$(PKG)_SOURCE_MD5:=f1b2fe9087ab64d7ea40a276a3628583
+$(PKG)_SOURCE_MD5:=f1f25a261ea677602a0a08c5c4f50166
 $(PKG)_SITE:=http://$(pkg).org/code/releases
 
 $(PKG)_LIBNAME:=lib$(pkg).so.$($(PKG)_VERSION)
@@ -19,8 +19,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -I../include" \
 		OFLAGS="" \
 		AR="$(TARGET_AR)" \
-		RANLIB="$(TARGET_RANLIB)" \
-		STRIP="$(TARGET_STRIP)" \
 		shared static
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
