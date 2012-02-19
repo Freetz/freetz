@@ -8,6 +8,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/screen.bin
 $(PKG)_DEPENDS_ON := ncurses
 
 $(PKG)_CONFIGURE_ENV += $(foreach flag,rename fchmod fchown strerror lstat _exit utimes vsnprintf getcwd setlocale strftime,ac_cv_func_$(flag)=yes )
+#$(PKG)_CONFIGURE_ENV += ac_cv_header_dwarf_h=no ac_cv_header_elf_h=no
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
