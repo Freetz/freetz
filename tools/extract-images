@@ -90,9 +90,11 @@ do_extract_kfs()
 		# Isolate array of SquashFS length candidates from hexdump lines, considering endian type
 		# Note: 4 bytes of length information are found at (SquashFS magic offset + 8)
 		tmp=$(echo "$hexfind_dump" | grep " 0*${squashfs_offs_hex[i]}\$" | sed -r 's/([^ ]+ ){2}([^ ]+).*/\2/')
-		[ "$ENDIAN_TYPE" == "big" ] \
-			&& squashfs_length[i]=$(printf "%d" "0x$tmp") \
-			|| squashfs_length[i]=$(printf "%d" "0x${tmp:6:2}${tmp:4:2}${tmp:2:2}${tmp:0:2}")
+		if [ "$ENDIAN_TYPE" == "big" ]; then
+			squashfs_length[i]=$(printf "%d" "0x$tmp")
+		else
+			squashfs_length[i]=$(printf "%d" "0x${tmp:6:2}${tmp:4:2}${tmp:2:2}${tmp:0:2}")
+		fi
 		# Special case: filesystem length 0 can happen if a raw (mtdblock) dump
 		# from the box is processed, because the box seems to erase the length
 		# info when flashing.

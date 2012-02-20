@@ -152,15 +152,17 @@ modpatch()
 			local delta_old=$delta
 			#echo2 "    $delta, $hdr_len, $from, $to"
 			# Cut & paste comment (if any) from original into auto-fixed patch file
-			[ $to -ge $from ] && \
+			if [ $to -ge $from ]; then
 				eval "sed -n '$from,${to}p' \"\$patch_file.orig\" >> \"\$patch_file\""
+			fi
 			local _file="${files[i]}"
 			# If backup exists, but is unreadable and has a size of zero, it
 			# was created as a placeholder by 'patch -b' previously and can be
 			# safely deleted. It even must be deleted in order to avoid a diff
 			# error because it is unreadable.
-			[ -f "$_file.orig" ] && [ ! -r "$_file.orig" ] && [ ! -s "$_file.orig" ] \
-				&& rm -f "$_file.orig"
+			if [ -f "$_file.orig" -a ! -r "$_file.orig" -a ! -s "$_file.orig" ]; then
+				rm -f "$_file.orig"
+			fi
 			# Auto-fix possibly fuzzy patch by re-diffing patched file against original
 			diff -Naur --label "$_file	$timestamp" --label "$_file	$timestamp" "$_file.orig" "$_file" >> "$patch_file"
 			rm -f "$_file.orig"

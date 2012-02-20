@@ -331,9 +331,11 @@ HTML_DIR="${FILESYSTEM_DIR}/${HTML_SUBDIR}"
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
-[ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] \
-	&& FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE" \
-	|| FILESYSTEM="${RAW_FILESYSTEM}"
+if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
+else
+	FILESYSTEM="${RAW_FILESYSTEM}"
+fi
 AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
@@ -381,9 +383,11 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 					mv "$exe_image" "$KERNEL_DIR/kernel.raw"
 					;;
 				*/filesystem.image)
-					[ "$exe_hr_mode" ] \
-						&& mv "$exe_image" "$KERNEL_DIR/kernelsquashfs.raw" \
-						|| mv "$exe_image" "$FIRMWARE_DIR/var/tmp/filesystem.image"
+					if [ "$exe_hr_mode" ]; then
+						mv "$exe_image" "$KERNEL_DIR/kernelsquashfs.raw"
+					else
+						mv "$exe_image" "$FIRMWARE_DIR/var/tmp/filesystem.image"
+					fi
 					;;
 			esac
 		done
@@ -403,9 +407,11 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ "$FREETZ_HAS_AVM_JUNK_BYTES" == "y" ]; then
 		echo0 "removing AVM SquashFS junk bytes"
 		[ "$FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="{FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
-		[ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ] \
-			&& "$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk" >/dev/null 2>&1 \
-			|| "$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk"
+		if [ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ]; then
+			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk" >/dev/null 2>&1
+		else
+			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk"
+		fi
 		[ $? -eq 0 ] || error 1 "AVM SquashFS junk bytes not found"
 		mv -f "$JUNK_BYTES_FILE.nojunk" "$JUNK_BYTES_FILE"
 	fi
@@ -428,8 +434,9 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
 
 		if [ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ]; then
-			[ -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && [ $(stat -c %s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}") -gt 0 ] \
-				&& _config_hint=" - maybe you should configure a firmware with FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE"
+			if [ -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && [ $(stat -c %s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}") -gt 0 ]; then
+				_config_hint=" - maybe you should configure a firmware with FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE"
+			fi
 			error 1 "kernel splitting failed${_config_hint}"
 		fi
 
@@ -999,7 +1006,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
 			$(
 				[ -r "${PACKAGES_DIR}/${pkg}/.exclude" ] \
-						&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude"
+					&& echo "--exclude-from=${PACKAGES_DIR}/${pkg}/.exclude"
 			) . | \
 		"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
@@ -1026,7 +1033,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
 				$(
 					[ -r "${ADDON_DIR}/${pkg}/.exclude" ] \
-							&& echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude" \
+						&& echo "--exclude-from=${ADDON_DIR}/${pkg}/.exclude" \
 				) . | \
 			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
@@ -1283,9 +1290,11 @@ fi
 # ------------------------------------------------------------------
 
 if [ "$DO_ZIP" -gt 0 ]; then
-	[ "$FW_IMAGES_DIR" ] \
-		&& zip_name="${FW_IMAGES_DIR}/${modstring}_rootfs.tar.gz" \
-		|| zip_name="${DIR}/${modstring}_rootfs.tar.gz"
+	if [ "$FW_IMAGES_DIR" ]; then
+		zip_name="${FW_IMAGES_DIR}/${modstring}_rootfs.tar.gz"
+	else
+		zip_name="${DIR}/${modstring}_rootfs.tar.gz"
+	fi
 	echo0 "zipping root file system to $zip_name"
 	"$TAR" -C "$FILESYSTEM_MOD_DIR" -czf "$zip_name" . || exit 1
 	if [ ! -s "$zip_name" ]; then
@@ -1340,9 +1349,11 @@ if [ "$DO_PACK" -gt 0 ]; then
 		[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
 		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
 			TOO_BIG_MSG="kernel image is $DIFF bytes too big."
-			[ "$FORCE_PACK" -eq 0 ] \
-				&& error 1 -b "${TOO_BIG_MSG} See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details." \
-				|| echo0   -b "${TOO_BIG_MSG} Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware"
+			if [ "$FORCE_PACK" -eq 0 ]; then
+				error 1 -b "${TOO_BIG_MSG} See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
+			else
+				echo0   -b "${TOO_BIG_MSG} Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware"
+			fi
 		fi
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
@@ -1376,9 +1387,11 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
 	# Pack firmware image (use old tar for compatibility)
-	[ "$FW_IMAGES_DIR" ] \
-		&& img_name="${FW_IMAGES_DIR}/${modimage}" \
-		|| img_name="${DIR}/${modimage}"
+	if [ "$FW_IMAGES_DIR" ]; then
+		img_name="${FW_IMAGES_DIR}/${modimage}"
+	else
+		img_name="${DIR}/${modimage}"
+	fi
 	echo0 "packing $img_name"
 	"$TAR" -C "$FIRMWARE_MOD_DIR" -cf "$img_name" . || exit 1
 	if [ ! -s "$img_name" ]; then
@@ -1395,9 +1408,11 @@ if [ "$action_names" ]; then
 	# Pack externalised files
 	if [ "$EXTERNAL_CREATEPAK" == "y" ] && [ -n "$externalised_files" ]; then
 		modexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.external"
-		[ "$FW_IMAGES_DIR" ] \
-			&& modexternal="${FW_IMAGES_DIR}/${modexternal}" \
-			|| modexternal="${DIR}/${modexternal}"
+		if [ "$FW_IMAGES_DIR" ]; then
+			modexternal="${FW_IMAGES_DIR}/${modexternal}"
+		else
+			modexternal="${DIR}/${modexternal}"
+		fi
 		echo "packing ${modexternal}"
 		"$TAR" -C "$EXTERNAL_MOD_DIR" -cf "$modexternal" . || exit 1
 		if [ ! -s "$modexternal" ]; then
