@@ -84,8 +84,15 @@ $(PKG)_CONFIGURE_OPTIONS += \
 	--without-utmp \
 	--without-winbind
 
+$(PKG)_TARGET_CFLAGS   += -ffunction-sections -fdata-sections
+$(PKG)_TARGET_CPPFLAGS += -D__location__=\\\"\\\"
+$(PKG)_TARGET_LDFLAGS += -Wl,--gc-sections
+
 $(PKG)_MAKE_FLAGS += RANLIB="$(TARGET_RANLIB)"
+$(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="$(SAMBA_TARGET_CFLAGS)"
+$(PKG)_MAKE_FLAGS += EXTRA_CPPFLAGS="$(SAMBA_TARGET_CPPFLAGS)"
 $(PKG)_MAKE_FLAGS += EXTRA_LDFLAGS="$(SAMBA_TARGET_LDFLAGS)"
+$(PKG)_MAKE_FLAGS += DYNEXP=
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
