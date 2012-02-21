@@ -9,12 +9,14 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/sbin/%,$(filter-out $($(P
 $(PKG)_DEPENDS_ON += popt
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_LFS
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,fu_cv_sys_stat_statvfs)
 $(PKG)_CONFIGURE_ENV += \
 	ac_cv_func_prctl=no \
 	fu_cv_sys_stat_statfs2_bsize=yes \
 	libreplace_cv_HAVE_IPV6=$(if $(FREETZ_TARGET_IPV6_SUPPORT),yes,no) \
+	LINUX_LFS_SUPPORT=$(if $(FREETZ_TARGET_LFS),yes,no) \
 	samba_cv_fpie=no \
 	samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
 	samba_cv_HAVE_BROKEN_GETGROUPS=no \
@@ -48,12 +50,12 @@ $(PKG)_CONFIGURE_ENV += \
 	samba_cv_REALPATH_TAKES_NULL=yes \
 	samba_cv_REPLACE_INET_NTOA=no \
 	samba_cv_SIZEOF_DEV_T=yes \
-	samba_cv_SIZEOF_INO_T=yes \
-	samba_cv_SIZEOF_OFF_T=yes \
+	samba_cv_SIZEOF_INO_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
+	samba_cv_SIZEOF_OFF_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
 	samba_cv_SIZEOF_TIME_T=no \
 	samba_cv_USE_SETREUID=yes \
 	SAMBA_fu_cv_sys_stat_statvfs=no \
-	SAMBA_fu_cv_sys_stat_statvfs64==no \
+	SAMBA_fu_cv_sys_stat_statvfs64=$(if $(FREETZ_TARGET_LFS),yes,no) \
 	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
 
 $(PKG)_CONFIGURE_OPTIONS += \
