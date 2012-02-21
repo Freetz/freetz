@@ -7,6 +7,10 @@ $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/sbin/%)
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_DEPENDS_ON += popt
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_TARGET_LDFLAGS += -liconv
+endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_LFS
@@ -37,7 +41,6 @@ $(PKG)_CONFIGURE_ENV += \
 	samba_cv_have_longlong=yes \
 	samba_cv_HAVE_MAKEDEV=yes \
 	samba_cv_HAVE_MMAP=yes \
-	samba_cv_HAVE_NATIVE_ICONV=no \
 	samba_cv_HAVE_OFF64_T=no \
 	samba_cv_HAVE_SECURE_MKSTEMP=yes \
 	samba_cv_have_setresgid=yes \
@@ -81,6 +84,9 @@ $(PKG)_CONFIGURE_OPTIONS += \
 	--without-utmp \
 	--without-winbind
 
+$(PKG)_MAKE_FLAGS += RANLIB="$(TARGET_RANLIB)"
+$(PKG)_MAKE_FLAGS += EXTRA_LDFLAGS="$(SAMBA_TARGET_LDFLAGS)"
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -88,7 +94,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	for target in headers all; do \
 	$(SUBMAKE) -C $(SAMBA_DIR)/source \
-		RANLIB="$(TARGET_RANLIB)" \
+		$(SAMBA_MAKE_FLAGS) \
 		$$target; \
 	done
 

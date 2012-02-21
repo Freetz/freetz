@@ -1,0 +1,26 @@
+--- source/configure
++++ source/configure
+@@ -46202,6 +46202,7 @@
+ # end utmp details
+ 
+ 
++if false; then
+ ICONV_LOCATION=standard
+ LOOK_DIRS="/usr /usr/local /sw /opt"
+ 
+@@ -46841,6 +46842,15 @@
+ _ACEOF
+ 
+ fi
++fi
++cat >>confdefs.h <<_ACEOF
++#define HAVE_ICONV 1
++#define HAVE_NATIVE_ICONV 1
++#define DEFAULT_DOS_CHARSET "CP850"
++#define DEFAULT_DISPLAY_CHARSET "ASCII"
++#define DEFAULT_UNIX_CHARSET "UTF-8"
++_ACEOF
++
+ 
+ 
+ { $as_echo "$as_me:$LINENO: checking for Linux kernel oplocks" >&5
