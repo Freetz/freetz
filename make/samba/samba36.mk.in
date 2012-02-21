@@ -22,11 +22,10 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_LFS
 
-$(PKG)_CONFIGURE_ENV += ac_cv_$(PKG)_path_PYTHON=""
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,path_PYTHON)
-
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_CONF_VARIABLES_PACKAGE_SPECIFIC,ac_cv_path_PYTHON)
 $(PKG)_CONFIGURE_ENV += \
 	ac_cv_file__proc_sys_kernel_core_pattern=yes \
+	fu_cv_sys_stat_statvfs64=$(if $(FREETZ_TARGET_LFS),yes,no) \
 	libreplace_cv_HAVE_C99_VSNPRINTF=yes \
 	libreplace_cv_HAVE_GETADDRINFO=no \
 	libreplace_cv_HAVE_GETTIMEOFDAY_TZ=yes \
@@ -38,46 +37,45 @@ $(PKG)_CONFIGURE_ENV += \
 	libreplace_cv_HAVE_SECURE_MKSTEMP=yes \
 	libreplace_cv_REPLACE_INET_NTOA=no \
 	LINUX_LFS_SUPPORT=$(if $(FREETZ_TARGET_LFS),yes,no) \
+	SAMBA_ac_cv_path_PYTHON="" \
 	samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
+	samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
+	samba_cv_HAVE_BROKEN_GETGROUPS=no \
+	samba_cv_HAVE_BROKEN_READDIR_NAME=no \
+	samba_cv_HAVE_BROKEN_READLINK=no \
+	samba_cv_HAVE_DEV64_T=no \
+	samba_cv_HAVE_DEVICE_MAJOR_FN=yes \
+	samba_cv_HAVE_DEVICE_MINOR_FN=yes \
 	samba_cv_HAVE_errwarn=no \
+	samba_cv_HAVE_FCNTL_LOCK=yes \
+	samba_cv_HAVE_FTRUNCATE_EXTEND=yes \
+	samba_cv_HAVE_INO64_T=no \
+	samba_cv_HAVE_KERNEL_CHANGE_NOTIFY=no \
 	samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes \
+	samba_cv_HAVE_KERNEL_SHARE_MODES=yes \
+	samba_cv_have_longlong=yes \
+	samba_cv_HAVE_MAKEDEV=yes \
+	samba_cv_HAVE_OFF64_T=no \
 	samba_cv_HAVE_qhalt=no \
 	samba_cv_have_setresgid=yes \
 	samba_cv_have_setresuid=yes \
+	samba_cv_HAVE_STRUCT_FLOCK64=yes \
+	samba_cv_HAVE_TRUNCATED_SALT=no \
+	samba_cv_HAVE_UNSIGNED_CHAR=no \
 	samba_cv_HAVE_w2=no \
 	samba_cv_HAVE_Wdeclaration_after_statement=yes \
 	samba_cv_HAVE_Werror_implicit_function_declaration=yes \
 	samba_cv_HAVE_Werror=yes \
 	samba_cv_HAVE_WRFILE_KEYTAB=no \
-	samba_cv_USE_SETRESUID=yes \
-	samba_cv_USE_SETREUID=yes \
-	\
 	samba_cv_linux_getgrouplist_ok=no \
-	samba_cv_have_longlong=yes \
+	samba_cv_REALPATH_TAKES_NULL=yes \
+	samba_cv_SIZEOF_DEV_T=yes \
+	samba_cv_SIZEOF_INO_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
+	samba_cv_SIZEOF_OFF_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
 	samba_cv_SIZEOF_TIME_T=no \
 	samba_cv_TIME_T_MAX=no \
-	samba_cv_SIZEOF_OFF_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
-	samba_cv_HAVE_OFF64_T=no \
-	samba_cv_SIZEOF_INO_T=$(if $(FREETZ_TARGET_LFS),yes,no) \
-	samba_cv_HAVE_INO64_T=no \
-	samba_cv_SIZEOF_DEV_T=yes \
-	samba_cv_HAVE_DEV64_T=no \
-	samba_cv_HAVE_DEVICE_MAJOR_FN=yes \
-	samba_cv_HAVE_DEVICE_MINOR_FN=yes \
-	samba_cv_HAVE_MAKEDEV=yes \
-	samba_cv_HAVE_UNSIGNED_CHAR=no \
-	samba_cv_HAVE_BROKEN_READDIR_NAME=no \
-	samba_cv_HAVE_KERNEL_CHANGE_NOTIFY=no \
-	samba_cv_HAVE_KERNEL_SHARE_MODES=yes \
-	samba_cv_HAVE_FTRUNCATE_EXTEND=yes \
-	samba_cv_HAVE_BROKEN_GETGROUPS=no \
-	samba_cv_HAVE_FCNTL_LOCK=yes \
-	samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
-	samba_cv_HAVE_STRUCT_FLOCK64=yes \
-	samba_cv_REALPATH_TAKES_NULL=yes \
-	samba_cv_HAVE_TRUNCATED_SALT=no \
-	fu_cv_sys_stat_statvfs64=$(if $(FREETZ_TARGET_LFS),yes,no) \
-	samba_cv_HAVE_BROKEN_READLINK=no \
+	samba_cv_USE_SETRESUID=yes \
+	samba_cv_USE_SETREUID=yes \
 	vfsfileid_cv_statfs=yes
 
 $(PKG)_CONFIGURE_OPTIONS += \
@@ -87,9 +85,9 @@ $(PKG)_CONFIGURE_OPTIONS += \
 	--disable-cups \
 	--disable-pie \
 	--disable-relro \
+	--disable-shared-libs \
 	--disable-static \
 	--disable-swat \
-	--disable-shared-libs \
 	--with-codepagedir=$(SAMBA_CODEPAGES_DIR) \
 	--with-configdir=/mod/etc/samba \
 	--with-included-iniparser \
@@ -100,21 +98,20 @@ $(PKG)_CONFIGURE_OPTIONS += \
 	--with-piddir=/var/run \
 	--with-privatedir=/mod/etc/samba \
 	--with-sendfile-support \
-	--without-cluster-support \
+	--with-shared-modules=pdb_tdbsam,pdb_wbc_sam,idmap_nss,nss_info_template,auth_winbind,auth_wbc,auth_domain \
+	--with-syslog \
 	--without-ads \
+	--without-cluster-support \
 	--without-krb5 \
 	--without-ldap \
-	--without-pam \
-	--without-winbind \
-	--without-libtdb \
-	--without-libtalloc \
+	--without-libaddns \
 	--without-libnetapi \
 	--without-libsmbclient \
 	--without-libsmbsharemodes \
-	--without-libaddns \
-	--with-shared-modules=pdb_tdbsam,pdb_wbc_sam,idmap_nss,nss_info_template,auth_winbind,auth_wbc,auth_domain \
-	\
-	--with-syslog
+	--without-libtalloc \
+	--without-libtdb \
+	--without-pam \
+	--without-winbind
 
 $(PKG)_TARGET_CFLAGS   += -ffunction-sections -fdata-sections
 $(PKG)_TARGET_CPPFLAGS += -DMAX_DEBUG_LEVEL=$(FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL) -D__location__=\\\"\\\"
