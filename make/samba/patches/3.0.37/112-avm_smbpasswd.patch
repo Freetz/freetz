@@ -1,3 +1,30 @@
+--- source/Makefile.in
++++ source/Makefile.in
+@@ -543,10 +543,7 @@
+ 
+ PASSWD_UTIL_OBJ = utils/passwd_util.o
+ 
+-SMBPASSWD_OBJ = utils/smbpasswd.o $(PASSWD_UTIL_OBJ) $(PASSCHANGE_OBJ) \
+-		$(PARAM_OBJ) $(SECRETS_OBJ) $(LIBSMB_OBJ) $(PASSDB_OBJ) \
+-		$(GROUPDB_OBJ) $(LIB_NONSMBD_OBJ) $(KRBCLIENT_OBJ) \
+-		$(POPT_LIB_OBJ) $(SMBLDAP_OBJ) $(RPC_PARSE_OBJ) $(LIBMSRPC_GEN_OBJ) $(LIBMSRPC_OBJ)
++SMBPASSWD_OBJ = utils/avm_smbpasswd.o libsmb/smbdes.o lib/md4.o lib/arc4.o lib/replace/snprintf.o
+ 
+ PDBEDIT_OBJ = utils/pdbedit.o $(PASSWD_UTIL_OBJ) $(PARAM_OBJ) $(PASSDB_OBJ) \
+ 		$(LIBSAMBA_OBJ) $(LIB_NONSMBD_OBJ) $(GROUPDB_OBJ) \
+@@ -1047,10 +1044,9 @@
+ 	@echo Linking $@
+ 	@$(CC) $(FLAGS) -o $@ $(SMBTREE_OBJ) $(LDFLAGS) $(DYNEXP) $(LIBS) @POPTLIBS@ $(KRB5LIBS) $(LDAP_LIBS)
+ 
+-bin/smbpasswd@EXEEXT@: proto_exists $(SMBPASSWD_OBJ) @BUILD_POPT@ bin/.dummy
++bin/smbpasswd@EXEEXT@: proto_exists $(SMBPASSWD_OBJ) bin/.dummy
+ 	@echo Linking $@
+-	@$(CC) $(FLAGS) -o $@ $(SMBPASSWD_OBJ) $(LDFLAGS) $(PASSDB_LIBS) \
+-		$(DYNEXP) $(LIBS) @POPTLIBS@ $(KRB5LIBS) $(LDAP_LIBS)
++	@$(CC) $(FLAGS) -o $@ $(SMBPASSWD_OBJ)
+ 
+ bin/pdbedit@EXEEXT@: proto_exists $(PDBEDIT_OBJ) @BUILD_POPT@ bin/.dummy
+ 	@echo Linking $@
 --- source/utils/avm_smbpasswd.c
 +++ source/utils/avm_smbpasswd.c
 @@ -0,0 +1,221 @@

@@ -1,0 +1,12 @@
+--- source/Makefile.in
++++ source/Makefile.in
+@@ -830,8 +830,7 @@
+ ######################################################################
+ # now the rules...
+ ######################################################################
+-all : SHOWFLAGS $(SBIN_PROGS) $(BIN_PROGS) $(ROOT_SBIN_PROGS) \
+-	$(SHLIBS) $(MODULES) $(NSS_MODULES) $(PAM_MODULES) @EXTRA_ALL_TARGETS@
++all : SHOWFLAGS bin/smbd@EXEEXT@ bin/nmbd@EXEEXT@ bin/smbpasswd@EXEEXT@
+ 
+ nss_modules : $(NSS_MODULES)
+ 
