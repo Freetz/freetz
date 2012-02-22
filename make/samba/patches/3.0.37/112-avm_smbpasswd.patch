@@ -1,21 +1,21 @@
---- source/utils/avm_smbpasswd.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ source/utils/avm_smbpasswd.c	2010-04-05 18:02:26.000000000 +0200
+--- source/utils/avm_smbpasswd.c
++++ source/utils/avm_smbpasswd.c
 @@ -0,0 +1,221 @@
 +/*
-+ * Unix SMB/CIFS implementation. 
++ * Unix SMB/CIFS implementation.
 + * Copyright (C) Jeremy Allison 1995-1998
 + * Copyright (C) Tim Potter     2001
-+ * 
++ *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License as published by the
 + * Free Software Foundation; either version 2 of the License, or (at your
 + * option) any later version.
-+ * 
++ *
 + * This program is distributed in the hope that it will be useful, but WITHOUT
 + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 + * more details.
-+ * 
++ *
 + * You should have received a copy of the GNU General Public License along with
 + * this program; if not, write to the Free Software Foundation, Inc., 675
 + * Mass Ave, Cambridge, MA 02139, USA.  */
@@ -24,13 +24,13 @@
 +#include <endian.h>
 +
 +
-+void E_md4hash(const char *passwd, uchar p16[16])
++void avm_E_md4hash(const char *passwd, uchar p16[16])
 +{
 +	int len;
 +	smb_ucs2_t wpwd[129];
 +	int i;
 +
-+	
++
 +	/* Password must be converted to NT unicode - null terminated. */
 +	len = strlen(passwd);
 +#if 0
@@ -48,7 +48,7 @@
 +	len = len /*strlen_w(wpwd)*/ * sizeof(int16);
 +
 +	mdfour(p16, (unsigned char *)wpwd, len);
-+	ZERO_STRUCT(wpwd);	
++	ZERO_STRUCT(wpwd);
 +}
 +
 +/**
@@ -58,14 +58,14 @@
 + * @return False if password was > 14 characters, and therefore may be incorrect, otherwise True
 + * @note p16 is filled in regardless
 + */
-+ 
-+BOOL E_deshash(const char *passwd, uchar p16[16])
++
++BOOL avm_E_deshash(const char *passwd, uchar p16[16])
 +{
 +	BOOL ret = True;
 +	char dospwd[256+2];
 +	int i;
 +	int len;
-+	
++
 +	/* Password must be converted to DOS charset - null terminated, uppercase. */
 +//	push_ascii(dospwd, passwd, sizeof(dospwd), STR_UPPER|STR_TERMINATE);
 +
@@ -79,7 +79,7 @@
 +		dospwd[i] = c;
 +	}
 +	dospwd[i] = 0;
-+       
++
 +	/* Only the fisrt 14 chars are considered, password need not be null terminated. */
 +	E_P16((const unsigned char *)dospwd, p16);
 +
@@ -88,7 +88,7 @@
 +	}
 +
 +	memset(dospwd, 0, sizeof(dospwd));
-+	// ZERO_STRUCT(dospwd);	
++	// ZERO_STRUCT(dospwd);
 +
 +	return ret;
 +}
@@ -108,10 +108,10 @@
 +			   const char *new_passwd, char *new_lanman_p16, char *new_nt_p16)
 +{
 +	/* Calculate the MD4 hash (NT compatible) of the password */
-+	E_md4hash(new_passwd, new_nt_p16);
++	avm_E_md4hash(new_passwd, new_nt_p16);
 +
-+	if (!E_deshash(new_passwd, new_lanman_p16)) {
-+		/* E_deshash returns false for 'long' passwords (> 14
++	if (!avm_E_deshash(new_passwd, new_lanman_p16)) {
++		/* avm_E_deshash returns false for 'long' passwords (> 14
 +		   DOS chars).  This allows us to match Win2k, which
 +		   does not store a LM hash for these passwords (which
 +		   would reduce the effective password length to 14 */
@@ -128,7 +128,7 @@
 + Start here.
 +**********************************************************/
 +int main(int argc, char **argv)
-+{	
++{
 +// not for freetz: char *passwd_filename = "/var/samba/private/smbpasswd";
 +	char *passwd_filename = "/mod/etc/samba/smbpasswd";
 +	char *cleartext_filename = "/var/tmp/smbpasswd.cleartext";
@@ -167,7 +167,7 @@
 +		uchar new_nt_p16[NT_HASH_LEN];
 +		char ascii_p16[32+1];
 +		char *p;
-+			
++
 +		line[sizeof(line)-1] = '\0';
 +		if (strlen(line)) {
 +			p = &line[strlen(line)-1];

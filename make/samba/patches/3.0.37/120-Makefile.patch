@@ -1,6 +1,6 @@
---- source/Makefile.in.orig	2010-04-05 19:25:34.000000000 +0200
-+++ source/Makefile.in	2010-04-05 19:25:34.000000000 +0200
-@@ -131,7 +131,7 @@
+--- source/Makefile.in
++++ source/Makefile.in
+@@ -130,7 +130,7 @@
  FLAGS3 =
  FLAGS4 =
  FLAGS5 = $(FLAGS1) $(FLAGS2) $(FLAGS3) $(FLAGS4)
@@ -9,7 +9,7 @@
  
  PASSWD_FLAGS = -DSMB_PASSWD_FILE=\"$(SMB_PASSWD_FILE)\" -DPRIVATE_DIR=\"$(PRIVATE_DIR)\"
  PATH_FLAGS1 = -DCONFIGFILE=\"$(CONFIGFILE)\"  -DSBINDIR=\"$(SBINDIR)\"
-@@ -831,8 +831,7 @@
+@@ -830,8 +830,7 @@
  ######################################################################
  # now the rules...
  ######################################################################
@@ -19,7 +19,7 @@
  
  nss_modules : $(NSS_MODULES)
  
-@@ -964,15 +963,23 @@
+@@ -963,15 +962,23 @@
  	  dir=bin $(MAKEDIR); fi
  	@: >> $@ || : > $@ # what a fancy emoticon!
  
@@ -51,7 +51,7 @@
  
  bin/swat@EXEEXT@: proto_exists $(SWAT_OBJ) @BUILD_POPT@ bin/.dummy
  	@echo Linking $@
-@@ -1049,10 +1056,16 @@
+@@ -1048,10 +1055,16 @@
  	@echo Linking $@
  	@$(CC) $(FLAGS) -o $@ $(SMBTREE_OBJ) $(LDFLAGS) $(DYNEXP) $(LIBS) @POPTLIBS@ $(KRB5LIBS) $(LDAP_LIBS)
  
@@ -71,7 +71,7 @@
  
  bin/pdbedit@EXEEXT@: proto_exists $(PDBEDIT_OBJ) @BUILD_POPT@ bin/.dummy
  	@echo Linking $@
-@@ -1812,7 +1825,7 @@
+@@ -1811,7 +1824,7 @@
  
  MKPROTO_SH = $(srcdir)/script/mkproto.sh
  
