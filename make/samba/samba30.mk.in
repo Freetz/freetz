@@ -1,10 +1,11 @@
 $(PKG)_BUILD_SUBDIR:=source
 
-$(PKG)_BINARIES_ALL := smbpasswd smbd nmbd
-$(PKG)_BINARIES := $(filter-out $(if $(FREETZ_PACKAGE_NMBD),,nmbd),$($(PKG)_BINARIES_ALL))
-$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/source/bin/%)
-$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/sbin/%)
-$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_BINARY:=samba_multicall
+$(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/$($(PKG)_BUILD_SUBDIR)/bin/$($(PKG)_BINARY)
+$(PKG)_BINARY_TARGET_DIR:=$($(PKG)_DEST_DIR)/sbin/$($(PKG)_BINARY)
+
+$(PKG)_SYMLINKS:=smbd nmbd smbpasswd
+$(PKG)_SYMLINKS_TARGET_DIR:=$($(PKG)_SYMLINKS:%=$($(PKG)_DEST_DIR)/sbin/%)
 
 $(PKG)_DEPENDS_ON += popt
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
@@ -100,23 +101,31 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured
 	for target in headers all; do \
-	$(SUBMAKE) -C $(SAMBA_DIR)/source \
+	$(SUBMAKE) -C $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR) \
 		$(SAMBA_MAKE_FLAGS) \
 		$$target; \
 	done
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/sbin/%: $($(PKG)_DIR)/source/bin/%
+$($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg):
+$($(PKG)_SYMLINKS_TARGET_DIR): $($(PKG)_BINARY_TARGET_DIR)
+	ln -sf $(SAMBA_BINARY) $@
 
-$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_NMBD)" != "y" ] && echo "sbin/nmbd" >> $@; \
+	touch $@
+
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_SYMLINKS_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(SAMBA_DIR)/source clean
-	$(RM) -r $(SAMBA_DIR)/source/bin
+	-$(SUBMAKE) -C $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR) clean
+	$(RM) -r $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR)/bin
 
 $(pkg)-uninstall:
-	$(RM) $(SAMBA_BINARIES_ALL:%=$(SAMBA_DEST_DIR)/sbin/%)
+	$(RM) $(SAMBA_BINARY_TARGET_DIR) $(SAMBA_SYMLINKS_TARGET_DIR)
