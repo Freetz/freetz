@@ -15,15 +15,15 @@
  
 +smbd/server_multicall.o: smbd/server.c smbd/server.o
 +	@echo "Compiling $< (multicall)"
-+	$(CC) -Dmain=smbd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
++	@$(CC) -Dmain=smbd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
 +
 +nmbd/nmbd_multicall.o: nmbd/nmbd.c nmbd/nmbd.o
 +	@echo "Compiling $< (multicall)"
-+	$(CC) -Dmain=nmbd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
++	@$(CC) -Dmain=nmbd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
 +
 +utils/smbpasswd_multicall.o: utils/smbpasswd.c utils/smbpasswd.o
 +	@echo "Compiling $< (multicall)"
-+	$(CC) -Dmain=smbpasswd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
++	@$(CC) -Dmain=smbpasswd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
 +
 +SMBD_MULTI_O = $(patsubst smbd/server.o,smbd/server_multicall.o,$(SMBD_OBJ))
 +NMBD_MULTI_O = $(patsubst nmbd/nmbd.o,nmbd/nmbd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(NMBD_OBJ)))
@@ -34,7 +34,7 @@
 +
 +bin/samba_multicall@EXEEXT@: proto_exists $(MULTICALL_O) @BUILD_POPT@ bin/.dummy
 +	@echo Linking $@
-+	$(CC) $(FLAGS) -o $@ $(MULTICALL_O) $(LDFLAGS) $(LDAP_LIBS) \
++	@$(CC) $(FLAGS) -o $@ $(MULTICALL_O) $(LDFLAGS) $(LDAP_LIBS) \
 +		$(KRB5LIBS) $(DYNEXP) $(PRINT_LIBS) $(AUTH_LIBS) \
 +		$(ACL_LIBS) $(PASSDB_LIBS) $(LIBS) @POPTLIBS@ @SMBD_LIBS@
 +

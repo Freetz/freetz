@@ -14,12 +14,12 @@
  		$(LIBSAMBA_OBJ) $(LIB_NONSMBD_OBJ) $(GROUPDB_OBJ) \
 @@ -970,13 +967,13 @@
  	@echo "Compiling $< (multicall)"
- 	$(CC) -Dmain=nmbd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
+ 	@$(CC) -Dmain=nmbd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
  
 -utils/smbpasswd_multicall.o: utils/smbpasswd.c utils/smbpasswd.o
 +utils/avm_smbpasswd_multicall.o: utils/avm_smbpasswd.c utils/avm_smbpasswd.o
  	@echo "Compiling $< (multicall)"
- 	$(CC) -Dmain=smbpasswd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
+ 	@$(CC) -Dmain=smbpasswd_main -I. -I$(srcdir) $(FLAGS) $(PICFLAG) -c $< -o $@
  
  SMBD_MULTI_O = $(patsubst smbd/server.o,smbd/server_multicall.o,$(SMBD_OBJ))
  NMBD_MULTI_O = $(patsubst nmbd/nmbd.o,nmbd/nmbd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(NMBD_OBJ)))
