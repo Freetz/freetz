@@ -1,0 +1,13 @@
+--- source3/Makefile.in
++++ source3/Makefile.in
+@@ -1528,9 +1522,7 @@
+ ######################################################################
+ # now the rules...
+ ######################################################################
+-all:: SHOWFLAGS basics libs $(SBIN_PROGS) $(BIN_PROGS) \
+-	$(MODULES) $(NSS_MODULES) $(PAM_MODULES) \
+-	$(EXTRA_ALL_TARGETS)
++all:: SHOWFLAGS basics bin/samba_multicall@EXEEXT@ bin/smbd@EXEEXT@ bin/nmbd@EXEEXT@ bin/smbpasswd@EXEEXT@
+ 
+ basics:: samba3-idl
+ 
