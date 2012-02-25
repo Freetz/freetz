@@ -15,7 +15,7 @@
  
 -utils/smbpasswd_multicall.o: utils/smbpasswd.c utils/smbpasswd.o
 +utils/smbpasswd_multicall.o: utils/avm_smbpasswd.c utils/avm_smbpasswd.o
- 	@echo Compiling $<.c
+ 	@echo "Compiling $< (multicall)"
  	@$(COMPILE_CC_PATH) -Dmain=smbpasswd_main && exit 0;\
  		echo "The following command failed:" 1>&2;\
 @@ -1797,7 +1797,7 @@ utils/smbpasswd_multicall.o: utils/smbpa
