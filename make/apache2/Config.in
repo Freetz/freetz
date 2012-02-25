@@ -1,39 +1,43 @@
 config FREETZ_PACKAGE_APACHE2
-    bool "Apache HTTP Server 2.2.21"
-    select FREETZ_LIB_libapr          if ! FREETZ_PACKAGE_APACHE2_STATIC
-    select FREETZ_LIB_libapr_WITH_DSO
-    select FREETZ_LIB_libaprutil      if ! FREETZ_PACKAGE_APACHE2_STATIC
-    select FREETZ_LIB_libpcre         if ! FREETZ_PACKAGE_APACHE2_STATIC
-    select FREETZ_LIB_libz            if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_DEFLATE
-    select FREETZ_LIB_libssl          if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_SSL
-    default n
-    help
-        The Apache httpd server
-
-config FREETZ_PACKAGE_APACHE2_COMPILEINMODS
-    bool "Compile modules in instead of building loadable modules"
-    depends on FREETZ_PACKAGE_APACHE2
-    default n
-    help
-        Causes all apache modules to be linked directly into the main binary.
-
-config FREETZ_PACKAGE_APACHE2_STATIC
-    bool "Create statically linked binary"
-    depends on FREETZ_PACKAGE_APACHE2
-    default n
-    help
-        Causes all libraries apache depends on to be linked in statically.
+	bool "Apache HTTP Server 2.2.22 (binary only)"
+	select FREETZ_LIB_libcrypt        if ! FREETZ_PACKAGE_APACHE2_STATIC
+	select FREETZ_LIB_libdl           if ! FREETZ_PACKAGE_APACHE2_STATIC
+	select FREETZ_LIB_libm            if ! FREETZ_PACKAGE_APACHE2_STATIC
+	select FREETZ_LIB_libapr          if ! FREETZ_PACKAGE_APACHE2_STATIC
+	select FREETZ_LIB_libapr_WITH_DSO
+	select FREETZ_LIB_libaprutil      if ! FREETZ_PACKAGE_APACHE2_STATIC
+	select FREETZ_LIB_libpcre         if ! FREETZ_PACKAGE_APACHE2_STATIC
+	select FREETZ_LIB_libz            if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_DEFLATE
+	select FREETZ_LIB_libcrypto       if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_SSL
+	select FREETZ_LIB_libssl          if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_SSL
+	default n
+	help
+		The Apache httpd server
 
 config FREETZ_PACKAGE_APACHE2_DEFLATE
-    bool "Enable deflate"
-    depends on FREETZ_PACKAGE_APACHE2
-    default n
-    help
-        Enables the deflate compression. Requires libz.
+	bool "Enable deflate"
+	depends on FREETZ_PACKAGE_APACHE2
+	default n
+	help
+		Enables the deflate compression. Requires libz.
 
 config FREETZ_PACKAGE_APACHE2_SSL
-    bool "Enable SSL"
-    depends on FREETZ_PACKAGE_APACHE2
-    default n
-    help
-        Enables the SSL module. Requires the SSL libraries.
+	bool "Enable SSL"
+	depends on FREETZ_PACKAGE_APACHE2
+	default n
+	help
+		Enables the SSL module. Requires openssl.
+
+config FREETZ_PACKAGE_APACHE2_COMPILEINMODS
+	bool "Compile modules in instead of building loadable modules"
+	depends on FREETZ_PACKAGE_APACHE2
+	default n
+	help
+		Causes all apache modules to be linked directly into the main binary.
+
+config FREETZ_PACKAGE_APACHE2_STATIC
+	bool "Create statically linked binary"
+	depends on FREETZ_PACKAGE_APACHE2
+	default n
+	help
+		Causes all libraries apache depends on to be linked in statically.

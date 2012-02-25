@@ -1,3 +1,4 @@
 if [ "$FREETZ_PACKAGE_APACHE2" = y ]; then
-  EXTERNAL_FILES+=" $( test -d "$PACKAGES_DIR/apache2-2.2.21/root" && cd "$PACKAGES_DIR/apache2-2.2.21/root" && find * -type f)"
+	APACHE2_ROOT="$PACKAGES_DIR/apache2-2.2.22/root"
+	EXTERNAL_FILES+=" $(test -d "$APACHE2_ROOT" && cd "$APACHE2_ROOT" && find * -type f)"
 fi
