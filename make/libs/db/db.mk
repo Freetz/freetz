@@ -16,7 +16,7 @@ $(PKG)_CONFIGURE_OPTIONS += --srcdir=../dist/
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-mutex=MIPS/gcc-assembly
 $(PKG)_CONFIGURE_OPTIONS += --disable-cxx
-$(PKG)_CONFIGURE_OPTIONS += --disable-compat185
+$(PKG)_CONFIGURE_OPTIONS += --enable-compat185
 $(PKG)_CONFIGURE_OPTIONS += --disable-tcl
 $(PKG)_CONFIGURE_OPTIONS += --enable-smallbuild
 

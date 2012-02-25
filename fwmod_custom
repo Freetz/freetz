@@ -7,25 +7,29 @@
 #  ./filesystem	- unpacked filesystem squashfs
 #  ./kernel	- unpacked kernel & hidden kernel squashfs
 
-all() {
-	dummy=0
+echo1() { echo "  $*"; }
+echo2() { echo "    $*"; }
+modpatch() {
+	echo1 "applying patch '${p#$FREETZ_BASE_DIR/}' ..."
+	( cd "$1"; patch -p0 || return 2; ) < "$2" | sed -e 's/^/    /';
 }
 
-clean() {
-	dummy=0
+all() {
+	CUSTOM_DIR="$FREETZ_BASE_DIR/custom"
+	FILESYSTEM_MOD_DIR="$PWD"/filesystem
+
+	for patch in "$CUSTOM_DIR"/*.sh; do
+		[ -d "$patch" ] && continue
+		[ -r "$patch" ] || continue
+		. $patch
+	done
 }
+
+clean() { :; }
 
 case "$1" in
-	""|all)
-		all
-		;;
-	clean)
-		clean
-		;;
-	*)
-		echo "Usage: $0 {all|clean}" 1>&2
-		exit 1
-		;;
+	""|all) all ;;
+	clean) clean ;;
+	*) echo "Usage: $0 {all|clean}" 1>&2; exit 1 ;;
 esac
 
-exit 0

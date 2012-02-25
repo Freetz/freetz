@@ -364,6 +364,6 @@ while true; do
 	[ "$RRDSTATS_DIGITEMP1W" = yes ] && collect_one
 	[ $# -eq 0 ] && exit
 	_SLEEPER=$(( $_NEXTRUN-$(date +%s) ))
-	[ $_SLEEPER -gt 0 ] && sleep $_SLEEPER
+	[ $_SLEEPER -gt 0 ] && /bin/sleep $_SLEEPER
 done
 
