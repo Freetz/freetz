@@ -1,32 +1,52 @@
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -1016,7 +1016,7 @@ TEST_LP_LOAD_OBJ = param/test_lp_load.o
+@@ -1016,13 +1016,7 @@
  
  PASSWD_UTIL_OBJ = utils/passwd_util.o
  
 -SMBPASSWD_OBJ = utils/smbpasswd.o $(PASSWD_UTIL_OBJ) $(PASSCHANGE_OBJ) \
-+SMBPASSWD_OBJ = utils/avm_smbpasswd.o $(PASSWD_UTIL_OBJ) $(PASSCHANGE_OBJ) \
- 		$(PARAM_OBJ) $(LIBSMB_OBJ) $(PASSDB_OBJ) \
- 		$(GROUPDB_OBJ) $(LIB_NONSMBD_OBJ) $(KRBCLIENT_OBJ) \
- 		$(POPT_LIB_OBJ) $(SMBLDAP_OBJ) \
-@@ -1788,7 +1788,7 @@ nmbd/nmbd_multicall.o: nmbd/nmbd.c nmbd/
+-		$(PARAM_OBJ) $(LIBSMB_OBJ) $(PASSDB_OBJ) \
+-		$(GROUPDB_OBJ) $(LIB_NONSMBD_OBJ) $(KRBCLIENT_OBJ) \
+-		$(POPT_LIB_OBJ) $(SMBLDAP_OBJ) \
+-		$(LIBMSRPC_GEN_OBJ) $(LIBMSRPC_OBJ) \
+-		$(LIBCLI_SAMR_OBJ) \
+-		rpc_client/init_lsa.o
++SMBPASSWD_OBJ = utils/avm_smbpasswd.o ../libcli/auth/smbdes.o ../lib/crypto/md4.o
+ 
+ PDBEDIT_OBJ = utils/pdbedit.o $(PASSWD_UTIL_OBJ) $(PARAM_OBJ) $(PASSDB_OBJ) \
+ 		$(LIBSAMBA_OBJ) $(LIBTSOCKET_OBJ) \
+@@ -1786,7 +1780,7 @@
  		echo "$(COMPILE_CC_PATH)" 1>&2;\
  		$(COMPILE_CC_PATH) >/dev/null 2>&1
  
 -utils/smbpasswd_multicall.o: utils/smbpasswd.c utils/smbpasswd.o
-+utils/smbpasswd_multicall.o: utils/avm_smbpasswd.c utils/avm_smbpasswd.o
++utils/avm_smbpasswd_multicall.o: utils/avm_smbpasswd.c utils/avm_smbpasswd.o
  	@echo "Compiling $< (multicall)"
  	@$(COMPILE_CC_PATH) -Dmain=smbpasswd_main && exit 0;\
  		echo "The following command failed:" 1>&2;\
-@@ -1797,7 +1797,7 @@ utils/smbpasswd_multicall.o: utils/smbpa
+@@ -1795,7 +1789,7 @@
  
  SMBD_MULTI_O = $(patsubst smbd/server.o,smbd/server_multicall.o,$(SMBD_OBJ))
  NMBD_MULTI_O = $(patsubst nmbd/nmbd.o,nmbd/nmbd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(NMBD_OBJ)))
 -SMBPASSWD_MULTI_O = $(patsubst utils/smbpasswd.o,utils/smbpasswd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(SMBPASSWD_OBJ)))
-+SMBPASSWD_MULTI_O = $(patsubst utils/avm_smbpasswd.o,utils/smbpasswd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(SMBPASSWD_OBJ)))
++SMBPASSWD_MULTI_O = $(patsubst utils/avm_smbpasswd.o,utils/avm_smbpasswd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(SMBPASSWD_OBJ)))
  MULTI_O = multi.o
  
  MULTICALL_O = $(sort $(SMBD_MULTI_O) $(NMBD_MULTI_O) $(SMBPASSWD_MULTI_O) $(MULTI_O))
+@@ -1890,11 +1884,9 @@
+ 		$(LIBS) $(POPT_LIBS) $(KRB5LIBS) $(LDAP_LIBS) $(NSCD_LIBS) \
+ 		$(LIBTALLOC_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
+ 
+-bin/smbpasswd@EXEEXT@: $(BINARY_PREREQS) $(SMBPASSWD_OBJ) @BUILD_POPT@ $(LIBTALLOC) $(LIBTDB) $(LIBWBCLIENT)
++bin/smbpasswd@EXEEXT@: $(BINARY_PREREQS) $(SMBPASSWD_OBJ)
+ 	@echo Linking $@
+-	@$(CC) -o $@ $(SMBPASSWD_OBJ) $(LDFLAGS) $(PASSDB_LIBS) \
+-		$(DYNEXP) $(LIBS) $(POPT_LIBS) $(KRB5LIBS) $(LDAP_LIBS) \
+-		$(LIBTALLOC_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
++	@$(CC) -o $@ $(SMBPASSWD_OBJ)
+ 
+ bin/pdbedit@EXEEXT@: $(BINARY_PREREQS) $(PDBEDIT_OBJ) @BUILD_POPT@ $(LIBTALLOC) $(LIBTDB) $(LIBWBCLIENT)
+ 	@echo Linking $@
 --- /dev/null
 +++ source3/utils/avm_smbpasswd.c
 @@ -0,0 +1,221 @@
