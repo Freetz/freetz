@@ -16,14 +16,16 @@ $(PKG)_CONFIGURE_ENV += LD_SHLIB="$(TARGET_CC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
 $(PKG)_CONFIGURE_ENV += LDFLAGS="$(if $(FREETZ_PACKAGE_APACHE_STATIC),-static)"
 $(PKG)_CONFIGURE_ENV += EXTRA_LIBS="-ldl"
+
 $(PKG)_CONFIGURE_OPTIONS += --target=$(pkg)
-$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr/apache
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
 $(PKG)_CONFIGURE_OPTIONS += --bindir=/usr/sbin
 $(PKG)_CONFIGURE_OPTIONS += --sbindir=/usr/sbin
-$(PKG)_CONFIGURE_OPTIONS += --localstatedir=/var/apache
-$(PKG)_CONFIGURE_OPTIONS += --runtimedir=/var/apache/logs
-$(PKG)_CONFIGURE_OPTIONS += --logfiledir=/var/apache/logs
-$(PKG)_CONFIGURE_OPTIONS += --proxycachedir=/var/apache/proxy
+$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/etc/$(pkg)
+$(PKG)_CONFIGURE_OPTIONS += --libexecdir=/usr/lib/$(pkg)
+$(PKG)_CONFIGURE_OPTIONS += --datadir=/usr/share/$(pkg)
+$(PKG)_CONFIGURE_OPTIONS += --localstatedir=/var/$(pkg)
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-module=most
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_APACHE_COMPILEINMODS),--disable-shared=all,--enable-shared=max)
 
@@ -42,9 +44,9 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE1) -C $(APACHE_DIR) install \
 		root="$(FREETZ_BASE_DIR)/$(APACHE_DEST_DIR)"
 	$(RM) -r \
-		$(APACHE_DEST_DIR)/{usr/sbin,var} \
-		$(APACHE_DEST_DIR)/usr/apache/{cgi-bin/*,conf/*.default,htdocs,icons/README*,include,man,libexec/httpd.exp}
-	-$(TARGET_STRIP) $(APACHE_DEST_DIR)/usr/apache/libexec/*.so
+		$(APACHE_DEST_DIR)/{etc/apache/*.default,usr/include,usr/man,usr/sbin,var} \
+		$(APACHE_DEST_DIR)/usr/share/apache/{cgi-bin/*,htdocs,icons/README*,icons/*.gif,icons/*/*.gif,include,man}
+	-$(TARGET_STRIP) $(APACHE_DEST_DIR)/usr/lib/apache/*.so
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
