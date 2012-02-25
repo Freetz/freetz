@@ -1,0 +1,4 @@
+if [ "$EXTERNAL_FREETZ_PACKAGE_APACHE" = y ]; then
+	APACHE_ROOT="$PACKAGES_DIR/apache-1.3.42/root"
+	EXTERNAL_FILES+=" $(test -d "$APACHE_ROOT" && cd "$APACHE_ROOT" && find * -type f)"
+fi
