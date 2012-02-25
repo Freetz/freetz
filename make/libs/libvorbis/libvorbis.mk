@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 1.3.2)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=798a4211221073c1409f26eac4567e8b
+$(call PKG_INIT_LIB, 1.3.3)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=71b649d3e08e63ece16649df906ce8b9
 $(PKG)_SITE:=http://downloads.xiph.org/releases/vorbis
 
-$(PKG)_LIBVERSIONS      := 0.4.5 2.0.8 3.3.4
+$(PKG)_LIBVERSIONS      := 0.4.6 2.0.9 3.3.5
 $(PKG)_LIBNAMES_SHORT   := vorbis vorbisenc vorbisfile
 $(PKG)_LIBNAMES_LONG    := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
 $(PKG)_LIBS_BUILD_DIR   := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/.libs/%)
