@@ -1280,7 +1280,6 @@ if [ "$action_names" ]; then
 	"$TAR" -C "$VARTAR_MOD_DIR" -cf "$VARTAR_MOD" . || exit 1
 
 	[ ! -s "$VARTAR_MOD" ] && error 1 "packing of var.tar failed"
-	mv "$VARTAR_MOD" "${FILESYSTEM_MOD_DIR}/lib/var.tar"
 
 	[ "$FREETZ_HAS_AVM_UDEV" == "y" ] || \
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
