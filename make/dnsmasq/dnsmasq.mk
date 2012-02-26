@@ -22,8 +22,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(DNSMASQ_DIR) \
 		CC="$(TARGET_CC)" \
 		COPTS="$(DNSMASQ_COPTS)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS=""
+		CFLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections" \
+		LDFLAGS="-Wl,--gc-sections"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
