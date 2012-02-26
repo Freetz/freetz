@@ -17,12 +17,17 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(ATTR_DIR)
+	$(SUBMAKE) -C $(ATTR_DIR) \
+		OPTIMIZER="" DEBUG="" \
+		PCFLAGS="-D_GNU_SOURCE" \
+		LCFLAGS="$(TARGET_CFLAGS)"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(ATTR_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		libattr-install-dev libattr-install-lib
+		include-install-dev libattr-install-dev libattr-install-lib
+	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libattr.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -34,7 +39,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(ATTR_DIR) clean
 	$(RM) -r \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libattr.so* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/attr \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libattr.*
 
 $(pkg)-uninstall:
 	$(RM) $(ATTR_TARGET_DIR)/libattr.so*
