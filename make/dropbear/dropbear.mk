@@ -15,7 +15,8 @@ else
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dbclient dropbearkey scp" MULTI=1 SCPPROGRESS=1
 endif
 
-$(PKG)_CPPFLAGS:=
+# disable argument null checking
+$(PKG)_CPPFLAGS:=-DARGTYPE=3
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER)),y)
 $(PKG)_CPPFLAGS+=-DSFTPSERVER_PATH='\"/usr/lib/sftp-server\"'
 endif
