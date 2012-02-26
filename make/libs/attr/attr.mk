@@ -1,7 +1,6 @@
 $(call PKG_INIT_LIB, 2.4.44)
-$(PKG)_DL_VERSION:=2.4.44
 $(PKG)_LIB_VERSION:=1.1.0
-$(PKG)_SOURCE:=$(pkg)_$($(PKG)_DL_VERSION).orig.tar.gz
+$(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
 $(PKG)_SOURCE_MD5:=d132c119831c27350e10b9f885711adc
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/a/attr
 
