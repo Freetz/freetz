@@ -9,7 +9,9 @@ modsed "s/CONFIG_NAS.*/CONFIG_NAS=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.
 # 3370, 7240, 7270, 7340 and 7390 de have "if (config.NAS) in menu_page_head.html
 # so there is no need to patch
 if isFreetzType 7320; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_nas.patch"
+	if ! isFreetzType LABOR; then
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_nas.patch"
+	fi
 fi
 
 echo2 "removing internal memory"
