@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.0.15)
+$(call PKG_INIT_BIN, 1.0.16)
 $(PKG)_SOURCE:=tinc-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=44bb7d1618955a0a56e9e159f1c46362
+$(PKG)_SOURCE_MD5:=f1c7ed94878725fb2cf4efb02bf160da
 $(PKG)_SITE:=http://www.tinc-vpn.org/packages/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/tincd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tincd
