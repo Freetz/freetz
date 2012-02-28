@@ -480,3 +480,26 @@ config FREETZ_HAS_AVM_MULTI_ANNEX
 	default n
 	help
 		Select this if you have a firmware with Multi-Annex.
+
+config FREETZ_HAS_AVM_CTLMGR_STRUCT_V1
+	bool "Has AVM ctlmgr struct layout V1"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_HAS_AVM_USB_HOST && \
+		! FREETZ_HAS_AVM_CTLMGR_STRUCT_V2
+	default y
+	help
+		1st structure layout.
+
+config FREETZ_HAS_AVM_CTLMGR_STRUCT_V2
+	bool "Has AVM ctlmgr struct layout V2"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_HAS_AVM_USB_HOST && \
+		FREETZ_TYPE_LABOR_PREVIEW && \
+		( \
+			FREETZ_TYPE_FON_WLAN_7270_V2 || \
+			FREETZ_TYPE_FON_WLAN_7270_V3 || \
+			FREETZ_TYPE_FON_WLAN_7320 || \
+			FREETZ_TYPE_FON_WLAN_7390 \
+		)
+	default y
+	help
+		2nd structure layout (CeBIT 2012).
+

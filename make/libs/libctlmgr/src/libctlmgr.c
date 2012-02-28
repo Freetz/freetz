@@ -5,6 +5,8 @@
  *
  */
 
+// #define DEBUG
+
 #define _XOPEN_SOURCE	500
 #define _SVID_SOURCE
 
@@ -27,13 +29,19 @@ static short g_bStorageUsers;
 
 struct user {
   struct user *	u_next;		// u00
-  int		u_enabled;	// u04
-  char *	u_user;		// u08
-  char *	u_pass;		// u12
-  int		u16;
+  int		u_enabled;		// u04
+  char *	u_user;			// u08
+  char *	u_pass;			// u12
+  char *	u_passint;		// u16
   int		u20;
   int		u24;
+#ifdef D_STRUCT_V2
+  int		u28;
+  int		u_boxusr_nr;	// u32
+#endif
+#ifdef D_STRUCT_V1
   int		u_boxusr_nr;	// u28
+#endif
 };
 
 
@@ -47,7 +55,14 @@ struct x {
   int		x24;
   int		x28;
   int		x32;
-  struct user *	x_users;
+#ifdef D_STRUCT_V2
+  int		x36;
+  int		x40;
+  struct user *        x_users;        // x44
+#endif
+#ifdef D_STRUCT_V1
+  struct user *        x_users;        // x36
+#endif
 };
 
 struct T_USBCFG_config {
@@ -189,6 +204,11 @@ write_passwd (int user_map)
 	uid = 1000 + up->u_boxusr_nr;
 	add_linux_ftp_user (fp_passwd, path_buf, up->u_pass, uid, 1);
 	fprintf (fp_users, "%s = \"%s\"\n", path_buf, up->u_user);
+#ifdef D_STRUCT_V2
+       sprintf (path_buf, "boxusr%uint", up->u_boxusr_nr);
+       uid = 2000 + up->u_boxusr_nr;
+       add_linux_ftp_user (fp_passwd, path_buf, up->u_passint, uid, 1);
+#endif
       }
     }
   }
@@ -213,3 +233,18 @@ write_etc_passwd_and_users_map ()
 {
   write_passwd (1);
 }
+
+#ifdef DEBUG
+void
+show_structure_layout_version ()
+{
+#ifdef D_STRUCT_V2
+	printf ("compiled for 2nd struct layout version");
+#elif D_STRUCT_V1
+	printf ("compiled for 1st struct layout version");
+#else
+	printf ("compiled for no struct layout version");
+#endif
+
+}
+#endif

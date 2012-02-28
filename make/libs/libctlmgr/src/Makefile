@@ -1,4 +1,5 @@
 override CFLAGS     += -fPIC
+override CPPFLAGS   += -D_GNU_SOURCE
          LDFLAGS     = -shared
          LIB_VERSION = 0.0.0
 
