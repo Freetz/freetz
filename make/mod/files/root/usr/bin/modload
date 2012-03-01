@@ -64,8 +64,8 @@ echo 'done.'
 
 echo -n 'Loading modules ... '
 if [ -r /tmp/flash/mod/modules ]; then
-	grep -v "^#" /tmp/flash/mod/modules | while read -r module; do
-		[ -z "$module" ] || modprobe $module
+	grep -v "^ *#" /tmp/flash/mod/modules | while read -r module; do
+		[ -n "$module" ] && modprobe ${module%.ko}
 	done
 fi
 echo 'done.'
