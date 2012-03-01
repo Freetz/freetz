@@ -72,6 +72,30 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION
 		externals these file(s)
 			/usr/bin/svnversion
 
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
+	boolean "mod_authz_svn"
+	depends on FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
+	default n
+	help
+		externals these file(s)
+		 /usr/lib/apache2/mod_authz_svn
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
+	boolean "mod_dav_svn"
+	depends on FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
+	default n
+	help
+		externals these file(s)
+		 /usr/lib/apache2/mod_dav_svn
+
+config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
+	boolean "mod_dontdothat"
+	depends on FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
+	default n
+	help
+		externals these file(s)
+		 /usr/lib/apache2/mod_dontdothat
+
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_LIBRARIES
 	boolean "svn libraries"
 	depends on FREETZ_PACKAGE_SUBVERSION_LIBRARIES \
@@ -82,7 +106,10 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_LIBRARIES
 		&& (!FREETZ_PACKAGE_SUBVERSION_SVNRDUMP || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNRDUMP) \
 		&& (!FREETZ_PACKAGE_SUBVERSION_SVNSERVE || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSERVE) \
 		&& (!FREETZ_PACKAGE_SUBVERSION_SVNSYNC || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSYNC) \
-		&& (!FREETZ_PACKAGE_SUBVERSION_SVNVERSION || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION)
+		&& (!FREETZ_PACKAGE_SUBVERSION_SVNVERSION || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_mod_authz_svn || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_authz_svn) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_mod_dav_svn || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dav_svn) \
+		&& (!FREETZ_PACKAGE_SUBVERSION_mod_dontdothat || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dontdothat)
 	default n
 	help
 		externals these file(s)

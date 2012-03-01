@@ -101,6 +101,33 @@ config FREETZ_PACKAGE_SUBVERSION_STATIC
 		Activating this switch causes all libraries subversion tools
 		depend on to be linked in statically.
 
+config FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
+	bool "apache modules"
+	depends on FREETZ_PACKAGE_SUBVERSION && !FREETZ_PACKAGE_SUBVERSION_STATIC \
+		&& FREETZ_PACKAGE_APACHE2 && !FREETZ_PACKAGE_APACHE2_COMPILEINMODS
+	select FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
+
+config FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
+	bool "mod_authz_svn"
+	depends on FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
+	default n
+	help
+		Subversion path-based authorization module for Apache
+
+config FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
+	bool "mod_dav_svn"
+	depends on FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
+	default n
+	help
+		Subversion plug-in for the Apache DAV module
+
+config FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
+	bool "mod_dontdothat"
+	depends on FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
+	default n
+	help
+		Module to block certain kinds of Apache Subversion requests
+
 config FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF
 	bool "remove webinterface"
 	depends on FREETZ_PACKAGE_SUBVERSION

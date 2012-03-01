@@ -30,6 +30,12 @@ $(PKG)_BINARIES_BUILD_DIR := $(join $(SUBVERSION_BINARIES:%=$($(PKG)_DIR)/subver
 $(PKG)_BINARIES_STAGING_DIR := $(SUBVERSION_BINARIES:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/%)
 $(PKG)_BINARIES_TARGET_DIR := $(SUBVERSION_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
+# apache modules
+$(PKG)_MODULES_ALL := mod_authz_svn mod_dav_svn mod_dontdothat
+$(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL))
+$(PKG)_MODULES_STAGING_DIR := $(SUBVERSION_MODULES:%=$(TARGET_TOOLCHAIN_STAGING_DIR)$(APACHE2_LIBEXECDIR)/%.so)
+$(PKG)_MODULES_TARGET_DIR := $(SUBVERSION_MODULES:%=$($(PKG)_DEST_DIR)$(APACHE2_LIBEXECDIR)/%.so)
+
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_DEPENDS_ON := apr
@@ -40,10 +46,14 @@ endif
 $(PKG)_DEPENDS_ON += neon
 $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_DEPENDS_ON += zlib
+ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES)),y)
+$(PKG)_DEPENDS_ON += apache2
+endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_STATIC
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
@@ -52,6 +62,9 @@ $(PKG)_CONFIGURE_OPTIONS += --with-apr-util="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr
 $(PKG)_CONFIGURE_OPTIONS += --with-neon="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --disable-neon-version-check
 $(PKG)_CONFIGURE_OPTIONS += --with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+
+$(PKG)_CONFIGURE_OPTIONS += --with-apxs=$(if $(FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apxs",no)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES),--enable-mod-activation,--disable-mod-activation)
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
@@ -63,10 +76,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-static
 endif
 $(PKG)_CONFIGURE_OPTIONS += --disable-nls
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-mod-activation
 $(PKG)_CONFIGURE_OPTIONS += --disable-javahl
 $(PKG)_CONFIGURE_OPTIONS += --disable-keychain # MacOS keychain
-$(PKG)_CONFIGURE_OPTIONS += --with-apxs=no
 $(PKG)_CONFIGURE_OPTIONS += --with-berkeley-db=$(if $(FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB),yes,no)
 $(PKG)_CONFIGURE_OPTIONS += --with-ctypesgen=no
 $(PKG)_CONFIGURE_OPTIONS += --with-gnome-keyring=no
@@ -83,7 +94,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(SUBVERSION_DIR)
 
-$($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR)
+$($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_STAGING_DIR) $($(PKG)_MODULES_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR)
 	$(SUBMAKE1) -C $(SUBVERSION_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		install
@@ -102,15 +113,20 @@ $($(PKG)_BINARIES_TARGET_DIR): \
 	$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/%
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_MODULES_TARGET_DIR): \
+	$($(PKG)_DEST_DIR)$(APACHE2_LIBEXECDIR)/%: \
+	$(TARGET_TOOLCHAIN_STAGING_DIR)$(APACHE2_LIBEXECDIR)/%
+	$(INSTALL_BINARY_STRIP)
+
 .PHONY: subversion-keep-required-files-only
-$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR) | $(pkg)-clean-not-included--int
+$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR) | $(pkg)-clean-not-included--int
 ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	@#compute transitive closure of all required svn-libraries
 	@getlibs() { $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-readelf -d "$$@" | grep -i "Shared library" | sed -r -e 's|^.*\[(.+)\].*$$|\1|g' | sort -u; }; \
 	getsvnlibs() { getlibs "$$@" | grep "libsvn"; }; \
 	getsvnlibslist() { local ret=""; for l in `getsvnlibs $$bins \`[ -n "$$libs" ] && (echo "$$libs" | sed -e 's| | '"$(SUBVERSION_DEST_LIBDIR)/"'|g')\``; do ret="$$ret $$l"; done; echo -n "$$ret"; }; \
 	\
-	bins="$(SUBVERSION_BINARIES_TARGET_DIR)"; libs=""; \
+	bins="$(SUBVERSION_BINARIES_TARGET_DIR) $(SUBVERSION_MODULES_TARGET_DIR)"; libs=""; \
 	$(call MESSAGE, Determining required svn-libraries: ); \
 	libs=`getsvnlibslist`; previouslibs=""; \
 	while [ "$$libs" != "$$previouslibs" ]; do \
@@ -141,11 +157,13 @@ $(pkg)-clean:
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/svn* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsvn*-$(SUBVERSION_MAJOR_VERSION)* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/subversion-$(SUBVERSION_MAJOR_VERSION)
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/subversion-$(SUBVERSION_MAJOR_VERSION) \
+		$(SUBVERSION_MODULES_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)$(APACHE2_LIBEXECDIR)/%.so)
 
 $(pkg)-uninstall:
 	$(RM) \
 		$(SUBVERSION_DEST_DIR)/usr/bin/svn* \
-		$(SUBVERSION_DEST_LIBDIR)/libsvn*-$(SUBVERSION_MAJOR_VERSION)*
+		$(SUBVERSION_DEST_LIBDIR)/libsvn*-$(SUBVERSION_MAJOR_VERSION)* \
+		$(SUBVERSION_MODULES_ALL:%=$(SUBVERSION_DEST_DIR)$(APACHE2_LIBEXECDIR)/%.so)
 
 $(PKG_FINISH)
