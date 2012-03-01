@@ -1,0 +1,29 @@
+--- support/apxs.in
++++ support/apxs.in
+@@ -25,7 +25,8 @@
+ 
+ my %config_vars = ();
+ 
+-my $installbuilddir = "@exp_installbuilddir@";
++my $STAGING_DIR = "";
++my $installbuilddir = "${STAGING_DIR}@exp_installbuilddir@";
+ get_config_vars("$installbuilddir/config_vars.mk",\%config_vars);
+ 
+ # read the configuration variables once
+@@ -546,6 +547,8 @@
+     &execute_cmds(@cmds);
+ 
+     #   activate module via LoadModule/AddModule directive
++    #   disabled for cross-compiling
++    if (0) {
+     if ($opt_a or $opt_A) {
+         if (not -f "$CFG_SYSCONFDIR/$CFG_TARGET.conf") {
+             error("Config file $CFG_SYSCONFDIR/$CFG_TARGET.conf not found");
+@@ -650,6 +653,7 @@
+             }
+ 	}
+     }
++    }
+ }
+ 
+ sub error{
