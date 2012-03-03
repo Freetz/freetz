@@ -42,3 +42,11 @@ config FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL
 	int "Maximum level of compiled-in debug messages"
 	depends on FREETZ_PACKAGE_SAMBA
 	default -1
+	help
+		1000 - include all debug messages
+		   2 - include only important messages
+		  -1 - disable debug messages completely
+
+		 Note: this option affects the size of the Samba binary.
+		       The higher the debug level, the more debug output
+		       is generated and the bigger the binary is.

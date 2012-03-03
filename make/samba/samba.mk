@@ -36,7 +36,9 @@ endif
 include $(MAKE_DIR)/samba/samba$(if $(FREETZ_SAMBA_VERSION_3_0),30,36).mk.in
 
 $(PKG)_TARGET_CFLAGS   += -ffunction-sections -fdata-sections
-$(PKG)_TARGET_CPPFLAGS += -DMAX_DEBUG_LEVEL=$(FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL) -D__location__=\\\"\\\"
+$(PKG)_TARGET_CPPFLAGS += -DMAX_DEBUG_LEVEL=$(FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL)
+# disable __location__ macro (expands to __FILE__ ":" __LINE__ per default) at debug levels -1 and 0 to reduce binary size
+$(PKG)_TARGET_CPPFLAGS += $(if $(filter -1 0,$(FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL)),-D__location__=\\\"\\\")
 $(PKG)_TARGET_LDFLAGS  += -Wl,--gc-sections
 
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="$(SAMBA_TARGET_CFLAGS)"
