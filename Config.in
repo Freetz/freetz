@@ -1404,6 +1404,37 @@ menu "Freetz customisation"
 		default "colored" if FREETZ_STYLE_COLORED
 		default "grey"    if FREETZ_STYLE_GREY
 
+	menu "Webinterface skins"
+
+	comment "CAUTION: You should select at least one skin."
+	depends on \
+	 	!FREETZ_SKIN_legacy && \
+		!FREETZ_SKIN_phoenix && \
+		!FREETZ_SKIN_newfreetz
+
+	config FREETZ_SKIN_legacy
+		bool "legacy"
+		default y
+		help
+			Main color blue, menu at right.
+			Size: about 12 kB (uncompressed)
+
+	config FREETZ_SKIN_newfreetz
+		bool "newfreetz"
+		default n
+		help
+			Main color green, menu at left.
+			Size: about 33 kB (uncompressed)
+
+	config FREETZ_SKIN_phoenix
+		bool "phoenix"
+		default n
+		help
+			Main color red, menu at top.
+			Size: about 15 kB (uncompressed)
+
+	endmenu
+
 	choice
 		prompt "Favicon"
 		default FREETZ_FAVICON_NONE

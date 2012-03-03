@@ -12,6 +12,9 @@ $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 # List all files that are optional with their dependecies
 $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	@echo -n "" > $@; \
+	[ ! "$(FREETZ_SKIN_legacy)" == "y" ] && echo "usr/share/*/legacy" >> $@; \
+	[ ! "$(FREETZ_SKIN_phoenix)" == "y" ] && echo "usr/share/*/phoenix" >> $@; \
+	[ ! "$(FREETZ_SKIN_newfreetz)" == "y" ] && echo "usr/share/*/newfreetz" >> $@; \
 	[ ! "$(EXTERNAL_ENABLED)" == "y" ] && echo "etc/init.d/rc.external" >> $@; \
 	[ ! "$(FREETZ_PATCH_FREETZMOUNT)" == "y" ] && echo "usr/lib/libmodmount.sh" >> $@; \
 	[ "$(FREETZ_REMOVE_BOX_INFO)" == "y" ] && echo "usr/lib/cgi-bin/mod/box_info.cgi" >> $@; \

@@ -18,6 +18,10 @@ start() {
 
 case $1 in
 	""|load)
+		if [ ! -e /usr/share/skin/$MOD_SKIN ]; then
+			# set first available skin, if selected is not installed
+			modconf set $CONF_NAME MOD_SKIN="$(ls /usr/share/skin | head -n1)"
+		fi
 		modlib_add_httpd_symlink $DAEMON
 		modreg daemon -p mod webcfg
 		modlib_start $MOD_HTTPD
