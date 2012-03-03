@@ -1,5 +1,5 @@
---- source/auth/auth_util.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/auth/auth_util.c	2010-04-05 18:02:26.000000000 +0200
+--- source/auth/auth_util.c
++++ source/auth/auth_util.c
 @@ -2284,18 +2284,20 @@
  		/* The only other possible result is that winbind is not up
  		   and running. We need to update the trustdom_cache
@@ -23,8 +23,8 @@
  	return False;
  }
  
---- source/include/local.h.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/include/local.h	2010-04-05 18:02:26.000000000 +0200
+--- source/include/local.h
++++ source/include/local.h
 @@ -49,7 +49,8 @@
  #define MAX_DIRECTORY_HANDLES 2048
  
@@ -35,8 +35,8 @@
  
  /* define what facility to use for syslog */
  #ifndef SYSLOG_FACILITY
---- source/lib/iconv.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/lib/iconv.c	2010-04-05 18:02:26.000000000 +0200
+--- source/lib/iconv.c
++++ source/lib/iconv.c
 @@ -385,7 +385,10 @@
  
  	while (*inbytesleft >= 2 && *outbytesleft >= 1) {
@@ -49,8 +49,8 @@
  		(*inbytesleft)  -= 2;
  		(*outbytesleft) -= 1;
  		(*inbuf)  += 2;
---- source/lib/pidfile.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/lib/pidfile.c	2010-04-05 18:02:26.000000000 +0200
+--- source/lib/pidfile.c
++++ source/lib/pidfile.c
 @@ -87,6 +87,7 @@
  	pstring pidFile;
  	pid_t pid;
@@ -69,8 +69,8 @@
  
  	slprintf(pidFile, sizeof(pidFile)-1, "%s/%s.pid", lp_piddir(), name);
  
---- source/lib/system.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/lib/system.c	2010-04-05 18:02:26.000000000 +0200
+--- source/lib/system.c
++++ source/lib/system.c
 @@ -1499,7 +1499,11 @@
  void *sys_dlopen(const char *name, int flags)
  {
@@ -83,8 +83,8 @@
  #else
  	return NULL;
  #endif
---- source/lib/util.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/lib/util.c	2010-04-05 18:02:26.000000000 +0200
+--- source/lib/util.c
++++ source/lib/util.c
 @@ -301,7 +301,11 @@
  	char *p;
  	if ((p = getenv("TMPDIR")))
@@ -97,8 +97,8 @@
  }
  
  /****************************************************************************
---- source/libsmb/clifile.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/libsmb/clifile.c	2010-04-05 18:02:26.000000000 +0200
+--- source/libsmb/clifile.c
++++ source/libsmb/clifile.c
 @@ -21,6 +21,8 @@
  
  #include "includes.h"
@@ -167,8 +167,8 @@
 +
 +#endif /* AVM_SMALLER */
 +
---- source/libsmb/namequery.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/libsmb/namequery.c	2010-04-05 18:02:26.000000000 +0200
+--- source/libsmb/namequery.c
++++ source/libsmb/namequery.c
 @@ -1114,6 +1114,7 @@
  			const char *sitename,
                           struct ip_service **return_iplist, int *return_count)
@@ -187,8 +187,8 @@
  }
  
  /*******************************************************************
---- source/libsmb/namequery_dc.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/libsmb/namequery_dc.c	2010-04-05 18:02:26.000000000 +0200
+--- source/libsmb/namequery_dc.c
++++ source/libsmb/namequery_dc.c
 @@ -52,6 +52,9 @@
  			struct in_addr *dc_ip,
  			fstring srv_name)
@@ -207,8 +207,8 @@
  }
  
  /****************************************************************************
---- source/modules/vfs_default.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/modules/vfs_default.c	2010-04-05 18:02:26.000000000 +0200
+--- source/modules/vfs_default.c
++++ source/modules/vfs_default.c
 @@ -24,6 +24,78 @@
  #undef DBGC_CLASS
  #define DBGC_CLASS DBGC_VFS
@@ -533,8 +533,8 @@
  	START_PROFILE(syscall_realpath);
  	result = sys_realpath(path, resolved_path);
  	END_PROFILE(syscall_realpath);
---- source/param/loadparm.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/param/loadparm.c	2010-04-05 18:02:26.000000000 +0200
+--- source/param/loadparm.c
++++ source/param/loadparm.c
 @@ -2713,8 +2713,11 @@
  
  	slprintf(comment, sizeof(comment) - 1,
@@ -548,8 +548,8 @@
  	string_set(&ServicePtrs[i]->szUsername, "");
  	string_set(&ServicePtrs[i]->comment, comment);
  	string_set(&ServicePtrs[i]->fstype, "IPC");
---- source/registry/reg_frontend.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/registry/reg_frontend.c	2010-04-05 18:02:26.000000000 +0200
+--- source/registry/reg_frontend.c
++++ source/registry/reg_frontend.c
 @@ -35,9 +35,11 @@
  
  REGISTRY_HOOK reg_hooks[] = {
@@ -562,8 +562,8 @@
    { KEY_SHARES,      		&shares_reg_ops },
  #endif
    { NULL, NULL }
---- source/rpc_client/cli_pipe.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/rpc_client/cli_pipe.c	2010-04-05 18:02:26.000000000 +0200
+--- source/rpc_client/cli_pipe.c
++++ source/rpc_client/cli_pipe.c
 @@ -619,7 +619,11 @@
  
  			DEBUG(1, ("cli_pipe_validate_current_pdu: RPC fault code %s received from remote machine %s "
@@ -576,8 +576,8 @@
  				cli->cli->desthost,
  				cli->pipe_name,
  				(unsigned int)cli->fnum));
---- source/rpc_parse/parse_prs.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/rpc_parse/parse_prs.c	2010-04-05 18:02:26.000000000 +0200
+--- source/rpc_parse/parse_prs.c
++++ source/rpc_parse/parse_prs.c
 @@ -796,7 +796,12 @@
  	}
  
@@ -592,8 +592,8 @@
  
  	ps->data_offset += sizeof(uint32);
  
---- source/rpc_parse/parse_sec.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/rpc_parse/parse_sec.c	2010-04-05 18:02:26.000000000 +0200
+--- source/rpc_parse/parse_sec.c
++++ source/rpc_parse/parse_sec.c
 @@ -104,7 +104,7 @@
   for you as it reads them.
  ********************************************************************/
@@ -603,8 +603,8 @@
  {
  	unsigned int i;
  	uint32 old_offset;
---- source/rpc_parse/parse_spoolss.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/rpc_parse/parse_spoolss.c	2010-04-05 18:02:26.000000000 +0200
+--- source/rpc_parse/parse_spoolss.c
++++ source/rpc_parse/parse_spoolss.c
 @@ -227,8 +227,13 @@
  	if(!prs_uint32("count2", ps, depth, &type->count2))
  		return False;
@@ -620,8 +620,8 @@
  
  	if (type->count2 > MAX_NOTIFY_TYPE_FOR_NOW) {
  		return False;
---- source/rpc_server/srv_pipe.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/rpc_server/srv_pipe.c	2010-04-05 18:02:26.000000000 +0200
+--- source/rpc_server/srv_pipe.c
++++ source/rpc_server/srv_pipe.c
 @@ -2335,6 +2335,7 @@
  	int               n_cmds = 0;
  
@@ -654,8 +654,8 @@
  #ifdef DEVELOPER
  		case PI_ECHO:
  			echo_get_pipe_fns( &cmds, &n_cmds );
---- source/smbd/change_trust_pw.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/change_trust_pw.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/change_trust_pw.c
++++ source/smbd/change_trust_pw.c
 @@ -30,6 +30,10 @@
  
  NTSTATUS change_trust_account_password( const char *domain, const char *remote_machine)
@@ -673,8 +673,8 @@
  	return nt_status;
 +#endif /* AVM_SMALLER */
  }
---- source/smbd/close.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/close.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/close.c
++++ source/smbd/close.c
 @@ -353,7 +353,9 @@
  	saved_status2 = close_filestruct(fsp);
  
@@ -685,8 +685,8 @@
  		file_free(fsp);
  		return NT_STATUS_OK;
  	}
---- source/smbd/conn.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/conn.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/conn.c
++++ source/smbd/conn.c
 @@ -216,9 +216,12 @@
  	 * idle with a handle open.
  	 */
@@ -700,8 +700,8 @@
  	
  	return allidle;
  }
---- source/smbd/dfree.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/dfree.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/dfree.c
++++ source/smbd/dfree.c
 @@ -130,11 +130,13 @@
  		}
  	}
@@ -716,8 +716,8 @@
  
  	/* FIXME : Any reason for this assumption ? */
  	if (*bsize < 256) {
---- source/smbd/dosmode.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/dosmode.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/dosmode.c
++++ source/smbd/dosmode.c
 @@ -40,12 +40,15 @@
  	if (ISDOT(path) || ISDOTDOT(path)) {
  		return 0;
@@ -735,8 +735,8 @@
  }
  
  /****************************************************************************
---- source/smbd/fileio.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/fileio.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/fileio.c
++++ source/smbd/fileio.c
 @@ -176,6 +176,8 @@
  
  static int wcp_file_size_change(files_struct *fsp)
@@ -765,8 +765,8 @@
  	}
  
  	if (!fsp->can_write) {
---- source/smbd/files.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/files.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/files.c
++++ source/smbd/files.c
 @@ -203,10 +203,12 @@
  		exit_server("out of memory in file_init");
  	}
@@ -780,8 +780,8 @@
  }
  
  /****************************************************************************
---- source/smbd/lanman.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/lanman.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/lanman.c
++++ source/smbd/lanman.c
 @@ -400,6 +400,7 @@
  	PACK(desc,t,v);
  }
@@ -1014,8 +1014,8 @@
  }
  
  /****************************************************************************
---- source/smbd/open.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/open.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/open.c
++++ source/smbd/open.c
 @@ -1155,8 +1155,11 @@
  		}
  
@@ -1029,9 +1029,9 @@
  	}
  
  	if (!parent_dirname_talloc(tmp_talloc_ctx(), fname, &parent_dir,
---- source/smbd/process.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/process.c	2010-04-05 18:02:26.000000000 +0200
-@@ -1028,7 +1028,9 @@
+--- source/smbd/process.c
++++ source/smbd/process.c
+@@ -1029,7 +1029,9 @@
  
  	chain_size = 0;
  	file_chain_reset();
@@ -1041,7 +1041,7 @@
  
  	if (msg_type != 0)
  		return(reply_special(inbuf,outbuf));  
-@@ -1268,9 +1270,11 @@
+@@ -1294,9 +1296,11 @@
  
  	select_timeout = blocking_locks_timeout_ms(SMBD_SELECT_TIMEOUT*1000);
  
@@ -1053,7 +1053,7 @@
  
  	return select_timeout;
  }
-@@ -1461,9 +1465,10 @@
+@@ -1487,9 +1491,10 @@
  	 */
  	process_blocking_lock_queue();
  
@@ -1065,7 +1065,7 @@
    
  	/*
  	 * Now we are root, check if the log files need pruning.
-@@ -1472,9 +1477,10 @@
+@@ -1498,9 +1503,10 @@
  	force_check_log_size();
  	check_log_size();
  
@@ -1077,8 +1077,8 @@
  
  	/*
  	 * Modify the select timeout depending upon
---- source/smbd/reply.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/reply.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/reply.c
++++ source/smbd/reply.c
 @@ -3606,7 +3606,10 @@
  	NTSTATUS status;
  	
@@ -1137,8 +1137,8 @@
  }
  
  /****************************************************************************
---- source/smbd/server.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/server.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/server.c
++++ source/smbd/server.c
 @@ -22,7 +22,7 @@
  
  #include "includes.h"
@@ -1331,8 +1331,8 @@
  
  	init_modules();
  
---- source/smbd/service.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/service.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/service.c
++++ source/smbd/service.c
 @@ -288,6 +288,7 @@
  		iService = add_home_service(service,service /* 'username' */, phome_dir);
  	}
@@ -1359,8 +1359,8 @@
  	} else {
  		file_close_conn(conn);
  		dptr_closecnum(conn);
---- source/smbd/trans2.c.orig	2009-09-30 14:21:56.000000000 +0200
-+++ source/smbd/trans2.c	2010-04-05 18:02:26.000000000 +0200
+--- source/smbd/trans2.c
++++ source/smbd/trans2.c
 @@ -2878,11 +2878,14 @@
  				/* unknown_2 6 NULL bytes follow*/
  		

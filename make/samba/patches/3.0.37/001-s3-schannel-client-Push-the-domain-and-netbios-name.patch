@@ -1,0 +1,30 @@
+From 51aaf9c6812430975dcd2cf9a632eb8d241ec41e Mon Sep 17 00:00:00 2001
+From: Andrew Bartlett <abartlet@samba.org>
+Date: Thu, 3 Jun 2010 09:35:31 +1000
+Subject: [PATCH] s3:schannel client Push the domain and netbios name into the DOS charset
+
+If the netbios name is not just ASCII, then we have to get it into the
+right character set.
+
+Andrew Bartlett
+---
+ source/rpc_parse/parse_rpc.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git source/rpc_parse/parse_rpc.c source/rpc_parse/parse_rpc.c
+index 2d166c7..7b4b8e8 100644
+--- source/rpc_parse/parse_rpc.c
++++ source/rpc_parse/parse_rpc.c
+@@ -786,8 +786,8 @@ void init_rpc_auth_schannel_neg(RPC_AUTH_SCHANNEL_NEG *neg,
+ {
+ 	neg->type1 = 0;
+ 	neg->type2 = 0x3;
+-	fstrcpy(neg->domain, domain);
+-	fstrcpy(neg->myname, myname);
++	push_ascii_fstring(neg->domain, domain);
++	push_ascii_fstring(neg->myname, myname);
+ }
+ 
+ /*******************************************************************
+--
+1.7.0.1
