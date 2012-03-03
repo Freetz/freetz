@@ -28,6 +28,7 @@ $(PKG)_CONFIGURE_ENV += ap_cv_void_ptr_lt_long=no
 $(PKG)_CONFIGURE_OPTIONS += --with-apr="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-1-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-apr-util="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apu-1-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre-config"
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl=$(if $(FREETZ_PACKAGE_APACHE2_SSL),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 $(PKG)_CONFIGURE_OPTIONS += --with-z=$(if $(FREETZ_PACKAGE_APACHE2_DEFLATE),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 
 $(PKG)_LIBEXECDIR := /usr/lib/$(pkg)
