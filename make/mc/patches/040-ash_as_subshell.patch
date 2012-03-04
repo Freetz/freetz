@@ -1,0 +1,112 @@
+--- src/subshell.c	2012-03-02 13:55:52.018954847 +0100
++++ src/subshell.c	2012-03-04 04:00:07.266276590 +0100
+@@ -126,6 +126,7 @@
+ static enum
+ {
+     BASH,
++    ASH,
+     TCSH,
+     ZSH,
+     FISH
+@@ -269,8 +270,10 @@
+     switch (subshell_type)
+     {
+     case BASH:
++        /* Do we have a custom init file ~/.local/share/mc/bashrc? */
+         init_file = mc_config_get_full_path ("bashrc");
+ 
++        /* Otherwise use ~/.bashrc */
+         if (access (init_file, R_OK) == -1)
+         {
+             g_free (init_file);
+@@ -294,6 +297,19 @@
+ 
+         break;
+ 
++    case ASH:
++        /* Do we have a custom init file ~/.local/share/mc/ashrc? */
++        init_file = mc_config_get_full_path ("ashrc");
++
++        /* Otherwise use ~/.profile */
++        if (access (init_file, R_OK) == -1)
++        {
++            g_free (init_file);
++            init_file = g_strdup (".profile");
++        }
++
++        break;
++
+         /* TODO: Find a way to pass initfile to TCSH and ZSH */
+     case TCSH:
+     case ZSH:
+@@ -332,6 +348,12 @@
+         execl (shell, "bash", "-rcfile", init_file, (char *) NULL);
+         break;
+ 
++    /* TODO for upstream patch: Execute correct ash/dash/busybox shell (not necessary for Freetz) */
++    /* TODO for upstream patch: Maybe we better use something like "ENV=<init_file> sh" to pass an init file instead of forcing a login shell */
++    case ASH:
++        execl (shell, "sh", "-l", (char *) NULL);
++        break;
++
+     case TCSH:
+         execl (shell, "tcsh", (char *) NULL);
+         break;
+@@ -796,6 +818,9 @@
+             subshell_type = BASH;
+         else if (strstr (shell, "/fish"))
+             subshell_type = FISH;
++        /* TODO for upstream patch: Check if "sh" really points to ash/dash/busybox (not necessary for Freetz) */
++        else if (strstr (shell, "/ash") || strstr (shell, "/dash") || strstr (shell, "/sh"))
++            subshell_type = ASH;
+         else
+         {
+             mc_global.tty.use_subshell = FALSE;
+@@ -846,7 +871,7 @@
+                 return;
+             }
+         }
+-        else /* subshell_type is BASH or ZSH */ if (pipe (subshell_pipe))
++        else /* subshell_type is BASH, ASH or ZSH */ if (pipe (subshell_pipe))
+         {
+             perror (__FILE__ ": couldn't create pipe");
+             mc_global.tty.use_subshell = FALSE;
+@@ -883,6 +908,24 @@
+                     " PROMPT_COMMAND='pwd>&%d;kill -STOP $$'\n", subshell_pipe[WRITE]);
+         break;
+ 
++    case ASH:
++        /* Ash needs a somewhat complicated precmd emulation via PS1.
++           BUF_SMALL (defined in lib/global.h) is the length limit for precmd. */
++        g_snprintf (precmd, sizeof (precmd),
++
++                    // A: This leads to a stopped subshell (=frozen mc) if user calls "sh" command
++                    //"PS1='$(pwd>&%d; kill -STOP $$)\\\\u@\\\\h:\\\\w\\\\$ '\n",
++
++                    // B: This leads to "sh: precmd: not found" in sub-subshell if user calls "sh" command
++                    //"precmd(){ pwd>&%d;kill -STOP $$; }; PS1='$(precmd)\\\\u@\\\\h:\\\\w\\\\$ '\n",
++
++                    // C: This works if user calls "sh" command because in sub-subshell
++                    //    PRECMD is unfedined, thus evaluated to empty string - no damage done
++                    "precmd(){ pwd>&%d;kill -STOP $$; }; PRECMD=precmd; PS1='$(eval $PRECMD)\\\\u@\\\\h:\\\\w\\\\$ '\n",
++
++                    subshell_pipe[WRITE]);
++        break;
++
+     case ZSH:
+         g_snprintf (precmd, sizeof (precmd),
+                     " precmd(){ pwd>&%d;kill -STOP $$ }\n", subshell_pipe[WRITE]);
+@@ -1103,6 +1146,13 @@
+         quote_cmd_start = "(printf \"%b\" '";
+         quote_cmd_end = "')";
+     }
++    /* TODO: When BusyBox printf is fixed, get rid of this "else if", see
++       http://lists.busybox.net/pipermail/busybox/2012-March/077460.html */
++    else if (subshell_type == ASH)
++    {
++        quote_cmd_start = "\"`echo -en '";
++        quote_cmd_end = "'`\"";
++    }
+     else
+     {
+         quote_cmd_start = "\"`printf \"%b\" '";
