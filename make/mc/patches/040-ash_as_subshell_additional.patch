@@ -1,0 +1,43 @@
+--- lib/mcconfig/paths.c	2012-03-04 04:28:07.000000000 +0100
++++ lib/mcconfig/paths.c	2012-03-04 04:28:43.000000000 +0100
+@@ -82,6 +82,7 @@
+     /* data */
+     { "skins",                                 &mc_data_str, MC_SKINS_SUBDIR},
+     { "fish",                                  &mc_data_str, FISH_PREFIX},
++    { "ashrc",                                 &mc_data_str, "ashrc"},
+     { "bashrc",                                &mc_data_str, "bashrc"},
+     { "inputrc",                               &mc_data_str, "inputrc"},
+     { "extfs.d",                               &mc_data_str, MC_EXTFS_DIR},
+--- tests/lib/mcconfig/user_configs_path.c	2012-03-04 04:27:47.000000000 +0100
++++ tests/lib/mcconfig/user_configs_path.c	2012-03-04 05:33:48.418447747 +0100
+@@ -96,6 +96,7 @@
+ 
+     path_fail_unless (CONF_DATA, MC_SKINS_SUBDIR);
+     path_fail_unless (CONF_DATA, FISH_PREFIX);
++    path_fail_unless (CONF_DATA, "ashrc");
+     path_fail_unless (CONF_DATA, "bashrc");
+     path_fail_unless (CONF_DATA, "inputrc");
+     path_fail_unless (CONF_DATA, MC_EXTFS_DIR);
+--- doc/man/mc.1.in	2012-03-04 05:18:35.970419532 +0100
++++ doc/man/mc.1.in	2012-03-04 05:35:58.262451703 +0100
+@@ -2408,7 +2408,7 @@
+ .\"NODE "  The subshell support"
+ .SH "  The subshell support"
+ The subshell support is a compile time option, that works with the
+-shells: bash, tcsh and zsh.
++shells: bash, ash, tcsh and zsh.
+ .PP
+ When the subshell code is activated the Midnight Commander will
+ spawn a concurrent copy of your shell (the one defined in the
+@@ -2423,8 +2423,10 @@
+ If you are using
+ .B bash
+ you can specify startup
+-commands for the subshell in your ~/.local/share/mc/bashrc file and
++commands for the subshell in your ~/.local/share/mc/bashrc file (fallback ~/.bashrc) and
+ special keyboard maps in the ~/.local/share/mc/inputrc file.
++.B ash
++users may specify startup commands in ~/.local/share/mc/ashrc (fallback ~/.profile).
+ .B tcsh
+ users may specify startup commands in the ~/.local/share/mc/tcshrc file.
+ .PP
