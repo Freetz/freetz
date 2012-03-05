@@ -1,13 +1,15 @@
-$(call PKG_INIT_LIB, 5.0.1)
-$(PKG)_LIB_VERSION:=10.0.1
+$(call PKG_INIT_LIB, 5.0.4)
+$(PKG)_LIB_VERSION:=10.0.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=6bac6df75c192a13419dfd71d19240a7
+$(PKG)_SOURCE_MD5:=50c3edcb7c9438e04377ee9a1a061b79
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmp.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-readline=no
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -33,7 +35,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GMP_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.* \
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/gmp*.h
 
 $(pkg)-uninstall:
