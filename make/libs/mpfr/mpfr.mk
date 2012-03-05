@@ -1,22 +1,20 @@
-$(call PKG_INIT_LIB, 2.4.2)
-$(PKG)_LIB_VERSION:=1.2.2
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=89e59fe665e2b3ad44a6789f40b059a0
+$(call PKG_INIT_LIB, 3.1.0)
+$(PKG)_LIB_VERSION:=4.1.0
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=6e495841bb026481567006cec0f821c3
 $(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmpfr.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON := gmp
 
-$(PKG)_CONFIGURE_OPTIONS += --with-gmp-build=$(TARGET_TOOLCHAIN_STAGING_DIR)
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-thread-safe
+$(PKG)_CONFIGURE_OPTIONS += --with-gmp=$(TARGET_TOOLCHAIN_STAGING_DIR)
 
-# Patch #3 modifies configure.in which in turn causes autoconf-1.11 & automake-2.64
-# to be called which could be missed on build system. As the patch also modifies
-# configure it's safe simply to touch configure.in
-$(PKG)_PREVENT_AUTOCONF_CALL := touch -t 200001010000.00 $(FREETZ_BASE_DIR)/$(MPFR_DIR)/configure.in;
-$(PKG)_CONFIGURE_PRE_CMDS += $($(PKG)_PREVENT_AUTOCONF_CALL)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -27,8 +25,9 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MPFR_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	$(SUBMAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(MPFR_DIR) install
+	$(SUBMAKE) -C $(MPFR_DIR)/src \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.la
 
@@ -41,8 +40,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(MPFR_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/mpfr*.h
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/*mpfr*.h
 
 $(pkg)-uninstall:
 	$(RM) $(MPFR_TARGET_DIR)/libmpfr*.so*
@@ -55,7 +55,6 @@ MPFR_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
 MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
 
 $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
-	$(MPFR_PREVENT_AUTOCONF_CALL)
 	mkdir -p $(MPFR_DIR2)
 	(cd $(MPFR_DIR2); $(RM) config.cache; \
 		CC="$(TOOLCHAIN_HOST_CC)" \
@@ -72,7 +71,7 @@ $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
 	touch $@
 
 $(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured | $(TOOLS_BUILD_DIR)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(MPFR_DIR2) install
+	PATH=$(TARGET_PATH) $(MAKE) -C $(MPFR_DIR2)/src install
 
 host-libmpfr: $(MPFR_HOST_BINARY)
 
