@@ -459,8 +459,7 @@ config FREETZ_HAS_AVM_JFFS2
 
 config FREETZ_HAS_AVM_JUNK_BYTES
 	bool "Has AVM junk bytes in SquashFS"		if FREETZ_TYPE_CUSTOM
-	default y		if \
-		FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LABOR
+	default y		if FREETZ_TYPE_FON_WLAN_7390
 	default n
 	help
 		Select this if you have a firmware with junk bytes in SquashFS, as
@@ -469,14 +468,14 @@ config FREETZ_HAS_AVM_JUNK_BYTES
 config FREETZ_HAS_AVM_MULTI_ANNEX
 	bool "Has AVM Multi-Annex"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		( FREETZ_TYPE_LABOR_PREVIEW && \
+		FREETZ_TYPE_LABOR_PREVIEW && \
 		( \
 			FREETZ_TYPE_FON_WLAN_7270_V2 || \
 			FREETZ_TYPE_FON_WLAN_7270_V3 || \
-			FREETZ_TYPE_FON_WLAN_7320 || \
-			FREETZ_TYPE_FON_WLAN_7390 \
-		) ) || \
-		FREETZ_TYPE_FON_WLAN_7360
+			FREETZ_TYPE_FON_WLAN_7320 \
+		) || \
+		FREETZ_TYPE_FON_WLAN_7360 || \
+		FREETZ_TYPE_FON_WLAN_7390
 	default n
 	help
 		Select this if you have a firmware with Multi-Annex.
@@ -492,13 +491,13 @@ config FREETZ_HAS_AVM_CTLMGR_STRUCT_V1
 config FREETZ_HAS_AVM_CTLMGR_STRUCT_V2
 	bool "Has AVM ctlmgr struct layout V2"		if FREETZ_TYPE_CUSTOM
 	depends on FREETZ_HAS_AVM_USB_HOST && \
-		FREETZ_TYPE_LABOR_PREVIEW && \
+		( FREETZ_TYPE_LABOR_PREVIEW && \
 		( \
 			FREETZ_TYPE_FON_WLAN_7270_V2 || \
 			FREETZ_TYPE_FON_WLAN_7270_V3 || \
-			FREETZ_TYPE_FON_WLAN_7320 || \
-			FREETZ_TYPE_FON_WLAN_7390 \
-		)
+			FREETZ_TYPE_FON_WLAN_7320 \
+		) || \
+		FREETZ_TYPE_FON_WLAN_7390 )
 	default y
 	help
 		2nd structure layout (CeBIT 2012).
