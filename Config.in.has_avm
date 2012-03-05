@@ -459,7 +459,8 @@ config FREETZ_HAS_AVM_JFFS2
 
 config FREETZ_HAS_AVM_JUNK_BYTES
 	bool "Has AVM junk bytes in SquashFS"		if FREETZ_TYPE_CUSTOM
-	default y		if FREETZ_TYPE_FON_WLAN_7390
+	default y		if \
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_DE)
 	default n
 	help
 		Select this if you have a firmware with junk bytes in SquashFS, as
@@ -475,7 +476,7 @@ config FREETZ_HAS_AVM_MULTI_ANNEX
 			FREETZ_TYPE_FON_WLAN_7320 \
 		) ) || \
 		FREETZ_TYPE_FON_WLAN_7360 || \
-		FREETZ_TYPE_FON_WLAN_7390
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_DE)
 	default n
 	help
 		Select this if you have a firmware with Multi-Annex.
@@ -497,7 +498,8 @@ config FREETZ_HAS_AVM_CTLMGR_STRUCT_V2
 			FREETZ_TYPE_FON_WLAN_7270_V3 || \
 			FREETZ_TYPE_FON_WLAN_7320 \
 		) || \
-		FREETZ_TYPE_FON_WLAN_7390 )
+		(FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_DE) \
+		)
 	default y
 	help
 		2nd structure layout (CeBIT 2012).
