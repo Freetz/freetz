@@ -1,5 +1,5 @@
---- src/subshell.c	2012-03-02 13:55:52.018954847 +0100
-+++ src/subshell.c	2012-03-04 05:10:53.750406898 +0100
+--- src/subshell.c	2012-03-05 13:59:36.697459979 +0100
++++ src/subshell.c	2012-03-05 13:53:10.765462536 +0100
 @@ -126,6 +126,7 @@
  static enum
  {
@@ -8,18 +8,7 @@
      TCSH,
      ZSH,
      FISH
-@@ -269,8 +270,10 @@
-     switch (subshell_type)
-     {
-     case BASH:
-+        /* Do we have a custom init file ~/.local/share/mc/bashrc? */
-         init_file = mc_config_get_full_path ("bashrc");
- 
-+        /* Otherwise use ~/.bashrc */
-         if (access (init_file, R_OK) == -1)
-         {
-             g_free (init_file);
-@@ -294,6 +297,24 @@
+@@ -297,6 +298,24 @@
  
          break;
  
@@ -35,28 +24,28 @@
 +        }
 +
 +        /* Put init file to ENV variable used by ash */
-+        char *putenv_str = g_strconcat ("ENV=", init_file, NULL);
++        putenv_str = g_strconcat ("ENV=", init_file, NULL);
 +        putenv (putenv_str);
-+        // Do not use "g_free (putenv_str)", otherwise ENV will be undefined!
++        /* Do not use "g_free (putenv_str)" here, otherwise ENV will be undefined! */
 +
 +        break;
 +
          /* TODO: Find a way to pass initfile to TCSH and ZSH */
      case TCSH:
      case ZSH:
-@@ -332,6 +353,11 @@
+@@ -335,6 +354,11 @@
          execl (shell, "bash", "-rcfile", init_file, (char *) NULL);
          break;
  
 +    /* TODO for upstream patch: Execute correct ash/dash/busybox shell (not necessary for Freetz) */
 +    case ASH:
-+        execl (shell, "sh", (char *) NULL);
++        execl (shell, "ash", (char *) NULL);
 +        break;
 +
      case TCSH:
          execl (shell, "tcsh", (char *) NULL);
          break;
-@@ -796,6 +822,9 @@
+@@ -800,6 +824,9 @@
              subshell_type = BASH;
          else if (strstr (shell, "/fish"))
              subshell_type = FISH;
@@ -66,7 +55,7 @@
          else
          {
              mc_global.tty.use_subshell = FALSE;
-@@ -846,7 +875,7 @@
+@@ -850,7 +877,7 @@
                  return;
              }
          }
@@ -75,7 +64,7 @@
          {
              perror (__FILE__ ": couldn't create pipe");
              mc_global.tty.use_subshell = FALSE;
-@@ -883,6 +912,24 @@
+@@ -887,6 +914,25 @@
                      " PROMPT_COMMAND='pwd>&%d;kill -STOP $$'\n", subshell_pipe[WRITE]);
          break;
  
@@ -84,14 +73,15 @@
 +           BUF_SMALL (defined in lib/global.h) is the length limit for precmd. */
 +        g_snprintf (precmd, sizeof (precmd),
 +
-+                    // A: This leads to a stopped subshell (=frozen mc) if user calls "sh" command
-+                    //"PS1='$(pwd>&%d; kill -STOP $$)\\\\u@\\\\h:\\\\w\\\\$ '\n",
-+
-+                    // B: This leads to "sh: precmd: not found" in sub-subshell if user calls "sh" command
-+                    //"precmd(){ pwd>&%d;kill -STOP $$; }; PS1='$(precmd)\\\\u@\\\\h:\\\\w\\\\$ '\n",
-+
-+                    // C: This works if user calls "sh" command because in sub-subshell
-+                    //    PRECMD is unfedined, thus evaluated to empty string - no damage done
++                    /* A: This leads to a stopped subshell (=frozen mc) if user calls "ash" command
++                     * "PS1='$(pwd>&%d; kill -STOP $$)\\\\u@\\\\h:\\\\w\\\\$ '\n",
++                     *
++                     * B: This leads to "sh: precmd: not found" in sub-subshell if user calls "ash" command
++                     * "precmd(){ pwd>&%d;kill -STOP $$; }; PS1='$(precmd)\\\\u@\\\\h:\\\\w\\\\$ '\n",
++                     *
++                     * C: This works if user calls "ash" command because in sub-subshell
++                     *    PRECMD is unfedined, thus evaluated to empty string - no damage done
++                     */
 +                    "precmd(){ pwd>&%d;kill -STOP $$; }; PRECMD=precmd; PS1='$(eval $PRECMD)\\\\u@\\\\h:\\\\w\\\\$ '\n",
 +
 +                    subshell_pipe[WRITE]);
@@ -100,7 +90,7 @@
      case ZSH:
          g_snprintf (precmd, sizeof (precmd),
                      " precmd(){ pwd>&%d;kill -STOP $$ }\n", subshell_pipe[WRITE]);
-@@ -1103,6 +1150,13 @@
+@@ -1107,6 +1153,13 @@
          quote_cmd_start = "(printf \"%b\" '";
          quote_cmd_end = "')";
      }
