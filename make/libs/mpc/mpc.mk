@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.8.2)
+$(call PKG_INIT_LIB, 0.9)
 $(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e98267ebd5648a39f881d66797122fb6
+$(PKG)_SOURCE_MD5:=0d6acab8d214bd7d1fbbc593e83dd00d
 $(PKG)_SITE:=http://www.multiprecision.org/mpc/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpc.so.$($(PKG)_LIB_VERSION)
@@ -10,7 +10,10 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmpc.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON := gmp mpfr
 
-$(PKG)_CONFIGURE_OPTIONS += --with-gmp-build=$(TARGET_TOOLCHAIN_STAGING_DIR)
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --with-gmp=$(TARGET_TOOLCHAIN_STAGING_DIR)
+$(PKG)_CONFIGURE_OPTIONS += --with-mpfr=$(TARGET_TOOLCHAIN_STAGING_DIR)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -20,8 +23,9 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MPC_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	$(SUBMAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		-C $(MPC_DIR) install
+	$(SUBMAKE) -C $(MPC_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpc.la
 
@@ -34,7 +38,8 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(MPC_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpc.* \
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpc.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/mpc*.h
 
 $(pkg)-uninstall:
