@@ -4,5 +4,8 @@ case $HTTP_COOKIE in
 	*skin=*) skin=${HTTP_COOKIE##*skin=}; skin=${skin%%[^A-Za-z0-9_]*} ;;
 	*) skin=$MOD_SKIN ;;
 esac
-[ -r "/usr/share/skin/$skin/skin.sh" ] || skin=legacy
+if [ ! -r "/usr/share/skin/$skin/skin.sh" ]; then
+	# set first available skin, if selected is not installed 
+	skin="$(ls /usr/share/skin | head -n1)"
+fi
 source "/usr/share/skin/$skin/skin.sh"
