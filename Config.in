@@ -1754,9 +1754,9 @@ config FREETZ_STRIP_LIBRARIES
 
 choice
 
-	prompt "Strip kernel modules - EXPERIMENTAL"
+	prompt "Strip kernel modules"
 		depends on FREETZ_SHOW_ADVANCED
-		default FREETZ_STRIP_MODULES_NONE
+		default FREETZ_STRIP_MODULES_FREETZ
 
 	config FREETZ_STRIP_MODULES_NONE
 		bool "none"
@@ -1769,7 +1769,7 @@ choice
 			Shrinks modules added by Freetz only.
 
 	config FREETZ_STRIP_MODULES_ALL
-		bool "Freetz & AVM"
+		bool "Freetz & AVM - EXPERIMENTAL"
 		help
 			Shrinks all modules. May cause weird effects, like
 			all LEDs flashing. See http://freetz.org/ticket/1249
