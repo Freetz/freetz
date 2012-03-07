@@ -23,3 +23,136 @@ config FREETZ_PACKAGE_NETSNMP_WITH_ZLIB
 	default n
 	help
 		Zlib compression for traffic
+
+config FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	bool "Build Net-SNMP applications"
+	depends on FREETZ_PACKAGE_NETSNMP
+	default n
+	help
+		Also build SNMP applications like setsnmp, snmpwalk ...
+
+menu "Select Net-SNMP applications"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+
+comment "Please select Net-SNMP applications to include ---"
+
+config FREETZ_PACKAGE_NETSNMP_encode_keychange
+	bool "encode_keychange"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary encode_keychange
+
+config FREETZ_PACKAGE_NETSNMP_snmpbulkget
+	bool "snmpbulkget"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpbulkget
+
+config FREETZ_PACKAGE_NETSNMP_snmpbulkwalk
+	bool "snmpbulkwalk"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpbulkwalk
+
+config FREETZ_PACKAGE_NETSNMP_snmpdelta
+	bool "snmpdelta"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpdelta
+
+config FREETZ_PACKAGE_NETSNMP_snmpdf
+	bool "snmpdf"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpdf
+
+config FREETZ_PACKAGE_NETSNMP_snmpget
+	bool "snmpget"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpget
+
+config FREETZ_PACKAGE_NETSNMP_snmpgetnext
+	bool "snmpgetnext"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpgetnext
+
+config FREETZ_PACKAGE_NETSNMP_snmpset
+	bool "snmpset"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpset
+
+config FREETZ_PACKAGE_NETSNMP_snmpstatus
+	bool "snmpstatus"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpstatus
+
+config FREETZ_PACKAGE_NETSNMP_snmptable
+	bool "snmptable"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmptable
+
+config FREETZ_PACKAGE_NETSNMP_snmptest
+	bool "snmptest"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmptest
+
+config FREETZ_PACKAGE_NETSNMP_snmptranslate
+	bool "snmptranslate"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmptranslate
+
+config FREETZ_PACKAGE_NETSNMP_snmptrap
+	bool "snmptrap"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmptrap
+
+config FREETZ_PACKAGE_NETSNMP_snmptrapd
+	bool "snmptrapd"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmptrapd
+
+config FREETZ_PACKAGE_NETSNMP_snmpusm
+	bool "snmpusm"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpusm
+
+config FREETZ_PACKAGE_NETSNMP_snmpvacm
+	bool "snmpvacm"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpvacm
+
+config FREETZ_PACKAGE_NETSNMP_snmpwalk
+	bool "snmpwalk"
+	depends on FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS
+	default n
+	help
+		include binary snmpwalk
+
+endmenu

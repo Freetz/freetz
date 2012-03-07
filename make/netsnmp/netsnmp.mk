@@ -6,12 +6,24 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
 
+# Applications selected 
+$(PKG)_APPS:= encode_keychange snmpbulkget snmpbulkwalk snmpdelta snmpdf snmpget snmpgetnext snmpset snmpstatus snmptable snmptest snmptranslate snmptrap snmptrapd snmpusm snmpvacm snmpwalk
+$(PKG)_APPS_INCLUDED    := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_APPS))
+$(PKG)_APPS_BUILD_DIR   := $(addprefix $($(PKG)_DIR)/apps/.libs/,$($(PKG)_APPS_INCLUDED))
+$(PKG)_APPS_TARGET_DIR  := $(addprefix $($(PKG)_DEST_DIR)/usr/bin/,$($(PKG)_APPS_INCLUDED))
+
 # Libraries
 $(PKG)_LIB_VERISON:=15.1.2
 $(PKG)_LIB_SUFFIX:=so.$($(PKG)_LIB_VERISON)
 $(PKG)_LIBNAMES_SHORT:=snmp snmpagent snmpmibs snmphelpers
+ifneq ($(filter snmptrap%,$(NETSNMP_APPS_INCLUDED)),)
+$(PKG)_LIBNAMES_SHORT+= snmptrapd
+endif
 $(PKG)_LIBNAMES_LONG:=$($(PKG)_LIBNAMES_SHORT:%=libnet%.$($(PKG)_LIB_SUFFIX))
 $(PKG)_LIBS_BUILD_DIR_SHORT:=snmplib agent agent agent/helpers
+ifneq ($(filter snmptrap%,$(NETSNMP_APPS_INCLUDED)),)
+$(PKG)_LIBS_BUILD_DIR_SHORT+= apps
+endif
 $(PKG)_LIBS_BUILD_DIR:=$(join $($(PKG)_LIBS_BUILD_DIR_SHORT:%=$($(PKG)_DIR)/%/.libs/),$($(PKG)_LIBNAMES_LONG))
 $(PKG)_LIBS_TARGET_DIR:=$($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DEST_LIBDIR)/%)
 
@@ -100,7 +112,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-persistent-directory=/var/lib/snmp
 $(PKG)_CONFIGURE_OPTIONS += --with-default-snmp-version=1
 $(PKG)_CONFIGURE_OPTIONS += --with-sys-contact=root@localhost
 $(PKG)_CONFIGURE_OPTIONS += --with-sys-location=Unknown
-$(PKG)_CONFIGURE_OPTIONS += --disable-applications
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS),--enable-applications,--disable-applications)
 $(PKG)_CONFIGURE_OPTIONS += --disable-debugging
 $(PKG)_CONFIGURE_OPTIONS += --disable-manuals
 $(PKG)_CONFIGURE_OPTIONS += --disable-mib-loading
@@ -121,7 +133,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_LIBS_BUILD_DIR) $((PKG)_APPS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(NETSNMP_DIR) \
 		LDFLAGS="$(TARGET_LDFLAGS) -ldl"
 
@@ -136,10 +148,11 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	#cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
 
 $(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH))))
+$(foreach app,$(NETSNMP_APPS_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(app),/usr/bin)))
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIBS_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_APPS_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NETSNMP_DIR) clean
