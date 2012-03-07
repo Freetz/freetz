@@ -19,25 +19,58 @@
      path_fail_unless (CONF_DATA, "inputrc");
      path_fail_unless (CONF_DATA, MC_EXTFS_DIR);
 --- doc/man/mc.1.in	2012-03-04 05:18:35.970419532 +0100
-+++ doc/man/mc.1.in	2012-03-04 05:35:58.262451703 +0100
++++ doc/man/mc.1.in	2012-03-06 18:49:07.000000000 +0100
 @@ -2408,7 +2408,7 @@
  .\"NODE "  The subshell support"
  .SH "  The subshell support"
  The subshell support is a compile time option, that works with the
 -shells: bash, tcsh and zsh.
-+shells: bash, ash, tcsh and zsh.
++shells: bash, ash (BusyBox and Debian), tcsh, zsh and fish.
  .PP
  When the subshell code is activated the Midnight Commander will
  spawn a concurrent copy of your shell (the one defined in the
-@@ -2423,8 +2423,10 @@
- If you are using
- .B bash
- you can specify startup
--commands for the subshell in your ~/.local/share/mc/bashrc file and
-+commands for the subshell in your ~/.local/share/mc/bashrc file (fallback ~/.bashrc) and
- special keyboard maps in the ~/.local/share/mc/inputrc file.
-+.B ash
-+users may specify startup commands in ~/.local/share/mc/ashrc (fallback ~/.profile).
- .B tcsh
- users may specify startup commands in the ~/.local/share/mc/tcshrc file.
+@@ -2420,28 +2420,34 @@
+ environment variables, use shell functions and define aliases that are
+ valid until you quit the Midnight Commander.
  .PP
+-If you are using
+ .B bash
+-you can specify startup
+-commands for the subshell in your ~/.local/share/mc/bashrc file and
+-special keyboard maps in the ~/.local/share/mc/inputrc file.
+-.B tcsh
+-users may specify startup commands in the ~/.local/share/mc/tcshrc file.
++users may specify startup commands in ~/.local/share/mc/bashrc (fallback ~/.bashrc)
++and special keyboard maps in ~/.local/share/mc/inputrc (fallback ~/.inputrc).
++.PP
++.B ash/dash
++users (BusyBox or Debian) may specify startup commands in ~/.local/share/mc/ashrc (fallback ~/.profile).
++.PP
++.B tcsh, zsh, fish
++users cannot specify mc-specific startup commands at present. They have to rely on
++shell-specific startup files.
+ .PP
+ When the subshell code is used, you can suspend applications at any
+ time with the sequence C\-o and jump back to the Midnight Commander, if
+ you interrupt an application, you will not be able to run other
+ external commands until you quit the application you interrupted.
+ .PP
+-An extra added feature of using the subshell is that the prompt
+-displayed by the Midnight Commander is the same prompt that you are
+-currently using in your shell.
++A special subshell feature is that Midnight Commander displays a dynamic prompt
++like "user@host:current_path> " (with known problems for fish which displays the prompt in
++full-screen mode (Ctrl-o), but not when the MC panels are visible).
+ .PP
+ The
+ .\"LINK2"
+ OPTIONS
+ .\"OPTIONS"
+-section has more information on how you can control the subshell code.
++section has more information on how you can control subshell usage (-U/-u).
++Furthermore, to set a specific subshell different from your current SHELL variable or
++login shell defined in /etc/passwd, you may call MC like this:
++.B SHELL=/bin/myshell mc
+ .\"NODE "Chmod"
+ .SH "Chmod"
+ The Chmod window is used to change the attribute bits in a group of
