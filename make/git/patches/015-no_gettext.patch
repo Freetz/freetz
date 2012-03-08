@@ -1,36 +1,18 @@
 --- configure
 +++ configure
-@@ -4589,6 +4589,7 @@
+@@ -5033,12 +5033,15 @@
+ done
  
- test -n "$NEEDS_LIBGEN" && LIBS="$LIBS -lgen"
  
++NO_GETTEXT=YesPlease
 +if false; then
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gettext in -lc" >&5
- $as_echo_n "checking for gettext in -lc... " >&6; }
- if test "${ac_cv_lib_c_gettext+set}" = set; then :
-@@ -4633,6 +4634,7 @@
- 
- 
- test -n "$LIBC_CONTAINS_LIBINTL" || LIBS="$LIBS -lintl"
-+fi
- 
- ## Checks for header files.
- { $as_echo "$as_me:${as_lineno-$LINENO}: CHECKS for header files" >&5
-@@ -5494,12 +5496,12 @@
- #
- # Define NO_GETTEXT if you don't want Git output to be translated.
- # A translated Git requires GNU libintl or another gettext implementation
--ac_fn_c_check_header_mongrel "$LINENO" "libintl.h" "ac_cv_header_libintl_h" "$ac_includes_default"
--if test "x$ac_cv_header_libintl_h" = x""yes; then :
--  NO_GETTEXT=
--else
-+#ac_fn_c_check_header_mongrel "$LINENO" "libintl.h" "ac_cv_header_libintl_h" "$ac_includes_default"
-+#if test "x$ac_cv_header_libintl_h" = x""yes; then :
-+#  NO_GETTEXT=
-+#else
+ ac_fn_c_check_header_mongrel "$LINENO" "libintl.h" "ac_cv_header_libintl_h" "$ac_includes_default"
+ if test "x$ac_cv_header_libintl_h" = x""yes; then :
+   NO_GETTEXT=
+ else
    NO_GETTEXT=YesPlease
--fi
-+#fi
+ fi
++fi
  
  
  
