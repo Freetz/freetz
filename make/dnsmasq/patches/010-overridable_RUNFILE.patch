@@ -1,0 +1,12 @@
+--- src/config.h
++++ src/config.h
+@@ -32,7 +32,9 @@
+ #define SMALLDNAME 40 /* most domain names are smaller than this */
+ #define HOSTSFILE "/etc/hosts"
+ #define ETHERSFILE "/etc/ethers"
++#ifndef RUNFILE
+ #define RUNFILE "/var/run/dnsmasq.pid"
++#endif
+ #define DEFLEASE 3600 /* default lease time, 1 hour */
+ #define CHUSER "nobody"
+ #define CHGRP "dip"

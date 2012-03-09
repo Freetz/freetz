@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.59)
+$(call PKG_INIT_BIN, 2.60)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=b5757ef2d7b651748eeebb88af29d7d6
+$(PKG)_SOURCE_MD5:=5a09908e02724d759ac60d9cafd27de8
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
@@ -10,8 +10,11 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dnsmasq
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
+$(PKG)_COPTS := -DCONFFILE=\\\"/mod/etc/dnsmasq.conf\\\"
+$(PKG)_COPTS += -DRUNFILE=\\\"/var/run/dnsmasq/dnsmasq.pid\\\"
+$(PKG)_COPTS += -DLEASEFILE=\\\"/var/tmp/dnsmasq.leases\\\"
 ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
-$(PKG)_COPTS := -DNO_IPV6
+$(PKG)_COPTS += -DNO_IPV6
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
