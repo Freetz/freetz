@@ -155,7 +155,7 @@ world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig
+KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
 
 noconfig_targets:=$(KCONFIG_TARGETS) tools \
 		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
@@ -436,6 +436,11 @@ menuconfig-nocache: $(CONFIG)/mconf
 config: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
+config-compress: config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf --savedefconfig .config_compressed $(CONFIG_IN_CACHE)
+	@echo "Compressed configuration written to .config_compressed."; \
+	echo  "It is equivalent to .config, but contains only non-default user selections."
+
 oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE)
 
@@ -451,6 +456,13 @@ $(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(PARSE_CONFIG_TOOL) $(deps_co
 #   $(1) = target name to be defined
 #   $(2) = info text to be printed
 #   $(3) = sub-regex for removing symbols from .config
+#
+# Note: We could also deactivate options which are on by default, but not
+# selected by any packages, e.g. FREETZ_BUSYBOX_ETHER_WAKE or almost 20 default
+# FREETZ_SHARE_terminfo_*. At the moment those options will be reactivated. To
+# deactivate them as well, the 'sed' command for step 1 can be replaced by:
+#   $$(SED) -i -r 's/^(FREETZ_($(3))_.+)=.+/\1=n/' .config; \
+#
 define CONFIG_CLEAN_DEPS
 $(1):
 	@{ \
@@ -458,7 +470,7 @@ $(1):
 	echo -n "Step 1: temporarily deactivate all $(2) ... "; \
 	$$(SED) -i -r 's/^(FREETZ_($(3))_)/# \1/' .config; \
 	echo "DONE"; \
-	echo -n "Step 2: reactivate only elements required by selected packages ... "; \
+	echo -n "Step 2: reactivate only elements required by selected packages or active by default ... "; \
 	make oldnoconfig > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
@@ -489,7 +501,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclean)
-	$(RM) -r .config .config.old .config.cmd .tmpconfig.h include/config include/generated
+	$(RM) -r .config .config_compressed .config.old .config.cmd .tmpconfig.h include/config include/generated
 	$(RM) -r $(DL_DIR)
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(SOURCE_DIR_ROOT)
