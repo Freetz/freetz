@@ -28,6 +28,23 @@ ismac () {
 	echo $1 | egrep '^[[:xdigit:]]{2}(:[[:xdigit:]]{2}){5}$' >/dev/null
 }
 
+create_resolv_conf () {
+		local __hostname=$1
+
+		local _nameserver=$(cat /tmp/flash/mod.diff 2>/dev/null| sed -nr "s/.* MOD_RESOLV_DNS='(.*)'/\1/p")
+		[ -z "$_nameserver" ] && local _nameserver="127.0.0.1"
+		echo "nameserver $_nameserver" > /etc/resolv.conf
+
+		local _domain=$(echo $__hostname |cut -d "." -f2-)
+		[ -n "$_domain" ] && echo "domain $_domain" >> /etc/resolv.conf
+
+		local _timeout=$(cat /tmp/flash/mod.diff 2>/dev/null| sed -nr "s/.* MOD_RESOLV_TIMEOUT='(.*)'/\1/p")
+		[ -n "$_timeout" ] && echo "options timeout:$_timeout" >> /etc/resolv.conf
+
+		local _attempts=$(cat /tmp/flash/mod.diff 2>/dev/null| sed -nr "s/.* MOD_RESOLV_ATTEMPTS='(.*)'/\1/p")
+		[ -n "$_attempts" ] && echo "options attempts:$_attempts" >> /etc/resolv.conf
+}
+
 case $1 in
 	"")
 		mvi /tmp/flash/mod/hosts
@@ -37,12 +54,7 @@ case $1 in
 		_hostname=$(ar7hostname)
 		hostname $_hostname
 
-		_nameserver=$(cat /tmp/flash/mod.diff 2>/dev/null| sed -nr "s/.* MOD_RESOLV_DNS='(.*)'/\1/p")
-		[ -z "$_nameserver" ] && _nameserver="127.0.0.1"
-		echo "nameserver $_nameserver" > /etc/resolv.conf
-
-		_domain=$(echo $_hostname |cut -d "." -f2-)
-		[ -n "$_domain" ] && echo "domain $_domain" >> /etc/resolv.conf
+		create_resolv_conf $_hostname
 
 		rm -f /var/tmp/hosts
 		rm -f /var/tmp/ethers
