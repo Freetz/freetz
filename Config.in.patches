@@ -966,6 +966,13 @@ config FREETZ_REMOVE_SUPPORT
 	help
 		Remove the support-files which can be taken by http://fritz.box/html/support.html
 
+config FREETZ_REMOVE_SUPPORT_EVENTSDUMP
+	bool "Remove eventsdump binary"
+	depends on FREETZ_REMOVE_SUPPORT
+	default n
+	help
+		Remove the eventsdump binary, saves about 6kB (uncompressed).
+
 config FREETZ_REMOVE_TR069
 	bool "Remove tr069 stuff" if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_HAS_AVM_TR069
