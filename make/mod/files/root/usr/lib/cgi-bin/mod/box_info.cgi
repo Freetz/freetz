@@ -79,7 +79,7 @@ sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
 
 echo "<dl class='info'>"
 echo "<dt>$(lang de:"Boxname" en:"Box name")</dt><dd>$CONFIG_PRODUKT_NAME</dd>"
-echo "<dt>ANNEX</dt><dd>$CONFIG_ANNEX</dd>"
+echo "<dt>ANNEX</dt><dd>$ANNEX</dd>"
 echo "</dl>"
 
 echo "<dl class='info'>"
