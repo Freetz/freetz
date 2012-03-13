@@ -57,7 +57,15 @@ start() {
 	fi
 
 	rm -rf /var/tmp/avm-resolv.conf /var/tmp/resolv.conf 2>/dev/null
-	[ "$FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS" == "y" ] && export LD_PRELOAD=libmultid.so
+	if [ "$FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS" == "y" ]; then
+		local _bind_enabled="$(modconf value BIND_ENABLED bind 2>/dev/null)"
+		local _dnsmasq_enabled="$(modconf value DNSMASQ_ENABLED dnsmasq 2>/dev/null)"
+		if [ "$_bind_enabled" != yes -a "$_dnsmasq_enabled" != yes ]; then
+			echo -n "discarded libmultid, no enabled dns server ... "
+		else
+			export LD_PRELOAD=libmultid.so
+		fi
+	fi
 	$DAEMON_BIN $DAEMON_CMD_IGD $DAEMON_CMD_NTP $DAEMON_CMD_069 $DAEMON_CMD_IGM
 	exitval=$?
 	unset LD_PRELOAD
