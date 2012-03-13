@@ -11,11 +11,15 @@ TMPFILE=$TMP/.conf.tmp.$$
 
 trap "rm -f $TMPFILE" EXIT
 
-case $1 in
-	set|load|save|default|vars|show)
-		cfg=/mod/etc/conf/$2.cfg
-		diff=$FLASH/$2.diff
-		default=/mod/etc/default.$2/$2.cfg
+cmd=$1
+[ "$cmd" == "value" ] && var=$2 && shift
+pkg=$2
+
+case $cmd in
+	set|load|save|default|vars|show|value)
+		cfg=/mod/etc/conf/$pkg.cfg
+		diff=$FLASH/$pkg.diff
+		default=/mod/etc/default.$pkg/$pkg.cfg
 
 		if [ ! -r "$default" ]; then
 			echo 'Package is not configurable.' 1>&2
@@ -26,13 +30,13 @@ case $1 in
 		cat > $TMPFILE
 
 		# . accepts relative filenames only if they start with .
-		default=$2
+		default=$pkg
 		case $default in
 			[^/]*) default="./$default"
 		esac
 		;;
 esac
-case $1 in
+case $cmd in
 	load)
 		if [ -r "$diff" ]; then
 			cat $diff | $0 merge $default > $cfg
@@ -49,7 +53,7 @@ case $1 in
 		fi
 		;;
 	default)
-		if [ "$2" = "mod" ]; then
+		if [ "$pkg" = "mod" ]; then
 			alias export=
 			. "$cfg"
 			unalias export
@@ -134,8 +138,11 @@ EOF
 	show)
 		cat "$cfg"
 		;;
+	value)
+		cat "$cfg" | sed -nr "s/^export ${var}='(.*)'$/\1/p"
+		;;
 	*)
-		echo "Usage: $0 {load|save|default|set|vars|show} <package-name>" 1>&2
+		echo "Usage: $0 {load|save|default|set|vars|show|value <PKG_VARIABLE>} <package-name>" 1>&2
 		echo "       $0 {merge|diff} <conf-file>" 1>&2
 		exit 1
 esac
