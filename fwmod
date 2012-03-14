@@ -1359,7 +1359,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		if [ "$FREETZ_HAS_AVM_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
-			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 233472)))
+			# 5*64kB sectors needed, see http://freetz.org/ticket/1680#comment:4
+			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 327680)))
 			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
 			if [ "$FREE_BYTE_JFFS2" -gt 0 ]; then
 				echo "${L1}Aproximately free time for the answering machine: $((($FREE_BYTE_JFFS2 / 2017)))s (${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))s)"
