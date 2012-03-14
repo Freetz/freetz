@@ -427,9 +427,11 @@ config FREETZ_REMOVE_AURA_USB
 config FREETZ_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko" if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_HAS_USB_CLIENT
+	select FREETZ_REMOVE_CDROM_ISO if FREETZ_HAS_AVM_CDROM_ISO
 	default n
 	help
 		Removes avalanche_usb.ko to save 60kB uncompressed space.
+		This is the Ethernet-over-USB driver which provides also CDROM emulation.
 
 config FREETZ_REMOVE_NAS
 	bool "Remove AVM NAS Webinterface"
@@ -729,13 +731,7 @@ config FREETZ_REMOVE_CHRONYD
 
 config FREETZ_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
-	depends on \
-		FREETZ_TYPE_300IP_AS_FON || \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_FON_5050 || \
-		FREETZ_TYPE_FON_WLAN || \
-		FREETZ_TYPE_WLAN_3020 || \
-		FREETZ_TYPE_WLAN_3030
+	depends on FREETZ_HAS_AVM_CDROM_ISO
 	default n
 	help
 		Removes the file /lib/modules/cdrom.iso to save 270kB uncompressed space.
