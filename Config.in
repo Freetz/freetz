@@ -601,11 +601,6 @@ config FREETZ_SHOW_ADVANCED
 		Show advanced Options for patching the firmware. This is only useful
 		for experienced users who really know what they are doing
 
-if FREETZ_SHOW_ADVANCED
-
-comment "Replace kernel (currently not available)"
-	depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
-
 config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
@@ -613,6 +608,11 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 		! FREETZ_TYPE_LABOR && \
 		! (FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LANG_DE)
 	default y
+
+if FREETZ_SHOW_ADVANCED
+
+comment "Replace kernel (currently not available)"
+	depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
 
 config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
@@ -1712,11 +1712,16 @@ config FREETZ_SQUASHFS_BLOCKSIZE
 	default 524288 if FREETZ_SQUASHFS_BLOCKSIZE_524288
 	default 1048576 if FREETZ_SQUASHFS_BLOCKSIZE_1048576
 
-menu "Kernel and modules options"
+source kernel/Config.in.kernel
+comment "Kernel modules (currently not available)"
+	depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
 
-	source kernel/Config.in
+menu "Kernel modules"
 
-endmenu # "Kernel and modules options" #
+	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
+	source kernel/Config.in.modules
+
+endmenu # "Kernel modules" #
 
 menu "BusyBox options"
 
