@@ -63,14 +63,14 @@ choice
 		depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 
 	config FREETZ_KERNEL_COMPILER_GCC_4_4
-		bool "gcc-4.4.6"
+		bool "gcc-4.4.7"
 		depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 
 endchoice
 
 config FREETZ_KERNEL_GCC_VERSION
 	string
-	default "4.4.6" if FREETZ_KERNEL_COMPILER_GCC_4_4
+	default "4.4.7" if FREETZ_KERNEL_COMPILER_GCC_4_4
 	default "3.4.6"
 
 config FREETZ_KERNEL_BINUTILS_VERSION
@@ -155,7 +155,7 @@ choice
 	default FREETZ_TARGET_COMPILER_GCC_4_5
 
 	config FREETZ_TARGET_COMPILER_GCC_4_4
-		bool "gcc-4.4.6"
+		bool "gcc-4.4.7"
 		depends on FREETZ_BUILD_TOOLCHAIN
 
 	config FREETZ_TARGET_COMPILER_GCC_4_5
@@ -205,7 +205,7 @@ config FREETZ_TARGET_UCLIBC_VERSION
 
 config FREETZ_TARGET_GCC_VERSION
 	string
-	default "4.4.6"		if FREETZ_TARGET_COMPILER_GCC_4_4
+	default "4.4.7"		if FREETZ_TARGET_COMPILER_GCC_4_4
 	default "4.5.3"		if FREETZ_TARGET_COMPILER_GCC_4_5
 	default "4.6.3"		if FREETZ_TARGET_COMPILER_GCC_4_6
 
