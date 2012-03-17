@@ -5,7 +5,7 @@
  				fprintf(stderr, "warning: (");
  				expr_fprint(e, stderr);
 -				fprintf(stderr, ") selects %s which has unmet direct dependencies (",
-+				fprintf(stderr, ") selects NOT %s because of unmet direct dependencies (",
++				fprintf(stderr, ") can NOT select %s because of unmet direct dependencies (",
  					sym->name);
  				expr_fprint(sym->dir_dep.expr, stderr);
  				fprintf(stderr, ")\n");
