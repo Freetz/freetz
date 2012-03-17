@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.4.3)
+$(call PKG_INIT_BIN, 5.7.1)
 $(PKG)_SOURCE:=net-snmp-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3513e39ee1a9d6c7581c508810b818f9
+$(PKG)_SOURCE_MD5:=c95d08fd5d93df0c11a2e1bdf0e01e0b
 $(PKG)_SITE:=@SF/net-snmp
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
@@ -13,7 +13,7 @@ $(PKG)_APPS_BUILD_DIR   := $(addprefix $($(PKG)_DIR)/apps/.libs/,$($(PKG)_APPS_I
 $(PKG)_APPS_TARGET_DIR  := $(addprefix $($(PKG)_DEST_DIR)/usr/bin/,$($(PKG)_APPS_INCLUDED))
 
 # Libraries
-$(PKG)_LIB_VERISON:=15.1.2
+$(PKG)_LIB_VERISON:=30.0.1
 $(PKG)_LIB_SUFFIX:=so.$($(PKG)_LIB_VERISON)
 $(PKG)_LIBNAMES_SHORT:=snmp snmpagent snmpmibs snmphelpers
 ifneq ($(filter snmptrap%,$(NETSNMP_APPS_INCLUDED)),)
@@ -140,13 +140,6 @@ $($(PKG)_BINARY) $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_APPS_BUILD_DIR): $($(PKG)_DIR
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
-
-	#mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
-	#mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/library
-	#cp $(NETSNMP_DIR)/agent/mibgroup/struct.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
-	#cp $(NETSNMP_DIR)/agent/mibgroup/util_funcs.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp
-	#cp $(NETSNMP_DIR)/agent/mibgroup/mibincl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/library
-	#cp $(NETSNMP_DIR)/agent/mibgroup/header_complex.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/net-snmp/agent
 
 $(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH))))
 $(foreach app,$(NETSNMP_APPS_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(app),/usr/bin)))
