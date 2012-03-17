@@ -20,9 +20,9 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  arch/mips/kernel/module.c |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
---- linux-2.6.28/arch/mips/kernel/module.c
-+++ linux-2.6.28/arch/mips/kernel/module.c
-@@ -303,7 +303,7 @@ int apply_relocate(Elf_Shdr *sechdrs, co
+--- linux-2.6.28/arch/mips/kernel/module.c	2012-03-17 06:22:21+01:00
++++ linux-2.6.28/arch/mips/kernel/module.c	2012-03-17 06:22:21+01:00
+@@ -365,7 +365,7 @@
  		/* This is the symbol it is referring to */
  		sym = (Elf_Sym *)sechdrs[symindex].sh_addr
  			+ ELF_MIPS_R_SYM(rel[i]);
@@ -31,7 +31,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  			/* Ignore unresolved weak symbol */
  			if (ELF_ST_BIND(sym->st_info) == STB_WEAK)
  				continue;
-@@ -343,7 +343,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs
+@@ -405,7 +405,7 @@
  		/* This is the symbol it is referring to */
  		sym = (Elf_Sym *)sechdrs[symindex].sh_addr
  			+ ELF_MIPS_R_SYM(rel[i]);

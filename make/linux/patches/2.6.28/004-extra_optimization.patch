@@ -1,6 +1,6 @@
---- linux-2.6.28/Makefile.orig	2010-11-04 21:20:19.470823452 +0100
-+++ linux-2.6.28/Makefile	2010-11-04 21:20:19.830823449 +0100
-@@ -539,8 +539,7 @@
+--- linux-2.6.28/Makefile	2012-03-17 06:22:19+01:00
++++ linux-2.6.28/Makefile	2012-03-17 06:22:19+01:00
+@@ -548,8 +548,7 @@
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os
  else
@@ -10,7 +10,7 @@
  endif
  
  include $(srctree)/arch/$(SRCARCH)/Makefile
-@@ -577,6 +576,9 @@
+@@ -586,6 +585,9 @@
  NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
  CHECKFLAGS     += $(NOSTDINC_FLAGS)
  
