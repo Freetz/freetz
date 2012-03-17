@@ -1,0 +1,18 @@
+--- scripts/kconfig/symbol.c	2011-10-15 02:24:34.000000000 +0200
++++ scripts/kconfig/symbol.c	2012-03-17 01:18:28.937462150 +0100
+@@ -355,12 +355,14 @@
+ 				    sym->dir_dep.expr);
+ 				fprintf(stderr, "warning: (");
+ 				expr_fprint(e, stderr);
+-				fprintf(stderr, ") selects %s which has unmet direct dependencies (",
++				fprintf(stderr, ") selects NOT %s because of unmet direct dependencies (",
+ 					sym->name);
+ 				expr_fprint(sym->dir_dep.expr, stderr);
+ 				fprintf(stderr, ")\n");
+ 				expr_free(e);
++				newval.tri = no;
+ 			}
++			else
+ 			newval.tri = EXPR_OR(newval.tri, sym->rev_dep.tri);
+ 		}
+ 		if (newval.tri == mod && sym_get_type(sym) == S_BOOLEAN)
