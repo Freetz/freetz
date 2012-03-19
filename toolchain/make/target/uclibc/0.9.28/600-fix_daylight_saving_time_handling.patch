@@ -18,9 +18,9 @@ Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
 
 diff --git a/libc/misc/time/time.c b/libc/misc/time/time.c
 index 19d68e1..8e2ebf1 100644
---- libc/misc/time/time.c
-+++ libc/misc/time/time.c
-@@ -689,7 +689,7 @@ static int tm_isdst(register const struct tm *__restrict ptm,
+--- libc/misc/time/time.c	2012-03-19 20:05:28+01:00
++++ libc/misc/time/time.c	2012-03-19 20:05:28+01:00
+@@ -644,7 +644,7 @@
  					++day;
  				}
  				monlen = 31 + day_cor[r->month -1] - day_cor[r->month];
@@ -29,5 +29,3 @@ index 19d68e1..8e2ebf1 100644
  					++monlen;
  				}
  				/* Wweekday (0 is Sunday) of 1st of the month
---
-cgit v0.9.0.1-2-gef13

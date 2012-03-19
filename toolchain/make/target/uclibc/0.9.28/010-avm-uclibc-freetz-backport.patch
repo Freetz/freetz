@@ -1,0 +1,75 @@
+--- libc/inet/resolv.c	2005-08-18 00:49:41.000000000 +0200
++++ libc/inet/resolv.c	2012-03-19 20:00:03.637318033 +0100
+@@ -154,9 +154,10 @@
+ #include <sys/un.h>
+ 
+ #define MAX_RECURSE 5
+-#define REPLY_TIMEOUT 10
+-#define MAX_RETRIES 3
+-#define MAX_SERVERS 3
++/*--- #define MAX_RETRIES 3 ---*/
++#define MAX_RETRIES __attempts
++/*--- #define REPLY_TIMEOUT 10 ---*/
++#define REPLY_TIMEOUT __timeout#define MAX_SERVERS 3
+ #define MAX_SEARCH 4
+ 
+ #define MAX_ALIASES	5
+@@ -179,6 +180,8 @@
+ extern char * __nameserver[MAX_SERVERS];
+ extern int __searchdomains;
+ extern char * __searchdomain[MAX_SEARCH];
++extern int __attempts;
++extern int __timeout;
+ 
+ #ifdef __UCLIBC_HAS_THREADS__
+ #include <pthread.h>
+@@ -691,6 +694,8 @@
+ 	    goto fail;
+ 
+ 	DPRINTF("Looking up type %d answer for '%s'\n", type, name);
++	DPRINTF("max attempts: %d (macro %d)\n", __attempts, MAX_RETRIES);
++	DPRINTF("timeout: %d (macro %d)\n", __timeout, REPLY_TIMEOUT);
+ 
+ 	/* Mess with globals while under lock */
+ 	LOCK;
+@@ -742,6 +747,8 @@
+ 
+ 		DPRINTF("On try %d, sending query to port %d of machine %s\n",
+ 				retries+1, NAMESERVER_PORT, dns);
++		DPRINTF("max attempts: %d (macro %d)\n", __attempts, MAX_RETRIES);
++		DPRINTF("timeout: %d (macro %d)\n", __timeout, REPLY_TIMEOUT);
+ 
+ #ifdef __UCLIBC_HAS_IPV6__
+ 		v6 = inet_pton(AF_INET6, dns, &sa6.sin6_addr) > 0;
+@@ -966,6 +973,8 @@
+ char * __nameserver[MAX_SERVERS];
+ int __searchdomains;
+ char * __searchdomain[MAX_SEARCH];
++int __attempts = 3;
++int __timeout = 10;
+ #ifdef __UCLIBC_HAS_THREADS__
+ pthread_mutex_t __resolv_lock = PTHREAD_MUTEX_INITIALIZER;
+ #endif
+@@ -1026,6 +1035,22 @@
+ 					DPRINTF("adding search %s\n", argv[i]);
+ 				}
+ 			}
++
++			/* options in resolv.conf */
++			if (strcmp(argv[0], "options") == 0) {
++				DPRINTF("hit options keyword\n");
++				for (i = 1; i < argc; i++) {
++					if (strncmp(argv[i], "timeout:", 8) == 0) {
++						__timeout = atoi(&argv[i][8]);
++						DPRINTF("set timeout value %d\n", __timeout);
++					}
++					if (strncmp(argv[i], "attempts:", 9) == 0) {
++						__attempts = atoi(&argv[i][9]);
++						DPRINTF("set attempts value %d\n", __attempts);
++					}
++				}
++			}
++
+ 		}
+ 		fclose(fp);
+ 		DPRINTF("nameservers = %d\n", __nameservers);
