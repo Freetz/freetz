@@ -1,20 +1,19 @@
 --- libc/inet/resolv.c	2005-08-18 00:49:41.000000000 +0200
 +++ libc/inet/resolv.c	2012-03-19 20:00:03.637318033 +0100
-@@ -154,9 +154,10 @@
+@@ -154,8 +154,10 @@
  #include <sys/un.h>
  
  #define MAX_RECURSE 5
 -#define REPLY_TIMEOUT 10
 -#define MAX_RETRIES 3
--#define MAX_SERVERS 3
 +/*--- #define MAX_RETRIES 3 ---*/
 +#define MAX_RETRIES __attempts
 +/*--- #define REPLY_TIMEOUT 10 ---*/
-+#define REPLY_TIMEOUT __timeout#define MAX_SERVERS 3
++#define REPLY_TIMEOUT __timeout
+ #define MAX_SERVERS 3
  #define MAX_SEARCH 4
  
- #define MAX_ALIASES	5
-@@ -179,6 +180,8 @@
+@@ -179,6 +181,8 @@
  extern char * __nameserver[MAX_SERVERS];
  extern int __searchdomains;
  extern char * __searchdomain[MAX_SEARCH];
@@ -23,7 +22,7 @@
  
  #ifdef __UCLIBC_HAS_THREADS__
  #include <pthread.h>
-@@ -691,6 +694,8 @@
+@@ -691,6 +695,8 @@
  	    goto fail;
  
  	DPRINTF("Looking up type %d answer for '%s'\n", type, name);
@@ -32,7 +31,7 @@
  
  	/* Mess with globals while under lock */
  	LOCK;
-@@ -742,6 +747,8 @@
+@@ -742,6 +748,8 @@
  
  		DPRINTF("On try %d, sending query to port %d of machine %s\n",
  				retries+1, NAMESERVER_PORT, dns);
@@ -41,7 +40,7 @@
  
  #ifdef __UCLIBC_HAS_IPV6__
  		v6 = inet_pton(AF_INET6, dns, &sa6.sin6_addr) > 0;
-@@ -966,6 +973,8 @@
+@@ -966,6 +974,8 @@
  char * __nameserver[MAX_SERVERS];
  int __searchdomains;
  char * __searchdomain[MAX_SEARCH];
@@ -50,7 +49,7 @@
  #ifdef __UCLIBC_HAS_THREADS__
  pthread_mutex_t __resolv_lock = PTHREAD_MUTEX_INITIALIZER;
  #endif
-@@ -1026,6 +1035,22 @@
+@@ -1026,6 +1036,22 @@
  					DPRINTF("adding search %s\n", argv[i]);
  				}
  			}
