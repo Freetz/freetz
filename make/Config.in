@@ -60,10 +60,14 @@ source make/pingtunnel/Config.in
 source make/portmap/Config.in
 
 menu "Point-to-Point"
+	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
 source make/pppd/Config.in
 source make/pptp/Config.in
 source make/pptpd/Config.in
 endmenu
+
+comment "Point-to-Point currently not available (no kernel sources)"
+    depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
 
 source make/privoxy/Config.in
 source make/radvd/Config.in
