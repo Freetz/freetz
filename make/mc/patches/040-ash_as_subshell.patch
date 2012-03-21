@@ -1,6 +1,6 @@
---- src/main.h	2012-03-06 02:32:24.493495264 +0100
-+++ src/main.h	2012-03-06 02:24:03.000000000 +0100
-@@ -72,6 +72,7 @@
+--- src/main.h
++++ src/main.h
+@@ -73,6 +73,7 @@
  #endif /* !HAVE_CHARSET */
  
  extern char *shell;
@@ -8,8 +8,8 @@
  extern const char *mc_prompt;
  
  /* index to record_macro_buf[], -1 if not recording a macro */
---- src/main.c	2012-03-06 02:32:24.493495264 +0100
-+++ src/main.c	2012-03-06 23:33:24.000000000 +0100
+--- src/main.c
++++ src/main.c
 @@ -101,6 +101,8 @@
  
  /* The user's shell */
@@ -19,8 +19,8 @@
  
  /* The prompt */
  const char *mc_prompt = NULL;
-@@ -165,19 +167,44 @@
- 
+@@ -168,19 +170,44 @@
+     shell_env = getenv ("SHELL");
      if ((shell_env == NULL) || (shell_env[0] == '\0'))
      {
 +        /* 2nd choice: user login shell */
@@ -62,11 +62,11 @@
 +            shell = g_strdup ("/bin/sh");
      }
 +    shell_realpath = mc_realpath (shell, rp_shell);
- }
  
- /* --------------------------------------------------------------------------------------------- */
---- src/subshell.c	2012-03-05 13:59:36.697459979 +0100
-+++ src/subshell.c	2012-03-06 23:37:48.000000000 +0100
+     /* This is the directory, where MC was installed, on Unix this is DATADIR */
+     /* and can be overriden by the MC_DATADIR environment variable */
+--- src/subshell.c
++++ src/subshell.c
 @@ -126,6 +126,8 @@
  static enum
  {
@@ -325,7 +325,7 @@
          break;
  
      }
-@@ -1107,6 +1227,13 @@
+@@ -1114,6 +1234,13 @@
          quote_cmd_start = "(printf \"%b\" '";
          quote_cmd_end = "')";
      }
