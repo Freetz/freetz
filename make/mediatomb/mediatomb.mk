@@ -73,7 +73,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_WEBIF)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(MEDIATOMB_DIR) clean
-	$(MEDIATOMB_DIR)/.configured
+	$(RM) $(MEDIATOMB_DIR)/.configured
 
 $(pkg)-uninstall:
 	$(RM) -r $(MEDIATOMB_TARGET_BINARY) $(MEDIATOMB_DEST_DIR)$(MEDIATOMB_SHARE_DIR)
