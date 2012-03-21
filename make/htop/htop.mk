@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.9)
+$(call PKG_INIT_BIN, 1.0.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=7c5507f35f363f3f40183a2ba3c561f8
+$(PKG)_SOURCE_MD5:=d3b80d905a6bff03f13896870787f901
 $(PKG)_SITE:=@SF/htop
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/htop
@@ -10,6 +10,8 @@ $(PKG)_DEPENDS_ON := ncurses
 
 $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_stat=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_meminfo=yes
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-unicode
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
