@@ -967,7 +967,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 	fi
 
-	if [ "$FREETZ_REPLACE_KERNEL_AVAILABLE" == "y" ]; then
+	if [ "$FREETZ_REPLACE_KERNEL" == "y" -o -n "$(set|grep ^FREETZ_MODULE_.*=y)" ]; then
 		[ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ] && strip_output=" and stripping"
 		echo0 "installing$strip_output modules"
 		for i in \
