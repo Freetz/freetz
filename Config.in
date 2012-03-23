@@ -34,7 +34,7 @@ config FREETZ_AVM_VERSION_7270_05_05
 	bool
 config FREETZ_AVM_VERSION_7320_04_86
 	bool
-config FREETZ_AVM_VERSION_7330_05_06
+config FREETZ_AVM_VERSION_7330_05_20
 	bool
 config FREETZ_AVM_VERSION_7360_05_08
 	bool
@@ -143,7 +143,7 @@ choice
 		bool "Fon WLAN 7320"
 
 	config FREETZ_TYPE_FON_WLAN_7330
-		select FREETZ_AVM_VERSION_7330_05_06
+		select FREETZ_AVM_VERSION_7330_05_20
 		bool "Fon WLAN 7330"
 
 	config FREETZ_TYPE_FON_WLAN_7330_SL
@@ -476,7 +476,7 @@ config FREETZ_AVM_VERSION_STRING
 	default "7270_04.86"    if FREETZ_AVM_VERSION_7270_04_86
 	default "7270_05.05"    if FREETZ_AVM_VERSION_7270_05_05
 	default "7320_04.86"    if FREETZ_AVM_VERSION_7320_04_86
-	default "7330_05.06"    if FREETZ_AVM_VERSION_7330_05_06
+	default "7330_05.20"    if FREETZ_AVM_VERSION_7330_05_20
 	default "7360_05.08"    if FREETZ_AVM_VERSION_7360_05_08
 	default "7390_05.05"    if FREETZ_AVM_VERSION_7390_05_05
 	default "7390_05.20"    if FREETZ_AVM_VERSION_7390_05_20
@@ -609,7 +609,8 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
-		! FREETZ_TYPE_LABOR
+		! FREETZ_TYPE_LABOR && \
+		! FREETZ_TYPE_FON_WLAN_7330
 	default y
 
 if FREETZ_SHOW_ADVANCED
@@ -626,7 +627,7 @@ config FREETZ_REPLACE_KERNEL
 			FREETZ_AVM_VERSION_7270_04_86 || \
 			FREETZ_AVM_VERSION_7270_05_05 || \
 			FREETZ_AVM_VERSION_7320_04_86 || \
-			FREETZ_AVM_VERSION_7330_05_06 || \
+			FREETZ_AVM_VERSION_7330_05_20 || \
 			FREETZ_AVM_VERSION_7360_05_08 || \
 			FREETZ_AVM_VERSION_7390_05_05 || \
 			FREETZ_AVM_VERSION_7390_05_20 \
@@ -636,7 +637,7 @@ config FREETZ_REPLACE_KERNEL
 		! FREETZ_REMOVE_JFFS2 && \
 		( \
 			FREETZ_AVM_VERSION_7320_04_86 || \
-			FREETZ_AVM_VERSION_7330_05_06 || \
+			FREETZ_AVM_VERSION_7330_05_20 || \
 			FREETZ_AVM_VERSION_7360_05_08 \
 		)
 	select FREETZ_MODULE_msdos if FREETZ_AVM_VERSION_7270_05_05
@@ -899,7 +900,7 @@ config FREETZ_DL_KERNEL_SITE
 	default "@AVM/fritzbox.fon_wlan_7270_v1/x_misc/opensrc" if FREETZ_AVM_VERSION_7270_04_86
 	default "@AVM/fritzbox.fon_wlan_7270_v3/x_misc/opensrc" if FREETZ_AVM_VERSION_7270_05_05
 	default "@AVM/fritzbox.fon_wlan_7320/x_misc/opensrc"    if FREETZ_AVM_VERSION_7320_04_86
-	default "@AVM/fritzbox.7330/x_misc/opensrc"             if FREETZ_AVM_VERSION_7330_05_06
+	default "@AVM/fritzbox.7330/x_misc/opensrc"             if FREETZ_AVM_VERSION_7330_05_20
 	default "@AVM/fritzbox.fon_wlan_7360_sl/x_misc/opensrc" if FREETZ_AVM_VERSION_7360_05_08
 	default "@AVM/fritzbox.fon_wlan_7390/x_misc/opensrc"    if FREETZ_AVM_VERSION_7390_05_05
 	default "@AVM/fritzbox.fon_wlan_7390/x_misc/opensrc"    if FREETZ_AVM_VERSION_7390_05_20
@@ -921,7 +922,7 @@ config FREETZ_DL_KERNEL_SOURCE
 	default "fritzbox7270-source-files-04.86.tar.gz"            if FREETZ_AVM_VERSION_7270_04_86
 	default "fritzbox-source-files-05.05.tar.gz"                if FREETZ_AVM_VERSION_7270_05_05
 	default "fritzbox7320-source-files-04.86.tar.gz"            if FREETZ_AVM_VERSION_7320_04_86
-	default "fritz_box_fon_wlan_7330_source_files.05.06.tar.gz" if FREETZ_AVM_VERSION_7330_05_06
+	default "fritz_box_fon_wlan_7330_source_files.05.06.tar.gz" if FREETZ_AVM_VERSION_7330_05_20
 	default "fritz_box_7360SL_source_files.05.08.tar.gz"        if FREETZ_AVM_VERSION_7360_05_08
 	default "fritz_box_fon_wlan_7390_source_files.05.05.tar.gz" if FREETZ_AVM_VERSION_7390_05_05
 	default "fritz_box_fon_wlan_7390_source_files.05.20.tar.gz" if FREETZ_AVM_VERSION_7390_05_20
@@ -943,7 +944,7 @@ config FREETZ_DL_KERNEL_SOURCE_MD5
 	default "55a11af7dcfd617c39e75877045ab468"  if FREETZ_AVM_VERSION_7270_04_86
 	default "19280ad861a7e88698d41211996c5ac6"  if FREETZ_AVM_VERSION_7270_05_05
 	default "0e2ddf32808eb329efc4b486c6de0011"  if FREETZ_AVM_VERSION_7320_04_86
-	default "baa047e62d316c765de1e2a4b051c11c"  if FREETZ_AVM_VERSION_7330_05_06
+	default "baa047e62d316c765de1e2a4b051c11c"  if FREETZ_AVM_VERSION_7330_05_20
 	default "08f3255b811476861096286fc00ea548"  if FREETZ_AVM_VERSION_7360_05_08
     default "fbf515bd77f3d3a64a3095889777cc13"  if FREETZ_AVM_VERSION_7390_05_05
 	default "092e37d9c2589595914d6e31cb1e63a8"  if FREETZ_AVM_VERSION_7390_05_20
@@ -1045,8 +1046,8 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_Fon_WLAN_7270_v3_Labor.74.05.09-21931.image"         if (FREETZ_TYPE_FON_WLAN_7270_V3 || (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_ALIEN_HARDWARE)) && FREETZ_TYPE_LABOR_PREVIEW
 	default "FRITZ.Box_Fon_WLAN_7320.100.04.89.image"                       if FREETZ_TYPE_FON_WLAN_7320 && ! FREETZ_TYPE_LABOR
 	default "FRITZ.Box_Fon_WLAN_7320_Labor.100.05.09-21948.image"           if FREETZ_TYPE_FON_WLAN_7320 && FREETZ_TYPE_LABOR_PREVIEW
-	default "FRITZ.Box_7330.107.05.08.image"                                if FREETZ_TYPE_FON_WLAN_7330 && ! FREETZ_TYPE_FON_WLAN_7330_SL
-	default "FRITZ.Box_7330_SL.116.05.08.image"                             if FREETZ_TYPE_FON_WLAN_7330_SL
+	default "FRITZ.Box_7330.107.05.20.image"                                if FREETZ_TYPE_FON_WLAN_7330 && ! FREETZ_TYPE_FON_WLAN_7330_SL
+	default "FRITZ.Box_7330_SL.116.05.20.image"                             if FREETZ_TYPE_FON_WLAN_7330_SL
 	default "FRITZ.Box_Fon_WLAN_7340.en-de-es-it-fr.99.05.05.image"         if FREETZ_TYPE_FON_WLAN_7340
 #	default "FRITZ.Box_Fon_WLAN_7360.109.05.08.image"                       if FREETZ_TYPE_FON_WLAN_7360 && ! FREETZ_TYPE_FON_WLAN_7360_SL
 	default "FRITZ.Box_Fon_WLAN_7360_SL.109.05.08.image"                    if FREETZ_TYPE_FON_WLAN_7360_SL
@@ -1100,8 +1101,8 @@ config FREETZ_DL_SOURCE_MD5
 	default "3835ce8f42fe76a689e7baee7956b73b"  if (FREETZ_TYPE_FON_WLAN_7270_V3 || (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_ALIEN_HARDWARE)) && FREETZ_TYPE_LANG_DE
 	default "78debc04f083eab38ff06cad60a9ea8a"  if (FREETZ_TYPE_FON_WLAN_7270_V3 || (FREETZ_TYPE_FON_WLAN_7270 && FREETZ_TYPE_ALIEN_HARDWARE)) && FREETZ_TYPE_LANG_EN
 	default "bbc805c964a06cf146f961ed16225208"  if FREETZ_TYPE_FON_WLAN_7320
-	default "77ea216a7500a9a522beeb105c786b63"  if FREETZ_TYPE_FON_WLAN_7330 && ! FREETZ_TYPE_FON_WLAN_7330_SL
-	default "e0eefd62f8710fe9c0f96f246900e5c5"  if FREETZ_TYPE_FON_WLAN_7330_SL
+	default "e932b5e7f9128da3266fca46cc81f718"  if FREETZ_TYPE_FON_WLAN_7330 && ! FREETZ_TYPE_FON_WLAN_7330_SL
+	default "8e4447c4984a56cd116ee44b12f5150c"  if FREETZ_TYPE_FON_WLAN_7330_SL
 	default "37a79764869166d845c7fc1aa19e6cb4"  if FREETZ_TYPE_FON_WLAN_7340
 #	default "e2f616894705a25d03d5e535f811c13a"  if FREETZ_TYPE_FON_WLAN_7360 && ! FREETZ_TYPE_FON_WLAN_7360_SL
 	default "e2f616894705a25d03d5e535f811c13a"  if FREETZ_TYPE_FON_WLAN_7360_SL
