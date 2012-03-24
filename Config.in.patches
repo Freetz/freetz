@@ -82,6 +82,15 @@ config FREETZ_ADD_REGEXT_GUI
 	help
 		Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf.
 
+config FREETZ_PATCH_GSMVOICE
+	bool "Patch GSM voice - EXPERIMENTAL"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_UMTS && ! FREETZ_REMOVE_UMTSD
+	default n
+	help
+		Patches the WebUI to allow voice-over-GSM.
+		Highly experimental! Your UMTS stick has to support it.
+		Webif: Internet > Mobilfunk > Telefonie über Mobilfunk
+
 #config FREETZ_PATCH_INTERNATIONAL
 #	bool "Patch international"
 #	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
