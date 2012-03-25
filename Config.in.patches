@@ -423,6 +423,15 @@ config FREETZ_REMOVE_ASSISTANT
 	help
 		Removes the installation assistant from the web menu.
 
+config FREETZ_REMOVE_ASSISTANT_SIP
+	bool "Remove SIP assistant"
+	default n
+	depends on FREETZ_REMOVE_ASSISTANT
+	help
+		Removes the SIP configuration assistant (about 155kB uncompressed) from
+		the web menu. With this patch you can't create new phones, but change and
+		use existing ones.
+
 config FREETZ_REMOVE_AURA_USB
 	bool "Remove remote USB connection (AURA = AVM USB Remote-Architecture)" if FREETZ_SHOW_ADVANCED
 	default n

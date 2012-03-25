@@ -11,8 +11,18 @@ rm_files "${HTML_DIR}/konfig" \
 	 "${HTML_LANG_MOD_DIR}/html/index_assi.html" \
 	 "${HTML_LANG_MOD_DIR}/html/assistent.html"
 
-# Don't delete provider.js because it's referenced by ohter files
-find "${HTML_DIR}/first" -type f -not -name "provider.js" -exec rm {} \;
+if [ "$FREETZ_REMOVE_ASSISTANT_SIP" == "y" ]; then
+	# Don't delete provider.js because it's referenced by other files.
+	find "${HTML_DIR}/first" -type f -not -name "provider.js" -exec rm {} \;
+else
+	# Needed by "neue Rufnummer": first.frm , lib.js , *bb_backokcancel.html , first_Sip_(1|2|3)*
+	rm_files \
+		"${HTML_DIR}/first/*_ISP*" \
+		"${HTML_DIR}/first/basic_first*" \
+		"${HTML_DIR}/first/first_Sip_free.*" \
+		"${HTML_DIR}/first/first_Start_Sip.*" \
+		"${HTML_DIR}/first/first_SIP_UI_*"
+fi
 
 find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
