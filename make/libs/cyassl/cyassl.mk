@@ -10,6 +10,9 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_DEPENDS_ON := zlib
 
+$(PKG)_CONFIGURE_ENV += PTHREAD_CFLAGS=-pthread
+$(PKG)_CONFIGURE_ENV += PTHREAD_LIBS=-lpthread
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-opensslExtra
 $(PKG)_CONFIGURE_OPTIONS += --enable-fastmath
 $(PKG)_CONFIGURE_OPTIONS += --enable-bigcache
@@ -29,8 +32,11 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	for d in cyassl cyassl/ctaocrypt cyassl/openssl; do \
 		mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/$$d; \
 		cp -a $(CYASSL_DIR)/$$d/*.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/$$d/; \
-	done; \
-	$(INSTALL_LIBRARY_INCLUDE_STATIC)
+	done;
+	$(SUBMAKE) -C $(CYASSL_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install-libLTLIBRARIES
+	$(PKG_FIX_LIBTOOL_LA) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl.la
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -41,8 +47,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(CYASSL_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl*
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl*
+	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcyassl* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/cyassl*
 
 $(pkg)-uninstall:
 	$(RM) $(CYASSL_TARGET_DIR)/libcyassl*.so*
