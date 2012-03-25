@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_CURL
-	bool "Curl 7.24.0 (binary only)"
+	bool "Curl 7.25.0 (binary only)"
 	default n
 	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_CURL_STATIC
 	help
@@ -11,13 +11,8 @@ config FREETZ_PACKAGE_CURL
 		busload of other useful tricks.
 
 config FREETZ_PACKAGE_CURL_STATIC
-	bool "Statically link libraries"
+	bool "create statically linked binary"
 	depends on FREETZ_PACKAGE_CURL
 	default n
 	help
-		CURL needs the following shared libraries which can be linked in statically
-		by activating this switch:
-		- libcurl.so
-		- libcrypto.so
-		- libssl.so
-		- libpolarssl.so
+		Causes all libraries curl binary depends on to be linked in statically
