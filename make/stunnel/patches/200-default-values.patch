@@ -1,6 +1,6 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -271,8 +271,10 @@
+@@ -272,8 +272,10 @@
  
  # Additional preprocesor definitions
  stunnel_CPPFLAGS = -I$(SSLDIR)/include \
@@ -15,7 +15,7 @@
  EXTRA_DIST = nogui.c make.bat makece.bat makew32.bat mingw.mak evc.mak \
 --- src/options.c
 +++ src/options.c
-@@ -652,7 +652,7 @@
+@@ -653,7 +653,7 @@
      /* cert */
      switch(cmd) {
      case CMD_INIT:
@@ -24,7 +24,7 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "cert"))
-@@ -660,7 +660,8 @@
+@@ -661,7 +661,8 @@
          section->cert=str_dup(arg);
          return NULL; /* OK */
      case CMD_DEFAULT:
@@ -34,7 +34,7 @@
      case CMD_HELP:
          s_log(LOG_NOTICE, "%-15s = certificate chain", "cert");
          break;
-@@ -946,7 +947,7 @@
+@@ -947,7 +948,7 @@
      /* key */
      switch(cmd) {
      case CMD_INIT:
@@ -43,7 +43,7 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
-@@ -954,6 +955,7 @@
+@@ -955,6 +956,7 @@
          section->key=str_dup(arg);
          return NULL; /* OK */
      case CMD_DEFAULT:
