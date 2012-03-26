@@ -1,7 +1,9 @@
 [ "$FREETZ_REMOVE_DSLD" == "y" ] || return 0
 
 echo1 "removing dsld files"
-rm_files $(find ${FILESYSTEM_MOD_DIR}/sbin \
+rm_files \
+	"${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libdsl.so" \
+	 $(find ${FILESYSTEM_MOD_DIR}/sbin \
 				${FILESYSTEM_MOD_DIR}/lib/modules \
 				-name dsld)
 

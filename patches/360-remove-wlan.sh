@@ -10,7 +10,8 @@ rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/fw_dcrhp_1150_ap.bin \
 	${FILESYSTEM_MOD_DIR}/usr/bin/wpa_authenticator \
 	${FILESYSTEM_MOD_DIR}/sbin/avmstickandsurf \
 	${FILESYSTEM_MOD_DIR}/usr/bin/iwpriv \
-	${FILESYSTEM_MOD_DIR}/usr/bin/iwconfig
+	${FILESYSTEM_MOD_DIR}/usr/bin/iwconfig \
+	${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libwlan.so
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_WLAN=.*$/CONFIG_WLAN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
