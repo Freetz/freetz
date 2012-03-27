@@ -1,0 +1,670 @@
+--- /dev/null	2011-07-20 21:38:32.699339587 +0200
++++ linux-2.6.32.21/drivers/net/avm_cpmac/cpmac_product_conf.c	2011-07-19 17:12:52.000000000 +0200
+@@ -0,0 +1,667 @@
++#include "cpphy_types.h"
++
++cpmac_product_struct cpmac_products = {
++    33,
++    {
++        { /* Fritz_Box_DECT_W920V */
++            "135 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    65535,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_SpeedportW503V */
++            "136 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_3270 */
++            "137 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7270_v1 */
++            "122 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7270_16 */
++            "139 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7270_AnnexA */
++            "141 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7240 */
++            "144 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7270plus */
++            "145 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7570 */
++            "146 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    65535,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_EasyboxA802R */
++            "147 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_EasyboxA602 */
++            "148 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_EasyboxA402 */
++            "149 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_SpeedportW722V */
++            "152 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    15,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7570_HN */
++            "153 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    65535,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7212 */
++            "154 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_ADM7001,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    65535,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7390 */
++            "156 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8316,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    15,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_Puma */
++            "157 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8316,
++                    CPMAC_PHY_MODE_MAGPIE,
++                    0x3f,
++                    28,
++                    0x20
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_SpeedportW504V */
++            "160 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_504avm */
++            "164 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7541 */
++            "165 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    15,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7270v4 */
++            "167 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8226,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_3270v3 */
++            "168 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_503avm */
++            "170 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_AR8216,
++                    CPMAC_PHY_MODE_AR8216,
++                    0x1f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7340 */
++            "171 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_VITESSE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    15,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_VITESSE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7320 */
++            "172 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_Neon */
++            "173 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_3370 */
++            "175 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_6312 */
++            "176 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_11G,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    28,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_6840 */
++            "177 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7313 */
++            "178 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7322 */
++            "179 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_7360 */
++            "181 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_HW182 */
++            "182 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_11G,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    28,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        }
++    }
++};

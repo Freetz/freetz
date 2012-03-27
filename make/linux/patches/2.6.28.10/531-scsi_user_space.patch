@@ -1,0 +1,56 @@
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Date: Tue, 10 Aug 2010 18:01:24 -0700
+Subject: [PATCH] scsi: use __uX types for headers exported to user space
+
+Commit 9e4f5e29 ("FC Pass Thru support") exported a number of header files
+in include/scsi to user space, but didn't change the uX types to the
+userspace-compatible __uX types.  Without that you'll get compile errors
+when including them - E.G.:
+
+include/scsi/scsi.h:145: error: expected specifier-qualifier-list before `u8'
+
+Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+Cc: Boaz Harrosh <bharrosh@panasas.com>
+Cc: James Smart <james.smart@emulex.com>
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ include/scsi/scsi.h         |    8 ++++----
+ include/scsi/scsi_netlink.h |    4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git linux-2.6.28.10/include/scsi/scsi.h linux-2.6.28.10/include/scsi/scsi.h
+index 9ae5c61..8fcb6e0 100644
+--- linux-2.6.28.10/include/scsi/scsi.h
++++ linux-2.6.28.10/include/scsi/scsi.h
+@@ -140,10 +140,10 @@
+ 
+ /* defined in T10 SCSI Primary Commands-2 (SPC2) */
+ struct scsi_varlen_cdb_hdr {
+-	u8 opcode;        /* opcode always == VARIABLE_LENGTH_CMD */
+-	u8 control;
+-	u8 misc[5];
+-	u8 additional_cdb_length;         /* total cdb length - 8 */
++	__u8 opcode;        /* opcode always == VARIABLE_LENGTH_CMD */
++	__u8 control;
++	__u8 misc[5];
++	__u8 additional_cdb_length;         /* total cdb length - 8 */
+ 	__be16 service_action;
+ 	/* service specific data follows */
+ };
+diff --git linux-2.6.28.10/include/scsi/scsi_netlink.h linux-2.6.28.10/include/scsi/scsi_netlink.h
+index 536752c..58ce8fe 100644
+--- linux-2.6.28.10/include/scsi/scsi_netlink.h
++++ linux-2.6.28.10/include/scsi/scsi_netlink.h
+@@ -105,8 +105,8 @@
+  *    PCI :  ID data is the 16 bit PCI Registered Vendor ID
+  */
+ #define SCSI_NL_VID_TYPE_SHIFT		56
+-#define SCSI_NL_VID_TYPE_MASK		((u64)0xFF << SCSI_NL_VID_TYPE_SHIFT)
+-#define SCSI_NL_VID_TYPE_PCI		((u64)0x01 << SCSI_NL_VID_TYPE_SHIFT)
++#define SCSI_NL_VID_TYPE_MASK		((__u64)0xFF << SCSI_NL_VID_TYPE_SHIFT)
++#define SCSI_NL_VID_TYPE_PCI		((__u64)0x01 << SCSI_NL_VID_TYPE_SHIFT)
+ #define SCSI_NL_VID_ID_MASK		(~ SCSI_NL_VID_TYPE_MASK)
+ 
+ 

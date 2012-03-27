@@ -1,0 +1,20 @@
+--- linux-2.6.28.10/drivers/net/avm_cpmac/Makefile	2011-12-19 22:13:34+01:00
++++ linux-2.6.28.10/drivers/net/avm_cpmac/Makefile	2011-12-19 22:13:34+01:00
+@@ -5,7 +5,7 @@
+ .PHONY: DO_COPY FORCE
+ 
+ EXTRA_CFLAGS := -DCPMAC_SIGNAL_CONGESTION -DCPPHY_USE_SWITCH -Wall -Wextra -Werror
+-EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"`svn info $(src) | grep URL | sed -e "s/^.*\/\([0-9.]\+\)-[^\/]*/\1/g"`  -  Revision `svnversion -cn $(src)`  -  `date +\"%a  %e.%m.%Y  %H:%M:%S\"` \""
++EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"1.108.1.32.1.15 - Revision 811:1568 - Mi  19.10.2011 11:06:17 \""
+ 
+ # declare multi-module main driver.
+ obj-$(CONFIG_AVM_CPMAC)	+= avm_cpmac.o
+@@ -20,7 +20,7 @@
+ 
+ avm_cpmac-y := $(DRIVER_OBJECTS)
+ 
+-$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c DO_COPY FORCE
++$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c FORCE
+ 
+ DO_COPY: $(src)/linux_avm_cpmac.h
+ 	mkdir -p $(FRITZ_BOX_BUILD_DIR)/$(KERNEL_BUILD)/filesystem/include/linux 

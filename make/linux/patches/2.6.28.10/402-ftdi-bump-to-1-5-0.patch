@@ -1,0 +1,236 @@
+From 094c2e6db4be381f708ad8a2e0532d7782f05ea4 Mon Sep 17 00:00:00 2001
+From: Mark Adamson <mark.adamson@ftdichip.com>
+Date: Thu, 9 Apr 2009 15:03:09 +0100
+Subject: [PATCH] USB: serial: FTDI: add high speed device support
+
+Added support for FTDI's USB 2.0 hi-speed devices - FT2232H (2
+interfaces) and FT4232H (4 interfaces), including a new baud rate
+calculation for these devices which can now achieve up to 12Mbaud by
+turning off a divide by 2.5 in the baud rate generator of the chips.  In
+order to achieve baud rates of <1200 baud, the divide by 2.5 must be
+active.  The default product ID of the FT2232H is 0x6010 (same as the
+FT2232C IC).  The default PID of the FT4232H is 0x6011.
+
+
+Signed-off-by: Mark J. Adamson <mark.adamson@ftdichip.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+ drivers/usb/serial/ftdi_sio.c |   90 ++++++++++++++++++++++++++++++++++++-----
+ drivers/usb/serial/ftdi_sio.h |   10 ++++-
+ 2 files changed, 89 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index 59c7501..80ccfa1 100644
+--- linux-2.6.28.10/drivers/usb/serial/ftdi_sio.c
++++ linux-2.6.28.10/drivers/usb/serial/ftdi_sio.c
+@@ -47,7 +47,7 @@
+ /*
+  * Version Information
+  */
+-#define DRIVER_VERSION "v1.4.3"
++#define DRIVER_VERSION "v1.5.0"
+ #define DRIVER_AUTHOR "Greg Kroah-Hartman <greg@kroah.com>, Bill Ryder <bryder@sgi.com>, Kuba Ober <kuba@mareimbrium.org>"
+ #define DRIVER_DESC "USB FTDI Serial Converters Driver"
+ 
+@@ -81,7 +81,8 @@
+ 	int rx_processed;
+ 	unsigned long rx_bytes;
+ 
+-	__u16 interface;	/* FT2232C port interface (0 for FT232/245) */
++	__u16 interface;	/* FT2232C, FT2232H or FT4232H port interface
++				   (0 for FT232/245) */
+ 
+ 	speed_t force_baud;	/* if non-zero, force the baud rate to
+ 				   this value */
+@@ -162,6 +163,7 @@
+ 	{ USB_DEVICE(FTDI_VID, FTDI_8U232AM_ALT_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_232RL_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_8U2232C_PID) },
++	{ USB_DEVICE(FTDI_VID, FTDI_4232H_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_MICRO_CHAMELEON_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_RELAIS_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_OPENDCC_PID) },
+@@ -694,6 +696,8 @@
+ 	[FT232BM] = "FT232BM",
+ 	[FT2232C] = "FT2232C",
+ 	[FT232RL] = "FT232RL",
++	[FT2232H] = "FT2232H",
++	[FT4232H] = "FT4232H"
+ };
+ 
+ 
+@@ -745,6 +749,8 @@
+ static unsigned short int ftdi_232am_baud_to_divisor(int baud);
+ static __u32 ftdi_232bm_baud_base_to_divisor(int baud, int base);
+ static __u32 ftdi_232bm_baud_to_divisor(int baud);
++static __u32 ftdi_2232h_baud_base_to_divisor(int baud, int base);
++static __u32 ftdi_2232h_baud_to_divisor(int baud);
+ 
+ static struct usb_serial_driver ftdi_sio_device = {
+ 	.driver = {
+@@ -838,6 +844,36 @@
+ 	 return ftdi_232bm_baud_base_to_divisor(baud, 48000000);
+ }
+ 
++static __u32 ftdi_2232h_baud_base_to_divisor(int baud, int base)
++{
++	static const unsigned char divfrac[8] = { 0, 3, 2, 4, 1, 5, 6, 7 };
++	__u32 divisor;
++	int divisor3;
++
++	/* hi-speed baud rate is 10-bit sampling instead of 16-bit */
++	divisor3 = (base / 10 / baud) * 8;
++
++	divisor = divisor3 >> 3;
++	divisor |= (__u32)divfrac[divisor3 & 0x7] << 14;
++	/* Deal with special cases for highest baud rates. */
++	if (divisor == 1)
++		divisor = 0;
++	else if (divisor == 0x4001)
++		divisor = 1;
++	/*
++	 * Set this bit to turn off a divide by 2.5 on baud rate generator
++	 * This enables baud rates up to 12Mbaud but cannot reach below 1200
++	 * baud with this bit set
++	 */
++	divisor |= 0x00020000;
++	return divisor;
++}
++
++static __u32 ftdi_2232h_baud_to_divisor(int baud)
++{
++	 return ftdi_2232h_baud_base_to_divisor(baud, 120000000);
++}
++
+ #define set_mctrl(port, set)		update_mctrl((port), (set), 0)
+ #define clear_mctrl(port, clear)	update_mctrl((port), 0, (clear))
+ 
+@@ -990,6 +1026,19 @@
+ 			baud = 9600;
+ 		}
+ 		break;
++	case FT2232H: /* FT2232H chip */
++	case FT4232H: /* FT4232H chip */
++		if ((baud <= 12000000) & (baud >= 1200)) {
++			div_value = ftdi_2232h_baud_to_divisor(baud);
++		} else if (baud < 1200) {
++			div_value = ftdi_232bm_baud_to_divisor(baud);
++		} else {
++			dbg("%s - Baud rate too high!", __func__);
++			div_value = ftdi_232bm_baud_to_divisor(9600);
++			div_okay = 0;
++			baud = 9600;
++		}
++		break;
+ 	} /* priv->chip_type */
+ 
+ 	if (div_okay) {
+@@ -1127,14 +1176,29 @@
+ 	if (interfaces > 1) {
+ 		int inter;
+ 
+-		/* Multiple interfaces.  Assume FT2232C. */
+-		priv->chip_type = FT2232C;
++		/* Multiple interfaces.*/
++		if (version == 0x0800) {
++			priv->chip_type = FT4232H;
++			/* Hi-speed - baud clock runs at 120MHz */
++			priv->baud_base = 120000000 / 2;
++		} else if (version == 0x0700) {
++			priv->chip_type = FT2232H;
++			/* Hi-speed - baud clock runs at 120MHz */
++			priv->baud_base = 120000000 / 2;
++		} else
++			priv->chip_type = FT2232C;
++
+ 		/* Determine interface code. */
+ 		inter = serial->interface->altsetting->desc.bInterfaceNumber;
+-		if (inter == 0)
+-			priv->interface = PIT_SIOA;
+-		else
+-			priv->interface = PIT_SIOB;
++		if (inter == 0) {
++			priv->interface = INTERFACE_A;
++		} else  if (inter == 1) {
++			priv->interface = INTERFACE_B;
++		} else  if (inter == 2) {
++			priv->interface = INTERFACE_C;
++		} else  if (inter == 3) {
++			priv->interface = INTERFACE_D;
++		}
+ 		/* BM-type devices have a bug where bcdDevice gets set
+ 		 * to 0x200 when iSerialNumber is 0.  */
+ 		if (version < 0x500) {
+@@ -1269,7 +1333,9 @@
+ 		if ((!retval) &&
+ 		    (priv->chip_type == FT232BM ||
+ 		     priv->chip_type == FT2232C ||
+-		     priv->chip_type == FT232RL)) {
++		     priv->chip_type == FT232RL ||
++		     priv->chip_type == FT2232H ||
++		     priv->chip_type == FT4232H)) {
+ 			retval = device_create_file(&port->dev,
+ 						    &dev_attr_latency_timer);
+ 		}
+@@ -1288,7 +1354,9 @@
+ 		device_remove_file(&port->dev, &dev_attr_event_char);
+ 		if (priv->chip_type == FT232BM ||
+ 		    priv->chip_type == FT2232C ||
+-		    priv->chip_type == FT232RL) {
++		    priv->chip_type == FT232RL ||
++		    priv->chip_type == FT2232H ||
++		    priv->chip_type == FT4232H) {
+ 			device_remove_file(&port->dev, &dev_attr_latency_timer);
+ 		}
+ 	}
+@@ -2285,6 +2353,8 @@
+ 	case FT232BM:
+ 	case FT2232C:
+ 	case FT232RL:
++	case FT2232H:
++	case FT4232H:
+ 		/* the 8U232AM returns a two byte value (the sio is a 1 byte
+ 		   value) - in the same format as the data returned from the in
+ 		   point */
+diff --git a/drivers/usb/serial/ftdi_sio.h b/drivers/usb/serial/ftdi_sio.h
+index 0a09118..f1d440a 100644
+--- linux-2.6.28.10/drivers/usb/serial/ftdi_sio.h
++++ linux-2.6.28.10/drivers/usb/serial/ftdi_sio.h
+@@ -10,7 +10,7 @@
+  * The device is based on the FTDI FT8U100AX chip. It has a DB25 on one side,
+  * USB on the other.
+  *
+- * Thanx to FTDI (http://www.ftdi.co.uk) for so kindly providing details
++ * Thanx to FTDI (http://www.ftdichip.com) for so kindly providing details
+  * of the protocol required to talk to the device and ongoing assistence
+  * during development.
+  *
+@@ -28,6 +28,7 @@
+ #define FTDI_8U232AM_ALT_PID 0x6006 /* FTDI's alternate PID for above */
+ #define FTDI_8U2232C_PID 0x6010 /* Dual channel device */
+ #define FTDI_232RL_PID  0xFBFA  /* Product ID for FT232RL */
++#define FTDI_4232H_PID 0x6011 /* Quad channel hi-speed device */
+ #define FTDI_RELAIS_PID	0xFA10  /* Relais device from Rudolf Gugler */
+ #define FTDI_NF_RIC_VID	0x0DCD	/* Vendor Id */
+ #define FTDI_NF_RIC_PID	0x0001	/* Product Id */
+@@ -875,6 +876,11 @@
+ #define FTDI_SIO_SET_LATENCY_TIMER	9 /* Set the latency timer */
+ #define FTDI_SIO_GET_LATENCY_TIMER	10 /* Get the latency timer */
+ 
++/* Interface indicies for FT2232, FT2232H and FT4232H devices*/
++#define INTERFACE_A		1
++#define INTERFACE_B		2
++#define INTERFACE_C		3
++#define INTERFACE_D		4
+ 
+ /*
+  * FIC / OpenMoko, Inc. http://wiki.openmoko.org/wiki/Neo1973_Debug_Board_v3
+@@ -1027,6 +1033,8 @@
+ 	FT232BM = 3,
+ 	FT2232C = 4,
+ 	FT232RL = 5,
++	FT2232H = 6,
++	FT4232H = 7
+ } ftdi_chip_type_t;
+ 
+ typedef enum {
