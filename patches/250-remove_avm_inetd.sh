@@ -6,7 +6,7 @@ rm_files "${FILESYSTEM_MOD_DIR}/bin/inetdctl" # AVM wrapper / starter script for
 rm_files "${FILESYSTEM_MOD_DIR}/etc/inetd.conf" # AVM Symlink to /var/tmp/inetd.conf
 
 # don't start inetd in rc.S
-if isFreetzType 3270 3270_V3 3370 7240 7270_V2 7270_V3 7320 7330 7340 7360 7390; then
+if isFreetzType 3270 3270_V3 3370 7240 7270_16 7320 7330 7340 7360 7390; then
 	rm_files "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd"
 else
 	count=$(grep "usr/sbin/inetd" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S" | wc -l)
