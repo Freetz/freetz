@@ -312,7 +312,6 @@ config FREETZ_TYPE_ALIEN_HARDWARE
 	depends on \
 		FREETZ_TYPE_FON_WLAN_7170 || \
 		FREETZ_TYPE_FON_WLAN_7270 || \
-		FREETZ_TYPE_FON_WLAN_7330 || \
 		FREETZ_TYPE_FON_WLAN_7570
 	default n
 	help
@@ -325,7 +324,6 @@ choice
 	default FREETZ_TYPE_SPEEDPORT_W701V_7170 if FREETZ_TYPE_FON_WLAN_7170
 	default FREETZ_TYPE_7240_7270 if FREETZ_TYPE_FON_WLAN_7270_V2
 	default FREETZ_TYPE_72702_72701 if FREETZ_TYPE_FON_WLAN_7270_V1
-	default FREETZ_TYPE_7320_7330 if FREETZ_TYPE_FON_WLAN_7330
 
 #	config FREETZ_TYPE_SINUS_W500V_7150
 #		bool "Sinus W500V"
@@ -441,13 +439,6 @@ choice
 		help
 			Enable this to compile a mod image for FritzBox FON WLAN 7270 v2 based
 			on a 7270 v1 image.
-
-	config FREETZ_TYPE_7320_7330
-		bool "7320"
-		depends on FREETZ_TYPE_FON_WLAN_7330
-		help
-			Enable this to compile an alien image for FritzBox FON WLAN 7320 based
-			on a 7320 image.
 
 	config FREETZ_TYPE_IAD_3331_7170
 		bool "Alice IAD 3331"
@@ -570,7 +561,6 @@ config FREETZ_TYPE_PREFIX_ALIEN_HARDWARE
 	default "7240_"             if FREETZ_TYPE_7240_7270
 	default "7270v1_"           if FREETZ_TYPE_7270_7270
 	default "7270v2_"           if FREETZ_TYPE_72702_72701
-	default "7320_"             if FREETZ_TYPE_7320_7330
 
 comment "Custom options -------------------------"
 	depends on FREETZ_TYPE_CUSTOM
@@ -1131,7 +1121,6 @@ config FREETZ_DL_SITE2
 		FREETZ_TYPE_7140_7170 || \
 		FREETZ_TYPE_7141_7170 || \
 		FREETZ_TYPE_7240_7270 || \
-		FREETZ_TYPE_7320_7330 || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
@@ -1144,7 +1133,6 @@ config FREETZ_DL_SITE2
 	default "@AVM/fritzbox.fon_wlan_7113/firmware/deutsch"      if FREETZ_TYPE_7113_7170
 	default "@AVM/fritzbox.fon_wlan_7140/firmware/deutsch"      if FREETZ_TYPE_7140_7170
 	default "@AVM/fritzbox.fon_wlan_7141/firmware/deutsch"      if FREETZ_TYPE_7141_7170
-	default "@AVM/fritzbox.fon_wlan_7320/firmware/deutsch"      if FREETZ_TYPE_7320_7330
 	default "@TELEKOM/Sinus W 500 V"                            if FREETZ_TYPE_SINUS_W500V_7150
 	default "@TELEKOM/Speedport/Speedport W 701 V"              if FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "@TELEKOM/Speedport/Speedport W 900V"               if FREETZ_TYPE_SPEEDPORT_W900V_7170
@@ -1162,7 +1150,6 @@ config FREETZ_DL_SOURCE2
 		FREETZ_TYPE_7140_7170 || \
 		FREETZ_TYPE_7141_7170 || \
 		FREETZ_TYPE_7240_7270 || \
-		FREETZ_TYPE_7320_7330 || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
@@ -1175,7 +1162,6 @@ config FREETZ_DL_SOURCE2
 	default "FRITZ.Box_Fon_WLAN_7112.87.04.87.image"                    if FREETZ_TYPE_7112_7170
 	default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"                    if FREETZ_TYPE_7113_7170
 	default "FRITZ.Box_Fon_WLAN_7141.40.04.76.image"                    if FREETZ_TYPE_7141_7170
-	default "FRITZ.Box_Fon_WLAN_7320.100.04.89.image"                   if FREETZ_TYPE_7320_7330
 	default "Sinus_W_500V.27.04.27.image"                               if FREETZ_TYPE_SINUS_W500V_7150
 	default "fritz.box_fon_wlan_7141.40.04.37.image"                    if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fw_Speedport_W701V_v33.04.57.image"                        if FREETZ_TYPE_SPEEDPORT_W701V_7170
@@ -1185,7 +1171,7 @@ config FREETZ_DL_SOURCE2
 	default "Speedport_W_920V.AnnexB.65.04.78.image"                    if FREETZ_TYPE_SPEEDPORT_W920V_7570 || FREETZ_TYPE_SPEEDPORT_W920V_LED_MODULE
 
 config FREETZ_DL_SOURCE2_MD5
-	string "AVM web interface MD5"          if FREETZ_DL_OVERRIDE
+	string "AVM alien web interface MD5"          if FREETZ_DL_OVERRIDE
 	depends on \
 		FREETZ_TYPE_3170_7170 || \
 		FREETZ_TYPE_7112_7170 || \
@@ -1193,7 +1179,6 @@ config FREETZ_DL_SOURCE2_MD5
 		FREETZ_TYPE_7140_7170 || \
 		FREETZ_TYPE_7141_7170 || \
 		FREETZ_TYPE_7240_7270 || \
-		FREETZ_TYPE_7320_7330 || \
 		FREETZ_TYPE_SINUS_W500V_7150 || \
 		FREETZ_TYPE_SPEEDPORT_W501V || \
 		FREETZ_TYPE_SPEEDPORT_W701V_7170 || \
@@ -1205,7 +1190,6 @@ config FREETZ_DL_SOURCE2_MD5
 	default "dc9a508562ad95114a0a3e084a97db7e"  if FREETZ_TYPE_7112_7170
 	default "f5d91a5ce4d9e65a3c526211e4e5f01b"  if FREETZ_TYPE_7113_7170
 	default "b612f315216adf3b230e4d99430194a8"  if FREETZ_TYPE_7141_7170
-	default "bbc805c964a06cf146f961ed16225208"  if FREETZ_TYPE_7320_7330
 	default "c49167da6dca42cdb34fbffbaf2c4097"  if FREETZ_TYPE_SPEEDPORT_W501V
 	default "e34713bd989c3e266a4650c133582510"  if FREETZ_TYPE_SPEEDPORT_W701V_7170
 	default "dd6f7461976c64b9808d2cf74ab4532f"  if FREETZ_TYPE_SPEEDPORT_W900V_7170
