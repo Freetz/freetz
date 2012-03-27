@@ -10,3 +10,12 @@ _upnp_file="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
 grep -q "^upnpdstart *()" $_upnp_file && _upnp_name=upnpdstart || _upnp_name=igddstart
 echo1 "patching rc.net: renaming $_upnp_name()"
 modsed "s/^\($_upnp_name *()\)/\1\n{ return; }\n_\1/" "$_upnp_file" "_$_upnp_name"
+#
+#echo1 "patching rc.net: removing igdd"
+#modsed "s/igdd websrv/multid/g" "$_upnp_file"
+#modsed "s/igdd multid/multid/g" "$_upnp_file"
+#
+#echo1 "patching prepare_fwupgrade: removing igdd"
+#modsed '/killall.*igdd/d' "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
+#modsed '/.*igdd -s/d'     "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
+#modsed 's/ igdd / /g'     "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
