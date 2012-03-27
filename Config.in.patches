@@ -284,10 +284,7 @@ comment "Removal patches ------------------------"
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 	bool "Remove Annex A firmware file"
 	depends on ! FREETZ_HAS_AVM_MULTI_ANNEX && \
-		( \
-			FREETZ_TYPE_FON_WLAN_7270_V2 || \
-			FREETZ_TYPE_FON_WLAN_7270_V3 \
-		)
+			FREETZ_TYPE_FON_WLAN_7270_16
 	default n
 	help
 		Remove lib/modules/dsp_*/*-A-dsl.bin. This saves about
