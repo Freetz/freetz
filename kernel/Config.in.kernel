@@ -1,4 +1,15 @@
+
+config FREETZ_KERNEL_VERSION_2_6_13
+	bool
+config FREETZ_KERNEL_VERSION_2_6_19
+	bool
+config FREETZ_KERNEL_VERSION_2_6_28
+	bool
+config FREETZ_KERNEL_VERSION_2_6_32
+	bool
+
 config FREETZ_KERNEL_VERSION_2_6_13_1
+	select FREETZ_KERNEL_VERSION_2_6_13
 	bool
 	default y if ! ( \
 		FREETZ_KERNEL_VERSION_2_6_19_2  || \
@@ -10,12 +21,14 @@ config FREETZ_KERNEL_VERSION_2_6_13_1
 
 config FREETZ_KERNEL_VERSION_2_6_19_2
 	bool
+	select FREETZ_KERNEL_VERSION_2_6_19
 	default y if \
 		FREETZ_TYPE_FON_WLAN_7270_V1 || \
 		FREETZ_TYPE_FON_WLAN_7570
 	default n
 
 config FREETZ_KERNEL_VERSION_2_6_28_10
+	select FREETZ_KERNEL_VERSION_2_6_28
 	bool
 	default y if \
 		FREETZ_TYPE_6840          || \
@@ -28,6 +41,7 @@ config FREETZ_KERNEL_VERSION_2_6_28_10
 	default n
 
 config FREETZ_KERNEL_VERSION_2_6_32_21
+	select FREETZ_KERNEL_VERSION_2_6_32
 	bool
 	default y if \
 		FREETZ_TYPE_FON_WLAN_7240    || \
@@ -37,6 +51,7 @@ config FREETZ_KERNEL_VERSION_2_6_32_21
 	default n
 
 config FREETZ_KERNEL_VERSION_2_6_32_41
+	select FREETZ_KERNEL_VERSION_2_6_32
 	bool
 #	default y if \
 #		(FREETZ_TYPE_FON_WLAN_7270_16 && FREETZ_TYPE_LABOR)
