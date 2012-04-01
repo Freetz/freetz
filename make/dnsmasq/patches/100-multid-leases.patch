@@ -18,7 +18,38 @@
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
 --- src/lease.c
 +++ src/lease.c
-@@ -223,10 +223,14 @@
+@@ -205,28 +205,44 @@
+       lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
+ }
+  
+-static void ourprintf(int *errp, char *format, ...)
++static void ourprintf_impl(FILE* f, int *errp, char *format, ...)
+ {
+   va_list ap;
+   
+   va_start(ap, format);
+-  if (!(*errp) && vfprintf(daemon->lease_stream, format, ap) < 0)
++  if (!(*errp) && f && vfprintf(f, format, ap) < 0)
+     *errp = errno;
+   va_end(ap);
+ }
+ 
++static void ourprintf(int *errp, char *format, ...)
++{
++  va_list ap;
++
++  va_start(ap, format);
++  ourprintf_impl(daemon->lease_stream, errp, format, ap);
++  va_end(ap);
++}
++
+ void lease_update_file(time_t now)
+ {
+   struct dhcp_lease *lease;
+   time_t next_event;
+-  int i, err = 0;
++  int i, err = 0, err_multid = 0;
++  static const char multid_leases_filename[] = "/var/tmp/multid.leases";
  
    if (file_dirty != 0 && daemon->lease_stream)
      {
@@ -29,17 +60,20 @@
        if (errno != 0 || ftruncate(fileno(daemon->lease_stream), 0) != 0)
  	err = errno;
 +
-+      multid_leases = fopen("/var/tmp/multid.leases", "w");
++      multid_leases = fopen(multid_leases_filename, "w");
++      if (errno != 0)
++        err_multid = errno;
        
        for (lease = leases; lease; lease = lease->next)
  	{
-@@ -256,14 +260,35 @@
+@@ -256,14 +272,36 @@
  	  ourprintf(&err, " %s ", daemon->addrbuff);
  	  ourprintf(&err, "%s ", lease->hostname ? lease->hostname : "*");
  	  	  
 +	  /* lease 00:12:79:41:AA:01 192.168.178.40 1122416 "computer" 0100127941b4a0 */
-+	  fprintf(
++	  ourprintf_impl(
 +	    multid_leases,
++	    &err_multid,
 +	    "%s %.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s %lu \"%s\" ",
 +	    lease->ifrname && strcmp(lease->ifrname, "wlan") == 0 ? "wlease" : "lease",
 +	    lease->hwaddr[0],
@@ -60,25 +94,38 @@
  	      ourprintf(&err, "%.2x\n", lease->clid[i]);
 +
 +	      for (i = 0; i < lease->clid_len; i++)
-+		fprintf(multid_leases,"%.2x", lease->clid[i]);
++		ourprintf_impl(multid_leases, &err_multid, "%.2x", lease->clid[i]);
  	    }
  	  else
  	    ourprintf(&err, "*\n");	  
 +
-+	  fprintf(multid_leases,"\n");
++	  ourprintf_impl(multid_leases, &err_multid, "\n");
  	}
        
  #ifdef HAVE_DHCP6  
-@@ -310,6 +335,8 @@
+@@ -310,6 +348,9 @@
        
        if (!err)
  	file_dirty = 0;
 +
-+      fclose(multid_leases);
++      if (multid_leases && fclose(multid_leases) != 0)
++        err_multid = errno;
      }
    
    /* Set alarm for when the first lease expires + slop. */
-@@ -685,6 +712,23 @@
+@@ -336,6 +377,11 @@
+ 		(unsigned int)difftime(next_event, now));
+     }
+ 
++  if (err_multid)
++    {
++      my_syslog(MS_DHCP | LOG_ERR, "failed to write/to update %s: %s", multid_leases_filename, strerror(err_multid));
++    }
++
+   if (next_event != 0)
+     alarm((unsigned)difftime(next_event, now)); 
+ }
+@@ -685,6 +731,23 @@
    lease->hostname = lease->fqdn = NULL;
  }
  
