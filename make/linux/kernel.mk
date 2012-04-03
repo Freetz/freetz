@@ -52,10 +52,6 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 		fi \
 	fi
 	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
-		DIRNAME=`find $(KERNEL_BUILD_DIR) -maxdepth 1 -name 'linux-*' -type d 2>/dev/null`; \
-	 	[ -n $$DIRNAME ] && mv $$DIRNAME $(KERNEL_BUILD_ROOT_DIR); \
-	fi
-	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
 		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
 	fi
 	@$(call _ECHO, preparing... )
@@ -146,7 +142,7 @@ $(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
 	touch $@
 
 $(KERNEL_HEADERS_DEVEL_DIR)/include/linux/version.h: $(KERNEL_DIR)/.prepared
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13_1)),y)
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13)),y)
 	$(call COPY_KERNEL_HEADERS,$(KERNEL_BUILD_ROOT_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(comma)asm-generic$(comma)linux$(comma)mtd$(comma)scsi$(comma)video})
 else
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \

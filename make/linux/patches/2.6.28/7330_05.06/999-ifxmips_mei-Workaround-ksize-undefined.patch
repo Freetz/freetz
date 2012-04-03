@@ -1,0 +1,26 @@
+--- linux-2.6.28.orig/drivers/char/ifxmips_mei.c
++++ linux-2.6.28/drivers/char/ifxmips_mei.c
+@@ -1686,9 +1686,11 @@
+          return DSL_DEV_MEI_ERR_FAILURE;
+       }
+ 
++#if 0
+       MEI_DEBUG(MEI_DBG_MOD_COM, MEI_DBG_MSG,
+          (MEI_DBG_PREFIX"Codeswap buffer created, size=%dK, location=0x%X"MEI_CRLF,
+          ksize(mei_arc_swap_buff)/1024, mei_arc_swap_buff));
++#endif
+    }
+ 
+    DSL_DEV_PRIVATE(pDev)->img_hdr =
+@@ -1955,9 +1957,11 @@
+ 
+    if(mei_arc_swap_buff != NULL)
+    {
++#if 0
+       MEI_DEBUG(MEI_DBG_MOD_COM, MEI_DBG_MSG,
+          (MEI_DBG_PREFIX"Freeing codeswap buffer: size=%dK, location=0x%08X"MEI_CRLF,
+          ksize(mei_arc_swap_buff)/1024, (int)mei_arc_swap_buff));
++#endif
+ 
+       kfree(mei_arc_swap_buff);
+       mei_arc_swap_buff = NULL;

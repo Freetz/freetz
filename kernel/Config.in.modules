@@ -7,7 +7,7 @@ menu "block"
 
 config FREETZ_MODULE_mtdblk
 	bool "mtdblk.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	default n
 
 config FREETZ_MODULE_block2mtd
@@ -56,51 +56,51 @@ menu "crypto"
 config FREETZ_MODULE_crypto_algapi
 	bool "crypto_algapi.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_2 || \
-		FREETZ_KERNEL_VERSION_2_6_28_10
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_crypto_blkcipher
 	bool "crypto_blkcipher.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28_10
+		FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_crypto_hash
 	bool "crypto_hash.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28_10
+		FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_aes
 	bool "aes.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13_1
+	depends on FREETZ_KERNEL_VERSION_2_6_13
 	default n
 
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_10
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_blkcipher
 	bool "blkcipher.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_2
+	depends on FREETZ_KERNEL_VERSION_2_6_19
 	default n
 
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_10
-	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19_2
-	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28_10
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19
+	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_cryptomgr
 	bool "cryptomgr.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_2 || \
-		FREETZ_KERNEL_VERSION_2_6_28_10
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_10
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_sha1
@@ -116,13 +116,13 @@ config FREETZ_MODULE_sha256
 config FREETZ_MODULE_sha1_generic
 	bool "sha1_generic.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && ! FREETZ_TYPE_FON_WLAN_7390
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_10
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_sha256_generic
 	bool "sha256_generic.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_10
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 endmenu
@@ -271,15 +271,15 @@ config FREETZ_MODULE_ipaq
 config FREETZ_MODULE_cp2101
 	bool "cp2101.ko"
 	depends on \
-		( FREETZ_KERNEL_VERSION_2_6_13_1 && ( FREETZ_AVM_VERSION_04_80 || FREETZ_AVM_VERSION_04_87 ) ) || \
-		FREETZ_KERNEL_VERSION_2_6_19_2 || \
-		FREETZ_KERNEL_VERSION_2_6_28_10
+		( FREETZ_KERNEL_VERSION_2_6_13 && ( FREETZ_AVM_VERSION_04_80 || FREETZ_AVM_VERSION_04_87 ) ) || \
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_usbserial
 	default n
 
 config FREETZ_MODULE_cp210x
 	bool "cp210x.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_32_21 || FREETZ_KERNEL_VERSION_2_6_32_41
+	depends on FREETZ_KERNEL_VERSION_2_6_32
 	select FREETZ_MODULE_usbserial
 	default n
 
@@ -394,7 +394,7 @@ config FREETZ_MODULE_jbd2
 config FREETZ_MODULE_lockd
 	bool "lockd.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
 		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_sunrpc
 	default n
@@ -410,7 +410,7 @@ config FREETZ_MODULE_minix
 config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
 		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_lockd
 	select FREETZ_MODULE_exportfs
@@ -419,14 +419,14 @@ config FREETZ_MODULE_nfsd
 config FREETZ_MODULE_exportfs
 	bool "exportfs.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
 		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 config FREETZ_MODULE_nfs
 	bool "nfs.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
 		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_lockd
 	default n
@@ -607,14 +607,14 @@ config FREETZ_MODULE_sit
 	bool "sit.ko"
 	depends on \
 		! FREETZ_HAS_AVM_IPV6 && \
-		FREETZ_KERNEL_VERSION_2_6_19_2 && \
+		FREETZ_KERNEL_VERSION_2_6_19 && \
 		FREETZ_MODULE_ipv6
 	default n
 
 config FREETZ_MODULE_sunrpc
 	bool "sunrpc.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13_1 || \
+		FREETZ_KERNEL_VERSION_2_6_13 || \
 		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 

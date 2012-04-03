@@ -1,0 +1,35 @@
+--- linux-2.6.32/arch/mips/oprofile/op_model_mipsxx.c.orig	2011-01-21 16:59:20.000000000 +0100
++++ linux-2.6.32/arch/mips/oprofile/op_model_mipsxx.c	2011-05-09 11:39:57.295250869 +0200
+@@ -298,6 +298,11 @@
+ 	}
+ }
+ 
++static irqreturn_t mipsxx_perfcount_int(int irq, void *dev_id)
++{
++	return mipsxx_perfcount_handler();
++}
++
+ static int __init mipsxx_init(void)
+ {
+ 	int counters;
+@@ -383,6 +388,10 @@
+ 	save_perf_irq = perf_irq;
+ 	perf_irq = mipsxx_perfcount_handler;
+ 
++	if (cp0_perfcount_irq >= 0)
++		return request_irq(cp0_perfcount_irq, mipsxx_perfcount_int,
++			IRQF_SHARED, "Perfcounter", save_perf_irq);
++
+ 	return 0;
+ }
+ 
+@@ -390,6 +399,9 @@
+ {
+ 	int counters = op_model_mipsxx_ops.num_counters;
+ 
++	if (cp0_perfcount_irq >= 0)
++		free_irq(cp0_perfcount_irq, save_perf_irq);
++
+ 	counters = counters_per_cpu_to_total(counters);
+ 	on_each_cpu(reset_counters, (void *)(long)counters, 1);
+ 

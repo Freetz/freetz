@@ -1,0 +1,908 @@
+--- linux-2.6.28.orig/fs/autofs4/autofs_i.h
++++ linux-2.6.28/fs/autofs4/autofs_i.h
+@@ -25,8 +25,6 @@
+ #define AUTOFS_DEV_IOCTL_IOC_FIRST	(AUTOFS_DEV_IOCTL_VERSION)
+ #define AUTOFS_DEV_IOCTL_IOC_COUNT	(AUTOFS_IOC_COUNT - 11)
+ 
+-#define AUTOFS_TYPE_TRIGGER	(AUTOFS_TYPE_DIRECT|AUTOFS_TYPE_OFFSET)
+-
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/time.h>
+@@ -188,6 +186,8 @@ int autofs4_expire_wait(struct dentry *d
+ int autofs4_expire_run(struct super_block *, struct vfsmount *,
+ 			struct autofs_sb_info *,
+ 			struct autofs_packet_expire __user *);
++int autofs4_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
++			    struct autofs_sb_info *sbi, int when);
+ int autofs4_expire_multi(struct super_block *, struct vfsmount *,
+ 			struct autofs_sb_info *, int __user *);
+ struct dentry *autofs4_expire_direct(struct super_block *sb,
+--- linux-2.6.28.orig/fs/autofs4/dev-ioctl.c
++++ linux-2.6.28/fs/autofs4/dev-ioctl.c
+@@ -124,7 +124,7 @@ static inline void free_dev_ioctl(struct
+ 
+ /*
+  * Check sanity of parameter control fields and if a path is present
+- * check that it has a "/" and is terminated.
++ * check that it is terminated and contains at least one "/".
+  */
+ static int validate_dev_ioctl(int cmd, struct autofs_dev_ioctl *param)
+ {
+@@ -138,15 +138,16 @@ static int validate_dev_ioctl(int cmd, s
+ 	}
+ 
+ 	if (param->size > sizeof(*param)) {
+-		err = check_name(param->path);
++		err = invalid_str(param->path,
++				 (void *) ((size_t) param + param->size));
+ 		if (err) {
+-			AUTOFS_WARN("invalid path supplied for cmd(0x%08x)",
+-				    cmd);
++			AUTOFS_WARN(
++			  "path string terminator missing for cmd(0x%08x)",
++			  cmd);
+ 			goto out;
+ 		}
+ 
+-		err = invalid_str(param->path,
+-				 (void *) ((size_t) param + param->size));
++		err = check_name(param->path);
+ 		if (err) {
+ 			AUTOFS_WARN("invalid path supplied for cmd(0x%08x)",
+ 				    cmd);
+@@ -180,7 +181,7 @@ static int autofs_dev_ioctl_protover(str
+ 				     struct autofs_sb_info *sbi,
+ 				     struct autofs_dev_ioctl *param)
+ {
+-	param->arg1 = sbi->version;
++	param->protover.version = sbi->version;
+ 	return 0;
+ }
+ 
+@@ -189,7 +190,7 @@ static int autofs_dev_ioctl_protosubver(
+ 					struct autofs_sb_info *sbi,
+ 					struct autofs_dev_ioctl *param)
+ {
+-	param->arg1 = sbi->sub_version;
++	param->protosubver.sub_version = sbi->sub_version;
+ 	return 0;
+ }
+ 
+@@ -334,13 +335,13 @@ static int autofs_dev_ioctl_openmount(st
+ 	int err, fd;
+ 
+ 	/* param->path has already been checked */
+-	if (!param->arg1)
++	if (!param->openmount.devid)
+ 		return -EINVAL;
+ 
+ 	param->ioctlfd = -1;
+ 
+ 	path = param->path;
+-	devid = param->arg1;
++	devid = param->openmount.devid;
+ 
+ 	err = 0;
+ 	fd = autofs_dev_ioctl_open_mountpoint(path, devid);
+@@ -372,7 +373,7 @@ static int autofs_dev_ioctl_ready(struct
+ {
+ 	autofs_wqt_t token;
+ 
+-	token = (autofs_wqt_t) param->arg1;
++	token = (autofs_wqt_t) param->ready.token;
+ 	return autofs4_wait_release(sbi, token, 0);
+ }
+ 
+@@ -387,8 +388,8 @@ static int autofs_dev_ioctl_fail(struct 
+ 	autofs_wqt_t token;
+ 	int status;
+ 
+-	token = (autofs_wqt_t) param->arg1;
+-	status = param->arg2 ? param->arg2 : -ENOENT;
++	token = (autofs_wqt_t) param->fail.token;
++	status = param->fail.status ? param->fail.status : -ENOENT;
+ 	return autofs4_wait_release(sbi, token, status);
+ }
+ 
+@@ -411,10 +412,10 @@ static int autofs_dev_ioctl_setpipefd(st
+ 	int pipefd;
+ 	int err = 0;
+ 
+-	if (param->arg1 == -1)
++	if (param->setpipefd.pipefd == -1)
+ 		return -EINVAL;
+ 
+-	pipefd = param->arg1;
++	pipefd = param->setpipefd.pipefd;
+ 
+ 	mutex_lock(&sbi->wq_mutex);
+ 	if (!sbi->catatonic) {
+@@ -456,8 +457,8 @@ static int autofs_dev_ioctl_timeout(stru
+ {
+ 	unsigned long timeout;
+ 
+-	timeout = param->arg1;
+-	param->arg1 = sbi->exp_timeout / HZ;
++	timeout = param->timeout.timeout;
++	param->timeout.timeout = sbi->exp_timeout / HZ;
+ 	sbi->exp_timeout = timeout * HZ;
+ 	return 0;
+ }
+@@ -488,7 +489,7 @@ static int autofs_dev_ioctl_requester(st
+ 	path = param->path;
+ 	devid = sbi->sb->s_dev;
+ 
+-	param->arg1 = param->arg2 = -1;
++	param->requester.uid = param->requester.gid = -1;
+ 
+ 	/* Get nameidata of the parent directory */
+ 	err = path_lookup(path, LOOKUP_PARENT, &nd);
+@@ -504,8 +505,8 @@ static int autofs_dev_ioctl_requester(st
+ 		err = 0;
+ 		autofs4_expire_wait(nd.path.dentry);
+ 		spin_lock(&sbi->fs_lock);
+-		param->arg1 = ino->uid;
+-		param->arg2 = ino->gid;
++		param->requester.uid = ino->uid;
++		param->requester.gid = ino->gid;
+ 		spin_unlock(&sbi->fs_lock);
+ 	}
+ 
+@@ -523,40 +524,13 @@ static int autofs_dev_ioctl_expire(struc
+ 				   struct autofs_sb_info *sbi,
+ 				   struct autofs_dev_ioctl *param)
+ {
+-	struct dentry *dentry;
+ 	struct vfsmount *mnt;
+-	int err = -EAGAIN;
+ 	int how;
+ 
+-	how = param->arg1;
++	how = param->expire.how;
+ 	mnt = fp->f_path.mnt;
+ 
+-	if (sbi->type & AUTOFS_TYPE_TRIGGER)
+-		dentry = autofs4_expire_direct(sbi->sb, mnt, sbi, how);
+-	else
+-		dentry = autofs4_expire_indirect(sbi->sb, mnt, sbi, how);
+-
+-	if (dentry) {
+-		struct autofs_info *ino = autofs4_dentry_ino(dentry);
+-
+-		/*
+-		 * This is synchronous because it makes the daemon a
+-		 * little easier
+-		*/
+-		err = autofs4_wait(sbi, dentry, NFY_EXPIRE);
+-
+-		spin_lock(&sbi->fs_lock);
+-		if (ino->flags & AUTOFS_INF_MOUNTPOINT) {
+-			ino->flags &= ~AUTOFS_INF_MOUNTPOINT;
+-			sbi->sb->s_root->d_mounted++;
+-		}
+-		ino->flags &= ~AUTOFS_INF_EXPIRING;
+-		complete_all(&ino->expire_complete);
+-		spin_unlock(&sbi->fs_lock);
+-		dput(dentry);
+-	}
+-
+-	return err;
++	return autofs4_do_expire_multi(sbi->sb, mnt, sbi, how);
+ }
+ 
+ /* Check if autofs mount point is in use */
+@@ -564,9 +538,9 @@ static int autofs_dev_ioctl_askumount(st
+ 				      struct autofs_sb_info *sbi,
+ 				      struct autofs_dev_ioctl *param)
+ {
+-	param->arg1 = 0;
++	param->askumount.may_umount = 0;
+ 	if (may_umount(fp->f_path.mnt))
+-		param->arg1 = 1;
++		param->askumount.may_umount = 1;
+ 	return 0;
+ }
+ 
+@@ -599,6 +573,7 @@ static int autofs_dev_ioctl_ismountpoint
+ 	struct nameidata nd;
+ 	const char *path;
+ 	unsigned int type;
++	unsigned int devid, magic;
+ 	int err = -ENOENT;
+ 
+ 	if (param->size <= sizeof(*param)) {
+@@ -607,13 +582,13 @@ static int autofs_dev_ioctl_ismountpoint
+ 	}
+ 
+ 	path = param->path;
+-	type = param->arg1;
++	type = param->ismountpoint.in.type;
+ 
+-	param->arg1 = 0;
+-	param->arg2 = 0;
++	param->ismountpoint.out.devid = devid = 0;
++	param->ismountpoint.out.magic = magic = 0;
+ 
+ 	if (!fp || param->ioctlfd == -1) {
+-		if (type == AUTOFS_TYPE_ANY) {
++		if (autofs_type_any(type)) {
+ 			struct super_block *sb;
+ 
+ 			err = path_lookup(path, LOOKUP_FOLLOW, &nd);
+@@ -621,7 +596,7 @@ static int autofs_dev_ioctl_ismountpoint
+ 				goto out;
+ 
+ 			sb = nd.path.dentry->d_sb;
+-			param->arg1 = new_encode_dev(sb->s_dev);
++			devid = new_encode_dev(sb->s_dev);
+ 		} else {
+ 			struct autofs_info *ino;
+ 
+@@ -634,38 +609,41 @@ static int autofs_dev_ioctl_ismountpoint
+ 				goto out_release;
+ 
+ 			ino = autofs4_dentry_ino(nd.path.dentry);
+-			param->arg1 = autofs4_get_dev(ino->sbi);
++			devid = autofs4_get_dev(ino->sbi);
+ 		}
+ 
+ 		err = 0;
+ 		if (nd.path.dentry->d_inode &&
+ 		    nd.path.mnt->mnt_root == nd.path.dentry) {
+ 			err = 1;
+-			param->arg2 = nd.path.dentry->d_inode->i_sb->s_magic;
++			magic = nd.path.dentry->d_inode->i_sb->s_magic;
+ 		}
+ 	} else {
+-		dev_t devid = new_encode_dev(sbi->sb->s_dev);
++		dev_t dev = autofs4_get_dev(sbi);
+ 
+ 		err = path_lookup(path, LOOKUP_PARENT, &nd);
+ 		if (err)
+ 			goto out;
+ 
+-		err = autofs_dev_ioctl_find_super(&nd, devid);
++		err = autofs_dev_ioctl_find_super(&nd, dev);
+ 		if (err)
+ 			goto out_release;
+ 
+-		param->arg1 = autofs4_get_dev(sbi);
++		devid = dev;
+ 
+ 		err = have_submounts(nd.path.dentry);
+ 
+ 		if (nd.path.mnt->mnt_mountpoint != nd.path.mnt->mnt_root) {
+ 			if (follow_down(&nd.path.mnt, &nd.path.dentry)) {
+ 				struct inode *inode = nd.path.dentry->d_inode;
+-				param->arg2 = inode->i_sb->s_magic;
++				magic = inode->i_sb->s_magic;
+ 			}
+ 		}
+ 	}
+ 
++	param->ismountpoint.out.devid = devid;
++	param->ismountpoint.out.magic = magic;
++
+ out_release:
+ 	path_put(&nd.path);
+ out:
+--- linux-2.6.28.orig/fs/autofs4/expire.c
++++ linux-2.6.28/fs/autofs4/expire.c
+@@ -63,15 +63,17 @@ static int autofs4_mount_busy(struct vfs
+ 		struct autofs_sb_info *sbi = autofs4_sbi(dentry->d_sb);
+ 
+ 		/* This is an autofs submount, we can't expire it */
+-		if (sbi->type == AUTOFS_TYPE_INDIRECT)
++		if (autofs_type_indirect(sbi->type))
+ 			goto done;
+ 
+ 		/*
+ 		 * Otherwise it's an offset mount and we need to check
+ 		 * if we can umount its mount, if there is one.
+ 		 */
+-		if (!d_mountpoint(dentry))
++		if (!d_mountpoint(dentry)) {
++			status = 0;
+ 			goto done;
++		}
+ 	}
+ 
+ 	/* Update the expiry counter if fs is busy */
+@@ -478,22 +480,16 @@ int autofs4_expire_run(struct super_bloc
+ 	return ret;
+ }
+ 
+-/* Call repeatedly until it returns -EAGAIN, meaning there's nothing
+-   more to be done */
+-int autofs4_expire_multi(struct super_block *sb, struct vfsmount *mnt,
+-			struct autofs_sb_info *sbi, int __user *arg)
++int autofs4_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
++			    struct autofs_sb_info *sbi, int when)
+ {
+ 	struct dentry *dentry;
+ 	int ret = -EAGAIN;
+-	int do_now = 0;
+ 
+-	if (arg && get_user(do_now, arg))
+-		return -EFAULT;
+-
+-	if (sbi->type & AUTOFS_TYPE_TRIGGER)
+-		dentry = autofs4_expire_direct(sb, mnt, sbi, do_now);
++	if (autofs_type_trigger(sbi->type))
++		dentry = autofs4_expire_direct(sb, mnt, sbi, when);
+ 	else
+-		dentry = autofs4_expire_indirect(sb, mnt, sbi, do_now);
++		dentry = autofs4_expire_indirect(sb, mnt, sbi, when);
+ 
+ 	if (dentry) {
+ 		struct autofs_info *ino = autofs4_dentry_ino(dentry);
+@@ -516,3 +512,16 @@ int autofs4_expire_multi(struct super_bl
+ 	return ret;
+ }
+ 
++/* Call repeatedly until it returns -EAGAIN, meaning there's nothing
++   more to be done */
++int autofs4_expire_multi(struct super_block *sb, struct vfsmount *mnt,
++			struct autofs_sb_info *sbi, int __user *arg)
++{
++	int do_now = 0;
++
++	if (arg && get_user(do_now, arg))
++		return -EFAULT;
++
++	return autofs4_do_expire_multi(sb, mnt, sbi, do_now);
++}
++
+--- linux-2.6.28.orig/fs/autofs4/inode.c
++++ linux-2.6.28/fs/autofs4/inode.c
+@@ -197,9 +197,9 @@ static int autofs4_show_options(struct s
+ 	seq_printf(m, ",minproto=%d", sbi->min_proto);
+ 	seq_printf(m, ",maxproto=%d", sbi->max_proto);
+ 
+-	if (sbi->type & AUTOFS_TYPE_OFFSET)
++	if (autofs_type_offset(sbi->type))
+ 		seq_printf(m, ",offset");
+-	else if (sbi->type & AUTOFS_TYPE_DIRECT)
++	else if (autofs_type_direct(sbi->type))
+ 		seq_printf(m, ",direct");
+ 	else
+ 		seq_printf(m, ",indirect");
+@@ -284,13 +284,13 @@ static int parse_options(char *options, 
+ 			*maxproto = option;
+ 			break;
+ 		case Opt_indirect:
+-			*type = AUTOFS_TYPE_INDIRECT;
++			set_autofs_type_indirect(type);
+ 			break;
+ 		case Opt_direct:
+-			*type = AUTOFS_TYPE_DIRECT;
++			set_autofs_type_direct(type);
+ 			break;
+ 		case Opt_offset:
+-			*type = AUTOFS_TYPE_OFFSET;
++			set_autofs_type_offset(type);
+ 			break;
+ 		default:
+ 			return 1;
+@@ -338,7 +338,7 @@ int autofs4_fill_super(struct super_bloc
+ 	sbi->sb = s;
+ 	sbi->version = 0;
+ 	sbi->sub_version = 0;
+-	sbi->type = AUTOFS_TYPE_INDIRECT;
++	set_autofs_type_indirect(&sbi->type);
+ 	sbi->min_proto = 0;
+ 	sbi->max_proto = 0;
+ 	mutex_init(&sbi->wq_mutex);
+@@ -380,7 +380,7 @@ int autofs4_fill_super(struct super_bloc
+ 	}
+ 
+ 	root_inode->i_fop = &autofs4_root_operations;
+-	root_inode->i_op = sbi->type & AUTOFS_TYPE_TRIGGER ?
++	root_inode->i_op = autofs_type_trigger(sbi->type) ?
+ 			&autofs4_direct_root_inode_operations :
+ 			&autofs4_indirect_root_inode_operations;
+ 
+--- linux-2.6.28.orig/fs/autofs4/waitq.c
++++ linux-2.6.28/fs/autofs4/waitq.c
+@@ -297,20 +297,14 @@ static int validate_request(struct autof
+ 	 */
+ 	if (notify == NFY_MOUNT) {
+ 		/*
+-		 * If the dentry isn't hashed just go ahead and try the
+-		 * mount again with a new wait (not much else we can do).
+-		*/
+-		if (!d_unhashed(dentry)) {
+-			/*
+-			 * But if the dentry is hashed, that means that we
+-			 * got here through the revalidate path.  Thus, we
+-			 * need to check if the dentry has been mounted
+-			 * while we waited on the wq_mutex. If it has,
+-			 * simply return success.
+-			 */
+-			if (d_mountpoint(dentry))
+-				return 0;
+-		}
++		 * If the dentry was successfully mounted while we slept
++		 * on the wait queue mutex we can return success. If it
++		 * isn't mounted (doesn't have submounts for the case of
++		 * a multi-mount with no mount at it's base) we can
++		 * continue on and create a new request.
++		 */
++		if (have_submounts(dentry))
++			return 0;
+ 	}
+ 
+ 	return 1;
+@@ -337,7 +331,7 @@ int autofs4_wait(struct autofs_sb_info *
+ 		 * is very similar for indirect mounts except only dentrys
+ 		 * in the root of the autofs file system may be negative.
+ 		 */
+-		if (sbi->type & AUTOFS_TYPE_TRIGGER)
++		if (autofs_type_trigger(sbi->type))
+ 			return -ENOENT;
+ 		else if (!IS_ROOT(dentry->d_parent))
+ 			return -ENOENT;
+@@ -348,7 +342,7 @@ int autofs4_wait(struct autofs_sb_info *
+ 		return -ENOMEM;
+ 
+ 	/* If this is a direct mount request create a dummy name */
+-	if (IS_ROOT(dentry) && sbi->type & AUTOFS_TYPE_TRIGGER)
++	if (IS_ROOT(dentry) && autofs_type_trigger(sbi->type))
+ 		qstr.len = sprintf(name, "%p", dentry);
+ 	else {
+ 		qstr.len = autofs4_getpath(sbi, dentry, &name);
+@@ -406,11 +400,11 @@ int autofs4_wait(struct autofs_sb_info *
+ 				type = autofs_ptype_expire_multi;
+ 		} else {
+ 			if (notify == NFY_MOUNT)
+-				type = (sbi->type & AUTOFS_TYPE_TRIGGER) ?
++				type = autofs_type_trigger(sbi->type) ?
+ 					autofs_ptype_missing_direct :
+ 					 autofs_ptype_missing_indirect;
+ 			else
+-				type = (sbi->type & AUTOFS_TYPE_TRIGGER) ?
++				type = autofs_type_trigger(sbi->type) ?
+ 					autofs_ptype_expire_direct :
+ 					autofs_ptype_expire_indirect;
+ 		}
+--- linux-2.6.28.orig/include/linux/auto_fs4.h
++++ linux-2.6.28/include/linux/auto_fs4.h
+@@ -29,10 +29,64 @@
+ #define AUTOFS_EXP_IMMEDIATE		1
+ #define AUTOFS_EXP_LEAVES		2
+ 
+-#define AUTOFS_TYPE_ANY			0x0000
+-#define AUTOFS_TYPE_INDIRECT		0x0001
+-#define AUTOFS_TYPE_DIRECT		0x0002
+-#define AUTOFS_TYPE_OFFSET		0x0004
++#define AUTOFS_TYPE_ANY			0U
++#define AUTOFS_TYPE_INDIRECT		1U
++#define AUTOFS_TYPE_DIRECT		2U
++#define AUTOFS_TYPE_OFFSET		4U
++
++static inline void set_autofs_type_indirect(unsigned int *type)
++{
++	*type = AUTOFS_TYPE_INDIRECT;
++	return;
++}
++
++static inline unsigned int autofs_type_indirect(unsigned int type)
++{
++	return (type == AUTOFS_TYPE_INDIRECT);
++}
++
++static inline void set_autofs_type_direct(unsigned int *type)
++{
++	*type = AUTOFS_TYPE_DIRECT;
++	return;
++}
++
++static inline unsigned int autofs_type_direct(unsigned int type)
++{
++	return (type == AUTOFS_TYPE_DIRECT);
++}
++
++static inline void set_autofs_type_offset(unsigned int *type)
++{
++	*type = AUTOFS_TYPE_OFFSET;
++	return;
++}
++
++static inline unsigned int autofs_type_offset(unsigned int type)
++{
++	return (type == AUTOFS_TYPE_OFFSET);
++}
++
++static inline unsigned int autofs_type_trigger(unsigned int type)
++{
++	return (type == AUTOFS_TYPE_DIRECT || type == AUTOFS_TYPE_OFFSET);
++}
++
++/*
++ * This isn't really a type as we use it to say "no type set" to
++ * indicate we want to search for "any" mount in the
++ * autofs_dev_ioctl_ismountpoint() device ioctl function.
++ */
++static inline void set_autofs_type_any(unsigned int *type)
++{
++	*type = AUTOFS_TYPE_ANY;
++	return;
++}
++
++static inline unsigned int autofs_type_any(unsigned int type)
++{
++	return (type == AUTOFS_TYPE_ANY);
++}
+ 
+ /* Daemon notification packet types */
+ enum autofs_notify {
+--- linux-2.6.28.orig/Documentation/filesystems/autofs4-mount-control.txt
++++ linux-2.6.28/Documentation/filesystems/autofs4-mount-control.txt
+@@ -179,8 +179,21 @@ struct autofs_dev_ioctl {
+ 				 * including this struct */
+ 	__s32 ioctlfd;          /* automount command fd */
+ 
+-	__u32 arg1;             /* Command parameters */
+-	__u32 arg2;
++	/* Command parameters */
++
++	union {
++		struct args_protover            protover;
++		struct args_protosubver         protosubver;
++		struct args_openmount           openmount;
++		struct args_ready               ready;
++		struct args_fail                fail;
++		struct args_setpipefd           setpipefd;
++		struct args_timeout             timeout;
++		struct args_requester           requester;
++		struct args_expire              expire;
++		struct args_askumount           askumount;
++		struct args_ismountpoint        ismountpoint;
++	};
+ 
+ 	char path[0];
+ };
+@@ -192,8 +205,8 @@ optionally be used to check a specific m
+ mount point file descriptor, and when requesting the uid and gid of the
+ last successful mount on a directory within the autofs file system.
+ 
+-The fields arg1 and arg2 are used to communicate parameters and results of
+-calls made as described below.
++The anonymous union is used to communicate parameters and results of calls
++made as described below.
+ 
+ The path field is used to pass a path where it is needed and the size field
+ is used account for the increased structure length when translating the
+@@ -245,25 +258,27 @@ AUTOFS_DEV_IOCTL_PROTOVER_CMD and AUTOFS
+ Get the major and minor version of the autofs4 protocol version understood
+ by loaded module. This call requires an initialized struct autofs_dev_ioctl
+ with the ioctlfd field set to a valid autofs mount point descriptor
+-and sets the requested version number in structure field arg1. These
+-commands return 0 on success or one of the negative error codes if
+-validation fails.
++and sets the requested version number in structure field protover.version
++and ptotosubver.sub_version respectively. These commands return 0 on
++success or one of the negative error codes if validation fails.
+ 
+ 
+-AUTOFS_DEV_IOCTL_OPENMOUNT and AUTOFS_DEV_IOCTL_CLOSEMOUNT
+-----------------------------------------------------------
++AUTOFS_DEV_IOCTL_OPENMOUNT_CMD and AUTOFS_DEV_IOCTL_CLOSEMOUNT_CMD
++------------------------------------------------------------------
+ 
+ Obtain and release a file descriptor for an autofs managed mount point
+ path. The open call requires an initialized struct autofs_dev_ioctl with
+ the the path field set and the size field adjusted appropriately as well
+-as the arg1 field set to the device number of the autofs mount. The
+-device number can be obtained from the mount options shown in
+-/proc/mounts. The close call requires an initialized struct
+-autofs_dev_ioct with the ioctlfd field set to the descriptor obtained
+-from the open call. The release of the file descriptor can also be done
+-with close(2) so any open descriptors will also be closed at process exit.
+-The close call is included in the implemented operations largely for
+-completeness and to provide for a consistent user space implementation.
++as the openmount.devid field set to the device number of the autofs mount.
++The device number of an autofs mounted filesystem can be obtained by using
++the AUTOFS_DEV_IOCTL_ISMOUNTPOINT ioctl function by providing the path
++and autofs mount type, as described below. The close call requires an
++initialized struct autofs_dev_ioct with the ioctlfd field set to the
++descriptor obtained from the open call. The release of the file descriptor
++can also be done with close(2) so any open descriptors will also be
++closed at process exit. The close call is included in the implemented
++operations largely for completeness and to provide for a consistent
++user space implementation.
+ 
+ 
+ AUTOFS_DEV_IOCTL_READY_CMD and AUTOFS_DEV_IOCTL_FAIL_CMD
+@@ -272,10 +287,10 @@ AUTOFS_DEV_IOCTL_READY_CMD and AUTOFS_DE
+ Return mount and expire result status from user space to the kernel.
+ Both of these calls require an initialized struct autofs_dev_ioctl
+ with the ioctlfd field set to the descriptor obtained from the open
+-call and the arg1 field set to the wait queue token number, received
+-by user space in the foregoing mount or expire request. The arg2 field
+-is set to the status to be returned. For the ready call this is always
+-0 and for the fail call it is set to the errno of the operation.
++call and the ready.token or fail.token field set to the wait queue
++token number, received by user space in the foregoing mount or expire
++request. The fail.status field is set to the status to be returned when
++sending a failure notification with AUTOFS_DEV_IOCTL_FAIL_CMD.
+ 
+ 
+ AUTOFS_DEV_IOCTL_SETPIPEFD_CMD
+@@ -290,9 +305,10 @@ mount be catatonic (see next call).
+ 
+ The call requires an initialized struct autofs_dev_ioctl with the
+ ioctlfd field set to the descriptor obtained from the open call and
+-the arg1 field set to descriptor of the pipe. On success the call
+-also sets the process group id used to identify the controlling process
+-(eg. the owning automount(8) daemon) to the process group of the caller.
++the setpipefd.pipefd field set to descriptor of the pipe. On success
++the call also sets the process group id used to identify the controlling
++process (eg. the owning automount(8) daemon) to the process group of
++the caller.
+ 
+ 
+ AUTOFS_DEV_IOCTL_CATATONIC_CMD
+@@ -313,6 +329,9 @@ Set the expire timeout for mounts within
+ 
+ The call requires an initialized struct autofs_dev_ioctl with the
+ ioctlfd field set to the descriptor obtained from the open call.
++The timeout.timeout field is set to the desired timeout and this
++field is set to the value of the value of the current timeout of
++the mount upon successful completion.
+ 
+ 
+ AUTOFS_DEV_IOCTL_REQUESTER_CMD
+@@ -323,9 +342,9 @@ mount on the given path dentry.
+ 
+ The call requires an initialized struct autofs_dev_ioctl with the path
+ field set to the mount point in question and the size field adjusted
+-appropriately as well as the arg1 field set to the device number of the
+-containing autofs mount. Upon return the struct field arg1 contains the
+-uid and arg2 the gid.
++appropriately as well as the ioctlfd field set to the descriptor obtained
++from the open call. Upon return the struct fields requester.uid and
++requester.gid contain the uid and gid respectively.
+ 
+ When reconstructing an autofs mount tree with active mounts we need to
+ re-connect to mounts that may have used the original process uid and
+@@ -343,8 +362,8 @@ this ioctl is called until no further ex
+ The call requires an initialized struct autofs_dev_ioctl with the
+ ioctlfd field set to the descriptor obtained from the open call. In
+ addition an immediate expire, independent of the mount timeout, can be
+-requested by setting the arg1 field to 1. If no expire candidates can
+-be found the ioctl returns -1 with errno set to EAGAIN.
++requested by setting the expire.how field to 1. If no expire candidates
++can be found the ioctl returns -1 with errno set to EAGAIN.
+ 
+ This call causes the kernel module to check the mount corresponding
+ to the given ioctlfd for mounts that can be expired, issues an expire
+@@ -357,7 +376,8 @@ Checks if an autofs mount point is in us
+ 
+ The call requires an initialized struct autofs_dev_ioctl with the
+ ioctlfd field set to the descriptor obtained from the open call and
+-it returns the result in the arg1 field, 1 for busy and 0 otherwise.
++it returns the result in the askumount.may_umount field, 1 for busy
++and 0 otherwise.
+ 
+ 
+ AUTOFS_DEV_IOCTL_ISMOUNTPOINT_CMD
+@@ -367,14 +387,15 @@ Check if the given path is a mountpoint.
+ 
+ The call requires an initialized struct autofs_dev_ioctl. There are two
+ possible variations. Both use the path field set to the path of the mount
+-point to check and the size field adjusted appropriately. One uses the
+-ioctlfd field to identify a specific mount point to check while the other
+-variation uses the path and optionaly arg1 set to an autofs mount type.
+-The call returns 1 if this is a mount point and sets arg1 to the device
+-number of the mount and field arg2 to the relevant super block magic
+-number (described below) or 0 if it isn't a mountpoint. In both cases
+-the the device number (as returned by new_encode_dev()) is returned
+-in field arg1.
++point to check and the size field must be adjusted appropriately. One uses
++the ioctlfd field to identify a specific mount point to check while the
++other variation uses the path and optionaly the ismountpoint.in.type 
++field set to an autofs mount type. The call returns 1 if this is a mount
++point and sets the ismountpoint.out.devid field to the device number of
++the mount and the ismountpoint.out.magic field to the relevant super
++block magic number (described below) or 0 if it isn't a mountpoint. In
++both cases the the device number (as returned by new_encode_dev()) is
++returned in the ismountpoint.out.devid field.
+ 
+ If supplied with a file descriptor we're looking for a specific mount,
+ not necessarily at the top of the mounted stack. In this case the path
+--- linux-2.6.28.orig/include/linux/auto_dev-ioctl.h
++++ linux-2.6.28/include/linux/auto_dev-ioctl.h
+@@ -10,7 +10,13 @@
+ #ifndef _LINUX_AUTO_DEV_IOCTL_H
+ #define _LINUX_AUTO_DEV_IOCTL_H
+ 
+-#include <linux/types.h>
++#include <linux/auto_fs.h>
++
++#ifdef __KERNEL__
++#include <linux/string.h>
++#else
++#include <string.h>
++#endif /* __KERNEL__ */
+ 
+ #define AUTOFS_DEVICE_NAME		"autofs"
+ 
+@@ -25,6 +31,60 @@
+  * An ioctl interface for autofs mount point control.
+  */
+ 
++struct args_protover {
++	__u32	version;
++};
++
++struct args_protosubver {
++	__u32	sub_version;
++};
++
++struct args_openmount {
++	__u32	devid;
++};
++
++struct args_ready {
++	__u32	token;
++};
++
++struct args_fail {
++	__u32	token;
++	__s32	status;
++};
++
++struct args_setpipefd {
++	__s32	pipefd;
++};
++
++struct args_timeout {
++	__u64	timeout;
++};
++
++struct args_requester {
++	__u32	uid;
++	__u32	gid;
++};
++
++struct args_expire {
++	__u32	how;
++};
++
++struct args_askumount {
++	__u32	may_umount;
++};
++
++struct args_ismountpoint {
++	union {
++		struct args_in {
++			__u32	type;
++		} in;
++		struct args_out {
++			__u32	devid;
++			__u32	magic;
++		} out;
++	};
++};
++
+ /*
+  * All the ioctls use this structure.
+  * When sending a path size must account for the total length
+@@ -39,20 +99,32 @@ struct autofs_dev_ioctl {
+ 				 * including this struct */
+ 	__s32 ioctlfd;		/* automount command fd */
+ 
+-	__u32 arg1;		/* Command parameters */
+-	__u32 arg2;
++	/* Command parameters */
++
++	union {
++		struct args_protover		protover;
++		struct args_protosubver		protosubver;
++		struct args_openmount		openmount;
++		struct args_ready		ready;
++		struct args_fail		fail;
++		struct args_setpipefd		setpipefd;
++		struct args_timeout		timeout;
++		struct args_requester		requester;
++		struct args_expire		expire;
++		struct args_askumount		askumount;
++		struct args_ismountpoint	ismountpoint;
++	};
+ 
+ 	char path[0];
+ };
+ 
+ static inline void init_autofs_dev_ioctl(struct autofs_dev_ioctl *in)
+ {
++	memset(in, 0, sizeof(struct autofs_dev_ioctl));
+ 	in->ver_major = AUTOFS_DEV_IOCTL_VERSION_MAJOR;
+ 	in->ver_minor = AUTOFS_DEV_IOCTL_VERSION_MINOR;
+ 	in->size = sizeof(struct autofs_dev_ioctl);
+ 	in->ioctlfd = -1;
+-	in->arg1 = 0;
+-	in->arg2 = 0;
+ 	return;
+ }
+ 
+--- linux-2.6.28.orig/fs/autofs4/root.c
++++ linux-2.6.28/fs/autofs4/root.c
+@@ -485,22 +485,6 @@ static struct dentry *autofs4_lookup(str
+ 	DPRINTK("pid = %u, pgrp = %u, catatonic = %d, oz_mode = %d",
+ 		 current->pid, task_pgrp_nr(current), sbi->catatonic, oz_mode);
+ 
+-	expiring = autofs4_lookup_expiring(sbi, dentry->d_parent, &dentry->d_name);
+-	if (expiring) {
+-		/*
+-		 * If we are racing with expire the request might not
+-		 * be quite complete but the directory has been removed
+-		 * so it must have been successful, so just wait for it.
+-		 */
+-		ino = autofs4_dentry_ino(expiring);
+-		autofs4_expire_wait(expiring);
+-		spin_lock(&sbi->lookup_lock);
+-		if (!list_empty(&ino->expiring))
+-			list_del_init(&ino->expiring);
+-		spin_unlock(&sbi->lookup_lock);
+-		dput(expiring);
+-	}
+-
+ 	unhashed = autofs4_lookup_active(sbi, dentry->d_parent, &dentry->d_name);
+ 	if (unhashed)
+ 		dentry = unhashed;
+@@ -538,14 +522,31 @@ static struct dentry *autofs4_lookup(str
+ 	}
+ 
+ 	if (!oz_mode) {
++		mutex_unlock(&dir->i_mutex);
++		expiring = autofs4_lookup_expiring(sbi,
++						   dentry->d_parent,
++						   &dentry->d_name);
++		if (expiring) {
++			/*
++			 * If we are racing with expire the request might not
++			 * be quite complete but the directory has been removed
++			 * so it must have been successful, so just wait for it.
++			 */
++			ino = autofs4_dentry_ino(expiring);
++			autofs4_expire_wait(expiring);
++			spin_lock(&sbi->lookup_lock);
++			if (!list_empty(&ino->expiring))
++				list_del_init(&ino->expiring);
++			spin_unlock(&sbi->lookup_lock);
++			dput(expiring);
++		}
++
+ 		spin_lock(&dentry->d_lock);
+ 		dentry->d_flags |= DCACHE_AUTOFS_PENDING;
+ 		spin_unlock(&dentry->d_lock);
+-		if (dentry->d_op && dentry->d_op->d_revalidate) {
+-			mutex_unlock(&dir->i_mutex);
++		if (dentry->d_op && dentry->d_op->d_revalidate)
+ 			(dentry->d_op->d_revalidate)(dentry, nd);
+-			mutex_lock(&dir->i_mutex);
+-		}
++		mutex_lock(&dir->i_mutex);
+ 	}
+ 
+ 	/*
+--- linux-2.6.28.orig/include/linux/auto_fs.h
++++ linux-2.6.28/include/linux/auto_fs.h
+@@ -17,11 +17,13 @@
+ #ifdef __KERNEL__
+ #include <linux/fs.h>
+ #include <linux/limits.h>
++#include <linux/types.h>
++#include <linux/ioctl.h>
++#else
+ #include <asm/types.h>
++#include <sys/ioctl.h>
+ #endif /* __KERNEL__ */
+ 
+-#include <linux/ioctl.h>
+-
+ /* This file describes autofs v3 */
+ #define AUTOFS_PROTO_VERSION	3
+ 

@@ -1,0 +1,86 @@
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Date: Sun, 8 Feb 2009 21:59:48 -0600
+Subject: [PATCH] [SCSI] Make scsi.h independent of the rest of the scsi includes
+
+This allows it to compile and be used on the ps3 platform that wants
+to use the #define values in scsi.h without actually having
+CONFIG_SCSI set.
+
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+---
+ block/cmd-filter.c       |    1 +
+ include/scsi/scsi.h      |   19 ++-----------------
+ include/scsi/scsi_cmnd.h |   15 +++++++++++++++
+ 3 files changed, 18 insertions(+), 17 deletions(-)
+
+diff --git linux-2.6.28/block/cmd-filter.c linux-2.6.28/block/cmd-filter.c
+index 504b275..572bbc2 100644
+--- linux-2.6.28/block/cmd-filter.c
++++ linux-2.6.28/block/cmd-filter.c
+@@ -22,6 +22,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/capability.h>
+ #include <linux/bitops.h>
++#include <linux/blkdev.h>
+ 
+ #include <scsi/scsi.h>
+ #include <linux/cdrom.h>
+diff --git linux-2.6.28/include/scsi/scsi.h linux-2.6.28/include/scsi/scsi.h
+index 80d7f60..084478e 100644
+--- linux-2.6.28/include/scsi/scsi.h
++++ linux-2.6.28/include/scsi/scsi.h
+@@ -9,7 +9,6 @@
+ #define _SCSI_SCSI_H
+ 
+ #include <linux/types.h>
+-#include <scsi/scsi_cmnd.h>
+ 
+ /*
+  * The maximum number of SG segments that we will put inside a
+@@ -449,22 +448,6 @@
+ #define driver_byte(result) (((result) >> 24) & 0xff)
+ #define suggestion(result)  (driver_byte(result) & SUGGEST_MASK)
+ 
+-static inline void set_msg_byte(struct scsi_cmnd *cmd, char status)
+-{
+-	cmd->result |= status << 8;
+-}
+-
+-static inline void set_host_byte(struct scsi_cmnd *cmd, char status)
+-{
+-	cmd->result |= status << 16;
+-}
+-
+-static inline void set_driver_byte(struct scsi_cmnd *cmd, char status)
+-{
+-	cmd->result |= status << 24;
+-}
+-
+-
+ #define sense_class(sense)  (((sense) >> 4) & 0x7)
+ #define sense_error(sense)  ((sense) & 0xf)
+ #define sense_valid(sense)  ((sense) & 0x80);
+diff --git linux-2.6.28/include/scsi/scsi_cmnd.h linux-2.6.28/include/scsi/scsi_cmnd.h
+index 855bf95..43b50d3 100644
+--- linux-2.6.28/include/scsi/scsi_cmnd.h
++++ linux-2.6.28/include/scsi/scsi_cmnd.h
+@@ -291,4 +291,19 @@
+ #define scsi_for_each_prot_sg(cmd, sg, nseg, __i)		\
+ 	for_each_sg(scsi_prot_sglist(cmd), sg, nseg, __i)
+ 
++static inline void set_msg_byte(struct scsi_cmnd *cmd, char status)
++{
++	cmd->result |= status << 8;
++}
++
++static inline void set_host_byte(struct scsi_cmnd *cmd, char status)
++{
++	cmd->result |= status << 16;
++}
++
++static inline void set_driver_byte(struct scsi_cmnd *cmd, char status)
++{
++	cmd->result |= status << 24;
++}
++
+ #endif /* _SCSI_SCSI_CMND_H */

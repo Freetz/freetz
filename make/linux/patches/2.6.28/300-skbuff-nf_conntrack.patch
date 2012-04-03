@@ -1,0 +1,38 @@
+--- linux-2.6.28/include/linux/skbuff.h
++++ linux-2.6.28/include/linux/skbuff.h
+@@ -488,10 +488,6 @@
+ #endif
+ 
+ 	void			(*destructor)(struct sk_buff *skb);
+-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+-	struct nf_conntrack	*nfct;
+-	struct sk_buff		*nfct_reasm;
+-#endif
+ #ifdef CONFIG_BRIDGE_NETFILTER
+ 	struct nf_bridge_info	*nf_bridge;
+ #endif
+@@ -563,6 +559,10 @@
+ 				*data;
+ 	unsigned int		truesize;
+ 	atomic_t		users;
++#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
++	struct nf_conntrack	*nfct;
++	struct sk_buff		*nfct_reasm;
++#endif
+ };
+ 
+ #ifdef __KERNEL__
+--- linux-2.6.28/net/core/skbuff.c
++++ linux-2.6.28/net/core/skbuff.c
+@@ -197,6 +197,11 @@
+ 	 * the tail pointer in struct sk_buff!
+ 	 */
+ 	memset(skb, 0, offsetof(struct sk_buff, tail));
++#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
++	skb->nfct = NULL;
++	skb->nfct_reasm = NULL;
++#endif
++
+ 
+ 	size = SKB_DATA_ALIGN(size);
+ #if (defined(CONFIG_FUSIV_ENABLE_MBUF_AP) && CONFIG_FUSIV_ENABLE_MBUF_AP) || (defined(CONFIG_FUSIV_ENABLE_AP_MBUF) && CONFIG_FUSIV_ENABLE_AP_MBUF)

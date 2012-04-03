@@ -1,0 +1,32 @@
+--- linux-2.6.28/drivers/block/compcache/Makefile
++++ linux-2.6.28/drivers/block/compcache/Makefile
+@@ -6,7 +6,7 @@
+ ramzswap-objs	:=	ramzswap_drv.o xvmalloc.o
+ 
+ ifneq ($(CONFIG_COMPCACHE),n)
+-extra-y			+= rzscontrol ramzswap.sh
++#extra-y			+= rzscontrol ramzswap.sh
+ 
+ rzscontrol-objs	:= rzscontrol.o
+ 
+--- linux-2.6.28/drivers/char/Makefile.ifx
++++ linux-2.6.28/drivers/char/Makefile.ifx
+@@ -14,6 +14,7 @@
+ #obj-$(CONFIG_IFX_MPS)           += drv_mps.o
+ obj-$(CONFIG_IFX_PMON)          += ifxmips_pmon.o
+ #obj-${CONFIG_IFXMIPS_DSL_CPE_MEI}   += ifxmips_mei.o
++obj-$(CONFIG_DSL_MEI_CPE_DRV)   += ifxmips_mei.o
+ ifeq ($(shell [ -f $(shell pwd)/drivers/char/drv_mei_cpe.o ] && echo exists),exists)
+ obj-y += drv_mei_cpe.o
+ endif
+--- linux-2.6.28/drivers/rtc/Makefile
++++ linux-2.6.28/drivers/rtc/Makefile
+@@ -75,7 +75,7 @@
+ ifeq ($(CONFIG_RTC_DRV_AVM_REF_CLOCK),m)
+ CFLAGS_rtc-avm.o += -DRTC_AVM_DEVICE_COUNT=1 # -DRTC_AVM_DEBUG=1
+ 
+-extra-y			 += S09-rtc
++#extra-y			 += S09-rtc
+ 
+ $(src)/S09-rtc: FORCE
+ 	rm -rf $(src)/S09-rtc
