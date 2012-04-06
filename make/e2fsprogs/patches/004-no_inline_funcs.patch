@@ -1,11 +1,11 @@
 --- configure
 +++ configure
-@@ -11216,7 +11216,7 @@
- 	p
- }
- '
--DEFS=`sed -n "$ac_script" confdefs.h`
-+DEFS="-DNO_INLINE_FUNCS `sed -n "$ac_script" confdefs.h`"
+@@ -11389,7 +11389,7 @@
+ # Let make expand exec_prefix.
+ test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
  
+-DEFS=-DHAVE_CONFIG_H
++DEFS="-DHAVE_CONFIG_H -DNO_INLINE_FUNCS"
  
  ac_libobjs=
+ ac_ltlibobjs=

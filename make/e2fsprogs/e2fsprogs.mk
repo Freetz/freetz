@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.41.14)
+$(call PKG_INIT_BIN, 1.42.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=05f70470aea2ef7efbb0845b2b116720
+$(PKG)_SOURCE_MD5:=04f4561a54ad0419248316a00c016baa
 $(PKG)_SITE:=@SF/e2fsprogs
 
 $(PKG)_LIBNAMES_SHORT_ALL := blkid com_err e2p ext2fs ss uuid
@@ -102,6 +102,9 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-elf-shlibs
 endif
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --disable-defrag
+$(PKG)_CONFIGURE_OPTIONS += --disable-quota
+$(PKG)_CONFIGURE_OPTIONS += --disable-testio-debug
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -110,6 +113,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(E2FSPROGS_DIR) \
 		INFO=true \
+		V=1 \
 		all \
 		$(E2FSPROGS_MAKE_ALL_EXTRAS)
 
