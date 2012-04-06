@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 8.21)
+$(call PKG_INIT_LIB, 8.30)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=0a7b592bea64b7aa7f4011fc7171a730
+$(PKG)_SOURCE_MD5:=98e8928cccc945d04279581e778fbdff
 $(PKG)_SITE:=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 
-$(PKG)_LIB_VERSION:=0.0.1
+$(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_LIBNAME=libpcre.so.$($(PKG)_LIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
@@ -20,9 +20,14 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(P
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-pcre8
+$(PKG)_CONFIGURE_OPTIONS += --disable-pcre16
 $(PKG)_CONFIGURE_OPTIONS += --enable-utf8
 $(PKG)_CONFIGURE_OPTIONS += --enable-unicode-properties
 $(PKG)_CONFIGURE_OPTIONS += --disable-cpp
+$(PKG)_CONFIGURE_OPTIONS += --disable-pcretest-libreadline
+$(PKG)_CONFIGURE_OPTIONS += --disable-pcregrep-libz
+$(PKG)_CONFIGURE_OPTIONS += --disable-pcregrep-libbz2
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -30,7 +35,6 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_POSIX_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(PCRE_DIR) \
-		CFLAGS="$(TARGET_CFLAGS)"\
 		all
 
 $($(PKG)_STAGING_BINARY) $($(PKG)_POSIX_STAGING_BINARY): $($(PKG)_BINARY) $($(PKG)_POSIX_BINARY)

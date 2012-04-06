@@ -1,6 +1,6 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -1507,8 +1507,8 @@
+@@ -1687,11 +1687,10 @@
  
  info-am:
  
@@ -9,5 +9,8 @@
 +install-data-am: \
 +	install-includeHEADERS \
  	install-nodist_includeHEADERS install-pkgconfigDATA
- 
+ 	@$(NORMAL_INSTALL)
+-	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
  install-dvi: install-dvi-am
+ 
+ install-dvi-am:

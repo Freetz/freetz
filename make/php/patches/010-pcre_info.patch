@@ -1,0 +1,43 @@
+--- ext/pcre/php_pcre.c
++++ ext/pcre/php_pcre.c
+@@ -241,6 +241,7 @@
+ 	char				*pattern;
+ 	int					 do_study = 0;
+ 	int					 poptions = 0;
++	int				count = 0;
+ 	unsigned const char *tables = NULL;
+ #if HAVE_SETLOCALE
+ 	char				*locale = setlocale(LC_CTYPE, NULL);
+@@ -252,10 +253,10 @@
+ 	   back the compiled pattern, otherwise go on and compile it. */
+ 	if (zend_hash_find(&PCRE_G(pcre_cache), regex, regex_len+1, (void **)&pce) == SUCCESS) {
+ 		/*
+-		 * We use a quick pcre_info() check to see whether cache is corrupted, and if it
++		 * We use a quick pcre_fullinfo() check to see whether cache is corrupted, and if it
+ 		 * is, we flush it and compile the pattern from scratch.
+ 		 */
+-		if (pcre_info(pce->re, NULL, NULL) == PCRE_ERROR_BADMAGIC) {
++		if (pcre_fullinfo(pce->re, NULL, PCRE_INFO_CAPTURECOUNT, &count) == PCRE_ERROR_BADMAGIC) {
+ 			zend_hash_clean(&PCRE_G(pcre_cache));
+ 		} else {
+ #if HAVE_SETLOCALE
+--- ext/pcre/php_pcre.def
++++ ext/pcre/php_pcre.def
+@@ -4,7 +4,6 @@
+ php_pcre_exec
+ php_pcre_get_substring
+ php_pcre_get_substring_list
+-php_pcre_info
+ php_pcre_maketables
+ php_pcre_study
+ php_pcre_version
+--- main/php_compat.h
++++ main/php_compat.h
+@@ -34,7 +34,6 @@
+ #define pcre_exec			php_pcre_exec
+ #define pcre_get_substring		php_pcre_get_substring
+ #define pcre_get_substring_list		php_pcre_get_substring_list
+-#define pcre_info			php_pcre_info
+ #define pcre_maketables			php_pcre_maketables
+ #define pcre_study			php_pcre_study
+ #define pcre_version			php_pcre_version

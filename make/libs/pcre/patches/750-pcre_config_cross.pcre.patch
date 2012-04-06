@@ -7,9 +7,9 @@
 +includedir=@includedir@
 +libdir=@libdir@
  
- if test @enable_cpp@ = yes ; then
-   usage="Usage: pcre-config [--prefix] [--exec-prefix] [--version] [--libs] [--libs-posix] [--libs-cpp] [--cflags] [--cflags-posix]"
-@@ -18,16 +20,16 @@
+ cflags="[--cflags]"
+ 
+@@ -31,16 +33,16 @@
  libR=
  case `uname -s` in
    *SunOS*)
@@ -30,10 +30,10 @@
  fi
  
  while test $# -gt 0; do
-@@ -57,8 +59,8 @@
+@@ -70,15 +72,15 @@
        echo @PACKAGE_VERSION@
        ;;
-     --cflags | --cflags-posix)
+     --cflags)
 -      if test @includedir@ != /usr/include ; then
 -        includes=-I@includedir@
 +      if test ${includedir} != /usr/include ; then
@@ -41,3 +41,12 @@
        fi
        echo $includes @PCRE_STATIC_CFLAG@
        ;;
+     --cflags-posix)
+       if test @enable_pcre8@ = yes ; then
+-        if test @includedir@ != /usr/include ; then
+-          includes=-I@includedir@
++        if test ${includedir} != /usr/include ; then
++          includes=-I${includedir}
+         fi
+         echo $includes @PCRE_STATIC_CFLAG@
+       else
