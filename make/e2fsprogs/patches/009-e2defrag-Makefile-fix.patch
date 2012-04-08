@@ -1,0 +1,20 @@
+--- misc/Makefile.in
++++ misc/Makefile.in
+@@ -14,6 +14,8 @@
+ @DEFRAG_CMT@@LINUX_CMT@E4DEFRAG_PROG= e4defrag
+ @DEFRAG_CMT@@LINUX_CMT@E4DEFRAG_MAN= e4defrag.8
+ 
++@DEFRAG_CMT@@LINUX_CMT@E4DEFRAG_PROG_PROFILED= e4defrag.profiled
++
+ @IMAGER_CMT@E2IMAGE_PROG= e2image
+ @IMAGER_CMT@E2IMAGE_MAN= e2image.8
+ 
+@@ -107,7 +109,7 @@
+ @PROFILE_CMT@all:: tune2fs.profiled blkid.profiled e2image.profiled \
+ 	e2undo.profiled mke2fs.profiled dumpe2fs.profiled fsck.profiled \
+ 	logsave.profiled filefrag.profiled uuidgen.profiled uuidd.profiled \
+-	e2image.profiled e4defrag.profiled
++	e2image.profiled $(E4DEFRAG_PROG_PROFILED)
+ 
+ profiled:
+ @PROFILE_CMT@	$(E) "	MKDIR $@"

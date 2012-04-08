@@ -222,7 +222,7 @@
  	LD_LIBRARY_PATH=$(LIB) DYLD_LIBRARY_PATH=$(LIB) ./tst_uuid
 --- misc/Makefile.in
 +++ misc/Makefile.in
-@@ -99,7 +99,7 @@
+@@ -101,7 +101,7 @@
  .c.o:
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $< -o $@
@@ -231,7 +231,7 @@
  
  all:: profiled $(SPROGS) $(UPROGS) $(USPROGS) $(SMANPAGES) $(UMANPAGES) \
  	$(FMANPAGES) $(LPROGS) $(E4DEFRAG_PROG)
-@@ -135,7 +135,7 @@
+@@ -137,7 +137,7 @@
  profile.o:
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $(srcdir)/../e2fsck/profile.c -o $@
@@ -240,7 +240,7 @@
  @PROFILE_CMT@	$(srcdir)/../e2fsck/profile.c
  
  findsuper: findsuper.o
-@@ -168,7 +168,7 @@
+@@ -170,7 +170,7 @@
  		$(PROFILED_E2P) $(DEPPROFILED_LIBBLKID) $(DEPPROFILED_LIBUUID) \
  		$(DEPPROFILED_LIBQUOTA)
  	$(E) "	LD $@"
@@ -249,7 +249,7 @@
  		$(PROFILED_TUNE2FS_OBJS) $(PROFILED_LIBBLKID) \
  		$(PROFILED_LIBUUID) $(PROFILED_LIBQUOTA) $(PROFILED_LIBE2P) \
  		$(LIBINTL) $(PROFILED_LIBS)
-@@ -186,7 +186,7 @@
+@@ -188,7 +188,7 @@
  blkid.profiled: $(PROFILED_BLKID_OBJS) $(DEPPROFILED_LIBBLKID) \
  		$(PROFILED_LIBEXT2FS)
  	$(E) "	LD $@"
@@ -258,7 +258,7 @@
  		$(PROFILED_LIBBLKID) $(LIBINTL) $(PROFILED_LIBEXT2FS)
  
  e2image: $(E2IMAGE_OBJS) $(DEPLIBS)
-@@ -195,7 +195,7 @@
+@@ -197,7 +197,7 @@
  
  e2image.profiled: $(PROFILED_E2IMAGE_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -267,7 +267,7 @@
  		$(PROFILED_E2IMAGE_OBJS) $(PROFILED_LIBS) $(LIBINTL)
  
  e2undo: $(E2UNDO_OBJS) $(DEPLIBS)
-@@ -204,7 +204,7 @@
+@@ -206,7 +206,7 @@
  
  e2undo.profiled: $(PROFILED_E2UNDO_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -276,7 +276,7 @@
  		$(PROFILED_E2UNDO_OBJS) $(PROFILED_LIBS) $(LIBINTL)
  
  e4defrag: $(E4DEFRAG_OBJS) $(DEPLIBS)
-@@ -213,7 +213,7 @@
+@@ -215,7 +215,7 @@
  
  e4defrag.profiled: $(PROFILED_E4DEFRAG_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -285,7 +285,7 @@
  		$(PROFILED_E4DEFRAG_OBJS) $(PROFILED_LIBS)
  
  base_device: base_device.c
-@@ -246,7 +246,7 @@
+@@ -248,7 +248,7 @@
  	$(PROFILED_LIBE2P) $(PROFILED_DEPLIBBLKID) $(PROFILED_DEPLIBUUID) \
  	$(PROFILED_LIBQUOTA)
  	$(E) "	LD $@"
@@ -294,7 +294,7 @@
  		$(PROFILED_MKE2FS_OBJS) $(PROFILED_LIBBLKID) \
  		$(PROFILED_LIBUUID) $(PROFILED_LIBQUOTA) $(PROFILED_LIBE2P) $(LIBINTL) \
  		$(PROFILED_LIBS)
-@@ -265,7 +265,7 @@
+@@ -267,7 +267,7 @@
  
  uuidgen.profiled: $(PROFILED_UUIDGEN_OBJS) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -303,7 +303,7 @@
  		$(PROFILED_UUIDGEN_OBJS) $(PROFILED_LIBUUID) $(LIBINTL)
  
  uuidd: $(UUIDD_OBJS) $(DEPLIBUUID)
-@@ -274,7 +274,7 @@
+@@ -276,7 +276,7 @@
  
  uuidd.profiled: $(PROFILED_UUIDD_OBJS) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -312,7 +312,7 @@
  		$(PROFILED_LIBUUID) $(LIBINTL)
  
  dumpe2fs: $(DUMPE2FS_OBJS) $(DEPLIBS) $(DEPLIBS_E2P) $(DEPLIBUUID)
-@@ -285,7 +285,7 @@
+@@ -287,7 +287,7 @@
  dumpe2fs.profiled: $(PROFILED_DUMPE2FS_OBJS) $(PROFILED_DEPLIBS) \
  		$(PROFILED_LIBE2P) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -321,7 +321,7 @@
  		$(PROFILED_DUMPE2FS_OBJS) $(PROFILED_LIBS) \
  		$(PROFILED_LIBE2P) $(PROFILED_LIBUUID) $(LIBINTL)
  
-@@ -295,7 +295,7 @@
+@@ -297,7 +297,7 @@
  
  fsck.profiled: $(PROFILED_FSCK_OBJS) $(PROFILED_DEPLIBBLKID)
  	$(E) "	LD $@"
@@ -330,7 +330,7 @@
  		$(PROFILED_LIBBLKID) $(LIBINTL)
  
  badblocks: $(BADBLOCKS_OBJS) $(DEPLIBS)
-@@ -304,7 +304,7 @@
+@@ -306,7 +306,7 @@
  
  badblocks.profiled: $(PROFILED_BADBLOCKS_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -339,7 +339,7 @@
  		$(PROFILED_BADBLOCKS_OBJS) $(PROFILED_LIBS) $(LIBINTL)
  
  logsave: logsave.o
-@@ -313,7 +313,7 @@
+@@ -315,7 +315,7 @@
  
  logsave.profiled: profiled/logsave.o
  	$(E) "	LD $@"
@@ -348,7 +348,7 @@
  
  e2freefrag: $(E2FREEFRAG_OBJS)
  	$(E) "	LD $@"
-@@ -325,7 +325,7 @@
+@@ -327,7 +327,7 @@
  
  filefrag.profiled: $(PROFILED_FILEFRAG_OBJS)
  	$(E) "	LD $@"
