@@ -2,18 +2,24 @@
 
 cat <<EOF
 #
+#default {
+#	default {
+#		deny spoof
+#		deny spoof_all
+#		deny spoof_privport
+#		allow random_numeric
+#		allow numeric
+#		allow hide
+#	}
+#}
 #global {
-#reply "unknown" 
-#} 
+#	reply "unknown"
+#}
 #
-#Reply with "unknown" to all successful ident lookups. 
-#
-#
-#to irc.example.org {
-#
-#reply "example" 
-#} 
-#
-#Reply with "example" to ident lookups for connections to irc.example.org.
+#user root {
+#	default {
+#		force reply "UNKNOWN"
+#	}
+#}
 #
 EOF
