@@ -5,7 +5,7 @@ DAEMON=stunnel
 
 config() {
 	modlib_config
-	[ -r "/tmp/flash/stunnel_svcs" ] && cat /tmp/flash/stunnel_svcs >> $DAEMON_CONFIG
+	[ -r "/tmp/flash/stunnel/svcs" ] && cat /tmp/flash/stunnel/svcs >> $DAEMON_CONFIG
 }
 
 start() {
@@ -14,9 +14,10 @@ start() {
 
 case $1 in
 	""|load)
-		[ -d "/tmp/flash/.stunnel" ] || mkdir /tmp/flash/.stunnel
-
-		export STUNNEL_CONFIGURED="1"
+		#compat only, may be removed later
+		[ -d "/tmp/flash/.stunnel" ] && mv /tmp/flash/.stunnel /tmp/flash/stunnel
+		[ ! -d "/tmp/flash/stunnel" ] && mkdir /tmp/flash/stunnel
+		[ -f /tmp/flash/stunnel_svcs ] && mv /tmp/flash/stunnel_svcs /tmp/flash/stunnel/svcs
 
 		modreg cgi 'stunnel' 'Stunnel'
 		modreg daemon $DAEMON
