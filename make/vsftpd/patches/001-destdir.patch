@@ -1,16 +1,7 @@
---- Makefile.orig	2009-02-18 23:28:05.000000000 +0100
-+++ Makefile	2009-05-06 13:30:33.177288819 +0200
-@@ -17,6 +17,8 @@
-     ssl.o sslslave.o ptracesandbox.o ftppolicy.o sysutil.o sysdeputil.o
- 
- 
-+DESTDIR =
-+
- .c.o:
- 	$(CC) -c $*.c $(CFLAGS) $(IFLAGS)
- 
-@@ -24,21 +26,20 @@
- 	$(CC) -o vsftpd $(OBJS) $(LINK) $(LIBS) $(LDFLAGS)
+--- Makefile
++++ Makefile
+@@ -29,21 +31,20 @@
+ 	$(CC) -o vsftpd $(OBJS) $(LINK) $(LDFLAGS) $(LIBS)
  
  install:
 -	if [ -x /usr/local/sbin ]; then \

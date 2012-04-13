@@ -1,6 +1,6 @@
---- tunables.c.orig	2010-08-14 07:23:01.000000000 +0200
-+++ tunables.c		2010-08-14 07:27:01.000000000 +0200
-@@ -250,19 +250,19 @@
+--- tunables.c
++++ tunables.c
+@@ -254,19 +254,19 @@
    /* -rw------- */
    tunable_chown_upload_mode = 0600;
  
@@ -25,7 +25,7 @@
    install_str_setting(0, &tunable_anon_root);
    install_str_setting(0, &tunable_local_root);
    install_str_setting(0, &tunable_banner_file);
-@@ -277,7 +277,7 @@
+@@ -281,7 +281,7 @@
    install_str_setting(0, &tunable_user_sub_token);
    install_str_setting("/etc/vsftpd.email_passwords",
                        &tunable_email_password_file);
@@ -33,4 +33,4 @@
 +  install_str_setting("/var/tmp/flash/vsftpd.pem",
                        &tunable_rsa_cert_file);
    install_str_setting(0, &tunable_dsa_cert_file);
-   install_str_setting("DES-CBC3-SHA", &tunable_ssl_ciphers);
+   install_str_setting("AES128-SHA:DES-CBC3-SHA", &tunable_ssl_ciphers);
