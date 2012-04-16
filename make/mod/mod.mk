@@ -12,22 +12,23 @@ $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 # List all files that are optional with their dependecies
 $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	@echo -n "" > $@; \
-	[ ! "$(FREETZ_SKIN_legacy)" == "y" ] && echo "usr/share/*/legacy" >> $@; \
-	[ ! "$(FREETZ_SKIN_phoenix)" == "y" ] && echo "usr/share/*/phoenix" >> $@; \
-	[ ! "$(FREETZ_SKIN_newfreetz)" == "y" ] && echo "usr/share/*/newfreetz" >> $@; \
-	[ ! "$(EXTERNAL_ENABLED)" == "y" ] && echo "etc/init.d/rc.external" >> $@; \
-	[ ! "$(FREETZ_PATCH_FREETZMOUNT)" == "y" ] && echo "usr/lib/libmodmount.sh" >> $@; \
+	[ "$(FREETZ_SKIN_legacy)" != "y" ] && echo "usr/share/*/legacy" >> $@; \
+	[ "$(FREETZ_SKIN_phoenix)" != "y" ] && echo "usr/share/*/phoenix" >> $@; \
+	[ "$(FREETZ_SKIN_newfreetz)" != "y" ] && echo "usr/share/*/newfreetz" >> $@; \
+	[ "$(FREETZ_REMOVE_WEBSRV)" != "y" ] && echo "etc/init.d/rc.websrv" >> $@; \
+	[ "$(EXTERNAL_ENABLED)" != "y" ] && echo "etc/init.d/rc.external" >> $@; \
+	[ "$(FREETZ_PATCH_FREETZMOUNT)" != "y" ] && echo "usr/lib/libmodmount.sh" >> $@; \
 	[ "$(FREETZ_REMOVE_BOX_INFO)" == "y" ] && echo "usr/lib/cgi-bin/mod/box_info.cgi" >> $@; \
 	[ "$(FREETZ_REMOVE_FREETZ_INFO)" == "y" ] && echo -e "usr/lib/cgi-bin/mod/do_download_config.cgi\nusr/lib/cgi-bin/mod/info.cgi" >> $@; \
 	[ "$(FREETZ_STYLE_COLORED)" == "y" ] && echo "usr/share/style/colorscheme-grey.css" >> $@ || echo "usr/share/style/colorscheme-colored.css" >> $@; \
 	[ "$(FREETZ_STRIP_SCRIPTS)" == "y" ] && echo "usr/share/abo??.txt" >> $@; \
-	[ ! "$(FREETZ_HAS_AVM_USB_HOST)" == "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo "etc/init.d/rc.ftpd" >> $@; \
+	[ "$(FREETZ_HAS_AVM_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo "etc/init.d/rc.ftpd" >> $@; \
 	[ "$(FREETZ_REMOVE_DSLD)" == "y" ] && echo -e "usr/bin/wrapper/dsld\netc/init.d/rc.dsld" >> $@; \
-	[ ! "$(FREETZ_HAS_AVM_USB_HOST)" == "y" -o "$(FREETZ_REMOVE_SMBD)" == "y" ] && [ ! "$(FREETZ_PACKAGE_SAMBA)" == "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
+	[ "$(FREETZ_HAS_AVM_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_SMBD)" == "y" ] && [ "$(FREETZ_PACKAGE_SAMBA)" != "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
 	[ "$(FREETZ_PACKAGE_MDEV)" == "y" -o "$(FREETZ_HAS_AVM_UDEV)" == "y" ] && echo "etc/device.table" >> $@; \
-	[ ! "$(FREETZ_PACKAGE_MOD_ETCSERVICES)" == "y" ] && echo "etc/services" >> $@; \
-	[ ! "$(FREETZ_CUSTOM_UDEV_RULES)" == "y" ] && echo -e "etc/default.mod/udev_*.def\netc/udev/rules.d/??-custom.rules" >> $@; \
-	[ ! "$(FREETZ_HAS_AVM_UDEV)" == "y" ] && echo "etc/udev" >> $@; \
+	[ "$(FREETZ_PACKAGE_MOD_ETCSERVICES)" != "y" ] && echo "etc/services" >> $@; \
+	[ "$(FREETZ_CUSTOM_UDEV_RULES)" != "y" ] && echo -e "etc/default.mod/udev_*.def\netc/udev/rules.d/??-custom.rules" >> $@; \
+	[ "$(FREETZ_HAS_AVM_UDEV)" != "y" ] && echo "etc/udev" >> $@; \
 	touch $@
 
 $(pkg)-precompiled:
