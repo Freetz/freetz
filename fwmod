@@ -683,14 +683,18 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ "$FREETZ_DEVELOPER_VERSION_STRING" == "y" ]; then
-		# be compatible: older versions of svnversion need WC_PATH
-		if SVN_VERSION="$(svnversion . | tr ":" "_")"; then
-			[ "${SVN_VERSION:0:6}" == "export" ] && SVN_VERSION=""
-			[ -n "$SVN_VERSION" ] && SVN_VERSION="-$SVN_VERSION"
+		if [ -d .svn ]; then
+			# be compatible: older versions of svnversion need WC_PATH
+			if REVISION="$(svnversion . | tr ":" "_")"; then
+				[ "${REVISION:0:6}" == "export" ] && REVISION=""
+			fi
+		elif [ -d .git ]; then
+			REVISION="$(git log 2>/dev/null | sed -rn 's!.*git-svn-id.*\@([^ ]*).*!\1!p')"
 		fi
+		[ -n "$REVISION" ] && REVISION="-$REVISION"
 	fi
 
-	SUBVERSION="$(cat $SUBVERSION_FILE)${SVN_VERSION}"
+	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
 	#delete .packages file
 	rm -f "${PACKAGES_LIST_FILE}"
 
