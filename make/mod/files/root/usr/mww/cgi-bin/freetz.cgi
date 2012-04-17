@@ -45,11 +45,6 @@ mickey
 mike
 </p>
 
-<p>
-<h1>Contributors</h1>
-2DO
-</p>
-
 </center>
 EOF
 cgi_end
