@@ -21,10 +21,10 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(EMPTY_DIR) clean
-	$(RM) $(EMPTY_DIR)/.configured
+	-$(SUBMAKE) -C $(HAPROXY_DIR) clean
+	$(RM) $(HAPROXY_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(EMPTY_TARGET_BINARY)
+	$(RM) $(HAPROXY_TARGET_BINARY)
 
 $(PKG_FINISH)
