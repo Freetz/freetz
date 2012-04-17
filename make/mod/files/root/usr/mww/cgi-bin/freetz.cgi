@@ -16,7 +16,6 @@ abraxXl
 buehmann
 cuma
 er13
-kriegaex
 markuschen
 olistudent
 ralf
@@ -31,19 +30,15 @@ hermann72pb
 hippie2000
 MaxMuster
 M66B
-sf3978
-</p>
-
-<p>
-<h1>Freshmen</h1>
-dileks
 reiffert
+sf3978
 </p>
 
 <p>
 <h1>Retired</h1>
 aholler
 johnbock
+kriegaex
 maz
 McNetic
 mickey
