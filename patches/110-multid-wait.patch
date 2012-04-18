@@ -1,8 +1,8 @@
---- etc/init.d/rc.net.orig	2010-09-28 18:00:48.000000000 +0200
-+++ etc/init.d/rc.net	2010-10-06 19:36:45.000000000 +0200
-@@ -68,6 +68,10 @@
-    if [ "`pidof multid`" = "" ] ; then
-       eval multid $MULTIDPARAM $VERBOSEPARAM
+--- etc/init.d/rc.net	2012-04-18 19:42:42+02:00
++++ etc/init.d/rc.net	2012-04-18 19:42:42+02:00
+@@ -67,6 +67,10 @@
+    if [ "`pidof lltdd`" = "" ] ; then
+       lltdd
     fi
 +	local countdown=10
 +	while [ $((countdown--)) -gt 0 ] && ! ifconfig eth0 > /dev/null 2>&1; do
@@ -10,4 +10,4 @@
 +	done
  }
  
- lltddstart()
+ checkwlan()
