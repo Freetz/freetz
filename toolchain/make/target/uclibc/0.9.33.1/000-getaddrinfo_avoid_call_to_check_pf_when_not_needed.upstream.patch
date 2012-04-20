@@ -1,0 +1,32 @@
+From: Alexander Komyagin <komyagin@altell.ru>
+Date: Wed, 04 Apr 2012 08:58:37 +0000
+Subject: getaddrinfo(): avoid call to __check_pf() when not needed
+
+__check_pf() function is called from getaddrinfo() and it calls
+getifaddrs(), which is too much overhead especially if RSBAC-Net
+is enabled. So with this patch __check_pf() is being called only
+when AI_ADDRCONFIG hint flag is specified - just when we really
+need that check.
+
+Signed-off-by: Alexander Komyagin <komyagin@altell.ru>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+diff --git libc/inet/getaddrinfo.c libc/inet/getaddrinfo.c
+index fe0d942..88bd745 100644
+--- libc/inet/getaddrinfo.c
++++ libc/inet/getaddrinfo.c
+@@ -401,7 +401,13 @@ gaih_inet(const char *name, const struct gaih_service *service,
+ 	int rc;
+ 	int v4mapped = (req->ai_family == PF_UNSPEC || req->ai_family == PF_INET6)
+ 			&& (req->ai_flags & AI_V4MAPPED);
+-	unsigned seen = __check_pf();
++	unsigned seen = 0;
++	if (req->ai_flags & AI_ADDRCONFIG) {
++		/* "seen" is only used when AI_ADDRCONFIG is specified.
++		   Avoid unnecessary call to __check_pf() otherwise
++		   since it can be costly especially when RSBAC-Net is enabled.  */
++		seen = __check_pf();
++	}
+ 
+ 	memset(&nullserv, 0, sizeof(nullserv));
+ 

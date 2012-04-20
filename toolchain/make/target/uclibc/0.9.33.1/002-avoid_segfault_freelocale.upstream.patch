@@ -1,0 +1,28 @@
+From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+Date: Tue, 17 Apr 2012 21:19:16 +0000
+Subject: locale: avoid segfault freelocale()
+
+PR 4964
+
+Eric Nadler writes:
+It looks to me like the base structure is not fully initialized
+with 0 (only a subset of the structure is initialized).
+This later results in a free of base->collate.index2weight in
+_locale_set_l.
+This free tries to free uninitialized memory and segfaults.
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+diff --git libc/misc/locale/locale.c libc/misc/locale/locale.c
+index 40303ab..e8fddf6 100644
+--- libc/misc/locale/locale.c
++++ libc/misc/locale/locale.c
+@@ -1292,7 +1292,7 @@ __locale_t newlocale(int category_mask, const char *locale, __locale_t base)
+ 	}
+ #else
+ 	if (!base) {
+-		base = malloc(sizeof(struct __uclibc_locale_struct));
++		base = calloc(1, sizeof(struct __uclibc_locale_struct));
+ 		if (base == NULL)
+ 			return base;
+ 		_locale_init_l(base);

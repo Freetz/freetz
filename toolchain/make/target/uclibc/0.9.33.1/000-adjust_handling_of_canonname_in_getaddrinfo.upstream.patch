@@ -1,0 +1,48 @@
+From: Ed W <lists@wildgooses.com>
+Date: Mon, 16 Apr 2012 22:27:55 +0000
+Subject: inet: adjust handling of canonname in getaddrinfo
+
+Posix says that canonname should use the text representation of an IP address
+when a numerical nodename given
+See: http://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html
+
+Signed-off-by: Ed Wildgoose <lists@wildgooses.com>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+diff --git libc/inet/getaddrinfo.c libc/inet/getaddrinfo.c
+index e7511f6..fe0d942 100644
+--- libc/inet/getaddrinfo.c
++++ libc/inet/getaddrinfo.c
+@@ -628,13 +628,20 @@ gaih_inet(const char *name, const struct gaih_service *service,
+ 		char buffer[sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255")];
+ 
+ 		while (at2 != NULL) {
+-			if (req->ai_flags & AI_CANONNAME) {
++			c = inet_ntop(at2->family, at2->addr, buffer, sizeof(buffer));
++			if (c) {
++				namelen = strlen(c) + 1;
++			} else if (req->ai_flags & AI_CANONNAME) {
+ 				struct hostent *h = NULL;
+ 				int herrno;
+ 				struct hostent th;
+ 				size_t tmpbuflen = 512;
+ 				char *tmpbuf;
+ 
++				/* Hint says numeric, but address is not */
++				if (req->ai_flags & AI_NUMERICHOST)
++					return -EAI_NONAME;
++
+ 				do {
+ 					tmpbuflen *= 2;
+ 					tmpbuf = alloca(tmpbuflen);
+@@ -656,9 +663,7 @@ gaih_inet(const char *name, const struct gaih_service *service,
+ 					return -EAI_SYSTEM;
+ 				}
+ 
+-				if (h == NULL)
+-					c = inet_ntop(at2->family, at2->addr, buffer, sizeof(buffer));
+-				else
++				if (h != NULL)
+ 					c = h->h_name;
+ 
+ 				if (c == NULL)
