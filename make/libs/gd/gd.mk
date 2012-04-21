@@ -50,12 +50,11 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GD_DIR) clean
-	$(RM) $(LIBGD_FREETZ_CONFIG_FILE)
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/gd \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/gdlib-config
 
 $(pkg)-uninstall:
-	$(RM) $(LIBGD_TARGET_DIR)/libgd*.so*
+	$(RM) $(GD_TARGET_DIR)/libgd*.so*
 
 $(PKG_FINISH)
