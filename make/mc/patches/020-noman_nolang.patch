@@ -21,29 +21,6 @@
  @USE_NLS_TRUE@SUBDIRS = $(DOC_LINGUAS)
  hlpdir = $(pkgdatadir)/help
  hlp_DATA = mc.hlp
---- doc/Makefile.am
-+++ doc/Makefile.am
-@@ -1,5 +1,5 @@
--DIST_SUBDIRS = hints man hlp
--SUBDIRS = hints man hlp
-+DIST_SUBDIRS = hints hlp
-+SUBDIRS = hints hlp
- 
- DOCS = FAQ HACKING INSTALL INSTALL.FAST MAINTAINERS README.QNX keybind-migration.txt
- EXTRA_DIST = $(DX_CONFIG) doxygen-include.am $(DOCS)
---- doc/Makefile.in
-+++ doc/Makefile.in
-@@ -390,8 +390,8 @@
- top_build_prefix = @top_build_prefix@
- top_builddir = @top_builddir@
- top_srcdir = @top_srcdir@
--DIST_SUBDIRS = hints man hlp
--SUBDIRS = hints man hlp
-+DIST_SUBDIRS = hints hlp
-+SUBDIRS = hints hlp
- DOCS = FAQ HACKING INSTALL INSTALL.FAST MAINTAINERS README.QNX keybind-migration.txt
- EXTRA_DIST = $(DX_CONFIG) doxygen-include.am $(DOCS)
- @DX_COND_doc_TRUE@@DX_COND_html_TRUE@DX_CLEAN_HTML = @DX_DOCDIR@/html
 --- doc/man/Makefile.am
 +++ doc/man/Makefile.am
 @@ -1,4 +1,7 @@
@@ -57,7 +34,7 @@
  endif
 --- doc/man/Makefile.in
 +++ doc/man/Makefile.in
-@@ -369,7 +369,8 @@
+@@ -368,7 +368,8 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -67,6 +44,16 @@
  @USE_NLS_TRUE@SUBDIRS = $(DOC_LINGUAS)
  man_MANS = mc.1 mcedit.1 mcview.1
  CLEANFILES = $(man_MANS)
+@@ -683,7 +683,8 @@
+ 	for dir in "$(DESTDIR)$(man1dir)"; do \
+ 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+ 	done
+-install: install-recursive
++install:
++#install: install-recursive
+ install-exec: install-exec-recursive
+ install-data: install-data-recursive
+ uninstall: uninstall-recursive
 --- misc/Makefile.am
 +++ misc/Makefile.am
 @@ -20,8 +20,7 @@
