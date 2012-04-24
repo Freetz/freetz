@@ -900,6 +900,19 @@ config FREETZ_REMOVE_MINID
 		ATTENTION: You must remove all Fritz!Mini's from your Fritz!Box configuration
 		and delete all Mini users with the Gini! software to avoid complications.
 
+config FREETZ_REMOVE_FAT
+	bool "Remove FAT modules"
+	depends on \
+			! FREETZ_AUTOMOUNT_FAT && \
+			FREETZ_HAS_AVM_USB_HOST && \
+			! FREETZ_TYPE_FON_WLAN_7270_16
+	default n
+	help
+		Remove FAT modules
+		This patch will remove fat.ko, vfat.ko and msdos.ko.
+		Be careful, mounting volumes with this filesystem will not work.
+		It saves about 80-135K compressed space in kernel.image.
+
 config FREETZ_REMOVE_NTFS
 	bool "Remove NTFS support"
 	depends on \
