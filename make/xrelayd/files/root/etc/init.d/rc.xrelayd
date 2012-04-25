@@ -8,12 +8,12 @@ DAEMON_CHECK="xrelayd"
 start() {
 	echo "Starting xrelayd services:"
 
-	if [ ! -r "/tmp/flash/.xrelayd/xrelayd_svcs" ]; then
+	if [ ! -r "/tmp/flash/xrelayd/xrelayd_svcs" ]; then
 		echo 'Error: services not found'
 		exit 1;
 	fi
 
-	cat /tmp/flash/.xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
+	cat /tmp/flash/xrelayd/xrelayd_svcs | grep -v "^#" | while read -r remote local comment; do
 		if [ -n "$remote" -a -n "$local" ]; then
 			echo -n "Starting xrelayd ($remote>$local $comment) ... "
 			$DAEMON -D$XRELAYD_VERBOSE -d $remote -r $local -p $XRELAYD_KEY -A $XRELAYD_CERTCHAIN
@@ -32,7 +32,10 @@ stop() {
 
 case $1 in
 	""|load)
-		mkdir -p /tmp/flash/.xrelayd
+		#compat only, may be removed later
+		[ -d "/tmp/flash/.xrelayd" ] && mv /tmp/flash/.xrelayd /tmp/flash/xrelayd
+
+		[ ! -d "/tmp/flash/xrelayd" ] && mkdir /tmp/flash/xrelayd
 
 		modreg cgi 'xrelayd' 'XRelayd'
 		modreg daemon $DAEMON
