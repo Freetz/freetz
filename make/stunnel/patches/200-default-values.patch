@@ -8,8 +8,8 @@
 -	-DPIDFILE='"$(localstatedir)/run/stunnel/stunnel.pid"'
 +	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"/mod/etc"' \
 +	-DPIDFILE='"/var/run/stunnel.pid"' \
-+	-DFREETZ_DEFAULT_CERT='"/tmp/flash/.stunnel/certs.pem"' \
-+	-DFREETZ_DEFAULT_KEY='"/tmp/flash/.stunnel/key.pem"'
++	-DFREETZ_DEFAULT_CERT='"/tmp/flash/stunnel/certs.pem"' \
++	-DFREETZ_DEFAULT_KEY='"/tmp/flash/stunnel/key.pem"'
  
  # Win32 executable
  EXTRA_DIST = nogui.c make.bat makece.bat makew32.bat mingw.mak evc.mak \
