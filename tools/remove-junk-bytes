@@ -9,6 +9,11 @@ SFK_TOOL="$(dirname "$0")/sfk"
 HEADER_MAGIC_HEX="3C1A8000375A038003400008"
 INTRA_MAGIC_TXT="NMI Boot"
 
+if [ $# -ne 2 -o ! -e "$INPUT_FILE" ]; then
+	echo "Usage: ${0##*/} input.image output.image"
+	exit 2
+fi
+
 hexdumps="$("$SFK_TOOL" hexfind "$INPUT_FILE" -bin /$HEADER_MAGIC_HEX/ -quiet -context=32)"
 offsets=($(echo "$hexdumps" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
 
