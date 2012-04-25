@@ -24,7 +24,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_STRIP_SCRIPTS)" == "y" ] && echo "usr/share/abo??.txt" >> $@; \
 	[ "$(FREETZ_HAS_AVM_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo "etc/init.d/rc.ftpd" >> $@; \
 	[ "$(FREETZ_REMOVE_DSLD)" == "y" ] && echo -e "usr/bin/wrapper/dsld\netc/init.d/rc.dsld" >> $@; \
-	[ "$(FREETZ_HAS_AVM_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_SMBD)" == "y" ] && [ "$(FREETZ_PACKAGE_SAMBA)" != "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
+	[ "$(FREETZ_HAS_AVM_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_SAMBA)" == "y" ] && [ "$(FREETZ_PACKAGE_SAMBA)" != "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
 	[ "$(FREETZ_PACKAGE_MDEV)" == "y" -o "$(FREETZ_HAS_AVM_UDEV)" == "y" ] && echo "etc/device.table" >> $@; \
 	[ "$(FREETZ_PACKAGE_MOD_ETCSERVICES)" != "y" ] && echo "etc/services" >> $@; \
 	[ "$(FREETZ_CUSTOM_UDEV_RULES)" != "y" ] && echo -e "etc/default.mod/udev_*.def\netc/udev/rules.d/??-custom.rules" >> $@; \

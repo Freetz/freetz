@@ -2,7 +2,7 @@ if [ "$FREETZ_HAS_AVM_USB_HOST" == "y" -a "$FREETZ_PACKAGE_SAMBA" == "y" ]; then
 	sed -i -e "/killall smbd*$/d" -e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 fi
 
-if [ "$FREETZ_PACKAGE_SAMBA" == "y" -o "$FREETZ_REMOVE_SMBD" == "y" ]; then
+if [ "$FREETZ_PACKAGE_SAMBA" == "y" -o "$FREETZ_REMOVE_SAMBA" == "y" ]; then
 	echo1 "remove AVM samba config"
 	rm_files \
 		"${FILESYSTEM_MOD_DIR}/bin/inetdsamba" \
@@ -12,8 +12,15 @@ if [ "$FREETZ_PACKAGE_SAMBA" == "y" -o "$FREETZ_REMOVE_SMBD" == "y" ]; then
 	modsed 's/^\(sambastart *()\)/\1{ return; }\n_\1/' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
 fi
 
-if [ "$FREETZ_REMOVE_SMBD" == "y" ]; then
-	echo1 "remove AVM-smbd files"
+
+if [ "$FREETZ_REMOVE_SAMBA" == "y" ] || \
+  [ "$FREETZ_PACKAGE_SAMBA" == "y" -a "$FREETZ_PACKAGE_NMBD" != "y" ]; then
+	echo1 "remove AVM's nmbd"
+	rm_files "${FILESYSTEM_MOD_DIR}/sbin/nmbd"
+fi
+
+if [ "$FREETZ_REMOVE_SAMBA" == "y" ]; then
+	echo1 "remove AVM samba files"
 	rm_files \
 		"${FILESYSTEM_MOD_DIR}/etc/samba_control" \
 		"${FILESYSTEM_MOD_DIR}/sbin/smbd" \
