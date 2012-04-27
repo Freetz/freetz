@@ -1,0 +1,17 @@
+--- nping/ProbeMode.cc
++++ nping/ProbeMode.cc
+@@ -692,10 +692,14 @@
+     }else{
+        hoplimit=DEFAULT_IPv6_TTL;
+     }
++#if defined(IPV6_UNICAST_HOPS)
+     if( setsockopt(rawfd, IPPROTO_IPV6, IPV6_UNICAST_HOPS, (char *)&hoplimit, sizeof(hoplimit)) != 0 )
+         outError(QT_2, "doIPv6ThroughSocket(): setsockopt() for Unicast Hop Limit on IPv6 socket failed");
++#endif
++#if defined(IPV6_MULTICAST_HOPS)
+     if( setsockopt(rawfd, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (char *)&hoplimit, sizeof(hoplimit)) != 0 )
+         outError(QT_2, "doIPv6ThroughSocket(): setsockopt() for Multicast Hop Limit on IPv6 socket failed");
++#endif
+ 
+ #ifdef IPV6_CHECKSUM  /* This is not available in when compiling with MinGW */
+     /* Transport layer checksum */
