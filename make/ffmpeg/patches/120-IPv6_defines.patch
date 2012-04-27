@@ -1,0 +1,33 @@
+--- libavformat/udp.c
++++ libavformat/udp.c
+@@ -44,8 +44,11 @@
+ 
+ #include <sys/time.h>
+ 
+-#ifndef IPV6_ADD_MEMBERSHIP
++#if !defined(IPV6_ADD_MEMBERSHIP) && defined(IPV6_JOIN_GROUP)
+ #define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
++#endif
++
++#if !defined(IPV6_DROP_MEMBERSHIP) && defined(IPV6_LEAVE_GROUP)
+ #define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
+ #endif
+ 
+@@ -114,7 +117,7 @@
+         }
+     }
+ #endif
+-#if HAVE_STRUCT_IPV6_MREQ && defined(IPPROTO_IPV6)
++#if HAVE_STRUCT_IPV6_MREQ && defined(IPPROTO_IPV6) && defined(IPV6_ADD_MEMBERSHIP)
+     if (addr->sa_family == AF_INET6) {
+         struct ipv6_mreq mreq6;
+ 
+@@ -143,7 +146,7 @@
+         }
+     }
+ #endif
+-#if HAVE_STRUCT_IPV6_MREQ && defined(IPPROTO_IPV6)
++#if HAVE_STRUCT_IPV6_MREQ && defined(IPPROTO_IPV6) && defined(IPV6_DROP_MEMBERSHIP)
+     if (addr->sa_family == AF_INET6) {
+         struct ipv6_mreq mreq6;
+ 

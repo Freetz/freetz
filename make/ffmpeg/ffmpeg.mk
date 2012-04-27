@@ -30,6 +30,7 @@ $(PKG)_DEMUXERS  := ac3 avi ffm flv h264 image2 matroska mjpeg mp3 mpegps mpegts
 $(PKG)_PARSERS   := aac ac3 h264 mjpeg mpegaudio mpegvideo mpeg4video
 $(PKG)_PROTOCOLS := file http pipe rtp tcp udp
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_ffmpeg
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_ffserver
 $(foreach i,encoder decoder muxer demuxer parser protocol, \
