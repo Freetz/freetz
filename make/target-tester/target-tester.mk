@@ -9,6 +9,7 @@ $(PKG)_BINARY_NOLFS:=$($(PKG)_DIR)/$($(PKG)_BINARY_NAME_NOLFS)
 $(PKG)_TARGET_BINARY_NOLFS:=$($(PKG)_DEST_DIR)/usr/bin/$($(PKG)_BINARY_NAME_NOLFS)
 
 $(PKG)_BINARIES:= \
+	ac_cv_func_fnmatch_works \
 	ac_cv_func_mmap_fixed_mapped \
 	ac_cv_lbl_unaligned_fail \
 	ac_cv_libnet_endianess \
