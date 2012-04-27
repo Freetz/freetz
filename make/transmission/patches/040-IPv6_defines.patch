@@ -1,0 +1,18 @@
+--- third-party/miniupnp/miniupnpc.c
++++ third-party/miniupnp/miniupnpc.c
+@@ -492,6 +492,7 @@
+ 	{
+ 		if(ipv6) {
+ #if !defined(_WIN32)
++#if defined(IPV6_MULTICAST_IF)
+ 			/* according to MSDN, if_nametoindex() is supported since
+ 			 * MS Windows Vista and MS Windows Server 2008.
+ 			 * http://msdn.microsoft.com/en-us/library/bb408409%28v=vs.85%29.aspx */
+@@ -500,6 +501,7 @@
+ 			{
+ 				PRINT_SOCKET_ERROR("setsockopt");
+ 			}
++#endif
+ #else
+ #ifdef DEBUG
+ 			printf("Setting of multicast interface not supported in IPv6 under Windows.\n");
