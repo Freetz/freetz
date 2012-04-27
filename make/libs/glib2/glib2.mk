@@ -15,6 +15,8 @@ $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_DIR)/%)
 $(PKG)_BUILD_PREREQ += glib-genmarshal
 $(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the libglib2.0-dev package
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
 $(PKG)_DEPENDS_ON := pcre
 
 # NB: glib2 does require iconv-functions, see glib/gconvert.c

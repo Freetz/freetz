@@ -1,0 +1,32 @@
+--- gio/ginetaddress.c
++++ gio/ginetaddress.c
+@@ -485,7 +485,14 @@
+       return g_inet_address_new_from_bytes (addr, family);
+     }
+   else
++    {
++#if defined(__UCLIBC_HAS_IPV6__)
+     return g_inet_address_new_from_bytes (in6addr_loopback.s6_addr, family);
++#else
++    static const struct in6_addr my_in6addr_loopback = IN6ADDR_LOOPBACK_INIT;
++    return g_inet_address_new_from_bytes (my_in6addr_loopback.s6_addr, family);
++#endif
++    }
+ }
+ 
+ /**
+@@ -512,7 +519,14 @@
+       return g_inet_address_new_from_bytes (addr, family);
+     }
+   else
++    {
++#if defined(__UCLIBC_HAS_IPV6__)
+     return g_inet_address_new_from_bytes (in6addr_any.s6_addr, family);
++#else
++    static const struct in6_addr my_in6addr_any = IN6ADDR_ANY_INIT;
++    return g_inet_address_new_from_bytes (my_in6addr_any.s6_addr, family);
++#endif
++    }
+ }
+ 
+ 
