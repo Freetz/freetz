@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 1.10)
+$(call PKG_INIT_BIN, 1.11)
 $(PKG)_SOURCE:=vnstat-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=95421d968689130590348ceb80ff74a8
+$(PKG)_SOURCE_MD5:=a5a113f9176cd61fb954f2ba297f5fdb
 $(PKG)_SITE:=http://humdi.net/vnstat
+
 $(PKG)_BINARIES_ALL := vnstat vnstatd vnstati
 $(PKG)_BINARIES := $(filter-out $(if $(FREETZ_PACKAGE_VNSTAT_DAEMON),,vnstatd) $(if $(FREETZ_PACKAGE_VNSTAT_IMAGE),,vnstati),$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/%)
