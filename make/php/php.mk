@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.3.10)
+$(call PKG_INIT_BIN, 5.4.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=816259e5ca7d0a7e943e56a3bb32b17f
+$(PKG)_SOURCE_MD5:=5b9529ed89dbc48c498e9693d1af3caf
 $(PKG)_SITE:=http://de.php.net/distributions
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
@@ -136,7 +136,9 @@ $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ssize_t=4
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_ptrdiff_t=4
 $(PKG)_CONFIGURE_ENV += ac_cv_c_bigendian_php=$(if $(FREETZ_TARGET_ARCH_BE),yes,no)
 $(PKG)_CONFIGURE_ENV += php_cv_sizeof_intmax_t=8
+$(PKG)_CONFIGURE_ENV += ac_cv_func_fnmatch_works=no
 $(PKG)_CONFIGURE_ENV += ac_cv_func_getaddrinfo=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_func_sigsetjmp=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_c_stack_direction=-1
 $(PKG)_CONFIGURE_ENV += ac_cv_ebcdic=no
 $(PKG)_CONFIGURE_ENV += ac_cv_header_atomic_h=no
@@ -150,6 +152,10 @@ $(PKG)_CONFIGURE_ENV += ac_cv_lib_png_png_write_image=yes
 $(PKG)_CONFIGURE_ENV += cookie_io_functions_use_off64_t=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_prog_gnu_ldcxx=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_NM) -B"
+
+# prevent pdo_cv_inc_path from being cached in config.cache by renaming it to something that doesn't contain _cv_
+# caching the value breaks a version bump as it points to a directory containing the php version number in it
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,pdo_cv_inc_path,php_pdo_inc_path,g' ./configure;
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 ifneq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
