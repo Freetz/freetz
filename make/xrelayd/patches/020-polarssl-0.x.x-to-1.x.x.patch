@@ -19,7 +19,7 @@
              ssl->session->length != prv->length )
              continue;
  
-@@ -334,13 +335,13 @@
+@@ -334,28 +335,28 @@
      return( 0 );
  }
  
@@ -35,7 +35,10 @@
              break;
          }
          len-=ret;
-@@ -350,7 +351,7 @@
+         buf+=ret;
+     }
+-    *eof |= (ret == POLARSSL_ERR_NET_CONN_RESET);
++    *eof |= (ret == 0);
      return ret;
  }
  
@@ -44,6 +47,12 @@
                                   void *ctx, unsigned char *buf, int len, int *eof)
  {
      int     ret=0;
+     ret = f_recv(ctx,buf,len);
+-    *eof |= (ret == POLARSSL_ERR_NET_CONN_RESET);
++    *eof |= (ret == 0);
+     return ret;
+ }
+ 
 @@ -394,7 +395,7 @@
      /* random number generation */
      havege_state hs;
