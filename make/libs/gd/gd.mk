@@ -32,7 +32,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(GD_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		includedir=/usr/include/gd \
 		install-libLTLIBRARIES install-includeHEADERS install-binSCRIPTS
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.la \
@@ -47,10 +46,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GD_DIR) clean
-	$(RM) -r \
+	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/gd \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/gdlib-config
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{entities,gdcache,gdfontg,gdfontl,gdfontmb,gdfonts,gdfontt,gdfx,gd,gd_io}.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/gdlib-config
 
 $(pkg)-uninstall:
 	$(RM) $(GD_TARGET_DIR)/libgd*.so*
