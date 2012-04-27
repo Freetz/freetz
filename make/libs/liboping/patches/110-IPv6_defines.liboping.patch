@@ -1,6 +1,6 @@
 --- src/liboping.c
 +++ src/liboping.c
-@@ -539,12 +539,14 @@
+@@ -539,12 +539,15 @@
  			if (cmsg->cmsg_level != IPPROTO_IPV6)
  				continue;
  
@@ -12,10 +12,34 @@
  				dprintf ("TOSv6 = 0x%02"PRIx8";\n", recv_qos);
  			} else
 +#endif /* defined(IPV6_TCLASS) */
++#if defined(IPV6_HOPLIMIT)
  			if (cmsg->cmsg_type == IPV6_HOPLIMIT)
  			{
  				memcpy (&recv_ttl, CMSG_DATA (cmsg),
-@@ -980,6 +982,7 @@
+@@ -552,6 +555,7 @@
+ 				dprintf ("TTLv6 = %i;\n", recv_ttl);
+ 			}
+ 			else
++#endif /* defined(IPV6_HOPLIMIT) */
+ 			{
+ 				dprintf ("Not handling option %i.\n",
+ 						cmsg->cmsg_type);
+@@ -946,12 +950,14 @@
+ 		ret = setsockopt (ph->fd, IPPROTO_IP, IP_TTL,
+ 				&ttl, sizeof (ttl));
+ 	}
++#if defined(IPV6_UNICAST_HOPS)
+ 	else if (ph->addrfamily == AF_INET6)
+ 	{
+ 		dprintf ("Setting TTLv6 to %i\n", ttl);
+ 		ret = setsockopt (ph->fd, IPPROTO_IPV6, IPV6_UNICAST_HOPS,
+ 				&ttl, sizeof (ttl));
+ 	}
++#endif /* IPV6_UNICAST_HOPS */
+ 
+ 	return (ret);
+ }
+@@ -980,6 +986,7 @@
  			dprintf ("Setting TP_TOS failed: %s\n", errbuf);
  		}
  	}
@@ -23,7 +47,7 @@
  	else if (ph->addrfamily == AF_INET6)
  	{
  		/* IPV6_TCLASS requires an "int". */
-@@ -996,6 +999,7 @@
+@@ -996,6 +1003,7 @@
  			dprintf ("Setting IPV6_TCLASS failed: %s\n", errbuf);
  		}
  	}

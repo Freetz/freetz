@@ -1,0 +1,68 @@
+--- src/liboping.c
++++ src/liboping.c
+@@ -375,6 +375,7 @@
+ # endif
+ #endif
+ 
++#if defined(HAVE_NETINET_ICMP6_H)
+ static pinghost_t *ping_receive_ipv6 (pingobj_t *obj, char *buffer,
+ 		size_t buffer_len)
+ {
+@@ -442,6 +443,7 @@
+ 
+ 	return (ptr);
+ }
++#endif /* HAVE_NETINET_ICMP6_H */
+ 
+ static int ping_receive_one (pingobj_t *obj, const pinghost_t *ph,
+ 		struct timeval *now)
+@@ -575,12 +577,14 @@
+ 		if (host == NULL)
+ 			return (-1);
+ 	}
++#if defined(HAVE_NETINET_ICMP6_H)
+ 	else if (ph->addrfamily == AF_INET6)
+ 	{
+ 		host = ping_receive_ipv6 (obj, payload_buffer, payload_buffer_len);
+ 		if (host == NULL)
+ 			return (-1);
+ 	}
++#endif
+ 	else
+ 	{
+ 		dprintf ("ping_receive_one: Unknown address family %i.\n",
+@@ -828,6 +832,7 @@
+ 	return (0);
+ }
+ 
++#if defined(HAVE_NETINET_ICMP6_H)
+ static int ping_send_one_ipv6 (pingobj_t *obj, pinghost_t *ph)
+ {
+ 	struct icmp6_hdr *icmp6;
+@@ -872,6 +877,7 @@
+ 
+ 	return (0);
+ }
++#endif /* HAVE_NETINET_ICMP6_H */
+ 
+ static int ping_send_all (pingobj_t *obj)
+ {
+@@ -903,6 +909,7 @@
+ 			dprintf ("timer set for hostname = %s\n", ptr->hostname);
+ 		}
+ 
++#if defined(HAVE_NETINET_ICMP6_H)
+ 		if (ptr->addrfamily == AF_INET6)
+ 		{	
+ 			dprintf ("Sending ICMPv6 echo request to `%s'\n", ptr->hostname);
+@@ -913,7 +920,9 @@
+ 				continue;
+ 			}
+ 		}
+-		else if (ptr->addrfamily == AF_INET)
++		else
++#endif /* HAVE_NETINET_ICMP6_H */
++		if (ptr->addrfamily == AF_INET)
+ 		{
+ 			dprintf ("Sending ICMPv4 echo request to `%s'\n", ptr->hostname);
+ 			if (ping_send_one_ipv4 (obj, ptr) != 0)
