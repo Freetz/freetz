@@ -1,0 +1,29 @@
+git-author:	Andrew Borodin <aborodin@…> (04/24/12 18:41:37)
+git-committer:	Andrew Borodin <aborodin@…> (04/25/12 12:55:56)
+Message:	Ticket #2787: crash when creating relative symlink.
+
+Index: lib/util.c
+===================================================================
+--- lib/util.c	(revision b1bcf6b01f5fffb25cf810b8f7f616b1440d05a8)
++++ lib/util.c	(revision 038b5e7406d177792d3e2cd904f6d32e5f392903)
+@@ -113,5 +113,5 @@
+ resolve_symlinks (const vfs_path_t *vpath)
+ {
+-    char *p;
++    char *p, *p2;
+     char *buf, *buf2, *q, *r, c;
+     struct stat mybuf;
+@@ -120,5 +120,5 @@
+         return NULL;
+ 
+-    p = vfs_path_to_str (vpath);
++    p = p2 = vfs_path_to_str (vpath);
+     r = buf = g_malloc (MC_MAXPATHLEN);
+     buf2 = g_malloc (MC_MAXPATHLEN);
+@@ -182,5 +182,5 @@
+   ret:
+     g_free (buf2);
+-    g_free (p);
++    g_free (p2);
+     return buf;
+ }
