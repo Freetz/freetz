@@ -17,11 +17,13 @@ $(PKG)_LIB_CLASSPATH_BINARY:=$($(PKG)_DIR)/sablevm-classpath/native/jni/java-io/
 $(PKG)_LIB_STAGING_CLASSPATH_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavaio-$($(PKG)_VERSION).so
 $(PKG)_LIB_TARGET_CLASSPATH_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sablevm-classpath/libjavaio-$($(PKG)_VERSION).so
 
-$(PKG)_DEPENDS_ON := libffi-sable libtool popt zlib
+$(PKG)_DEPENDS_ON := libffi libtool popt zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SABLEVM_SDK_MINI
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,configure sablevm/configure sablevm/src/libffi/configure sablevm-classpath/configure)
+# ensure no bundled libraries are used by removing corresponding subdirs
+$(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r sablevm/src/libffi sablevm/src/libpopt;
 
 $(PKG)_COMMON_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_COMMON_CONFIGURE_OPTIONS += --enable-shared
@@ -41,7 +43,7 @@ $(PKG_UNPACKED)
 
 define SABLEVM_SDK_HOST_DEPENDENCY
 $($(PKG)_DIR)/$(1)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(SABLEVM_SDK_DIR)/$(1); $(RM) -f config.cache; ./configure --prefix="$(FREETZ_BASE_DIR)/$(SABLEVM_SDK_DIR)/_dummyprefix");
+	(cd $(SABLEVM_SDK_DIR)/$(1); $(RM) config.cache; ./configure --prefix="$(FREETZ_BASE_DIR)/$(SABLEVM_SDK_DIR)/_dummyprefix");
 	touch $$@
 
 $($(PKG)_DIR)/$(1)/.compiled: $($(PKG)_DIR)/$(1)/.configured
