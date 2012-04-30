@@ -1,0 +1,44 @@
+--- gio/Makefile.in
++++ gio/Makefile.in
+@@ -756,7 +756,7 @@
+ TEST_PROGS = 
+ NULL = 
+ SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_4) \
+-	$(am__append_8) $(am__append_11) . $(am__append_14) tests
++	$(am__append_8) $(am__append_11) . $(am__append_14)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@uninstall_ms_lib_cmd = -rm $(DESTDIR)$(libdir)/gio-2.0.lib
+--- glib/Makefile.in
++++ glib/Makefile.in
+@@ -555,7 +555,7 @@
+ @HAVE_GOOD_PRINTF_FALSE@PRINTF_SUBDIR = gnulib
+ @HAVE_GOOD_PRINTF_FALSE@printf_la = gnulib/libgnulib.la
+ @USE_SYSTEM_PCRE_FALSE@MAYBE_PCRE = pcre 
+-SUBDIRS = libcharset $(PRINTF_SUBDIR) $(MAYBE_PCRE) update-pcre . tests
++SUBDIRS = libcharset $(PRINTF_SUBDIR) $(MAYBE_PCRE) update-pcre .
+ DIST_SUBDIRS = libcharset gnulib pcre update-pcre tests
+ AM_CPPFLAGS = \
+ 	$(glib_INCLUDES) 		\
+--- gobject/Makefile.in
++++ gobject/Makefile.in
+@@ -465,7 +465,7 @@
+ # GObject - GLib Type, Object, Parameter and Signal Library
+ # Copyright (C) 1997,98,99,2000 Tim Janik and Red Hat, Inc.
+ #
+-SUBDIRS = . tests
++SUBDIRS = .
+ BUILT_SOURCES = $(am__append_1)
+ CLEANFILES = $(am__append_2) gobject-public-headers.txt $(gen_sources) \
+ 	libgobject-gdb.py
+--- Makefile.in
++++ Makefile.in
+@@ -426,7 +426,7 @@
+ 	gio-windows-2.0.pc.in
+ TEST_PROGS = 
+ ACLOCAL_AMFLAGS = -I m4macros ${ACLOCAL_FLAGS}
+-SUBDIRS = . m4macros glib gmodule gthread gobject gio tests po docs
++SUBDIRS = . m4macros glib gmodule gthread gobject gio po
+ DIST_SUBDIRS = $(SUBDIRS) build
+ bin_SCRIPTS = glib-gettextize
+ AM_CPPFLAGS = \

@@ -1,22 +1,18 @@
 --- configure
 +++ configure
-@@ -24658,9 +24658,6 @@
+@@ -25289,6 +25289,7 @@
  	LDFLAGS_orig="$LDFLAGS"
  	LIBS="$G_MODULE_LIBS $LIBS"
  	LDFLAGS="$LDFLAGS $G_MODULE_LDFLAGS"
--	echo "void glib_plugin_test(void) { }" > plugin.c
--	${SHELL} ./libtool --mode=compile ${CC} -shared \
--		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
++if test "$cross_compiling" != yes; then
+ 	echo "void glib_plugin_test(void) { }" > plugin.c
+ 	${SHELL} ./libtool --mode=compile --tag=CC ${CC} ${CFLAGS} \
+ 		${CPPFLAGS} -c -o plugin.lo plugin.c >/dev/null 2>&1
+@@ -25297,6 +25298,7 @@
+ 		-shrext ".o" -avoid-version plugin.lo \
+ 		-rpath /dont/care >/dev/null 2>&1
+ 	eval `./libtool --config | grep ^objdir`
++fi
  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for RTLD_GLOBAL brokenness" >&5
  $as_echo_n "checking for RTLD_GLOBAL brokenness... " >&6; }
- if test "${glib_cv_rtldglobal_broken+set}" = set; then :
-@@ -24670,6 +24667,9 @@
- 		if test "$cross_compiling" = yes; then :
-   glib_cv_rtldglobal_broken=no
- else
-+	echo "void glib_plugin_test(void) { }" > plugin.c
-+	${SHELL} ./libtool --mode=compile ${CC} -shared \
-+		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
-   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
- /* end confdefs.h.  */
- 
+ if ${glib_cv_rtldglobal_broken+:} false; then :

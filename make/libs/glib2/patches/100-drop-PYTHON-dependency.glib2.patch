@@ -1,0 +1,30 @@
+--- configure
++++ configure
+@@ -7419,6 +7419,8 @@
+ fi
+ 
+ 
++PYTHON=none
++if false; then
+ # Need suitable python path for greport
+ 
+ 
+@@ -7644,6 +7646,7 @@
+ 
+ 
+   fi
++fi
+ 
+ 
+ 
+--- gio/Makefile.in
++++ gio/Makefile.in
+@@ -755,7 +755,7 @@
+ 	$(NULL) $(completion_DATA)
+ TEST_PROGS = 
+ NULL = 
+-SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_4) \
++SUBDIRS = $(am__append_1) $(am__append_4) \
+ 	$(am__append_8) $(am__append_11) . $(am__append_14)
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
+ @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)

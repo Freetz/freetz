@@ -1,0 +1,261 @@
+--- configure
++++ configure
+@@ -8243,6 +8243,7 @@
+ CONFIG_STATUS_DEPENDENCIES='$(top_srcdir)/po/LINGUAS'
+ 
+ 
++if false; then
+    for ac_header in locale.h
+ do :
+   ac_fn_c_check_header_mongrel "$LINENO" "locale.h" "ac_cv_header_locale_h" "$ac_includes_default"
+@@ -8959,6 +8960,7 @@
+ fi
+ 
+ LIBS="$INTLLIBS $LIBS"
++fi
+ 
+ GETTEXT_PACKAGE=glib20
+ 
+@@ -8968,6 +8970,7 @@
+ _ACEOF
+ 
+ 
++if false; then
+ glib_save_prefix="$prefix"
+ glib_save_exec_prefix="$exec_prefix"
+ glib_save_datarootdir="$datarootdir"
+@@ -8986,6 +8989,7 @@
+ cat >>confdefs.h <<_ACEOF
+ #define GLIB_LOCALE_DIR "$localedir"
+ _ACEOF
++fi
+ 
+ 
+ 
+@@ -23657,6 +23661,7 @@
+ done
+ 
+ 
++if false; then
+ for ac_func in newlocale uselocale strtod_l strtoll_l strtoull_l
+ do :
+   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+@@ -23668,6 +23673,7 @@
+ 
+ fi
+ done
++fi
+ 
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for C99 vsnprintf" >&5
+--- Makefile.in
++++ Makefile.in
+@@ -426,7 +426,7 @@
+ 	gio-windows-2.0.pc.in
+ TEST_PROGS = 
+ ACLOCAL_AMFLAGS = -I m4macros ${ACLOCAL_FLAGS}
+-SUBDIRS = . m4macros glib gmodule gthread gobject gio po
++SUBDIRS = . m4macros glib gmodule gthread gobject gio
+ DIST_SUBDIRS = $(SUBDIRS) build
+ bin_SCRIPTS = glib-gettextize
+ AM_CPPFLAGS = \
+--- glib/ggettext.c
++++ glib/ggettext.c
+@@ -40,7 +40,7 @@
+ 
+ #include <string.h>
+ #include <locale.h>
+-#include <libintl.h>
++/* #include <libintl.h> */
+ 
+ #ifdef G_OS_WIN32
+ 
+@@ -95,6 +95,7 @@
+ static void
+ ensure_gettext_initialized (void)
+ {
++#if 0
+   static gsize initialised;
+ 
+   if (g_once_init_enter (&initialised))
+@@ -111,6 +112,7 @@
+ #    endif
+       g_once_init_leave (&initialised, TRUE);
+     }
++#endif
+ }
+ 
+ /**
+@@ -302,6 +304,7 @@
+ static gboolean
+ _g_dgettext_should_translate (void)
+ {
++#if 0
+   static gsize translate = 0;
+   enum {
+     SHOULD_TRANSLATE = 1,
+@@ -346,6 +349,9 @@
+     }
+ 
+   return translate == SHOULD_TRANSLATE;
++#else
++  return FALSE;
++#endif
+ }
+ 
+ /**
+@@ -393,10 +399,10 @@
+ g_dgettext (const gchar *domain,
+             const gchar *msgid)
+ {
+-  if (domain && G_UNLIKELY (!_g_dgettext_should_translate ()))
++  /* if (domain && G_UNLIKELY (!_g_dgettext_should_translate ())) */
+     return msgid;
+ 
+-  return dgettext (domain, msgid);
++  /* return dgettext (domain, msgid); */
+ }
+ 
+ /**
+@@ -420,10 +426,10 @@
+              const gchar *msgid,
+              gint         category)
+ {
+-  if (domain && G_UNLIKELY (!_g_dgettext_should_translate ()))
++  /* if (domain && G_UNLIKELY (!_g_dgettext_should_translate ())) */
+     return msgid;
+ 
+-  return dcgettext (domain, msgid, category);
++  /* return dcgettext (domain, msgid, category); */
+ }
+ 
+ /**
+@@ -451,10 +457,10 @@
+              const gchar *msgid_plural,
+              gulong       n)
+ {
+-  if (domain && G_UNLIKELY (!_g_dgettext_should_translate ()))
++  /* if (domain && G_UNLIKELY (!_g_dgettext_should_translate ())) */
+     return n == 1 ? msgid : msgid_plural;
+ 
+-  return dngettext (domain, msgid, msgid_plural, n);
++  /* return dngettext (domain, msgid, msgid_plural, n); */
+ }
+ 
+ 
+--- glib/gi18n.h
++++ glib/gi18n.h
+@@ -22,10 +22,10 @@
+ 
+ #include <glib.h>
+ 
+-#include <libintl.h>
++/* #include <libintl.h> */
+ #include <string.h>
+ 
+-#define  _(String) gettext (String)
++#define  _(String) ((char *) g_dgettext (NULL, String))
+ #define Q_(String) g_dpgettext (NULL, String, 0)
+ #define N_(String) (String)
+ #define C_(Context,String) g_dpgettext (NULL, Context "\004" String, strlen (Context) + 1)
+--- glib/gi18n-lib.h
++++ glib/gi18n-lib.h
+@@ -22,7 +22,7 @@
+ 
+ #include <glib.h>
+ 
+-#include <libintl.h>
++/* #include <libintl.h> */
+ #include <string.h>
+ 
+ #ifndef GETTEXT_PACKAGE
+--- gio/gdbus-tool.c
++++ gio/gdbus-tool.c
+@@ -1922,6 +1922,7 @@
+   gchar *completion_cur;
+   gchar *completion_prev;
+ 
++#if 0
+   setlocale (LC_ALL, "");
+   textdomain (GETTEXT_PACKAGE);
+ 
+@@ -1937,6 +1938,7 @@
+ #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+ #endif
++#endif
+ 
+   ret = 1;
+   completion_cur = NULL;
+--- gio/glib-compile-resources.c
++++ gio/glib-compile-resources.c
+@@ -626,6 +626,7 @@
+   gchar *tmp;
+ #endif
+ 
++#if 0
+   setlocale (LC_ALL, "");
+   textdomain (GETTEXT_PACKAGE);
+ 
+@@ -640,6 +641,7 @@
+ #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+ #endif
++#endif
+ 
+   g_type_init ();
+ 
+--- gio/glib-compile-schemas.c
++++ gio/glib-compile-schemas.c
+@@ -2007,6 +2007,7 @@
+   gchar *tmp;
+ #endif
+ 
++#if 0
+   setlocale (LC_ALL, "");
+   textdomain (GETTEXT_PACKAGE);
+ 
+@@ -2021,6 +2022,7 @@
+ #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+ #endif
++#endif
+ 
+   context = g_option_context_new (N_("DIRECTORY"));
+   g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
+--- gio/gresource-tool.c
++++ gio/gresource-tool.c
+@@ -586,6 +586,7 @@
+   gchar *tmp;
+ #endif
+ 
++#if 0
+   setlocale (LC_ALL, "");
+   textdomain (GETTEXT_PACKAGE);
+ 
+@@ -600,6 +601,7 @@
+ #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+ #endif
++#endif
+ 
+   g_type_init ();
+ 
+--- gio/gsettings-tool.c
++++ gio/gsettings-tool.c
+@@ -694,6 +694,7 @@
+   gchar *tmp;
+ #endif
+ 
++#if 0
+   setlocale (LC_ALL, "");
+   textdomain (GETTEXT_PACKAGE);
+ 
+@@ -708,6 +709,7 @@
+ #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+ #endif
++#endif
+ 
+   if (argc < 2)
+     return gsettings_help (FALSE, NULL);

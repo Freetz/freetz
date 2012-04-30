@@ -11,6 +11,8 @@ $(PKG)_TARGET_BINARY_NOLFS:=$($(PKG)_DEST_DIR)/usr/bin/$($(PKG)_BINARY_NAME_NOLF
 $(PKG)_BINARIES:= \
 	ac_cv_func_fnmatch_works \
 	ac_cv_func_mmap_fixed_mapped \
+	ac_cv_func_printf_unix98 \
+	ac_cv_func_vsnprintf_c99 \
 	ac_cv_lbl_unaligned_fail \
 	ac_cv_libnet_endianess \
 	bash_cv_dup2_broken \

@@ -1,0 +1,12 @@
+--- glib-2.0.pc.in
++++ glib-2.0.pc.in
+@@ -10,7 +10,6 @@
+ Name: GLib
+ Description: C Utility Library
+ Version: @VERSION@
+-Requires.private: @PCRE_REQUIRES@
+-Libs: -L${libdir} -lglib-2.0 @INTLLIBS@
+-Libs.private: @G_THREAD_LIBS@ @G_LIBS_EXTRA@ @PCRE_LIBS@ @INTLLIBS@ @ICONV_LIBS@
++Requires: @PCRE_REQUIRES@
++Libs: -L${libdir} -lglib-2.0 @G_THREAD_LIBS@ @G_LIBS_EXTRA@ @INTLLIBS@ @ICONV_LIBS@ @PCRE_LIBS@
+ Cflags: -I${includedir}/glib-2.0 -I${libdir}/glib-2.0/include @GLIB_EXTRA_CFLAGS@
