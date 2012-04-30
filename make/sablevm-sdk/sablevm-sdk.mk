@@ -22,8 +22,6 @@ $(PKG)_DEPENDS_ON := libffi libtool popt zlib
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SABLEVM_SDK_MINI
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,configure sablevm/configure sablevm/src/libffi/configure sablevm-classpath/configure)
-# ensure no bundled libraries are used by removing corresponding subdirs
-$(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r sablevm/src/libffi sablevm/src/libpopt;
 
 $(PKG)_COMMON_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_COMMON_CONFIGURE_OPTIONS += --enable-shared
