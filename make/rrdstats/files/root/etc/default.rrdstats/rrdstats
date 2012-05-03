@@ -169,7 +169,7 @@ collect_thg() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdatBL$uptdatUP$uptdatIS --template rx:sn:tx:ip$templateADD
 }
 
-collect_epc() {
+collect_epc_100609() {
 	NAMEPREFIX=epc_$RRDSTATS_INTERVAL
 	local _CISCOEPC_RX='4'
 	local _CISCOEPC_TX='1'
@@ -231,6 +231,74 @@ collect_epc() {
 	if [ "$RRDSTATS_CISCOEPC_UC" == "yes" ]; then
 		local datUC=:$($WGET http://192.168.100.1/ChannelsSelection.htm -O - -q -T 2 | sed -nr 's/.*SAHappyUpstreamChannel.*value=([0-9]).*/\1/p')
 		local tplUC=:uc
+	fi
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD$datUP$datUC --template $updateT$tplUP$tplUC
+}
+
+collect_epc_120225() {
+	NAMEPREFIX=epc_$RRDSTATS_INTERVAL
+	local _CISCOEPC_RX='4'
+	local _CISCOEPC_TX='1'
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		count=0
+		while [ $count -lt $_CISCOEPC_RX ]; do
+			let count++
+			local epcRX="$epcRX DS:rxfq$count:GAUGE:600:99:999 DS:rxdb$count:GAUGE:600:-99:99 DS:rxsn$count:GAUGE:600:0:99"
+		done
+		count=0
+		while [ $count -lt $_CISCOEPC_TX ]; do
+			let count++
+			local epcTX="$epcTX DS:txfq$count:GAUGE:600:9:99 DS:txdb$count:GAUGE:600:0:99"
+		done
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			$epcRX \
+			$epcTX \
+			DS:up:GAUGE:600:0:99999 \
+			DS:uc:GAUGE:600:0:9 \
+			RRA:LAST:0.1:1:576  \
+			RRA:LAST:0.1:6:672  \
+			RRA:LAST:0.1:24:732 \
+			RRA:LAST:0.1:144:1460
+	fi
+	[ -z "$WGET" ] && WGET="$(detect_wget)"
+	updateT=
+	updateD=N
+	local datWG=$($WGET http://192.168.100.1/Docsis_signal.asp -O - -q -T 2 |grep -E "dw\((vhz|vdbuv|vdb|vusch_freq\))")
+	#RXdata
+	count=0
+	for line in $(echo "$datWG" | sed -ne '/dw(vhz)/{N}{N};s/.*nowrap> *\(.*\)000000 .*\n.*nowrap> *\(.*\)\.\(.*\) <script.*\n.*nowrap> *\(.*\) *<script.*/\1:$((\2\3-600)):\4/p'); do
+		let count++
+		[ $count -gt $_CISCOEPC_RX ] && break
+		[ -n "$updateT" ] && updateT=$updateT:
+		updateD=${updateD}:$(eval echo "$line" | sed -nr 's/(.*:.*)([0-9]:.*)/\1.\2/p')
+		updateT=${updateT}rxfq${count}:rxdb${count}:rxsn${count}
+	done
+	#TXdata
+	count=0
+	for line in $(echo "$datWG" | sed -ne '/dw(vusch_freq)/{N};s/.*nowrap> *\(..\)\(.\)00000 <script.*\n.*nowrap> *\(.*\)\.\(.*\) <script.*/\1.\2:$((\3\4-600))/p'); do
+		let count++
+		[ $count -gt $_CISCOEPC_TX ] && break
+		[ -n "$updateT" ] && updateT=$updateT:
+		updateD=${updateD}:$(eval echo "$line" | sed -nr 's/(.*:.*)(.)/\1.\2/p')
+		updateT=${updateT}txfq${count}:txdb${count}
+	done
+	[ $updateD = N ] && return
+	#uptime
+	if [ "$RRDSTATS_CISCOEPC_UP" == "yes" ]; then
+		local tX=$($WGET http://192.168.100.1/Docsis_status.asp -O - -q -T 2 |grep "dw(vdays)"| sed -ne 's/.*nowrap>\([0-9]*\).*dw(vdays).*\( [0-9]\{1,2\}\).*\(:[0-9]*\).*:[0-9]*.*/\1 days\2h\3/p')
+		if [ -n "$tX" ]; then
+			local tH=$(($(echo $tX | sed -nr 's/([0-9]*) days 0?([0-9]*)h.*/\1*24+\2/p')))
+			local tM=$(($(echo $tX | sed -nr 's/.*:0?([0-9]*)/100*\1\/60/p')))
+			case $tM in ?) tM=0$tM ;; esac
+			local datUP=:$tH.$tM
+			local tplUP=:up
+		fi
+	fi
+	#channel
+	if [ "$RRDSTATS_CISCOEPC_UC" == "yes" ]; then
+		local datUC=:$($WGET http://192.168.100.1/ChannelsSelection.asp -O - -q -T 2 | sed -nr 's/.*SAHappyUpstreamChannel.*value=([0-9]).*/\1/p')
+		[ "$datUC" != ":" ] && local tplUC=:uc || local datUC=
 	fi
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD$datUP$datUC --template $updateT$tplUP$tplUC
 }
@@ -352,7 +420,7 @@ while true; do
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
 	[ "$RRDSTATS_CABLE_MODEM" = thg ] && collect_thg
-	[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc
+	[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc$RRDSTATS_CISCOEPC_FW
 	[ -n "$RRDSTATS_DISK_DEV1" ] && collect_diskio 1
 	[ -n "$RRDSTATS_DISK_DEV2" ] && collect_diskio 2
 	[ -n "$RRDSTATS_DISK_DEV3" ] && collect_diskio 3

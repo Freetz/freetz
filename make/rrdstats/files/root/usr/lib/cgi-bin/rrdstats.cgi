@@ -29,6 +29,7 @@ check "$RRDSTATS_WEB_INETD"  yes:web_inetd
 check "$RRDSTATS_WEB_AUTH"   yes:web_auth
 check "$RRDSTATS_CABLE_MODEM" thg epc "*":no
 check "$RRDSTATS_THOMSON_ADV" yes:thomson_adv
+check "$RRDSTATS_CISCOEPC_FW" _100609 _120225
 check "$RRDSTATS_CISCOEPC_UP" yes:ciscoepc_up
 check "$RRDSTATS_CISCOEPC_UC" yes:ciscoepc_uc
 check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
@@ -190,14 +191,19 @@ if [ "$RRDSTATS_CABLE_MODEM" == "epc" ]; then
 cat << EOF
 <ul>
 <p>
+<label >$(lang de:"Firmwaredatum" en:"Firmware date"): </label>
+<input id="ciscofw1" type="radio" name="ciscoepc_fw" value="_100609"$_100609_chk><label for="ciscofw1">09.06.2010</label>
+<input id="ciscofw2" type="radio" name="ciscoepc_fw" value="_120225"$_120225_chk><label for="ciscofw2">25.02.2012</label>
+</p>
+<p>
 <input type="hidden" name="ciscoepc_up" value="no">
 <input id="t2" type="checkbox" name="ciscoepc_up" value="yes"$ciscoepc_up_chk>
-<label for="t2">$(lang de:"&Uuml;berwache Uptime" en:"Observe uptime")</label>
+<label for="t2">$(lang de:"&Uuml;berwache zus&auml;tzlich Uptime" en:"Observe uptime too")</label>
 </p>
 <p>
 <input type="hidden" name="ciscoepc_uc" value="no">
 <input id="t3" type="checkbox" name="ciscoepc_uc" value="yes"$ciscoepc_uc_chk>
-<label for="t3">$(lang de:"&Uuml;berwache Upstream-ID" en:"Observe upstream id")</label>
+<label for="t3">$(lang de:"&Uuml;berwache zus&auml;tzlich Upstream-ID" en:"Observe upstream id too")</label>
 </p>
 </ul>
 </p>
