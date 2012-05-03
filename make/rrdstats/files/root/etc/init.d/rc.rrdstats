@@ -37,7 +37,7 @@ start() {
 
 	stop_status
 
-	modlib_startdaemon start-stop-daemon -S -b -q -m -p $PID_FILE -n $DAEMON -a /etc/default.rrdstats/rrdstats -- $RRDSTATS_INTERVAL
+	modlib_startdaemon start-stop-daemon -S -b -q -m -p $PID_FILE -n $DAEMON -a rrdstats -- $RRDSTATS_INTERVAL
 
 	if [ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" != "yes" ]; then
 		webcfg-rrd -P "$HTTPD_PID_RRD"
