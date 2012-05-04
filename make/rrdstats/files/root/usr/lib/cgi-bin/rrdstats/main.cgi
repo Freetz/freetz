@@ -171,7 +171,7 @@ generate_graph() {
 				GPRINT:rxsn3:MAX:"%4.1lf /"                                         \
 				GPRINT:rxsn3:LAST:"%4.1lf\n"                                        \
 				                                                                    \
-				LINE3:rxdb4$BLUE:"Downstream SNR #4 (min/avg/max/cur)[dB]\:   "     \
+				LINE3:rxsn4$BLUE:"Downstream SNR #4 (min/avg/max/cur)[dB]\:   "     \
 				GPRINT:rxsn4:MIN:"%4.1lf /"                                         \
 				GPRINT:rxsn4:AVERAGE:"%4.1lf /"                                     \
 				GPRINT:rxsn4:MAX:"%4.1lf /"                                         \
