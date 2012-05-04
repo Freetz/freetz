@@ -35,7 +35,7 @@ struct user {
   char *	u_passint;		// u16
   int		u20;
   int		u24;
-#ifdef D_STRUCT_V2
+#if defined(D_STRUCT_V2) || defined(D_STRUCT_V3)
   int		u28;
   int		u_boxusr_nr;	// u32
 #endif
@@ -55,12 +55,12 @@ struct x {
   int		x24;
   int		x28;
   int		x32;
-#ifdef D_STRUCT_V2
+#ifdef D_STRUCT_V3
   int		x36;
   int		x40;
   struct user *        x_users;        // x44
 #endif
-#ifdef D_STRUCT_V1
+#if defined(D_STRUCT_V1) || defined(D_STRUCT_V2)
   struct user *        x_users;        // x36
 #endif
 };
@@ -204,7 +204,7 @@ write_passwd (int user_map)
 	uid = 1000 + up->u_boxusr_nr;
 	add_linux_ftp_user (fp_passwd, path_buf, up->u_pass, uid, 1);
 	fprintf (fp_users, "%s = \"%s\"\n", path_buf, up->u_user);
-#ifdef D_STRUCT_V2
+#if defined(D_STRUCT_V2) || defined(D_STRUCT_V3)
        sprintf (path_buf, "boxusr%uint", up->u_boxusr_nr);
        uid = 2000 + up->u_boxusr_nr;
        add_linux_ftp_user (fp_passwd, path_buf, up->u_passint, uid, 1);
@@ -238,7 +238,9 @@ write_etc_passwd_and_users_map ()
 void
 show_structure_layout_version ()
 {
-#ifdef D_STRUCT_V2
+#ifdef D_STRUCT_V3
+	printf ("compiled for 3rd struct layout version");
+#elif D_STRUCT_V2
 	printf ("compiled for 2nd struct layout version");
 #elif D_STRUCT_V1
 	printf ("compiled for 1st struct layout version");

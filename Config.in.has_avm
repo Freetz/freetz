@@ -474,14 +474,23 @@ config FREETZ_HAS_AVM_MULTI_ANNEX
 config FREETZ_HAS_AVM_CTLMGR_STRUCT_V1
 	bool "Has AVM ctlmgr struct layout V1"		if FREETZ_TYPE_CUSTOM
 	depends on FREETZ_HAS_AVM_USB_HOST && \
-		! FREETZ_HAS_AVM_CTLMGR_STRUCT_V2
+		! FREETZ_HAS_AVM_CTLMGR_STRUCT_V2 && \
+		! FREETZ_HAS_AVM_CTLMGR_STRUCT_V3
 	default y
 	help
 		1st structure layout.
 
 config FREETZ_HAS_AVM_CTLMGR_STRUCT_V2
 	bool "Has AVM ctlmgr struct layout V2"		if FREETZ_TYPE_CUSTOM
-	depends on FREETZ_HAS_AVM_USB_HOST && \
+	depends on  \
+		FREETZ_TYPE_6840
+	default y
+	help
+		2nd structure layout (6840 LTE).
+
+config FREETZ_HAS_AVM_CTLMGR_STRUCT_V3
+	bool "Has AVM ctlmgr struct layout V3"		if FREETZ_TYPE_CUSTOM
+	depends on \
 		( \
 		FREETZ_TYPE_FON_WLAN_7240 || \
 		FREETZ_TYPE_FON_WLAN_7270_16 || \
@@ -492,5 +501,5 @@ config FREETZ_HAS_AVM_CTLMGR_STRUCT_V2
 		)
 	default y
 	help
-		2nd structure layout (CeBIT 2012).
+		3rd structure layout (CeBIT 2012).
 
