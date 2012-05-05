@@ -40,8 +40,17 @@ ac_cv_func_getgrgid_r=yes
 ac_cv_func_posix_getgrgid_r=yes
 ac_cv_func_setpgrp_void=yes
 ac_cv_func_mmap_fixed_mapped=yes
-for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime dlopen fork fork_works vfork vfork_works; do
+for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit utimes vsnprintf getcwd strftime fork fork_works vfork vfork_works; do
 	eval ac_cv_func_$name=yes
+done
+
+# dlfcn
+ac_cv_header_dlfcn_h=yes
+for name in dlopen dlclose dlsym dlerror; do
+	# function resides in libc
+	eval ac_cv_func_$name=no
+	# function resides in libdl
+	eval ac_cv_lib_dl_$name=yes
 done
 
 # disable all epoll functions as they are known to cause problems on some boxes (probably a kernel bug, affected versions 2.6.13.x/2.6.19.x)

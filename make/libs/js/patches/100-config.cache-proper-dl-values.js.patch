@@ -1,0 +1,14 @@
+--- configure
++++ configure
+@@ -5842,7 +5842,11 @@
+ 
+ for ac_func in dlopen dlclose dlerror
+ do
++if test $ac_cv_lib_dl_dlopen = yes; then
++as_ac_var=`echo "ac_cv_lib_dl_$ac_func" | $as_tr_sh`
++else
+ as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
++fi
+ { echo "$as_me:$LINENO: checking for $ac_func" >&5
+ echo $ECHO_N "checking for $ac_func... $ECHO_C" >&6; }
+ if { as_var=$as_ac_var; eval "test \"\${$as_var+set}\" = set"; }; then
