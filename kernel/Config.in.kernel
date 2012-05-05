@@ -1,9 +1,6 @@
 
 # WARNING this is the kernel version of the (older) sources
 
-config FREETZ_KERNEL_VERSION_2_6_32
-	bool
-
 config FREETZ_KERNEL_VERSION_2_6_13
 	bool
 	default y if ! ( \
@@ -32,20 +29,13 @@ config FREETZ_KERNEL_VERSION_2_6_28
 		FREETZ_TYPE_WLAN_3370
 	default n
 
-config FREETZ_KERNEL_VERSION_2_6_32_21
+config FREETZ_KERNEL_VERSION_2_6_32
 	bool
-	select FREETZ_KERNEL_VERSION_2_6_32
-	default y if \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3
-	default n
-
-config FREETZ_KERNEL_VERSION_2_6_32_41
-	bool
-	select FREETZ_KERNEL_VERSION_2_6_32
 	default y if \
 		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270_16
+		FREETZ_TYPE_FON_WLAN_7270_16 || \
+		FREETZ_TYPE_WLAN_3270 || \
+		FREETZ_TYPE_WLAN_3270_V3
 	default n
 
 config FREETZ_KERNEL_VERSION
@@ -181,6 +171,4 @@ config FREETZ_MODULES_KVER
 	default "2.6.13.1-ohio"	if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_KERNEL_LAYOUT_OHIO
 	default "2.6.19.2"		if FREETZ_KERNEL_VERSION_2_6_19
 	default "2.6.28.10"		if FREETZ_KERNEL_VERSION_2_6_28
-	default "2.6.32.21"		if FREETZ_KERNEL_VERSION_2_6_32_21
-	default "2.6.32.41"		if FREETZ_KERNEL_VERSION_2_6_32_41
-
+	default "2.6.32.41"		if FREETZ_KERNEL_VERSION_2_6_32
