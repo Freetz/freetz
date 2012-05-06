@@ -1,0 +1,51 @@
+#!/bin/sh
+
+cat << EOF
+acl manager proto cache_object
+acl localhost src 127.0.0.1/32
+acl to_localhost dst 127.0.0.0/8 0.0.0.0/32
+acl localnet src 192.168.178.0/24
+acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl Safe_ports port 70
+acl Safe_ports port 210
+acl Safe_ports port 1025-65535
+acl Safe_ports port 280
+acl Safe_ports port 488
+acl Safe_ports port 591
+acl Safe_ports port 777
+acl CONNECT method CONNECT
+pid_filename /var/run/squid/squid.pid
+mime_table /tmp/flash/squid/mime.conf
+quick_abort_min 0 KB
+quick_abort_max 0 KB
+cache_effective_user squid
+http_port $SQUID_PORT transparent
+http_access allow localnet
+http_access allow localhost
+hierarchy_stoplist cgi-bin ?
+cache_dir ufs $SQUID_CACHE_DIR $SQUID_CACHE_PARAM1 $SQUID_CACHE_PARAM2 $SQUID_CACHE_PARAM3
+coredump_dir $SQUID_COREDUMP_DIR
+refresh_pattern ^ftp: 1440 20% 10080
+refresh_pattern ^gopher: 1440 0% 1440
+refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
+persistent_connection_after_error off
+client_persistent_connections on
+server_persistent_connections on
+refresh_pattern . 0 20% 4320
+cache_access_log $SQUID_LOG_DIR/access.log
+cache_log $SQUID_LOG_DIR/cache.log
+cache_store_log $SQUID_LOG_DIR/store.log
+request_header_max_size 20 KB
+reply_header_max_size 20 KB
+chunked_request_body_max_size 64 KB
+cache_mgr squid@$(hostname)
+detect_broken_pconn on
+ignore_unknown_nameservers on
+forwarded_for off
+visible_hostname $(hostname)
+log_fqdn off
+detect_broken_pconn on
+EOF

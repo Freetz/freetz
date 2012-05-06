@@ -1,0 +1,70 @@
+#!/bin/sh
+
+DAEMON=squid
+PID_FILE=/var/run/squid/$DAEMON.pid
+. /etc/init.d/modlibrc
+
+
+config() {
+	# logfiles
+	rm -f /var/log/squid_*.log 2>/dev/null
+	for logfile in access cache store; do
+		ln -sf $SQUID_LOG_DIR${logfile}.log /var/log/squid_${logfile}.log
+	done
+	#directories
+	for dirs in $SQUID_LOG_DIR $SQUID_CACHE_DIR $SQUID_COREDUMP_DIR; do
+		[ -d $dirs ] && continue
+		mkdir $dirs
+		chown squid:squid $dirs
+	done
+	#
+	modlib_config
+}
+
+start() {
+	modlib_startdaemon $DAEMON_BIN -f $DAEMON_CONFIG
+}
+
+case $1 in
+       ""|load)
+       	modlib_addgroup $DAEMON
+		modlib_adduser $DAEMON -s /bin/false -D -S -H -G $DAEMON -g $DAEMON
+		mkdir -p ${PID_FILE%/*}
+		chown $DAEMON:$DAEMON ${PID_FILE%/*}
+
+		mkdir -p /tmp/flash/squid/
+		[ ! -e /tmp/flash/squid/mime.conf ] && touch /tmp/flash/squid/mime.conf
+
+		modreg cgi $DAEMON Squid
+		modreg daemon $DAEMON
+		modreg status $DAEMON Squid ${DAEMON}_log
+		modreg file $DAEMON mime 'mime.conf' 0 ${DAEMON}_mime
+
+		modlib_start $DAEMON_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg status $DAEMON ${DAEMON}_log
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
