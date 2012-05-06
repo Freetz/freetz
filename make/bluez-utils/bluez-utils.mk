@@ -20,11 +20,11 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --with-usb=no
 $(PKG)_AC_VARIABLES := header_usb_h lib_usb_usb_open lib_usb_usb_get_busses lib_usb_usb_interrupt_read header_fuse_h lib_fuse_fuse_main
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
-$(PKG)_CONFIGURE_ENV += $(foreach ac_variable,$($(PKG)_AC_VARIABLES),bluez_utils_cv_$(ac_variable)=no)
+$(PKG)_CONFIGURE_ENV += $(foreach variable,$($(PKG)_AC_VARIABLES),$(pkg)_$(variable)=no)
 
 # bluez-utils code is not C99 compliant
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,prog_cc_stdc)
-$(PKG)_CONFIGURE_ENV += bluez_utils_cv_prog_cc_stdc=no
+$(PKG)_CONFIGURE_ENV += $(pkg)_prog_cc_stdc=no
 
 $(PKG)_CONFIGURE_OPTIONS +=--disable-dbus
 $(PKG)_CONFIGURE_OPTIONS +=--disable-fuse

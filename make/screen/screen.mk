@@ -12,7 +12,7 @@ $(PKG)_CONFIGURE_ENV += $(foreach flag,rename fchmod fchown strerror lstat _exit
 
 $(PKG)_AC_VARIABLES := header_dwarf_h header_elf_h
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES),./configure)
-$(PKG)_CONFIGURE_ENV += $(foreach flag,$($(PKG)_AC_VARIABLES),$(pkg)$(flag)=no)
+$(PKG)_CONFIGURE_ENV += $(foreach variable,$($(PKG)_AC_VARIABLES),$(pkg)_$(variable)=no)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
