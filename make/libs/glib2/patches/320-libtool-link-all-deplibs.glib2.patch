@@ -1,0 +1,24 @@
+In 2.32.2 glib developers updated libtool version to 2.4.2-Debian-2.4.2-1ubuntu1 (in 2.32.1 they used 2.4.2 without any postfix).
+This new version sets link_all_deplibs* to 'no' breaking the compilation of some binaries under gio.
+Restore the behaviour of unpatched libtool version by reverting this change.
+
+--- configure
++++ configure
+@@ -13579,7 +13579,7 @@
+     with_gnu_ld=no
+     ;;
+   linux* | k*bsd*-gnu | gnu*)
+-    link_all_deplibs=no
++    #link_all_deplibs=no
+     ;;
+   esac
+ 
+@@ -18680,7 +18680,7 @@
+     esac
+     ;;
+   linux* | k*bsd*-gnu | gnu*)
+-    link_all_deplibs_CXX=no
++    #link_all_deplibs_CXX=no
+     ;;
+   *)
+     export_symbols_cmds_CXX='$NM $libobjs $convenience | $global_symbol_pipe | $SED '\''s/.* //'\'' | sort | uniq > $export_symbols'
