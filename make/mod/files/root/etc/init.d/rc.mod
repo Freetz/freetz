@@ -26,7 +26,7 @@ start() {
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
-	for pkg in crond telnetd webcfg dsld ftpd multid swap external; do
+	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv; do
 		local rc="/etc/init.d/rc.$pkg"
 		[ -x "$rc" ] && log "$($rc)"
 	done

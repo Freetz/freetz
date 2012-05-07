@@ -1,0 +1,11 @@
+#!/bin/sh
+
+export PATH=/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/sbin:/bin:/usr/sbin:/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=websrv
+DAEMON_BIN=httpd-$DAEMON
+DAEMON_ENV="PATH=$PATH WEBIF=avm"
+
+#redirect of stderr is needed to prevent corrupted html headers:
+exec env - $DAEMON_ENV $DAEMON_BIN "$@" -p 80 -h /usr/www/all/ 2>/dev/null

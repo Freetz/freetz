@@ -15,7 +15,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_SKIN_legacy)" != "y" ] && echo "usr/share/*/legacy" >> $@; \
 	[ "$(FREETZ_SKIN_phoenix)" != "y" ] && echo "usr/share/*/phoenix" >> $@; \
 	[ "$(FREETZ_SKIN_newfreetz)" != "y" ] && echo "usr/share/*/newfreetz" >> $@; \
-	[ "$(FREETZ_REMOVE_WEBSRV)" != "y" ] && echo "etc/init.d/rc.websrv" >> $@; \
+	[ "$(FREETZ_REMOVE_WEBSRV)" != "y" ] && echo -e "etc/init.d/rc.websrv\nusr/bin/websrv\nusr/lib/cgi-bin/conf.avm/30-websrv.sh" >> $@; \
 	[ "$(EXTERNAL_ENABLED)" != "y" ] && echo "etc/init.d/rc.external" >> $@; \
 	[ "$(FREETZ_PATCH_FREETZMOUNT)" != "y" ] && echo "usr/lib/libmodmount.sh" >> $@; \
 	[ "$(FREETZ_REMOVE_BOX_INFO)" == "y" ] && echo "usr/lib/cgi-bin/mod/box_info.cgi" >> $@; \

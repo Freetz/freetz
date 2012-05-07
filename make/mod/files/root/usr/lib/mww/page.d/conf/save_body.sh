@@ -29,6 +29,7 @@ apply_changes() {
 		avm)
 			start_stop $startORstop telnetd "$OLDSTATUS_telnetd"
 			start_stop $startORstop multid "$OLDSTATUS_multid"
+			start_stop $startORstop websrv "$OLDSTATUS_websrv"
 			;;
 		mod)
 			start_stop $startORstop swap "$OLDSTATUS_swap"
@@ -79,7 +80,7 @@ echo -n "<pre class='log'>"
 exec 2>&1
 
 back="mod status"
-unset OLDSTATUS_telnetd OLDSTATUS_multid OLDSTATUS_swap OLDSTATUS_external RELOAD_external OLDSTATUS_webcfg
+unset OLDSTATUS_telnetd OLDSTATUS_multid OLDSTATUS_websrv OLDSTATUS_swap OLDSTATUS_external RELOAD_external OLDSTATUS_webcfg
 
 if $default; then
 	hook=def
@@ -106,6 +107,7 @@ if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 			back="cgi $package"
 			OLDSTATUS_telnetd=$(rc_status "telnetd")
 			OLDSTATUS_multid=$(rc_status "multid")
+			OLDSTATUS_websrv=$(rc_status "websrv")
 			;;
 		mod)
 			back="mod conf"
