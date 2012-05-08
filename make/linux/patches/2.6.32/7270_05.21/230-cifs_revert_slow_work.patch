@@ -80,7 +80,7 @@ diff -burN fs/cifs.orig//cifsfs.c fs/cifs/cifsfs.c
 +				rc = CIFSSMBLock(0, pTcon, netfid,
 +						0 /* len */ , 0 /* offset */, 0,
 +						0, LOCKING_ANDX_OPLOCK_RELEASE,
-+						false /* wait flag */);
++						false /* wait flag */,0);
 +				cFYI(1, ("Oplock release rc = %d", rc));
 +			}
 +			set_current_state(TASK_INTERRUPTIBLE);
