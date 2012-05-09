@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.4.2)
+$(call PKG_INIT_BIN, 5.4.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=252a6546db3a26260b419a883c875615
+$(PKG)_SOURCE_MD5:=51f9488bf8682399b802c48656315cac
 $(PKG)_SITE:=http://de.php.net/distributions
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sapi/cgi/php-cgi
