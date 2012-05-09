@@ -40,18 +40,13 @@ case $1 in
 		mkdir -p ${PID_FILE%/*}
 		chown $DAEMON:$DAEMON ${PID_FILE%/*}
 
-		mkdir -p /tmp/flash/squid/
-		[ ! -e /tmp/flash/squid/mime.conf ] && touch /tmp/flash/squid/mime.conf
-
 		modreg cgi $DAEMON Squid
 		modreg daemon $DAEMON
 		modreg status $DAEMON Squid ${DAEMON}_log
-		modreg file $DAEMON mime 'mime.conf' 0 ${DAEMON}_mime
 
 		modlib_start $DAEMON_ENABLED
 		;;
 	unload)
-		modunreg file $DAEMON
 		modunreg status $DAEMON ${DAEMON}_log
 		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON

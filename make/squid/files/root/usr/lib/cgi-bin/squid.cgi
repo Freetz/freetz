@@ -29,6 +29,7 @@ sec_end
 sec_begin '$(lang de:"Squid" en:"Squid")'
 
 cgi_print_textline_p "port" "$SQUID_PORT" 5/5 "$(lang de:"Port" en:"Port"): "
+cgi_print_textline_p "localnet" "$SQUID_LOCALNET" 31/31 "$(lang de:"Lokales netzwerk" en:"Local network"): "
 
 cgi_print_textline_p "cache_dir" "$SQUID_CACHE_DIR" 45/255 "$(lang de:"Pfad f&uuml;r Cache" en:"Path for cache"): "
 cgi_print_textline_p "coredump_dir" "$SQUID_COREDUMP_DIR" 45/255 "$(lang de:"Pfad f&uuml;r Coredumps" en:"Path for coredumps"): "
