@@ -25,9 +25,17 @@ start() {
 	modlib_startdaemon $DAEMON_BIN -f $DAEMON_CONFIG
 }
 
+stop() {
+	$DAEMON_BIN -f $DAEMON_CONFIG -k shutdown
+}
+
+reload() {
+	$DAEMON_BIN -f $DAEMON_CONFIG -k reconfigure
+}
+
 case $1 in
-       ""|load)
-       	modlib_addgroup $DAEMON
+	""|load)
+		modlib_addgroup $DAEMON
 		modlib_adduser $DAEMON -s /bin/false -D -S -H -G $DAEMON -g $DAEMON
 		mkdir -p ${PID_FILE%/*}
 		chown $DAEMON:$DAEMON ${PID_FILE%/*}
@@ -58,11 +66,14 @@ case $1 in
 	restart)
 		modlib_restart
 		;;
+	reload)
+		modlib_reload
+		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
