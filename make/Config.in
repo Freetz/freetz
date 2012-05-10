@@ -59,7 +59,11 @@ source make/php/Config.in
 source make/pingtunnel/Config.in
 source make/portmap/Config.in
 
+comment "Point-to-Point (not available, no sources by AVM)" 
+	depends on !FREETZ_REPLACE_KERNEL_AVAILABLE
+	 
 menu "Point-to-Point"
+	depends on FREETZ_REPLACE_KERNEL_AVAILABLE 
 source make/pppd/Config.in
 source make/pptp/Config.in
 source make/pptpd/Config.in
