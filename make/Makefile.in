@@ -281,7 +281,7 @@ PKG_PREVENT_RPATH_HARDCODING1 = $(subst $$$$,$$,$(call PKG_PREVENT_RPATH_HARDCOD
 #  $2 (optional) is the file to be patched, default ./$($(PKG)_BUILD_SUBDIR)/configure
 #  $3 (optional) is the prefix of the variables to rename, default ac
 PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = \
-	$(SED) -i -r -e 's/$(if $(strip $3),$(strip $3),ac)(_cv(_'"$(shell echo "$(strip $1)" | tr " " "|")"'))/'"$(shell echo $(pkg) | tr '[\-\+]' '[_x]')"'\2/g' \
+	$(SED) -i -r -e 's/$(if $(strip $3),$(strip $3),ac)(_cv(_('"$(shell echo "$(strip $1)" | tr " " "|")"')))/'"$(shell echo $(pkg) | tr '[\-\+]' '[_x]')"'\2/g' \
 	$(if $(strip $2),$(strip $2),./$(if $(strip $($(PKG)_BUILD_SUBDIR)),$(strip $($(PKG)_BUILD_SUBDIR))/)configure);
 
 # Usage:
