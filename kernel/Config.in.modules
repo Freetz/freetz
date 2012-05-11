@@ -56,20 +56,19 @@ menu "crypto"
 config FREETZ_MODULE_crypto_algapi
 	bool "crypto_algapi.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19 || \
-		FREETZ_KERNEL_VERSION_2_6_28
+		FREETZ_KERNEL_VERSION_2_6_19_MIN
 	default n
 
 config FREETZ_MODULE_crypto_blkcipher
 	bool "crypto_blkcipher.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28
+		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 config FREETZ_MODULE_crypto_hash
 	bool "crypto_hash.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_aes
@@ -79,7 +78,7 @@ config FREETZ_MODULE_aes
 
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_blkcipher
@@ -90,17 +89,17 @@ config FREETZ_MODULE_blkcipher
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_cryptomgr
 	bool "cryptomgr.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19 || \
-		FREETZ_KERNEL_VERSION_2_6_28
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	depends on  \
+		FREETZ_KERNEL_VERSION_2_6_19_MIN && \
+		! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_sha1
@@ -116,13 +115,14 @@ config FREETZ_MODULE_sha256
 config FREETZ_MODULE_sha1_generic
 	bool "sha1_generic.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && ! FREETZ_TYPE_FON_WLAN_7390
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_hash
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_sha256_generic
 	bool "sha256_generic.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 endmenu
