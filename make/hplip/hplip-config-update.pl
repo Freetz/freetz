@@ -72,7 +72,7 @@ close($in);
 
 print <<EOF;
 config FREETZ_PACKAGE_HPLIP
-	bool "HPLIP $version (binary only)"
+	bool "HPLIP $version (binary only, unstable)"
 	default n
 	select FREETZ_PACKAGE_SANE_BACKENDS
 	help
