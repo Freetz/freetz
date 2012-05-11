@@ -56,18 +56,22 @@ menu "crypto"
 config FREETZ_MODULE_crypto_algapi
 	bool "crypto_algapi.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_MIN
+		FREETZ_KERNEL_VERSION_2_6_19_MIN && \
+		!FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_crypto_blkcipher
 	bool "crypto_blkcipher.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN
+		FREETZ_KERNEL_VERSION_2_6_28_MIN && \
+		!FREETZ_TYPE_FON_WLAN_7390
 	default n
 
 config FREETZ_MODULE_crypto_hash
 	bool "crypto_hash.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_28_MIN && \
+		!FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	default n
 
@@ -88,7 +92,9 @@ config FREETZ_MODULE_blkcipher
 
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+	depends on \
+		FREETZ_KERNEL_VERSION_2_6_19_MIN && \
+		!FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
 	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_FON_WLAN_7390
