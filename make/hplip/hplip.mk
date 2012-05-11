@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.11.1)
+$(call PKG_INIT_BIN, 3.12.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=86f63a00c911313206fef6a147f7faad
+$(PKG)_SOURCE_MD5:=a063f76aa47edab55a3f31ff2558df07
 $(PKG)_SITE:=@SF/hplip
 $(PKG)_LIB_IP_VERSION=0.0.1
 $(PKG)_LIB_IP_BINARY:=$($(PKG)_DIR)/.libs/libhpip.so.$($(PKG)_LIB_IP_VERSION)
