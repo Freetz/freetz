@@ -19,6 +19,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		LDFLAGS=""
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+	mkdir -p $(HP_UTILS_DEST_DIR)/usr/bin
+	mkdir -p $(HP_UTILS_DEST_DIR)/usr/lib/freetz
 	cp $(HP_UTILS_DIR)/hp-clean $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-faxsetup $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-levels $(HP_UTILS_DEST_DIR)/usr/bin
@@ -26,7 +28,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	cp $(HP_UTILS_DIR)/hp-probe $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-status $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-timedate $(HP_UTILS_DEST_DIR)/usr/bin
-	cp -a $(HP_UTILS_DIR)/libhp-utils.so* $(HP_UTILS_DEST_DIR)/usr/lib
+	cp -a $(HP_UTILS_DIR)/libhp-utils.so* $(HP_UTILS_DEST_DIR)/usr/lib/freetz
 	$(TARGET_STRIP) $(HP_UTILS_DEST_DIR)/usr/bin/hp-clean \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-faxsetup \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-levels \
@@ -34,7 +36,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-probe \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-status \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-timedate \
-		$(HP_UTILS_DEST_DIR)/usr/lib/libhp-utils.so.$(HP_UTILS_VERSION)
+		$(HP_UTILS_DEST_DIR)/usr/lib/freetz/libhp-utils.so.$(HP_UTILS_VERSION)
 
 $(pkg):
 
@@ -50,6 +52,7 @@ $(pkg)-uninstall:
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-probe \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-status \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-printserv \
-		$(HP_UTILS_DEST_DIR)/usr/bin/hp-timedate
+		$(HP_UTILS_DEST_DIR)/usr/bin/hp-timedate \
+		$(HP_UTILS_DEST_DIR)/usr/lib/freetz/libhp-utils.so*
 
 $(PKG_FINISH)
