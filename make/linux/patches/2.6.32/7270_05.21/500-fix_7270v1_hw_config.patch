@@ -1,0 +1,74 @@
+--- linux-2.6.32/arch/mips/ur8/avm_hw_config.c
++++ linux-2.6.32/arch/mips/ur8/avm_hw_config.c
+@@ -59,6 +59,21 @@
+ 
+ 
+ /*------------------------------------------------------------------------------------------*\
++ * FRITZ!Box Fon WLAN 7270 v1 8MB           
++\*------------------------------------------------------------------------------------------*/
++struct _avm_hw_config avm_hardware_config_hw122[] = {
++    { .name = "gpio_avm_piglet_noemif_data",   .value = 13 },
++    { .name = "gpio_avm_piglet_noemif_done",   .value = 41 },
++    { .name = "gpio_avm_piglet_noemif_clk",    .value = 12 }, 
++    { .name = "gpio_avm_piglet_noemif_prog",   .value = 39 }, 
++    { .name = "gpio_avm_piglet_noemif_fpgaok", .value = 29 }, 
++    { .name = "gpio_avm_dect_reset",           .value = 20 },
++    { .name = NULL }
++};
++EXPORT_SYMBOL(avm_hardware_config_hw122);
++
++
++/*------------------------------------------------------------------------------------------*\
+  * FRITZ!Box Fon WLAN 7270 v2 16MB           
+ \*------------------------------------------------------------------------------------------*/
+ struct _avm_hw_config avm_hardware_config_hw139[] = {
+@@ -240,6 +255,7 @@
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ struct _avm_hw_config_table avm_hw_config_tables[] = {
++	{ 122, avm_hardware_config_hw122 }, /*--- FRITZ!Box Fon WLAN 7270 v1 8MB ---*/
+     { 135, avm_hardware_config_hw135 }, /*--- Speedport W 920V ---*/
+     { 136, avm_hardware_config_hw136 }, /*--- Speedport W 503V ---*/
+     { 137, avm_hardware_config_hw137 }, /*--- FRITZ!Box WLAN 3270 ---*/
+
+--- linux-2.6.32/arch/mips/include/asm/avm_cache.h
++++ linux-2.6.32/arch/mips/include/asm/avm_cache.h
+@@ -16,6 +16,7 @@
+ \*------------------------------------------------------------------------------------------*/
+ struct _avm_cache_setting avm_cache_settings[] = {
+ /*--- UR8 ---*/
++    { 122, CONF_CM_CACHABLE_NO_WA },       /*--- FRITZ!Box Fon WLAN 7270 v1 8MB ---*/
+     { 135, CONF_CM_CACHABLE_NO_WA },       /*--- Speedport W 920V ---*/
+     { 136, CONF_CM_CACHABLE_NO_WA },       /*--- Speedport W 503V ---*/
+     { 137, CONF_CM_CACHABLE_NO_WA },       /*--- FRITZ!Box WLAN 3270 ---*/
+
+--- linux-2.6.32/drivers/net/avm_cpmac/cpmac_product_conf.c	2012-05-02 13:57:10.000000000 +0000
++++ linux-2.6.32/drivers/net/avm_cpmac/cpmac_product_conf_new.c	2012-05-11 21:20:26.775912593 +0000
+@@ -63,6 +63,26 @@
+                 }
+             }
+         },
++	{ /* Fritz_Box_7270_v1 */
++            "122 ",
++            2,
++            {
++                {
++                    CPMAC_PHY_TYPE_TANTOS,
++                    CPMAC_PHY_MODE_VINAX7,
++                    0x6f,
++                    26,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
+         { /* Fritz_Box_7270_16 */
+             "139 ",
+             2,
+
