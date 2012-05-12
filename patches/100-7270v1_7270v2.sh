@@ -28,6 +28,19 @@ echo2 "    step 1: unpack kernel"
 addr=($(${TOOLS_DIR}/unpack-kernel ${RAW_KERNEL_MOD} ${RAW_KERNEL_MOD}.unp)) || exit 1
 
 echo2 "    step 2: patch unpacked kernel"
+# 0x3843B5
+${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/687731333911EF617C68B3/687731323211EF617C68B3/" -yes >/dev/null 2>&1
+# 0x38E57E
+${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/687731333911ED617C68B3/687731323211ED617C68B3/" -yes >/dev/null 2>&1
+# 0x398A25
+${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/68773133391144617C68B3/68773132321144617C68B3/" -yes >/dev/null 2>&1
+# 0x3E591D
+${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/5F68773133390061766D5F/5F68773132320061766D5F/" -yes >/dev/null 2>&1
+# 0x3FE28C
+${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/58E64F948B000000/58E64F947A000000/" -yes >/dev/null 2>&1
+# 0x3FED6F
+${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/008B000000000000008D/007A000000000000008D/" -yes >/dev/null 2>&1
+# 0x40FA4C
 ${TOOLS_DIR}/sfk replace ${RAW_KERNEL_MOD}.unp -binary "/3133392000000000/3132322000000000/" -yes >/dev/null 2>&1
 [ $? -eq 1 ] || exit 1
 
