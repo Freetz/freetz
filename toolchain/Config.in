@@ -61,17 +61,22 @@ choice
 		bool "gcc-4.4.7"
 		depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 
+	config FREETZ_KERNEL_COMPILER_GCC_4_6
+		bool "gcc-4.6.3"
+		depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+
 endchoice
 
 config FREETZ_KERNEL_GCC_VERSION
 	string
+	default "4.6.3" if FREETZ_KERNEL_COMPILER_GCC_4_6
 	default "4.4.7" if FREETZ_KERNEL_COMPILER_GCC_4_4
 	default "3.4.6"
 
 config FREETZ_KERNEL_BINUTILS_VERSION
 	string
-	default "2.22" if FREETZ_KERNEL_COMPILER_GCC_4_4
-	default "2.18"
+	default "2.22"
+	default "2.18" if FREETZ_KERNEL_COMPILER_GCC_3_4
 
 comment "Target toolchain options ----------------------------------"
 choice
