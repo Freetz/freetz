@@ -449,6 +449,7 @@ config FREETZ_HAS_AVM_JFFS2
 config FREETZ_HAS_AVM_JUNK_BYTES
 	bool "Has AVM junk bytes in SquashFS"		if FREETZ_TYPE_CUSTOM
 	default y		if \
+		FREETZ_TYPE_FON_WLAN_7340 || \
 		FREETZ_TYPE_FON_WLAN_7390
 	default n
 	help
