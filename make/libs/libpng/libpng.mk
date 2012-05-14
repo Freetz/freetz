@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.47)
-$(PKG)_LIB_VERSION:=0.47.0
+$(call PKG_INIT_LIB, 1.2.49)
+$(PKG)_LIB_VERSION:=0.49.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=a9f97648bebecbd634ea66a37f85fcef
+$(PKG)_SOURCE_MD5:=2e7966a54826a4735f3f52bd8c763c79
 $(PKG)_SITE:=@SF/libpng
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpng12.so.$($(PKG)_LIB_VERSION)
