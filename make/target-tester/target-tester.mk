@@ -29,7 +29,8 @@ $(PKG)_BINARIES:= \
 	gt_cv_int_divbyzero_sigfpe \
 	libnet_cv_have_packet_socket \
 	realpath_test \
-	tst_nl_langinfo
+	tst_nl_langinfo \
+	zlib_four_byte_unsigned_int
 
 # doesn't compile
 #	bash_cv_sys_siglist		-> no
