@@ -153,7 +153,7 @@ mount_usbroot() {
 
 	kver="$(uname -r)"
 	case "$kver" in
-		2.6.28.10 | 2.6.32.21 )
+		2.6.28* | 2.6.32* )
 			# no need to cache hotplug events, udev does it
 			mount dev /oldroot -t tmpfs -o nosuid
 
