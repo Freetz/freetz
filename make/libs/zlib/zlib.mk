@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.2.6)
+$(call PKG_INIT_LIB, 1.2.7)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=dc2cfa0d2313ca77224b4d932b2911e9
-$(PKG)_SITE:=@SF/libpng
+$(PKG)_SOURCE_MD5:=2ab442d169156f34c379c968f3f482dd
+$(PKG)_SITE:=http://zlib.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$($(PKG)_LIB_VERSION)
