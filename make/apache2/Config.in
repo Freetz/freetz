@@ -10,6 +10,8 @@ config FREETZ_PACKAGE_APACHE2
 	select FREETZ_LIB_libz            if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_DEFLATE
 	select FREETZ_LIB_libcrypto       if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_SSL
 	select FREETZ_LIB_libssl          if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_SSL
+	select FREETZ_LIB_libxml2         if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_PACKAGE_APACHE2_LIBXML
+	select FREETZ_LIB_libxml2_WITH_HTML if FREETZ_PACKAGE_APACHE2_LIBXML
 	default n
 	help
 		The Apache httpd server
@@ -27,6 +29,13 @@ config FREETZ_PACKAGE_APACHE2_SSL
 	default n
 	help
 		Enables the SSL module. Requires openssl.
+
+config FREETZ_PACKAGE_APACHE2_LIBXML
+	bool "Enable libxml dependent modules"
+	depends on FREETZ_PACKAGE_APACHE2
+	default n
+	help
+		Enables libxml dependent modules. Requires libxml2.
 
 config FREETZ_PACKAGE_APACHE2_COMPILEINMODS
 	bool "Compile modules in instead of building loadable modules"
