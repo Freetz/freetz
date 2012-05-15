@@ -257,6 +257,28 @@ config FREETZ_HAS_AVM_NAS
 	help
 		Select this if you have a box with NAS support.
 
+config FREETZ_HAS_AVM_MYFRITZ
+	bool "Has AVM myFritz"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_WLAN_3270 || \
+			FREETZ_TYPE_WLAN_3270_V3 || \
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270_16 || \
+			FREETZ_TYPE_FON_WLAN_7320 || \
+			FREETZ_TYPE_FON_WLAN_7330 || \
+			FREETZ_TYPE_FON_WLAN_7360 || \
+			FREETZ_TYPE_FON_WLAN_7390 \
+		) || \
+		!FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_FON_WLAN_7340 || \
+			FREETZ_TYPE_FON_WLAN_7360_XL || \
+			FREETZ_TYPE_FON_WLAN_7390 \
+		)
+	default n
+	help
+		Select this if you have a firmware with MyFritz.
+
 config FREETZ_HAS_AVM_PHONE
 	bool "Has Phone"	if FREETZ_TYPE_CUSTOM
 	default n		if \
