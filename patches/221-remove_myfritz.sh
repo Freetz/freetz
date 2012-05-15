@@ -1,4 +1,4 @@
-[ "$FREETZ_REMOVE_MYFRITZ" = "y" ] || return 0;
+[ "$FREETZ_REMOVE_MYFRITZ" = "y" ] || return 0
 
 echo1 "removing myfritz"
 rm -rf "${FILESYSTEM_MOD_DIR}/usr/www.myfritz"
