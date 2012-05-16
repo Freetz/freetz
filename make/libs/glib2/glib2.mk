@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 2.32.2)
-$(PKG)_LIB_VERSION:=0.3200.2
+$(call PKG_INIT_LIB, 2.32.3)
+$(PKG)_LIB_VERSION:=0.3200.3
 $(PKG)_MAJOR_VERSION:=2.0
 $(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=5bfdb6197afb90e4dbc7b1bb98f0eae0
-$(PKG)_SITE:=http://ftp.gnome.org/pub/gnome/sources/glib/2.32
+$(PKG)_SOURCE_MD5:=9bd3ac535c24b6c162be13b2c43c5adc
+$(PKG)_SITE:=ftp://ftp.gnome.org/pub/gnome/sources/glib/2.32
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/glib-$($(PKG)_VERSION)
 
 $(PKG)_LIBNAMES_SHORT := glib gobject gmodule gthread gio
