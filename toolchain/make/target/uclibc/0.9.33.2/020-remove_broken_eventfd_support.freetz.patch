@@ -1,0 +1,54 @@
+Remove broken eventfd/eventfd2 support (added in uClibc 0.9.33).
+
+--- extra/Configs/Config.in
++++ extra/Configs/Config.in
+@@ -952,7 +952,7 @@
+ 	default y
+ 	help
+ 	  accept4(), bdflush(),
+-	  capget(), capset(), eventfd(), fstatfs(),
++	  capget(), capset(), fstatfs(),
+ 	  inotify_*(), ioperm(), iopl(),
+ 	  madvise(), modify_ldt(), pipe2(), personality(),
+ 	  prctl()/arch_prctl(), pivot_root(), modify_ldt(),
+--- libc/sysdeps/linux/common/Makefile.in
++++ libc/sysdeps/linux/common/Makefile.in
+@@ -19,11 +19,11 @@
+ CSRC-$(UCLIBC_LINUX_MODULE_24) += create_module.c query_module.c \
+ 	get_kernel_syms.c
+ # we need these internally: fstatfs.c statfs.c
++CSRC-                         += eventfd.c
+ CSRC-$(UCLIBC_LINUX_SPECIFIC) += \
+ 	bdflush.c \
+ 	capget.c \
+ 	capset.c \
+-	eventfd.c \
+ 	inotify.c \
+ 	ioperm.c \
+ 	iopl.c \
+--- Makefile.in
++++ Makefile.in
+@@ -270,7 +270,8 @@
+ HEADERS_RM-$(UCLIBC_HAS_WORDEXP)             += wordexp.h
+ HEADERS_RM-$(UCLIBC_HAS_XATTR)               += sys/xattr.h
+ HEADERS_RM-$(UCLIBC_HAS_XLOCALE)             += xlocale.h
+-HEADERS_RM-$(UCLIBC_LINUX_SPECIFIC)          += sys/eventfd.h sys/fsuid.h \
++HEADERS_RM-                                  += sys/eventfd.h
++HEADERS_RM-$(UCLIBC_LINUX_SPECIFIC)          += sys/fsuid.h \
+ 	bits/inotify.h \
+ 	sys/inotify.h \
+ 	sys/kdaemon.h \
+--- libc/sysdeps/linux/common/stubs.c
++++ libc/sysdeps/linux/common/stubs.c
+@@ -93,9 +93,11 @@
+ make_stub(epoll_wait)
+ #endif
+ 
++#if 0
+ #if !defined __NR_eventfd && defined __UCLIBC_LINUX_SPECIFIC__
+ make_stub(eventfd)
+ #endif
++#endif
+ 
+ #ifndef __NR_fdatasync
+ make_stub(fdatasync)
