@@ -49,3 +49,65 @@
  @ENABLE_SHARED_FALSE@libxtables_la_LIBADD = 
  @ENABLE_SHARED_TRUE@libxtables_la_LIBADD = -ldl
  xtables_multi_SOURCES = xtables-multi.c $(am__append_2) \
+--- extensions/libxt_TCPMSS.c
++++ extensions/libxt_TCPMSS.c
+@@ -5,7 +5,9 @@
+ #include <stdio.h>
+ #include <xtables.h>
+ #include <netinet/ip.h>
++#ifdef ENABLE_IPV6
+ #include <netinet/ip6.h>
++#endif
+ #include <linux/netfilter/xt_TCPMSS.h>
+ 
+ enum {
+@@ -32,10 +34,12 @@
+ 	__TCPMSS_help(sizeof(struct iphdr));
+ }
+ 
++#ifdef ENABLE_IPV6
+ static void TCPMSS_help6(void)
+ {
+ 	__TCPMSS_help(sizeof(struct ip6_hdr));
+ }
++#endif
+ 
+ static const struct xt_option_entry TCPMSS4_opts[] = {
+ 	{.name = "set-mss", .id = O_SET_MSS, .type = XTTYPE_UINT16,
+@@ -45,6 +49,7 @@
+ 	XTOPT_TABLEEND,
+ };
+ 
++#ifdef ENABLE_IPV6
+ static const struct xt_option_entry TCPMSS6_opts[] = {
+ 	{.name = "set-mss", .id = O_SET_MSS, .type = XTTYPE_UINT16,
+ 	 .min = 0, .max = UINT16_MAX - sizeof(struct ip6_hdr),
+@@ -52,6 +57,7 @@
+ 	{.name = "clamp-mss-to-pmtu", .id = O_CLAMP_MSS, .type = XTTYPE_NONE},
+ 	XTOPT_TABLEEND,
+ };
++#endif
+ 
+ static void TCPMSS_parse(struct xt_option_call *cb)
+ {
+@@ -105,6 +111,7 @@
+ 	.x6_options	= TCPMSS4_opts,
+ };
+ 
++#ifdef ENABLE_IPV6
+ static struct xtables_target tcpmss_target6 = {
+ 	.family		= NFPROTO_IPV6,
+ 	.name		= "TCPMSS",
+@@ -118,9 +125,12 @@
+ 	.x6_fcheck	= TCPMSS_check,
+ 	.x6_options	= TCPMSS6_opts,
+ };
++#endif
+ 
+ void _init(void)
+ {
+ 	xtables_register_target(&tcpmss_target);
++#ifdef ENABLE_IPV6
+ 	xtables_register_target(&tcpmss_target6);
++#endif
+ }
