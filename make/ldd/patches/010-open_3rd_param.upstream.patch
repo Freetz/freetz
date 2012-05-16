@@ -1,0 +1,18 @@
+From a76558a92e21643a628c3c6a8cd22816634b1749
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Sat, 05 Sep 2009 21:35:09 +0000
+Subject: do not pass 3rd param to open() which do not create files
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+--- ldd.c
++++ ldd.c
+@@ -248,7 +248,7 @@
+ 		return 0;
+ 
+ 	if (stat(LDSO_CACHE, &st)
+-			|| (fd = open(LDSO_CACHE, O_RDONLY, 0)) < 0) {
++			|| (fd = open(LDSO_CACHE, O_RDONLY)) < 0) {
+ 		dprintf(2, "ldd: can't open cache '%s'\n", LDSO_CACHE);
+ 		cache_addr = (caddr_t) - 1;	/* so we won't try again */
+ 		return -1;

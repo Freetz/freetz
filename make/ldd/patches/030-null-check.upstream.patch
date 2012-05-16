@@ -1,0 +1,19 @@
+From 85f4b028d767fc390a7b866d2f58d58be489242d
+From: Kevin Day <thekevinday@gmail.com>
+Date: Wed, 30 Mar 2011 11:51:22 +0000
+Subject: utils/ldd: Check for returned pointer from strrchr not the value it holds
+
+Signed-off-by: Kevin Day <thekevinday@gmail.com>
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+
+--- ldd.c
++++ ldd.c
+@@ -542,7 +542,7 @@
+ 		interp = strdup(s);
+ 		interp_dir = strdup(s);
+ 		tmp = strrchr(interp_dir, '/');
+-		if (*tmp)
++		if (tmp)
+ 			*tmp = '\0';
+ 		else {
+ 			free(interp_dir);

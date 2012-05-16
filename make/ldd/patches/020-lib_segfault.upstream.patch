@@ -1,0 +1,31 @@
+From b2c4199f0fd53c009858e7ce27f932a4ac92bc60
+From: Natanael Copa <ncopa@alpinelinux.org>
+Date: Mon, 24 May 2010 07:07:45 +0000
+Subject: utils: Fix ldd segfault
+
+Fixes ldd segfault on this testcase:
+
+extern void _dl_getenv(void);
+void foo(void)
+{
+    printf("foo: %x\n", &_dl_getenv);
+}
+
+linked as -shared
+
+It fixes bug #1507
+
+Signed-off-by: Natanael Copa <ncopa@alpinelinux.org>
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+
+--- ldd.c
++++ ldd.c
+@@ -565,7 +565,7 @@
+ 				}
+ 				newlib->name = NULL;
+ 				newlib->path = NULL;
+-				return NULL;
++				break;
+ 			}
+ 		}
+ 		if (newlib == NULL)
