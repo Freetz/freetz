@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.7.4)
+$(call PKG_INIT_BIN, 1.7.5)
 $(PKG)_MAJOR_VERSION:=1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=99ace9433be21a4793fc1cdbf2fdea09
+$(PKG)_SOURCE_MD5:=f6353b9b581081cdf97299300c9eada3
 $(PKG)_SITE:=@APACHE/subversion
 
 ifeq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
