@@ -6,6 +6,9 @@ echo1 "adapt firmware for 7270v1"
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270_16 ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270
 
+# patch HWRevision detection to fix online help
+modsed "s/HWRevision=.*$/HWRevision=139/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7270 v1\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_7270\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_ROM_SIZE=.*$/CONFIG_ROM_SIZE=\"8\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
