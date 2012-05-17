@@ -1,0 +1,11 @@
+--- Makerules
++++ Makerules
+@@ -329,7 +329,7 @@
+ 	$(Q)echo "/* Force shared libraries to know about the correct library loader */" > $@
+ 	$(Q)echo "#include <features.h>" >> $@
+ 	$(Q)echo "const char __dl_ldso__[] attribute_hidden __attribute__ ((weak)) __attribute__ ((section " \
+-		"(\".interp\"))) =\""$(RUNTIME_PREFIX)$(MULTILIB_DIR)/$(UCLIBC_LDSO)"\";" >> $@
++		"(\".interp\"))) =\""$(RUNTIME_PREFIX)$(MULTILIB_DIR)/$(UCLIBC_LDSO)"\";" | $(SED) -e 's://:/:g' >> $@
+ 
+ $(interp): $(top_builddir)lib/interp.c
+ 	$(compile.c)
