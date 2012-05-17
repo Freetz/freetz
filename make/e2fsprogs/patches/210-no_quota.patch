@@ -147,7 +147,7 @@
 +#ifdef CONFIG_QUOTA
  	/* Making quota file hidden */
  	{ PR_0_HIDE_QUOTA,
- 	  N_("Making @q @is hidden.\n\n"),
+ 	  N_("Making @q @i %i (%Q) hidden.\n"),
  	  PROMPT_NONE, PR_PREEN_OK },
 +#endif
  
@@ -180,6 +180,19 @@
  
  	/* Invalid bad inode */
  	{ PR_1_INVALID_BAD_INODE,
+@@ -1691,10 +1699,12 @@
+ 	  N_("Recreate @j"),
+ 	  PROMPT_NULL, PR_PREEN_OK | PR_NO_OK },
+ 
++#ifdef CONFIG_QUOTA
+ 	/* Update quota information if it is inconsistent */
+ 	{ PR_6_UPDATE_QUOTAS,
+ 	  N_("Update quota info for quota type %N"),
+ 	  PROMPT_NULL, PR_PREEN_OK | PR_NO_OK },
++#endif
+ 
+ 	{ 0 }
+ };
 --- e2fsck/problem.h
 +++ e2fsck/problem.h
 @@ -234,8 +234,10 @@
@@ -214,6 +227,17 @@
  
  /* Invalid bad inode */
  #define PR_1_INVALID_BAD_INODE		0x010065
+@@ -1028,8 +1028,10 @@
+ /* Recreate the journal if E2F_FLAG_JOURNAL_INODE flag is set */
+ #define PR_6_RECREATE_JOURNAL		0x060001
+ 
++#ifdef CONFIG_QUOTA
+ /* Update quota information if it is inconsistent */
+ #define PR_6_UPDATE_QUOTAS		0x060002
++#endif
+ 
+ /*
+  * Function declarations
 --- e2fsck/quota.c
 +++ e2fsck/quota.c
 @@ -4,6 +4,7 @@
@@ -224,7 +248,7 @@
  #ifdef HAVE_SYS_MOUNT_H
  #include <sys/param.h>
  #include <sys/mount.h>
-@@ -88,3 +89,4 @@
+@@ -80,3 +81,4 @@
  
  	return;
  }
@@ -246,15 +270,15 @@
  }
 --- e2fsck/unix.c
 +++ e2fsck/unix.c
-@@ -1577,6 +1577,7 @@
+@@ -1575,6 +1575,7 @@
  	else
  		journal_size = -1;
  
 +#ifdef CONFIG_QUOTA
  	if (sb->s_feature_ro_compat & EXT4_FEATURE_RO_COMPAT_QUOTA) {
- 		int qtype;
  		/* Quotas were enabled. Do quota accounting during fsck. */
-@@ -1588,6 +1589,7 @@
+ 		if ((sb->s_usr_quota_inum && sb->s_grp_quota_inum) ||
+@@ -1585,6 +1586,7 @@
  
  		quota_init_context(&ctx->qctx, ctx->fs, qtype);
  	}
@@ -262,13 +286,16 @@
  
  	run_result = e2fsck_run(ctx);
  	e2fsck_clear_progbar(ctx);
-@@ -1621,10 +1623,12 @@
+@@ -1618,6 +1620,7 @@
  	}
  no_journal:
  
 +#ifdef CONFIG_QUOTA
  	if (ctx->qctx) {
- 		quota_write_inode(ctx->qctx, -1);
+ 		int i, needs_writeout;
+ 		for (i = 0; i < MAXQUOTAS; i++) {
+@@ -1633,6 +1636,7 @@
+ 		}
  		quota_release_context(&ctx->qctx);
  	}
 +#endif
@@ -293,7 +320,7 @@
  
 --- misc/mke2fs.c
 +++ misc/mke2fs.c
-@@ -64,7 +64,9 @@
+@@ -61,7 +61,9 @@
  #include "prof_err.h"
  #include "../version.h"
  #include "nls-enable.h"
@@ -303,7 +330,7 @@
  
  #define STRIDE_LENGTH 8
  
-@@ -96,7 +98,9 @@
+@@ -93,7 +95,9 @@
  int	lazy_itable_init;
  char	*bad_blocks_filename;
  __u32	fs_stride;
@@ -313,7 +340,7 @@
  
  struct ext2_super_block fs_param;
  char *fs_uuid = NULL;
-@@ -796,6 +800,7 @@
+@@ -793,6 +797,7 @@
  			discard = 1;
  		} else if (!strcmp(token, "nodiscard")) {
  			discard = 0;
@@ -321,7 +348,7 @@
  		} else if (!strcmp(token, "quotatype")) {
  			if (!arg) {
  				r_usage++;
-@@ -813,6 +818,7 @@
+@@ -810,6 +815,7 @@
  				r_usage++;
  				continue;
  			}
@@ -329,7 +356,7 @@
  		} else {
  			r_usage++;
  			badopt = token;
-@@ -832,7 +838,11 @@
+@@ -829,7 +835,11 @@
  			"\ttest_fs\n"
  			"\tdiscard\n"
  			"\tnodiscard\n"
@@ -342,7 +369,7 @@
  			badopt ? badopt : "");
  		free(buf);
  		exit(1);
-@@ -2206,6 +2216,7 @@
+@@ -2204,6 +2214,7 @@
  	ext2fs_free_blocks_count_set(fs->super, EXT2FS_C2B(fs, tot_free));
  }
  
@@ -350,7 +377,7 @@
  static int create_quota_inodes(ext2_filsys fs)
  {
  	quota_ctx_t qctx;
-@@ -2217,6 +2228,7 @@
+@@ -2215,6 +2226,7 @@
  
  	return 0;
  }
@@ -358,7 +385,7 @@
  
  int main (int argc, char *argv[])
  {
-@@ -2576,9 +2588,11 @@
+@@ -2574,9 +2586,11 @@
  	if (EXT2_HAS_RO_COMPAT_FEATURE(&fs_param,
  				       EXT4_FEATURE_RO_COMPAT_BIGALLOC))
  		fix_cluster_bg_counts(fs);
