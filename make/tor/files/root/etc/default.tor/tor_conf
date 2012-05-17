@@ -54,6 +54,7 @@ if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
 	[ "$TOR_DIRPORT" ] && echo "DirPort $TOR_DIRPORT"
 	[ "$TOR_MAXONIONSPENDING" ] && echo "MaxOnionsPending $TOR_MAXONIONSPENDING"
 	[ "$TOR_EXITPOLICY" ] && echo "ExitPolicy $TOR_EXITPOLICY"
+	[ "$TOR_BRIDGERELAY" == "yes" ] && echo "BridgeRelay 1"
 fi
 
 cat <<EOF

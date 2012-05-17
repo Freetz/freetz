@@ -9,6 +9,7 @@ check "$TOR_STRICT_ENTRY_NODES" yes:strict_entry
 check "$TOR_STRICT_EXIT_NODES" yes:strict_exit
 check "$TOR_RELAY_ENABLED" yes:relay_enabled
 check "$TOR_DATADIRPERSISTENT" yes:datadirpersistent_enabled
+check "$TOR_BRIDGERELAY" yes:bridgerelay
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
@@ -22,7 +23,7 @@ sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
 
 cat << EOF
 <h2>$(lang de:"Der Tor Server ist gebunden an" en:"The Tor server is listening on")</h2>
-<p>$(lang de:"IP Adresse" en:"IP Address"):&nbsp;<input id="address" type="text" size="16" maxlength="16" name="socks_address" value="$(html "$TOR_SOCKS_ADDRESS")">   
+<p>$(lang de:"IP Adresse" en:"IP Address"):&nbsp;<input id="address" type="text" size="16" maxlength="16" name="socks_address" value="$(html "$TOR_SOCKS_ADDRESS")">
 $(lang de:"Port" en:"Port"):&nbsp;<input id="port" type="text" size="5" maxlength="5" name="socks_port" value="$(html "$TOR_SOCKS_PORT")"></p>
 <h2>$(lang de:"Fernsteuerung" en:"Remote Control") (optional)</h2>
 <p>Control Port:&nbsp;<input id="control" type="text" size="5" maxlength="5" name="control_port" value="$(html "$TOR_CONTROL_PORT")"></p>
@@ -67,11 +68,12 @@ cat << EOF
 <p>$(lang de:"IP oder FQDN des Servers" en:"IP or FQDN for your server"):&nbsp;<input id="address" type="text" size="30" maxlength="30" name="address" value="$(html "$TOR_ADDRESS")")></p>
 <p>BandwidthRate ($(lang de:"z.B." en:"e.g.") "20 KB"):&nbsp;<input id="bandwith" type="text" size="5" maxlength="7" name="bandwidthrate" value="$(html "$TOR_BANDWIDTHRATE")"></p>
 <p>BandwidthBurst ($(lang de:"z.B." en:"e.g.") "40 KB"):&nbsp;<input id="bandwithburst" type="text" size="5" maxlength="7" name="bandwidthburst" value="$(html "$TOR_BANDWIDTHBURST")"></p>
-<p>ORPort:&nbsp;<input id="or" type="text" size="5" maxlength="5" name="orport" value="$(html "$TOR_ORPORT")"> &nbsp; DirPort:&nbsp;<input id="dir" type="text" size="5" maxlength="5" name="dirport" value="$(html "$TOR_DIRPORT")"></p> 
+<p>ORPort:&nbsp;<input id="or" type="text" size="5" maxlength="5" name="orport" value="$(html "$TOR_ORPORT")"> &nbsp; DirPort:&nbsp;<input id="dir" type="text" size="5" maxlength="5" name="dirport" value="$(html "$TOR_DIRPORT")"></p>
 <p>MaxOnionsPending (Default 100): &nbsp;<input id="maxonions" type="text" size="5" maxlength="5" name="maxonionspending" value="$(html "$TOR_MAXONIONSPENDING")"></p>
 <p>ExitPolicy ($(lang de:"z.B." en:"e.g.") "reject *.*" = no exits allowed):&nbsp;<input id="policy" type="text" size="20" maxlength="20" name="exitpolicy" value="$(html "$TOR_EXITPOLICY")"></p>
-<p>DataDirectory (Default /var/tmp/tor): &nbsp;<input id="datadir" type="text" size="40" maxlength="40" name="datadirectory" 
-value="$(html "$TOR_DATADIRECTORY")"> &nbsp; 
+<p>$(lang de:"Diesen Server als Bridge verwenden" en:"Use this server as a bridge"): <input type="hidden" name="bridgerelay_nodes" value="no"><input id="e10" type="checkbox" name="bridgerelay_nodes" value="yes"$bridgerelay_chk></p>
+<p>DataDirectory (Default /var/tmp/tor): &nbsp;<input id="datadir" type="text" size="40" maxlength="40" name="datadirectory"
+value="$(html "$TOR_DATADIRECTORY")"> &nbsp;
 $(lang de:"Verzeichnis" en:"directory") persistent: <input type="hidden" name="datadirpersistent" value="no"><input id="e9" type="checkbox" name="datadirpersistent" value="yes"$datadirpersistent_enabled_chk></p>
 </p>
 
