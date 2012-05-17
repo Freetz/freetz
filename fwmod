@@ -997,7 +997,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 
 		echo1 "generating modules.dep"
-		NM=$NM ${TOOLS_DIR}/depmod.pl -b "$MODULES_DIR" \
+		[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && errsyms="-e"
+		NM=$NM ${TOOLS_DIR}/depmod.pl $errsyms -b "$MODULES_DIR" \
 			-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_KERNEL_REF}-${FREETZ_AVM_VERSION_STRING}.map
 		# add plugin kernel modules for 7270 if plugins are not enabled
 		if [ "$FREETZ_TYPE_FON_WLAN_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
