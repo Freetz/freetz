@@ -553,8 +553,10 @@ function sizeinfo()
 			local shash="$(ls -l $1 | $MD5SUM)"
 			local sfile="${SIZEINFO_CACHEDIR}/${1##*/}.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			;;
-		pkg)	#packages: one directory
-			local sfile="${1}/../.sizeinfo.BS_${FILESYSTEM_BLOCKSIZE_KB}"
+		pkg)	#packages: files (without .excluded)
+			local shash="$(echo $* | sort | $MD5SUM)"
+			local sfile="${1}/.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
+			shift
 			;;
 		add)	#addons: one directory
 			local shash="$(find $1 -type f -exec ls -l {} ';' | $MD5SUM)"
@@ -568,11 +570,15 @@ function sizeinfo()
 
 	#compressed size
 	if [ ! -s "$sfile" ]; then
-		local tempf=/tmp/freetz-sizeinfo-$$.tmp
-		$TOOLS_DIR/$MKSQUASHFS_TOOL $@ $tempf $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE | grep -A1 ^Filesystem \
-			| sed -n 'N;s!Filesystem size \(.*\)ytes (.*\n.*(\(.*\)ytes.*$!\1 \2!p' \
-			| awk '{printf "%8s%3s (uncompressed:%8s%3s)",$1,$2,$3,$4}' > ${sfile}
-		rm -rf $tempf 2>/dev/null
+		if [ $# -eq 0 ]; then
+			echo -n "    0.00 Kb (uncompressed:    0.00 Kb)" > ${sfile}
+		else
+			local tempf=/tmp/freetz-sizeinfo-$$.tmp
+			$TOOLS_DIR/$MKSQUASHFS_TOOL $@ $tempf $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE 2>/dev/null | grep -A1 ^Filesystem \
+				| sed -n 'N;s!Filesystem size \(.*\)ytes (.*\n.*(\(.*\)ytes.*$!\1 \2!p' \
+				| awk '{printf "%8s%3s (uncompressed:%8s%3s)",$1,$2,$3,$4}' > ${sfile}
+			rm -rf $tempf 2>/dev/null
+		fi
 	fi
 
 	#uncompressed size
@@ -1028,7 +1034,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
 
 		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
-		sizeinfo pkg "${PACKAGES_DIR}/${pkg}/root"
+
+		pkgfiles="$(find ${PACKAGES_DIR}/${pkg}/root -type f)"
+		excludes="$(cat ${PACKAGES_DIR}/${pkg}/.exclude 2>/dev/null | sed ':a;N;$!ba;s/\n/|/g')"
+		[ -n "$excludes" ] && pkgfiles=$(echo "$pkgfiles" | grep -vE "$excludes" )
+		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
 	done
 	for pkg in $(static_addons); do
 		sizeinfo "$pkg (addon)"
