@@ -1,0 +1,13 @@
+--- makefile.orig	2008-03-21 15:28:44.000000000 +0100
++++ makefile	2008-03-21 15:29:48.000000000 +0100
+@@ -35,8 +35,8 @@
+ 	$(OUTDIR)/os_unix.o $(OUTDIR)/os_windows.o $(OUTDIR)/inadyn_cmd.o
+ OBJ=$(COMMON_OBJ) $(CFG_OBJ)
+ 
+-COMPILE=gcc  -Wall  -pedantic -c $(INCLUDE) $(ARCH_SPECIFIC_CFLAGS) $(CFLAGS) -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
+-LINK=gcc $(CFLAGS) -o "$(OUTFILE)" $(OBJ) $(CFG_LIB) $(ARCH_SPECIFIC_LIBS) $(LIBS)
++COMPILE=$(CC)  -Wall  -pedantic -c $(INCLUDE) $(ARCH_SPECIFIC_CFLAGS) $(CFLAGS) -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
++LINK=$(CC) $(CFLAGS) $(LDFLAGS) -o "$(OUTFILE)" $(OBJ) $(CFG_LIB) $(ARCH_SPECIFIC_LIBS) $(LIBS)
+ 
+ # Pattern rules
+ $(OUTDIR)/%.o : $(SRCDIR)/%.c
