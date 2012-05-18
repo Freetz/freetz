@@ -27,10 +27,6 @@ KERNEL_LINKING_FILES = \
 	drivers/net/avm_cpmac/linux_ar_reg.h \
 	drivers/net/avm_cpmac/linux_avm_cpmac.h
 
-ifeq ($(FREETZ_REPLACE_KERNEL),y)
-TARGETS+=kernel
-else
-ifeq ($(shell grep -qe '^FREETZ_MODULE_.*=y$$' $(TOPDIR)/.config && echo y),y)
-TARGETS+=kernel
-endif
+ifneq (,$(filter y,$(FREETZ_REPLACE_KERNEL) $(shell grep -qe '^FREETZ_MODULE_.*=y$$' $(TOPDIR)/.config && echo y)))
+	TARGETS+=kernel
 endif
