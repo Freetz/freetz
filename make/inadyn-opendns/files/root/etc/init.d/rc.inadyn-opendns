@@ -1,0 +1,44 @@
+#!/bin/sh
+
+DAEMON=inadyn-opendns
+. /etc/init.d/modlibrc
+
+
+config() {
+	modlib_config
+}
+
+start() {
+	modlib_startdaemon $DAEMON_BIN --input_file $DAEMON_CONFIG $INADYN_OPENDNS_CMDLINE
+}
+
+case $1 in
+	""|load)
+
+		modreg cgi $DAEMON inadyn-OpenDNS
+
+		modlib_start $INADYN_OPENDNS_ENABLED
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
