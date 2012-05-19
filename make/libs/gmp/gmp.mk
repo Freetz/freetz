@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 5.0.4)
-$(PKG)_LIB_VERSION:=10.0.4
+$(call PKG_INIT_LIB, 5.0.5)
+$(PKG)_LIB_VERSION:=10.0.5
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=50c3edcb7c9438e04377ee9a1a061b79
+$(PKG)_SOURCE_MD5:=041487d25e9c230b0c42b106361055fe
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
