@@ -170,7 +170,7 @@ endchoice
 
 choice
 	prompt "Target compiler"
-	default FREETZ_TARGET_COMPILER_GCC_4_5
+	default FREETZ_TARGET_COMPILER_GCC_4_6
 
 	config FREETZ_TARGET_COMPILER_GCC_4_4
 		bool "gcc-4.4.7"
@@ -178,6 +178,7 @@ choice
 
 	config FREETZ_TARGET_COMPILER_GCC_4_5
 		bool "gcc-4.5.3"
+		depends on FREETZ_BUILD_TOOLCHAIN
 
 	config FREETZ_TARGET_COMPILER_GCC_4_6
 		bool "gcc-4.6.3"
