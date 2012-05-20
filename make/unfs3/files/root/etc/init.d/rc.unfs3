@@ -1,0 +1,79 @@
+#!/bin/sh
+
+DAEMON=unfs3
+DAEMON_BIN=unfsd
+. /etc/init.d/modlibrc
+
+start() {
+	set -o noglob
+	echo -n 'Starting $DAEMON ... '
+
+	if [ ! -e /etc/exports ]; then
+		echo "can't open /etc/exports ... failed."
+		exit 1
+	fi
+
+	/usr/sbin/portmap
+ 	exitval1=$?
+	/usr/bin/unfsd -u -i $PID_FILE
+ 	exitval2=$?
+
+	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		return 1
+	fi
+}
+
+stop() {
+	local id=$(cat $PID_FILE 2>/dev/null)
+	kill $id 2>/dev/null
+	exitval1=$?
+	killall portmap > /dev/null 2>&1
+	exitval2=$?
+	[ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ] && return 0
+}
+
+case $1 in
+	""|load)
+		[ -d "/tmp/flash/unfs3" ] || mkdir -p /tmp/flash/unfs3
+		ln -fs /tmp/flash/unfs3/exports /var/tmp/exports
+
+		# portmap needs this
+		modlib_addgroup nobody
+		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+
+		modreg cgi $DAEMON 'UNFS-Server'
+		modreg daemon $DAEMON
+		modreg file $DAEMON hosts_allow 'hosts.allow' 1 "hosts_allow"
+		modreg file $DAEMON hosts_deny 'hosts.deny' 1 "hosts_deny"
+		modreg file $DAEMON exports 'exports' 1 "exports"
+
+		modlib_start $UNFS3_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
