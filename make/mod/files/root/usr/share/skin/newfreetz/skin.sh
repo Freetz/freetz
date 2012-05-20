@@ -32,7 +32,7 @@ skin_body_begin() {
 		<div id="title-box-left"></div>
     	<div id="title-box-mid"></div>
    		 <div id="title-box-right"></div>
-    	<div id="title-box-logo"><a href="/cgi-bin/index.cgi" class="logo"><img src="/images/newfreetz/freetz_logo.gif"></a></div>
+    	<div id="title-box-logo"><a href="http://www.freetz.org/" target="_blank" class="logo"><img src="/images/newfreetz/freetz_logo.gif"></a></div>
     	<div id="title-box-fun">the fun has just begun ...</div>
     	<div id="title-box-version">$(html < /etc/.freetz-version)</div>
     </div>
