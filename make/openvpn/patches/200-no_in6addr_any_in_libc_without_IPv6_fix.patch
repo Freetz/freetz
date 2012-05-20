@@ -11,7 +11,41 @@
    if (hand >= 0 && hand < pool->size_ipv6 )
 --- socket.c
 +++ socket.c
-@@ -2603,10 +2603,11 @@
+@@ -1379,6 +1379,7 @@
+ 	    {
+ 	      int success;
+ 	      int err;
++	      static const struct in6_addr my_in6addr_any = IN6ADDR_ANY_INIT;
+ 	      CLEAR(sock->info.lsa->local.addr.in6);
+ 	      if (sock->local_host)
+ 		{
+@@ -1392,7 +1393,7 @@
+ 	      else
+ 		{
+ 		  sock->info.lsa->local.addr.in6.sin6_family = AF_INET6;
+-		  sock->info.lsa->local.addr.in6.sin6_addr = in6addr_any;
++		  sock->info.lsa->local.addr.in6.sin6_addr = my_in6addr_any;
+ 		  success = true;
+ 		}
+ 	      if (!success)
+@@ -1428,6 +1429,7 @@
+ {
+   struct gc_arena gc = gc_new ();
+   int af;
++  static const struct in6_addr my_in6addr_any = IN6ADDR_ANY_INIT;
+ 
+   if (!sock->did_resolve_remote)
+     {
+@@ -1444,7 +1446,7 @@
+               case AF_INET6:
+                 CLEAR(sock->info.lsa->remote.addr.in6);
+                 sock->info.lsa->remote.addr.in6.sin6_family = AF_INET6;
+-                sock->info.lsa->remote.addr.in6.sin6_addr = in6addr_any;
++                sock->info.lsa->remote.addr.in6.sin6_addr = my_in6addr_any;
+                 break;
+             }
+ 
+@@ -2558,10 +2558,11 @@
  const char *
  print_in6_addr (struct in6_addr a6, unsigned int flags, struct gc_arena *gc)
  {
