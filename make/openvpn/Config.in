@@ -1,8 +1,8 @@
 config FREETZ_PACKAGE_OPENVPN
-	bool "OpenVPN 2.3-alpha1"
+	bool "OpenVPN 2.2.2"
 	select FREETZ_PACKAGE_BRIDGE_UTILS
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC && ! FREETZ_PACKAGE_OPENVPN_POLARSSL
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_OPENVPN_STATIC && ! FREETZ_PACKAGE_OPENVPN_POLARSSL
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_OPENVPN_STATIC
 	default n
 	help
 		VPN Server
@@ -46,28 +46,3 @@ config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 	help
 		Enables binary optimiziation for size.
 		Must be disabled to use the config option "explicit-exit-notify".
-
-config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
-	bool "Use \"ip\" instead of \"ifconfig\" and \"route\""
-	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_BUSYBOX_IP
-	select FREETZ_BUSYBOX_FEATURE_IP_ADDRESS 
-	select FREETZ_BUSYBOX_FEATURE_IP_LINK
-	select FREETZ_BUSYBOX_FEATURE_IP_ROUTE
-	default n
-	help
-		Enables openvpn to use ip when setting IPs, link parameters and routes.
-
-comment "selects busybox's \"IP\" options \"link\", \"address\" and \"route\" (if not yet selected) ---" 
-	depends on FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
-
-config FREETZ_PACKAGE_OPENVPN_POLARSSL
-	bool "Use Polarssl (exprimental)"
-	depends on FREETZ_PACKAGE_OPENVPN
-	default n
-	select FREETZ_LIB_libpolarssl if ! FREETZ_PACKAGE_OPENVPN_STATIC
-	help
-		Enables usage of polarssl instead of openssl.
-		Should lead to smaller binaries, but lacks support for some openssl features.
-
-		IMPORTANT: 	PolarSSL does NOT support OpenVPN default cipher "blowfish" (BF-CBC)!
-				Please use AES-128-CBC instead.

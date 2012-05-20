@@ -150,8 +150,6 @@ sec_begin '$(lang de:"Basiseinstellungen" en:"Basic Configuration")'
 
 HASBRCTL=$(which brctl 2> /dev/null)
 HASIPV6=$([ -d /proc/sys/net/ipv6 ] && echo true)
-HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true)
-
 
 cat << EOF
 <table class="padded">
@@ -256,7 +254,7 @@ cat << EOF
 	<td>
 	  Cipher:&nbsp;
 	  <select id="id_act_cipher" style="width:150px;" name="my_cipher" onchange='if (this.value=="none") (alert($(lang de:"\"Achtung, Verkehr durch das VPN ist so unverschl&uuml;sselt!\"" en:"\"Caution: All traffic will be unencrypted!\""))); changeval();'>
-		$([ $HASBLOWFISH ] && echo '<option value="BF-CBC">Blowfish</option>')
+		<option value="BF-CBC">Blowfish</option>
 		<option value="AES-128-CBC">AES 128</option>
 		<option value="AES-256-CBC">AES 256</option>
 		<option value="DES-EDE3-CBC">Triple-DES</option>
@@ -270,7 +268,6 @@ cat << EOF
 	  </div>
 	</td>
 </tr>
-$([ ! $HASBLOWFISH ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>')
 <tr>
 	<td colspan="3">
 	  <div id="div_no_certtype" style="display:none; padding-top:10px;">
