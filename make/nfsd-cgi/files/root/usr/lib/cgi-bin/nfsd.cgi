@@ -1,18 +1,21 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
-check "$NFSD_ENABLED" yes:auto "*":man
+
+#
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$NFSD_ENABLED" "" "" 0
+
+sec_end
+
+#
+
+sec_begin '$(lang de:"Optionen" en:"Options")'
+
+cgi_print_checkbox_p "no_nfs_v4" "$NFSD_NO_NFS_V4" "$(lang de:"NFS Version 4 nicht anbieten" en:"Do not offer NFS version 4")"
 
 sec_end
 

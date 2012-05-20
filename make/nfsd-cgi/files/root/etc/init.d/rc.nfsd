@@ -33,7 +33,8 @@ start() {
  	exitval1=$?
 	/usr/sbin/exportfs -r > /dev/null 2>&1
  	exitval2=$?
-	/usr/sbin/nfsd
+	[ "$NFSD_NO_NFS_V4" == "yes" ] && NO_NFS_VERSION_4="-N 4"
+	/usr/sbin/nfsd $NO_NFS_VERSION_4
  	exitval3=$?
 	/usr/sbin/mountd
 	exitval4=$?
