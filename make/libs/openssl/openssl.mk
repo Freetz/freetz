@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.9.8w)
+$(call PKG_INIT_LIB, 0.9.8x)
 $(PKG)_LIB_VERSION:=0.9.8
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4ceb7d570e42c094b360cc7b8e848a0b
+$(PKG)_SOURCE_MD5:=ee17e9bc805c8cc7d0afac3b0ef78eda
 $(PKG)_SITE:=http://www.openssl.org/source
 
 $(PKG)_SSL_BINARY:=$($(PKG)_DIR)/libssl.so.$($(PKG)_LIB_VERSION)
