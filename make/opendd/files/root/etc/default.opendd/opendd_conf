@@ -32,9 +32,13 @@ else
 fi
 
 if [ "$OPENDD_EMAIL_ENABLED" == "yes" ]; then
+if [ -z "$OPENDD_EMAIL_SENDER" ]; then
+	echo "mailfrom = $OPENDD_EMAIL_FROM"
+else
+	echo "mailfrom = \"$OPENDD_EMAIL_SENDER\" <$OPENDD_EMAIL_FROM>"
+fi
 cat << EOF
 ##email
-mailfrom = $OPENDD_EMAIL_FROM
 mailto = $OPENDD_EMAIL_TO
 smtpservername = $OPENDD_EMAIL_SERVER
 smtpserverport = $OPENDD_EMAIL_PORT

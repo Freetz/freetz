@@ -1,0 +1,35 @@
+Index: include/sendmail.c
+===================================================================
+--- include/sendmail.c
++++ include/sendmail.c
+@@ -110,16 +110,21 @@
+ 
+ int get_mailfrom(char **buffer, const char *mailfrom) {
+   size_t size;
+-  *buffer = strdup("MAIL FROM: <");
++  const char *MAIL_FROM = "MAIL FROM: <";
++  const char *src;
++  char *dst;
++  size_t MAIL_FROM_len = strlen (MAIL_FROM);
++  *buffer = malloc (MAIL_FROM_len + strlen(mailfrom) + 2);
+   if (*buffer == NULL)
+     return 0;
+-  size = strlen("MAIL FROM: <") + strlen(mailfrom) + 2;
+-  if (!saferealloc((void **)buffer, *buffer, size * sizeof(char))) {
+-    FREE(*buffer);
+-    return 0;
+-  }
+-  strlcat(*buffer, mailfrom, size * sizeof(char));
+-  strlcat(*buffer, ">", size * sizeof(char));
++  src = strchr (mailfrom, '<');
++  if (!src)
++    src = mailfrom;
++  memcpy (*buffer, MAIL_FROM, MAIL_FROM_len);
++  dst = *buffer + MAIL_FROM_len;
++  while (*src != '\0' && *src != '>')
++    *dst++ = *src++;
++  *dst = '>';
+   return 1;
+ }
+ 
+

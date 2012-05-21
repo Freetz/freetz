@@ -58,8 +58,9 @@ cat << EOF
 <input type="hidden" name="email_enabled" value="no">
 <input id="e1" type="checkbox" name="email_enabled" value="yes"$email_enabled_chk><label for="e1"> $(lang de:"eMail verschicken" en:"Send eMail")</label>
 </p>
-<p>$(lang de:"Absender" en:"From"): <input type="text" name="email_from" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_FROM")"></p>
-<p>$(lang de:"Empf&auml;nger" en:"To"): <input type="text" name="email_to" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_TO")"></p>
+<p>$(lang de:"Sendername" en:"Sender name"): <input type="text" name="email_sender" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_SENDER")"></p>
+<p>$(lang de:"Senderadresse" en:"Sender address"): <input type="text" name="email_from" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_FROM")"></p>
+<p>$(lang de:"Empf&auml;nger" en:"Recipient"): <input type="text" name="email_to" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_TO")"></p>
 <p>$(lang de:"E-Mail-Server" en:"E-mail-server"): <input type="text" name="email_server" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_SERVER")"></p>
 <p>$(lang de:"E-Mail-Server Port" en:"E-mail-server port"): <input type="text" name="email_port" size="4" maxlength="5" value="$(html "$OPENDD_EMAIL_PORT")"></p>
 <p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="email_user" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_USER")"></p>
