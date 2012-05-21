@@ -27,7 +27,7 @@ skin_body_begin() {
 	cat << EOF
 <div id="world">
 <div id="header">
-<h1><a href="http://www.freetz.org/" target="_blank" class="logo">Freetz</a>&nbsp;<a id="about" href="/cgi-bin/about.cgi" target="_blank">&ndash;</a>&nbsp;<span class="title">$title</span></h1>
+<h1><a href="http://freetz.org/" target="_blank" class="logo">Freetz</a>&nbsp;<a id="about" href="/cgi-bin/about.cgi" target="_blank">&ndash;</a>&nbsp;<span class="title">$title</span></h1>
 EOF
 if [ -n "$_CGI_HELP" ]; then
 	echo "<a class='help' href='$(html "$_CGI_HELP")'>$(lang de:"Hilfe" en:"Help")</a>"
