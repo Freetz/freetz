@@ -2,7 +2,7 @@ Index: include/sendmail.c
 ===================================================================
 --- include/sendmail.c
 +++ include/sendmail.c
-@@ -110,16 +110,21 @@
+@@ -110,16 +110,23 @@
  
  int get_mailfrom(char **buffer, const char *mailfrom) {
    size_t size;
@@ -24,6 +24,8 @@ Index: include/sendmail.c
 +  src = strchr (mailfrom, '<');
 +  if (!src)
 +    src = mailfrom;
++  else
++    src++;
 +  memcpy (*buffer, MAIL_FROM, MAIL_FROM_len);
 +  dst = *buffer + MAIL_FROM_len;
 +  while (*src != '\0' && *src != '>')
