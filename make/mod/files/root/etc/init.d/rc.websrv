@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# "load" of this script by freetz, not rc.net
-[ ! -e /mod/etc/default.websrv ] && exit
+# rc.mod has to "load" before rc.net is allowed to "start"/"stop"
+[ ! -e /tmp/.websrvload -a -n "$1" -a "$1" != "load" ] && exit
 
 DAEMON=websrv
 DAEMON_BIN=httpd-$DAEMON
@@ -20,6 +20,8 @@ start() {
 
 case $1 in
 	""|load)
+		touch /tmp/.websrvload
+
 		modlib_add_httpd_symlink $DAEMON
 		modreg daemon -p avm $DAEMON
 
