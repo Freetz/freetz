@@ -11,9 +11,13 @@ DAEMON_ENV='LD_PRELOAD='
 
 config() {
 	modlib_config
+	rm -f /var/log/${DAEMON}_*.log 2>/dev/null
 	modunreg status lighttpd lighttpd-log
 	if [ "$LIGHTTPD_LOGGING" = "yes" ]; then
 		if [ "$LIGHTTPD_LOGGING_ERROR_FILE" = "yes" ] || [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" = "y" -a "$LIGHTTPD_LOGGING_ACCESS_FILE" = "yes" ]; then
+			[ "$LIGHTTPD_CHROOT" = "yes" ] && local chroot_prefix="${LIGHTTPD_DOCROOT}/"
+			ln -sf $chroot_prefix$LIGHTTPD_LOGGING_ERROR /var/log/${DAEMON}_error.log
+			ln -sf $chroot_prefix$LIGHTTPD_LOGGING_ACCESS /var/log/${DAEMON}_access.log
 			modreg status lighttpd lighttpd lighttpd-log
 		fi
 	fi

@@ -101,7 +101,7 @@ EOF
 out="connection.kbytes-per-second = $LIGHTTPD_LIMITCONN\nserver.kbytes-per-second = $LIGHTTPD_LIMITSRV"
 virthost_conf "$LIGHTTPD_LIMITVIRT" "$out"
 
-if [ "$LIGHTTPD_CHROOT" = "yes" ];then
+if [ "$LIGHTTPD_CHROOT" = "yes" ]; then
 cat << EOF
 server.chroot = "$LIGHTTPD_DOCROOT"
 EOF

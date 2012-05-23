@@ -4,17 +4,12 @@
 . /usr/lib/libmodcgi.sh
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
-CHROOT=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "server.chroot" | cut -d\" -f 2)
-LOGA=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "accesslog.filename" | cut -d\" -f 2)
-LOGE=$(cat /mod/etc/lighttpd/lighttpd.conf | grep "server.errorlog" | cut -d\" -f 2)
-if [ -n "$CHROOT" ]; then
-	LOGA="$CHROOT/$LOGA"
-	LOGE="$CHROOT/$LOGE"
-fi
+LOGA="/var/log/lighttpd_access.log"
+LOGE="/var/log/lighttpd_error.log"
 
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG" = "y" ]; then
 	if [ -r "$LOGA" ]; then
-		echo "<h1>lighttpd access log $LOGA</h1>"
+		echo "<h1>lighttpd access log $(realpath $LOGA)</h1>"
 		echo -n '<pre class="log">'
 		html < $LOGA
 		echo '</pre>'
@@ -26,7 +21,7 @@ else
 fi
 
 if [ -r "$LOGE" ]; then
-	echo "<h1>lighttpd access log $LOGE</h1>"
+	echo "<h1>lighttpd access log $(realpath $LOGE)</h1>"
 	echo -n '<pre class="log">'
 	html < $LOGE
 	echo '</pre>'
