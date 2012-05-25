@@ -695,7 +695,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				[ "${REVISION:0:6}" == "export" ] && REVISION=""
 			fi
 		elif [ -d .git ]; then
-			REVISION="$(git log 2>/dev/null | sed -rn 's!.*git-svn-id.*\@([^ ]*).*!\1!p')"
+			REVISION="$(git log 2>/dev/null | sed -rn 's!.*git-svn-id.*\@([^ ]*).*!\1!p' | head -n1)"
 		fi
 		[ -n "$REVISION" ] && REVISION="-$REVISION"
 	fi
