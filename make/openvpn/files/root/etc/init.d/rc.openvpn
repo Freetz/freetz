@@ -8,48 +8,28 @@ mypidof() {
 	ps -w | sed -n "/\/m[o]d\/etc\/${1}.conf/ s/^[ ]*\([0-9]*\)[ ].*/\1/ p"
 }
 
-start() {
-	echo -n "Starting $DAEMON ... "
-	if [ -n "$(mypidof $DAEMON)" ]; then
-		echo "already started."
-		return 1;
-	fi
-
-	if [ ! -e "/tmp/flash/openvpn/static.key" ]; then
-		echo -n "creating static.key ... "
-		openvpn --genkey --secret /tmp/flash/openvpn/static.key
-		/usr/bin/modsave flash >/dev/null
-	fi
-
+config(){
 	if [ -r "/tmp/flash/openvpn/own_${DAEMON}.conf" ]; then
 		cp /tmp/flash/openvpn/own_${DAEMON}.conf /mod/etc/${DAEMON}.conf
 	else
-		if [ -x "/tmp/flash/${DAEMON}_conf" ]; then
-			/tmp/flash/${DAEMON}_conf /mod/etc/${DAEMON}.conf
-		else
-			/mod/etc/default.${DAEMON}/${DAEMON}_conf /mod/etc/${DAEMON}.conf
-		fi
-		if [ -r "/tmp/flash/${DAEMON}.extra" ]; then
-			cat /tmp/flash/${DAEMON}.extra >> /mod/etc/${DAEMON}.conf
-		fi
+		modlib_config ${DAEMON}
 	fi
+}
 
+start() {
 	cp -f /etc/resolv.conf /tmp/openvpn/etc
 	cp -f /etc/TZ /tmp/openvpn/etc
 
-	$DAEMON --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
+	trap 'echo -e "You may get some more hints by starting ${DAEMON} w/o \"--daemon\":\n\t$DAEMON --config /mod/etc/${DAEMON}.conf"' EXIT
+	modlib_startdaemon ${DAEMON} --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid --daemon
+	trap - EXIT
+
 	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
 	if [ $(which brctl) ] && TAP=$(grep "#Helperline" /mod/etc/${DAEMON}.conf | grep -o tap[0-9] ); then
 		brctl addif lan $TAP 2> /dev/null
 	fi
 }
+
 
 stop() {
 	echo -n "Stopping ${DAEMON} ... "
@@ -70,7 +50,6 @@ stop() {
 		exit $exitval
 	fi
 
-	rm -f /mod/etc/${DAEMON}.conf
 	rm -f /var/run/${DAEMON}.pid
 }
 
@@ -98,6 +77,11 @@ case $1 in
 			mkdir -p /tmp/openvpn/etc
 			mkdir -p /tmp/flash/openvpn
 		fi
+		if [ ! -e "/tmp/flash/openvpn/static.key" ]; then
+			echo -n "creating static.key ... "
+			openvpn --genkey --secret /tmp/flash/openvpn/static.key
+			/usr/bin/modsave flash >/dev/null
+		fi
 		d_BU="$DAEMON"
 		as="${OPENVPN_AUTOSTART#*#}"
 		for d in $(echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' ); do
@@ -121,7 +105,7 @@ case $1 in
 		fi
 		;;
 	start)
-		start
+		modlib_start
 		;;
 	stop)
 		stop

@@ -80,7 +80,7 @@ cat << EOF
 	  </select>
 	</td>
 	<td>
-	  <input type="button" value="$(lang de:"L&ouml;schen" en:"Delete")" style="width:150px;" title=$(lang de:"\'Diese Konfiguration l&ouml;schen (nicht m&ouml;glich f&uuml;r \"default\")\'" en:"\'Delete this configuration (not possible for \"default\")\'") onclick='if (local_config_count > 1) del_config(); else alert("$(lang de:"Das ist die letze Konfiguration und kann daher nicht gel&ouml;scht werden!" en:"This is the last configuration and therefor cannot be deleted!")");'>
+	  <input type="button" value="$(lang de:"L&ouml;schen" en:"Delete")" style="width:150px;" title=$(lang de:"\'Diese Konfiguration l&ouml;schen (nicht m&ouml;glich f&uuml;r \"default\")\'" en:"\'Delete this configuration (not possible for \"default\")\'") onclick='if (local_config_count > 1) del_config(); else alert("$(lang de:"Das ist die letze Konfiguration und kann daher nicht entfernt werden!" en:"This is the last configuration and therefor cannot be deleted!")");'>
 	</td>
 </tr>
 </table>
@@ -150,6 +150,8 @@ sec_begin '$(lang de:"Basiseinstellungen" en:"Basic Configuration")'
 
 HASBRCTL=$(which brctl 2> /dev/null)
 HASIPV6=$([ -d /proc/sys/net/ipv6 ] && echo true)
+HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true) 
+HASLZO=$(openvpn --version | grep -q LZO && echo true)
 
 cat << EOF
 <table class="padded">
@@ -253,8 +255,8 @@ cat << EOF
 <tr>
 	<td>
 	  Cipher:&nbsp;
-	  <select id="id_act_cipher" style="width:150px;" name="my_cipher" onchange='if (this.value=="none") (alert($(lang de:"\"Achtung, Verkehr durch das VPN ist so unverschl&uuml;sselt!\"" en:"\"Caution: All traffic will be unencrypted!\""))); changeval();'>
-		<option value="BF-CBC">Blowfish</option>
+	  <select id="id_act_cipher" style="width:150px;" name="my_cipher" onchange='if (this.value=="none") (alert($(lang de:"\"Achtung, Verkehr durch das VPN ist so unverschl\"+unescape(\"%FC\")+\"sselt!\"" en:"\"Caution: All traffic will be unencrypted!\""))); changeval();'>
+		$([ $HASBLOWFISH ] && echo '<option value="BF-CBC">Blowfish</option>')
 		<option value="AES-128-CBC">AES 128</option>
 		<option value="AES-256-CBC">AES 256</option>
 		<option value="DES-EDE3-CBC">Triple-DES</option>
@@ -268,6 +270,7 @@ cat << EOF
 	  </div>
 	</td>
 </tr>
+$([ ! $HASBLOWFISH ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>')
 <tr>
 	<td colspan="3">
 	  <div id="div_no_certtype" style="display:none; padding-top:10px;">
@@ -455,7 +458,20 @@ cat << EOF
 </div>
 
 <div style="display:inline; padding-left:20px;">
-	<input id="id_act_comp_lzo" type="checkbox" title="$(lang de:"LZO-Komprimierung nutzen? !!Muss auf Server und Client gleich eingestellt sein!!" en:"Use LZO compression? !!Must be the same setting on server and client site!!")" onclick='if (this.checked) (local_complzo[act_conf]="yes"); else (local_complzo[act_conf]=""); changeval();'>
+	<input id="id_act_comp_lzo" type="checkbox" 
+EOF
+
+if [ $HASLZO ]; then 
+cat << EOF
+title="$(lang de:"LZO-Komprimierung nutzen? !!Muss auf Server und Client gleich eingestellt sein!!" en:"Use LZO compression? !!Must be the same setting on server and client site!!")" onclick='if (this.checked) (local_complzo[act_conf]="yes"); else (local_complzo[act_conf]=""); changeval();'
+EOF
+else
+cat << EOF
+title="$(lang de:"LZO-Komprimierung nicht eincompiliert." en:"LZO compression not compiled in")" disabled 
+EOF
+fi
+cat << EOF
+>
 	<label for="id_act_comp_lzo">LZO</label>
 </div>
 
@@ -526,6 +542,11 @@ cat << EOF
 </div>
 
 <script type="text/javascript">
+var ALERT_UNSUPPORTED='$(lang de:" nicht unterst'+unescape(\"%FC\")+'tzt\\n" en:" unsupported\\n")'
+var ALERT_START='$(lang de:"Die gespeicherte Konfiguration wird leider nicht unterst'+unescape(\"%FC\")+'tzt.\\n" en:"The saved configuration is not supported by this binary.\\n")'
+var ALERT_END='$(lang de:"\\nVor dem Starten bitte eine neue Konfiguration abspeichern!" en:"\\nPlease save a new configuration before starting.")'
+
+
 var act_conf=1;
 
 variablen=[ "$(echo $MYVARS| sed 's/ /"\, "/ g')" ]
@@ -588,12 +609,17 @@ function Init_Table(name) {
 }
 
 function Init_Checkbox() {
+alert_lzo = false;
+alert_cipher = false;
 	if ( local_autostart[act_conf] == "yes" ) { document.getElementById("id_act_start_auto").checked = true } else { document.getElementById("id_act_start_man").checked = true };
 	if ( local_mode[act_conf] == "server" ) { document.getElementById("id_act_server").checked = true } else { document.getElementById("id_act_client").checked = true };
 	if ( local_proto[act_conf] == "tcp" ) { document.getElementById("id_act_tcp").checked = true } else { document.getElementById("id_act_udp").checked = true };
 	$([ $HASIPV6 ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
 	if ( local_keepalive[act_conf] == "yes" ) { document.getElementById("id_act_keepalive").checked = true } else { document.getElementById("id_act_keepalive").checked = false };
-	if ( local_complzo[act_conf] == "yes" ) { document.getElementById("id_act_comp_lzo").checked = true } else { document.getElementById("id_act_comp_lzo").checked = false };
+	if ( local_complzo[act_conf] == "yes" ){ 
+		if ( "$(echo $HASLZO)" == "true" ) { document.getElementById("id_act_comp_lzo").checked = true } 
+		else { document.getElementById("id_act_comp_lzo").checked = false ; local_complzo[act_conf] = ""; alert_lzo=true;}; }
+	else { document.getElementById("id_act_comp_lzo").checked = false };
 	if ( local_type[act_conf] == "tap" ) { document.getElementById("id_act_tap").checked = true } else { document.getElementById("id_act_tun").checked = true };
 	if ( local_auth_type[act_conf] == "certs" ) { document.getElementById("id_act_certs").checked = true } else { document.getElementById("id_act_static").checked = true };
 	if ( local_redirect[act_conf] == "yes" ) { document.getElementById("id_act_redirect").checked = true; document.getElementById("id_act_push_redirect").checked = true } else { document.getElementById("id_act_redirect").checked = false; document.getElementById("id_act_push_redirect").checked = false };
@@ -630,7 +656,7 @@ function Init_Checkbox() {
 
 	document.getElementById("id_act_cipher").value = local_cipher[act_conf];
 	if (document.getElementById("id_act_cipher").value != local_cipher[act_conf]) {
-		alert ('$(lang de:"Nicht unterst&uuml;tzter Wert f&uuml;r den Cipher" en:"Unsupported value for cipher")');
+		alert_cipher=local_cipher[act_conf];
 	}
 
 	document.getElementById("id_act_verbose").value=local_verbose[act_conf];
@@ -654,6 +680,14 @@ function Init_Checkbox() {
 	document.getElementById("id_act_client_info").value=local_client_info[act_conf];
 	document.getElementById("id_act_additional").value=local_additional[act_conf];
 	document.getElementById("id_act_udp_fragment").value=local_udp_fragment[act_conf];
+if (alert_lzo || alert_cipher) {
+	tmp=ALERT_START;
+	if (alert_lzo) tmp+=' - LZO'+ALERT_UNSUPPORTED ;
+	if (alert_cipher) tmp+=' - cipher '+alert_cipher+ALERT_UNSUPPORTED ;
+	tmp += ALERT_END;
+	alert ( tmp );
+  }
+
 }
 
 function init_configs() {
@@ -711,7 +745,7 @@ function del_config() {
 			changeconf();
 		}
 		else {
-			alert($(lang de:"\"Die 'default' Konfiguration kann nicht gel&ouml;scht werden\"" en:"\"The default configuration cannot be removed.\""));
+			alert($(lang de:"\"Die 'default' Konfiguration kann nicht entfernt werden\"" en:"\"The default configuration cannot be removed.\""));
 		}
 	}
 }
