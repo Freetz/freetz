@@ -49,7 +49,7 @@ check_date() {
 }
 
 exec_rcs() {
-	eventadd 1 "Running external: $1"
+	eventadd 1 "Running external: $1" 2>/dev/null
 	if [ "$MOD_EXTERNAL_FREETZ_SERVICES" != "yes" ]; then
 		if [ -z "$MOD_EXTERNAL_OWN_SERVICES" ]; then
 			log "No services selected, failed."
