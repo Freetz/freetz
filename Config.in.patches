@@ -866,6 +866,16 @@ config FREETZ_REMOVE_HELP
 	help
 		Removes the (offline) help pages from the web menu.
 
+config FREETZ_REMOVE_LIBFUSE
+	bool "Remove libfuse.so - EXPERIMENTAL"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_TYPE_FON_WLAN_7570
+	select FREETZ_REMOVE_NTFS
+	select FREETZ_REMOVE_WEBDAV
+	default n
+	help
+		This removes libfuse.so and saves about 132 KB (uncompressed).
+		NTFS and Webdav are also removed.
+
 config FREETZ_REMOVE_JFFS2
 	bool "Remove jffs2.ko - EXPERIMENTAL"
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_JFFS2
