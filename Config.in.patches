@@ -302,15 +302,27 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 		Remove lib/modules/dsp_*/*-B-dsl.bin. This saves about
 		330-400 KB of uncompressed data size.
 
-config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE
-	bool "Remove Multi-Annex firmware files"
+config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
+	bool "Remove Multi-Annex firmware diff files"
 	depends on FREETZ_HAS_AVM_MULTI_ANNEX
 	default n
 	help
-		Remove lib/modules/dsp_*/*-?-dsl.bin*. This saves about
-		420-600 KB of uncompressed data size and bspatch, 67 KB.
+		Remove the diffs to the prime firmware. This saves about
+		120-230 KB of uncompressed data size and 67 KB of bspatch.
+		Select this only if you don't want to switch the firmware.
+		See http://www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
+
+
+config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
+	bool "Remove Multi-Annex firmware prime file"
+	depends on FREETZ_HAS_AVM_MULTI_ANNEX && FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
+	default y
+	help
+		This saves about 340-790 KB of uncompressed data size. Removes
+		lib/modules/dsp_*/*-?-dsl.bin or lib/modules/*Vx180Code.bin.gz.
 		Select this only if you don't use the the DSL modem. See
 		http://www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
+
 
 config FREETZ_REMOVE_DSL_CONTROL
 	bool "Remove dsl_control - EXPERIMENTAL"
@@ -318,7 +330,7 @@ config FREETZ_REMOVE_DSL_CONTROL
 		( \
 			FREETZ_REMOVE_ANNEX_A_FIRMWARE || \
 			FREETZ_REMOVE_ANNEX_B_FIRMWARE || \
-			FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE \
+			FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME \
 		) && ( \
 			FREETZ_KERNEL_LAYOUT_AR9 || \
 			FREETZ_KERNEL_LAYOUT_VR9 \
