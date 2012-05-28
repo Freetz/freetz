@@ -330,7 +330,7 @@
  if HPIJS_INSTALL
  # hpijs
  bin_PROGRAMS = hpijs
-@@ -488,24 +402,6 @@
+@@ -488,49 +402,8 @@
  endif # HPCUPS ONLY
  endif # HPCUPS_INSTALL
  
@@ -352,11 +352,18 @@
 -cupsdrv2_DATA = $(cups_drv)
 -endif
 -
- install-dist_hplip_LogDATA:
- if FULL_BUILD
- 	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
-@@ -520,17 +416,6 @@
- 
+-install-dist_hplip_LogDATA:
+-if FULL_BUILD
+-	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
+-	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
+-	chmod 774 $(DESTDIR)$(hplip_Logdir)
+-endif	#FULL_BUILD
+-if HPLIP_BUILD
+-	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
+-	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
+-	chmod 774 $(DESTDIR)$(hplip_Logdir)
+-endif	#FULL_BUILD
+-
  install-data-hook:
  if HPLIP_BUILD
 -#	   If scanner build, add hpaio entry to sane dll.conf.
