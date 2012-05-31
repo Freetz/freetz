@@ -393,7 +393,7 @@ choice
 
 	config FREETZ_TYPE_7113_7170
 		bool "7113"
-		depends on FREETZ_TYPE_FON_WLAN_7170
+		depends on FREETZ_TYPE_FON_WLAN_7170 && !FREETZ_TYPE_ANNEX_A
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
 		select FREETZ_REMOVE_PRINTSERV
@@ -402,6 +402,7 @@ choice
 		help
 			Enable this to compile a mod image for FritzBox Fon WLAN 7113 based
 			on a 7170 image.
+			WARNING: A 7113 has only 16MB RAM.
 
 	config FREETZ_TYPE_7140_7170
 		bool "7140"
