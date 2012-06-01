@@ -1,12 +1,13 @@
 comment "Dropbear (unavailable, needs replace kernel for pty-support)"
-	depends on FREETZ_TYPE_FON_5140 && !FREETZ_REPLACE_KERNEL
+	depends on !FREETZ_REPLACE_KERNEL && \
+		(FREETZ_TYPE_FON_5140 || FREETZ_TYPE_SPEEDPORT_W501V)
 
 config FREETZ_PACKAGE_DROPBEAR
 	bool "Dropbear 2012.55"
-	depends on !FREETZ_TYPE_FON_5140 || FREETZ_REPLACE_KERNEL
+	depends on FREETZ_REPLACE_KERNEL || \
+		! (FREETZ_TYPE_FON_5140 || FREETZ_TYPE_SPEEDPORT_W501V)
 	select FREETZ_LIB_libutil
 	select FREETZ_PACKAGE_AUTHORIZED_KEYS
-	select FREETZ_REPLACE_KERNEL if FREETZ_TYPE_SPEEDPORT_W501V
 	default n
 	help
 		Dropbear SSH server and client
