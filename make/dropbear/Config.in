@@ -1,11 +1,12 @@
 comment "Dropbear (unavailable, needs replace kernel for pty-support)"
-	depends on !FREETZ_REPLACE_KERNEL && \
-		(FREETZ_TYPE_FON_5140 || FREETZ_TYPE_SPEEDPORT_W501V)
+	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_HAS_AVM_PTY_SUPPORT && !FREETZ_SHOW_ADVANCED
+
+comment "Hint: Select replace kernel if need pty-support"
+	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_HAS_AVM_PTY_SUPPORT && FREETZ_SHOW_ADVANCED
 
 config FREETZ_PACKAGE_DROPBEAR
 	bool "Dropbear 2012.55"
-	depends on FREETZ_REPLACE_KERNEL || \
-		! (FREETZ_TYPE_FON_5140 || FREETZ_TYPE_SPEEDPORT_W501V)
+	depends on FREETZ_REPLACE_KERNEL || FREETZ_HAS_AVM_NO_PTY_SUPPORT || FREETZ_SHOW_ADVANCED
 	select FREETZ_LIB_libutil
 	select FREETZ_PACKAGE_AUTHORIZED_KEYS
 	default n

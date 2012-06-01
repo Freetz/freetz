@@ -1,4 +1,13 @@
 
+config FREETZ_HAS_AVM_PTY_SUPPORT
+	bool "Has no PTY support"	if FREETZ_TYPE_CUSTOM
+	default n		if \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_SPEEDPORT_W501V
+	default y
+	help
+		Select this if your original kernel has no pty support.
+
 config FREETZ_HAS_AVM_CDROM_ISO
 	bool "Has AVM cdrom.iso"	if FREETZ_TYPE_CUSTOM
 	default y		if \
