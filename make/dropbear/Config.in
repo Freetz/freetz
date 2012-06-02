@@ -1,9 +1,6 @@
 comment "Dropbear (unavailable, needs replace kernel for pty-support)"
 	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_HAS_AVM_PTY_SUPPORT && !FREETZ_SHOW_ADVANCED
 
-comment "Hint: Select replace kernel if need pty-support"
-	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_HAS_AVM_PTY_SUPPORT && FREETZ_SHOW_ADVANCED
-
 config FREETZ_PACKAGE_DROPBEAR
 	bool "Dropbear 2012.55"
 	depends on FREETZ_REPLACE_KERNEL || FREETZ_HAS_AVM_PTY_SUPPORT || FREETZ_SHOW_ADVANCED
@@ -32,6 +29,9 @@ config FREETZ_PACKAGE_DROPBEAR
 		    single binary (a la busybox)
 		  - Features can easily be disabled when compiling to save space
 		    TCP forwarding support
+
+comment "Hint: Select replace kernel if need pty-support"
+	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_HAS_AVM_PTY_SUPPORT && FREETZ_SHOW_ADVANCED && FREETZ_PACKAGE_DROPBEAR
 
 config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
 	bool "Add SFTP support"
