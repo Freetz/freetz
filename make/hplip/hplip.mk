@@ -69,9 +69,9 @@ $($(PKG)_LIB_HPAIO_TARGET_BINARY): $($(PKG)_LIB_HPAIO_STAGING_BINARY)
 	$(TARGET_STRIP) $@
 
 $(PKG)_TARGET_CONF:
-	$(call MESSAGE,HPLIP: Strip down models.dat to $(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE))
-	@awk 'BEGIN { found=0 } /^\[.*\]/ || /^$$/ { found=0 } /^\['$(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE)'\]/ { found=1 } \
-		{ if (found) { print $$0 } }' < $(HPLIP_DIR)/data/models/models.dat \
+	$(call MESSAGE,HPLIP: Strip down models.dat to $(subst ",,$(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE)))
+	@awk '/^\[.*\]/{p=0} $$0=="[$(subst ",,$(FREETZ_PACKAGE_HPLIP_PRINTER_TYPE))]"{p=1} p && !/^$$/' \
+		< $(HPLIP_DIR)/data/models/models.dat \
 		> $(HPLIP_DEST_DIR)/usr/share/hplip/data/models/models.dat
 
 .PHONY: $(PKG)_TARGET_CONF
@@ -87,7 +87,7 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(HPLIP_DIR) clean
 
 $(pkg)-config-update:
-	$(HPLIP_MAKE_DIR)/hplip-config-update.pl $(HPLIP_VERSION) \
+	$(HPLIP_MAKE_DIR)/hplip-config-update.py $(HPLIP_VERSION) \
 		$(HPLIP_DIR)/data/models/models.dat > $(HPLIP_MAKE_DIR)/Config.in
 
 $(pkg)-uninstall:
