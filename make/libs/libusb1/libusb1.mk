@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.0.8)
+$(call PKG_INIT_LIB, 1.0.9)
 $(PKG)_SHORT_VERSION:=1.0
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=libusb-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=37d34e6eaa69a4b645a19ff4ca63ceef
+$(PKG)_SOURCE_MD5:=7f5a02375ad960d4e33a6dae7d63cfcb
 $(PKG)_SITE:=@SF/libusb
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libusb-$($(PKG)_VERSION)
 
