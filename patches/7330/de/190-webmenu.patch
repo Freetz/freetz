@@ -1,17 +1,40 @@
---- usr/www/all/templates/menu_page_end.html	2012-03-23 19:35:37+01:00
-+++ usr/www/all/templates/menu_page_end.html	2012-03-23 19:35:37+01:00
-@@ -15,7 +15,8 @@
- box.out([[<a href='http://www.avm.de/en/fritzclips' target='_blank'>{?22:958?}</a> | ]])
+--- usr/www/all/templates/menu_page_end.html	2012-04-23 15:48:00+02:00
++++ usr/www/all/templates/menu_page_end.html	2012-04-23 15:48:00+02:00
+@@ -16,10 +16,11 @@
  end
  box.out([[<a href=']]..href.get("/menus/programs.lua")..[[' >{?22:2?}</a> | ]])
+ if (config.language=="de") then
 -box.out([[<a href='http://www.avm.de' target='_blank' style='margin-right:0px;'>www.avm.de</a> ]])
-+box.out([[<a href='http://www.avm.de' target='_blank'>www.avm.de</a> | ]])
++box.out([[<a href='http://www.avm.de' target='_blank'>www.avm.de</a> ]])
+ else
+-box.out([[<a href='http://www.avm.de/en' target='_blank' style='margin-right:0px;'>www.avm.de</a> ]])
++box.out([[<a href='http://www.avm.de/en' target='_blank'>www.avm.de</a> ]])
+ end
 +box.out([[<a href='http://www.freetz.org' target='_blank' style='margin-right:0px;'>www.freetz.org</a> ]])
  end
  ?>
  </div>
---- usr/www/all/templates/menu_page_head.html	2012-03-23 19:35:37+01:00
-+++ usr/www/all/templates/menu_page_head.html	2012-03-23 19:35:37+01:00
+--- usr/www/all/menus/menu_freetz.lua	2012-04-23 15:48:00+02:00
++++ usr/www/all/menus/menu_freetz.lua	2012-04-23 15:48:00+02:00
+@@ -0,0 +1,16 @@
++menu.add_item{
++page = "/cgi-bin/freetz_status",
++target = "_blank",
++text = "Freetz",
++menu = "freetz",
++explain = "Freetz Webinterface",
++subpages = {}
++}
++menu.add_item{
++page = "/cgi-bin/freetz_wol",
++target = "_blank",
++text = "Freetz WOL",
++menu = "freetz-wol",
++explain = "Freetz WOL Webinterface",
++subpages = {}
++}
+--- usr/www/all/templates/menu_page_head.html	2012-04-23 15:48:00+02:00
++++ usr/www/all/templates/menu_page_head.html	2012-04-23 15:48:00+02:00
 @@ -49,7 +49,7 @@
  <div class="clear_float"></div>
  <?lua
@@ -43,22 +66,3 @@
 +</div>
 +</div>
  </div>
---- usr/www/all/menus/menu_freetz.lua	2012-03-23 19:35:37+01:00
-+++ usr/www/all/menus/menu_freetz.lua	2012-03-23 19:35:37+01:00
-@@ -0,0 +1,16 @@
-+menu.add_item{
-+page = "/cgi-bin/freetz_status",
-+target = "_blank",
-+text = "Freetz",
-+menu = "freetz",
-+explain = "Freetz Webinterface",
-+subpages = {}
-+}
-+menu.add_item{
-+page = "/cgi-bin/freetz_wol",
-+target = "_blank",
-+text = "Freetz WOL",
-+menu = "freetz-wol",
-+explain = "Freetz WOL Webinterface",
-+subpages = {}
-+}
