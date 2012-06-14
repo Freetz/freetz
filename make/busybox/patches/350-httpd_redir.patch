@@ -49,8 +49,8 @@
  				(g_query ? g_query : ""));
  	}
 @@ -1987,8 +1997,12 @@
- 	} while (*++tptr);
- 	*++urlp = '\0';       /* terminate after last character */
+ 		tptr++;
+ 	}
  
 +	/* redirect active */
 +	if (redirect_path && (strncmp(urlcopy, redirect_path, strlen(redirect_path)) != 0))
@@ -59,7 +59,7 @@
  	/* If URL is a directory, add '/' */
 -	if (urlp[-1] != '/') {
 +	if (!redirect_path && (urlp[-1] != '/')) {
- 		if (is_directory(urlcopy + 1, 1, NULL)) {
+ 		if (is_directory(urlcopy + 1, /*followlinks:*/ 1)) {
  			found_moved_temporarily = urlcopy;
  		}
 @@ -2345,7 +2359,9 @@
