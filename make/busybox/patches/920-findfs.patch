@@ -1,5 +1,5 @@
---- util-linux/findfs.c	2011-10-05 21:16:04+02:00
-+++ util-linux/findfs.c	2011-10-05 21:16:04+02:00
+--- util-linux/findfs.c	2012-06-14 17:48:13+02:00
++++ util-linux/findfs.c	2012-06-14 17:48:13+02:00
 @@ -27,17 +27,10 @@
  	if (!dev)
  		bb_show_usage();
@@ -18,8 +18,8 @@
  
  	if (*argv != dev) {
  		puts(*argv);
---- include/volume_id.h	2011-10-05 21:16:04+02:00
-+++ include/volume_id.h	2011-10-05 21:16:04+02:00
+--- include/volume_id.h	2012-06-14 17:48:13+02:00
++++ include/volume_id.h	2012-06-14 17:48:13+02:00
 @@ -20,6 +20,8 @@
  
  char *get_devname_from_label(const char *spec);
@@ -29,8 +29,8 @@
  void display_uuid_cache(int scan_devices);
  
  /* Returns:
---- util-linux/volume_id/get_devname.c	2011-10-05 21:16:04+02:00
-+++ util-linux/volume_id/get_devname.c	2011-10-05 21:16:04+02:00
+--- util-linux/volume_id/get_devname.c	2012-06-14 17:48:13+02:00
++++ util-linux/volume_id/get_devname.c	2012-06-14 17:48:13+02:00
 @@ -49,13 +49,16 @@
  	if (volume_id_probe_all(vid, /*0,*/ size) != 0)
  		goto ret;
@@ -50,7 +50,7 @@
  		dbg("found label '%s', uuid '%s'", *label, *uuid);
  #endif
  		rv = 0;
-@@ -295,6 +298,41 @@
+@@ -292,6 +295,41 @@
  	return NULL;
  }
  
@@ -92,7 +92,7 @@
  int resolve_mount_spec(char **fsname)
  {
  	char *tmp = *fsname;
-@@ -303,7 +341,12 @@
+@@ -300,7 +338,12 @@
  		tmp = get_devname_from_uuid(*fsname + 5);
  	else if (strncmp(*fsname, "LABEL=", 6) == 0)
  		tmp = get_devname_from_label(*fsname + 6);
