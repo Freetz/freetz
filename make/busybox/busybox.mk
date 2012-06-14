@@ -3,14 +3,13 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=af2fededb6dca804544c05684636e574
 $(PKG)_SITE:=http://www.busybox.net/downloads
 
-$(PKG)_SOURCE_DIR:=$($(PKG)_SOURCE_DIR)/ref-$($(PKG)_REF)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 
 $(PKG)_TARGET_DIR:=$(subst -$($(PKG)_VERSION),,$($(PKG)_TARGET_DIR))
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)-$($(PKG)_REF)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)
 
-$(PKG)_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/busybox.config
+$(PKG)_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/$(pkg).config
 $(PKG)_CUSTOM_CONFIG_FILE:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.custom
 $(PKG)_CUSTOM_CONFIG_TEMP:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.temp
 

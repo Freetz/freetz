@@ -916,29 +916,21 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ "$FREETZ_REPLACE_BUSYBOX" == "y" ]; then
-		echo0 "replacing busybox"
+		echo0 "installing busybox"
 
-		echo1 "replacing busybox-${FREETZ_TARGET_REF}"
-
-		if [ ! -r "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" ]; then
-			error 1 "cannot find busybox replacement"
-		fi
-
-		# Replace busybox
-		cp -pf "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}" "${FILESYSTEM_MOD_DIR}/bin/busybox"
+		echo1 "replacing busybox"
+		[ ! -r "${PACKAGES_DIR}/busybox/busybox" ] && error 1 "cannot find busybox replacement"
+		cp -pf "${PACKAGES_DIR}/busybox/busybox" "${FILESYSTEM_MOD_DIR}/bin/busybox"
 
 		echo1 "installing symlinks"
-
-		if [ ! -r "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links" ]; then
-			error 1 "cannot find busybox links"
-		fi
+		[ ! -r "${PACKAGES_DIR}/busybox/busybox.links" ] && error 1 "cannot find busybox links"
 
 		# Remove old busybox links
 		# be compatible: do not use -delete (not found in older versions of find)
 		find "$FILESYSTEM_MOD_DIR" \( -lname "busybox" -or -lname "*/busybox" \) -print0 | xargs -0 rm
 
 		# Install new busybox links
-		for link in $(cat "${PACKAGES_DIR}/busybox/busybox-${FREETZ_TARGET_REF}.links"); do
+		for link in $(cat "${PACKAGES_DIR}/busybox/busybox.links"); do
 			LINK_DIR="$(dirname "$link")"
 			LINK_NAME="$(basename "$link")"
 
