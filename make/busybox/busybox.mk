@@ -210,9 +210,7 @@ $(pkg)-uninstall:
 	$(RM) $(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_BINARY).links
 
 $(pkg)-dirclean:
-	$(RM) -r $(BUSYBOX_DIR)
 	$(RM) $(BUSYBOX_CUSTOM_CONFIG_FILE)
-	$(RM) $(BUSYBOX_TARGET_DIR)/busybox-*
 
 $(pkg)-distclean: busybox-dirclean
 
