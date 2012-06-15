@@ -1,5 +1,5 @@
---- e2fsck/e2fsck.h
-+++ e2fsck/e2fsck.h
+--- e2fsck/e2fsck.h	2012-06-15 18:51:30+02:00
++++ e2fsck/e2fsck.h	2012-06-15 18:51:30+02:00
 @@ -67,7 +67,9 @@
  #define E2FSCK_ATTR(x)
  #endif
@@ -34,8 +34,8 @@
  
  /* pass1.c */
  extern void e2fsck_setup_tdb_icount(e2fsck_t ctx, int flags,
---- e2fsck/Makefile.in
-+++ e2fsck/Makefile.in
+--- e2fsck/Makefile.in	2012-06-15 18:51:30+02:00
++++ e2fsck/Makefile.in	2012-06-15 18:51:30+02:00
 @@ -11,6 +11,13 @@
  
  @MCONFIG@
@@ -50,8 +50,8 @@
  PROGS=		e2fsck
  MANPAGES=	e2fsck.8
  FMANPAGES=	e2fsck.conf.5
---- e2fsck/pass1b.c
-+++ e2fsck/pass1b.c
+--- e2fsck/pass1b.c	2012-06-15 18:51:30+02:00
++++ e2fsck/pass1b.c	2012-06-15 18:51:30+02:00
 @@ -644,8 +644,10 @@
  	if (ctx->inode_bad_map)
  		ext2fs_unmark_inode_bitmap2(ctx->inode_bad_map, ino);
@@ -73,8 +73,8 @@
  		}
  	}
  }
---- e2fsck/pass1.c
-+++ e2fsck/pass1.c
+--- e2fsck/pass1.c	2012-06-15 18:51:30+02:00
++++ e2fsck/pass1.c	2012-06-15 18:51:30+02:00
 @@ -923,6 +923,7 @@
  				e2fsck_write_inode_full(ctx, ino, inode,
  							inode_size, "pass1");
@@ -103,8 +103,8 @@
  	}
  
  	if (!(fs->super->s_feature_ro_compat &
---- e2fsck/pass3.c
-+++ e2fsck/pass3.c
+--- e2fsck/pass3.c	2012-06-15 18:51:30+02:00
++++ e2fsck/pass3.c	2012-06-15 18:51:30+02:00
 @@ -490,8 +490,10 @@
  	ext2fs_icount_store(ctx->inode_count, ino, 2);
  	ext2fs_icount_store(ctx->inode_link_info, ino, 2);
@@ -126,8 +126,8 @@
  
  	e2fsck_write_inode(ctx, dir, &inode, "expand_directory");
  
---- e2fsck/pass4.c
-+++ e2fsck/pass4.c
+--- e2fsck/pass4.c	2012-06-15 18:51:30+02:00
++++ e2fsck/pass4.c	2012-06-15 18:51:30+02:00
 @@ -64,7 +64,9 @@
  			e2fsck_read_bitmaps(ctx);
  			ext2fs_inode_alloc_stats2(fs, i, -1,
@@ -138,8 +138,8 @@
  			return 0;
  		}
  	}
---- e2fsck/problem.c
-+++ e2fsck/problem.c
+--- e2fsck/problem.c	2012-06-15 18:51:30+02:00
++++ e2fsck/problem.c	2012-06-15 18:51:30+02:00
 @@ -408,10 +408,12 @@
  	  N_("Setting free @bs count to %c (was %b)\n"),
  	  PROMPT_NONE, PR_PREEN_NOMSG },
@@ -193,8 +193,8 @@
  
  	{ 0 }
  };
---- e2fsck/problem.h
-+++ e2fsck/problem.h
+--- e2fsck/problem.h	2012-06-15 18:51:30+02:00
++++ e2fsck/problem.h	2012-06-15 18:51:30+02:00
 @@ -234,8 +234,10 @@
  /* Free blocks count wrong */
  #define PR_0_FREE_BLOCK_COUNT			0x000040
@@ -227,7 +227,7 @@
  
  /* Invalid bad inode */
  #define PR_1_INVALID_BAD_INODE		0x010065
-@@ -1028,8 +1028,10 @@
+@@ -1028,8 +1036,10 @@
  /* Recreate the journal if E2F_FLAG_JOURNAL_INODE flag is set */
  #define PR_6_RECREATE_JOURNAL		0x060001
  
@@ -238,8 +238,8 @@
  
  /*
   * Function declarations
---- e2fsck/quota.c
-+++ e2fsck/quota.c
+--- e2fsck/quota.c	2012-06-15 18:51:30+02:00
++++ e2fsck/quota.c	2012-06-15 18:51:30+02:00
 @@ -4,6 +4,7 @@
   */
  
@@ -253,9 +253,9 @@
  	return;
  }
 +#endif
---- e2fsck/super.c
-+++ e2fsck/super.c
-@@ -850,10 +850,12 @@
+--- e2fsck/super.c	2012-06-15 18:51:30+02:00
++++ e2fsck/super.c	2012-06-15 18:51:30+02:00
+@@ -854,10 +854,12 @@
  	 */
  	e2fsck_fix_dirhash_hint(ctx);
  
@@ -268,9 +268,9 @@
  
  	return;
  }
---- e2fsck/unix.c
-+++ e2fsck/unix.c
-@@ -1575,6 +1575,7 @@
+--- e2fsck/unix.c	2012-06-15 18:51:30+02:00
++++ e2fsck/unix.c	2012-06-15 18:51:30+02:00
+@@ -1580,6 +1580,7 @@
  	else
  		journal_size = -1;
  
@@ -278,7 +278,7 @@
  	if (sb->s_feature_ro_compat & EXT4_FEATURE_RO_COMPAT_QUOTA) {
  		/* Quotas were enabled. Do quota accounting during fsck. */
  		if ((sb->s_usr_quota_inum && sb->s_grp_quota_inum) ||
-@@ -1585,6 +1586,7 @@
+@@ -1590,6 +1591,7 @@
  
  		quota_init_context(&ctx->qctx, ctx->fs, qtype);
  	}
@@ -286,7 +286,7 @@
  
  	run_result = e2fsck_run(ctx);
  	e2fsck_clear_progbar(ctx);
-@@ -1618,6 +1620,7 @@
+@@ -1623,6 +1625,7 @@
  	}
  no_journal:
  
@@ -294,7 +294,7 @@
  	if (ctx->qctx) {
  		int i, needs_writeout;
  		for (i = 0; i < MAXQUOTAS; i++) {
-@@ -1633,6 +1636,7 @@
+@@ -1638,6 +1641,7 @@
  		}
  		quota_release_context(&ctx->qctx);
  	}
@@ -302,8 +302,8 @@
  
  	if (run_result == E2F_FLAG_RESTART) {
  		log_out(ctx, _("Restarting e2fsck from the beginning...\n"));
---- misc/Makefile.in
-+++ misc/Makefile.in
+--- misc/Makefile.in	2012-06-15 18:51:30+02:00
++++ misc/Makefile.in	2012-06-15 18:51:30+02:00
 @@ -11,6 +11,13 @@
  
  @MCONFIG@
@@ -318,8 +318,8 @@
  @DEFRAG_CMT@@LINUX_CMT@E4DEFRAG_PROG= e4defrag
  @DEFRAG_CMT@@LINUX_CMT@E4DEFRAG_MAN= e4defrag.8
  
---- misc/mke2fs.c
-+++ misc/mke2fs.c
+--- misc/mke2fs.c	2012-06-15 18:51:30+02:00
++++ misc/mke2fs.c	2012-06-15 18:51:30+02:00
 @@ -61,7 +61,9 @@
  #include "prof_err.h"
  #include "../version.h"
@@ -397,8 +397,8 @@
  
  	if (!quiet)
  		printf(_("Writing superblocks and "
---- misc/tune2fs.c
-+++ misc/tune2fs.c
+--- misc/tune2fs.c	2012-06-15 18:51:30+02:00
++++ misc/tune2fs.c	2012-06-15 18:51:30+02:00
 @@ -56,7 +56,9 @@
  #include "jfs_user.h"
  #include "util.h"
