@@ -1250,7 +1250,7 @@ config FREETZ_SIZEINFO_UNCOMPRESSED
 menu "Firmware packaging (fwmod) special options"
 	visible if FREETZ_SHOW_ADVANCED
 
-comment "CAUTION: you probably want to activate unpacking"
+comment "ATTENTION: you probably want to activate unpacking"
 	depends on FREETZ_FWMOD_SKIP_UNPACK
 
 config FREETZ_FWMOD_SKIP_UNPACK
@@ -1322,6 +1322,7 @@ config FREETZ_FWMOD_NFSROOT
 		user password for sudo.
 
 comment "ATTENTION: target folder name must not be empty"
+	depends on FREETZ_FWMOD_NFSROOT
 
 config FREETZ_FWMOD_NFSROOT_DIR
 	string "Target folder name"
