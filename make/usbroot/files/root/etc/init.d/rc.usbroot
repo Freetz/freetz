@@ -376,6 +376,19 @@ load_modules_2_6_28_10() {
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_load_params="piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}"
 			;;
+		171 ) # 7340
+			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
+			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
+			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
+			piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount} 
+			#piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`
+			if [ -z $piglet_bitfilemode ]; then piglet_bitfilemode=0; fi
+			piglet_load_params=" \
+				piglet_bitfile=$piglet_bitfile \
+				piglet_potsbitfile=$piglet_potsbitfile \
+				piglet_bitfilemode=$piglet_bitfilemode \
+			"
+			;;
 		172 | 179 ) # 7320, 7330
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_441.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_441.hex
@@ -392,7 +405,7 @@ load_modules_2_6_28_10() {
 	if modprobe usbcore; then
 		mount -t usbfs usbfs /proc/bus/usb
 		case "$HWRevision" in
-			156 ) # 7390
+			156 | 171 ) # 7390, 7340
 				modprobe ehci_hcd
 				modprobe ohci_hcd
 				;;
