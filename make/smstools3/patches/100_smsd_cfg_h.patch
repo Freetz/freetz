@@ -1,0 +1,29 @@
+--- src/smsd_cfg.h.orig	2012-04-16 22:58:03.000000000 +0200
++++ src/smsd_cfg.h	2012-04-16 23:03:54.000000000 +0200
+@@ -21,7 +21,7 @@
+ #include <time.h>
+ 
+ #ifndef __FreeBSD__
+-#define DEFAULT_CONFIGFILE "/etc/smsd.conf"
++#define DEFAULT_CONFIGFILE "/tmp/flash/smstools3/smsd.conf"
+ #else
+ #define DEFAULT_CONFIGFILE "%%PREFIX%%/etc/smsd.conf"
+ #endif
+@@ -34,7 +34,7 @@
+ 
+ #define MM_CORE_FNAME "/tmp/mm_smsd_%i" /* %i is PID */
+ 
+-#define NUMS 64
++#define NUMBER_OF_MODEMS 64
+ #define SIZE_NUM 16
+ 
+ #define DEVICE devices[process_id]
+@@ -120,7 +120,7 @@
+ typedef struct
+ {
+   char name[32]; 		// Name of the queue
+-  char numbers[NUMS][SIZE_NUM];	// Phone numbers assigned to this queue
++  char numbers[NUMBER_OF_MODEMS][SIZE_NUM];	// Phone numbers assigned to this queue
+   char directory[PATH_MAX];		// Queue directory
+ } _queue;
+ 
