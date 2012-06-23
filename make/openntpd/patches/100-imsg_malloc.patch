@@ -1,0 +1,13 @@
+--- imsg.c.orig	2006-05-14 07:29:24.000000000 +0200
++++ imsg.c	2012-06-17 14:58:57.000000000 +0200
+@@ -75,6 +75,10 @@
+ 		return (0);
+ 	datalen = imsg->hdr.len - IMSG_HEADER_SIZE;
+ 	ibuf->r.rptr = ibuf->r.buf + IMSG_HEADER_SIZE;
++
++	if (datalen == 0)
++		++datalen;
++
+ 	if ((imsg->data = malloc(datalen)) == NULL) {
+ 		log_warn("imsg_get");
+ 		return (-1);
