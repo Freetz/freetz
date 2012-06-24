@@ -169,8 +169,7 @@ mount_usbroot() {
 			if [ "$kver" = "2.6.28.10" ]; then
 				load_modules_2_6_28_10
 			else
-				# no need to load any modules for 2.6.32.21
-				mount -t usbfs usbfs /proc/bus/usb
+				load_modules_2_6_32
 			fi
 			;;
 
@@ -419,6 +418,61 @@ load_modules_2_6_28_10() {
 	fi
 }
 
+load_modules_2_6_32() {
+	load_piglet=0
+	piglet_dectmode="0x0"
+	dect_firstlevelfile=/lib/modules/dectfw_firstlevel.hex
+	dect_secondlevelfile=/lib/modules/dectfw_secondlevel.hex
+	piglet_load_params=""
+	
+	case "$HWRevision" in
+		144 ) # 7240
+			load_piglet=1
+			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
+			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
+			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
+
+			piglet_load_params=" \
+				piglet_bitfile=$piglet_bitfile \
+				piglet_use_pll3_clk=1
+			"
+		172 | 179 | 181 | 183 | 188 ) # 7320, 7330, 7360, 7360 SL, 7330 SL 
+			load_piglet=1
+			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_441.hex
+			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_441.hex
+			piglet_dectmode="0x101"
+			piglet_load_params=" \
+				piglet_dectmode=$piglet_dectmode \
+			"
+			;;
+		* )
+			echo "HWRevision $HWRevision not supported here."
+			;;
+	esac
+	
+	if [ $load_piglet -eq 1 ]; then
+		modprobe Piglet_noemif \
+			piglet_dectmode=$piglet_dectmode \
+			dect_firstlevelfile=$dect_firstlevelfile \
+			dect_secondlevelfile=$dect_secondlevelfile \
+			$piglet_load_params
+	fi
+
+	case "$HWRevision" in
+		122 | 137 | 139 | 141 | 144 | 145 | 167 | 168 ) # 7270 v1, 3270 v1+2, 7270 v2, v2 Annex A., v3, v4, 7240, 3270 v3
+			mount -t usbfs usbfs /proc/bus/usb
+			;;
+		172 | 175 | 179 | 181 | 183 | 188 ) # 7320, 3370, 7330, 7360, 7360 SL, 7370 SL
+			if modprobe usbcore; then
+				mount -t usbfs usbfs /proc/bus/usb
+			fi
+			modprobe ifxusb_host
+			;;
+		* )
+			echo "HWRevision $HWRevision not supported here."
+			;;
+	esac
+}
 
 # Unmount stuff before pivot_root
 unmount_virtualfs() {
