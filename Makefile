@@ -502,13 +502,16 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 
 common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclean)
 	$(RM) -r .config .config_compressed .config.old .config.cmd .tmpconfig.h include/config include/generated
-	$(RM) -r $(DL_DIR)
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(SOURCE_DIR_ROOT)
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
+	@echo "Use 'make download-clean' to remove the download directory" 
 
-dist: distclean
+download-clean: 
+	$(RM) -r $(DL_DIR) 
+
+dist: distclean download-clean
 	version="$$(cat .version)"; \
 	curdir="$$(basename $$(pwd))"; \
 	dir="$$(cat .version | $(SED) -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
