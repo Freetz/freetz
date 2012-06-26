@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 2.0.8)
+$(call PKG_INIT_LIB, 2.2.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=30342e0a1f3f8f8366df3470c2ab88f6
+$(PKG)_SOURCE_MD5:=47fded02bb6dbb1bd2fda6282b30a59a
 $(PKG)_SITE:=http://yassl.com
 
-$(PKG)_LIBNAME:=libcyassl.so.3.0.0
+$(PKG)_LIBNAME:=libcyassl.so.3.0.1
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
