@@ -12,7 +12,7 @@ config(){
 	if [ -r "/tmp/flash/openvpn/own_${DAEMON}.conf" ]; then
 		cp /tmp/flash/openvpn/own_${DAEMON}.conf /mod/etc/${DAEMON}.conf
 	else
-		modlib_config ${DAEMON}
+		modlib_config ${DAEMON} /mod/etc/${DAEMON}.conf
 	fi
 }
 
@@ -89,15 +89,22 @@ case $1 in
 				echo "$d is disabled" 1>&2
 			else
 				DAEMON="$d"
+				DAEMON_LONG_NAME=$DAEMON
 				start
 			fi
 			as=${as#*#}
 		done
 		DAEMON="$d_BU"
+		DAEMON_LONG_NAME=$DAEMON
 		;;
 	unload)
 		stop
 		if [ "$DAEMON" = "openvpn" ]; then
+		for d in $(echo "${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' ); do
+				DAEMON="$d"
+				DAEMON_LONG_NAME=$DAEMON
+				stop
+		done
 			modunreg file openvpn
 			modunreg daemon openvpn
 			modunreg cgi openvpn
