@@ -1,0 +1,48 @@
+#!/bin/sh
+
+DAEMON=igmpproxy
+DAEMON_LONG_NAME=IGMPproxy
+DAEMON_CONFIG=/tmp/flash/$DAEMON/config
+. /etc/init.d/modlibrc
+
+
+start() {
+	modlib_startdaemon start-stop-daemon -S -b -q -m -p $PID_FILE -n $DAEMON -a $DAEMON -- $DAEMON_CONFIG
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "$DAEMON_CONFIG" ] && cat /mod/etc/default.$DAEMON/$DAEMON.config > $DAEMON_CONFIG
+
+		modreg file $DAEMON config '$(lang de:"Konfiguration" en:"Configuration")' 1 "igmpproxy_config"
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg daemon $DAEMON
+
+		modlib_start $DAEMON_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
