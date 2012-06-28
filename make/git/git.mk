@@ -61,6 +61,16 @@ $($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 		&& ln -fs ../../bin/$$binary $(GIT_DEST_DIR)/usr/lib/git-core/; \
 	done
 
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_GIT_REMOVE_WEBIF)" == "y" ] \
+		&& echo "usr/lib/cgi-bin/git.cgi" >> $@ \
+		&& echo "etc/default.git" >> $@ \
+		&& echo "etc/init.d/rc.git" >> $@; \
+	touch $@
+
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR)

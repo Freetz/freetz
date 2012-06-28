@@ -13,6 +13,13 @@ config FREETZ_PACKAGE_GIT
 		unusually rich command set that provides both high-level operations
 		and full access to internals.
 
+config FREETZ_PACKAGE_GIT_REMOVE_WEBIF
+	bool "remove webinterface"
+	depends on FREETZ_PACKAGE_GIT
+	default n
+	help
+		This option removes the webinterface
+
 config FREETZ_PACKAGE_GIT_WITH_PCRE
 	bool "build with pcre support"
 	depends on FREETZ_PACKAGE_GIT
