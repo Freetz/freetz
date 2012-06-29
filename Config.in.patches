@@ -1083,6 +1083,8 @@ config FREETZ_REMOVE_UPNP
 		FREETZ_TYPE_WLAN_3030 || \
 		FREETZ_TYPE_WLAN_3130
 	select FREETZ_REMOVE_TR069 if FREETZ_HAS_AVM_TR069
+	select FREETZ_REMOVE_AURA_USB if FREETZ_HAS_AVM_AURA_USB
+
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd/upnpd' and some more files used by
