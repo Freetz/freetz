@@ -109,7 +109,7 @@ endif
 
 # Folder root/ needs 755 permissions
 ifneq ($(shell stat -c %a make/mod/files/root),755)
-$(error Please unpack/checkout again with umask set to 0022)
+$(error Please set umask to 0022 and then unpack/checkout again)
 endif
 
 # We need umask 0022
