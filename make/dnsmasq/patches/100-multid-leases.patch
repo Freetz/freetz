@@ -1,5 +1,5 @@
---- src/dnsmasq.h	2012-04-29 19:02:21+02:00
-+++ src/dnsmasq.h	2012-04-29 19:02:21+02:00
+--- src/dnsmasq.h
++++ src/dnsmasq.h
 @@ -502,6 +502,7 @@
  #endif
    int hwaddr_len, hwaddr_type; /* hw_type used for iaid in v6 */
@@ -16,8 +16,8 @@
  void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
  void lease_set_interface(struct dhcp_lease *lease, int interface, time_t now);
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
---- src/lease.c	2012-04-29 19:02:21+02:00
-+++ src/lease.c	2012-04-29 19:02:21+02:00
+--- src/lease.c
++++ src/lease.c
 @@ -196,28 +196,44 @@
        lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
  }
@@ -113,7 +113,7 @@
      }
    
    /* Set alarm for when the first lease expires + slop. */
-@@ -334,6 +375,11 @@
+@@ -341,6 +382,11 @@
  		(unsigned int)difftime(next_event, now));
      }
  
@@ -125,7 +125,7 @@
    send_alarm(next_event, now);
  }
  
-@@ -787,6 +833,23 @@
+@@ -794,6 +840,23 @@
    lease->hostname = lease->fqdn = NULL;
  }
  
@@ -149,8 +149,8 @@
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth, char *domain, char *config_domain)
  {
    struct dhcp_lease *lease_tmp;
---- src/rfc2131.c	2012-04-29 19:02:21+02:00
-+++ src/rfc2131.c	2012-04-29 19:02:21+02:00
+--- src/rfc2131.c
++++ src/rfc2131.c
 @@ -486,6 +486,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0, now, 1);
  	      if (hostname)
