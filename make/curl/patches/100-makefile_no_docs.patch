@@ -33,7 +33,7 @@
  	@(cd tests; $(MAKE) clean)
 --- Makefile.in
 +++ Makefile.in
-@@ -331,7 +331,7 @@
+@@ -337,7 +337,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src include
@@ -42,7 +42,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -813,10 +813,10 @@
+@@ -819,10 +819,10 @@
  	done)
  
  html:
@@ -55,7 +55,7 @@
  
  check: test examples
  
-@@ -836,7 +836,7 @@
+@@ -842,7 +842,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
@@ -64,7 +64,7 @@
  
  clean-local:
  	@(cd tests; $(MAKE) clean)
-@@ -893,12 +893,12 @@
+@@ -899,12 +899,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
