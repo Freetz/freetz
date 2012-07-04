@@ -1,7 +1,7 @@
 --- configure
 +++ configure
 	2012-01-13 21:11:06.345273110 +0100
-@@ -14083,13 +14083,25 @@
+@@ -14143,13 +14143,25 @@
  done
  
      OLDLIBS="$LIBS"
@@ -31,7 +31,7 @@
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -14099,73 +14111,34 @@
+@@ -14159,73 +14171,34 @@
  #ifdef __cplusplus
  extern "C"
  #endif
@@ -115,7 +115,7 @@
  
 --- src/network.c
 +++ src/network.c
-@@ -31,6 +31,7 @@
+@@ -37,6 +37,7 @@
  #endif
  
  #ifdef USE_OPENSSL
@@ -123,7 +123,7 @@
  static void ssl_info_callback(const SSL *ssl, int where, int ret) {
  	UNUSED(ret);
  
-@@ -42,6 +43,7 @@
+@@ -48,6 +49,7 @@
  	}
  }
  #endif
@@ -131,7 +131,7 @@
  
  static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
  	server_socket *srv_socket = (server_socket *)context;
-@@ -612,7 +614,9 @@
+@@ -618,7 +620,9 @@
  		}
  
  		SSL_CTX_set_options(s->ssl_ctx, ssloptions);
@@ -141,7 +141,7 @@
  
  		if (!s->ssl_use_sslv2) {
  			/* disable SSLv2 */
-@@ -706,6 +710,15 @@
+@@ -712,6 +716,15 @@
  #endif
  #endif
  
@@ -157,7 +157,7 @@
  		if (!buffer_is_empty(s->ssl_ca_file)) {
  			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
-@@ -737,6 +750,7 @@
+@@ -743,6 +756,7 @@
  				"SSL: You specified ssl.verifyclient.activate but no ca_file"
  			);
  		}
@@ -184,4 +184,16 @@
 +#endif
  }
  #endif
+ 
+--- src/connections.c
++++ src/connections.c
+@@ -1360,7 +1360,9 @@
+ 			}
+ 
+ 			con->renegotiations = 0;
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 			SSL_set_app_data(con->ssl, con);
++#endif
+ 			SSL_set_accept_state(con->ssl);
+ 			con->conf.is_ssl=1;
  

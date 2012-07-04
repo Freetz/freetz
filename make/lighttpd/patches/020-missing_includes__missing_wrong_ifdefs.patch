@@ -1,16 +1,14 @@
 --- src/network.c
 +++ src/network.c
-@@ -25,6 +25,9 @@
- # include <openssl/ssl.h>
- # include <openssl/err.h>
+@@ -27,6 +27,7 @@
  # include <openssl/rand.h>
+ # include <openssl/dh.h>
+ # include <openssl/bn.h>
 +# include <openssl/bio.h>
-+# include <openssl/bn.h>
-+# include <openssl/dh.h>
- #endif
  
- #ifdef USE_OPENSSL
-@@ -493,13 +496,14 @@
+ # if OPENSSL_VERSION_NUMBER >= 0x0090800fL
+ #  ifndef OPENSSL_NO_ECDH
+@@ -501,13 +502,14 @@
  	network_backend_t backend;
  
  #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
@@ -26,7 +24,7 @@
  	DH *dh;
  	BIO *bio;
  
-@@ -542,6 +546,7 @@
+@@ -550,6 +552,7 @@
  		0x85,0x5E,0x6E,0xEB,0x22,0xB3,0xB2,0xE5,
  	};
  #endif
@@ -34,7 +32,7 @@
  
  	struct nb_map {
  		network_backend_t nb;
-@@ -640,6 +645,7 @@
+@@ -648,6 +651,7 @@
  			}
  		}
  
@@ -42,7 +40,7 @@
  		/* Support for Diffie-Hellman key exchange */
  		if (!buffer_is_empty(s->ssl_dh_file)) {
  			/* DH parameters from file */
-@@ -673,9 +679,10 @@
+@@ -681,9 +685,10 @@
  		SSL_CTX_set_tmp_dh(s->ssl_ctx,dh);
  		SSL_CTX_set_options(s->ssl_ctx,SSL_OP_SINGLE_DH_USE);
  		DH_free(dh);
