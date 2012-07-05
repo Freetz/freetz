@@ -39,10 +39,10 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-http
 $(PKG)_CONFIGURE_OPTIONS += --enable-password-save
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL),--enable-small,--disable-small)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
-$(PKG)_CONFIGURE_OPTIONS += --with-ifconfig-path=/sbin/ifconfig
-$(PKG)_CONFIGURE_OPTIONS += --with-iproute-path=/bin/ip
-$(PKG)_CONFIGURE_OPTIONS += --with-route-path=/sbin/route
-$(PKG)_CONFIGURE_OPTIONS += --with-netstat-path=/bin/netstat
+$(PKG)_CONFIGURE_OPTIONS += --with-ifconfig-path=ifconfig
+$(PKG)_CONFIGURE_OPTIONS += --with-iproute-path=ip
+$(PKG)_CONFIGURE_OPTIONS += --with-route-path=route
+$(PKG)_CONFIGURE_OPTIONS += --with-netstat-path=netstat
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
