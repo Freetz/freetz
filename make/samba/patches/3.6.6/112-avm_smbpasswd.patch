@@ -1,6 +1,6 @@
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -1016,13 +1016,7 @@
+@@ -1017,13 +1017,7 @@
  
  PASSWD_UTIL_OBJ = utils/passwd_util.o
  
@@ -15,7 +15,7 @@
  
  PDBEDIT_OBJ = utils/pdbedit.o $(PASSWD_UTIL_OBJ) $(PARAM_OBJ) $(PASSDB_OBJ) \
  		$(LIBSAMBA_OBJ) $(LIBTSOCKET_OBJ) \
-@@ -1786,7 +1780,7 @@
+@@ -1787,7 +1781,7 @@
  		echo "$(COMPILE_CC_PATH)" 1>&2;\
  		$(COMPILE_CC_PATH) >/dev/null 2>&1
  
@@ -24,7 +24,7 @@
  	@echo "Compiling $< (multicall)"
  	@$(COMPILE_CC_PATH) -Dmain=smbpasswd_main && exit 0;\
  		echo "The following command failed:" 1>&2;\
-@@ -1795,7 +1789,7 @@
+@@ -1796,7 +1790,7 @@
  
  SMBD_MULTI_O = $(patsubst smbd/server.o,smbd/server_multicall.o,$(SMBD_OBJ))
  NMBD_MULTI_O = $(patsubst nmbd/nmbd.o,nmbd/nmbd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(NMBD_OBJ)))
@@ -33,7 +33,7 @@
  MULTI_O = multi.o
  
  MULTICALL_O = $(sort $(SMBD_MULTI_O) $(NMBD_MULTI_O) $(SMBPASSWD_MULTI_O) $(MULTI_O))
-@@ -1890,11 +1884,9 @@
+@@ -1891,11 +1885,9 @@
  		$(LIBS) $(POPT_LIBS) $(KRB5LIBS) $(LDAP_LIBS) $(NSCD_LIBS) \
  		$(LIBTALLOC_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
  
