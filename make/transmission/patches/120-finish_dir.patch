@@ -1,6 +1,6 @@
 --- daemon/daemon.c
 +++ daemon/daemon.c
-@@ -89,6 +89,8 @@
+@@ -94,6 +94,8 @@
      { 'C', "no-watch-dir", "Disable the watch-dir", "C", 0, NULL },
      { 941, "incomplete-dir", "Where to store new torrents until they're complete", NULL, 1, "<directory>" },
      { 942, "no-incomplete-dir", "Don't store incomplete torrents in a different location", NULL, 0, NULL },
@@ -9,7 +9,7 @@
      { 'd', "dump-settings", "Dump the settings and exit", "d", 0, NULL },
      { 'e', "logfile", "Dump the log messages to this filename", "e", 1, "<filename>" },
      { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
-@@ -375,6 +377,11 @@
+@@ -402,6 +404,11 @@
                        break;
              case 942: tr_bencDictAddBool( &settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, false );
                        break;
@@ -20,7 +20,7 @@
 +                      break;
              case 'd': dumpSettings = true;
                        break;
-             case 'e': logfile = fopen( optarg, "a+" );
+             case 'e': logfile = fopen( optarg, LOGFILE_MODE_STR );
 --- daemon/remote.c
 +++ daemon/remote.c
 @@ -237,6 +237,8 @@
@@ -69,7 +69,7 @@
  .It Fl g Fl -config-dir Ar directory
 --- daemon/transmission-remote.1
 +++ daemon/transmission-remote.1
-@@ -151,6 +151,11 @@
+@@ -155,6 +155,11 @@
  such as "\-g1,3-5" to add files #1, #3, #4, and #5 to the download list.
  .It Fl G Fl -no-get Ar all | file-index | files
  Mark file(s) for not downloading.
@@ -83,7 +83,7 @@
  .Ar ratio
 --- extras/rpc-spec.txt
 +++ extras/rpc-spec.txt
-@@ -432,6 +432,8 @@
+@@ -440,6 +440,8 @@
     "download-queue-enabled"         | boolean    | if true, limit how many torrents can be downloaded at once
     "dht-enabled"                    | boolean    | true means allow dht in public torrents
     "encryption"                     | string     | "required", "preferred", "tolerated"
@@ -92,7 +92,7 @@
     "idle-seeding-limit"             | number     | torrents we're seeding will be stopped if they're idle for this long
     "idle-seeding-limit-enabled"     | boolean    | true if the seeding inactivity limit is honored by default
     "incomplete-dir"                 | string     | path for incomplete torrents, when enabled
-@@ -707,3 +709,5 @@
+@@ -715,3 +717,5 @@
           |         | yes       |                | new method "queue-move-down"
           |         | yes       |                | new method "queue-move-bottom"
           |         | yes       |                | new method "torrent-start-now"
@@ -122,7 +122,7 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_DHT_ENABLED, tr_sessionIsDHTEnabled( s ) );
 --- libtransmission/session.c
 +++ libtransmission/session.c
-@@ -318,6 +318,8 @@
+@@ -320,6 +320,8 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,              false );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR,                  tr_getDefaultDownloadDir( ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,          false );
@@ -131,7 +131,7 @@
      tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                        TR_MSG_INF );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_DOWNLOAD_QUEUE_SIZE,             5 );
      tr_bencDictAddBool( d, TR_PREFS_KEY_DOWNLOAD_QUEUE_ENABLED,          true );
-@@ -390,6 +392,8 @@
+@@ -392,6 +394,8 @@
      tr_bencDictAddBool( d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,               tr_sessionIsIdleLimited( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR,                   tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,           tr_sessionIsIncompleteDirEnabled( s ) );
@@ -140,7 +140,7 @@
      tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                         tr_getMessageLevel( ) );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_GLOBAL,                s->peerLimit );
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT,               s->peerLimitPerTorrent );
-@@ -816,6 +820,10 @@
+@@ -818,6 +822,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -151,7 +151,7 @@
      if( tr_bencDictFindBool( settings, TR_PREFS_KEY_RENAME_PARTIAL_FILES, &boolVal ) )
          tr_sessionSetIncompleteFileNamingEnabled( session, boolVal );
  
-@@ -1035,6 +1043,49 @@
+@@ -1037,6 +1045,49 @@
  ****
  ***/
  
@@ -229,7 +229,7 @@
  
 --- libtransmission/torrent.c
 +++ libtransmission/torrent.c
-@@ -449,6 +449,12 @@
+@@ -448,6 +448,12 @@
  
          tor->isStopping = true;
  
