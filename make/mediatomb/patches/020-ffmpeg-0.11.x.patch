@@ -1,0 +1,42 @@
+--- src/metadata/ffmpeg_handler.cc
++++ src/metadata/ffmpeg_handler.cc
+@@ -274,14 +274,27 @@
+     av_register_all();
+ 
+     // Open video file
++#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
++    if (avformat_open_input(&pFormatCtx, 
++                          item->getLocation().c_str(), NULL, NULL) != 0)
++#else
+     if (av_open_input_file(&pFormatCtx, 
+                           item->getLocation().c_str(), NULL, 0, NULL) != 0)
++#endif
+         return; // Couldn't open file
+ 
+     // Retrieve stream information
++#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
++    if (avformat_find_stream_info(pFormatCtx, NULL) < 0)
++#else
+     if (av_find_stream_info(pFormatCtx) < 0)
++#endif
+     {
++#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
++        avformat_close_input(&pFormatCtx);
++#else
+         av_close_input_file(pFormatCtx);
++#endif
+         return; // Couldn't find stream information
+     }   
+ 	// Add metadata using ffmpeg library calls
+@@ -290,7 +303,11 @@
+ 	addFfmpegResourceFields(item, pFormatCtx, &x, &y);
+ 	
+     // Close the video file
++#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
++    avformat_close_input(&pFormatCtx);
++#else
+     av_close_input_file(pFormatCtx);
++#endif
+ }
+ 
+ Ref<IOHandler> FfmpegHandler::serveContent(Ref<CdsItem> item, int resNum, off_t *data_size)

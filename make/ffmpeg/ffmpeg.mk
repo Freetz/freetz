@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.10.4)
+$(call PKG_INIT_BIN, 0.11.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=25740dd23f6d65439f908ec212da10d7
+$(PKG)_SOURCE_MD5:=ff8cb914f657e164dd60ea1008b555a8
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
 $(PKG)_DEPENDS_ON := zlib
@@ -14,8 +14,8 @@ $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 $(PKG)_LIBNAMES_SHORT      := avcodec avdevice avfilter avformat avutil postproc swresample swscale
-$(PKG)_LIBVERSIONS_MAJOR   := 53      53       2        53       51     52       0          2
-$(PKG)_LIBVERSIONS_MINOR   := 61.100  4.100    61.100   32.100   35.100 0.100    6.100      1.100
+$(PKG)_LIBVERSIONS_MAJOR   := 54      54       2        54       51     52       0          2
+$(PKG)_LIBVERSIONS_MINOR   := 23.100  0.100    77.100   6.100    54.100 0.100    15.100     1.100
 
 $(PKG)_LIBNAMES_LONG_MAJOR := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS_MAJOR))
 $(PKG)_LIBNAMES_LONG       := $(join $($(PKG)_LIBNAMES_LONG_MAJOR:%=%.),$($(PKG)_LIBVERSIONS_MINOR))
