@@ -3,9 +3,9 @@
 @@ -2,7 +2,7 @@
  #define _RAR_ERRHANDLER_
  
- #if (defined(GUI) || !defined(_WIN_ALL)) && !defined(SFX_MODULE) && !defined(_WIN_CE) || defined(RARDLL)
+ #ifndef SFX_MODULE
 -#define ALLOW_EXCEPTIONS
 +#undef ALLOW_EXCEPTIONS
  #endif
  
- enum { SUCCESS,WARNING,FATAL_ERROR,CRC_ERROR,LOCK_ERROR,WRITE_ERROR,
+ enum RAR_EXIT // RAR exit code.

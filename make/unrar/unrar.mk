@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 4.1.4)
+$(call PKG_INIT_BIN, 4.2.4)
 $(PKG)_DIR:=$(subst -$($(PKG)_VERSION),,$($(PKG)_DIR))
 $(PKG)_SOURCE:=unrarsrc-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=808c92a661820a637ca1330cf40c18e4
+$(PKG)_SOURCE_MD5:=8ea9d1b4139474b282d76e627a2de3e4
 $(PKG)_SITE:=http://www.rarlab.com/rar/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/unrar
