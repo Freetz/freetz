@@ -100,6 +100,13 @@ config FREETZ_BUSYBOX_DIFF
 		This feature adds about 14.2 KB to BusyBox.
 		All sub-features in BusyBox are selected.
 
+config FREETZ_BUSYBOX_BASE64
+	bool "base64"
+	depends on FREETZ_REPLACE_BUSYBOX
+	default n
+	help
+		Include the 'base64' tool in busybox
+
 config FREETZ_BUSYBOX_DOS2UNIX
 	bool "dos2unix"
 	depends on FREETZ_REPLACE_BUSYBOX
