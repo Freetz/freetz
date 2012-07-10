@@ -131,7 +131,7 @@
  
  static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
  	server_socket *srv_socket = (server_socket *)context;
-@@ -618,7 +620,9 @@
+@@ -622,7 +624,9 @@
  		}
  
  		SSL_CTX_set_options(s->ssl_ctx, ssloptions);
@@ -141,7 +141,7 @@
  
  		if (!s->ssl_use_sslv2) {
  			/* disable SSLv2 */
-@@ -712,6 +716,15 @@
+@@ -716,6 +720,15 @@
  #endif
  #endif
  
@@ -157,7 +157,7 @@
  		if (!buffer_is_empty(s->ssl_ca_file)) {
  			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
-@@ -743,6 +756,7 @@
+@@ -747,6 +760,7 @@
  				"SSL: You specified ssl.verifyclient.activate but no ca_file"
  			);
  		}
@@ -187,7 +187,7 @@
  
 --- src/connections.c
 +++ src/connections.c
-@@ -1360,7 +1360,9 @@
+@@ -1368,7 +1368,9 @@
  			}
  
  			con->renegotiations = 0;

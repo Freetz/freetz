@@ -30,9 +30,9 @@
  #endif
 +#endif
  
- 	struct nb_map {
- 		network_backend_t nb;
-@@ -648,6 +651,7 @@
+ #ifdef USE_OPENSSL
+ 	char ssl_error_string_buf[256];
+@@ -652,6 +655,7 @@
  			}
  		}
  
@@ -40,7 +40,7 @@
  		/* Support for Diffie-Hellman key exchange */
  		if (!buffer_is_empty(s->ssl_dh_file)) {
  			/* DH parameters from file */
-@@ -681,9 +685,10 @@
+@@ -685,9 +689,10 @@
  		SSL_CTX_set_tmp_dh(s->ssl_ctx,dh);
  		SSL_CTX_set_options(s->ssl_ctx,SSL_OP_SINGLE_DH_USE);
  		DH_free(dh);
