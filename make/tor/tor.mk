@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.2.35)
+$(call PKG_INIT_BIN, 0.2.2.37)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=dcecf699c4b929319d5f1ce0358d4835
+$(PKG)_SOURCE_MD5:=5aafdca4fb6af6e12b503d32b03f14a7
 $(PKG)_SITE:=http://www.torproject.org/dist
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
@@ -8,13 +8,12 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
 
 $(PKG)_DEPENDS_ON := zlib openssl libevent
 
-$(PKG)_CONFIGURE_ENV += CROSS_COMPILE="yes"
-$(PKG)_CONFIGURE_ENV += ac_cv_libevent_linker_option='(none)'
-$(PKG)_CONFIGURE_ENV += ac_cv_openssl_linker_option='(none)'
-$(PKG)_CONFIGURE_ENV += ac_cv_libevent_normal=yes
+$(PKG)_CONFIGURE_ENV += tor_cv_malloc_zero_works=no
 $(PKG)_CONFIGURE_ENV += tor_cv_null_is_zero=yes
-$(PKG)_CONFIGURE_ENV += tor_cv_unaligned_ok=yes
+$(PKG)_CONFIGURE_ENV += tor_cv_sign_extend=yes
+$(PKG)_CONFIGURE_ENV += tor_cv_size_t_signed=no
 $(PKG)_CONFIGURE_ENV += tor_cv_time_t_signed=yes
+$(PKG)_CONFIGURE_ENV += tor_cv_twos_complement=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
