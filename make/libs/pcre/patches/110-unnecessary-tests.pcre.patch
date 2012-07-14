@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -16528,6 +16528,7 @@
+@@ -16540,6 +16540,7 @@
  done
  
  
@@ -8,7 +8,7 @@
  # Check for the availability of libz (aka zlib)
  
  for ac_header in zlib.h
-@@ -16581,8 +16582,10 @@
+@@ -16593,8 +16594,10 @@
  if test "x$ac_cv_lib_z_gzopen" = xyes; then :
    HAVE_LIBZ=1
  fi
@@ -19,21 +19,11 @@
  # Check for the availability of libbz2. Originally we just used AC_CHECK_LIB,
  # as for libz. However, this had the following problem, diagnosed and fixed by
  # a user:
-@@ -16644,7 +16647,9 @@
+@@ -16656,6 +16659,7 @@
  rm -f core conftest.err conftest.$ac_objext \
      conftest$ac_exeext conftest.$ac_ext
  LIBS="$OLD_LIBS"
 +fi
  
-+if test "$enable_pcretest_libreadline" = "yes"; then
  # Check for the availabiity of libreadline
- 
- for ac_header in readline/readline.h
-@@ -16930,6 +16935,7 @@
-     LIBREADLINE="-lreadline $LIBREADLINE"
-   fi
- fi
-+fi
- 
- # This facilitates -ansi builds under Linux
  

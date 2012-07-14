@@ -1,15 +1,15 @@
-$(call PKG_INIT_LIB, 8.30)
+$(call PKG_INIT_LIB, 8.31)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=98e8928cccc945d04279581e778fbdff
+$(PKG)_SOURCE_MD5:=1c9a276af932b5599157f96e945391f0
 $(PKG)_SITE:=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 
-$(PKG)_LIB_VERSION:=1.0.0
+$(PKG)_LIB_VERSION:=1.0.1
 $(PKG)_LIBNAME=libpcre.so.$($(PKG)_LIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
-$(PKG)_POSIX_LIB_VERSION:=0.0.0
+$(PKG)_POSIX_LIB_VERSION:=0.0.1
 $(PKG)_POSIX_LIBNAME=libpcreposix.so.$($(PKG)_POSIX_LIB_VERSION)
 $(PKG)_POSIX_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_POSIX_LIBNAME)
 $(PKG)_POSIX_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_POSIX_LIBNAME)
@@ -26,6 +26,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-utf8
 $(PKG)_CONFIGURE_OPTIONS += --enable-unicode-properties
 $(PKG)_CONFIGURE_OPTIONS += --disable-cpp
 $(PKG)_CONFIGURE_OPTIONS += --disable-pcretest-libreadline
+$(PKG)_CONFIGURE_OPTIONS += --disable-pcretest-libedit
 $(PKG)_CONFIGURE_OPTIONS += --disable-pcregrep-libz
 $(PKG)_CONFIGURE_OPTIONS += --disable-pcregrep-libbz2
 
