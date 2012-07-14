@@ -73,7 +73,7 @@ $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 
 $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_NMBD)" != "y" ] && echo "sbin/nmbd" >> $@; \
+	[ "$(FREETZ_PACKAGE_SAMBA_NMBD)" != "y" ] && echo "sbin/nmbd" >> $@; \
 	touch $@
 
 $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_SYMLINKS_TARGET_DIR) $(if $(FREETZ_SAMBA_VERSION_3_0),,$($(PKG)_CODEPAGES_TARGET_DIR))

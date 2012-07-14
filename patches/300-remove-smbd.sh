@@ -14,7 +14,7 @@ fi
 
 
 if [ "$FREETZ_REMOVE_SAMBA" == "y" ] || \
-  [ "$FREETZ_PACKAGE_SAMBA" == "y" -a "$FREETZ_PACKAGE_NMBD" != "y" ]; then
+  [ "$FREETZ_PACKAGE_SAMBA" == "y" -a "$FREETZ_PACKAGE_SAMBA_NMBD" != "y" ]; then
 	echo1 "remove AVM's nmbd"
 	rm_files "${FILESYSTEM_MOD_DIR}/sbin/nmbd"
 fi
