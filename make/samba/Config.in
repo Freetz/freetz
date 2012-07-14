@@ -1,4 +1,4 @@
-config FREETZ_PACKAGE_SAMBA
+config FREETZ_PACKAGE_SAMBA_SMBD
 	bool "Samba smbd (Filesharing)"
 	select FREETZ_LIB_libcrypt
 	select FREETZ_LIB_libdl
@@ -14,7 +14,7 @@ config FREETZ_PACKAGE_SAMBA
 
 config FREETZ_PACKAGE_SAMBA_NMBD
 	bool "Samba nmbd (Nameservices)"
-	depends on FREETZ_PACKAGE_SAMBA
+	depends on FREETZ_PACKAGE_SAMBA_SMBD
 	default n
 	help
 		Provides the Samba NetBIOS nameserver (nmbd). This is what you need if you
@@ -22,7 +22,7 @@ config FREETZ_PACKAGE_SAMBA_NMBD
 		masterbrowser.
 
 choice
-	depends on FREETZ_PACKAGE_SAMBA
+	depends on FREETZ_PACKAGE_SAMBA_SMBD
 	prompt "version"
 	default FREETZ_SAMBA_VERSION_3_0
 
@@ -40,7 +40,7 @@ endchoice
 
 config FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL
 	int "Maximum level of compiled-in debug messages"
-	depends on FREETZ_PACKAGE_SAMBA
+	depends on FREETZ_PACKAGE_SAMBA_SMBD
 	default -1
 	help
 		1000 - include all debug messages
