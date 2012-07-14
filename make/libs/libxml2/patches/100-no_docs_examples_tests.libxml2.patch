@@ -1,0 +1,48 @@
+--- Makefile.in
++++ Makefile.in
+@@ -314,7 +314,7 @@
+ man3dir = $(mandir)/man3
+ NROFF = nroff
+ MANS = $(man_MANS)
+-DATA = $(confexec_DATA) $(m4data_DATA) $(pkgconfig_DATA)
++DATA = $(pkgconfig_DATA)
+ RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
+   distclean-recursive maintainer-clean-recursive
+ AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
+@@ -586,7 +586,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ ACLOCAL_AMFLAGS = -I m4
+-SUBDIRS = include . doc example xstc @PYTHON_SUBDIR@
++SUBDIRS = include . xstc @PYTHON_SUBDIR@
+ DIST_SUBDIRS = include . doc example python xstc
+ INCLUDES = -I$(top_builddir)/include -I@srcdir@/include @THREAD_CFLAGS@ @Z_CFLAGS@ @LZMA_CFLAGS@
+ bin_SCRIPTS = xml2-config
+@@ -1574,7 +1574,7 @@
+ 	       exit 1; } >&2
+ check-am: all-am
+ check: check-recursive
+-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
++all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(DATA) \
+ 		config.h
+ install-binPROGRAMS: install-libLTLIBRARIES
+ 
+@@ -1634,15 +1634,15 @@
+ 
+ info-am:
+ 
+-install-data-am: install-data-local install-m4dataDATA install-man \
++install-data-am: \
+ 	install-pkgconfigDATA
+ 
+ install-dvi: install-dvi-recursive
+ 
+ install-dvi-am:
+ 
+-install-exec-am: install-binPROGRAMS install-binSCRIPTS \
+-	install-confexecDATA install-libLTLIBRARIES
++install-exec-am: install-binSCRIPTS \
++	install-libLTLIBRARIES
+ 
+ install-html: install-html-recursive
+ 

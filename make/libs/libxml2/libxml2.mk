@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 2.7.8)
-$(PKG)_SOURCE:=$(pkg)-sources-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a78857dd73a8784776d7f9625ccf7a39
+$(call PKG_INIT_LIB, 2.8.0)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=c62106f02ee00b6437f0fb9d370c1093
 $(PKG)_SITE:=ftp://xmlsoft.org/$(pkg)
 
 $(PKG)_LIBNAME:=$(pkg).so.$($(PKG)_VERSION)
@@ -70,7 +70,6 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/xml2-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libxml-2.0.pc
 		ln -sf libxml2/libxml $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libxml
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/xml2Conf.sh
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -85,8 +84,7 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libxml2* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/xml2-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libxml* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libxml-2.0.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/libxml.m4
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libxml-2.0.pc
 
 $(pkg)-uninstall:
 	$(RM) $(LIBXML2_TARGET_DIR)/libxml2*.so*
