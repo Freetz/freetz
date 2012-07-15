@@ -1,28 +1,10 @@
-config FREETZ_PACKAGE_SAMBA_SMBD
-	bool "Samba smbd (Filesharing)"
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libresolv
-	select FREETZ_LIB_libpopt
-	select FREETZ_LIB_libz        if FREETZ_SAMBA_VERSION_3_6
-	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+config FREETZ_PACKAGE_SAMBA
+	bool "Samba suite"
 	default n
-	help
-		Provides the Samba SMB server (smbd). This is what you need if you would
-		like your router's file system to be accessible from Windows or from
-		other UNIX/Linux machines via smbmount, smbclient, cifsmount or similar.
-
-config FREETZ_PACKAGE_SAMBA_NMBD
-	bool "Samba nmbd (Nameservices)"
-	depends on FREETZ_PACKAGE_SAMBA_SMBD
-	default n
-	help
-		Provides the Samba NetBIOS nameserver (nmbd). This is what you need if you
-		would like to see your Fritzbox in the network neighbourhood or act as a
-		masterbrowser.
+	select FREETZ_PACKAGE_SAMBA_SMBD if (!FREETZ_PACKAGE_SAMBA_SMBCLIENT && !FREETZ_PACKAGE_SAMBA_NMBLOOKUP)
 
 choice
-	depends on FREETZ_PACKAGE_SAMBA_SMBD
+	depends on FREETZ_PACKAGE_SAMBA
 	prompt "version"
 	default FREETZ_SAMBA_VERSION_3_0
 
@@ -35,12 +17,63 @@ choice
 		bool "samba 3.6.6"
 		help
 			The binary with smbd and nmbd needs about 1682 kB (uncompressed).
-
 endchoice
+
+config FREETZ_PACKAGE_SAMBA_SMBD
+	bool "smbd (file sharing server)"
+	depends on FREETZ_PACKAGE_SAMBA
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libresolv
+	select FREETZ_LIB_libpopt
+	select FREETZ_LIB_libz        if FREETZ_SAMBA_VERSION_3_6
+	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	default y
+	help
+		Provides the Samba SMB server (smbd). This is what you need if you would
+		like your router's file system to be accessible from Windows or from
+		other UNIX/Linux machines via smbmount, smbclient, cifsmount or similar.
+
+config FREETZ_PACKAGE_SAMBA_NMBD
+	bool "nmbd (NetBIOS name server)"
+	depends on FREETZ_PACKAGE_SAMBA
+	select FREETZ_PACKAGE_SAMBA_SMBD
+	default n
+	help
+		Provides the Samba NetBIOS name server (nmbd). This is what you need
+		if you would like to see your router in the network neighbourhood or
+		act as a master browser.
+
+config FREETZ_PACKAGE_SAMBA_SMBCLIENT
+	bool "smbclient"
+	depends on FREETZ_PACKAGE_SAMBA
+	select FREETZ_LIB_libcrypt    if FREETZ_SAMBA_VERSION_3_0
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libresolv
+	select FREETZ_LIB_libpopt
+	select FREETZ_LIB_libreadline
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libz        if FREETZ_SAMBA_VERSION_3_6
+	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	default n
+	help
+		ftp-like client to access SMB/CIFS resources on servers.
+
+config FREETZ_PACKAGE_SAMBA_NMBLOOKUP
+	bool "nmblookup"
+	depends on FREETZ_PACKAGE_SAMBA
+	select FREETZ_LIB_libcrypt    if FREETZ_SAMBA_VERSION_3_0
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libresolv
+	select FREETZ_LIB_libpopt
+	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	default n
+	help
+		NetBIOS over TCP/IP client used to lookup NetBIOS names.
 
 config FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL
 	int "Maximum level of compiled-in debug messages"
-	depends on FREETZ_PACKAGE_SAMBA_SMBD
+	depends on FREETZ_PACKAGE_SAMBA
 	default -1
 	help
 		1000 - include all debug messages

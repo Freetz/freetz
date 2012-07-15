@@ -19,6 +19,10 @@ $(PKG)_BINARY:=samba_multicall
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/$($(PKG)_BUILD_SUBDIR)/bin/$($(PKG)_BINARY)
 $(PKG)_BINARY_TARGET_DIR:=$($(PKG)_DEST_DIR)/sbin/$($(PKG)_BINARY)
 
+$(PKG)_CLIENT_BINARIES:=smbclient nmblookup
+$(PKG)_CLIENT_BINARIES_BUILD_DIR:=$($(PKG)_CLIENT_BINARIES:%=$($(PKG)_DIR)/$($(PKG)_BUILD_SUBDIR)/bin/%)
+$(PKG)_CLIENT_BINARIES_TARGET_DIR:=$($(PKG)_CLIENT_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+
 $(PKG)_SYMLINKS:=smbd nmbd smbpasswd
 $(PKG)_SYMLINKS_TARGET_DIR:=$($(PKG)_SYMLINKS:%=$($(PKG)_DEST_DIR)/sbin/%)
 
@@ -27,7 +31,7 @@ $(PKG)_CODEPAGES_DIR:=/etc/samba
 $(PKG)_CODEPAGES_BUILD_DIR:=$($(PKG)_CODEPAGES:%=$($(PKG)_DIR)/codepages/%)
 $(PKG)_CODEPAGES_TARGET_DIR:=$($(PKG)_CODEPAGES:%=$($(PKG)_DEST_DIR)$($(PKG)_CODEPAGES_DIR)/%)
 
-$(PKG)_DEPENDS_ON += popt
+$(PKG)_DEPENDS_ON += popt ncurses readline
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_TARGET_LDFLAGS += -liconv
@@ -50,7 +54,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY_BUILD_DIR) $($(PKG)_CLIENT_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	for target in $(if $(FREETZ_SAMBA_VERSION_3_0),headers) all; do \
 	$(SUBMAKE) -C $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR) \
 		$(SAMBA_MAKE_FLAGS) \
@@ -63,6 +67,9 @@ $($(PKG)_CODEPAGES_BUILD_DIR): $($(PKG)_DIR)/.unpacked
 $($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_CLIENT_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/$($(PKG)_BUILD_SUBDIR)/bin/%
+	$(INSTALL_BINARY_STRIP)
+
 $($(PKG)_SYMLINKS_TARGET_DIR): $($(PKG)_BINARY_TARGET_DIR)
 	ln -sf $(SAMBA_BINARY) $@
 
@@ -73,16 +80,21 @@ $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 
 $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" ] && echo -e "sbin/samba_multicall\nsbin/smbd\nsbin/smbpasswd" >> $@; \
+	[ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" ] && echo -e "etc/default.samba\netc/init.d/rc.nmbd\netc/init.d/rc.samba\netc/init.d/rc.smbd\netc/samba_control\nusr/lib/cgi-bin/samba.cgi" >> $@; \
+	[ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" -a "$(FREETZ_SAMBA_VERSION_3_6)" == "y" ] && echo -e "etc/samba/lowcase.dat\netc/samba/upcase.dat\netc/samba/valid.dat" >> $@; \
 	[ "$(FREETZ_PACKAGE_SAMBA_NMBD)" != "y" ] && echo "sbin/nmbd" >> $@; \
+	[ "$(FREETZ_PACKAGE_SAMBA_SMBCLIENT)" != "y" ] && echo "usr/bin/smbclient" >> $@; \
+	[ "$(FREETZ_PACKAGE_SAMBA_NMBLOOKUP)" != "y" ] && echo "usr/bin/nmblookup" >> $@; \
 	touch $@
 
-$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_SYMLINKS_TARGET_DIR) $(if $(FREETZ_SAMBA_VERSION_3_0),,$($(PKG)_CODEPAGES_TARGET_DIR))
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_CLIENT_BINARIES_TARGET_DIR) $($(PKG)_SYMLINKS_TARGET_DIR) $(if $(FREETZ_SAMBA_VERSION_3_0),,$($(PKG)_CODEPAGES_TARGET_DIR))
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR) clean
 	$(RM) -r $(SAMBA_DIR)/$(SAMBA_BUILD_SUBDIR)/bin
 
 $(pkg)-uninstall:
-	$(RM) $(SAMBA_BINARY_TARGET_DIR) $(SAMBA_SYMLINKS_TARGET_DIR) $(SAMBA_CODEPAGES_TARGET_DIR)
+	$(RM) $(SAMBA_BINARY_TARGET_DIR) $(SAMBA_CLIENT_BINARIES_TARGET_DIR) $(SAMBA_SYMLINKS_TARGET_DIR) $(SAMBA_CODEPAGES_TARGET_DIR)
 
 $(PKG_FINISH)

@@ -1,7 +1,36 @@
+config EXTERNAL_FREETZ_PACKAGE_SAMBA
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_SAMBA
+	boolean "Samba suite"
+	default n
+
+menu samba
+        depends on EXTERNAL_FREETZ_PACKAGE_SAMBA
+
 config EXTERNAL_FREETZ_PACKAGE_SAMBA_SMBD
-	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_SAMBA_SMBD
-	bool "Samba"
+	depends on FREETZ_PACKAGE_SAMBA_SMBD
+	bool "Samba server binaries"
 	default n
 	help
 		externals these file(s):
 		 /sbin/samba_multicall
+		 /etc/samba/lowcase.dat
+		 /etc/samba/upcase.dat
+		 /etc/samba/valid.dat
+
+config EXTERNAL_FREETZ_PACKAGE_SAMBA_SMBCLIENT
+	depends on FREETZ_PACKAGE_SAMBA_SMBCLIENT
+	bool "smbclient"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/smbclient
+
+config EXTERNAL_FREETZ_PACKAGE_SAMBA_NMBLOOKUP
+	depends on FREETZ_PACKAGE_SAMBA_NMBLOOKUP
+	bool "nmblookup"
+	default n
+	help
+		externals these file(s):
+		 /usr/bin/nmblookup
+
+endmenu
