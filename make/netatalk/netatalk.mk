@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.2.2)
+$(call PKG_INIT_BIN, 2.2.3)
 $(PKG)_SOURCE := $(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5 := bd42b686ec7209d9ab47bd8e2e2431c4
+$(PKG)_SOURCE_MD5 := 0b5a0645836183b0e548ccfbd5c022f8
 $(PKG)_SITE := @SF/$(pkg)
 
 $(PKG)_LIBS := uams_guest
