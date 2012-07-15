@@ -20,6 +20,9 @@ case $1 in
 			cp -a /etc/default.avahi/* /tmp/flash/avahi/
 		fi
 		
+		modlib_addgroup $DAEMON_GROUP
+		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+		
 		modlib_start $AVAHI_ENABLED 
 		;;
 	start)
