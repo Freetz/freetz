@@ -1,19 +1,28 @@
-$(call PKG_INIT_BIN, 1.10)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=0a05fc528aae1c52046c846d990d26ff
-$(PKG)_SITE:=http://freetz.magenbrot.net
+$(call PKG_INIT_BIN, 5.5)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/cifs-utils-$($(PKG)_VERSION)
+$(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=4de6c660ccdb9506d0e2cff4f37b8707
+$(PKG)_SITE:=http://ftp.samba.org/pub/linux-cifs/cifs-utils
+
+$(PKG)_STARTLEVEL=50
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/mount.cifs
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/mount.cifs
-$(PKG)_STARTLEVEL=50
+
+$(PKG)_CONFIGURE_OPTIONS += --with-libcap-ng=no
+$(PKG)_CONFIGURE_OPTIONS += --with-libcap=no
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-cifsupcall
+$(PKG)_CONFIGURE_OPTIONS += --disable-cifscreds
+$(PKG)_CONFIGURE_OPTIONS += --disable-cifsidmap
+$(PKG)_CONFIGURE_OPTIONS += --disable-cifsacl
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
-$(PKG_CONFIGURED_NOP)
+$(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	(cd $(CIFSMOUNT_DIR); \
-		$(TARGET_CC) $(TARGET_CFLAGS) -o mount.cifs mount.cifs.c \
-	)
+	$(SUBMAKE) -C $(CIFSMOUNT_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
