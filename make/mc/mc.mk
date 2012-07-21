@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.8.3)
+$(call PKG_INIT_BIN, 4.8.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=1e29f8d2ce66b686b905857553a092be
+$(PKG)_SOURCE_MD5:=eef6144d9f0331437e9a51adbb77c757
 $(PKG)_SITE:=http://www.midnight-commander.org/downloads
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/mc
@@ -37,6 +37,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
 $(PKG)_CONFIGURE_OPTIONS += --without-x
 $(PKG)_CONFIGURE_OPTIONS += --without-gpm-mouse
+$(PKG)_CONFIGURE_OPTIONS += --disable-aspell
 $(PKG)_CONFIGURE_OPTIONS += --disable-doxygen-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-doxygen-dot
 $(PKG)_CONFIGURE_OPTIONS += --disable-doxygen-html
@@ -47,7 +48,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-search-engine=glib
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/usr/share
 
-$(PKG)_ENDIS_OPTIONS          := background charset vfs vfs-cpio vfs-extfs vfs-ftp vfs-sfs vfs-tar vfs-fish vfs-smb vfs-undelfs
+$(PKG)_ENDIS_OPTIONS          := background charset vfs vfs-cpio vfs-extfs vfs-ftp vfs-sfs vfs-tar vfs-fish vfs-sftp vfs-smb vfs-undelfs
 $(PKG)_ENDIS_OPTIONS_ENABLED  := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_ENDIS_OPTIONS),WITH)
 $(PKG)_ENDIS_OPTIONS_DISABLED := $(filter-out $($(PKG)_ENDIS_OPTIONS_ENABLED),$($(PKG)_ENDIS_OPTIONS))
 $(PKG)_CONFIGURE_OPTIONS      += $(foreach option,$($(PKG)_ENDIS_OPTIONS_ENABLED),--enable-$(option))

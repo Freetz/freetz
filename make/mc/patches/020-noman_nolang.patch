@@ -11,7 +11,7 @@
  endif
 --- doc/hlp/Makefile.in
 +++ doc/hlp/Makefile.in
-@@ -366,7 +366,8 @@
+@@ -378,7 +378,8 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -34,7 +34,7 @@
  endif
 --- doc/man/Makefile.in
 +++ doc/man/Makefile.in
-@@ -368,7 +368,8 @@
+@@ -380,7 +380,8 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -44,7 +44,7 @@
  @USE_NLS_TRUE@SUBDIRS = $(DOC_LINGUAS)
  man_MANS = mc.1 mcedit.1 mcview.1
  CLEANFILES = $(man_MANS)
-@@ -683,7 +683,8 @@
+@@ -694,7 +695,8 @@
  	for dir in "$(DESTDIR)$(man1dir)"; do \
  	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
  	done
@@ -56,7 +56,7 @@
  uninstall: uninstall-recursive
 --- misc/Makefile.am
 +++ misc/Makefile.am
-@@ -20,8 +20,7 @@
+@@ -18,8 +18,7 @@
  	mc.keymap \
  	mc.keymap.default \
  	mc.keymap.emacs \
@@ -64,11 +64,11 @@
 -	mc.menu.sr
 +	mc.menu
  
- CLEANFILES = $(SCRIPTS_OUT)
- 
+ LIBFILES_SCRIPT = \
+ 	edit.indent.rc
 --- misc/Makefile.in
 +++ misc/Makefile.in
-@@ -383,8 +383,7 @@
+@@ -396,8 +396,7 @@
  	mc.keymap \
  	mc.keymap.default \
  	mc.keymap.emacs \
@@ -76,8 +76,8 @@
 -	mc.menu.sr
 +	mc.menu
  
- CLEANFILES = $(SCRIPTS_OUT)
- cfgdir = $(sysconfdir)/@PACKAGE@
+ LIBFILES_SCRIPT = \
+ 	edit.indent.rc
 --- src/vfs/extfs/helpers/Makefile.am
 +++ src/vfs/extfs/helpers/Makefile.am
 @@ -3,7 +3,7 @@
@@ -91,7 +91,7 @@
  EXTFS_CONST = bpp changesetfs gitfs+ patchsetfs rpm trpm u7z
 --- src/vfs/extfs/helpers/Makefile.in
 +++ src/vfs/extfs/helpers/Makefile.in
-@@ -345,7 +345,7 @@
+@@ -357,7 +357,7 @@
  EXTFSCONFFILES = sfs.ini
  
  # Files to install and distribute other than extfs scripts
@@ -113,7 +113,7 @@
  fish_SCRIPTS = ls mkdir fexists unlink chown chmod rmdir ln mv hardlink get send append info utime
 --- src/vfs/fish/helpers/Makefile.in
 +++ src/vfs/fish/helpers/Makefile.in
-@@ -332,7 +332,7 @@
+@@ -344,7 +344,7 @@
  fishdir = $(libexecdir)/@PACKAGE@/fish
  
  # Files to install and distribute other than fish scripts
