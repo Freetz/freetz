@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 2.32.3)
-$(PKG)_LIB_VERSION:=0.3200.3
+$(call PKG_INIT_LIB, 2.32.4)
+$(PKG)_LIB_VERSION:=0.3200.4
 $(PKG)_MAJOR_VERSION:=2.0
 $(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=9bd3ac535c24b6c162be13b2c43c5adc
+$(PKG)_SOURCE_MD5:=bf84fefd9c1a5b5a7a38736f4ddd674a
 $(PKG)_SITE:=ftp://ftp.gnome.org/pub/gnome/sources/glib/2.32
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/glib-$($(PKG)_VERSION)
 

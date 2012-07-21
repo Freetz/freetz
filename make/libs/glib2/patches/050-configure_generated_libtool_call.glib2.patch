@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -25292,6 +25292,7 @@
+@@ -25304,6 +25304,7 @@
  	LDFLAGS_orig="$LDFLAGS"
  	LIBS="$G_MODULE_LIBS $LIBS"
  	LDFLAGS="$LDFLAGS $G_MODULE_LDFLAGS"
@@ -8,7 +8,7 @@
  	echo "void glib_plugin_test(void) { }" > plugin.c
  	${SHELL} ./libtool --mode=compile --tag=CC ${CC} ${CFLAGS} \
  		${CPPFLAGS} -c -o plugin.lo plugin.c >/dev/null 2>&1
-@@ -25300,6 +25301,7 @@
+@@ -25312,6 +25313,7 @@
  		-shrext ".o" -avoid-version plugin.lo \
  		-rpath /dont/care >/dev/null 2>&1
  	eval `./libtool --config | grep ^objdir`
