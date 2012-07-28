@@ -3,7 +3,7 @@
 
 . /usr/lib/libmodcgi.sh
 
-MYVARS='AUTOSTART DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER UDP_FRAGMENT PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN PARAM_1 PARAM_2 PARAM_3'
+MYVARS='AUTOSTART DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DOMAIN PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER UDP_FRAGMENT PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN PARAM_1 PARAM_2 PARAM_3'
 ALLVARS="$MYVARS ENABLED CONFIG_COUNT CONFIG_CHANGED EXPERT"
 
 cat << EOF
@@ -150,7 +150,7 @@ sec_begin '$(lang de:"Basiseinstellungen" en:"Basic Configuration")'
 
 HASBRCTL=$(which brctl 2> /dev/null)
 HASIPV6=$([ -d /proc/sys/net/ipv6 ] && echo true)
-HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true) 
+HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true)
 HASLZO=$(openvpn --version | grep -q LZO && echo true)
 
 cat << EOF
@@ -429,6 +429,9 @@ cat << EOF
 	  <i>Push&nbsp;$(lang de:"Optionen" en:"Options")<br>(optional)</i>
 	</td>
 	<td>
+	  DNS Domain
+	</td>
+	<td>
 	  DNS Server
 	</td>
 	<td>
@@ -436,6 +439,9 @@ cat << EOF
 	</td>
 </tr>
 <tr>
+	<td>
+	  <input id="id_act_push_domain" type="text" size="15" maxlength="50" onblur='(local_push_domain[act_conf]=this.value); Consolidate_Vars();'>
+	</td>
 	<td>
 	  <input id="id_act_push_dns" type="text" size="15" maxlength="15" onblur='(local_push_dns[act_conf]=this.value); Consolidate_Vars();'>
 	</td>
@@ -458,16 +464,16 @@ cat << EOF
 </div>
 
 <div style="display:inline; padding-left:20px;">
-	<input id="id_act_comp_lzo" type="checkbox" 
+	<input id="id_act_comp_lzo" type="checkbox"
 EOF
 
-if [ $HASLZO ]; then 
+if [ $HASLZO ]; then
 cat << EOF
 title="$(lang de:"LZO-Komprimierung nutzen? !!Muss auf Server und Client gleich eingestellt sein!!" en:"Use LZO compression? !!Must be the same setting on server and client site!!")" onclick='if (this.checked) (local_complzo[act_conf]="yes"); else (local_complzo[act_conf]=""); changeval();'
 EOF
 else
 cat << EOF
-title="$(lang de:"LZO-Komprimierung nicht eincompiliert." en:"LZO compression not compiled in")" disabled 
+title="$(lang de:"LZO-Komprimierung nicht eincompiliert." en:"LZO compression not compiled in")" disabled
 EOF
 fi
 cat << EOF
@@ -616,8 +622,8 @@ alert_cipher = false;
 	if ( local_proto[act_conf] == "tcp" ) { document.getElementById("id_act_tcp").checked = true } else { document.getElementById("id_act_udp").checked = true };
 	$([ $HASIPV6 ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
 	if ( local_keepalive[act_conf] == "yes" ) { document.getElementById("id_act_keepalive").checked = true } else { document.getElementById("id_act_keepalive").checked = false };
-	if ( local_complzo[act_conf] == "yes" ){ 
-		if ( "$(echo $HASLZO)" == "true" ) { document.getElementById("id_act_comp_lzo").checked = true } 
+	if ( local_complzo[act_conf] == "yes" ){
+		if ( "$(echo $HASLZO)" == "true" ) { document.getElementById("id_act_comp_lzo").checked = true }
 		else { document.getElementById("id_act_comp_lzo").checked = false ; local_complzo[act_conf] = ""; alert_lzo=true;}; }
 	else { document.getElementById("id_act_comp_lzo").checked = false };
 	if ( local_type[act_conf] == "tap" ) { document.getElementById("id_act_tap").checked = true } else { document.getElementById("id_act_tun").checked = true };
@@ -674,6 +680,7 @@ alert_cipher = false;
 	document.getElementById("id_act_keepalive_ping").value=local_keepalive_ping[act_conf];
 	document.getElementById("id_act_keepalive_timeout").value=local_keepalive_timeout[act_conf];
 	document.getElementById("id_act_maxclients").value=local_maxclients[act_conf];
+	document.getElementById("id_act_push_domain").value=local_push_domain[act_conf];
 	document.getElementById("id_act_push_dns").value=local_push_dns[act_conf];
 	document.getElementById("id_act_push_wins").value=local_push_wins[act_conf];
 	document.getElementById("id_act_shaper").value=local_shaper[act_conf];

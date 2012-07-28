@@ -2,7 +2,7 @@
 
 scriptname=$0
 scriptname=${scriptname##*/}
-prefix=${scriptname%%_conf} 
+prefix=${scriptname%%_conf}
 
 CCD_REL=/clients_$prefix
 CCD=/var/tmp/openvpn$CCD_REL
@@ -24,7 +24,7 @@ unset IFS
 }
 
 delimiter="#"
-vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN PARAM_1 PARAM_2 PARAM_3" 
+vars="DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DOMAIN PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES UDP_FRAGMENT ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN PARAM_1 PARAM_2 PARAM_3"
 count=1
 
 while [ $count -le $OPENVPN_CONFIG_COUNT ]; do
@@ -88,14 +88,14 @@ if [ "$AUTH_TYPE" = "certs" ]; then
 		echo "tls-client"
 		[ "yes" != "$NO_CERTTYPE" ] && echo "ns-cert-type server"
 		[ "$TLS_AUTH" = "yes" ] && echo "tls-auth ${keypath}static.key 1"
-	fi 
+	fi
 else
 	echo "secret ${keypath}static.key"
 fi
 
 
 if [ "$MODE" = "server" ]; then
-	[ "$LOCAL" ] && echo "local $LOCAL" 
+	[ "$LOCAL" ] && echo "local $LOCAL"
 	echo "port $PORT"
 
 	if [ "$TYPE" = "tap" ] || [ $TUNSUBNET ]; then
@@ -117,16 +117,16 @@ if [ "$MODE" = "server" ]; then
 			echo "mode server"
 			echo "ifconfig-pool $DHCP_RANGE"
 			if [ "$CLIENT2CLIENT" = "yes" ]; then
-				echo "push \"route ${DHCP_RANGE%.* *}.0 255.255.255.0\""		
+				echo "push \"route ${DHCP_RANGE%.* *}.0 255.255.255.0\""
 			else
 				echo "push \"route $BOX_IP\""
 			fi
 			[ "$TYPE" = "tun" ] && [ ! $TUNSUBNET ] && echo "route ${DHCP_RANGE%.* *}.0 255.255.255.0"
 		fi
 
-		if [ "$CLIENT_INFO" = "yes" ]; then 
+		if [ "$CLIENT_INFO" = "yes" ]; then
 			mkdir -p $CCD
-			rm -f $CCD/*	
+			rm -f $CCD/*
 			[ ! "$DHCP_RANGE" ] && echo "mode server"
 			echo "client-config-dir $CCD_REL"
 			client=1
@@ -138,7 +138,7 @@ if [ "$MODE" = "server" ]; then
 			restnet=${CLIENT_NETS#*:}
 
 			while [ $client -le "$CLIENTS_DEFINED" ]
-			do	
+			do
 				eval C_IP$client=\$actcip
 				eval C_NAME$client=\$actcname
 				eval C_NET$client=\$actcnet
@@ -167,7 +167,7 @@ if [ "$MODE" = "server" ]; then
 					i=1
 					while [ $i -le $CLIENTS_DEFINED ]; do
 						if [ $i -ne $client ]; then
-							eval cnet=\$C_NET$i 
+							eval cnet=\$C_NET$i
 							eval cip=\$C_IP$i
 							[ "$cnet" != "-"  ] && echo -e "push \"route $cnet $cip\"" | sed "s/[[:space:]]*;[[:space:]]*/ ${cip}\"\npush \"route /g" >> "$CCD/$name"
 						fi
@@ -180,6 +180,7 @@ if [ "$MODE" = "server" ]; then
 	fi # of CERTS
 
 	[ "$CLIENT2CLIENT" = "yes" ] && echo "client-to-client"
+	[ "$PUSH_DOMAIN" ] && echo "push \"dhcp-option DOMAIN $PUSH_DOMAIN\""
 	[ "$PUSH_DNS" ] && echo "push \"dhcp-option DNS $PUSH_DNS\""
 	[ "$PUSH_WINS" ] && echo "push \"dhcp-option WINS $PUSH_WINS\""
 	[ "$REDIRECT" ] && echo "push \"redirect-gateway\""
@@ -191,13 +192,13 @@ else # Client
 	[ "$REMOTE_NET" ] && echo "route $REMOTE_NET" | sed 's/[[:space:]]*;[[:space:]]*/\nroute /g'
 	[ "$REDIRECT" ] && echo "redirect-gateway"
 	if [ "$DHCP_CLIENT" != "yes" ]; then
-		if [ "$TYPE" = "tun" ]; then 
+		if [ "$TYPE" = "tun" ]; then
 			echo "ifconfig $BOX_IP $REMOTE_IP"
 		else
 			echo "ifconfig $BOX_IP $BOX_MASK"
 		fi
 	fi
-	
+
 fi
 
 echo "tun-mtu $MTU"
