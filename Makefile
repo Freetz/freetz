@@ -81,7 +81,7 @@ endef
 
 # Print yellow error message and exit
 define ERROR
-printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)" >&2;  exit $(1);
+printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
 endef
 
 # strip quotes and then whitespaces
