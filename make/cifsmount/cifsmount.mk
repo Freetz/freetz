@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 5.5)
+$(call PKG_INIT_BIN, 5.6)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/cifs-utils-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=4de6c660ccdb9506d0e2cff4f37b8707
+$(PKG)_SOURCE_MD5:=89c94ff512e375b92899b79622604c39
 $(PKG)_SITE:=http://ftp.samba.org/pub/linux-cifs/cifs-utils
 
 $(PKG)_STARTLEVEL=50
@@ -16,6 +16,10 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-cifsupcall
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifscreds
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifsidmap
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifsacl
+$(PKG)_CONFIGURE_OPTIONS += --disable-systemd
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-pie
+$(PKG)_CONFIGURE_OPTIONS += --disable-relro
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
