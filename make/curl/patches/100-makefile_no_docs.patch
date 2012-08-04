@@ -29,11 +29,11 @@
 -	@(cd docs/examples; $(MAKE) check)
 +	#@(cd docs/examples; $(MAKE) check)
  
- clean-local:
- 	@(cd tests; $(MAKE) clean)
+ # This is a hook to have 'make clean' also clean up the dosc and the tests
+ # dir. The extra check for the Makefiles being present is necessary because
 --- Makefile.in
 +++ Makefile.in
-@@ -337,7 +337,7 @@
+@@ -343,7 +343,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src include
@@ -42,7 +42,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  all: all-recursive
-@@ -819,10 +819,10 @@
+@@ -825,10 +825,10 @@
  	done)
  
  html:
@@ -55,16 +55,16 @@
  
  check: test examples
  
-@@ -842,7 +842,7 @@
+@@ -848,7 +848,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all torture-test)
  
  examples:
 -	@(cd docs/examples; $(MAKE) check)
 +	#@(cd docs/examples; $(MAKE) check)
  
- clean-local:
- 	@(cd tests; $(MAKE) clean)
-@@ -899,12 +899,12 @@
+ # This is a hook to have 'make clean' also clean up the dosc and the tests
+ # dir. The extra check for the Makefiles being present is necessary because
+@@ -909,12 +909,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
