@@ -17,7 +17,11 @@ $(SFK_DIR)/.unpacked: $(DL_DIR)/$(SFK_SOURCE) | $(TOOLS_SOURCE_DIR)
 	touch $@
 
 $(SFK_DIR)/sfk: $(SFK_DIR)/.unpacked
+ifeq ($(shell uname), Darwin)
+	$(TOOLS_CXX) -DMAC_OS_X $(SFK_DIR)/sfk.cpp $(SFK_DIR)/sfknet.cpp $(SFK_DIR)/patch.cpp $(SFK_DIR)/inst.cpp -o $(SFK_DIR)/sfk
+else
 	$(TOOLS_CXX) -s $(SFK_DIR)/sfk.cpp $(SFK_DIR)/sfknet.cpp $(SFK_DIR)/patch.cpp $(SFK_DIR)/inst.cpp -o $(SFK_DIR)/sfk
+endif
 
 $(TOOLS_DIR)/sfk: $(SFK_DIR)/sfk
 	cp $(SFK_DIR)/sfk $(TOOLS_DIR)/sfk
