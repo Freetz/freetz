@@ -1375,7 +1375,11 @@ if [ "$DO_PACK" -gt 0 ]; then
 			if [ "$FREE_BYTE_JFFS2" -gt 0 ]; then
 				echo "${L1}Aproximately free time for the answering machine: $((($FREE_BYTE_JFFS2 / 2017)))s (${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))s)"
 			else
-				echo "${L1}WARNING: Not enough free flash space for answering machine!"
+				if [ "$FREETZ_REMOVE_JFFS2" != "y" ]; then
+					echo "${L1}WARNING: Not enough free flash space for answering machine!"
+				else
+					echo "${L1}Telephone answering machine will need a usb storage device!"
+				fi
 			fi
 		fi
 	fi
