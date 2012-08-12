@@ -62,12 +62,12 @@ source make/portmap/Config.in
 comment "Point-to-Point (not available, no sources by AVM)"
 	depends on !FREETZ_REPLACE_KERNEL_AVAILABLE
 
-comment "Point-to-Point (not available, activate replace kernel)"
-	depends on FREETZ_TYPE_FON_WLAN_7390 && !FREETZ_REPLACE_KERNEL && FREETZ_REPLACE_KERNEL_AVAILABLE
+comment "Point-to-Point (not available, needs replace kernel)"
+	depends on FREETZ_AVM_VERSION_7390_05_21 && !FREETZ_REPLACE_KERNEL
 
 menu "Point-to-Point"
-	depends on (!FREETZ_TYPE_FON_WLAN_7390 && FREETZ_REPLACE_KERNEL_AVAILABLE) || \
-			   (FREETZ_TYPE_FON_WLAN_7390 && FREETZ_REPLACE_KERNEL)
+	depends on (FREETZ_REPLACE_KERNEL_AVAILABLE && !FREETZ_AVM_VERSION_7390_05_21) || \
+		FREETZ_REPLACE_KERNEL
 source make/pppd/Config.in
 source make/pptp/Config.in
 source make/pptpd/Config.in
