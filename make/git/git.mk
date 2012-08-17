@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.7.11.4)
+$(call PKG_INIT_BIN, 1.7.11.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=21c7100cddee8579233a924111e829ab
+$(PKG)_SOURCE_MD5:=9985d35c11531d546426ebefb327c847
 $(PKG)_SITE:=http://git-core.googlecode.com/files
 
 # files to be moved from /usr/lib/git-core to /usr/bin
