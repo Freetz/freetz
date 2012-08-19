@@ -1,6 +1,6 @@
 --- src/dnsmasq.h
 +++ src/dnsmasq.h
-@@ -502,6 +502,7 @@
+@@ -505,6 +505,7 @@
  #endif
    int hwaddr_len, hwaddr_type; /* hw_type used for iaid in v6 */
    unsigned char hwaddr[DHCP_CHADDR_MAX]; /* also IPv6 address */
@@ -8,7 +8,7 @@
    struct in_addr addr, override, giaddr;
    unsigned char *extradata;
    unsigned int extradata_len, extradata_size;
-@@ -1002,6 +1003,7 @@
+@@ -999,6 +1000,7 @@
  void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len, time_t now, int force);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth, char *domain, char *config_domain);
