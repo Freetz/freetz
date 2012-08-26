@@ -15,10 +15,6 @@ $(PKG)_DEPENDS_ON += lzo
 $(PKG)_LIBS += -llzo2
 endif
 
-ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_STATIC)),y)
-$(PKG)_LDFLAGS := -static
-endif
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_WITH_LZO
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
@@ -27,6 +23,16 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
 # ipv6 patch modifies both files, touch them to prevent configure from being regenerated
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac; touch ./Makefile.in ./configure;
+
+# add EXTRA_(C|LD)FLAGS
+$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
+
+$(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
+$(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
+
+ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_STATIC)),y)
+$(PKG)_EXTRA_LDFLAGS += -static
+endif
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc/openvpn
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_LZO),,--disable-lzo)
@@ -50,7 +56,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(OPENVPN_DIR) \
-		LDFLAGS="$(OPENVPN_LDFLAGS)" \
+		EXTRA_CFLAGS="$(OPENVPN_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS="$(OPENVPN_EXTRA_LDFLAGS)" \
 		LIBS="$(OPENVPN_LIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
