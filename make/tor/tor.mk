@@ -23,8 +23,14 @@ $(PKG)_CONFIGURE_OPTIONS += --with-libevent-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TOR_STATIC
 
+# add EXTRA_(C|LD)FLAGS
+$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
+
+$(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
+$(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
+
 ifeq ($(strip $(FREETZ_PACKAGE_TOR_STATIC)),y)
-$(PKG)_LDFLAGS := -static
+$(PKG)_EXTRA_LDFLAGS += -static
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -33,8 +39,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(TOR_DIR) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(TOR_LDFLAGS)"
+		EXTRA_CFLAGS="$(TOR_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS="$(TOR_EXTRA_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
