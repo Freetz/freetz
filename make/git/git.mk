@@ -37,6 +37,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-python
 $(PKG)_CONFIGURE_OPTIONS += --without-tcltk
 
 $(PKG)_MAKE_PARAMS := V=1 NO_NSEC=1 STRIP="$(TARGET_STRIP)" NO_INSTALL_HARDLINKS=y
+$(PKG)_MAKE_PARAMS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_LDFLAGS="-Wl,--gc-sections"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

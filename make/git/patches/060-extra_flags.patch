@@ -1,0 +1,14 @@
+--- config.mak.in
++++ config.mak.in
+@@ -2,9 +2,9 @@
+ # @configure_input@
+ 
+ CC = @CC@
+-CFLAGS = @CFLAGS@
++CFLAGS = @CFLAGS@ $(EXTRA_CFLAGS)
+ CPPFLAGS = @CPPFLAGS@
+-LDFLAGS = @LDFLAGS@
++LDFLAGS = @LDFLAGS@ $(EXTRA_LDFLAGS)
+ CC_LD_DYNPATH = @CC_LD_DYNPATH@
+ AR = @AR@
+ TAR = @TAR@
