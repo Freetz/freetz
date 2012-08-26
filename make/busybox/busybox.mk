@@ -13,6 +13,11 @@ $(PKG)_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/$(pkg).config
 $(PKG)_CUSTOM_CONFIG_FILE:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.custom
 $(PKG)_CUSTOM_CONFIG_TEMP:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-Config.temp
 
+$(PKG)_MAKE_FLAGS += CC="$(TARGET_CC)"
+$(PKG)_MAKE_FLAGS += CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)"
+$(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="$(TARGET_CFLAGS)"
+$(PKG)_MAKE_FLAGS += ARCH="mips"
+
 ifneq ($(strip $(DL_DIR)/$(BUSYBOX_SOURCE)), $(strip $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
@@ -165,24 +170,19 @@ $($(PKG)_CUSTOM_CONFIG_FILE): $(TOPDIR)/.config $($(PKG)_CONFIG_FILE)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_CUSTOM_CONFIG_FILE)
 	cp $(BUSYBOX_CUSTOM_CONFIG_FILE) $(BUSYBOX_DIR)/.config
 	$(call PKG_EDIT_CONFIG, CONFIG_LFS=$(FREETZ_TARGET_LFS)) $(BUSYBOX_DIR)/.config
-	$(SUBMAKE) CC="$(TARGET_CC)" \
-		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
-		-C $(BUSYBOX_DIR) oldconfig
+	$(SUBMAKE) -C $(BUSYBOX_DIR) \
+		$(BUSYBOX_MAKE_FLAGS) \
+		oldconfig
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) CC="$(TARGET_CC)" \
-		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
-		ARCH="mips" \
-		-C $(BUSYBOX_DIR)
+	$(SUBMAKE) -C $(BUSYBOX_DIR) \
+		$(BUSYBOX_MAKE_FLAGS)
 
 $($(PKG)_BINARY).links: $($(PKG)_BINARY)
-	$(SUBMAKE) CC="$(TARGET_CC)" \
-		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		-C $(BUSYBOX_DIR) busybox.links
+	$(SUBMAKE) -C $(BUSYBOX_DIR) \
+		$(BUSYBOX_MAKE_FLAGS) \
+		busybox.links
 	touch $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
@@ -195,18 +195,17 @@ $(pkg)-source: $($(PKG)_DIR)/.unpacked
 
 $(pkg)-menuconfig: $($(PKG)_DIR)/.unpacked $($(PKG)_CONFIG_FILE)
 	cp $(BUSYBOX_CONFIG_FILE) $(BUSYBOX_DIR)/.config
-	$(SUBMAKE) CC="$(TARGET_CC)" \
-		CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
-		-C $(BUSYBOX_DIR) menuconfig
+	$(SUBMAKE) -C $(BUSYBOX_DIR) \
+		$(BUSYBOX_MAKE_FLAGS) \
+		menuconfig
 	cp $(BUSYBOX_DIR)/.config $(BUSYBOX_CONFIG_FILE)
 
 $(pkg)-oldconfig: $($(PKG)_DIR)/.configured
 
 $(pkg)-precompiled: uclibc $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_BINARY).links
 
-$(pkg)-clean: busybox-uninstall
-	-$(SUBMAKE) -C $(BUSYBOX_DIR) clean
+$(pkg)-clean: $(pkg)-uninstall
+	-$(SUBMAKE) -C $(BUSYBOX_DIR) $(BUSYBOX_MAKE_FLAGS) clean
 
 $(pkg)-uninstall:
 	$(RM) $(BUSYBOX_TARGET_BINARY) $(BUSYBOX_TARGET_BINARY).links
