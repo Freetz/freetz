@@ -4,6 +4,7 @@ $(PKG)_SOURCE:=perl-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=82400c6d34f7b7b43d0196c76cd2bbb1
 $(PKG)_SITE:=ftp://ftp.mpi-sb.mpg.de/pub/perl/CPAN/src/5.0
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/perl-$($(PKG)_VERSION)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/microperl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/microperl
 $(PKG)_TARGET_SYMLINK:=$($(PKG)_DEST_DIR)/usr/bin/perl
@@ -17,7 +18,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MICROPERL_DIR) -f Makefile.micro \
-		CC="$(TARGET_CC)" OPTIMIZE="$(TARGET_CFLAGS)"
+		CC="$(TARGET_CC)" OPTIMIZE="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections" LDFLAGS="-Wl,--gc-sections"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
