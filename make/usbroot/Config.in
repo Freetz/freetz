@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_USBROOT
 	bool "USB root 0.2"
-	depends on FREETZ_HAS_AVM_USB_HOST
+	depends on FREETZ_HAS_AVM_USB_HOST && ! FREETZ_TYPE_WLAN_3370
 	select FREETZ_PACKAGE_FSTYP
 	select FREETZ_PACKAGE_USBROOT_E2FSCK if FREETZ_HAS_AVM_E2FSPROGS
 	default n
@@ -40,3 +40,6 @@ config FREETZ_PACKAGE_USBROOT_E2FSCK
 	help
 		This option includes the /usr/sbin/e2fsck application which is used
 		to fix filesystem errors automatically prior to mounting usbroot.
+
+comment "USB root package not available" 
+	depends on FREETZ_TYPE_WLAN_3370
