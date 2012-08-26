@@ -53,8 +53,13 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
 $(PKG)_CONFIGURE_OPTIONS += --enable-lightweight
 $(PKG)_CONFIGURE_OPTIONS += --enable-utp
 
+# add EXTRA_(C|LD)FLAGS
+$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
+$(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
+$(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
+
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_STATIC)),y)
-$(PKG)_LDFLAGS := -all-static
+$(PKG)_EXTRA_LDFLAGS += -all-static
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -63,7 +68,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(TRANSMISSION_DIR) \
-		LDFLAGS="$(TARGET_LDFLAGS) $(TRANSMISSION_LDFLAGS)"
+		EXTRA_CFLAGS="$(TRANSMISSION_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS="$(TRANSMISSION_EXTRA_LDFLAGS)"
 
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
 
