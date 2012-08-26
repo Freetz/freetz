@@ -31,6 +31,15 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-crypto
 $(PKG)_CONFIGURE_OPTIONS += --with-fuse=internal
 $(PKG)_CONFIGURE_OPTIONS += --without-uuid
 
+# add EXTRA_(C|LD)FLAGS
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,^(C)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' $(abspath $($(PKG)_DIR))/{src,ntfsprogs,libfuse-lite}/Makefile.in;
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,^(LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' $(abspath $($(PKG)_DIR))/{src,ntfsprogs}/Makefile.in;
+
+$(PKG)_MAKE_FLAGS += ARCH="$(KERNEL_ARCH)"
+$(PKG)_MAKE_FLAGS += CROSS_COMPILE="$(TARGET_CROSS)"
+$(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections"
+$(PKG)_MAKE_FLAGS += EXTRA_LDFLAGS="-Wl,--gc-sections"
+
 $(call REPLACE_LIBTOOL)
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -38,22 +47,20 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIB_BINARY) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(NTFS_DIR) all \
-		ARCH="$(KERNEL_ARCH)" \
-		CROSS_COMPILE="$(TARGET_CROSS)"
+	$(SUBMAKE) -C $(NTFS_DIR) \
+		$(NTFS_MAKE_FLAGS) \
+		all
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	$(SUBMAKE) -C $(NTFS_DIR)/libntfs-3g \
-		ARCH="$(KERNEL_ARCH)" \
-		CROSS_COMPILE="$(TARGET_CROSS)" \
+		$(NTFS_MAKE_FLAGS) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libntfs-3g.pc
 	$(SUBMAKE) -C $(NTFS_DIR)/include/ntfs-3g \
-		ARCH="$(KERNEL_ARCH)" \
-		CROSS_COMPILE="$(TARGET_CROSS)" \
+		$(NTFS_MAKE_FLAGS) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 
@@ -67,7 +74,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_LIB_TARGET_BINARY) $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(NTFS_DIR) clean
+	-$(SUBMAKE) -C $(NTFS_DIR) $(NTFS_MAKE_FLAGS) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libntfs-3g* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libntfs-3g.pc \
