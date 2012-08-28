@@ -50,14 +50,14 @@ EOF
 
 i=1
 
-awk '/^   8 +.*sd[a-z][0-9]/ { print $4, int($3/1024) }' /proc/partitions | while read DEVPART SIZE; do
+awk '/^   8 +.*sd[a-z][0-9]?/ { print $4, int($3/1024) }' /proc/partitions | while read DEVPART SIZE; do
 	# filter partition number, get vendor and model string from sysfs, guess filesystem type
 	dev=$(echo $DEVPART | sed 's/[0-9]//g')
 	vendor=$(cat /sys/block/$dev/device/vendor)
 	model=$(cat /sys/block/$dev/device/model)
 	fs=$([ -x /usr/bin/fstyp ] && fstyp "/dev/$DEVPART" || echo "$(lang de:"unbekannt" en:"unknown")")
 	mountastyp=$fs
-        html_devpart=$(html "$DEVPART")
+	html_devpart=$(html "$DEVPART")
 
 	# set radio button states
 	checked=''; disabled=''
@@ -119,7 +119,7 @@ E.g.: rw,noatime,nodiratime")</small></p>
 (flash memory):") <input id="y1" type="radio" name="unmountoldroot" value="yes"$y1_chk><label
 for="y1"> $(lang de:"Ja" en:"Yes")</label><input id="n1" type="radio"
 name="unmountoldroot" value="no"$n1_chk/><label for="n1"> $(lang de:"Nein" en:"No")</label><br />
-<small>$(lang de:"Achtung: Das Aktivieren dieser Option kann zu einer Reboot-Schleife führen." en:"Caution: 
+<small>$(lang de:"Achtung: Das Aktivieren dieser Option kann zu einer Reboot-Schleife führen." en:"Caution:
 Activating this option can cause reboot loops")</small></p>
 EOF
 
