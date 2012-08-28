@@ -23,12 +23,12 @@ config FREETZ_PACKAGE_SANE_BACKENDS
 
 config FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
 	bool "sane-find-scanner"
-	depends FREETZ_PACKAGE_SANE_BACKENDS
+	depends on FREETZ_PACKAGE_SANE_BACKENDS
 	default n
 
 config FREETZ_PACKAGE_SANE_BACKENDS_scanimage
 	bool "scanimage"
-	depends FREETZ_PACKAGE_SANE_BACKENDS
+	depends on FREETZ_PACKAGE_SANE_BACKENDS
 	default n
 
 EOF
@@ -37,7 +37,7 @@ EOF
 		print $out <<EOF;
 config FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
 	bool "$backend backend"
-	depends FREETZ_PACKAGE_SANE_BACKENDS
+	depends on FREETZ_PACKAGE_SANE_BACKENDS
 EOF
 
 		if ($backend ne "dll") {
