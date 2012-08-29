@@ -1357,13 +1357,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
 		[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
 		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-			if [ "$FORCE_PACK" -eq 0 && "$DO_ZIP" -eq 0 ]; then
+			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
 				error 1 -b "kernel image is $DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
 			fi
-			if [ "$FORCE_PACK" -gt 0 && "$DO_ZIP" -eq 0 ]; then
+			if [ "$FORCE_PACK" -gt 0 -a "$DO_ZIP" -eq 0 ]; then
 				echo0   -b "Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware"
 			fi
-			if [ "$FORCE_PACK" -eq 0 && "$DO_ZIP" -gt 0 ]; then
+			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -gt 0 ]; then
 				echo0   -b "Use for USBroot or NFSroot mode only."
 			fi
 		fi
