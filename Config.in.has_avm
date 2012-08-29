@@ -478,6 +478,21 @@ config FREETZ_HAS_AVM_JUNK_BYTES
 		Select this if you have a firmware with junk bytes in SquashFS, as
 		described in http://freetz.org/ticket/1614#comment:70
 
+config FREETZ_HAS_AVM_ANNEX_A_AND_B
+	bool "Has Annex A and B"		if FREETZ_TYPE_CUSTOM
+	default y		if FREETZ_TYPE_LANG_EN && \
+		( \
+			FREETZ_TYPE_300IP_AS_FON || \
+			FREETZ_TYPE_FON || \
+			FREETZ_TYPE_FON_5124 || \
+			FREETZ_TYPE_FON_WLAN || \
+			FREETZ_TYPE_FON_WLAN_7140 || \
+			FREETZ_TYPE_FON_WLAN_7170 \
+		)
+	default n
+	help
+		Select this if a firmware for Annex A and B is available.
+
 config FREETZ_HAS_AVM_MULTI_ANNEX
 	bool "Has AVM Multi-Annex"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X
