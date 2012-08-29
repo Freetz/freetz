@@ -213,7 +213,6 @@ rm "$DOT_CONFIG.fwmod"
 [ "$FREETZ_FWMOD_SKIP_UNPACK" == "y" ] && DO_UNPACK=0
 [ "$FREETZ_FWMOD_SKIP_MODIFY" == "y" ] && DO_MOD=0
 [ "$FREETZ_FWMOD_SKIP_PACK"   == "y" ] && DO_PACK=0
-[ "$FREETZ_FWMOD_SDK"         == "y" ] && FORCE_PACK=1
 [ "$FREETZ_FWMOD_USBROOT"     == "y" ] && DO_ZIP=1
 [ "$FREETZ_FWMOD_SDK"         == "y" ] && FORCE_PACK=1
 [ "$FREETZ_FWMOD_NFSROOT_DIR"        ] && COPY_FS_DIR="$FREETZ_FWMOD_NFSROOT_DIR" && DO_ZIP=1
@@ -1358,11 +1357,14 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
 		[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
 		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-			TOO_BIG_MSG="kernel image is $DIFF bytes too big."
-			if [ "$FORCE_PACK" -eq 0 ]; then
-				error 1 -b "${TOO_BIG_MSG} See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
-			else
-				echo0   -b "${TOO_BIG_MSG} Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware"
+			if [ "$FORCE_PACK" -eq 0 && "$DO_ZIP" -eq 0 ]; then
+				error 1 -b "kernel image is $DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
+			fi
+			if [ "$FORCE_PACK" -gt 0 && "$DO_ZIP" -eq 0 ]; then
+				echo0   -b "Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware"
+			fi
+			if [ "$FORCE_PACK" -eq 0 && "$DO_ZIP" -gt 0 ]; then
+				echo0   -b "Use for USBroot or NFSroot mode only."
 			fi
 		fi
 	fi
