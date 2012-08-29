@@ -119,6 +119,28 @@ config FREETZ_HAS_AVM_TR069
 	help
 		Select this if your original firmware has tr069 support (libtr069, libtr064).
 
+config FREETZ_HAS_AVM_TR069_FWUPDATE
+	bool "Has AVM tr069fwupdate"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_AVM_VERSION_05_2X || \
+		FREETZ_TYPE_300IP_AS_FON || \
+		FREETZ_TYPE_FON_5010 || \
+		FREETZ_TYPE_FON_5124 || \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_WLAN_3130 || \
+		FREETZ_TYPE_WLAN_3131 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_WLAN_7170 || \
+		FREETZ_TYPE_FON_WLAN_7270_V1 || \
+		FREETZ_TYPE_FON_WLAN_7570
+	default n
+	help
+		Select this if your original firmware has tr069fwupdate (for MT-D).
+
 config FREETZ_HAS_AVM_CHRONYD
 	bool "Has chronyd"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_AVMDAEMON_DISABLE_NTP if ! FREETZ_REMOVE_CHRONYD
