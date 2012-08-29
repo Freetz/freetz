@@ -1,5 +1,5 @@
---- configure.in	2012-05-11 21:27:01+02:00
-+++ configure.in	2012-05-11 21:27:01+02:00
+--- configure.in	2012-08-29 11:45:44+02:00
++++ configure.in	2012-08-29 11:45:44+02:00
 @@ -37,15 +37,13 @@
  AC_PROG_INSTALL
  AC_PROG_LIBTOOL
@@ -17,17 +17,17 @@
  
  # Checks for typedefs, structures, and compiler characteristics.
  AC_C_BIGENDIAN(,[APDK_ENDIAN_FLAG="-DAPDK_LITTLE_ENDIAN"])
-@@ -494,8 +492,6 @@
+@@ -517,8 +515,6 @@
  fi
  
  if test "$hpijs_only_build" = "no"; then
 -   AC_CHECK_LIB([cups], [cupsDoFileRequest], [LIBS="$LIBS"], [AC_MSG_ERROR([cannot find libcups support], 9)])
 -   AC_CHECK_HEADERS(cups/cups.h, ,[AC_MSG_ERROR([cannot find cups-devel support], 3)])
-    AC_CHECK_LIB([usb], [usb_init], [LIBS="$LIBS"], [AC_MSG_ERROR([cannot find libusb support], 2)])
-    AC_CHECK_HEADERS(usb.h, ,[AC_MSG_ERROR([cannot find libusb-devel support], 11)])
- fi
---- hplip.conf.in	2012-05-11 21:27:01+02:00
-+++ hplip.conf.in	2012-05-11 21:27:01+02:00
+    if test "$libusb01_build" = "yes"; then
+       AC_CHECK_LIB([usb], [usb_init], [LIBS="$LIBS"], [AC_MSG_ERROR([cannot find libusb support], 2)])
+       AC_CHECK_HEADERS(usb.h, ,[AC_MSG_ERROR([cannot find libusb-devel support], 11)])
+--- hplip.conf.in	2012-08-29 11:45:44+02:00
++++ hplip.conf.in	2012-08-29 11:45:44+02:00
 @@ -5,14 +5,6 @@
  
  [dirs]
@@ -43,18 +43,18 @@
  
  # Following values are determined at configure time and cannot be changed.
  [configure]
---- scan/sane/hpaio.c	2012-05-11 21:27:01+02:00
-+++ scan/sane/hpaio.c	2012-05-11 21:27:01+02:00
-@@ -40,7 +40,6 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <ctype.h>
+--- scan/sane/hpaio.c	2012-08-29 11:45:44+02:00
++++ scan/sane/hpaio.c	2012-08-29 11:45:44+02:00
+@@ -34,7 +34,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
 -#include <cups/cups.h>
- #include "sane.h"
- #include "saneopts.h"
- #include "common.h"
-@@ -114,45 +113,6 @@
-    return 0;
+ #include "hpmud.h"
+ #include "hpip.h"
+ #include "soap.h"
+@@ -131,97 +130,6 @@
+    return i;
  }
  
 -static int AddCupsList(char *uri, char ***printer)
@@ -96,13 +96,7 @@
 -   return stat;
 -}
 -
- /* Parse URI record from buf. Assumes one record per line. All returned strings are zero terminated. */
- static int GetUriLine(char *buf, char *uri, char **tail)
- {
-@@ -185,58 +145,6 @@
-    return i;
- }
- 
+-
 -static int GetCupsPrinters(char ***printer)
 -{
 -   http_t *http=NULL;     /* HTTP object */
@@ -154,11 +148,10 @@
 - bugout:
 -   return cnt;
 -}
--
+ 
  static int DevDiscovery(int localOnly)
  {
-    struct hpmud_model_attributes ma;
-@@ -245,7 +153,6 @@
+@@ -231,7 +139,6 @@
     char model[HPMUD_LINE_SIZE];
     char *tail;
     int i, scan_type, cnt=0, total=0, bytes_read;  
@@ -166,7 +159,7 @@
     enum HPMUD_RESULT stat;
  
     stat = hpmud_probe_devices(HPMUD_BUS_ALL, message, sizeof(message), &cnt, &bytes_read);
-@@ -272,26 +179,6 @@
+@@ -258,26 +165,6 @@
        }
     }
  
@@ -193,8 +186,8 @@
  bugout:
     return total;
  }
---- Makefile.am	2012-05-11 21:27:01+02:00
-+++ Makefile.am	2012-05-11 21:27:01+02:00
+--- Makefile.am	2012-08-29 11:45:44+02:00
++++ Makefile.am	2012-08-29 11:45:44+02:00
 @@ -8,10 +8,6 @@
  
  hplipdir = $(datadir)/hplip
@@ -206,7 +199,7 @@
  dist_noinst_SCRIPTS =
  dist_noinst_DATA =
  noinst_PROGRAMS =
-@@ -33,13 +29,6 @@
+@@ -33,14 +29,6 @@
  
  if HPLIP_BUILD
  
@@ -215,12 +208,13 @@
 -hp_PROGRAMS = hp
 -hp_SOURCES = prnt/backend/hp.c
 -hp_LDADD = libhpmud.la $(DBUS_LIBS)
+-hp_LDFLAGS = $(libhpmud_la_LDFLAGS)
 -hp_CFLAGS = $(DBUS_CFLAGS)
 -
  # hpaio sane backend
  if SCAN_BUILD
  libsane_hpaiodir = $(libdir)/sane
-@@ -56,7 +45,7 @@
+@@ -57,7 +45,7 @@
  libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
  endif
  # The following is a interlibrary dependency that must be compiled first.
@@ -229,7 +223,7 @@
  #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
  libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS)
  endif # SCAN_BUILD
-@@ -83,39 +72,10 @@
+@@ -99,50 +87,10 @@
  	ip/xbi2gray.c ip/xcolrspc.c ip/xfakemono.c ip/xgray2bi.c ip/xinvert.c ip/xjpg_enc.c ip/xmatrix.c ip/xpnm.c ip/xscale.c ip/xthumb.c ip/xyxtract.c \
  	ip/hpip.h ip/ipdefs.h ip/xform.h ip/xjpg_dct.h ip/xjpg_huf.h ip/xjpg_mrk.h
  
@@ -242,6 +236,16 @@
 -
 -# hpmud.rules
 -rulesdir = /etc/udev/rules.d
+-if UDEV_SYSFS_RULES
+-dist_rules_DATA = data/rules/56-hpmud_support_sysfs.rules
+-dist_rules_DATA += data/rules/86-hpmud_plugin_sysfs.rules
+-dist_rules_DATA += data/rules/56-hpmud_add_printer_sysfs.rules
+-if UDEV_ACL_RULES
+-dist_rules_DATA += data/rules/40-hplip_sysfs.rules
+-else
+-dist_rules_DATA += data/rules/55-hpmud_sysfs.rules
+-endif
+-else
 -dist_rules_DATA = data/rules/56-hpmud_support.rules
 -dist_rules_DATA += data/rules/86-hpmud_plugin.rules
 -dist_rules_DATA += data/rules/56-hpmud_add_printer.rules
@@ -249,6 +253,7 @@
 -dist_rules_DATA += data/rules/40-hplip.rules
 -else
 -dist_rules_DATA += data/rules/55-hpmud.rules
+-endif
 -endif
 -halpredir = /usr/share/hal/fdi/preprobe/10osvendor
 -dist_halpre_DATA = data/rules/20-hplip-devices.fdi
@@ -270,7 +275,7 @@
  # Log Files
  hplip_Logdir=/var/log/hp
  
-@@ -334,13 +294,6 @@
+@@ -367,13 +315,6 @@
  dist_policykit_policy_DATA = data/policykit/com.hp.hplip.policy
  endif
  
@@ -284,7 +289,7 @@
  # hplip.desktop
  hplip_desktopdir = $(icondir)
  hplip_desktop_DATA = hplip.desktop
-@@ -373,45 +326,6 @@
+@@ -406,45 +347,6 @@
  dist_rip_SCRIPTS = prnt/hpijs/foomatic-rip-hplip
  endif
  
@@ -330,7 +335,7 @@
  if HPIJS_INSTALL
  # hpijs
  bin_PROGRAMS = hpijs
-@@ -488,49 +402,8 @@
+@@ -522,49 +424,8 @@
  endif # HPCUPS ONLY
  endif # HPCUPS_INSTALL
  

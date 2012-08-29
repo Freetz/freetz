@@ -80,8 +80,10 @@ if __name__ == "__main__":
     stdout.write("""\
 config FREETZ_PACKAGE_HPLIP
 	bool "HPLIP %s (binary only, unstable)"
-	default n
 	select FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libusb
+	default n
 	help
 		HPLIP - HP Linux Imaging and Printing
 

@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.12.4)
+$(call PKG_INIT_BIN, 3.12.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a063f76aa47edab55a3f31ff2558df07
+$(PKG)_SOURCE_MD5:=5303938e8630775ea6fb383af85775e5
 $(PKG)_SITE:=@SF/hplip
 $(PKG)_LIB_IP_VERSION=0.0.1
 $(PKG)_LIB_IP_BINARY:=$($(PKG)_DIR)/.libs/libhpip.so.$($(PKG)_LIB_IP_VERSION)
@@ -20,6 +20,7 @@ $(PKG)_DEPENDS_ON := sane-backends
 $(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i;
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
+$(PKG)_CONFIGURE_OPTIONS += --enable-libusb01_build
 $(PKG)_CONFIGURE_OPTIONS += --enable-lite-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-doc-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-network-build
@@ -95,6 +96,7 @@ $(pkg)-uninstall:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/hpmud.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/hplip \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/var/log/hp \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/etc/default.hplip
 
 $(PKG_FINISH)
