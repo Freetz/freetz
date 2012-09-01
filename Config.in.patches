@@ -436,8 +436,18 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 		the web menu. With this patch you can't create new phones, but change and
 		use existing ones.
 
+config FREETZ_REMOVE_AHA
+	bool "Remove AVM Home Automation (AHA) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
+	default n
+	depends on FREETZ_HAS_AVM_AHA
+	help
+		Remove the aha daemon and some related libs.
+		Used for "Smart Home".
+
+		This patch only removes the files, not the settings in AVM's web interface.
+
 config FREETZ_REMOVE_AURA_USB
-	bool "Remove remote USB connection (AURA = AVM USB Remote-Architecture)" if FREETZ_SHOW_ADVANCED
+	bool "Remove AVM USB Remote-Architecture (AURA)" if FREETZ_SHOW_ADVANCED
 	default n
 	depends on FREETZ_HAS_AVM_AURA_USB
 	help
