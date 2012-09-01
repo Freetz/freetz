@@ -596,6 +596,7 @@ config FREETZ_SHOW_ADVANCED
 config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
+		! FREETZ_TYPE_LABOR && \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN)
 	default y
 
