@@ -27,8 +27,9 @@ check "$RRDSTATS_UPTIME_ENB" yes:uptime_enb
 check "$RRDSTATS_WEBENABLED" yes:webenabled
 check "$RRDSTATS_WEB_INETD"  yes:web_inetd
 check "$RRDSTATS_WEB_AUTH"   yes:web_auth
-check "$RRDSTATS_CABLE_MODEM" thg epc "*":no
+check "$RRDSTATS_CABLE_MODEM" thg epc arris "*":no
 check "$RRDSTATS_THOMSON_ADV" yes:thomson_adv
+check "$RRDSTATS_ARRISTM_ADV" yes:arristm_adv
 check "$RRDSTATS_CISCOEPC_FW" _100609 _120225
 check "$RRDSTATS_CISCOEPC_UP" yes:ciscoepc_up
 check "$RRDSTATS_CISCOEPC_UC" yes:ciscoepc_uc
@@ -207,6 +208,25 @@ cat << EOF
 </p>
 </ul>
 </p>
+EOF
+fi
+cat << EOF
+</p>
+
+<hr>
+
+<p>
+<input id="modem4" type="radio" name="cable_modem" value="arris"$arris_chk><label for="modem4">Arris Touchstone TM</label>
+EOF
+if [ "$RRDSTATS_CABLE_MODEM" == "arris" ]; then
+cat << EOF
+<ul>
+<p>
+<input type="hidden" name="arristm_adv" value="no">
+<input id="t4" type="checkbox" name="arristm_adv" value="yes"$arristm_adv_chk>
+<label for="t4">$(lang de:"Zus&auml;tzliche Parameter: Downstreamfrequenz, Upstreamfrequenz und Uptime" en:"More parameters: Downstream frequency, upstream frequency and uptime")</label>
+</p>
+</ul>
 EOF
 fi
 cat << EOF

@@ -418,6 +418,114 @@ generate_graph() {
 				GPRINT:uc:LAST:"%3.0lf\n"                                 > /dev/null
 			fi
 			;;
+		arris0)
+			FILE=$RRDSTATS_RRDDATA/arris_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                     \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
+				--title "$TITLE"                                         \
+				--start now-$PERIODE                                     \
+				--width $WIDTH --height $HEIGHT                          \
+				--vertical-label "values"                                \
+				$DEFAULT_COLORS                                          \
+				$LAZY                                                    \
+				-W "Generated on: $DATESTRING"                           \
+				                                                         \
+				DEF:rx=$FILE:rx:LAST                                     \
+				DEF:sn=$FILE:sn:LAST                                     \
+				DEF:tx=$FILE:tx:LAST                                     \
+				DEF:ip=$FILE:ip:LAST                                     \
+				                                                         \
+				LINE3:tx$GREEN:"Upstream   (min/avg/max/cur)[dBmV]\:"    \
+				GPRINT:tx:MIN:"%3.0lf /"                                 \
+				GPRINT:tx:AVERAGE:"%3.0lf /"                             \
+				GPRINT:tx:MAX:"%3.0lf /"                                 \
+				GPRINT:tx:LAST:"%3.0lf\n"                                \
+				                                                         \
+				LINE3:sn$YELLOW:"S-N Ratio    (min/avg/max/cur)[dB]\:"   \
+				GPRINT:sn:MIN:"%3.0lf /"                                 \
+				GPRINT:sn:AVERAGE:"%3.0lf /"                             \
+				GPRINT:sn:MAX:"%3.0lf /"                                 \
+				GPRINT:sn:LAST:"%3.0lf\n"                                \
+				                                                         \
+				LINE3:rx$RED:"Downstream (min/avg/max/cur)[dBmV]\:"      \
+				GPRINT:rx:MIN:"%3.0lf /"                                 \
+				GPRINT:rx:AVERAGE:"%3.0lf /"                             \
+				GPRINT:rx:MAX:"%3.0lf /"                                 \
+				GPRINT:rx:LAST:"%3.0lf\n"                                \
+				                                                         \
+				LINE3:ip$BLUE:"Computers (min/avg/max/cur)[count]\:"     \
+				GPRINT:ip:MIN:"%3.0lf /"                                 \
+				GPRINT:ip:AVERAGE:"%3.0lf /"                             \
+				GPRINT:ip:MAX:"%3.0lf /"                                 \
+				GPRINT:ip:LAST:"%3.0lf\n"                                > /dev/null
+			fi
+			;;
+		arris1)
+			FILE=$RRDSTATS_RRDDATA/arris_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                   \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                       \
+				--title "$TITLE"                                       \
+				--start now-$PERIODE                                   \
+				--width $WIDTH --height $HEIGHT                        \
+				--vertical-label "hours"                               \
+				$DEFAULT_COLORS                                        \
+				-l 0 $LAZY                                             \
+				-W "Generated on: $DATESTRING"                         \
+				                                                       \
+				DEF:up=$FILE:up:LAST                                   \
+				                                                       \
+				AREA:up$YELLOW:"System Uptime (avg/max/cur)[hours]\:"  \
+				GPRINT:up:AVERAGE:"%3.2lf /"                           \
+				GPRINT:up:MAX:"%3.2lf /"                               \
+				GPRINT:up:LAST:"%3.2lf\n"                              > /dev/null
+			fi
+			;;
+		arris2)
+			FILE=$RRDSTATS_RRDDATA/arris_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                    \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                        \
+				--title "$TITLE"                                        \
+				--start now-$PERIODE                                    \
+				--width $WIDTH --height $HEIGHT                         \
+				--vertical-label "MHz"                                  \
+				$DEFAULT_COLORS                                         \
+				$LAZY                                                   \
+				-W "Generated on: $DATESTRING"                          \
+				                                                        \
+				DEF:if=$FILE:if:LAST                                    \
+				                                                        \
+				LINE3:if$GREEN:"Downstream Freq (min/avg/max/cur)[MHz]\:" \
+				GPRINT:if:MIN:"%5.1lf /"                                \
+				GPRINT:if:AVERAGE:"%5.1lf /"                            \
+				GPRINT:if:MAX:"%5.1lf /"                                \
+				GPRINT:if:LAST:"%5.1lf\n"                               > /dev/null
+			fi
+			;;
+		arris3)
+			FILE=$RRDSTATS_RRDDATA/arris_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                      \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                          \
+				--title "$TITLE"                                          \
+				--start now-$PERIODE                                      \
+				--width $WIDTH --height $HEIGHT                           \
+				--vertical-label "MHz"                                    \
+				$DEFAULT_COLORS                                           \
+				$LAZY                                                     \
+				-W "Generated on: $DATESTRING"                            \
+				                                                          \
+				DEF:uf=$FILE:uf:LAST                                      \
+				                                                          \
+				LINE3:uf$BLUE:"Upstream Freq (min/avg/max/cur)[MHz]\:"    \
+				GPRINT:uf:MIN:"%5.1lf /"                                  \
+				GPRINT:uf:AVERAGE:"%5.1lf /"                              \
+				GPRINT:uf:MAX:"%5.1lf /"                                  \
+				GPRINT:uf:LAST:"%5.1lf\n"                                 > /dev/null
+			fi
+			;;
 		swap)
 			FILE=$RRDSTATS_RRDDATA/mem_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
@@ -672,17 +780,22 @@ gen_main() {
 
 graph=$(cgi_param graph | tr -d .)
 case $graph in
-	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epc1|epc2|epc3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epc1|epc2|epc3|arris0|arris1|arris2|arris3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
 		GROUP_PERIOD=$(cgi_param group | tr -d .)
 		if [ -z "$GROUP_PERIOD" ]; then
-			heading=$(echo $graph | sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;s/^thg0$/Thomson THG - basic/g;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;s/^epc0$/Cisco EPC - basic/g;s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;s/^epc3$/Cisco EPC - Upstream Channel/;s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
+			heading=$(echo $graph | sed "s/^upt$/Uptime/g;s/^cpu$/Processor/g;s/^mem$/Memory/g;s/^swap$/Swapspace/g;\
+			  s/^thg0$/Thomson THG - basic/g;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;\
+			  s/^epc0$/Cisco EPC - basic/g;s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;s/^epc3$/Cisco EPC - Upstream Channel/;\
+			  s/^arris0$/Arris TM - basic/g;s/^arris1$/Arris TM - System Uptime/;s/^arris2/Arris TM - Downstream Frequency/;s/^arris3$/Arris TM - Upstream Frequency/;\
+			  s/^diskio1$/$RRDSTATS_DISK_NAME1/g;s/^diskio2$/$RRDSTATS_DISK_NAME2/g;s/^diskio3$/$RRDSTATS_DISK_NAME3/g;s/^diskio4$/$RRDSTATS_DISK_NAME4/g;\
+			  s/^if1$/$RRDSTATS_NICE_NAME1/g;s/^if2$/$RRDSTATS_NICE_NAME2/g;s/^if3$/$RRDSTATS_NICE_NAME3/g;s/^if4$/$RRDSTATS_NICE_NAME4/g;s/^one$/DigiTemp/g")
 		else
 			heading="$GROUP_PERIOD"
 		fi
 		echo "<center><font size=+1><br><b>$heading stats</b></font></center>"
 
-		if [ $(echo "$graph" | sed 's/^thg./yes/') = yes -a "$RRDSTATS_THOMSON_ADV" = yes ]; then
+		if [ "$(echo "$graph" | sed 's/^thg./yes/')" = yes -a "$RRDSTATS_THOMSON_ADV" = yes ]; then
 			echo "<br><center> \
 			<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg0')\" /> \
 			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg1')\" /> \
@@ -690,13 +803,21 @@ case $graph in
 			<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg3')\" /> \
 			</center>"
 		fi
-		if [ $(echo "$graph" | sed 's/^epc./yes/') = yes ]; then
+		if [ "$(echo "$graph" | sed 's/^epc./yes/')" = yes ]; then
 			echo "<br><center>"
 			echo "<input type=\"button\" value=\"EPC basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc0')\" />"
 			[ "$RRDSTATS_CISCOEPC_UP" == "yes" ] && echo "<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc1')\" />"
 			echo "<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc2')\" />"
 			[ "$RRDSTATS_CISCOEPC_UC" == "yes" ] && echo "<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc3')\" />"
 			echo "</center>"
+		fi
+		if [ "$(echo "$graph" | sed 's/^arris./yes/')" = yes -a "$RRDSTATS_ARRISTM_ADV" = yes ]; then
+			echo "<br><center> \
+			<input type=\"button\" value=\"Arris TM basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris0')\" /> \
+			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris1')\" /> \
+			<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris2')\" /> \
+			<input type=\"button\" value=\"Upstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris3')\" /> \
+			</center>"
 		fi
 
 
@@ -731,6 +852,7 @@ case $graph in
 				[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
 				[ "$RRDSTATS_CABLE_MODEM" = thg ] && gen_main "thg0" "Thomson THG" "$periodnn"
 				[ "$RRDSTATS_CABLE_MODEM" = epc ] && gen_main "epc0" "Cisco EPC" "$periodnn"
+				[ "$RRDSTATS_CABLE_MODEM" = arris ] && gen_main "arris0" "Arris TM" "$periodnn"
 				[ -n "$RRDSTATS_DISK_DEV1" ] && gen_main "diskio1" "$RRDSTATS_DISK_NAME1" "$periodnn"
 				[ -n "$RRDSTATS_DISK_DEV2" ] && gen_main "diskio2" "$RRDSTATS_DISK_NAME2" "$periodnn"
 				[ -n "$RRDSTATS_DISK_DEV3" ] && gen_main "diskio3" "$RRDSTATS_DISK_NAME3" "$periodnn"

@@ -303,6 +303,41 @@ collect_epc_120225() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD$datUP$datUC --template $updateT$tplUP$tplUC
 }
 
+collect_arristm() {
+	NAMEPREFIX=arris_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:rx:GAUGE:600:-100:150 \
+			DS:sn:GAUGE:600:-100:150 \
+			DS:tx:GAUGE:600:-100:150 \
+			DS:ip:GAUGE:600:0:999 \
+			DS:up:GAUGE:600:0:99999 \
+			DS:if:GAUGE:600:0:999 \
+			DS:uf:GAUGE:600:0:999 \
+			RRA:LAST:0.1:1:576 \
+			RRA:LAST:0.1:6:672 \
+			RRA:LAST:0.1:24:732 \
+			RRA:LAST:0.1:144:1460
+	fi
+	[ -z "$WGET" ] && WGET="$(detect_wget)"
+	inpData=$($WGET http://192.168.100.1/phy.htm -O - -q -T 2)
+	uptdatBL=N$(echo "$inpData" | grep -E "dB" | sed 's/ dB.*//;s/ *<.*>/:/' | tr -d '\n')
+	uptdatBL=$uptdatBL:$(echo "$inpData" | grep -E "Computers" | sed 's/.*<TD>//;s/<\/TD>.*//' | tr -d '\n')
+	[ $uptdatBL = N: ] && return
+	
+	if [ "$RRDSTATS_ARRISTM_ADV" = yes ]; then
+		tX=$(echo "$inpData" | grep "System Uptime")
+		tH=$(( $(echo $tX | sed 's/.*<TD>//;s/ .*//') *24+ $(echo $tX | sed -r 's/.* //;s/h.*//') ))
+		tM=$(( ( $(echo $tX | sed -r 's/.*h://;s/m:.*//') *100)/60 ))
+		case $tM in ?) tM=0$tM ;; esac
+		uptdatUP=:$tH.$tM
+		uptdatIS=$(echo "$inpData" | grep -E "MHz" | sed 's/ MHz.*//;s/ *<.*>/:/' | tr -d '\n')
+		templateADD=:up:if:uf
+	fi
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdatBL$uptdatUP$uptdatIS --template rx:sn:tx:ip$templateADD
+}
+
 collect_net() {
 	[ $# -eq 0 ] && return
 	case $1 in
@@ -421,6 +456,7 @@ while true; do
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
 	[ "$RRDSTATS_CABLE_MODEM" = thg ] && collect_thg
 	[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc$RRDSTATS_CISCOEPC_FW
+	[ "$RRDSTATS_CABLE_MODEM" = arris ] && collect_arristm
 	[ -n "$RRDSTATS_DISK_DEV1" ] && collect_diskio 1
 	[ -n "$RRDSTATS_DISK_DEV2" ] && collect_diskio 2
 	[ -n "$RRDSTATS_DISK_DEV3" ] && collect_diskio 3
