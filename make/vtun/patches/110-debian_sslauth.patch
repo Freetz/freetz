@@ -132,7 +132,7 @@
  #endif /* HAVE_SSL */
  
  /* 
-@@ -353,7 +393,11 @@ struct vtun_host * auth_server(int fd)
+@@ -358,7 +398,11 @@ struct vtun_host * auth_server(int fd)
  		   if( !(h = find_host(host)) )
  		      break;
  
@@ -145,7 +145,7 @@
  	
  		   if( !memcmp(chal_req, chal_res, VTUN_CHAL_SIZE) ){
  		      /* Auth successeful. */
-@@ -405,7 +449,11 @@ int auth_client(int fd, struct vtun_host
+@@ -410,7 +454,11 @@ int auth_client(int fd, struct vtun_host
  		   if( !strncmp(buf,"OK",2) && cs2cl(buf,chal)){
  		      stage = ST_CHAL;
  					
@@ -164,8 +164,8 @@
  %token K_OPTIONS K_DEFAULT K_PORT K_BINDADDR K_PERSIST K_TIMEOUT
  %token K_PASSWD K_PROG K_PPP K_SPEED K_IFCFG K_FWALL K_ROUTE K_DEVICE 
  %token K_MULTI K_SRCADDR K_IFACE K_ADDR
--%token K_TYPE K_PROT K_COMPRESS K_ENCRYPT K_KALIVE K_STAT
-+%token K_TYPE K_PROT K_COMPRESS K_ENCRYPT K_KALIVE K_STAT K_SSLAUTH
+-%token K_TYPE K_PROT K_NAT_HACK K_COMPRESS K_ENCRYPT K_KALIVE K_STAT
++%token K_TYPE K_PROT K_NAT_HACK K_COMPRESS K_ENCRYPT K_KALIVE K_STAT K_SSLAUTH
  %token K_UP K_DOWN K_SYSLOG K_IPROUTE
  
  %token <str> K_HOST K_ERROR
@@ -195,7 +195,7 @@
     { "iface",    K_IFACE }, 
 --- main.c.orig
 +++ main.c
-@@ -63,6 +63,7 @@ int main(int argc, char *argv[], char *e
+@@ -66,6 +66,7 @@ int main(int argc, char *argv[], char *e
       vtun.cfg_file = VTUN_CONFIG_FILE;
       vtun.persist = -1;
       vtun.timeout = -1;
@@ -203,9 +203,9 @@
  	
       /* Dup strings because parser will try to free them */
       vtun.ppp   = strdup("/usr/sbin/pppd");
-@@ -85,6 +86,11 @@ int main(int argc, char *argv[], char *e
+@@ -88,6 +89,11 @@ int main(int argc, char *argv[], char *e
       default_host.ka_interval = 30;
-      default_host.ka_failure  = 4;
+      default_host.ka_maxfail  = 4;
       default_host.loc_fd = default_host.rmt_fd = -1;
 +#ifdef HAVE_SSL
 +     default_host.sslauth = 1;
@@ -215,7 +215,7 @@
  
       /* Start logging to syslog and stderr */
       openlog("vtund", LOG_PID | LOG_NDELAY | LOG_PERROR, LOG_DAEMON);
-@@ -158,6 +164,16 @@ int main(int argc, char *argv[], char *e
+@@ -166,6 +172,16 @@ int main(int argc, char *argv[], char *e
  	vtun.persist = 0;
       if(vtun.timeout == -1)
  	vtun.timeout = VTUN_TIMEOUT;
@@ -244,7 +244,7 @@
     /* Persist mode */
     int  persist;
  
-@@ -193,6 +196,7 @@ extern llist host_list;
+@@ -204,6 +207,7 @@ extern llist host_list;
  struct vtun_opts {
     int  timeout;
     int  persist;

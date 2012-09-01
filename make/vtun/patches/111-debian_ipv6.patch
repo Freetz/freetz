@@ -1,6 +1,6 @@
 --- netlib.c.orig	2008-01-07 23:35:56.000000000 +0100
 +++ netlib.c	2010-09-02 11:43:45.000000000 +0200
-@@ -228,21 +228,23 @@
+@@ -241,21 +241,23 @@
  
  int server_addr(struct sockaddr_in *addr, struct vtun_host *host)
  {
@@ -29,7 +29,7 @@
  
       host->sopt.raddr = strdup(inet_ntoa(addr->sin_addr));
       host->sopt.rport = vtun.bind_addr.port;
-@@ -253,8 +255,11 @@
+@@ -266,8 +268,11 @@
  /* Set address by interface name, ip address or hostname */
  int generic_addr(struct sockaddr_in *addr, struct vtun_addr *vaddr)
  {
@@ -42,7 +42,7 @@
    
       addr->sin_family = AF_INET;
    
-@@ -269,13 +274,14 @@
+@@ -282,13 +287,14 @@
  	 }
             break;
          case VTUN_ADDR_NAME:
