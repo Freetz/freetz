@@ -30,6 +30,8 @@ if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS" == "y" ]; then
 		for files in \
 		 	lib/modules/dsp_*/*-?-dsl.bin \
 		 	lib/modules/*Vx180Code.bin.gz \
+		 	lib/modules/*/kernel/drivers/vdsldriver/ \
+		 	usr/sbin/dsl_monitor \
 		 	etc/init.d/E40-dsl \
 			; do
 			rm_files "${FILESYSTEM_MOD_DIR}/$files"
