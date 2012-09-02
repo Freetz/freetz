@@ -1,25 +1,15 @@
 --- cyassl/openssl/dh.h
 +++ cyassl/openssl/dh.h
-@@ -1,2 +1,8 @@
- /* dh.h for openssl */
+@@ -5,6 +5,9 @@
+ #define CYASSL_DH_H_
  
-+#ifndef CYASSL_DH_H
-+#define CYASSL_DH_H
-+
+ 
++/* supports only a subset of openssl-functions, thus OPENSSL_NO_DH for now */
 +#define OPENSSL_NO_DH
 +
-+#endif
---- cyassl/openssl/dsa.h
-+++ cyassl/openssl/dsa.h
-@@ -1,2 +1,8 @@
- /* dsa.h for openssl */
+ #include <cyassl/openssl/ssl.h>
+ #include <cyassl/openssl/bn.h>
  
-+#ifndef CYASSL_DSA_H
-+#define CYASSL_DSA_H
-+
-+#define OPENSSL_NO_DSA
-+
-+#endif
 --- cyassl/openssl/ecdsa.h
 +++ cyassl/openssl/ecdsa.h
 @@ -1,2 +1,8 @@
