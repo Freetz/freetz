@@ -325,7 +325,7 @@ collect_arristm() {
 	uptdatBL=N$(echo "$inpData" | grep -E "dB" | sed 's/ dB.*//;s/ *<.*>/:/' | tr -d '\n')
 	uptdatBL=$uptdatBL:$(echo "$inpData" | grep -E "Computers" | sed 's/.*<TD>//;s/<\/TD>.*//' | tr -d '\n')
 	[ $uptdatBL = N: ] && return
-	
+
 	if [ "$RRDSTATS_ARRISTM_ADV" = yes ]; then
 		tX=$(echo "$inpData" | grep "System Uptime")
 		tH=$(( $(echo $tX | sed 's/.*<TD>//;s/ .*//') *24+ $(echo $tX | sed -r 's/.* //;s/h.*//') ))
@@ -449,8 +449,9 @@ one_alert() {
 
 
 [ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_ERR="85.000000" || _SENSOR_ERR="185.000000"
+_STARTDATE=$(date +%s)
 while true; do
-	[ $# -eq 0 ] || _NEXTRUN=$(( $(date +%s)+$1 ))
+	[ $# -eq 0 ] || _NEXTRUN=$(( ( ($(date +%s) - $_STARTDATE)/$1 +1) *$1 + $_STARTDATE ))
 	collect_cpu
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
