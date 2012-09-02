@@ -8,6 +8,11 @@ COUNT=0
 
 [ -z "$DEVICES" ] && html $(lang de:"Keine Ger&auml;te gefunden." en:"No devices found.")
 
+if ! which smartctl; then
+	echo "<h1>$(lang de:"smartctl nicht gefunden." en:"smartctl not found.")</h1>"
+	exit
+fi
+
 for DEVICE in $DEVICES; do
 	let COUNT++
 	[ $COUNT -gt 1 ] && echo "<hr>"
