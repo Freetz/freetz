@@ -1,0 +1,23 @@
+#!/bin/sh
+
+DAEMON=smartmontools
+DAEMON_LONG_NAME=SMARTmontools
+
+
+
+case $1 in
+	""|load)
+		modreg status $DAEMON "S.M.A.R.T."
+		echo "Loading $DAEMON_LONG_NAME ... done."
+		;;
+	unload)
+		modunreg status $DAEMON
+		echo "Unloading $DAEMON_LONG_NAME ... done."
+		;;
+	*)
+		echo "Usage: $0 [load|unload]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
