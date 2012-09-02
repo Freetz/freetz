@@ -28,6 +28,6 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(SMARTMONTOOLS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(SMARTMONTOOLS_BINARIES_ALL:%=$(SMARTMONTOOLS_DEST_DIR)/usr/sbin/%)
+	$(RM) $(SMARTMONTOOLS_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
