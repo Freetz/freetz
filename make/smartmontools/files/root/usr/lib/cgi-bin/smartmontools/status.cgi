@@ -13,7 +13,7 @@ for DEVICE in $DEVICES; do
 	[ $COUNT -gt 1 ] && echo "<hr>"
 
     DEVICE="/dev/$DEVICE"
-    echo "<h1>Ger&auml;te $DEVICE</h1>"
+    echo "<h1>$(lang de:"Ger&auml;t" en:"Device"): $DEVICE</h1>"
 
 	DATAI="$(smartctl -i /dev/sda 2>/dev/null | sed  -e '1,3d')"
 	NAME="$(echo "$DATAI" | sed -rn 's/Device Model: *(.*)/\1/p')"
