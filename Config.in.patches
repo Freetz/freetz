@@ -84,7 +84,11 @@ config FREETZ_ADD_REGEXT_GUI
 
 config FREETZ_PATCH_GSMVOICE
 	bool "Patch GSM voice - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_UMTS && ! FREETZ_REMOVE_UMTSD
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		FREETZ_HAS_AVM_UMTS && \
+		! FREETZ_REMOVE_UMTSD && \
+		! FREETZ_TYPE_FON_WLAN_7270_V1
 	default n
 	help
 		Patches the WebUI to allow voice-over-GSM.
