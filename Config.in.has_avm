@@ -354,7 +354,9 @@ config FREETZ_HAS_AVM_WLAN
 
 config FREETZ_HAS_AVM_UMTS
 	bool "Has UMTS"		if FREETZ_TYPE_CUSTOM
-	default y		if FREETZ_AVM_VERSION_05_2X
+	default y		if \
+		FREETZ_AVM_VERSION_05_2X || \
+		FREETZ_TYPE_FON_WLAN_7270_V1
 	default n
 	help
 		Select this if you have a box with UMTS.
