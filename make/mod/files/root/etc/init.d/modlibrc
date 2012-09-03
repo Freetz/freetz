@@ -165,7 +165,7 @@ modlib_startdaemon() {
 	# even daemons without pid-support creates a .pid file:
 	local fn=$PID_FILE
 	if [ ! -s "$fn" ]; then
-		local dp=$(pidof -s "$DAEMON_BIN")
+		local dp=$(pidof "$DAEMON_BIN" | sed 's/.* //')
 		if [ $? -ne 0 ]; then
 			echo 'failed.'
 			exit 1
