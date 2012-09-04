@@ -33,7 +33,7 @@ $(lang de:"Dieses Skript nach Verbindungsabbau ausf&uuml;hren" en:"Execute this 
 <input type="text" name="checktimeout" size="45" maxlength="255" value="$(html "$PPP_SCRIPT_HUP")">
 </p>
 <p>
-$(lang de:"Befehls-TTY (zB /dev/ttyUSB1)" en:"Command-TTY (eg /dev/ttyUSB1)"):&nbsp;<input type="text" name="diagtty" size="45" maxlength="255" value="$(html "$PPP_DIAGTTY")">
+$(lang de:"Befehls-TTY (zB /dev/ttyUSB2)" en:"Command-TTY (eg /dev/ttyUSB2)"):&nbsp;<input type="text" name="diagtty" size="45" maxlength="255" value="$(html "$PPP_DIAGTTY")">
 </p>
 EOF
 sec_end

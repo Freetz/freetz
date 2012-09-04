@@ -8,14 +8,14 @@
 if [ -n "$PPP_DIAGTTY" ]; then
 
 eval "$(modcgi branding:pkg:cmd mod_cgi)"
-if [ ! -z "$MOD_CGI_CMD" ]; then
+if [ -n "$MOD_CGI_CMD" ]; then
 	sec_begin '$(lang de:"Hinweis" en:"Remark")'
-        echo "<font size=-2 color=red><br>$(lang de:"Aktualisierung wurde angefordert. Dies kann bis zu einer Minute dauern." en:"Refresh initiated. This max take up to one minute.")<br></font>"
-        sec_end
-        (sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY;)&
-        (sleep 2; echo -en "AT+CSQ\r"    >$PPP_DIAGTTY;)&
-        (sleep 3; echo -en "at+COPS?\r"  >$PPP_DIAGTTY;)&
-        (sleep 4; echo -en "at+COPS=?\r" >$PPP_DIAGTTY;)&
+	echo "<font size=-2 color=red><br>$(lang de:"Aktualisierung wurde angefordert. Dies kann bis zu einer Minute dauern." en:"Refresh initiated. This max take up to one minute.")<br></font>"
+	sec_end
+	(sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY;)&
+	(sleep 2; echo -en "AT+CSQ\r"    >$PPP_DIAGTTY;)&
+	(sleep 3; echo -en "at+COPS?\r"  >$PPP_DIAGTTY;)&
+	(sleep 4; echo -en "at+COPS=?\r" >$PPP_DIAGTTY;)&
 fi
 
 sec_begin '$(lang de:"Status" en:"State")'
@@ -31,11 +31,11 @@ for RECVONE in $RECVALL; do
 done
 local_ALL="${local_ALL}</UL>"
 
-local_PIN=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+CPIN: "      | tail -n1 | sed 's/^+CPIN: //')
-local_NET=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+COPS: [0-9]" | tail -n1 | sed 's/.*,"//;s/",/ (/;s/2$/3G)/;s/0$/2G)/')
-local_SIG=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+CSQ:"        | tail -n1 | sed 's/,.*//;s/.* //')
-local_MOD=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^\^MODE:"      | tail -n1 | sed 's/.*MODE://; s/5,4/UMTS/;s/5,5/HSDPA/;s/0,0/NONE/;s/3,3/EDGE/;s/3,2/GPRS/')
-local_FLW=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^^DSFLOWRPT:"  | tail -n1 | sed 's/.*DSFLOWRPT://;')
+local_PIN=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep -m1 "^+CPIN: "      | sed 's/^+CPIN: //')
+local_NET=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep -m1 "^+COPS: [0-9]" | sed 's/.*,"//;s/",/ (/;s/(2/(3G)/;s/(0/(2G)/')
+local_SIG=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep -m1 "^+CSQ:"        | sed 's/,.*//;s/.* //')
+local_MOD=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep -m1 "^\^MODE:"      | sed 's/.*MODE://; s/5,4/UMTS/;s/5,5/HSDPA/;s/0,0/NONE/;s/3,3/EDGE/;s/3,2/GPRS/')
+local_FLW=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep -m1 "^^DSFLOWRPT:"  | sed 's/.*DSFLOWRPT://;')
 
 let dH=0x0$(echo $local_FLW | cut -d "," -f 1)/3600
 let dM=0x0$(echo $local_FLW | cut -d "," -f 1)-3600*dH
