@@ -6,7 +6,7 @@
 DEVICES="$(cat /proc/partitions | sed -nr 's/.*[[:space:]](sd.)$/\1/p')"
 COUNT=0
 
-[ -z "$DEVICES" ] && html $(lang de:"Keine Ger&auml;te gefunden." en:"No devices found.")
+[ -z "$DEVICES" ] && html "$(lang de:"Keine Ger&auml;te gefunden." en:"No devices found.")"
 
 if ! which smartctl >/dev/null 2>&1; then
 	echo "<h1>$(lang de:"smartctl nicht gefunden." en:"smartctl not found.")</h1>"
@@ -17,8 +17,8 @@ for DEVICE in $DEVICES; do
 	let COUNT++
 	[ $COUNT -gt 1 ] && echo "<hr>"
 
-    DEVICE="/dev/$DEVICE"
-    echo "<h1>$(lang de:"Ger&auml;t" en:"Device"): $DEVICE</h1>"
+	DEVICE="/dev/$DEVICE"
+	echo "<h1>$(lang de:"Ger&auml;t" en:"Device"): $DEVICE</h1>"
 
 	DATAI="$(smartctl -i /dev/sda 2>/dev/null | sed  -e '1,3d')"
 	NAME="$(echo "$DATAI" | sed -rn 's/Device Model: *(.*)/\1/p')"
@@ -40,8 +40,8 @@ for DEVICE in $DEVICES; do
 	echo "</tr>"
 	echo "</table>"
 
-    echo -n '<pre class="log full">'
-    echo -e "$DATAI\n\n$DATAH\n\n$DATAA\n"
-    echo '</pre>'
+	echo -n '<pre class="log full">'
+	echo -e "\n$DATAI\n\n$DATAH\n\n$DATAA\n"
+	echo '</pre>'
 done
 
