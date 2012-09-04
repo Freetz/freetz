@@ -1,0 +1,15 @@
+--- src/mount_davfs.c
++++ src/mount_davfs.c
+@@ -1781,11 +1781,7 @@
+     args->header = NULL;
+ 
+     args->sys_cache = ne_strdup(DAV_SYS_CACHE);
+-    if (getuid() != 0) {
+-        args->cache_dir = ne_concat(user_dir, "/", DAV_CACHE, NULL);
+-    } else {
+-        args->cache_dir = NULL;
+-    }
++    args->cache_dir = NULL;
+     args->backup_dir = ne_strdup(DAV_BACKUP_DIR);
+     args->cache_size = DAV_CACHE_SIZE;
+     args->table_size = DAV_TABLE_SIZE;

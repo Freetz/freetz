@@ -1,0 +1,39 @@
+--- src/mount_davfs.c
++++ src/mount_davfs.c
+@@ -198,8 +198,10 @@
+ static dav_args *
+ new_args(void);
+ 
++#ifdef LOG_DBG_CMDLINE
+ static void
+ log_dbg_cmdline(char *argv[]);
++#endif
+ 
+ static void
+ log_dbg_config(char *argv[], dav_args *args);
+@@ -934,7 +936,9 @@
+ static dav_args *
+ parse_commandline(int argc, char *argv[])
+ {
++#ifdef LOG_DBG_CMDLINE
+     log_dbg_cmdline(argv);
++#endif
+     dav_args *args = new_args();
+ 
+     char *short_options = "vwVho:";
+@@ -1799,6 +1803,7 @@
+ }
+ 
+ 
++#ifdef LOG_DBG_CMDLINE
+ static void
+ log_dbg_cmdline(char *argv[])
+ {
+@@ -1810,6 +1815,7 @@
+         free(cmdline);
+     }
+ }
++#endif
+ 
+ 
+ static void
