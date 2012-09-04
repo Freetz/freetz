@@ -1,0 +1,57 @@
+#!/bin/sh
+
+DAEMON=shellinabox
+DAEMON_BIN=shellinaboxd
+DAEMON_LONG_NAME="Shell in a Box"
+. /etc/init.d/modlibrc
+
+
+config() {
+	mkdir -p /tmp/shellinabox
+	if [ -n "${SHELLINABOX_CERT// /}" -a -z "${SHELLINABOX_NOSSL// /}" ]; then
+		echo "$SHELLINABOX_CERT" > /tmp/shellinabox/certificate.pem
+	fi
+}
+
+start() {
+	local CMDLINE="-b --pidfile=$PID_FILE -c /tmp/shellinabox"
+	[ -n "${SHELLINABOX_PORT// /}" ] && CMDLINE="$CMDLINE -p $SHELLINABOX_PORT"
+	[ -n "${SHELLINABOX_NOSSL// /}" ] && CMDLINE="$CMDLINE -t"
+	[ -n "${SHELLINABOX_SERVICE// /}" ] && CMDLINE="$CMDLINE -s $SHELLINABOX_SERVICE"
+	modlib_startdaemon $DAEMON_BIN $CMDLINE $SHELLINABOX_OPTIONS
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+
+		modlib_adduser nobody
+		modlib_addgroup nogroup
+
+		modlib_start $SHELLINABOX_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

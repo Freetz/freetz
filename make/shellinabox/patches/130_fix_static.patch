@@ -1,0 +1,11 @@
+--- Makefile.in.ori	2010-11-23 13:57:28.000000000 +0100
++++ Makefile.in	2010-11-23 13:56:24.000000000 +0100
+@@ -509,7 +509,7 @@
+ 	rm -f $$list
+ shellinaboxd$(EXEEXT): $(shellinaboxd_OBJECTS) $(shellinaboxd_DEPENDENCIES) 
+ 	@rm -f shellinaboxd$(EXEEXT)
+-	$(shellinaboxd_LINK) $(shellinaboxd_OBJECTS) $(shellinaboxd_LDADD) $(LIBS)
++	$(shellinaboxd_LINK) $(shellinaboxd_OBJECTS) $(shellinaboxd_LDADD) $(LIBS) $(shellinaboxd_ADD)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)

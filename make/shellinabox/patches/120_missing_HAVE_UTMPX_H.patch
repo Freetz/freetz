@@ -1,0 +1,11 @@
+--- shellinabox/launcher.c
++++ shellinabox/launcher.c
+@@ -595,7 +595,7 @@
+   return utmp;
+ }
+ 
+-#if defined(HAVE_UPDWTMP) && !defined(HAVE_UPDWTMPX)
++#if defined(HAVE_UTMPX_H) && defined(HAVE_UPDWTMP) && !defined(HAVE_UPDWTMPX)
+ #define min(a,b) ({ typeof(a) _a=(a); typeof(b) _b=(b); _a < _b ? _a : _b; })
+ #define updwtmpx x_updwtmpx
+ 
