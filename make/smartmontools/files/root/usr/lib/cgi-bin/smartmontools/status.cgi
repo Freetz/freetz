@@ -15,19 +15,24 @@ fi
 
 for DEVICE in $DEVICES; do
 	let COUNT++
-	[ $COUNT -gt 1 ] && echo "<hr>"
+	[ $COUNT -gt 1 ] && echo "<br><hr><br>"
 
 	DEVICE="/dev/$DEVICE"
 	echo "<h1>$(lang de:"Ger&auml;t" en:"Device"): $DEVICE</h1>"
 
-	DATAI="$(smartctl -i /dev/sda 2>/dev/null | sed  -e '1,3d')"
+	if ! smartctl /dev/$DEVICE >/dev/null 2>&1; then
+		echo "$(lang de:"S.M.A.R.T. nicht unterst&uuml;tzt" en:"S.M.A.R.T. not supported").<br>"
+		continue
+	fi
+
+	DATAI="$(smartctl -i /dev/$DEVICE 2>/dev/null | sed  -e '1,3d')"
 	NAME="$(echo "$DATAI" | sed -rn 's/Device Model: *(.*)/\1/p')"
 	SIZE="$(echo "$DATAI" | sed -rn 's/User Capacity:.*\[(.*)]/\1/p')"
-	DATAA="$(smartctl -A /dev/sda 2>/dev/null | sed  -e '1,3d')"
+	DATAA="$(smartctl -A /dev/$DEVICE 2>/dev/null | sed  -e '1,3d')"
 	TGC="$(echo "$DATAA" | sed -rn 's/.*Temperature_Celsius.* ([0-9]*)$/\1/p')"
 	PCC="$(echo "$DATAA" | sed -rn 's/.*Power_Cycle_Count.* ([0-9]*)$/\1/p')"
 	POH="$(echo "$DATAA" | sed -rn 's/.*Power_On_Hours.* ([0-9]*)$/\1/p')"
-	DATAH="$(smartctl -H /dev/sda 2>/dev/null | sed  -e '1,3d')"
+	DATAH="$(smartctl -H /dev/$DEVICE 2>/dev/null | sed  -e '1,3d')"
 	SMART="$(echo "$DATAH" | sed -rn 's/^SMART.*: (.*)/\1/p' | sed 's/^PASSED$/$(lang de:"GUT" en:"PASSED")/g')"
 
 	echo "<table width=100%>"
