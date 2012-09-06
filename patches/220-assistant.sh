@@ -28,7 +28,7 @@ find "${HTML_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
 
 if [ -e "$HTML_DIR/home/sitemap.html" ]; then
-	if isFreetzType 3270 3270_V3 3370 6840 7112 7113 7141 7150 7170 7240 7270 7320 7330 7340 7360 7390 7570; then
+	if isFreetzType 3270 3270_V3 3370 6840 7112 7113 7141 7150 7170 7240 7270 7312 7320 7330 7340 7360 7390 7570; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/${FREETZ_TYPE_LANGUAGE}/remove_assistant_${FREETZ_TYPE_PREFIX}.patch"
 	elif isFreetzType 7140; then
 		if isFreetzType LANG_A_CH; then
