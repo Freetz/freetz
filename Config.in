@@ -263,7 +263,7 @@ choice
 		depends on \
 			FREETZ_TYPE_FON_5010 || \
 			FREETZ_TYPE_FON_WLAN_7140 || \
-			FREETZ_TYPE_FON_WLAN_7170 \
+			FREETZ_TYPE_FON_WLAN_7170
 
 	config FREETZ_TYPE_LANG_EN
 		bool "en - international"
@@ -280,7 +280,8 @@ choice
 			FREETZ_TYPE_FON_WLAN_7340 || \
 			FREETZ_TYPE_FON_WLAN_7360_XL || \
 			FREETZ_TYPE_FON_WLAN_7390 || \
-			FREETZ_TYPE_FON_WLAN_7570 \
+			FREETZ_TYPE_FON_WLAN_7570 || \
+			FREETZ_TYPE_WLAN_3270_V3
 
 endchoice # "Firmware language" #
 
@@ -961,7 +962,8 @@ config FREETZ_DL_SITE
 	default "@AVM/fritzbox.wlan_3131/firmware/deutsch"              if FREETZ_TYPE_WLAN_3131
 	default "@AVM/fritzbox.wlan_3170/firmware/deutsch"              if FREETZ_TYPE_WLAN_3170
 	default "@AVM/fritzbox.wlan_3270/firmware/deutsch"              if FREETZ_TYPE_WLAN_3270
-	default "@AVM/fritzbox.wlan_3270_v3/firmware/deutsch"           if FREETZ_TYPE_WLAN_3270_V3
+	default "@AVM/fritzbox.wlan_3270_v3/firmware/deutsch"           if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_DE
+	default "@AVM/fritzbox.wlan_3270_v3/firmware/english"           if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_EN
 	default "@AVM/fritzbox.wlan_3370/firmware/deutsch"              if FREETZ_TYPE_WLAN_3370
 	default "@TELEKOM/Speedport/Speedport_W501V"                    if FREETZ_TYPE_SPEEDPORT_W501V
 	default "@AVM/..."                                              if FREETZ_TYPE_CUSTOM
@@ -1020,7 +1022,8 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_wlan_3131.50.04.57.image"                            if FREETZ_TYPE_WLAN_3131
 	default "fritz.box_wlan_3170.49.04.58.image"                            if FREETZ_TYPE_WLAN_3170
 	default "fritz.box_wlan_3270.67.05.21.image"                            if FREETZ_TYPE_WLAN_3270
-	default "fritz.box_wlan_3270_v3.96.05.21.image"                         if FREETZ_TYPE_WLAN_3270_V3
+	default "fritz.box_wlan_3270_v3.96.05.21.image"                         if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_DE
+	default "FRITZ.Box_WLAN_3270_v3.en-de-es-it-fr.96.05.23.image"          if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_EN
 	default "fritz.box_wlan_3370.103.05.21.image"                           if FREETZ_TYPE_WLAN_3370
 	default "fw_Speedport_W501V_v_28.04.38.image"                           if FREETZ_TYPE_SPEEDPORT_W501V
 	default "fritz.box..."                                                  if FREETZ_TYPE_CUSTOM
@@ -1076,7 +1079,8 @@ config FREETZ_DL_SOURCE_MD5
 	default "a34a8d4f7af511d5dd6fff5f3c4e8276"  if FREETZ_TYPE_WLAN_3131
 	default "f08942a9679002e21c29bb2cad9ded3e"  if FREETZ_TYPE_WLAN_3170
 	default "5138514e9e56964c6cd2a30e7f7c31d8"  if FREETZ_TYPE_WLAN_3270
-	default "f42854fbca4834f97cfe54a72acdb944"  if FREETZ_TYPE_WLAN_3270_V3
+	default "f42854fbca4834f97cfe54a72acdb944"  if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_DE
+	default "a99fe91cc1478dffa7446c06489de964"  if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_EN
 	default "dc28afed7294ce738ec92e427bb934a5"  if FREETZ_TYPE_WLAN_3370
 	default "f64d17124ba354427a1710d12b35e00f"  if FREETZ_TYPE_SPEEDPORT_W501V
 
