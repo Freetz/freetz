@@ -3,7 +3,7 @@
 
 . /usr/lib/libmodcgi.sh
 
-DEVICES="$(cat /proc/partitions | sed -nr 's/.*[[:space:]](sd.)$/\1/p')"
+DEVICES="$(cat /proc/partitions | sed -nr 's/.*[[:space:]](sd.)$/\1/p' | sort)"
 COUNT=0
 
 [ -z "$DEVICES" ] && html "$(lang de:"Keine Ger&auml;te gefunden." en:"No devices found.")"
@@ -45,8 +45,8 @@ for DEVICE in $DEVICES; do
 	echo "</tr>"
 	echo "</table>"
 
-	echo -n '<pre class="log full">'
+	echo -n '<pre class="log full"><FONT SIZE=-1>'
 	echo -e "\n$DATAI\n\n$DATAH\n\n$DATAA\n"
-	echo '</pre>'
+	echo '</FONT></pre>'
 done
 
