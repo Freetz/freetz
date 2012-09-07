@@ -15,13 +15,13 @@ fi
 
 for DEVICE in $DEVICES; do
 	let COUNT++
-	[ $COUNT -gt 1 ] && echo "<br><hr><br>"
+	[ $COUNT -gt 1 ] && echo "<hr><br>"
 
 	DEVICE="/dev/$DEVICE"
 	echo "<h1>$(lang de:"Ger&auml;t" en:"Device"): $DEVICE</h1>"
 
 	if ! smartctl $DEVICE >/dev/null 2>&1; then
-		echo "$(lang de:"S.M.A.R.T. nicht unterst&uuml;tzt" en:"S.M.A.R.T. not supported").<br>"
+		echo "$(lang de:"S.M.A.R.T. nicht unterst&uuml;tzt" en:"S.M.A.R.T. not supported").<br><br>"
 		continue
 	fi
 

@@ -1,0 +1,105 @@
+#!/bin/sh
+
+DAEMON=smstools3
+DAEMON_BIN=smsd
+DAEMON_LONG_NAME=SMStools3
+. /etc/init.d/modlibrc
+
+
+config() {
+	if [ ! -c "$SMSTOOLS3_DEVICE" ]; then
+		echo "device is not ready, "
+		return 1
+	fi
+
+	if [ -z "$SMSTOOLS3_DIR" ]; then
+		echo "data directory not configured, "
+		return 1
+	fi
+
+	modlib_config
+
+	local _DIR="${SMSTOOLS3_DIR%/}"
+	rm -rf /var/spool/sms           2>/dev/null
+	mkdir "$_DIR/"         2>/dev/null
+	mkdir "$_DIR/checked"  2>/dev/null
+	mkdir "$_DIR/incoming" 2>/dev/null
+	mkdir "$_DIR/outgoing" 2>/dev/null
+	ln -s "$_DIR" /var/spool/sms
+
+	if [ ! -d "$_DIR" ]; then
+		echo "data directory not available, "
+		return 1
+	fi
+}
+
+start() {
+	modlib_startdaemon $DAEMON_BIN -c /mod/etc/smstools3.conf
+}
+
+stop_post() {
+	if [ "${SMSTOOLS3_DIR#/tmp/flash}" != "$SMSTOOLS3_DIR" ]; then
+		echo -n "saving ... "
+		modsave flash >/dev/null
+	fi
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+		modreg status $DAEMON "$DAEMON_LONG_NAME"
+
+		modlib_start $SMSTOOLS3_ENABLED
+		;;
+	unload)
+		modunreg status $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+    sendsms)
+            if ! modlib_check_running; then
+            	modlib_start || exit 1
+            fi
+            echo -n "$DAEMON_LONG_NAME is sending SMS ... "
+            if [ $# -le 2 ];then
+                    echo "not enough parameters, failed."
+                    exit 1
+            fi
+
+            shift
+            if [ "$1" == "flash" ]; then
+                    FLASH=flash
+                    shift
+            fi
+            NUMBER=$1
+            shift
+
+            echo "To: $NUMBER" > /var/spool/sms/$$
+            [ "$FLASH" == "flash" ] && echo "Flash: yes" >> /var/spool/sms/$$
+            echo "" >> /var/spool/sms/$$
+            echo "$*" >> /var/spool/sms/$$
+            mv /var/spool/sms/$$ /var/spool/sms/outgoing/
+
+            echo "done."
+            ;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|sendsms [flash] +<number> <message>]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
