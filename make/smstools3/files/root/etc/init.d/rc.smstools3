@@ -71,31 +71,31 @@ case $1 in
 		modlib_status
 		;;
     sendsms)
-            if ! modlib_check_running; then
-            	modlib_start || exit 1
-            fi
-            echo -n "$DAEMON_LONG_NAME is sending SMS ... "
-            if [ $# -le 2 ];then
-                    echo "not enough parameters, failed."
-                    exit 1
-            fi
+		if ! modlib_check_running; then
+			modlib_start || exit 1
+		fi
+		echo -n "$DAEMON_LONG_NAME is sending SMS ... "
+		if [ $# -le 2 ];then
+			echo "not enough parameters, failed."
+			exit 1
+		fi
 
-            shift
-            if [ "$1" == "flash" ]; then
-                    FLASH=flash
-                    shift
-            fi
-            NUMBER=$1
-            shift
+		shift
+		if [ "$1" == "flash" ]; then
+			FLASH=flash
+			shift
+		fi
+		NUMBER=$1
+		shift
 
-            echo "To: $NUMBER" > /var/spool/sms/$$
-            [ "$FLASH" == "flash" ] && echo "Flash: yes" >> /var/spool/sms/$$
-            echo "" >> /var/spool/sms/$$
-            echo "$*" >> /var/spool/sms/$$
-            mv /var/spool/sms/$$ /var/spool/sms/outgoing/
+		echo "To: $NUMBER" > /var/spool/sms/$$
+		[ "$FLASH" == "flash" ] && echo "Flash: yes" >> /var/spool/sms/$$
+		echo "" >> /var/spool/sms/$$
+		echo "$*" >> /var/spool/sms/$$
+		mv /var/spool/sms/$$ /var/spool/sms/outgoing/
 
-            echo "done."
-            ;;
+		echo "done."
+		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status|sendsms [flash] +<number> <message>]" 1>&2
 		exit 1
