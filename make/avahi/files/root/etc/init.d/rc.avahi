@@ -19,11 +19,15 @@ case $1 in
 			mkdir -p /tmp/flash/avahi
 			cp -a /etc/default.avahi/* /tmp/flash/avahi/
 		fi
-		
+
 		modlib_addgroup $DAEMON_GROUP
 		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
-		
-		modlib_start $AVAHI_ENABLED 
+
+		modlib_start $AVAHI_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modlib_stop
 		;;
 	start)
 		start
@@ -38,9 +42,9 @@ case $1 in
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|load|status]" 1>&2
+		echo "Usage: $0 [start|stop|restart|load|unload|status]" 1>&2
 		exit 1
-                ;;
+		;;
 esac
 
 exit 0
