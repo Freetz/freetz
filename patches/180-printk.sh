@@ -1,7 +1,7 @@
 echo1 "applying printk patch"
 
 file="$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
-if isFreetzType 5010 5050 7050 7112 7140 7141 7150; then
+if isFreetzType 5010 5050 5124 5140 7050 7112 7140 7141 7150; then
 	modsed "s/takeover_printk=1/takeover_printk=0/g" $file "takeover_printk=0"
 else
 	for conf_script in rc.S S17-isdn S11-piglet; do
