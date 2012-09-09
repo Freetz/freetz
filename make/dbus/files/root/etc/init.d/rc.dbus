@@ -27,12 +27,16 @@ case $1 in
 
 		modlib_start $DBUS_ENABLED
 		;;
+	unload)
+		modunreg daemon $DAEMON
+		modlib_stop
+		;;
 	start)
 		start
 		;;
 	stop)
 		modlib_stop
-                ;;
+		;;
 	restart)
 		modlib_restart
 		;;
@@ -40,7 +44,7 @@ case $1 in
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|load|status]" 1>&2
+		echo "Usage: $0 [start|stop|restart|load|unload|status]" 1>&2
 		exit 1
 		;;
 esac
