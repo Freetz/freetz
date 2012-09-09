@@ -70,7 +70,7 @@ case $1 in
 	status)
 		modlib_status
 		;;
-    sendsms)
+	sendsms)
 		if ! modlib_check_running; then
 			modlib_start || exit 1
 		fi
@@ -96,8 +96,17 @@ case $1 in
 
 		echo "done."
 		;;
+	listsms)
+		[ $# -ge 2 ] && FOLDER=$2 || FOLDER=incoming
+		for sms in $(ls -t /var/spool/sms/$FOLDER/ 2>/dev/null); do
+			echo -e "\n<b>${sms#GSM.}</b>"
+			grep -E "^To:|^From:|^Sent:|^Received:" /var/spool/sms/$FOLDER/$sms | sed 's/From: /From: \+/'
+			echo "\"$(cat /var/spool/sms/$FOLDER/$sms | sed -n '/^$/,$p' | grep -v ^$)\""
+		done
+		echo
+		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|sendsms [flash] +<number> <message>]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|listsms [incoming|outgoing|checked]|sendsms [flash] +<nbr> <msg>]" 1>&2
 		exit 1
 		;;
 esac

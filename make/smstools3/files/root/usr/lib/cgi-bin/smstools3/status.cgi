@@ -13,11 +13,7 @@ if [ -n "$MOD_CGI_NUMBER" -a "$MOD_CGI_NUMBER" != "+49" ]; then
 fi
 
 list_sms() {
-	for sms in $(ls -t $1/ 2>/dev/null); do
-		echo -e "\n<b>${sms#GSM.}</b>"
-		grep -E "^To:|^From:|^Send:|^Received:" $1/$sms | sed 's/From: /From: \+/'
-		echo "\"$(cat $1/$sms | sed -n '/^$/,$p' | grep -v ^$)\""
-	done | sed 's/$/<br>/g'
+	/etc/init.d/rc.smstools3 listsms $1 | sed 's/$/<br>/g'
 }
 
 sec_begin '$(lang de:"SMS versenden" en:"Send SMS")'
@@ -35,12 +31,12 @@ sec_end
 
 if [ $(find /var/spool/sms/checked/ /var/spool/sms/outgoing/ -type f | wc -l) -gt 0 ]; then
 sec_begin '$(lang de:"Zu versendende SMS" en:"Transmitting SMS")'
-list_sms /var/spool/sms/outgoing
-list_sms /var/spool/sms/checked
+list_sms outgoing
+list_sms checked
 sec_end
 fi
 
 sec_begin '$(lang de:"Empfangene SMS" en:"Received SMS")'
-list_sms /var/spool/sms/incoming
+list_sms incoming
 sec_end
 
