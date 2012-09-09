@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_PHP
-	bool "PHP 5.4.6 (binary only)"
+	bool "PHP (binary only)"
 	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
@@ -10,6 +10,17 @@ config FREETZ_PACKAGE_PHP
 		is borrowed from C, Java and Perl with a couple of unique PHP-specific features
 		thrown in. The goal of the language is to allow web developers to write
 		dynamically generated pages quickly.
+
+choice
+	depends on FREETZ_PACKAGE_PHP
+	prompt "version"
+	default FREETZ_PHP_VERSION_5_4
+
+	config FREETZ_PHP_VERSION_5_3
+		bool "php 5.3.16"
+	config FREETZ_PHP_VERSION_5_4
+		bool "php 5.4.6"
+endchoice
 
 menu "PHP features"
 depends on FREETZ_PACKAGE_PHP
