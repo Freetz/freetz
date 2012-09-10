@@ -25,6 +25,7 @@ config() {
 	mkdir "$_DIR/checked"  2>/dev/null
 	mkdir "$_DIR/incoming" 2>/dev/null
 	mkdir "$_DIR/outgoing" 2>/dev/null
+	mkdir "$_DIR/conveyed" 2>/dev/null
 	ln -s "$_DIR" /var/spool/sms
 
 	if [ ! -d "$_DIR" ]; then
@@ -88,11 +89,16 @@ case $1 in
 		NUMBER=$1
 		shift
 
-		echo "To: $NUMBER" > /var/spool/sms/$$
-		[ "$FLASH" == "flash" ] && echo "Flash: yes" >> /var/spool/sms/$$
-		echo "" >> /var/spool/sms/$$
-		echo "$*" >> /var/spool/sms/$$
-		mv /var/spool/sms/$$ /var/spool/sms/outgoing/
+		tempfile="/var/spool/sms/conveyed/GSM.$(date -Iseconds | sed 's/\:/-/g;s/\+.*//g;s/T/_/g')"
+		echo "To: $NUMBER" > $tempfile
+		[ "$FLASH" == "flash" ] && echo "Flash: yes" >> $tempfile
+		echo "" >> $tempfile
+		echo "$*" >> $tempfile
+		if [ "${SMSTOOLS3_DIR#/tmp/flash}" != "$SMSTOOLS3_DIR" ]; then
+			echo -n "saving ... "
+			modsave flash >/dev/null
+		fi
+		cp $tempfile /var/spool/sms/outgoing/
 
 		echo "done."
 		;;
@@ -106,7 +112,7 @@ case $1 in
 		echo
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|listsms [incoming|outgoing|checked]|sendsms [flash] +<nbr> <msg>]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|listsms [incoming|outgoing|checked|conveyed]|sendsms [flash] +<nbr> <msg>]" 1>&2
 		exit 1
 		;;
 esac

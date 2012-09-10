@@ -40,3 +40,8 @@ sec_begin '$(lang de:"Empfangene SMS" en:"Received SMS")'
 list_sms incoming
 sec_end
 
+if [ $(find /var/spool/sms/conveyed/ -type f | wc -l) -gt 0 ]; then
+sec_begin '$(lang de:"Versendete SMS" en:"Conveyed SMS")'
+list_sms conveyed
+sec_end
+fi
