@@ -1,0 +1,28 @@
+Ticket #2881: (edit_move_forward3): fix two-columns extra offset of cursor after tab character.
+
+Signed-off-by: Andrew Borodin <aborodin@…>
+
+Index: src/editor/edit.c
+===================================================================
+--- src/editor/edit.c	(revision b4a10d82cc50bd55f91d98b31497df7021e731f3)
++++ src/editor/edit.c	(revision 28cd54da5a73e6d722bd0534e3f43baedb398cea)
+@@ -3074,14 +3074,13 @@
+ #endif
+ 
++        if (c == '\n')
++            return (upto != 0 ? (off_t) col : p);
+         if (c == '\t')
+             col += TAB_SIZE - col % TAB_SIZE;
+-        else if (c == '\n')
+-            return (upto != 0 ? (off_t) col : p);
+-
+-        if ((c < 32 || c == 127) && (orig_c == c
++        else if ((c < 32 || c == 127) && (orig_c == c
+ #ifdef HAVE_CHARSET
+-                                     || (!mc_global.utf8_display && !edit->utf8)
++                                          || (!mc_global.utf8_display && !edit->utf8)
+ #endif
+-            ))
++                 ))
+             /* '\r' is shown as ^M, so we must advance 2 characters */
+             /* Caret notation for control characters */
