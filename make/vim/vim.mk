@@ -51,7 +51,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(VIM_DIR) clean
-	$(RM) $(VIM_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(VIM_TARGET_BINARY)

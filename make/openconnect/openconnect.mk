@@ -28,7 +28,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(OPENCONNECT_DIR) clean
-	$(RM) $(OPENCONNECT_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(OPENCONNECT_TARGET_BINARY)
