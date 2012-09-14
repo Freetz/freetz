@@ -1,0 +1,30 @@
+--- linux-2.6.13.1/arch/mips/kernel/cpu-probe.c	2008-01-09 10:55:42.000000000 +0100
++++ linux-2.6.13.1/arch/mips/kernel/cpu-probe.c	2012-09-14 00:23:56.150102084 +0200
+@@ -87,7 +87,7 @@
+         case 0: /*--- 125 MHz ---*/
+             if(avm_prev_idle_mode_speedup != avm_idle_mode_speedup) {
+                 avm_prev_idle_mode_speedup = avm_idle_mode_speedup;
+-                printk("[speedup] -> 125 MHz\n");
++//              printk("[speedup] -> 125 MHz\n");
+             }
+             if(p_idle < HIGH_SPEED_IDLE) {
+                 if(avm_idle_lock_speedup2) {
+@@ -121,7 +121,7 @@
+         case 1: /*--- 150 MHz ---*/
+             if(avm_prev_idle_mode_speedup != avm_idle_mode_speedup) {
+                 avm_prev_idle_mode_speedup = avm_idle_mode_speedup;
+-                printk("[speedup] -> 150 MHz\n");
++//              printk("[speedup] -> 150 MHz\n");
+             }
+             if(p_idle < HIGH_SPEED_IDLE) {
+                 /*--- Timer aufsetzen fuer normalspeed ---*/
+@@ -143,7 +143,7 @@
+         case 2: /*--- 62.5 MHz ---*/
+             if(avm_prev_idle_mode_speedup != avm_idle_mode_speedup) {
+                 avm_prev_idle_mode_speedup = avm_idle_mode_speedup;
+-                printk("[speedup] -> 62.5 MHz\n");
++//              printk("[speedup] -> 62.5 MHz\n");
+             }
+             if(p_idle < LOW_SPEED_IDLE) {
+                 /*--- Hochschalten auf 125 MHz ---*/
+
