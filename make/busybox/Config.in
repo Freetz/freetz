@@ -578,3 +578,30 @@ config FREETZ_BUSYBOX_TRACEROUTE6
 	depends on ! FREETZ_PACKAGE_IPUTILS
 	default n
 endmenu
+
+menu "Locale & Unicode options"
+	depends on FREETZ_REPLACE_BUSYBOX
+
+config FREETZ_BUSYBOX_LOCALE_SUPPORT
+	bool "Enable locale support"
+	depends on !FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	default n
+	help
+		Enables locale support in busybox
+
+config FREETZ_BUSYBOX_UNICODE_SUPPORT
+	bool "Unicode support"
+	depends on !FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	default n
+	help
+		Enable Unicode support in busybox
+
+config FREETZ_BUSYBOX_UNICODE_USING_LOCALE
+	bool "Use libc routines for Unicode"
+	depends on FREETZ_BUSYBOX_UNICODE_SUPPORT && FREETZ_BUSYBOX_LOCALE_SUPPORT
+	default y if !FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	default n
+	help
+		With this option on, Unicode support is implemented using libc
+		routines. Otherwise, internal implementation is used.
+endmenu
