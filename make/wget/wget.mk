@@ -1,10 +1,12 @@
-$(call PKG_INIT_BIN,1.13.4)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=12115c3750a4d92f9c6ac62bac372e85
+$(call PKG_INIT_BIN,1.14)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=316f6f59292c9098ad81fd54f658c579
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget$(if $(FREETZ_BUSYBOX_WGET),-gnu)
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_z_compress)
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_WITH_SSL)),y)
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_USE_GNUTLS)),y)
@@ -12,13 +14,14 @@ $(PKG)_DEPENDS_ON += gnutls
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=gnutls
 $(PKG)_CONFIGURE_OPTIONS += --with-libgnutls-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-libssl-prefix
-$(PKG)_LIBS := -lgnutls -ltasn1 -lgcrypt -lgpg-error -lz
+ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
+$(PKG)_STATIC_LIBS := -ltasn1 -lz
+endif
 else
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-libgnutls-prefix
-$(PKG)_LIBS := -lssl -lcrypto -ldl
 endif
 endif
 
@@ -29,6 +32,7 @@ endif
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-iri
+$(PKG)_CONFIGURE_OPTIONS += --without-zlib # is only required for compressing warc files
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_WGET_WITH_SSL),,--without-ssl)
 
@@ -45,7 +49,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(WGET_DIR) \
 		LDFLAGS="$(WGET_LDFLAGS)" \
-		LIBS="$(WGET_LIBS)"
+		STATIC_LIBS="$(WGET_STATIC_LIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
