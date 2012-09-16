@@ -7,6 +7,10 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget$(if $(FREETZ_BUSYBOX_WGET),-gnu)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_z_compress)
+# add EXTRA_(C|LD)FLAGS
+$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
+$(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
+$(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_WITH_SSL)),y)
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_USE_GNUTLS)),y)
@@ -26,7 +30,7 @@ endif
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
-$(PKG)_LDFLAGS := -static
+$(PKG)_EXTRA_LDFLAGS += -static
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
@@ -48,7 +52,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(WGET_DIR) \
-		LDFLAGS="$(WGET_LDFLAGS)" \
+		EXTRA_CFLAGS="$(WGET_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS="$(WGET_EXTRA_LDFLAGS)" \
 		STATIC_LIBS="$(WGET_STATIC_LIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
