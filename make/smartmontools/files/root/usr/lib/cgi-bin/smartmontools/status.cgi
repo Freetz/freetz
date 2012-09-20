@@ -31,6 +31,7 @@ for DEVICE in $DEVICES; do
 	DATAA="$(smartctl -A $DEVICE 2>/dev/null | sed  -e '1,3d')"
 	TGC="$(echo "$DATAA" | sed -rn 's/.*Temperature_Celsius.* ([0-9]*)$/\1/p')"
 	PCC="$(echo "$DATAA" | sed -rn 's/.*Power_Cycle_Count.* ([0-9]*)$/\1/p')"
+	SSC="$(echo "$DATAA" | sed -rn 's/.*Start_Stop_Count.* ([0-9]*)$/\1/p')"
 	POH="$(echo "$DATAA" | sed -rn 's/.*Power_On_Hours.* ([0-9]*)$/\1/p')"
 	DATAH="$(smartctl -H $DEVICE 2>/dev/null | sed  -e '1,3d')"
 	SMART="$(echo "$DATAH" | sed -rn 's/^SMART.*: (.*)/\1/p' | sed 's/^PASSED$/$(lang de:"GUT" en:"PASSED")/g')"
@@ -41,7 +42,7 @@ for DEVICE in $DEVICES; do
 	echo "<tr><td>$(lang de:"Zustand" en:"Health")</td><td>$SMART</td></tr>"
 	echo "<tr><td>$(lang de:"Temperatur" en:"Termperature")</td><td>$TGC &deg;C</td></tr>"
 	echo "<tr><td>$(lang de:"Laufzeit" en:"Power-on")</td><td>$(($POH/24)) $(lang de:"Tage" en:"days")</td></tr>"
-	echo "<tr><td>$(lang de:"Einschaltvorg&auml;nge" en:"Power cycles")</td><td>$PCC</td></tr>"
+	echo "<tr><td>$(lang de:"Einschalt- / Anlaufvorg&auml;nge" en:"Power cycles / spinups")</td><td>$PCC / $SSC</td></tr>"
 	echo "</tr>"
 	echo "</table>"
 
