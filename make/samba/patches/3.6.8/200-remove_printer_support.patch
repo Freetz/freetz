@@ -224,7 +224,7 @@
  		rpc_winreg_shutdown();
 --- source3/smbd/open.c
 +++ source3/smbd/open.c
-@@ -1556,6 +1556,9 @@ static NTSTATUS open_file_ntcreate(conne
+@@ -1546,6 +1546,9 @@ static NTSTATUS open_file_ntcreate(conne
  		 * Most of the passed parameters are ignored.
  		 */
  
@@ -316,37 +316,26 @@
  	check_reload(sconn, time_mono(NULL));
 --- source3/smbd/server.c
 +++ source3/smbd/server.c
-@@ -126,7 +126,9 @@ static void smb_pcap_updated(struct mess
- {
+@@ -104,6 +104,10 @@ static void smb_pcap_updated(struct mess
  	struct tevent_context *ev_ctx =
  		talloc_get_type_abort(private_data, struct tevent_context);
--
+ 
 +#ifndef PRINTER_SUPPORT
 +	return;
 +#endif
- 	DEBUG(10,("Got message saying pcap was updated. Reloading.\n"));
++
+ 	DEBUG(10,("smb_conf_updated: Got message saying smb.conf was "
+ 		  "updated. Reloading.\n"));
  	change_to_root_user();
- 	reload_printers(ev_ctx, msg);
-@@ -1228,8 +1230,10 @@ extern void build_options(bool screen);
- 		return -1;
- 	}
- 
-+#ifdef PRINTER_SUPPORT
- 	if (!print_backend_init(smbd_messaging_context()))
- 		exit(1);
-+#endif
- 
- 	if (!init_guest_info()) {
- 		DEBUG(0,("ERROR: failed to setup guest info.\n"));
-@@ -1257,6 +1261,7 @@ extern void build_options(bool screen);
+@@ -1254,6 +1258,7 @@ extern void build_options(bool screen);
  		exit(1);
  	}
  
 +#ifdef PRINTER_SUPPORT
- 	/* Publish nt printers, this requires a working winreg pipe */
- 	pcap_cache_reload(server_event_context(), smbd_messaging_context(),
- 			  &reload_printers);
-@@ -1285,6 +1290,7 @@ extern void build_options(bool screen);
+ 	/*
+ 	 * The print backend init also migrates the printing tdb's,
+ 	 * this requires a winreg pipe.
+@@ -1289,6 +1294,7 @@ extern void build_options(bool screen);
  				       smbd_messaging_context());
  		}
  	}
