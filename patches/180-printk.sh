@@ -1,3 +1,4 @@
+isFreetzType 7270_V1 && return 0
 echo1 "applying printk patch"
 
 file="$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"
