@@ -1,0 +1,28 @@
+--- linux-2.6.19.2/drivers/char/avm_new/avm_debug.c	2010-07-07 15:54:32.000000000 +0200
++++ linux-2.6.19.2/drivers/char/avm_new/avm_debug.c	2012-06-15 13:36:55.985848119 +0200
+@@ -400,7 +400,7 @@
+ 
+         SKIP_SPACES(p);
+ #ifdef CONFIG_PRINTK
+-        printk("\n[avm_debug]redirect kernel-messages (/dev/debug)\n");
++        printk("\n[avm_debug]redirect kernel-messages EXTENDED (/dev/debug)\n");
+         set_printk(avm_kernelprintk);
+         if(!IS_ERR(&set_vprintk) && &set_vprintk) {
+             set_vprintk(avm_kernelvprintk);
+@@ -1243,6 +1243,16 @@
+         DebugPrintf_Puts(DebugData, strlen(DebugData));
+         pud->Sum        = 10;
+     } else {
++#ifdef CONFIG_PRINTK
++    if(!(DebugData[0] == '[' && format[1] =='D' &&
++      (
++      ( format[2] == 'E' && format[3] == 'C' && format[4] == 'T' )
++      ||
++      ( format[2] == 'C' && format[3] == 'T' && format[4] == 'D' )
++      )
++      ))
++        __printk("%s", DebugData);
++#endif /*--- #ifdef CONFIG_PRINTK ---*/
+         pud->Sum        = 0;
+     }
+     pud->Pos        = 0;
