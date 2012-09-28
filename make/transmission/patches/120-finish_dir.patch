@@ -23,7 +23,7 @@
              case 'e': logfile = fopen( optarg, LOGFILE_MODE_STR );
 --- daemon/remote.c
 +++ daemon/remote.c
-@@ -237,6 +237,8 @@
+@@ -240,6 +240,8 @@
      { 963, "blocklist-update",       "Blocklist update", NULL, 0, NULL },
      { 'c', "incomplete-dir",         "Where to store new torrents until they're complete", "c", 1, "<dir>" },
      { 'C', "no-incomplete-dir",      "Don't store incomplete torrents in a different location", "C", 0, NULL },
@@ -32,7 +32,7 @@
      { 'b', "debug",                  "Print debugging information", "b",  0, NULL },
      { 'd', "downlimit",              "Set the max download speed in "SPEED_K_STR" for the current torrent(s) or globally", "d", 1, "<speed>" },
      { 'D', "no-downlimit",           "Disable max download speed for the current torrent(s) or globally", "D", 0, NULL },
-@@ -404,6 +406,8 @@
+@@ -407,6 +409,8 @@
          case 991: /* no-start-paused */
          case 992: /* trash-torrent */
          case 993: /* no-trash-torrent */
@@ -41,7 +41,7 @@
              return MODE_SESSION_SET;
  
          case 712: /* tracker-remove */
-@@ -2020,6 +2024,11 @@
+@@ -2023,6 +2027,11 @@
                            break;
                  case 'e': tr_bencDictAddInt( args, TR_PREFS_KEY_MAX_CACHE_SIZE_MB, atoi(optarg) );
                            break;
@@ -100,7 +100,7 @@
 +         |         | yes       | session-set    | new arg "finish-dir-enabled"
 --- libtransmission/rpcimpl.c
 +++ libtransmission/rpcimpl.c
-@@ -1573,6 +1573,10 @@
+@@ -1577,6 +1577,10 @@
          tr_sessionSetIncompleteDir( session, str );
      if( tr_bencDictFindBool( args_in, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
          tr_sessionSetIncompleteDirEnabled( session, boolVal );
@@ -111,7 +111,7 @@
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_GLOBAL, &i ) )
          tr_sessionSetPeerLimit( session, i );
      if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_TORRENT, &i ) )
-@@ -1712,6 +1716,8 @@
+@@ -1716,6 +1720,8 @@
      tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT, tr_sessionGetPeerLimitPerTorrent( s ) );
      tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR, tr_sessionGetIncompleteDir( s ) );
      tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, tr_sessionIsIncompleteDirEnabled( s ) );
@@ -201,7 +201,7 @@
  void
  tr_sessionLock( tr_session * session )
  {
-@@ -1873,6 +1924,7 @@
+@@ -1877,6 +1928,7 @@
      tr_free( session->torrentDir );
      tr_free( session->downloadDir );
      tr_free( session->incompleteDir );
@@ -211,7 +211,7 @@
      tr_free( session );
 --- libtransmission/session.h
 +++ libtransmission/session.h
-@@ -105,6 +105,7 @@
+@@ -114,6 +114,7 @@
      bool                         isRatioLimited;
      bool                         isIdleLimited;
      bool                         isIncompleteDirEnabled;
@@ -219,7 +219,7 @@
      bool                         pauseAddedTorrent;
      bool                         deleteSourceTorrent;
      bool                         scrapePausedTorrents;
-@@ -176,6 +177,7 @@
+@@ -185,6 +186,7 @@
      char *                       resumeDir;
      char *                       torrentDir;
      char *                       incompleteDir;
