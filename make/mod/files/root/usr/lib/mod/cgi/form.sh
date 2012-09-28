@@ -165,6 +165,7 @@ cgi_print_checkbox_br()
 #   $3: Length, int or size/maxlength
 #   $4: Label, optional
 #   $5: Text after input field, optional
+#   $6: Type of input field, optional (default is "text")
 cgi_print_textline()
 {
 	local name=$1
@@ -172,6 +173,7 @@ cgi_print_textline()
 	local len=$3
 	local label=$4
 	local post_text=$5
+	local type=${6:-text}
 	local size maxlength
 
 	if [ "${len%/*}" = "$len" ]; then
@@ -193,18 +195,36 @@ cgi_print_textline()
 	if [ -n "$value" ]; then
 		value=" value=\"$(html "$value")\""
 	fi
-	echo "$label<input type=\"text\" name=\"$name\" id=\"$name\"$size$maxlength$value>$post_text"
+	echo "$label<input type=\"$type\" name=\"$name\" id=\"$name\"$size$maxlength$value>$post_text"
 }
 
 cgi_print_textline_p()
 {
 	echo "<p>"
-	cgi_print_textline "$1" "$2" "$3" "$4" "$5"
+	cgi_print_textline "$1" "$2" "$3" "$4" "$5" "$6"
 	echo "</p>"
 }
 
 cgi_print_textline_br()
 {
-	cgi_print_textline "$1" "$2" "$3" "$4" "$5<br>"
+	cgi_print_textline "$1" "$2" "$3" "$4" "$5<br>" "$6"
+}
+
+
+# Print a one line password field
+#   Parameters: See cgi_print_textline above
+cgi_print_password()
+{
+	cgi_print_textline "$1" "$2" "$3" "$4" "$5" "password"
+}
+
+cgi_print_password_p()
+{
+	cgi_print_textline_p "$1" "$2" "$3" "$4" "$5" "password"
+}
+
+cgi_print_password_br()
+{
+	cgi_print_textline_br "$1" "$2" "$3" "$4" "$5" "password"
 }
 
