@@ -14,38 +14,37 @@ do_nmbd() {
 }
 
 config() {
-	local CLEAR_FILE=/var/tmp/smbpasswd.cleartext
-	local PASS_FILE=/mod/etc/samba/smbpasswd
-	local USERS_MAP=/mod/etc/samba/users.map
-
 	mkdir -p /mod/etc/samba
 	modlib_config
 
 	# create users.map, if needed
+	local USERS_MAP=/mod/etc/samba/users.map
 	if [ -z "$SAMBA_USER" -o "$SAMBA_SYSTEMUSER" == "$SAMBA_USER" ]; then
 		echo > $USERS_MAP
 	else
 		echo "$SAMBA_SYSTEMUSER = \"$SAMBA_USER\"" > $USERS_MAP
 	fi
 
-	# encrypt password, if a new was set
-	if [ -r $CLEAR_FILE ]; then
-		local SAMBA_PWD="$(cat $CLEAR_FILE | sed 's/|/:/g' | cut -d ":" -f3)"
-		local SAMBA_UID="$(id -u $SAMBA_SYSTEMUSER)"
-		echo "$SAMBA_SYSTEMUSER:$SAMBA_UID:$SAMBA_PWD:[UX         ]:LCT-00000001:" > $CLEAR_FILE
-		if which smbpasswd >/dev/null; then
+	# encrypt password
+	local PASS_FILE=/mod/etc/samba/smbpasswd
+	rm -rf $PASS_FILE 2>/dev/null
+	if which smbpasswd >/dev/null; then
+		if [ -n "$SAMBA_PASS" ]; then
+			local CLEAR_FILE=/var/tmp/smbpasswd.cleartext
+			local SAMBA_UID="$(id -u $SAMBA_SYSTEMUSER)"
+			echo "$SAMBA_SYSTEMUSER:$SAMBA_UID:$SAMBA_PASS:[UX         ]:LCT-00000001:" > $CLEAR_FILE
 			smbpasswd 2>/dev/null
 			rm $CLEAR_FILE
 			# make sure a password is set
 			if [ ! -r $PASS_FILE ]; then
-				echo "$PASS_FILE does not exist, failed."
+				echo "can not encrypt password, failed."
 				exit 1
 			fi
+		else
+			# samba complains if the file does not exist
+			touch $PASS_FILE
 		fi
 	fi
-
-	# samba complains if the file does not exist
-	[ -r $PASS_FILE ] || touch $PASS_FILE
 
 	return
 }

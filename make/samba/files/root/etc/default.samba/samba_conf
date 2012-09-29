@@ -1,7 +1,5 @@
 #!/bin/sh
 
-. /etc/default.samba/modlibsamba
-
 
 echo "### global"
 
@@ -37,7 +35,7 @@ echo "### expert"
 
 echo "### default"
 
-if [ "$MODLIBSAMBA_ENABLED" == "yes" ]; then
+if [ "$SAMBA_AVMSHARES" == "yes" ]; then
 	for SHARE in /var/media/ftp/*; do
 		if [ -d "$SHARE" ]; then
 			SHORTNAME=$(basename "$SHARE" | sed s/-Partition-/-/)
@@ -45,9 +43,9 @@ if [ "$MODLIBSAMBA_ENABLED" == "yes" ]; then
 			echo "[$SHORTNAME]"
 			echo " path = $SHARE"
 			echo " user = $SAMBA_SYSTEMUSER"
-			echo " read only = $MODLIBSAMBA_READONLY"
-			[ "$MODLIBSAMBA_PASSWORD" == "\"\"" ] && echo " guest ok = yes"
-			fi
+			echo " read only = $SAMBA_READONLY"
+			[ -z "$SAMBA_PASS" ] && echo " guest ok = yes"
+		fi
 	done
 fi
 
