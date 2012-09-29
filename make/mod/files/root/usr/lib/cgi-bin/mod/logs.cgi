@@ -8,7 +8,7 @@ show_log() {
 	esac
 	if [ -s "$log" ]; then
 		echo "<h1><a href='$SCRIPT_NAME$log'>$title</a></h1>"
-		echo "<pre class='log${class+ $class}'>"
+		echo "<pre class='log  ${class:-small}'>"
 		html < "$log" | highlight
 		echo '</pre>'
 	fi
