@@ -19,6 +19,18 @@ config(){
 start() {
 	cp -f /etc/resolv.conf /tmp/openvpn/etc
 	cp -f /etc/TZ /tmp/openvpn/etc
+	for file in $(echo ${OPENVPN_FILES2CP#*#} | tr ';#' '\n\n'); do
+		if [ ! -r $file ]; then # not a full path? Try to find a binary
+			fullpath=$(which $file);
+			[ ! x = x$fullpath ] && file=$fullpath
+		fi
+		if [ -r $file ]; then
+			mkdir -p /tmp/openvpn${file%/*}
+			cp -a $file /tmp/openvpn${file%/*}
+		else
+			echo "Copying files to chroot. File $file not found. Skipped"
+		fi
+	done
 
 	trap 'echo -e "You may get some more hints by starting ${DAEMON} w/o \"--daemon\":\n\t$DAEMON --config /mod/etc/${DAEMON}.conf"' EXIT
 	modlib_startdaemon ${DAEMON} --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid --daemon

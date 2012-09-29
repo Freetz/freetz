@@ -3,7 +3,7 @@
 
 . /usr/lib/libmodcgi.sh
 
-MYVARS='AUTOSTART DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DOMAIN PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER UDP_FRAGMENT PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN PARAM_1 PARAM_2 PARAM_3'
+MYVARS='AUTOSTART DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DOMAIN PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER UDP_FRAGMENT PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN FILES2CP PARAM_1 PARAM_2 PARAM_3'
 ALLVARS="$MYVARS ENABLED CONFIG_COUNT CONFIG_CHANGED EXPERT"
 
 cat << EOF
@@ -545,6 +545,10 @@ cat << EOF
 	$(lang de:"Zusatzparameter (mit \";\" getrennt), z.B. \"par1 xy ; par2 ab ; par3\"" en:"Additional parameters (separated by \";\"), e.g. \"par1 xy ; par2 ab ; par3\""):<br>
 	<input id="id_act_additional" type="text" style="width:600px; margin-top:5px;" onblur='(local_additional[act_conf]=this.value); Consolidate_Vars();'>
 </div>
+<div style="clear:both; padding-top:15px; width:610px; text-align:center;">
+	$(lang de:"Dateien, die ins chroot kopiert werden sollen (mit \";\" trennen)" en:"Files to copy into chroot environment (separate by \";\")"):<br>
+	<input id="id_act_files2cp" type="text" style="width:600px; margin-top:5px;" title="$(lang de:"F&uuml;r Programme, die ein Link auf Busybox sind, m&uuml;ssen Link und Busybox kopiert werden!" en:"For busybox commands you will need to copy programm and busybox")"; onblur='(local_files2cp[act_conf]=this.value); Consolidate_Vars();'>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -687,6 +691,7 @@ alert_cipher = false;
 	document.getElementById("id_act_client_info").value=local_client_info[act_conf];
 	document.getElementById("id_act_additional").value=local_additional[act_conf];
 	document.getElementById("id_act_udp_fragment").value=local_udp_fragment[act_conf];
+	document.getElementById("id_act_files2cp").value=local_files2cp[act_conf];
 if (alert_lzo || alert_cipher) {
 	tmp=ALERT_START;
 	if (alert_lzo) tmp+=' - LZO'+ALERT_UNSUPPORTED ;
