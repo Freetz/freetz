@@ -33,6 +33,7 @@ check "$RRDSTATS_ARRISTM_ADV" yes:arristm_adv
 check "$RRDSTATS_CISCOEPC_FW" _100609 _120225
 check "$RRDSTATS_CISCOEPC_UP" yes:ciscoepc_up
 check "$RRDSTATS_CISCOEPC_UC" yes:ciscoepc_uc
+check "$RRDSTATS_CISCOEPC_DETAILS" yes:ciscoepc_details
 check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
 check "$RRDSTATS_DIGITEMP_C" yes:digitemp_c "*":digitemp_f
 check "$RRDSTATS_DIGITEMP_RETRY85" yes:digitemp_retry85
@@ -206,6 +207,11 @@ cat << EOF
 <input id="t3" type="checkbox" name="ciscoepc_uc" value="yes"$ciscoepc_uc_chk>
 <label for="t3">$(lang de:"&Uuml;berwache zus&auml;tzlich Upstream-ID" en:"Observe upstream id too")</label>
 </p>
+<p>
+<input type="hidden" name="ciscoepc_details" value="no">
+<input id="t4" type="checkbox" name="ciscoepc_details" value="yes"$ciscoepc_details_chk>
+<label for="t4">$(lang de:"Unterseiten f&uuml;r die Werte der Hauptseite" en:"Sub pages for the values on the main page")</label>
+</p>
 </ul>
 </p>
 EOF
@@ -223,8 +229,8 @@ cat << EOF
 <ul>
 <p>
 <input type="hidden" name="arristm_adv" value="no">
-<input id="t4" type="checkbox" name="arristm_adv" value="yes"$arristm_adv_chk>
-<label for="t4">$(lang de:"Zus&auml;tzliche Parameter: Downstreamfrequenz, Upstreamfrequenz und Uptime" en:"More parameters: Downstream frequency, upstream frequency and uptime")</label>
+<input id="t0" type="checkbox" name="arristm_adv" value="yes"$arristm_adv_chk>
+<label for="t0">$(lang de:"Zus&auml;tzliche Parameter: Downstreamfrequenz, Upstreamfrequenz und Uptime" en:"More parameters: Downstream frequency, upstream frequency and uptime")</label>
 </p>
 </ul>
 EOF
