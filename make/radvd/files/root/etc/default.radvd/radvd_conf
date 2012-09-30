@@ -6,7 +6,23 @@ interface $RADVD_INTERFACE
 	AdvSendAdvert on;
 	prefix $RADVD_PREFIX
 	{
-		
+
 	};
+EOF
+
+if [ -n "$RADVD_CLIENTS" ]; then
+cat << EOF
+	clients
+	{
+EOF
+for client in $RADVD_CLIENTS; do
+echo "	${client};"
+done
+cat << EOF
+	}
+EOF
+fi
+
+cat << EOF
 };
 EOF
