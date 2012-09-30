@@ -197,11 +197,19 @@ cat << EOF
 <input id="ciscofw1" type="radio" name="ciscoepc_fw" value="_100609"$_100609_chk><label for="ciscofw1">09.06.2010</label>
 <input id="ciscofw2" type="radio" name="ciscoepc_fw" value="_120225"$_120225_chk><label for="ciscofw2">25.02.2012</label>
 </p>
+EOF
+
+if [ "$RRDSTATS_CISCOEPC_FW" != "_120225" ]; then
+cat << EOF
 <p>
 <input type="hidden" name="ciscoepc_up" value="no">
 <input id="t2" type="checkbox" name="ciscoepc_up" value="yes"$ciscoepc_up_chk>
 <label for="t2">$(lang de:"&Uuml;berwache zus&auml;tzlich Uptime" en:"Observe uptime too")</label>
 </p>
+EOF
+fi
+
+cat << EOF
 <p>
 <input type="hidden" name="ciscoepc_uc" value="no">
 <input id="t3" type="checkbox" name="ciscoepc_uc" value="yes"$ciscoepc_uc_chk>
