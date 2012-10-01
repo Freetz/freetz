@@ -1,9 +1,10 @@
---- crypto/hmac/hmac.c.orig	2010-06-12 15:18:51.000000000 +0200
-+++ crypto/hmac/hmac.c	2010-11-17 10:49:51.000000000 +0100
-@@ -177,4 +177,13 @@
+--- crypto/hmac/hmac.c
++++ crypto/hmac/hmac.c
+@@ -249,3 +249,12 @@
+ 	EVP_MD_CTX_set_flags(&ctx->o_ctx, flags);
  	EVP_MD_CTX_set_flags(&ctx->md_ctx, flags);
  	}
- 
++
 +// Define alias names for compatibility with AVMs libcrypto
 +#define	DEFINE_ALIAS(n)	extern __typeof (n) ossl_##n __attribute__ ((alias (#n)));
 +
@@ -12,5 +13,3 @@
 +DEFINE_ALIAS (HMAC_Init_ex);
 +DEFINE_ALIAS (HMAC_Update);
 +DEFINE_ALIAS (HMAC_Final);
-+
- #endif

@@ -9,6 +9,7 @@ $(PKG)_PEM:=$($(PKG)_DIR)/$(pkg).pem
 $(PKG)_TARGET_PEM:=$($(PKG)_DEST_DIR)/etc/default.$(pkg)/$(pkg).pem
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENDD_WITH_SSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_LIBS := -lcrypto -lssl
 $(PKG)_OPTS := -DUSE_SOCKET_SSL
 $(PKG)_DEPENDS_ON := openssl

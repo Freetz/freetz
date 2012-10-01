@@ -17,6 +17,7 @@ $(PKG)_DEPENDS_ON += libiconv
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_GIT_WITH_PCRE
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 
 $(PKG)_CONFIGURE_ENV += ac_cv_c_c99_format=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_fread_reads_directories=no

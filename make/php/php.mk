@@ -99,6 +99,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-pdo-sqlite
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_SSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_LIBS += -ldl

@@ -1,15 +1,15 @@
 --- Makefile.org
 +++ Makefile.org
-@@ -179,7 +179,7 @@ WTARFILE=       $(NAME)-win.tar
+@@ -179,7 +179,7 @@
  EXHEADER=       e_os2.h
  HEADER=         e_os.h
  
 -all: Makefile build_all openssl.pc libssl.pc libcrypto.pc
-+all: build_all openssl.pc libssl.pc libcrypto.pc
++all:          build_all openssl.pc libssl.pc libcrypto.pc
  
  # as we stick to -e, CLEARENV ensures that local variables in lower
  # Makefiles remain local and variable. $${VAR+VAR} is tribute to Korn
-@@ -474,11 +474,6 @@ openssl.pc: Makefile
+@@ -474,11 +474,6 @@
  	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
  

@@ -13,6 +13,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_UMURMUR_USE_POLARSSL)),y)
 $(PKG)_DEPENDS_ON += polarssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=polarssl
 else
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 endif

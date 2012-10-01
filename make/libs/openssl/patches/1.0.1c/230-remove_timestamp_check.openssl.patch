@@ -1,0 +1,23 @@
+--- Makefile.org
++++ Makefile.org
+@@ -184,7 +184,7 @@
+ EXHEADER=       e_os2.h
+ HEADER=         e_os.h
+ 
+-all: Makefile build_all openssl.pc libssl.pc libcrypto.pc
++all:          build_all openssl.pc libssl.pc libcrypto.pc
+ 
+ # as we stick to -e, CLEARENV ensures that local variables in lower
+ # Makefiles remain local and variable. $${VAR+VAR} is tribute to Korn
+@@ -396,11 +396,6 @@
+ 	    echo 'Libs.private: $(EX_LIBS)'; \
+ 	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
+ 
+-Makefile: Makefile.org Configure config
+-	@echo "Makefile is older than Makefile.org, Configure or config."
+-	@echo "Reconfigure the source tree (via './config' or 'perl Configure'), please."
+-	@false
+-
+ libclean:
+ 	rm -f *.map *.so *.so.* *.dylib *.dll engines/*.so engines/*.dll engines/*.dylib *.a engines/*.a */lib */*/lib
+ 

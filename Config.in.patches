@@ -1187,8 +1187,9 @@ config FREETZ_REMOVE_WLAN
 comment "Replacement patches --------------------"
 
 config FREETZ_REPLACE_SSL_LIBS
-	bool "Replace AVM SSL libraries" if FREETZ_SHOW_ADVANCED
-	depends on FREETZ_HAS_AVM_OPENSSL_LIBS
+	bool "Replace AVM's version of OpenSSL libraries" if FREETZ_SHOW_ADVANCED
+	depends on FREETZ_HAS_AVM_OPENSSL_LIBS && FREETZ_LIB_libcrypto && FREETZ_OPENSSL_VERSION_0
+	select FREETZ_LIB_libssl
 	default n
 	help
 		Use this option only if you are running out of space and if you

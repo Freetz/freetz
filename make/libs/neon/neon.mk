@@ -10,6 +10,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libneon.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON := expat
 ifeq ($(strip $(FREETZ_LIB_libneon_WITH_SSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 endif
 ifeq ($(strip $(FREETZ_LIB_libneon_WITH_ZLIB)),y)

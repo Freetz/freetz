@@ -25,6 +25,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_XMAIL_STATIC)),y)
 $(PKG)_LDFLAGS += -static
 endif
 ifeq ($(strip $(FREETZ_PACKAGE_XMAIL_WITH_SSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_LDFLAGS += -lssl -lcrypto
 $(PKG)_CFLAGS += -DWITH_SSL

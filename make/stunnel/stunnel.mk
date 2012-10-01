@@ -14,6 +14,7 @@ $(PKG)_DEPENDS_ON += cyassl
 $(PKG)_LIBS := -lutil -lcyassl -lz -lm -lpthread
 $(PKG)_CONFIGURE_ENV += OPENSSL_ALTERNATIVE=cyassl
 else
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_LIBS := -lutil -lssl -lcrypto -lz -ldl -lpthread
 endif

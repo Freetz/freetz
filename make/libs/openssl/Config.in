@@ -1,6 +1,6 @@
 config FREETZ_LIB_libcrypto
 	bool "OpenSSL cryptographic library (libcrypto.so)"
-	select FREETZ_LIB_libssl if FREETZ_REPLACE_SSL_LIBS
+	select FREETZ_LIB_libdl
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -20,9 +20,39 @@ config FREETZ_LIB_libcrypto
 config FREETZ_LIB_libssl
 	bool "OpenSSL SSL/TLS library (libssl.so)"
 	depends on FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libdl
 	default n
 	help
 		SSL - OpenSSL SSL/TLS library
 
 		The OpenSSL ssl library implements the Secure Sockets Layer (SSL v2/v3)
 		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
+
+choice
+
+	depends on FREETZ_LIB_libcrypto
+	prompt "OpenSSL version"
+	default FREETZ_OPENSSL_VERSION_0 if FREETZ_HAS_AVM_OPENSSL_LIBS && (FREETZ_UCLIBC_0_9_28_BASED_BOX || FREETZ_UCLIBC_0_9_28_BASED_BOX)
+	default FREETZ_OPENSSL_VERSION_1
+
+	config FREETZ_OPENSSL_VERSION_0
+	bool "0.9.8x"
+	help
+	    - is smaller than 1.0.x (about 233kB)
+	    - could be used (with some limitations) as a replacement for AVM's OpenSSL library
+	    - contains no assembler optimized code
+
+	config FREETZ_OPENSSL_VERSION_1
+	bool "1.0.1c"
+	help
+	    - is bigger than 0.9.8 (about 233kB)
+	    - could NOT be used as a replacement for AVM's OpenSSL library
+	    - contains assembler optimized code giving performance improvements of up to 30%
+
+endchoice
+
+config FREETZ_OPENSSL_SHLIB_VERSION
+	depends on FREETZ_LIB_libcrypto
+	string
+	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
+	default "1.0.0" if FREETZ_OPENSSL_VERSION_1

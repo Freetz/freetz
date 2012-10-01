@@ -21,6 +21,7 @@ $(PKG)_DEPENDS_ON += zlib
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_NGIRCD_WITH_SSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 endif
 

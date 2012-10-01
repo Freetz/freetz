@@ -7,6 +7,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON := openssl
 $(PKG)_LIBS := -lssl -lcrypto -ldl
 endif
