@@ -22,6 +22,7 @@ $(PKG)_DEPENDS_ON += pcre
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre-regex="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_CURL)),y)
+$(PKG)_REBUILD_SUBOPTS += $(filter FREETZ_LIB_libcurl_%,$(CURL_REBUILD_SUBOPTS))
 $(PKG)_DEPENDS_ON += curl
 $(PKG)_CONFIGURE_OPTIONS += --with-curl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 endif
