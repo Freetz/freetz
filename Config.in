@@ -296,26 +296,36 @@ config FREETZ_TYPE_LANGUAGE
 	default "en"        if FREETZ_TYPE_LANG_EN
 
 config FREETZ_TYPE_LABOR
-	bool "Labor"
-	depends on FREETZ_TYPE_LANG_DE && \
+	bool "Use AVM Labor firmware as base"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
+		FREETZ_TYPE_LANG_DE && \
 		FREETZ_TYPE_FON_WLAN_7390
 	default n
 	help
-		Enable this to compile the mod based on an AVM "labor" firmware.
+		Enable this option to use an AVM Labor firmware as base for modding.
+
+		AVM offers Labor firmwares only for 7270_16 (not v1, but v2/v3) and
+		7390 router models with "de" language.
+
+		For more details see <http://www.avm.de/Labor/>.
+
+		NOTE: Firmware files have to be downloaded manually and unpacked
+		into dl/fw/ directory.
 
 #choice
 #	prompt "Labor version"
 #		depends on FREETZ_TYPE_LABOR
-#		default FREETZ_TYPE_LABOR_PREVIEW
+#		default FREETZ_TYPE_LABOR
 #
-#	config FREETZ_TYPE_LABOR_PREVIEW
-#		bool "Preview"
+#	config FREETZ_TYPE_LABOR
+#		bool "Labor"
 #		depends on \
 #			FREETZ_TYPE_FON_WLAN_7270_16
 #		help
-#			Labor Preview
+#			Labor
 #
-#endchoice # "Labor version" #
+#endchoice # "AVM Labor version" #
 
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for \"alien\" hardware"
@@ -532,9 +542,9 @@ config FREETZ_TYPE_PREFIX
 	default "7240"              if FREETZ_TYPE_FON_WLAN_7240
 	default "7270_v1"           if FREETZ_TYPE_FON_WLAN_7270_V1
 	default "7270_v2"           if ((FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && ! FREETZ_TYPE_LABOR
-#	default "7270_v2_preview"   if ((FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_LABOR
+#	default "7270_v2_labor"   if ((FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_LABOR
 	default "7270_v3"           if ((FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270) && ! FREETZ_TYPE_LABOR
-#	default "7270_v3_preview"   if ((FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270) && FREETZ_TYPE_LABOR
+#	default "7270_v3_labor"   if ((FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270) && FREETZ_TYPE_LABOR
 	default "7312"              if FREETZ_TYPE_FON_WLAN_7312
 	default "7320"              if FREETZ_TYPE_FON_WLAN_7320
 	default "7330"              if FREETZ_TYPE_FON_WLAN_7330_XL
