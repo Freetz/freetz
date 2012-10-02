@@ -155,7 +155,7 @@ world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
 
 include $(TOOLS_DIR)/make/Makefile.in
 
-KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
+KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
 
 noconfig_targets:=$(KCONFIG_TARGETS) tools \
 		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
@@ -441,7 +441,7 @@ config-compress: config-cache $(CONFIG)/conf
 	@echo "Compressed configuration written to .config_compressed."; \
 	echo  "It is equivalent to .config, but contains only non-default user selections."
 
-oldconfig oldnoconfig defconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
+oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE)
 
 config-cache: $(CONFIG_IN_CACHE)
