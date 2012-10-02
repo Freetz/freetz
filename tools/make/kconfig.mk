@@ -1,4 +1,4 @@
-KCONFIG_VERSION:=3.1-rc9
+KCONFIG_VERSION:=3.1
 KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.gz
 # Cannot check MD5 because URL produces slightly different archives even
 # though unpacked contents are identical.
