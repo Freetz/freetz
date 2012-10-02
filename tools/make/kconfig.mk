@@ -24,10 +24,12 @@ $(KCONFIG_DIR)/.unpacked: kconfig-download | $(TOOLS_SOURCE_DIR)
 	done;
 	touch $@
 
-$(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
+kconfig-unpacked: $(KCONFIG_DIR)/.unpacked
+
+$(KCONFIG_DIR)/scripts/kconfig/conf: kconfig-unpacked
 	$(MAKE) -C $(KCONFIG_DIR) config
 
-$(KCONFIG_DIR)/scripts/kconfig/mconf: $(KCONFIG_DIR)/.unpacked
+$(KCONFIG_DIR)/scripts/kconfig/mconf: kconfig-unpacked
 	$(MAKE) -C $(KCONFIG_DIR) menuconfig
 
 $(KCONFIG_TARGET_DIR)/conf: $(KCONFIG_DIR)/scripts/kconfig/conf
