@@ -13,9 +13,9 @@ KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
 $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
 	wget -O $(DL_DIR)/$(KCONFIG_SOURCE) "$(KCONFIG_SITE)"
 
-kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
+kconfig-download: $(DL_DIR)/$(KCONFIG_SOURCE)
 
-$(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
+$(KCONFIG_DIR)/.unpacked: kconfig-download | $(TOOLS_SOURCE_DIR)
 	mkdir -p $(KCONFIG_DIR)/scripts
 	tar -C $(KCONFIG_DIR)/scripts $(VERBOSE) --wildcards --strip-components=1 \
 		-xf $(DL_DIR)/$(KCONFIG_SOURCE) */basic */kconfig */Makefile.{build,host,lib} */Kbuild.include
