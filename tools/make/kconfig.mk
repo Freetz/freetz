@@ -15,7 +15,7 @@ $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
 
 kconfig-download: $(DL_DIR)/$(KCONFIG_SOURCE)
 
-$(KCONFIG_DIR)/.unpacked: kconfig-download | $(TOOLS_SOURCE_DIR)
+$(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	mkdir -p $(KCONFIG_DIR)/scripts
 	tar -C $(KCONFIG_DIR)/scripts $(VERBOSE) --wildcards --strip-components=1 \
 		-xf $(DL_DIR)/$(KCONFIG_SOURCE) */basic */kconfig */Makefile.{build,host,lib} */Kbuild.include
@@ -26,10 +26,10 @@ $(KCONFIG_DIR)/.unpacked: kconfig-download | $(TOOLS_SOURCE_DIR)
 
 kconfig-unpacked: $(KCONFIG_DIR)/.unpacked
 
-$(KCONFIG_DIR)/scripts/kconfig/conf: kconfig-unpacked
+$(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
 	$(MAKE) -C $(KCONFIG_DIR) config
 
-$(KCONFIG_DIR)/scripts/kconfig/mconf: kconfig-unpacked
+$(KCONFIG_DIR)/scripts/kconfig/mconf: $(KCONFIG_DIR)/.unpacked
 	$(MAKE) -C $(KCONFIG_DIR) menuconfig
 
 $(KCONFIG_TARGET_DIR)/conf: $(KCONFIG_DIR)/scripts/kconfig/conf
@@ -59,3 +59,5 @@ kconfig-distclean:
 	$(RM) \
 		$(KCONFIG_TARGET_DIR)/conf \
 		$(KCONFIG_TARGET_DIR)/mconf
+
+.PHONY: kconfig-download kconfig-unpacked kconfig kconfig-clean kconfig-dirclean kconfig-distclean
