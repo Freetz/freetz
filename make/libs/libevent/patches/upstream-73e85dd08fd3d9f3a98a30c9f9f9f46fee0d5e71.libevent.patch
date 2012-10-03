@@ -1,0 +1,25 @@
+From: George Danchev <danchev@spnet.net>
+Date: Wed, 12 Sep 2012 20:11:12 -0400
+Subject: [PATCH] Avoid a memory-leak on OOM in evdns.
+
+---
+ evdns.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git evdns.c evdns.c
+index e9cea45..7b0fc2b 100644
+--- evdns.c
++++ evdns.c
+@@ -2291,7 +2291,10 @@ nameserver_send_probe(struct nameserver *const ns) {
+ 	handle = mm_calloc(1, sizeof(*handle));
+ 	if (!handle) return;
+ 	req = request_new(ns->base, handle, TYPE_A, "google.com", DNS_QUERY_NO_SEARCH, nameserver_probe_callback, ns);
+-	if (!req) return;
++	if (!req) {
++		mm_free(handle);
++		return;
++	}
+ 	ns->probe_request = handle;
+ 	/* we force this into the inflight queue no matter what */
+ 	request_trans_id_set(req, transaction_id_pick(ns->base));
+--
