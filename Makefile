@@ -19,7 +19,7 @@ SHELL:=/bin/bash
 IMAGE:=
 LOCALIP:=
 RECOVER:=
-FREETZ_BASE_DIR:=$(shell pwd)
+export FREETZ_BASE_DIR:=$(shell pwd)
 ADDON_DIR:=addon
 BUILD_DIR:=build
 DL_DIR:=dl
@@ -31,7 +31,7 @@ SOURCE_DIR_ROOT:=source
 TOOLCHAIN_DIR:=toolchain
 TOOLS_DIR:=tools
 DL_FW_DIR:=$(DL_DIR)/fw
-FW_IMAGES_DIR:=images
+export FW_IMAGES_DIR:=images
 MIRROR_DIR:=$(DL_DIR)/mirror
 
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
@@ -54,13 +54,7 @@ CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
-_comma:= ,
-_empty:=
-_space:=$(_empty) $(_empty)
-
-export FW_IMAGES_DIR
-export FREETZ_BASE_DIR
-
+include $(sort $(wildcard include/make/*.mk))
 
 # Use echo -e "$(_Y)message$(_N)" if you want to print a yellow message
 IS_TTY=$(shell tty -s && echo 1 || echo 0)
@@ -71,7 +65,6 @@ __Y:=\033[33m
 _N:=\\033[m
 __N:=\033[m
 endif
-
 export __Y
 export __N
 
@@ -82,11 +75,6 @@ endef
 # Print yellow error message and exit
 define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
-endef
-
-# strip quotes and then whitespaces
-define qstrip
-$(strip $(subst ",,$(1)))
 endef
 
 # check for proper make version
@@ -506,10 +494,10 @@ common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclea
 	$(RM) -r $(SOURCE_DIR_ROOT)
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
-	@echo "Use 'make download-clean' to remove the download directory" 
+	@echo "Use 'make download-clean' to remove the download directory"
 
-download-clean: 
-	$(RM) -r $(DL_DIR) 
+download-clean:
+	$(RM) -r $(DL_DIR)
 
 dist: distclean download-clean
 	version="$$(cat .version)"; \

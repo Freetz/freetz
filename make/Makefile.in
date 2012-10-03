@@ -91,7 +91,7 @@ FREETZ_LD_RUN_PATH:=LD_RUN_PATH="$(FREETZ_LIBRARY_PATH)"
 # commands to run before calling configure
 # each command has to be terminated by ';'
 TARGET_CONFIGURE_PRE_CMDS:=
-TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status} ;
+TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status};
 
 # setup environment for configure
 TARGET_CONFIGURE_ENV:=
@@ -166,26 +166,6 @@ endif
 # the creation and maintenance of the makefiles.
 # macro names containing _INT are for internal use only and should not be called outside of this file
 # For details of the required targets, see the documentation in README.Makefiles
-
-# SUBST_MAP
-# Substitute according to map src:dst
-#  $(1) - String
-#  $(2) - List of src:dst pairs
-SUBST_MAP = $(strip		\
-	$(eval __tmp := $1)	\
-	$(foreach s,$2,		\
-		$(eval __tmp := $(subst $(word 1,$(subst :, ,$s)),$(word 2,$(subst :, ,$s)),$(__tmp))))	\
-	$(__tmp))
-SUBST_MAP_TOLOWER := A:a B:b C:c D:d E:e F:f G:g H:h I:i J:j K:k L:l M:m N:n O:o P:p Q:q R:r S:s T:t U:u V:v W:w X:x Y:y Z:z
-SUBST_MAP_TOUPPER := a:A b:B c:C d:D e:E f:F g:G h:H i:I j:J k:K l:L m:M n:N o:O p:P q:Q r:R s:S t:T u:U v:V w:W x:X y:Y z:Z
-SUBST_MAP_NAME := -:_
-SUBST_MAP_TOUPPER_NAME := $(SUBST_MAP_TOUPPER) $(SUBST_MAP_NAME)
-SUBST_MAP_TOLOWER_NAME := $(SUBST_MAP_TOLOWER) $(SUBST_MAP_NAME)
-
-# TOUPPER_NAME
-# Convert letters to uppercase, minus to underline
-#   $(1) = name to convert
-TOUPPER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOUPPER_NAME))
 
 define SELECTED_SUBOPTIONS__INT
 $(strip \
@@ -753,10 +733,9 @@ endef
 define PKG_UNPACKED_CHECK_SUBOPTS__INT1
 $(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
 endef
-_HASH_SIGN:=\#
 define PKG_UNPACKED_CHECK_SUBOPTS__INT2
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_HASH_SIGN) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
+	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_hash) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
 	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
 		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
 		$($(PKG)_CLEAN_TARGET_DIR__INT) \

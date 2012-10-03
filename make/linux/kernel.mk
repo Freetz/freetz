@@ -1,6 +1,4 @@
-comma:=,
-space:=$(empty) $(empty)
-AVM_SOURCE:=$(call qstrip,$(subst $(space),\ ,$(FREETZ_DL_KERNEL_SOURCE)))
+AVM_SOURCE:=$(call qstrip,$(subst $(_space),\ ,$(FREETZ_DL_KERNEL_SOURCE)))
 AVM_KERNEL_VERSION:=$(subst .,\.,$(KERNEL_VERSION))
 
 AVM_UNPACK__INT_.gz:=z
@@ -143,7 +141,7 @@ $(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
 
 $(KERNEL_HEADERS_DEVEL_DIR)/include/linux/version.h: $(KERNEL_DIR)/.prepared
 ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13)),y)
-	$(call COPY_KERNEL_HEADERS,$(KERNEL_BUILD_ROOT_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(comma)asm-generic$(comma)linux$(comma)mtd$(comma)scsi$(comma)video})
+	$(call COPY_KERNEL_HEADERS,$(KERNEL_BUILD_ROOT_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(_comma)asm-generic$(_comma)linux$(_comma)mtd$(_comma)scsi$(_comma)video})
 else
 	$(SUBMAKE) -C $(KERNEL_BUILD_ROOT_DIR) \
 		CROSS_COMPILE="$(KERNEL_CROSS)" \
