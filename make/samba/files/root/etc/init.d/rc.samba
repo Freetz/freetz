@@ -29,7 +29,9 @@ config() {
 	local PASS_FILE=/mod/etc/samba/smbpasswd
 	rm -rf $PASS_FILE 2>/dev/null
 	if which smbpasswd >/dev/null; then
-		if [ -n "$SAMBA_PASS" ]; then
+		if [ -s /tmp/flash/samba/smbpasswd ]; then
+			cat /tmp/flash/samba/smbpasswd > $PASS_FILE
+		elif [ -n "$SAMBA_PASS" ]; then
 			local CLEAR_FILE=/var/tmp/smbpasswd.cleartext
 			local SAMBA_UID="$(id -u $SAMBA_SYSTEMUSER)"
 			echo "$SAMBA_SYSTEMUSER:$SAMBA_UID:$SAMBA_PASS:[UX         ]:LCT-00000001:" > $CLEAR_FILE
