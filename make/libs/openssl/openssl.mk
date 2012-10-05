@@ -49,8 +49,11 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
-#	OpenSSL's "make depend" looks for installed headers before its own, so remove installed stuff first
-	$(MAKE) openssl-clean-staging
+#	OpenSSL's "make depend" looks for installed headers before its own,
+#	so remove installed stuff from the staging dir first.
+#	Remove installed libs also from freetz' packages dir to ensure
+#	that it doesn't contain files from previous builds (0.9.8 to/from 1.0.x switch).
+	$(MAKE) openssl-clean-staging openssl-uninstall
 	for target in depend all; do \
 		$(SUBMAKE1) $(OPENSSL_MAKE_FLAGS) $$target; \
 	done
