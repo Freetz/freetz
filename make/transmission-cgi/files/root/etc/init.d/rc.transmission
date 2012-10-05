@@ -125,7 +125,7 @@ start() {
 		OPTIONS="$OPTIONS --auth --username $TRANSMISSION_RPCUSERNAME --password $TRANSMISSION_RPCPASSWORD"
 	else
 		OPTIONS="$OPTIONS --no-auth"
-		echo -n "without password protection.. "
+		echo -n "without password protection ... "
 	fi
 
 	[ -n "$TRANSMISSION_RPCPORT" ] && OPTIONS="$OPTIONS -p $TRANSMISSION_RPCPORT"
@@ -137,7 +137,7 @@ start() {
 	if [ -n "$TRANSMISSION_WEBDIR" -a -d "$TRANSMISSION_WEBDIR" -a -r "$TRANSMISSION_WEBDIR/index.html" ]; then
 		export TRANSMISSION_WEB_HOME="$TRANSMISSION_WEBDIR"
 	else
-		echo -n "without web interface.. "
+		echo -n "without web interface ... "
 		unset TRANSMISSION_WEB_HOME
 	fi
 
