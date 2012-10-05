@@ -1,10 +1,13 @@
-$(call PKG_INIT_LIB, 0.16.1)
-$(PKG)_LIB_VERSION:=8.0.1
+$(call PKG_INIT_LIB, 0.18.1.1)
+$(PKG)_LIB_VERSION:=8.1.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3d9ad24301c6d6b17ec30704a13fe127
+$(PKG)_SOURCE_MD5:=3dd55b952826d2b32f51308f2f91aa89
 $(PKG)_SITE:=@GNU/$(pkg)
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/gettext-runtime/intl/.libs/libintl.so.$($(PKG)_LIB_VERSION)
+# we only want libintl
+$(PKG)_BUILD_SUBDIR := gettext-runtime
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/$($(PKG)_BUILD_SUBDIR)/intl/.libs/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libintl.so.$($(PKG)_LIB_VERSION)
 
@@ -24,18 +27,25 @@ $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libexpat-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-emacs
 $(PKG)_CONFIGURE_OPTIONS += --disable-csharp
+$(PKG)_CONFIGURE_OPTIONS += --disable-curses
+$(PKG)_CONFIGURE_OPTIONS += --without-libglib-2.0-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libcroco-0.6-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libunistring-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libxml2-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libncurses-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libtermcap-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libxcurses-prefix
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-# We only want libintl
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
+	$(SUBMAKE) -C $(GETTEXT_DIR)/$(GETTEXT_BUILD_SUBDIR)/intl \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	$(SUBMAKE) -C $(GETTEXT_DIR)/gettext-runtime/intl \
+	$(SUBMAKE) -C $(GETTEXT_DIR)/$(GETTEXT_BUILD_SUBDIR)/intl \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -49,7 +59,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(GETTEXT_DIR) clean
+	-$(SUBMAKE) -C $(GETTEXT_DIR)/$(GETTEXT_BUILD_SUBDIR)/intl clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgettext* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libintl* \
