@@ -1,14 +1,10 @@
 ( \
 	[ "$FREETZ_UCLIBC_0_9_29_BASED_BOX" == "y" -a "$FREETZ_TARGET_UCLIBC_VERSION_0_9_29" != "y" ] \
-	|| [ "$FREETZ_UCLIBC_0_9_30_BASED_BOX" == "y" ] \
-	|| [ "$FREETZ_UCLIBC_0_9_31_BASED_BOX" == "y" ] \
 	|| [ "$FREETZ_UCLIBC_0_9_32_BASED_BOX" == "y" ] \
 ) || return 0
 
 version=
 [ "$FREETZ_UCLIBC_0_9_29_BASED_BOX" == "y" ] && version="0.9.29"
-[ "$FREETZ_UCLIBC_0_9_30_BASED_BOX" == "y" ] && version="0.9.30"
-[ "$FREETZ_UCLIBC_0_9_31_BASED_BOX" == "y" ] && version="0.9.31"
 [ "$FREETZ_UCLIBC_0_9_32_BASED_BOX" == "y" ] && version="0.9.32"
 
 echo1 "removing uClibc-${version} files"
