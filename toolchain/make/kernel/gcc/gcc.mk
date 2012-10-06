@@ -48,9 +48,6 @@ endif
 endif
 
 GCC_KERNEL_EXTRA_MAKE_OPTIONS := MAKEINFO=true
-ifeq ($(strip $(FREETZ_TOOLCHAIN_STATIC)),y)
-GCC_KERNEL_EXTRA_MAKE_OPTIONS += LDFLAGS="-static"
-endif
 
 gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 $(DL_DIR)/$(GCC_KERNEL_SOURCE): | $(DL_DIR)

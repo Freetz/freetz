@@ -79,10 +79,6 @@ endif
 endif
 
 GCC_EXTRA_MAKE_OPTIONS := MAKEINFO=true
-ifeq ($(strip $(FREETZ_TOOLCHAIN_STATIC)),y)
-GCC_EXTRA_MAKE_OPTIONS += LDFLAGS="-static"
-endif
-
 
 GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
 # This macro exists for the following reason:

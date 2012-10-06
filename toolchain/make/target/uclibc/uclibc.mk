@@ -156,7 +156,7 @@ endif
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS) -m32" \
-		BUILD_LDFLAGS="$(if $(FREETZ_TOOLCHAIN_STATIC),-static)" \
+		BUILD_LDFLAGS="" \
 		hostutils
 	for i in ldd ldconfig; do \
 		install -c $(UCLIBC_DIR)/utils/$$i.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/$$i; \
