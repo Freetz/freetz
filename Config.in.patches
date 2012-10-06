@@ -1186,12 +1186,12 @@ config FREETZ_REMOVE_WLAN
 
 comment "Replacement patches --------------------"
 
-comment "Replace OpenSSL libraries (unavailable, requires openssl-0.9.8)"
+comment "Replace OpenSSL libraries (not available, requires openssl-0.9.8)"
 	depends on FREETZ_SHOW_ADVANCED && \
 		!( FREETZ_HAS_AVM_OPENSSL_LIBS && FREETZ_LIB_libcrypto && FREETZ_OPENSSL_VERSION_0 )
 
 config FREETZ_REPLACE_SSL_LIBS
-	bool "Replace AVM's version of OpenSSL libraries" if FREETZ_SHOW_ADVANCED
+	bool "Replace OpenSSL libraries" if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_HAS_AVM_OPENSSL_LIBS && FREETZ_LIB_libcrypto && FREETZ_OPENSSL_VERSION_0
 	select FREETZ_LIB_libssl
 	default n
