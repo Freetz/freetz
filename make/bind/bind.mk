@@ -24,6 +24,11 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-epoll=no
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/urandom"
 $(PKG)_CONFIGURE_OPTIONS += --with-libtool
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
+$(PKG)_CONFIGURE_OPTIONS += --without-gssapi
+$(PKG)_CONFIGURE_OPTIONS += --disable-isc-spnego
+$(PKG)_CONFIGURE_OPTIONS += --without-pkcs11
+$(PKG)_CONFIGURE_OPTIONS += --without-idnlib
+$(PKG)_CONFIGURE_OPTIONS += --without-purify
 $(PKG)_CONFIGURE_OPTIONS += --without-libxml2
 $(PKG)_CONFIGURE_OPTIONS += --disable-threads
 $(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
