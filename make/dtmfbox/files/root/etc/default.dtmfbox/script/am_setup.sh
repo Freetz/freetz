@@ -53,7 +53,7 @@ then
 
 	$DTMFBOX $SRC_ID -stop menu
 	/var/dtmfbox/script/espeak.sh "$TEXT" "$SRC_ID" &
-	set_cfg_value /var/dtmfbox/script.cfg "" "$CFG_KEY" "\"$NEW_CFG_VALUE\"" 
+	set_cfg_value /var/dtmfbox/script.cfg "" "$CFG_KEY" "\"$NEW_CFG_VALUE\""
 	$DTMFBOX $SRC_ID -goto "menu:am_setup"
   fi
 
@@ -65,13 +65,13 @@ then
   $DTMFBOX $SRC_ID -stop menu
   load_am_settings "$ACC_ID"
   get_locktempdir
-  
+
   echo "USER $AM_FTP_USERNAME" >  $LOCKTEMPDIR/nc_ftp_cmd
   echo "PASS $AM_FTP_PASSWORD" >> $LOCKTEMPDIR/nc_ftp_cmd
   echo "CWD $AM_FTP_PATH"  >> $LOCKTEMPDIR/nc_ftp_cmd
 
   chmod +x $LOCKTEMPDIR/nc_ftp_cmd
-		
+
   FTP_FOUND="0"
   for file in `find /var/dtmfbox/record/$ACC_ID/*`
   do

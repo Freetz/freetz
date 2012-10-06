@@ -8,7 +8,7 @@ check_callback() {
   do
 	eval CALLBACK="\$CALLBACK${cnt}"
 	if [ "$CALLBACK" = "" ]; then break; fi
-	
+
 	SPLIT=`echo $CALLBACK | sed 's/\// /g'`
 	let i=0;
 	for SPLIT_VAL in $SPLIT;
@@ -23,15 +23,15 @@ check_callback() {
 	if [ "$CALLBACK_CALLING_NO" = "" ]; then CALLBACK_CALLING_NO="$DST_NO"; fi
 	if [ "$CALLBACK_CALLING_ACC" = "" ]; then CALLBACK_CALLING_ACC="$ACC_ID"; fi
 	if [ "$CALLBACK_TRIGGER_ACC" = "" ]; then CALLBACK_TRIGGER_ACC="$ACC_ID"; fi
-	
+
 	VALID_CB=`echo $DST_NO | sed s/$CALLBACK_TRIGGER_NO/OK/g`
 	if [ "$VALID_CB" = "OK" ];
 	then
 	 if [ "$CALLBACK_TRIGGER_ACC" = "$ACC_ID" ] || [ "$CALLBACK_TRIGGER_ACC" = "$SRC_NO" ]; then
-		
+
 		# regex: replace number
 		CALLBACK_CALLING_NO=`echo $DST_NO | sed "s/$CALLBACK_TRIGGER_NO/$CALLBACK_CALLING_NO/g"`
-		
+
 		# get number from dtmfbox.cfg  and remove X#... from capi-voip accounts
 		get_cfg_value "/var/dtmfbox/dtmfbox.cfg" "acc$CALLBACK_CALLING_ACC" "number"
 		if [ ! -z "$CFG_VALUE" ]; then
@@ -75,7 +75,7 @@ check_callthrough() {
   do
 	eval CALLTHROUGH="\$CALLTHROUGH${cnt}"
 	if [ "$CALLTHROUGH" = "" ]; then break; fi
-	
+
 	SPLIT=`echo $CALLTHROUGH | sed 's/\// /g'`
 	let i=0;
 	for SPLIT_VAL in $SPLIT;
@@ -88,22 +88,22 @@ check_callthrough() {
 
 	VALID_CT=`echo $DST_NO | sed s/$CALLTHROUGH_TRIGGER_NO/OK/g`
 	if [ "$VALID_CT" = "OK" ];
-	then		
+	then
 	if [ "$CALLTHROUGH_TRIGGER_ACC" = "$ACC_ID" ] || [ "$CALLTHROUGH_TRIGGER_ACC" = "$SRC_NO" ]; then
 		echo "CbCt-Script: valid callthrough - $CALLTHROUGH_TRIGGER_ACC -> $CALLTHROUGH_TRIGGER_NO"
-		
+
 		# Another script already active?
-		if [ -f "$ACTION_CONTROL" ]; then				
+		if [ -f "$ACTION_CONTROL" ]; then
 			echo "CbCt-Script: Another script already got the call! Aborting..."
 			VALID_CT=""
 			exit 1
 		fi
 		echo "CT" > "$ACTION_CONTROL"
-		 		
+
 		$DTMFBOX $SRC_ID -hook up
 		$DTMFBOX $SRC_ID -goto "menu:callthrough_pin"
 		return 1
-	else		
+	else
 		 VALID_CT=""
 	fi
 	else
@@ -127,7 +127,7 @@ then
   #############################################
   check_callback
   if [ "$VALID_CB" = "OK" ];
-  then	
+  then
 	 exit 1
   fi
 
@@ -159,10 +159,10 @@ then
 	  then
 		sleep 3
 		echo "CbCt-Script: Callback $CALLBACK_CALLING_ACC -> $CALLBACK_CALLING_NO"
-		CON_ID=`$DTMFBOX -call "$CALLBACK_CALLING_ACC" "$CALLBACK_CALLING_NO" "$CALLBACK_CALLING_CTRL"`		
+		CON_ID=`$DTMFBOX -call "$CALLBACK_CALLING_ACC" "$CALLBACK_CALLING_NO" "$CALLBACK_CALLING_CTRL"`
 		$DTMFBOX $CON_ID -goto "menu:callthrough_pin"
 		exit 1;
 	  fi
-	fi	
+	fi
   fi
 fi

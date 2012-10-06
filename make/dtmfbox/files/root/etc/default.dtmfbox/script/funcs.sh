@@ -20,13 +20,13 @@ get_cfg_value() {
   if [ -z "$SECTION" ]; then
 	COMMENTARY="#.*"
 	SLINE_NUM=`cat "$FILE" | sed -e "s/$COMMENTARY//g" | grep -n "$KEY=" | sed -e 's/\(.*\):.*/\1/g'`
-	if [ -z "$SLINE_NUM" ]; then return; fi	
+	if [ -z "$SLINE_NUM" ]; then return; fi
 	let LINE_NUM=$SLINE_NUM
 	let in_section=2;
   else
 	COMMENTARY="\/\/.*"
 	SLINE_NUM=`cat "$FILE" | sed "s/$COMMENTARY//g" | grep -n "\[$SECTION\]" | sed -e 's/\(.*\):.*/\1/g'`
-	if [ -z "$SLINE_NUM" ]; then return; fi	
+	if [ -z "$SLINE_NUM" ]; then return; fi
 	let LINE_NUM=$SLINE_NUM
 	let in_section=2;
   fi
@@ -34,20 +34,20 @@ get_cfg_value() {
   while read line;
   do
 	if [ $cnt -eq $LINE_NUM ];
-	then		
+	then
 		# check, if we enter the section
-		if [ $in_section -eq 2 ]; then		
+		if [ $in_section -eq 2 ]; then
 			if [ ! -z "`echo $line | grep \"$KEY=\"`" ];
-			then 	
+			then
 				CFG_VALUE="`echo "$line" | sed -e "s/$COMMENTARY//g" -e \"s/$KEY\=\(.*\)/\1/g\" -e 's/\t/ /g' -e 's/ *$//g' -e 's/^ *//g'`";
 				return 0;
 			fi
 		fi
 	else
 		let cnt=cnt+1
-	fi	
+	fi
   done < "$FILE"
-    
+
 }
 
 # Set a value in a *.cfg file
@@ -70,7 +70,7 @@ set_cfg_value() {
 	let in_section=1
 	COMMENTARY="#.*"
   else
-	COMMENTARY="\/\/.*"	
+	COMMENTARY="\/\/.*"
   fi
 
   while read line;
@@ -82,14 +82,14 @@ set_cfg_value() {
 			check_out_section=`echo "$line" | sed -r "s/\[.*\]/OK/g"`
 			if [ "$check_out_section" = "OK" ]; then let in_section=2; fi
 		fi
-	
+
 		# check, if we enter the section
 		if [ $in_section -eq 0 ]; then
 			if [ "$line" = "[$SECTION]" ]; then let in_section=1; fi
 		fi
-	
+
 		if [ $in_section -eq 1 ]; then
-			CFG_VALUE=`echo "$line" | grep -E "^$KEY="`; 		
+			CFG_VALUE=`echo "$line" | grep -E "^$KEY="`;
 			if [ ! -z "$CFG_VALUE" ]; then
 				COMMENT=`echo "$line" | sed "s/.*\($COMMENTARY\)/\1/g"`
 				if [ "$COMMENT" = "$line" ]; then COMMENT=""; fi
@@ -114,7 +114,7 @@ set_cfg_value() {
   fi
 }
 
-# Check write permission and get $LOCKTEMPDIR for pipes. 
+# Check write permission and get $LOCKTEMPDIR for pipes.
 get_locktempdir() {
 	LOCKTEMPDIR=`touch /var/tmp/$SRC_ID-$$.lock 2>&1`
 	if [ ! -z "$LOCKTEMPDIR" ]; then LOCKTEMPDIR="/tmp"; else LOCKTEMPDIR="/var/tmp"; rm $LOCKTEMPDIR/$SRC_ID-$$.lock; fi

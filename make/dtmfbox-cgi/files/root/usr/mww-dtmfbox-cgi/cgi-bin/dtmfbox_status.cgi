@@ -1,9 +1,9 @@
 #!/bin/sh
 . ./dtmfbox_cfg.cgi
 
-if [ ! -z "$(pidof 'dtmfbox')" ]; 
+if [ ! -z "$(pidof 'dtmfbox')" ];
 then
-  status_daemon="running" 
+  status_daemon="running"
 else
   status_daemon="stopped"
 fi
@@ -11,12 +11,12 @@ fi
 # &pid=
 if [ "${QUERY_STRING}" != "" ] && [ "$PID" = "" ]; then
 	PID=`echo ${QUERY_STRING} | sed -n 's/.*pid=\(.*\)/\1/p' | sed -e 's/&.*//g'`
-fi 
+fi
 
 # &no_startstop=
 if [ "${QUERY_STRING}" != "" ] && [ "$NO_STARTSTOP" = "" ]; then
 	NO_STARTSTOP=`echo ${QUERY_STRING} | sed -n 's/.*no_startstop=\(.*\)/\1/p' | sed -e 's/&.*//g'`
-fi 
+fi
 
 
 DO_REFRESH="10000"
@@ -26,7 +26,7 @@ then
 fi
 
 if [ "$status_daemon" = "running" ];
-then	  
+then
 	status_accounts="`dtmfbox -list accounts`"
 	status_connections="`dtmfbox -list`"
 	status_clients="`dtmfbox -list clients`"
@@ -66,7 +66,7 @@ cat << EOF
 	<td width="150"><font size="2" color="green"><i><b>dtmfbox running!</b></i></font></td>
 	<td align="center"><input type="button" value="Restart" onclick="javascript:parent.location.href='$MAIN_CGI&start=daemon&show=$CURRENT_PAGE'" id="start_daemon" name="start_daemon"></td>
 	<td align="center"><input type="button" value="Restart (Log)" onclick="javascript:parent.location.href='$MAIN_CGI&start=logged&show=$CURRENT_PAGE'" id="start_logged" name="start_logged"></td>
-	<td align="center"><input type="button" value="Stoppen" onclick="javascript:parent.location.href='$MAIN_CGI&start=stop&show=$CURRENT_PAGE'" id="stop_daemon" name="stop_daemon"></td>	
+	<td align="center"><input type="button" value="Stoppen" onclick="javascript:parent.location.href='$MAIN_CGI&start=stop&show=$CURRENT_PAGE'" id="stop_daemon" name="stop_daemon"></td>
 EOF
 else
 cat << EOF
@@ -81,7 +81,7 @@ cat << EOF
   $btnViewLog
   </tr>
   </table>
- 
+
 <pre style="font-size:11px;border:0px" width="85%" class='code'>
 EOF
 

@@ -150,11 +150,11 @@ record_file() {
 	   echo "AM-Script: stream to $AM_FTP_SERVER:$AM_FTP_PORT$AM_FTP_PATH"
 	   $DTMFBOX $SRC_ID -record "$REC_FIFO" &
 	   $FTPPUT -u "$AM_FTP_USERNAME" -p "$AM_FTP_PASSWORD" -P "$AM_FTP_PORT" "$AM_FTP_SERVER" "$AM_FTP_PATH/$RECFILE_UNIQUE_FTP" "$REC_FIFO" &
-	
+
 	   # create local pseudo file
 	   RECFILE_UNIQUE=`echo "$RECFILE_UNIQUE" | sed -e 's/\.wav/\.raw/g'`
 	   echo > "$RECFILE_UNIQUE"
-	 fi	
+	 fi
 
    fi
 
@@ -206,7 +206,7 @@ play_file() {
 if [ "$EVENT" = "CONNECT" ] && [ "$DIRECTION" = "INCOMING" ] && [ "$AM_ACTIVE" = "1" ];
 then
 
- IS_ANONYMOUS=`echo "$DST_NO" | sed -e 's/@.*//g' | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ/abcdefghijklmnopqrstuvwxyzöäü/;" | sed -e 's/unknown/anonymous/g' -e 's/^anonym$/anonymous/g'`	
+ IS_ANONYMOUS=`echo "$DST_NO" | sed -e 's/@.*//g' | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZÖÄÜ/abcdefghijklmnopqrstuvwxyzöäü/;" | sed -e 's/unknown/anonymous/g' -e 's/^anonym$/anonymous/g'`
  if [ "$IS_ANONYMOUS" = "" ]; then IS_ANONYMOUS="anonymous"; fi
 
  # Hookup-Type: 0=all, 1=anonymous only, 2=anonymous immediately - others after ringtime
@@ -255,7 +255,7 @@ then
    if [ "$AM_RECORD_TYPE" != "2" ];
    then
 	 echo "AM-Script: recording $RECFILE"
-	 record_file	
+	 record_file
    fi
 
    # record timeout
@@ -286,9 +286,9 @@ then
   if [ "`echo $DTMF | grep $AM_PIN`" != "" ]
   then
 	# stop answering machine
-	kill_process		
+	kill_process
 	$DTMFBOX $SRC_ID -stop play all
-	$DTMFBOX $SRC_ID -stop record	
+	$DTMFBOX $SRC_ID -stop record
 
 	# delete recording
 	generate_rec_filename

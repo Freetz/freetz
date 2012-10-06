@@ -3,7 +3,7 @@
 # &fullscreen=
 if [ "${QUERY_STRING}" != "" ] && [ "$FULLSCREEN" = "" ]; then
 	FULLSCREEN=`echo ${QUERY_STRING} | sed -n 's/.*fullscreen=\(.*\)/\1/p' | sed -e 's/&.*//g'`
-fi 
+fi
 
 head_begin
 
@@ -23,16 +23,16 @@ if [ "${QUERY_STRING}" != "" ]; then
 
 	# &page=
 	if [ "$PAGE" = "" ]; then
-		PAGE=`echo ${QUERY_STRING} | sed -n 's/.*page=\(.*\)/\1/p' | sed -e 's/&.*//g'`	
+		PAGE=`echo ${QUERY_STRING} | sed -n 's/.*page=\(.*\)/\1/p' | sed -e 's/&.*//g'`
 	fi
 
 	# &help=
 	if [ "$HELPPAGE" = "" ]; then
-		HELPPAGE=`echo ${QUERY_STRING} | sed -n 's/.*help=\(.*\)/\1/p' | sed -e 's/&.*//g'`	
+		HELPPAGE=`echo ${QUERY_STRING} | sed -n 's/.*help=\(.*\)/\1/p' | sed -e 's/&.*//g'`
 	fi
-	
+
 	# &direct_edit=
-	_DIRECT_EDIT=`echo ${QUERY_STRING} | sed -n 's/.*direct_edit=\(.*\)/\1/p' | sed -e 's/&.*//g'`		
+	_DIRECT_EDIT=`echo ${QUERY_STRING} | sed -n 's/.*direct_edit=\(.*\)/\1/p' | sed -e 's/&.*//g'`
 	if [ ! -z "$_DIRECT_EDIT" ]; then DIRECT_EDIT="$_DIRECT_EDIT"; fi
 
 	# &new_patht=
@@ -54,13 +54,13 @@ if [ "${QUERY_STRING}" != "" ]; then
 	if [ "$RESET" = "" ]; then
 		RESET=`echo ${QUERY_STRING} | sed -n 's/.*reset_type=\(.*\)/\1/p' | sed -e 's/&.*//g'`
 	fi
-	if [ "$RESET" != "" ]; then 	
+	if [ "$RESET" != "" ]; then
 
 		if [ "$RESET" = "path" ];
 		then
 			show_title "Pfad ändern"
-		
-			# stop dtmfbox			
+
+			# stop dtmfbox
 			/var/dtmfbox/rc.dtmfbox stop
 
 			# No path? Then install to /var/dtmfbox-bin
@@ -71,18 +71,18 @@ if [ "${QUERY_STRING}" != "" ]; then
 			echo "<br><br>"
 			echo "Pfad wird auf \"$NEWPATH\" geändert.<br>"
 			echo "Bitte warten, bis alle Dateien kopiert wurden...<br><br>"
-			
+
 			if [ "$DTMFBOX_PATH" = "$NEWPATH" ]; then
 				echo "<b>Hinweis:</b> Alter und neuer Pfad nicht unterschiedlich!<br>"
 				echo "<br>Abgebrochen!"
 				head_end
 				return 1;
 			fi
-			
+
 			echo -n "<pre class='code'>"
 
-			# Copy required files to new path			
-			mkdir -p $NEWPATH			
+			# Copy required files to new path
+			mkdir -p $NEWPATH
 			if [ "$FREETZ" = "0" ];
 			then
 				# Copy the current files (minimum)
@@ -96,7 +96,7 @@ if [ "${QUERY_STRING}" != "" ]; then
 				cp -Rf /var/dtmfbox/*.cfg $NEWPATH
 
 				# USB? Then copy all files (including recordings)...
-				if [ "$NEWPATH" != "/var/dtmfbox-bin" ]; then	
+				if [ "$NEWPATH" != "/var/dtmfbox-bin" ]; then
 					cp -Rf /var/dtmfbox/* $NEWPATH
 				fi
 			fi
@@ -131,18 +131,18 @@ if [ "${QUERY_STRING}" != "" ]; then
 			head_end
 			return 1;
 		fi
-	
+
 		if [ "$RESET" = "uninstall" ];
 		then
 			show_page "dtmfbox_scriptedit.cgi" "UNINSTALL"
 			show_title "dtmfbox deinstallieren..."
-					
+
 			# stop dtmfbox
 			/var/dtmfbox/rc.dtmfbox stop >/dev/null
 
 			# remove entry from /var/flash/debug.cfg
 			/var/dtmfbox/rc.dtmfbox uninstall
-			
+
 			rm /var/dtmfbox
 
 			echo "<br>Fertig!"
@@ -154,13 +154,13 @@ if [ "${QUERY_STRING}" != "" ]; then
 		then
 			if [ ! -z "$WEBIFPASS" ];
 			then
-				# save pass to httpd.conf	
+				# save pass to httpd.conf
 				WEBIFPASS_ENC="/:admin:`$HTTPD -m $WEBIFPASS`"
-				echo "$WEBIFPASS_ENC" > /var/dtmfbox/httpd/httpd.conf			
+				echo "$WEBIFPASS_ENC" > /var/dtmfbox/httpd/httpd.conf
 			else
 				rm /var/dtmfbox/httpd/httpd.conf
 			fi
-			
+
 			show_page "dtmfbox_scriptedit.cgi" "SAVE"
 			echo "<font size='2'><a href='$MAIN_CGI&page=status'><< zurück zur Statusseite...</a></font>"
 
@@ -194,7 +194,7 @@ if [ "${QUERY_STRING}" != "" ]; then
 					chmod +x /var/dtmfbox/tmp/dtmfbox_delete_local.sh
 					. /var/dtmfbox/tmp/dtmfbox_delete_local.sh
 					rm /var/dtmfbox/tmp/dtmfbox_delete_local.sh
-				fi	
+				fi
 
 				if [ "$CMD_REMOTE" = "" ]; then
 					CMD_REMOTE=`echo ${QUERY_STRING} | sed -n 's/.*cmd_remote=\(.*\)/\1/p' | sed -e 's/&.*//g'`
@@ -207,36 +207,36 @@ if [ "${QUERY_STRING}" != "" ]; then
 					rm /var/dtmfbox/tmp/dtmfbox_delete_ftp.sh
 				fi
 			fi
-		fi	
+		fi
 	fi
 
 	# &start=
 	if [ "$START" = "" ]; then
 		START=`echo ${QUERY_STRING} | sed -n 's/.*start=\(.*\)/\1/p' | sed -e 's/&.*//g'`
-	fi	
+	fi
 	if [ "$START" != "" ];
-	then			
+	then
 		# Daemon starten
 		if [ "$START" = "daemon" ];
 		then
 			/var/dtmfbox/rc.dtmfbox restart > /dev/null
 		fi
-		
+
 		# Daemon geloggt starten
 		if [ "$START" = "logged" ];
-		then	
+		then
 			/var/dtmfbox/rc.dtmfbox stop >/dev/null
-			rm /var/dtmfbox/tmp/dtmfbox.log 2>/dev/null			
+			rm /var/dtmfbox/tmp/dtmfbox.log 2>/dev/null
 			/var/dtmfbox/rc.dtmfbox log >/dev/null
-			touch /var/dtmfbox/tmp/dtmfbox.log		
+			touch /var/dtmfbox/tmp/dtmfbox.log
 		fi
-		
+
 		# Daemon stoppen
 		if [ "$START" = "stop" ];
 		then
 			/var/dtmfbox/rc.dtmfbox stop >/dev/null
 		fi
-	
+
 		# Fritzbox rebooten
 		if [ "$START" = "reboot" ];
 		then
@@ -255,7 +255,7 @@ if [ "${QUERY_STRING}" != "" ]; then
 	# &run_cmd=
 	if [ "$RUN_CMD" = "" ]; then
 		RUN_CMD=`echo ${QUERY_STRING} | sed -n 's/.*run_cmd=\(.*\)/\1/p' | sed -e 's/&.*//g'`
-	fi	
+	fi
 
 	if [ "$RUN_CMD" != "" ];
 	then
@@ -269,7 +269,7 @@ if [ "${QUERY_STRING}" != "" ]; then
 			if [ "$SEC_PID1" = "$SEC_PID2" ];
 			then
 				RUN_CMD=$($HTTPD -d "$RUN_CMD")
-				$RUN_CMD >/dev/null 2>/dev/null	
+				$RUN_CMD >/dev/null 2>/dev/null
 
 				if [ "$CLOSE_CMD" = "1" ];
 				then
@@ -279,7 +279,7 @@ if [ "${QUERY_STRING}" != "" ]; then
 				fi
 			fi
 		fi
-	fi		
+	fi
 
 fi
 if [ "$PAGE" = "" ]; then PAGE="status"; fi
@@ -292,7 +292,7 @@ get_am_messages() {
   status_recordings=""
   let tmp_acc_no=$DTMFBOX_MAX_ACCOUNTS;
   while [ $tmp_acc_no -ge 1 ];
-  do	
+  do
 	let msg_cnt=0;
 	for file in `find $DTMFBOX_PATH/record/${tmp_acc_no}/* 2>/dev/null`
 	do
@@ -300,10 +300,10 @@ get_am_messages() {
 			let msg_cnt=msg_cnt+1
 		fi
 	done
-	
+
 	if [ "$msg_cnt" != "0" ];
 	then
-		get_cfg_value "/var/dtmfbox/dtmfbox.cfg" "acc${tmp_acc_no}" "name"		
+		get_cfg_value "/var/dtmfbox/dtmfbox.cfg" "acc${tmp_acc_no}" "name"
 		status_recordings="<a href='$MAIN_CGI&page=am_messages&acc=${tmp_acc_no}'>Account #${tmp_acc_no} ($CFG_VALUE) - $msg_cnt Nachricht(en)</a><br>$status_recordings"
 	fi
 	let tmp_acc_no=$tmp_acc_no-1
@@ -425,7 +425,7 @@ fi
 cat << EOF
 <script>
 function change_webphone_account(acc_idx)
-{	
+{
 	var opt=document.getElementById('account').options[acc_idx].text;
 	if(opt.indexOf('(capi)') != -1 ) {
 		document.getElementById('capi_controller').style.display='block';
@@ -443,7 +443,7 @@ function webphone_dial()
 	var controller_div = document.getElementById('capi_controller');
 	var controller = document.getElementById('selected_controller');
 	var dtmfbox_path="$DTMFBOX_PATH";
-	
+
 	var controller_value = '';
 
 	if(controller_div.style.display != "none") {
@@ -462,7 +462,7 @@ function webphone_dial()
 		alert('Bitte Account wählen!');
 		return;
 	};
-		
+
 	window.open('$MAIN_CGI&page=$PAGE&close=1&pid=$$&run_cmd=/bin/sh%20dtmfbox_webphone.cgi%20CALL%20${REMOTE_ADDR}%20$LOC_RTP_START%20$REM_RTP_START%20' + escape(dtmfbox_path) + '%20' + escape(account.value) + '%20' + escape(trg_no.value) + '%20' + escape(controller_value) + '%20');
 }
 
@@ -487,7 +487,7 @@ else
 fi
 
 cat << EOF
-	<applet code="WebPhone" archive="sWebPhone.jar" codebase="$WEBPHONE_CODEBASE" HEIGHT="200" style="width:95%">	
+	<applet code="WebPhone" archive="sWebPhone.jar" codebase="$WEBPHONE_CODEBASE" HEIGHT="200" style="width:95%">
 	<PARAM NAME="remote_addr" VALUE="$WEBPHONE_REM_RTP_HOST">
 	<PARAM NAME="remote_rtp" VALUE="$REM_RTP_START">
 	<PARAM NAME="remote_rtcp" VALUE="$REM_RTCP_START">
@@ -524,7 +524,7 @@ fi
 let i=i+1
 done
 
-cat << EOF	
+cat << EOF
 	</select>
 </td>
 </tr><tr>
@@ -618,7 +618,7 @@ function submit_reset_options()
 			text = "Webinterface-Passwort setzen?";
 		}
 	}
-	
+
 	if(confirm(text)) {
 		document.forms['freset'].submit();
 	}
@@ -633,11 +633,11 @@ function change_reset_options()
 
 	if(option == 'password')  {
 		document.getElementById('passworddiv').style.display = "block";
-		document.forms['freset']['webifpass'].focus();	
+		document.forms['freset']['webifpass'].focus();
 	} else {
 		if(option == 'path') {
 			document.getElementById('pathdiv').style.display = "block";
-			document.forms['freset']['new_path'].focus();	
+			document.forms['freset']['new_path'].focus();
 		}
 	}
 }
@@ -677,7 +677,7 @@ EOF
   if [ "$FREETZ" = "1" ] && [ -z "$DTMFBOX_PATH" ];
   then
 	head_end
-	return	
+	return
   fi
 fi
 
@@ -686,9 +686,9 @@ fi
 ####################################################################################
 if [ "$PAGE" = "am_messages" ];
 then
-		
+
 	let ITEMS_PER_PAGE=10
-	
+
 	acc_no_str=`echo ${QUERY_STRING} | sed -n 's/.*acc=\(.*\)/\1/p' | sed -e 's/&.*//g'`
 	page_str=`echo ${QUERY_STRING} | sed -n 's/.*page_msg=\(.*\)/\1/p' | sed -e 's/&.*//g'`
 	if [ -z "$page_str" ]; then page_str="1"; fi
@@ -717,12 +717,12 @@ then
 
 cat << EOF
 	<script language="javascript">
-	
+
 	function delete_recordings(rec_cnt)
 	{
 		var cmd_local="";
 		var cmd_remote="";
-	
+
 		for(j=0; j<document.forms.length; j++)
 		{
 			for(i=0; i<rec_cnt; i++)
@@ -733,24 +733,24 @@ cat << EOF
 					{
 						// delete local file
 						cmd_local = cmd_local + 'rm ' + document.forms[j]['recfile' + i].value + ';';
-		
+
 						// delete remote file
 						if(document.forms[j]['is_ftp' + i].value == "FTP") {
 							if(cmd_remote.length == 0)
 							cmd_remote="cat << EOF > /var/dtmfbox/tmp/nc_ftp_cmd\n$ftp_login";
-		
+
 							cmd_remote = cmd_remote + 'DELE ' + document.forms[j]['recfilename' + i].value + '\n';
-						}	
+						}
 					}
 				} catch(e) {}
 			}
 		}
 		if(cmd_remote.length > 0) {
 			cmd_remote = cmd_remote + "QUIT\nEOF\n";
-			cmd_remote = cmd_remote + "cat /var/dtmfbox/tmp/nc_ftp_cmd | $NC $ftp_server:$ftp_port;\n"	
-			cmd_remote = cmd_remote + "rm /var/dtmfbox/tmp/nc_ftp_cmd;\n"	
+			cmd_remote = cmd_remote + "cat /var/dtmfbox/tmp/nc_ftp_cmd | $NC $ftp_server:$ftp_port;\n"
+			cmd_remote = cmd_remote + "rm /var/dtmfbox/tmp/nc_ftp_cmd;\n"
 		}
-	
+
 		if(cmd_local.length > 0)
 		{
 			cmd_local=escape(cmd_local);
@@ -760,12 +760,12 @@ cat << EOF
 	}
 	</script>
 EOF
-	
+
 	echo '<a name="am_recordings" href="#am_recordings"></a>'
 	echo '<div id="form_am_recordings" style="display:block">'
-	
+
 	show_title "Aufnahmen - Account #${acc_no}"
-	
+
 	echo "<form name='am_message'>"
 	echo "<table border='1' cellpadding='5' cellspacing='0' width='95%' bordercolor='black'><tr><td>"
 	echo "<table border='0' cellpadding='1' cellspacing='0' width='100%'>"
@@ -778,7 +778,7 @@ EOF
 	echo "<td width='10' bgcolor='black'></td>"
 	echo "<td bgcolor='black'><font color='white'><b>Nummer</b></font></td>"
 	echo "<td width='75' bgcolor='black'></td></tr><tr>"
-	
+
 	let rec_no=1
 	let p=0;
 	let position=0;
@@ -788,7 +788,7 @@ EOF
 	for file in `ls -r $DTMFBOX_PATH/record/$acc_no/* 2>/dev/null`
 	do
 	if [ -f $file ]; then
-	
+
 		if [ $position -ge $start_position ] && [ $position -le $end_position ];
 		then
 
@@ -805,21 +805,21 @@ EOF
 		else
 			FILE_DURATION="~"
 		fi
-	
-		if [ "$IS_FTP" != "FTP" ]; then IS_FTP="HDD"; else IS_FTP="FTP"; fi	
-	
+
+		if [ "$IS_FTP" != "FTP" ]; then IS_FTP="HDD"; else IS_FTP="FTP"; fi
+
 		if [ "$IS_FTP" != "FTP" ]; then
 			DOWNLOAD_CMD="dtmfbox_cmd.cgi?pid=$$&script=cat%20$file&binary=true&download_name=$filename"
 		else
 			DOWNLOAD_CMD="ftp://$ftp_user:$ftp_pass@$ftp_server:$ftp_port/$ftp_path/$filename"
 		fi
-	
+
 		if [ $p -eq 0 ]; then
 			echo "<tr bgcolor='#EEEEEE'>"
 		else
 			echo "<tr bgcolor='#DFDFDF'>"
 		fi
-	
+
 		echo "<td width='25'><div align='center'><input type='hidden' value=\"$filename\" name=\"recfilename${rec_no}\" id=\"recfilename${rec_no}\"><input type='hidden' value=\"$file\" name=\"recfile${rec_no}\" id=\"recfile${rec_no}\"><input type='hidden' value=\"$IS_FTP\" name=\"is_ftp${rec_no}\" id=\"is_ftp${rec_no}\"><input type='checkbox' name=\"recording${rec_no}\" id=\"recording${rec_no}\"></div></td>"
 		echo "<td width='40'><div align='center'>$IS_FTP</div></td>"
 		echo "<td width='175'><div align='center'>$FILE_DATE</div></td>"
@@ -828,24 +828,24 @@ EOF
 		echo "<td>$CALLER_NO an $ACCOUNT_NO</td>"
 		echo "<td width='75'><div align='center'><input type='button' value='Anhören' onclick=\"javascript:win=window.open('$DOWNLOAD_CMD');\" style='width:75px'></div></td>"
 		echo "</tr>"
-	
+
 		let rec_no=rec_no+1;
 		let p=p+1;
 		if [ $p -eq 2 ]; then p=0; fi
 		fi
-	
+
 		let position=position+1;
 	fi
-	done	
+	done
 	echo "</table><br>"
-	
+
 	echo "<table border='0' width='100%' cellpadding='0' cellspacing='0'><tr>"
 	echo "<td align='left' width='175px'><input type='button' value='Auswahl umkehren' onclick=\"javascript:for(j=0; j<document.forms.length;j++) { for(i=0; i<${rec_no}; i++) { try { document.forms[j]['recording' + i].checked = !document.forms[j]['recording' + i].checked; } catch(e) {} } }\" style='width:150px'></td>"
-	
+
 	let pages=$position/$ITEMS_PER_PAGE;
 	let pages2=$pages*$ITEMS_PER_PAGE;
 	if [ "$pages2" -ne "$position" ]; then let pages=pages+1; fi
-	
+
 	echo "<td align='left'>$position Nachricht(en) - Seite: "
 	let page=1;
 	while [ $page -le $pages ];

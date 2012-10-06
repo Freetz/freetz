@@ -21,7 +21,7 @@ then
 	# check if pid equals with last pid saved
 	pid2=`cat /var/dtmfbox/tmp/webinterface.pid`
 
-	if [ "$pid1" = "$pid2" ]; 
+	if [ "$pid1" = "$pid2" ];
 	then
 
 		if [ "$binary" = "true" ]; then

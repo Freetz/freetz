@@ -30,4 +30,4 @@ if [ "$ALL_MAIL" = "0" ]; then SAY="Sie haben keine I Maeils."; fi
 if [ "$ALL_MAIL" = "1" ]; then SAY="Sie haben eine I Maeil."; fi
 if [ "$SAY" = "" ]; then SAY="Sie haben $ALL_MAIL I Maeils."; fi
 
-$DTMFBOX $SRC_ID -speak "$SAY" 
+$DTMFBOX $SRC_ID -speak "$SAY"

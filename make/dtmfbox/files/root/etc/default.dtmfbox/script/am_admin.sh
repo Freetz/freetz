@@ -98,7 +98,7 @@ play_message() {
 		then
 			found=1
 			break 1
-		fi	
+		fi
 
 		let i=i+1
 	done

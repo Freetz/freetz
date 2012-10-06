@@ -19,7 +19,7 @@ INTERNAL_CTRL=3
 if [ "$MODE" = "DIAL" ];
 then
 	# Is account configured for anticallcenter script?
-	eval RELAY_NO="\$ANTICC_ACC${ACC_ID}_RELAYNO"	
+	eval RELAY_NO="\$ANTICC_ACC${ACC_ID}_RELAYNO"
 	if [ "$RELAY_NO" = "" ]; then return 1; fi
 
 	# SIP-call or use ISDN (Ctrl. 3)?
@@ -27,7 +27,7 @@ then
 
 	# Make call!
 	echo "AntiCallcenter-Script: Make call (Account $ACC_ID)"
-	DST_ID=`$DTMFBOX $SRC_ID -call "$DTMF" "$RELAY_NO" $INTERNAL_CTRL`	
+	DST_ID=`$DTMFBOX $SRC_ID -call "$DTMF" "$RELAY_NO" $INTERNAL_CTRL`
 
 	# Leave menu ...
 	$DTMFBOX $SRC_ID -stop menu
@@ -37,13 +37,13 @@ then
 	$DTMFBOX $DST_ID -hook auto
 fi
 
-# Check, if account is configured for anticallcenter script. 
-# If caller is anonymous (or number shorter then 5 chars), 
+# Check, if account is configured for anticallcenter script.
+# If caller is anonymous (or number shorter then 5 chars),
 # redirect call to menu "menu:anticallcenter"
 if [ "$DIRECTION" = "INCOMING" ] && [ "$EVENT" = "CONNECT" ];
 then
 	# Is account configured for anticallcenter script?
-	eval RELAY_NO="\$ANTICC_ACC${ACC_ID}_RELAYNO"	
+	eval RELAY_NO="\$ANTICC_ACC${ACC_ID}_RELAYNO"
 	if [ "$RELAY_NO" = "" ]; then return 1; fi
 
 	# Is anonymous or number length <= 4?
@@ -52,7 +52,7 @@ then
 
 	if [ "$TMP_DSTNO" = "anonymous" ] || [ $DSTLEN -le 4 ];
 	then
-		if [ -f "$ACTION_CONTROL" ] && [ "$DIRECTION" = "INCOMING" ]; 
+		if [ -f "$ACTION_CONTROL" ] && [ "$DIRECTION" = "INCOMING" ];
 		then
 			echo "AntiCallcenter-Script: Another script already got the call! Aborting..."
 			return 1
@@ -60,7 +60,7 @@ then
 		echo "ANONYMOUS" > "$ACTION_CONTROL"
 
 		# Confirm call and send caller to [menu:anticallcenter]
-		echo "AntiCallcenter-Script: Confirm call (Account $ACC_ID)"		
+		echo "AntiCallcenter-Script: Confirm call (Account $ACC_ID)"
 		$DTMFBOX $SRC_ID -hook up
 		$DTMFBOX $SRC_ID -goto menu:anticallcenter
 		$DTMFBOX $SRC_ID -speak "Bitte Nummer eingeben und mit Raute bestaetigen."

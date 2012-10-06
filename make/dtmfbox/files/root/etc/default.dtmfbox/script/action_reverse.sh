@@ -97,7 +97,7 @@ then
 	fi
 
 	# Is account configured for reverse lookup?
-	eval FAKE_MSN="\$REVERS_ACC${ACC_ID}_FAKEMSN"	
+	eval FAKE_MSN="\$REVERS_ACC${ACC_ID}_FAKEMSN"
 	if [ "$FAKE_MSN" = "" ]; then return 1; fi
 
 	# Make call, save returning connection id
@@ -117,7 +117,7 @@ fi
 # When any another script is already running (answering machine, callthrough,  etc.), then abort.
 # Otherwise we take control...
 if [ "$EVENT" = "CONFIRMED" ];
-then	
+then
 	if [ "$DIRECTION" = "OUTGOING" ] && [ -f "$XCON_ID_FILE" ];
 	then
 		touch "$XCON_CF_FILE"
@@ -136,7 +136,7 @@ then
 			$DTMFBOX $XCON_ID -hook manual
 			$DTMFBOX $XCON_ID -hook down
 		else
-			echo "XCON" > "$ACTION_CONTROL"			
+			echo "XCON" > "$ACTION_CONTROL"
 			echo "Reverse-Script: Confirm call (Account $ACC_ID)"
 		fi
 

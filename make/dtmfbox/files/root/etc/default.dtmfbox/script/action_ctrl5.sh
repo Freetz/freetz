@@ -29,7 +29,7 @@ fi
 if [ "$REJECT_CTRL" = "5" ];
 then
   echo "Ctrl5-Script: force reject to prevent fallback!"
-  $DTMFBOX $SRC_ID -hook reject  
+  $DTMFBOX $SRC_ID -hook reject
   exit 1;
 else
   echo "Ctrl5-Script: no reject required!"

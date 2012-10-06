@@ -29,26 +29,26 @@ if [ "$DTMF" != "*" ];
 then
   # reset number?
   RESET_NO=`echo "$DTMF" | sed -e 's/.*\*.*/RESET_NO/g'`
-  if [ "$RESET_NO" = "RESET_NO" ]; 
+  if [ "$RESET_NO" = "RESET_NO" ];
   then
     if [ "$DST_ID" != "-1" ]; then $DTMFBOX $DST_ID -hook down; fi
     $DTMFBOX $SRC_ID -speak "Abbruch."
     sleep 1
-    $DTMFBOX $SRC_ID -goto "menu:callthrough_number($TRG_ACC_ID)"    
+    $DTMFBOX $SRC_ID -goto "menu:callthrough_number($TRG_ACC_ID)"
     exit 1
   fi
 
   # make call!
   NO=`echo "$DTMF" | sed -e 's/#//g'`
-  if [ "$DST_ID" != "-1" ]; then $DTMFBOX $DST_ID -hook down; fi  
-  
+  if [ "$DST_ID" != "-1" ]; then $DTMFBOX $DST_ID -hook down; fi
+
   if [ "$NO" != "" ];
   then
-  
+
    # get number from dtmfbox.cfg  and remove X#... from capi-voip accounts
    get_cfg_value "/var/dtmfbox/dtmfbox.cfg" "acc$TRG_ACC_ID" "number"
-   if [ ! -z "$CFG_VALUE" ]; then					
-	CALLBACK_CALLING_ACC_TMP=`echo $CFG_VALUE | sed 's/.*#//g'`						
+   if [ ! -z "$CFG_VALUE" ]; then
+	CALLBACK_CALLING_ACC_TMP=`echo $CFG_VALUE | sed 's/.*#//g'`
 	get_cfg_value "/var/dtmfbox/dtmfbox.cfg" "acc$TRG_ACC_ID" "type"
 	CFG_VALUE=`echo $CFG_VALUE | sed -e 's/[^a-z]//g'`
 	if [ "$CFG_VALUE" = "capi" ] && [ "$CALLBACK_CALLING_CTRL" = "" ]; then
@@ -56,13 +56,13 @@ then
 		CFG_VALUE=`echo $CFG_VALUE | sed -e 's/[^0-9]//g'`
 		CALLBACK_CALLING_CTRL="$CFG_VALUE"
 	fi
-	TRG_ACC_ID="$CALLBACK_CALLING_ACC_TMP"						
+	TRG_ACC_ID="$CALLBACK_CALLING_ACC_TMP"
 	echo "Callthrough-Script: $TRG_ACC_ID -> $NO (Ctrl: $CALLBACK_CALLING_CTRL)"
     fi
 
     # make call
     $DTMFBOX $SRC_ID -call "$TRG_ACC_ID" "$NO" "$CALLBACK_CALLING_CTRL"
-  else  
+  else
     $DTMFBOX $SRC_ID -speak "Bitte Nummer eingeben."
   fi
 fi

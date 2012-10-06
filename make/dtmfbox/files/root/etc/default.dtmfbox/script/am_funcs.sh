@@ -5,7 +5,7 @@
 load_am_settings() {
 
 	ACC_ID="$1"
-		
+
 	AM_ACTIVE="$GLOBAL_AM_ACTIVE"
 	AM_PIN="$GLOBAL_AM_PIN"
 	AM_MENU="$GLOBAL_AM_MENU"
@@ -31,7 +31,7 @@ load_am_settings() {
 	AM_FTP_PATH="$GLOBAL_AM_FTP_PATH"
 	AM_FTP_USERNAME="$GLOBAL_AM_FTP_USERNAME"
 	AM_FTP_PASSWORD="$GLOBAL_AM_FTP_PASSWORD"
-	
+
 	eval ACC_AM_ACTIVE="\$ACC${ACC_ID}_AM_ACTIVE"
 	if [ "$ACC_AM_ACTIVE" = "0" ];
 	then

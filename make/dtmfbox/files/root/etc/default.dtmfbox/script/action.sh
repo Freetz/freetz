@@ -24,19 +24,19 @@ run_script() {
 # When file exist, some script has taken the control over the connection
 if [ "$EVENT" = "CONNECT" ];
 then
-	if [ -f "$ACTION_CONTROL" ]; then rm "$ACTION_CONTROL"; fi	
+	if [ -f "$ACTION_CONTROL" ]; then rm "$ACTION_CONTROL"; fi
 fi
 
 if [ "$DIRECTION" = "INCOMING" ]
 then
 	# Answering machine
 	if [ "$EVENT" = "CONNECT" ] || [ "$EVENT" = "DTMF" ] || [ "$EVENT" = "DISCONNECT" ]; then
-		run_script "/var/dtmfbox/script/action_am.sh" &		
+		run_script "/var/dtmfbox/script/action_am.sh" &
 	fi
 
-	# Callback/Callthrough 
+	# Callback/Callthrough
 	if [ "$EVENT" = "CONNECT" ] || [ "$EVENT" = "DISCONNECT" ]; then
-		run_script "/var/dtmfbox/script/action_cbct.sh" &		
+		run_script "/var/dtmfbox/script/action_cbct.sh" &
 	fi
 fi
 
