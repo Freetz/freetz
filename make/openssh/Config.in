@@ -21,7 +21,7 @@ config FREETZ_PACKAGE_OPENSSH_sshd
 	select FREETZ_PACKAGE_OPENSSH
 	default n
 
-comment "Build OpenSSH client (ssh) unavailable, provided by dropbear"
+comment "Build OpenSSH client (ssh) (not available, provided by dropbear)"
 	depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
 config FREETZ_PACKAGE_OPENSSH_ssh
 	bool "Build OpenSSH client (ssh)"
@@ -29,7 +29,7 @@ config FREETZ_PACKAGE_OPENSSH_ssh
 	select FREETZ_PACKAGE_OPENSSH
 	default n
 
-comment "Build OpenSSH secure copy utility (scp) unavailable, provided by dropbear"
+comment "Build OpenSSH secure copy utility (scp) (not available, provided by dropbear)"
 	depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
 config FREETZ_PACKAGE_OPENSSH_scp
 	bool "Build OpenSSH secure copy utility (scp)"

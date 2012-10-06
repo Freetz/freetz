@@ -1,8 +1,8 @@
-comment "truecrypt (unavailable, needs at least kernel 2.6.28)"
+comment "truecrypt (not available, needs at least kernel 2.6.28)"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 
-comment "truecrypt (unavailable, needs libstdc++ as the standard C++ library)"
-	depends on !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX && FREETZ_KERNEL_VERSION_2_6_28_MIN
+comment "truecrypt (not available, needs libstdc++ as the standard C++ library)"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 
 config FREETZ_PACKAGE_TRUECRYPT
 	bool "truecrypt 7.1a (binary only, unstable)"
