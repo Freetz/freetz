@@ -1,0 +1,16 @@
+--- openbsd-compat/bsd-poll.c
++++ openbsd-compat/bsd-poll.c
+@@ -45,11 +45,12 @@
+ 	struct timeval tv, *tvp = NULL;
+ 
+ 	for (i = 0; i < nfds; i++) {
++		fd = fds[i].fd;
+ 		if (fd >= FD_SETSIZE) {
+ 			errno = EINVAL;
+ 			return -1;
+ 		}
+-		maxfd = MAX(maxfd, fds[i].fd);
++		maxfd = MAX(maxfd, fd);
+ 	}
+ 
+ 	nmemb = howmany(maxfd + 1 , NFDBITS);

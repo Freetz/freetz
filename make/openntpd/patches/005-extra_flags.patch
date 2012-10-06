@@ -1,0 +1,22 @@
+--- openbsd-compat/Makefile.in
++++ openbsd-compat/Makefile.in
+@@ -17,7 +17,7 @@
+ LD=@LD@
+ CFLAGS=@CFLAGS@
+ LDFLAGS=@LDFLAGS@
+-CPPFLAGS=-I. -I.. -I$(srcdir) -I$(srcdir)/.. @CPPFLAGS@
++CPPFLAGS=-I. -I.. -I$(srcdir) -I$(srcdir)/.. @CPPFLAGS@ $(EXTRA_CPPFLAGS)
+ LIBS=@LIBS@
+ AR=@AR@
+ RANLIB=@RANLIB@
+--- Makefile.in
++++ Makefile.in
+@@ -19,7 +19,7 @@
+ VPATH=@srcdir@
+ CC=@CC@
+ CFLAGS=@CFLAGS@
+-CPPFLAGS=-I. -I$(srcdir) @CPPFLAGS@ $(PATHS)
++CPPFLAGS=-I. -I$(srcdir) @CPPFLAGS@ $(EXTRA_CPPFLAGS) $(PATHS)
+ LIBS=	@LIBS@
+ LDFLAGS=@LDFLAGS@
+ AWK=	@AWK@

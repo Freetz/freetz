@@ -1,0 +1,28 @@
+Author: Stefan Praszalowicz <stefan.praszalowicz@avedya.com>
+Description: Rather than fail on IPv4 only networks when seeing an IPv6 DNS record, just give a warning (Closes: #500676).
+Bug-Debian: 500676.
+
+Index: client.c
+===================================================================
+--- client.c
++++ client.c
+@@ -135,8 +135,17 @@
+ 		struct sockaddr *sa = (struct sockaddr *)&p->addr->ss;
+ 
+ 		if ((p->query->fd = socket(p->addr->ss.ss_family, SOCK_DGRAM,
+-		    0)) == -1)
+-			fatal("client_query socket");
++		    0)) == -1) {
++
++			if (errno == EAFNOSUPPORT) {
++				log_warn("client_query socket");
++				client_nextaddr(p);
++				set_next(p, error_interval());
++				return (-1);
++			}
++			else
++				fatal("client_query socket");
++		}
+ 		if (connect(p->query->fd, sa, SA_LEN(sa)) == -1) {
+ 			if (errno == ECONNREFUSED || errno == ENETUNREACH ||
+ 			    errno == EHOSTUNREACH || errno == EADDRNOTAVAIL) {
