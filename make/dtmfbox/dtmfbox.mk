@@ -36,7 +36,9 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY) $($(PKG)_BINARY_MENU_SO): $($(PKG)_DIR)/.configured
-	$(SUBMAKE1) -C $(DTMFBOX_DIR)
+	$(SUBMAKE1) -C $(DTMFBOX_DIR) \
+		EXTRA_CFLAGS="-ffunction-sections -fdata-sections" \
+		EXTRA_LDFLAGS="-Wl,--gc-sections"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

@@ -4,11 +4,8 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=6462f2a636e5b14f50e92efc000924f0
 $(PKG)_SITE:=http://fritz.v3v.de/dtmfbox/libs
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/pjsip/lib/libpjsip.a
-$(PKG)_CONFIG_SITE:=$(PJPROJECT_DIR)/pjlib/include/pj/config_site.h
-$(PKG)_STAGING_BINARY:=$(PJPROJECT_DIR)/pjproject.build
-# only static lib
-#$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpjsip.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/pjlib/lib/libpj-$(TARGET_ARCH)-unknown-linux-gnu.a
+$(PKG)_CONFIG_SITE:=$($(PKG)_DIR)/pjlib/include/pj/config_site.h
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
 $(PKG)_CONFIGURE_OPTIONS += --disable-oss
@@ -36,58 +33,37 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_DIR)/.depend: $($(PKG)_DIR)/.configured
-	cd $(PJPROJECT_DIR)
-	rm -f $(PJPROJECT_CONFIG_SIZE)
-	echo "#undef PJ_OS_HAS_CHECK_STACK"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_OS_HAS_CHECK_STACK 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_TERM_HAS_COLOR 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_ENABLE_EXTRA_CHECK 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_DEBUG 0"			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define NDEBUG 0"				>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_LOG_LEVEL_MAX 4"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_HAS_ERROR_STRING 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJSIP_SAFE_MODULE 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJMEDIA_HAS_SRTP 0" 		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJ_HAS_FLOATING_POINT 0"		>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define SIOCGIFCONF 1"			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#undef PJ_HAS_NET_IF_H"			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#undef PJ_HAS_IFADDR_H"			>> $(PJPROJECT_CONFIG_SITE)
-	echo "#define PJMEDIA_SOUND_IMPLEMENTATION PJMEDIA_SOUND_NULL_SOUND" >> $(PJPROJECT_CONFIG_SITE)
-	$(SUBMAKE) -C $(PJPROJECT_DIR) dep \
-		LDFLAGS="-lm"
-	touch $@
+$(PJPROJECT_CONFIG_SITE): $($(PKG)_DIR)/.configured
+	$(RM) $@
+	echo "#undef PJ_OS_HAS_CHECK_STACK"		>> $@
+	echo "#define PJ_OS_HAS_CHECK_STACK 0"		>> $@
+	echo "#define PJ_TERM_HAS_COLOR 0"		>> $@
+	echo "#define PJ_ENABLE_EXTRA_CHECK 0"		>> $@
+	echo "#define PJ_DEBUG 0"			>> $@
+	echo "#define NDEBUG 0"				>> $@
+	echo "#define PJ_LOG_LEVEL_MAX 4"		>> $@
+	echo "#define PJ_HAS_ERROR_STRING 0"		>> $@
+	echo "#define PJSIP_SAFE_MODULE 0"		>> $@
+	echo "#define PJMEDIA_HAS_SRTP 0" 		>> $@
+	echo "#define PJ_HAS_FLOATING_POINT 0"		>> $@
+	echo "#define SIOCGIFCONF 1"			>> $@
+	echo "#undef PJ_HAS_NET_IF_H"			>> $@
+	echo "#undef PJ_HAS_IFADDR_H"			>> $@
+	echo "#define PJMEDIA_SOUND_IMPLEMENTATION PJMEDIA_SOUND_NULL_SOUND" >> $@
 
-$($(PKG)_STAGING_BINARY): $($(PKG)_DIR)/.depend
-	$(SUBMAKE1) -C $(PJPROJECT_DIR) \
-		LDFLAGS="-lm"
-	touch $@
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured $(PJPROJECT_CONFIG_SITE)
+	for target in dep all; do \
+		$(SUBMAKE1) -C $(PJPROJECT_DIR) \
+		CC_CFLAGS="-Wall -ffunction-sections -fdata-sections" \
+		LDFLAGS="-lm" \
+		$$target; \
+	done
 
-#$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-#	cd $(PJPROJECT_DIR)
-#	$(SUBMAKE1) -C $(PJPROJECT_DIR) LDFLAGS="-lm" \
-#		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-#	install
-#	touch $@
-
-#$(PJSIP_TARGET_BINARY): $(PJSIP_STAGING_BINARY)
-#	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpjsip*.so* $(PJPROJECT_TARGET_DIR)
-#	$(TARGET_STRIP) $@
-
-$(pkg): $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_BINARY)
 
 $(pkg)-precompiled:
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(PJPROJECT_DIR) \
-		TARGET_NAME="$(REAL_GNU_TARGET_NAME)" \
-		clean
-#		rm -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/local/lib/libpj*.a \
-#		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/local/lib/libresample-*.a \
-#		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/local/lib/libsrtp-*.a \
-#		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/local/lib/libmilenage-*.a
-
-#$(pkg)-uninstall:
-#	rm -f $(PJPROJECT_TARGET_DIR)/libpjsip*.so*
+	-$(SUBMAKE) -C $(PJPROJECT_DIR) clean
 
 $(PKG_FINISH)
