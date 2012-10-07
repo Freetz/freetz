@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 0.5.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=40dac2970d1048e554e41ca9b5abedbd
-$(PKG)_SITE:=http://fritz.v3v.de/$(pkg)/$(pkg)-src
+$(PKG)_SITE:=@SF/dtmfbox.berlios
 
 $(PKG)_STARTLEVEL=72
 
