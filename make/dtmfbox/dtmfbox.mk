@@ -2,25 +2,34 @@ $(call PKG_INIT_BIN, 0.5.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=40dac2970d1048e554e41ca9b5abedbd
 $(PKG)_SITE:=http://fritz.v3v.de/$(pkg)/$(pkg)-src
-$(PKG)_PJPATH:=$(FREETZ_BASE_DIR)/$($(PKG)_SOURCE_DIR)/pjproject-1.0.1
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
-$(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/.libs/libmenu.plugin.so
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
-$(PKG)_TARGET_BINARY_MENU_SO:=$($(PKG)_TARGET_DIR)/root/usr/lib/libmenu.plugin.so
+
 $(PKG)_STARTLEVEL=72
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
+$(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/.libs/libmenu.plugin.so.0.0.1
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
+$(PKG)_TARGET_BINARY_MENU_SO:=$($(PKG)_TARGET_DIR)/root/usr/lib/libmenu.plugin.so.0.0.1
 
 $(PKG)_DEPENDS_ON := libcapi pjproject
 
-$(PKG)_CONFIGURE_OPTIONS := --with-pjsip-path=$(DTMFBOX_PJPATH)
-$(PKG)_CONFIGURE_OPTIONS += --prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)
-$(PKG)_CONFIGURE_OPTIONS += --exec-prefix=$(TARGET_TOOLCHAIN_STAGING_DIR)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DTMFBOX_WITH_CAPI
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DTMFBOX_WITH_VOIP
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DTMFBOX_WITH_ICE
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DTMFBOX_WITH_SPEEX_CODEC
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DTMFBOX_WITH_GSM_CODEC
+#$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DTMFBOX_WITH_ILBC_CODEC
+
+# touch some files to prevent aclocal.m4 & configure from being regenerated
+$(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 configure.in acinclude.m4;
+
+$(PKG)_CONFIGURE_OPTIONS += --with-pjsip-path=$(FREETZ_BASE_DIR)/$($(PKG)_SOURCE_DIR)/pjproject-1.0.1
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
 $(PKG)_CONFIGURE_OPTIONS += --disable-template
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_$(PKG)_WITH_CAPI),,--disable-capi)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_$(PKG)_WITH_VOIP),,--disable-sip)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_$(PKG)_WITH_ICE),,--disable-ice)
-
-$(call REPLACE_LIBTOOL)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DTMFBOX_WITH_CAPI),,--disable-capi)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DTMFBOX_WITH_VOIP),,--disable-sip)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DTMFBOX_WITH_ICE),,--disable-ice)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -33,9 +42,8 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_BINARY_MENU_SO): $($(PKG)_BINARY_MENU_SO)
-#	$(INSTALL_LIBRARY_STRIP)
-	mkdir -p $(dir $@); \
-	cp -a $<* $(dir $@)
+	$(INSTALL_LIBRARY_STRIP)
+	for i in "" ".0"; do ln -sf $(notdir $@) $(dir $@)libmenu.plugin.so$$i; done
 
 $(pkg):
 
