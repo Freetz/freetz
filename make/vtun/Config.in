@@ -37,6 +37,7 @@ config FREETZ_PACKAGE_VTUN_WITH_SSL
 	bool "With SSL Encryption"
 	depends on FREETZ_PACKAGE_VTUN
 	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_VTUN_STATIC
+	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_VTUN_STATIC
 	default y
 	help
 		Build with SSL encryption for tunnel traffic

@@ -1,6 +1,7 @@
 config FREETZ_LIB_libcrypto
 	bool "OpenSSL cryptographic library (libcrypto.so)"
 	select FREETZ_LIB_libdl
+	select FREETZ_OPENSSL_VERSION_PROMPT
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -28,9 +29,13 @@ config FREETZ_LIB_libssl
 		The OpenSSL ssl library implements the Secure Sockets Layer (SSL v2/v3)
 		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
 
+config FREETZ_OPENSSL_VERSION_PROMPT
+	bool
+	default n
+
 choice
 
-	depends on FREETZ_LIB_libcrypto
+	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	prompt "OpenSSL version"
 	default FREETZ_OPENSSL_VERSION_0
 
@@ -51,7 +56,7 @@ choice
 endchoice
 
 config FREETZ_OPENSSL_SHLIB_VERSION
-	depends on FREETZ_LIB_libcrypto
+	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	string
 	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
 	default "1.0.0" if FREETZ_OPENSSL_VERSION_1

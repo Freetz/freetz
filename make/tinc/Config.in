@@ -4,6 +4,7 @@ config FREETZ_PACKAGE_TINC
 	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_TINC_STATIC
+	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_TINC_STATIC
 	help
 		Tinc is a Virtual Private Network (VPN) daemon that uses tunneling
