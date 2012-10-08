@@ -61,8 +61,8 @@ config FREETZ_PATCH_DSL_EXPERT
 		! FREETZ_REMOVE_DSLD && \
 		FREETZ_TYPE_LANG_DE && \
 		( \
-		FREETZ_TYPE_FON_WLAN_7240 || \
-		FREETZ_TYPE_FON_WLAN_7270 \
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270 \
 		)
 	default n
 	help
@@ -287,7 +287,7 @@ comment "Removal patches ------------------------"
 
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 	bool "Remove Annex A firmware file"
-	depends on ! FREETZ_HAS_AVM_MULTI_ANNEX && \
+	depends on FREETZ_SHOW_ADVANCED && ! FREETZ_HAS_AVM_MULTI_ANNEX && \
 			FREETZ_TYPE_FON_WLAN_7270_16
 	default n
 	help
@@ -296,7 +296,7 @@ config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
-	depends on ! FREETZ_HAS_AVM_MULTI_ANNEX && \
+	depends on FREETZ_SHOW_ADVANCED && ! FREETZ_HAS_AVM_MULTI_ANNEX && \
 		( \
 			FREETZ_TYPE_FON_WLAN_7240 || \
 			FREETZ_TYPE_FON_WLAN_7270 \
@@ -307,7 +307,7 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 		330-400 KB of uncompressed data size.
 
 config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
-	bool "Remove Multi-Annex firmware diff files"
+	bool "Remove 2nd Annex firmware file"
 	depends on FREETZ_HAS_AVM_MULTI_ANNEX
 	default n
 	help
@@ -318,8 +318,8 @@ config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 
 
 config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
-	bool "Remove Multi-Annex firmware prime file"
-	depends on FREETZ_HAS_AVM_MULTI_ANNEX && FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
+	bool "Remove 1st Annex firmware file"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_MULTI_ANNEX && FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 	default y
 	help
 		This saves about 340-790 KB of uncompressed data size. Removes
@@ -330,7 +330,7 @@ config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 
 config FREETZ_REMOVE_DSL_CONTROL
 	bool "Remove dsl_control - EXPERIMENTAL"
-	depends on \
+	depends on FREETZ_SHOW_ADVANCED && \
 		( \
 			FREETZ_REMOVE_ANNEX_A_FIRMWARE || \
 			FREETZ_REMOVE_ANNEX_B_FIRMWARE || \
@@ -443,7 +443,7 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 config FREETZ_REMOVE_AHA
 	bool "Remove AVM Home Automation (AHA) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
 	default n
-	depends on FREETZ_HAS_AVM_AHA
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_AHA
 	help
 		Remove the aha daemon and some related files.
 		Used for "Smart Home".
@@ -479,7 +479,7 @@ config FREETZ_REMOVE_NAS
 config FREETZ_REMOVE_MYFRITZ
 	bool "Remove AVM MyFritz - EXPERIMENTAL"
 	default n
-	depends on FREETZ_HAS_AVM_MYFRITZ && FREETZ_REMOVE_NAS
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_MYFRITZ && FREETZ_REMOVE_NAS
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
 
@@ -797,8 +797,9 @@ config FREETZ_REMOVE_DECT_UPDATE
 		This will save about 32kB uncompressed size.
 
 config FREETZ_REMOVE_DSLD
-	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
+	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
 	default n
+	depends on FREETZ_SHOW_ADVANCED
 	select FREETZ_REMOVE_UPNP
 	select FREETZ_REMOVE_USERMAN if ! \
 		( \
@@ -1106,7 +1107,7 @@ config FREETZ_REMOVE_UPNP_LIBS
 
 config FREETZ_REMOVE_USERMAN
 	bool "Remove usermand and userman.ko - EXPERIMENTAL"
-	depends on \
+	depends on FREETZ_SHOW_ADVANCED && \
 		! FREETZ_TYPE_FON_5140 && \
 		! FREETZ_TYPE_FON_WLAN_7112 && \
 		! FREETZ_TYPE_FON_WLAN_7113 && \
@@ -1139,9 +1140,8 @@ config FREETZ_REMOVE_VOIPD
 		because the Web UI is also removed.
 
 config FREETZ_REMOVE_VOIP_ISDN
-	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
-	depends on \
-		FREETZ_HAS_AVM_PHONE
+	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_PHONE
 	select FREETZ_REMOVE_DECT if FREETZ_HAS_AVM_DECT
 	select FREETZ_REMOVE_VOIPD
 	select FREETZ_REMOVE_DTRACE
@@ -1174,9 +1174,8 @@ config FREETZ_REMOVE_WEBDAV
 		On 7270v1 only scripts, links and a 10KB library.
 
 config FREETZ_REMOVE_WLAN
-	bool "Remove WLAN files (for non-wlan boxes) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
-	depends on \
-		FREETZ_HAS_AVM_WLAN
+	bool "Remove WLAN files (for non-wlan boxes) - EXPERIMENTAL"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_WLAN
 	default n
 	help
 		Radically remove a lot of wlan-related files. This patch saves about
