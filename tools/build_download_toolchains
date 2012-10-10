@@ -7,7 +7,7 @@ TARGET_TOOLCHAIN_FILENAME_SUFFIX=freetz-${TARGET_TOOLCHAIN_VERSION}-shared-glibc
 
 TOOL_CONF=tools/config/conf
 DOT_CONFIG=.config
-DOWNLOADS=../dl
+DOWNLOADS=~/dl
 
 miniconfig() {
 local i
@@ -26,20 +26,17 @@ EOF
 #
 # required kernel compiler versions:
 #     3.4 LE
-#     4.4 LE
 #     4.6 LE/BE
 #
 # required uClibc versions:
 #     0.9.28   LE
 #     0.9.29   LE
-#     0.9.31.x LE
 #     0.9.32.x LE/BE
 #
 
 #                                        kernel       uClibc
 # FREETZ_TYPE_FON_WLAN                   3.4 LE     0.9.28   LE
 # FREETZ_TYPE_FON_WLAN_7270_V1+IPv6      3.4 LE     0.9.29   LE
-# FREETZ_TYPE_FON_WLAN_7270_V3+EN        4.4 LE     0.9.31.x LE
 # FREETZ_TYPE_FON_WLAN_7270_V3           4.6 LE     0.9.32.x LE
 #
 # FREETZ_TYPE_FON_WLAN_7390              4.6 BE     0.9.32.x BE
@@ -50,7 +47,6 @@ make defconfig
 for options in \
 	FREETZ_TYPE_FON_WLAN \
 	"FREETZ_TYPE_FON_WLAN_7270_V1 FREETZ_TARGET_IPV6_SUPPORT" \
-	"FREETZ_TYPE_FON_WLAN_7270_V3 FREETZ_TYPE_LANG_EN" \
 	FREETZ_TYPE_FON_WLAN_7270_V3 \
 	FREETZ_TYPE_FON_WLAN_7390 \
 ; do
@@ -58,6 +54,7 @@ for options in \
 	optionsUnderscoreSep=$(echo $options | sed -e 's| |_|g')
 	echo "Building toolchains for $optionsCommaSep"
 	make distclean
+	rm -rf dl 2>/dev/null
 	ln -sf $DOWNLOADS dl
 	make $TOOL_CONF
 	miniconfig $options > $DOT_CONFIG
