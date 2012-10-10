@@ -32,7 +32,7 @@ esac
 
 cgi_begin "$message ..."
 echo "<div id='result'>"
-echo -n "<p>$message:</p><pre class='log'>"
+echo -n "<p>$message:</p><pre class='log.small'>"
 "$rcfile" "$SERVICE_CMD" | html | highlight
 echo '</pre>'
 echo "</div>"
