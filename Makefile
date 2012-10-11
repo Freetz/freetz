@@ -95,9 +95,9 @@ ifeq ($(shell MWW=make/mod/files/root/usr/mww; \
 $(error File permissions or links are wrong! Please unpack Freetz on a filesystem with Unix-like permissions)
 endif
 
-# Check file permissions in make/mod/files/root/ directory
+# Folder root/ needs 755 permissions
 ifneq ($(shell stat -c %a make/mod/files/root),755)
-$(error Please run "umask 0022 make/mod/files/root" to fix file permissions)
+$(error Please set umask to 0022 and then unpack/checkout again)
 endif
 
 # We need umask 0022
