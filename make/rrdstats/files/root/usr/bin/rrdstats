@@ -171,16 +171,14 @@ collect_thg() {
 
 collect_epc_100609() {
 	NAMEPREFIX=epc_$RRDSTATS_INTERVAL
-	local _CISCOEPC_RX='4'
-	local _CISCOEPC_TX='1'
 	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
 		count=0
-		while [ $count -lt $_CISCOEPC_RX ]; do
+		while [ $count -lt $RRDSTATS_CISCOEPC_RX ]; do
 			let count++
 			local epcRX="$epcRX DS:rxfq$count:GAUGE:600:99:999 DS:rxdb$count:GAUGE:600:-99:99 DS:rxsn$count:GAUGE:600:0:99"
 		done
 		count=0
-		while [ $count -lt $_CISCOEPC_TX ]; do
+		while [ $count -lt $RRDSTATS_CISCOEPC_TX ]; do
 			let count++
 			local epcTX="$epcTX DS:txfq$count:GAUGE:600:9:99 DS:txdb$count:GAUGE:600:0:99"
 		done
@@ -203,7 +201,7 @@ collect_epc_100609() {
 	count=0
 	for line in $(echo "$datWG" | sed -ne '/vdsch_freq/{N}{N};s/.*nowrap> *\(...\)000000 Hz.*\n.*nowrap> *\(.*\)\.\(.*\) dBuV.*\n.*nowrap> *\(.*\) dB.*/\1:$((\2\3-600)):\4/p'); do
 		let count++
-		[ $count -gt $_CISCOEPC_RX ] && break
+		[ $count -gt $RRDSTATS_CISCOEPC_RX -o $count -gt 8 ] && break
 		[ -n "$updateT" ] && updateT=$updateT:
 		updateD=${updateD}:$(eval echo "$line" | sed -nr 's/(.*:.*)([0-9]:.*)/\1.\2/p')
 		updateT=${updateT}rxfq${count}:rxdb${count}:rxsn${count}
@@ -212,7 +210,7 @@ collect_epc_100609() {
 	count=0
 	for line in $(echo "$datWG" | sed -ne '/vusch_freq/{N};s/.*nowrap> *\(..\)\(.\)00000 Hz.*\n.*nowrap> *\(.*\)\.\(.*\) dBuV.*/\1.\2:$((\3\4-600))/p'); do
 		let count++
-		[ $count -gt $_CISCOEPC_TX ] && break
+		[ $count -gt $RRDSTATS_CISCOEPC_TX -o $count -gt 4 ] && break
 		[ -n "$updateT" ] && updateT=$updateT:
 		updateD=${updateD}:$(eval echo "$line" | sed -nr 's/(.*:.*)(.)/\1.\2/p')
 		updateT=${updateT}txfq${count}:txdb${count}
@@ -237,16 +235,14 @@ collect_epc_100609() {
 
 collect_epc_120225() {
 	NAMEPREFIX=epc_$RRDSTATS_INTERVAL
-	local _CISCOEPC_RX='4'
-	local _CISCOEPC_TX='1'
 	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
 		count=0
-		while [ $count -lt $_CISCOEPC_RX ]; do
+		while [ $count -lt $RRDSTATS_CISCOEPC_RX ]; do
 			let count++
 			local epcRX="$epcRX DS:rxfq$count:GAUGE:600:99:999 DS:rxdb$count:GAUGE:600:-99:99 DS:rxsn$count:GAUGE:600:0:99"
 		done
 		count=0
-		while [ $count -lt $_CISCOEPC_TX ]; do
+		while [ $count -lt $RRDSTATS_CISCOEPC_TX ]; do
 			let count++
 			local epcTX="$epcTX DS:txfq$count:GAUGE:600:9:99 DS:txdb$count:GAUGE:600:0:99"
 		done
@@ -269,7 +265,7 @@ collect_epc_120225() {
 	count=0
 	for line in $(echo "$datWG" | sed -ne '/dw(vhz)/{N}{N};s/.*nowrap> *\(.*\)000000 .*\n.*nowrap> *\(.*\)\.\(.*\) <script.*\n.*nowrap> *\(.*\) *<script.*/\1:$((\2\3-600)):\4/p'); do
 		let count++
-		[ $count -gt $_CISCOEPC_RX ] && break
+		[ $count -gt $RRDSTATS_CISCOEPC_RX -o $count -gt 8 ] && break
 		[ -n "$updateT" ] && updateT=$updateT:
 		updateD=${updateD}:$(eval echo "$line" | sed -nr 's/(.*:.*)([0-9]:.*)/\1.\2/p')
 		updateT=${updateT}rxfq${count}:rxdb${count}:rxsn${count}
@@ -278,7 +274,7 @@ collect_epc_120225() {
 	count=0
 	for line in $(echo "$datWG" | sed -ne '/dw(vusch_freq)/{N};s/.*nowrap> *\(..\)\(.\)00000 <script.*\n.*nowrap> *\(.*\)\.\(.*\) <script.*/\1.\2:$((\3\4-600))/p'); do
 		let count++
-		[ $count -gt $_CISCOEPC_TX ] && break
+		[ $count -gt $RRDSTATS_CISCOEPC_TX -o $count -gt 4 ] && break
 		[ -n "$updateT" ] && updateT=$updateT:
 		updateD=${updateD}:$(eval echo "$line" | sed -nr 's/(.*:.*)(.)/\1.\2/p')
 		updateT=${updateT}txfq${count}:txdb${count}

@@ -211,6 +211,14 @@ fi
 
 cat << EOF
 <p>
+<input type="text" name="ciscoepc_rx" size="1" maxlength="1" value="$(html "$RRDSTATS_CISCOEPC_RX")">&nbsp;$(lang de:"Kan&auml;le im Downstream verf&uuml;gbar" en:"channels for downstream available")<br>
+<input type="text" name="ciscoepc_tx" size="1" maxlength="1" value="$(html "$RRDSTATS_CISCOEPC_TX")">&nbsp;$(lang de:"Kan&auml;le im Upstream verf&uuml;gbar" en:"channels for upstream available")<br>
+<font size="-2">
+$(lang de:"Vorsicht: Die Datenbank muss bei &Auml;nderung der Kan&auml;le manuell angepasst werden" en:"Warning: You have to modify the database by your own after changing the count of channels"),&nbsp;
+$(lang de:"siehe" en:"see")&nbsp;<a href='$(html "http://freetz.org/wiki/packages/rrdstats#cable")' target='_blank'>Wiki</a>.
+</font>
+</p>
+<p>
 <input type="hidden" name="ciscoepc_uc" value="no">
 <input id="t3" type="checkbox" name="ciscoepc_uc" value="yes"$ciscoepc_uc_chk>
 <label for="t3">$(lang de:"&Uuml;berwache zus&auml;tzlich Upstream-ID" en:"Observe upstream id too")</label>
