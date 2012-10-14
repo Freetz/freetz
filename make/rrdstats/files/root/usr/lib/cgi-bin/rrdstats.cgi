@@ -219,11 +219,6 @@ $(lang de:"siehe" en:"see")&nbsp;<a href='$(html "http://freetz.org/wiki/package
 </font>
 </p>
 <p>
-<input type="hidden" name="ciscoepc_uc" value="no">
-<input id="t3" type="checkbox" name="ciscoepc_uc" value="yes"$ciscoepc_uc_chk>
-<label for="t3">$(lang de:"&Uuml;berwache zus&auml;tzlich Upstream-ID" en:"Observe upstream id too")</label>
-</p>
-<p>
 <input type="hidden" name="ciscoepc_details" value="no">
 <input id="t4" type="checkbox" name="ciscoepc_details" value="yes"$ciscoepc_details_chk>
 <label for="t4">$(lang de:"Unterseiten f&uuml;r die Werte der Hauptseite" en:"Sub pages for the values on the main page")</label>

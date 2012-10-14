@@ -410,28 +410,6 @@ generate_graph() {
 				                                                                       > /dev/null 2>&1
 			fi
 			;;
-		epc3)
-			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
-			if [ -e $FILE ]; then
-				$_NICE rrdtool graph                                      \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png                          \
-				--title "$TITLE"                                          \
-				--start now-$PERIODE                                      \
-				--width $WIDTH --height $HEIGHT                           \
-				--vertical-label "ID"                                     \
-				$DEFAULT_COLORS                                           \
-				-l 0 -u 5 $LAZY                                           \
-				-W "Generated on: $DATESTRING"                            \
-				                                                          \
-				DEF:uc=$FILE:uc:LAST                                      \
-				                                                          \
-				LINE3:uc$BLUE:"Upstream Channel (min/avg/max/cur)[ID]\: " \
-				GPRINT:uc:MIN:"%3.0lf   /"                                \
-				GPRINT:uc:AVERAGE:"%3.0lf   /"                            \
-				GPRINT:uc:MAX:"%3.0lf   /"                                \
-				GPRINT:uc:LAST:"%3.0lf\n"                                 > /dev/null
-			fi
-			;;
 		thg0)
 			FILE=$RRDSTATS_RRDDATA/thg_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
@@ -902,7 +880,7 @@ gen_main() {
 
 graph=$(cgi_param graph | tr -d .)
 case $graph in
-	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|epc3|arris0|arris1|arris2|arris3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
 		GROUP_PERIOD=$(cgi_param group | tr -d .)
 		if [ -z "$GROUP_PERIOD" ]; then
@@ -910,7 +888,7 @@ case $graph in
 			  s/^thg0$/Thomson THG - basic/;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;\
 			  s/^epc0$/Cisco EPC - Overview/;\
 			  s/^epcA$/Cisco EPC - Downstream Signal-Noise-Ratio/;s/^epcB$/Cisco EPC - Downstream Signal-Power-Level/;s/^epcC/Cisco EPC - Upstream Signal-Power-Level \& Frequency/;\
-			  s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;s/^epc3$/Cisco EPC - Upstream Channel/;\
+			  s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;\
 			  s/^arris0$/Arris TM - basic/;s/^arris1$/Arris TM - System Uptime/;s/^arris2/Arris TM - Downstream Frequency/;s/^arris3$/Arris TM - Upstream Frequency/;\
 			  s/^diskio1$/$RRDSTATS_DISK_NAME1/;s/^diskio2$/$RRDSTATS_DISK_NAME2/;s/^diskio3$/$RRDSTATS_DISK_NAME3/;s/^diskio4$/$RRDSTATS_DISK_NAME4/;\
 			  s/^if1$/$RRDSTATS_NICE_NAME1/;s/^if2$/$RRDSTATS_NICE_NAME2/;s/^if3$/$RRDSTATS_NICE_NAME3/;s/^if4$/$RRDSTATS_NICE_NAME4/;s/^one$/DigiTemp/")
@@ -936,7 +914,6 @@ case $graph in
 				echo "<input type=\"button\" value=\"Downstream SIG\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcB')\" />"
 				echo "<input type=\"button\" value=\"Upstream SIG & FRQ\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcC')\" />"
 			fi
-			[ "$RRDSTATS_CISCOEPC_UC" == "yes" ] && echo "<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc3')\" />"
 			[ "$RRDSTATS_CISCOEPC_UP" == "yes" ] && echo "<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc1')\" />"
 			echo "</center>"
 		fi

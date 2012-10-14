@@ -187,7 +187,6 @@ collect_epc_100609() {
 			$epcRX \
 			$epcTX \
 			DS:up:GAUGE:600:0:99999 \
-			DS:uc:GAUGE:600:0:9 \
 			RRA:LAST:0.1:1:576  \
 			RRA:LAST:0.1:6:672  \
 			RRA:LAST:0.1:24:732 \
@@ -225,12 +224,7 @@ collect_epc_100609() {
 		local datUP=:$tH.$tM
 		local tplUP=:up
 	fi
-	#channel
-	if [ "$RRDSTATS_CISCOEPC_UC" == "yes" ]; then
-		local datUC=:$($WGET http://192.168.100.1/ChannelsSelection.htm -O - -q -T 2 | sed -nr 's/.*SAHappyUpstreamChannel.*value=([0-9]).*/\1/p')
-		local tplUC=:uc
-	fi
-	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD$datUP$datUC --template $updateT$tplUP$tplUC
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD$datUP --template $updateT$tplUP
 }
 
 collect_epc_120225() {
@@ -251,7 +245,6 @@ collect_epc_120225() {
 			$epcRX \
 			$epcTX \
 			DS:up:GAUGE:600:0:99999 \
-			DS:uc:GAUGE:600:0:9 \
 			RRA:LAST:0.1:1:576  \
 			RRA:LAST:0.1:6:672  \
 			RRA:LAST:0.1:24:732 \
@@ -291,12 +284,7 @@ collect_epc_120225() {
 #			local tplUP=:up
 #		fi
 #	fi
-	#channel
-	if [ "$RRDSTATS_CISCOEPC_UC" == "yes" ]; then
-		local datUC=:$($WGET http://192.168.100.1/ChannelsSelection.asp -O - -q -T 2 | sed -nr 's/.*SAHappyUpstreamChannel.*value=([0-9]).*/\1/p')
-		[ "$datUC" != ":" ] && local tplUC=:uc || local datUC=
-	fi
-	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD$datUP$datUC --template $updateT$tplUP$tplUC
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD$datUP --template $updateT$tplUP
 }
 
 collect_arristm() {
