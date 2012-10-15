@@ -23,6 +23,7 @@ RED_D=#CC3118
 ORANGE_D=#CC7016
 BLACK=#000000
 GREY=#7F7F7F
+NBSP="$(echo -e '\240')"
 NOCACHE="?nocache=$(date -Iseconds | sed 's/T/_/g;s/+.*$//g;s/:/-/g')"
 _NICE=$(which nice)
 DEFAULT_COLORS="--color SHADEA#ffffff --color SHADEB#ffffff --color BACK#ffffff --color CANVAS#eeeeee80"
@@ -131,6 +132,54 @@ generate_graph() {
 		epc0)
 			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
+				local DS_DEF=''
+
+				count=0
+				local GPRINT_TXDB=''
+				local GPRINT_TXFQ=''
+				while [ $count -lt $RRDSTATS_CISCOEPC_TX ]; do
+					let count++
+					DS_DEF="$DS_DEF \
+						DEF:txfq$count=$FILE:txfq$count:LAST \
+						DEF:txdb$count=$FILE:txdb$count:LAST "
+					COLOR_DB=$GREEN && COLOR_FQ=$RED
+					GPRINT_TXDB="$GPRINT_TXDB \
+						LINE3:txdb$count$COLOR_DB:Upstream${NBSP}SIG${NBSP}#${count}${NBSP}(min/avg/max/cur)[dBmV]\:\t\t \
+						GPRINT:txdb$count:MIN:%4.1lf\t/ \
+						GPRINT:txdb$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:txdb$count:MAX:%4.1lf\t/ \
+						GPRINT:txdb$count:LAST:%4.1lf\n "
+					GPRINT_TXFQ="$GPRINT_TXFQ \
+						LINE3:txfq$count$COLOR_FQ:Upstream${NBSP}Frequency${NBSP}#${count}${NBSP}(min/avg/max/cur)[MHz]\:\t \
+						GPRINT:txfq$count:MIN:%4.1lf\t/ \
+						GPRINT:txfq$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:txfq$count:MAX:%4.1lf\t/ \
+						GPRINT:txfq$count:LAST:%4.1lf\n "
+				done
+
+				count=0
+				local GPRINT_RXSN=''
+				local GPRINT_RXDB=''
+				while [ $count -lt $RRDSTATS_CISCOEPC_RX ]; do
+					let count++
+					DS_DEF="$DS_DEF \
+						DEF:rxsn$count=$FILE:rxsn$count:LAST \
+						DEF:rxdb$count=$FILE:rxdb$count:LAST "
+					COLOR_SN=$YELLOW && COLOR_DB=$BLUE
+					GPRINT_RXSN="$GPRINT_RXSN \
+						LINE3:rxsn$count$COLOR_SN:Downstream${NBSP}SNR${NBSP}#${count}${NBSP}(min/avg/max/cur)[dB]\:\t\t \
+						GPRINT:rxsn$count:MIN:%4.1lf\t/ \
+						GPRINT:rxsn$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:rxsn$count:MAX:%4.1lf\t/ \
+						GPRINT:rxsn$count:LAST:%4.1lf\n "
+					GPRINT_RXDB="$GPRINT_RXDB \
+						LINE3:rxdb1$COLOR_DB:Downstream${NBSP}SIG${NBSP}#${count}${NBSP}(min/avg/max/cur)[dBmV]\:\t\t \
+						GPRINT:rxdb$count:MIN:%4.1lf\t/ \
+						GPRINT:rxdb$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:rxdb$count:MAX:%4.1lf\t/ \
+						GPRINT:rxdb$count:LAST:%4.1lf\n "
+				done
+
 				$_NICE rrdtool graph                                     \
 				$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
 				--title "$TITLE"                                         \
@@ -140,136 +189,76 @@ generate_graph() {
 				$DEFAULT_COLORS                                          \
 				$LAZY                                                    \
 				-W "Generated on: $DATESTRING"                           \
-				DEF:txfq1=$FILE:txfq1:LAST                               \
-				DEF:txdb1=$FILE:txdb1:LAST                               \
-                                                                         \
-				DEF:rxsn1=$FILE:rxsn1:LAST                               \
-				DEF:rxsn2=$FILE:rxsn2:LAST                               \
-				DEF:rxsn3=$FILE:rxsn3:LAST                               \
-				DEF:rxsn4=$FILE:rxsn4:LAST                               \
-                                                                         \
-				DEF:rxdb1=$FILE:rxdb1:LAST                               \
-				DEF:rxdb2=$FILE:rxdb2:LAST                               \
-				DEF:rxdb3=$FILE:rxdb3:LAST                               \
-				DEF:rxdb4=$FILE:rxdb4:LAST                               \
-                                                                                    \
-				LINE3:rxsn1$GREEN:"Downstream SNR #1 (min/avg/max/cur)[dB]\:   "    \
-				GPRINT:rxsn1:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxsn1:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn1:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxsn2$YELLOW:"Downstream SNR #2 (min/avg/max/cur)[dB]\:   "   \
-				GPRINT:rxsn2:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn2:AVERAGE:"%3.1lf /"                                     \
-				GPRINT:rxsn2:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn2:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxsn3$RED:"Downstream SNR #3 (min/avg/max/cur)[dB]\:   "      \
-				GPRINT:rxsn3:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn3:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxsn3:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn3:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxsn4$BLUE:"Downstream SNR #4 (min/avg/max/cur)[dB]\:   "     \
-				GPRINT:rxsn4:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn4:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxsn4:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn4:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				                                                                    \
-				LINE1:4$GREY:"Downstream SIG Optimum\: 4 dBmV              -------------------------------\n" \
-				                                                                    \
-				LINE3:rxdb1$LGREEN:"Downstream SIG #1 (min/avg/max/cur)[dBmV]\: "   \
-				GPRINT:rxdb1:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb1:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb1:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxdb2$LYELLOW:"Downstream SIG #2 (min/avg/max/cur)[dBmV]\: "  \
-				GPRINT:rxdb2:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb2:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb2:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb2:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxdb3$LRED:"Downstream SIG #3 (min/avg/max/cur)[dBmV]\: "     \
-				GPRINT:rxdb3:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb3:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb3:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb3:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxdb4$LBLUE:"Downstream SIG #4 (min/avg/max/cur)[dBmV]\: "    \
-				GPRINT:rxdb4:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb4:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb4:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb4:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				                                                                    \
-				LINE:44$GREY:"Upstream SIG Optimum\: 44 dBmV               -------------------------------\n" \
-				                                                                    \
-				LINE3:txdb1$LPURPLE:"Upstream SIG (min/avg/max/cur)[dBmV]\:      "  \
-				GPRINT:txdb1:MIN:"%4.1lf /"                                         \
-				GPRINT:txdb1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:txdb1:MAX:"%4.1lf /"                                         \
-				GPRINT:txdb1:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				                                                                    \
-				LINE3:txfq1$PURPLE:"Upstream Frequency (min/avg/max/cur)[MHz]\: "   \
-				GPRINT:txfq1:MIN:"%4.1lf /"                                         \
-				GPRINT:txfq1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:txfq1:MAX:"%4.1lf /"                                         \
-				GPRINT:txfq1:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				                                                                    > /dev/null 2>&1
+				                                                         \
+				$DS_DEF                                                  \
+				$GPRINT_RXSN                                             \
+				LINE1:4$GREY:"Downstream SIG Optimum\: 4 dBmV\t\t\t\t  --------------------------------\n" \
+				$GPRINT_RXDB                                             \
+				LINE:44$GREY:"Upstream SIG Optimum\: 44 dBmV\t\t\t\t  --------------------------------\n" \
+				$GPRINT_TXDB                                             \
+				$GPRINT_TXFQ                                             \
+				                                                         > /dev/null 2>&1
 			fi
 			;;
 		epcA)
 			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
+				local DS_DEF=''
+				local GPRINT=''
+				count=0
+				while [ $count -lt $RRDSTATS_CISCOEPC_RX ]; do
+					let count++
+					DS_DEF="$DS_DEF DEF:rxsn$count=$FILE:rxsn$count:LAST"
+					COLOR_MOD=$((count%4))
+					[ $COLOR_MOD == 1 ] && COLOR_VAR=$GREEN
+					[ $COLOR_MOD == 2 ] && COLOR_VAR=$YELLOW
+					[ $COLOR_MOD == 3 ] && COLOR_VAR=$RED
+					[ $COLOR_MOD == 0 ] && COLOR_VAR=$BLUE
+					GPRINT="$GPRINT \
+						LINE3:rxsn$count$COLOR_VAR:Downstream${NBSP}SNR${NBSP}#${count}${NBSP}(min/avg/max/cur)[dB]\:\t \
+						GPRINT:rxsn$count:MIN:%4.1lf\t/ \
+						GPRINT:rxsn$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:rxsn$count:MAX:%4.1lf\t/ \
+						GPRINT:rxsn$count:LAST:%4.1lf\n "
+				done
 				$_NICE rrdtool graph                                     \
 				$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
 				--title "$TITLE"                                         \
 				--start now-$PERIODE                                     \
 				--width $WIDTH --height $HEIGHT                          \
 				--vertical-label "values"                                \
+				-Y                                                       \
 				$DEFAULT_COLORS                                          \
 				$LAZY                                                    \
 				-A                                                       \
 				-W "Generated on: $DATESTRING"                           \
-				DEF:rxsn1=$FILE:rxsn1:LAST                               \
-				DEF:rxsn2=$FILE:rxsn2:LAST                               \
-				DEF:rxsn3=$FILE:rxsn3:LAST                               \
-				DEF:rxsn4=$FILE:rxsn4:LAST                               \
-                                                                                    \
-				LINE3:rxsn1$GREEN:"Downstream SNR #1 (min/avg/max/cur)[dB]\:   "    \
-				GPRINT:rxsn1:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxsn1:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn1:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxsn2$YELLOW:"Downstream SNR #2 (min/avg/max/cur)[dB]\:   "   \
-				GPRINT:rxsn2:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn2:AVERAGE:"%3.1lf /"                                     \
-				GPRINT:rxsn2:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn2:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxsn3$RED:"Downstream SNR #3 (min/avg/max/cur)[dB]\:   "      \
-				GPRINT:rxsn3:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn3:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxsn3:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn3:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxsn4$BLUE:"Downstream SNR #4 (min/avg/max/cur)[dB]\:   "     \
-				GPRINT:rxsn4:MIN:"%4.1lf /"                                         \
-				GPRINT:rxsn4:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxsn4:MAX:"%4.1lf /"                                         \
-				GPRINT:rxsn4:LAST:"%4.1lf\n"                                        \
-				                                                                    > /dev/null 2>&1
+								                                         \
+				$DS_DEF                                                  \
+				$GPRINT                                                  \
+				                                                         > /dev/null 2>&1
 			fi
 			;;
 		epcB)
 			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
+				local DS_DEF=''
+				local GPRINT=''
+				count=0
+				while [ $count -lt $RRDSTATS_CISCOEPC_RX ]; do
+					let count++
+					DS_DEF="$DS_DEF DEF:rxdb$count=$FILE:rxdb$count:LAST"
+					COLOR_MOD=$((count%4))
+					[ $COLOR_MOD == 1 ] && COLOR_VAR=$LGREEN
+					[ $COLOR_MOD == 2 ] && COLOR_VAR=$LYELLOW
+					[ $COLOR_MOD == 3 ] && COLOR_VAR=$LRED
+					[ $COLOR_MOD == 0 ] && COLOR_VAR=$LBLUE
+					GPRINT="$GPRINT \
+						LINE3:rxdb$count$COLOR_VAR:Downstream${NBSP}SIG${NBSP}#${count}${NBSP}(min/avg/max/cur)[dBmV]\:\t \
+						GPRINT:rxdb$count:MIN:%4.1lf\t/ \
+						GPRINT:rxdb$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:rxdb$count:MAX:%4.1lf\t/ \
+						GPRINT:rxdb$count:LAST:%4.1lf\n "
+				done
 				$_NICE rrdtool graph                                     \
 				$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
 				--title "$TITLE"                                         \
@@ -279,42 +268,44 @@ generate_graph() {
 				$DEFAULT_COLORS                                          \
 				$LAZY                                                    \
 				-W "Generated on: $DATESTRING"                           \
-				DEF:rxdb1=$FILE:rxdb1:LAST                               \
-				DEF:rxdb2=$FILE:rxdb2:LAST                               \
-				DEF:rxdb3=$FILE:rxdb3:LAST                               \
-				DEF:rxdb4=$FILE:rxdb4:LAST                               \
-                                                                                    \
-				LINE1:4$GREY:"Downstream SIG Optimum\: 4 dBmV              -------------------------------\n" \
-				                                                                    \
-				LINE3:rxdb1$LGREEN:"Downstream SIG #1 (min/avg/max/cur)[dBmV]\: "   \
-				GPRINT:rxdb1:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb1:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb1:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxdb2$LYELLOW:"Downstream SIG #2 (min/avg/max/cur)[dBmV]\: "  \
-				GPRINT:rxdb2:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb2:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb2:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb2:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxdb3$LRED:"Downstream SIG #3 (min/avg/max/cur)[dBmV]\: "     \
-				GPRINT:rxdb3:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb3:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb3:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb3:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				LINE3:rxdb4$LBLUE:"Downstream SIG #4 (min/avg/max/cur)[dBmV]\: "    \
-				GPRINT:rxdb4:MIN:"%4.1lf /"                                         \
-				GPRINT:rxdb4:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:rxdb4:MAX:"%4.1lf /"                                         \
-				GPRINT:rxdb4:LAST:"%4.1lf\n"                                        \
-				                                                                    > /dev/null 2>&1
+								                                         \
+				$DS_DEF                                                  \
+				LINE1:4$GREY:"Downstream SIG Optimum\: 4 dBmV\t\t\t   -------------------------------\n" \
+				$GPRINT                                                   \
+				                                                                       > /dev/null 2>&1
 			fi
 			;;
 		epcC)
 			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
+				local DS_DEF=''
+				local GPRINT_FQ=''
+				local GPRINT_DB=''
+				count=0
+				while [ $count -lt $RRDSTATS_CISCOEPC_TX ]; do
+					let count++
+					DS_DEF="$DS_DEF \
+						DEF:txfq$count=$FILE:txfq$count:LAST \
+						DEF:txdb$count=$FILE:txdb$count:LAST"
+					COLOR_MOD=$((count%2))
+					[ $COLOR_MOD == 1 ] && COLOR_DB=$BLUE    && COLOR_FQ=$RED
+					[ $COLOR_MOD == 2 ] && COLOR_DB=$GREEN   && COLOR_FQ=$YELLOW
+					[ $COLOR_MOD == 3 ] && COLOR_DB=$LGREEN  && COLOR_FQ=$LYELLOW
+					[ $COLOR_MOD == 0 ] && COLOR_DB=$LBLUE   && COLOR_FQ=$LRED
+					GPRINT_DB="$GPRINT_DB \
+						LINE3:txdb$count$COLOR_DB:Upstream${NBSP}SIG${NBSP}#${count}${NBSP}(min/avg/max/cur)[dBmV]\:\t\t \
+						GPRINT:txdb$count:MIN:%4.1lf\t/ \
+						GPRINT:txdb$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:txdb$count:MAX:%4.1lf\t/ \
+						GPRINT:txdb$count:LAST:%4.1lf\n "
+					GPRINT_FQ="$GPRINT_FQ \
+						LINE3:txfq$count$COLOR_FQ:Upstream${NBSP}Frequency${NBSP}#${count}${NBSP}(min/avg/max/cur)[MHz]\:\t \
+						GPRINT:txfq$count:MIN:%4.1lf\t/ \
+						GPRINT:txfq$count:AVERAGE:%4.1lf\t/ \
+						GPRINT:txfq$count:MAX:%4.1lf\t/ \
+						GPRINT:txfq$count:LAST:%4.1lf\n "
+				done
+
 				$_NICE rrdtool graph                                     \
 				$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
 				--title "$TITLE"                                         \
@@ -325,24 +316,12 @@ generate_graph() {
 				$LAZY                                                    \
 				-Y                                                       \
 				-W "Generated on: $DATESTRING"                           \
-				DEF:txfq1=$FILE:txfq1:LAST                               \
-				DEF:txdb1=$FILE:txdb1:LAST                               \
-                                                                                    \
-				LINE:44$GREY:"Upstream SIG Optimum\: 44 dBmV               -------------------------------\n" \
-				                                                                    \
-				LINE3:txdb1$LPURPLE:"Upstream SIG (min/avg/max/cur)[dBmV]\:      "  \
-				GPRINT:txdb1:MIN:"%4.1lf /"                                         \
-				GPRINT:txdb1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:txdb1:MAX:"%4.1lf /"                                         \
-				GPRINT:txdb1:LAST:"%4.1lf\n"                                        \
-				                                                                    \
-				                                                                    \
-				LINE3:txfq1$PURPLE:"Upstream Frequency (min/avg/max/cur)[MHz]\: "   \
-				GPRINT:txfq1:MIN:"%4.1lf /"                                         \
-				GPRINT:txfq1:AVERAGE:"%4.1lf /"                                     \
-				GPRINT:txfq1:MAX:"%4.1lf /"                                         \
-				GPRINT:txfq1:LAST:"%4.1lf\n"                                        \
-				                                                                    > /dev/null 2>&1
+				                                                         \
+				$DS_DEF                                                  \
+				$GPRINT_FQ                                               \
+				LINE:44$GREY:"Upstream SIG Optimum\: 44 dBmV\t\t\t\t  --------------------------------\n" \
+				$GPRINT_DB                                               \
+				                                                         > /dev/null 2>&1
 			fi
 			;;
 		epc1)
@@ -369,6 +348,24 @@ generate_graph() {
 		epc2)
 			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
+				local DS_DEF=''
+				local GPRINT=''
+				count=0
+				while [ $count -lt $RRDSTATS_CISCOEPC_RX ]; do
+					let count++
+					DS_DEF="$DS_DEF DEF:rxfq$count=$FILE:rxfq$count:LAST"
+					COLOR_MOD=$((count%4))
+					[ $COLOR_MOD == 1 ] && COLOR_VAR=$GREEN
+					[ $COLOR_MOD == 2 ] && COLOR_VAR=$YELLOW
+					[ $COLOR_MOD == 3 ] && COLOR_VAR=$RED
+					[ $COLOR_MOD == 0 ] && COLOR_VAR=$BLUE
+					GPRINT="$GPRINT \
+						LINE3:rxfq$count$COLOR_VAR:Downstream${NBSP}Frequency${NBSP}#${count}${NBSP}(min/avg/max/cur)[MHz]\:\t\
+						GPRINT:rxfq$count:MIN:%3.0lf\t/ \
+						GPRINT:rxfq$count:AVERAGE:%3.0lf\t/ \
+						GPRINT:rxfq$count:MAX:%3.0lf\t/ \
+						GPRINT:rxfq$count:LAST:%3.0lf\n "
+				done
 				$_NICE rrdtool graph                                                   \
 				$RRDSTATS_RRDTEMP/$IMAGENAME.png                                       \
 				--title "$TITLE"                                                       \
@@ -378,35 +375,9 @@ generate_graph() {
 				$DEFAULT_COLORS                                                        \
 				$LAZY                                                                  \
 				-W "Generated on: $DATESTRING"                                         \
-				                                                                       \
-				DEF:rxfq1=$FILE:rxfq1:LAST                                             \
-				DEF:rxfq2=$FILE:rxfq2:LAST                                             \
-				DEF:rxfq3=$FILE:rxfq3:LAST                                             \
-				DEF:rxfq4=$FILE:rxfq4:LAST                                             \
-				                                                                       \
-				LINE3:rxfq1$GREEN:"Downstream Frequency #1 (min/avg/max/cur)[MHz]\: "  \
-				GPRINT:rxfq1:MIN:"%3.0lf /"                                            \
-				GPRINT:rxfq1:AVERAGE:"%3.0lf /"                                        \
-				GPRINT:rxfq1:MAX:"%3.0lf /"                                            \
-				GPRINT:rxfq1:LAST:"%3.0lf\n"                                           \
-				                                                                       \
-				LINE3:rxfq2$YELLOW:"Downstream Frequency #2 (min/avg/max/cur)[MHz]\: " \
-				GPRINT:rxfq2:MIN:"%3.0lf /"                                            \
-				GPRINT:rxfq2:AVERAGE:"%3.0lf /"                                        \
-				GPRINT:rxfq2:MAX:"%3.0lf /"                                            \
-				GPRINT:rxfq2:LAST:"%3.0lf\n"                                           \
-				                                                                       \
-				LINE3:rxfq3$RED:"Downstream Frequency #3 (min/avg/max/cur)[MHz]\: "    \
-				GPRINT:rxfq3:MIN:"%3.0lf /"                                            \
-				GPRINT:rxfq3:AVERAGE:"%3.0lf /"                                        \
-				GPRINT:rxfq3:MAX:"%3.0lf /"                                            \
-				GPRINT:rxfq3:LAST:"%3.0lf\n"                                           \
-				                                                                       \
-				LINE3:rxfq4$BLUE:"Downstream Frequency #4 (min/avg/max/cur)[MHz]\: "   \
-				GPRINT:rxfq4:MIN:"%3.0lf /"                                            \
-				GPRINT:rxfq4:AVERAGE:"%3.0lf /"                                        \
-				GPRINT:rxfq4:MAX:"%3.0lf /"                                            \
-				GPRINT:rxfq4:LAST:"%3.0lf\n"                                           \
+								                                                       \
+				$DS_DEF                                                                \
+				$GPRINT                                                                \
 				                                                                       > /dev/null 2>&1
 			fi
 			;;
