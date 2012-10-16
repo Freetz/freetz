@@ -6,7 +6,7 @@
  
 +# Lua version and release.
 +export V=5.1
-+export R=5.1.4
++export R=5.1.5
 +
  # What to install.
  TO_BIN= lua luac
@@ -18,7 +18,7 @@
  
 -# Lua version and release.
 -V= 5.1
--R= 5.1.4
+-R= 5.1.5
 -
  all:	$(PLAT)
  
@@ -67,7 +67,7 @@
 +so:	$(ALL_SO)
 +
  $(LUA_A): $(CORE_O) $(LIB_O)
- 	$(AR) $@ $?
+ 	$(AR) $@ $(CORE_O) $(LIB_O)	# DLL needs all object files
  	$(RANLIB) $@
  
 -$(LUA_T): $(LUA_O) $(LUA_A)
