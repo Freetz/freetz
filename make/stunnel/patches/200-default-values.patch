@@ -15,39 +15,39 @@
  EXTRA_DIST = nogui.c make.bat makece.bat makew32.bat mingw.mak evc.mak \
 --- src/options.c
 +++ src/options.c
-@@ -653,7 +653,7 @@
+@@ -786,7 +786,7 @@
      /* cert */
      switch(cmd) {
-     case CMD_INIT:
+     case CMD_BEGIN:
 -        section->cert=NULL;
 +        section->cert=FREETZ_DEFAULT_CERT;
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "cert"))
-@@ -661,7 +661,8 @@
-         section->cert=str_dup(arg);
-         return NULL; /* OK */
+@@ -800,7 +800,8 @@
+     case CMD_FREE:
+         break;
      case CMD_DEFAULT:
 -        break; /* no default certificate */
-+        s_log(LOG_NOTICE, "%-15s = %s", "cert", FREETZ_DEFAULT_CERT);
++        s_log(LOG_NOTICE, "%-22s = %s", "cert", FREETZ_DEFAULT_CERT);
 +        break;
      case CMD_HELP:
-         s_log(LOG_NOTICE, "%-15s = certificate chain", "cert");
+         s_log(LOG_NOTICE, "%-22s = certificate chain", "cert");
          break;
-@@ -947,7 +948,7 @@
+@@ -1144,7 +1145,7 @@
      /* key */
      switch(cmd) {
-     case CMD_INIT:
+     case CMD_BEGIN:
 -        section->key=NULL;
 +        section->key=FREETZ_DEFAULT_KEY;
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
-@@ -955,6 +956,7 @@
-         section->key=str_dup(arg);
-         return NULL; /* OK */
+@@ -1156,6 +1157,7 @@
+     case CMD_FREE:
+         break;
      case CMD_DEFAULT:
-+        s_log(LOG_NOTICE, "%-15s = %s", "key", FREETZ_DEFAULT_KEY);
++        s_log(LOG_NOTICE, "%-22s = %s", "key", FREETZ_DEFAULT_KEY);
          break;
      case CMD_HELP:
-         s_log(LOG_NOTICE, "%-15s = certificate private key", "key");
+         s_log(LOG_NOTICE, "%-22s = certificate private key", "key");

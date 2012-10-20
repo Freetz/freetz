@@ -11,7 +11,7 @@
  
 --- src/options.c
 +++ src/options.c
-@@ -75,7 +75,7 @@
+@@ -73,7 +73,7 @@
  static char *print_option(int, OPT_UNION *);
  static int parse_socket_option(char *);
  
@@ -20,7 +20,7 @@
  static char *parse_ocsp_url(SERVICE_OPTIONS *, char *);
  static unsigned long parse_ocsp_flag(char *);
  #endif /* HAVE_OSSL_OCSP_H */
-@@ -1009,7 +1009,7 @@
+@@ -1218,7 +1218,7 @@
          break;
      }
  
@@ -29,7 +29,7 @@
  
      /* OCSP */
      switch(cmd) {
-@@ -2208,7 +2208,7 @@
+@@ -2557,7 +2557,7 @@
  
  /**************************************** OCSP */
  
@@ -40,7 +40,7 @@
      char *host, *port, *path;
 --- src/prototypes.h
 +++ src/prototypes.h
-@@ -136,7 +136,7 @@
+@@ -141,7 +141,7 @@
      char *crl_file;                       /* file containing bunches of CRLs */
      int verify_level;
      X509_STORE *revocation_store;             /* cert store for CRL checking */
@@ -49,7 +49,7 @@
      SOCKADDR_UNION ocsp_addr;
      char *ocsp_path;
      unsigned long ocsp_flags;
-@@ -215,7 +215,7 @@
+@@ -220,7 +220,7 @@
          unsigned int transparent_src:1;
          unsigned int transparent_dst:1; /* endpoint: transparent destination */
  #endif
@@ -57,7 +57,7 @@
 +#if defined(HAVE_OSSL_OCSP_H) && SSLEAY_VERSION_NUMBER >= 0x00907000L
          unsigned int ocsp:1;
  #endif
-     } option;
+         unsigned int reset:1;           /* reset sockets on error */
 --- src/verify.c
 +++ src/verify.c
 @@ -48,7 +48,7 @@
