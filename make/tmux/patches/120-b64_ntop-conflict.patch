@@ -24,7 +24,7 @@
  	uint8_t output[4];
 --- tty.c
 +++ tty.c
-@@ -1006,7 +1006,7 @@
+@@ -1034,7 +1034,7 @@
  	off = 4 * ((ctx->num + 2) / 3) + 1; /* storage for base64 */
  	buf = xmalloc(off);
  
@@ -32,4 +32,4 @@
 +	tmux_b64_ntop(ctx->ptr, ctx->num, buf, off);
  	tty_putcode_ptr2(tty, TTYC_MS, "", buf);
  
- 	xfree(buf);
+ 	free(buf);
