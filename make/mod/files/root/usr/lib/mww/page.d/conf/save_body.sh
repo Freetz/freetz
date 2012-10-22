@@ -74,7 +74,7 @@ if $default; then
 else
 	echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings") ($PACKAGE_TITLE):</p>"
 fi
-echo -n "<pre class='log'>"
+echo -n "<pre class='log.small'>"
 
 # redirect stderr to stdout so we see output in webif
 exec 2>&1

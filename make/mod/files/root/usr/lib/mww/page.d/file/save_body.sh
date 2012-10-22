@@ -4,7 +4,7 @@ echo "<p>$(lang de:"Konfiguration speichern" en:"Saving settings"):</p>"
 if ! allowed; then
 	print_access_denied
 else
-	echo -n "<pre class='log'>"
+	echo -n "<pre class='log.small'>"
 
 	# redirect stderr to stdout so we see output in webif
 	exec 2>&1
