@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 3.0.12)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4c1f1e72b82371704f93ebdd3c7b6259
-$(PKG)_SITE:=http://www.daniel-baumann.ch/software/dosfstools
+$(call PKG_INIT_BIN, 3.0.13)
+$(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.xz
+$(PKG)_SOURCE_MD5:=c1d851e3fc065a935c7cf919545d239f
+#$(PKG)_SITE:=http://www.daniel-baumann.ch/software/dosfstools
+$(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/d/dosfstools
 
 $(PKG)_BINARIES_ALL := dosfsck dosfslabel mkdosfs
 $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
