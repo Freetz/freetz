@@ -38,7 +38,7 @@
  	pid = sys_fork();
 --- source3/utils/net_rpc.c
 +++ source3/utils/net_rpc.c
-@@ -7791,6 +7791,10 @@ int net_rpc_printer(struct net_context *
+@@ -7798,6 +7798,10 @@ int net_rpc_printer(struct net_context *
  		{NULL, NULL, 0, NULL, NULL}
  	};
  
@@ -224,7 +224,7 @@
  		rpc_winreg_shutdown();
 --- source3/smbd/open.c
 +++ source3/smbd/open.c
-@@ -1546,6 +1546,9 @@ static NTSTATUS open_file_ntcreate(conne
+@@ -1552,6 +1552,9 @@ static NTSTATUS open_file_ntcreate(conne
  		 * Most of the passed parameters are ignored.
  		 */
  
@@ -261,7 +261,7 @@
  			errno = ret;
 --- source3/smbd/smb2_create.c
 +++ source3/smbd/smb2_create.c
-@@ -485,7 +485,10 @@ static struct tevent_req *smbd_smb2_crea
+@@ -486,7 +486,10 @@ static struct tevent_req *smbd_smb2_crea
  		info = FILE_WAS_OPENED;
  	} else if (CAN_PRINT(smb1req->conn)) {
  		status = file_new(smb1req, smb1req->conn, &result);
@@ -327,7 +327,7 @@
  	DEBUG(10,("smb_conf_updated: Got message saying smb.conf was "
  		  "updated. Reloading.\n"));
  	change_to_root_user();
-@@ -1254,6 +1258,7 @@ extern void build_options(bool screen);
+@@ -1227,6 +1231,7 @@ extern void build_options(bool screen);
  		exit(1);
  	}
  
@@ -335,7 +335,7 @@
  	/*
  	 * The print backend init also migrates the printing tdb's,
  	 * this requires a winreg pipe.
-@@ -1289,6 +1294,7 @@ extern void build_options(bool screen);
+@@ -1262,6 +1267,7 @@ extern void build_options(bool screen);
  				       smbd_messaging_context());
  		}
  	}
