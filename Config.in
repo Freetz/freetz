@@ -622,6 +622,12 @@ comment "Replace kernel (not available, no sources by AVM)"
 config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
 	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
+	# until http://freetz.org/ticket/1716 is fixed
+	select FREETZ_REMOVE_USERMAN if \
+		( \
+			FREETZ_TYPE_2170 || \
+			FREETZ_TYPE_WLAN_3170 \
+		)
 	select FREETZ_MODULE_fuse if \
 		( \
 			FREETZ_AVM_VERSION_3370_05_21 || \
@@ -643,12 +649,12 @@ config FREETZ_REPLACE_KERNEL
 	select FREETZ_MODULE_msdos if \
 		! FREETZ_REMOVE_FAT && \
 		( \
-		FREETZ_AVM_VERSION_7270_05_21 \
+			FREETZ_AVM_VERSION_7270_05_21 \
 		)
 	select FREETZ_MODULE_vfat if \
 		! FREETZ_REMOVE_FAT && \
 		( \
-		FREETZ_AVM_VERSION_7270_05_21 \
+			FREETZ_AVM_VERSION_7270_05_21 \
 		)
 	default n
 	help
