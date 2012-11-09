@@ -19,6 +19,7 @@ config(){
 start() {
 	cp -f /etc/resolv.conf /tmp/openvpn/etc
 	cp -f /etc/TZ /tmp/openvpn/etc
+	mknod -m 444 /tmp/openvpn/dev/urandom c 1 9
 	for file in $(echo ${OPENVPN_FILES2CP#*#} | tr ';#' '\n\n'); do
 		if [ ! -r $file ]; then # not a full path? Try to find a binary
 			fullpath=$(which $file);
@@ -87,6 +88,7 @@ case $1 in
 			modlib_addgroup openvpn
 			modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
 			mkdir -p /tmp/openvpn/etc
+			mkdir -p /tmp/openvpn/dev
 			mkdir -p /tmp/flash/openvpn
 		fi
 		if [ ! -e "/tmp/flash/openvpn/static.key" ]; then

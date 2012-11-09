@@ -1,14 +1,25 @@
+ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_23)),y)
+$(call PKG_INIT_BIN, 2.3_beta1)
+$(PKG)_SOURCE_MD5:=1a69ee90a330705d8056ac62c5d8ef42
+$(PKG)_CONDITIONAL_PATCHES += v2.3
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/openvpn/openvpn
+ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_STATIC)),y)
+$(PKG)_EXTRA_LDFLAGS += -all-static
+endif
+else
 $(call PKG_INIT_BIN, 2.2.2)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=c5181e27b7945fa6276d21873329c5c7
-$(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
+$(PKG)_CONDITIONAL_PATCHES += v2.2
 $(PKG)_BINARY:=$($(PKG)_DIR)/openvpn
+endif
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
 $(PKG)_STARTLEVEL=81
 
-$(PKG)_DEPENDS_ON := openssl
+$(PKG)_DEPENDS_ON := $(if $(FREETZ_PACKAGE_OPENVPN_POLARSSL),polarssl,openssl)
 
-$(PKG)_LIBS := -lssl -lcrypto -ldl
+$(PKG)_LIBS := $(if $(FREETZ_PACKAGE_OPENVPN_POLARSSL),-lpolarssl,-lssl -lcrypto) -ldl
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_LZO)),y)
 $(PKG)_DEPENDS_ON += lzo
@@ -20,7 +31,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
-$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_POLARSSL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
 
 # ipv6 patch modifies both files, touch them to prevent configure from being regenerated
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac; touch ./Makefile.in ./configure;
@@ -44,8 +56,14 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-pkcs11
 $(PKG)_CONFIGURE_OPTIONS += --disable-socks
 $(PKG)_CONFIGURE_OPTIONS += --disable-http
 $(PKG)_CONFIGURE_OPTIONS += --enable-password-save
+ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_USE_IPROUTE)),y)
+$(PKG)_CONFIGURE_OPTIONS += --enable-iproute2
+$(PKG)_CONFIGURE_OPTIONS += --with-iproute-path=/bin/ip
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_POLARSSL)),y)
+$(PKG)_CONFIGURE_OPTIONS += --with-crypto-library=polarssl
+endif
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL),--enable-small,--disable-small)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --with-ifconfig-path=/sbin/ifconfig
 $(PKG)_CONFIGURE_OPTIONS += --with-iproute-path=/bin/ip
 $(PKG)_CONFIGURE_OPTIONS += --with-route-path=/sbin/route
