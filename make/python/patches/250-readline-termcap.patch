@@ -1,0 +1,41 @@
+--- ./setup.py.orig	2012-05-24 21:15:39.073068958 +0200
++++ ./setup.py	2012-05-24 21:22:20.148199769 +0200
+@@ -574,7 +574,6 @@
+ 
+         # readline
+         do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
+-        readline_termcap_library = ""
+         curses_library = "ncurses"
+ 
+         if platform == 'darwin':
+@@ -589,29 +588,7 @@
+                 if find_file('readline/rlconf.h', inc_dirs, []) is None:
+                     do_readline = False
+         if do_readline:
+-            if platform == 'darwin' and os_release < 9:
+-                # In every directory on the search path search for a dynamic
+-                # library and then a static library, instead of first looking
+-                # for dynamic libraries on the entiry path.
+-                # This way a staticly linked custom readline gets picked up
+-                # before the (possibly broken) dynamic library in /usr/lib.
+-                readline_extra_link_args = ('-Wl,-search_paths_first',)
+-            else:
+-                readline_extra_link_args = ()
+-
+-            readline_libs = ['readline']
+-            if readline_termcap_library:
+-                pass # Issue 7384: Already linked against curses or tinfo.
+-            elif curses_library:
+-                readline_libs.append(curses_library)
+-            elif self.compiler.find_library_file(lib_dirs +
+-                                                     ['/usr/lib/termcap'],
+-                                                     'termcap'):
+-                readline_libs.append('termcap')
+-            exts.append( Extension('readline', ['readline.c'],
+-                                   library_dirs=['/usr/lib/termcap'],
+-                                   extra_link_args=readline_extra_link_args,
+-                                   libraries=readline_libs) )
++            exts.append( Extension('readline', ['readline.c'], libraries=['readline']) )
+         else:
+             missing.append('readline')
+ 

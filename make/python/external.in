@@ -1,0 +1,12 @@
+config EXTERNAL_FREETZ_PACKAGE_PYTHON
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_PYTHON#
+	select EXTERNAL_SUBDIRS
+	bool "python"
+	default n
+	help
+		externals these file(s) and directories
+		 /usr/bin/python2.7
+		 /usr/include/python2.7
+		 /usr/lib/python27.zip (if it exists)
+		 /usr/lib/python2.7
+
