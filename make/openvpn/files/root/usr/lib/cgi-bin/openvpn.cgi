@@ -2,6 +2,7 @@
 
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 MYVARS='AUTOSTART DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DOMAIN PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER UDP_FRAGMENT PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN FILES2CP PARAM_1 PARAM_2 PARAM_3'
 ALLVARS="$MYVARS ENABLED CONFIG_COUNT CONFIG_CHANGED EXPERT"
@@ -148,11 +149,6 @@ sec_end
 
 sec_begin '$(lang de:"Basiseinstellungen" en:"Basic Configuration")'
 
-HASBRCTL=$(which brctl 2> /dev/null)
-HASIPV6=$([ -d /proc/sys/net/ipv6 ] && echo true)
-HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true)
-HASLZO=$(openvpn --version | grep -q LZO && echo true)
-
 cat << EOF
 <table class="padded">
 <tr>
@@ -168,11 +164,11 @@ cat << EOF
 	  &nbsp;
 	</td>
 	<td>
-	  <input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); $([ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "none" : "block";') changeval();'>
+	  <input id="id_act_tun" type="radio" name="my_type" value="tun" onclick='(local_type[act_conf]="tun"); $(echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "none" : "block";') changeval();'>
 	  <label for="id_act_tun">Tunnel (TUN)</label>
 	</td>
 	<td>
-	  <input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); $([ $HASBRCTL ] && echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "block" : "none";') changeval();'>
+	  <input id="id_act_tap" type="radio" name="my_type" value="tap" onclick='(local_type[act_conf]="tap"); $(echo 'document.getElementById("div_add_tap").style.display=(this.checked)? "block" : "none";') changeval();'>
 	  <label for="id_act_tap">$(lang de:"Br&uuml;cke" en:"Bridge") (TAP)</label>
 	</td>
 </tr>
@@ -194,21 +190,14 @@ cat << EOF
 	  </div>
 	</td>
 	<td>
-EOF
-if [ $HASBRCTL ]; then cat << CASEEOF
 	  <div id="div_add_tap">
 		<input id="id_act_tap2lan" type="checkbox" title="$(lang de:"Das TAP-Interface wird automatisch zum LAN-Interface gebr&uuml;ckt (brctl)" en:"TAP interface will be bridged to LAN using brctl")" name="my_tap2lan" value="yes" onclick='(local_tap2lan[act_conf]=(this.checked)? "yes" : ""); changeval();'>
 		<label for="id_act_tap2lan">$(lang de:"mit LAN br&uuml;cken" en:"bridge to LAN")</label>
 	  </div>
-CASEEOF
-else
-	echo "&nbsp;"
-fi
-cat << EOF
 	</td>
 </tr>
 EOF
-if [ $HASIPV6 ]; then cat << CASEEOF
+if [ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" ]; then cat << CASEEOF
 <tr>
 	<td colspan="5">
 	  <div id="div_use_ipv6">
@@ -256,7 +245,7 @@ cat << EOF
 	<td>
 	  Cipher:&nbsp;
 	  <select id="id_act_cipher" style="width:150px;" name="my_cipher" onchange='if (this.value=="none") (alert($(lang de:"\"Achtung, Verkehr durch das VPN ist so unverschl\"+unescape(\"%FC\")+\"sselt!\"" en:"\"Caution: All traffic will be unencrypted!\""))); changeval();'>
-		$([ $HASBLOWFISH ] && echo '<option value="BF-CBC">Blowfish</option>')
+		$([ "$FREETZ_PACKAGE_OPENVPN_POLARSSL" != "y" ] && echo '<option value="BF-CBC">Blowfish</option>')
 		<option value="AES-128-CBC">AES 128</option>
 		<option value="AES-256-CBC">AES 256</option>
 		<option value="DES-EDE3-CBC">Triple-DES</option>
@@ -270,7 +259,7 @@ cat << EOF
 	  </div>
 	</td>
 </tr>
-$([ ! $HASBLOWFISH ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>')
+$([ ! "$FREETZ_PACKAGE_OPENVPN_POLARSSL" != "y" ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>')
 <tr>
 	<td colspan="3">
 	  <div id="div_no_certtype" style="display:none; padding-top:10px;">
@@ -467,7 +456,7 @@ cat << EOF
 	<input id="id_act_comp_lzo" type="checkbox"
 EOF
 
-if [ $HASLZO ]; then
+if [ "$FREETZ_PACKAGE_OPENVPN_WITH_LZO" == "y" ]; then
 cat << EOF
 title="$(lang de:"LZO-Komprimierung nutzen? !!Muss auf Server und Client gleich eingestellt sein!!" en:"Use LZO compression? !!Must be the same setting on server and client site!!")" onclick='if (this.checked) (local_complzo[act_conf]="yes"); else (local_complzo[act_conf]=""); changeval();'
 EOF
@@ -624,10 +613,10 @@ alert_cipher = false;
 	if ( local_autostart[act_conf] == "yes" ) { document.getElementById("id_act_start_auto").checked = true } else { document.getElementById("id_act_start_man").checked = true };
 	if ( local_mode[act_conf] == "server" ) { document.getElementById("id_act_server").checked = true } else { document.getElementById("id_act_client").checked = true };
 	if ( local_proto[act_conf] == "tcp" ) { document.getElementById("id_act_tcp").checked = true } else { document.getElementById("id_act_udp").checked = true };
-	$([ $HASIPV6 ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
+	$([ "$$FREETZ_TARGET_IPV6_SUPPORT" == "y" ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
 	if ( local_keepalive[act_conf] == "yes" ) { document.getElementById("id_act_keepalive").checked = true } else { document.getElementById("id_act_keepalive").checked = false };
 	if ( local_complzo[act_conf] == "yes" ){
-		if ( "$(echo $HASLZO)" == "true" ) { document.getElementById("id_act_comp_lzo").checked = true }
+		if ( "$FREETZ_PACKAGE_OPENVPN_WITH_LZO" == "y" ) { document.getElementById("id_act_comp_lzo").checked = true }
 		else { document.getElementById("id_act_comp_lzo").checked = false ; local_complzo[act_conf] = ""; alert_lzo=true;}; }
 	else { document.getElementById("id_act_comp_lzo").checked = false };
 	if ( local_type[act_conf] == "tap" ) { document.getElementById("id_act_tap").checked = true } else { document.getElementById("id_act_tun").checked = true };
@@ -641,7 +630,7 @@ alert_cipher = false;
 	if ( local_tls_auth[act_conf] == "yes" ) { document.getElementById("id_act_tls_auth").checked = true } else { document.getElementById("id_act_tls_auth").checked = false };
 	if ( local_debug[act_conf] == "yes" ) { document.getElementById("id_act_debug").checked = true } else { document.getElementById("id_act_debug").checked = false };
 	document.getElementById("id_act_no_certtype").checked = ( local_no_certtype[act_conf] == "yes" ) ? "checked" : ""
-	$([ $HASBRCTL ] && echo "document.getElementById"'("id_act_tap2lan").checked = ( local_tap2lan[act_conf] == "yes" ) ? "checked" : ""')
+	document.getElementById("id_act_tap2lan").checked = ( local_tap2lan[act_conf] == "yes" ) ? "checked" : ""
 	if ( local_client_info[act_conf] == "yes" ) { document.getElementById("id_act_client_info").checked = true } else { document.getElementById("id_act_client_info").checked = false };
 
 	if ( local_own_keys[act_conf] != "" ) {
@@ -849,7 +838,7 @@ function changeval(value) {
 
 	local_cipher[act_conf]= document.getElementById("id_act_cipher").value;
 
-	$([ $HASBRCTL ] && echo "document.getElementById('div_add_tap').style.display = (document.getElementById('id_act_tap').checked)? 'block' : 'none';")
+	document.getElementById("div_add_tap").style.display = (document.getElementById("id_act_tap").checked)? "block" : "none";
 
 	if ( act_conf > 1 && document.getElementById("id_act_config").value != 1 ) {
 		document.getElementById("div_own_keys").style.display = "block";
