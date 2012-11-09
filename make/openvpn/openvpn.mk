@@ -1,6 +1,6 @@
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_23)),y)
-$(call PKG_INIT_BIN, 2.3_beta1)
-$(PKG)_SOURCE_MD5:=1a69ee90a330705d8056ac62c5d8ef42
+$(call PKG_INIT_BIN, 2.3_rc1)
+$(PKG)_SOURCE_MD5:=075ee7c57734a1fe0b02c35dbad51876
 $(PKG)_CONDITIONAL_PATCHES += v2.3
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/openvpn/openvpn
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_STATIC)),y)

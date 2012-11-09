@@ -9,14 +9,14 @@ config FREETZ_PACKAGE_OPENVPN
 		VPN Server
 
 config FREETZ_PACKAGE_OPENVPN_23
-	bool "Use beta version OpenVPN 2.3_beta1 - EXPERIMENTAL"
+	bool "Use beta version OpenVPN 2.3_RC1 - EXPERIMENTAL"
 	depends on FREETZ_PACKAGE_OPENVPN
 	default n
 	help
 		Use new aplpha version VPN Server with support for polarSSL
 
 config FREETZ_PACKAGE_OPENVPN_POLARSSL
-	bool "Use Polarssl (exprimental)"
+	bool "Use Polarssl - EXPERIMENTAL"
 	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_23
 	default n
 	select FREETZ_LIB_libpolarssl if ! FREETZ_PACKAGE_OPENVPN_STATIC
