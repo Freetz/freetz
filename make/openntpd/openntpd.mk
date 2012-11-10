@@ -7,6 +7,10 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ntpd
 
 $(PKG)_STARTLEVEL=60 # before aiccu
 
+$(PKG)_CONFIGURE_ENV += ac_cv_have_decl_asprintf=yes 
+$(PKG)_CONFIGURE_ENV += ac_cv_func_setresuid=yes 
+$(PKG)_CONFIGURE_ENV += ac_cv_func_setresgid=yes 
+
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,have_decl_LLONG_MAX) 
 
 $(PKG)_CONFIGURE_OPTIONS += --with-builtin-arc4random
