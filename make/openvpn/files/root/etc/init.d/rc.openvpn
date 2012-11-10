@@ -19,7 +19,7 @@ config(){
 start() {
 	cp -f /etc/resolv.conf /tmp/openvpn/etc
 	cp -f /etc/TZ /tmp/openvpn/etc
-	mknod -m 444 /tmp/openvpn/dev/urandom c 1 9
+	mknod -m 444 /tmp/openvpn/dev/urandom c 1 9 2>/dev/null
 	for file in $(echo ${OPENVPN_FILES2CP#*#} | tr ';#' '\n\n'); do
 		if [ ! -r $file ]; then # not a full path? Try to find a binary
 			fullpath=$(which $file);
