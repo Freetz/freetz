@@ -1,47 +1,56 @@
 config FREETZ_PACKAGE_OPENVPN
 	bool "OpenVPN"
 	select FREETZ_BUSYBOX_BRCTL if ! FREETZ_PACKAGE_BRIDGE_UTILS
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC && ! FREETZ_PACKAGE_OPENVPN_POLARSSL
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_OPENVPN_STATIC && ! FREETZ_PACKAGE_OPENVPN_POLARSSL
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_OPENVPN_STATIC && ! FREETZ_PACKAGE_OPENVPN_POLARSSL
 	default n
 	help
 		VPN Server
 
-config FREETZ_PACKAGE_OPENVPN_23
-	bool "Use beta version OpenVPN 2.3_RC1 - EXPERIMENTAL"
+choice
 	depends on FREETZ_PACKAGE_OPENVPN
-	default n
-	help
-		Use new aplpha version VPN Server with support for polarSSL
+	prompt "Version"
+	default FREETZ_PACKAGE_OPENVPN_VERSION_2_2
 
-config FREETZ_PACKAGE_OPENVPN_POLARSSL
-	bool "Use Polarssl - EXPERIMENTAL"
-	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_23
-	default n
-	select FREETZ_LIB_libpolarssl if ! FREETZ_PACKAGE_OPENVPN_STATIC
-	help
-		Enables usage of polarssl instead of openssl.
-		Should lead to smaller binaries, but lacks support for some openssl features.
+	config FREETZ_PACKAGE_OPENVPN_VERSION_2_2
+		bool "2.2.2"
+		help
+			Latest stable version of OpenVPN
 
-		IMPORTANT: 	PolarSSL does NOT support OpenVPN default cipher "blowfish" (BF-CBC)!
-				Please use AES-128-CBC instead.
+	config FREETZ_PACKAGE_OPENVPN_VERSION_2_3
+		bool "2.3_RC1 (EXPERIMENTAL)"
+		help
+			Experimental version of OpenVPN with support for polarSSL
+
+endchoice
+
+choice
+	depends on FREETZ_PACKAGE_OPENVPN
+	prompt "SSL library"
+	default FREETZ_PACKAGE_OPENVPN_OPENSSL
+
+	config FREETZ_PACKAGE_OPENVPN_OPENSSL
+		bool "OpenSSL"
+		select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_OPENVPN_STATIC
+		select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		select FREETZ_LIB_libssl    if ! FREETZ_PACKAGE_OPENVPN_STATIC
+
+	config FREETZ_PACKAGE_OPENVPN_POLARSSL
+		bool "PolarSSL"
+		depends on FREETZ_PACKAGE_OPENVPN_VERSION_2_3
+		select FREETZ_LIB_libpolarssl if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		help
+			Leads to smaller binaries, but lacks support for some openssl features.
+
+			Note: PolarSSL does NOT support OpenVPN default cipher "blowfish" (BF-CBC)!
+			      Please use AES-128-CBC instead.
+
+endchoice
 
 config FREETZ_PACKAGE_OPENVPN_STATIC
-	bool "Statically link libraries"
+	bool "Create statically linked binary"
 	depends on FREETZ_PACKAGE_OPENVPN
 	default n
 	help
-		OpenVPN needs the following shared libraries which can be linked in statically
-		by activating this switch:
-		- libcrypto.so
-		- libssl.so
-		- libc.so
-		- libgcc_s.so
-		- libdl.so
-		- libz.so
-		- ld-linux.so.2
-		(- liblzo2.so)
+		Causes all libraries OpenVPN depends on to be linked in statically.
 
 config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 	bool "With lzo Compression"
