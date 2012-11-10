@@ -613,7 +613,7 @@ alert_cipher = false;
 	if ( local_autostart[act_conf] == "yes" ) { document.getElementById("id_act_start_auto").checked = true } else { document.getElementById("id_act_start_man").checked = true };
 	if ( local_mode[act_conf] == "server" ) { document.getElementById("id_act_server").checked = true } else { document.getElementById("id_act_client").checked = true };
 	if ( local_proto[act_conf] == "tcp" ) { document.getElementById("id_act_tcp").checked = true } else { document.getElementById("id_act_udp").checked = true };
-	$([ "$$FREETZ_TARGET_IPV6_SUPPORT" == "y" ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
+	$([ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
 	if ( local_keepalive[act_conf] == "yes" ) { document.getElementById("id_act_keepalive").checked = true } else { document.getElementById("id_act_keepalive").checked = false };
 	if ( local_complzo[act_conf] == "yes" ){
 		if ( "$FREETZ_PACKAGE_OPENVPN_WITH_LZO" == "y" ) { document.getElementById("id_act_comp_lzo").checked = true }
