@@ -1,0 +1,20 @@
+--- src/socket.c
++++ src/socket.c
+@@ -51,7 +51,7 @@
+ 		return 1;
+ 	}
+ 
+-	fp = fdopen(fd, "r+");
++	fp = fdopen(fd, "a+");
+ 	/* Communication takes place in accordance with TCPMUX
+ 	   protocol (RFC 1078).  The rule tag is used as service
+ 	   name. */
+@@ -60,7 +60,7 @@
+ 	if (!p)
+ 		logmsg(LOG_ERR, _("%s: TCPMUX did not respond"), rule->tag);
+ 	else if (*p == '+') 
+-		fprintf(fp, "%s %s\r\n", req->pw->pw_name, req->cmdline);
++		fprintf(fp, "%s %s\n", req->pw->pw_name, req->cmdline);
+ 	else
+ 		logmsg(LOG_ERR, _("%s: TCPMUX returned %s"), rule->tag, p);
+ 	fflush(fp);
