@@ -1,6 +1,5 @@
-diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org/client.c openntpd-3.9p1/client.c
---- client.c	2011-03-19 23:17:52.000000000 +0100
-+++ client.c	2011-05-30 13:48:33.000000000 +0200
+--- client.c
++++ client.c
 @@ -27,7 +27,6 @@
  #include "ntpd.h"
  
@@ -204,9 +203,8 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  		return (-1);
  
  	memcpy(&p->update, &p->reply[best], sizeof(p->update));
-diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org/ntp.c openntpd-3.9p1/ntp.c
---- ntp.c	2006-05-14 07:29:23.000000000 +0200
-+++ ntp.c	2011-05-30 23:06:37.250000000 +0200
+--- ntp.c
++++ ntp.c
 @@ -54,6 +54,38 @@
  void	peer_remove(struct ntp_peer *);
  int	offset_compare(const void *, const void *);
@@ -537,9 +535,8 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
 +	p->errorRetry  = conf->errorRetry;
 +	p->errorReinit = 0;
 +}
-diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org/ntpd.c openntpd-3.9p1/ntpd.c
---- ntpd.c	2011-03-19 23:17:52.000000000 +0100
-+++ ntpd.c	2011-05-31 01:19:47.781250000 +0200
+--- ntpd.c
++++ ntpd.c
 @@ -43,7 +43,7 @@
  int		main(int, char *[]);
  int		check_child(pid_t, const char *);
@@ -547,9 +544,9 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
 -int		ntpd_adjtime(double);
 +int		ntpd_adjtime(double,const struct ntpd_conf *);
  void		ntpd_settime(double);
- void	readfreq(void);
  
-@@ -74,7 +74,7 @@
+ volatile sig_atomic_t	 quit = 0;
+@@ -73,7 +73,7 @@
  {
  	extern char *__progname;
  
@@ -558,7 +555,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  	exit(1);
  }
  
-@@ -101,7 +101,7 @@
+@@ -100,7 +100,7 @@
  	log_init(1);		/* log to stderr until daemonized */
  	res_init();		/* XXX */
  
@@ -567,7 +564,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  		switch (ch) {
  		case 'd':
  			conf.debug = 1;
-@@ -110,10 +110,15 @@
+@@ -109,10 +109,15 @@
  			conffile = optarg;
  			break;
  		case 's':
@@ -585,7 +582,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  			break;
  		default:
  			usage();
-@@ -225,6 +230,7 @@
+@@ -226,6 +231,7 @@
  
  	msgbuf_clear(&ibuf->w);
  	free(ibuf);
@@ -593,7 +590,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  	log_info("Terminating");
  	return (0);
  }
-@@ -282,22 +288,24 @@
+@@ -283,22 +289,24 @@
  			if (imsg.hdr.len != IMSG_HEADER_SIZE + sizeof(d))
  				fatalx("invalid IMSG_ADJTIME received");
  			memcpy(&d, imsg.data, sizeof(d));
@@ -624,7 +621,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  			break;
  		case IMSG_HOST_DNS:
  			name = imsg.data;
-@@ -327,18 +335,57 @@
+@@ -328,18 +336,57 @@
  	return (0);
  }
  
@@ -685,7 +682,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  	d_to_tv(d, &tv);
  	if (adjtime(&tv, &olddelta) == -1)
  		log_warn("adjtime failed");
-@@ -351,29 +398,8 @@
+@@ -352,29 +399,8 @@
  void
  ntpd_settime(double d)
  {
@@ -716,10 +713,9 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
 -	log_info("set local clock to %s (offset %fs)", buf, d);
 +	ntpd_settime_ex( d );
  }
-diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org/ntpd.h openntpd-3.9p1/ntpd.h
---- ntpd.h	2011-03-19 23:17:52.000000000 +0100
-+++ ntpd.h	2011-05-31 01:19:02.562500000 +0200
-@@ -61,6 +61,25 @@
+--- ntpd.h
++++ ntpd.h
+@@ -63,6 +63,25 @@
  #define	SETTIME_TIMEOUT		15	/* max seconds to wait with -s */
  #define	LOG_NEGLIGEE		128	/* negligible drift to not log (ms) */
  
@@ -745,7 +741,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  enum client_state {
  	STATE_NONE,
  	STATE_DNS_INPROGRESS,
-@@ -119,10 +138,14 @@
+@@ -121,10 +140,14 @@
  	enum client_state		 state;
  	time_t				 next;
  	time_t				 deadline;
@@ -760,7 +756,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  };
  
  struct ntpd_conf {
-@@ -131,8 +154,14 @@
+@@ -133,8 +156,14 @@
  	struct ntp_status			status;
  	u_int8_t				listen_all;
  	u_int8_t				settime;
@@ -775,7 +771,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  };
  
  struct buf {
-@@ -227,6 +256,7 @@
+@@ -229,6 +258,7 @@
  
  /* parse.y */
  int	 parse_config(const char *, struct ntpd_conf *);
@@ -783,7 +779,7 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  
  /* config.c */
  int		 host(const char *, struct ntp_addr **);
-@@ -251,13 +281,17 @@
+@@ -253,13 +283,17 @@
  void	client_log_error(struct ntp_peer *, const char *, int);
  void	update_scale(double);
  time_t	scale_interval(time_t);
@@ -802,9 +798,8 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
  double			sfp_to_d(struct s_fixedpt);
  struct s_fixedpt	d_to_sfp(double);
 +const char*		tdiff_to_string(double, TtimeBuf*);
-diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org/parse.y openntpd-3.9p1/parse.y
---- parse.y	2006-05-14 07:29:23.000000000 +0200
-+++ parse.y	2011-05-31 01:19:47.781250000 +0200
+--- parse.y
++++ parse.y
 @@ -43,6 +43,17 @@
  static int			 errors = 0;
  const char			*infile;
@@ -1171,9 +1166,8 @@ diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org
 +		return 1;  /* repeat ok */
 +	return 0;
 +}
-diff -u -r -N -x '*.o' -x '*.out' -x '*.a' -x ntpd -x y.tab.c openntpd-3.9p1.org/util.c openntpd-3.9p1/util.c
---- util.c	2006-05-14 07:29:23.000000000 +0200
-+++ util.c	2011-04-20 21:17:41.640625000 +0200
+--- util.c
++++ util.c
 @@ -32,6 +32,14 @@
  	return (tv.tv_sec + JAN_1970 + 1.0e-6 * tv.tv_usec);
  }

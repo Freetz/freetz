@@ -1,40 +1,44 @@
---- ntpd.h	2006-05-14 07:29:21.000000000 +0200
-+++ ntpd.h	2007-02-03 23:51:56.000000000 +0100
-@@ -34,6 +34,7 @@
+--- ntpd.c
++++ ntpd.c
+@@ -153,6 +153,9 @@
+ 	chld_pid = ntp_main(pipe_chld, &conf);
+ 
+ 	setproctitle("[priv]");
++#ifdef USE_ADJTIMEX
++	readfreq();
++#endif
+ 
+ 	signal(SIGTERM, sighdlr);
+ 	signal(SIGINT, sighdlr);
+--- ntpd.h
++++ ntpd.h
+@@ -34,6 +34,9 @@
  #define	NTPD_USER	"_ntp"
  #endif
  #define	CONFFILE	SYSCONFDIR "/ntpd.conf"
-+#define DRIFTFILE	"/var/db/ntpd.drift"
-
++#ifdef USE_ADJTIMEX
++#define	DRIFTFILE	"/var/db/ntpd.drift"
++#endif
+ 
  #define	READ_BUF_SIZE		4096
-
---- ntpd.c	2006-05-14 07:29:23.000000000 +0200
-+++ ntpd.c	2007-02-04 00:00:36.000000000 +0100
-@@ -45,6 +45,7 @@
- int		dispatch_imsg(struct ntpd_conf *);
- int		ntpd_adjtime(double);
- void		ntpd_settime(double);
-+void	readfreq(void);
-
- volatile sig_atomic_t	 quit = 0;
- volatile sig_atomic_t	 reconfig = 0;
-@@ -153,7 +154,8 @@
- 	chld_pid = ntp_main(pipe_chld, &conf);
-
- 	setproctitle("[priv]");
--
-+	readfreq();
-+
- 	signal(SIGTERM, sighdlr);
- 	signal(SIGINT, sighdlr);
- 	signal(SIGCHLD, sighdlr);
-
---- openbsd-compat/port-linux.c	2007-02-03 20:52:20.000000000 +0100
-+++ openbsd-compat/port-linux.c	2007-02-04 01:02:16.000000000 +0100
+ 
+--- openbsd-compat/openbsd-compat.h
++++ openbsd-compat/openbsd-compat.h
+@@ -49,6 +49,8 @@
+ #ifdef USE_ADJTIMEX
+ # include <sys/time.h>
+ int _compat_adjtime(const struct timeval *, struct timeval *);
++void writefreq(double d);
++void readfreq(void);
+ #endif
+ 
+ #ifndef HAVE_INET_PTON
+--- openbsd-compat/port-linux.c
++++ openbsd-compat/port-linux.c
 @@ -33,6 +33,49 @@
  /* maximum change to skew per adjustment, in PPM */
  #define MAX_SKEW_DELTA 5.0
-
+ 
 +void
 +writefreq(double d)
 +{
@@ -88,5 +92,5 @@
 +
 +		writefreq( tskew );
  	}
-
+ 
  	log_debug("interval %0.3lf skew %0.3lf total skew %0.3lf", interval,
