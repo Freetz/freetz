@@ -37,6 +37,7 @@ endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_VERSION_2_3)),y)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_polarssl_ssl_init lib_polarssl_aes_crypt_cbc)
 endif
 
 # 2.3 doesn't support --with-*-path options
