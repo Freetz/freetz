@@ -5,13 +5,84 @@ config FREETZ_PACKAGE_RRDSTATS
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	default n
 	help
-		Lets you view graphically the stats of your Freetz Box.
-		Installs BusyBox's "nice" to save spare resources.
+		Lets you view graphically various stats of your Freetz Box.
+		Selects BusyBox's 'nice' to save spare resources.
 
-		Optional:
-		Install DigiTemp to graph your 1-wire temperature sensors.
 
-		Thomson/Cisco cable-modem:
-		It is recommended to install the package wget
-		to prevent stalling of whole RRDstats if the modem is not
-		reachable.
+config FREETZ_PACKAGE_RRDSTATS_CABLEMODEM
+	bool "Support for cabel modem logging"
+	depends on FREETZ_PACKAGE_RRDSTATS
+	default n
+	select FREETZ_BUSYBOX_WGET if !FREETZ_PACKAGE_WGET
+	help
+		Enables the options in the Webif and
+		selects (BusyBox or GNU) wget.
+		Logging of frequencies, signal strength
+		and SNR for these cable modems:
+		 * Thomson THG (520 and 540)
+		 * Cisco EPC 3212 (09.06.2010 and 25.02.2012)
+		 * Arris Touchstone TM
+
+config FREETZ_PACKAGE_RRDSTATS_CABLEMODEM_WGET
+	bool "Use GNU wget"
+	depends on FREETZ_PACKAGE_RRDSTATS_CABLEMODEM
+	default y
+	select FREETZ_PACKAGE_WGET
+	help
+		Selects GNU wget instead of BusyBox's.
+		This is recommended since it prevents stalling
+		of whole RRDstats if the modem is not reachable.
+
+
+config FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD
+#	bool "Support for cable segment load"
+	depends on FREETZ_PACKAGE_RRDSTATS
+	default n
+#	select FREETZ_PACKAGE_DVBSNOOP
+#	select FREETZ_PACKAGE_DVBTUNE
+	help
+		Enables the options in the Webif and
+		selects dvbtune & dvbsnoop.
+		This is for logging the load of your
+		whole cable internet segment.
+
+config FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD_SUNDTEK
+	bool "Sundtek DVB driver"
+	depends on FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD
+	default n
+	select FREETZ_PACKAGE_SUNDTEK
+	help
+		Selects Sundtek DVB driver.
+
+
+config FREETZ_PACKAGE_RRDSTATS_STORAGE
+	bool "Support for storage devices"
+	depends on FREETZ_PACKAGE_RRDSTATS
+	default y
+	help
+		Enables the options in the Webif.
+		Logging of devices (eg 'sda') or
+		partitions (eg 'sda1') is possible.
+
+
+config FREETZ_PACKAGE_RRDSTATS_NETWORK
+	bool "Support for network interfaces"
+	depends on FREETZ_PACKAGE_RRDSTATS
+	default y
+	help
+		Enables the options in the Webif.
+		Logging of real devices (eg 'eth0')
+		or virtual (eg 'lan') is possible.
+
+
+config FREETZ_PACKAGE_RRDSTATS_DIGITEMP
+	bool "Support for DigiTemp"
+	depends on FREETZ_PACKAGE_RRDSTATS
+	default n
+	select FREETZ_PACKAGE_DIGITEMP
+	help
+		Enables the options in the Webif and
+		selects DigiTemp.
+		Logging of 1-wire temperature sensors with DigiTemp.
+
+

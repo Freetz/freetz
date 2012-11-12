@@ -23,7 +23,8 @@ config() {
 	# show/hide digitemp
 	modunreg status rrdstats rrddt
 	modunreg file rrdstats
-	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP1W" = yes ]; then
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
+	if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
 		modreg status rrdstats DigiTemp rrddt
 		modreg file rrdstats dt-conf 'dt-conf' 0 "dt-conf"
 		modreg file rrdstats dt-alias 'dt-alias' 1 "dt-alias"

@@ -4,6 +4,7 @@
 
 [ ! -r /mod/etc/conf/rrdstats.cfg ] && exit 1
 . /mod/etc/conf/rrdstats.cfg
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 _NICE=$(which nice)
 _SENSOR_CNF=/tmp/flash/rrdstats/digitemp.conf
@@ -439,18 +440,26 @@ while true; do
 	collect_cpu
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
-	[ "$RRDSTATS_CABLE_MODEM" = thg ] && collect_thg
-	[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc$RRDSTATS_CISCOEPC_FW
-	[ "$RRDSTATS_CABLE_MODEM" = arris ] && collect_arristm
-	[ -n "$RRDSTATS_DISK_DEV1" ] && collect_diskio 1
-	[ -n "$RRDSTATS_DISK_DEV2" ] && collect_diskio 2
-	[ -n "$RRDSTATS_DISK_DEV3" ] && collect_diskio 3
-	[ -n "$RRDSTATS_DISK_DEV4" ] && collect_diskio 4
-	[ -n "$RRDSTATS_INTERFACE1" ] && collect_net 1
-	[ -n "$RRDSTATS_INTERFACE2" ] && collect_net 2
-	[ -n "$RRDSTATS_INTERFACE3" ] && collect_net 3
-	[ -n "$RRDSTATS_INTERFACE4" ] && collect_net 4
-	[ "$RRDSTATS_DIGITEMP1W" = yes ] && collect_one
+	if [ "$FREETZ_PACKAGE_RRDSTATS_CABLEMODEM" == "y" ]; then
+		[ "$RRDSTATS_CABLE_MODEM" = thg ] && collect_thg
+		[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc$RRDSTATS_CISCOEPC_FW
+		[ "$RRDSTATS_CABLE_MODEM" = arris ] && collect_arristm
+	fi
+	if [ "$FREETZ_PACKAGE_RRDSTATS_STORAGE" == "y" ]; then
+		[ -n "$RRDSTATS_DISK_DEV1" ] && collect_diskio 1
+		[ -n "$RRDSTATS_DISK_DEV2" ] && collect_diskio 2
+		[ -n "$RRDSTATS_DISK_DEV3" ] && collect_diskio 3
+		[ -n "$RRDSTATS_DISK_DEV4" ] && collect_diskio 4
+	fi
+	if [ "$FREETZ_PACKAGE_RRDSTATS_NETWORK" == "y" ]; then
+		[ -n "$RRDSTATS_INTERFACE1" ] && collect_net 1
+		[ -n "$RRDSTATS_INTERFACE2" ] && collect_net 2
+		[ -n "$RRDSTATS_INTERFACE3" ] && collect_net 3
+		[ -n "$RRDSTATS_INTERFACE4" ] && collect_net 4
+	fi
+	if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" ]; then
+		[ "$RRDSTATS_DIGITEMP1W" = yes ] && collect_one
+	fi
 	[ $# -eq 0 ] && exit
 	_SLEEPER=$(( $_NEXTRUN-$(date +%s) ))
 	[ $_SLEEPER -gt 0 ] && sleep $_SLEEPER

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$RRDSTATS_ENABLED" yes:auto "*":man
 check "$RRDSTATS_XCHGUPDOWN" yes:xchgupdown
@@ -60,7 +61,7 @@ cat << EOF
 <li><a href="$(href status rrdstats stats)">$(lang de:"Statistiken anzeigen" en:"Show statistics")</a></li>
 EOF
 
-if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
 cat << EOF
 <li><a href="$(href status rrdstats rrddt)">$(lang de:"DigiTemp anzeigen" en:"Show DigiTemp")</a></li>
 EOF
@@ -79,7 +80,7 @@ cat << EOF
 EOF
 
 if [ "$RRDSTATS_WEBENABLED" = "yes" ]; then
-if [ -x /etc/init.d/rc.inetd ]; then
+if [ "$FREETZ_PACKAGE_INETD" == "y" ]; then
 cat << EOF
 <p>
 <input type="hidden" name="web_inetd" value="no">
@@ -158,6 +159,8 @@ cat << EOF
 EOF
 
 sec_end
+
+if [ "$FREETZ_PACKAGE_RRDSTATS_CABLEMODEM" == "y" ]; then
 sec_begin '$(lang de:"Kabelmodem" en:"Cable modem")'
 
 cat << EOF
@@ -251,6 +254,9 @@ cat << EOF
 EOF
 
 sec_end
+fi
+
+if [ "$FREETZ_PACKAGE_RRDSTATS_STORAGE" == "y" ]; then
 sec_begin '$(lang de:"Disks" en:"Disks")'
 
 cat << EOF
@@ -303,6 +309,9 @@ $(lang de:"Maximal: Maximale Bandbreite in MegaByte/Sekunde, '0' f&uuml;r automa
 EOF
 
 sec_end
+fi
+
+if [ "$FREETZ_PACKAGE_RRDSTATS_NETWORK" == "y" ]; then
 sec_begin '$(lang de:"Interfaces" en:"Interfaces")'
 
 cat << EOF
@@ -359,8 +368,9 @@ $(lang de:"Maximal: Maximale Bandbreite in Megabit/Sekunde, '0' f&uuml;r automat
 EOF
 
 sec_end
+fi
 
-if [ -x "$(which digitemp)" ]; then
+if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" ]; then
 sec_begin 'DigiTemp'
 
 cat << EOF
@@ -381,7 +391,7 @@ cat << EOF
 EOF
 
 if [ "$RRDSTATS_DIGITEMP_HTTP" = "yes" ]; then
-if [ -x /etc/init.d/rc.inetd ]; then
+if [ "$FREETZ_PACKAGE_INETD" == "y" ]; then
 cat << EOF
 <p>
 <input type="hidden" name="digitemp_inetd" value="no">
