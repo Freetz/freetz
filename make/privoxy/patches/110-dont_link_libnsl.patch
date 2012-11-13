@@ -1,0 +1,14 @@
+--- configure.in
++++ configure.in
+@@ -469,7 +469,11 @@
+ dnl =================================================================
+ 
+ dnl Next line needed to find the gethost*_r functions on Solaris
++case "$host" in
++*-solaris*)
+ AC_CHECK_LIB(nsl, gethostbyname)
++;;
++esac
+ 
+ AC_CHECK_FUNC(gethostbyaddr_r, [
+   AC_MSG_CHECKING([signature of gethostbyaddr_r])
