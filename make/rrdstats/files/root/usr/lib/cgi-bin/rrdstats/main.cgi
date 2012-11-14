@@ -9,12 +9,12 @@
 DATESTRING=$(date -R)
 [ -n "$_cgi_width" ] && let WIDTH=_cgi_width-145 || let WIDTH=500
 GROUP_PERIOD="$(cgi_param group | tr -d .)"
-graph="$(cgi_param graph | tr -d .)"
+ALL_GRAPHS="$(cgi_param graph | tr -d .)"
 
 while [ $# -gt 0 ]; do
 	case "$1" in
 		-graph=*)
-			graph="${1#*=}"
+			ALL_GRAPHS="$ALL_GRAPHS ${1#*=}"
 			;;
 		-group=*)
 			GROUP_PERIOD="${1#*=}"
@@ -977,115 +977,122 @@ gen_main() {
 	sec_end
 }
 
-#graph=$(cgi_param graph | tr -d .)
-case $graph in
-	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|csl0|csl1|csl2|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
-		set_lazy "$RRDSTATS_NOTLAZYS"
-		#GROUP_PERIOD=$(cgi_param group | tr -d .)
-		if [ -z "$GROUP_PERIOD" ]; then
-			heading=$(echo $graph | sed "s/^upt$/Uptime/;s/^cpu$/Processor/;s/^mem$/Memory/;s/^swap$/Swapspace/;\
-			  s/^thg0$/Thomson THG - basic/;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;\
-			  s/^epc0$/Cisco EPC - Overview/;\
-			  s/^epcA$/Cisco EPC - Downstream Signal-Noise-Ratio/;s/^epcB$/Cisco EPC - Downstream Signal-Power-Level/;s/^epcC/Cisco EPC - Upstream Signal-Power-Level \& Frequency/;\
-			  s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;\
-			  s/^csl0$/Cable segment load/;s/^csl1$/Cable segment load - lower frequencies/;s/^csl2$/Cable segment load - upper frequencies/;\
-			  s/^arris0$/Arris TM - basic/;s/^arris1$/Arris TM - System Uptime/;s/^arris2/Arris TM - Downstream Frequency/;s/^arris3$/Arris TM - Upstream Frequency/;\
-			  s/^diskio1$/$RRDSTATS_DISK_NAME1/;s/^diskio2$/$RRDSTATS_DISK_NAME2/;s/^diskio3$/$RRDSTATS_DISK_NAME3/;s/^diskio4$/$RRDSTATS_DISK_NAME4/;\
-			  s/^if1$/$RRDSTATS_NICE_NAME1/;s/^if2$/$RRDSTATS_NICE_NAME2/;s/^if3$/$RRDSTATS_NICE_NAME3/;s/^if4$/$RRDSTATS_NICE_NAME4/;s/^one$/DigiTemp/")
-		else
-			heading="$GROUP_PERIOD"
-		fi
-		echo "<center><font size=+1><br><b>$heading stats</b></font></center>"
-
-		if [ "$(echo "$graph" | sed 's/^thg./yes/')" = yes -a "$RRDSTATS_THOMSON_ADV" = yes ]; then
-			echo "<br><center> \
-			<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg0')\" /> \
-			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg1')\" /> \
-			<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg2')\" /> \
-			<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg3')\" /> \
-			</center>"
-		fi
-		if [ "$(echo "$graph" | sed 's/^epc./yes/')" = yes ]; then
-			echo "<br><center>"
-			echo "<input type=\"button\" value=\"Overview\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc0')\" />"
-			echo "<input type=\"button\" value=\"Downstream FRQ\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc2')\" />"
-			if [ "$RRDSTATS_CISCOEPC_DETAILS" == "yes" ]; then
-				echo "<input type=\"button\" value=\"Downstream SNR\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcA')\" />"
-				echo "<input type=\"button\" value=\"Downstream SIG\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcB')\" />"
-				echo "<input type=\"button\" value=\"Upstream SIG & FRQ\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcC')\" />"
+graphit() {
+	graph=$1
+	#graph=$(cgi_param graph | tr -d .)
+	case $graph in
+		cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|csl0|csl1|csl2|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+			set_lazy "$RRDSTATS_NOTLAZYS"
+			#GROUP_PERIOD=$(cgi_param group | tr -d .)
+			if [ -z "$GROUP_PERIOD" ]; then
+				heading=$(echo $graph | sed "s/^upt$/Uptime/;s/^cpu$/Processor/;s/^mem$/Memory/;s/^swap$/Swapspace/;\
+				  s/^thg0$/Thomson THG - basic/;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;\
+				  s/^epc0$/Cisco EPC - Overview/;\
+				  s/^epcA$/Cisco EPC - Downstream Signal-Noise-Ratio/;s/^epcB$/Cisco EPC - Downstream Signal-Power-Level/;s/^epcC/Cisco EPC - Upstream Signal-Power-Level \& Frequency/;\
+				  s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;\
+				  s/^csl0$/Cable segment load/;s/^csl1$/Cable segment load - lower frequencies/;s/^csl2$/Cable segment load - upper frequencies/;\
+				  s/^arris0$/Arris TM - basic/;s/^arris1$/Arris TM - System Uptime/;s/^arris2/Arris TM - Downstream Frequency/;s/^arris3$/Arris TM - Upstream Frequency/;\
+				  s/^diskio1$/$RRDSTATS_DISK_NAME1/;s/^diskio2$/$RRDSTATS_DISK_NAME2/;s/^diskio3$/$RRDSTATS_DISK_NAME3/;s/^diskio4$/$RRDSTATS_DISK_NAME4/;\
+				  s/^if1$/$RRDSTATS_NICE_NAME1/;s/^if2$/$RRDSTATS_NICE_NAME2/;s/^if3$/$RRDSTATS_NICE_NAME3/;s/^if4$/$RRDSTATS_NICE_NAME4/;s/^one$/DigiTemp/")
+			else
+				heading="$GROUP_PERIOD"
 			fi
-			[ "$RRDSTATS_CISCOEPC_UP" == "yes" ] && echo "<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc1')\" />"
-			echo "</center>"
-		fi
-		if [ "$(echo "$graph" | sed 's/^arris./yes/')" = yes -a "$RRDSTATS_ARRISTM_ADV" = yes ]; then
-			echo "<br><center> \
-			<input type=\"button\" value=\"Arris TM basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris0')\" /> \
-			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris1')\" /> \
-			<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris2')\" /> \
-			<input type=\"button\" value=\"Upstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris3')\" /> \
-			</center>"
-		fi
-		if [ "$(echo "$graph" | sed 's/^csl./yes/')" = yes ]; then
-			echo "<br><center> \
-			<input type=\"button\" value=\"lower frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl1')\" /> \
-			&nbsp; \
-			<input type=\"button\" value=\"all frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl0')\" /> \
-			&nbsp; \
-			<input type=\"button\" value=\"upper frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl2')\" /> \
-			</center>"
-		fi
+			echo "<center><font size=+1><br><b>$heading stats</b></font></center>"
+
+			if [ "$(echo "$graph" | sed 's/^thg./yes/')" = yes -a "$RRDSTATS_THOMSON_ADV" = yes ]; then
+				echo "<br><center> \
+				<input type=\"button\" value=\"THG basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg0')\" /> \
+				<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg1')\" /> \
+				<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg2')\" /> \
+				<input type=\"button\" value=\"Upstream Channel\" onclick=\"window.location=('$SCRIPT_NAME?graph=thg3')\" /> \
+				</center>"
+			fi
+			if [ "$(echo "$graph" | sed 's/^epc./yes/')" = yes ]; then
+				echo "<br><center>"
+				echo "<input type=\"button\" value=\"Overview\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc0')\" />"
+				echo "<input type=\"button\" value=\"Downstream FRQ\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc2')\" />"
+				if [ "$RRDSTATS_CISCOEPC_DETAILS" == "yes" ]; then
+					echo "<input type=\"button\" value=\"Downstream SNR\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcA')\" />"
+					echo "<input type=\"button\" value=\"Downstream SIG\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcB')\" />"
+					echo "<input type=\"button\" value=\"Upstream SIG & FRQ\" onclick=\"window.location=('$SCRIPT_NAME?graph=epcC')\" />"
+				fi
+				[ "$RRDSTATS_CISCOEPC_UP" == "yes" ] && echo "<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=epc1')\" />"
+				echo "</center>"
+			fi
+			if [ "$(echo "$graph" | sed 's/^arris./yes/')" = yes -a "$RRDSTATS_ARRISTM_ADV" = yes ]; then
+				echo "<br><center> \
+				<input type=\"button\" value=\"Arris TM basics\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris0')\" /> \
+				<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris1')\" /> \
+				<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris2')\" /> \
+				<input type=\"button\" value=\"Upstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris3')\" /> \
+				</center>"
+			fi
+			if [ "$(echo "$graph" | sed 's/^csl./yes/')" = yes ]; then
+				echo "<br><center> \
+				<input type=\"button\" value=\"lower frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl1')\" /> \
+				&nbsp; \
+				<input type=\"button\" value=\"all frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl0')\" /> \
+				&nbsp; \
+				<input type=\"button\" value=\"upper frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl2')\" /> \
+				</center>"
+			fi
 
 
-		for period in $RRDSTATS_PERIODSSUB; do
-			set_period $period
-			sec_begin "last $periodnn"
-			generate_graph "$graph" "$periodG" "$graph-$period" "" $GROUP_PERIOD
-			echo "<center><a href=\"$SCRIPT_NAME\" class=\"image\">"
-			echo "<img src=\"/statpix/$graph-$period$GROUP_PERIOD.png$NOCACHE\" alt=\"$heading stats for last $periodnn\" border=\"0\" />"
-			echo "</a></center>"
-			sec_end
-		done
-		[ -n "$HTTP_REFERER" ] && backdest="history.go(-1)" || backdest="window.location.href='$SCRIPT_NAME'"
-		echo "<br><center><input type=\"button\" value=\"Back\" onclick=\"javascript:$backdest\" /></center>"
-		;;
-	*)
-		set_lazy "$RRDSTATS_NOTLAZYM"
-		set_period "$RRDSTATS_PERIODMAIN"
-		echo "<center><font size=+1><br><b>Stats for last $periodnn</b></font></center>"
-		case $RRD_DISPLAY_TYPE in
-			rrddt)
-				ALL_GROUPS=$(grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group 2>/dev/null | tr -s " " | cut -d " " -f2 | uniq)
-				[ -z "$ALL_GROUPS" ] && gen_main "one" "$curgroup" "$periodnn"
-				for curgroup in $ALL_GROUPS; do
-					gen_main "one" "$curgroup" "$periodnn" "$curgroup"
-				done
-				;;
-			*)
-				gen_main "cpu" "Processor" "$periodnn"
-				gen_main "mem" "Memory" "$periodnn"
-				[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
-				[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
-				if [ "$FREETZ_PACKAGE_RRDSTATS_CABLEMODEM" == "y" ]; then
-					[ "$RRDSTATS_CABLE_MODEM" = thg ] && gen_main "thg0" "Thomson THG" "$periodnn"
-					[ "$RRDSTATS_CABLE_MODEM" = epc ] && gen_main "epc0" "Cisco EPC" "$periodnn"
-					[ "$RRDSTATS_CABLE_MODEM" = arris ] && gen_main "arris0" "Arris TM" "$periodnn"
-				fi
-				if [ "$FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD" == "y" ]; then
-					[ "$RRDSTATS_CABLESEG_ENABLED" = yes ] && gen_main "csl0" "Cable segment load" "$periodnn"
-				fi
-				if [ "$FREETZ_PACKAGE_RRDSTATS_STORAGE" == "y" ]; then
-					[ -n "$RRDSTATS_DISK_DEV1" ] && gen_main "diskio1" "$RRDSTATS_DISK_NAME1" "$periodnn"
-					[ -n "$RRDSTATS_DISK_DEV2" ] && gen_main "diskio2" "$RRDSTATS_DISK_NAME2" "$periodnn"
-					[ -n "$RRDSTATS_DISK_DEV3" ] && gen_main "diskio3" "$RRDSTATS_DISK_NAME3" "$periodnn"
-					[ -n "$RRDSTATS_DISK_DEV4" ] && gen_main "diskio4" "$RRDSTATS_DISK_NAME4" "$periodnn"
-				fi
-				if [ "$FREETZ_PACKAGE_RRDSTATS_NETWORK" == "y" ]; then
-					[ -n "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
-					[ -n "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
-					[ -n "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"
-					[ -n "$RRDSTATS_INTERFACE4" ] && gen_main "if4" "$RRDSTATS_NICE_NAME4" "$periodnn"
-				fi
-				;;
-		esac
-		;;
-esac
+			for period in $RRDSTATS_PERIODSSUB; do
+				set_period $period
+				sec_begin "last $periodnn"
+				generate_graph "$graph" "$periodG" "$graph-$period" "" $GROUP_PERIOD
+				echo "<center><a href=\"$SCRIPT_NAME\" class=\"image\">"
+				echo "<img src=\"/statpix/$graph-$period$GROUP_PERIOD.png$NOCACHE\" alt=\"$heading stats for last $periodnn\" border=\"0\" />"
+				echo "</a></center>"
+				sec_end
+			done
+			[ -n "$HTTP_REFERER" ] && backdest="history.go(-1)" || backdest="window.location.href='$SCRIPT_NAME'"
+			echo "<br><center><input type=\"button\" value=\"Back\" onclick=\"javascript:$backdest\" /></center>"
+			;;
+		*)
+			set_lazy "$RRDSTATS_NOTLAZYM"
+			set_period "$RRDSTATS_PERIODMAIN"
+			echo "<center><font size=+1><br><b>Stats for last $periodnn</b></font></center>"
+			case $RRD_DISPLAY_TYPE in
+				rrddt)
+					ALL_GROUPS=$(grep -vE "^#|^$|^ " /var/tmp/flash/rrdstats/digitemp.group 2>/dev/null | tr -s " " | cut -d " " -f2 | uniq)
+					[ -z "$ALL_GROUPS" ] && gen_main "one" "$curgroup" "$periodnn"
+					for curgroup in $ALL_GROUPS; do
+						gen_main "one" "$curgroup" "$periodnn" "$curgroup"
+					done
+					;;
+				*)
+					gen_main "cpu" "Processor" "$periodnn"
+					gen_main "mem" "Memory" "$periodnn"
+					[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
+					[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
+					if [ "$FREETZ_PACKAGE_RRDSTATS_CABLEMODEM" == "y" ]; then
+						[ "$RRDSTATS_CABLE_MODEM" = thg ] && gen_main "thg0" "Thomson THG" "$periodnn"
+						[ "$RRDSTATS_CABLE_MODEM" = epc ] && gen_main "epc0" "Cisco EPC" "$periodnn"
+						[ "$RRDSTATS_CABLE_MODEM" = arris ] && gen_main "arris0" "Arris TM" "$periodnn"
+					fi
+					if [ "$FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD" == "y" ]; then
+						[ "$RRDSTATS_CABLESEG_ENABLED" = yes ] && gen_main "csl0" "Cable segment load" "$periodnn"
+					fi
+					if [ "$FREETZ_PACKAGE_RRDSTATS_STORAGE" == "y" ]; then
+						[ -n "$RRDSTATS_DISK_DEV1" ] && gen_main "diskio1" "$RRDSTATS_DISK_NAME1" "$periodnn"
+						[ -n "$RRDSTATS_DISK_DEV2" ] && gen_main "diskio2" "$RRDSTATS_DISK_NAME2" "$periodnn"
+						[ -n "$RRDSTATS_DISK_DEV3" ] && gen_main "diskio3" "$RRDSTATS_DISK_NAME3" "$periodnn"
+						[ -n "$RRDSTATS_DISK_DEV4" ] && gen_main "diskio4" "$RRDSTATS_DISK_NAME4" "$periodnn"
+					fi
+					if [ "$FREETZ_PACKAGE_RRDSTATS_NETWORK" == "y" ]; then
+						[ -n "$RRDSTATS_INTERFACE1" ] && gen_main "if1" "$RRDSTATS_NICE_NAME1" "$periodnn"
+						[ -n "$RRDSTATS_INTERFACE2" ] && gen_main "if2" "$RRDSTATS_NICE_NAME2" "$periodnn"
+						[ -n "$RRDSTATS_INTERFACE3" ] && gen_main "if3" "$RRDSTATS_NICE_NAME3" "$periodnn"
+						[ -n "$RRDSTATS_INTERFACE4" ] && gen_main "if4" "$RRDSTATS_NICE_NAME4" "$periodnn"
+					fi
+					;;
+			esac
+			;;
+	esac
+}
+
+for single_graph in $ALL_GRAPHS; do
+	graphit $single_graph
+done
