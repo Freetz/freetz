@@ -8,6 +8,27 @@
 
 DATESTRING=$(date -R)
 [ -n "$_cgi_width" ] && let WIDTH=_cgi_width-145 || let WIDTH=500
+GROUP_PERIOD="$(cgi_param group | tr -d .)"
+graph="$(cgi_param graph | tr -d .)"
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-graph=*)
+			graph="${1#*=}"
+			;;
+		-group=*)
+			GROUP_PERIOD="${1#*=}"
+			;;
+		-width=*)
+			WIDTH="${1#*=}"
+			;;
+		-not-lazy)
+			NOTLAZY="1"
+			;;
+	esac
+	shift
+done
+
 let HEIGHT=$WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX
 PERIODE="24h"
 RED=#EA644A
@@ -927,7 +948,7 @@ csl_graph() {
 
 set_lazy() {
 	LAZY=" "
-	[ "$1" = "no" ] && LAZY=" -z "
+	[ -z "$NOTLAZY" -a "$1" = "no" ] && LAZY=" -z "
 }
 
 set_period() {
@@ -956,11 +977,11 @@ gen_main() {
 	sec_end
 }
 
-graph=$(cgi_param graph | tr -d .)$1
+#graph=$(cgi_param graph | tr -d .)
 case $graph in
 	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|csl0|csl1|csl2|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
-		GROUP_PERIOD=$(cgi_param group | tr -d .)$2
+		#GROUP_PERIOD=$(cgi_param group | tr -d .)
 		if [ -z "$GROUP_PERIOD" ]; then
 			heading=$(echo $graph | sed "s/^upt$/Uptime/;s/^cpu$/Processor/;s/^mem$/Memory/;s/^swap$/Swapspace/;\
 			  s/^thg0$/Thomson THG - basic/;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;\
