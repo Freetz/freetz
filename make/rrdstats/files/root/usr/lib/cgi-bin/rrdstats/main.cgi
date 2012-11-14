@@ -10,7 +10,6 @@ DATESTRING=$(date -R)
 [ -n "$_cgi_width" ] && let WIDTH=_cgi_width-145 || let WIDTH=500
 GROUP_PERIOD="$(cgi_param group | tr -d .)"
 ALL_GRAPHS="$(cgi_param graph | tr -d .)"
-
 while [ $# -gt 0 ]; do
 	case "$1" in
 		-graph=*)
@@ -28,6 +27,7 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
+[ -z "$ALL_GRAPHS" ] && ALL_GRAPHS="mainpage"
 
 let HEIGHT=$WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX
 PERIODE="24h"
