@@ -35,6 +35,9 @@ check "$RRDSTATS_CISCOEPC_FW" _100609 _120225
 check "$RRDSTATS_CISCOEPC_UP" yes:ciscoepc_up
 check "$RRDSTATS_CISCOEPC_UC" yes:ciscoepc_uc
 check "$RRDSTATS_CISCOEPC_DETAILS" yes:ciscoepc_details
+check "$RRDSTATS_CABLESEG_ENABLED" yes:cableseg_enabled
+check "$RRDSTATS_CABLESEG_MAXBW" yes:cableseg_maxbw
+check "$RRDSTATS_CABLESEG_MAXBWSUB" yes:cableseg_maxbwsub
 check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
 check "$RRDSTATS_DIGITEMP_C" yes:digitemp_c "*":digitemp_f
 check "$RRDSTATS_DIGITEMP_RETRY85" yes:digitemp_retry85
@@ -253,6 +256,38 @@ cat << EOF
 </p>
 EOF
 
+sec_end
+fi
+
+if [ "$FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD" == "y" ]; then
+sec_begin '$(lang de:"Kabelsegment" en:"Cable segment")'
+cat << EOF
+
+<p>
+<input type="hidden" name="cableseg_enabled" value="no">
+<input id="k1" type="checkbox" name="cableseg_enabled" value="yes"$cableseg_enabled_chk>
+<label for="k1">$(lang de:"&Uumlberwachung des Kabelsegmentes aktivieren" en:"Observe cable segment load")</label>
+</p>
+
+<p>$(lang de:"Frequenzen" en:"Frequencies"):&nbsp;<input type="text" name="cableseg_frq" size="45" maxlength="255" value="$(html "$RRDSTATS_CABLESEG_FRQ")"></p>
+<p>$(lang de:"Symbolrate" en:"Symbol rate"):&nbsp;<input type="text" name="cableseg_srate" size="5" maxlength="4" value="$(html "$RRDSTATS_CABLESEG_SRATE")"></p>
+<p>$(lang de:"Modulation" en:"Modulation"):&nbsp;<input type="text" name="cableseg_qam" size="4" maxlength="3" value="$(html "$RRDSTATS_CABLESEG_QAM")"></p>
+<p>$(lang de:"Wartezeit nach jeder Frequenz" en:"Wait after each frequency"):&nbsp;<input type="text" name="cableseg_sleep" size="3" maxlength="2" value="$(html "$RRDSTATS_CABLESEG_SLEEP")">&nbsp;($(lang de:"Sekunden" en:"seconds"))</p>
+<p>
+<input type="hidden" name="cableseg_maxbw" value="no">
+<input id="k2" type="checkbox" name="cableseg_maxbw" value="yes"$cableseg_maxbw_chk>
+<label for="k2">$(lang de:"Maximale Bandbreite auf Hauptseite anzeigen" en:"Show maximum bandwidth on main page")</label>
+</p>
+<input type="hidden" name="cableseg_maxbwsub" value="no">
+<input id="k3" type="checkbox" name="cableseg_maxbwsub" value="yes"$cableseg_maxbwsub_chk>
+<label for="k3">$(lang de:"Maximale Bandbreite auf Untzerseiten anzeigen" en:"Show maximum bandwidth on sub pages")</label>
+</p>
+
+<i>$(lang de:"Umgebung f&uuml;r DVB-Programme" en:"Environment for DVB programs")</i>
+<p>$(lang de:"vorher" en:"before"):&nbsp;<input type="text" name="cableseg_pre" size="45" maxlength="255" value="$(html "$RRDSTATS_CABLESEG_PRE")"></p>
+<p>$(lang de:"nachher" en:"after"):&nbsp;<input type="text" name="cableseg_post" size="45" maxlength="255" value="$(html "$RRDSTATS_CABLESEG_POST")"></p>
+
+EOF
 sec_end
 fi
 

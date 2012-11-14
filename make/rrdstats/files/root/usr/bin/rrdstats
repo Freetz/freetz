@@ -358,6 +358,51 @@ collect_net() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $netdata --template in:out
 }
 
+collect_csl() {
+	for _CURRENT_FRQ in $RRDSTATS_CABLESEG_FRQ; do
+		collect_csl_sub $_CURRENT_FRQ
+	done
+}
+
+collect_csl_sub() {
+	local _CURRENT_FRQ=${1}000000
+	NAMEPREFIX=csl_${RRDSTATS_INTERVAL}-$_CURRENT_FRQ
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:load:GAUGE:600:0:U \
+			RRA:MIN:0.5:1:576    RRA:AVERAGE:0.5:1:576    RRA:MAX:0.5:1:576    \
+			RRA:MIN:0.5:6:672    RRA:AVERAGE:0.5:6:672    RRA:MAX:0.5:6:672    \
+			RRA:MIN:0.5:24:732   RRA:AVERAGE:0.5:24:732   RRA:MAX:0.5:24:732   \
+			RRA:MIN:0.5:144:1460 RRA:AVERAGE:0.5:144:1460 RRA:MAX:0.5:144:1460
+	fi
+
+	$RRDSTATS_CABLESEG_PRE
+
+	local cnt=0
+	while ! $_NICE dvbtune -f $_CURRENT_FRQ -s $RRDSTATS_CABLESEG_SRATE -qam $RRDSTATS_CABLESEG_QAM >/dev/null 2>&1; do
+		let cnt++
+		echo "$(date) $_CURRENT_FRQ TUNEFAIL $cnt" >> /var/log/rrdstats_csl.log
+		[ $cnt -gt 2 ] && break
+		sleep 1
+	done
+
+	local val=""
+	[ $cnt -le 2 ] && val=$($_NICE dvbsnoop -timeout 1666 -s bandwidth 8190 -n 5500 -hideproginfo 2>&1 | sed -nr 's/^## PID.*total.*Avrg: *([0-9]*\.[0-9]).*/\1/p')
+	[ $? -ne 0 -o "${val#0}" != "$val" ] && val=""
+
+	$RRDSTATS_CABLESEG_POST
+
+	if [ -n "$val" ]; then
+		# kbit->mbit, round, 1 decimal ...
+		val=$( printf %.1f $(awk "BEGIN{print $val/1024}") )
+		[ ${val%.*} -lt 99 ] && $_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd "N:$val" --template load
+	else
+		echo "$(date) $_CURRENT_FRQ READFAIL" >> /var/log/rrdstats_csl.log
+	fi
+	[ -n "$RRDSTATS_CABLESEG_SLEEP" -a "$RRDSTATS_CABLESEG_SLEEP" != "0" ] && sleep $RRDSTATS_CABLESEG_SLEEP
+}
+
 collect_one() {
 	[ -n "$RRDSTATS_DIGITEMPRS" ] && rs_param=" -s $RRDSTATS_DIGITEMPRS "
 	_CURRENT=$(date +"%d.%m.%Y %T")
@@ -444,6 +489,9 @@ while true; do
 		[ "$RRDSTATS_CABLE_MODEM" = thg ] && collect_thg
 		[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc$RRDSTATS_CISCOEPC_FW
 		[ "$RRDSTATS_CABLE_MODEM" = arris ] && collect_arristm
+	fi
+	if [ "$FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD" == "y" ]; then
+		[ "$RRDSTATS_CABLESEG_ENABLED" = yes ] && collect_csl
 	fi
 	if [ "$FREETZ_PACKAGE_RRDSTATS_STORAGE" == "y" ]; then
 		[ -n "$RRDSTATS_DISK_DEV1" ] && collect_diskio 1

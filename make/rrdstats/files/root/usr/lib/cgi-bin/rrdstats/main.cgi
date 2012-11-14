@@ -598,6 +598,27 @@ generate_graph() {
 				GPRINT:uf:LAST:"%5.1lf\n"                                 > /dev/null
 			fi
 			;;
+		csl0) #all
+			csl_graph 0 $RRDSTATS_CABLESEG_FRQ
+			;;
+		csl1) #lower
+			local cnt=0
+			local _VISIBLE_FRQ=''
+			for _CURRENT_FRQ in $RRDSTATS_CABLESEG_FRQ; do
+				let cnt++
+				[ $cnt -le 4 ] && _VISIBLE_FRQ="$_VISIBLE_FRQ $_CURRENT_FRQ"
+			done
+			[ -n "$_VISIBLE_FRQ" ] && csl_graph 1 $_VISIBLE_FRQ
+			;;
+		csl2) #upper
+			local cnt=0
+			local _VISIBLE_FRQ=''
+			for _CURRENT_FRQ in $RRDSTATS_CABLESEG_FRQ; do
+				let cnt++
+				[ $cnt -gt 4 ] && _VISIBLE_FRQ="$_VISIBLE_FRQ $_CURRENT_FRQ"
+			done
+			[ -n "$_VISIBLE_FRQ" ] && csl_graph 2 $_VISIBLE_FRQ
+			;;
 		swap)
 			FILE=$RRDSTATS_RRDDATA/mem_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
@@ -819,6 +840,91 @@ generate_graph() {
 	return 1
 }
 
+csl_graph() {
+	local _CURRENT_PAGE=$1
+	shift
+	local _VISIBLE_FRQ="$*"
+	local STACK=''
+	local DS_DEF=''
+	local GPRINT=''
+	local FRQ_COUNT=$(echo $_VISIBLE_FRQ | wc -w)
+	local RPN_O=''
+	local RPN_V=''
+	count=0
+
+	for _CURRENT_FRQ in $_VISIBLE_FRQ; do
+		FILE=$RRDSTATS_RRDDATA/csl_${RRDSTATS_INTERVAL}-${_CURRENT_FRQ}000000.rrd
+		if [ -e $FILE ]; then
+			let count++
+			DS_DEF="$DS_DEF DEF:load$count=$FILE:load:AVERAGE"
+
+			[ -n "$RPN_V" ] && RPN_O="$RPN_O,+" && RPN_V="${RPN_V},"
+			RPN_V="${RPN_V}load$count"
+
+			MULTIP=0
+			[ $_CURRENT_PAGE -ne 0 ] && MULTIP=$(($_CURRENT_PAGE-1))
+			COLOR_MOD=$(($count+$MULTIP*$FRQ_COUNT % $FRQ_COUNT+$MULTIP*$FRQ_COUNT))
+			[ $COLOR_MOD == 1 ] && COLOR_VAR=#fffc00
+			[ $COLOR_MOD == 2 ] && COLOR_VAR=#ffc600
+			[ $COLOR_MOD == 3 ] && COLOR_VAR=#ffa200
+			[ $COLOR_MOD == 4 ] && COLOR_VAR=#ff6c00
+			[ $COLOR_MOD == 5 ] && COLOR_VAR=#00c6ff
+			[ $COLOR_MOD == 6 ] && COLOR_VAR=#0090ff
+			[ $COLOR_MOD == 7 ] && COLOR_VAR=#0066ff
+			[ $COLOR_MOD == 8 ] && COLOR_VAR=#0042ff
+
+			GPRINT="$GPRINT \
+			AREA:load$count$COLOR_VAR:$_CURRENT_FRQ${NBSP}MHz${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t$STACK \
+			GPRINT:load$count:MIN:%4.1lf\t/ \
+			GPRINT:load$count:AVERAGE:%4.1lf\t/ \
+			GPRINT:load$count:MAX:%4.1lf\t/ \
+			GPRINT:load$count:LAST:%4.1lf\n "
+			[ -z "$STACK" ] && STACK=":STACK"
+		fi
+	done
+	if [ -n "$DS_DEF" ]; then
+
+		MAXSPEEDC=$(awk "BEGIN{print $FRQ_COUNT*55.62}")
+		MAXSPEED="0"
+		if [ "$_CURRENT_PAGE" == "0" ]; then
+			[ "$RRDSTATS_CABLESEG_MAXBW" == "yes" ] && MAXSPEED="1"
+		else
+			[ "$RRDSTATS_CABLESEG_MAXBWSUB" == "yes" ] && MAXSPEED="1"
+		fi
+		if [ "$MAXSPEED" != "1" ]; then
+			MAXSPEEDR="COMMENT:${NBSP}${NBSP}"
+		else
+			MAXSPEEDR="LINE2:$MAXSPEEDC$BLACK:"
+			MAXSPEEDP="-u $MAXSPEEDC"
+			TOPVALUE="VDEF:top=rpn,MAXIMUM LINE1:top#FF0000"
+		fi
+		MAXSPEEDS="${MAXSPEEDR}Bandwidth${NBSP}available\:${NBSP}$MAXSPEEDC${NBSP}MBit/s\t${NBSP}---------------------------------\n"
+
+		OVERALL=" \
+		CDEF:rpn=$RPN_V$RPN_O \
+		LINE2:rpn$BLACK:Summary${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t \
+		GPRINT:rpn:MIN:%4.1lf\t/ \
+		GPRINT:rpn:AVERAGE:%4.1lf\t/ \
+		GPRINT:rpn:MAX:%4.1lf\t/ \
+		GPRINT:rpn:LAST:%4.1lf\n "
+
+		$_NICE rrdtool graph                                     \
+		$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
+		--title "$TITLE"                                         \
+		--start now-$PERIODE -l 0 $MAXSPEEDP -r                  \
+		--width $WIDTH --height $HEIGHT                          \
+		--vertical-label "MBit/s"                                \
+		-Y                                                       \
+		$DEFAULT_COLORS                                          \
+		$LAZY                                                    \
+		-A                                                       \
+		-W "Generated on: $DATESTRING"                           \
+		                                                         \
+		$DS_DEF $GPRINT $MAXSPEEDS $OVERALL $TOPVALUE            \
+		                                                         > /dev/null 2>&1
+	fi
+}
+
 set_lazy() {
 	LAZY=" "
 	[ "$1" = "no" ] && LAZY=" -z "
@@ -852,7 +958,7 @@ gen_main() {
 
 graph=$(cgi_param graph | tr -d .)
 case $graph in
-	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|csl0|csl1|csl2|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
 		GROUP_PERIOD=$(cgi_param group | tr -d .)
 		if [ -z "$GROUP_PERIOD" ]; then
@@ -861,6 +967,7 @@ case $graph in
 			  s/^epc0$/Cisco EPC - Overview/;\
 			  s/^epcA$/Cisco EPC - Downstream Signal-Noise-Ratio/;s/^epcB$/Cisco EPC - Downstream Signal-Power-Level/;s/^epcC/Cisco EPC - Upstream Signal-Power-Level \& Frequency/;\
 			  s/^epc1$/Cisco EPC - System Uptime/;s/^epc2/Cisco EPC - Downstream Frequency/;\
+			  s/^csl0$/Cable segment load/;s/^csl1$/Cable segment load - lower frequencies/;s/^csl2$/Cable segment load - upper frequencies/;\
 			  s/^arris0$/Arris TM - basic/;s/^arris1$/Arris TM - System Uptime/;s/^arris2/Arris TM - Downstream Frequency/;s/^arris3$/Arris TM - Upstream Frequency/;\
 			  s/^diskio1$/$RRDSTATS_DISK_NAME1/;s/^diskio2$/$RRDSTATS_DISK_NAME2/;s/^diskio3$/$RRDSTATS_DISK_NAME3/;s/^diskio4$/$RRDSTATS_DISK_NAME4/;\
 			  s/^if1$/$RRDSTATS_NICE_NAME1/;s/^if2$/$RRDSTATS_NICE_NAME2/;s/^if3$/$RRDSTATS_NICE_NAME3/;s/^if4$/$RRDSTATS_NICE_NAME4/;s/^one$/DigiTemp/")
@@ -895,6 +1002,15 @@ case $graph in
 			<input type=\"button\" value=\"System Uptime\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris1')\" /> \
 			<input type=\"button\" value=\"Downstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris2')\" /> \
 			<input type=\"button\" value=\"Upstream Frequency\" onclick=\"window.location=('$SCRIPT_NAME?graph=arris3')\" /> \
+			</center>"
+		fi
+		if [ "$(echo "$graph" | sed 's/^csl./yes/')" = yes ]; then
+			echo "<br><center> \
+			<input type=\"button\" value=\"lower frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl1')\" /> \
+			&nbsp; \
+			<input type=\"button\" value=\"all frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl0')\" /> \
+			&nbsp; \
+			<input type=\"button\" value=\"upper frequencies\" onclick=\"window.location=('$SCRIPT_NAME?graph=csl2')\" /> \
 			</center>"
 		fi
 
@@ -932,6 +1048,9 @@ case $graph in
 					[ "$RRDSTATS_CABLE_MODEM" = thg ] && gen_main "thg0" "Thomson THG" "$periodnn"
 					[ "$RRDSTATS_CABLE_MODEM" = epc ] && gen_main "epc0" "Cisco EPC" "$periodnn"
 					[ "$RRDSTATS_CABLE_MODEM" = arris ] && gen_main "arris0" "Arris TM" "$periodnn"
+				fi
+				if [ "$FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD" == "y" ]; then
+					[ "$RRDSTATS_CABLESEG_ENABLED" = yes ] && gen_main "csl0" "Cable segment load" "$periodnn"
 				fi
 				if [ "$FREETZ_PACKAGE_RRDSTATS_STORAGE" == "y" ]; then
 					[ -n "$RRDSTATS_DISK_DEV1" ] && gen_main "diskio1" "$RRDSTATS_DISK_NAME1" "$periodnn"

@@ -35,11 +35,11 @@ config FREETZ_PACKAGE_RRDSTATS_CABLEMODEM_WGET
 
 
 config FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD
-#	bool "Support for cable segment load"
+	bool "Support for cable segment load"
 	depends on FREETZ_PACKAGE_RRDSTATS
 	default n
-#	select FREETZ_PACKAGE_DVBSNOOP
-#	select FREETZ_PACKAGE_DVBTUNE
+	select FREETZ_PACKAGE_DVBSNOOP
+	select FREETZ_PACKAGE_DVBTUNE
 	help
 		Enables the options in the Webif and
 		selects dvbtune & dvbsnoop.
@@ -47,10 +47,10 @@ config FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD
 		whole cable internet segment.
 
 config FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD_SUNDTEK
-	bool "Sundtek DVB driver"
+#	bool "Sundtek DVB driver"
 	depends on FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD
 	default n
-	select FREETZ_PACKAGE_SUNDTEK
+#	select FREETZ_PACKAGE_SUNDTEK
 	help
 		Selects Sundtek DVB driver.
 
