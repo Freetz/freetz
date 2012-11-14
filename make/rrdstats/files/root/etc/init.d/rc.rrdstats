@@ -171,8 +171,14 @@ case $1 in
 	restore)
 		restore
 		;;
+	graph)
+		[ $# -ge 3 ] && GROUP=" ($3)"
+		echo -n "RRDstats generating '$2$GROUP' ... "
+		/usr/lib/cgi-bin/rrdstats/main.cgi $2 $3 >/dev/null 2>&1
+		echo "done."
+		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|config|backup|restore]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config|backup|restore|graph [name] [group]]" 1>&2
 		exit 1
 		;;
 esac

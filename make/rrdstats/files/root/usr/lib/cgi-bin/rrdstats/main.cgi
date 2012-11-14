@@ -956,11 +956,11 @@ gen_main() {
 	sec_end
 }
 
-graph=$(cgi_param graph | tr -d .)
+graph=$(cgi_param graph | tr -d .)$1
 case $graph in
 	cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|csl0|csl1|csl2|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 		set_lazy "$RRDSTATS_NOTLAZYS"
-		GROUP_PERIOD=$(cgi_param group | tr -d .)
+		GROUP_PERIOD=$(cgi_param group | tr -d .)$2
 		if [ -z "$GROUP_PERIOD" ]; then
 			heading=$(echo $graph | sed "s/^upt$/Uptime/;s/^cpu$/Processor/;s/^mem$/Memory/;s/^swap$/Swapspace/;\
 			  s/^thg0$/Thomson THG - basic/;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;\
