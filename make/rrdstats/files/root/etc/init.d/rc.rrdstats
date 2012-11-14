@@ -12,8 +12,6 @@ config() {
 		modlib_config httpd-$SUBDAEMON /mod/etc/httpd-${SUBDAEMON}.conf
 	done
 
-	mkdir -p /tmp/rrdstats/
-	rm -f /tmp/rrdstats/digitemp_alert*
 	# kein "-p" wg externer Pfade!
 	mkdir $RRDSTATS_RRDDATA 2>/dev/null
 	mkdir $RRDSTATS_RRDTEMP 2>/dev/null
@@ -25,6 +23,8 @@ config() {
 	modunreg file rrdstats
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
+		mkdir -p /tmp/.rrdstats/
+		rm -f /tmp/.rrdstats/digitemp_alert*
 		modreg status rrdstats DigiTemp rrddt
 		modreg file rrdstats dt-conf 'dt-conf' 0 "dt-conf"
 		modreg file rrdstats dt-alias 'dt-alias' 1 "dt-alias"

@@ -452,7 +452,7 @@ one_alert() {
 		_ALERT=$(grep "^$_SENSOR_ALI " /tmp/flash/rrdstats/digitemp.alert 2>/dev/null | head -n $_ALERT_NUM | tail -n1 | tr -s " ")
 		_ALERT_SEC=$(echo $_ALERT | cut -d " " -f4)
 
-		_ALERT_FILE=/tmp/rrdstats/digitemp_alert.$_ALERT_NUM
+		_ALERT_FILE=/tmp/.rrdstats/digitemp_alert.$_ALERT_NUM
 		if [ -f $_ALERT_FILE ]; then
 			[ $(( $(cat $_ALERT_FILE)+$_ALERT_SEC )) -gt $(date +%s) ] && continue
 		fi
