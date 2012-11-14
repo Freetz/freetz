@@ -1,7 +1,6 @@
 config FREETZ_PACKAGE_VSFTPD
 	bool "Vsftpd 3.0.2"
 	select FREETZ_LIB_libcrypt if ! FREETZ_PACKAGE_VSFTPD_STATIC
-	select FREETZ_LIB_libnsl if ! FREETZ_PACKAGE_VSFTPD_STATIC
 	default n
 	help
 		A fast and secure FTP server
