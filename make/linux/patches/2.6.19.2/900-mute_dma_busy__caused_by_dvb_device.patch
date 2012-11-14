@@ -1,0 +1,11 @@
+--- linux-2.6.19.2/drivers/usb/musb/musb_host.c	2010-06-03 14:52:03.000000000 +0200
++++ linux-2.6.19.2/drivers/usb/musb/musb_host.c	2012-11-13 20:16:16.557256182 +0100
+@@ -1560,7 +1560,7 @@
+ 
+ 	if (unlikely(dma_channel_status(dma) == MGC_DMA_STATUS_BUSY)) {
+ 		/* SHOULD NEVER HAPPEN ... but at least DaVinci has done it */
+-		ERR("RX%d dma busy, csr %04x\n", bEnd, wRxCsrVal);
++//		ERR("RX%d dma busy, csr %04x\n", bEnd, wRxCsrVal);
+ 		/* WARN_ON(1); */
+ 		goto finish;
+ 	}
