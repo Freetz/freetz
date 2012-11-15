@@ -1,0 +1,56 @@
+--- linux-2.6.19.2/drivers/usb/host/ehci-sched.c	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/usb/host/ehci-sched.c	2012-11-15 17:53:34.763613420 +0100
+@@ -1514,7 +1514,7 @@
+ 					struct ehci_itd, itd_list);
+ 			list_move_tail (&itd->itd_list, &stream->td_list);
+ 			itd->stream = iso_stream_get (stream);
+-			itd->urb = usb_get_urb (urb);
++			itd->urb = urb;
+ 			itd_init (stream, itd);
+ 		}
+ 
+@@ -1595,9 +1595,6 @@
+ 		}
+ 	}
+ 
+-	usb_put_urb (urb);
+-	itd->urb = NULL;
+-	itd->stream = NULL;
+ 	list_move (&itd->itd_list, &stream->free_list);
+ 	iso_stream_put (ehci, stream);
+ 
+@@ -1613,7 +1610,6 @@
+ 	/* give urb back to the driver ... can be out-of-order */
+ 	dev = urb->dev;
+ 	ehci_urb_done (ehci, urb);
+-	urb = NULL;
+ 
+ 	/* defer stopping schedule; completion can submit */
+ 	ehci->periodic_sched--;
+@@ -1900,7 +1896,7 @@
+ 				struct ehci_sitd, sitd_list);
+ 		list_move_tail (&sitd->sitd_list, &stream->td_list);
+ 		sitd->stream = iso_stream_get (stream);
+-		sitd->urb = usb_get_urb (urb);
++		sitd->urb = urb;
+ 
+ 		sitd_patch (stream, sitd, sched, packet);
+ 		sitd_link (ehci, (next_uframe >> 3) % ehci->periodic_size,
+@@ -1958,9 +1954,6 @@
+ 		desc->actual_length = desc->length - SITD_LENGTH (t);
+ 	}
+ 
+-	usb_put_urb (urb);
+-	sitd->urb = NULL;
+-	sitd->stream = NULL;
+ 	list_move (&sitd->sitd_list, &stream->free_list);
+ 	stream->depth -= stream->interval << 3;
+ 	iso_stream_put (ehci, stream);
+@@ -1977,7 +1970,6 @@
+ 	/* give urb back to the driver */
+ 	dev = urb->dev;
+ 	ehci_urb_done (ehci, urb);
+-	urb = NULL;
+ 
+ 	/* defer stopping schedule; completion can submit */
+ 	ehci->periodic_sched--;
