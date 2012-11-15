@@ -32,8 +32,10 @@ start() {
 	done
 
 	# Static Packages
-	if [ -x /etc/init.d/rc.external -a "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ]; then
-		EXTERNAL_SERVICES=" $(cat /etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES "
+	if [ -x /etc/init.d/rc.external ]; then
+		if [ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" -o -n "$MOD_EXTERNAL_OWN_SERVICES" ]; then
+			EXTERNAL_SERVICES=" $(cat /etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES "
+		fi
 	fi
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		[ "$pkg" = mod ] && continue
