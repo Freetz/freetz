@@ -1,0 +1,34 @@
+--- linux-2.6.19.2/drivers/usb/core/devio.c	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/usb/core/devio.c	2012-11-15 16:28:14.916958604 +0100
+@@ -1041,6 +1041,14 @@
+ 		free_async(as);
+ 		return -ENOMEM;
+ 	}
++	/* Isochronous input data may end up being discontiguous
++	 * if some of the packets are short.  Clear the buffer so
++	 * that the gaps don't leak kernel data to userspace.
++	 */
++	//if (is_in && uurb->type == USBDEVFS_URB_TYPE_ISO)
++	if (USB_DIR_IN && uurb->type == USBDEVFS_URB_TYPE_ISO)
++		memset(as->urb->transfer_buffer, 0,
++				uurb->buffer_length);
+         as->urb->dev = ps->dev;
+         as->urb->pipe = (uurb->type << 30) | __create_pipe(ps->dev, uurb->endpoint & 0xf) | (uurb->endpoint & USB_DIR_IN);
+         as->urb->transfer_flags = uurb->flags;
+@@ -1115,9 +1123,14 @@
+ 	void __user *addr = as->userurb;
+ 	unsigned int i;
+ 
+-	if (as->userbuffer)
+-		if (copy_to_user(as->userbuffer, urb->transfer_buffer, urb->transfer_buffer_length))
++	if (as->userbuffer) {
++		if (urb->number_of_packets > 0)		/* Isochronous */
++			i = urb->transfer_buffer_length;
++		else					/* Non-Isoc */
++			i = urb->actual_length;
++		if (copy_to_user(as->userbuffer, urb->transfer_buffer, i))
+ 			return -EFAULT;
++	}
+ 	if (put_user(urb->status, &userurb->status))
+ 		return -EFAULT;
+ 	if (put_user(urb->actual_length, &userurb->actual_length))
