@@ -113,8 +113,10 @@ modreg_file() {
 }
 
 register() {
+	AUML="$(echo -ne '\344')"
+
 	modreg cgi mod "Freetz"
-	modreg conf mod webcfg "$(lang de:"Weboberfläche" en:"Web interface")"
+	modreg conf mod webcfg "$(lang de:"Weboberfl${AUML}che" en:"Web interface")"
 	modreg cgi avm "$(lang de:"AVM-Dienste" en:"AVM services")"
 
 	modreg_file  .profile    0
@@ -138,8 +140,7 @@ case $1 in
 		start
 		;;
 	stop)
-		shift
-		stop $*
+		stop
 		;;
 	*)
 		echo "Usage: $0 [start|stop]" 1>&2
