@@ -9,8 +9,6 @@ $(PKG)_DEPENDS_ON := ncurses
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-$(PKG)_CONFIGURE_ENV += ac_cv_lib_resolv_res_mkquery=yes
-
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
 $(PKG)_CONFIGURE_OPTIONS += --without-gtk
