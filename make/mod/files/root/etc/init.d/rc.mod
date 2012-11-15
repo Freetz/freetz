@@ -33,9 +33,8 @@ start() {
 
 	# Static Packages
 	if [ -x /etc/init.d/rc.external ]; then
-		if [ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" -o -n "$MOD_EXTERNAL_OWN_SERVICES" ]; then
-			EXTERNAL_SERVICES=" $(cat /etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES "
-		fi
+		[ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ] && EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null)"
+		EXTERNAL_SERVICES=" $EXTERNAL_SERVICES $MOD_EXTERNAL_OWN_SERVICES "
 	fi
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		[ "$pkg" = mod ] && continue
@@ -115,7 +114,7 @@ modreg_file() {
 
 register() {
 	modreg cgi mod "Freetz"
-	modreg conf mod webcfg "$(lang de:"Weboberfläche" en:"Web interface")"
+	modreg conf mod webcfg "$(lang de:"Weboberflï¿½che" en:"Web interface")"
 	modreg cgi avm "$(lang de:"AVM-Dienste" en:"AVM services")"
 
 	modreg_file  .profile    0
