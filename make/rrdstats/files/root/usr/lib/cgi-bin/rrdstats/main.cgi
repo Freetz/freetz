@@ -916,8 +916,8 @@ csl_graph() {
 			MAXSPEEDR="COMMENT:${NBSP}${NBSP}"
 		else
 			MAXSPEEDR="LINE2:$MAXSPEEDC$BLACK:"
-			MAXSPEEDP="-u $MAXSPEEDC"
-			TOPVALUE="VDEF:top=rpn,MAXIMUM LINE1:top#FF0000"
+			local MAXSPEEDP="-u $MAXSPEEDC"
+			local TOPVALUE="VDEF:top=rpn,MAXIMUM LINE1:top#FF0000"
 		fi
 		MAXSPEEDS="${MAXSPEEDR}Bandwidth${NBSP}available\:${NBSP}$MAXSPEEDC${NBSP}MBit/s\t${NBSP}---------------------------------\n"
 
