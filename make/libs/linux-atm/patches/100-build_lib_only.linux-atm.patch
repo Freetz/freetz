@@ -1,0 +1,23 @@
+--- Makefile.in
++++ Makefile.in
+@@ -231,7 +231,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = src doc
++SUBDIRS = src
+ EXTRA_DIST = COPYING.GPL COPYING.LGPL BUGS
+ all: config.h
+ 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -215,8 +215,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = include lib test debug qgen q2931 saal sigd maint arpd ilmid man led lane \
+-		mpoad oamd switch config extra br2684
++SUBDIRS = include lib
+ 
+ all: all-recursive
+ 
