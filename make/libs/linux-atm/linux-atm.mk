@@ -34,7 +34,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LINUX_ATM_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libatm*
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libatm* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{atm,atmd,atmsap}.h
 
 $(pkg)-uninstall:
 	$(RM) $(LINUX_ATM_TARGET_DIR)/libatm*.so*
