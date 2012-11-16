@@ -1,0 +1,29 @@
+--- configure
++++ configure
+@@ -10886,6 +10886,7 @@
+ 
+ 
+ 
++if false; then
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lresolv" >&5
+ $as_echo_n "checking for main in -lresolv... " >&6; }
+ if test "${ac_cv_lib_resolv_main+set}" = set; then :
+@@ -10927,6 +10928,7 @@
+   as_fn_error $? "*** Unable to find libresolv!!!" "$LINENO" 5
+ 
+ fi
++fi
+ 
+ 
+ LIBS=""
+--- src/lib/Makefile.in
++++ src/lib/Makefile.in
+@@ -230,7 +230,7 @@
+ 			misc.c atmres.h ans.c \
+ 			common.c diag.c kptr.c text2ip.c timer.c unix.c
+ 
+-libatm_la_LIBADD = -lresolv
++libatm_la_LIBADD =
+ libatm_la_DEPENDENCIES = $(top_builddir)/src/include/atm.h \
+ 				$(top_builddir)/src/include/atmsap.h \
+ 				$(top_builddir)/src/include/atmd.h
