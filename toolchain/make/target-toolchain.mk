@@ -32,17 +32,20 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@/usr/lib/pkgconfig
 	@mkdir -p $@/target-utils
 
-target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
+target-toolchain: \
+	$(TARGET_TOOLCHAIN_STAGING_DIR) \
 	$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) \
 	$(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP) \
 	kernel-configured uclibc-configured target-toolchain-kernel-headers \
-	$(TARGET_TOOLCHAIN)
+	$(TARGET_TOOLCHAIN) \
+	| $(TARGET_TOOLCHAIN_DIR)
 
-target-toolchain-unpacked: $(TARGET_TOOLCHAIN_DIR) \
+target-toolchain-unpacked: \
 	uclibc-unpacked \
 	binutils-unpacked \
 	gcc-unpacked \
-	ccache-unpacked
+	ccache-unpacked \
+	| $(TARGET_TOOLCHAIN_DIR)
 
 target-toolchain-clean: \
 	binutils-uninstall binutils_target-uninstall gcc-uninstall gcc_target-uninstall \
