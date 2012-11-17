@@ -1,0 +1,20 @@
+--- Makefile
++++ Makefile
+@@ -28,7 +28,7 @@
+ TOPDIR=./
+ include Rules.mak
+ 
+-DIRS = ldso libc libcrypt libresolv libnsl libutil libm libpthread librt
++DIRS = ldso libc libcrypt libutil libm libpthread librt
+ ifeq ($(strip $(UCLIBC_HAS_GETTEXT_AWARENESS)),y)
+ 	DIRS += libintl
+ endif
+@@ -48,8 +48,6 @@
+ 	@$(MAKE) -C libc shared
+ 	@$(MAKE) -C ldso shared
+ 	@$(MAKE) -C libcrypt shared
+-	@$(MAKE) -C libresolv shared
+-	@$(MAKE) -C libnsl shared
+ 	@$(MAKE) -C libutil shared
+ 	@$(MAKE) -C libm shared
+ 	@$(MAKE) -C libpthread shared
