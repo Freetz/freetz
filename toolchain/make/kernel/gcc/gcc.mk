@@ -108,4 +108,4 @@ gcc-kernel-clean: gcc-kernel-uninstall
 gcc-kernel-dirclean: gcc-kernel-clean
 	$(RM) -r $(GCC_KERNEL_DIR)
 
-.PHONY: gcc-kernel
+.PHONY: gcc-kernel gcc-kernel-source gcc-kernel-uninstall gcc-kernel-clean gcc-kernel-dirclean

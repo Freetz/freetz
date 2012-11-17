@@ -80,4 +80,4 @@ binutils-kernel-dirclean: binutils-kernel-clean
 
 binutils-kernel: binutils-dependencies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
 
-.PHONY: binutils binutils-dependencies
+.PHONY: binutils-kernel binutils-kernel-source binutils-dependencies binutils-kernel-uninstall binutils-kernel-clean binutils-kernel-dirclean

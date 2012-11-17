@@ -2,6 +2,7 @@ CCACHE_KERNEL_VERSION:=3.1.7
 CCACHE_KERNEL_SOURCE:=ccache-$(CCACHE_KERNEL_VERSION).tar.bz2
 CCACHE_KERNEL_MD5:=82257745eac54826527946e9e3d046f4
 CCACHE_KERNEL_SITE:=http://samba.org/ftp/ccache
+
 CCACHE_KERNEL_DIR:=$(KERNEL_TOOLCHAIN_DIR)/ccache-$(CCACHE_KERNEL_VERSION)
 CCACHE_KERNEL_BINARY:=ccache
 CCACHE_KERNEL_TARGET_BINARY:=bin/ccache
@@ -10,6 +11,7 @@ CCACHE_CACHE_DIR=$(HOME)/.freetz-ccache
 
 CCACHE_KERNEL_BIN_DIR:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache
 
+ccache-kernel-source: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
 $(DL_DIR)/$(CCACHE_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(CCACHE_KERNEL_SOURCE) $(CCACHE_KERNEL_SITE) $(CCACHE_KERNEL_MD5)
 
@@ -44,7 +46,7 @@ $(CCACHE_KERNEL_DIR)/$(CCACHE_KERNEL_BINARY): $(CCACHE_KERNEL_DIR)/.configured
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY): $(CCACHE_KERNEL_DIR)/$(CCACHE_KERNEL_BINARY)
 	mkdir -p $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin
-	mkdir -p $(CCACHE_CACHE_DIR) 
+	mkdir -p $(CCACHE_CACHE_DIR)
 	cp $(CCACHE_KERNEL_DIR)/$(CCACHE_KERNEL_BINARY) $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
 	# Keep the actual toolchain binaries in a directory at the same level.
 	# Otherwise, relative paths for include dirs break.
@@ -74,6 +76,6 @@ ccache-kernel-clean:
 	-$(MAKE) -C $(CCACHE_KERNEL_DIR) clean
 
 ccache-kernel-dirclean: ccache-kernel-clean
-	rm -rf $(CCACHE_KERNEL_DIR)
+	$(RM) -r $(CCACHE_KERNEL_DIR)
 
-.PHONY: ccache-kernel
+.PHONY: ccache-kernel ccache-kernel-source ccache-kernel-clean ccache-kernel-dirclean
