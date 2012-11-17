@@ -191,16 +191,12 @@ uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
 uclibc: $(UCLIBC_PREREQ) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)/lib/libc.so.0
 
-uclibc-configured-source: uclibc-source
-
 uclibc-clean:
 	-$(MAKE1) -C $(UCLIBC_DIR) clean
 	$(RM) $(UCLIBC_DIR)/.config
 
 uclibc-dirclean:
 	$(RM) -r $(UCLIBC_DIR)
-
-.PHONY: uclibc-configured uclibc
 
 #############################################################
 #
@@ -232,3 +228,7 @@ uclibc_target-clean: uclibc_target-dirclean
 
 uclibc_target-dirclean:
 	$(RM) -r $(TARGET_UTILS_DIR)/usr/include
+
+.PHONY: uclibc-source uclibc-unpacked uclibc-menuconfig \
+	uclibc-configured uclibc uclibc-clean uclibc-dirclean \
+	uclibc_target uclibc_target-clean uclibc_target-dirclean

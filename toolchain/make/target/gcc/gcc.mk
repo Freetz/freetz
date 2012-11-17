@@ -230,8 +230,6 @@ gcc-clean: gcc-uninstall
 
 gcc-dirclean: gcc-clean
 
-.PHONY: gcc gcc_initial
-
 #############################################################
 #
 # Next build target gcc compiler
@@ -291,3 +289,8 @@ gcc_target-clean: gcc_target-uninstall
 	$(RM) -r $(GCC_BUILD_DIR3)
 
 gcc_target-dirclean: gcc_target-clean
+
+.PHONY: gcc-source gcc-unpacked \
+	gcc_initial gcc_initial-uninstall gcc_initial-clean gcc_initial-dirclean \
+	gcc gcc-uninstall gcc-clean gcc-dirclean \
+	gcc_target gcc_target-uninstall gcc_target-clean gcc_target-dirclean

@@ -15,16 +15,8 @@ include $(TOOLCHAIN_DIR)/make/target/python-host/python-host.mk
 include $(TOOLCHAIN_DIR)/make/target/python-setuptools/python-setuptools.mk
 include $(TOOLCHAIN_DIR)/make/target/python-distutilscross/python-distutilscross.mk
 
-TARGET_TOOLCHAIN := binutils gcc $(STDCXXLIB)
-
-ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
-	TARGET_TOOLCHAIN += ccache
-endif
-
-ifeq ($(strip $(FREETZ_TARGET_TOOLCHAIN)),y)
-	TARGET_TOOLCHAIN += binutils_target gcc_target uclibc_target
-endif
-
+TARGET_TOOLCHAIN := binutils gcc $(STDCXXLIB) $(if $(FREETZ_TOOLCHAIN_CCACHE),ccache)
+TARGET_TOOLCHAIN += $(if $(FREETZ_TARGET_TOOLCHAIN),binutils_target gcc_target uclibc_target)
 TARGET_TOOLCHAIN += libtool-host $(if $(FREETZ_PACKAGE_GDB_HOST),gdbhost)
 TARGET_TOOLCHAIN += python-host python-setuptools python-distutilscross
 
@@ -41,30 +33,22 @@ $(TARGET_TOOLCHAIN_STAGING_DIR):
 	@mkdir -p $@/target-utils
 
 target-toolchain: $(TARGET_TOOLCHAIN_DIR) $(TARGET_TOOLCHAIN_STAGING_DIR) \
-			$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) \
-			$(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP) \
-			kernel-configured uclibc-configured target-toolchain-kernel-headers \
-			$(TARGET_TOOLCHAIN)
+	$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) \
+	$(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP) \
+	kernel-configured uclibc-configured target-toolchain-kernel-headers \
+	$(TARGET_TOOLCHAIN)
 
-target-toolchain-source: $(TARGET_TOOLCHAIN_DIR) \
-	$(UCLIBC_DIR)/.unpacked \
-	$(BINUTILS_DIR)/.unpacked \
-	$(GCC_DIR)/.unpacked \
-	$(CCACHE_DIR)/.unpacked
+target-toolchain-unpacked: $(TARGET_TOOLCHAIN_DIR) \
+	uclibc-unpacked \
+	binutils-unpacked \
+	gcc-unpacked \
+	ccache-unpacked
 
-target-toolchain-clean:
-	$(RM) $(UCLIBC_DIR)/.config
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)*
-	$(RM) -r $(TARGET_UTILS_DIR)/*
-	-$(MAKE) -C $(UCLIBC_DIR) clean
-	-$(MAKE) -C $(BINUTILS_DIR) clean
-	$(RM) -r $(GCC_BUILD_DIR1)
-	$(RM) -r $(GCC_BUILD_DIR2)
-	$(RM) -r $(GCC_BUILD_DIR3)
-ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache/$(REAL_GNU_TARGET_NAME)*
-	-$(MAKE) -C $(CCACHE_DIR) clean
-endif
+target-toolchain-clean: \
+	binutils-uninstall binutils_target-uninstall gcc-uninstall gcc_target-uninstall \
+	binutils-clean binutils_target-clean gcc_initial-clean gcc-clean gcc_target-clean uclibc-clean ccache-clean
 
-target-toolchain-dirclean:
+target-toolchain-dirclean: binutils-dirclean binutils_target-dirclean gcc_initial-dirclean gcc-dirclean gcc_target-dirclean ccache-dirclean uclibc-dirclean
 	$(RM) -r $(TARGET_TOOLCHAIN_DIR)
+
+.PHONY: target-toolchain target-toolchain-unpacked target-toolchain-clean target-toolchain-dirclean

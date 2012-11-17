@@ -2,6 +2,7 @@ CCACHE_VERSION:=3.1.7
 CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.bz2
 CCACHE_MD5:=82257745eac54826527946e9e3d046f4
 CCACHE_SITE:=http://samba.org/ftp/ccache
+
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
 CCACHE_BINARY:=ccache
 CCACHE_TARGET_BINARY:=usr/bin/ccache
@@ -10,11 +11,13 @@ CCACHE_BIN_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 
 CCACHE_CACHE_DIR=$(HOME)/.freetz-ccache
 
+ccache-source: $(DL_DIR)/$(CCACHE_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_MD5)
 endif
 
+ccache-unpacked: $(CCACHE_DIR)/.unpacked
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -f $(CCACHE_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(CCACHE_SOURCE)
@@ -88,6 +91,6 @@ ccache-clean:
 	-$(MAKE) -C $(CCACHE_DIR) clean
 
 ccache-dirclean: ccache-clean
-	rm -rf $(CCACHE_DIR)
+	$(RM) -r $(CCACHE_DIR)
 
-.PHONY: ccache
+.PHONY: ccache ccache-source ccache-unpacked ccache-clean ccache-dirclean
