@@ -44,7 +44,7 @@ target-toolchain-unpacked: \
 	uclibc-unpacked \
 	binutils-unpacked \
 	gcc-unpacked \
-	ccache-unpacked \
+	$(if $(FREETZ_TOOLCHAIN_CCACHE),ccache-unpacked) \
 	| $(TARGET_TOOLCHAIN_DIR)
 
 target-toolchain-clean: \
