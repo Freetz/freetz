@@ -18,10 +18,10 @@ kernel-toolchain: \
 	$(KERNEL_TOOLCHAIN) \
 	| $(KERNEL_TOOLCHAIN_DIR)
 
-kernel-toolchain-source: \
-	$(BINUTILS_KERNEL_DIR)/.unpacked \
-	$(GCC_KERNEL_DIR)/.unpacked \
-	$(CCACHE_KERNEL_DIR)./unpacked \
+kernel-toolchain-unpacked: \
+	binutils-kernel-unpacked \
+	gcc-kernel-unpacked \
+	$(if $(FREETZ_TOOLCHAIN_CCACHE),ccache-kernel-unpacked) \
 	| $(KERNEL_TOOLCHAIN_DIR)
 
 kernel-toolchain-clean: \
@@ -30,3 +30,5 @@ kernel-toolchain-clean: \
 
 kernel-toolchain-dirclean: binutils-kernel-dirclean gcc-kernel-dirclean ccache-kernel-dirclean
 	$(RM) -r $(KERNEL_TOOLCHAIN_DIR)
+
+.PHONY: kernel-toolchain kernel-toolchain-unpacked kernel-toolchain-clean kernel-toolchain-dirclean

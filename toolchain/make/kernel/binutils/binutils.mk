@@ -15,6 +15,7 @@ binutils-kernel-source: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(BINUTILS_KERNEL_SOURCE) $(BINUTILS_KERNEL_SITE) $(BINUTILS_KERNEL_MD5)
 
+binutils-kernel-unpacked: $(BINUTILS_KERNEL_DIR)/.unpacked
 $(BINUTILS_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 	mkdir -p $(KERNEL_TOOLCHAIN_DIR)
 	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
@@ -80,4 +81,4 @@ binutils-kernel-dirclean: binutils-kernel-clean
 
 binutils-kernel: binutils-dependencies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
 
-.PHONY: binutils-kernel binutils-kernel-source binutils-dependencies binutils-kernel-uninstall binutils-kernel-clean binutils-kernel-dirclean
+.PHONY: binutils-kernel binutils-kernel-source binutils-kernel-unpacked binutils-dependencies binutils-kernel-uninstall binutils-kernel-clean binutils-kernel-dirclean

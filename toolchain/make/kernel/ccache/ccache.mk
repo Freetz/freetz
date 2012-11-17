@@ -15,6 +15,7 @@ ccache-kernel-source: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
 $(DL_DIR)/$(CCACHE_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(CCACHE_KERNEL_SOURCE) $(CCACHE_KERNEL_SITE) $(CCACHE_KERNEL_MD5)
 
+ccache-kernel-unpacked: $(CCACHE_KERNEL_DIR)/.unpacked
 $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR)
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
@@ -78,4 +79,4 @@ ccache-kernel-clean:
 ccache-kernel-dirclean: ccache-kernel-clean
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 
-.PHONY: ccache-kernel ccache-kernel-source ccache-kernel-clean ccache-kernel-dirclean
+.PHONY: ccache-kernel ccache-kernel-source ccache-kernel-unpacked ccache-kernel-clean ccache-kernel-dirclean

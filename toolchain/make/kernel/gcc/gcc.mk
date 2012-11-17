@@ -52,6 +52,7 @@ gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 $(DL_DIR)/$(GCC_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GCC_KERNEL_SOURCE) $(GCC_KERNEL_SITE) $(GCC_KERNEL_MD5)
 
+gcc-kernel-unpacked: $(GCC_KERNEL_DIR)/.unpacked
 $(GCC_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 	mkdir -p $(KERNEL_TOOLCHAIN_DIR)
 	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(GCC_KERNEL_SOURCE)
@@ -108,4 +109,4 @@ gcc-kernel-clean: gcc-kernel-uninstall
 gcc-kernel-dirclean: gcc-kernel-clean
 	$(RM) -r $(GCC_KERNEL_DIR)
 
-.PHONY: gcc-kernel gcc-kernel-source gcc-kernel-uninstall gcc-kernel-clean gcc-kernel-dirclean
+.PHONY: gcc-kernel gcc-kernel-source gcc-kernel-unpacked gcc-kernel-uninstall gcc-kernel-clean gcc-kernel-dirclean
