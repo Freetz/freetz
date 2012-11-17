@@ -1,0 +1,50 @@
+--- configure
++++ configure
+@@ -7284,6 +7284,7 @@
+ 
+ fi
+ 
++if false; then
+ 	# -lresolv needs to be at the end of LIBS or DNS lookups break
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for res_query in -lresolv" >&5
+ $as_echo_n "checking for res_query in -lresolv... " >&6; }
+@@ -7324,6 +7325,7 @@
+ if test "x$ac_cv_lib_resolv_res_query" = xyes; then :
+    LIBS="$LIBS -lresolv"
+ fi
++fi
+ 
+ 	IPADDR_IN_DISPLAY=yes
+ 	$as_echo "#define USE_PIPES 1" >>confdefs.h
+@@ -8231,6 +8233,7 @@
+ if test "x$ac_cv_func_strcasecmp" = xyes; then :
+ 
+ else
++if false; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for strcasecmp in -lresolv" >&5
+ $as_echo_n "checking for strcasecmp in -lresolv... " >&6; }
+ if ${ac_cv_lib_resolv_strcasecmp+:} false; then :
+@@ -8270,6 +8273,7 @@
+ if test "x$ac_cv_lib_resolv_strcasecmp" = xyes; then :
+   LIBS="$LIBS -lresolv"
+ fi
++fi
+ 
+ 
+ fi
+@@ -14901,6 +14905,7 @@
+ else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ $as_echo "no" >&6; }
++if false; then
+ 		    saved_LIBS="$LIBS"
+ 		    LIBS="$LIBS -lresolv"
+ 		    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for res_query in -lresolv" >&5
+@@ -14936,6 +14941,7 @@
+     conftest$ac_exeext conftest.$ac_ext
+ 
+ fi
++fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ 		for ac_func in _getshort _getlong
