@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 4.0.5)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=5400cad5f91e131ac2ded7c24aea594c
+$(call PKG_INIT_BIN, 4.4.0)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=b057e3e01686a200c35753c3496c2130
 $(PKG)_SITE:=http://ftp.yars.free.net/pub/source/lftp
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lftp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lftp
 
@@ -17,10 +18,11 @@ endif
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-# rename lftp's xmalloc/xrealloc/... functions to avoid name clashing with the same-named functions provided by readline
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r \
-	-e 's,^(.*[^a-zA-Z_0-9]|[ \t]*)(xmalloc|xmalloc_register_block|xrealloc|x2realloc|xzalloc|xcalloc|xfree|xmemdup|xstrdup|xstrset)([ \t]*[(]),\1lftp_\2\3,g' \
-	lib/*.h lib/*.c src/*.h src/*.c src/*.cc;
+$(PKG)_CONFIGURE_ENV += i_cv_posix_fallocate_works=no
+$(PKG)_CONFIGURE_ENV += gl_cv_func_frexp_no_libm=no
+$(PKG)_CONFIGURE_ENV += gl_cv_func_frexpl_no_libm=no
+$(PKG)_CONFIGURE_ENV += gl_cv_func_ldexp_no_libm=no
+$(PKG)_CONFIGURE_ENV += gl_cv_func_ldexpl_no_libm=no
 
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
