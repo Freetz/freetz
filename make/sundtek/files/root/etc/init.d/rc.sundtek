@@ -1,0 +1,76 @@
+#!/bin/sh
+
+DAEMON=sundtek
+DAEMON_LONG_NAME="Sundtek DVB"
+DAEMON_BIN=mediasrv
+DAEMON_CHECK=mediasrv
+. /etc/init.d/modlibrc
+
+DAEMON_BIN_CONFIG=mediaclient
+
+
+start() {
+	modlib_startdaemon $DAEMON_BIN -d -l /var/log/sundtek.log
+}
+
+startdaemon_post() {
+	[ -z "$SUNDTEK_CONFIG" ] && return
+	#wait for device
+	local cnt=0
+	while [ $( $DAEMON_BIN_CONFIG -e 2>/dev/null|wc -l) -le 1 ]; do
+		let cnt++
+		echo -n "."
+		[ $cnt -gt 99 ] && return 1
+		sleep 1
+	done
+	#set configuration
+	echo "$SUNDTEK_CONFIG" |
+	while IFS= read -r line; do
+		[ -z "$line" -o "${line#\#}" != "${line#;}" ] && continue
+		$DAEMON_BIN_CONFIG $line >/dev/null
+	done
+	echo -n " "
+}
+
+stop() {
+	$DAEMON_BIN_CONFIG --shutdown >/dev/null
+	#wait for shutdown
+	local cnt=0
+	while pidof $DAEMON_BIN >/dev/null; do
+		let cnt++
+		[ $cnt -gt 17 ] && return 1
+		sleep 1
+	done
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+
+		modlib_start $SUNDTEK_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

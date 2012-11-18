@@ -1,0 +1,11 @@
+config FREETZ_PACKAGE_SUNDTEK
+	bool "Sundtek DVB driver 121113.174818"
+	default n
+	help
+		Sundtek closed-source linux driver daemon & client.
+
+comment "CAUTION: With kernel 2.6.19 your RAM will be eaten"
+depends on FREETZ_PACKAGE_SUNDTEK && FREETZ_KERNEL_VERSION_2_6_19
+comment "up within 12h, see http://freetz.org/ticket/472"
+depends on FREETZ_PACKAGE_SUNDTEK && FREETZ_KERNEL_VERSION_2_6_19
+
