@@ -1,0 +1,134 @@
+#!/bin/sh
+
+# firmware downloader & unpacker script
+#
+# download:
+#    Downloads everything (~1,1GB) from ftp.avm.de except
+#    sources, then deletes unneded files (~350 MB).
+#    The filename based on the whole directory (s!/!--!).
+# unpack:
+#    Removes unpacked/ folder, unpacks all downloaded firmware
+#    files to corresponding folder.
+#    Output: Either the count of files or something else on error.
+# unpack <file1 .. fileN>:
+#    Unpacks given files to subdir of current folder (${file%.image}).
+#
+# don't run as root ;-)
+#
+#
+# cuma, 19.11.2012
+
+
+DL_DIR=~/fw-avm
+
+
+download() {
+	mkdir -p $DL_DIR
+	cd $DL_DIR
+	rm -rf ftp.avm.de 2>/dev/null
+	wget -nv -m -X /*/*/x_misc ftp://ftp.avm.de/fritz.box/
+	find ftp.avm.de -type f ! -name *.image -exec rm -rf {} ';' 2>/dev/null
+	for file in `find ftp.avm.de -type f`; do mv -f $file `echo $file|sed 's!firmware/!!g;s!ftp\.avm\.de/fritz.box/!!g;s!/!--!g'`; done
+	rm -rf ftp.avm.de 2>/dev/null
+}
+
+unpack () {
+	[ ! -d $DL_DIR ] && echo "no $DL_DIR dir with images"
+	cd $DL_DIR
+	rm -rf unpacked 2>/dev/null
+	mkdir -p unpacked
+	[ -f _failed.log ] && rm _failed.log
+
+	for file in *.image; do
+		image $file unpacked/
+	done
+
+	if [ -e _failed.log ]; then
+		echo FAILED:
+		cat _failed.log
+	fi
+}
+
+image() {
+	local img=$1
+	local dst=$2
+	tar xf $img ./var/tmp/*.image >/dev/null 2>&1 # --wildcard
+	if [ ! -d var ]; then
+		echo -e "NULL\t$img"
+		continue
+	fi
+	if [ ! -f var/tmp/kernel.image ]; then
+		echo -e "---\t$img" | tee -a _failed.log
+		continue
+	fi
+	$FTOOLS/remove-junk-bytes var/tmp/kernel.image var/tmp/kernel.junked 2>&1 | grep -E "removing junk bytes" #|No junk header found"
+	mv var/tmp/kernel.junked var/tmp/kernel.image 2>/dev/null
+	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
+	rm -rf var
+	$FTOOLS/rmtichksum -f x.image >/dev/null 2>&1
+	$FTOOLS/find-squashfs x.image >/dev/null 2>&1
+	rm x.image
+	cat kernelsquashfs.raw kernel.raw > x.raw
+	rm kernel.raw
+	rm kernelsquashfs.raw
+	$FTOOLS/unsquashfs3-lzma x.raw >/dev/null 2>&1 || $FTOOLS/unsquashfs3 x.raw >/dev/null 2>&1 || echo FALSE $img #$FTOOLS/unsquashfs-lzma x.raw >/dev/null 2>&1 ||
+	rm x.raw
+	#for newest fw
+	if [ -e squashfs-root/filesystem_core.squashfs ]; then
+		$FTOOLS/find-squashfs squashfs-root/filesystem_core.squashfs >/dev/null 2>&1
+		rm -rf squashfs-root
+		rm kernel.raw
+		unsquashfs kernelsquashfs.raw >/dev/null 2>&1
+		rm kernelsquashfs.raw
+	fi
+
+	if [ -d squashfs-root ]; then
+		echo -e "`find squashfs-root -type f | wc -l`\t${img##*/}" # | tee -a _failed.log
+		mv squashfs-root ${dst}`echo $img |sed 's!\.image$!!;s!.*/!!'`
+	##rm -rf $img
+	else
+		echo -e "===\t$img" | tee -a _failed.log
+	fi
+}
+
+# check args
+while [ $# -gt 0 ]; do
+	case $1 in
+		download)
+			download=y
+			;;
+		unpack)
+			unpack=y
+			;;
+		*)
+			image="$image $1"
+			;;
+	esac
+	shift
+done
+if [ "$download" != "y" -a "$unpack" != "y" ]; then
+	echo "usage: ${0##*/} <download AND/OR unpack [image1 .. imageN]>"
+	exit 1
+fi
+
+# check tools
+if [ "$unpack" == "y" ]; then
+	FTOOLS="$(dirname $(readlink -f ${0}))"
+	if [ ! -e $FTOOLS/find-squashfs ]; then
+		echo "You have to run 'make tools' first."
+		exit 1
+	fi
+fi
+
+# main
+[ "$download" == "y" ] && download
+if [ "$unpack" == "y" ]; then
+	if [ -z "$image" ]; then
+		unpack
+	else
+		for imgfile in $image; do
+			image $imgfile
+		done
+	fi
+fi
+
