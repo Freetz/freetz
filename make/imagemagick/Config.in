@@ -1,0 +1,113 @@
+config FREETZ_PACKAGE_IMAGEMAGICK
+	bool "ImageMagick 6.8.0-4 (binary only)"
+	default n
+	help
+		ImageMagick is a robust collection of tools and libraries to read,
+		write, and manipulate an image in many image formats, including popular
+		formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. With ImageMagick,
+		you can create images dynamically, making it suitable for Web
+		applications. You can also resize, rotate, sharpen, color-reduce, or
+		add special effects to an image and save your completed work in many
+		different image formats. Image processing operations are available from
+		the command line as well as through C, C++, and PERL-based programming
+		interfaces.
+
+menu "Utilities"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_animate
+	bool "animate"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_conjure
+	bool "conjure"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_convert
+	bool "convert"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_compare
+	bool "compare"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_composite
+	bool "composite"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_display
+	bool "display"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_identify
+	bool "identify"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_import
+	bool "import"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_mogrify
+	bool "mogrify"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_montage
+	bool "montage"
+	default y
+
+	config FREETZ_PACKAGE_IMAGEMAGICK_stream
+    bool "stream"
+    default y
+
+endmenu
+
+menu "Configuration"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+
+config FREETZ_PACKAGE_IMAGEMAGICK_freetype
+	bool "freetype"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default y
+	select FREETZ_LIB_libfreetype
+
+config FREETZ_PACKAGE_IMAGEMAGICK_ghostscript_fonts
+	bool
+#	bool "Ghostscript fonts"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default n
+#	select FREETZ_PACKAGE_GHOSTSCRIPT_FONTS
+
+config FREETZ_PACKAGE_IMAGEMAGICK_jpeg
+	bool "jpeg"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default y
+	select FREETZ_LIB_libjpeg
+
+config FREETZ_PACKAGE_IMAGEMAGICK_libz
+	bool "libz"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default y
+	select FREETZ_LIB_libz
+
+config FREETZ_PACKAGE_IMAGEMAGICK_png
+	bool "png"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default y
+	select FREETZ_LIB_libpng12
+
+config FREETZ_PACKAGE_IMAGEMAGICK_xml
+	bool "xml"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default y
+	select FREETZ_LIB_libxml2
+
+endmenu
+
+config FREETZ_PACKAGE_IMAGEMAGICK_STATIC
+	bool "Statically link libraries"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default n
+	help
+		Statically link libmagick and
+		libwand by activating this switch.
+

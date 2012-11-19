@@ -1,0 +1,15 @@
+if [ "$EXTERNAL_FREETZ_PACKAGE_IMAGEMAGICK" ]; then
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_STATIC"    == "y" ] && EXTERNAL_FILES+=" /lib/freetz/libMagickWand.so.6.0.0"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_STATIC"    == "y" ] && EXTERNAL_FILES+=" /lib/freetz/libMagickCore.so.6.0.0"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_animate"   == "y" ] && EXTERNAL_FILES+=" /usr/bin/animate"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_conjure"   == "y" ] && EXTERNAL_FILES+=" /usr/bin/conjure"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_convert"   == "y" ] && EXTERNAL_FILES+=" /usr/bin/convert"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_compare"   == "y" ] && EXTERNAL_FILES+=" /usr/bin/compare"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_composite" == "y" ] && EXTERNAL_FILES+=" /usr/bin/composite"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_display"   == "y" ] && EXTERNAL_FILES+=" /usr/bin/display"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_identify"  == "y" ] && EXTERNAL_FILES+=" /usr/bin/identify"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_import"    == "y" ] && EXTERNAL_FILES+=" /usr/bin/import"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_mogrify"   == "y" ] && EXTERNAL_FILES+=" /usr/bin/mogrify"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_montage"   == "y" ] && EXTERNAL_FILES+=" /usr/bin/montage"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_stream"    == "y" ] && EXTERNAL_FILES+=" /usr/bin/stream"
+fi
