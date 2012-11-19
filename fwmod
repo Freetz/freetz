@@ -405,7 +405,8 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	# Remove AVM's special junk bytes from SquashFS
 	if [ "$FREETZ_HAS_AVM_JUNK_BYTES" == "y" ]; then
 		echo0 "removing AVM SquashFS junk bytes"
-		[ "$FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="{FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
+		[ "$FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
+echo $JUNK_BYTES_FILE
 		if [ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ]; then
 			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk" >/dev/null 2>&1
 		else
