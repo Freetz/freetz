@@ -6,6 +6,8 @@ config FREETZ_PACKAGE_SUNDTEK
 	default n
 	help
 		Sundtek closed-source linux driver daemon & client.
+		To use this driver you have to run:
+		export LD_PRELOAD=/usr/lib/libmediaclient.so
 
 comment "CAUTION: With kernel 2.6.19 your RAM will be eaten"
 depends on FREETZ_PACKAGE_SUNDTEK && FREETZ_KERNEL_VERSION_2_6_19
