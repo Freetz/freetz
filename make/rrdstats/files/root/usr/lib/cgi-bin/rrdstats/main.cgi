@@ -21,6 +21,9 @@ while [ $# -gt 0 ]; do
 		-width=*)
 			WIDTH="${1#*=}"
 			;;
+		-period=*)
+			PERIOD_ARG="$PERIOD_ARG ${1#*=}"
+			;;
 		-not-lazy)
 			NOTLAZY="1"
 			;;
@@ -970,7 +973,7 @@ gen_main() {
 	GROUP=$4
 	[ $# -ge 4 ] && GROUP_URL="&group=$4"
 	sec_begin "$FNAME"
-	generate_graph "$SNAME" "$RRDSTATS_PERIODMAIN" "$SNAME" "" $GROUP
+	generate_graph "$SNAME" "$CURRENT_PERIOD" "$SNAME" "" $GROUP
 	echo "<center><a href=\"$SCRIPT_NAME?graph=$SNAME$GROUP_URL\" class=\"image\">"
 	echo "<img src=\"/statpix/$SNAME$GROUP.png$NOCACHE\" alt=\"$FNAME stats for last $LAPSE\" border=\"0\" />"
 	echo "</a></center>"
@@ -1038,7 +1041,8 @@ graphit() {
 			fi
 
 
-			for period in $RRDSTATS_PERIODSSUB; do
+			[ -n "$PERIOD_ARG" ] && CURRENT_PERIOD="$PERIOD_ARG" || CURRENT_PERIOD="$RRDSTATS_PERIODSSUB"
+			for period in $CURRENT_PERIOD; do
 				set_period $period
 				sec_begin "last $periodnn"
 				generate_graph "$graph" "$periodG" "$graph-$period" "" $GROUP_PERIOD
@@ -1052,7 +1056,8 @@ graphit() {
 			;;
 		*)
 			set_lazy "$RRDSTATS_NOTLAZYM"
-			set_period "$RRDSTATS_PERIODMAIN"
+			[ -n "$PERIOD_ARG" ] && CURRENT_PERIOD="$PERIOD_ARG" || CURRENT_PERIOD="$RRDSTATS_PERIODMAIN"
+			set_period "$CURRENT_PERIOD"
 			echo "<center><font size=+1><br><b>Stats for last $periodnn</b></font></center>"
 			case $RRD_DISPLAY_TYPE in
 				rrddt)
