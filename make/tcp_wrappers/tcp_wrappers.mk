@@ -28,7 +28,7 @@ $($(PKG)_BINARY) $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 		AR="$(TARGET_AR)" \
 		ARFLAGS=rv \
 		AUX_OBJ=weak_symbols.o \
-		LIBS=-lnsl \
+		LIBS="" \
 		NETGROUP= \
 		TLI= \
 		VSYSLOG= \
