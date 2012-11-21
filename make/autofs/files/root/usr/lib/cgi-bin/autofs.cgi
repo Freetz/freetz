@@ -2,6 +2,7 @@
 
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$AUTOFS_ENABLED" yes:auto "*":man
 check "$AUTOFS_DAVFS2_CONF" yes:davfs2_conf
@@ -31,7 +32,7 @@ EOF
 fi
 sec_end
 
-if which mount.davfs >/dev/null; then
+if [ "$FREETZ_PACKAGE_DAVFS2" == "y" ]; then
 sec_begin '$(lang de:"Dateisysteme" en:"Filesystems")'
 cat << EOF
 <p>
