@@ -12,5 +12,5 @@ if [ "$EXTERNAL_FREETZ_PACKAGE_IMAGEMAGICK" ]; then
 	[ "$FREETZ_PACKAGE_IMAGEMAGICK_stream"    == "y" ] && EXTERNAL_FILES+=" /usr/bin/stream"
 	[ "$FREETZ_PACKAGE_IMAGEMAGICK_STATIC"    != "y" ] && EXTERNAL_FILES+=" $FREETZ_LIBRARY_DIR/libMagickCore.so.6.0.0"
 	[ "$FREETZ_PACKAGE_IMAGEMAGICK_STATIC"    != "y" ] && EXTERNAL_FILES+=" $FREETZ_LIBRARY_DIR/libMagickWand.so.6.0.0"
-	[ "FREETZ_PACKAGE_IMAGEMAGICK_xml"        == "y" ] && EXTERNAL_FILES+=" /etc/ImageMagick"
+	[ "$FREETZ_PACKAGE_IMAGEMAGICK_xml"       == "y" ] && EXTERNAL_FILES+=" /etc/ImageMagick"
 fi
