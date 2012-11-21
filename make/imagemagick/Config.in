@@ -1,5 +1,7 @@
 config FREETZ_PACKAGE_IMAGEMAGICK
 	bool "ImageMagick 6.8.0-4 (binary only)"
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libm
 	default n
 	help
 		ImageMagick is a robust collection of tools and libraries to read,
@@ -56,8 +58,8 @@ menu "Utilities"
 	default y
 
 	config FREETZ_PACKAGE_IMAGEMAGICK_stream
-    bool "stream"
-    default y
+	bool "stream"
+	default y
 
 endmenu
 
@@ -104,10 +106,8 @@ config FREETZ_PACKAGE_IMAGEMAGICK_xml
 endmenu
 
 config FREETZ_PACKAGE_IMAGEMAGICK_STATIC
-	bool "Statically link libraries"
+	bool "Create statically linked binaries"
 	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default n
 	help
-		Statically link libmagick and
-		libwand by activating this switch.
-
+		Causes all dependent libraries to be linked in statically.
