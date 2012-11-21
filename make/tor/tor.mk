@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.2.39)
+$(call PKG_INIT_BIN, 0.2.3.25)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=9157a1f02fcda9d7d2c5744176373abd
+$(PKG)_SOURCE_MD5:=a1c364189a9a66ed9daa8e6436489daf
 $(PKG)_SITE:=http://www.torproject.org/dist
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
@@ -14,6 +14,9 @@ $(PKG)_CONFIGURE_ENV += tor_cv_sign_extend=yes
 $(PKG)_CONFIGURE_ENV += tor_cv_size_t_signed=no
 $(PKG)_CONFIGURE_ENV += tor_cv_time_t_signed=yes
 $(PKG)_CONFIGURE_ENV += tor_cv_twos_complement=yes
+$(PKG)_CONFIGURE_ENV += tor_cv_cflags__fstack_protector_all=no
+$(PKG)_CONFIGURE_ENV += tor_cv_cflags__Wstack_protector=no
+$(PKG)_CONFIGURE_ENV += tor_cv_cflags___param_ssp_buffer_size_1=no
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
