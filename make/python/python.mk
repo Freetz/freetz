@@ -1,10 +1,14 @@
 $(call PKG_INIT_BIN, 2.7.3)
 $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=c57477edd6d18bd9eeca2f21add73919
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
+
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/python
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python2.7_bin
-$(PKG)_SOURCE_MD5:=c57477edd6d18bd9eeca2f21add73919
+
+$(PKG)_HOST_DEPENDS_ON := python-host python-setuptools python-distutilscross
+$(PKG)_DEPENDS_ON :=
 
 ifeq ($(strip $(FREETZ_LIB_libpython)),y)
 $(PKG)_LIB_PYTHON_BINARY:=$($(PKG)_DIR)/libpython2.7.so.1.0
@@ -16,7 +20,7 @@ $(PKG)_LIB_PYTHON_STAGING_BINARY:=
 $(PKG)_LIB_PYTHON_TARGET_BINARY:=
 endif
 
-$(PKG)_COMPRESS_PYC := 
+$(PKG)_COMPRESS_PYC :=
 
 ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC)),y)
 $(PKG)_COMPRESS_PYC += zip -9myR ../python27.zip . "*.pyc";
@@ -25,7 +29,6 @@ $(PKG)_COMPRESS_PYC += rm -rf hotshot importlib json logging multiprocessing;
 $(PKG)_COMPRESS_PYC += rm -rf plat-linux2 pydoc_data unittest;
 endif
 
-$(PKG)_DEPENDS_ON :=
 $(PKG)_REMOVE_MODS :=
 
 ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV)),y)
