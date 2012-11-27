@@ -1,9 +1,5 @@
-comment "Python (not available, needs self-built toolchain)"
-	depends on !FREETZ_BUILD_TOOLCHAIN
-
 config FREETZ_PACKAGE_PYTHON
 	bool "Python 2.7.3 (unstable)"
-	depends on FREETZ_BUILD_TOOLCHAIN
 	select FREETZ_LIB_libpython if ! FREETZ_PACKAGE_PYTHON_STATIC
 	default n
 	help
