@@ -9,15 +9,18 @@ HOST_TOOLCHAIN_DIR:=$(FREETZ_BASE_DIR)/$(TOOLCHAIN_DIR)/host
 
 PYTHON_HOST_TARGET_BINARY:=$(HOST_TOOLCHAIN_DIR)/usr/bin/python2.7
 
+python-host-source: $(DL_DIR)/$(PYTHON_HOST_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(PYTHON_HOST_SOURCE)), $(strip $(DL_DIR)/$(PYTHON_SOURCE)))
 $(DL_DIR)/$(PYTHON_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(PYTHON_HOST_SOURCE) $(PYTHON_HOST_SITE) $(PYTHON_HOST_MD5)
 endif
 
+python-host-unpacked: $(PYTHON_HOST_DIR)/.unpacked
 $(PYTHON_HOST_DIR)/.unpacked: $(DL_DIR)/$(PYTHON_HOST_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(PYTHON_HOST_SOURCE)
 	touch $@
 
+python-host-configured: $(PYTHON_HOST_DIR)/.configured
 $(PYTHON_HOST_DIR)/.configured: $(PYTHON_HOST_DIR)/.unpacked
 	(cd $(PYTHON_HOST_DIR); rm -rf config.cache; \
 		CC=$(HOSTCC) \
@@ -47,12 +50,6 @@ $(PYTHON_HOST_TARGET_BINARY): $(PYTHON_HOST_BINARY)
 
 python-host: $(PYTHON_HOST_TARGET_BINARY)
 
-python-host-source: $(PYTHON_HOST_DIR)/.unpacked
-
-python-host-configured: $(PYTHON_HOST_DIR)/.configured
-
-python-host-precompiled: $(PYTHON_HOST_BINARY)
-
 python-host-clean:
 	-$(MAKE) -C $(PYTHON_HOST_DIR) clean
 
@@ -75,4 +72,4 @@ python-host-dirclean:
 		$(HOST_TOOLCHAIN_DIR)/usr/share/man/man1/python2.7.1
 	find $(HOST_TOOLCHAIN_DIR)/usr/ -depth -empty -delete
 
-.PHONY: python-host
+.PHONY: python-host-source python-host-unpacked python-host-configured python-host python-host-clean python-host-dirclean

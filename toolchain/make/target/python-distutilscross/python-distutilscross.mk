@@ -1,7 +1,8 @@
 PYTHON_DISTUTILSCROSS_VERSION:=0.1
-PYTHON_DISTUTILSCROSS_SITE:=http://pypi.python.org/packages/source/d/distutilscross
 PYTHON_DISTUTILSCROSS_SOURCE:=distutilscross-$(PYTHON_DISTUTILSCROSS_VERSION).tar.gz
 PYTHON_DISTUTILSCROSS_MD5:=700801380a336a01925ad8409ad98c25
+PYTHON_DISTUTILSCROSS_SITE:=http://pypi.python.org/packages/source/d/distutilscross
+
 PYTHON_DISTUTILSCROSS_DIR:=$(TARGET_TOOLCHAIN_DIR)/distutilscross-$(PYTHON_DISTUTILSCROSS_VERSION)
 PYTHON_DISTUTILSCROSS_BINARY:=$(TARGET_TOOLCHAIN_DIR)/distutilscross-$(PYTHON_DISTUTILSCROSS_VERSION)/distutilscross/crosscompile.py
 
@@ -12,13 +13,16 @@ PYTHON_DISTUTILSCROSS_TARGET_BINARY:=$(PYTHON_DISTUTILSCROSS_SITE_PACKAGES)/dist
 PYTHON_HOST:=$(PYTHON_HOST_TARGET_BINARY)
 PYTHON_HOST_HOME:=$(HOST_TOOLCHAIN_DIR)/usr
 
+python-distutilscross-source: $(DL_DIR)/$(PYTHON_DISTUTILSCROSS_SOURCE)
 $(DL_DIR)/$(PYTHON_DISTUTILSCROSS_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(PYTHON_DISTUTILSCROSS_SOURCE) $(PYTHON_DISTUTILSCROSS_SITE) $(PYTHON_DISTUTILSCROSS_MD5)
 
+python-distutilscross-unpacked: $(PYTHON_DISTUTILSCROSS_DIR)/.unpacked
 $(PYTHON_DISTUTILSCROSS_DIR)/.unpacked: $(DL_DIR)/$(PYTHON_DISTUTILSCROSS_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xzf $(DL_DIR)/$(PYTHON_DISTUTILSCROSS_SOURCE)
 	touch $@
 
+python-distutilscross-configured: $(PYTHON_DISTUTILSCROSS_DIR)/.configured
 $(PYTHON_DISTUTILSCROSS_DIR)/.configured: $(PYTHON_DISTUTILSCROSS_DIR)/.unpacked
 	touch $@
 
@@ -36,13 +40,7 @@ $(PYTHON_DISTUTILSCROSS_TARGET_BINARY): $(PYTHON_DISTUTILSCROSS_BINARY)
 		$(PYTHON_HOST) setup.py install; \
 	)
 
-python-distutilscross: python-host python-setuptools $(PYTHON_DISTUTILSCROSS_TARGET_BINARY)
-
-python-distutilscross-unpacked: $(PYTHON_DISTUTILSCROSS_DIR)/.unpacked
-
-python-distutilscross-configured: $(PYTHON_DISTUTILSCROSS_DIR)/.configured
-
-python-distutilscross-source: $(DL_DIR)/$(PYTHON_DISTUTILSCROSS_SOURCE)
+python-distutilscross: $(PYTHON_DISTUTILSCROSS_TARGET_BINARY) | python-host python-setuptools
 
 python-distutilscross-clean:
 	(cd $(PYTHON_DISTUTILSCROSS_DIR); \
@@ -56,4 +54,4 @@ python-distutilscross-dirclean:
 		$(PYTHON_DISTUTILSCROSS_TARGET_BINARY) \
 		$(HOST_TOOLCHAIN_DIR)/usr/lib/python2.7/site-packages/distutilscross*
 
-.PHONY: python-distutilscross
+.PHONY: python-distutilscross-source python-distutilscross-unpacked python-distutilscross-configured python-distutilscross python-distutilscross-clean python-distutilscross-dirclean
