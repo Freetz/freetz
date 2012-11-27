@@ -11,14 +11,10 @@ include $(TOOLCHAIN_DIR)/make/target/gcc/gcc.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
-include $(TOOLCHAIN_DIR)/make/target/python-host/python-host.mk
-include $(TOOLCHAIN_DIR)/make/target/python-setuptools/python-setuptools.mk
-include $(TOOLCHAIN_DIR)/make/target/python-distutilscross/python-distutilscross.mk
 
 TARGET_TOOLCHAIN := binutils gcc $(STDCXXLIB) $(if $(FREETZ_TOOLCHAIN_CCACHE),ccache)
 TARGET_TOOLCHAIN += $(if $(FREETZ_TARGET_TOOLCHAIN),binutils_target gcc_target uclibc_target)
 TARGET_TOOLCHAIN += libtool-host $(if $(FREETZ_PACKAGE_GDB_HOST),gdbhost)
-TARGET_TOOLCHAIN += python-host python-setuptools python-distutilscross
 
 $(TARGET_TOOLCHAIN_DIR):
 	@mkdir -p $@
