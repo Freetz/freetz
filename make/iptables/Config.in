@@ -272,7 +272,7 @@ config FREETZ_MODULE_nf_defrag_ipv4
 
 config FREETZ_MODULE_ip_nat
 	bool "ip_nat.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
+	depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
 	select FREETZ_MODULE_ip_conntrack
 	default n
 	help
@@ -295,7 +295,8 @@ config FREETZ_MODULE_nf_nat
 
 config FREETZ_MODULE_ip_nat_ftp
 	bool "ip_nat_ftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
 	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_ftp
@@ -310,7 +311,7 @@ config FREETZ_MODULE_nf_nat_ftp
 
 config FREETZ_MODULE_ip_nat_h323
 	bool "ip_nat_h323.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
+	depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_h323
 	default n
@@ -325,7 +326,8 @@ config FREETZ_MODULE_nf_nat_h323
 
 config FREETZ_MODULE_ip_nat_irc
 	bool "ip_nat_irc.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
 	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_KERNEL_VERSION_2_6_19
@@ -341,7 +343,7 @@ config FREETZ_MODULE_nf_nat_irc
 
 config FREETZ_MODULE_ip_nat_pptp
 	bool "ip_nat_pptp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
+	depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
 	select FREETZ_MODULE_ip_nat
 	select FREETZ_MODULE_ip_conntrack_pptp
 	default n
@@ -356,7 +358,8 @@ config FREETZ_MODULE_nf_nat_pptp
 
 config FREETZ_MODULE_ip_nat_rtsp
 	bool "ip_nat_rtsp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
 	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_rtsp
@@ -364,7 +367,8 @@ config FREETZ_MODULE_ip_nat_rtsp
 
 config FREETZ_MODULE_ip_nat_tftp
 	bool "ip_nat_tftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
 	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_KERNEL_VERSION_2_6_19
@@ -395,13 +399,19 @@ config FREETZ_MODULE_iptable_mangle
 		iptables(8). This table is used for various packet alterations
 		which can effect how the packet is routed.
 
+comment "iptable_nat.ko (not available, needs replace kernel)"
+	depends on FREETZ_KERNEL_VERSION_2_6_19 && !FREETZ_REPLACE_KERNEL
+
 config FREETZ_MODULE_iptable_nat
 	bool "iptable_nat.ko"
+	depends on !FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL
 	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_ip_tables
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_nf_nat if FREETZ_KERNEL_VERSION_2_6_28
 	default n
+	help
+		Can not be load with AVM-kernel 2.6.19, see http://freetz.org/ticket/1929
 
 config FREETZ_MODULE_iptable_raw
 	bool "iptable_raw.ko"
@@ -561,7 +571,8 @@ config FREETZ_MODULE_ipt_MARK
 
 config FREETZ_MODULE_ipt_MASQUERADE
 	bool "ipt_MASQUERADE.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
 	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
@@ -595,7 +606,8 @@ config FREETZ_MODULE_ipt_owner
 
 config FREETZ_MODULE_ipt_REDIRECT
 	bool "ipt_REDIRECT.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MAX
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MAX && \
+		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
 	select FREETZ_MODULE_iptable_nat
 	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
 	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_KERNEL_VERSION_2_6_28
