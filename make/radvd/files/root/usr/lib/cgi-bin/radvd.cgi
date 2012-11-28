@@ -35,6 +35,10 @@ cat << EOF
 	<td>$(lang de:"IPv6 Prefix" en:"IPv6 prefix"):</td>
 	<td><input type="text" name="prefix" size="30" maxlength="100" value="$(html "$RADVD_PREFIX")"></td>
 </tr>
+<tr>
+	<td>$(lang de:"IPv6 MTU" en:"IPv6 MTU"):</td>
+	<td><input type="text" name="mtu" size="9" maxlength="9" value="$(html "$RADVD_MTU")"></td>
+</tr>
 </table>
 <p>
 <input type="hidden" name="forward" value="no">
