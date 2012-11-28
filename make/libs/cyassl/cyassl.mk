@@ -27,7 +27,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(CYASSL_DIR)
+	$(SUBMAKE) -C $(CYASSL_DIR) V=1
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	for d in cyassl cyassl/ctaocrypt cyassl/openssl; do \
