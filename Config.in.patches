@@ -913,6 +913,13 @@ config FREETZ_REMOVE_JFFS2
 		This patch does *not* change any scripts which might require JFFS, so use at
 		your own risk and test the firmware after flashing it onto your device.
 
+config FREETZ_REMOVE_RAMZSWAP
+	bool "Remove ramzswap.ko - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
+	default n
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_RAMZSWAP
+	help
+		Remove the ramzswap.ko (about 35 kB uncompressed).
+
 config FREETZ_REMOVE_LSOF
 	bool "Remove lsof"
 	depends on FREETZ_HAS_AVM_LSOF

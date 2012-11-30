@@ -429,6 +429,13 @@ config FREETZ_HAS_AVM_CTLMGR_STRUCT_V3
 	help
 		3rd structure layout (CeBIT 2012).
 
+config FREETZ_HAS_AVM_RAMZSWAP
+	bool "Has AVM ramzswap.ko"		if FREETZ_TYPE_CUSTOM
+	default y		if FREETZ_AVM_VERSION_05_2X
+	default n
+	help
+		Select this if you have a firmware with ramzswap.ko.
+
 config FREETZ_HAS_AVM_AHA
 	bool "Has AVM Home Automation"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_TYPE_LABOR
