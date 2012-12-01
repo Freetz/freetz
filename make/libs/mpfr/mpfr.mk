@@ -51,7 +51,7 @@ $(PKG_FINISH)
 
 # host version
 MPFR_DIR2:=$(TOOLS_SOURCE_DIR)/mpfr-$(MPFR_VERSION)
-MPFR_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
+MPFR_HOST_DIR:=$(HOST_TOOLS_DIR)
 MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
 
 $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
@@ -70,7 +70,7 @@ $(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
 	)
 	touch $@
 
-$(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured | $(TOOLS_BUILD_DIR)
+$(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured | $(HOST_TOOLS_DIR)
 	PATH=$(TARGET_PATH) $(MAKE) -C $(MPFR_DIR2)/src install
 
 host-libmpfr: $(MPFR_HOST_BINARY)

@@ -49,7 +49,7 @@ $(PKG_FINISH)
 
 # host version
 MPC_DIR2:=$(TOOLS_SOURCE_DIR)/mpc-$(MPC_VERSION)
-MPC_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
+MPC_HOST_DIR:=$(HOST_TOOLS_DIR)
 MPC_HOST_BINARY:=$(MPC_HOST_DIR)/lib/libmpc.a
 
 $(MPC_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPC_DIR)/.unpacked
@@ -69,7 +69,7 @@ $(MPC_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPC_DIR)/.unpacked
 	)
 	touch $@
 
-$(MPC_HOST_BINARY): $(MPC_DIR2)/.configured | $(TOOLS_BUILD_DIR)
+$(MPC_HOST_BINARY): $(MPC_DIR2)/.configured | $(HOST_TOOLS_DIR)
 	PATH=$(TARGET_PATH) $(MAKE) -C $(MPC_DIR2) install
 
 host-libmpc: $(MPC_HOST_BINARY)

@@ -48,7 +48,7 @@ $(PKG_FINISH)
 
 # host version
 GMP_DIR2:=$(TOOLS_SOURCE_DIR)/gmp-$(GMP_VERSION)
-GMP_HOST_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
+GMP_HOST_DIR:=$(HOST_TOOLS_DIR)
 GMP_HOST_BINARY:=$(GMP_HOST_DIR)/lib/libgmp.a
 
 $(GMP_DIR2)/.configured: | $(GMP_DIR)/.unpacked
@@ -67,7 +67,7 @@ $(GMP_DIR2)/.configured: | $(GMP_DIR)/.unpacked
 	)
 	touch $@
 
-$(GMP_HOST_BINARY): $(GMP_DIR2)/.configured | $(TOOLS_BUILD_DIR)
+$(GMP_HOST_BINARY): $(GMP_DIR2)/.configured | $(HOST_TOOLS_DIR)
 	PATH=$(TARGET_PATH) $(MAKE) -C $(GMP_DIR2) install
 
 host-libgmp: $(GMP_HOST_BINARY)
