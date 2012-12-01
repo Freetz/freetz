@@ -238,11 +238,6 @@ else
 include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
 
-# TODO-1941: adjust after moving python* to host-utils
-include $(TOOLCHAIN_DIR)/make/target/python-host/python-host.mk
-include $(TOOLCHAIN_DIR)/make/target/python-setuptools/python-setuptools.mk
-include $(TOOLCHAIN_DIR)/make/target/python-distutilscross/python-distutilscross.mk
-
 DL_IMAGE:=
 image:
 
