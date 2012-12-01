@@ -1,0 +1,19 @@
+--- lib/configure
++++ lib/configure
+@@ -73,6 +73,7 @@
+ 						;;
+ 		esac
+ 		echo >>$c '#define PCI_HAVE_64BIT_ADDRESS'
++		LIBRESOLV=
+ 		;;
+ 	sunos)
+ 		case $cpu in
+@@ -168,7 +169,7 @@
+ if [ "$DNS" = yes ] ; then
+ 	echo >>$c "#define PCI_USE_DNS"
+ 	echo >>$c "#define PCI_ID_DOMAIN \"pci.id.ucw.cz\""
+-	echo >>$m "WITH_LIBS+=$LIBRESOLV"
++#	echo >>$m "WITH_LIBS+=$LIBRESOLV"
+ fi
+ 
+ echo "Checking whether to build a shared library... $SHARED (set manually)"
