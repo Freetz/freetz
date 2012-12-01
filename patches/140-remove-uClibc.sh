@@ -20,6 +20,7 @@ for link in \
 	libthread_db.so* \
 	libresolv.so* \
 	librt.so* \
+	libubacktrace.so* \
 	libutil.so* \
 ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/$link"
