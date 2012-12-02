@@ -283,9 +283,10 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/zlib;
 $(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/pgen hostpgen;
 $(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/python2.7 hostpython;
 
-$(PKG)_HOSTPYTHON_COMPILE := $(abspath $(HOST_TOOLS_DIR)/usr/bin/python)
-$(PKG)_HOSTPYTHON         := $(abspath $($(PKG)_DIR)/hostpython)
-$(PKG)_HOSTPGEN           := $(abspath $($(PKG)_DIR)/hostpgen)
+$(PKG)_MAKE_OPTIONS := CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_MAKE_OPTIONS += HOSTPYTHON_COMPILE="$(abspath $(HOST_TOOLS_DIR)/usr/bin/python)"
+$(PKG)_MAKE_OPTIONS += HOSTPYTHON="$(abspath $($(PKG)_DIR)/hostpython)"
+$(PKG)_MAKE_OPTIONS += HOSTPGEN="$(abspath $($(PKG)_DIR)/hostpgen)"
 
 ifneq ($(strip $(DL_DIR)/$(PYTHON_SOURCE)),$(strip $(DL_DIR)/$(PYTHON_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
@@ -295,16 +296,13 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(PYTHON_DIR) \
-		HOSTPYTHON="$(PYTHON_HOSTPYTHON)" \
-		HOSTPGEN="$(PYTHON_HOSTPGEN)" \
+		$(PYTHON_MAKE_OPTIONS) \
 		all
 	touch $@
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	$(SUBMAKE) -C $(PYTHON_DIR) \
-		HOSTPYTHON_COMPILE="$(PYTHON_HOSTPYTHON_COMPILE)" \
-		HOSTPYTHON="$(PYTHON_HOSTPYTHON)" \
-		HOSTPGEN="$(PYTHON_HOSTPGEN)" \
+		$(PYTHON_MAKE_OPTIONS) \
 		DESTDIR="$(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)" \
 		install
 	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR); \
