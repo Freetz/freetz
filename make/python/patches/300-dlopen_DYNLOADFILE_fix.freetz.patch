@@ -1,0 +1,44 @@
+--- configure
++++ configure
+@@ -7914,6 +7914,7 @@
+ if test "x$ac_cv_lib_dl_dlopen" = x""yes; then :
+   cat >>confdefs.h <<_ACEOF
+ #define HAVE_LIBDL 1
++#define HAVE_DLOPEN 1
+ _ACEOF
+ 
+   LIBS="-ldl $LIBS"
+@@ -9475,6 +9476,7 @@
+ 
+ DLINCLDIR=.
+ 
++if test "$ac_cv_lib_dl_dlopen" != yes; then
+ # the dlopen() function means we might want to use dynload_shlib.o. some
+ # platforms, such as AIX, have dlopen(), but don't want to use it.
+ for ac_func in dlopen
+@@ -9487,6 +9489,7 @@
+ 
+ fi
+ done
++fi
+ 
+ 
+ # DYNLOADFILE specifies which dynload_*.o file we will use for dynamic
+@@ -9498,7 +9501,7 @@
+ then
+ 	case $ac_sys_system/$ac_sys_release in
+ 	AIX*) # Use dynload_shlib.c and dlopen() if we have it; otherwise dynload_aix.c
+-	if test "$ac_cv_func_dlopen" = yes
++	if test "$ac_cv_func_dlopen" = yes -o "$ac_cv_lib_dl_dlopen" = yes
+ 	then DYNLOADFILE="dynload_shlib.o"
+ 	else DYNLOADFILE="dynload_aix.o"
+ 	fi
+@@ -9511,7 +9514,7 @@
+ 	*)
+ 	# use dynload_shlib.c and dlopen() if we have it; otherwise stub
+ 	# out any dynamic loading
+-	if test "$ac_cv_func_dlopen" = yes
++	if test "$ac_cv_func_dlopen" = yes -o "$ac_cv_lib_dl_dlopen" = yes
+ 	then DYNLOADFILE="dynload_shlib.o"
+ 	else DYNLOADFILE="dynload_stub.o"
+ 	fi

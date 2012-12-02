@@ -1,12 +1,16 @@
 config FREETZ_PACKAGE_PYTHON
 	bool "Python 2.7.3 (unstable)"
-	select FREETZ_LIB_libpython if ! FREETZ_PACKAGE_PYTHON_STATIC
+	select FREETZ_LIB_libpython if !FREETZ_PACKAGE_PYTHON_STATIC
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libutil
 	default n
 	help
 		Python is a remarkably powerful dynamic programming language that is used
 		in a wide variety of application domains.
-		CAUTION: Python adds roughly 7.5 MB to 12 MB (depending on your choice of
-		         modules) of uncompressed data to your image. In most cases, it should therefore be externalized.
+		CAUTION: Python adds roughly 7.5 MB to 12 MB (depending on your choice of modules)
+		of uncompressed data to your image. In most cases, it should therefore be externalized.
 
 config FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 	bool "Compress *.pyc files"
@@ -22,11 +26,12 @@ config FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 		cost.
 
 config FREETZ_PACKAGE_PYTHON_STATIC
-	bool "Create statically linked binary"
+	bool "Link libpython statically in"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
-		Causes all libraries Python depends on to be linked in statically
+		Don't create shared version of libpython, link it in statically instead.
+		All other libraries Python depends on are still linked in dynamically.
 
 menu "Python binary modules (extensions)"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -318,17 +323,18 @@ config FREETZ_PACKAGE_PYTHON_MOD_RANDOM
 		in turn requires openssl.
 		For details, see: http://docs.python.org/library/random.html
 
-# Readline module segfaults :-(
-#config FREETZ_PACKAGE_PYTHON_MOD_READLINE
+# Readline module segfaults, thus disabled for now
+config FREETZ_PACKAGE_PYTHON_MOD_READLINE
 #	bool "readline.so"
-#	depends on FREETZ_PACKAGE_PYTHON
-#	select FREETZ_LIB_libreadline
-#	default n
-#	help
-#		GNU readline interface.
-#		The readline module defines a number of functions to facilitate completion and reading/writing of history files from the Python
-#		interpreter. Requires libreadline.
-#		For details, see: http://docs.python.org/library/readline.html
+	bool
+	depends on FREETZ_PACKAGE_PYTHON
+	select FREETZ_LIB_libreadline
+	default n
+	help
+		GNU readline interface.
+		The readline module defines a number of functions to facilitate completion and reading/writing of history files from the Python
+		interpreter. Requires libreadline.
+		For details, see: http://docs.python.org/library/readline.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_RESOURCE
 	bool "resource.so"
@@ -378,6 +384,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_SSL
 	select FREETZ_PACKAGE_PYTHON_MOD_SOCKET
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
+	select FREETZ_OPENSSL_VERSION_PROMPT
 	default n
 	help
 		TLS/SSL wrapper for socket objects.

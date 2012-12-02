@@ -4,29 +4,25 @@ $(PKG)_SOURCE_MD5:=c57477edd6d18bd9eeca2f21add73919
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
-$(PKG)_BINARY:=$($(PKG)_DIR)/python
+
+$(PKG)_LOCAL_INSTALL_DIR:=$($(PKG)_DIR)/_install
+
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python2.7_bin
+$(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython2.7.so.1.0
+
+$(PKG)_BUILD_PREREQ += zip
 
 $(PKG)_HOST_DEPENDS_ON := python-host python-setuptools python-distutilscross
-$(PKG)_DEPENDS_ON :=
-
-ifeq ($(strip $(FREETZ_LIB_libpython)),y)
-$(PKG)_LIB_PYTHON_BINARY:=$($(PKG)_DIR)/libpython2.7.so.1.0
-$(PKG)_LIB_PYTHON_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpython2.7.so.1.0
-$(PKG)_LIB_PYTHON_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/libpython2.7.so.1.0
-else
-$(PKG)_LIB_PYTHON_BINARY:=
-$(PKG)_LIB_PYTHON_STAGING_BINARY:=
-$(PKG)_LIB_PYTHON_TARGET_BINARY:=
-endif
+# libffi is a compile-time dependency only
+$(PKG)_DEPENDS_ON := libffi
 
 $(PKG)_COMPRESS_PYC :=
 
 ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC)),y)
 $(PKG)_COMPRESS_PYC += zip -9myR ../python27.zip . "*.pyc";
-$(PKG)_COMPRESS_PYC += rm -rf bsddb compiler ctypes curses distutils email encodings;
-$(PKG)_COMPRESS_PYC += rm -rf hotshot importlib json logging multiprocessing;
-$(PKG)_COMPRESS_PYC += rm -rf plat-linux2 pydoc_data unittest;
+$(PKG)_COMPRESS_PYC += $(RM) -r bsddb compiler ctypes curses distutils email encodings;
+$(PKG)_COMPRESS_PYC += $(RM) -r hotshot importlib json logging multiprocessing;
+$(PKG)_COMPRESS_PYC += $(RM) -r plat-linux2 pydoc_data unittest;
 endif
 
 $(PKG)_REMOVE_MODS :=
@@ -123,7 +119,10 @@ $(PKG)_REMOVE_MODS += lib-dynload/_elementtree.so
 $(PKG)_REMOVE_MODS += xml/etree/cElementTree.py*
 endif
 
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_EXPAT)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_EXPAT)),y)
+$(PKG)_DEPENDS_ON += expat
+$(PKG)_CONFIGURE_OPTIONS += --with-system-expat
+else
 $(PKG)_REMOVE_MODS += lib-dynload/pyexpat.so
 $(PKG)_REMOVE_MODS += xml/dom/expatbuilder.py*
 $(PKG)_REMOVE_MODS += xml/sax/expatreader.py*
@@ -182,16 +181,12 @@ $(PKG)_REMOVE_MODS += lib-dynload/_random.so
 $(PKG)_REMOVE_MODS += random.py*
 endif
 
-# Readline module segfaults :-(
-#  -> remove uncoditionally
+ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_READLINE)),y)
+$(PKG)_DEPENDS_ON += readline
+else
 $(PKG)_REMOVE_MODS += lib-dynload/readline.so
 $(PKG)_REMOVE_MODS += rlcompleter.py*
-#ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_READLINE)),y)
-#$(PKG)_DEPENDS_ON += readline
-#else
-#$(PKG)_REMOVE_MODS += lib-dynload/readline.so
-#$(PKG)_REMOVE_MODS += rlcompleter.py*
-#endif
+endif
 
 ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_RESOURCE)),y)
 $(PKG)_REMOVE_MODS += lib-dynload/resource.so
@@ -258,39 +253,39 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_BSDDB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CURSES
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SSL
-#$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_READLINE
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_READLINE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_ZLIB
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-$(PKG)_CONFIGURE_DEFOPTS := y
-
-$(PKG)_CONFIGURE_ENV += CPPFLAGS="-I. -IInclude -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include/openssl"
-$(PKG)_CONFIGURE_ENV += LDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 $(PKG)_CONFIGURE_ENV += ac_cv_have_chflags=no
 $(PKG)_CONFIGURE_ENV += ac_cv_have_lchflags=no
 $(PKG)_CONFIGURE_ENV += ac_cv_py_format_size_t=no
 $(PKG)_CONFIGURE_ENV += ac_cv_have_long_long_format=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_buggy_getaddrinfo=no
-$(PKG)_CONFIGURE_ENV += DYNLOADFILE="dynload_shlib.o"
-$(PKG)_CONFIGURE_ENV += OPT="$(TARGET_CFLAGS)"
-$(PKG)_CONFIGURE_ENV += LIBFFI_INCLUDEDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/include"
+$(PKG)_CONFIGURE_ENV += OPT="-fno-inline"
 
-$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
-$(PKG)_CONFIGURE_OPTIONS += --with-libs="-lutil"
-$(PKG)_CONFIGURE_OPTIONS += --with-threads
+# use local config.cache to avoid conflicts with other packages
+# TODO: check if this is still necessary
 $(PKG)_CONFIGURE_OPTIONS += --cache-file=config.cache
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6)
+
+$(PKG)_CONFIGURE_OPTIONS += --with-system-ffi
+$(PKG)_CONFIGURE_OPTIONS += --with-threads
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PYTHON_STATIC),--disable-shared,--enable-shared)
 
-$(PKG)_CONFIGURE_PRE_CMDS += (cd $(FREETZ_BASE_DIR)/$(PYTHON_DIR); autoreconf --force --install || exit 0);
+# remove local copy of libffi, we use system one
+$(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/_ctypes/libffi*;
+# remove local copy of zlib, we use system one
+$(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/zlib;
 
-$(PKG)_MAKE_OPTIONS := \
-	$(PYTHON_CONFIGURE_ENV) \
-	CROSS_COMPILE=yes \
-	CFLAGS="$(TARGET_CFLAGS) -fno-inline" \
-	LD="$(TARGET_CC)" \
-	LDSHARED="$(TARGET_CC) -shared" \
-	HOSTPYTHON=$(HOST_TOOLS_DIR)/usr/bin/python \
-	HOSTPGEN=$(HOST_TOOLS_DIR)/usr/bin/pgen
+# The python executable needs to stay in the root of the builddir
+# since its location is used to compute the path of the config files.
+$(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/pgen hostpgen;
+$(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/python2.7 hostpython;
+
+$(PKG)_HOSTPYTHON_COMPILE := $(abspath $(HOST_TOOLS_DIR)/usr/bin/python)
+$(PKG)_HOSTPYTHON         := $(abspath $($(PKG)_DIR)/hostpython)
+$(PKG)_HOSTPGEN           := $(abspath $($(PKG)_DIR)/hostpgen)
 
 ifneq ($(strip $(DL_DIR)/$(PYTHON_SOURCE)),$(strip $(DL_DIR)/$(PYTHON_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
@@ -298,82 +293,98 @@ endif
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	rm -fr $(FREETZ_BASE_DIR)/$(PYTHON_DIR)/Modules/_ctypes/libffi*
-	rm -fr $(FREETZ_BASE_DIR)/$(PYTHON_DIR)/Modules/zlib
-	sed -i "/ HAVE_DLOPEN / a#define HAVE_DLOPEN 1" $(FREETZ_BASE_DIR)/$(PYTHON_DIR)/pyconfig.h
-	sed -i "/# XXX Omitted modules: / a\ \ \ \ \ \ \ \ lib_dirs += ['$(TARGET_TOOLCHAIN_STAGING_DIR)/lib']" $(FREETZ_BASE_DIR)/$(PYTHON_DIR)/setup.py
-	sed -i "/# XXX Omitted modules: / a\ \ \ \ \ \ \ \ inc_dirs += ['$(TARGET_TOOLCHAIN_STAGING_DIR)/include']" $(FREETZ_BASE_DIR)/$(PYTHON_DIR)/setup.py
-	$(SUBMAKE) -C $(PYTHON_DIR) all \
-		$(PYTHON_MAKE_OPTIONS)
+$($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
+	$(SUBMAKE) -C $(PYTHON_DIR) \
+		HOSTPYTHON="$(PYTHON_HOSTPYTHON)" \
+		HOSTPGEN="$(PYTHON_HOSTPGEN)" \
+		all
+	touch $@
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	$(SUBMAKE) -C $(PYTHON_DIR) install \
-		$(PYTHON_MAKE_OPTIONS) \
-		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)"
-	$(SUBMAKE) -C $(PYTHON_DIR) install \
-		$(PYTHON_MAKE_OPTIONS) \
-		DESTDIR="$(FREETZ_BASE_DIR)/$(PYTHON_DEST_DIR)"
-	$(INSTALL_BINARY_STRIP)
-	(cd $(FREETZ_BASE_DIR)/$(PYTHON_DEST_DIR)/usr; \
-		rm -rf lib/libpython2.7.a share/; \
-		find include/python2.7/ -name "*.h" \! -name "pyconfig.h" \
-			\! -name "Python.h" -delete; \
-		cd $(FREETZ_BASE_DIR)/$(PYTHON_DEST_DIR)/usr/bin; \
-		mv python_wrapper python2.7; \
-		chmod 755 python2.7; \
-		rm -rf 2to3 idle pydoc smtpd.py; \
-		cd $(FREETZ_BASE_DIR)/$(PYTHON_DEST_DIR)/usr/lib/python2.7; \
-		rm -rf idlelib lib2to3 lib-old lib-tk plat-linux3 pdb.doc; \
-		rm -rf sqlite3 wsgiref wsgiref.egg-info xml; \
-		rm -f lib-dynload/future_builtins.so lib-dynload/_sqlite3.so; \
-		rm -rf $(PYTHON_REMOVE_MODS); \
-		find -name "*.py" -delete; \
-		find -name "*.pyo" -delete; \
+$($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
+	$(SUBMAKE) -C $(PYTHON_DIR) \
+		HOSTPYTHON_COMPILE="$(PYTHON_HOSTPYTHON_COMPILE)" \
+		HOSTPYTHON="$(PYTHON_HOSTPYTHON)" \
+		HOSTPGEN="$(PYTHON_HOSTPGEN)" \
+		DESTDIR="$(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)" \
+		install
+	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR); \
+		chmod -R u+w usr; \
+		$(RM) -r \
+			usr/bin/2to3 \
+			usr/bin/idle \
+			usr/bin/pydoc \
+			usr/bin/python*-config \
+			usr/bin/smtpd.py \
+			\
+			usr/lib/libpython2.7.a \
+			\
+			usr/lib/python2.7/lib2to3 \
+			usr/lib/python2.7/idlelib \
+			usr/lib/python2.7/lib-old \
+			usr/lib/python2.7/lib-tk \
+			usr/lib/python2.7/plat-linux3 \
+			usr/lib/python2.7/pdb.doc \
+			\
+			usr/lib/python2.7/sqlite3 \
+			usr/lib/python2.7/lib-dynload/_sqlite3.so \
+			\
+			usr/lib/python2.7/wsgiref \
+			usr/lib/python2.7/wsgiref.egg-info \
+			\
+			usr/lib/python2.7/lib-dynload/future_builtins.so \
+			\
+			usr/lib/python2.7/LICENSE.txt \
+			usr/lib/python2.7/site-packages/README \
+			\
+			usr/lib/pkgconfig \
+			\
+			usr/share; \
+		find usr/include/python2.7/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
+		find usr/lib/python2.7/ \( -name "*.py" -o -name "*.pyo" \) -delete; \
+		\
+		$(TARGET_STRIP) \
+			usr/bin/python2.7 \
+			$(if $(FREETZ_PACKAGE_PYTHON_STATIC),,usr/lib/libpython2.7.so.1.0) \
+			usr/lib/python2.7/lib-dynload/*.so; \
+		\
+		mv usr/bin/python2.7 usr/bin/python2.7_bin; \
+	)
+	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/python2.7; \
+		$(RM) -r $(PYTHON_REMOVE_MODS); \
 		$(PYTHON_COMPRESS_PYC) \
-		cd $(FREETZ_BASE_DIR)/$(PYTHON_DEST_DIR)/usr/lib/python2.7/lib-dynload; \
-		$(TARGET_STRIP) *.so; \
-		chmod 644 *.so; \
+		find . -depth -empty -delete; \
 	)
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
-		rm -rf 2to3 idle pydoc python python2.7 python-config smtpd.py; \
-		cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib; \
-		rm -rf python2.7; \
-	)
+	touch $@
 
-$($(PKG)_LIB_PYTHON_BINARY):
+$(PYTHON_TARGET_BINARY): $($(PKG)_DIR)/.installed
+	tar -c -C $(PYTHON_LOCAL_INSTALL_DIR) --exclude='libpython2.7.so*' . | tar -x -C $(PYTHON_DEST_DIR)
+	touch -c $@
 
-$($(PKG)_LIB_PYTHON_STAGING_BINARY): $($(PKG)_LIB_PYTHON_BINARY)
-
-$($(PKG)_LIB_PYTHON_TARGET_BINARY): $($(PKG)_LIB_PYTHON_STAGING_BINARY)
-	$(INSTALL_LIBRARY_STRIP)
+ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_STATIC)),y)
+$($(PKG)_LIB_PYTHON_TARGET_DIR): $($(PKG)_DIR)/.installed
+	mkdir -p $(dir $@); \
+	cp -a $(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/libpython2.7.so* $(dir $@); \
+	touch -c $@
+endif
 
 $(pkg):
 
-$(pkg)-test: $(PYTHON_BINARY)
-
-$(pkg)-precompiled: $(PYTHON_TARGET_BINARY) \
-		$(PYTHON_LIB_PYTHON_TARGET_BINARY)
+$(pkg)-precompiled: $(PYTHON_TARGET_BINARY) $(if $(FREETZ_PACKAGE_PYTHON_STATIC),,$(PYTHON_LIB_PYTHON_TARGET_DIR))
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PYTHON_DIR) clean
 	$(RM) $(PYTHON_FREETZ_CONFIG_FILE)
+	$(RM) $(PYTHON_DIR)/.configured $(PYTHON_DIR)/.compiled $(PYTHON_DIR)/.installed
+	$(RM) -r $(PYTHON_LOCAL_INSTALL_DIR)
 
 $(pkg)-uninstall:
-	$(RM) $(PYTHON_TARGET_BINARY)
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python2.7
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/2to3
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/idle
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pydoc
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/smtpd.py
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/python2.7
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpython2.7.so*
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/python2.7
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/python2.7
-	$(RM) $(PYTHON_DEST_DIR)/usr/bin/python
-	$(RM) $(PYTHON_DEST_DIR)/usr/lib/libpython2.7.so*
-	$(RM) $(PYTHON_DEST_DIR)/usr/lib/python2.7
-	$(RM) $(PYTHON_DEST_DIR)/usr/lib/python27.zip
+	$(RM) -r \
+		$(PYTHON_TARGET_BINARY) \
+		$(PYTHON_TARGET_LIBDIR)/libpython2.7.so* \
+		$(PYTHON_DEST_DIR)/usr/bin/python \
+		$(PYTHON_DEST_DIR)/usr/bin/python2 \
+		$(PYTHON_DEST_DIR)/usr/lib/python2.7 \
+		$(PYTHON_DEST_DIR)/usr/lib/python27.zip \
+		$(PYTHON_DEST_DIR)/usr/include/python2.7
 
 $(PKG_FINISH)

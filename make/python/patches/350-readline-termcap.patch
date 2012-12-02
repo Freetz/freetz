@@ -1,6 +1,6 @@
---- ./setup.py.orig	2012-05-24 21:15:39.073068958 +0200
-+++ ./setup.py	2012-05-24 21:22:20.148199769 +0200
-@@ -574,7 +574,6 @@
+--- setup.py
++++ setup.py
+@@ -572,7 +572,6 @@
  
          # readline
          do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
@@ -8,7 +8,7 @@
          curses_library = "ncurses"
  
          if platform == 'darwin':
-@@ -589,29 +588,7 @@
+@@ -587,29 +586,7 @@
                  if find_file('readline/rlconf.h', inc_dirs, []) is None:
                      do_readline = False
          if do_readline:

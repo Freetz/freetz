@@ -1,6 +1,6 @@
---- ./Lib/distutils/command/build_scripts.py.orig	2012-04-10 01:07:29.000000000 +0200
-+++ ./Lib/distutils/command/build_scripts.py	2012-05-23 18:17:16.318382829 +0200
-@@ -51,10 +51,7 @@
+--- Lib/distutils/command/build_scripts.py
++++ Lib/distutils/command/build_scripts.py
+@@ -51,10 +51,7 @@ class build_scripts (Command):
  
  
      def copy_scripts (self):
@@ -12,7 +12,7 @@
          """
          _sysconfig = __import__('sysconfig')
          self.mkpath(self.build_dir)
-@@ -78,41 +75,9 @@
+@@ -78,41 +75,9 @@ class build_scripts (Command):
                  if not self.dry_run:
                      raise
                  f = None

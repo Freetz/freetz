@@ -19,10 +19,14 @@ $(PYTHON_HOST_DIR)/.unpacked: $(DL_DIR)/$(PYTHON_HOST_SOURCE) | $(TOOLS_SOURCE_D
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xjf $(DL_DIR)/$(PYTHON_HOST_SOURCE)
 	@touch $@
 
+# python quirk:
+#  CFLAGS and OPT flags passed here are then used while cross-compiling -> use some target neutral flags
 python-host-configured: $(PYTHON_HOST_DIR)/.configured
 $(PYTHON_HOST_DIR)/.configured: $(PYTHON_HOST_DIR)/.unpacked
 	(cd $(PYTHON_HOST_DIR); $(RM) config.cache; \
 		CC=$(TOOLS_CC) \
+		CFLAGS="-Os" \
+		OPT="-fno-inline" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \

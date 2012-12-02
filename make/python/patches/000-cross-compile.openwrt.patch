@@ -1,6 +1,6 @@
---- Makefile.pre.in.orig	2012-04-10 01:07:33.000000000 +0200
-+++ Makefile.pre.in	2012-05-23 18:11:31.260540374 +0200
-@@ -182,6 +182,7 @@
+--- Makefile.pre.in
++++ Makefile.pre.in
+@@ -182,6 +182,7 @@ UNICODE_OBJS=   @UNICODE_OBJS@
  
  PYTHON=		python$(EXE)
  BUILDPYTHON=	python$(BUILDEXE)
@@ -8,7 +8,7 @@
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -214,6 +215,7 @@
+@@ -214,6 +215,7 @@ LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -16,7 +16,7 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -384,7 +386,7 @@
+@@ -384,7 +386,7 @@ build_all_generate_profile:
  	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-generate" LIBS="$(LIBS) -lgcov"
  
  run_profile_task:
@@ -25,7 +25,7 @@
  
  build_all_use_profile:
  	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-use"
-@@ -402,14 +404,14 @@
+@@ -402,14 +404,14 @@ $(BUILDPYTHON):	Modules/python.o $(LIBRA
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
  
  platform: $(BUILDPYTHON)
@@ -43,7 +43,7 @@
  	esac
  
  # Build static library
-@@ -543,7 +545,7 @@
+@@ -543,7 +545,7 @@ Modules/python.o: $(srcdir)/Modules/pyth
  $(GRAMMAR_H) $(GRAMMAR_C): Parser/pgen.stamp
  Parser/pgen.stamp: $(PGEN) $(GRAMMAR_INPUT)
  		-@$(INSTALL) -d Include
@@ -52,7 +52,7 @@
  		-touch Parser/pgen.stamp
  
  $(PGEN):	$(PGENOBJS)
-@@ -708,7 +710,7 @@
+@@ -708,7 +710,7 @@ $(LIBRARY_OBJS) $(MODOBJS) Modules/pytho
  
  TESTOPTS=	-l $(EXTRATESTOPTS)
  TESTPROG=	$(srcdir)/Lib/test/regrtest.py
@@ -61,7 +61,7 @@
  test:		all platform
  		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
  		-$(TESTPYTHON) $(TESTPROG) $(TESTOPTS)
-@@ -1062,7 +1064,7 @@
+@@ -1062,7 +1064,7 @@ libainstall:	all python-config
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -70,7 +70,7 @@
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
-@@ -1100,7 +1102,7 @@
+@@ -1100,7 +1102,7 @@ frameworkinstallstructure:	$(LDLIBRARY)
  		fi; \
  	done
  	$(LN) -fsn include/python$(VERSION) $(DESTDIR)$(prefix)/Headers
@@ -79,7 +79,7 @@
  	$(LN) -fsn $(VERSION) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Versions/Current
  	$(LN) -fsn Versions/Current/$(PYTHONFRAMEWORK) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/$(PYTHONFRAMEWORK)
  	$(LN) -fsn Versions/Current/Headers $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Headers
-@@ -1135,7 +1137,7 @@
+@@ -1135,7 +1137,7 @@ frameworkinstallextras:
  # This installs a few of the useful scripts in Tools/scripts
  scriptsinstall:
  	SRCDIR=$(srcdir) $(RUNSHARED) \
@@ -88,7 +88,7 @@
  	--prefix=$(prefix) \
  	--install-scripts=$(BINDIR) \
  	--root=$(DESTDIR)/
-@@ -1157,7 +1159,7 @@
+@@ -1157,7 +1159,7 @@ config.status:	$(srcdir)/configure
  
  # Run reindent on the library
  reindent:
@@ -97,7 +97,7 @@
  
  # Rerun configure with the same options as it was run last time,
  # provided the config.status script exists
-@@ -1260,7 +1262,7 @@
+@@ -1260,7 +1262,7 @@ funny:
  
  # Perform some verification checks on any modified files.
  patchcheck:
