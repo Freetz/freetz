@@ -13,8 +13,8 @@ $(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython2.7.so.1.0
 $(PKG)_BUILD_PREREQ += zip
 
 $(PKG)_HOST_DEPENDS_ON := python-host python-setuptools python-distutilscross
-# libffi is a compile-time dependency only
-$(PKG)_DEPENDS_ON := libffi
+# libffi is a compile-time only dependency
+$(PKG)_DEPENDS_ON := libffi zlib
 
 $(PKG)_COMPRESS_PYC :=
 
@@ -242,19 +242,12 @@ ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA)),y)
 $(PKG)_REMOVE_MODS += lib-dynload/unicodedata.so
 endif
 
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_ZLIB)),y)
-$(PKG)_DEPENDS_ON += zlib
-else
-$(PKG)_REMOVE_MODS += lib-dynload/zlib.so
-endif
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_BSDDB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CURSES
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_READLINE
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_ZLIB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
 $(PKG)_CONFIGURE_ENV += ac_cv_have_chflags=no

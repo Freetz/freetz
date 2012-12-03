@@ -5,6 +5,7 @@ config FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libutil
+	select FREETZ_LIB_libz
 	default n
 	help
 		Python is a remarkably powerful dynamic programming language that is used
@@ -15,7 +16,6 @@ config FREETZ_PACKAGE_PYTHON
 config FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 	bool "Compress *.pyc files"
 	depends on FREETZ_PACKAGE_PYTHON
-	select FREETZ_PACKAGE_PYTHON_MOD_ZLIB
 	default y
 	help
 		Causes all *.pyc files usually residing in /usr/lib/python2.7 to be
@@ -431,20 +431,5 @@ config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
 		defines character properties for all Unicode characters. Unless you need
 		to examine those properties, you are safe to say N here.
 		For details, see: http://docs.python.org/library/unicodedata.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_ZLIB
-	bool "zlib.so"
-	depends on FREETZ_PACKAGE_PYTHON
-	select FREETZ_LIB_libz
-	default y
-	help
-		Compression compatible with gzip.
-		For applications that require data compression, the functions in this
-		module allow compression and decompression, using the zlib library.
-		This module is mandatory, if you want to use the compressed set of Python
-		modules from /usr/lib/python27.zip, which contains all the *.py[c] files
-		usually residing inside /usr/lib/python2.7.
-		Requires libz.
-		For details, see: http://docs.python.org/library/zlib.html
 
 endmenu
