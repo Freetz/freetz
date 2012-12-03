@@ -304,6 +304,8 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PYTHON_STATIC),--disable-share
 
 # remove local copy of libffi, we use system one
 $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/_ctypes/libffi*;
+# remove local copy of expat, we use system one
+$(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/expat;
 # remove local copy of zlib, we use system one
 $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/zlib;
 
