@@ -387,7 +387,7 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/python2.7; \
 		$(RM) -r $(PYTHON_REMOVE_MODS); \
 		$(PYTHON_COMPRESS_PYC) \
-		find . -type d -depth -empty -delete; \
+		find . -depth -type d -empty -delete; \
 	)
 	touch $@
 
