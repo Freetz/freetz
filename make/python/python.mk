@@ -334,9 +334,14 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 			usr/lib/python2.7/LICENSE.txt \
 			usr/lib/python2.7/site-packages/README \
 			\
+			usr/lib/python2.7/config/* \
+			\
 			usr/lib/pkgconfig \
 			\
 			usr/share; \
+		\
+		touch usr/lib/python2.7/config/Makefile; \
+		\
 		find usr/include/python2.7/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
 		find usr/lib/python2.7/ \( -name "*.py" -o -name "*.pyo" \) -delete; \
 		\
@@ -350,7 +355,7 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/python2.7; \
 		$(RM) -r $(PYTHON_REMOVE_MODS); \
 		$(PYTHON_COMPRESS_PYC) \
-		find . -depth -empty -delete; \
+		find . -type d -depth -empty -delete; \
 	)
 	touch $@
 
