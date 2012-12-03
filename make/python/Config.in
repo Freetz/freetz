@@ -323,10 +323,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_RANDOM
 		in turn requires openssl.
 		For details, see: http://docs.python.org/2/library/random.html
 
-# Readline module segfaults, thus disabled for now
 config FREETZ_PACKAGE_PYTHON_MOD_READLINE
-#	bool "readline.so"
-	bool
+	bool "readline.so"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libreadline
 	default n
