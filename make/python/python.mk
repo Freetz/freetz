@@ -202,6 +202,13 @@ ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SPWD)),y)
 $(PKG)_REMOVE_MODS += lib-dynload/spwd.so
 endif
 
+ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SQLITE)),y)
+$(PKG)_DEPENDS_ON += sqlite
+else
+$(PKG)_REMOVE_MODS += lib-dynload/_sqlite3.so
+$(PKG)_REMOVE_MODS += sqlite3
+endif
+
 ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
 else
@@ -247,6 +254,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_BSDDB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CURSES
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_READLINE
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SQLITE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
@@ -354,9 +362,6 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 			usr/lib/python2.7/lib-tk \
 			usr/lib/python2.7/plat-linux3 \
 			usr/lib/python2.7/pdb.doc \
-			\
-			usr/lib/python2.7/sqlite3 \
-			usr/lib/python2.7/lib-dynload/_sqlite3.so \
 			\
 			usr/lib/python2.7/wsgiref \
 			usr/lib/python2.7/wsgiref.egg-info \

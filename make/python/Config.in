@@ -366,6 +366,18 @@ config FREETZ_PACKAGE_PYTHON_MOD_SPWD
 		Fritz!Box, you most probably won't need it. If unsure say N.
 		For details, see: http://docs.python.org/2/library/spwd.html
 
+config FREETZ_PACKAGE_PYTHON_MOD_SQLITE
+	bool "_sqlite3.so"
+	depends on FREETZ_PACKAGE_PYTHON
+	select FREETZ_LIB_libsqlite3
+	default n
+	help
+		DB-API 2.0 interface for SQLite databases.
+		This module provides a SQL interface compliant with the DB-API 2.0
+		specification described by PEP 249. On the Fritz!Box, you most
+		probably won't need it. If unsure say N.
+		For details, see: http://docs.python.org/2/library/sqlite3.html
+
 config FREETZ_PACKAGE_PYTHON_MOD_STRUCT
 	bool "_struct.so"
 	depends on FREETZ_PACKAGE_PYTHON
