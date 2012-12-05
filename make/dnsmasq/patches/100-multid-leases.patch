@@ -1,5 +1,5 @@
---- src/dnsmasq.h
-+++ src/dnsmasq.h
+--- src/dnsmasq.h	2012-12-05 12:45:47+01:00
++++ src/dnsmasq.h	2012-12-05 12:45:47+01:00
 @@ -505,6 +505,7 @@
  #endif
    int hwaddr_len, hwaddr_type; /* hw_type used for iaid in v6 */
@@ -8,7 +8,7 @@
    struct in_addr addr, override, giaddr;
    unsigned char *extradata;
    unsigned int extradata_len, extradata_size;
-@@ -999,6 +1000,7 @@
+@@ -1002,6 +1003,7 @@
  void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
  		      unsigned char *clid, int hw_len, int hw_type, int clid_len, time_t now, int force);
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth, char *domain, char *config_domain);
@@ -16,8 +16,8 @@
  void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
  void lease_set_interface(struct dhcp_lease *lease, int interface, time_t now);
  struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
---- src/lease.c
-+++ src/lease.c
+--- src/lease.c	2012-12-05 12:45:47+01:00
++++ src/lease.c	2012-12-05 12:45:47+01:00
 @@ -196,28 +196,44 @@
        lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
  }
@@ -125,7 +125,7 @@
    send_alarm(next_event, now);
  }
  
-@@ -794,6 +840,23 @@
+@@ -807,6 +853,23 @@
    lease->hostname = lease->fqdn = NULL;
  }
  
@@ -149,8 +149,8 @@
  void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth, char *domain, char *config_domain)
  {
    struct dhcp_lease *lease_tmp;
---- src/rfc2131.c
-+++ src/rfc2131.c
+--- src/rfc2131.c	2012-12-05 12:45:47+01:00
++++ src/rfc2131.c	2012-12-05 12:45:47+01:00
 @@ -486,6 +486,7 @@
  	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0, now, 1);
  	      if (hostname)
@@ -159,7 +159,7 @@
  	      /* infinite lease unless nailed in dhcp-host line. */
  	      lease_set_expires(lease,  
  				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
-@@ -1314,6 +1315,7 @@
+@@ -1326,6 +1327,7 @@
  	  if (hostname)
  	    lease_set_hostname(lease, hostname, hostname_auth, get_domain(lease->addr), domain);
  	  
