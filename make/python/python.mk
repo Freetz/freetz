@@ -7,7 +7,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
 
 $(PKG)_LOCAL_INSTALL_DIR:=$($(PKG)_DIR)/_install
 
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python2.7_bin
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python2.7.bin
 $(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython2.7.so.1.0
 
 $(PKG)_BUILD_PREREQ += zip
@@ -387,7 +387,7 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 			$(if $(FREETZ_PACKAGE_PYTHON_STATIC),,usr/lib/libpython2.7.so.1.0) \
 			usr/lib/python2.7/lib-dynload/*.so; \
 		\
-		mv usr/bin/python2.7 usr/bin/python2.7_bin; \
+		mv usr/bin/python2.7 usr/bin/python2.7.bin; \
 	)
 	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/python2.7; \
 		$(RM) -r $(PYTHON_REMOVE_MODS); \
