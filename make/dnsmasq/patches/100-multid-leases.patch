@@ -1,24 +1,6 @@
---- src/dnsmasq.h	2012-12-05 12:45:47+01:00
-+++ src/dnsmasq.h	2012-12-05 12:45:47+01:00
-@@ -505,6 +505,7 @@
- #endif
-   int hwaddr_len, hwaddr_type; /* hw_type used for iaid in v6 */
-   unsigned char hwaddr[DHCP_CHADDR_MAX]; /* also IPv6 address */
-+  char *ifrname;         /* name of interface */
-   struct in_addr addr, override, giaddr;
-   unsigned char *extradata;
-   unsigned int extradata_len, extradata_size;
-@@ -1002,6 +1003,7 @@
- void lease_set_hwaddr(struct dhcp_lease *lease, unsigned char *hwaddr,
- 		      unsigned char *clid, int hw_len, int hw_type, int clid_len, time_t now, int force);
- void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth, char *domain, char *config_domain);
-+void lease_set_ifrname(struct dhcp_lease *lease, char *ifrname);
- void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now);
- void lease_set_interface(struct dhcp_lease *lease, int interface, time_t now);
- struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
---- src/lease.c	2012-12-05 12:45:47+01:00
-+++ src/lease.c	2012-12-05 12:45:47+01:00
-@@ -196,28 +196,44 @@
+--- src/lease.c
++++ src/lease.c
+@@ -196,28 +196,51 @@
        lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
  }
   
@@ -54,6 +36,13 @@
    if (file_dirty != 0 && daemon->lease_stream)
      {
 +      FILE *multid_leases;
++      char interface_name[IF_NAMESIZE];
++      int dhcp_fd = daemon->dhcpfd;
++
++#ifdef HAVE_DHCP6
++      if (!daemon->dhcp)
++        dhcp_fd = daemon->dhcp6fd;
++#endif
 +
        errno = 0;
        rewind(daemon->lease_stream);
@@ -66,16 +55,24 @@
        
        for (lease = leases; lease; lease = lease->next)
  	{
-@@ -247,14 +263,36 @@
+@@ -247,14 +270,66 @@
  	  ourprintf(&err, " %s ", daemon->addrbuff);
  	  ourprintf(&err, "%s ", lease->hostname ? lease->hostname : "*");
  	  	  
-+	  /* lease 00:12:79:41:AA:01 192.168.178.40 1122416 "computer" 0100127941b4a0 */
++
++	  if (!indextoname(dhcp_fd, lease->last_interface, interface_name))
++	    interface_name[0] = 0;
++#if 0
++	  my_syslog(MS_DHCP | LOG_INFO, "multid.leases-debug lease->last_interface=%d interface_name=\"%s\"", lease->last_interface, interface_name);
++#endif
++
++	  /* (w)lease mac-address ip-address lease-expires "hostname" client-id mac-address "" */
++	  /* Example: lease 00:12:79:41:AA:01 192.168.178.40 1122416 "computer" 0100127941b4a0 00:12:79:41:AA:01 "" */
 +	  ourprintf_impl(
 +	    multid_leases,
 +	    &err_multid,
-+	    "%s %.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s %lu \"%s\" ",
-+	    lease->ifrname && strcmp(lease->ifrname, "wlan") == 0 ? "wlease" : "lease",
++	    "%s %.2x:%.2x:%.2x:%.2x:%.2x:%.2x %s %lu \"%s\" ",
++	    (strstr(interface_name, "wlan") || strstr(interface_name, "wifi") || strstr(interface_name, "ath")) ? "wlease" : "lease",
 +	    lease->hwaddr[0],
 +	    lease->hwaddr[1],
 +	    lease->hwaddr[2],
@@ -96,14 +93,37 @@
 +	      for (i = 0; i < lease->clid_len; i++)
 +		ourprintf_impl(multid_leases, &err_multid, "%.2x", lease->clid[i]);
  	    }
- 	  else
+-	  else
++	  else {
  	    ourprintf(&err, "*\n");	  
++#if 0
++	    // single point as client-id
++	    ourprintf_impl(multid_leases, &err_multid, ".");
++#else
++	    // mac-address (without ':') prefixed with 01 as client-id
++	    ourprintf_impl(multid_leases, &err_multid, "01");
++	    for (i = 0; i <= 5; i++)
++	      ourprintf_impl(multid_leases, &err_multid, "%.2x", lease->hwaddr[i]);
++#endif
++	  }
++
++	  ourprintf_impl(
++	    multid_leases,
++	    &err_multid,
++	    " %.2x:%.2x:%.2x:%.2x:%.2x:%.2x \"\"",
++	    lease->hwaddr[0],
++	    lease->hwaddr[1],
++	    lease->hwaddr[2],
++	    lease->hwaddr[3],
++	    lease->hwaddr[4],
++	    lease->hwaddr[5]
++	  );
 +
 +	  ourprintf_impl(multid_leases, &err_multid, "\n");
  	}
        
  #ifdef HAVE_DHCP6  
-@@ -301,6 +339,9 @@
+@@ -301,6 +376,9 @@
        
        if (!err)
  	file_dirty = 0;
@@ -113,7 +133,7 @@
      }
    
    /* Set alarm for when the first lease expires + slop. */
-@@ -341,6 +382,11 @@
+@@ -341,6 +419,11 @@
  		(unsigned int)difftime(next_event, now));
      }
  
@@ -125,45 +145,12 @@
    send_alarm(next_event, now);
  }
  
-@@ -807,6 +853,23 @@
-   lease->hostname = lease->fqdn = NULL;
- }
- 
-+void lease_set_ifrname (struct dhcp_lease *lease, char *ifrname)
-+{
-+  char *lease_ifrname = NULL;
-+
-+  if (!(lease_ifrname = malloc(strlen(ifrname) + 1)))
-+    return;    /* whoops */
-+
-+  strcpy(lease_ifrname, ifrname);
-+
-+  if (lease->ifrname)
-+    free(lease->ifrname);
-+
-+  lease->ifrname = lease_ifrname;
+@@ -911,6 +994,8 @@
+ #ifdef HAVE_DHCP6
+   slaac_add_addrs(lease, now, 0);
+ #endif
 +
 +  file_dirty = 1;
-+}
-+
- void lease_set_hostname(struct dhcp_lease *lease, char *name, int auth, char *domain, char *config_domain)
- {
-   struct dhcp_lease *lease_tmp;
---- src/rfc2131.c	2012-12-05 12:45:47+01:00
-+++ src/rfc2131.c	2012-12-05 12:45:47+01:00
-@@ -486,6 +486,7 @@
- 	      lease_set_hwaddr(lease, mess->chaddr, NULL, mess->hlen, mess->htype, 0, now, 1);
- 	      if (hostname)
- 		lease_set_hostname(lease, hostname, 1, get_domain(lease->addr), domain); 
-+	      lease_set_ifrname(lease, iface_name);
- 	      /* infinite lease unless nailed in dhcp-host line. */
- 	      lease_set_expires(lease,  
- 				have_config(config, CONFIG_TIME) ? config->lease_time : 0xffffffff, 
-@@ -1326,6 +1327,7 @@
- 	  if (hostname)
- 	    lease_set_hostname(lease, hostname, hostname_auth, get_domain(lease->addr), domain);
- 	  
-+	  lease_set_ifrname(lease, iface_name);
- 	  lease_set_expires(lease, time, now);
- 	  lease_set_interface(lease, int_index, now);
+ }
  
+ void rerun_scripts(void)
