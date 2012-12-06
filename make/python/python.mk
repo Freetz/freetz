@@ -80,9 +80,9 @@ $(PKG)_REMOVE_MODS += lib-dynload/_ctypes_test.so
 $(PKG)_REMOVE_MODS += ctypes
 endif
 
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CURSES)),y)
-$(PKG)_DEPENDS_ON += ncurses
-else
+$(PKG)_DEPENDS_ON += $(if $(or $(FREETZ_PACKAGE_PYTHON_MOD_CURSES),$(FREETZ_PACKAGE_PYTHON_MOD_READLINE)),ncurses)
+
+ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CURSES)),y)
 $(PKG)_REMOVE_MODS += curses
 $(PKG)_REMOVE_MODS += lib-dynload/_curses.so
 $(PKG)_REMOVE_MODS += lib-dynload/_curses_panel.so
