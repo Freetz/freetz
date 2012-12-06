@@ -8,7 +8,7 @@
  
  # if OPENSSL_VERSION_NUMBER >= 0x0090800fL
  #  ifndef OPENSSL_NO_ECDH
-@@ -501,13 +502,14 @@
+@@ -498,13 +499,14 @@
  	network_backend_t backend;
  
  #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
@@ -24,7 +24,7 @@
  	DH *dh;
  	BIO *bio;
  
-@@ -550,6 +552,7 @@
+@@ -547,6 +549,7 @@
  		0x85,0x5E,0x6E,0xEB,0x22,0xB3,0xB2,0xE5,
  	};
  #endif
@@ -32,7 +32,7 @@
  
  #ifdef USE_OPENSSL
  	char ssl_error_string_buf[256];
-@@ -652,6 +655,7 @@
+@@ -649,6 +652,7 @@
  			}
  		}
  
@@ -40,7 +40,7 @@
  		/* Support for Diffie-Hellman key exchange */
  		if (!buffer_is_empty(s->ssl_dh_file)) {
  			/* DH parameters from file */
-@@ -685,9 +689,10 @@
+@@ -682,9 +686,10 @@
  		SSL_CTX_set_tmp_dh(s->ssl_ctx,dh);
  		SSL_CTX_set_options(s->ssl_ctx,SSL_OP_SINGLE_DH_USE);
  		DH_free(dh);

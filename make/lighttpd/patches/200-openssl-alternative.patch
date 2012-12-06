@@ -1,7 +1,7 @@
 --- configure
 +++ configure
 	2012-01-13 21:11:06.345273110 +0100
-@@ -14143,13 +14143,25 @@
+@@ -14248,13 +14248,25 @@
  done
  
      OLDLIBS="$LIBS"
@@ -31,7 +31,7 @@
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -14159,73 +14171,34 @@
+@@ -14264,73 +14276,34 @@
  #ifdef __cplusplus
  extern "C"
  #endif
@@ -131,7 +131,7 @@
  
  static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
  	server_socket *srv_socket = (server_socket *)context;
-@@ -622,7 +624,9 @@
+@@ -619,7 +621,9 @@
  		}
  
  		SSL_CTX_set_options(s->ssl_ctx, ssloptions);
@@ -141,7 +141,7 @@
  
  		if (!s->ssl_use_sslv2) {
  			/* disable SSLv2 */
-@@ -716,6 +720,15 @@
+@@ -713,6 +717,15 @@
  #endif
  #endif
  
@@ -157,7 +157,7 @@
  		if (!buffer_is_empty(s->ssl_ca_file)) {
  			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
-@@ -747,6 +760,7 @@
+@@ -744,6 +757,7 @@
  				"SSL: You specified ssl.verifyclient.activate but no ca_file"
  			);
  		}
@@ -187,7 +187,7 @@
  
 --- src/connections.c
 +++ src/connections.c
-@@ -1368,7 +1368,9 @@
+@@ -1369,7 +1369,9 @@
  			}
  
  			con->renegotiations = 0;

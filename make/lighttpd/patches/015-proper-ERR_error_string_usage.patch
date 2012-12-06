@@ -46,7 +46,7 @@
  			}
  			break;
  		}
-@@ -1353,8 +1360,9 @@
+@@ -1354,8 +1361,9 @@
  		/* connect FD to SSL */
  		if (srv_socket->is_ssl) {
  			if (NULL == (con->ssl = SSL_new(srv_socket->ssl_ctx))) {
@@ -57,7 +57,7 @@
  
  				return NULL;
  			}
-@@ -1365,8 +1373,9 @@
+@@ -1366,8 +1374,9 @@
  			con->conf.is_ssl=1;
  
  			if (1 != (SSL_set_fd(con->ssl, cnt))) {
@@ -68,7 +68,7 @@
  				return NULL;
  			}
  		}
-@@ -1583,8 +1592,12 @@
+@@ -1584,8 +1593,12 @@
  
  						break;
  					default:
@@ -82,7 +82,7 @@
  					}
  				}
  #endif
-@@ -1706,10 +1719,11 @@
+@@ -1707,10 +1720,11 @@
  					case SSL_ERROR_SYSCALL:
  						/* perhaps we have error waiting in our error-queue */
  						if (0 != (err = ERR_get_error())) {
@@ -94,9 +94,9 @@
 +										lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
  							} while((err = ERR_get_error()));
  						} else if (errno != 0) { /* ssl bug (see lighttpd ticket #2213): sometimes errno == 0 */
- 							log_error_write(srv, __FILE__, __LINE__, "sddds", "SSL (error):",
-@@ -1719,10 +1733,14 @@
- 	
+ 							switch(errno) {
+@@ -1727,10 +1741,14 @@
+ 
  						break;
  					default:
 +						{
@@ -109,11 +109,11 @@
 +									lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
 +						}
  						}
- 	
+ 
  						break;
 --- src/network.c
 +++ src/network.c
-@@ -551,6 +551,10 @@
+@@ -548,6 +548,10 @@
  	};
  #endif
  
@@ -124,7 +124,7 @@
  	struct nb_map {
  		network_backend_t nb;
  		const char *name;
-@@ -610,7 +614,7 @@
+@@ -607,7 +611,7 @@
  
  		if (NULL == (s->ssl_ctx = SSL_CTX_new(SSLv23_server_method()))) {
  			log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -133,7 +133,7 @@
  			return -1;
  		}
  
-@@ -621,7 +625,7 @@
+@@ -618,7 +622,7 @@
  			/* disable SSLv2 */
  			if (!(SSL_OP_NO_SSLv2 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv2))) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -142,7 +142,7 @@
  				return -1;
  			}
  		}
-@@ -630,7 +634,7 @@
+@@ -627,7 +631,7 @@
  			/* disable SSLv3 */
  			if (!(SSL_OP_NO_SSLv3 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv3))) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -151,7 +151,7 @@
  				return -1;
  			}
  		}
-@@ -639,7 +643,7 @@
+@@ -636,7 +640,7 @@
  			/* Disable support for low encryption ciphers */
  			if (SSL_CTX_set_cipher_list(s->ssl_ctx, s->ssl_cipher_list->ptr) != 1) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -160,7 +160,7 @@
  				return -1;
  			}
  
-@@ -710,18 +714,18 @@
+@@ -707,18 +711,18 @@
  		if (!buffer_is_empty(s->ssl_ca_file)) {
  			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -182,7 +182,7 @@
  					return -1;
  				}
  				SSL_CTX_set_client_CA_list(s->ssl_ctx, certs);
-@@ -741,20 +745,20 @@
+@@ -738,20 +742,20 @@
  
  		if (SSL_CTX_use_certificate_file(s->ssl_ctx, s->ssl_pemfile->ptr, SSL_FILETYPE_PEM) < 0) {
  			log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
