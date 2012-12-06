@@ -13,7 +13,6 @@ $(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython2.7.so.1.0
 $(PKG)_BUILD_PREREQ += zip
 
 $(PKG)_HOST_DEPENDS_ON := python-host python-setuptools python-distutilscross
-# libffi is a compile-time only dependency
 $(PKG)_DEPENDS_ON := libffi zlib
 
 $(PKG)_COMPRESS_PYC :=

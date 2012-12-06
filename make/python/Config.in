@@ -131,6 +131,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CSV
 config FREETZ_PACKAGE_PYTHON_MOD_CTYPES
 	bool "_ctypes.so and _ctypes_test.so"
 	depends on FREETZ_PACKAGE_PYTHON
+	select FREETZ_LIB_libffi
 	default n
 	help
 		Foreign function library for Python, that provides C compatible data
