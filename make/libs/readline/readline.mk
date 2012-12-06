@@ -17,6 +17,7 @@ $(PKG)_CONFIGURE_ENV += bash_cv_func_ctype_nonascii=no
 $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present
 $(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
 $(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
+$(PKG)_CONFIGURE_ENV += bash_cv_termcap_lib=libncurses
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
