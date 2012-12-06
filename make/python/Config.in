@@ -8,30 +8,33 @@ config FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libz
 	default n
 	help
-		Python is a remarkably powerful dynamic programming language that is used
-		in a wide variety of application domains.
-		CAUTION: Python adds roughly 7.5 MB to 12 MB (depending on your choice of modules)
-		of uncompressed data to your image. In most cases, it should therefore be externalized.
+		Python is a remarkably powerful dynamic programming language
+		that is used in a wide variety of application domains.
+		CAUTION: Python adds roughly 4 MB to 15.5 MB (depending on
+		your choice of modules) of uncompressed data to your image.
+		In most cases, it should therefore be externalized.
 
 config FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 	bool "Compress *.pyc files"
 	depends on FREETZ_PACKAGE_PYTHON
 	default y
 	help
-		Causes all *.pyc files usually residing in /usr/lib/python2.7 to be
-		compressed into one large file, /usr/lib/python27.zip. Thereafter, only
-		*.so files and some small text data are left in /usr/lib/python2.7, while
-		Python will (efficiently) read all *.pyc files from the zip archive.
-		Leaving this option enabled saves you about 50% of space at virtually no
-		cost.
+		Causes all *.pyc files usually residing in /usr/lib/python2.7
+		to be compressed into one large file, /usr/lib/python27.zip.
+		Thereafter, only *.so files and some small text data are left in
+		/usr/lib/python2.7, while Python will (efficiently) read all
+		*.pyc files from the zip archive.
+		Leaving this option enabled saves you about 50% of space at
+		virtually no cost.
 
 config FREETZ_PACKAGE_PYTHON_STATIC
 	bool "Link libpython statically in"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
-		Don't create shared version of libpython, link it in statically instead.
-		All other libraries Python depends on are still linked in dynamically.
+		Don't create shared version of libpython, link it in statically
+		instead. All other libraries Python depends on are still linked
+		in dynamically.
 
 menu "Python binary modules (extensions)"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -41,8 +44,10 @@ config FREETZ_PACKAGE_PYTHON_MOD_TEST
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
-		Install test/unittest modules and tests contained in various modules.
-		Note: If unsure, say N, since these modules take up a lot of disk space.
+		Install test/unittest modules and tests contained in various
+		modules.
+		Note: If unsure, say N, since these modules take up a lot of
+		disk space.
 		For details, see: http://docs.python.org/2/library/test.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV
@@ -51,9 +56,10 @@ config FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV
 	default n
 	help
 		Access to (OSS-compatible) Linux audio devices.
-		Note: Only useful, if you connect an audio-capable USB device to your
-		box. Most people may safely say N here.
-		For details, see: http://docs.python.org/2/library/ossaudiodev.html
+		Note: Only useful, if you connect an audio-capable USB device
+		to your box. Most people may safely say N here.
+		For details, see:
+		http://docs.python.org/2/library/ossaudiodev.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_AUDIOOP
 	bool "audioop.so"
@@ -78,8 +84,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_BSDDB
 	select FREETZ_LIB_libdb
 	default n
 	help
-		Interface to Berkeley DB library.
-		Requires libdb.
+		Interface to Berkeley DB library. Requires libdb.
 		For details, see: http://docs.python.org/2/library/bsddb.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CMATH
@@ -106,10 +111,10 @@ config FREETZ_PACKAGE_PYTHON_MOD_CPROFILE
 	default n
 	help
 		Python cProfiler.
-		A profiler is a program that describes the run time performance of a
-		program, providing a variety of statistics. If you don't plan on
-		debugging your Python scripts on the Fritz!Box, you can safely say N
-		here.
+		A profiler is a program that describes the run time performance
+		of a program, providing a variety of statistics. If you don't
+		plan on debugging your Python scripts on the Fritz!Box, you can
+		safely say N here.
 		For details, see: http://docs.python.org/2/library/profile.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CRYPT
@@ -134,8 +139,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_CTYPES
 	select FREETZ_LIB_libffi
 	default n
 	help
-		Foreign function library for Python, that provides C compatible data
-		types and allows calling functions in DLLs or shared libraries.
+		Foreign function library for Python, that provides C compatible
+		data types and allows calling functions in DLLs or shared
+		libraries. Requires libffi.
 		For details, see: http://docs.python.org/2/library/ctypes.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CURSES
@@ -146,7 +152,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CURSES
 	default n
 	help
 		Terminal handling for character-cell displays.
-		Requires libncurses.
+		Requires libncurses and libpanel.
 		Most people won't need it, so it's safe to say N.
 		For details, see: http://docs.python.org/2/library/curses.html
 
@@ -156,8 +162,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_DATETIME
 	default y
 	help
 		Basic date and time types.
-		The datetime module supplies classes for manipulating dates and times in
-		both simple and complex ways.
+		The datetime module supplies classes for manipulating dates and
+		times in both simple and complex ways.
 		For details, see: http://docs.python.org/2/library/datetime.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_EASTERN_CODECS
@@ -165,8 +171,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_EASTERN_CODECS
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
-		Provide codec registry and base classes for Asian and Eastern languages.
-		In particular:
+		Provide codec registry and base classes for Asian and Eastern
+		languages, in particular:
 		 * big5
 		 * big5hkscs
 		 * cp932
@@ -209,8 +215,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_FCNTL
 	default y
 	help
 		The fcntl() and ioctl() system calls.
-		This module performs file control and I/O control on file descriptors.
-		You probably want to say Y here.
+		This module performs file control and I/O control on file
+		descriptors. You probably want to say Y here.
 		For details, see: http://docs.python.org/2/library/fcntl.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_FUNCTOOLS
@@ -219,9 +225,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_FUNCTOOLS
 	default n
 	help
 		Higher-order functions and operations on callable objects.
-		The functools module is for higher-order functions: functions that act on
-		or return other functions. If you don't need this functionality, it's
-		safe to say N.
+		The functools module is for higher-order functions: Functions
+		that act on or return other functions. If you don't need this
+		functionality, it's safe to say N.
 		For details, see: http://docs.python.org/2/library/functools.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_GRP
@@ -230,7 +236,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_GRP
 	default n
 	help
 		This module provides access to the Unix group database.
-		On the Fritz!Box, you most probably won't need it. If unsure say N.
+		On the Fritz!Box, you most probably won't need it. If unsure
+		say N.
 		For details, see: http://docs.python.org/2/library/grp.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
@@ -240,11 +247,11 @@ config FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
 	default y
 	help
 		Secure hashes and message digests.
-		This module implements a common interface to many different secure hash
-		and message digest algorithms. It is a good idea to leave this enabled,
-		however the hashlib module, requires both the openssl libraries and
-		"_ssl.so" (s. below). Thus, if you have to save disk space, you might
-		say N.
+		This module implements a common interface to many different
+		secure hash and message digest algorithms. It is a good idea to
+		leave this enabled, however the hashlib module requires both
+		the openssl libraries and "_ssl.so" (s. below). Thus, if you
+		are on a space constrained setup, you should probably say N.
 		For details, see: http://docs.python.org/2/library/hashlib.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT
@@ -253,8 +260,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT
 	default n
 	help
 		High performance logging profiler.
-		If you don't plan on debugging your Python scripts on the Fritz!Box, you
-		can safely say N here.
+		If you don't plan on debugging your Python scripts on the
+		Fritz!Box, you can safely say N here.
 		For details, see: http://docs.python.org/2/library/hotshot.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_IO
@@ -263,10 +270,11 @@ config FREETZ_PACKAGE_PYTHON_MOD_IO
 	default n
 	help
 		Core tools for working with streams.
-		The io module provides the Python interfaces to stream handling. Under
-		Python 2.x, this is proposed as an alternative to the built-in file
-		object, but in Python 3.x it is the default interface to access files and
-		streams. You most probably won't need this, and can safely say N.
+		The io module provides the Python interfaces to stream handling.
+		In Python 2.x, this is proposed as an alternative to the
+		built-in file object, while in Python 3.x it is the default
+		interface to access files and streams. You most probably won't
+		need this, and can safely say N.
 		For details, see: http://docs.python.org/2/library/io.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_JSON
@@ -275,8 +283,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_JSON
 	default n
 	help
 		JSON encoder and decoder.
-		JSON (JavaScript Object Notation) is a subset of JavaScript syntax used
-		as a lightweight data interchange format.
+		JSON (JavaScript Object Notation) is a subset of JavaScript
+		syntax used as a lightweight data interchange format.
 		For details, see: http://docs.python.org/2/library/json.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_MULTIPROCESSING
@@ -286,9 +294,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_MULTIPROCESSING
 	default n
 	help
 		Process-based "threading" interface.
-		Multiprocessing is a package that supports spawning processes using an
-		API similar to the threading module. It's usually safe to say N here.
-		Requires "mmap.so" (s. below).
+		Multiprocessing is a package that supports spawning processes
+		using an API similar to the threading module. It's usually safe
+		to say N here. Requires "mmap.so" (s. below).
 		For details, see: http://docs.python.org/2/library/multiprocessing.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_MMAP
@@ -297,8 +305,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_MMAP
 	default n
 	help
 		Memory-mapped file support.
-		Memory-mapped file objects behave like both strings and like file
-		objects. Primarily used by "_multiprocessing.so" (s. above).
+		Memory-mapped file objects behave like both strings and like
+		file objects. Primarily used by "_multiprocessing.so"
+		(s. above).
 		For details, see: http://docs.python.org/2/library/mmap.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_OPERATOR
@@ -307,9 +316,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_OPERATOR
 	default n
 	help
 		Standard operators as functions.
-		The operator module exports a set of efficient functions corresponding to
-		the intrinsic operators of Python. For example, operator.add(x, y) is
-		equivalent to the expression x+y.
+		The operator module exports a set of efficient functions
+		corresponding to the intrinsic operators of Python. E.g.,
+		operator.add(x, y) is equivalent to the expression x+y.
 		For details, see: http://docs.python.org/2/library/operator.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_RANDOM
@@ -319,10 +328,10 @@ config FREETZ_PACKAGE_PYTHON_MOD_RANDOM
 	default y
 	help
 		Generate pseudo-random numbers.
-		This module implements pseudo-random number generators for various
-		distributions. It is probably a good idea to leave this enabled, although
-		it requires both "_hashlib.so" (s. above) and "_ssl.so" (s. below), which
-		in turn requires openssl.
+		This module implements pseudo-random number generators for
+		various distributions. It is probably a good idea to leave this
+		enabled, although it requires both "_hashlib.so" (s. above) and
+		"_ssl.so" (s. below), which in turn requires openssl.
 		For details, see: http://docs.python.org/2/library/random.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_READLINE
@@ -333,8 +342,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_READLINE
 	default n
 	help
 		GNU readline interface.
-		The readline module defines a number of functions to facilitate completion and reading/writing of history files from the Python
-		interpreter. Requires libreadline.
+		The readline module defines a number of functions to facilitate
+		completion and reading/writing of history files from the Python
+		interpreter. Requires libncurses and libreadline.
 		For details, see: http://docs.python.org/2/library/readline.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_RESOURCE
@@ -343,9 +353,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_RESOURCE
 	default y
 	help
 		Resource usage information.
-		This module provides basic mechanisms for measuring and controlling
-		system resources utilized by a program. Several other modules depend on
-		it, so it should be left enabled.
+		This module provides basic mechanisms for measuring and
+		controlling system resources utilized by a program. Several
+		other modules depend on it, so it should be left enabled.
 		For details, see: http://docs.python.org/2/library/resource.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SOCKET
@@ -354,9 +364,10 @@ config FREETZ_PACKAGE_PYTHON_MOD_SOCKET
 	default y
 	help
 		Low-level networking interface.
-		This module provides access to the BSD socket interface. It is required
-		for all serious network related programming in Python. As such, it should
-		be left enabled on a networking device like your Fritz!Box.
+		This module provides access to the BSD socket interface. It is
+		required for all serious network related programming in Python.
+		That said, it should be left enabled on a networking device like
+		your Fritz!Box.
 		For details, see: http://docs.python.org/2/library/socket.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SPWD
@@ -365,8 +376,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_SPWD
 	default n
 	help
 		The shadow password database.
-		This module provides access to the Unix shadow password database. On the
-		Fritz!Box, you most probably won't need it. If unsure say N.
+		This module provides access to the Unix shadow password
+		database. On the Fritz!Box, you most probably won't need it.
+		If unsure say N.
 		For details, see: http://docs.python.org/2/library/spwd.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SQLITE
@@ -376,9 +388,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_SQLITE
 	default n
 	help
 		DB-API 2.0 interface for SQLite databases.
-		This module provides a SQL interface compliant with the DB-API 2.0
-		specification described by PEP 249. On the Fritz!Box, you most
-		probably won't need it. If unsure say N.
+		This module provides a SQL interface compliant with the DB-API
+		2.0 specification described by PEP 249. On the Fritz!Box, you
+		most probably won't need it. If unsure say N.
 		For details, see: http://docs.python.org/2/library/sqlite3.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_STRUCT
@@ -387,8 +399,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_STRUCT
 	default n
 	help
 		Interpret strings as packed binary data.
-		This module performs conversions between Python values and C structs
-		represented as Python strings.
+		This module performs conversions between Python values and C
+		structs represented as Python strings.
 		For details, see: http://docs.python.org/2/library/struct.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SSL
@@ -401,9 +413,9 @@ config FREETZ_PACKAGE_PYTHON_MOD_SSL
 	default n
 	help
 		TLS/SSL wrapper for socket objects.
-		This module is prerequisite to a number of other modules, so you probably
-		want to enable it. However, it requires both "_socket.so" (s. above) and
-		openssl libraries.
+		This module is prerequisite to a number of other modules, so
+		you probably want to enable it. However, it requires both
+		"_socket.so" (s. above) and openssl libraries.
 		For details, see: http://docs.python.org/2/library/ssl.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SYSLOG
@@ -412,7 +424,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_SYSLOG
 	default n
 	help
 		Unix syslog library routines.
-		This module provides an interface to the Unix syslog library routines.
+		This module provides an interface to the Unix syslog library
+		routines.
 		For details, see: http://docs.python.org/2/library/syslog.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_TERMIOS
@@ -421,7 +434,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_TERMIOS
 	default n
 	help
 		POSIX style tty control.
-		This module provides an interface to the POSIX calls for tty I/O control.
+		This module provides an interface to the POSIX calls for tty I/O
+		control.
 		For details, see: http://docs.python.org/2/library/termios.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_TIME
@@ -430,8 +444,8 @@ config FREETZ_PACKAGE_PYTHON_MOD_TIME
 	default y
 	help
 		Time access and conversions.
-		This module provides various time-related functions. You are HIGHLY
-		encouraged to leave it enabled.
+		This module provides various time-related functions. You are
+		HIGHLY encouraged to leave it enabled.
 		For details, see: http://docs.python.org/2/library/time.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
@@ -440,9 +454,10 @@ config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
 	default n
 	help
 		Unicode Database.
-		This module provides access to the Unicode Character Database which
-		defines character properties for all Unicode characters. Unless you need
-		to examine those properties, you are safe to say N here.
+		This module provides access to the Unicode Character Database
+		which defines character properties for all Unicode characters.
+		Unless you need to examine those properties, you are safe to say
+		N here.
 		For details, see: http://docs.python.org/2/library/unicodedata.html
 
 endmenu
