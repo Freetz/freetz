@@ -1,7 +1,4 @@
 #!/bin/sh
 
-# TODO: is it really necessary to override LD_LIBRARY_PATH
-
-PYTHONHOME="/usr" \
-LD_LIBRARY_PATH="${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}/usr/lib/freetz" \
-/usr/bin/python2.7.bin "$@"
+export PYTHONHOME="/usr"
+exec /usr/bin/python2.7.bin "$@"
