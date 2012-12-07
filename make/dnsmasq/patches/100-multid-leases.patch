@@ -1,31 +1,38 @@
 --- src/lease.c
 +++ src/lease.c
-@@ -196,28 +196,51 @@
+@@ -196,13 +196,29 @@ void lease_update_from_configs(void)
        lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
  }
   
--static void ourprintf(int *errp, char *format, ...)
-+static void ourprintf_impl(FILE* f, int *errp, char *format, ...)
++static void ourvprintf(FILE* f, int *errp, char *format, va_list ap)
++{
++  if (!(*errp) && f && vfprintf(f, format, ap) < 0)
++    *errp = errno;
++}
++
++static void ourprintf3(FILE* f, int *errp, char *format, ...) __attribute__((format(printf, 3, 4)));
++static void ourprintf3(FILE* f, int *errp, char *format, ...)
++{
++  va_list ap;
++
++  va_start(ap, format);
++  ourvprintf(f, errp, format, ap);
++  va_end(ap);
++}
++
++static void ourprintf(int *errp, char *format, ...) __attribute__((format(printf, 2, 3)));
+ static void ourprintf(int *errp, char *format, ...)
  {
    va_list ap;
    
    va_start(ap, format);
 -  if (!(*errp) && vfprintf(daemon->lease_stream, format, ap) < 0)
-+  if (!(*errp) && f && vfprintf(f, format, ap) < 0)
-     *errp = errno;
+-    *errp = errno;
++  ourvprintf(daemon->lease_stream, errp, format, ap);
    va_end(ap);
  }
  
-+static void ourprintf(int *errp, char *format, ...)
-+{
-+  va_list ap;
-+
-+  va_start(ap, format);
-+  ourprintf_impl(daemon->lease_stream, errp, format, ap);
-+  va_end(ap);
-+}
-+
- void lease_update_file(time_t now)
+@@ -210,14 +226,28 @@ void lease_update_file(time_t now)
  {
    struct dhcp_lease *lease;
    time_t next_event;
@@ -55,7 +62,7 @@
        
        for (lease = leases; lease; lease = lease->next)
  	{
-@@ -247,14 +270,66 @@
+@@ -247,14 +277,66 @@ void lease_update_file(time_t now)
  	  ourprintf(&err, " %s ", daemon->addrbuff);
  	  ourprintf(&err, "%s ", lease->hostname ? lease->hostname : "*");
  	  	  
@@ -68,7 +75,7 @@
 +
 +	  /* (w)lease mac-address ip-address lease-expires "hostname" client-id mac-address "" */
 +	  /* Example: lease 00:12:79:41:AA:01 192.168.178.40 1122416 "computer" 0100127941b4a0 00:12:79:41:AA:01 "" */
-+	  ourprintf_impl(
++	  ourprintf3(
 +	    multid_leases,
 +	    &err_multid,
 +	    "%s %.2x:%.2x:%.2x:%.2x:%.2x:%.2x %s %lu \"%s\" ",
@@ -91,23 +98,23 @@
  	      ourprintf(&err, "%.2x\n", lease->clid[i]);
 +
 +	      for (i = 0; i < lease->clid_len; i++)
-+		ourprintf_impl(multid_leases, &err_multid, "%.2x", lease->clid[i]);
++		ourprintf3(multid_leases, &err_multid, "%.2x", lease->clid[i]);
  	    }
 -	  else
 +	  else {
  	    ourprintf(&err, "*\n");	  
 +#if 0
 +	    // single point as client-id
-+	    ourprintf_impl(multid_leases, &err_multid, ".");
++	    ourprintf3(multid_leases, &err_multid, ".");
 +#else
 +	    // mac-address (without ':') prefixed with 01 as client-id
-+	    ourprintf_impl(multid_leases, &err_multid, "01");
++	    ourprintf3(multid_leases, &err_multid, "01");
 +	    for (i = 0; i <= 5; i++)
-+	      ourprintf_impl(multid_leases, &err_multid, "%.2x", lease->hwaddr[i]);
++	      ourprintf3(multid_leases, &err_multid, "%.2x", lease->hwaddr[i]);
 +#endif
 +	  }
 +
-+	  ourprintf_impl(
++	  ourprintf3(
 +	    multid_leases,
 +	    &err_multid,
 +	    " %.2x:%.2x:%.2x:%.2x:%.2x:%.2x \"\"",
@@ -119,11 +126,11 @@
 +	    lease->hwaddr[5]
 +	  );
 +
-+	  ourprintf_impl(multid_leases, &err_multid, "\n");
++	  ourprintf3(multid_leases, &err_multid, "\n");
  	}
        
  #ifdef HAVE_DHCP6  
-@@ -301,6 +376,9 @@
+@@ -301,6 +383,9 @@ void lease_update_file(time_t now)
        
        if (!err)
  	file_dirty = 0;
@@ -133,7 +140,7 @@
      }
    
    /* Set alarm for when the first lease expires + slop. */
-@@ -341,6 +419,11 @@
+@@ -341,6 +426,11 @@ void lease_update_file(time_t now)
  		(unsigned int)difftime(next_event, now));
      }
  
@@ -145,12 +152,11 @@
    send_alarm(next_event, now);
  }
  
-@@ -911,6 +994,8 @@
+@@ -907,6 +997,7 @@ void lease_set_interface(struct dhcp_lea
+ 
+   lease->last_interface = interface;
+   lease->flags |= LEASE_CHANGED; 
++  file_dirty = 1;
+ 
  #ifdef HAVE_DHCP6
    slaac_add_addrs(lease, now, 0);
- #endif
-+
-+  file_dirty = 1;
- }
- 
- void rerun_scripts(void)
