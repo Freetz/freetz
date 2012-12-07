@@ -1,4 +1,3 @@
-if [ -r /usr/lib/libmodmount.sh ]; then
 
 sec_begin 'Freetzmount'
 
@@ -14,4 +13,3 @@ cgi_print_checkbox_p "stor_killblocker" "$MOD_STOR_KILLBLOCKER" \
 cgi_print_textline_p "stor_prefix" "$MOD_STOR_PREFIX" 20 "$(lang de:"Pr&auml;fix f&uuml;r Mountpoints" en:"Prefix for mountpoints") (uStor) :"
 
 sec_end
-fi
