@@ -29,6 +29,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_PACKAGE_MOD_ETCSERVICES)" != "y" ] && echo "etc/services" >> $@; \
 	[ "$(FREETZ_CUSTOM_UDEV_RULES)" != "y" ] && echo -e "etc/default.mod/udev_*.def\netc/udev/rules.d/??-custom.rules" >> $@; \
 	[ "$(FREETZ_HAS_AVM_UDEV)" != "y" ] && echo "etc/udev" >> $@; \
+	[ "$(FREETZ_TARGET_IPV6_SUPPORT)" != "y" ] && echo -e "usr/lib/cgi-bin/mod/conf/80-ipv6.sh" >> $@; \
 	touch $@
 
 $(pkg)-precompiled:
