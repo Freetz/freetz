@@ -2,13 +2,16 @@ get_env() {
 	sed -n "s/^$1	//p" /proc/sys/urlader/environment
 }
 
-sec_begin '$(lang de:"Box" en:"Box")'
+[ -r /var/env.cache ] && . /var/env.cache
+
+sec_begin "$CONFIG_PRODUKT_NAME"
 
 cat << EOF
-<p>
-$(lang de:"Firmware" en:"Firmware"): $(get_env firmware_info)-$(cat /etc/.freetz-version)
-</p>
-<table width="100%"><tr><td>
+<table width="100%">
+
+<tr>
+<td>Firmware: $CONFIG_VERSION_MAJOR.$CONFIG_VERSION rev$(/etc/version --project 2>/dev/null) $CONFIG_LABOR_ID_NAME</td>
+<td align="right">
 EOF
 
 brands_cnt=0
@@ -45,9 +48,14 @@ else
 fi
 
 cat << EOF
-
 </td>
-<td align="right">$(lang de:"Uptime" en:"Uptime"): $(uptime | sed -r 's/.* up (.*), *load .*/\1/')</td></tr>
+</tr>
+
+<tr>
+<td>Freetz: $(cat /etc/.freetz-version |sed 's/freetz-//')</td>
+<td align="right">Uptime: $(uptime | sed -r 's/.* up (.*), *load .*/\1/')</td>
+</tr>
+
 </table>
 EOF
 
