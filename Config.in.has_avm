@@ -392,6 +392,28 @@ config FREETZ_HAS_AVM_JUNK_BYTES
 		Select this if you have a firmware with junk bytes in SquashFS, as
 		described in http://freetz.org/ticket/1614#comment:70
 
+config FREETZ_HAS_AVM_MICROVOIP_DSL
+	bool "Has microvoip-dsl.bin"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_FON_WLAN || \
+		FREETZ_TYPE_WLAN_3131 || \
+		FREETZ_TYPE_WLAN_3170 || \
+		FREETZ_TYPE_FON_5010 || \
+		FREETZ_TYPE_FON_5124 || \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_5140 || \
+		FREETZ_TYPE_FON_WLAN_7112 || \
+		FREETZ_TYPE_FON_WLAN_7113 || \
+		FREETZ_TYPE_FON_WLAN_7140 || \
+		FREETZ_TYPE_FON_WLAN_7141 || \
+		FREETZ_TYPE_FON_7150 || \
+		FREETZ_TYPE_FON_WLAN_7170
+	 #	FREETZ_TYPE_FON_5113
+	default n
+	help
+		Select this if firmware contains microvoip-dsl-bin.
+
 config FREETZ_HAS_AVM_ANNEX_A_AND_B
 	bool "Has Annex A and B"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_TYPE_LANG_EN && \

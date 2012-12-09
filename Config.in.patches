@@ -285,6 +285,14 @@ config FREETZ_CUSTOM_UDEV_RULES
 
 comment "Removal patches ------------------------"
 
+config FREETZ_REMOVE_MICROVOIP_DSL
+	bool "Remove microvoip-dsl.bin - EXPERIMANTAL"
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_MICROVOIP_DSL
+	default n
+	help
+		Remove lib/modules/microvoip-dsl.bin. This saves about
+		270-380 KB of uncompressed data size.
+
 config FREETZ_REMOVE_ANNEX_A_FIRMWARE
 	bool "Remove Annex A firmware file"
 	depends on FREETZ_SHOW_ADVANCED && ! FREETZ_HAS_AVM_MULTI_ANNEX && \
