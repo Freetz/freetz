@@ -20,7 +20,7 @@ config() {
 }
 
 startdaemon_pre() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null || true
 }
 
 start() {
