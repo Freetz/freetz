@@ -19,11 +19,17 @@ config() {
 	modlib_config
 }
 
-start() {
+startdaemon_pre() {
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+}
+
+start() {
 	local OPTIONS="--pid-file=$PID_FILE $DNSMASQ_OPTIONS"
 	[ "$DNSMASQ_DNS_PORT" ] && OPTIONS="$OPTIONS -p $DNSMASQ_DNS_PORT"
 	modlib_startdaemon $DAEMON $OPTIONS
+}
+
+startdaemon_post() {
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 
 	if [ ! -L "/var/flash/multid.leases" -a "$DNSMASQ_DHCP" = "yes" ]; then
@@ -42,9 +48,11 @@ start() {
 	done
 }
 
-stop() {
+stop_pre() {
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
-	kill $(cat $PID_FILE) 2> /dev/null
+}
+
+stop_post() {
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 
 	if [ -L "/var/flash/multid.leases" ]; then
@@ -94,11 +102,14 @@ case $1 in
 		fi
 		modlib_restart
 		;;
+	reload)
+		modlib_reload
+		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
