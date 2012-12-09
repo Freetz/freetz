@@ -37,7 +37,7 @@ if [ -e "$HOME_LUA" ]; then
 	# heute: box.out(" <span class=\"cs_Details\">({?537:891?} "..tostring(g_coninf_data.CallsToday)..")</span>")
 	modsed '/box.out(" <span class=."cs_Details.">.{?537:891?} "..tostring(g_coninf_data.CallsToday)..")<.span>")/d' "$HOME_LUA"
 	# mehr: <a class="cs_more" href="<?lua box.out(get_link('/fon_num/foncalls.lua'))?>">{?537:36?}</a>
-	modsed '/<a class="cs_more" href="<?lua box.out(get_link(..fon_num.foncalls.lua.))?>">{?537:36?}</a>/d' "$HOME_LUA"
+	modsed '/<a class="cs_more" href="<?lua box.out(get_link(..fon_num.foncalls.lua.))?>">{?537:36?}<.a>/d' "$HOME_LUA"
 	# href: <a class="head_link" href="<?lua href.write('/fon_num/foncalls.lua') ?>">
 	modsed 's/\(<a class="head_link" href="\)<?lua href.write(..fon_num.foncalls.lua.) ?>\(">\)/\1\2/' "$HOME_LUA"
 
@@ -47,11 +47,11 @@ if [ -e "$HOME_LUA" ]; then
 	# mehr: <a class="cs_more" href="<?lua box.out(get_link('/fon_num/fonbuch.lua'))?>">{?537:405?}</a>
 	modsed '/<a class="cs_more" href="<?lua box.out(get_link(..fon_num.fonbuch.lua.))?>">{?537:405?}<.a>/d' "$HOME_LUA"
 	# href: <a class="head_link" href="<?lua href.write('/fon_num/fonbuch.lua') ?>">
-	modsed 's/\(<a class="head_link" href="\)<?lua href.write(..fon_num.fonbuch.lua.) ?>\(">\)/\1x\2/' "$HOME_LUA"
+	modsed 's/\(<a class="head_link" href="\)<?lua href.write(..fon_num.fonbuch.lua.) ?>\(">\)/\1\2/' "$HOME_LUA"
 
 	# patcht Hauptseite > Kasten Verbindungen > Telefonie
 	modsed '/str=str.."<td class=."..State_Led(led)..".><.td>"/d' "$HOME_LUA"
-	modsed '/str=str.."<td ><a href=."..get_link(".fon_devices.fondevices.lua")..".>{?537:794?}<\/a><\/td>"/d' "$HOME_LUA"
+	modsed '/str=str.."<td ><a href=."..get_link(".fon_devices.fondevices.lua")..".>{?537:794?}<.a><.td>"/d' "$HOME_LUA"
 	modsed '/str=str.."<td>"..status.."<.td>"/d' "$HOME_LUA"
 
 fi

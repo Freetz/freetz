@@ -7,6 +7,6 @@
 if [ -e "${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua" ]; then
 	# patcht Hauptseite > Kasten Anschlüsse > DSL
 	echo1 "hiding dsl"
-	modsed "s/^\(function tr_connect_info_dsl\)()$/\1()\nreturn\nend\n\1_()/" \
+	modsed 's/^\(function tr_connect_info_dsl\)()$/\1()\nreturn ""\nend\n\1_()/' \
 	  "${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua" "tr_connect_info_dsl_("
 fi
