@@ -17,3 +17,41 @@ rm_files ${FILESYSTEM_MOD_DIR}/usr/bin/faxd
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
+# Webinterface Hauptseite
+HOME_LUA="${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua"
+home_disable() {
+	modsed "s/^\(function $1\)()$/\1()\nreturn\nend\n\1_()/" "$HOME_LUA" " $1_("
+}
+if [ -e "$HOME_LUA" ]; then
+	echo1 "patching home.lua"
+
+	# patcht Hauptseite > Kasten Komfortfunktionen
+	home_disable tr_call_redirect  # Rufumleitung
+	home_disable tr_tam            # Anrufbeantworter
+	home_disable IntFax_Display    # Facksimile
+	home_disable tr_fonbook        # Telefonbuch
+	home_disable tr_foncalls       # Anrufliste
+
+	# patcht Hauptseite > Kasten Anrufe
+	# heute: box.out(" <span class=\"cs_Details\">({?537:891?} "..tostring(g_coninf_data.CallsToday)..")</span>")
+	modsed '/box.out(" <span class=."cs_Details.">.{?537:891?} "..tostring(g_coninf_data.CallsToday)..")<.span>")/d' "$HOME_LUA"
+	# mehr: <a class="cs_more" href="<?lua box.out(get_link('/fon_num/foncalls.lua'))?>">{?537:36?}</a>
+	modsed '/<a class="cs_more" href="<?lua box.out(get_link(..fon_num.foncalls.lua.))?>">{?537:36?}</a>/d' "$HOME_LUA"
+	# href: <a class="head_link" href="<?lua href.write('/fon_num/foncalls.lua') ?>">
+	modsed 's/\(<a class="head_link" href="\)<?lua href.write(..fon_num.foncalls.lua.) ?>\(">\)/\1\2/' "$HOME_LUA"
+
+	# patcht Hauptseite > Kasten Telefonbuch
+	# zuletzt: <span class="cs_Details">({?537:67?})</span>
+	modsed '/<span class="cs_Details">({?537:67?})<.span>/d' "$HOME_LUA"
+	# mehr: <a class="cs_more" href="<?lua box.out(get_link('/fon_num/fonbuch.lua'))?>">{?537:405?}</a>
+	modsed '/<a class="cs_more" href="<?lua box.out(get_link(..fon_num.fonbuch.lua.))?>">{?537:405?}<.a>/d' "$HOME_LUA"
+	# href: <a class="head_link" href="<?lua href.write('/fon_num/fonbuch.lua') ?>">
+	modsed 's/\(<a class="head_link" href="\)<?lua href.write(..fon_num.fonbuch.lua.) ?>\(">\)/\1x\2/' "$HOME_LUA"
+
+	# patcht Hauptseite > Kasten Verbindungen > Telefonie
+	modsed '/str=str.."<td class=."..State_Led(led)..".><.td>"/d' "$HOME_LUA"
+	modsed '/str=str.."<td ><a href=."..get_link(".fon_devices.fondevices.lua")..".>{?537:794?}<\/a><\/td>"/d' "$HOME_LUA"
+	modsed '/str=str.."<td>"..status.."<.td>"/d' "$HOME_LUA"
+
+fi
