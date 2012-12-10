@@ -5,8 +5,8 @@ for files in \
 	sbin/start_dect_update.sh \
 	usr/bin/dect_manager \
 	usr/share/ctlmgr/libdect.so \
-	lib/modules/dectfw_firstlevel.hex \
-	lib/modules/dectfw_secondlevel.hex \
+	lib/modules/dectfw_firstlevel*.hex \
+	lib/modules/dectfw_secondlevel*.hex \
 	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*dect*" -printf "%P\n") \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
@@ -24,8 +24,12 @@ if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi" ]; then
 	file="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi"
 elif [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn" ]; then
 	file="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
+	modsed 's!dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex!!' $file
+	modsed 's!dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex!!' $file
 else
 	file="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	modsed '/dect.*firstlevel/g' $file
+	modsed '/dect.*secondlevel/g' $file
 fi
 modsed "s/^modprobe dect_io$//g" $file
 
