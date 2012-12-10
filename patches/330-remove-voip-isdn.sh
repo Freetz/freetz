@@ -17,6 +17,10 @@ rm_files ${FILESYSTEM_MOD_DIR}/usr/bin/faxd \
 	${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit \
 	${FILESYSTEM_MOD_DIR}/lib/modules/c55fw.hex
 
+echo1 "patching rc.S"
+modsed '/microvoip_isdn_top.bit/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+modsed '/c55fw.hex/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
