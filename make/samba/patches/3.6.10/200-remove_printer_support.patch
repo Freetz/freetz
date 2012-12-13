@@ -51,7 +51,7 @@
  			d_printf(_("Usage:\n"));
 --- source3/smbd/reply.c
 +++ source3/smbd/reply.c
-@@ -5196,7 +5196,11 @@ void reply_printopen(struct smb_request 
+@@ -5196,7 +5196,11 @@ void reply_printopen(struct smb_request
  		return;
  	}
  
@@ -78,7 +78,7 @@
  		return;
 --- source3/smbd/lanman.c
 +++ source3/smbd/lanman.c
-@@ -784,6 +784,10 @@ static bool api_DosPrintQGetInfo(struct 
+@@ -784,6 +784,10 @@ static bool api_DosPrintQGetInfo(struct
  	union spoolss_JobInfo *job_info = NULL;
  	union spoolss_PrinterInfo printer_info;
  
@@ -133,7 +133,7 @@
  	if (!str1 || !str2 || !p) {
  		return False;
  	}
-@@ -4792,6 +4812,10 @@ static bool api_WPrintJobGetInfo(struct 
+@@ -4792,6 +4812,10 @@ static bool api_WPrintJobGetInfo(struct
  	struct spoolss_DevmodeContainer devmode_ctr;
  	union spoolss_JobInfo info;
  
@@ -177,7 +177,7 @@
  	if (!str1 || !str2 || !p) {
  		return False;
  	}
-@@ -5374,6 +5410,10 @@ static bool api_WPrintDriverEnum(struct 
+@@ -5374,6 +5410,10 @@ static bool api_WPrintDriverEnum(struct
  	int succnt;
  	struct pack_desc desc;
  
@@ -224,7 +224,7 @@
  		rpc_winreg_shutdown();
 --- source3/smbd/open.c
 +++ source3/smbd/open.c
-@@ -1552,6 +1552,9 @@ static NTSTATUS open_file_ntcreate(conne
+@@ -1566,6 +1566,9 @@ static NTSTATUS open_file_ntcreate(conne
  		 * Most of the passed parameters are ignored.
  		 */
  
@@ -303,7 +303,7 @@
  	}
 --- source3/smbd/process.c
 +++ source3/smbd/process.c
-@@ -2475,8 +2475,10 @@ static bool housekeeping_fn(const struct
+@@ -2476,8 +2476,10 @@ static bool housekeeping_fn(const struct
  
  	change_to_root_user();
  
@@ -316,7 +316,7 @@
  	check_reload(sconn, time_mono(NULL));
 --- source3/smbd/server.c
 +++ source3/smbd/server.c
-@@ -104,6 +104,10 @@ static void smb_pcap_updated(struct mess
+@@ -104,6 +104,10 @@ static void smb_conf_updated(struct mess
  	struct tevent_context *ev_ctx =
  		talloc_get_type_abort(private_data, struct tevent_context);
  

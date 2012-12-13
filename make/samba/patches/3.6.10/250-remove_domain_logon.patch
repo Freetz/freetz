@@ -110,7 +110,7 @@
  	if (!r->in.domain_name) {
  		return WERR_INVALID_PARAM;
  	}
-@@ -897,6 +901,10 @@ WERROR _wkssvc_NetrUnjoinDomain2(struct 
+@@ -897,6 +901,10 @@ WERROR _wkssvc_NetrUnjoinDomain2(struct
  	WERROR werr;
  	struct security_token *token = p->session_info->security_token;
  
@@ -147,7 +147,7 @@
  	/* lookup a DC first */
  
  	if ( !get_dc_name(domain, NULL, dc_name, &dc_ss) ) {
-@@ -243,6 +250,10 @@ NTSTATUS change_trust_account_password( 
+@@ -243,6 +250,10 @@ NTSTATUS change_trust_account_password(
  	struct cli_state *cli = NULL;
  	struct rpc_pipe_client *netlogon_pipe = NULL;
  
@@ -172,7 +172,7 @@
  }
 --- source3/smbd/process.c
 +++ source3/smbd/process.c
-@@ -2483,8 +2483,10 @@ static bool housekeeping_fn(const struct
+@@ -2484,8 +2484,10 @@ static bool housekeeping_fn(const struct
  	/* check if we need to reload services */
  	check_reload(sconn, time_mono(NULL));
  
