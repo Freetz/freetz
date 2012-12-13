@@ -11,16 +11,16 @@
      { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
 @@ -402,6 +404,11 @@
                        break;
-             case 942: tr_bencDictAddBool( &settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, false );
+             case 942: tr_bencDictAddBool (&settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, false);
                        break;
-+            case 1043:tr_bencDictAddStr( &settings, TR_PREFS_KEY_FINISH_DIR, optarg );
-+                      tr_bencDictAddBool( &settings, TR_PREFS_KEY_FINISH_DIR_ENABLED, true );
++            case 1043:tr_bencDictAddStr (&settings, TR_PREFS_KEY_FINISH_DIR, optarg);
++                      tr_bencDictAddBool (&settings, TR_PREFS_KEY_FINISH_DIR_ENABLED, true);
 +                      break;
-+            case 1044:tr_bencDictAddBool( &settings, TR_PREFS_KEY_FINISH_DIR_ENABLED, false );
++            case 1044:tr_bencDictAddBool (&settings, TR_PREFS_KEY_FINISH_DIR_ENABLED, false);
 +                      break;
              case 'd': dumpSettings = true;
                        break;
-             case 'e': logfile = fopen( optarg, LOGFILE_MODE_STR );
+             case 'e': logfile = fopen (optarg, LOGFILE_MODE_STR);
 --- daemon/remote.c
 +++ daemon/remote.c
 @@ -240,6 +240,8 @@
@@ -30,8 +30,8 @@
 +    {1043, "finish-dir",             "Where to move torrents after they reached a specific ratio", NULL, 1, "<directory>" },
 +    {1044, "no-finish-dir",          "Don't move torrents to a different location after they reached a specific ratio", NULL, 0, NULL },
      { 'b', "debug",                  "Print debugging information", "b",  0, NULL },
-     { 'd', "downlimit",              "Set the max download speed in "SPEED_K_STR" for the current torrent(s) or globally", "d", 1, "<speed>" },
-     { 'D', "no-downlimit",           "Disable max download speed for the current torrent(s) or globally", "D", 0, NULL },
+     { 'd', "downlimit",              "Set the max download speed in "SPEED_K_STR" for the current torrent (s) or globally", "d", 1, "<speed>" },
+     { 'D', "no-downlimit",           "Disable max download speed for the current torrent (s) or globally", "D", 0, NULL },
 @@ -407,6 +409,8 @@
          case 991: /* no-start-paused */
          case 992: /* trash-torrent */
@@ -43,16 +43,16 @@
          case 712: /* tracker-remove */
 @@ -2023,6 +2027,11 @@
                            break;
-                 case 'e': tr_bencDictAddInt( args, TR_PREFS_KEY_MAX_CACHE_SIZE_MB, atoi(optarg) );
+                 case 'e': tr_bencDictAddInt (args, TR_PREFS_KEY_MAX_CACHE_SIZE_MB, atoi (optarg));
                            break;
-+                case 1043:tr_bencDictAddStr( args, TR_PREFS_KEY_FINISH_DIR, optarg );
-+                          tr_bencDictAddBool( args, TR_PREFS_KEY_FINISH_DIR_ENABLED, true );
++                case 1043:tr_bencDictAddStr (args, TR_PREFS_KEY_FINISH_DIR, optarg);
++                          tr_bencDictAddBool (args, TR_PREFS_KEY_FINISH_DIR_ENABLED, true);
 +                          break;
-+                case 1044:tr_bencDictAddBool( args, TR_PREFS_KEY_FINISH_DIR_ENABLED, false );
++                case 1044:tr_bencDictAddBool (args, TR_PREFS_KEY_FINISH_DIR_ENABLED, false);
 +                          break;
-                 case 910: tr_bencDictAddStr( args, TR_PREFS_KEY_ENCRYPTION, "required" );
+                 case 910: tr_bencDictAddStr (args, TR_PREFS_KEY_ENCRYPTION, "required");
                            break;
-                 case 911: tr_bencDictAddStr( args, TR_PREFS_KEY_ENCRYPTION, "preferred" );
+                 case 911: tr_bencDictAddStr (args, TR_PREFS_KEY_ENCRYPTION, "preferred");
 --- daemon/transmission-daemon.1
 +++ daemon/transmission-daemon.1
 @@ -52,6 +52,11 @@
@@ -101,57 +101,57 @@
 --- libtransmission/rpcimpl.c
 +++ libtransmission/rpcimpl.c
 @@ -1577,6 +1577,10 @@
-         tr_sessionSetIncompleteDir( session, str );
-     if( tr_bencDictFindBool( args_in, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
-         tr_sessionSetIncompleteDirEnabled( session, boolVal );
-+    if( tr_bencDictFindStr( args_in, TR_PREFS_KEY_FINISH_DIR, &str ) )
-+        tr_sessionSetFinishDir( session, str );
-+    if( tr_bencDictFindBool( args_in, TR_PREFS_KEY_FINISH_DIR_ENABLED, &boolVal ) )
+         tr_sessionSetIncompleteDir (session, str);
+     if (tr_bencDictFindBool (args_in, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal))
+         tr_sessionSetIncompleteDirEnabled (session, boolVal);
++    if (tr_bencDictFindStr (args_in, TR_PREFS_KEY_FINISH_DIR, &str))
++        tr_sessionSetFinishDir (session, str);
++    if (tr_bencDictFindBool (args_in, TR_PREFS_KEY_FINISH_DIR_ENABLED, &boolVal))
 +        tr_sessionSetFinishDirEnabled( session, boolVal );
-     if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_GLOBAL, &i ) )
-         tr_sessionSetPeerLimit( session, i );
-     if( tr_bencDictFindInt( args_in, TR_PREFS_KEY_PEER_LIMIT_TORRENT, &i ) )
+     if (tr_bencDictFindInt (args_in, TR_PREFS_KEY_PEER_LIMIT_GLOBAL, &i))
+         tr_sessionSetPeerLimit (session, i);
+     if (tr_bencDictFindInt (args_in, TR_PREFS_KEY_PEER_LIMIT_TORRENT, &i))
 @@ -1716,6 +1720,8 @@
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT, tr_sessionGetPeerLimitPerTorrent( s ) );
-     tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR, tr_sessionGetIncompleteDir( s ) );
-     tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, tr_sessionIsIncompleteDirEnabled( s ) );
-+    tr_bencDictAddStr ( d, TR_PREFS_KEY_FINISH_DIR, tr_sessionGetFinishDir( s ) );
-+    tr_bencDictAddBool( d, TR_PREFS_KEY_FINISH_DIR_ENABLED, tr_sessionIsFinishDirEnabled( s ) );
-     tr_bencDictAddBool( d, TR_PREFS_KEY_PEX_ENABLED, tr_sessionIsPexEnabled( s ) );
-     tr_bencDictAddBool( d, TR_PREFS_KEY_UTP_ENABLED, tr_sessionIsUTPEnabled( s ) );
-     tr_bencDictAddBool( d, TR_PREFS_KEY_DHT_ENABLED, tr_sessionIsDHTEnabled( s ) );
+     tr_bencDictAddInt (d, TR_PREFS_KEY_PEER_LIMIT_TORRENT, tr_sessionGetPeerLimitPerTorrent (s));
+     tr_bencDictAddStr (d, TR_PREFS_KEY_INCOMPLETE_DIR, tr_sessionGetIncompleteDir (s));
+     tr_bencDictAddBool (d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, tr_sessionIsIncompleteDirEnabled (s));
++    tr_bencDictAddStr (d, TR_PREFS_KEY_FINISH_DIR, tr_sessionGetFinishDir (s));
++    tr_bencDictAddBool (d, TR_PREFS_KEY_FINISH_DIR_ENABLED, tr_sessionIsFinishDirEnabled (s));
+     tr_bencDictAddBool (d, TR_PREFS_KEY_PEX_ENABLED, tr_sessionIsPexEnabled (s));
+     tr_bencDictAddBool (d, TR_PREFS_KEY_UTP_ENABLED, tr_sessionIsUTPEnabled (s));
+     tr_bencDictAddBool (d, TR_PREFS_KEY_DHT_ENABLED, tr_sessionIsDHTEnabled (s));
 --- libtransmission/session.c
 +++ libtransmission/session.c
-@@ -320,6 +320,8 @@
-     tr_bencDictAddBool( d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,              false );
-     tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR,                  tr_getDefaultDownloadDir( ) );
-     tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,          false );
-+    tr_bencDictAddStr ( d, TR_PREFS_KEY_FINISH_DIR,                      tr_getDefaultDownloadDir( ) );
-+    tr_bencDictAddBool( d, TR_PREFS_KEY_FINISH_DIR_ENABLED,              false );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                        TR_MSG_INF );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_DOWNLOAD_QUEUE_SIZE,             5 );
-     tr_bencDictAddBool( d, TR_PREFS_KEY_DOWNLOAD_QUEUE_ENABLED,          true );
-@@ -392,6 +394,8 @@
-     tr_bencDictAddBool( d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,               tr_sessionIsIdleLimited( s ) );
-     tr_bencDictAddStr ( d, TR_PREFS_KEY_INCOMPLETE_DIR,                   tr_sessionGetIncompleteDir( s ) );
-     tr_bencDictAddBool( d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,           tr_sessionIsIncompleteDirEnabled( s ) );
-+    tr_bencDictAddStr ( d, TR_PREFS_KEY_FINISH_DIR,                       tr_sessionGetFinishDir( s ) );
-+    tr_bencDictAddBool( d, TR_PREFS_KEY_FINISH_DIR_ENABLED,               tr_sessionIsFinishDirEnabled( s ) );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_MSGLEVEL,                         tr_getMessageLevel( ) );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_GLOBAL,                s->peerLimit );
-     tr_bencDictAddInt ( d, TR_PREFS_KEY_PEER_LIMIT_TORRENT,               s->peerLimitPerTorrent );
-@@ -818,6 +822,10 @@
-         tr_sessionSetIncompleteDir( session, str );
-     if( tr_bencDictFindBool( settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal ) )
-         tr_sessionSetIncompleteDirEnabled( session, boolVal );
-+    if( tr_bencDictFindStr( settings, TR_PREFS_KEY_FINISH_DIR, &str ) )
-+        tr_sessionSetFinishDir( session, str );
-+    if( tr_bencDictFindBool( settings, TR_PREFS_KEY_FINISH_DIR_ENABLED, &boolVal ) )
-+        tr_sessionSetFinishDirEnabled( session, boolVal );
-     if( tr_bencDictFindBool( settings, TR_PREFS_KEY_RENAME_PARTIAL_FILES, &boolVal ) )
-         tr_sessionSetIncompleteFileNamingEnabled( session, boolVal );
+@@ -322,6 +322,8 @@
+     tr_bencDictAddBool (d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,              false);
+     tr_bencDictAddStr (d, TR_PREFS_KEY_INCOMPLETE_DIR,                  tr_getDefaultDownloadDir ());
+     tr_bencDictAddBool (d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,          false);
++    tr_bencDictAddStr (d, TR_PREFS_KEY_FINISH_DIR,                      tr_getDefaultDownloadDir());
++    tr_bencDictAddBool (d, TR_PREFS_KEY_FINISH_DIR_ENABLED,              false);
+     tr_bencDictAddInt (d, TR_PREFS_KEY_MSGLEVEL,                        TR_MSG_INF);
+     tr_bencDictAddInt (d, TR_PREFS_KEY_DOWNLOAD_QUEUE_SIZE,             5);
+     tr_bencDictAddBool (d, TR_PREFS_KEY_DOWNLOAD_QUEUE_ENABLED,          true);
+@@ -394,6 +396,8 @@
+     tr_bencDictAddBool (d, TR_PREFS_KEY_IDLE_LIMIT_ENABLED,               tr_sessionIsIdleLimited (s));
+     tr_bencDictAddStr (d, TR_PREFS_KEY_INCOMPLETE_DIR,                   tr_sessionGetIncompleteDir (s));
+     tr_bencDictAddBool (d, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED,           tr_sessionIsIncompleteDirEnabled (s));
++    tr_bencDictAddStr (d, TR_PREFS_KEY_FINISH_DIR,                       tr_sessionGetFinishDir (s));
++    tr_bencDictAddBool (d, TR_PREFS_KEY_FINISH_DIR_ENABLED,               tr_sessionIsFinishDirEnabled (s));
+     tr_bencDictAddInt (d, TR_PREFS_KEY_MSGLEVEL,                         tr_getMessageLevel ());
+     tr_bencDictAddInt (d, TR_PREFS_KEY_PEER_LIMIT_GLOBAL,                s->peerLimit);
+     tr_bencDictAddInt (d, TR_PREFS_KEY_PEER_LIMIT_TORRENT,               s->peerLimitPerTorrent);
+@@ -820,6 +824,10 @@
+         tr_sessionSetIncompleteDir (session, str);
+     if (tr_bencDictFindBool (settings, TR_PREFS_KEY_INCOMPLETE_DIR_ENABLED, &boolVal))
+         tr_sessionSetIncompleteDirEnabled (session, boolVal);
++    if (tr_bencDictFindStr (settings, TR_PREFS_KEY_FINISH_DIR, &str))
++        tr_sessionSetFinishDir (session, str);
++    if (tr_bencDictFindBool (settings, TR_PREFS_KEY_FINISH_DIR_ENABLED, &boolVal))
++        tr_sessionSetFinishDirEnabled (session, boolVal);
+     if (tr_bencDictFindBool (settings, TR_PREFS_KEY_RENAME_PARTIAL_FILES, &boolVal))
+         tr_sessionSetIncompleteFileNamingEnabled (session, boolVal);
  
-@@ -1037,6 +1045,49 @@
+@@ -1039,6 +1047,49 @@
  ****
  ***/
  
@@ -199,16 +199,16 @@
 +***/
 +
  void
- tr_sessionLock( tr_session * session )
+ tr_sessionLock (tr_session * session)
  {
-@@ -1877,6 +1928,7 @@
-     tr_free( session->torrentDir );
-     tr_free( session->downloadDir );
-     tr_free( session->incompleteDir );
-+    tr_free( session->finishDir );
-     tr_free( session->blocklist_url );
-     tr_free( session->peer_congestion_algorithm );
-     tr_free( session );
+@@ -1879,6 +1930,7 @@
+     tr_free (session->torrentDir);
+     tr_free (session->downloadDir);
+     tr_free (session->incompleteDir);
++    tr_free (session->finishDir);
+     tr_free (session->blocklist_url);
+     tr_free (session->peer_congestion_algorithm);
+     tr_free (session);
 --- libtransmission/session.h
 +++ libtransmission/session.h
 @@ -114,6 +114,7 @@
@@ -229,7 +229,7 @@
  
 --- libtransmission/torrent.c
 +++ libtransmission/torrent.c
-@@ -448,6 +448,12 @@
+@@ -450,6 +450,12 @@
  
          tor->isStopping = true;
  
@@ -240,8 +240,8 @@
 +        }
 +
          /* maybe notify the client */
-         if( tor->ratio_limit_hit_func != NULL )
-             tor->ratio_limit_hit_func( tor, tor->ratio_limit_hit_func_user_data );
+         if (tor->ratio_limit_hit_func != NULL)
+             tor->ratio_limit_hit_func (tor, tor->ratio_limit_hit_func_user_data);
 --- libtransmission/transmission.h
 +++ libtransmission/transmission.h
 @@ -180,6 +180,8 @@
