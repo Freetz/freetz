@@ -21,9 +21,9 @@ for file in \
 	fi
 done
 if isFreetzType 7270v1; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages_7270_04.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/dsl-expert-pages_7270_04.patch"
 elif isFreetzType 7240 7270_16; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages_7270_05.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/dsl-expert-pages_7270_05.patch"
 else
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/dsl-expert-pages_7170.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/dsl-expert-pages_7170.patch"
 fi

@@ -40,7 +40,7 @@ for i in $files; do
 done
 
 #echo2 "patching webmenu"
-#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/7240_7270.patch"
+#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/7240_7270.patch"
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_72* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7240
@@ -68,6 +68,6 @@ modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_plus_55266
 #fi
 # set OEM to avme for international firmware
 if isFreetzType LANG_EN; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/en/install-7240_7270.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/en/install-7240_7270.patch" || exit 2
 fi
 

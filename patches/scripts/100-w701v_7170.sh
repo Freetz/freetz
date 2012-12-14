@@ -30,9 +30,9 @@ cp "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char
 cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYSTEM_MOD_DIR}/lib/modules"
 
 echo2 "patching webmenu"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/sp2fritz-W701V_7170.patch" || exit 2
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/sp2fritz-W701V_7170.patch" || exit 2
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove-FON3-7170-alien.patch" || exit 2
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-FON3-7170-alien.patch" || exit 2
 
 echo2 "moving default config dir, creating tcom and congstar symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
@@ -93,4 +93,4 @@ fi
 
 # patch install script to accept firmware from FBF or Speedport
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-W701V_7170.patch" || exit 2
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-W701V_7170.patch" || exit 2

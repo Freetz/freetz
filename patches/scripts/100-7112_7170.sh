@@ -37,10 +37,10 @@ cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/driver
 
 echo2 "patching webmenu"
 isFreetzType LANG_DE && \
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove-POTS-7170-alien.patch"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove-FON3-7170-alien.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-POTS-7170-alien.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-FON3-7170-alien.patch"
 
 echo2 "moving default config dir"
 mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7112"
@@ -71,5 +71,5 @@ modsed "s/CONFIG_USB_STORAGE_SPINDOWN=.*$/CONFIG_USB_STORAGE_SPINDOWN=\"n\"/g" "
 
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/install-7112_7170.patch" || exit 2
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7112_7170.patch" || exit 2
 
