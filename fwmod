@@ -178,6 +178,9 @@ UNTAR="$(which tar)"
 # Freetz directores relative to base dir
 PACKAGES_DIR_ROOT="${BASE_DIR}/packages"
 PATCHES_DIR="${BASE_DIR}/patches"
+PATCHES_COND_DIR="${PATCHES_DIR}/cond"
+PATCHES_DEVICES_DIR="${PATCHES_DIR}/devices"
+PATCHES_SCRIPTS_DIR="${PATCHES_DIR}/scripts"
 ROOT_DIR="${BASE_DIR}/root"
 KERNEL_REP_DIR="${BASE_DIR}/kernel"
 ADDON_DIR="${BASE_DIR}/addon"
@@ -635,13 +638,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo1 "applying patches (${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_LANGUAGE})"
 
 	# Apply patches
-	if [ ! -d "${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}" ]; then
-		error 1 "missing ${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}"
+	if [ ! -d "${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX}" ]; then
+		error 1 "missing ${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX}"
 	fi
 
 	# Execute version specific patch scripts
-	for i in "${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/${FREETZ_TYPE_LANGUAGE}/"*.sh \
-		"${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/"*.sh; do
+	for i in "${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX}/${FREETZ_TYPE_LANGUAGE}/"*.sh \
+		"${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX}/"*.sh; do
 		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
 		. $i
@@ -660,8 +663,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Apply (general, version specific, language specific) patches
 	shopt -s nullglob
 	for i in "${PATCHES_DIR}/"*.patch \
-		"${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/"*.patch \
-		"${PATCHES_DIR}/${FREETZ_TYPE_PREFIX}/${FREETZ_TYPE_LANGUAGE}/"*.patch
+		"${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX}/"*.patch \
+		"${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX}/${FREETZ_TYPE_LANGUAGE}/"*.patch
 	do
 		modpatch "$FILESYSTEM_MOD_DIR" "$i"
 	done
@@ -750,7 +753,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	# Execute general patch scripts
-	for i in "${PATCHES_DIR}/"*.sh; do
+	for i in "${PATCHES_SCRIPTS_DIR}/"*.sh; do
 		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
 		. $i
