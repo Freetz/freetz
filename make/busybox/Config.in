@@ -540,6 +540,21 @@ config FREETZ_BUSYBOX_WGET
 	help
 		Include the 'wget' tool in busybox
 
+config FREETZ_BUSYBOX_FEATURE_WGET_STATUSBAR
+        bool "statusbar"
+        depends on FREETZ_BUSYBOX_WGET
+        default n
+
+config FREETZ_BUSYBOX_FEATURE_WGET_AUTHENTICATION
+        bool "authentication"
+        depends on FREETZ_BUSYBOX_WGET
+        default n
+
+config FREETZ_BUSYBOX_FEATURE_WGET_TIMEOUT
+        bool "timeout"
+        depends on FREETZ_BUSYBOX_WGET
+        default n
+
 config FREETZ_BUSYBOX_WHO
 	bool "who"
 	depends on FREETZ_REPLACE_BUSYBOX

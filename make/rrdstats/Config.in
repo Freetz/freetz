@@ -14,6 +14,7 @@ config FREETZ_PACKAGE_RRDSTATS_CABLEMODEM
 	depends on FREETZ_PACKAGE_RRDSTATS
 	default n
 	select FREETZ_BUSYBOX_WGET if !FREETZ_PACKAGE_WGET
+	select FREETZ_BUSYBOX_FEATURE_WGET_TIMEOUT if !FREETZ_PACKAGE_WGET
 	help
 		Enables the options in the Webif and
 		selects (BusyBox or GNU) wget.
