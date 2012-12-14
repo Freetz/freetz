@@ -293,22 +293,9 @@ config FREETZ_REMOVE_MICROVOIP_DSL
 		Remove lib/modules/microvoip-dsl.bin. This saves about
 		270-380 KB of uncompressed data size.
 
-config FREETZ_REMOVE_ANNEX_A_FIRMWARE
-	bool "Remove Annex A firmware file"
-	depends on FREETZ_SHOW_ADVANCED && ! FREETZ_HAS_AVM_MULTI_ANNEX && \
-			FREETZ_TYPE_FON_WLAN_7270_16
-	default n
-	help
-		Remove lib/modules/dsp_*/*-A-dsl.bin. This saves about
-		330-400 KB of uncompressed data size.
-
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
-	depends on FREETZ_SHOW_ADVANCED && ! FREETZ_HAS_AVM_MULTI_ANNEX && \
-		( \
-			FREETZ_TYPE_FON_WLAN_7240 || \
-			FREETZ_TYPE_FON_WLAN_7270 \
-		)
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_TYPE_FON_WLAN_7270_V1
 	default n
 	help
 		Remove lib/modules/dsp_*/*-B-dsl.bin. This saves about
