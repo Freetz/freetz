@@ -200,6 +200,13 @@ config FREETZ_HAS_AVM_LSOF
 	help
 		Select this if you have a box with lsof binary.
 
+config FREETZ_HAS_AVM_SOCAT
+	bool "Has socat"		if FREETZ_TYPE_CUSTOM
+	default y		if FREETZ_TYPE_FON_WLAN_7390
+	default n
+	help
+		Select this if you have a box with socat binary.
+
 config FREETZ_HAS_AVM_NAS
 	bool "Has NAS"		if FREETZ_TYPE_CUSTOM
 	select FREETZ_BUSYBOX_TAR_OLDGNU_COMPATIBILITY

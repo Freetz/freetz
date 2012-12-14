@@ -936,6 +936,14 @@ config FREETZ_REMOVE_LSOF
 		Remove /bin/lsof binary.
 		This saves about 48 KB compressed space in kernel.image.
 
+config FREETZ_REMOVE_SOCAT
+	bool "Remove socat"
+	depends on FREETZ_HAS_AVM_SOCAT
+	default y
+	help
+		Remove /sbin/socat binary.
+		This saves about 247 KB compressed space in kernel.image.
+
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv" if FREETZ_SHOW_ADVANCED
 	depends on \
