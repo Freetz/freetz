@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.0.1)
+$(call PKG_INIT_BIN, 1.0.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d3b80d905a6bff03f13896870787f901
+$(PKG)_SOURCE_MD5:=0d01cca8df3349c74569cefebbd9919e
 $(PKG)_SITE:=@SF/htop
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/htop
