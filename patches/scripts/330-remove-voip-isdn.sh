@@ -26,18 +26,15 @@ modsed "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/r
 
 # Webinterface Hauptseite
 HOME_LUA="${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua"
-home_disable() {
-	modsed "s/^\(function $1\)()$/\1()\nreturn\nend\n\1_()/" "$HOME_LUA" " $1_("
-}
 if [ -e "$HOME_LUA" ]; then
 	echo1 "patching home.lua"
 
 	# patcht Hauptseite > Kasten Komfortfunktionen
-	home_disable tr_call_redirect  # Rufumleitung
-	home_disable tr_tam            # Anrufbeantworter
-	home_disable IntFax_Display    # Facksimile
-	home_disable tr_fonbook        # Telefonbuch
-	home_disable tr_foncalls       # Anrufliste
+	homelua_disable tr_call_redirect  # Rufumleitung
+	homelua_disable tr_tam            # Anrufbeantworter
+	homelua_disable IntFax_Display    # Facksimile
+	homelua_disable tr_fonbook        # Telefonbuch
+	homelua_disable tr_foncalls       # Anrufliste
 
 	# patcht Hauptseite > Kasten Anrufe
 	# heute: box.out(" <span class=\"cs_Details\">({?537:891?} "..tostring(g_coninf_data.CallsToday)..")</span>")

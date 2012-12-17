@@ -9,6 +9,8 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
+homelua_disable tr_smart_home
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_HOME_AUTO=.*$/CONFIG_HOME_AUTO=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_HOME_AUTO_NET=.*$/CONFIG_HOME_AUTO_NET=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
