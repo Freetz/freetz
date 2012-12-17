@@ -11,7 +11,14 @@ done
 
 homelua_disable tr_smart_home
 
-echo1 "patching rc.conf"
-modsed "s/CONFIG_HOME_AUTO=.*$/CONFIG_HOME_AUTO=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-modsed "s/CONFIG_HOME_AUTO_NET=.*$/CONFIG_HOME_AUTO_NET=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-modsed "s/CONFIG_DECT_HOME=.*$/CONFIG_DECT_HOME=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all/dect/dect_settings.lua"
+echo1 "patching ${sedfile##*/}"
+modsed '/^require("libaha")/d' $sedfile
+modsed 's/^\(var ulepresent = \).*/\10;/' $sedfile
+modsed '/^devicelist = aha.GetDeviceList()/d' $sedfile
+
+sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+echo1 "patching ${sedfile##*/}"
+modsed "s/CONFIG_HOME_AUTO=.*$/CONFIG_HOME_AUTO=\"n\"/g" $sedfile
+modsed "s/CONFIG_HOME_AUTO_NET=.*$/CONFIG_HOME_AUTO_NET=\"n\"/g" $sedfile
+modsed "s/CONFIG_DECT_HOME=.*$/CONFIG_DECT_HOME=\"n\"/g" $sedfile
