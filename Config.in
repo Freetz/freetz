@@ -306,7 +306,7 @@ choice
 		bool "05.22"
 
 	config FREETZ_TYPE_FIRMWARE_current
-		bool "05.50"
+		bool "05.50 - EXPERIMENTAL"
 		depends on FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FON_WLAN_7390
 
 	config FREETZ_TYPE_LABOR
@@ -589,7 +589,7 @@ config FREETZ_INSTALL_BASE
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_librt
 	select FREETZ_LIB_libuClibc
-	select FREETZ_LIB_libctlmgr if FREETZ_HAS_AVM_USB_HOST
+	select FREETZ_LIB_libctlmgr if FREETZ_HAS_AVM_USB_HOST && !FREETZ_AVM_VERSION_05_5X && !FREETZ_TYPE_LABOR
 	default y
 	help
 		This is mandatory
