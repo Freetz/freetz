@@ -19,19 +19,21 @@ echo1 "patching web UI"
 modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_LANG_MOD_DIR}/html/de/home/home.html"
 modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_LANG_MOD_DIR}/html/de/menus/menu2_konfig.html"
 
-echo1 "patching rc.S"
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi" ]; then
-	file="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi"
+	sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi"
+	echo1 "patching ${sedfile##*/}"
 elif [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn" ]; then
-	file="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
-	modsed 's!dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex!!' $file
-	modsed 's!dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex!!' $file
+	sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
+	echo1 "patching ${sedfile##*/}"
+	modsed 's!dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex!!' $sedfile
+	modsed 's!dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex!!' $sedfile
 else
-	file="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-	modsed '/dect.*firstlevel/g' $file
-	modsed '/dect.*secondlevel/g' $file
+	sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	echo1 "patching ${sedfile##*/}"
+	modsed '/dect.*firstlevel/d' $sedfile
+	modsed '/dect.*secondlevel/d' $sedfile
 fi
-modsed "s/^modprobe dect_io$//g" $file
+modsed "s/^modprobe dect_io$//g" $sedfile
 
 echo1 "patching rc.conf"
 modsed "s/\(CONFIG_.*DECT.*=\).*/\1\"n\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
