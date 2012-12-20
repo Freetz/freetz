@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 8.31)
+$(call PKG_INIT_LIB, 8.32)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=1c9a276af932b5599157f96e945391f0
+$(PKG)_SOURCE_MD5:=62f02a76bb57a40bc66681760ed511d5
 $(PKG)_SITE:=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 
-$(PKG)_LIB_VERSION:=1.0.1
+$(PKG)_LIB_VERSION:=1.2.0
 $(PKG)_LIBNAME=libpcre.so.$($(PKG)_LIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
