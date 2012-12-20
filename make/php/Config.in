@@ -17,9 +17,9 @@ choice
 	default FREETZ_PHP_VERSION_5_4
 
 	config FREETZ_PHP_VERSION_5_3
-		bool "php 5.3.19"
+		bool "php 5.3.20"
 	config FREETZ_PHP_VERSION_5_4
-		bool "php 5.4.9"
+		bool "php 5.4.10"
 endchoice
 
 menu "PHP features"
@@ -128,17 +128,4 @@ config FREETZ_PACKAGE_PHP_STATIC
 	depends on FREETZ_PACKAGE_PHP
 	default n
 	help
-		PHP needs the following shared libraries which can be linked in statically
-		by activating this switch:
-		  - libcrypt.so.0
-		  - libc.so.0
-		  - libgcc_s.so.1
-		  - libcurl.so.4
-		  - libgd.so.2
-		  - libm.so.0
-		  - libpcre.so.0
-		  - libsqlite3.so.0
-		  - libssl.so.0.9.8
-		  - libcrypto.so.0.9.8
-		  - libxml2.so.2
-		  - libz.so.1
+		Causes all libraries PHP depends on to be linked in statically.
