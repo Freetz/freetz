@@ -26,8 +26,8 @@ case $1 in
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
-		modlib_adduser nobody
 		modlib_addgroup nogroup
+		modlib_adduser nobody -G nogroup -s /bin/false -H -D -g "shellinabox account"
 
 		modlib_start $SHELLINABOX_ENABLED
 		;;
