@@ -1,0 +1,12 @@
+--- root/usr/lib/callmonitor/modules/tel.sh	2012-11-15 09:29:53.000000000 +0100
++++ root/usr/lib/callmonitor/modules/tel.sh	2012-12-23 17:56:59.025736286 +0100
+@@ -121,6 +121,9 @@
+ } > "$_tel_OKZ_CACHE"
+ fi
+ . "$_tel_OKZ_CACHE"
++if [ -r /tmp/flash/callmonitor/telcfg.override ]; then
++. /tmp/flash/callmonitor/telcfg.override
++fi
+ tel_collect_lkzs
+ }
+ tel_config
