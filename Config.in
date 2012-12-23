@@ -1883,9 +1883,7 @@ config EXTERNAL_LINKS
 
 config EXTERNAL_SUBDIRS
 	bool "Keep subdirectories"
-	default n if ! EXTERNAL_DOWNLOADER
-	default y if EXTERNAL_DOWNLOADER
-	depends on EXTERNAL_ENABLED
+	depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER
 	help
 		Keep the original directory structure
 
