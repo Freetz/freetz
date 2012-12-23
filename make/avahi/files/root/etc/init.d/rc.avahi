@@ -2,6 +2,7 @@
 
 DAEMON=avahi
 DAEMON_BIN=avahi-daemon
+PID_FILE=/var/run/avahi-daemon/pid
 
 . /etc/init.d/modlibrc
 
@@ -14,14 +15,15 @@ start() {
 
 case $1 in
 	load)
-		modreg daemon $DAEMON
-		if [ ! -d /tmp/flash/avahi ]; then
-			mkdir -p /tmp/flash/avahi
-			cp -a /etc/default.avahi/* /tmp/flash/avahi/
-		fi
-
 		modlib_addgroup $DAEMON_GROUP
 		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+
+		if [ ! -d /tmp/flash/avahi ]; then
+			mkdir -p /tmp/flash/avahi
+			cp -a /etc/config-template.avahi/* /tmp/flash/avahi/
+		fi
+
+		modreg daemon $DAEMON
 
 		modlib_start $AVAHI_ENABLED
 		;;

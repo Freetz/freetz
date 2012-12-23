@@ -2,6 +2,7 @@
 
 DAEMON=dbus
 DAEMON_BIN=dbus-daemon
+PID_FILE=/var/run/dbus/pid
 
 . /etc/init.d/modlibrc
 
@@ -17,13 +18,13 @@ case $1 in
 		modlib_addgroup nobody
 		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 
-		modreg daemon $DAEMON
-
 		if [ ! -d /tmp/flash/dbus-1 ]; then
 			mkdir -p /tmp/flash/dbus-1
-			cp -a /etc/default.dbus/* /tmp/flash/dbus-1/
+			cp -a /etc/config-template.dbus/* /tmp/flash/dbus-1/
 		fi
 		mkdir -p /var/run/dbus
+
+		modreg daemon $DAEMON
 
 		modlib_start $DBUS_ENABLED
 		;;
