@@ -10,6 +10,8 @@ for files in \
 	sbin/mediasrv \
 	sbin/start_mediasrv \
 	sbin/stop_mediasrv \
+	etc/init.d/rc.media \
+	etc/init.d/S76-media \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
@@ -24,9 +26,11 @@ modsed "/^<p.*uiViewUseMusik.*<\/p>$/ {
 	D }" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/nas/einstellungen.html"
 fi
 
-if isFreetzType 3270 3270_V3 3370 7240 7270_16 7340 7360 7390; then
+sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all/storage/settings.lua"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
 	# see http://freetz.org/ticket/1391 for details
-	modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/storage/settings.lua"
+	modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" $sedfile
 fi
 
 echo1 "patching rc.conf"
