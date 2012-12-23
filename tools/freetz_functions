@@ -1,6 +1,14 @@
 #!/bin/sh
 
 
+#linkbox_remove <menu-name>
+#removes links within a box on the left
+linkbox_remove() {
+	local linkbox_file="${FILESYSTEM_MOD_DIR}/usr/www/all/templates/menu_page_head.html"
+	linkbox_row=$(cat $linkbox_file |nl| sed -n "s/^ *\([0-9]*\).*menu.write_menu('$1')$/\1/p")
+	modsed "$((linkbox_row-6)),$((linkbox_row+9))d" $linkbox_file
+}
+
 #quickstart_remove <target-link>
 #removes links within quickstart.html (top menu)
 quickstart_remove() {
