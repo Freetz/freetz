@@ -1,6 +1,22 @@
 #!/bin/sh
 
 
+#quickstart_remove <target-link>
+#removes links within quickstart.html (top menu)
+quickstart_remove() {
+	modsed \
+	  "/^box.out.*"sm_link_bold".*'\/$1\/'.*box.tohtml.*/d" \
+	  "${FILESYSTEM_MOD_DIR}/usr/www/all/templates/quickstart.html"
+}
+
+#menulua_remove <page-link>
+#removes links within menu_data.lua (left menu)
+menulua_remove() {
+	modsed \
+	  "/^page = \".*\/$1.lua\",$/d" \
+	  "${FILESYSTEM_MOD_DIR}/usr/www/all/menus/menu_data.lua"
+}
+
 #homelua_disable <function-name>
 #easily disable functions within home.lua by returning nothing
 homelua_disable() {
