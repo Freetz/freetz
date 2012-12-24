@@ -5,8 +5,8 @@ for files in \
 	sbin/start_dect_update.sh \
 	usr/bin/dect_manager \
 	usr/share/ctlmgr/libdect.so \
-	lib/modules/dectfw_firstlevel*.hex \
-	lib/modules/dectfw_secondlevel*.hex \
+	lib/modules/dectfw_firstlevel.hex \
+	lib/modules/dectfw_secondlevel.hex \
 	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*dect*" -printf "%P\n") \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
