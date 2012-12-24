@@ -13,5 +13,13 @@ rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/fw_dcrhp_1150_ap.bin \
 	${FILESYSTEM_MOD_DIR}/usr/bin/iwconfig \
 	${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libwlan.so
 
+sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all//internet/internet_settings.lua"
+if [ -e $sedfile ]; then
+	# patcht Internet > Zugangsdaten > Internetzugang
+	echo1 "patching ${sedfile##*/}"
+	modsed '/^require"wlanscan"$/d' $sedfile
+	modsed '/^wlanscanOnload.*$/d' $sedfile
+fi
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_WLAN=.*$/CONFIG_WLAN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
