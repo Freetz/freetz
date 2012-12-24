@@ -6,6 +6,7 @@ for files in \
  	lib/libikecrypto*.so* \
  	lib/libikeossl*.so* \
 	usr/share/ctlmgr/libvpnstat.so \
+	usr/www/all/internet/vpn.lua \
 	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*vpn*" -printf "%P\n") \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
