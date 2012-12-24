@@ -10,6 +10,7 @@ DAEMON_USER=nobody
 DAEMON_GROUP=nobody
 
 start() {
+	[ -x /usr/bin/dbus-uuidgen ] && /usr/bin/dbus-uuidgen --ensure
 	modlib_startdaemon $DAEMON_BIN --system
 }
 
@@ -22,7 +23,7 @@ case $1 in
 			mkdir -p /tmp/flash/dbus-1
 			cp -a /etc/config-template.dbus/* /tmp/flash/dbus-1/
 		fi
-		mkdir -p /var/run/dbus
+		mkdir -p /var/run/dbus /var/lib/dbus
 
 		modreg daemon $DAEMON
 

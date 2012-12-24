@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_DBUS
-	bool "Dbus 1.6.8"
+	bool "D-Bus 1.6.8"
 	default n
 	select FREETZ_LIB_libexpat
 	select FREETZ_LIB_libpthread
@@ -10,3 +10,32 @@ config FREETZ_PACKAGE_DBUS
 		it makes it simple and reliable to code a "single instance"
 		application or daemon, and to launch applications and daemons
 		on demand when their services are needed.
+
+menu "D-Bus tools"
+	depends on FREETZ_PACKAGE_DBUS
+
+config FREETZ_PACKAGE_DBUS_monitor
+	bool "dbus-monitor"
+	default n
+	select FREETZ_LIB_libdbus
+	select FREETZ_LIB_libpthread
+	help
+		dbus-monitor allows to monitor messages sent over a D-Bus message bus.
+
+config FREETZ_PACKAGE_DBUS_send
+	bool "dbus-send"
+	default n
+	select FREETZ_LIB_libdbus
+	select FREETZ_LIB_libpthread
+	help
+		dbus-send allows to send messages to a D-Bus message bus.
+
+config FREETZ_PACKAGE_DBUS_uuidgen
+	bool "dbus-uuidgen"
+	default n
+	select FREETZ_LIB_libdbus
+	select FREETZ_LIB_libpthread
+	help
+		dbus-uuidgen generates or reads a universally unique ID.
+
+endmenu
