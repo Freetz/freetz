@@ -31,7 +31,7 @@ if [ -e "$HOME_LUA" ]; then
 
 	# patcht Hauptseite > Kasten Komfortfunktionen
 	homelua_disable tr_call_redirect  # Rufumleitung
-	homelua_disable tr_tam            # Anrufbeantworter
+	homelua_disable tr_tam.*          # Anrufbeantworter (5.2x=tr_tam 5.50=tr_tamcalls)
 	homelua_disable IntFax_Display    # Facksimile
 	homelua_disable tr_fonbook        # Telefonbuch
 	homelua_disable tr_foncalls       # Anrufliste
