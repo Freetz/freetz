@@ -58,10 +58,20 @@ config FREETZ_AVM_VERSION_05_5X
 	bool
 	select FREETZ_AVM_VERSION_05_2X_MIN
 
+
+#alias for 3270 (v2) and 3270 v3
+config FREETZ_TYPE_WLAN_3270
+	bool
+
+#alias for 7270 v2 and 7270 v3
 config FREETZ_TYPE_FON_WLAN_7270_16
 	bool
+
+#alias for 7330 (XL) and 7330 SL
 config FREETZ_TYPE_FON_WLAN_7330
 	bool
+
+#alias for 7360 (XL) and 7360 SL
 config FREETZ_TYPE_FON_WLAN_7360
 	bool
 
@@ -231,13 +241,15 @@ choice
 		select FREETZ_AVM_VERSION_04_57
 		bool "WLAN 3170"
 
-	config FREETZ_TYPE_WLAN_3270
+	config FREETZ_TYPE_WLAN_3270_V2
 		select FREETZ_AVM_VERSION_7270_05_21
 		bool "WLAN 3270 (v1 and v2 only)"
+		select FREETZ_TYPE_WLAN_3270
 
 	config FREETZ_TYPE_WLAN_3270_V3
 		select FREETZ_AVM_VERSION_7270_05_21
 		bool "WLAN 3270 (v3 only)"
+		select FREETZ_TYPE_WLAN_3270
 
 	config FREETZ_TYPE_WLAN_3370
 		select FREETZ_AVM_VERSION_3370_05_21
@@ -549,7 +561,7 @@ config FREETZ_TYPE_PREFIX
 	default "3130"              if FREETZ_TYPE_WLAN_3130
 	default "3131"              if FREETZ_TYPE_WLAN_3131
 	default "3170"              if FREETZ_TYPE_WLAN_3170
-	default "3270"              if FREETZ_TYPE_WLAN_3270
+	default "3270"              if FREETZ_TYPE_WLAN_3270_V2
 	default "3270_v3"           if FREETZ_TYPE_WLAN_3270_V3
 	default "3370"              if FREETZ_TYPE_WLAN_3370
 	default "fon"               if FREETZ_TYPE_FON
@@ -777,8 +789,7 @@ config FREETZ_TARGET_REF_16MB
 		FREETZ_TYPE_FON_WLAN_7360 || \
 		FREETZ_TYPE_FON_WLAN_7390 || \
 		FREETZ_TYPE_FON_WLAN_7570 || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3
+		FREETZ_TYPE_WLAN_3270
 
 config FREETZ_TARGET_REF_48MB
 	bool
@@ -840,8 +851,7 @@ config FREETZ_KERNEL_REF_16MB
 		FREETZ_TYPE_FON_WLAN_7360 || \
 		FREETZ_TYPE_FON_WLAN_7390 || \
 		FREETZ_TYPE_FON_WLAN_7570 || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3
+		FREETZ_TYPE_WLAN_3270
 
 config FREETZ_KERNEL_REF
 	string "Kernel ref"     if FREETZ_TYPE_CUSTOM
@@ -881,8 +891,7 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_FON_WLAN_7330 || \
 		FREETZ_TYPE_FON_WLAN_7360 || \
 		(FREETZ_TYPE_FON_WLAN_7570 && ! FREETZ_TYPE_FON_WLAN_7570_IAD) || \
-		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3
+		FREETZ_TYPE_WLAN_3270
 	default 59
 	help
 		Number of 64K blocks in the kernel mtd device.
@@ -1029,7 +1038,7 @@ config FREETZ_DL_SITE
 	default "@AVM/fritzbox.wlan_3130/firmware"                      if FREETZ_TYPE_WLAN_3130
 	default "@AVM/fritzbox.wlan_3131/firmware/deutsch"              if FREETZ_TYPE_WLAN_3131
 	default "@AVM/fritzbox.wlan_3170/firmware/deutsch"              if FREETZ_TYPE_WLAN_3170
-	default "@AVM/fritzbox.wlan_3270/firmware/deutsch"              if FREETZ_TYPE_WLAN_3270
+	default "@AVM/fritzbox.wlan_3270/firmware/deutsch"              if FREETZ_TYPE_WLAN_3270_V2
 	default "@AVM/fritzbox.wlan_3270_v3/firmware/deutsch"           if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_DE
 	default "@AVM/fritzbox.wlan_3270_v3/firmware/english"           if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_EN
 	default "@AVM/fritzbox.wlan_3370/firmware/deutsch"              if FREETZ_TYPE_WLAN_3370
@@ -1094,7 +1103,7 @@ config FREETZ_DL_SOURCE
 	default "fritz.box_wlan_3130.44.04.34.image"                            if FREETZ_TYPE_WLAN_3130
 	default "fritz.box_wlan_3131.50.04.57.image"                            if FREETZ_TYPE_WLAN_3131
 	default "fritz.box_wlan_3170.49.04.58.image"                            if FREETZ_TYPE_WLAN_3170
-	default "fritz.box_wlan_3270.67.05.21.image"                            if FREETZ_TYPE_WLAN_3270
+	default "fritz.box_wlan_3270.67.05.21.image"                            if FREETZ_TYPE_WLAN_3270_V2
 	default "fritz.box_wlan_3270_v3.96.05.21.image"                         if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_DE
 	default "FRITZ.Box_WLAN_3270_v3.en-de-es-it-fr.96.05.23.image"          if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_EN
 	default "fritz.box_wlan_3370.103.05.21.image"                           if FREETZ_TYPE_WLAN_3370
@@ -1155,7 +1164,7 @@ config FREETZ_DL_SOURCE_MD5
 	default "1c8dcee29f84c96648aa4b96271c9a16"  if FREETZ_TYPE_WLAN_3130
 	default "a34a8d4f7af511d5dd6fff5f3c4e8276"  if FREETZ_TYPE_WLAN_3131
 	default "f08942a9679002e21c29bb2cad9ded3e"  if FREETZ_TYPE_WLAN_3170
-	default "5138514e9e56964c6cd2a30e7f7c31d8"  if FREETZ_TYPE_WLAN_3270
+	default "5138514e9e56964c6cd2a30e7f7c31d8"  if FREETZ_TYPE_WLAN_3270_V2
 	default "f42854fbca4834f97cfe54a72acdb944"  if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_DE
 	default "a99fe91cc1478dffa7446c06489de964"  if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LANG_EN
 	default "dc28afed7294ce738ec92e427bb934a5"  if FREETZ_TYPE_WLAN_3370
@@ -1954,7 +1963,6 @@ config FREETZ_TARGET_ARCH_LE
 		FREETZ_TYPE_WLAN_3131 || \
 		FREETZ_TYPE_WLAN_3170 || \
 		FREETZ_TYPE_WLAN_3270 || \
-		FREETZ_TYPE_WLAN_3270_V3 || \
 		FREETZ_TYPE_SPEEDPORT_W501V
 
 config FREETZ_TARGET_ARCH_BE
