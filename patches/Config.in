@@ -287,11 +287,14 @@ comment "Removal patches ------------------------"
 
 config FREETZ_REMOVE_MICROVOIP_DSL
 	bool "Remove microvoip-dsl.bin - EXPERIMANTAL"
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_MICROVOIP_DSL
+	depends on FREETZ_SHOW_ADVANCED && \
+		FREETZ_HAS_AVM_MICROVOIP_DSL && \
+		FREETZ_REMOVE_VOIP_ISDN
 	default n
 	help
-		Remove lib/modules/microvoip-dsl.bin. This saves about
-		270-380 KB of uncompressed data size.
+		Remove the files lib/modules/microvoip-dsl.bin and
+		lib/modules/2.6.13.1-*/kernel/drivers/atm/avm_atm/tiatm.ko
+		This saves about 590-700 KB of uncompressed data size.
 
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware file"
