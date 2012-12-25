@@ -113,7 +113,7 @@ type="input" id="fstype" size="20" maxlength="10" name="fstype" value="$(html "$
 size="40" maxlength="64" type="text" name="mntoptions" value="$(html "$USBROOT_MNTOPTIONS")"/><br />
 <small>$(lang de:"Geben Sie hier kommagetrennte Optionen an, welche beim Mounten des Dateisystems
 verwendet werden (siehe Man-Pages von mount). Beispiel: rw,noatime,nodiratime"
-en:"Enter a comma-seperated list of options which are used when the filesystem is mounted.
+en:"Enter a comma-separated list of options which are used when the filesystem is mounted.
 E.g.: rw,noatime,nodiratime")</small></p>
 <p>$(lang de:"Altes Root-Filesystem (Flashspeicher) unmounten:" en:"Unmount old root filesystem
 (flash memory):") <input id="y1" type="radio" name="unmountoldroot" value="yes"$y1_chk><label

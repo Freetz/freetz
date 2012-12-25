@@ -56,7 +56,7 @@ sec_end
 
 sec_begin '$(lang de:"Optionale Parameter" en:"Optional parameters")'
 cat << EOF
-$(lang de:"Clients an die es erlaubt ist Prefixe anzuk&uuml;ndigen (mir Leertaste trennen)" en:"Clients to which prefixes are allowed to announce (seperated with blancs)"):
+$(lang de:"Leerzeichen getrennte Liste der Clients an die es erlaubt ist Prefixe anzuk&uuml;ndigen" en:"A space separated list of clients (IPv6 addresses) to advertise to"):
 <input type="text" name="clients" size="55" maxlength="255" value="$(html "$RADVD_CLIENTS")">
 EOF
 sec_end

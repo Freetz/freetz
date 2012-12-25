@@ -82,7 +82,7 @@ cat << EOF
 	<br>
 	<div class="textwrapper"><textarea id="script_code" rows="10" cols="80"></textarea></div><p>
 	<input type="button" id="exec" value="$(lang de:"Skript ausf&uuml;hren" en:"Run script")" onClick="tx();">&nbsp;&nbsp;
-	<label for="repeat">$(lang de:"Wiederholungsintervall" en:"Loop intervall")</label> <input type="text" id="repeat" size=6>&nbsp;ms&nbsp;&nbsp;
+	<label for="repeat">$(lang de:"Wiederholungsintervall" en:"Loop interval")</label> <input type="text" id="repeat" size=6>&nbsp;ms&nbsp;&nbsp;
 	<label for="history">$(lang de:"Historie" en:"History")</label> <select id="history" onChange="historySelected(this.selectedIndex)"></select>
 	<input type="button" value="$(lang de:"Hist. l&ouml;schen" en:"Delete hist.")" onClick="cleanHistory()">&nbsp;&nbsp;
 	<input type="checkbox" id="dl"><label for="dl">Download</label>

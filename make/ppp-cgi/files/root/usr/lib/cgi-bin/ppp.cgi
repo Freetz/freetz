@@ -91,20 +91,20 @@ $(lang de:"Logdatei von Fallback" en:"Fallback-logfile"):&nbsp;<input type="text
 &nbsp;<a href="$(href status ppp ppplog)">$(lang de:"(anzeigen)" en:"(show)")</a>
 </p>
 <p>
-$(lang de:"Internetverbindung in diesem Intervall pr&uuml;fen" en:"Check connection in this intervall"):&nbsp;
+$(lang de:"Internetverbindung in diesem Intervall pr&uuml;fen" en:"Internet connection check interval"):&nbsp;
 <input type="text" name="checkinterval" size="2" maxlength="4" value="$(html "$PPP_CHECKINTERVAL")">
 &nbsp;$(lang de:"Sekunden" en:"seconds")
 </p>
 <p>
-$(lang de:"Alternative Verbindung aufbauen nach" en:"Establish alter connection after a timeout of"):&nbsp;
+$(lang de:"Alternative Verbindung aufbauen nach" en:"Establish alternative connection after a timeout of"):&nbsp;
 <input type="text" name="checktimeout" size="2" maxlength="4" value="$(html "$PPP_CHECKTIMEOUT")">
 &nbsp;$(lang de:"Sekunden ohne Antwort" en:"seconds")
 </p>
 <p>
-$(lang de:"Mit Leerzeichen getrennt Hosts zum pr&uuml;fen der Internetverbindung" en:"Space seperated hosts for check of the internet-connection"):&nbsp;<input type="text" name="checkhosts" size="45" maxlength="255" value="$(html "$PPP_CHECKHOSTS")">
+$(lang de:"Leerzeichen getrennte Liste der Hosts zum Pr&uuml;fen der Internetverbindung" en:"Space separated list of hosts to be used for internet connection check"):&nbsp;<input type="text" name="checkhosts" size="45" maxlength="255" value="$(html "$PPP_CHECKHOSTS")">
 </p>
 <p>
-$(lang de:"Host zum pr&uuml;fen auf Wiederherstellung (nicht erreichbar w&auml;hrend der Verbindung!)" en:"Host for online-again check (not reachable while dun-connection!)"):&nbsp;<input type="text" name="alivecheck" size="45" maxlength="255" value="$(html "$PPP_ALIVECHECK")">
+$(lang de:"Host zum Pr&uuml;fen auf Wiederherstellung (nicht erreichbar w&auml;hrend der Verbindung!)" en:"Host for online-again check (not reachable while dun-connection!)"):&nbsp;<input type="text" name="alivecheck" size="45" maxlength="255" value="$(html "$PPP_ALIVECHECK")">
 </p>
 EOF
 sec_end

@@ -26,7 +26,7 @@ sec_end
 
 sec_begin '$(lang de:"Cron" en:"Cron")'
 cat << EOF
-<p>$(lang de:"Intervall" en:"Intervall"): <input type="text" name="cron_int" size="15" maxlength="20" value="$(html "$HTPDATE_CRON_INT")"></p>
+<p>$(lang de:"Intervall" en:"Interval"): <input type="text" name="cron_int" size="15" maxlength="20" value="$(html "$HTPDATE_CRON_INT")"></p>
 EOF
 sec_end
 

@@ -138,7 +138,7 @@ mount_fs() {
 
 # mount function
 # used by /etc/hotplug/run_mount
-# seperated from do_mount since fw 04.89
+# separated from do_mount since fw 04.89
 do_mount_locked() {
 	local mnt_failure=0
 	local rcftpd="/etc/init.d/rc.ftpd"
