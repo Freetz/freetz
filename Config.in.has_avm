@@ -1,4 +1,18 @@
 
+config FREETZ_HAS_AVM_LABOR
+	bool "Has AVM Labor Firmware"		if FREETZ_TYPE_CUSTOM
+	default y		if FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_WLAN_3270 || \
+			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7270_16 || \
+			FREETZ_TYPE_FON_WLAN_7312 || \
+			FREETZ_TYPE_FON_WLAN_7320 || \
+			FREETZ_TYPE_FON_WLAN_7330 || \
+			FREETZ_TYPE_FON_WLAN_7360_SL )
+	default n
+	help
+		Select this if a labor firmware is available for you box.
+
 config FREETZ_HAS_AVM_PTY_SUPPORT
 	bool "Has PTY support"	if FREETZ_TYPE_CUSTOM
 	default n		if \
