@@ -30,7 +30,7 @@ find "${HTML_DIR}/menus" -type f |
 if [ -e "$HTML_DIR/home/sitemap.html" ]; then
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then
 		linkbox_remove wizards
-	elif isFreetzType 7112 7113 7141 7150 7170 7270_v1 7570; then
+	elif isFreetzType 7112 7113 7141 7150 7170 7270_V1 7570; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/${FREETZ_TYPE_LANGUAGE}/remove_assistant_${FREETZ_TYPE_PREFIX}.patch"
 	elif isFreetzType 7140; then
 		if isFreetzType LANG_A_CH; then
