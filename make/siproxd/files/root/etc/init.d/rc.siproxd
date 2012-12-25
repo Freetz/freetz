@@ -1,10 +1,10 @@
 #!/bin/sh
 
 DAEMON=siproxd
+VARRUN_DIR=/var/run/$DAEMON
 PID_FILE=$VARRUN_DIR/$DAEMON.pid
 . /etc/init.d/modlibrc
 
-VARRUN_DIR=/var/run/$DAEMON
 PERSISTENT_CONF_DIR=/tmp/flash/$DAEMON
 HOME_DIR=/mod/home/$DAEMON
 
@@ -49,6 +49,7 @@ case "$1" in
 	unload)
 		modunreg file siproxd
 		modunreg cgi siproxd
+		modunreg daemon $DAEMON
 		modlib_stop
 		;;
 	start)
