@@ -116,8 +116,7 @@ case $1 in
 	""|load)
 		mkdir -p $CONF_DIR
 		mkdir -p /tmp/flash/$DAEMON
-		modlib_addgroup $DAEMON
-		modlib_adduser $DAEMON -s /bin/false -D -S -H -G $DAEMON -g $DAEMON_LONG_NAME
+		modlib_add_user_and_group $DAEMON
 
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON

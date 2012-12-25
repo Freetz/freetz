@@ -3,11 +3,8 @@
 DAEMON=dbus
 DAEMON_BIN=dbus-daemon
 PID_FILE=/var/run/dbus/pid
-
 . /etc/init.d/modlibrc
 
-DAEMON_USER=nobody
-DAEMON_GROUP=nobody
 
 start() {
 	[ -x /usr/bin/dbus-uuidgen ] && /usr/bin/dbus-uuidgen --ensure
@@ -16,8 +13,7 @@ start() {
 
 case $1 in
 	load)
-		modlib_addgroup nobody
-		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+		modlib_add_user_and_group nobody
 
 		if [ ! -d /tmp/flash/dbus-1 ]; then
 			mkdir -p /tmp/flash/dbus-1

@@ -24,7 +24,8 @@ case $1 in
 		mkdir -p /tmp/flash/netatalk
 		mkdir -p /var/run
 
-		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftp user"
+		modlib_addgroup users
+		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftpuser"
 
 		modreg cgi netatalk "Netatalk"
 		modreg file netatalk applevolumes_default '$(lang de:"Freigaben" en:"Shares")' 1 "applevolumes_default"
@@ -59,12 +60,12 @@ case $1 in
 		do_afpd start
 		;;
 	reload)
-	  config
+		config
 		do_cnid_metad reload
 		do_afpd reload
 		;;
 	status)
-	  do_afpd status
+		do_afpd status
 		;;
 	config)
 		config

@@ -23,11 +23,9 @@ start() {
 
 case $1 in
 	""|load)
+		modlib_add_user_and_group nobody
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-
-		modlib_addgroup nobody
-		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
 
 		modlib_start $SHELLINABOX_ENABLED
 		;;

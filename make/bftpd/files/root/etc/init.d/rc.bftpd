@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=bftpd
+DAEMON_LONG_NAME=Bftpd
 . /etc/init.d/modlibrc
 
 config() {
@@ -13,20 +14,20 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_adduser ftp -G users -D -S -g "FTP account"
+		modlib_add_user_and_group ftp users
 		mkdir -p /var/run/bftpd
 		mkdir -p /mod/home/ftp
 		chown ftp:users /mod/home/ftp -R
 		[ -e "/var/tmp/ftp" ] || ln -sf /mod/home/ftp /var/tmp/ftp
 
-		modreg cgi 'bftpd' 'Bftpd'
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
 		modlib_start $BFTPD_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
-		modunreg cgi 'bftpd'
+		modunreg cgi $DAENIB
 		modlib_stop
 		;;
 	start)

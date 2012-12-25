@@ -16,8 +16,7 @@ config() {
 	#davfs2
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	if [ "$FREETZ_PACKAGE_DAVFS2" == "y" -a "$AUTOFS_DAVFS2_CONF" == "yes" ]; then
-		modlib_addgroup davfs2
-		modlib_adduser davfs2 -s /bin/false -D -S -H -G davfs2 -g DavFS2
+		modlib_add_user_and_group davfs2
 		mkdir -p /var/davfs2
 		touch /var/davfs2/davfs2.conf /var/davfs2/secrets
 		chmod 600 /var/davfs2/secrets

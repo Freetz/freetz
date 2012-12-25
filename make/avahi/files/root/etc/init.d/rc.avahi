@@ -3,11 +3,7 @@
 DAEMON=avahi
 DAEMON_BIN=avahi-daemon
 PID_FILE=/var/run/avahi-daemon/pid
-
 . /etc/init.d/modlibrc
-
-DAEMON_USER=nobody
-DAEMON_GROUP=nobody
 
 start() {
 	modlib_startdaemon $DAEMON_BIN -D
@@ -15,8 +11,7 @@ start() {
 
 case $1 in
 	load)
-		modlib_addgroup $DAEMON_GROUP
-		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+		modlib_add_user_and_group nobody
 
 		if [ ! -d /tmp/flash/avahi ]; then
 			mkdir -p /tmp/flash/avahi

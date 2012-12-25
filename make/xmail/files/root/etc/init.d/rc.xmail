@@ -20,8 +20,7 @@ configure() {
 	mkdir -p /mod/etc/$DAEMON
 
 	if [ "$XMAIL_UNPRIV" = "yes" ]; then
-		modlib_addgroup xmail
-		modlib_adduser xmail -G xmail -s /bin/false -H -D -g "XMail account"
+		modlib_add_user_and_group $DAEMON
 
 		#do a simple test if a linux filesystem is present
 		touch $XMAIL_MAILLOCATION/.filesystemtest 2>/dev/null
@@ -114,7 +113,7 @@ start() {
 	configure
 
 	compartment=""
-	[ "$XMAIL_UNPRIV" = "yes" ] && compartment="/usr/lib/MailRoot/bin/compartment --user xmail --group xmail"
+	[ "$XMAIL_UNPRIV" = "yes" ] && compartment="/usr/lib/MailRoot/bin/compartment --user $DAEMON --group $DAEMON"
 	$compartment /usr/lib/MailRoot/bin/$DAEMON_BIN $CMDOPTS
 	exitval=$?
 

@@ -9,8 +9,7 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_addgroup nobody
-		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+		modlib_add_user_and_group nobody
 
 		modreg cgi $DAEMON httpry
 		modreg daemon $DAEMON

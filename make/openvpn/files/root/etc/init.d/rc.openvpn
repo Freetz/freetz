@@ -85,8 +85,7 @@ case $1 in
 			modreg file openvpn 'crl_pem' 'CRL' 0 "crl_pem"
 			modreg file openvpn 'dh_pem' 'DH Param' 0 "dh_pem"
 			modreg file openvpn 'static_key' 'Static Key' 0 "static_key"
-			modlib_addgroup openvpn
-			modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
+			modlib_add_user_and_group openvpn
 			mkdir -p /tmp/openvpn/etc
 			mkdir -p /tmp/openvpn/dev
 			mkdir -p /tmp/flash/openvpn

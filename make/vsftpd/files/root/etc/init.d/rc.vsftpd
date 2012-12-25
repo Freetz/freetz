@@ -33,7 +33,7 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_adduser ftp -G users -D -S -g "FTP account"
+		modlib_add_user_and_group ftp users
 		mkdir -p /mod/home/ftp
 		chown ftp:users /mod/home/ftp -R
 		mkdir -p /var/run/vsftpd

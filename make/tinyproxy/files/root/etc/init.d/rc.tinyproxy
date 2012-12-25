@@ -4,16 +4,14 @@ DAEMON=tinyproxy
 PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
-DAEMON_USER=nobody
-DAEMON_GROUP=nobody
 
 config() {
 	modlib_config
-	chown $DAEMON_USER:$DAEMON_GROUP /mod/etc/$DAEMON.conf
-	[ -e /var/tmp/tinyproxy.filter ] && chown $DAEMON_USER:$DAEMON_GROUP /var/tmp/tinyproxy.filter
+	chown nobody:nobody /mod/etc/$DAEMON.conf
+	[ -e /var/tmp/tinyproxy.filter ] && chown nobody:nobody /var/tmp/tinyproxy.filter
 	if [ ! "$TINYPROXY_SYSLOG" = "yes" ]; then
 		touch "$TINYPROXY_LOGFILE"
-		chown $DAEMON_USER:$DAEMON_GROUP "$TINYPROXY_LOGFILE"
+		chown nobody:nobody "$TINYPROXY_LOGFILE"
 	fi
 }
 
@@ -74,10 +72,9 @@ case $1 in
 		modreg cgi 'tinyproxy' 'tinyproxy'
 		modreg daemon $DAEMON
 
-		modlib_addgroup $DAEMON_GROUP
-		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+		modlib_add_user_and_group nobody
 		mkdir -p ${PID_FILE%/*}
-		chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
+		chown nobody:nobody ${PID_FILE%/*}
 
 		modlib_start $TINYPROXY_ENABLED
 		;;

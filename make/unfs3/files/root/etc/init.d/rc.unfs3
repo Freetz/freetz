@@ -41,8 +41,7 @@ case $1 in
 		ln -fs /tmp/flash/unfs3/exports /var/tmp/exports
 
 		# portmap needs this
-		modlib_addgroup nobody
-		modlib_adduser nobody -s /bin/false -D -S -H -G nobody -g 'nobody'
+		modlib_add_user_and_group nobody
 
 		modreg cgi $DAEMON 'UNFS-Server'
 		modreg daemon $DAEMON

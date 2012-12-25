@@ -16,8 +16,7 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_addgroup $DAEMON
-		modlib_adduser $DAEMON -G $DAEMON -s /bin/false -H -D -g "dns2tcp account"
+		modlib_add_user_and_group $DAEMON
 
 		modreg cgi 'dns2tcp' 'DNS2TCP'
 		modreg daemon $DAEMON

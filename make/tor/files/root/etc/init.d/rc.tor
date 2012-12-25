@@ -7,12 +7,10 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
 DAEMON_STORAGE=/tmp/flash/$DAEMON
-DAEMON_USER=tor
-DAEMON_GROUP=tor
 
 config() {
 	[ -d "$DAEMON_STORAGE" ] || mkdir -p $DAEMON_STORAGE
-	chown $DAEMON_USER:$DAEMON_GROUP "$DAEMON_STORAGE"
+	chown $DAEMON:$DAEMON "$DAEMON_STORAGE"
 
 	if [ ! -d "$TOR_DATADIRECTORY" ]; then
 		mkdir "$TOR_DATADIRECTORY" 2>/dev/null
@@ -20,13 +18,13 @@ config() {
 			echo "Could not create $TOR_DATADIRECTORY, failed."
 			exit $exitval
 		fi
-		chown $DAEMON_USER:$DAEMON_GROUP "$TOR_DATADIRECTORY"
+		chown $DAEMON:$DAEMON "$TOR_DATADIRECTORY"
 	fi
 
 	if [ "$TOR_RELAY_ENABLED" = "yes" ] && [ -e "$DAEMON_STORAGE/secret_id_key" ] && [ ! -e "$TOR_DATADIRECTORY/keys/secret_id_key" ]; then
 		mkdir -p $TOR_DATADIRECTORY/keys 2>/dev/null
 		ln -s $DAEMON_STORAGE/secret_id_key $TOR_DATADIRECTORY/keys/secret_id_key
-		chown $DAEMON_USER:$DAEMON_GROUP "$TOR_DATADIRECTORY/keys" -R
+		chown $DAEMON:$DAEMON "$TOR_DATADIRECTORY/keys" -R
 	fi
 
 	mkdir -p /mod/etc/$DAEMON
@@ -71,10 +69,9 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_addgroup $DAEMON_GROUP
-		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+		modlib_add_user_and_group $DAEMON
 		mkdir -p ${PID_FILE%/*}
-		chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
+		chown $DAEMON:$DAEMON ${PID_FILE%/*}
 
 		modreg cgi "$DAEMON" "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON

@@ -2,8 +2,10 @@
 
 DAEMON=subversion
 DAEMON_BIN=svnserve
+DAEMON_LONG_NAME=Subversion
 PID_FILE=/var/run/$DAEMON.pid
 . /etc/init.d/modlibrc
+
 
 echoDone() { echo 'done.'; }
 echoFailed() { echo 'failed.'; }
@@ -66,18 +68,17 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_addgroup $SUBVERSION_GROUP
-		modlib_adduser $SUBVERSION_USER -G $SUBVERSION_GROUP -s /bin/false -D -S -H -g "subversion account"
+		modlib_add_user_and_group $SUBVERSION_USER $SUBVERSION_GROUP
 
-		modreg cgi 'subversion' 'Subversion'
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
 		modlib_start $SUBVERSION_ENABLED
 		;;
 	unload)
-		modunreg status subversion
+		modunreg status $DAEMON
 		modunreg daemon $DAEMON
-		modunreg cgi 'subversion'
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)

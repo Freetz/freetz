@@ -35,8 +35,7 @@ reload() {
 
 case $1 in
 	""|load)
-		modlib_addgroup $DAEMON
-		modlib_adduser $DAEMON -s /bin/false -D -S -H -G $DAEMON -g $DAEMON
+		modlib_add_user_and_group $DAEMON
 		mkdir -p ${PID_FILE%/*}
 		chown $DAEMON:$DAEMON ${PID_FILE%/*}
 

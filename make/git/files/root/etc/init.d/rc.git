@@ -2,8 +2,10 @@
 
 DAEMON=git
 DAEMON_BIN=git-daemon
+DAEMON_LONG_NAME=Git
 PID_FILE=/var/run/$DAEMON.pid
 . /etc/init.d/modlibrc
+
 
 echoDone() { echo 'done.'; }
 echoFailed() { echo 'failed.'; }
@@ -55,17 +57,16 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_addgroup $GIT_GROUP
-		modlib_adduser $GIT_USER -G $GIT_GROUP -s /bin/false -D -S -H -g "git account"
+		modlib_add_user_and_group $GIT_USER $GIT_GROUP
 
-		modreg cgi 'git' 'Git'
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
 		modlib_start $GIT_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
-		modunreg cgi 'git'
+		modunreg cgi $GIT
 		modlib_stop
 		;;
 	start)

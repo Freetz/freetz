@@ -5,7 +5,7 @@ DAEMON_BIN="$DAEMON-daemon"
 PID_FILE=/var/run/$DAEMON.pid
 . /etc/init.d/modlibrc
 
-USERNAME=bittorrent
+USERNAME=$DAEMON
 GROUPNAME=users
 
 echoFailedAndExit() {
@@ -158,7 +158,7 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_adduser $USERNAME -G $GROUPNAME -D -S -g "Torrent server"
+		modlib_add_user_and_group $USERNAME $GROUPNAME
 		modreg cgi 'transmission' 'Transmission'
 		modreg daemon $DAEMON
 

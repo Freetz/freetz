@@ -4,9 +4,6 @@ DAEMON=dnsmasq
 PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
-DAEMON_USER=nobody
-DAEMON_GROUP=nobody
-
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
@@ -77,10 +74,9 @@ case $1 in
 		modreg daemon $DAEMON
 		modreg file dnsmasq extra 'extra' 0 dnsmasq_extra
 
-		modlib_addgroup $DAEMON_GROUP
-		modlib_adduser $DAEMON_USER -s /bin/false -D -S -H -G $DAEMON_GROUP -g $DAEMON_GROUP
+		modlib_add_user_and_group nobody
 		mkdir -p ${PID_FILE%/*}
-		chown $DAEMON_USER:$DAEMON_GROUP ${PID_FILE%/*}
+		chown nobody:nobody ${PID_FILE%/*}
 
 		modlib_start $DNSMASQ_ENABLED
 		;;

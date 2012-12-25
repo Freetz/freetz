@@ -71,8 +71,7 @@ case $1 in
 		modreg file openssh "rsa_key" "rsa_key" 0 "rsa_key"
 
 		mkdir -p /tmp/openssh
-		modlib_addgroup sshd
-		modlib_adduser sshd -G sshd -s /bin/false -H -D -h /tmp/openssh -g "sshd account"
+		modlib_add_user_and_group $DAEMON_BIN
 
 		modlib_start $OPENSSH_ENABLED
 		;;

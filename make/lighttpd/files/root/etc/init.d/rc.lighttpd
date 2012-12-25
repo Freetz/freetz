@@ -32,8 +32,7 @@ case $1 in
 		mkdir -p /mod/etc/$DAEMON
 		mkdir -p /tmp/flash/$DAEMON
 
-		modlib_addgroup wwwrun
-		modlib_adduser wwwrun -G wwwrun -s /bin/false -H -D -g "lighttpd account"
+		modlib_add_user_and_group wwwrun
 
 		modreg cgi 'lighttpd' 'lighttpd'
 		modreg daemon $DAEMON
