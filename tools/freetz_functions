@@ -17,6 +17,7 @@ quickstart_remove() {
 	  usr/www.myfritz/all/home/fritzinfo.lua \
 	  usr/www.myfritz/all/home/fritzinfo_mobile.lua \
 	  ; do
+		[ ! -e "${FILESYSTEM_MOD_DIR}/$file" ] && continue
 		modsed \
 		  "/^box.out.*m_link_bold.*href.get.*'[\/]*$1[\/]*'.*box.tohtml.*/d" \
 		  "${FILESYSTEM_MOD_DIR}/$file"
