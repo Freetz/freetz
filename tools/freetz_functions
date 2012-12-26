@@ -12,9 +12,15 @@ linkbox_remove() {
 #quickstart_remove <target-link>
 #removes links within quickstart.html (top menu)
 quickstart_remove() {
-	modsed \
-	  "/^box.out.*"sm_link_bold".*'\/$1\/'.*box.tohtml.*/d" \
-	  "${FILESYSTEM_MOD_DIR}/usr/www/all/templates/quickstart.html"
+	for file in \
+	  usr/www/all/templates/quickstart.html \
+	  usr/www.myfritz/all/home/fritzinfo.lua \
+	  usr/www.myfritz/all/home/fritzinfo_mobile.lua \
+	  ; do
+		modsed \
+		  "/^box.out.*m_link_bold.*href.get.*'[\/]*$1[\/]*'.*box.tohtml.*/d" \
+		  "${FILESYSTEM_MOD_DIR}/$file"
+	done
 }
 
 #menulua_remove <page-link>
