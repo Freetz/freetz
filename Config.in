@@ -58,6 +58,9 @@ config FREETZ_AVM_VERSION_05_5X
 	bool
 	select FREETZ_AVM_VERSION_05_2X_MIN
 
+config FREETZ_AVM_VERSION_SERIES
+	string
+	default "05_5X"  if FREETZ_AVM_VERSION_05_5X
 
 #alias for 3270 (v2) and 3270 v3
 config FREETZ_TYPE_WLAN_3270
@@ -555,10 +558,8 @@ config FREETZ_TYPE_PREFIX
 	default "3130"              if FREETZ_TYPE_WLAN_3130
 	default "3131"              if FREETZ_TYPE_WLAN_3131
 	default "3170"              if FREETZ_TYPE_WLAN_3170
-	default "3270"              if FREETZ_TYPE_WLAN_3270_V2 && FREETZ_TYPE_FINAL
-	default "3270_labor"        if FREETZ_TYPE_WLAN_3270_V2 && FREETZ_TYPE_LABOR
-	default "3270_v3"           if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_FINAL
-	default "3270_v3_labor"     if FREETZ_TYPE_WLAN_3270_V3 && FREETZ_TYPE_LABOR
+	default "3270"              if FREETZ_TYPE_WLAN_3270_V2
+	default "3270_v3"           if FREETZ_TYPE_WLAN_3270_V3
 	default "3370"              if FREETZ_TYPE_WLAN_3370
 	default "fon"               if FREETZ_TYPE_FON
 	default "5010"              if FREETZ_TYPE_FON_5010
@@ -575,32 +576,26 @@ config FREETZ_TYPE_PREFIX
 	default "7141"              if FREETZ_TYPE_FON_WLAN_7141
 	default "7150"              if FREETZ_TYPE_FON_7150
 	default "7170"              if FREETZ_TYPE_FON_WLAN_7170
-	default "7240"              if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_FINAL
-	default "7240_labor"        if FREETZ_TYPE_FON_WLAN_7240 && FREETZ_TYPE_LABOR
+	default "7240"              if FREETZ_TYPE_FON_WLAN_7240
 	default "7270_v1"           if FREETZ_TYPE_FON_WLAN_7270_V1
-	default "7270_v2"           if ((FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_FINAL
-	default "7270_v2_labor"     if ((FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_LABOR
-	default "7270_v3"           if ((FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270) && FREETZ_TYPE_FINAL
-	default "7270_v3_labor"     if ((FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270) && FREETZ_TYPE_LABOR
-	default "7312"              if FREETZ_TYPE_FON_WLAN_7312 && FREETZ_TYPE_FINAL
-	default "7312_labor"        if FREETZ_TYPE_FON_WLAN_7312 && FREETZ_TYPE_LABOR
-	default "7320"              if FREETZ_TYPE_FON_WLAN_7320 && FREETZ_TYPE_FINAL
-	default "7320_labor"        if FREETZ_TYPE_FON_WLAN_7320 && FREETZ_TYPE_LABOR
-	default "7330"              if FREETZ_TYPE_FON_WLAN_7330_XL && FREETZ_TYPE_FINAL
-	default "7330_labor"        if FREETZ_TYPE_FON_WLAN_7330_XL && FREETZ_TYPE_LABOR
-	default "7330_SL"           if FREETZ_TYPE_FON_WLAN_7330_SL && FREETZ_TYPE_FINAL
-	default "7330_SL_labor"     if FREETZ_TYPE_FON_WLAN_7330_SL && FREETZ_TYPE_LABOR
+	default "7270_v2"           if ((FREETZ_TYPE_FON_WLAN_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270)
+	default "7270_v3"           if ((FREETZ_TYPE_FON_WLAN_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270)
+	default "7312"              if FREETZ_TYPE_FON_WLAN_7312
+	default "7320"              if FREETZ_TYPE_FON_WLAN_7320
+	default "7330"              if FREETZ_TYPE_FON_WLAN_7330_XL
+	default "7330_SL"           if FREETZ_TYPE_FON_WLAN_7330_SL
 	default "7340"              if FREETZ_TYPE_FON_WLAN_7340
-	default "7360"              if FREETZ_TYPE_FON_WLAN_7360_XL && FREETZ_TYPE_FINAL
-	default "7360_labor"        if FREETZ_TYPE_FON_WLAN_7360_XL && FREETZ_TYPE_LABOR
-	default "7360_SL"           if FREETZ_TYPE_FON_WLAN_7360_SL && FREETZ_TYPE_FINAL
-	default "7360_SL_labor"     if FREETZ_TYPE_FON_WLAN_7360_SL && FREETZ_TYPE_LABOR
+	default "7360"              if FREETZ_TYPE_FON_WLAN_7360_XL
+	default "7360_SL"           if FREETZ_TYPE_FON_WLAN_7360_SL
 	default "7390_05_22"        if FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_FIRMWARE_05_2X
 	default "7390"              if FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_FIRMWARE_05_5X
-#	default "7390_labor"        if FREETZ_TYPE_FON_WLAN_7390 && FREETZ_TYPE_LABOR
 	default "7570"              if FREETZ_TYPE_FON_WLAN_7570
 	default "W501V"             if FREETZ_TYPE_SPEEDPORT_W501V
 	default "custom"            if FREETZ_TYPE_CUSTOM
+
+config FREETZ_TYPE_PREFIX_LABOR_FIRMWARE
+	string
+	default "_labor"            if FREETZ_TYPE_LABOR
 
 config FREETZ_TYPE_PREFIX_ALIEN_HARDWARE
 	string
