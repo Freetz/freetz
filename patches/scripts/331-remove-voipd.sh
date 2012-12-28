@@ -17,9 +17,9 @@ if [ ! -e "${FILESYSTEM_MOD_DIR}/usr/share/telefon/libtam.so" -o "$FREETZ_REMOVE
 fi
 
 echo1 "patching web UI"
-modsed '/<tr.*\<FonAll\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${HTML_LANG_MOD_DIR}/html/de/home/home.html"
-modsed '/<tr.*\<FonStatus$1\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${HTML_LANG_MOD_DIR}/html/de/home/home.html"
-modsed "/jslGoTo('fon','siplist')/d;/^<?.* sip.*?>$/d" "${HTML_LANG_MOD_DIR}/html/de/menus/menu2_fon.html"
+modsed '/<tr.*\<FonAll\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${HTML_SPEC_MOD_DIR}/home/home.html"
+modsed '/<tr.*\<FonStatus$1\>/ {/\/tr>/ bn;:x;N;s/\n//;/\/tr>/ bn;bx;:n;s/<tr.*\/tr>//}' "${HTML_SPEC_MOD_DIR}/home/home.html"
+modsed "/jslGoTo('fon','siplist')/d;/^<?.* sip.*?>$/d" "${HTML_SPEC_MOD_DIR}/menus/menu2_fon.html"
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_FON_IPHONE=.*$/CONFIG_FON_IPHONE=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

@@ -18,12 +18,12 @@ done
 
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
 
-if [ -e "${HTML_LANG_MOD_DIR}/html/de/nas/einstellungen.html" ]; then
+if [ -e "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html" ]; then
 echo1 "patching Web UI"
 modsed "/^<p.*uiViewUseMusik.*<\/p>$/ {
 	N
 	s/\n//g
-	D }" "${HTML_LANG_MOD_DIR}/html/de/nas/einstellungen.html"
+	D }" "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html"
 fi
 
 sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"

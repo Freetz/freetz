@@ -1,33 +1,28 @@
 [ "$FREETZ_REMOVE_ASSISTANT" == "y" ] || return 0
 # from m*.* mod
 echo1 "removing assistant"
-if [ -e "${HTML_LANG_MOD_DIR}/html/de" ];then
-	HTML_DIR="${HTML_LANG_MOD_DIR}/html/de"
-else
-	HTML_DIR="${HTML_LANG_MOD_DIR}/html/en"
-fi
 
-rm_files "${HTML_DIR}/konfig" \
+rm_files "${HTML_SPEC_MOD_DIR}/konfig" \
 	 "${HTML_LANG_MOD_DIR}/html/index_assi.html" \
 	 "${HTML_LANG_MOD_DIR}/html/assistent.html"
 
 if [ "$FREETZ_REMOVE_ASSISTANT_SIP" == "y" ]; then
 	# Don't delete provider.js because it's referenced by other files.
-	find "${HTML_DIR}/first" -type f -not -name "provider.js" -exec rm {} \;
+	find "${HTML_SPEC_MOD_DIR}/first" -type f -not -name "provider.js" -exec rm {} \;
 else
 	# Needed by "neue Rufnummer": first.frm , lib.js , *bb_backokcancel.html , first_Sip_(1|2|3)*
 	rm_files \
-		"${HTML_DIR}/first/*_ISP*" \
-		"${HTML_DIR}/first/basic_first*" \
-		"${HTML_DIR}/first/first_Sip_free.*" \
-		"${HTML_DIR}/first/first_Start_Sip.*" \
-		"${HTML_DIR}/first/first_SIP_UI_*"
+		"${HTML_SPEC_MOD_DIR}/first/*_ISP*" \
+		"${HTML_SPEC_MOD_DIR}/first/basic_first*" \
+		"${HTML_SPEC_MOD_DIR}/first/first_Sip_free.*" \
+		"${HTML_SPEC_MOD_DIR}/first/first_Start_Sip.*" \
+		"${HTML_SPEC_MOD_DIR}/first/first_SIP_UI_*"
 fi
 
-find "${HTML_DIR}/menus" -type f |
+find "${HTML_SPEC_MOD_DIR}/menus" -type f |
 	xargs sed -s -i -e '/var:menuAssistent/d'
 
-if [ -e "$HTML_DIR/home/sitemap.html" ]; then
+if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then
 		linkbox_remove wizards
 	elif isFreetzType 7112 7113 7141 7150 7170 7270_V1 7570; then

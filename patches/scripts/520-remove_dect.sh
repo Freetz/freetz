@@ -16,8 +16,8 @@ rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient.so*"
 
 echo1 "patching web UI"
-modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_LANG_MOD_DIR}/html/de/home/home.html"
-modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_LANG_MOD_DIR}/html/de/menus/menu2_konfig.html"
+modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_SPEC_MOD_DIR}/home/home.html"
+modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_SPEC_MOD_DIR}/menus/menu2_konfig.html"
 menu2html_remove dect
 
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi" ]; then

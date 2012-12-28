@@ -58,9 +58,9 @@ done
 
 
 echo2 "patching webinterface"
-modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_LANG_MOD_DIR}/html/de/fon/sip1.js"
-modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_LANG_MOD_DIR}/html/de/fon/siplist.js"
-modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${HTML_LANG_MOD_DIR}/html/de/internet/authform.html"
+modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_SPEC_MOD_DIR}/fon/sip1.js"
+modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_SPEC_MOD_DIR}/fon/siplist.js"
+modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${HTML_SPEC_MOD_DIR}/internet/authform.html"
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led
