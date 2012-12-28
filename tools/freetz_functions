@@ -5,7 +5,7 @@
 #removes links within a box on the left
 linkbox_remove() {
 	local linkbox_file="${FILESYSTEM_MOD_DIR}/usr/www/all/templates/menu_page_head.html"
-	linkbox_row=$(cat $linkbox_file |nl| sed -n "s/^ *\([0-9]*\).*menu.write_menu('$1')$/\1/p")
+	local linkbox_row=$(cat $linkbox_file |nl| sed -n "s/^ *\([0-9]*\).*menu.write_menu('$1')$/\1/p")
 	modsed "$((linkbox_row-6)),$((linkbox_row+9))d" $linkbox_file
 }
 
@@ -30,6 +30,17 @@ menulua_remove() {
 	modsed \
 	  "/^page = \".*\/$1.lua\",$/d" \
 	  "${FILESYSTEM_MOD_DIR}/usr/www/all/menus/menu_data.lua"
+}
+
+#menu2html_remove <menu-name>
+#removes links within menu2_home.html (left menu, pre lua)
+menu2html_remove() {
+	for menu2html_file in ${FILESYSTEM_MOD_DIR}/usr/www/all/html/*/menus/menu2_home.html; do
+		[ ! -e $menu2html_file ] && continue
+		modsed \
+		  "/LMenuitemTop/{N;N;/^<li class=.LMenuitemTop.>\n<a href=.javascript:jslGoTo.'$1','.*'..>.*<.a>\n<.li>$/d}" \
+		  $menu2html_file
+	done
 }
 
 #homelua_disable <function-name>

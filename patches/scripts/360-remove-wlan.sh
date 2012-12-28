@@ -13,6 +13,8 @@ rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/fw_dcrhp_1150_ap.bin \
 	${FILESYSTEM_MOD_DIR}/usr/bin/iwconfig \
 	${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libwlan.so
 
+menu2html_remove wlan
+
 sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all//internet/internet_settings.lua"
 if [ -e $sedfile ]; then
 	# patcht Internet > Zugangsdaten > Internetzugang

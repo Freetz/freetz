@@ -18,6 +18,7 @@ rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")
 echo1 "patching web UI"
 modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_LANG_MOD_DIR}/html/de/home/home.html"
 modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_LANG_MOD_DIR}/html/de/menus/menu2_konfig.html"
+menu2html_remove dect
 
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi" ]; then
 	sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi"

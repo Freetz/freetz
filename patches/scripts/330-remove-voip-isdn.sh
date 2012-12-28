@@ -24,6 +24,8 @@ modsed '/c55fw.hex/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 echo1 "patching rc.conf"
 modsed "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
+menu2html_remove fon
+
 # Webinterface Hauptseite
 HOME_LUA="${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua"
 if [ -e "$HOME_LUA" ]; then
