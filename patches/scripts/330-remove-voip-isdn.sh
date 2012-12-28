@@ -27,7 +27,7 @@ modsed "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/r
 menu2html_remove fon
 
 # Webinterface Hauptseite
-HOME_LUA="${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua"
+HOME_LUA="${HTML_LANG_MOD_DIR}/home/home.lua"
 if [ -e "$HOME_LUA" ]; then
 	echo1 "patching home.lua"
 

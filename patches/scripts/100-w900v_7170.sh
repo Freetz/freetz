@@ -60,10 +60,10 @@ modsed 's|PMINFO_MODE=7.*$|PMINFO_MODE=7,200,141,10,100|' "${FILESYSTEM_MOD_DIR}
 modsed 's|PMINFO_MODE=8.*$|PMINFO_MODE=8,100,200,78,150|' "${FILESYSTEM_MOD_DIR}/lib/modules/pm_info.in"
 
 echo2 "patching webinterface"
-modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/sip1.js"
-modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/fon/siplist.js"
-modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/internet/authform.html"
-#sed -i - "s/<? setvariable var:TextMenuSoftware \"Programme\" ?>\\n//g" "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2.inc"
+modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_LANG_MOD_DIR}/html/de/fon/sip1.js"
+modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_LANG_MOD_DIR}/html/de/fon/siplist.js"
+modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${HTML_LANG_MOD_DIR}/html/de/internet/authform.html"
+#sed -i - "s/<? setvariable var:TextMenuSoftware \"Programme\" ?>\\n//g" "${HTML_LANG_MOD_DIR}/html/de/menus/menu2.inc"
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led

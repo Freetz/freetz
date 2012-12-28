@@ -1,10 +1,10 @@
 echo1 "applying webmenu patch"
 modsed \
   "/^\` ?>/{N;N;N;s/^\` ?>\n\(<.div>\n<.td>\n<td id=.Dataspalte.>\)/\` ?>\n<? include ..\/html\/menu2_freetz.html ?>\n\1/g}" \
-  "${FILESYSTEM_MOD_DIR}/usr/www/all/html/de/menus/menu2.html"
+  "${HTML_LANG_MOD_DIR}/html/de/menus/menu2.html"
 
 #this creates menu2_freetz.html
-cat > "${FILESYSTEM_MOD_DIR}/usr/www/all/html/menu2_freetz.html" <<EOF
+cat > "${HTML_LANG_MOD_DIR}/html/menu2_freetz.html" <<EOF
 
 <div style="position:relative;top:-21px">
 

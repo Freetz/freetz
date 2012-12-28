@@ -15,7 +15,7 @@ rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/fw_dcrhp_1150_ap.bin \
 
 menu2html_remove wlan
 
-sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all//internet/internet_settings.lua"
+sedfile="${HTML_LANG_MOD_DIR}//internet/internet_settings.lua"
 if [ -e $sedfile ]; then
 	# patcht Internet > Zugangsdaten > Internetzugang
 	echo1 "patching ${sedfile##*/}"

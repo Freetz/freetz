@@ -4,7 +4,7 @@ modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/${FREETZ_TYPE_LANGUAGE}/webm
 
 # menu2_freetz.html created by 190-webmenu
 # append to this file
-cat >> "${FILESYSTEM_MOD_DIR}/usr/www/all/html/menu2_freetz.html" <<EOF
+cat >> "${HTML_LANG_MOD_DIR}/html/menu2_freetz.html" <<EOF
 
 <div style="position:relative;top:-21px">
 

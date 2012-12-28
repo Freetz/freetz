@@ -8,8 +8,8 @@ echo1 "removing TCOM Webinterface"
 rm -rf "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 
 echo1 "copying AVM Webinterface"
-mkdir "${FILESYSTEM_MOD_DIR}/usr/www/all"
-"$TAR" -c -C "${DIR}/.tk/original/filesystem/usr/www/all" --exclude=html/de/usb . | "$TAR" -x -C "${FILESYSTEM_MOD_DIR}/usr/www/all"
+mkdir "${HTML_LANG_MOD_DIR}"
+"$TAR" -c -C "${DIR}/.tk/original/filesystem/usr/www/all" --exclude=html/de/usb . | "$TAR" -x -C "${HTML_LANG_MOD_DIR}"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/avm"
 

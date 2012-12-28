@@ -14,16 +14,16 @@ done
 homelua_disable tr_smart_home
 menulua_remove home_auto_overview
 
-sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all/home/home.lua"
+sedfile="${HTML_LANG_MOD_DIR}/home/home.lua"
 echo1 "patching ${sedfile##*/}"
 modsed '/^<?include "net\/home_auto_func_lib.lua" ?>/d' $sedfile
 
-sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all/mobile/home.lua"
+sedfile="${HTML_LANG_MOD_DIR}/mobile/home.lua"
 echo1 "patching ${sedfile##*/}"
 modsed '/^require("libaha")/d' $sedfile
 modsed '/^t_ha_list = aha.GetDeviceList()/d' $sedfile
 
-sedfile="${FILESYSTEM_MOD_DIR}/usr/www/all/dect/dect_settings.lua"
+sedfile="${HTML_LANG_MOD_DIR}/dect/dect_settings.lua"
 echo1 "patching ${sedfile##*/}"
 modsed '/^require("libaha")/d' $sedfile
 modsed 's/^\(var ulepresent = \).*/\10;/' $sedfile
