@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 6.8.1-0)
+$(call PKG_INIT_BIN, 6.8.1-3)
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=151da01e3695a7c4ce3b309b76ecc349
+$(PKG)_SOURCE_MD5:=bae7f2261098f6088fccffac053c6963
 $(PKG)_SITE:=http://www.$(pkg).org/download
 
 $(PKG)_DIR:=$(SOURCE_DIR)/ImageMagick-$($(PKG)_VERSION)
