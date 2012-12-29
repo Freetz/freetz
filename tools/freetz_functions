@@ -35,12 +35,9 @@ menulua_remove() {
 #menu2html_remove <menu-name>
 #removes links within menu2_home.html (left menu, pre lua)
 menu2html_remove() {
-	for menu2html_file in ${HTML_LANG_MOD_DIR}/html/*/menus/menu2_home.html; do
-		[ ! -e $menu2html_file ] && continue
-		modsed \
-		  "/LMenuitemTop/{N;N;/^<li class=.LMenuitemTop.>\n<a href=.javascript:jslGoTo.'$1','.*'..>.*<.a>\n<.li>$/d}" \
-		  $menu2html_file
-	done
+	modsed \
+	  "/LMenuitemTop/{N;N;/^<li class=.LMenuitemTop.>\n<a href=.javascript:jslGoTo.'$1','.*'..>.*<.a>\n<.li>$/d}" \
+	  "${HTML_SPEC_MOD_DIR}/menus/menu2_home.html"
 }
 
 #homelua_disable <function-name>
