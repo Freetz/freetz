@@ -60,3 +60,8 @@ if [ -e "$HOME_LUA" ]; then
 	modsed '/str=str.."<td>"..status.."<.td>"/d' "$HOME_LUA"
 
 fi
+
+# patcht System > Firmware-Update > Firmware-Datei
+# entfernt: "Hinweis: Es wird zur Zeit noch telefoniert. Wenn Sie das
+# Firmware-Update jetzt starten, werden alle Telefongespräche beendet."
+modsed 's/^if next.calls. then$/if false then/' "${HTML_LANG_MOD_DIR}/system/update_file.lua"
