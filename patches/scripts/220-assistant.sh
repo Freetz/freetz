@@ -24,7 +24,12 @@ find "${HTML_SPEC_MOD_DIR}/menus" -type f |
 
 if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then
+		#lua
 		linkbox_remove wizards
+		#html
+		linkbox_file="${HTML_SPEC_MOD_DIR}/menus/menu2.html"
+		linkbox_row=$(cat $linkbox_file |nl| sed -n "s/^ *\([0-9]*\).*<a href=.javascript:jslGoTo.'konfig','home'..>.*<.a>$/\1/p")
+		modsed "$((linkbox_row-13)),$((linkbox_row+19))d" $linkbox_file
 	elif isFreetzType 7112 7113 7141 7150 7170 7270_V1 7570; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/${FREETZ_TYPE_LANGUAGE}/remove_assistant_${FREETZ_TYPE_PREFIX}.patch"
 	elif isFreetzType 7140; then
