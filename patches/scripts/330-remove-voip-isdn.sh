@@ -39,6 +39,7 @@ if [ -e "$HOME_LUA" ]; then
 	homelua_disable tr_foncalls       # Anrufliste
 
 	# patcht Hauptseite > Kasten Anrufe
+	modsed '/^{?537:759?}$/d' "$HOME_LUA"
 	# heute: box.out(" <span class=\"cs_Details\">({?537:891?} "..tostring(g_coninf_data.CallsToday)..")</span>")
 	modsed '/box.out(" <span class=."cs_Details.">.{?537:891?} "..tostring(g_coninf_data.CallsToday)..")<.span>")/d' "$HOME_LUA"
 	# mehr: <a class="cs_more" href="<?lua box.out(get_link('/fon_num/foncalls.lua'))?>">{?537:36?}</a>
@@ -47,6 +48,7 @@ if [ -e "$HOME_LUA" ]; then
 	modsed 's/\(<a class="head_link" href="\)<?lua href.write(..fon_num.foncalls.lua.) ?>\(">\)/\1\2/' "$HOME_LUA"
 
 	# patcht Hauptseite > Kasten Telefonbuch
+	modsed '/^{?537:969?}$/d' "$HOME_LUA"
 	# zuletzt: <span class="cs_Details">({?537:67?})</span>
 	modsed '/<span class="cs_Details">({?537:67?})<.span>/d' "$HOME_LUA"
 	# mehr: <a class="cs_more" href="<?lua box.out(get_link('/fon_num/fonbuch.lua'))?>">{?537:405?}</a>
