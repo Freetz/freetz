@@ -20,9 +20,6 @@ fi
 # patcht Internet > DSL-Informationen (html)
 modsed 's/\(setvariable var:showdslinfo \)./\10/' "${HTML_SPEC_MOD_DIR}/menus/menu2_internet.html"
 
-<? if eq $var:showdslinfo 1 `
-
-
 rm_files \
   "${HTML_LANG_MOD_DIR}/internet/dsl_*.lua" \
   "${HTML_LANG_MOD_DIR}/internet/vdsl_profile.lua"
