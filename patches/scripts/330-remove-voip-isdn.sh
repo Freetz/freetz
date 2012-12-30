@@ -37,11 +37,13 @@ if [ -e "$HOME_LUA" ]; then
 	homelua_disable IntFax_Display    # Facksimile
 	homelua_disable tr_fonbook        # Telefonbuch
 	homelua_disable tr_foncalls       # Anrufliste
+	homelua_disable tr_internet_Sips  # Verbindungen (7570)
 
 	# patcht Hauptseite > Kasten Anrufe
 	modsed '/^{?537:759?}$/d' "$HOME_LUA"
 	# heute: box.out(" <span class=\"cs_Details\">({?537:891?} "..tostring(g_coninf_data.CallsToday)..")</span>")
-	modsed '/box.out(" <span class=."cs_Details.">.{?537:891?} "..tostring(g_coninf_data.CallsToday)..")<.span>")/d' "$HOME_LUA"
+	# 7570: box.out([[ <span class="cs_Details">({?537:891?} ]]..tostring(g_coninf_data.CallsToday)..[[)</span>]])
+	modsed '/box.out(.* <span class=.*cs_Details.*>.{?537:891?} .*tostring(g_coninf_data.CallsToday).*)<.span>.*)/d' "$HOME_LUA"
 	# mehr: <a class="cs_more" href="<?lua box.out(get_link('/fon_num/foncalls.lua'))?>">{?537:36?}</a>
 	modsed '/<a class="cs_more" href="<?lua box.out(get_link(..fon_num.foncalls.lua.))?>">{?537:36?}<.a>/d' "$HOME_LUA"
 	# href: <a class="head_link" href="<?lua href.write('/fon_num/foncalls.lua') ?>">
