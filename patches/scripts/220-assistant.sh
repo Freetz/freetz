@@ -44,3 +44,6 @@ if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant_wop.patch"
 	fi
 fi
+
+# even if box is unconfigured do not try to adress assistant-pages but home
+modsed '/uiPostPageName/ s#"[^"]*first_[^"]*"#home"#' "${HTML_LANG_MOD_DIR}/html/logincheck.html"
