@@ -46,4 +46,12 @@ if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 fi
 
 # even if box is unconfigured do not try to adress assistant-pages but home
-modsed '/uiPostPageName/ s#"[^"]*first_[^"]*"#home"#' "${HTML_LANG_MOD_DIR}/html/logincheck.html"
+modsed \
+  '/uiPostPageName", "first_/{N;s/.*\n.*$/jslSetValue("uiPostPageName", "home");\njslSetValue("uiPostMenu", "home");/g}' \
+  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
+# for all 'jslSetValue("uiPostPageName"' (Annex/Country/Language) use this:
+# '/uiPostPageName",.*first_/{N;s/.*\n.*$/jslSetValue("uiPostPageName", "home");\njslSetValue("uiPostMenu", "home");/g}' \
+modsed \
+  's/^http.redirect(get_goto_oldassi_href.*/go_home()/' \
+  "${HTML_LANG_MOD_DIR}/lua/first.lua"
+
