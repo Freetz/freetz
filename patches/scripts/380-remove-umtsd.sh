@@ -1,6 +1,6 @@
 if [ "$FREETZ_REMOVE_UMTSD" == "y" -o "$FREETZ_REMOVE_ASSISTANT" == "y" ]; then
 	modsed \
-	  sed 's/\(^var umts = \).*/\10;/g' \
+	  's/\(^var umts = \).*/\10;/g' \
 	  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
 	modsed \
 	  's/\(^local start_umts.*\) =.*/\1 = false/g' \
