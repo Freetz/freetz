@@ -59,13 +59,13 @@ homelua_disable() {
 #
 # Example: The following construct...
 #
-# if [ "$FREETZ_TYPE_FON_5010" == "y" ] || \
-#     [ "$FREETZ_TYPE_FON_5050" == "y" ] || \
-#     [ "$FREETZ_TYPE_FON_WLAN_7050" == "y" ] || \
-#     [ "$FREETZ_TYPE_FON_WLAN_7140" == "y" ] || \
-#     [ "$FREETZ_TYPE_FON_WLAN_7141" == "y" ] || \
-#     [ "$FREETZ_TYPE_FON_7150" == "y" ] || \
-#     [ "$FREETZ_TYPE_FON_WLAN_7170" == "y" ]
+# if [ "$FREETZ_TYPE_5010" == "y" ] || \
+#     [ "$FREETZ_TYPE_5050" == "y" ] || \
+#     [ "$FREETZ_TYPE_7050" == "y" ] || \
+#     [ "$FREETZ_TYPE_7140" == "y" ] || \
+#     [ "$FREETZ_TYPE_7141" == "y" ] || \
+#     [ "$FREETZ_TYPE_7150" == "y" ] || \
+#     [ "$FREETZ_TYPE_7170" == "y" ]
 # then
 #
 # ... can now be abbreviated by:
@@ -80,10 +80,8 @@ homelua_disable() {
 isFreetzType()
 {
 	while [ $# -gt 0 ]; do
-		for group in '' _FON _FON_WLAN _WLAN _SINUS _SPEEDPORT; do
-			varname=`echo "\\$FREETZ_TYPE$group"_$1`
-			[ "`eval echo $varname`" == "y" ] && return 0
-		done
+		varname=`echo "\\$FREETZ_TYPE"_$1`
+		[ "`eval echo $varname`" == "y" ] && return 0
 		shift
 	done
 	return 1

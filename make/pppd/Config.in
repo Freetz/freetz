@@ -5,9 +5,9 @@ config FREETZ_PACKAGE_PPPD
 	bool "pppd 2.4.5"
 	select FREETZ_LIB_libcrypt
 	select FREETZ_LIB_libdl
-	select FREETZ_MODULE_ppp_async if ! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_ppp_async if ! FREETZ_TYPE_7390
 	select FREETZ_MODULE_ppp_deflate
-	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_FON_WLAN_7390
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_7390
 	select FREETZ_MODULE_ppp_mppe_mppc
 	default n
 	help

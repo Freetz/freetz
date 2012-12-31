@@ -13,7 +13,7 @@ if isFreetzType W501V W701V W901V; then
 	modsed "s/avme/tcom/g" "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.js"
 fi
 
-if [ "$FREETZ_TYPE_FON_WLAN" == "y" ]; then
+if [ "$FREETZ_TYPE_WLAN" == "y" ]; then
 	# PCR & SCR could not be changed on Fritz!Box Fon WLAN via web-interface
 	return 0
 fi
