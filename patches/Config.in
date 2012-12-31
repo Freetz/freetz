@@ -888,8 +888,12 @@ config FREETZ_REMOVE_HELP
 		Removes the (offline) help pages from the web menu.
 
 config FREETZ_REMOVE_LIBFUSE
-	bool "Remove libfuse.so - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_TYPE_FON_WLAN_7570
+	bool "Remove libfuse.so"
+	depends on \
+		( \
+			FREETZ_TYPE_FON_WLAN_7570 || \
+			FREETZ_TYPE_FON_WLAN_7270_V1 \
+		)
 	select FREETZ_REMOVE_NTFS
 	select FREETZ_REMOVE_WEBDAV
 	default n
