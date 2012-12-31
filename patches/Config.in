@@ -93,7 +93,7 @@ config FREETZ_PATCH_GSMVOICE
 	help
 		Patches the WebUI to allow voice-over-GSM.
 		Highly experimental! Your UMTS stick has to support it.
-		Webif: Internet > Mobilfunk > Telefonie über Mobilfunk
+		Webif: Internet > Mobilfunk > Telefonie ueber Mobilfunk
 
 #config FREETZ_PATCH_INTERNATIONAL
 #	bool "Patch international"
@@ -286,8 +286,8 @@ config FREETZ_CUSTOM_UDEV_RULES
 comment "Removal patches ------------------------"
 
 config FREETZ_REMOVE_MICROVOIP_DSL
-	bool "Remove microvoip-dsl.bin - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED && \
+	bool "Remove microvoip-dsl.bin"
+	depends on \
 		FREETZ_HAS_AVM_MICROVOIP_DSL && \
 		FREETZ_REMOVE_VOIP_ISDN
 	default n
@@ -327,8 +327,8 @@ config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 
 
 config FREETZ_REMOVE_DSL_CONTROL
-	bool "Remove dsl_control - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED && \
+	bool "Remove dsl_control"
+	depends on \
 		( \
 			FREETZ_REMOVE_ANNEX_A_FIRMWARE || \
 			FREETZ_REMOVE_ANNEX_B_FIRMWARE || \
@@ -391,7 +391,7 @@ menu "Remove ISDN/POTS piglet file(s) - EXPERIMENTAL"
 		)
 
 	config FREETZ_REMOVE_PIGLET_ISDN
-	bool "Remove ISDN piglet file(s) - EXPERIMENTAL"
+	bool "Remove ISDN piglet file(s)"
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -400,7 +400,7 @@ menu "Remove ISDN/POTS piglet file(s) - EXPERIMENTAL"
 
 
 	config FREETZ_REMOVE_PIGLET_POTS
-	bool "Remove POTS piglet file(s) - EXPERIMENTAL"
+	bool "Remove POTS piglet file(s)"
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -439,9 +439,9 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 		use existing ones.
 
 config FREETZ_REMOVE_AHA
-	bool "Remove AVM Home Automation (AHA) - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
+	bool "Remove AVM Home Automation (AHA)"
 	default n
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_AHA
+	depends on FREETZ_HAS_AVM_AHA
 	help
 		Remove the aha daemon and some related files.
 		Used for "Smart Home".
@@ -475,7 +475,7 @@ config FREETZ_REMOVE_NAS
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
 config FREETZ_REMOVE_MYFRITZ
-	bool "Remove AVM MyFritz - EXPERIMENTAL"
+	bool "Remove AVM MyFritz"
 	default n
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_MYFRITZ && FREETZ_REMOVE_NAS
 	help
@@ -779,8 +779,8 @@ config FREETZ_REMOVE_CDROM_ISO
 		Removes the file /lib/modules/cdrom.iso to save 270kB uncompressed space.
 
 config FREETZ_REMOVE_DECT
-	bool "Remove DECT files - EXPERIMENTAL"
-	depends on FREETZ_HAS_AVM_DECT && FREETZ_SHOW_ADVANCED
+	bool "Remove DECT files"
+	depends on FREETZ_HAS_AVM_DECT
 	default n
 	help
 		Remove dect files (modules, dect_manager and dect related Web UI).
@@ -796,9 +796,8 @@ config FREETZ_REMOVE_DECT_UPDATE
 		This will save about 32kB uncompressed size.
 
 config FREETZ_REMOVE_DSLD
-	bool "Remove dsld (for boxes in IP client mode) - EXPERIMENTAL"
+	bool "Remove dsld (for boxes in IP client mode)"
 	default n
-	depends on FREETZ_SHOW_ADVANCED
 	select FREETZ_REMOVE_UPNP
 	select FREETZ_REMOVE_USERMAN if ! \
 		( \
@@ -825,12 +824,9 @@ config FREETZ_REMOVE_DSLD
 		because kernel module userman.ko always depends on kdsldmod.ko which is
 		stripped by this patch.
 
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
-
 config FREETZ_REMOVE_SHOWDSLDSTAT
-	bool "Remove showdsldstat - EXPERIMENTAL"
+	bool "Remove showdsldstat"
 	default n
-	depends on FREETZ_SHOW_ADVANCED
 	help
 		Removes the showdsldstat utility which shows you the cpmac mode, connect time,
 		external ip, route and dns servers. Also the state of IPv6, voip and tr069.
@@ -894,7 +890,7 @@ config FREETZ_REMOVE_LIBFUSE
 		NTFS and Webdav are also removed.
 
 config FREETZ_REMOVE_JFFS2
-	bool "Remove jffs2.ko - EXPERIMENTAL"
+	bool "Remove jffs2.ko"
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_JFFS2
 	default n
 	help
@@ -912,9 +908,9 @@ config FREETZ_REMOVE_JFFS2
 		your own risk and test the firmware after flashing it onto your device.
 
 config FREETZ_REMOVE_RAMZSWAP
-	bool "Remove ramzswap.ko - EXPERIMENTAL" if FREETZ_SHOW_ADVANCED
+	bool "Remove ramzswap.ko"
 	default n
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_RAMZSWAP
+	depends on FREETZ_HAS_AVM_RAMZSWAP
 	help
 		Remove the ramzswap.ko (about 35 kB uncompressed).
 
@@ -1121,8 +1117,8 @@ config FREETZ_REMOVE_UPNP_LIBS
 	default n
 
 config FREETZ_REMOVE_USERMAN
-	bool "Remove usermand and userman.ko - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED && \
+	bool "Remove usermand and userman.ko"
+	depends on \
 		! FREETZ_TYPE_FON_5140 && \
 		! FREETZ_TYPE_FON_WLAN_7112 && \
 		! FREETZ_TYPE_FON_WLAN_7113 && \
@@ -1155,8 +1151,8 @@ config FREETZ_REMOVE_VOIPD
 		because the Web UI is also removed.
 
 config FREETZ_REMOVE_VOIP_ISDN
-	bool "Remove VoIP & ISDN files (for non-telephony boxes) - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_PHONE
+	bool "Remove VoIP & ISDN files (for non-telephony boxes)"
+	depends on FREETZ_HAS_AVM_PHONE
 	select FREETZ_REMOVE_DECT if FREETZ_HAS_AVM_DECT
 	select FREETZ_REMOVE_VOIPD
 	select FREETZ_REMOVE_DTRACE
@@ -1176,8 +1172,6 @@ config FREETZ_REMOVE_VOIP_ISDN
 		NOTE: Corresponding web UI files will also be removed, so you will
 		encounter several empty web pages or submenus.
 
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
-
 config FREETZ_REMOVE_WEBDAV
 	bool "Remove WebDAV"
 	depends on \
@@ -1189,14 +1183,14 @@ config FREETZ_REMOVE_WEBDAV
 		On 7270v1 only scripts, links and a 10KB library.
 
 config FREETZ_REMOVE_WLAN
-	bool "Remove WLAN files (for non-wlan boxes) - EXPERIMENTAL"
+	bool "Remove WLAN files (for non-wlan boxes)"
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_WLAN
 	default n
 	help
 		Radically remove a lot of wlan-related files. This patch saves about
 		700 kb of uncomrpessed data size in the firmware image.
-
-		EXPERIMENTAL FEATURE, USE AT OWN RISK!
+		
+		WARNING: Do not enable Wlan, you will get a reboot loop!
 
 comment "Replacement patches --------------------"
 
