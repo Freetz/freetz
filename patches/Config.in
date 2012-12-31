@@ -365,6 +365,7 @@ menu "Remove v1/v2 piglet file(s)"
 
 	config FREETZ_REMOVE_PIGLET_V2
 	bool "Remove v2 piglet file(s)"
+	depends on FREETZ_TYPE_7170
 	help
 		The firmware of this model contains double piglet files. Which instance is needed depends
 		on the hardware version (v1 or v2) of your box. You can safely remove the
@@ -382,6 +383,9 @@ comment "WARNING: Both (v1 and v2) piglet files are selected for removal."
 menu "Remove ISDN/POTS piglet file(s)"
 	depends on \
 			FREETZ_TYPE_2170 || \
+			FREETZ_TYPE_3130 || \
+			FREETZ_TYPE_3131 || \
+			FREETZ_TYPE_3170 || \
 			FREETZ_TYPE_5010 || \
 			FREETZ_TYPE_5113 || \
 			FREETZ_TYPE_5124 || \
@@ -393,13 +397,26 @@ menu "Remove ISDN/POTS piglet file(s)"
 			FREETZ_TYPE_7170 || \
 			FREETZ_TYPE_7270_V1 || \
 			FREETZ_TYPE_7270_V2 || \
-			FREETZ_TYPE_7340 || \
-			FREETZ_TYPE_3130 || \
-			FREETZ_TYPE_3131 || \
-			FREETZ_TYPE_3170 \
+			FREETZ_TYPE_7340
 
 	config FREETZ_REMOVE_PIGLET_ISDN
 	bool "Remove ISDN piglet file(s)"
+	depends on \
+		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_3130 || \
+		FREETZ_TYPE_3131 || \
+		FREETZ_TYPE_3170 || \
+		FREETZ_TYPE_5012 || \
+		FREETZ_TYPE_5113 || \
+		FREETZ_TYPE_5124 || \
+		FREETZ_TYPE_5140 || \
+		FREETZ_TYPE_7113 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7141 || \
+		FREETZ_TYPE_7170 || \
+		FREETZ_TYPE_7270_V1 || \
+		FREETZ_TYPE_7270_V2 || \
+		FREETZ_TYPE_7340
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -409,6 +426,12 @@ menu "Remove ISDN/POTS piglet file(s)"
 
 	config FREETZ_REMOVE_PIGLET_POTS
 	bool "Remove POTS piglet file(s)"
+	depends on \
+		FREETZ_TYPE_5010 || \
+		FREETZ_TYPE_5113 || \
+		FREETZ_TYPE_7113 || \
+		FREETZ_TYPE_7150 || \
+		FREETZ_TYPE_7340
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -894,8 +917,8 @@ config FREETZ_REMOVE_LIBFUSE
 			FREETZ_TYPE_7570 || \
 			FREETZ_TYPE_7270_V1 \
 		)
-	select FREETZ_REMOVE_NTFS
-	select FREETZ_REMOVE_WEBDAV
+	select FREETZ_REMOVE_NTFS if FREETZ_HAS_AVM_NTFS && !FREETZ_AVMPLUGINS_NTFS
+	select FREETZ_REMOVE_WEBDAV if FREETZ_HAS_AVM_WEBDAV
 	default n
 	help
 		This removes libfuse.so and saves about 132 KB (uncompressed).
@@ -1186,8 +1209,7 @@ config FREETZ_REMOVE_VOIP_ISDN
 
 config FREETZ_REMOVE_WEBDAV
 	bool "Remove WebDAV"
-	depends on \
-		FREETZ_HAS_AVM_WEBDAV
+	depends on FREETZ_HAS_AVM_WEBDAV
 	default n
 	help
 		Remove WebDAV (Online-Speicher) feature. Saves about 510 KB of
@@ -1201,7 +1223,7 @@ config FREETZ_REMOVE_WLAN
 	help
 		Radically remove a lot of wlan-related files. This patch saves about
 		700 kb of uncomrpessed data size in the firmware image.
-		
+
 		WARNING: Do not enable Wlan, you will get a reboot loop!
 
 comment "Replacement patches --------------------"
