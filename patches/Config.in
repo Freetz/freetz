@@ -379,16 +379,24 @@ comment "WARNING: Both (v1 and v2) piglet files are selected for removal."
 		FREETZ_REMOVE_PIGLET_V1 && \
 		FREETZ_REMOVE_PIGLET_V2
 
-menu "Remove ISDN/POTS piglet file(s) - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED && \
-		( \
+menu "Remove ISDN/POTS piglet file(s)"
+	depends on \
+			FREETZ_TYPE_2170 || \
+			FREETZ_TYPE_FON_5010 || \
 			FREETZ_TYPE_FON_5113 || \
+			FREETZ_TYPE_FON_5124 || \
+			FREETZ_TYPE_FON_5140 || \
+			FREETZ_TYPE_FON_7150 || \
 			FREETZ_TYPE_FON_WLAN_7113 || \
-			FREETZ_TYPE_FON_WLAN_7240 || \
+			FREETZ_TYPE_FON_WLAN_7140 || \
+			FREETZ_TYPE_FON_WLAN_7141 || \
+			FREETZ_TYPE_FON_WLAN_7170 || \
+			FREETZ_TYPE_FON_WLAN_7270_V1 || \
+			FREETZ_TYPE_FON_WLAN_7270_V2 || \
 			FREETZ_TYPE_FON_WLAN_7340 || \
-			FREETZ_TYPE_5113_7170 || \
-			FREETZ_TYPE_7113_7170 \
-		)
+			FREETZ_TYPE_WLAN_3130 || \
+			FREETZ_TYPE_WLAN_3131 || \
+			FREETZ_TYPE_WLAN_3170 \
 
 	config FREETZ_REMOVE_PIGLET_ISDN
 	bool "Remove ISDN piglet file(s)"

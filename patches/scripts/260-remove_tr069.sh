@@ -1,6 +1,6 @@
 if [ "$FREETZ_REMOVE_TR069" == "y" -o "$FREETZ_REMOVE_ASSISTANT" == "y" ]; then
 	modsed \
-	  sed 's/\(^var doTr069 = \).*/\1false;/g' \
+	  's/\(^var doTr069 = \).*/\1false;/g' \
 	  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
 	modsed \
 	  's!http.redirect("/tr69_autoconfig/.*!go_home()!g' \
