@@ -43,6 +43,13 @@ config FREETZ_PACKAGE_IPTABLES_XML
 	help
 		Include iptables-xml to convert saved rules to xml.
 
+config FREETZ_PACKAGE_IPTABLES_STATIC
+	bool "Build static binary"
+	depends on FREETZ_PACKAGE_IPTABLES
+	default n
+	help
+		Build a statically linked binary with all libraries compiled in
+
 # Include here for a cleaner menu structure (list packages before modules/libs)
 source make/iptables-cgi/Config.in
 source make/nhipt/Config.in
