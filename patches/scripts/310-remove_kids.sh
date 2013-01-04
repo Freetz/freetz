@@ -1,9 +1,12 @@
 [ "$FREETZ_REMOVE_KIDS" == "y" ] || return 0
-echo1 "removing userman files"
+echo1 "removing kids files (userman/contfiltd)"
 rm_files \
   ${FILESYSTEM_MOD_DIR}/bin/userman* \
+  $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*') \
   ${HTML_LANG_MOD_DIR}/internet/kids*.lua \
-  $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*')
+  ${FILESYSTEM_MOD_DIR}/sbin/contfiltd \
+  ${FILESYSTEM_MOD_DIR}/etc/bpjm.data \
+  ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libuser.so
 
 # Prevent continous reboots on 3170 with replace kernel
 if [ "$FREETZ_REMOVE_DSLD" = "y" ] || ! ( isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ); then
@@ -32,5 +35,5 @@ if [ -e "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init" ]; then
 	modsed "s/KIDS=y/KIDS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
 else
 	modsed "s/CONFIG_KIDS=.*$/CONFIG_KIDS=\"n\"/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
+	modsed "s/CONFIG_KIDS_CONTENT=.*$/CONFIG_KIDS_CONTENT=\"n\"/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
 fi
-

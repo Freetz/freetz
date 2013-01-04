@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_TELEPHONY" == "y" ] || return 0
 
-echo1 "removing VoIP & ISDN files"
+echo1 "removing telephony files"
 if [ "$FREETZ_HAS_AVM_USB_HOST" == "y" ]; then
 rm_files $(find ${FILESYSTEM_MOD_DIR} ! -path '*/lib/*' -a -name '*isdn*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
 	 $(find ${FILESYSTEM_MOD_DIR}/lib/modules/2.6*/ -name '*isdn*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
@@ -9,13 +9,14 @@ else
 	rm_files $(find ${FILESYSTEM_MOD_DIR} -name '*isdn*' -o -name '*iglet*' -o -name '*voip' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/')
 fi
 
-rm_files $(find ${FILESYSTEM_MOD_DIR} -name '*capi*' -o -name '*tam*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
-	 $(find ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr -name 'libfon*' -o -name 'libtelcfg*') \
-	 $(find ${FILESYSTEM_MOD_DIR} -name 'voipd' -o -name 'telefon' -o -name 'pbd' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/')
-
-rm_files ${FILESYSTEM_MOD_DIR}/usr/bin/faxd \
-	${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit \
-	${FILESYSTEM_MOD_DIR}/lib/modules/c55fw.hex
+rm_files \
+  $(find ${FILESYSTEM_MOD_DIR} -name '*capi*' -o -name '*tam*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
+  $(find ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr -name 'libfon*' -o -name 'libtelcfg*') \
+  $(find ${FILESYSTEM_MOD_DIR} -name 'voipd' -o -name 'telefon' -o -name 'pbd' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
+  ${FILESYSTEM_MOD_DIR}/usr/bin/faxd \
+  ${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit \
+  ${FILESYSTEM_MOD_DIR}/lib/modules/c55fw.hex \
+  ${FILESYSTEM_MOD_DIR}/etc/init.d/S17-tam
 
 echo1 "patching rc.S"
 modsed '/microvoip_isdn_top.bit/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
@@ -67,5 +68,5 @@ fi
 
 # patcht System > Firmware-Update > Firmware-Datei
 # entfernt: "Hinweis: Es wird zur Zeit noch telefoniert. Wenn Sie das
-# Firmware-Update jetzt starten, werden alle Telefongespräche beendet."
+# Firmware-Update jetzt starten, werden alle Telefongesprï¿½che beendet."
 modsed 's/^if next.calls. then$/if false then/' "${HTML_LANG_MOD_DIR}/system/update_file.lua"
