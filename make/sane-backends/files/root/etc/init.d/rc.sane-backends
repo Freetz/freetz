@@ -11,6 +11,10 @@ config() {
 	modlib_config ${DAEMON_BIN}
 }
 
+start() {
+	modlib_startdaemon $DAEMON_BIN -a
+}
+
 case $1 in
 	""|load)
 		[ ! -d $CONFDIR/dll.d ] && mkdir -p $CONFDIR/dll.d
@@ -22,7 +26,7 @@ case $1 in
 		done
 
 		modreg cgi 'sane-backends' 'SANE'
-		modreg daemon --disable sane-backends
+		modreg daemon sane-backends
 
 		modlib_start $SANE_BACKENDS_ENABLED
 		;;
@@ -32,12 +36,16 @@ case $1 in
 	unload)
 		modunreg cgi 'sane-backends'
 		modunreg daemon sane-backends
+		modlib_stop
 		;;
 	start)
+		modlib_start
 		;;
 	stop)
+		modlib_stop
 		;;
 	restart)
+		modlib_restart
 		;;
 	status)
 		modlib_status

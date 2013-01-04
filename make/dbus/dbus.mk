@@ -3,6 +3,7 @@ $(PKG)_LIB_VERSION:=3.7.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=3bf059c7dd5eda5f539a1b7cfe7a14a2
 $(PKG)_SITE:=http://$(pkg).freedesktop.org/releases/$(pkg)
+$(PKG)_STARTLEVEL=90 # before avahi
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/bus/dbus-daemon
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dbus-daemon

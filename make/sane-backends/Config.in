@@ -12,6 +12,15 @@ config FREETZ_PACKAGE_SANE_BACKENDS
 		SANE - Scanner support
 		(initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)
 
+config FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI
+	bool "enable avahi support"
+	depends on FREETZ_PACKAGE_SANE_BACKENDS
+	select FREETZ_PACKAGE_AVAHI
+	select FREETZ_LIB_libavahi_client
+	default n
+	help
+		Enable avahi support.
+
 config FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
 	bool "sane-find-scanner"
 	depends on FREETZ_PACKAGE_SANE_BACKENDS

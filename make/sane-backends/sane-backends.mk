@@ -30,16 +30,20 @@ $(PKG)_TARGET_BINARIES+=$($(PKG)_TARGET_scanimage)
 endif
 
 $(PKG)_DEPENDS_ON:= libusb
+ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI)),y)
+$(PKG)_DEPENDS_ON += avahi
+endif
 
 # include selected backends
 include $($(PKG)_MAKE_DIR)/sane-backends.in
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI),--enable-avahi,--disable-avahi)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthread
-$(PKG)_CONFIGURE_OPTIONS += --disable-avahi
 $(PKG)_CONFIGURE_OPTIONS += --disable-latex
 $(PKG)_CONFIGURE_OPTIONS += --disable-libusb_1_0
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath

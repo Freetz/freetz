@@ -3,22 +3,10 @@
 
 . /usr/lib/libmodcgi.sh
 
-check "$SANE_BACKENDS_ENABLED" inetd "*":man
-
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
-if [ -e "/etc/default.inetd/inetd.cfg" ]; then
-cat << EOF
-<input id="e1" type="radio" name="enabled" value="inetd"$inetd_chk><label for="e1"> $(lang de:"Inetd" en:"Inetd")</label>
-EOF
-fi
-cat << EOF
-<p>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
-EOF
-cat << EOF
-</p>
-EOF
+cgi_print_radiogroup_service_starttype \
+	"enabled" "$SANE_BACKENDS_ENABLED" "" "" 1
 
 sec_end
 sec_begin '$(lang de:"Sane Daemon" en:"Sane Daemon")'
