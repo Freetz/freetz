@@ -12,7 +12,7 @@ for files in \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
-if [ ! -e "${FILESYSTEM_MOD_DIR}/usr/share/telefon/libtam.so" -o "$FREETZ_REMOVE_VOIP_ISDN" == "y" ]; then
+if [ ! -e "${FILESYSTEM_MOD_DIR}/usr/share/telefon/libtam.so" -o "$FREETZ_REMOVE_TELEPHONY" == "y" ]; then
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/libmscodex.so*"
 fi
 

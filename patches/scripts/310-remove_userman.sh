@@ -1,4 +1,4 @@
-[ "$FREETZ_REMOVE_USERMAN" == "y" ] || return 0
+[ "$FREETZ_REMOVE_KIDS" == "y" ] || return 0
 echo1 "removing userman files"
 rm_files \
   ${FILESYSTEM_MOD_DIR}/bin/userman* \

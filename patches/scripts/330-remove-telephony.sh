@@ -1,4 +1,4 @@
-[ "$FREETZ_REMOVE_VOIP_ISDN" == "y" ] || return 0
+[ "$FREETZ_REMOVE_TELEPHONY" == "y" ] || return 0
 
 echo1 "removing VoIP & ISDN files"
 if [ "$FREETZ_HAS_AVM_USB_HOST" == "y" ]; then
