@@ -13,6 +13,29 @@ config FREETZ_HAS_AVM_LABOR
 	help
 		Select this if a labor firmware is available for you box.
 
+config FREETZ_HAS_AVM_PIGLET
+	bool "Has PIGLET file(s)"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_3130 || \
+		FREETZ_TYPE_3131 || \
+		FREETZ_TYPE_3170 || \
+		FREETZ_TYPE_5010 || \
+		FREETZ_TYPE_5113 || \
+		FREETZ_TYPE_5124 || \
+		FREETZ_TYPE_5140 || \
+		FREETZ_TYPE_7113 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7141 || \
+		FREETZ_TYPE_7150 || \
+		FREETZ_TYPE_7170 || \
+		FREETZ_TYPE_7270_V1 || \
+		FREETZ_TYPE_7270_V2 || \
+		FREETZ_TYPE_7340
+	default n
+	help
+		Select this if your original kernel has pty support.
+
 config FREETZ_HAS_AVM_PTY_SUPPORT
 	bool "Has PTY support"	if FREETZ_TYPE_CUSTOM
 	default n		if \
