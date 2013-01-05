@@ -15,6 +15,9 @@ else
 	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
 
+# patcht Internet > Filter > Kindersicherung
+menulua_remove kids
+
 # patcht Heimnetz > Netzwerk > Bearbeiten > Kindersicherung
 modsed '/<.lua show_kisi_content() .>/d' "${HTML_LANG_MOD_DIR}/net/edit_device.lua"
 
