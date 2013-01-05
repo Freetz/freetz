@@ -14,7 +14,7 @@ cat >> "${HTML_LANG_MOD_DIR}/html/menu2_freetz.html" <<EOF
 <div class="small_bar_back_head">
 <div id="MainWizardhead" style="padding-top:2px;">
 <ul>
-<li><a href="/cgi-bin/freetz_wol" target="_blank">Freetz WOL</a></li>
+<li><a href="/cgi-bin/freetz_wol?<? echo \$var:sidParam ?>" target="_blank">Freetz WOL</a></li>
 <li class="explain">Freetz WOL Webinterface</li>
 </ul>
 </div>
