@@ -618,7 +618,7 @@ endef
 # Unpack, without patch, but only if source package is defined
 # Call $(PKG)_CUSTOM_UNPACK if UNPACK_CMD evaluates to an empty string (because of unknown extension)
 define PKG_UNPACK
-	$(if $($(PKG)_SOURCE),$(or $(strip $(call UNPACK_CMD,$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR))),$(strip $(call $(PKG)_CUSTOM_UNPACK,$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR)))))
+	$(if $($(PKG)_SOURCE),$(or $(if $($(PKG)_CUSTOM_UNPACK),$(strip $(call $(PKG)_CUSTOM_UNPACK,$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR)))),$(strip $(call UNPACK_CMD,$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR)))))
 endef
 
 ### PKG_PATCH - apply patches
