@@ -53,7 +53,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-dps=no
 $(PKG)_CONFIGURE_OPTIONS += --with-fftw=no
 $(PKG)_CONFIGURE_OPTIONS += --with-fpx=no
 $(PKG)_CONFIGURE_OPTIONS += --with-fontconfig=no
-$(PKG)_CONFIGURE_OPTIONS += --with-gs-font-dir=/usr/share/ghostscript/fonts
+$(PKG)_CONFIGURE_OPTIONS += --with-gs-font-dir=$(GHOSTSCRIPT_FONTS_RUNTIME_DIR)
 $(PKG)_CONFIGURE_OPTIONS += --with-gvc=no
 $(PKG)_CONFIGURE_OPTIONS += --with-jbig=no
 $(PKG)_CONFIGURE_OPTIONS += --with-jp2=no
