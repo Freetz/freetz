@@ -1,7 +1,5 @@
 config EXTERNAL_FREETZ_PACKAGE_PYTHON
-	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_PYTHON
-# TODO: convert select to depend
-	select EXTERNAL_SUBDIRS
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_PYTHON && EXTERNAL_SUBDIRS
 	bool "python"
 	default n
 	help
