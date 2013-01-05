@@ -68,5 +68,5 @@ fi
 
 # patcht System > Firmware-Update > Firmware-Datei
 # entfernt: "Hinweis: Es wird zur Zeit noch telefoniert. Wenn Sie das
-# Firmware-Update jetzt starten, werden alle Telefongespr�che beendet."
+# Firmware-Update jetzt starten, werden alle Telefongespraeche beendet."
 modsed 's/^if next.calls. then$/if false then/' "${HTML_LANG_MOD_DIR}/system/update_file.lua"
