@@ -18,6 +18,17 @@ fi
 # patcht Heimnetz > Netzwerk > Bearbeiten > Kindersicherung
 modsed '/<.lua show_kisi_content() .>/d' "${HTML_LANG_MOD_DIR}/net/edit_device.lua"
 
+# patcht Internet > Filter > Listen > Filterlisten
+#lua
+modsed '/^<hr>$/{N;N;N;N;N;N;N;/^<hr>\n.*385:981.*/d}' "${FILESYSTEM_MOD_DIR}/internet/trafficappl.lua"
+modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:767.*/d}' "${FILESYSTEM_MOD_DIR}/internet/trafficappl.lua"
+modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:122.*/d}' "${FILESYSTEM_MOD_DIR}/internet/trafficappl.lua"
+modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:925.*/d}' "${FILESYSTEM_MOD_DIR}/internet/trafficappl.lua"
+#html
+modsed '/^<hr>$/{N;N;N;N;/^.*\n.*55:721.*/d}' "${FILESYSTEM_MOD_DIR}/internet/trafficappl.html"
+modsed '/^<div class="ml25">$/{N;N;N;N;N;/.*\n.*55:566.*/d}' "${FILESYSTEM_MOD_DIR}/internet/trafficappl.html"
+modsed '/^<div class="ml25 mb10">$/{N;N;N;N;N;/.*\n.*55:421.*/d}' "${FILESYSTEM_MOD_DIR}/internet/trafficappl.html"
+
 # redirect on webif to prio settings
 for j in home.html menu2_internet.html; do
 	for i in $(find "${HTML_LANG_MOD_DIR}" -type f -name $j); do
