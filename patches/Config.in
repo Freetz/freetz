@@ -505,7 +505,7 @@ config FREETZ_REMOVE_AVM_VPN
 		vpn settings. This will save about 120kB compressed size.
 
 config FREETZ_REMOVE_WEBSRV
-	bool "Remove AVM web server (replaced by httpd)"
+	bool "Remove websrv"
 	depends on \
 		! ( FREETZ_TYPE_300IP && FREETZ_TYPE_LANG_EN ) \
 		&& ! FREETZ_TYPE_2170 \
@@ -927,13 +927,10 @@ config FREETZ_REMOVE_SOCAT
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
 	depends on \
-		FREETZ_HAS_AVM_USB_HOST && \
-		! ( \
-			FREETZ_TYPE_7270_V1 || \
-			FREETZ_TYPE_W701V_7170 || \
-			FREETZ_TYPE_7112_7170 || \
-			FREETZ_TYPE_7113_7170 \
-		)
+		(FREETZ_HAS_AVM_USB_HOST && !FREETZ_TYPE_7270_V1) || \
+		FREETZ_TYPE_7112_7170 || \
+		FREETZ_TYPE_7113_7170 || \
+		FREETZ_TYPE_W701V_7170
 	default n
 	help
 		Remove the MediaServer-daemon (mediasrv) and some other related files.
@@ -1010,14 +1007,12 @@ config FREETZ_REMOVE_RUNCLOCK
 config FREETZ_REMOVE_SAMBA
 	bool "Remove Samba (smbd/smbd)"
 	depends on \
-		FREETZ_HAS_AVM_USB_HOST && \
-		! FREETZ_PACKAGE_SAMBA_SMBD && \
-		! ( \
-			FREETZ_TYPE_7150 || \
-			FREETZ_TYPE_7270_V1 || \
-			FREETZ_TYPE_W701V_7170 || \
+		!FREETZ_PACKAGE_SAMBA_SMBD && \
+		( \
+			(FREETZ_HAS_AVM_USB_HOST && !FREETZ_TYPE_7270_V1) || \
 			FREETZ_TYPE_7112_7170 || \
-			FREETZ_TYPE_7113_7170 \
+			FREETZ_TYPE_7113_7170 || \
+			FREETZ_TYPE_W701V_7170 \
 		)
 	default n
 	help
