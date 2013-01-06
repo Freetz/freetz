@@ -1130,6 +1130,13 @@ config FREETZ_REMOVE_KIDS
 	help
 		Remove userman/contfiltd files (Kindersicherung)
 
+config FREETZ_REMOVE_QOS
+	bool "Remove QoS"
+	default n
+	help
+		Removes tc and some kernel modules.
+		The command tc is used by dsld.
+
 config FREETZ_REMOVE_AVM_E2FSPROGS
 	bool "Remove e2fsprogs"
 	depends on \

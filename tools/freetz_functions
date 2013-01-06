@@ -28,7 +28,7 @@ quickstart_remove() {
 #removes links within menu_data.lua (left menu)
 menulua_remove() {
 	modsed \
-	  "/^page = \".*\/$1.lua\",$/d" \
+	  "/{* *page = \".*\/$1.lua\",/d" \
 	  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
 }
 
