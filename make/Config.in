@@ -62,10 +62,10 @@ comment "Point-to-Point (not available, no sources by AVM)"
 	depends on !FREETZ_REPLACE_KERNEL_AVAILABLE
 
 comment "Point-to-Point (not available, needs replace kernel)"
-	depends on FREETZ_AVM_VERSION_7390_05_21 && !FREETZ_REPLACE_KERNEL
+	depends on FREETZ_KERNEL_VERSION_2_6_28 && !FREETZ_REPLACE_KERNEL
 
 menu "Point-to-Point"
-	depends on (FREETZ_REPLACE_KERNEL_AVAILABLE && !FREETZ_AVM_VERSION_7390_05_21) || \
+	depends on (FREETZ_REPLACE_KERNEL_AVAILABLE && !FREETZ_KERNEL_VERSION_2_6_28) || \
 		FREETZ_REPLACE_KERNEL
 source make/pppd/Config.in
 source make/pptp/Config.in
