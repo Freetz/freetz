@@ -296,8 +296,9 @@ config FREETZ_REMOVE_MICROVOIP_DSL
 		This saves about 590-700 KB of uncompressed data size.
 
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
-	bool "Remove Annex B firmware file"
-	depends on FREETZ_SHOW_ADVANCED && \
+	bool "Remove Annex B firmware"
+	depends on \
+		FREETZ_SHOW_ADVANCED && \
 		FREETZ_TYPE_7270_V1
 	default n
 	help
@@ -542,16 +543,13 @@ config FREETZ_REMOVE_WEBSRV
 		will be removed too, because only those two binaries use it.
 
 comment "No brandings available to remove"
-	depends on \
-		FREETZ_TYPE_W501V
+	depends on FREETZ_TYPE_W501V
 
 menu "Remove brandings"
-	depends on \
-		! FREETZ_TYPE_W501V
+	depends on !FREETZ_TYPE_W501V
 
 comment "avm and tcom branding can't be removed"
-	depends on \
-		FREETZ_TYPE_ALIEN_HARDWARE
+	depends on FREETZ_TYPE_ALIEN_HARDWARE
 
 config FREETZ_REMOVE_BRANDING_1und1
 	bool "1&1"
@@ -616,10 +614,8 @@ config FREETZ_REMOVE_BRANDING_avm
 config FREETZ_REMOVE_BRANDING_avme
 	bool "AVM international"
 	depends on \
-		( \
 		FREETZ_TYPE_CUSTOM || \
-		FREETZ_TYPE_LANG_EN \
-		)
+		FREETZ_TYPE_LANG_EN
 	default n
 	help
 		AVM international branding
@@ -732,8 +728,7 @@ config FREETZ_REMOVE_BRANDING_freenet
 
 config FREETZ_REMOVE_BRANDING_versatel
 	bool "Versatel"
-	depends on \
-		FREETZ_TYPE_3131
+	depends on FREETZ_TYPE_3131
 	default n
 	help
 		Versatel branding
@@ -947,7 +942,7 @@ config FREETZ_REMOVE_MEDIASRV
 		Saves compressed 230 KB on a 7270_V2 and 40 KB on a 7170.
 
 config FREETZ_REMOVE_MINID
-	bool "Remove minid and MT-D/F"
+	bool "Remove minid (Fritz!Mini and MT-D/F)"
 	default n
 	depends on FREETZ_HAS_AVM_MINID
 	help
@@ -959,7 +954,7 @@ config FREETZ_REMOVE_MINID
 		and delete all Mini users with the Gini! software to avoid complications.
 
 config FREETZ_REMOVE_FAT
-	bool "Remove FAT modules"
+	bool "Remove FAT"
 	depends on \
 			! FREETZ_AUTOMOUNT_FAT && \
 			FREETZ_HAS_AVM_USB_HOST && \
@@ -997,7 +992,7 @@ config FREETZ_REMOVE_PRINTSERV
 		Saves about 8 KB of compressed space.
 
 config FREETZ_REMOVE_PRINTSERV_MODULE
-	bool "Remove usblp kernel module"
+	bool "Remove usblp.ko"
 	depends on FREETZ_REMOVE_PRINTSERV && \
 		! FREETZ_MODULE_usblp
 	default n
@@ -1045,7 +1040,7 @@ config FREETZ_REMOVE_SUPPORT
 		Remove the support-files which can be taken by http://fritz.box/html/support.html
 
 config FREETZ_REMOVE_SUPPORT_EVENTSDUMP
-	bool "Remove eventsdump binary"
+	bool "Remove eventsdump"
 	depends on FREETZ_REMOVE_SUPPORT
 	default n
 	help
@@ -1120,7 +1115,7 @@ config FREETZ_REMOVE_UPNP_LIBS
 	default n
 
 config FREETZ_REMOVE_KIDS
-	bool "Remove kids (userman/contfiltd)"
+	bool "Remove kids (usermand/contfiltd)"
 	depends on \
 		! FREETZ_TYPE_5140 && \
 		! FREETZ_TYPE_7112 && \
@@ -1131,7 +1126,7 @@ config FREETZ_REMOVE_KIDS
 		Remove userman/contfiltd files (Kindersicherung)
 
 config FREETZ_REMOVE_QOS
-	bool "Remove QoS"
+	bool "Remove QoS (tc)"
 	default n
 	help
 		Removes tc and some kernel modules.
@@ -1139,8 +1134,7 @@ config FREETZ_REMOVE_QOS
 
 config FREETZ_REMOVE_AVM_E2FSPROGS
 	bool "Remove e2fsprogs"
-	depends on \
-		FREETZ_HAS_AVM_E2FSPROGS
+	depends on FREETZ_HAS_AVM_E2FSPROGS
 	default n
 	help
 		Removes the e2fsprogs files (blkid, fsck, mkfs) and
