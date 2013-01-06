@@ -1,15 +1,16 @@
-$(call PKG_INIT_LIB, 2.4.0)
+$(call PKG_INIT_LIB, 2.4.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=3df6952acbe7d9f60037c10763fad7bb
+$(PKG)_SOURCE_MD5:=5d8ac7bcf6740c3b641b04663825ea53
 $(PKG)_SITE:=http://yassl.com
 
-$(PKG)_LIBNAME:=libcyassl.so.3.0.3
+$(PKG)_LIBNAME:=libcyassl.so.4.0.0
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_DEPENDS_ON := zlib
 
+$(PKG)_CONFIGURE_ENV += C_EXTRA_FLAGS="$(TARGET_CFLAGS)"
 $(PKG)_CONFIGURE_ENV += PTHREAD_CFLAGS=-pthread
 $(PKG)_CONFIGURE_ENV += PTHREAD_LIBS=-lpthread
 
@@ -18,6 +19,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-fastmath
 $(PKG)_CONFIGURE_OPTIONS += --enable-bigcache
 $(PKG)_CONFIGURE_OPTIONS += --disable-dtls
 $(PKG)_CONFIGURE_OPTIONS += --with-libz="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --disable-examples
 
 # remove optimization & debug flags
 $(PKG)_CONFIGURE_PRE_CMDS += $(foreach flag,-O[0-9] -g -ggdb3,$(SED) -i -r -e 's,(C(XX)?FLAGS="[^"]*)$(flag)(( [^"]*)?"),\1\3,g' ./configure;)
