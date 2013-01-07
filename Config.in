@@ -869,45 +869,6 @@ config FREETZ_KERNEL_REF
 	default "8mb"           if FREETZ_KERNEL_REF_8MB
 	default "16mb"          if FREETZ_KERNEL_REF_16MB
 
-config FREETZ_KERNEL_MTD_SIZE
-	int "Kernel (64K blocks)"   if FREETZ_TYPE_CUSTOM
-	default 64          if \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_3370
-	default 119         if \
-		FREETZ_TYPE_5124 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7112 || \
-		FREETZ_TYPE_7113 || \
-		FREETZ_TYPE_7140 || \
-		FREETZ_TYPE_7141 || \
-		(FREETZ_TYPE_7170 && ! FREETZ_TYPE_3170_7170) || \
-		(FREETZ_TYPE_7270_V1 && ! FREETZ_TYPE_72702_72701) || \
-		FREETZ_TYPE_7270_7270
-	default 122         if \
-		FREETZ_TYPE_7570_IAD && ! FREETZ_REPLACE_KERNEL
-	default 238             if \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7390
-	default 244         if \
-		FREETZ_TYPE_7570_IAD && FREETZ_REPLACE_KERNEL
-	default 246         if \
-		FREETZ_TYPE_7240 || \
-		(FREETZ_TYPE_7270_V1 && FREETZ_TYPE_72702_72701) || \
-		FREETZ_TYPE_7270_16 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7360_16 || \
-		(FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_IAD) || \
-		FREETZ_TYPE_3270
-	default 502         if \
-		FREETZ_TYPE_7360_32
-	default 59
-	help
-		Number of 64K blocks in the kernel mtd device.
-
 source Config.in.has_avm
 
 comment "Mod ------------------------------------"
