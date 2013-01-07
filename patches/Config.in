@@ -482,23 +482,13 @@ config FREETZ_REMOVE_AVM_VPN
 	bool "Remove VPN"
 	default n
 	depends on \
+		FREETZ_AVM_VERSION_05_2X_MIN || \
 		FREETZ_TYPE_2170 || \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_3170 || \
 		FREETZ_TYPE_7150 || \
 		(FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_DE) || \
-		FREETZ_TYPE_7240 || \
-		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360 || \
-		FREETZ_TYPE_7390 || \
-		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_3170 || \
-		FREETZ_TYPE_3270 || \
-		FREETZ_TYPE_3370
+		FREETZ_TYPE_7270_V1 || \
+		FREETZ_TYPE_7570
 	help
 		Remove AVM's vpn and some other related files
 		This patch removes the files and related Web UI entrys, but not the
@@ -507,33 +497,23 @@ config FREETZ_REMOVE_AVM_VPN
 config FREETZ_REMOVE_WEBSRV
 	bool "Remove websrv"
 	depends on \
-		! ( FREETZ_TYPE_300IP && FREETZ_TYPE_LANG_EN ) \
+		! FREETZ_AVM_VERSION_05_2X_MIN \
 		&& ! FREETZ_TYPE_2170 \
-		&& ! FREETZ_TYPE_6810 \
-		&& ! FREETZ_TYPE_6840 \
-		&& ! ( FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN ) \
-		&& ! FREETZ_TYPE_5124 \
-		&& ! FREETZ_TYPE_5140 \
-		&& ! ( FREETZ_TYPE_WLAN && FREETZ_TYPE_LANG_EN ) \
-		&& ! FREETZ_TYPE_7112 \
-		&& ! ( FREETZ_TYPE_7113 && FREETZ_TYPE_LANG_EN ) \
-		&& ! ( FREETZ_TYPE_7140 && FREETZ_TYPE_LANG_EN ) \
-		&& ! ( FREETZ_TYPE_7140 && FREETZ_TYPE_LANG_A_CH ) \
-		&& ! FREETZ_TYPE_7141 \
-		&& ! FREETZ_TYPE_7170 \
-		&& ! FREETZ_TYPE_7240 \
-		&& ! FREETZ_TYPE_7270 \
-		&& ! FREETZ_TYPE_7312 \
-		&& ! FREETZ_TYPE_7320 \
-		&& ! FREETZ_TYPE_7330 \
-		&& ! FREETZ_TYPE_7340 \
-		&& ! FREETZ_TYPE_7360 \
-		&& ! FREETZ_TYPE_7390 \
-		&& ! FREETZ_TYPE_7570 \
 		&& ! FREETZ_TYPE_3131 \
 		&& ! FREETZ_TYPE_3170 \
-		&& ! FREETZ_TYPE_3270 \
-		&& ! FREETZ_TYPE_3370
+		&& ! FREETZ_TYPE_5124 \
+		&& ! FREETZ_TYPE_5140 \
+		&& ! FREETZ_TYPE_7112 \
+		&& !(FREETZ_TYPE_7113 && FREETZ_TYPE_LANG_EN) \
+		&& !(FREETZ_TYPE_7140 && FREETZ_TYPE_LANG_EN) \
+		&& !(FREETZ_TYPE_7140 && FREETZ_TYPE_LANG_A_CH) \
+		&& ! FREETZ_TYPE_7141 \
+		&& ! FREETZ_TYPE_7170 \
+		&& ! FREETZ_TYPE_7270_V1 \
+		&& ! FREETZ_TYPE_7570 \
+		&& !(FREETZ_TYPE_300IP && FREETZ_TYPE_LANG_EN) \
+		&& !(FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) \
+		&& !(FREETZ_TYPE_WLAN && FREETZ_TYPE_LANG_EN)
 	default n
 	help
 		Patch init scripts so BusyBox's httpd is used instead of AVM's websrv.
@@ -826,23 +806,14 @@ config FREETZ_REMOVE_SHOWDSLDSTAT
 config FREETZ_REMOVE_DTRACE
 	bool "Remove dtrace"
 	depends on \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
+		FREETZ_AVM_VERSION_05_2X_MIN || \
 		FREETZ_TYPE_5124 || \
 		FREETZ_TYPE_7150 || \
 		FREETZ_TYPE_7113 || \
 		FREETZ_TYPE_7141 || \
 		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7240 || \
-		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360 || \
-		FREETZ_TYPE_7390 || \
-		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_3370
+		FREETZ_TYPE_7270_V1 || \
+		FREETZ_TYPE_7570
 	default y
 	help
 		Remove /usr/bin/dtrace. This utility is only needed to trace ISDN D-channel.
