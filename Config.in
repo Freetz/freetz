@@ -74,9 +74,18 @@ config FREETZ_TYPE_7270_16
 config FREETZ_TYPE_7330
 	bool
 
-#alias for 7360 (XL) and 7360 SL
+#alias for 7360_16MB: en (XL) and SL
+config FREETZ_TYPE_7360_16
+	bool
+	select FREETZ_TYPE_7360
+#alias for 7360_32MB: de (XL)
+config FREETZ_TYPE_7360_32
+	bool
+	select FREETZ_TYPE_7360
+#alias for all 7360: de(XL)32, en(XL)16 and SL16
 config FREETZ_TYPE_7360
 	bool
+
 
 choice
 	prompt "Hardware type"
@@ -202,12 +211,13 @@ choice
 	config FREETZ_TYPE_7360_XL
 		select FREETZ_AVM_VERSION_7360_05_20
 		bool "Fon WLAN 7360"
-		select FREETZ_TYPE_7360
+		select FREETZ_TYPE_7360_32 if FREETZ_TYPE_LANG_DE
+		select FREETZ_TYPE_7360_16 if FREETZ_TYPE_LANG_EN
 
 	config FREETZ_TYPE_7360_SL
 		select FREETZ_AVM_VERSION_7360_05_20
 		bool "Fon WLAN 7360 SL"
-		select FREETZ_TYPE_7360
+		select FREETZ_TYPE_7360_16
 
 	config FREETZ_TYPE_7390
 		select FREETZ_AVM_VERSION_7390_05_21 if FREETZ_TYPE_FIRMWARE_05_2X
@@ -290,6 +300,7 @@ choice
 			! FREETZ_TYPE_7340 && \
 			! FREETZ_TYPE_7360_XL && \
 			! FREETZ_TYPE_7570
+#TODO remove FREETZ_TYPE_7360_XL for 7360_32
 
 	config FREETZ_TYPE_LANG_A_CH
 		bool "a-ch - deutsch"
@@ -653,7 +664,8 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
 	depends on \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
-		! FREETZ_TYPE_7312
+		! FREETZ_TYPE_7312 && \
+		! FREETZ_TYPE_7360_32
 	default y
 
 if FREETZ_SHOW_ADVANCED
@@ -781,10 +793,15 @@ config FREETZ_TARGET_REF_16MB
 		FREETZ_TYPE_7320 || \
 		FREETZ_TYPE_7330 || \
 		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360 || \
+		FREETZ_TYPE_7360_16 || \
 		FREETZ_TYPE_7390 || \
 		FREETZ_TYPE_7570 || \
 		FREETZ_TYPE_3270
+
+config FREETZ_TARGET_REF_32MB
+	bool
+	default y           if \
+		FREETZ_TYPE_7360_32
 
 config FREETZ_TARGET_REF_48MB
 	bool
@@ -798,6 +815,7 @@ config FREETZ_TARGET_REF
 	default "4mb"           if FREETZ_TARGET_REF_4MB
 	default "8mb"           if FREETZ_TARGET_REF_8MB
 	default "16mb"          if FREETZ_TARGET_REF_16MB
+	default "32mb"          if FREETZ_TARGET_REF_32MB
 	default "48mb"          if FREETZ_TARGET_REF_48MB
 
 config FREETZ_KERNEL_REF_4MB
@@ -884,9 +902,12 @@ config FREETZ_KERNEL_MTD_SIZE
 		FREETZ_TYPE_7312 || \
 		FREETZ_TYPE_7320 || \
 		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7360 || \
+		FREETZ_TYPE_7360_16 || \
 		(FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_IAD) || \
 		FREETZ_TYPE_3270
+#TODO correct mtd blocks for 7360_32:
+	default 457         if \
+		FREETZ_TYPE_7360_32
 	default 59
 	help
 		Number of 64K blocks in the kernel mtd device.
@@ -1025,6 +1046,7 @@ config FREETZ_DL_SITE
 	default "@AVM/fritzbox.7330_sl/firmware/deutsch"                     if FREETZ_TYPE_FINAL && FREETZ_TYPE_7330_SL
 	default "@AVM/Beta/Neue_Repeatingfunktion_Preview/FRITZ!Box_7330_SL" if FREETZ_TYPE_LABOR && FREETZ_TYPE_7330_SL
 	default "@AVM/fritzbox.fon_wlan_7340/firmware/english"               if FREETZ_TYPE_FINAL && FREETZ_TYPE_7340
+	default "@AVM/fritzbox.fon_wlan_7360/firmware/deutsch"               if FREETZ_TYPE_FINAL && FREETZ_TYPE_7360_32
 	default "@AVM/fritzbox.fon_wlan_7360/firmware/english"               if FREETZ_TYPE_FINAL && FREETZ_TYPE_7360_XL
 	default "@AVM/fritzbox.fon_wlan_7360_sl/firmware/deutsch"            if FREETZ_TYPE_FINAL && FREETZ_TYPE_7360_SL && FREETZ_TYPE_FINAL
 	default "@AVM/Downgrade/FRITZ!Box Fon WLAN 7390/deutsch"             if FREETZ_TYPE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_05_2X && FREETZ_TYPE_LANG_DE
@@ -1094,6 +1116,8 @@ config FREETZ_DL_SOURCE
 	default "FRITZ.Box_7330_SL.116.05.22.image"                             if FREETZ_TYPE_FINAL && FREETZ_TYPE_7330_SL
 	default "FRITZ.Box_7330_SL_BETA.116.05.29-24310.image"                  if FREETZ_TYPE_LABOR && FREETZ_TYPE_7330_SL
 	default "FRITZ.Box_Fon_WLAN_7340.en-de-es-it-fr.99.05.22.image"         if FREETZ_TYPE_FINAL && FREETZ_TYPE_7340
+	default "FRITZ.Box_Fon_WLAN_7360.124.05.29-24312.image"                 if FREETZ_TYPE_LABOR && FREETZ_TYPE_7360_32
+	default "FRITZ.Box_Fon_WLAN_7360.124.05.22.image"                       if FREETZ_TYPE_FINAL && FREETZ_TYPE_7360_32
 	default "FRITZ.Box_Fon_WLAN_7360.en-de-es-it-fr.111.05.24.image"        if FREETZ_TYPE_FINAL && FREETZ_TYPE_7360_XL
 	default "FRITZ.Box_Fon_WLAN_7360_SL.AnnexB.109.05.29-24312.image"       if FREETZ_TYPE_LABOR && FREETZ_TYPE_7360_SL
 	default "FRITZ.Box_Fon_WLAN_7360_SL.109.05.22.image"                    if FREETZ_TYPE_FINAL && FREETZ_TYPE_7360_SL
@@ -1159,6 +1183,7 @@ config FREETZ_DL_SOURCE_MD5
 	default "08a74360b43a0bf086d7bdf7e138594b"  if (FREETZ_TYPE_7330_XL || FREETZ_TYPE_7320_7330) && FREETZ_TYPE_LANG_EN
 	default "57e792fbe0f121611f75c18fef3c114d"  if FREETZ_TYPE_7330_SL
 	default "d887def011101bdc6836d8a84b17b62e"  if FREETZ_TYPE_7340
+	default "d641accb614985099f949c9f3b7e0406"  if FREETZ_TYPE_7360_32
 	default "ebd29587ccd18ef287d258f76d10e83f"  if FREETZ_TYPE_7360_XL
 	default "913665f19b1faf5082091b338e3a9283"  if FREETZ_TYPE_7360_SL
 	default "ad5448ea20ce00dc5c2d18a93ff7835a"  if FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_05_5X
