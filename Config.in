@@ -750,71 +750,6 @@ config FREETZ_TARGET_IPV6_SUPPORT
 		It is also recommended to include the package iptables/ip6tables for
 		firewall settings.
 
-config FREETZ_TARGET_REF_4MB
-	bool
-	default y           if \
-		FREETZ_TYPE_2170 || \
-		FREETZ_TYPE_300IP || \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_5010 || \
-		FREETZ_TYPE_5050 || \
-		FREETZ_TYPE_5140 || \
-		FREETZ_TYPE_WLAN || \
-		FREETZ_TYPE_7050 || \
-		FREETZ_TYPE_W501V || \
-		FREETZ_TYPE_3020 || \
-		FREETZ_TYPE_3030 || \
-		FREETZ_TYPE_3130 || \
-		FREETZ_TYPE_3131 || \
-		FREETZ_TYPE_3170
-
-config FREETZ_TARGET_REF_8MB
-	bool
-	default y           if \
-		FREETZ_TYPE_5124 || \
-		FREETZ_TYPE_7112 || \
-		FREETZ_TYPE_7113 || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7140 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7170 || \
-		( FREETZ_TYPE_7270_V1 && ! FREETZ_TYPE_72702_72701 )
-
-config FREETZ_TARGET_REF_16MB
-	bool
-	default y           if \
-		FREETZ_TYPE_7240 || \
-		( FREETZ_TYPE_7270_V1 && FREETZ_TYPE_72702_72701 ) || \
-		FREETZ_TYPE_7270_16 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360_16 || \
-		FREETZ_TYPE_7390 || \
-		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_3270
-
-config FREETZ_TARGET_REF_32MB
-	bool
-	default y           if \
-		FREETZ_TYPE_7360_32
-
-config FREETZ_TARGET_REF_48MB
-	bool
-	default y           if \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_3370
-
-config FREETZ_TARGET_REF
-	string "Target ref"     if FREETZ_TYPE_CUSTOM
-	default "4mb"           if FREETZ_TARGET_REF_4MB
-	default "8mb"           if FREETZ_TARGET_REF_8MB
-	default "16mb"          if FREETZ_TARGET_REF_16MB
-	default "32mb"          if FREETZ_TARGET_REF_32MB
-	default "48mb"          if FREETZ_TARGET_REF_48MB
-
 config FREETZ_KERNEL_REF_4MB
 	bool
 	default y           if \
@@ -1845,7 +1780,6 @@ endchoice
 
 config FREETZ_STRIP_SCRIPTS
 	bool "Strip comments from shell scripts - EXPERIMENTAL"
-	#depends on FREETZ_TARGET_REF_4MB || FREETZ_TARGET_REF_8MB
 	default n
 	help
 		Shrinks shell scripts by removing comments and whitespace. Saves up to
