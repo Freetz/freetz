@@ -1370,8 +1370,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 		[ ! -s "$KERNEL_MOD" ] && error 1 "kernel merging failed"
 
 		# Check size of kernel image (multiple of 64 kB blocks)
-		KERNEL_LIMIT="$(sed -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
-		[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
+		if [ -n "$FREETZ_KERNEL_CUSTOM_MTD_SIZE" ]; then
+			let KERNEL_LIMIT="$FREETZ_KERNEL_CUSTOM_MTD_SIZE*64*1024"
+		else
+			KERNEL_LIMIT="$(sed -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
+			[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
+		fi
 		let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
 		let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 

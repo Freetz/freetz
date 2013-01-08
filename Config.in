@@ -804,6 +804,16 @@ config FREETZ_KERNEL_REF
 	default "8mb"           if FREETZ_KERNEL_REF_8MB
 	default "16mb"          if FREETZ_KERNEL_REF_16MB
 
+config FREETZ_KERNEL_CUSTOM_MTD_SIZE
+	int "Kernel (64K blocks)"   if FREETZ_TYPE_CUSTOM
+	default 59	if FREETZ_TYPE_3170_7170
+	default 119	if FREETZ_TYPE_7270_7270
+	default 122	if FREETZ_TYPE_7570_IAD && ! FREETZ_REPLACE_KERNEL
+	default 244	if FREETZ_TYPE_7570_IAD && FREETZ_REPLACE_KERNEL
+	default 246	if FREETZ_TYPE_72702_72701
+	help
+		Custom number of 64K blocks in the kernel mtd device.
+
 source Config.in.has_avm
 
 comment "Mod ------------------------------------"
