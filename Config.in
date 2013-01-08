@@ -1109,7 +1109,6 @@ config FREETZ_DL_SITE2
 		FREETZ_TYPE_W701V_7170 || \
 		FREETZ_TYPE_W900V_7170 || \
 		FREETZ_TYPE_W920V_7570 || \
-		FREETZ_TYPE_W920V_LED_MODULE || \
 		(FREETZ_TYPE_7270_V1 && FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "@AVM/fritzbox.wlan_3170/firmware/deutsch"          if FREETZ_TYPE_3170_7170
 	default "@AVM/fritzbox.fon_wlan_7112/firmware/deutsch"      if FREETZ_TYPE_7112_7170
@@ -1122,7 +1121,7 @@ config FREETZ_DL_SITE2
 	default "@TELEKOM/Speedport/Speedport W 701 V"              if FREETZ_TYPE_W701V_7170
 	default "@TELEKOM/Speedport/Speedport W 900V"               if FREETZ_TYPE_W900V_7170
 	default "@AVM/fritzbox.fon_wlan_7270_v2/firmware/english"   if FREETZ_TYPE_7270_V1
-	default "@TELEKOM/Speedport/Speedport W 920V"               if FREETZ_TYPE_W920V_7570 || FREETZ_TYPE_W920V_LED_MODULE
+	default "@TELEKOM/Speedport/Speedport W 920V"               if FREETZ_TYPE_W920V_7570
 
 
 config FREETZ_DL_SOURCE2
@@ -1139,7 +1138,6 @@ config FREETZ_DL_SOURCE2
 		FREETZ_TYPE_W501V || \
 		FREETZ_TYPE_W701V_7170 || \
 		FREETZ_TYPE_W900V_7170 || \
-		FREETZ_TYPE_W920V_LED_MODULE || \
 		FREETZ_TYPE_W920V_7570 || \
 		((FREETZ_TYPE_7270_V1 || FREETZ_TYPE_7270_V2) && FREETZ_ADD_ANNEX_A_FIRMWARE)
 	default "fritz.box_wlan_3170.49.04.58.image"                        if FREETZ_TYPE_3170_7170
@@ -1154,7 +1152,7 @@ config FREETZ_DL_SOURCE2
 	default "fritz.box_fon_wlan_7141.40.04.37.image"                    if FREETZ_TYPE_W501V
 	default "fw_Speedport_W701V_v33.04.57.image"                        if FREETZ_TYPE_W701V_7170
 	default "fw_Speedport_W900V_v34.04.57.image"                        if FREETZ_TYPE_W900V_7170
-	default "Speedport_W_920V.AnnexB.65.04.78.image"                    if FREETZ_TYPE_W920V_7570 || FREETZ_TYPE_W920V_LED_MODULE
+	default "Speedport_W_920V.AnnexB.65.04.78.image"                    if FREETZ_TYPE_W920V_7570
 
 config FREETZ_DL_SOURCE2_MD5
 	string "AVM alien web interface MD5"          if FREETZ_DL_OVERRIDE
