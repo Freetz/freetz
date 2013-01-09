@@ -1,286 +1,5 @@
-comment "Web menu patches -----------------------"
 
-config FREETZ_PATCH_VCC
-	bool "Patch 2nd VCC"
-	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
-	default n
-	help
-		Patches the setting for 2nd VCC into web menu. It also adds two additional
-		settings (PCR & SCR) not available in the original AVM firmware.
-
-		Please also note that it is not possible to change the value of traffic_class
-		setting via the web-interface. You have to do it some other way (e.g. using
-		FBEditor or nvi ar7.cfg).
-
-		Warning: Please read up on what each VCC setting means before setting/changing it.
-		Besides not working wrong values may cause additional costs for you as your provider
-		may treat it as simultaneous dial-in attempts (Doppeleinwahl).
-
-		The correct values for an 1&1-Komplettanschluss are:
-		  VPI = 1;
-		  VCI = 35;
-		  traffic_class = atm_traffic_class_CBR;
-		  pcr = 603;
-		  scr = 0;
-
-config FREETZ_PATCH_ATA
-	bool "Patch ATA"
-	default n
-	help
-		Patches the ATA mode configuration pages into the web menu.
-
-		The ATA-Mode (better: IP-Client Mode) disables the DSL modem
-		and routing and reduces the power consumption of a box.
-
-		Some models disable this feature, most models have brandings
-		or environment configuration which disable the IP-Client Mode.
-		This patch forces the ATA-Mode to be enabled.
-
-		ATA will not work with some 7170/7140 due to limited hardware,
-		see http://wiki.ip-phone-forum.de/gateways:avm:fbf:kabel
-
-config FREETZ_PATCH_ENUM
-	bool "Patch enum"
-	depends on \
-		FREETZ_TYPE_LANG_DE && \
-		( \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_300IP || \
-		FREETZ_TYPE_5050 || \
-		FREETZ_TYPE_WLAN || \
-		FREETZ_TYPE_7050 || \
-		FREETZ_TYPE_7140 \
-		)
-	default n
-	help
-		Patches the enum configuration pages into the web menu.
-
-config FREETZ_PATCH_DSL_EXPERT
-	bool "Patch extended DSL settings"
-	depends on \
-		! FREETZ_REMOVE_DSLD && \
-		FREETZ_TYPE_LANG_DE && \
-		( \
-			FREETZ_TYPE_7240 || \
-			FREETZ_TYPE_7270 \
-		)
-	default n
-	help
-		Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares.
-
-config FREETZ_ADD_REGEXT_GUI
-	bool "Patch GUI to enable external SIP connections"
-	depends on \
-	FREETZ_TYPE_7570 || \
-	( \
-		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7240 || \
-		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7390 \
-	) && FREETZ_TYPE_LANG_DE
-	default n
-	help
-		Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf.
-
-config FREETZ_PATCH_GSMVOICE
-	bool "Patch GSM voice"
-	depends on \
-		FREETZ_HAS_AVM_UMTS && \
-		! FREETZ_REMOVE_UMTSD && \
-		! FREETZ_TYPE_7270_V1
-	default n
-	help
-		Patches the WebUI to allow voice-over-GSM.
-		Highly experimental! Your UMTS stick has to support it.
-		Webif: Internet > Mobilfunk > Telefonie ueber Mobilfunk
-
-#config FREETZ_PATCH_INTERNATIONAL
-#	bool "Patch international"
-#	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
-#	default y
-#	help
-#		Reveals some options from the international firmware in the web menu.
-
-config FREETZ_PATCH_ALARMCLOCK
-	bool "Patch third alarm-clock"
-	depends on ( \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7112 || \
-		FREETZ_TYPE_7141 || \
-		(FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_DE) || \
-		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570 \
-		)
-	default n
-	help
-		Adds a third alarm-clock to AVM-Webinterface
-
-config FREETZ_PATCH_SIGNED
-	bool "Patch web menu signed message"
-	default n
-	help
-		Hides the "unsupported changes" message from the web interface.
-
-if FREETZ_HAS_AVM_USB_HOST
-comment "USB patches --------------------"
-
-config FREETZ_PATCH_FREETZMOUNT
-	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
-	select FREETZ_USBSTORAGE_AUTOMOUNT
-	select FREETZ_BUSYBOX_BLKID if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
-	select FREETZ_BUSYBOX_BLKID_TYPE if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
-	select FREETZ_BUSYBOX_VOLUMEID
-	default y
-	help
-		1. Replaces and deselects usb-storage patch.
-		   - The names of USB storage directories can be defined by WebIF (default uStorXY) (or by volume LABEL).
-		2. Replaces and deselects autorun.sh/autoend.sh patch.
-		   - autorun/autoend behaviour can be activated/deactivated via WebIF.
-		   - autorun/autoend are useful to start/terminate applications located on USB devices, eg
-		     apache, samba or even swapfiles, after connecting or before disconnecting of USB devices.
-		3. Auto-mounted USB storage devices will be fully accessible, eg it is now possible to put
-		   user home directories for (e.g. for FTP) on a FAT32-formatted partition and permit shell
-		   and FTP users to actually write to their own home directories.
-		4. Avoid deleting whole filesystems on USB devices.
-		5. Enhanced behaviour during mounting and unmounting.
-		6. Provides mount-by-label feature.
-
-		It is highly recommended to select this patch.
-
-config FREETZ_USBSTORAGE_AUTOMOUNT
-	bool "Automount filesystems"
-	depends on FREETZ_PATCH_FREETZMOUNT
-	default y
-	help
-		The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted
-		automatically. Detection is done by blkid utility . It depends on the original firmware
-		which of the following points you have to select.
-
-if FREETZ_USBSTORAGE_AUTOMOUNT
-config FREETZ_AUTOMOUNT_EXT2
-	bool "ext2"
-	select FREETZ_BUSYBOX_VOLUMEID_EXT
-	select FREETZ_MODULE_ext2
-	default n
-	help
-		This adds ext2 module to your firmware.
-
-config FREETZ_AUTOMOUNT_EXT3
-	bool "ext3"
-	select FREETZ_BUSYBOX_VOLUMEID_EXT
-	select FREETZ_MODULE_ext3 if ! FREETZ_HAS_AVM_EXT3
-	default y if FREETZ_HAS_AVM_EXT3
-	default n
-	help
-		This adds ext3 module to your firmware.
-
-config FREETZ_AUTOMOUNT_EXT4
-	bool "ext4"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_BUSYBOX_VOLUMEID_EXT
-	select FREETZ_MODULE_ext4
-	default n
-	help
-		This adds ext4 module to your firmware.
-
-config FREETZ_AUTOMOUNT_FAT
-	bool "fat"
-	select FREETZ_BUSYBOX_VOLUMEID_FAT
-	default y
-	help
-		This enables detection of fat partitions.
-
-config FREETZ_AUTOMOUNT_HFS
-	bool "HFS"
-	select FREETZ_BUSYBOX_VOLUMEID_HFS
-	select FREETZ_MODULE_hfs
-	default n
-	help
-		This adds hfs module to your firmware.
-
-config FREETZ_AUTOMOUNT_HFS_PLUS
-	bool "HFS+"
-	select FREETZ_BUSYBOX_VOLUMEID_HFS
-	select FREETZ_MODULE_hfsplus
-	default n
-	help
-		This adds hfs+ module to your firmware.
-
-config FREETZ_AUTOMOUNT_LUKS
-	bool "luks"
-	select FREETZ_BUSYBOX_VOLUMEID_LUKS
-	default n
-	help
-		This enables detection (not mounting) of luks partitions.
-
-config FREETZ_AUTOMOUNT_NTFS
-	bool "NTFS"
-	select FREETZ_PACKAGE_NTFS if FREETZ_REMOVE_NTFS || ! FREETZ_HAS_AVM_NTFS
-	select FREETZ_BUSYBOX_VOLUMEID_NTFS
-	default y if FREETZ_HAS_AVM_NTFS && ! FREETZ_REMOVE_NTFS
-	default n
-	help
-		This adds ntfs-3g mount helper to your firmware.
-
-config FREETZ_AUTOMOUNT_REISER_FS
-	bool "ReiserFS"
-	select FREETZ_BUSYBOX_VOLUMEID_REISERFS
-	select FREETZ_MODULE_reiserfs
-	default n
-	help
-		This adds reiserfs module to your firmware.
-
-config FREETZ_AUTOMOUNT_LINUXSWAP
-	bool "swap"
-	select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
-	default n
-	help
-		This enables detection of linux-swap partitions.
-
-endif
-
-config FREETZ_PATCH_MAXDEVCOUNT
-	bool "Raise the count of connectable usb device to 9"
-	default n
-	help
-		Use this patch if you would connect more than 3 device to the box
-
-config FREETZ_PATCH_MULTIPLE_PRINTERS
-	bool "Add support for multiple printers"
-	depends on ! FREETZ_REMOVE_PRINTSERV && \
-		( \
-		( FREETZ_TYPE_7140 && ! FREETZ_TYPE_LANG_DE ) || \
-		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_5124 || \
-		FREETZ_TYPE_2170 || \
-		FREETZ_TYPE_3131 || \
-		FREETZ_TYPE_3170 || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7270_V1 \
-		)
-		# no patch available atm: 7140_DE 2070 3070 3050 3130
-	default n
-	help
-		Use this patch if you want to use more than one printer.
-
-endif
-
-config FREETZ_MODIFY_UMTSD
-	bool "Modify umtsd: only for known modems"
-	depends on FREETZ_HAS_AVM_UMTS && FREETZ_HAS_AVM_UDEV && ! FREETZ_REMOVE_UMTSD
-	default n
-	help
-		AVM's umtsd will only be started if a *known* umts modem is
-		detected. So your /dev/ttyUSB? could be used by other programs.
-
-config FREETZ_CUSTOM_UDEV_RULES
-	bool "Enable custom UDEV rules"
-	depends on FREETZ_HAS_AVM_UDEV
-	default n
-	help
-		You could use own rules for UDEV.
+menu "Removal patches"
 
 comment "Removal patches ------------------------"
 
@@ -1160,6 +879,296 @@ config FREETZ_REMOVE_WLAN
 
 		WARNING: Do not enable Wlan, you will get a reboot loop!
 
+endmenu # "Removal patches" #
+
+
+
+menu "Other patches"
+
+comment "Web menu patches -----------------------"
+
+config FREETZ_PATCH_VCC
+	bool "Patch 2nd VCC"
+	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
+	default n
+	help
+		Patches the setting for 2nd VCC into web menu. It also adds two additional
+		settings (PCR & SCR) not available in the original AVM firmware.
+
+		Please also note that it is not possible to change the value of traffic_class
+		setting via the web-interface. You have to do it some other way (e.g. using
+		FBEditor or nvi ar7.cfg).
+
+		Warning: Please read up on what each VCC setting means before setting/changing it.
+		Besides not working wrong values may cause additional costs for you as your provider
+		may treat it as simultaneous dial-in attempts (Doppeleinwahl).
+
+		The correct values for an 1&1-Komplettanschluss are:
+		  VPI = 1;
+		  VCI = 35;
+		  traffic_class = atm_traffic_class_CBR;
+		  pcr = 603;
+		  scr = 0;
+
+config FREETZ_PATCH_ATA
+	bool "Patch ATA"
+	default n
+	help
+		Patches the ATA mode configuration pages into the web menu.
+
+		The ATA-Mode (better: IP-Client Mode) disables the DSL modem
+		and routing and reduces the power consumption of a box.
+
+		Some models disable this feature, most models have brandings
+		or environment configuration which disable the IP-Client Mode.
+		This patch forces the ATA-Mode to be enabled.
+
+		ATA will not work with some 7170/7140 due to limited hardware,
+		see http://wiki.ip-phone-forum.de/gateways:avm:fbf:kabel
+
+config FREETZ_PATCH_ENUM
+	bool "Patch enum"
+	depends on \
+		FREETZ_TYPE_LANG_DE && \
+		( \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_300IP || \
+		FREETZ_TYPE_5050 || \
+		FREETZ_TYPE_WLAN || \
+		FREETZ_TYPE_7050 || \
+		FREETZ_TYPE_7140 \
+		)
+	default n
+	help
+		Patches the enum configuration pages into the web menu.
+
+config FREETZ_PATCH_DSL_EXPERT
+	bool "Patch extended DSL settings"
+	depends on \
+		! FREETZ_REMOVE_DSLD && \
+		FREETZ_TYPE_LANG_DE && \
+		( \
+			FREETZ_TYPE_7240 || \
+			FREETZ_TYPE_7270 \
+		)
+	default n
+	help
+		Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares.
+
+config FREETZ_ADD_REGEXT_GUI
+	bool "Patch GUI to enable external SIP connections"
+	depends on \
+	FREETZ_TYPE_7570 || \
+	( \
+		FREETZ_TYPE_7170 || \
+		FREETZ_TYPE_7240 || \
+		FREETZ_TYPE_7270 || \
+		FREETZ_TYPE_7390 \
+	) && FREETZ_TYPE_LANG_DE
+	default n
+	help
+		Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf.
+
+config FREETZ_PATCH_GSMVOICE
+	bool "Patch GSM voice"
+	depends on \
+		FREETZ_HAS_AVM_UMTS && \
+		! FREETZ_REMOVE_UMTSD && \
+		! FREETZ_TYPE_7270_V1
+	default n
+	help
+		Patches the WebUI to allow voice-over-GSM.
+		Highly experimental! Your UMTS stick has to support it.
+		Webif: Internet > Mobilfunk > Telefonie ueber Mobilfunk
+
+#config FREETZ_PATCH_INTERNATIONAL
+#	bool "Patch international"
+#	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
+#	default y
+#	help
+#		Reveals some options from the international firmware in the web menu.
+
+config FREETZ_PATCH_ALARMCLOCK
+	bool "Patch third alarm-clock"
+	depends on ( \
+		FREETZ_TYPE_7150 || \
+		FREETZ_TYPE_7112 || \
+		FREETZ_TYPE_7141 || \
+		(FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_DE) || \
+		FREETZ_TYPE_7270_V1 || \
+		FREETZ_TYPE_7570 \
+		)
+	default n
+	help
+		Adds a third alarm-clock to AVM-Webinterface
+
+config FREETZ_PATCH_SIGNED
+	bool "Patch web menu signed message"
+	default n
+	help
+		Hides the "unsupported changes" message from the web interface.
+
+if FREETZ_HAS_AVM_USB_HOST
+comment "USB patches --------------------"
+
+config FREETZ_PATCH_FREETZMOUNT
+	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
+	select FREETZ_USBSTORAGE_AUTOMOUNT
+	select FREETZ_BUSYBOX_BLKID if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
+	select FREETZ_BUSYBOX_BLKID_TYPE if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
+	select FREETZ_BUSYBOX_VOLUMEID
+	default y
+	help
+		1. Replaces and deselects usb-storage patch.
+		   - The names of USB storage directories can be defined by WebIF (default uStorXY) (or by volume LABEL).
+		2. Replaces and deselects autorun.sh/autoend.sh patch.
+		   - autorun/autoend behaviour can be activated/deactivated via WebIF.
+		   - autorun/autoend are useful to start/terminate applications located on USB devices, eg
+		     apache, samba or even swapfiles, after connecting or before disconnecting of USB devices.
+		3. Auto-mounted USB storage devices will be fully accessible, eg it is now possible to put
+		   user home directories for (e.g. for FTP) on a FAT32-formatted partition and permit shell
+		   and FTP users to actually write to their own home directories.
+		4. Avoid deleting whole filesystems on USB devices.
+		5. Enhanced behaviour during mounting and unmounting.
+		6. Provides mount-by-label feature.
+
+		It is highly recommended to select this patch.
+
+config FREETZ_USBSTORAGE_AUTOMOUNT
+	bool "Automount filesystems"
+	depends on FREETZ_PATCH_FREETZMOUNT
+	default y
+	help
+		The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted
+		automatically. Detection is done by blkid utility . It depends on the original firmware
+		which of the following points you have to select.
+
+if FREETZ_USBSTORAGE_AUTOMOUNT
+config FREETZ_AUTOMOUNT_EXT2
+	bool "ext2"
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_MODULE_ext2
+	default n
+	help
+		This adds ext2 module to your firmware.
+
+config FREETZ_AUTOMOUNT_EXT3
+	bool "ext3"
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_MODULE_ext3 if ! FREETZ_HAS_AVM_EXT3
+	default y if FREETZ_HAS_AVM_EXT3
+	default n
+	help
+		This adds ext3 module to your firmware.
+
+config FREETZ_AUTOMOUNT_EXT4
+	bool "ext4"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_BUSYBOX_VOLUMEID_EXT
+	select FREETZ_MODULE_ext4
+	default n
+	help
+		This adds ext4 module to your firmware.
+
+config FREETZ_AUTOMOUNT_FAT
+	bool "fat"
+	select FREETZ_BUSYBOX_VOLUMEID_FAT
+	default y
+	help
+		This enables detection of fat partitions.
+
+config FREETZ_AUTOMOUNT_HFS
+	bool "HFS"
+	select FREETZ_BUSYBOX_VOLUMEID_HFS
+	select FREETZ_MODULE_hfs
+	default n
+	help
+		This adds hfs module to your firmware.
+
+config FREETZ_AUTOMOUNT_HFS_PLUS
+	bool "HFS+"
+	select FREETZ_BUSYBOX_VOLUMEID_HFS
+	select FREETZ_MODULE_hfsplus
+	default n
+	help
+		This adds hfs+ module to your firmware.
+
+config FREETZ_AUTOMOUNT_LUKS
+	bool "luks"
+	select FREETZ_BUSYBOX_VOLUMEID_LUKS
+	default n
+	help
+		This enables detection (not mounting) of luks partitions.
+
+config FREETZ_AUTOMOUNT_NTFS
+	bool "NTFS"
+	select FREETZ_PACKAGE_NTFS if FREETZ_REMOVE_NTFS || ! FREETZ_HAS_AVM_NTFS
+	select FREETZ_BUSYBOX_VOLUMEID_NTFS
+	default y if FREETZ_HAS_AVM_NTFS && ! FREETZ_REMOVE_NTFS
+	default n
+	help
+		This adds ntfs-3g mount helper to your firmware.
+
+config FREETZ_AUTOMOUNT_REISER_FS
+	bool "ReiserFS"
+	select FREETZ_BUSYBOX_VOLUMEID_REISERFS
+	select FREETZ_MODULE_reiserfs
+	default n
+	help
+		This adds reiserfs module to your firmware.
+
+config FREETZ_AUTOMOUNT_LINUXSWAP
+	bool "swap"
+	select FREETZ_BUSYBOX_VOLUMEID_LINUXSWAP
+	default n
+	help
+		This enables detection of linux-swap partitions.
+
+endif
+
+config FREETZ_PATCH_MAXDEVCOUNT
+	bool "Raise the count of connectable usb device to 9"
+	default n
+	help
+		Use this patch if you would connect more than 3 device to the box
+
+config FREETZ_PATCH_MULTIPLE_PRINTERS
+	bool "Add support for multiple printers"
+	depends on ! FREETZ_REMOVE_PRINTSERV && \
+		( \
+		( FREETZ_TYPE_7140 && ! FREETZ_TYPE_LANG_DE ) || \
+		FREETZ_TYPE_7570 || \
+		FREETZ_TYPE_5124 || \
+		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_3131 || \
+		FREETZ_TYPE_3170 || \
+		FREETZ_TYPE_7141 || \
+		FREETZ_TYPE_7150 || \
+		FREETZ_TYPE_7170 || \
+		FREETZ_TYPE_7270_V1 \
+		)
+		# no patch available atm: 7140_DE 2070 3070 3050 3130
+	default n
+	help
+		Use this patch if you want to use more than one printer.
+
+endif
+
+config FREETZ_MODIFY_UMTSD
+	bool "Modify umtsd: only for known modems"
+	depends on FREETZ_HAS_AVM_UMTS && FREETZ_HAS_AVM_UDEV && ! FREETZ_REMOVE_UMTSD
+	default n
+	help
+		AVM's umtsd will only be started if a *known* umts modem is
+		detected. So your /dev/ttyUSB? could be used by other programs.
+
+config FREETZ_CUSTOM_UDEV_RULES
+	bool "Enable custom UDEV rules"
+	depends on FREETZ_HAS_AVM_UDEV
+	default n
+	help
+		You could use own rules for UDEV.
+
 comment "Replacement patches --------------------"
 
 comment "Replace OpenSSL libraries (not available, requires openssl-0.9.8)"
@@ -1359,3 +1368,4 @@ config FREETZ_AVMDAEMON_DISABLE_LLMNR
 		Remaps multid's binding of both LLMNR ("Link-
 		local Multicast Name Resolution) ports.
 
+endmenu # "Other patches" #
