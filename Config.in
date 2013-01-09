@@ -237,12 +237,6 @@ choice
 		select FREETZ_AVM_VERSION_7270_04_86
 		bool "7570 VDSL Fon WLAN"
 
-	config FREETZ_TYPE_7570_IAD
-		bool "build firmware for Alice IAD 7570"
-		depends on FREETZ_TYPE_7570
-	comment "Hint: Use replace kernel to get max filesystem size"
-		depends on FREETZ_TYPE_7570_IAD
-
 	config FREETZ_TYPE_6810
 		select FREETZ_AVM_VERSION_3370_05_21
 		bool "6810 LTE - EXPERIMENTAL"
@@ -344,8 +338,15 @@ choice
 			Enable this to compile a mod image for T-Com Speedport W900V based
 			on a 7170 image.
 
+	config FREETZ_TYPE_7570_IAD
+		bool "Alice IAD 7570"
+		depends on FREETZ_TYPE_7570
+
+	comment "Hint: Use replace kernel to get max filesystem size"
+		depends on FREETZ_TYPE_7570_IAD && ! FREETZ_REPLACE_KERNEL
+
 	config FREETZ_TYPE_W920V_7570
-		bool "W920V"
+		bool "Speedport W920V"
 		depends on FREETZ_TYPE_7570
 		help
 			Enable this to compile a mod image for T-Com Speedport W920V based
