@@ -239,15 +239,8 @@ source make/vnstat-cgi/Config.in
 source make/wol-cgi/Config.in
 endmenu
 
-config FREETZ_SHOW_UNSTABLE_PACKAGES
-	bool "Unstable"
-	depends on FREETZ_SHOW_ADVANCED
-	help
-		These packages may not work at all. They are currently under development or have known issues which make them not work correctly.
-		Do not use them if you don't know what you are doing.
-
 menu "Unstable packages"
-	depends on FREETZ_SHOW_UNSTABLE_PACKAGES
+	visible if FREETZ_SHOW_UNSTABLE_PACKAGES
 source make/collectd/Config.in
 source make/dtmfbox/Config.in
 source make/dtmfbox-cgi/Config.in
