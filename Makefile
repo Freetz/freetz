@@ -309,11 +309,10 @@ firmware-nocompile: tools $(DL_IMAGE) package-list
 	@echo "WARNING: There are no packages selected. To install packages type"
 	@echo "         'make menuconfig' and change to the 'Package selection' submenu."
 	@echo
-	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
-	@./fwmod -n -d $(BUILD_DIR) $(DL_IMAGE)
 endif
+	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
 
 firmware: precompiled firmware-nocompile
 
