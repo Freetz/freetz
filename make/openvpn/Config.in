@@ -9,18 +9,18 @@ config FREETZ_PACKAGE_OPENVPN
 choice
 	depends on FREETZ_PACKAGE_OPENVPN
 	prompt "Version"
-	default FREETZ_PACKAGE_OPENVPN_VERSION_2_2
-
-	config FREETZ_PACKAGE_OPENVPN_VERSION_2_2
-		bool "2.2.2"
-		help
-			Latest stable version of OpenVPN
+	default FREETZ_PACKAGE_OPENVPN_VERSION_2_3
 
 	config FREETZ_PACKAGE_OPENVPN_VERSION_2_3
-		bool "2.3.0 - EXPERIMENTAL"
-		depends on FREETZ_SHOW_ADVANCED
+		bool "2.3.0"
 		help
-			Experimental version of OpenVPN with support for polarSSL
+			Latest stable version of OpenVPN with support for polarSSL
+
+	config FREETZ_PACKAGE_OPENVPN_VERSION_2_2
+		bool "2.2.2 - old stable version"
+		help
+			Prior stable version of OpenVPN
+			Please use just in case of problems with version 2.3.0
 
 endchoice
 
