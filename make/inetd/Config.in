@@ -6,3 +6,9 @@ config FREETZ_PACKAGE_INETD
 		'Virtual' inetd package. Provides configuration framework for
 		inetd. Requires a compatible inetd binary. (at the moment, only
 		busybox inetd is supported)
+
+config FREETZ_PACKAGE_INETD_TIME
+	bool "Select'time' server support"
+	depends on FREETZ_PACKAGE_INETD
+	select FEATURE_INETD_SUPPORT_BUILTIN_TIME
+	default n

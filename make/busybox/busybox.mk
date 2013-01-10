@@ -9,8 +9,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_DIR:=$(subst -$($(PKG)_VERSION),,$($(PKG)_TARGET_DIR))
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)
 
-$(PKG)_CONFIG_TMP_FILE:=$($(PKG)_SOURCE_DIR)/$(pkg)-config.temp
-$(PKG)_CONFIG_DST_FILE:=$(BUSYBOX_DIR)/.config
+$(PKG)_CONFIG_FILE:=$(BUSYBOX_DIR)/.config
 
 $(PKG)_MAKE_FLAGS += CC="$(TARGET_CC)"
 $(PKG)_MAKE_FLAGS += CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)"
@@ -25,7 +24,7 @@ $(PKG_UNPACKED)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	@cat $(TOPDIR)/.config \
 		| sed -nr 's!^(# )*(FREETZ_BUSYBOX_)([^_].*)!\1CONFIG_\3!p' \
-		> $(BUSYBOX_DIR)/.config
+		> $(BUSYBOX_CONFIG_FILE)
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
@@ -46,14 +45,14 @@ $($(PKG)_TARGET_BINARY).links: $($(PKG)_BINARY).links
 
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 
-$(pkg)-menuconfig: $($(PKG)_DIR)/.unpacked $($(PKG)_CONFIG_FILE)
+$(pkg)-menuconfig: $($(PKG)_DIR)/.unpacked
 	@cat $(TOPDIR)/.config \
 		| sed -nr 's!^(# )*(FREETZ_BUSYBOX_)([^_].*)!\1CONFIG_\3!p' \
-		> $(BUSYBOX_DIR)/.config
+		> $(BUSYBOX_CONFIG_FILE)
 	$(SUBMAKE) -C $(BUSYBOX_DIR) \
 		$(BUSYBOX_MAKE_FLAGS) \
 		menuconfig
-	grep -v '^CONFIG_' $(BUSYBOX_DIR)/.config
+	grep -v '^CONFIG_' $(BUSYBOX_CONFIG_FILE)
 
 $(pkg)-oldconfig: $($(PKG)_DIR)/.configured
 
