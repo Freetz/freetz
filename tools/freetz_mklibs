@@ -5,7 +5,7 @@ GNU_TARGET_NAME=${FREETZ_TARGET_ARCH}-linux
 REAL_GNU_TARGET_NAME=${GNU_TARGET_NAME}-uclibc
 
 mklibs() {
-	# TODO: replace the next 5 lines with code that replaces all
+	# TODO: replace the next 11 lines with code that replaces all
 	# absolute sym links... to make mklibs happy
 	local -a abs_symlinks=( \
 		/lib/libcapi20.so \
@@ -13,6 +13,12 @@ mklibs() {
 		/lib/libfwsign.so.0 \
 		/lib/libled2.so.2.2 \
 		/lib/libled2.so.2 \
+		/lib/libdsl.so \
+		/lib/libdsl.so.0 \
+		/lib/libdslsmiface.so
+		/lib/libdslsmiface.so.0
+		/usr/share/ctlmgr/libplcctlmgr.so.0 \
+		/usr/lib/libplcaccess.so.0 \
 	)
 	local -a rel_targets=( \
 		libcapi20.so.3.0.4 \
@@ -20,11 +26,18 @@ mklibs() {
 		libfwsign.so \
 		libled2.so.2.2.0 \
 		libled2.so.2.2.0 \
+		../usr/share/ctlmgr/libdsl.so \
+		../usr/share/ctlmgr/libdsl.so \
+		libdslsmiface.so.0.0.0 \
+		libdslsmiface.so.0.0.0 \
+		libplcctlmgr.so \
+		libplcaccess.so \
 	)
+	for ((i=0; i<11; i++)); do
+		[ -h "${FILESYSTEM_MOD_DIR}${abs_symlinks[$i]}" ] && ln -sf "${rel_targets[i]}" "${FILESYSTEM_MOD_DIR}${abs_symlinks[$i]}"
 	for ((i=0; i<5; i++)); do
 		[ -h "${FILESYSTEM_MOD_DIR}/${abs_symlinks[$i]}" ] && ln -sf "${rel_targets[i]}" "${FILESYSTEM_MOD_DIR}/${abs_symlinks[$i]}"
 	done
-
 	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
 	mkdir -p ${MOD_DIR}/mklibs-out
 	# first find all programs and add them to the mklibs list
