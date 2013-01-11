@@ -4,68 +4,7 @@ config FREETZ_HAVE_DOT_CONFIG
 	bool
 	default y
 
-
-comment "General --------------------------------"
-
-choice
-	prompt "Freetz language"
-	default FREETZ_LANG_DE      if FREETZ_TYPE_LANG_DE
-	default FREETZ_LANG_DE      if FREETZ_TYPE_LANG_A_CH
-	default FREETZ_LANG_EN      if FREETZ_TYPE_LANG_EN
-
-	config FREETZ_LANG_DE
-		bool "de - deutsch"
-
-	config FREETZ_LANG_EN
-		bool "en - english"
-
-endchoice # "Freetz language" #
-
-config FREETZ_LANG_STRING
-	string
-	default "de"            if FREETZ_LANG_DE
-	default "en"            if FREETZ_LANG_EN
-
-
-choice
-	prompt "Firmware language"
-		default FREETZ_TYPE_LANG_DE
-
-	config FREETZ_TYPE_LANG_DE
-		bool "de - deutsch"
-		depends on \
-			! FREETZ_TYPE_5010 && \
-			! FREETZ_TYPE_5124 && \
-			! FREETZ_TYPE_7340 && \
-			! FREETZ_TYPE_7570
-
-	config FREETZ_TYPE_LANG_A_CH
-		bool "a-ch - deutsch"
-		depends on \
-			FREETZ_TYPE_5010 || \
-			FREETZ_TYPE_7140 || \
-			FREETZ_TYPE_7170
-
-	config FREETZ_TYPE_LANG_EN
-		bool "en - international"
-		depends on \
-			FREETZ_TYPE_FON || \
-			FREETZ_TYPE_300IP || \
-			FREETZ_TYPE_5124 || \
-			FREETZ_TYPE_WLAN || \
-			FREETZ_TYPE_7113 || \
-			FREETZ_TYPE_7140 || \
-			FREETZ_TYPE_7170 || \
-			FREETZ_TYPE_7270_16 || \
-			FREETZ_TYPE_7330_XL || \
-			FREETZ_TYPE_7340 || \
-			FREETZ_TYPE_7360_XL || \
-			FREETZ_TYPE_7390 || \
-			FREETZ_TYPE_7570 || \
-			FREETZ_TYPE_3270_V3
-
-endchoice # "Firmware language" #
-
+comment "Hardware/Firmware ----------------------"
 
 choice
 	prompt "Hardware type"
@@ -260,6 +199,45 @@ config FREETZ_TYPE_7270
 	select FREETZ_AVM_VERSION_7270_04_86 if FREETZ_TYPE_7270_V1
 	select FREETZ_AVM_VERSION_7270_05_21 if FREETZ_TYPE_7270_16
 	bool
+
+choice
+	prompt "Firmware language"
+		default FREETZ_TYPE_LANG_DE
+
+	config FREETZ_TYPE_LANG_DE
+		bool "de - deutsch"
+		depends on \
+			! FREETZ_TYPE_5010 && \
+			! FREETZ_TYPE_5124 && \
+			! FREETZ_TYPE_7340 && \
+			! FREETZ_TYPE_7570
+
+	config FREETZ_TYPE_LANG_A_CH
+		bool "a-ch - deutsch"
+		depends on \
+			FREETZ_TYPE_5010 || \
+			FREETZ_TYPE_7140 || \
+			FREETZ_TYPE_7170
+
+	config FREETZ_TYPE_LANG_EN
+		bool "en - international"
+		depends on \
+			FREETZ_TYPE_FON || \
+			FREETZ_TYPE_300IP || \
+			FREETZ_TYPE_5124 || \
+			FREETZ_TYPE_WLAN || \
+			FREETZ_TYPE_7113 || \
+			FREETZ_TYPE_7140 || \
+			FREETZ_TYPE_7170 || \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7330_XL || \
+			FREETZ_TYPE_7340 || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7390 || \
+			FREETZ_TYPE_7570 || \
+			FREETZ_TYPE_3270_V3
+
+endchoice # "Firmware language" #
 
 choice
 	prompt "Firmware version"
@@ -468,6 +446,26 @@ choice
 
 endchoice # prompt "Annex" #
 
+comment "Menuconfig -----------------------------"
+
+config FREETZ_SHOW_ADVANCED
+	bool "Show advanced user options"
+	default n
+	help
+		Show advanced Options for patching the firmware. This is only useful
+		for experienced users who really know what they are doing
+
+	config FREETZ_SHOW_UNSTABLE_PACKAGES
+		bool "Show unstable packages"
+		depends on FREETZ_SHOW_ADVANCED
+		help
+			These packages may not work at all. They are currently
+			under development or have known issues which make them
+			not work correctly.
+			Do not use them if you don't know what you are doing.
+
+comment "Original components --------------------"
+
 comment "Hint: Select build toolchain if you want to enable IPv6 support"
 	depends on \
 		( \
@@ -549,11 +547,73 @@ config FREETZ_REPLACE_KERNEL
 
 endif # FREETZ_SHOW_ADVANCED #
 
+config FREETZ_AVMPLUGINS_ENABLED
+	bool "Integrate AVM Plugins into image"
+	depends on FREETZ_TYPE_7270_V1
+	default n
+	help
+		This feature disables AVM's plugin download and handling.
+		You could integrate these plugins directly into the firmware image by
+		selecting them below. This saves some resources because plugins are not
+		copied into RAM nor mounted with loop-devices.
 
-comment "Mod ------------------------------------"
+menu "Plugin selection"
+	depends on FREETZ_AVMPLUGINS_ENABLED
+	comment "Select plugin(s) for insertion"
+
+	config FREETZ_AVMPLUGINS_MEDIASRV
+		bool "MEDIASRV"
+		default n
+		help
+			Integrates UPNP Mediaserver
+
+	config FREETZ_AVMPLUGINS_MINI
+		bool "MINI"
+		default n
+		help
+			Integrates FRITZ! Mini support
+
+	config FREETZ_AVMPLUGINS_NTFS
+		bool "NTFS"
+		default n
+		help
+			Integrates NTFS filesystem support
+			Not recommended if you are using Freetz-NTFS!
+
+	config FREETZ_AVMPLUGINS_ONLINEPB
+		bool "Online Phone Book"
+		default n
+		help
+			Integrates Online Phone Book support
+
+	config FREETZ_AVMPLUGINS_SAMBA
+		bool "SAMBA"
+		depends on ! FREETZ_PACKAGE_SAMBA_SMBD
+		default n
+		help
+			Integrates AVM's Samba Fileserver
+
+	config FREETZ_AVMPLUGINS_TAM
+		bool "TAM"
+		default n
+		help
+			Integrates Telephone Answering Machine (TAM)
+
+	config FREETZ_AVMPLUGINS_WEBDAV
+		bool "WEBDAV"
+		depends on ! FREETZ_PACKAGE_DAVFS2 && ! FREETZ_REMOVE_WEBDAV
+		default n
+		help
+			Integrates AVM's webdav
+
+endmenu # "Plugin selection" #
+
+source patches/Config.in
 
 
-menu "Package selection"
+comment "Additional components ------------------"
+
+menu "Packages"
 	source make/Config.in
 endmenu # "Package selection" #
 
@@ -572,6 +632,12 @@ menu "Kernel modules"
 	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
 	source kernel/Config.in.modules
 endmenu # "Kernel modules" #
+
+menu "Busybox applets"
+	visible if FREETZ_SHOW_ADVANCED
+	depends on FREETZ_REPLACE_BUSYBOX
+	source make/busybox/Config.in
+endmenu # "Busybox applets" #
 
 
 menu "External processing"
@@ -632,18 +698,29 @@ menu "External processing"
 	source kernel/external.in
 endmenu # "External processing" #
 
+comment "Mod customizations ---------------------"
 
-source patches/Config.in
+menu "Web Interface"
 
+	choice
+		prompt "Freetz language"
+		default FREETZ_LANG_DE      if FREETZ_TYPE_LANG_DE
+		default FREETZ_LANG_DE      if FREETZ_TYPE_LANG_A_CH
+		default FREETZ_LANG_EN      if FREETZ_TYPE_LANG_EN
 
-menu "Busybox applets"
-	visible if FREETZ_SHOW_ADVANCED
-	depends on FREETZ_REPLACE_BUSYBOX
-	source make/busybox/Config.in
-endmenu # "Busybox applets" #
+		config FREETZ_LANG_DE
+			bool "de - deutsch"
 
+		config FREETZ_LANG_EN
+			bool "en - english"
 
-menu "Webif customisation"
+	endchoice # "Freetz language" #
+
+	config FREETZ_LANG_STRING
+		string
+		default "de"            if FREETZ_LANG_DE
+		default "en"            if FREETZ_LANG_EN
+
 
 	config FREETZ_SECURITY_LEVEL
 		int "Freetz security level (0-2)"
@@ -654,30 +731,6 @@ menu "Webif customisation"
 			1 : only configuration files without shell commands might be edited
 			2 : no configuration files might be edited.
 
-	config FREETZ_REMOVE_BOX_INFO
-		bool "Remove BOX-Info page"
-		default n
-		help
-			BOX-Info is a special status page for compact presentation of important
-			information about your Fritz!Box: ROM/RAM size, processor type,
-			DSL driver information, etc.
-
-			If you do not have enough space in your image, you can remove BOX-Info
-			from your image. But usualy it is not necessary: The size of BOX-Info cgi
-			is very small (2-3 kByte).
-
-	config FREETZ_REMOVE_FREETZ_INFO
-		bool "Remove FREETZ-Info page"
-		default n
-		help
-			FREETZ-Info is a special status page for compact presentation of important
-			information about FREETZ. This status page can also show the .config,
-			if it is included into image (s. "Remove .config from Image").
-
-			If you do not have enough space in your image, you can remove FREETZ-Info
-			from your image. But usualy it is not necessary: The size of FREETZ-Info
-			is very small (2-3 kByte).
-
 	choice
 		prompt "Freetz style"
 		default FREETZ_STYLE_COLORED
@@ -687,10 +740,10 @@ menu "Webif customisation"
 			from colored to grey by change of the Freetz style.
 
 		config FREETZ_STYLE_COLORED
-			bool "Default - green status-bars"
+			bool "green status-bars"
 
 		config FREETZ_STYLE_GREY
-			bool "Alternative - grey status-bars"
+			bool "grey status-bars"
 
 	endchoice # "Freetz style" #
 
@@ -781,316 +834,351 @@ menu "Webif customisation"
 		default "none"          if FREETZ_TAGGING_NONE
 		default "cuma"          if FREETZ_TAGGING_CUMA
 
-endmenu # "Webif customisation" #
+endmenu # "Webif customization" #
 
+menu "Additional image/box information"
+	visible if FREETZ_SHOW_ADVANCED
 
-config FREETZ_AVMPLUGINS_ENABLED
-	bool "Integrate AVM Plugins into image"
-	depends on FREETZ_TYPE_7270_V1
-	default n
-	help
-		This feature disables AVM's plugin download and handling.
-		You could integrate these plugins directly into the firmware image by
-		selecting them below. This saves some resources because plugins are not
-		copied into RAM nor mounted with loop-devices.
-
-menu "Plugin selection"
-	depends on FREETZ_AVMPLUGINS_ENABLED
-	comment "Select plugin(s) for insertion"
-
-	config FREETZ_AVMPLUGINS_MEDIASRV
-		bool "MEDIASRV"
+	# TODO: invert logic
+	config FREETZ_REMOVE_BOX_INFO
+		bool "Remove BOX-Info page"
 		default n
 		help
-			Integrates UPNP Mediaserver
+			BOX-Info is a special status page for compact presentation of important
+			information about your Fritz!Box: ROM/RAM size, processor type,
+			DSL driver information, etc.
 
-	config FREETZ_AVMPLUGINS_MINI
-		bool "MINI"
+			If you do not have enough space in your image, you can remove BOX-Info
+			from your image. But usualy it is not necessary: The size of BOX-Info cgi
+			is very small (2-3 kByte).
+
+	# TODO: invert logic
+	config FREETZ_REMOVE_FREETZ_INFO
+		bool "Remove FREETZ-Info page"
 		default n
 		help
-			Integrates FRITZ! Mini support
+			FREETZ-Info is a special status page for compact presentation of important
+			information about FREETZ. This status page can also show the .config,
+			if it is included into image (s. "Remove .config from Image").
 
-	config FREETZ_AVMPLUGINS_NTFS
-		bool "NTFS"
+			If you do not have enough space in your image, you can remove FREETZ-Info
+			from your image. But usualy it is not necessary: The size of FREETZ-Info
+			is very small (2-3 kByte).
+
+	config FREETZ_DEVELOPER_VERSION_STRING
+		bool "Add SVN revision to Freetz version"
 		default n
 		help
-			Integrates NTFS filesystem support
-			Not recommended if you are using Freetz-NTFS!
+			Add SVN (Subversion) repository revision number to firmware image name
+			and to the Freetz version information stored in /etc/.freetz-version.
 
-	config FREETZ_AVMPLUGINS_ONLINEPB
-		bool "Online Phone Book"
+			The revision number string is generated by the client command line tool
+			svnversion and may include switch/modify flags and/or a range of
+			version numbers, depending on the current state of the working
+			directory at the time of generation. See 'svnversion --help' for
+			details.
+
+			ATTENTION! This option is for developers working on checked-out
+			versions of the Freetz source code only and requires svnversion to be
+			installed.
+
+	config FREETZ_MODIFY_AVM_VERSION
+		bool "Add Freetz version to AVM version data"
 		default n
 		help
-			Integrates Online Phone Book support
+			Add or append freetz version string (e.g. freetz-devel or freetz-devel-8849M)
+			to AVM firmware version data stored in /etc/.subversion, /etc/version and some
+			other places within the firmware itself.
 
-	config FREETZ_AVMPLUGINS_SAMBA
-		bool "SAMBA"
-		depends on ! FREETZ_PACKAGE_SAMBA_SMBD
-		default n
+			Note: AVM firmware version data is exchanged with AVMs firmware update server
+			during automatic firmware update checks and in some other situations.
+			Enable this if you dont care if AVM or your ISP are knowing that you're running
+			a box with customized firmware.
+
+			Disable this if you have trouble with your isp or plugin downloads from
+			AVM don't work.
+
+			Maybe you want to change this too: http://wehavemorefun.de/fritzbox/AVM-Dienste
+
+	config FREETZ_USER_DEFINED_COMMENT
+		string "User defined comment"
+		default ""
 		help
-			Integrates AVM's Samba Fileserver
+			User defined comment for generated image.
 
-	config FREETZ_AVMPLUGINS_TAM
-		bool "TAM"
-		default n
-		help
-			Integrates Telephone Answering Machine (TAM)
-
-	config FREETZ_AVMPLUGINS_WEBDAV
-		bool "WEBDAV"
-		depends on ! FREETZ_PACKAGE_DAVFS2 && ! FREETZ_REMOVE_WEBDAV
-		default n
-		help
-			Integrates AVM's webdav
-
-endmenu # "Plugin selection" #
-
-
-comment "----------------------------------------"
-
-
-menu "Expert options"
-#FIXME: this causes 'Speicherzugriffsfehler' and various 'recursive dependencies'
-#	visible if FREETZ_SHOW_ADVANCED
-
-	config FREETZ_SHOW_UNSTABLE_PACKAGES
-		bool "Show unstable packages"
+	config FREETZ_CUSTOM_IMAGE_NAME
+		bool "Add user defined comment to image name"
 		depends on FREETZ_SHOW_ADVANCED
+		default n
 		help
-			These packages may not work at all. They are currently
-			under development or have known issues which make them
-			not work correctly.
-			Do not use them if you don't know what you are doing.
+			Add the user defined comment to the file name of the created image
+
+	config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
+		bool "Add custom string as prefix"
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_CUSTOM_IMAGE_NAME
+		default n
+		help
+			Add the user defined comment as a prefix in front of the image file name.
+			Otherwise the user defined comment will be added between the language setting
+			and the build date
+
+	config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
+		bool "Create options.cfg as a separate file"
+		depends on FREETZ_SHOW_ADVANCED
+		default y
+		help
+			When unchecked causes options.cfg to be created as a symbolic link to .config
+
+			When checked causes options.cfg to be created as a separate file containing
+			a much smaller subset of options included in .config. This increases image
+			size by about 160 bytes but reduces memory footprint at run-time.
+
+	config FREETZ_REMOVE_DOT_CONFIG
+		bool "Remove .config from image"
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_CREATE_SEPARATE_OPTIONS_CFG
+		default n
+		help
+			Usually, a stripped version of the FREETZ configuration file .config
+			is integrated into the image for better trouble-shooting.
+
+			It is not recommended to remove .config from the image,
+			but if you want to save a few bytes in your image and
+			you are sure that removing this file is the last chance to have
+			a working image, you can do it on your own risk!
+
+endmenu # "Additional image/box information" #
 
 
-	menu "Build system options"
+comment "Build system ---------------------------"
 
-		config FREETZ_VERBOSITY_LEVEL
-			int "Verbosity level (0-2)"
-			default 2
-			help
-				Verbosity level of the fwmod script and tar.
-				0 is the least and 2 the most information.
+menu "Toolchain options"
 
-		config FREETZ_SIZEINFO_COMPRESSED
-			bool "Show compressed sizes during build"
-			default y
-			help
-				Show compressed sizes of libs, packages & modules during build"
+	choice
+		prompt "Toolchains"
+		default FREETZ_DOWNLOAD_TOOLCHAIN
+		help
+			Download Toolchain, build toolchain
 
-		config FREETZ_SIZEINFO_UNCOMPRESSED
-			bool "Show uncompressed sizes too"
-			depends on FREETZ_SIZEINFO_COMPRESSED
-			default n
-			help
-				Show uncompressed sizes of libs, packages & modules too"
+		config FREETZ_DOWNLOAD_TOOLCHAIN
+			bool "Download and use precompiled toolchains"
 
-		menu "Firmware packaging (fwmod) special options"
-			visible if FREETZ_SHOW_ADVANCED
+		config FREETZ_BUILD_TOOLCHAIN
+			bool "Build own toolchains (requires 4GB diskspace)"
 
-		comment "ATTENTION: you probably want to activate unpacking"
-			depends on FREETZ_FWMOD_SKIP_UNPACK
+	endchoice # "Toolchains" #
 
-		config FREETZ_FWMOD_SKIP_UNPACK
-			bool "Skip unpacking original firmware"
-			default n
-			help
-				In 99,9% of all cases you want this option deactivated because usually
-				it makes a lot of sense to unpack a firmware before modifying it. ;-)
+	source toolchain/Config.in
 
-		config FREETZ_FWMOD_SKIP_MODIFY
-			bool "Skip modifying unpacked firmware, adding Freetz stuff"
-			default n
-			help
-				Usually you want this option deactivated, but maybe you want to use
-				the Freetz build infrastructure to build your own custom firmware mod
-				without actually adding any Freetz-specific stuff. If so, activate
-				this option.
-
-		config FREETZ_FWMOD_SKIP_PACK
-			bool "Skip packing modified firmware"
-			default n
-			help
-				If you are a USB root or NFS root user, you probably do not need a
-				packed firmware image for flashing. It might not fit into the box's
-				flash memory anyway if you have chosen a lot of packages. In that
-				case you want to activate this option.
-
-		config FREETZ_FWMOD_SDK
-			bool "Force pack even if image is too big (SDK stick mode)"
-			depends on ! FREETZ_FWMOD_SKIP_PACK
-			default n
-			help
-				Choose this option if you intend to use the packed image on an SDK
-				stick (see http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware).
-				At the time of writing this, SDK stick mode is only supported on
-				7270_v2/3, but maybe you found a way to port it to another firmware,
-				so you are free to use this option at will.
-
-		config FREETZ_FWMOD_USBROOT
-			bool "Pack file system into archive (USB root mode)"
-			default n
-			help
-				Choose this option if you intend to use the modified file system as a
-				USB root and want it packed into a .tar.gz archive for later transfer
-				to the USB medium.
-
-				This option can also be useful for NFS root, if you want to archive
-				the file system in addition to or instead of copying it to a target
-				directory directly using the next option.
-
-		config FREETZ_FWMOD_NFSROOT
-			bool "Copy file system to target folder (NFS root mode)"
-			default n
-			select FREETZ_FWMOD_USBROOT
-			help
-				Choose this option if you intend to use the modified file system as
-				an NFS root and want it copied to a target folder of your choice.
-
-				This option can also be useful for USB root, if the target USB medium
-				is already attached to your workstation or accessible via NFS (*not*
-				Samba/CIFS!).
-
-				ATTENTION: Make sure that the target folder is *not* mounted as a
-				USB/NFS root while copying files into it. This would probably cause
-				your box to reboot and lead to an inconsistent root file system.
-				You should also be aware of the fact that in order to cleanly unpack
-				file root system to the target folder we need to be root (fakeroot is
-				enough to pack, but not to unpack). So please be ready to enter your
-				user password for sudo.
-
-		comment "ATTENTION: target folder name must not be empty"
-			depends on FREETZ_FWMOD_NFSROOT
-
-		config FREETZ_FWMOD_NFSROOT_DIR
-			string "Target folder name"
-			depends on FREETZ_FWMOD_NFSROOT
-			default ""
-			help
-				Enter the target folder name here. It can be either absolute or
-				relative to the Freetz build system's base directory (where e.g.
-				fwmod is located).
-
-		endmenu # Firmware packaging (fwmod) special options
-
-		config FREETZ_JLEVEL
-			int "Number of jobs to run simultaneously"
-			default 2
-			help
-				Number of jobs to run simultanesouly
-
-		config FREETZ_CHECK_CHANGED
-			bool "Force package clean if it has changed"
-			default y
-			help
-				If this is activated, all packages are checked for changes in make/<pkg>/files
-				and make/<pkg>/patches. If so, the package will be recreated.
-
-		config FREETZ_BACKUP_CONFIG_CACHE
-			bool "Backup config.cache"
-			default n
-			help
-				This is a developer only option.
-				It causes config.cache to be backed up before calling package configure script and after that.
-				This might simplify searching for a missing/wrong config.cache entry.
-
-		config FREETZ_DL_SITE_USER
-			string "User-defined download site"
-			help
-				User-defined download site for Freetz packages and source files.
-
-				Note: We recommend you to only set a user-defined value here, if necessary.
-				Necessary means that the regular Freetz mirrors are currently unavailable
-				or the desired package cannot be found on either of them.
-
-	endmenu # "Build system options" #
+endmenu # "Toolchain options" #
 
 
-	menu "Additional image/box information"
+menu "Build system options"
 
-		config FREETZ_DEVELOPER_VERSION_STRING
-			bool "Add SVN revision to Freetz version"
-			default y
-			help
-				Add SVN (Subversion) repository revision number to firmware image name
-				and to the Freetz version information stored in /etc/.freetz-version.
+	config FREETZ_VERBOSITY_LEVEL
+		int "Verbosity level (0-2)"
+		default 2
+		help
+			Verbosity level of the fwmod script and tar.
+			0 is the least and 2 the most information.
 
-				The revision number string is generated by the client command line tool
-				svnversion and may include switch/modify flags and/or a range of
-				version numbers, depending on the current state of the working
-				directory at the time of generation. See 'svnversion --help' for
-				details.
+	config FREETZ_SIZEINFO_COMPRESSED
+		bool "Show compressed sizes during build"
+		default y
+		help
+			Show compressed sizes of libs, packages & modules during build"
 
-				ATTENTION! This option is for developers working on checked-out
-				versions of the Freetz source code only and requires svnversion to be
-				installed.
+	config FREETZ_SIZEINFO_UNCOMPRESSED
+		bool "Show uncompressed sizes too"
+		depends on FREETZ_SIZEINFO_COMPRESSED
+		default n
+		help
+			Show uncompressed sizes of libs, packages & modules too"
 
-		config FREETZ_MODIFY_AVM_VERSION
-			bool "Add Freetz version to AVM version data"
-			default n
-			help
-				Add or append freetz version string (e.g. freetz-devel or freetz-devel-8849M)
-				to AVM firmware version data stored in /etc/.subversion, /etc/version and some
-				other places within the firmware itself.
 
-				Note: AVM firmware version data is exchanged with AVMs firmware update server
-				during automatic firmware update checks and in some other situations.
-				Enable this if you dont care if AVM or your ISP are knowing that you're running
-				a box with customized firmware.
+	config FREETZ_JLEVEL
+		int "Number of jobs to run simultaneously"
+		default 2
+		help
+			Number of jobs to run simultanesouly
 
-				Disable this if you have trouble with your isp or plugin downloads from
-				AVM don't work.
+	config FREETZ_CHECK_CHANGED
+		bool "Force package clean if it has changed"
+		default y
+		help
+			If this is activated, all packages are checked for changes in make/<pkg>/files
+			and make/<pkg>/patches. If so, the package will be recreated.
 
-				Maybe you want to change this too: http://wehavemorefun.de/fritzbox/AVM-Dienste
+	config FREETZ_BACKUP_CONFIG_CACHE
+		bool "Backup config.cache"
+		default n
+		help
+			This is a developer only option.
+			It causes config.cache to be backed up before calling package configure script and after that.
+			This might simplify searching for a missing/wrong config.cache entry.
 
-		config FREETZ_USER_DEFINED_COMMENT
-			string "User defined comment"
-			default ""
-			help
-				User defined comment for generated image.
 
-		config FREETZ_CUSTOM_IMAGE_NAME
-			bool "Add user defined comment to image name"
+endmenu # "Build system options" #
+
+
+menu "Firmware packaging (fwmod) options"
+	visible if FREETZ_SHOW_ADVANCED
+
+	comment "ATTENTION: you probably want to activate unpacking"
+		depends on FREETZ_FWMOD_SKIP_UNPACK
+
+	config FREETZ_FWMOD_SKIP_UNPACK
+	bool "Skip unpacking original firmware"
+	default n
+		help
+			In 99,9% of all cases you want this option deactivated because usually
+			it makes a lot of sense to unpack a firmware before modifying it. ;-)
+
+	config FREETZ_FWMOD_SKIP_MODIFY
+		bool "Skip modifying unpacked firmware, adding Freetz stuff"
+		default n
+		help
+			Usually you want this option deactivated, but maybe you want to use
+			the Freetz build infrastructure to build your own custom firmware mod
+			without actually adding any Freetz-specific stuff. If so, activate
+			this option.
+
+	config FREETZ_FWMOD_SKIP_PACK
+		bool "Skip packing modified firmware"
+		default n
+		help
+			If you are a USB root or NFS root user, you probably do not need a
+			packed firmware image for flashing. It might not fit into the box's
+			flash memory anyway if you have chosen a lot of packages. In that
+			case you want to activate this option.
+
+	config FREETZ_FWMOD_SDK
+		bool "Force pack even if image is too big (SDK stick mode)"
+		depends on ! FREETZ_FWMOD_SKIP_PACK
+		default n
+		help
+			Choose this option if you intend to use the packed image on an SDK
+			stick (see http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware).
+			At the time of writing this, SDK stick mode is only supported on
+			7270_v2/3, but maybe you found a way to port it to another firmware,
+			so you are free to use this option at will.
+
+	config FREETZ_FWMOD_USBROOT
+		bool "Pack file system into archive (USB root mode)"
+		default n
+		help
+			Choose this option if you intend to use the modified file system as a
+			USB root and want it packed into a .tar.gz archive for later transfer
+			to the USB medium.
+
+			This option can also be useful for NFS root, if you want to archive
+			the file system in addition to or instead of copying it to a target
+			directory directly using the next option.
+
+	config FREETZ_FWMOD_NFSROOT
+		bool "Copy file system to target folder (NFS root mode)"
+		default n
+		select FREETZ_FWMOD_USBROOT
+		help
+			Choose this option if you intend to use the modified file system as
+			an NFS root and want it copied to a target folder of your choice.
+
+			This option can also be useful for USB root, if the target USB medium
+			is already attached to your workstation or accessible via NFS (*not*
+			Samba/CIFS!).
+
+			ATTENTION: Make sure that the target folder is *not* mounted as a
+			USB/NFS root while copying files into it. This would probably cause
+			your box to reboot and lead to an inconsistent root file system.
+			You should also be aware of the fact that in order to cleanly unpack
+			file root system to the target folder we need to be root (fakeroot is
+			enough to pack, but not to unpack). So please be ready to enter your
+			user password for sudo.
+
+	comment "ATTENTION: target folder name must not be empty"
+		depends on FREETZ_FWMOD_NFSROOT
+
+	config FREETZ_FWMOD_NFSROOT_DIR
+		string "Target folder name"
+		depends on FREETZ_FWMOD_NFSROOT
+		default ""
+		help
+			Enter the target folder name here. It can be either absolute or
+			relative to the Freetz build system's base directory (where e.g.
+			fwmod is located).
+
+endmenu # Firmware packaging (fwmod) special options
+
+comment "Other ----------------------------------"
+
+menu "Strip options"
+
+	config FREETZ_STRIP_BINARIES
+		bool "Strip leftover unstripped binaries/libraries"
+		default y
+		help
+			This option shrinks unstripped binaries/libraries via fwmod script.
+			In case of problems, you can disable it (Default: enabled).
+
+	config FREETZ_STRIP_LIBRARIES
+		bool "Run mklibs on the built root filesystem - EXPERIMENTAL"
+		depends on FREETZ_SHOW_ADVANCED
+		default n
+		help
+			Recompiles all the shared libraries to only include the
+			symbols actually needed to run the binaries on the target.
+
+			Note that this will make the system libraries incompatible
+			with most of the packages that are not selected during the
+			build process.
+
+	choice
+
+		prompt "Strip kernel modules"
 			depends on FREETZ_SHOW_ADVANCED
-			default n
+			default FREETZ_STRIP_MODULES_FREETZ
+
+		config FREETZ_STRIP_MODULES_NONE
+			bool "none"
 			help
-				Add the user defined comment to the file name of the created image
+				Disables shrinking of modules.
 
-		config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
-			bool "Add custom string as prefix"
-			depends on FREETZ_SHOW_ADVANCED && FREETZ_CUSTOM_IMAGE_NAME
-			default n
+		config FREETZ_STRIP_MODULES_FREETZ
+			bool "Freetz only"
 			help
-				Add the user defined comment as a prefix in front of the image file name.
-				Otherwise the user defined comment will be added between the language setting
-				and the build date
+				Shrinks modules added by Freetz only.
 
-		config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
-			bool "Create options.cfg as a separate file"
-			depends on FREETZ_SHOW_ADVANCED
-			default y
+		config FREETZ_STRIP_MODULES_ALL
+			bool "Freetz & AVM - EXPERIMENTAL"
 			help
-				When unchecked causes options.cfg to be created as a symbolic link to .config
+				Shrinks all modules. May cause weird effects, like
+				all LEDs flashing. See http://freetz.org/ticket/1249
 
-				When checked causes options.cfg to be created as a separate file containing
-				a much smaller subset of options included in .config. This increases image
-				size by about 160 bytes but reduces memory footprint at run-time.
+	endchoice
 
-		config FREETZ_REMOVE_DOT_CONFIG
-			bool "Remove .config from image"
-			depends on FREETZ_SHOW_ADVANCED && FREETZ_CREATE_SEPARATE_OPTIONS_CFG
-			default n
-			help
-				Usually, a stripped version of the FREETZ configuration file .config
-				is integrated into the image for better trouble-shooting.
+	config FREETZ_STRIP_SCRIPTS
+		bool "Strip comments from shell scripts - EXPERIMENTAL"
+		default n
+		help
+			Shrinks shell scripts by removing comments and whitespace. Saves up to
+			37K (compressed), depending on firmware and package selection.
 
-				It is not recommended to remove .config from the image,
-				but if you want to save a few bytes in your image and
-				you are sure that removing this file is the last chance to have
-				a working image, you can do it on your own risk!
+			DO NOT USE this option unless you absolutely have to because you are in
+			desparate need for some more space in your firmware image. This mostly
+			applies to hardware with just 4 MB flash memory, maybe 8 MB in some cases.
 
-	endmenu # "Additional image/box information" #
+			ATTENTION: This option has a runtime of 1 minute!
 
+			CAVEAT: The stripping code is a simple heuristic, so theoretically there
+			could be problems caused by mutilated scripts (unlikely, but possible).
+			In case of strange firmware behaviour you might want to disable this patch
+			and retry to see if that fixes the problem. If so, please report to the
+			Freetz team.
+
+endmenu # "Strip options" #
+
+
+menu "SquashFS options"
+	visible if FREETZ_SHOW_ADVANCED
 
 	comment "CAUTION: SquashFS block sizes >64 KB can cause an unstable box due to extensive memory usage"
 		depends on ! (FREETZ_SQUASHFS_BLOCKSIZE_ORIG || FREETZ_SQUASHFS_BLOCKSIZE_65536)
@@ -1109,12 +1197,6 @@ menu "Expert options"
 
 				64 KB is the default for kernel 2.6 firmwares.
 
-	#	config FREETZ_SQUASHFS_BLOCKSIZE_16384
-	#		bool "16 KB"
-
-	#	config FREETZ_SQUASHFS_BLOCKSIZE_32768
-	#		bool "32 KB"
-
 		config FREETZ_SQUASHFS_BLOCKSIZE_65536
 			bool "64 KB"
 			help
@@ -1125,138 +1207,50 @@ menu "Expert options"
 
 				64 KB is the default for kernel 2.6 firmwares.
 
-		if FREETZ_SHOW_ADVANCED && \
-			FREETZ_REPLACE_KERNEL && \
-			(FREETZ_KERNEL_VERSION_2_6_19_MAX || FREETZ_KERNEL_VERSION_2_6_32)
+		if FREETZ_REPLACE_KERNEL && (FREETZ_KERNEL_VERSION_2_6_19_MAX || FREETZ_KERNEL_VERSION_2_6_32)
 			config FREETZ_SQUASHFS_BLOCKSIZE_131072
-		 		bool "128 KB - EXPERIMENTAL"
+				bool "128 KB - EXPERIMENTAL"
 				help
 					Block size of the root filesystem. SquashFS 3.4 can use block sizes
 					up to 1MB but the Default used by Freetz is 64KB. SquashFS 3.4 which
 					is included in Kernel 2.6.32 has a default Block size of 128 KB.
-		endif # FREETZ_KERNEL_VERSION_2_6_32 #
+		endif
 
-		if FREETZ_SHOW_ADVANCED && \
-			FREETZ_REPLACE_KERNEL && \
-			FREETZ_KERNEL_VERSION_2_6_19_MAX
-
+		if FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_19_MAX
 			config FREETZ_SQUASHFS_BLOCKSIZE_262144
 				bool "256 KB - EXPERIMENTAL"
-
 			config FREETZ_SQUASHFS_BLOCKSIZE_524288
 				bool "512 KB - EXPERIMENTAL"
-
 			config FREETZ_SQUASHFS_BLOCKSIZE_1048576
 				bool "1024 KB - EXPERIMENTAL"
-
-		endif # FREETZ_SHOW_ADVANCED #
+		endif
 
 	endchoice # "SquashFS block size" #
 
+endmenu # SquashFS options #
 
-	config FREETZ_SQUASHFS_BLOCKSIZE
-		int
-		help
-			Numeric SquashFS block size in bytes
+config FREETZ_SQUASHFS_BLOCKSIZE
+	int
+	default 65536 if FREETZ_SQUASHFS_BLOCKSIZE_65536
+	default 131072 if FREETZ_SQUASHFS_BLOCKSIZE_131072
+	default 262144 if FREETZ_SQUASHFS_BLOCKSIZE_262144
+	default 524288 if FREETZ_SQUASHFS_BLOCKSIZE_524288
+	default 1048576 if FREETZ_SQUASHFS_BLOCKSIZE_1048576
+	# ensure reasonable default is provided if "SquashFS options"-menu is not visible
+	default 65536 if !FREETZ_SQUASHFS_BLOCKSIZE_ORIG
+	help
+		Numeric SquashFS block size in bytes
 
-		default 16384 if FREETZ_SQUASHFS_BLOCKSIZE_16384
-		default 32768 if FREETZ_SQUASHFS_BLOCKSIZE_32768
-		default 65536 if FREETZ_SQUASHFS_BLOCKSIZE_65536
-		default 131072 if FREETZ_SQUASHFS_BLOCKSIZE_131072
-		default 262144 if FREETZ_SQUASHFS_BLOCKSIZE_262144
-		default 524288 if FREETZ_SQUASHFS_BLOCKSIZE_524288
-		default 1048576 if FREETZ_SQUASHFS_BLOCKSIZE_1048576
 
-
-	menu "Strip binaries, libs, modules and scripts"
-
-		config FREETZ_STRIP_BINARIES
-			bool "Strip leftover unstripped binaries"
-			default y
+menu "Override options"
+		config FREETZ_DL_SITE_USER
+			string "User-defined download site"
 			help
-				This option shrinks unstripped binaries via fwmod script.
-				In case of problems, you can disable it (Default: enabled).
+				User-defined download site for Freetz packages and source files.
 
-		config FREETZ_STRIP_LIBRARIES
-			bool "Run mklibs on the built root filesystem - EXPERIMENTAL"
-			depends on FREETZ_SHOW_ADVANCED
-			default n
-			help
-				Recompiles all the shared libraries to only include the
-				symbols actually needed to run the binaries on the target.
-
-				Note that this will make the system libraries incompatible
-				with most of the packages that are not selected during the
-				build process.
-
-		choice
-
-			prompt "Strip kernel modules"
-				depends on FREETZ_SHOW_ADVANCED
-				default FREETZ_STRIP_MODULES_FREETZ
-
-			config FREETZ_STRIP_MODULES_NONE
-				bool "none"
-				help
-					Disables shrinking of modules.
-
-			config FREETZ_STRIP_MODULES_FREETZ
-				bool "Freetz only"
-				help
-					Shrinks modules added by Freetz only.
-
-			config FREETZ_STRIP_MODULES_ALL
-				bool "Freetz & AVM - EXPERIMENTAL"
-				help
-					Shrinks all modules. May cause weird effects, like
-					all LEDs flashing. See http://freetz.org/ticket/1249
-
-		endchoice
-
-		config FREETZ_STRIP_SCRIPTS
-			bool "Strip comments from shell scripts - EXPERIMENTAL"
-			default n
-			help
-				Shrinks shell scripts by removing comments and whitespace. Saves up to
-				37K (compressed), depending on firmware and package selection.
-
-				DO NOT USE this option unless you absolutely have to because you are in
-				desparate need for some more space in your firmware image. This mostly
-				applies to hardware with just 4 MB flash memory, maybe 8 MB in some cases.
-
-				ATTENTION: This option has a runtime of 1 minute!
-
-				CAVEAT: The stripping code is a simple heuristic, so theoretically there
-				could be problems caused by mutilated scripts (unlikely, but possible).
-				In case of strange firmware behaviour you might want to disable this patch
-				and retry to see if that fixes the problem. If so, please report to the
-				Freetz team.
-
-	endmenu # "Strip binaries, libs, modules and scripts" #
-
-
-	menu "Toolchain options"
-
-		choice
-			prompt "Toolchains"
-			default FREETZ_DOWNLOAD_TOOLCHAIN
-			help
-				Download Toolchain, build toolchain
-
-			config FREETZ_DOWNLOAD_TOOLCHAIN
-				bool "Download and use precompiled toolchain"
-
-			config FREETZ_BUILD_TOOLCHAIN
-				bool "Build toolchain (requires 4GB diskspace)"
-
-		endchoice # "Toolchains" #
-
-		source toolchain/Config.in
-
-	endmenu # "Toolchain options" #
-
-
-	#start "Override firmware source"
+				Note: We recommend you to only set a user-defined value here, if necessary.
+				Necessary means that the regular Freetz mirrors are currently unavailable
+				or the desired package cannot be found on either of them.
 
 		config FREETZ_DL_OVERRIDE
 			bool "Override firmware source" if FREETZ_SHOW_ADVANCED
@@ -1532,7 +1526,6 @@ menu "Expert options"
 			default "@AVM/fritzbox.fon_wlan_7270_v2/firmware/english"   if FREETZ_TYPE_7270_V1
 			default "@TELEKOM/Speedport/Speedport W 920V"               if FREETZ_TYPE_W920V_7570
 
-
 		config FREETZ_DL_SOURCE2
 			string "AVM alien web interface firmware source"      if FREETZ_DL_OVERRIDE
 			depends on \
@@ -1602,18 +1595,7 @@ menu "Expert options"
 			depends on FREETZ_TYPE_W500V_7150
 			default "e13231dcfba56505ebf7bac4ee72af75"
 
-	#endof "Override firmware source"
-
-
-endmenu # "Expert options" #
-
-
-config FREETZ_SHOW_ADVANCED
-	bool "Advanced options"
-	default n
-	help
-		Show advanced Options for patching the firmware. This is only useful
-		for experienced users who really know what they are doing
+endmenu # Override options #
 
 
 
