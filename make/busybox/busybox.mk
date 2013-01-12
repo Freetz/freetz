@@ -16,6 +16,8 @@ $(PKG)_MAKE_FLAGS += CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)"
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="$(TARGET_CFLAGS)"
 $(PKG)_MAKE_FLAGS += ARCH="mips"
 
+include $(MAKE_DIR)/busybox/busybox.rebuild-subopts.mk.in
+
 ifneq ($(strip $(DL_DIR)/$(BUSYBOX_SOURCE)), $(strip $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
