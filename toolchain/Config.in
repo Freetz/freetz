@@ -229,6 +229,7 @@ config FREETZ_TARGET_NLS
 config FREETZ_TARGET_LFS
 	bool "Large file support (LFS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
 	default y
+	select FREETZ_BUSYBOX_LFS
 	help
 		Support files > 2 GB on target system. This is desirable for Torrent
 		clients, for example. This option is enabled by default and should not

@@ -3,6 +3,7 @@ config FREETZ_PACKAGE_USBROOT
 	depends on FREETZ_HAS_AVM_USB_HOST && ! FREETZ_AVM_VERSION_3370_05_21
 	select FREETZ_PACKAGE_FSTYP
 	select FREETZ_PACKAGE_USBROOT_E2FSCK if FREETZ_HAS_AVM_E2FSPROGS
+	select FREETZ_BUSYBOX_MAKEDEVS
 	default n
 	help
 		Mount an ext{2,3} filesystem (fs) from an USB stick and use it
@@ -41,5 +42,5 @@ config FREETZ_PACKAGE_USBROOT_E2FSCK
 		This option includes the /usr/sbin/e2fsck application which is used
 		to fix filesystem errors automatically prior to mounting usbroot.
 
-comment "USB root package not available" 
+comment "USB root package not available"
 	depends on FREETZ_AVM_VERSION_3370_05_21

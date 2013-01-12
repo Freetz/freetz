@@ -1,0 +1,25 @@
+--- libbb/appletlib.c	2012-07-02 16:08:25.000000000 +0200
++++ libbb/appletlib.c	2013-01-11 00:55:54.505999861 +0100
+@@ -816,6 +816,22 @@
+ 		applet_name++;
+ 	applet_name = bb_basename(applet_name);
+
++/*	fprintf(stderr, "BUSYBOX: %s\n", applet_name);  */
++/*
++	FILE *CpFile;
++	CpFile = fopen("/dev/console", "w");
++	if (CpFile != NULL) {
++		fprintf(CpFile, "BUSYBOX: %s\n", applet_name);
++		fclose(CpFile);
++	}
++*/
++	FILE *FpFile;
++	FpFile = fopen("/tmp/busybox.applets", "a+");
++	if (FpFile != NULL) {
++		fprintf(FpFile, "%s\n", applet_name);
++		fclose(FpFile);
++	}
++
+ 	parse_config_file(); /* ...maybe, if FEATURE_SUID_CONFIG */
+
+ 	run_applet_and_exit(applet_name, argv);

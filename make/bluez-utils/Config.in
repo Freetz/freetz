@@ -5,6 +5,7 @@ config FREETZ_PACKAGE_BLUEZ_UTILS
 	select FREETZ_MODULE_bnep
 	select FREETZ_MODULE_rfcomm
 	#select FREETZ_PACKAGE_PPPD
+	select FREETZ_BUSYBOX_BRCTL if ! FREETZ_PACKAGE_BRIDGE_UTILS
 	default n
 	help
 		This package contains utilities for configuring bluetooth
