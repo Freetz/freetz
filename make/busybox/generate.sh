@@ -5,11 +5,11 @@ BBVER="$(sed -n 's/$(call PKG_INIT_BIN, \(.*\))/\1/p' $BBDIR/busybox.mk)"
 BBOUT="$BBDIR/Config.in.busybox"
 
 default_int() {
-	sed -i "/^config FREETZ_BUSYBOX_$1$/{N;N;N;s/\tdefault [^\n]*/default $2/}" "$BBOUT"
+	sed -i "/^config FREETZ_BUSYBOX_$1$/{N;N;N;N;N;s/\tdefault [^\n]*/default $2/}" "$BBOUT"
 }
 
 default_string() {
-	sed -i "/^config FREETZ_BUSYBOX_$1$/{N;N;N;s#\tdefault [^\n]*#default \"$2\"#}" "$BBOUT"
+	sed -i "/^config FREETZ_BUSYBOX_$1$/{N;N;N;N;N;s#\tdefault [^\n]*#default \"$2\"#}" "$BBOUT"
 }
 
 echo -n "unpacking ..."
