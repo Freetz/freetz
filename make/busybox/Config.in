@@ -228,6 +228,8 @@ config FREETZ_BUSYBOX__MANDATORY
 	select FREETZ_BUSYBOX_WHOIS
 	select FREETZ_BUSYBOX_XARGS
 	select FREETZ_BUSYBOX_YES
+	help
+		Selects everything Freetz needs to run properly
 
 config FREETZ_BUSYBOX__IPV6_UTILS
 	bool "IPv6"
@@ -240,6 +242,8 @@ config FREETZ_BUSYBOX__IPV6_UTILS
 	select FREETZ_BUSYBOX_FEATURE_IFUPDOWN_IPV6
 	select FREETZ_BUSYBOX_FEATURE_IPV6
 	select FREETZ_BUSYBOX_FEATURE_PREFER_IPV4_ADDRESS
+	help
+		Selects everything Freetz needs to run properly
 
 config FREETZ_BUSYBOX__PACKER
 	bool "file (un)packer"
@@ -257,9 +261,12 @@ config FREETZ_BUSYBOX__PACKER
 	select FREETZ_BUSYBOX_UNZIP
 	select FREETZ_BUSYBOX_UUENCODE
 	select FREETZ_BUSYBOX_XZ
+	help
+		Selects base64, b(un)zip2, unlzma, unzip, unxz,
+		uuencode and some tar features.
 
 config FREETZ_BUSYBOX__NETWORK
-	bool "advanced network tools"
+	bool "network tools"
 	select FREETZ_BUSYBOX_ARP
 	select FREETZ_BUSYBOX_ARPING
 	select FREETZ_BUSYBOX_ETHER_WAKE
@@ -276,14 +283,14 @@ config FREETZ_BUSYBOX__NETWORK
 	select FREETZ_BUSYBOX_TRACEROUTE
 	select FREETZ_BUSYBOX_WGET
 	select FREETZ_BUSYBOX_WHOIS
+	help
+		Selects arp, arping, ether-wake, ftpget, ftpput,
+		nc, nslookup, rdate, traceroute, wget, whois.
 
 config FREETZ_BUSYBOX__TERMINAL
 	bool "terminal helper"
-	select FREETZ_BUSYBOX_BEEP
-	select FREETZ_BUSYBOX_BUSYBOX_LONG_OPTS
+	select FREETZ_BUSYBOX_LONG_OPTS
 	select FREETZ_BUSYBOX_CLEAR
-	select FREETZ_BUSYBOX_CONFIG_NC_EXTRA
-	select FREETZ_BUSYBOX_CONFIG_NC_SERVER
 	select FREETZ_BUSYBOX_FEATURE_LESS_BRACKETS
 	select FREETZ_BUSYBOX_FEATURE_LESS_FLAGS
 	select FREETZ_BUSYBOX_FEATURE_LESS_REGEXP
@@ -293,9 +300,10 @@ config FREETZ_BUSYBOX__TERMINAL
 	select FREETZ_BUSYBOX_FEATURE_TELNET_TTYPE
 	select FREETZ_BUSYBOX_LESS
 	select FREETZ_BUSYBOX_MORE
-	select FREETZ_BUSYBOX_NC
 	select FREETZ_BUSYBOX_RESET
 	select FREETZ_BUSYBOX_TELNET
+	help
+		Selects clear, less, more, reset, telnet.
 
 config FREETZ_BUSYBOX__DEVELOPER
 	bool "developer tools"
@@ -313,6 +321,9 @@ config FREETZ_BUSYBOX__DEVELOPER
 	select FREETZ_BUSYBOX_PATCH
 	select FREETZ_BUSYBOX_STRINGS
 	select FREETZ_BUSYBOX_TIME
+	help
+		Selects diff, dos2unix, hexdump, md5sum, modinfo,
+		patch, strings, time.
 
 comment ""
-source Config.in.busybox
+source make/busybox/Config.in.busybox
