@@ -5,37 +5,18 @@ GNU_TARGET_NAME=${FREETZ_TARGET_ARCH}-linux
 REAL_GNU_TARGET_NAME=${GNU_TARGET_NAME}-uclibc
 
 mklibs() {
-	# TODO: replace the next 11 lines with code that replaces all
-	# absolute sym links... to make mklibs happy
-	local -a abs_symlinks=( \
-		/lib/libcapi20.so \
-		/lib/libcapi20.so.3 \
-		/lib/libfwsign.so.0 \
-		/lib/libled2.so.2.2 \
-		/lib/libled2.so.2 \
-		/lib/libdsl.so \
-		/lib/libdsl.so.0 \
-		/lib/libdslsmiface.so \
-		/lib/libdslsmiface.so.0 \
-		/usr/share/ctlmgr/libplcctlmgr.so.0 \
-		/usr/lib/libplcaccess.so.0 \
-	)
-	local -a rel_targets=( \
-		libcapi20.so.3.0.4 \
-		libcapi20.so.3.0.4 \
-		libfwsign.so \
-		libled2.so.2.2.0 \
-		libled2.so.2.2.0 \
-		../usr/share/ctlmgr/libdsl.so \
-		../usr/share/ctlmgr/libdsl.so \
-		libdslsmiface.so.0.0.0 \
-		libdslsmiface.so.0.0.0 \
-		libplcctlmgr.so \
-		libplcaccess.so \
-	)
-	for ((i=0; i<11; i++)); do
-		[ -h "${FILESYSTEM_MOD_DIR}${abs_symlinks[$i]}" ] && ln -sf "${rel_targets[i]}" "${FILESYSTEM_MOD_DIR}${abs_symlinks[$i]}"
+	# replaces all absolute sym links to make mklibs happy
+	for link in $(find "${FILESYSTEM_MOD_DIR}" -name "*.so*" -lname "/*"); do
+		file="$(realpath ${FILESYSTEM_MOD_DIR}$(readlink $link) | sed  "s#.*$FILESYSTEM_MOD_DIR/##")"
+		temp="${link#$FILESYSTEM_MOD_DIR/}"
+		while [ "${temp#*/}" != "$temp" ]; do
+			temp="${temp#*/}"
+			file="../$file"
+		done
+		echo2 "replacing $link --> $file"
+		ln -sf "$file" "$link"
 	done
+	#
 	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
 	mkdir -p ${MOD_DIR}/mklibs-out
 	# first find all programs and add them to the mklibs list
