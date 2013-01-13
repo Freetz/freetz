@@ -4,6 +4,44 @@ config FREETZ_HAVE_DOT_CONFIG
 	bool
 	default y
 
+
+comment "User competence ------------------------"
+
+choice
+	prompt "Level of user competence"
+	default FREETZ_USER_LEVEL_BEGINNER
+	help
+		Select your level of competence in regard to such aspects as:
+		 - modifying firmware of embedded devices
+		 - Linux based operating systems
+		 - cross-compiling software
+		 - tracking software/hardware problems down
+
+		The higher the selected level (beginner << advanced << expert)
+		the more options for customizing the firmware are shown.
+
+		Please select levels greater than beginner only
+		if you really need to and know what you're doing.
+
+	config FREETZ_USER_LEVEL_BEGINNER
+		bool "Beginner"
+
+	config FREETZ_USER_LEVEL_ADVANCED
+		bool "Advanced"
+		select FREETZ_SHOW_ADVANCED
+
+	config FREETZ_USER_LEVEL_EXPERT
+		bool "Expert"
+		select FREETZ_SHOW_ADVANCED
+		select FREETZ_SHOW_EXPERT
+endchoice
+
+config FREETZ_SHOW_ADVANCED
+	bool
+config FREETZ_SHOW_EXPERT
+	bool
+
+
 comment "Hardware/Firmware ----------------------"
 
 choice
@@ -1580,39 +1618,6 @@ menu "Override options"
 		default "e13231dcfba56505ebf7bac4ee72af75"
 
 endmenu # Override options #
-
-
-comment "Menuconfig -----------------------------"
-
-menu "Advanced options"
-	config FREETZ_SHOW_ADVANCED
-		bool "Show advanced user options"
-		default n
-		help
-			Show advanced options for patching the firmware. This
-			is only useful for experienced users who really know
-			what they are doing.
-
-	config FREETZ_SHOW_EXPERT
-		bool "Show expert options"
-		depends on FREETZ_SHOW_ADVANCED
-		help
-			Show expert options. Do not select this if you don't
-			know why.
-
-	config FREETZ_SHOW_UNSTABLE_PACKAGES
-		bool "Show unstable packages"
-		depends on FREETZ_SHOW_ADVANCED
-		help
-			These packages may not work at all. They are currently
-			under development or have known issues which make them
-			not work correctly.
-			Do not use them if you don't know what you are doing.
-
-endmenu # "Advanced options" #
-
-
-
 ### everything below is not visible
 
 source Config.in.has_avm
