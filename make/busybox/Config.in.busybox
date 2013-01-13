@@ -436,7 +436,7 @@ config FREETZ_BUSYBOX_FEATURE_PREFER_APPLETS
 
 config FREETZ_BUSYBOX_BUSYBOX_EXEC_PATH
 	string "Path to BusyBox executable"
-default "/bin/busybox"
+	default "/bin/busybox"
 	help
 	  When Busybox applets need to run other busybox applets, BusyBox
 	  sometimes needs to exec() itself. When the /proc filesystem is
@@ -882,7 +882,7 @@ config FREETZ_BUSYBOX_FEATURE_EDITING_HISTORY
 	int "History size"
 	# Don't allow way too big values here, code uses fixed "char *history[N]" struct member
 	range 0 9999
-default 15
+	default 15
 	depends on FREETZ_BUSYBOX_FEATURE_EDITING
 	help
 	  Specify command history size (0 - disable).
@@ -970,7 +970,7 @@ config FREETZ_BUSYBOX_FEATURE_VERBOSE_CP_MESSAGE
 config FREETZ_BUSYBOX_FEATURE_COPYBUF_KB
 	int "Copy buffer size, in kilobytes"
 	range 1 1024
-default 64
+	default 64
 	help
 	  Size of buffer used by cp, mv, install, wget etc.
 	  Buffers which are 4 kb or less will be allocated on stack.
@@ -2636,7 +2636,7 @@ config FREETZ_BUSYBOX_VI
 config FREETZ_BUSYBOX_FEATURE_VI_MAX_LEN
 	int "Maximum screen width in vi"
 	range 256 16384
-default 1024
+	default 1024
 	depends on FREETZ_BUSYBOX_VI
 	help
 	  Contrary to what you may think, this is not eating much.
