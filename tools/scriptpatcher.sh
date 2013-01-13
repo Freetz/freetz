@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 usage() {
 	local err_arg=255
 	[ $# -gt 0 ] && [ -n "$1" ] && { echo "ERROR: double option \"$1\"!" ; err_arg=128 ; }
