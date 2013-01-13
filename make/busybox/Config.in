@@ -307,8 +307,8 @@ config FREETZ_BUSYBOX__TERMINAL
 	select FREETZ_BUSYBOX_RESET
 	select FREETZ_BUSYBOX_TELNET
 	help
-		Selects clear, less, more, reset, telnet and
-		some wget features.
+		Selects clear, less, ls-color, more, reset, telnet,
+		wget-authentication and wget-statusbar.
 
 config FREETZ_BUSYBOX__DEVELOPER
 	bool "developer tools"
@@ -327,8 +327,9 @@ config FREETZ_BUSYBOX__DEVELOPER
 	select FREETZ_BUSYBOX_STRINGS
 	select FREETZ_BUSYBOX_TIME
 	help
-		Selects diff, dos2unix, hexdump, md5sum, modinfo,
-		patch, strings, time.
+		Selects diff (with some features), dos2unix, hexdump,
+		lsof, md5sum with sum-check, modinfo, patch, strings
+		and time.
 
 comment ""
 source make/busybox/Config.in.busybox
