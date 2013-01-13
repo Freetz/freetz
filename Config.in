@@ -1214,8 +1214,6 @@ menu "SquashFS options"
 
 	endchoice # "SquashFS block size" #
 
-endmenu # SquashFS options #
-
 config FREETZ_SQUASHFS_BLOCKSIZE
 	int
 	default 65536 if FREETZ_SQUASHFS_BLOCKSIZE_65536
@@ -1223,10 +1221,10 @@ config FREETZ_SQUASHFS_BLOCKSIZE
 	default 262144 if FREETZ_SQUASHFS_BLOCKSIZE_262144
 	default 524288 if FREETZ_SQUASHFS_BLOCKSIZE_524288
 	default 1048576 if FREETZ_SQUASHFS_BLOCKSIZE_1048576
-	# ensure reasonable default is provided if "SquashFS options"-menu is not visible
-	default 65536 if !FREETZ_SQUASHFS_BLOCKSIZE_ORIG
 	help
 		Numeric SquashFS block size in bytes
+
+endmenu # SquashFS options #
 
 
 menu "Override options"
