@@ -1,9 +1,9 @@
-KCONFIG_VERSION:=3.1
+KCONFIG_VERSION:=3.7
 KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.gz
 # Cannot check MD5 because URL produces slightly different archives even
 # though unpacked contents are identical.
 #KCONFIG_SOURCE_MD5:=xxx
-KCONFIG_SITE:=http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=snapshot;h=0efcb507b7f49a4d022a43b7309e2146fdb13b03;sf=tgz
+KCONFIG_SITE:=http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=snapshot;h=80c5770e79175a33026cf083a894fd4ebb0b9f1e;sf=tgz
 KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
 KCONFIG_MAKE_DIR:=$(TOOLS_DIR)/make
 KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
