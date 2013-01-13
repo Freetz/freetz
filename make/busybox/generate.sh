@@ -12,6 +12,10 @@ default_string() {
 	sed -i "/^config FREETZ_BUSYBOX_$1$/{N;N;N;N;N;s#\tdefault [^\n]*#default \"$2\"#}" "$BBOUT"
 }
 
+default_choice() {
+	sed -r -i "/^[ \t]*prompt \"$1\"/{N;N;N;N;N;s/(\tdefault )[^\n]*/\1$2/}" "$BBOUT"
+}
+
 echo -n "unpacking ..."
 rm -rf "$BBDIR/busybox-$BBVER"
 tar xf "$BBDIR/../../dl/busybox-$BBVER.tar.bz2" -C "$BBDIR"
@@ -46,5 +50,6 @@ default_int "FEATURE_COPYBUF_KB" 64
 default_int "FEATURE_EDITING_HISTORY" 15
 default_int "FEATURE_VI_MAX_LEN" 1024
 default_string "BUSYBOX_EXEC_PATH" "/bin/busybox"
+default_choice "Buffer allocation policy" FREETZ_BUSYBOX_FEATURE_BUFFERS_GO_ON_STACK
 
 echo " done."
