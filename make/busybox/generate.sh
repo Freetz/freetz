@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Generates a Config.in(.busybox) of Busybox for Freetz
 BBDIR="$(dirname $(readlink -f $0))"
 BBVER="$(sed -n 's/$(call PKG_INIT_BIN, \(.*\))/\1/p' $BBDIR/busybox.mk)"
