@@ -47,17 +47,6 @@ $($(PKG)_TARGET_BINARY).links: $($(PKG)_BINARY).links
 
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 
-$(pkg)-menuconfig: $($(PKG)_DIR)/.unpacked
-	@cat $(TOPDIR)/.config \
-		| sed -nr 's!^(# )*(FREETZ_BUSYBOX_)([^_].*)!\1CONFIG_\3!p' \
-		> $(BUSYBOX_CONFIG_FILE)
-	$(SUBMAKE) -C $(BUSYBOX_DIR) \
-		$(BUSYBOX_MAKE_FLAGS) \
-		menuconfig
-	grep -v '^CONFIG_' $(BUSYBOX_CONFIG_FILE)
-
-$(pkg)-oldconfig: $($(PKG)_DIR)/.configured
-
 $(pkg)-precompiled: uclibc $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_BINARY).links
 
 $(pkg)-clean: $(pkg)-uninstall
@@ -69,7 +58,5 @@ $(pkg)-uninstall:
 $(pkg)-dirclean:
 
 $(pkg)-distclean: busybox-dirclean
-
-.PHONY: busybox-menuconfig busybox-oldconfig
 
 $(PKG_FINISH)
