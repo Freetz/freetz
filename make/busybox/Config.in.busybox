@@ -177,7 +177,7 @@ config FREETZ_BUSYBOX_FEATURE_CHECK_UNICODE_IN_ENV
 config FREETZ_BUSYBOX_SUBST_WCHAR
 	int "Character code to substitute unprintable characters with"
 	depends on FREETZ_BUSYBOX_UNICODE_SUPPORT
-	default 63
+	default 0
 	help
 	  Typical values are 63 for '?' (works with any output device),
 	  30 for ASCII substitute control code,
@@ -186,7 +186,7 @@ config FREETZ_BUSYBOX_SUBST_WCHAR
 config FREETZ_BUSYBOX_LAST_SUPPORTED_WCHAR
 	int "Range of supported Unicode characters"
 	depends on FREETZ_BUSYBOX_UNICODE_SUPPORT
-	default 767
+	default 0
 	help
 	  Any character with Unicode value bigger than this is assumed
 	  to be non-printable on output device. Many applets replace

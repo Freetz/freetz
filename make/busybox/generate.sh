@@ -51,5 +51,7 @@ default_int "FEATURE_EDITING_HISTORY" 15
 default_int "FEATURE_VI_MAX_LEN" 1024
 default_string "BUSYBOX_EXEC_PATH" "/bin/busybox"
 default_choice "Buffer allocation policy" FREETZ_BUSYBOX_FEATURE_BUFFERS_GO_ON_STACK
+default_int SUBST_WCHAR 0
+default_int LAST_SUPPORTED_WCHAR 0
 
 echo " done."
