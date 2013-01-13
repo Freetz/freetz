@@ -80,13 +80,9 @@ config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 
 config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
 	bool "Use 'ip' instead of 'ifconfig' and 'route'"
-	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_BUSYBOX_IP
-	select FREETZ_BUSYBOX_FEATURE_IP_ADDRESS
-	select FREETZ_BUSYBOX_FEATURE_IP_LINK
-	select FREETZ_BUSYBOX_FEATURE_IP_ROUTE
+	depends on FREETZ_PACKAGE_OPENVPN
+	select FREETZ_BUSYBOX_IP
 	default n
 	help
 		Enables openvpn to use ip when setting IPs, link parameters and routes.
-
-comment "selects busybox's 'IP' options 'link', 'address' and 'route' (if not yet selected) ---"
-	depends on FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
+		This selects busybox's 'IP' applet.

@@ -113,11 +113,11 @@ case $1 in
 	unload)
 		stop
 		if [ "$DAEMON" = "openvpn" ]; then
-		for d in $(echo "${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' ); do
-				DAEMON="$d"
-				DAEMON_LONG_NAME=$DAEMON
-				stop
-		done
+			for d in $(echo "${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' ); do
+					DAEMON="$d"
+					DAEMON_LONG_NAME=$DAEMON
+					stop
+			done
 			modunreg file openvpn
 			modunreg daemon openvpn
 			modunreg cgi openvpn
