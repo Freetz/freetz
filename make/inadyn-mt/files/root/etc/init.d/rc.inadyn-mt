@@ -59,9 +59,11 @@ configure () {
 				echo dyndns_server_name $(echo $value | cut -d\  -f1)
 				echo dyndns_server_url $(echo $value | cut -d\  -f2)
 			fi
-			for value in $(ivalueof INADYN_MT_ALIAS $ii); do
+			local alias="$(ivalueof INADYN_MT_ALIAS $ii)"
+			for value in $alias; do
 				echo "alias $value"
 			done
+			[ -z "$alias" ] && echo "alias alias$ii"
 			value=$(ivalueof INADYN_MT_USER $ii)
 			[ -n "$value" ] && echo "username $value"
 			value=$(ivalueof INADYN_MT_PASS $ii)
