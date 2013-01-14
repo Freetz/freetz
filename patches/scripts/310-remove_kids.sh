@@ -5,8 +5,7 @@ rm_files \
   $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*') \
   ${HTML_LANG_MOD_DIR}/internet/kids*.lua \
   ${FILESYSTEM_MOD_DIR}/sbin/contfiltd \
-  ${FILESYSTEM_MOD_DIR}/etc/bpjm.data \
-  ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libuser.so
+  ${FILESYSTEM_MOD_DIR}/etc/bpjm.data
 
 # Prevent continous reboots on 3170 with replace kernel
 if [ "$FREETZ_REMOVE_DSLD" = "y" ] || ! ( isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ); then
