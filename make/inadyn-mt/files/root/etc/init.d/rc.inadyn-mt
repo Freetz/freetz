@@ -29,7 +29,7 @@ configure () {
 	while [ 5 -gt $ii ]; do
 		if [ yes = "$(ivalueof INADYN_MT_ACTIVE $ii)" ]; then
 
-			value=$(ivalueof INADYN_MT_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,')
+			local url=$(ivalueof INADYN_MT_URL $ii | sed 's,\([^/]*\)\(.*\),\1 \2,')
 			case $(ivalueof INADYN_MT_SERVICE $ii) in
 				dyndns.org)
 					echo -e '\ndyndns_system dyndns@dyndns.org'
@@ -50,20 +50,26 @@ configure () {
 					echo -e '\ndyndns_system default@no-ip.com'
 					;;
 				userdefined)
-					[ -z "$value" ] && continue
+					[ -z "$url" ] && continue
 					echo -e '\ndyndns_system custom@http_svr_basic_auth'
 					;;
 			esac
 
-			if [ -n "$value" ]; then
-				echo dyndns_server_name $(echo $value | cut -d\  -f1)
-				echo dyndns_server_url $(echo $value | cut -d\  -f2)
+			if [ -n "$url" ]; then
+				echo dyndns_server_name $(echo $url | cut -d\  -f1)
+				echo dyndns_server_url $(echo $url | cut -d\  -f2)
 			fi
+
 			local alias="$(ivalueof INADYN_MT_ALIAS $ii)"
 			for value in $alias; do
 				echo "alias $value"
 			done
-			[ -z "$alias" ] && echo "alias alias$ii"
+			local url_hostname="${url#*[?&]hostname=}"
+			if [ -z "$alias" -a "$url_hostname" != "$url" ]; then
+				#use hostname= as alias, see http://freetz.org/ticket/1960
+				echo "alias ${url_hostmname%%&*}"
+			fi
+
 			value=$(ivalueof INADYN_MT_USER $ii)
 			[ -n "$value" ] && echo "username $value"
 			value=$(ivalueof INADYN_MT_PASS $ii)
