@@ -124,7 +124,7 @@
 -#STATIC_LINKING: CFLAGS += -DSTATIC
 -#STATIC_LINKING: LDFLAGS = -static
 +CFLAGS = -Wall -D_GNU_SOURCE -pthread
-+CPPFLAGS = -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavutil -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavcodec -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavformat
++#CPPFLAGS = -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavutil -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavcodec -I$(CROSS_TOOLCHAIN_SYSROOT)/usr/include/libavformat
  CC = gcc
  RM = rm -f
  INSTALL = install
