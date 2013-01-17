@@ -60,6 +60,6 @@ default_int SUBST_WCHAR 0
 default_int LAST_SUPPORTED_WCHAR 0
 default_string BUSYBOX_EXEC_PATH "/bin/busybox"
 default_choice "Buffer allocation policy" FREETZ_BUSYBOX_FEATURE_BUFFERS_GO_ON_STACK
-depends_on LOCALE_SUPPORT "FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET"
+depends_on LOCALE_SUPPORT "!FREETZ_TARGET_UCLIBC_VERSION_0_9_28"
 
 echo " done."
