@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 1.8.3)
+$(call PKG_INIT_BIN, 1.8.8)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=7ad8c97c89f77aab7a00317eb7e811e9
-$(PKG)_SITE:=http://alioth.debian.org/frs/download.php/3706
+$(PKG)_SOURCE_MD5:=069dc875a2ae2d85a2ebceac73252c0a
+$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/3862
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/pcscd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/pcscd
 $(PKG)_LIB:=$($(PKG)_DIR)/src/.libs/libpcsclite.so.$($(PKG)_LIB_VERSION)
