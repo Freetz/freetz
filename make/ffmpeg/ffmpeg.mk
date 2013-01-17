@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.11.2)
+$(call PKG_INIT_BIN, 1.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=93c1908022567b321df74db7214da6ac
+$(PKG)_SOURCE_MD5:=578c590a0e996c1fc71acb666c0ed858
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
 $(PKG)_DEPENDS_ON := zlib
@@ -14,8 +14,8 @@ $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 $(PKG)_LIBNAMES_SHORT      := avcodec avdevice avfilter avformat avutil postproc swresample swscale
-$(PKG)_LIBVERSIONS_MAJOR   := 54      54       2        54       51     52       0          2
-$(PKG)_LIBVERSIONS_MINOR   := 23.100  0.100    77.100   6.100    54.100 0.100    15.100     1.100
+$(PKG)_LIBVERSIONS_MAJOR   := 54      54       3        54       52     52       0          2
+$(PKG)_LIBVERSIONS_MINOR   := 86.100  3.102    32.100   59.106   13.100 2.100    17.102     1.103
 
 $(PKG)_LIBNAMES_LONG_MAJOR := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS_MAJOR))
 $(PKG)_LIBNAMES_LONG       := $(join $($(PKG)_LIBNAMES_LONG_MAJOR:%=%.),$($(PKG)_LIBVERSIONS_MINOR))
@@ -43,6 +43,7 @@ $(PKG)_CONFIGURE_DEFOPTS := n
 $(PKG)_CONFIGURE_OPTIONS += --enable-cross-compile
 $(PKG)_CONFIGURE_OPTIONS += --cross-prefix="$(TARGET_CROSS)"
 $(PKG)_CONFIGURE_OPTIONS += --arch="$(TARGET_ARCH)"
+$(PKG)_CONFIGURE_OPTIONS += --disable-mips32r2
 $(PKG)_CONFIGURE_OPTIONS += --target-os=linux
 $(PKG)_CONFIGURE_OPTIONS += --prefix="/usr"
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
@@ -55,7 +56,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-version3
 $(PKG)_CONFIGURE_OPTIONS += --disable-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-dxva2
 $(PKG)_CONFIGURE_OPTIONS += --disable-mmx
-$(PKG)_CONFIGURE_OPTIONS += --disable-mmx2
+$(PKG)_CONFIGURE_OPTIONS += --disable-mmxext
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthreads
 $(PKG)_CONFIGURE_OPTIONS += --disable-optimizations
 $(PKG)_CONFIGURE_OPTIONS += --enable-small
@@ -70,12 +71,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-devices
 $(PKG)_CONFIGURE_OPTIONS += --disable-filters
 $(PKG)_CONFIGURE_OPTIONS += --disable-hwaccels
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-encoders
-$(PKG)_CONFIGURE_OPTIONS += --disable-decoders
-$(PKG)_CONFIGURE_OPTIONS += --disable-muxers
-$(PKG)_CONFIGURE_OPTIONS += --disable-demuxers
-$(PKG)_CONFIGURE_OPTIONS += --disable-parsers
-$(PKG)_CONFIGURE_OPTIONS += --disable-protocols
+$(PKG)_CONFIGURE_OPTIONS += --disable-everything
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_ENCODERS)
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_DECODERS)
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_MUXERS)
