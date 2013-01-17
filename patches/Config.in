@@ -821,6 +821,7 @@ config FREETZ_REMOVE_QOS
 config FREETZ_REMOVE_AVM_E2FSPROGS
 	bool "Remove e2fsprogs"
 	depends on FREETZ_HAS_AVM_E2FSPROGS
+	default y if FREETZ_PATCH_FREETZMOUNT
 	default n
 	help
 		Removes the e2fsprogs files (blkid, fsck, mkfs) and
