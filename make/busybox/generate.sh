@@ -16,6 +16,9 @@ default_string() {
 default_choice() {
 	sed -r -i "/^[ \t]*prompt \"$1\"/{N;N;N;N;N;s/(\tdefault )[^\n]*/\1$2/}" "$BBOUT"
 }
+depends_on() {
+	sed -r -i "/^config FREETZ_BUSYBOX_$1/{N;N;N;N;N;s/(\thelp\n)/\tdepends on $2\n\1/}" "$BBOUT"
+}
 
 echo -n "unpacking ..."
 rm -rf "$BBDIR/busybox-$BBVER"
@@ -53,9 +56,10 @@ sed -n 's/^config /$(PKG)_REBUILD_SUBOPTS += /p' "$BBOUT" | sort -u >> "$BBDEP"
 
 default_int FEATURE_COPYBUF_KB 64
 default_int FEATURE_VI_MAX_LEN 1024
-default_string BUSYBOX_EXEC_PATH "/bin/busybox"
-default_choice "Buffer allocation policy" FREETZ_BUSYBOX_FEATURE_BUFFERS_GO_ON_STACK
 default_int SUBST_WCHAR 0
 default_int LAST_SUPPORTED_WCHAR 0
+default_string BUSYBOX_EXEC_PATH "/bin/busybox"
+default_choice "Buffer allocation policy" FREETZ_BUSYBOX_FEATURE_BUFFERS_GO_ON_STACK
+depends_on LOCALE_SUPPORT "FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET"
 
 echo " done."
