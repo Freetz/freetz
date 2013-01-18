@@ -1,8 +1,8 @@
 $(call PKG_INIT_BIN, 1.4.9)
 $(PKG)_SOURCE:=ccid-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/3864/
+$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/3866/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libccid.la
-$(PKG)_SOURCE_MD5:=1afd9cc6fb1676d1fdd605d10c70d08e
+$(PKG)_SOURCE_MD5:=697dca102b676a8d391b0492acaef2e8
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libccid.la
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/pcsc/drivers/ifd-ccid.bundle/Contents/Linux/libccid.so
 $(PKG)_UDEV_RULESFILE:=$($(PKG)_DEST_DIR)/etc/udev/rules.d/92_pcscd_ccid.rules
