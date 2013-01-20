@@ -39,14 +39,21 @@ $BBDIR/../../tools/parse-config Config.in >> "$BBOUT" 2>/dev/null
 rm -rf "$BBDIR/busybox-$BBVER"
 
 echo -n " searching ..."
-des=""
-for c in $(sed -n 's/^config //p' "$BBOUT"); do
-	[ -n "$des" ] && des="${des};"
-	des="${des}s!\([ (!]\)\($c$\)!\1FREETZ_BUSYBOX_\2!g;s!\([ (!]\)\($c[) ]\)!\1FREETZ_BUSYBOX_\2!g"
+nonfeature_symbols=""
+feature_symbols=""
+for symbol in $(sed -n 's/^config //p' "$BBOUT"); do
+	if [ "${symbol:0:8}" != "FEATURE_" ]; then
+		nonfeature_symbols="${nonfeature_symbols}${nonfeature_symbols:+|}${symbol}"
+	else
+		feature_symbols="${feature_symbols}${feature_symbols:+|}${symbol}"
+	fi
 done
 
 echo -n " replacing ..."
-sed -i "$des" "$BBOUT"
+sed -i -r \
+	-e "s,([ (!])(${feature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g" \
+	-e "/^[ \t#]*(config|default|depends|select)/{s,([ (!])(${nonfeature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g}" \
+	"$BBOUT"
 sed -i '/^mainmenu /d' "$BBOUT"
 sed -i 's!\(^#*[\t ]*default \)y\(.*\)$!\1n\2!g;' "$BBOUT"
 

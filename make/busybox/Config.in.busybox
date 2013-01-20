@@ -484,24 +484,24 @@ config FREETZ_BUSYBOX_PIE
 	default n
 	depends on !FREETZ_BUSYBOX_STATIC
 	help
-	  Hardened code option. FREETZ_BUSYBOX_PIE binaries are loaded at a different
+	  Hardened code option. PIE binaries are loaded at a different
 	  address at each invocation. This has some overhead,
 	  particularly on x86-32 which is short on registers.
 
 	  Most people will leave this set to 'N'.
 
 config FREETZ_BUSYBOX_NOMMU
-	bool "Force FREETZ_BUSYBOX_NOMMU build"
+	bool "Force NOMMU build"
 	default n
 	help
 	  Busybox tries to detect whether architecture it is being
 	  built against supports MMU or not. If this detection fails,
-	  or if you want to build FREETZ_BUSYBOX_NOMMU version of busybox for testing,
-	  you may force FREETZ_BUSYBOX_NOMMU build here.
+	  or if you want to build NOMMU version of busybox for testing,
+	  you may force NOMMU build here.
 
 	  Most people will leave this set to 'N'.
 
-# FREETZ_BUSYBOX_PIE can be made to work with BUILD_LIBBUSYBOX, but currently
+# PIE can be made to work with BUILD_LIBBUSYBOX, but currently
 # build system does not support that
 config FREETZ_BUSYBOX_BUILD_LIBBUSYBOX
 	bool "Build shared libbusybox"
@@ -1252,13 +1252,13 @@ config FREETZ_BUSYBOX_RPM2CPIO
 	bool "rpm2cpio"
 	default n
 	help
-	  Converts a FREETZ_BUSYBOX_RPM file into a FREETZ_BUSYBOX_CPIO archive.
+	  Converts a RPM file into a CPIO archive.
 
 config FREETZ_BUSYBOX_RPM
 	bool "rpm"
 	default n
 	help
-	  Mini FREETZ_BUSYBOX_RPM applet - queries and extracts FREETZ_BUSYBOX_RPM packages.
+	  Mini RPM applet - queries and extracts RPM packages.
 
 config FREETZ_BUSYBOX_TAR
 	bool "tar"
@@ -1474,7 +1474,7 @@ config FREETZ_BUSYBOX_FEATURE_DATE_COMPAT
 	depends on FREETZ_BUSYBOX_DATE
 	help
 	  System time can be set by 'date -s DATE' and simply 'date DATE',
-	  but formats of FREETZ_BUSYBOX_DATE string are different. 'date DATE' accepts
+	  but formats of DATE string are different. 'date DATE' accepts
 	  a rather weird MMDDhhmm[[YY]YY][.ss] format with completely
 	  unnatural placement of year between minutes and seconds.
 	  date -s (and other commands like touch -d) use more sensible
@@ -1493,7 +1493,7 @@ config FREETZ_BUSYBOX_ID
 	bool "id"
 	default n
 	help
-	  id displays the current user and group FREETZ_BUSYBOX_ID names.
+	  id displays the current user and group ID names.
 config FREETZ_BUSYBOX_GROUPS
 	bool "groups"
 	default n
@@ -1658,7 +1658,7 @@ config FREETZ_BUSYBOX_DD
 	  while optionally performing conversions on it.
 
 config FREETZ_BUSYBOX_FEATURE_DD_SIGNAL_HANDLING
-	bool "Enable FREETZ_BUSYBOX_DD signal handling for status reporting"
+	bool "Enable DD signal handling for status reporting"
 	default n
 	depends on FREETZ_BUSYBOX_DD
 	help
@@ -1803,7 +1803,7 @@ config FREETZ_BUSYBOX_FALSE
 	bool "false"
 	default n
 	help
-	  false returns an exit code of FREETZ_BUSYBOX_FALSE (1).
+	  false returns an exit code of FALSE (1).
 
 config FREETZ_BUSYBOX_FOLD
 	bool "fold"
@@ -2214,7 +2214,7 @@ config FREETZ_BUSYBOX_TRUE
 	bool "true"
 	default n
 	help
-	  true returns an exit code of FREETZ_BUSYBOX_TRUE (0).
+	  true returns an exit code of TRUE (0).
 
 config FREETZ_BUSYBOX_TTY
 	bool "tty"
@@ -3171,13 +3171,13 @@ config FREETZ_BUSYBOX_FEATURE_KILL_REMOVED
 	  that have been removed.
 
 config FREETZ_BUSYBOX_FEATURE_KILL_DELAY
-	int "How long to wait between TERM and FREETZ_BUSYBOX_KILL (0 - send TERM only)" if FREETZ_BUSYBOX_FEATURE_KILL_REMOVED
+	int "How long to wait between TERM and KILL (0 - send TERM only)" if FREETZ_BUSYBOX_FEATURE_KILL_REMOVED
 	range 0 1024
 	default 0
 	depends on FREETZ_BUSYBOX_FEATURE_KILL_REMOVED
 	help
 	  With nonzero setting, init sends TERM, forks, child waits N
-	  seconds, sends FREETZ_BUSYBOX_KILL and exits. Setting it too high is unwise
+	  seconds, sends KILL and exits. Setting it too high is unwise
 	  (child will hang around for too long and could actually kill
 	  the wrong process!)
 
@@ -3306,7 +3306,7 @@ config FREETZ_BUSYBOX_USE_BB_PWD_GRP
 	  system's /etc/password, /etc/group files (and your system will be
 	  smaller, and I will get fewer emails asking about how glibc NSS
 	  works). When this option is enabled, you will not be able to use
-	  FREETZ_BUSYBOX_PAM to access remote LDAP password servers and whatnot. And if you
+	  PAM to access remote LDAP password servers and whatnot. And if you
 	  want hostname resolution to work with glibc, you still need the
 	  /lib/libnss_* libraries.
 
@@ -3332,7 +3332,7 @@ config FREETZ_BUSYBOX_USE_BB_SHADOW
 	  system's /etc/shadow file when handling shadow passwords. This
 	  makes your system smaller (and I will get fewer emails asking about
 	  how glibc NSS works). When this option is enabled, you will not be
-	  able to use FREETZ_BUSYBOX_PAM to access shadow passwords from remote LDAP
+	  able to use PAM to access shadow passwords from remote LDAP
 	  password servers and whatnot.
 
 config FREETZ_BUSYBOX_USE_BB_CRYPT
@@ -3349,7 +3349,7 @@ config FREETZ_BUSYBOX_USE_BB_CRYPT
 	  DES encryption/decryption.
 
 	  For busybox, having large static buffers is undesirable,
-	  especially on FREETZ_BUSYBOX_NOMMU machines. Busybox also doesn't need
+	  especially on NOMMU machines. Busybox also doesn't need
 	  DES encryption/decryption and can do with smaller code.
 
 	  If you enable this option, it will add about 4.8k of code
@@ -3487,17 +3487,17 @@ config FREETZ_BUSYBOX_LOGIN_SESSION_AS_CHILD
 	depends on FREETZ_BUSYBOX_LOGIN
 	help
 	  Run the logged in session in a child process.  This allows
-	  login to clean up things such as utmp entries or FREETZ_BUSYBOX_PAM sessions
+	  login to clean up things such as utmp entries or PAM sessions
 	  when the login session is complete.  If you use PAM, you
-	  almost always would want this to be set to Y, else FREETZ_BUSYBOX_PAM session
+	  almost always would want this to be set to Y, else PAM session
 	  will not be cleaned up.
 
 config FREETZ_BUSYBOX_PAM
-	bool "Support for FREETZ_BUSYBOX_PAM (Pluggable Authentication Modules)"
+	bool "Support for PAM (Pluggable Authentication Modules)"
 	default n
 	depends on FREETZ_BUSYBOX_LOGIN
 	help
-	  Use FREETZ_BUSYBOX_PAM in login(1) instead of direct access to password database.
+	  Use PAM in login(1) instead of direct access to password database.
 
 config FREETZ_BUSYBOX_LOGIN_SCRIPTS
 	bool "Support for login scripts"
@@ -5173,7 +5173,7 @@ config FREETZ_BUSYBOX_FEATURE_CHAT_TTY_HIFI
 	depends on FREETZ_BUSYBOX_CHAT
 	default n
 	help
-	  Original chat always treats STDIN as a FREETZ_BUSYBOX_TTY device and sets for it
+	  Original chat always treats STDIN as a TTY device and sets for it
 	  so-called raw mode. This option turns on such behaviour.
 
 config FREETZ_BUSYBOX_FEATURE_CHAT_IMPLICIT_CR
@@ -5806,7 +5806,7 @@ config FREETZ_BUSYBOX_STUN_IP
 	bool "stun-ip"
 	default n
 	help
-	  determine external FREETZ_BUSYBOX_IP address via STUN
+	  determine external IP address via STUN
 
 config FREETZ_BUSYBOX_WHOIS
 	bool "whois"
@@ -5861,14 +5861,14 @@ config FREETZ_BUSYBOX_ARP
 	default n
 	select FREETZ_BUSYBOX_PLATFORM_LINUX
 	help
-	  Manipulate the system FREETZ_BUSYBOX_ARP cache.
+	  Manipulate the system ARP cache.
 
 config FREETZ_BUSYBOX_ARPING
 	bool "arping"
 	default n
 	select FREETZ_BUSYBOX_PLATFORM_LINUX
 	help
-	  Ping hosts by FREETZ_BUSYBOX_ARP packets.
+	  Ping hosts by ARP packets.
 
 config FREETZ_BUSYBOX_BRCTL
 	bool "brctl"
@@ -6087,11 +6087,11 @@ config FREETZ_BUSYBOX_FEATURE_HTTPD_PROXY
 	  http://hostname[:port]/new/path/myfile.
 
 config FREETZ_BUSYBOX_FEATURE_HTTPD_GZIP
-	bool "Support for FREETZ_BUSYBOX_GZIP content encoding"
+	bool "Support for GZIP content encoding"
 	default n
 	depends on FREETZ_BUSYBOX_HTTPD
 	help
-	  Makes httpd send files using FREETZ_BUSYBOX_GZIP content encoding if the
+	  Makes httpd send files using GZIP content encoding if the
 	  client supports it and a pre-compressed <file>.gz exists.
 
 config FREETZ_BUSYBOX_IFCONFIG
@@ -6164,8 +6164,8 @@ config FREETZ_BUSYBOX_IFUPDOWN
 	  Activate or deactivate the specified interfaces. This applet makes
 	  use of either "ifconfig" and "route" or the "ip" command to actually
 	  configure network interfaces. Therefore, you will probably also want
-	  to enable either FREETZ_BUSYBOX_IFCONFIG and ROUTE, or enable
-	  FREETZ_BUSYBOX_FEATURE_IFUPDOWN_IP and the various FREETZ_BUSYBOX_IP options. Of
+	  to enable either IFCONFIG and ROUTE, or enable
+	  FREETZ_BUSYBOX_FEATURE_IFUPDOWN_IP and the various IP options. Of
 	  course you could use non-busybox versions of these programs, so
 	  against my better judgement (since this will surely result in plenty
 	  of support questions on the mailing list), I do not force you to
@@ -6410,7 +6410,7 @@ config FREETZ_BUSYBOX_IPCALC
 	bool "ipcalc"
 	default n
 	help
-	  ipcalc takes an FREETZ_BUSYBOX_IP address and netmask and calculates the
+	  ipcalc takes an IP address and netmask and calculates the
 	  resulting broadcast, network, and host range.
 
 config FREETZ_BUSYBOX_FEATURE_IPCALC_FANCY
@@ -6483,7 +6483,7 @@ config FREETZ_BUSYBOX_ROUTE
 	default n
 	select FREETZ_BUSYBOX_PLATFORM_LINUX
 	help
-	  Route displays or manipulates the kernel's FREETZ_BUSYBOX_IP routing tables.
+	  Route displays or manipulates the kernel's IP routing tables.
 
 config FREETZ_BUSYBOX_SLATTACH
 	bool "slattach"
@@ -6514,7 +6514,7 @@ config FREETZ_BUSYBOX_TELNET
 	bool "telnet"
 	default n
 	help
-	  Telnet is an interface to the FREETZ_BUSYBOX_TELNET protocol, but is also commonly
+	  Telnet is an interface to the TELNET protocol, but is also commonly
 	  used to test other simple protocols.
 
 config FREETZ_BUSYBOX_FEATURE_TELNET_TTYPE
@@ -6541,8 +6541,8 @@ config FREETZ_BUSYBOX_TELNETD
 	default n
 	select FREETZ_BUSYBOX_FEATURE_SYSLOG
 	help
-	  A daemon for the FREETZ_BUSYBOX_TELNET protocol, allowing you to log onto the host
-	  running the daemon. Please keep in mind that the FREETZ_BUSYBOX_TELNET protocol
+	  A daemon for the TELNET protocol, allowing you to log onto the host
+	  running the daemon. Please keep in mind that the TELNET protocol
 	  sends passwords in plain text. If you can't afford the space for an
 	  SSH daemon and you trust your network, you may say 'y' here. As a
 	  more secure alternative, you should seriously consider installing the
@@ -6569,7 +6569,7 @@ config FREETZ_BUSYBOX_TELNETD
 
 		  mount -t devpts devpts /dev/pts
 
-	  You need to be sure that busybox has FREETZ_BUSYBOX_LOGIN and
+	  You need to be sure that busybox has LOGIN and
 	  FREETZ_BUSYBOX_FEATURE_SUID enabled. And finally, you should make
 	  certain that Busybox has been installed setuid root:
 
@@ -6611,7 +6611,7 @@ config FREETZ_BUSYBOX_TFTP
 	bool "tftp"
 	default n
 	help
-	  This enables the Trivial File Transfer Protocol client program. FREETZ_BUSYBOX_TFTP
+	  This enables the Trivial File Transfer Protocol client program. TFTP
 	  is usually used for simple, small transfers such as a root image
 	  for a network-enabled bootloader.
 
@@ -6633,8 +6633,8 @@ config FREETZ_BUSYBOX_FEATURE_TFTP_GET
 	default n
 	depends on FREETZ_BUSYBOX_TFTP || FREETZ_BUSYBOX_TFTPD
 	help
-	  Add support for the GET command within the FREETZ_BUSYBOX_TFTP client. This allows
-	  a client to retrieve a file from a FREETZ_BUSYBOX_TFTP server.
+	  Add support for the GET command within the TFTP client. This allows
+	  a client to retrieve a file from a TFTP server.
 	  Also enable upload support in tftpd, if tftpd is selected.
 
 	  Note: this option does _not_ make tftpd capable of download
@@ -6645,8 +6645,8 @@ config FREETZ_BUSYBOX_FEATURE_TFTP_PUT
 	default n
 	depends on FREETZ_BUSYBOX_TFTP || FREETZ_BUSYBOX_TFTPD
 	help
-	  Add support for the PUT command within the FREETZ_BUSYBOX_TFTP client. This allows
-	  a client to transfer a file to a FREETZ_BUSYBOX_TFTP server.
+	  Add support for the PUT command within the TFTP client. This allows
+	  a client to transfer a file to a TFTP server.
 	  Also enable download support in tftpd, if tftpd is selected.
 
 config FREETZ_BUSYBOX_FEATURE_TFTP_BLOCKSIZE
@@ -6677,7 +6677,7 @@ config FREETZ_BUSYBOX_TRACEROUTE
 	default n
 	select FREETZ_BUSYBOX_PLATFORM_LINUX
 	help
-	  Utility to trace the route of FREETZ_BUSYBOX_IP packets.
+	  Utility to trace the route of IP packets.
 
 config FREETZ_BUSYBOX_TRACEROUTE6
 	bool "traceroute6"
@@ -6707,7 +6707,7 @@ config FREETZ_BUSYBOX_FEATURE_TRACEROUTE_USE_ICMP
 	default n
 	depends on FREETZ_BUSYBOX_TRACEROUTE
 	help
-	  Add option -I to use ICMP FREETZ_BUSYBOX_ECHO instead of UDP datagrams.
+	  Add option -I to use ICMP ECHO instead of UDP datagrams.
 
 config FREETZ_BUSYBOX_TUNCTL
 	bool "tunctl"
@@ -6774,18 +6774,18 @@ config FREETZ_BUSYBOX_FEATURE_UDHCPD_WRITE_LEASES_EARLY
 	  rewriting remains undisturbed.
 
 config FREETZ_BUSYBOX_FEATURE_UDHCPD_BASE_IP_ON_MAC
-	bool "Select FREETZ_BUSYBOX_IP address based on client MAC"
+	bool "Select IP address based on client MAC"
 	default n
 	depends on FREETZ_BUSYBOX_UDHCPD
 	help
-	  If selected, udhcpd will base its selection of FREETZ_BUSYBOX_IP address to offer
+	  If selected, udhcpd will base its selection of IP address to offer
 	  on the client's hardware address. Otherwise udhcpd uses the next
 	  consecutive free address.
 
-	  This reduces the frequency of FREETZ_BUSYBOX_IP address changes for clients
+	  This reduces the frequency of IP address changes for clients
 	  which let their lease expire, and makes consecutive DHCPOFFERS
 	  for the same client to (almost always) contain the same
-	  FREETZ_BUSYBOX_IP address.
+	  IP address.
 
 config FREETZ_BUSYBOX_DHCPD_LEASES_FILE
 	string "Absolute path to lease file"
@@ -6807,11 +6807,11 @@ config FREETZ_BUSYBOX_UDHCPC
 	  runs a script when a lease is obtained or lost.
 
 config FREETZ_BUSYBOX_FEATURE_UDHCPC_ARPING
-	bool "Verify that the offered address is free, using FREETZ_BUSYBOX_ARP ping"
+	bool "Verify that the offered address is free, using ARP ping"
 	default n
 	depends on FREETZ_BUSYBOX_UDHCPC
 	help
-	  If selected, udhcpc will send FREETZ_BUSYBOX_ARP probes and make sure
+	  If selected, udhcpc will send ARP probes and make sure
 	  the offered address is really not in use by anyone. The client
 	  will DHCPDECLINE the offer if the address is in use,
 	  and restart the discover process.
@@ -6851,7 +6851,7 @@ config FREETZ_BUSYBOX_FEATURE_UDHCP_8021Q
 	depends on FREETZ_BUSYBOX_UDHCPD || FREETZ_BUSYBOX_UDHCPC
 	help
 	  If selected, both client and server will support passing of VLAN
-	  FREETZ_BUSYBOX_ID and priority via options 132 and 133 as per 802.1Q.
+	  ID and priority via options 132 and 133 as per 802.1Q.
 
 config FREETZ_BUSYBOX_UDHCPC_DEFAULT_SCRIPT
 	string "Absolute path to config script"
@@ -6881,7 +6881,7 @@ config FREETZ_BUSYBOX_UDHCPC_SLACK_FOR_BUGGY_SERVERS
 	  Known buggy DHCP servers:
 	  3Com OfficeConnect Remote 812 ADSL Router:
 	    seems to confuse maximum allowed UDP packet size with
-	    maximum size of entire FREETZ_BUSYBOX_IP packet, and sends packets which are
+	    maximum size of entire IP packet, and sends packets which are
 	    28 bytes too large.
 	  Seednet (ISP) VDSL: sends packets 2 bytes too large.
 
@@ -6956,7 +6956,7 @@ config FREETZ_BUSYBOX_ZCIP
 	select FREETZ_BUSYBOX_PLATFORM_LINUX
 	select FREETZ_BUSYBOX_FEATURE_SYSLOG
 	help
-	  FREETZ_BUSYBOX_ZCIP provides ZeroConf IPv4 address selection, according to RFC 3927.
+	  ZCIP provides ZeroConf IPv4 address selection, according to RFC 3927.
 	  It's a daemon that allocates and defends a dynamically assigned
 	  address on the 169.254/16 network, requiring no system administrator.
 
@@ -7222,7 +7222,7 @@ config FREETZ_BUSYBOX_FEATURE_PS_LONG
 	depends on FREETZ_BUSYBOX_PS && !FREETZ_BUSYBOX_DESKTOP
 	help
 	  Support argument 'l' for long output.
-	  Adds fields PPID, RSS, START, FREETZ_BUSYBOX_TIME & FREETZ_BUSYBOX_TTY
+	  Adds fields PPID, RSS, START, TIME & TTY
 
 config FREETZ_BUSYBOX_FEATURE_PS_TIME
 	bool "Enable time and elapsed time output"
