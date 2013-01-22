@@ -33,7 +33,7 @@ for b in ps dmesg lsmod mount logread ifconfig showdsldstat; do
 done
 
 # (log)files
-for l in $(find /etc/*.pkg /var/log/* /etc/.config /etc/options.cfg /tmp/flash/mod/rc.* /var/flash/debug.cfg /var/env.cache /proc/partitions -type f -o -type c); do
+for l in $(find /etc/*.pkg /var/log/* /etc/.config /etc/options.cfg /tmp/flash/mod/rc.* /var/flash/debug.cfg /var/env.cache /proc/partitions /proc/bus/usb/devices /mod/etc/conf/cs_cams.cfg /mod/etc/conf/tbflex.cfg -type f -o -type c); do
 	cat $l > $SUPDIR/${l##*/} 2>&1
 done
 [ -e $SUPDIR/.config ] && mv $SUPDIR/.config $SUPDIR/config.txt
