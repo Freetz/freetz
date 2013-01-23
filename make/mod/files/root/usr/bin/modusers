@@ -1,65 +1,27 @@
 #!/bin/sh
+#save/load users and groups from/to flash (not TFFS)
 
-APPLET=${0##*/}
-
-usage() {
-	cat << EOF
-
-$0: get/put users, groups & passwords from/to save buffer
-Usage: $APPLET {load|save}
-
-Examples:
-  # Retrieve data from save buffer (*not* from TFFS)
-  $APPLET load
-
-  # Put data to save buffer (*not* to TFFS)
-  $APPLET save
-  # Make save buffer persistent in TFFS
-  modsave flash
-
-EOF
-}
-
-[ $# -eq 0 ] && usage && exit 0
-[ $# -ne 1 ] && usage >&2 && exit 1
-
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-FLASH_DIR=/tmp/flash
-USER_DIR=$FLASH_DIR/users
-TMP_DIR=/tmp
+SAVE_DIR=/tmp/flash/users
 FILES="passwd group shadow gshadow"
 
-make_user_dir()
-{
-	rm -rf $USER_DIR
-	mkdir -pm 700 $USER_DIR
-}
-
-save()
-{
-	make_user_dir
-	( cd $TMP_DIR && cp -a $FILES $USER_DIR	)
-}
-
-init_passwd()
-{
-	return 0
-#	WEBUI_PASSWD=$(allcfgconv -c -o - ar7 | sed -n -e '1,/webui/d' -e '/}/,$d' -e '/password/s/^.*"\(.*\)".*$/\1/p')
-#	CRYPT_PASSWD=$(httpd -m "$WEBUI_PASSWD")
-#	sed -i -e "s,^\(root:\)[^:]*\(.*\)$,\1${CRYPT_PASSWD}\2,g" $TMP_DIR/shadow
-#	/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/usr/sbin/httpd -m "$WEBUI_PASSWD")
-}
-
-load()
-{
-	if ! [ -d "$USER_DIR" ]; then
-		make_user_dir
-		init_passwd
-	fi
-
+save() {
+	[ ! -e /tmp/.usersloaded ] && return 1
+	rm -rf $SAVE_DIR
+	mkdir -pm 700 $SAVE_DIR
 	for f in $FILES; do
-		[ -e "$USER_DIR/$f" ] && cp -a "$USER_DIR/$f" "$TMP_DIR"
+		cat "/tmp/$f" > "$SAVE_DIR/$f" 2>/dev/null
 	done
+}
+
+load() {
+	mkdir -pm 700 $SAVE_DIR
+	for f in $FILES; do
+		grep -vE "^boxusr|^ftpuser" "$SAVE_DIR/$f" > "/tmp/$f" 2>/dev/null
+	done
+	grep -q "^ftpuser" /etc/passxx || grep ^ftpuser "$SAVE_DIR/passwd" >> /etc/passwd
+	grep -E "^boxusr|^ftpuser" /etc/passxx >> /etc/passwd
+	[ $(cat /etc/passxx | wc -l) -le 1 ] && grep -E "^boxusr" "$SAVE_DIR/passwd" >> /etc/passwd
+	touch /tmp/.usersloaded
 }
 
 case $1 in
@@ -69,8 +31,12 @@ case $1 in
 	load)
 		load
 		;;
+	update)
+		save
+		load
+		;;
 	*)
-		usage >&2
+		echo "Usage: $0 [load|save|update]" 1>&2
 		exit 1
 		;;
 esac
