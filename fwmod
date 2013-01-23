@@ -75,6 +75,7 @@ while getopts umpanfzc:i:d: opt; do
 	esac
 done
 shift $((OPTIND-1))
+FIRMWARE_NOCOMPILE=1
 
 # At least one (non-empty) firmware image name must be specified
 [ $# -ne 1 -a $# -ne 2 -o ! "$1" ] && usage >&2 && exit 1
