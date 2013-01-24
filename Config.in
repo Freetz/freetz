@@ -122,6 +122,14 @@ choice
 		select FREETZ_AVM_VERSION_04_67
 		bool "5140 Fon"
 
+	config FREETZ_TYPE_6810
+		select FREETZ_AVM_VERSION_3370_05_21
+		bool "6810 LTE - EXPERIMENTAL"
+
+	config FREETZ_TYPE_6840
+		select FREETZ_AVM_VERSION_3370_05_21
+		bool "6840 LTE"
+
 	config FREETZ_TYPE_7050
 		select FREETZ_AVM_VERSION_04_33
 		bool "7050 Fon WLAN"
@@ -214,14 +222,6 @@ choice
 		select FREETZ_AVM_VERSION_7270_04_86
 		bool "7570 VDSL Fon WLAN"
 
-	config FREETZ_TYPE_6810
-		select FREETZ_AVM_VERSION_3370_05_21
-		bool "6810 LTE - EXPERIMENTAL"
-
-	config FREETZ_TYPE_6840
-		select FREETZ_AVM_VERSION_3370_05_21
-		bool "6840 LTE"
-
 	config FREETZ_TYPE_CUSTOM
 		bool "Custom"
 		depends on FREETZ_SHOW_ADVANCED
@@ -289,7 +289,7 @@ choice
 	config FREETZ_TYPE_FIRMWARE_05_5X
 		bool "FRITZ!OS 05.5x - EXPERIMENTAL"
 		depends on \
-			FREETZ_USER_LEVEL_ADVANCED && \
+			FREETZ_SHOW_ADVANCED && \
 			FREETZ_TYPE_LANG_DE && ( \
 				FREETZ_TYPE_7390 || \
 				FREETZ_TYPE_7270_16 \
@@ -1330,6 +1330,7 @@ menu "Override options"
 		default "@AVM/fritzbox.fon/firmware/english/annex_b"                 if FREETZ_TYPE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 		default "@AVM/fritzbox_6810_lte/firmware/deutsch"                    if FREETZ_TYPE_FINAL && FREETZ_TYPE_6810
 		default "@AVM/fritzbox_6840_lte/firmware/deutsch"                    if FREETZ_TYPE_FINAL && FREETZ_TYPE_6840
+		default "@AVM/Beta/FRITZ!Box_6840_LTE"                               if FREETZ_TYPE_LABOR && FREETZ_TYPE_6840
 		default "@AVM/fritzbox.fon_5010/firmware/deutsch_a-ch"               if FREETZ_TYPE_FINAL && FREETZ_TYPE_5010
 		default "@AVM/fritzbox.fon_5050/firmware"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_5050
 		default "@AVM/fritzbox.fon_5124/firmware/english/annex_a"            if FREETZ_TYPE_FINAL && FREETZ_TYPE_5124 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -1397,6 +1398,7 @@ menu "Override options"
 		default "fritz.box_fon.en.06.04.49.image"                               if FREETZ_TYPE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 		default "FRITZ.Box_6810_LTE.108.05.27.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_6810
 		default "FRITZ.Box_6840_LTE.105.05.27.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_6840
+		default "FRITZ.Box_6840_LTE_BETA.105.05.29-24421.image"                 if FREETZ_TYPE_LABOR && FREETZ_TYPE_6840
 		default "fritz.box_fon_5010.annexa.48.04.43.image"                      if FREETZ_TYPE_FINAL && FREETZ_TYPE_5010
 		default "fritz.box_fon_5050.12.04.31.image"                             if FREETZ_TYPE_FINAL && FREETZ_TYPE_5050
 		default "FRITZ.Box_Fon_5124.AnnexA.en.57.04.76.image"                   if FREETZ_TYPE_FINAL && FREETZ_TYPE_5124 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -1651,7 +1653,7 @@ config FREETZ_INSTALL_BASE
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_librt
 	select FREETZ_LIB_libuClibc
-	select FREETZ_LIB_libctlmgr if FREETZ_HAS_AVM_USB_HOST && !FREETZ_AVM_VERSION_05_5X
+	select FREETZ_LIB_libctlmgr
 	default y
 	help
 		This is mandatory
