@@ -74,9 +74,6 @@ start() {
 		echo "done."
 	fi
 
-	# TODO: remove this
-	modusers update
-
 	touch /tmp/.modstarted
 
 	# 7390: external hook for nand flash, if NAND exists it is mounted under /var/media/ftp

@@ -4,6 +4,19 @@
 SAVE_DIR=/tmp/flash/users
 FILES="passwd group shadow gshadow"
 
+load() {
+	# /var/tmp/passwd.tmp is created by ctlmgr+libctlmgr.
+	# Do NOT MoVe /var/tmp/passwd.tmp! Keep /var/tmp/passwd.avm for later "load"s.
+	mkdir -pm 700 $SAVE_DIR
+	for f in $FILES; do
+		grep -vE "^boxusr|^ftpuser" "$SAVE_DIR/$f" > "/tmp/$f" 2>/dev/null
+	done
+	cp /var/tmp/passwd.tmp /var/tmp/passwd.avm 2>/dev/null && rm -rf /var/tmp/passwd.tmp
+	[ -e /var/tmp/passwd.avm ] && grep -v "^root:" /var/tmp/passwd.avm >> /etc/passwd
+	grep -q "^ftpuser" /etc/passwd || grep "^ftpuser" "$SAVE_DIR/passwd" >> /etc/passwd
+	touch /tmp/.usersloaded
+}
+
 save() {
 	[ ! -e /tmp/.usersloaded ] && return 1
 	rm -rf $SAVE_DIR
@@ -13,23 +26,12 @@ save() {
 	done
 }
 
-load() {
-	mkdir -pm 700 $SAVE_DIR
-	for f in $FILES; do
-		grep -vE "^boxusr|^ftpuser" "$SAVE_DIR/$f" > "/tmp/$f" 2>/dev/null
-	done
-	grep -q "^ftpuser" /etc/passxx || grep ^ftpuser "$SAVE_DIR/passwd" >> /etc/passwd
-	grep -E "^boxusr|^ftpuser" /etc/passxx >> /etc/passwd
-	[ $(cat /etc/passxx | wc -l) -le 1 ] && grep -E "^boxusr" "$SAVE_DIR/passwd" >> /etc/passwd
-	touch /tmp/.usersloaded
-}
-
 case $1 in
-	save)
-		save
-		;;
 	load)
 		load
+		;;
+	save)
+		save
 		;;
 	update)
 		save

@@ -1,25 +1,8 @@
 config FREETZ_LIB_libctlmgr
 	bool "libctlmgr (libctlmgr.so)"
-	depends on FREETZ_HAS_AVM_USB_HOST && !FREETZ_AVM_VERSION_05_5X
+	depends on FREETZ_HAS_AVM_USB_HOST
 	default n
 	help
 		This is Freetz compatibility library which overwrites functions of AVM's
 		libraries, e.g. write_etc_passwd.
 
-choice
-	prompt "Structure layout"
-		depends on FREETZ_LIB_libctlmgr
-
-	config FREETZ_LIB_libctlmgr_WITH_STRUCT_V1
-		bool "V1"
-		depends on FREETZ_HAS_AVM_CTLMGR_STRUCT_V1
-		help
-			1st structure layout.
-
-	config FREETZ_LIB_libctlmgr_WITH_STRUCT_V3
-		bool "V3"
-		depends on FREETZ_HAS_AVM_CTLMGR_STRUCT_V3
-		help
-			3rd structure layout (CeBIT 2012).
-
-endchoice # "Structure layout" #
