@@ -1,15 +1,14 @@
 /*
- * Compatibility library
- * Overites functions
+ * Shared library intended to be loaded via LD_PRELOAD.
+ * Overrides some uClibc functions to eliminate
+ * deficiencies of AVM's user management.
+ *
  * (C) 2011 Oliver Metz, Ralf Friedl
  *     2013 cuma
  *
  */
 
 // #define DEBUG
-
-#define _XOPEN_SOURCE	500
-#define _SVID_SOURCE
 
 #include <dlfcn.h>      // dlopen, dlsym
 #include <stdarg.h>     // vprintf
@@ -20,7 +19,6 @@
 #include <stdlib.h>     // exit, system
 #include <stdint.h>
 #include <unistd.h>
-#include <pwd.h>
 
 
 static void debug_printf(char *fmt, ...) {
@@ -33,7 +31,6 @@ static void debug_printf(char *fmt, ...) {
 #endif
 }
 
-static int (*real_remove)(const char *) = NULL;
 static int (*real_rename)(const char *, const char *) = NULL;
 
 static void _libctlmgr_init (void) __attribute__((constructor));
@@ -41,7 +38,11 @@ static void _libctlmgr_init (void)
 {
 	const char *err;
 
-#if defined(RTLD_NEXT) && 0 /* TODO: doesn't work as AVM messes up the symbol table in libled.so? */
+#if defined(RTLD_NEXT) && 0
+  /*
+   * TODO: doesn't work because of a uClibc bug fixed by the following commit
+   *       http://git.uclibc.org/uClibc/commit/ldso/libdl/libdl.c?id=df3a5fcc8d1c3402289375c92df705e978fab58d
+   */
 	void *libc_handle = RTLD_NEXT;
 #else
 	void *libc_handle = dlopen("/lib/libc.so.0", RTLD_LOCAL | RTLD_LAZY);
@@ -56,7 +57,6 @@ static void _libctlmgr_init (void)
 		fprintf(stderr, "ctlmgr: libctlmgr unable to get rename-handle: %s\n", err);
 		exit(1);
 	}
-
 }
 
 int rename(const char *old, const char *new) {
@@ -71,4 +71,3 @@ int rename(const char *old, const char *new) {
 		return 0;
 	}
 }
-

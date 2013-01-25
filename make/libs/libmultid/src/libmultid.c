@@ -41,7 +41,11 @@ static void _libmultid_init (void)
 {
 	const char *err;
 
-#if defined(RTLD_NEXT) && 0 /* TODO: doesn't work as AVM messes up the symbol table in libled.so? */
+#if defined(RTLD_NEXT) && 0
+  /*
+   * TODO: doesn't work because of a uClibc bug fixed by the following commit
+   *       http://git.uclibc.org/uClibc/commit/ldso/libdl/libdl.c?id=df3a5fcc8d1c3402289375c92df705e978fab58d
+   */
 	void *libc_handle = RTLD_NEXT;
 #else
 	void *libc_handle = dlopen("/lib/libc.so.0", RTLD_LOCAL | RTLD_LAZY);
