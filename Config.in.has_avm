@@ -2,12 +2,12 @@
 config FREETZ_HAS_AVM_LABOR
 	bool "Has AVM Labor Firmware"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_TYPE_LANG_DE && ( \
-			FREETZ_TYPE_3270 || \
-			FREETZ_TYPE_6840 || \
-			FREETZ_TYPE_7312 || \
-			FREETZ_TYPE_7320 || \
-			FREETZ_TYPE_7330 || \
-			FREETZ_TYPE_7360 )
+		FREETZ_TYPE_3270 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_7312 || \
+		FREETZ_TYPE_7320 || \
+		FREETZ_TYPE_7330 || \
+		FREETZ_TYPE_7360 )
 	default n
 	help
 		Select this if a labor firmware is available for you box.
@@ -15,13 +15,34 @@ config FREETZ_HAS_AVM_LABOR
 config FREETZ_HAS_AVM_FW55X
 	bool "Has AVM Firmware 05.5x"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_3390 || \
 			FREETZ_TYPE_7240 || \
 			FREETZ_TYPE_7270_16 || \
-			FREETZ_TYPE_7390 )
+			FREETZ_TYPE_7390 \
+		)
+	default n
+	help
+		Select this if your box has firmware versions 05.5x.
+
+config FREETZ_HAS_AVM_FW52X
+	bool "Has AVM Firmware 05.2x"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_3270 || \
+		FREETZ_TYPE_3370 || \
+		FREETZ_TYPE_6810 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_7240 || \
+		FREETZ_TYPE_7270_16 || \
+		FREETZ_TYPE_7312 || \
+		FREETZ_TYPE_7320 || \
+		FREETZ_TYPE_7330 || \
+		FREETZ_TYPE_7340 || \
+		FREETZ_TYPE_7360 || \
+		FREETZ_TYPE_7390
 	default n
 	help
 		Select this if your box has firmware
-		versions 05.5x (additional to 05.2x).
+		versions 05.2x.
 
 config FREETZ_HAS_AVM_PIGLET
 	bool "Has PIGLET file(s)"	if FREETZ_TYPE_CUSTOM
@@ -323,8 +344,9 @@ config FREETZ_HAS_AVM_UDEV
 config FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE
 	bool "Has update filesystem image"  if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_3370
+		FREETZ_TYPE_3370 || \
+		FREETZ_TYPE_3390 || \
+		FREETZ_TYPE_6840
 	default n
 	help
 		Select this if you have a box with an update filesystem image.
