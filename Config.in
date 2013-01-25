@@ -279,23 +279,16 @@ endchoice # "Firmware language" #
 
 choice
 	prompt "Firmware version"
-		depends on FREETZ_HAS_AVM_LABOR || \
-			FREETZ_TYPE_7240 || \
-			FREETZ_TYPE_7270_16 || \
-			FREETZ_TYPE_7390
+		depends on FREETZ_HAS_AVM_LABOR || FREETZ_HAS_AVM_FW55X
 
 	config FREETZ_TYPE_FIRMWARE_05_2X
 		bool "FRITZ!OS 05.2x"
+		select FREETZ_AVM_VERSION_05_2X
 
 	config FREETZ_TYPE_FIRMWARE_05_5X
 		bool "FRITZ!OS 05.5x - EXPERIMENTAL"
-		depends on \
-			FREETZ_SHOW_ADVANCED && \
-			FREETZ_TYPE_LANG_DE && ( \
-				FREETZ_TYPE_7240 || \
-				FREETZ_TYPE_7270_16 || \
-				FREETZ_TYPE_7390 \
-			)
+		select FREETZ_AVM_VERSION_05_5X
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_FW55X
 
 	config FREETZ_TYPE_LABOR
 		bool "FRITZ! Labor"
@@ -1855,8 +1848,6 @@ config FREETZ_AVM_VERSION_7270_04_86
 	bool
 config FREETZ_AVM_VERSION_7270_05_21
 	bool
-	select FREETZ_AVM_VERSION_05_2X if FREETZ_TYPE_FIRMWARE_05_2X
-	select FREETZ_AVM_VERSION_05_5X if FREETZ_TYPE_FIRMWARE_05_5X
 config FREETZ_AVM_VERSION_7330_05_20
 	bool
 	select FREETZ_AVM_VERSION_05_2X
@@ -1868,7 +1859,6 @@ config FREETZ_AVM_VERSION_7390_05_21
 	select FREETZ_AVM_VERSION_05_2X
 config FREETZ_AVM_VERSION_7390_05_50
 	bool
-	select FREETZ_AVM_VERSION_05_5X
 config FREETZ_AVM_VERSION_r7203
 	bool
 
@@ -1950,13 +1940,10 @@ config FREETZ_TYPE_PREFIX
 	default "7141"              if FREETZ_TYPE_7141
 	default "7150"              if FREETZ_TYPE_7150
 	default "7170"              if FREETZ_TYPE_7170
-	default "7240_05_22"        if FREETZ_TYPE_7240 && FREETZ_TYPE_FIRMWARE_05_2X
-	default "7240"              if FREETZ_TYPE_7240 && FREETZ_TYPE_FIRMWARE_05_5X
+	default "7240"              if FREETZ_TYPE_7240
 	default "7270_v1"           if FREETZ_TYPE_7270_V1
-	default "7270_v2_05_22"     if ((FREETZ_TYPE_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_FIRMWARE_05_2X
-	default "7270_v2"           if ((FREETZ_TYPE_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_FIRMWARE_05_5X
-	default "7270_v3_05_22"     if ((FREETZ_TYPE_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270) && FREETZ_TYPE_FIRMWARE_05_2X
-	default "7270_v3"           if ((FREETZ_TYPE_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270) && FREETZ_TYPE_FIRMWARE_05_5X
+	default "7270_v2"           if ((FREETZ_TYPE_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270)
+	default "7270_v3"           if ((FREETZ_TYPE_7270_V3 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7240_7270)
 	default "7312"              if FREETZ_TYPE_7312
 	default "7320"              if FREETZ_TYPE_7320
 	default "7330"              if FREETZ_TYPE_7330_XL
@@ -1964,8 +1951,7 @@ config FREETZ_TYPE_PREFIX
 	default "7340"              if FREETZ_TYPE_7340
 	default "7360"              if FREETZ_TYPE_7360_XL
 	default "7360_SL"           if FREETZ_TYPE_7360_SL
-	default "7390_05_22"        if FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_05_2X
-	default "7390"              if FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_05_5X
+	default "7390"              if FREETZ_TYPE_7390
 	default "7570"              if FREETZ_TYPE_7570
 	default "W501V"             if FREETZ_TYPE_W501V
 	default "custom"            if FREETZ_TYPE_CUSTOM
@@ -1973,6 +1959,10 @@ config FREETZ_TYPE_PREFIX
 config FREETZ_TYPE_PREFIX_LABOR_FIRMWARE
 	string
 	default "_labor"            if FREETZ_TYPE_LABOR
+
+config FREETZ_TYPE_PREFIX_FW52X_FIRMWARE
+	string
+	default "_05_22"            if FREETZ_HAS_AVM_FW55X && FREETZ_AVM_VERSION_05_2X
 
 config FREETZ_TYPE_PREFIX_ALIEN_HARDWARE
 	string
