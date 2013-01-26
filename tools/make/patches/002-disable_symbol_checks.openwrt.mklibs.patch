@@ -9,15 +9,12 @@
          break
  
      previous_pass_unresolved = unresolved
-@@ -533,10 +533,7 @@ while 1:
- 
-     # which symbols are actually used from each lib
+@@ -535,7 +535,7 @@ while 1:
      for name in needed_symbols:
--        if not name in symbol_provider:
--            if not needed_symbols[name].weak:
+         if not name in symbol_provider:
+             if not needed_symbols[name].weak:
 -                raise "No library provides non-weak %s" % name
--        else:
-+        if name in symbol_provider:
++                print "WARNING: Unresolvable symbol %s" % name
+         else:
              lib = symbol_provider[name]
              library_symbols_used[lib].add(library_symbols[lib][name])
- 
