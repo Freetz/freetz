@@ -574,6 +574,13 @@ config FREETZ_REMOVE_LIBFUSE
 		This removes libfuse.so and saves about 132 KB (uncompressed).
 		NTFS and Webdav are also removed.
 
+config FREETZ_REMOVE_ISOFS
+	bool "Remove isofs.ko"
+	default n
+	depends on FREETZ_HAS_AVM_ISOFS
+	help
+		Remove isofs.ko (about 35 kB uncompressed).
+
 config FREETZ_REMOVE_JFFS2
 	bool "Remove jffs2.ko"
 	depends on FREETZ_HAS_AVM_JFFS2
@@ -597,7 +604,7 @@ config FREETZ_REMOVE_RAMZSWAP
 	default n
 	depends on FREETZ_HAS_AVM_RAMZSWAP
 	help
-		Remove the ramzswap.ko (about 35 kB uncompressed).
+		Remove ramzswap.ko (about 35 kB uncompressed).
 
 config FREETZ_REMOVE_LSOF
 	bool "Remove lsof"

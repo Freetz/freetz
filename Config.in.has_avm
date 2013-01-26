@@ -163,7 +163,19 @@ config FREETZ_HAS_AVM_EXT3
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
-		Select this if your original firmware has ext3 support into the kernel.
+		Select this if your original firmware has ext3 support built into the kernel.
+
+config FREETZ_HAS_AVM_ISOFS
+	bool "Has AVM isofs kernel module"	if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_5124 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7141 || \
+		FREETZ_TYPE_7150 || \
+		FREETZ_TYPE_7170
+	default n
+	help
+		Select this if your original firmware contains isofs kernel module.
 
 config FREETZ_HAS_AVM_TR069
 	bool "Has AVM tr069"	if FREETZ_TYPE_CUSTOM
