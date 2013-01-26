@@ -1305,8 +1305,10 @@ menu "Override options"
 			Necessary means that the regular Freetz mirrors are currently unavailable
 			or the desired package cannot be found on either of them.
 
+	source toolchain/Config.in.override
+
 	config FREETZ_DL_OVERRIDE
-		bool "Override firmware source" if FREETZ_SHOW_ADVANCED
+		bool "Override firmware source" if FREETZ_SHOW_EXPERT
 		default n
 		help
 			Enable this to override automatically generated entries.

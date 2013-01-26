@@ -1,0 +1,35 @@
+	config FREETZ_DL_TOOLCHAIN_OVERRIDE
+		bool "Override precompiled toolchain options" if FREETZ_SHOW_EXPERT
+		depends on FREETZ_DOWNLOAD_TOOLCHAIN
+		default n
+		help
+			Enable this to override precompiled-toolchain related options.
+
+	config FREETZ_DL_TOOLCHAIN_SITE
+		string "Download toolchain site"              if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default ""
+
+	config FREETZ_DL_KERNEL_TOOLCHAIN_VERSION
+		string "Kernel toolchain version"             if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "r9637"
+
+	config FREETZ_DL_KERNEL_TOOLCHAIN_MD5
+		string "Kernel toolchain MD5"                 if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "817ad5a28d89562e50bb0f8818de2e43"    if FREETZ_TARGET_ARCH_LE && FREETZ_KERNEL_COMPILER_GCC_3_4
+		default "b17b7f26931ad8f263953a2dfc1d08b7"    if FREETZ_TARGET_ARCH_LE && FREETZ_KERNEL_COMPILER_GCC_4_6
+		default "3f72606936b7dbc877d406e77a21faac"    if FREETZ_TARGET_ARCH_BE && FREETZ_KERNEL_COMPILER_GCC_4_6
+
+	config FREETZ_DL_TARGET_TOOLCHAIN_VERSION
+		string "Target toolchain version"             if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "r9637"
+
+	config FREETZ_DL_TARGET_TOOLCHAIN_MD5
+		string "Target toolchain MD5"                 if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "f87ad91acb90d87f3fe1105a6f8cdc5d"    if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_COMPILER_GCC_4_6 && FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+		default "77464a9717e4d4133b3f88a98bff93de"    if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_COMPILER_GCC_4_6 && FREETZ_TARGET_UCLIBC_VERSION_0_9_29
+		default "bc1fa16bb96c2460207059539c9bee00"    if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_COMPILER_GCC_4_6 && FREETZ_TARGET_UCLIBC_VERSION_0_9_32
+		default "2a6641843adb01457f15b36b1daafe34"    if FREETZ_TARGET_ARCH_BE && FREETZ_TARGET_COMPILER_GCC_4_6 && FREETZ_TARGET_UCLIBC_VERSION_0_9_32
+
+	config FREETZ_DL_TOOLCHAIN_SUFFIX
+		string "Precompiled toolchain suffix"         if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "shared-glibc"
