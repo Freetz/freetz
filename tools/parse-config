@@ -38,8 +38,9 @@ sub expand {
 }
 
 open ($fh_deps, '>', $deps_file_tmp) or die $!;
-print $fh_deps "$deps_name :=";
+print $fh_deps "$deps_name := \$(filter-out Config.in.custom,";
 expand($_, $0) for @ARGV;
+print $fh_deps " \\\n)";
 print $fh_deps "\n\n\$($deps_name): ;\n";
 close ($fh_deps) or die $!;
 rename ($deps_file_tmp, $deps_file) or die $!;

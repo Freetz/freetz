@@ -422,7 +422,7 @@ menuconfig: config-cache $(CONFIG)/mconf
 menuconfig-single: config-cache $(CONFIG)/mconf
 	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-nocache: $(CONFIG)/mconf
+menuconfig-nocache: $(CONFIG_IN).custom $(CONFIG)/mconf
 	@$(CONFIG)/mconf $(CONFIG_IN)
 
 config: config-cache $(CONFIG)/conf
@@ -440,9 +440,12 @@ config-cache: $(CONFIG_IN_CACHE)
 
 -include include/config/cache.conf.cmd
 
-$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(PARSE_CONFIG_TOOL) $(deps_config_cache)
+$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(CONFIG_IN).custom $(PARSE_CONFIG_TOOL) $(deps_config_cache)
 	@mkdir -p include/config include/generated
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
+
+$(CONFIG_IN).custom:
+	@touch $@
 
 # Macro to clean up config dependencies
 #   $(1) = target name to be defined
