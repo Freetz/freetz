@@ -1,0 +1,15 @@
+--- src/mklibs
++++ src/mklibs
+@@ -592,6 +592,12 @@ while 1:
+             if soname != "libgcc_s.so.1":
+                 cmd.append(library_depends_gcc_libnames(so_file, soname))
+                 cmd.append(libgcc_link)
++                # Add both shared and pic.a version of libgcc. Some symbols are not included in the shared version of libgcc
++                # (see libgcc.map for details) and exist only in the pic.a version of it. In order the symbols available
++                # in the shared version are not linked directly into the reduced/relinked library the shared version of libgcc
++                # must come before the pic.a one (this way the symbols will be resolved via NEEDED and not via direct linking).
++                cmd.append(find_pic("libgcc_s.so.1"))
++
+             command(target + "gcc", *cmd)
+ 
+             ## DEBUG
