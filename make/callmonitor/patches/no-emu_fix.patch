@@ -1,0 +1,9 @@
+--- root/usr/lib/callmonitor/modules/user.sh	2013-01-13 13:26:56.000000000 +0100
++++ root/usr/lib/callmonitor/modules/user.sh	2013-01-26 18:55:20.613375836 +0100
+@@ -34,5 +34,5 @@
+ grep -q "^boxusers " /var/flash/ar7.cfg
+ }
+ user_is_compat() {
+-[ "$(ctlmgr_ctl r boxusers settings/compatibility_mode)" -eq 1 ]
++[ "$(ctlmgr_ctl r boxusers settings/compatibility_mode)" != "0" ]
+ }
