@@ -312,7 +312,11 @@ firmware-nocompile: tools $(DL_IMAGE) package-list
 else
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
 endif
+ifneq ($(findstring firmware-nocompile,$(MAKECMDGOALS)),firmware-nocompile)
 	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
+else
+	@./fwmod -n -d $(BUILD_DIR) $(DL_IMAGE)
+endif
 
 firmware: precompiled firmware-nocompile
 
