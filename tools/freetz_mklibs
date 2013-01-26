@@ -31,7 +31,7 @@ mklibs() {
 		awk ' /shared object/ { print $1 }' >> ${MOD_DIR}/mklibs-progs
 	# Run mklibs script, needs path to mklibs-readelf and objcopy
 	PATH=${MKLIBS_DIR}:${TARGET_TOOLCHAIN_STAGING_DIR}/bin:$PATH \
-		${MKLIBS_SCRIPT} -D -v \
+		${MKLIBS_SCRIPT} -D -vvv \
 		-d ${MOD_DIR}/mklibs-out \
 		--sysroot ${FREETZ_BASE_DIR}/ \
 		-L toolchain/target/lib \
