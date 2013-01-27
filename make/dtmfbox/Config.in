@@ -6,7 +6,12 @@ config FREETZ_PACKAGE_DTMFBOX
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
 	select FREETZ_PACKAGE_DTMFBOX_WITH_G711_CODEC
+	# du gzip gunzip head httpd mkfifo tail tar are mandatory busybox applets thus not selected here
+	select FREETZ_BUSYBOX_FTPPUT
+	select FREETZ_BUSYBOX_NC
 	select FREETZ_BUSYBOX_REALPATH
+	select FREETZ_BUSYBOX_UUDECODE
+	select FREETZ_BUSYBOX_UUENCODE
 	default n
 	help
 		dtmfbox is a small softswitch application, that can be used to
