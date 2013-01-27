@@ -161,7 +161,7 @@ if [ "$MODE" = "server" ]; then
 				echo "ifconfig-push $ip $BOX_MASK"  > "$CCD/$name"
 				if [ "$net" != "-" ]; then
 					echo -e "route $net $ip" | sed "s/[[:space:]]*;[[:space:]]*/ ${ip}\nroute /g"
-					echo -e "iroute $net" | sed "s/[[:space:]]*;[[:space:]]*/\niroute /g" >> "$CCD/$name"
+					[ "$TYPE" = "tun" ] && echo -e "iroute $net" | sed "s/[[:space:]]*;[[:space:]]*/\niroute /g" >> "$CCD/$name"
 				fi
 				if [ "$CLIENT2CLIENT" = "yes" ]; then
 					i=1
