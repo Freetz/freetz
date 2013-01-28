@@ -302,7 +302,11 @@ endchoice # "Firmware language" #
 
 choice
 	prompt "Firmware version"
-		depends on FREETZ_HAS_AVM_LABOR || FREETZ_HAS_AVM_FW55X || FREETZ_HAS_AVM_FW52X
+
+	config FREETZ_TYPE_FIRMWARE_04_XX
+		bool "FRITZ!OS 04.xx"
+		select FREETZ_AVM_VERSION_04_XX
+		depends on FREETZ_HAS_AVM_FW4XX
 
 	config FREETZ_TYPE_FIRMWARE_05_2X
 		bool "FRITZ!OS 05.2x"
@@ -312,7 +316,7 @@ choice
 	config FREETZ_TYPE_FIRMWARE_05_5X
 		bool "FRITZ!OS 05.5x"
 		select FREETZ_AVM_VERSION_05_5X
-		depends on FREETZ_HAS_AVM_FW55X && FREETZ_TYPE_LANG_DE 
+		depends on FREETZ_HAS_AVM_FW55X
 
 	config FREETZ_TYPE_LABOR
 		bool "FRITZ! Labor"
@@ -1836,6 +1840,8 @@ config FREETZ_AVM_VERSION_7390_05_50
 config FREETZ_AVM_VERSION_r7203
 	bool
 
+config FREETZ_AVM_VERSION_04_XX
+	bool
 config FREETZ_AVM_VERSION_05_2X_MIN
 	bool
 config FREETZ_AVM_VERSION_05_2X
@@ -1844,10 +1850,6 @@ config FREETZ_AVM_VERSION_05_2X
 config FREETZ_AVM_VERSION_05_5X
 	bool
 	select FREETZ_AVM_VERSION_05_2X_MIN
-
-config FREETZ_AVM_VERSION_SERIES
-	string
-	default "05_5X"  if FREETZ_AVM_VERSION_05_5X
 
 #alias for 3270 (v2) and 3270 v3
 config FREETZ_TYPE_3270
@@ -1880,14 +1882,14 @@ config FREETZ_AVM_VERSION_STRING
 	default "04.76"         if FREETZ_AVM_VERSION_04_76
 	default "04.80"         if FREETZ_AVM_VERSION_04_80
 	default "04.87"         if FREETZ_AVM_VERSION_04_87
-	default "3370_05.21"    if FREETZ_AVM_VERSION_3370_05_21
+	default "r7203"         if FREETZ_AVM_VERSION_r7203
 	default "7270_04.86"    if FREETZ_AVM_VERSION_7270_04_86
-	default "7270_05.21"    if FREETZ_AVM_VERSION_7270_05_21
 	default "7330_05.20"    if FREETZ_AVM_VERSION_7330_05_20
 	default "7360_05.20"    if FREETZ_AVM_VERSION_7360_05_20
+	default "3370_05.21"    if FREETZ_AVM_VERSION_3370_05_21
+	default "7270_05.21"    if FREETZ_AVM_VERSION_7270_05_21
 	default "7390_05.21"    if FREETZ_AVM_VERSION_7390_05_21
 	default "7390_05.50"    if FREETZ_AVM_VERSION_7390_05_50
-	default "r7203"         if FREETZ_AVM_VERSION_r7203
 
 config FREETZ_TYPE_PREFIX
 	string
@@ -1937,9 +1939,12 @@ config FREETZ_TYPE_PREFIX_LABOR_FIRMWARE
 	string
 	default "_labor"            if FREETZ_TYPE_LABOR
 
-config FREETZ_TYPE_PREFIX_FW52X_FIRMWARE
+config FREETZ_TYPE_PREFIX_SERIES_SUBDIR
 	string
-	default "_05_22"            if FREETZ_HAS_AVM_FW55X && FREETZ_AVM_VERSION_05_2X
+	default "04_XX"             if FREETZ_AVM_VERSION_04_XX
+	default "05_2X"             if FREETZ_AVM_VERSION_05_2X
+	default "05_5X"             if FREETZ_AVM_VERSION_05_5X || FREETZ_TYPE_LABOR
+
 
 config FREETZ_TYPE_PREFIX_ALIEN_HARDWARE
 	string
