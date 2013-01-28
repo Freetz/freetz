@@ -1,4 +1,4 @@
-[ "$FREETZ_AVM_VERSION_05_5X" == "y" ] || return 0
+[ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ] || return 0
 echo1 "applying tffs_nodes patch"
 # This creates the char device for saving Freetz "flash"
 
