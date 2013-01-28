@@ -1,5 +1,5 @@
---- networking/telnetd.c.orig	2010-12-21 05:29:45.000000000 +0100
-+++ networking/telnetd.c	2011-01-04 16:56:17.682164713 +0100
+--- networking/telnetd.c
++++ networking/telnetd.c
 @@ -28,8 +28,8 @@
  //usage:	IF_NOT_FEATURE_TELNETD_STANDALONE(" via inetd") "\n"
  //usage:     "\n	-l LOGIN	Exec LOGIN on connect"
@@ -11,7 +11,7 @@
  //usage:	IF_FEATURE_TELNETD_STANDALONE(
  //usage:     "\n	-p PORT		Port to listen on"
  //usage:     "\n	-b ADDR[:PORT]	Address to bind to"
-@@ -551,7 +551,7 @@
+@@ -552,7 +552,7 @@
  	/* We don't want to die if just one session is broken */
  	signal(SIGPIPE, SIG_IGN);
  

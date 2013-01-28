@@ -1,5 +1,5 @@
---- util-linux/findfs.c	2012-06-14 17:48:13+02:00
-+++ util-linux/findfs.c	2012-06-14 17:48:13+02:00
+--- util-linux/findfs.c
++++ util-linux/findfs.c
 @@ -27,17 +27,10 @@
  	if (!dev)
  		bb_show_usage();
@@ -18,8 +18,8 @@
  
  	if (*argv != dev) {
  		puts(*argv);
---- include/volume_id.h	2012-06-14 17:48:13+02:00
-+++ include/volume_id.h	2012-06-14 17:48:13+02:00
+--- include/volume_id.h
++++ include/volume_id.h
 @@ -20,6 +20,8 @@
  
  char *get_devname_from_label(const char *spec);
@@ -29,28 +29,9 @@
  void display_uuid_cache(int scan_devices);
  
  /* Returns:
---- util-linux/volume_id/get_devname.c	2012-06-14 17:48:13+02:00
-+++ util-linux/volume_id/get_devname.c	2012-06-14 17:48:13+02:00
-@@ -49,13 +49,16 @@
- 	if (volume_id_probe_all(vid, /*0,*/ size) != 0)
- 		goto ret;
- 
--	if (vid->label[0] != '\0' || vid->uuid[0] != '\0') {
-+#if ENABLE_FEATURE_BLKID_TYPE
-+	if (vid->label[0] != '\0' || vid->uuid[0] != '\0' || vid->type != NULL) {
- 		*label = xstrndup(vid->label, sizeof(vid->label));
- 		*uuid  = xstrndup(vid->uuid, sizeof(vid->uuid));
--#if ENABLE_FEATURE_BLKID_TYPE
- 		*type = vid->type;
- 		dbg("found label '%s', uuid '%s', type '%s'", *label, *uuid, *type);
- #else
-+	if (vid->label[0] != '\0' || vid->uuid[0] != '\0') {
-+		*label = xstrndup(vid->label, sizeof(vid->label));
-+		*uuid  = xstrndup(vid->uuid, sizeof(vid->uuid));
- 		dbg("found label '%s', uuid '%s'", *label, *uuid);
- #endif
- 		rv = 0;
-@@ -292,6 +295,41 @@
+--- util-linux/volume_id/get_devname.c
++++ util-linux/volume_id/get_devname.c
+@@ -296,6 +296,41 @@
  	return NULL;
  }
  
@@ -92,7 +73,7 @@
  int resolve_mount_spec(char **fsname)
  {
  	char *tmp = *fsname;
-@@ -300,7 +338,12 @@
+@@ -304,7 +339,12 @@
  		tmp = get_devname_from_uuid(*fsname + 5);
  	else if (strncmp(*fsname, "LABEL=", 6) == 0)
  		tmp = get_devname_from_label(*fsname + 6);

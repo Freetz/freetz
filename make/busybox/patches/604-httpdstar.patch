@@ -1,6 +1,6 @@
---- libbb/appletlib.c	2011-10-05 21:12:07+02:00
-+++ libbb/appletlib.c	2011-10-05 21:12:07+02:00
-@@ -147,12 +147,14 @@
+--- libbb/appletlib.c
++++ libbb/appletlib.c
+@@ -146,12 +146,14 @@
  	return strcmp(name, APPLET_NAME(i));
  }
  #endif
@@ -11,12 +11,12 @@
  #if NUM_APPLETS > 8
  	/* Do a binary search to find the applet entry given the name. */
  	const char *p;
--	p = bsearch(name, applet_names, ARRAY_SIZE(applet_main), 1, applet_name_compare);
-+	p = bsearch(name_to_search_for, applet_names, ARRAY_SIZE(applet_main), 1, applet_name_compare);
- 	if (!p)
- 		return -1;
- 	return p - applet_names;
-@@ -161,7 +163,7 @@
+-	p = bsearch(name, (void*)(ptrdiff_t)1, ARRAY_SIZE(applet_main), 1, applet_name_compare);
++	p = bsearch(name_to_search_for, (void*)(ptrdiff_t)1, ARRAY_SIZE(applet_main), 1, applet_name_compare);
+ 	/*
+ 	 * if (!p) return -1;
+ 	 * ^^^^^^^^^^^^^^^^^^ the code below will do this if p == NULL :)
+@@ -162,7 +164,7 @@
  	int i = 0;
  	const char *p = applet_names;
  	while (i < NUM_APPLETS) {

@@ -315,7 +315,18 @@ config FREETZ_BUSYBOX_FEATURE_PIDFILE
 	default n
 	help
 	  This option makes some applets (e.g. crond, syslogd, inetd) write
-	  a pidfile in /var/run. Some applications rely on them.
+	  a pidfile at the configured PID_FILE_PATH.  It has no effect
+	  on applets which require pidfiles to run.
+
+config FREETZ_BUSYBOX_PID_FILE_PATH
+	string "Path to directory for pidfile"
+	default "/var/run"
+	depends on FREETZ_BUSYBOX_FEATURE_PIDFILE
+	help
+	  This is the default path where pidfiles are created.  Applets which
+	  allow you to set the pidfile path on the command line will override
+	  this value.  The option has no effect on applets that require you to
+	  specify a pidfile path.
 
 config FREETZ_BUSYBOX_FEATURE_SUID
 	bool "Support for SUID/SGID handling"
@@ -326,7 +337,7 @@ config FREETZ_BUSYBOX_FEATURE_SUID
 	  root-level operations even when run by ordinary users
 	  (for example, mounting of user mounts in fstab needs this).
 
-	  Busybox will automatically drop priviledges for applets
+	  Busybox will automatically drop privileges for applets
 	  that don't need root access.
 
 	  If you are really paranoid and don't want to do this, build two
@@ -828,6 +839,16 @@ config FREETZ_BUSYBOX_MD5_SMALL
 	  1                   1.4                5392
 	  2                   3.0                5088
 	  3 (smallest)        5.1                4912
+
+config FREETZ_BUSYBOX_SHA3_SMALL
+	int "SHA3: Trade bytes for speed (0:fast, 1:slow)"
+	default 1
+	range 0 1
+	help
+	  Trade binary size versus speed for the sha3sum algorithm.
+	  SHA3_SMALL=0 compared to SHA3_SMALL=1 (approximate):
+	  64-bit x86: +270 bytes of code, 45% faster
+	  32-bit x86: +450 bytes of code, 75% faster
 
 config FREETZ_BUSYBOX_FEATURE_FAST_TOP
 	bool "Faster /proc scanning code (+100 bytes)"
@@ -2076,6 +2097,12 @@ config FREETZ_BUSYBOX_SHA512SUM
 	help
 	  Compute and check SHA512 message digest
 
+config FREETZ_BUSYBOX_SHA3SUM
+	bool "sha3sum"
+	default n
+	help
+	  Compute and check SHA3 (512-bit) message digest
+
 config FREETZ_BUSYBOX_SLEEP
 	bool "sleep"
 	default n
@@ -2328,13 +2355,13 @@ config FREETZ_BUSYBOX_FEATURE_HUMAN_READABLE
 	help
 	  Allow df, du, and ls to have human readable output.
 
-comment "Common options for md5sum, sha1sum, sha256sum, sha512sum"
-	depends on FREETZ_BUSYBOX_MD5SUM || FREETZ_BUSYBOX_SHA1SUM || FREETZ_BUSYBOX_SHA256SUM || FREETZ_BUSYBOX_SHA512SUM
+comment "Common options for md5sum, sha1sum, sha256sum, sha512sum, sha3sum"
+	depends on FREETZ_BUSYBOX_MD5SUM || FREETZ_BUSYBOX_SHA1SUM || FREETZ_BUSYBOX_SHA256SUM || FREETZ_BUSYBOX_SHA512SUM || FREETZ_BUSYBOX_SHA3SUM
 
 config FREETZ_BUSYBOX_FEATURE_MD5_SHA1_SUM_CHECK
 	bool "Enable -c, -s and -w options"
 	default n
-	depends on FREETZ_BUSYBOX_MD5SUM || FREETZ_BUSYBOX_SHA1SUM || FREETZ_BUSYBOX_SHA256SUM || FREETZ_BUSYBOX_SHA512SUM
+	depends on FREETZ_BUSYBOX_MD5SUM || FREETZ_BUSYBOX_SHA1SUM || FREETZ_BUSYBOX_SHA256SUM || FREETZ_BUSYBOX_SHA512SUM || FREETZ_BUSYBOX_SHA3SUM
 	help
 	  Enabling the -c options allows files to be checked
 	  against pre-calculated hash values.
@@ -2740,14 +2767,6 @@ config FREETZ_BUSYBOX_FEATURE_VI_ASK_TERMINAL
 	  cursor position using "ESC [ 6 n" escape sequence, then read stdin.
 
 	  This is not clean but helps a lot on serial lines and such.
-
-config FREETZ_BUSYBOX_FEATURE_VI_OPTIMIZE_CURSOR
-	bool "Optimize cursor movement"
-	default n
-	depends on FREETZ_BUSYBOX_VI
-	help
-	  This will make the cursor movement faster, but requires more memory
-	  and it makes the applet a tiny bit larger.
 
 config FREETZ_BUSYBOX_AWK
 	bool "awk"
@@ -4757,6 +4776,15 @@ config FREETZ_BUSYBOX_FEATURE_VOLUMEID_FAT
 	help
 	  TODO
 
+config FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXFAT
+	bool "exFAT filesystem"
+	default n
+	depends on FREETZ_BUSYBOX_VOLUMEID
+	help
+	  exFAT (extended FAT) is a proprietary file system designed especially
+	  for flash drives. It has many features from NTFS, but with less
+	  overhead. exFAT is used on most SDXC cards for consumer electronics.
+
 config FREETZ_BUSYBOX_FEATURE_VOLUMEID_HFS
 	bool "hfs filesystem"
 	default n
@@ -4780,6 +4808,13 @@ config FREETZ_BUSYBOX_FEATURE_VOLUMEID_JFS
 
 config FREETZ_BUSYBOX_FEATURE_VOLUMEID_XFS
 	bool "xfs filesystem"
+	default n
+	depends on FREETZ_BUSYBOX_VOLUMEID
+	help
+	  TODO
+
+config FREETZ_BUSYBOX_FEATURE_VOLUMEID_NILFS
+	bool "nilfs filesystem"
 	default n
 	depends on FREETZ_BUSYBOX_VOLUMEID
 	help
@@ -4847,6 +4882,16 @@ config FREETZ_BUSYBOX_FEATURE_VOLUMEID_ROMFS
 	depends on FREETZ_BUSYBOX_VOLUMEID
 	help
 	  TODO
+
+config FREETZ_BUSYBOX_FEATURE_VOLUMEID_SQUASHFS
+	bool "SquashFS filesystem"
+	default n
+	depends on FREETZ_BUSYBOX_VOLUMEID && FREETZ_BUSYBOX_FEATURE_BLKID_TYPE
+	help
+	  Squashfs is a compressed read-only filesystem for Linux. Squashfs is
+	  intended for general read-only filesystem use and in constrained block
+	  device/memory systems (e.g. embedded systems) where low overhead is
+	  needed.
 
 config FREETZ_BUSYBOX_FEATURE_VOLUMEID_SYSV
 	bool "sysv filesystem"
@@ -5890,12 +5935,12 @@ config FREETZ_BUSYBOX_FEATURE_BRCTL_FANCY
 	  This adds about 600 bytes.
 
 config FREETZ_BUSYBOX_FEATURE_BRCTL_SHOW
-	bool "Support show, showmac and showstp"
+	bool "Support show"
 	default n
 	depends on FREETZ_BUSYBOX_BRCTL && FREETZ_BUSYBOX_FEATURE_BRCTL_FANCY
 	help
 	  Add support for option which prints the current config:
-	    showmacs, showstp, show
+	    show
 
 config FREETZ_BUSYBOX_DNSD
 	bool "dnsd"
@@ -6732,10 +6777,11 @@ config FREETZ_BUSYBOX_FEATURE_TUNCTL_UG
 #
 
 config FREETZ_BUSYBOX_UDHCPC6
-       bool "udhcp client for DHCPv6 (udhcpc6)"
-       default n  # not yet ready
-       help
-         udhcpc6 is a DHCPv6 client
+	bool "udhcp client for DHCPv6 (udhcpc6)"
+	default n  # not yet ready
+	depends on FREETZ_BUSYBOX_FEATURE_IPV6
+	help
+	  udhcpc6 is a DHCPv6 client
 
 config FREETZ_BUSYBOX_UDHCPD
 	bool "udhcp server (udhcpd)"
@@ -6914,8 +6960,8 @@ config FREETZ_BUSYBOX_WGET
 	bool "wget"
 	default n
 	help
-	  wget is a utility for non-interactive download of files from HTTP,
-	  HTTPS, and FTP servers.
+	  wget is a utility for non-interactive download of files from HTTP
+	  and FTP servers.
 
 config FREETZ_BUSYBOX_FEATURE_WGET_STATUSBAR
 	bool "Enable a nifty process meter (+2k)"
@@ -7111,6 +7157,59 @@ config FREETZ_BUSYBOX_SMEMCAP
 	help
 	  smemcap is a tool for capturing process data for smem,
 	  a memory usage statistic tool.
+config FREETZ_BUSYBOX_TOP
+	bool "top"
+	default n
+	help
+	  The top program provides a dynamic real-time view of a running
+	  system.
+
+config FREETZ_BUSYBOX_FEATURE_TOP_CPU_USAGE_PERCENTAGE
+	bool "Show CPU per-process usage percentage"
+	default n
+	depends on FREETZ_BUSYBOX_TOP
+	help
+	  Make top display CPU usage for each process.
+	  This adds about 2k.
+
+config FREETZ_BUSYBOX_FEATURE_TOP_CPU_GLOBAL_PERCENTS
+	bool "Show CPU global usage percentage"
+	default n
+	depends on FREETZ_BUSYBOX_FEATURE_TOP_CPU_USAGE_PERCENTAGE
+	help
+	  Makes top display "CPU: NN% usr NN% sys..." line.
+	  This adds about 0.5k.
+
+config FREETZ_BUSYBOX_FEATURE_TOP_SMP_CPU
+	bool "SMP CPU usage display ('c' key)"
+	default n
+	depends on FREETZ_BUSYBOX_FEATURE_TOP_CPU_GLOBAL_PERCENTS
+	help
+	  Allow 'c' key to switch between individual/cumulative CPU stats
+	  This adds about 0.5k.
+
+config FREETZ_BUSYBOX_FEATURE_TOP_DECIMALS
+	bool "Show 1/10th of a percent in CPU/mem statistics"
+	default n
+	depends on FREETZ_BUSYBOX_FEATURE_TOP_CPU_USAGE_PERCENTAGE
+	help
+	  Show 1/10th of a percent in CPU/mem statistics.
+	  This adds about 0.3k.
+
+config FREETZ_BUSYBOX_FEATURE_TOP_SMP_PROCESS
+	bool "Show CPU process runs on ('j' field)"
+	default n
+	depends on FREETZ_BUSYBOX_TOP
+	help
+	  Show CPU where process was last found running on.
+	  This is the 'j' field.
+
+config FREETZ_BUSYBOX_FEATURE_TOPMEM
+	bool "Topmem command ('s' key)"
+	default n
+	depends on FREETZ_BUSYBOX_TOP
+	help
+	  Enable 's' in top (gives lots of memory info).
 config FREETZ_BUSYBOX_UPTIME
 	bool "uptime"
 	default n
@@ -7259,60 +7358,6 @@ config FREETZ_BUSYBOX_BB_SYSCTL
 	default n
 	help
 	  Configure kernel parameters at runtime.
-
-config FREETZ_BUSYBOX_TOP
-	bool "top"
-	default n
-	help
-	  The top program provides a dynamic real-time view of a running
-	  system.
-
-config FREETZ_BUSYBOX_FEATURE_TOP_CPU_USAGE_PERCENTAGE
-	bool "Show CPU per-process usage percentage"
-	default n
-	depends on FREETZ_BUSYBOX_TOP
-	help
-	  Make top display CPU usage for each process.
-	  This adds about 2k.
-
-config FREETZ_BUSYBOX_FEATURE_TOP_CPU_GLOBAL_PERCENTS
-	bool "Show CPU global usage percentage"
-	default n
-	depends on FREETZ_BUSYBOX_FEATURE_TOP_CPU_USAGE_PERCENTAGE
-	help
-	  Makes top display "CPU: NN% usr NN% sys..." line.
-	  This adds about 0.5k.
-
-config FREETZ_BUSYBOX_FEATURE_TOP_SMP_CPU
-	bool "SMP CPU usage display ('c' key)"
-	default n
-	depends on FREETZ_BUSYBOX_FEATURE_TOP_CPU_GLOBAL_PERCENTS
-	help
-	  Allow 'c' key to switch between individual/cumulative CPU stats
-	  This adds about 0.5k.
-
-config FREETZ_BUSYBOX_FEATURE_TOP_DECIMALS
-	bool "Show 1/10th of a percent in CPU/mem statistics"
-	default n
-	depends on FREETZ_BUSYBOX_FEATURE_TOP_CPU_USAGE_PERCENTAGE
-	help
-	  Show 1/10th of a percent in CPU/mem statistics.
-	  This adds about 0.3k.
-
-config FREETZ_BUSYBOX_FEATURE_TOP_SMP_PROCESS
-	bool "Show CPU process runs on ('j' field)"
-	default n
-	depends on FREETZ_BUSYBOX_TOP
-	help
-	  Show CPU where process was last found running on.
-	  This is the 'j' field.
-
-config FREETZ_BUSYBOX_FEATURE_TOPMEM
-	bool "Topmem command ('s' key)"
-	default n
-	depends on FREETZ_BUSYBOX_TOP
-	help
-	  Enable 's' in top (gives lots of memory info).
 
 config FREETZ_BUSYBOX_FEATURE_SHOW_THREADS
 	bool "Support for showing threads in ps/pstree/top"
@@ -8107,6 +8152,19 @@ config FREETZ_BUSYBOX_FEATURE_LOGREAD_REDUCED_LOCKING
 	  from circular buffer, minimizing semaphore
 	  contention at some minor memory expense.
 
+config FREETZ_BUSYBOX_FEATURE_KMSG_SYSLOG
+	bool "Linux kernel printk buffer support"
+	default n
+	depends on FREETZ_BUSYBOX_SYSLOGD
+	select FREETZ_BUSYBOX_PLATFORM_LINUX
+	help
+	  When you enable this feature, the syslogd utility will
+	  write system log message to the Linux kernel's printk buffer.
+	  This can be used as a smaller alternative to the syslogd IPC
+	  support, as klogd and logread aren't needed.
+
+	  NOTICE: Syslog facilities in log entries needs kernel 3.5+.
+
 config FREETZ_BUSYBOX_KLOGD
 	bool "klogd"
 	default n
@@ -8116,6 +8174,9 @@ config FREETZ_BUSYBOX_KLOGD
 	  out to the 'syslogd' utility so they can be logged. If
 	  you wish to record the messages produced by the kernel,
 	  you should enable this option.
+
+comment "klogd should not be used together with syslog to kernel printk buffer"
+	depends on FREETZ_BUSYBOX_KLOGD && FREETZ_BUSYBOX_FEATURE_KMSG_SYSLOG
 
 config FREETZ_BUSYBOX_FEATURE_KLOGD_KLOGCTL
 	bool "Use the klogctl() interface"

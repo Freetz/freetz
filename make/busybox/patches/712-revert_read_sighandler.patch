@@ -8,9 +8,9 @@ Subject: hush: use SA_RESTARTed signal handlers across read.
 Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
 ---
 (limited to 'shell/shell_common.c')
---- shell/shell_common.c	2013-01-12 17:35:42+01:00
-+++ shell/shell_common.c	2013-01-12 17:35:42+01:00
-@@ -165,40 +165,32 @@
+--- shell/shell_common.c
++++ shell/shell_common.c
+@@ -166,40 +166,32 @@
  	bufpos = 0;
  	do {
  		char c;
@@ -18,7 +18,7 @@ Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
 -		int timeout;
  
 -		if ((bufpos & 0xff) == 0)
--			buffer = xrealloc(buffer, bufpos + 0x100);
+-			buffer = xrealloc(buffer, bufpos + 0x101);
 +		errno = 0;
  
 -		timeout = -1;
