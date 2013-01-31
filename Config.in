@@ -1385,7 +1385,6 @@ menu "Override options"
 		default "@AVM/fritzbox.fon_wlan_7170/firmware/english/annex_a"       if FREETZ_TYPE_FINAL && FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 		default "@AVM/fritzbox.fon_wlan_7170/firmware/english/annex_b"       if FREETZ_TYPE_FINAL && FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 		default "@AVM/fritzbox.fon_wlan_7240/firmware/deutsch"               if FREETZ_TYPE_FINAL && FREETZ_TYPE_7240
-		default "@AVM/Beta/Neue_Repeatingfunktion_Preview/FRITZ!Box_7240"    if FREETZ_TYPE_LABOR && FREETZ_TYPE_7240
 		default "@AVM/fritzbox.fon_wlan_7270_v1/firmware/deutsch"            if FREETZ_TYPE_FINAL && ((FREETZ_TYPE_7270_V1 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_72702_72701 ) && FREETZ_TYPE_LANG_DE
 		default "@AVM/fritzbox.fon_wlan_7270_v2/firmware/deutsch"            if FREETZ_TYPE_FINAL && ((FREETZ_TYPE_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FINAL
 		default "@AVM/fritzbox.fon_wlan_7270_v2/firmware/english"            if FREETZ_TYPE_FINAL && ((FREETZ_TYPE_7270_V2 && ! FREETZ_TYPE_ALIEN_HARDWARE) || FREETZ_TYPE_7270_7270) && FREETZ_TYPE_LANG_EN
@@ -1413,9 +1412,7 @@ menu "Override options"
 		default "@AVM/fritzbox.wlan_3131/firmware/deutsch"                   if FREETZ_TYPE_FINAL && FREETZ_TYPE_3131
 		default "@AVM/fritzbox.wlan_3170/firmware/deutsch"                   if FREETZ_TYPE_FINAL && FREETZ_TYPE_3170
 		default "@AVM/fritzbox.wlan_3270/firmware/deutsch"                   if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V2
-		default "@AVM/Beta/Neue_Repeatingfunktion_Preview/FRITZ!Box_3270"    if FREETZ_TYPE_LABOR && FREETZ_TYPE_3270_V2
 		default "@AVM/fritzbox.wlan_3270_v3/firmware/deutsch"                if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_DE
-		default "@AVM/Beta/Neue_Repeatingfunktion_Preview/FRITZ!Box_3270v3"  if FREETZ_TYPE_LABOR && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_DE
 		default "@AVM/fritzbox.wlan_3270_v3/firmware/english"                if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_EN
 		default "@AVM/fritzbox.wlan_3370/firmware/deutsch"                   if FREETZ_TYPE_FINAL && FREETZ_TYPE_3370
 		default "@AVM/fritzbox.wlan_3390/firmware/deutsch"                   if FREETZ_TYPE_FINAL && FREETZ_TYPE_3390
@@ -1490,10 +1487,10 @@ menu "Override options"
 		default "fritz.box_wlan_3130.44.04.34.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_3130
 		default "fritz.box_wlan_3131.50.04.57.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_3131
 		default "fritz.box_wlan_3170.49.04.58.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_3170
-		default "fritz.box_wlan_3270.67.05.21.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V2 && FREETZ_TYPE_FINAL
-		default "FRITZ.Box_WLAN_3270_BETA.67.05.29-24250.image"                 if FREETZ_TYPE_LABOR && FREETZ_TYPE_3270_V2
-		default "fritz.box_wlan_3270_v3.96.05.21.image"                         if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_DE
-		default "FRITZ.Box_WLAN_3270_v3_BETA.96.05.29-24250.image"              if FREETZ_TYPE_LABOR && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_DE
+		default "fritz.box_wlan_3270.67.05.21.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V2 && FREETZ_TYPE_FIRMWARE_05_2X
+		default "fritz.box_wlan_3270.67.05.50.image"                            if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V2 && FREETZ_TYPE_FIRMWARE_05_5X
+		default "fritz.box_wlan_3270_v3.96.05.21.image"                         if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_FIRMWARE_05_2X && FREETZ_TYPE_LANG_DE
+		default "fritz.box_wlan_3270_v3.96.05.50.image"                         if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_FIRMWARE_05_5X && FREETZ_TYPE_LANG_DE
 		default "FRITZ.Box_WLAN_3270_v3.en-de-es-it-fr.96.05.23.image"          if FREETZ_TYPE_FINAL && FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_EN
 		default "fritz.box_wlan_3370.103.05.21.image"                           if FREETZ_TYPE_FINAL && FREETZ_TYPE_3370
 		default "FRITZ.Box_3390.121.05.50.image"                                if FREETZ_TYPE_FINAL && FREETZ_TYPE_3390
@@ -1558,8 +1555,10 @@ menu "Override options"
 		default "1c8dcee29f84c96648aa4b96271c9a16"  if FREETZ_TYPE_3130
 		default "a34a8d4f7af511d5dd6fff5f3c4e8276"  if FREETZ_TYPE_3131
 		default "f08942a9679002e21c29bb2cad9ded3e"  if FREETZ_TYPE_3170
-		default "5138514e9e56964c6cd2a30e7f7c31d8"  if FREETZ_TYPE_3270_V2
-		default "f42854fbca4834f97cfe54a72acdb944"  if FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_DE
+		default "5138514e9e56964c6cd2a30e7f7c31d8"  if FREETZ_TYPE_3270_V2 && FREETZ_TYPE_FIRMWARE_05_2X
+		default "272d19ab684f6b555acd0e74abcac650"  if FREETZ_TYPE_3270_V2 && FREETZ_TYPE_FIRMWARE_05_5X
+		default "f42854fbca4834f97cfe54a72acdb944"  if FREETZ_TYPE_3270_V3 && FREETZ_TYPE_FIRMWARE_05_2X && FREETZ_TYPE_LANG_DE
+		default "a7e2c604f7552740016211c7a9cf8afc"  if FREETZ_TYPE_3270_V3 && FREETZ_TYPE_FIRMWARE_05_5X && FREETZ_TYPE_LANG_DE
 		default "a99fe91cc1478dffa7446c06489de964"  if FREETZ_TYPE_3270_V3 && FREETZ_TYPE_LANG_EN
 		default "dc28afed7294ce738ec92e427bb934a5"  if FREETZ_TYPE_3370
 		default "9353f2d0ed1b97e17165a338cfbee0b3"  if FREETZ_TYPE_3390
