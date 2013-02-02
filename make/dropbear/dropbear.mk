@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 0.53.1)
+$(call PKG_INIT_BIN, 2012.55)
 $(PKG)_SOURCE:=dropbear-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=http://matt.ucc.asn.au/dropbear/releases
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dropbearmulti
 $(PKG)_STARTLEVEL=30
-$(PKG)_SOURCE_MD5:=0284ea239083f04c8b874e08e1aca243
+$(PKG)_SOURCE_MD5:=8c784baec3054cdb1bb4bfa792c87812
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dropbearkey" MULTI=1
