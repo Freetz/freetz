@@ -43,7 +43,7 @@ endif
 # 2.3 doesn't support --with-*-path options
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,path_IFCONFIG path_IPROUTE path_ROUTE)
 $(PKG)_CONFIGURE_ENV += $(pkg)_path_IFCONFIG=/sbin/ifconfig
-$(PKG)_CONFIGURE_ENV += $(pkg)_path_IPROUTE=/bin/ip
+$(PKG)_CONFIGURE_ENV += $(pkg)_path_IPROUTE=/sbin/ip
 $(PKG)_CONFIGURE_ENV += $(pkg)_path_ROUTE=/sbin/route
 
 # add EXTRA_CFLAGS, EXTRA_LDFLAGS, EXTRA_LIBS make variables
