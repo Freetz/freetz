@@ -1,0 +1,11 @@
+--- linux-2.6.19.2/drivers/base/core.c
++++ linux-2.6.19.2/drivers/base/core.c
+@@ -403,7 +403,7 @@
+ 
+ 	dev = get_device(dev);
+ 	if (!dev || !strlen(dev->bus_id))
+-		goto Error;
++		goto Done;
+ 
+ 	/* if this is a class device, and has no parent, create one */
+ 	if ((dev->class) && (dev->parent == NULL)) {

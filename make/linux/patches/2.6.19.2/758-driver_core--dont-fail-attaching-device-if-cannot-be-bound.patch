@@ -1,0 +1,92 @@
+--- linux-2.6.19.2/drivers/base/core.c
++++ linux-2.6.19.2/drivers/base/core.c
+@@ -479,8 +479,7 @@
+ 	if ((error = bus_add_device(dev)))
+ 		goto BusError;
+ 	kobject_uevent(&dev->kobj, KOBJ_ADD);
+-	if ((error = bus_attach_device(dev)))
+-		goto AttachError;
++	bus_attach_device(dev);
+ 	if (parent)
+ 		klist_add_tail(&dev->knode_parent, &parent->klist_children);
+ 
+@@ -499,8 +498,6 @@
+  	kfree(class_name);
+ 	put_device(dev);
+ 	return error;
+- AttachError:
+-	bus_remove_device(dev);
+  BusError:
+ 	device_pm_remove(dev);
+  PMError:
+--- linux-2.6.19.2/drivers/base/dd.c	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/base/dd.c	2013-02-01 02:19:03.035657595 +0100
+@@ -203,7 +203,8 @@
+  *	pair is found, break out and return.
+  *
+  *	Returns 1 if the device was bound to a driver;
+- *	0 if no matching device was found; error code otherwise.
++ *	0 if no matching device was found;
++ *	-ENODEV if the device is not registered.
+  *
+  *	When called for a USB interface, @dev->parent->sem must be held.
+  */
+@@ -216,6 +217,10 @@
+ 		ret = device_bind_driver(dev);
+ 		if (ret == 0)
+ 			ret = 1;
++		else {
++			dev->driver = NULL;
++			ret = 0;
++		}
+ 	} else
+ 		ret = bus_for_each_drv(dev->bus, NULL, dev, __device_attach);
+ 	up(&dev->sem);
+--- linux-2.6.19.2/drivers/base/base.h	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/base/base.h	2013-02-01 02:19:57.375267580 +0100
+@@ -16,7 +16,7 @@
+ extern int attribute_container_init(void);
+ 
+ extern int bus_add_device(struct device * dev);
+-extern int bus_attach_device(struct device * dev);
++extern void bus_attach_device(struct device * dev);
+ extern void bus_remove_device(struct device * dev);
+ extern struct bus_type *get_bus(struct bus_type * bus);
+ extern void put_bus(struct bus_type * bus);
+--- linux-2.6.19.2/drivers/base/bus.c	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/base/bus.c	2013-02-01 02:23:19.451796245 +0100
+@@ -406,7 +406,7 @@
+  *	- Add device to bus's list of devices.
+  *	- Try to attach to driver.
+  */
+-int bus_attach_device(struct device * dev)
++void bus_attach_device(struct device * dev)
+ {
+ 	struct bus_type *bus = dev->bus;
+ 	int ret = 0;
+@@ -414,13 +414,12 @@
+ 	if (bus) {
+ 		dev->is_registered = 1;
+ 		ret = device_attach(dev);
+-		if (ret >= 0) {
++		WARN_ON(ret < 0);
++		if (ret >= 0)
+ 			klist_add_tail(&dev->knode_bus, &bus->klist_devices);
+-			ret = 0;
+-		} else
++		else
+ 			dev->is_registered = 0;
+ 	}
+-	return ret;
+ }
+ 
+ /**
+@@ -593,8 +592,6 @@
+ 		ret = device_attach(dev);
+ 		if (dev->parent)
+ 			up(&dev->parent->sem);
+-		if (ret > 0)
+-			ret = 0;
+ 	}
+ 	return ret < 0 ? ret : 0;
+ }

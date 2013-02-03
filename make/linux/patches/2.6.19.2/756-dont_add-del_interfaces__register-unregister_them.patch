@@ -1,0 +1,20 @@
+--- linux-2.6.19.2/drivers/usb/core/message.c
++++ linux-2.6.19.2/drivers/usb/core/message.c
+@@ -1042,7 +1050,7 @@
+ 			dev_dbg (&dev->dev, "unregistering interface %s\n",
+ 				interface->dev.bus_id);
+ 			usb_remove_sysfs_intf_files(interface);
+-			device_del (&interface->dev);
++			device_unregister (&interface->dev);
+ 		}
+ 
+ 		/* Now that the interfaces are unbound, nobody should
+@@ -1484,7 +1495,7 @@
+ 			"adding %s (config #%d, interface %d)\n",
+ 			intf->dev.bus_id, configuration,
+ 			intf->cur_altsetting->desc.bInterfaceNumber);
+-		ret = device_add (&intf->dev);
++		ret = device_register (&intf->dev);
+ 		if (ret != 0) {
+ 			dev_err(&dev->dev, "device_add(%s) --> %d\n",
+ 				intf->dev.bus_id, ret);

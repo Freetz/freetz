@@ -1,0 +1,19 @@
+--- linux-2.6.19.2/drivers/usb/net/usbnet.c
++++ linux-2.6.19.2/drivers/usb/net/usbnet.c
+@@ -972,6 +972,7 @@
+ 		if (dev->txq.qlen >= TX_QLEN (dev))
+ 			netif_stop_queue (net);
+ 	}
++	usb_put_urb (urb);
+ 	spin_unlock_irqrestore (&dev->txq.lock, flags);
+ 
+ 	if (retval) {
+@@ -1088,6 +1089,8 @@
+ 	/* we don't hold rtnl here ... */
+ 	flush_scheduled_work ();
+ 
++	usb_scuttle_anchored_urbs (&dev->deferred);
++
+ 	if (dev->driver_info->unbind)
+ 		dev->driver_info->unbind (dev, intf);
+ 

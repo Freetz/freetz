@@ -9,48 +9,45 @@
  			itd_init (stream, itd);
  		}
  
-@@ -1595,9 +1595,6 @@
+@@ -1595,7 +1595,6 @@
  		}
  	}
  
 -	usb_put_urb (urb);
--	itd->urb = NULL;
--	itd->stream = NULL;
+ 	itd->urb = NULL;
+ 	itd->stream = NULL;
  	list_move (&itd->itd_list, &stream->free_list);
- 	iso_stream_put (ehci, stream);
+@@ -1621,7 +1620,7 @@
+ 		(void) disable_periodic (ehci);
+ 	ehci_to_hcd(ehci)->self.bandwidth_isoc_reqs--;
  
-@@ -1613,7 +1610,6 @@
- 	/* give urb back to the driver ... can be out-of-order */
- 	dev = urb->dev;
- 	ehci_urb_done (ehci, urb);
--	urb = NULL;
- 
- 	/* defer stopping schedule; completion can submit */
- 	ehci->periodic_sched--;
-@@ -1900,7 +1896,7 @@
+-	if (unlikely (list_empty (&stream->td_list))) {
++	if (unlikely(list_is_singular(&stream->td_list))) {
+ 		ehci_to_hcd(ehci)->self.bandwidth_allocated
+ 				-= stream->bandwidth;
+ 		ehci_vdbg (ehci,
+@@ -1900,7 +1899,6 @@
  				struct ehci_sitd, sitd_list);
  		list_move_tail (&sitd->sitd_list, &stream->td_list);
  		sitd->stream = iso_stream_get (stream);
 -		sitd->urb = usb_get_urb (urb);
-+		sitd->urb = urb;
  
  		sitd_patch (stream, sitd, sched, packet);
  		sitd_link (ehci, (next_uframe >> 3) % ehci->periodic_size,
-@@ -1958,9 +1954,6 @@
+@@ -1958,7 +1956,6 @@
  		desc->actual_length = desc->length - SITD_LENGTH (t);
  	}
  
 -	usb_put_urb (urb);
--	sitd->urb = NULL;
--	sitd->stream = NULL;
+ 	sitd->urb = NULL;
+ 	sitd->stream = NULL;
  	list_move (&sitd->sitd_list, &stream->free_list);
- 	stream->depth -= stream->interval << 3;
- 	iso_stream_put (ehci, stream);
-@@ -1977,7 +1970,6 @@
- 	/* give urb back to the driver */
- 	dev = urb->dev;
- 	ehci_urb_done (ehci, urb);
--	urb = NULL;
+@@ -1985,7 +1982,7 @@
+ 		(void) disable_periodic (ehci);
+ 	ehci_to_hcd(ehci)->self.bandwidth_isoc_reqs--;
  
- 	/* defer stopping schedule; completion can submit */
- 	ehci->periodic_sched--;
+-	if (list_empty (&stream->td_list)) {
++	if (list_is_singular(&stream->td_list)) {
+ 		ehci_to_hcd(ehci)->self.bandwidth_allocated
+ 				-= stream->bandwidth;
+ 		ehci_vdbg (ehci,
