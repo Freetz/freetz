@@ -1,0 +1,20 @@
+--- linux-2.6.19.2/drivers/net/avm_cpmac/cpmac_debug.h	2010-07-15 15:36:02.000000000 +0200
++++ linux-2.6.19.2/drivers/net/avm_cpmac/cpmac_debug.h	2013-02-02 21:38:43.590841720 +0100
+@@ -39,14 +39,11 @@
+ /*--- #define DEB_SUPPORT(a...) ---*/
+ #define DEB_ERR(a...) printk(KERN_ERR "[cpmac] " a);
+ #define DEB_WARN(a...) printk(KERN_WARNING "[cpmac] " a);
+-/*--- #define DEB_INFO(a...) printk (KERN_ERR "[cpmac] " a); ---*/
+-#define DEB_INFO(a...)
+-/*--- #define DEB_INFOTRC(a...) printk(KERN_ERR "[cpmac] " a); ---*/
+-#define DEB_INFOTRC(a...) 
++#define DEB_INFO(a...) printk (KERN_ERR "[cpmac] " a);
++#define DEB_INFOTRC(a...) printk(KERN_ERR "[cpmac] " a);
+ /*--- #define DEB_TRC(a...) printk(KERN_ERR "[cpmac] " a); ---*/
+ #define DEB_TRC(a...)
+-/*--- #define DEB_TEST(a...) DEB_ERR("[test] " a); ---*/
+-#define DEB_TEST(a...)
++#define DEB_TEST(a...) DEB_ERR("[test] " a);
+ 
+ #define assert(i)  BUG_ON(!(i))
+ /*--- #define assert(exp) ---*/

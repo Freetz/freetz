@@ -1,0 +1,39 @@
+--- linux-2.6.19.2/drivers/base/core.c	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/drivers/base/core.c	2013-02-02 20:24:01.801145655 +0100
+@@ -394,7 +394,7 @@
+  *	to the global and sibling lists for the device, then
+  *	adds it to the other relevant subsystems of the driver model.
+  */
+-int device_add(struct device *dev)
++int device_add_X(struct device *dev)
+ {
+ 	struct device *parent = NULL;
+ 	char *class_name = NULL;
+@@ -676,7 +676,7 @@
+ EXPORT_SYMBOL_GPL(device_for_each_child);
+ 
+ EXPORT_SYMBOL_GPL(device_initialize);
+-EXPORT_SYMBOL_GPL(device_add);
++EXPORT_SYMBOL_GPL(device_add_X);
+ EXPORT_SYMBOL_GPL(device_register);
+ 
+ EXPORT_SYMBOL_GPL(device_del);
+--- linux-2.6.19.2/include/linux/device.h	2007-01-11 08:38:19.000000000 +0100
++++ linux-2.6.19.2/include/linux/device.h	2013-02-02 19:46:00.477451636 +0100
+@@ -27,6 +27,7 @@
+ #define DEVICE_ID_SIZE		32
+ #define BUS_ID_SIZE		KOBJ_NAME_LEN
+ 
++#define device_add(x) ({ printk("device_add_X(): %s:%d @%s\n",__FILE__,__LINE__,__FUNCTION__); device_add_X(x); })
+ 
+ struct device;
+ struct device_driver;
+@@ -391,7 +394,7 @@
+ extern int __must_check device_register(struct device * dev);
+ extern void device_unregister(struct device * dev);
+ extern void device_initialize(struct device * dev);
+-extern int __must_check device_add(struct device * dev);
++extern int __must_check device_add_X(struct device * dev);
+ extern void device_del(struct device * dev);
+ extern int device_for_each_child(struct device *, void *,
+ 		     int (*fn)(struct device *, void *));
