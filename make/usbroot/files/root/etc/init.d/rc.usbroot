@@ -318,29 +318,6 @@ load_modules_2_6_19_2() {
 			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
 			piglet_load_params="piglet_enable_button=3"
 			;;
-		144 | 171 ) # 7240, 7340
-			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
-			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
-			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
-			#piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`
-			if [ -z $piglet_bitfilemode ] ; then piglet_bitfilemode=0 ; fi
-			piglet_load_params=" \
-				piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount} \
-				piglet_bitfilemode=$piglet_bitfilemode \
-			"
-			if [ $HWRevision = 144 ]; then
-				piglet_load_params="$piglet_load_params \
-					piglet_use_pll3_clk=1 \
-					piglet_enable_button=2 \
-				"
-			fi
-			;;
-		145 | 156 ) # 7270v3, 7390
-			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
-			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
-			piglet_bitfile=/lib/modules/bitfile.bit${HWRevision_BitFileCount}
-			[ $HWRevision = 145 ] && piglet_load_params="piglet_enable_button=3"
-			;;
 	esac
 
 	modprobe Piglet_noemif \
@@ -387,11 +364,6 @@ load_modules_2_6_28_10() {
 				piglet_potsbitfile=$piglet_potsbitfile \
 				piglet_bitfilemode=$piglet_bitfilemode \
 			"
-			;;
-		172 | 179 ) # 7320, 7330
-			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_441.hex
-			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_441.hex
-			piglet_dectmode="0x101"
 			;;
 	esac
 
