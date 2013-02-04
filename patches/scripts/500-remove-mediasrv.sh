@@ -31,6 +31,10 @@ if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
 	# see http://freetz.org/ticket/1391 for details
 	modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" $sedfile
+	# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver
+	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
+	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<p>{?80:1383?}<.p>$/\1/p')
+	modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
 fi
 
 echo1 "patching rc.conf"
