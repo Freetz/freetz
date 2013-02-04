@@ -18,6 +18,7 @@ fi
 # Defaults
 TEXT_ROWS=18
 CONFIG_PREPARE=
+HELP=
 
 # Load config
 [ -r "$def" ] && . "$def"
@@ -37,7 +38,7 @@ if ! allowed || [ "$CONFIG_SAVE" == "false" ]; then
     readonly=true
 fi
 
-cgi --id="file:$PACKAGE/$ID" --help="/packages/$PACKAGE#$ID"
+cgi --id="file:$PACKAGE/$ID" --help="${HELP:-/packages/$PACKAGE#$ID}"
 
 case $REQUEST_METHOD in
 	POST)	source "$HANDLER_DIR/save.sh" ;;
