@@ -1,0 +1,79 @@
+
+
+This patch is *INVERTED* to fix "slab size-32" problem, see http://freetz.org/ticket/472
+
+
+Foom: Alan Stern <stern@rowland.harvard.edu>
+Date: Mon, 24 Oct 2005 19:33:03 +0000 (-0400)
+Subject: [PATCH] usbcore: endpoint attributes track altsetting changes
+X-Git-Tag: v2.6.15-rc1~59^2~6^2~5^2~10
+X-Git-Url: http://git.openvz.org/?p=linux-2.6.16-openvz;a=commitdiff_plain;h=0e6c8e8db508fcb292836b23d039649c5de29090
+
+[PATCH] usbcore: endpoint attributes track altsetting changes
+
+This patch (as588) fixes the way endpoint attribute files are registered
+and unregistered.  Now they will correctly track along with altsetting
+changes.  This fixes bugzilla entry #5467.
+
+In a separate but related change, when a usb_reset_configuration call
+fails, the device state is not changed to USB_STATE_ADDRESS.  In the
+first place, failure means that we don't know what the state is, not
+that we know the device is unconfigured.  In the second place, doing
+this can potentially lead to a memory leak, since usbcore might not
+realize there still is a current configuration that needs to be
+destroyed.
+
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+
+
++++ linux-2.6.19.2/drivers/usb/core/message.c
+@@ -1181,8 +1181,6 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate)
+ 	 */
+ 
+ 	/* prevent submissions using previous endpoint settings */
+-	if (device_is_registered(&iface->dev))
+-		usb_remove_sysfs_intf_files(iface);
+ 	usb_disable_interface(dev, iface);
+ 
+ 	iface->cur_altsetting = alt;
+@@ -1218,8 +1218,6 @@ int usb_set_interface(struct usb_device *dev, int interface, int alternate)
+ 	 * (Likewise, EP0 never "halts" on well designed devices.)
+ 	 */
+ 	usb_enable_interface(dev, iface);
+-	if (device_is_registered(&iface->dev))
+-		usb_create_sysfs_intf_files(iface);
+ 
+ 	return 0;
+ }
+@@ -1269,8 +1269,10 @@ int usb_reset_configuration(struct usb_device *dev)
+ 			USB_REQ_SET_CONFIGURATION, 0,
+ 			config->desc.bConfigurationValue, 0,
+ 			NULL, 0, USB_CTRL_SET_TIMEOUT);
++	if (retval < 0) {
++		usb_set_device_state(dev, USB_STATE_ADDRESS);
+-	if (retval < 0)
+ 		return retval;
++	}
+ 
+ 	dev->toggle[0] = dev->toggle[1] = 0;
+ 
+@@ -1279,8 +1279,6 @@ int usb_reset_configuration(struct usb_device *dev)
+ 		struct usb_interface *intf = config->interface[i];
+ 		struct usb_host_interface *alt;
+ 
+-		if (device_is_registered(&intf->dev))
+-			usb_remove_sysfs_intf_files(intf);
+ 		alt = usb_altnum_to_altsetting(intf, 0);
+ 
+ 		/* No altsetting 0?  We'll assume the first altsetting.
+@@ -1293,8 +1293,6 @@ int usb_reset_configuration(struct usb_device *dev)
+ 
+ 		intf->cur_altsetting = alt;
+ 		usb_enable_interface(dev, intf);
+-		if (device_is_registered(&intf->dev))
+-			usb_create_sysfs_intf_files(intf);
+ 	}
+ 	return 0;
+ }
