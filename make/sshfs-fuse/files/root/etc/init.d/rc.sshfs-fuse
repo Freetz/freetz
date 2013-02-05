@@ -18,8 +18,7 @@ start() {
 
 	exitval=0
 	SSHFSMNT_PATH=/usr/bin
-	modprobe fuse
-	[ "$?" -gt 0 ] && exitval=1
+	modprobe fuse 2>/dev/null
 
 	for i in $SSHFS_FUSE_LIST; do
 		eval SSHFS_FUSE_SHARE=\$SSHFS_FUSE_SHARE$i
