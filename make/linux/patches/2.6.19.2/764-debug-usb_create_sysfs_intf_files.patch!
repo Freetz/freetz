@@ -1,0 +1,25 @@
+--- linux-2.6.19.2/drivers/usb/core/sysfs.c
++++ linux-2.6.19.2/drivers/usb/core/sysfs.c
+@@ -360,7 +360,7 @@
+ 		usb_remove_ep_files(&iface_desc->endpoint[i]);
+ }
+ 
+-int usb_create_sysfs_intf_files(struct usb_interface *intf)
++int usb_create_sysfs_intf_files_X(struct usb_interface *intf)
+ {
+ 	struct usb_device *udev = interface_to_usbdev(intf);
+ 	struct usb_host_interface *alt = intf->cur_altsetting;
+--- linux-2.6.19.2/drivers/usb/core/usb.h
++++ linux-2.6.19.2/drivers/usb/core/usb.h
+@@ -1,9 +1,10 @@
+ /* Functions local to drivers/usb/core/ */
+ #define usb_create_ep_files(x,y,z) ({ printk("usb_create_ep_files_X(): %s:%d @%s\n",__FILE__,__LINE__,__FUNCTION__); usb_create_ep_files_X(x,y,z); })
++#define usb_create_sysfs_intf_files(x) ({ printk("usb_create_sysfs_intf_files_X(): %s:%d @%s\n",__FILE__,__LINE__,__FUNCTION__); usb_create_sysfs_intf_files_X(x); })
+ 
+ extern int usb_create_sysfs_dev_files (struct usb_device *dev);
+ extern void usb_remove_sysfs_dev_files (struct usb_device *dev);
+-extern int usb_create_sysfs_intf_files (struct usb_interface *intf);
++extern int usb_create_sysfs_intf_files_X (struct usb_interface *intf);
+ extern void usb_remove_sysfs_intf_files (struct usb_interface *intf);
+ extern int usb_create_ep_files_X(struct device *parent, struct usb_host_endpoint *endpoint,
+ 				struct usb_device *udev);
