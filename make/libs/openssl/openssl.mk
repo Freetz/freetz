@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8x,1.0.1c))
+$(call PKG_INIT_LIB,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8y,1.0.1d))
 $(PKG)_LIB_VERSION:=$(call qstrip,$(FREETZ_OPENSSL_SHLIB_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5_0.9.8x := ee17e9bc805c8cc7d0afac3b0ef78eda
-$(PKG)_SOURCE_MD5_1.0.1c := ae412727c8c15b67880aef7bd2999b2e
+$(PKG)_SOURCE_MD5_0.9.8y := 47c7fb37f78c970f1d30aa2f9e9e26d8
+$(PKG)_SOURCE_MD5_1.0.1d := b92fc634f0f1f31a67ed4175adc5ba33
 $(PKG)_SOURCE_MD5        := $($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://www.openssl.org/source
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
