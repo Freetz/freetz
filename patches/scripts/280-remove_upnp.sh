@@ -10,11 +10,11 @@ rm_files $(find ${FILESYSTEM_MOD_DIR}/sbin -maxdepth 1 -type f -name upnpdevd -o
 menulua_remove upnp
 # html: Geraete und Benutzer
 modsed \
-  '/<li><a href="javascript:doNetPage('upnp')">{?629:6292?}</a></li>/d' \
+  '/<li><a href="javascript:doNetPage(.upnp.)">{?629:6292?}<.a><.li>/d' \
   "${HTML_SPEC_MOD_DIR}/home/clients.html"
 # html: Netzwerkeinstellungen
 modsed \
-  '/<li><a href="javascript:DoTabsUpnp()">{?296:4188?}</a></li>/d' \
+  '/<li><a href="javascript:DoTabsUpnp()">{?296:4188?}<.a><.li>/d' \
   "${HTML_SPEC_MOD_DIR}/system/net.html"
 
 _upnp_file="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
