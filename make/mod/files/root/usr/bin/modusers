@@ -7,6 +7,10 @@ FILES="passwd group shadow gshadow"
 load() {
 	mkdir -pm 700 $SAVE_DIR
 	for f in $FILES; do
+		# set permissions: 644 for passwd & group, 600 for shadow & gshadow
+		touch "/tmp/$f"
+		[ "$f" == "${f%shadow}" ] && chmod 644 "/tmp/$f" || chmod 600 "/tmp/$f"
+		# existing settings available?
 		if [ ! -e "$SAVE_DIR/$f" ]; then
 			# save default users&groups from var.tar
 			cat "/tmp/$f" > "$SAVE_DIR/$f" 2>/dev/null
