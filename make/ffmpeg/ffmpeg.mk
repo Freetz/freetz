@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.1.1)
+$(call PKG_INIT_BIN, 1.1.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=8d6ece2641f54fe3a86f270426f83e52
+$(PKG)_SOURCE_MD5:=7434c0b38be2ce9c4344d067cc0067f5
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
 $(PKG)_DEPENDS_ON := zlib
