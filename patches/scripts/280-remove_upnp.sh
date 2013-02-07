@@ -6,7 +6,7 @@ rm_files $(find ${FILESYSTEM_MOD_DIR}/sbin -maxdepth 1 -type f -name upnpdevd -o
 	 $(find ${FILESYSTEM_MOD_DIR}/etc -maxdepth 1 -type d -name 'default.*' | xargs -I{} find {} -name '*igd*')
 [ "$FREETZ_REMOVE_UPNP_LIBS" == "y" ] && rm_files $(ls -1 ${FILESYSTEM_MOD_DIR}/lib/libavmupnp*)
 
-# patcht Heimetz  Netzwerk > Programme (lua)
+# patcht Heimetz > Netzwerk > Programme (lua)
 menulua_remove upnp
 # html: Geraete und Benutzer
 modsed \

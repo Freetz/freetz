@@ -1,12 +1,9 @@
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
 echo1 "remove mediasrv files"
 for files in \
-	bin/showfritznasdbstart \
-	lib/libavmdb.so* \
 	lib/libpng.so* \
 	lib/libmediasrv.so* \
 	lib/libsqlite3*.so* \
-	sbin/fritznasdb \
 	sbin/mediasrv \
 	sbin/start_mediasrv \
 	sbin/stop_mediasrv \
@@ -15,6 +12,13 @@ for files in \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
+
+# MEDIASRV & NAS are using these files
+if [ "$FREETZ_REMOVE_NAS" == "y" ]; then
+	rm_files \
+	  "${FILESYSTEM_MOD_DIR}/lib/libavmdb.so*" \
+	  "${FILESYSTEM_MOD_DIR}/lib/libwebusb.so*"
+fi
 
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
 
