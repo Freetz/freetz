@@ -1,0 +1,21 @@
+--- configure
++++ configure
+@@ -39,6 +39,8 @@
+ }
+ EOF
+ CXX=${CXX:-unknown}
++# -fpermissive fixes deprecated auto_ptr usage (including broken auto_ptr test), s. http://gcc.gnu.org/gcc-4.3/porting_to.html for more details
++CXXFLAGS="$CXXFLAGS -fpermissive"
+ if ! $CXX $CXXFLAGS -c $tmp_file.C 2>/dev/null; then
+   $echo "Error: Could not find a working C++ compiler.";
+   exit 1;
+--- html.h
++++ html.h
+@@ -54,6 +54,7 @@
+ #  include "libstd/include/auto_ptr.h"
+ #else /* } { */
+ #  include <memory>
++   using ::std::auto_ptr;
+ #endif /* } */
+ #include <utility>
+ 

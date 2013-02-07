@@ -1,0 +1,13 @@
+Close every file after processing, not at the end of program.
+Index: html2text-1.3.2a/html2text.C
+===================================================================
+--- html2text.C
++++ html2text.C
+@@ -376,6 +376,7 @@
+     );
+ 
+     if (parser.yyparse() != 0) exit(1);
++	uis.close();
+   }
+ 
+   return 0;

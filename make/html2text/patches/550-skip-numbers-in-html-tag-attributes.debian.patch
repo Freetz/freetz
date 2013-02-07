@@ -1,0 +1,13 @@
+Index: html2text/HTMLControl.C
+===================================================================
+--- HTMLControl.C
++++ HTMLControl.C
+@@ -372,7 +372,7 @@
+             attribute.first = c;
+             for (;;) {
+               c = get_char();
+-              if (!isalpha(c) && c != '-' && c != '_' && c != ':') break;
++              if (!isalnum(c) && c != '-' && c != '_' && c != ':') break;
+ 	      // Same as in line 352 - Arno
+               attribute.first += c;
+             }

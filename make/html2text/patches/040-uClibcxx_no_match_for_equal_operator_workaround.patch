@@ -1,0 +1,24 @@
+--- HTMLParser.y
++++ HTMLParser.y
+@@ -414,7 +414,8 @@
+   }
+   | body_content texts {
+     Paragraph *p = new Paragraph;
+-    p->texts = auto_ptr<list<auto_ptr<Element> > >($2);
++    auto_ptr<list<auto_ptr<Element> > > _tmp($2);
++    p->texts.reset(_tmp.release());
+     ($$ = $1)->push_back(auto_ptr<Element>(p));
+   }
+   | body_content heading {
+--- HTMLParser.C
++++ HTMLParser.C
+@@ -2160,7 +2160,8 @@
+ #line 415 "HTMLParser.y"
+ {
+     Paragraph *p = new Paragraph;
+-    p->texts = auto_ptr<list<auto_ptr<Element> > >(yyvsp[0].element_list);
++    auto_ptr<list<auto_ptr<Element> > > _tmp(yyvsp[0].element_list);
++    p->texts.reset(_tmp.release());
+     (yyval.element_list = yyvsp[-1].element_list)->push_back(auto_ptr<Element>(p));
+   ;
+     break;}

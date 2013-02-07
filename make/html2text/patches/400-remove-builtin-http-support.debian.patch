@@ -1,0 +1,108 @@
+Remove limited built-in http support.
+
+The original html2text doesn't support any complicated HTTP queries and
+answers. The Debian version of html2text doesn't provide http support
+at all.
+
+However, you can easily operate by using the curl or wget packages:
+
+curl -s http://www.server.org/aaa/bbb/ccc.html | html2text
+wget http://www.server.org/aaa/bbb/ccc.html -O- | html2text
+
+Index: html2text-1.3.2a/html2text.C
+===================================================================
+--- html2text.C
++++ html2text.C
+@@ -36,18 +36,20 @@
+ 
+ 
+ #include <iostream>
++#include <fstream>
+ #include <string.h>
+ #include <stdlib.h>
+ 
+ #include "html.h"
+ #include "HTMLControl.h"
+-#include "urlistream.h"
++//#include "urlistream.h"
+ #include "format.h"
+ 
+ #define stringify(x) stringify2(x)
+ #define stringify2(x) #x
+ 
+ /* ------------------------------------------------------------------------- */
++using std::ifstream;
+ 
+ class MyParser : public HTMLControl {
+ 
+@@ -55,7 +57,7 @@
+   enum { PRINT_AS_ASCII, UNPARSE, SYNTAX_CHECK };
+ 
+   MyParser(
+-    urlistream &is_,
++    istream &is_,
+     bool       debug_scanner_,
+     bool       debug_parser_,
+     ostream    &os_,
+@@ -352,15 +354,14 @@
+     }
+ 
+     istream    *isp;
+-    urlistream uis;
++    ifstream     uis;
+ 
+     uis.open(input_url);
+     if (!uis.is_open()) {
+       std::cerr
+-        << "Opening input URL \""
++        << "Cannot open input file \""
+ 	<< input_url
+-        << "\": "
+-        << uis.open_error()
++        << "\"."
+         << std::endl;
+       exit(1);
+     }
+Index: html2text-1.3.2a/HTMLControl.h
+===================================================================
+--- HTMLControl.h
++++ HTMLControl.h
+@@ -38,7 +38,6 @@
+ /* ------------------------------------------------------------------------- */
+ 
+ #include "HTMLParser.h"
+-#include "urlistream.h"
+ #include <istream>
+ 
+ using std::istream;
+@@ -48,7 +47,7 @@
+ class HTMLControl : public HTMLParser {
+ 
+ public:
+-  HTMLControl(urlistream &is_, bool debug_scanner_, bool debug_parser_) :
++  HTMLControl(istream &is_, bool debug_scanner_, bool debug_parser_) :
+     HTMLParser(),
+     current_line(1),
+     current_column(0),
+@@ -84,7 +83,7 @@
+ 
+   bool debug_scanner;
+ 
+-  urlistream &is;
++  istream &is;
+   int     ungotten_chars[5];
+   int     number_of_ungotten_chars;
+ };
+Index: html2text-1.3.2a/Makefile.in
+===================================================================
+--- Makefile.in
++++ Makefile.in
+@@ -65,7 +65,7 @@
+ 	@echo '"/usr/local/bin", "/usr/local/man/man1" and "/usr/local/man/man5").';
+ 	@echo
+ 
+-OBJS = html2text.o html.o HTMLControl.o HTMLParser.o Area.o format.o sgml.o table.o urlistream.o Properties.o cmp_nocase.o
++OBJS = html2text.o html.o HTMLControl.o HTMLParser.o Area.o format.o sgml.o table.o Properties.o cmp_nocase.o
+ 
+ html2text : $(OBJS) $(LIBSTDCXX_LIBS)
+ 	$(CXX) $(LDFLAGS) $(OBJS) $(LOADLIBES) $(LDLIBS) -o $@

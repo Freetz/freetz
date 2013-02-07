@@ -1,0 +1,63 @@
+Substituted 'char*' with 'const char*' in needed places to avoid
+'deprecated conversion from string constant to ‘char*’' warnings.
+Index: sgml.C
+===================================================================
+--- sgml.C
++++ sgml.C
+@@ -61,7 +61,7 @@
+ static const struct TextToInt {
+   char name[8];
+   int  iso8859code;
+-  char *asciistr;
++  const char *asciistr;
+ } entities[] = {
+   { "AElig",   LATIN1_AElig,  "AE"         },
+   { "AMP",     0,             "&"          },
+Index: HTMLParser.h
+===================================================================
+--- HTMLParser.h
++++ HTMLParser.h
+@@ -487,7 +487,7 @@
+  /* decl const */
+ public:
+  int YY_HTMLParser_PARSE(YY_HTMLParser_PARSE_PARAM);
+- virtual void YY_HTMLParser_ERROR(char *) YY_HTMLParser_ERROR_BODY;
++ virtual void YY_HTMLParser_ERROR(const char *) YY_HTMLParser_ERROR_BODY;
+ #ifdef YY_HTMLParser_PURE
+ #ifdef YY_HTMLParser_LSP_NEEDED
+  virtual int  YY_HTMLParser_LEX(YY_HTMLParser_STYPE *YY_HTMLParser_LVAL,YY_HTMLParser_LTYPE *YY_HTMLParser_LLOC) YY_HTMLParser_LEX_BODY;
+Index: html2text.C
+===================================================================
+--- html2text.C
++++ html2text.C
+@@ -73,7 +73,7 @@
+   {}
+ 
+ private:
+-  /*virtual*/ void yyerror(char *);
++  /*virtual*/ void yyerror(const char *);
+   /*virtual*/ void process(const Document &);
+ 
+   ostream &os;
+@@ -83,7 +83,7 @@
+ };
+ 
+ /*virtual*/ void
+-MyParser::yyerror(char *p)
++MyParser::yyerror(const char *p)
+ {
+ 
+   /*
+Index: HTMLParser.C
+===================================================================
+--- HTMLParser.C
++++ HTMLParser.C
+@@ -600,7 +600,7 @@
+  /* decl const */
+ public:
+  int YY_HTMLParser_PARSE (YY_HTMLParser_PARSE_PARAM);
+- virtual void YY_HTMLParser_ERROR(char *msg) YY_HTMLParser_ERROR_BODY;
++ virtual void YY_HTMLParser_ERROR(const char *msg) YY_HTMLParser_ERROR_BODY;
+ #ifdef YY_HTMLParser_PURE
+ #ifdef YY_HTMLParser_LSP_NEEDED
+  virtual int  YY_HTMLParser_LEX (YY_HTMLParser_STYPE *YY_HTMLParser_LVAL,YY_HTMLParser_LTYPE *YY_HTMLParser_LLOC) YY_HTMLParser_LEX_BODY;

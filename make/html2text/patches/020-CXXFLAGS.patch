@@ -1,0 +1,113 @@
+--- configure
++++ configure
+@@ -39,7 +39,7 @@
+ }
+ EOF
+ CXX=${CXX:-unknown}
+-if ! $CXX -c $tmp_file.C 2>/dev/null; then
++if ! $CXX $CXXFLAGS -c $tmp_file.C 2>/dev/null; then
+   $echo "Error: Could not find a working C++ compiler.";
+   exit 1;
+ fi;
+@@ -70,7 +70,7 @@
+ }
+ EOF
+ for i in "" -DSYS_POLL_MISSING; do
+-  if $CXX $tmp_file.C $i -o $tmp_file 2>/dev/null; then
++  if $CXX $CXXFLAGS $tmp_file.C $i -o $tmp_file 2>/dev/null; then
+     SYS_POLL_MISSING="$i";
+     break;
+   fi;
+@@ -101,7 +101,7 @@
+ }
+ EOF
+ for i in "" "-lbsocket" "-lbsocket -lnsl" "-lsocket" "-lsocket -lnsl"; do
+-  if $CXX $tmp_file.C $i -o $tmp_file 2>/dev/null; then
++  if $CXX $CXXFLAGS $tmp_file.C $i -o $tmp_file 2>/dev/null; then
+     SOCKET_LIBRARIES="$i";
+     break;
+   fi;
+@@ -138,7 +138,7 @@
+   '-DBOOL_DEFINITION="typedef unsigned char bool;const bool false=0,true=1;"' \
+   '-DBOOL_DEFINITION="enum bool{false,true};"'; \
+ do
+-  if eval "$CXX $tmp_file.C $i -o $tmp_file 2>/dev/null"; then
++  if eval "$CXX $CXXFLAGS $tmp_file.C $i -o $tmp_file 2>/dev/null"; then
+     BOOL_DEFINITION="$i";
+     break;
+   fi;
+@@ -169,7 +169,7 @@
+   '' \
+   '-Dexplicit='; \
+ do
+-  if eval "$CXX $tmp_file.C $i -o $tmp_file 2>/dev/null"; then
++  if eval "$CXX $CXXFLAGS $tmp_file.C $i -o $tmp_file 2>/dev/null"; then
+     EXPLICIT="$i";
+     break;
+   fi;
+@@ -201,7 +201,7 @@
+ using namespace std;
+ void func() { map<string, string> x; }
+ EOF
+-if $CXX -c $tmp_file.C 2>/dev/null; then
++if $CXX $CXXFLAGS -c $tmp_file.C 2>/dev/null; then
+   LIBSTDCXX_INCLUDES="";
+   LIBSTDCXX_LIBS="";
+   $echo 'works; no need to make "./libstd"';
+@@ -237,7 +237,7 @@
+   return 0;
+ }  
+ EOF
+-if eval "$CXX -c $LIBSTDCXX_INCLUDES $EXPLICIT $BOOL_DEFINITION $tmp_file.C" 2>/dev/null; then
++if eval "$CXX $CXXFLAGS -c $LIBSTDCXX_INCLUDES $EXPLICIT $BOOL_DEFINITION $tmp_file.C" 2>/dev/null; then
+   $echo 'defined in <memory>, good';
+ else
+   $echo 'not defined or not working, use "./libstd/include/auto_ptr.h"';
+@@ -250,7 +250,7 @@
+ MAKEDEPEND_INCLUDES="";
+ $echo 'Checking "makedepend" includes... \c';
+ echo "#include <iostream>" >$tmp_file.C;
+-MAKEDEPEND_INCLUDES=`$CXX -E $tmp_file.C 2>/dev/null |
++MAKEDEPEND_INCLUDES=`$CXX $CXXFLAGS -E $tmp_file.C 2>/dev/null |
+ sed -n \
+   -e 's/^#line .*"\(\/.*\)\/.*".*/-I\1/p' \
+   -e 's/^# [1-9][0-9]* "\(\/.*\)\/.*".*/-I\1/p' |
+@@ -273,6 +273,7 @@
+   SYS_POLL_MISSING \
+   SOCKET_LIBRARIES \
+   CXX \
++  CXXFLAGS \
+   BOOL_DEFINITION \
+   EXPLICIT \
+   LIBSTDCXX_INCLUDES \
+--- Makefile.in
++++ Makefile.in
+@@ -34,6 +34,7 @@
+ DOCDIR    = /usr/share/doc/html2text
+ 
+ CXX                 = @CXX@
++CXXFLAGS            = @CXXFLAGS@
+ BOOL_DEFINITION     = @BOOL_DEFINITION@
+ EXPLICIT            = @EXPLICIT@
+ SYS_POLL_MISSING    = @SYS_POLL_MISSING@
+@@ -43,19 +44,15 @@
+ AUTO_PTR_BROKEN     = @AUTO_PTR_BROKEN@
+ MAKEDEPEND_INCLUDES = @MAKEDEPEND_INCLUDES@
+ 
+-DEBUG=-O2 -g
+-
+ INCLUDES  = $(LIBSTDCXX_INCLUDES)
+ DEFINES   = -DVERSION=$(VERSION) $(SYS_POLL_MISSING) $(BOOL_DEFINITION) $(EXPLICIT) $(AUTO_PTR_BROKEN)
+ CPPFLAGS  = $(INCLUDES) $(DEFINES)
+-CXXFLAGS  = $(CPPFLAGS) $(DEBUG)
+-LDFLAGS   = $(DEBUG)
+ LOADLIBES = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES)
+ 
+ .SUFFIXES : .C .o
+ 
+ .C.o :
+-	$(CXX) -c $(CXXFLAGS) $*.C
++	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $*.C
+ 
+ # -----------------------------------------------------------------------------
+ 
