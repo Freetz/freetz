@@ -1,0 +1,35 @@
+--- html2text.C
++++ html2text.C
+@@ -356,18 +356,23 @@
+     istream    *isp;
+     ifstream     uis;
+ 
+-    uis.open(input_url);
+-    if (!uis.is_open()) {
+-      std::cerr
+-        << "Cannot open input file \""
+-	<< input_url
+-        << "\"."
+-        << std::endl;
+-      exit(1);
++    if (!strcmp(input_url, "-")) {
++      isp = &std::cin;
++    } else {
++      uis.open(input_url);
++      if (!uis.is_open()) {
++        std::cerr
++          << "Cannot open input file \""
++          << input_url
++          << "\"."
++          << std::endl;
++        exit(1);
++      }
++      isp = &uis;
+     }
+ 
+     MyParser parser(
+-      uis,
++      *isp,
+       debug_scanner,
+       debug_parser,
+       *osp,
