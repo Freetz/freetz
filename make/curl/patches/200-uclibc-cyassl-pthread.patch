@@ -1,7 +1,6 @@
-Because of uClibc bug all binaries/libraries (indirectly) depending on pthread must link it directly.
 --- configure
 +++ configure
-@@ -11642,6 +11642,8 @@
+@@ -12312,6 +12312,8 @@
      ;;
    esac
  
@@ -10,14 +9,12 @@ Because of uClibc bug all binaries/libraries (indirectly) depending on pthread m
    ld_shlibs=yes
  
    # On some targets, GNU ld is compatible enough with the native linker
-@@ -22718,8 +22720,8 @@
+@@ -23463,7 +23465,7 @@
        { $as_echo "$as_me:${as_lineno-$LINENO}: detected CyaSSL" >&5
  $as_echo "$as_me: detected CyaSSL" >&6;}
  
--      CURL_LIBS="$CURL_LIBS -lcyassl -lm"
--      LIBS="$LIBS -lcyassl -lm"
-+      CURL_LIBS="$CURL_LIBS -lcyassl -lpthread -lm"
-+      LIBS="$LIBS -lcyassl -lpthread -lm"
+-      LIBS="-lcyassl -lm $LIBS"
++      LIBS="-lcyassl -lpthread -lm $LIBS"
  
        if test -n "$cyassllib"; then
                                          if test "x$cross_compiling" != "xyes"; then

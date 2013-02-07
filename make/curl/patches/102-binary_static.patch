@@ -1,11 +1,11 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -108,7 +108,7 @@
- 	$(AM_CFLAGS) $(CFLAGS)
- CCLD = $(CC)
- LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
--	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-+	$(AM_LDFLAGS) $(LDFLAGS) $(STATIC_LDFLAGS) -o $@
- SOURCES = $(curl_SOURCES)
- DIST_SOURCES = $(curl_SOURCES)
- ETAGS = etags
+@@ -118,7 +118,7 @@
+ curl_OBJECTS = $(am_curl_OBJECTS)
+ curl_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+ 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(curl_LDFLAGS) \
+-	$(LDFLAGS) -o $@
++	$(LDFLAGS) $(STATIC_LDFLAGS) -o $@
+ DEFAULT_INCLUDES = 
+ depcomp = $(SHELL) $(top_srcdir)/depcomp
+ am__depfiles_maybe = depfiles

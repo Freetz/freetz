@@ -1,0 +1,42 @@
+--- configure
++++ configure
+@@ -3634,13 +3634,16 @@
+   for xc_word in $CFLAGS; do
+     case "$xc_word" in
+       -D*)
+-        xc_bad_var_cflags=yes
++        CPPFLAGS="$CPPFLAGS $xc_word"
++        #xc_bad_var_cflags=yes
+         ;;
+       -U*)
+-        xc_bad_var_cflags=yes
++        CPPFLAGS="$CPPFLAGS $xc_word"
++        #xc_bad_var_cflags=yes
+         ;;
+       -I*)
+-        xc_bad_var_cflags=yes
++        CPPFLAGS="$CPPFLAGS $xc_word"
++        #xc_bad_var_cflags=yes
+         ;;
+       -rpath*)
+         xc_bad_var_cflags=yes
+@@ -39603,13 +39606,16 @@
+   for xc_word in $CFLAGS; do
+     case "$xc_word" in
+       -D*)
+-        xc_bad_var_cflags=yes
++        #xc_bad_var_cflags=yes
++        CPPFLAGS="$CPPFLAGS $xc_word"
+         ;;
+       -U*)
+-        xc_bad_var_cflags=yes
++        #xc_bad_var_cflags=yes
++        CPPFLAGS="$CPPFLAGS $xc_word"
+         ;;
+       -I*)
+-        xc_bad_var_cflags=yes
++        #xc_bad_var_cflags=yes
++        CPPFLAGS="$CPPFLAGS $xc_word"
+         ;;
+       -rpath*)
+         xc_bad_var_cflags=yes
