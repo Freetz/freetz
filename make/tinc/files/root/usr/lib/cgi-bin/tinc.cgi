@@ -25,11 +25,11 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Erweiterte" en:"Advanced")'
+sec_begin '$(lang de:"Erweitert" en:"Advanced")'
 
-cgi_print_textline_p "debuglevel" "$TINC_DEBUGLEVEL" 1/1 "$(lang de:"Debuglevel" en:"Debug level")(0-5)"
+cgi_print_textline_p "debuglevel" "$TINC_DEBUGLEVEL" 1/1 "$(lang de:"Debuglevel" en:"Debug level")(0-5): "
 
-cgi_print_checkbox_p "logfile_enabled" "$TINC_LOGFILE_ENABLED" "$(lang de:"In Datei loggen" en:"Log to file"): "
+cgi_print_checkbox_p "logfile_enabled" "$TINC_LOGFILE_ENABLED" "$(lang de:"In Datei loggen" en:"Log to file")"
 cgi_print_textline_p "logfile_name" "$TINC_LOGFILE_NAME" 55/255 "$(lang de:"Logdatei" en:"Log file"): "
 
 

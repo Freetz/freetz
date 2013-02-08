@@ -13,7 +13,7 @@ config() {
 
 start() {
 	[ -z "$TINC_DEBUGLEVEL" ] && _DEBUGLEVEL="" || _DEBUGLEVEL="-d$TINC_DEBUGLEVEL"
-	if ["$TINC_LOGFILE_ENABLED" != "y" ]; then
+	if [ "$TINC_LOGFILE_ENABLED" != "y" ]; then
 		_LOGFILE=''
 	else
 		_LOGFILE='--logfile'
