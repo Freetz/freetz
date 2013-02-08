@@ -1,4 +1,5 @@
 $(call PKG_INIT_BIN, 2.7.3)
+$(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=c57477edd6d18bd9eeca2f21add73919
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
@@ -7,8 +8,8 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
 
 $(PKG)_LOCAL_INSTALL_DIR:=$($(PKG)_DIR)/_install
 
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python2.7.bin
-$(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython2.7.so.1.0
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python$($(PKG)_MAJOR_VERSION).bin
+$(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython$($(PKG)_MAJOR_VERSION).so.1.0
 
 $(PKG)_BUILD_PREREQ += zip
 
@@ -319,7 +320,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/zlib;
 # The python executable needs to stay in the root of the builddir
 # since its location is used to compute the path of the config files.
 $(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/pgen hostpgen;
-$(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/python2.7 hostpython;
+$(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/python$($(PKG)_MAJOR_VERSION) hostpython;
 
 $(PKG)_MAKE_OPTIONS := CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_MAKE_OPTIONS += HOSTPYTHON_COMPILE="$(abspath $(HOST_TOOLS_DIR)/usr/bin/python)"
@@ -353,42 +354,42 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 			usr/bin/python*-config \
 			usr/bin/smtpd.py \
 			\
-			usr/lib/libpython2.7.a \
+			usr/lib/libpython$(PYTHON_MAJOR_VERSION).a \
 			\
-			usr/lib/python2.7/lib2to3 \
-			usr/lib/python2.7/idlelib \
-			usr/lib/python2.7/lib-old \
-			usr/lib/python2.7/lib-tk \
-			usr/lib/python2.7/plat-linux3 \
-			usr/lib/python2.7/pdb.doc \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib2to3 \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/idlelib \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-old \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-tk \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/plat-linux3 \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/pdb.doc \
 			\
-			usr/lib/python2.7/wsgiref \
-			usr/lib/python2.7/wsgiref.egg-info \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/wsgiref \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/wsgiref.egg-info \
 			\
-			usr/lib/python2.7/lib-dynload/future_builtins.so \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-dynload/future_builtins.so \
 			\
-			usr/lib/python2.7/LICENSE.txt \
-			usr/lib/python2.7/site-packages/README \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/LICENSE.txt \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/site-packages/README \
 			\
-			usr/lib/python2.7/config/* \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/config/* \
 			\
 			usr/lib/pkgconfig \
 			\
 			usr/share; \
 		\
-		touch usr/lib/python2.7/config/Makefile; \
+		touch usr/lib/python$(PYTHON_MAJOR_VERSION)/config/Makefile; \
 		\
-		find usr/include/python2.7/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
-		find usr/lib/python2.7/ \( -name "*.py" -o -name "*.pyo" \) -delete; \
+		find usr/include/python$(PYTHON_MAJOR_VERSION)/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
+		find usr/lib/python$(PYTHON_MAJOR_VERSION)/ \( -name "*.py" -o -name "*.pyo" \) -delete; \
 		\
 		$(TARGET_STRIP) \
-			usr/bin/python2.7 \
-			$(if $(FREETZ_PACKAGE_PYTHON_STATIC),,usr/lib/libpython2.7.so.1.0) \
-			usr/lib/python2.7/lib-dynload/*.so; \
+			usr/bin/python$(PYTHON_MAJOR_VERSION) \
+			$(if $(FREETZ_PACKAGE_PYTHON_STATIC),,usr/lib/libpython$(PYTHON_MAJOR_VERSION).so.1.0) \
+			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-dynload/*.so; \
 		\
-		mv usr/bin/python2.7 usr/bin/python2.7.bin; \
+		mv usr/bin/python$(PYTHON_MAJOR_VERSION) usr/bin/python$(PYTHON_MAJOR_VERSION).bin; \
 	)
-	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/python2.7; \
+	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/python$(PYTHON_MAJOR_VERSION); \
 		$(RM) -r $(PYTHON_REMOVE_MODS); \
 		$(PYTHON_COMPRESS_PYC) \
 		find . -depth -type d -empty -delete; \
@@ -396,13 +397,13 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	touch $@
 
 $(PYTHON_TARGET_BINARY): $($(PKG)_DIR)/.installed
-	tar -c -C $(PYTHON_LOCAL_INSTALL_DIR) --exclude='libpython2.7.so*' . | tar -x -C $(PYTHON_DEST_DIR)
+	tar -c -C $(PYTHON_LOCAL_INSTALL_DIR) --exclude='libpython$(PYTHON_MAJOR_VERSION).so*' . | tar -x -C $(PYTHON_DEST_DIR)
 	touch -c $@
 
 ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_STATIC)),y)
 $($(PKG)_LIB_PYTHON_TARGET_DIR): $($(PKG)_DIR)/.installed
 	mkdir -p $(dir $@); \
-	cp -a $(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/libpython2.7.so* $(dir $@); \
+	cp -a $(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/libpython$(PYTHON_MAJOR_VERSION).so* $(dir $@); \
 	touch -c $@
 endif
 
@@ -419,11 +420,11 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) -r \
 		$(PYTHON_TARGET_BINARY) \
-		$(PYTHON_TARGET_LIBDIR)/libpython2.7.so* \
+		$(PYTHON_TARGET_LIBDIR)/libpython$(PYTHON_MAJOR_VERSION).so* \
 		$(PYTHON_DEST_DIR)/usr/bin/python \
 		$(PYTHON_DEST_DIR)/usr/bin/python2 \
-		$(PYTHON_DEST_DIR)/usr/lib/python2.7 \
+		$(PYTHON_DEST_DIR)/usr/lib/python$(PYTHON_MAJOR_VERSION) \
 		$(PYTHON_DEST_DIR)/usr/lib/python27.zip \
-		$(PYTHON_DEST_DIR)/usr/include/python2.7
+		$(PYTHON_DEST_DIR)/usr/include/python$(PYTHON_MAJOR_VERSION)
 
 $(PKG_FINISH)
