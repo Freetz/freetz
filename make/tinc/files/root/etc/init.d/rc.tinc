@@ -1,0 +1,77 @@
+#!/bin/sh
+
+DAEMON=tinc
+DAEMON_BIN=tincd
+DAEMON_CHECK="tincd"
+DAEMON_LONG_NAME="Tinc"
+. /etc/init.d/modlibrc
+
+
+config() {
+	modlib_config
+}
+
+start() {
+	[ -z "$TINC_DEBUGLEVEL" ] && _DEBUGLEVEL="" || _DEBUGLEVEL="-d$TINC_DEBUGLEVEL"
+	if ["$TINC_LOGFILE_ENABLED" != "y" ]; then
+		_LOGFILE=''
+	else
+		_LOGFILE='--logfile'
+		[ -n "$TINC_LOGFILE_NAME" ] && _LOGFILE="${_LOGFILE}=${TINC_LOGFILE_NAME}"
+	fi
+	modlib_startdaemon $DAEMON_BIN $_DEBUGLEVEL -c /tmp/flash/$DAEMON $_LOGFILE
+}
+
+stop() {
+	$DAEMON_BIN --kill
+	for x in 1 2 3 4 5 6 7 8 9; do
+		pidof $DAEMON_BIN >/dev/null || break
+		sleep 1
+	done
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON/hosts" ] && mkdir -p /tmp/flash/$DAEMON/hosts
+		rm -rf "/tmp/flash/$DAEMON/$DAEMON.conf" 2>/dev/null
+		ln -s "/mod/etc/$DAEMON.conf" "/tmp/flash/$DAEMON/$DAEMON.conf"
+		/etc/default.tinc/default-config.sh
+
+		modreg file $DAEMON server1      Server1      1 server1
+		modreg file $DAEMON server2      Server2      1 server2
+		modreg file $DAEMON server3      Server3      1 server3
+		modreg file $DAEMON rsa_key_priv rsa-key.priv 1 rsa_key_priv
+		modreg file $DAEMON rsa_key_pub  rsa-key.pub  1 rsa_key_pub
+		modreg file $DAEMON tinc_down    tinc-down    1 tinc_down
+		modreg file $DAEMON tinc_up      tinc-up      1 tinc_up
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+
+		modlib_start $TINC_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

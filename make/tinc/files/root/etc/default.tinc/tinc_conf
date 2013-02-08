@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "Name        = $TINC_SERVER0"
+
+[ -n "$TINC_SERVER1" ] && echo "ConnectTo   = $TINC_SERVER1"
+[ -n "$TINC_SERVER2" ] && echo "ConnectTo   = $TINC_SERVER2"
+[ -n "$TINC_SERVER3" ] && echo "ConnectTo   = $TINC_SERVER3"
+
+cat << EOF
+Device      = /dev/tun
+DeviceType  = tap
+Mode        = switch
+EOF
