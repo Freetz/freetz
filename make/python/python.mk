@@ -13,6 +13,8 @@ $(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython$($(PKG)_MAJOR_VE
 $(PKG)_ZIPPED_PYC:=usr/lib/python$(subst .,,$($(PKG)_MAJOR_VERSION)).zip
 $(PKG)_ZIPPED_PYC_TARGET_DIR:=$($(PKG)_DEST_DIR)/$($(PKG)_ZIPPED_PYC)
 
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python$($(PKG)_MAJOR_VERSION)
+
 include $(MAKE_DIR)/python/python-filelists.mk.in
 
 $(PKG)_MODULES_ALL := \
@@ -102,9 +104,6 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 		chmod -R u+w usr; \
 		$(RM) -r $(subst $(_newline),$(_space),$(Python/unnecessary/files)); \
 		\
-		touch usr/lib/python$(PYTHON_MAJOR_VERSION)/config/Makefile; \
-		\
-		find usr/include/python$(PYTHON_MAJOR_VERSION)/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
 		find usr/lib/python$(PYTHON_MAJOR_VERSION)/ -name "*.pyo" -delete; \
 		\
 		$(TARGET_STRIP) \
@@ -116,8 +115,22 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	)
 	touch $@
 
+$($(PKG)_STAGING_BINARY): $($(PKG)_DIR)/.installed
+	@tar -c -C $(PYTHON_LOCAL_INSTALL_DIR)/usr --exclude='*.pyc' . | tar -x -C $(TARGET_TOOLCHAIN_STAGING_DIR)/usr; \
+	$(PKG_FIX_LIBTOOL_LA) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/python-$(PYTHON_MAJOR_VERSION).pc; \
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python$(PYTHON_MAJOR_VERSION).bin ; \
+	cp $(HOST_TOOLS_DIR)/usr/bin/python$(PYTHON_MAJOR_VERSION) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/hostpython; \
+	ln -sf hostpython $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python$(PYTHON_MAJOR_VERSION); \
+	$(SED) -ri -e 's,^#!.*,#!/usr/bin/env python$(PYTHON_MAJOR_VERSION),g' $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python$(PYTHON_MAJOR_VERSION)-config; \
+	touch -c $@
+
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.installed
 	@tar -c -C $(PYTHON_LOCAL_INSTALL_DIR) --exclude='libpython$(PYTHON_MAJOR_VERSION).so*' . | tar -x -C $(PYTHON_DEST_DIR); \
+	(cd $(PYTHON_DEST_DIR); \
+		echo -n > usr/lib/python$(PYTHON_MAJOR_VERSION)/config/Makefile; \
+		find usr/include/python$(PYTHON_MAJOR_VERSION)/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
+		$(RM) -r $(subst $(_newline),$(_space),$(Python/development/files)); \
+	); \
 	touch -c $@
 
 ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_STATIC)),y)
@@ -156,7 +169,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config $($(PKG)_TARGET_DIR)/py.lst $($
 	cat $(PYTHON_TARGET_DIR)/excluded-module-files.lst >> $@; \
 	touch -c $@
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(if $(FREETZ_PACKAGE_PYTHON_STATIC),,$($(PKG)_LIB_PYTHON_TARGET_DIR)) $($(PKG)_ZIPPED_PYC_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_STAGING_BINARY) $($(PKG)_TARGET_BINARY) $(if $(FREETZ_PACKAGE_PYTHON_STATIC),,$($(PKG)_LIB_PYTHON_TARGET_DIR)) $($(PKG)_ZIPPED_PYC_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PYTHON_DIR) clean
@@ -165,6 +178,11 @@ $(pkg)-clean:
 	$(RM) $(PYTHON_TARGET_DIR)/py.lst $(PYTHON_TARGET_DIR)/pyc.lst
 	$(RM) $(PYTHON_TARGET_DIR)/excluded-module-files.lst $(PYTHON_TARGET_DIR)/excluded-module-files-zip.lst $(PYTHON_TARGET_DIR)/.excluded
 	$(RM) -r $(PYTHON_LOCAL_INSTALL_DIR)
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/hostpython
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/python$(PYTHON_MAJOR_VERSION)
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/python$(PYTHON_MAJOR_VERSION)
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpython$(PYTHON_MAJOR_VERSION).so*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/python*
 
 $(pkg)-uninstall:
 	$(RM) -r \

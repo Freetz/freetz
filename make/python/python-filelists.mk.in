@@ -5,11 +5,14 @@ usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-dynload/future_builtins.so
 usr/bin/idle
 usr/lib/python$(PYTHON_MAJOR_VERSION)/idlelib
 usr/bin/pydoc
-usr/bin/python*-config
 usr/bin/smtpd.py
 usr/lib/libpython$(PYTHON_MAJOR_VERSION).a
-usr/lib/pkgconfig
-usr/lib/python$(PYTHON_MAJOR_VERSION)/config/*
+usr/lib/python$(PYTHON_MAJOR_VERSION)/config/config.c*
+usr/lib/python$(PYTHON_MAJOR_VERSION)/config/install-sh
+usr/lib/python$(PYTHON_MAJOR_VERSION)/config/libpython$(PYTHON_MAJOR_VERSION).a
+usr/lib/python$(PYTHON_MAJOR_VERSION)/config/makesetup
+usr/lib/python$(PYTHON_MAJOR_VERSION)/config/python.o
+usr/lib/python$(PYTHON_MAJOR_VERSION)/config/Setup*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/ctypes/macholib/fetch_macholib*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/ctypes/macholib/README.ctypes
 usr/lib/python$(PYTHON_MAJOR_VERSION)/distutils/command/command_template
@@ -26,6 +29,11 @@ usr/lib/python$(PYTHON_MAJOR_VERSION)/plat-linux2/regen
 usr/lib/python$(PYTHON_MAJOR_VERSION)/plat-linux3
 usr/lib/python$(PYTHON_MAJOR_VERSION)/wsgiref.egg-info
 usr/share
+endef
+
+define Python/development/files
+usr/bin/python*-config
+usr/lib/pkgconfig
 endef
 
 define Python/unnecessary-if-compression-enabled/dirs
