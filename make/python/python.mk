@@ -10,246 +10,33 @@ $(PKG)_LOCAL_INSTALL_DIR:=$($(PKG)_DIR)/_install
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python$($(PKG)_MAJOR_VERSION).bin
 $(PKG)_LIB_PYTHON_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/libpython$($(PKG)_MAJOR_VERSION).so.1.0
+$(PKG)_ZIPPED_PYC:=usr/lib/python$(subst .,,$($(PKG)_MAJOR_VERSION)).zip
+$(PKG)_ZIPPED_PYC_TARGET_DIR:=$($(PKG)_DEST_DIR)/$($(PKG)_ZIPPED_PYC)
+
+include $(MAKE_DIR)/python/python-filelists.mk.in
+
+$(PKG)_MODULES_ALL := \
+	audiodev audioop bisect bsddb cmath collections cprofile crypt csv ctypes curses \
+	datetime eastern_codecs elementtree fcntl functools grp hashlib hotshot io json \
+	mmap multiprocessing operator random readline resource socket spwd sqlite ssl \
+	struct syslog termios test time unicodedata wsgiref
+$(PKG)_MODULES_SELECTED := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)
+$(PKG)_MODULES_EXCLUDED := $(filter-out $($(PKG)_MODULES_SELECTED),$($(PKG)_MODULES_ALL))
+
+$(PKG)_EXCLUDED_FILES   := $(subst $(_newline),$(_space),$(foreach mod,$($(PKG)_MODULES_EXCLUDED),$(PyMod/$(mod)/files)))
+$(PKG)_UNNECESSARY_DIRS := $(if $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC),$(subst $(_newline),$(_space),$(Python/unnecessary-if-compression-enabled/dirs)))
+$(PKG)_UNNECESSARY_DIRS += $(subst $(_newline),$(_space),$(foreach mod,$($(PKG)_MODULES_EXCLUDED),$(PyMod/$(mod)/dirs)))
 
 $(PKG)_BUILD_PREREQ += zip
 
 $(PKG)_HOST_DEPENDS_ON := python-host
-$(PKG)_DEPENDS_ON := libffi zlib
-
-$(PKG)_COMPRESS_PYC :=
-
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC)),y)
-$(PKG)_COMPRESS_PYC += zip -9myR ../python27.zip . "*.pyc";
-$(PKG)_COMPRESS_PYC += $(RM) -r bsddb compiler ctypes curses distutils email encodings;
-$(PKG)_COMPRESS_PYC += $(RM) -r hotshot importlib json logging multiprocessing;
-$(PKG)_COMPRESS_PYC += $(RM) -r plat-linux2 pydoc_data unittest;
-endif
-
-$(PKG)_REMOVE_MODS :=
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/linuxaudiodev.so
-$(PKG)_REMOVE_MODS += lib-dynload/ossaudiodev.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_AUDIOOP)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/audioop.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_BISECT)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_bisect.so
-$(PKG)_REMOVE_MODS += bisect.py*
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_BSDDB)),y)
-$(PKG)_DEPENDS_ON += db
-else
-$(PKG)_REMOVE_MODS += bsddb
-$(PKG)_REMOVE_MODS += dbhash.py*
-$(PKG)_REMOVE_MODS += lib-dynload/dbm.so
-$(PKG)_REMOVE_MODS += lib-dynload/_bsddb.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CMATH)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/cmath.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_COLLECTIONS)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_collections.so
-$(PKG)_REMOVE_MODS += _acoll.py*
-$(PKG)_REMOVE_MODS += collections.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CPROFILE)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_lsprof.so
-$(PKG)_REMOVE_MODS += cProfile.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CSV)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_csv.so
-$(PKG)_REMOVE_MODS += csv.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CRYPT)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/crypt.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CTYPES)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_ctypes.so
-$(PKG)_REMOVE_MODS += lib-dynload/_ctypes_test.so
-$(PKG)_REMOVE_MODS += ctypes
-endif
-
+$(PKG)_DEPENDS_ON := expat libffi zlib
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_PYTHON_MOD_BSDDB),db)
 $(PKG)_DEPENDS_ON += $(if $(or $(FREETZ_PACKAGE_PYTHON_MOD_CURSES),$(FREETZ_PACKAGE_PYTHON_MOD_READLINE)),ncurses)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_PYTHON_MOD_READLINE),readline)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_PYTHON_MOD_SQLITE),sqlite)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_PYTHON_MOD_SSL),openssl)
 
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_CURSES)),y)
-$(PKG)_REMOVE_MODS += curses
-$(PKG)_REMOVE_MODS += lib-dynload/_curses.so
-$(PKG)_REMOVE_MODS += lib-dynload/_curses_panel.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_DATETIME)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/datetime.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_EASTERN_CODECS)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_codecs_*.so
-$(PKG)_REMOVE_MODS += lib-dynload/_multibytecodec.so
-$(PKG)_REMOVE_MODS += encodings/big5.py*
-$(PKG)_REMOVE_MODS += encodings/big5hkscs.py*
-$(PKG)_REMOVE_MODS += encodings/cp932.py*
-$(PKG)_REMOVE_MODS += encodings/cp949.py*
-$(PKG)_REMOVE_MODS += encodings/cp950.py*
-$(PKG)_REMOVE_MODS += encodings/euc_jis_2004.py*
-$(PKG)_REMOVE_MODS += encodings/euc_jisx0213.py*
-$(PKG)_REMOVE_MODS += encodings/euc_jp.py*
-$(PKG)_REMOVE_MODS += encodings/euc_kr.py*
-$(PKG)_REMOVE_MODS += encodings/gb18030.py*
-$(PKG)_REMOVE_MODS += encodings/gb2312.py*
-$(PKG)_REMOVE_MODS += encodings/gbk.py*
-$(PKG)_REMOVE_MODS += encodings/hz.py*
-$(PKG)_REMOVE_MODS += encodings/iso2022_jp*.py*
-$(PKG)_REMOVE_MODS += encodings/iso2022_kr*.py*
-$(PKG)_REMOVE_MODS += encodings/johab.py*
-$(PKG)_REMOVE_MODS += encodings/shift_jis*.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_ELEMENTTREE)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_elementtree.so
-$(PKG)_REMOVE_MODS += xml/etree/cElementTree.py*
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_EXPAT)),y)
-$(PKG)_DEPENDS_ON += expat
-$(PKG)_CONFIGURE_OPTIONS += --with-system-expat
-else
-$(PKG)_REMOVE_MODS += lib-dynload/pyexpat.so
-$(PKG)_REMOVE_MODS += xml/dom/expatbuilder.py*
-$(PKG)_REMOVE_MODS += xml/sax/expatreader.py*
-$(PKG)_REMOVE_MODS += xml/parsers
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_FCNTL)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/fcntl.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_FUNCTOOLS)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_functools.so
-$(PKG)_REMOVE_MODS += functools.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_GRP)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/grp.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_HASHLIB)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_hashlib.so
-$(PKG)_REMOVE_MODS += hashlib.py
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_hotshot.so
-$(PKG)_REMOVE_MODS += hotshot
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_IO)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_io.so
-$(PKG)_REMOVE_MODS += _pyio.py*
-$(PKG)_REMOVE_MODS += io.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_JSON)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_json.so
-$(PKG)_REMOVE_MODS += json
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_MULTIPROCESSING)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_multiprocessing.so
-$(PKG)_REMOVE_MODS += multiprocessing
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_MMAP)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/mmap.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_OPERATOR)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/operator.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_RANDOM)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_random.so
-$(PKG)_REMOVE_MODS += random.py*
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_READLINE)),y)
-$(PKG)_DEPENDS_ON += readline
-else
-$(PKG)_REMOVE_MODS += lib-dynload/readline.so
-$(PKG)_REMOVE_MODS += rlcompleter.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_RESOURCE)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/resource.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SOCKET)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_socket.so
-$(PKG)_REMOVE_MODS += socket.py*
-$(PKG)_REMOVE_MODS += SocketServer.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SPWD)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/spwd.so
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SQLITE)),y)
-$(PKG)_DEPENDS_ON += sqlite
-else
-$(PKG)_REMOVE_MODS += lib-dynload/_sqlite3.so
-$(PKG)_REMOVE_MODS += sqlite3
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SSL)),y)
-$(PKG)_DEPENDS_ON += openssl
-else
-$(PKG)_REMOVE_MODS += lib-dynload/_ssl.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_STRUCT)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/_struct.so
-$(PKG)_REMOVE_MODS += struct.py*
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_SYSLOG)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/syslog.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_TERMIOS)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/termios.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_TEST)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/ctypes_test.so
-$(PKG)_REMOVE_MODS += lib-dynload/_testcapi.so
-$(PKG)_REMOVE_MODS += test
-$(PKG)_REMOVE_MODS += unittest
-$(PKG)_REMOVE_MODS += bsddb/test
-$(PKG)_REMOVE_MODS += ctypes/test
-$(PKG)_REMOVE_MODS += distutils/test
-$(PKG)_REMOVE_MODS += email/test
-$(PKG)_REMOVE_MODS += json/test
-$(PKG)_REMOVE_MODS += sqlite3/test
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_TIME)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/time.so
-endif
-
-ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA)),y)
-$(PKG)_REMOVE_MODS += lib-dynload/unicodedata.so
-endif
-
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_BSDDB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CURSES
@@ -258,41 +45,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SQLITE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-# TODO: find a way to include/exclude selected/unselected
-#       modules without rebuilding the whole python
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_TEST
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_AUDIOOP
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_BISECT
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CMATH
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_COLLECTIONS
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CPROFILE
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CRYPT
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CSV
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_CTYPES
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_DATETIME
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_EASTERN_CODECS
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_ELEMENTTREE
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_EXPAT
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_FCNTL
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_FUNCTOOLS
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_GRP
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_IO
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_JSON
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_MULTIPROCESSING
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_MMAP
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_OPERATOR
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_RANDOM
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_RESOURCE
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SOCKET
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SPWD
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_STRUCT
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_SYSLOG
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_TERMIOS
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_TIME
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
 
 $(PKG)_CONFIGURE_ENV += ac_cv_have_chflags=no
 $(PKG)_CONFIGURE_ENV += ac_cv_have_lchflags=no
@@ -305,6 +57,7 @@ $(PKG)_CONFIGURE_ENV += OPT="-fno-inline"
 # TODO: check if this is still necessary
 $(PKG)_CONFIGURE_OPTIONS += --cache-file=config.cache
 
+$(PKG)_CONFIGURE_OPTIONS += --with-system-expat
 $(PKG)_CONFIGURE_OPTIONS += --with-system-ffi
 $(PKG)_CONFIGURE_OPTIONS += --with-threads
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
@@ -347,40 +100,12 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 		install
 	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR); \
 		chmod -R u+w usr; \
-		$(RM) -r \
-			usr/bin/2to3 \
-			usr/bin/idle \
-			usr/bin/pydoc \
-			usr/bin/python*-config \
-			usr/bin/smtpd.py \
-			\
-			usr/lib/libpython$(PYTHON_MAJOR_VERSION).a \
-			\
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib2to3 \
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/idlelib \
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-old \
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-tk \
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/plat-linux3 \
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/pdb.doc \
-			\
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/wsgiref \
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/wsgiref.egg-info \
-			\
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-dynload/future_builtins.so \
-			\
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/LICENSE.txt \
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/site-packages/README \
-			\
-			usr/lib/python$(PYTHON_MAJOR_VERSION)/config/* \
-			\
-			usr/lib/pkgconfig \
-			\
-			usr/share; \
+		$(RM) -r $(subst $(_newline),$(_space),$(Python/unnecessary/files)); \
 		\
 		touch usr/lib/python$(PYTHON_MAJOR_VERSION)/config/Makefile; \
 		\
 		find usr/include/python$(PYTHON_MAJOR_VERSION)/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
-		find usr/lib/python$(PYTHON_MAJOR_VERSION)/ \( -name "*.py" -o -name "*.pyo" \) -delete; \
+		find usr/lib/python$(PYTHON_MAJOR_VERSION)/ -name "*.pyo" -delete; \
 		\
 		$(TARGET_STRIP) \
 			usr/bin/python$(PYTHON_MAJOR_VERSION) \
@@ -389,32 +114,56 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 		\
 		mv usr/bin/python$(PYTHON_MAJOR_VERSION) usr/bin/python$(PYTHON_MAJOR_VERSION).bin; \
 	)
-	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/python$(PYTHON_MAJOR_VERSION); \
-		$(RM) -r $(PYTHON_REMOVE_MODS); \
-		$(PYTHON_COMPRESS_PYC) \
-		find . -depth -type d -empty -delete; \
-	)
 	touch $@
 
-$(PYTHON_TARGET_BINARY): $($(PKG)_DIR)/.installed
-	tar -c -C $(PYTHON_LOCAL_INSTALL_DIR) --exclude='libpython$(PYTHON_MAJOR_VERSION).so*' . | tar -x -C $(PYTHON_DEST_DIR)
+$($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.installed
+	@tar -c -C $(PYTHON_LOCAL_INSTALL_DIR) --exclude='libpython$(PYTHON_MAJOR_VERSION).so*' . | tar -x -C $(PYTHON_DEST_DIR); \
 	touch -c $@
 
 ifneq ($(strip $(FREETZ_PACKAGE_PYTHON_STATIC)),y)
 $($(PKG)_LIB_PYTHON_TARGET_DIR): $($(PKG)_DIR)/.installed
-	mkdir -p $(dir $@); \
+	@mkdir -p $(dir $@); \
 	cp -a $(PYTHON_LOCAL_INSTALL_DIR)/usr/lib/libpython$(PYTHON_MAJOR_VERSION).so* $(dir $@); \
 	touch -c $@
 endif
 
-$(pkg):
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
 
-$(pkg)-precompiled: $(PYTHON_TARGET_BINARY) $(if $(FREETZ_PACKAGE_PYTHON_STATIC),,$(PYTHON_LIB_PYTHON_TARGET_DIR))
+$($(PKG)_TARGET_DIR)/py.lst $($(PKG)_TARGET_DIR)/pyc.lst: $($(PKG)_DIR)/.installed $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+	@(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR); \
+		find usr -type f -name "*.$(basename $(notdir $@))"  | sort > $(FREETZ_BASE_DIR)/$@; \
+	)
+
+$($(PKG)_TARGET_DIR)/excluded-module-files.lst: $(TOPDIR)/.config $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+	@(set -f; echo $(PYTHON_EXCLUDED_FILES) | tr " " "\n" | sort > $@)
+
+$($(PKG)_TARGET_DIR)/excluded-module-files-zip.lst: $($(PKG)_TARGET_DIR)/excluded-module-files.lst
+	@cat $< | sed -r 's,usr/lib/python$(PYTHON_MAJOR_VERSION)/,,g' > $@
+
+$($(PKG)_ZIPPED_PYC_TARGET_DIR): $($(PKG)_TARGET_DIR)/excluded-module-files-zip.lst $($(PKG)_TARGET_BINARY)
+	@(cd $(dir $@)/python$(PYTHON_MAJOR_VERSION); \
+		$(RM) ../$(notdir $@); \
+		$(if $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC),zip -9qyR -x@$(FREETZ_BASE_DIR)/$(PYTHON_TARGET_DIR)/excluded-module-files-zip.lst ../$(notdir $@) . "*.pyc";) \
+	); \
+	touch $@
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config $($(PKG)_TARGET_DIR)/py.lst $($(PKG)_TARGET_DIR)/pyc.lst $($(PKG)_TARGET_DIR)/excluded-module-files.lst
+	@echo -n "" > $@; \
+	[ "$(FREETZ_PACKAGE_PYTHON_PY)"  != y ] && cat $(PYTHON_TARGET_DIR)/py.lst >> $@; \
+	[ "$(FREETZ_PACKAGE_PYTHON_PYC)" != y -o "$(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC)" == y ] && cat $(PYTHON_TARGET_DIR)/pyc.lst >> $@; \
+	(set -f; echo $(PYTHON_UNNECESSARY_DIRS) | tr " " "\n" | sort >> $@); \
+	[ "$(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC)" != y ] && echo "$(PYTHON_ZIPPED_PYC)" >> $@; \
+	cat $(PYTHON_TARGET_DIR)/excluded-module-files.lst >> $@; \
+	touch -c $@
+
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(if $(FREETZ_PACKAGE_PYTHON_STATIC),,$($(PKG)_LIB_PYTHON_TARGET_DIR)) $($(PKG)_ZIPPED_PYC_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PYTHON_DIR) clean
 	$(RM) $(PYTHON_FREETZ_CONFIG_FILE)
 	$(RM) $(PYTHON_DIR)/.configured $(PYTHON_DIR)/.compiled $(PYTHON_DIR)/.installed
+	$(RM) $(PYTHON_TARGET_DIR)/py.lst $(PYTHON_TARGET_DIR)/pyc.lst
+	$(RM) $(PYTHON_TARGET_DIR)/excluded-module-files.lst $(PYTHON_TARGET_DIR)/excluded-module-files-zip.lst $(PYTHON_TARGET_DIR)/.excluded
 	$(RM) -r $(PYTHON_LOCAL_INSTALL_DIR)
 
 $(pkg)-uninstall:
@@ -424,7 +173,7 @@ $(pkg)-uninstall:
 		$(PYTHON_DEST_DIR)/usr/bin/python \
 		$(PYTHON_DEST_DIR)/usr/bin/python2 \
 		$(PYTHON_DEST_DIR)/usr/lib/python$(PYTHON_MAJOR_VERSION) \
-		$(PYTHON_DEST_DIR)/usr/lib/python27.zip \
+		$(PYTHON_ZIPPED_PYC_TARGET_DIR) \
 		$(PYTHON_DEST_DIR)/usr/include/python$(PYTHON_MAJOR_VERSION)
 
 $(PKG_FINISH)

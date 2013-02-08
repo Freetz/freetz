@@ -5,6 +5,7 @@ config FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libutil
+	select FREETZ_LIB_libexpat
 	select FREETZ_LIB_libz
 	default n
 	help
@@ -14,9 +15,30 @@ config FREETZ_PACKAGE_PYTHON
 		your choice of modules) of uncompressed data to your image.
 		In most cases, it should therefore be externalized.
 
+choice
+
+	depends on FREETZ_PACKAGE_PYTHON
+	prompt "File type"
+	default FREETZ_PACKAGE_PYTHON_PYC
+
+	config FREETZ_PACKAGE_PYTHON_PYC
+		bool "Use precompiled files (*.pyc)"
+		help
+			Precompiled files reduce start-up time of python programs.
+			Use this option if you don't plan to modify python and/or
+			its modules.
+
+	config FREETZ_PACKAGE_PYTHON_PY
+		bool "Use human readable/modifiable files (*.py)"
+		help
+			Use this option if you want to be able to modify python and/or
+			its modules for development/testing or any other purposes.
+
+endchoice
+
 config FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 	bool "Compress *.pyc files"
-	depends on FREETZ_PACKAGE_PYTHON
+	depends on FREETZ_PACKAGE_PYTHON_PYC
 	default y
 	help
 		Causes all *.pyc files usually residing in /usr/lib/python2.7
@@ -51,7 +73,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_TEST
 		For details, see: http://docs.python.org/2/library/test.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV
-	bool "linuxaudiodev.so and ossaudiodev.so"
+	bool "linuxaudiodev and ossaudiodev"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -62,7 +84,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV
 		http://docs.python.org/2/library/ossaudiodev.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_AUDIOOP
-	bool "audioop.so"
+	bool "audioop"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -70,7 +92,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_AUDIOOP
 		For details, see: http://docs.python.org/2/library/audioop.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_BISECT
-	bool "_bisect.so"
+	bool "bisect"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -79,7 +101,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_BISECT
 		For details, see: http://docs.python.org/2/library/bisect.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_BSDDB
-	bool "_bsddb.so"
+	bool "bsddb"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libdb
 	default n
@@ -88,7 +110,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_BSDDB
 		For details, see: http://docs.python.org/2/library/bsddb.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CMATH
-	bool "cmath.so"
+	bool "cmath"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -98,7 +120,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CMATH
 		For details, see: http://docs.python.org/2/library/cmath.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_COLLECTIONS
-	bool "_collections.so"
+	bool "collections"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -106,7 +128,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_COLLECTIONS
 		For details, see: http://docs.python.org/2/library/collections.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CPROFILE
-	bool "_lsprof.so"
+	bool "lsprof"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -118,7 +140,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CPROFILE
 		For details, see: http://docs.python.org/2/library/profile.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CRYPT
-	bool "crypt.so"
+	bool "crypt"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -126,7 +148,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CRYPT
 		For details, see: http://docs.python.org/2/library/crypt.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CSV
-	bool "_csv.so"
+	bool "csv"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -134,7 +156,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CSV
 		For details, see: http://docs.python.org/2/library/csv.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CTYPES
-	bool "_ctypes.so and _ctypes_test.so"
+	bool "ctypes"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libffi
 	default n
@@ -145,7 +167,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CTYPES
 		For details, see: http://docs.python.org/2/library/ctypes.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CURSES
-	bool "_curses.so and _curses_panel.so"
+	bool "curses and curses_panel"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libpanel
@@ -157,7 +179,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_CURSES
 		For details, see: http://docs.python.org/2/library/curses.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_DATETIME
-	bool "datetime.so"
+	bool "datetime"
 	depends on FREETZ_PACKAGE_PYTHON
 	default y
 	help
@@ -194,23 +216,15 @@ config FREETZ_PACKAGE_PYTHON_MOD_EASTERN_CODECS
 		For details, see: http://docs.python.org/2/library/codecs.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_ELEMENTTREE
-	bool "_elementtree.so"
+	bool "elementtree"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
 		The ElementTree XML API. Enables xml.etree.ElementTree.
 		For details, see: http://effbot.org/zone/element-index.htm
 
-config FREETZ_PACKAGE_PYTHON_MOD_EXPAT
-	bool "pyexpat.so"
-	depends on FREETZ_PACKAGE_PYTHON
-	default y
-	help
-		Fast XML parsing using Expat. Enables xml.parsers.expat.
-		For details, see: http://docs.python.org/2/library/pyexpat.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_FCNTL
-	bool "fcntl.so"
+	bool "fcntl"
 	depends on FREETZ_PACKAGE_PYTHON
 	default y
 	help
@@ -220,7 +234,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_FCNTL
 		For details, see: http://docs.python.org/2/library/fcntl.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_FUNCTOOLS
-	bool "_functools.so"
+	bool "functools"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -231,7 +245,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_FUNCTOOLS
 		For details, see: http://docs.python.org/2/library/functools.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_GRP
-	bool "grp.so"
+	bool "grp"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -241,7 +255,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_GRP
 		For details, see: http://docs.python.org/2/library/grp.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
-	bool "_hashlib.so"
+	bool "hashlib"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_PACKAGE_PYTHON_MOD_SSL
 	default y
@@ -250,12 +264,12 @@ config FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
 		This module implements a common interface to many different
 		secure hash and message digest algorithms. It is a good idea to
 		leave this enabled, however the hashlib module requires both
-		the openssl libraries and "_ssl.so" (s. below). Thus, if you
+		the openssl libraries and "ssl" (s. below). Thus, if you
 		are on a space constrained setup, you should probably say N.
 		For details, see: http://docs.python.org/2/library/hashlib.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT
-	bool "_hotshot.so"
+	bool "hotshot"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -265,7 +279,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT
 		For details, see: http://docs.python.org/2/library/hotshot.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_IO
-	bool "_io.so"
+	bool "io"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -278,7 +292,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_IO
 		For details, see: http://docs.python.org/2/library/io.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_JSON
-	bool "_json.so"
+	bool "json"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -288,7 +302,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_JSON
 		For details, see: http://docs.python.org/2/library/json.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_MULTIPROCESSING
-	bool "_multiprocessing.so"
+	bool "multiprocessing"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_PACKAGE_PYTHON_MOD_MMAP
 	default n
@@ -296,22 +310,21 @@ config FREETZ_PACKAGE_PYTHON_MOD_MULTIPROCESSING
 		Process-based "threading" interface.
 		Multiprocessing is a package that supports spawning processes
 		using an API similar to the threading module. It's usually safe
-		to say N here. Requires "mmap.so" (s. below).
+		to say N here. Requires "mmap" (s. below).
 		For details, see: http://docs.python.org/2/library/multiprocessing.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_MMAP
-	bool "mmap.so"
+	bool "mmap"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
 		Memory-mapped file support.
 		Memory-mapped file objects behave like both strings and like
-		file objects. Primarily used by "_multiprocessing.so"
-		(s. above).
+		file objects. Primarily used by "multiprocessing" (s. above).
 		For details, see: http://docs.python.org/2/library/mmap.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_OPERATOR
-	bool "operator.so"
+	bool "operator"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -322,7 +335,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_OPERATOR
 		For details, see: http://docs.python.org/2/library/operator.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_RANDOM
-	bool "_random.so"
+	bool "random"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
 	default y
@@ -330,12 +343,12 @@ config FREETZ_PACKAGE_PYTHON_MOD_RANDOM
 		Generate pseudo-random numbers.
 		This module implements pseudo-random number generators for
 		various distributions. It is probably a good idea to leave this
-		enabled, although it requires both "_hashlib.so" (s. above) and
-		"_ssl.so" (s. below), which in turn requires openssl.
+		enabled, although it requires both "hashlib" (s. above) and
+		"ssl" (s. below), which in turn requires openssl.
 		For details, see: http://docs.python.org/2/library/random.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_READLINE
-	bool "readline.so"
+	bool "readline"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libreadline
@@ -348,7 +361,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_READLINE
 		For details, see: http://docs.python.org/2/library/readline.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_RESOURCE
-	bool "resource.so"
+	bool "resource"
 	depends on FREETZ_PACKAGE_PYTHON
 	default y
 	help
@@ -359,7 +372,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_RESOURCE
 		For details, see: http://docs.python.org/2/library/resource.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SOCKET
-	bool "_socket.so"
+	bool "socket"
 	depends on FREETZ_PACKAGE_PYTHON
 	default y
 	help
@@ -371,7 +384,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_SOCKET
 		For details, see: http://docs.python.org/2/library/socket.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SPWD
-	bool "spwd.so"
+	bool "spwd"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -382,7 +395,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_SPWD
 		For details, see: http://docs.python.org/2/library/spwd.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SQLITE
-	bool "_sqlite3.so"
+	bool "sqlite3"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_LIB_libsqlite3
 	default n
@@ -394,7 +407,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_SQLITE
 		For details, see: http://docs.python.org/2/library/sqlite3.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_STRUCT
-	bool "_struct.so"
+	bool "struct"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -404,7 +417,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_STRUCT
 		For details, see: http://docs.python.org/2/library/struct.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SSL
-	bool "_ssl.so"
+	bool "ssl"
 	depends on FREETZ_PACKAGE_PYTHON
 	select FREETZ_PACKAGE_PYTHON_MOD_SOCKET
 	select FREETZ_LIB_libcrypto
@@ -415,11 +428,11 @@ config FREETZ_PACKAGE_PYTHON_MOD_SSL
 		TLS/SSL wrapper for socket objects.
 		This module is prerequisite to a number of other modules, so
 		you probably want to enable it. However, it requires both
-		"_socket.so" (s. above) and openssl libraries.
+		"socket" (s. above) and openssl libraries.
 		For details, see: http://docs.python.org/2/library/ssl.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SYSLOG
-	bool "syslog.so"
+	bool "syslog"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -429,7 +442,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_SYSLOG
 		For details, see: http://docs.python.org/2/library/syslog.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_TERMIOS
-	bool "termios.so"
+	bool "termios"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -439,7 +452,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_TERMIOS
 		For details, see: http://docs.python.org/2/library/termios.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_TIME
-	bool "time.so"
+	bool "time"
 	depends on FREETZ_PACKAGE_PYTHON
 	default y
 	help
@@ -449,7 +462,7 @@ config FREETZ_PACKAGE_PYTHON_MOD_TIME
 		For details, see: http://docs.python.org/2/library/time.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
-	bool "unicodedata.so"
+	bool "unicodedata"
 	depends on FREETZ_PACKAGE_PYTHON
 	default n
 	help
@@ -459,5 +472,14 @@ config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
 		Unless you need to examine those properties, you are safe to say
 		N here.
 		For details, see: http://docs.python.org/2/library/unicodedata.html
+
+config FREETZ_PACKAGE_PYTHON_MOD_WSGIREF
+	bool "wsgiref"
+	depends on FREETZ_PACKAGE_PYTHON
+	default n
+	help
+		This module provides a variety of utility functions for working
+		with WSGI environments.
+		For details, see: http://docs.python.org/2/library/wsgiref.html
 
 endmenu
