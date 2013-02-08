@@ -63,7 +63,7 @@ if [ ! -e /tmp/flash/tinc/tinc-down ]; then
 cat << EOF > /tmp/flash/tinc/tinc-down
 ifconfig \$INTERFACE down
 EOF
-chmod + /tmp/flash/tinc/tinc-down
+chmod +x /tmp/flash/tinc/tinc-down
 fi
 
 

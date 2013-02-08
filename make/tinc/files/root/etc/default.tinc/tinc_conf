@@ -1,13 +1,21 @@
 #!/bin/sh
 
-echo "Name        = $TINC_SERVER0"
+echo "Name          = $TINC_SERVER0"
 
 [ -n "$TINC_SERVER1" ] && echo "ConnectTo   = $TINC_SERVER1"
 [ -n "$TINC_SERVER2" ] && echo "ConnectTo   = $TINC_SERVER2"
 [ -n "$TINC_SERVER3" ] && echo "ConnectTo   = $TINC_SERVER3"
 
+
+[ -n "$TINC_ADDR" ] && _BIND_TO="$TINC_ADDR"
+if [ -n "$TINC_PORT" ]; then
+	[ -z "$TINC_ADDR" ] && _BIND_TO="*"
+	_BIND_TO="$_BIND_TO $TINC_PORT"
+fi
+[ -n "$_BIND_TO" ] && echo "BindToAddress = $_BIND_TO"
+
 cat << EOF
-Device      = /dev/tun
-DeviceType  = tap
-Mode        = switch
+Device        = /dev/tun
+DeviceType    = tap
+Mode          = switch
 EOF
