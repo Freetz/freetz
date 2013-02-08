@@ -15,9 +15,8 @@ done
 
 # MEDIASRV & NAS are using these files
 if [ "$FREETZ_REMOVE_NAS" == "y" ]; then
-	rm_files \
-	  "${FILESYSTEM_MOD_DIR}/lib/libavmdb.so*" \
-	  "${FILESYSTEM_MOD_DIR}/lib/libwebusb.so*"
+	rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmdb.so*"
+	[ "$FREETZ_AVM_VERSION_05_5X" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libwebusb.so*"
 fi
 
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
