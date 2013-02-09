@@ -1,0 +1,11 @@
+config FREETZ_PACKAGE_PYTHON_PYOPENSSL
+	bool "pyopenssl 0.13"
+	depends on FREETZ_PACKAGE_PYTHON
+	select FREETZ_PACKAGE_PYTHON_MOD_CTYPES
+	select FREETZ_LIB_libpython2 if !FREETZ_PACKAGE_PYTHON_STATIC
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	default n
+	help
+		Python interface to the OpenSSL library.
