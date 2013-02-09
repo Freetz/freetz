@@ -1,0 +1,26 @@
+--- libImaging/Imaging.h
++++ libImaging/Imaging.h
+@@ -75,7 +75,7 @@
+ struct ImagingMemoryInstance {
+ 
+     /* Format */
+-    char mode[4+1];	/* Band names ("1", "L", "P", "RGB", "RGBA", "CMYK") */
++    char mode[6+1];	/* Band names ("1", "L", "P", "RGB", "RGBA", "CMYK", "YCbCr", "BGR;xy") */
+     int type;		/* Data type (IMAGING_TYPE_*) */
+     int depth;		/* Depth (ignored in this version) */
+     int bands;		/* Number of bands (1, 2, 3, or 4) */
+--- PIL/Image.py
++++ PIL/Image.py
+@@ -1494,11 +1494,11 @@
+     def split(self):
+         "Split image into bands"
+ 
++        self.load()
+         if self.im.bands == 1:
+             ims = [self.copy()]
+         else:
+             ims = []
+-            self.load()
+             for i in range(self.im.bands):
+                 ims.append(self._new(self.im.getband(i)))
+         return tuple(ims)
