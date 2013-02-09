@@ -19,9 +19,10 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.configured
 	$(call Build/PyMod, \
 		$(PYTHON_PYOPENSSL_DIR), \
-		install --prefix=/usr --root=$(abspath $(PYTHON_PYOPENSSL_DEST_DIR)) \
+		install --prefix=/usr --root=$(abspath $(PYTHON_PYOPENSSL_DEST_DIR)), \
+		, \
+		$(PYTHON_PYOPENSSL_DEST_DIR)$(PYTHON_SITE_PKG_DIR) \
 	)
-	$(TARGET_STRIP) $(dir $@)*.so
 
 $(pkg):
 

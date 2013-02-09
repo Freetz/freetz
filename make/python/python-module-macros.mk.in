@@ -28,6 +28,7 @@ endef
 # $(1) => build dir
 # $(2) => additional arguments to setup.py
 # $(3) => additional variables
+# $(4) => dir to look for .so files to be stripped
 define Build/PyMod
 	$(call HostPython, \
 		cd $(strip $(1)); \
@@ -37,4 +38,5 @@ define Build/PyMod
 		, \
 		./setup.py $(2) \
 	)
+	$(if $(strip $(4)),find $(strip $(4)) -type f -name "*.so" -exec $(TARGET_STRIP) \{\} \+)
 endef

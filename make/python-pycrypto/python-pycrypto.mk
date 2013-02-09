@@ -19,9 +19,9 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.configured
 	$(call Build/PyMod, \
 		$(PYTHON_PYCRYPTO_DIR), \
 		install --prefix=/usr --root=$(abspath $(PYTHON_PYCRYPTO_DEST_DIR)), \
-		TARGET_ARCH="$(FREETZ_TARGET_ARCH)" \
+		TARGET_ARCH="$(FREETZ_TARGET_ARCH)", \
+		$(PYTHON_PYCRYPTO_DEST_DIR)$(PYTHON_SITE_PKG_DIR) \
 	)
-	find $(dir $@) -type f -name "*.so" -exec $(TARGET_STRIP) \{\} \+
 
 $(pkg):
 
