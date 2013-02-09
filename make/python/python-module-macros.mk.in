@@ -31,9 +31,8 @@ endef
 define Build/PyMod
 	$(call HostPython, \
 		cd $(strip $(1)); \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="$(TARGET_CPPFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
+		$(TARGET_CONFIGURE_ENV) \
+		$(FREETZ_LD_RUN_PATH) \
 		$(3) \
 		, \
 		./setup.py $(2) \
