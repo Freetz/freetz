@@ -8,6 +8,23 @@ define qstrip
 $(strip $(subst ",,$(1)))
 endef
 
+#
+# $1 - pattern (regular wildcard parameter)
+#
+# Overcomes the following deficiency of $(sort $(wildcard ...))
+#
+# $(sort xyz-suffix xyz):
+#    returns (as expected) "xyz xyz-suffix"
+# $(sort xyz-suffix/... xyz/...):
+#    however returns "xyz-suffix/... xyz/..."
+#    which is actually correct (ASCII code of "-" is smaller than that of "/")
+#    but not what one would expect when sorting is applied to filepaths.
+#
+# sorted-wildcard returns "xyz/... xyz-suffix/..." for "xyz-suffix/... xyz/..."
+#
+define sorted-wildcard
+$(strip $(subst $(_bang),/,$(sort $(subst /,$(_bang),$(wildcard $(1))))))
+endef
 
 #
 # $1 - some string representing a version of some package

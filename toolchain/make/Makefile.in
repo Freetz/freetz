@@ -1,5 +1,5 @@
--include $(sort $(wildcard $(TOOLCHAIN_DIR)/make/kernel/*/Makefile.in))
--include $(sort $(wildcard $(TOOLCHAIN_DIR)/make/target/*/Makefile.in))
+-include $(call sorted-wildcard,$(TOOLCHAIN_DIR)/make/kernel/*/Makefile.in)
+-include $(call sorted-wildcard,$(TOOLCHAIN_DIR)/make/target/*/Makefile.in)
 
 TARGET_ARCH:=$(call qstrip,$(FREETZ_TARGET_ARCH))
 

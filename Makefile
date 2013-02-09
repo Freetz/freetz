@@ -54,6 +54,7 @@ CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
+# do not use sorted-wildcard here, it's first defined in files included here
 include $(sort $(wildcard include/make/*.mk))
 
 # Use echo -e "$(_Y)message$(_N)" if you want to print a yellow message
@@ -177,7 +178,7 @@ TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
 TOOLS_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLS))
 TOOLS_SOURCE:=$(patsubst %,%-source,$(TOOLS))
 
-include $(sort $(wildcard $(TOOLS_DIR)/make/*.mk))
+include $(call sorted-wildcard,$(TOOLS_DIR)/make/*.mk)
 
 $(DL_DIR) \
 $(DL_FW_DIR) \
@@ -198,13 +199,13 @@ step: image world tools firmware
 
 include $(TOOLCHAIN_DIR)/make/Makefile.in
 include $(MAKE_DIR)/Makefile.in
-include $(sort $(wildcard $(MAKE_DIR)/libs/*/Makefile.in))
-include $(sort $(wildcard $(MAKE_DIR)/*/Makefile.in))
+include $(call sorted-wildcard,$(MAKE_DIR)/libs/*/Makefile.in)
+include $(call sorted-wildcard,$(MAKE_DIR)/*/Makefile.in)
 
 ALL_PACKAGES:=
 LOCALSOURCE_PACKAGES:=
-include $(sort $(wildcard $(MAKE_DIR)/libs/*/*.mk))
-include $(sort $(wildcard $(MAKE_DIR)/*/*.mk))
+include $(call sorted-wildcard,$(MAKE_DIR)/libs/*/*.mk)
+include $(call sorted-wildcard,$(MAKE_DIR)/*/*.mk)
 NON_LOCALSOURCE_PACKAGES:=$(filter-out $(LOCALSOURCE_PACKAGES),$(ALL_PACKAGES))
 PACKAGES_CHECK_DOWNLOADS:=$(patsubst %,%-check-download,$(NON_LOCALSOURCE_PACKAGES))
 PACKAGES_MIRROR:=$(patsubst %,%-download-mirror,$(NON_LOCALSOURCE_PACKAGES))
