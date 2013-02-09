@@ -1,0 +1,9 @@
+config FREETZ_PACKAGE_PYTHON_PYCURL
+	bool "pycurl 7.19.0"
+	depends on FREETZ_PACKAGE_PYTHON
+	select FREETZ_LIB_libpython2 if !FREETZ_PACKAGE_PYTHON_STATIC
+	select FREETZ_LIB_libcurl
+	default n
+	help
+		PycURL is a Python interface to libcurl. PycURL can be used
+		to fetch objects identified by a URL from a Python program.
