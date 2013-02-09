@@ -15,6 +15,8 @@ $(PKG)_ZIPPED_PYC_TARGET_DIR:=$($(PKG)_DEST_DIR)/$($(PKG)_ZIPPED_PYC)
 
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python$($(PKG)_MAJOR_VERSION)
 
+include $(MAKE_DIR)/python/python-module-macros.mk.in
+
 include $(MAKE_DIR)/python/python-filelists.mk.in
 
 $(PKG)_MODULES_ALL := \
