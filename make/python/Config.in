@@ -38,7 +38,7 @@ endchoice
 
 config FREETZ_PACKAGE_PYTHON_COMPRESS_PYC
 	bool "Compress *.pyc files"
-	depends on FREETZ_PACKAGE_PYTHON_PYC
+	depends on FREETZ_PACKAGE_PYTHON && FREETZ_PACKAGE_PYTHON_PYC
 	default y
 	help
 		Causes all *.pyc files usually residing in /usr/lib/python2.7
