@@ -27,9 +27,9 @@ $(PKG)_MODULES_ALL := \
 $(PKG)_MODULES_SELECTED := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)
 $(PKG)_MODULES_EXCLUDED := $(filter-out $($(PKG)_MODULES_SELECTED),$($(PKG)_MODULES_ALL))
 
-$(PKG)_EXCLUDED_FILES   := $(subst $(_newline),$(_space),$(foreach mod,$($(PKG)_MODULES_EXCLUDED),$(PyMod/$(mod)/files)))
-$(PKG)_UNNECESSARY_DIRS := $(if $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC),$(subst $(_newline),$(_space),$(Python/unnecessary-if-compression-enabled/dirs)))
-$(PKG)_UNNECESSARY_DIRS += $(subst $(_newline),$(_space),$(foreach mod,$($(PKG)_MODULES_EXCLUDED),$(PyMod/$(mod)/dirs)))
+$(PKG)_EXCLUDED_FILES   := $(call newline2space,$(foreach mod,$($(PKG)_MODULES_EXCLUDED),$(PyMod/$(mod)/files)))
+$(PKG)_UNNECESSARY_DIRS := $(if $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC),$(call newline2space,$(Python/unnecessary-if-compression-enabled/dirs)))
+$(PKG)_UNNECESSARY_DIRS += $(call newline2space,$(foreach mod,$($(PKG)_MODULES_EXCLUDED),$(PyMod/$(mod)/dirs)))
 
 $(PKG)_BUILD_PREREQ += zip
 
@@ -104,7 +104,7 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 		install
 	(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR); \
 		chmod -R u+w usr; \
-		$(RM) -r $(subst $(_newline),$(_space),$(Python/unnecessary/files)); \
+		$(RM) -r $(call newline2space,$(Python/unnecessary/files)); \
 		\
 		find usr/lib/python$(PYTHON_MAJOR_VERSION)/ -name "*.pyo" -delete; \
 		\
@@ -131,7 +131,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.installed
 	(cd $(PYTHON_DEST_DIR); \
 		echo -n > usr/lib/python$(PYTHON_MAJOR_VERSION)/config/Makefile; \
 		find usr/include/python$(PYTHON_MAJOR_VERSION)/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \
-		$(RM) -r $(subst $(_newline),$(_space),$(Python/development/files)); \
+		$(RM) -r $(call newline2space,$(Python/development/files)); \
 	); \
 	touch -c $@
 
