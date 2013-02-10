@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 3.9.7)
+$(call PKG_INIT_BIN, 4.0.3)
+$(PKG)_LIB_VERSION:=5.2.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=626102f448ba441d42e3212538ad67d2
-$(PKG)_SITE:=ftp://ftp.remotesensing.org/pub/libtiff
+$(PKG)_SOURCE_MD5:=051c1068e6a0627f461948c365290410
+$(PKG)_SITE:=http://download.osgeo.org/libtiff
 
 $(PKG)_BINARIES_ALL := bmp2tiff fax2ps fax2tiff gif2tiff ppm2tiff raw2tiff tiff2bw tiff2pdf tiff2ps tiffinfo tiffsplit
 $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
@@ -11,7 +12,7 @@ $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_LIBNAMES_SHORT := libtiff libtiffxx
-$(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=%.so.$($(PKG)_VERSION))
+$(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=%.so.$($(PKG)_LIB_VERSION))
 
 $(PKG)_LIBS_BUILD_DIR :=$($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/libtiff/.libs/%)
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
@@ -55,7 +56,11 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 	$(SUBMAKE) -C $(TIFF_DIR)/libtiff \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
+	$(SUBMAKE) -C $(TIFF_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install-pkgconfigDATA
 	$(PKG_FIX_LIBTOOL_LA) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libtiff*.pc \
 		$(TIFF_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%.la)
 
 $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
@@ -69,6 +74,7 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(TIFF_DIR) clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libtiff* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libtiff*.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/tiff*
 
 $(pkg)-uninstall:
