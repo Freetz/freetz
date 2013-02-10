@@ -4,6 +4,9 @@ $(PKG)_SITE:=hg@https://bitbucket.org/spoob/pyload
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/opt/pyLoad/pyLoadCore.py
 
+$(PKG)_BUILD_PREREQ += hg
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the mercurial package (sudo apt-get install mercurial)
+
 define pyLoad/build/files
 .build-prereq-checked
 .unpacked
