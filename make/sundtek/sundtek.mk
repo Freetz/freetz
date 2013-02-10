@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,130201.160757)
+$(call PKG_INIT_BIN,130210.134617)
 $(PKG)_SOURCE:=$(pkg)_installer_$($(PKG)_VERSION).sh
-$(PKG)_SOURCE_MD5:=0fcd15ac0bd116967b54534301491ba4
+$(PKG)_SOURCE_MD5:=81451e57207ad2d3e8c6e148be110040
 $(PKG)_SITE:=http://www.sundtek.de/media
 
 $(PKG)_STARTLEVEL=90 # before rrdstats
