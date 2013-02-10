@@ -1,0 +1,60 @@
+config FREETZ_PACKAGE_TIFF
+	bool "TIFF utils 3.9.7 (binary only)"
+	default n
+	help
+		Various utilities to manupulate/convert images to/from TIFF format.
+
+config FREETZ_PACKAGE_TIFF_bmp2tiff
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "bmp2tiff"
+
+config FREETZ_PACKAGE_TIFF_fax2ps
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "fax2ps"
+
+config FREETZ_PACKAGE_TIFF_fax2tiff
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "fax2tiff"
+
+config FREETZ_PACKAGE_TIFF_gif2tiff
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "gif2tiff"
+
+config FREETZ_PACKAGE_TIFF_ppm2tiff
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "ppm2tiff"
+
+config FREETZ_PACKAGE_TIFF_raw2tiff
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "raw2tiff"
+
+config FREETZ_PACKAGE_TIFF_tiff2bw
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "tiff2bw"
+
+config FREETZ_PACKAGE_TIFF_tiff2pdf
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "tiff2pdf"
+
+config FREETZ_PACKAGE_TIFF_tiff2ps
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "tiff2ps"
+
+config FREETZ_PACKAGE_TIFF_tiffinfo
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "tiffinfo"
+
+config FREETZ_PACKAGE_TIFF_tiffsplit
+	depends on FREETZ_PACKAGE_TIFF
+	select FREETZ_LIB_libtiff
+	bool "tiffsplit"
