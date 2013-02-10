@@ -27,7 +27,7 @@
  	USE_ST_TIMESPEC = YesPlease
  	NO_MKSTEMPS = YesPlease
  	HAVE_PATHS_H = YesPlease
-@@ -1525,15 +1525,6 @@
+@@ -1526,15 +1526,6 @@
  	PTHREAD_LIBS =
  endif
  
@@ -43,7 +43,7 @@
  
  ifdef NO_LIBGEN_H
  	COMPAT_CFLAGS += -DNO_LIBGEN_H
-@@ -1544,7 +1535,7 @@
+@@ -1545,7 +1536,7 @@
  	BASIC_CFLAGS += -DUSE_LIBPCRE
  	ifdef LIBPCREDIR
  		BASIC_CFLAGS += -I$(LIBPCREDIR)/include
@@ -52,7 +52,7 @@
  	endif
  	EXTLIBS += -lpcre
  endif
-@@ -1558,7 +1549,7 @@
+@@ -1559,7 +1550,7 @@
  	ifdef CURLDIR
  		# Try "-Wl,-rpath=$(CURLDIR)/$(lib)" in such a case.
  		BASIC_CFLAGS += -I$(CURLDIR)/include
@@ -61,7 +61,7 @@
  	else
  		CURL_LIBCURL = -lcurl
  	endif
-@@ -1586,7 +1577,7 @@
+@@ -1587,7 +1578,7 @@
  	ifndef NO_EXPAT
  		ifdef EXPATDIR
  			BASIC_CFLAGS += -I$(EXPATDIR)/include
@@ -70,7 +70,7 @@
  		else
  			EXPAT_LIBEXPAT = -lexpat
  		endif
-@@ -1595,7 +1586,7 @@
+@@ -1596,7 +1587,7 @@
  
  ifdef ZLIB_PATH
  	BASIC_CFLAGS += -I$(ZLIB_PATH)/include
@@ -79,7 +79,7 @@
  endif
  EXTLIBS += -lz
  
-@@ -1603,7 +1594,7 @@
+@@ -1604,7 +1595,7 @@
  	OPENSSL_LIBSSL = -lssl
  	ifdef OPENSSLDIR
  		BASIC_CFLAGS += -I$(OPENSSLDIR)/include
@@ -88,7 +88,7 @@
  	else
  		OPENSSL_LINK =
  	endif
-@@ -1627,7 +1618,7 @@
+@@ -1628,7 +1619,7 @@
  ifdef NEEDS_LIBICONV
  	ifdef ICONVDIR
  		BASIC_CFLAGS += -I$(ICONVDIR)/include
