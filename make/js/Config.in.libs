@@ -1,5 +1,7 @@
 config FREETZ_LIB_libjs
 	bool "libjs (libjs.so)"
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
 	default n
 	help
 		OSSP js - Mozilla JavaScript Engine

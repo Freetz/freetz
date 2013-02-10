@@ -1,13 +1,16 @@
-$(call PKG_INIT_LIB, 1.6.20070208)
+$(call PKG_INIT_BIN, 1.6.20070208)
 $(PKG)_LIB_VERSION:=1.0.6
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=07f6cad7e03fd74a949588c3d4b333de
 $(PKG)_SITE:=ftp://ftp.ossp.org/pkg/lib/js
 
+$(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/.libs/js
+$(PKG)_BINARY_TARGET_DIR:=$($(PKG)_DEST_DIR)/usr/bin/js
+
 $(PKG)_LIBNAME:=lib$(pkg).so.$($(PKG)_LIB_VERSION)
-$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
-$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
+$(PKG)_LIBRARY_BUILD_DIR:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
+$(PKG)_LIBRARY_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
+$(PKG)_LIBRARY_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -22,10 +25,10 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY_BUILD_DIR) $($(PKG)_LIBRARY_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(JS_DIR)
 
-$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
+$($(PKG)_LIBRARY_STAGING_DIR): $($(PKG)_LIBRARY_BUILD_DIR)
 	$(SUBMAKE) -C $(JS_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
@@ -33,12 +36,15 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(call PKG_FIX_LIBTOOL_LA,prefix) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/js.pc
 	$(call PKG_FIX_LIBTOOL_LA,prefix exec_prefix js_bindir js_libdir js_includedir js_mandir js_datadir js_acdir) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/js-config
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
+$($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_LIBRARY_TARGET_DIR): $($(PKG)_LIBRARY_STAGING_DIR)
 	$(INSTALL_LIBRARY_STRIP)
 
-$(pkg): $($(PKG)_STAGING_BINARY)
+$(pkg): $($(PKG)_LIBRARY_STAGING_DIR)
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_LIBRARY_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(JS_DIR) clean
@@ -49,6 +55,8 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/js/
 
 $(pkg)-uninstall:
-	$(RM) $(JS_TARGET_DIR)/libjs.so*
+	$(RM) $(JS_BINARY_TARGET_DIR)
+	$(RM) $(JS_TARGET_LIBDIR)/libjs.so*
 
+$(call PKG_ADD_LIB,libjs)
 $(PKG_FINISH)
