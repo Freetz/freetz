@@ -1,0 +1,35 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -36,7 +36,7 @@
+ POST_UNINSTALL = :
+ build_triplet = @build@
+ host_triplet = @host@
+-noinst_PROGRAMS = xtractprotos$(EXEEXT)
++noinst_PROGRAMS = #xtractprotos$(EXEEXT)
+ subdir = src
+ DIST_COMMON = $(pkginclude_HEADERS) $(srcdir)/Makefile.am \
+ 	$(srcdir)/Makefile.in $(srcdir)/endianness.h.in
+@@ -130,8 +130,8 @@
+ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+ 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+ 	$(LDFLAGS) -o $@
+-SOURCES = $(liblept_la_SOURCES) xtractprotos.c
+-DIST_SOURCES = $(liblept_la_SOURCES) xtractprotos.c
++SOURCES = $(liblept_la_SOURCES) #xtractprotos.c
++DIST_SOURCES = $(liblept_la_SOURCES) #xtractprotos.c
+ HEADERS = $(pkginclude_HEADERS)
+ ETAGS = etags
+ CTAGS = ctags
+@@ -828,9 +828,9 @@
+ 	uninstall-pkgincludeHEADERS
+ 
+ 
+-allheaders: $(liblept_la_SOURCES)
+-	@test -x xtractprotos || echo "First run 'make xtractprotos'"
+-	./xtractprotos -prestring=LEPT_DLL -protos=inline $(liblept_la_SOURCES)
++#allheaders: $(liblept_la_SOURCES)
++#	@test -x xtractprotos || echo "First run 'make xtractprotos'"
++#	./xtractprotos -prestring=LEPT_DLL -protos=inline $(liblept_la_SOURCES)
+ 
+ dist-hook: 
+ 	cp "$(distdir)"/endianness.h{.dist,}

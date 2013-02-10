@@ -1,0 +1,64 @@
+--- src/allheaders.h
++++ src/allheaders.h
+@@ -2081,14 +2081,6 @@
+ LEPT_DLL extern l_int32 lstackExtendArray ( L_STACK *lstack );
+ LEPT_DLL extern l_int32 lstackGetCount ( L_STACK *lstack );
+ LEPT_DLL extern l_int32 lstackPrint ( FILE *fp, L_STACK *lstack );
+-LEPT_DLL extern l_int32 * sudokuReadFile ( const char *filename );
+-LEPT_DLL extern l_int32 * sudokuReadString ( const char *str );
+-LEPT_DLL extern L_SUDOKU * sudokuCreate ( l_int32 *array );
+-LEPT_DLL extern void sudokuDestroy ( L_SUDOKU **psud );
+-LEPT_DLL extern l_int32 sudokuSolve ( L_SUDOKU *sud );
+-LEPT_DLL extern l_int32 sudokuTestUniqueness ( l_int32 *array, l_int32 *punique );
+-LEPT_DLL extern L_SUDOKU * sudokuGenerate ( l_int32 *array, l_int32 seed, l_int32 minelems, l_int32 maxtries );
+-LEPT_DLL extern l_int32 sudokuOutput ( L_SUDOKU *sud, l_int32 arraytype );
+ LEPT_DLL extern PIX * pixAddSingleTextblock ( PIX *pixs, L_BMF *bmf, const char *textstr, l_uint32 val, l_int32 location, l_int32 *poverflow );
+ LEPT_DLL extern l_int32 pixSetTextblock ( PIX *pixs, L_BMF *bmf, const char *textstr, l_uint32 val, l_int32 x0, l_int32 y0, l_int32 wtext, l_int32 firstindent, l_int32 *poverflow );
+ LEPT_DLL extern l_int32 pixSetTextline ( PIX *pixs, L_BMF *bmf, const char *textstr, l_uint32 val, l_int32 x0, l_int32 y0, l_int32 *pwidth, l_int32 *poverflow );
+--- src/alltypes.h
++++ src/alltypes.h
+@@ -51,7 +51,6 @@
+ #include "ptra.h"
+ #include "queue.h"
+ #include "regutils.h"
+-#include "sudoku.h"
+ #include "stack.h"
+ #include "watershed.h"
+ 
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -105,7 +105,7 @@
+ 	rotateam.lo rotateamlow.lo rotateorth.lo rotateorthlow.lo \
+ 	rotateshear.lo runlength.lo sarray.lo scale.lo scalelow.lo \
+ 	seedfill.lo seedfilllow.lo sel1.lo sel2.lo selgen.lo shear.lo \
+-	skew.lo spixio.lo stack.lo sudoku.lo textops.lo tiffio.lo \
++	skew.lo spixio.lo stack.lo textops.lo tiffio.lo \
+ 	tiffiostub.lo utils.lo viewfiles.lo warper.lo watershed.lo \
+ 	webpio.lo webpiostub.lo writefile.lo zlibmem.lo zlibmemstub.lo
+ liblept_la_OBJECTS = $(am_liblept_la_OBJECTS)
+@@ -307,7 +307,7 @@
+  seedfill.c seedfilllow.c                                       \
+  sel1.c sel2.c selgen.c                                         \
+  shear.c skew.c	spixio.c                                        \
+- stack.c sudoku.c textops.c                                     \
++ stack.c textops.c                                     \
+  tiffio.c tiffiostub.c 		                                \
+  utils.c viewfiles.c                                            \
+  warper.c watershed.c                                           \
+@@ -320,7 +320,7 @@
+  gplot.h heap.h imageio.h jbclass.h                             \
+  leptwin.h list.h	                                        \
+  morph.h pix.h ptra.h queue.h readbarcode.h                     \
+- regutils.h stack.h sudoku.h watershed.h
++ regutils.h stack.h watershed.h
+ 
+ LDADD = liblept.la
+ EXTRA_DIST = arrayaccess.h.vc                                   \
+@@ -559,7 +559,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skew.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spixio.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stack.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sudoku.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textops.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiffio.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiffiostub.Plo@am__quote@
