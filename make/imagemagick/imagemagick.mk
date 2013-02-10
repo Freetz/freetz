@@ -1,6 +1,7 @@
-$(call PKG_INIT_BIN, 6.8.1-10)
+$(call PKG_INIT_BIN, 6.8.2-8)
+$(PKG)_LIB_VERSION:=8.0.0
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=a6ca7bf812136263ecafc02bacccd6a7
+$(PKG)_SOURCE_MD5:=c90d99ce0f0e08ebeab568eda7eedec7
 $(PKG)_SITE:=http://www.$(pkg).org/download
 
 $(PKG)_DIR:=$(SOURCE_DIR)/ImageMagick-$($(PKG)_VERSION)
@@ -10,11 +11,11 @@ $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/utilities/$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,.libs/)%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-$(PKG)_LIB_CORE := libMagickCore-Q16.so.7.0.0
+$(PKG)_LIB_CORE := libMagickCore-Q16.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_CORE_BUILD_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DIR)/magick/.libs/%)
 $(PKG)_LIB_CORE_TARGET_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DEST_LIBDIR)/%)
 
-$(PKG)_LIB_WAND := libMagickWand-Q16.so.7.0.0
+$(PKG)_LIB_WAND := libMagickWand-Q16.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_WAND_BUILD_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DIR)/wand/.libs/%)
 $(PKG)_LIB_WAND_TARGET_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DEST_LIBDIR)/%)
 
