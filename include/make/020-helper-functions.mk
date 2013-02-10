@@ -9,6 +9,16 @@ $(strip $(subst ",,$(1)))
 endef
 
 #
+# $1 - some string possibly containing newline chars
+#
+# returns:
+#   the same string with all newline chars replaced with spaces
+#
+define newline2space
+$(subst $(_newline),$(_space),$(1))
+endef
+
+#
 # $1 - pattern (regular wildcard parameter)
 #
 # Overcomes the following deficiency of $(sort $(wildcard ...))
