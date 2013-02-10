@@ -4,6 +4,12 @@ config EXTERNAL_FREETZ_LIB_libtiff
 	default n
 	help
 		externals these file(s):
-		 /usr/lib/freetz/libtiff.so.3.9.5
-		 /usr/lib/freetz/libtiffxx.so.3.9.5
+		 /usr/lib/freetz/libtiff.so.3.9.7
 
+config EXTERNAL_FREETZ_LIB_libtiffxx
+	depends on EXTERNAL_ENABLED && FREETZ_LIB_libtiffxx
+	bool "libtiffxx"
+	default n
+	help
+		externals these file(s):
+		 /usr/lib/freetz/libtiffxx.so.3.9.7

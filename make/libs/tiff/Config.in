@@ -1,8 +1,16 @@
 config FREETZ_LIB_libtiff
 	bool "TIFF library (libtiff.so)"
+	select FREETZ_LIB_libm
 	select FREETZ_LIB_libz
 	select FREETZ_LIB_libjpeg
 	default n
 	help
 		libtiff is a library for handling the TIFF image format
 
+config FREETZ_LIB_libtiffxx
+	bool "TIFF library, C++ interface (libtiffxx.so)"
+	select FREETZ_LIB_libtiff
+	select FREETZ_LIB_STDCXXLIB
+	default n
+	help
+		libtiff, C++ interface
