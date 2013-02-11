@@ -1,0 +1,9 @@
+config FREETZ_PACKAGE_SSLH
+	bool "sslh 1.14 (binary only)"
+	default n
+	help
+		sslh accepts HTTPS, SSH and OpenVPN connections on the same port.
+		This makes it possible to connect to an SSH server or an OpenVPN
+		on port 443 (e.g. from inside a corporate firewall, which almost
+		never block port 443) while still serving HTTPS on that port.
+
