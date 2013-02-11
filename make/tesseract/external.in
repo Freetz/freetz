@@ -1,0 +1,92 @@
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_TESSERACT
+	bool "tesseract"
+	default n
+	help
+		external tesseract & tools
+
+menu tesseract
+	depends on EXTERNAL_FREETZ_PACKAGE_TESSERACT
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_tesseract
+	bool "tesseract"
+	depends on FREETZ_PACKAGE_TESSERACT_tesseract
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/tesseract
+		 /usr/share/tessdata
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_ambiguous_words
+	bool "ambiguous_words"
+	depends on FREETZ_PACKAGE_TESSERACT_ambiguous_words
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/ambiguous_words
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_classifier_tester
+	bool "classifier_tester"
+	depends on FREETZ_PACKAGE_TESSERACT_classifier_tester
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/classifier_tester
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_cntraining
+	bool "cntraining"
+	depends on FREETZ_PACKAGE_TESSERACT_cntraining
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/cntraining
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_combine_tessdata
+	bool "combine_tessdata"
+	depends on FREETZ_PACKAGE_TESSERACT_combine_tessdata
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/combine_tessdata
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_dawg2wordlist
+	bool "dawg2wordlist"
+	depends on FREETZ_PACKAGE_TESSERACT_dawg2wordlist
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/dawg2wordlist
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_mftraining
+	bool "mftraining"
+	depends on FREETZ_PACKAGE_TESSERACT_mftraining
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/mftraining
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_shapeclustering
+	bool "shapeclustering"
+	depends on FREETZ_PACKAGE_TESSERACT_shapeclustering
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/shapeclustering
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_unicharset_extractor
+	bool "unicharset_extractor"
+	depends on FREETZ_PACKAGE_TESSERACT_unicharset_extractor
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/unicharset_extractor
+
+config EXTERNAL_FREETZ_PACKAGE_TESSERACT_wordlist2dawg
+	bool "wordlist2dawg"
+	depends on FREETZ_PACKAGE_TESSERACT_wordlist2dawg
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/wordlist2dawg
+
+endmenu

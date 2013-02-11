@@ -1,0 +1,16 @@
+if [ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_tesseract" == "y" ]; then
+	EXTERNAL_FILES+=" /usr/bin/tesseract"
+	[ "$EXTERNAL_SUBDIRS" == "y" ] && EXTERNAL_FILES+=" /usr/share/tessdata"
+fi
+
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_ambiguous_words" == "y" ] && EXTERNAL_FILES+=" /usr/bin/ambiguous_words"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_classifier_tester" == "y" ] && EXTERNAL_FILES+=" /usr/bin/classifier_tester"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_cntraining" == "y" ] && EXTERNAL_FILES+=" /usr/bin/cntraining"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_combine_tessdata" == "y" ] && EXTERNAL_FILES+=" /usr/bin/combine_tessdata"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_dawg2wordlist" == "y" ] && EXTERNAL_FILES+=" /usr/bin/dawg2wordlist"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_mftraining" == "y" ] && EXTERNAL_FILES+=" /usr/bin/mftraining"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_shapeclustering" == "y" ] && EXTERNAL_FILES+=" /usr/bin/shapeclustering"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_unicharset_extractor" == "y" ] && EXTERNAL_FILES+=" /usr/bin/unicharset_extractor"
+[ "$EXTERNAL_FREETZ_PACKAGE_TESSERACT_wordlist2dawg" == "y" ] && EXTERNAL_FILES+=" /usr/bin/wordlist2dawg"
+
+[ "$EXTERNAL_FREETZ_LIB_libtesseract" == "y" ] && EXTERNAL_FILES+=" $FREETZ_LIBRARY_DIR/libtesseract.so.3.0.2"

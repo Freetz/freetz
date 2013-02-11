@@ -1,0 +1,34 @@
+--- ccmain/equationdetect.cpp
++++ ccmain/equationdetect.cpp
+@@ -162,6 +162,22 @@
+   return 0;
+ }
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MAJOR__ == 0 && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ <= 29
++#define NO_FMAX_IN_UCLIBC
++#endif
++
++#if defined(NO_FMAX_IN_UCLIBC)
++static double _fmax_(double x, double y) {
++  if (isnan(x))
++    return x;
++  if (isnan(y))
++    return y;
++  return x > y ? x : y;
++}
++#else
++#define _fmax_ fmax
++#endif
++
+ void EquationDetect::IdentifySpecialText(
+     BLOBNBOX *blobnbox, const int height_th) {
+   ASSERT_HOST(blobnbox != NULL);
+@@ -214,7 +230,7 @@
+   BlobSpecialTextType type = BSTT_NONE;
+ 
+   // Classification.
+-  if (fmax(lang_score, equ_score) < kConfScoreTh) {
++  if (_fmax_(lang_score, equ_score) < kConfScoreTh) {
+     // If both score are very small, then mark it as unclear.
+     type = BSTT_UNCLEAR;
+   } else if (diff > kConfDiffTh && equ_score > lang_score) {

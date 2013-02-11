@@ -1,0 +1,57 @@
+config FREETZ_PACKAGE_TESSERACT
+	bool "Tesseract OCR 3.02.02 (binary only)"
+	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	select FREETZ_PACKAGE_TESSERACT_tesseract
+	default n
+	help
+		Tesseract is an Open Source OCR engine
+
+config FREETZ_PACKAGE_TESSERACT_tesseract
+	bool "tesseract"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_ambiguous_words
+	bool "ambiguous_words"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_classifier_tester
+	bool "classifier_tester"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_cntraining
+	bool "cntraining"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_combine_tessdata
+	bool "combine_tessdata"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_dawg2wordlist
+	bool "dawg2wordlist"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_mftraining
+	bool "mftraining"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_shapeclustering
+	bool "shapeclustering"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_unicharset_extractor
+	bool "unicharset_extractor"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
+
+config FREETZ_PACKAGE_TESSERACT_wordlist2dawg
+	bool "wordlist2dawg"
+	depends on FREETZ_PACKAGE_TESSERACT
+	select FREETZ_LIB_libtesseract
