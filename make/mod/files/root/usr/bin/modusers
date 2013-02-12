@@ -6,6 +6,10 @@ FILES="passwd group shadow gshadow"
 
 load() {
 	mkdir -pm 700 $SAVE_DIR
+	# temporary file
+	touch "/tmp/passwd.mod"
+	chmod 644 "/tmp/passwd.mod"
+	cat /tmp/passwd > /tmp/passwd.mod
 	for f in $FILES; do
 		# set permissions: 644 for passwd & group, 600 for shadow & gshadow
 		touch "/tmp/$f"
