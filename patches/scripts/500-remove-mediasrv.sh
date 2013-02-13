@@ -13,12 +13,10 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
-# MEDIASRV & NAS are using these files
-if [ "$FREETZ_REMOVE_NAS" == "y" ]; then
-	rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmdb.so*"
-	[ "$FREETZ_AVM_VERSION_05_5X" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libwebusb.so*"
-fi
-
+# don't remove libwebusb*.so, see http://freetz.org/ticket/2020
+# MEDIASRV & NAS are using this file
+[ "$FREETZ_REMOVE_NAS" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmdb.so*"
+# MEDIASRV & MINID are using this file
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
 
 if [ -e "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html" ]; then

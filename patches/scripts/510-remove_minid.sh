@@ -25,6 +25,7 @@ for files in \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
+# REMOVE_MEDIASRV uses/removes libavmid3*.so
 
 [ "$FREETZ_REMOVE_VOIPD" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient*"
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
