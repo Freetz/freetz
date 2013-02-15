@@ -6,10 +6,8 @@ config FREETZ_PACKAGE_DIGITEMP
 
 		You could use RRDstats for data collection and visualisation
 
-comment "CAUTION: With kernel 2.6.19 digitemp eats up your"
-	depends on FREETZ_PACKAGE_DIGITEMP && FREETZ_KERNEL_VERSION_2_6_19
-comment "RAM within 24h, see http://freetz.org/ticket/472"
-	depends on FREETZ_PACKAGE_DIGITEMP && FREETZ_KERNEL_VERSION_2_6_19
+comment "CAUTION: Use 'replace kernel' to avoid mem leak!"
+	depends on FREETZ_PACKAGE_DIGITEMP && FREETZ_KERNEL_VERSION_2_6_19 && !FREETZ_REPLACE_KERNEL
 
 choice
 	prompt "digitemp"
