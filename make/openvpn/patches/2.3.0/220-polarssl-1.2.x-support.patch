@@ -1,0 +1,170 @@
+--- src/openvpn/crypto_polarssl.h
++++ src/openvpn/crypto_polarssl.h
+@@ -60,7 +60,11 @@
+ #define OPENVPN_MODE_OFB 	POLARSSL_MODE_OFB
+ 
+ /** Cipher is in CFB mode */
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+ #define OPENVPN_MODE_CFB 	POLARSSL_MODE_CFB128
++#else
++#define OPENVPN_MODE_CFB 	POLARSSL_MODE_CFB
++#endif
+ 
+ /** Cipher should encrypt */
+ #define OPENVPN_OP_ENCRYPT 	POLARSSL_ENCRYPT
+--- src/openvpn/ssl_polarssl.h
++++ src/openvpn/ssl_polarssl.h
+@@ -30,6 +30,7 @@
+ #ifndef SSL_POLARSSL_H_
+ #define SSL_POLARSSL_H_
+ 
++#include <polarssl/version.h>
+ #include <polarssl/ssl.h>
+ 
+ #if defined(ENABLE_PKCS11)
+@@ -73,7 +74,9 @@
+ 
+ struct key_state_ssl {
+         ssl_context *ctx;
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+         ssl_session *ssn;
++#endif
+         endless_buffer *ct_in;
+         endless_buffer *ct_out;
+ };
+--- src/openvpn/ssl_polarssl.c
++++ src/openvpn/ssl_polarssl.c
+@@ -65,6 +65,7 @@
+ {
+ }
+ 
++#if POLARSSL_VERSION_NUMBER < 0x0102000
+ static int default_ciphersuites[] =
+ {
+     SSL_EDH_RSA_AES_256_SHA,
+@@ -81,6 +82,7 @@
+     SSL_RSA_RC4_128_MD5,
+     0
+ };
++#endif
+ 
+ void
+ tls_ctx_server_new(struct tls_root_ctx *ctx)
+@@ -514,12 +516,18 @@
+ 
+       ssl_set_rng (ks_ssl->ctx, ctr_drbg_random, rand_ctx_get());
+ 
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+       ALLOC_OBJ_CLEAR (ks_ssl->ssn, ssl_session);
+       ssl_set_session (ks_ssl->ctx, 0, 0, ks_ssl->ssn );
++#endif
+       if (ssl_ctx->allowed_ciphers)
+ 	ssl_set_ciphersuites (ks_ssl->ctx, ssl_ctx->allowed_ciphers);
+       else
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+ 	ssl_set_ciphersuites (ks_ssl->ctx, default_ciphersuites);
++#else
++	ssl_set_ciphersuites (ks_ssl->ctx, ssl_default_ciphersuites);
++#endif
+ 
+       /* Initialise authentication information */
+       if (is_server)
+@@ -556,8 +564,10 @@
+ 	  ssl_free(ks_ssl->ctx);
+ 	  free(ks_ssl->ctx);
+ 	}
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+       if (ks_ssl->ssn)
+ 	free(ks_ssl->ssn);
++#endif
+       if (ks_ssl->ct_in) {
+ 	buf_free_entries(ks_ssl->ct_in);
+ 	free(ks_ssl->ct_in);
+@@ -818,7 +828,7 @@
+ void
+ print_details (struct key_state_ssl * ks_ssl, const char *prefix)
+ {
+-  x509_cert *cert;
++  const x509_cert *cert;
+   char s1[256];
+   char s2[256];
+ 
+@@ -828,7 +838,11 @@
+ 		    ssl_get_version (ks_ssl->ctx),
+ 		    ssl_get_ciphersuite(ks_ssl->ctx));
+ 
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+   cert = ks_ssl->ctx->peer_cert;
++#else
++  cert = ssl_get_peer_cert(ks_ssl->ctx);
++#endif
+   if (cert != NULL)
+     {
+       openvpn_snprintf (s2, sizeof (s2), ", " counter_format " bit RSA", (counter_type) cert->rsa.len * 8);
+--- src/openvpn/ssl_verify_polarssl.h
++++ src/openvpn/ssl_verify_polarssl.h
+@@ -33,6 +33,7 @@
+ #include "syshead.h"
+ #include "misc.h"
+ #include "manage.h"
++#include <polarssl/version.h>
+ #include <polarssl/x509.h>
+ 
+ #ifndef __OPENVPN_X509_CERT_T_DECLARED
+@@ -64,9 +65,14 @@
+  * @param cert         - The certificate used by PolarSSL.
+  * @param cert_depth   - The depth of the current certificate in the chain, with
+  *                       0 being the actual certificate.
++ * PolarSSL < 1.2.x
+  * @param preverify_ok - Whether the remote OpenVPN peer's certificate
+  *                       past verification.  A value of 1 means it
+  *                       verified successfully, 0 means it failed.
++ * PolarSSL >= 1.2.x
++ * @param preverify_flags - Pointer to preverify flags.
++ *                          ((*flags) == 0) means verified successfully
++ *                          ((*flags) != 0) means verification failed
+  *
+  * @return The return value indicates whether the supplied certificate is
+  *     allowed to set up a VPN tunnel.  The following values can be
+@@ -75,7 +81,11 @@
+  *      - \c 1: success, this certificate is allowed to connect.
+  */
+ int verify_callback (void *session_obj, x509_cert *cert, int cert_depth,
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+     int preverify_ok);
++#else
++    int *preverify_flags);
++#endif
+ 
+ /** @} name Function for authenticating a new connection from a remote OpenVPN peer */
+ 
+--- src/openvpn/ssl_verify_polarssl.c
++++ src/openvpn/ssl_verify_polarssl.c
+@@ -44,7 +44,11 @@
+ 
+ int
+ verify_callback (void *session_obj, x509_cert *cert, int cert_depth,
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+     int preverify_ok)
++#else
++    int *preverify_flags)
++#endif
+ {
+   struct tls_session *session = (struct tls_session *) session_obj;
+   struct gc_arena gc = gc_new();
+@@ -59,7 +63,15 @@
+   cert_hash_remember (session, cert_depth, x509_get_sha1_hash(cert, &gc));
+ 
+   /* did peer present cert which was signed by our root cert? */
++#if POLARSSL_VERSION_NUMBER < 0x01020000
+   if (!preverify_ok)
++#else
++  if (preverify_flags && (*preverify_flags) != 0)
++  /*
++   * In case of PolarSSL>=1.2.x the actual reason could be determined and printed out,
++   * see polarssl-1.2.x/programs/ssl/ssl_client2.c::my_verify for details.
++   */
++#endif
+     {
+       char *subject = x509_get_subject(cert, &gc);
+ 

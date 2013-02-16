@@ -7,6 +7,14 @@
 MYVARS='AUTOSTART DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DOMAIN PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER UDP_FRAGMENT PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN FILES2CP PARAM_1 PARAM_2 PARAM_3'
 ALLVARS="$MYVARS ENABLED CONFIG_COUNT CONFIG_CHANGED EXPERT"
 
+#if which openvpn >/dev/null; then
+#	HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true)
+#	HASLZO=$(openvpn --version | grep -q LZO && echo true)
+#else
+	HASBLOWFISH=$([ "$FREETZ_PACKAGE_OPENVPN_POLARSSL" != y -o "$FREETZ_LIB_libpolarssl_WITH_BLOWFISH" == y ] && echo true)
+	HASLZO=$([ "$FREETZ_PACKAGE_OPENVPN_WITH_LZO" == y ] && echo true)
+#fi
+
 cat << EOF
 <style type="text/css">
 	span.small, div.small {
@@ -245,7 +253,7 @@ cat << EOF
 	<td>
 	  Cipher:&nbsp;
 	  <select id="id_act_cipher" style="width:150px;" name="my_cipher" onchange='if (this.value=="none") (alert($(lang de:"\"Achtung, Verkehr durch das VPN ist so unverschl\"+unescape(\"%FC\")+\"sselt!\"" en:"\"Caution: All traffic will be unencrypted!\""))); changeval();'>
-		$([ "$FREETZ_PACKAGE_OPENVPN_POLARSSL" != "y" ] && echo '<option value="BF-CBC">Blowfish</option>')
+		$([ $HASBLOWFISH ] && echo '<option value="BF-CBC">Blowfish</option>')
 		<option value="AES-128-CBC">AES 128</option>
 		<option value="AES-256-CBC">AES 256</option>
 		<option value="DES-EDE3-CBC">Triple-DES</option>
@@ -259,7 +267,7 @@ cat << EOF
 	  </div>
 	</td>
 </tr>
-$([ ! "$FREETZ_PACKAGE_OPENVPN_POLARSSL" != "y" ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>')
+$([ ! $HASBLOWFISH ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>')
 <tr>
 	<td colspan="3">
 	  <div id="div_no_certtype" style="display:none; padding-top:10px;">
@@ -456,7 +464,7 @@ cat << EOF
 	<input id="id_act_comp_lzo" type="checkbox"
 EOF
 
-if [ "$FREETZ_PACKAGE_OPENVPN_WITH_LZO" == "y" ]; then
+if [ $HASLZO ]; then
 cat << EOF
 title="$(lang de:"LZO-Komprimierung nutzen? !!Muss auf Server und Client gleich eingestellt sein!!" en:"Use LZO compression? !!Must be the same setting on server and client site!!")" onclick='if (this.checked) (local_complzo[act_conf]="yes"); else (local_complzo[act_conf]=""); changeval();'
 EOF
@@ -616,7 +624,7 @@ alert_cipher = false;
 	$([ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
 	if ( local_keepalive[act_conf] == "yes" ) { document.getElementById("id_act_keepalive").checked = true } else { document.getElementById("id_act_keepalive").checked = false };
 	if ( local_complzo[act_conf] == "yes" ){
-		if ( "$FREETZ_PACKAGE_OPENVPN_WITH_LZO" == "y" ) { document.getElementById("id_act_comp_lzo").checked = true }
+		if ( "$(echo $HASLZO)" == "true"  ) { document.getElementById("id_act_comp_lzo").checked = true }
 		else { document.getElementById("id_act_comp_lzo").checked = false ; local_complzo[act_conf] = ""; alert_lzo=true;}; }
 	else { document.getElementById("id_act_comp_lzo").checked = false };
 	if ( local_type[act_conf] == "tap" ) { document.getElementById("id_act_tap").checked = true } else { document.getElementById("id_act_tun").checked = true };
