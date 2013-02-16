@@ -13,3 +13,19 @@ config FREETZ_PACKAGE_PYLOAD
 		pyLoad is a fast, lightweight and full featured download manager
 		for many One-Click-Hoster, container formats like DLC, video sites
 		or just plain http/ftp links.
+
+config FREETZ_PACKAGE_PYLOAD_WITH_TESSERACT
+	bool "With Tesseract OCR for captcha recognition"
+	depends on FREETZ_PACKAGE_PYLOAD && FREETZ_PACKAGE_TESSERACT_AVAILABLE
+	select FREETZ_PACKAGE_TESSERACT
+	default n
+	help
+		Causes Tesseract OCR to be added to the image
+		for captcha recognition support in pyLoad.
+
+		Note:
+		 - Tesseract OCR is a huge package.
+		 - pyLoad support for captcha recognition
+		   is very limited even with Tesseract OCR.
+
+		You most probably want to say 'no' here.
