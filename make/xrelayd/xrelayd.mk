@@ -6,7 +6,14 @@ $(PKG)_SITE:=http://znerol.ch/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/xrelayd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/xrelayd
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_XRELAYD_GENSTUFF
+
 $(PKG)_DEPENDS_ON := polarssl
+
+$(PKG)_CFLAGS := $(TARGET_CFLAGS)
+$(PKG)_CFLAGS += -Werror-implicit-function-declaration
+$(PKG)_CFLAGS += $(if $(FREETZ_PACKAGE_XRELAYD_GENSTUFF),-DGENSTUFF)
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -15,7 +22,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(XRELAYD_DIR) \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -Werror-implicit-function-declaration" \
+		CFLAGS="$(XRELAYD_CFLAGS)" \
 		LD="$(TARGET_CC)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

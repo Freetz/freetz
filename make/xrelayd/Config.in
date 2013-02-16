@@ -12,3 +12,11 @@ config FREETZ_PACKAGE_XRELAYD
 		PolarSSL library is somewhat bigger than MatrixSSL. Its command line
 		interface is identical to Matrixtunnel's, so switching should be easy
 		for all users.
+
+config FREETZ_PACKAGE_XRELAYD_GENSTUFF
+	bool "With Key-/Cert-Generation"
+	depends on FREETZ_PACKAGE_XRELAYD
+	select FREETZ_LIB_libpolarssl_WITH_GENRSA
+	default n
+	help
+		Include support for private key and x509 certificate generation.

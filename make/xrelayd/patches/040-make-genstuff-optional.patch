@@ -1,0 +1,66 @@
+--- xrelayd.c
++++ xrelayd.c
+@@ -164,11 +164,13 @@
+                     "    -P      pidfile\n"
+                     "    -f      foreground mode\n"
+                     "    -D      syslog level (0...7)\n"
++#ifdef GENSTUFF
+                     "\n"
+                     "  Options for private key and x509 certificate generation\n"
+                     "    -K      generate private key and certificate. arg=keylen\n"
+                     "    -U      subjectline for certificate. specify at least CN\n"
+                     "    -Y      number of days before this cert becomes invalid\n"
++#endif
+                     "\n");
+     exit(status);
+ }
+@@ -682,6 +684,7 @@
+                 // version
+                 break;
+ 
++#ifdef GENSTUFF
+             case 'K':
+                 // generate keys + certificate
+                 genstuff=1;
+@@ -705,7 +708,8 @@
+                     usage(1);
+                 }
+                 break;
+-            
++#endif
++
+             case '?':
+             case 'h':
+                 usage(0);
+@@ -744,6 +748,7 @@
+     
+     // key
+     if(genstuff && servermode) {
++#ifdef GENSTUFF
+         // generate key if desired
+         ILOG("Generating private key");
+         havege_init( &hs );
+@@ -757,6 +762,7 @@
+             // write out PEM-keyfile here
+             x509write_keyfile(&key, keyfile, X509_OUTPUT_PEM); 
+         }
++#endif
+     }
+     else if(keyfile) {
+         ILOG("Loading the private key");
+@@ -777,6 +783,7 @@
+     char    notbefore[24],notafter[24];
+ 
+     if(genstuff && servermode) {
++#ifdef GENSTUFF
+         // generate self signed certificate
+         ILOG("Generating x509 certificate");
+         x509write_init_raw(&raw_cert);
+@@ -807,6 +814,7 @@
+         x509parse_crt(&cert, raw_cert.raw.data, raw_cert.raw.len);
+         
+         x509write_free_raw(&raw_cert);
++#endif
+     }
+     else if(certfile) {
+         ILOG("Loading the server certificate");
