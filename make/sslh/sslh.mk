@@ -5,6 +5,8 @@ $(PKG)_SITE:=http://rutschle.net/tech
 $(PKG)_BINARY:=$($(PKG)_DIR)/sslh-fork
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/sslh
 
+$(PKG)_DEPENDS_ON += libconfig
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -12,8 +14,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(SSLH_DIR) \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		USELIBCONFIG= \
+		CFLAGS="$(TARGET_CFLAGS) -DLIBCONFIG" \
 		USELIBWRAP= \
 		sslh
 

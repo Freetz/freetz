@@ -1,0 +1,12 @@
+. /mod/etc/conf/sslh.cfg
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+[ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" -a "$SSLH_IPV6TOO" == "yes" ] && proto=$1
+inetdcfg_desc="sslh daemon"
+inetdcfg_port=${SSLH_PORTS%% *}
+inetdcfg_sock=stream
+inetdcfg_proto=tcp$proto
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/sbin/sslh
+inetdcfg_arg0=sslh
+inetdcfg_args="-i -F /mod/etc/sslh.conf"
