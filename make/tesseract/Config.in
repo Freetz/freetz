@@ -5,9 +5,20 @@ config FREETZ_PACKAGE_TESSERACT
 	bool "Tesseract OCR 3.02.02 (binary only)"
 	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 	select FREETZ_PACKAGE_TESSERACT_tesseract
+	select FREETZ_PACKAGE_TESSERACT_ENG
 	default n
 	help
 		Tesseract is an Open Source OCR engine
+
+menu Languages
+	depends on FREETZ_PACKAGE_TESSERACT
+
+	config FREETZ_PACKAGE_TESSERACT_ENG
+		bool "English"
+
+	config FREETZ_PACKAGE_TESSERACT_DEU
+		bool "German"
+endmenu
 
 config FREETZ_PACKAGE_TESSERACT_tesseract
 	bool "tesseract"
