@@ -2,9 +2,9 @@
 VERSION="2.0.4_rc5"
 FWVER=$(sed -n '/FIRMWARE_VERSION=/ s/export.*\.04\.// p' /etc/version)
 
-CONFIG=/mod/etc/conf/avm-firewall.cfg
 . /usr/lib/libmodcgi.sh
 . /mod/etc/conf/avm-firewall.cfg
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 SUBNET="
 255.255.255.252
@@ -203,7 +203,7 @@ EOF
 sec_end
 
 sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")' forward-rules
-
+[ "$FREETZ_AVM_VERSION_05_5X" == "y" ] && echo '<p><small>$(lang en:"This firmware prevents forwarding to FTP (port 21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe f&uuml;r FTP (Port 21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>'
 cat << EOF
 
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("forwardingrules").style.display=(this.checked)? "block" : "none"' >
@@ -213,7 +213,7 @@ $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln 
         <tr><td align="left" colspan="8">dslifaces forwardrules</td></tr>
         <tr> <th bgcolor="#bae3ff">$(lang en:"Aktive" de:"Aktiv")</th> <th bgcolor="#bae3ff">$(lang en:"Protocol" de:"Protokoll")</th> <th bgcolor="#bae3ff">$(lang en:"Source Port" de:"Quell-Port")</th> <th bgcolor="#bae3ff">$(lang en:"Address" de:"Adresse")</th>
         <th bgcolor="#bae3ff">$(lang en:"Dest. Port" de:"Ziel-Port")</th> <th bgcolor="#bae3ff">$(lang en:"Description" de:"Beschreibung")</th> <th bgcolor="#bae3ff">$(lang en:"Configure" de:"Bearbeiten")</th> </tr>
-        <tr style="display:none"><td bgcolor="#CDCDCD" width="40" align="center"><input type="checkbox" onclick='fwddisable[ (this.parentNode.parentNode.rowIndex -3)] = ! this.checked ; rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3));'></td><td><select>
+        <tr style="display:none"><td bgcolor="#CDCDCD" width="40" align="center"><input type="checkbox" onclick='fwddisable[ (this.parentNode.parentNode.rowIndex -3)] = ! this.checked ; rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3));'></td><td><select onchange='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdprot", this.value)'>
         <option value="icmp">icmp</option><option value="gre">gre</option><option value="tcp">tcp</option><option value="udp">udp</option>
         </select> </td><td><input type="text" size="10" title="SPort" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdsport", this.value)'>
         </td><td><input type="text" size="24" title="Destination" onblur='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwddest", this.value)'>
