@@ -129,11 +129,11 @@ sec_end
 
 sec_begin '$(lang en:"Firewall rules" de:"Firewall-Regeln")' fw-rules
 cat << EOF
- 
-<table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'> 
- &nbsp; &nbsp; <font color="blue">$(lang en:"Outgoing" de:"Ausgehende Regeln")</font> (highoutput)<input type="radio" name="selectrules" id="id_ho_rules" 
- 	onclick='if (selrules=="li") {allrules_li=allrules}; selrules="ho" ; allrules=allrules_ho; Init_FW_Table()'></td> 
- 	<td align=right $([ $FWVER -ge 76 ] && echo ' style="display:none"')> $(lang en:"Enable logging" de:"Logging einschalten") (<i>dsld -D</i>) <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes" $([ "$AVM_FIREWALL_LOG" = yes ] && echo checked)> </td> </tr> 
+
+<table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'>
+ &nbsp; &nbsp; <font color="blue">$(lang en:"Outgoing" de:"Ausgehende Regeln")</font> (highoutput)<input type="radio" name="selectrules" id="id_ho_rules"
+ 	onclick='if (selrules=="li") {allrules_li=allrules}; selrules="ho" ; allrules=allrules_ho; Init_FW_Table()'></td>
+ 	<td align=right $([ $FWVER -ge 76 ] && echo ' style="display:none"')> $(lang en:"Enable logging" de:"Logging einschalten") (<i>dsld -D</i>) <input type="hidden" name="log" value=""><input type="checkbox" name="log" value="yes" $([ "$AVM_FIREWALL_LOG" = yes ] && echo checked)> </td> </tr>
 <tr><td> $(lang en:"For debugging show rules window" de:"Zum Debuggen Firewall-Regeln anzeigen"): &nbsp; LowInput <input type="checkbox" onclick='document.getElementById("id_rules_li").style.display=(this.checked)? "block" : "none"' >
  &nbsp; HighOutput <input type="checkbox" onclick='document.getElementById("id_rules_ho").style.display=(this.checked)? "block" : "none"' ></td>
  <td align=right $([ $FWVER -ge 76 ] && echo ' style="display:none"')> $(lang en:"Log all dropped packets" de:"Verworfene Pakete loggen") (<b>no</b> <i>dsld -n</i>) <input type="hidden" name="log_dropped" value=""><input type="checkbox" name="log_dropped" value="yes" $([ "$AVM_FIREWALL_LOG_DROPPED" = yes ] && echo checked)> </td></tr>
@@ -149,7 +149,7 @@ cat << EOF
 
 <table border="1" cellpadding="4" cellspacing="0" align="center" id="id_table_fwrules">
     <tr border="0"><td style="border-right:0" align="left" id="id_table_title" colspan="3"><font color="red">dslifaces rules lowinput</font></td><td style="border-left:0" align="right" colspan="4" >$(lang en:"<b>Default</b> policy" de:"Implizite <b>Standard</b>-Regel"):
- &nbsp; <b>Permit</b> <input type="radio" name="default_policy" value="permit" id="id_permit" onclick="policyclick()"> &nbsp; <b>Deny</b> <input type="radio" name="default_policy" value="deny" id="id_deny" onclick="policyclick()"> </td></tr> 
+ &nbsp; <b>Permit</b> <input type="radio" name="default_policy" value="permit" id="id_permit" onclick="policyclick()"> &nbsp; <b>Deny</b> <input type="radio" name="default_policy" value="deny" id="id_deny" onclick="policyclick()"> </td></tr>
     <tr> <th bgcolor="#bae3ff">#</th> <th bgcolor="#bae3ff">$(lang en:"Source" de:"Quelle")</th> <th bgcolor="#bae3ff">$(lang en:"Destination" de:"Ziel")</th> <th bgcolor="#bae3ff">$(lang en:"Protocol" de:"Protokoll")</th>
     <th bgcolor="#bae3ff">Service/Port</th> <th bgcolor="#bae3ff">A$(lang en:"c" de:"k")tion</th> <th bgcolor="#bae3ff">$(lang en:"&nbsp;&nbsp;&nbsp;Configure&nbsp;&nbsp;&nbsp;" de:"&nbsp;&nbsp;Bearbeiten&nbsp;&nbsp;")</th> </tr>
 EOF
@@ -164,7 +164,7 @@ echo '</table>'
 
 #EOF
 sec_end
- 
+
 sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")' new-forward-rule
 cat << EOF
 <p>
@@ -174,7 +174,7 @@ cat << EOF
 	<option title="udp" value="udp">udp</option>
 	<option title="gre" value="gre">gre</option>
 	<option title="icmp" value="icmp">icmp</option>
-</select> </td> 
+</select> </td>
 <td></td>
 <td><div id="div_fwdsport">
 &nbsp; &nbsp; (Start-)Port: <input size="5" id="id_fwd_in_sport" title="startport" value="22" onblur="onlynum(this);(fdsport=this.value);build_new_fwdrule()">
@@ -182,7 +182,7 @@ cat << EOF
 </div></td>
 </tr>
 <tr><td>$(lang en:"Destination" de:"Ziel"): </td><td>
-<select id="id_fwddest_type" onchange='(fddtype=this.value); build_new_fwdrule()'> 
+<select id="id_fwddest_type" onchange='(fddtype=this.value); build_new_fwdrule()'>
         <option value="fritz">Fritz!Box</option> <option value="host">host</option>
 </select></td>
 <td>&nbsp; <input type="text" disabled="disabled" id="id_fwddest" size="15" maxlength="15" value="0.0.0.0" onblur="onlynumpoint(this); fddest=this.value;build_new_fwdrule()">
@@ -190,7 +190,7 @@ cat << EOF
 <td>
 <div id="div_fwddport" style="display:inline"> &nbsp; &nbsp; (Start-)Port: <input type="text" size="5" id='id_fwd_out_sport' value='22' onblur='onlynum(this);fdoport=this.value;build_new_fwdrule()'>
 </div>
-</td> 
+</td>
 </tr>
 <tr> <td>Name: </td><td colspan="3"> <input type="text" name="fwd_name" id="id_fwdname" size="18" maxlength="18" value="" onblur="fdname=this.value;build_new_fwdrule()"></td> </tr>
 </p>
@@ -254,9 +254,9 @@ showrules();
 allrules=allrules_li;
 selrules="li";
 byId("new-fw-rule").style.display = "block";
-byId("fw-rules").style.display = "block"; 
+byId("fw-rules").style.display = "block";
 byId("new-forward-rule").style.display = "none";
-byId("forward-rules").style.display = "none"; 
+byId("forward-rules").style.display = "none";
 Init_FW_Table()
 build_new_rule()
 
@@ -282,7 +282,7 @@ build_new_fwdrule();
 function onlynum(elem){
         elem.value=elem.value.replace(/[^0-9]+/g,'');
 }
-                                                                                                                                                       
+
 function onlynumpoint(elem){
         elem.value=elem.value.replace(/[^0-9\.]+/g,'');
 }
@@ -336,12 +336,12 @@ function Init_FWDTable(){
   for (j=3;j<=fwdrulescount+2;j++){
   	if (j >= lastRow) {var row = tbl.insertRow(j);for (i=0; i<=6 ; i++){row.appendChild(tbl.rows[2].cells[i].cloneNode(true))}};
   	tbl.rows[j].style.display='';
-  	
+
         cn=tbl.rows[j].childNodes;
         var el_active=cn[0].firstChild;
-        var el_prot=cn[1].firstChild; 
+        var el_prot=cn[1].firstChild;
         var el_sport=cn[2].firstChild;
-        var el_dest=cn[3].firstChild; 
+        var el_dest=cn[3].firstChild;
         var el_dport=cn[4].firstChild;
         var el_name=cn[5].firstChild;
         var lastel=cn[6].childNodes;
@@ -354,12 +354,12 @@ function Init_FWDTable(){
         el_dport.disabled=has_no_port;
         el_dport.value=fwddport[j-3];
         el_name.value=fwdname[j-3];
-        for (i=0; i< lastel.length ; i++){ 
-                switch (lastel[i].title){ 
-                case "move rule up": lastel[i].style.display=(j==3) ? "none" : "inline"; break; 
-                case "move rule down": lastel[i].style.display=(j==fwdrulescount+2) ? "none" : "inline"; break; 
-                } 
-        } 
+        for (i=0; i< lastel.length ; i++){
+                switch (lastel[i].title){
+                case "move rule up": lastel[i].style.display=(j==3) ? "none" : "inline"; break;
+                case "move rule down": lastel[i].style.display=(j==fwdrulescount+2) ? "none" : "inline"; break;
+                }
+        }
   }
   for(j=lastRow-1;j>fwdrulescount+2;j--){
   	tbl.rows[j].style.display="none";
@@ -468,7 +468,7 @@ function build_new_rule(){
   else {
     txt=elem_proto.options[elem_proto.selectedIndex].title;
     if (txt.charAt(0) == "c" ){
-    tmp += " " + txt 
+    tmp += " " + txt
     }
   }
   document.getElementById("id_new_rule").value = tmp;
@@ -552,9 +552,9 @@ function Init_FW_Table(){
               action_rows=row.childNodes[5].firstChild.firstChild.rows;
               action_rows[0].firstChild.firstChild.id="id_act_img_"+(j-2)+"";
               action_rows[1].firstChild.firstChild.id="id_act_txt_"+(j-2)+"";
-                  
+
           };
-             
+
             tbl.rows[j].style.display='';
             cn=tbl.rows[j].childNodes;
             cn[0].innerHTML=j-2+"";
