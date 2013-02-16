@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 1.1.5)
+$(call PKG_INIT_LIB, 1.2.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-gpl.tgz
-$(PKG)_SOURCE_MD5:=bc66a2183c15bf5884fa6a25748b8bc1
+$(PKG)_SOURCE_MD5:=f42dd79cd85384ac9ad482caa665ac8f
 $(PKG)_SITE:=http://$(pkg).org/code/releases
 
 $(PKG)_LIBNAME:=lib$(pkg).so.$($(PKG)_VERSION)
@@ -8,11 +8,23 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/library/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl_WITH_BLOWFISH
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl_WITH_GENRSA
+
+$(PKG)_SYMBOLS_TO_COMMENT_OUT += $(if $(FREETZ_LIB_libpolarssl_WITH_BLOWFISH),,POLARSSL_BLOWFISH_C)
+$(PKG)_SYMBOLS_TO_COMMENT_OUT += $(if $(FREETZ_LIB_libpolarssl_WITH_GENRSA),,POLARSSL_GENPRIME)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+# Don't use -D/-U to define/undefine required symbols, patch config.h instead. The installed headers must contain properly defined symbols.
+	$(if $(strip $(POLARSSL_SYMBOLS_TO_COMMENT_OUT)), \
+		for d in $(POLARSSL_SYMBOLS_TO_COMMENT_OUT); do \
+			$(SED) -ri -e "s|^([ \t]*#define[ \t]+$$d[ \t]*)$$|/* \1 */|" $(POLARSSL_DIR)/include/polarssl/config.h; \
+		done \
+	)
 	$(SUBMAKE) -C $(POLARSSL_DIR)/library \
 		VERSION="$(POLARSSL_VERSION)" \
 		CC="$(TARGET_CC)" \

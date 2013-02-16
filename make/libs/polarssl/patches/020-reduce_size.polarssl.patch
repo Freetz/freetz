@@ -1,15 +1,6 @@
 --- include/polarssl/config.h
 +++ include/polarssl/config.h
-@@ -136,7 +136,7 @@
-  *
-  * Enable all SSL/TLS debugging messages.
-  */
--#define POLARSSL_DEBUG_MSG
-+/* #define POLARSSL_DEBUG_MSG */
- 
- /**
-  * \def POLARSSL_GENPRIME
-@@ -203,7 +203,7 @@
+@@ -236,7 +236,7 @@
   *
   * Enable the checkup functions (*_self_test).
   */
@@ -17,8 +8,26 @@
 +/* #define POLARSSL_SELF_TEST */
  
  /**
-  * \def POLARSSL_X509_ALLOW_UNSUPPORTED_CRITICAL_EXTENSION
-@@ -357,7 +357,7 @@
+  * \def POLARSSL_SSL_ALL_ALERT_MESSAGES
+@@ -426,7 +426,7 @@
+  *      TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256
+  *      TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256
+  */
+-#define POLARSSL_CAMELLIA_C
++/* #define POLARSSL_CAMELLIA_C */
+ 
+ /**
+  * \def POLARSSL_CERTS_C
+@@ -438,7 +438,7 @@
+  *
+  * This module is used for testing (ssl_client/server).
+  */
+-#define POLARSSL_CERTS_C
++/* #define POLARSSL_CERTS_C */
+ 
+ /**
+  * \def POLARSSL_CIPHER_C
+@@ -478,7 +478,7 @@
   *
   * This module provides debugging functions.
   */
@@ -27,7 +36,7 @@
  
  /**
   * \def POLARSSL_DES_C
-@@ -502,7 +502,7 @@
+@@ -650,7 +650,7 @@
   *
   * This modules adds support for the VIA PadLock on x86.
   */
@@ -35,4 +44,13 @@
 +/* #define POLARSSL_PADLOCK_C */
  
  /**
-  * \def POLARSSL_PEM_C
+  * \def POLARSSL_PBKDF2_C
+@@ -869,7 +869,7 @@
+  * Module:  library/xtea.c
+  * Caller:
+  */
+-#define POLARSSL_XTEA_C
++/* #define POLARSSL_XTEA_C */
+ /* \} name */
+ 
+ #endif /* config.h */

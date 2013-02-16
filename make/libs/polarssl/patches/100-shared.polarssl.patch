@@ -1,8 +1,8 @@
 --- library/Makefile
 +++ library/Makefile
-@@ -22,6 +22,11 @@
- # Windows shared library extension:
- # DLEXT=dll
+@@ -34,6 +34,11 @@
+ LDFLAGS += -lws2_32
+ endif
  
 +VERSION=0.0.0
 +LIB_SO=libpolarssl.$(DLEXT)
@@ -10,9 +10,9 @@
 +LIB_SO_MAJOR=$(LIB_SO).$(firstword $(subst ., ,$(VERSION)))
 +
  OBJS=	aes.o		arc4.o		asn1parse.o		\
- 		base64.o	bignum.o	camellia.o		\
- 		certs.o		cipher.o	cipher_wrap.o	\
-@@ -43,7 +48,7 @@
+ 		asn1write.o base64.o	bignum.o		\
+ 		blowfish.o	camellia.o					\
+@@ -61,7 +66,7 @@
  
  static: libpolarssl.a
  
@@ -21,7 +21,7 @@
  
  libpolarssl.a: $(OBJS)
  	echo "  AR    $@"
-@@ -51,9 +56,11 @@
+@@ -69,9 +74,11 @@
  	echo "  RL    $@"
  	$(AR) s $@
  

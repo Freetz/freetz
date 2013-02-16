@@ -1,0 +1,57 @@
+--- library/cipher_wrap.c
++++ library/cipher_wrap.c
+@@ -642,8 +642,8 @@
+ const cipher_info_t blowfish_cbc_info = {
+     POLARSSL_CIPHER_BLOWFISH_CBC,
+     POLARSSL_MODE_CBC,
+-    32,
+-    "BLOWFISH-CBC",
++    128,
++    "BF-CBC",
+     8,
+     8,
+     &blowfish_info
+@@ -653,8 +653,8 @@
+ const cipher_info_t blowfish_cfb64_info = {
+     POLARSSL_CIPHER_BLOWFISH_CFB64,
+     POLARSSL_MODE_CFB,
+-    32,
+-    "BLOWFISH-CFB64",
++    128,
++    "BF-CFB64",
+     8,
+     8,
+     &blowfish_info
+@@ -665,8 +665,8 @@
+ const cipher_info_t blowfish_ctr_info = {
+     POLARSSL_CIPHER_BLOWFISH_CTR,
+     POLARSSL_MODE_CTR,
+-    32,
+-    "BLOWFISH-CTR",
++    128,
++    "BF-CTR",
+     8,
+     8,
+     &blowfish_info
+--- library/cipher.c
++++ library/cipher.c
+@@ -277,16 +277,16 @@
+ #endif
+ 
+ #if defined(POLARSSL_BLOWFISH_C)
+-    if( !strcasecmp( "BLOWFISH-CBC", cipher_name ) )
++    if( !strcasecmp( "BLOWFISH-CBC", cipher_name ) || !strcasecmp( "BF-CBC", cipher_name ) )
+         return cipher_info_from_type( POLARSSL_CIPHER_BLOWFISH_CBC );
+ 
+ #if defined(POLARSSL_CIPHER_MODE_CFB)
+-    if( !strcasecmp( "BLOWFISH-CFB64", cipher_name ) )
++    if( !strcasecmp( "BLOWFISH-CFB64", cipher_name ) || !strcasecmp( "BF-CFB64", cipher_name ) )
+         return cipher_info_from_type( POLARSSL_CIPHER_BLOWFISH_CFB64 );
+ #endif /* defined(POLARSSL_CIPHER_MODE_CFB) */
+ 
+ #if defined(POLARSSL_CIPHER_MODE_CTR)
+-    if( !strcasecmp( "BLOWFISH-CTR", cipher_name ) )
++    if( !strcasecmp( "BLOWFISH-CTR", cipher_name ) || !strcasecmp( "BF-CTR", cipher_name ) )
+         return cipher_info_from_type( POLARSSL_CIPHER_BLOWFISH_CTR );
+ #endif /* defined(POLARSSL_CIPHER_MODE_CTR) */
+ #endif
