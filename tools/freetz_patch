@@ -142,7 +142,6 @@ modpatch()
 		local patch_file="$(readlink -f "$patch_file")"
 		mv -f "$patch_file" "$patch_file.orig"
 		cd "$target_dir"
-		local timestamp="$(date --rfc-3339=seconds)"
 		for (( i=0; i<$file_count; i++ )); do
 			# Locate patch comment for each file
 			local delta=$(( patch_lines[i] - filtered_lines[i] ))
@@ -164,7 +163,7 @@ modpatch()
 				rm -f "$_file.orig"
 			fi
 			# Auto-fix possibly fuzzy patch by re-diffing patched file against original
-			diff -Naur --label "$_file	$timestamp" --label "$_file	$timestamp" "$_file.orig" "$_file" >> "$patch_file"
+			diff -Naur --label "$_file" --label "$_file" "$_file.orig" "$_file" >> "$patch_file"
 			rm -f "$_file.orig"
 		done
 		cd - > /dev/null
