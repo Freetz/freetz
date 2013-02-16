@@ -54,7 +54,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang en:"Firewall add new rule" de:"Neue Firewall-Regel")' new-fw-rule
+sec_begin '$(lang en:"Firewall add new rule" de:"Neue Firewall-Regel")'
 cat << EOF
 <p>
 <input type="hidden" name="gui" value="*gui*">
@@ -127,7 +127,7 @@ EOF
 echo $rulescount
 sec_end
 
-sec_begin '$(lang en:"Firewall rules" de:"Firewall-Regeln")' fw-rules
+sec_begin '$(lang en:"Firewall rules" de:"Firewall-Regeln")'
 cat << EOF
 
 <table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'>
@@ -165,7 +165,7 @@ echo '</table>'
 #EOF
 sec_end
 
-sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")' new-forward-rule
+sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")'
 cat << EOF
 <p>
 <table border="0">
