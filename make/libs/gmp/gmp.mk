@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 5.0.5)
-$(PKG)_LIB_VERSION:=10.0.5
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=041487d25e9c230b0c42b106361055fe
+$(call PKG_INIT_LIB, 5.1.1)
+$(PKG)_LIB_VERSION:=10.1.1
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=485b1296e6287fa381e6015b19767989
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
@@ -9,6 +9,8 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.so.$($(PKG
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libgmp.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,path_LDCXX,,lt)
+
+$(PKG)_CONFIGURE_ENV += gmp_cv_func_vsnprintf=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
