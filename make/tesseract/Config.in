@@ -1,9 +1,13 @@
-comment "Tesseract OCR (not available, needs libstdc++ as Standard C++ Library)"
-	depends on !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+config FREETZ_PACKAGE_TESSERACT_AVAILABLE
+	bool
+	default y if FREETZ_HAS_AVM_RAMSIZE_64MB_MIN && FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+
+comment "Tesseract OCR (not available, needs box with at least 64MB RAM and libstdc++ as Standard C++ Library)"
+	depends on !FREETZ_PACKAGE_TESSERACT_AVAILABLE
 
 config FREETZ_PACKAGE_TESSERACT
 	bool "Tesseract OCR 3.02.02 (binary only)"
-	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	depends on FREETZ_PACKAGE_TESSERACT_AVAILABLE
 	select FREETZ_PACKAGE_TESSERACT_tesseract
 	select FREETZ_PACKAGE_TESSERACT_ENG
 	default n
