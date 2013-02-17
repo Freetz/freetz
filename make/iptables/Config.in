@@ -1214,7 +1214,7 @@ endmenu
 
 config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 	bool "Iptables shared libraries"
-	depends on FREETZ_PACKAGE_IPTABLES
+	depends on FREETZ_PACKAGE_IPTABLES && ! FREETZ_PACKAGE_IPTABLES_STATIC
 	default n
 	help
 		Shared Libraries for iptables
