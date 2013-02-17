@@ -1,8 +1,8 @@
 config FREETZ_PACKAGE_TESSERACT_AVAILABLE
 	bool
-	default y if FREETZ_HAS_AVM_RAMSIZE_64MB_MIN && FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	default y if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 
-comment "Tesseract OCR (not available, needs box with at least 64MB RAM and libstdc++ as Standard C++ Library)"
+comment "Tesseract OCR (not available, needs libstdc++ as Standard C++ Library)"
 	depends on !FREETZ_PACKAGE_TESSERACT_AVAILABLE
 
 config FREETZ_PACKAGE_TESSERACT
@@ -13,6 +13,14 @@ config FREETZ_PACKAGE_TESSERACT
 	default n
 	help
 		Tesseract is an Open Source OCR engine
+
+		Note:
+		 Tesseract including languages files is a huge package and requires
+		 a lot of RAM at run-time. It is NOT recommended to use it on boxes
+		 having less than 64MB RAM.
+
+comment "You need a box with at least 64MB RAM to run Tesseract"
+	depends on FREETZ_PACKAGE_TESSERACT
 
 menu Languages
 	depends on FREETZ_PACKAGE_TESSERACT
