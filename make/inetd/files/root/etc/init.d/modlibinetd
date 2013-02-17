@@ -35,9 +35,9 @@ update_file() {
 		pkg_inetd=$pkg_name
 	fi
 
+	echo -n "$pkg_out is updating inetd ... "
 	sed -i -e "/#:$pkg_inetd:/ { n; s/^\([^#].*\)/#<off>#\1/ }" $INETD_CONF
 	for single_port in $inetdcfg_port; do
-		echo -n "$pkg_out [$single_port] is updating inetd ... "
 		if ! grep -q "#:$pkg_inetd:$single_port:" $INETD_CONF; then
 			echo >> $INETD_CONF
 			echo "#:$pkg_inetd:$single_port: $inetdcfg_desc" >> $INETD_CONF
@@ -46,11 +46,10 @@ update_file() {
 
 		if [ "inetd" == "$(/etc/init.d/rc.$pkg_name status)" -o "inetd" == "$sub_status" ]; then
 			sed -i -e "/#:$pkg_inetd:$single_port:/ { n; s/^.*/$(update_line escape)/ }" $INETD_CONF
-			echo "active."
-		else
-			echo "inactive."
+			local pkg_status="active."
 		fi
 	done
+	echo "${pkg_status:-inactive.}"
 }
 
 update_main() {
