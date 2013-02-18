@@ -1,0 +1,9 @@
+config FREETZ_PACKAGE_OPENSSL
+	bool "OpenSSL (binary only)"
+	default n
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	help
+		This package contains the OpenSSL command-line utility.

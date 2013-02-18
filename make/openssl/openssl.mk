@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8y,1.0.1e))
+$(call PKG_INIT_BIN,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8y,1.0.1e))
 $(PKG)_LIB_VERSION:=$(call qstrip,$(FREETZ_OPENSSL_SHLIB_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5_0.9.8y := 47c7fb37f78c970f1d30aa2f9e9e26d8
@@ -7,12 +7,15 @@ $(PKG)_SOURCE_MD5        := $($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://www.openssl.org/source
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
-$(PKG)_SSL_BINARY:=$($(PKG)_DIR)/libssl.so.$($(PKG)_LIB_VERSION)
-$(PKG)_CRYPTO_BINARY:=$($(PKG)_DIR)/libcrypto.so.$($(PKG)_LIB_VERSION)
-$(PKG)_STAGING_SSL_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libssl.so.$($(PKG)_LIB_VERSION)
-$(PKG)_STAGING_CRYPTO_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcrypto.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_SSL_BINARY:=$($(PKG)_TARGET_DIR)/libssl.so.$($(PKG)_LIB_VERSION)
-$(PKG)_TARGET_CRYPTO_BINARY:=$($(PKG)_TARGET_DIR)/libcrypto.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/apps/openssl
+$(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/openssl
+
+$(PKG)_LIBNAMES_SHORT := libssl libcrypto
+$(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=%.so.$($(PKG)_LIB_VERSION))
+
+$(PKG)_LIBS_BUILD_DIR :=$($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/%)
+$(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
+$(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_0
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1
@@ -48,7 +51,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY_BUILD_DIR) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 #	OpenSSL's "make depend" looks for installed headers before its own,
 #	so remove installed stuff from the staging dir first.
 #	Remove installed libs also from freetz' packages dir to ensure
@@ -58,20 +61,20 @@ $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY): $($(PKG)_DIR)/.configured
 		$(SUBMAKE1) $(OPENSSL_MAKE_FLAGS) $$target; \
 	done
 
-$($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY): $($(PKG)_SSL_BINARY) $($(PKG)_CRYPTO_BINARY)
+$($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 	$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) install
 	$(call PKG_FIX_LIBTOOL_LA,prefix) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/{libcrypto,libssl,openssl}.pc
 
-$($(PKG)_TARGET_SSL_BINARY): $($(PKG)_STAGING_SSL_BINARY)
+$($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
 	$(INSTALL_LIBRARY_STRIP)
 
-$($(PKG)_TARGET_CRYPTO_BINARY): $($(PKG)_STAGING_CRYPTO_BINARY)
-	$(INSTALL_LIBRARY_STRIP)
+$(pkg): $($(PKG)_LIBS_STAGING_DIR)
 
-$(pkg): $($(PKG)_STAGING_SSL_BINARY) $($(PKG)_STAGING_CRYPTO_BINARY)
-
-$(pkg)-precompiled: $($(PKG)_TARGET_SSL_BINARY) $($(PKG)_TARGET_CRYPTO_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR)
 
 $(pkg)-clean: $(pkg)-clean-staging
 	-$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) clean
@@ -84,6 +87,7 @@ $(pkg)-clean-staging:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
 
 $(pkg)-uninstall:
-	$(RM) $(OPENSSL_TARGET_DIR)/{libssl,libcrypto}*.so*
+	$(RM) $(OPENSSL_BINARY_TARGET_DIR) $(OPENSSL_TARGET_LIBDIR)/{libssl,libcrypto}*.so*
 
+$(call PKG_ADD_LIB,libcrypto)
 $(PKG_FINISH)
