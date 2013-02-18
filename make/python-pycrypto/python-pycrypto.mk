@@ -16,12 +16,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.configured
-	$(call Build/PyMod, \
-		$(PYTHON_PYCRYPTO_DIR), \
-		install --prefix=/usr --root=$(abspath $(PYTHON_PYCRYPTO_DEST_DIR)), \
-		TARGET_ARCH="$(FREETZ_TARGET_ARCH)", \
-		$(PYTHON_PYCRYPTO_DEST_DIR)$(PYTHON_SITE_PKG_DIR) \
-	)
+	$(call Build/PyMod/PKG, PYTHON_PYCRYPTO, , TARGET_ARCH=$(FREETZ_TARGET_ARCH))
 
 $(pkg):
 

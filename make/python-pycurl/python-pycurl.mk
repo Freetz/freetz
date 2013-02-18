@@ -17,13 +17,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.configured
-	$(call Build/PyMod, \
-		$(PYTHON_PYCURL_DIR), \
-		install --prefix=/usr --root=$(abspath $(PYTHON_PYCURL_DEST_DIR)) \
-		--curl-config=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl-config, \
-		, \
-		$(PYTHON_PYCURL_DEST_DIR)$(PYTHON_SITE_PKG_DIR) \
-	)
+	$(call Build/PyMod/PKG, PYTHON_PYCURL, --curl-config=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl-config)
 
 $(pkg):
 
