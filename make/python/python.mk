@@ -20,10 +20,10 @@ include $(MAKE_DIR)/python/python-module-macros.mk.in
 include $(MAKE_DIR)/python/python-filelists.mk.in
 
 $(PKG)_MODULES_ALL := \
-	audiodev audioop bisect bsddb cmath collections cprofile crypt csv ctypes curses \
-	datetime eastern_codecs elementtree fcntl functools grp hashlib hotshot io json \
-	mmap multiprocessing operator random readline resource socket spwd sqlite ssl \
-	struct syslog termios test time unicodedata wsgiref
+	audiodev audioop bsddb cmath cprofile crypt csv ctypes curses \
+	eastern_codecs elementtree grp hotshot json \
+	mmap multiprocessing readline spwd sqlite ssl \
+	syslog termios test unicodedata wsgiref
 $(PKG)_MODULES_SELECTED := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)
 $(PKG)_MODULES_EXCLUDED := $(filter-out $($(PKG)_MODULES_SELECTED),$($(PKG)_MODULES_ALL))
 

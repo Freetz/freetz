@@ -91,15 +91,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_AUDIOOP
 		Manipulate raw audio data.
 		For details, see: http://docs.python.org/2/library/audioop.html
 
-config FREETZ_PACKAGE_PYTHON_MOD_BISECT
-	bool "bisect"
-	depends on FREETZ_PACKAGE_PYTHON
-	default n
-	help
-		Array bisection algorithm.
-		Only needed for special types of (sorted) lists.
-		For details, see: http://docs.python.org/2/library/bisect.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_BSDDB
 	bool "bsddb"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -118,14 +109,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_CMATH
 		Not particularly useful to most non-mathematicians. ;-)
 		If unsure say N.
 		For details, see: http://docs.python.org/2/library/cmath.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_COLLECTIONS
-	bool "collections"
-	depends on FREETZ_PACKAGE_PYTHON
-	default n
-	help
-		High-performance container datatypes.
-		For details, see: http://docs.python.org/2/library/collections.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_CPROFILE
 	bool "lsprof"
@@ -178,16 +161,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_CURSES
 		Most people won't need it, so it's safe to say N.
 		For details, see: http://docs.python.org/2/library/curses.html
 
-config FREETZ_PACKAGE_PYTHON_MOD_DATETIME
-	bool "datetime"
-	depends on FREETZ_PACKAGE_PYTHON
-	default y
-	help
-		Basic date and time types.
-		The datetime module supplies classes for manipulating dates and
-		times in both simple and complex ways.
-		For details, see: http://docs.python.org/2/library/datetime.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_EASTERN_CODECS
 	bool "encodings for Eastern and Asian languages"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -223,27 +196,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_ELEMENTTREE
 		The ElementTree XML API. Enables xml.etree.ElementTree.
 		For details, see: http://effbot.org/zone/element-index.htm
 
-config FREETZ_PACKAGE_PYTHON_MOD_FCNTL
-	bool "fcntl"
-	depends on FREETZ_PACKAGE_PYTHON
-	default y
-	help
-		The fcntl() and ioctl() system calls.
-		This module performs file control and I/O control on file
-		descriptors. You probably want to say Y here.
-		For details, see: http://docs.python.org/2/library/fcntl.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_FUNCTOOLS
-	bool "functools"
-	depends on FREETZ_PACKAGE_PYTHON
-	default n
-	help
-		Higher-order functions and operations on callable objects.
-		The functools module is for higher-order functions: Functions
-		that act on or return other functions. If you don't need this
-		functionality, it's safe to say N.
-		For details, see: http://docs.python.org/2/library/functools.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_GRP
 	bool "grp"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -254,20 +206,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_GRP
 		say N.
 		For details, see: http://docs.python.org/2/library/grp.html
 
-config FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
-	bool "hashlib"
-	depends on FREETZ_PACKAGE_PYTHON
-	select FREETZ_PACKAGE_PYTHON_MOD_SSL
-	default y
-	help
-		Secure hashes and message digests.
-		This module implements a common interface to many different
-		secure hash and message digest algorithms. It is a good idea to
-		leave this enabled, however the hashlib module requires both
-		the openssl libraries and "ssl" (s. below). Thus, if you
-		are on a space constrained setup, you should probably say N.
-		For details, see: http://docs.python.org/2/library/hashlib.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT
 	bool "hotshot"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -277,19 +215,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_HOTSHOT
 		If you don't plan on debugging your Python scripts on the
 		Fritz!Box, you can safely say N here.
 		For details, see: http://docs.python.org/2/library/hotshot.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_IO
-	bool "io"
-	depends on FREETZ_PACKAGE_PYTHON
-	default n
-	help
-		Core tools for working with streams.
-		The io module provides the Python interfaces to stream handling.
-		In Python 2.x, this is proposed as an alternative to the
-		built-in file object, while in Python 3.x it is the default
-		interface to access files and streams. You most probably won't
-		need this, and can safely say N.
-		For details, see: http://docs.python.org/2/library/io.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_JSON
 	bool "json"
@@ -323,30 +248,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_MMAP
 		file objects. Primarily used by "multiprocessing" (s. above).
 		For details, see: http://docs.python.org/2/library/mmap.html
 
-config FREETZ_PACKAGE_PYTHON_MOD_OPERATOR
-	bool "operator"
-	depends on FREETZ_PACKAGE_PYTHON
-	default n
-	help
-		Standard operators as functions.
-		The operator module exports a set of efficient functions
-		corresponding to the intrinsic operators of Python. E.g.,
-		operator.add(x, y) is equivalent to the expression x+y.
-		For details, see: http://docs.python.org/2/library/operator.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_RANDOM
-	bool "random"
-	depends on FREETZ_PACKAGE_PYTHON
-	select FREETZ_PACKAGE_PYTHON_MOD_HASHLIB
-	default y
-	help
-		Generate pseudo-random numbers.
-		This module implements pseudo-random number generators for
-		various distributions. It is probably a good idea to leave this
-		enabled, although it requires both "hashlib" (s. above) and
-		"ssl" (s. below), which in turn requires openssl.
-		For details, see: http://docs.python.org/2/library/random.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_READLINE
 	bool "readline"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -359,29 +260,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_READLINE
 		completion and reading/writing of history files from the Python
 		interpreter. Requires libncurses and libreadline.
 		For details, see: http://docs.python.org/2/library/readline.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_RESOURCE
-	bool "resource"
-	depends on FREETZ_PACKAGE_PYTHON
-	default y
-	help
-		Resource usage information.
-		This module provides basic mechanisms for measuring and
-		controlling system resources utilized by a program. Several
-		other modules depend on it, so it should be left enabled.
-		For details, see: http://docs.python.org/2/library/resource.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_SOCKET
-	bool "socket"
-	depends on FREETZ_PACKAGE_PYTHON
-	default y
-	help
-		Low-level networking interface.
-		This module provides access to the BSD socket interface. It is
-		required for all serious network related programming in Python.
-		That said, it should be left enabled on a networking device like
-		your Fritz!Box.
-		For details, see: http://docs.python.org/2/library/socket.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SPWD
 	bool "spwd"
@@ -406,29 +284,15 @@ config FREETZ_PACKAGE_PYTHON_MOD_SQLITE
 		most probably won't need it. If unsure say N.
 		For details, see: http://docs.python.org/2/library/sqlite3.html
 
-config FREETZ_PACKAGE_PYTHON_MOD_STRUCT
-	bool "struct"
-	depends on FREETZ_PACKAGE_PYTHON
-	default n
-	help
-		Interpret strings as packed binary data.
-		This module performs conversions between Python values and C
-		structs represented as Python strings.
-		For details, see: http://docs.python.org/2/library/struct.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_SSL
 	bool "ssl"
 	depends on FREETZ_PACKAGE_PYTHON
-	select FREETZ_PACKAGE_PYTHON_MOD_SOCKET
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
 	select FREETZ_OPENSSL_VERSION_PROMPT
 	default n
 	help
 		TLS/SSL wrapper for socket objects.
-		This module is prerequisite to a number of other modules, so
-		you probably want to enable it. However, it requires both
-		"socket" (s. above) and openssl libraries.
 		For details, see: http://docs.python.org/2/library/ssl.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_SYSLOG
@@ -450,16 +314,6 @@ config FREETZ_PACKAGE_PYTHON_MOD_TERMIOS
 		This module provides an interface to the POSIX calls for tty I/O
 		control.
 		For details, see: http://docs.python.org/2/library/termios.html
-
-config FREETZ_PACKAGE_PYTHON_MOD_TIME
-	bool "time"
-	depends on FREETZ_PACKAGE_PYTHON
-	default y
-	help
-		Time access and conversions.
-		This module provides various time-related functions. You are
-		HIGHLY encouraged to leave it enabled.
-		For details, see: http://docs.python.org/2/library/time.html
 
 config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
 	bool "unicodedata"
