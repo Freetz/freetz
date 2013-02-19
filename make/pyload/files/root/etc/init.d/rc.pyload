@@ -18,19 +18,17 @@ start() {
 		echo "$DAEMON_LONG_NAME is not configured, failed."
 		return 1
 	fi
-	DAEMON_ENV=''
-	modlib_startdaemon $DAEMON_BINARY --daemon -p $PID_FILE
+	modlib_startdaemon $DAEMON_BINARY --daemon -p $PID_FILE 2>/dev/null
 }
 
 stop() {
-	$DAEMON_BINARY -q
+	$DAEMON_BINARY -p $PID_FILE -q >/dev/null
 }
 
 case $1 in
 	""|load)
 		config
 
-		modreg file $DAEMON pyload_conf 'pyload.conf' 1 pyload_conf
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
@@ -39,7 +37,6 @@ case $1 in
 	unload)
 		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
-		modunreg file $DAEMON
 
 		modlib_stop
 		;;
