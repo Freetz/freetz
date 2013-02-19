@@ -4,16 +4,16 @@
 TRANSMISSION_FROM_SVN:=n
 
 ifeq ($(TRANSMISSION_FROM_SVN),y)
-$(call PKG_INIT_BIN, 13785)
+$(call PKG_INIT_BIN, 14031)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=svn://svn.transmissionbt.com/Transmission/branches/2.7x
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e '/^m4_define.+user_agent_prefix/s,[+],,g' -e '/^m4_define.+peer_id_prefix/s,[XZ]-,0-,g' ./configure.ac;
 $(PKG)_CONFIGURE_PRE_CMDS += AUTOGEN_SUBDIR_MODE=y ./autogen.sh;
 else
-$(call PKG_INIT_BIN, 2.76)
+$(call PKG_INIT_BIN, 2.77)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=bbe6fb5c9e8a0f8d970defb1d80a28df
+$(PKG)_SOURCE_MD5:=b75fd5d69ac88e093d25c469183e7f7a
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
 endif
 
