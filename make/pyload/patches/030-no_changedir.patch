@@ -1,0 +1,81 @@
+--- module/setup.py
++++ module/setup.py
+@@ -150,15 +150,6 @@
+             return False
+ 
+         print ""
+-        print _("Do you want to change the config path? Current is %s") % abspath("")
+-        print _(
+-            "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it.")
+-        path = self.ask(_("Change config path?"), self.no, bool=True)
+-        if path:
+-            self.conf_path()
+-            #calls exit when changed
+-
+-        print ""
+         print _("Do you want to configure login data and basic settings?")
+         print _("This is recommend for first run.")
+         con = self.ask(_("Make basic setup?"), self.yes, bool=True)
+@@ -393,29 +384,6 @@
+             if not noaction:
+                 db.shutdown()
+ 
+-    def conf_path(self, trans=False):
+-        if trans:
+-            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+-            translation = gettext.translation("setup", join(self.path, "locale"),
+-                languages=[self.config["general"]["language"], "en"], fallback=True)
+-            translation.install(True)
+-
+-        print _("Setting new configpath, current configuration will not be transfered!")
+-        path = self.ask(_("Configpath"), abspath(""))
+-        try:
+-            path = join(pypath, path)
+-            if not exists(path):
+-                makedirs(path)
+-            f = open(join(pypath, "module", "config", "configdir"), "wb")
+-            f.write(path)
+-            f.close()
+-            print _("Configpath changed, setup will now close, please restart to go on.")
+-            print _("Press Enter to exit.")
+-            raw_input()
+-            exit()
+-        except Exception, e:
+-            print _("Setting config path failed: %s") % str(e)
+-
+     def print_dep(self, name, value):
+         """Print Status of dependency"""
+         if value:
+--- pyLoadCore.py
++++ pyLoadCore.py
+@@ -81,7 +81,7 @@
+             try:
+                 options, args = getopt(argv[1:], 'vchdusqp:',
+                     ["version", "clear", "clean", "help", "debug", "user",
+-                     "setup", "configdir=", "changedir", "daemon",
++                     "setup", "configdir=", "daemon",
+                      "quit", "status", "no-remote","pidfile="])
+ 
+                 for option, argument in options:
+@@ -113,13 +113,6 @@
+                         s = Setup(pypath, self.config)
+                         s.start()
+                         exit()
+-                    elif option == "--changedir":
+-                        from module.setup import Setup
+-
+-                        self.config = ConfigParser()
+-                        s = Setup(pypath, self.config)
+-                        s.conf_path(True)
+-                        exit()
+                     elif option in ("-q", "--quit"):
+                         self.quitInstance()
+                         exit()
+@@ -160,7 +153,6 @@
+         print "  -s, --setup", " " * 12, "Run Setup Assistent"
+         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
+         print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
+-        print "  --changedir", " " * 12, "Change config dir permanently"
+         print "  --daemon", " " * 15, "Daemonize after start"
+         print "  --no-remote", " " * 12, "Disable remote access (saves RAM)"
+         print "  --status", " " * 15, "Display pid if running or False"
