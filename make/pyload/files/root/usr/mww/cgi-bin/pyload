@@ -1,0 +1,5 @@
+#!/bin/sh
+. /usr/lib/libmodredir.sh
+plport="$(sed -n '/^webinterface -/{N;N;N;N;N;N;N;N;N;s/.*"Port" = \([0-9]*\).*/\1/p}' /mod/pyload/pyload.conf 2>/dev/null)"
+
+redirect "http://$(self_host):${plport:-8000}/" "pyload"

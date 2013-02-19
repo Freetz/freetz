@@ -1,0 +1,69 @@
+#!/bin/sh
+
+DAEMON=pyload
+DAEMON_LONG_NAME="pyLoad"
+. /etc/init.d/modlibrc
+
+DAEMON_BINARY="/opt/pyLoad/pyLoadCore.py"
+
+
+config() {
+	rm -rf /mod/pyload
+	ln -s "$PYLOAD_CONFIGDIR" /mod/pyload
+	mkdir "$PYLOAD_CONFIGDIR" 2>/dev/null
+}
+
+start() {
+	if [ ! -e /mod/pyload/pyload.conf ]; then
+		echo "$DAEMON_LONG_NAME is not configured, failed."
+		return 1
+	fi
+	DAEMON_ENV=''
+	modlib_startdaemon $DAEMON_BINARY --daemon -p $PID_FILE
+}
+
+stop() {
+	$DAEMON_BINARY -q
+}
+
+case $1 in
+	""|load)
+		config
+
+		modreg file $DAEMON pyload_conf 'pyload.conf' 1 pyload_conf
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+
+		modlib_start $PYLOAD_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	setup)
+		echo -e "\n\nDo NOT modify 'configdir', use webif instead!\n"
+		config
+		$DAEMON_BINARY -s
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|setup]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
