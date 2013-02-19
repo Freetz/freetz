@@ -1,0 +1,12 @@
+--- module/InitHomeDir.py
++++ module/InitHomeDir.py
+@@ -57,7 +57,8 @@
+ # dirty method to set configdir from commandline arguments
+ if "--configdir=" in args:
+     pos = args.find("--configdir=")
+-    end = args.find("-", pos + 12)
++    # NB: paths containing spaces are not supported, original version doesn't support paths containing '-'
++    end = args.find(" ", pos + 12)
+ 
+     if end == -1:
+         configdir = args[pos + 12:].strip()
