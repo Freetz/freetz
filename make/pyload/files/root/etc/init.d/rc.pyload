@@ -57,8 +57,12 @@ case $1 in
 		config
 		$DAEMON_BINARY -s
 		;;
+	user)
+		config
+		$DAEMON_BINARY -u
+		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|setup]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|setup|user]" 1>&2
 		exit 1
 		;;
 esac
