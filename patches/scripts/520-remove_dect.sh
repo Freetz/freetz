@@ -20,21 +20,16 @@ modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_SPEC_MOD_DIR}/home/home.
 modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_SPEC_MOD_DIR}/menus/menu2_konfig.html"
 menu2html_remove dect
 
-if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi" ]; then
-	sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-capi"
-	echo1 "patching ${sedfile##*/}"
-elif [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn" ]; then
-	sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
-	echo1 "patching ${sedfile##*/}"
-	modsed 's!dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex!!' $sedfile
-	modsed 's!dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex!!' $sedfile
-else
-	sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-	echo1 "patching ${sedfile##*/}"
-	modsed '/dect.*firstlevel/d' $sedfile
-	modsed '/dect.*secondlevel/d' $sedfile
+MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
+if [ -e "$MODPROBEPIGLET" ]; then
+	echo1 "patching ${MODPROBEPIGLET##*/}"
+	modsed '/^dect_[a-z]*levelfile=/ d; s!dect_[a-z]*levelfile=[^ ]*\.hex!!g' $MODPROBEPIGLET
 fi
-modsed "s/^modprobe dect_io$//g" $sedfile
+MODPROBEDECT=$(grep -l -i -e "^modprobe dect_io$" "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
+if [ -e "$MODPROBEDECT" ]; then
+	echo1 "patching ${MODPROBEDECT##*/}"
+	modsed '/^modprobe dect_io$/d' $MODPROBEDECT
+fi
 
 echo1 "patching rc.conf"
 modsed "s/\(CONFIG_.*DECT.*=\).*/\1\"n\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

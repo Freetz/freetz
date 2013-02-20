@@ -16,7 +16,8 @@ rm_files \
   ${FILESYSTEM_MOD_DIR}/usr/bin/faxd \
   ${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit \
   ${FILESYSTEM_MOD_DIR}/lib/modules/c55fw.hex \
-  ${FILESYSTEM_MOD_DIR}/etc/init.d/S17-tam
+  ${FILESYSTEM_MOD_DIR}/etc/init.d/S17-tam \
+  ${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet
 
 echo1 "patching rc.S"
 modsed '/microvoip_isdn_top.bit/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
