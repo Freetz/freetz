@@ -58,7 +58,7 @@ case $1 in
 		$DAEMON_BINARY -s
 		;;
 	user)
-		config
+		modlib_check_running || config
 		$DAEMON_BINARY -u
 		;;
 	*)
