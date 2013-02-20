@@ -36,12 +36,19 @@ sec_end
 
 #
 
-if [ ! -e /mod/pyload/pyload.conf ]; then
-sec_begin '$(lang de:"Erstmalige Einrichtung" en:"Initial setup")'
+sec_begin '$(lang de:"Hinweis" en:"Note")'
 
+echo '<ul>'
+if [ ! -e /mod/pyload/pyload.conf ]; then
 cat << EOF
-$(lang de:"pyLoad wurde noch nicht konfiguriert. Dazu bitte diesen Befehl in einem Terminal ausf&uuml;hren" en:"pyLoad is not configured. To do so, please run this in a terminal"):<br>rc.pyload setup
+<li>$(lang de:"pyLoad wurde noch nicht konfiguriert. Dazu bitte diesen Befehl in einem Terminal ausf&uuml;hren" en:"pyLoad is not configured. To do so, please run this in a terminal"): <i>rc.pyload setup</i></li>
+EOF
+fi
+cat << EOF
+<li>$(lang de:"Die Benutzerverwaltung kann so aufgerufen werden" en:"The user management can be run by"): <i>rc.pyload user</i></li>
+</ul>
 EOF
 
 sec_end
-fi
+
+
