@@ -1194,9 +1194,19 @@ if [ "$DO_MOD" -gt 0 ]; then
 			# shebang. This excludes dot-included files without shebang, but
 			# anything else would be too unsafe. We do not want plain text
 			# files stripped.
-			grep -sq '#[^!]' "$f" &&
-			# Strip blank lines, shell comments (not shebangs) and indentation
-			sed -i '/^[ \t]*$/d;/^[ \t]*#[^!].*/d;s/^[ \t]*//g' "$f" &&
+			grep -sq '#[^!]' "$f" ||
+			# continue the loop with the next file if one of the conditions above is false
+			continue
+			
+			# Strip ...
+			STRIP_SCRIPTS_SED_SCRIPT='/^[ \t]*$/d;'               # blank lines
+			# TODO: doesn't work because of multiline IFS definitions, i.e. IFS='\t\n'
+			#STRIP_SCRIPTS_SED_SCRIPT+='s/[ \t]+$//;'             # trailing white spaces
+			STRIP_SCRIPTS_SED_SCRIPT+='/^[ \t]*#[^!].*/d;'        # shell comments (not shebangs)
+			if [ "${f: -3:3}" != ".py" ]; then
+				STRIP_SCRIPTS_SED_SCRIPT+='s/^[ \t]*//g;'     # and indentation if it's not a python script
+			fi
+			sed -i -r "${STRIP_SCRIPTS_SED_SCRIPT}" "$f" &&
 			echo2 "${f##${FILESYSTEM_MOD_DIR}}"
 		done
 	fi
