@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, cff39521889e)
+$(call PKG_INIT_BIN, 776cefc7de)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=hg@https://bitbucket.org/spoob/pyload
+$(PKG)_SITE:=git@https://github.com/pyload/pyload.git
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/opt/pyLoad/pyLoadCore.py
 
-$(PKG)_BUILD_PREREQ += hg
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the mercurial package (sudo apt-get install mercurial)
+$(PKG)_BUILD_PREREQ += git
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the git package (sudo apt-get install git)
 
 define pyLoad/build/files
 .build-prereq-checked
@@ -15,6 +15,7 @@ define pyLoad/build/files
 endef
 
 define pyLoad/unnecessary/files
+.hgignore
 docs
 icons
 LICENSE
