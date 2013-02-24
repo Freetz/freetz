@@ -16,7 +16,7 @@ wert (){
 	done
 	unset IFS
 }
- 
+
 count=2
 
 . /mod/etc/conf/openvpn.cfg
@@ -35,15 +35,15 @@ do
 	act="openvpn_${LOKAL_CONFIG_NAMES}"
 	cc="$cc $act"
 	if [ ! -d /mod/etc/default.${act} ]; then
-		mkdir /mod/etc/default.${act} 
+		mkdir /mod/etc/default.${act}
 	fi
 	if [ -e /mod/etc/default.${act}/${act}_conf ]; then
 		rm /mod/etc/default.${act}/${act}_conf
 	fi
 	if [ -x /tmp/flash/openvpn_conf ]; then
-		ln -sf /tmp/flash/openvpn_conf /mod/etc/default.${act}/${act}_conf 
+		ln -sf /tmp/flash/openvpn_conf /mod/etc/default.${act}/${act}_conf
 	else
-		ln -sf /mod/etc/default.openvpn/openvpn_conf /mod/etc/default.${act}/${act}_conf 
+		ln -sf /mod/etc/default.openvpn/openvpn_conf /mod/etc/default.${act}/${act}_conf
 	fi
 	if [ ! -x /mod/etc/init.d/rc.${act} ]; then
 	    ln -s rc.openvpn /mod/etc/init.d/rc.${act}
@@ -53,7 +53,7 @@ do
 	fi
 
 
-	unset IFS=
+	unset IFS
 	for deffile in $(ls /mod/etc/default.openvpn/*.def)
 	do
 		name=${deffile##*/}
@@ -94,6 +94,5 @@ for config in $(ls /mod/etc/init.d/rc.openvpn*); do
 		modunreg file "$confname"
 	else
 		grep -q "$confname" /mod/etc/reg/daemon.reg || modreg daemon -p openvpn "$confname"
-	fi	
+	fi
 done
-
