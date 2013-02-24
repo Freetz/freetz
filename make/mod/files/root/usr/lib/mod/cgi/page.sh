@@ -12,7 +12,7 @@ _cgi_print_extra_styles() {
 _cgi_option() {
 	local opt=$1 value=$2 uri
 	case $opt in
-		style) 
+		style)
 			case $value in
 				/*|*:*) uri=$value ;;
 				*) uri="/style/$value" ;;

@@ -9,14 +9,14 @@ EOF
 
 	# If there is no menu, we make the space available to the content.
 	[ -z "$id" ] && let _cgi_width+=180
-	
-	# The width of the whole cgi: There are 20px border, 20 px space 
+
+	# The width of the whole cgi: There are 20px border, 20 px space
 	# and 180px for the menu area.
 	let _cgi_content_width=_cgi_width+30
 	let _cgi_border_width=_cgi_content_width-20
 	let _cgi_total_width=_cgi_content_width+20
 	[ -z "$id" ] || let _cgi_total_width+=180
-	
+
 	export _cgi_content_width
 }
 
@@ -30,17 +30,17 @@ skin_body_begin() {
 	<div id="wrapper">
 	<div id="title-box">
 		<div id="title-box-left"></div>
-    	<div id="title-box-mid"></div>
-   		 <div id="title-box-right"></div>
-    	<div id="title-box-logo"><a href="http://freetz.org/" target="_blank" class="logo"><img src="/images/newfreetz/freetz_logo.gif"></a></div>
-    	<div id="title-box-fun">the fun has just begun ...</div>
-    	<div id="title-box-version">$(html < /etc/.freetz-version)</div>
-    </div>
-    <div id="contentwrapper" style="width:${_cgi_total_width}px">
+		<div id="title-box-mid"></div>
+		<div id="title-box-right"></div>
+		<div id="title-box-logo"><a href="http://freetz.org/" target="_blank" class="logo"><img src="/images/newfreetz/freetz_logo.gif"></a></div>
+		<div id="title-box-fun">the fun has just begun ...</div>
+		<div id="title-box-version">$(html < /etc/.freetz-version)</div>
+	</div>
+	<div id="contentwrapper" style="width:${_cgi_total_width}px">
 EOF
-    
-    if [ -n "$id" ]; then 
-    	cat << EOF
+
+    if [ -n "$id" ]; then
+	cat << EOF
 <div id="menu">
 	<div style>
 		<div id="menu-top-left"></div>
@@ -54,13 +54,14 @@ EOF
  _cgi_print_menu "$id"
 
 cat << EOF
-		</div></div>
+		</div>
+	</div>
 	<div style>
 		<div id="edge-bot-left"></div>
 		<div id="menu-bot"></div>
 		<div id="edge-bot-right"></div>
 	</div>
-</div>		
+</div>
 EOF
 fi
 cat << EOF
@@ -71,7 +72,7 @@ cat << EOF
 		<div id="edge-top-right"></div>
 		<div id="titlebar"><span class="title">$title</span>$help</div>
 	</div>
-	
+
 	<div id="container">
 EOF
 }
@@ -79,7 +80,7 @@ EOF
 skin_body_end() {
 	cat << EOF
 	</div>
-	
+
 	<div style>
 		<div id="edge-bot-left"></div>
 		<div id="edge-bot"style="width:${_cgi_border_width}px"></div>
@@ -98,13 +99,10 @@ EOF
 }
 
 skin_sec_begin() {
-	
 echo "<h1>$1</h1>"
-
 }
 
 skin_sec_end() {
-	let _cgi_breakline_width=_cgi_content_width-2
+let _cgi_breakline_width=_cgi_content_width-2
 echo "<div id='breakline' style='width:${_cgi_breakline_width}px'></div>"
-
 }
