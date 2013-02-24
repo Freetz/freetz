@@ -1,0 +1,27 @@
+config FREETZ_PACKAGE_RTMPDUMP
+	bool "RTMPDump 2.4-git (binary only)"
+	select FREETZ_PACKAGE_RTMPDUMP_rtmpdump
+	help
+		rtmpdump is a toolkit for RTMP streams. All forms of RTMP are supported,
+		including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.
+
+config FREETZ_PACKAGE_RTMPDUMP_WITH_SSL
+	bool "with SSL support"
+	depends on FREETZ_PACKAGE_RTMPDUMP
+	select FREETZ_LIB_libpolarssl
+	select FREETZ_LIB_libz
+	help
+
+config FREETZ_PACKAGE_RTMPDUMP_rtmpdump
+	bool "rtmpdump"
+	depends on FREETZ_PACKAGE_RTMPDUMP
+	default y
+	help
+		RTMP streaming media client
+
+config FREETZ_PACKAGE_RTMPDUMP_rtmpgw
+	bool "rtmpgw"
+	depends on FREETZ_PACKAGE_RTMPDUMP
+	select FREETZ_LIB_libpthread
+	help
+		RTMP streaming media gateway
