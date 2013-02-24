@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.0.14)
+$(call PKG_INIT_BIN, 3.0.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=791172a19bc2250fe89c9a59c67bf3b5
+$(PKG)_SOURCE_MD5:=64d2020bd8e92105dfad30feee72a3ec
 $(PKG)_SITE:=http://www.daniel-baumann.ch/files/software/dosfstools
 
 $(PKG)_BINARIES_ALL := dosfsck dosfslabel mkdosfs
