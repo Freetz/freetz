@@ -1,5 +1,5 @@
-$(call PKG_INIT_BIN, 776cefc7de)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(call PKG_INIT_BIN, 6c35da105b)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/pyload/pyload.git
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/opt/pyLoad/pyLoadCore.py
