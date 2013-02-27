@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN,130216.153357)
+$(call PKG_INIT_BIN,130224.044101)
 $(PKG)_SOURCE:=$(pkg)_installer_$($(PKG)_VERSION).sh
 $(PKG)_SOURCE_MD5:=c57716ec8d11875381e0379be7bf1394
 $(PKG)_SITE:=http://www.sundtek.de/media
