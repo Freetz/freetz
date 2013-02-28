@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 6c35da105b)
+$(call PKG_INIT_BIN, e9cfc82852)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/pyload/pyload.git
 
