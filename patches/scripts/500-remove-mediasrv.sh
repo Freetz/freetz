@@ -4,6 +4,7 @@ for files in \
 	lib/libpng.so* \
 	lib/libmediasrv.so* \
 	lib/libsqlite3*.so* \
+	lib/libstationurl.so* \
 	sbin/mediasrv \
 	sbin/start_mediasrv \
 	sbin/stop_mediasrv \
