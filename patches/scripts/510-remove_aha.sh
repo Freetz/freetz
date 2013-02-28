@@ -5,8 +5,10 @@ for files in \
  	lib/libaha.so* \
 	usr/share/aha/ \
 	etc/init.d/S78-aha \
+	usr/www/all/lua/ha_func_lib.lua \
 	usr/www/all/net/home_auto_*.lua \
 	usr/www/all/mobile/home_auto_*.lua \
+	usr/www/all/js/ha_draw.js \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
@@ -17,11 +19,13 @@ menulua_remove home_auto_overview
 sedfile="${HTML_LANG_MOD_DIR}/home/home.lua"
 echo1 "patching ${sedfile##*/}"
 modsed '/^<?include "net\/home_auto_func_lib.lua" ?>/d' $sedfile
+modsed '/^require ("ha_func_lib")/d' $sedfile
+modsed 's/ha_func_lib.get_device_counts.*/0/' $sedfile
 
-sedfile="${HTML_LANG_MOD_DIR}/mobile/home.lua"
-echo1 "patching ${sedfile##*/}"
-modsed '/^require("libaha")/d' $sedfile
-modsed '/^t_ha_list = aha.GetDeviceList()/d' $sedfile
+for sedfile in ${HTML_LANG_MOD_DIR}/home/home.lua ${HTML_LANG_MOD_DIR}/mobile/home.lua; do
+	modsed '/^require("libaha")/d' $sedfile
+	modsed '/aha.GetDeviceList()/d' $sedfile
+done
 
 sedfile="${HTML_LANG_MOD_DIR}/dect/dect_settings.lua"
 echo1 "patching ${sedfile##*/}"
