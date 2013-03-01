@@ -1,8 +1,10 @@
-$(call PKG_INIT_BIN, 6.8.2-8)
-$(PKG)_LIB_VERSION:=8.0.0
+$(call PKG_INIT_BIN, 6.8.3-6)
+$(PKG)_MAJOR_VERSION:=6
+$(PKG)_ABI_SUFFIX:=Q16
+$(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=c90d99ce0f0e08ebeab568eda7eedec7
-$(PKG)_SITE:=http://www.$(pkg).org/download
+$(PKG)_SOURCE_MD5:=6cd18b768436c58188fa499dbcad3838
+$(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_DIR:=$(SOURCE_DIR)/ImageMagick-$($(PKG)_VERSION)
 
@@ -11,11 +13,11 @@ $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/utilities/$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,.libs/)%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-$(PKG)_LIB_CORE := libMagickCore-Q16.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_CORE := libMagickCore-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_CORE_BUILD_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DIR)/magick/.libs/%)
 $(PKG)_LIB_CORE_TARGET_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DEST_LIBDIR)/%)
 
-$(PKG)_LIB_WAND := libMagickWand-Q16.so.$($(PKG)_LIB_VERSION)
+$(PKG)_LIB_WAND := libMagickWand-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_WAND_BUILD_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DIR)/wand/.libs/%)
 $(PKG)_LIB_WAND_TARGET_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DEST_LIBDIR)/%)
 
@@ -44,6 +46,9 @@ $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_IMAGEMAGICK_png),libpng)
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_IMAGEMAGICK_xml),libxml2)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+$(PKG)_CONFIGURE_PRE_CMDS += \
+	find $(abspath $($(PKG)_DIR)) -name "*.in" -type f -exec \
+	$(SED) -i -r -e 's,($($(PKG)_MAJOR_VERSION)|@MAGICK_MAJOR_VERSION@)[.]($($(PKG)_ABI_SUFFIX)|@MAGICK_ABI_SUFFIX@),\1-\2,g' \{\} \+;
 
 $(PKG)_CONFIGURE_OPTIONS += --with-modules=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-hdri=no
