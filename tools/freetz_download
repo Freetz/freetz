@@ -83,6 +83,20 @@ do_checkout_git()
 {
 	git clone "$1" "$2" && (cd "$2" && git checkout "$3" && rm -rf .git)
 }
+# Note: remote repository must support "git archive" command
+# $1 is expected to have the following format:
+#    repository_url,path1,path2,...,pathN
+# where
+#    repository_url - a repository url supporting archive command, e.g. git://repo.or.cz/git.git
+#    pathX - a path to any file or directory within the repository
+# Only path1,...,pathN will be transmitted saving both bandwidth and processing power.
+do_checkout_git_archive()
+{
+	local repository paths
+	repository=$(echo "$1" | cut -d , -f 1)
+	paths=$(echo "$1" | cut -d , -f 2- | tr , " ")
+	git archive --format=tar --remote="$repository" --prefix="$2/" "$3" $paths | tar -x
+}
 do_checkout_bzr()
 {
 	bzr export -r"$3" "$2" "$1"
@@ -179,7 +193,7 @@ if [ -n "$MAIN_URL" ]; then
 		sites[3]=http://archive.apache.org/dist/$MAIN_URL
 		num_sites=4
 	else
-		supportedVCSs="cvs|svn|git|bzr|hg|darcs"
+		supportedVCSs="cvs|svn|git|git_archive|bzr|hg|darcs"
 		VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
 		if [ -n "${VCS}" ]; then
 			MAIN_URL="$(echo "${MAIN_URL}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
