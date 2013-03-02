@@ -24,7 +24,7 @@ do_extract_bl()
 	local BOOTLOADER_MAGIC="$1"
 	local ENDIAN_TYPE="$2"
 	# Find bootloader candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ -quiet)"
+	hexfind_dump="$($mod_tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ -quiet)"
 	# Isolate arrays of bootloader offset candidates (hex & dec)
 	bootloader_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
 	[ "$bootloader_offs_hex" ] || return
@@ -81,7 +81,7 @@ do_extract_kfs()
 	local ENDIAN_TYPE="$2"
 
 	# Find SquashFS candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$SQUASHFS_MAGIC/ -quiet)"
+	hexfind_dump="$($mod_tools/sfk hexfind "$input_file" -bin /$SQUASHFS_MAGIC/ -quiet)"
 	# Isolate arrays of SquashFS offset candidates (hex & dec)
 	squashfs_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
 	[ "$squashfs_offs_hex" ] || return
@@ -102,7 +102,7 @@ do_extract_kfs()
 	done
 
 	# Find kernel candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_base/tools/sfk hexfind "$input_file" -bin /$KERNEL_MAGIC/ -quiet)"
+	hexfind_dump="$($mod_tools/sfk hexfind "$input_file" -bin /$KERNEL_MAGIC/ -quiet)"
 	# Isolate arrays of kernel offset candidates (hex & dec)
 	kernel_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
 	[ "$kernel_offs_hex" ] || return
@@ -174,7 +174,7 @@ extract_kernel_filesystem()
 }
 
 # Parameter handling
-mod_base="."
+mod_tools="$(dirname $(readlink -f ${0}))"
 endian="-any"
 case $# in
 	0)
@@ -185,11 +185,11 @@ case $# in
 		input_file="$1"
 		;;
 	2)
-		[ "$1" == "-be" -o "$1" == "-le" ] && endian="$1" || mod_base="$1"
+		[ "$1" == "-be" -o "$1" == "-le" ] && endian="$1" || mod_tools="${1%/}/tools"
 		input_file="$2"
 		;;
 	3)
-		mod_base="$1"
+		mod_tools="${1%/}/tools"
 		[ "$2" == "-be" -o "$2" == "-le" ] && endian="$2" || { usage >&2; exit 1; }
 		input_file="$3"
 		;;

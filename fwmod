@@ -358,8 +358,13 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	mkdir "$FIRMWARE_DIR"
 
 	if [ "$FIRMWARE_EXTENSION" != "exe" ]; then
+		# Check and skip garbage
+		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))	"
+		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
+		[ "$grbg" != "0x0" ] && printf "Skipping %d Bytes garbage..." $grbg
 		# Unpack standard *.image file in tar format
-		"$UNTAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
+		tail -c $(( $image_size - $image_grbg )) "$FIRMWARE" | \
+		  "$UNTAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
 	fi
 	if [ "$FIRMWARE_EXTENSION" == "exe" ] || [ "$untar_failed" ]; then
 		# Unpack Windows recover.exe file or mtdblock dump
@@ -1197,7 +1202,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			grep -sq '#[^!]' "$f" ||
 			# continue the loop with the next file if one of the conditions above is false
 			continue
-			
+
 			# Strip ...
 			STRIP_SCRIPTS_SED_SCRIPT='/^[ \t]*$/d;'               # blank lines
 			# TODO: doesn't work because of multiline IFS definitions, i.e. IFS='\t\n'

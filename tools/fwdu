@@ -52,16 +52,27 @@ unpack () {
 image() {
 	local img=$1
 	local dst=$2
-	tar xf $img ./var/tmp/*.image >/dev/null 2>&1 # --wildcard
+	rm -rf var
+	if [ "$img" != "${img%.exe}" ]; then
+		$FTOOLS/extract-images $img >/dev/null
+		mkdir -p var
+		mv ${img#*/}.unp var/tmp
+	else
+		local size="0x$(printf "%08X\n" $(stat -c %s $img))	"
+		local grbg="$($FTOOLS/sfk hexfind $img _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
+		[ "$grbg" != "0x0" ] && printf "\tSkipping %d Bytes garbage:\n" $grbg
+		tail -c $(( $size - $grbg )) $img | tar x ./var/tmp/*.image >/dev/null 2>&1 # --wildcard
+	fi
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
 		continue
 	fi
 	if [ ! -f var/tmp/kernel.image ]; then
 		echo -e "---\t$img" | tee -a _failed.log
+		rm -rf var
 		continue
 	fi
-	$FTOOLS/remove-junk-bytes var/tmp/kernel.image var/tmp/kernel.junked 2>&1 | grep -E "removing junk bytes" #|No junk header found"
+	$FTOOLS/remove-junk-bytes var/tmp/kernel.image var/tmp/kernel.junked 2>&1 | grep -E "removing junk bytes" | sed 's/.*/\t&:/'  #|No junk header found"
 	mv var/tmp/kernel.junked var/tmp/kernel.image 2>/dev/null
 	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
 	rm -rf var
@@ -83,8 +94,8 @@ image() {
 	fi
 
 	if [ -d squashfs-root ]; then
-		echo -e "`find squashfs-root -type f | wc -l`\t${img##*/}" # | tee -a _failed.log
-		mv squashfs-root ${dst}`echo $img |sed 's!\.image$!!;s!.*/!!'`
+		echo -e "`find squashfs-root -type f | wc -l`\t$img" # | tee -a _failed.log
+		mv squashfs-root ${dst} $(echo ${img%.*} |sed 's!.*/!!')
 	##rm -rf $img
 	else
 		echo -e "===\t$img" | tee -a _failed.log
