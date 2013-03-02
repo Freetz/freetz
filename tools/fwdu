@@ -52,6 +52,10 @@ unpack () {
 image() {
 	local img=$1
 	local dst=$2
+	if [ ! -e $img ]; then
+		echo -e "~~~~\t$img" | tee -a _failed.log
+		continue
+	fi
 	rm -rf var
 	if [ "$img" != "${img%.exe}" ]; then
 		$FTOOLS/extract-images $img >/dev/null
@@ -68,7 +72,7 @@ image() {
 		continue
 	fi
 	if [ ! -f var/tmp/kernel.image ]; then
-		echo -e "---\t$img" | tee -a _failed.log
+		echo -e "----\t$img" | tee -a _failed.log
 		rm -rf var
 		continue
 	fi
@@ -95,10 +99,10 @@ image() {
 
 	if [ -d squashfs-root ]; then
 		echo -e "`find squashfs-root -type f | wc -l`\t$img" # | tee -a _failed.log
-		mv squashfs-root ${dst} $(echo ${img%.*} |sed 's!.*/!!')
+		mv squashfs-root "${dst}$(echo ${img%.*} |sed 's!.*/!!')"
 	##rm -rf $img
 	else
-		echo -e "===\t$img" | tee -a _failed.log
+		echo -e "====\t$img" | tee -a _failed.log
 	fi
 }
 
