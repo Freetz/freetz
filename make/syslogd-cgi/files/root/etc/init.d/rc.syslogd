@@ -4,6 +4,7 @@ DAEMON=syslogd
 . /etc/init.d/modlibrc
 
 start() {
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 	if [ "$SYSLOGD_NETWORK" = "no" -a "$SYSLOGD_LOCAL" = "no" ] || [ "$SYSLOGD_NETWORK" = "yes" -a -z "$SYSLOGD_HOST" ]; then
 		echo 'Syslogd misconfigured. Please correct your settings! Starting with default options.'
@@ -54,7 +55,7 @@ start() {
 
 	modlib_startdaemon $DAEMON $SYSLOGD_OPTIONS $SYSLOGD_EXPERT_OPTIONS
 
-	if [ "$SYSLOGD_KLOGD" = "yes" ]; then
+	if [ "$FREETZ_BUSYBOX_KLOGD" == "y" -a "$SYSLOGD_KLOGD" = "yes" ]; then
 		KLOGDOPTIONS=""
 		[ -n "$SYSLOGD_KLOGD_LEVEL" ] && KLOGDOPTIONS="-c $SYSLOGD_KLOGD_LEVEL"
 

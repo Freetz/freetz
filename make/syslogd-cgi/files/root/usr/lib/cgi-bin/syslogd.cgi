@@ -2,6 +2,7 @@
 
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$SYSLOGD_ENABLED" yes:auto "*":man
 check "$SYSLOGD_NETWORK" yes:network
@@ -43,7 +44,7 @@ cat << EOF
 <label for="r2">Host:</label>
 <input id="r2" type="text" name="host" size="20" maxlength="20" value="$(html "$SYSLOGD_HOST")">
 <label for="r11">Port:</label>
-<input id="r11" type="text" name="port" size="5" maxlength="6" value="$(html "$SYSLOGD_PORT")"> 
+<input id="r11" type="text" name="port" size="5" maxlength="6" value="$(html "$SYSLOGD_PORT")">
 </p>
 </li>
 </ul>
@@ -68,7 +69,7 @@ cat << EOF
 <ul>
 <li style="list-style-type: none">
 <label for="r5">$(lang de:"maximale Logfilegr&ouml;&szlig;e" en:"Max log file size") (in KB):</label>
-<input id="r5" type="text" name="maxsize" size="6" maxlength="6" value="$(html "$SYSLOGD_MAXSIZE")"> 
+<input id="r5" type="text" name="maxsize" size="6" maxlength="6" value="$(html "$SYSLOGD_MAXSIZE")">
 <br>
 <label for="r10">$(lang de:"Anzahl Logdateien" en:"Max number of logs to keep"):</label>
 <input id="r10" type="text" name="maxfiles" size="2" maxlength="2" value="$(html "$SYSLOGD_MAXFILES")">
@@ -91,6 +92,10 @@ cat << EOF
 </li>
 </ul>
 <h2></h2>
+EOF
+
+if [ "$FREETZ_BUSYBOX_KLOGD" == "y" ]; then
+cat << EOF
 <input type="hidden" name="klogd" value="no">
 <h2>
 <input id="r12" type="checkbox" name="klogd" value="yes"$klogd_chk>
@@ -102,6 +107,10 @@ cat << EOF
 <input id="r13" type="text" name="klogd_level" size="2" maxlength="1" value="$(html "$SYSLOGD_KLOGD_LEVEL")">
 </li>
 </ul>
+EOF
+fi
+
+cat << EOF
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten):" en:"Additional command line options (for experts)")</h2>
 <label for="r8">$(lang de:"Optionen" en:"Options"):</label>
 <input id="r8" type="text" name="expert_options" size="20" maxlength="255" value="$(html "$SYSLOGD_EXPERT_OPTIONS")">
