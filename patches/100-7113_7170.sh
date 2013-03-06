@@ -36,7 +36,7 @@ echo2 "patching rc.S and rc.conf"
 modsed '/modprobe Piglet piglet_bitfile.*$/i \
 piglet_potsbitfile=/lib/modules/microvoip_top.bit\${HWRevision_BitFileCount}\
 piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-modsed "s/modprobe Piglet piglet_bitfile=.*$/modprobe Piglet_noemif piglet_bitfile=\$piglet_bitfile piglet_pots
+modsed "s/modprobe Piglet piglet_bitfile=.*$/modprobe Piglet_noemif piglet_bitfile=\$piglet_bitfile piglet_potsbitfile=\$piglet_potsbitfile piglet_bitfilemode=\$piglet_bitfilemode/g" \
 	"${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 
 modsed "s/CONFIG_AB_COUNT=.*$/CONFIG_AB_COUNT=\"2\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
