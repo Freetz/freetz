@@ -1285,7 +1285,11 @@ if [ "$action_names" ]; then
 	rm -f "${DIR}/*.image"
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
-	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}_${FIRMWAREVERSION}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}-${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"
+	if [ -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
+		modbaselaborname="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
+		modbaselaborname="-rev${modbaselaborname}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
+	fi
+	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}_${FIRMWAREVERSION}${modbaselaborname}-${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
 		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
 	else
