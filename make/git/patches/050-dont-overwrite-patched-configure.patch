@@ -1,11 +1,11 @@
 --- Makefile
 +++ Makefile
-@@ -2264,7 +2264,7 @@
- 	mv $@+ $@
- endif # NO_PYTHON
+@@ -2270,7 +2270,7 @@
+ 		   autoconf -o configure configure.ac+ && \
+ 		   $(RM) configure.ac+
  
 -configure: configure.ac GIT-VERSION-FILE
 +configure: configure.ac
- 	$(QUIET_GEN)$(RM) $@ $<+ && \
- 	sed -e 's/@@GIT_VERSION@@/$(GIT_VERSION)/g' \
- 	    $< > $<+ && \
+ 	$(QUIET_GEN)$(CONFIGURE_RECIPE)
+ 
+ ifdef AUTOCONFIGURED
