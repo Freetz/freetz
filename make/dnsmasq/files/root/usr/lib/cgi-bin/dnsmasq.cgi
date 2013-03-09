@@ -37,6 +37,14 @@ EOF
 fi
 sec_end
 
+sec_begin '$(lang de:"Anzeigen" en:"Show")'
+cat << EOF
+<ul>
+<li><a href="$(href file mod hosts)">$(lang de:"'hosts'-Datei bearbeiten" en:"edit 'hosts' file")</a></li>
+</ul>
+EOF
+sec_end
+
 sec_begin '$(lang de:"DNS Server" en:"DNS server")'
 cat << EOF
 <h2>$(lang de:"Der DNS Server ist gebunden an" en:"The DNS server is listening on"):</h2>
