@@ -56,23 +56,23 @@ menu "crypto"
 config FREETZ_MODULE_crypto_algapi
 	bool "crypto_algapi.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_MIN && \
-		!FREETZ_TYPE_7390
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_crypto_blkcipher
 	bool "crypto_blkcipher.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN && \
-		!FREETZ_TYPE_7390
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_crypto_hash
 	bool "crypto_hash.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN && \
-		!FREETZ_TYPE_7390
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_7390
+		FREETZ_KERNEL_VERSION_2_6_28 || \
+		FREETZ_KERNEL_VERSION_2_6_32_MIN
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_aes
@@ -82,7 +82,7 @@ config FREETZ_MODULE_aes
 
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_7390
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_blkcipher
@@ -93,19 +93,19 @@ config FREETZ_MODULE_blkcipher
 config FREETZ_MODULE_cbc
 	bool "cbc.ko"
 	depends on \
-		FREETZ_KERNEL_VERSION_2_6_19_MIN && \
-		!FREETZ_TYPE_7390
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_7390
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_32_MIN
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	select FREETZ_MODULE_blkcipher if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_7390
+	select FREETZ_MODULE_crypto_blkcipher if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_cryptomgr
 	bool "cryptomgr.ko"
 	depends on  \
-		FREETZ_KERNEL_VERSION_2_6_19_MIN && \
-		! FREETZ_TYPE_7390
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_7390
+		FREETZ_KERNEL_VERSION_2_6_19 || \
+		FREETZ_KERNEL_VERSION_2_6_32_MIN
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_sha1
@@ -120,15 +120,15 @@ config FREETZ_MODULE_sha256
 
 config FREETZ_MODULE_sha1_generic
 	bool "sha1_generic.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && ! FREETZ_TYPE_7390
+	depends on FREETZ_KERNEL_VERSION_2_6_32_MIN
 	select FREETZ_MODULE_crypto_hash
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_7390
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_sha256_generic
 	bool "sha256_generic.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_TYPE_7390
+	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 endmenu
@@ -165,39 +165,39 @@ config FREETZ_MODULE_dummy
 
 config FREETZ_MODULE_ppp_async
 	bool "ppp_async.ko"
-	depends on ! FREETZ_TYPE_7390
+	depends on ! FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_ppp_generic
 	select FREETZ_MODULE_crc_ccitt
 	default n
 
 config FREETZ_MODULE_ppp_deflate
 	bool "ppp_deflate.ko"
-	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_7390
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_ppp_generic
 	bool "ppp_generic.ko"
-	depends on ! FREETZ_TYPE_7390
+	depends on ! FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_slhc
 	default n
 
 config FREETZ_MODULE_pppoe
 	bool "pppoe.ko"
-	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_7390
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_pppox
 	default n
 
 config FREETZ_MODULE_pppox
 	bool "pppox.ko"
-	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_7390
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_ppp_mppe_mppc
 	bool "ppp_mppe_mppc.ko"
-	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_7390
+	select FREETZ_MODULE_ppp_generic if ! FREETZ_KERNEL_VERSION_2_6_28
 	select FREETZ_MODULE_arc4
 	select FREETZ_MODULE_sha1 if FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_sha1_generic if FREETZ_KERNEL_VERSION_2_6_28_MIN  && ! FREETZ_TYPE_7390
+	select FREETZ_MODULE_sha1_generic if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_scsi_mod
@@ -222,7 +222,7 @@ config FREETZ_MODULE_sr_mod
 
 config FREETZ_MODULE_slhc
 	bool "slhc.ko"
-	depends on ! FREETZ_TYPE_7390
+	depends on ! FREETZ_KERNEL_VERSION_2_6_28
 	default n
 
 config FREETZ_MODULE_musb_hdrc
