@@ -1,11 +1,15 @@
-$(call PKG_INIT_BIN, c5f21698c3)
+PYLOAD_GIT_REPOSITORY:=https://github.com/pyload/pyload.git
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT),$(call git-get-latest-revision,$(PYLOAD_GIT_REPOSITORY),stable),803ae199c5))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=git@https://github.com/pyload/pyload.git
+$(PKG)_SITE:=git@$($(PKG)_GIT_REPOSITORY)
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/opt/pyLoad/pyLoadCore.py
 
 $(PKG)_BUILD_PREREQ += git
 $(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the git package (sudo apt-get install git)
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT
 
 define pyLoad/build/files
 .build-prereq-checked

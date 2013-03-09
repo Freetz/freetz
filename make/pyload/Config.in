@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_PYLOAD
-	bool "pyLoad 0.4.9-git"
+	bool "pyLoad 0.4.9-git-stable-branch"
 	select FREETZ_PACKAGE_PYTHON
 	select FREETZ_PACKAGE_PYTHON_MOD_CTYPES
 	select FREETZ_PACKAGE_PYTHON_MOD_JSON
@@ -18,13 +18,30 @@ config FREETZ_PACKAGE_PYLOAD
 		for many One-Click-Hoster, container formats like DLC, video sites
 		or just plain http/ftp links.
 
+choice
+	depends on FREETZ_PACKAGE_PYLOAD
+	prompt "Version"
+	default FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
+
+	config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
+		bool "latest tested by freetz developers"
+
+	config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT
+		bool "latest git revision"
+		help
+			Note this increases build time by about 2 seconds
+			since the latest git-revision is determined anew
+			on each make invocation.
+
+endchoice
+
 config FREETZ_PACKAGE_PYLOAD_EXTRACT
-	bool "select unrar and unzip"
+	bool "With unrar and unzip for file unpacking"
 	depends on FREETZ_PACKAGE_PYLOAD
 	select FREETZ_PACKAGE_UNRAR
 	select FREETZ_BUSYBOX_UNZIP
 	help
-		This select unrar and unzip for file unpacking.
+		This selects unrar and unzip packages for file unpacking.
 
 config FREETZ_PACKAGE_PYLOAD_WITH_TESSERACT
 	bool "With Tesseract OCR for captcha recognition"
