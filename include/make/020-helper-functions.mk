@@ -67,3 +67,14 @@ SUBST_MAP_TOLOWER_NAME := $(SUBST_MAP_TOLOWER) $(SUBST_MAP_NAME)
 # Convert letters to uppercase, minus to underline
 #   $1 = string to convert
 TOUPPER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOUPPER_NAME))
+
+#
+# $1 - git repository
+# $2 - (optional) branch name, if omitted "master" is used
+#
+# returns:
+#   latest revision of the specified branch
+#
+define git-get-latest-revision
+$(shell rev=$$(git ls-remote --heads $(strip $(1)) $(if $(strip $(2)),$(strip $(2)),master) | sed -rn -e 's,^([0-9a-f]{10})[0-9a-f]{30}.*,\1,p'); echo "$${rev:-FAILED_TO_DETERMINE_LATEST_REVISION}")
+endef
