@@ -23,7 +23,7 @@ $(PKG)_MODULES_ALL := \
 	audiodev audioop bsddb cmath cprofile crypt csv ctypes curses \
 	eastern_codecs elementtree grp hotshot json \
 	mmap multiprocessing readline spwd sqlite ssl \
-	syslog termios test unicodedata wsgiref
+	syslog termios test unicodedata unittest wsgiref
 $(PKG)_MODULES_SELECTED := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)
 $(PKG)_MODULES_EXCLUDED := $(filter-out $($(PKG)_MODULES_SELECTED),$($(PKG)_MODULES_ALL))
 

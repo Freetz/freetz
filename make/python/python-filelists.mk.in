@@ -210,7 +210,6 @@ usr/lib/python$(PYTHON_MAJOR_VERSION)/test/decimaltestdata
 usr/lib/python$(PYTHON_MAJOR_VERSION)/test/subprocessdata
 usr/lib/python$(PYTHON_MAJOR_VERSION)/test/tracedmodules
 usr/lib/python$(PYTHON_MAJOR_VERSION)/test/xmltestdata
-usr/lib/python$(PYTHON_MAJOR_VERSION)/unittest
 usr/lib/python$(PYTHON_MAJOR_VERSION)/unittest/test
 usr/lib/python$(PYTHON_MAJOR_VERSION)/bsddb/test
 usr/lib/python$(PYTHON_MAJOR_VERSION)/ctypes/test
@@ -230,7 +229,6 @@ usr/lib/python$(PYTHON_MAJOR_VERSION)/test/decimaltestdata/*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/test/subprocessdata/*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/test/tracedmodules/*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/test/xmltestdata/*
-usr/lib/python$(PYTHON_MAJOR_VERSION)/unittest/*.py*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/unittest/test/*.py*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/bsddb/test/*.py*
 usr/lib/python$(PYTHON_MAJOR_VERSION)/ctypes/test/*.py*
@@ -243,6 +241,13 @@ endef
 
 define PyMod/unicodedata/files
 usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-dynload/unicodedata.so
+endef
+
+define PyMod/unittest/dirs
+usr/lib/python$(PYTHON_MAJOR_VERSION)/unittest
+endef
+define PyMod/unittest/files
+usr/lib/python$(PYTHON_MAJOR_VERSION)/unittest/*.py*
 endef
 
 define PyMod/wsgiref/dirs

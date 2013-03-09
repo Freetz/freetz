@@ -61,17 +61,6 @@ config FREETZ_PACKAGE_PYTHON_STATIC
 menu "Python binary modules (extensions)"
 	depends on FREETZ_PACKAGE_PYTHON
 
-config FREETZ_PACKAGE_PYTHON_MOD_TEST
-	bool "Enable test framework"
-	depends on FREETZ_PACKAGE_PYTHON
-	default n
-	help
-		Install test/unittest modules and tests contained in various
-		modules.
-		Note: If unsure, say N, since these modules take up a lot of
-		disk space.
-		For details, see: http://docs.python.org/2/library/test.html
-
 config FREETZ_PACKAGE_PYTHON_MOD_AUDIODEV
 	bool "linuxaudiodev and ossaudiodev"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -315,6 +304,22 @@ config FREETZ_PACKAGE_PYTHON_MOD_TERMIOS
 		control.
 		For details, see: http://docs.python.org/2/library/termios.html
 
+config FREETZ_PACKAGE_PYTHON_MOD_TEST
+	bool "test (useless for an end user)"
+	depends on FREETZ_PACKAGE_PYTHON
+	default n
+	help
+		Install test module and tests contained in various modules.
+
+		Note:
+		 The test package is meant for internal use by Python only.
+		 It is only useful if one wants to test Python itself, e.g.
+		 to ensure that it has been properly cross-compiled.
+		 It is absolutely useless for an end user. 99.99% of
+		 the users may say N here.
+
+		For details, see: http://docs.python.org/2/library/test.html
+
 config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
 	bool "unicodedata"
 	depends on FREETZ_PACKAGE_PYTHON
@@ -326,6 +331,19 @@ config FREETZ_PACKAGE_PYTHON_MOD_UNICODEDATA
 		Unless you need to examine those properties, you are safe to say
 		N here.
 		For details, see: http://docs.python.org/2/library/unicodedata.html
+
+config FREETZ_PACKAGE_PYTHON_MOD_UNITTEST
+	bool "unittest"
+	depends on FREETZ_PACKAGE_PYTHON
+	default n
+	help
+		unittest supports test automation, sharing of setup and shutdown
+		code for tests, aggregation of tests into collections, and independence
+		of the tests from the reporting framework. The unittest module provides
+		classes that make it easy to support these qualities for a set of tests.
+
+		For details, see: http://docs.python.org/2/library/unittest.html
+
 
 config FREETZ_PACKAGE_PYTHON_MOD_WSGIREF
 	bool "wsgiref"
