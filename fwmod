@@ -842,13 +842,20 @@ if [ "$DO_MOD" -gt 0 ]; then
 		for i in `find "${AVMPLUGINS_MOD_DIR}" -maxdepth 1 -type d -name var -prune -false , -type d -name "plugin-*" 2>/dev/null`; do
 			AVMPLUGIN="${i##*plugin-}"
 			if [ "$(eval "echo \"\$FREETZ_AVMPLUGINS_$(echo "$AVMPLUGIN" | tr [:lower:] [:upper:])\"")" == "y" ]; then
-				echo2 "$AVMPLUGIN plugin"
+				echo1 "$AVMPLUGIN plugin"
 				cp -a "${AVMPLUGINS_MOD_DIR}/plugin-${AVMPLUGIN}" "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}"
 				ln -s "/usr/share/avmplugins/plugin-${AVMPLUGIN}" "${VARTAR_MOD_DIR}/var/plugin-${AVMPLUGIN}"
 				for module in `cd "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}";find -type f -name "*.ko"`; do
 					echo2 "moving ${module##*/} to standard modules dir"
 					mv "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}/$module" "${FILESYSTEM_MOD_DIR}/$module"
 				done
+				case "$AVMPLUGIN" in
+					tam)
+						modsed \
+						  "s/ CONFIG_TAM_ONRAM=.*$/ CONFIG_TAM_ONRAM=\"n\"/g" \
+						  "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+						;;
+				esac
 			fi
 		done
 	fi
