@@ -95,7 +95,7 @@ TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status};
 
 # setup environment for configure
 TARGET_CONFIGURE_ENV:=
-TARGET_CONFIGURE_ENV += PATH="$(TARGET_PATH)"
+TARGET_CONFIGURE_ENV += PATH=$(TARGET_PATH)
 
 # Set compiler/linker flags here, not in TARGET_CONFIGURE_OPTIONS,
 # because this way they do not disturb old configure scripts
