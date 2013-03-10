@@ -19,9 +19,10 @@ config FREETZ_PACKAGE_CRYPTSETUP
 		block devices under Linux.
 
 config FREETZ_CRYPTSETUP_LOOP
-	bool "select loop module"
+	bool "support for container files"
 	depends on FREETZ_PACKAGE_CRYPTSETUP
 	select FREETZ_MODULE_loop
+	select FREETZ_BUSYBOX_LOSETUP
 	help
 		This is required to mount container *files*.
 
