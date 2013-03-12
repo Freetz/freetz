@@ -1,0 +1,36 @@
+From 0eb398501fab9c016b9b6008682c43873c4a6188
+From: Gert Doering <gert@greenie.muc.de>
+Date: Mon, 11 Mar 2013 21:03:20 +0100
+Subject: [PATCH] Repair "tcp server queue overflow" brokenness, more
+ <stdbool.h> fallout.
+
+Return value of mbuf_len() wrong - it's returning a length value, not
+a yes/no value - so when the queue length approached 65 (full!), it
+still only returned "1", leading to MBUF overflow later on.  Change
+from "bool" to "unsigned int", misbehaviour gone...
+
+This fixes OpenVPN trac ticket #263.
+
+Signed-off-by: Gert Doering <gert@greenie.muc.de>
+Acked-by: Arne Schwabe <arne@rfc2549.org>
+Acked-by: Peter Caprioli <petercap@kth.se>
+Message-Id: <20130312100706.GN953@greenie.muc.de>
+URL: http://article.gmane.org/gmane.network.openvpn.devel/7396
+Signed-off-by: Gert Doering <gert@greenie.muc.de>
+---
+ src/openvpn/mbuf.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git src/openvpn/mbuf.h src/openvpn/mbuf.h
+index a0de679..1085adc 100644
+--- src/openvpn/mbuf.h
++++ src/openvpn/mbuf.h
+@@ -83,7 +83,7 @@ struct mbuf_set
+   return ms && ms->len;
+ }
+ 
+-static inline bool
++static inline unsigned int
+ mbuf_len (const struct mbuf_set *ms)
+ {
+   return ms->len;
