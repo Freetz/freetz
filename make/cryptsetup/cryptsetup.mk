@@ -1,22 +1,23 @@
-$(call PKG_INIT_BIN, 1.0.6)
+$(call PKG_INIT_BIN, 1.6.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=00d452eb7a76e39f5749545d48934a10
+$(PKG)_SOURCE_MD5:=99002ac59a65ea371e7a98200943cb80
 $(PKG)_SITE:=http://cryptsetup.googlecode.com/files
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/cryptsetup
 
-$(PKG)_DEPENDS_ON := devmapper e2fsprogs popt
+$(PKG)_DEPENDS_ON := devmapper e2fsprogs popt libgcrypt
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
-$(PKG)_CONFIGURE_OPTIONS += --disable-libgcrypt
-$(PKG)_CONFIGURE_OPTIONS += --enable-libdevmapper
-$(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
-$(PKG)_CONFIGURE_OPTIONS += --disable-shared-library
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --disable-kernel_crypto
+$(PKG)_CONFIGURE_OPTIONS += --with-crypto_backend=gcrypt
+$(PKG)_CONFIGURE_OPTIONS += --disable-python
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
