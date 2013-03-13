@@ -4,6 +4,7 @@ for files in \
  	bin/aurad \
 	bin/auracntl \
 	bin/aurachanged \
+	etc/hotplug/aura \
 	; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done

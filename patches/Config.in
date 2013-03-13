@@ -198,6 +198,14 @@ config FREETZ_REMOVE_MYFRITZ
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
 
+config FREETZ_REMOVE_FHEM
+	bool "Remove FHEM"
+	default n
+	depends on FREETZ_HAS_AVM_FHEM
+	help
+		Removes the FHEM scripts and kernel modules (cdc_acm & ftdi_sio).
+		This saves about 100 KB, uncompressed.
+
 config FREETZ_REMOVE_AVM_VPN
 	bool "Remove VPN"
 	default n

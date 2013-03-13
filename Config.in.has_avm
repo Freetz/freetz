@@ -367,6 +367,13 @@ config FREETZ_HAS_AVM_MYFRITZ
 	help
 		Select this if you have a firmware with MyFritz.
 
+config FREETZ_HAS_AVM_FHEM
+	bool "Has AVM FHEM"		if FREETZ_TYPE_CUSTOM
+	default y		if FREETZ_AVM_VERSION_05_2X_MIN
+	default n
+	help
+		Select this if the firmware supports FHEM.
+
 config FREETZ_HAS_AVM_PHONE
 	bool "Has Phone"	if FREETZ_TYPE_CUSTOM
 	default n		if \
