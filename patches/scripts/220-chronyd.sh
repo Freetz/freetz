@@ -6,7 +6,6 @@ if [ "$FREETZ_REMOVE_CHRONYD" == "y" ]; then
 		"${FILESYSTEM_MOD_DIR}/etc/onlinechanged/chrony" \
 		"${FILESYSTEM_MOD_DIR}/sbin/chronyc" \
 		"${FILESYSTEM_MOD_DIR}/sbin/chronyd"
-		#
 	sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
 	if [ -e "$sedfile" ]; then
 		# patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Zeitsynchronisation
