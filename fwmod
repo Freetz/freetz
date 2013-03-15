@@ -600,6 +600,15 @@ function sizeinfo()
 	echo
 }
 
+# show avm image details
+avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*([0-9]{4}.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)"
+avm_fw_major="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)"
+avm_fw_version="$(sed -n 's/^export FIRMWARE_VERSION=.*}//p' ${FILESYSTEM_DIR}/etc/version)"
+avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/ \1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
+avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
+avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
+echo1 -l "detected firmware $avm_fw_produkt $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
+
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"
 
@@ -1293,8 +1302,7 @@ if [ "$action_names" ]; then
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
 	if [ -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
-		modbaselaborname="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
-		modbaselaborname="-rev${modbaselaborname}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
+		modbaselaborname="-rev${avm_fw_revision}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
 	fi
 	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}_${FIRMWAREVERSION}${modbaselaborname}-${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
