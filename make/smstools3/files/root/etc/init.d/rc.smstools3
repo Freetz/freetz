@@ -8,12 +8,12 @@ DAEMON_LONG_NAME=SMStools3
 
 config() {
 	if [ ! -c "$SMSTOOLS3_DEVICE" ]; then
-		echo "device is not ready, "
+		echo -n "device is not ready, "
 		return 1
 	fi
 
 	if [ -z "$SMSTOOLS3_DIR" ]; then
-		echo "data directory not configured, "
+		echo -n "data directory not configured, "
 		return 1
 	fi
 
@@ -29,7 +29,7 @@ config() {
 	ln -s "$_DIR" /var/spool/sms
 
 	if [ ! -d "$_DIR" ]; then
-		echo "data directory not available, "
+		echo -n "data directory not available, "
 		return 1
 	fi
 }
