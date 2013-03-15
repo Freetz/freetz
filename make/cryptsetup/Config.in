@@ -1,3 +1,6 @@
+comment "cryptsetup (not available, needs replace kernel)"
+	depends on FREETZ_KERNEL_VERSION_2_6_13 && !FREETZ_REPLACE_KERNEL
+
 config FREETZ_PACKAGE_CRYPTSETUP
 	bool "cryptsetup 1.6.0 (binary only)"
 	depends on \
@@ -18,6 +21,7 @@ config FREETZ_PACKAGE_CRYPTSETUP
 	help
 		cryptsetup is used to conveniently setup dm-crypt managed
 		block devices under Linux.
+		Hint: Don't forget to insmod all selected modules.
 
 config FREETZ_CRYPTSETUP_LOOP
 	bool "support for container files"
