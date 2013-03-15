@@ -23,9 +23,15 @@ config FREETZ_PACKAGE_AUTOFS_NFS
 	help
 		select this if you want mount NFS-Shares
 
+
+comment "select cifs package (not available, needs replace kernel)"
+	depends on FREETZ_PACKAGE_AUTOFS && \
+		!FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN
+
 config FREETZ_PACKAGE_AUTOFS_CIFS
 	bool "select cifs package"
-	depends on FREETZ_PACKAGE_AUTOFS
+	depends on FREETZ_PACKAGE_AUTOFS && \
+		( FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX )
 	select FREETZ_PACKAGE_CIFSMOUNT
 	default n
 	help
