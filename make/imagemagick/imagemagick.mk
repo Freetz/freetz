@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 6.8.3-6)
+$(call PKG_INIT_BIN, 6.8.3-9)
 $(PKG)_MAJOR_VERSION:=6
 $(PKG)_ABI_SUFFIX:=Q16
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=6cd18b768436c58188fa499dbcad3838
+$(PKG)_SOURCE_MD5:=40645feea6aeff830e0bcde0588797ca
 $(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_DIR:=$(SOURCE_DIR)/ImageMagick-$($(PKG)_VERSION)
