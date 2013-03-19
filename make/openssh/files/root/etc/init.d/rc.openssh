@@ -1,11 +1,11 @@
 #!/bin/sh
 
 DAEMON=openssh
-DAEMON_LONG_NAME="openssh SSH server"
+DAEMON_LONG_NAME="OpenSSH SSH server"
 DAEMON_BIN=sshd
 . /etc/init.d/modlibrc
 
-CONFFILE=/mod/etc/sshd_conf
+CONFFILE=/mod/etc/openssh.conf
 
 gen_key() {
 	rm -f "$1"
@@ -64,7 +64,7 @@ start() {
 
 case $1 in
 	""|load)
-		modreg cgi 'openssh' 'OpenSSH sshd'
+		modreg cgi 'openssh' 'OpenSSH'
 		modreg daemon $DAEMON
 
 		modreg file openssh "dsa_key" "dsa_key" 0 "dsa_key"
