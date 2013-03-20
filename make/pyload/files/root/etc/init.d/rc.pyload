@@ -14,7 +14,7 @@ config() {
 }
 
 start() {
-	if [ ! -e /mod/pyload/pyload.conf ]; then
+	if [ ! -e "$PYLOAD_CONFIGDIR/pyload.conf" ]; then
 		echo "$DAEMON_LONG_NAME is not configured, failed."
 		return 1
 	fi
