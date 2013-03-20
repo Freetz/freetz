@@ -1,0 +1,11 @@
+--- serial/serialposix.py
++++ serial/serialposix.py
+@@ -215,7 +215,7 @@
+     # no exception, just continue with a brave attempt to build a device name
+     # even if the device name is not correct for the platform it has chances
+     # to work using a string with the real device name as port parameter.
+-    def device(portum):
++    def device(portnum):
+         return '/dev/ttyS%d' % portnum
+     def set_special_baudrate(port, baudrate):
+         raise SerialException("sorry don't know how to handle non standard baud rate on this platform")

@@ -1,0 +1,31 @@
+--- pyrrd/backend/external.py
++++ pyrrd/backend/external.py
+@@ -264,7 +264,7 @@
+         data += [unicode(x) for x in obj.rra]
+         return (obj.filename, params + data)
+ 
+-    if function == 'update':
++    elif function == 'update':
+         validParams = ['template']
+         params = common.buildParameters(obj, validParams)
+         FIRST_VALUE = 0
+@@ -277,15 +277,15 @@
+             data = [data for data, nil in obj.values]
+         return (obj.filename, params + data)
+ 
+-    if function == 'fetch':
++    elif function == 'fetch':
+         validParams = ['resolution', 'start', 'end']
+         params = common.buildParameters(obj, validParams)
+-        return (obj.filename, obj.cf, params)
++        return (obj.filename, [obj.cf] + params)
+ 
+-    if function == 'info':
++    elif function == 'info':
+         return (obj.filename, obj)
+ 
+-    if function == 'graph':
++    elif function == 'graph':
+         validParams = ['start', 'end', 'step', 'title',
+             'vertical_label', 'width', 'height', 'only_graph',
+             'upper_limit', 'lower_limit', 'rigid', 'alt_autoscale',

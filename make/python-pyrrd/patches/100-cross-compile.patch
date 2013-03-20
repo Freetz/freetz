@@ -1,0 +1,28 @@
+--- setup.py
++++ setup.py
+@@ -1,4 +1,6 @@
+-from setuptools import setup
++#!/usr/bin/env python
++
++from distutils.core import setup
+ 
+ from pyrrd import meta
+ from pyrrd.util import dist
+--- pyrrd/util/__init__.py
++++ pyrrd/util/__init__.py
+@@ -1,6 +1,3 @@
+-from time import mktime
+-from datetime import datetime
+-
+ try:
+     from xml.etree import ElementTree
+ except ImportError:
+@@ -19,6 +16,8 @@
+     >>> type(now)
+     <type 'int'>
+     '''
++    from time import mktime
++    from datetime import datetime
+     if not dt_obj:
+         dt_obj = datetime.now()
+     return int(mktime(dt_obj.timetuple()))
