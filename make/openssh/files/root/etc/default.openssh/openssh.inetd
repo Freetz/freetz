@@ -1,0 +1,10 @@
+. /mod/etc/conf/openssh.cfg
+inetdcfg_desc="OpenSSH SSH server"
+inetdcfg_port=$OPENSSH_PORT
+inetdcfg_sock=stream
+inetdcfg_proto=tcp$1
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/sbin/sshd
+inetdcfg_arg0=sshd
+inetdcfg_args="-i -f /mod/etc/openssh.conf $OPENSSH_OPTIONS"
