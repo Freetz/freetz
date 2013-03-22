@@ -290,16 +290,18 @@
  			//bb_error_msg("matches:");
  			//for (int i = 0; i < ARRAY_SIZE(off); i++) {
  			//	if (off[i].rm_so < 0) continue;
-@@ -575,7 +664,7 @@ static void make_device(char *device_nam
+@@ -574,9 +663,8 @@ static void make_device(char *device_nam
+ 		}
  		/* else: it's final implicit "match-all" rule */
   rule_matches:
++		dbg2("rule matched, line %d", G.parser ? G.parser->lineno : -1);
  #endif
 -		dbg("rule matched");
-+		dbg2("rule matched, line %d", G.parser ? G.parser->lineno : -1);
- 
+-
  		/* Build alias name */
  		alias = NULL;
-@@ -619,34 +708,30 @@ static void make_device(char *device_nam
+ 		if (ENABLE_FEATURE_MDEV_RENAME && rule->ren_mov) {
+@@ -619,34 +707,30 @@ static void make_device(char *device_nam
  				}
  			}
  		}
@@ -342,7 +344,7 @@
  		}
  
  		if (operation == OP_add && major >= 0) {
-@@ -656,8 +741,17 @@ static void make_device(char *device_nam
+@@ -656,8 +740,17 @@ static void make_device(char *device_nam
  				mkdir_recursive(node_name);
  				*slash = '/';
  			}
@@ -362,7 +364,7 @@
  			if (mknod(node_name, rule->mode | type, makedev(major, minor)) && errno != EEXIST)
  				bb_perror_msg("can't create '%s'", node_name);
  			if (ENABLE_FEATURE_MDEV_CONF) {
-@@ -671,8 +765,7 @@ static void make_device(char *device_nam
+@@ -671,8 +764,7 @@ static void make_device(char *device_nam
  //TODO: on devtmpfs, device_name already exists and symlink() fails.
  //End result is that instead of symlink, we have two nodes.
  //What should be done?
@@ -372,7 +374,7 @@
  					symlink(node_name, device_name);
  				}
  			}
-@@ -681,27 +774,21 @@ static void make_device(char *device_nam
+@@ -681,27 +773,21 @@ static void make_device(char *device_nam
  		if (ENABLE_FEATURE_MDEV_EXEC && command) {
  			/* setenv will leak memory, use putenv/unsetenv/free */
  			char *s = xasprintf("%s=%s", "MDEV", node_name);
@@ -403,7 +405,7 @@
  			unlink(node_name);
  		}
  
-@@ -746,9 +833,16 @@ static int FAST_FUNC dirAction(const cha
+@@ -746,9 +832,16 @@ static int FAST_FUNC dirAction(const cha
  	 * under /sys/class/ */
  	if (1 == depth) {
  		free(G.subsystem);
@@ -421,7 +423,7 @@
  	}
  
  	return (depth >= MAX_SYSFS_DEPTH ? SKIP : TRUE);
-@@ -813,12 +907,107 @@ static void load_firmware(const char *fi
+@@ -813,12 +906,107 @@ static void load_firmware(const char *fi
  		full_write(loading_fd, "-1", 2);
  
   out:
@@ -529,7 +531,7 @@
  int mdev_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
  int mdev_main(int argc UNUSED_PARAM, char **argv)
  {
-@@ -840,8 +1029,8 @@ int mdev_main(int argc UNUSED_PARAM, cha
+@@ -840,8 +1028,8 @@ int mdev_main(int argc UNUSED_PARAM, cha
  	xchdir("/dev");
  
  	if (argv[1] && strcmp(argv[1], "-s") == 0) {
@@ -540,7 +542,7 @@
  		 */
  		struct stat st;
  
-@@ -853,6 +1042,8 @@ int mdev_main(int argc UNUSED_PARAM, cha
+@@ -853,6 +1041,8 @@ int mdev_main(int argc UNUSED_PARAM, cha
  		G.root_major = major(st.st_dev);
  		G.root_minor = minor(st.st_dev);
  
@@ -549,7 +551,7 @@
  		/* ACTION_FOLLOWLINKS is needed since in newer kernels
  		 * /sys/block/loop* (for example) are symlinks to dirs,
  		 * not real directories.
-@@ -878,11 +1069,13 @@ int mdev_main(int argc UNUSED_PARAM, cha
+@@ -878,11 +1068,13 @@ int mdev_main(int argc UNUSED_PARAM, cha
  		char *action;
  		char *env_devname;
  		char *env_devpath;
@@ -564,7 +566,7 @@
  		 * DEVPATH is like "/block/sda" or "/class/input/mice"
  		 */
  		action = getenv("ACTION");
-@@ -893,39 +1086,20 @@ int mdev_main(int argc UNUSED_PARAM, cha
+@@ -893,39 +1085,20 @@ int mdev_main(int argc UNUSED_PARAM, cha
  		if (!action || !env_devpath /*|| !G.subsystem*/)
  			bb_show_usage();
  		fw = getenv("FIRMWARE");
@@ -616,7 +618,7 @@
  
  		snprintf(temp, PATH_MAX, "/sys%s", env_devpath);
  		if (op == OP_remove) {
-@@ -935,16 +1109,18 @@ int mdev_main(int argc UNUSED_PARAM, cha
+@@ -935,16 +1108,18 @@ int mdev_main(int argc UNUSED_PARAM, cha
  			if (!fw)
  				make_device(env_devname, temp, op);
  		}
