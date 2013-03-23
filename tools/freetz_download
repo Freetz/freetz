@@ -81,7 +81,14 @@ do_checkout_svn()
 }
 do_checkout_git()
 {
-	git clone "$1" "$2" && (cd "$2" && git checkout "$3" && rm -rf .git)
+	git clone "$1" "$2" || return $?
+	(
+		cd "$2" && git checkout "$3" || return $?
+		if [ -f ".gitmodules" ]; then
+			git submodule init && git submodule update || return $?
+		fi
+		rm -rf .git
+	)
 }
 # Note: remote repository must support "git archive" command
 # $1 is expected to have the following format:
