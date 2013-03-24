@@ -60,3 +60,16 @@ config FREETZ_PACKAGE_PYLOAD_WITH_TESSERACT
 		   is very limited even with Tesseract OCR.
 
 		You most probably want to say 'no' here.
+
+config FREETZ_PACKAGE_PYLOAD_WITH_LIGHTWEIGHT_WSGI_SERVER
+	bool "With support for lightweight WSGI server"
+	depends on FREETZ_PACKAGE_PYLOAD
+	select FREETZ_PACKAGE_PYTHON_BJOERN
+	default n
+	help
+		This selects python-bjoern module - a module providing
+		an alternative WSGI server implementation for Python
+		pretending to be fast and ultra-lightweight.
+		Activating this option allows you to say 'lightweight'
+		while configuring pyLoad and answering the question
+		for the web-server backend.
