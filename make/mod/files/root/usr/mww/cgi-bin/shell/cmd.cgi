@@ -8,8 +8,8 @@
 	if [ "$FORM_tar" = "true" ]; then echo -n '.tar'; fi
 	if [ "$FORM_gz" = "true" ]; then echo -n '.gz'; fi
 	echo -n $'"\r\n\r\n'
-	echo "$FORM_script" | sed "s/"$'\r'"//g" | sh
+	echo "$FORM_script" | tr -d '\r' | sh
 else
 	echo -n 'Content-Type: text/html'$'\r\n\r\n'
-	echo "$FORM_script" | sed "s/"$'\r'"//g" | sh | sed -e 's/&/\&amp;/g ; s/</\&lt;/g ; s/>/\&gt;/g' | head -c 64000
+	echo "$FORM_script" | tr -d '\r' | sh 2>&1 | head -c 64000 | sed -e 's/&/\&amp;/g ; s/</\&lt;/g ; s/>/\&gt;/g'
 fi %>
