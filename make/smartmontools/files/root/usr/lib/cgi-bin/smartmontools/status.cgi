@@ -28,6 +28,7 @@ for DEVICE in $DEVICES; do
 	DATAI="$(smartctl -i $DEVICE 2>/dev/null | sed  -e '1,3d')"
 	NAME="$(echo "$DATAI" | sed -rn 's/Device Model: *(.*)/\1/p')"
 	SIZE="$(echo "$DATAI" | sed -rn 's/User Capacity:.*\[(.*)]/\1/p')"
+	FIRM="$(echo "$DATAI" | sed -rn 's/Firmware Version: *(.*)/\1/p')"
 	DATAA="$(smartctl -A $DEVICE 2>/dev/null | sed  -e '1,3d')"
 	TGC="$(echo "$DATAA" | sed -rn 's/.*Temperature_Celsius.* ([0-9]*)$/\1/p')"
 	PCC="$(echo "$DATAA" | sed -rn 's/.*Power_Cycle_Count.* ([0-9]*)$/\1/p')"
@@ -39,7 +40,8 @@ for DEVICE in $DEVICES; do
 
 	echo "<table width=100%>"
 	echo "<tr>"
-	echo "<tr><td>$NAME</td><td>$SIZE</td></tr>"
+	[ -n "$FIRM" ] && FIRM=" ($FIRM)"
+	echo "<tr><td>$NAME$FIRM</td><td>$SIZE</td></tr>"
 	[ -n "$SMART" ] && echo "<tr><td>$(lang de:"Zustand" en:"Health")</td><td>$SMART</td></tr>"
 	[ $WLC -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Restgesundheit" en:"Wear leveling")</td><td>$(( 100-$WLC ))&#037;</td></tr>"
 	[ $TGC -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Temperatur" en:"Termperature")</td><td>$TGC &deg;C</td></tr>"
