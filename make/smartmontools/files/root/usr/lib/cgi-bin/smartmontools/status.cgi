@@ -33,6 +33,7 @@ for DEVICE in $DEVICES; do
 	PCC="$(echo "$DATAA" | sed -rn 's/.*Power_Cycle_Count.* ([0-9]*)$/\1/p')"
 	SSC="$(echo "$DATAA" | sed -rn 's/.*Start_Stop_Count.* ([0-9]*)$/\1/p')"
 	POH="$(echo "$DATAA" | sed -rn 's/.*Power_On_Hours.* ([0-9]*)$/\1/p')"
+	WLC="$(echo "$DATAA" | sed -rn 's/.*Perc_Rated_Life_Used.* ([0-9]*)$/\1/p')"
 	DATAH="$(smartctl -H $DEVICE 2>/dev/null | sed  -e '1,3d')"
 	SMART="$(echo "$DATAH" | sed -rn 's/^SMART.*: (.*)/\1/p' | sed 's/^PASSED$/$(lang de:"GUT" en:"PASSED")/g')"
 
@@ -40,6 +41,7 @@ for DEVICE in $DEVICES; do
 	echo "<tr>"
 	echo "<tr><td>$NAME</td><td>$SIZE</td></tr>"
 	[ -n "$SMART" ] && echo "<tr><td>$(lang de:"Zustand" en:"Health")</td><td>$SMART</td></tr>"
+	[ $WLC -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Restgesundheit" en:"Wear leveling")</td><td>$(( 100-$WLC ))&#037;</td></tr>"
 	[ $TGC -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Temperatur" en:"Termperature")</td><td>$TGC &deg;C</td></tr>"
 	[ $POH -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Laufzeit" en:"Power-on")</td><td>$(($POH/24)) $(lang de:"Tage" en:"days")</td></tr>"
 	if [ $PCC -gt 0 2>/dev/null ]; then
