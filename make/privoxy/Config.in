@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_PRIVOXY
-	bool "Privoxy 3.0.19"
+	bool "Privoxy 3.0.21"
 	default n
 	help
 		Privoxy is a web proxy with advanced filtering capabilities for protecting privacy, modifying web page
@@ -8,6 +8,16 @@ config FREETZ_PACKAGE_PRIVOXY
 
 		It can also be used together with Tor Proxy to forward HTTP traffic to Tor as described in the Tor
 		documentation.
+
+config FREETZ_PACKAGE_PRIVOXY_WITH_ADBLOCK
+        bool "With AdBlock filter list downloader"
+        depends on FREETZ_PACKAGE_PRIVOXY
+        select FREETZ_PACKAGE_WGET
+        select FREETZ_PACKAGE_WGET_WITH_SSL
+        default n
+        help
+                This option enables automatic filter list downloads from adblock.org.
+		Requires and selects GNU wget (busybox wget does not support https).
 
 config FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE
 	bool "With shared libpcre"

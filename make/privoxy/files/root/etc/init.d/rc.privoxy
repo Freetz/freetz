@@ -8,9 +8,10 @@ config() {
 	[ ! -d "/mod/etc/$DAEMON" ] && mkdir -p /mod/etc/$DAEMON
 	[ ! -r "/mod/etc/privoxy/default.filter" ] && ln -s /etc/privoxy/default.filter /mod/etc/privoxy/default.filter
 	[ ! -r "/mod/etc/privoxy/default.action" ] && ln -s /etc/privoxy/default.action /mod/etc/privoxy/default.action
+	[ ! -r "/mod/etc/privoxy/match-all.action" ] && ln -s /etc/privoxy/match-all.action /mod/etc/privoxy/match-all.action
 	[ ! -d "/mod/etc/privoxy/templates" ] && ln -s /etc/privoxy/templates /mod/etc/privoxy/templates
-	if [ "$PRIVOXY_GET_EASYLIST" -a -n "${PRIVOXY_ALT_PATH// /}" ]; then
-		/mod/etc/default.privoxy/privoxy_loadeasylist ${PRIVOXY_ALT_PATH} dowait
+	if [ "$PRIVOXY_GET_ADBLOCKLIST" -a -n "${PRIVOXY_ALT_PATH// /}" ]; then
+		/mod/etc/default.privoxy/privoxy_loadadblocklist ${PRIVOXY_ALT_PATH} dowait
 	fi
 	modlib_config
 }
@@ -40,10 +41,12 @@ case $1 in
 		modreg file privoxy user_action 'user.actions' 0 "action"
 		modreg cgi 'privoxy' 'Privoxy'
 		modreg daemon $DAEMON
+		modreg status $DAEMON privoxy privoxy_log
 
 		modlib_start $PRIVOXY_ENABLED
 		;;
 	unload)
+		modunreg status $DAEMON privoxy_log
 		modunreg daemon $DAEMON
 		modunreg cgi privoxy
 		modunreg file privoxy

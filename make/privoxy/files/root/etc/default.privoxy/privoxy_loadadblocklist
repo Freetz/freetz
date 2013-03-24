@@ -1,27 +1,29 @@
 #!/bin/sh
 MYPATH=$1
 unset HAVENET
+
+maxPings=1
+[ "$2" = "dowait" ] && maxPings=15
+
 count=0
-if [ "$2" != "dowait" ]; then
-	ping -c 1 adblockplus.mozdev.org  > /dev/null 2>&1 && HAVENET=yes 
-else
-	while [ ! "$HAVENET" -a $count -lt 15 ]; do
-		sleep 1
-		ping -c 1 adblockplus.mozdev.org  > /dev/null 2>&1 && HAVENET=yes
-		[ "$HAVENET" ] || count=$(( $count + 1 ))
-	done
-fi
+while [ ! "$HAVENET" -a $count -lt $maxPings ]; do
+	ping -c 1 -w 1 adblockplus.org  > /dev/null 2>&1 && HAVENET=yes
+	[ "$HAVENET" ] || count=$(( $count + 1 ))
+done
 
 if [  "$HAVENET" -a "$MYPATH" ]; then
-	URL="http://adblockplus.mozdev.org/easylist/easylist.txt"
 	mkdir -p $MYPATH 2> /dev/null || exit
 	ACTION=${MYPATH}/user.action
 	FILTER=${MYPATH}/user.filter
-	FILE=$(basename ${URL})
+	FILE=$(basename ${PRIVOXY_ADBLOCK_URL})
 	LIST=${FILE%\.*}
 	FILE=/tmp/${FILE}
 	rm -f ${FILE}
-	wget -qO ${FILE} ${URL}
+
+	wget=/usr/bin/wget-gnu
+	[ ! -x $wget ] && wget=wget
+	$wget --no-check-certificate -qO ${FILE} ${PRIVOXY_ADBLOCK_URL}
+
 	if [ $(cat ${FILE} | wc -l) -gt 100 ]; then
 		echo -e "{ +block{${LIST}} }" > ${ACTION}
 		sed '/^!.*/d;1,1 d;/^@@.*/d;/\$.*/d;/#/d;s/\./\\./g;s/\?/\\?/g;s/\*/.*/g;s/(/\\(/g;s/)/\\)/g;s/\[/\\[/g;s/\]/\\]/g;s/\^/[\/\&:\?=_]/g;s/^||/\./g;s/^|/^/g;s/|$/\$/g;/|/d' ${FILE} >> ${ACTION}
