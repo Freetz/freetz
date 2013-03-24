@@ -604,7 +604,7 @@ function sizeinfo()
 avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*([0-9]{4}.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)"
 avm_fw_major="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)"
 avm_fw_version="$(sed -n 's/^export FIRMWARE_VERSION=.*}//p' ${FILESYSTEM_DIR}/etc/version)"
-avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/ \1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
+avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
 avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
 avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
 echo1 -l "detected firmware $avm_fw_produkt $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
