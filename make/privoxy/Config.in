@@ -10,13 +10,13 @@ config FREETZ_PACKAGE_PRIVOXY
 		documentation.
 
 config FREETZ_PACKAGE_PRIVOXY_WITH_ADBLOCK
-        bool "With AdBlock filter list downloader"
-        depends on FREETZ_PACKAGE_PRIVOXY
-        select FREETZ_PACKAGE_WGET
-        select FREETZ_PACKAGE_WGET_WITH_SSL
-        default n
-        help
-                This option enables automatic filter list downloads from adblock.org.
+	bool "With AdBlock filter list downloader"
+	depends on FREETZ_PACKAGE_PRIVOXY
+	select FREETZ_PACKAGE_WGET
+	select FREETZ_PACKAGE_WGET_WITH_SSL
+	default n
+	help
+		This option enables automatic filter list downloads from adblock.org.
 		Requires and selects GNU wget (busybox wget does not support https).
 
 config FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE
