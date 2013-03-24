@@ -39,10 +39,18 @@ for DEVICE in $DEVICES; do
 	echo "<table width=100%>"
 	echo "<tr>"
 	echo "<tr><td>$NAME</td><td>$SIZE</td></tr>"
-	echo "<tr><td>$(lang de:"Zustand" en:"Health")</td><td>$SMART</td></tr>"
-	echo "<tr><td>$(lang de:"Temperatur" en:"Termperature")</td><td>$TGC &deg;C</td></tr>"
-	echo "<tr><td>$(lang de:"Laufzeit" en:"Power-on")</td><td>$(($POH/24)) $(lang de:"Tage" en:"days")</td></tr>"
-	echo "<tr><td>$(lang de:"Einschalt- / Anlaufvorg&auml;nge" en:"Power cycles / spinups")</td><td>$PCC / $SSC</td></tr>"
+	[ -n "$SMART" ] && echo "<tr><td>$(lang de:"Zustand" en:"Health")</td><td>$SMART</td></tr>"
+	[ $TGC -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Temperatur" en:"Termperature")</td><td>$TGC &deg;C</td></tr>"
+	[ $POH -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Laufzeit" en:"Power-on")</td><td>$(($POH/24)) $(lang de:"Tage" en:"days")</td></tr>"
+	if [ $PCC -gt 0 2>/dev/null ]; then
+		if [ $SSC -gt 0 2>/dev/null ]; then
+			echo "<tr><td>$(lang de:"Einschalt- / Anlaufvorg&auml;nge" en:"Power cycles / spinups")</td><td>$PCC / $SSC</td></tr>"
+		else
+			echo "<tr><td>$(lang de:"Einschaltvorg&auml;nge" en:"Power cycles")</td><td>$PCC</td></tr>"
+		fi
+	else
+		[ $SSC -gt 0 2>/dev/null ] && echo "<tr><td>$(lang de:"Anlaufvorg&auml;nge" en:"Spinups")</td><td>$SSC</td></tr>"
+	fi
 	echo "</tr>"
 	echo "</table>"
 
