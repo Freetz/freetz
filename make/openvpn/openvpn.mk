@@ -58,7 +58,9 @@ $(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENVPN_STATIC),$(if $(FREETZ_PACK
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc/openvpn
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_LZO),--enable-lzo,--disable-lzo)
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-multihome
 $(PKG)_CONFIGURE_OPTIONS += --disable-plugins
+$(PKG)_CONFIGURE_OPTIONS += --disable-port-share
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_MGMNT),--enable-management,--disable-management)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pkcs11
 $(PKG)_CONFIGURE_OPTIONS += --disable-socks
