@@ -1,6 +1,6 @@
---- linux-2.6.28/arch/mips/Kconfig.orig	2010-04-26 10:47:11.000000000 +0200
-+++ linux-2.6.28/arch/mips/Kconfig	2010-10-16 15:48:54.791946790 +0200
-@@ -808,6 +808,17 @@
+--- linux-2.6.28/arch/mips/Kconfig
++++ linux-2.6.28/arch/mips/Kconfig
+@@ -810,6 +810,17 @@
  config MIPS_BONITO64
  	bool
  
@@ -18,8 +18,8 @@
  config MIPS_MSC
  	bool
  
---- linux-2.6.28/arch/mips/math-emu/Makefile.orig	2010-04-07 11:56:53.000000000 +0200
-+++ linux-2.6.28/arch/mips/math-emu/Makefile	2010-10-16 15:48:54.791946790 +0200
+--- linux-2.6.28/arch/mips/math-emu/Makefile
++++ linux-2.6.28/arch/mips/math-emu/Makefile
 @@ -2,12 +2,14 @@
  # Makefile for the Linux/MIPS kernel FPU emulation.
  #
@@ -37,8 +37,8 @@
 +	   dp_sqrt.o sp_sqrt.o
  
  EXTRA_CFLAGS += -Wall
---- linux-2.6.28/arch/mips/math-emu/cp1emu.c.orig	2008-12-30 05:06:20.000000000 +0100
-+++ linux-2.6.28/arch/mips/math-emu/cp1emu.c	2010-10-16 15:48:54.791946790 +0200
+--- linux-2.6.28/arch/mips/math-emu/cp1emu.c
++++ linux-2.6.28/arch/mips/math-emu/cp1emu.c
 @@ -56,6 +56,12 @@
  #endif
  #define __mips 4
@@ -77,8 +77,8 @@
  
  #ifdef CONFIG_DEBUG_FS
  extern struct dentry *mips_debugfs_dir;
---- linux-2.6.28/arch/mips/math-emu/dsemul.c.orig	2008-12-30 05:06:20.000000000 +0100
-+++ linux-2.6.28/arch/mips/math-emu/dsemul.c	2010-10-16 15:48:54.791946790 +0200
+--- linux-2.6.28/arch/mips/math-emu/dsemul.c
++++ linux-2.6.28/arch/mips/math-emu/dsemul.c
 @@ -109,6 +109,7 @@
  	return SIGILL;		/* force out of emulation loop */
  }
@@ -97,8 +97,8 @@
 +	return 0;
 +}
 +#endif /* CONFIG_MIPS_FPU_EMU */
---- linux-2.6.28/arch/mips/math-emu/kernel_linkage.c.orig	2008-12-30 05:06:20.000000000 +0100
-+++ linux-2.6.28/arch/mips/math-emu/kernel_linkage.c	2010-10-16 15:48:54.791946790 +0200
+--- linux-2.6.28/arch/mips/math-emu/kernel_linkage.c
++++ linux-2.6.28/arch/mips/math-emu/kernel_linkage.c
 @@ -29,6 +29,7 @@
  
  #define SIGNALLING_NAN 0x7ff800007ff80000LL

@@ -1,5 +1,5 @@
---- linux-2.6.28/drivers/net/ppp_generic.c	2012-08-12 21:26:13+02:00
-+++ linux-2.6.28/drivers/net/ppp_generic.c	2012-08-12 21:26:13+02:00
+--- linux-2.6.28/drivers/net/ppp_generic.c
++++ linux-2.6.28/drivers/net/ppp_generic.c
 @@ -49,10 +49,6 @@
  #include <asm/atomic.h>
  
@@ -11,7 +11,7 @@
  
  #define PPP_VERSION	"2.4.2"
  
-@@ -1565,9 +1561,6 @@
+@@ -1566,9 +1562,6 @@
  	struct sk_buff *ns;
  	int proto, len, npi;
  
@@ -21,7 +21,7 @@
  	/*
  	 * Decompress the frame, if compressed.
  	 * Note that some decompressors need to see uncompressed frames
-@@ -1637,12 +1630,6 @@
+@@ -1641,12 +1634,6 @@
  	++ppp->dev->stats.rx_packets;
  	ppp->dev->stats.rx_bytes += skb->len - 2;
  
@@ -34,7 +34,7 @@
  
  	npi = proto_to_npindex(proto);
  	if (npi < 0) {
-@@ -1691,10 +1678,6 @@
+@@ -1695,10 +1682,6 @@
  			kfree_skb(skb);
  		} else {
  
@@ -45,7 +45,7 @@
  			/* chop off protocol */
  			skb_pull_rcsum(skb, 2);
  			skb->dev = ppp->dev;
-@@ -2825,178 +2808,11 @@
+@@ -2821,178 +2804,11 @@
  }
  
  
