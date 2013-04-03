@@ -1,5 +1,5 @@
---- linux-2.6.32/include/linux/skbuff.h	2012-05-07 22:21:25+02:00
-+++ linux-2.6.32/include/linux/skbuff.h	2012-05-07 22:21:25+02:00
+--- linux-2.6.32/include/linux/skbuff.h
++++ linux-2.6.32/include/linux/skbuff.h
 @@ -520,10 +520,6 @@
  	 */
      unsigned long uniq_id;
@@ -11,7 +11,7 @@
  #if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
  	struct nf_queue_entry	*nf_queue_entry;
  #endif
-@@ -585,6 +581,10 @@
+@@ -584,6 +580,10 @@
  				*data;
  	unsigned int		truesize;
  	atomic_t		users;
@@ -22,9 +22,9 @@
  #ifdef CONFIG_ATHRS_HW_NAT
          __u32                   ath_hw_nat_fw_flags;
  #endif
---- linux-2.6.32/net/core/skbuff.c	2012-05-07 22:21:25+02:00
-+++ linux-2.6.32/net/core/skbuff.c	2012-05-07 22:21:25+02:00
-@@ -444,6 +444,11 @@
+--- linux-2.6.32/net/core/skbuff.c
++++ linux-2.6.32/net/core/skbuff.c
+@@ -453,6 +453,11 @@
  	 * the tail pointer in struct sk_buff!
  	 */
  	memset(skb, 0, offsetof(struct sk_buff, tail));
