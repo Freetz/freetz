@@ -1,0 +1,47 @@
+
+http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?id=8905e272a595430e4b24deb1c1239a63fb2f2c70
+
+
+From 8905e272a595430e4b24deb1c1239a63fb2f2c70 Mon Sep 17 00:00:00 2001
+From: Johan Hovold <jhovold@gmail.com>
+Date: Wed, 18 Jan 2012 00:46:00 +0000
+Subject: USB: ftdi_sio: fix initial baud rate
+
+commit 108e02b12921078a59dcacd048079ece48a4a983 upstream.
+
+Fix regression introduced by commit b1ffb4c851f1 ("USB: Fix Corruption
+issue in USB ftdi driver ftdi_sio.c") which caused the termios settings
+to no longer be initialised at open. Consequently it was no longer
+possible to set the port to the default speed of 9600 baud without first
+changing to another baud rate and back again.
+
+Reported-by: Roland Ramthun <mail@roland-ramthun.de>
+Signed-off-by: Johan Hovold <jhovold@gmail.com>
+Tested-by: Roland Ramthun <mail@roland-ramthun.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+--- linux-2.6.28/drivers/usb/serial/ftdi_sio.c
++++ linux-2.6.28/drivers/usb/serial/ftdi_sio.c
+@@ -1541,6 +1541,7 @@
+ static int ftdi_open(struct tty_struct *tty,
+ 			struct usb_serial_port *port, struct file *filp)
+ { /* ftdi_open */
++	struct ktermios dummy;
+ 	struct usb_device *dev = port->serial->dev;
+ 	struct ftdi_private *priv = usb_get_serial_port_data(port);
+ 	unsigned long flags;
+@@ -1571,9 +1572,10 @@
+ 	   This is same behaviour as serial.c/rs_open() - Kuba */
+ 
+ 	/* ftdi_set_termios  will send usb control messages */
+-	if (tty)
+-		ftdi_set_termios(tty, port, tty->termios);
+-
++	if (tty) {
++		memset(&dummy, 0, sizeof(dummy));
++		ftdi_set_termios(tty, port, &dummy);
++	}
+ 	/* FIXME: Flow control might be enabled, so it should be checked -
+ 	   we have no control of defaults! */
+ 	/* Turn on RTS and DTR since we are not flow controlling by default */
