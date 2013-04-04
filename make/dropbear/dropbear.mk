@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 2012.55)
+$(call PKG_INIT_BIN, 2013.56)
 
-$(PKG)_SITE:=http://ftp.debian.org/debian/pool/main/d/dropbear
-$(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
-$(PKG)_SOURCE_MD5:=44836e5a0419ba12557f9ea46880077e
+$(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=700f1ae51ff008486465968db692b6dc
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dropbearmulti
