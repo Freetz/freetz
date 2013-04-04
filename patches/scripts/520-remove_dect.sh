@@ -20,11 +20,15 @@ modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_SPEC_MOD_DIR}/home/home.
 modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_SPEC_MOD_DIR}/menus/menu2_konfig.html"
 menu2html_remove dect
 
-MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
-if [ -e "$MODPROBEPIGLET" ]; then
-	echo1 "patching ${MODPROBEPIGLET##*/}"
-	modsed '/^dect_[a-z]*levelfile=/ d; s!dect_[a-z]*levelfile=[^ ]*\.hex!!g' $MODPROBEPIGLET
+# don't patch this in firmwares < 05.5x (see http://freetz.org/ticket/2056)
+if [ "$FREETZ_AVM_VERSION_05_5X" == "y" ]; then
+	MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
+	if [ -e "$MODPROBEPIGLET" ]; then
+		echo1 "patching ${MODPROBEPIGLET##*/}"
+		modsed '/^dect_[a-z]*levelfile=/ d; s!dect_[a-z]*levelfile=[^ ]*\.hex!!g' $MODPROBEPIGLET
+	fi
 fi
+
 MODPROBEDECT=$(grep -l -i -e "^modprobe dect_io$" "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
 if [ -e "$MODPROBEDECT" ]; then
 	echo1 "patching ${MODPROBEDECT##*/}"
