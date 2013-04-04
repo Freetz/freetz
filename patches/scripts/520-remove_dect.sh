@@ -21,7 +21,7 @@ modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_SPEC_MOD_DIR}/menus/menu
 menu2html_remove dect
 
 # don't patch this in firmwares < 05.5x (see http://freetz.org/ticket/2056)
-if [ "$FREETZ_AVM_VERSION_05_5X" == "y" ]; then
+if [ "$FREETZ_AVM_VERSION_05_5X_MIN" == "y" ]; then
 	MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
 	if [ -e "$MODPROBEPIGLET" ]; then
 		echo1 "patching ${MODPROBEPIGLET##*/}"

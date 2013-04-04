@@ -204,7 +204,7 @@ EOF
 sec_end
 
 sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")' forward-rules
-[ "$FREETZ_AVM_VERSION_05_5X" == "y" ] && echo '<p><small>$(lang en:"This firmware prevents forwarding to FTP (port 21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe f&uuml;r FTP (Port 21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>'
+[ "$FREETZ_AVM_VERSION_05_5X_MIN" == "y" ] && echo '<p><small>$(lang en:"This firmware prevents forwarding to FTP (port 21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe f&uuml;r FTP (Port 21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>'
 cat << EOF
 
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("forwardingrules").style.display=(this.checked)? "block" : "none"' >
