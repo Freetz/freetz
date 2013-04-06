@@ -1,6 +1,6 @@
 --- setup.py
 +++ setup.py
-@@ -573,32 +573,7 @@ class PyBuildExt(build_ext):
+@@ -694,32 +694,7 @@
          # readline
          do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
          readline_termcap_library = ""
@@ -32,5 +32,5 @@
 -            curses_library = 'curses'
 +        curses_library = "ncurses"
  
-         if platform == 'darwin':
+         if host_platform == 'darwin':
              os_release = int(os.uname()[2].split('.')[0])

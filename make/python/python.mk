@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.7.3)
+$(call PKG_INIT_BIN, 2.7.4)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=c57477edd6d18bd9eeca2f21add73919
+$(PKG)_SOURCE_MD5:=62704ea0f125923208d84ff0568f7d50
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
@@ -56,6 +56,8 @@ $(PKG)_CONFIGURE_ENV += ac_cv_have_lchflags=no
 $(PKG)_CONFIGURE_ENV += ac_cv_py_format_size_t=no
 $(PKG)_CONFIGURE_ENV += ac_cv_have_long_long_format=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_buggy_getaddrinfo=no
+$(PKG)_CONFIGURE_ENV += ac_cv_file__dev_ptmx=no
+$(PKG)_CONFIGURE_ENV += ac_cv_file__dev_ptc=no
 $(PKG)_CONFIGURE_ENV += OPT="-fno-inline"
 
 # use local config.cache to avoid conflicts with other packages
@@ -79,12 +81,14 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r Modules/zlib;
 # since its location is used to compute the path of the config files.
 $(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/pgen hostpgen;
 $(PKG)_CONFIGURE_PRE_CMDS += cp $(HOST_TOOLS_DIR)/usr/bin/python$($(PKG)_MAJOR_VERSION) hostpython;
+# Create empty pybuilddir.txt to add the directory python is built in to the list of
+# directories PYTHON_FOR_BUILD should look in for libpython while cross-compiling.
+$(PKG)_CONFIGURE_PRE_CMDS += touch pybuilddir.txt;
 
-$(PKG)_MAKE_OPTIONS := CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
-$(PKG)_MAKE_OPTIONS += HOSTPYTHON_COMPILE="$(abspath $(HOST_TOOLS_DIR)/usr/bin/python)"
-$(PKG)_MAKE_OPTIONS += HOSTPYTHON="$(abspath $($(PKG)_DIR)/hostpython)"
-$(PKG)_MAKE_OPTIONS += HOSTPGEN="$(abspath $($(PKG)_DIR)/hostpgen)"
-$(PKG)_MAKE_OPTIONS += AR="$(TARGET_AR)"
+$(PKG)_MAKE_OPTIONS  := CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_MAKE_OPTIONS  += PYTHON_FOR_COMPILE="$(abspath $(HOST_TOOLS_DIR)/usr/bin/python)"
+$(PKG)_CONFIGURE_ENV += PYTHON_INTERPRETER_FOR_BUILD="$(abspath $($(PKG)_DIR)/hostpython)"
+$(PKG)_MAKE_OPTIONS  += PGEN_FOR_BUILD="$(abspath $($(PKG)_DIR)/hostpgen)"
 
 ifneq ($(strip $(DL_DIR)/$(PYTHON_SOURCE)),$(strip $(DL_DIR)/$(PYTHON_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
