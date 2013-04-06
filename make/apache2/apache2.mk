@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.4.3)
+$(call PKG_INIT_BIN, 2.4.4)
 $(PKG)_SOURCE:=httpd-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=87aaf7bc7e8715f0455997bb8c6791aa
+$(PKG)_SOURCE_MD5:=0e712ee2119cd798c8ae39d5f11a9206
 $(PKG)_SITE:=@APACHE/httpd
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/httpd-$($(PKG)_VERSION)
 
