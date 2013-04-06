@@ -1,11 +1,11 @@
---- linux-2.6.32/drivers/net/avm_cpmac/Makefile	2012-07-13 12:12:20+02:00
-+++ linux-2.6.32/drivers/net/avm_cpmac/Makefile	2012-07-13 12:12:20+02:00
-@@ -6,7 +6,7 @@
+--- linux-2.6.32/drivers/net/avm_cpmac/common/Makefile	2012-07-13 12:12:20+02:00
++++ linux-2.6.32/drivers/net/avm_cpmac/common/Makefile	2012-07-13 12:12:20+02:00
+@@ -3,7 +3,7 @@
+ # Copyright (C) 2011 AVM GmbH <fritzbox_info@avm.de>
+ #
  
- EXTRA_CFLAGS := -DCPMAC_SIGNAL_CONGESTION -DCPPHY_USE_SWITCH
- EXTRA_CFLAGS += -Wall -Wextra -Werror
--EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"`svn info $(src) | grep URL | sed -e "s/^.*\/\([0-9.]\+\)-[^\/]*/\1/g"`  -  Revision `svnversion -cn $(src)`  -  `date +\"%a  %e.%m.%Y  %H:%M:%S\"` \""
-+EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"1.108.1.101 - Revision 811:1778 - Fr 13.04.2012 13:09:32\""
+-EXTRA_CFLAGS += -DAVMNET_VERSION="\"`svn info $(src)/.. | grep URL | sed -e "s/^.*\/\([0-9.]\+\)-[^\/]*/\1/g"`  -  Revision `svnversion -cn $(src)`  -  `date +\"%a  %e.%m.%Y  %H:%M:%S\"` \""
++EXTRA_CFLAGS += -DAVMNET_VERSION="\"6.54.1.7 - Revision 1715:2036 - Fr 15.02.2013 15:08:48\""
  
- NOTANGLE=notangle
- NOWEAVE=noweave
+ obj-y		+= avmnet_config.o avmnet_common.o
+ 

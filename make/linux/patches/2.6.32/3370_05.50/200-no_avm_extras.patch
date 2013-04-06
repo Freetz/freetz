@@ -20,25 +20,3 @@
  
  $(src)/S09-rtc: FORCE
  	rm -rf $(src)/S09-rtc
---- linux-2.6.32/drivers/net/ifxmips_switch_api/Makefile	2012-07-13 12:12:20+02:00
-+++ linux-2.6.32/drivers/net/ifxmips_switch_api/Makefile	2012-07-13 12:12:20+02:00
-@@ -9,7 +9,7 @@
- drv_switch_api-objs	:= ifx_ethsw_linux.o
- drv_switch_api-objs	+= ifx_ethsw_init.o
- 
--extra-y			+= switch_utility
-+#extra-y			+= switch_utility
- 
- ##################### AR9 ######################
- ifeq ($(CONFIG_AR9),y)
---- linux-2.6.32/drivers/net/avm_cpmac/Makefile	2012-07-13 12:12:20+02:00
-+++ linux-2.6.32/drivers/net/avm_cpmac/Makefile	2012-07-13 12:12:20+02:00
-@@ -99,7 +99,7 @@
- # Create source files on demand
- EXTRACT_SOURCE: $(SOURCE_FILES:%=$(src)/%) $(src)/cpmac_product_conf.c
- 
--extra-y	+= cpmacconfig
-+#extra-y	+= cpmacconfig
- 
- cpmacconfig-objs	:= cpmacconfig.o
- 
