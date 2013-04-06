@@ -10,17 +10,20 @@
      { "extfs.d",                               &mc_data_str, MC_EXTFS_DIR},
 --- tests/lib/mcconfig/user_configs_path.c
 +++ tests/lib/mcconfig/user_configs_path.c
-@@ -96,6 +96,7 @@
- 
-     path_fail_unless (CONF_DATA, MC_SKINS_SUBDIR);
-     path_fail_unless (CONF_DATA, FISH_PREFIX);
-+    path_fail_unless (CONF_DATA, "ashrc");
-     path_fail_unless (CONF_DATA, "bashrc");
-     path_fail_unless (CONF_DATA, "inputrc");
-     path_fail_unless (CONF_DATA, MC_EXTFS_DIR);
+@@ -138,6 +138,10 @@
+     },
+     { /* 0. */
+         CONF_DATA,
++        "ashrc"
++    },
++    { /* 0. */
++        CONF_DATA,
+         "bashrc"
+     },
+     { /* 0. */
 --- doc/man/mc.1.in
 +++ doc/man/mc.1.in
-@@ -2417,7 +2417,7 @@
+@@ -2434,7 +2434,7 @@
  .\"NODE "  The subshell support"
  .SH "  The subshell support"
  The subshell support is a compile time option, that works with the
@@ -29,7 +32,7 @@
  .PP
  When the subshell code is activated the Midnight Commander will
  spawn a concurrent copy of your shell (the one defined in the
-@@ -2429,28 +2429,34 @@
+@@ -2446,28 +2446,34 @@
  environment variables, use shell functions and define aliases that are
  valid until you quit the Midnight Commander.
  .PP

@@ -44,7 +44,7 @@
  @USE_NLS_TRUE@SUBDIRS = $(DOC_LINGUAS)
  man_MANS = mc.1 mcedit.1 mcview.1
  CLEANFILES = $(man_MANS)
-@@ -724,7 +725,8 @@
+@@ -725,7 +726,8 @@
  	for dir in "$(DESTDIR)$(man1dir)"; do \
  	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
  	done
@@ -58,8 +58,8 @@
 +++ misc/Makefile.am
 @@ -18,8 +18,7 @@
  	mc.keymap \
- 	mc.keymap.default \
- 	mc.keymap.emacs \
+ 	mc.default.keymap \
+ 	mc.emacs.keymap \
 -	mc.menu \
 -	mc.menu.sr
 +	mc.menu
@@ -70,8 +70,8 @@
 +++ misc/Makefile.in
 @@ -422,8 +422,7 @@
  	mc.keymap \
- 	mc.keymap.default \
- 	mc.keymap.emacs \
+ 	mc.default.keymap \
+ 	mc.emacs.keymap \
 -	mc.menu \
 -	mc.menu.sr
 +	mc.menu
