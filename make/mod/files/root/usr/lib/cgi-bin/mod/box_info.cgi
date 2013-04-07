@@ -116,7 +116,7 @@ sec_end
 sec_begin '$(lang de:"Netzwerk" en:"Network")'
 
 host_name=$(hostname)
-ext_name="$(sed 's/.*[ \t]//g' /var/tmp/ddnsstat.txt 2>/dev/null)"
+ext_name="$(sed 's/.*[ \t]//g' /var/tmp/ddnsstat.txt 2>/dev/null | sort -u)"
 act_ip=$(hostname -i)
 pubip="$(/usr/bin/get_ip)"
 echo '<table width="100%"><tr><td><b>$(lang de:"Netze" en:"Networks"):</b></td>'
