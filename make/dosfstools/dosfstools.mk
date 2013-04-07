@@ -9,6 +9,11 @@ $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_LIBS += -liconv
+endif
+
 # always compile with LFS enabled
 $(PKG)_CFLAGS := $(subst $(CFLAGS_LARGEFILE),,$(TARGET_CFLAGS)) $(CFLAGS_LFS_ENABLED) -fomit-frame-pointer
 
@@ -20,6 +25,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(DOSFSTOOLS_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(DOSFSTOOLS_CFLAGS)" \
+		LDFLAGS="$(DOSFSTOOLS_LIBS)" \
 		all
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/%
