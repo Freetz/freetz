@@ -1,0 +1,46 @@
+--- src/libs/zbxsysinfo/common/net.c
++++ src/libs/zbxsysinfo/common/net.c
+@@ -31,6 +31,43 @@
+ #	pragma comment(lib, "Dnsapi.lib") /* add the library for DnsQuery function */
+ #endif
+ 
++#ifndef HAVE_DN_SKIPNAME
++
++/* Fix found on kde bug tracker at https://bugs.kde.org/show_bug.cgi?id=185492  */
++
++#include <sys/types.h>
++#include <arpa/nameser.h>
++
++/* lifted from openbsd source */
++int dn_skipname(const u_char *comp_dn, const u_char *eom)
++{
++        const u_char *cp;
++        int n;
++
++        cp = comp_dn;
++        while (cp < eom && (n = *cp++)) {
++        /*
++         * check for indirection
++         */
++                switch (n & INDIR_MASK) {
++                case 0:                 /* normal case, n == len */
++                        cp += n;
++                        continue;
++                case INDIR_MASK:        /* indirection */
++                        cp++;
++                        break;
++                default:                /* illegal type */
++                        return (-1);
++                }
++                break;
++        }
++        if (cp > eom)
++                return (-1);
++        return (cp - comp_dn);
++}
++
++#endif
++
+ /*
+  * 0 - NOT OK
+  * 1 - OK

@@ -1,0 +1,104 @@
+config FREETZ_PACKAGE_ZABBIX
+	bool "Zabbix 2.0.5 (binary only)"
+	default n
+	help
+		Zabbix is an enterprise-class open source distributed monitoring
+		solution.
+
+		Zabbix is software that monitors numerous parameters of a
+		network and the health and integrity of servers. Zabbix uses a
+		flexible notification mechanism that allows users to configure
+		e-mail based alerts for virtually any event. This allows a fast
+		reaction to server problems. Zabbix offers excellent reporting
+		and data visualisation features based on the stored data. This
+		makes Zabbix ideal for capacity planning.
+
+		Zabbix supports both polling and trapping. All Zabbix reports
+		and statistics, as well as configuration parameters, are
+		accessed through a web-based front end. A web-based front end
+		ensures that the status of your network and the health of your
+		servers can be assessed from any location. Properly configured,
+		Zabbix can play an important role in monitoring IT
+		infrastructure. This is equally true for small organisations
+		with a few servers and for large companies with a multitude of
+		servers.
+
+		Zabbix is free of cost. Zabbix is written and distributed under
+		the GPL General Public License version 2. It means that
+		its source code is freely distributed and available for the
+		general public.
+
+config FREETZ_PACKAGE_ZABBIX_agentd
+	bool "agent"
+	depends on FREETZ_PACKAGE_ZABBIX
+	select FREETZ_BUSYBOX_FEATURE_UTMP
+	select FREETZ_BUSYBOX_WHO
+	default n
+	help
+		Zabbix agent is deployed on a monitoring target to actively
+		monitor local resources and applications (hard drives, memory,
+		processor statistics etc).
+
+		The agent gathers operational information locally and reports
+		data to Zabbix server for further processing. In case of failures
+		(such as a hard disk running full or a crashed service process),
+		Zabbix server can actively alert the administrators of the particular
+		machine that reported the failure.
+
+config FREETZ_PACKAGE_ZABBIX_server
+	bool "server"
+	depends on FREETZ_PACKAGE_ZABBIX
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libsqlite3
+	default n
+	help
+		Zabbix server is the central process of Zabbix software.
+		The server performs the polling and trapping of data,
+		it calculates triggers, sends notifications to users.
+		It is the central component to which Zabbix agents and
+		proxies report data on availability and integrity of systems.
+		The server can itself remotely check networked services
+		(such as web servers and mail servers) using simple service checks.
+
+		Note: most freetz users want to say NO here.
+
+config FREETZ_PACKAGE_ZABBIX_proxy
+	bool "proxy"
+	depends on FREETZ_PACKAGE_ZABBIX
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libsqlite3
+	default n
+	help
+		Zabbix proxy is a process that may collect monitoring data
+		from one or more monitored devices and send the information
+		to the Zabbix server, essentially working on behalf of the server.
+		All collected data is buffered locally and then transferred
+		to the Zabbix server the proxy belongs to.
+
+		Deploying a proxy is optional, but may be very beneficial
+		to distribute the load of a single Zabbix server. If only
+		proxies collect data, processing on the server becomes
+		less CPU and disk I/O hungry.
+
+config FREETZ_PACKAGE_ZABBIX_sender
+	bool "sender"
+	depends on FREETZ_PACKAGE_ZABBIX
+	default n
+	help
+		Zabbix sender is a command line utility that may be used
+		to send performance data to Zabbix server for processing.
+
+		The utility is usually used in long running user scripts
+		for periodical sending of availability and performance data.
+
+config FREETZ_PACKAGE_ZABBIX_get
+	bool "get"
+	depends on FREETZ_PACKAGE_ZABBIX
+	default n
+	help
+		Zabbix get is a process which can be used to communicate
+		with Zabbix agent and retrieve required information from
+		the agent.
+
+		The utility is usually used for the troubleshooting
+		of Zabbix agents.
