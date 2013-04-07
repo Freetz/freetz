@@ -42,7 +42,7 @@ $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(ZABBIX_DIR) clean
-	$(RM) $(ZABBIX_DIR)/.configured
+	-$(RM) $(ZABBIX_DIR)/.configured
 
 $(pkg)-uninstall:
 	$(RM) $(ZABBIX_DEST_DIR)/usr/sbin/zabbix_*
