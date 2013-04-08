@@ -1,0 +1,163 @@
+From a0ad13ef643a5829d63c456ab6143bbda60b44a9 Mon Sep 17 00:00:00 2001
+From: NeilBrown <neilb@suse.de>
+Date: Fri, 26 Jan 2007 08:57:10 +0000
+Subject: [PATCH] knfsd: Fix type mismatch with filldir_t used by nfsd
+
+nfsd defines a type 'encode_dent_fn' which is much like 'filldir_t' except
+that the first pointer is 'struct readdir_cd *' rather than 'void *'.  It
+then casts encode_dent_fn points to 'filldir_t' as needed.  This hides any
+other type mismatches between the two such as the fact that the 'ino' arg
+recently changed from ino_t to u64.
+
+So: get rid of 'encode_dent_fn', get rid of the cast of the function type,
+change the first arg of various functions from 'struct readdir_cd *' to
+'void *', and live with the fact that we have a little less type checking
+on the calling of these functions now.  Less internal (to nfsd) checking
+offset by more external checking, which is more important.
+
+Thanks to Gabriel Paubert <paubert@iram.es> for discovering this and
+providing an initial patch.
+
+Signed-off-by: Gabriel Paubert <paubert@iram.es>
+Signed-off-by: Neil Brown <neilb@suse.de>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+diff --git a/fs/nfsd/nfs3xdr.c linux-2.6.19.2/fs/nfsd/nfs3xdr.c
+index 277df40..e695660 100644
+--- linux-2.6.19.2/fs/nfsd/nfs3xdr.c	2013-04-07 14:25:54+02:00
++++ linux-2.6.19.2/fs/nfsd/nfs3xdr.c	2013-04-07 14:25:54+02:00
+@@ -994,15 +994,16 @@
+ }
+ 
+ int
+-nfs3svc_encode_entry(struct readdir_cd *cd, const char *name,
+-		     int namlen, loff_t offset, ino_t ino, unsigned int d_type)
++nfs3svc_encode_entry(void *cd, const char *name,
++		     int namlen, loff_t offset, u64 ino, unsigned int d_type)
+ {
+ 	return encode_entry(cd, name, namlen, offset, ino, d_type, 0);
+ }
+ 
+ int
+-nfs3svc_encode_entry_plus(struct readdir_cd *cd, const char *name,
+-			  int namlen, loff_t offset, ino_t ino, unsigned int d_type)
++nfs3svc_encode_entry_plus(void *cd, const char *name,
++			  int namlen, loff_t offset, u64 ino,
++			  unsigned int d_type)
+ {
+ 	return encode_entry(cd, name, namlen, offset, ino, d_type, 1);
+ }
+diff --git linux-2.6.19.2/fs/nfsd/nfs4xdr.c linux-2.6.19.2/fs/nfsd/nfs4xdr.c
+index fea4636..18aa944 100644
+--- linux-2.6.19.2/fs/nfsd/nfs4xdr.c	2013-04-07 14:25:54+02:00
++++ linux-2.6.19.2/fs/nfsd/nfs4xdr.c	2013-04-07 14:25:54+02:00
+@@ -1884,9 +1884,10 @@
+ }
+ 
+ static int
+-nfsd4_encode_dirent(struct readdir_cd *ccd, const char *name, int namlen,
+-		    loff_t offset, ino_t ino, unsigned int d_type)
++nfsd4_encode_dirent(void *ccdv, const char *name, int namlen,
++		    loff_t offset, u64 ino, unsigned int d_type)
+ {
++	struct readdir_cd *ccd = ccdv;
+ 	struct nfsd4_readdir *cd = container_of(ccd, struct nfsd4_readdir, common);
+ 	int buflen;
+ 	__be32 *p = cd->buffer;
+diff --git linux-2.6.19.2/fs/nfsd/nfsxdr.c linux-2.6.19.2/fs/nfsd/nfsxdr.c
+index f5243f9..6555c50 100644
+--- linux-2.6.19.2/fs/nfsd/nfsxdr.c	2013-04-07 14:25:54+02:00
++++ linux-2.6.19.2/fs/nfsd/nfsxdr.c	2013-04-07 14:25:54+02:00
+@@ -467,9 +467,10 @@
+ }
+ 
+ int
+-nfssvc_encode_entry(struct readdir_cd *ccd, const char *name,
+-		    int namlen, loff_t offset, ino_t ino, unsigned int d_type)
++nfssvc_encode_entry(void *ccdv, const char *name,
++		    int namlen, loff_t offset, u64 ino, unsigned int d_type)
+ {
++	struct readdir_cd *ccd = ccdv;
+ 	struct nfsd_readdirres *cd = container_of(ccd, struct nfsd_readdirres, common);
+ 	__be32	*p = cd->buffer;
+ 	int	buflen, slen;
+diff --git linux-2.6.19.2/fs/nfsd/vfs.c linux-2.6.19.2/fs/nfsd/vfs.c
+index 4dd49d6..5d32e5f 100644
+--- linux-2.6.19.2/fs/nfsd/vfs.c	2013-04-07 14:25:54+02:00
++++ linux-2.6.19.2/fs/nfsd/vfs.c	2013-04-07 14:25:54+02:00
+@@ -1724,7 +1724,7 @@
+  */
+ __be32
+ nfsd_readdir(struct svc_rqst *rqstp, struct svc_fh *fhp, loff_t *offsetp, 
+-	     struct readdir_cd *cdp, encode_dent_fn func)
++	     struct readdir_cd *cdp, filldir_t func)
+ {
+ 	__be32		err;
+ 	int 		host_err;
+@@ -1749,7 +1749,7 @@
+ 
+ 	do {
+ 		cdp->err = nfserr_eof; /* will be cleared on successful read */
+-		host_err = vfs_readdir(file, (filldir_t) func, cdp);
++		host_err = vfs_readdir(file, func, cdp);
+ 	} while (host_err >=0 && cdp->err == nfs_ok);
+ 	if (host_err)
+ 		err = nfserrno(host_err);
+diff --git linux-2.6.19.2/include/linux/nfsd/nfsd.h linux-2.6.19.2/include/linux/nfsd/nfsd.h
+index 0727774..4b7c4b5 100644
+--- linux-2.6.19.2/include/linux/nfsd/nfsd.h	2013-04-07 14:25:54+02:00
++++ linux-2.6.19.2/include/linux/nfsd/nfsd.h	2013-04-07 14:25:54+02:00
+@@ -52,8 +52,6 @@
+ struct readdir_cd {
+ 	__be32			err;	/* 0, nfserr, or nfserr_eof */
+ };
+-typedef int		(*encode_dent_fn)(struct readdir_cd *, const char *,
+-						int, loff_t, ino_t, unsigned int);
+ typedef int (*nfsd_dirop_t)(struct inode *, struct dentry *, int, int);
+ 
+ extern struct svc_program	nfsd_program;
+@@ -117,7 +115,7 @@
+ int		nfsd_truncate(struct svc_rqst *, struct svc_fh *,
+ 				unsigned long size);
+ __be32		nfsd_readdir(struct svc_rqst *, struct svc_fh *,
+-			     loff_t *, struct readdir_cd *, encode_dent_fn);
++			     loff_t *, struct readdir_cd *, filldir_t);
+ __be32		nfsd_statfs(struct svc_rqst *, struct svc_fh *,
+ 				struct kstatfs *);
+ 
+diff --git linux-2.6.19.2/include/linux/nfsd/xdr.h linux-2.6.19.2/include/linux/nfsd/xdr.h
+index 877192d..67885d5 100644
+--- linux-2.6.19.2/include/linux/nfsd/xdr.h	2013-04-07 14:25:54+02:00
++++ linux-2.6.19.2/include/linux/nfsd/xdr.h	2013-04-07 14:25:54+02:00
+@@ -165,8 +165,8 @@
+ int nfssvc_encode_statfsres(struct svc_rqst *, __be32 *, struct nfsd_statfsres *);
+ int nfssvc_encode_readdirres(struct svc_rqst *, __be32 *, struct nfsd_readdirres *);
+ 
+-int nfssvc_encode_entry(struct readdir_cd *, const char *name,
+-				int namlen, loff_t offset, ino_t ino, unsigned int);
++int nfssvc_encode_entry(void *, const char *name,
++			int namlen, loff_t offset, u64 ino, unsigned int);
+ 
+ int nfssvc_release_fhandle(struct svc_rqst *, __be32 *, struct nfsd_fhandle *);
+ 
+diff --git linux-2.6.19.2/include/linux/nfsd/xdr3.h linux-2.6.19.2/include/linux/nfsd/xdr3.h
+index 7996386..89d9d60 100644
+--- linux-2.6.19.2/include/linux/nfsd/xdr3.h	2013-04-07 14:25:54+02:00
++++ linux-2.6.19.2/include/linux/nfsd/xdr3.h	2013-04-07 14:25:54+02:00
+@@ -331,11 +331,11 @@
+ 				struct nfsd3_attrstat *);
+ int nfs3svc_release_fhandle2(struct svc_rqst *, __be32 *,
+ 				struct nfsd3_fhandle_pair *);
+-int nfs3svc_encode_entry(struct readdir_cd *, const char *name,
+-				int namlen, loff_t offset, ino_t ino,
++int nfs3svc_encode_entry(void *, const char *name,
++				int namlen, loff_t offset, u64 ino,
+ 				unsigned int);
+-int nfs3svc_encode_entry_plus(struct readdir_cd *, const char *name,
+-				int namlen, loff_t offset, ino_t ino,
++int nfs3svc_encode_entry_plus(void *, const char *name,
++				int namlen, loff_t offset, u64 ino,
+ 				unsigned int);
+ /* Helper functions for NFSv3 ACL code */
+ __be32 *nfs3svc_encode_post_op_attr(struct svc_rqst *rqstp, __be32 *p,
