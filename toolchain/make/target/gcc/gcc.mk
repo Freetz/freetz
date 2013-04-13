@@ -220,7 +220,7 @@ GCC_BUILD_DIR3:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-target
 $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR3)
 	(cd $(GCC_BUILD_DIR3); $(RM) config.cache; \
-		CFLAGS_FOR_BUILD="-g -O2 $(TOOLCHAIN_HOST_CFLAGS)" \
+		CFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
 		$(TARGET_CONFIGURE_ENV) \
 		$(GCC_DIR)/configure \
 		--prefix=/usr \
