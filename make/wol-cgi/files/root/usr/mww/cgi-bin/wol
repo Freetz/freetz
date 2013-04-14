@@ -1,0 +1,5 @@
+#!/bin/sh
+. /usr/lib/libmodredir.sh
+. /mod/etc/conf/wol.cfg
+
+redirect "http://$(self_host):${WOL_PORT:-84}/" "WOL"

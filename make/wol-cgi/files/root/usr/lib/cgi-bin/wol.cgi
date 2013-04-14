@@ -21,6 +21,17 @@ cat << EOF
 EOF
 
 sec_end
+
+sec_begin '$(lang de:"Anzeigen" en:"Show")'
+
+cat << EOF
+<ul>
+<li><a href="/cgi-bin/wol" target="_blank">$(lang de:"WOL-Webinterface" en:"WOL web interface")</a></li>
+</ul>
+EOF
+
+sec_end
+
 sec_begin '$(lang de:"Bekannte Hosts" en:"Known hosts")'
 
 cat << EOF
