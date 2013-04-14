@@ -1,0 +1,41 @@
+--- linux-2.6.32/drivers/block/compcache/Makefile	2012-07-13 12:12:20+02:00
++++ linux-2.6.32/drivers/block/compcache/Makefile	2012-07-13 12:12:20+02:00
+@@ -6,7 +6,7 @@
+ ramzswap-objs	:=	ramzswap_drv.o xvmalloc.o
+ 
+ ifneq ($(CONFIG_COMPCACHE),n)
+-extra-y			+= rzscontrol ramzswap.sh
++#extra-y			+= rzscontrol ramzswap.sh
+ 
+ rzscontrol-objs	:= rzscontrol.o
+ 
+--- linux-2.6.32/drivers/rtc/Makefile	2012-07-13 12:12:20+02:00
++++ linux-2.6.32/drivers/rtc/Makefile	2012-07-13 12:12:20+02:00
+@@ -91,7 +91,7 @@
+ ifeq ($(CONFIG_RTC_DRV_AVM_REF_CLOCK),m)
+ CFLAGS_rtc-avm.o += -DRTC_AVM_DEVICE_COUNT=1 # -DRTC_AVM_DEBUG=1
+ 
+-extra-y			 += S09-rtc
++#extra-y			 += S09-rtc
+ 
+ $(src)/S09-rtc: FORCE
+ 	rm -rf $(src)/S09-rtc
+--- linux-2.6.32/drivers/net/ifxmips_ppa/Makefile.orig	2012-10-23 10:20:32.000000000 +0200
++++ linux-2.6.32/drivers/net/ifxmips_ppa/Makefile	2013-04-06 17:43:54.865291133 +0200
+@@ -1,6 +1,6 @@
+ obj-$(CONFIG_IFX_PPA)		+= platform/ ppa_api/
+ 
+-extra-y			+= ppacmd
++#extra-y			+= ppacmd
+ 
+ 
+ $(src)/ppacmd: FORCE
+--- linux-2.6.32/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile.orig	2013-04-06 17:22:03.000000000 +0200
++++ linux-2.6.32/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile	2013-04-06 17:22:11.841349229 +0200
+@@ -1,5 +1,5 @@
+ 
+-extra-y			+= notify_avmnet
++#extra-y			+= notify_avmnet
+ 
+ clean-files		+= libtest libnotify_avmnet.so.0.1 libnotify_avmnet.so.0 libnotify_avmnet.so notify_avmnet.o
+ 
