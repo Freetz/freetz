@@ -1,0 +1,11 @@
+--- libgcc/config.host
++++ libgcc/config.host
+@@ -722,7 +722,7 @@
+ 	;;
+ mips*-*-linux*)				# Linux MIPS, either endian.
+ 	extra_parts="$extra_parts crtfastmath.o"
+-	tmake_file="${tmake_file} t-crtfm mips/t-mips16"
++	tmake_file="${tmake_file} t-crtfm"
+ 	md_unwind_header=mips/linux-unwind.h
+ 	if test "${ac_cv_sizeof_long_double}" = 16; then
+ 		tmake_file="${tmake_file} mips/t-tpbit"

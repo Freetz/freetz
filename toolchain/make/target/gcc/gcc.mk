@@ -6,6 +6,7 @@ GCC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gcc
 
 GCC_MD5_4.6.3 := 773092fe5194353b02bb0110052a972e
 GCC_MD5_4.7.3 := 86f428a30379bdee0224e353ee2f999e
+GCC_MD5_4.8.0 := e6040024eb9e761c3bea348d1fa5abb0
 GCC_MD5       := $(GCC_MD5_$(GCC_VERSION))
 
 GCC_INITIAL_PREREQ=
@@ -221,7 +222,10 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR3)
 	(cd $(GCC_BUILD_DIR3); $(RM) config.cache; \
 		CFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
+		CXXFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
+		CPPFLAGS_FOR_BUILD="" \
 		$(TARGET_CONFIGURE_ENV) \
+		CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
 		$(GCC_DIR)/configure \
 		--prefix=/usr \
 		--with-gxx-include-dir=/usr/include/c++ \

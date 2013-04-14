@@ -142,6 +142,10 @@ choice
 	config FREETZ_TARGET_COMPILER_GCC_4_7
 		bool "gcc-4.7.3"
 		depends on FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE
+
+	config FREETZ_TARGET_COMPILER_GCC_4_8
+		bool "gcc-4.8.0 - HIGHLY EXPERIMENTAL"
+		depends on FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE
 endchoice
 
 choice
@@ -189,11 +193,13 @@ config FREETZ_TARGET_GCC_VERSION
 	string
 	default "4.6.3"		if FREETZ_TARGET_COMPILER_GCC_4_6
 	default "4.7.3"		if FREETZ_TARGET_COMPILER_GCC_4_7
+	default "4.8.0"		if FREETZ_TARGET_COMPILER_GCC_4_8
 
 config FREETZ_GNULIBSTDCXX_VERSION
 	string
 	default "6.0.16"	if FREETZ_TARGET_COMPILER_GCC_4_6
 	default "6.0.17"	if FREETZ_TARGET_COMPILER_GCC_4_7
+	default "6.0.18"	if FREETZ_TARGET_COMPILER_GCC_4_8
 
 config FREETZ_STDCXXLIB
 	string
@@ -268,11 +274,15 @@ config FREETZ_TARGET_LFS
 		be changed unless you know what you are doing, as it can easily cause
 		problems.
 
+# TODO: doesn't compile, no fix yet available
+comment "Build binutils and gcc for target (not available for gcc-4.8.x)"
+	depends on FREETZ_BUILD_TOOLCHAIN && FREETZ_TARGET_COMPILER_GCC_4_8
+
 config FREETZ_TARGET_TOOLCHAIN
 	select FREETZ_LIB_libgmp
 	select FREETZ_LIB_libmpfr
 	select FREETZ_LIB_libmpc
-	bool "Build binutils and gcc for target" if FREETZ_BUILD_TOOLCHAIN
+	bool "Build binutils and gcc for target" if FREETZ_BUILD_TOOLCHAIN && !FREETZ_TARGET_COMPILER_GCC_4_8
 	default n
 	help
 		Build the binutils and gcc to run on the target.

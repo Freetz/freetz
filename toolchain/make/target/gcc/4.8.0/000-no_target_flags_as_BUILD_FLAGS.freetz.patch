@@ -1,0 +1,43 @@
+
+This patch contains an attempt to fix improper usage of TARGET_CXXFLAGS/TARGET_CPPFLAGS as BUILD_CXXFLAGS/BUILD_CPPFLAGS while building gcc for target.
+
+Note: even with this patch applied gcc for target still doesn't compile. So consider it as just the 1st step.
+
+--- gcc/configure
++++ gcc/configure
+@@ -702,6 +702,7 @@
+ collect2
+ STMP_FIXINC
+ BUILD_LDFLAGS
++BUILD_CPPFLAGS
+ BUILD_CXXFLAGS
+ BUILD_CFLAGS
+ CXX_FOR_BUILD
+@@ -11696,6 +11697,7 @@
+ CXX_FOR_BUILD='$(CXX)'
+ BUILD_CFLAGS='$(ALL_CFLAGS)'
+ BUILD_CXXFLAGS='$(ALL_CXXFLAGS)'
++BUILD_CPPFLAGS='$(ALL_CPPFLAGS)'
+ BUILD_LDFLAGS='$(LDFLAGS)'
+ STMP_FIXINC=stmp-fixinc
+ 
+@@ -11703,6 +11705,8 @@
+ if test x$build != x$host || test "x$coverage_flags" != x
+ then
+     BUILD_CFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(CFLAGS_FOR_BUILD)'
++    BUILD_CXXFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(NOEXCEPTION_FLAGS) $(CXXFLAGS_FOR_BUILD)'
++    BUILD_CPPFLAGS='$(CPPFLAGS_FOR_BUILD)'
+     BUILD_LDFLAGS='$(LDFLAGS_FOR_BUILD)'
+ fi
+ 
+--- gcc/Makefile.in
++++ gcc/Makefile.in
+@@ -747,7 +747,7 @@
+ 
+ # Native linker and preprocessor flags.  For x-fragment overrides.
+ BUILD_LDFLAGS=@BUILD_LDFLAGS@
+-BUILD_CPPFLAGS=$(ALL_CPPFLAGS)
++BUILD_CPPFLAGS=@BUILD_CPPFLAGS@
+ 
+ # Actual name to use when installing a native compiler.
+ GCC_INSTALL_NAME := $(shell echo gcc|sed '$(program_transform_name)')
