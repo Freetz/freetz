@@ -14,14 +14,6 @@ start() {
 
 case $1 in
 	""|load)
-		#compat only, may be removed later
-		[ -d "/tmp/flash/.stunnel" ] && mv /tmp/flash/.stunnel /tmp/flash/stunnel
-		[ ! -d "/tmp/flash/stunnel" ] && mkdir /tmp/flash/stunnel
-		if [ -f /tmp/flash/stunnel_svcs ]; then
-			mv /tmp/flash/stunnel_svcs /tmp/flash/stunnel/svcs
-			sed -i 's!/tmp/flash/.stunnel/!/tmp/flash/stunnel/!g' /tmp/flash/stunnel/svcs
-		fi
-
 		modreg cgi 'stunnel' 'Stunnel'
 		modreg daemon $DAEMON
 		modreg file stunnel svcs 'services' 0 "stunnel_svcs"

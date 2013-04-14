@@ -32,9 +32,6 @@ stop() {
 
 case $1 in
 	""|load)
-		#compat only, may be removed later
-		[ -d "/tmp/flash/.xrelayd" ] && mv /tmp/flash/.xrelayd /tmp/flash/xrelayd
-
 		[ ! -d "/tmp/flash/xrelayd" ] && mkdir /tmp/flash/xrelayd
 
 		modreg cgi 'xrelayd' 'XRelayd'
