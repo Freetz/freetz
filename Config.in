@@ -314,7 +314,8 @@ choice
 		depends on FREETZ_HAS_AVM_FW55X
 
 	config FREETZ_TYPE_FIRMWARE_LABOR
-		bool "FRITZ! Labor"
+#		bool "FRITZ! Labor"
+		bool
 		select FREETZ_AVM_VERSION_05_5X
 		depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_LABOR
 		help
@@ -1099,7 +1100,7 @@ menu "Build system options"
 
 	config FREETZ_VERBOSITY_LEVEL
 		int "Verbosity level (0-2)"
-		default 2
+		default 0
 		help
 			Verbosity level of the fwmod script and tar.
 			0 is the least and 2 the most information.
