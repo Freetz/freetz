@@ -89,6 +89,7 @@ case $1 in
 			mkdir -p /tmp/openvpn/etc
 			mkdir -p /tmp/openvpn/dev
 			mkdir -p /tmp/flash/openvpn
+			[ "$OPENVPN_CONFIG_COUNT" -eq 1 -a "$OPENVPN_ENABLED" = inetd ] && /mod/etc/default.openvpn/openvpn_conf  > /mod/etc/openvpn.conf
 		fi
 		if [ ! -e "/tmp/flash/openvpn/static.key" ]; then
 			echo -n "creating static.key ... "
@@ -98,13 +99,11 @@ case $1 in
 		d_BU="$DAEMON"
 		as="${OPENVPN_AUTOSTART#*#}"
 		for d in $(echo "openvpn${OPENVPN_CONFIG_NAMES#*DEFAULT#}" | sed 's/#/ openvpn_/g' ); do
-			if [ "${as%%#*}" != "yes" ]; then
-				echo "$d is disabled" 1>&2
-			else
-				DAEMON="$d"
-				DAEMON_LONG_NAME=$DAEMON
-				start
-			fi
+			TMP_ENABLE=${as%%#*}
+			[ -z "$TMP_ENABLE" ] && TMP_ENABLE="no"
+			DAEMON="$d"
+			DAEMON_LONG_NAME=$DAEMON
+			modlib_start $TMP_ENABLE 
 			as=${as#*#}
 		done
 		DAEMON="$d_BU"
@@ -141,7 +140,9 @@ case $1 in
 		fi
 		;;
 	status)
-		if [ -z "$(mypidof $DAEMON)" ]; then
+		if [ "$OPENVPN_ENABLED" = inetd ]; then
+			echo "inetd"
+		elif [ -z "$(mypidof $DAEMON)" ]; then
 			echo 'stopped'
 		else
 			echo 'running'

@@ -134,9 +134,19 @@ cat << EOF
 	  <input id="id_act_start_man" type="radio" name="my_enabled" onclick='(local_autostart[act_conf]=""); changeval();'>
 	  <label for="id_act_start_man">$(lang de:"Manuell" en:"Manual")</label>
 	</td>
+	<td>
+EOF
+if [ -e "/etc/default.inetd/inetd.cfg" -a $OPENVPN_CONFIG_COUNT -le 1 ]; then
+cat << EOF
+	  <input id="id_act_start_inet" type="radio" name="my_enabled" onclick='(local_autostart[act_conf]="inetd"); changeval();'>
+	  <label for="id_act_start_inet">Inetd</label>
+EOF
+fi
+cat << EOF
+	</td>
 </tr>
 <tr>
-	<td colspan="2">
+	<td colspan="3">
 	  <input id="id_act_debug" title="$(lang de:"Ausgaben protokollieren nach " en:"Save messages to ") &quot;var/tmp/debug_openvpn.out&quot;" type="checkbox" onclick='if (this.checked) (local_debug[act_conf]="yes"); else (local_debug[act_conf]=""); changeval();'>
 	  <label for="id_act_debug">$(lang de:"Debug-Mode aktivieren" en:"Enable debug mode") (/var/tmp/debug_openvpn.out)</label>
 
@@ -618,7 +628,8 @@ function Init_Table(name) {
 function Init_Checkbox() {
 alert_lzo = false;
 alert_cipher = false;
-	if ( local_autostart[act_conf] == "yes" ) { document.getElementById("id_act_start_auto").checked = true } else { document.getElementById("id_act_start_man").checked = true };
+	if ( local_autostart[act_conf] == "yes" ) { document.getElementById("id_act_start_auto").checked = true } else {
+		if ( local_autostart[act_conf] == "inetd" ) { document.getElementById("id_act_start_inet").checked = true } else {document.getElementById("id_act_start_man").checked = true }; }
 	if ( local_mode[act_conf] == "server" ) { document.getElementById("id_act_server").checked = true } else { document.getElementById("id_act_client").checked = true };
 	if ( local_proto[act_conf] == "tcp" ) { document.getElementById("id_act_tcp").checked = true } else { document.getElementById("id_act_udp").checked = true };
 	$([ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" ] && echo "document.getElementById"'("id_act_ipv6").checked = ( local_ipv6[act_conf] == "yes" )? "checked" : ""')
@@ -864,7 +875,7 @@ function changeval(value) {
 	}
 
 	if ( local_expert == "yes" ) {
-		document.getElementById("sec-conf").style.display = "block";
+		document.getElementById("sec-conf").style.display = ("$OPENVPN_ENABLED"=="inetd")? "none":"block";
 		document.getElementById("div_expert").style.display = "block";
 	}
 	else {
