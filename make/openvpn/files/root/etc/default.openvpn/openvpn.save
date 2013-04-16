@@ -29,5 +29,7 @@ pkg_post_save() {
 	if [ "$OPENVPN_CONFIG_COUNT" -eq 1 -a "$OPENVPN_ENABLED" = inetd ]; then
 		/mod/etc/default.openvpn/openvpn_conf > /mod/etc/openvpn.conf
 		echo "Generated config for openvpn"
-	fi ;
+	fi
+	# enable/disable inetd
+	[ -x /etc/init.d/rc.inetd ] && /etc/init.d/rc.inetd config openvpn
 }
