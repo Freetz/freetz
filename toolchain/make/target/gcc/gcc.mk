@@ -221,11 +221,16 @@ GCC_BUILD_DIR3:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)-target
 $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR3)
 	(cd $(GCC_BUILD_DIR3); $(RM) config.cache; \
-		CFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
-		CXXFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
-		CPPFLAGS_FOR_BUILD="" \
 		$(TARGET_CONFIGURE_ENV) \
+		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" \
+		CONFIG_SITE=$(CONFIG_SITE) \
+		\
 		CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
+		\
+		CFLAGS_FOR_BUILD="$(TOOLCHAIN_HOST_CFLAGS) -O2 -I$(HOST_TOOLS_DIR)/include" \
+		CXXFLAGS_FOR_BUILD="$(TOOLCHAIN_HOST_CFLAGS) -O2 -I$(HOST_TOOLS_DIR)/include" \
+		LDFLAGS_FOR_BUILD="-L$(HOST_TOOLS_DIR)/lib" \
+		\
 		$(GCC_DIR)/configure \
 		--prefix=/usr \
 		--with-gxx-include-dir=/usr/include/c++ \
