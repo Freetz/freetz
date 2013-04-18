@@ -1,0 +1,20 @@
+see: http://code.google.com/p/shellinabox/issues/detail?id=202#c20
+From ea7fea87a2cdba9df40f27464ce27f5d192ac389 Mon Sep 17 00:00:00 2001
+From: Alexander Sulfrian <alexander.sulfrian@fu-berlin.de>
+Date: Mon, 7 Jan 2013 19:11:49 +0100
+Subject: [PATCH 1/2] add new keyCodes used by >=FF15
+--- shellinabox/vt100.jspp
++++ shellinabox/vt100.jspp
+@@ -2894,10 +2894,10 @@
+     event.keyCode == 226;
+   var normalKey                 =
+     alphNumKey                                   ||
+-    event.keyCode ==  59 || event.keyCode ==  61 ||
++    event.keyCode >=  59 && event.keyCode ==  61 ||
+     event.keyCode == 106 || event.keyCode == 107 ||
+     event.keyCode >= 109 && event.keyCode <= 111 ||
+-    event.keyCode >= 186 && event.keyCode <= 192 ||
++    event.keyCode >= 160 && event.keyCode <= 192 ||
+     event.keyCode >= 219 && event.keyCode <= 223 ||
+     event.keyCode == 252;
+   try {
