@@ -1,11 +1,9 @@
 [ "$FREETZ_REMOVE_AVM_VPN" == "y" ] || return 0
 
-ctlmgrNeeded=$(getNeededEntries ${FILESYSTEM_MOD_DIR}/usr/bin/ctlmgr ${FILESYSTEM_MOD_DIR}/usr/bin/avm/ctlmgr)
-
 echo1 "removing AVM-VPN files"
 for files in \
  	bin/avmike \
-	$(grep -q "libikeapi" 2>/dev/null <<< "$ctlmgrNeeded" || echo 'lib/libikeapi*.so*') \
+	$(isNeededEntry "libikeapi" "${FILESYSTEM_MOD_DIR}/usr/bin/ctlmgr" "${FILESYSTEM_MOD_DIR}/usr/bin/avm/ctlmgr" || echo 'lib/libikeapi*.so*') \
  	lib/libikecrypto*.so* \
  	lib/libikeossl*.so* \
 	usr/share/ctlmgr/libvpnstat.so \
