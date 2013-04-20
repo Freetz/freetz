@@ -2,15 +2,15 @@
 
 echo1 "removing VoIP files"
 for files in \
-	bin/showvoipdstat \
-	bin/voipd \
-	lib/libosip*2.so* \
-	lib/librtpstream*.so* \
-	lib/libsiplib.so* \
-	usr/www/all/html/de/first/sip* \
-	usr/www/all/html/de/fon/sip* \
-	etc/init.d/rc.voip \
-; do
+  bin/showvoipdstat \
+  bin/voipd \
+  lib/libosip*2.so* \
+  lib/librtpstream*.so* \
+  lib/libsiplib.so* \
+  usr/www/all/html/de/first/sip* \
+  usr/www/all/html/de/fon/sip* \
+  etc/init.d/rc.voip \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 if \

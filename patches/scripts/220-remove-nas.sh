@@ -4,8 +4,8 @@ echo1 "removing nas"
 rm -rf "${FILESYSTEM_MOD_DIR}/usr/www.nas"
 ln -sf www "${FILESYSTEM_MOD_DIR}/usr/www.nas"
 rm_files \
-	"${FILESYSTEM_MOD_DIR}/sbin/fritznasdb" \
-	"${FILESYSTEM_MOD_DIR}/bin/showfritznasdbstat"
+  "${FILESYSTEM_MOD_DIR}/sbin/fritznasdb" \
+  "${FILESYSTEM_MOD_DIR}/bin/showfritznasdbstat"
 # REMOVE_MEDIASRV uses/removes libavmdb*.so
 
 # patcht Heimnetz > Speicher (NAS). Fehler von AVM? http://freetz.org/ticket/2011

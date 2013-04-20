@@ -13,11 +13,11 @@ if [ "$FREETZ_REMOVE_ASSISTANT_SIP" == "y" ]; then
 else
 	# Needed by "neue Rufnummer": first.frm , lib.js , *bb_backokcancel.html , first_Sip_(1|2|3)*
 	rm_files \
-		"${HTML_SPEC_MOD_DIR}/first/*_ISP*" \
-		"${HTML_SPEC_MOD_DIR}/first/basic_first*" \
-		"${HTML_SPEC_MOD_DIR}/first/first_Sip_free.*" \
-		"${HTML_SPEC_MOD_DIR}/first/first_Start_Sip.*" \
-		"${HTML_SPEC_MOD_DIR}/first/first_SIP_UI_*"
+	  "${HTML_SPEC_MOD_DIR}/first/*_ISP*" \
+	  "${HTML_SPEC_MOD_DIR}/first/basic_first*" \
+	  "${HTML_SPEC_MOD_DIR}/first/first_Sip_free.*" \
+	  "${HTML_SPEC_MOD_DIR}/first/first_Start_Sip.*" \
+	  "${HTML_SPEC_MOD_DIR}/first/first_SIP_UI_*"
 fi
 
 find "${HTML_SPEC_MOD_DIR}/menus" -type f | xargs sed -s -i -e '/var:menuAssistent/d'
