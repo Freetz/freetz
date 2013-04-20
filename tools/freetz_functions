@@ -322,3 +322,15 @@ getNeededEntries()
 	"${FREETZ_BASE_DIR}"/toolchain/target/bin/${FREETZ_TARGET_CROSS}readelf -d "$@" 2>/dev/null \
 	| grep "(NEEDED)" | sed -r -e 's,^[^[]* [[]([^]]*)[]].*$,\1,' | sort -u
 }
+
+#
+# Returns if $1 is a "(NEEDED)"-entry of one of the binaries/libraries supplied after $1
+# $1 might also be an extended grep-pattern, e.g. (libcapi|libfax)
+#
+isNeededEntry()
+{
+	[ $# -lt 2 ] && error 1 "isNeededEntry failed, not enough parameters."
+	local neededPattern="$1"; shift
+	local neededEntries=$(getNeededEntries "$@")
+	grep -E -q "$neededPattern" 2>/dev/null <<< "$neededEntries"
+}
