@@ -12,18 +12,18 @@ else
 	echo1 "${HTML_SPEC_MOD_DIR}"
 	rm_files "${HTML_SPEC_MOD_DIR}/help"
 	find "${HTML_SPEC_MOD_DIR}/menus" -type f |
-		xargs sed -s -i -e '/var:menuHilfe/d'
+	  xargs sed -s -i -e '/var:menuHilfe/d'
 	if [ -e "${HTML_SPEC_MOD_DIR}/global.inc" ]; then
-	    modsed '/setvariable var:txtHelp/d' "${HTML_SPEC_MOD_DIR}/global.inc"
+		modsed '/setvariable var:txtHelp/d' "${HTML_SPEC_MOD_DIR}/global.inc"
 	fi
 	find "${HTML_SPEC_MOD_DIR}/.." -name "*.html" -type f |
-		xargs sed -s -i -e '/<input type="button" onclick="uiDoHelp/d'
+	  xargs sed -s -i -e '/<input type="button" onclick="uiDoHelp/d'
 
 	# Remove functions "uiDoHelp*"
 	find "${HTML_SPEC_MOD_DIR}/.." -name '*.js' -type f |
-		xargs -I '{}' "$TOOLS_DIR/developer/remove_js_function.sh" "{}" "uiDoHelp[[:alpha:]]*"
+	  xargs -I '{}' "$TOOLS_DIR/developer/remove_js_function.sh" "{}" "uiDoHelp[[:alpha:]]*"
 
 	# Remove functions "jslPopHelp*"
 	find "${HTML_SPEC_MOD_DIR}/js" -name '*.js' -type f |
-		xargs -I '{}' "$TOOLS_DIR/developer/remove_js_function.sh" "{}" "jslPopHelp[[:alpha:]]*"
+	  xargs -I '{}' "$TOOLS_DIR/developer/remove_js_function.sh" "{}" "jslPopHelp[[:alpha:]]*"
 fi

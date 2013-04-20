@@ -1,16 +1,16 @@
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
 echo1 "remove mediasrv files"
 for files in \
-	lib/libpng.so* \
-	lib/libmediasrv.so* \
-	lib/libsqlite3*.so* \
-	lib/libstationurl.so* \
-	sbin/mediasrv \
-	sbin/start_mediasrv \
-	sbin/stop_mediasrv \
-	etc/init.d/rc.media \
-	etc/init.d/S76-media \
-	; do
+  lib/libpng.so* \
+  lib/libmediasrv.so* \
+  lib/libsqlite3*.so* \
+  lib/libstationurl.so* \
+  sbin/mediasrv \
+  sbin/start_mediasrv \
+  sbin/stop_mediasrv \
+  etc/init.d/rc.media \
+  etc/init.d/S76-media \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
@@ -21,11 +21,11 @@ done
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
 
 if [ -e "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html" ]; then
-echo1 "patching Web UI"
-modsed "/^<p.*uiViewUseMusik.*<\/p>$/ {
-	N
-	s/\n//g
-	D }" "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html"
+	echo1 "patching Web UI"
+	modsed "/^<p.*uiViewUseMusik.*<\/p>$/ {
+	  N
+	  s/\n//g
+	  D }" "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html"
 fi
 
 sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"

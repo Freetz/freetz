@@ -1,7 +1,7 @@
 [ "$FREETZ_REMOVE_PIGLET_POTS" == "y" -o \
-	"$FREETZ_REMOVE_PIGLET_ISDN" == "y" -o \
-	"$FREETZ_REMOVE_PIGLET_V1" == "y" -o \
-	"$FREETZ_REMOVE_PIGLET_V2" == "y" ] || return 0
+  "$FREETZ_REMOVE_PIGLET_ISDN" == "y" -o \
+  "$FREETZ_REMOVE_PIGLET_V1" == "y" -o \
+  "$FREETZ_REMOVE_PIGLET_V2" == "y" ] || return 0
 echo1 "removing unneeded piglet file(s)"
 
 bitfile_path="${FILESYSTEM_MOD_DIR}/lib/modules"

@@ -7,22 +7,22 @@ rm_files "${FILESYSTEM_MOD_DIR}/lib/*${version}*"
 
 echo1 "removing uClibc links"
 for link in \
-	ld-linux.so* \
-	ld-uClibc.so* \
-	ld.so* \
-	libc.so* \
-	libcrypt.so* \
-	libdl.so* \
-	libld-uClibc* \
-	libm.so* \
-	libnsl.so* \
-	libpthread.so* \
-	libthread_db.so* \
-	libresolv.so* \
-	librt.so* \
-	libubacktrace.so* \
-	libutil.so* \
-; do
+  ld-linux.so* \
+  ld-uClibc.so* \
+  ld.so* \
+  libc.so* \
+  libcrypt.so* \
+  libdl.so* \
+  libld-uClibc* \
+  libm.so* \
+  libnsl.so* \
+  libpthread.so* \
+  libthread_db.so* \
+  libresolv.so* \
+  librt.so* \
+  libubacktrace.so* \
+  libutil.so* \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/$link"
 done
 

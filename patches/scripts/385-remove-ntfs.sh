@@ -2,10 +2,10 @@
 
 echo1 "remove AVM's ntfs-3g files"
 for files in \
-	bin/ntfs-3g \
-	lib/libfuse.so* \
-	lib/libntfs-3g.so* \
-	; do
+  bin/ntfs-3g \
+  lib/libfuse.so* \
+  lib/libntfs-3g.so* \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 

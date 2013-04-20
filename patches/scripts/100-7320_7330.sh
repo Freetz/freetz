@@ -11,9 +11,7 @@ files="css/default/images/kopfbalken_mitte.gif"
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
 for i in $files; do
-	cp -a \
-		"${DIR}/.tk/original/filesystem/usr/www/avm/$i" \
-		"${FILESYSTEM_MOD_DIR}/usr/www/avm/$i"
+	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" "${FILESYSTEM_MOD_DIR}/usr/www/avm/$i"
 done
 
 echo2 "moving default config dir"

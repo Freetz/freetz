@@ -35,8 +35,7 @@ files+=" css/default/images/illu_box.gif"
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
 for i in $files; do
-	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" \
-		"${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
+	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" "${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
 done
 
 #echo2 "patching webmenu"

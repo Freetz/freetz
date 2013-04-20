@@ -17,8 +17,7 @@ if [ "\$(/etc/init.d/rc.usbroot status)" = "running" ]; then
 		device="\$(/etc/init.d/rc.usbroot store)"
 		device="\${device%%:*}"
 		device="\${device##*/}"
-		for path in /sys/block/sd[a-z] /sys/block/sd[a-z]/sd[a-z][0-9]
-		do
+		for path in /sys/block/sd[a-z] /sys/block/sd[a-z]/sd[a-z][0-9]; do
 			# add device only if it is not the usb root device
 			# so it is not mounted one more time
 			[ "\${path##*/}" = "\$device" ] || echo add > \$path/uevent
