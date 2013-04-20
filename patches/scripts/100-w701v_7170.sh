@@ -64,12 +64,14 @@ modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led
-sed -i -e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
+sed -i \
+	-e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
 	-e 's|DEF info,0 = 99,32,16,info|DEF info,0 = 2,6,1,info|' \
 	-e 's|DEF info,1 = 99,32,16,info|DEF info,1 = 2,6,1,info|' \
 	-e 's|DEF info,2 = 99,32,16,info|DEF info,2 = 2,6,1,info|' \
 	-e 's|DEF info,3 = 99,32,16,info|DEF info,3 = 2,6,1,info|' \
-	-e 's|DEF info,4 = 99,32,16,info|DEF info,4 = 2,6,1,info|' "${FILESYSTEM_MOD_DIR}/etc/led.conf"
+	-e 's|DEF info,4 = 99,32,16,info|DEF info,4 = 2,6,1,info|' \
+	"${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
 # map tam info to power
 echo "MAP tam,0 TO power,1" >> "${FILESYSTEM_MOD_DIR}/etc/led.conf"

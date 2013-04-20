@@ -51,8 +51,6 @@ modsed "s/CONFIG_WLAN_SAVEMEM=.*$/CONFIG_WLAN_SAVEMEM=\"y\"/g" "${FILESYSTEM_MOD
 #modsed "s/CONFIG_TR064=.*$/CONFIG_TR064=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 #modsed "s/CONFIG_VPN=.*$/CONFIG_VPN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
-
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
 modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7113_7170.patch" || exit 2
-

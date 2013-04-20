@@ -1,20 +1,20 @@
 if [ "$FREETZ_REMOVE_TR069" == "y" -o "$FREETZ_REMOVE_ASSISTANT" == "y" ]; then
 	modsed \
-	  's/\(^var doTr069 = \).*/\1false;/g' \
-	  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
+		's/\(^var doTr069 = \).*/\1false;/g' \
+		"${HTML_LANG_MOD_DIR}/html/logincheck.html"
 	modsed \
-	  's!http.redirect("/tr69_autoconfig/.*!go_home()!g' \
-	  "${HTML_LANG_MOD_DIR}/lua/first.lua"
+		's!http.redirect("/tr69_autoconfig/.*!go_home()!g' \
+		"${HTML_LANG_MOD_DIR}/lua/first.lua"
 fi
 
 [ "$FREETZ_REMOVE_TR069" == "y" ] || return 0
 
 echo1 "removing tr069 stuff"
 rm_files \
-  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr064.so" \
-  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so" \
-  "${FILESYSTEM_MOD_DIR}/sbin/tr069discover" \
-  "${HTML_LANG_MOD_DIR}/tr69_autoconfig/"
+	"${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr064.so" \
+	"${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so" \
+	"${FILESYSTEM_MOD_DIR}/sbin/tr069discover" \
+	"${HTML_LANG_MOD_DIR}/tr69_autoconfig/"
 
 if [ "$FREETZ_REMOVE_TR069_FWUPDATE" == "y" ]; then
 	 rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/tr069fwupdate"

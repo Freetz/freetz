@@ -39,11 +39,11 @@ modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7340\
 modsed "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"99\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 # patch loading of bitfile
-if isFreetzType LANG_EN; then  
-	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn" 
+if isFreetzType LANG_EN; then
+	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
 	modsed 's#^\(modprobe Piglet_noemif.*\)#\1 piglet_potsbitfile=/lib/modules/bitfile_pots\.bit\${HWRevision_BitFileCount} piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`#g' \
-	  "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn" 
-fi 
+	  "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
+fi
 
 # patch install script to accept firmware from 7390
 echo2 "applying install patch"

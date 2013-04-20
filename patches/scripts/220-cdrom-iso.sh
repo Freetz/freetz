@@ -12,4 +12,3 @@ elif isFreetzType 300IP FON WLAN && isFreetzType LANG_EN; then
 else
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-no-cdrom-fallback.patch"
 fi
-

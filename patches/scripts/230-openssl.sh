@@ -10,4 +10,3 @@ if [ "$FREETZ_REPLACE_SSL_LIBS" == "y" ]; then
 		ln -sf "/usr/lib/freetz/libssl.so.0.9.8" "${FILESYSTEM_MOD_DIR}/lib/libssl.so.0.9.8"
 	fi
 fi
-

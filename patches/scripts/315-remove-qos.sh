@@ -2,10 +2,10 @@
 
 echo1 "removing qos files"
 rm_files \
-  "${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/net/sched/" \
-  "${FILESYSTEM_MOD_DIR}/sbin/qos" \
-  "${FILESYSTEM_MOD_DIR}/sbin/tc" \
-  "${HTML_LANG_MOD_DIR}/internet/traffic*.lua"
+	"${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/net/sched/" \
+	"${FILESYSTEM_MOD_DIR}/sbin/qos" \
+	"${FILESYSTEM_MOD_DIR}/sbin/tc" \
+	"${HTML_LANG_MOD_DIR}/internet/traffic*.lua"
 
 # entfernet Internet > Filter (von 'Kindersicherung' mitgenutzt)
 if [ "$FREETZ_REMOVE_KIDS" == "y" ]; then

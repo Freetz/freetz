@@ -2,12 +2,12 @@
 echo1 "adding dsl expert pages"
 
 for file in \
-  ${HTML_SPEC_MOD_DIR}/internet/adsl.html \
-  ${HTML_SPEC_MOD_DIR}/internet/bits.html \
-  ${HTML_SPEC_MOD_DIR}/internet/atm.html \
-  ${HTML_SPEC_MOD_DIR}/internet/overview.html \
-  ${HTML_SPEC_MOD_DIR}/internet/feedback.html \
-  ; do
+	${HTML_SPEC_MOD_DIR}/internet/adsl.html \
+	${HTML_SPEC_MOD_DIR}/internet/bits.html \
+	${HTML_SPEC_MOD_DIR}/internet/atm.html \
+	${HTML_SPEC_MOD_DIR}/internet/overview.html \
+	${HTML_SPEC_MOD_DIR}/internet/feedback.html \
+; do
 	[ ! -f "$file" ] && continue
 	modsed "
 	s|query box:settings.expertmode.activated ?>. .1.|query box:settings/expertmode/activated ?>' '0'|
@@ -22,6 +22,6 @@ for file in \
 done
 
 modpatch \
-  "$FILESYSTEM_MOD_DIR" \
-  "${PATCHES_COND_DIR}/240-add-dsl-expert-pages/" \
-  "/usr/www/all/html/de/internet/awatch.js"
+	"$FILESYSTEM_MOD_DIR" \
+	"${PATCHES_COND_DIR}/240-add-dsl-expert-pages/" \
+	"/usr/www/all/html/de/internet/awatch.js"

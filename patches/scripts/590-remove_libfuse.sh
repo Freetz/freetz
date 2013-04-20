@@ -2,4 +2,3 @@
 
 echo1 "removing libfuse.so"
 rm_files "${MODULES_DIR}/lib/libfuse.so*"
-
