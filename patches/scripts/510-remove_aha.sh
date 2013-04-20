@@ -2,6 +2,7 @@
 echo1 "removing aha files"
 for files in \
 	usr/bin/aha \
+	usr/bin/ahamailer \
 	lib/libaha.so* \
 	usr/share/aha/ \
 	etc/init.d/S78-aha \
