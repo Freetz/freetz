@@ -1,7 +1,7 @@
 [ "$FREETZ_REMOVE_DSLD" == "y" ] || return 0
 
 echo1 "removing dsld files"
-if [ ! -e "${FILESYSTEM_MOD_DIR}/lib/libwylg.so" ] || ! isNeededEntry libdsl.so "${FILESYSTEM_MOD_DIR}/lib/libwylg.so"; then
+if [ "$FREETZ_REMOVE_AHA" == "y" -o ! -e "${FILESYSTEM_MOD_DIR}/lib/libwylg.so" ] || ! isNeededEntry libdsl.so "${FILESYSTEM_MOD_DIR}/lib/libwylg.so"; then
 	rm_files "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libdsl.so" "${FILESYSTEM_MOD_DIR}/lib/libdsl.so*"
 fi
 rm_files $(find ${FILESYSTEM_MOD_DIR}/sbin ${FILESYSTEM_MOD_DIR}/lib/modules -name dsld)
