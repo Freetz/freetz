@@ -29,7 +29,7 @@ start() {
 	# set ipv6
 	if [ -e /usr/lib/cgi-bin/mod/conf/80-ipv6.sh -a -d /proc/sys/net/ipv6 ]; then
 		echo "$MOD_IPV6_ASSIGN" | grep -v "^ *#" | while read -r if6 ip6; do
-			[ -n "$if6" -a -n "$ip6" ] && ip addr add $ip6 dev $if6
+			[ -n "$if6" -a -n "$ip6" ] && ifconfig $if6 $ip6
 		done
 		[ "$MOD_IPV6_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 	fi
