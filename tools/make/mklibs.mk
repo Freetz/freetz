@@ -26,7 +26,7 @@ $(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR)
 	done
 	touch $@
 
-$(MKLIBS_SCRIPT) $(MKLIBS_SCRIPT)-copy: $(MKLIBS_DIR)/.unpacked
+$(MKLIBS_SCRIPT): $(MKLIBS_DIR)/.unpacked
 
 $(MKLIBS_DIR)/.configured: $(MKLIBS_DIR)/.unpacked
 	(cd $(MKLIBS_DIR); rm -rf config.cache; \
@@ -43,15 +43,11 @@ $(MKLIBS_TARGET_SCRIPT): $(MKLIBS_SCRIPT)
 	mkdir -p $(dir $@)
 	cp $^ $@
 
-$(MKLIBS_TARGET_SCRIPT)-copy: $(MKLIBS_SCRIPT)-copy
-	mkdir -p $(dir $@)
-	cp $^ $@
-
 $(MKLIBS_READELF_TARGET_BINARY): $(MKLIBS_READELF_BINARY)
 	mkdir -p $(dir $@)
 	cp $^ $@
 
-mklibs: $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_TARGET_SCRIPT)-copy $(MKLIBS_READELF_TARGET_BINARY)
+mklibs: $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_READELF_TARGET_BINARY)
 
 mklibs-clean:
 	$(MAKE) -C $(MKLIBS_DIR) clean
@@ -60,4 +56,4 @@ mklibs-dirclean:
 	$(RM) -r $(MKLIBS_DIR)
 
 mklibs-distclean:
-	$(RM) -r $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_TARGET_SCRIPT)-copy $(MKLIBS_READELF_TARGET_BINARY)
+	$(RM) -r $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_READELF_TARGET_BINARY)
