@@ -16,7 +16,7 @@
 +vmlinux.eva: vmlinux.lzma
 +	loadaddr=$$($(AWK) '/A _text/ { print "0x"$$1; }' < System.map); \
 +	entry=$$($(AWK) '/T kernel_entry/ { print "0x"$$1; }' < System.map); \
-+	echo $$loadaddr $$entry; \
++	echo loadaddr=$$loadaddr entry=$$entry; \
 +	$$FREETZ_BASE_DIR/tools/lzma2eva $$loadaddr $$entry \
 +		vmlinux.lzma vmlinux.eva
 +
