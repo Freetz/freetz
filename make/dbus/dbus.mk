@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.6.8)
-$(PKG)_LIB_VERSION:=3.7.2
+$(call PKG_INIT_BIN, 1.6.10)
+$(PKG)_LIB_VERSION:=3.7.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3bf059c7dd5eda5f539a1b7cfe7a14a2
+$(PKG)_SOURCE_MD5:=de4970c20629aeb958a12132415b3630
 $(PKG)_SITE:=http://$(pkg).freedesktop.org/releases/$(pkg)
 $(PKG)_STARTLEVEL=90 # before avahi
 
