@@ -16,9 +16,9 @@ rm_files \
   "${FILESYSTEM_MOD_DIR}/sbin/tr069discover" \
   "${HTML_LANG_MOD_DIR}/tr69_autoconfig/"
 
-if [ "$FREETZ_REMOVE_TR069_FWUPDATE" == "y" ]; then
-	 rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/tr069fwupdate"
-fi
+[ "$FREETZ_REMOVE_TR069_FWUPDATE" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/tr069fwupdate"
+[ "$FREETZ_REMOVE_TR069_HTTPSDL" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/httpsdl"
+
 echo1 "patching default tr069.cfg"
 find ${FILESYSTEM_MOD_DIR}/etc -name tr069.cfg -exec sed -e 's/enabled = yes/enabled = no/' -i '{}' \;
 

@@ -770,6 +770,17 @@ config FREETZ_REMOVE_TR069_FWUPDATE
 		Removes the file /usr/bin/tr069fwupdate, needed for
 		updating the firmware in MT-D devices
 
+config FREETZ_REMOVE_TR069_HTTPSDL
+	bool "Remove httpsdl"
+	depends on FREETZ_REMOVE_TR069 && FREETZ_HAS_AVM_TR069_FWUPDATE && FREETZ_REMOVE_TR069_FWUPDATE
+	default y
+	help
+		Removes the file /usr/bin/httpsdl, used by:
+		* tr069/fwupdate, you have removed it
+		* firmware updater, with Freetz you don't want it
+		* some more ?
+		This saves 15-45 KB of uncompressed data size.
+
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS (USB GSM)"
 	depends on FREETZ_HAS_AVM_UMTS
@@ -871,7 +882,7 @@ config FREETZ_REMOVE_TELEPHONY
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
-		2.370 KB or 2.3 MB of uncompressed data size in the firmware image. This
+		2370 KB or 2.3 MB of uncompressed data size in the firmware image. This
 		means savings of about 700 KB of compressed firmware size.
 
 		ATTENTION: Currently there have not been a whole lot of tests concerning
