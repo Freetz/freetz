@@ -635,16 +635,14 @@ menu "SquashFS options"
 
 				64 KB is the default for kernel 2.6 firmwares.
 
-		if FREETZ_REPLACE_KERNEL && (FREETZ_KERNEL_VERSION_2_6_19_MAX || FREETZ_KERNEL_VERSION_2_6_32)
+		if FREETZ_REPLACE_KERNEL
 			config FREETZ_SQUASHFS_BLOCKSIZE_131072
 				bool "128 KB - EXPERIMENTAL"
 				help
 					Block size of the root filesystem. SquashFS 3.4 can use block sizes
 					up to 1MB but the Default used by Freetz is 64KB. SquashFS 3.4 which
 					is included in Kernel 2.6.32 has a default Block size of 128 KB.
-		endif
 
-		if FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_19_MAX
 			config FREETZ_SQUASHFS_BLOCKSIZE_262144
 				bool "256 KB - EXPERIMENTAL"
 			config FREETZ_SQUASHFS_BLOCKSIZE_524288
