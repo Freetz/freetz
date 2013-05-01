@@ -212,8 +212,8 @@ kernel-clean:
 kernel-mrproper:
 	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE)
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) mrproper
-	-cp -f  $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_ROOT_DIR)/.config
-		kernel-oldconfig
+	-cp -f $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_ROOT_DIR)/.config
+	-$(SUBMAKE) kernel-oldconfig
 
 kernel-dirclean:
 	$(RM) -r $(SOURCE_DIR_ROOT)/kernel
