@@ -4,27 +4,38 @@ DAEMON=emailrelay
 DAEMON_LONG_NAME="E-MailRelay"
 . /etc/init.d/modlibrc
 
+
+SPOOLDIR="$(echo "$EMAILRELAY_OPTIONS" | sed -n 's/^[ \t]*spool-dir //p')"
+
 config() {
-	rm -rf /var/spool/emailrelay
-	ln -s "$EMAILRELAY_SPOOLDIR" /var/spool/emailrelay
-	mkdir "$EMAILRELAY_SPOOLDIR" 2>/dev/null
+	mkdir $SPOOLDIR 2>/dev/null
 }
 
-start() {
-	if [ ! -d "$EMAILRELAY_SPOOLDIR" ]; then
+pre_start() {
+	if [ ! -d "$SPOOLDIR" ]; then
 		echo "$DAEMON_LONG_NAME can not find spool directory, failed."
 		return 1
 	fi
-	modlib_startdaemon $DAEMON_BIN
+}
+
+start() {
+	local STATIC_ARGS='--log --close-stderr --user=emailrelay --pid-file=/var/run/emailrelay.pid'
+	local CUSTOM_ARGS="$(
+		echo "$EMAILRELAY_OPTIONS" | while read line; do
+			echo "$line" | grep -q "^[ \t]*$" && continue
+			echo "$line" | grep -q "^[ \t]*#" && continue
+			echo "$line" | grep -qE "^log|^close-stderr|^user |^pid-file " && continue
+			echo "$line" | sed 's/^/--/;s/ /=/'
+		done | sort -u
+	)"
+	modlib_startdaemon $DAEMON_BIN $STATIC_ARGS $CUSTOM_ARGS
 }
 
 case $1 in
 	""|load)
 		modlib_add_user_and_group $DAEMON
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e /tmp/flash/$DAEMON/$DAEMON.conf ] && /etc/default.$DAEMON/default-config.sh
 
-		modreg file $DAEMON "conf" 'emailrelay.conf' 1 "emailrelay_conf"
 		modreg file $DAEMON "filter" 'emailrelay-filter' 1 "emailrelay_filter"
 		modreg file $DAEMON "auth" 'emailrelay.auth' 1 "emailrelay_auth"
 		modreg file $DAEMON "pem" 'emailrelay.pem' 1 "emailrelay_pem"

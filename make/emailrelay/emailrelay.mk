@@ -7,10 +7,9 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/emailrelay
 
 $(PKG)_DEPENDS_ON := openssl zlib uclibcxx
 
-$(PKG)_REBUILD_SUBOPTS := FREETZ_TARGET_IPV6_SUPPORT
-
-$(PKG)_CONFIGURE_OPTIONS := $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6)
-$(PKG)_CONFIGURE_OPTIONS += --enable-small-config
+#daemon does not start if ipv6 enabled but unused (no valid dns configuration)
+#$(PKG)_REBUILD_SUBOPTS := FREETZ_TARGET_IPV6_SUPPORT
+#$(PKG)_CONFIGURE_OPTIONS := $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --disable-admin
 $(PKG)_CONFIGURE_OPTIONS += --disable-gui
 

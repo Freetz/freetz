@@ -8,5 +8,7 @@ cgi_print_radiogroup_service_starttype "enabled" "$EMAILRELAY_ENABLED" "" "" 0
 sec_end
 
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
-cgi_print_textline_p "spooldir" "$EMAILRELAY_SPOOLDIR" 55/255 "$(lang de:"Verzeichnis f&uuml;r Spooler" en:"Spool directory"): "
+cat << EOF
+<p><textarea name="options" rows="25" cols="65" maxlength="2040">$(html "$EMAILRELAY_OPTIONS")</textarea></p>
+EOF
 sec_end
