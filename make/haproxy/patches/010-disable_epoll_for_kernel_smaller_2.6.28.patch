@@ -1,0 +1,16 @@
+--- Makefile
++++ Makefile
+@@ -208,12 +208,10 @@
+   USE_LIBCRYPT    = implicit
+ else
+ ifeq ($(TARGET),linux26)
+-  # This is for standard Linux 2.6 with netfilter and standard epoll()
++  # This is for standard Linux 2.6 with netfilter and without epoll()
+   USE_GETSOCKNAME = implicit
+   USE_NETFILTER   = implicit
+   USE_POLL        = implicit
+-  USE_EPOLL       = implicit
+-  USE_SEPOLL      = implicit
+   USE_TPROXY      = implicit
+   USE_LIBCRYPT    = implicit
+ else
