@@ -1,0 +1,31 @@
+config FREETZ_PACKAGE_EMAILRELAY
+	bool "E-MailRelay 1.8.2 (binary only)"
+	default n
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	select FREETZ_LIB_libz
+	select FREETZ_LIB_libuClibc__
+	help
+		E-MailRelay is a simple store-and-forward message
+		transfer agent and proxy server. It runs on Unix-like
+		operating systems (including Linux), and on Windows.
+
+		When used as proxy server the E-MailRelay program
+		(emailrelay) runs in the background and accepts e-mail
+		from local e-mail client programs (KMail, Outlook etc.)
+		or from the outside world, using the SMTP protocol. As
+		soon as an e-mail message is received it is forwarded
+		on to the next SMTP server for onward delivery. This
+		becomes more useful when you add in your own message
+		processing: as each message is received it can be passed
+		one of your programs for editing, filtering, encrypting etc.
+
+		When used as a store-and-forward transfer agent E-Mail-
+		Relay runs in two modes: the storage daemon part, and the
+		forwarding agent. The storage daemon waits for incoming
+		mail and stores anything it receives in a spool directory.
+		As a forwarding agent E-MailRelay pulls messages out
+		of the	spool directory and passes them on to a remote
+		server -- perhaps your ISP mail server.
+		E-MailRelay can also run as a POP3 server so that e-mail
+		client programs can read the spooled messages.
