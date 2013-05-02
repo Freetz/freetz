@@ -5,7 +5,8 @@ $(PKG)_SITE:=@SF/emailrelay
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/main/emailrelay
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/emailrelay
 
-$(PKG)_DEPENDS_ON := openssl zlib uclibcxx
+# uClibc causes stalling while pop3 access
+$(PKG)_DEPENDS_ON := $(STDCXXLIB) openssl zlib
 
 #daemon does not start if ipv6 enabled but unused (no valid dns configuration)
 #$(PKG)_REBUILD_SUBOPTS := FREETZ_TARGET_IPV6_SUPPORT
@@ -18,9 +19,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(EMAILRELAY_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)"
+	$(SUBMAKE) -C $(EMAILRELAY_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

@@ -1,10 +1,13 @@
+comment "E-MailRelay (not available, needs libstdc++ as Standard C++ Library)"
+	depends on !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+
 config FREETZ_PACKAGE_EMAILRELAY
+	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 	bool "E-MailRelay 1.8.2"
 	default n
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
 	select FREETZ_LIB_libz
-	select FREETZ_LIB_libuClibc__
 	help
 		E-MailRelay is a simple store-and-forward message
 		transfer agent and proxy server. It runs on Unix-like
