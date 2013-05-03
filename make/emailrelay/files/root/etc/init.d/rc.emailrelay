@@ -19,16 +19,20 @@ pre_start() {
 }
 
 start() {
-	local STATIC_ARGS='--log --close-stderr --user=emailrelay --pid-file=/var/run/emailrelay.pid'
+	local STATIC_ARGS="--close-stderr --user=$DAEMON --pid-file=$PID_FILE"
 	local CUSTOM_ARGS="$(
 		echo "$EMAILRELAY_OPTIONS" | while read line; do
 			echo "$line" | grep -q "^[ \t]*$" && continue
 			echo "$line" | grep -q "^[ \t]*#" && continue
-			echo "$line" | grep -qE "^log|^close-stderr|^user |^pid-file " && continue
+			echo "$line" | grep -qE "^close-stderr|^user |^pid-file " && continue
 			echo "$line" | sed 's/^/--/;s/ /=/'
 		done | sort -u
 	)"
 	modlib_startdaemon $DAEMON_BIN $STATIC_ARGS $CUSTOM_ARGS
+}
+
+startdaemon_post() {
+	[ ! -s $PID_FILE ] && sleep 1
 }
 
 case $1 in
