@@ -4,8 +4,6 @@ for files in \
   usr/bin/aha \
   usr/bin/ahamailer \
   lib/libaha.so* \
-  lib/libmailbuilder.so* \
-  lib/libwylg.so* \
   usr/share/aha/ \
   etc/init.d/S78-aha \
   usr/www/all/lua/ha_func_lib.lua \
