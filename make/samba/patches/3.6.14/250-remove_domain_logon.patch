@@ -99,7 +99,7 @@
  	dfs_commands,
 --- source3/rpc_server/wkssvc/srv_wkssvc_nt.c
 +++ source3/rpc_server/wkssvc/srv_wkssvc_nt.c
-@@ -820,6 +820,10 @@ WERROR _wkssvc_NetrJoinDomain2(struct pi
+@@ -824,6 +824,10 @@ WERROR _wkssvc_NetrJoinDomain2(struct pi
  	WERROR werr;
  	struct security_token *token = p->session_info->security_token;
  
@@ -110,7 +110,7 @@
  	if (!r->in.domain_name) {
  		return WERR_INVALID_PARAM;
  	}
-@@ -897,6 +901,10 @@ WERROR _wkssvc_NetrUnjoinDomain2(struct
+@@ -901,6 +905,10 @@ WERROR _wkssvc_NetrUnjoinDomain2(struct
  	WERROR werr;
  	struct security_token *token = p->session_info->security_token;
  
@@ -172,7 +172,7 @@
  }
 --- source3/smbd/process.c
 +++ source3/smbd/process.c
-@@ -2484,8 +2484,10 @@ static bool housekeeping_fn(const struct
+@@ -2431,8 +2431,10 @@ static bool housekeeping_fn(const struct
  	/* check if we need to reload services */
  	check_reload(sconn, time_mono(NULL));
  

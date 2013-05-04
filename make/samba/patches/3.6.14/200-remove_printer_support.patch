@@ -25,7 +25,7 @@
  	dfs_commands,
 --- source3/printing/spoolssd.c
 +++ source3/printing/spoolssd.c
-@@ -153,6 +153,10 @@ void start_spoolssd(struct tevent_contex
+@@ -165,6 +165,10 @@ void start_spoolssd(struct tevent_contex
  	NTSTATUS status;
  	int ret;
  
@@ -51,7 +51,7 @@
  			d_printf(_("Usage:\n"));
 --- source3/smbd/reply.c
 +++ source3/smbd/reply.c
-@@ -5196,7 +5196,11 @@ void reply_printopen(struct smb_request
+@@ -5206,7 +5206,11 @@ void reply_printopen(struct smb_request
  		return;
  	}
  
@@ -64,7 +64,7 @@
  		reply_nterror(req, NT_STATUS_ACCESS_DENIED);
  		END_PROFILE(SMBsplopen);
  		return;
-@@ -5302,7 +5306,10 @@ void reply_printqueue(struct smb_request
+@@ -5312,7 +5316,10 @@ void reply_printqueue(struct smb_request
  	   is really quite gross and only worked when there was only
  	   one printer - I think we should now only accept it if they
  	   get it right (tridge) */
@@ -303,7 +303,7 @@
  	}
 --- source3/smbd/process.c
 +++ source3/smbd/process.c
-@@ -2476,8 +2476,10 @@ static bool housekeeping_fn(const struct
+@@ -2423,8 +2423,10 @@ static bool housekeeping_fn(const struct
  
  	change_to_root_user();
  
@@ -327,7 +327,7 @@
  	DEBUG(10,("smb_conf_updated: Got message saying smb.conf was "
  		  "updated. Reloading.\n"));
  	change_to_root_user();
-@@ -1227,6 +1231,7 @@ extern void build_options(bool screen);
+@@ -1273,6 +1277,7 @@ extern void build_options(bool screen);
  		exit(1);
  	}
  
@@ -335,7 +335,7 @@
  	/*
  	 * The print backend init also migrates the printing tdb's,
  	 * this requires a winreg pipe.
-@@ -1262,6 +1267,7 @@ extern void build_options(bool screen);
+@@ -1315,6 +1320,7 @@ extern void build_options(bool screen);
  				       smbd_messaging_context());
  		}
  	}
