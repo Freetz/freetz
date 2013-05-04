@@ -1,6 +1,6 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -314,7 +314,7 @@
+@@ -336,7 +336,7 @@
  man3dir = $(mandir)/man3
  NROFF = nroff
  MANS = $(man_MANS)
@@ -9,7 +9,7 @@
  RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
    distclean-recursive maintainer-clean-recursive
  AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
-@@ -589,7 +589,7 @@
+@@ -611,7 +611,7 @@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
  ACLOCAL_AMFLAGS = -I m4
@@ -18,7 +18,7 @@
  DIST_SUBDIRS = include . doc example python xstc
  AM_CPPFLAGS = -I$(top_builddir)/include -I$(srcdir)/include
  AM_CFLAGS = $(THREAD_CFLAGS) $(Z_CFLAGS) $(LZMA_CFLAGS)
-@@ -1586,7 +1586,7 @@
+@@ -1635,7 +1635,7 @@
  check-am: all-am
  check: $(BUILT_SOURCES)
  	$(MAKE) $(AM_MAKEFLAGS) check-recursive
@@ -27,7 +27,7 @@
  		config.h
  install-binPROGRAMS: install-libLTLIBRARIES
  
-@@ -1654,15 +1654,15 @@
+@@ -1703,15 +1703,15 @@
  
  info-am:
  
