@@ -27,7 +27,7 @@ fi
 
 sedfile="${HTML_LANG_MOD_DIR}/net/network_user_devices.lua"
 if [ -e $sedfile ]; then
-	# patcht Heimetz > Netzwerk > Geräte und Benutzer
+	# patcht Heimnetz > Netzwerk > Geräte und Benutzer
 	echo1 "patching ${sedfile##*/}"
 	modsed 's/&& <?lua box.js(tostring(g_dev.wlan_count<2)) ?>//g' $sedfile
 fi

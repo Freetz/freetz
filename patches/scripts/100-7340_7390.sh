@@ -14,16 +14,14 @@ echo2 "copying 7340 files"
 files="bitfile_isdn.bit bitfile_pots.bit"
 
 for i in $files; do
-    cp -a "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules/$i"
+	cp -a "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules/$i"
 done
 
 files="css/default/images/kopfbalken_mitte.gif"
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
 for i in $files; do
-	cp -a \
-		"${DIR}/.tk/original/filesystem/usr/www/avme/$i" \
-		"${FILESYSTEM_MOD_DIR}/usr/www/avme/$i"
+	cp -a "${DIR}/.tk/original/filesystem/usr/www/avme/$i" "${FILESYSTEM_MOD_DIR}/usr/www/avme/$i"
 done
 
 echo2 "moving default config dir"
@@ -41,11 +39,11 @@ modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon WLAN 7340\
 modsed "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"99\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 # patch loading of bitfile
-if isFreetzType LANG_EN; then  
-	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn" 
+if isFreetzType LANG_EN; then
+	modsed "s/bitfile.bit/bitfile_isdn.bit/" "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
 	modsed 's#^\(modprobe Piglet_noemif.*\)#\1 piglet_potsbitfile=/lib/modules/bitfile_pots\.bit\${HWRevision_BitFileCount} piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`#g' \
-		"${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn" 
-fi 
+	  "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
+fi
 
 # patch install script to accept firmware from 7390
 echo2 "applying install patch"

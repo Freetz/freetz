@@ -8,4 +8,3 @@ fi
 
 rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/dtrace"
 [ "$FREETZ_REPLACE_DTRACE" == "y" ] && ln -s /tmp/flash/mod/dtrace "${FILESYSTEM_MOD_DIR}/usr/bin/dtrace"
-

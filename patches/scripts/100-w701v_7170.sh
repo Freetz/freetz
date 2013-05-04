@@ -15,11 +15,12 @@ for i in fs/ext2 fs/fat fs/isofs fs/nls fs/vfat fs/mbcache.ko drivers/usb driver
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/$i"
 done
 for i in bin/pause bin/reinit_jffs2 \
-	bin/*usb* sbin/*usb* usr/bin/*usb* usr/sbin/*usb* \
-	etc/hotplug etc/samba_control \
-	etc/default.*/*/*usb* etc/init.d/rc.*usb* etc/*usb*.tab \
-	lib/lib*usb*.so* usr/share/*/lib*usb*.so* \
-	usr/www/all/*usb* usr/www/all/html/*usb* usr/www/all/html/*/*usb* usr/www/all/html/*/*/*usb* ; do
+  bin/*usb* sbin/*usb* usr/bin/*usb* usr/sbin/*usb* \
+  etc/hotplug etc/samba_control \
+  etc/default.*/*/*usb* etc/init.d/rc.*usb* etc/*usb*.tab \
+  lib/lib*usb*.so* usr/share/*/lib*usb*.so* \
+  usr/www/all/*usb* usr/www/all/html/*usb* usr/www/all/html/*/*usb* usr/www/all/html/*/*/*usb* \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 
@@ -64,12 +65,14 @@ modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led
-sed -i -e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
-	-e 's|DEF info,0 = 99,32,16,info|DEF info,0 = 2,6,1,info|' \
-	-e 's|DEF info,1 = 99,32,16,info|DEF info,1 = 2,6,1,info|' \
-	-e 's|DEF info,2 = 99,32,16,info|DEF info,2 = 2,6,1,info|' \
-	-e 's|DEF info,3 = 99,32,16,info|DEF info,3 = 2,6,1,info|' \
-	-e 's|DEF info,4 = 99,32,16,info|DEF info,4 = 2,6,1,info|' "${FILESYSTEM_MOD_DIR}/etc/led.conf"
+sed -i \
+  -e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
+  -e 's|DEF info,0 = 99,32,16,info|DEF info,0 = 2,6,1,info|' \
+  -e 's|DEF info,1 = 99,32,16,info|DEF info,1 = 2,6,1,info|' \
+  -e 's|DEF info,2 = 99,32,16,info|DEF info,2 = 2,6,1,info|' \
+  -e 's|DEF info,3 = 99,32,16,info|DEF info,3 = 2,6,1,info|' \
+  -e 's|DEF info,4 = 99,32,16,info|DEF info,4 = 2,6,1,info|' \
+  "${FILESYSTEM_MOD_DIR}/etc/led.conf"
 
 # map tam info to power
 echo "MAP tam,0 TO power,1" >> "${FILESYSTEM_MOD_DIR}/etc/led.conf"

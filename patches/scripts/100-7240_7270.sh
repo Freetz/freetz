@@ -35,8 +35,7 @@ files+=" css/default/images/illu_box.gif"
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
 for i in $files; do
-	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" \
-		"${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
+	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" "${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
 done
 
 #echo2 "patching webmenu"
@@ -70,4 +69,3 @@ modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_plus_55266
 if isFreetzType LANG_EN; then
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/en/install-7240_7270.patch" || exit 2
 fi
-

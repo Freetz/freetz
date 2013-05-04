@@ -18,16 +18,16 @@ done
 # no internal S0
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit*"
 # USB
-for i in bin/pause bin/reinit_jffs2 \
-	bin/*usb* sbin/*usb* usr/bin/*usb* usr/sbin/*usb* \
-	etc/hotplug etc/samba_control \
-	etc/default.*/*/*usb* etc/init.d/rc.*usb* etc/*usb*.tab \
-	lib/lib*usb*.so* usr/share/*/lib*usb*.so* \
-	usr/www/all/*usb* usr/www/all/html/*usb* usr/www/all/html/*/*usb* usr/www/all/html/*/*/*usb* ; do
-		rm_files "${FILESYSTEM_MOD_DIR}/$i"
+for i in \
+  bin/pause bin/reinit_jffs2 \
+  bin/*usb* sbin/*usb* usr/bin/*usb* usr/sbin/*usb* \
+  etc/hotplug etc/samba_control \
+  etc/default.*/*/*usb* etc/init.d/rc.*usb* etc/*usb*.tab \
+  lib/lib*usb*.so* usr/share/*/lib*usb*.so* \
+  usr/www/all/*usb* usr/www/all/html/*usb* usr/www/all/html/*/*usb* usr/www/all/html/*/*/*usb* \
+  ; do
+	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
-
-
 
 echo2 "copying 7112 files"
 cp -a "${DIR}/.tk/original/filesystem/lib/modules/bitfile.bit" "${FILESYSTEM_MOD_DIR}/lib/modules/"
@@ -36,8 +36,7 @@ cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/driver
 cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && \
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
 
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-POTS-7170-alien.patch"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-FON3-7170-alien.patch"
@@ -72,4 +71,3 @@ modsed "s/CONFIG_USB_STORAGE_SPINDOWN=.*$/CONFIG_USB_STORAGE_SPINDOWN=\"n\"/g" "
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
 modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7112_7170.patch" || exit 2
-

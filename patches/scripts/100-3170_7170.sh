@@ -12,21 +12,22 @@ cp -a "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FIL
 
 echo2 "deleting obsolete files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
-for i in bin/reinit_jffs2 etc/init.d/rc.voip etc/minid \
-	lib/libmscodex* lib/libphone* lib/libspeex* \
-	lib/libavmaudio* lib/libconverttopdf* lib/libmedia* \
-	lib/modules/2.6.13.1-ohio/kernel/drivers/char/audio \
-	lib/modules/2.6.13.1-ohio/kernel/drivers/net/rfcntl \
-	lib/modules/2.6.13.1-ohio/kernel/fs/jffs2 \
-	lib/modules/2.6.13.1-ohio/kernel/fs/isofs \
-	usr/bin/faxd usr/bin/resettam \
-	usr/share/tam usr/share/telefon usr/share/ctlmgr/libtamconf.so; do
+for i in \
+  bin/reinit_jffs2 etc/init.d/rc.voip etc/minid \
+  lib/libmscodex* lib/libphone* lib/libspeex* \
+  lib/libavmaudio* lib/libconverttopdf* lib/libmedia* \
+  lib/modules/2.6.13.1-ohio/kernel/drivers/char/audio \
+  lib/modules/2.6.13.1-ohio/kernel/drivers/net/rfcntl \
+  lib/modules/2.6.13.1-ohio/kernel/fs/jffs2 \
+  lib/modules/2.6.13.1-ohio/kernel/fs/isofs \
+  usr/bin/faxd usr/bin/resettam \
+  usr/share/tam usr/share/telefon usr/share/ctlmgr/libtamconf.so \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$i"
 done
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && \
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170
@@ -85,4 +86,3 @@ if isFreetzType LANG_DE || isFreetzType ANNEX_B; then
 else
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-3170_7170_a_ch.patch" || exit 2
 fi
-

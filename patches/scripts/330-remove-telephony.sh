@@ -12,8 +12,16 @@ else
 	rm_files $(find ${FILESYSTEM_MOD_DIR} -name '*isdn*' -o -name '*iglet*' -o -name '*voip' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/')
 fi
 
+# libcapi cannot be removed in firmwares having libfaxsendlua.so, libfaxsendlua.so is required by /usr/www/cgi-bin/firmwarecfg
+# this is also the reason why we don't remove libfaxsendlua.so
+# TODO: AVM's version of libcapi can be removed if freetz' version of it is available. In order this to work we however need to symlink
+# AVM's version to the freetz one (i.e. "to replace it"). AVM binaries know nothing about /usr/lib/freetz and will not find libcapi there.
+if [ ! -e "${FILESYSTEM_MOD_DIR}/lib/libfaxsendlua.so" ] || ! isNeededEntry libcapi20.so "${FILESYSTEM_MOD_DIR}/lib/libfaxsendlua.so"; then
+	rm_files $(find ${FILESYSTEM_MOD_DIR} -name 'libcapi*')
+fi
+
 rm_files \
-  $(find ${FILESYSTEM_MOD_DIR} -name '*capi*' -o -name '*tam*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
+  $(find ${FILESYSTEM_MOD_DIR} \( -name '*capi*' -a ! -name 'libcapi*' \) -o -name '*tam*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
   $(find ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr -name 'libfon*' -o -name 'libtelcfg*') \
   $(find ${FILESYSTEM_MOD_DIR} -name 'voipd' -o -name 'telefon' -o -name 'pbd' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
   ${FILESYSTEM_MOD_DIR}/usr/bin/faxd \

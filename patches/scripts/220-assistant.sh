@@ -2,9 +2,10 @@
 # from m*.* mod
 echo1 "removing assistant"
 
-rm_files "${HTML_SPEC_MOD_DIR}/konfig" \
-	 "${HTML_LANG_MOD_DIR}/html/index_assi.html" \
-	 "${HTML_LANG_MOD_DIR}/html/assistent.html"
+rm_files \
+  "${HTML_SPEC_MOD_DIR}/konfig" \
+  "${HTML_LANG_MOD_DIR}/html/index_assi.html" \
+  "${HTML_LANG_MOD_DIR}/html/assistent.html"
 
 if [ "$FREETZ_REMOVE_ASSISTANT_SIP" == "y" ]; then
 	# Don't delete provider.js because it's referenced by other files.
@@ -12,15 +13,14 @@ if [ "$FREETZ_REMOVE_ASSISTANT_SIP" == "y" ]; then
 else
 	# Needed by "neue Rufnummer": first.frm , lib.js , *bb_backokcancel.html , first_Sip_(1|2|3)*
 	rm_files \
-		"${HTML_SPEC_MOD_DIR}/first/*_ISP*" \
-		"${HTML_SPEC_MOD_DIR}/first/basic_first*" \
-		"${HTML_SPEC_MOD_DIR}/first/first_Sip_free.*" \
-		"${HTML_SPEC_MOD_DIR}/first/first_Start_Sip.*" \
-		"${HTML_SPEC_MOD_DIR}/first/first_SIP_UI_*"
+	  "${HTML_SPEC_MOD_DIR}/first/*_ISP*" \
+	  "${HTML_SPEC_MOD_DIR}/first/basic_first*" \
+	  "${HTML_SPEC_MOD_DIR}/first/first_Sip_free.*" \
+	  "${HTML_SPEC_MOD_DIR}/first/first_Start_Sip.*" \
+	  "${HTML_SPEC_MOD_DIR}/first/first_SIP_UI_*"
 fi
 
-find "${HTML_SPEC_MOD_DIR}/menus" -type f |
-	xargs sed -s -i -e '/var:menuAssistent/d'
+find "${HTML_SPEC_MOD_DIR}/menus" -type f | xargs sed -s -i -e '/var:menuAssistent/d'
 
 if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then
@@ -54,4 +54,3 @@ modsed \
 modsed \
   's/^http.redirect(get_goto_oldassi_href.*/go_home()/' \
   "${HTML_LANG_MOD_DIR}/lua/first.lua"
-

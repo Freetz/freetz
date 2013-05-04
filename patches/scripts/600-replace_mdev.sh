@@ -4,6 +4,7 @@ ln_file () {
 	echo2 "linking $2 to $1"
 	ln -s "$1" "$2"
 }
+
 echo1 "relocating stick'n'surf configuration program"
 mkdir -m 750 -p ${FILESYSTEM_MOD_DIR}/lib/mdev/misc
 

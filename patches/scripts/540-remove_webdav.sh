@@ -2,14 +2,14 @@
 
 echo1 "removing AVM webdav files"
 for files in \
-	lib/libexpat.so* \
-	lib/libneon.so* \
-	sbin/*mount.davfs \
-	etc/onlinechanged/webdav_net \
-	etc/webdav_control \
-	usr/www/all/html/de/home/home_webdav.txt \
-	bin/webdavcfginfo \
-	; do
+  lib/libexpat.so* \
+  lib/libneon.so* \
+  sbin/*mount.davfs \
+  etc/onlinechanged/webdav_net \
+  etc/webdav_control \
+  usr/www/all/html/de/home/home_webdav.txt \
+  bin/webdavcfginfo \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 

@@ -1,15 +1,16 @@
 [ "$FREETZ_REMOVE_AHA" == "y" ] || return 0
 echo1 "removing aha files"
 for files in \
- 	usr/bin/aha \
- 	lib/libaha.so* \
-	usr/share/aha/ \
-	etc/init.d/S78-aha \
-	usr/www/all/lua/ha_func_lib.lua \
-	usr/www/all/net/home_auto_*.lua \
-	usr/www/all/mobile/home_auto_*.lua \
-	usr/www/all/js/ha_draw.js \
-	; do
+  usr/bin/aha \
+  usr/bin/ahamailer \
+  lib/libaha.so* \
+  usr/share/aha/ \
+  etc/init.d/S78-aha \
+  usr/www/all/lua/ha_func_lib.lua \
+  usr/www/all/net/home_auto_*.lua \
+  usr/www/all/mobile/home_auto_*.lua \
+  usr/www/all/js/ha_draw.js \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 

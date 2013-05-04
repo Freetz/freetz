@@ -1,14 +1,14 @@
 [ "$FREETZ_REMOVE_DECT" == "y" ] || return 0
 echo1 "removing DECT files"
 for files in \
-	bin/supportdata.dect \
-	sbin/start_dect_update.sh \
-	usr/bin/dect_manager \
-	usr/share/ctlmgr/libdect.so \
-	lib/modules/dectfw_firstlevel.hex \
-	lib/modules/dectfw_secondlevel.hex \
-	$(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*dect*" -printf "%P\n") \
-	; do
+  bin/supportdata.dect \
+  sbin/start_dect_update.sh \
+  usr/bin/dect_manager \
+  usr/share/ctlmgr/libdect.so \
+  lib/modules/dectfw_firstlevel.hex \
+  lib/modules/dectfw_secondlevel.hex \
+  $(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*dect*" -printf "%P\n") \
+  ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")

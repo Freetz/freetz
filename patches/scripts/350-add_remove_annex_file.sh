@@ -19,25 +19,24 @@ fi
 if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS" == "y" ]; then
 	echo1 "removing Multi-Annex firmware diff files"
 	for files in \
-	 	lib/modules/dsp_*/*-?-dsl.bin.bsdiff \
-	 	lib/modules/dsp_*/*-?-dsl.bin.md5sum \
-	 	lib/modules/*Vx180Code.bin.bsdiff \
-	 	lib/modules/*Vx180Code.bin.md5sum \
-	 	usr/bin/bspatch \
-		; do
+	  lib/modules/dsp_*/*-?-dsl.bin.bsdiff \
+	  lib/modules/dsp_*/*-?-dsl.bin.md5sum \
+	  lib/modules/*Vx180Code.bin.bsdiff \
+	  lib/modules/*Vx180Code.bin.md5sum \
+	  usr/bin/bspatch \
+	  ; do
 		rm_files "${FILESYSTEM_MOD_DIR}/$files"
 	done
 	if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME" == "y" ]; then
 		echo1 "removing Multi-Annex firmware prime file"
 		for files in \
-		 	lib/modules/dsp_*/*-?-dsl.bin \
-		 	lib/modules/*Vx180Code.bin.gz \
-		 	lib/modules/*/kernel/drivers/vdsldriver/ \
-		 	usr/sbin/dsl_monitor \
-		 	etc/init.d/E40-dsl \
-			; do
+		  lib/modules/dsp_*/*-?-dsl.bin \
+		  lib/modules/*Vx180Code.bin.gz \
+		  lib/modules/*/kernel/drivers/vdsldriver/ \
+		  usr/sbin/dsl_monitor \
+		  etc/init.d/E40-dsl \
+		  ; do
 			rm_files "${FILESYSTEM_MOD_DIR}/$files"
 		done
 	fi
 fi
-
