@@ -19,7 +19,7 @@ pre_start() {
 }
 
 start() {
-	local STATIC_ARGS="--close-stderr --user=$DAEMON --pid-file=$PID_FILE"
+	local STATIC_ARGS="--user=$DAEMON --pid-file=$PID_FILE"
 	local CUSTOM_ARGS="$(
 		echo "$EMAILRELAY_OPTIONS" | while read line; do
 			echo "$line" | grep -q "^[ \t]*$" && continue
@@ -28,11 +28,17 @@ start() {
 			echo "$line" | sed 's/^/--/;s/ /=/'
 		done | sort -u
 	)"
-	modlib_startdaemon $DAEMON_BIN $STATIC_ARGS $CUSTOM_ARGS
+	modlib_startdaemon $DAEMON_BIN $STATIC_ARGS $CUSTOM_ARGS 2>/dev/null
 }
 
 startdaemon_post() {
-	[ ! -s $PID_FILE ] && sleep 1
+        # wait for proper daemon startup, typically 0-2 seconds
+        local cnt=0
+        while [ $cnt -le 9 ]; do
+                [ -s $PID_FILE ] && kill -0 "$(cat $PID_FILE)" 2>/dev/null && break
+                let cnt++
+                sleep 1
+        done
 }
 
 case $1 in
