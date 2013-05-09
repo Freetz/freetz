@@ -1,0 +1,29 @@
+
+http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?id=a9fec7102f01f6464b19e13ffd9d8c48663379ad
+
+
+From a9fec7102f01f6464b19e13ffd9d8c48663379ad Mon Sep 17 00:00:00 2001
+From: Jim Paris <jim@jtan.com>
+Date: Thu, 15 Jan 2009 13:31:07 +0000
+Subject: ftdi_sio: fix kref leak
+
+Commit 4a90f09b20f4622dcbff1f0e1e6bae1704f8ad8c added kref stuff to
+ftdi_sio, but missed tty_kref_put at one exit point in
+ftdi_process_read.
+
+Signed-off-by: Jim Paris <jim@jtan.com>
+Signed-off-by: Alan Cox <alan@redhat.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+---
+--- linux-2.6.28/drivers/usb/serial/ftdi_sio.c
++++ linux-2.6.28/drivers/usb/serial/ftdi_sio.c
+@@ -2089,7 +2089,7 @@
+ 			spin_unlock_irqrestore(&priv->rx_lock, flags);
+ 			dbg("%s - deferring remainder until unthrottled",
+ 					__func__);
+-			return;
++			goto out;
+ 		}
+ 		spin_unlock_irqrestore(&priv->rx_lock, flags);
+ 		/* if the port is closed stop trying to read */
