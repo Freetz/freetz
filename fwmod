@@ -727,17 +727,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "cannot determine version"
 	fi
 
-	if [ "$FREETZ_DEVELOPER_VERSION_STRING" == "y" ]; then
-		if [ -d .svn ]; then
-			# be compatible: older versions of svnversion need WC_PATH
-			if REVISION="$(svnversion . | tr ":" "_")"; then
-				[ "${REVISION:0:6}" == "export" ] && REVISION=""
-			fi
-		elif [ -d .git ]; then
-			REVISION="$(git log 2>/dev/null | sed -rn 's!.*git-svn-id.*\@([^ ]*).*!\1!p' | head -n1)"
+	if [ -d .svn ]; then
+		# be compatible: older versions of svnversion need WC_PATH
+		if REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"; then
+			[ "${REVISION:0:6}" == "export" ] && REVISION=""
 		fi
-		[ -n "$REVISION" ] && REVISION="-$REVISION"
+	elif [ -d .git ]; then
+		REVISION="$(git log 2>/dev/null | sed -rn 's!.*git-svn-id.*\@([^ ]*).*!\1!p' | head -n1)"
 	fi
+	[ -n "$REVISION" ] && REVISION="-$REVISION"
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
 	#delete .packages file
