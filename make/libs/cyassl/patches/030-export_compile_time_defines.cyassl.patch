@@ -1,6 +1,6 @@
 --- cyassl/ctaocrypt/settings.h
 +++ cyassl/ctaocrypt/settings.h
-@@ -454,6 +454,48 @@
+@@ -507,6 +507,60 @@
  
  /* Place any other flags or defines here */
  
@@ -43,6 +43,18 @@
 +
 +	#if !defined(NO_PSK)
 +	#define NO_PSK
++	#endif
++
++	#if !defined(NO_DSA)
++	#define NO_DSA
++	#endif
++
++	#if !defined(NO_MD4)
++	#define NO_MD4
++	#endif
++
++	#if !defined(NO_PWDBASED)
++	#define NO_PWDBASED
 +	#endif
 +
 +#endif /* FREETZ */

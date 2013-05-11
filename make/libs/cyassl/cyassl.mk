@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 2.5.0)
+$(call PKG_INIT_LIB, 2.6.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=8965fb76f89af827ace53e423453b7cd
+$(PKG)_SOURCE_MD5:=9c48fd4ab677c11b4612fb4eb15444d9
 $(PKG)_SITE:=http://yassl.com
 
-$(PKG)_LIBNAME:=libcyassl.so.4.0.0
+$(PKG)_LIBNAME:=libcyassl.so.5.0.0
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
@@ -14,7 +14,9 @@ $(PKG)_CONFIGURE_ENV += C_EXTRA_FLAGS="$(TARGET_CFLAGS)"
 $(PKG)_CONFIGURE_ENV += PTHREAD_CFLAGS=-pthread
 $(PKG)_CONFIGURE_ENV += PTHREAD_LIBS=-lpthread
 
-$(PKG)_CONFIGURE_OPTIONS += --enable-opensslExtra
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-opensslextra
 $(PKG)_CONFIGURE_OPTIONS += --enable-fastmath
 $(PKG)_CONFIGURE_OPTIONS += --enable-bigcache
 $(PKG)_CONFIGURE_OPTIONS += --disable-dtls
