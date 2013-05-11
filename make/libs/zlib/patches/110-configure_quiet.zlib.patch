@@ -1,10 +1,10 @@
 --- configure
 +++ configure
-@@ -106,6 +106,7 @@
-     -a*=* | --archs=*) ARCHS=`echo $1 | sed 's/.*=//'`; shift ;;
+@@ -121,6 +121,7 @@
      --sysconfdir=*) echo "ignored option: --sysconfdir" | tee -a configure.log; shift ;;
      --localstatedir=*) echo "ignored option: --localstatedir" | tee -a configure.log; shift ;;
+     -c* | --const) zconst=1; shift ;;
 +    --quiet) shift ;;
-     *) echo "unknown option: $1"; echo "$0 --help for help" | tee -a configure.log; exit 1 ;;
-     esac
- done
+     *)
+       echo "unknown option: $1" | tee -a configure.log
+       echo "$0 --help for help" | tee -a configure.log

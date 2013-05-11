@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.7)
+$(call PKG_INIT_LIB, 1.2.8)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=2ab442d169156f34c379c968f3f482dd
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=28f1205d8dd2001f26fec1e8c2cebe37
 $(PKG)_SITE:=http://zlib.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
