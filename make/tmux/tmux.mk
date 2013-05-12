@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.7)
+$(call PKG_INIT_BIN, 1.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=2c48fb9beb22eedba7a5de3b78dd0c03
+$(PKG)_SOURCE_MD5:=b9477de2fe660244cbc6e6d7e668ea0e
 $(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/tmux

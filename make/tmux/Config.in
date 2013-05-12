@@ -1,11 +1,8 @@
 config FREETZ_PACKAGE_TMUX
-	bool "tmux 1.7 (binary only)"
-	select FREETZ_LIB_libcrypt if ! FREETZ_PACKAGE_TMUX_STATIC
+	bool "tmux 1.8 (binary only)"
 	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_TMUX_STATIC
-	select FREETZ_LIB_librt if ! FREETZ_PACKAGE_TMUX_STATIC
 	select FREETZ_LIB_libncurses if ! FREETZ_PACKAGE_TMUX_STATIC
 	select FREETZ_LIB_libevent if ! FREETZ_PACKAGE_TMUX_STATIC
-	select FREETZ_LIB_libpthread if ! FREETZ_PACKAGE_TMUX_STATIC
 	select FREETZ_SHARE_terminfo
 	default n
 	help
