@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.10)
+$(call PKG_INIT_BIN, 0.2.11)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4d71a699bddce3df0996b5dd0a279b47
+$(PKG)_SOURCE_MD5:=f02030d04d45b51c2dea201b9f50bd8d
 $(PKG)_SITE:=http://$(pkg).googlecode.com/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)d
@@ -17,6 +17,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 endif
+$(PKG)_CONFIGURE_OPTIONS += --disable-polarssl-test-certificate
+$(PKG)_CONFIGURE_OPTIONS += --disable-polarssl-havege
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
