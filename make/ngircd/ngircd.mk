@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,19.2)
+$(call PKG_INIT_BIN, 20.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=8d71dd7da25f5da918a20202681501f0
+$(PKG)_SOURCE_MD5:=603f0b05e57a2b3bce0e7184bf418461
 $(PKG)_SITE:=ftp://ftp.berlios.de/pub/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)/$(pkg)
