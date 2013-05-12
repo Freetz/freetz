@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 2.2.5)
+$(call PKG_INIT_BIN, 2.2.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=77a10a49589f975ce98350a4527a2ebf
+$(PKG)_SOURCE_MD5:=03233ae480689a008eb98feb1b599807
 $(PKG)_SITE:=http://www.nano-editor.org/dist/v2.2
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nano
 
@@ -85,4 +86,3 @@ $(pkg)-uninstall:
 	$(RM) $(NANO_TARGET_BINARY)
 
 $(PKG_FINISH)
-
