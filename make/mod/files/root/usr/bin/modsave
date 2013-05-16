@@ -15,9 +15,8 @@ save() {
 
 	tar -cf $TMPFILE flash -C /tmp/
 
-	# compressed config size must be less than 32 KB
+	# compressed config size must be less than 32 KB (~32330Bytes)
 	size=$(gzip -c $TMPFILE | wc -c)
-
 	if [ "$size" -gt "$MOD_LIMIT" ]; then
 		rm -f $TMPFILE
 		echo "size: $size limit: $MOD_LIMIT" 1>&2
@@ -25,13 +24,13 @@ save() {
 		exit 1
 	fi
 
+	which md5sum >/dev/null && FLASHSUM="$(md5sum /var/flash/freetz)" || FLASHSUM=ignore
 	echo -n "Writing $size bytes to /var/flash/freetz ... "
 	cat $TMPFILE > /var/flash/freetz 2>/dev/null
 	local rv=$?
 	rm -f $TMPFILE
-	if [ $rv -ne 0 ]; then
+	if [ $rv -ne 0 -o "$FLASHSUM" == "$(md5sum /var/flash/freetz 2>/dev/null)" ]; then
 		echo 'failed.'
-		echo 'Error: Could not save config file.'
 		exit $rv
 	fi
 	echo "done."
