@@ -24,12 +24,13 @@ save() {
 		exit 1
 	fi
 
-	which md5sum >/dev/null && FLASHSUM="$(md5sum /var/flash/freetz)" || FLASHSUM=ignore
+	FLASHSUM="$(md5sum /var/flash/freetz 2>/dev/null)"
 	echo -n "Writing $size bytes to /var/flash/freetz ... "
 	cat $TMPFILE > /var/flash/freetz 2>/dev/null
 	local rv=$?
 	rm -f $TMPFILE
-	if [ $rv -ne 0 -o "$FLASHSUM" == "$(md5sum /var/flash/freetz 2>/dev/null)" ]; then
+	which md5sum >/dev/null && [ "$(md5sum /var/flash/freetz)" == "$FLASHSUM" ] && local rv=9
+	if [ $rv -ne 0 ]; then
 		echo 'failed.'
 		exit $rv
 	fi
