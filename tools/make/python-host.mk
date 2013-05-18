@@ -1,6 +1,6 @@
-PYTHON_HOST_VERSION:=2.7.4
+PYTHON_HOST_VERSION:=2.7.5
 PYTHON_HOST_SOURCE:=Python-$(PYTHON_HOST_VERSION).tar.bz2
-PYTHON_HOST_MD5:=62704ea0f125923208d84ff0568f7d50
+PYTHON_HOST_MD5:=6334b666b7ff2038c761d7b27ba699c1
 PYTHON_HOST_SITE:=http://www.python.org/ftp/python/$(PYTHON_HOST_VERSION)
 
 PYTHON_HOST_DIR:=$(TOOLS_SOURCE_DIR)/Python-$(PYTHON_HOST_VERSION)
@@ -67,6 +67,6 @@ python-host-dirclean:
 		$(HOST_TOOLS_DIR)/usr/lib/python2.7 \
 		$(HOST_TOOLS_DIR)/usr/lib/pkgconfig/python* \
 		$(HOST_TOOLS_DIR)/usr/share/python2.7 \
-		$(HOST_TOOLS_DIR)/usr/share/man/man1/python2.7.1
+		$(HOST_TOOLS_DIR)/usr/share/man/man1/python*
 
 .PHONY: python-host-source python-host-unpacked python-host-configured python-host python-host-clean python-host-dirclean
