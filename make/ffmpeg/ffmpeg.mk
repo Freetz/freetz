@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.2)
+$(call PKG_INIT_BIN, 1.2.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=c871d20559cb64c015b5cf0858812a56
+$(PKG)_SOURCE_MD5:=5071a26cc149f380908ce79ec2a677ef
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
 $(PKG)_DEPENDS_ON := zlib
@@ -57,7 +57,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-gpl
 $(PKG)_CONFIGURE_OPTIONS += --enable-version3
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-doc
-$(PKG)_CONFIGURE_OPTIONS += --disable-dxva2
 $(PKG)_CONFIGURE_OPTIONS += --disable-mmx
 $(PKG)_CONFIGURE_OPTIONS += --disable-mmxext
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthreads
