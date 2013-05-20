@@ -64,7 +64,7 @@
  case $OS_NAME in
  	OpenBSD)
  		MAJORVER=`echo $OS_VERSION | cut -d. -f1`
-@@ -155,9 +156,9 @@
+@@ -155,49 +156,49 @@
  		exit 1
  		;;
  esac
@@ -75,7 +75,65 @@
  echo "#define OS_URL			\"${OS_URL}\"" >> ${CONFIGFILE}
  echo "" >> ${CONFIGFILE}
  
-@@ -175,7 +176,7 @@
+-if [ -e "/usr/include/libavutil/avutil.h" ]; then
++if [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libavutil/avutil.h" ]; then
+ 	echo "#define HAVE_LIBAVUTIL_AVUTIL_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/ffmpeg/avutil.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/ffmpeg/avutil.h" ]; then
+ 	echo "#define HAVE_FFMPEG_AVUTIL_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/ffmpeg/libavutil/avutil.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/ffmpeg/libavutil/avutil.h" ]; then
+ 	echo "#define HAVE_FFMPEG_LIBAVUTIL_AVUTIL_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/libav/libavutil/avutil.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libav/libavutil/avutil.h" ]; then
+ 	echo "#define HAVE_LIBAV_LIBAVUTIL_AVUTIL_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/libav/avutil.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libav/avutil.h" ]; then
+ 	echo "#define HAVE_LIBAV_AVUTIL_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/avutil.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/avutil.h" ]; then
+ 	echo "#define HAVE_AVUTIL_H 1" >> ${CONFIGFILE}
+ fi
+-if [ -e "/usr/include/libavformat/avformat.h" ]; then
++if [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libavformat/avformat.h" ]; then
+ 	echo "#define HAVE_LIBAVFORMAT_AVFORMAT_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/ffmpeg/avformat.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/ffmpeg/avformat.h" ]; then
+ 	echo "#define HAVE_FFMPEG_AVFORMAT_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/ffmpeg/libavformat/avformat.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/ffmpeg/libavformat/avformat.h" ]; then
+ 	echo "#define HAVE_FFMPEG_LIBAVFORMAT_AVFORMAT_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/libav/libavformat/avformat.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libav/libavformat/avformat.h" ]; then
+ 	echo "#define HAVE_LIBAV_LIBAVFORMAT_AVFORMAT_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/libav/avformat.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libav/avformat.h" ]; then
+ 	echo "#define HAVE_LIBAV_AVFORMAT_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/avformat.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/avformat.h" ]; then
+ 	echo "#define HAVE_AVFORMAT_H 1" >> ${CONFIGFILE}
+ fi
+-if [ -e "/usr/include/libavcodec/avcodec.h" ]; then
++if [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libavcodec/avcodec.h" ]; then
+ 	echo "#define HAVE_LIBAVCODEC_AVCODEC_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/ffmpeg/avcodec.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/ffmpeg/avcodec.h" ]; then
+ 	echo "#define HAVE_FFMPEG_AVCODEC_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/ffmpeg/libavcodec/avcodec.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/ffmpeg/libavcodec/avcodec.h" ]; then
+ 	echo "#define HAVE_FFMPEG_LIBAVCODEC_AVCODEC_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/libav/libavcodec/avcodec" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libav/libavcodec/avcodec" ]; then
+ 	echo "#define HAVE_LIBAV_LIBAVCODEC_AVCODEC_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/libav/avcodec.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/libav/avcodec.h" ]; then
+ 	echo "#define HAVE_LIBAV_AVCODEC_H 1" >> ${CONFIGFILE}
+-elif [ -e "/usr/include/avcodec.h" ]; then
++elif [ -e "${CROSS_TOOLCHAIN_SYSROOT}/usr/include/avcodec.h" ]; then
+ 	echo "#define HAVE_AVCODEC_H 1" >> ${CONFIGFILE}
+ fi
+ echo >> ${CONFIGFILE}
+@@ -216,7 +217,7 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system inotify.h exists.  Otherwise our own inotify.h will be used. */" >> ${CONFIGFILE}
@@ -84,7 +142,7 @@
  echo "#define HAVE_INOTIFY_H" >> ${CONFIGFILE}
  else
  echo "/*#define HAVE_INOTIFY_H*/" >> ${CONFIGFILE}
-@@ -183,7 +184,7 @@
+@@ -224,7 +225,7 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system iconv.h exists.  ID3 tag reading in various character sets will not work properly otherwise. */" >> ${CONFIGFILE}
@@ -93,7 +151,7 @@
  echo "#define HAVE_ICONV_H" >> ${CONFIGFILE}
  else
  echo -e "\nWARNING!!  Iconv support not found.  ID3 tag reading may not work."
-@@ -192,11 +193,11 @@
+@@ -233,11 +234,11 @@
  echo "" >> ${CONFIGFILE}
  
  echo "/* Enable if the system libintl.h exists for NLS support. */" >> ${CONFIGFILE}
@@ -111,16 +169,13 @@
  echo "/* Enable NETGEAR-specific tweaks. */" >> ${CONFIGFILE}
 --- Makefile
 +++ Makefile
-@@ -10,14 +10,9 @@
+@@ -10,11 +10,9 @@
  # or :
  # $ make install
  #
 -#CFLAGS = -Wall -O -D_GNU_SOURCE -g -DDEBUG
 -#CFLAGS = -Wall -g -Os -D_GNU_SOURCE
--CFLAGS = -Wall -g -O3 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 \
--	 -I/usr/include/ffmpeg \
--	 -I/usr/include/libavutil -I/usr/include/libavcodec -I/usr/include/libavformat \
--	 -I/usr/include/ffmpeg/libavutil -I/usr/include/ffmpeg/libavcodec -I/usr/include/ffmpeg/libavformat
+-CFLAGS = -Wall -g -O3 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 -#STATIC_LINKING: CFLAGS += -DSTATIC
 -#STATIC_LINKING: LDFLAGS = -static
 +override CFLAGS   += -Wall -pthread -ffunction-sections -fdata-sections
@@ -129,7 +184,7 @@
  CC = gcc
  RM = rm -f
  INSTALL = install
-@@ -35,16 +30,19 @@
+@@ -32,16 +30,19 @@
             tagutils/textutils.o tagutils/misc.o tagutils/tagutils.o \
             playlist.o image_utils.o albumart.o log.o
  
@@ -153,7 +208,7 @@
  
  all:	$(EXECUTABLES)
  
-@@ -56,7 +54,7 @@
+@@ -53,7 +54,7 @@
  distclean: clean
  	$(RM) config.h
  
@@ -162,7 +217,7 @@
  	$(INSTALL) -d $(SBININSTALLDIR)
  	$(INSTALL) minidlna $(SBININSTALLDIR)
  
-@@ -64,21 +62,11 @@
+@@ -61,21 +62,11 @@
  	$(INSTALL) -d $(ETCINSTALLDIR)
  	$(INSTALL) --mode=0644 minidlna.conf $(ETCINSTALLDIR)
  
@@ -188,15 +243,13 @@
  
  # DO NOT DELETE
  
-@@ -128,8 +116,4 @@
+@@ -125,6 +116,4 @@
  .SUFFIXES: .c .o
  
  .c.o:
 -	@echo Compiling $*.c
--	@$(CC) $(CFLAGS) -o $@ -c $< && exit 0;\
--		echo "The following command failed:" 1>&2;\
--		echo "$(CC) $(CFLAGS) -o $@ -c $<";\
--		$(CC) $(CFLAGS) -o $@ -c $< &>/dev/null
+-	@$(CC) $(CFLAGS) -o $@ -c $< && exit 0; \
+-		echo "The following command failed:  $(CC) $(CFLAGS) -o $@ -c $<" && false
 +	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 --- upnphttp.h
 +++ upnphttp.h

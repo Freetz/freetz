@@ -1,29 +1,3 @@
---- metadata.c
-+++ metadata.c
-@@ -30,9 +30,9 @@
- #include "image_utils.h"
- #include <jpeglib.h>
- #include <setjmp.h>
--#include <avutil.h>
--#include <avcodec.h>
--#include <avformat.h>
-+#include <libavutil/avutil.h>
-+#include <libavcodec/avcodec.h>
-+#include <libavformat/avformat.h>
- #include "tagutils/tagutils.h"
- 
- #include "upnpglobalvars.h"
---- tagutils/tagutils-plist.c
-+++ tagutils/tagutils-plist.c
-@@ -27,7 +27,7 @@
- #include "misc.h"
- #include "tagutils.h"
- #include "textutils.h"
--#include "log.h"
-+#include "../log.h"
- 
- 
- #define MAX_BUF 4096
 --- minidlnatypes.h
 +++ minidlnatypes.h
 @@ -31,6 +31,7 @@
