@@ -1,0 +1,20 @@
+--- Makefile.in
++++ Makefile.in
+@@ -314,7 +314,7 @@
+ 	@LIBEXIF_LIBS@ \
+ 	@LIBINTL@ \
+ 	@LIBICONV@ \
+-	-lFLAC  $(flacoggflag) $(vorbisflag)
++	-lFLAC $(vorbisflag) $(flacoggflag)
+ 
+ minidlnad_LDFLAGS = @STATIC_LDFLAGS@
+ testupnpdescgen_SOURCES = testupnpdescgen.c upnpdescgen.c
+@@ -325,7 +325,7 @@
+ 	@LIBAVFORMAT_LIBS@ \
+ 	@LIBAVUTIL_LIBS@ \
+ 	@LIBEXIF_LIBS@ \
+-	-lFLAC  $(flacoggflag) $(vorbisflag)
++	-lFLAC $(vorbisflag) $(flacoggflag)
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ EXTRA_DIST = m4/ChangeLog

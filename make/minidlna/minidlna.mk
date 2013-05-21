@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 1.0.26)
+$(call PKG_INIT_BIN, 1.1.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c8347c0ce44579f9ff2ca24676dcc5f7
+$(PKG)_SOURCE_MD5:=26484a84af3fceafdee26595aae097f7
 $(PKG)_SITE:=@SF/minidlna
 
-$(PKG)_BINARY := $($(PKG)_DIR)/minidlna
+$(PKG)_BINARY := $($(PKG)_DIR)/minidlnad
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/sbin/minidlna
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MINIDLNA_STATIC
@@ -12,11 +12,29 @@ $(PKG)_DEPENDS_ON += ffmpeg libexif flac libid3tag jpeg libogg libvorbis sqlite
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_ICONV_LIB += -liconv
+$(PKG)_CONFIGURE_OPTIONS += --with-libiconv-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)"
+else
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 endif
 
-$(PKG)_CONFIGURE_PRE_CMDS += ln -s genconfig.sh configure;
-$(PKG)_CONFIGURE_DEFOPTS := n
-$(PKG)_CONFIGURE_ENV := CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)"
+$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --disable-netgear
+$(PKG)_CONFIGURE_OPTIONS += --disable-readynas
+$(PKG)_CONFIGURE_OPTIONS += --enable-tivo
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_MINIDLNA_STATIC),--enable-static,--disable-static)
+$(PKG)_CONFIGURE_OPTIONS += --with-log-path="/var/log"
+$(PKG)_CONFIGURE_OPTIONS += --with-db-path="/tmp/minidlna"
+$(PKG)_CONFIGURE_OPTIONS += --with-os-name="FRITZ!Box"
+$(PKG)_CONFIGURE_OPTIONS += --with-os-version=""
+$(PKG)_CONFIGURE_OPTIONS += --with-os-url="http://freetz.org"
+
+ifeq ($(strip $(FREETZ_PACKAGE_MINIDLNA_STATIC)),y)
+# sqlite
+$(PKG)_EXTRA_LIBS += -ldl
+# libavformat
+$(PKG)_EXTRA_LIBS += -lavcodec -lavutil $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),-lopenjpeg) -lz -lm
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -24,12 +42,10 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MINIDLNA_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LINK_STATICALLY="$(if $(FREETZ_PACKAGE_MINIDLNA_STATIC),yes,no)" \
-		FFMPEG_EXTRA_LIBS="$(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),-lopenjpeg)" \
-		ICONV_LIB="$(MINIDLNA_ICONV_LIB)" \
-		CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)"
+		EXTRA_CFLAGS="-ffunction-sections -fdata-sections" \
+		EXTRA_LDFLAGS="-Wl,--gc-sections" \
+		EXTRA_LIBS="$(MINIDLNA_EXTRA_LIBS)" \
+		V=1
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

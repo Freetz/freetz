@@ -1,0 +1,11 @@
+--- configure
++++ configure
+@@ -9944,7 +9944,7 @@
+ 	if test "$enableval" = "yes"; then
+ 		STATIC_CFLAGS="-DSTATIC"
+ 
+-		STATIC_LDFLAGS="-Wl,-Bstatic"
++		STATIC_LDFLAGS="-static-libgcc -Wl,-Bstatic"
+ 
+                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
