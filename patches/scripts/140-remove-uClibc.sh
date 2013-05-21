@@ -1,6 +1,7 @@
 [ "$FREETZ_UCLIBC_0_9_28_BASED_BOX" == "y" ] && version="0.9.28"
 [ "$FREETZ_UCLIBC_0_9_29_BASED_BOX" == "y" ] && version="0.9.29"
 [ "$FREETZ_UCLIBC_0_9_32_BASED_BOX" == "y" ] && version="0.9.32"
+[ "$FREETZ_UCLIBC_0_9_33_BASED_BOX" == "y" ] && version="0.9.33.2"
 
 echo1 "removing uClibc-${version} files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/*${version}*"
