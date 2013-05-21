@@ -1,0 +1,42 @@
+From 1181ad3ea9d73908b0238702032eccaeb8834a1a Mon Sep 17 00:00:00 2001
+From: Willy Tarreau <w@1wt.eu>
+Date: Fri, 26 Apr 2013 11:43:56 +0200
+Subject: [PATCH 2/2] BUG/MEDIUM: checks: disable TCP quickack when pure TCP
+ checks are used
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Cyril Bonté reported an issue with some services when pure port probes are
+used since 1.4.23, because of the RST which is sent and sometimes caught by
+the checked service. The result is that the service detects an error and may
+sometimes log this error or complain about it. This issue does not appear
+when "option tcp-smart-connect" is set.
+
+So we now perform exactly like 1.5 with port probes, which means that we set
+the TCP quickack mode on the socket before connecting, so that the final ACK
+is never sent. So the sequence is now a clean SYN-SYN/ACK-RST which never
+wakes the application up and that only checks that the port is open.
+---
+ src/checks.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git src/checks.c src/checks.c
+index e586e4c..9813914 100644
+--- src/checks.c
++++ src/checks.c
+@@ -1388,8 +1388,13 @@
+ 					/* disabling tcp quick ack now allows
+ 					 * the request to leave the machine with
+ 					 * the first ACK.
++					 * We also want to do this to perform a
++					 * SYN-SYN/ACK-RST sequence when raw TCP
++					 * checks are configured.
+ 					 */
+-					if (s->proxy->options2 & PR_O2_SMARTCON)
++					if ((s->proxy->options2 & PR_O2_SMARTCON) ||
++					    (!(s->proxy->options & (PR_O_HTTP_CHK|PR_O_SMTP_CHK)) &&
++					     !(s->proxy->options2 & (PR_O2_SSL3_CHK|PR_O2_MYSQL_CHK|PR_O2_LDAP_CHK))))
+ 						setsockopt(fd, IPPROTO_TCP, TCP_QUICKACK, (char *) &zero, sizeof(zero));
+ #endif
+ 					if ((connect(fd, (struct sockaddr *)&sa, sizeof(sa)) != -1) || (errno == EINPROGRESS)) {
