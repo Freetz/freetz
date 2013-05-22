@@ -25,6 +25,7 @@ for link in \
   libutil.so* \
   ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/$link"
+	rm_files "${FILESYSTEM_MOD_DIR}/usr/lib/$link"
 done
 
 echo1 "linking ld.so.1"
