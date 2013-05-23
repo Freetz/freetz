@@ -16,6 +16,17 @@ start() {
 	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG $BIP_CMDLINE
 }
 
+startdaemon_post() {
+	c=9
+	while [ $c -gt 0 ]; do
+		local PIDOF="$(pidof $DAEMON_BIN)"
+		[ -n "$PIDOF" -a "$PIDOF" == "${PIDOF/ /}" ] && return 0
+		let c++
+		sleep 1
+	done
+	return 1
+}
+
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
