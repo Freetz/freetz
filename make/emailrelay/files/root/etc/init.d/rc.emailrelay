@@ -32,13 +32,13 @@ start() {
 }
 
 startdaemon_post() {
-        # wait for proper daemon startup, typically 0-2 seconds
-        local cnt=0
-        while [ $cnt -le 9 ]; do
-                [ -s $PID_FILE ] && kill -0 "$(cat $PID_FILE)" 2>/dev/null && break
-                let cnt++
-                sleep 1
-        done
+	# wait for proper daemon startup, typically 0-2 seconds
+	local cnt=0
+	while [ $cnt -le 9 ]; do
+		[ -s $PID_FILE ] && kill -0 "$(cat $PID_FILE)" 2>/dev/null && break
+		let cnt++
+		sleep 1
+	done
 }
 
 case $1 in
