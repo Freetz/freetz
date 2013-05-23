@@ -80,19 +80,19 @@ endchoice
 
 choice
 	prompt "Kernel compiler"
-	default FREETZ_KERNEL_COMPILER_GCC_3_4 if FREETZ_AVM_GCC_3_4
-	default FREETZ_KERNEL_COMPILER_GCC_4_6 if FREETZ_AVM_GCC_4_6
-	default FREETZ_KERNEL_COMPILER_GCC_4_7 if FREETZ_AVM_GCC_4_7
+	default FREETZ_KERNEL_GCC_3_4 if FREETZ_AVM_GCC_3_4
+	default FREETZ_KERNEL_GCC_4_6 if FREETZ_AVM_GCC_4_6
+	default FREETZ_KERNEL_GCC_4_7 if FREETZ_AVM_GCC_4_7
 
-	config FREETZ_KERNEL_COMPILER_GCC_3_4
+	config FREETZ_KERNEL_GCC_3_4
 		bool "gcc-3.4.6"
 		depends on FREETZ_AVM_GCC_3_4
 
-	config FREETZ_KERNEL_COMPILER_GCC_4_6
+	config FREETZ_KERNEL_GCC_4_6
 		bool "gcc-4.6.4"
 		depends on FREETZ_AVM_GCC_4_6
 
-	config FREETZ_KERNEL_COMPILER_GCC_4_7
+	config FREETZ_KERNEL_GCC_4_7
 		bool "gcc-4.7.3"
 		depends on FREETZ_AVM_GCC_4_7
 endchoice
@@ -105,9 +105,9 @@ config FREETZ_KERNEL_BINUTILS_VERSION
 
 config FREETZ_KERNEL_GCC_VERSION
 	string
-	default "3.4.6" if FREETZ_KERNEL_COMPILER_GCC_3_4
-	default "4.6.4" if FREETZ_KERNEL_COMPILER_GCC_4_6
-	default "4.7.3" if FREETZ_KERNEL_COMPILER_GCC_4_7
+	default "3.4.6" if FREETZ_KERNEL_GCC_3_4
+	default "4.6.4" if FREETZ_KERNEL_GCC_4_6
+	default "4.7.3" if FREETZ_KERNEL_GCC_4_7
 
 comment "Target toolchain options ----------------------------------"
 choice
