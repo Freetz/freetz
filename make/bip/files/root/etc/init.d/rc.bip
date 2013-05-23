@@ -17,14 +17,13 @@ start() {
 }
 
 startdaemon_post() {
-	c=9
-	while [ $c -gt 0 ]; do
-		local PIDOF="$(pidof $DAEMON_BIN)"
-		[ -n "$PIDOF" -a "$PIDOF" == "${PIDOF/ /}" ] && return 0
-		let c++
+	# wait for proper daemon startup, typically 0 seconds
+	local cnt=0
+	while [ $cnt -le 9 ]; do
+		[ -s $PID_FILE ] && kill -0 "$(cat $PID_FILE)" 2>/dev/null && break
+		let cnt++
 		sleep 1
 	done
-	return 1
 }
 
 case $1 in
