@@ -7,7 +7,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/minicom
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/minicom
 
 $(PKG)_DEPENDS_ON += ncurses
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 endif
 
@@ -24,7 +24,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MINICOM_DIR) \
-		ICONVLIB="$(if $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28),-liconv)" \
+		ICONVLIB="$(if $(FREETZ_TARGET_UCLIBC_0_9_28),-liconv)" \
 		AM_CFLAGS=""
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

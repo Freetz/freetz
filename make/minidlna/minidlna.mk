@@ -9,7 +9,7 @@ $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/sbin/minidlna
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MINIDLNA_STATIC
 
 $(PKG)_DEPENDS_ON += ffmpeg libexif flac libid3tag jpeg libogg libvorbis sqlite
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_ICONV_LIB += -liconv
 $(PKG)_CONFIGURE_OPTIONS += --with-libiconv-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)"

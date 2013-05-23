@@ -12,7 +12,7 @@ $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/git
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/git
 
 $(PKG)_DEPENDS_ON += curl expat openssl zlib
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 endif
 

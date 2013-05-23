@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_MINICOM
 	bool "minicom 2.5 (binary only)"
 	select FREETZ_LIB_libncurses
-	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		Minicom is a menu driven communications program. It emulates ANSI and
@@ -107,4 +107,3 @@ config FREETZ_PACKAGE_MINICOM_PORT
 	default "/dev/ttyUSB0"	if FREETZ_PACKAGE_MINICOM_PORT_USB0
 	default "/dev/ttyUSB1"	if FREETZ_PACKAGE_MINICOM_PORT_USB1
 	default "/dev/ttyUSB2"	if FREETZ_PACKAGE_MINICOM_PORT_USB2
-

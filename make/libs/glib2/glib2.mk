@@ -26,7 +26,7 @@ $(PKG)_DEPENDS_ON := pcre libffi zlib
 # "do use the implementation provided by C library", i.e. by uClibc.
 # As freetz' builds of uClibc prior to and excluding 0.9.29 do not
 # provide them, we must use an extra library - the gnu-libiconv.
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_CONFIGURE_OPTIONS += --with-libiconv=gnu
 else

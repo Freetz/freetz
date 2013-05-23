@@ -10,7 +10,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libxml2_WITH_HTML
 
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 endif
 $(PKG)_DEPENDS_ON += zlib

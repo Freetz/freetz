@@ -17,7 +17,7 @@ $(PKG)_MODULES_TARGET_DIR:=$($(PKG)_MODULES_LONG:%=$($(PKG)_DEST_DIR)$($(PKG)_MO
 $(PKG)_NOT_INCLUDED:=$(if $(FREETZ_PACKAGE_SLANG_MODULES),,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR))
 
 $(PKG)_DEPENDS_ON += pcre zlib
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 endif
 

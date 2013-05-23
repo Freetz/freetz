@@ -26,7 +26,7 @@ config FREETZ_PACKAGE_SAMBA_SMBD
 	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libpopt
 	select FREETZ_LIB_libz        if FREETZ_SAMBA_VERSION_3_6
-	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_0_9_28
 	default y
 	help
 		Provides the Samba SMB server (smbd). This is what you need if you would
@@ -52,7 +52,7 @@ config FREETZ_PACKAGE_SAMBA_SMBCLIENT
 	select FREETZ_LIB_libreadline
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libz        if FREETZ_SAMBA_VERSION_3_6
-	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		ftp-like client to access SMB/CIFS resources on servers.
@@ -63,7 +63,7 @@ config FREETZ_PACKAGE_SAMBA_NMBLOOKUP
 	select FREETZ_LIB_libcrypt    if FREETZ_SAMBA_VERSION_3_0
 	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libpopt
-	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_VERSION_0_9_28
+	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		NetBIOS over TCP/IP client used to lookup NetBIOS names.

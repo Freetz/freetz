@@ -24,7 +24,7 @@ $(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems fastjar is provided by 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CLASSPATH_MINI
 
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON := libiconv
 endif
 

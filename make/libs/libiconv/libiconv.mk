@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=7ab33ebd26687c744a37264a330bbe9a
 $(PKG)_SITE:=@GNU/$(pkg)
 
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_PREFIX:=/usr
 else
 $(PKG)_PREFIX:=/usr/lib/$(pkg)

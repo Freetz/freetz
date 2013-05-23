@@ -24,7 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-screen=ncurses
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_LIBICONV:=-liconv
 else

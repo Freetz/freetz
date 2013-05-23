@@ -13,7 +13,7 @@ $(PKG)_UMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/umount.davfs
 $(PKG)_DEPENDS_ON := neon fuse
 $(PKG)_LIBS := \$$(NEON_LIBS)
 
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_VERSION_0_9_28)),y)
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += libiconv
 $(PKG)_LIBS += -liconv
 endif
