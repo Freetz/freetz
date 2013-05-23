@@ -681,7 +681,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 
 	# Now we are in place to check html directory
-	for i in all/en all; do
+	for i in all/en all ewetel; do
 		if [ -d "${HTML_MOD_DIR}/$i" ]; then
 			HTML_LANG_MOD_DIR="${HTML_MOD_DIR}/$i"
 			break
@@ -806,12 +806,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oem_kept=0
 	oem_list=
 
-	oems=$(grep -E 'for i in  (avm|tcom)' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')
-
-	if [ -z "$oems" ]; then
-		error 1 "no oems found"
-	fi
-
+	oems=$(grep -E 'for i in  (avm|tcom|ewetel)' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')
+	[ -z "$oems" ] && error 1 "no oems found"
 
 	ln -sf /usr/www/cgi-bin/freetz_status "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_status"
 	[ "$FREETZ_PACKAGE_WOL_CGI" == "y" ] && ln -sf /usr/www/cgi-bin/freetz_wol "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_wol"
