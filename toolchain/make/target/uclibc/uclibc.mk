@@ -59,7 +59,7 @@ $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DA
 
 uclibc-config: $(UCLIBC_DIR)/.config
 $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
-	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) $(UCLIBC_DIR)/.config
+	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(UCLIBC_VERSION) $(UCLIBC_DIR)/.config
 	$(call PKG_EDIT_CONFIG,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)) $(UCLIBC_DIR)/Rules.mak
 	$(call PKG_EDIT_CONFIG, \
 		$(if $(FREETZ_TARGET_UCLIBC_0_9_28), \
@@ -110,7 +110,7 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
 		menuconfig && \
-	cp -f $^ $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(TARGET_TOOLCHAIN_UCLIBC_REF).$(UCLIBC_VERSION) && \
+	cp -f $^ $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(UCLIBC_VERSION) && \
 	touch $^
 
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(GCC_BUILD_DIR1)/.installed
