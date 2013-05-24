@@ -24,4 +24,9 @@ UCLIBC_FILES = \
 	libuClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libutil-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libutil.so \
-	libutil.so.0
+	libutil.so.0 \
+	$(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace), \
+		libubacktrace-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
+		libubacktrace.so \
+		libubacktrace.so.0 \
+	)

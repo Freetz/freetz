@@ -79,6 +79,17 @@ comment "CAUTION: Usage of an uClibc version higher than that used by AVM may le
 	depends on (FREETZ_AVM_UCLIBC_0_9_29 && !FREETZ_TARGET_UCLIBC_0_9_29) \
 		|| (FREETZ_AVM_UCLIBC_0_9_32 && !FREETZ_TARGET_UCLIBC_0_9_32)
 
+config FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
+	bool
+	default y if FREETZ_TARGET_UCLIBC_0_9_32 || FREETZ_TARGET_UCLIBC_0_9_33
+	default n
+
+config FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
+	bool
+	depends on FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
+	default y if FREETZ_AVM_UCLIBC_0_9_33 && !FREETZ_REMOVE_AVM_E2FSPROGS
+	default n
+
 choice
 	prompt "Target binutils"
 	default FREETZ_TARGET_BINUTILS_2_22
