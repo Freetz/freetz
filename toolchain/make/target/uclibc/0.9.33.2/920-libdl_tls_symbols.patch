@@ -1,0 +1,30 @@
+When build statically linked applications for MIPS platform,
+sometimes the linker fails with following errors:
+undefined reference to TLS_DTPREL_VALUE
+undefined reference to TLS_TPREL_VALUE
+The include of dl-tls.h is only in code guarded by SHARED,
+Removing the SHARED compilation option to cover static link too.
+
+Signed-off-by: Vincent Wen <wenvincent90 at gmail.com>
+---
+ ldso/libdl/libdl.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+index 4630a59..565c241 100644
+--- ldso/libdl/libdl.c
++++ ldso/libdl/libdl.c
+@@ -42,6 +42,7 @@
+ 
+ #if defined(USE_TLS) && USE_TLS
+ #include <ldsodefs.h>
++#include <dl-tls.h>
+ extern void _dl_add_to_slotinfo(struct link_map  *l);
+ #endif
+ 
+@@ -51,7 +52,6 @@ __UCLIBC_MUTEX_STATIC(_dl_mutex, PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP);
+ 
+ #ifdef SHARED
+ # if defined(USE_TLS) && USE_TLS
+-# include <dl-tls.h>
+ extern struct link_map *_dl_update_slotinfo(unsigned long int req_modid);
+ # endif
