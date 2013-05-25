@@ -1,0 +1,45 @@
+From 6e2dbd7387bc2381e08aa85d6d33bb2d2d140843 Mon Sep 17 00:00:00 2001
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Tue, 05 Jun 2012 22:05:19 +0000
+Subject: MIPS: Convert __syscall_error() callers to use $a0 for argument
+
+Some callers passed the first argument in $v0, while others used $a0.
+Change the callers to use $a0 consistently.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+index b307447..00cc675 100644
+--- libc/sysdeps/linux/mips/vfork.S
++++ libc/sysdeps/linux/mips/vfork.S
+@@ -84,6 +84,7 @@ NESTED(__vfork,FRAMESZ,sp)
+ 
+ 	/* Something bad happened -- no child created.  */
+ L(error):
++	move	a0, v0
+ #ifdef __PIC__
+ 	PTR_LA		t9, __syscall_error
+ 	RESTORE_GP64
+index fc51774..4d2c405 100644
+--- libpthread/linuxthreads/sysdeps/unix/sysv/linux/mips/mips64/sysdep-cancel.h
++++ libpthread/linuxthreads/sysdeps/unix/sysv/linux/mips/mips64/sysdep-cancel.h
+@@ -31,7 +31,7 @@
+ # undef PSEUDO
+ # define PSEUDO(name, syscall_name, args)				      \
+   .align 2;								      \
+-  99:									      \
++  99: move a0, v0; 							      \
+   PTR_LA t9,__syscall_error;					 	      \
+   /* manual cpreturn.  */						      \
+   REG_L gp, STKOFF_GP(sp);						      \
+index 7bbab5c..238d798 100644
+--- libpthread/linuxthreads/sysdeps/unix/sysv/linux/mips/vfork.S
++++ libpthread/linuxthreads/sysdeps/unix/sysv/linux/mips/vfork.S
+@@ -80,6 +80,7 @@ NESTED(__vfork,FRAMESZ,sp)
+ 
+ 	/* Something bad happened -- no child created.  */
+ L(error):
++	move		a0, v0
+ #ifdef __PIC__
+ 	PTR_LA		t9, __syscall_error
+ 	RESTORE_GP64

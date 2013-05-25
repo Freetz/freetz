@@ -1,0 +1,54 @@
+From 6a29716d9c9fd15893bf1b33fab58d9485b88a65 Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 14 Nov 2012 05:08:18 +0000
+Subject: libc/sysdeps: add dup3 syscall wrapper
+
+Some projects (like udev) are starting to use this.
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+index 1b2fd4d..766fcf3 100644
+--- include/unistd.h
++++ include/unistd.h
+@@ -513,6 +513,12 @@ extern int dup (int __fd) __THROW __wur;
+ extern int dup2 (int __fd, int __fd2) __THROW;
+ libc_hidden_proto(dup2)
+ 
++#ifdef __USE_GNU
++/* Duplicate FD to FD2, closing FD2 and making it open on the same
++   file while setting flags according to FLAGS.  */
++extern int dup3 (int __fd, int __fd2, int __flags) __THROW;
++#endif
++
+ /* NULL-terminated array of "NAME=VALUE" environment variables.  */
+ extern char **__environ;
+ #ifdef __USE_GNU
+index b39082b..bbffd9a 100644
+--- libc/sysdeps/linux/common/Makefile.in
++++ libc/sysdeps/linux/common/Makefile.in
+@@ -23,6 +23,7 @@ CSRC-$(UCLIBC_LINUX_SPECIFIC) += \
+ 	bdflush.c \
+ 	capget.c \
+ 	capset.c \
++	dup3.c \
+ 	eventfd.c \
+ 	inotify.c \
+ 	ioperm.c \
+new file mode 100644
+index 0000000..539c071
+--- /dev/null
++++ libc/sysdeps/linux/common/dup3.c
+@@ -0,0 +1,13 @@
++/* vi: set sw=4 ts=4: */
++/*
++ * dup2() for uClibc
++ *
++ * Copyright (C) 2000-2006 Erik Andersen <andersen@uclibc.org>
++ *
++ * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
++ */
++
++#include <sys/syscall.h>
++#include <unistd.h>
++
++_syscall3(int, dup3, int, oldfd, int, newfd, int, flags)

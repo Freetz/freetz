@@ -1,0 +1,17 @@
+From 6cdef8bfcb287711dfcc27557b46028d890676b6 Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 17 Nov 2012 20:29:16 +0000
+Subject: libc/sysdeps: dup3: check for __NR_dup3 since older kernels/arches lack it
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+index 539c071..8a57785 100644
+--- libc/sysdeps/linux/common/dup3.c
++++ libc/sysdeps/linux/common/dup3.c
+@@ -10,4 +10,6 @@
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ 
++#if defined(__NR_dup3)
+ _syscall3(int, dup3, int, oldfd, int, newfd, int, flags)
++#endif
