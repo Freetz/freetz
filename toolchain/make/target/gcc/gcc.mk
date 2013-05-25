@@ -23,7 +23,7 @@ GCC_COMMON_CONFIGURE_OPTIONS := \
 	--disable-libgomp \
 	--disable-libmudflap \
 	--disable-multilib \
-	--disable-tls \
+	$(if $(FREETZ_AVM_UCLIBC_NPTL_ENABLED),--enable-tls,--disable-tls) \
 	--disable-fixed-point \
 	--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp \
 	$(if $(FREETZ_TARGET_ARCH_LE),--with-march=4kc) \
