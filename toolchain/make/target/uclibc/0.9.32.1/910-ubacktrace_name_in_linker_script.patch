@@ -1,0 +1,11 @@
+--- Rules.mak
++++ Rules.mak
+@@ -539,7 +539,7 @@
+ ifeq ($(UCLIBC_HAS_BACKTRACE),y)
+ # Only used in installed libc.so linker script
+ UBACKTRACE_FULL_NAME := $(RUNTIME_PREFIX)lib/$(UBACKTRACE_DSO)
+-export UBACKTRACE_ASNEEDED:=$(shell $(LD) --help 2>/dev/null | grep -q -- --as-needed && echo "AS_NEEDED ( $(UBACKTRACE_FULL_NAME) )" || echo "$(UBACKTRACE_FULL_NAME)")
++export UBACKTRACE_ASNEEDED:=$(shell $(LD) --help 2>/dev/null | grep -q -- --as-needed && echo "AS_NEEDED ( $(UBACKTRACE_DSO) )" || echo "$(UBACKTRACE_DSO)")
+ else
+ export UBACKTRACE_ASNEEDED:=""
+ endif
