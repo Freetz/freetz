@@ -103,6 +103,8 @@ case $1 in
 			[ -z "$TMP_ENABLE" ] && TMP_ENABLE="no"
 			DAEMON="$d"
 			DAEMON_LONG_NAME=$DAEMON
+			DAEMON_BIN=$DAEMON
+			PID_FILE=/var/run/${DAEMON_BIN}.pid
 			modlib_start $TMP_ENABLE 
 			as=${as#*#}
 		done
