@@ -33,7 +33,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_MINIDLNA_STATIC)),y)
 # sqlite
 $(PKG)_EXTRA_LIBS += -ldl
 # libavformat
-$(PKG)_EXTRA_LIBS += -lavcodec -lavutil $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),-lopenjpeg) -lz -lm
+$(PKG)_EXTRA_LIBS += -lavcodec -lavutil $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),-lopenjpeg) -lz -lm -lpthread
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
