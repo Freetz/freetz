@@ -84,3 +84,23 @@
  #include <assert.h>
  
  
+--- gw6c-messaging/src/messagesender.cc
++++ gw6c-messaging/src/messagesender.cc
+@@ -20,6 +20,7 @@
+ #include <gw6cmessaging/messagesender.h>
+ #include <assert.h>
+ 
++#include <cstddef> // NULL
+ 
+ #define MAX_QUEUE_ITEMS     512
+ 
+--- gw6c-messaging/gw6cmessaging/message.h
++++ gw6c-messaging/gw6cmessaging/message.h
+@@ -26,6 +26,7 @@
+ 
+ 
+ #include <sys/types.h>
++#include <cstddef> // offsetof
+ 
+ // Useful macros
+ #define MSG_HEADER_LEN                    offsetof(gw6cmessaging::Message::__MSG_CONTENTS, _data)
