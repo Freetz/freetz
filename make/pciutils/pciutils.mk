@@ -29,7 +29,7 @@ $($(PKG)_SETPCI_TARGET_BINARY): $($(PKG)_SETPCI_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_IDS): $($(PKG)_IDS)
-	$(PCIUTILS_DIR)/update-pciids.sh
+	(cd $(PCIUTILS_DIR); ./update-pciids.sh)
 	$(INSTALL_FILE)
 
 $(pkg):
