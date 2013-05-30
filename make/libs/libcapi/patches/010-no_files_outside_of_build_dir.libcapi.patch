@@ -1,0 +1,20 @@
+Cleanup install rule:
+ file_list_444 is created outside of libcapi build dir (because of ../) - it annoys. As it is unused don't create it at all.
+
+--- Makefile
++++ Makefile
+@@ -110,14 +110,6 @@
+ 	ln -fs $(CAPI20_SOCK_SO_VT) $(FILESYSTEM)/lib/$(CAPI20_SOCK_SO_VM)
+ 	ln -fs $(CAPI20_SOCK_SO_VT) $(FILESYSTEM)/lib/$(CAPI20_SOCK_SO)
+ 
+-	echo -e " lib/$(CAPI20SO_VT)\c" >>../file_list_444
+-	echo -e " lib/$(CAPI20_SOCK_SO_VT)\c" >>../file_list_444
+-	echo -e " lib/$(CAPI20A)\c" >>../file_list_444
+-	echo -e " lib/$(CAPI20_SOCK_A)\c" >>../file_list_444
+-	echo -e " include/capi20.h\c" >>../file_list_444
+-	echo -e " include/capiutils.h\c" >>../file_list_444
+-	echo -e " include/capicmd.h\c" >>../file_list_444
+-
+ ##################################################################################################
+ clean:		
+ 	$(RM) -f $(CAPI20OBJS) $(CAPI20LOBJS) capidyn.o $(CAPI20NAME)* 
