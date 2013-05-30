@@ -236,9 +236,9 @@ else
 	MKSQUASHFS_OPTIONS+=" -le"
 fi
 
-# Use FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE etc. to determine correct mksquashfs tool
+# Use FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE etc. to determine correct mksquashfs tool
 # TODO: Add new symbols for SquashFS version and LZMA compression to Config.in
-if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3"
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 elif [ "$FREETZ_KERNEL_VERSION_2_6_13" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then
@@ -335,7 +335,7 @@ HTML_DIR="${FILESYSTEM_DIR}/${HTML_SUBDIR}"
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
-if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
 else
 	FILESYSTEM="${RAW_FILESYSTEM}"
@@ -415,7 +415,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	# Remove AVM's special junk bytes from SquashFS
 	if [ "$FREETZ_AVM_HAS_JUNK_BYTES" == "y" ]; then
 		echo0 "removing AVM SquashFS junk bytes"
-		[ "$FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
+		[ "$FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
 		if [ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ]; then
 			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk" >/dev/null 2>&1
 		else
@@ -429,7 +429,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
 
 	mkdir -p "$KERNEL_DIR"
-	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
 
 		echo "unpacking update image"
@@ -444,7 +444,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 		if [ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ]; then
 			if [ -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && [ $(stat -c %s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}") -gt 0 ]; then
-				_config_hint=" - maybe you should configure a firmware with FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE"
+				_config_hint=" - maybe you should configure a firmware with FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE"
 			fi
 			error 1 "kernel splitting failed${_config_hint}"
 		fi
@@ -514,7 +514,7 @@ FILESYSTEM_MOD="${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}"
 RAW_KERNEL_MOD="${KERNEL_MOD_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 
-if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	CORE_FILESYSTEM_MOD="${FILESYSTEM_CORE_MOD_DIR}/${FILESYSTEM_CORE_IMAGE}"
 else
 	CORE_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
@@ -1383,7 +1383,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
-	if [ "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
@@ -1431,7 +1431,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
+		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
 			# 5*64kB sectors needed, see http://freetz.org/ticket/1680#comment:4
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 327680)))
