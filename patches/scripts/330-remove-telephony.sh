@@ -1,12 +1,12 @@
 [ "$FREETZ_REMOVE_TELEPHONY" == "y" ] || return 0
 
 echo1 "removing telephony files"
-if [ "$FREETZ_HAS_AVM_USB_HOST" == "y" ]; then
+if [ "$FREETZ_AVM_HAS_USB_HOST" == "y" ]; then
 	rm_files \
 	  $(find ${FILESYSTEM_MOD_DIR} ! -path '*/lib/*' -a -name '*isdn*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
 	  $(find ${FILESYSTEM_MOD_DIR}/lib/modules/2.6*/ -name '*isdn*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
 	  $(find ${FILESYSTEM_MOD_DIR} ! -path '*/lib/*' -a ! -name '*.cfg' -a -name '*voip*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(etc|proc|dev|sys|oldroot|var)/')
-	[ "$FREETZ_HAS_AVM_USB_HOST_AHCI" != "y" ] && \
+	[ "$FREETZ_AVM_HAS_USB_HOST_AHCI" != "y" ] && \
 	  rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit
 else
 	rm_files $(find ${FILESYSTEM_MOD_DIR} -name '*isdn*' -o -name '*iglet*' -o -name '*voip' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/')
@@ -30,7 +30,7 @@ rm_files \
   ${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet
 
 echo1 "patching rc.S"
-[ "$FREETZ_HAS_AVM_USB_HOST_AHCI" != "y" ] && \
+[ "$FREETZ_AVM_HAS_USB_HOST_AHCI" != "y" ] && \
   modsed '/microvoip_isdn_top.bit/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 modsed '/c55fw.hex/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 

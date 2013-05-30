@@ -71,6 +71,6 @@ default_string BUSYBOX_EXEC_PATH "/bin/busybox"
 default_choice "Buffer allocation policy" FREETZ_BUSYBOX_FEATURE_BUFFERS_GO_ON_STACK
 depends_on LOCALE_SUPPORT "!FREETZ_TARGET_UCLIBC_0_9_28"
 depends_on FEATURE_IPV6 "FREETZ_TARGET_IPV6_SUPPORT"
-depends_on KLOGD "FREETZ_HAS_AVM_PRINTK"
+depends_on KLOGD "FREETZ_AVM_HAS_PRINTK"
 
 echo " done."

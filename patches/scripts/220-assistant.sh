@@ -38,7 +38,7 @@ if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 		else
 			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant.patch"
 		fi
-	elif [ "$FREETZ_HAS_AVM_PHONE" == "y" ]; then
+	elif [ "$FREETZ_AVM_HAS_PHONE" == "y" ]; then
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant.patch"
 	else
 		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant_wop.patch"

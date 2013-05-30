@@ -22,13 +22,13 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_REMOVE_FREETZ_INFO)" == "y" ] && echo -e "usr/lib/cgi-bin/mod/do_download_config.cgi\nusr/lib/cgi-bin/mod/info.cgi" >> $@; \
 	[ "$(FREETZ_STYLE_COLORED)" == "y" ] && echo "usr/share/style/colorscheme-grey.css" >> $@ || echo "usr/share/style/colorscheme-colored.css" >> $@; \
 	[ "$(FREETZ_STRIP_SCRIPTS)" == "y" ] && echo "usr/share/abo??.txt" >> $@; \
-	[ "$(FREETZ_HAS_AVM_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo "etc/init.d/rc.ftpd" >> $@; \
+	[ "$(FREETZ_AVM_HAS_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo "etc/init.d/rc.ftpd" >> $@; \
 	[ "$(FREETZ_REMOVE_DSLD)" == "y" ] && echo -e "usr/bin/wrapper/dsld\netc/init.d/rc.dsld" >> $@; \
-	[ "$(FREETZ_HAS_AVM_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_SAMBA)" == "y" ] && [ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
-	[ "$(FREETZ_PACKAGE_MDEV)" == "y" -o "$(FREETZ_HAS_AVM_UDEV)" == "y" ] && echo "etc/device.table" >> $@; \
+	[ "$(FREETZ_AVM_HAS_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_SAMBA)" == "y" ] && [ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
+	[ "$(FREETZ_PACKAGE_MDEV)" == "y" -o "$(FREETZ_AVM_HAS_UDEV)" == "y" ] && echo "etc/device.table" >> $@; \
 	[ "$(FREETZ_PACKAGE_MOD_ETCSERVICES)" != "y" ] && echo "etc/services" >> $@; \
 	[ "$(FREETZ_CUSTOM_UDEV_RULES)" != "y" ] && echo -e "etc/default.mod/udev_*.def\netc/udev/rules.d/??-custom.rules" >> $@; \
-	[ "$(FREETZ_HAS_AVM_UDEV)" != "y" ] && echo "etc/udev" >> $@; \
+	[ "$(FREETZ_AVM_HAS_UDEV)" != "y" ] && echo "etc/udev" >> $@; \
 	[ "$(FREETZ_TARGET_IPV6_SUPPORT)" != "y" ] && echo "usr/lib/cgi-bin/mod/conf/80-ipv6.sh" >> $@; \
 	touch $@
 

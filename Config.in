@@ -282,15 +282,15 @@ choice
 
 	config FREETZ_TYPE_LANG_DE
 		bool "de - deutsch"
-		depends on FREETZ_HAS_AVM_LANG_DE
+		depends on FREETZ_AVM_HAS_LANG_DE
 
 	config FREETZ_TYPE_LANG_A_CH
 		bool "a-ch - deutsch"
-		depends on FREETZ_HAS_AVM_LANG_A_CH
+		depends on FREETZ_AVM_HAS_LANG_A_CH
 
 	config FREETZ_TYPE_LANG_EN
 		bool "en - international"
-		depends on FREETZ_HAS_AVM_LANG_EN
+		depends on FREETZ_AVM_HAS_LANG_EN
 
 endchoice # "Firmware language" #
 
@@ -301,22 +301,22 @@ choice
 	config FREETZ_TYPE_FIRMWARE_04_XX
 		bool "FRITZ!OS 04.xx"
 		select FREETZ_AVM_VERSION_04_XX
-		depends on FREETZ_HAS_AVM_FW4XX
+		depends on FREETZ_AVM_HAS_FW4XX
 
 	config FREETZ_TYPE_FIRMWARE_05_2X
 		bool "FRITZ!OS 05.2x"
 		select FREETZ_AVM_VERSION_05_2X
-		depends on FREETZ_HAS_AVM_FW52X
+		depends on FREETZ_AVM_HAS_FW52X
 
 	config FREETZ_TYPE_FIRMWARE_05_5X
 		bool "FRITZ!OS 05.5x"
 		select FREETZ_AVM_VERSION_05_5X
-		depends on FREETZ_HAS_AVM_FW55X
+		depends on FREETZ_AVM_HAS_FW55X
 
 	config FREETZ_TYPE_FIRMWARE_LABOR
 		bool "FRITZ! Labor"
 		select FREETZ_AVM_VERSION_05_5X
-		depends on FREETZ_SHOW_ADVANCED && FREETZ_HAS_AVM_LABOR
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_LABOR
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
@@ -327,7 +327,7 @@ choice
 		bool "EWE Edition"
 		select FREETZ_AVM_VERSION_05_2X if FREETZ_TYPE_7360_XL
 		select FREETZ_AVM_VERSION_05_5X if FREETZ_TYPE_7390
-		depends on FREETZ_HAS_AVM_FWEWE
+		depends on FREETZ_AVM_HAS_FWEWE
 		help
 			http://www.ewe.de/privatkunden/service/hardware.php
 			http://download.ewe.de/avm/
@@ -514,7 +514,7 @@ endchoice # "Alien hardware type" #
 
 choice
 	prompt "Annex"
-		depends on FREETZ_HAS_AVM_ANNEX_A_AND_B
+		depends on FREETZ_AVM_HAS_ANNEX_A_AND_B
 		default FREETZ_TYPE_ANNEX_B
 
 	config FREETZ_TYPE_ANNEX_A
@@ -530,7 +530,7 @@ comment "Original components --------------------"
 comment "Hint: Select build toolchain if you want to enable IPv6 support"
 	depends on \
 		( \
-			FREETZ_HAS_AVM_IPV6 || \
+			FREETZ_AVM_HAS_IPV6 || \
 			(FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL_AVAILABLE) \
 		) && \
 		(FREETZ_TARGET_UCLIBC_0_9_28 && FREETZ_DOWNLOAD_TOOLCHAIN && !FREETZ_DL_TOOLCHAIN_OVERRIDE)
@@ -539,12 +539,12 @@ config FREETZ_TARGET_IPV6_SUPPORT
 	bool "IPv6 support"
 	depends on \
 		( \
-			FREETZ_HAS_AVM_IPV6 || \
+			FREETZ_AVM_HAS_IPV6 || \
 			(FREETZ_SHOW_ADVANCED && FREETZ_REPLACE_KERNEL_AVAILABLE) \
 		) && \
 		! (FREETZ_TARGET_UCLIBC_0_9_28 && FREETZ_DOWNLOAD_TOOLCHAIN && !FREETZ_DL_TOOLCHAIN_OVERRIDE)
-	select FREETZ_REPLACE_KERNEL if ! (FREETZ_HAS_AVM_IPV6)
-	select FREETZ_MODULE_ipv6    if ! (FREETZ_HAS_AVM_IPV6) && FREETZ_REPLACE_KERNEL
+	select FREETZ_REPLACE_KERNEL if ! (FREETZ_AVM_HAS_IPV6)
+	select FREETZ_MODULE_ipv6    if ! (FREETZ_AVM_HAS_IPV6) && FREETZ_REPLACE_KERNEL
 	select FREETZ_BUSYBOX__IPV6_UTILS
 	default n
 	help
@@ -1755,7 +1755,7 @@ config FREETZ_INSTALL_BASE
 	select FREETZ_LIB_librt
 	select FREETZ_LIB_libubacktrace if FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
 	select FREETZ_LIB_libuClibc
-	select FREETZ_LIB_libctlmgr if FREETZ_HAS_AVM_USB_HOST
+	select FREETZ_LIB_libctlmgr if FREETZ_AVM_HAS_USB_HOST
 	default y
 	help
 		This is mandatory

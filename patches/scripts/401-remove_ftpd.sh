@@ -1,6 +1,6 @@
-[ "$FREETZ_REMOVE_FTPD" == "y" -o "$FREETZ_HAS_AVM_NAS" == "y" ] || return 0
+[ "$FREETZ_REMOVE_FTPD" == "y" -o "$FREETZ_AVM_HAS_NAS" == "y" ] || return 0
 
-if [ "$FREETZ_HAS_AVM_NAS" == "y" -a "$FREETZ_REMOVE_FTPD" != "y" ]; then
+if [ "$FREETZ_AVM_HAS_NAS" == "y" -a "$FREETZ_REMOVE_FTPD" != "y" ]; then
 	echo1 "remove banner from AVM ftpd"
 	perl -pi -e 's#/etc/motd#/etc/fooo#g' "${FILESYSTEM_MOD_DIR}/sbin/ftpd"
 fi

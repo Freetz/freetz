@@ -1,4 +1,4 @@
-[ "$FREETZ_HAS_AVM_CHRONYD" == "y" ] || return 0
+[ "$FREETZ_AVM_HAS_CHRONYD" == "y" ] || return 0
 
 if [ "$FREETZ_REMOVE_CHRONYD" == "y" ]; then
 	echo1 "remove chronyd files"

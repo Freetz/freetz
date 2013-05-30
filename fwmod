@@ -413,7 +413,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	done
 
 	# Remove AVM's special junk bytes from SquashFS
-	if [ "$FREETZ_HAS_AVM_JUNK_BYTES" == "y" ]; then
+	if [ "$FREETZ_AVM_HAS_JUNK_BYTES" == "y" ]; then
 		echo0 "removing AVM SquashFS junk bytes"
 		[ "$FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
 		if [ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ]; then
@@ -631,7 +631,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Copy the unpacked directory
 	mkdir -p "$MOD_DIR"
-	[ "$FREETZ_HAS_AVM_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
+	[ "$FREETZ_AVM_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
 	"$TAR" -c -C "$ORG_DIR" $exclude_dev . | "$TAR" -x -C "$MOD_DIR" || exit 1
 
 	# Fix some permissions
@@ -1347,7 +1347,7 @@ if [ "$action_names" ]; then
 
 	[ ! -s "$VARTAR_MOD" ] && error 1 "packing of var.tar failed"
 
-	[ "$FREETZ_HAS_AVM_UDEV" == "y" ] || \
+	[ "$FREETZ_AVM_HAS_UDEV" == "y" ] || \
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
 fi
 
@@ -1431,7 +1431,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$FREETZ_HAS_AVM_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
+		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
 			# 5*64kB sectors needed, see http://freetz.org/ticket/1680#comment:4
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 327680)))

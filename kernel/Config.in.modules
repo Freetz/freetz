@@ -353,7 +353,7 @@ config FREETZ_MODULE_ext2
 
 config FREETZ_MODULE_ext3
 	bool "ext3.ko"
-	depends on ! FREETZ_HAS_AVM_EXT3
+	depends on ! FREETZ_AVM_HAS_EXT3
 	select FREETZ_MODULE_jbd if FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_mbcache
 	default n
@@ -534,7 +534,7 @@ config FREETZ_MODULE_cls_u32
 
 config FREETZ_MODULE_ipv6
 	bool "ipv6.ko"
-	depends on FREETZ_TARGET_IPV6_SUPPORT && ! FREETZ_HAS_AVM_IPV6
+	depends on FREETZ_TARGET_IPV6_SUPPORT && ! FREETZ_AVM_HAS_IPV6
 	default n
 	help
 		This is complemental support for the IP version 6.
@@ -612,7 +612,7 @@ config FREETZ_MODULE_rfcomm
 config FREETZ_MODULE_sit
 	bool "sit.ko"
 	depends on \
-		! FREETZ_HAS_AVM_IPV6 && \
+		! FREETZ_AVM_HAS_IPV6 && \
 		FREETZ_KERNEL_VERSION_2_6_19 && \
 		FREETZ_MODULE_ipv6
 	default n

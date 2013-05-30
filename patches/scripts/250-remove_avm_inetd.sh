@@ -1,4 +1,4 @@
-[ "$FREETZ_PACKAGE_INETD" == "y" -a "$FREETZ_HAS_AVM_INETD" == "y" ] || return 0
+[ "$FREETZ_PACKAGE_INETD" == "y" -a "$FREETZ_AVM_HAS_INETD" == "y" ] || return 0
 
 echo1 "removing AVM inetd"
 

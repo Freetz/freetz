@@ -30,7 +30,7 @@ config FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 	bool
 	default y
 
-config FREETZ_HAS_AVM_LABOR
+config FREETZ_AVM_HAS_LABOR
 	bool "Has AVM Labor Firmware"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
@@ -42,7 +42,7 @@ config FREETZ_HAS_AVM_LABOR
 	help
 		Select this if a labor firmware is available for you box.
 
-config FREETZ_HAS_AVM_FW55X
+config FREETZ_AVM_HAS_FW55X
 	bool "Has AVM Firmware 05.5x"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
@@ -72,7 +72,7 @@ config FREETZ_HAS_AVM_FW55X
 	help
 		Select this if your box has firmware versions 05.5x.
 
-config FREETZ_HAS_AVM_FW52X
+config FREETZ_AVM_HAS_FW52X
 	bool "Has AVM Firmware 05.2x"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_3270 || \
@@ -91,16 +91,16 @@ config FREETZ_HAS_AVM_FW52X
 	help
 		Select this if your box has firmware versions 05.2x.
 
-config FREETZ_HAS_AVM_FW4XX
+config FREETZ_AVM_HAS_FW4XX
 	bool "Has AVM Firmware 04.xx"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		! FREETZ_HAS_AVM_FW52X && \
-		! FREETZ_HAS_AVM_FW55X
+		! FREETZ_AVM_HAS_FW52X && \
+		! FREETZ_AVM_HAS_FW55X
 	default n
 	help
 		Select this if your box has firmware versions 05.2x.
 
-config FREETZ_HAS_AVM_FWEWE
+config FREETZ_AVM_HAS_FWEWE
 	bool "Has EWE Edition Firmware"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_LANG_EN && ( \
@@ -111,7 +111,7 @@ config FREETZ_HAS_AVM_FWEWE
 	help
 		Select this if a EWE Edition firmware is available for you box.
 
-config FREETZ_HAS_AVM_LANG_DE
+config FREETZ_AVM_HAS_LANG_DE
 	bool "Has AVM Firmware language de/deutsch"			if FREETZ_TYPE_CUSTOM
 	default y		if \
 		! ( \
@@ -124,7 +124,7 @@ config FREETZ_HAS_AVM_LANG_DE
 	help
 		Select this if a de/german firmware is available for your box.
 
-config FREETZ_HAS_AVM_LANG_A_CH
+config FREETZ_AVM_HAS_LANG_A_CH
 	bool "Has AVM Firmware language a-ch/deutsch"		if FREETZ_TYPE_CUSTOM
 	depends on \
 		FREETZ_TYPE_5010 || \
@@ -134,7 +134,7 @@ config FREETZ_HAS_AVM_LANG_A_CH
 	help
 		Select this if a a-ch/german firmware is available for your box.
 
-config FREETZ_HAS_AVM_LANG_EN
+config FREETZ_AVM_HAS_LANG_EN
 	bool "Has AVM Firmware language en/international"	if FREETZ_TYPE_CUSTOM
 	default y 		if \
 		FREETZ_TYPE_FON || \
@@ -240,7 +240,7 @@ config FREETZ_AVM_GCC_4_7
 ###
 
 
-config FREETZ_HAS_AVM_PRINTK
+config FREETZ_AVM_HAS_PRINTK
 	bool "Has AVM printk support"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		! (FREETZ_TYPE_3170 && !FREETZ_REPLACE_KERNEL)
@@ -248,7 +248,7 @@ config FREETZ_HAS_AVM_PRINTK
 	help
 		Select this if your box has printk support.
 
-config FREETZ_HAS_AVM_PIGLET
+config FREETZ_AVM_HAS_PIGLET
 	bool "Has PIGLET file(s)"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_2170 || \
@@ -271,7 +271,7 @@ config FREETZ_HAS_AVM_PIGLET
 	help
 		Select this if your original kernel has pty support.
 
-config FREETZ_HAS_AVM_PTY_SUPPORT
+config FREETZ_AVM_HAS_PTY_SUPPORT
 	bool "Has PTY support"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_5140 || \
@@ -280,7 +280,7 @@ config FREETZ_HAS_AVM_PTY_SUPPORT
 	help
 		Select this if your original kernel has pty support.
 
-config FREETZ_HAS_AVM_CDROM_ISO
+config FREETZ_AVM_HAS_CDROM_ISO
 	bool "Has AVM cdrom.iso"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_300IP || \
@@ -293,11 +293,11 @@ config FREETZ_HAS_AVM_CDROM_ISO
 	help
 		Select this if your original firmware has a cdrom.iso.
 
-config FREETZ_HAS_AVM_AURA_USB
+config FREETZ_AVM_HAS_AURA_USB
 	bool "Has remote USB connection (AURA = AVM USB Remote-Architcture)"	if FREETZ_TYPE_CUSTOM
-	select FREETZ_REMOVE_AURA_USB if ! FREETZ_HAS_AVM_USB_HOST
+	select FREETZ_REMOVE_AURA_USB if ! FREETZ_AVM_HAS_USB_HOST
 	default y		if \
-		FREETZ_HAS_AVM_USB_HOST || \
+		FREETZ_AVM_HAS_USB_HOST || \
 		FREETZ_TYPE_7112_7170 || \
 		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_W701V_7170
@@ -306,7 +306,7 @@ config FREETZ_HAS_AVM_AURA_USB
 		Select this if your original firmware has an aura-usb-daemon (remote USB
 		connection, USB-Fernanschluss)
 
-config FREETZ_HAS_AVM_MINID
+config FREETZ_AVM_HAS_MINID
 	bool "Has mini-daemon (minid)"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_REMOVE_MINID if \
 		FREETZ_TYPE_7113_7170 || \
@@ -321,7 +321,7 @@ config FREETZ_HAS_AVM_MINID
 	help
 		Select this if your original firmware has a mini-daemon (minid)
 
-config FREETZ_HAS_AVM_NTFS
+config FREETZ_AVM_HAS_NTFS
 	bool "Has AVM NTFS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_AVM_VERSION_05_2X_MIN || \
@@ -331,7 +331,7 @@ config FREETZ_HAS_AVM_NTFS
 	help
 		Select this if your original firmware has ntfs support.
 
-config FREETZ_HAS_AVM_IPV6
+config FREETZ_AVM_HAS_IPV6
 	bool "Has AVM IPv6"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_TARGET_IPV6_SUPPORT
 	default y		if \
@@ -341,7 +341,7 @@ config FREETZ_HAS_AVM_IPV6
 	help
 		Select this if your original firmware has IPv6 support.
 
-config FREETZ_HAS_AVM_WEBDAV
+config FREETZ_AVM_HAS_WEBDAV
 	bool "Has AVM WebDAV"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_AVM_VERSION_05_2X_MIN || \
@@ -351,7 +351,7 @@ config FREETZ_HAS_AVM_WEBDAV
 	help
 		Select this if your original firmware has WebDAV support.
 
-config FREETZ_HAS_AVM_INETD
+config FREETZ_AVM_HAS_INETD
 	bool "Has AVM inetd"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_PACKAGE_INETD
 	default y		if \
@@ -363,14 +363,14 @@ config FREETZ_HAS_AVM_INETD
 	help
 		Select this if your original firmware has inetd support.
 
-config FREETZ_HAS_AVM_EXT3
+config FREETZ_AVM_HAS_EXT3
 	bool "Has AVM ext3 built into the kernel"	if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
 		Select this if your original firmware has ext3 support built into the kernel.
 
-config FREETZ_HAS_AVM_ISOFS
+config FREETZ_AVM_HAS_ISOFS
 	bool "Has AVM isofs kernel module"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_5124 || \
@@ -382,7 +382,7 @@ config FREETZ_HAS_AVM_ISOFS
 	help
 		Select this if your original firmware contains isofs kernel module.
 
-config FREETZ_HAS_AVM_TR069
+config FREETZ_AVM_HAS_TR069
 	bool "Has AVM tr069"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_AVM_VERSION_05_2X_MIN || \
@@ -410,7 +410,7 @@ config FREETZ_HAS_AVM_TR069
 	help
 		Select this if your original firmware has tr069 support (libtr069, libtr064).
 
-config FREETZ_HAS_AVM_TR069_FWUPDATE
+config FREETZ_AVM_HAS_TR069_FWUPDATE
 	bool "Has AVM tr069fwupdate"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_AVM_VERSION_05_2X_MIN || \
@@ -432,7 +432,7 @@ config FREETZ_HAS_AVM_TR069_FWUPDATE
 	help
 		Select this if your original firmware has tr069fwupdate (for MT-D).
 
-config FREETZ_HAS_AVM_CHRONYD
+config FREETZ_AVM_HAS_CHRONYD
 	bool "Has chronyd"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_AVMDAEMON_DISABLE_NTP if ! FREETZ_REMOVE_CHRONYD
 	default y		if \
@@ -442,7 +442,7 @@ config FREETZ_HAS_AVM_CHRONYD
 	help
 		Select this if you have a box with chronyd.
 
-config FREETZ_HAS_AVM_DECT
+config FREETZ_AVM_HAS_DECT
 	bool "Has DECT"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6810 || \
@@ -462,7 +462,7 @@ config FREETZ_HAS_AVM_DECT
 	help
 		Select this if you have a box with DECT.
 
-config FREETZ_HAS_AVM_OPENSSL_LIBS
+config FREETZ_AVM_HAS_OPENSSL_LIBS
 	bool "Has libssl"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_300IP || \
@@ -478,21 +478,21 @@ config FREETZ_HAS_AVM_OPENSSL_LIBS
 	help
 		Select this if you have a box with AVM libcrypto and libssl.
 
-config FREETZ_HAS_AVM_LSOF
+config FREETZ_AVM_HAS_LSOF
 	bool "Has lsof"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
 		Select this if you have a box with lsof binary.
 
-config FREETZ_HAS_AVM_SOCAT
+config FREETZ_AVM_HAS_SOCAT
 	bool "Has socat"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_TYPE_7390
 	default n
 	help
 		Select this if you have a box with socat binary.
 
-config FREETZ_HAS_AVM_NAS
+config FREETZ_AVM_HAS_NAS
 	bool "Has NAS"		if FREETZ_TYPE_CUSTOM
 	select FREETZ_BUSYBOX_FEATURE_TAR_OLDGNU_COMPATIBILITY
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
@@ -500,21 +500,21 @@ config FREETZ_HAS_AVM_NAS
 	help
 		Select this if you have a box with NAS support.
 
-config FREETZ_HAS_AVM_MYFRITZ
+config FREETZ_AVM_HAS_MYFRITZ
 	bool "Has AVM MyFritz"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
 		Select this if you have a firmware with MyFritz.
 
-config FREETZ_HAS_AVM_FHEM
+config FREETZ_AVM_HAS_FHEM
 	bool "Has AVM FHEM"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
 		Select this if the firmware supports FHEM.
 
-config FREETZ_HAS_AVM_PHONE
+config FREETZ_AVM_HAS_PHONE
 	bool "Has Phone"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_2170 || \
@@ -528,7 +528,7 @@ config FREETZ_HAS_AVM_PHONE
 	help
 		Select this if you have a box with phone support.
 
-config FREETZ_HAS_AVM_STRACE
+config FREETZ_AVM_HAS_STRACE
 	bool "Has strace"	if FREETZ_TYPE_CUSTOM
 #	default y		if \
 #		FREETZ_TYPE_3370
@@ -536,7 +536,7 @@ config FREETZ_HAS_AVM_STRACE
 	help
 		Select this if you have a box with strace binary.
 
-config FREETZ_HAS_AVM_TAM
+config FREETZ_AVM_HAS_TAM
 	bool "Has TAM"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6810 || \
@@ -557,7 +557,7 @@ config FREETZ_HAS_AVM_TAM
 	help
 		Select this if you have a box with TAM (Telephone Answering Machine) support.
 
-config FREETZ_HAS_AVM_UDEV
+config FREETZ_AVM_HAS_UDEV
 	bool "udev"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
@@ -591,7 +591,7 @@ config FREETZ_HAS_USB_CLIENT
 	help
 		Select this if you have a box with USB.
 
-config FREETZ_HAS_AVM_USB_HOST
+config FREETZ_AVM_HAS_USB_HOST
 	bool "USB host"		if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_300IP || \
@@ -615,9 +615,9 @@ config FREETZ_HAS_AVM_USB_HOST
 	help
 		Select this if your USB port is a host adapter (which was not designed by AVM).
 
-config FREETZ_HAS_AVM_USB_HOST_AHCI
+config FREETZ_AVM_HAS_USB_HOST_AHCI
 	bool "AVM USB host (AHCI)"	if FREETZ_TYPE_CUSTOM
-	depends on FREETZ_HAS_AVM_USB_HOST
+	depends on FREETZ_AVM_HAS_USB_HOST
 	default y		if \
 		FREETZ_TYPE_2170 || \
 		FREETZ_TYPE_5124 || \
@@ -634,14 +634,14 @@ config FREETZ_HAS_AVM_USB_HOST_AHCI
 		named AHCI (= AVM [USB] Host Controller Interface).
 		Hint: No support for "Low Speed" devices.
 
-config FREETZ_HAS_AVM_E2FSPROGS
+config FREETZ_AVM_HAS_E2FSPROGS
 	bool "Has AVM e2fsprogs files"	if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
 		Select this if you have a firmware with blkid, fsck and mkfs.
 
-config FREETZ_HAS_AVM_WLAN
+config FREETZ_AVM_HAS_WLAN
 	bool "Has WLAN"		if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_TYPE_2170 || \
@@ -655,7 +655,7 @@ config FREETZ_HAS_AVM_WLAN
 	help
 		Select this if you have a box with WLAN.
 
-config FREETZ_HAS_AVM_UMTS
+config FREETZ_AVM_HAS_UMTS
 	bool "Has UMTS"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_AVM_VERSION_05_2X_MIN || \
@@ -664,7 +664,7 @@ config FREETZ_HAS_AVM_UMTS
 	help
 		Select this if you have a box with UMTS.
 
-config FREETZ_HAS_AVM_JFFS2
+config FREETZ_AVM_HAS_JFFS2
 	bool "Has jffs2.ko"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_7150 || \
@@ -681,7 +681,7 @@ config FREETZ_HAS_AVM_JFFS2
 	help
 		Select this if you have a box with optional JFFS2 filesystem (jffs2.ko).
 
-config FREETZ_HAS_AVM_JUNK_BYTES
+config FREETZ_AVM_HAS_JUNK_BYTES
 	bool "Has AVM junk bytes in SquashFS"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_6810 || \
@@ -692,7 +692,7 @@ config FREETZ_HAS_AVM_JUNK_BYTES
 		Select this if you have a firmware with junk bytes in SquashFS, as
 		described in http://freetz.org/ticket/1614#comment:70
 
-config FREETZ_HAS_AVM_MICROVOIP_DSL
+config FREETZ_AVM_HAS_MICROVOIP_DSL
 	bool "Has microvoip-dsl.bin"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_FON || \
@@ -714,7 +714,7 @@ config FREETZ_HAS_AVM_MICROVOIP_DSL
 	help
 		Select this if firmware contains microvoip-dsl.bin.
 
-config FREETZ_HAS_AVM_ANNEX_A_AND_B
+config FREETZ_AVM_HAS_ANNEX_A_AND_B
 	bool "Has Annex A and B"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_TYPE_LANG_EN && \
 		( \
@@ -729,23 +729,23 @@ config FREETZ_HAS_AVM_ANNEX_A_AND_B
 	help
 		Select this if a firmware for Annex A and B is available.
 
-config FREETZ_HAS_AVM_MULTI_ANNEX
+config FREETZ_AVM_HAS_MULTI_ANNEX
 	bool "Has AVM Multi-Annex"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
 		Select this if you have a firmware with Multi-Annex.
 
-config FREETZ_HAS_AVM_RAMZSWAP
+config FREETZ_AVM_HAS_RAMZSWAP
 	bool "Has AVM ramzswap.ko"		if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
 		Select this if you have a firmware with ramzswap.ko.
 
-config FREETZ_HAS_AVM_AHA
+config FREETZ_AVM_HAS_AHA
 	bool "Has AVM Home Automation"		if FREETZ_TYPE_CUSTOM
-	default y		if FREETZ_AVM_VERSION_05_5X_MIN && FREETZ_HAS_AVM_DECT
+	default y		if FREETZ_AVM_VERSION_05_5X_MIN && FREETZ_AVM_HAS_DECT
 	default n
 	help
 		Select this if you have a firmware with AHA (AVM Home Automation).

@@ -30,7 +30,7 @@ done
 [ "$FREETZ_REMOVE_VOIPD" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient*"
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
 [ "$FREETZ_REMOVE_AURA_USB" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavm_audio.so*"
-[ "$FREETZ_HAS_AVM_DECT" != "y" -o "$FREETZ_REMOVE_DECT" == "y" ] && \
+[ "$FREETZ_AVM_HAS_DECT" != "y" -o "$FREETZ_REMOVE_DECT" == "y" ] && \
 for files in \
   lib/libavcodec.so* \
   lib/libavformat.so* \

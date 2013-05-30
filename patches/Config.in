@@ -6,7 +6,7 @@ comment "Removal patches ------------------------"
 config FREETZ_REMOVE_MICROVOIP_DSL
 	bool "Remove microvoip-dsl.bin"
 	depends on \
-		FREETZ_HAS_AVM_MICROVOIP_DSL && \
+		FREETZ_AVM_HAS_MICROVOIP_DSL && \
 		FREETZ_REMOVE_TELEPHONY
 	default n
 	help
@@ -26,7 +26,7 @@ config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 
 config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 	bool "Remove 2nd Annex firmware"
-	depends on FREETZ_HAS_AVM_MULTI_ANNEX
+	depends on FREETZ_AVM_HAS_MULTI_ANNEX
 	default n
 	help
 		Remove the diffs to the prime firmware. This saves about
@@ -38,7 +38,7 @@ config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 	bool "Remove 1st Annex firmware"
 	depends on FREETZ_SHOW_ADVANCED && \
-		FREETZ_HAS_AVM_MULTI_ANNEX && \
+		FREETZ_AVM_HAS_MULTI_ANNEX && \
 		FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 	default n
 	help
@@ -101,7 +101,7 @@ menu "Remove piglet"
 
 	config FREETZ_REMOVE_PIGLET_ISDN
 	bool "Remove ISDN piglet file(s)"
-	depends on FREETZ_HAS_AVM_PIGLET
+	depends on FREETZ_AVM_HAS_PIGLET
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -156,7 +156,7 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 config FREETZ_REMOVE_AHA
 	bool "Remove AHA (AVM Home Automation)"
 	default n
-	depends on FREETZ_HAS_AVM_AHA
+	depends on FREETZ_AVM_HAS_AHA
 	help
 		Remove the aha daemon and some related files.
 		Used for "Smart Home".
@@ -166,7 +166,7 @@ config FREETZ_REMOVE_AHA
 config FREETZ_REMOVE_AURA_USB
 	bool "Remove AURA (AVM USB Remote-Architecture)"
 	default n
-	depends on FREETZ_HAS_AVM_AURA_USB
+	depends on FREETZ_AVM_HAS_AURA_USB
 	help
 		Remove the aura-usb-daemon (remote USB connection, USB-Fernanschluss) and some
 		related files.
@@ -176,7 +176,7 @@ config FREETZ_REMOVE_AURA_USB
 config FREETZ_REMOVE_USB_MODULE
 	bool "Remove avalanche_usb.ko"
 	depends on FREETZ_HAS_USB_CLIENT
-	select FREETZ_REMOVE_CDROM_ISO if FREETZ_HAS_AVM_CDROM_ISO
+	select FREETZ_REMOVE_CDROM_ISO if FREETZ_AVM_HAS_CDROM_ISO
 	default n
 	help
 		Removes avalanche_usb.ko to save 60kB uncompressed space.
@@ -185,7 +185,7 @@ config FREETZ_REMOVE_USB_MODULE
 config FREETZ_REMOVE_NAS
 	bool "Remove NAS"
 	default n
-	depends on FREETZ_HAS_AVM_NAS
+	depends on FREETZ_AVM_HAS_NAS
 	help
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
@@ -193,7 +193,7 @@ config FREETZ_REMOVE_MYFRITZ
 	bool "Remove MyFritz"
 	default n
 	depends on \
-		FREETZ_HAS_AVM_MYFRITZ && \
+		FREETZ_AVM_HAS_MYFRITZ && \
 		FREETZ_REMOVE_NAS
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
@@ -201,7 +201,7 @@ config FREETZ_REMOVE_MYFRITZ
 config FREETZ_REMOVE_FHEM
 	bool "Remove FHEM"
 	default n
-	depends on FREETZ_HAS_AVM_FHEM
+	depends on FREETZ_AVM_HAS_FHEM
 	help
 		Removes the FHEM scripts and kernel modules (cdc_acm & ftdi_sio).
 		This saves about 100 KB, uncompressed.
@@ -455,7 +455,7 @@ endmenu
 
 config FREETZ_REMOVE_CAPIOVERTCP
 	bool "Remove CAPIoverTCP"
-	depends on FREETZ_HAS_AVM_PHONE
+	depends on FREETZ_AVM_HAS_PHONE
 	default n
 	help
 		Remove CAPIoverTCP (capiotcp_server). Use this if you don't want to use
@@ -465,7 +465,7 @@ config FREETZ_REMOVE_CAPIOVERTCP
 
 config FREETZ_REMOVE_CHRONYD
 	bool "Remove chronyd"
-	depends on FREETZ_HAS_AVM_CHRONYD
+	depends on FREETZ_AVM_HAS_CHRONYD
 	default n
 	help
 		Removes AVM's time synchronization tool (chrony) and related files.
@@ -473,15 +473,15 @@ config FREETZ_REMOVE_CHRONYD
 
 config FREETZ_REMOVE_CDROM_ISO
 	bool "Remove cdrom.iso"
-	depends on FREETZ_HAS_AVM_CDROM_ISO
+	depends on FREETZ_AVM_HAS_CDROM_ISO
 	default n
 	help
 		Removes the file /lib/modules/cdrom.iso to save 270kB uncompressed space.
 
 config FREETZ_REMOVE_DECT
 	bool "Remove DECT"
-	depends on FREETZ_HAS_AVM_DECT
-	select FREETZ_REMOVE_AHA if FREETZ_HAS_AVM_AHA
+	depends on FREETZ_AVM_HAS_DECT
+	select FREETZ_REMOVE_AHA if FREETZ_AVM_HAS_AHA
 	default n
 	help
 		Remove dect files (modules, dect_manager and dect related Web UI).
@@ -555,7 +555,7 @@ config FREETZ_REMOVE_DTRACE
 config FREETZ_REMOVE_FTPD
 	bool "Remove ftpd"
 	depends on \
-		FREETZ_HAS_AVM_USB_HOST || \
+		FREETZ_AVM_HAS_USB_HOST || \
 		FREETZ_TYPE_7112_7170 || \
 		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_W701V_7170
@@ -580,8 +580,8 @@ config FREETZ_REMOVE_LIBFUSE
 			FREETZ_TYPE_7570 || \
 			FREETZ_TYPE_7270_V1 \
 		)
-	select FREETZ_REMOVE_NTFS if FREETZ_HAS_AVM_NTFS && !FREETZ_AVMPLUGINS_NTFS
-	select FREETZ_REMOVE_WEBDAV if FREETZ_HAS_AVM_WEBDAV
+	select FREETZ_REMOVE_NTFS if FREETZ_AVM_HAS_NTFS && !FREETZ_AVMPLUGINS_NTFS
+	select FREETZ_REMOVE_WEBDAV if FREETZ_AVM_HAS_WEBDAV
 	default n
 	help
 		This removes libfuse.so and saves about 132 KB (uncompressed).
@@ -590,13 +590,13 @@ config FREETZ_REMOVE_LIBFUSE
 config FREETZ_REMOVE_ISOFS
 	bool "Remove isofs.ko"
 	default n
-	depends on FREETZ_HAS_AVM_ISOFS
+	depends on FREETZ_AVM_HAS_ISOFS
 	help
 		Remove isofs.ko (about 35 kB uncompressed).
 
 config FREETZ_REMOVE_JFFS2
 	bool "Remove jffs2.ko"
-	depends on FREETZ_HAS_AVM_JFFS2
+	depends on FREETZ_AVM_HAS_JFFS2
 	default n
 	help
 		If your AVM firmware contains the JFFS2 kernel module (jffs2.ko), this patch
@@ -615,13 +615,13 @@ config FREETZ_REMOVE_JFFS2
 config FREETZ_REMOVE_RAMZSWAP
 	bool "Remove ramzswap.ko"
 	default n
-	depends on FREETZ_HAS_AVM_RAMZSWAP
+	depends on FREETZ_AVM_HAS_RAMZSWAP
 	help
 		Remove ramzswap.ko (about 35 kB uncompressed).
 
 config FREETZ_REMOVE_LSOF
 	bool "Remove lsof"
-	depends on FREETZ_HAS_AVM_LSOF
+	depends on FREETZ_AVM_HAS_LSOF
 	default n
 	help
 		Remove /bin/lsof binary.
@@ -629,7 +629,7 @@ config FREETZ_REMOVE_LSOF
 
 config FREETZ_REMOVE_SOCAT
 	bool "Remove socat"
-	depends on FREETZ_HAS_AVM_SOCAT
+	depends on FREETZ_AVM_HAS_SOCAT
 	default y
 	help
 		Remove /sbin/socat binary.
@@ -638,7 +638,7 @@ config FREETZ_REMOVE_SOCAT
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
 	depends on \
-		(FREETZ_HAS_AVM_USB_HOST && !FREETZ_TYPE_7270_V1) || \
+		(FREETZ_AVM_HAS_USB_HOST && !FREETZ_TYPE_7270_V1) || \
 		FREETZ_TYPE_7112_7170 || \
 		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_W701V_7170
@@ -652,7 +652,7 @@ config FREETZ_REMOVE_MEDIASRV
 config FREETZ_REMOVE_MINID
 	bool "Remove minid (Fritz!Mini and MT-D/F)"
 	default n
-	depends on FREETZ_HAS_AVM_MINID
+	depends on FREETZ_AVM_HAS_MINID
 	help
 		Remove the mini-daemon (minid) and some other related files. This patch
 		removes Fritz!Mini and MT-D/F support and all Web UI entrys.
@@ -665,7 +665,7 @@ config FREETZ_REMOVE_FAT
 	bool "Remove FAT"
 	depends on \
 			! FREETZ_AUTOMOUNT_FAT && \
-			FREETZ_HAS_AVM_USB_HOST && \
+			FREETZ_AVM_HAS_USB_HOST && \
 			! FREETZ_TYPE_7270_16
 	default n
 	help
@@ -677,7 +677,7 @@ config FREETZ_REMOVE_FAT
 config FREETZ_REMOVE_NTFS
 	bool "Remove NTFS"
 	depends on \
-			FREETZ_HAS_AVM_NTFS && \
+			FREETZ_AVM_HAS_NTFS && \
 			! FREETZ_AVMPLUGINS_NTFS
 	default n
 	help
@@ -689,7 +689,7 @@ config FREETZ_REMOVE_NTFS
 config FREETZ_REMOVE_PRINTSERV
 	bool "Remove printserv"
 	depends on \
-		FREETZ_HAS_AVM_USB_HOST || \
+		FREETZ_AVM_HAS_USB_HOST || \
 		FREETZ_TYPE_7112_7170 || \
 		FREETZ_TYPE_7113_7170 || \
 		FREETZ_TYPE_W701V_7170
@@ -720,7 +720,7 @@ config FREETZ_REMOVE_SAMBA
 	depends on \
 		!FREETZ_PACKAGE_SAMBA_SMBD && \
 		( \
-			(FREETZ_HAS_AVM_USB_HOST && !FREETZ_TYPE_7270_V1) || \
+			(FREETZ_AVM_HAS_USB_HOST && !FREETZ_TYPE_7270_V1) || \
 			FREETZ_TYPE_7112_7170 || \
 			FREETZ_TYPE_7113_7170 || \
 			FREETZ_TYPE_W701V_7170 \
@@ -733,7 +733,7 @@ config FREETZ_REMOVE_SAMBA
 
 config FREETZ_REMOVE_STRACE
 	bool "Remove strace"
-	depends on FREETZ_HAS_AVM_STRACE
+	depends on FREETZ_AVM_HAS_STRACE
 	default n
 	help
 		Remove /usr/bin/strace binary.
@@ -756,7 +756,7 @@ config FREETZ_REMOVE_SUPPORT_EVENTSDUMP
 
 config FREETZ_REMOVE_TR069
 	bool "Remove tr069" if FREETZ_SHOW_ADVANCED
-	depends on FREETZ_HAS_AVM_TR069
+	depends on FREETZ_AVM_HAS_TR069
 	select FREETZ_AVMDAEMON_DISABLE_TR069
 	default n
 	help
@@ -764,7 +764,7 @@ config FREETZ_REMOVE_TR069
 
 config FREETZ_REMOVE_TR069_FWUPDATE
 	bool "Remove fwupdate"
-	depends on FREETZ_REMOVE_TR069 && FREETZ_HAS_AVM_TR069_FWUPDATE
+	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_HAS_TR069_FWUPDATE
 	default n
 	help
 		Removes the file /usr/bin/tr069fwupdate, needed for
@@ -772,7 +772,7 @@ config FREETZ_REMOVE_TR069_FWUPDATE
 
 config FREETZ_REMOVE_TR069_HTTPSDL
 	bool "Remove httpsdl"
-	depends on FREETZ_REMOVE_TR069 && FREETZ_HAS_AVM_TR069_FWUPDATE && FREETZ_REMOVE_TR069_FWUPDATE
+	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_HAS_TR069_FWUPDATE && FREETZ_REMOVE_TR069_FWUPDATE
 	default y
 	help
 		Removes the file /usr/bin/httpsdl, used by:
@@ -783,7 +783,7 @@ config FREETZ_REMOVE_TR069_HTTPSDL
 
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS (USB GSM)"
-	depends on FREETZ_HAS_AVM_UMTS
+	depends on FREETZ_AVM_HAS_UMTS
 	default n
 	help
 		Remove UMTS support
@@ -808,8 +808,8 @@ config FREETZ_REMOVE_UPNP
 		FREETZ_TYPE_3020 || \
 		FREETZ_TYPE_3030 || \
 		FREETZ_TYPE_3130
-	select FREETZ_REMOVE_TR069 if FREETZ_HAS_AVM_TR069
-	select FREETZ_REMOVE_AURA_USB if FREETZ_HAS_AVM_AURA_USB
+	select FREETZ_REMOVE_TR069 if FREETZ_AVM_HAS_TR069
+	select FREETZ_REMOVE_AURA_USB if FREETZ_AVM_HAS_AURA_USB
 	default n
 	help
 		Remove Universal Plug'n'Play daemon 'igdd/upnpd' and some more files used by
@@ -851,7 +851,7 @@ config FREETZ_REMOVE_QOS
 
 config FREETZ_REMOVE_AVM_E2FSPROGS
 	bool "Remove e2fsprogs"
-	depends on FREETZ_HAS_AVM_E2FSPROGS
+	depends on FREETZ_AVM_HAS_E2FSPROGS
 	default y if FREETZ_PATCH_FREETZMOUNT
 	default n
 	help
@@ -860,7 +860,7 @@ config FREETZ_REMOVE_AVM_E2FSPROGS
 
 config FREETZ_REMOVE_VOIPD
 	bool "Remove VoIP"
-	depends on FREETZ_HAS_AVM_PHONE
+	depends on FREETZ_AVM_HAS_PHONE
 	default n
 	help
 		This removes the integrated sip-client and -server and the releated Web menu,
@@ -873,12 +873,12 @@ config FREETZ_REMOVE_VOIPD
 
 config FREETZ_REMOVE_TELEPHONY
 	bool "Remove telephony"
-	depends on FREETZ_HAS_AVM_PHONE
-	select FREETZ_REMOVE_DECT if FREETZ_HAS_AVM_DECT
+	depends on FREETZ_AVM_HAS_PHONE
+	select FREETZ_REMOVE_DECT if FREETZ_AVM_HAS_DECT
 	select FREETZ_REMOVE_VOIPD
 	select FREETZ_REMOVE_DTRACE
 	select FREETZ_REMOVE_CAPIOVERTCP
-	select FREETZ_REMOVE_MINID if FREETZ_HAS_AVM_MINID
+	select FREETZ_REMOVE_MINID if FREETZ_AVM_HAS_MINID
 	default n
 	help
 		Radically remove a lot of telephony-related files. This patch saves about
@@ -892,7 +892,7 @@ config FREETZ_REMOVE_TELEPHONY
 
 config FREETZ_REMOVE_WEBDAV
 	bool "Remove WebDAV"
-	depends on FREETZ_HAS_AVM_WEBDAV
+	depends on FREETZ_AVM_HAS_WEBDAV
 	default n
 	help
 		Remove WebDAV (Online-Speicher) feature. Saves about 510 KB of
@@ -902,7 +902,7 @@ config FREETZ_REMOVE_WEBDAV
 config FREETZ_REMOVE_WLAN
 	bool "Remove WLAN"
 	depends on FREETZ_SHOW_ADVANCED && \
-		FREETZ_HAS_AVM_WLAN
+		FREETZ_AVM_HAS_WLAN
 	default n
 	help
 		Radically remove a lot of wlan-related files. This patch saves about
@@ -920,7 +920,7 @@ comment "Web menu patches -----------------------"
 
 config FREETZ_PATCH_VCC
 	bool "Patch 2nd VCC"
-	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE && !FREETZ_AVM_VERSION_05_5X
+	depends on FREETZ_AVM_HAS_PHONE && FREETZ_TYPE_LANG_DE && !FREETZ_AVM_VERSION_05_5X
 	default n
 	help
 		Patches the setting for 2nd VCC into web menu. It also adds two additional
@@ -1026,7 +1026,7 @@ config FREETZ_ADD_REGEXT_GUI
 config FREETZ_PATCH_GSMVOICE
 	bool "Patch GSM voice"
 	depends on \
-		FREETZ_HAS_AVM_UMTS && \
+		FREETZ_AVM_HAS_UMTS && \
 		! FREETZ_REMOVE_UMTSD && \
 		! FREETZ_TYPE_7270_V1
 	default n
@@ -1037,7 +1037,7 @@ config FREETZ_PATCH_GSMVOICE
 
 #config FREETZ_PATCH_INTERNATIONAL
 #	bool "Patch international"
-#	depends on FREETZ_HAS_AVM_PHONE && FREETZ_TYPE_LANG_DE
+#	depends on FREETZ_AVM_HAS_PHONE && FREETZ_TYPE_LANG_DE
 #	default y
 #	help
 #		Reveals some options from the international firmware in the web menu.
@@ -1062,14 +1062,14 @@ config FREETZ_PATCH_SIGNED
 	help
 		Hides the "unsupported changes" message from the web interface.
 
-if FREETZ_HAS_AVM_USB_HOST
+if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches --------------------"
 
 config FREETZ_PATCH_FREETZMOUNT
 	bool "FREETZMOUNT: Patch AVMs hotplug scripts, USB storage names, ..."
 	select FREETZ_USBSTORAGE_AUTOMOUNT
-	select FREETZ_BUSYBOX_BLKID if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
-	select FREETZ_BUSYBOX_FEATURE_BLKID_TYPE if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_HAS_AVM_E2FSPROGS
+	select FREETZ_BUSYBOX_BLKID if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_AVM_HAS_E2FSPROGS
+	select FREETZ_BUSYBOX_FEATURE_BLKID_TYPE if FREETZ_REMOVE_AVM_E2FSPROGS || ! FREETZ_AVM_HAS_E2FSPROGS
 	select FREETZ_BUSYBOX_VOLUMEID
 	default y
 	help
@@ -1109,8 +1109,8 @@ config FREETZ_AUTOMOUNT_EXT2
 config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXT
-	select FREETZ_MODULE_ext3 if ! FREETZ_HAS_AVM_EXT3
-	default y if FREETZ_HAS_AVM_EXT3
+	select FREETZ_MODULE_ext3 if ! FREETZ_AVM_HAS_EXT3
+	default y if FREETZ_AVM_HAS_EXT3
 	default n
 	help
 		This adds ext3 module to your firmware.
@@ -1156,9 +1156,9 @@ config FREETZ_AUTOMOUNT_LUKS
 
 config FREETZ_AUTOMOUNT_NTFS
 	bool "NTFS"
-	select FREETZ_PACKAGE_NTFS if FREETZ_REMOVE_NTFS || ! FREETZ_HAS_AVM_NTFS
+	select FREETZ_PACKAGE_NTFS if FREETZ_REMOVE_NTFS || ! FREETZ_AVM_HAS_NTFS
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_NTFS
-	default y if FREETZ_HAS_AVM_NTFS && ! FREETZ_REMOVE_NTFS
+	default y if FREETZ_AVM_HAS_NTFS && ! FREETZ_REMOVE_NTFS
 	default n
 	help
 		This adds ntfs-3g mount helper to your firmware.
@@ -1211,7 +1211,7 @@ endif
 
 config FREETZ_MODIFY_UMTSD
 	bool "Modify umtsd: only for known modems"
-	depends on FREETZ_HAS_AVM_UMTS && FREETZ_HAS_AVM_UDEV && ! FREETZ_REMOVE_UMTSD
+	depends on FREETZ_AVM_HAS_UMTS && FREETZ_AVM_HAS_UDEV && ! FREETZ_REMOVE_UMTSD
 	default n
 	help
 		AVM's umtsd will only be started if a *known* umts modem is
@@ -1219,7 +1219,7 @@ config FREETZ_MODIFY_UMTSD
 
 config FREETZ_CUSTOM_UDEV_RULES
 	bool "Enable custom UDEV rules"
-	depends on FREETZ_HAS_AVM_UDEV
+	depends on FREETZ_AVM_HAS_UDEV
 	default n
 	help
 		You could use own rules for UDEV.
@@ -1228,12 +1228,12 @@ comment "Replacement patches --------------------"
 
 comment "Replace OpenSSL libraries (not available, requires openssl-0.9.8)"
 	depends on FREETZ_SHOW_ADVANCED && \
-		!( FREETZ_HAS_AVM_OPENSSL_LIBS && FREETZ_LIB_libcrypto && FREETZ_OPENSSL_VERSION_0 )
+		!( FREETZ_AVM_HAS_OPENSSL_LIBS && FREETZ_LIB_libcrypto && FREETZ_OPENSSL_VERSION_0 )
 
 config FREETZ_REPLACE_SSL_LIBS
 	bool "Replace OpenSSL libraries"
 	depends on FREETZ_SHOW_ADVANCED && \
-		FREETZ_HAS_AVM_OPENSSL_LIBS && FREETZ_LIB_libcrypto && FREETZ_OPENSSL_VERSION_0
+		FREETZ_AVM_HAS_OPENSSL_LIBS && FREETZ_LIB_libcrypto && FREETZ_OPENSSL_VERSION_0
 	select FREETZ_LIB_libssl
 	default n
 	help
@@ -1382,7 +1382,7 @@ config FREETZ_AVMDAEMON_DISABLE_IGM
 
 config FREETZ_AVMDAEMON_DISABLE_TR069
 	bool "Disable tr069"
-	depends on FREETZ_HAS_AVM_TR069
+	depends on FREETZ_AVM_HAS_TR069
 	default n
 	help
 		Disables multid's tr069discover
