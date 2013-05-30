@@ -17,7 +17,11 @@ modsed 's/urlader_size=131072/urlader_size=262144/' "${FIRMWARE_MOD_DIR}/var/ins
 if [ "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 	# set mtd1 to 16 MB (244 * 64KB)
 	modsed 's/kernel_size=16121856/kernel_size=15990784/' "${FIRMWARE_MOD_DIR}/var/install"
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7570_HN.patch"
+	if [ "$FREETZ_TYPE_7570_7270" != "y" ]; then
+		modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7570_HN.patch"
+	else
+		echo TODO!!!
+	fi
 else
 	# use only 8 MB (122 * 64 KB)
 	modsed 's/kernel_size=16121856/kernel_size=7995392/' "${FIRMWARE_MOD_DIR}/var/install"
