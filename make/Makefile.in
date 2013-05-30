@@ -562,7 +562,7 @@ $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link); \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
 	else \
-		$(DL_TOOL) $(DL_DIR) $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \
+		$(DL_TOOL) $(DL_DIR) $($(PKG)_SOURCE) $($(PKG)_SITE) $(or $($(PKG)_SOURCE_SHA1),$($(PKG)_SOURCE_MD5)) $(SILENT); \
 	fi
 
 $(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
@@ -572,7 +572,7 @@ $(MIRROR_DIR)/$($(PKG)_SOURCE): | $(MIRROR_DIR)
 		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link); \
 		ln $(DL_DIR)/$($(PKG)_SOURCE) $(MIRROR_DIR); \
 	else \
-		$(DL_TOOL) $(MIRROR_DIR) $($(PKG)_SOURCE) $($(PKG)_SITE) $($(PKG)_SOURCE_MD5) $(SILENT); \
+		$(DL_TOOL) $(MIRROR_DIR) $($(PKG)_SOURCE) $($(PKG)_SITE) $(or $($(PKG)_SOURCE_SHA1),$($(PKG)_SOURCE_MD5)) $(SILENT); \
 	fi
 
 $(pkg)-download-mirror: $(MIRROR_DIR)/$($(PKG)_SOURCE)
