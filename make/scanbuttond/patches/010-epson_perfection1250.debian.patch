@@ -1,0 +1,27 @@
+--- backends/plustek.c
++++ backends/plustek.c
+@@ -29,7 +29,7 @@
+ 
+ static char* backend_name = "Plustek USB";
+ 
+-#define NUM_SUPPORTED_USB_DEVICES 9
++#define NUM_SUPPORTED_USB_DEVICES 10
+ 
+ static int supported_usb_devices[NUM_SUPPORTED_USB_DEVICES][3] = {
+ 	// vendor, product, num_buttons
+@@ -39,6 +39,7 @@
+ 	{ 0x04a9, 0x220d, 3 },	// CanoScan LiDE 20
+ 	{ 0x04a9, 0x2220, 3 },  // CanoScan LiDE 25
+ 	{ 0x04a9, 0x220e, 3 },	// CanoScan LiDE 30
++	{ 0x04b8, 0x010f, 4 },  // Epson Perfection 1250
+ 	{ 0x04b8, 0x011d, 4 },  // Epson Perfection 1260
+ 	{ 0x03f0, 0x0605, 2 },  // HP ScanJet 2200c (maybe only 1 button?)
+ 	{ 0x0458, 0x2007, 5 }   // Genius (KYE) ColorPage-HR6 V2 (5 buttons)
+@@ -51,6 +52,7 @@
+ 	{ "Canon", "CanoScan LiDE 20" },
+ 	{ "Canon", "CanoScan LiDE 25" },
+ 	{ "Canon", "CanoScan LiDE 30" },
++	{ "Epson", "Perfection 1250" },
+ 	{ "Epson", "Perfection 1260" },
+ 	{ "Hewlett-Packard", "ScanJet 2200c" },
+ 	{ "Genius (KYE)", "ColorPage-HR6 V2" }

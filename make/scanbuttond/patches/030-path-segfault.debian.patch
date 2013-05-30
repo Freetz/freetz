@@ -1,0 +1,42 @@
+--- scanbuttond.c
++++ scanbuttond.c
+@@ -16,6 +16,10 @@
+ // along with this program; if not, write to the Free Software
+ // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
++// Modified by Milan Zamazal <pdm@debian.org> on 2008-06-06:
++// Patch by Thomas Viehweger <patchesthomas.vie@web.de> -- don't segfault when
++// PATH is not set.
++
+ #include <sys/stat.h>
+ #include <sys/wait.h>
+ #include <stdio.h>
+@@ -276,13 +280,23 @@
+ 
+ 	// setup the environment
+ 	char* oldpath = getenv("PATH");
++	if (oldpath == NULL) {
++		oldpath = "";
++	}
+ 	char* dir = dirname(argv[0]);
+ 	path = (char*)malloc(strlen(oldpath) + strlen(dir) + 1);
+-	strcpy(path, oldpath);
+-	strcat(path, ":");
+-	strcat(path, dir);
+-	setenv("PATH", path, 1);
+-	free(path);
++	if (path) {
++		if (strlen(oldpath)) {
++			strcpy(path, oldpath);
++			strcat(path, ":");
++		}
++		else {
++			path[0] = 0;
++		}
++		strcat(path, dir);
++		setenv("PATH", path, 1);
++		free(path);
++	}
+ 
+ 	syslog(LOG_DEBUG, "running scanner initialization script...");
+ 	execute_and_wait(initscanner_script);

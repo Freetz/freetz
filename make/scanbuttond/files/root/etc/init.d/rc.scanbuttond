@@ -1,0 +1,50 @@
+#!/bin/sh
+
+DAEMON=scanbuttond
+DAEMON_LONG_NAME="ScanButton daemon"
+. /etc/init.d/modlibrc
+
+config() {
+	local CONFDIR=/mod/etc/scanbuttond
+	[ ! -d $CONFDIR ] && mkdir -p $CONFDIR
+	[ ! -e $CONFDIR/meta.conf ] && ln -sf /etc/default.scanbuttond/meta.conf $CONFDIR/meta.conf
+	echo "$SCANBUTTOND_BUTTONPRESSED_SCRIPT" > $CONFDIR/buttonpressed.sh
+	echo "$SCANBUTTOND_INITSCANNER_SCRIPT" > $CONFDIR/initscanner.sh
+	chmod +x $CONFDIR/*.sh
+}
+
+start() {
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
+	config
+	modlib_startdaemon $DAEMON
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON "${DAEMON_LONG_NAME}"
+		modreg daemon $DAEMON
+		modlib_start $SCANBUTTOND_ENABLED
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg daemon $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+esac
+
+exit 0

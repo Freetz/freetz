@@ -1,0 +1,33 @@
+Description: Add support for HP ScanJet 4500
+Author: potter000
+Reviewed-by: Daniel T Chen <crimsun@ubuntu.com>
+Origin: potter000, https://bugs.launchpad.net/ubuntu/+source/scanbuttond/+bug/675326/+attachment/1733623/+files/hp4500.patch
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/scanbuttond/+bug/675326
+Forwarded: no
+Last-Update: 2011-07-28
+
+--- backends/hp5590.c
++++ backends/hp5590.c
+@@ -27,11 +27,12 @@
+ 
+ static char* backend_name = "HP5590 USB";
+ 
+-#define NUM_SUPPORTED_USB_DEVICES 4
++#define NUM_SUPPORTED_USB_DEVICES 5
+ 
+ static int supported_usb_devices[NUM_SUPPORTED_USB_DEVICES][3] =
+ {
+        /* vendor, product, num_buttons */
++       { 0x03f0, 0x1205, 5 },  /* HP Scanjet 4500 */
+        { 0x03f0, 0x1305, 5 },  /* HP Scanjet 4570 */
+        { 0x03f0, 0x1305, 5 },  /* HP Scanjet 5550 */
+        { 0x03f0, 0x1705, 5 },  /* HP Scanjet 5590 */
+@@ -40,6 +41,7 @@
+ 
+ static char* usb_device_descriptions[NUM_SUPPORTED_USB_DEVICES][2] =
+ {
++       { "Hewlett-Packard", "ScanJet 4500" },
+        { "Hewlett-Packard", "ScanJet 4570" },
+        { "Hewlett-Packard", "ScanJet 5550" },
+        { "Hewlett-Packard", "Scanjet 5590" },
+

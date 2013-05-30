@@ -1,0 +1,79 @@
+menu SCANBUTTOND
+
+config FREETZ_PACKAGE_SCANBUTTOND
+	bool "scanbuttond cvs (unstable)"
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libusb
+	select FREETZ_PACKAGE_SANE_BACKENDS_scanimage
+	select FREETZ_PACKAGE_SCANBUTTOND_BACKEND_meta
+	default n
+	help
+		Scanner button daemon. It allows you to invoke actions such as shell
+		scripts whenever one of the scanner front panel buttons is pressed.
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_artec_eplus48u
+	bool "artec_eplus48u backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_epson
+	bool "epson backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_genesys
+	bool "genesys backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_gt68xx
+	bool "gt68xx backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_hp3500
+	bool "hp3500 backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_hp3900
+	bool "hp3900 backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_hp5590
+	bool "hp5590 backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_meta
+	bool "meta backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_mustek
+	bool "mustek backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_niash
+	bool "niash backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_plustek
+	bool "plustek backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_plustek_umax
+	bool "plustek_umax backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+config FREETZ_PACKAGE_SCANBUTTOND_BACKEND_snapscan
+	bool "snapscan backend"
+	depends on FREETZ_PACKAGE_SCANBUTTOND
+	default n
+
+endmenu

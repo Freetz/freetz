@@ -1,0 +1,71 @@
+--- scripts/buttonpressed.sh.example
++++ scripts/buttonpressed.sh.example
+@@ -7,9 +7,28 @@
+ #        more scanners. In this case we can pass the device name to SANE programs 
+ #        like scanimage.
+ 
++# *** WARNING ***
++# The example code below contains just simple examples how things may get done.
++# Don't simply uncomment the code on systems with untrusted users!  This would
++# make your button scanning vulnerable to various kinds of attacks by local users.
++# *** WARNING ***
++
+ TMPFILE="/tmp/scan.tiff"
++TMPFILE_PDF="/tmp/scan.pdf"
++TMPFILE_PS="/tmp/scan.ps"
+ LOCKFILE="/tmp/copy.lock"
+ 
++# Lock file handling and GNOME examples for buttons 2, 3, 4 below contributed
++# by Lutz Müller <lutz@topfrose.de>.
++
++if ! lockfile-create --retry 2 $LOCKFILE; then
++	echo "Error: scanning already in progress for $2"
++	exit
++fi
++rm -f $TMPFILE
++rm -f $TMPFILE_PDF
++rm -f $TMPFILE_PS
++
+ case $1 in
+ 	1)
+ 		echo "button 1 has been pressed on $2"
+@@ -47,15 +66,39 @@
+ 		# echo "The print job has been submitted" | festival --tts
+ 		# rm -f $LOCKFILE
+ 		#
++
++		# Another example of the same action, but using other tools and
++		# working with newer scanimage versions.
++		# It requires sane-utils, lockfile-progs and netpbm.
++		# Suggested by Francesco Potorti`.
++		#
++		# if ! lockfile-create --retry 2 $LOCKFILE; then
++		#   echo "Error: scanning already in progress for $2"
++		#   exit
++		# fi
++		# SCAN_OPTIONS="--resolution 300 --contrast 10 --brightness 0"
++		# scanimage --verbose --device-name $2 \
++		#           --mode Gray -x 210 -y 297 $SCAN_OPTIONS |
++		#   pnmtops -width=8.27 -height=11.69 |
++		#   lpr -J $2 $PRINTER
++		# lockfile-remove $LOCKFILE
+ 		;;
+ 	2)
+ 		echo "button 2 has been pressed on $2"
++		# flegita
+ 		;;
+ 	3)
+ 		echo "button 3 has been pressed on $2"
++		# scanimage --resolution 300 --device-name $2 --mode Color -x 210 -y 297 | pnmtops -width=8.27 -height=11.69 > $TMPFILE_PS
++		# ps2pdf $TMPFILE_PS $TMPFILE_PDF
++		# evince $TMPFILE_PDF
+ 		;;
+ 	4)
+ 		echo "button 4 has been pressed on $2"
++		# scanimage --resolution 300 --device-name $2 --mode Color -x 210 -y 297 | pnmtops -width=8.27 -height=11.69 > $TMPFILE_PS
++		# ps2pdf $TMPFILE_PS $TMPFILE_PDF
++		# nautilus-sendto $TMPFILE_PDF
+ 		;;
+ esac
+ 
++lockfile-remove $LOCKFILE

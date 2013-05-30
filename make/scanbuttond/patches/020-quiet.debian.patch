@@ -1,0 +1,63 @@
+--- scanbuttond.c
++++ scanbuttond.c
+@@ -54,6 +54,7 @@
+ 	{"retrydelay", required_argument, NULL, 'r'},
+ 	{"help", no_argument, NULL, 'h'},
+ 	{"version", no_argument, NULL, 'v'},
++	{"quiet", no_argument, NULL, 'q'},
+ 	{NULL, 0, NULL, 0}
+ };
+ 
+@@ -67,6 +68,7 @@
+ static int daemonize;
+ static int killed = 0;
+ static char* path;
++static int quiet;
+ 
+ 
+ char* scanbtnd_get_connection_name(int connection)
+@@ -141,6 +143,7 @@
+ 	printf("  -r, --retrydelay=DELAY      The retry delay (ms), default: %ld\n", DEF_RETRY_DELAY);
+ 	printf("  -h, --help                  Shows this screen\n");
+ 	printf("  -v, --version               Shows the version\n");
++	printf("  -q, --quiet                 Shut up about not finding any scanners\n");
+ }
+ 
+ 
+@@ -153,8 +156,9 @@
+ 	poll_delay = -1;
+ 	retry_delay = -1;
+ 	daemonize = 1;
++	quiet = 0;
+ 
+-	while ((c = getopt_long (argc, argv, "fb:s:S:p:r:hv", long_opts, NULL)) != -1) {
++	while ((c = getopt_long (argc, argv, "fb:s:S:p:r:hvq", long_opts, NULL)) != -1) {
+ 		switch (c) {
+ 			case 'f':
+ 				daemonize = 0;
+@@ -192,6 +196,9 @@
+ 				show_version();
+ 				exit(EXIT_SUCCESS);
+ 				break;
++			case 'q':
++				quiet = 1;
++				break;
+ 		}
+ 	}
+ 
+@@ -307,11 +314,13 @@
+ 	while (killed == 0) {
+ 
+ 		if (scanners == NULL) {
+-			syslog(LOG_DEBUG, "rescanning devices...");
++			if (!quiet)
++				syslog(LOG_DEBUG, "rescanning devices...");
+ 			backend->scanbtnd_rescan();
+ 			scanners = backend->scanbtnd_get_supported_devices();
+ 			if (scanners == NULL) {
+-				syslog(LOG_DEBUG, "no supported devices found. rescanning in a few seconds...");
++				if (!quiet)
++					syslog(LOG_DEBUG, "no supported devices found. rescanning in a few seconds...");
+ 				usleep(retry_delay);
+ 				continue;
+ 			}
