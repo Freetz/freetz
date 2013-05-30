@@ -10,9 +10,11 @@
 # at a relative location '../.config' to this script. The variables are:
 #   - FREETZ_DL_SITE_USER     (URL, e.g. http://my.server.org)
 
-# XXX: Temporarily use system's md5sum if busybox applet is not yet build (see #1535)
+# XXX: Temporarily use system's md5sum/sha1sum if busybox applet is not yet build (see #1535)
 MD5SUM=$(dirname $0)/md5sum
 [ ! -x $MD5SUM ] && MD5SUM="$(which md5sum)"
+SHA1SUM=$(dirname $0)/sha1sum
+[ ! -x $SHA1SUM ] && SHA1SUM="$(which sha1sum)"
 
 DOT_CONFIG=$FREETZ_BASE_DIR/.config
 FREETZ_DL_SITE_1="http://freetz.magenbrot.net"
@@ -146,7 +148,7 @@ fi
 DL_DIR="$1"
 DL_FILE="$2"
 MAIN_URL="$3"
-MD5="$4"
+CHECKSUM="$(echo $4)" # trim whitespaces, length is used to determine whether it's MD5 or SHA1
 
 # Import Freetz config variables
 [ -e $DOT_CONFIG ] && . $DOT_CONFIG
@@ -157,7 +159,7 @@ if [ "$DEBUG" == "1" ]; then
 	echo "    DOT_CONFIG=$DOT_CONFIG"
 	echo "    DL_FILE=$DL_FILE"
 	echo "    MAIN_URL=$MAIN_URL"
-	echo "    MD5=$MD5"
+	echo "    CHECKSUM=$CHECKSUM"
 fi
 
 num_sites=0
@@ -205,7 +207,7 @@ if [ -n "$MAIN_URL" ]; then
 		if [ -n "${VCS}" ]; then
 			MAIN_URL="$(echo "${MAIN_URL}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
 			num_sites=0
-			MD5=""
+			CHECKSUM=""
 		else
 			sites[$num_sites]=$MAIN_URL
 			(( num_sites++ ))
@@ -248,14 +250,25 @@ for i in ${sites[@]}; do
 		if [ "$?" != "0" ]; then
 			continue
 		fi
-		if [ -n "$MD5" -a -x "$MD5SUM" ]; then
-			FILE_MD5=$($MD5SUM "$DL_DIR/$DL_FILE" | sed 's/ .*//')
-			if [ "$(echo $MD5 | tr A-Z a-z)" != "$FILE_MD5" ]; then
-				echo "MD5 mismatch for $DL_DIR/$DL_FILE: $MD5 $FILE_MD5" 1>&1
-				rm -f "$DL_DIR/$DL_FILE"
-				continue;
-			else
-				echo "MD5 verified for $DL_DIR/$DL_FILE: $FILE_MD5"
+
+		if [ -n "$CHECKSUM" ]; then
+			if [ "${#CHECKSUM}" == 40 ]; then
+				CHECKSUM_PROG="$SHA1SUM"
+				CHECKSUM_ALGO="SHA1"
+			elif [ "${#CHECKSUM}" == 32 ]; then
+				CHECKSUM_PROG="$MD5SUM"
+				CHECKSUM_ALGO="MD5"
+			fi
+
+			if [ -x "$CHECKSUM_PROG" ]; then
+				FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//')
+				if [ "$(echo $CHECKSUM | tr A-Z a-z)" != "$FILE_CHECKSUM" ]; then
+					echo "$CHECKSUM_ALGO mismatch for $DL_DIR/$DL_FILE: $CHECKSUM $FILE_CHECKSUM" 1>&1
+					rm -f "$DL_DIR/$DL_FILE"
+					continue;
+				else
+					echo "$CHECKSUM_ALGO verified for $DL_DIR/$DL_FILE: $FILE_CHECKSUM"
+				fi
 			fi
 		fi
 	fi
