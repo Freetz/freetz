@@ -1,0 +1,30 @@
+--- cfg_file.y
++++ cfg_file.y
+@@ -598,7 +598,7 @@
+ /* Find host in the hosts list.
+  * NOTE: This function can be called only once since it deallocates hosts list.
+  */ 
+-inline struct vtun_host* find_host(char *host)
++struct vtun_host* find_host(char *host)
+ {
+    return (struct vtun_host *)llist_free(&host_list, free_host, host);
+ }
+@@ -616,7 +616,7 @@
+ }
+ 
+ /* Clear the VTUN_NAT_HACK flag which are not relevant to the current operation mode */
+-inline void clear_nat_hack_flags(int svr)
++void clear_nat_hack_flags(int svr)
+ {
+ 	if (svr)
+ 		llist_trav(&host_list,clear_nat_hack_server,NULL);
+--- vtun.h
++++ vtun.h
+@@ -235,6 +235,6 @@
+ int  tunnel(struct vtun_host *host);
+ int  read_config(char *file);
+ struct vtun_host * find_host(char *host);
+-inline void clear_nat_hack_flags(int svr);
++void clear_nat_hack_flags(int svr);
+ 
+ #endif

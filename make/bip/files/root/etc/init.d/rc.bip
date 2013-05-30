@@ -16,6 +16,16 @@ start() {
 	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG $BIP_CMDLINE
 }
 
+startdaemon_post() {
+	# wait for proper daemon startup, typically 0 seconds
+	local cnt=0
+	while [ $cnt -le 9 ]; do
+		[ -s $PID_FILE ] && kill -0 "$(cat $PID_FILE)" 2>/dev/null && break
+		let cnt++
+		sleep 1
+	done
+}
+
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
