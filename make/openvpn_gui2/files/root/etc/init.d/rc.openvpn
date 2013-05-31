@@ -1,0 +1,160 @@
+#!/bin/sh
+
+scriptname=$0
+DAEMON=${scriptname##*/rc.}
+daemon="$(echo $DAEMON | tr [A-Z-] [a-z_])"
+if [ $DAEMON == "openvpn" ]; then
+	TITLE=OpenVPN
+	keypath=/tmp/flash/openvpn/
+else
+	keypath=/tmp/flash/openvpn/${daemon}/
+	TITLE=${2-$DAEMON}
+fi
+
+. /etc/init.d/modlibrc
+
+mypidof() {
+	ps -w | sed -n "/\/m[o]d\/etc\/${1}.conf/ s/^[ ]*\([0-9]*\)[ ].*/\1/ p"
+}
+
+
+if [ ! -e /var/tmp/.openvpnfirstrun ]; then
+	touch /var/tmp/.openvpnfirstrun
+	if [ -e /tmp/flash/openvpn/configs ]; then
+		 for config in $(cat /tmp/flash/openvpn/configs); do
+			/mod/etc/default.openvpn/generate_virtual_pkg $config
+		done
+	fi
+	[ -r /var/tmp/flash/openvpn/static.key ] || compat
+fi
+
+[ -x /mod/sbin/$DAEMON ] || ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
+
+case $1 in
+	""|load|start|restart)
+		modlib_addgroup openvpn
+		modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
+		mkdir -p /tmp/openvpn/etc
+		cp -f /etc/resolv.conf /tmp/openvpn/etc
+		;;
+esac
+
+config() {
+	modlib_config
+}
+
+
+start() {
+	echo -n "Starting $DAEMON ... "
+	if [ -n "$(mypidof $DAEMON)" ]; then
+		echo "already started."
+		return 1;
+	fi
+
+	if [ ! -e "${keypath}static.key" ]; then
+		echo -n "creating static.key ... "
+		mkdir -p ${keypath}
+		openvpn --genkey --secret ${keypath}static.key
+		/usr/bin/modsave flash >/dev/null
+	fi
+
+	if [ -r "/tmp/flash/openvpn/own_${daemon}.conf" ]; then
+		cp /tmp/flash/openvpn/own_${daemon}.conf /mod/etc/${daemon}.conf 
+	else
+		if [ -x "/tmp/flash/${daemon}_conf" ]; then
+			/tmp/flash/${daemon}_conf /mod/etc/${daemon}.conf
+		else
+			/mod/etc/default.${daemon}/${daemon}_conf /mod/etc/${daemon}.conf
+		fi
+		if [ -r "/tmp/flash/${daemon}.extra" ]; then
+			cat /tmp/flash/${daemon}.extra >> /mod/etc/${daemon}.conf
+		fi
+	fi
+
+	$DAEMON --config /mod/etc/${daemon}.conf --writepid /var/run/${daemon}.pid
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
+	if [ $(which brctl) ] && TAP=$(grep "#Helperline" /mod/etc/${daemon}.conf | grep -o tap[0-9] ); then
+		brctl addif lan $TAP 2> /dev/null
+	fi
+}
+
+stop() {
+	echo -n "Stopping ${DAEMON} ... "
+	PID=$(mypidof $DAEMON)
+
+	if [ -z "$PID" ]; then
+		echo "not running."
+		return 1
+	fi
+
+	kill $PID > /dev/null 2>&1
+	exitval=$?
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+
+	rm -f /mod/etc/${daemon}.conf
+	rm -f /var/run/${daemon}.pid
+}
+
+case $1 in
+	""|load)
+		modreg cgi "${DAEMON}" "${TITLE-$DAEMON}"
+		modreg daemon ${DAEMON}
+		modreg file ${DAEMON} 'box_crt' 'Box Cert' 0 "box_crt"
+		modreg file ${DAEMON} 'box_key' 'Private Key' 0 "box_key"
+		modreg file ${DAEMON} 'ca_crt' 'CA Cert' 0 "ca_crt"
+		modreg file ${DAEMON} 'crl_pem' 'CRL' 0 "crl_pem"
+		modreg file ${DAEMON} 'dh_pem' 'DH Param' 0 "dh_pem"
+		modreg file ${DAEMON} 'static_key' 'Static Key' 0 "static_key"
+		modreg file ${DAEMON} 'script1' 'Script 1' 0 "script1"
+		modreg file ${DAEMON} 'script2' 'Script 2' 0 "script2"
+		modreg file ${DAEMON} 'script3' 'Script 3' 0 "script3"
+		if [ "${OPENVPN_ENABLED}" != "yes" ]; then
+			echo "${DAEMON} is disabled" 1>&2
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		modunreg file ${DAEMON}
+		modunreg daemon ${DAEMON}
+		modunreg cgi ${DAEMON}
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	reload)
+		if [ -r "/var/run/${daemon}.pid" ]; then
+			kill -HUP $(cat /var/run/${daemon}.pid)
+		fi
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status] [GUI-Title]" 1>&2
+		exit 1
+		;;
+
+esac
+
+exit 0

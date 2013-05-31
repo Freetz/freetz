@@ -1,0 +1,98 @@
+#!/bin/sh
+
+cc="openvpn"
+uebergabe=""
+delimiter="#"
+
+wert (){
+	IFS=$2
+	local number=$3
+	local c=0
+	uebergabe=""
+	for inhalt in $1
+	do
+		if [ "$c" -eq "$number" ]; then uebergabe=$inhalt; fi
+		let c++
+	done
+	unset IFS
+}
+
+count=2
+
+. /mod/etc/conf/openvpn.cfg
+while [ $count -le $OPENVPN_CONFIG_COUNT ]
+do
+	IFS=''
+	wert $OPENVPN_CONFIG_NAMES $delimiter $count
+	LOKAL_CONFIG_NAMES=$uebergabe
+	IFS=''
+	wert $OPENVPN_AUTOSTART $delimiter $count
+	LOKAL_CONFIG_AUTOSTART=$uebergabe
+	IFS=''
+	wert $OPENVPN_OWN_KEYS $delimiter $count
+	LOKAL_OWN_KEYS=$uebergabe
+
+	act="openvpn_${LOKAL_CONFIG_NAMES}"
+	cc="$cc $act"
+	if [ ! -d /mod/etc/default.${act} ]; then
+		mkdir /mod/etc/default.${act}
+	fi
+	if [ -e /mod/etc/default.${act}/${act}_conf ]; then
+		rm /mod/etc/default.${act}/${act}_conf
+	fi
+	if [ -x /tmp/flash/openvpn_conf ]; then
+		ln -sf /tmp/flash/openvpn_conf /mod/etc/default.${act}/${act}_conf
+	else
+		ln -sf /mod/etc/default.openvpn/openvpn_conf /mod/etc/default.${act}/${act}_conf
+	fi
+	if [ ! -x /mod/etc/init.d/rc.${act} ]; then
+	    ln -s rc.openvpn /mod/etc/init.d/rc.${act}
+	fi
+	if [ ! -x /mod/sbin/$act ]; then
+		ln -s /usr/sbin/openvpn /mod/sbin/$act
+	fi
+
+
+	unset IFS
+	for deffile in $(ls /mod/etc/default.openvpn/*.def)
+	do
+		name=${deffile##*/}
+			tmpid=${name%%.*}
+			tmpid="OVPN_${LOKAL_CONFIG_NAMES}_$tmpid"
+			tmptitle=$(grep CAPTION $deffile)
+			tmptitle=${tmptitle##*=\'}
+			tmptitle=${tmptitle%%(*}
+			if [ "$LOKAL_OWN_KEYS" == "yes" ]; then
+				 sed "/SAVE/ s/[^\/]openvpn/&${act#openvpn}/g"  $deffile | sed "/CAPTION/ s/VPN/VPN Config ${LOKAL_CONFIG_NAMES}/g" | sed "/FILE\|SAVE/ s%/openvpn/%/openvpn/${LOKAL_CONFIG_NAMES}_%" > /mod/etc/default.${act}/$name
+				modreg file openvpn "$tmpid" "${LOKAL_CONFIG_NAMES}: $tmptitle" 0 "/mod/etc/default.${act}/$name"
+			else
+				modunreg file openvpn "$tmpid"
+			fi
+		done
+
+	upperconfigname=$(echo ${LOKAL_CONFIG_NAMES} | tr [a-z]- [A-Z]_)
+	str=$(echo "OPENVPN_${upperconfigname}_ENABLED=\"${LOKAL_CONFIG_AUTOSTART}\"")
+	echo "$str" > /mod/etc/conf/${act}.cfg
+let count++
+done
+unset IFS
+
+for config in $(ls /mod/etc/init.d/rc.openvpn*); do
+	confname=${config##*rc.}
+	tmp=$(echo $cc | grep $confname)
+	if [ "$tmp" == "" ]; then
+		if [ running = $("$config" status) ]; then
+			echo -n "Stop daemon of deleted config: "
+			"$config" stop
+		fi
+		modunreg daemon "$confname"
+		rm $config
+		if [ -d /mod/etc/default.$confname ]; then
+			rm -rf /mod/etc/default.$confname
+			rm -rf /tmp/flash/$confname
+		fi
+		modunreg file "$confname"
+	else
+		grep -q "$confname" /mod/etc/reg/daemon.reg || modreg daemon -p openvpn "$confname"
+	fi
+done

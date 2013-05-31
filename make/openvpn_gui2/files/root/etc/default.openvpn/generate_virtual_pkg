@@ -1,0 +1,38 @@
+#!/bin/sh
+title=$1
+packagename=$(echo "$title" | tr 'A-Z\-' 'a-z\_')
+
+if [ ! -d /mod/etc/default.${packagename} ]; then
+	mkdir /mod/etc/default.${packagename} 
+fi
+if [ -e /mod/etc/default.${packagename}/${packagename}_conf ]; then
+	rm /mod/etc/default.${packagename}/${packagename}_conf
+fi
+ln -sf /mod/etc/default.openvpn/openvpn_conf /mod/etc/default.${packagename}/${packagename}_conf 
+#ln -sf /mod/etc/default.openvpn/openvpn.cfg  /mod/etc/default.${packagename}/${packagename}.cfg
+sed "s%/openvpn/%/openvpn/${packagename}/%" /mod/etc/default.openvpn/openvpn.cfg > /mod/etc/default.${packagename}/${packagename}.cfg
+ln -sf /mod/etc/default.openvpn/openvpn.save  /mod/etc/default.${packagename}/${packagename}.save
+
+ln -sf rc.openvpn /mod/etc/init.d/rc.${packagename}
+
+if [ ! -x /mod/sbin/$packagename ]; then
+	ln -s /usr/sbin/openvpn /mod/sbin/$packagename
+fi
+if [ ! -x /mod/usr/lib/cgi-bin/${packagename}.cgi ]; then
+	ln -s /mod/usr/lib/cgi-bin/openvpn.cgi /mod/usr/lib/cgi-bin/${packagename}.cgi
+fi
+                                                                
+for deffile in $(ls /mod/etc/default.openvpn/*.def); do
+	name=${deffile##*/}
+	tmpid=${name%%.*}
+	tmpid="${packagename}_$tmpid"
+	tmptitle=$(grep CAPTION $deffile)
+	tmptitle=${tmptitle##*=\'}
+	tmptitle=${tmptitle%%(*}
+	mkdir -p /tmp/flash/openvpn/${packagename}
+	sed "/SAVE/ s/openvpn/${packagename}/g"  $deffile | sed "/CAPTION/ s/OpenVPN/$title/g" | sed "/FILE/ s%/openvpn/%/openvpn/${packagename}/%" > /mod/etc/default.${packagename}/$name
+#	modreg file ${packagename} "$tmpid" "$tmptitle" 0 "/mod/etc/default.${packagename}/$name"
+done
+
+modconf load ${packagename}
+/mod/etc/init.d/rc.${packagename} load $title

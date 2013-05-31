@@ -1,0 +1,5 @@
+CAPTION='Script1 (OpenVPN)'
+DESCRIPTION='$(lang de:"Optionales Skript 1." en:"Optional script #1.")'
+CONFIG_FILE='/tmp/flash/openvpn/script1'
+CONFIG_SAVE='modsave flash; chmod 600  ${CONFIG_FILE}; if [ ! -z "$(pidof openvpn)" ]; then echo ""; /mod/etc/init.d/rc.openvpn reload; fi'
+CONFIG_TYPE='text'
