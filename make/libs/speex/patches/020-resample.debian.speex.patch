@@ -1,0 +1,71 @@
+--- libspeex/resample.c
++++ libspeex/resample.c
+@@ -561,8 +561,8 @@
+       st->cutoff = quality_map[st->quality].downsample_bandwidth * st->den_rate / st->num_rate;
+       /* FIXME: divide the numerator and denominator by a certain amount if they're too large */
+       st->filt_len = st->filt_len*st->num_rate / st->den_rate;
+-      /* Round down to make sure we have a multiple of 4 */
+-      st->filt_len &= (~0x3);
++      /* Round up to make sure we have a multiple of 8 for SSE */
++      st->filt_len = ((st->filt_len-1)&(~0x7))+8;
+       if (2*st->den_rate < st->num_rate)
+          st->oversample >>= 1;
+       if (4*st->den_rate < st->num_rate)
+@@ -579,7 +579,7 @@
+    }
+    
+    /* Choose the resampling type that requires the least amount of memory */
+-   if (st->den_rate <= st->oversample)
++   if (st->filt_len*st->den_rate <= st->filt_len*st->oversample+8)
+    {
+       spx_uint32_t i;
+       if (!st->sinc_table)
+@@ -756,9 +756,9 @@
+ #endif
+    
+    /* Per channel data */
+-   st->last_sample = (spx_int32_t*)speex_alloc(nb_channels*sizeof(int));
+-   st->magic_samples = (spx_uint32_t*)speex_alloc(nb_channels*sizeof(int));
+-   st->samp_frac_num = (spx_uint32_t*)speex_alloc(nb_channels*sizeof(int));
++   st->last_sample = (spx_int32_t*)speex_alloc(nb_channels*sizeof(spx_int32_t));
++   st->magic_samples = (spx_uint32_t*)speex_alloc(nb_channels*sizeof(spx_uint32_t));
++   st->samp_frac_num = (spx_uint32_t*)speex_alloc(nb_channels*sizeof(spx_uint32_t));
+    for (i=0;i<nb_channels;i++)
+    {
+       st->last_sample[i] = 0;
+@@ -954,13 +954,15 @@
+ {
+    spx_uint32_t i;
+    int istride_save, ostride_save;
+-   spx_uint32_t bak_len = *out_len;
++   spx_uint32_t bak_out_len = *out_len;
++   spx_uint32_t bak_in_len = *in_len;
+    istride_save = st->in_stride;
+    ostride_save = st->out_stride;
+    st->in_stride = st->out_stride = st->nb_channels;
+    for (i=0;i<st->nb_channels;i++)
+    {
+-      *out_len = bak_len;
++      *out_len = bak_out_len;
++      *in_len = bak_in_len;
+       if (in != NULL)
+          speex_resampler_process_float(st, i, in+i, in_len, out+i, out_len);
+       else
+@@ -975,13 +977,15 @@
+ {
+    spx_uint32_t i;
+    int istride_save, ostride_save;
+-   spx_uint32_t bak_len = *out_len;
++   spx_uint32_t bak_out_len = *out_len;
++   spx_uint32_t bak_in_len = *in_len;
+    istride_save = st->in_stride;
+    ostride_save = st->out_stride;
+    st->in_stride = st->out_stride = st->nb_channels;
+    for (i=0;i<st->nb_channels;i++)
+    {
+-      *out_len = bak_len;
++      *out_len = bak_out_len;
++      *in_len = bak_in_len;
+       if (in != NULL)
+          speex_resampler_process_int(st, i, in+i, in_len, out+i, out_len);
+       else
