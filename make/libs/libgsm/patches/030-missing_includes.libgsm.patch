@@ -1,0 +1,26 @@
+--- inc/toast.h
++++ inc/toast.h
+@@ -37,6 +38,10 @@
+ # endif
+ #endif
+ 
++#ifdef HAS_STDIO_H
++# include <stdio.h>
++#endif
++
+ #include "gsm.h"
+ 
+ #ifndef	S_ISREG
+--- src/code.c
++++ src/code.c
+@@ -9,8 +9,8 @@
+ #include	"config.h"
+ 
+ 
+-#ifdef	HAS_STDLIB_H
+-#include	<stdlib.h>
++#ifdef	HAS_STRING_H
++#include	<string.h>
+ #else
+ #	include "proto.h"
+ 	extern char	* memcpy P((char *, char *, int));

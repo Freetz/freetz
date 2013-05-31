@@ -1,0 +1,43 @@
+--- Makefile
++++ Makefile
+@@ -139,7 +139,10 @@
+ 
+ # Targets
+ 
++VERSION=1.0.13
++MAJOR_VERSION=$(firstword $(subst ., ,$(VERSION)))
+ LIBGSM	= $(LIB)/libgsm.a
++LIBGSMSO= $(LIB)/libgsm.so.$(VERSION)
+ 
+ TOAST	= $(BIN)/toast
+ UNTOAST	= $(BIN)/untoast
+@@ -279,7 +282,7 @@
+ 
+ # Target rules
+ 
+-all:		$(LIBGSM) $(TOAST) $(TCAT) $(UNTOAST)
++all:		$(LIBGSM) $(LIBGSMSO) $(TOAST) $(TCAT) $(UNTOAST)
+ 		@-echo $(ROOT): Done.
+ 
+ tst:		$(TST)/lin2cod $(TST)/cod2lin $(TOAST) $(TST)/test-result
+@@ -304,6 +307,11 @@
+ 		$(AR) $(ARFLAGS) $(LIBGSM) $(GSM_OBJECTS)
+ 		$(RANLIB) $(LIBGSM)
+ 
++$(LIBGSMSO):	$(LIB) $(GSM_OBJECTS)
++	$(CC) $(LDFLAGS) -shared -Wl,-soname,libgsm.so.$(MAJOR_VERSION) -o $@ $(GSM_OBJECTS)
++	$(LN) -sf $(notdir $@) lib/libgsm.so.$(MAJOR_VERSION)
++	$(LN) -sf $(notdir $@) lib/libgsm.so
++
+ 
+ # Toast, Untoast and Tcat -- the compress-like frontends to gsm.
+ 
+@@ -425,7 +433,7 @@
+ 			-print | xargs rm $(RMFLAGS)
+ 
+ clean:	semi-clean
+-		-rm $(RMFLAGS) $(LIBGSM) $(ADDTST)/add		\
++		-rm $(RMFLAGS) $(LIBGSM) lib/libgsm.so* $(ADDTST)/add		\
+ 			$(TOAST) $(TCAT) $(UNTOAST)	\
+ 			$(ROOT)/gsm-1.0.tar.Z
+ 

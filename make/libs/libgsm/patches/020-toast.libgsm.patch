@@ -1,0 +1,23 @@
+--- Makefile
++++ Makefile
+@@ -315,16 +315,16 @@
+ 
+ # Toast, Untoast and Tcat -- the compress-like frontends to gsm.
+ 
+-$(TOAST):	$(BIN) $(TOAST_OBJECTS) $(LIBGSM)
+-		$(LD) $(LFLAGS) -o $(TOAST) $(TOAST_OBJECTS) $(LIBGSM) $(LDLIB)
++$(TOAST):	$(BIN) $(TOAST_OBJECTS) $(LIBGSM) $(LIBGSMSO)
++		$(LD) $(LFLAGS) -o $(TOAST) $(TOAST_OBJECTS) -Llib -lgsm $(LDLIB)
+ 
+ $(UNTOAST):	$(BIN) $(TOAST)
+ 		-rm $(RMFLAGS) $(UNTOAST)
+-		$(LN) $(TOAST) $(UNTOAST)
++		$(LN) -sf $(notdir $(TOAST)) $(UNTOAST)
+ 
+ $(TCAT):	$(BIN) $(TOAST)
+ 		-rm $(RMFLAGS) $(TCAT)
+-		$(LN) $(TOAST) $(TCAT)
++		$(LN) -sf $(notdir $(TOAST)) $(TCAT)
+ 
+ 
+ # The local bin and lib directories
