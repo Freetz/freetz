@@ -1,0 +1,56 @@
+--- Makefile.in
++++ Makefile.in
+@@ -13,9 +13,12 @@
+ # distribution  cleans and builds a .tgz
+ # tags          builds etags file from all .c and .h files
+ 
++VERSION=$(shell cat VERSION)
++MAJOR_VERSION=$(firstword $(subst ., ,$(VERSION)))
++
+ .PHONY: all test build_table_apps
+ 
+-all: libsrtp.a
++all: libsrtp.a libsrtp.so.$(VERSION)
+ 
+ runtest: build_table_apps test
+ 	@echo "running libsrtp test applications..."
+@@ -39,7 +42,7 @@
+ CFLAGS	= @CFLAGS@
+ LIBS	= @LIBS@
+ LDFLAGS	= @LDFLAGS@ -L.
+-COMPILE = $(CC) $(DEFS) $(INCDIR) $(CPPFLAGS) $(CFLAGS)
++COMPILE = $(CC) $(DEFS) $(INCDIR) $(CPPFLAGS) $(CFLAGS) -fPIC
+ SRTPLIB	= -lsrtp
+ 
+ AR	= $(subst ranlib,ar,@RANLIB@)
+@@ -106,6 +109,9 @@
+ 	$(AR) cr libsrtp.a $^
+ 	$(RANLIB) libsrtp.a
+ 
++libsrtp.so.$(VERSION): $(srtpobj) $(cryptobj) $(gdoi)
++	$(CC) $(LDFLAGS) -shared -Wl,-soname,libsrtp.so.$(MAJOR_VERSION) -o libsrtp.so.$(VERSION) $^
++
+ # libcryptomath.a contains general-purpose routines that are used to
+ # generate tables and verify cryptoalgorithm implementations - this
+ # library is not meant to be included in production code
+@@ -196,6 +202,11 @@
+ 	cp $(srcdir)/crypto/include/*.h $(DESTDIR)$(includedir)/srtp
+ 	if [ "$(srcdir)" != "." ]; then cp crypto/include/*.h $(DESTDIR)$(includedir)/srtp; fi
+ 	if [ -f libsrtp.a ]; then cp libsrtp.a $(DESTDIR)$(libdir)/; fi
++	if [ -f libsrtp.so.$(VERSION) ]; then \
++		cp libsrtp.so.$(VERSION) $(DESTDIR)$(libdir)/; \
++		ln -sf libsrtp.so.$(VERSION) $(DESTDIR)$(libdir)/libsrtp.so.$(MAJOR_VERSION); \
++		ln -sf libsrtp.so.$(VERSION) $(DESTDIR)$(libdir)/libsrtp.so; \
++	fi
+ 
+ uninstall:
+ 	rm -f $(DESTDIR)$(includedir)/srtp/*.h
+@@ -204,7 +215,7 @@
+ 
+ clean:
+ 	rm -rf $(cryptobj) $(srtpobj) $(cryptomath) TAGS \
+-        libcryptomath.a libsrtp.a core *.core test/core
++        libcryptomath.a libsrtp.a libsrtp.so* core *.core test/core
+ 	for a in * */* */*/*; do			\
+               if [ -f "$$a~" ] ; then rm -f $$a~; fi;	\
+         done;

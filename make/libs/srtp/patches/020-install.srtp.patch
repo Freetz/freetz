@@ -1,0 +1,12 @@
+--- Makefile.in
++++ Makefile.in
+@@ -190,9 +190,6 @@
+ .PHONY: clean superclean distclean install
+ 
+ install:
+-	@if [ -r $(DESTDIR)$(includedir)/srtp/srtp.h ]; then \
+-	   echo "you should run 'make uninstall' first"; exit 1;  \
+-	fi
+ 	$(INSTALL) -d $(DESTDIR)$(includedir)/srtp
+ 	$(INSTALL) -d $(DESTDIR)$(libdir)
+ 	cp $(srcdir)/include/*.h $(DESTDIR)$(includedir)/srtp  
