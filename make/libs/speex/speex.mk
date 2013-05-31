@@ -36,7 +36,7 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 		install-libLTLIBRARIES
 	$(SUBMAKE) -C $(SPEEX_DIR)/include/speex \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
-		install-pkgincludeHEADERS
+		install-pkgincludeHEADERS install-nodist_pkgincludeHEADERS
 	$(SUBMAKE) -C $(SPEEX_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-pkgconfigDATA
