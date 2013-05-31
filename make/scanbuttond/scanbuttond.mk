@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/scanbuttond
 $(PKG)_SOURCE_MD5:=a117534dab22c2a7a9a1e5a64b2b0c25
 
-$(PKG)_BUILD_PREREQ += autoreconf automake
+$(PKG)_BUILD_PREREQ += autoreconf
 
 $(PKG)_INSTALL_SUBDIR:=_install
 
@@ -28,7 +28,7 @@ $(PKG)_REBUILD_SUBOPTS += $(foreach backend,$($(PKG)_BACKENDS_ALL),FREETZ_PACKAG
 
 $(PKG)_DEPENDS_ON += libusb
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoreconf --force; automake -a; autoreconf --force;
+$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i;
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --libdir=$(FREETZ_LIBRARY_PATH)
