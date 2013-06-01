@@ -1,0 +1,19 @@
+--- pjlib/include/pj/string.h
++++ pjlib/include/pj/string.h
+@@ -598,11 +598,12 @@
+  */
+ PJ_INLINE(void) pj_bzero(void *dst, pj_size_t size)
+ {
+-#if defined(PJ_HAS_BZERO) && PJ_HAS_BZERO!=0
+-    bzero(dst, size);
+-#else
++// Always use memset to make asterisk happy
++//#if defined(PJ_HAS_BZERO) && PJ_HAS_BZERO!=0
++//    bzero(dst, size);
++//#else
+     memset(dst, 0, size);
+-#endif
++//#endif
+ }
+ 
+ 
