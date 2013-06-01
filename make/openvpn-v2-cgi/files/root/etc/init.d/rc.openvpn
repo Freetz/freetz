@@ -22,6 +22,8 @@ mypidof() {
 
 if [ ! -e /var/tmp/.openvpnfirstrun ]; then
 	touch /var/tmp/.openvpnfirstrun
+	modlib_addgroup openvpn 
+	modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account" 
 	if [ -e /tmp/flash/openvpn/configs ]; then
 		 for config in $(cat /tmp/flash/openvpn/configs); do
 			/mod/etc/default.openvpn/generate_virtual_pkg $config

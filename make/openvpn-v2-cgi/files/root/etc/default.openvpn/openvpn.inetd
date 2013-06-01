@@ -1,7 +1,7 @@
 . /mod/etc/conf/openvpn.cfg
 PORT=$(echo "${OPENVPN_CONF}" | sed -n '/[l]*port/ s/[^0-9]*// p')
-[ -z "$PORT" ] && PORT=1194
-PROTO=$(echo "${OPENVPN_CONF}" | grep -q -e "proto.*tcp" && echo tcp || echo udp)
+PORT=${PORT:-1194}
+PROTO=$(echo "${OPENVPN_CONF}" | grep -q -e "proto.*tcp" && echo tcp || echo udp)$1
 
 inetdcfg_desc="OpenVPN"
 inetdcfg_port=$PORT
