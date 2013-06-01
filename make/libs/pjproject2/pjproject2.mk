@@ -71,7 +71,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	for target in dep all; do \
 		$(SUBMAKE1) -C $(PJPROJECT2_DIR) \
-		EXTRA_CFLAGS="-ffunction-sections -fdata-sections" \
+		EXTRA_CFLAGS="-fno-strict-aliasing -ffunction-sections -fdata-sections" \
 		$$target; \
 	done
 	@touch $@
