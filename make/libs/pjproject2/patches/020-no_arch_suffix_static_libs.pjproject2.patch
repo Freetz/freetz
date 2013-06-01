@@ -1,0 +1,22 @@
+Note: this patch alone is not enough. The following sed-statements should be executed in addition.
+ sed -i -r -e 's,[-/][$][(]TARGET_NAME[)],$(TARGET_SUFFIX),g' $(grep -rl -e "[-/][$][(]TARGET_NAME[)]")
+ sed -i -r -e 's,-([$][(]LIB_SUFFIX[)]),\1,g' $(grep -rl -e "-[$][(]LIB_SUFFIX[)]")
+--- build.mak.in
++++ build.mak.in
+@@ -8,13 +8,15 @@
+ export HOST_NAME := unix
+ export CC_NAME := gcc
+ export TARGET_NAME := @target@
++#comment in to restore the original behavior, i.e. no suffix for shared libraries and ARCH name containing suffix for static libraries
++#export TARGET_SUFFIX := $(if $(strip $(TARGET_NAME)),-$(strip $(TARGET_NAME)))
+ export CROSS_COMPILE := @ac_cross_compile@
+ export LINUX_POLL := @ac_linux_poll@ 
+ export SHLIB_SUFFIX := @ac_shlib_suffix@
+ 
+ export ac_prefix := @prefix@
+ 
+-LIB_SUFFIX = $(TARGET_NAME).a
++LIB_SUFFIX = $(TARGET_SUFFIX).a
+ 
+ ifeq (@ac_shared_libraries@,1)
+ export PJ_SHARED_LIBRARIES := 1
