@@ -1,0 +1,12 @@
+--- compat.h
++++ compat.h
+@@ -197,6 +197,9 @@
+ #endif
+ 
+ #ifndef HAVE_B64_NTOP
++#ifdef b64_ntop
++#undef b64_ntop
++#endif
+ /* b64_ntop.c */
+ int		 b64_ntop(const unsigned char *, size_t, char *, size_t);
+ #endif
