@@ -1,0 +1,29 @@
+config FREETZ_PACKAGE_ASTERISK
+	bool "Asterisk 11.4.0 (binary only) - EXPERIMENTAL"
+#
+# asterisk binary dependencies
+#
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libsqlite3
+#
+# combined dependencies of all modules
+#
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libcurl
+	select FREETZ_LIB_libgsm
+	select FREETZ_LIB_libpj
+	select FREETZ_LIB_libpjlib-util
+	select FREETZ_LIB_libpjnath
+	select FREETZ_LIB_libspeex
+	select FREETZ_LIB_libspeexdsp
+	select FREETZ_LIB_libsqlite3
+	select FREETZ_LIB_libsrtp
+	select FREETZ_LIB_libz
+	default n
+	help
+		Asterisk is an open source framework for building communications applications.

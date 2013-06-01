@@ -5,7 +5,12 @@ $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
 $(PKG)_INSTALL_SUBDIR:=_install
 
-$(PKG)_DEPENDS_ON += $(STDCXXLIB)
+$(PKG)_BINARY_BUILD_DIR  := $($(PKG)_DIR)/$($(PKG)_INSTALL_SUBDIR)/usr/sbin/asterisk
+$(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/sbin/asterisk
+
+$(PKG)_MODULE_BUILD_DIR  := $($(PKG)_DIR)/$($(PKG)_INSTALL_SUBDIR)/usr/lib/asterisk/modules/chan_iax2.so
+$(PKG)_MODULE_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/lib/asterisk/modules/chan_iax2.so
+
 $(PKG)_DEPENDS_ON += curl
 $(PKG)_DEPENDS_ON += libgsm
 $(PKG)_DEPENDS_ON += ncurses
@@ -88,9 +93,9 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ss7=no
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=no
 $(PKG)_CONFIGURE_OPTIONS += --with-suppserv=no
 $(PKG)_CONFIGURE_OPTIONS += --with-tds=no
-#$(PKG)_CONFIGURE_OPTIONS += --with-termcap=no
+$(PKG)_CONFIGURE_OPTIONS += --with-termcap=no
 $(PKG)_CONFIGURE_OPTIONS += --with-timerfd=no
-#$(PKG)_CONFIGURE_OPTIONS += --with-tinfo=no
+$(PKG)_CONFIGURE_OPTIONS += --with-tinfo=no
 $(PKG)_CONFIGURE_OPTIONS += --with-tonezone=no
 $(PKG)_CONFIGURE_OPTIONS += --with-unixodbc=no
 $(PKG)_CONFIGURE_OPTIONS += --with-vorbis=no
@@ -111,20 +116,36 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS)
+	touch $@
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) \
 		DESTDIR="$(abspath $(ASTERISK_DIR)/$(ASTERISK_INSTALL_SUBDIR))" \
-		install
+		install samples
+	touch $@
+
+$($(PKG)_BINARY_BUILD_DIR) $($(PKG)_MODULE_BUILD_DIR): $($(PKG)_DIR)/.installed
+
+$($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_MODULE_TARGET_DIR): $($(PKG)_MODULE_BUILD_DIR)
+	mkdir -p $(dir $@)
+	cp -a $(dir $<)/*.so $(dir $@)
+	-$(TARGET_STRIP) $(dir $@)/*.so
+	touch $@
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_DIR)/.installed
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULE_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) distclean
 	$(RM) $(ASTERISK_DIR)/{.configured,.compiled,.installed}
 
 $(pkg)-uninstall:
+	$(RM) -r \
+		$(ASTERISK_BINARY_TARGET_DIR) \
+		$(ASTERISK_DEST_DIR)/usr/lib/asterisk/modules
 
 $(PKG_FINISH)
