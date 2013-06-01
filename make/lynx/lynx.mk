@@ -11,6 +11,8 @@ $(PKG)_TARGET_CFG:=$($(PKG)_DEST_DIR)/etc/$(pkg).cfg
 $(PKG)_LSS:=$($(PKG)_DIR)/samples/$(pkg).lss
 $(PKG)_TARGET_LSS:=$($(PKG)_DEST_DIR)/etc/$(pkg).lss
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_acos lib_m_acos)
+
 $(PKG)_CONFIGURE_OPTIONS += \
 	--enable-warnings \
 	--with-screen=ncurses \
