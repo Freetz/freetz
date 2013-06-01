@@ -17,7 +17,7 @@ if [ "openvpn" == ${pkgname} ]; then
 else
 	filepath=/tmp/flash/openvpn/${pkgname}/
 fi
-check $OPENVPN_ENABLED yes:auto "*":man
+check $OPENVPN_ENABLED yes:auto inetd "*":man
 check $OPENVPN_EXTCLIENT yes:clients 
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")' sec_start
@@ -25,7 +25,9 @@ sec_begin '$(lang de:"Starttyp" en:"Start type")' sec_start
 cat << EOF
 <p>
 <input id="e1" type="radio" name="enabled" value="yes" $auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="" $man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
+<input id="e2" type="radio" name="enabled" value="no" $man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
+$([ -e "/etc/default.inetd/inetd.cfg" ] && \
+	echo '<input id="e3" type="radio" name="enabled" value="inetd"'$inetd_chk'><label for="e3"> Inetd</label>')
 </p>
 EOF
 

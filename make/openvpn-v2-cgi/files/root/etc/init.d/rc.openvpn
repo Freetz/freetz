@@ -1,6 +1,8 @@
 #!/bin/sh
 
 scriptname=$0
+CONF_ENABLED=OPENVPN_ENABLED
+[ -z "$OPENVPN_ENABLED" ] && OPENVPN_ENABLED=no
 DAEMON=${scriptname##*/rc.}
 daemon="$(echo $DAEMON | tr [A-Z-] [a-z_])"
 if [ $DAEMON == "openvpn" ]; then
@@ -25,19 +27,10 @@ if [ ! -e /var/tmp/.openvpnfirstrun ]; then
 			/mod/etc/default.openvpn/generate_virtual_pkg $config
 		done
 	fi
-	[ -r /var/tmp/flash/openvpn/static.key ] || compat
 fi
 
 [ -x /mod/sbin/$DAEMON ] || ln -s /usr/sbin/openvpn /mod/sbin/$DAEMON
 
-case $1 in
-	""|load|start|restart)
-		modlib_addgroup openvpn
-		modlib_adduser openvpn -G openvpn -s /bin/false -H -D -g "OpenVPN account"
-		mkdir -p /tmp/openvpn/etc
-		cp -f /etc/resolv.conf /tmp/openvpn/etc
-		;;
-esac
 
 config() {
 	modlib_config
@@ -45,44 +38,7 @@ config() {
 
 
 start() {
-	echo -n "Starting $DAEMON ... "
-	if [ -n "$(mypidof $DAEMON)" ]; then
-		echo "already started."
-		return 1;
-	fi
-
-	if [ ! -e "${keypath}static.key" ]; then
-		echo -n "creating static.key ... "
-		mkdir -p ${keypath}
-		openvpn --genkey --secret ${keypath}static.key
-		/usr/bin/modsave flash >/dev/null
-	fi
-
-	if [ -r "/tmp/flash/openvpn/own_${daemon}.conf" ]; then
-		cp /tmp/flash/openvpn/own_${daemon}.conf /mod/etc/${daemon}.conf 
-	else
-		if [ -x "/tmp/flash/${daemon}_conf" ]; then
-			/tmp/flash/${daemon}_conf /mod/etc/${daemon}.conf
-		else
-			/mod/etc/default.${daemon}/${daemon}_conf /mod/etc/${daemon}.conf
-		fi
-		if [ -r "/tmp/flash/${daemon}.extra" ]; then
-			cat /tmp/flash/${daemon}.extra >> /mod/etc/${daemon}.conf
-		fi
-	fi
-
-	$DAEMON --config /mod/etc/${daemon}.conf --writepid /var/run/${daemon}.pid
-	exitval=$?
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
-	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
-	if [ $(which brctl) ] && TAP=$(grep "#Helperline" /mod/etc/${daemon}.conf | grep -o tap[0-9] ); then
-		brctl addif lan $TAP 2> /dev/null
-	fi
+	modlib_start
 }
 
 stop() {
@@ -121,11 +77,8 @@ case $1 in
 		modreg file ${DAEMON} 'script1' 'Script 1' 0 "script1"
 		modreg file ${DAEMON} 'script2' 'Script 2' 0 "script2"
 		modreg file ${DAEMON} 'script3' 'Script 3' 0 "script3"
-		if [ "${OPENVPN_ENABLED}" != "yes" ]; then
-			echo "${DAEMON} is disabled" 1>&2
-		else
-			start
-		fi
+
+		modlib_start "${OPENVPN_ENABLED}"
 		;;
 	unload)
 		stop

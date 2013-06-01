@@ -1,0 +1,14 @@
+. /mod/etc/conf/openvpn.cfg
+PORT=$(echo "${OPENVPN_CONF}" | sed -n '/[l]*port/ s/[^0-9]*// p')
+[ -z "$PORT" ] && PORT=1194
+PROTO=$(echo "${OPENVPN_CONF}" | grep -q -e "proto.*tcp" && echo tcp || echo udp)
+
+inetdcfg_desc="OpenVPN"
+inetdcfg_port=$PORT
+inetdcfg_proto=$PROTO
+inetdcfg_sock=$(echo $inetdcfg_proto| sed 's/udp/dgram/;s/tcp/stream/')
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/sbin/openvpn
+inetdcfg_arg0=openvpn
+inetdcfg_args="--inetd nowait --config /mod/etc/openvpn.conf"

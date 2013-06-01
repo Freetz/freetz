@@ -17,16 +17,16 @@ update_line() {
 
 update_file() {
 	local pkg_path=$1
-	local pkg_subd=$(echo $pkg_path | sed -e 's@^/etc/default\.[^/]*/\([^/]*\)\.inetd$@\1@')
-	local pkg_name=$(echo $pkg_path | sed -e 's@^/etc/default\.\([^/]*\)/[^/]*\.inetd$@\1@')
-	if [ ! -e "/etc/init.d/rc.$pkg_name" ]; then
+	local pkg_subd=$(echo $pkg_path | sed -e 's@^/mod/etc/default\.[^/]*/\([^/]*\)\.inetd$@\1@')
+	local pkg_name=$(echo $pkg_path | sed -e 's@^/mod/etc/default\.\([^/]*\)/[^/]*\.inetd$@\1@')
+	if [ ! -e "/mod/etc/init.d/rc.$pkg_name" ]; then
 		echo "$DAEMON: package $pkg_name has no rc script, failed."
 		exit 1
 	fi
 	. $pkg_path "$inetd_ipv6"
 
 	if [ "$pkg_name" != "$pkg_subd" ]; then
-		sub_status=$(/etc/init.d/rc.$pkg_name status_$pkg_subd)
+		sub_status=$(/mod/etc/init.d/rc.$pkg_name status_$pkg_subd)
 		local pkg_out="$pkg_name ($pkg_subd)"
 		pkg_inetd=${pkg_name}_$pkg_subd
 	else
@@ -44,7 +44,7 @@ update_file() {
 			echo "#<off>#$(update_line)" >> $INETD_CONF
 		fi
 
-		if [ "inetd" == "$(/etc/init.d/rc.$pkg_name status)" -o "inetd" == "$sub_status" ]; then
+		if [ "inetd" == "$(/mod/etc/init.d/rc.$pkg_name status)" -o "inetd" == "$sub_status" ]; then
 			sed -i -e "/#:$pkg_inetd:$single_port:/ { n; s/^.*/$(update_line escape)/ }" $INETD_CONF
 			local pkg_status="active."
 		fi
@@ -56,13 +56,13 @@ update_main() {
 	if [ $# -eq 0 ]; then
 		echo -e '\nConfiguring inetd: ...'
 		update_user
-		for package in $(ls /etc/default.*/*.inetd); do
+		for package in $(ls /mod/etc/default.*/*.inetd); do
 			update_file $package
 		done
 		echo 'Configuring inetd: done.'
 	else
 		for package; do
-			package_main=$(ls /etc/default.$package/*.inetd 2>/dev/null)
+			package_main=$(ls /mod/etc/default.$package/*.inetd 2>/dev/null)
 			if [ -n "$package_main" ]; then
 				for package_sub in $package_main; do
 					update_file "$package_sub"
