@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_OPENVPN
 	bool "OpenVPN"
 	select FREETZ_BUSYBOX_BRCTL if ! FREETZ_PACKAGE_BRIDGE_UTILS
-	select FREETZ_PACKAGE_OPENVPN_GUI if ! FREETZ_PACKAGE_OPENVPN_GUI2
+	select FREETZ_PACKAGE_OPENVPN_CGI if ! FREETZ_PACKAGE_OPENVPN_V2_CGI
 	default n
 	help
 		VPN Server
@@ -93,7 +93,7 @@ config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
 		Enables openvpn to use ip when setting IPs, link parameters and routes.
 		This selects busybox's 'IP' applet.
 
-config FREETZ_PACKAGE_OPENVPN_GUI2
+config FREETZ_PACKAGE_OPENVPN_V2_CGI
 	bool "Use new (very experimental) GUI. ! Old configs are deleted !"
 	depends on FREETZ_PACKAGE_OPENVPN
 	default n
