@@ -1,0 +1,14 @@
+Check for speex_encoder_init instead of speex_encode to determine the presense of libspeex.
+When compiled with no floating numbers support it does provide speex_encode_int and no speex_encode.
+speex_encoder_init is available regardless of "float vs. int"-configuration.
+--- configure
++++ configure
+@@ -26699,7 +26699,7 @@
+       	 pbxlibdir="-L${SPEEX_DIR}"
+       fi
+    fi
+-   pbxfuncname="speex_encode"
++   pbxfuncname="speex_encoder_init"
+    if test "x${pbxfuncname}" = "x" ; then   # empty lib, assume only headers
+       AST_SPEEX_FOUND=yes
+    else

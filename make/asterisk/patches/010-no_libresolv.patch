@@ -1,0 +1,11 @@
+--- main/Makefile
++++ main/Makefile
+@@ -43,7 +43,7 @@
+   ifneq (x$(CAP_LIB),x)
+     AST_LIBS+=$(CAP_LIB)
+   endif
+-  AST_LIBS+=-lpthread $(EDITLINE_LIB) -lm -lresolv
++  AST_LIBS+=-lpthread $(EDITLINE_LIB) -lm
+ else
+   AST_LIBS+=$(EDITLINE_LIB) -lm
+ endif

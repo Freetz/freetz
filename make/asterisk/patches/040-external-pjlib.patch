@@ -1,0 +1,55 @@
+--- res/Makefile
++++ res/Makefile
+@@ -67,26 +67,20 @@
+ ael/pval.o: ael/pval.c
+ 
+ clean::
+-	@if [ -f pjproject/build.mak ]; then $(MAKE) -C pjproject realclean; fi
+ 	rm -f snmp/*.o snmp/*.i ael/*.o ael/*.i ais/*.o ais/*.i
+ 
+ dist-clean::
+-	rm -f pjproject/build.mak
+-
+-pjproject/build.mak: pjproject/aconfigure
+-	(cd pjproject && CFLAGS="-fPIC" ./configure --build=$(BUILD_PLATFORM) --host=$(HOST_PLATFORM) --disable-floating-point --disable-sound --disable-oss --disable-speex-aec --disable-l16-codec --disable-gsm-codec --disable-g722-codec --disable-g7221-codec --disable-speex-codec --disable-ilbc-codec --disable-g711-codec)
+ 
+ ifneq ($(findstring $(MAKECMDGOALS),all),)
+--include pjproject/build.mak
++ifeq ($(strip $(PJPROJECT_BUILD_MAK_DIR)),)
++$(error PJPROJECT_BUILD_MAK_DIR variable pointing to a directory containing pjproject build.mak file is not set)
++endif
++include $(strip $(PJPROJECT_BUILD_MAK_DIR))/build.mak
+ endif
+ 
+ .PHONY: FORCE
+ FORCE:
+ 
+-$(PJ_LIB_FILES): FORCE
+-	$(MAKE) -C $(patsubst %/lib/,%,$(dir $@))/build/ ../lib/$(notdir $@)
+-
+-res_rtp_asterisk.o: $(PJ_LIB_FILES)
+-res_rtp_asterisk.o: _ASTCFLAGS+=$(PJ_CFLAGS)
+-res_rtp_asterisk.so: _ASTLDFLAGS+=$(PJ_LDFLAGS)
+-res_rtp_asterisk.so: LIBS+=$(PJ_LDLIBS)
++res_rtp_asterisk.o: _ASTCFLAGS+=$(filter-out -I%,$(PJ_CFLAGS))
++res_rtp_asterisk.so: _ASTLDFLAGS+=$(filter-out -L%,$(PJ_LDFLAGS))
++res_rtp_asterisk.so: LIBS+=-Wl,--as-needed $(PJ_LDLIBS) -Wl,--no-as-needed
+--- res/res_rtp_asterisk.c
++++ res/res_rtp_asterisk.c
+@@ -48,11 +48,13 @@
+ 
+ /* Asterisk discourages the use of bzero in favor of memset, in fact if you try to use bzero it will tell you to use memset. As a result bzero has to be undefined
+  * here since it is used internally by pjlib. The only other option would be to modify pjlib... which won't happen. */
++#if 0 /* disable this ugly hack as it doesn't work with uClibc, we use a patched version of pjlib */
+ #undef bzero
+ #define bzero bzero
+-#include "pjlib.h"
+-#include "pjlib-util.h"
+-#include "pjnath.h"
++#endif
++#include <pjlib.h>
++#include <pjlib-util.h>
++#include <pjnath.h>
+ 
+ #include "asterisk/stun.h"
+ #include "asterisk/pbx.h"

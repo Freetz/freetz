@@ -1,0 +1,23 @@
+--- configure
++++ configure
+@@ -16356,6 +16356,12 @@
+ 
+ fi
+ 
++# The following symbols are affected
++#  HAVE_RES_NINIT    - actually available, but the dependent res_nsearch is not available (configure doesn't check if res_nsearch is available)
++#                      => let asterisk think res_ninit is not available
++#  HAVE_RES_NDESTROY - not available
++#  HAVE_RES_CLOSE    - not available
++if false; then
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for res_ninit" >&5
+ $as_echo_n "checking for res_ninit... " >&6; }
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+@@ -16576,6 +16582,7 @@
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
++fi
+ 
+ 
+     if test "x${PBX_GLOB_NOMAGIC}" != "x1"; then

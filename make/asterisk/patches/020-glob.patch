@@ -1,0 +1,59 @@
+--- res/ael/ael.flex
++++ res/ael/ael.flex
+@@ -69,6 +69,7 @@
+ 
+ %{
+ #include "asterisk.h"
++#include "asterisk/compat.h" // MY_GLOB_FLAGS
+ ASTERISK_FILE_VERSION(__FILE__, "$Revision: 366126 $")
+ 
+ #include <sys/types.h>
+@@ -595,11 +596,7 @@
+ 		   snprintf(fnamebuf2,sizeof(fnamebuf2), "%s/%s", (char *)ast_config_AST_CONFIG_DIR, fnamebuf);
+ 		   ast_copy_string(fnamebuf,fnamebuf2,sizeof(fnamebuf));
+ 		}
+-#ifdef SOLARIS
+-			glob_ret = glob(fnamebuf, GLOB_NOCHECK, NULL, &globbuf);
+-#else
+-			glob_ret = glob(fnamebuf, GLOB_NOMAGIC|GLOB_BRACE, NULL, &globbuf);
+-#endif
++			glob_ret = glob(fnamebuf, MY_GLOB_FLAGS, NULL, &globbuf);
+ 			if (glob_ret == GLOB_NOSPACE) {
+ 				ast_log(LOG_WARNING,
+ 					"Glob Expansion of pattern '%s' failed: Not enough memory\n", fnamebuf);
+--- res/ael/ael_lex.c
++++ res/ael/ael_lex.c
+@@ -1,4 +1,5 @@
+ #include "asterisk.h"
++#include "asterisk/compat.h" // MY_GLOB_FLAGS
+ 
+ #line 2 "ael_lex.c"
+ 
+@@ -1976,11 +1977,7 @@
+ 		   snprintf(fnamebuf2,sizeof(fnamebuf2), "%s/%s", (char *)ast_config_AST_CONFIG_DIR, fnamebuf);
+ 		   ast_copy_string(fnamebuf,fnamebuf2,sizeof(fnamebuf));
+ 		}
+-#ifdef SOLARIS
+-			glob_ret = glob(fnamebuf, GLOB_NOCHECK, NULL, &globbuf);
+-#else
+-			glob_ret = glob(fnamebuf, GLOB_NOMAGIC|GLOB_BRACE, NULL, &globbuf);
+-#endif
++			glob_ret = glob(fnamebuf, MY_GLOB_FLAGS, NULL, &globbuf);
+ 			if (glob_ret == GLOB_NOSPACE) {
+ 				ast_log(LOG_WARNING,
+ 					"Glob Expansion of pattern '%s' failed: Not enough memory\n", fnamebuf);
+--- utils/extconf.c
++++ utils/extconf.c
+@@ -3736,11 +3736,7 @@
+ 		glob_t globbuf;
+ 
+ 		globbuf.gl_offs = 0;	/* initialize it to silence gcc */
+-#ifdef SOLARIS
+-		glob_ret = glob(fn, GLOB_NOCHECK, NULL, &globbuf);
+-#else
+-		glob_ret = glob(fn, GLOB_NOMAGIC|GLOB_BRACE, NULL, &globbuf);
+-#endif
++		glob_ret = glob(fn, MY_GLOB_FLAGS, NULL, &globbuf);
+ 		if (glob_ret == GLOB_NOSPACE)
+ 			ast_log(LOG_WARNING,
+ 				"Glob Expansion of pattern '%s' failed: Not enough memory\n", fn);
