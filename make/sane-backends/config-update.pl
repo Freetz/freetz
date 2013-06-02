@@ -113,7 +113,7 @@ config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS
 	bool "SANE"
 	default n
 	help
-		externals these file(s):
+		externals the following file(s):
 		 /usr/lib/freetz/libsane.so.$version
 		 /usr/sbin/saned
 
@@ -122,7 +122,7 @@ config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
 	bool "sane-find-scanner"
 	default n
 	help
-		externals these file(s):
+		externals the following file(s):
 		 /usr/bin/sane-find-scanner
 
 config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_scanimage
@@ -130,7 +130,7 @@ config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_scanimage
 	bool "scanimage"
 	default n
 	help
-		externals these file(s):
+		externals the following file(s):
 		 /usr/bin/scanimage
 
 EOF
@@ -142,7 +142,7 @@ config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
 	bool "$backend backend"
 	default n
 	help
-		externals these file(s):
+		externals the following file(s):
 		 /usr/lib/freetz/sane/libsane-$backend.so.$version
 
 EOF
