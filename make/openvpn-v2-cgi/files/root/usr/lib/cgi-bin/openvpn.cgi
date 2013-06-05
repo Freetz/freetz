@@ -2,8 +2,8 @@
 
 if  $(echo "$QUERY_STRING" | grep -q genconfigname ); then
 	NAME=${QUERY_STRING##*genconfigname=}
-        sh /etc/default.openvpn/generate_virtual_pkg "$NAME"
-        sed -i "/$NAME/ d" /tmp/flash/openvpn/configs
+	sh /etc/default.openvpn/generate_virtual_pkg "$NAME"
+	sed -i "/$NAME/ d" /tmp/flash/openvpn/configs
 	echo "$NAME" >> /tmp/flash/openvpn/configs
 fi
 
@@ -18,7 +18,7 @@ else
 	filepath=/tmp/flash/openvpn/${pkgname}/
 fi
 check $OPENVPN_ENABLED yes:auto inetd "*":man
-check $OPENVPN_EXTCLIENT yes:clients 
+check $OPENVPN_EXTCLIENT yes:clients
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")' sec_start
 
@@ -42,4 +42,3 @@ $(lang de:"Hinweis: Zertifikate und Keys liegen unter " en:"Certs and keys are l
 EOF
 
 sec_end
-

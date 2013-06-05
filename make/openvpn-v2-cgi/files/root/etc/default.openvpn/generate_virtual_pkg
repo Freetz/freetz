@@ -3,12 +3,12 @@ title=$1
 packagename=$(echo "$title" | tr 'A-Z\-' 'a-z\_')
 
 if [ ! -d /mod/etc/default.${packagename} ]; then
-	mkdir /mod/etc/default.${packagename} 
+	mkdir /mod/etc/default.${packagename}
 fi
 if [ -e /mod/etc/default.${packagename}/${packagename}_conf ]; then
 	rm /mod/etc/default.${packagename}/${packagename}_conf
 fi
-ln -sf /mod/etc/default.openvpn/openvpn_conf /mod/etc/default.${packagename}/${packagename}_conf 
+ln -sf /mod/etc/default.openvpn/openvpn_conf /mod/etc/default.${packagename}/${packagename}_conf
 sed "s%/openvpn/%/openvpn/${packagename}/%" /mod/etc/default.openvpn/openvpn.cfg > /mod/etc/default.${packagename}/${packagename}.cfg
 ln -sf /mod/etc/default.openvpn/openvpn.save  /mod/etc/default.${packagename}/${packagename}.save
 sed "s%/openvpn\.c%/${packagename}.c% ; s%OpenVPN%$title% ; s%/usr/sbin/openvpn$%/mod/sbin/${packagename}%" /mod/etc/default.openvpn/openvpn.inetd > /mod/etc/default.${packagename}/${packagename}.inetd
@@ -21,7 +21,7 @@ fi
 if [ ! -x /mod/usr/lib/cgi-bin/${packagename}.cgi ]; then
 	ln -s /mod/usr/lib/cgi-bin/openvpn.cgi /mod/usr/lib/cgi-bin/${packagename}.cgi
 fi
-                                                                
+
 for deffile in $(ls /mod/etc/default.openvpn/*.def); do
 	name=${deffile##*/}
 	tmpid=${name%%.*}

@@ -1,4 +1,4 @@
-# All OpenVPN configurations shall use OPENVPN_<XY> settings, 
+# All OpenVPN configurations shall use OPENVPN_<XY> settings,
 # based aon openvpn.cfg regardless their name.
 # So this hack will to force modcgi to package "openvpn"
 # for all "derived" OpenVPN packages.
@@ -6,7 +6,5 @@
 modcgiprog=$(which modcgi)
 
 modcgi() {
-        $modcgiprog  ${1//OPENVPN_/} openvpn
+	$modcgiprog  ${1//OPENVPN_/} openvpn
 }
-
-
