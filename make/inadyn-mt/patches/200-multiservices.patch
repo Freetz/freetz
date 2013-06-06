@@ -1,4 +1,4 @@
-diff -ur inadyn-mt.v.02.24.38/readme.html inadyn-mt.v.02.24.38-ms-pid-03/readme.html
+diff -ur inadyn-mt.v.02.24.38/readme.html inadyn-mt.v.02.24.38-ms-pid-04/readme.html
 --- readme.html
 +++ readme.html
 @@ -6,7 +6,7 @@
@@ -6,7 +6,7 @@ diff -ur inadyn-mt.v.02.24.38/readme.html inadyn-mt.v.02.24.38-ms-pid-03/readme.
  <p><b>inadyn-mt - Simple DYNAMIC DNS client.<br>
  </b></p>
 -<p><b>Version 02.24.38, January 2013<br>
-+<p><b>Version 02.24.38-ms_pid_03_patch, May 2013<br>
++<p><b>Version 02.24.38-ms_pid_04_patch, June 2013<br>
  </b></p>
  <p><b>INADYN Advanced Help<br>
  </b></p>
@@ -41,10 +41,14 @@ diff -ur inadyn-mt.v.02.24.38/readme.html inadyn-mt.v.02.24.38-ms-pid-03/readme.
  '--background': runs in background.&nbsp; Output to syslog or to log file [if specified].<br>
  '--verbose &#60;#&#62;': set dbg level. 0 to 5<br>
  '--iterations &#60;#&#62;': set the number of DNS updates. Default is 0, which means infinity.<br>
-@@ -481,6 +489,25 @@
+@@ -481,6 +489,29 @@
  <b>HISTORY<br>
  <br>
  </b>
++
++Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_04 - June 2013<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows version patch type-o fixed<br><br>
 +
 +Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_03 - May 2013<br>
 +&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
@@ -67,7 +71,8 @@ diff -ur inadyn-mt.v.02.24.38/readme.html inadyn-mt.v.02.24.38-ms-pid-03/readme.
  Ver.&nbsp; inadyn-mt 2.24.38 - January 2013<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - fatal configuration selector fault fixed<br><br>
-diff -ur inadyn-mt.v.02.24.38/src/config.h inadyn-mt.v.02.24.38-ms-pid-03/src/config.h
+Only in inadyn-mt.v.02.24.38-ms-pid-04: readme.html~
+diff -ur inadyn-mt.v.02.24.38/src/config.h inadyn-mt.v.02.24.38-ms-pid-04/src/config.h
 --- src/config.h
 +++ src/config.h
 @@ -1,11 +1,8 @@
@@ -196,7 +201,7 @@ diff -ur inadyn-mt.v.02.24.38/src/config.h inadyn-mt.v.02.24.38-ms-pid-03/src/co
  
  /* Define to rpl_malloc if the replacement function should be used. */
  /* #undef malloc */
-diff -ur inadyn-mt.v.02.24.38/src/dyndns.c inadyn-mt.v.02.24.38-ms-pid-03/src/dyndns.c
+diff -ur inadyn-mt.v.02.24.38/src/dyndns.c inadyn-mt.v.02.24.38-ms-pid-04/src/dyndns.c
 --- src/dyndns.c
 +++ src/dyndns.c
 @@ -143,7 +143,9 @@
@@ -1863,15 +1868,6 @@ diff -ur inadyn-mt.v.02.24.38/src/dyndns.c inadyn-mt.v.02.24.38-ms-pid-03/src/dy
  
  						break;
  					}
-@@ -2735,7 +2752,7 @@
- 	int	wait_ret=0;
- 
- 
--	if (is_waited)
-+	if (is_aited)
- 
- 		*is_waited=0;
- 
 @@ -2875,7 +2892,7 @@
  
  
@@ -2245,7 +2241,8 @@ diff -ur inadyn-mt.v.02.24.38/src/dyndns.c inadyn-mt.v.02.24.38-ms-pid-03/src/dy
  		/* dyn_dns_shutdown object */
  		rc = dyn_dns_shutdown(p_dyndns);
  	}
-diff -ur inadyn-mt.v.02.24.38/src/dyndns.h inadyn-mt.v.02.24.38-ms-pid-03/src/dyndns.h
+Only in inadyn-mt.v.02.24.38-ms-pid-04/src: dyndns.c~
+diff -ur inadyn-mt.v.02.24.38/src/dyndns.h inadyn-mt.v.02.24.38-ms-pid-04/src/dyndns.h
 --- src/dyndns.h
 +++ src/dyndns.h
 @@ -75,7 +75,7 @@
@@ -2253,7 +2250,7 @@ diff -ur inadyn-mt.v.02.24.38/src/dyndns.h inadyn-mt.v.02.24.38-ms-pid-03/src/dy
  #endif
  
 -#define	DYNDNS_EXTRA_VERSION
-+#define	DYNDNS_EXTRA_VERSION	"-ms_pid_patch_03"
++#define	DYNDNS_EXTRA_VERSION	"-ms_pid_patch_04"
  
  #define DYNDNS_VERSION_STRING	"02.24.38" DYNDNS_VERSION_SND DYNDNS_VERSION_THD DYNDNS_EXTRA_VERSION
  #define DYNDNS_AGENT_NAME		"inadyn-mt/" DYNDNS_VERSION_STRING
@@ -2421,7 +2418,8 @@ diff -ur inadyn-mt.v.02.24.38/src/dyndns.h inadyn-mt.v.02.24.38-ms-pid-03/src/dy
  
  /* MAIN - Dyn DNS update entry point.*/
  
-diff -ur inadyn-mt.v.02.24.38/src/errorcode.c inadyn-mt.v.02.24.38-ms-pid-03/src/errorcode.c
+Only in inadyn-mt.v.02.24.38-ms-pid-04/src: dyndns.h~
+diff -ur inadyn-mt.v.02.24.38/src/errorcode.c inadyn-mt.v.02.24.38-ms-pid-04/src/errorcode.c
 --- src/errorcode.c
 +++ src/errorcode.c
 @@ -56,6 +56,7 @@
@@ -2432,7 +2430,7 @@ diff -ur inadyn-mt.v.02.24.38/src/errorcode.c inadyn-mt.v.02.24.38-ms-pid-03/src
  		{RC_DYNDNS_INVALID_IP_ADDR,"RC_DYNDNS_INVALID_IP_ADDR"},
          {RC_DYNDNS_BUFFER_TOO_SMALL,"RC_DYNDNS_BUFFER_TOO_SMALL"},
          {RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE,"RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE"},
-diff -ur inadyn-mt.v.02.24.38/src/errorcode.h inadyn-mt.v.02.24.38-ms-pid-03/src/errorcode.h
+diff -ur inadyn-mt.v.02.24.38/src/errorcode.h inadyn-mt.v.02.24.38-ms-pid-04/src/errorcode.h
 --- src/errorcode.h
 +++ src/errorcode.h
 @@ -46,6 +46,7 @@
@@ -2443,7 +2441,7 @@ diff -ur inadyn-mt.v.02.24.38/src/errorcode.h inadyn-mt.v.02.24.38-ms-pid-03/src
  	RC_DYNDNS_INVALID_IP_ADDR					= 0x39,
      RC_DYNDNS_BUFFER_TOO_SMALL					= 0x40,
      RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE	= 0x41,
-diff -ur inadyn-mt.v.02.24.38/src/inadyn_cmd.c inadyn-mt.v.02.24.38-ms-pid-03/src/inadyn_cmd.c
+diff -ur inadyn-mt.v.02.24.38/src/inadyn_cmd.c inadyn-mt.v.02.24.38-ms-pid-04/src/inadyn_cmd.c
 --- src/inadyn_cmd.c
 +++ src/inadyn_cmd.c
 @@ -72,6 +72,7 @@
@@ -3074,7 +3072,7 @@ diff -ur inadyn-mt.v.02.24.38/src/inadyn_cmd.c inadyn-mt.v.02.24.38-ms-pid-03/sr
  
  		{
  			rc = RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS;
-diff -ur inadyn-mt.v.02.24.38/src/lang.c inadyn-mt.v.02.24.38-ms-pid-03/src/lang.c
+diff -ur inadyn-mt.v.02.24.38/src/lang.c inadyn-mt.v.02.24.38-ms-pid-04/src/lang.c
 --- src/lang.c
 +++ src/lang.c
 @@ -659,14 +659,20 @@
@@ -3101,7 +3099,7 @@ diff -ur inadyn-mt.v.02.24.38/src/lang.c inadyn-mt.v.02.24.38-ms-pid-03/src/lang
  
  
  	rc=do_init_lang_strings(pLOG_FILE,lang_file_and_path);
-diff -ur inadyn-mt.v.02.24.38/src/os_windows.c inadyn-mt.v.02.24.38-ms-pid-03/src/os_windows.c
+diff -ur inadyn-mt.v.02.24.38/src/os_windows.c inadyn-mt.v.02.24.38-ms-pid-04/src/os_windows.c
 --- src/os_windows.c
 +++ src/os_windows.c
 @@ -322,14 +322,13 @@
@@ -3121,7 +3119,7 @@ diff -ur inadyn-mt.v.02.24.38/src/os_windows.c inadyn-mt.v.02.24.38-ms-pid-03/sr
  	}
  
  
-diff -ur inadyn-mt.v.02.24.38/src/path.c inadyn-mt.v.02.24.38-ms-pid-03/src/path.c
+diff -ur inadyn-mt.v.02.24.38/src/path.c inadyn-mt.v.02.24.38-ms-pid-04/src/path.c
 --- src/path.c
 +++ src/path.c
 @@ -635,7 +635,7 @@
