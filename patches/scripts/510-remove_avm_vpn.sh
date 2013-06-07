@@ -14,7 +14,7 @@ for files in \
 done
 
 echo1 "patching WebUI"
-for files in $(grep -rsl '<? setvariable var:showVpn 1 ?>' ${FILESYSTEM_MOD_DIR}); do
+for files in $(grep -rsl '<? setvariable var:showVpn 1 ?>' ${HTML_SPEC_MOD_DIR}); do
 	echo2 "patching $files"
 	modsed 's/<? setvariable var:showVpn 1 ?>//' "$files"
 done
