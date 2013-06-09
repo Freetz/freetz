@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_INADYN_MT
 	bool "Inadyn-mt 02.24.38"
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if ! FREETZ_TARGET_ARCH_BE
 	default n
 	help
 		INADYN-MT - Simple Dynamic DNS client.

@@ -17,6 +17,8 @@ for i in 0 1 2 3 4; do
 		afraid.org:afraid$i \
 		zoneedit.com:zoneedit$i \
 		no-ip.com:noip$i \
+		tunnelbroker.net:tunnelbroker$i \
+		dns.he.net:dnshenet$i \
 		userdefined:userdef$i
 done
 
@@ -95,6 +97,8 @@ document.write("<div id='Account0' style='display:block'>" +
       "<OPTION VALUE='afraid.org' $afraid0_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit0_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip0_sel>no-ip.com</OPTION>" +
+      "<OPTION VALUE='tunnelbroker.net' $tunnelbroker0_sel>tunnelbroker.net</OPTION>" +
+      "<OPTION VALUE='dns.he.net' $dnshenet0_sel>dns.he.net</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef0_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -128,6 +132,8 @@ document.write("<div id='Account1' style='display:none'>" +
       "<OPTION VALUE='afraid.org' $afraid1_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit1_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip1_sel>no-ip.com</OPTION>" +
+      "<OPTION VALUE='tunnelbroker.net' $tunnelbroker1_sel>tunnelbroker.net</OPTION>" +
+      "<OPTION VALUE='dns.he.net' $dnshenet1_sel>dns.he.net</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef1_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -161,6 +167,8 @@ document.write("<div id='Account2' style='display:none'>" +
       "<OPTION VALUE='afraid.org' $afraid2_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit2_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip2_sel>no-ip.com</OPTION>" +
+      "<OPTION VALUE='tunnelbroker.net' $tunnelbroker2_sel>tunnelbroker.net</OPTION>" +
+      "<OPTION VALUE='dns.he.net' $dnshenet2_sel>dns.he.net</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef2_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -195,6 +203,8 @@ document.write("<div id='Account3' style='display:none'>" +
       "<OPTION VALUE='afraid.org' $afraid3_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit3_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip3_sel>no-ip.com</OPTION>" +
+      "<OPTION VALUE='tunnelbroker.net' $tunnelbroker3_sel>tunnelbroker.net</OPTION>" +
+      "<OPTION VALUE='dns.he.net' $dnshenet3_sel>dns.he.net</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef3_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -229,6 +239,8 @@ document.write("<div id='Account4' style='display:none'>" +
       "<OPTION VALUE='afraid.org' $afraid4_sel>afraid.org</OPTION>" +
       "<OPTION VALUE='zoneedit.com' $zoneedit4_sel>zoneedit.com</OPTION>" +
       "<OPTION VALUE='no-ip.com' $noip4_sel>no-ip.com</OPTION>" +
+      "<OPTION VALUE='tunnelbroker.net' $tunnelbroker4_sel>tunnelbroker.net</OPTION>" +
+      "<OPTION VALUE='dns.he.net' $dnshenet4_sel>dns.he.net</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef4_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +

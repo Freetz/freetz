@@ -8,8 +8,9 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/inadyn-mt
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/inadyn-mt
 
 
+$(PKG)_CONFIGURE_OPTIONS += --disable-dynamic
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
-$(PKG)_CONFIGURE_OPTIONS += --enable-threads
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_ARCH_BE),--disable-threads,--enable-threads)
 #$(PKG)_CONFIGURE_OPTIONS += --enable-debug
 
 $(PKG_SOURCE_DOWNLOAD)

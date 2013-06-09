@@ -1,0 +1,62 @@
+diff -Naur a/src/md5.c b/src/md5.c
+--- src/md5.c	2013-01-19 08:39:22.000000000 +0100
++++ src/md5.c	2013-06-07 19:56:09.206002308 +0200
+@@ -25,12 +25,10 @@
+ 
+ #include "md5.h"
+ 
+-#ifdef _LIBC
+ # include <endian.h>
+ # if __BYTE_ORDER == __BIG_ENDIAN
+ #  define WORDS_BIGENDIAN 1
+ # endif
+-#endif
+ 
+ #if defined(WORDS_BIGENDIAN) || defined(_BIG_ENDIAN)
+ # define SWAP(n)							\
+diff -Naur a/src/md5.h b/src/md5.h
+--- src/md5.h	2013-01-19 08:39:22.000000000 +0100
++++ src/md5.h	2013-06-07 20:00:53.257990364 +0200
+@@ -32,42 +32,9 @@
+    the resulting executable.  Locally running cross-compiled executables
+    is usually not possible.  */
+ 
+-#ifdef _LIBC
+ # include <limits.h>
+ # include <sys/types.h>
+ typedef u_int32_t md5_uint32;
+-#else
+-# if defined __STDC__ && __STDC__
+-#  define UINT_MAX_32_BITS 4294967295U
+-# else
+-#  define UINT_MAX_32_BITS 0xFFFFFFFF
+-# endif
+-
+-/* If UINT_MAX isn't defined, assume it's a 32-bit type.
+-   This should be valid for all systems GNU cares about because
+-   that doesn't include 16-bit systems, and only modern systems
+-   (that certainly have <limits.h>) have 64+-bit integral types.  */
+-
+-# ifndef UINT_MAX
+-#  define UINT_MAX UINT_MAX_32_BITS
+-# endif
+-
+-# if UINT_MAX == UINT_MAX_32_BITS
+-   typedef unsigned int md5_uint32;
+-# else
+-#  if USHRT_MAX == UINT_MAX_32_BITS
+-    typedef unsigned short md5_uint32;
+-#  else
+-#   if ULONG_MAX == UINT_MAX_32_BITS
+-     typedef unsigned long md5_uint32;
+-#   else
+-     /* The following line is intended to evoke an error.
+-        Using #error is not portable enough.  */
+-     "Cannot determine unsigned 32-bit data type."
+-#   endif
+-#  endif
+-# endif
+-#endif
+ 
+ /* Structure to save state of computation between the single steps.  */
+ struct md5_ctx
