@@ -45,7 +45,7 @@ ip_public()
 
 via_dsld() {
 	# Firmware ca. 04.68 and newer should be safe, but some boxes had it since 04.31
-	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0: ip ([0-9.]+).*/\1/p')"
+	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0:.*ip ([0-9.]+).*/\1/p')"
 	ip_public "$IP" || return 1
 }
 
