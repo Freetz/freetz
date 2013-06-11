@@ -17,25 +17,34 @@ rm_files \
 
 menu2html_remove wlan
 
+# patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > IPv4-Adressen
+sedfile="${HTML_LANG_MOD_DIR}/net/boxnet.lua"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	modsed 's/config.WLAN/0/g' $sedfile
+fi
+
+# patcht Internet > Zugangsdaten > Internetzugang
 sedfile="${HTML_LANG_MOD_DIR}/internet/internet_settings.lua"
 if [ -e $sedfile ]; then
-	# patcht Internet > Zugangsdaten > Internetzugang
 	echo1 "patching ${sedfile##*/}"
 	modsed '/^require"wlanscan"$/d' $sedfile
 	modsed '/^wlanscanOnload.*$/d' $sedfile
 fi
 
+# patcht Heimnetz > Netzwerk > Geraete und Benutzer
 sedfile="${HTML_LANG_MOD_DIR}/net/network_user_devices.lua"
 if [ -e $sedfile ]; then
-	# patcht Heimnetz > Netzwerk > Geräte und Benutzer
 	echo1 "patching ${sedfile##*/}"
 	modsed 's/&& <?lua box.js(tostring(g_dev.wlan_count<2)) ?>//g' $sedfile
 fi
+
+# fix AVM-VPN: Set WLAN to "disabled" value "0". Otherwise ctlmgr_ctl reports "no emu" or "" (nothing).
 for sedfile in $(grep -R -l  "wlan:settings/ap_enabled" ${HTML_LANG_MOD_DIR}/* 2>/dev/null); do
-	# fix AVM-VPN: Set WLAN to "disabled" value "0". Otherwise ctlmgr_ctl reports "no emu" or "" (nothing).
 	echo1 "patching ${sedfile##*/}"
 	modsed 's#box.query("wlan:settings/ap_enabled[^"]*")#"0"#g ; s#<? query wlan:settings/ap_enabled[^ ]* ?>#0#g ; s#{ sz_query = "wlan:settings/ap_enabled"}#{ sz_value = "0" }#g' $sedfile
 done
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_WLAN=.*$/CONFIG_WLAN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
