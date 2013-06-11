@@ -17,7 +17,7 @@ rm_files \
 
 menu2html_remove wlan
 
-# patcht Heimnetz > Netzwerk > IPv4-Einstellungen
+# patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > IPv4-Adressen
 sedfile="${HTML_LANG_MOD_DIR}/net/boxnet.lua"
 if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
