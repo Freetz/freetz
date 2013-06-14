@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PHP_VERSION_5_3),5.3.25,5.4.15))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PHP_VERSION_5_3),5.3.26,5.4.16))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5_5.3.25:=347625ed7fbf2fe1f1c70b0f879fee2a
-$(PKG)_SOURCE_MD5_5.4.15:=145ea5e845e910443ff1eddb3dbcf56a
+$(PKG)_SOURCE_MD5_5.3.26:=d71db8d92edbb48beb5b645b55471139
+$(PKG)_SOURCE_MD5_5.4.16:=3d2c694d28861d707b2622c3cc941cff
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://de.php.net/distributions
 
