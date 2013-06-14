@@ -1,6 +1,6 @@
 Note: this patch alone is not enough. The following sed-statements should be executed in addition.
- sed -i -r -e 's,[-/][$][(]TARGET_NAME[)],$(TARGET_SUFFIX),g' $(grep -rl -e "[-/][$][(]TARGET_NAME[)]")
- sed -i -r -e 's,-([$][(]LIB_SUFFIX[)]),\1,g' $(grep -rl -e "-[$][(]LIB_SUFFIX[)]")
+ sed -i -r -e 's,[-/][$][(]TARGET_NAME[)],$(TARGET_SUFFIX),g' $(grep -rl -e "[-/][$][(]TARGET_NAME[)]" .)
+ sed -i -r -e 's,-([$][(]LIB_SUFFIX[)]),\1,g' $(grep -rl -e "-[$][(]LIB_SUFFIX[)]" .)
 --- build.mak.in
 +++ build.mak.in
 @@ -8,13 +8,15 @@

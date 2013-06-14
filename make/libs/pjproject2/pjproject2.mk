@@ -61,8 +61,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-v4l2
 $(PKG)_CONFIGURE_OPTIONS += --with-external-srtp
 $(PKG)_CONFIGURE_OPTIONS += --without-external-pa
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,[-/][$$$$][(]TARGET_NAME[)],$$$$(TARGET_SUFFIX),g' $$$$(grep -rl -e "[-/][$$$$][(]TARGET_NAME[)]");
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,-([$$$$][(]LIB_SUFFIX[)]),\1,g' $$$$(grep -rl -e "-[$$$$][(]LIB_SUFFIX[)]");
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,[-/][$$$$][(]TARGET_NAME[)],$$$$(TARGET_SUFFIX),g' $$$$(grep -rl -e "[-/][$$$$][(]TARGET_NAME[)]" .);
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,-([$$$$][(]LIB_SUFFIX[)]),\1,g' $$$$(grep -rl -e "-[$$$$][(]LIB_SUFFIX[)]" .);
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
