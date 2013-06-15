@@ -1,0 +1,66 @@
+#!/bin/sh
+
+DAEMON="asterisk"
+DAEMON_LONG_NAME="Asterisk"
+PID_FILE=/var/run/asterisk/asterisk.pid
+ASTERISK_CONFIGDIR_LINK="/mod/etc/asterisk"
+ASTERISK_CONFIGFILE="$ASTERISK_CONFIGDIR_LINK/asterisk.conf"
+
+. /etc/init.d/modlibrc
+
+config() {
+	rm -rf "$ASTERISK_CONFIGDIR_LINK"
+	ln -s "$ASTERISK_CONFIGDIR" "$ASTERISK_CONFIGDIR_LINK"
+	mkdir "$ASTERISK_CONFIGDIR" 2>/dev/null
+}
+
+start() {
+	if [ ! -s $ASTERISK_CONFIGFILE ]; then
+		echo "No configuration files found in $ASTERISK_CONFIGDIR, failed." >&2
+		return 1
+	fi
+	for d in lib run log spool; do
+		mkdir -p /var/$d/asterisk
+	done
+	modlib_startdaemon $DAEMON -C "$ASTERISK_CONFIGFILE"
+}
+
+stop() {
+	$DAEMON -C "$ASTERISK_CONFIGFILE" -rx "core stop now"
+}
+
+case "$1" in
+	""|load)
+		config
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+		modlib_start $ASTERISK_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	connect|console)
+		shift
+		$DAEMON -C "$ASTERISK_CONFIGFILE" -r "$@"
+		;;
+	*)
+		echo "Usage: $0 {load|unload|start|stop|restart|status|connect|console}" >&2
+		exit 1
+		;;
+esac
+
+exit 0
