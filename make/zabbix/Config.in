@@ -33,6 +33,7 @@ config FREETZ_PACKAGE_ZABBIX_agentd
 	depends on FREETZ_PACKAGE_ZABBIX
 	select FREETZ_BUSYBOX_FEATURE_UTMP
 	select FREETZ_BUSYBOX_WHO
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		Zabbix agent is deployed on a monitoring target to actively
@@ -50,6 +51,7 @@ config FREETZ_PACKAGE_ZABBIX_server
 	depends on FREETZ_PACKAGE_ZABBIX
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libsqlite3
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		Zabbix server is the central process of Zabbix software.
@@ -67,6 +69,7 @@ config FREETZ_PACKAGE_ZABBIX_proxy
 	depends on FREETZ_PACKAGE_ZABBIX
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libsqlite3
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		Zabbix proxy is a process that may collect monitoring data
@@ -83,6 +86,7 @@ config FREETZ_PACKAGE_ZABBIX_proxy
 config FREETZ_PACKAGE_ZABBIX_sender
 	bool "sender"
 	depends on FREETZ_PACKAGE_ZABBIX
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		Zabbix sender is a command line utility that may be used
@@ -94,6 +98,7 @@ config FREETZ_PACKAGE_ZABBIX_sender
 config FREETZ_PACKAGE_ZABBIX_get
 	bool "get"
 	depends on FREETZ_PACKAGE_ZABBIX
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		Zabbix get is a process which can be used to communicate

@@ -13,6 +13,9 @@ $(PKG)_BINARIES_TARGET_DIR    := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin
 $(PKG)_NOT_INCLUDED           := $(addprefix $($(PKG)_DEST_DIR)/usr/sbin/zabbix_,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_DEPENDS_ON += sqlite
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
+$(PKG)_DEPENDS_ON += libiconv
+endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
