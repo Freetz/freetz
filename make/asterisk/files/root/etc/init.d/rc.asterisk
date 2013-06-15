@@ -4,7 +4,7 @@ DAEMON="asterisk"
 DAEMON_LONG_NAME="Asterisk"
 PID_FILE=/var/run/asterisk/asterisk.pid
 ASTERISK_CONFIGDIR_LINK="/mod/etc/asterisk"
-ASTERISK_CONFIGFILE="$ASTERISK_CONFIGDIR_LINK/asterisk.conf"
+DAEMON_CONFIG="$ASTERISK_CONFIGDIR_LINK/asterisk.conf"
 
 . /etc/init.d/modlibrc
 
@@ -14,25 +14,36 @@ config() {
 	mkdir "$ASTERISK_CONFIGDIR" 2>/dev/null
 }
 
+config_minimal() {
+	echo -n "Creating minimal $DAEMON configuration ... "
+	config
+	modlib_config ${DAEMON}_minimal
+	if [ -s "$DAEMON_CONFIG" ]; then
+		echo "done."
+	else
+		echo "failed."
+		exit 1
+	fi
+}
+
 start() {
 	config
-	if [ ! -s $ASTERISK_CONFIGFILE ]; then
-		echo "No configuration files found in $ASTERISK_CONFIGDIR, failed." >&2
+	if [ ! -s "$DAEMON_CONFIG" ]; then
+		echo "No config file found in \"$ASTERISK_CONFIGDIR\", use \"$(basename $0) config-minimal\" to create a minimal one." 1>&2
 		return 1
 	fi
 	for d in lib run log spool; do
 		mkdir -p /var/$d/asterisk
 	done
-	modlib_startdaemon $DAEMON -C "$ASTERISK_CONFIGFILE"
+	modlib_startdaemon $DAEMON -C "$DAEMON_CONFIG"
 }
 
 stop() {
-	$DAEMON -C "$ASTERISK_CONFIGFILE" -rx "core stop now"
+	$DAEMON -C "$DAEMON_CONFIG" -rx "core stop now"
 }
 
 case "$1" in
 	""|load)
-		config
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 		modlib_start $ASTERISK_ENABLED
@@ -54,12 +65,15 @@ case "$1" in
 	status)
 		modlib_status
 		;;
+	config-minimal)
+		config_minimal
+		;;
 	connect|console)
 		shift
-		$DAEMON -C "$ASTERISK_CONFIGFILE" -r "$@"
+		$DAEMON -C "$DAEMON_CONFIG" -r "$@"
 		;;
 	*)
-		echo "Usage: $0 {load|unload|start|stop|restart|status|connect|console}" >&2
+		echo "Usage: $0 {load|unload|start|stop|restart|status|config-minimal|connect|console}" >&2
 		exit 1
 		;;
 esac
