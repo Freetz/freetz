@@ -3,13 +3,16 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA1:=8ec0d10834c87a2bff58f23d961c67f16a26d01a
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
-$(PKG)_INSTALL_SUBDIR:=_install
+$(PKG)_CONFIG_DIR:=/etc/asterisk
+$(PKG)_MODULES_DIR:=/usr/lib/asterisk/modules
+$(PKG)_INSTALL_DIR:=$($(PKG)_DIR)/_install
+$(PKG)_INSTALL_DIR_ABSOLUTE:=$(abspath $($(PKG)_INSTALL_DIR))
 
-$(PKG)_BINARY_BUILD_DIR  := $($(PKG)_DIR)/$($(PKG)_INSTALL_SUBDIR)/usr/sbin/asterisk
+$(PKG)_BINARY_BUILD_DIR  := $($(PKG)_INSTALL_DIR)/usr/sbin/asterisk
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/sbin/asterisk
 
-$(PKG)_MODULE_BUILD_DIR  := $($(PKG)_DIR)/$($(PKG)_INSTALL_SUBDIR)/usr/lib/asterisk/modules/chan_iax2.so
-$(PKG)_MODULE_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/lib/asterisk/modules/chan_iax2.so
+$(PKG)_MODULE_BUILD_DIR  := $($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/chan_iax2.so
+$(PKG)_MODULE_TARGET_DIR := $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/chan_iax2.so
 
 $(PKG)_DEPENDS_ON += curl
 $(PKG)_DEPENDS_ON += libgsm
@@ -21,6 +24,8 @@ $(PKG)_DEPENDS_ON += speex
 $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_DEPENDS_ON += srtp
 $(PKG)_DEPENDS_ON += zlib
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 
 # Remove internal pjproject version to ensure that it is not used.
 # We use pjproject version modified by asterisk developers (contains shared libraries support).
@@ -107,7 +112,7 @@ $(PKG)_MAKE_OPTIONS += -C $(ASTERISK_DIR)
 $(PKG)_MAKE_OPTIONS += NOISY_BUILD=yes
 $(PKG)_MAKE_OPTIONS += DEBUG=""
 $(PKG)_MAKE_OPTIONS += OPTIMIZE=""
-$(PKG)_MAKE_OPTIONS += ASTCFLAGS="-fno-strict-aliasing -DLOW_MEMORY"
+$(PKG)_MAKE_OPTIONS += ASTCFLAGS="-fno-strict-aliasing $(if $(FREETZ_PACKAGE_ASTERISK_LOWMEMORY),-DLOW_MEMORY)"
 $(PKG)_MAKE_OPTIONS += PJPROJECT_BUILD_MAK_DIR="$(abspath $(PJPROJECT2_DIR))"
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -120,8 +125,10 @@ $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) \
-		DESTDIR="$(abspath $(ASTERISK_DIR)/$(ASTERISK_INSTALL_SUBDIR))" \
+		DESTDIR="$(ASTERISK_INSTALL_DIR_ABSOLUTE)" \
 		install samples
+# 3rd-party modules may redefine PACKAGE_* variables, wrap asterisk variables with #ifndef to avoid warnings
+	$(SED) -i -r -e 's,(\#define (PACKAGE_[A-Za-z0-9]*)[ \t].*),\#ifndef \2\n\1\n\#endif,g' $(ASTERISK_INSTALL_DIR)/usr/include/asterisk/autoconfig.h
 	touch $@
 
 $($(PKG)_BINARY_BUILD_DIR) $($(PKG)_MODULE_BUILD_DIR): $($(PKG)_DIR)/.installed
@@ -146,6 +153,6 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) -r \
 		$(ASTERISK_BINARY_TARGET_DIR) \
-		$(ASTERISK_DEST_DIR)/usr/lib/asterisk/modules
+		$(ASTERISK_DEST_DIR)$(ASTERISK_MODULES_DIR)
 
 $(PKG_FINISH)

@@ -27,3 +27,8 @@ config FREETZ_PACKAGE_ASTERISK
 	default n
 	help
 		Asterisk is an open source framework for building communications applications.
+
+config FREETZ_PACKAGE_ASTERISK_LOWMEMORY
+	depends on FREETZ_PACKAGE_ASTERISK
+	bool "optimize asterisk for low-memory usage"
+	default y
