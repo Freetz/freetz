@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA1:=8ec0d10834c87a2bff58f23d961c67f16a26d01a
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
-$(PKG)_CONFIG_DIR:=/etc/asterisk
+$(PKG)_CONFIG_DIR:=/mod/etc/asterisk
 $(PKG)_MODULES_DIR:=/usr/lib/asterisk/modules
 $(PKG)_INSTALL_DIR:=$($(PKG)_DIR)/_install
 $(PKG)_INSTALL_DIR_ABSOLUTE:=$(abspath $($(PKG)_INSTALL_DIR))
@@ -107,6 +107,8 @@ $(PKG)_CONFIGURE_OPTIONS += --with-vorbis=no
 $(PKG)_CONFIGURE_OPTIONS += --with-vpb=no
 $(PKG)_CONFIGURE_OPTIONS += --with-x11=no
 $(PKG)_CONFIGURE_OPTIONS += --with-z="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+
+$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 
 $(PKG)_MAKE_OPTIONS += -C $(ASTERISK_DIR)
 $(PKG)_MAKE_OPTIONS += NOISY_BUILD=yes
