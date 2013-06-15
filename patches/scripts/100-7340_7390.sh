@@ -5,27 +5,32 @@ if [ -z "$FIRMWARE2" ]; then
 	exit 1
 fi
 
-echo1 "adapt firmware for 7390"
+echo1 "adapt firmware for 7340"
 
 echo2 "deleting obsolete files"
 rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/bitfile.bit
 
-echo2 "copying 7340 files"
-files="bitfile_isdn.bit bitfile_pots.bit"
+echo2 "moving default config dir"
+mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7390 ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340
 
+echo2 "copying 7340 modules"
+files="bitfile_isdn.bit bitfile_pots.bit"
 for i in $files; do
-	cp -a "${DIR}/.tk/original/filesystem/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules/$i"
+	cp -a "${FILESYSTEM_TK_DIR}/lib/modules/$i" "${FILESYSTEM_MOD_DIR}/lib/modules/$i"
 done
 
+echo2 "copying 7340 webif files"
 files="css/default/images/kopfbalken_mitte.gif"
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
 for i in $files; do
-	cp -a "${DIR}/.tk/original/filesystem/usr/www/avme/$i" "${FILESYSTEM_MOD_DIR}/usr/www/avme/$i"
+	cp -a "${FILESYSTEM_TK_DIR}/usr/www/avme/$i" "${FILESYSTEM_MOD_DIR}/usr/www/avme/$i"
 done
 
-echo2 "moving default config dir"
-mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7390 ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340
+echo2 "copying 7340 wlan files"
+cp -a ${FILESYSTEM_TK_DIR}/etc/default.Fritz_Box_7340/avme/wlan* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/
+#7340 difference: 2.4 OR 5 GHz Wlan
+cp -a ${FILESYSTEM_TK_DIR}/usr/www/all/wlan/wlan_settings.lua ${FILESYSTEM_MOD_DIR}/usr/www/all/wlan/wlan_settings.lua
 
 echo2 "patching rc.conf"
 modsed "s/CONFIG_ETH_COUNT=.*$/CONFIG_ETH_COUNT=\"2\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
@@ -48,3 +53,4 @@ fi
 # patch install script to accept firmware from 7390
 echo2 "applying install patch"
 modsed "s/iks_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_64415/iks_16MB_xilinx_2eth_2ab_isdn_te_pots_wlan_usb_host_dect_63350/g" "${FIRMWARE_MOD_DIR}/var/install"
+
