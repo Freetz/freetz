@@ -1,0 +1,33 @@
+--- channel.c
++++ channel.c
+@@ -98,7 +98,11 @@
+ 		: 0;
+ }
+ 
+-#if ASTERISK_VERSION_NUM >= 100000 /* 10+ */
++#if ASTERISK_VERSION_NUM >= 110000 /* 11+ */
++
++static struct ast_channel * channel_request (attribute_unused const char * type, struct ast_format_cap * cap, const struct ast_channel *requestor, const char * data, int * cause)
++
++#elif ASTERISK_VERSION_NUM >= 100000 /* 10+ */
+ 
+ static struct ast_channel * channel_request (attribute_unused const char * type, struct ast_format_cap * cap, const struct ast_channel *requestor, void * data, int * cause)
+ 
+@@ -185,7 +189,7 @@
+ }
+ 
+ #/* */
+-static int channel_call (struct ast_channel* channel, char* dest, attribute_unused int timeout)
++static int channel_call (struct ast_channel* channel, const char* dest, attribute_unused int timeout)
+ {
+ 	struct cpvt* cpvt = ast_channel_tech_pvt(channel);
+ 	struct pvt* pvt;
+@@ -935,7 +939,7 @@
+ }
+ 
+ #/* FIXME: must modify in conjuction with state on call not whole device? */
+-static int channel_devicestate (void* data)
++static int channel_devicestate (const char* data)
+ {
+ 	char*	device;
+ 	struct pvt*	pvt;
