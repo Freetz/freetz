@@ -15,6 +15,7 @@ config() {
 }
 
 start() {
+	config
 	if [ ! -s $ASTERISK_CONFIGFILE ]; then
 		echo "No configuration files found in $ASTERISK_CONFIGDIR, failed." >&2
 		return 1
