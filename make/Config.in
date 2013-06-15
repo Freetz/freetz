@@ -265,6 +265,10 @@ endmenu
 menu "Unstable packages"
 	visible if FREETZ_SHOW_EXPERT
 source make/asterisk/Config.in
+menu "Asterisk 3rd-party modules"
+	depends on FREETZ_PACKAGE_ASTERISK
+	source make/asterisk-chan-dongle/Config.in
+endmenu
 source make/collectd/Config.in
 source make/dtmfbox/Config.in
 source make/dtmfbox-cgi/Config.in

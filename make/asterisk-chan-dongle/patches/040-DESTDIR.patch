@@ -1,0 +1,29 @@
+--- configure.in
++++ configure.in
+@@ -186,7 +186,6 @@
+     fi
+     ])
+ 
+-AC_CHECK_DESTDIR([/usr/lib/asterisk/modules /usr/local/lib/asterisk/modules /opt/local/lib/asterisk/modules])
+ 
+ dnl Checks for library functions.
+ AC_FUNC_MEMCMP
+@@ -241,7 +240,6 @@
+ AC_SUBST([PACKAGE_TARNAME])
+ AC_SUBST([PACKAGE_REVISION])
+ AC_SUBST([PACKAGE_VERSION])
+-AC_SUBST([DESTDIR])
+ AC_SUBST([AC_CFLAGS])
+ AC_CONFIG_FILES([Makefile])
+ AC_OUTPUT
+--- Makefile.in
++++ Makefile.in
+@@ -51,7 +51,7 @@
+ 
+ install: all
+ 	$(STRIP) $(PROJM)
+-	$(INSTALL) -m 755 $(PROJM) @DESTDIR@
++	$(INSTALL) -m 755 $(PROJM) $(DESTDIR)/usr/lib/asterisk/modules
+ 
+ $(PROJM): $(chan_donglem_so_OBJS) Makefile
+ 	$(LD) $(LDFLAGS) $(SOLINK) -o $@ $(chan_donglem_so_OBJS) $(LIBS)
