@@ -46,7 +46,7 @@ $($(PKG)_CONFIG_TARGET): $($(PKG)_CONFIG)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_BINARY_TARGET) $($(PKG)_CONFIG_TARGET)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET) #$($(PKG)_CONFIG_TARGET)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(ASTERISK_CHAN_DONGLE_DIR) clean

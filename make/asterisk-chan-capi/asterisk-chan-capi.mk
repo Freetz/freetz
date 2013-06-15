@@ -39,7 +39,7 @@ $($(PKG)_CONFIG_TARGET): $($(PKG)_CONFIG)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_BINARY_TARGET) $($(PKG)_CONFIG_TARGET)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET) #$($(PKG)_CONFIG_TARGET)
 
 $(pkg)-clean:
 	-$(SUBMAKE) $(ASTERISK_CHAN_CAPI_MAKE_OPTIONS) clean
