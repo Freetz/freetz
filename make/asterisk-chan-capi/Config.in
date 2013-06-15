@@ -1,0 +1,8 @@
+config FREETZ_PACKAGE_ASTERISK_CHAN_CAPI
+	bool "chan_capi module"
+	depends on FREETZ_PACKAGE_ASTERISK
+	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libcapi20
+	default n
+	help
+		Common ISDN API 2.0 module for asterisk

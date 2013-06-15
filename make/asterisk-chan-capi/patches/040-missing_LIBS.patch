@@ -1,0 +1,14 @@
+--- Makefile
++++ Makefile
+@@ -191,9 +191,9 @@
+ 	@if [ "$(V)" = "0" ]; then \
+ 		echo " [LD] $@ ($^)";	\
+ 	else	\
+-		echo "$(CC) -shared -Xlinker -x -o $@ $^ $(LIBLINUX)";	\
++		echo "$(CC) -shared -Xlinker -x -o $@ $^ $(LIBS) $(LIBLINUX)";	\
+ 	fi
+-	@$(CC) -shared -Xlinker -x -o $@ $^ $(LIBLINUX)
++	@$(CC) -shared -Xlinker -x -o $@ $^ $(LIBS) $(LIBLINUX)
+ 
+ install: all
+ 	$(INSTALL) -d -m 755 $(MODULES_DIR)

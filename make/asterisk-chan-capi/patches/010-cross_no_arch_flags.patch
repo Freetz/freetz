@@ -1,0 +1,30 @@
+--- Makefile
++++ Makefile
+@@ -61,18 +61,6 @@
+ CONFIG_DIR=$(INSTALL_PREFIX)/usr/pkg/etc/asterisk
+ endif
+ 
+-OSARCH=$(shell uname -s)
+-
+-ifeq ($(strip $(PROC)),)
+-ifeq (${OSARCH},Linux)
+-PROC=$(shell uname -m)
+-else
+-ifeq (${OSARCH},FreeBSD)
+-PROC=$(shell uname -m)
+-endif
+-endif
+-endif
+-
+ AVERSION=$(shell if grep -q "VERSION_NUM 0104" $(ASTERISK_HEADER_DIR)/asterisk/version.h; then echo V1_4; fi)
+ 
+ ifeq (${USE_OWN_LIBCAPI},yes)
+@@ -114,8 +102,6 @@
+ CFLAGS+=$(OPTIMIZE)
+ CFLAGS+=-Wno-unused-but-set-variable -Wno-unused-function
+ CFLAGS+=-O2
+-CFLAGS+=$(shell if $(CC) -march=$(PROC) -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-march=$(PROC)"; fi)
+-CFLAGS+=$(shell if uname -m | grep -q "ppc\|arm\|s390"; then echo "-fsigned-char"; fi)
+ ifeq (${DIVA_STREAMING},1)
+ CFLAGS += -DDIVA_STREAMING=1
+ endif
