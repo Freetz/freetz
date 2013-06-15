@@ -19,6 +19,9 @@ endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
+# add EXTRA_(C|LD)FLAGS
+$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
+
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --disable-java
 $(PKG)_CONFIGURE_OPTIONS += --enable-agent
@@ -29,6 +32,8 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-proxy
 $(PKG)_MAKE_FLAGS := ARCH=linux
 $(PKG)_MAKE_FLAGS += AR="$(TARGET_AR)"
 $(PKG)_MAKE_FLAGS += RANLIB="$(TARGET_RANLIB)"
+$(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections"
+$(PKG)_MAKE_FLAGS += EXTRA_LDFLAGS="-Wl,--gc-sections"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
