@@ -1,0 +1,22 @@
+--- tools/versioncheck
++++ tools/versioncheck
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ SCCP_BRANCH="unknown"
+ SCCP_VERSION="unknown"
+-SCCP_REVISION="unknown"
++SCCP_REVISION="${SCCP_REVISION:-unknown}"
+ 
+ if test -d .svn || test -d ../.svn || test -d ../../.svn;then
+   if test ! -z "`which svn`"; then
+--- autoconf/acinclude.m4
++++ autoconf/acinclude.m4
+@@ -333,7 +333,7 @@
+ #  AC_UNDEFINE("PACKAGE_VERSION")
+   SCCP_BRANCH="unknown"
+   SCCP_VERSION="unknown"
+-  SCCP_REVISION="unknown"
++  SCCP_REVISION="${SCCP_REVISION:-unknown}"
+ 
+   BASE=`dirname $ac_dir`
+   pushd $BASE >/dev/null

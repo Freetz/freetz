@@ -1,0 +1,9 @@
+config FREETZ_PACKAGE_ASTERISK_CHAN_SCCP
+	bool "chan_sccp module"
+	depends on FREETZ_PACKAGE_ASTERISK
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libpthread
+	default n
+	help
+		SCCP channel provider for asterisk. It delivers extended functionality
+		for SCCP phones over chan_skinny delivered by asterisk by default.
