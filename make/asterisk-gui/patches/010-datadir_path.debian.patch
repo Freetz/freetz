@@ -1,0 +1,105 @@
+Fix datadir to be /usr/share/asterisk rather than /var/lib/asterisk
+
+Any file that needs to be written is written to /var/spool/asterisk/tmp ,
+which is also linked from /usr/share/asterisk/static-http/config/tmp
+
+Upstream issue: https://issues.asterisk.org/view.php?id=15119
+
+--- scripts/listfiles
++++ scripts/listfiles
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-SYSINFO_OUTPUT="/var/lib/asterisk/static-http/config/sysinfo_output.html"
++SYSINFO_OUTPUT="/usr/share/asterisk/static-http/config/tmp/sysinfo_output.html"
+ 
+ #/bin/echo "<div id=list_files>" > $SYSINFO_OUTPUT
+ /bin/mkdir -p -- "$1"
+--- config/js/index.js
++++ config/js/index.js
+@@ -296,23 +296,26 @@
+ 		if( ASTERISK_CONF === null ){ ASTERISK_CONF = new ASTGUI.customObject ; } // if context 'directories' not found in asterisk.conf
+ 		sessionData.directories.asteriskConfig =  ASTERISK_CONF.getProperty('astetcdir') ||  '/etc/asterisk/' ;
+ 		sessionData.directories.astvarlibdir = ASTERISK_CONF.getProperty('astvarlibdir') || '/var/lib/asterisk/' ;
++		sessionData.directories.astdatadir = ASTERISK_CONF.getProperty('astdatadir') || '/usr/share/asterisk/' ;
+ 		sessionData.directories.AGIBIN = ASTERISK_CONF.getProperty('astagidir') || '/var/lib/asterisk/agi-bin/' ;
+ 		sessionData.directories.astspooldir = ASTERISK_CONF.getProperty('astspooldir') || '/var/spool/asterisk/' ;
++		sessionData.directories.tmpdir = sessionData.directories.astspooldir + 'tmp/';
+ 
+ 		if( !sessionData.directories.asteriskConfig.endsWith('/') ){ sessionData.directories.asteriskConfig = sessionData.directories.asteriskConfig + '/' ; }
+ 		if( !sessionData.directories.astvarlibdir.endsWith('/') ){ sessionData.directories.astvarlibdir = sessionData.directories.astvarlibdir + '/' ; }
++		if( !sessionData.directories.astdatadir.endsWith('/') ){ sessionData.directories.astdatadir = sessionData.directories.astdatadir + '/' ; }
+ 		if( !sessionData.directories.AGIBIN.endsWith('/') ){ sessionData.directories.AGIBIN = sessionData.directories.AGIBIN + '/' ; }
+ 		if( !sessionData.directories.astspooldir.endsWith('/') ){ sessionData.directories.astspooldir = sessionData.directories.astspooldir + '/' ; }
+ 
+-		sessionData.directories.guiInstall = sessionData.directories.astvarlibdir + 'static-http/config/' ;
++		sessionData.directories.guiInstall = sessionData.directories.astdatadir + 'static-http/config/' ;
+ 		sessionData.directories.ConfigBkp = sessionData.directories.astvarlibdir + 'gui_backups/';
+ 		sessionData.directories.ConfigBkp_dldPath = sessionData.directories.guiInstall + 'private/bkps/'; // path for keeping the bkp files for download
+-		sessionData.directories.Sounds = sessionData.directories.astvarlibdir + 'sounds/' ;
+-		sessionData.directories.MOH = sessionData.directories.astvarlibdir + 'moh/' ; // path for music on hold files
++		sessionData.directories.Sounds = sessionData.directories.astdatadir + 'sounds/' ;
++		sessionData.directories.MOH = sessionData.directories.astdatadir + 'moh/' ; // path for music on hold files
+ 		sessionData.directories.menusRecord = sessionData.directories.Sounds + 'record/' ;
+ 
+-		sessionData.directories.scripts = sessionData.directories.astvarlibdir + 'scripts/';/* Directory for gui scripts (listfiles, for example) */	
+-		sessionData.directories.output_SysInfo = './sysinfo_output.html' ;
++		sessionData.directories.scripts = sessionData.directories.astdatadir + 'scripts/';/* Directory for gui scripts (listfiles, for example) */	
++		sessionData.directories.output_SysInfo = 'tmp/sysinfo_output.html' ;
+ 		sessionData.directories.voicemails_dir = sessionData.directories.astspooldir + 'voicemail/default/' ;
+ 		sessionData.directories.script_takeBackup =  'sh ' + sessionData.directories.scripts + 'takebackup';
+ 		sessionData.directories.script_restoreBackup =  'sh ' + sessionData.directories.scripts + 'restorebackup';
+--- config/js/astman.js
++++ config/js/astman.js
+@@ -358,6 +358,7 @@
+ 		g729RegInfo: 'g729reginfo.conf', // ASTGUI.globals.g729RegInfo, the sessionData.directories.script_Registerg729 script will read this file to generate tab delimited file
+ 		hwcfgFile: 'gui_confighw.conf', // file to store configured hardware information, to detect hardware changes
+ 		dahdiIncludeFile: 'dahdi_guiread.conf', // file that will be used to read zaptel.conf or dahdi/system.conf , ASTGUI.globals.dahdiIncludeFile
++		dahdiIncludeFile: '/var/spool/asterisk/tmp/dahdi_guiread.conf', // file that will be used to read zaptel.conf or dahdi/system.conf , ASTGUI.globals.dahdiIncludeFile
+ 		dahdiScanOutput: 'dahdi_scan.conf', // file that will be used to read output from ztscan or dahdi_scan, ASTGUI.globals.dahdiScanOutput
+ 		pingInterval : 5000,
+ 		app_factoryReset : '/bin/reset_config', // ASTGUI.globals.app_factoryReset
+@@ -2567,12 +2568,12 @@
+ 		// output will be sent as a argument to the callback function
+ 		//var fcmd = cmd + ' > ' + top.sessionData.directories.guiInstall +  ;
+ 		var tmp_opf = ( top.sessionData.directories.output_SysInfo.afterChar('/') || top.sessionData.directories.output_SysInfo ).rChop('.html') + Math.round( 10000 * Math.random() ) + '.html' ;
+-		var fcmd = cmd + ' > ' + top.sessionData.directories.guiInstall + tmp_opf ;
++		var fcmd = cmd + ' > ' + top.sessionData.directories.tmpdir + tmp_opf ;
+ 
+ 		var after = function(){
+ 			parent.document.getElementById('ajaxstatus').style.display = 'none';
+-			ASTGUI.loadHTML( tmp_opf , function(cmd_output){
+-				ASTGUI.systemCmd( 'rm ' + top.sessionData.directories.guiInstall + tmp_opf, function(){cb(cmd_output);} );
++			ASTGUI.loadHTML( 'tmp/' + tmp_opf , function(cmd_output){
++				ASTGUI.systemCmd( 'rm ' + top.sessionData.directories.tmpdir + tmp_opf, function(){cb(cmd_output);} );
+ 			});
+ 		};
+ 
+--- scripts/detectdahdi.sh
++++ scripts/detectdahdi.sh
+@@ -2,7 +2,7 @@
+ 
+ # script to detect whether zaptel/dahdi was installed & generate an include file for GUI
+ 
+-OUTPUTFILE="/etc/asterisk/dahdi_guiread.conf"
++OUTPUTFILE="/var/spool/asterisk/tmp/dahdi_guiread.conf"
+ 
+ echo "" > ${OUTPUTFILE}
+ echo "[general]" >> ${OUTPUTFILE}
+@@ -10,14 +10,14 @@
+ 
+ if [ -e /dev/zap ]; then
+ 	echo "zaptel"
+-	echo "#include \"../zaptel.conf\"" >> ${OUTPUTFILE}
++	echo "#include \"/etc/zaptel.conf\"" >> ${OUTPUTFILE}
+ 	echo "" >> ${OUTPUTFILE}
+ 	exit 0
+ fi
+ 
+ if [ -e /dev/dahdi ]; then
+         echo "dahdi"
+-	echo "#include \"../dahdi/system.conf\"" >> ${OUTPUTFILE}
++	echo "#include \"/etc/dahdi/system.conf\"" >> ${OUTPUTFILE}
+ 	echo "" >> ${OUTPUTFILE}
+ 	exit 0
+ fi
