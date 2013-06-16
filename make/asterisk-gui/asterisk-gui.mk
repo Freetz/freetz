@@ -3,6 +3,8 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA1:=51282c0d174974c0314e68d8ad8214af7e3fb7a6
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk-gui
 
+$(PKG)_BUILD_PREREQ += uudecode
+
 $(PKG)_TARGET:=$($(PKG)_DEST_DIR)/usr/share/asterisk/static-http/index.html
 
 $(PKG)_CONFIGURE_PRE_CMDS += (cd debian/images; for f in *.uu; do uudecode -o ../../config/images/$$$${f/%.uu/} $$$$f; done);
