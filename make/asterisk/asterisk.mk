@@ -24,6 +24,9 @@ $(PKG)_DEPENDS_ON += speex
 $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_DEPENDS_ON += srtp
 $(PKG)_DEPENDS_ON += zlib
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
+$(PKG)_DEPENDS_ON += libiconv
+endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
@@ -52,7 +55,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-gtk2=no
 $(PKG)_CONFIGURE_OPTIONS += --with-h323=no
 $(PKG)_CONFIGURE_OPTIONS += --with-hoard=no
 $(PKG)_CONFIGURE_OPTIONS += --with-ical=no
-$(PKG)_CONFIGURE_OPTIONS += --with-iconv=no
+$(PKG)_CONFIGURE_OPTIONS += --with-iconv=yes
 $(PKG)_CONFIGURE_OPTIONS += --with-iksemel=no
 $(PKG)_CONFIGURE_OPTIONS += --with-ilbc=no
 $(PKG)_CONFIGURE_OPTIONS += --with-imap=no
