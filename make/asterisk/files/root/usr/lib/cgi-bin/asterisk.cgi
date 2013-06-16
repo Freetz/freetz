@@ -13,7 +13,6 @@ sec_end
 sec_begin '$(lang de:"Dokumentation" en:"Documentation")'
 cat << EOM
 <ul>
-<li><a href="http://www.asterisk.org/astdocs/asterisk.html">Asterisk Reference Information</a></li>
 <li><a href="https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+Documentation">Asterisk 11 Documentation</a></li>
 </ul>
 EOM
