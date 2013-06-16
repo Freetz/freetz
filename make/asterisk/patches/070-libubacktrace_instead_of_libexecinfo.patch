@@ -1,0 +1,39 @@
+--- configure
++++ configure
+@@ -21575,7 +21575,7 @@
+ 
+ 
+ 
+-# Non-glibc platforms require libexecinfo for backtrace support
++# Non-glibc platforms require libubacktrace for backtrace support
+ 
+ if test "x${PBX_BKTR}" != "x1" -a "${USE_BKTR}" != "no"; then
+    pbxlibdir=""
+@@ -21593,14 +21593,14 @@
+    else
+       ast_ext_lib_check_save_CFLAGS="${CFLAGS}"
+       CFLAGS="${CFLAGS} "
+-      as_ac_Lib=`$as_echo "ac_cv_lib_execinfo_${pbxfuncname}" | $as_tr_sh`
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ${pbxfuncname} in -lexecinfo" >&5
+-$as_echo_n "checking for ${pbxfuncname} in -lexecinfo... " >&6; }
++      as_ac_Lib=`$as_echo "ac_cv_lib_ubacktrace_${pbxfuncname}" | $as_tr_sh`
++{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ${pbxfuncname} in -lubacktrace" >&5
++$as_echo_n "checking for ${pbxfuncname} in -lubacktrace... " >&6; }
+ if eval \${$as_ac_Lib+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lexecinfo ${pbxlibdir}  $LIBS"
++LIBS="-lubacktrace ${pbxlibdir}  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -21642,7 +21642,7 @@
+ 
+    # now check for the header.
+    if test "${AST_BKTR_FOUND}" = "yes"; then
+-      BKTR_LIB="${pbxlibdir} -lexecinfo "
++      BKTR_LIB="${pbxlibdir} -lubacktrace "
+       # if --with-BKTR=DIR has been specified, use it.
+       if test "x${BKTR_DIR}" != "x"; then
+          BKTR_INCLUDE="-I${BKTR_DIR}/include"

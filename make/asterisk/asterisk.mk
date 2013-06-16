@@ -26,6 +26,7 @@ $(PKG)_DEPENDS_ON += srtp
 $(PKG)_DEPENDS_ON += zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
 
 # Remove internal pjproject version to ensure that it is not used.
 # We use pjproject version modified by asterisk developers (contains shared libraries support).
@@ -44,7 +45,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-cpg=no
 $(PKG)_CONFIGURE_OPTIONS += --with-crypto="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-curses=no
 $(PKG)_CONFIGURE_OPTIONS += --with-dahdi=no
-$(PKG)_CONFIGURE_OPTIONS += --with-execinfo=no
+$(PKG)_CONFIGURE_OPTIONS += --with-execinfo=$(if $(FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 $(PKG)_CONFIGURE_OPTIONS += --with-gmime=no
 $(PKG)_CONFIGURE_OPTIONS += --with-gsm="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-gtk2=no

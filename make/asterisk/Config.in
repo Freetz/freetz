@@ -36,3 +36,9 @@ config FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 	depends on FREETZ_PACKAGE_ASTERISK
 	bool "optimize asterisk for low-memory usage"
 	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
+	depends on FREETZ_PACKAGE_ASTERISK && FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
+	bool "enable backtrace support"
+	select FREETZ_LIB_libubacktrace
+	default n
