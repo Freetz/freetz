@@ -17,7 +17,7 @@ $(PKG)_MODULE_TARGET_DIR := $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/chan_iax2.so
 $(PKG)_DEPENDS_ON += curl
 $(PKG)_DEPENDS_ON += libgsm
 $(PKG)_DEPENDS_ON += ncurses
-#$(PKG)_DEPENDS_ON += openssl
+$(PKG)_DEPENDS_ON += openssl
 $(PKG)_DEPENDS_ON += pjproject2
 $(PKG)_DEPENDS_ON += popt
 $(PKG)_DEPENDS_ON += speex
@@ -41,7 +41,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-bfd=no
 $(PKG)_CONFIGURE_OPTIONS += --with-bluetooth=no
 $(PKG)_CONFIGURE_OPTIONS += --with-cap=no
 $(PKG)_CONFIGURE_OPTIONS += --with-cpg=no
-$(PKG)_CONFIGURE_OPTIONS += --with-crypto=no
+$(PKG)_CONFIGURE_OPTIONS += --with-crypto="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-curses=no
 $(PKG)_CONFIGURE_OPTIONS += --with-dahdi=no
 $(PKG)_CONFIGURE_OPTIONS += --with-execinfo=no
@@ -95,7 +95,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-sqlite3="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-sqlite=no
 $(PKG)_CONFIGURE_OPTIONS += --with-srtp="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-ss7=no
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl=no
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-suppserv=no
 $(PKG)_CONFIGURE_OPTIONS += --with-tds=no
 $(PKG)_CONFIGURE_OPTIONS += --with-termcap=no
