@@ -30,7 +30,30 @@ done
 echo2 "copying 7340 wlan files"
 cp -a ${FILESYSTEM_TK_DIR}/etc/default.Fritz_Box_7340/avme/wlan* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/
 #7340 difference: 2.4 OR 5 GHz Wlan
-cp -a ${FILESYSTEM_TK_DIR}/usr/www/all/wlan/wlan_settings.lua ${FILESYSTEM_MOD_DIR}/usr/www/all/wlan/wlan_settings.lua
+
+sedfile="${HTML_LANG_MOD_DIR}/wlan/wlan_settings.lua"
+echo1 "patching ${sedfile##*/}"
+cp -a ${FILESYSTEM_TK_DIR}/usr/www/avme/wlan/wlan_settings.lua $sedfile
+modsed \
+  "s/1706:98/1706:863/g; \
+  s/1706:660/1706:329/g; \
+  s/1706:191/1706:639/g; \
+  s/1706:914/1706:786/g; \
+  s/1706:913/1706:458/g; \
+  s/1706:852/1706:146/g" \
+  $sedfile
+
+sedfile="${HTML_LANG_MOD_DIR}/wlan/radiochannel.lua"
+echo1 "patching ${sedfile##*/}"
+cp -a ${FILESYSTEM_TK_DIR}/usr/www/avme/wlan/radiochannel.lua $sedfile
+modsed \
+  "s/6447:231/6447:234/g; \
+  s/6447:161/6447:815/g; \
+  s/6447:873/6447:720/g; \
+  s/6447:210/6447:454/g; \
+  s/6447:284/6447:11/g; \
+  s/6447:132/6447:791/g" \
+  $sedfile
 
 echo2 "patching rc.conf"
 modsed "s/CONFIG_ETH_COUNT=.*$/CONFIG_ETH_COUNT=\"2\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
