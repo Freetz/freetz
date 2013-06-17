@@ -1,8 +1,5 @@
 config FREETZ_PACKAGE_ASTERISK
 	bool "Asterisk 11.4.0 - EXPERIMENTAL"
-#
-# asterisk binary dependencies
-#
 	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
@@ -10,25 +7,6 @@ config FREETZ_PACKAGE_ASTERISK
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libsqlite3
 	select FREETZ_LIB_libssl
-#
-# combined dependencies of all modules
-#
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libcurl
-	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libpjlib_util
-	select FREETZ_LIB_libpjnath
-	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libsqlite3
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libz
 	default n
 	help
 		Asterisk is an open source framework for building communications applications.
@@ -43,3 +21,17 @@ config FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
 	bool "enable backtrace support"
 	select FREETZ_LIB_libubacktrace
 	default n
+
+source make/asterisk-gui/Config.in
+
+menu "Asterisk modules"
+	depends on FREETZ_PACKAGE_ASTERISK
+	source make/asterisk/Config.in.generated
+endmenu
+
+menu "Asterisk 3rd-party modules"
+	depends on FREETZ_PACKAGE_ASTERISK
+	source make/asterisk-chan-capi/Config.in
+	source make/asterisk-chan-dongle/Config.in
+	source make/asterisk-chan-sccp/Config.in
+endmenu

@@ -11,8 +11,12 @@ $(PKG)_INSTALL_DIR_ABSOLUTE:=$(abspath $($(PKG)_INSTALL_DIR))
 $(PKG)_BINARY_BUILD_DIR  := $($(PKG)_INSTALL_DIR)/usr/sbin/asterisk
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/sbin/asterisk
 
-$(PKG)_MODULE_BUILD_DIR  := $($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/chan_iax2.so
-$(PKG)_MODULE_TARGET_DIR := $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/chan_iax2.so
+include $(MAKE_DIR)/asterisk/asterisk.mk.in
+$(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL))
+$(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/%.so)
+$(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so)
+
+$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
 
 $(PKG)_BUILD_PREREQ += svn
 
@@ -145,20 +149,17 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	$(SED) -i -r -e 's,(\#define (PACKAGE_[A-Za-z0-9]*)[ \t].*),\#ifndef \2\n\1\n\#endif,g' $(ASTERISK_INSTALL_DIR)/usr/include/asterisk/autoconfig.h
 	touch $@
 
-$($(PKG)_BINARY_BUILD_DIR) $($(PKG)_MODULE_BUILD_DIR): $($(PKG)_DIR)/.installed
+$($(PKG)_BINARY_BUILD_DIR) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.installed
 
 $($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PKG)_MODULE_TARGET_DIR): $($(PKG)_MODULE_BUILD_DIR)
-	mkdir -p $(dir $@)
-	cp -a $(dir $<)/*.so $(dir $@)
-	-$(TARGET_STRIP) $(dir $@)/*.so
-	touch $@
+$($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%: $($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/%
+	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULE_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) distclean

@@ -1,0 +1,1338 @@
+###
+### DO NOT EDIT! This file has been generated.
+###
+
+menu "Add-ons"
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_MOBILE
+		bool "chan_mobile: Bluetooth Mobile Device Channel Driver"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_BLUETOOTH
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_OOH323
+		bool "chan_ooh323: Objective Systems H323 Channel"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_MP3
+		bool "format_mp3: MP3 format [Any rate but 8000hz mono is optimal]"
+		default y
+
+endmenu
+
+menu "Applications"
+
+	config FREETZ_PACKAGE_ASTERISK_APP_ADSIPROG
+		bool "app_adsiprog: Asterisk ADSI Programming Application"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_RES_ADSI
+
+	config FREETZ_PACKAGE_ASTERISK_APP_ALARMRECEIVER
+		bool "app_alarmreceiver: Alarm Receiver for Asterisk"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_AMD
+		bool "app_amd: Answering Machine Detection Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_AUTHENTICATE
+		bool "app_authenticate: Authentication Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_CDR
+		bool "app_cdr: Tell Asterisk to not maintain a CDR for the current call"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_CELGENUSEREVENT
+		bool "app_celgenuserevent: Generate an User-Defined CEL event"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_CHANISAVAIL
+		bool "app_chanisavail: Check channel availability"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_CHANNELREDIRECT
+		bool "app_channelredirect: Redirects a given channel to a dialplan target"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_CHANSPY
+		bool "app_chanspy: Listen to the audio of an active channel"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_CONFBRIDGE
+		bool "app_confbridge: Conference Bridge Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_CONTROLPLAYBACK
+		bool "app_controlplayback: Control Playback Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DAHDIRAS
+		bool "app_dahdiras: DAHDI ISDN Remote Access Server"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_DAHDI
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DB
+		bool "app_db: Database Access Functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DIAL
+		bool "app_dial: Dialing Application"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_CHAN_LOCAL
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DICTATE
+		bool "app_dictate: Virtual Dictation Machine"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DIRECTED_PICKUP
+		bool "app_directed_pickup: Directed Call Pickup Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DIRECTORY
+		bool "app_directory: Extension Directory"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_APP_VOICEMAIL
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DISA
+		bool "app_disa: DISA (Direct Inward System Access) Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_DUMPCHAN
+		bool "app_dumpchan: Dump Info About The Calling Channel"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_ECHO
+		bool "app_echo: Simple Echo Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_EXEC
+		bool "app_exec: Executes dialplan applications"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_EXTERNALIVR
+		bool "app_externalivr: External IVR Interface Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_FESTIVAL
+		bool "app_festival: Simple Festival Interface"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_FLASH
+		bool "app_flash: Flash channel application"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_DAHDI
+
+	config FREETZ_PACKAGE_ASTERISK_APP_FOLLOWME
+		bool "app_followme: Find-Me/Follow-Me Application"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_CHAN_LOCAL
+
+	config FREETZ_PACKAGE_ASTERISK_APP_FORKCDR
+		bool "app_forkcdr: Fork The CDR into 2 separate entities"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_GETCPEID
+		bool "app_getcpeid: Get ADSI CPE ID"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_ICES
+		bool "app_ices: Encode and Stream via icecast and ices"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_IMAGE
+		bool "app_image: Image Transmission Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_JACK
+		bool "app_jack: JACK Interface"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_JACK
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_RESAMPLE
+
+	config FREETZ_PACKAGE_ASTERISK_APP_MACRO
+		bool "app_macro: Extension Macros"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_MEETME
+		bool "app_meetme: MeetMe conference bridge"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_DAHDI
+
+	config FREETZ_PACKAGE_ASTERISK_APP_MILLIWATT
+		bool "app_milliwatt: Digital Milliwatt (mu-law) Test Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_MINIVM
+		bool "app_minivm: Mini VoiceMail (A minimal Voicemail e-mail System)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_MIXMONITOR
+		bool "app_mixmonitor: Mixed Audio Monitoring Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_MORSECODE
+		bool "app_morsecode: Morse code"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_MP3
+		bool "app_mp3: Silly MP3 Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_NBSCAT
+		bool "app_nbscat: Silly NBS Stream Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_ORIGINATE
+		bool "app_originate: Originate call"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_OSPLOOKUP
+		bool "app_osplookup: Open Settlement Protocol Applications"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OSPTK
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OPENSSL
+
+	config FREETZ_PACKAGE_ASTERISK_APP_PAGE
+		bool "app_page: Page Multiple Phones"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_APP_CONFBRIDGE
+
+	config FREETZ_PACKAGE_ASTERISK_APP_PARKANDANNOUNCE
+		bool "app_parkandannounce: Call Parking and Announce Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_PLAYBACK
+		bool "app_playback: Sound File Playback Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_PLAYTONES
+		bool "app_playtones: Playtones Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_PRIVACY
+		bool "app_privacy: Require phone number to be entered, if no CallerID sent"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_QUEUE
+		bool "app_queue: True Call Queueing"
+		default y
+		select FREETZ_PACKAGE_ASTERISK_RES_MONITOR
+
+	config FREETZ_PACKAGE_ASTERISK_APP_READ
+		bool "app_read: Read Variable Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_READEXTEN
+		bool "app_readexten: Read and evaluate extension validity"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_RECORD
+		bool "app_record: Trivial Record Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_SAYUNIXTIME
+		bool "app_sayunixtime: Say time"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_SENDDTMF
+		bool "app_senddtmf: Send DTMF digits Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_SENDTEXT
+		bool "app_sendtext: Send Text Applications"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_SMS
+		bool "app_sms: SMS/PSTN handler"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_SOFTHANGUP
+		bool "app_softhangup: Hangs up the requested channel"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_SPEECH_UTILS
+		bool "app_speech_utils: Dialplan Speech Applications"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_STACK
+		bool "app_stack: Dialplan subroutines (Gosub, Return, etc)"
+		default y
+		select FREETZ_PACKAGE_ASTERISK_RES_AGI
+
+	config FREETZ_PACKAGE_ASTERISK_APP_SYSTEM
+		bool "app_system: Generic System() application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_TALKDETECT
+		bool "app_talkdetect: Playback with Talk Detection"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_TEST
+		bool "app_test: Interface Test Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_TRANSFER
+		bool "app_transfer: Transfers a caller to another extension"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_URL
+		bool "app_url: Send URL Applications"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_USEREVENT
+		bool "app_userevent: Custom User Event Application"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_VERBOSE
+		bool "app_verbose: Send verbose output"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_VOICEMAIL
+		bool "app_voicemail: Comedian Mail (Voicemail System)"
+		default y
+		select FREETZ_PACKAGE_ASTERISK_RES_ADSI
+		select FREETZ_PACKAGE_ASTERISK_RES_SMDI
+
+	config FREETZ_PACKAGE_ASTERISK_APP_WAITFORRING
+		bool "app_waitforring: Waits until first ring after time"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_WAITFORSILENCE
+		bool "app_waitforsilence: Wait For Silence"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_WAITUNTIL
+		bool "app_waituntil: Wait until specified time"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_WHILE
+		bool "app_while: While Loops and Conditional Execution"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_APP_ZAPATELLER
+		bool "app_zapateller: Block Telemarketers with Special Information Tone"
+		default y
+
+endmenu
+
+menu "Bridging Modules"
+
+	config FREETZ_PACKAGE_ASTERISK_BRIDGE_BUILTIN_FEATURES
+		bool "bridge_builtin_features: Built in bridging features"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_BRIDGE_MULTIPLEXED
+		bool "bridge_multiplexed: Multiplexed two channel bridging module"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_BRIDGE_SIMPLE
+		bool "bridge_simple: Simple two channel bridging module"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_BRIDGE_SOFTMIX
+		bool "bridge_softmix: Multi-party software based channel mixing"
+		default y
+
+endmenu
+
+menu "Call Detail Recording"
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_ADAPTIVE_ODBC
+		bool "cdr_adaptive_odbc: Adaptive ODBC CDR backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_RES_ODBC
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_CSV
+		bool "cdr_csv: Comma Separated Values CDR Backend"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_CUSTOM
+		bool "cdr_custom: Customizable Comma Separated Values CDR Backend"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_MANAGER
+		bool "cdr_manager: Asterisk Manager Interface CDR Backend"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_ODBC
+		bool "cdr_odbc: ODBC CDR Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_RES_ODBC
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_PGSQL
+		bool "cdr_pgsql: PostgreSQL CDR Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_PGSQL
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_RADIUS
+		bool "cdr_radius: RADIUS CDR Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_RADIUS
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_SQLITE3_CUSTOM
+		bool "cdr_sqlite3_custom: SQLite3 Custom CDR Module"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SQLITE3
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_SYSLOG
+		bool "cdr_syslog: Customizable syslog CDR Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SYSLOG
+
+	config FREETZ_PACKAGE_ASTERISK_CDR_TDS
+		bool "cdr_tds: FreeTDS CDR Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_FREETDS
+
+endmenu
+
+menu "Channel Event Logging"
+
+	config FREETZ_PACKAGE_ASTERISK_CEL_CUSTOM
+		bool "cel_custom: Customizable Comma Separated Values CEL Backend"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CEL_MANAGER
+		bool "cel_manager: Asterisk Manager Interface CEL Backend"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CEL_ODBC
+		bool "cel_odbc: ODBC CEL backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_RES_ODBC
+
+	config FREETZ_PACKAGE_ASTERISK_CEL_PGSQL
+		bool "cel_pgsql: PostgreSQL CEL Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_PGSQL
+
+	config FREETZ_PACKAGE_ASTERISK_CEL_RADIUS
+		bool "cel_radius: RADIUS CEL Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_RADIUS
+
+	config FREETZ_PACKAGE_ASTERISK_CEL_SQLITE3_CUSTOM
+		bool "cel_sqlite3_custom: SQLite3 Custom CEL Module"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SQLITE3
+
+	config FREETZ_PACKAGE_ASTERISK_CEL_TDS
+		bool "cel_tds: FreeTDS CEL Backend"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_FREETDS
+
+endmenu
+
+menu "Channel Drivers"
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_AGENT
+		bool "chan_agent: Agent Proxy Channel"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_CHAN_LOCAL
+		depends on FREETZ_PACKAGE_ASTERISK_RES_MONITOR
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_ALSA
+		bool "chan_alsa: ALSA Console Channel Driver"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ALSA
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_BRIDGE
+		bool "chan_bridge: Bridge Interaction Channel"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_CONSOLE
+		bool "chan_console: Console Channel Driver"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_PORTAUDIO
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_DAHDI
+		bool "chan_dahdi: DAHDI Telephony"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_DAHDI
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_TONEZONE
+		select FREETZ_PACKAGE_ASTERISK_RES_SMDI
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_PRI
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SS7
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OPENR2
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_IAX2
+		bool "chan_iax2: Inter Asterisk eXchange (Ver 2)"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_CRYPTO
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_LOCAL
+		bool "chan_local: Local Proxy Channel (Note: used internally by other modules)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_MGCP
+		bool "chan_mgcp: Media Gateway Control Protocol (MGCP)"
+		default y
+		select FREETZ_PACKAGE_ASTERISK_RES_PKTCCOPS
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_MISDN
+		bool "chan_misdn: Channel driver for mISDN Support (BRI/PRI)"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ISDNNET
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_MISDN
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SUPPSERV
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_MOTIF
+		bool "chan_motif: Motif Jingle Channel Driver"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_IKSEMEL
+		depends on FREETZ_PACKAGE_ASTERISK_RES_XMPP
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OPENSSL
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_MULTICAST_RTP
+		bool "chan_multicast_rtp: Multicast RTP Paging Channel"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_NBS
+		bool "chan_nbs: Network Broadcast Sound Support"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_NBS
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_OSS
+		bool "chan_oss: OSS Console Channel Driver"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OSS
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_PHONE
+		bool "chan_phone: Linux Telephony API Support"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_IXJUSER
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_SIP
+		bool "chan_sip: Session Initiation Protocol (SIP)"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_CHAN_LOCAL
+		select FREETZ_PACKAGE_ASTERISK_RES_CRYPTO
+		select FREETZ_PACKAGE_ASTERISK_RES_HTTP_WEBSOCKET
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_SKINNY
+		bool "chan_skinny: Skinny Client Control Protocol (Skinny)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CHAN_UNISTIM
+		bool "chan_unistim: UNISTIM Protocol (USTM)"
+		default y
+
+endmenu
+
+menu "Codec Translators"
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_A_MU
+		bool "codec_a_mu: A-law and Mulaw direct Coder/Decoder"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_ADPCM
+		bool "codec_adpcm: Adaptive Differential PCM Coder/Decoder"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_ALAW
+		bool "codec_alaw: A-law Coder/Decoder"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_DAHDI
+		bool "codec_dahdi: Generic DAHDI Transcoder Codec Translator"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_DAHDI
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_G722
+		bool "codec_g722: ITU G.722-64kbps G722 Transcoder"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_G726
+		bool "codec_g726: ITU G.726-32kbps G726 Transcoder"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_GSM
+		bool "codec_gsm: GSM Coder/Decoder"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_GSM
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_ILBC
+		bool "codec_ilbc: iLBC Coder/Decoder"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ILBC
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_LPC10
+		bool "codec_lpc10: LPC10 2.4kbps Coder/Decoder"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_RESAMPLE
+		bool "codec_resample: SLIN Resampling Codec"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_SPEEX
+		bool "codec_speex: Speex Coder/Decoder"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SPEEX
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SPEEX_PREPROCESS
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SPEEXDSP
+
+	config FREETZ_PACKAGE_ASTERISK_CODEC_ULAW
+		bool "codec_ulaw: mu-Law Coder/Decoder"
+		default y
+
+endmenu
+
+menu "Format Interpreters"
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_G719
+		bool "format_g719: ITU G.719"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_G723
+		bool "format_g723: G.723.1 Simple Timestamp File Format"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_G726
+		bool "format_g726: Raw G.726 (16/24/32/40kbps) data"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_G729
+		bool "format_g729: Raw G.729 data"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_GSM
+		bool "format_gsm: Raw GSM data"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_H263
+		bool "format_h263: Raw H.263 data"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_H264
+		bool "format_h264: Raw H.264 data"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_ILBC
+		bool "format_ilbc: Raw iLBC data"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_JPEG
+		bool "format_jpeg: jpeg (joint picture experts group) image format"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_OGG_VORBIS
+		bool "format_ogg_vorbis: OGG/Vorbis audio"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_VORBIS
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OGG
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_PCM
+		bool "format_pcm: Raw/Sun uLaw/ALaw 8KHz (PCM,PCMA,AU), G.722 16Khz"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_SIREN14
+		bool "format_siren14: ITU G.722.1 Annex C (Siren14, licensed from Polycom)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_SIREN7
+		bool "format_siren7: ITU G.722.1 (Siren7, licensed from Polycom)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_SLN
+		bool "format_sln: Raw Signed Linear Audio support (SLN) 8khz-192khz"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_VOX
+		bool "format_vox: Dialogic VOX (ADPCM) File Format"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_WAV
+		bool "format_wav: Microsoft WAV/WAV16 format (8kHz/16kHz Signed Linear)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FORMAT_WAV_GSM
+		bool "format_wav_gsm: Microsoft WAV format (Proprietary GSM)"
+		default y
+
+endmenu
+
+menu "Dialplan Functions"
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_AES
+		bool "func_aes: AES dialplan functions"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_CRYPTO
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_AUDIOHOOKINHERIT
+		bool "func_audiohookinherit: Audiohook inheritance function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_BASE64
+		bool "func_base64: base64 encode/decode dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_BLACKLIST
+		bool "func_blacklist: Look up Caller*ID name/number from blacklist database"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_CALLCOMPLETION
+		bool "func_callcompletion: Call Control Configuration Function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_CALLERID
+		bool "func_callerid: Party ID related dialplan functions (Caller-ID, Connected-line, Redirecting)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_CDR
+		bool "func_cdr: Call Detail Record (CDR) dialplan function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_CHANNEL
+		bool "func_channel: Channel information dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_CONFIG
+		bool "func_config: Asterisk configuration file variable access"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_CURL
+		bool "func_curl: Load external URL"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_CURL
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_CUT
+		bool "func_cut: Cut out information from a string"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_DB
+		bool "func_db: Database (astdb) related dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_DEVSTATE
+		bool "func_devstate: Gets or sets a device state in the dialplan"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_DIALGROUP
+		bool "func_dialgroup: Dialgroup dialplan function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_DIALPLAN
+		bool "func_dialplan: Dialplan Context/Extension/Priority Checking Functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_ENUM
+		bool "func_enum: ENUM related dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_ENV
+		bool "func_env: Environment/filesystem dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_EXTSTATE
+		bool "func_extstate: Gets an extension's state in the dialplan"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_FRAME_TRACE
+		bool "func_frame_trace: Frame Trace for internal ast_frame debugging."
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_GLOBAL
+		bool "func_global: Variable dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_GROUPCOUNT
+		bool "func_groupcount: Channel group dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_HANGUPCAUSE
+		bool "func_hangupcause: HANGUPCAUSE related functions and applications"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_ICONV
+		bool "func_iconv: Charset conversions"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ICONV
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_JITTERBUFFER
+		bool "func_jitterbuffer: Jitter buffer for read side of channel."
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_LOCK
+		bool "func_lock: Dialplan mutexes"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_LOGIC
+		bool "func_logic: Logical dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_MATH
+		bool "func_math: Mathematical dialplan function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_MD5
+		bool "func_md5: MD5 digest dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_MODULE
+		bool "func_module: Checks if Asterisk module is loaded in memory"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_ODBC
+		bool "func_odbc: ODBC lookups"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_RES_ODBC
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_PITCHSHIFT
+		bool "func_pitchshift: Audio Effects Dialplan Functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_PRESENCESTATE
+		bool "func_presencestate: Gets or sets a presence state in the dialplan"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_RAND
+		bool "func_rand: Random number dialplan function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_REALTIME
+		bool "func_realtime: Read/Write/Store/Destroy values from a RealTime repository"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_SHA1
+		bool "func_sha1: SHA-1 computation dialplan function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_SHELL
+		bool "func_shell: Collects the output generated by a command executed by the system shell"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_SPEEX
+		bool "func_speex: Noise reduction and Automatic Gain Control (AGC)"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SPEEX
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SPEEX_PREPROCESS
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SPEEXDSP
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_SPRINTF
+		bool "func_sprintf: SPRINTF dialplan function"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_SRV
+		bool "func_srv: SRV related dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_STRINGS
+		bool "func_strings: String handling dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_SYSINFO
+		bool "func_sysinfo: System information related functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_TIMEOUT
+		bool "func_timeout: Channel timeout dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_URI
+		bool "func_uri: URI encode/decode dialplan functions"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_VERSION
+		bool "func_version: Get Asterisk Version/Build Info"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_VMCOUNT
+		bool "func_vmcount: Indicator for whether a voice mailbox has messages in a given folder."
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_FUNC_VOLUME
+		bool "func_volume: Technology independent volume control"
+		default y
+
+endmenu
+
+menu "PBX Modules"
+
+	config FREETZ_PACKAGE_ASTERISK_PBX_AEL
+		bool "pbx_ael: Asterisk Extension Language Compiler"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_RES_AEL_SHARE
+
+	config FREETZ_PACKAGE_ASTERISK_PBX_CONFIG
+		bool "pbx_config: Text Extension Configuration"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_PBX_DUNDI
+		bool "pbx_dundi: Distributed Universal Number Discovery (DUNDi)"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ZLIB
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_CRYPTO
+
+	config FREETZ_PACKAGE_ASTERISK_PBX_LOOPBACK
+		bool "pbx_loopback: Loopback Switch"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_PBX_LUA
+		bool "pbx_lua: Lua PBX Switch"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_LUA
+
+	config FREETZ_PACKAGE_ASTERISK_PBX_REALTIME
+		bool "pbx_realtime: Realtime Switch"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_PBX_SPOOL
+		bool "pbx_spool: Outgoing Spool Support"
+		default y
+
+endmenu
+
+menu "Resource Modules"
+
+	config FREETZ_PACKAGE_ASTERISK_RES_ADSI
+		bool "res_adsi: ADSI Resource"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_AEL_SHARE
+		bool "res_ael_share: share-able code for AEL"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_AGI
+		bool "res_agi: Asterisk Gateway Interface (AGI)"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CALENDAR
+		bool "res_calendar: Asterisk Calendar integration"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CALENDAR_CALDAV
+		bool "res_calendar_caldav: Asterisk CalDAV Calendar Integration"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_NEON
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ICAL
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_LIBXML2
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CALENDAR_EWS
+		bool "res_calendar_ews: Asterisk MS Exchange Web Service Calendar Integration"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_NEON29
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CALENDAR_EXCHANGE
+		bool "res_calendar_exchange: Asterisk MS Exchange Calendar Integration"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_NEON
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ICAL
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_IKSEMEL
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CALENDAR_ICALENDAR
+		bool "res_calendar_icalendar: Asterisk iCalendar .ics file integration"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_NEON
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_ICAL
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CLIALIASES
+		bool "res_clialiases: CLI Aliases"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CLIORIGINATE
+		bool "res_clioriginate: Call origination and redirection from the CLI"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CONFIG_CURL
+		bool "res_config_curl: Realtime Curl configuration"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_CURL
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CONFIG_LDAP
+		bool "res_config_ldap: LDAP realtime interface"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_LDAP
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CONFIG_ODBC
+		bool "res_config_odbc: Realtime ODBC configuration"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_RES_ODBC
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CONFIG_PGSQL
+		bool "res_config_pgsql: PostgreSQL RealTime Configuration Driver"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_PGSQL
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CONFIG_SQLITE
+		bool "res_config_sqlite: Realtime SQLite configuration"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SQLITE
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CONFIG_SQLITE3
+		bool "res_config_sqlite3: SQLite 3 realtime config engine"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SQLITE3
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CONVERT
+		bool "res_convert: File format conversion CLI command"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_COROSYNC
+		bool "res_corosync: Corosync"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_COROSYNC
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CRYPTO
+		bool "res_crypto: Cryptographic Digital Signatures"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OPENSSL
+
+	config FREETZ_PACKAGE_ASTERISK_RES_CURL
+		bool "res_curl: cURL Resource Module"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_CURL
+
+	config FREETZ_PACKAGE_ASTERISK_RES_FAX
+		bool "res_fax: Generic FAX Applications"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_FAX_SPANDSP
+		bool "res_fax_spandsp: Spandsp G.711 and T.38 FAX Technologies"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SPANDSP
+		depends on FREETZ_PACKAGE_ASTERISK_RES_FAX
+
+	config FREETZ_PACKAGE_ASTERISK_RES_FORMAT_ATTR_CELT
+		bool "res_format_attr_celt: CELT Format Attribute Module"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_FORMAT_ATTR_H263
+		bool "res_format_attr_h263: H.263 Format Attribute Module"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_FORMAT_ATTR_H264
+		bool "res_format_attr_h264: H.264 Format Attribute Module"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_FORMAT_ATTR_SILK
+		bool "res_format_attr_silk: SILK Format Attribute Module"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_HTTP_POST
+		bool "res_http_post: HTTP POST support"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_GMIME
+
+	config FREETZ_PACKAGE_ASTERISK_RES_HTTP_WEBSOCKET
+		bool "res_http_websocket: HTTP WebSocket Support"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_LIMIT
+		bool "res_limit: Resource limits"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_MONITOR
+		bool "res_monitor: Call Monitoring Resource"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_MUSICONHOLD
+		bool "res_musiconhold: Music On Hold Resource"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_MUTESTREAM
+		bool "res_mutestream: Mute audio stream resources"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_ODBC
+		bool "res_odbc: ODBC resource"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_GENERIC_ODBC
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_LTDL
+
+	config FREETZ_PACKAGE_ASTERISK_RES_PHONEPROV
+		bool "res_phoneprov: HTTP Phone Provisioning"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_PKTCCOPS
+		bool "res_pktccops: PktcCOPS manager for MGCP"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_REALTIME
+		bool "res_realtime: Realtime Data Lookup/Rewrite"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_RTP_ASTERISK
+		bool "res_rtp_asterisk: Asterisk RTP Stack"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_PJPROJECT
+
+	config FREETZ_PACKAGE_ASTERISK_RES_RTP_MULTICAST
+		bool "res_rtp_multicast: Multicast RTP Engine"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_SECURITY_LOG
+		bool "res_security_log: Security Event Logging"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_SMDI
+		bool "res_smdi: Simplified Message Desk Interface (SMDI) Resource"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_SNMP
+		bool "res_snmp: SNMP [Sub]Agent for Asterisk"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_NETSNMP
+
+	config FREETZ_PACKAGE_ASTERISK_RES_SPEECH
+		bool "res_speech: Generic Speech Recognition API"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_SRTP
+		bool "res_srtp: Secure RTP (SRTP)"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_SRTP
+
+	config FREETZ_PACKAGE_ASTERISK_RES_STUN_MONITOR
+		bool "res_stun_monitor: STUN Network Monitor"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_TIMING_DAHDI
+		bool "res_timing_dahdi: DAHDI Timing Interface"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_DAHDI
+
+	config FREETZ_PACKAGE_ASTERISK_RES_TIMING_KQUEUE
+		bool "res_timing_kqueue: KQueue Timing Interface"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_KQUEUE
+
+	config FREETZ_PACKAGE_ASTERISK_RES_TIMING_PTHREAD
+		bool "res_timing_pthread: pthread Timing Interface"
+		default y
+
+	config FREETZ_PACKAGE_ASTERISK_RES_TIMING_TIMERFD
+		bool "res_timing_timerfd: Timerfd Timing Interface"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_TIMERFD
+
+	config FREETZ_PACKAGE_ASTERISK_RES_XMPP
+		bool "res_xmpp: Asterisk XMPP Interface"
+		default y
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_IKSEMEL
+		depends on FREETZ_PACKAGE_ASTERISK_WITH_OPENSSL
+
+endmenu
+
+config FREETZ_PACKAGE_ASTERISK_WITH_ALSA
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_BLUETOOTH
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_COROSYNC
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_CRYPTO
+	bool
+	select FREETZ_LIB_libcrypto
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_CURL
+	bool
+	select FREETZ_LIB_libcurl
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_DAHDI
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_FREETDS
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_GENERIC_ODBC
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_GMIME
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_GSM
+	bool
+	select FREETZ_LIB_libgsm
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_ICAL
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_ICONV
+	bool
+	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_IKSEMEL
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_ILBC
+	bool
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_ISDNNET
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_IXJUSER
+	bool
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_JACK
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_KQUEUE
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_LDAP
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_LIBXML2
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_LTDL
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_LUA
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_MISDN
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_NBS
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_NEON
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_NEON29
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_NETSNMP
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_OGG
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_OPENR2
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_OPENSSL
+	bool
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_OSPTK
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_OSS
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_PGSQL
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_PJPROJECT
+	bool
+	select FREETZ_LIB_libpj
+	select FREETZ_LIB_libpjlib_util
+	select FREETZ_LIB_libpjnath
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_PORTAUDIO
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_PRI
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_RADIUS
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_RESAMPLE
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SPANDSP
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SPEEX
+	bool
+	select FREETZ_LIB_libspeex
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SPEEXDSP
+	bool
+	select FREETZ_LIB_libspeexdsp
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SPEEX_PREPROCESS
+	bool
+	select FREETZ_LIB_libspeex
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SQLITE
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SQLITE3
+	bool
+	select FREETZ_LIB_libsqlite3
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SRTP
+	bool
+	select FREETZ_LIB_libsrtp
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SS7
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SUPPSERV
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_SYSLOG
+	bool
+	default y
+
+config FREETZ_PACKAGE_ASTERISK_WITH_TIMERFD
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_TONEZONE
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_VORBIS
+	bool
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_WITH_ZLIB
+	bool
+	select FREETZ_LIB_libz
+	default y
+
