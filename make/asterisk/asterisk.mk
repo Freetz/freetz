@@ -14,6 +14,8 @@ $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/sbin/asterisk
 $(PKG)_MODULE_BUILD_DIR  := $($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/chan_iax2.so
 $(PKG)_MODULE_TARGET_DIR := $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/chan_iax2.so
 
+$(PKG)_BUILD_PREREQ += svn
+
 $(PKG)_DEPENDS_ON += curl
 $(PKG)_DEPENDS_ON += libgsm
 $(PKG)_DEPENDS_ON += ncurses
@@ -124,6 +126,12 @@ $(PKG)_MAKE_OPTIONS += PJPROJECT_BUILD_MAK_DIR="$(abspath $(PJPROJECT2_DIR))"
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
+
+$($(PKG)_DIR)/addons/mp3/mpg123.h: $($(PKG)_DIR)/.unpacked
+	(cd $(ASTERISK_DIR); ./contrib/scripts/get_mp3_source.sh)
+	touch -c $@
+
+$($(PKG)_DIR)/.configured: | $($(PKG)_DIR)/addons/mp3/mpg123.h
 
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS)
