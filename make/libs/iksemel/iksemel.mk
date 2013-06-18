@@ -26,7 +26,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(IKSEMEL_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/include/iksemel $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libiksemel*
 	$(SUBMAKE) -C $(IKSEMEL_DIR) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
