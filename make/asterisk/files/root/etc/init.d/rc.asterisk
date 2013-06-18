@@ -3,19 +3,20 @@
 DAEMON="asterisk"
 DAEMON_LONG_NAME="Asterisk"
 PID_FILE=/var/run/asterisk/asterisk.pid
-ASTERISK_CONFIGDIR_LINK="/mod/etc/asterisk"
-DAEMON_CONFIG="$ASTERISK_CONFIGDIR_LINK/asterisk.conf"
-
+DAEMON_CONFIG="$ASTERISK_CONFIGDIR/asterisk.conf"
 . /etc/init.d/modlibrc
 
+
 config() {
+	local ASTERISK_CONFIGDIR_LINK="/mod/etc/asterisk"
 	rm -rf "$ASTERISK_CONFIGDIR_LINK"
 	ln -s "$ASTERISK_CONFIGDIR" "$ASTERISK_CONFIGDIR_LINK"
 	mkdir "$ASTERISK_CONFIGDIR" 2>/dev/null
 }
 
-config_minimal() {
-	echo -n "Creating minimal $DAEMON configuration ... "
+setup() {
+	modlib_check_running && modlib_stop
+	echo -n "Creating minimal $DAEMON_LONG_NAME configuration ... "
 	config
 	modlib_config ${DAEMON}_minimal
 	if [ -s "$DAEMON_CONFIG" ]; then
@@ -27,14 +28,10 @@ config_minimal() {
 }
 
 start() {
-	config
-	if [ ! -s "$DAEMON_CONFIG" ]; then
-		echo "No config file found in \"$ASTERISK_CONFIGDIR\", use \"$(basename $0) config-minimal\" to create a minimal one." 1>&2
+	if [ ! -s "$ASTERISK_CONFIGDIR/asterisk.conf" ]; then
+		echo "$DAEMON_LONG_NAME is not configured, failed."
 		return 1
 	fi
-	for d in lib run log spool; do
-		mkdir -p /var/$d/asterisk
-	done
 	modlib_startdaemon $DAEMON -C "$DAEMON_CONFIG"
 }
 
@@ -44,13 +41,21 @@ stop() {
 
 case "$1" in
 	""|load)
+		for dir in lib run log spool; do
+			mkdir -p /var/$dir/asterisk
+		done
+
+		modreg file $DAEMON conf 'asterisk.conf' 1 "asterisk_conf"
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
+
 		modlib_start $ASTERISK_ENABLED
 		;;
 	unload)
+		modunreg file $DAEMON
 		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
+
 		modlib_stop
 		;;
 	start)
@@ -65,15 +70,15 @@ case "$1" in
 	status)
 		modlib_status
 		;;
-	config-minimal)
-		config_minimal
+	setup)
+		setup
 		;;
-	connect|console)
+	console)
 		shift
 		$DAEMON -C "$DAEMON_CONFIG" -r "$@"
 		;;
 	*)
-		echo "Usage: $0 {load|unload|start|stop|restart|status|config-minimal|connect|console}" >&2
+		echo "Usage: $0 {load|unload|start|stop|restart|status|setup|console}" >&2
 		exit 1
 		;;
 esac
