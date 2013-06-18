@@ -170,4 +170,7 @@ $(pkg)-uninstall:
 		$(ASTERISK_BINARY_TARGET_DIR) \
 		$(ASTERISK_DEST_DIR)$(ASTERISK_MODULES_DIR)
 
+$(pkg)-generate-menuconfig: | $($(PKG)_DIR)/.configured
+	$(MAKE_DIR)/asterisk/generate-menuconfig.py $(ASTERISK_DIR)/menuselect-tree > $(MAKE_DIR)/asterisk/Config.in.generated
+
 $(PKG_FINISH)
