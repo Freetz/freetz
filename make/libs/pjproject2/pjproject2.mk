@@ -20,6 +20,8 @@ $(PKG)_DEPENDS_ON += libgsm speex srtp e2fsprogs
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
+$(PKG)_CONFIGURE_ENV += $(if $(FREETZ_PACKAGE_E2FSPROGS_STATIC),UUID_PIC_LIB=uuid_pic)
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-floating-point

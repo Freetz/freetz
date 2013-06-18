@@ -1,0 +1,42 @@
+--- aconfigure
++++ aconfigure
+@@ -4175,13 +4175,14 @@
+ 
+ fi
+ 
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for uuid_generate in -luuid" >&5
+-$as_echo_n "checking for uuid_generate in -luuid... " >&6; }
++[ -z "$UUID_PIC_LIB" ] && UUID_PIC_LIB=uuid
++{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for uuid_generate in -l$UUID_PIC_LIB" >&5
++$as_echo_n "checking for uuid_generate in -l$UUID_PIC_LIB... " >&6; }
+ if test "${ac_cv_lib_uuid_uuid_generate+set}" = set; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-luuid  $LIBS"
++LIBS="-l$UUID_PIC_LIB  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -4216,17 +4217,17 @@
+ #define HAVE_LIBUUID 1
+ _ACEOF
+ 
+-  LIBS="-luuid $LIBS"
++  LIBS="-l$UUID_PIC_LIB $LIBS"
+ 
+ fi
+ 
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for uuid_generate in -luuid" >&5
+-$as_echo_n "checking for uuid_generate in -luuid... " >&6; }
++{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for uuid_generate in -l$UUID_PIC_LIB" >&5
++$as_echo_n "checking for uuid_generate in -l$UUID_PIC_LIB... " >&6; }
+ if test "${ac_cv_lib_uuid_uuid_generate+set}" = set; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-luuid  $LIBS"
++LIBS="-l$UUID_PIC_LIB  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
