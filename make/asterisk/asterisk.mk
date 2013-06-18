@@ -21,6 +21,7 @@ $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so
 $(PKG)_BUILD_PREREQ += svn
 
 $(PKG)_DEPENDS_ON += curl
+$(PKG)_DEPENDS_ON += iksemel
 $(PKG)_DEPENDS_ON += libgsm
 $(PKG)_DEPENDS_ON += ncurses
 $(PKG)_DEPENDS_ON += openssl
@@ -62,7 +63,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-h323=no
 $(PKG)_CONFIGURE_OPTIONS += --with-hoard=no
 $(PKG)_CONFIGURE_OPTIONS += --with-ical=no
 $(PKG)_CONFIGURE_OPTIONS += --with-iconv=yes
-$(PKG)_CONFIGURE_OPTIONS += --with-iksemel=no
+$(PKG)_CONFIGURE_OPTIONS += --with-iksemel="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-ilbc=no
 $(PKG)_CONFIGURE_OPTIONS += --with-imap=no
 $(PKG)_CONFIGURE_OPTIONS += --with-inotify=no

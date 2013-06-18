@@ -18,6 +18,7 @@ def menuselect2kconfig(menuselectFilename):
 		"CURL": ["FREETZ_LIB_libcurl"],
 		"GSM": ["FREETZ_LIB_libgsm"],
 		"ICONV": ["FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28"],
+		"IKSEMEL": ["FREETZ_LIB_libiksemel"],
 		"ILBC": [],
 		"IXJUSER": [],
 		"PJPROJECT": ["FREETZ_LIB_libpj", "FREETZ_LIB_libpjlib_util", "FREETZ_LIB_libpjnath"],
