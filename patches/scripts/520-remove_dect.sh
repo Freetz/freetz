@@ -7,10 +7,12 @@ for files in \
   usr/share/ctlmgr/libdect.so \
   lib/modules/dectfw_firstlevel.hex \
   lib/modules/dectfw_secondlevel.hex \
-  $(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*/html/*dect*" -printf "%P\n") \
+  $(find ${FILESYSTEM_MOD_DIR} -iwholename "*usr/www/*dect*" -printf "%P\n") \
   ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
+[ "$FREETZ_REMOVE_TELEPHONY" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/dectfw_*"
+
 rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")
 
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient.so*"
@@ -20,13 +22,10 @@ modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_SPEC_MOD_DIR}/home/home.
 modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_SPEC_MOD_DIR}/menus/menu2_konfig.html"
 menu2html_remove dect
 
-# don't patch this in firmwares < 05.5x (see http://freetz.org/ticket/2056)
-if [ "$FREETZ_AVM_VERSION_05_5X_MIN" == "y" ]; then
-	MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
-	if [ -e "$MODPROBEPIGLET" ]; then
-		echo1 "patching ${MODPROBEPIGLET##*/}"
-		modsed '/^dect_[a-z]*levelfile=/ d; s!dect_[a-z]*levelfile=[^ ]*\.hex!!g' $MODPROBEPIGLET
-	fi
+MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
+if [ -e "$MODPROBEPIGLET" ]; then
+	echo1 "patching ${MODPROBEPIGLET##*/}"
+	modsed '/^dect_[a-z]*levelfile=/ d; s!dect_[a-z]*levelfile=[^ ]*\level.hex!!g; s!.*dect_io.*!#&!' $MODPROBEPIGLET
 fi
 
 MODPROBEDECT=$(grep -l -i -e "^modprobe dect_io$" "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
