@@ -11,7 +11,7 @@ $(PKG)_INSTALL_DIR_ABSOLUTE:=$(abspath $($(PKG)_INSTALL_DIR))
 $(PKG)_BINARY_BUILD_DIR  := $($(PKG)_INSTALL_DIR)/usr/sbin/asterisk
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/sbin/asterisk
 
-include $(MAKE_DIR)/asterisk/asterisk.mk.in
+include $(MAKE_DIR)/asterisk/asterisk-modules.mk.in
 $(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL))
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/%.so)
 $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so)
@@ -172,7 +172,22 @@ $(pkg)-uninstall:
 		$(ASTERISK_BINARY_TARGET_DIR) \
 		$(ASTERISK_DEST_DIR)$(ASTERISK_MODULES_DIR)
 
-$(pkg)-generate-menuconfig: | $($(PKG)_DIR)/.configured
-	$(MAKE_DIR)/asterisk/generate-menuconfig.py $(ASTERISK_DIR)/menuselect-tree > $(MAKE_DIR)/asterisk/Config.in.generated
+$(pkg)-generate: | $($(PKG)_DIR)/.configured
+	@echo -n "Generating menuconfig file... "
+	@( \
+		$(MAKE_DIR)/asterisk/generate-menuconfig.py $(ASTERISK_DIR)/menuselect-tree > $(MAKE_DIR)/asterisk/Config.in.generated \
+	) && echo "done"
+	@echo -n "Generating modules list... "
+	@( \
+		echo '$$(PKG)_MODULES_ALL := \' > $(MAKE_DIR)/asterisk/asterisk-modules.mk.in \
+		&& cat $(MAKE_DIR)/asterisk/Config.in.generated \
+		| grep 'config FREETZ_PACKAGE_ASTERISK' \
+		| grep -v 'FREETZ_PACKAGE_ASTERISK_WITH' \
+		| sort -u \
+		| sed -r -e 's,[ \t]*config FREETZ_PACKAGE_ASTERISK_([0-9A-Za-z_]*).*,\1 \\,g' \
+		| tr [:upper:] [:lower:] \
+		| sed -r -e 's,(res_xmpp) \\,\1,g' \
+		>> $(MAKE_DIR)/asterisk/asterisk-modules.mk.in \
+	) && echo "done"
 
 $(PKG_FINISH)

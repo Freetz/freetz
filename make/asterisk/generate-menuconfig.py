@@ -150,7 +150,7 @@ def main():
 
 	if len(sys.argv) != 2:
 		print "Usage: " + os.path.basename(main.__file__) + " asterisk-menuselect-tree-file > outfile"
-		print "    or \"make asterisk-generate-menuconfig\" in Freetz root directory"
+		print "    or \"make asterisk-generate\" in Freetz root directory"
 		return
 
 	menuselect2kconfig(sys.argv[1])
