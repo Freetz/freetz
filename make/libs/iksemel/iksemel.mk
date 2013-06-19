@@ -11,6 +11,8 @@ $(PKG)_DEPENDS_ON += openssl
 
 $(PKG)_BUILD_PREREQ += autoreconf
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls

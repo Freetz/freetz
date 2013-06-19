@@ -37,6 +37,7 @@ endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 
 # Remove internal pjproject version to ensure that it is not used.
 # We use pjproject version modified by asterisk developers (contains shared libraries support).
