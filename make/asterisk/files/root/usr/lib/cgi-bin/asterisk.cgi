@@ -17,7 +17,7 @@ sec_end
 sec_begin '$(lang de:"Dokumentation" en:"Documentation")'
 cat << EOM
 <ul>
-<li><a href="https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+Documentation">Asterisk 11 $(lang de:"Documentation" en:"documentation")</a></li>
+<li><a href="https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+Documentation">Asterisk 11 $(lang de:"Dokumentation" en:"documentation")</a></li>
 </ul>
 EOM
 sec_end
