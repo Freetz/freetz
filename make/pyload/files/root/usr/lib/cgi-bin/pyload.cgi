@@ -39,7 +39,7 @@ sec_end
 sec_begin '$(lang de:"Hinweis" en:"Note")'
 
 echo '<ul>'
-if [ ! -e /mod/pyload/pyload.conf ]; then
+if [ ! -s "$PYLOAD_CONFIGDIR/pyload.conf" ]; then
 cat << EOF
 <li>$(lang de:"pyLoad wurde noch nicht konfiguriert. Dazu bitte diesen Befehl in einem Terminal ausf&uuml;hren" en:"pyLoad is not configured. To do so, please run this in a terminal"): <i>rc.pyload setup</i></li>
 EOF
