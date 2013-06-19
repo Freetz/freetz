@@ -26,7 +26,7 @@ sec_end
 
 sec_begin '$(lang de:"Hinweis" en:"Note")'
 echo '<ul>'
-if [ ! -s /mod/etc/asterisk/asterisk.conf ]; then
+if [ ! -s "$ASTERISK_CONFIGDIR/asterisk.conf" ]; then
 cat << EOF
 <li>$(lang de:"Asterisk wurde noch nicht konfiguriert. Dazu bitte diesen Befehl in einem Terminal ausf&uuml;hren" en:"Asterisk is not configured. To do so, please run this in a terminal"): <i>rc.asterisk setup</i></li>
 EOF
