@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 11.4.0)
+$(call PKG_INIT_BIN, 11.5.0-rc1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=8ec0d10834c87a2bff58f23d961c67f16a26d01a
+$(PKG)_SOURCE_SHA1:=58e524118fdf8fe0b12d122290777954869bfe64
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
 $(PKG)_CONFIG_DIR:=/mod/etc/asterisk
@@ -106,6 +106,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-speex="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-sqlite3="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-sqlite=no
 $(PKG)_CONFIGURE_OPTIONS += --with-srtp="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-SRTP_SHUTDOWN="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-ss7=no
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-suppserv=no
@@ -115,6 +116,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-timerfd=no
 $(PKG)_CONFIGURE_OPTIONS += --with-tinfo=no
 $(PKG)_CONFIGURE_OPTIONS += --with-tonezone=no
 $(PKG)_CONFIGURE_OPTIONS += --with-unixodbc=no
+$(PKG)_CONFIGURE_OPTIONS += --with-uuid=no
 $(PKG)_CONFIGURE_OPTIONS += --with-vorbis=no
 $(PKG)_CONFIGURE_OPTIONS += --with-vpb=no
 $(PKG)_CONFIGURE_OPTIONS += --with-x11=no
@@ -138,6 +140,9 @@ $($(PKG)_DIR)/addons/mp3/mpg123.h: $($(PKG)_DIR)/.unpacked
 	touch -c $@
 
 $($(PKG)_DIR)/.configured: | $($(PKG)_DIR)/addons/mp3/mpg123.h
+
+$($(PKG)_DIR)/menuselect-tree: $($(PKG)_DIR)/.configured
+	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) menuselect-tree
 
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS)
@@ -172,7 +177,7 @@ $(pkg)-uninstall:
 		$(ASTERISK_BINARY_TARGET_DIR) \
 		$(ASTERISK_DEST_DIR)$(ASTERISK_MODULES_DIR)
 
-$(pkg)-generate: | $($(PKG)_DIR)/.configured
+$(pkg)-generate: | $($(PKG)_DIR)/menuselect-tree
 	@echo -n "Generating menuconfig file... "
 	@( \
 		$(MAKE_DIR)/asterisk/generate-menuconfig.py $(ASTERISK_DIR)/menuselect-tree > $(MAKE_DIR)/asterisk/Config.in.generated \

@@ -36,7 +36,15 @@
 +res_rtp_asterisk.so: LIBS+=-Wl,--as-needed $(PJ_LDLIBS) -Wl,--no-as-needed
 --- res/res_rtp_asterisk.c
 +++ res/res_rtp_asterisk.c
-@@ -48,11 +48,13 @@
+@@ -29,7 +29,6 @@
+  */
+ 
+ /*** MODULEINFO
+-	<depend>uuid</depend>
+ 	<support_level>core</support_level>
+  ***/
+ 
+@@ -49,11 +48,13 @@
  
  /* Asterisk discourages the use of bzero in favor of memset, in fact if you try to use bzero it will tell you to use memset. As a result bzero has to be undefined
   * here since it is used internally by pjlib. The only other option would be to modify pjlib... which won't happen. */
