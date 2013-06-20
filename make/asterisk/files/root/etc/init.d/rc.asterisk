@@ -3,12 +3,12 @@
 DAEMON="asterisk"
 DAEMON_LONG_NAME="Asterisk"
 PID_FILE=/var/run/asterisk/asterisk.pid
+DAEMON_CONFIG="/mod/etc/asterisk/asterisk.conf"
 . /etc/init.d/modlibrc
-DAEMON_CONFIG="$ASTERISK_CONFIGDIR/asterisk.conf"
 
 
 config() {
-	local ASTERISK_CONFIGDIR_LINK="/mod/etc/asterisk"
+	local ASTERISK_CONFIGDIR_LINK="${DAEMON_CONFIG%/*}"
 	rm -rf "$ASTERISK_CONFIGDIR_LINK"
 	ln -s "$ASTERISK_CONFIGDIR" "$ASTERISK_CONFIGDIR_LINK"
 	mkdir "$ASTERISK_CONFIGDIR" 2>/dev/null
@@ -75,6 +75,7 @@ case "$1" in
 		;;
 	console)
 		shift
+		modlib_check_running || modlib_start
 		$DAEMON -C "$DAEMON_CONFIG" -r "$@"
 		;;
 	*)
