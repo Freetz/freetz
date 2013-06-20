@@ -20,6 +20,6 @@ fi
 cat << EOF
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
 EOF
-cgi_print_textline_p "options" "$INETD_OPTIONS" 20/255 "$(lang de:"Optionen" en:"Options"):"
+cgi_print_textline_p "options" "$INETD_OPTIONS" 20/255 "$(lang de:"Optionen" en:"Options"): "
 
 sec_end
