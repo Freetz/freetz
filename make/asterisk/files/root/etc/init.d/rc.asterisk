@@ -32,11 +32,16 @@ start() {
 		echo "$DAEMON_LONG_NAME is not configured, failed."
 		return 1
 	fi
-	modlib_startdaemon $DAEMON -C "$DAEMON_CONFIG"
+	modlib_startdaemon $DAEMON -C "$DAEMON_CONFIG" $ASTERISK_VERBOSITY
 }
 
 stop() {
 	$DAEMON -C "$DAEMON_CONFIG" -rx "core stop now"
+}
+
+usage() {
+	echo "Usage: $0 {load|unload|start|start-v[v...]|stop|restart|status|setup|console}" >&2
+	exit 1
 }
 
 case "$1" in
@@ -61,6 +66,14 @@ case "$1" in
 	start)
 		modlib_start
 		;;
+	start-v*)
+		ASTERISK_VERBOSITY="${1//start-}"
+		if [ -z "${ASTERISK_VERBOSITY//v}" ]; then
+			ASTERISK_VERBOSITY="-${ASTERISK_VERBOSITY}" modlib_start
+		else
+			usage
+		fi
+		;;
 	stop)
 		modlib_stop
 		;;
@@ -79,8 +92,7 @@ case "$1" in
 		$DAEMON -C "$DAEMON_CONFIG" -r "$@"
 		;;
 	*)
-		echo "Usage: $0 {load|unload|start|stop|restart|status|setup|console}" >&2
-		exit 1
+		usage
 		;;
 esac
 
