@@ -1,11 +1,11 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -117,7 +117,7 @@
+@@ -205,7 +205,7 @@
  curl_OBJECTS = $(am_curl_OBJECTS)
- curl_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
- 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(curl_LDFLAGS) \
--	$(LDFLAGS) -o $@
-+	$(LDFLAGS) $(STATIC_LDFLAGS) -o $@
- DEFAULT_INCLUDES = 
- depcomp = $(SHELL) $(top_srcdir)/depcomp
- am__depfiles_maybe = depfiles
+ curl_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+-	$(curl_LDFLAGS) $(LDFLAGS) -o $@
++	$(curl_LDFLAGS) $(LDFLAGS) $(STATIC_LDFLAGS) -o $@
+ AM_V_P = $(am__v_P_@AM_V@)
+ am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
+ am__v_P_0 = false
