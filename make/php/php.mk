@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PHP_VERSION_5_3),5.3.26,5.4.16))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PHP_VERSION_5_3),5.3.26,$(if $(FREETZ_PHP_VERSION_5_4),5.4.16,5.5.0)))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5_5.3.26:=d71db8d92edbb48beb5b645b55471139
 $(PKG)_SOURCE_MD5_5.4.16:=3d2c694d28861d707b2622c3cc941cff
+$(PKG)_SOURCE_MD5_5.5.0:=daf2d54e79def9fd0fb2ac7dfcefb7f3
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://de.php.net/distributions
 
@@ -123,6 +124,7 @@ endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PHP_VERSION_5_3
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PHP_VERSION_5_4
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PHP_VERSION_5_5
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_CURL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PHP_WITH_GD
@@ -156,6 +158,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_func_utime_null=no
 $(PKG)_CONFIGURE_ENV += ac_cv_time_r_type=POSIX
 $(PKG)_CONFIGURE_ENV += ac_cv_what_readdir_r=POSIX
 $(PKG)_CONFIGURE_ENV += ac_cv_write_stdout=yes
+$(PKG)_CONFIGURE_ENV += ac_cv_lib_gd_gdImageCreateFromXpm=no
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_png_png_write_image=yes
 $(PKG)_CONFIGURE_ENV += cookie_io_functions_use_off64_t=yes
 $(PKG)_CONFIGURE_ENV += lt_cv_prog_gnu_ldcxx=yes
