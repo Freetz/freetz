@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.3)
+$(call PKG_INIT_LIB, avm-7390.05.50)
 $(PKG)_LIB_VERSION:=3.0.4
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=87d3cd1f17061d4ddee01246a1eea926
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=98e25e3a8e8f3724f6688d993f15ae83
 $(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libcapi20.so.$($(PKG)_LIB_VERSION)
@@ -15,7 +15,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LIBCAPI_DIR) \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
-		CAPI20OPTS="$(TARGET_CFLAGS)" \
+		CAPI20OPTS="$(TARGET_CFLAGS) $(FPIC)" \
 		all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
