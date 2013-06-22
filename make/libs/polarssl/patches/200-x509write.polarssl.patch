@@ -1,15 +1,15 @@
 --- include/polarssl/x509.h
 +++ include/polarssl/x509.h
-@@ -62,6 +62,8 @@
- #define POLARSSL_ERR_X509_INVALID_INPUT                    -0x2A00  /**< Input invalid. */
- #define POLARSSL_ERR_X509_MALLOC_FAILED                    -0x2A80  /**< Allocation of memory failed. */
+@@ -64,6 +64,8 @@
  #define POLARSSL_ERR_X509_FILE_IO_ERROR                    -0x2B00  /**< Read/write of file failed. */
-+#define POLARSSL_ERR_X509_POINT_ERROR                      -0x2C00
-+#define POLARSSL_ERR_X509_VALUE_TO_LENGTH                  -0x2C80
+ #define POLARSSL_ERR_X509_PASSWORD_REQUIRED                -0x2B80  /**< Private key password can't be empty. */
+ #define POLARSSL_ERR_X509_PASSWORD_MISMATCH                -0x2C00  /**< Given private key password does not allow for correct decryption. */
++#define POLARSSL_ERR_X509_POINT_ERROR                      -0x2C80
++#define POLARSSL_ERR_X509_VALUE_TO_LENGTH                  -0x2D00
  /* \} name */
  
  
-@@ -380,11 +382,9 @@
+@@ -382,11 +384,9 @@
  
  /**
   * \name Structures for writing X.509 certificates.
@@ -21,7 +21,7 @@
  typedef struct _x509_node
  {
      unsigned char *data;
-@@ -412,7 +412,6 @@
+@@ -414,7 +414,6 @@
      x509_node sign;
  }
  x509_raw;
@@ -29,7 +29,7 @@
  
  #ifdef __cplusplus
  extern "C" {
-@@ -757,6 +756,229 @@
+@@ -771,6 +770,229 @@
   */
  int x509_self_test( int verbose );
  

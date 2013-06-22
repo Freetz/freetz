@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 1.2.7)
+$(call PKG_INIT_LIB, 1.2.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-gpl.tgz
-$(PKG)_SOURCE_MD5:=bd3dfa7e37ba2778e42d74a34c5d41d8
+$(PKG)_SOURCE_MD5:=985151639b1ca037293f06da44fbc6bc
 $(PKG)_SITE:=http://$(pkg).org/code/releases
 
 $(PKG)_LIBNAME:=lib$(pkg).so.$($(PKG)_VERSION)
