@@ -28,6 +28,14 @@ if [ -e "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html" ]; then
 	  D }" "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html"
 fi
 
+# patcht USB-Geräte > USB-Speicher >  Musikbox aktivieren
+sedfile="${HTML_SPEC_MOD_DIR}/usb/usbdisk.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	sedrow=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*"uiViewUseMusik".*$/\1/p')
+	modsed "$((sedrow-1)),$((sedrow+2))d" $sedfile
+fi
+
 sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"

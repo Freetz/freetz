@@ -17,6 +17,14 @@ rm_files \
 
 menu2html_remove wlan
 
+# patcht System > Nachtschaltung > Klingelsperre aktivieren
+sedfile="${HTML_SPEC_MOD_DIR}/system/nacht.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	modsed '/id="uiViewUseNachtWlan"/{N;//d}' $sedfile
+	modsed '/.*id="uiViewUseWlanForcedOff".*/d' $sedfile
+fi
+
 # patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > IPv4-Adressen
 sedfile="${HTML_LANG_MOD_DIR}/net/boxnet.lua"
 if [ -e $sedfile ]; then

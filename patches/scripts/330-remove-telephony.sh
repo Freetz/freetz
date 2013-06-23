@@ -28,7 +28,10 @@ rm_files \
   ${FILESYSTEM_MOD_DIR}/lib/modules/c55fw.hex \
   ${FILESYSTEM_MOD_DIR}/etc/init.d/S17-tam \
   ${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn \
-  ${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet
+  ${FILESYSTEM_MOD_DIR}/etc/init.d/S11-piglet \
+  ${HTML_SPEC_MOD_DIR}/fon/ \
+  ${HTML_SPEC_MOD_DIR}/fon_config/ \
+  ${HTML_SPEC_MOD_DIR}/menus/menu2_fon.html
 
 echo1 "patching rc.S"
 [ "$FREETZ_AVM_HAS_USB_HOST_AHCI" != "y" ] && \
@@ -39,6 +42,45 @@ echo1 "patching rc.conf"
 modsed "s/CONFIG_FON=.*$/CONFIG_FON=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 menu2html_remove fon
+
+# patcht Erweiterte Einstellungen
+sedfile="${HTML_SPEC_MOD_DIR}/enhsettings/enhsettings.js"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	modsed 's/\(setvariable var:showTelefon \)./\10/g' $sedfile
+fi
+
+# patcht Uebersicht > Komfortfunktionen
+sedfile="${HTML_SPEC_MOD_DIR}/home/home.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	for item in Tam IntFax Sperre Umleitung Callthrough Wecker1 Wecker2 Wecker3; do
+		modsed "/ id=.tr${item}. /{N;N;N;N;//d}" $sedfile
+	done
+fi
+
+# patcht Uebersicht: linkes Menue
+sedfile="${HTML_SPEC_MOD_DIR}/menus/menu2_homehome.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	for target in foncalls fonbuch fondevices; do
+		modsed "/.*jslGoTo('home','${target}').*/d" $sedfile
+	done
+fi
+
+# patcht System > Nachtschaltung > Klingelsperre aktivieren
+sedfile="${HTML_SPEC_MOD_DIR}/system/nacht.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	modsed '/id="uiViewUseNachtFon"/{N;//d}' $sedfile
+fi
+
+# patcht Telefonie
+sedfile="${HTML_SPEC_MOD_DIR}/menus/menu2_konfig.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	modsed "/.*('fon','foncalls').*/d" $sedfile
+fi
 
 # Webinterface Hauptseite
 HOME_LUA="${HTML_LANG_MOD_DIR}/home/home.lua"

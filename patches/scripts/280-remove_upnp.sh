@@ -10,13 +10,9 @@ rm_files \
 # patcht Heimetz > Netzwerk > Programme (lua)
 menulua_remove upnp
 # html: Geraete und Benutzer
-modsed \
-  '/<li><a href="javascript:doNetPage(.upnp.)">{?629:6292?}<.a><.li>/d' \
-  "${HTML_SPEC_MOD_DIR}/home/clients.html"
+modsed "/.*javascript:doNetPage('upnp').*/d" "${HTML_SPEC_MOD_DIR}/home/clients.html"
 # html: Netzwerkeinstellungen
-modsed \
-  '/<li><a href="javascript:DoTabsUpnp()">{?296:4188?}<.a><.li>/d' \
-  "${HTML_SPEC_MOD_DIR}/system/net.html"
+modsed "/.*javascript:DoTabsUpnp().*/d" "${HTML_SPEC_MOD_DIR}/system/net.html"
 
 _upnp_file="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
 for _upnp_name in upnpdevdstart upnpdstart _upnp_name; do

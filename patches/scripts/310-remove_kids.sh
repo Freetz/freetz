@@ -21,6 +21,9 @@ menulua_remove kids
 # patcht Heimnetz > Netzwerk > Bearbeiten > Kindersicherung
 modsed '/<.lua show_kisi_content() .>/d' "${HTML_LANG_MOD_DIR}/net/edit_device.lua"
 
+# patcht Uebersicht > Komfortfunktionen
+modsed '/ id="trKids" /{N;N;N;N;//d}' "${HTML_SPEC_MOD_DIR}/home/home.html"
+
 # patcht Internet > Filter > Listen > Filterlisten
 #lua
 modsed '/^<hr>$/{N;N;N;N;N;N;N;/^<hr>\n.*385:981.*/d}' "${HTML_LANG_MOD_DIR}/internet/trafficappl.lua"
