@@ -1,0 +1,40 @@
+--- chan_capi.c
++++ chan_capi.c
+@@ -1553,7 +1553,11 @@
+ /*
+  * PBX tells us to make a call
+  */
++#ifdef CC_AST_HAS_VERSION_11_0
++static int pbx_capi_call(struct ast_channel *c, const char *idest, int timeout)
++#else
+ static int pbx_capi_call(struct ast_channel *c, char *idest, int timeout)
++#endif
+ {
+ 	struct capi_pvt *i = CC_CHANNEL_PVT(c);
+ 	char *dest, *interface, *param, *ocid;
+@@ -2669,9 +2673,12 @@
+ #elif !defined(CC_AST_HAS_VERSION_10_0) /* } { */
+ static struct ast_channel *
+ pbx_capi_request(const char *type, int format, const struct ast_channel *requestor, void *data, int *cause)
+-#else /* } { */
++#elif !defined(CC_AST_HAS_VERSION_11_0) /* } { */
+ static struct ast_channel *
+ pbx_capi_request(const char *type, struct ast_format_cap *format, const struct ast_channel *requestor, void *data, int *cause)
++#else /* } { */
++static struct ast_channel *
++pbx_capi_request(const char *type, struct ast_format_cap *format, const struct ast_channel *requestor, const char *data, int *cause)
+ #endif /* } */
+ 
+ #else /* } { */
+@@ -8050,7 +8057,11 @@
+ /*
+  * PBX wants to know the state for a specific device
+  */
++#ifdef CC_AST_HAS_VERSION_11_0
++static int pbx_capi_devicestate(const char *data)
++#else
+ static int pbx_capi_devicestate(void *data)
++#endif
+ {
+ 	char *s;
+ 	char *target;
