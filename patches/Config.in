@@ -716,7 +716,7 @@ config FREETZ_REMOVE_RUNCLOCK
 		This saves about 5K compressed space in kernel.image.
 
 config FREETZ_REMOVE_SAMBA
-	bool "Remove Samba (smbd/smbd)"
+	bool "Remove Samba (smbd/nmbd)"
 	depends on \
 		!FREETZ_PACKAGE_SAMBA_SMBD && \
 		( \
@@ -727,7 +727,7 @@ config FREETZ_REMOVE_SAMBA
 		)
 	default n
 	help
-		Remove Samba daemons (smbd and nmbd if available)
+		Remove Samba daemons (smbd, and nmbd if available)
 		This patch removes only the daemons. The regular options in AVM's webinterface
 		are still present.
 
