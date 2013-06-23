@@ -203,6 +203,34 @@ config FREETZ_TARGET_TOOLCHAIN_AVM_COMPATIBLE
 		In case all binaries you want to run on an unmodified box will be
 		linked statically it is safe to say 'no' here.
 
+config FREETZ_TARGET_UCLIBC_DODEBUG
+	bool "Include debug symbols in uClibc"
+	depends on (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE) && (FREETZ_TARGET_UCLIBC_0_9_32 || FREETZ_TARGET_UCLIBC_0_9_33)
+	default n
+	help
+		This is a developers only option! Do not activate it
+		if you don't know what it is useful for!
+
+		Causes uClibc to be compiled with debug support enabled,
+		i.e. activates DODEBUG symbol in uClibc .config
+
+choice
+
+	prompt "Debug level"
+	depends on FREETZ_TARGET_UCLIBC_DODEBUG
+	default FREETZ_TARGET_UCLIBC_DODEBUG_DEFAULT
+
+	config FREETZ_TARGET_UCLIBC_DODEBUG_DEFAULT
+		bool "default"
+
+	config FREETZ_TARGET_UCLIBC_DODEBUG_MAXIMUM
+		bool "maximum"
+		help
+			Significantly increases size of all uClibc libraries.
+			Your box should have at least 64MB RAM.
+
+endchoice
+
 config FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET
 	bool "Use reduced set of locales" if FREETZ_BUILD_TOOLCHAIN && \
 						( \

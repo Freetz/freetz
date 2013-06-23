@@ -1,0 +1,11 @@
+--- Rules.mak
++++ Rules.mak
+@@ -673,7 +673,7 @@
+ 
+ LDFLAGS:=$(LDFLAGS_NOSTRIP) -Wl,-z,defs
+ ifeq ($(DODEBUG),y)
+-CFLAGS += -O0 -g3 -DDEBUG
++CFLAGS += -O0 -g$(DEBUG_LEVEL) -DDEBUG
+ else
+ CFLAGS += $(OPTIMIZATION)
+ endif
