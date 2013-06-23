@@ -65,6 +65,10 @@ config FREETZ_AVM_HAS_FW55X
 			FREETZ_TYPE_7340 || \
 			FREETZ_TYPE_7360_XL || \
 			FREETZ_TYPE_7390 \
+		)) \
+		|| \
+		( FREETZ_TYPE_LANG_IT && ( \
+			FREETZ_TYPE_3270_V3 \
 		))
 	default n
 	help
@@ -73,7 +77,7 @@ config FREETZ_AVM_HAS_FW55X
 config FREETZ_AVM_HAS_FW52X
 	bool "Has AVM Firmware 05.2x"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_3270 || \
+		( FREETZ_TYPE_3270 && !FREETZ_TYPE_LANG_IT ) || \
 		FREETZ_TYPE_3370 || \
 		FREETZ_TYPE_6810 || \
 		( FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE ) || \
@@ -153,6 +157,14 @@ config FREETZ_AVM_HAS_LANG_EN
 	default n
 	help
 		Select this if an en/international firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_IT
+	bool "Has AVM Firmware language italian"	if FREETZ_TYPE_CUSTOM
+	default y 		if \
+		FREETZ_TYPE_3270_V3
+	default n
+	help
+		Select this if an italian firmware is available for your box.
 
 
 ###
