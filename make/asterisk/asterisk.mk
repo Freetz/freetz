@@ -131,14 +131,14 @@ $(PKG)_MAKE_OPTIONS += -C $(ASTERISK_DIR)
 $(PKG)_MAKE_OPTIONS += NOISY_BUILD=yes
 $(PKG)_MAKE_OPTIONS += DEBUG="$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),$(ASTERISK_DEBUG_CFLAGS))"
 $(PKG)_MAKE_OPTIONS += OPTIMIZE=""
-$(PKG)_MAKE_OPTIONS += ASTCFLAGS="-fno-strict-aliasing $(if $(FREETZ_PACKAGE_ASTERISK_LOWMEMORY),-DLOW_MEMORY)"
+$(PKG)_MAKE_OPTIONS += ASTCFLAGS="-fno-strict-aliasing"
 $(PKG)_MAKE_OPTIONS += PJPROJECT_BUILD_MAK_DIR="$(abspath $(PJPROJECT2_DIR))"
 
 # $(1): variable name
 # $(2): value (yes or no)
 # $(3): menuselect file
 define asterisk_set_menuselect_default
-$(SED) -i -r -e '/name="$(strip $(1))"/{N;N;s,(<defaultenabled>)(no|yes)(</defaultenabled>),\1$(strip $(2))\3,'} $(strip $(3))
+$(SED) -i -r -e '/name="$(strip $(1))"/{N;N;s,(<defaultenabled>)(no|yes)(</defaultenabled>),\1$(strip $(2))\3,'} $(strip $(3));
 endef
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -153,6 +153,7 @@ $($(PKG)_DIR)/.configured: | $($(PKG)_DIR)/addons/mp3/mpg123.h
 
 $($(PKG)_DIR)/.defaults_adjusted: $($(PKG)_DIR)/.unpacked
 	(cd $(ASTERISK_DIR); \
+		$(call asterisk_set_menuselect_default,LOW_MEMORY,$(if $(FREETZ_PACKAGE_ASTERISK_LOWMEMORY),yes,no),./build_tools/cflags.xml) \
 		$(call asterisk_set_menuselect_default,DEBUG_THREADS,$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),yes,no),./build_tools/cflags.xml) \
 	)
 	touch $@
