@@ -22,6 +22,34 @@ config FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
 	select FREETZ_LIB_libubacktrace
 	default n
 
+config FREETZ_PACKAGE_ASTERISK_DEBUG
+	depends on FREETZ_PACKAGE_ASTERISK
+	bool "add debug information (read help please!)"
+#	select FREETZ_LIB_libthread_db
+	select FREETZ_PACKAGE_GDB
+	select FREETZ_PACKAGE_GDB_GDB
+	default n
+	help
+		Causes compiler to disable optimizations and to add debug information
+		to the asterisk binary and modules. Debug information might help
+		tracking down different run-time problems.
+
+		Note1:
+		  The resulting asterisk binary is huge! It doesn't make any sense to
+		  activate this option on boxes with less than 64MB RAM. It won't run.
+
+		Note2:
+		  Don't forget to disable stripping under "Strip options/Strip leftover
+		  unstripped binaries/libraries". Otherwise all debug information will
+		  be stripped at the "modifying firmware"-step.
+
+		Note3:
+		  This option selects GDB. Debug information without GDB doesn't make
+		  sense.
+
+		Note4:
+		  Use "ulimit -c umlimited" to disable core-file size limit.
+
 source make/asterisk-gui/Config.in
 
 menu "Asterisk modules"

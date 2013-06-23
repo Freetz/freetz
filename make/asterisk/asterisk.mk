@@ -36,6 +36,7 @@ $(PKG)_DEPENDS_ON += libiconv
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_DEBUG
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 
@@ -124,12 +125,21 @@ $(PKG)_CONFIGURE_OPTIONS += --with-z="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 
+$(PKG)_DEBUG_CFLAGS := -O0 -g -DDEBUG
+
 $(PKG)_MAKE_OPTIONS += -C $(ASTERISK_DIR)
 $(PKG)_MAKE_OPTIONS += NOISY_BUILD=yes
-$(PKG)_MAKE_OPTIONS += DEBUG=""
+$(PKG)_MAKE_OPTIONS += DEBUG="$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),$(ASTERISK_DEBUG_CFLAGS))"
 $(PKG)_MAKE_OPTIONS += OPTIMIZE=""
 $(PKG)_MAKE_OPTIONS += ASTCFLAGS="-fno-strict-aliasing $(if $(FREETZ_PACKAGE_ASTERISK_LOWMEMORY),-DLOW_MEMORY)"
 $(PKG)_MAKE_OPTIONS += PJPROJECT_BUILD_MAK_DIR="$(abspath $(PJPROJECT2_DIR))"
+
+# $(1): variable name
+# $(2): value (yes or no)
+# $(3): menuselect file
+define asterisk_set_menuselect_default
+$(SED) -i -r -e '/name="$(strip $(1))"/{N;N;s,(<defaultenabled>)(no|yes)(</defaultenabled>),\1$(strip $(2))\3,'} $(strip $(3))
+endef
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -140,6 +150,14 @@ $($(PKG)_DIR)/addons/mp3/mpg123.h: $($(PKG)_DIR)/.unpacked
 	touch -c $@
 
 $($(PKG)_DIR)/.configured: | $($(PKG)_DIR)/addons/mp3/mpg123.h
+
+$($(PKG)_DIR)/.defaults_adjusted: $($(PKG)_DIR)/.unpacked
+	(cd $(ASTERISK_DIR); \
+		$(call asterisk_set_menuselect_default,DEBUG_THREADS,$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),yes,no),./build_tools/cflags.xml) \
+	)
+	touch $@
+
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.defaults_adjusted
 
 $($(PKG)_DIR)/menuselect-tree: $($(PKG)_DIR)/.configured
 	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) menuselect-tree
@@ -159,10 +177,10 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 $($(PKG)_BINARY_BUILD_DIR) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.installed
 
 $($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
-	$(INSTALL_BINARY_STRIP)
+	$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),$(INSTALL_FILE),$(INSTALL_BINARY_STRIP))
 
 $($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%: $($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/%
-	$(INSTALL_BINARY_STRIP)
+	$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),$(INSTALL_FILE),$(INSTALL_BINARY_STRIP))
 
 $(pkg):
 
@@ -170,7 +188,7 @@ $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) distclean
-	$(RM) $(ASTERISK_DIR)/{.configured,.compiled,.installed}
+	$(RM) $(ASTERISK_DIR)/{.defaults_adjusted,.configured,.compiled,.installed}
 
 $(pkg)-uninstall:
 	$(RM) -r \

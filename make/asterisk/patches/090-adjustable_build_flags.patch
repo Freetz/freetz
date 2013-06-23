@@ -1,0 +1,31 @@
+--- build_tools/cflags.xml
++++ build_tools/cflags.xml
+@@ -1,15 +1,14 @@
+ 	<category name="MENUSELECT_CFLAGS" displayname="Compiler Flags" positive_output="yes" remove_on_change=".lastclean">
+-		<member name="DONT_OPTIMIZE" displayname="Disable Optimizations by the Compiler">
++		<member name="DONT_OPTIMIZE" displayname="Disable Optimizations by the Compiler"><defaultenabled>no</defaultenabled>
+ 			<support_level>core</support_level>
+ 		</member>
+-		<member name="DEBUG_THREADS" displayname="Enable Thread Debugging">
++		<member name="DEBUG_THREADS" displayname="Enable Thread Debugging"><defaultenabled>no</defaultenabled>
+ 			<support_level>core</support_level>
+ 		</member>
+-		<member name="STATIC_BUILD" displayname="Build static binaries">
++		<member name="STATIC_BUILD" displayname="Build static binaries"><defaultenabled>no</defaultenabled>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="LOADABLE_MODULES" displayname="Runtime module loading">
+-			<defaultenabled>yes</defaultenabled>
++		<member name="LOADABLE_MODULES" displayname="Runtime module loading"><defaultenabled>yes</defaultenabled>
+ 			<support_level>core</support_level>
+ 		</member>
+ 		<member name="DEBUG_FD_LEAKS" displayname="Enable File Descriptor Leak Detection">
+@@ -21,7 +20,7 @@
+ 			<defaultenabled>no</defaultenabled>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="LOW_MEMORY" displayname="Optimize for Low Memory Usage">
++		<member name="LOW_MEMORY" displayname="Optimize for Low Memory Usage"><defaultenabled>no</defaultenabled>
+ 			<support_level>extended</support_level>
+ 		</member>
+ 		<member name="BETTER_BACKTRACES" displayname="Use libbfd (GPL) to generate better inline backtraces">
