@@ -58,6 +58,8 @@ else
 fi
 if [ -r /etc/.revision ]; then
 	avm_revision=$(cat /etc/.revision)
+elif [ -r /etc/version ]; then
+	avm_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' /etc/version)"
 else
 	avm_revision=$notdefined
 fi
