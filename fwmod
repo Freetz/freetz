@@ -1134,6 +1134,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Processing some options, must be done after base package is in place
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
 		echo0 "processing mod base options"
+
 		# color scheme
 		if [ "$FREETZ_STYLE" == "grey" ]; then
 			echo1 "setting grey style as default"
@@ -1142,6 +1143,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo1 "setting colored style as default"
 			ln -s colorscheme-colored.css ${FILESYSTEM_MOD_DIR}/usr/share/style/colorscheme.css
 		fi
+
 		# favicon
 		if [ "$FREETZ_FAVICON_STRING" != "none" ]; then
 			echo1 "adding favicon(s) (${FREETZ_FAVICON_STRING})"
@@ -1152,22 +1154,24 @@ if [ "$DO_MOD" -gt 0 ]; then
 				ln -fs "./html/favicon.ico" "${HTML_LANG_MOD_DIR}/favicon.ico"
 			fi
 		fi
+
 		# security level
-		echo1 "patching security level"
+		echo1 "patching security level ($FREETZ_SECURITY_LEVEL)"
 		sed -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
+
 		# external
-		[ ! "$EXTERNAL_ENABLED" == "y" ] && echo1 "rc.external was not integrated into image"
-		# freetz mount
-		[ ! "$FREETZ_PATCH_FREETZMOUNT" == "y" ] && echo1 "libmodmount.sh was not integrated into image"
+		[ ! "$EXTERNAL_ENABLED" != "y" ] && echo1 "integrated external"
+		# FREETZMOUNT
+		[ ! "$FREETZ_PATCH_FREETZMOUNT" != "y" ] && echo1 "integrated FREETZMOUNT"
 		# Box-Info
-		[ "$FREETZ_REMOVE_BOX_INFO" == "y" ] && echo1 "Box-Info cgi was not integrated into image"
+		[ "$FREETZ_REMOVE_BOX_INFO" != "y" ] && echo1 "integrated Box-Info"
 		# FREETZ-Info
-		[ "$FREETZ_REMOVE_FREETZ_INFO" == "y" ] && echo1 "FREETZ-Info cgis were not integrated into image"
-		# Packing .config into image
+		[ "$FREETZ_REMOVE_FREETZ_INFO" != "y" ] && echo1 "integrated FREETZ-Info"
+
+		# .config
 		if [ ! "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
-			echo1 "integrating stripped .config file into image"
-			dot_config_file="$MOD_DIR/filesystem/etc/.config"
-			cat "$DOT_CONFIG" | sed -e "s/#.*//g;/^$/d" > "$dot_config_file"
+			sed -e "s/#.*//g;/^$/d" "$DOT_CONFIG" > "${FILESYSTEM_MOD_DIR}/etc/.config"
+			echo1 "integrated .config (stripped)"
 		fi
 
 		# logo tagging
