@@ -5,6 +5,10 @@
 [ "$FREETZ_ADD_ANNEX_A_FIRMWARE" == "y" ] && return 0
 echo1 "hiding dsl"
 
+rm_files \
+  "${HTML_LANG_MOD_DIR}/internet/dsl_*.lua" \
+  "${HTML_LANG_MOD_DIR}/internet/vdsl_profile.lua"
+
 if [ -e "${HTML_LANG_MOD_DIR}/home/home.lua" ]; then
 	# patcht Hauptseite > Kasten Anschluesse > DSL
 	homelua_disable tr_connect_info_dsl
@@ -28,7 +32,11 @@ if [ -e $sedfile ]; then
 	modsed '/cbDslStateDisplay[^(]/d' $sedfile
 fi
 
-rm_files \
-  "${HTML_LANG_MOD_DIR}/internet/dsl_*.lua" \
-  "${HTML_LANG_MOD_DIR}/internet/vdsl_profile.lua"
+# patcht Uebersicht > Anschluesse
+sedfile="${HTML_SPEC_MOD_DIR}/home/home.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	sedrow="$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*document.write(DslStateLed(.*$/\1/p')"
+	modsed "$((sedrow-1)),$((sedrow+3))d" $sedfile
+fi
 
