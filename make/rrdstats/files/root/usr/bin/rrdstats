@@ -91,6 +91,23 @@ collect_upt() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdata --template uptime
 }
 
+collect_temp() {
+	NAMEPREFIX=temp_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:temperature:GAUGE:600:0:100 \
+			RRA:MAX:0.1:1:576 \
+			RRA:MAX:0.1:6:672 \
+			RRA:MAX:0.1:24:732 \
+			RRA:MAX:0.1:144:1460
+	fi
+	uT="$(ctlmgr_ctl r power status/act_temperature 2>/dev/null)"
+	[ $uT -gt 0 2>/dev/null ] || return
+	tempdata=N:$uT
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $tempdata --template temperature
+}
+
 collect_diskio() {
 	[ $# -eq 0 ] && return
 	case $1 in
@@ -485,6 +502,9 @@ while true; do
 	collect_cpu
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
+	if [ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" ]; then
+		[ "$RRDSTATS_TEMP_ENB" = yes ] && collect_temp
+	fi
 	if [ "$FREETZ_PACKAGE_RRDSTATS_CABLEMODEM" == "y" ]; then
 		[ "$RRDSTATS_CABLE_MODEM" = thg ] && collect_thg
 		[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc$RRDSTATS_CISCOEPC_FW

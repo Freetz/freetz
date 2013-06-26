@@ -25,6 +25,7 @@ check "$RRDSTATS_START_RESTORE" yes:start_restore
 check "$RRDSTATS_DELBACKUP"  yes:delbackup
 check "$RRDSTATS_CPU100PERC" yes:cpu100perc
 check "$RRDSTATS_UPTIME_ENB" yes:uptime_enb
+check "$RRDSTATS_TEMP_ENB" yes:temp_enb
 check "$RRDSTATS_WEBENABLED" yes:webenabled
 check "$RRDSTATS_WEB_INETD"  yes:web_inetd
 check "$RRDSTATS_WEB_AUTH"   yes:web_auth
@@ -135,6 +136,15 @@ $(lang de:"Graphen immer neu generieren (not lazy)" en:"Always generate new grap
 <input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk>
 <label for="u1">$(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</label></p>
 EOF
+
+if [ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" ]; then
+cat << EOF
+<p>
+<input type="hidden" name="temp_enb" value="no">
+<input id="f1" type="checkbox" name="temp_enb" value="yes"$temp_enb_chk>
+<label for="f1">$(lang de:"Temperatur aufzeichnen und anzeigen" en:"Temperature logging and graphs")</label></p>
+EOF
+fi
 
 sec_end
 sec_begin '$(lang de:"Backup" en:"Backup")'

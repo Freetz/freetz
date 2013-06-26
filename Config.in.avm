@@ -758,3 +758,13 @@ config FREETZ_AVM_HAS_AHA
 	default n
 	help
 		Select this if the original firmware contains support for AHA (AVM Home Automation).
+
+config FREETZ_AVM_HAS_TEMPERATURE_SENSOR
+	bool "Has internal temperature sensor"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_AVM_VERSION_05_2X_MIN || \
+		FREETZ_TYPE_7270
+	default n
+	help
+		Select this if the device has an internal temperature sensor.
+

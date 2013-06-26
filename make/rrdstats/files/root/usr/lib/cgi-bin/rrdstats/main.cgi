@@ -154,6 +154,26 @@ generate_graph() {
 				GPRINT:uptime:LAST:"%3.2lf\n"                         > /dev/null
 			fi
 			;;
+		temp)
+			FILE=$RRDSTATS_RRDDATA/temp_$RRDSTATS_INTERVAL.rrd
+			if [ -e $FILE ]; then
+				$_NICE rrdtool graph                                    \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                        \
+				--title "$TITLE"                                        \
+				--start -1-$PERIODE -l 0 -r                             \
+				--width $WIDTH --height $HEIGHT $LAZY                   \
+				--vertical-label "celsius" -X 1                         \
+				$DEFAULT_COLORS                                         \
+				-W "Generated on: $DATESTRING"                          \
+				                                                        \
+				DEF:temperature=$FILE:temperature:MAX                   \
+				                                                        \
+				AREA:temperature$GREEN:"Temperature (avg/max/cur)\:   " \
+				GPRINT:temperature:AVERAGE:"%3.2lf /"                   \
+				GPRINT:temperature:MAX:"%3.2lf /"                       \
+				GPRINT:temperature:LAST:"%3.2lf\n"                      > /dev/null
+			fi
+			;;
 		epc0)
 			FILE=$RRDSTATS_RRDDATA/epc_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
@@ -988,7 +1008,7 @@ graphit() {
 			set_lazy "$RRDSTATS_NOTLAZYS"
 			#GROUP_PERIOD=$(cgi_param group | tr -d .)
 			if [ -z "$GROUP_PERIOD" ]; then
-				heading=$(echo $graph | sed "s/^upt$/Uptime/;s/^cpu$/Processor/;s/^mem$/Memory/;s/^swap$/Swapspace/;\
+				heading=$(echo $graph | sed "s/^upt$/Uptime/;s/^temp$/Temperature/;s/^cpu$/Processor/;s/^mem$/Memory/;s/^swap$/Swapspace/;\
 				  s/^thg0$/Thomson THG - basic/;s/^thg1$/Thomson THG - System Uptime/;s/^thg2/Thomson THG - Downstream Frequency/;s/^thg3$/Thomson THG - Upstream Channel/;\
 				  s/^epc0$/Cisco EPC - Overview/;\
 				  s/^epcA$/Cisco EPC - Downstream Signal-Noise-Ratio/;s/^epcB$/Cisco EPC - Downstream Signal-Power-Level/;s/^epcC/Cisco EPC - Upstream Signal-Power-Level \& Frequency/;\
@@ -1072,6 +1092,9 @@ graphit() {
 					gen_main "mem" "Memory" "$periodnn"
 					[ "$(free | grep "Swap:" | awk '{print $2}')" != "0" ] && gen_main "swap" "Swapspace" "$periodnn"
 					[ "$RRDSTATS_UPTIME_ENB" = yes ] && gen_main "upt" "Uptime" "$periodnn"
+					if [ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" ]; then
+						[ "$RRDSTATS_TEMP_ENB" = yes ] && gen_main "temp" "Temperature" "$periodnn"
+					fi
 					if [ "$FREETZ_PACKAGE_RRDSTATS_CABLEMODEM" == "y" ]; then
 						[ "$RRDSTATS_CABLE_MODEM" = thg ] && gen_main "thg0" "Thomson THG" "$periodnn"
 						[ "$RRDSTATS_CABLE_MODEM" = epc ] && gen_main "epc0" "Cisco EPC" "$periodnn"
