@@ -22,7 +22,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
 
 --- linux-2.6.28/arch/mips/kernel/module.c
 +++ linux-2.6.28/arch/mips/kernel/module.c
-@@ -365,7 +365,7 @@
+@@ -435,7 +435,7 @@
  		/* This is the symbol it is referring to */
  		sym = (Elf_Sym *)sechdrs[symindex].sh_addr
  			+ ELF_MIPS_R_SYM(rel[i]);
@@ -31,7 +31,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  			/* Ignore unresolved weak symbol */
  			if (ELF_ST_BIND(sym->st_info) == STB_WEAK)
  				continue;
-@@ -405,7 +405,7 @@
+@@ -475,7 +475,7 @@
  		/* This is the symbol it is referring to */
  		sym = (Elf_Sym *)sechdrs[symindex].sh_addr
  			+ ELF_MIPS_R_SYM(rel[i]);

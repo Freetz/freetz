@@ -1,0 +1,27 @@
+--- linux-2.6.28/drivers/net/avm_cpmac/Makefile
++++ linux-2.6.28/drivers/net/avm_cpmac/Makefile
+@@ -12,7 +12,7 @@
+ #EXTRA_CFLAGS += -Wpadded
+ #EXTRA_CFLAGS += -Wunreachable-code
+ EXTRA_CFLAGS += -Wall -Wextra -Werror
+-EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"`svn info $(src) | grep URL | sed -e "s/^.*\/\([0-9.]\+\)-[^\/]*/\1/g"`  -  Revision `svnversion -cn $(src)`  -  `date +\"%a  %e.%m.%Y  %H:%M:%S\"` \""
++EXTRA_CFLAGS += -DAVM_CPMAC_VERSION="\"1.108.1.101 - Revision 811:1778 - Fr 13.04.2012 14:52:55 \""
+ 
+ # declare multi-module main driver.
+ obj-$(CONFIG_AVM_CPMAC)	+= avm_cpmac.o
+@@ -23,13 +23,13 @@
+ 			   cpphy_entry.o cpphy_ar8216_ar.o cpphy_mgmt.o \
+ 			   cpmac_fusiv_if.o cpmac_puma_if.o cpphy_switch.o cpmac_product_conf.o
+ 			
+-$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c DO_COPY FORCE
++$(obj)/cpphy_entry.o: $(src)/cpphy_entry.c FORCE
+ 
+ DO_COPY:
+ 	mkdir -p $(FRITZ_BOX_BUILD_DIR)/$(KERNEL_BUILD)/filesystem/include/linux 
+ 	cp -f $(src)/linux_avm_cpmac.h $(FRITZ_BOX_BUILD_DIR)/$(KERNEL_BUILD)/filesystem/include/linux/avm_cpmac.h
+ 
+-extra-y	+= cpmacconfig
++#extra-y	+= cpmacconfig
+ 
+ cpmacconfig-objs	:= cpmacconfig.o
+ 
