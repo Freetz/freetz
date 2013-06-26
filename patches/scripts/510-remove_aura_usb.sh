@@ -22,6 +22,13 @@ if [ -e $sedfile ]; then
 	modsed "/.*btnSave.*/d" $sedfile
 fi
 
+# patcht Heimnetz > USB-Geräte > Fernanschluss
+sedfile="${HTML_SPEC_MOD_DIR}/usb/usb_tabs.html"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	modsed "/javascript:uiDoAuraPage()/d" $sedfile
+fi
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_AURA=.*$/CONFIG_AURA=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
