@@ -1,4 +1,21 @@
+[ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || \
+[ "$FREETZ_AVMPLUGINS_ENABLED" -a "$FREETZ_AVMPLUGINS_MEDIASRV" != "y" ] || \
+return 0
+
+echo1 "patching rc.conf"
+modsed "s/CONFIG_MEDIASRV=.*$/CONFIG_MEDIASRV=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
+#patcht Heimnetz > Speicher (NAS) > Aktivierung > Musikbox aktiv
+sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
+	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?80:1383?}.*$/\1/p')
+	modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
+fi
+
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
+
 echo1 "remove mediasrv files"
 for files in \
   lib/libpng.so* \
@@ -47,5 +64,3 @@ if [ -e $sedfile ]; then
 	modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
 fi
 
-echo1 "patching rc.conf"
-modsed "s/CONFIG_MEDIASRV=.*$/CONFIG_MEDIASRV=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
