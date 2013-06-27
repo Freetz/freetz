@@ -1,0 +1,82 @@
+--- convert.c
++++ convert.c
+@@ -89,16 +89,16 @@
+ /*------------------------------------------------------------------------------------------*\
+  * neue Methode mit dem Big-Endian Port eingeführt
+ \*------------------------------------------------------------------------------------------*/
+-static inline unsigned char copy_byte_from_le_unaligned (unsigned char *source);
+-static inline unsigned short copy_word_from_le_unaligned (unsigned char *source);
+-static inline unsigned int copy_dword_from_le_unaligned (unsigned char *source);
+-static inline unsigned long long copy_qword_from_le_unaligned (unsigned char *source);
+-static inline void copy_byte_to_le_unaligned (unsigned char *dest, unsigned char source);
+-static inline void copy_word_to_le_unaligned (unsigned char *dest, unsigned short source);
+-static inline void copy_dword_to_le_unaligned (unsigned char *dest, unsigned int source);
+-static inline void copy_qword_to_le_unaligned (unsigned char *dest, unsigned long long source);
++unsigned char copy_byte_from_le_unaligned (unsigned char *source);
++unsigned short copy_word_from_le_unaligned (unsigned char *source);
++unsigned int copy_dword_from_le_unaligned (unsigned char *source);
++unsigned long long copy_qword_from_le_unaligned (unsigned char *source);
++void copy_byte_to_le_unaligned (unsigned char *dest, unsigned char source);
++void copy_word_to_le_unaligned (unsigned char *dest, unsigned short source);
++void copy_dword_to_le_unaligned (unsigned char *dest, unsigned int source);
++void copy_qword_to_le_unaligned (unsigned char *dest, unsigned long long source);
+ 
+-static inline void copy_qword_to_le_unaligned (unsigned char *dest, unsigned long long source) {
++void copy_qword_to_le_unaligned (unsigned char *dest, unsigned long long source) {
+     dest[0] = (unsigned char)(source >> 0);
+ 	dest[1] = (unsigned char)(source >> 8);
+ 	dest[2] = (unsigned char)(source >> 16);
+@@ -109,23 +109,23 @@
+ 	dest[7] = (unsigned char)(source >> 56);
+ }
+ 
+-static inline void copy_dword_to_le_unaligned (unsigned char *dest, unsigned int source) {
++void copy_dword_to_le_unaligned (unsigned char *dest, unsigned int source) {
+     dest[0] = (unsigned char)(source >> 0);
+ 	dest[1] = (unsigned char)(source >> 8);
+ 	dest[2] = (unsigned char)(source >> 16);
+ 	dest[3] = (unsigned char)(source >> 24);
+ }
+ 
+-static inline void copy_word_to_le_unaligned (unsigned char *dest, unsigned short source) {
++void copy_word_to_le_unaligned (unsigned char *dest, unsigned short source) {
+     dest[0] = (unsigned char)(source >> 0);
+ 	dest[1] = (unsigned char)(source >> 8);
+ }
+ 
+-static inline void copy_byte_to_le_unaligned (unsigned char *dest, unsigned char source) {
++void copy_byte_to_le_unaligned (unsigned char *dest, unsigned char source) {
+     dest[0] = (unsigned char)(source >> 0);
+ }
+ 
+-static inline unsigned long long copy_qword_from_le_unaligned (unsigned char *source) {
++unsigned long long copy_qword_from_le_unaligned (unsigned char *source) {
+     return 
+         ((unsigned long long)source[0] <<  0) | 
+         ((unsigned long long)source[1] <<  8) | 
+@@ -138,7 +138,7 @@
+         0;
+ }
+ 
+-static inline unsigned int copy_dword_from_le_unaligned (unsigned char *source) {
++unsigned int copy_dword_from_le_unaligned (unsigned char *source) {
+     return 
+         ((unsigned int)source[0] <<  0) | 
+         ((unsigned int)source[1] <<  8) | 
+@@ -147,14 +147,14 @@
+         0;
+ }
+ 
+-static inline unsigned short copy_word_from_le_unaligned (unsigned char *source) {
++unsigned short copy_word_from_le_unaligned (unsigned char *source) {
+     return 
+         ((unsigned short)source[0] <<  0) | 
+         ((unsigned short)source[1] <<  8) | 
+         0;
+ }
+ 
+-static inline unsigned char copy_byte_from_le_unaligned (unsigned char *source) {
++unsigned char copy_byte_from_le_unaligned (unsigned char *source) {
+     return *source;
+ }
+ 
