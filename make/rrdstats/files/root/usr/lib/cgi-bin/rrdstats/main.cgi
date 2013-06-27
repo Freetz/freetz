@@ -64,114 +64,121 @@ generate_graph() {
 			FILE=$RRDSTATS_RRDDATA/cpu_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
 				[ "$RRDSTATS_CPU100PERC" = "yes" ] && CPU100PERC=" -u 100 -r "
-				$_NICE rrdtool graph                         \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png             \
-				--title "$TITLE"                             \
-				--start now-$PERIODE                         \
-				--width $WIDTH --height $HEIGHT              \
-				--vertical-label "CPU usage [%]"             \
-				$DEFAULT_COLORS                              \
-				-l 0 $CPU100PERC $LAZY                       \
-				-W "Generated on: $DATESTRING"               \
-				                                             \
-				DEF:user=$FILE:user:AVERAGE                  \
-				DEF:nice=$FILE:nice:AVERAGE                  \
-				DEF:syst=$FILE:syst:AVERAGE                  \
-				DEF:wait=$FILE:wait:AVERAGE                  \
-				DEF:idle=$FILE:idle:AVERAGE                  \
-				CDEF:cpu=user,nice,syst,wait,+,+,+           \
-				                                             \
-				AREA:wait$RED:"CPU wait"                     \
-				AREA:syst$GREEN:"CPU system":STACK           \
-				AREA:nice$YELLOW:"CPU nice":STACK            \
-				AREA:user$BLUE:"CPU user\n":STACK            \
-				                                             \
-				LINE1:cpu$BLACK                              \
-				COMMENT:"Averaged CPU usage (min/avg/cur)\:" \
-				GPRINT:cpu:MIN:"%2.1lf%% /"                  \
-				GPRINT:cpu:AVERAGE:"%2.1lf%% /"              \
-				GPRINT:cpu:LAST:"%2.1lf%%\n"                 > /dev/null
+				$_NICE rrdtool graph                             \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                 \
+				--title "$TITLE"                                 \
+				--start now-$PERIODE                             \
+				--width $WIDTH --height $HEIGHT                  \
+				--vertical-label "CPU usage [%]"                 \
+				$DEFAULT_COLORS                                  \
+				-l 0 $CPU100PERC $LAZY                           \
+				-W "Generated on: $DATESTRING"                   \
+				                                                 \
+				DEF:user=$FILE:user:AVERAGE                      \
+				DEF:nice=$FILE:nice:AVERAGE                      \
+				DEF:syst=$FILE:syst:AVERAGE                      \
+				DEF:wait=$FILE:wait:AVERAGE                      \
+				DEF:idle=$FILE:idle:AVERAGE                      \
+				CDEF:cpu=user,nice,syst,wait,+,+,+               \
+				                                                 \
+				AREA:wait$RED:"CPU wait"                         \
+				AREA:syst$GREEN:"CPU system":STACK               \
+				AREA:nice$YELLOW:"CPU nice":STACK                \
+				AREA:user$BLUE:"CPU user\n":STACK                \
+				                                                 \
+				LINE1:cpu$BLACK                                  \
+				COMMENT:"Averaged CPU usage (min/avg/max/cur)\:" \
+				GPRINT:cpu:MIN:"%2.1lf%% /"                      \
+				GPRINT:cpu:AVERAGE:"%2.1lf%% /"                  \
+				GPRINT:cpu:MAX:"%2.1lf%% /"                      \
+				GPRINT:cpu:LAST:"%2.1lf%%\n"                     > /dev/null
 			fi
 			;;
 		mem)
 			FILE=$RRDSTATS_RRDDATA/mem_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
 				let RAM=$(grep MemTotal /proc/meminfo | tr -s [:blank:] " " | cut -d " " -f 2)*1024
-				$_NICE rrdtool graph                                            \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png                                \
-				--title "$TITLE"                                                \
-				--start now-$PERIODE -u $RAM -r -l 0 $LAZY                      \
-				--width $WIDTH --height $HEIGHT                                 \
-				--vertical-label "allocation [bytes]"                           \
-				$DEFAULT_COLORS                                                 \
-				--base 1024 --units=si                                          \
-				-W "Generated on: $DATESTRING"                                  \
-				                                                                \
-				DEF:used=$FILE:used:AVERAGE                                     \
-				DEF:buff=$FILE:buff:AVERAGE                                     \
-				DEF:cached=$FILE:cached:AVERAGE                                 \
-				DEF:free=$FILE:free:AVERAGE                                     \
-				                                                                \
-				AREA:used$RED:"Used memory   (avg/max/cur)[bytes]\:"            \
-				LINE1:used$RED_D                                                \
-				GPRINT:used:AVERAGE:"%3.0lf%s /"                                \
-				GPRINT:used:MAX:"%3.0lf%s /"                                    \
-				GPRINT:used:LAST:"%3.0lf%s\n"                                   \
-				                                                                \
-				AREA:buff$BLUE:"Buffer memory (avg/max/cur)[bytes]\:":STACK     \
-				GPRINT:buff:AVERAGE:"%3.0lf%s /"                                \
-				GPRINT:buff:MAX:"%3.0lf%s /"                                    \
-				GPRINT:buff:LAST:"%3.0lf%s\n"                                   \
-				                                                                \
-				AREA:cached$YELLOW:"Cache memory  (avg/max/cur)[bytes]\:":STACK \
-				GPRINT:cached:AVERAGE:"%3.0lf%s /"                              \
-				GPRINT:cached:MAX:"%3.0lf%s /"                                  \
-				GPRINT:cached:LAST:"%3.0lf%s\n"                                 \
-				                                                                \
-				AREA:free$GREEN:"Free memory   (avg/max/cur)[bytes]\:":STACK    \
-				GPRINT:free:AVERAGE:"%3.0lf%s /"                                \
-				GPRINT:free:MAX:"%3.0lf%s /"                                    \
-				GPRINT:free:LAST:"%3.0lf%s\n"                                   > /dev/null
+				$_NICE rrdtool graph                                                \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                                    \
+				--title "$TITLE"                                                    \
+				--start now-$PERIODE -u $RAM -r -l 0 $LAZY                          \
+				--width $WIDTH --height $HEIGHT                                     \
+				--vertical-label "allocation [bytes]"                               \
+				$DEFAULT_COLORS                                                     \
+				--base 1024 --units=si                                              \
+				-W "Generated on: $DATESTRING"                                      \
+				                                                                    \
+				DEF:used=$FILE:used:AVERAGE                                         \
+				DEF:buff=$FILE:buff:AVERAGE                                         \
+				DEF:cached=$FILE:cached:AVERAGE                                     \
+				DEF:free=$FILE:free:AVERAGE                                         \
+				                                                                    \
+				AREA:used$RED:"Used memory   (min/avg/max/cur)[bytes]\:"            \
+				LINE1:used$RED_D                                                    \
+				GPRINT:used:MIN:"%3.0lf%s /"                                        \
+				GPRINT:used:AVERAGE:"%3.0lf%s /"                                    \
+				GPRINT:used:MAX:"%3.0lf%s /"                                        \
+				GPRINT:used:LAST:"%3.0lf%s\n"                                       \
+				                                                                    \
+				AREA:buff$BLUE:"Buffer memory (min/avg/max/cur)[bytes]\:":STACK     \
+				GPRINT:buff:MIN:"%3.0lf%s /"                                        \
+				GPRINT:buff:AVERAGE:"%3.0lf%s /"                                    \
+				GPRINT:buff:MAX:"%3.0lf%s /"                                        \
+				GPRINT:buff:LAST:"%3.0lf%s\n"                                       \
+				                                                                    \
+				AREA:cached$YELLOW:"Cache memory  (min/avg/max/cur)[bytes]\:":STACK \
+				GPRINT:cached:MIN:"%3.0lf%s /"                                      \
+				GPRINT:cached:AVERAGE:"%3.0lf%s /"                                  \
+				GPRINT:cached:MAX:"%3.0lf%s /"                                      \
+				GPRINT:cached:LAST:"%3.0lf%s\n"                                     \
+				                                                                    \
+				AREA:free$GREEN:"Free memory   (min/avg/max/cur)[bytes]\:":STACK    \
+				GPRINT:free:MIN:"%3.0lf%s /"                                        \
+				GPRINT:free:AVERAGE:"%3.0lf%s /"                                    \
+				GPRINT:free:MAX:"%3.0lf%s /"                                        \
+				GPRINT:free:LAST:"%3.0lf%s\n"                                       > /dev/null
 			fi
 			;;
 		upt)
 			FILE=$RRDSTATS_RRDDATA/upt_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
-				$_NICE rrdtool graph                                  \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png                      \
-				--title "$TITLE"                                      \
-				--start -1-$PERIODE -l 0 -r                           \
-				--width $WIDTH --height $HEIGHT $LAZY                 \
-				--vertical-label "hours" -X 1                         \
-				$DEFAULT_COLORS                                       \
-				-W "Generated on: $DATESTRING"                        \
-				                                                      \
-				DEF:uptime=$FILE:uptime:MAX                           \
-				                                                      \
-				AREA:uptime$YELLOW:"Uptime (avg/max/cur)[hours]\:   " \
-				GPRINT:uptime:AVERAGE:"%3.2lf /"                      \
-				GPRINT:uptime:MAX:"%3.2lf /"                          \
-				GPRINT:uptime:LAST:"%3.2lf\n"                         > /dev/null
+				$_NICE rrdtool graph                                      \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                          \
+				--title "$TITLE"                                          \
+				--start -1-$PERIODE -l 0 -r                               \
+				--width $WIDTH --height $HEIGHT $LAZY                     \
+				--vertical-label "hours" -X 1                             \
+				$DEFAULT_COLORS                                           \
+				-W "Generated on: $DATESTRING"                            \
+				                                                          \
+				DEF:uptime=$FILE:uptime:MAX                               \
+                                                                          \
+				AREA:uptime$YELLOW:"Uptime (min/avg/max/cur)[hours]\:   " \
+				GPRINT:uptime:MIN:"%3.2lf /"                              \
+				GPRINT:uptime:AVERAGE:"%3.2lf /"                          \
+				GPRINT:uptime:MAX:"%3.2lf /"                              \
+				GPRINT:uptime:LAST:"%3.2lf\n"                             > /dev/null
 			fi
 			;;
 		temp)
 			FILE=$RRDSTATS_RRDDATA/temp_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
-				$_NICE rrdtool graph                                    \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png                        \
-				--title "$TITLE"                                        \
-				--start -1-$PERIODE -l 0 -r                             \
-				--width $WIDTH --height $HEIGHT $LAZY                   \
-				--vertical-label "celsius" -X 1                         \
-				$DEFAULT_COLORS                                         \
-				-W "Generated on: $DATESTRING"                          \
-				                                                        \
-				DEF:temperature=$FILE:temperature:MAX                   \
-				                                                        \
-				AREA:temperature$GREEN:"Temperature (avg/max/cur)\:   " \
-				GPRINT:temperature:AVERAGE:"%3.2lf /"                   \
-				GPRINT:temperature:MAX:"%3.2lf /"                       \
-				GPRINT:temperature:LAST:"%3.2lf\n"                      > /dev/null
+				$_NICE rrdtool graph                                        \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                            \
+				--title "$TITLE"                                            \
+				--start -1-$PERIODE -l 0 -r                                 \
+				--width $WIDTH --height $HEIGHT $LAZY                       \
+				--vertical-label "celsius" -X 1                             \
+				$DEFAULT_COLORS                                             \
+				-W "Generated on: $DATESTRING"                              \
+				                                                            \
+				DEF:temperature=$FILE:temperature:MAX                       \
+				                                                            \
+				AREA:temperature$GREEN:"Temperature (min/avg/max/cur)\:   " \
+				GPRINT:temperature:MIN:"%3.2lf /"                           \
+				GPRINT:temperature:AVERAGE:"%3.2lf /"                       \
+				GPRINT:temperature:MAX:"%3.2lf /"                           \
+				GPRINT:temperature:LAST:"%3.2lf\n"                          > /dev/null
 			fi
 			;;
 		epc0)
@@ -666,30 +673,32 @@ generate_graph() {
 		swap)
 			FILE=$RRDSTATS_RRDDATA/mem_$RRDSTATS_INTERVAL.rrd
 			if [ -e $FILE ]; then
-				$_NICE rrdtool graph                                          \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png                              \
-				--title "$TITLE"                                              \
-				--start -1-$PERIODE -l 0 -u 100 -r                            \
-				--width $WIDTH --height $HEIGHT	$LAZY                         \
-				--vertical-label "Swap usage [%]"                             \
-				$DEFAULT_COLORS                                               \
-				-W "Generated on: $DATESTRING"                                \
-				                                                              \
-				DEF:total=$FILE:swaptotal:AVERAGE                             \
-				DEF:free=$FILE:swapfree:AVERAGE                               \
-				CDEF:used=total,free,-                                        \
-				CDEF:usedpct=100,used,total,/,*                               \
-				CDEF:freepct=100,free,total,/,*                               \
-				                                                              \
-				AREA:usedpct#0000FF:"Used swap     (avg/max/cur)\:    "       \
-				GPRINT:usedpct:AVERAGE:"%3.1lf%% /"                           \
-				GPRINT:usedpct:MAX:"%3.1lf%% /"                               \
-				GPRINT:usedpct:LAST:"%3.1lf%%\n"                              \
-				                                                              \
-				AREA:freepct#00FF00:"Free swap     (avg/max/cur)\:    ":STACK \
-				GPRINT:freepct:AVERAGE:"%3.1lf%% /"                           \
-				GPRINT:freepct:MAX:"%3.1lf%% /"                               \
-				GPRINT:freepct:LAST:"%3.1lf%%\n"                              > /dev/null
+				$_NICE rrdtool graph                                              \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                                  \
+				--title "$TITLE"                                                  \
+				--start -1-$PERIODE -l 0 -u 100 -r                                \
+				--width $WIDTH --height $HEIGHT	$LAZY                             \
+				--vertical-label "Swap usage [%]"                                 \
+				$DEFAULT_COLORS                                                   \
+				-W "Generated on: $DATESTRING"                                    \
+				                                                                  \
+				DEF:total=$FILE:swaptotal:AVERAGE                                 \
+				DEF:free=$FILE:swapfree:AVERAGE                                   \
+				CDEF:used=total,free,-                                            \
+				CDEF:usedpct=100,used,total,/,*                                   \
+				CDEF:freepct=100,free,total,/,*                                   \
+				                                                                  \
+				AREA:usedpct#0000FF:"Used swap     (min/avg/max/cur)\:    "       \
+				GPRINT:usedpct:MIN:"%5.1lf%% /"                                   \
+				GPRINT:usedpct:AVERAGE:"%5.1lf%% /"                               \
+				GPRINT:usedpct:MAX:"%5.1lf%% /"                                   \
+				GPRINT:usedpct:LAST:"%5.1lf%%\n"                                  \
+				                                                                  \
+				AREA:freepct#00FF00:"Free swap     (min/avg/max/cur)\:    ":STACK \
+				GPRINT:freepct:MIN:"%5.1lf%% /"                                   \
+				GPRINT:freepct:AVERAGE:"%5.1lf%% /"                               \
+				GPRINT:freepct:MAX:"%5.1lf%% /"                                   \
+				GPRINT:freepct:LAST:"%5.1lf%%\n"                                  > /dev/null
 			fi
 			;;
 		diskio1|diskio2|diskio3|diskio4)
@@ -731,28 +740,30 @@ generate_graph() {
 
 			FILE=$RRDSTATS_RRDDATA/$1_$RRDSTATS_INTERVAL-$DISK.rrd
 			if [ -e $FILE ]; then
-				$_NICE rrdtool graph                                       \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png                           \
-				--title "$TITLE"                                           \
-				--start -1-$PERIODE $LOGARITHMIC $LAZY $MAXIMALBW          \
-				--width $WIDTH --height $HEIGHT                            \
-				--vertical-label "bytes/s"                                 \
-				$DEFAULT_COLORS                                            \
-				--units=si                                                 \
-				-W "Generated on: $DATESTRING"                             \
-				                                                           \
-				DEF:read=$FILE:read:AVERAGE                                \
-				DEF:write=$FILE:write:AVERAGE                              \
-				                                                           \
-				AREA:read$GREEN:"Read        (avg/max/cur)[bytes/s]\:"     \
-				GPRINT:read:AVERAGE:"%3.0lf%s /"                           \
-				GPRINT:read:MAX:"%3.0lf%s /"                               \
-				GPRINT:read:LAST:"%3.0lf%s\n"                              \
-				                                                           \
-				AREA:write#0000FF80:"Write       (avg/max/cur)[bytes/s]\:" \
-				GPRINT:write:AVERAGE:"%3.0lf%s /"                          \
-				GPRINT:write:MAX:"%3.0lf%s /"                              \
-				GPRINT:write:LAST:"%3.0lf%s\n"                             > /dev/null
+				$_NICE rrdtool graph                                           \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                               \
+				--title "$TITLE"                                               \
+				--start -1-$PERIODE $LOGARITHMIC $LAZY $MAXIMALBW              \
+				--width $WIDTH --height $HEIGHT                                \
+				--vertical-label "bytes/s"                                     \
+				$DEFAULT_COLORS                                                \
+				--units=si                                                     \
+				-W "Generated on: $DATESTRING"                                 \
+				                                                               \
+				DEF:read=$FILE:read:AVERAGE                                    \
+				DEF:write=$FILE:write:AVERAGE                                  \
+				                                                               \
+				AREA:read$GREEN:"Read        (min/avg/max/cur)[bytes/s]\:"     \
+				GPRINT:read:MIN:"%3.0lf%s /"                                   \
+				GPRINT:read:AVERAGE:"%3.0lf%s /"                               \
+				GPRINT:read:MAX:"%3.0lf%s /"                                   \
+				GPRINT:read:LAST:"%3.0lf%s\n"                                  \
+				                                                               \
+				AREA:write#0000FF80:"Write       (min/avg/max/cur)[bytes/s]\:" \
+				GPRINT:write:MIN:"%3.0lf%s /"                                  \
+				GPRINT:write:AVERAGE:"%3.0lf%s /"                              \
+				GPRINT:write:MAX:"%3.0lf%s /"                                  \
+				GPRINT:write:LAST:"%3.0lf%s\n"                                 > /dev/null
 			fi
 			;;
 		if1|if2|if3|if4)
@@ -806,28 +817,30 @@ generate_graph() {
 
 			FILE=$RRDSTATS_RRDDATA/$1_$RRDSTATS_INTERVAL-$(echo $IF | sed 's/\:/_/g').rrd
 			if [ -e $FILE ]; then
-				$_NICE rrdtool graph                                     \
-				$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
-				--title "$TITLE"                                         \
-				--start -1-$PERIODE $LOGARITHMIC $LAZY $MAXIMALBW        \
-				--width $WIDTH --height $HEIGHT                          \
-				--vertical-label "bytes/s"                               \
-				$DEFAULT_COLORS                                          \
-				--units=si                                               \
-				-W "Generated on: $DATESTRING"                           \
-				                                                         \
-				DEF:in=$FILE:$NET_RX:AVERAGE                             \
-				DEF:out=$FILE:$NET_TX:AVERAGE                            \
-				                                                         \
-				AREA:in$GREEN:"Incoming    (avg/max/cur)[bytes/s]\:"     \
-				GPRINT:in:AVERAGE:"%3.0lf%s /"                           \
-				GPRINT:in:MAX:"%3.0lf%s /"                               \
-				GPRINT:in:LAST:"%3.0lf%s\n"                              \
-				                                                         \
-				AREA:out#0000FF80:"Outgoing    (avg/max/cur)[bytes/s]\:" \
-				GPRINT:out:AVERAGE:"%3.0lf%s /"                          \
-				GPRINT:out:MAX:"%3.0lf%s /"                              \
-				GPRINT:out:LAST:"%3.0lf%s"                               > /dev/null
+				$_NICE rrdtool graph                                         \
+				$RRDSTATS_RRDTEMP/$IMAGENAME.png                             \
+				--title "$TITLE"                                             \
+				--start -1-$PERIODE $LOGARITHMIC $LAZY $MAXIMALBW            \
+				--width $WIDTH --height $HEIGHT                              \
+				--vertical-label "bytes/s"                                   \
+				$DEFAULT_COLORS                                              \
+				--units=si                                                   \
+				-W "Generated on: $DATESTRING"                               \
+				                                                             \
+				DEF:in=$FILE:$NET_RX:AVERAGE                                 \
+				DEF:out=$FILE:$NET_TX:AVERAGE                                \
+				                                                             \
+				AREA:in$GREEN:"Incoming    (min/avg/max/cur)[bytes/s]\:"     \
+				GPRINT:in:MIN:"%3.0lf%s /"                                   \
+				GPRINT:in:AVERAGE:"%3.0lf%s /"                               \
+				GPRINT:in:MAX:"%3.0lf%s /"                                   \
+				GPRINT:in:LAST:"%3.0lf%s\n"                                  \
+				                                                             \
+				AREA:out#0000FF80:"Outgoing    (min/avg/max/cur)[bytes/s]\:" \
+				GPRINT:out:MIN:"%3.0lf%s /"                                  \
+				GPRINT:out:AVERAGE:"%3.0lf%s /"                              \
+				GPRINT:out:MAX:"%3.0lf%s /"                                  \
+				GPRINT:out:LAST:"%3.0lf%s"                                   > /dev/null
 			fi
 			;;
 
