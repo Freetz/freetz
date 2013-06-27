@@ -1004,7 +1004,7 @@ graphit() {
 	graph=$1
 	#graph=$(cgi_param graph | tr -d .)
 	case $graph in
-		cpu|mem|swap|upt|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|csl0|csl1|csl2|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
+		cpu|mem|swap|upt|temp|thg0|thg1|thg2|thg3|epc0|epcA|epcB|epcC|epc1|epc2|arris0|arris1|arris2|arris3|csl0|csl1|csl2|diskio1|diskio2|diskio3|diskio4|if1|if2|if3|if4|one)
 			set_lazy "$RRDSTATS_NOTLAZYS"
 			#GROUP_PERIOD=$(cgi_param group | tr -d .)
 			if [ -z "$GROUP_PERIOD" ]; then
