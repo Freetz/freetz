@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.0)
+$(call PKG_INIT_LIB, 1.2.1)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA1:=30b29bd9214d50887abcc20cf82096aaaf5d1d61
+$(PKG)_SOURCE_SHA1:=f65fbbd72926c8e7cf0dbd4ada03b0d226f461fd
 $(PKG)_SITE:=https://serf.googlecode.com/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libserf-1.so.$($(PKG)_LIB_VERSION)
