@@ -290,7 +290,7 @@ cat << EOF
 </p>
 <input type="hidden" name="cableseg_maxbwsub" value="no">
 <input id="k3" type="checkbox" name="cableseg_maxbwsub" value="yes"$cableseg_maxbwsub_chk>
-<label for="k3">$(lang de:"Maximale Bandbreite auf Untzerseiten anzeigen" en:"Show maximum bandwidth on sub pages")</label>
+<label for="k3">$(lang de:"Maximale Bandbreite auf Unterseiten anzeigen" en:"Show maximum bandwidth on sub pages")</label>
 </p>
 
 <i>$(lang de:"Umgebung f&uuml;r DVB-Programme" en:"Environment for DVB programs")</i>
