@@ -174,7 +174,7 @@ generate_graph() {
 				                                                            \
 				DEF:temperature=$FILE:temperature:MAX                       \
 				                                                            \
-				AREA:temperature$GREEN:"Temperature (min/avg/max/cur)\:   " \
+				AREA:temperature$RED:"Temperature (min/avg/max/cur)\:   "   \
 				GPRINT:temperature:MIN:"%3.0lf /"                           \
 				GPRINT:temperature:AVERAGE:"%3.0lf /"                       \
 				GPRINT:temperature:MAX:"%3.0lf /"                           \
