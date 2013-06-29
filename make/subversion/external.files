@@ -10,7 +10,7 @@
 [ "$EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dav_svn" == "y" ] && EXTERNAL_FILES+=" /usr/lib/apache2/mod_dav_svn.so"
 [ "$EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dontdothat" == "y" ] && EXTERNAL_FILES+=" /usr/lib/apache2/mod_dontdothat.so"
 if [ "$EXTERNAL_FREETZ_PACKAGE_SUBVERSION_LIBRARIES" == "y" ]; then
-	for SVNLIBSHORT in client delta diff fs fs_base fs_fs fs_util ra ra_local ra_neon ra_svn repos subr wc; do
+	for SVNLIBSHORT in client delta diff fs fs_base fs_fs fs_util ra ra_local ra_neon ra_serf ra_svn repos subr wc; do
 		SVNLIBFULL="/usr/lib/freetz/libsvn_${SVNLIBSHORT}-1.so.0.0.0"
 		[ -e "${FILESYSTEM_MOD_DIR}${SVNLIBFULL}" ] && EXTERNAL_FILES+=" ${SVNLIBFULL}"
 	done

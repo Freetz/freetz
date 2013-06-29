@@ -1,0 +1,49 @@
+--- configure
++++ configure
+@@ -21477,6 +21477,8 @@
+ # Python: Used for testsuite, and bindings
+ 
+ 
++PYTHON="none"
++if false; then
+ PYTHON="`$abs_srcdir/build/find_python.sh`"
+ if test -z "$PYTHON"; then
+   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Python 2.5 or later is required to run the testsuite" >&5
+@@ -21537,6 +21539,7 @@
+   test -n "$PYTHON" && break
+ done
+ test -n "$PYTHON" || PYTHON="none"
++fi
+ 
+ 
+ # The minimum version for the JVM runtime for our Java bytecode.
+@@ -22027,6 +22030,8 @@
+ 
+ 
+ 
++PERL="none"
++if false; then
+ # Extract the first word of "perl", so it can be a program name with args.
+ set dummy perl; ac_word=$2
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+@@ -22066,9 +22071,12 @@
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ $as_echo "no" >&6; }
+ fi
++fi
+ 
+ 
+ 
++RUBY="none"
++if false; then
+ if test -n "$RUBY"; then
+   # Extract the first word of ""$RUBY"", so it can be a program name with args.
+ set dummy "$RUBY"; ac_word=$2
+@@ -22325,6 +22333,7 @@
+ $as_echo "$as_me: WARNING: Upgrade to the official 1.8.2 release, or later" >&2;}
+   fi
+ fi
++fi
+ 
+ 
+ 
