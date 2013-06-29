@@ -174,8 +174,8 @@ if [ -n "$MAIN_URL" ]; then
 		done
 	elif [ ${MAIN_URL:0:4} == "@AVM" ]; then
 		MAIN_URL=${MAIN_URL/@AVM\//}
-		sites[0]=ftp://ftp.avm.de/fritz.box/$MAIN_URL
-		sites[1]=http://download.avm.de/fritz.box/$MAIN_URL
+		sites[0]=http://download.avm.de/fritz.box/$MAIN_URL
+		sites[1]=ftp://ftp.avm.de/fritz.box/$MAIN_URL
 		sites[2]=ftp://service.avm.de/$MAIN_URL
 		num_sites=3
 	elif [ ${MAIN_URL:0:4} == "@GNU" ]; then
