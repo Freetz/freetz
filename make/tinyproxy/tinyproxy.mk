@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.8.2)
+$(call PKG_INIT_BIN, 1.8.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=edc8502193cfed4974d6a770da173755
+$(PKG)_SOURCE_MD5:=292ac51da8ad6ae883d4ebf56908400d
 $(PKG)_SITE:=https://www.banu.com/pub/tinyproxy/1.8
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/tinyproxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tinyproxy

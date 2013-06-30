@@ -24,7 +24,7 @@
  # tools want this on a single line
 --- configure.orig	2010-06-05 11:49:34.000000000 +0200
 +++ configure	2010-09-19 02:17:17.624729636 +0200
-@@ -6816,59 +6816,8 @@
+@@ -6815,61 +6815,9 @@
  
  
  
@@ -79,8 +79,12 @@
 -fi
 -
 -if test x"$A2X" = x"no"; then
--  as_fn_error "Test for asciidoc failed. See the file 'INSTALL' for help." "$LINENO" 5
+-  as_fn_error $? "Test for asciidoc failed. See the file 'INSTALL' for help." "$LINENO" 5
 -fi
+-
+-ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile data/templates/Makefile etc/Makefile docs/Makefile docs/man5/Makefile docs/man5/tinyproxy.conf.txt docs/man8/Makefile docs/man8/tinyproxy.txt m4macros/Makefile tests/Makefile tests/scripts/Makefile"
++ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile data/templates/Makefile etc/Makefile m4macros/Makefile"
  
- ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile data/templates/Makefile etc/Makefile docs/Makefile docs/man5/Makefile docs/man5/tinyproxy.conf.txt docs/man8/Makefile docs/man8/tinyproxy.txt m4macros/Makefile tests/Makefile tests/scripts/Makefile"
  
+ cat >confcache <<\_ACEOF
+
