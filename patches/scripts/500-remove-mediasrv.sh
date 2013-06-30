@@ -5,13 +5,21 @@ return 0
 echo1 "patching rc.conf"
 modsed "s/CONFIG_MEDIASRV=.*$/CONFIG_MEDIASRV=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
-#patcht Heimnetz > Speicher (NAS) > Aktivierung > Musikbox aktiv
 sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
-	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
 	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?80:1383?}.*$/\1/p')
-	modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
+	if grep -q uiViewUseMusikBox $sedfile; then
+		# patcht Heimnetz > Speicher (NAS) > Aktivierung > Musikbox aktiv (04.xx)
+		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
+		modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
+	else
+		# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver (05.xx)
+		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
+		modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
+	fi
+	# see http://freetz.org/ticket/1391 for details
+	modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" $sedfile
 fi
 
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
@@ -51,16 +59,5 @@ if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
 	sedrow=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*"uiViewUseMusik".*$/\1/p')
 	modsed "$((sedrow-1)),$((sedrow+2))d" $sedfile
-fi
-
-sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
-if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
-	# see http://freetz.org/ticket/1391 for details
-	modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" $sedfile
-	# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver
-	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
-	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<p>{?80:1383?}<.p>$/\1/p')
-	modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
 fi
 
