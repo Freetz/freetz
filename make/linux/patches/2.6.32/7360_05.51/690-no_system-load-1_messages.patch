@@ -1,0 +1,10 @@
+--- linux-2.6.32/arch/mips/kernel/process.c
++++ linux-2.6.32/arch/mips/kernel/process.c
+@@ -245,6 +245,7 @@
+             } else {
+                 pg_fault_avg = 0;
+             }
++            if(pcpuidle->fullrun > 1)
+             printk(KERN_WARNING"[%u]system-load %d %s %d tasks:%lu %% curr:%s(%lu %%) max:%s(%lu %%, pid:%d), readytorun: %ld"
+                     ", pgfault %lu/s (max %lu avg %lu.%lu)"
+                     "\n", 
