@@ -1057,6 +1057,21 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
+	kolinecnt="$(cat $MODULES_DIR/modules.dep | wc -l)"
+	kofilecnt="$(find $MODULES_DIR -type f -name '*.ko' | wc -l)"
+	echo1 "kernel modules installed: $kolinecnt ($kofilecnt files)"
+	if [ "$FREETZ_KERNEL_VERSION_2_6_28" == "y" ]; then
+		if [ "$FREETZ_REPLACE_KERNEL" != "y" ];then
+			koreplacek=", try 'replace kernel'"
+			komaxcount=50
+		else
+			komaxcount=99
+		fi
+		if [ $kolinecnt -gt $komaxcount -o $kofilecnt -gt $komaxcount ]; then
+			echo0 "WARNING: This kernel can only load $komaxcount modules at the same time${koreplacek}."
+		fi
+	fi
+
 	echo0 "installing packages"
 	for pkg in $(static_packages); do
 		sizeinfo "$pkg"
