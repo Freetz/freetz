@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 2.6.0)
+$(call PKG_INIT_LIB, 2.7.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=9c48fd4ab677c11b4612fb4eb15444d9
+$(PKG)_SOURCE_SHA1:=2d4f658d6db14a02a96487e20874736c244ab02e
 $(PKG)_SITE:=http://yassl.com
 
-$(PKG)_LIBNAME:=libcyassl.so.5.0.0
+$(PKG)_LIBNAME:=libcyassl.so.5.0.1
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
@@ -22,6 +22,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-bigcache
 $(PKG)_CONFIGURE_OPTIONS += --disable-dtls
 $(PKG)_CONFIGURE_OPTIONS += --with-libz="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --disable-examples
+$(PKG)_CONFIGURE_OPTIONS += --disable-inline
 
 # remove optimization & debug flags
 $(PKG)_CONFIGURE_PRE_CMDS += $(foreach flag,-O[0-9] -g -ggdb3,$(SED) -i -r -e 's,(C(XX)?FLAGS="[^"]*)$(flag)(( [^"]*)?"),\1\3,g' ./configure;)
