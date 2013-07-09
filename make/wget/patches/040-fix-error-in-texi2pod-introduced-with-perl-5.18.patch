@@ -3,25 +3,8 @@ From: Dave Reisner <dreisner@archlinux.org>
 Date: Mon, 17 Jun 2013 23:31:46 +0530
 Subject: [PATCH] Fix error in texi2pod intriduced with Perl 5.18
 
----
- doc/ChangeLog   | 5 +++++
- doc/texi2pod.pl | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+taken from http://lists.gnu.org/archive/html/bug-wget/2013-06/msg00046.html
 
-diff --git a/doc/ChangeLog b/doc/ChangeLog
-index 5e29c54..b9416d6 100644
---- doc/ChangeLog
-+++ doc/ChangeLog
-@@ -1,3 +1,8 @@
-+2013-06-17  Dave Reisner  <dreisner@archlinux.org>
-+
-+	* texi2pod.pl: Fix formatting error that causes build to fail with
-+	Perl 5.18
-+
- 2013-06-17  Darshit Shah  <darnir@gmail.com>
- 
- 	* wget.texi (POST): Explain the new redirection rules.
-diff --git a/doc/texi2pod.pl b/doc/texi2pod.pl
 index 86c4b18..9db6de1 100755
 --- doc/texi2pod.pl
 +++ doc/texi2pod.pl
@@ -34,6 +17,3 @@ index 86c4b18..9db6de1 100755
              } else {
                  # Entity escapes prevent munging by the <> processing below.
                  $_ = "\n=item $ic\&LT;$thing\&GT;\n";
--- 
-1.8.3.1
-
