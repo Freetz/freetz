@@ -523,3 +523,77 @@
  
  	ast_mutex_lock(&refreshlock);
  	module_unloading = 1;
+--- apps/app_mixmonitor.c
++++ apps/app_mixmonitor.c
+@@ -39,7 +39,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 391794 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 393630 $")
+ 
+ #include "asterisk/paths.h"	/* use ast_config_AST_MONITOR_DIR */
+ #include "asterisk/stringfields.h"
+@@ -1331,6 +1331,7 @@
+ 	res = stop_mixmonitor_full(c, mixmonitor_id);
+ 
+ 	if (res) {
++		ast_channel_unref(c);
+ 		astman_send_error(s, m, "Could not stop monitoring channel");
+ 		return AMI_SUCCESS;
+ 	}
+--- channels/chan_dahdi.c
++++ channels/chan_dahdi.c
+@@ -49,7 +49,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387298 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 393628 $")
+ 
+ #if defined(__NetBSD__) || defined(__FreeBSD__)
+ #include <pthread.h>
+@@ -15452,6 +15452,7 @@
+ 	dahdi_softhangup_all();
+ 	ast_verb(4, "Final softhangup of all DAHDI channels complete.\n");
+ 	destroy_all_channels();
++	memset(round_robin, 0, sizeof(round_robin));
+ 	ast_debug(1, "Channels destroyed. Now re-reading config. %d active channels remaining.\n", ast_active_channels());
+ 
+ 	ast_mutex_unlock(&monlock);
+--- channels/chan_unistim.c
++++ channels/chan_unistim.c
+@@ -38,7 +38,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 391379 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 393395 $")
+ 
+ #include <sys/stat.h>
+ #include <signal.h>
+@@ -3318,12 +3318,11 @@
+ 		}
+ 		break;
+ 	case KEY_FUNC2:
++		if (ast_channel_state(sub->owner) == AST_STATE_RING) {
++			transfer_cancel_step2(pte);
++		}
+ 		if (ast_channel_state(sub->owner) == AST_STATE_UP) {
+-			if (get_sub(pte->device, SUB_THREEWAY)) {
+-				transfer_cancel_step2(pte);
+-			} else {
+-				transfer_call_step1(pte);
+-			}
++			transfer_call_step1(pte);
+ 		}
+ 		break;
+ 	case KEY_HANGUP:
+@@ -4837,7 +4836,6 @@
+ 				continue;
+ 			}
+ 			if (d->ssub[i] != NULL) { /* Found other subchannel active other then hangup'ed one */
+-				ast_log(LOG_WARNING, "There is not only one call here %p %p %i\n",d->ssub[i], sub, i);
+ 				end_call = 0;
+ 			}
+ 		}
