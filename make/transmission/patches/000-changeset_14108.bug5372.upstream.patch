@@ -1,0 +1,372 @@
+Index: libtransmission/peer-common.h
+===================================================================
+--- libtransmission/peer-common.h	(revision 14107)
++++ libtransmission/peer-common.h	(revision 14108)
+@@ -150,4 +150,30 @@
+ void tr_peerUpdateProgress (tr_torrent * tor, struct tr_peer *);
+ 
++bool tr_peerIsSeed (const struct tr_peer * peer);
++
++/***
++****
++***/
++
++typedef struct tr_swarm_stats
++{
++  int activePeerCount[2];
++  int activeWebseedCount;
++  int peerCount;
++  int peerFromCount[TR_PEER_FROM__MAX];
++}
++tr_swarm_stats;
++
++extern const tr_swarm_stats TR_SWARM_STATS_INIT;
++
++void tr_swarmGetStats (const struct tr_swarm * swarm, tr_swarm_stats * setme);
++
++void tr_swarmIncrementActivePeers (struct tr_swarm * swarm, tr_direction direction, bool is_active);
++
++
++/***
++****
++***/
++
+ 
+ #ifdef WIN32
+Index: libtransmission/peer-mgr.c
+===================================================================
+--- libtransmission/peer-mgr.c	(revision 14107)
++++ libtransmission/peer-mgr.c	(revision 14108)
+@@ -104,4 +104,6 @@
+ const tr_peer_event TR_PEER_EVENT_INIT = { 0, 0, NULL, 0, 0, 0, 0 };
+ 
++const tr_swarm_stats TR_SWARM_STATS_INIT = { { 0, 0 }, 0, 0, { 0, 0, 0, 0, 0, 0, 0 } };
++
+ /**
+ ***
+@@ -185,4 +187,6 @@
+ typedef struct tr_swarm
+ {
++  tr_swarm_stats             stats;
++
+   tr_ptrArray                outgoingHandshakes; /* tr_handshake */
+   tr_ptrArray                pool; /* struct peer_atom */
+@@ -487,17 +491,4 @@
+ 
+ static void
+-resetTorrentStats (tr_torrent * tor)
+-{
+-  int i;
+-
+-  tor->peerCount = 0;
+-  tor->activePeerCount[TR_UP] = 0;
+-  tor->activePeerCount[TR_DOWN] = 0;
+-  tor->activeWebseedCount = 0;
+-  for (i=0; i<TR_PEER_FROM__MAX; i++)
+-    tor->peerFromCount[i] = 0;
+-}
+-
+-static void
+ swarmFree (void * vs)
+ {
+@@ -514,5 +505,5 @@
+   tr_ptrArrayDestruct (&s->outgoingHandshakes, NULL);
+   tr_ptrArrayDestruct (&s->peers, NULL);
+-  resetTorrentStats (s->tor);
++  s->stats = TR_SWARM_STATS_INIT;
+ 
+   replicationFree (s);
+@@ -534,5 +525,5 @@
+   tr_ptrArrayDestruct (&s->webseeds, (PtrArrayForeachFunc)tr_peerFree);
+   s->webseeds = TR_PTR_ARRAY_INIT;
+-  s->tor->activeWebseedCount = 0;
++  s->stats.activeWebseedCount = 0;
+ 
+   /* repopulate it */
+@@ -1936,9 +1927,9 @@
+ 
+   tr_ptrArrayInsertSorted (&swarm->peers, peer, peerCompare);
+-  ++tor->peerCount;
+-  ++tor->peerFromCount[atom->fromFirst];
+-
+-  assert (tor->peerCount == tr_ptrArraySize (&swarm->peers));
+-  assert (tor->peerFromCount[atom->fromFirst] <= tor->peerCount);
++  ++swarm->stats.peerCount;
++  ++swarm->stats.peerFromCount[atom->fromFirst];
++
++  assert (swarm->stats.peerCount == tr_ptrArraySize (&swarm->peers));
++  assert (swarm->stats.peerFromCount[atom->fromFirst] <= swarm->stats.peerCount);
+ }
+ 
+@@ -2576,6 +2567,31 @@
+ }
+ 
+-static bool
+-peerIsSeed (const tr_peer * peer)
++void
++tr_swarmGetStats (const tr_swarm * swarm, tr_swarm_stats * setme)
++{
++  assert (swarm != NULL);
++  assert (setme != NULL);
++
++  *setme = swarm->stats;
++}
++
++void
++tr_swarmIncrementActivePeers (tr_swarm * swarm, tr_direction direction, bool is_active)
++{
++  int n = swarm->stats.activePeerCount[direction];
++
++  if (is_active)
++    ++n;
++  else
++    --n;
++
++  assert (0 <= n);
++  assert (n <= swarm->stats.peerCount);
++
++  swarm->stats.activePeerCount[direction] = n;
++}
++
++bool
++tr_peerIsSeed (const tr_peer * peer)
+ {
+   if (peer->progress >= 1.0)
+@@ -2705,5 +2721,5 @@
+       stat->isDownloadingFrom   = tr_peerMsgsIsActive (msgs, TR_PEER_TO_CLIENT);
+       stat->isUploadingTo       = tr_peerMsgsIsActive (msgs, TR_CLIENT_TO_PEER);
+-      stat->isSeed              = peerIsSeed (peer);
++      stat->isSeed              = tr_peerIsSeed (peer);
+ 
+       stat->blocksToPeer        = tr_historyGet (&peer->blocksSentToPeer,    now, CANCEL_HISTORY_SEC);
+@@ -2766,5 +2782,5 @@
+   assert (tr_torrentIsPieceTransferAllowed (tor, TR_PEER_TO_CLIENT));
+ 
+-  if (peerIsSeed (peer))
++  if (tr_peerIsSeed (peer))
+     return true;
+ 
+@@ -3056,5 +3072,5 @@
+       struct peer_atom * atom = peer->atom;
+ 
+-      if (peerIsSeed (peer)) /* choke seeds and partial seeds */
++      if (tr_peerIsSeed (peer)) /* choke seeds and partial seeds */
+         {
+           tr_peerMsgsSetChoke (PEER_MSGS(peer), true);
+@@ -3149,9 +3165,13 @@
+   while ((tor = tr_torrentNext (mgr->session, tor)))
+     {
+-      if (tor->isRunning && tor->peerCount)
++      if (tor->isRunning)
+         {
+           tr_swarm * s = tor->swarm;
+-          rechokeUploads (s, now);
+-          rechokeDownloads (s);
++
++          if (s->stats.peerCount > 0)
++            {
++              rechokeUploads (s, now);
++              rechokeDownloads (s);
++            }
+         }
+     }
+@@ -3185,5 +3205,5 @@
+ 
+   /* disconnect if we're both seeds and enough time has passed for PEX */
+-  if (tr_torrentIsSeed (tor) && peerIsSeed (peer))
++  if (tr_torrentIsSeed (tor) && tr_peerIsSeed (peer))
+     return !tr_torrentAllowsPex (tor) || (now-atom->time>=30);
+ 
+@@ -3286,6 +3306,6 @@
+ 
+   removed = tr_ptrArrayRemoveSorted (&s->peers, peer, peerCompare);
+-  --s->tor->peerCount;
+-  --s->tor->peerFromCount[atom->fromFirst];
++  --s->stats.peerCount;
++  --s->stats.peerFromCount[atom->fromFirst];
+ 
+   if (replicationExists (s))
+@@ -3293,6 +3313,6 @@
+ 
+   assert (removed == peer);
+-  assert (s->tor->peerCount == tr_ptrArraySize (&s->peers));
+-  assert (s->tor->peerFromCount[atom->fromFirst] >= 0);
++  assert (s->stats.peerCount == tr_ptrArraySize (&s->peers));
++  assert (s->stats.peerFromCount[atom->fromFirst] >= 0);
+ 
+   tr_peerFree (removed);
+@@ -3333,5 +3353,5 @@
+     removePeer (s, tr_ptrArrayNth (&s->peers, 0));
+ 
+-  assert (!s->tor->peerCount);
++  assert (!s->stats.peerCount);
+ }
+ 
+@@ -3619,5 +3639,5 @@
+ 
+       /* update the torrent's stats */
+-      tor->activeWebseedCount = countActiveWebseeds (tor->swarm);
++      tor->swarm->stats.activeWebseedCount = countActiveWebseeds (tor->swarm);
+     }
+ 
+Index: libtransmission/peer-msgs.c
+===================================================================
+--- libtransmission/peer-msgs.c	(revision 14107)
++++ libtransmission/peer-msgs.c	(revision 14108)
+@@ -690,11 +690,48 @@
+ ***/
+ 
++static bool 
++tr_peerMsgsCalculateActive (const tr_peerMsgs * msgs, tr_direction direction)
++{
++  bool is_active;
++
++  assert (tr_isPeerMsgs (msgs));
++  assert (tr_isDirection (direction));
++
++  if (direction == TR_CLIENT_TO_PEER)
++    {
++      is_active = tr_peerMsgsIsPeerInterested (msgs)
++              && !tr_peerMsgsIsPeerChoked (msgs);
++
++      if (is_active)
++        assert (!tr_peerIsSeed (&msgs->peer));
++    }
++  else /* TR_PEER_TO_CLIENT */
++    {
++      if (!tr_torrentHasMetadata (msgs->torrent))
++        is_active = true;
++      else
++        is_active = tr_peerMsgsIsClientInterested (msgs)
++                && !tr_peerMsgsIsClientChoked (msgs);
++
++      if (is_active)
++        assert (!tr_torrentIsSeed (msgs->torrent));
++    }
++
++  return is_active;
++}
++
+ bool
+ tr_peerMsgsIsActive (const tr_peerMsgs  * msgs, tr_direction direction)
+ {
++  bool is_active;
++
+   assert (tr_isPeerMsgs (msgs));
+   assert (tr_isDirection (direction));
+ 
+-  return msgs->is_active[direction];
++  is_active = msgs->is_active[direction];
++
++  assert (is_active == tr_peerMsgsCalculateActive (msgs, direction));
++
++  return is_active;
+ }
+ 
+@@ -704,18 +741,11 @@
+                       bool           is_active)
+ {
++  dbgmsg (msgs, "direction [%d] is_active [%d]", (int)direction, (int)is_active);
++
+   if (msgs->is_active[direction] != is_active)
+     {
+-      int n = msgs->torrent->activePeerCount[direction];
+-
+       msgs->is_active[direction] = is_active;
+ 
+-      if (is_active)
+-        ++n;
+-      else
+-        --n;
+-      assert (0 <= n);
+-      assert (n <= msgs->torrent->peerCount);
+-
+-      msgs->torrent->activePeerCount[direction] = n;
++      tr_swarmIncrementActivePeers (msgs->torrent->swarm, direction, is_active);
+     }
+ }
+@@ -724,24 +754,7 @@
+ tr_peerMsgsUpdateActive (tr_peerMsgs * msgs, tr_direction direction)
+ {
+-  bool active;
+-
+-  assert (tr_isPeerMsgs (msgs));
+-  assert (tr_isDirection (direction));
+-
+-  if (direction == TR_CLIENT_TO_PEER)
+-    {
+-      active = tr_peerMsgsIsPeerInterested (msgs)
+-           && !tr_peerMsgsIsPeerChoked (msgs);
+-    }
+-  else /* TR_PEER_TO_CLIENT */
+-    {
+-      if (!tr_torrentHasMetadata (msgs->torrent))
+-        active = true;
+-      else
+-        active = tr_peerMsgsIsClientInterested (msgs)
+-             && !tr_peerMsgsIsClientChoked (msgs);
+-    }
+-
+-  tr_peerMsgsSetActive (msgs, direction, active);
++  const bool is_active = tr_peerMsgsCalculateActive (msgs, direction);
++
++  tr_peerMsgsSetActive (msgs, direction, is_active);
+ }
+ 
+@@ -847,4 +860,5 @@
+       protocolSendChoke (msgs, peer_is_choked);
+       msgs->chokeChangedAt = now;
++      tr_peerMsgsUpdateActive (msgs, TR_CLIENT_TO_PEER);
+     }
+ }
+Index: libtransmission/torrent.c
+===================================================================
+--- libtransmission/torrent.c	(revision 14107)
++++ libtransmission/torrent.c	(revision 14108)
+@@ -1256,4 +1256,5 @@
+   unsigned int pieceUploadSpeed_Bps;
+   unsigned int pieceDownloadSpeed_Bps;
++  struct tr_swarm_stats swarm_stats;
+   int i;
+ 
+@@ -1261,4 +1262,9 @@
+ 
+   tor->lastStatTime = tr_time ();
++
++  if (tor->swarm != NULL)
++    tr_swarmGetStats (tor->swarm, &swarm_stats);
++  else
++    swarm_stats = TR_SWARM_STATS_INIT;
+ 
+   s = &tor->stats;
+@@ -1271,11 +1277,10 @@
+ 
+   s->manualAnnounceTime = tr_announcerNextManualAnnounce (tor);
+-
+-  s->peersConnected      = tor->peerCount;
+-  s->peersSendingToUs    = tor->activePeerCount[TR_DOWN];
+-  s->peersGettingFromUs  = tor->activePeerCount[TR_UP];
+-  s->webseedsSendingToUs = tor->activeWebseedCount;
++  s->peersConnected      = swarm_stats.peerCount;
++  s->peersSendingToUs    = swarm_stats.activePeerCount[TR_DOWN];
++  s->peersGettingFromUs  = swarm_stats.activePeerCount[TR_UP];
++  s->webseedsSendingToUs = swarm_stats.activeWebseedCount;
+   for (i=0; i<TR_PEER_FROM__MAX; i++)
+-    s->peersFrom[i] = tor->peerFromCount[i];
++    s->peersFrom[i] = swarm_stats.peerFromCount[i];
+ 
+   s->rawUploadSpeed_KBps     = toSpeedKBps (tr_bandwidthGetRawSpeed_Bps (&tor->bandwidth, now, TR_UP));
+Index: libtransmission/torrent.h
+===================================================================
+--- libtransmission/torrent.h	(revision 14107)
++++ libtransmission/torrent.h	(revision 14108)
+@@ -226,9 +226,4 @@
+     int                        secondsDownloading;
+     int                        secondsSeeding;
+-
+-    int                        peerCount;
+-    int                        peerFromCount[TR_PEER_FROM__MAX];
+-    int                        activePeerCount[2];
+-    int                        activeWebseedCount;
+ 
+     int                        queuePosition;

@@ -1,0 +1,39 @@
+Index: libtransmission/peer-mgr.c
+===================================================================
+--- libtransmission/peer-mgr.c	(revision 14110)
++++ libtransmission/peer-mgr.c	(revision 14111)
+@@ -2611,12 +2611,18 @@
+   size_t n;
+   uint64_t desiredAvailable;
+-  const tr_swarm * s = tor->swarm;
++  const tr_swarm * s;
++
++  assert (tr_isTorrent (tor));
+ 
+   /* common shortcuts... */
+ 
+-  if (tr_torrentIsSeed (s->tor))
++  if (tr_torrentIsSeed (tor))
+     return 0;
+ 
+   if (!tr_torrentHasMetadata (tor))
++    return 0;
++
++  s = tor->swarm;
++  if (s == NULL)
+     return 0;
+ 
+@@ -2642,5 +2648,5 @@
+   for (i=0, n=MIN (tor->info.pieceCount, s->pieceReplicationSize); i<n; ++i)
+     if (!tor->info.pieces[i].dnd && (s->pieceReplication[i] > 0))
+-      desiredAvailable += tr_cpMissingBytesInPiece (&s->tor->completion, i);
++      desiredAvailable += tr_cpMissingBytesInPiece (&tor->completion, i);
+ 
+   assert (desiredAvailable <= tor->info.totalSize);
+@@ -3378,5 +3384,5 @@
+   time_t pieceDataTime;
+   time_t time;
+-  int speed;
++  unsigned int speed;
+   bool doPurge;
+ };
