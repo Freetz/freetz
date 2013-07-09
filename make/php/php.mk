@@ -29,7 +29,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-curl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_GD)),y)
-$(PKG)_DEPENDS_ON += gd
+$(PKG)_DEPENDS_ON += libgd
 $(PKG)_CONFIGURE_OPTIONS += --with-gd="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --enable-gd-native-ttf
 endif

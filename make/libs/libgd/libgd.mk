@@ -1,10 +1,8 @@
 $(call PKG_INIT_LIB, 2.1.0)
 $(PKG)_LIB_VERSION:=3.0.0
-$(PKG)_SOURCE:=libgd-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5:=03588159bf4faab9079849c8d709acc6
 $(PKG)_SITE:=https://bitbucket.org/libgd/gd-libgd/downloads
-
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libgd-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libgd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.so.$($(PKG)_LIB_VERSION)
@@ -33,13 +31,13 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(GD_DIR)
+	$(SUBMAKE) -C $(LIBGD_DIR)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	$(SUBMAKE) -C $(GD_DIR)/src \
+	$(SUBMAKE) -C $(LIBGD_DIR)/src \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-libLTLIBRARIES install-includeHEADERS
-	$(SUBMAKE) -C $(GD_DIR)/config \
+	$(SUBMAKE) -C $(LIBGD_DIR)/config \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -55,7 +53,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(GD_DIR) clean
+	-$(SUBMAKE) -C $(LIBGD_DIR) clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gdlib.pc \
@@ -63,6 +61,6 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/gdlib-config
 
 $(pkg)-uninstall:
-	$(RM) $(GD_TARGET_DIR)/libgd*.so*
+	$(RM) $(LIBGD_TARGET_DIR)/libgd*.so*
 
 $(PKG_FINISH)

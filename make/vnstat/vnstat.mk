@@ -10,7 +10,7 @@ $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 ifeq ($(strip $(FREETZ_PACKAGE_VNSTAT_IMAGE)),y)
-$(PKG)_DEPENDS_ON += gd
+$(PKG)_DEPENDS_ON += libgd
 $(PKG)_MAKE_TARGET := all
 endif
 
