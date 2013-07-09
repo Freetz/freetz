@@ -1,0 +1,30 @@
+From f023c0e265443e8caab45aa9aa18ce245aa22af0 Mon Sep 17 00:00:00 2001
+From: Chengwei Yang <chengwei.yang@intel.com>
+Date: Fri, 28 Jun 2013 06:34:22 +0000
+Subject: Remove invoke of va_end before va_start
+
+Signed-off-by: Chengwei Yang <chengwei.yang@intel.com>
+Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Bug: https://bugs.freedesktop.org/show_bug.cgi?id=66300
+---
+diff --git dbus/dbus-errors.c dbus/dbus-errors.c
+index db3305b..a0571a5 100644
+--- dbus/dbus-errors.c
++++ dbus/dbus-errors.c
+@@ -235,7 +235,7 @@ dbus_error_free (DBusError *error)
+  * must ensure the name and message are global data that won't be
+  * freed. You probably want dbus_set_error() instead, in most cases.
+  * 
+- * @param error the error.or #NULL
++ * @param error the error or #NULL
+  * @param name the error name (not copied!!!)
+  * @param message the error message (not copied!!!)
+  */
+@@ -379,7 +379,6 @@ dbus_set_error (DBusError  *error,
+                                 message_from_error (name)))
+         {
+           _dbus_string_free (&str);
+-          va_end (args);
+           goto nomem;
+         }
+     }

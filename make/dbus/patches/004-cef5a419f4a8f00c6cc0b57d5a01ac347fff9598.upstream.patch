@@ -1,0 +1,24 @@
+From cef5a419f4a8f00c6cc0b57d5a01ac347fff9598 Mon Sep 17 00:00:00 2001
+From: Chengwei Yang <chengwei.yang@intel.com>
+Date: Sat, 29 Jun 2013 04:21:27 +0000
+Subject: Test: add a test case for escaping byte > 127
+
+Bug: https://bugs.freedesktop.org/show_bug.cgi?id=53499
+Signed-off-by: Chengwei Yang <chengwei.yang@intel.com>
+Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+---
+diff --git dbus/dbus-address.c dbus/dbus-address.c
+index f3d48d0..6506d21 100644
+--- dbus/dbus-address.c
++++ dbus/dbus-address.c
+@@ -678,7 +678,9 @@ static const EscapeTest escape_tests[] = {
+   { "Z", "Z" },
+   { "a", "a" },
+   { "i", "i" },
+-  { "z", "z" }
++  { "z", "z" },
++  /* Bug: https://bugs.freedesktop.org/show_bug.cgi?id=53499 */
++  { "%c3%b6", "\303\266" }
+ };
+ 
+ static const char* invalid_escaped_values[] = {
