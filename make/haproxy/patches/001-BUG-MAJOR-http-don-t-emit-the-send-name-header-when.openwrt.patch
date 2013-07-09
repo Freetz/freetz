@@ -1,0 +1,41 @@
+From d362dc75f3dfa7062e5c2cb7822ad12ffb755389 Mon Sep 17 00:00:00 2001
+From: Willy Tarreau <w@1wt.eu>
+Date: Thu, 4 Jul 2013 11:44:27 +0200
+Subject: [PATCH 1/2] BUG/MAJOR: http: don't emit the send-name-header when no
+ server is available
+
+Lukas Benes reported that http-send-name-header causes a segfault if no
+server is available because we're dereferencing the session's target which
+is NULL. The tiniest reproducer looks like this :
+
+     listen foo
+         bind :1234
+         mode http
+         http-send-name-header srv
+
+This obvious fix must be backported to 1.4 which is affected as well.
+(cherry picked from commit 0fc36e3ae99ccbe6de88cf64093f3045e526d088)
+---
+ src/session.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git src/session.c src/session.c
+index 6211a45..21ecb9f 100644
+--- src/session.c
++++ src/session.c
+@@ -1428,9 +1428,9 @@ resync_stream_interface:
+ 		/* Now we can add the server name to a header (if requested) */
+ 		/* check for HTTP mode and proxy server_name_hdr_name != NULL */
+ 		if ((s->flags & SN_BE_ASSIGNED) &&
+-			(s->be->mode == PR_MODE_HTTP) &&
+-			(s->be->server_id_hdr_name != NULL)) {
+-
++		    (s->be->mode == PR_MODE_HTTP) &&
++		    (s->be->server_id_hdr_name != NULL) &&
++		    (s->srv)) {
+ 			http_send_name_header(&s->txn,
+ 					      &s->txn.req,
+ 					      s->req,
+-- 
+1.8.1.5
+
