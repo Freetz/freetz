@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.42.7)
+$(call PKG_INIT_BIN, 1.42.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a1ec22ef003688dae9f76c74881b22b9
+$(PKG)_SOURCE_MD5:=8ef664b6eb698aa6b733df59b17b9ed4
 $(PKG)_SITE:=@SF/e2fsprogs
 
 $(PKG)_LIBNAMES_SHORT_ALL := blkid com_err e2p ext2fs ss uuid
@@ -105,6 +105,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --disable-defrag
 $(PKG)_CONFIGURE_OPTIONS += --disable-quota
 $(PKG)_CONFIGURE_OPTIONS += --disable-testio-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
