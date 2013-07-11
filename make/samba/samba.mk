@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_SAMBA_VERSION_3_0),3.0.37,3.6.15))
+$(call PKG_INIT_BIN, $(if $(FREETZ_SAMBA_VERSION_3_0),3.0.37,3.6.16))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5_3.0.37:=11ed2bfef4090bd5736b194b43f67289
-$(PKG)_SOURCE_MD5_3.6.15:=d9424e9badb089bd51e6cfc752b21dfa
+$(PKG)_SOURCE_MD5_3.6.16:=12c6785802813c2c5bf66e5c4c4e1d93
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://samba.org/samba/ftp/stable
 

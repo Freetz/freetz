@@ -1,6 +1,6 @@
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -1017,13 +1017,7 @@
+@@ -1019,13 +1019,7 @@
  
  PASSWD_UTIL_OBJ = utils/passwd_util.o
  
@@ -15,7 +15,7 @@
  
  PDBEDIT_OBJ = utils/pdbedit.o $(PASSWD_UTIL_OBJ) $(PARAM_OBJ) $(PASSDB_OBJ) \
  		$(LIBSAMBA_OBJ) $(LIBTSOCKET_OBJ) \
-@@ -1787,7 +1781,7 @@
+@@ -1789,7 +1783,7 @@
  		echo "$(COMPILE_CC_PATH)" 1>&2;\
  		$(COMPILE_CC_PATH) >/dev/null 2>&1
  
@@ -24,7 +24,7 @@
  	@echo "Compiling $< (multicall)"
  	@$(COMPILE_CC_PATH) -Dmain=smbpasswd_main && exit 0;\
  		echo "The following command failed:" 1>&2;\
-@@ -1796,7 +1790,7 @@
+@@ -1798,7 +1792,7 @@
  
  SMBD_MULTI_O = $(patsubst smbd/server.o,smbd/server_multicall.o,$(SMBD_OBJ))
  NMBD_MULTI_O = $(patsubst nmbd/nmbd.o,nmbd/nmbd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(NMBD_OBJ)))
@@ -33,19 +33,19 @@
  MULTI_O = multi.o
  
  MULTICALL_O = $(sort $(SMBD_MULTI_O) $(NMBD_MULTI_O) $(SMBPASSWD_MULTI_O) $(MULTI_O))
-@@ -1891,11 +1885,9 @@
+@@ -1893,11 +1887,9 @@
  		$(LIBS) $(POPT_LIBS) $(KRB5LIBS) $(LDAP_LIBS) $(NSCD_LIBS) \
- 		$(LIBTALLOC_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
+ 		$(LIBTALLOC_LIBS) $(LIBTEVENT_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
  
--bin/smbpasswd@EXEEXT@: $(BINARY_PREREQS) $(SMBPASSWD_OBJ) @BUILD_POPT@ $(LIBTALLOC) $(LIBTDB) $(LIBWBCLIENT)
+-bin/smbpasswd@EXEEXT@: $(BINARY_PREREQS) $(SMBPASSWD_OBJ) @BUILD_POPT@ $(LIBTALLOC) $(LIBTEVENT) $(LIBTDB) $(LIBWBCLIENT)
 +bin/smbpasswd@EXEEXT@: $(BINARY_PREREQS) $(SMBPASSWD_OBJ)
  	@echo Linking $@
 -	@$(CC) -o $@ $(SMBPASSWD_OBJ) $(LDFLAGS) $(PASSDB_LIBS) \
 -		$(DYNEXP) $(LIBS) $(POPT_LIBS) $(KRB5LIBS) $(LDAP_LIBS) \
--		$(LIBTALLOC_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
+-		$(LIBTALLOC_LIBS) $(LIBTEVENT_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
 +	@$(CC) -o $@ $(SMBPASSWD_OBJ)
  
- bin/pdbedit@EXEEXT@: $(BINARY_PREREQS) $(PDBEDIT_OBJ) @BUILD_POPT@ $(LIBTALLOC) $(LIBTDB) $(LIBWBCLIENT)
+ bin/pdbedit@EXEEXT@: $(BINARY_PREREQS) $(PDBEDIT_OBJ) @BUILD_POPT@ $(LIBTALLOC) $(LIBTEVENT) $(LIBTDB) $(LIBWBCLIENT)
  	@echo Linking $@
 --- /dev/null
 +++ source3/utils/avm_smbpasswd.c

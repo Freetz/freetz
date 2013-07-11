@@ -1,6 +1,6 @@
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -1627,6 +1627,7 @@
+@@ -1622,6 +1622,7 @@
  
  SHOWFLAGS::
  	@echo "Using CFLAGS     = $(CFLAGS)"
@@ -8,7 +8,7 @@
  	@echo "      PICFLAG    = $(PICFLAG)"
  	@echo "      LIBS       = $(LIBS)"
  	@echo "      LDFLAGS    = $(LDFLAGS)"
-@@ -1674,7 +1674,7 @@
+@@ -1669,7 +1670,7 @@
  	  echo "Checking  $*.c with '$(CC_CHECKER)'";\
  	  $(CHECK_CC); \
  	 fi
@@ -17,16 +17,16 @@
  	@$(COMPILE) && exit 0;\
  		echo "The following command failed:" 1>&2;\
  		echo "$(subst ",\",$(COMPILE_CC))" 1>&2;\
-@@ -1803,7 +1804,12 @@
+@@ -1798,7 +1799,12 @@
  MULTICALL_O = $(sort $(SMBD_MULTI_O) $(NMBD_MULTI_O) $(SMBPASSWD_MULTI_O) $(MULTI_O))
  
- bin/samba_multicall@EXEEXT@: $(BINARY_PREREQS) $(MULTICALL_O) $(LIBTALLOC) $(LIBTDB) $(LIBWBCLIENT) @BUILD_POPT@
+ bin/samba_multicall@EXEEXT@: $(BINARY_PREREQS) $(MULTICALL_O) $(LIBTALLOC) $(LIBTEVENT) $(LIBTDB) $(LIBWBCLIENT) @BUILD_POPT@
 -	@echo Linking $@
 +	@echo Linking $@: \
 +	$(CC) -o $@ $(MULTICALL_O) $(LDFLAGS) $(LDAP_LIBS) @SMBD_FAM_LIBS@ \
 +		$(KRB5LIBS) $(DYNEXP) $(PRINT_LIBS) $(AUTH_LIBS) \
 +		$(ACL_LIBS) $(PASSDB_LIBS) $(LIBS) $(DNSSD_LIBS) $(AVAHI_LIBS) \
-+		$(POPT_LIBS) @SMBD_LIBS@ $(LIBTALLOC_LIBS) $(LIBTDB_LIBS) \
++		$(POPT_LIBS) @SMBD_LIBS@ $(LIBTALLOC_LIBS) $(LIBTEVENT_LIBS) $(LIBTDB_LIBS) \
 +		$(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
  	@$(CC) -o $@ $(MULTICALL_O) $(LDFLAGS) $(LDAP_LIBS) @SMBD_FAM_LIBS@ \
  		$(KRB5LIBS) $(DYNEXP) $(PRINT_LIBS) $(AUTH_LIBS) \
