@@ -70,8 +70,6 @@ config FREETZ_PACKAGE_DROPBEAR_STATIC
 	bool "Build static binary"
 	depends on FREETZ_PACKAGE_DROPBEAR
 	default n
-
-config FREETZ_PACKAGE_DROPBEAR_STANDALONE
-	bool "Standalone binary (for use w/o freetz; paths set to /var/tmp/)"
-	depends on FREETZ_PACKAGE_DROPBEAR_STATIC
-	default n
+	help
+		This option will also enable the use of the binary 
+		on non freetz boxes (with missing devfs).
