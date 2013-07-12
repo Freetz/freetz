@@ -712,11 +712,13 @@ config FREETZ_MODULE_ipt_ttl
 	help
 		This adds CONFIG_IP_NF_MATCH_TTL option, which enabled the user
 		to match packets by their TTL value.
-# FIXME
 config FREETZ_MODULE_ipt_TTL
 	bool "ipt_TTL.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
+	help
+		This option adds a `TTL' target, which allows you to create rules in
+		the `mangle' table which alter the TTL (time to live) field of an IP
+		packet.
 
 endmenu
 
