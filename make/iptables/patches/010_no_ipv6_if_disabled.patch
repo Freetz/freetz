@@ -111,3 +111,221 @@
  	xtables_register_target(&tcpmss_target6);
 +#endif
  }
+--- extensions/libxt_conntrack.c
++++ extensions/libxt_conntrack.c
+@@ -610,6 +610,7 @@
+ 			printf(" %s%s",
+ 			       xtables_ipaddr_to_anyname(&addr->in),
+ 			       xtables_ipmask_to_numeric(&mask->in));
++#ifdef ENABLE_IPV6
+ 	} else if (family == NFPROTO_IPV6) {
+ 		if (!numeric && addr->ip6[0] == 0 && addr->ip6[1] == 0 &&
+ 		    addr->ip6[2] == 0 && addr->ip6[3] == 0) {
+@@ -624,6 +625,7 @@
+ 			printf(" %s%s",
+ 			       xtables_ip6addr_to_anyname(&addr->in6),
+ 			       xtables_ip6mask_to_numeric(&mask->in6));
++#endif
+ 	}
+ }
+ 
+--- extensions/libxt_iprange.c
++++ extensions/libxt_iprange.c
+@@ -53,6 +53,7 @@
+ 	memset(range, 0, sizeof(union nf_inet_addr) * 2);
+ 
+ 	if (family == NFPROTO_IPV6) {
++#ifdef ENABLE_IPV6
+ 		for (i = 0; i < ARRAY_SIZE(spec); ++i) {
+ 			ia6 = xtables_numeric_to_ip6addr(spec[i]);
+ 			if (ia6 == NULL)
+@@ -60,6 +61,7 @@
+ 					optname, spec[i]);
+ 			range[i].in6 = *ia6;
+ 		}
++#endif
+ 	} else {
+ 		for (i = 0; i < ARRAY_SIZE(spec); ++i) {
+ 			ia4 = xtables_numeric_to_ipaddr(spec[i]);
+@@ -217,6 +219,7 @@
+ 	}
+ }
+ 
++#ifdef ENABLE_IPV6
+ static void
+ iprange_mt6_print(const void *ip, const struct xt_entry_match *match,
+                   int numeric)
+@@ -242,6 +245,7 @@
+ 		printf("-%s", xtables_ip6addr_to_numeric(&info->dst_max.in6));
+ 	}
+ }
++#endif
+ 
+ static void iprange_save(const void *ip, const struct xt_entry_match *match)
+ {
+@@ -279,6 +283,7 @@
+ 	}
+ }
+ 
++#ifdef ENABLE_IPV6
+ static void iprange_mt6_save(const void *ip, const struct xt_entry_match *match)
+ {
+ 	const struct xt_iprange_mtinfo *info = (const void *)match->data;
+@@ -296,6 +301,7 @@
+ 		printf("-%s", xtables_ip6addr_to_numeric(&info->dst_max.in6));
+ 	}
+ }
++#endif
+ 
+ static struct xtables_match iprange_mt_reg[] = {
+ 	{
+@@ -326,6 +332,7 @@
+ 		.save          = iprange_mt4_save,
+ 		.x6_options    = iprange_mt_opts,
+ 	},
++#ifdef ENABLE_IPV6
+ 	{
+ 		.version       = XTABLES_VERSION,
+ 		.name          = "iprange",
+@@ -340,6 +347,7 @@
+ 		.save          = iprange_mt6_save,
+ 		.x6_options    = iprange_mt_opts,
+ 	},
++#endif
+ };
+ 
+ void _init(void)
+--- extensions/libxt_policy.c
++++ extensions/libxt_policy.c
+@@ -279,22 +279,26 @@
+ 	}
+ 	if (e->match.daddr) {
+ 		PRINT_INVERT(e->invert.daddr);
++#ifdef ENABLE_IPV6
+ 		if (family == NFPROTO_IPV6)
+ 			printf(" %stunnel-dst %s%s", prefix,
+ 			       xtables_ip6addr_to_numeric(&e->daddr.a6),
+ 			       xtables_ip6mask_to_numeric(&e->dmask.a6));
+ 		else
++#endif
+ 			printf(" %stunnel-dst %s%s", prefix,
+ 			       xtables_ipaddr_to_numeric(&e->daddr.a4),
+ 			       xtables_ipmask_to_numeric(&e->dmask.a4));
+ 	}
+ 	if (e->match.saddr) {
+ 		PRINT_INVERT(e->invert.saddr);
++#ifdef ENABLE_IPV6
+ 		if (family == NFPROTO_IPV6)
+ 			printf(" %stunnel-src %s%s", prefix,
+ 			       xtables_ip6addr_to_numeric(&e->saddr.a6),
+ 			       xtables_ip6mask_to_numeric(&e->smask.a6));
+ 		else
++#endif
+ 			printf(" %stunnel-src %s%s", prefix,
+ 			       xtables_ipaddr_to_numeric(&e->saddr.a4),
+ 			       xtables_ipmask_to_numeric(&e->smask.a4));
+--- extensions/libxt_TEE.c
++++ extensions/libxt_TEE.c
+@@ -61,6 +61,7 @@
+ 		printf(" oif=%s", info->oif);
+ }
+ 
++#ifdef ENABLE_IPV6
+ static void tee_tg6_print(const void *ip, const struct xt_entry_target *target,
+                           int numeric)
+ {
+@@ -73,6 +74,7 @@
+ 	if (*info->oif != '\0')
+ 		printf(" oif=%s", info->oif);
+ }
++#endif
+ 
+ static void tee_tg_save(const void *ip, const struct xt_entry_target *target)
+ {
+@@ -83,6 +85,7 @@
+ 		printf(" --oif %s", info->oif);
+ }
+ 
++#ifdef ENABLE_IPV6
+ static void tee_tg6_save(const void *ip, const struct xt_entry_target *target)
+ {
+ 	const struct xt_tee_tginfo *info = (const void *)target->data;
+@@ -91,6 +94,7 @@
+ 	if (*info->oif != '\0')
+ 		printf(" --oif %s", info->oif);
+ }
++#endif
+ 
+ static struct xtables_target tee_tg_reg = {
+ 	.name          = "TEE",
+@@ -106,6 +110,7 @@
+ 	.x6_options    = tee_tg_opts,
+ };
+ 
++#ifdef ENABLE_IPV6
+ static struct xtables_target tee_tg6_reg = {
+ 	.name          = "TEE",
+ 	.version       = XTABLES_VERSION,
+@@ -119,9 +124,12 @@
+ 	.x6_parse      = xtables_option_parse,
+ 	.x6_options    = tee_tg_opts,
+ };
++#endif
+ 
+ void _init(void)
+ {
+ 	xtables_register_target(&tee_tg_reg);
++#ifdef ENABLE_IPV6
+ 	xtables_register_target(&tee_tg6_reg);
++#endif
+ }
+--- extensions/libxt_TPROXY.c
++++ extensions/libxt_TPROXY.c
+@@ -70,6 +70,7 @@
+ 	       (unsigned int)info->mark_mask);
+ }
+ 
++#ifdef ENABLE_IPV6
+ static void
+ tproxy_tg_print6(const void *ip, const struct xt_entry_target *target,
+ 		 int numeric)
+@@ -82,6 +83,7 @@
+ 	       ntohs(info->lport), (unsigned int)info->mark_value,
+ 	       (unsigned int)info->mark_mask);
+ }
++#endif
+ 
+ static void tproxy_tg_save(const void *ip, const struct xt_entry_target *target)
+ {
+@@ -106,6 +108,7 @@
+ 	       (unsigned int)info->mark_value, (unsigned int)info->mark_mask);
+ }
+ 
++#ifdef ENABLE_IPV6
+ static void
+ tproxy_tg_save6(const void *ip, const struct xt_entry_target *target)
+ {
+@@ -117,6 +120,7 @@
+ 	printf(" --tproxy-mark 0x%x/0x%x",
+ 	       (unsigned int)info->mark_value, (unsigned int)info->mark_mask);
+ }
++#endif
+ 
+ static void tproxy_tg0_parse(struct xt_option_call *cb)
+ {
+@@ -174,6 +178,7 @@
+ 		.x6_options    = tproxy_tg1_opts,
+ 		.x6_parse      = tproxy_tg1_parse,
+ 	},
++#ifdef ENABLE_IPV6
+ 	{
+ 		.name          = "TPROXY",
+ 		.revision      = 1,
+@@ -187,6 +192,7 @@
+ 		.x6_options    = tproxy_tg1_opts,
+ 		.x6_parse      = tproxy_tg1_parse,
+ 	},
++#endif
+ };
+ 
+ void _init(void)
