@@ -701,14 +701,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 	[ -z "$HTML_LANG_MOD_DIR" ] && error 1 "No HTML directory given."
 
-	# Now check language specific html directory
+	# Now check language specific html directory (if there is any)
 	for i in de en; do
 		if [ -d "${HTML_LANG_MOD_DIR}/html/$i" ]; then
 			HTML_SPEC_MOD_DIR="${HTML_LANG_MOD_DIR}/html/$i"
 			break
 		fi
 	done
-	[ -z "$HTML_SPEC_MOD_DIR" ] && error 1 "No language specific HTML directory given."
+	echo1 "Language specific HTML directory: ${HTML_SPEC_MOD_DIR:-none}"
 
 	# Apply (general, version specific, language specific) patches
 	shopt -s nullglob
