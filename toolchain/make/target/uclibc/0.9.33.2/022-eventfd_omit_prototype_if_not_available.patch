@@ -10,9 +10,9 @@
 +#if defined(__UCLIBC_LINUX_SPECIFIC__) && (defined(__NR_eventfd) || defined(__NR_eventfd2) || defined(__UCLIBC_HAS_STUBS__))
  #include <stdint.h>
  
- 
-@@ -44,5 +48,6 @@
- extern int eventfd (int __count, int __flags) __THROW;
+ /* Get the platform-dependent flags.  */
+@@ -45,5 +49,6 @@
+ #endif
  
  __END_DECLS
 +#endif
