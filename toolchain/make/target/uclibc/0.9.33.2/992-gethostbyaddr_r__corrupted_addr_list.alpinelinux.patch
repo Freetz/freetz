@@ -1,0 +1,27 @@
+From 5654318b39dae5e5a32e290849ec590cb85ee0b3 Mon Sep 17 00:00:00 2001
+From: Nikolaus Voss <n.voss@weinmann.de>
+Date: Mon, 28 Nov 2011 16:18:30 +0100
+Subject: [PATCH 1/2] gethostbyaddr_r: add space for alias pointers
+To: uclibc@uclibc.org
+
+addr_list and alias where on the same buffer offset. This led
+to corrupt addr_list which was overwritten by the resolved name.
+
+Signed-off-by: Nikolaus Voss <n.voss@weinmann.de>
+---
+ libc/inet/resolv.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git libc/inet/resolv.c libc/inet/resolv.c
+index 021d5bf..bc596b0 100644
+--- libc/inet/resolv.c
++++ libc/inet/resolv.c
+@@ -2407,6 +2407,8 @@ int gethostbyaddr_r(const void *addr, socklen_t addrlen,
+ 	 */
+ #define in6 ((struct in6_addr *)in)
+ 	alias = (char **)buf;
++	buf += sizeof(alias) * 2;
++	buflen -= sizeof(alias) * 2;
+ 	addr_list = (struct in_addr**)buf;
+ 	buf += sizeof(*addr_list) * 2;
+ 	buflen -= sizeof(*addr_list) * 2;
