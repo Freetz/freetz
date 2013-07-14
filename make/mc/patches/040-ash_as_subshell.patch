@@ -77,7 +77,7 @@
      /* and can be overriden by the MC_DATADIR environment variable */
 --- src/subshell.c
 +++ src/subshell.c
-@@ -125,6 +125,8 @@ enum
+@@ -128,6 +128,8 @@ enum
  static enum
  {
      BASH,
@@ -86,7 +86,7 @@
      TCSH,
      ZSH,
      FISH
-@@ -281,8 +283,9 @@ init_subshell_child (const char *pty_nam
+@@ -280,8 +282,9 @@ init_subshell_child (const char *pty_nam
              init_file = g_strdup (".bashrc");
          }
  
@@ -98,7 +98,7 @@
  
          /* Allow alternative readline settings for MC */
          {
-@@ -298,7 +301,26 @@ init_subshell_child (const char *pty_nam
+@@ -297,7 +300,26 @@ init_subshell_child (const char *pty_nam
  
          break;
  
@@ -126,7 +126,7 @@
      case TCSH:
      case ZSH:
      case FISH:
-@@ -336,19 +358,17 @@ init_subshell_child (const char *pty_nam
+@@ -335,19 +357,17 @@ init_subshell_child (const char *pty_nam
          execl (mc_global.tty.shell, "bash", "-rcfile", init_file, (char *) NULL);
          break;
  
@@ -150,7 +150,7 @@
          break;
      }
  
-@@ -774,7 +794,8 @@ init_subshell (void)
+@@ -773,7 +793,8 @@ init_subshell (void)
  {
      /* This must be remembered across calls to init_subshell() */
      static char pty_name[BUF_SMALL];
@@ -160,7 +160,7 @@
  
      switch (check_sid ())
      {
-@@ -790,21 +811,36 @@ init_subshell (void)
+@@ -789,21 +810,36 @@ init_subshell (void)
      /* Take the current (hopefully pristine) tty mode and make */
      /* a raw mode based on it now, before we do anything else with it */
      init_raw_mode ();
@@ -205,7 +205,7 @@
          else
          {
              mc_global.tty.use_subshell = FALSE;
-@@ -855,7 +891,7 @@ init_subshell (void)
+@@ -854,7 +890,7 @@ init_subshell (void)
                  return;
              }
          }
@@ -214,12 +214,12 @@
          {
              perror (__FILE__ ": couldn't create pipe");
              mc_global.tty.use_subshell = FALSE;
-@@ -883,29 +919,113 @@ init_subshell (void)
+@@ -882,29 +918,113 @@ init_subshell (void)
          init_subshell_child (pty_name);
      }
  
--    /* Set up `precmd' or equivalent for reading the subshell's CWD */
-+    /* Set up `precmd' or equivalent for reading the subshell's CWD
+-    /* Set up 'precmd' or equivalent for reading the subshell's CWD */
++    /* Set up 'precmd' or equivalent for reading the subshell's CWD
 +     *
 +     * Attention! Never forget that these are *one-liners* even though the concatenated
 +     * substrings contain line breaks and indentation for better understanding of the
@@ -335,7 +335,7 @@
          break;
  
      }
-@@ -1109,6 +1229,13 @@ subshell_name_quote (const char *s)
+@@ -1110,6 +1230,13 @@ subshell_name_quote (const char *s)
          quote_cmd_start = "(printf \"%b\" '";
          quote_cmd_end = "')";
      }

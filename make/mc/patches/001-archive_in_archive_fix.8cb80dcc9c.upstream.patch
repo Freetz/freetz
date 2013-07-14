@@ -1,0 +1,14 @@
+Index: src/filemanager/ext.c
+===================================================================
+--- src/filemanager/ext.c	(revision 2640b21bb9700aa51a70f35f9e10732c82a7366f)
++++ src/filemanager/ext.c	(revision 8cb80dcc9c0c2f36111dd439f3e415cec58f7ffa)
+@@ -680,7 +680,7 @@
+ #endif /* HAVE_CHARSET */
+ 
++        got_data = get_file_type_local (localfile_vpath, content_string, sizeof (content_string));
++
+         mc_ungetlocalcopy (filename_vpath, localfile_vpath, FALSE);
+-
+-        got_data = get_file_type_local (localfile_vpath, content_string, sizeof (content_string));
+ 
+         if (got_data > 0)
