@@ -30,7 +30,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libtag.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libtag*.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/taglib*.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/taglib-config
 
