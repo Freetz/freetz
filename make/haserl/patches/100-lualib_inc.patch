@@ -1,6 +1,6 @@
---- src/Makefile.in.orig	2011-05-10 18:32:47.000000000 +0200
-+++ src/Makefile.in	2011-05-10 23:00:41.185988652 +0200
-@@ -48,7 +48,7 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -65,7 +65,7 @@
  CONFIG_CLEAN_FILES =
  CONFIG_CLEAN_VPATH_FILES =
  am__installdirs = "$(DESTDIR)$(bindir)"
@@ -9,7 +9,7 @@
  am__haserl_SOURCES_DIST = common.c common.h sliding_buffer.c \
  	sliding_buffer.h h_error.c h_error.h h_script.c h_script.h \
  	rfc2388.c rfc2388.h h_bash.c h_bash.h h_lua_common.c \
-@@ -510,16 +510,16 @@
+@@ -533,16 +533,16 @@
  
  
  # lua2c_LIBS ?= -llua -ldl -lm
@@ -35,8 +35,8 @@
  
  @USE_LUA_TRUE@h_lua_common.c : haserl_lualib.inc
  
---- src/haserl_lualib.inc.orig	2011-05-10 23:00:41.195983527 +0200
-+++ src/haserl_lualib.inc	2011-05-10 23:00:41.195983527 +0200
+--- src/haserl_lualib.inc
++++ src/haserl_lualib.inc
 @@ -0,0 +1,97 @@
 +/* This file was automatically generated from haserl_lualib.lua. DO NOT EDIT */
 +

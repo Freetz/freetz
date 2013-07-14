@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 0.9.29)
-$(PKG)_SOURCE:=haserl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4cac9409530200b4a7a82a48ec174800
+$(call PKG_INIT_BIN, 0.9.30)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=e25f1a13f7cfe5993e961803446cd718
 $(PKG)_SITE:=@SF/haserl
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/haserl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/haserl
 
