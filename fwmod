@@ -1048,10 +1048,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 
 		echo1 "generating modules.dep"
-		[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && errsyms="-e"
-		NM=$NM ${TOOLS_DIR}/depmod.pl $errsyms -b "$MODULES_DIR" \
-			-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}.map
-		# add plugin kernel modules for 7270 if plugins are not enabled
+		DEPMOD_TEMP="$(mktemp)"
+		NM=$NM ${TOOLS_DIR}/depmod.pl -e -b "$MODULES_DIR" \
+			-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}.map \
+			2>&1 | tee "$DEPMOD_TEMP"
+		if grep -q "^unresolved symbol " "$DEPMOD_TEMP"; then
+			warn 'Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config?'
+		fi
+		rm -rf "$DEPMOD_TEMP" 2>/dev/null
+		# add plugin kernel modules for 7270v1 if plugins are not enabled
 		if [ "$FREETZ_TYPE_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
 			echo -e "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko\nkernel/drivers/char/audio/avm_audio.ko:\n" >> $MODULES_DIR/modules.dep
 		fi
