@@ -1053,7 +1053,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}.map \
 			2>&1 | tee "$DEPMOD_TEMP"
 		if grep -q "^unresolved symbol " "$DEPMOD_TEMP"; then
-			warn 'Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config?'
+			warn "Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config?"
 		fi
 		rm -rf "$DEPMOD_TEMP" 2>/dev/null
 		# add plugin kernel modules for 7270v1 if plugins are not enabled
