@@ -165,6 +165,9 @@ echo2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@"; }
 
 # Warning message
 warn() { echoX -p "WARNING: " "$@" >&2; }
+warn0() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && warn "$@"; }
+warn1() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && warn "$@"; }
+warn2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && warn "$@"; }
 
 # Error message + exit with specified error code
 error()
