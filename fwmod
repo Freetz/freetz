@@ -1310,6 +1310,8 @@ if [ "$action_names" ]; then
 		echo "         This can result in invalid images!!!" 1>&2
 	fi
 
+	[ "$FW_IMAGES_DIR" ] && mkdir -p "$FW_IMAGES_DIR"
+
 	# Check if firmware is unpacked
 	if [ ! -r "$UNPACKED_FILE" ]; then
 		error 1 "firmware image has to be unpacked before packing"
