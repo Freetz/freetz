@@ -13,9 +13,5 @@ modsed "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"65\"/g" "${FILESYSTEM_
 
 if [ "$FREETZ_PATCH_W920V_LED_MODULE" == "y" ]; then
 	echo1 "changing LED semantics to W920V"
-	if [ "$FREETZ_TYPE_7570_7270" != "y" ]; then
-		cp -a "${DIR}/.tk/original/filesystem/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko"
-	else
-		echo TODO!!!
-	fi
+	cp -a "${DIR}/.tk/original/filesystem/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko" 
 fi

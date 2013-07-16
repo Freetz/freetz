@@ -1,4 +1,4 @@
-isFreetzType 7570_7270 7570_IAD W920V_7570 || return 0
+isFreetzType 7570_7270 || return 0
 
 if [ -z "$FIRMWARE2" ]; then
 	echo "ERROR: no tk firmware" 1>&2
