@@ -612,7 +612,7 @@ function sizeinfo()
 }
 
 # show avm image details
-avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*([0-9]{4}.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # newer 4-digits
+avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # newer 4-digits
 [ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=.*([0-9]{4}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" #older 4-digits
 [ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -n 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=\(FRITZ!Box\|Speedport\)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init |head -n1| sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" #oldest, fon-sl-wlan etc
 avm_fw_produkt="${avm_fw_produkt%% Edition*}"
