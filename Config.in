@@ -396,7 +396,6 @@ choice
 
 	config FREETZ_TYPE_7570_IAD
 		bool "Alice IAD 7570"
-		#		depends on FREETZ_TYPE_7570
 		depends on FREETZ_TYPE_7570 || (FREETZ_TYPE_7270 && FREETZ_TYPE_LANG_EN)
 
 	comment "Hint: Use replace kernel to get max filesystem size"
@@ -408,7 +407,6 @@ choice
 
 	config FREETZ_TYPE_W920V_7570
 		bool "Speedport W920V"
-		#		depends on FREETZ_TYPE_7570
 		depends on FREETZ_TYPE_7570 || (FREETZ_TYPE_7270 && FREETZ_TYPE_LANG_EN)
 		help
 			Enable this to compile a mod image for T-Com Speedport W920V based
@@ -1689,10 +1687,6 @@ menu "Override options"
 			FREETZ_TYPE_W701V_7170 || \
 			FREETZ_TYPE_W900V_7170 || \
 			FREETZ_TYPE_W920V_7570
-
-
-#			((FREETZ_TYPE_7270_V1 || FREETZ_TYPE_7270_V2) && FREETZ_ADD_ANNEX_A_FIRMWARE)
-
 
 	config FREETZ_DL_SITE2
 		string "AVM alien web interface DL Site"      if FREETZ_DL_OVERRIDE
