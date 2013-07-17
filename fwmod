@@ -1024,43 +1024,41 @@ if [ "$DO_MOD" -gt 0 ]; then
 		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 	fi
 
-	if [ "$FREETZ_REPLACE_KERNEL" == "y" -o -n "$(set|grep ^FREETZ_MODULE_.*=y)" ]; then
-		[ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ] && strip_output=" and stripping"
-		echo0 "installing$strip_output modules"
-		for i in \
-		$( \
-			cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}" && \
-			find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
-		)
-		do
-			bn="$(basename "$i")"
-			if [ "$FREETZ_MODULES_ALL" = "y" -o "$(eval "echo \"\$FREETZ_MODULE_$(echo "${bn%\.ko}" | tr '\-+' '_x')\"")" == "y" ]; then
-				sizeinfo "$bn"
-				ko_file_src="${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}/${i}"
-				ko_path_dst="${MODULES_DIR}/kernel/$(dirname "$i")"
-				[ -d "$ko_path_dst" ] || mkdir -p "$ko_path_dst"
-				cp -a $ko_file_src "$ko_path_dst/"
-				if [ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ]; then
-					${ABS_BASE_DIR}/toolchain/kernel/bin/${FREETZ_KERNEL_CROSS}strip -p --strip-unneeded \
-						--remove-section={.comment,.pdr,.mdebug.abi32,.note.gnu.build-id} "$ko_path_dst/$bn"
-				fi
-				sizeinfo mod "$ko_path_dst/$bn"
-			fi
-		done
+	[ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ] && strip_output=" and stripping"
+	echo0 "installing$strip_output modules"
+	for i in \
+	$( \
+		cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}" && \
+		find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
+	); do
+		bn="$(basename "$i")"
+		ko_install="$(eval "echo \"\$FREETZ_MODULE_$(echo "${bn%\.ko}" | tr '\-+' '_x')\"")"
+		[ "$FREETZ_MODULES_ALL" = "y" -o "$ko_install" == "y" ] || continue
+		sizeinfo "$bn"
+		ko_file_src="${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}/${i}"
+		ko_path_dst="${MODULES_DIR}/kernel/$(dirname "$i")"
+		[ -d "$ko_path_dst" ] || mkdir -p "$ko_path_dst"
+		cp -a $ko_file_src "$ko_path_dst/"
+		if [ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ]; then
+			${ABS_BASE_DIR}/toolchain/kernel/bin/${FREETZ_KERNEL_CROSS}strip -p --strip-unneeded \
+				--remove-section={.comment,.pdr,.mdebug.abi32,.note.gnu.build-id} "$ko_path_dst/$bn"
+		fi
+		sizeinfo mod "$ko_path_dst/$bn"
+	done
 
-		echo1 "generating modules.dep"
-		DEPMOD_TEMP="$(mktemp)"
-		NM=$NM ${TOOLS_DIR}/depmod.pl -e -b "$MODULES_DIR" \
-			-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}.map \
-			2>&1 | tee "$DEPMOD_TEMP"
-		if grep -q "^unresolved symbol " "$DEPMOD_TEMP"; then
-			warn "Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config?"
-		fi
-		rm -rf "$DEPMOD_TEMP" 2>/dev/null
-		# add plugin kernel modules for 7270v1 if plugins are not enabled
-		if [ "$FREETZ_TYPE_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
-			echo -e "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko\nkernel/drivers/char/audio/avm_audio.ko:\n" >> $MODULES_DIR/modules.dep
-		fi
+	echo1 "generating modules.dep"
+	DEPMOD_TEMP="$(mktemp)"
+	NM=$NM ${TOOLS_DIR}/depmod.pl -e -b "$MODULES_DIR" \
+		-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}.map \
+		2>&1 | tee "$DEPMOD_TEMP"
+	if grep -q "^unresolved symbol " "$DEPMOD_TEMP"; then
+		warn "Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config?"
+	fi
+	rm -rf "$DEPMOD_TEMP" 2>/dev/null
+	# add plugin kernel modules for 7270v1 if plugins are not enabled
+	if [ "$FREETZ_TYPE_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
+		echo "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko" >> $MODULES_DIR/modules.dep
+		echo "kernel/drivers/char/audio/avm_audio.ko:" >> $MODULES_DIR/modules.dep
 	fi
 
 	kolinecnt="$(cat $MODULES_DIR/modules.dep | wc -l)"
