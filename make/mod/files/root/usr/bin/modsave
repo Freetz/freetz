@@ -46,13 +46,11 @@ case $1 in
 
 		echo -n 'Saving config ... '
 		/usr/bin/modconf save mod
-		if [ -e /etc/static.pkg ]; then
-			for pkg in "$(cat /etc/static.pkg)"; do
-				if [ -r "/etc/default.$pkg/$pkg.cfg" ]; then
-					/usr/bin/modconf save "$pkg"
-				fi
-			done
-		fi
+		for pkg in $(cat /mod/etc/static.pkg 2>/dev/null); do
+			if [ -r "/etc/default.$pkg/$pkg.cfg" ]; then
+				/usr/bin/modconf save "$pkg"
+			fi
+		done
 		echo 'done.'
 
 		save

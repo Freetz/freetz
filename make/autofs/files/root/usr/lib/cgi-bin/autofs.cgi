@@ -22,7 +22,7 @@ cat << EOF
 <h2>$(lang de:"Optionale Aufrufparameter:" en:"Optional commandline parameters:")</h2>
 <p><input type="text" name="cmdline" size="55" maxlength="250" value="$(html "$AUTOFS_CMDLINE")"></p>
 EOF
-if [ -r /etc/external.pkg ]; then
+if [ -r /mod/etc/external.pkg ]; then
 cat << EOF
 <p>
 <input type="hidden" name="external" value="no">

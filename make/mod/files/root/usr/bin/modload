@@ -49,16 +49,14 @@ echo -n 'Loading hosts ... '
 echo 'done.'
 
 echo -n 'Loading config ... '
-if [ -e /etc/static.pkg ]; then
-	for pkg in $(cat /etc/static.pkg) avm; do
-		[ -e "/mod/pkg/$pkg" ] || ln -s / "/mod/pkg/$pkg"
-		lnmod -d "/etc/default.$pkg"
-		lnmod -d "/usr/lib/cgi-bin/$pkg"
-		lnmod -x "/usr/lib/cgi-bin/$pkg.cgi"
-		lnmod -x "/etc/init.d/rc.$pkg"
-		[ -r "/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
-	done
-fi
+for pkg in $(cat /mod/etc/static.pkg 2>/dev/null) avm; do
+	[ -e "/mod/pkg/$pkg" ] || ln -s / "/mod/pkg/$pkg"
+	lnmod -d "/etc/default.$pkg"
+	lnmod -d "/usr/lib/cgi-bin/$pkg"
+	lnmod -x "/usr/lib/cgi-bin/$pkg.cgi"
+	lnmod -x "/etc/init.d/rc.$pkg"
+	[ -r "/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
+done
 /usr/bin/modconf load avm
 echo 'done.'
 

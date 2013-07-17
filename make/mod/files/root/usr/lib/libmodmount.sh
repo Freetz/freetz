@@ -173,23 +173,23 @@ do_mount_locked() {
 		umask $old_umask
 		eventadd 140 "$mnt_name ($mnt_dev)"
 		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully ($fs_type)"
-		if [ -x $rcftpd ]; then                                               # start/enable ftpd
+		if [ -x $rcftpd ]; then                                                   # start/enable ftpd
 			[ -x "$(which inetdctl)" ] && inetdctl enable ftpd || $rcftpd start
 		fi
-		/etc/init.d/rc.swap autostart $mnt_path                               # swap
+		/etc/init.d/rc.swap autostart $mnt_path                                   # swap
 		local autorun="$mnt_path/autorun.sh"
-		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &      # autorun
-		[ -r /etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path & # external
-		[ -x $TR069START ] && $TR069START $mnt_name                           # tr069
-		[ -x /etc/samba_control ] && /etc/samba_control reconfig              # SAMBA reconfiguration
-		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                         # tam
-		rm -f /var/media/NEW_LINK && ln -f -s $mnt_path /var/media/NEW_LINK   # mark last mounted partition
-		msgsend multid update_usb_infos                                       # upnp
+		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &          # autorun
+		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path & # external
+		[ -x $TR069START ] && $TR069START $mnt_name                               # tr069
+		[ -x /etc/samba_control ] && /etc/samba_control reconfig                  # SAMBA reconfiguration
+		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                             # tam
+		rm -f /var/media/NEW_LINK && ln -f -s $mnt_path /var/media/NEW_LINK       # mark last mounted partition
+		msgsend multid update_usb_infos                                           # upnp
 		if [ -x $fritznasdb_control ]; then
 			msgsend upnpd plugin force_notify libmediasrv.so new_partition    # mediasrv
 			$fritznasdb_control new_partition "$mnt_path"                     # fritznasdb
 		fi
-		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done                 # led
+		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done                     # led
 	else
 		case "$fs_type" in
 		"crypto_LUKS")
@@ -272,7 +272,7 @@ do_umount_locked() {
 	local autoend="$mnt_path/autoend.sh"
 	local mnt_dev=`grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//'`        # /dev/sdXY
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
-	[ -r /etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path        # external
+	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
 	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
 	if [ -x $fritznasdb_control ]; then
 		$fritznasdb_control lost_partition $mnt_path                          # fritznasdb

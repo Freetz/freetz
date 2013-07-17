@@ -57,14 +57,14 @@ exec_rcs() {
 		fi
 		EXTERNAL_SERVICES="$MOD_EXTERNAL_OWN_SERVICES"
 	else
-		EXTERNAL_SERVICES="$(cat /etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES"
+		EXTERNAL_SERVICES="$(cat /mod/etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES"
 	fi
 	if [ ! -d "$EXTERNAL_DIRECTORY" ]; then
 		rm -rf "$EXTERNAL_LINK" 2>/dev/null
 		log "Directory could not be found, failed."
 		exit 1
 	fi
-	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
+	for pkg in $(cat /mod/etc/static.pkg 2>/dev/null); do
 		if echo " $EXTERNAL_SERVICES " | grep -q " $pkg "; then
 			[ -x /etc/init.d/rc.$pkg ] && log "$(/etc/init.d/rc.$pkg $1 2>&1)"
 		fi

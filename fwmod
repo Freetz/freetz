@@ -1097,7 +1097,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
 			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
 
-		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
+		if ! grep -q "^$pkg_name$" "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg" >/dev/null 2>&1; then
+			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
+		fi
 
 		pkgfiles="$(find ${PACKAGES_DIR}/${pkg}/root -type f)"
 		excludes="$(cat ${PACKAGES_DIR}/${pkg}/.exclude 2>/dev/null | sed ':a;N;$!ba;s/\n/|/g')"
@@ -1129,7 +1131,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 				modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
 		fi
 
-		grep -q "^$pkg_name$" "${FILESYSTEM_MOD_DIR}/etc/static.pkg" >/dev/null 2>&1 || ( echo "$pkg_name" >> "${FILESYSTEM_MOD_DIR}/etc/static.pkg" )
+		if ! grep -q "^$pkg_name$" "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg" >/dev/null 2>&1; then
+			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
+		fi
 		sizeinfo add "${ADDON_DIR}/${pkg}"
 	done
 

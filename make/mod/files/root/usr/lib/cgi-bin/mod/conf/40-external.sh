@@ -2,7 +2,7 @@ if [ -x /etc/init.d/rc.external ]; then
 check "$MOD_EXTERNAL_WAIT_INFINITE" yes:external_wait_infinite_00 "*":external_wait_infinite_15
 
 sec_begin 'external'
-_services=`cat /etc/external.pkg 2>/dev/null`
+_services=$(cat /mod/etc/external.pkg 2>/dev/null)
 [ -z "$_services" ] && _services=$(lang de:"-keine-" en:"-none-")
 
 cgi_print_textline_p "external_directory" "$MOD_EXTERNAL_DIRECTORY" 55/255 "$(lang de:"Verzeichnis von external" en:"Directory for external"): "

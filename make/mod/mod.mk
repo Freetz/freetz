@@ -16,7 +16,7 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 	[ "$(FREETZ_SKIN_phoenix)" != "y" ] && echo "usr/share/*/phoenix" >> $@; \
 	[ "$(FREETZ_SKIN_newfreetz)" != "y" ] && echo "usr/share/*/newfreetz" >> $@; \
 	[ "$(FREETZ_REMOVE_WEBSRV)" != "y" ] && echo -e "etc/init.d/rc.websrv\nusr/bin/websrv\nusr/lib/cgi-bin/conf.avm/30-websrv.sh" >> $@; \
-	[ "$(EXTERNAL_ENABLED)" != "y" -o "$(EXTERNAL_DOWNLOADER)" == "y" ] && echo "etc/init.d/rc.external" >> $@; \
+	[ "$(EXTERNAL_ENABLED)" != "y" -o "$(EXTERNAL_DOWNLOADER)" == "y" ] && echo -e "etc/init.d/rc.external\netc/external.pkg" >> $@; \
 	[ "$(FREETZ_PATCH_FREETZMOUNT)" != "y" ] && echo -e "usr/lib/libmodmount.sh\nusr/lib/cgi-bin/mod/conf/30-mount.sh" >> $@; \
 	[ "$(FREETZ_REMOVE_BOX_INFO)" == "y" ] && echo "usr/lib/cgi-bin/mod/box_info.cgi" >> $@; \
 	[ "$(FREETZ_REMOVE_FREETZ_INFO)" == "y" ] && echo -e "usr/lib/cgi-bin/mod/do_download_config.cgi\nusr/lib/cgi-bin/mod/info.cgi" >> $@; \
