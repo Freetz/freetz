@@ -192,12 +192,6 @@ GRAPHICS_DIR="${BASE_DIR}/${GRAPHICS_SUBDIR}"
 FAVICON_DIR="${GRAPHICS_DIR}/favicon"
 TAGGING_DIR="${GRAPHICS_DIR}/tagging"
 
-# Package files
-STATIC_PACKAGES_FILE="${BASE_DIR}/.static"
-DYNAMIC_PACKAGES_FILE="${BASE_DIR}/.dynamic"
-STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
-DYNAMIC_ADDON_FILE="${ADDON_DIR}/dynamic.pkg"
-
 # Alien variables
 TK_DIR="${DIR}/.tk/original"
 FIRMWARE_TK_DIR="${TK_DIR}/${FIRMWARE_SUBDIR}"
@@ -751,8 +745,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ -n "$REVISION" ] && REVISION="-$REVISION"
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
-	#delete .packages file
-	rm -f "${PACKAGES_LIST_FILE}"
 
 	for i in $(set|grep -i "^FREETZ_REMOVE_.*=y$"|sed -e "s/^.\{14\}//;s/=.*//"|tr [A-Z] [a-z]|sort); do
 		OPTIONS+=" -$i"
@@ -763,6 +755,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		OPTIONS_ADD+=" +$i"
 	done
 
+	rm -f "${PACKAGES_LIST_FILE}"
 	for pkg in $(static_packages) $(static_addons); do
 		OPTIONS_ADD+=" +$pkg"
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
@@ -1501,7 +1494,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Last, but not least, include .config and addon/static.pkg into firmware
 	# image for further reference, e.g. user support
 	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
-	[ -r "$STATIC_ADDON_FILE" ] && cp "$STATIC_ADDON_FILE" "$FIRMWARE_MOD_DIR/var"
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
 	# Pack firmware image (use old tar for compatibility)
