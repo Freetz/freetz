@@ -616,6 +616,7 @@ avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*([0-9]{4}.*)"/\1/p' ${
 [ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=.*([0-9]{4}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" #older 4-digits
 [ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -n 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=\(FRITZ!Box\|Speedport\)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init |head -n1| sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" #oldest, fon-sl-wlan etc
 avm_fw_produkt="${avm_fw_produkt%% Edition*}"
+avm_fw_produkt="${avm_fw_produkt% }"
 avm_fw_language="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
 avm_fw_language="$avm_fw_language$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| sed 's/.*_//g;s/\.db//g'); do [ "_$x" != "$avm_fw_language" ] && echo -en "-$x"; done; echo)" # other languages
 avm_fw_major="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
