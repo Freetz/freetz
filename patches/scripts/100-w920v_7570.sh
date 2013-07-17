@@ -1,5 +1,6 @@
-isFreetzType W920V_7570 || return 0
 # 7570 firmware on W920V hardware
+isFreetzType W920V_7570 || return 0
+[ -z "$FIRMWARE2" ] && error 1 "no tk firmware"
 
 echo1 "adapt firmware for W920V"
 echo2 "moving default config dir"
@@ -12,6 +13,7 @@ modsed "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ur8_8MB_xilinx_4eth_2ab_
 modsed "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"65\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
 if [ "$FREETZ_PATCH_W920V_LED_MODULE" == "y" ]; then
+	# this is only enabled for fw 04.xx, no module for kernel 2.6.32
 	echo1 "changing LED semantics to W920V"
-	cp -a "${DIR}/.tk/original/filesystem/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko" 
+	cp -a "${DIR}/.tk/original/filesystem/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko"
 fi
