@@ -27,6 +27,7 @@ modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-FON3-7170-alien.pa
 
 if [ ! "$FREETZ_REMOVE_DECT" == "y" ];then
 	echo2 "Add dect sites to webmenu"
+	error 1 "You have to select 'Remove DECT' until this is fixed!"
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/sp2fritz-W900V_7170.patch" || exit 2
 	cp "${DIR}/.tk/original/filesystem/usr/share/ctlmgr/libdect.so" "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr"
 fi
@@ -100,3 +101,4 @@ fi
 # patch install script to accept firmware from FBF on Speedport
 echo1 "applying install patch"
 modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-W900V_7170.patch" || exit 2
+
