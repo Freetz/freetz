@@ -18,7 +18,6 @@ reload() { :; }
 
 case $1 in
 	""|load)
-		[ -r /tmp/flash/crontab.save ] && mv /tmp/flash/crontab.save /tmp/flash/mod/crontab
 		modreg daemon -p mod crond
 		modreg file mod crontab 'crontab' 0 "crontab"
 
