@@ -1,0 +1,11 @@
+--- include/sendmail.c
++++ include/sendmail.c
+@@ -246,7 +246,7 @@
+       /* select timeout */
+         nb_timeout++;
+         logmsg(LOG_ERR, "sendmail() : select() timeout (%d time(s))", nb_timeout);
+-        if (g_max_timeout_number >= nb_timeout) {
++        if (g_max_timeout_number <= nb_timeout) {
+           logmsg(LOG_ERR, "sendmail() : max number of select() timeout reached (%d time(s) max)",
+                  g_max_timeout_number);
+           break;
