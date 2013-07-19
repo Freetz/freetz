@@ -910,6 +910,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		# Fix permissions set by AVM, in particular revoke write permissions for g- and o-users.
 		chmod 644 "${VARTAR_MOD_DIR}/var/tmp/hosts" "${VARTAR_MOD_DIR}/var/tmp/resolv.conf"
 		mkdir -p "${VARTAR_MOD_DIR}/var/tmp/onlinechanged"
+		mkdir -p "${VARTAR_MOD_DIR}/var/mod/etc/onlinechanged"
+		mkdir -p "${VARTAR_MOD_DIR}/var/mod/etc/cron.d"
 		ln -s ../var/tmp/ethers "${FILESYSTEM_MOD_DIR}/etc/ethers"
 		ln -s ../var/tmp/exports "${FILESYSTEM_MOD_DIR}/etc/exports"
 		ln -s ../var/tmp/gshadow "${FILESYSTEM_MOD_DIR}/etc/gshadow"

@@ -37,18 +37,27 @@ echo $EXTERNAL_SERVICES \
   | tee "${EXTERNAL_MOD_DIR}/external.pkg" \
   > "${VARTAR_MOD_DIR}/var/mod/etc/external.pkg"
 
+#dynamic files
+if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
+	for eservice in $EXTERNAL_SERVICES; do
+		eservice_full="$(grep "^${eservice}-" $PACKAGES_LIST_FILE)"
+		EXTERNAL_SCRIPTS+=" $(cd $PACKAGES_DIR/${eservice_full}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+	done
+fi
+
 #own files
-EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
+EXTERNAL_FILES="$EXTERNAL_OWN_FILES $EXTERNAL_SCRIPTS"
 for EXT_FILES in $(find make make/libs -maxdepth 2 -name external.files) kernel/external.files; do
 	. $EXT_FILES
 done
-EXTERNAL_FILES=$(echo $EXTERNAL_FILES | sed -e 's| |\n/|g;s|//\+|/|g' | sort)
+EXTERNAL_FILES=$(echo $EXTERNAL_FILES | sed -e 's| |\n/|g;s|//\+|/|g' | sort -u)
 
 for EXTERNAL_FILE in $EXTERNAL_FILES; do
 	FILENAME=$(basename $EXTERNAL_FILE)
 	if [ -L "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE" -a "$EXTERNAL_LINKS" != "y" ]; then
 		warn "$MESSAGE ${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE is a symbolic link. It will not be processed"
 	else
+		IS_SCRIPT=n
 		EXTERNAL_LINKSUBDIR=""
 		EXTERNAL_TARGETDIR="${EXTERNAL_MOD_DIR}"
 		#subdir
@@ -56,10 +65,17 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 			EXTERNAL_LINKSUBDIR="$(dirname $EXTERNAL_FILE)"
 			EXTERNAL_TARGETDIR+="$EXTERNAL_LINKSUBDIR"
 			mkdir -p "$EXTERNAL_TARGETDIR"
+			#script
+			case $EXTERNAL_FILE in
+				/etc/cron.d/*|/etc/default.*|/etc/init.d/rc.*|/etc/onlinechanged/*|/usr/lib/cgi-bin/*)
+					IS_SCRIPT=y
+					;;
+			esac
 		fi
 		#downloader
 		EXTERNAL_TEMP="${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
 		if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
+			[ "$IS_SCRIPT" != "n" ] && continue
 			FILEPERM=$(ls -l $EXTERNAL_TEMP | awk '{k=0;for(i=0;i<=8;i++)k+=((substr($1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf("%0o",k)}')
 			echo2 "packing $FILENAME.gz for Downloader"
 			gzip -c "$EXTERNAL_TEMP" > "$OUT_DIR/$FILENAME.gz"
@@ -74,9 +90,15 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 		else
 			EXTERNAL_MSG="not found"
 		fi
+		
 		#link file
-		ln -s "/mod/external$EXTERNAL_LINKSUBDIR/$FILENAME" "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
-		echo2 "$EXTERNAL_FILE... $EXTERNAL_MSG & linked"
+		if [ "$IS_SCRIPT" != "n" ]; then
+			EXTERNAL_LINKED=""
+		else
+			EXTERNAL_LINKED=" & linked"
+			ln -s "/mod/external$EXTERNAL_LINKSUBDIR/$FILENAME" "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
+		fi
+		echo2 "$EXTERNAL_FILE... $EXTERNAL_MSG$EXTERNAL_LINKED."
 	fi
 done
 [ $(find $EXTERNAL_MOD_DIR -type f | wc -l) -gt 0 ] && touch "${EXTERNAL_MOD_DIR}/.external"

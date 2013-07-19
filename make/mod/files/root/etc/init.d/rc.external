@@ -66,7 +66,7 @@ exec_rcs() {
 	fi
 	for pkg in $(cat /mod/etc/static.pkg 2>/dev/null); do
 		if echo " $EXTERNAL_SERVICES " | grep -q " $pkg "; then
-			[ -x /etc/init.d/rc.$pkg ] && log "$(/etc/init.d/rc.$pkg $1 2>&1)"
+			[ -x /mod/etc/init.d/rc.$pkg ] && log "$(/mod/etc/init.d/rc.$pkg $1 2>&1)"
 		fi
 	done
 	[ -f $EXTERNAL_CUSTOM_FILE ] && log "$(. $EXTERNAL_CUSTOM_FILE $1 2>&1)"
@@ -98,6 +98,26 @@ start() {
 		done
 	fi
 
+	# create dynamic
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
+	for SERVICE in $(cat /mod/etc/external.pkg); do
+		for src in \
+		  etc/default.$SERVICE \
+		  etc/init.d/rc.$SERVICE \
+		  etc/onlinechanged/*$SERVICE \
+		  etc/cron.d/$SERVICE \
+		  usr/lib/cgi-bin/$SERVICE.cgi \
+		  usr/lib/cgi-bin/$SERVICE \
+		  ; do
+			[ ! -e "${EXTERNAL_LINK}/$src" ] && continue
+	        mkdir -p "${EXTERNAL_LINK}/${src%/*}"
+	        rm -rf "/mod/$src" 2>/dev/null
+	        [ "$EXTERNAL_DYNAMIC_COPY" == "y" ] && cp -r "${EXTERNAL_LINK}/$src" "/mod/$src"
+	        [ "$EXTERNAL_DYNAMIC_LINK" == "y" ] && ln -s "${EXTERNAL_LINK}/$src" "/mod/$src"
+		done
+		[ -r "/mod/etc/default.$SERVICE/$SERVICE.cfg" ] && /usr/bin/modconf load "$SERVICE"
+	done
+
 	exec_rcs load
 
 	log "Starting external finished."
@@ -108,9 +128,24 @@ stop() {
 
 	if [ -e /var/run/shutdown ]; then
 		log -x "Stopping external is skipped because of system shutdown."
-	else
-		exec_rcs unload
+		return
 	fi
+
+	exec_rcs unload
+
+	# remove dynamic
+	for SERVICE in $(cat /mod/etc/external.pkg); do
+		for src in \
+		  etc/default.$SERVICE \
+		  etc/init.d/rc.$SERVICE \
+		  etc/onlinechanged/*$SERVICE \
+		  etc/cron.d/$SERVICE \
+		  usr/lib/cgi-bin/$SERVICE.cgi \
+		  usr/lib/cgi-bin/$SERVICE \
+		  ; do
+	        rm -rf "/mod/$src" 2>/dev/null
+		done
+	done
 
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
 	tar xf /var.tar ./var/mod/etc/external.pkg ./var/mod/etc/static.pkg -C /

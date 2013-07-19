@@ -840,6 +840,37 @@ menu "External processing"
 
 			Not all packages are shown if you disable this.
 
+	config EXTERNAL_DYNAMIC
+		bool "Process scripts"
+		default n
+		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS
+		help
+			Moves scripts out of the image, eg
+			* /etc/default.PKG/
+			* /etc/init.d/rc.PKG
+			* /etc/onlinechanged/*PKG
+			* /etc/cron.d/PKG
+			* /usr/lib/cgi-bin/PKG.cgi
+			* /usr/lib/cgi-bin/PKG/
+			* ...
+		
+	choice
+		prompt "External behaviour"
+		default EXTERNAL_DYNAMIC_LINK
+		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS && EXTERNAL_DYNAMIC
+		help
+			How to use externalised scripts?
+			* copy to ram
+			* link to usb
+		
+		config EXTERNAL_DYNAMIC_COPY
+			bool "copy"
+	
+		config EXTERNAL_DYNAMIC_LINK
+			bool "link"
+	
+	endchoice
+
 	config EXTERNAL_CREATEPAK
 		bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
 		default y
