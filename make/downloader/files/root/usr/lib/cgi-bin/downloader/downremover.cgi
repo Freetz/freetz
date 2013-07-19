@@ -32,7 +32,7 @@ if [ -n "$QUERY_STRING" ]; then
 	case $cmd in
 		remove)
 			echo -n "<pre>"
-			/etc/init.d/rc.downloader remove
+			/mod/etc/init.d/rc.downloader remove
 			echo "</pre>"
 			back_button cgi downloader
 			;;

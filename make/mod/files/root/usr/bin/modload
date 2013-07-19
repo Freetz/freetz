@@ -54,7 +54,7 @@ for pkg in $(cat /mod/etc/static.pkg 2>/dev/null) avm; do
 	lnmod -d "/etc/default.$pkg"
 	lnmod -d "/usr/lib/cgi-bin/$pkg"
 	lnmod -x "/usr/lib/cgi-bin/$pkg.cgi"
-	lnmod -x "/etc/init.d/rc.$pkg"
+	lnmod -x "/mod/etc/init.d/rc.$pkg"
 	[ -r "/mod/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
 done
 /usr/bin/modconf load avm

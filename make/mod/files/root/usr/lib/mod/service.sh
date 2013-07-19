@@ -110,6 +110,6 @@ unset inetd_status
 
 inetd_status() {
 	if [ -e /etc/default.inetd/inetd.cfg ]; then
-		/etc/init.d/rc.inetd status 2> /dev/null
+		/mod/etc/init.d/rc.inetd status 2> /dev/null
 	fi
 }

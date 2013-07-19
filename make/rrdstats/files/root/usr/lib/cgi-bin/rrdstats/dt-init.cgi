@@ -11,7 +11,7 @@ echo "<p>$(lang de:"Initialisiere DigiTemp" en:"Initializing DigiTemp") ... $(la
 
 echo -n '<pre>'
 {
-    /etc/init.d/rc.rrdstats stop
+    /mod/etc/init.d/rc.rrdstats stop
     killall digitemp >/dev/null 2>&1
     mkdir -p /tmp/flash/rrdstats
     cd /tmp

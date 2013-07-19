@@ -292,11 +292,11 @@ install() {
 		ln -sf "$INSTALL_PATH" /var/dtmfbox
 		ln -sf "/usr/sbin/dtmfbox" "$INSTALL_PATH/dtmfbox" 2>/dev/null
 		ln -sf "/usr/lib/libmenu.plugin.so" "$INSTALL_PATH/libmenu.plugin.so" 2>/dev/null
-		ln -sf "/etc/init.d/rc.dtmfbox" "$INSTALL_PATH/rc.dtmfbox" 2>/dev/null
+		ln -sf "/mod/etc/init.d/rc.dtmfbox" "$INSTALL_PATH/rc.dtmfbox" 2>/dev/null
 		ln -sf "/etc/default.dtmfbox" "$INSTALL_PATH/default" 2>/dev/null
 		if [ ! -f "$INSTALL_PATH/dtmfbox" ]; then cp -f "/usr/sbin/dtmfbox" "$INSTALL_PATH"; fi
 		if [ ! -f "$INSTALL_PATH/libmenu.plugin.so" ]; then cp -f "/usr/lib/libmenu.plugin.so" "$INSTALL_PATH"; fi
-		if [ ! -f "$INSTALL_PATH/rc.dtmfbox" ]; then cp -f "/etc/init.d/rc.dtmfbox" "$INSTALL_PATH"; fi
+		if [ ! -f "$INSTALL_PATH/rc.dtmfbox" ]; then cp -f "/mod/etc/init.d/rc.dtmfbox" "$INSTALL_PATH"; fi
 		if [ ! -d "$INSTALL_PATH/default" ]; then cp -Rf "/etc/default.dtmfbox" "$INSTALL_PATH/default"; fi
 	fi
 

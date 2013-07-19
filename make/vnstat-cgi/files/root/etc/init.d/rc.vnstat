@@ -45,7 +45,7 @@ config() {
 
 stop_status() {
 	kill -9 "$(cat $HTTPD_PID_VNS 2>/dev/null)" 2>/dev/null
-	[ -x /etc/init.d/rc.inetd ] && /etc/init.d/rc.inetd config vnstat >/dev/null
+	[ -x /mod/etc/init.d/rc.inetd ] && /mod/etc/init.d/rc.inetd config vnstat >/dev/null
 	modunreg status vnstat stats
 }
 
@@ -59,7 +59,7 @@ start() {
 		webcfg-vns -P $HTTPD_PID_VNS
 	fi
 	modlib_startdaemon $DAEMON_BIN -s -d --config /tmp/flash/vnstat/vnstat.conf
-	[ -x /etc/init.d/rc.inetd ] && //etc/init.d/rc.inetd config vnstat
+	[ -x /mod/etc/init.d/rc.inetd ] && //mod/etc/init.d/rc.inetd config vnstat
 	modreg status vnstat vnstat stats
 }
 

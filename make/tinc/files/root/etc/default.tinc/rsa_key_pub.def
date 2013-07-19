@@ -4,7 +4,7 @@ CAPTION="Tinc: rsa_key.pub ($TINC_SERVER0)"
 DESCRIPTION='$(lang de:"Generierung mit" en:"Generate keys with"): tincd -c /tmp/flash/tinc --generate-keys=2048 && modsave'
 
 CONFIG_FILE="/tmp/flash/tinc/hosts/$TINC_SERVER0"
-CONFIG_SAVE='modsave flash; [ "$(/etc/init.d/rc.tinc status)" == "running" ] && /etc/init.d/rc.tinc restart'
+CONFIG_SAVE='modsave flash; [ "$(/mod/etc/init.d/rc.tinc status)" == "running" ] && /mod/etc/init.d/rc.tinc restart'
 CONFIG_TYPE='text'
 
 TEXT_ROWS=30

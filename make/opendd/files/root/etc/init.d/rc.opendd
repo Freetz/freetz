@@ -7,12 +7,12 @@ DAEMON_LONG_NAME=OpenDD
 set_cron() {
 	CRON_OLD="$(cat /tmp/cron.d/opendd 2>/dev/null)"
 	if [ "$OPENDD_ENABLED" == "yes" -a "$OPENDD_FORCE_UPDATE" == "yes" ]; then
-		CRON_NEW="45 5 * * *  /etc/init.d/rc.opendd cron"
+		CRON_NEW="45 5 * * *  /mod/etc/init.d/rc.opendd cron"
 	fi
 	if [ "$CRON_OLD" != "$CRON_NEW" ] ; then
 		mkdir -p /tmp/cron.d/
 		echo "$CRON_NEW" > /tmp/cron.d/opendd
-		/etc/init.d/rc.crond reload
+		/mod/etc/init.d/rc.crond reload
 	fi
 }
 

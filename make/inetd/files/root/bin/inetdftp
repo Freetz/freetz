@@ -6,7 +6,7 @@ WEBDAVCONTROL=/etc/webdav_control
 
 test -x $WEBDAVCONTROL && $WEBDAVCONTROL start >/dev/null 2>&1 &
 
-/sbin/ftpd $(/etc/init.d/rc.ftpd get_options)
+/sbin/ftpd $(/mod/etc/init.d/rc.ftpd get_options)
 
 test -x $WEBDAVCONTROL && $WEBDAVCONTROL stop_last >/dev/null 2>&1 &
 

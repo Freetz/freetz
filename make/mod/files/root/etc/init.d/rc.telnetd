@@ -36,7 +36,7 @@ case $? in
 		pidof telnetd >/dev/null && telnetd_phone=y
 		;;
 	5)
-		if [ "$(/etc/init.d/rc.inetd status)" == "running" ]; then
+		if [ "$(/mod/etc/init.d/rc.inetd status)" == "running" ]; then
 			# Note negative grep doesn't necessarily mean that telnetd is started by phone.
 			# We could be in the process of switching telnetd to inetd-mode: the (old) inetd
 			# instance might still be running, the config it uses has however no telnetd entry,

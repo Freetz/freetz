@@ -47,7 +47,7 @@ start() {
 	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" != "yes" ]; then
 		webcfg-one -P "$HTTPD_PID_ONE"
 	fi
-	[ -x /etc/init.d/rc.inetd ] && /etc/init.d/rc.inetd config rrdstats
+	[ -x /mod/etc/init.d/rc.inetd ] && /mod/etc/init.d/rc.inetd config rrdstats
 	modreg status rrdstats RRDstats stats
 }
 
@@ -62,7 +62,7 @@ stop_post() {
 stop_status() {
 	kill -9 "$(cat $HTTPD_PID_RRD 2>/dev/null)" 2>/dev/null
 	kill -9 "$(cat $HTTPD_PID_ONE 2>/dev/null)" 2>/dev/null
-	[ -x /etc/init.d/rc.inetd ] && /etc/init.d/rc.inetd config rrdstats >/dev/null
+	[ -x /mod/etc/init.d/rc.inetd ] && /mod/etc/init.d/rc.inetd config rrdstats >/dev/null
 	modunreg status rrdstats rrddt
 	modunreg status rrdstats stats
 }

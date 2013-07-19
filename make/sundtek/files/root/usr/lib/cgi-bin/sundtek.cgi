@@ -21,7 +21,7 @@ echo -n '<pre><FONT SIZE=-1>'
 mediasrv --build 2>&1 | html
 echo '</FONT></pre>'
 
-if [ "$(/etc/init.d/rc.sundtek status 2>/dev/null)" == "running" ]; then
+if [ "$(/mod/etc/init.d/rc.sundtek status 2>/dev/null)" == "running" ]; then
 
 	echo "$(lang de:"Unterst&uuml;tzte Hardware" en:"Supported hardware"):"
 	echo -n '<pre><FONT SIZE=-1>'

@@ -18,7 +18,7 @@ case $1 in
 	""|load)
 		mkdir -p /mod/etc/netatalk
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
-			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
+			ln -s /mod/etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
 		modreg daemon -h -n netatalk-afpd -r rc.$DAEMON_BIN -p netatalk afpd
 
@@ -44,7 +44,7 @@ case $1 in
 		modlib_status
 		;;
 	config)
-		/etc/init.d/rc.netatalk config
+		/mod/etc/init.d/rc.netatalk config
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|reload|status|config]" 1>&2

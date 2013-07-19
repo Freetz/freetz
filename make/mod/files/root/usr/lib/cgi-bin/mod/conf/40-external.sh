@@ -1,4 +1,4 @@
-if [ -x /etc/init.d/rc.external ]; then
+if [ -x /mod/etc/init.d/rc.external ]; then
 check "$MOD_EXTERNAL_WAIT_INFINITE" yes:external_wait_infinite_00 "*":external_wait_infinite_15
 
 sec_begin 'external'
@@ -13,7 +13,7 @@ echo "<p>"
 cgi_print_textline "external_own_services" "$MOD_EXTERNAL_OWN_SERVICES" 55/255 "$(lang de:"Diese selbst definierten Dienste behandeln" en:"Manage these own services"): "
 cat << EOF
 <FONT SIZE=-2><br><br>
-$(lang de:"Hinweis: Namen der /etc/init.d/rc.DAEMON Dateien ohne das f&uuml;hrende rc. und mit Leerzeichen getrennt angeben. " en:"Input the names of /etc/init.d/rc.DAEMON files without rc., separated by space. ")
+$(lang de:"Hinweis: Namen der /mod/etc/init.d/rc.DAEMON Dateien ohne das f&uuml;hrende rc. und mit Leerzeichen getrennt angeben. " en:"Input the names of /mod/etc/init.d/rc.DAEMON files without rc., separated by space. ")
 $(lang de:"Dies kann dazu genutzt werden um nicht externalisierte Dienste die ein USB-Ger&auml;t zum Speichern der Daten ben&ouml;tigen (wie RRDstats, Tor, bip, Xmail oder vnstat-cgi) zu starten und stoppen." en:"This would be helpful if a service is not externalized, but needs your USB-device for storing data-files (like RRDstats, Tor, bip, Xmail or vnstat-cgi).")
 </FONT>
 </p>

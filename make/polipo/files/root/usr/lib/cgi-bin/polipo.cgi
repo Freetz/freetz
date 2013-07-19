@@ -58,7 +58,7 @@ cat << EOF
  </tr>
 </table>
 EOF
-if [ "running" == "$(/etc/init.d/rc.polipo status)" ] && [ "true" != "$POLIPO_DISABLELOCALINTERFACE" ]; then
+if [ "running" == "$(/mod/etc/init.d/rc.polipo status)" ] && [ "true" != "$POLIPO_DISABLELOCALINTERFACE" ]; then
 	echo "<p><a href=http://$(self_host):$(html "$POLIPO_PORT")/polipo/ target=_ >Link $(lang de:"zur" en:"to") Polipo GUI</a></p>"
 fi
 

@@ -5,7 +5,7 @@
 #########
 
 . /lib/mdev/common/log
-if [ ! -x /etc/init.d/rc.samba ]; then
+if [ ! -x /mod/etc/init.d/rc.samba ]; then
 	log_error "samba server start/stop script not found"
 	exit 0
 fi
@@ -126,7 +126,7 @@ reload () {
 case $1 in
 	start)
 		pidof -s -o $$ smbd >/dev/null ||
-			/etc/init.d/rc.samba start | log_info
+			/mod/etc/init.d/rc.samba start | log_info
 		mountpoint_configure
 		reload
 		;;
@@ -135,7 +135,7 @@ case $1 in
 		if pidof -s -o $$ smbd >/dev/null; then
 			if [ 1 -eq $(grep -c '^\[' $SMB_CONF 2>/dev/null || echo 1) ]; then
 				log_info "samba not configured"
-				/etc/init.d/rc.samba stop | log_info
+				/mod/etc/init.d/rc.samba stop | log_info
 			else
 				reload
 			fi

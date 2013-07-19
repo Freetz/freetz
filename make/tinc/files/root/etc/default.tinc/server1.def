@@ -4,7 +4,7 @@ CAPTION="Tinc: Server1 (${TINC_SERVER1:-$(lang de:"deaktiviert" en:"deactivated"
 DESCRIPTION='$(lang de:"Manpage auf" en:"Manpage at") www.die.net: <a target=blank href=http://linux.die.net/man/5/tinc.conf>http://linux.die.net/man/5/tinc.conf</a>'
 
 CONFIG_FILE="/tmp/flash/tinc/hosts/$TINC_SERVER1"
-CONFIG_SAVE='modsave flash; [ "$(/etc/init.d/rc.tinc status)" == "running" ] && /etc/init.d/rc.tinc restart'
+CONFIG_SAVE='modsave flash; [ "$(/mod/etc/init.d/rc.tinc status)" == "running" ] && /mod/etc/init.d/rc.tinc restart'
 [ -z "$TINC_SERVER1" ] && CONFIG_SAVE='false'
 CONFIG_TYPE='text'
 

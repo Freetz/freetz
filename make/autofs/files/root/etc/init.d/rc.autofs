@@ -34,13 +34,13 @@ config() {
 start() {
 	modlib_startdaemon $DAEMON_BIN $AUTOFS_CMDLINE
 	if [ $? -eq 0 -a "$AUTOFS_EXTERNAL" == "yes" -a -r /mod/etc/external.pkg ]; then
-		/etc/init.d/rc.external start $mnt_path >/dev/null 2>&1 &
+		/mod/etc/init.d/rc.external start $mnt_path >/dev/null 2>&1 &
 	fi
 }
 
 stop() {
 	if [ "$AUTOFS_EXTERNAL" == "yes" -a -r /mod/etc/external.pkg ]; then
-		/etc/init.d/rc.external stop $mnt_path >/dev/null 2>&1
+		/mod/etc/init.d/rc.external stop $mnt_path >/dev/null 2>&1
 	fi
 	local current_pid="$(cat $PID_FILE 2>/dev/null)"
 	kill $current_pid 2>/dev/null

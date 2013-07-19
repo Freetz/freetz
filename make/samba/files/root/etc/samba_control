@@ -19,8 +19,8 @@ if [ $# -ge 2 ]; then
 	done
 fi
 
-/etc/init.d/rc.smbd config
-if [ "$(/etc/init.d/rc.smbd status 2>/dev/null)" != "disabled" ]; then
+/mod/etc/init.d/rc.smbd config
+if [ "$(/mod/etc/init.d/rc.smbd status 2>/dev/null)" != "disabled" ]; then
 	killall -HUP smbd
 fi
 

@@ -87,7 +87,7 @@ cat << EOF
 <ul>
 <li><a href="$(href file tor secret_id_key)">$(lang de:"Secret ID Key bearbeiten" en:"Edit secret id key")</a></li>
 EOF
-if [ -x /etc/init.d/rc.avm-firewall ]; then
+if [ -x /mod/etc/init.d/rc.avm-firewall ]; then
 cat << EOF
 <li>$(lang de:"Lokale Portfreigaben einrichten" en:"Edit local port-forwarding"): <a href="$(href cgi avm-firewall)">$(lang de:"hier klicken" en:"click here")</a></li>
 EOF

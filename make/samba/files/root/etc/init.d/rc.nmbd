@@ -8,7 +8,7 @@ CONF_ENABLED=SAMBA_NMBD_ENABLED
 . /etc/init.d/modlibrc
 
 config() {
-	/etc/init.d/rc.samba config
+	/mod/etc/init.d/rc.samba config
 }
 
 start() {
@@ -18,7 +18,7 @@ start() {
 case $1 in
 	""|load)
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
-			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
+			ln -s /mod/etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
 		modreg daemon -n samba-nmbd -r rc.$DAEMON_BIN -p samba nmbd
 

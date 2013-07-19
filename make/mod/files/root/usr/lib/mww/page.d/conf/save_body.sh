@@ -9,7 +9,7 @@ start_stop() {
 	case "$startORstop" in
 		start)
 			local newstatus=$(rc_status ${4-$2})
-			[ "$oldstatus" == inetd -a "$newstatus" != inetd ] && /etc/init.d/rc.inetd config "$package"
+			[ "$oldstatus" == inetd -a "$newstatus" != inetd ] && /mod/etc/init.d/rc.inetd config "$package"
 
 			# NB: This changes daemon's status when switching to inetd mode
 			# and daemon was stopped before. Please review when dynamic
@@ -34,7 +34,7 @@ apply_changes() {
 		mod)
 			start_stop $startORstop swap "$OLDSTATUS_swap"
 			# external
-			if [ -x /etc/init.d/rc.external ]; then
+			if [ -x /mod/etc/init.d/rc.external ]; then
 				if [ "$startORstop" == "stop" ]; then
 					NEW_EXTERNAL_DIRECTORY="$(echo "$settings" | sed -ne "/MOD_EXTERNAL_DIRECTORY/s/MOD_EXTERNAL_DIRECTORY='\(.*\)'/\1/p")"
 					[ "$MOD_EXTERNAL_DIRECTORY" != "$NEW_EXTERNAL_DIRECTORY" ] && RELOAD_external="true"
@@ -44,7 +44,7 @@ apply_changes() {
 			#webcfg
 			if [ "$startORstop" == "start" -a "$OLDSTATUS_webcfg" != "stopped" ]; then
 				echo "$(lang de:"Starte das Freetz-Webinterface in 9 Sekunden neu" en:"Restarting the Freetz webinterface in 9 seconds")!"
-				/etc/init.d/rc.webcfg force-restart 9 >/dev/null 2>&1 &
+				/mod/etc/init.d/rc.webcfg force-restart 9 >/dev/null 2>&1 &
 			fi
 			/usr/lib/mod/reg-status reload
 			/usr/bin/modhosts load

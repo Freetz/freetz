@@ -8,7 +8,7 @@ XMAIL_SSLSUPPORT= XMAIL_SSLVISIBLE=
 # Check for SSL support
 /usr/lib/MailRoot/bin/CtrlClnt 2>&1 | grep -qe ' -S ' && XMAIL_SSLSUPPORT=1
 # Check for installed and running PHPXmail
-[ -e /etc/init.d/rc.phpxmail ] && XMAIL_PHPXMAIL=1
+[ -e /mod/etc/init.d/rc.phpxmail ] && XMAIL_PHPXMAIL=1
 
 check "$XMAIL_ENABLED" yes:auto "*":man
 check "$XMAIL_UNPRIV" yes:unpriv

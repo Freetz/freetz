@@ -2,7 +2,7 @@
 
 ## Store 'clean' environment for later use
 # overwrite AVM's version
-env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
+env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /mod/etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
 
 DAEMON=mod
 . /etc/init.d/modlibrc
@@ -20,7 +20,7 @@ start() {
 	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv smbd; do
 		local pkg_default=/etc/default.$pkg
 		[ -d "$pkg_default" -a ! -e "/mod${pkg_default}" ] && ln -s "$pkg_default" "/mod${pkg_default}"
-		local rc="/etc/init.d/rc.$pkg"
+		local rc="/mod/etc/init.d/rc.$pkg"
 		[ -e "$rc" -a ! -e "/mod$rc" ] && ln -s "$rc" "/mod$rc"
 	done
 
@@ -35,18 +35,18 @@ start() {
 	fi
 
 	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv; do
-		local rc="/etc/init.d/rc.$pkg"
+		local rc="/mod/etc/init.d/rc.$pkg"
 		[ -x "$rc" ] && log "$($rc)"
 	done
 
 	# Static Packages
-	if [ -x /etc/init.d/rc.external ]; then
+	if [ -x /mod/etc/init.d/rc.external ]; then
 		[ "$MOD_EXTERNAL_FREETZ_SERVICES" == "yes" ] && EXTERNAL_SERVICES="$(cat /mod/etc/external.pkg 2>/dev/null)"
 		EXTERNAL_SERVICES=" $EXTERNAL_SERVICES $MOD_EXTERNAL_OWN_SERVICES "
 	fi
 	for pkg in $(cat /etc/static.pkg 2>/dev/null); do
 		[ "$pkg" = mod ] && continue
-		local rc="/etc/init.d/rc.$pkg"
+		local rc="/mod/etc/init.d/rc.$pkg"
 		if [ -x "$rc" ]; then
 			if echo "$EXTERNAL_SERVICES" | grep -q " $pkg "; then
 				log "$pkg will be started by external."
@@ -80,7 +80,7 @@ start() {
 	if [ "$CONFIG_NAND" = 'y' -a -f "$MOD_EXTERNAL_DIRECTORY"/.external ] &&
 		df -P "$MOD_EXTERNAL_DIRECTORY" | tail -n1 | grep -q " /var/media/ftp$"; then
 		log "external detected on nand."
-		/etc/init.d/rc.external start
+		/mod/etc/init.d/rc.external start
 	 fi
 
 	/usr/lib/mod/menu-update
@@ -91,7 +91,7 @@ start() {
 stop_helper() {
 	for pkg in $*; do
 		[ "$pkg" = mod ] && continue
-		local rc="/etc/init.d/rc.$pkg"
+		local rc="/mod/etc/init.d/rc.$pkg"
 		[ -x "$rc" ] && log "$pkg: $($rc stop)"
 	done
 }

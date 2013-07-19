@@ -7,13 +7,13 @@ eval "$(modcgi branding:pkg:number:message:flash mod_cgi)"
 if [ -n "$MOD_CGI_NUMBER" -a "$MOD_CGI_NUMBER" != "+49" ]; then
 	sec_begin '$(lang de:"Hinweis" en:"Remark")'
 	echo "<font color=red><br>"
-	/etc/init.d/rc.smstools3 sendsms $MOD_CGI_FLASH $MOD_CGI_NUMBER $MOD_CGI_MESSAGE
+	/mod/etc/init.d/rc.smstools3 sendsms $MOD_CGI_FLASH $MOD_CGI_NUMBER $MOD_CGI_MESSAGE
 	echo "</font>"
 	sec_end
 fi
 
 list_sms() {
-	/etc/init.d/rc.smstools3 listsms $1 | sed 's/$/<br>/g'
+	/mod/etc/init.d/rc.smstools3 listsms $1 | sed 's/$/<br>/g'
 }
 
 sec_begin '$(lang de:"SMS versenden" en:"Send SMS")'

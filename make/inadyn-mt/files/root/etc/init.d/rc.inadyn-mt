@@ -16,7 +16,7 @@ configure () {
 
 	echo background
 	echo verbose $INADYN_MT_VERBOSE
-	[ -x /etc/init.d/rc.syslogd ] && running=$(/etc/init.d/rc.syslogd status)
+	[ -x /mod/etc/init.d/rc.syslogd ] && running=$(/mod/etc/init.d/rc.syslogd status)
 	if [ "$running" = "running" ]; then
 		echo syslog
 	else

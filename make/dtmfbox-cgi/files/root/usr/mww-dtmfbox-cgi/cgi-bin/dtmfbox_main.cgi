@@ -109,7 +109,7 @@ if [ "${QUERY_STRING}" != "" ]; then
  			  $DTMFBOX_PATH/rc.dtmfbox check_busybox	# Relink busybox
 			  $DTMFBOX_PATH/rc.dtmfbox install bypath	# Reinstall dtmfbox (USB/RAM)
 			else
-			  /etc/init.d/rc.dtmfbox install bypath		# Reinstall dtmfbox (FREETZ)
+			  /mod/etc/init.d/rc.dtmfbox install bypath		# Reinstall dtmfbox (FREETZ)
 			fi
 
 			echo -n "</pre>"

@@ -109,7 +109,7 @@ modlib_add_user_and_group() {
 #	use CONF_ENABLED for other variablename with manual/automatic/inetd in .cfg-file
 modlib_check_running() {
 	[ -n "$FORCE_STATUS" ] && return $FORCE_STATUS
-	if [ -x /etc/init.d/rc.inetd ]; then
+	if [ -x /mod/etc/init.d/rc.inetd ]; then
 		[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
 	fi
 	if [ -n "$DAEMON_CHECK" ]; then
@@ -208,7 +208,7 @@ modlib_start() {
 		echo "${DAEMON_LONG_NAME} is disabled." 1>&2
 		exit 1
 	fi
-	if [ "$DAEMON_ENABLED" == "inetd" -a ! -x /etc/init.d/rc.inetd ]; then
+	if [ "$DAEMON_ENABLED" == "inetd" -a ! -x /mod/etc/init.d/rc.inetd ]; then
 		echo "WARNING: ${DAEMON_LONG_NAME} could not find inetd." 1>&2
 	fi
 
@@ -223,7 +223,7 @@ modlib_start() {
 			;;
 		5)
 			config
-			/etc/init.d/rc.inetd config $DAEMON
+			/mod/etc/init.d/rc.inetd config $DAEMON
 			;;
 		*)
 			echo "${DAEMON_LONG_NAME} start prohibited, status is uncertain!" 1>&2
@@ -235,9 +235,9 @@ modlib_start() {
 # modlib_force_start
 #   forces start of the daemon
 modlib_force_start() {
-	if [ -x /etc/init.d/rc.inetd ]; then
+	if [ -x /mod/etc/init.d/rc.inetd ]; then
 		config
-		/etc/init.d/rc.inetd config $DAEMON
+		/mod/etc/init.d/rc.inetd config $DAEMON
 	fi
 	modlib_start
 }

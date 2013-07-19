@@ -27,12 +27,12 @@ run() {
 set_cron() {
 	local HTPDATE_CRON_OLD="$(cat /tmp/cron.d/htpdate 2>/dev/null)"
 	if [ "$HTPDATE_ENABLED" == "yes" ]; then
-		local HTPDATE_CRON_NEW="$HTPDATE_CRON_INT  /etc/init.d/rc.htpdate cron"
+		local HTPDATE_CRON_NEW="$HTPDATE_CRON_INT  /mod/etc/init.d/rc.htpdate cron"
 	fi
 	if [ "$HTPDATE_CRON_OLD" != "$HTPDATE_CRON_NEW" ] ; then
 		mkdir -p /tmp/cron.d/
 		echo "$HTPDATE_CRON_NEW" > /tmp/cron.d/htpdate
-		/etc/init.d/rc.crond reload
+		/mod/etc/init.d/rc.crond reload
 	fi
 
 	run

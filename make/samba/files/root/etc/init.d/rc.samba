@@ -6,11 +6,11 @@ DAEMON_CONFIG=/mod/etc/samba/smb.conf
 . /etc/init.d/modlibrc
 
 do_smbd() {
-	/etc/init.d/rc.smbd $1
+	/mod/etc/init.d/rc.smbd $1
 }
 
 do_nmbd() {
-	[ -x "$(which nmbd)" -o -L "$(which nmbd)" ] && /etc/init.d/rc.nmbd $1
+	[ -x "$(which nmbd)" -o -L "$(which nmbd)" ] && /mod/etc/init.d/rc.nmbd $1
 }
 
 config() {

@@ -1,8 +1,8 @@
 apply_changes()
 {
-	[ -x /etc/init.d/rc.nmbd ] && start_stop $1 $2 $nmbd_oldstatus nmbd
+	[ -x /mod/etc/init.d/rc.nmbd ] && start_stop $1 $2 $nmbd_oldstatus nmbd
 	start_stop $1 $2 $smbd_oldstatus smbd
 }
 
-[ -x /etc/init.d/rc.nmbd ] && nmbd_oldstatus=$(/etc/init.d/rc.nmbd status)
-smbd_oldstatus=$(/etc/init.d/rc.smbd status)
+[ -x /mod/etc/init.d/rc.nmbd ] && nmbd_oldstatus=$(/mod/etc/init.d/rc.nmbd status)
+smbd_oldstatus=$(/mod/etc/init.d/rc.smbd status)

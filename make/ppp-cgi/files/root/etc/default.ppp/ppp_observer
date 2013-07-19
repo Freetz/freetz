@@ -15,7 +15,7 @@ bisbald () {
 	HURET=1
 	while [ $HURET -ne 0 ]; do
 		[ "$PPP_FALLBACK" != 'yes' ] || echo -e "\n$(date): HANGUP" >> $PPP_FABALOG
-		/etc/init.d/rc.ppp disconnect
+		/mod/etc/init.d/rc.ppp disconnect
 		HURET=$?
 	done
 }

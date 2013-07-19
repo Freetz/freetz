@@ -18,7 +18,7 @@ if [ "$result" -ne 0 ]; then
 else
 	echo '<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>'
 	echo '<p>$(lang de:"Starte Weboberfl&auml;che neu ..." en:"Restarting webcfg ...")</p>'
-	/etc/init.d/rc.webcfg restart > /dev/null 2>&1
+	/mod/etc/init.d/rc.webcfg restart > /dev/null 2>&1
 
 	#XMail admin account
 	if [ -x /usr/lib/MailRoot/bin/XMCrypt ]; then
@@ -35,7 +35,7 @@ else
 					echo -e "\"$MOD_HTTPD_USER\"\t\"$xmcryptpass\""
 				) > $XMAIL_MAILLOCATION/ctrlaccounts.tab
 
-				#/etc/init.d/rc.xmail restart
+				#/mod/etc/init.d/rc.xmail restart
 
 				#PHPXmail server.php
 				[ -d /usr/mww/phpxmail ] && (

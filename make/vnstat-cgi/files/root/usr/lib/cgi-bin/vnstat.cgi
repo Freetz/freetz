@@ -57,7 +57,7 @@ $(lang de:"Zus&auml;tzlichen Webserver aktiveren auf Port" en:"Activate addition
 EOF
 
 if [ "$VNSTAT_WEBENABLED" = "yes" ]; then
-if [ -x /etc/init.d/rc.inetd ]; then
+if [ -x /mod/etc/init.d/rc.inetd ]; then
 cat << EOF
 <p>
 <input type="hidden" name="web_inetd" value="no">
