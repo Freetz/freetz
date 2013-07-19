@@ -2,7 +2,7 @@
 
 if  $(echo "$QUERY_STRING" | grep -q genconfigname ); then
 	NAME=${QUERY_STRING##*genconfigname=}
-	sh /etc/default.openvpn/generate_virtual_pkg "$NAME"
+	sh /mod/etc/default.openvpn/generate_virtual_pkg "$NAME"
 	sed -i "/$NAME/ d" /tmp/flash/openvpn/configs
 	echo "$NAME" >> /tmp/flash/openvpn/configs
 fi

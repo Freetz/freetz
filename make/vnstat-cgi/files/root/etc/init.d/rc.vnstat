@@ -75,7 +75,7 @@ case $1 in
 		modlib_add_httpd_symlink vns
 
 		[ ! -d "/tmp/flash/vnstat" ] && mkdir -p /tmp/flash/vnstat
-		[ ! -e "/tmp/flash/vnstat/vnstat.conf" ] && /etc/default.vnstat/vnstat_conf > /tmp/flash/vnstat/vnstat.conf
+		[ ! -e "/tmp/flash/vnstat/vnstat.conf" ] && /mod/etc/default.vnstat/vnstat_conf > /tmp/flash/vnstat/vnstat.conf
 
 		modreg file vnstat conf 'vnstat.conf' 1 "vnstat_conf"
 		modreg cgi vnstat vnstat

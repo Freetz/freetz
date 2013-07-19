@@ -6,7 +6,7 @@ DAEMON=php
 case $1 in
 	""|load)
 		[ ! -d /tmp/flash/$DAEMON ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e /tmp/flash/php.ini ] && cat /etc/default.$DAEMON/php.ini > /tmp/flash/php.ini
+		[ ! -e /tmp/flash/php.ini ] && cat /mod/etc/default.$DAEMON/php.ini > /tmp/flash/php.ini
 
 		modreg daemon --hide $DAEMON
 		modreg file $DAEMON config 'php.ini' 0 "php_config"

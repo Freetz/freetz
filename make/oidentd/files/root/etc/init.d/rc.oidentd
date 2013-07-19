@@ -11,7 +11,7 @@ start() {
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/oidentd_conf > $DAEMON_CONFIG
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/oidentd_conf > $DAEMON_CONFIG
 
 		modreg file $DAEMON conf 'oidentd.conf' 1 "oidentd_conf"
 		modreg cgi $DAEMON oidentd

@@ -7,9 +7,9 @@ case $1 in
 		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
 
-		[ ! -e "/tmp/flash/ppp/chap-secrets" -a ! -e /tmp/flash/ppp/chap-secrets ] && /etc/default.pppd/chap_secrets > /tmp/flash/ppp/chap-secrets
-		#[ ! -e "/tmp/flash/ppp/pap-secrets" -a ! -e /tmp/flash/ppp/pap-secrets ] && /etc/default.pppd/pap_secrets > /tmp/flash/ppp/pap-secrets
-		#[ ! -e "/tmp/flash/ppp/options" -a ! -e /tmp/flash/ppp/options ] && /etc/default.pppd/pppd_options > /tmp/flash/ppp/options
+		[ ! -e "/tmp/flash/ppp/chap-secrets" -a ! -e /tmp/flash/ppp/chap-secrets ] && /mod/etc/default.pppd/chap_secrets > /tmp/flash/ppp/chap-secrets
+		#[ ! -e "/tmp/flash/ppp/pap-secrets" -a ! -e /tmp/flash/ppp/pap-secrets ] && /mod/etc/default.pppd/pap_secrets > /tmp/flash/ppp/pap-secrets
+		#[ ! -e "/tmp/flash/ppp/options" -a ! -e /tmp/flash/ppp/options ] && /mod/etc/default.pppd/pppd_options > /tmp/flash/ppp/options
 
 		[ -e "/tmp/flash/ppp/chap-secrets" -a ! -e /mod/etc/ppp/chap-secrets ] && ln -s /tmp/flash/ppp/chap-secrets /mod/etc/ppp/chap-secrets
 		#[ -e "/tmp/flash/ppp/pap-secrets" -a ! -e /mod/etc/ppp/pap-secrets ] && ln -s /tmp/flash/ppp/pap_secrets /mod/etc/ppp/pap-secrets

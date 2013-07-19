@@ -13,7 +13,7 @@ cat << EOF
 <input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
 EOF
-if [ -e "/etc/default.inetd/inetd.cfg" ]; then
+if [ -e "/mod/etc/default.inetd/inetd.cfg" ]; then
 cat << EOF
 <input id="e3" type="radio" name="enabled" value="inetd"$inetd_chk><label for="e3"> $(lang de:"Inetd" en:"Inetd")</label>
 EOF

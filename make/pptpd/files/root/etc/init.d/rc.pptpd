@@ -8,9 +8,9 @@ config() {
 	rm -f /mod/etc/ppp/ip-up
 	rm -f /mod/etc/ppp/ip-down
 	[ -x "/tmp/flash/ppp/pppd_ip-up" ] && /tmp/flash/ppp/pppd_ip-up > /mod/etc/ppp/ip-up
-	[ ! -e "/mod/etc/ppp/ip-up" ] && /etc/default.pppd/pppd_ip-up > /mod/etc/ppp/ip-up
+	[ ! -e "/mod/etc/ppp/ip-up" ] && /mod/etc/default.pppd/pppd_ip-up > /mod/etc/ppp/ip-up
 	[ -x "/tmp/flash/ppp/pppd_ip-down" ] && /tmp/flash/ppp/pppd_ip-down > /mod/etc/ppp/ip-down
-	[ ! -e "/mod/etc/ppp/ip-down" ] && /etc/default.pppd/pppd_ip-down > /mod/etc/ppp/ip-down
+	[ ! -e "/mod/etc/ppp/ip-down" ] && /mod/etc/default.pppd/pppd_ip-down > /mod/etc/ppp/ip-down
 	chmod 755 /mod/etc/ppp/ip-up
 	chmod 755 /mod/etc/ppp/ip-down
 }
@@ -35,8 +35,8 @@ case $1 in
 		[ ! -d "/tmp/flash/ppp" ] && mkdir -p /tmp/flash/ppp
 		[ ! -d "/mod/etc/ppp" ] && mkdir -p /mod/etc/ppp
 
-		[ ! -e "/tmp/flash/ppp/options.pptpd" ] && /etc/default.${DAEMON}/pptpd_options > /tmp/flash/ppp/options.pptpd
-		[ ! -e "/tmp/flash/ppp/pptpd.conf" ] && /etc/default.${DAEMON}/pptpd_conf > /tmp/flash/ppp/pptpd.conf
+		[ ! -e "/tmp/flash/ppp/options.pptpd" ] && /mod/etc/default.${DAEMON}/pptpd_options > /tmp/flash/ppp/options.pptpd
+		[ ! -e "/tmp/flash/ppp/pptpd.conf" ] && /mod/etc/default.${DAEMON}/pptpd_conf > /tmp/flash/ppp/pptpd.conf
 
 		[ ! -e "/mod/etc/ppp/options.pptpd" ] && ln -s /tmp/flash/ppp/options.pptpd /mod/etc/ppp/options.pptpd
 		[ ! -e "/mod/etc/ppp/pptpd.conf" ] && ln -s /tmp/flash/ppp/pptpd.conf /mod/etc/ppp/pptpd.conf

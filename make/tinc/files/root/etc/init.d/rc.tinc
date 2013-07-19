@@ -35,7 +35,7 @@ case $1 in
 		[ ! -d "/tmp/flash/$DAEMON/hosts" ] && mkdir -p /tmp/flash/$DAEMON/hosts
 		rm -rf "/tmp/flash/$DAEMON/$DAEMON.conf" 2>/dev/null
 		ln -s "/mod/etc/$DAEMON.conf" "/tmp/flash/$DAEMON/$DAEMON.conf"
-		/etc/default.tinc/default-config.sh
+		/mod/etc/default.tinc/default-config.sh
 
 		modreg file $DAEMON server1      Server1      1 server1
 		modreg file $DAEMON server2      Server2      1 server2

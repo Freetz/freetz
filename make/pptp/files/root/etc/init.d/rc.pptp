@@ -16,11 +16,11 @@ start() {
 	rm -f /mod/etc/ppp/ip-up
 	rm -f /mod/etc/ppp/ip-down
 	[ -x /tmp/flash/ppp/peers/pptp_peer ] && /tmp/flash/ppp/peers/pptp_peer > /mod/etc/ppp/peers/pptp
-	[ ! -e /mod/etc/ppp/peers/pptp ] && /etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
+	[ ! -e /mod/etc/ppp/peers/pptp ] && /mod/etc/default.${DAEMON}/pptp_peer > /mod/etc/ppp/peers/pptp
 	[ -x /tmp/flash/ppp/pppd_ip-up ] && /tmp/flash/ppp/pppd_ip-up > /mod/etc/ppp/ip-up
-	[ ! -e /mod/etc/ppp/ip-up ] && /etc/default.pppd/pppd_ip-up > /mod/etc/ppp/ip-up
+	[ ! -e /mod/etc/ppp/ip-up ] && /mod/etc/default.pppd/pppd_ip-up > /mod/etc/ppp/ip-up
 	[ -x /tmp/flash/ppp/pppd_ip-down ] && /tmp/flash/ppp/pppd_ip-down > /mod/etc/ppp/ip-down
-	[ ! -e /mod/etc/ppp/ip-down ] && /etc/default.pppd/pppd_ip-down > /mod/etc/ppp/ip-down
+	[ ! -e /mod/etc/ppp/ip-down ] && /mod/etc/default.pppd/pppd_ip-down > /mod/etc/ppp/ip-down
 	chmod 755 /mod/etc/ppp/ip-up
 	chmod 755 /mod/etc/ppp/ip-down
 
@@ -50,7 +50,7 @@ start() {
 			if [ -x /var/tmp/flash/ppp/pptp_restart ]; then
 				/var/tmp/flash/ppp/pptp_restart &
 			else
-				/etc/default.pptp/pptp_restart &
+				/mod/etc/default.pptp/pptp_restart &
 			fi
 			exitval=$?
 			if [ "$exitval" -eq 0 ]; then
@@ -92,7 +92,7 @@ case $1 in
 		[ ! -d /tmp/flash/ppp ] && mkdir -p /tmp/flash/ppp
 		[ ! -d /mod/etc/ppp/peers ] && mkdir -p /mod/etc/ppp/peers
 
-		[ ! -e /tmp/flash/ppp/options.pptp ] && /etc/default.${DAEMON}/pptp_options > /tmp/flash/ppp/options.pptp
+		[ ! -e /tmp/flash/ppp/options.pptp ] && /mod/etc/default.${DAEMON}/pptp_options > /tmp/flash/ppp/options.pptp
 		[ -e /tmp/flash/ppp/options.pptp -a ! -e /mod/etc/ppp/options.pptp ] && ln -s /tmp/flash/ppp/options.pptp /mod/etc/ppp/options.pptp
 
 		modreg cgi 'pptp' 'PPTP'

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if  $(echo "$QUERY_STRING" | grep -q dogencert ); then
-        sh /etc/default.shellinabox/generate_cert.sh
+        sh /mod/etc/default.shellinabox/generate_cert.sh
         echo '<textarea id="certout">'
         cat /tmp/shellinabox_certificate.pem
         echo '</textarea>'

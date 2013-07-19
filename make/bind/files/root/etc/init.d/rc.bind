@@ -38,7 +38,7 @@ case $1 in
 
 		mkdir -p "/tmp/flash/${DAEMON}"
 
-		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/${DAEMON_BIN}_conf > $DAEMON_CONFIG
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/${DAEMON_BIN}_conf > $DAEMON_CONFIG
 
 		modreg cgi "$DAEMON" "Bind"
 		modreg daemon $DAEMON

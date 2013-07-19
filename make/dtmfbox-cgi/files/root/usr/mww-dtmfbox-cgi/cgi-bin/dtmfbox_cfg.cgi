@@ -1,7 +1,7 @@
 #!/bin/sh
 DTMFBOX_VERSION="v0.5.0"
 
-if [ -d "/etc/default.dtmfbox" ]; then FREETZ="1"; else FREETZ="0"; fi		# USB/Standalone=0 | Freetz=1
+if [ -d "/mod/etc/default.dtmfbox" ]; then FREETZ="1"; else FREETZ="0"; fi		# USB/Standalone=0 | Freetz=1
 
 let DTMFBOX_MAX_ACCOUNTS=10							# Max. accounts
 let DTMFBOX_MAX_SAVE_LIMIT=61440						# Max. size of /var/flash/debug.cfg

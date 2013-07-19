@@ -15,11 +15,11 @@ start() {
 	MASK=$(grep mask /var/mod/etc/vpnc.conf | sed -e 's/#mask //g')
 
 	if [ $NETWORK != "0.0.0.0" ]; then
-		sed -e 's/#set -x/INTERNAL_IP4_DNS=\nCISCO_SPLIT_INC=1\nCISCO_SPLIT_INC_0_ADDR='$NETWORK'\nCISCO_SPLIT_INC_0_MASK='$MASK'\nCISCO_SPLIT_INC_0_MASKLEN=22\nCISCO_SPLIT_INC_0_PROTOCOL=0\nCISCO_SPLIT_INC_0_SPORT=0\nCISCO_SPLIT_INC_0_DPORT=0\n\n#set -x\n/g' /etc/default.vpnc/vpnc-script > /var/tmp/vpnc-script
+		sed -e 's/#set -x/INTERNAL_IP4_DNS=\nCISCO_SPLIT_INC=1\nCISCO_SPLIT_INC_0_ADDR='$NETWORK'\nCISCO_SPLIT_INC_0_MASK='$MASK'\nCISCO_SPLIT_INC_0_MASKLEN=22\nCISCO_SPLIT_INC_0_PROTOCOL=0\nCISCO_SPLIT_INC_0_SPORT=0\nCISCO_SPLIT_INC_0_DPORT=0\n\n#set -x\n/g' /mod/etc/default.vpnc/vpnc-script > /var/tmp/vpnc-script
 		chmod +x /var/tmp/vpnc-script
 		VPNC_SCRIPT="/var/tmp/vpnc-script"
 	else
-		VPNC_SCRIPT="/etc/default.vpnc/vpnc-script"
+		VPNC_SCRIPT="/mod/etc/default.vpnc/vpnc-script"
 	fi
 
 	modlib_startdaemon $DAEMON --script $VPNC_SCRIPT /mod/etc/$DAEMON.conf

@@ -39,13 +39,13 @@ configure() {
 	fi
 	if [ ! -e "$XMAIL_MAILLOCATION/server.tab" ]; then
 		echo -n 'initialzing mail location folder with default values ... '
-		tar -C $XMAIL_MAILLOCATION -xf /etc/default.$DAEMON/default_config/default_config.tar
+		tar -C $XMAIL_MAILLOCATION -xf /mod/etc/default.$DAEMON/default_config/default_config.tar
 		echo 'done.'
 	else
-		for i in $(tar -tf /etc/default.$DAEMON/default_config/default_config.tar); do
+		for i in $(tar -tf /mod/etc/default.$DAEMON/default_config/default_config.tar); do
 			[ "${i:0:2}" == "./" ] && ii=${i:2}
 			[ ! -z "$ii" ] && [ ! -e "$XMAIL_MAILLOCATION/$ii" ] && tar -C $XMAIL_MAILLOCATION \
-				-xf /etc/default.$DAEMON/default_config/default_config.tar $i
+				-xf /mod/etc/default.$DAEMON/default_config/default_config.tar $i
 		done
 	fi
 	[ -e "$XMAIL_MAILLOCATION/tmp" ] || mkdir $XMAIL_MAILLOCATION/tmp

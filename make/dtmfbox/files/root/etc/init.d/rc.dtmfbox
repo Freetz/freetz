@@ -23,7 +23,7 @@ fi
 if [ "$DTMFBOX_INSTALLED" = "1" ]; then export PATH=$PATH:/var/dtmfbox; export LD_LIBRARY_PATH=/var/dtmfbox; fi
 
 # Using Freez-Mod?
-if [ -d "/etc/default.dtmfbox" ]; then FREETZ="1"; else FREETZ="0"; fi
+if [ -d "/mod/etc/default.dtmfbox" ]; then FREETZ="1"; else FREETZ="0"; fi
 
 # Check, if dtmfbox is already installed
 #
@@ -293,11 +293,11 @@ install() {
 		ln -sf "/usr/sbin/dtmfbox" "$INSTALL_PATH/dtmfbox" 2>/dev/null
 		ln -sf "/usr/lib/libmenu.plugin.so" "$INSTALL_PATH/libmenu.plugin.so" 2>/dev/null
 		ln -sf "/mod/etc/init.d/rc.dtmfbox" "$INSTALL_PATH/rc.dtmfbox" 2>/dev/null
-		ln -sf "/etc/default.dtmfbox" "$INSTALL_PATH/default" 2>/dev/null
+		ln -sf "/mod/etc/default.dtmfbox" "$INSTALL_PATH/default" 2>/dev/null
 		if [ ! -f "$INSTALL_PATH/dtmfbox" ]; then cp -f "/usr/sbin/dtmfbox" "$INSTALL_PATH"; fi
 		if [ ! -f "$INSTALL_PATH/libmenu.plugin.so" ]; then cp -f "/usr/lib/libmenu.plugin.so" "$INSTALL_PATH"; fi
 		if [ ! -f "$INSTALL_PATH/rc.dtmfbox" ]; then cp -f "/mod/etc/init.d/rc.dtmfbox" "$INSTALL_PATH"; fi
-		if [ ! -d "$INSTALL_PATH/default" ]; then cp -Rf "/etc/default.dtmfbox" "$INSTALL_PATH/default"; fi
+		if [ ! -d "$INSTALL_PATH/default" ]; then cp -Rf "/mod/etc/default.dtmfbox" "$INSTALL_PATH/default"; fi
 	fi
 
 	echo "Restoring defaults ..."

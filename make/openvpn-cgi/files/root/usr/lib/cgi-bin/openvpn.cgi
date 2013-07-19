@@ -136,7 +136,7 @@ cat << EOF
 	</td>
 	<td>
 EOF
-if [ -e "/etc/default.inetd/inetd.cfg" -a $OPENVPN_CONFIG_COUNT -le 1 ]; then
+if [ -e "/mod/etc/default.inetd/inetd.cfg" -a $OPENVPN_CONFIG_COUNT -le 1 ]; then
 cat << EOF
 	  <input id="id_act_start_inet" type="radio" name="my_enabled" onclick='(local_autostart[act_conf]="inetd"); changeval();'>
 	  <label for="id_act_start_inet">Inetd</label>

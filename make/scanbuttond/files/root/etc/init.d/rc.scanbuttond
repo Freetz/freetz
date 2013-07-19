@@ -7,7 +7,7 @@ DAEMON_LONG_NAME="ScanButton daemon"
 config() {
 	local CONFDIR=/mod/etc/scanbuttond
 	[ ! -d $CONFDIR ] && mkdir -p $CONFDIR
-	[ ! -e $CONFDIR/meta.conf ] && ln -sf /etc/default.scanbuttond/meta.conf $CONFDIR/meta.conf
+	[ ! -e $CONFDIR/meta.conf ] && ln -sf /mod/etc/default.scanbuttond/meta.conf $CONFDIR/meta.conf
 	echo "$SCANBUTTOND_BUTTONPRESSED_SCRIPT" > $CONFDIR/buttonpressed.sh
 	echo "$SCANBUTTOND_INITSCANNER_SCRIPT" > $CONFDIR/initscanner.sh
 	chmod +x $CONFDIR/*.sh

@@ -33,8 +33,8 @@ start() {
 	modprobe ppp-deflate
 	modprobe slhc
 
-	start-stop-daemon -n ppp_observer -a /etc/default.ppp/ppp_observer -b -q -S
-	[ -n "$PPP_DIAGTTY" ] && start-stop-daemon -n ppp_logger -a /etc/default.ppp/ppp_logger -b -q -S
+	start-stop-daemon -n ppp_observer -a /mod/etc/default.ppp/ppp_observer -b -q -S
+	[ -n "$PPP_DIAGTTY" ] && start-stop-daemon -n ppp_logger -a /mod/etc/default.ppp/ppp_logger -b -q -S
 	echo 'done.'
 }
 
@@ -63,8 +63,8 @@ case $1 in
 		[ ! -d "/tmp/flash/ppp/peers" ] && mkdir -p /tmp/flash/ppp/peers
 		[ ! -e "/mod/etc/ppp/peers" ] && ln -s /tmp/flash/ppp/peers /mod/etc/ppp/peers
 
-		[ ! -e "/tmp/flash/ppp/peers/dun" ] && /etc/default.${DAEMON}/peers_options > /tmp/flash/ppp/peers/dun
-		[ ! -e "/tmp/flash/ppp/peers/dun.chat" ] && /etc/default.${DAEMON}/peers_chat > /tmp/flash/ppp/peers/dun.chat
+		[ ! -e "/tmp/flash/ppp/peers/dun" ] && /mod/etc/default.${DAEMON}/peers_options > /tmp/flash/ppp/peers/dun
+		[ ! -e "/tmp/flash/ppp/peers/dun.chat" ] && /mod/etc/default.${DAEMON}/peers_chat > /tmp/flash/ppp/peers/dun.chat
 
 		modreg cgi 'ppp' 'PPP'
 		modreg daemon $DAEMON

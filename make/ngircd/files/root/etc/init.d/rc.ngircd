@@ -11,7 +11,7 @@ start() {
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$DAEMON_CONFIG" ] && /etc/default.$DAEMON/ngircd_conf > $DAEMON_CONFIG
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/ngircd_conf > $DAEMON_CONFIG
 
 		modreg cgi 'ngircd' 'ngIRCd'
 		modreg daemon $DAEMON
