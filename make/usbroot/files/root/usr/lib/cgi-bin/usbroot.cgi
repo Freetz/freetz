@@ -6,7 +6,7 @@
 # radio group dis-/enable
 check "$USBROOT_ENABLED" yes:e1 "*":e2
 # current state
-if [ "$(/etc/init.d/rc.usbroot status)" == "running" ]; then
+if [ "$(/mod/etc/init.d/rc.usbroot status)" == "running" ]; then
 	cur_state="$(lang de:"Aktiviert" en:"Active")"
 else
 	cur_state="$(lang de:"Inaktiv" en:"Inactive")"
