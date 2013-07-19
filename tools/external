@@ -33,7 +33,9 @@ fi
 for EXTERNAL_SERVICE in $(find make -maxdepth 2 -name external.services); do
 	. $EXTERNAL_SERVICE
 done
-echo $EXTERNAL_SERVICES > "${VARTAR_MOD_DIR}/var/mod/etc/external.pkg"
+echo $EXTERNAL_SERVICES \
+  | tee "${EXTERNAL_MOD_DIR}/external.pkg" \
+  > "${VARTAR_MOD_DIR}/var/mod/etc/external.pkg"
 
 #own files
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES"
@@ -51,7 +53,7 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 		EXTERNAL_TARGETDIR="${EXTERNAL_MOD_DIR}"
 		#subdir
 		if [ "$EXTERNAL_SUBDIRS" == "y" ]; then
-			EXTERNAL_LINKSUBDIR="`dirname $EXTERNAL_FILE`"
+			EXTERNAL_LINKSUBDIR="$(dirname $EXTERNAL_FILE)"
 			EXTERNAL_TARGETDIR+="$EXTERNAL_LINKSUBDIR"
 			mkdir -p "$EXTERNAL_TARGETDIR"
 		fi

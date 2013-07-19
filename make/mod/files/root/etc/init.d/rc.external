@@ -4,10 +4,10 @@ DAEMON=external
 CONF_NAME=mod
 . /etc/init.d/modlibrc
 
-local LOG_FILE=/var/log/$DAEMON.log
-local EXTERNAL_LINK=/mod/external
-local EXTERNAL_DIRECTORY=`echo $MOD_EXTERNAL_DIRECTORY|sed 's/\/*$//'`
-local EXTERNAL_CUSTOM_FILE=/tmp/flash/mod/rc.external
+LOG_FILE=/var/log/$DAEMON.log
+EXTERNAL_LINK=/mod/external
+EXTERNAL_DIRECTORY=`echo $MOD_EXTERNAL_DIRECTORY|sed 's/\/*$//'`
+EXTERNAL_CUSTOM_FILE=/tmp/flash/mod/rc.external
 
 #parameter -n: no new-line at line end
 #parameter -x: add trailing new-line, if logfile exists
@@ -90,6 +90,13 @@ start() {
 	[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && check_date
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
 	ln -s "$EXTERNAL_DIRECTORY" "$EXTERNAL_LINK"
+	if [ -e "${EXTERNAL_LINK}/external.pkg" ]; then
+		EXTERNAL_SERVICES="$(cat ${EXTERNAL_LINK}/*.pkg | tr "\n" " ")"
+		echo "$EXTERNAL_SERVICES" > /mod/etc/external.pkg
+		for package in $EXTERNAL_SERVICES; do
+			grep -q "^$package$" /mod/etc/static.pkg || echo "$package" >> /mod/etc/static.pkg 
+		done
+	fi
 
 	exec_rcs load
 
@@ -106,6 +113,7 @@ stop() {
 	fi
 
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
+	tar xf /var.tar ./var/mod/etc/external.pkg ./var/mod/etc/static.pkg -C /
 
 	log "Stopping external finished."
 }

@@ -1374,7 +1374,7 @@ if [ "$action_names" ]; then
 	echo "export FREETZ_INFO_MAKEDATE='$modmakedate'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
 	echo "export FREETZ_INFO_COMMENT='${FREETZ_USER_DEFINED_COMMENT}'" >> "$freetz_info_file"
-	externalised_files=$(find build/modified/external/ -type f 2>/dev/null | sed -e '/\.external/d;s,build/modified/external/,,')
+	externalised_files=$(find build/modified/external/ -type f 2>/dev/null | sed -e '/external\.pkg/d;/\.external/d;s,build/modified/external/,,')
 	echo "export FREETZ_INFO_EXTERNAL_FILES='${externalised_files}'" >> "$freetz_info_file"
 
 	# Pack var.tar (use old tar for compatibility)

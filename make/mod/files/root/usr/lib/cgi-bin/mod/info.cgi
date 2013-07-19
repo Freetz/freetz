@@ -155,7 +155,7 @@ if [ -r /etc/.config ]; then
 	preprocess_conf /etc/.config | format_conf
 fi
 
-if [ -n	 "$FREETZ_INFO_EXTERNAL_FILES" ]; then
+if [ -n "$FREETZ_INFO_EXTERNAL_FILES" ]; then
 	sec_begin '$(lang de:"Ausgelagerte Dateien" en:"Externalised files")'
 		let width=_cgi_width-30
 		echo -n "<pre style='width: ${width}px; max-height: 100px;'>"
