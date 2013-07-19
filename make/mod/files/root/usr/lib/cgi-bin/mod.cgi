@@ -4,7 +4,7 @@
 . /usr/lib/libmodcgi.sh
 
 inetd=false
-[ -e /etc/default.inetd/inetd.cfg ] && inetd=true
+[ -e /mod/etc/default.inetd/inetd.cfg ] && inetd=true
 
 CONF=/usr/lib/cgi-bin/mod/conf
 for conf in "$CONF"/*.sh; do

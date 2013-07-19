@@ -47,7 +47,7 @@ case $1 in
 		echo -n 'Saving config ... '
 		/usr/bin/modconf save mod
 		for pkg in $(cat /mod/etc/static.pkg 2>/dev/null); do
-			if [ -r "/etc/default.$pkg/$pkg.cfg" ]; then
+			if [ -r "/mod/etc/default.$pkg/$pkg.cfg" ]; then
 				/usr/bin/modconf save "$pkg"
 			fi
 		done

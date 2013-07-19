@@ -109,7 +109,7 @@ stat_end() {
 unset inetd_status
 
 inetd_status() {
-	if [ -e /etc/default.inetd/inetd.cfg ]; then
+	if [ -e /mod/etc/default.inetd/inetd.cfg ]; then
 		/mod/etc/init.d/rc.inetd status 2> /dev/null
 	fi
 }

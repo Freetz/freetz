@@ -313,7 +313,7 @@ modlib_force_stop() {
 	echo -n "Stopping ${DAEMON_LONG_NAME} forced ... "
 	FORCE_STATUS="0"
 	modlib_stop >/dev/null
-	if [ -e /etc/default.$DAEMON/*.inetd ]; then
+	if [ -e /mod/etc/default.$DAEMON/*.inetd ]; then
 		FORCE_STATUS="5"
 		modlib_stop >/dev/null
 	fi
