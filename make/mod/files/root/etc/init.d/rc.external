@@ -100,7 +100,7 @@ start() {
 
 	# create dynamic
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
-	for SERVICE in $(cat /mod/etc/external.pkg); do
+	for SERVICE in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
 		for src in \
 		  etc/default.$SERVICE \
 		  etc/init.d/rc.$SERVICE \
@@ -134,7 +134,7 @@ stop() {
 	exec_rcs unload
 
 	# remove dynamic
-	for SERVICE in $(cat /mod/etc/external.pkg); do
+	for SERVICE in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
 		for src in \
 		  etc/default.$SERVICE \
 		  etc/init.d/rc.$SERVICE \
