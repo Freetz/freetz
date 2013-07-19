@@ -7,7 +7,7 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
-	[ "$(/mod/etc/init.d/rc.multid status)" != "running" -o "$DNSMASQ_MULTID_RESTART" != "yes" ] && nomultid=y
+	[ "$(/etc/init.d/rc.multid status)" != "running" -o "$DNSMASQ_MULTID_RESTART" != "yes" ] && nomultid=y
 else
 	nomultid=y
 fi
@@ -17,7 +17,7 @@ config() {
 }
 
 startdaemon_pre() {
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid stop >/dev/null || true
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null || true
 }
 
 start() {
@@ -27,7 +27,7 @@ start() {
 }
 
 startdaemon_post() {
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 
 	if [ ! -L "/var/flash/multid.leases" -a "$DNSMASQ_DHCP" = "yes" ]; then
 		rm -f /var/flash/multid.leases
@@ -46,11 +46,11 @@ startdaemon_post() {
 }
 
 stop_pre() {
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid stop >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
 }
 
 stop_post() {
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 
 	if [ -L "/var/flash/multid.leases" ]; then
 		major=$(grep tffs /proc/devices)

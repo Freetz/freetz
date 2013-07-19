@@ -11,20 +11,20 @@ PID_FILE=/var/run/${DAEMON_BIN}/${DAEMON_BIN}.pid
 if [ "$BIND_MULTID" != "yes" -o "$FREETZ_AVMDAEMON_DISABLE_DNS" == "y" ]; then
 	nomultid=y
 else
-	[ "$(/mod/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
+	[ "$(/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
 fi
 
 start() {
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid stop >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
 	modlib_startdaemon $DAEMON_BIN $BIND_CMDLINE
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 	return 0
 }
 
 stop() {
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid stop >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
 	kill $(cat $PID_FILE) 2>/dev/null
-	[ "$nomultid" != "y" ] && /mod/etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 	return 0
 }
 
