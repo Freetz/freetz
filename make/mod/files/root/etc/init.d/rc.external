@@ -99,25 +99,26 @@ start() {
 	fi
 
 	# create dynamic
-	for SERVICE in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
+	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
 		for src in \
-		  etc/default.$SERVICE \
-		  etc/init.d/rc.$SERVICE \
-		  etc/onlinechanged/*$SERVICE \
-		  etc/cron.d/$SERVICE \
-		  usr/lib/cgi-bin/$SERVICE.cgi \
-		  usr/lib/cgi-bin/$SERVICE \
+		  ${EXTERNAL_LINK}/etc/default.$pkg \
+		  ${EXTERNAL_LINK}/etc/init.d/rc.$pkg \
+		  ${EXTERNAL_LINK}/etc/onlinechanged/*$pkg \
+		  ${EXTERNAL_LINK}/etc/cron.d/$pkg \
+		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg.cgi \
+		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg \
 		  ; do
-			[ ! -e "${EXTERNAL_LINK}/$src" ] && continue
-	        mkdir -p "${EXTERNAL_LINK}/${src%/*}"
-	        rm -rf "/mod/$src" 2>/dev/null
+			[ ! -e "$src" ] && continue
+			dst="/mod${src#$EXTERNAL_LINK}"
+	        mkdir -p "${src%/*}"
+			rm -rf "$dst" 2>/dev/null
 			if [ "$MOD_EXTERNAL_BEHAVIOUR" == "copy" ]; then
-				cp -r "${EXTERNAL_LINK}/$src" "/mod/$src"
-	        else
-				ln -s "${EXTERNAL_LINK}/$src" "/mod/$src"
-	        fi
+				cp -r "$src" "$dst"
+			else
+				ln -s "$src" "$dst"
+			fi
 		done
-		[ -r "/mod/etc/default.$SERVICE/$SERVICE.cfg" ] && /usr/bin/modconf load "$SERVICE"
+		[ -r "/mod/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
 	done
 
 	exec_rcs load
@@ -136,16 +137,16 @@ stop() {
 	exec_rcs unload
 
 	# remove dynamic
-	for SERVICE in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
+	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
 		for src in \
-		  etc/default.$SERVICE \
-		  etc/init.d/rc.$SERVICE \
-		  etc/onlinechanged/*$SERVICE \
-		  etc/cron.d/$SERVICE \
-		  usr/lib/cgi-bin/$SERVICE.cgi \
-		  usr/lib/cgi-bin/$SERVICE \
+		  /mod/etc/default.$pkg \
+		  /mod/etc/init.d/rc.$pkg \
+		  /mod/etc/onlinechanged/*$pkg \
+		  /mod/etc/cron.d/$pkg \
+		  /mod/usr/lib/cgi-bin/$pkg.cgi \
+		  /mod/usr/lib/cgi-bin/$pkg \
 		  ; do
-	        rm -rf "/mod/$src" 2>/dev/null
+	        rm -rf "$src" 2>/dev/null
 		done
 	done
 
