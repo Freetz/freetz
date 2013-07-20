@@ -1,4 +1,5 @@
 if [ -x /mod/etc/init.d/rc.external ]; then
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 check "$MOD_EXTERNAL_WAIT_INFINITE" yes:external_wait_infinite_00 "*":external_wait_infinite_15
 check "$MOD_EXTERNAL_BEHAVIOUR" copy:external_behaviour_copy "*":external_behaviour_link
 
@@ -8,6 +9,7 @@ _services=$(cat /mod/etc/external.pkg 2>/dev/null)
 
 cgi_print_textline_p "external_directory" "$MOD_EXTERNAL_DIRECTORY" 55/255 "$(lang de:"Verzeichnis von external" en:"Directory for external"): "
 
+if [ "$EXTERNAL_DYNAMIC" == "yes" ]; then
 cat << EOF
 $(lang de:"Ausgelagerte Script so nutzen:" en:"Handle externalised scripts:")?
 <blockquote> 
@@ -15,6 +17,7 @@ $(lang de:"Ausgelagerte Script so nutzen:" en:"Handle externalised scripts:")?
 <input id="s6" type="radio" name="external_behaviour" value="copy"$external_behaviour_copy_chk><label for="s6"> $(lang de:"In den RAM kopieren" en:"Copy to RAM").</label><br>
 </blockquote>
 EOF
+fi
 
 cgi_print_checkbox_p "external_freetz_services" "$MOD_EXTERNAL_FREETZ_SERVICES" "$(lang de:"Folgende externalisierte Freetz-Dienste behandeln" en:"Manage these externalized services of Freetz")" ": $_services"
 

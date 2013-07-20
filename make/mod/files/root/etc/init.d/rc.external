@@ -98,7 +98,8 @@ start() {
 		done
 	fi
 
-	# create dynamic
+	# create dynamic links (or copy)
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
 		for src in \
 		  ${EXTERNAL_LINK}/etc/default.$pkg \
@@ -108,8 +109,10 @@ start() {
 		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg.cgi \
 		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg \
 		  ; do
+			[ "$EXTERNAL_DYNAMIC" != "yes" ] && src="${src#$EXTERNAL_LINK}"
+			[ ! -e "$src" ] && continue 
 			dst="/mod${src#$EXTERNAL_LINK}"
-	        mkdir -p "${src%/*}"
+			mkdir -p "${src%/*}"
 			rm -rf "$dst" 2>/dev/null
 			if [ "$MOD_EXTERNAL_BEHAVIOUR" == "copy" ]; then
 				cp -r "$src" "$dst"
