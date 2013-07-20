@@ -39,9 +39,9 @@ echo $EXTERNAL_SERVICES \
 
 #dynamic files
 if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
-	for eservice in $EXTERNAL_SERVICES; do
-		eservice_full="$(grep "^${eservice}-" $PACKAGES_LIST_FILE)"
-		EXTERNAL_SCRIPTS+=" $(cd $PACKAGES_DIR/${eservice_full}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+	for pkg in $EXTERNAL_SERVICES; do
+		pkg_version="$(grep "^${pkg}-" $PACKAGES_LIST_FILE)"
+		EXTERNAL_SCRIPTS+=" $(cd $PACKAGES_DIR/${pkg_version}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
 	done
 fi
 
@@ -101,6 +101,16 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 		echo2 "$EXTERNAL_FILE... $EXTERNAL_MSG$EXTERNAL_LINKED."
 	fi
 done
+
+#remove emtpy directories ("scripts")
+for dir in $(echo $EXTERNAL_SCRIPTS | sort -ru); do
+	rmdir "${FILESYSTEM_MOD_DIR}$dir" 2>/dev/null
+	while [ "$dir" != "${dir%/*}" ]; do
+		dir="${dir%/*}"
+		rmdir "${FILESYSTEM_MOD_DIR}$dir" 2>/dev/null
+	done
+done
+
 [ $(find $EXTERNAL_MOD_DIR -type f | wc -l) -gt 0 ] && touch "${EXTERNAL_MOD_DIR}/.external"
 if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 	echo "  NOTE: Please upload zipped Downloader files from"

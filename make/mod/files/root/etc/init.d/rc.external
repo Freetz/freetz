@@ -108,7 +108,6 @@ start() {
 		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg.cgi \
 		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg \
 		  ; do
-			[ ! -e "$src" ] && continue
 			dst="/mod${src#$EXTERNAL_LINK}"
 	        mkdir -p "${src%/*}"
 			rm -rf "$dst" 2>/dev/null
