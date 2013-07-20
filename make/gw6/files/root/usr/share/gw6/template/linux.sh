@@ -76,12 +76,12 @@ ExecNoCheck()
 Display 1 "--- Start of configuration script. ---"
 Display 1 "Script: " `basename $0`
 
-ifconfig=/sbin/ifconfig
-route=/sbin/route
-ipconfig=/bin/ip
-rtadvd=/usr/sbin/radvd
+ifconfig=$(which ifconfig)
+route=$(which route)
+ipconfig=$(which ip)
+rtadvd=$(which radvd)
 rtadvd_pid=/var/run/radvd.pid
-sysctl=/sbin/sysctl
+sysctl=$(which sysctl)
 rtadvdconfigfilename=gw6c-rtadvd.conf
 rtadvdconfigfile=/tmp/$rtadvdconfigfilename
 
