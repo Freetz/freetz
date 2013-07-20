@@ -99,7 +99,6 @@ start() {
 	fi
 
 	# create dynamic
-	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	for SERVICE in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
 		for src in \
 		  etc/default.$SERVICE \
@@ -112,8 +111,11 @@ start() {
 			[ ! -e "${EXTERNAL_LINK}/$src" ] && continue
 	        mkdir -p "${EXTERNAL_LINK}/${src%/*}"
 	        rm -rf "/mod/$src" 2>/dev/null
-	        [ "$EXTERNAL_DYNAMIC_COPY" == "y" ] && cp -r "${EXTERNAL_LINK}/$src" "/mod/$src"
-	        [ "$EXTERNAL_DYNAMIC_LINK" == "y" ] && ln -s "${EXTERNAL_LINK}/$src" "/mod/$src"
+			if [ "$MOD_EXTERNAL_BEHAVIOUR" == "copy" ]; then
+				cp -r "${EXTERNAL_LINK}/$src" "/mod/$src"
+	        else
+				ln -s "${EXTERNAL_LINK}/$src" "/mod/$src"
+	        fi
 		done
 		[ -r "/mod/etc/default.$SERVICE/$SERVICE.cfg" ] && /usr/bin/modconf load "$SERVICE"
 	done

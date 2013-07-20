@@ -38,6 +38,8 @@ apply_changes() {
 				if [ "$startORstop" == "stop" ]; then
 					NEW_EXTERNAL_DIRECTORY="$(echo "$settings" | sed -ne "/MOD_EXTERNAL_DIRECTORY/s/MOD_EXTERNAL_DIRECTORY='\(.*\)'/\1/p")"
 					[ "$MOD_EXTERNAL_DIRECTORY" != "$NEW_EXTERNAL_DIRECTORY" ] && RELOAD_external="true"
+					NEW_EXTERNAL_BEHAVIOUR="$(echo "$settings" | sed -ne "/MOD_EXTERNAL_BEHAVIOUR/s/MOD_EXTERNAL_BEHAVIOUR='\(.*\)'/\1/p")"
+					[ "$MOD_EXTERNAL_BEHAVIOUR" != "$NEW_EXTERNAL_BEHAVIOUR" ] && RELOAD_external="true"
 				fi
 				[ "$RELOAD_external" == "true" ] && start_stop $startORstop external "$OLDSTATUS_external"
 			fi
