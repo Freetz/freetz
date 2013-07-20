@@ -109,12 +109,17 @@ start() {
 		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg.cgi \
 		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg \
 		  ; do
-			[ "$EXTERNAL_DYNAMIC" != "yes" ] && src="${src#$EXTERNAL_LINK}"
+			if [ "$EXTERNAL_DYNAMIC" != "yes" ]; then
+				src="${src#$EXTERNAL_LINK}"
+				# no links to local scripts in /etc/
+				[ "$src" != "${src#/etc/onlinechanged/}" ] && continue
+				[ "$src" != "${src#/etc/cron.d/}" ] && continue
+			fi
 			[ ! -e "$src" ] && continue 
 			dst="/mod${src#$EXTERNAL_LINK}"
 			mkdir -p "${src%/*}"
 			rm -rf "$dst" 2>/dev/null
-			if [ "$MOD_EXTERNAL_BEHAVIOUR" == "copy" ]; then
+			if [ "$MOD_EXTERNAL_BEHAVIOUR" == "copy" -a "$EXTERNAL_DYNAMIC" == "yes" ]; then
 				cp -r "$src" "$dst"
 			else
 				ln -s "$src" "$dst"
