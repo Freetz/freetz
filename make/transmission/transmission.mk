@@ -4,18 +4,17 @@
 TRANSMISSION_FROM_SVN:=n
 
 ifeq ($(TRANSMISSION_FROM_SVN),y)
-$(call PKG_INIT_BIN, 14103)
+$(call PKG_INIT_BIN, 14128)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=svn://svn.transmissionbt.com/Transmission/trunk
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e '/^m4_define.+user_agent_prefix/s,[+],,g' -e '/^m4_define.+peer_id_prefix/s,[XZ]-,0-,g' ./configure.ac;
 $(PKG)_CONFIGURE_PRE_CMDS += AUTOGEN_SUBDIR_MODE=y ./autogen.sh;
 else
-$(call PKG_INIT_BIN, 2.80)
+$(call PKG_INIT_BIN, 2.81)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA1:=ace7df72b261e1aa97f5b9c2917894a6d86f29fb
+$(PKG)_SOURCE_SHA1:=2ca458982054b4ad21bdbdb8cf085c96e5118e34
 $(PKG)_SITE:=http://download.m0k.org/transmission/files
-$(PKG)_CONDITIONAL_PATCHES+=official-tarball
 endif
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show

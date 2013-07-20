@@ -127,7 +127,7 @@
  
 --- libtransmission/rpcimpl.c
 +++ libtransmission/rpcimpl.c
-@@ -1873,6 +1873,12 @@
+@@ -1875,6 +1875,12 @@
    if (tr_variantDictFindBool (args_in, TR_KEY_incomplete_dir_enabled, &boolVal))
      tr_sessionSetIncompleteDirEnabled (session, boolVal);
  
@@ -140,7 +140,7 @@
    if (tr_variantDictFindInt (args_in, TR_KEY_peer_limit_global, &i))
      tr_sessionSetPeerLimit (session, i);
  
-@@ -2039,6 +2045,8 @@
+@@ -2041,6 +2047,8 @@
    tr_variantDictAddInt  (d, TR_KEY_peer_limit_per_torrent, tr_sessionGetPeerLimitPerTorrent (s));
    tr_variantDictAddStr  (d, TR_KEY_incomplete_dir, tr_sessionGetIncompleteDir (s));
    tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled, tr_sessionIsIncompleteDirEnabled (s));
