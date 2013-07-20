@@ -7,7 +7,7 @@ maxPings=1
 
 count=0
 while [ ! "$HAVENET" -a $count -lt $maxPings ]; do
-	ping -c 1 -w 1 adblockplus.org  > /dev/null 2>&1 && HAVENET=yes
+	ping -c 1 -w 1 www.dfn.de  > /dev/null 2>&1 && HAVENET=yes
 	[ "$HAVENET" ] || count=$(( $count + 1 ))
 done
 
@@ -20,8 +20,7 @@ if [  "$HAVENET" -a "$MYPATH" ]; then
 	FILE=/tmp/${FILE}
 	rm -f ${FILE}
 
-	wget=/usr/bin/wget-gnu
-	[ ! -x $wget ] && wget=wget
+	which wget-gnu >/dev/null && wget=wget-gnu || wget=wget
 	$wget --no-check-certificate -qO ${FILE} ${PRIVOXY_ADBLOCK_URL}
 
 	if [ $(cat ${FILE} | wc -l) -gt 100 ]; then
@@ -37,8 +36,11 @@ if [  "$HAVENET" -a "$MYPATH" ]; then
 		sed '/^@@.*/!d;s/^@@//g;/\$.*image.*/!d;s/\$.*image.*//g;/#/d;s/\./\\./g;s/\?/\\?/g;s/\*/.*/g;s/(/\\(/g;s/)/\\)/g;s/\[/\\[/g;s/\]/\\]/g;s/\^/[\/\&:\?=_]/g;s/^||/\./g;s/^|/^/g;s/|$/\$/g;/|/d' ${FILE} >> ${ACTION}
 		rm -f ${FILE}
 	else
-		echo "Fetching files for filter failed".
+		echo "Fetching files for filter failed (file less than 100 lines)."
 	fi
 else
-	echo "Fetching files for filter failed".
+	echo -n "Fetching files for filter failed ( "
+	[ ! "$HAVENET" ] && echo -n "no net";
+	[ ! "$MYPATH" ] && echo -n " no path";
+	echo  " )."
 fi
