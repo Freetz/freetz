@@ -76,6 +76,7 @@ exec_rcs() {
 start() {
 	log -x "Starting external ($EXTERNAL_DIRECTORY):"
 
+	# wait until it's external's turn
 	if [ ! -e /tmp/.modstarted -o -e /var/run/onlinechanged ]; then
 		log -n "Waiting for mod-startup:"
 		spaceit=" "
@@ -88,8 +89,12 @@ start() {
 		log " done."
 	fi
 	[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && check_date
+
+	# create /mod/external	
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
 	ln -s "$EXTERNAL_DIRECTORY" "$EXTERNAL_LINK"
+	
+	# create /mod/etc/(static|external).pkg
 	if [ -e "${EXTERNAL_LINK}/external.pkg" ]; then
 		EXTERNAL_SERVICES="$(cat ${EXTERNAL_LINK}/*.pkg | tr "\n" " ")"
 		echo "$EXTERNAL_SERVICES" > /mod/etc/external.pkg

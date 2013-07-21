@@ -39,16 +39,32 @@ echo $EXTERNAL_SERVICES \
 
 #dynamic files
 if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
+	# search files
 	for pkg in $EXTERNAL_SERVICES; do
 		pkg_version="$(grep "^${pkg}-" $PACKAGES_LIST_FILE)"
-		EXTERNAL_SCRIPTS+=" $(cd $PACKAGES_DIR/${pkg_version}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+		# only scripts (fallback)
+		if [ "$EXTERNAL_DYNAMIC_SCRIPTS" == "y" ]; then
+			PKG_FILES="$(cd $PACKAGES_DIR/${pkg_version}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+			for file in $PKG_FILES; do
+				case $file in
+					/etc/default.$pkg/*|/etc/init.d/rc.*|/etc/onlinechanged/*|/etc/cron.d/*|/usr/lib/cgi-bin/$pkg*)
+					EXTERNAL_DYNAMIC_FILES+=" $file"
+					;;
+				esac
+			done
+		fi
+		# everything (experimental)
+		if [ "$EXTERNAL_DYNAMIC_EVERY" == "y" ]; then
+			EXTERNAL_DYNAMIC_FILES+=" $(cd $PACKAGES_DIR/${pkg_version}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+		fi
 	done
 fi
 
 #own files
-EXTERNAL_FILES="$EXTERNAL_OWN_FILES $EXTERNAL_SCRIPTS"
-for EXT_FILES in $(find make make/libs -maxdepth 2 -name external.files) kernel/external.files; do
-	. $EXT_FILES
+EXTERNAL_FILES="$EXTERNAL_OWN_FILES $EXTERNAL_DYNAMIC_FILES"
+for EXT_FILE in $(find make make/libs -maxdepth 2 -name external.files) kernel/external.files; do
+	[ "$EXTERNAL_DYNAMIC_EVERY" == "y" -a -e "${EXT_FILE/external.files/external.services}" ] && continue
+	. $EXT_FILE
 done
 EXTERNAL_FILES=$(echo $EXTERNAL_FILES | sed -e 's| |\n/|g;s|//\+|/|g' | sort -u)
 
@@ -98,12 +114,12 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 			EXTERNAL_LINKED=" & linked"
 			ln -s "/mod/external$EXTERNAL_LINKSUBDIR/$FILENAME" "${FILESYSTEM_MOD_DIR}$EXTERNAL_FILE"
 		fi
-		echo2 "$EXTERNAL_FILE... $EXTERNAL_MSG$EXTERNAL_LINKED."
+		echo2 "$EXTERNAL_FILE ... $EXTERNAL_MSG$EXTERNAL_LINKED."
 	fi
 done
 
 #remove emtpy directories ("scripts")
-for dir in $(echo $EXTERNAL_SCRIPTS | sort -ru); do
+for dir in $(echo $EXTERNAL_DYNAMIC_FILES | sort -ru); do
 	rmdir "${FILESYSTEM_MOD_DIR}$dir" 2>/dev/null
 	while [ "$dir" != "${dir%/*}" ]; do
 		dir="${dir%/*}"

@@ -841,26 +841,56 @@ menu "External processing"
 			Not all packages are shown if you disable this.
 
 	config EXTERNAL_DYNAMIC
-		bool "Process scripts"
+		bool "Dynamic packages"
 		default n
 		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS
 		help
-			Moves scripts out of the image, eg
-			* /etc/default.PKG/
-			* /etc/init.d/rc.PKG
-			* /etc/onlinechanged/*PKG
-			* /etc/cron.d/PKG
-			* /usr/lib/cgi-bin/PKG.cgi
-			* /usr/lib/cgi-bin/PKG/
-			* ...
+			Enable dynamic package processing.
+
+		choice
+		prompt "Behaviour"
+		default EXTERNAL_DYNAMIC_EVERY
+		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS && EXTERNAL_DYNAMIC 
+		help
+			Dynamit behaviour:
+			* only scripts:
+				- /etc/default.PKG/
+				- /etc/init.d/rc.PKG
+				- /etc/onlinechanged/*PKG
+				- /etc/cron.d/PKG
+				- /usr/lib/cgi-bin/PKG.cgi
+				- /usr/lib/cgi-bin/PKG/
+				- files defined in external.file
+			* everything:
+				Every file of the Package.
+				The file external.file is obsolete with this option.
+				Let's see if all packages can handle this!
+	
+		config EXTERNAL_DYNAMIC_SCRIPTS
+			bool "only scripts"
+	
+		config EXTERNAL_DYNAMIC_EVERY
+			bool "everything"
+	
+	endchoice
 
 	config EXTERNAL_CREATEPAK
 		bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
 		default y
 		depends on EXTERNAL_ENABLED && ! EXTERNAL_DOWNLOADER
 		help
-			Creates a file for upload with the webinterface
+			Creates a file for upload with the webinterface.
 
+	config EXTERNAL_CREATEPAK_DYNAMIC
+#		bool "For every package a file" if ! EXTERNAL_DOWNLOADER
+		bool
+		default n
+		depends on \
+			EXTERNAL_ENABLED &&	! EXTERNAL_DOWNLOADER && \
+			EXTERNAL_CREATEPAK && EXTERNAL_DYNAMIC
+		help
+			Creates a file for every package which is an external service.
+	
 	config EXTERNAL_OWN_FILES
 		string "own files"
 		default ""
