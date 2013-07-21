@@ -1,5 +1,5 @@
 $(call PKG_INIT_LIB, 0.1.12)
-$(PKG)_SHORT_VERSION:=0.1
+$(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_LIB_VERSION:=4.4.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=caf182cbc7565dac0fd72155919672e6
@@ -39,11 +39,12 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBUSB_DIR) clean
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/bin/libusb-config \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/includes/usb*.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/usb.h \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb-$(LIBUSB_SHORT_VERSION)* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libusb.{a,la} \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc
 
 $(pkg)-uninstall:
-	$(RM) $(LIBUSB_TARGET_DIR)/libusb*.so*
+	$(RM) $(LIBUSB_TARGET_DIR)/libusb-$(LIBUSB_SHORT_VERSION).so*
 
 $(PKG_FINISH)
