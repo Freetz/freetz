@@ -1,0 +1,20 @@
+--- Makefile.in
++++ Makefile.in
+@@ -265,7 +265,7 @@
+              apidocs/footer.html apidocs/doxygen.css apidocs/doxygen.png libusb.pc.in
+ 
+ EXTRA_libusb_la_SOURCE = linux.c linux.h bsd.c darwin.c
+-lib_LTLIBRARIES = libusb.la libusbpp.la
++lib_LTLIBRARIES = libusb.la
+ pkgconfig_DATA = libusb.pc
+ @BSD_API_FALSE@@DARWIN_API_FALSE@@LINUX_API_FALSE@OS_SUPPORT = 
+ @BSD_API_FALSE@@DARWIN_API_TRUE@@LINUX_API_FALSE@OS_SUPPORT = darwin.c
+@@ -284,7 +284,7 @@
+ # Do not add usb.h to *_SOURCES, regardless of dependencies.
+ # It would be added to the dist tarball, which it shouldn't be.
+ nodist_include_HEADERS = usb.h
+-include_HEADERS = usbpp.h
++include_HEADERS =
+ libusb_la_LDFLAGS = \
+ 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+ 	-release $(LT_RELEASE) \
