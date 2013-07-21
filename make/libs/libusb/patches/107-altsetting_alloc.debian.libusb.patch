@@ -1,0 +1,32 @@
+--- descriptors.c
++++ descriptors.c
+@@ -177,6 +177,7 @@
+     }
+ 
+     ifp = interface->altsetting + interface->num_altsetting;
++    memset(ifp, 0, sizeof(struct usb_interface_descriptor));
+     interface->num_altsetting++;
+ 
+     usb_parse_descriptor(buffer, "bbbbbbbbb", ifp);
+@@ -219,10 +220,7 @@
+     /* Copy any unknown descriptors into a storage area for */
+     /*  drivers to later parse */
+     len = (int)(buffer - begin);
+-    if (!len) {
+-      ifp->extra = NULL;
+-      ifp->extralen = 0;
+-    } else {
++    if (len) {
+       ifp->extra = malloc(len);
+       if (!ifp->extra) {
+         if (usb_debug >= 1)
+@@ -277,8 +275,7 @@
+         parsed += retval;
+         size -= retval;
+       }
+-    } else
+-      ifp->endpoint = NULL;
++    }
+ 
+     /* We check to see if it's an alternate to this one */
+     ifp = (struct usb_interface_descriptor *)buffer;

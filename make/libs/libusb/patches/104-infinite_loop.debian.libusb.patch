@@ -1,0 +1,27 @@
+--- linux.c
++++ linux.c
+@@ -213,15 +213,21 @@
+       return ret;
+     }
+ 
+-    FD_ZERO(&writefds);
+-    FD_SET(dev->fd, &writefds);
+-
+ restart:
+     waiting = 1;
+     context = NULL;
+     while (!urb.usercontext && ((ret = ioctl(dev->fd, IOCTL_USB_REAPURBNDELAY, &context)) == -1) && waiting) {
++      if (ret == -1)
++      {
++        if (errno == ENODEV)
++        {
++          return -ENODEV;
++        }
++      }
+       tv.tv_sec = 0;
+       tv.tv_usec = 1000; // 1 msec
++      FD_ZERO(&writefds);
++      FD_SET(dev->fd, &writefds);
+       select(dev->fd + 1, NULL, &writefds, NULL, &tv); //sub second wait
+ 
+       if (timeout) {

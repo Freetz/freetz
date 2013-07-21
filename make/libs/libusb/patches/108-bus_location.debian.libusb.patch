@@ -1,0 +1,10 @@
+--- linux.c
++++ linux.c
+@@ -355,6 +355,7 @@
+ 
+     strncpy(bus->dirname, entry->d_name, sizeof(bus->dirname) - 1);
+     bus->dirname[sizeof(bus->dirname) - 1] = 0;
++    bus->location = atoi(bus->dirname);
+ 
+     LIST_ADD(fbus, bus);
+ 

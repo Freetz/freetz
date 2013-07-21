@@ -1,0 +1,95 @@
+--- bsd.c
++++ bsd.c
+@@ -279,7 +279,7 @@
+   return info->ep_fd[ep];
+ }
+ 
+-int usb_bulk_write(usb_dev_handle *dev, int ep, char *bytes, int size,
++int usb_bulk_write(usb_dev_handle *dev, int ep, const char *bytes, int size,
+                    int timeout)
+ {
+   int fd, ret;
+@@ -358,7 +358,7 @@
+   return ret;
+ }
+ 
+-int usb_interrupt_write(usb_dev_handle *dev, int ep, char *bytes, int size,
++int usb_interrupt_write(usb_dev_handle *dev, int ep, const char *bytes, int size,
+                         int timeout)
+ {
+   int fd, ret, sent = 0;
+--- linux.c
++++ linux.c
+@@ -277,11 +277,11 @@
+   return bytesdone;
+ }
+ 
+-int usb_bulk_write(usb_dev_handle *dev, int ep, char *bytes, int size,
++int usb_bulk_write(usb_dev_handle *dev, int ep, const char *bytes, int size,
+ 	int timeout)
+ {
+   /* Ensure the endpoint address is correct */
+-  return usb_urb_transfer(dev, ep, USB_URB_TYPE_BULK, bytes, size,
++  return usb_urb_transfer(dev, ep, USB_URB_TYPE_BULK, (char *)bytes, size,
+ 		timeout);
+ }
+ 
+@@ -299,11 +299,11 @@
+  * 2.5 HCDs yet) don't handle multi-packet Interrupt transfers. So we need
+  * to lookup the endpoint packet size and packetize appropriately here.
+  */
+-int usb_interrupt_write(usb_dev_handle *dev, int ep, char *bytes, int size,
++int usb_interrupt_write(usb_dev_handle *dev, int ep, const char *bytes, int size,
+ 	int timeout)
+ {
+   /* Ensure the endpoint address is correct */
+-  return usb_urb_transfer(dev, ep, USB_URB_TYPE_INTERRUPT, bytes, size,
++  return usb_urb_transfer(dev, ep, USB_URB_TYPE_INTERRUPT, (char *)bytes, size,
+ 		timeout);
+ }
+ 
+--- darwin.c
++++ darwin.c
+@@ -871,7 +871,7 @@
+   return rw_arg.io_size;
+ }
+ 
+-int usb_bulk_write(usb_dev_handle *dev, int ep, char *bytes, int size, int timeout)
++int usb_bulk_write(usb_dev_handle *dev, int ep, const char *bytes, int size, int timeout)
+ {
+   int result;
+   rw_async_to_func_t to_func = NULL;
+@@ -886,7 +886,7 @@
+   to_func = (*(device->interface))->WritePipeAsyncTO;
+ #endif
+ 
+-  if ((result = usb_bulk_transfer (dev, ep, bytes, size, timeout,
++  if ((result = usb_bulk_transfer (dev, ep, (char *) bytes, size, timeout,
+ 				   (*(device->interface))->WritePipeAsync, to_func)) < 0)
+     USB_ERROR_STR (result, "usb_bulk_write: An error occured during write (see messages above)");
+   
+@@ -918,7 +918,7 @@
+ }
+ 
+ /* interrupt endpoints seem to be treated just like any other endpoint under OSX/Darwin */
+-int usb_interrupt_write(usb_dev_handle *dev, int ep, char *bytes, int size,
++int usb_interrupt_write(usb_dev_handle *dev, int ep, const char *bytes, int size,
+ 	int timeout)
+ {
+   return usb_bulk_write (dev, ep, bytes, size, timeout);
+--- usb.h.in
++++ usb.h.in
+@@ -296,11 +296,11 @@
+ 	unsigned char index, void *buf, int size);
+ 
+ /* <arch>.c */
+-int usb_bulk_write(usb_dev_handle *dev, int ep, char *bytes, int size,
++int usb_bulk_write(usb_dev_handle *dev, int ep, const char *bytes, int size,
+ 	int timeout);
+ int usb_bulk_read(usb_dev_handle *dev, int ep, char *bytes, int size,
+ 	int timeout);
+-int usb_interrupt_write(usb_dev_handle *dev, int ep, char *bytes, int size,
++int usb_interrupt_write(usb_dev_handle *dev, int ep, const char *bytes, int size,
+         int timeout);
+ int usb_interrupt_read(usb_dev_handle *dev, int ep, char *bytes, int size,
+         int timeout);
