@@ -101,6 +101,8 @@ start() {
 	# create dynamic links (or copy)
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
+		status="$(/mod/etc/init.d/rc.$pkg status 2>/dev/null)"
+		[ -n "$status" -a "$status" != "stopped" ] && continue
 		for src in \
 		  ${EXTERNAL_LINK}/etc/default.$pkg \
 		  ${EXTERNAL_LINK}/etc/init.d/rc.$pkg \
@@ -112,8 +114,9 @@ start() {
 			if [ "$EXTERNAL_DYNAMIC" != "y" ]; then
 				src="${src#$EXTERNAL_LINK}"
 				# no links to local scripts in /etc/
-				[ "$src" != "${src#/etc/onlinechanged/}" ] && continue
-				[ "$src" != "${src#/etc/cron.d/}" ] && continue
+				case $src in
+					/etc/onlinechanged/*|/etc/cron.d/*) continue ;;
+				esac
 			fi
 			[ ! -e "$src" ] && continue 
 			dst="/mod${src#$EXTERNAL_LINK}"
@@ -145,16 +148,11 @@ stop() {
 
 	# remove dynamic
 	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
-		for src in \
-		  /mod/etc/default.$pkg \
-		  /mod/etc/init.d/rc.$pkg \
-		  /mod/etc/onlinechanged/*$pkg \
-		  /mod/etc/cron.d/$pkg \
-		  /mod/usr/lib/cgi-bin/$pkg.cgi \
-		  /mod/usr/lib/cgi-bin/$pkg \
-		  ; do
-	        rm -rf "$src" 2>/dev/null
-		done
+		rm -rf \
+		  /mod/etc/default.$pkg          /mod/etc/init.d/rc.$pkg \
+		  /mod/etc/onlinechanged/*$pkg   /mod/etc/cron.d/$pkg \
+		  /mod/usr/lib/cgi-bin/$pkg.cgi  /mod/usr/lib/cgi-bin/$pkg \
+		  2>/dev/null
 	done
 
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
