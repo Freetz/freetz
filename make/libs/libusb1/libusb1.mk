@@ -1,10 +1,10 @@
-$(call PKG_INIT_LIB, 1.0.9)
+$(call PKG_INIT_LIB, 1.0.16)
 $(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_LIB_VERSION:=0.1.0
-$(PKG)_SOURCE:=libusb-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=7f5a02375ad960d4e33a6dae7d63cfcb
-$(PKG)_SITE:=@SF/libusb
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libusb-$($(PKG)_VERSION)
+$(PKG)_SOURCE:=libusbx-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=7f5715d624cd6c26b30a317eb6c2fe5e
+$(PKG)_SITE:=@SF/libusbx
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libusbx-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libusb/.libs/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
@@ -12,13 +12,17 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libusb-$($(PKG)_SHORT_VERSION).so.$($
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-examples-build
+$(PKG)_CONFIGURE_OPTIONS += --disable-tests-build
+# needs libudev to work
+$(PKG)_CONFIGURE_OPTIONS += --disable-udev
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(LIBUSB1_DIR) all
+	$(SUBMAKE) -C $(LIBUSB1_DIR) V=1 all
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(LIBUSB1_DIR) \
