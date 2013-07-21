@@ -192,9 +192,9 @@ GRAPHICS_DIR="${BASE_DIR}/${GRAPHICS_SUBDIR}"
 FAVICON_DIR="${GRAPHICS_DIR}/favicon"
 TAGGING_DIR="${GRAPHICS_DIR}/tagging"
 
-# Package files 
-STATIC_PACKAGES_FILE="${BASE_DIR}/.static" 
-STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg" 
+# Package files
+STATIC_PACKAGES_FILE="${BASE_DIR}/.static"
+STATIC_ADDON_FILE="${ADDON_DIR}/static.pkg"
 
 # Alien variables
 TK_DIR="${DIR}/.tk/original"
@@ -701,6 +701,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ -z "$HTML_LANG_MOD_DIR" ] && error 1 "No HTML directory given."
 
 	# Now check language specific html directory (if there is any)
+	HTML_SPEC_MOD_DIR="${HTML_LANG_MOD_DIR}/html/doesnotexist"
 	for i in de en; do
 		if [ -d "${HTML_LANG_MOD_DIR}/html/$i" ]; then
 			HTML_SPEC_MOD_DIR="${HTML_LANG_MOD_DIR}/html/$i"
