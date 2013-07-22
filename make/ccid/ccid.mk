@@ -1,59 +1,47 @@
 $(call PKG_INIT_BIN, 1.4.9)
 $(PKG)_SOURCE:=ccid-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/3866/
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/libccid.la
 $(PKG)_SOURCE_MD5:=697dca102b676a8d391b0492acaef2e8
-$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libccid.la
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/pcsc/drivers/ifd-ccid.bundle/Contents/Linux/libccid.so
-$(PKG)_UDEV_RULESFILE:=$($(PKG)_DEST_DIR)/etc/udev/rules.d/92_pcscd_ccid.rules
-$(PKG)_UDEV_TARGET_RULESFILE:=$($(PKG)_DIR)/src/92_pcscd_ccid.rules
+$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/3866
 
-$(PKG)_DEPENDS_ON := libusb1 pcsc-lite 
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libccid.so
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/pcsc/drivers/ifd-ccid.bundle/Contents/Linux/libccid.so
+
+$(PKG)_UDEV_RULESFILE:=$($(PKG)_DIR)/src/92_pcscd_ccid.rules
+$(PKG)_UDEV_TARGET_RULESFILE:=$($(PKG)_DEST_DIR)/etc/udev/rules.d/92_pcscd_ccid.rules
+
+$(PKG)_DEPENDS_ON := libusb1 pcsc-lite
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += PCSC_CFLAGS="-pthread -I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/PCSC/"
-$(PKG)_CONFIGURE_OPTIONS += PCSC_LIBS="-lpcsclite -L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/"
-#$(PKG)_CONFIGURE_OPTIONS += --prefix=/mod/usr/lib/
-#$(PKG)_CONFIGURE_OPTIONS += --enable-usbdropdir=/mod/usr/lib/pcsc/drivers
-
-
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-
-$($(PKG)_UDEV_TARGET_RULESFILE):
-
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(CCID_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)"
+	$(SUBMAKE) -C $(CCID_DIR) V=1
 
-$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	cp $(CCID_BINARY) $(CCID_STAGING_BINARY)
-	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libccid.la
- 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(CCID_DIR)/src \
 		DESTDIR="$(abspath $(CCID_DEST_DIR))" \
-		install_ccid 
+		install_ccid
 
-$($(PKG)_UDEV_RULESFILE): $($(PKG)_UDEV_TARGET_RULESFILE)
-	mkdir -p $(CCID_DEST_DIR)/etc/udev/rules.d
-	cp $(CCID_DIR)/src/92_pcscd_ccid.rules $(CCID_DEST_DIR)/etc/udev/rules.d/
+$($(PKG)_UDEV_RULESFILE): $($(PKG)_DIR)/.configured
+
+$($(PKG)_UDEV_TARGET_RULESFILE): $($(PKG)_UDEV_RULESFILE)
+	$(INSTALL_FILE)
 
 $(pkg):
 
-$(pkg)-precompiled: $(CCID_STAGING_BINARY) $(CCID_TARGET_BINARY) $(CCID_UDEV_RULESFILE)
+$(pkg)-precompiled: $(CCID_TARGET_BINARY) $(CCID_UDEV_TARGET_RULESFILE)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(CCID_DIR) clean
 	$(RM) $(CCID_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(CCID_TARGET_BINARY)
+	$(RM) $(CCID_TARGET_BINARY) $(CCID_UDEV_TARGET_RULESFILE)
 
 $(PKG_FINISH)

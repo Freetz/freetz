@@ -1,5 +1,6 @@
 config FREETZ_PACKAGE_CCID
 	bool "CCID 1.4.9"
+	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libusb_1
 	select FREETZ_PACKAGE_PCSC_LITE
 	default n
@@ -7,5 +8,3 @@ config FREETZ_PACKAGE_CCID
 		ccid provides the source code for a generic USB
 		CCID (Chip/Smart Card Interface Devices) driver and
 		ICCD (Integrated Circuit(s) Card Devices).
-		Uses PCSC-Lite
-
