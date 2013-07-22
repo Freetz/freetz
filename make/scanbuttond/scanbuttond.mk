@@ -74,7 +74,7 @@ $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR) $($(PK
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(SCANBUTTOND_DIR) clean
-	$(RM) $($(PKG)_DIR)/{.configured,.compiled,.installed}
+	$(RM) $(SCANBUTTOND_DIR)/{.configured,.compiled,.installed}
 
 $(pkg)-uninstall:
 	$(RM) -r \
