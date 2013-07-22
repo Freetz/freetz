@@ -59,8 +59,7 @@ exec_rcs() {
 	else
 		EXTERNAL_SERVICES="$(cat /mod/etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES"
 	fi
-	if [ ! -d "$EXTERNAL_DIRECTORY" ]; then
-		rm -rf "$EXTERNAL_LINK" 2>/dev/null
+	if ! status; then
 		log "Directory could not be found, failed."
 		exit 1
 	fi
@@ -71,7 +70,6 @@ exec_rcs() {
 	done
 	[ -f $EXTERNAL_CUSTOM_FILE ] && log "$(. $EXTERNAL_CUSTOM_FILE $1 2>&1)"
 }
-
 
 start() {
 	log -x "Starting external ($EXTERNAL_DIRECTORY):"
@@ -153,11 +151,7 @@ stop() {
 
 	# remove dynamic
 	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
-		rm -rf \
-		  /mod/etc/default.$pkg          /mod/etc/init.d/rc.$pkg \
-		  /mod/etc/onlinechanged/*$pkg   /mod/etc/cron.d/$pkg \
-		  /mod/usr/lib/cgi-bin/$pkg.cgi  /mod/usr/lib/cgi-bin/$pkg \
-		  2>/dev/null
+		remove_scripts $pkg
 	done
 
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
@@ -166,11 +160,44 @@ stop() {
 	log "Stopping external finished."
 }
 
+status() {
+	[ -L "$EXTERNAL_LINK" -a -d "$EXTERNAL_LINK" ] && return 0
+	rm -rf "$EXTERNAL_LINK" 2>/dev/null
+	return 1
+}
 
-if [ $# -ge 2 ]; then
-	# no output, every mounted partition runs this with its path
-	echo "$EXTERNAL_DIRECTORY" | grep -q "$2" || exit 1
-fi
+remove_scripts() {
+	#removes script-links (after unload)
+	local pkg=$1
+	rm -rf \
+	  /mod/etc/default.$pkg          /mod/etc/init.d/rc.$pkg \
+	  /mod/etc/onlinechanged/*$pkg   /mod/etc/cron.d/$pkg \
+	  /mod/usr/lib/cgi-bin/$pkg.cgi  /mod/usr/lib/cgi-bin/$pkg \
+	  2>/dev/null
+}
+
+remove() {
+	# removes single packages
+	for pkg in $*; do
+		if ! echo " $(cat /mod/etc/external.pkg) " | grep -q " $pkg "; then
+			log "Can not remove package '$pkg', failed."
+			continue
+		fi
+		# unload package
+		[ -x /mod/etc/init.d/rc.$pkg ] && log "$(/mod/etc/init.d/rc.$pkg unload 2>&1)"
+		#delete scripts
+		remove_scripts $pkg
+		# remove PKG from external.pkg
+		sed -i "s/^$pkg //;s/ $pkg / /;s/ $pkg$//" /mod/etc/external.pkg
+		log "Removed package '$pkg', done."
+	done
+}
+
+usage() {		
+	echo "Usage: $0 [start|stop|status|remove <PKG>] [mountpoint]" 1>&2
+	echo "Logfile is stored here: $LOG_FILE"
+	exit 1
+}
 
 create_custom_file() {
 cat << 'EOF' > $EXTERNAL_CUSTOM_FILE
@@ -183,6 +210,15 @@ case "$1" in
 esac
 EOF
 }
+
+
+case $1 in
+	start|stop)
+	if [ $# -ge 2 ]; then
+		# no output, every mounted partition runs this with its path
+		echo "$EXTERNAL_DIRECTORY" | grep -q "$2" || exit 1
+	fi
+esac
 
 case $1 in
 	""|load)
@@ -197,12 +233,15 @@ case $1 in
 		stop
 		;;
 	status)
-		[ -d "$EXTERNAL_DIRECTORY" ] && echo running || echo stopped
+		status && echo running || echo stopped
+		;;
+	remove)
+		shift
+		[ $# -lt 1 ] && usage
+		remove $*
 		;;
 	*)
-		echo "Usage: $0 [start|stop|status] [mountpoint]" 1>&2
-		echo "Logfile is stored here: $LOG_FILE"
-		exit 1
+		usage
 		;;
 esac
 
