@@ -1504,11 +1504,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 
 	# Pack firmware image (use old tar for compatibility)
-	if [ "$FW_IMAGES_DIR" ]; then
-		img_name="${FW_IMAGES_DIR}/${modimage}"
-	else
-		img_name="${DIR}/${modimage}"
-	fi
+	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
 	echo0 "packing $img_name"
 	"$TAR" -C "$FIRMWARE_MOD_DIR" -cf "$img_name" . || exit 1
 	if [ ! -s "$img_name" ]; then
@@ -1523,18 +1519,28 @@ fi
 
 if [ "$action_names" ]; then
 	# Pack externalised files
-	if [ "$EXTERNAL_CREATEPAK" == "y" ] && [ -n "$externalised_files" ]; then
-		modexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate.external"
-		if [ "$FW_IMAGES_DIR" ]; then
-			modexternal="${FW_IMAGES_DIR}/${modexternal}"
-		else
-			modexternal="${DIR}/${modexternal}"
-		fi
+	if [ "$EXTERNAL_CREATEPAK" == "y" -a -n "$externalised_files" ]; then
+		tplexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate"
+		#static packages
+		modexternal="${FW_IMAGES_DIR:-$DIR}/${tplexternal}.external"
 		echo "packing ${modexternal}"
 		"$TAR" -C "$EXTERNAL_MOD_DIR" -cf "$modexternal" . || exit 1
 		if [ ! -s "$modexternal" ]; then
 			rm -f "$modexternal"
 			error 1 "packing of external tar failed"
+		fi
+		#dynamic packages
+		if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
+			for pkg in ${EXTERNAL_MOD_DIR}-*; do
+				pkg=${pkg#${EXTERNAL_MOD_DIR}-}
+				pkgexternal="${FW_IMAGES_DIR:-$DIR}/${tplexternal}_${pkg}.external"
+				echo "packing ${pkgexternal}"
+				"$TAR" -C "$EXTERNAL_MOD_DIR-${pkg}" -cf "$pkgexternal" . || exit 1
+				if [ ! -s "$pkgexternal" ]; then
+					rm -f "$pkgexternal"
+					error 1 "packing of external-$pkg tar failed"
+				fi
+			done
 		fi
 	fi
 

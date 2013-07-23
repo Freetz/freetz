@@ -882,12 +882,11 @@ menu "External processing"
 			Creates a file for upload with the webinterface.
 
 	config EXTERNAL_CREATEPAK_DYNAMIC
-#		bool "For every package a file" if ! EXTERNAL_DOWNLOADER
-		bool
+		bool "For every package a file" if ! EXTERNAL_DOWNLOADER
 		default n
 		depends on \
 			EXTERNAL_ENABLED &&	! EXTERNAL_DOWNLOADER && \
-			EXTERNAL_CREATEPAK && EXTERNAL_DYNAMIC
+			EXTERNAL_CREATEPAK && EXTERNAL_DYNAMIC && EXTERNAL_DYNAMIC_EVERY
 		help
 			Creates a file for every package which is an external service.
 	

@@ -29,13 +29,21 @@ if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 	touch "$OUT_DIR/$OUT_CONF"
 fi
 
-#start/stop external services
+#external services
 for EXTERNAL_SERVICE in $(find make -maxdepth 2 -name external.services); do
 	. $EXTERNAL_SERVICE
 done
-echo $EXTERNAL_SERVICES \
-  | tee "${EXTERNAL_MOD_DIR}/external.pkg" \
-  > "${VARTAR_MOD_DIR}/var/mod/etc/external.pkg"
+#.pkg files
+echo $EXTERNAL_SERVICES > "${VARTAR_MOD_DIR}/var/mod/etc/external.pkg"
+if [ "$EXTERNAL_CREATEPAK_DYNAMIC" != "y" ]; then
+	cat "${VARTAR_MOD_DIR}/var/mod/etc/external.pkg" > "${EXTERNAL_MOD_DIR}/external.pkg"
+else
+	touch "${EXTERNAL_MOD_DIR}/external.pkg"
+	for pkg in $EXTERNAL_SERVICES; do
+		mkdir -p "${EXTERNAL_MOD_DIR}-${pkg}"
+		echo "${pkg}" > "${EXTERNAL_MOD_DIR}-${pkg}/${pkg}.pkg"
+	done
+fi
 
 #dynamic files
 if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
@@ -118,12 +126,26 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 	fi
 done
 
-#remove emtpy directories ("scripts")
+#directory for each service package
+if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
+	for pkg in $EXTERNAL_SERVICES; do
+		pkg_dir="${EXTERNAL_MOD_DIR}-${pkg}"
+		pkg_ver="$(grep "^${pkg}-" $PACKAGES_LIST_FILE)"
+		files=" $(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+		for file in $files; do
+			[ ! -e "${EXTERNAL_MOD_DIR}$file" ] && continue
+			mkdir -p "${pkg_dir}${file%/*}"
+			mv "${EXTERNAL_MOD_DIR}$file" "${pkg_dir}${file}"
+		done	
+	done
+fi
+
+#remove emtpy directories, dynamic leftover
 for dir in $(echo $EXTERNAL_DYNAMIC_FILES | sort -ru); do
-	rmdir "${FILESYSTEM_MOD_DIR}$dir" 2>/dev/null
+	rmdir "${FILESYSTEM_MOD_DIR}$dir" "${EXTERNAL_MOD_DIR}$dir" 2>/dev/null
 	while [ "$dir" != "${dir%/*}" ]; do
 		dir="${dir%/*}"
-		rmdir "${FILESYSTEM_MOD_DIR}$dir" 2>/dev/null
+		rmdir "${FILESYSTEM_MOD_DIR}$dir" "${EXTERNAL_MOD_DIR}$dir" 2>/dev/null
 	done
 done
 
