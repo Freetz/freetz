@@ -5,11 +5,31 @@ DAEMON_LOMG_NAME=Samba
 DAEMON_CONFIG=/mod/etc/samba/smb.conf
 . /etc/init.d/modlibrc
 
+create_rc() {
+	#creates /mod/etc/init.d/rc.(smbd|nmbd)
+	if [ "$(modconf value MOD_EXTERNAL_BEHAVIOUR mod)" != "copy" ]; then
+		#link
+		local link="$(readlink /mod/etc/init.d/rc.samba)"
+		if [ "$link" != "$(readlink /mod/etc/init.d/rc.$1)" ]; then
+			rm -rf /mod/etc/init.d/rc.$1 2>/dev/null
+			ln -s ${link%samba}$1 /mod/etc/init.d/rc.$1
+		fi
+	else
+		#copy
+		if [ ! -f /mod/etc/init.d/rc.$1 ]; then
+			rm -rf /mod/etc/init.d/rc.$1 2>/dev/null
+			cp /mod/external/etc/init.d/rc.$1 /mod/etc/init.d/rc.$1
+		fi
+	fi
+}
+
 do_smbd() {
+	create_rc smbd
 	/mod/etc/init.d/rc.smbd $1
 }
 
 do_nmbd() {
+	create_rc nmbd
 	[ -x "$(which nmbd)" -o -L "$(which nmbd)" ] && /mod/etc/init.d/rc.nmbd $1
 }
 
@@ -73,6 +93,7 @@ case $1 in
 		modunreg cgi samba
 		do_smbd unload
 		do_nmbd unload
+		rm -rf /mod/etc/init.d/rc.smbd /mod/etc/init.d/rc.nmbd 2>/dev/null
 		;;
 	start)
 		do_nmbd start

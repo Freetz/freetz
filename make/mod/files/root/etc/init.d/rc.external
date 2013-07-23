@@ -103,7 +103,7 @@ start() {
 
 	# create dynamic links (or copy)
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
-	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
+	for pkg in $(cat /mod/etc/external.pkg); do
 		status="$(/mod/etc/init.d/rc.$pkg status 2>/dev/null)"
 		[ -n "$status" -a "$status" != "stopped" ] && continue
 		for src in \
@@ -150,7 +150,7 @@ stop() {
 	exec_rcs unload
 
 	# remove dynamic
-	for pkg in $(cat /mod/etc/external.pkg | sed 's/ samba / samba smbd nmbd /'); do
+	for pkg in $(cat /mod/etc/external.pkg); do
 		remove_scripts $pkg
 	done
 
