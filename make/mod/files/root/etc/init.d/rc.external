@@ -93,8 +93,8 @@ start() {
 	ln -s "$EXTERNAL_DIRECTORY" "$EXTERNAL_LINK"
 	
 	# create /mod/etc/(static|external).pkg
-	if [ -e "${EXTERNAL_LINK}/external.pkg" ]; then
-		EXTERNAL_SERVICES="$(cat ${EXTERNAL_LINK}/*.pkg | tr "\n" " ")"
+	if [ -e "${EXTERNAL_LINK}/.external" ]; then
+		EXTERNAL_SERVICES="$(cat ${EXTERNAL_LINK}/*.pkg 2>/dev/null | tr "\n" " ")"
 		echo "$EXTERNAL_SERVICES" > /mod/etc/external.pkg
 		for package in $EXTERNAL_SERVICES; do
 			grep -q "^$package$" /mod/etc/static.pkg || echo "$package" >> /mod/etc/static.pkg 

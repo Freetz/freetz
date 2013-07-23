@@ -50,28 +50,22 @@ if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
 	# search files
 	for pkg in $EXTERNAL_SERVICES; do
 		pkg_version="$(grep "^${pkg}-" $PACKAGES_LIST_FILE)"
-		# only scripts (fallback)
-		if [ "$EXTERNAL_DYNAMIC_SCRIPTS" == "y" ]; then
-			PKG_FILES="$(cd $PACKAGES_DIR/${pkg_version}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-			for file in $PKG_FILES; do
-				case $file in
-					/etc/default.$pkg/*|/etc/init.d/rc.*|/etc/onlinechanged/*|/etc/cron.d/*|/usr/lib/cgi-bin/$pkg*)
-					EXTERNAL_DYNAMIC_FILES+=" $file"
-					;;
-				esac
-			done
-		fi
-		# everything (experimental)
-		if [ "$EXTERNAL_DYNAMIC_EVERY" == "y" ]; then
-			EXTERNAL_DYNAMIC_FILES+=" $(cd $PACKAGES_DIR/${pkg_version}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-		fi
+		PKG_FILES="$(cd $PACKAGES_DIR/${pkg_version}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+		for file in $PKG_FILES; do
+			case $file in
+				/etc/default.$pkg/*|/etc/init.d/rc.*|/etc/onlinechanged/*|/etc/cron.d/*|/usr/lib/cgi-bin/$pkg*)
+				[ "$EXTERNAL_DYNAMIC_NOSCRIPTS" == "y" ] && continue
+				;;
+			esac
+			EXTERNAL_DYNAMIC_FILES+=" $file"
+		done
 	done
 fi
 
 #own files
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES $EXTERNAL_DYNAMIC_FILES"
 for EXT_FILE in $(find make make/libs -maxdepth 2 -name external.files) kernel/external.files; do
-	[ "$EXTERNAL_DYNAMIC_EVERY" == "y" -a -e "${EXT_FILE/external.files/external.services}" ] && continue
+	[ "$EXTERNAL_DYNAMIC" == "y" -a -e "${EXT_FILE/external.files/external.services}" ] && continue
 	. $EXT_FILE
 done
 EXTERNAL_FILES=$(echo $EXTERNAL_FILES | sed -e 's| |\n/|g;s|//\+|/|g' | sort -u)
@@ -136,7 +130,8 @@ if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
 			[ ! -e "${EXTERNAL_MOD_DIR}$file" ] && continue
 			mkdir -p "${pkg_dir}${file%/*}"
 			mv "${EXTERNAL_MOD_DIR}$file" "${pkg_dir}${file}"
-		done	
+		done
+		touch "${pkg_dir}/.external"
 	done
 fi
 

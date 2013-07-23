@@ -824,13 +824,6 @@ menu "External processing"
 			Prepare files for Downloader package.
 			Downloader loads usualy files from a http or ftp server into the RAM of the box.
 
-	config EXTERNAL_LINKS
-		bool "Do not ignore symbolic links"
-		default n
-		depends on EXTERNAL_ENABLED
-		help
-			Allows externalisation of symbolic links.
-
 	config EXTERNAL_SUBDIRS
 		bool "Keep subdirectories"
 		default y
@@ -840,39 +833,34 @@ menu "External processing"
 
 			Not all packages are shown if you disable this.
 
+	config EXTERNAL_LINKS
+		bool "Do not ignore symbolic links"
+		default n
+		depends on EXTERNAL_ENABLED
+		help
+			Allows externalisation of symbolic links.
+
 	config EXTERNAL_DYNAMIC
 		bool "Dynamic packages"
-		default n
+		default y
 		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS
 		help
 			Enable dynamic package processing.
 
-		choice
-		prompt "Behaviour"
-		default EXTERNAL_DYNAMIC_EVERY
-		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS && EXTERNAL_DYNAMIC 
+	config EXTERNAL_DYNAMIC_NOSCRIPTS
+		bool "Do not process scripts"
+		default n
+		depends on EXTERNAL_ENABLED && EXTERNAL_DYNAMIC
 		help
-			Dynamit behaviour:
-			* only scripts:
-				- /etc/default.PKG/
-				- /etc/init.d/rc.PKG
-				- /etc/onlinechanged/*PKG
-				- /etc/cron.d/PKG
-				- /usr/lib/cgi-bin/PKG.cgi
-				- /usr/lib/cgi-bin/PKG/
-				- files defined in external.file
-			* everything:
-				Every file of the Package.
-				The file external.file is obsolete with this option.
-				Let's see if all packages can handle this!
-	
-		config EXTERNAL_DYNAMIC_SCRIPTS
-			bool "only scripts"
-	
-		config EXTERNAL_DYNAMIC_EVERY
-			bool "everything"
-	
-	endchoice
+			Do not process these files:
+			- /etc/default.PKG/
+			- /etc/init.d/rc.PKG
+			- /etc/onlinechanged/*PKG
+			- /etc/cron.d/PKG
+			- /usr/lib/cgi-bin/PKG.cgi
+			- /usr/lib/cgi-bin/PKG/
+			Use this, if you do not want to waste ram
+			or have access to your external device.			
 
 	config EXTERNAL_CREATEPAK
 		bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
@@ -884,9 +872,7 @@ menu "External processing"
 	config EXTERNAL_CREATEPAK_DYNAMIC
 		bool "For every package a file" if ! EXTERNAL_DOWNLOADER
 		default n
-		depends on \
-			EXTERNAL_ENABLED &&	! EXTERNAL_DOWNLOADER && \
-			EXTERNAL_CREATEPAK && EXTERNAL_DYNAMIC && EXTERNAL_DYNAMIC_EVERY
+		depends on EXTERNAL_CREATEPAK && EXTERNAL_DYNAMIC
 		help
 			Creates a file for every package which is an external service.
 	
