@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEFAULTSET="ansi gnome konsole linux putty rxvt screen screen-w sun vt100 vt102 vt102-nsgr vt102-w vt200 vt220 vt52 xterm xterm-color xterm-xfree86"
+DEFAULTSET="ansi gnome konsole linux putty rxvt screen screen-w sun vt100 vt102 vt102-nsgr vt102-w vt200 vt220 vt52 xterm xterm-color xterm-256color xterm-xfree86"
 
 cat <<"EOF"
 ### script-generated file; do not change manually ###
