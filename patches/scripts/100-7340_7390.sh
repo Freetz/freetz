@@ -73,6 +73,16 @@ if isFreetzType LANG_EN; then
 	  "${FILESYSTEM_MOD_DIR}/etc/init.d/S17-isdn"
 fi
 
+# patch ar7.cfg to include eth1
+echo2 "applying ar7.cfg patch"
+modsed '/interfaces =/ s/"eth0"/"eth0", "eth1"/' "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg"
+awk -v eth1="$(sed -n '/name = "eth[1]"/,/} {/ p' "${FILESYSTEM_TK_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg")" \
+	'{if (/name = "wlan/){print eth1; print$0}else{print $0}}' \
+	"${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg" > \
+	"${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.tmp"
+mv  "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.tmp" \
+	"${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg"
+
 # patch install script to accept firmware from 7390
 echo2 "applying install patch"
 modsed "s/iks_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_64415/iks_16MB_xilinx_2eth_2ab_isdn_te_pots_wlan_usb_host_dect_63350/g" "${FIRMWARE_MOD_DIR}/var/install"
