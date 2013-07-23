@@ -1,5 +1,5 @@
 PYLOAD_GIT_REPOSITORY:=https://github.com/pyload/pyload.git
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT),$(call git-get-latest-revision,$(PYLOAD_GIT_REPOSITORY),stable),d941665ed6))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT),$(call git-get-latest-revision,$(PYLOAD_GIT_REPOSITORY),stable),5f673918f7))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@$($(PKG)_GIT_REPOSITORY)
 
