@@ -74,14 +74,15 @@ if isFreetzType LANG_EN; then
 fi
 
 # patch ar7.cfg to include eth1
+ar7path="etc/default.Fritz_Box_7340/avme/ar7.cfg"
+mod_file="${FILESYSTEM_MOD_DIR}/${ar7path}"
+tk_file="${FILESYSTEM_TK_DIR}/${ar7path}"
 echo2 "applying ar7.cfg patch"
-modsed '/interfaces =/ s/"eth0"/"eth0", "eth1"/' "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg"
-awk -v eth1="$(sed -n '/name = "eth[1]"/,/} {/ p' "${FILESYSTEM_TK_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg")" \
+modsed '/interfaces =/ s/"eth0"/"eth0", "eth1"/' "${mod_file}"
+awk -v eth1="$(sed -n '/name = "eth[1]"/,/} {/ p' "${tk_file}")" \
 	'{if (/name = "wlan/){print eth1; print$0}else{print $0}}' \
-	"${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg" > \
-	"${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.tmp"
-mv  "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.tmp" \
-	"${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7340/avme/ar7.cfg"
+	"${mod_file}" > "${mod_file}.tmp"
+mv  "${mod_file}.tmp"	"${mod_file}"
 
 # patch install script to accept firmware from 7390
 echo2 "applying install patch"
