@@ -847,12 +847,12 @@ menu "External processing"
 		help
 			Enable dynamic package processing.
 
-	config EXTERNAL_DYNAMIC_NOSCRIPTS
-		bool "Do not process scripts"
-		default n
+	config EXTERNAL_DYNAMIC_SCRIPTS
+		bool "Process scripts too"
+		default y
 		depends on EXTERNAL_ENABLED && EXTERNAL_DYNAMIC
 		help
-			Do not process these files:
+			Do not exclude these files:
 			- /etc/default.PKG/
 			- /etc/init.d/rc.PKG
 			- /etc/onlinechanged/*PKG

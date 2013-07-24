@@ -9,7 +9,7 @@ _services=$(cat /mod/etc/external.pkg 2>/dev/null)
 
 cgi_print_textline_p "external_directory" "$MOD_EXTERNAL_DIRECTORY" 55/255 "$(lang de:"Verzeichnis von external" en:"Directory for external"): "
 
-if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
+if [ "$EXTERNAL_DYNAMIC" == "y" -a "$EXTERNAL_DYNAMIC_SCRIPTS" == "y" ]; then
 cat << EOF
 $(lang de:"Ausgelagerte Script so nutzen:" en:"Handle externalised scripts:")?
 <blockquote> 
