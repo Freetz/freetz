@@ -10,10 +10,13 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/libusb/.libs/libusb-$($(PKG)_SHORT_VERSION).so.$($(
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_2_6_28_MIN
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-examples-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-tests-build
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_KERNEL_VERSION_2_6_28_MIN),--enable-timerfd,--disable-timerfd)
 # needs libudev to work
 $(PKG)_CONFIGURE_OPTIONS += --disable-udev
 
