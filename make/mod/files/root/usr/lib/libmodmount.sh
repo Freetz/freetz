@@ -61,7 +61,7 @@ remove_swap() {
 						;;
 					*)
 						eventadd 135 "SWAP Partition ($swap_dev)"
-						log_freetz err "SWAP Partition ($swap_dev) could not be removed."
+						log_freetz err "SWAP Partition ($swap_dev) could not be removed, error $retval."
 						;;
 				esac
 			fi
@@ -230,7 +230,7 @@ do_mount_locked() {
 					;;
 				*)                                                            # error
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz err "SWAP partition $mnt_dev could not be mounted"
+					log_freetz err "SWAP partition $mnt_dev could not be mounted, error $err_fs_mount"
 					mnt_failure=1
 					;;
 			esac
