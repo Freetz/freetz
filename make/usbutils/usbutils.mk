@@ -1,18 +1,20 @@
-$(call PKG_INIT_BIN,0.86)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=34979f675d2bcb3e1b45012fa830a53f
-$(PKG)_SITE:=@SF/linux-usb
+$(call PKG_INIT_BIN,007)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=c9df5107ae9d26b10a1736a261250139
+$(PKG)_SITE:=https://www.kernel.org/pub/linux/utils/usb/usbutils
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsusb
-$(PKG)_IDS:=$($(PKG)_DIR)/usb.ids
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/lsusb-freetz
+
 $(PKG)_IDS_SITE:=http://linux-usb.sourceforge.net
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/listusb
+$(PKG)_IDS:=$($(PKG)_DIR)/usb.ids
 $(PKG)_TARGET_IDS:=$($(PKG)_DEST_DIR)/usr/share/usb.ids
+
 ifneq ($(strip $(FREETZ_PACKAGE_USBUTILS_IDS)),y)
 $(PKG)_NOT_INCLUDED:=$($(PKG)_TARGET_IDS)
 endif
 
-$(PKG)_DEPENDS_ON := libusb
+$(PKG)_DEPENDS_ON := libusb1
 
 $(PKD)_REBUILD_SUBOPTS += FREETZ_PACKAGE_USBUTILS_IDS_UPDATE
 
@@ -23,7 +25,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(USBUTILS_DIR)
+	$(SUBMAKE) -C $(USBUTILS_DIR) V=1
 
 $($(PKG)_IDS): $($(PKG)_DIR)/.configured
 ifeq ($(strip $(FREETZ_PACKAGE_USBUTILS_IDS_UPDATE)),y)
