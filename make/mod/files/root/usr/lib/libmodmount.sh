@@ -179,7 +179,7 @@ do_mount_locked() {
 		/mod/etc/init.d/rc.swap autostart $mnt_path                                   # swap
 		local autorun="$mnt_path/autorun.sh"
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &          # autorun
-		[ -r /mod/etc/external.pkg ] && /mod/etc/init.d/rc.external start $mnt_path & # external
+		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path & # external
 		[ -x $TR069START ] && $TR069START $mnt_name                               # tr069
 		[ -x /etc/samba_control ] && /etc/samba_control reconfig                  # SAMBA reconfiguration
 		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                             # tam
@@ -272,7 +272,7 @@ do_umount_locked() {
 	local autoend="$mnt_path/autoend.sh"
 	local mnt_dev=`grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//'`        # /dev/sdXY
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
-	[ -r /mod/etc/external.pkg ] && /mod/etc/init.d/rc.external stop $mnt_path    # external
+	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
 	/mod/etc/init.d/rc.swap autostop $mnt_path                                    # swap
 	if [ -x $fritznasdb_control ]; then
 		$fritznasdb_control lost_partition $mnt_path                          # fritznasdb

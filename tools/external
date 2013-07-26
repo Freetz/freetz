@@ -49,7 +49,7 @@ fi
 if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
 	# search files
 	for pkg in $EXTERNAL_SERVICES; do
-		pkg_ver="$(grep "^${pkg}-" $PACKAGES_LIST_FILE | head -n1)"
+		pkg_ver="$(grep "^${pkg}-" $PACKAGES_LIST_FILE -m1)"
 		PKG_FILES="$(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
 		for file in $PKG_FILES; do
 			case $file in
@@ -124,7 +124,7 @@ done
 if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
 	for pkg in $EXTERNAL_SERVICES; do
 		pkg_dir="${EXTERNAL_MOD_DIR}-${pkg}"
-		pkg_ver="$(grep "^${pkg}-" $PACKAGES_LIST_FILE | head -n1)"
+		pkg_ver="$(grep "^${pkg}-" $PACKAGES_LIST_FILE -m1)"
 		files=" $(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
 		for file in $files; do
 			[ ! -e "${EXTERNAL_MOD_DIR}$file" ] && continue
