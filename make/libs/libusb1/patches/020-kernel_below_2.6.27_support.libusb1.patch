@@ -1,0 +1,54 @@
+--- libusb/os/linux_netlink.c
++++ libusb/os/linux_netlink.c
+@@ -49,13 +49,38 @@
+ 
+ struct sockaddr_nl snl = { .nl_family=AF_NETLINK, .nl_groups=KERNEL };
+ 
++static int _set_fd_nonblocking(int fd) {
++	int val;
++
++	val = fcntl(fd, F_GETFL, 0);
++	if (val < 0) {
++		return LIBUSB_ERROR_OTHER;
++	}
++
++	val = fcntl(fd, F_SETFL, val | O_NONBLOCK);
++	if (val < 0) {
++		return LIBUSB_ERROR_OTHER;
++	}
++
++	return LIBUSB_SUCCESS;
++}
++
+ int linux_netlink_start_event_monitor(void)
+ {
+ 	int ret;
+ 
+ 	snl.nl_groups = KERNEL;
+ 
+-	linux_netlink_socket = socket(PF_NETLINK, SOCK_RAW|SOCK_CLOEXEC|SOCK_NONBLOCK, NETLINK_KOBJECT_UEVENT);
++/* NB: SOCK_CLOEXEC might be defined in *libc-header but actually not supported by the kernel version */
++#ifdef SOCK_CLOEXEC
++	linux_netlink_socket = socket(PF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_KOBJECT_UEVENT);
++	/* Check if kernel seems to be too old to know SOCK_CLOEXEC */
++	if (linux_netlink_socket < 0 && errno == EINVAL)
++#endif
++	{
++		linux_netlink_socket = socket(PF_NETLINK, SOCK_RAW, NETLINK_KOBJECT_UEVENT);
++	}
++
+ 	if (-1 == linux_netlink_socket) {
+ 		return LIBUSB_ERROR_OTHER;
+ 	}
+@@ -65,6 +90,11 @@
+ 		return LIBUSB_ERROR_OTHER;
+ 	}
+ 
++	ret = _set_fd_nonblocking(linux_netlink_socket);
++	if (ret != LIBUSB_SUCCESS) {
++		return LIBUSB_ERROR_OTHER;
++	}
++
+ 	/* TODO -- add authentication */
+ 	/* setsockopt(linux_netlink_socket, SOL_SOCKET, SO_PASSCRED, &one, sizeof(one)); */
+ 
