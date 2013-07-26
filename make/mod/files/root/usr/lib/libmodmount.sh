@@ -43,7 +43,7 @@ remove_swap() {
 		retval=21                                                             # swap devices found
 		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio; do
 			if [ "$swap_type" == "partition" ]; then
-				/mod/etc/init.d/rc.swap autostop $swap_dev
+				/etc/init.d/rc.swap autostop $swap_dev
 				retval=$?
 				echo $retval > ${tmpret}
 				case "$retval" in
@@ -124,7 +124,7 @@ mount_fs() {
 			[ -x "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
 			;;
 		swap)
-			/mod/etc/init.d/rc.swap autostart $dev_node
+			/etc/init.d/rc.swap autostart $dev_node
 			err_mo=$((17+$?))
 			;;
 		*)                                                                    # fs type unknown
@@ -141,7 +141,7 @@ mount_fs() {
 # separated from do_mount since fw 04.89
 do_mount_locked() {
 	local mnt_failure=0
-	local rcftpd="/mod/etc/init.d/rc.ftpd"
+	local rcftpd="/etc/init.d/rc.ftpd"
 	local fritznasdb_control="/etc/fritznasdb_control"
 	local tammnt="/var/tam/mount"
 	local mnt_rw=rw
@@ -176,7 +176,7 @@ do_mount_locked() {
 		if [ -x $rcftpd ]; then                                                   # start/enable ftpd
 			[ -x "$(which inetdctl)" ] && inetdctl enable ftpd || $rcftpd start
 		fi
-		/mod/etc/init.d/rc.swap autostart $mnt_path                                   # swap
+		/etc/init.d/rc.swap autostart $mnt_path                                   # swap
 		local autorun="$mnt_path/autorun.sh"
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &          # autorun
 		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path & # external
@@ -260,8 +260,8 @@ do_mount_locked() {
 # used by /etc/hotplug/storage
 # separated from do_umount() since FW XX.04.86
 do_umount_locked() {
-	local rcftpd="/mod/etc/init.d/rc.ftpd"
-	local rcsmbd="/mod/etc/init.d/rc.smbd"
+	local rcftpd="/etc/init.d/rc.ftpd"
+	[ -e /mod/etc/init.d/rc.smbd ] && local rcsmbd="/mod/etc/init.d/rc.smbd" || local rcsmbd="/etc/init.d/rc.smbd"
 	local fritznasdb_control="/etc/fritznasdb_control"
 	local kill_daemon=""
 	local ftpd_needs_start=0
@@ -273,7 +273,7 @@ do_umount_locked() {
 	local mnt_dev=`grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//'`        # /dev/sdXY
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
 	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
-	/mod/etc/init.d/rc.swap autostop $mnt_path                                    # swap
+	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
 	if [ -x $fritznasdb_control ]; then
 		$fritznasdb_control lost_partition $mnt_path                          # fritznasdb
 		msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path" # medisrv
@@ -435,7 +435,7 @@ hd_spindown_control() {
 # of /etc/hotplug/storage
 # reload storage media
 storage_reload() {
-	local rcftpd="/mod/etc/init.d/rc.ftpd"
+	local rcftpd="/etc/init.d/rc.ftpd"
 	[ -d /var/media ] || return 0
 	[ -x $rcftpd ] && $rcftpd restart
 	hd_spindown_control loadconfig
