@@ -5,7 +5,7 @@ case $HTTP_COOKIE in
 	*) skin=$MOD_SKIN ;;
 esac
 if [ ! -r "/usr/share/skin/$skin/skin.sh" ]; then
-	# set first available skin, if selected is not installed 
+	# set first available skin, if selected is not installed
 	skin="$(ls /usr/share/skin | head -n1)"
 fi
 source "/usr/share/skin/$skin/skin.sh"

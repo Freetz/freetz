@@ -88,16 +88,16 @@ start() {
 	fi
 	[ "$MOD_EXTERNAL_YEAR_MIN" == "yes" ] && check_date
 
-	# create /mod/external	
+	# create /mod/external
 	rm -rf "$EXTERNAL_LINK" 2>/dev/null
 	ln -s "$EXTERNAL_DIRECTORY" "$EXTERNAL_LINK"
-	
+
 	# create /mod/etc/(static|external).pkg
 	if [ -e "${EXTERNAL_LINK}/.external" ]; then
 		EXTERNAL_SERVICES="$(cat ${EXTERNAL_LINK}/*.pkg 2>/dev/null | tr "\n" " ")"
 		echo "$EXTERNAL_SERVICES" > /mod/etc/external.pkg
 		for package in $EXTERNAL_SERVICES; do
-			grep -q "^$package$" /mod/etc/static.pkg || echo "$package" >> /mod/etc/static.pkg 
+			grep -q "^$package$" /mod/etc/static.pkg || echo "$package" >> /mod/etc/static.pkg
 		done
 	fi
 
@@ -121,7 +121,7 @@ start() {
 					/etc/onlinechanged/*|/etc/cron.d/*) continue ;;
 				esac
 			fi
-			[ ! -e "$src" ] && continue 
+			[ ! -e "$src" ] && continue
 			dst="/mod${src#$EXTERNAL_LINK}"
 			mkdir -p "${src%/*}"
 			rm -rf "$dst" 2>/dev/null
@@ -193,7 +193,7 @@ remove() {
 	done
 }
 
-usage() {		
+usage() {
 	echo "Usage: $0 [start [mountpoint]|stop|status|remove <PKG>]" 1>&2
 	echo "Logfile is stored here: $LOG_FILE"
 	exit 1

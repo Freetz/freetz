@@ -5,9 +5,9 @@
 mkdir -p "/mod/etc/racoon/certs"
 PA="`echo "${IPSEC_TOOLS_CERTPATH}" | sed 's%/*$%%'`"
 
-echo "$IPSEC_TOOLS_RACOON" > /mod/etc/racoon/racoon.conf  
+echo "$IPSEC_TOOLS_RACOON" > /mod/etc/racoon/racoon.conf
 
-echo "$IPSEC_TOOLS_SETKEY" > /mod/etc/racoon/setkey.conf  
+echo "$IPSEC_TOOLS_SETKEY" > /mod/etc/racoon/setkey.conf
 
 if [ ! -z "$IPSEC_TOOLS_VPN_LOCAL" ] && [ ! -z "$IPSEC_TOOLS_VPN_REMOTE" ] && [ ! -z "$IPSEC_TOOLS_DYNDNS" ]; then
     REM_IP=`ping -c1 -w1 $IPSEC_TOOLS_DYNDNS | sed -n 's/PING .* (\([0-9\.]*\)):.*/\1/ p'`
@@ -15,16 +15,16 @@ if [ ! -z "$IPSEC_TOOLS_VPN_LOCAL" ] && [ ! -z "$IPSEC_TOOLS_VPN_REMOTE" ] && [ 
     LOC_IF=$(route -n|grep "^0.0.0.0"|awk '{print $8;}')
     LOC_IP=$(ifconfig $LOC_IF|sed -n '/addr:/s/ [^r]*..//gp')
     if [ ! -z "$REM_IP" ] && [ ! -z "$LOC_IP" ] ; then
-	echo "spdadd $IPSEC_TOOLS_VPN_LOCAL $IPSEC_TOOLS_VPN_REMOTE any -P out ipsec esp/tunnel/$LOC_IP-$REM_IP/require;" >>  /mod/etc/racoon/setkey.conf  
-	echo "spdadd $IPSEC_TOOLS_VPN_REMOTE $IPSEC_TOOLS_VPN_LOCAL any -P in  ipsec esp/tunnel/$REM_IP-$LOC_IP/require;" >>  /mod/etc/racoon/setkey.conf  
+	echo "spdadd $IPSEC_TOOLS_VPN_LOCAL $IPSEC_TOOLS_VPN_REMOTE any -P out ipsec esp/tunnel/$LOC_IP-$REM_IP/require;" >>  /mod/etc/racoon/setkey.conf
+	echo "spdadd $IPSEC_TOOLS_VPN_REMOTE $IPSEC_TOOLS_VPN_LOCAL any -P in  ipsec esp/tunnel/$REM_IP-$LOC_IP/require;" >>  /mod/etc/racoon/setkey.conf
     fi
-fi 
-echo "$IPSEC_TOOLS_CRT" > ${PA}/${IPSEC_TOOLS_CERTNAME}  
+fi
+echo "$IPSEC_TOOLS_CRT" > ${PA}/${IPSEC_TOOLS_CERTNAME}
 
-echo "$IPSEC_TOOLS_KEY" > ${PA}/${IPSEC_TOOLS_KEYNAME}  
+echo "$IPSEC_TOOLS_KEY" > ${PA}/${IPSEC_TOOLS_KEYNAME}
 
-echo "$IPSEC_TOOLS_CA" > ${PA}/${IPSEC_TOOLS_CERTNAME}  
+echo "$IPSEC_TOOLS_CA" > ${PA}/${IPSEC_TOOLS_CERTNAME}
 
-echo "$IPSEC_TOOLS_PSK" > ${PA}/${IPSEC_TOOLS_PSKNAME} 
+echo "$IPSEC_TOOLS_PSK" > ${PA}/${IPSEC_TOOLS_PSKNAME}
 
-chmod 600  ${PA}/* 
+chmod 600  ${PA}/*

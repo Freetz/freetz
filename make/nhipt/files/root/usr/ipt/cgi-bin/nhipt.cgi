@@ -699,7 +699,7 @@ if (myConf["BOOT"]=="usb") {
 	myStr = myStr "<TR><TH class=right>BOOT FROM : </TH><TD class=left><INPUT TYPE=RADIO NAME=BOOT VALUE=flash" flash ">Fritz flash</TD><TD class=left><INPUT TYPE=RADIO NAME=BOOT VALUE=usb" usb ">USB stick</TD></TR>";
 	if (BoxType == 72) {
 		myStr = myStr "<TR><TH class=right>LOG TO : </TH><TD class=left><INPUT TYPE=RADIO NAME=LOGTO VALUE=internal " loginternal "> nhipt-deamon</TD><TD class=left><INPUT TYPE=RADIO NAME=LOGTO VALUE=syslog " logsyslog "> syslog-deamon </TD></TR>";
-	} else { 
+	} else {
 		myStr = myStr "<INPUT TYPE=HIDDEN NAME=LOGTO VALUE=syslog>"
 	}
 	if (BoxType == 73) {

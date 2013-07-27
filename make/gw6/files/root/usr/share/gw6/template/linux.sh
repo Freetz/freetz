@@ -11,7 +11,7 @@
 # notices are not to be removed from the source code.
 #
 # Note: IPV6 support and tun Support must be enabled before calling this script.
-# 
+#
 
 
 LANGUAGE=C
@@ -71,7 +71,7 @@ ExecNoCheck()
    $* # Execute command
 }
 
-# Program localization 
+# Program localization
 
 Display 1 "--- Start of configuration script. ---"
 Display 1 "Script: " `basename $0`
@@ -105,7 +105,7 @@ fi
 #############################################################################
 # Tunnel destruction script.
 #
-#   Is invoked by the Gateway6 Client on shutdown when it receives the 
+#   Is invoked by the Gateway6 Client on shutdown when it receives the
 #   SIGHUP signal. Use "kill -HUP <gw6c pid>".
 #
 if [ X"${TSP_OPERATION}" = X"TSP_TUNNEL_TEARDOWN" ]; then
@@ -139,7 +139,7 @@ if [ X"${TSP_OPERATION}" = X"TSP_TUNNEL_TEARDOWN" ]; then
   if [ -x $ipconfig ]; then
     # Delete tunnel via ipconfig
     ExecNoCheck $ipconfig tunnel del $TSP_TUNNEL_INTERFACE
-  else  
+  else
     # Check if interface exists and remove it
     $ifconfig $TSP_TUNNEL_INTERFACE >/dev/null 2>/dev/null
     if [ $? -eq 0 ]; then
@@ -155,9 +155,9 @@ if [ X"${TSP_OPERATION}" = X"TSP_TUNNEL_TEARDOWN" ]; then
       ExecNoCheck $ifconfig $TSP_TUNNEL_INTERFACE down
     fi
   fi
-  
+
   # Stop radvd daemon if it was running
-  KillProcess $rtadvdconfigfile  
+  KillProcess $rtadvdconfigfile
 
   Display 1 Tunnel tear down completed.
 
@@ -197,8 +197,8 @@ if [ X"${TSP_HOST_TYPE}" = X"host" ] || [ X"${TSP_HOST_TYPE}" = X"router" ]; the
    Exec $ifconfig $TSP_TUNNEL_INTERFACE add $TSP_CLIENT_ADDRESS_IPV6/$TSP_TUNNEL_PREFIXLEN
    Exec $ifconfig $TSP_TUNNEL_INTERFACE mtu 1280
 
-   # 
-   # Default route  
+   #
+   # Default route
    Display 1 "Adding default route"
    ExecNoCheck $route -A inet6 del ::/0 2>/dev/null # delete old default route
    ExecNoCheck $route -A inet6 del 2000::/3 2>/dev/null  # delete old gw route

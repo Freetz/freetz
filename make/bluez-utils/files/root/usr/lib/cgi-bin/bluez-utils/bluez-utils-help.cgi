@@ -8,7 +8,7 @@ echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">"
 echo "<html>"
 echo "<body><h1>Bluez Utils Help</h1>"
 
-if [ -f "/etc/bluetooth/help.html" ]; then 
+if [ -f "/etc/bluetooth/help.html" ]; then
 	cat /etc/bluetooth/help.html
 else
 	echo "<p>Help not installed</p>"

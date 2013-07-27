@@ -32,7 +32,7 @@ cat << EOF
 <a href="$(href extra bluez-utils bluez-utils-help)">Show Bluez-Utils Help</a>
 </p>
 <p>
-MAC: <input type="text" name="mac" size="20" maxlength="20" value="$(html "$BLUEZ_UTILS_MAC")"> 
+MAC: <input type="text" name="mac" size="20" maxlength="20" value="$(html "$BLUEZ_UTILS_MAC")">
 <a href="$(href extra bluez-utils bluez-utils-help)#macaddr">Show MAC</a>
 </p>
 <p>
@@ -84,14 +84,14 @@ cat << EOF
 Run (once) sdptool
 <input id="sdptool_start_1" type="radio" name="sdptool_start" value="yes"$sdptool_start_yes_chk><label for="sdptool_start_1"> yes</label>
 <input id="sdptool_start_2" type="radio" name="sdptool_start" value="no"$sdptool_start_no_chk><label for="sdptool_start_2"> no</label>
-</p><p>                     
+</p><p>
 sdptool options <input type="text" name="sdpdtool_options" size="80" maxlength="80" value="$(html "$BLUEZ_UTILS_SDPDTOOL_OPTIONS")">
 </p>
 
 Run (once) rfcomm
 <input id="rfcommprg_start_1" type="radio" name="rfcommprg_start" value="yes"$rfcommprg_start_yes_chk><label for="rfcommprg_start_1"> yes</label>
 <input id="rfcommprg_start_2" type="radio" name="rfcommprg_start" value="no"$rfcommprg_start_no_chk><label for="rfcommprg_start_2"> no</label>
-</p><p>                     
+</p><p>
 rfcomm options <input type="text" name="rfcommprg_options" size="80" maxlength="80" value="$(html "$BLUEZ_UTILS_RFCOMMPRG_OPTIONS")">
 </p>
 

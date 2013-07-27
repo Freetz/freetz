@@ -8,7 +8,7 @@ cgi_begin '$(lang de:"Supportdatei erstellen" en:"Create support file")'
 cat << EOF
 
 <p>$(lang
-	de:"Es wird eine Datei mit Konfigurations- und Logdateien zusammengepackt, 
+	de:"Es wird eine Datei mit Konfigurations- und Logdateien zusammengepackt,
  die eine Fehlersuche erm&ouml;glicht. Es werden Callmonitor-Rufnummern, DSL-Serial,
  MAC-, IPv4- sowie IPv6-Adressen entfernt. Es gibt aber keine Garantie, dass dies
  fehlerfrei funktioniert. Deshalb bitte vor Ver&ouml;ffentlichung der Datei selbst

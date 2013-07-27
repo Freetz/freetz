@@ -40,13 +40,13 @@ cat << EOF
 <p>IP/Name des IPSec Gateway<br>
 IPSec gateway: <input type="text" name="ipsecgateway" size="15" maxlength="30" value="$(html "$VPNC_IPSECGATEWAY")"> &lt;IP/Name&gt;</p>
 <p>Name der IKE DH Group<br>
-IKE DH Group: 
+IKE DH Group:
 <input id="ike1" type="radio" name="ikedhgroup" value="dh1"$ike1_chk><label for="ike1"> dh1</label>
 <input id="ike2" type="radio" name="ikedhgroup" value="dh2"$ike2_chk><label for="ike2"> dh2</label>
 <input id="ike5" type="radio" name="ikedhgroup" value="dh5"$ike5_chk><label for="ike5"> dh5</label>
 </p>
 <p>Diffie-Hellman Gruppe f&uuml;r PFS<br>
-Perfect Forward Secrecy:  
+Perfect Forward Secrecy:
 <input id="pfs1" type="radio" name="perfectforwardsecrecy" value="nopfs"$pfs_nopfs_chk><label for="pfs1"> nopfs</label>
 <input id="pfs2" type="radio" name="perfectforwardsecrecy" value="dh1"$pfs_dh1_chk><label for="pfs2"> dh1</label>
 <input id="pfs3" type="radio" name="perfectforwardsecrecy" value="dh2"$pfs_dh2_chk><label for="pfs3"> dh2</label>
@@ -56,17 +56,17 @@ Perfect Forward Secrecy:
 <p>Lokale ISAKMP Portnummer (0 == zuf&auml;llig)<br>
 Local Port: <input type="text" name="localport" size="15" maxlength="15" value="$(html "$VPNC_LOCALPORT")"> &lt;0-65535&gt;</p>
 <p>IPSEC mit Cisco-UDP Encapsulation nutzen<br>
-UDP Encapsulate:  
+UDP Encapsulate:
 <input id="udpe1" type="radio" name="udpencapsulate" value="yes"$udpenc_on_chk><label for="udpe1"> an</label>
 <input id="udpe2" type="radio" name="udpencapsulate" value="no"$udpenc_off_chk><label for="udpe2"> aus</label>
 </p>
 <p>Aktiviere schwache single DES Verschl&uuml;sselung<br>
-Enable Single DES: 
+Enable Single DES:
 <input id="esd1" type="radio" name="enablesingledes" value="yes"$en_single_des_on_chk><label for="esd1"> an</label>
 <input id="esd2" type="radio" name="enablesingledes" value="no"$en_single_des_off_chk><label for="esd2"> aus</label>
 </p>
 <p>Deaktiviere Nutzung von NAT-T<br>
-Disable NAT Traversal:  
+Disable NAT Traversal:
 <input id="dnt1" type="radio" name="disablenattraversal" value="yes"$dis_nat_trav_on_chk><label for="dnt1"> an</label>
 <input id="dnt2" type="radio" name="disablenattraversal" value="no"$dis_nat_trav_off_chk><label for="dnt2"> aus</label>
 </p>

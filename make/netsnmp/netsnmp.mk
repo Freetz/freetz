@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/net-snmp-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
 
-# Applications selected 
+# Applications selected
 $(PKG)_APPS:= encode_keychange snmpbulkget snmpbulkwalk snmpdelta snmpdf snmpget snmpgetnext snmpset snmpstatus snmptable snmptest snmptranslate snmptrap snmptrapd snmpusm snmpvacm snmpwalk
 $(PKG)_APPS_INCLUDED    := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_APPS))
 $(PKG)_APPS_BUILD_DIR   := $(addprefix $($(PKG)_DIR)/apps/.libs/,$($(PKG)_APPS_INCLUDED))

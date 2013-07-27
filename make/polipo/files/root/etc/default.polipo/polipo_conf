@@ -5,22 +5,22 @@
 echo "daemonise = true"
 
 
-[ -n "${POLIPO_PORT// /}" ] && echo "proxyPort = $POLIPO_PORT" 
+[ -n "${POLIPO_PORT// /}" ] && echo "proxyPort = $POLIPO_PORT"
 
-[ -n "${POLIPO_IP// /}" ] && echo "proxyAddress = \"$POLIPO_IP\"" 
+[ -n "${POLIPO_IP// /}" ] && echo "proxyAddress = \"$POLIPO_IP\""
 
-[ -n "${POLIPO_CLIENTS// /}" ] && echo "allowedClients = \"$POLIPO_CLIENTS\"" 
+[ -n "${POLIPO_CLIENTS// /}" ] && echo "allowedClients = \"$POLIPO_CLIENTS\""
 
-[ -n "$POLIPO_DISABLESERVERSLIST" ] && echo "disableServersList = $POLIPO_DISABLESERVERSLIST" 
+[ -n "$POLIPO_DISABLESERVERSLIST" ] && echo "disableServersList = $POLIPO_DISABLESERVERSLIST"
 
-[ -n "$POLIPO_DISABLEINDEXING" ] && echo "disableIndexing = $POLIPO_DISABLEINDEXING" 
+[ -n "$POLIPO_DISABLEINDEXING" ] && echo "disableIndexing = $POLIPO_DISABLEINDEXING"
 
-[ -n "$POLIPO_DISABLECONFIGURATION" ] && echo "disableConfiguration = $POLIPO_DISABLECONFIGURATION" 
+[ -n "$POLIPO_DISABLECONFIGURATION" ] && echo "disableConfiguration = $POLIPO_DISABLECONFIGURATION"
 
-[ -n "$POLIPO_DISABLELOCALINTERFACE" ] && echo "disableLocalInterface = $POLIPO_DISABLELOCALINTERFACE" 
+[ -n "$POLIPO_DISABLELOCALINTERFACE" ] && echo "disableLocalInterface = $POLIPO_DISABLELOCALINTERFACE"
 
 # optional settings
-if [ -n "$POLIPO_OPTIONS" ]; then 
+if [ -n "$POLIPO_OPTIONS" ]; then
 	echo "$POLIPO_OPTIONS" | sed 's/[[:space:]]*;[[:space:]]*/\n/g'
-fi 
+fi
 

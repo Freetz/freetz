@@ -356,7 +356,7 @@ load_modules_2_6_28_10() {
 			dect_firstlevelfile=/lib/modules/dectfw_firstlevel_488.hex
 			dect_secondlevelfile=/lib/modules/dectfw_secondlevel_488.hex
 			piglet_bitfile=/lib/modules/bitfile_isdn.bit${HWRevision_BitFileCount}
-			piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount} 
+			piglet_potsbitfile=/lib/modules/bitfile_pots.bit${HWRevision_BitFileCount}
 			#piglet_bitfilemode=`/bin/testvalue /var/flash/telefon_misc 4 2638`
 			if [ -z $piglet_bitfilemode ]; then piglet_bitfilemode=0; fi
 			piglet_load_params=" \
@@ -409,7 +409,7 @@ load_modules_2_6_32() {
 	else
 		echo "HWRevision $HWRevision not supported here."
 	fi
-	
+
 	if [ -n "$piglet_dectmode" ]; then
 		modprobe Piglet_noemif \
 			piglet_dectmode=$piglet_dectmode \

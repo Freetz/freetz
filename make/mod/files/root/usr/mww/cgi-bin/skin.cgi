@@ -11,7 +11,7 @@ invalid_skin() {
 	source /usr/lib/libmodcgi.sh
 	cgi --id=skin
 	cgi_begin 'Skins'
-	[ $# -gt 0 ] && print_error "$(lang 
+	[ $# -gt 0 ] && print_error "$(lang
 		de:"'$name' ist kein g&uuml;ltiger Skin."
 		en:"'$name' is not a valid skin."
 	)"

@@ -7,11 +7,11 @@ start() {
 	# include environment
 	[ -r /var/env.cache ] && . /var/env.cache
 	BOXTYPE=${CONFIG_PRODUKT#Fritz_Box_}
-	
+
 	[ -z "$BOXTYPE" ] && echo "Warning: boxtype not recognized"
- 
+
 	if [ "$BOXTYPE" = "7170" ];then
-	
+
 	echo 'Setting Ports ...'
 
 	# Port Mode
@@ -27,7 +27,7 @@ start() {
 	/sbin/$DAEMON spme 4 $CPMACCFG_SPEED4 $CPMACCFG_FLOW4
 
 	fi
-	
+
 	# VLAN Settings
 	vlan
 
@@ -131,7 +131,7 @@ ipv4bcast () {
 	printf "%u.%u.%u.%u" $((${IBC} >> 24 & 0xFF)) $((${IBC} >> 16 & 0xFF)) \
 	$((${IBC} >> 8 & 0xFF)) $((${IBC} & 0xFF))
 }
- 
+
 ethernet() {
 	if [ -n "$CPMACCFG_ETH1_IP" ]; then
 		if [ "$h_eth1" != "0x20" ]; then
@@ -156,7 +156,7 @@ ethernet() {
 			ifconfig eth3 $CPMACCFG_ETH3_IP netmask $CPMACCFG_ETH3_SUBNET broadcast $BROADCAST up
 		fi
 	fi
-} 
+}
 
 
 
@@ -164,7 +164,7 @@ case $1 in
 	""|load)
 		modreg cgi 'cpmaccfg' 'Cpmaccfg'
 		modreg daemon --hide cpmaccfg
-		
+
 		modlib_start $CPMACCFG_ENABLED
 		;;
 	unload)

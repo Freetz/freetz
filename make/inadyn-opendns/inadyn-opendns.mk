@@ -17,7 +17,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		STRIP="$(TARGET_STRIP)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="" 
+		LDFLAGS=""
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

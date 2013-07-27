@@ -36,7 +36,7 @@ sis_pid()
 {
 	# detecting sispmctl pid for defined port number
 	# $1: Port number for integrated web interface
-	[ -n "$1" ] && sis_webport="$1" || sis_webport="$DEFAULTPORT" 
+	[ -n "$1" ] && sis_webport="$1" || sis_webport="$DEFAULTPORT"
 	sis_pid="$(ps | sed -n -e "/[[:space:]]sispmctl.* -p $1/s/^ *\([0-9]*\) .*/\1/p")"
 	if [ -z "$sis_pid" ]
 	then
@@ -52,14 +52,14 @@ sis_pid()
 sispmctl_daemon()
 {
 	# daemon start for integrated web interface
-	# $1: device number (1...9) in freetz configuration (required for name conversion) 
+	# $1: device number (1...9) in freetz configuration (required for name conversion)
 	# $1=0: special case for binding device #0 on default port
 	[ -n "$1" ] && out_number=$1 || out_number=0
 	eval sis_id="\$SISPMCTL_D${out_number}_ID"
 	eval sis_name="\$SISPMCTL_D${out_number}_NAME"
 	eval sis_webport="\$SISPMCTL_D${out_number}_PORT"
-	[ -z "$sis_name" ] && sis_name="SIS-PM-$out_number" 
-	[ -z "$sis_webport" ] && sis_webport="$DEFAULTPORT" 
+	[ -z "$sis_name" ] && sis_name="SIS-PM-$out_number"
+	[ -z "$sis_webport" ] && sis_webport="$DEFAULTPORT"
 	[ $out_number -eq 0 ] && sis_id=$(echo "$IDs" | head -n 1) # special case: use first ID
 
 	WEBDIR_PORT="$SISPMCTL_WEBDIR-$sis_webport" # separate web directory for current port
@@ -93,7 +93,7 @@ sispmctl_daemon()
 		new_pid="$(cat ${PID_FILE_PORT})"
 		echo "$old_pids $new_pid" > ${PID_FILE} 2>/dev/null # global PID file consists all the PIDs separated by spaces (like pidof)
 	else
-		cp ${PID_FILE_PORT} ${PID_FILE} >/dev/null 2>&1 
+		cp ${PID_FILE_PORT} ${PID_FILE} >/dev/null 2>&1
 	fi
 	retval=0
 	sis_error_reporter $retval
@@ -104,18 +104,18 @@ prepare_webdir()
 {
 	# preparation of web directories for internal integrated web interface
 	# standard names for outlets are replaced with user defined values
-	# $1: device number (0...9) in freetz configuration (required for name conversion)  
+	# $1: device number (0...9) in freetz configuration (required for name conversion)
 	retval=0
 	[ -n "$1" ] && out_number=$1 || out_number=1
 	eval sis_name="\$SISPMCTL_D${out_number}_NAME"
 	eval sis_webport="\$SISPMCTL_D${out_number}_PORT"
-	[ -z "$sis_name" ] && sis_name="SIS-PM-$out_number" 
-	[ -z "$sis_webport" ] && sis_webport="$DEFAULTPORT" 
+	[ -z "$sis_name" ] && sis_name="SIS-PM-$out_number"
+	[ -z "$sis_webport" ] && sis_webport="$DEFAULTPORT"
 	kk=1
 	while [ $kk -le 4 ]
 	do # reading names for outlets 1...4 from FREETZ configuration
 		eval NAME_O_curr="\$SISPMCTL_D${out_number}_O${kk}"
-		[ -z "$NAME_O_curr" ] && NAME_O_curr="Socket ${kk}" 
+		[ -z "$NAME_O_curr" ] && NAME_O_curr="Socket ${kk}"
 		eval NAME_O${kk}="\$NAME_O_curr"
 		kk=$(($kk + 1))
 	done
@@ -148,7 +148,7 @@ prepare_webdir()
 		else # all other files are symbolic linked
 			ln -s /usr/share/sispmctl-${SISPMCTL_SKIN}/${file_name} ${WEBDIR_PORT}/${file_name}
 		fi
-	done 
+	done
 	return $retval
 }
 

@@ -1,4 +1,4 @@
-cat << 'EOF' > /tmp/openssl_shellinabox.cnf 
+cat << 'EOF' > /tmp/openssl_shellinabox.cnf
  [ req ]
  default_bits           = 1024
  default_keyfile        = keyfile.pem

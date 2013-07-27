@@ -35,7 +35,7 @@ if [ -r /tmp/flash/mod/hosts ]; then
 				if [ -n "$desc" ]; then
 					[ '*' != "$host" ] && echo -n "$host "
 					echo -n "$desc"
-				elif [ -n "$host" -a "$host" != "*" ]; then 
+				elif [ -n "$host" -a "$host" != "*" ]; then
 					echo -n "$host"
 				else
 					echo -n "$mac"
@@ -61,7 +61,7 @@ for INTERFACE in $(ifconfig | grep ^[a-z] | cut -f1 -d ' '); do
 	echo '<option title="'$INTERFACE'" value="'$INTERFACE'">'$INTERFACE'</option>'
 done
 
-echo '</select></td>' 
+echo '</select></td>'
 
 foundwol=$(which wol)
 if [ -x "$foundwol" ]; then

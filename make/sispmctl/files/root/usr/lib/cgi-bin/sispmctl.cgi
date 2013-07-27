@@ -31,7 +31,7 @@ sec_begin '$(lang de:"Integrierter WEB-Server" en:"Integrated WEB Server")'
 if [ -d /usr/share/sispmctl-web2 ]
 then
 cat << EOF
-<p>Skin: 
+<p>Skin:
 <select name="skin" id="skin">
 <option title="Standard" value="web1"$skin_web1>Standard</option>
 EOF
@@ -57,7 +57,7 @@ if [ -n "$IDs" ]
 then
 	NUMB_DEV=$(echo "$IDs" | wc -l)
 	sec_begin '$(lang de:"Erkannte Steckdosenleisten" en:"Detected multiple socket outlets")'
-	
+
 	echo "<table><tr><td>"
 	echo '<font size="-2"><b>$(lang de:"Seriennummer" en:"Serial No")&nbsp;&nbsp;</b></font></td>'
 	echo '<td><font size="-2"><b>$(lang de:"Typ" en:"Type")&nbsp;&nbsp;</b></font></td>'
@@ -123,7 +123,7 @@ fi
 sec_begin '$(lang de:"Zuordnung und Benennung der Steckdosen" en:"Allocation and naming")'
 
 cat << EOF
-<p>$(lang de:"Anzahl der verwalteten Steckdosenleisten" en:"Number of administrated devices"): 
+<p>$(lang de:"Anzahl der verwalteten Steckdosenleisten" en:"Number of administrated devices"):
 <select name="numofdev" id="numofdev">
 EOF
 ii=1

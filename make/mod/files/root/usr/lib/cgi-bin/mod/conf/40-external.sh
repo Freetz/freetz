@@ -12,7 +12,7 @@ cgi_print_textline_p "external_directory" "$MOD_EXTERNAL_DIRECTORY" 55/255 "$(la
 if [ "$EXTERNAL_DYNAMIC" == "y" -a "$EXTERNAL_DYNAMIC_SCRIPTS" == "y" ]; then
 cat << EOF
 $(lang de:"Ausgelagerte Script so nutzen:" en:"Handle externalised scripts:")?
-<blockquote> 
+<blockquote>
 <input id="s5" type="radio" name="external_behaviour" value="link"$external_behaviour_link_chk><label for="s5"> $(lang de:"Auf Ger&auml;t verweisen" en:"Link to USB").</label><br>
 <input id="s6" type="radio" name="external_behaviour" value="copy"$external_behaviour_copy_chk><label for="s6"> $(lang de:"In den RAM kopieren" en:"Copy to RAM").</label><br>
 </blockquote>

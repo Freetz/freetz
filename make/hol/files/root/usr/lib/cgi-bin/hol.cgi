@@ -26,7 +26,7 @@ sec_end
 sec_begin '$(lang de:"Aktionen" en:"Actions")'
 
 cat << EOF
-<p>Aktion: 
+<p>Aktion:
 
 <select name="action" id="action">
 <option title="$(lang de:"Abmelden" en:"Log Off")" value="logoff"$act_logoff>$(lang de:"Abmelden" en:"Log Off")</option>
