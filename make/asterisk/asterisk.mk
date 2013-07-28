@@ -125,6 +125,8 @@ $(PKG)_CONFIGURE_OPTIONS += --with-z="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 
+$(PKG)_CONFIGURE_ENV += ac_cv_func_newlocale=no
+
 $(PKG)_DEBUG_CFLAGS := -O0 -g -DDEBUG
 
 $(PKG)_MAKE_OPTIONS += -C $(ASTERISK_DIR)
