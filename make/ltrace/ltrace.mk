@@ -6,6 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/ltrace
 $(PKG)_CONF:=$($(PKG)_DIR)/etc/ltrace.conf
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ltrace
 $(PKG)_TARGET_CONF:=$($(PKG)_DEST_DIR)/etc/ltrace.conf
+$(PKG)_CATEGORY:=Debug helpers
 
 $(PKG)_DEPENDS_ON := libelf
 

@@ -1,4 +1,5 @@
 $(call PKG_INIT_BIN, 0.3)
+$(PKG)_CATEGORY:=Unstable
 
 $(PKG_UNPACKED)
 

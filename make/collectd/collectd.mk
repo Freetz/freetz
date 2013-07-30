@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://collectd.org/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
+$(PKG)_CATEGORY:=Unstable
 
 $(PKG)_TYPES_DB:=$($(PKG)_DIR)/src/types.db
 $(PKG)_TARGET_TYPES_DB:=$($(PKG)_DEST_DIR)/usr/share/$(pkg)/types.db

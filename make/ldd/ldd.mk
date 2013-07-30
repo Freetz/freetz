@@ -6,6 +6,7 @@ $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_SOURCE_FILE:=$($(PKG)_DIR)/ldd.c
 $(PKG)_BINARY:=$($(PKG)_DIR)/ldd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ldd
+$(PKG)_CATEGORY:=Debug helpers
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

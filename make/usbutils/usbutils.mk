@@ -9,6 +9,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/lsusb-freetz
 $(PKG)_IDS_SITE:=http://linux-usb.sourceforge.net
 $(PKG)_IDS:=$($(PKG)_DIR)/usb.ids
 $(PKG)_TARGET_IDS:=$($(PKG)_DEST_DIR)/usr/share/usb.ids
+$(PKG)_CATEGORY:=Debug helpers
 
 ifneq ($(strip $(FREETZ_PACKAGE_USBUTILS_IDS)),y)
 $(PKG)_NOT_INCLUDED:=$($(PKG)_TARGET_IDS)

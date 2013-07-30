@@ -29,6 +29,8 @@ ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_scanimage)),y)
 $(PKG)_TARGET_BINARIES+=$($(PKG)_TARGET_scanimage)
 endif
 
+$(PKG)_CATEGORY:=Unstable
+
 $(PKG)_DEPENDS_ON:= libusb
 ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI)),y)
 $(PKG)_DEPENDS_ON += avahi

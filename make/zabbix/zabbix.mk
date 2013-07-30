@@ -11,6 +11,7 @@ $(PKG)_BINARIES               := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIE
 $(PKG)_BINARIES_BUILD_DIR     := $(addprefix $($(PKG)_DIR)/,$(join $($(PKG)_BINARIES_BUILD_SUBDIRS),$($(PKG)_BINARIES_ALL:%=zabbix_%)))
 $(PKG)_BINARIES_TARGET_DIR    := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/zabbix_%)
 $(PKG)_NOT_INCLUDED           := $(addprefix $($(PKG)_DEST_DIR)/usr/sbin/zabbix_,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_CATEGORY:=Unstable
 
 $(PKG)_DEPENDS_ON += sqlite
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)

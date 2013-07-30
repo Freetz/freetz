@@ -15,6 +15,8 @@ $(PKG)_INWATCH_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/inotifywatch
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libinotifytools/src/.libs/libinotifytools.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/libinotifytools.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_CATEGORY:=Debug helpers
+
 # fix inotify-tools packaging errors (configure.ac & aclocal.m4 have a later date than libinotifytools/src/inotifytools/inotify.h.in)
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 configure.ac aclocal.m4;
 

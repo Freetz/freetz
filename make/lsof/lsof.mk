@@ -6,6 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)_src
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsof
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lsof
+$(PKG)_CATEGORY:=Debug helpers
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)

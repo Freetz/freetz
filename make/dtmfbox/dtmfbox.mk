@@ -9,6 +9,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_BINARY_MENU_SO:=$($(PKG)_DIR)/plugins/menu.plugin/.libs/libmenu.plugin.so.0.0.1
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/root/usr/sbin/$(pkg)
 $(PKG)_TARGET_BINARY_MENU_SO:=$($(PKG)_TARGET_DIR)/root/usr/lib/libmenu.plugin.so.0.0.1
+$(PKG)_CATEGORY:=Unstable
 
 $(PKG)_DEPENDS_ON := libcapi pjproject
 

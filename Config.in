@@ -774,7 +774,20 @@ source patches/Config.in
 comment "Additional components ------------------"
 
 menu "Packages"
-	source make/Config.in
+	comment "*** not all packages support selected language ***"
+		depends on ! FREETZ_LANG_DE
+	
+	config FREETZ_SELECTED_LANG_ONLY
+		bool "Packages supporting selected language only"
+		depends on ! FREETZ_LANG_DE
+		default n
+		help
+			Show only packages supporting the selected language. Packages not
+			supporting your selected language can be installed, but they will be in
+			default language (usually German).
+	
+	
+	source make/Config.in.generated
 endmenu # "Package selection" #
 
 
@@ -883,8 +896,10 @@ menu "External processing"
 		help
 			Put your own files/directories here (space separated)
 
-	source make/external.in
-	source kernel/external.in
+		source make/external.in.generated
+		source make/libs/external.in
+		source kernel/external.in
+
 endmenu # "External processing" #
 
 comment "Mod customizations ---------------------"

@@ -9,6 +9,7 @@ $(PKG)_SOURCE_MD5:=
 
 $(PKG)_MODPROBE_CONF:=$($(PKG)_MAKE_DIR)/files/root/etc/modprobe.conf
 $(PKG)_TARGET_MODPROBE_CONF:=$($(PKG)_DEST_DIR)/etc/modprobe.conf
+$(PKG)_CATEGORY:=Unstable
 
 $(PKG)_KERNEL_VERSION := $(shell echo $(KERNEL_VERSION) | $(SED) 's/\.[^.]*$$//')
 

@@ -1,0 +1,143 @@
+#!/bin/bash
+
+CFILE=make/Config.in.generated
+EFILE=make/external.in.generated
+SUBCATS=tools/genin.cat
+
+[ ! -d make/mod ] && exit 1
+
+# collect categories & their packages
+#echo -n "genin "
+CATs=""
+CATTABLE=""
+NONHIDDEN="#"
+
+for mk in $(find make/*/ -maxdepth 1 -name *.mk); do
+	let c++
+	[ "$((c%3))" == "0" ] && echo -n "."
+	# set PKG to $mk w/o <PKG>.mk file (resulting in "make/<PKG>")
+	PKG=${mk%/*.mk}
+	# ignore libs
+	[ "$PKG" == "make/libs" ] && continue
+	# delete everything beside CATEGORY row; delete CAT prefix
+	CAT=$(sed '/^\$(PKG)_CATEGORY[ :]*=/ ! d ; s%.*\=[ ]*%%' $mk)
+	[ -z "$CAT" ] && CAT=Packages
+	NONHIDDEN="${NONHIDDEN//%$CAT/}%${CAT}"
+	# prepend <Categorie>##<PKG> to table 
+	CATTABLE="$CATTABLE\n${CAT}##${PKG#make/}"
+done
+
+echo ""
+
+##################################################################
+# Build "complete" categories by prepending "parent" cathegories #
+##################################################################
+
+# read in pairs of "parent##child" and replace a newline by %
+SUBCAT=$(cat $SUBCATS)
+
+# fill variable for the complete prefixes and replace a newline by % for later "in string replacement"
+NEW="%"$(cat $SUBCATS | grep -v "^#"| tr '\n' '%')
+# we have to find out wether we are "finished" by determing, wether raplacement happend
+OLD=""
+
+# we use values with whitespaces inside, so change IFS to be only "\n"    
+buIFS=$IFS
+IFS='
+' 
+while [ "$NEW" != "$OLD" ]; do
+	OLD=$NEW
+	for row in $SUBCAT; do
+		CHILD=${row#*\#\#}
+		# replace a "leading" entry of "CHILD" by "PARENT##CHILD"  
+		NEW=${NEW//\%${CHILD}/\%$row}
+	done
+done
+# fix leading "%" and replace "%" by a newline
+NEW=${NEW/#\%/}
+NEW="$(echo $NEW | tr '%' '\n')"
+
+
+# o.k., now NEW contains of a full chain of category dependencies...
+# a file containing 
+#
+# Network##Firewall
+# Network##E-mail
+# Network##Chat
+# Network##Tools
+# Tools##USB
+# Tools##Ethernet
+# Ethernet##IPv6
+#
+#
+# will lead to "NEW" like this:
+#
+# Network##E-mail
+# Network##Chat
+# Network##Tools
+# Network##Tools##USB
+# Network##Tools##Ethernet
+# Network##Tools##Ethernet##IPv6
+#
+#
+#
+# we now will expand the entries in NONHIDDEN
+
+for row in $NEW; do
+	CHILD=${row##*\#\#} 
+	NONHIDDEN=${NONHIDDEN//%$CHILD/%$row}
+done
+
+
+##################################################################
+#                END Building "complete" categories              #
+##################################################################
+
+# remove leading "#%" in "NONHIDDEN"
+NONHIDDEN=${NONHIDDEN/\#%/}
+
+# sort "nonhidden" categories
+CATs=$(	echo -e "${NONHIDDEN//%/\n}" | sort -u )
+#CATTABLE_NEW=$(	echo -e "${CATTABLE// /\n}" | sort -u )
+
+#echo -e "CATTABLE=$CATTABLE"
+#echo "########################################"
+#echo "CATS=$CATs"
+#echo "########################################"
+#echo
+
+
+# now everything is ready to start ;-)
+# just walk through the CATs and build a "new menu" for every entry found.
+# We will add child-menus at the end and have to determin, when a menu is finished
+# so we will not write an endmenu but save it for the next entry to see, wether this one is a child ...
+
+# build menus
+SAVMENU=""
+echo -n ""                                                                                              >  $CFILE
+echo -e "\ncomment \"packages\"\n\tdepends on EXTERNAL_ENABLED"                                         >  $EFILE
+for CAT in $CATs; do
+	while [ -n "$SAVEMENU" -a -n "${SAVEMENU##*${CAT%##*}}" ]; do
+		# the actual CAT is NO subCAT of previous, so close menu(s)
+		echo "endmenu"                                                                                  >> $CFILE
+		SAVEMENU=${SAVEMENU%\%%*}
+	done
+	CATONLY=${CAT##*##}
+	echo -e "\nmenu \"${CATONLY}\""                                                                     >> $CFILE
+	for PKG in $(echo -e "${CATTABLE}"| sed "/^${CATONLY/\//\\/}##/ !d ; s/^[^#]*##// "); do
+		[ -e "make/$PKG/external.in" ] && echo "source make/$PKG/external.in"                           >> $EFILE
+		case "$PKG" in asterisk-*|nhipt|sg3_utils|busybox|ruby-fcgi|iptables-cgi) continue ;; esac
+		[ -e "make/$PKG/Config.in" ] && echo -e "\tsource make/$PKG/Config.in"                          >> $CFILE
+	done
+	SAVEMENU="$SAVEMENU%%$CAT"
+done
+# close menu(s), if there are some open
+while [ -n "$SAVEMENU" ]; do
+        echo "endmenu"                                                                                  >> $CFILE
+        SAVEMENU=${SAVEMENU%\%%*}
+done
+
+echo ""                                                                                                 >> $CFILE
+echo ""                                                                                                 >> $EFILE
+
+IFS=$buIFS # reset IFS 

@@ -24,6 +24,8 @@ $(PKG)_SCRIPTS_TARGET_DIR := $($(PKG)_SCRIPTS:%=$($(PKG)_DEST_DIR)/etc/default.s
 
 $(PKG)_META_TARGET_DIR    := $($(PKG)_DEST_DIR)/etc/default.scanbuttond/meta.conf
 
+$(PKG)_CATEGORY:=Unstable
+
 $(PKG)_REBUILD_SUBOPTS += $(foreach backend,$($(PKG)_BACKENDS_ALL),FREETZ_PACKAGE_SCANBUTTOND_BACKEND_$(backend))
 
 $(PKG)_DEPENDS_ON += libusb

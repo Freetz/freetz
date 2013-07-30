@@ -6,6 +6,7 @@ $(PKG)_SOURCE_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/index.php
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/default.$(pkg)/config.php.default
+$(PKG)_CATEGORY:=Web interfaces
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

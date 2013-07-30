@@ -51,6 +51,7 @@ DL_TOOL:=$(TOOLS_DIR)/freetz_download
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
+GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
 CHECK_BUILD_DIR_VERSION:=
 CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
@@ -136,6 +137,18 @@ endif
 # There are known problems with mksquashfs3 and SUSE's gcc-4.5.0
 ifeq ($(shell gcc --version | grep -q "gcc (SUSE Linux) 4.5.0 20100604" && echo y),y)
 $(error gcc (SUSE Linux) 4.5.0 has known bugs. Please install and use a different version)
+endif
+
+# genin: generate .in files
+ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
+ifneq ($(shell \
+	[ -e make/Config.in.generated -a -e make/external.in.generated ] || \
+	$(GENERATE_IN_TOOL) \
+	>&2 \
+	&& echo OK\
+),OK)
+$(error genin failed)
+endif
 endif
 
 all: step
@@ -487,6 +500,7 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_
 
 common-clean:
 	./fwmod_custom clean
+	$(RM) make/Config.in.generated make/external.in.generated 
 	$(RM) .static .dynamic .packages .exclude-dist-tmp $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)

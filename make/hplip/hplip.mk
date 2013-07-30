@@ -14,6 +14,7 @@ $(PKG)_LIB_HPAIO_VERSION=1.0.0
 $(PKG)_LIB_HPAIO_BINARY:=$($(PKG)_DIR)/.libs/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_LIB_HPAIO_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
+$(PKG)_CATEGORY:=Unstable
 
 $(PKG)_DEPENDS_ON := sane-backends
 

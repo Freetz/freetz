@@ -1,4 +1,5 @@
 $(call PKG_INIT_BIN, 0.6.9)
+$(PKG)_CATEGORY:=Web interfaces
 $(PKG)_STARTLEVEL=81
 
 $(PKG_UNPACKED)

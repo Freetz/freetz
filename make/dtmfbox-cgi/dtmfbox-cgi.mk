@@ -3,6 +3,7 @@ $(call PKG_INIT_BIN,0.1)
 $(PKG)_WEBPHONE_SITE:=http://fritz.v3v.de/webphone
 $(PKG)_WEBPHONE_SOURCE:=sWebPhone.jar
 $(PKG)_WEBPHONE_TARGET:=$(DTMFBOX_CGI_TARGET_DIR)/root/usr/mww-dtmfbox-cgi/sWebPhone.jar
+$(PKG)_CATEGORY:=Unstable
 
 ifneq ($(strip $(FREETZ_PACKAGE_DTMFBOX_WITH_HELP)),y)
 $(PKG)_NOT_INCLUDED += $(DTMFBOX_CGI_TARGET_DIR)/root/usr/mww-dtmfbox-cgi/cgi-bin/dtmfbox_help.cgi

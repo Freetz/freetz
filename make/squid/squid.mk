@@ -5,6 +5,7 @@ $(PKG)_SITE:=http://www.squid-cache.org/Versions/v3/$(call GET_MAJOR_VERSION,$($
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/squid
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/squid
+$(PKG)_CATEGORY:=Unstable
 
 $(PKG)_DEPENDS_ON := $(STDCXXLIB)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
