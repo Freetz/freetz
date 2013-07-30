@@ -126,7 +126,7 @@ for CAT in $CATs; do
 	echo -e "\nmenu \"${CATONLY}\""                                                                     >> $CFILE
 	for PKG in $(echo -e "${CATTABLE}"| sed "/^${CATONLY/\//\\/}##/ !d ; s/^[^#]*##// "); do
 		[ -e "make/$PKG/external.in" ] && echo "source make/$PKG/external.in"                           >> $EFILE
-		case "$PKG" in asterisk-*|nhipt|sg3_utils|busybox|ruby-fcgi|iptables-cgi) continue ;; esac
+		case "$PKG" in asterisk-*|nhipt|sg3_utils|busybox|ruby-fcgi|iptables-cgi|python-*) continue ;; esac
 		[ -e "make/$PKG/Config.in" ] && echo -e "\tsource make/$PKG/Config.in"                          >> $CFILE
 	done
 	SAVEMENU="$SAVEMENU%%$CAT"
