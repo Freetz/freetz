@@ -39,7 +39,7 @@ config() {
 
 
 start() {
-	modlib_start
+	modlib_startdaemon ${DAEMON} --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid --daemon
 }
 
 stop() {
