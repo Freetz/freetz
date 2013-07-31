@@ -1,4 +1,4 @@
-KCONFIG_VERSION:=v3.8
+KCONFIG_VERSION:=v3.11-rc3
 KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.xz
 KCONFIG_SITE:=git_archive@git://repo.or.cz/linux-2.6.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib
 KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
