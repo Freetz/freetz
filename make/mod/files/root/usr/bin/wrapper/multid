@@ -17,8 +17,13 @@ done
 
 if [ "$multid_mode" == "start" ]; then
 	for dns_pkg in dnsmasq bind; do
-		if [ "$(/mod/etc/init.d/rc.$dns_pkg status 2>/dev/null)" == "stopped" ]; then
-			/mod/etc/init.d/rc.$dns_pkg multid 2>&1 | log
+		if [ -e /mod/etc/init.d/rc.$dns_pkg ]; then
+			rc="/mod/etc/init.d/rc.$dns_pkg"
+		else
+			rc="/etc/init.d/rc.$dns_pkg"
+		fi
+		if [ "$($rc status 2>/dev/null)" == "stopped" ]; then
+			$rc multid 2>&1 | log
 		fi
 	done
 fi
