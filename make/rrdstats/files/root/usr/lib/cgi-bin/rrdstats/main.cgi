@@ -971,6 +971,7 @@ csl_graph() {
 		CDEF:rpn_MIN=$RPN_MIN$RPN_O \
 		CDEF:rpn_AVG=$RPN_AVG$RPN_O \
 		CDEF:rpn_MAX=$RPN_MAX$RPN_O \
+		LINE2:rpn_AVG$BLACK \
 		LINE1:rpn_MAX$BLACK \
 		COMMENT:${NBSP}${NBSP}Summary${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t \
 		GPRINT:rpn_MIN:MIN:%4.1lf\t/ \
