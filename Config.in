@@ -1143,14 +1143,12 @@ menu "Toolchain options"
 
 	choice
 		prompt "Toolchains"
-		default FREETZ_DOWNLOAD_TOOLCHAIN if FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
-		default FREETZ_BUILD_TOOLCHAIN
+		default FREETZ_DOWNLOAD_TOOLCHAIN
 		help
 			Download Toolchain, build toolchain
 
 		config FREETZ_DOWNLOAD_TOOLCHAIN
 			bool "Download and use precompiled toolchains"
-			depends on FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 
 		config FREETZ_BUILD_TOOLCHAIN
 			bool "Build own toolchains (requires 4GB diskspace)"
