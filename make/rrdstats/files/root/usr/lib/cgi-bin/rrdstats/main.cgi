@@ -955,7 +955,7 @@ csl_graph() {
 
 		MAXSPEEDC=$(awk "BEGIN{print $FRQ_COUNT*55.62}")
 		MAXSPEED="0"
-		GPRINT="${GPRINT} COMMENT:Bandwidth${NBSP}available\:${NBSP}$MAXSPEEDC${NBSP}MBit/s\t${NBSP}---------------------------------\n"
+		GPRINT="${GPRINT} COMMENT:${NBSP}${NBSP}Bandwidth${NBSP}available\:${NBSP}$MAXSPEEDC${NBSP}MBit/s\t${NBSP}---------------------------------\n"
 		if [ "$_CURRENT_PAGE" == "0" ]; then
 			[ "$RRDSTATS_CABLESEG_MAXBW" == "yes" ] && MAXSPEED="1"
 		else
