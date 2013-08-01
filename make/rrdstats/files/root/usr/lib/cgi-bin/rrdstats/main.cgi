@@ -35,6 +35,7 @@ done
 let HEIGHT=$WIDTH*$RRDSTATS_DIMENSIONY/$RRDSTATS_DIMENSIONX
 PERIODE="24h"
 RED=#EA644A
+DARKRED=#FF0000
 YELLOW=#ECD748
 GREEN=#54EC48
 BLUE=#48C4EC
@@ -906,17 +907,28 @@ csl_graph() {
 	local GPRINT=''
 	local FRQ_COUNT=$(echo $_VISIBLE_FRQ | wc -w)
 	local RPN_O=''
-	local RPN_V=''
+	local RPN_MIN=''
+	local RPN_AVG=''
+	local RPN_MAX=''
 	count=0
 
 	for _CURRENT_FRQ in $_VISIBLE_FRQ; do
 		FILE=$RRDSTATS_RRDDATA/csl_${RRDSTATS_INTERVAL}-${_CURRENT_FRQ}000000.rrd
 		if [ -e $FILE ]; then
 			let count++
-			DS_DEF="$DS_DEF DEF:load$count=$FILE:load:AVERAGE"
+			DS_DEF="$DS_DEF DEF:loadMIN$count=$FILE:load:MIN"
+			DS_DEF="$DS_DEF DEF:loadAVG$count=$FILE:load:AVERAGE"
+			DS_DEF="$DS_DEF DEF:loadMAX$count=$FILE:load:MAX"
 
-			[ -n "$RPN_V" ] && RPN_O="$RPN_O,+" && RPN_V="${RPN_V},"
-			RPN_V="${RPN_V}load$count"
+			if [ -n "$RPC_MIN$RPN_AVG$RPN_MAX" ]; then
+				RPN_O="${RPN_O},+"
+				RPN_MIN="${RPN_MIN},"
+				RPN_AVG="${RPN_AVG},"
+				RPN_MAX="${RPN_MAX},"
+			fi
+			RPN_MIN="${RPN_MIN}loadMIN$count"
+			RPN_AVG="${RPN_AVG}loadAVG$count"
+			RPN_MAX="${RPN_MAX}loadMAX$count"
 
 			MULTIP=0
 			[ $_CURRENT_PAGE -ne 0 ] && MULTIP=$(($_CURRENT_PAGE-1))
@@ -931,11 +943,11 @@ csl_graph() {
 			[ $COLOR_MOD == 8 ] && COLOR_VAR=#0042ff
 
 			GPRINT="$GPRINT \
-			AREA:load$count$COLOR_VAR:$_CURRENT_FRQ${NBSP}MHz${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t$STACK \
-			GPRINT:load$count:MIN:%4.1lf\t/ \
-			GPRINT:load$count:AVERAGE:%4.1lf\t/ \
-			GPRINT:load$count:MAX:%4.1lf\t/ \
-			GPRINT:load$count:LAST:%4.1lf\n "
+			AREA:loadAVG$count$COLOR_VAR:$_CURRENT_FRQ${NBSP}MHz${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t$STACK \
+			GPRINT:loadMIN$count:MIN:%4.1lf\t/ \
+			GPRINT:loadAVG$count:AVERAGE:%4.1lf\t/ \
+			GPRINT:loadMAX$count:MAX:%4.1lf\t/ \
+			GPRINT:loadAVG$count:LAST:%4.1lf\n "
 			[ -z "$STACK" ] && STACK=":STACK"
 		fi
 	done
@@ -943,27 +955,30 @@ csl_graph() {
 
 		MAXSPEEDC=$(awk "BEGIN{print $FRQ_COUNT*55.62}")
 		MAXSPEED="0"
+		GPRINT="${GPRINT} COMMENT:Bandwidth${NBSP}available\:${NBSP}$MAXSPEEDC${NBSP}MBit/s\t${NBSP}---------------------------------\n"
 		if [ "$_CURRENT_PAGE" == "0" ]; then
 			[ "$RRDSTATS_CABLESEG_MAXBW" == "yes" ] && MAXSPEED="1"
 		else
 			[ "$RRDSTATS_CABLESEG_MAXBWSUB" == "yes" ] && MAXSPEED="1"
 		fi
-		if [ "$MAXSPEED" != "1" ]; then
-			MAXSPEEDR="COMMENT:${NBSP}${NBSP}"
-		else
-			MAXSPEEDR="LINE2:$MAXSPEEDC$BLACK:"
+		if [ "$MAXSPEED" == "1" ]; then
+			GPRINT="${GPRINT} LINE2:$MAXSPEEDC$GREY"
 			local MAXSPEEDP="-u $MAXSPEEDC"
-			local TOPVALUE="VDEF:top=rpn,MAXIMUM LINE1:top#FF0000"
+			#local TOPVALUE="VDEF:top=rpn_AVG,MAXIMUM LINE1:top#FF0000"
 		fi
-		MAXSPEEDS="${MAXSPEEDR}Bandwidth${NBSP}available\:${NBSP}$MAXSPEEDC${NBSP}MBit/s\t${NBSP}---------------------------------\n"
 
 		OVERALL=" \
-		CDEF:rpn=$RPN_V$RPN_O \
-		LINE2:rpn$BLACK:Summary${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t \
-		GPRINT:rpn:MIN:%4.1lf\t/ \
-		GPRINT:rpn:AVERAGE:%4.1lf\t/ \
-		GPRINT:rpn:MAX:%4.1lf\t/ \
-		GPRINT:rpn:LAST:%4.1lf\n "
+		CDEF:rpn_MIN=$RPN_MIN$RPN_O \
+		CDEF:rpn_AVG=$RPN_AVG$RPN_O \
+		CDEF:rpn_MAX=$RPN_MAX$RPN_O \
+		LINE1:rpn_MAX$BLACK \
+		COMMENT:${NBSP}${NBSP}Summary${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t \
+		GPRINT:rpn_MIN:MIN:%4.1lf\t/ \
+		GPRINT:rpn_AVG:AVERAGE:%4.1lf\t/ \
+		GPRINT:rpn_MAX:MAX:%4.1lf\t/ \
+		GPRINT:rpn_AVG:LAST:%4.1lf\n "
+		#LINE2:rpn_MAX$GREY
+		#LINE2:rpn_MIN$GREEN
 
 		$_NICE rrdtool graph                                     \
 		$RRDSTATS_RRDTEMP/$IMAGENAME.png                         \
@@ -977,7 +992,7 @@ csl_graph() {
 		-A                                                       \
 		-W "Generated on: $DATESTRING"                           \
 		                                                         \
-		$DS_DEF $GPRINT $MAXSPEEDS $OVERALL $TOPVALUE            \
+		$DS_DEF $GPRINT $OVERALL $TOPVALUE                       \
 		                                                         > /dev/null 2>&1
 	fi
 }
