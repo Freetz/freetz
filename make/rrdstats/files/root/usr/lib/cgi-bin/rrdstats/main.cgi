@@ -967,11 +967,15 @@ csl_graph() {
 			#local TOPVALUE="VDEF:top=rpn_AVG,MAXIMUM LINE1:top#FF0000"
 		fi
 
+		case "$PERIODE" in
+			*minutes|*hours|*days|*weeks|1months) SHADE="LINE1:rpn_AVG$BLACK" ;;
+			*) SHADE="" ;;
+		esac
 		OVERALL=" \
 		CDEF:rpn_MIN=$RPN_MIN$RPN_O \
 		CDEF:rpn_AVG=$RPN_AVG$RPN_O \
 		CDEF:rpn_MAX=$RPN_MAX$RPN_O \
-		LINE2:rpn_AVG$BLACK \
+		$SHADE \
 		LINE1:rpn_MAX$BLACK \
 		COMMENT:${NBSP}${NBSP}Summary${NBSP}(min/avg/max/cur)${NBSP}[MBit/s]\:\t \
 		GPRINT:rpn_MIN:MIN:%4.1lf\t/ \
