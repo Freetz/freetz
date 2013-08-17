@@ -1,0 +1,14 @@
+--- config/config.h
++++ config/config.h
+@@ -0,0 +1,11 @@
++#include <endian.h>
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++#define config_endian 1
++#elif __BYTE_ORDER == __BIG_ENDIAN
++#define config_endian 0
++#else
++#error unsupported byte order!
++#endif
++#define config_strdup 1
++#define config_socklen_t 1
++#define config_gethostname 1
