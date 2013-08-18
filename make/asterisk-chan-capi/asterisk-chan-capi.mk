@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 9f0033b175)
+$(call PKG_INIT_BIN, 958)
 $(PKG)_NAME_NO_HYPHEN:=$(subst -,,$(pkg))
 $(PKG)_SOURCE:=$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=git@https://github.com/adlerweb/chan_capi.git
+$(PKG)_SITE:=svn://svn.chan-capi.org/chan-capi/trunk
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION)
 
