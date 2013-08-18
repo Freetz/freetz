@@ -633,11 +633,8 @@
 -		|| !AST_LIST_EMPTY(&sla.ringing_stations) || !AST_LIST_EMPTY(&sla.failed_stations)) {
 -		ast_mutex_unlock(&sla.lock);
 -		return;
-+	if (event->trunk_ref) {
-+		ao2_ref(event->trunk_ref, -1);
-+		event->trunk_ref = NULL;
- 	}
- 
+-	}
+-
 -	AST_RWLIST_RDLOCK(&sla_stations);
 -	AST_RWLIST_TRAVERSE(&sla_stations, station, entry) {
 -		if (station->ref_count)
@@ -647,9 +644,9 @@
 -	if (station) {
 -		ast_mutex_unlock(&sla.lock);
 -		return;
-+	if (event->station) {
-+		ao2_ref(event->station, -1);
-+		event->station = NULL;
++	if (event->trunk_ref) {
++		ao2_ref(event->trunk_ref, -1);
++		event->trunk_ref = NULL;
  	}
  
 -	AST_RWLIST_RDLOCK(&sla_trunks);
@@ -662,8 +659,11 @@
 -	if (trunk) {
 -		ast_mutex_unlock(&sla.lock);
 -		return;
--	}
--
++	if (event->station) {
++		ao2_ref(event->station, -1);
++		event->station = NULL;
+ 	}
+ 
 -	/* yay */
 -	sla_load_config(1);
 -	sla.reload = 0;
@@ -1072,15 +1072,14 @@
 -	struct sla_trunk *trunk;
 -	struct sla_station *station;
 +	const struct sla_trunk *trunk = obj;
-+
-+	return ast_str_case_hash(trunk->name);
-+}
  
 -	AST_RWLIST_WRLOCK(&sla_trunks);
 -	while ((trunk = AST_RWLIST_REMOVE_HEAD(&sla_trunks, entry)))
 -		destroy_trunk(trunk);
 -	AST_RWLIST_UNLOCK(&sla_trunks);
--
++	return ast_str_case_hash(trunk->name);
++}
+ 
 -	AST_RWLIST_WRLOCK(&sla_stations);
 -	while ((station = AST_RWLIST_REMOVE_HEAD(&sla_stations, entry)))
 -		destroy_station(station);
@@ -1406,10 +1405,10 @@
 +	if (!existing_station) {
 +		ao2_link(sla_stations, station);
 +	}
- 
- 	return 0;
- }
- 
++
++	return 0;
++}
++
 +static int sla_trunk_mark(void *obj, void *arg, int flags)
 +{
 +	struct sla_trunk *trunk = obj;
@@ -1424,10 +1423,10 @@
 +	}
 +
 +	ao2_unlock(trunk);
-+
-+	return 0;
-+}
-+
+ 
+ 	return 0;
+ }
+ 
 +static int sla_station_mark(void *obj, void *arg, int flags)
 +{
 +	struct sla_station *station = obj;
@@ -1701,6 +1700,28 @@
  		astman_send_error(s, m, "Could not stop monitoring channel");
  		return AMI_SUCCESS;
  	}
+--- apps/app_playback.c
++++ apps/app_playback.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 381217 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ 
+ #include "asterisk/file.h"
+ #include "asterisk/pbx.h"
+@@ -212,6 +212,10 @@
+ 		s = x + 1;
+ 	ast_debug(2, "value is <%s>\n", s);
+ 	n = ast_var_assign("SAY", s);
++	if (!n) {
++		ast_log(LOG_ERROR, "Memory allocation error in do_say\n");
++		return -1;
++	}
+ 	AST_LIST_INSERT_HEAD(&head, n, entries);
+ 
+ 	/* scan the body, one piece at a time */
 --- apps/app_queue.c
 +++ apps/app_queue.c
 @@ -63,7 +63,7 @@
@@ -2378,6 +2399,106 @@
  "Usage: queue pause member <channel> in <queue> reason <reason>\n";
  
  static const char qum_cmd_usage[] =
+--- apps/app_stack.c
++++ apps/app_stack.c
+@@ -32,7 +32,7 @@
+ 
+ #include "asterisk.h"
+  
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 371592 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ 
+ #include "asterisk/pbx.h"
+ #include "asterisk/module.h"
+@@ -245,8 +245,9 @@
+ 	}
+ 
+ 	if (!found) {
+-		variables = ast_var_assign(var, "");
+-		AST_LIST_INSERT_HEAD(&frame->varshead, variables, entries);
++		if ((variables = ast_var_assign(var, ""))) {
++			AST_LIST_INSERT_HEAD(&frame->varshead, variables, entries);
++		}
+ 		pbx_builtin_pushvar_helper(chan, var, value);
+ 	} else {
+ 		pbx_builtin_setvar_helper(chan, var, value);
+--- apps/confbridge/conf_config_parser.c
++++ apps/confbridge/conf_config_parser.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 382066 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 391700 $")
+ #include "asterisk/logger.h"
+ #include "asterisk/config.h"
+ #include "asterisk/config_options.h"
+@@ -1320,12 +1320,10 @@
+ 	return 0;
+ }
+ 
+-int conf_load_config(int reload)
++int conf_load_config(void)
+ {
+-	if (!reload) {
+-		if (aco_info_init(&cfg_info)) {
+-			return -1;
+-		}
++	if (aco_info_init(&cfg_info)) {
++		return -1;
+ 	}
+ 
+ 	/* User options */
+@@ -1373,23 +1371,29 @@
+ 	/* Menu options */
+ 	aco_option_register_custom(&cfg_info, "^[0-9A-D*#]+$", ACO_REGEX, menu_types, NULL, menu_option_handler, 0);
+ 
+-	if (aco_process_config(&cfg_info, reload) == ACO_PROCESS_ERROR) {
++	if (aco_process_config(&cfg_info, 0) == ACO_PROCESS_ERROR) {
+ 		goto error;
+ 	}
+ 
+-	if (!reload && ast_cli_register_multiple(cli_confbridge_parser, ARRAY_LEN(cli_confbridge_parser))) {
++	if (ast_cli_register_multiple(cli_confbridge_parser, ARRAY_LEN(cli_confbridge_parser))) {
+ 		goto error;
+ 	}
+ 
+ 	return 0;
+ error:
+-	/* On a reload, just keep the config we already have in place. */
+-	if (!reload) {
+-		conf_destroy_config();
+-	}
++	conf_destroy_config();
+ 	return -1;
+ }
+ 
++int conf_reload_config(void)
++{
++	if (aco_process_config(&cfg_info, 1) == ACO_PROCESS_ERROR) {
++		/* On a reload, just keep the config we already have in place. */
++		return -1;
++	}
++	return 0;
++}
++
+ static void conf_user_profile_copy(struct user_profile *dst, struct user_profile *src)
+ {
+ 	*dst = *src;
+--- apps/confbridge/include/confbridge.h
++++ apps/confbridge/include/confbridge.h
+@@ -244,7 +244,10 @@
+ };
+ 
+ /*! \brief load confbridge.conf file */
+-int conf_load_config(int reload);
++int conf_load_config(void);
++
++/*! \brief reload confbridge.conf file */
++int conf_reload_config(void);
+ 
+ /*! \brief destroy the information loaded from the confbridge.conf file*/
+ void conf_destroy_config(void);
 --- channels/chan_dahdi.c
 +++ channels/chan_dahdi.c
 @@ -49,7 +49,7 @@
@@ -2481,6 +2602,17 @@
  	ast_debug(1, "Channels destroyed. Now re-reading config. %d active channels remaining.\n", ast_active_channels());
  
  	ast_mutex_unlock(&monlock);
+--- channels/chan_iax2.c
++++ channels/chan_iax2.c
+@@ -38,7 +38,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 394181 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 391334 $")
+ 
+ #include <sys/mman.h>
+ #include <dirent.h>
 --- channels/chan_motif.c
 +++ channels/chan_motif.c
 @@ -36,7 +36,7 @@
@@ -2513,6 +2645,46 @@
  	ast_rtp_glue_unregister(&jingle_rtp_glue);
  	ast_sched_context_destroy(sched);
  	aco_info_destroy(&cfg_info);
+--- channels/chan_sip.c
++++ channels/chan_sip.c
+@@ -210,7 +210,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388601 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396583 $")
+ 
+ #include <signal.h>
+ #include <sys/signal.h>
+@@ -15159,6 +15159,8 @@
+ 			append_history(p, "RegistryInit", "Account: %s@%s", r->username, r->hostname);
+ 		}
+ 
++		p->socket.type = r->transport;
++
+ 		/* Use port number specified if no SRV record was found */
+ 		if (!ast_sockaddr_isnull(&r->us)) {
+ 			if (!ast_sockaddr_port(&r->us) && r->portno) {
+@@ -16020,7 +16022,7 @@
+ 	if (ast_apply_acl(sip_cfg.contact_acl, &peer->addr, "SIP contact ACL: ") != AST_SENSE_ALLOW ||
+ 			ast_apply_acl(peer->contactacl, &peer->addr, "SIP contact ACL: ") != AST_SENSE_ALLOW) {
+ 		ast_log(LOG_WARNING, "Domain '%s' disallowed by contact ACL (violating IP %s)\n", hostport,
+-			ast_sockaddr_stringify_addr(&testsa));
++				ast_sockaddr_stringify_addr(&peer->addr));
+ 		ast_string_field_set(peer, fullcontact, "");
+ 		ast_string_field_set(pvt, our_contact, "");
+ 		return PARSE_REGISTER_DENIED;
+@@ -23013,8 +23015,8 @@
+ 					wait = ast_random() % 2000;
+ 				}
+ 				p->waitid = ast_sched_add(sched, wait, sip_reinvite_retry, dialog_ref(p, "passing dialog ptr into sched structure based on waitid for sip_reinvite_retry."));
+-				ast_log(LOG_WARNING, "just did sched_add waitid(%d) for sip_reinvite_retry for dialog %s in handle_response_invite\n", p->waitid, p->callid);
+-				ast_debug(2, "Reinvite race. Waiting %d secs before retry\n", wait);
++				ast_debug(2, "Reinvite race. Scheduled sip_reinvite_retry in %d secs in handle_response_invite (waitid %d, dialog '%s')\n",
++						wait, p->waitid, p->callid);
+ 			}
+ 		}
+ 		break;
 --- channels/chan_unistim.c
 +++ channels/chan_unistim.c
 @@ -38,7 +38,7 @@
@@ -2520,28 +2692,93 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 389661 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 393395 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396377 $")
  
  #include <sys/stat.h>
  #include <signal.h>
-@@ -3318,12 +3318,11 @@
+@@ -2903,7 +2903,11 @@
+ 			send_text(TEXT_LINE0, TEXT_NORMAL, pte, ustmtext("Enter the number to dial", pte));
+ 			send_text(TEXT_LINE1, TEXT_NORMAL, pte, ustmtext("and press Call", pte));
+ 		}
+-		send_text_status(pte, ustmtext("Call   Redial BackSp Erase", pte));
++		if (ast_strlen_zero(pte->device->redial_number)) {
++			send_text_status(pte, ustmtext("Call          BackSp Erase", pte));
++		} else {
++			send_text_status(pte, ustmtext("Call   Redial BackSp Erase", pte));
++		}
+ 	}
+ 
+ 	pte->device->size_phone_number = 0;
+@@ -3298,6 +3302,8 @@
+ static void key_call(struct unistimsession *pte, char keycode)
+ {
+ 	struct unistim_subchannel *sub = get_sub(pte->device, SUB_REAL);
++	struct unistim_subchannel *sub_3way = get_sub(pte->device, SUB_THREEWAY);
++
+ 	if ((keycode >= KEY_0) && (keycode <= KEY_SHARP)) {
+ 		if (keycode == KEY_SHARP) {
+ 			keycode = '#';
+@@ -3312,23 +3318,21 @@
+ 	switch (keycode) {
+ 	case KEY_FUNC1:
+ 		if (ast_channel_state(sub->owner) == AST_STATE_UP) {
+-			if (get_sub(pte->device, SUB_THREEWAY)) {
++			if (sub_3way) {
+ 				close_call(pte);
+ 			}
  		}
  		break;
  	case KEY_FUNC2:
-+		if (ast_channel_state(sub->owner) == AST_STATE_RING) {
-+			transfer_cancel_step2(pte);
-+		}
- 		if (ast_channel_state(sub->owner) == AST_STATE_UP) {
+-		if (ast_channel_state(sub->owner) == AST_STATE_UP) {
 -			if (get_sub(pte->device, SUB_THREEWAY)) {
 -				transfer_cancel_step2(pte);
 -			} else {
 -				transfer_call_step1(pte);
 -			}
++		if (sub_3way) {
++			transfer_cancel_step2(pte);
++		} else if (ast_channel_state(sub->owner) == AST_STATE_UP) {
 +			transfer_call_step1(pte);
  		}
  		break;
  	case KEY_HANGUP:
-@@ -4777,7 +4776,7 @@
+ 	case KEY_FUNC4:
+-		if (!get_sub(pte->device, SUB_THREEWAY)) {
++		if (!sub_3way) {
+ 			close_call(pte);
+ 		}
+ 		break;
+@@ -4010,13 +4014,24 @@
+ 			send_text(TEXT_LINE1, TEXT_NORMAL, pte, pte->device->call_forward);
+ 		}
+ 		send_icon(TEXT_LINE0, FAV_ICON_REFLECT + FAV_BLINK_SLOW, pte);
+-		send_text_status(pte, ustmtext("Dial   Redial NoFwd  ", pte));
++		if (ast_strlen_zero(pte->device->redial_number)) {
++			send_text_status(pte, ustmtext("Dial          NoFwd  ", pte));
++		} else {
++			send_text_status(pte, ustmtext("Dial   Redial NoFwd  ", pte));
++		}
+ 	} else {
+-		if ((pte->device->extension == EXTENSION_ASK) ||
+-			(pte->device->extension == EXTENSION_TN)) {
+-			send_text_status(pte, ustmtext("Dial   Redial Fwd    Unregis", pte));
++		if ((pte->device->extension == EXTENSION_ASK) || (pte->device->extension == EXTENSION_TN)) {
++			if (ast_strlen_zero(pte->device->redial_number)) {
++				send_text_status(pte, ustmtext("Dial          Fwd    Unregis", pte));
++			} else {
++				send_text_status(pte, ustmtext("Dial   Redial Fwd    Unregis", pte));
++			}
+ 		} else {
+-			send_text_status(pte, ustmtext("Dial   Redial Fwd    Pickup", pte));
++			if (ast_strlen_zero(pte->device->redial_number)) {
++				send_text_status(pte, ustmtext("Dial          Fwd    Pickup", pte));
++			} else {
++				send_text_status(pte, ustmtext("Dial   Redial Fwd    Pickup", pte));
++			}
+ 		}
+ 		send_text(TEXT_LINE1, TEXT_NORMAL, pte, pte->device->maintext1);
+ 		if (pte->device->missed_call == 0) {
+@@ -4777,7 +4792,7 @@
  	struct unistim_line *l;
  	struct unistim_device *d;
  	struct unistimsession *s;
@@ -2550,7 +2787,36 @@
  
  	s = channel_to_session(ast);
  	sub = ast_channel_tech_pvt(ast);
-@@ -4822,10 +4821,8 @@
+@@ -4792,8 +4807,8 @@
+ 		ast_verb(0, "unistim_hangup(%s) on %s@%s (STATE_%s)\n", ast_channel_name(ast), l->name, l->parent->name, ptestate_tostr(s->state));
+ 	}
+ 	sub_trans = get_sub(d, SUB_THREEWAY);
+-	if (sub_trans && (sub_trans->owner) && (sub->subtype == SUB_REAL) &&
+-		(sub->alreadygone == 0)) {
++	sub_real = get_sub(d, SUB_REAL);
++	if (sub_trans && (sub_trans->owner) && (sub->subtype == SUB_REAL)) { /* 3rd party busy or congested and transfer_cancel_step2 does not called */
+ 		if (unistimdebug) {
+ 			ast_verb(0, "Threeway call disconnected, switching to real call\n");
+ 		}
+@@ -4803,16 +4818,13 @@
+ 		sub_trans->moh = 0;
+ 		sub_trans->subtype = SUB_REAL;
+ 		swap_subs(sub_trans, sub);
+-
+ 		send_text_status(s, ustmtext("       Transf        Hangup", s));
+ 		send_callerid_screen(s, sub_trans);
+ 		unistim_hangup_clean(ast, sub);
+ 		unistim_unalloc_sub(d, sub);
+ 		return 0;
+ 	}
+-	sub_real = get_sub(d, SUB_REAL);
+-	if (sub_real && (sub_real->owner) && (sub->subtype == SUB_THREEWAY) &&
+-		(sub->alreadygone == 0)) {
++	if (sub_real && (sub_real->owner) && (sub->subtype == SUB_THREEWAY)) { /* 3way call cancelled by softkey pressed */
+ 		if (unistimdebug) {
+ 			ast_verb(0, "Real call disconnected, stay in call\n");
+ 		}
+@@ -4822,10 +4834,8 @@
  		unistim_unalloc_sub(d, sub);
  		return 0;
  	}
@@ -2561,7 +2827,7 @@
  	} else if (sub->subtype == SUB_RING) {
  		send_no_ring(s);
  		for (i = 0; i < FAVNUM; i++) {
-@@ -4836,9 +4833,16 @@
+@@ -4836,9 +4846,16 @@
  			if (is_key_line(d, i) && !strcmp(l->name, d->sline[i]->name)) {
  				send_favorite_short(i, FAV_LINE_ICON, s);
  				d->ssub[i] = NULL;
@@ -2578,7 +2844,7 @@
  	sub->moh = 0;
  	if (sub->softkey >= 0) {
  		send_favorite_short(sub->softkey, FAV_LINE_ICON, s);
-@@ -6132,7 +6136,7 @@
+@@ -6132,7 +6149,7 @@
  			return 0;
  		}
  		if (d->softkeyicon[p] != 0) {
@@ -2587,83 +2853,428 @@
  			return 0;
  		}
  		memmove(line, line + 2, sizeof(line) - 2);
---- apps/confbridge/include/confbridge.h
-+++ apps/confbridge/include/confbridge.h
-@@ -244,7 +244,10 @@
- };
- 
- /*! \brief load confbridge.conf file */
--int conf_load_config(int reload);
-+int conf_load_config(void);
+--- configs/iax.conf.sample
++++ configs/iax.conf.sample
+@@ -607,6 +607,15 @@
+ ; IPs can also optionally be given but are not required.  Caller*ID can be
+ ; suggested to the other side as well if it is for example a phone instead of
+ ; another PBX.
++;connectedline=yes ; Set how connected line information is handled for this
++;                  ; peer. If set to "yes", both sending and receiving
++;                  ; connected line information will be enabled. If set to
++;                  ; "send", this peer will send connected line information
++;                  ; but will not process connected line updates. If set to
++;                  ; "receive", connected line updates will be processed
++;                  ; but not sent. If set to "no", connected line updates
++;                  ; will be disabled. Default is "no".
 +
-+/*! \brief reload confbridge.conf file */
-+int conf_reload_config(void);
  
- /*! \brief destroy the information loaded from the confbridge.conf file*/
- void conf_destroy_config(void);
---- apps/confbridge/conf_config_parser.c
-+++ apps/confbridge/conf_config_parser.c
+ ;[dynamichost]
+ ;host=dynamic
+--- configs/indications.conf.sample
++++ configs/indications.conf.sample
+@@ -434,7 +434,7 @@
+ ringcadence = 2000,4000
+ dial = 425
+ busy = 425/500,0/500
+-ring = 425/400,0/200
++ring = 425/400,0/200,425/400,0/2000
+ congestion = 425/500,0/500
+ 
+ [nl]
+--- configs/sla.conf.sample
++++ configs/sla.conf.sample
+@@ -15,6 +15,17 @@
+ ; -------------------------------------
+ 
+ 
++; ********************************
++; **** Configuration Ordering ****
++; ********************************
++
++; Note that SLA configuration processing assumes that *all* trunk declarations are
++; listed in the configuration file before any stations.
++
++; ********************************
++; ********************************
++
++
+ ; ---- Trunk Declarations -------------
+ ;
+ ;[line1]                    ; Provide a name for this trunk.
+--- contrib/realtime/postgresql/realtime.sql
++++ contrib/realtime/postgresql/realtime.sql
+@@ -136,6 +136,23 @@
+ PRIMARY KEY (queue_name, interface)
+ ) WITHOUT OIDS;
+ 
++drop table queue_log;
++CREATE TABLE "queue_log" (
++"id" SERIAL,
++"time" TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
++"callid" character varying(50) NOT NULL,
++"queuename" character varying(50) NOT NULL,
++"agent" character varying(50) NOT NULL,
++"event" character varying(20) NOT NULL,
++"data1" character varying(50) NOT NULL,
++"data2" character varying(50) NOT NULL,
++"data3" character varying(50) NOT NULL,
++"data4" character varying(50) NOT NULL,
++"data5" character varying(50) NOT NULL,
++CONSTRAINT queue_log_pkey PRIMARY KEY (id)
++) WITHOUT OIDS;
++
++GRANT ALL ON TABLE queue_log TO asterisk;
+ GRANT ALL ON TABLE cdr TO asterisk;
+ GRANT ALL ON TABLE extensions_conf TO asterisk;
+ GRANT ALL ON TABLE sip_conf TO asterisk;
+--- funcs/func_channel.c
++++ funcs/func_channel.c
+@@ -20,7 +20,7 @@
+  *
+  * \author Kevin P. Fleming <kpfleming@digium.com>
+  * \author Ben Winslow
+- * 
++ *
+  * \ingroup functions
+  */
+ 
+@@ -30,7 +30,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 384641 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 394981 $")
+ 
+ #include <regex.h>
+ #include <ctype.h>
+@@ -253,16 +253,35 @@
+ 						<para>     <literal>audio</literal>             Get audio destination</para>
+ 						<para>     <literal>video</literal>             Get video destination</para>
+ 						<para>     <literal>text</literal>              Get text destination</para>
++						<para>   Defaults to <literal>audio</literal> if unspecified.</para>
++					</enum>
++					<enum name="rtpsource">
++						<para>R/O Get source RTP destination information.</para>
++						<para>   This option takes one additional argument:</para>
++						<para>    Argument 1:</para>
++						<para>     <literal>audio</literal>             Get audio destination</para>
++						<para>     <literal>video</literal>             Get video destination</para>
++						<para>     <literal>text</literal>              Get text destination</para>
++						<para>   Defaults to <literal>audio</literal> if unspecified.</para>
+ 					</enum>
+ 				</enumlist>
+ 				<para><emphasis>chan_iax2</emphasis> provides the following additional options:</para>
+ 				<enumlist>
++					<enum name="osptoken">
++						<para>R/O Get the peer's osptoken.</para>
++					</enum>
+ 					<enum name="peerip">
+ 						<para>R/O Get the peer's ip address.</para>
+ 					</enum>
+ 					<enum name="peername">
+ 						<para>R/O Get the peer's username.</para>
+ 					</enum>
++					<enum name="secure_signaling">
++						<para>R/O Get the if the IAX channel is secured.</para>
++					</enum>
++					<enum name="secure_media">
++						<para>R/O Get the if the IAX channel is secured.</para>
++					</enum>
+ 				</enumlist>
+ 				<para><emphasis>chan_dahdi</emphasis> provides the following additional options:</para>
+ 				<enumlist>
+@@ -320,17 +339,35 @@
+ 				<para><emphasis>chan_ooh323</emphasis> provides the following additional options:</para>
+ 				<enumlist>
+ 					<enum name="faxdetect">
+-						<para>Fax Detect [R/W]</para>
++						<para>R/W Fax Detect</para>
+ 						<para>Returns 0 or 1</para>
+ 						<para>Write yes or no</para>
+ 					</enum>
+ 					<enum name="t38support">
+-						<para>t38support [R/W]</para>
++						<para>R/W t38support</para>
+ 						<para>Returns 0 or 1</para>
+ 						<para>Write yes or no</para>
+ 					</enum>
+-					<enum name="h323id">
+-						<para>Returns h323id [R]</para>
++					<enum name="h323id_url">
++						<para>R/0 Returns caller URL</para>
++ 					</enum>
++					<enum name="caller_h323id">
++						<para>R/0 Returns caller h323id</para>
++					</enum>
++					<enum name="caller_dialeddigits">
++						<para>R/0 Returns caller dialed digits</para>
++					</enum>
++					<enum name="caller_email">
++						<para>R/0 Returns caller email</para>
++					</enum>
++					<enum name="callee_email">
++						<para>R/0 Returns callee email</para>
++					</enum>
++					<enum name="callee_dialeddigits">
++						<para>R/0 Returns callee dialed digits</para>
++					</enum>
++					<enum name="caller_url">
++						<para>R/0 Returns caller URL</para>
+ 					</enum>
+ 				</enumlist>
+ 			</parameter>
+@@ -538,7 +575,7 @@
+ #ifdef CHANNEL_TRACE
+ 	else if (!strcasecmp(data, "trace")) {
+ 		ast_channel_lock(chan);
+-		if (ast_true(value)) 
++		if (ast_true(value))
+ 			ret = ast_channel_trace_enable(chan);
+ 		else if (ast_false(value))
+ 			ret = ast_channel_trace_disable(chan);
+@@ -553,7 +590,7 @@
+ 		struct ast_tone_zone *new_zone;
+ 		if (!(new_zone = ast_get_indication_zone(value))) {
+ 			ast_log(LOG_ERROR, "Unknown country code '%s' for tonezone. Check indications.conf for available country codes.\n", value);
+-			ret = -1;	
++			ret = -1;
+ 		} else {
+ 			ast_channel_lock(chan);
+ 			if (ast_channel_zone(chan)) {
+--- funcs/func_global.c
++++ funcs/func_global.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 370655 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ 
+ #include <sys/stat.h>
+ 
+@@ -253,15 +253,16 @@
+ 	}
+ 	AST_LIST_TRAVERSE_SAFE_END;
+ 
+-	var = ast_var_assign(args.var, S_OR(value, ""));
+-	AST_LIST_INSERT_HEAD(varshead, var, entries);
+-	manager_event(EVENT_FLAG_DIALPLAN, "VarSet", 
+-		"Channel: %s\r\n"
+-		"Variable: SHARED(%s)\r\n"
+-		"Value: %s\r\n"
+-		"Uniqueid: %s\r\n", 
+-		chan ? ast_channel_name(chan) : "none", args.var, value, 
+-		chan ? ast_channel_uniqueid(chan) : "none");
++	if ((var = ast_var_assign(args.var, S_OR(value, "")))) {
++		AST_LIST_INSERT_HEAD(varshead, var, entries);
++		manager_event(EVENT_FLAG_DIALPLAN, "VarSet", 
++			"Channel: %s\r\n"
++			"Variable: SHARED(%s)\r\n"
++			"Value: %s\r\n"
++			"Uniqueid: %s\r\n", 
++			chan ? ast_channel_name(chan) : "none", args.var, value, 
++			chan ? ast_channel_uniqueid(chan) : "none");
++	}
+ 
+ 	ast_channel_unlock(chan);
+ 
+--- funcs/func_strings.c
++++ funcs/func_strings.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 370655 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396310 $")
+ 
+ #include <regex.h>
+ #include <ctype.h>
+@@ -165,6 +165,10 @@
+ 			<para>Literally returns the given <replaceable>string</replaceable>.  The intent is to permit
+ 			other dialplan functions which take a variable name as an argument to be able to take a literal
+ 			string, instead.</para>
++			<note><para>The functions which take a variable name need to be passed var and not
++			${var}.  Similarly, use PASSTHRU() and not ${PASSTHRU()}.</para></note>
++			<para>Example: ${CHANNEL} contains SIP/321-1</para>
++			<para>         ${CUT(PASSTHRU(${CUT(CHANNEL,-,1)}),/,2)}) will return 321</para>
+ 		</description>
+ 	</function>
+ 	<function name="REGEX" language="en_US">
+@@ -1694,6 +1698,12 @@
+ 
+ 	for (i = 0; i < ARRAY_LEN(test_args); i++) {
+ 		struct ast_var_t *var = ast_var_assign("FIELDS", test_args[i].fields);
++		if (!var) {
++			ast_test_status_update(test, "Out of memory\n");
++			res = AST_TEST_FAIL;
++			break;
++		}
++
+ 		AST_LIST_INSERT_HEAD(ast_channel_varshead(chan), var, entries);
+ 
+ 		snprintf(expression, sizeof(expression), "${FIELDNUM(%s,%s,%s)}", var->name, test_args[i].delim, test_args[i].field);
+@@ -1796,6 +1806,13 @@
+ 		char tmp[512], tmp2[512] = "";
+ 
+ 		struct ast_var_t *var = ast_var_assign("test_string", test_strings[i][0]);
++		if (!var) {
++			ast_test_status_update(test, "Unable to allocate variable\n");
++			ast_free(str);
++			ast_channel_release(chan);
++			return AST_TEST_FAIL;
++		}
++			
+ 		AST_LIST_INSERT_HEAD(ast_channel_varshead(chan), var, entries);
+ 
+ 		if (test_strings[i][3]) {
+--- include/asterisk/logger.h
++++ include/asterisk/logger.h
+@@ -411,7 +411,7 @@
+  * \param addresses A list of addresses, such as the ->addresses structure element of struct ast_bt.
+  * \param num_frames Number of addresses in the addresses list
+  * \retval NULL Unable to allocate memory
+- * \return List of strings
++ * \return List of strings. Free the entire list with a single ast_free call.
+  * \since 1.6.2.16
+  */
+ char **ast_bt_get_symbols(void **addresses, size_t num_frames);
+--- main/asterisk.c
++++ main/asterisk.c
+@@ -1,7 +1,7 @@
+ /*
+  * Asterisk -- An open source telephony toolkit.
+  *
+- * Copyright (C) 1999 - 2012, Digium, Inc.
++ * Copyright (C) 1999 - 2013, Digium, Inc.
+  *
+  * Mark Spencer <markster@digium.com>
+  *
+@@ -39,7 +39,7 @@
+  *
+  * \section copyright Copyright and Author
+  *
+- * Copyright (C) 1999 - 2012, Digium, Inc.
++ * Copyright (C) 1999 - 2013, Digium, Inc.
+  * Asterisk is a <a href="http://www.digium.com/en/company/view-policy.php?id=Trademark-Policy">registered trademark</a>
+  * of <a href="http://www.digium.com">Digium, Inc</a>.
+  *
+@@ -65,7 +65,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 379790 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396746 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -173,7 +173,7 @@
+ 
+ /*! \brief Welcome message when starting a CLI interface */
+ #define WELCOME_MESSAGE \
+-    ast_verbose("Asterisk %s, Copyright (C) 1999 - 2012 Digium, Inc. and others.\n" \
++    ast_verbose("Asterisk %s, Copyright (C) 1999 - 2013 Digium, Inc. and others.\n" \
+                 "Created by Mark Spencer <markster@digium.com>\n" \
+                 "Asterisk comes with ABSOLUTELY NO WARRANTY; type 'core show warranty' for details.\n" \
+                 "This is free software, with components licensed under the GNU General Public\n" \
+@@ -1977,6 +1977,11 @@
+ 	/* Called when readline data is available */
+ 	if (!ast_all_zeros(s))
+ 		ast_el_add_history(s);
++
++	while (isspace(*s)) {
++		s++;
++	}
++
+ 	/* The real handler for bang */
+ 	if (s[0] == '!') {
+ 		if (s[1])
+@@ -3070,7 +3075,7 @@
+ 
+ static int show_cli_help(void)
+ {
+-	printf("Asterisk %s, Copyright (C) 1999 - 2012, Digium, Inc. and others.\n", ast_get_version());
++	printf("Asterisk %s, Copyright (C) 1999 - 2013, Digium, Inc. and others.\n", ast_get_version());
+ 	printf("Usage: asterisk [OPTIONS]\n");
+ 	printf("Valid Options:\n");
+ 	printf("   -V              Display version number and exit\n");
+--- main/astobj2.c
++++ main/astobj2.c
+@@ -24,7 +24,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388700 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396441 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/astobj2.h"
+@@ -123,7 +123,7 @@
+ 	for(i = 0; i < c; i++) {
+ 		ast_verbose("%d: %p %s\n", i, addresses[i], strings[i]);
+ 	}
+-	free(strings);
++	ast_free(strings);
+ }
+ #endif
+ 
+--- main/cdr.c
++++ main/cdr.c
+@@ -37,7 +37,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 383840 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ 
+ #include <signal.h>
+ 
+@@ -383,8 +383,7 @@
+ 		}
+ 		AST_LIST_TRAVERSE_SAFE_END;
+ 
+-		if (value) {
+-			newvariable = ast_var_assign(name, value);
++		if (value && (newvariable = ast_var_assign(name, value))) {
+ 			AST_LIST_INSERT_HEAD(headp, newvariable, entries);
+ 		}
+ 	}
+@@ -408,8 +407,8 @@
+ 	AST_LIST_TRAVERSE(headpa,variables,entries) {
+ 		if (variables &&
+ 		    (var = ast_var_name(variables)) && (val = ast_var_value(variables)) &&
+-		    !ast_strlen_zero(var) && !ast_strlen_zero(val)) {
+-			newvariable = ast_var_assign(var, val);
++		    !ast_strlen_zero(var) && !ast_strlen_zero(val) &&
++		    (newvariable = ast_var_assign(var, val))) {
+ 			AST_LIST_INSERT_HEAD(headpb, newvariable, entries);
+ 			x++;
+ 		}
+--- main/cli.c
++++ main/cli.c
 @@ -29,7 +29,7 @@
  
  #include "asterisk.h"
  
--ASTERISK_FILE_VERSION(__FILE__, "$Revision: 382066 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 391700 $")
- #include "asterisk/logger.h"
- #include "asterisk/config.h"
- #include "asterisk/config_options.h"
-@@ -1320,12 +1320,10 @@
- 	return 0;
- }
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 386051 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396746 $")
  
--int conf_load_config(int reload)
-+int conf_load_config(void)
- {
--	if (!reload) {
--		if (aco_info_init(&cfg_info)) {
--			return -1;
--		}
-+	if (aco_info_init(&cfg_info)) {
-+		return -1;
- 	}
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"	/* use ast_config_AST_MODULE_DIR */
+@@ -2299,6 +2299,13 @@
+ 		return NULL;
  
- 	/* User options */
-@@ -1373,23 +1371,29 @@
- 	/* Menu options */
- 	aco_option_register_custom(&cfg_info, "^[0-9A-D*#]+$", ACO_REGEX, menu_types, NULL, menu_option_handler, 0);
- 
--	if (aco_process_config(&cfg_info, reload) == ACO_PROCESS_ERROR) {
-+	if (aco_process_config(&cfg_info, 0) == ACO_PROCESS_ERROR) {
- 		goto error;
- 	}
- 
--	if (!reload && ast_cli_register_multiple(cli_confbridge_parser, ARRAY_LEN(cli_confbridge_parser))) {
-+	if (ast_cli_register_multiple(cli_confbridge_parser, ARRAY_LEN(cli_confbridge_parser))) {
- 		goto error;
- 	}
- 
- 	return 0;
- error:
--	/* On a reload, just keep the config we already have in place. */
--	if (!reload) {
--		conf_destroy_config();
--	}
-+	conf_destroy_config();
- 	return -1;
- }
- 
-+int conf_reload_config(void)
-+{
-+	if (aco_process_config(&cfg_info, 1) == ACO_PROCESS_ERROR) {
-+		/* On a reload, just keep the config we already have in place. */
-+		return -1;
-+	}
-+	return 0;
-+}
+ 	cur = duplicate;
 +
- static void conf_user_profile_copy(struct user_profile *dst, struct user_profile *src)
- {
- 	*dst = *src;
++	/* Remove leading spaces from the command */
++	while (isspace(*s)) {
++		cur++;
++		s++;
++	}
++
+ 	/* scan the original string copying into cur when needed */
+ 	for (; *s ; s++) {
+ 		if (x >= max - 1) {
 --- main/config_options.c
 +++ main/config_options.c
 @@ -27,7 +27,7 @@
@@ -2695,6 +3306,41 @@
  	return 0;
  }
  
+--- main/features.c
++++ main/features.c
+@@ -30,7 +30,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387038 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396884 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -3613,6 +3613,10 @@
+ 				res = AST_FEATURE_RETURN_SUCCESS; /* We found something */
+ 			} else if (operation == FEATURE_INTERPRET_DO) {
+ 				res = builtin_features[x].operation(chan, peer, config, code, sense, NULL);
++				ast_test_suite_event_notify("FEATURE_DETECTION",
++						"Result: success\r\n"
++						"Feature: %s",
++						builtin_features[x].sname);
+ 			}
+ 			if (feature) {
+ 				memcpy(feature, &builtin_features[x], sizeof(*feature));
+@@ -3625,6 +3629,12 @@
+ 			}
+ 		}
+ 	}
++
++	if (operation == FEATURE_INTERPRET_CHECK && x == FEATURES_COUNT) {
++		ast_test_suite_event_notify("FEATURE_DETECTION",
++				"Result: fail");
++	}
++
+ 	ast_rwlock_unlock(&features_lock);
+ 
+ 	if (ast_strlen_zero(dynamic_features_buf) || feature_detected) {
 --- main/format.c
 +++ main/format.c
 @@ -31,7 +31,7 @@
@@ -2715,28 +3361,6 @@
  	if (!(entry = ao2_alloc(sizeof(*entry), NULL))) {
  		return -1;
  	}
---- funcs/func_strings.c
-+++ funcs/func_strings.c
-@@ -31,7 +31,7 @@
- 
- #include "asterisk.h"
- 
--ASTERISK_FILE_VERSION(__FILE__, "$Revision: 370655 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 394303 $")
- 
- #include <regex.h>
- #include <ctype.h>
-@@ -165,6 +165,10 @@
- 			<para>Literally returns the given <replaceable>string</replaceable>.  The intent is to permit
- 			other dialplan functions which take a variable name as an argument to be able to take a literal
- 			string, instead.</para>
-+			<note><para>The functions which take a variable name need to be passed var and not
-+			${var}.  Similarly, use PASSTHRU() and not ${PASSTHRU()}.</para></note>
-+			<para>Example: ${CHANNEL} contains SIP/321-1</para>
-+			<para>         ${CUT(PASSTHRU(${CUT(CHANNEL,-,1)}),/,2)}) will return 321</para>
- 		</description>
- 	</function>
- 	<function name="REGEX" language="en_US">
 --- main/http.c
 +++ main/http.c
 @@ -36,7 +36,7 @@
@@ -2744,10 +3368,28 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 384119 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 392810 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 394900 $")
  
  #include <time.h>
  #include <sys/time.h>
+@@ -666,7 +666,7 @@
+ 			prev = v;
+ 		}
+ 	}
+-	
++
+ done:
+ 	ast_free(buf);
+ 	return post_vars;
+@@ -843,7 +843,7 @@
+ 	struct ast_variable *v, *cookies=NULL;
+ 
+ 	for (v = headers; v; v = v->next) {
+-		if (!strncasecmp(v->name, "Cookie", 6)) {
++		if (!strcasecmp(v->name, "Cookie")) {
+ 			char *tmp = ast_strdupa(v->value);
+ 			if (cookies) {
+ 				ast_variables_destroy(cookies);
 @@ -1024,7 +1024,7 @@
  	struct http_uri_redirect *redirect;
  	struct ast_flags config_flags = { reload ? CONFIG_FLAG_FILEUNCHANGED : 0 };
@@ -2776,6 +3418,61 @@
 +			ast_free(order);
  			break;
  		}
+ 	}
+--- main/logger.c
++++ main/logger.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 389677 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396441 $")
+ 
+ /* When we include logger.h again it will trample on some stuff in syslog.h, but
+  * nothing we care about in here. */
+@@ -1733,7 +1733,31 @@
+ 		}
+ 	}
+ #else /* !defined(BETTER_BACKTRACES) */
+-	strings = backtrace_symbols(addresses, num_frames);
++	if ((strings = backtrace_symbols(addresses, num_frames))) {
++		/* Re-do value into ast_alloc'ed memory */
++		char **ast_strings;
++		char *p;
++		unsigned size = num_frames + sizeof(*strings);
++		int i;
++		for (i = 0; i < num_frames; ++i) {
++			size += strlen(strings[i]) + 1;
++		}
++#undef free
++		if (!(ast_strings = ast_malloc(size))) {
++			free(strings);
++			ast_log(LOG_WARNING, "Unable to re-allocate space for backtrace structure\n");
++			return NULL;
++		}
++		p = (char *) (ast_strings + num_frames);
++		for (i = 0; i < num_frames; ++i) {
++			unsigned len = strlen(strings[i]) + 1;
++			ast_strings[i] = p;
++			memcpy(p, strings[i], len);
++			p += len;
++		}
++		free(strings);
++		strings = ast_strings;
++	}
+ #endif /* defined(BETTER_BACKTRACES) */
+ 	return strings;
+ }
+@@ -1758,9 +1782,7 @@
+ 			ast_debug(1, "#%d: [%p] %s\n", i - 3, bt->addresses[i], strings[i]);
+ 		}
+ 
+-		/* MALLOC_DEBUG will erroneously report an error here, unless we undef the macro. */
+-#undef free
+-		free(strings);
++		ast_free(strings);
+ 	} else {
+ 		ast_debug(1, "Could not allocate memory for backtrace\n");
  	}
 --- main/named_acl.c
 +++ main/named_acl.c
@@ -2807,6 +3504,132 @@
  	if (aco_info_init(&cfg_info)) {
  		return 0;
  	}
+--- main/pbx.c
++++ main/pbx.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388578 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"	/* use ast_config_AST_SYSTEM_NAME */
+@@ -11332,10 +11332,9 @@
+ 		headp = &globals;
+ 	}
+ 
+-	if (value) {
++	if (value && (newvariable = ast_var_assign(name, value))) {
+ 		if (headp == &globals)
+ 			ast_verb(2, "Setting global variable '%s' to '%s'\n", name, value);
+-		newvariable = ast_var_assign(name, value);
+ 		AST_LIST_INSERT_HEAD(headp, newvariable, entries);
+ 	}
+ 
+@@ -11382,10 +11381,9 @@
+ 	}
+ 	AST_LIST_TRAVERSE_SAFE_END;
+ 
+-	if (value) {
++	if (value && (newvariable = ast_var_assign(name, value))) {
+ 		if (headp == &globals)
+ 			ast_verb(2, "Setting global variable '%s' to '%s'\n", name, value);
+-		newvariable = ast_var_assign(name, value);
+ 		AST_LIST_INSERT_HEAD(headp, newvariable, entries);
+ 		/*** DOCUMENTATION
+ 			<managerEventInstance>
+--- main/utils.c
++++ main/utils.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387295 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396441 $")
+ 
+ #include <ctype.h>
+ #include <sys/stat.h>
+@@ -869,7 +869,7 @@
+ 			ast_str_append(str, 0, "\t%s\n", symbols[frame_iterator]);
+ 		}
+ 
+-		free(symbols);
++		ast_free(symbols);
+ 	} else {
+ 		ast_str_append(str, 0, "\tCouldn't retrieve backtrace symbols\n");
+ 	}
+--- pbx/pbx_dundi.c
++++ pbx/pbx_dundi.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388378 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ 
+ #include "asterisk/network.h"
+ #include <sys/ioctl.h>
+@@ -598,14 +598,18 @@
+ 			ast_eid_to_str(dr[anscnt].eid_str, sizeof(dr[anscnt].eid_str), &dr[anscnt].eid);
+ 			if (ast_test_flag(&flags, DUNDI_FLAG_EXISTS)) {
+ 				AST_LIST_HEAD_INIT_NOLOCK(&headp);
+-				newvariable = ast_var_assign("NUMBER", called_number);
+-				AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
+-				newvariable = ast_var_assign("EID", dr[anscnt].eid_str);
+-				AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
+-				newvariable = ast_var_assign("SECRET", cursecret);
+-				AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
+-				newvariable = ast_var_assign("IPADDR", ipaddr);
+-				AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++				if ((newvariable = ast_var_assign("NUMBER", called_number))) {
++					AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++				}
++				if ((newvariable = ast_var_assign("EID", dr[anscnt].eid_str))) {
++					AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++				}
++				if ((newvariable = ast_var_assign("SECRET", cursecret))) {
++					AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++				}
++				if ((newvariable = ast_var_assign("IPADDR", ipaddr))) {
++					AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++				}
+ 				pbx_substitute_variables_varshead(&headp, map->dest, dr[anscnt].dest, sizeof(dr[anscnt].dest));
+ 				dr[anscnt].weight = get_mapping_weight(map, &headp);
+ 				while ((newvariable = AST_LIST_REMOVE_HEAD(&headp, entries)))
+--- pbx/pbx_loopback.c
++++ pbx/pbx_loopback.c
+@@ -28,7 +28,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 361155 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ 
+ #include "asterisk/file.h"
+ #include "asterisk/logger.h"
+@@ -91,12 +91,15 @@
+ 
+ 	snprintf(tmp, sizeof(tmp), "%d", priority);
+ 	AST_LIST_HEAD_INIT_NOLOCK(&headp);
+-	newvariable = ast_var_assign("EXTEN", exten);
+-	AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
+-	newvariable = ast_var_assign("CONTEXT", context);
+-	AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
+-	newvariable = ast_var_assign("PRIORITY", tmp);
+-	AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++	if ((newvariable = ast_var_assign("EXTEN", exten))) {
++		AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++	}
++	if ((newvariable = ast_var_assign("CONTEXT", context))) {
++		AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++	}
++	if ((newvariable = ast_var_assign("PRIORITY", tmp))) {
++		AST_LIST_INSERT_HEAD(&headp, newvariable, entries);
++	}
+ 	/* Substitute variables */
+ 	pbx_substitute_variables_varshead(&headp, data, buf, buflen);
+ 	/* free the list */
 --- res/res_agi.c
 +++ res/res_agi.c
 @@ -31,7 +31,7 @@
@@ -2902,23 +3725,41 @@
  		ast_sha1_hash_uint(sha, combined);
  		ast_base64encode(base64, (const unsigned char*)sha, 20, sizeof(base64));
  
---- configs/sla.conf.sample
-+++ configs/sla.conf.sample
-@@ -15,6 +15,17 @@
- ; -------------------------------------
+--- tests/test_hashtab_thrash.c
++++ tests/test_hashtab_thrash.c
+@@ -35,7 +35,7 @@
  
+ #include "asterisk.h"
  
-+; ********************************
-+; **** Configuration Ordering ****
-+; ********************************
-+
-+; Note that SLA configuration processing assumes that *all* trunk declarations are
-+; listed in the configuration file before any stations.
-+
-+; ********************************
-+; ********************************
-+
-+
- ; ---- Trunk Declarations -------------
- ;
- ;[line1]                    ; Provide a name for this trunk.
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 376339 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396657 $")
+ #include <pthread.h>
+ #include "asterisk/hashtab.h"
+ #include "asterisk/lock.h"
+@@ -197,8 +197,10 @@
+ 		ast_hashtab_end_traversal(it);
+ 
+ 		if (last_count == count) {
+-			/* Allow other threads to run. */
+-			sched_yield();
++			/* Give other threads ample chance to run, note that using sched_yield here does not
++			 * provide enough of a chance and can cause this thread to starve others.
++			 */
++			usleep(1);
+ 		} else if (last_count > count) {
+ 			/* Make sure the hashtable never shrinks */
+ 			return "hashtab unexpectedly shrank";
+--- utils/extconf.c
++++ utils/extconf.c
+@@ -3149,10 +3149,9 @@
+ 		}
+ 	}
+ 
+-	if (value) {
++	if (value && (newvariable = ast_var_assign(name, value))) {
+ 		if ((option_verbose > 1) && (headp == &globals))
+ 			ast_verbose(VERBOSE_PREFIX_2 "Setting global variable '%s' to '%s'\n", name, value);
+-		newvariable = ast_var_assign(name, value);
+ 		AST_LIST_INSERT_HEAD(headp, newvariable, entries);
+ 	}
+ 
