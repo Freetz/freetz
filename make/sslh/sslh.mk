@@ -27,7 +27,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(SSLH_DIR) clean
-	$(RM) $(SSLH_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
 	$(RM) $(SSLH_TARGET_BINARY)
