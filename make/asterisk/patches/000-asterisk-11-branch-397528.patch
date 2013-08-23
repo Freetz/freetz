@@ -34,10 +34,22 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387689 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 393929 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396944 $")
  
  #include <dahdi/user.h>
  
+@@ -655,9 +655,9 @@
+ #define CONFFLAG_INTROMSG           (1ULL << 32) /*!< If set play an intro announcement at start of conference */
+ #define CONFFLAG_INTROUSER_VMREC    (1ULL << 33)
+ /*! If there's only one person left in a conference when someone leaves, kill the conference */
+-#define CONFFLAG_KILL_LAST_MAN_STANDING ((uint64_t)1 << 34)
++#define CONFFLAG_KILL_LAST_MAN_STANDING (1ULL << 34)
+ /*! If set, don't enable a denoiser for the channel */
+-#define CONFFLAG_DONT_DENOISE       (1ULL << 33)
++#define CONFFLAG_DONT_DENOISE       (1ULL << 35)
+ 
+ enum {
+ 	OPT_ARG_WAITMARKED = 0,
 @@ -866,17 +866,26 @@
  	/*! This option uses the values in the sla_hold_access enum and sets the
  	 * access control type for hold on this station. */
@@ -1087,7 +1099,7 @@
 +static int sla_trunk_cmp(void *obj, void *arg, int flags)
 +{
 +	struct sla_trunk *trunk = obj, *trunk2 = arg;
- 
++
 +	return !strcasecmp(trunk->name, trunk2->name) ? CMP_MATCH | CMP_STOP : 0;
 +}
 +
@@ -1097,7 +1109,7 @@
 +
 +	return ast_str_case_hash(station->name);
 +}
-+
+ 
 +static int sla_station_cmp(void *obj, void *arg, int flags)
 +{
 +	struct sla_station *station = obj, *station2 = arg;
@@ -1729,7 +1741,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 391241 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 394345 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396948 $")
  
  #include <sys/time.h>
  #include <sys/signal.h>
@@ -1773,7 +1785,36 @@
  	} else {
  		ao2_unlock(q);
  	}
-@@ -1959,7 +1959,7 @@
+@@ -1709,7 +1709,7 @@
+  * \retval 1 if the member is available
+  * \retval 0 if the member is not available
+  */
+-static int is_member_available(struct member *mem)
++static int is_member_available(struct call_queue *q, struct member *mem)
+ {
+ 	int available = 0;
+ 
+@@ -1734,6 +1734,10 @@
+ 			break;
+ 	}
+ 
++	/* Let wrapuptimes override device state availability */
++	if (mem->lastcall && q->wrapuptime && (time(NULL) - q->wrapuptime < mem->lastcall)) {
++		available = 0;
++	}
+ 	return available;
+ }
+ 
+@@ -1774,7 +1778,7 @@
+ 
+ 			/* check every member until we find one NOT_INUSE */
+ 			if (!avail) {
+-				avail = is_member_available(m);
++				avail = is_member_available(q, m);
+ 			}
+ 			if (avail && found_member) {
+ 				/* early exit as we've found an available member and the member of interest */
+@@ -1959,7 +1963,7 @@
  		return 0;
  	} else if (c > 96) {
  		return c - 64;
@@ -1782,7 +1823,7 @@
  	return c - 32;
  }
  
-@@ -2123,7 +2123,7 @@
+@@ -2123,7 +2127,7 @@
  	}
  
  	contentdup = ast_strdupa(content);
@@ -1791,7 +1832,7 @@
  	if (!(maxstr = strchr(contentdup, ','))) {
  		ast_log(LOG_WARNING, "Improperly formatted penaltychange rule at line %d. Ignoring.\n", linenum);
  		ast_free(rule);
-@@ -2144,7 +2144,7 @@
+@@ -2144,7 +2148,7 @@
  	if ((minstr = strchr(maxstr,','))) {
  		*minstr++ = '\0';
  	}
@@ -1800,7 +1841,7 @@
  	/* The last check will evaluate true if either no penalty change is indicated for a given rule
  	 * OR if a min penalty change is indicated but no max penalty change is */
  	if (*maxstr == '+' || *maxstr == '-' || *maxstr == '\0') {
-@@ -2176,7 +2176,7 @@
+@@ -2176,7 +2180,7 @@
  			}
  		}
  		AST_LIST_TRAVERSE_SAFE_END;
@@ -1809,7 +1850,7 @@
  		if (!inserted) {
  			AST_LIST_INSERT_TAIL(&rl_iter->rules, rule, list);
  			inserted = 1;
-@@ -2229,7 +2229,7 @@
+@@ -2229,7 +2233,7 @@
  }
  
  /*! \brief Configure a queue parameter.
@@ -1818,7 +1859,7 @@
   * The failunknown flag is set for config files (and static realtime) to show
   * errors for unknown parameters. It is cleared for dynamic realtime to allow
   *  extra fields in the tables.
-@@ -2238,7 +2238,7 @@
+@@ -2238,7 +2242,7 @@
  */
  static void queue_set_param(struct call_queue *q, const char *param, const char *val, int linenum, int failunknown)
  {
@@ -1827,7 +1868,7 @@
  		!strcasecmp(param, "music") || !strcasecmp(param, "musiconhold")) {
  		ast_string_field_set(q, moh, val);
  	} else if (!strcasecmp(param, "announce")) {
-@@ -2645,7 +2645,7 @@
+@@ -2645,7 +2649,7 @@
  				ao2_unlock(q);
  				queue_t_unref(q, "Queue is dead; can't return it");
  				return NULL;
@@ -1836,7 +1877,7 @@
  			ast_log(LOG_WARNING, "Static queue '%s' already exists. Not loading from realtime\n", q->name);
  			ao2_unlock(q);
  			return q;
-@@ -3246,7 +3246,7 @@
+@@ -3246,7 +3250,7 @@
  }
  
  /*! \brief Caller leaving queue.
@@ -1845,7 +1886,16 @@
   * Search the queue to find the leaving client, if found remove from queue
   * create manager event, move others up the queue.
  */
-@@ -3596,11 +3596,11 @@
+@@ -3384,7 +3388,7 @@
+ 	mem_iter = ao2_iterator_init(q->members, 0);
+ 	while ((mem = ao2_iterator_next(&mem_iter))) {
+ 
+-		avl += is_member_available(mem);
++		avl += is_member_available(q, mem);
+ 		ao2_ref(mem, -1);
+ 
+ 		/* If autofill is not enabled or if the queue's strategy is ringall, then
+@@ -3596,11 +3600,11 @@
  	return 1;
  }
  
@@ -1860,7 +1910,7 @@
   * Failure can occur if:
   * - Agent on call
   * - Agent is paused
-@@ -3675,7 +3675,7 @@
+@@ -3675,7 +3679,7 @@
  		} else if (!ast_strlen_zero(ast_channel_dialed(qe->chan)->number.str)) {
  			ast_set_callerid(tmp->chan, ast_channel_dialed(qe->chan)->number.str, NULL, NULL);
  		} else if (!ast_strlen_zero(S_OR(ast_channel_macroexten(qe->chan), ast_channel_exten(qe->chan)))) {
@@ -1869,7 +1919,7 @@
  		}
  		tmp->dial_callerid_absent = 1;
  	}
-@@ -3807,7 +3807,7 @@
+@@ -3807,7 +3811,7 @@
  	return best;
  }
  
@@ -1878,7 +1928,7 @@
   * \brief Place a call to a queue member.
   *
   * Once metrics have been calculated for each member, this function is used
-@@ -3841,7 +3841,7 @@
+@@ -3841,7 +3845,7 @@
  			ast_debug(1, "Trying '%s' with metric %d\n", best->interface, best->metric);
  			ret = ring_entry(qe, best, busies);
  		}
@@ -1887,7 +1937,7 @@
  		/* If we have timed out, break out */
  		if (qe->expire && (time(NULL) >= qe->expire)) {
  			ast_debug(1, "Queue timed out while ringing members.\n");
-@@ -3923,14 +3923,14 @@
+@@ -3923,14 +3927,14 @@
  	}
  
  	ast_verb(3, "Playing periodic announcement\n");
@@ -1905,7 +1955,7 @@
  	/* play the announcement */
  	res = play_file(qe->chan, ast_str_buffer(qe->parent->sound_periodicannounce[qe->last_periodic_announce_sound]));
  
-@@ -3958,7 +3958,7 @@
+@@ -3958,7 +3962,7 @@
  	if (!qe->parent->randomperiodicannounce) {
  		qe->last_periodic_announce_sound++;
  	}
@@ -1914,7 +1964,7 @@
  	return res;
  }
  
-@@ -4601,7 +4601,7 @@
+@@ -4601,7 +4605,7 @@
   	if (qe->parent->periodicannouncefrequency && qe->parent->announce_to_first_user) {
   		say_periodic_announcement(qe, ringing);
   	}
@@ -1923,7 +1973,7 @@
  	if (!*to) {
  		for (o = start; o; o = o->call_next) {
  			rna(orig, qe, o->interface, o->member->membername, 1);
-@@ -4619,7 +4619,7 @@
+@@ -4619,7 +4623,7 @@
  	return peer;
  }
  
@@ -1932,7 +1982,7 @@
   * \brief Check if we should start attempting to call queue members.
   *
   * A simple process, really. Count the number of members who are available
-@@ -4649,11 +4649,11 @@
+@@ -4649,11 +4653,11 @@
  		if (!ch->pending) {
  			idx++;
  		}
@@ -1946,7 +1996,7 @@
  	 * Autofill and position check added to support autofill=no (as only calls
  	 * from the front of the queue are valid when autofill is disabled)
  	 */
-@@ -4678,7 +4678,7 @@
+@@ -4678,7 +4682,7 @@
  {
  	int max_penalty = qe->pr->max_relative ? qe->max_penalty + qe->pr->max_value : qe->pr->max_value;
  	int min_penalty = qe->pr->min_relative ? qe->min_penalty + qe->pr->min_value : qe->pr->min_value;
@@ -1955,7 +2005,7 @@
  	/* a relative change to the penalty could put it below 0 */
  	if (max_penalty < 0) {
  		max_penalty = 0;
-@@ -4753,7 +4753,7 @@
+@@ -4753,7 +4757,7 @@
  		if (qe->parent->periodicannouncefrequency &&
  			(res = say_periodic_announcement(qe,ringing)))
  			break;
@@ -1964,7 +2014,7 @@
  		/* see if we need to move to the next penalty level for this queue */
  		while (qe->pr && ((time(NULL) - qe->start) >= qe->pr->time)) {
  			update_qe_rule(qe);
-@@ -4764,7 +4764,7 @@
+@@ -4764,7 +4768,7 @@
  			*reason = QUEUE_TIMEOUT;
  			break;
  		}
@@ -1973,7 +2023,7 @@
  		/* Wait a second before checking again */
  		if ((res = ast_waitfordigit(qe->chan, RECHECK * 1000))) {
  			if (res > 0 && !valid_exit(qe, res)) {
-@@ -4773,7 +4773,7 @@
+@@ -4773,7 +4777,7 @@
  				break;
  			}
  		}
@@ -1982,7 +2032,7 @@
  		/* If we have timed out, break out */
  		if (qe->expire && (time(NULL) >= qe->expire)) {
  			*reason = QUEUE_TIMEOUT;
-@@ -4816,7 +4816,7 @@
+@@ -4816,7 +4820,7 @@
  		member->calls++;
  		member->lastqueue = q;
  		ao2_unlock(q);
@@ -1991,7 +2041,7 @@
  	ao2_lock(q);
  	q->callscompleted++;
  	if (callcompletedinsl) {
-@@ -5024,7 +5024,7 @@
+@@ -5024,7 +5028,7 @@
  				(long) (time(NULL) - callstart), qe->opos);
  
  	update_queue(qe->parent, member, callcompletedinsl, (time(NULL) - callstart));
@@ -2000,7 +2050,7 @@
  	/* No need to lock the channels because they are already locked in ast_do_masquerade */
  	if ((datastore = ast_channel_datastore_find(old_chan, &queue_transfer_info, NULL))) {
  		ast_channel_datastore_remove(old_chan, datastore);
-@@ -5123,7 +5123,7 @@
+@@ -5123,7 +5127,7 @@
   * \param[in] qe the queue_ent structure which corresponds to the caller attempting to reach members
   * \param[in] opts the options passed as the third parameter to the Queue() application
   * \param[in] opt_args the options passed as the third parameter to the Queue() application
@@ -2009,7 +2059,7 @@
   * \param[in] url the url passed as the fourth parameter to the Queue() application
   * \param[in,out] tries the number of times we have tried calling queue members
   * \param[out] noption set if the call to Queue() has the 'n' option set.
-@@ -5223,7 +5223,7 @@
+@@ -5223,7 +5227,7 @@
  		ast_set_flag(&(bridge_config.features_caller), AST_FEATURE_PARKCALL);
  	}
  	if (ast_test_flag(&opts, OPT_NO_RETRY)) {
@@ -2018,7 +2068,7 @@
  			|| qe->parent->strategy == QUEUE_STRATEGY_RRORDERED) {
  			(*tries)++;
  		} else {
-@@ -5304,7 +5304,7 @@
+@@ -5304,7 +5308,7 @@
  		AST_LIST_LOCK(dialed_interfaces);
  		AST_LIST_TRAVERSE(dialed_interfaces, di, list) {
  			if (!strcasecmp(cur->interface, di->interface)) {
@@ -2027,7 +2077,7 @@
  					di->interface);
  				break;
  			}
-@@ -5359,7 +5359,7 @@
+@@ -5359,7 +5363,7 @@
  			   XXX If we're forcibly removed, these outgoing calls won't get
  			   hung up XXX */
  			tmp->q_next = outgoing;
@@ -2036,7 +2086,7 @@
  			/* If this line is up, don't try anybody else */
  			if (outgoing->chan && (ast_channel_state(outgoing->chan) == AST_STATE_UP))
  				break;
-@@ -5583,7 +5583,7 @@
+@@ -5583,7 +5587,7 @@
  		 	pbx_builtin_setvar_multiple(qe->chan, interfacevar);
  			pbx_builtin_setvar_multiple(peer, interfacevar);
  		}
@@ -2045,7 +2095,7 @@
  		/* if setqueueentryvar is defined, make queue entry (i.e. the caller) variables available to the channel */
  		/* use  pbx_builtin_setvar to set a load of variables with one call */
  		if (qe->parent->setqueueentryvar) {
-@@ -5592,7 +5592,7 @@
+@@ -5592,7 +5596,7 @@
  			pbx_builtin_setvar_multiple(qe->chan, interfacevar);
  			pbx_builtin_setvar_multiple(peer, interfacevar);
  		}
@@ -2054,7 +2104,7 @@
  		ao2_unlock(qe->parent);
  
  		/* try to set queue variables if configured to do so*/
-@@ -5636,7 +5636,7 @@
+@@ -5636,7 +5640,7 @@
  				}
  			} else {
  				mixmonapp = pbx_findapp("MixMonitor");
@@ -2063,7 +2113,7 @@
  				if (mixmonapp) {
  					ast_debug(1, "Starting MixMonitor as requested.\n");
  					if (!monitorfilename) {
-@@ -5703,7 +5703,7 @@
+@@ -5703,7 +5707,7 @@
  
  						pbx_substitute_variables_helper(qe->chan, meid2, meid, sizeof(meid) - 1);
  					}
@@ -2072,7 +2122,7 @@
  					snprintf(tmpid2, sizeof(tmpid2), "%s.%s", tmpid, qe->parent->monfmt);
  
  					if (!ast_strlen_zero(monitor_exec)) {
-@@ -5711,7 +5711,7 @@
+@@ -5711,7 +5715,7 @@
  					} else {
  						snprintf(mixmonargs, sizeof(mixmonargs), "%s,b%s", tmpid2, monitor_options);
  					}
@@ -2081,7 +2131,7 @@
  					ast_debug(1, "Arguments being passed to MixMonitor: %s\n", mixmonargs);
  					/* We purposely lock the CDR so that pbx_exec does not update the application data */
  					if (ast_channel_cdr(qe->chan)) {
-@@ -5727,12 +5727,12 @@
+@@ -5727,12 +5731,12 @@
  			}
  		}
  		/* Drop out of the queue at this point, to prepare for next caller */
@@ -2096,7 +2146,7 @@
  		/* run a macro for this connection if defined. The macro simply returns, no action is taken on the result */
  		/* use macro from dialplan if passed as a option, otherwise use the default queue macro */
  		if (!ast_strlen_zero(macro)) {
-@@ -5869,7 +5869,7 @@
+@@ -5869,7 +5873,7 @@
  					qe->parent->eventwhencalled == QUEUE_EVENT_VARIABLES ? vars2manager(qe->chan, vars, sizeof(vars)) : "");
  		ast_copy_string(oldcontext, ast_channel_context(qe->chan), sizeof(oldcontext));
  		ast_copy_string(oldexten, ast_channel_exten(qe->chan), sizeof(oldexten));
@@ -2105,7 +2155,7 @@
  		if ((queue_end_bridge = ao2_alloc(sizeof(*queue_end_bridge), NULL))) {
  			queue_end_bridge->q = qe->parent;
  			queue_end_bridge->chan = qe->chan;
-@@ -5910,7 +5910,7 @@
+@@ -5910,7 +5914,7 @@
  					(long) (callstart - qe->start), (long) (time(NULL) - callstart), qe->opos);
  				send_agent_complete(qe, queuename, peer, member, callstart, vars, sizeof(vars), AGENT);
  			}
@@ -2114,7 +2164,7 @@
  				ast_channel_datastore_remove(qe->chan, tds);
  			}
  			ast_channel_unlock(qe->chan);
-@@ -6038,7 +6038,7 @@
+@@ -6038,7 +6042,7 @@
  	ast_free(value);
  }
  
@@ -2123,7 +2173,7 @@
   * \retval RES_NOT_DYNAMIC when they aren't a RT member
   * \retval RES_NOSUCHQUEUE queue does not exist
   * \retval RES_OKAY removed member from queue
-@@ -6107,7 +6107,7 @@
+@@ -6107,7 +6111,7 @@
  	return res;
  }
  
@@ -2132,7 +2182,25 @@
   * \retval RES_NOT_DYNAMIC when they aren't a RT member
   * \retval RES_NOSUCHQUEUE queue does not exist
   * \retval RES_OKAY added member from queue
-@@ -6587,7 +6587,7 @@
+@@ -6169,7 +6173,7 @@
+ 				new_member->penalty, new_member->calls, (int) new_member->lastcall,
+ 				new_member->status, new_member->paused);
+ 
+-			if (is_member_available(new_member)) {
++			if (is_member_available(q, new_member)) {
+ 				ast_devstate_changed(AST_DEVICE_NOT_INUSE, AST_DEVSTATE_CACHABLE, "Queue:%s_avail", q->name);
+ 			}
+ 
+@@ -6235,7 +6239,7 @@
+ 					dump_queue_members(q);
+ 				}
+ 
+-				if (is_member_available(mem)) {
++				if (is_member_available(q, mem)) {
+ 					ast_devstate_changed(AST_DEVICE_NOT_INUSE, AST_DEVSTATE_CACHABLE, "Queue:%s_avail", q->name);
+ 				} else if (!num_available_members(q)) {
+ 					ast_devstate_changed(AST_DEVICE_INUSE, AST_DEVSTATE_CACHABLE, "Queue:%s_avail", q->name);
+@@ -6587,7 +6591,7 @@
  				ast_log(LOG_WARNING, "Error converting penalty: %s: Out of range.\n", penalty_tok);
  				break;
  			}
@@ -2141,7 +2209,7 @@
  			if (!paused_tok) {
  				ast_log(LOG_WARNING, "Error parsing persistent member string for '%s' (paused)\n", queue_name);
  				break;
-@@ -6599,7 +6599,7 @@
+@@ -6599,7 +6603,7 @@
  			}
  
  			ast_debug(1, "Reload Members: Queue: %s  Member: %s  Name: %s  Penalty: %d  Paused: %d\n", queue_name, interface, membername, penalty, paused);
@@ -2150,7 +2218,7 @@
  			if (add_to_queue(queue_name, interface, membername, penalty, paused, 0, state_interface) == RES_OUTOFMEMORY) {
  				ast_log(LOG_ERROR, "Out of Memory when reloading persistent queue member\n");
  				break;
-@@ -6854,7 +6854,7 @@
+@@ -6854,7 +6858,7 @@
  		return -1;
  	}
  
@@ -2159,7 +2227,7 @@
  		"%s", args.params ? args.params : "");
  
  	return 0;
-@@ -6892,14 +6892,14 @@
+@@ -6892,14 +6896,14 @@
  
  /*!\brief The starting point for all queue calls
   *
@@ -2176,7 +2244,7 @@
   *    exit the queue.
   */
  static int queue_exec(struct ast_channel *chan, const char *data)
-@@ -7084,7 +7084,7 @@
+@@ -7084,7 +7088,7 @@
  			record_abandoned(&qe);
  			reason = QUEUE_TIMEOUT;
  			res = 0;
@@ -2185,7 +2253,7 @@
  				qe.pos, qe.opos, (long) time(NULL) - qe.start);
  			break;
  		}
-@@ -7103,7 +7103,7 @@
+@@ -7103,7 +7107,7 @@
  				goto stop;
  			}
  		}
@@ -2194,7 +2262,7 @@
  		/* Leave if we have exceeded our queuetimeout */
  		if (qe.expire && (time(NULL) >= qe.expire)) {
  			record_abandoned(&qe);
-@@ -7145,7 +7145,7 @@
+@@ -7145,7 +7149,7 @@
  			break;
  		}
  
@@ -2203,7 +2271,7 @@
  		/* Leave if we have exceeded our queuetimeout */
  		if (qe.expire && (time(NULL) >= qe.expire)) {
  			record_abandoned(&qe);
-@@ -7194,12 +7194,12 @@
+@@ -7194,12 +7198,12 @@
  
  	/* Don't allow return code > 0 */
  	if (res >= 0) {
@@ -2218,7 +2286,7 @@
  		ast_stopstream(chan);
  	}
  
-@@ -7374,6 +7374,9 @@
+@@ -7374,6 +7378,9 @@
  			   ((m = interface_exists(q, args.interface)))) {
  			count = m->ringinuse;
  			ao2_ref(m, -1);
@@ -2228,7 +2296,7 @@
  		} else {
  			ast_log(LOG_ERROR, "Unknown option %s provided to %s, valid values are: "
  				"logged, free, ready, count, penalty, paused, ringinuse\n", args.option, cmd);
-@@ -7488,7 +7491,7 @@
+@@ -7488,7 +7495,7 @@
  		ast_log(LOG_ERROR, "%s requires an argument: queuename\n", cmd);
  		return -1;
  	}
@@ -2237,7 +2305,7 @@
  	if ((q = find_load_queue_rt_friendly(data))) {
  		ao2_lock(q);
  		mem_iter = ao2_iterator_init(q->members, 0);
-@@ -7622,7 +7625,7 @@
+@@ -7622,7 +7629,7 @@
  	}
  
  	penalty = get_member_penalty (args.queuename, args.interface);
@@ -2246,7 +2314,7 @@
  	if (penalty >= 0) { /* remember that buf is already '\0' */
  		snprintf (buf, len, "%d", penalty);
  	}
-@@ -7718,7 +7721,7 @@
+@@ -7718,7 +7725,7 @@
  	char *rulecat = NULL;
  	struct ast_variable *rulevar = NULL;
  	struct ast_flags config_flags = { reload ? CONFIG_FLAG_FILEUNCHANGED : 0 };
@@ -2255,7 +2323,7 @@
  	if (!(cfg = ast_config_load("queuerules.conf", config_flags))) {
  		ast_log(LOG_NOTICE, "No queuerules.conf file found, queues will not follow penalty rules\n");
  		return AST_MODULE_LOAD_SUCCESS;
-@@ -7919,7 +7922,7 @@
+@@ -7919,7 +7926,7 @@
   *
   * Once we have isolated a queue within reload_queues, we call this. This will either
   * reload information for the queue or if we're just reloading member information, we'll just
@@ -2264,7 +2332,7 @@
   *
   * \param cfg The configuration which we are reading
   * \param mask Tells us what information we need to reload
-@@ -7955,7 +7958,7 @@
+@@ -7955,7 +7962,7 @@
  	} else {
  		new = 0;
  	}
@@ -2273,7 +2341,7 @@
  	if (!new) {
  		ao2_lock(q);
  		prev_weight = q->weight ? 1 : 0;
-@@ -8074,7 +8077,7 @@
+@@ -8074,7 +8081,7 @@
   * \param mask Gives flags telling us what information to actually reload
   * \param queuename If set to a non-zero string, then only reload information from
   * that particular queue. Otherwise inspect all queues
@@ -2282,7 +2350,7 @@
   * \retval 0 All clear!
   */
  static int reload_queues(int reload, struct ast_flags *mask, const char *queuename)
-@@ -8198,9 +8201,9 @@
+@@ -8198,9 +8205,9 @@
  	}
  }
  
@@ -2295,7 +2363,7 @@
   * List the queues strategy, calls processed, members logged in,
   * other queue statistics such as avg hold time.
  */
-@@ -8348,7 +8351,7 @@
+@@ -8348,7 +8355,7 @@
  	return CLI_SUCCESS;
  }
  
@@ -2304,7 +2372,7 @@
   * \brief Check if a given word is in a space-delimited list
   *
   * \param list Space delimited list of words
-@@ -8405,11 +8408,11 @@
+@@ -8405,11 +8412,11 @@
  		/* terminating conditions satisfied, word at beginning or separated by ' ' */
  		return 1;
  	}
@@ -2318,7 +2386,7 @@
   * \brief Check if a given word is in a space-delimited list
   *
   * \param line The line as typed not including the current word being completed
-@@ -8475,7 +8478,7 @@
+@@ -8475,7 +8482,7 @@
  			"       Provides summary information on a specified queue.\n";
  		return NULL;
  	case CLI_GENERATE:
@@ -2327,7 +2395,7 @@
  	}
  
  	return __queues_show(NULL, a->fd, a->argc, a->argv);
-@@ -8585,7 +8588,7 @@
+@@ -8585,7 +8592,7 @@
  				"Queue: %s\r\n"
  				"LoggedIn: %d\r\n"
  				"Available: %d\r\n"
@@ -2336,7 +2404,7 @@
  				"HoldTime: %d\r\n"
  				"TalkTime: %d\r\n"
  				"LongestHoldTime: %d\r\n"
-@@ -8895,7 +8898,7 @@
+@@ -8895,7 +8902,7 @@
  {
  	const char *queuename = NULL;
  	struct ast_flags mask = {QUEUE_RESET_STATS,};
@@ -2345,7 +2413,7 @@
  	queuename = astman_get_header(m, "Queue");
  
  	if (!reload_handler(1, &mask, queuename)) {
-@@ -8985,7 +8988,7 @@
+@@ -8985,7 +8992,7 @@
  		astman_send_error(s, m, "Need 'Interface' and 'Penalty' parameters.");
  		return 0;
  	}
@@ -2354,7 +2422,7 @@
  	penalty = atoi(penalty_s);
  
  	if (set_member_value((char *)queuename, (char *)interface, MEMBER_PENALTY, penalty)) {
-@@ -9207,7 +9210,7 @@
+@@ -9207,7 +9214,7 @@
  	switch (cmd) {
  	case CLI_INIT:
  		e->command = "queue {pause|unpause} member";
@@ -2363,7 +2431,7 @@
  			"Usage: queue {pause|unpause} member <member> [queue <queue> [reason <reason>]]\n"
  			"	Pause or unpause a queue member. Not specifying a particular queue\n"
  			"	will pause or unpause a member across all queues to which the member\n"
-@@ -9342,7 +9345,7 @@
+@@ -9342,7 +9349,7 @@
  	switch (cmd) {
  	case CLI_INIT:
  		e->command = "queue set penalty";
@@ -2372,7 +2440,7 @@
  		"Usage: queue set penalty <penalty> on <interface> [in <queue>]\n"
  		"	Set a member's penalty in the queue specified. If no queue is specified\n"
  		"	then that interface's penalty is set in all queues to which that interface is a member\n";
-@@ -9375,7 +9378,7 @@
+@@ -9375,7 +9382,7 @@
  	}
  }
  
@@ -2381,7 +2449,7 @@
  {
  	int which = 0;
  	struct rule_list *rl_iter;
-@@ -9429,7 +9432,7 @@
+@@ -9429,7 +9436,7 @@
  		}
  	}
  	AST_LIST_UNLOCK(&rule_lists);
@@ -2390,7 +2458,7 @@
  }
  
  static char *handle_queue_reset(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
-@@ -9535,7 +9538,7 @@
+@@ -9535,7 +9542,7 @@
  	return CLI_SUCCESS;
  }
  
@@ -2652,7 +2720,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388601 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396583 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397254 $")
  
  #include <signal.h>
  #include <sys/signal.h>
@@ -2674,7 +2742,33 @@
  		ast_string_field_set(peer, fullcontact, "");
  		ast_string_field_set(pvt, our_contact, "");
  		return PARSE_REGISTER_DENIED;
-@@ -23013,8 +23015,8 @@
+@@ -18558,7 +18560,24 @@
+ 		ast_string_field_set(p, context, sip_cfg.messagecontext);
+ 	}
+ 
+-	get_destination(p, NULL, NULL);
++	switch (get_destination(p, NULL, NULL)) {
++	case SIP_GET_DEST_REFUSED:
++		/* Okay to send 403 since this is after auth processing */
++		transmit_response(p, "403 Forbidden", req);
++		sip_scheddestroy(p, DEFAULT_TRANS_TIMEOUT);
++		return;
++	case SIP_GET_DEST_INVALID_URI:
++		transmit_response(p, "416 Unsupported URI Scheme", req);
++		sip_scheddestroy(p, DEFAULT_TRANS_TIMEOUT);
++		return;
++	case SIP_GET_DEST_EXTEN_NOT_FOUND:
++	case SIP_GET_DEST_EXTEN_MATCHMORE:
++		transmit_response(p, "404 Not Found", req);
++		sip_scheddestroy(p, DEFAULT_TRANS_TIMEOUT);
++		return;
++	case SIP_GET_DEST_EXTEN_FOUND:
++		break;
++	}
+ 
+ 	if (!(msg = ast_msg_alloc())) {
+ 		transmit_response(p, "500 Internal Server Error", req);
+@@ -23013,8 +23032,8 @@
  					wait = ast_random() % 2000;
  				}
  				p->waitid = ast_sched_add(sched, wait, sip_reinvite_retry, dialog_ref(p, "passing dialog ptr into sched structure based on waitid for sip_reinvite_retry."));
@@ -2685,6 +2779,39 @@
  			}
  		}
  		break;
+@@ -26830,6 +26849,21 @@
+ 
+ 			sender = ast_strdupa(from);
+ 			ast_callerid_parse(sender, &name, &location);
++			if (ast_strlen_zero(location)) {
++				/* This can occur if either
++				 *  1) A name-addr style From header does not close the angle brackets
++				 *  properly.
++				 *  2) The From header is not in name-addr style and the content of the
++				 *  From contains characters other than 0-9, *, #, or +.
++				 *
++				 *  In both cases, ast_callerid_parse() should have parsed the From header
++				 *  as a name rather than a number. So we just need to set the location
++				 *  to what was parsed as a name, and set the name NULL since there was
++				 *  no name present.
++				 */
++				location = name;
++				name = NULL;
++			}
+ 			ast_string_field_set(pvt, fromname, name);
+ 			if (strchr(location, ':')) { /* Must be a URI */
+ 				parse_uri(location, "sip:,sips:", &user, NULL, &domain, NULL);
+@@ -28349,9 +28383,7 @@
+ 
+ 	copy_socket_data(&p->socket, &req->socket);
+ 
+-	if (ast_sockaddr_isnull(&p->recv)) { /* This may already be set before getting here */
+-		ast_sockaddr_copy(&p->recv, addr);
+-	}
++	ast_sockaddr_copy(&p->recv, addr);
+ 
+ 	/* if we have an owner, then this request has been authenticated */
+ 	if (p->owner) {
 --- channels/chan_unistim.c
 +++ channels/chan_unistim.c
 @@ -38,7 +38,7 @@
@@ -2853,6 +2980,59 @@
  			return 0;
  		}
  		memmove(line, line + 2, sizeof(line) - 2);
+--- channels/sig_pri.c
++++ channels/sig_pri.c
+@@ -9286,7 +9286,7 @@
+ 			info_str = pri_dump_info_str(pri->pri);
+ 			if (info_str) {
+ 				ast_cli(fd, "%s", info_str);
+-				free(info_str);
++				ast_std_free(info_str);
+ 			}
+ #else
+ 			pri_dump_info(pri->pri);
+--- channels/sip/dialplan_functions.c
++++ channels/sip/dialplan_functions.c
+@@ -25,7 +25,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 369013 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397133 $")
+ 
+ #include <math.h>
+ 
+@@ -353,7 +353,7 @@
+ 		goto done;
+ 	}
+ 	ast_channel_tech_set(chan, &sip_tech);
+-	ast_channel_tech_pvt_set(chan, p);
++	ast_channel_tech_pvt_set(chan, dialog_ref(p, "Give the owner channel a reference to the dialog"));
+ 	p->owner = chan;
+ 
+ 	varstr = ast_str_create(16);
+@@ -397,8 +397,9 @@
+ 	ast_free(varstr);
+ 	ast_free(buffer);
+ 
+-	/* This unref will take care of destroying the channel, RTP instance, and SIP pvt */
++	/* This unlink and unref will take care of destroying the channel, RTP instance, and SIP pvt */
+ 	if (p) {
++		dialog_unlink_all(p);
+ 		dialog_unref(p, "Destroy test object");
+ 	}
+ 	ast_rtp_engine_unregister(&test_engine);
+--- configs/h323.conf.sample
++++ configs/h323.conf.sample
+@@ -29,6 +29,8 @@
+ ;allow=gsm		; Always allow GSM, it's cool :)
+ ;allow=ulaw		; see https://wiki.asterisk.org/wiki/display/AST/RTP+Packetization
+ 			; for framing options
++;autoframing=yes	; Set packetization based on the remote endpoint's (ptime)
++			; preferences. Defaults to no.
+ ;
+ ; User-Input Mode (DTMF)
+ ;
 --- configs/iax.conf.sample
 +++ configs/iax.conf.sample
 @@ -607,6 +607,15 @@
@@ -2882,6 +3062,25 @@
  congestion = 425/500,0/500
  
  [nl]
+--- configs/sip.conf.sample
++++ configs/sip.conf.sample
+@@ -310,6 +310,8 @@
+ ;allow=ulaw                     ; Allow codecs in order of preference
+ ;allow=ilbc                     ; see https://wiki.asterisk.org/wiki/display/AST/RTP+Packetization
+ 				; for framing options
++;autoframing=yes		; Set packetization based on the remote endpoint's (ptime)
++				; preferences. Defaults to no.
+ ;
+ ; This option specifies a preference for which music on hold class this channel
+ ; should listen to when put on hold if the music class has not been set on the
+@@ -1192,6 +1194,7 @@
+ ; language
+ ; allow
+ ; disallow
++; autoframing
+ ; insecure
+ ; trustrpid
+ ; progressinband
 --- configs/sla.conf.sample
 +++ configs/sla.conf.sample
 @@ -15,6 +15,17 @@
@@ -2928,6 +3127,17 @@
  GRANT ALL ON TABLE cdr TO asterisk;
  GRANT ALL ON TABLE extensions_conf TO asterisk;
  GRANT ALL ON TABLE sip_conf TO asterisk;
+--- default.exports
++++ default.exports
+@@ -1,4 +1,8 @@
+ {
++	global:
++		/* See main/asterisk.exports.in for an explanation why this is
++		 * needed. */
++		_IO_stdin_used;
+ 	local:
+ 		*;
+ };
 --- funcs/func_channel.c
 +++ funcs/func_channel.c
 @@ -20,7 +20,7 @@
@@ -3128,6 +3338,67 @@
  		AST_LIST_INSERT_HEAD(ast_channel_varshead(chan), var, entries);
  
  		if (test_strings[i][3]) {
+--- include/asterisk/astmm.h
++++ include/asterisk/astmm.h
+@@ -54,6 +54,12 @@
+ #undef vasprintf
+ #undef free
+ 
++void *ast_std_malloc(size_t size);
++void *ast_std_calloc(size_t nmemb, size_t size);
++void *ast_std_realloc(void *ptr, size_t size);
++void ast_std_free(void *ptr);
++void ast_free_ptr(void *ptr);
++
+ void *__ast_calloc(size_t nmemb, size_t size, const char *file, int lineno, const char *func);
+ void *__ast_calloc_cache(size_t nmemb, size_t size, const char *file, int lineno, const char *func);
+ void *__ast_malloc(size_t size, const char *file, int lineno, const char *func);
+--- include/asterisk/frame.h
++++ include/asterisk/frame.h
+@@ -296,12 +296,16 @@
+ };
+ 
+ enum ast_control_t38_rate {
+-	AST_T38_RATE_2400 = 0,
++	AST_T38_RATE_2400 = 1,
+ 	AST_T38_RATE_4800,
+ 	AST_T38_RATE_7200,
+ 	AST_T38_RATE_9600,
+ 	AST_T38_RATE_12000,
+-	AST_T38_RATE_14400,
++	/* Set to 0 so it's taken as default when unspecified.
++	 * See ITU-T T.38 Implementors' Guide (11 May 2012),
++	 * Table H.2: if the T38MaxBitRate attribute is omitted
++	 * it should use a default of 14400. */
++	AST_T38_RATE_14400 = 0,
+ };
+ 
+ enum ast_control_t38_rate_management {
+--- include/asterisk/lock.h
++++ include/asterisk/lock.h
+@@ -289,22 +289,6 @@
+ #endif /* HAVE_BKTR */
+ #endif /* !defined(LOW_MEMORY) */
+ 
+-#ifdef HAVE_BKTR
+-static inline void __dump_backtrace(struct ast_bt *bt, int canlog)
+-{
+-	char **strings;
+-
+-	ssize_t i;
+-
+-	strings = backtrace_symbols(bt->addresses, bt->num_frames);
+-
+-	for (i = 0; i < bt->num_frames; i++)
+-		__ast_mutex_logger("%s\n", strings[i]);
+-
+-	free(strings);
+-}
+-#endif
+-
+ /*!
+  * \brief log info for the current lock with ast_log().
+  *
 --- include/asterisk/logger.h
 +++ include/asterisk/logger.h
 @@ -411,7 +411,7 @@
@@ -3135,10 +3406,43 @@
   * \param num_frames Number of addresses in the addresses list
   * \retval NULL Unable to allocate memory
 - * \return List of strings
-+ * \return List of strings. Free the entire list with a single ast_free call.
++ * \return List of strings. Free the entire list with a single ast_std_free call.
   * \since 1.6.2.16
   */
  char **ast_bt_get_symbols(void **addresses, size_t num_frames);
+--- include/asterisk/utils.h
++++ include/asterisk/utils.h
+@@ -459,24 +459,20 @@
+ long int ast_random(void);
+ 
+ 
++#ifndef __AST_DEBUG_MALLOC
++#define ast_std_malloc malloc
++#define ast_std_calloc calloc
++#define ast_std_realloc realloc
++#define ast_std_free free
++
+ /*!
+  * \brief free() wrapper
+  *
+  * ast_free_ptr should be used when a function pointer for free() needs to be passed
+  * as the argument to a function. Otherwise, astmm will cause seg faults.
+  */
+-#ifdef __AST_DEBUG_MALLOC
+-static void ast_free_ptr(void *ptr) attribute_unused;
+-static void ast_free_ptr(void *ptr)
+-{
+-	ast_free(ptr);
+-}
+-#else
+ #define ast_free free
+ #define ast_free_ptr ast_free
+-#endif
+-
+-#ifndef __AST_DEBUG_MALLOC
+ 
+ #define MALLOC_FAILURE_MSG \
+ 	ast_log(LOG_ERROR, "Memory Allocation Failure in function %s at line %d of %s\n", func, lineno, file);
 --- main/asterisk.c
 +++ main/asterisk.c
 @@ -1,7 +1,7 @@
@@ -3198,6 +3502,103 @@
  	printf("Usage: asterisk [OPTIONS]\n");
  	printf("Valid Options:\n");
  	printf("   -V              Display version number and exit\n");
+--- main/asterisk.exports.in
++++ main/asterisk.exports.in
+@@ -46,6 +46,25 @@
+ 		LINKER_SYMBOL_PREFIXres_srtp;
+ 		LINKER_SYMBOL_PREFIXres_srtp_policy;
+ 		LINKER_SYMBOL_PREFIXsecure_call_info;
++		/*
++
++		If _IO_stdin_used is not exported, stdout/stderr may not get
++		properly aligned. That causes breakage on some architectures.
++
++		http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=634261#51
++		http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=634261#94
++		http://lists.gnu.org/archive/html/bug-glibc/2001-12/msg00203.html
++
++		We export the symbol to get proper behaviour. Now printf
++		doesn't SIGBUS anymore on the SPARC.
++
++		Michael Karcher wrote on Jan 13, 2013:
++		> A build process that mangles the export of _IO_stdin_used is
++		> (as defined by the libc ABI, even if not explicitly written
++		> down) broken. [...]
++
++		*/
++		LINKER_SYMBOL_PREFIX_IO_stdin_used;
+ 	local:
+ 		*;
+ };
+--- main/astfd.c
++++ main/astfd.c
+@@ -31,7 +31,7 @@
+ 
+ #ifdef DEBUG_FD_LEAKS
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 369013 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397107 $")
+ 
+ #include <stdio.h>
+ #include <string.h>
+@@ -274,8 +274,14 @@
+ 
+ static struct ast_cli_entry cli_show_fd = AST_CLI_DEFINE(handle_show_fd, "Show open file descriptors");
+ 
++static void fd_shutdown(void)
++{
++	ast_cli_unregister(&cli_show_fd);
++}
++
+ int ast_fd_init(void)
+ {
++	ast_register_atexit(fd_shutdown);
+ 	return ast_cli_register(&cli_show_fd);
+ }
+ 
+--- main/astmm.c
++++ main/astmm.c
+@@ -32,7 +32,7 @@
+ 
+ #if defined(__AST_DEBUG_MALLOC)
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377401 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
+ 
+ #include "asterisk/paths.h"	/* use ast_config_AST_LOG_DIR */
+ #include <stddef.h>
+@@ -157,6 +157,31 @@
+ 		}                                    \
+ 	} while (0)
+ 
++void *ast_std_malloc(size_t size)
++{
++	return malloc(size);
++}
++
++void *ast_std_calloc(size_t nmemb, size_t size)
++{
++	return calloc(nmemb, size);
++}
++
++void *ast_std_realloc(void *ptr, size_t size)
++{
++	return realloc(ptr, size);
++}
++
++void ast_std_free(void *ptr)
++{
++	free(ptr);
++}
++
++void ast_free_ptr(void *ptr)
++{
++	ast_free(ptr);
++}
++
+ /*!
+  * \internal
+  *
 --- main/astobj2.c
 +++ main/astobj2.c
 @@ -24,7 +24,7 @@
@@ -3205,7 +3606,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388700 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396441 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
  
  #include "asterisk/_private.h"
  #include "asterisk/astobj2.h"
@@ -3214,7 +3615,7 @@
  		ast_verbose("%d: %p %s\n", i, addresses[i], strings[i]);
  	}
 -	free(strings);
-+	ast_free(strings);
++	ast_std_free(strings);
  }
  #endif
  
@@ -3250,6 +3651,26 @@
  			AST_LIST_INSERT_HEAD(headpb, newvariable, entries);
  			x++;
  		}
+--- main/cel.c
++++ main/cel.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377883 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397034 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -310,7 +310,7 @@
+ 
+ 	config = ast_config_load2("cel.conf", "cel", config_flags);
+ 
+-	if (config == CONFIG_STATUS_FILEMISSING) {
++	if (config == CONFIG_STATUS_FILEMISSING || config == CONFIG_STATUS_FILEUNCHANGED || config == CONFIG_STATUS_FILEINVALID) {
+ 		config = NULL;
+ 		goto return_cleanup;
+ 	}
 --- main/cli.c
 +++ main/cli.c
 @@ -29,7 +29,7 @@
@@ -3305,6 +3726,26 @@
 +
  	return 0;
  }
+ 
+--- main/data.c
++++ main/data.c
+@@ -28,7 +28,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377883 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396961 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -1631,7 +1631,7 @@
+ {
+ 	struct data_filter *filter = obj, *globres;
+ 
+-	AST_LIST_TRAVERSE(&(filter->glob_list), globres, list) {
++	while ((globres = AST_LIST_REMOVE_HEAD(&(filter->glob_list), list))) {
+ 		ao2_ref(globres, -1);
+ 	}
  
 --- main/features.c
 +++ main/features.c
@@ -3368,7 +3809,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 384119 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 394900 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397309 $")
  
  #include <time.h>
  #include <sys/time.h>
@@ -3399,6 +3840,32 @@
  	int num_addrs = 0;
  	int http_tls_was_enabled = 0;
  
+@@ -1229,7 +1229,25 @@
+ 
+ static void http_shutdown(void)
+ {
++	struct http_uri_redirect *redirect;
+ 	ast_cli_unregister_multiple(cli_http, ARRAY_LEN(cli_http));
++
++	ast_tcptls_server_stop(&http_desc);
++	if (http_tls_cfg.enabled) {
++		ast_tcptls_server_stop(&https_desc);
++	}
++	ast_free(http_tls_cfg.certfile);
++	ast_free(http_tls_cfg.pvtfile);
++	ast_free(http_tls_cfg.cipher);
++
++	ast_http_uri_unlink(&statusuri);
++	ast_http_uri_unlink(&staticuri);
++
++	AST_RWLIST_WRLOCK(&uri_redirects);
++	while ((redirect = AST_RWLIST_REMOVE_HEAD(&uri_redirects, entry))) {
++		ast_free(redirect);
++	}
++	AST_RWLIST_UNLOCK(&uri_redirects);
+ }
+ 
+ int ast_http_init(void)
 --- main/loader.c
 +++ main/loader.c
 @@ -33,7 +33,7 @@
@@ -3419,6 +3886,42 @@
  			break;
  		}
  	}
+--- main/lock.c
++++ main/lock.c
+@@ -27,8 +27,9 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388839 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
+ 
++#include "asterisk/utils.h"
+ #include "asterisk/lock.h"
+ 
+ /* Allow direct use of pthread_mutex_* / pthread_cond_* */
+@@ -45,6 +46,22 @@
+ #undef pthread_cond_wait
+ #undef pthread_cond_timedwait
+ 
++#if defined(DEBUG_THREADS) && defined(HAVE_BKTR)
++static void __dump_backtrace(struct ast_bt *bt, int canlog)
++{
++	char **strings;
++	ssize_t i;
++
++	strings = backtrace_symbols(bt->addresses, bt->num_frames);
++
++	for (i = 0; i < bt->num_frames; i++) {
++		__ast_mutex_logger("%s\n", strings[i]);
++	}
++
++	ast_std_free(strings);
++}
++#endif	/* defined(DEBUG_THREADS) && defined(HAVE_BKTR) */
++
+ int __ast_pthread_mutex_init(int tracking, const char *filename, int lineno, const char *func,
+ 						const char *mutex_name, ast_mutex_t *t)
+ {
 --- main/logger.c
 +++ main/logger.c
 @@ -31,7 +31,7 @@
@@ -3426,51 +3929,141 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 389677 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396441 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
  
  /* When we include logger.h again it will trample on some stuff in syslog.h, but
   * nothing we care about in here. */
-@@ -1733,7 +1733,31 @@
+@@ -1593,7 +1593,7 @@
+ 
+ char **ast_bt_get_symbols(void **addresses, size_t num_frames)
+ {
+-	char **strings = NULL;
++	char **strings;
+ #if defined(BETTER_BACKTRACES)
+ 	int stackfr;
+ 	bfd *bfdobj;           /* bfd.h */
+@@ -1613,9 +1613,12 @@
+ 
+ #if defined(BETTER_BACKTRACES)
+ 	strings_size = num_frames * sizeof(*strings);
+-	eachlen = ast_calloc(num_frames, sizeof(*eachlen));
+ 
+-	if (!(strings = ast_calloc(num_frames, sizeof(*strings)))) {
++	eachlen = ast_calloc(num_frames, sizeof(*eachlen));
++	strings = ast_std_calloc(num_frames, sizeof(*strings));
++	if (!eachlen || !strings) {
++		ast_free(eachlen);
++		ast_std_free(strings);
+ 		return NULL;
+ 	}
+ 
+@@ -1630,6 +1633,7 @@
+ 
+ 		if (strcmp(dli.dli_fname, "asterisk") == 0) {
+ 			char asteriskpath[256];
++
+ 			if (!(dli.dli_fname = ast_utils_which("asterisk", asteriskpath, sizeof(asteriskpath)))) {
+ 				/* This will fail to find symbols */
+ 				ast_debug(1, "Failed to find asterisk binary for debug symbols.\n");
+@@ -1638,11 +1642,11 @@
+ 		}
+ 
+ 		lastslash = strrchr(dli.dli_fname, '/');
+-		if (	(bfdobj = bfd_openr(dli.dli_fname, NULL)) &&
+-				bfd_check_format(bfdobj, bfd_object) &&
+-				(allocsize = bfd_get_symtab_upper_bound(bfdobj)) > 0 &&
+-				(syms = ast_malloc(allocsize)) &&
+-				(symbolcount = bfd_canonicalize_symtab(bfdobj, syms))) {
++		if ((bfdobj = bfd_openr(dli.dli_fname, NULL)) &&
++			bfd_check_format(bfdobj, bfd_object) &&
++			(allocsize = bfd_get_symtab_upper_bound(bfdobj)) > 0 &&
++			(syms = ast_malloc(allocsize)) &&
++			(symbolcount = bfd_canonicalize_symtab(bfdobj, syms))) {
+ 
+ 			if (bfdobj->flags & DYNAMIC) {
+ 				offset = addresses[stackfr] - dli.dli_fbase;
+@@ -1651,9 +1655,9 @@
+ 			}
+ 
+ 			for (section = bfdobj->sections; section; section = section->next) {
+-				if (	!bfd_get_section_flags(bfdobj, section) & SEC_ALLOC ||
+-						section->vma > offset ||
+-						section->size + section->vma < offset) {
++				if (!bfd_get_section_flags(bfdobj, section) & SEC_ALLOC ||
++					section->vma > offset ||
++					section->size + section->vma < offset) {
+ 					continue;
+ 				}
+ 
+@@ -1668,7 +1672,9 @@
+ 				found++;
+ 				if ((lastslash = strrchr(file, '/'))) {
+ 					const char *prevslash;
+-					for (prevslash = lastslash - 1; *prevslash != '/' && prevslash >= file; prevslash--);
++
++					for (prevslash = lastslash - 1; *prevslash != '/' && prevslash >= file; prevslash--) {
++					}
+ 					if (prevslash >= file) {
+ 						lastslash = prevslash;
+ 					}
+@@ -1690,9 +1696,7 @@
+ 		}
+ 		if (bfdobj) {
+ 			bfd_close(bfdobj);
+-			if (syms) {
+-				ast_free(syms);
+-			}
++			ast_free(syms);
+ 		}
+ 
+ 		/* Default output, if we cannot find the information within BFD */
+@@ -1712,27 +1716,31 @@
+ 
+ 		if (!ast_strlen_zero(msg)) {
+ 			char **tmp;
+-			eachlen[stackfr] = strlen(msg);
+-			if (!(tmp = ast_realloc(strings, strings_size + eachlen[stackfr] + 1))) {
+-				ast_free(strings);
++
++			eachlen[stackfr] = strlen(msg) + 1;
++			if (!(tmp = ast_std_realloc(strings, strings_size + eachlen[stackfr]))) {
++				ast_std_free(strings);
+ 				strings = NULL;
+ 				break; /* out of stack frame iteration */
+ 			}
+ 			strings = tmp;
+ 			strings[stackfr] = (char *) strings + strings_size;
+-			ast_copy_string(strings[stackfr], msg, eachlen[stackfr] + 1);
+-			strings_size += eachlen[stackfr] + 1;
++			strcpy(strings[stackfr], msg);/* Safe since we just allocated the room. */
++			strings_size += eachlen[stackfr];
  		}
  	}
+ 
+ 	if (strings) {
+-		/* Recalculate the offset pointers */
++		/* Recalculate the offset pointers because of the reallocs. */
+ 		strings[0] = (char *) strings + num_frames * sizeof(*strings);
+ 		for (stackfr = 1; stackfr < num_frames; stackfr++) {
+-			strings[stackfr] = strings[stackfr - 1] + eachlen[stackfr - 1] + 1;
++			strings[stackfr] = strings[stackfr - 1] + eachlen[stackfr - 1];
+ 		}
+ 	}
++	ast_free(eachlen);
++
  #else /* !defined(BETTER_BACKTRACES) */
--	strings = backtrace_symbols(addresses, num_frames);
-+	if ((strings = backtrace_symbols(addresses, num_frames))) {
-+		/* Re-do value into ast_alloc'ed memory */
-+		char **ast_strings;
-+		char *p;
-+		unsigned size = num_frames + sizeof(*strings);
-+		int i;
-+		for (i = 0; i < num_frames; ++i) {
-+			size += strlen(strings[i]) + 1;
-+		}
-+#undef free
-+		if (!(ast_strings = ast_malloc(size))) {
-+			free(strings);
-+			ast_log(LOG_WARNING, "Unable to re-allocate space for backtrace structure\n");
-+			return NULL;
-+		}
-+		p = (char *) (ast_strings + num_frames);
-+		for (i = 0; i < num_frames; ++i) {
-+			unsigned len = strlen(strings[i]) + 1;
-+			ast_strings[i] = p;
-+			memcpy(p, strings[i], len);
-+			p += len;
-+		}
-+		free(strings);
-+		strings = ast_strings;
-+	}
++
+ 	strings = backtrace_symbols(addresses, num_frames);
  #endif /* defined(BETTER_BACKTRACES) */
  	return strings;
- }
-@@ -1758,9 +1782,7 @@
+@@ -1758,9 +1766,7 @@
  			ast_debug(1, "#%d: [%p] %s\n", i - 3, bt->addresses[i], strings[i]);
  		}
  
 -		/* MALLOC_DEBUG will erroneously report an error here, unless we undef the macro. */
 -#undef free
 -		free(strings);
-+		ast_free(strings);
++		ast_std_free(strings);
  	} else {
  		ast_debug(1, "Could not allocate memory for backtrace\n");
  	}
@@ -3539,6 +4132,62 @@
  		AST_LIST_INSERT_HEAD(headp, newvariable, entries);
  		/*** DOCUMENTATION
  			<managerEventInstance>
+--- main/threadstorage.c
++++ main/threadstorage.c
+@@ -38,7 +38,7 @@
+ 
+ #else /* !defined(DEBUG_THREADLOCALS) */
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 370655 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397107 $")
+ 
+ #include "asterisk/strings.h"
+ #include "asterisk/utils.h"
+@@ -249,10 +249,16 @@
+ 	AST_CLI_DEFINE(handle_cli_threadstorage_show_summary,     "Summarize outstanding memory allocations")
+ };
+ 
++static void threadstorage_shutdown(void)
++{
++	ast_cli_unregister_multiple(cli, ARRAY_LEN(cli));
++}
++
+ void threadstorage_init(void)
+ {
+ 	pthread_mutex_init(&threadstoragelock, NULL);
+ 	ast_cli_register_multiple(cli, ARRAY_LEN(cli));
++	ast_register_atexit(threadstorage_shutdown);
+ }
+ 
+ #endif /* !defined(DEBUG_THREADLOCALS) */
+--- main/udptl.c
++++ main/udptl.c
+@@ -54,7 +54,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377849 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397365 $")
+ 
+ #include <sys/time.h>
+ #include <signal.h>
+@@ -1419,8 +1419,15 @@
+ 
+ static void __ast_udptl_reload(int reload)
+ {
++	RAII_VAR(struct udptl_config *, udptl_cfg, udptl_snapshot_alloc(), ao2_cleanup);
++
+ 	if (aco_process_config(&cfg_info, reload) == ACO_PROCESS_ERROR) {
+-		ast_log(LOG_WARNING, "Could not reload udptl config\n");
++		if (!reload) {
++			if (!aco_set_defaults(&general_option, "general", udptl_cfg->general)) {
++				ast_log(LOG_WARNING, "Could not load udptl config; using defaults\n");
++				ao2_global_obj_replace(globals, udptl_cfg);
++			}
++		}
+ 	}
+ }
+ 
 --- main/utils.c
 +++ main/utils.c
 @@ -29,7 +29,7 @@
@@ -3546,7 +4195,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387295 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396441 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
  
  #include <ctype.h>
  #include <sys/stat.h>
@@ -3555,10 +4204,29 @@
  		}
  
 -		free(symbols);
-+		ast_free(symbols);
++		ast_std_free(symbols);
  	} else {
  		ast_str_append(str, 0, "\tCouldn't retrieve backtrace symbols\n");
  	}
+--- main/xmldoc.c
++++ main/xmldoc.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377511 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397067 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"
+@@ -759,6 +759,7 @@
+ 				if ((paramtype = ast_xml_get_attribute(node, "required"))) {
+ 					if (!ast_true(paramtype)) {
+ 						optmidnode = 1;
++						ast_xml_free_attr(paramtype);
+ 						break;
+ 					}
+ 					ast_xml_free_attr(paramtype);
 --- pbx/pbx_dundi.c
 +++ pbx/pbx_dundi.c
 @@ -29,7 +29,7 @@
