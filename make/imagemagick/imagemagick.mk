@@ -25,7 +25,7 @@ $(PKG)_XML_CONFIGS := \
 	coder.xml colors.xml delegates.xml log.xml magic.xml mime.xml policy.xml \
 	thresholds.xml type.xml type-dejavu.xml type-ghostscript.xml type-windows.xml
 $(PKG)_XML_CONFIGS_BUILD_DIR := $($(PKG)_XML_CONFIGS:%=$($(PKG)_DIR)/config/%)
-$(PKG)_XML_CONFIGS_TARGET_DIR := $($(PKG)_XML_CONFIGS:%=$($(PKG)_DEST_DIR)/etc/ImageMagick/%)
+$(PKG)_XML_CONFIGS_TARGET_DIR := $($(PKG)_XML_CONFIGS:%=$($(PKG)_DEST_DIR)/etc/ImageMagick-$($(PKG)_MAJOR_VERSION)/%)
 
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 $(PKG)_NOT_INCLUDED += $(if $(FREETZ_PACKAGE_IMAGEMAGICK_xml),,$($(PKG)_XML_CONFIGS_TARGET_DIR))
@@ -110,7 +110,7 @@ $($(PKG)_LIB_CORE_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/magick/.li
 	$(INSTALL_LIBRARY_STRIP)
 $($(PKG)_LIB_WAND_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/wand/.libs/%
 	$(INSTALL_LIBRARY_STRIP)
-$($(PKG)_XML_CONFIGS_TARGET_DIR): $($(PKG)_DEST_DIR)/etc/ImageMagick/%: $($(PKG)_DIR)/config/%
+$($(PKG)_XML_CONFIGS_TARGET_DIR): $($(PKG)_DEST_DIR)/etc/ImageMagick-$($(PKG)_MAJOR_VERSION)/%: $($(PKG)_DIR)/config/%
 	$(INSTALL_FILE)
 
 $(pkg):
