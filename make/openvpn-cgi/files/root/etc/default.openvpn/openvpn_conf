@@ -4,8 +4,9 @@ scriptname=$0
 scriptname=${scriptname##*/}
 prefix=${scriptname%%_conf}
 
-CCD_REL=/clients_$prefix
-CCD=/var/tmp/openvpn$CCD_REL
+CHROOT=/var/tmp/openvpn
+CCD_REL=clients_$prefix
+CCD=$CHROOT/$CCD_REL
 
 . /mod/etc/conf/openvpn.cfg
 
@@ -77,10 +78,10 @@ if [ "$AUTH_TYPE" = "certs" ]; then
 	if [ "$MODE" = "server" ]; then
 		echo "dh ${keypath}dh.pem"
 		if [ -r "${keypath}crl.pem" ] && [ "$(sed 's/[ \t]*//g' ${keypath}crl.pem)" ]; then
-			cp -f "${keypath}crl.pem" /tmp/openvpn/etc
+			cp -f "${keypath}crl.pem" $CHROOT/etc
 			echo "crl-verify /etc/${keypath##*openvpn/}crl.pem"
 		else
-			rm -f "/tmp/openvpn/etc/${keypath##*openvpn/}crl.pem"
+			rm -f "$CHROOT/etc/${keypath##*openvpn/}crl.pem"
 		fi
 		echo "tls-server"
 		[ "$TLS_AUTH" = "yes" ] && echo "tls-auth ${keypath}static.key 0"
@@ -224,7 +225,8 @@ fi
 [ "$OPENVPN_MGMNT" = "yes" ] && echo "management $OPENVPN_MGMNT"
 [ "$LOGFILE" = "yes" ] && echo "status /var/log/$prefix.log"
 
-echo "chroot /tmp/openvpn"
+echo "cd $CHROOT"
+echo "chroot $CHROOT"
 echo "user openvpn"
 echo "group openvpn"
 echo "persist-tun"
