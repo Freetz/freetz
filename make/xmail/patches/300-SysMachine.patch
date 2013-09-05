@@ -1,13 +1,20 @@
---- /dev/null	2009-12-14 23:28:50.862941706 +0100
-+++ SysMachine.h	2009-12-15 09:06:33.000000000 +0100
-@@ -0,0 +1,24 @@
+--- SysMachine.h
++++ SysMachine.h
+@@ -0,0 +1,32 @@
 +#ifndef _MACHDEFS_H
 +#define _MACHDEFS_H
 +
++#include <endian.h>
 +
-+#undef MACH_BIG_ENDIAN_WORDS
-+
-+#undef MACH_BIG_ENDIAN_BITFIELD
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++  #undef MACH_BIG_ENDIAN_WORDS
++  #undef MACH_BIG_ENDIAN_BITFIELD
++#elif __BYTE_ORDER == __BIG_ENDIAN
++  #define MACH_BIG_ENDIAN_WORDS
++  #define MACH_BIG_ENDIAN_BITFIELD
++#else
++  #error unsupported byte order!
++#endif
 +
 +typedef signed char MachInt8;
 +typedef unsigned char MachUInt8;
@@ -21,7 +28,8 @@
 +typedef unsigned int MachUInt32;
 +#define MACH_TYPE_32BIT int
 +
-+
++typedef signed long long MachInt64;
++typedef unsigned long long MachUInt64;
++#define MACH_TYPE_64BIT long long
 +
 +#endif
-+
