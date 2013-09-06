@@ -1,5 +1,104 @@
---- SysDepCommon.cpp.orig	2010-02-26 04:33:44.000000000 +0100
-+++ SysDepCommon.cpp	2010-05-01 07:52:17.000000000 +0200
+--- MailSvr.cpp
++++ MailSvr.cpp
+@@ -302,9 +302,11 @@
+ 			iDisable++;
+ 			break;
+ 
++#ifdef IPV6
+ 		case '6':
+ 			iFamily = AF_INET6;
+ 			break;
++#endif
+ 		}
+ 	}
+ 
+@@ -389,10 +391,11 @@
+ 
+ 		case '-':
+ 			return 0;
+-
++#ifdef IPV6
+ 		case '6':
+ 			iFamily = AF_INET6;
+ 			break;
++#endif
+ 		}
+ 	}
+ 	if (MscCreateServerSockets(ThCfgCTRLS.iNumAddr, ThCfgCTRLS.SvrAddr, iFamily,
+@@ -489,9 +492,11 @@
+ 			iDisable++;
+ 			break;
+ 
++#ifdef IPV6
+ 		case '6':
+ 			iFamily = AF_INET6;
+ 			break;
++#endif
+ 		}
+ 	}
+ 
+@@ -624,9 +629,11 @@
+ 			iDisable++;
+ 			break;
+ 
++#ifdef IPV6
+ 		case '6':
+ 			iFamily = AF_INET6;
+ 			break;
++#endif
+ 		}
+ 	}
+ 
+@@ -715,9 +722,11 @@
+ 		case '-':
+ 			return 0;
+ 
++#ifdef IPV6
+ 		case '6':
+ 			iFamily = AF_INET6;
+ 			break;
++#endif
+ 		}
+ 	}
+ 	if (MscCreateServerSockets(ThCfgPOP3S.iNumAddr, ThCfgPOP3S.SvrAddr, iFamily,
+@@ -838,9 +847,11 @@
+ 			iDisable++;
+ 			break;
+ 
++#ifdef IPV6
+ 		case '6':
+ 			iFamily = AF_INET6;
+ 			break;
++#endif
+ 		}
+ 	}
+ 
+@@ -927,9 +938,11 @@
+ 		case '-':
+ 			return 0;
+ 
++#ifdef IPV6
+ 		case '6':
+ 			iFamily = AF_INET6;
+ 			break;
++#endif
+ 		}
+ 	}
+ 	if (MscCreateServerSockets(ThCfgSMTPS.iNumAddr, ThCfgSMTPS.SvrAddr, iFamily,
+@@ -1351,9 +1364,11 @@
+ 			iAddrFamily = AF_INET;
+ 			break;
+ 
++#ifdef IPV6
+ 		case '6':
+ 			iAddrFamily = AF_INET6;
+ 			break;
++#endif
+ 
+ 		case '5':
+ 			iAddrFamily = SYS_INET46;
+--- SysDepCommon.cpp
++++ SysDepCommon.cpp
 @@ -43,6 +43,7 @@
  		AddrInfo.iSize = sizeof(struct sockaddr_in);
  		break;

@@ -1,0 +1,955 @@
+--- CTRLClient.cpp
++++ CTRLClient.cpp
+@@ -25,8 +25,10 @@
+ #include "SvrDefines.h"
+ #include "ShBlocks.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "MiscUtils.h"
+ #include "StrUtils.h"
+ #include "MD5.h"
+@@ -46,7 +48,9 @@
+ #define CCLN_CHF_USESSL (1 << 2)
+ 
+ struct CClnChannelCfg {
++#ifdef WITH_SSL
+ 	SslServerBind SSLB;
++#endif
+ 	unsigned long ulFlags;
+ };
+ 
+@@ -184,6 +188,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int CClnSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+@@ -207,6 +212,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ BSOCK_HANDLE CClnConnectServer(char const *pszServer, int iPortNo,
+ 			       char const *pszUsername, char const *pszPassword,
+@@ -239,11 +245,13 @@
+ 	int iErrorCode = 0;
+ 	char szRTXBuffer[2048] = "";
+ 
++#ifdef WITH_SSL
+ 	if ((pChCfg->ulFlags & CCLN_CHF_USESSL) &&
+ 	    CClnSslBind(pChCfg, hBSock) < 0) {
+ 		BSckDetach(hBSock, 1);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#endif
+ 
+ 	/* Read welcome message */
+ 	if (CClnGetResponse(hBSock, szRTXBuffer, sizeof(szRTXBuffer), &iErrorCode, iTimeout) < 0) {
+@@ -256,6 +264,7 @@
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to SSL?
+ 	 */
+@@ -276,6 +285,7 @@
+ 			return INVALID_BSOCK_HANDLE;
+ 		}
+ 	}
++#endif
+ 
+ 	/* Prepare login */
+ 	char szTimeStamp[256] = "";
+@@ -357,12 +367,14 @@
+ 		"       -p pass          = set password\n"
+ 		"       -t timeout       = set timeout [%d]\n"
+ 		"       -f filename      = set I/O filename [stdin/stdout]\n"
++#ifdef WITH_SSL
+ 		"       -S               = enable SSL link negotiation\n"
+ 		"       -L               = use native SSL link\n"
+ 		"       -K filename      = set the SSL private key file\n"
+ 		"       -C filename      = set the SSL certificate file\n"
+ 		"       -X filename      = set the SSL certificate-list file\n"
+ 		"       -H dir           = set the SSL certificate-store directory\n"
++#endif
+ 		"       -c               = disable MD5 authentication\n"
+ 		"       -D               = enable debug\n",
+ 		pszProgName, STD_CTRL_PORT, STD_CTRL_TIMEOUT);
+@@ -381,10 +393,12 @@
+ 
+ 	ZeroData(ChCfg);
+ 	ChCfg.ulFlags = CCLN_CHF_USEMD5;
++#ifdef WITH_SSL
+ 	ChCfg.SSLB.pszKeyFile = SysGetEnv("CTRL_KEY_FILE");
+ 	ChCfg.SSLB.pszCertFile = SysGetEnv("CTRL_CERT_FILE");
+ 	ChCfg.SSLB.pszCAFile = SysGetEnv("CTRL_CA_FILE");
+ 	ChCfg.SSLB.pszCAPath = SysGetEnv("CTRL_CA_PATH");
++#endif
+ 
+ 	for (i = 1; i < iArgCount; i++) {
+ 		if (pszArgs[i][0] != '-')
+@@ -425,6 +439,7 @@
+ 			ChCfg.ulFlags &= ~CCLN_CHF_USEMD5;
+ 			break;
+ 
++#ifdef WITH_SSL
+ 		case ('S'):
+ 			ChCfg.ulFlags &= ~CCLN_CHF_USESSL;
+ 			ChCfg.ulFlags |= CCLN_CHF_SSLSWITCH;
+@@ -462,6 +477,7 @@
+ 				ChCfg.SSLB.pszCAPath = SysStrDup(pszArgs[i]);
+ 			}
+ 			break;
++#endif
+ 
+ 		case ('D'):
+ 			bServerDebug = true;
+@@ -473,15 +489,19 @@
+ 	}
+ 	if (strlen(szServer) == 0 || strlen(szUsername) == 0 ||
+ 	    strlen(szPassword) == 0 || i == iArgCount) {
++#ifdef WITH_SSL
+ 		SysFree(ChCfg.SSLB.pszKeyFile);
+ 		SysFree(ChCfg.SSLB.pszCertFile);
++#endif
+ 		return CCLN_ERR_BAD_USAGE;
+ 	}
++#ifdef WITH_SSL
+ 	if ((ChCfg.SSLB.pszKeyFile != NULL) != (ChCfg.SSLB.pszCertFile != NULL)) {
+ 		SysFree(ChCfg.SSLB.pszKeyFile);
+ 		SysFree(ChCfg.SSLB.pszCertFile);
+ 		return CCLN_ERR_SSL_KEYCERT;
+ 	}
++#endif
+ 
+ 	int iFirstParam = i, iCmdLength = 0;
+ 
+@@ -503,10 +523,12 @@
+ 	BSOCK_HANDLE hBSock = CClnConnectServer(szServer, iPortNo, szUsername, szPassword,
+ 						&ChCfg, iTimeout);
+ 
++#ifdef WITH_SSL
+ 	SysFree(ChCfg.SSLB.pszKeyFile);
+ 	SysFree(ChCfg.SSLB.pszCertFile);
+ 	SysFree(ChCfg.SSLB.pszCAFile);
+ 	SysFree(ChCfg.SSLB.pszCAPath);
++#endif
+ 	if (hBSock == INVALID_BSOCK_HANDLE) {
+ 		ErrorPush();
+ 		SysFree(pszCommand);
+@@ -537,26 +559,34 @@
+ 		CClnLogError(ErrGetErrorCode());
+ 		return 1;
+ 	}
++#ifdef WITH_SSL
+ 	if (BSslInit() < 0) {
+ 		CClnLogError(ErrGetErrorCode());
+ 		SysCleanupLibrary();
+ 		return 2;
+ 	}
++#endif
+ 
+ 	int iExecResult = CClnExec(iArgCount, pszArgs);
+ 
+ 	if (iExecResult == CCLN_ERR_BAD_USAGE) {
+ 		CClnShowUsage(pszArgs[0]);
++#ifdef WITH_SSL
+ 		BSslCleanup();
++#endif
+ 		SysCleanupLibrary();
+ 		return 3;
+ 	} else if (iExecResult < 0) {
+ 		CClnLogError(iExecResult);
++#ifdef WITH_SSL
+ 		BSslCleanup();
++#endif
+ 		SysCleanupLibrary();
+ 		return 4;
+ 	}
++#ifdef WITH_SSL
+ 	BSslCleanup();
++#endif
+ 	SysCleanupLibrary();
+ 
+ 	return 0;
+--- CTRLSvr.cpp
++++ CTRLSvr.cpp
+@@ -26,8 +26,10 @@
+ #include "ShBlocks.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "ResLocks.h"
+ #include "MiscUtils.h"
+ #include "MD5.h"
+@@ -300,6 +302,7 @@
+ 	return ERR_BAD_CTRL_LOGIN;
+ }
+ 
++#ifdef WITH_SSL
+ static int CTRLSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+@@ -311,6 +314,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static int CTRLLogin(CTRLConfig *pCTRLCfg, BSOCK_HANDLE hBSock,
+ 		     char const *pszTimeStamp, SYS_INET_ADDR const &PeerInfo)
+@@ -321,6 +325,7 @@
+ 	    MscCmdStringCheck(szLogin) < 0)
+ 		return ErrGetErrorCode();
+ 
++#ifdef WITH_SSL
+ 	if (strcmp(szLogin, CTRL_TLS_INIT_STR) == 0) {
+ 		int iError;
+ 		SslServerBind SSLB;
+@@ -357,6 +362,7 @@
+ 		    MscCmdStringCheck(szLogin) < 0)
+ 			return ErrGetErrorCode();
+ 	}
++#endif
+ 
+ 	char **ppszTokens = StrGetTabLineStrings(szLogin);
+ 
+@@ -2513,6 +2519,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -2545,6 +2552,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 	/* Check IP permission */
+ 	if (CTRLCheckPeerIP(pThCtx->SockFD) < 0) {
+ 		ErrorPush();
+--- FINGSvr.cpp
++++ FINGSvr.cpp
+@@ -26,8 +26,10 @@
+ #include "ShBlocks.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "StrUtils.h"
+ #include "ResLocks.h"
+ #include "MiscUtils.h"
+@@ -368,6 +370,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -400,6 +403,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 	/* Increase threads count */
+ 	FINGConfig *pFINGCfg = (FINGConfig *) ShbLock(pThCtx->pThCfg->hThShb);
+ 
+--- MailSvr.cpp
++++ MailSvr.cpp
+@@ -29,7 +29,9 @@
+ #include "BuffSock.h"
+ #include "MailConfig.h"
+ #include "MiscUtils.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
++#endif
+ #include "ResLocks.h"
+ #include "POP3Svr.h"
+ #include "SMTPSvr.h"
+@@ -85,15 +87,19 @@
+ enum SvrServices {
+ 	SVC_SMAIL = 0,
+ 	SVC_CTRL,
++#ifdef WITH_SSL
+ 	SVC_CRTLS,
++#endif
+ 	SVC_POP3,
+ 	SVC_SMTP,
+ 	SVC_FING,
+ 	SVC_LMAIL,
+ 	SVC_PSYNC,
++#ifdef WITH_SSL
+ 	SVC_SMTPS,
+ 	SVC_POP3S,
+ 	SVC_CTRLS,
++#endif
+ 
+ 	SVC_MAX
+ };
+@@ -137,18 +143,24 @@
+ static int iNumLMAILThreads;
+ static SYS_THREAD hCTRLThread;
+ static ThreadConfig ThCfgCTRL;
++#ifdef WITH_SSL
+ static SYS_THREAD hCTRLSThread;
+ static ThreadConfig ThCfgCTRLS;
++#endif
+ static SYS_THREAD hFINGThread;
+ static ThreadConfig ThCfgFING;
+ static SYS_THREAD hPOP3Thread;
+ static ThreadConfig ThCfgPOP3;
++#ifdef WITH_SSL
+ static SYS_THREAD hPOP3SThread;
+ static ThreadConfig ThCfgPOP3S;
++#endif
+ static SYS_THREAD hSMTPThread;
+ static ThreadConfig ThCfgSMTP;
++#ifdef WITH_SSL
+ static SYS_THREAD hSMTPSThread;
+ static ThreadConfig ThCfgSMTPS;
++#endif
+ static SYS_THREAD hSMAILThreads[MAX_SMAIL_THREADS];
+ static SYS_THREAD hLMAILThreads[MAX_LMAIL_THREADS];
+ static SYS_THREAD hPSYNCThread;
+@@ -355,6 +367,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int SvrSetupCTRLS(int iArgCount, char *pszArgs[])
+ {
+ 	int iPort = STD_CTRLS_PORT, iFamily = AF_INET;
+@@ -426,6 +439,7 @@
+ 	for (; ThCfgCTRLS.iNumSockFDs > 0; ThCfgCTRLS.iNumSockFDs--)
+ 		SysCloseSocket(ThCfgCTRLS.SockFDs[ThCfgCTRLS.iNumSockFDs - 1]);
+ }
++#endif
+ 
+ static long SvrThreadCntFING(ThreadConfig const *pThCfg)
+ {
+@@ -685,6 +699,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int SvrSetupPOP3S(int iArgCount, char *pszArgs[])
+ {
+ 	int iPort = STD_POP3S_PORT, iFamily = AF_INET;
+@@ -757,6 +772,7 @@
+ 	for (; ThCfgPOP3S.iNumSockFDs > 0; ThCfgPOP3S.iNumSockFDs--)
+ 		SysCloseSocket(ThCfgPOP3S.SockFDs[ThCfgPOP3S.iNumSockFDs - 1]);
+ }
++#endif
+ 
+ static long SvrThreadCntSMTP(ThreadConfig const *pThCfg)
+ {
+@@ -901,6 +917,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int SvrSetupSMTPS(int iArgCount, char *pszArgs[])
+ {
+ 	int iPort = STD_SMTPS_PORT, iFamily = AF_INET;
+@@ -973,6 +990,7 @@
+ 	for (; ThCfgSMTPS.iNumSockFDs > 0; ThCfgSMTPS.iNumSockFDs--)
+ 		SysCloseSocket(ThCfgSMTPS.SockFDs[ThCfgSMTPS.iNumSockFDs - 1]);
+ }
++#endif
+ 
+ static void SvrShutdown__SMAIL(void *pPrivate)
+ {
+@@ -1411,8 +1429,12 @@
+ 		return ErrorPop();
+ 	}
+ 	/* Initialize DNS cache */
+-	if (CDNS_Initialize(iDnsCacheDirs) < 0 ||
+-	    BSslInit() < 0) {
++	if (CDNS_Initialize(iDnsCacheDirs) < 0
++#ifdef WITH_SSL
++	    ||
++	    BSslInit() < 0
++#endif
++	    ) {
+ 		ErrorPush();
+ 		RLckCleanupLockers();
+ 
+@@ -1424,7 +1446,9 @@
+ 
+ static void SvrCleanup(void)
+ {
++#ifdef WITH_SSL
+ 	BSslCleanup();
++#endif
+ 	RLckCleanupLockers();
+ 	SvrShutdownCleanup();
+ }
+@@ -1490,11 +1514,17 @@
+ 	ArrayInit(iSvcI, -1);
+ 	if ((iSvcI[SVC_SMAIL] = SvrSetupSMAIL(iMergeArgsCount, ppszMergeArgs)) < 0 ||
+ 	    (iSvcI[SVC_CTRL] = SvrSetupCTRL(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#ifdef WITH_SSL
+ 	    (iSvcI[SVC_CTRLS] = SvrSetupCTRLS(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#endif
+ 	    (iSvcI[SVC_POP3] = SvrSetupPOP3(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#ifdef WITH_SSL
+ 	    (iSvcI[SVC_POP3S] = SvrSetupPOP3S(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#endif
+ 	    (iSvcI[SVC_SMTP] = SvrSetupSMTP(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#ifdef WITH_SSL
+ 	    (iSvcI[SVC_SMTPS] = SvrSetupSMTPS(iMergeArgsCount, ppszMergeArgs)) < 0 ||
++#endif
+ 	    (iSvcI[SVC_PSYNC] = SvrSetupPSYNC(iMergeArgsCount, ppszMergeArgs)) < 0 ||
+ 	    (iSvcI[SVC_FING] = SvrSetupFING(iMergeArgsCount, ppszMergeArgs)) < 0 ||
+ 	    (iSvcI[SVC_LMAIL] = SvrSetupLMAIL(iMergeArgsCount, ppszMergeArgs)) < 0) {
+@@ -1530,16 +1560,22 @@
+ 		SvrCleanupFING();
+ 	if (iSvcI[SVC_PSYNC] == 0)
+ 		SvrCleanupPSYNC();
++#ifdef WITH_SSL
+ 	if (iSvcI[SVC_SMTPS] == 0)
+ 		SvrCleanupSMTPS();
++#endif
+ 	if (iSvcI[SVC_SMTP] == 0)
+ 		SvrCleanupSMTP();
++#ifdef WITH_SSL
+ 	if (iSvcI[SVC_POP3S] == 0)
+ 		SvrCleanupPOP3S();
++#endif
+ 	if (iSvcI[SVC_POP3] == 0)
+ 		SvrCleanupPOP3();
++#ifdef WITH_SSL
+ 	if (iSvcI[SVC_CTRLS] == 0)
+ 		SvrCleanupCTRLS();
++#endif
+ 	if (iSvcI[SVC_CTRL] == 0)
+ 		SvrCleanupCTRL();
+ 	if (iSvcI[SVC_SMAIL] == 0)
+--- MiscUtils.cpp
++++ MiscUtils.cpp
+@@ -30,12 +30,16 @@
+ #include "MD5.h"
+ #include "Base64Enc.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
++#endif
+ #include "MailConfig.h"
+ #include "UsrUtils.h"
+ #include "SvrUtils.h"
+ #include "MessQueue.h"
++#ifdef WITH_SSL
+ #include "SSLMisc.h"
++#endif
+ #include "MailSvr.h"
+ #include "MiscUtils.h"
+ 
+@@ -130,6 +134,7 @@
+ 
+ void MscSafeGetTmpFile(char *pszPath, int iMaxPath)
+ {
++#ifdef WITH_SSL
+ 	time_t tmNow;
+ 	unsigned long ulID;
+ 	SYS_INT64 MsTime;
+@@ -155,6 +160,11 @@
+ 	md5_update(&MCtx, RndBytes, sizeof(RndBytes));
+ 	md5_final(&MCtx);
+ 	md5_hex(MCtx.digest, szMD5);
++#else
++	char szTempDir[SYS_MAX_PATH], szMD5[12];
++	strcpy(szMD5, "xmailXXXXXX");
++	mktemp(szMD5);
++#endif
+ 
+ 	SysGetTempDir(szTempDir, sizeof(szTempDir));
+ 	SysSNPrintf(pszPath, iMaxPath, "%s%s.xtmp", szTempDir, szMD5);
+@@ -1520,12 +1530,14 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ int MscSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+ 
+ 	return 0;
+ }
++#endif
+ 
+ int MscParseOptions(char const *pszOpts, int (*pfAssign)(void *, char const *, char const *),
+ 		    void *pPrivate)
+--- POP3Svr.cpp
++++ POP3Svr.cpp
+@@ -26,12 +26,16 @@
+ #include "ShBlocks.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
++#endif
+ #include "ResLocks.h"
+ #include "MiscUtils.h"
+ #include "StrUtils.h"
+ #include "MD5.h"
++#ifdef WITH_SSL
+ #include "SSLConfig.h"
++#endif
+ #include "SvrUtils.h"
+ #include "UsrUtils.h"
+ #include "UsrAuth.h"
+@@ -525,9 +529,11 @@
+ {
+ 	char const *pszSTLS = "";
+ 
++#ifdef WITH_SSL
+ 	if (SvrTestConfigFlag("EnablePOP3-TLS", true, POP3S.hSvrConfig) &&
+ 	    strcmp(BSckBioName(hBSock), BSSL_BIO_NAME) != 0)
+ 		pszSTLS = "STLS\r\n";
++#endif
+ 
+ 	BSckVSendString(hBSock, POP3S.pPOP3Cfg->iTimeout,
+ 			"+OK Capability list follows\r\n"
+@@ -542,6 +548,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int POP3SslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	POP3Session *pPOP3S = (POP3Session *) pPrivate;
+@@ -553,7 +560,9 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
++#ifdef WITH_SSL
+ static int POP3HandleCmd_STLS(char const *pszCommand, BSOCK_HANDLE hBSock,
+ 			      POP3Session &POP3S)
+ {
+@@ -610,6 +619,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static int POP3HandleCmd_STAT(char const *pszCommand, BSOCK_HANDLE hBSock,
+ 			      POP3Session &POP3S)
+@@ -863,8 +873,10 @@
+ 		iCmdResult = POP3HandleCmd_APOP(pszCommand, hBSock, POP3S);
+ 	else if (StrCmdMatch(pszCommand, "CAPA"))
+ 		iCmdResult = POP3HandleCmd_CAPA(pszCommand, hBSock, POP3S);
++#ifdef WITH_SSL
+ 	else if (StrCmdMatch(pszCommand, "STLS"))
+ 		iCmdResult = POP3HandleCmd_STLS(pszCommand, hBSock, POP3S);
++#endif
+ 	else if (StrCmdMatch(pszCommand, "STAT"))
+ 		iCmdResult = POP3HandleCmd_STAT(pszCommand, hBSock, POP3S);
+ 	else if (StrCmdMatch(pszCommand, "LIST"))
+@@ -955,6 +967,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -987,6 +1000,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 
+ 	/* Check IP permission */
+ 	if (POP3CheckPeerIP(pThCtx->SockFD) < 0) {
+--- POP3Utils.cpp
++++ POP3Utils.cpp
+@@ -29,8 +29,10 @@
+ #include "SList.h"
+ #include "BuffSock.h"
+ #include "Hash.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "MD5.h"
+ #include "MailConfig.h"
+ #include "UsrUtils.h"
+@@ -840,6 +842,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int UPopSwitchToTLS(BSOCK_HANDLE hBSock, char const *pszServer,
+ 			   POP3ChannelCfg const *pChCfg)
+ {
+@@ -874,6 +877,7 @@
+ 
+ 	return UPopSwitchToTLS(hBSock, pszServer, pChCfg);
+ }
++#endif
+ 
+ static BSOCK_HANDLE UPopCreateChannel(char const *pszServer, char const *pszUsername,
+ 				      char const *pszPassword, POP3ChannelCfg const *pChCfg)
+@@ -908,6 +912,7 @@
+ 		SysCloseSocket(SockFD);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#ifdef WITH_SSL
+ 	/*
+ 	 * Is this a full POP3S connection?
+ 	 */
+@@ -916,6 +921,7 @@
+ 		SysCloseSocket(SockFD);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#endif
+ 
+ 	/* Read welcome message */
+ 	char szRTXBuffer[2048];
+@@ -925,6 +931,7 @@
+ 		UPopCloseChannel(hBSock);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#ifdef WITH_SSL
+ 	/*
+ 	 * Non TLS mode active and STLS required?
+ 	 */
+@@ -935,6 +942,7 @@
+ 		UPopCloseChannel(hBSock);
+ 		return INVALID_BSOCK_HANDLE;
+ 	}
++#endif
+ 
+ 	/* Extract TimeStamp from server respose (if any) */
+ 	char szTimeStamp[256] = "";
+@@ -1075,12 +1083,14 @@
+ 		pChCfg->ulFlags |= POPCHF_USE_APOP;
+ 	else if (strcmp(pszName, "FAPOP") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_APOP | POPCHF_FORCE_APOP;
++#ifdef WITH_SSL
+ 	else if (strcmp(pszName, "STLS") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_STLS;
+ 	else if (strcmp(pszName, "FSTLS") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_STLS | POPCHF_FORCE_STLS;
+ 	else if (strcmp(pszName, "POP3S") == 0)
+ 		pChCfg->ulFlags |= POPCHF_USE_POP3S;
++#endif
+ 	else if (strcmp(pszName, "Leave") == 0) {
+ 		if (pszValue == NULL || atoi(pszValue) > 0)
+ 			pChCfg->ulFlags |= POPCHF_LEAVE_MSGS;
+--- SMTPSvr.cpp
++++ SMTPSvr.cpp
+@@ -26,7 +26,9 @@
+ #include "SList.h"
+ #include "ShBlocks.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
++#endif
+ #include "ResLocks.h"
+ #include "StrUtils.h"
+ #include "UsrUtils.h"
+@@ -35,7 +37,9 @@
+ #include "SMAILUtils.h"
+ #include "QueueUtils.h"
+ #include "MiscUtils.h"
++#ifdef WITH_SSL
+ #include "SSLConfig.h"
++#endif
+ #include "Base64Enc.h"
+ #include "MD5.h"
+ #include "UsrMailList.h"
+@@ -278,9 +282,11 @@
+ 	} else if (strcmp(pszName, "SenderDomainCheck") == 0) {
+ 		if (pszVal != NULL && !atoi(pszVal))
+ 			pSMTPS->ulFlags |= SMTPF_SNDRCHECK_BYPASS;
++#ifdef WITH_SSL
+ 	} else if (strcmp(pszName, "EaseTLS") == 0) {
+ 		if (pszVal == NULL || atoi(pszVal))
+ 			pSMTPS->ulSetupFlags &= ~SMTPF_WANT_TLS;
++#endif
+ 	} else if (strcmp(pszName, "EnableVRFY") == 0) {
+ 		if (pszVal == NULL || atoi(pszVal))
+ 			pSMTPS->ulFlags |= SMTPF_VRFY_ENABLED;
+@@ -492,9 +498,11 @@
+ 	    strcmp(pszName, "MailAuth") == 0) {
+ 		if (pszValue == NULL || atoi(pszValue))
+ 			pSMTPS->ulSetupFlags |= SMTPF_MAIL_LOCKED;
++#ifdef WITH_SSL
+ 	} else if (strcmp(pszName, "WantTLS") == 0) {
+ 		if (pszValue == NULL || atoi(pszValue))
+ 			pSMTPS->ulSetupFlags |= SMTPF_WANT_TLS;
++#endif
+ 	}
+ 
+ 	return 0;
+@@ -529,9 +537,11 @@
+ 			SMTPS.ulMaxMsgSize = 0;
+ 			break;
+ 
++#ifdef WITH_SSL
+ 		case 'S':
+ 			SMTPS.ulFlags |= SMTPF_EASE_TLS;
+ 			break;
++#endif
+ 		}
+ 	}
+ 
+@@ -977,6 +987,7 @@
+ 		ErrSetErrorCode(ERR_SMTP_BAD_CMD_SEQUENCE);
+ 		return ERR_SMTP_BAD_CMD_SEQUENCE;
+ 	}
++#ifdef WITH_SSL
+ 	/* Do we need to be in TLS mode for this session? */
+ 	if ((SMTPS.ulFlags & SMTPF_WANT_TLS) && !(SMTPS.ulFlags & SMTPF_EASE_TLS) &&
+ 	    strcmp(BSckBioName(hBSock), BSSL_BIO_NAME) != 0) {
+@@ -987,6 +998,7 @@
+ 		ErrSetErrorCode(ERR_TLS_MODE_REQUIRED);
+ 		return ERR_TLS_MODE_REQUIRED;
+ 	}
++#endif
+ 
+ 	/* Split the RETURN PATH */
+ 	char **ppszRetDomains = USmtpGetPathStrings(pszCommand);
+@@ -2253,7 +2265,11 @@
+ 	SysFree(pszDomain);
+ 
+ 	/* Emit extended SMTP command and internal auths */
++#ifdef WITH_SSL
+ 	int iLinkSSL = strcmp(BSckBioName(hBSock), BSSL_BIO_NAME) == 0;
++#else
++	int iLinkSSL = 0;
++#endif
+ 
+ 	StrDynAdd(&DynS,
+ 		  "250 VRFY\r\n"
+@@ -2269,8 +2285,10 @@
+ 		StrDynPrint(&DynS, "250 SIZE %lu\r\n", SMTPS.ulMaxMsgSize);
+ 	else
+ 		StrDynAdd(&DynS, "250 SIZE\r\n");
++#ifdef WITH_SSL
+ 	if (!iLinkSSL && SvrTestConfigFlag("EnableSMTP-TLS", true, SMTPS.hSvrConfig))
+ 		StrDynAdd(&DynS, "250 STARTTLS\r\n");
++#endif
+ 
+ 	/* Send EHLO response file */
+ 	if (SMTPSendMultilineResponse(hBSock, SMTPS.pSMTPCfg->iTimeout,
+@@ -2291,6 +2309,7 @@
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int SMTPSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SMTPSession *pSMTPS = (SMTPSession *) pPrivate;
+@@ -2302,7 +2321,9 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
++#ifdef WITH_SSL
+ static int SMTPHandleCmd_STARTTLS(char const *pszCommand, BSOCK_HANDLE hBSock, SMTPSession &SMTPS)
+ {
+ 
+@@ -2362,6 +2383,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static char *SMTPExtAuthMacroLkupProc(void *pPrivate, char const *pszName, int iSize)
+ {
+@@ -2931,6 +2953,7 @@
+ 		StrSNCpy(szAuthParam, ppszTokens[2]);
+ 	StrFreeStrings(ppszTokens);
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Check if the client sent an AUTH type that is not allowed in non-TLS
+ 	 * mode.
+@@ -2942,6 +2965,7 @@
+ 		ErrSetErrorCode(ERR_UNKNOWN_SMTP_AUTH);
+ 		return ERR_UNKNOWN_SMTP_AUTH;
+ 	}
++#endif
+ 
+ 	/* Handle authentication methods */
+ 	if (stricmp(szAuthType, "PLAIN") == 0) {
+@@ -3000,9 +3024,11 @@
+ {
+ 	char const *pszSTLS = "";
+ 
++#ifdef WITH_SSL
+ 	if (strcmp(BSckBioName(hBSock), BSSL_BIO_NAME) != 0 &&
+ 	    SvrTestConfigFlag("EnableSMTP-TLS", true, SMTPS.hSvrConfig))
+ 		pszSTLS = " STARTTLS";
++#endif
+ 
+ 	BSckVSendString(hBSock, SMTPS.pSMTPCfg->iTimeout,
+ 			"214-HELO EHLO MAIL RCPT DATA AUTH%s\r\n"
+@@ -3140,8 +3166,10 @@
+ 		iError = SMTPHandleCmd_HELO(pszCommand, hBSock, SMTPS);
+ 	else if (StrCmdMatch(pszCommand, "EHLO"))
+ 		iError = SMTPHandleCmd_EHLO(pszCommand, hBSock, SMTPS);
++#ifdef WITH_SSL
+ 	else if (StrCmdMatch(pszCommand, "STARTTLS"))
+ 		iError = SMTPHandleCmd_STARTTLS(pszCommand, hBSock, SMTPS);
++#endif
+ 	else if (StrCmdMatch(pszCommand, "AUTH"))
+ 		iError = SMTPHandleCmd_AUTH(pszCommand, hBSock, SMTPS);
+ 	else if (StrCmdMatch(pszCommand, "RSET"))
+@@ -3235,6 +3263,7 @@
+ 		return ErrorPop();
+ 	}
+ 
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need to switch to TLS?
+ 	 */
+@@ -3267,6 +3296,7 @@
+ 		SysFree(SslE.pszIssuer);
+ 		SysFree(SslE.pszSubject);
+ 	}
++#endif
+ 
+ 	/* Increase threads count */
+ 	if (SMTPThreadCountAdd(+1, pThCtx->pThCfg->hThShb) < 0) {
+--- SMTPUtils.cpp
++++ SMTPUtils.cpp
+@@ -28,8 +28,10 @@
+ #include "StrUtils.h"
+ #include "SList.h"
+ #include "BuffSock.h"
++#ifdef WITH_SSL
+ #include "SSLBind.h"
+ #include "SSLConfig.h"
++#endif
+ #include "MailConfig.h"
+ #include "UsrUtils.h"
+ #include "UsrAuth.h"
+@@ -161,6 +163,7 @@
+ {
+ 	SMTPGateway *pGw = (SMTPGateway *) pPrivate;
+ 
++#ifdef WITH_SSL
+ 	if (strcmp(pszName, "NeedTLS") == 0) {
+ 		if (pszValue != NULL) {
+ 			int iNeedTLS = atoi(pszValue);
+@@ -172,6 +175,9 @@
+ 				pGw->ulFlags |= SMTP_GWF_FORCE_TLS;
+ 		}
+ 	} else if (strcmp(pszName, "OutBind") == 0) {
++#else
++	if (strcmp(pszName, "OutBind") == 0) {
++#endif
+ 		if (pszValue != NULL) {
+ 			SysFree(pGw->pszIFace);
+ 			pGw->pszIFace = SysStrDup(pszValue);
+@@ -1116,14 +1122,17 @@
+ 
+ 			if (pszLine[4] == ' ' && isdigit(pszLine[5]))
+ 				pSmtpCh->ulMaxMsgSize = (unsigned long) atol(pszLine + 5);
++#ifdef WITH_SSL
+ 		} else if (StrCmdMatch(pszLine, "STARTTLS")) {
+ 			pSmtpCh->ulFlags |= SMTPCH_SUPPORT_TLS;
++#endif
+ 		}
+ 	}
+ 
+ 	return 0;
+ }
+ 
++#ifdef WITH_SSL
+ static int USmtpSslEnvCB(void *pPrivate, int iID, void const *pData)
+ {
+ 	SslBindEnv *pSslE = (SslBindEnv *) pPrivate;
+@@ -1186,6 +1195,7 @@
+ 
+ 	return iError;
+ }
++#endif
+ 
+ static void USmtpCleanEHLO(SmtpChannel *pSmtpCh)
+ {
+@@ -1321,6 +1331,7 @@
+ 			return INVALID_SMTPCH_HANDLE;
+ 		}
+ 	}
++#ifdef WITH_SSL
+ 	/*
+ 	 * Do we need SSL?
+ 	 */
+@@ -1339,6 +1350,7 @@
+ 			goto SendHELO;
+ 		}
+ 	}
++#endif
+ 
+ 	/* Check if We need authentication */
+ 	if (USmtpServerAuthenticate(pSmtpCh, szAddress, pSMTPE) < 0) {
+--- SSLBind.cpp
++++ SSLBind.cpp
+@@ -19,6 +19,7 @@
+  *  Davide Libenzi <davidel@xmailserver.org>
+  *
+  */
++#ifdef WITH_SSL
+ 
+ #include "SysInclude.h"
+ #include "SysDep.h"
+@@ -565,4 +566,5 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+--- SSLConfig.cpp
++++ SSLConfig.cpp
+@@ -19,6 +19,7 @@
+  *  Davide Libenzi <davidel@xmailserver.org>
+  *
+  */
++#ifdef WITH_SSL
+ 
+ #include "SysInclude.h"
+ #include "SysDep.h"
+@@ -91,4 +92,5 @@
+ 	SysFree(pSSLB->pszCAFile);
+ 	SysFree(pSSLB->pszCAPath);
+ }
++#endif
+ 
+--- SSLMisc.cpp
++++ SSLMisc.cpp
+@@ -19,6 +19,7 @@
+  *  Davide Libenzi <davidel@xmailserver.org>
+  *
+  */
++#ifdef WITH_SSL
+ 
+ #include "SysInclude.h"
+ #include "SysDep.h"
+@@ -50,3 +51,5 @@
+ 	return 0;
+ }
+ 
++#endif
++

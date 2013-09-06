@@ -33,3 +33,22 @@
 +#define MACH_TYPE_64BIT long long
 +
 +#endif
+--- Makefile.common
++++ Makefile.common
+@@ -79,7 +79,7 @@
+ $(OUTDIR)/%.o: %.cpp
+ 	${CC} ${CPPFLAGS} ${CFLAGS} -o $(OUTDIR)/$*.o -c $*.cpp
+ 
+-all: ${OUTDIR} ${MKMACHDEPINC} ${MAILSVR} ${CRTLCLNT} ${XMCRYPT} ${MKUSERS} ${SENDMAIL}
++all: ${OUTDIR}                 ${MAILSVR} ${CRTLCLNT} ${XMCRYPT} ${MKUSERS} ${SENDMAIL}
+ 
+ ${OUTDIR}:
+ 	@mkdir ${OUTDIR}
+@@ -115,6 +115,6 @@
+ 
+ clean:
+ 	rm -f .depend a.out core ${MAILSVR} ${CRTLCLNT} ${XMCRYPT} ${MKUSERS} ${SENDMAIL}
+-	rm -f *.o *~ ${MKMACHDEPINC} ${MKMACHDEP}
++	rm -f *.o *~
+ 	rm -rf ${OUTDIR}
+ 
