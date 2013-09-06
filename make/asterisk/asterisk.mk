@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 11.5.0)
+$(call PKG_INIT_BIN, 11.5.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=ef6629cb8716bf6fa2d1f267f7c2a44882fca46
+$(PKG)_SOURCE_SHA1:=fd2d568dbb6d75be17b141466ee3e276d4910e23
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
 $(PKG)_CONFIG_DIR:=/mod/etc/asterisk

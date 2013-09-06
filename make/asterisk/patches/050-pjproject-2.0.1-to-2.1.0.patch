@@ -1,7 +1,7 @@
 --- res/res_rtp_asterisk.c
 +++ res/res_rtp_asterisk.c
-@@ -1778,7 +1778,7 @@
- 	ast_rtp_instance_set_data(instance, rtp);
+@@ -1802,7 +1802,7 @@
+ 	passwd = pj_str(rtp->local_passwd);
  
  	/* Create an ICE session for ICE negotiation */
 -	if (icesupport && pj_ice_sess_create(&stun_config, NULL, PJ_ICE_SESS_ROLE_UNKNOWN, 2, &ast_rtp_ice_sess_cb, &ufrag, &passwd, &rtp->ice) == PJ_SUCCESS) {

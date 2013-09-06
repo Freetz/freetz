@@ -1,6 +1,6 @@
 --- res/Makefile
 +++ res/Makefile
-@@ -67,26 +67,20 @@
+@@ -67,29 +67,21 @@
  ael/pval.o: ael/pval.c
  
  clean::
@@ -27,11 +27,15 @@
 -$(PJ_LIB_FILES): FORCE
 -	$(MAKE) -C $(patsubst %/lib/,%,$(dir $@))/build/ ../lib/$(notdir $@)
 -
+-ifeq ($(subst 1:0,1,$(UUID)), 1)
 -res_rtp_asterisk.o: $(PJ_LIB_FILES)
++res_rtp_asterisk.o: _ASTCFLAGS+=$(filter-out -I%,$(PJ_CFLAGS))
+ res_rtp_asterisk.o: _ASTCFLAGS+=-DUSE_PJPROJECT
 -res_rtp_asterisk.o: _ASTCFLAGS+=$(PJ_CFLAGS)
 -res_rtp_asterisk.so: _ASTLDFLAGS+=$(PJ_LDFLAGS)
 -res_rtp_asterisk.so: LIBS+=$(PJ_LDLIBS)
-+res_rtp_asterisk.o: _ASTCFLAGS+=$(filter-out -I%,$(PJ_CFLAGS))
+-endif
+\ No newline at end of file
 +res_rtp_asterisk.so: _ASTLDFLAGS+=$(filter-out -L%,$(PJ_LDFLAGS))
 +res_rtp_asterisk.so: LIBS+=-Wl,--as-needed $(PJ_LDLIBS) -Wl,--no-as-needed
 --- res/res_rtp_asterisk.c
@@ -40,12 +44,12 @@
   */
  
  /*** MODULEINFO
--	<depend>uuid</depend>
+-	<use type="external">uuid</use>
  	<support_level>core</support_level>
   ***/
  
-@@ -49,11 +48,13 @@
- 
+@@ -50,11 +49,13 @@
+ #ifdef USE_PJPROJECT
  /* Asterisk discourages the use of bzero in favor of memset, in fact if you try to use bzero it will tell you to use memset. As a result bzero has to be undefined
   * here since it is used internally by pjlib. The only other option would be to modify pjlib... which won't happen. */
 +#if 0 /* disable this ugly hack as it doesn't work with uClibc, we use a patched version of pjlib */
@@ -58,6 +62,6 @@
 +#include <pjlib.h>
 +#include <pjlib-util.h>
 +#include <pjnath.h>
+ #endif
  
  #include "asterisk/stun.h"
- #include "asterisk/pbx.h"
