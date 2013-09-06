@@ -60,6 +60,6 @@ $(pkg)-clean:
 	$(RM) $(XMAIL_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(XMAIL_TARGET_BINARY)
+	$(RM) $(XMAIL_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
