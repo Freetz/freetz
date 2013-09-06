@@ -1,6 +1,8 @@
 config FREETZ_PACKAGE_XMAIL
 	bool "XMail 1.27"
-	select FREETZ_LIB_STDCXXLIB if ! FREETZ_PACKAGE_XMAIL_STATIC
+	select FREETZ_LIB_STDCXXLIB  if !FREETZ_PACKAGE_XMAIL_STATIC
+	select FREETZ_LIB_libdl      if !FREETZ_PACKAGE_XMAIL_STATIC
+	select FREETZ_LIB_libpthread if !FREETZ_PACKAGE_XMAIL_STATIC
 	default n
 	help
 		XMail is an Internet and Intranet mail server featuring an SMTP server,
@@ -16,8 +18,8 @@ config FREETZ_PACKAGE_XMAIL
 config FREETZ_PACKAGE_XMAIL_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_XMAIL
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_XMAIL_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_XMAIL_STATIC
+	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_XMAIL_STATIC
+	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_XMAIL_STATIC
 	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_XMAIL_STATIC
 	default n
 	help
