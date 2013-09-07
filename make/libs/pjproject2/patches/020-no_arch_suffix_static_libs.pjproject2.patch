@@ -3,7 +3,7 @@ Note: this patch alone is not enough. The following sed-statements should be exe
  sed -i -r -e 's,-([$][(]LIB_SUFFIX[)]),\1,g' $(grep -rl -e "-[$][(]LIB_SUFFIX[)]" .)
 --- build.mak.in
 +++ build.mak.in
-@@ -8,13 +8,15 @@
+@@ -8,6 +8,8 @@
  export HOST_NAME := unix
  export CC_NAME := gcc
  export TARGET_NAME := @target@
@@ -12,8 +12,9 @@ Note: this patch alone is not enough. The following sed-statements should be exe
  export CROSS_COMPILE := @ac_cross_compile@
  export LINUX_POLL := @ac_linux_poll@ 
  export SHLIB_SUFFIX := @ac_shlib_suffix@
- 
- export ac_prefix := @prefix@
+@@ -17,7 +19,7 @@
+ export includedir := @includedir@
+ export libdir := @libdir@
  
 -LIB_SUFFIX = $(TARGET_NAME).a
 +LIB_SUFFIX = $(TARGET_SUFFIX).a
