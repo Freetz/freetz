@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 3.0.16)
+$(call PKG_INIT_BIN, 3.0.22)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=27aca18aeb8bb0851ccaeb47e7416a6e
+$(PKG)_SOURCE_MD5:=301f01ca8a734011c0257134bcf475c8
 $(PKG)_SITE:=http://www.daniel-baumann.ch/files/software/dosfstools
 
-$(PKG)_BINARIES_ALL := dosfsck dosfslabel mkdosfs
+$(PKG)_BINARIES_ALL := fsck.fat fatlabel mkfs.fat
 $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)

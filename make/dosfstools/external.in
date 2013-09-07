@@ -8,29 +8,29 @@ config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS
 menu dosfstools
 	depends on EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS
 
-config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_dosfsck
-	boolean "dosfsck"
-	depends on FREETZ_PACKAGE_DOSFSTOOLS_DOSFSCK
+config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_fsck_fat
+	boolean "fsck.fat"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS_fsck_fat
 	default n
 	help
-		external these file
-			/usr/sbin/dosfsck
-			(use at your own risk, dosfsck is needed to check an uncleanly umounted filesystem)
+		externals the following file(s):
+		 /usr/sbin/fsck.fat
+		 (use at your own risk, fsck.fat is needed to check an uncleanly umounted filesystem)
 
-config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_dosfslabel
-	boolean "dosfslabel"
-	depends on FREETZ_PACKAGE_DOSFSTOOLS_DOSFSLABEL
+config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_fatlabel
+	boolean "fatlabel"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS_fatlabel
 	default n
 	help
 		externals the following file(s)
-			/usr/sbin/dosfslabel
+		 /usr/sbin/fatlabel
 
-config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_mkdosfs
-	boolean "mkdosfs"
-	depends on FREETZ_PACKAGE_DOSFSTOOLS_MKDOSFS
+config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_mkfs_fat
+	boolean "mkfs.fat"
+	depends on FREETZ_PACKAGE_DOSFSTOOLS_mkfs_fat
 	default n
 	help
 		externals the following file(s)
-			/usr/sbin/mkdosfs
+		 /usr/sbin/mkfs.fat
 
 endmenu
