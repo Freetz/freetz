@@ -1,0 +1,152 @@
+--- src/boot.c
++++ src/boot.c
+@@ -36,6 +36,7 @@
+ #include "io.h"
+ #include "boot.h"
+ #include "check.h"
++#include "conversion.h"
+ 
+ #define ROUND_TO_MULTIPLE(n,m) ((n) && (m) ? (n)+(m)-1-((n)-1)%(m) : 0)
+     /* don't divide by zero */
+--- src/check.c
++++ src/check.c
+@@ -37,6 +37,7 @@
+ #include "file.h"
+ #include "lfn.h"
+ #include "check.h"
++#include "conversion.h"
+ 
+ static DOS_FILE *root;
+ 
+--- src/fat.c
++++ src/fat.c
+@@ -34,6 +34,7 @@
+ #include "io.h"
+ #include "check.h"
+ #include "fat.h"
++#include "conversion.h"
+ 
+ /**
+  * Fetch the FAT entry for a specified cluster.
+--- src/lfn.c
++++ src/lfn.c
+@@ -31,6 +31,7 @@
+ #include "fsck.fat.h"
+ #include "lfn.h"
+ #include "file.h"
++#include "conversion.h"
+ 
+ typedef struct {
+     __u8 id;			/* sequence number for slot */
+--- src/mkfs.fat.c
++++ src/mkfs.fat.c
+@@ -69,6 +69,8 @@
+ 
+ #include <asm/types.h>
+ 
++#include "conversion.h"
++
+ /* In earlier versions, an own llseek() was used, but glibc lseek() is
+  * sufficient (or even better :) for 64 bit offsets in the meantime */
+ #define llseek lseek
+--- src/conversion.h
++++ src/conversion.h
+@@ -0,0 +1,98 @@
++#ifndef _CONVERSION_H
++#define _CONVERSION_H
++
++
++#ifdef _BSD_SOURCE
++
++# include <endian.h>
++# include <byteswap.h>
++
++# if __BYTE_ORDER == __LITTLE_ENDIAN
++
++#  ifndef htobe16
++#   define htobe16(x) __bswap_16 (x)
++#  endif
++#  ifndef htole16
++#   define htole16(x) (x)
++#  endif
++#  ifndef be16toh
++#   define be16toh(x) __bswap_16 (x)
++#  endif
++#  ifndef le16toh
++#   define le16toh(x) (x)
++#  endif
++
++#  ifndef htobe32
++#   define htobe32(x) __bswap_32 (x)
++#  endif
++#  ifndef htole32
++#   define htole32(x) (x)
++#  endif
++#  ifndef be32toh
++#   define be32toh(x) __bswap_32 (x)
++#  endif
++#  ifndef le32toh
++#   define le32toh(x) (x)
++#  endif
++
++#  ifndef htobe64
++#   define htobe64(x) __bswap_64 (x)
++#  endif
++#  ifndef htole64
++#   define htole64(x) (x)
++#  endif
++#  ifndef be64toh
++#   define be64toh(x) __bswap_64 (x)
++#  endif
++#  ifndef le64toh
++#   define le64toh(x) (x)
++#  endif
++
++# elif __BYTE_ORDER == __BIG_ENDIAN
++
++#  ifndef htobe16
++#   define htobe16(x) (x)
++#  endif
++#  ifndef htole16
++#   define htole16(x) __bswap_16 (x)
++#  endif
++#  ifndef be16toh
++#   define be16toh(x) (x)
++#  endif
++#  ifndef le16toh
++#   define le16toh(x) __bswap_16 (x)
++#  endif
++
++#  ifndef htobe32
++#   define htobe32(x) (x)
++#  endif
++#  ifndef htole32
++#   define htole32(x) __bswap_32 (x)
++#  endif
++#  ifndef be32toh
++#   define be32toh(x) (x)
++#  endif
++#  ifndef le32toh
++#   define le32toh(x) __bswap_32 (x)
++#  endif
++
++#  ifndef htobe64
++#   define htobe64(x) (x)
++#  endif
++#  ifndef htole64
++#   define htole64(x) __bswap_64 (x)
++#  endif
++#  ifndef be64toh
++#   define be64toh(x) (x)
++#  endif
++#  ifndef le64toh
++#   define le64toh(x) __bswap_64 (x)
++#  endif
++
++# else
++#  error unsupported byte order!
++# endif
++
++#endif
++
++#endif
