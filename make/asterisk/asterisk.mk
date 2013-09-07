@@ -172,7 +172,7 @@ $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	touch $@
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
-	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) \
+	$(SUBMAKE1) $(ASTERISK_MAKE_OPTIONS) \
 		DESTDIR="$(ASTERISK_INSTALL_DIR_ABSOLUTE)" \
 		install samples
 # 3rd-party modules may redefine PACKAGE_* variables, wrap asterisk variables with #ifndef to avoid warnings
