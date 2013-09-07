@@ -172,7 +172,7 @@ $(strip \
 	$(foreach suboption, $(1), \
 		$(if \
 			$(or \
-				$(FREETZ_$(3)_$(if $(2),$(2)_,)$(subst -,_,$(suboption))), \
+				$(FREETZ_$(3)_$(if $(2),$(2)_,)$(call LEGAL_VARNAME,$(suboption))), \
 				$(FREETZ_$(3)_$(if $(2),$(2)_,)$(call TOUPPER_NAME,$(suboption))) \
 			), \
 			$(suboption) \

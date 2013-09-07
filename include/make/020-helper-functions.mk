@@ -59,14 +59,19 @@ SUBST_MAP = $(strip		\
 	$(__tmp))
 SUBST_MAP_TOLOWER := A:a B:b C:c D:d E:e F:f G:g H:h I:i J:j K:k L:l M:m N:n O:o P:p Q:q R:r S:s T:t U:u V:v W:w X:x Y:y Z:z
 SUBST_MAP_TOUPPER := a:A b:B c:C d:D e:E f:F g:G h:H i:I j:J k:K l:L m:M n:N o:O p:P q:Q r:R s:S t:T u:U v:V w:W x:X y:Y z:Z
-SUBST_MAP_NAME := -:_
-SUBST_MAP_TOUPPER_NAME := $(SUBST_MAP_TOUPPER) $(SUBST_MAP_NAME)
-SUBST_MAP_TOLOWER_NAME := $(SUBST_MAP_TOLOWER) $(SUBST_MAP_NAME)
+SUBST_MAP_LEGAL_VARNAME := -:_ .:_
+SUBST_MAP_TOUPPER_NAME := $(SUBST_MAP_TOUPPER) $(SUBST_MAP_LEGAL_VARNAME)
+SUBST_MAP_TOLOWER_NAME := $(SUBST_MAP_TOLOWER) $(SUBST_MAP_LEGAL_VARNAME)
 
 # TOUPPER_NAME
-# Convert letters to uppercase, minus to underline
+# Converts lower-case letters to upper-case, all characters which cannot be used in identifiers to underscore
 #   $1 = string to convert
 TOUPPER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOUPPER_NAME))
+
+# LEGAL_VARNAME
+# Converts all characters which cannot be used in identifiers to underscore
+#   $1 = string to convert
+LEGAL_VARNAME = $(call SUBST_MAP,$1,$(SUBST_MAP_LEGAL_VARNAME))
 
 #
 # $1 - git repository
