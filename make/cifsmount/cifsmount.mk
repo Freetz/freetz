@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 5.8)
+$(call PKG_INIT_BIN, 6.1)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/cifs-utils-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=6aa9c4347780872fefe5823ac06a8ff3
+$(PKG)_SOURCE_MD5:=f83ef48ab1154aa74dd4cf1c1202bf04
 $(PKG)_SITE:=http://ftp.samba.org/pub/linux-cifs/cifs-utils
 
 $(PKG)_STARTLEVEL=50
