@@ -1,0 +1,24 @@
+Fixes for platforms without at funcs and without ACL support
+
+--- etc/afpd/filedir.c
++++ etc/afpd/filedir.c
+@@ -372,7 +372,7 @@
+ #ifdef HAVE_ATFUNCS
+         opened = of_findnameat(sdir_fd, &path);
+ #else
+-        opened = of_findname(&path);
++        opened = of_findname(vol, &path);
+ #endif /* HAVE_ATFUNCS */
+ 
+         if (opened) {
+--- include/atalk/acl.h
++++ include/atalk/acl.h
+@@ -53,7 +53,7 @@
+ 
+ #else /* HAVE_ACLS=no */
+ 
+-#define O_NETATALK_ACL
++#define O_NETATALK_ACL 0
+ #define chmod_acl chmod
+ 
+ #endif /* HAVE_ACLS */
