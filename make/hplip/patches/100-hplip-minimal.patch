@@ -1,5 +1,5 @@
---- configure.in	2012-08-29 11:45:44+02:00
-+++ configure.in	2012-08-29 11:45:44+02:00
+--- configure.in
++++ configure.in
 @@ -37,15 +37,13 @@
  AC_PROG_INSTALL
  AC_PROG_LIBTOOL
@@ -20,14 +20,14 @@
 @@ -517,8 +515,6 @@
  fi
  
- if test "$hpijs_only_build" = "no"; then
+ if test "$hpijs_only_build" = "no" && test "$hpcups_only_build" = "no"; then
 -   AC_CHECK_LIB([cups], [cupsDoFileRequest], [LIBS="$LIBS"], [AC_MSG_ERROR([cannot find libcups support], 9)])
 -   AC_CHECK_HEADERS(cups/cups.h, ,[AC_MSG_ERROR([cannot find cups-devel support], 3)])
     if test "$libusb01_build" = "yes"; then
        AC_CHECK_LIB([usb], [usb_init], [LIBS="$LIBS"], [AC_MSG_ERROR([cannot find libusb support], 2)])
        AC_CHECK_HEADERS(usb.h, ,[AC_MSG_ERROR([cannot find libusb-devel support], 11)])
---- hplip.conf.in	2012-08-29 11:45:44+02:00
-+++ hplip.conf.in	2012-08-29 11:45:44+02:00
+--- hplip.conf.in
++++ hplip.conf.in
 @@ -5,14 +5,6 @@
  
  [dirs]
@@ -40,11 +40,11 @@
 -cupsbackend=@cupsbackenddir@
 -cupsfilter=@cupsfilterdir@
 -drv=@abs_drvdir@
+ bin=/usr/bin
  
  # Following values are determined at configure time and cannot be changed.
- [configure]
---- scan/sane/hpaio.c	2012-08-29 11:45:44+02:00
-+++ scan/sane/hpaio.c	2012-08-29 11:45:44+02:00
+--- scan/sane/hpaio.c
++++ scan/sane/hpaio.c
 @@ -34,7 +34,6 @@
  #include <stdio.h>
  #include <stdlib.h>
@@ -53,7 +53,55 @@
  #include "hpmud.h"
  #include "hpip.h"
  #include "soap.h"
-@@ -131,97 +130,6 @@
+@@ -47,47 +46,6 @@
+ #define DEBUG_DECLARE_ONLY
+ #include "sanei_debug.h"
+ 
+-#if (CUPS_VERSION_MAJOR > 1) || (CUPS_VERSION_MINOR > 5)
+-#define HAVE_CUPS_1_6 1
+-#endif
+-
+-#ifndef HAVE_CUPS_1_6
+-#define ippGetGroupTag(attr)  attr->group_tag
+-#define ippGetValueTag(attr)  attr->value_tag
+-#define ippGetName(attr)      attr->name
+-#define ippGetString(attr, element, language) attr->values[element].string.text
+-
+-static ipp_attribute_t * ippFirstAttribute( ipp_t *ipp )
+-{
+-    if (!ipp)
+-        return (NULL);
+-    return (ipp->current = ipp->attrs);
+-}
+-
+-static ipp_attribute_t * ippNextAttribute( ipp_t *ipp )
+-{
+-    if (!ipp || !ipp->current)
+-        return (NULL);
+-    return (ipp->current = ipp->current->next);
+-}
+-
+-static int ippSetOperation( ipp_t *ipp, ipp_op_t op )
+-{
+-    if (!ipp)
+-        return (0);
+-    ipp->request.op.operation_id = op;
+-    return (1);
+-}
+-
+-static int ippSetRequestId( ipp_t *ipp, int request_id )
+-{
+-    if (!ipp)
+-        return (0);
+-    ipp->request.any.request_id = request_id;
+-    return (1);
+-}
+-#endif
+-
+ static SANE_Device **DeviceList = NULL;
+ 
+ static int AddDeviceList(char *uri, char *model, SANE_Device ***pd)
+@@ -172,98 +130,6 @@
     return i;
  }
  
@@ -112,8 +160,8 @@
 -   /* Assemble the IPP request */
 -   request = ippNew();
 -
--   request->request.op.operation_id = CUPS_GET_PRINTERS;
--   request->request.any.request_id  = 1;
+-   ippSetOperation( request, CUPS_GET_PRINTERS );
+-   ippSetRequestId( request, 1 );
 -
 -   ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_CHARSET, "attributes-charset", NULL, "utf-8");
 -   ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_LANGUAGE, "attributes-natural-language", NULL, "en");
@@ -123,20 +171,20 @@
 -   if ((response = cupsDoRequest(http, request, "/")) == NULL)
 -      goto bugout;
 -
--   for (attr = response->attrs; attr != NULL; attr = attr->next)
+-   for (attr = ippFirstAttribute ( response ); attr != NULL; attr = ippNextAttribute( response ))
 -   {
 -      /* Skip leading attributes until we hit a printer. */
--      while (attr != NULL && attr->group_tag != IPP_TAG_PRINTER)
--         attr = attr->next;
+-      while (attr != NULL && ippGetGroupTag( attr ) != IPP_TAG_PRINTER)
+-         attr = ippNextAttribute( response );
 -
 -      if (attr == NULL)
 -         break;
 -
--      while (attr != NULL && attr->group_tag == IPP_TAG_PRINTER)
+-      while (attr != NULL && ippGetGroupTag( attr ) == IPP_TAG_PRINTER)
 -      {
--         if (strcmp(attr->name, "device-uri") == 0 && attr->value_tag == IPP_TAG_URI && AddCupsList(attr->values[0].string.text, printer) == 0)
+-         if (strcmp(ippGetName( attr ), "device-uri") == 0 && ippGetValueTag( attr ) == IPP_TAG_URI && AddCupsList(ippGetString( attr, 0, NULL ), printer) == 0)
 -            cnt++;
--         attr = attr->next;
+-         attr = ippNextAttribute( response );
 -      }
 -
 -      if (attr == NULL)
@@ -148,18 +196,19 @@
 - bugout:
 -   return cnt;
 -}
- 
+-
  static int DevDiscovery(int localOnly)
  {
-@@ -231,7 +139,6 @@
+    struct hpmud_model_attributes ma;
+@@ -272,7 +138,6 @@
     char model[HPMUD_LINE_SIZE];
     char *tail;
-    int i, scan_type, cnt=0, total=0, bytes_read;  
+    int i, scan_type, cnt=0, total=0, bytes_read;
 -   char **cups_printer=NULL;     /* list of printers */
     enum HPMUD_RESULT stat;
  
     stat = hpmud_probe_devices(HPMUD_BUS_ALL, message, sizeof(message), &cnt, &bytes_read);
-@@ -258,26 +165,6 @@
+@@ -299,26 +164,6 @@
        }
     }
  
@@ -186,9 +235,9 @@
  bugout:
     return total;
  }
---- Makefile.am	2012-08-29 11:45:44+02:00
-+++ Makefile.am	2012-08-29 11:45:44+02:00
-@@ -8,10 +8,6 @@
+--- Makefile.am
++++ Makefile.am
+@@ -9,10 +9,6 @@
  
  hplipdir = $(datadir)/hplip
  
@@ -199,7 +248,7 @@
  dist_noinst_SCRIPTS =
  dist_noinst_DATA =
  noinst_PROGRAMS =
-@@ -33,14 +29,6 @@
+@@ -34,14 +30,6 @@
  
  if HPLIP_BUILD
  
@@ -214,7 +263,7 @@
  # hpaio sane backend
  if SCAN_BUILD
  libsane_hpaiodir = $(libdir)/sane
-@@ -57,7 +45,7 @@
+@@ -58,7 +46,7 @@
  libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
  endif
  # The following is a interlibrary dependency that must be compiled first.
@@ -223,7 +272,7 @@
  #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
  libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS)
  endif # SCAN_BUILD
-@@ -99,50 +87,10 @@
+@@ -102,40 +90,10 @@
  	ip/xbi2gray.c ip/xcolrspc.c ip/xfakemono.c ip/xgray2bi.c ip/xinvert.c ip/xjpg_enc.c ip/xmatrix.c ip/xpnm.c ip/xscale.c ip/xthumb.c ip/xyxtract.c \
  	ip/hpip.h ip/ipdefs.h ip/xform.h ip/xjpg_dct.h ip/xjpg_huf.h ip/xjpg_mrk.h
  
@@ -234,27 +283,18 @@
 -hp_mkuri_LDADD = -ldl libhpmud.la
 -hp_mkuri_CFLAGS = -DCONFDIR=\"$(hplip_confdir)\"
 -
+-#hpmud rules data dir
+-rulessystemdir=/usr/lib/systemd/system
+-dist_rulessystem_DATA =data/rules/hplip-printer@.service
+-
 -# hpmud.rules
 -rulesdir = /etc/udev/rules.d
 -if UDEV_SYSFS_RULES
--dist_rules_DATA = data/rules/56-hpmud_support_sysfs.rules
--dist_rules_DATA += data/rules/86-hpmud_plugin_sysfs.rules
--dist_rules_DATA += data/rules/56-hpmud_add_printer_sysfs.rules
--if UDEV_ACL_RULES
--dist_rules_DATA += data/rules/40-hplip_sysfs.rules
+-dist_rules_DATA = data/rules/56-hpmud_sysfs.rules
 -else
--dist_rules_DATA += data/rules/55-hpmud_sysfs.rules
+-dist_rules_DATA = data/rules/56-hpmud.rules
 -endif
--else
--dist_rules_DATA = data/rules/56-hpmud_support.rules
--dist_rules_DATA += data/rules/86-hpmud_plugin.rules
--dist_rules_DATA += data/rules/56-hpmud_add_printer.rules
--if UDEV_ACL_RULES
--dist_rules_DATA += data/rules/40-hplip.rules
--else
--dist_rules_DATA += data/rules/55-hpmud.rules
--endif
--endif
+-
 -halpredir = /usr/share/hal/fdi/preprobe/10osvendor
 -dist_halpre_DATA = data/rules/20-hplip-devices.fdi
 -
@@ -269,13 +309,12 @@
 -
 -# hplip.state
 -hplip_statedir = /var/lib/hp
--dist_hplip_state_DATA = 
--#dist_hplip_state_DATA = hplip.state
+-dist_hplip_state_DATA =
 -
  # Log Files
  hplip_Logdir=/var/log/hp
- 
-@@ -367,13 +315,6 @@
+ hplip_tmpdir=/var/log/hp/tmp
+@@ -363,13 +321,6 @@
  dist_policykit_policy_DATA = data/policykit/com.hp.hplip.policy
  endif
  
@@ -286,10 +325,10 @@
 -hppgsz_CFLAGS = $(libapdk_la_CFLAGS)
 -hppgsz_LDADD = libapdk.la -ljpeg -ldl
 -
+ if GUI_BUILD
  # hplip.desktop
  hplip_desktopdir = $(icondir)
- hplip_desktop_DATA = hplip.desktop
-@@ -406,45 +347,6 @@
+@@ -404,46 +355,6 @@
  dist_rip_SCRIPTS = prnt/hpijs/foomatic-rip-hplip
  endif
  
@@ -323,7 +362,8 @@
 -	prnt/hpijs/ljjetready.cpp prnt/hpijs/ljjetready.h prnt/hpijs/jdatadbf.c prnt/hpijs/jccolor.c prnt/hpijs/ljfastraster.cpp prnt/hpijs/ljfastraster.h \
 -	prnt/hpijs/jinclude.h prnt/hpijs/jpegint.h prnt/hpijs/dj55xx.h prnt/hpijs/hpijsfax.h prnt/hpijs/ojprokx50.h \
 -	prnt/hpijs/ljzjs.cpp prnt/hpijs/ljzjs.h prnt/hpijs/ljzjsmono.cpp prnt/hpijs/ljm1005.cpp prnt/hpijs/ljm1005.h \
--	prnt/hpijs/ljzjsmono.h prnt/hpijs/hpjbig_wrapper.h prnt/hpijs/quickconnect.cpp prnt/hpijs/quickconnect.h prnt/hpijs/ljp1xxx.h prnt/hpijs/ljzjscolor.cpp prnt/hpijs/ljzjscolor.h
+-	prnt/hpijs/ljzjsmono.h prnt/hpijs/hpjbig_wrapper.h prnt/hpijs/quickconnect.cpp prnt/hpijs/quickconnect.h prnt/hpijs/ljp1xxx.h prnt/hpijs/ljzjscolor.cpp prnt/hpijs/ljzjscolor.h \
+-	common/utils.c common/utils.h
 -libapdk_la_CXXFLAGS = -DAPDK_DJ660 -DAPDK_DJ6xx -DAPDK_DJ6xxPhoto -DAPDK_DJ8xx -DAPDK_DJ9xx -DAPDK_DJ9xxVIP -DAPDK_DJ630 \
 -	-DAPDK_APOLLO2XXX -DAPDK_APOLLO21XX -DAPDK_APOLLO2560 -DAPDK_DJ600 -DAPDK_DJ350 -DAPDK_DJ8x5 -DAPDK_PSP100 -DAPDK_AUTODUPLEX \
 -	-DAPDK_HIGH_RES_MODES -DAPDK_LJMONO -DAPDK_DJ540 -DAPDK_DJ850 -DAPDK_DJ890 -DAPDK_DJ3320 -DAPDK_LJCOLOR -DAPDK_DJGENERICVIP \
@@ -335,7 +375,7 @@
  if HPIJS_INSTALL
  # hpijs
  bin_PROGRAMS = hpijs
-@@ -522,49 +424,8 @@
+@@ -524,62 +435,8 @@
  endif # HPCUPS ONLY
  endif # HPCUPS_INSTALL
  
@@ -357,16 +397,29 @@
 -cupsdrv2_DATA = $(cups_drv)
 -endif
 -
+-
 -install-dist_hplip_LogDATA:
 -if FULL_BUILD
 -	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
 -	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
--	chmod 774 $(DESTDIR)$(hplip_Logdir)
+-	chmod 775 $(DESTDIR)$(hplip_Logdir)
 -endif	#FULL_BUILD
 -if HPLIP_BUILD
 -	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
 -	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
--	chmod 774 $(DESTDIR)$(hplip_Logdir)
+-	chmod 775 $(DESTDIR)$(hplip_Logdir)
+-endif	#FULL_BUILD
+-
+-install-dist_hplip_tmpDATA:
+-if FULL_BUILD
+-	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
+-	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
+-	chmod 0775 $(DESTDIR)$(hplip_tmpdir)
+-endif	#FULL_BUILD
+-if HPLIP_BUILD
+-	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
+-	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
+-	chmod 0775 $(DESTDIR)$(hplip_tmpdir)
 -endif	#FULL_BUILD
 -
  install-data-hook:
