@@ -83,3 +83,20 @@ LEGAL_VARNAME = $(call SUBST_MAP,$1,$(SUBST_MAP_LEGAL_VARNAME))
 define git-get-latest-revision
 $(shell rev=$$(git ls-remote --heads $(strip $(1)) $(if $(strip $(2)),$(strip $(2)),master) | sed -rn -e 's,^([0-9a-f]{10})[0-9a-f]{30}.*,\1,p'); echo "$${rev:-FAILED_TO_DETERMINE_LATEST_REVISION}")
 endef
+
+#
+# $1 - menuconfig file
+# $2 - (optional) dir name, if omitted "make" is used
+#
+define genin-get-considered-packages
+$(shell cat $1 2>/dev/null | sed -r -n -e 's,^[ \t]*source[ \t]+$(if $(strip $(2)),$(strip $(2)),make)/([^/]+)/(Config|external)[.]in(.libs)?.*,\1,p' | sort -u)
+endef
+
+#
+# $1 - dir
+# $2 - name of the file to look for
+# $3 - (optional) subdirs to exclude
+#
+define get-subdirs-containing
+$(shell find $(strip $(1)) -maxdepth 2 -name "$(strip $(2))" -printf "%h\n" $(if $(strip $(3)),| grep -v -E "$(strip $(1))/$(subst $(_space),|,$(strip $(3)))") | sed -r -e 's,^$(strip $(1))/,,' | sort -u)
+endef

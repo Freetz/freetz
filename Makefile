@@ -139,15 +139,13 @@ ifeq ($(shell gcc --version | grep -q "gcc (SUSE Linux) 4.5.0 20100604" && echo 
 $(error gcc (SUSE Linux) 4.5.0 has known bugs. Please install and use a different version)
 endif
 
-# genin: generate .in files
+# genin: (re)generate .in files if necessary
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
-ifneq ($(shell \
-	[ -e make/Config.in.generated -a -e make/external.in.generated ] || \
-	$(GENERATE_IN_TOOL) \
-	>&2 \
-	&& echo OK\
-),OK)
+# Note: the list of the packages to be treated specially (the 3rd argument of get-subdirs-containing) should match that used in genin
+ifneq ($(call genin-get-considered-packages,make/Config.in.generated),$(call get-subdirs-containing,make,Config.in,libs busybox asterisk[-].* python[-].* iptables-cgi ruby-fcgi nhipt sg3_utils))
+ifneq ($(shell $(GENERATE_IN_TOOL) >&2 && echo OK),OK)
 $(error genin failed)
+endif
 endif
 endif
 
