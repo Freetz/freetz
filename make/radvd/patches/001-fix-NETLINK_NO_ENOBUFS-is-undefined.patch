@@ -1,0 +1,73 @@
+From 31cf41f50dddca5d06f07450647de1debab44eb5 Mon Sep 17 00:00:00 2001
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Sun, 28 Jul 2013 12:34:39 +0200
+Subject: [PATCH] netlink.c: Fix build failure when NETLINK_NO_ENOBUFS is not
+ defined
+
+My build with radvd-1.9.3 and the Freetz build-system breaks with a
+Linux-kernel v2.6.13.1 like this:
+
+netlink.c: In function 'netlink_socket':
+netlink.c:84:41: error: 'NETLINK_NO_ENOBUFS' undeclared (first use in
+this function)
+netlink.c:84:41: note: each undeclared identifier is reported only
+once for each function it appears in
+make[2]: *** [netlink.o] Error 1
+
+This is obvious as my kernel-sources have no "NETLINK_NO_ENOBUFS" definition
+in "include/linux/netlink.h".
+
+The culprit is the else-if line here:
+
+[ netlink.c ]
+
+int netlink_socket(void)
+{
+...
+        if (sock == -1) {
+                flog(LOG_ERR, "Unable to open netlink socket: %s", strerror(errno));
+        }
+        else if (setsockopt(sock, SOL_NETLINK, NETLINK_NO_ENOBUFS, &val, sizeof(val)) < 0 ) {
+                flog(LOG_ERR, "Unable to setsockopt NETLINK_NO_ENOBUFS: %s", strerror(errno));
+        }
+...
+
+The NETLINK_NO_ENOBUFS socket flag was first introduced with Linux-kernel
+v2.6.29-rc7:
+
+   commit 38938bfe3489394e2eed5e40c9bb8f66a2ce1405
+   "netlink: add NETLINK_NO_ENOBUFS socket flag"
+
+The issue in radvd was introduced with:
+
+   commit de9a8849258b2a6a125d686dcb9c424affad354d
+   "setsockopt NETLINK_NO_ENOBUFS"
+
+I have added extra checks for SOL_NETLINK and NETLINK_NO_ENOBUFS definitions
+which fixes the issue for me.
+
+NOTE: Compile-tested only!
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ netlink.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git netlink.c netlink.c
+index a37ccad..d405731 100644
+--- netlink.c
++++ netlink.c
+@@ -81,9 +81,11 @@ int netlink_socket(void)
+ 	if (sock == -1) {
+ 		flog(LOG_ERR, "Unable to open netlink socket: %s", strerror(errno));
+ 	}
++#if defined SOL_NETLINK && defined NETLINK_NO_ENOBUFS
+ 	else if (setsockopt(sock, SOL_NETLINK, NETLINK_NO_ENOBUFS, &val, sizeof(val)) < 0 ) {
+ 		flog(LOG_ERR, "Unable to setsockopt NETLINK_NO_ENOBUFS: %s", strerror(errno));
+ 	}
++#endif
+ 
+ 	memset(&snl, 0, sizeof(snl));
+ 	snl.nl_family = AF_NETLINK;
+-- 
+1.8.3.4
+
