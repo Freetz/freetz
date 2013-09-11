@@ -83,7 +83,8 @@ cat << EOF
 <input type="hidden" name="offline" value="0">
 <input id="a3" type="checkbox" name="offline" value="1"$offline_chk><label for="a3"> $(lang de:"Offline-Host" en:"Offline-Host")</label>
 </p>
+<p>$(lang de:"E-Mail-Server Timeout" en:"E-mail server timeout"): <input type="text" name="email_timeout" size="4" maxlength="5" value="$(html "$OPENDD_EMAIL_TIMEOUT")"></p>
+<p>$(lang de:"E-Mail-Server max. Versuche" en:"E-mail server max. retry"): <input type="text" name="email_retry" size="4" maxlength="3" value="$(html "$OPENDD_EMAIL_RETRY")"></p>
 EOF
 sec_end
-
 

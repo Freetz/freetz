@@ -45,5 +45,7 @@ smtpserverport = $OPENDD_EMAIL_PORT
 smtpauthuser = $OPENDD_EMAIL_USER
 smtpauthpwd = $OPENDD_EMAIL_PASS
 EOF
+[ -n "$OPENDD_EMAIL_RETRY" ] && echo "mailretry = $OPENDD_EMAIL_RETRY"
+[ -n "$OPENDD_EMAIL_TIMEOUT" ] && echo "mailtimeout = $OPENDD_EMAIL_TIMEOUT"
 fi
 

@@ -1,0 +1,54 @@
+--- ./opendd.h.ori	2013-07-05 13:50:25.897063095 +0200
++++ ./opendd.h	2013-07-05 13:52:24.333065374 +0200
+@@ -26,6 +26,10 @@
+ #define EXIT_DYNDNS_SUCCESS 1
+ #define EXIT_DYNDNS_FAILED 500
+ 
++/* Default values for timeout and retry in the sendmail function */
++#define DEFAULTSMTPTIMEOUT 20
++#define DEFAULTSMTPRETRY 2
++
+ 
+ void setproctitle(char *, ...);
+ #define SETPROCTITLE	setproctitle
+--- ./opendd.c.ori	2013-07-05 13:24:15.753032860 +0200
++++ ./opendd.c	2013-07-05 13:57:06.737070814 +0200
+@@ -411,8 +411,37 @@
+   }
+   
+   /* Increase the select() timeout for the sendmail function */
+-  set_sendmail_timeout(20);
++  value = get_option("mailtimeout", &type);
++  if (value == NULL)
++    set_sendmail_timeout(DEFAULTSMTPTIMEOUT);
++  else {
++    switch(type) {
++    case OPTION_INT:
++      set_sendmail_timeout(*((int *)value));
++      break;
++    default:
++      logmsg(LOG_ERR, "send_report() : \"mailtimeout\" is not a valid option !");
++      return 0;
++      break;
++    }
++  }
+   
++  /* Set maximum retry for the sendmail function */
++  value = get_option("mailretry", &type);
++  if (value == NULL)
++    set_max_timeout_number(DEFAULTSMTPRETRY);   
++  else {
++    switch(type) {
++    case OPTION_INT:
++      set_max_timeout_number(*((int *)value));
++      break;
++    default:
++      logmsg(LOG_ERR, "send_report() : \"mailretry\" is not a valid option !");
++      return 0;
++      break;
++    }
++  }
++
+   /* First we must disable SSL socket */
+   dyndns_use_ssl = get_socket_ssl();
+   if (dyndns_use_ssl)
