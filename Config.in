@@ -139,10 +139,10 @@ choice
 
 	comment "LTE"
 
-#	config FREETZ_TYPE_6810
-#		select FREETZ_AVM_VERSION_3370_05_21 if FREETZ_AVM_VERSION_05_2X
-#		select FREETZ_AVM_VERSION_7360_05_51 if FREETZ_AVM_VERSION_05_5X
-#		bool "6810 - EXPERIMENTAL"
+	config FREETZ_TYPE_6810
+		select FREETZ_AVM_VERSION_3370_05_21 if FREETZ_AVM_VERSION_05_2X
+		select FREETZ_AVM_VERSION_7360_05_51 if FREETZ_AVM_VERSION_05_5X
+		bool "6810 - EXPERIMENTAL"
 
 	config FREETZ_TYPE_6840
 		select FREETZ_AVM_VERSION_3370_05_21 if FREETZ_AVM_VERSION_05_2X
@@ -1438,8 +1438,10 @@ menu "Override options"
 		default "@AVM/fritzbox.fon/firmware/english/annex_b"                 if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 		default "@AVM/Downgrade/FRITZ!Box 6810 LTE"                          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_FIRMWARE_05_2X
 		default "@AVM/fritzbox_6810_lte/firmware/deutsch"                    if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_FIRMWARE_05_5X
+		default "@AVM/Beta/FRITZ!Box 6810 LTE"                               if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_6810
 		default "@AVM/Downgrade/FRITZ!Box 6840 LTE/deutsch"                  if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_05_2X
 		default "@AVM/Downgrade/FRITZ!Box 6840 LTE/english"                  if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_05_2X
+		default "@AVM/Beta/FRITZ!Box 6840 LTE"                               if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE
 		default "@AVM/fritzbox_6840_lte/firmware/deutsch"                    if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_05_5X
 		default "@AVM/fritzbox_6840_lte/firmware/english"                    if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_05_5X
 		default "@AVM/fritzbox.fon_5010/firmware/deutsch_a-ch"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_5010
@@ -1539,8 +1541,10 @@ menu "Override options"
 		default "FRITZ.Box_Fon_WLAN.AnnexB.en.08.04.49.image"                   if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_WLAN && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
 		default "FRITZ.Box_6810_LTE.108.05.27.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_FIRMWARE_05_2X
 		default "FRITZ.Box_6810_LTE.108.05.55.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_FIRMWARE_05_5X
+		default "FRITZ.Box_6810_LTE_BETA.108.05.56.image"                       if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_6810
 		default "FRITZ.Box_6840_LTE.105.05.27.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_05_2X
 		default "FRITZ.Box_6840_LTE.en-de-es-it-fr.105.05.24.image"             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_05_2X
+		default "FRITZ.Box_6840_LTE_BETA.105.05.56.image"                       if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE
 		default "FRITZ.Box_6840_LTE.105.05.55.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_05_5X
 		default "FRITZ.Box_6840_LTE.en-de-es-it-fr.105.05.50.image"             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_05_5X
 		default "fritz.box_fon_wlan_7050.14.04.33.image"                        if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7050
