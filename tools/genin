@@ -29,16 +29,16 @@ done
 
 echo ""
 
-##################################################################
-# Build "complete" categories by prepending "parent" cathegories #
-##################################################################
+#################################################################
+# Build "complete" categories by prepending "parent" categories #
+#################################################################
 
-# read in pairs of "parent##child" and replace a newline by %
+# read in "parent##child"-pairs and replace newlines by %
 SUBCAT=$(cat $SUBCATS)
 
-# fill variable for the complete prefixes and replace a newline by % for later "in string replacement"
+# fill variable for the complete prefixes and replace newlines by % for later "in string replacement"
 NEW="%"$(cat $SUBCATS | grep -v "^#"| tr '\n' '%')
-# we have to find out wether we are "finished" by determing, wether replacement happend
+# we have to find out whether we are "finished" by determining, whether replacement happened
 OLD=""
 
 # we use values with whitespaces inside, so change IFS to be only "\n"
@@ -53,12 +53,12 @@ while [ "$NEW" != "$OLD" ]; do
 		NEW=${NEW//\%${CHILD}/\%$row}
 	done
 done
-# fix leading "%" and replace "%" by a newline
+# fix leading "%" and replace "%" by newline
 NEW=${NEW/#\%/}
 NEW="$(echo $NEW | tr '%' '\n')"
 
 
-# o.k., now NEW contains of a full chain of category dependencies...
+# o.k., now NEW contains a full chain of category dependencies...
 # a file containing
 #
 # Network##Firewall
@@ -109,8 +109,8 @@ CATs=$( echo -e "${NONHIDDEN//%/\n}" | sort -u )
 
 # now everything is ready to start ;-)
 # just walk through the CATs and build a "new menu" for every entry found.
-# We will add child-menus at the end and have to determin, when a menu is finished
-# so we will not write an endmenu but save it for the next entry to see, wether this one is a child ...
+# We will add child-menus at the end and have to determine, when a menu is finished
+# so we will not write an endmenu but save it for the next entry to see, whether this one is a child ...
 
 # build menus
 SAVMENU=""
@@ -131,13 +131,13 @@ for CAT in $CATs; do
 	done
 	SAVEMENU="$SAVEMENU%%$CAT"
 done
-# close menu(s), if there are some open
+# close menu(s), if there are some open ones
 while [ -n "$SAVEMENU" ]; do
-        echo "endmenu"                                                                                  >> $CFILE
-        SAVEMENU=${SAVEMENU%\%%*}
+	echo "endmenu"                                                                                  >> $CFILE
+	SAVEMENU=${SAVEMENU%\%%*}
 done
 
 echo ""                                                                                                 >> $CFILE
 echo ""                                                                                                 >> $EFILE
 
-IFS=$buIFS # reset IFS
+IFS=$buIFS # restore IFS
