@@ -60,6 +60,7 @@ run() {
 		if [ ! -e /tmp/flash/opendd/opendd.ip ]; then
 			echo "$NEW_IP" >/tmp/flash/opendd/opendd.ip
 			modsave flash >/dev/null
+			. /tmp/flash/opendd/opendd.onforcedupdate >/dev/null 2>&1
 		fi
 	fi
 	update_ip $NEW_IP
