@@ -1,0 +1,18 @@
+--- session.c
++++ session.c
+@@ -1448,6 +1448,15 @@
+ 	
+ 		debug3("%s: checking '%s'", __func__, component);
+ 
++		/* do not check root directory on Freetz as this
++		 * is read-only anyway
++		 */
++		if(!memcmp(component, "/", strlen(component)))
++		{
++			debug3("%s: check for permissions and ownership disabled for / on Freetz", __func__);
++			continue;
++		}
++
+ 		if (stat(component, &st) != 0)
+ 			fatal("%s: stat(\"%s\"): %s", __func__,
+ 			    component, strerror(errno));
