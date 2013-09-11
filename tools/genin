@@ -23,7 +23,7 @@ for mk in $(find make/*/ -maxdepth 1 -name *.mk); do
 	CAT=$(sed '/^\$(PKG)_CATEGORY[ :]*=/ ! d ; s%.*\=[ ]*%%' $mk)
 	[ -z "$CAT" ] && CAT=Packages
 	NONHIDDEN="${NONHIDDEN//%$CAT/}%${CAT}"
-	# prepend <Categorie>##<PKG> to table 
+	# prepend <Categorie>##<PKG> to table
 	CATTABLE="$CATTABLE\n${CAT}##${PKG#make/}"
 done
 
@@ -38,18 +38,18 @@ SUBCAT=$(cat $SUBCATS)
 
 # fill variable for the complete prefixes and replace a newline by % for later "in string replacement"
 NEW="%"$(cat $SUBCATS | grep -v "^#"| tr '\n' '%')
-# we have to find out wether we are "finished" by determing, wether raplacement happend
+# we have to find out wether we are "finished" by determing, wether replacement happend
 OLD=""
 
-# we use values with whitespaces inside, so change IFS to be only "\n"    
+# we use values with whitespaces inside, so change IFS to be only "\n"
 buIFS=$IFS
 IFS='
-' 
+'
 while [ "$NEW" != "$OLD" ]; do
 	OLD=$NEW
 	for row in $SUBCAT; do
 		CHILD=${row#*\#\#}
-		# replace a "leading" entry of "CHILD" by "PARENT##CHILD"  
+		# replace a "leading" entry of "CHILD" by "PARENT##CHILD"
 		NEW=${NEW//\%${CHILD}/\%$row}
 	done
 done
@@ -59,7 +59,7 @@ NEW="$(echo $NEW | tr '%' '\n')"
 
 
 # o.k., now NEW contains of a full chain of category dependencies...
-# a file containing 
+# a file containing
 #
 # Network##Firewall
 # Network##E-mail
@@ -84,7 +84,7 @@ NEW="$(echo $NEW | tr '%' '\n')"
 # we now will expand the entries in NONHIDDEN
 
 for row in $NEW; do
-	CHILD=${row##*\#\#} 
+	CHILD=${row##*\#\#}
 	NONHIDDEN=${NONHIDDEN//%$CHILD/%$row}
 done
 
@@ -97,8 +97,8 @@ done
 NONHIDDEN=${NONHIDDEN/\#%/}
 
 # sort "nonhidden" categories
-CATs=$(	echo -e "${NONHIDDEN//%/\n}" | sort -u )
-#CATTABLE_NEW=$(	echo -e "${CATTABLE// /\n}" | sort -u )
+CATs=$( echo -e "${NONHIDDEN//%/\n}" | sort -u )
+#CATTABLE_NEW=$( echo -e "${CATTABLE// /\n}" | sort -u )
 
 #echo -e "CATTABLE=$CATTABLE"
 #echo "########################################"
@@ -140,4 +140,4 @@ done
 echo ""                                                                                                 >> $CFILE
 echo ""                                                                                                 >> $EFILE
 
-IFS=$buIFS # reset IFS 
+IFS=$buIFS # reset IFS
