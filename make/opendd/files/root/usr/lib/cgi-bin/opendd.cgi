@@ -61,10 +61,12 @@ cat << EOF
 <p>$(lang de:"Sendername" en:"Sender name"): <input type="text" name="email_sender" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_SENDER")"></p>
 <p>$(lang de:"Senderadresse" en:"Sender address"): <input type="text" name="email_from" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_FROM")"></p>
 <p>$(lang de:"Empf&auml;nger" en:"Recipient"): <input type="text" name="email_to" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_TO")"></p>
-<p>$(lang de:"E-Mail-Server" en:"E-mail-server"): <input type="text" name="email_server" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_SERVER")"></p>
-<p>$(lang de:"E-Mail-Server Port" en:"E-mail-server port"): <input type="text" name="email_port" size="4" maxlength="5" value="$(html "$OPENDD_EMAIL_PORT")"></p>
+<p>$(lang de:"E-Mail-Server" en:"E-mail server"): <input type="text" name="email_server" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_SERVER")"></p>
+<p>$(lang de:"E-Mail-Server Port" en:"E-mail server port"): <input type="text" name="email_port" size="4" maxlength="5" value="$(html "$OPENDD_EMAIL_PORT")"></p>
 <p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="email_user" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_USER")"></p>
 <p>$(lang de:"Passwort" en:"Password"): <input type="password" name="email_pass" size="55" maxlength="250" value="$(html "$OPENDD_EMAIL_PASS")"></p>
+<p>$(lang de:"E-Mail-Server Timeout" en:"E-mail server timeout"): <input type="text" name="email_timeout" size="4" maxlength="5" value="$(html "$OPENDD_EMAIL_TIMEOUT")"></p>
+<p>$(lang de:"E-Mail-Server max. Versuche" en:"E-mail server max. retry"): <input type="text" name="email_retry" size="4" maxlength="3" value="$(html "$OPENDD_EMAIL_RETRY")"></p>
 EOF
 sec_end
 
@@ -83,8 +85,6 @@ cat << EOF
 <input type="hidden" name="offline" value="0">
 <input id="a3" type="checkbox" name="offline" value="1"$offline_chk><label for="a3"> $(lang de:"Offline-Host" en:"Offline-Host")</label>
 </p>
-<p>$(lang de:"E-Mail-Server Timeout" en:"E-mail server timeout"): <input type="text" name="email_timeout" size="4" maxlength="5" value="$(html "$OPENDD_EMAIL_TIMEOUT")"></p>
-<p>$(lang de:"E-Mail-Server max. Versuche" en:"E-mail server max. retry"): <input type="text" name="email_retry" size="4" maxlength="3" value="$(html "$OPENDD_EMAIL_RETRY")"></p>
 EOF
 sec_end
 
