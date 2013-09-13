@@ -4123,6 +4123,36 @@
  		} else {
  			ast_channel_lock(chan);
  			if (ast_channel_zone(chan)) {
+--- funcs/func_dialgroup.c
++++ funcs/func_dialgroup.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 366917 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
+ 
+ #include <sys/stat.h>
+ 
+@@ -174,11 +174,17 @@
+ {
+ 	int len = 500, res = 0;
+ 	char *buf = NULL;
++	char *new_buf;
+ 	char *dialgroup = ast_strdupa(cdialgroup);
+ 
+ 	do {
+ 		len *= 2;
+-		buf = ast_realloc(buf, len);
++		new_buf = ast_realloc(buf, len);
++		if (!new_buf) {
++			ast_free(buf);
++			return -1;
++		}
++		buf = new_buf;
+ 
+ 		if ((res = dialgroup_read(chan, "", dialgroup, buf, len)) < 0) {
+ 			ast_free(buf);
 --- funcs/func_global.c
 +++ funcs/func_global.c
 @@ -31,7 +31,7 @@
@@ -4247,8 +4277,20 @@
  enum ast_control_t38_rate_management {
 --- include/asterisk/lock.h
 +++ include/asterisk/lock.h
-@@ -289,22 +289,6 @@
+@@ -281,30 +281,18 @@
+ #else
+ void ast_remove_lock_info(void *lock_addr);
  #endif /* HAVE_BKTR */
++void ast_suspend_lock_info(void *lock_addr);
++void ast_restore_lock_info(void *lock_addr);
+ #else
+ #ifdef HAVE_BKTR
+ #define ast_remove_lock_info(ignore,me)
+ #else
+ #define ast_remove_lock_info(ignore)
+ #endif /* HAVE_BKTR */
++#define ast_suspend_lock_info(ignore);
++#define ast_restore_lock_info(ignore);
  #endif /* !defined(LOW_MEMORY) */
  
 -#ifdef HAVE_BKTR
@@ -4339,7 +4381,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 379790 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398000 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
  
  #include "asterisk/_private.h"
  
@@ -4414,8 +4456,8 @@
 +	term_color(outbuf, cmp, COLOR_GRAY, 0, maxout);
 +
 +	return s;
- }
- 
++}
++
 +struct console_state_data {
 +	int newline;
 +	char verbose_line_level;
@@ -4427,8 +4469,8 @@
 +	state->newline = 1;
 +	state->verbose_line_level = 0;
 +	return 0;
-+}
-+
+ }
+ 
 +AST_THREADSTORAGE_CUSTOM(console_state, console_state_init, ast_free_ptr);
 +
  /* These gymnastics are due to platforms which designate char as unsigned by
@@ -4622,7 +4664,117 @@
  
  			if ((res < EL_BUF_SIZE - 1) && ((buf[res-1] == '\n') || (buf[res-2] == '\n'))) {
  				*cp = CC_REFRESH;
-@@ -3070,7 +3107,7 @@
+@@ -2603,45 +2640,62 @@
+ 	return ast_str_buffer(prompt);
+ }
+ 
++static void destroy_match_list(char **match_list, int matches)
++{
++	if (match_list) {
++		int idx;
++
++		for (idx = 0; idx < matches; ++idx) {
++			ast_free(match_list[idx]);
++		}
++		ast_free(match_list);
++	}
++}
++
+ static char **ast_el_strtoarr(char *buf)
+ {
+-	char **match_list = NULL, **match_list_tmp, *retstr;
+-	size_t match_list_len;
++	char *retstr;
++	char **match_list = NULL;
++	char **new_list;
++	size_t match_list_len = 1;
+ 	int matches = 0;
+ 
+-	match_list_len = 1;
+-	while ( (retstr = strsep(&buf, " ")) != NULL) {
+-
+-		if (!strcmp(retstr, AST_CLI_COMPLETE_EOF))
++	while ((retstr = strsep(&buf, " "))) {
++		if (!strcmp(retstr, AST_CLI_COMPLETE_EOF)) {
+ 			break;
++		}
+ 		if (matches + 1 >= match_list_len) {
+ 			match_list_len <<= 1;
+-			if ((match_list_tmp = ast_realloc(match_list, match_list_len * sizeof(char *)))) {
+-				match_list = match_list_tmp;
+-			} else {
+-				if (match_list)
+-					ast_free(match_list);
+-				return (char **) NULL;
++			new_list = ast_realloc(match_list, match_list_len * sizeof(char *));
++			if (!new_list) {
++				destroy_match_list(match_list, matches);
++				return NULL;
+ 			}
++			match_list = new_list;
+ 		}
+ 
+-		match_list[matches++] = ast_strdup(retstr);
++		retstr = ast_strdup(retstr);
++		if (!retstr) {
++			destroy_match_list(match_list, matches);
++			return NULL;
++		}
++		match_list[matches++] = retstr;
+ 	}
+ 
+-	if (!match_list)
+-		return (char **) NULL;
++	if (!match_list) {
++		return NULL;
++	}
+ 
+ 	if (matches >= match_list_len) {
+-		if ((match_list_tmp = ast_realloc(match_list, (match_list_len + 1) * sizeof(char *)))) {
+-			match_list = match_list_tmp;
+-		} else {
+-			if (match_list)
+-				ast_free(match_list);
+-			return (char **) NULL;
++		new_list = ast_realloc(match_list, (match_list_len + 1) * sizeof(char *));
++		if (!new_list) {
++			destroy_match_list(match_list, matches);
++			return NULL;
+ 		}
++		match_list = new_list;
+ 	}
+ 
+-	match_list[matches] = (char *) NULL;
++	match_list[matches] = NULL;
+ 
+ 	return match_list;
+ }
+@@ -2742,7 +2796,9 @@
+ 
+ 		if (nummatches > 0) {
+ 			char *mbuf;
++			char *new_mbuf;
+ 			int mlen = 0, maxmbuf = 2048;
++
+ 			/* Start with a 2048 byte buffer */
+ 			if (!(mbuf = ast_malloc(maxmbuf))) {
+ 				*((char *) lf->cursor) = savechr;
+@@ -2756,10 +2812,13 @@
+ 				if (mlen + 1024 > maxmbuf) {
+ 					/* Every step increment buffer 1024 bytes */
+ 					maxmbuf += 1024;
+-					if (!(mbuf = ast_realloc(mbuf, maxmbuf))) {
++					new_mbuf = ast_realloc(mbuf, maxmbuf);
++					if (!new_mbuf) {
++						ast_free(mbuf);
+ 						*((char *) lf->cursor) = savechr;
+ 						return (char *)(CC_ERROR);
+ 					}
++					mbuf = new_mbuf;
+ 				}
+ 				/* Only read 1024 bytes at a time */
+ 				res = read(ast_consock, mbuf + mlen, 1024);
+@@ -3070,7 +3129,7 @@
  
  static int show_cli_help(void)
  {
@@ -4631,7 +4783,7 @@
  	printf("Usage: asterisk [OPTIONS]\n");
  	printf("Valid Options:\n");
  	printf("   -V              Display version number and exit\n");
-@@ -3472,7 +3509,7 @@
+@@ -3472,7 +3531,7 @@
  
  static void print_intro_message(const char *runuser, const char *rungroup)
  {
@@ -4640,7 +4792,7 @@
  		if (ast_register_verbose(console_verboser)) {
  			fprintf(stderr, "Unable to register console verboser?\n");
  			return;
-@@ -3964,8 +4001,8 @@
+@@ -3964,8 +4023,8 @@
  
  	print_intro_message(runuser, rungroup);
  
@@ -4712,10 +4864,19 @@
  #if defined(__AST_DEBUG_MALLOC)
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377401 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398721 $")
  
  #include "asterisk/paths.h"	/* use ast_config_AST_LOG_DIR */
  #include <stddef.h>
+@@ -70,7 +70,7 @@
+ #undef vasprintf
+ #undef asprintf
+ 
+-#define FENCE_MAGIC		0xdeadbeef	/*!< Allocated memory high/low fence overwrite check. */
++#define FENCE_MAGIC		0xfeedbabe	/*!< Allocated memory high/low fence overwrite check. */
+ #define FREED_MAGIC		0xdeaddead	/*!< Freed memory wipe filler. */
+ #define MALLOC_FILLER	0x55		/*!< Malloced memory filler.  Must not be zero. */
+ 
 @@ -157,6 +157,31 @@
  		}                                    \
  	} while (0)
@@ -4827,7 +4988,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 386051 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396746 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
  
  #include "asterisk/_private.h"
  #include "asterisk/paths.h"	/* use ast_config_AST_MODULE_DIR */
@@ -4845,6 +5006,79 @@
  	/* scan the original string copying into cur when needed */
  	for (; *s ; s++) {
  		if (x >= max - 1) {
+@@ -2363,9 +2370,22 @@
+ 	return matches;
+ }
+ 
++static void destroy_match_list(char **match_list, int matches)
++{
++	if (match_list) {
++		int idx;
++
++		for (idx = 1; idx < matches; ++idx) {
++			ast_free(match_list[idx]);
++		}
++		ast_free(match_list);
++	}
++}
++
+ char **ast_cli_completion_matches(const char *text, const char *word)
+ {
+ 	char **match_list = NULL, *retstr, *prevstr;
++	char **new_list;
+ 	size_t match_list_len, max_equal, which, i;
+ 	int matches = 0;
+ 
+@@ -2374,14 +2394,19 @@
+ 	while ((retstr = ast_cli_generator(text, word, matches)) != NULL) {
+ 		if (matches + 1 >= match_list_len) {
+ 			match_list_len <<= 1;
+-			if (!(match_list = ast_realloc(match_list, match_list_len * sizeof(*match_list))))
++			new_list = ast_realloc(match_list, match_list_len * sizeof(*match_list));
++			if (!new_list) {
++				destroy_match_list(match_list, matches);
+ 				return NULL;
++			}
++			match_list = new_list;
+ 		}
+ 		match_list[++matches] = retstr;
+ 	}
+ 
+-	if (!match_list)
++	if (!match_list) {
+ 		return match_list; /* NULL */
++	}
+ 
+ 	/* Find the longest substring that is common to all results
+ 	 * (it is a candidate for completion), and store a copy in entry 0.
+@@ -2394,20 +2419,23 @@
+ 		max_equal = i;
+ 	}
+ 
+-	if (!(retstr = ast_malloc(max_equal + 1))) {
+-		ast_free(match_list);
++	retstr = ast_malloc(max_equal + 1);
++	if (!retstr) {
++		destroy_match_list(match_list, matches);
+ 		return NULL;
+ 	}
+-
+ 	ast_copy_string(retstr, match_list[1], max_equal + 1);
+ 	match_list[0] = retstr;
+ 
+ 	/* ensure that the array is NULL terminated */
+ 	if (matches + 1 >= match_list_len) {
+-		if (!(match_list = ast_realloc(match_list, (match_list_len + 1) * sizeof(*match_list)))) {
++		new_list = ast_realloc(match_list, (match_list_len + 1) * sizeof(*match_list));
++		if (!new_list) {
+ 			ast_free(retstr);
++			destroy_match_list(match_list, matches);
+ 			return NULL;
+ 		}
++		match_list = new_list;
+ 	}
+ 	match_list[matches + 1] = NULL;
+ 
 --- main/config.c
 +++ main/config.c
 @@ -32,7 +32,7 @@
@@ -4916,6 +5150,36 @@
 -	AST_LIST_TRAVERSE(&(filter->glob_list), globres, list) {
 +	while ((globres = AST_LIST_REMOVE_HEAD(&(filter->glob_list), list))) {
  		ao2_ref(globres, -1);
+ 	}
+ 
+--- main/event.c
++++ main/event.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387030 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -1197,13 +1197,17 @@
+ 	const void *data, size_t data_len)
+ {
+ 	struct ast_event_ie *ie;
++	struct ast_event *old_event;
+ 	unsigned int extra_len;
+ 	uint16_t event_len;
+ 
+ 	event_len = ntohs((*event)->event_len);
+ 	extra_len = sizeof(*ie) + data_len;
+ 
+-	if (!(*event = ast_realloc(*event, event_len + extra_len))) {
++	old_event = *event;
++	*event = ast_realloc(*event, event_len + extra_len);
++	if (!*event) {
++		ast_free(old_event);
+ 		return -1;
  	}
  
 --- main/features.c
@@ -5014,6 +5278,43 @@
  	if (!(entry = ao2_alloc(sizeof(*entry), NULL))) {
  		return -1;
  	}
+--- main/heap.c
++++ main/heap.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 369013 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
+ 
+ #include "asterisk/heap.h"
+ #include "asterisk/utils.h"
+@@ -181,18 +181,19 @@
+ #endif
+ )
+ {
+-	h->avail_len = h->avail_len * 2 + 1;
++	void **new_heap;
++	size_t new_len = h->avail_len * 2 + 1;
+ 
+-	if (!(h->heap =
+ #ifdef MALLOC_DEBUG
+-			__ast_realloc(h->heap, h->avail_len * sizeof(void *), file, lineno, func)
++	new_heap = __ast_realloc(h->heap, new_len * sizeof(void *), file, lineno, func);
+ #else
+-			ast_realloc(h->heap, h->avail_len * sizeof(void *))
++	new_heap = ast_realloc(h->heap, new_len * sizeof(void *));
+ #endif
+-		)) {
+-		h->cur_len = h->avail_len = 0;
++	if (!new_heap) {
+ 		return -1;
+ 	}
++	h->heap = new_heap;
++	h->avail_len = new_len;
+ 
+ 	return 0;
+ }
 --- main/http.c
 +++ main/http.c
 @@ -36,7 +36,7 @@
@@ -5085,11 +5386,39 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377742 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398103 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
  
  #include <math.h>
  
-@@ -499,6 +499,9 @@
+@@ -341,12 +341,12 @@
+ 	}
+ 
+ 	while ((s = strsep(&stringp, separator)) && !ast_strlen_zero(s)) {
++		struct playtones_item *new_items;
+ 		struct ast_tone_zone_part tone_data = {
+ 			.time = 0,
+ 		};
+ 
+ 		s = ast_strip(s);
+-
+ 		if (s[0]=='!') {
+ 			s++;
+ 		} else if (d.reppos == -1) {
+@@ -374,9 +374,12 @@
+ 			}
+ 		}
+ 
+-		if (!(d.items = ast_realloc(d.items, (d.nitems + 1) * sizeof(*d.items)))) {
++		new_items = ast_realloc(d.items, (d.nitems + 1) * sizeof(*d.items));
++		if (!new_items) {
++			ast_free(d.items);
+ 			return -1;
+ 		}
++		d.items = new_items;
+ 
+ 		d.items[d.nitems].fac1 = 2.0 * cos(2.0 * M_PI * (tone_data.freq1 / sample_rate)) * max_sample_val;
+ 		d.items[d.nitems].init_v2_1 = sin(-4.0 * M_PI * (tone_data.freq1 / sample_rate)) * d.vol;
+@@ -499,6 +502,9 @@
  
  	ast_tone_zone_unlock(zone);
  
@@ -5126,7 +5455,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388839 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398649 $")
  
 +#include "asterisk/utils.h"
  #include "asterisk/lock.h"
@@ -5155,6 +5484,364 @@
  int __ast_pthread_mutex_init(int tracking, const char *filename, int lineno, const char *func,
  						const char *mutex_name, ast_mutex_t *t)
  {
+@@ -191,12 +208,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t);
+@@ -323,12 +348,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t);
+@@ -480,10 +513,8 @@
+ 
+ #ifdef DEBUG_THREADS
+ 	struct ast_lock_track *lt;
++	struct ast_lock_track lt_orig;
+ 	int canlog = strcmp(filename, "logger.c") & t->tracking;
+-#ifdef HAVE_BKTR
+-	struct ast_bt *bt = NULL;
+-#endif
+ 
+ #if defined(AST_MUTEX_INIT_W_CONSTRUCTORS) && defined(CAN_COMPARE_MUTEX_TO_INIT_VALUE)
+ 	if ((t->mutex) == ((pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER)) {
+@@ -514,33 +545,20 @@
+ 			__dump_backtrace(&lt->backtrace[ROFFSET], canlog);
+ #endif
+ 			DO_THREAD_CRASH;
++		} else if (lt->reentrancy <= 0) {
++			__ast_mutex_logger("%s line %d (%s): attempted to wait on an unlocked mutex '%s'\n",
++					   filename, lineno, func, mutex_name);
++			DO_THREAD_CRASH;
+ 		}
+ 
+-		if (--lt->reentrancy < 0) {
+-			__ast_mutex_logger("%s line %d (%s): mutex '%s' freed more times than we've locked!\n",
+-				   filename, lineno, func, mutex_name);
+-			lt->reentrancy = 0;
+-		}
+-
+-		if (lt->reentrancy < AST_MAX_REENTRANCY) {
+-			lt->file[lt->reentrancy] = NULL;
+-			lt->lineno[lt->reentrancy] = 0;
+-			lt->func[lt->reentrancy] = NULL;
+-			lt->thread[lt->reentrancy] = 0;
+-		}
+-
+-#ifdef HAVE_BKTR
+-		if (lt->reentrancy) {
+-			bt = &lt->backtrace[lt->reentrancy - 1];
+-		}
+-#endif
++		/* Waiting on a condition completely suspends a recursive mutex,
++		 * even if it's been recursively locked multiple times. Make a
++		 * copy of the lock tracking, and reset reentrancy to zero */
++		lt_orig = *lt;
++		lt->reentrancy = 0;
+ 		ast_reentrancy_unlock(lt);
+ 
+-#ifdef HAVE_BKTR
+-		ast_remove_lock_info(t, bt);
+-#else
+-		ast_remove_lock_info(t);
+-#endif
++		ast_suspend_lock_info(t);
+ 	}
+ #endif /* DEBUG_THREADS */
+ 
+@@ -552,28 +570,16 @@
+ 				   filename, lineno, func, strerror(res));
+ 		DO_THREAD_CRASH;
+ 	} else if (t->tracking) {
++		pthread_mutex_t reentr_mutex_orig;
+ 		ast_reentrancy_lock(lt);
+-		if (lt->reentrancy < AST_MAX_REENTRANCY) {
+-			lt->file[lt->reentrancy] = filename;
+-			lt->lineno[lt->reentrancy] = lineno;
+-			lt->func[lt->reentrancy] = func;
+-			lt->thread[lt->reentrancy] = pthread_self();
+-#ifdef HAVE_BKTR
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
+-			bt = &lt->backtrace[lt->reentrancy];
+-#endif
+-			lt->reentrancy++;
+-		} else {
+-			__ast_mutex_logger("%s line %d (%s): '%s' really deep reentrancy!\n",
+-							   filename, lineno, func, mutex_name);
+-		}
++		/* Restore lock tracking to what it was prior to the wait */
++		reentr_mutex_orig = lt->reentr_mutex;
++		*lt = lt_orig;
++		/* un-trash the mutex we just copied over */
++		lt->reentr_mutex = reentr_mutex_orig;
+ 		ast_reentrancy_unlock(lt);
+ 
+-#ifdef HAVE_BKTR
+-		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t, bt);
+-#else
+-		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t);
+-#endif
++		ast_restore_lock_info(t);
+ 	}
+ #endif /* DEBUG_THREADS */
+ 
+@@ -588,10 +594,8 @@
+ 
+ #ifdef DEBUG_THREADS
+ 	struct ast_lock_track *lt;
++	struct ast_lock_track lt_orig;
+ 	int canlog = strcmp(filename, "logger.c") & t->tracking;
+-#ifdef HAVE_BKTR
+-	struct ast_bt *bt = NULL;
+-#endif
+ 
+ #if defined(AST_MUTEX_INIT_W_CONSTRUCTORS) && defined(CAN_COMPARE_MUTEX_TO_INIT_VALUE)
+ 	if ((t->mutex) == ((pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER)) {
+@@ -622,32 +626,20 @@
+ 			__dump_backtrace(&lt->backtrace[ROFFSET], canlog);
+ #endif
+ 			DO_THREAD_CRASH;
+-		}
+-
+-		if (--lt->reentrancy < 0) {
+-			__ast_mutex_logger("%s line %d (%s): mutex '%s' freed more times than we've locked!\n",
++		} else if (lt->reentrancy <= 0) {
++			__ast_mutex_logger("%s line %d (%s): attempted to wait on an unlocked mutex '%s'\n",
+ 					   filename, lineno, func, mutex_name);
+-			lt->reentrancy = 0;
++			DO_THREAD_CRASH;
+ 		}
+ 
+-		if (lt->reentrancy < AST_MAX_REENTRANCY) {
+-			lt->file[lt->reentrancy] = NULL;
+-			lt->lineno[lt->reentrancy] = 0;
+-			lt->func[lt->reentrancy] = NULL;
+-			lt->thread[lt->reentrancy] = 0;
+-		}
+-#ifdef HAVE_BKTR
+-		if (lt->reentrancy) {
+-			bt = &lt->backtrace[lt->reentrancy - 1];
+-		}
+-#endif
++		/* Waiting on a condition completely suspends a recursive mutex,
++		 * even if it's been recursively locked multiple times. Make a
++		 * copy of the lock tracking, and reset reentrancy to zero */
++		lt_orig = *lt;
++		lt->reentrancy = 0;
+ 		ast_reentrancy_unlock(lt);
+ 
+-#ifdef HAVE_BKTR
+-		ast_remove_lock_info(t, bt);
+-#else
+-		ast_remove_lock_info(t);
+-#endif
++		ast_suspend_lock_info(t);
+ 	}
+ #endif /* DEBUG_THREADS */
+ 
+@@ -659,28 +651,16 @@
+ 				   filename, lineno, func, strerror(res));
+ 		DO_THREAD_CRASH;
+ 	} else if (t->tracking) {
++		pthread_mutex_t reentr_mutex_orig;
+ 		ast_reentrancy_lock(lt);
+-		if (lt->reentrancy < AST_MAX_REENTRANCY) {
+-			lt->file[lt->reentrancy] = filename;
+-			lt->lineno[lt->reentrancy] = lineno;
+-			lt->func[lt->reentrancy] = func;
+-			lt->thread[lt->reentrancy] = pthread_self();
+-#ifdef HAVE_BKTR
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
+-			bt = &lt->backtrace[lt->reentrancy];
+-#endif
+-			lt->reentrancy++;
+-		} else {
+-			__ast_mutex_logger("%s line %d (%s): '%s' really deep reentrancy!\n",
+-							   filename, lineno, func, mutex_name);
+-		}
++		/* Restore lock tracking to what it was prior to the wait */
++		reentr_mutex_orig = lt->reentr_mutex;
++		*lt = lt_orig;
++		/* un-trash the mutex we just copied over */
++		lt->reentr_mutex = reentr_mutex_orig;
+ 		ast_reentrancy_unlock(lt);
+ 
+-#ifdef HAVE_BKTR
+-		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t, bt);
+-#else
+-		ast_store_lock_info(AST_MUTEX, filename, lineno, func, mutex_name, t);
+-#endif
++		ast_suspend_lock_info(t);
+ 	}
+ #endif /* DEBUG_THREADS */
+ 
+@@ -882,12 +862,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_RDLOCK, filename, line, func, name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_RDLOCK, filename, line, func, name, t);
+@@ -1001,12 +989,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t);
+@@ -1124,12 +1120,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t);
+@@ -1227,12 +1231,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t);
+@@ -1333,12 +1345,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_RDLOCK, filename, line, func, name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_RDLOCK, filename, line, func, name, t);
+@@ -1403,12 +1423,20 @@
+ 
+ 	if (t->tracking) {
+ #ifdef HAVE_BKTR
++		struct ast_bt tmp;
++
++		/* The implementation of backtrace() may have its own locks.
++		 * Capture the backtrace outside of the reentrancy lock to
++		 * avoid deadlocks. See ASTERISK-22455. */
++		ast_bt_get_addresses(&tmp);
++
+ 		ast_reentrancy_lock(lt);
+ 		if (lt->reentrancy != AST_MAX_REENTRANCY) {
+-			ast_bt_get_addresses(&lt->backtrace[lt->reentrancy]);
++			lt->backtrace[lt->reentrancy] = tmp;
+ 			bt = &lt->backtrace[lt->reentrancy];
+ 		}
+ 		ast_reentrancy_unlock(lt);
++
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t, bt);
+ #else
+ 		ast_store_lock_info(AST_WRLOCK, filename, line, func, name, t);
 --- main/logger.c
 +++ main/logger.c
 @@ -31,7 +31,7 @@
@@ -5576,11 +6263,81 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387295 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398649 $")
  
  #include <ctype.h>
  #include <sys/stat.h>
-@@ -869,7 +869,7 @@
+@@ -603,6 +603,8 @@
+ 		enum ast_lock_type type;
+ 		/*! This thread is waiting on this lock */
+ 		int pending:2;
++		/*! A condition has suspended this lock */
++		int suspended:1;
+ #ifdef HAVE_BKTR
+ 		struct ast_bt *backtrace;
+ #endif
+@@ -789,6 +791,60 @@
+ 	return 0;
+ }
+ 
++void ast_suspend_lock_info(void *lock_addr)
++{
++	struct thr_lock_info *lock_info;
++	int i = 0;
++
++	if (!(lock_info = ast_threadstorage_get(&thread_lock_info, sizeof(*lock_info)))) {
++		return;
++	}
++
++	pthread_mutex_lock(&lock_info->lock);
++
++	for (i = lock_info->num_locks - 1; i >= 0; i--) {
++		if (lock_info->locks[i].lock_addr == lock_addr)
++			break;
++	}
++
++	if (i == -1) {
++		/* Lock not found :( */
++		pthread_mutex_unlock(&lock_info->lock);
++		return;
++	}
++
++	lock_info->locks[i].suspended = 1;
++
++	pthread_mutex_unlock(&lock_info->lock);
++}
++
++void ast_restore_lock_info(void *lock_addr)
++{
++	struct thr_lock_info *lock_info;
++	int i = 0;
++
++	if (!(lock_info = ast_threadstorage_get(&thread_lock_info, sizeof(*lock_info))))
++		return;
++
++	pthread_mutex_lock(&lock_info->lock);
++
++	for (i = lock_info->num_locks - 1; i >= 0; i--) {
++		if (lock_info->locks[i].lock_addr == lock_addr)
++			break;
++	}
++
++	if (i == -1) {
++		/* Lock not found :( */
++		pthread_mutex_unlock(&lock_info->lock);
++		return;
++	}
++
++	lock_info->locks[i].suspended = 0;
++
++	pthread_mutex_unlock(&lock_info->lock);
++}
++
++
+ #ifdef HAVE_BKTR
+ void ast_remove_lock_info(void *lock_addr, struct ast_bt *bt)
+ #else
+@@ -869,7 +925,7 @@
  			ast_str_append(str, 0, "\t%s\n", symbols[frame_iterator]);
  		}
  
@@ -5589,6 +6346,70 @@
  	} else {
  		ast_str_append(str, 0, "\tCouldn't retrieve backtrace symbols\n");
  	}
+@@ -882,7 +938,7 @@
+ 	ast_mutex_t *lock;
+ 	struct ast_lock_track *lt;
+ 
+-	ast_str_append(str, 0, "=== ---> %sLock #%d (%s): %s %d %s %s %p (%d)\n",
++	ast_str_append(str, 0, "=== ---> %sLock #%d (%s): %s %d %s %s %p (%d%s)\n",
+ 				   lock_info->locks[i].pending > 0 ? "Waiting for " :
+ 				   lock_info->locks[i].pending < 0 ? "Tried and failed to get " : "", i,
+ 				   lock_info->locks[i].file,
+@@ -890,7 +946,8 @@
+ 				   lock_info->locks[i].line_num,
+ 				   lock_info->locks[i].func, lock_info->locks[i].lock_name,
+ 				   lock_info->locks[i].lock_addr,
+-				   lock_info->locks[i].times_locked);
++				   lock_info->locks[i].times_locked,
++				   lock_info->locks[i].suspended ? " - suspended" : "");
+ #ifdef HAVE_BKTR
+ 	append_backtrace_information(str, lock_info->locks[i].backtrace);
+ #endif
+@@ -999,20 +1056,32 @@
+ 	pthread_mutex_lock(&lock_infos_lock.mutex);
+ 	AST_LIST_TRAVERSE(&lock_infos, lock_info, entry) {
+ 		int i;
+-		if (lock_info->num_locks) {
+-			ast_str_append(&str, 0, "=== Thread ID: 0x%lx (%s)\n", (long) lock_info->thread_id,
+-				lock_info->thread_name);
+-			pthread_mutex_lock(&lock_info->lock);
+-			for (i = 0; str && i < lock_info->num_locks; i++) {
+-				append_lock_information(&str, lock_info, i);
++		int header_printed = 0;
++		pthread_mutex_lock(&lock_info->lock);
++		for (i = 0; str && i < lock_info->num_locks; i++) {
++			/* Don't show suspended locks */
++			if (lock_info->locks[i].suspended) {
++				continue;
+ 			}
+-			pthread_mutex_unlock(&lock_info->lock);
+-			if (!str)
+-				break;
++
++			if (!header_printed) {
++				ast_str_append(&str, 0, "=== Thread ID: 0x%lx (%s)\n", (long) lock_info->thread_id,
++					lock_info->thread_name);
++				header_printed = 1;
++			}
++
++			append_lock_information(&str, lock_info, i);
++		}
++		pthread_mutex_unlock(&lock_info->lock);
++		if (!str) {
++			break;
++		}
++		if (header_printed) {
+ 			ast_str_append(&str, 0, "=== -------------------------------------------------------------------\n"
+-			               "===\n");
+-			if (!str)
+-				break;
++				"===\n");
++		}
++		if (!str) {
++			break;
+ 		}
+ 	}
+ 	pthread_mutex_unlock(&lock_infos_lock.mutex);
 --- main/xmldoc.c
 +++ main/xmldoc.c
 @@ -29,7 +29,7 @@
@@ -5596,11 +6417,41 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377511 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397067 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
  
  #include "asterisk/_private.h"
  #include "asterisk/paths.h"
-@@ -759,6 +759,7 @@
+@@ -578,8 +578,11 @@
+  */
+ static void __attribute__((format(printf, 4, 5))) xmldoc_reverse_helper(int reverse, int *len, char **syntax, const char *fmt, ...)
+ {
+-	int totlen, tmpfmtlen;
+-	char *tmpfmt, tmp;
++	int totlen;
++	int tmpfmtlen;
++	char *tmpfmt;
++	char *new_syntax;
++	char tmp;
+ 	va_list ap;
+ 
+ 	va_start(ap, fmt);
+@@ -592,12 +595,12 @@
+ 	tmpfmtlen = strlen(tmpfmt);
+ 	totlen = *len + tmpfmtlen + 1;
+ 
+-	*syntax = ast_realloc(*syntax, totlen);
+-
+-	if (!*syntax) {
++	new_syntax = ast_realloc(*syntax, totlen);
++	if (!new_syntax) {
+ 		ast_free(tmpfmt);
+ 		return;
+ 	}
++	*syntax = new_syntax;
+ 
+ 	if (reverse) {
+ 		memmove(*syntax + tmpfmtlen, *syntax, *len);
+@@ -759,6 +762,7 @@
  				if ((paramtype = ast_xml_get_attribute(node, "required"))) {
  					if (!ast_true(paramtype)) {
  						optmidnode = 1;
@@ -5871,6 +6722,49 @@
  			return IKS_FILTER_EAT;
  		}
  	} else {
+--- res/res_musiconhold.c
++++ res/res_musiconhold.c
+@@ -32,7 +32,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 375895 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
+ 
+ #include <ctype.h>
+ #include <signal.h>
+@@ -1047,20 +1047,26 @@
+ static int moh_add_file(struct mohclass *class, const char *filepath)
+ {
+ 	if (!class->allowed_files) {
+-		if (!(class->filearray = ast_calloc(1, INITIAL_NUM_FILES * sizeof(*class->filearray))))
++		class->filearray = ast_calloc(1, INITIAL_NUM_FILES * sizeof(*class->filearray));
++		if (!class->filearray) {
+ 			return -1;
++		}
+ 		class->allowed_files = INITIAL_NUM_FILES;
+ 	} else if (class->total_files == class->allowed_files) {
+-		if (!(class->filearray = ast_realloc(class->filearray, class->allowed_files * sizeof(*class->filearray) * 2))) {
+-			class->allowed_files = 0;
+-			class->total_files = 0;
++		char **new_array;
++
++		new_array = ast_realloc(class->filearray, class->allowed_files * sizeof(*class->filearray) * 2);
++		if (!new_array) {
+ 			return -1;
+ 		}
++		class->filearray = new_array;
+ 		class->allowed_files *= 2;
+ 	}
+ 
+-	if (!(class->filearray[class->total_files] = ast_strdup(filepath)))
++	class->filearray[class->total_files] = ast_strdup(filepath);
++	if (!class->filearray[class->total_files]) {
+ 		return -1;
++	}
+ 
+ 	class->total_files++;
+ 
 --- res/res_rtp_asterisk.c
 +++ res/res_rtp_asterisk.c
 @@ -29,13 +29,13 @@
@@ -6656,6 +7550,92 @@
  	TEST(test_expected_result(test, c, "${foo},${this_does_not_exist},${THIS_DOES_NOT_EXIST(either)}", "123,,"));
  #undef TEST
  
+--- utils/ael_main.c
++++ utils/ael_main.c
+@@ -18,7 +18,7 @@
+ #include <regex.h>
+ #include <limits.h>
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 358812 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398749 $")
+ 
+ #include "asterisk/channel.h"
+ #include "asterisk/ast_expr.h"
+@@ -647,5 +647,11 @@
+ {
+ }
+ #endif /* HAVE_BKTR */
++void ast_suspend_lock_info(void *lock_addr)
++{
++}
++void ast_restore_lock_info(void *lock_addr)
++{
++}
+ #endif /* !defined(LOW_MEMORY) */
+ #endif /* DEBUG_THREADS */
+--- utils/check_expr.c
++++ utils/check_expr.c
+@@ -21,7 +21,7 @@
+  ***/
+ 
+ #include "asterisk.h"
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 328259 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398753 $")
+ 
+ #include "asterisk/ast_expr.h"
+ 
+@@ -55,6 +55,7 @@
+ }
+ #endif
+ 
++#ifdef DEBUG_THREADS
+ #if !defined(LOW_MEMORY)
+ #ifdef HAVE_BKTR
+ void ast_store_lock_info(enum ast_lock_type type, const char *filename,
+@@ -105,12 +106,20 @@
+ }
+ #endif /* HAVE_BKTR */
+ 
++void ast_suspend_lock_info(void *lock_addr)
++{
++}
++void ast_restore_lock_info(void *lock_addr)
++{
++}
+ void ast_mark_lock_acquired(void *);
+ void ast_mark_lock_acquired(void *foo)
+ {
+     /* not a lot to do in a standalone w/o threading! */
+ }
+ #endif
++#endif /* DEBUG_THREADS */
++
+ 
+ static int global_lineno = 1;
+ static int global_expr_count=0;
+--- utils/conf2ael.c
++++ utils/conf2ael.c
+@@ -28,7 +28,7 @@
+  ***/
+ 
+ #include "asterisk.h"
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 358812 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398749 $")
+ 
+ #include "asterisk/paths.h"	/* CONFIG_DIR */
+ #include <locale.h>
+@@ -777,5 +777,11 @@
+ {
+ }
+ #endif /* HAVE_BKTR */
++void ast_suspend_lock_info(void *lock_addr)
++{
++}
++void ast_restore_lock_info(void *lock_addr)
++{
++}
+ #endif /* !defined(LOW_MEMORY) */
+ #endif /* DEBUG_THREADS */
 --- utils/extconf.c
 +++ utils/extconf.c
 @@ -3149,10 +3149,9 @@
