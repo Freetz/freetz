@@ -28,7 +28,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(UNRAR_DIR) -f makefile \
 		CXX="$(TARGET_CXX)" \
-		CXXFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS) -fno-rtti -fno-exceptions" \
 		DEFINES="$(UNRAR_DEFINES)" \
 		LDFLAGS="$(UNRAR_LDFLAGS)" \
 		STRIP=true

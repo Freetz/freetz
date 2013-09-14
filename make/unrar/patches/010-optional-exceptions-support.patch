@@ -1,0 +1,90 @@
+--- errhnd.cpp
++++ errhnd.cpp
+@@ -339,7 +339,11 @@
+     mprintf(L"\n%s\n",St(MProgAborted));
+ #endif
+   ErrHandler.SetErrorCode(Code);
++#ifdef ALLOW_EXCEPTIONS
+   throw Code;
++#else
++  exit(Code);
++#endif
+ }
+ 
+ 
+--- rar.cpp
++++ rar.cpp
+@@ -32,7 +32,9 @@
+   bool ShutdownOnClose=false;
+ #endif
+ 
++#ifdef ALLOW_EXCEPTIONS
+   try 
++#endif
+   {
+   
+     CommandData *Cmd=new CommandData;
+@@ -78,6 +80,7 @@
+     Cmd->ProcessCommand();
+     delete Cmd;
+   }
++#ifdef ALLOW_EXCEPTIONS
+   catch (RAR_EXIT ErrCode)
+   {
+     ErrHandler.SetErrorCode(ErrCode);
+@@ -91,6 +94,7 @@
+   {
+     ErrHandler.SetErrorCode(RARX_FATAL);
+   }
++#endif
+ 
+ #if defined(_WIN_ALL) && !defined(SFX_MODULE) && !defined(SHELL_EXT)
+   if (ShutdownOnClose)
+--- unpack50frag.cpp
++++ unpack50frag.cpp
+@@ -36,7 +36,11 @@
+       Size-=Size/32;
+     }
+     if (NewMem==NULL)
++#ifdef ALLOW_EXCEPTIONS
+       throw std::bad_alloc();
++#else
++      ErrHandler.MemoryError();
++#endif
+     
+     // Clean the window to generate the same output when unpacking corrupt
+     // RAR files, which may access to unused areas of sliding dictionary.
+@@ -48,7 +52,11 @@
+     BlockNum++;
+   }
+   if (TotalSize<WinSize) // Not found enough free blocks.
++#ifdef ALLOW_EXCEPTIONS
+     throw std::bad_alloc();
++#else
++    ErrHandler.MemoryError();
++#endif
+ }
+ 
+ 
+--- unpack.cpp
++++ unpack.cpp
+@@ -91,11 +91,19 @@
+ 
+   // We do not handle growth for fragmented window now.
+   if (Grow && (NewWindow==NULL || Fragmented))
++#ifdef ALLOW_EXCEPTIONS
+     throw std::bad_alloc();
++#else
++    ErrHandler.MemoryError();
++#endif
+ 
+   if (NewWindow==NULL)
+     if (WinSize<0x1000000) // Exclude RAR4 and small dictionaries.
++#ifdef ALLOW_EXCEPTIONS
+       throw std::bad_alloc();
++#else
++      ErrHandler.MemoryError();
++#endif
+     else
+     {
+       FragWindow.Init(WinSize);
