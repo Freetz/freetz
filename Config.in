@@ -1512,7 +1512,7 @@ menu "Override options"
 		default "@AVM/fritzbox.fon_wlan_7390/firmware/deutsch"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_05_5X && FREETZ_TYPE_LANG_DE
 		default "@AVM/fritzbox.fon_wlan_7390/firmware/english"               if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_7390 || FREETZ_TYPE_7340_7390) && FREETZ_TYPE_FIRMWARE_05_5X && FREETZ_TYPE_LANG_EN
 		default "@AVM/fritzbox.7490/firmware/deutsch"                        if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490
-#		default "@AVM/beta"                                                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
+		default "@AVM/beta"                                                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
 		default "@AVM/fritzbox.fon_wlan_7570/firmware/english"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		default "@AVM/fritzbox.sl_wlan/firmware"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3020
 		default "@AVM/fritzbox.wlan_3030/firmware"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3030
@@ -1632,6 +1632,16 @@ menu "Override options"
 		default "FRITZ.Box_3390.121.05.51.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3390
 		default "fw_Speedport_W501V_v_28.04.38.image"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_W501V
 		default "fritz.box..."                                                  if FREETZ_TYPE_CUSTOM
+
+	config FREETZ_DL_SOURCE_CONTAINER 
+		string
+		depends on FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR
+		default "fritzbox-labor-7490-26415.zip"
+
+	config FREETZ_DL_SOURCE_CONTAINER_MD5
+		string
+		depends on FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR
+		default "3427f94adc3c9dec2702aeceb8c4ae5b"
 
 	config FREETZ_DL_SOURCE_MD5
 		string "MD5 checksum for downloaded Image"  if FREETZ_DL_OVERRIDE
