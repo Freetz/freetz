@@ -450,11 +450,13 @@ oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig: config-
 
 config-cache: $(CONFIG_IN_CACHE)
 
+ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 -include include/config/cache.conf.cmd
 
 $(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(CONFIG_IN).custom $(PARSE_CONFIG_TOOL) $(deps_config_cache)
 	@mkdir -p include/config include/generated
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
+endif
 
 $(CONFIG_IN).custom:
 	@touch $@
@@ -498,7 +500,7 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_
 
 common-clean:
 	./fwmod_custom clean
-	$(RM) make/Config.in.generated make/external.in.generated 
+	$(RM) make/Config.in.generated make/external.in.generated
 	$(RM) .static .dynamic .packages .exclude-dist-tmp $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
