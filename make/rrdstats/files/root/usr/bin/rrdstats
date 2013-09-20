@@ -35,7 +35,8 @@ collect_cpu() {
 			RRA:AVERAGE:0.5:1:576 \
 			RRA:AVERAGE:0.5:6:672 \
 			RRA:AVERAGE:0.5:24:732 \
-			RRA:AVERAGE:0.5:144:1460
+			RRA:AVERAGE:0.5:144:1460 \
+			RRA:AVERAGE:0.5:360:2920
 	fi
 	cpudata=$(grep '^cpu ' /proc/stat 2>/dev/null | awk '{print "N:"$2":"$3":"$4":"$6+$7":"$5;}')
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $cpudata --template user:nice:syst:wait:idle
@@ -56,7 +57,8 @@ collect_mem() {
 			RRA:AVERAGE:0.5:1:576 \
 			RRA:AVERAGE:0.5:6:672 \
 			RRA:AVERAGE:0.5:24:732 \
-			RRA:AVERAGE:0.5:144:1460
+			RRA:AVERAGE:0.5:144:1460 \
+			RRA:AVERAGE:0.5:360:2920
 	fi
 	memdata=$(awk '
 		/^MemTotal:/ {total=$2*1024}
@@ -81,7 +83,8 @@ collect_upt() {
 			RRA:MAX:0.1:1:576 \
 			RRA:MAX:0.1:6:672 \
 			RRA:MAX:0.1:24:732 \
-			RRA:MAX:0.1:144:1460
+			RRA:MAX:0.1:144:1460 \
+			RRA:MAX:0.1:360:2920
 	fi
 	uX=$(( $(cat /proc/uptime | sed 's/ .*$//;s/\..*//')/60 ))
 	uH=$(( $uX/60 ))
@@ -100,7 +103,8 @@ collect_temp() {
 			RRA:MAX:0.1:1:576 \
 			RRA:MAX:0.1:6:672 \
 			RRA:MAX:0.1:24:732 \
-			RRA:MAX:0.1:144:1460
+			RRA:MAX:0.1:144:1460 \
+			RRA:MAX:0.1:360:2920
 	fi
 	uT="$(ctlmgr_ctl r power status/act_temperature 2>/dev/null)"
 	[ $uT -gt 0 2>/dev/null ] || return
@@ -137,7 +141,8 @@ collect_diskio() {
 				RRA:AVERAGE:0.5:1:576 \
 				RRA:AVERAGE:0.5:6:672 \
 				RRA:AVERAGE:0.5:24:732 \
-				RRA:AVERAGE:0.5:144:1460
+				RRA:AVERAGE:0.5:144:1460 \
+				RRA:AVERAGE:0.5:360:2920
 		fi
 		if ( echo $DISK | grep -E 'sd[a-z][0-9]' >/dev/null 2>&1 ); then
 			io=$(cat /proc/diskstats | sed -n 's/^.*'$DISK' \([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.\([0-9]*\)[0-9]*.*$/\2:\4/p')
@@ -170,7 +175,8 @@ collect_thg() {
 			RRA:LAST:0.1:1:576 \
 			RRA:LAST:0.1:6:672 \
 			RRA:LAST:0.1:24:732 \
-			RRA:LAST:0.1:144:1460
+			RRA:LAST:0.1:144:1460 \
+			RRA:LAST:0.1:360:2920
 	fi
 	[ -z "$WGET" ] && WGET="$(detect_wget)"
 	uptdatBL=N$($WGET http://192.168.100.1/BasicLan.htm -O - -q -T 2 | grep -E "Power|Ratio|Computers" | sed 's/ dB.*//g;s/<\/td><\/tr>$//;s/^.*>/:/' | tr -d "\n")
@@ -208,7 +214,8 @@ collect_epc_100609() {
 			RRA:LAST:0.1:1:576  \
 			RRA:LAST:0.1:6:672  \
 			RRA:LAST:0.1:24:732 \
-			RRA:LAST:0.1:144:1460
+			RRA:LAST:0.1:144:1460 \
+			RRA:LAST:0.1:360:2920
 	fi
 	[ -z "$WGET" ] && WGET="$(detect_wget)"
 	updateT=
@@ -266,7 +273,8 @@ collect_epc_120225() {
 			RRA:LAST:0.1:1:576  \
 			RRA:LAST:0.1:6:672  \
 			RRA:LAST:0.1:24:732 \
-			RRA:LAST:0.1:144:1460
+			RRA:LAST:0.1:144:1460 \
+			RRA:LAST:0.1:360:2920
 	fi
 	[ -z "$WGET" ] && WGET="$(detect_wget)"
 	updateT=
@@ -320,7 +328,8 @@ collect_arristm() {
 			RRA:LAST:0.1:1:576 \
 			RRA:LAST:0.1:6:672 \
 			RRA:LAST:0.1:24:732 \
-			RRA:LAST:0.1:144:1460
+			RRA:LAST:0.1:144:1460 \
+			RRA:LAST:0.1:360:2920
 	fi
 	[ -z "$WGET" ] && WGET="$(detect_wget)"
 	inpData=$($WGET http://192.168.100.1/phy.htm -O - -q -T 2)
@@ -368,7 +377,8 @@ collect_net() {
 			RRA:AVERAGE:0.5:1:576 \
 			RRA:AVERAGE:0.5:6:672 \
 			RRA:AVERAGE:0.5:24:732 \
-			RRA:AVERAGE:0.5:144:1460
+			RRA:AVERAGE:0.5:144:1460 \
+			RRA:AVERAGE:0.5:360:2920
 	fi
 	netdata=$(ifconfig $IF | sed '/bytes/!d;s/.*RX bytes/N/;s/ .*TX bytes//;s/ .*//')
 	[ -z "$netdata" ] && netdata="N:0:0"
