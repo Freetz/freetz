@@ -106,7 +106,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387689 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396944 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399034 $")
  
  #include <dahdi/user.h>
  
@@ -363,7 +363,63 @@
  
  	if (!trunk_ref) {
  		ast_debug(1, "Trunk not found for event!\n");
-@@ -5571,34 +5608,30 @@
+@@ -5013,6 +5050,23 @@
+ 			res = -2;
+ 			goto usernotfound;
+ 		}
++	} else {
++		/* fail for commands that require a user */
++		switch (*args.command) {
++		case 'm': /* Unmute */
++		case 'M': /* Mute */
++		case 't': /* Lower user's talk volume */
++		case 'T': /* Raise user's talk volume */
++		case 'u': /* Lower user's listen volume */
++		case 'U': /* Raise user's listen volume */
++		case 'r': /* Reset user's volume level */
++		case 'k': /* Kick user */
++			res = -2;
++			ast_log(LOG_NOTICE, "No user specified!\n");
++			goto usernotfound;
++		default:
++			break;
++		}
+ 	}
+ 
+ 	switch (*args.command) {
+@@ -5028,21 +5082,22 @@
+ 	case 101: /* e: Eject last user*/
+ 	{
+ 		int max_no = 0;
++		RAII_VAR(struct ast_conf_user *, eject_user, NULL, ao2_cleanup);
+ 
+-		/* If they passed in a user, disregard it */
+-		if (user) {
+-			ao2_ref(user, -1);
++		ao2_callback(cnf->usercontainer, OBJ_NODATA, user_max_cmp, &max_no);
++		eject_user = ao2_find(cnf->usercontainer, &max_no, 0);
++		if (!eject_user) {
++			res = -1;
++			ast_log(LOG_NOTICE, "No last user to kick!\n");
++			break;
+ 		}
+ 
+-		ao2_callback(cnf->usercontainer, OBJ_NODATA, user_max_cmp, &max_no);
+-		user = ao2_find(cnf->usercontainer, &max_no, 0);
+-		if (!ast_test_flag64(&user->userflags, CONFFLAG_ADMIN))
+-			user->adminflags |= ADMINFLAG_KICKME;
+-		else {
++		if (!ast_test_flag64(&eject_user->userflags, CONFFLAG_ADMIN)) {
++			eject_user->adminflags |= ADMINFLAG_KICKME;
++		} else {
+ 			res = -1;
+ 			ast_log(LOG_NOTICE, "Not kicking last user, is an Admin!\n");
+ 		}
+-		ao2_ref(user, -1);
+ 		break;
+ 	}
+ 	case 77: /* M: Mute */ 
+@@ -5571,34 +5626,30 @@
  	ast_config_destroy(cfg);
  }
  
@@ -412,7 +468,7 @@
  }
  
  static int sla_check_station_hold_access(const struct sla_trunk *trunk,
-@@ -5622,9 +5655,11 @@
+@@ -5622,9 +5673,11 @@
  	return 0;
  }
  
@@ -425,7 +481,7 @@
   * \return a pointer to the station's trunk reference.  If the trunk
   *         is not found, it is not idle and barge is disabled, or if
   *         it is on hold and private hold is set, then NULL will be returned.
-@@ -5651,16 +5686,32 @@
+@@ -5651,16 +5704,32 @@
  		break;
  	}
  
@@ -459,7 +515,7 @@
  	station_ref->station = station;
  
  	return station_ref;
-@@ -5673,12 +5724,48 @@
+@@ -5673,12 +5742,48 @@
  	if (!(ringing_station = ast_calloc(1, sizeof(*ringing_station))))
  		return NULL;
  
@@ -508,7 +564,7 @@
  static enum ast_device_state sla_state_to_devstate(enum sla_trunk_state state)
  {
  	switch (state) {
-@@ -5701,18 +5788,25 @@
+@@ -5701,18 +5806,25 @@
  {
  	struct sla_station *station;
  	struct sla_trunk_ref *trunk_ref;
@@ -536,7 +592,7 @@
  }
  
  struct run_station_args {
-@@ -5730,8 +5824,8 @@
+@@ -5730,8 +5842,8 @@
  
  static void *run_station(void *data)
  {
@@ -547,7 +603,7 @@
  	struct ast_str *conf_name = ast_str_create(16);
  	struct ast_flags64 conf_flags = { 0 };
  	struct ast_conference *conf;
-@@ -5774,6 +5868,8 @@
+@@ -5774,6 +5886,8 @@
  	return NULL;
  }
  
@@ -556,7 +612,7 @@
  static void sla_stop_ringing_trunk(struct sla_ringing_trunk *ringing_trunk)
  {
  	char buf[80];
-@@ -5783,10 +5879,11 @@
+@@ -5783,10 +5897,11 @@
  	admin_exec(NULL, buf);
  	sla_change_trunk_state(ringing_trunk->trunk, SLA_TRUNK_STATE_IDLE, ALL_TRUNK_REFS, NULL);
  
@@ -571,7 +627,7 @@
  }
  
  static void sla_stop_ringing_station(struct sla_ringing_station *ringing_station,
-@@ -5821,7 +5918,7 @@
+@@ -5821,7 +5936,7 @@
  	}
  
  done:
@@ -580,7 +636,7 @@
  }
  
  static void sla_dial_state_callback(struct ast_dial *dial)
-@@ -5873,8 +5970,10 @@
+@@ -5873,8 +5988,10 @@
  			if (rm)
  				AST_LIST_REMOVE_CURRENT(entry);
  
@@ -592,7 +648,7 @@
  
  			break;
  		}
-@@ -5892,7 +5991,7 @@
+@@ -5892,7 +6009,7 @@
  	struct sla_ringing_station *ringing_station;
  
  	AST_LIST_TRAVERSE_SAFE_BEGIN(&sla.ringing_stations, ringing_station, entry) {
@@ -601,7 +657,7 @@
  		struct sla_ringing_trunk *ringing_trunk = NULL;
  		struct run_station_args args;
  		enum ast_dial_result dial_res;
-@@ -5925,7 +6024,7 @@
+@@ -5925,7 +6042,7 @@
  				ast_dial_join(ringing_station->station->dial);
  				ast_dial_destroy(ringing_station->station->dial);
  				ringing_station->station->dial = NULL;
@@ -610,7 +666,7 @@
  				break;
  			}
  			/* Track the channel that answered this trunk */
-@@ -5936,12 +6035,14 @@
+@@ -5936,12 +6053,14 @@
  			/* Now, start a thread that will connect this station to the trunk.  The rest of
  			 * the code here sets up the thread and ensures that it is able to save the arguments
  			 * before they are no longer valid since they are allocated on the stack. */
@@ -627,7 +683,7 @@
  			ast_mutex_init(&cond_lock);
  			ast_cond_init(&cond, NULL);
  			ast_mutex_lock(&cond_lock);
-@@ -5995,7 +6096,7 @@
+@@ -5995,7 +6114,7 @@
  			continue;
  		if (ast_tvdiff_ms(ast_tvnow(), failed_station->last_try) > 1000) {
  			AST_LIST_REMOVE_CURRENT(entry);
@@ -636,7 +692,7 @@
  			break;
  		}
  		res = 1;
-@@ -6048,11 +6149,9 @@
+@@ -6048,11 +6167,9 @@
  	if (res != AST_DIAL_RESULT_TRYING) {
  		struct sla_failed_station *failed_station;
  		ast_dial_destroy(dial);
@@ -651,7 +707,7 @@
  		return -1;
  	}
  	if (!(ringing_station = sla_create_ringing_station(station))) {
-@@ -6092,6 +6191,8 @@
+@@ -6092,6 +6209,8 @@
  			break;
  	}
  
@@ -660,7 +716,7 @@
  	return trunk_ref;
  }
  
-@@ -6103,7 +6204,7 @@
+@@ -6103,7 +6222,7 @@
  static int sla_check_station_delay(struct sla_station *station, 
  	struct sla_ringing_trunk *ringing_trunk)
  {
@@ -669,7 +725,7 @@
  	unsigned int delay = UINT_MAX;
  	int time_left, time_elapsed;
  
-@@ -6196,7 +6297,7 @@
+@@ -6196,7 +6315,7 @@
  			ast_dial_join(ringing_station->station->dial);
  			ast_dial_destroy(ringing_station->station->dial);
  			ringing_station->station->dial = NULL;
@@ -678,7 +734,7 @@
  		}
  	}
  	AST_LIST_TRAVERSE_SAFE_END
-@@ -6353,8 +6454,10 @@
+@@ -6353,8 +6472,10 @@
  {
  	struct sla_station *station;
  	int res = 0;
@@ -690,7 +746,7 @@
  		struct sla_ringing_trunk *ringing_trunk;
  		int time_left;
  
-@@ -6384,6 +6487,7 @@
+@@ -6384,6 +6505,7 @@
  		if (time_left < *timeout)
  			*timeout = time_left;
  	}
@@ -698,7 +754,7 @@
  
  	return res;
  }
-@@ -6425,50 +6529,19 @@
+@@ -6425,50 +6547,19 @@
  	return 1;
  }
  
@@ -757,7 +813,7 @@
  }
  
  static void *sla_thread(void *data)
-@@ -6507,27 +6580,21 @@
+@@ -6507,27 +6598,21 @@
  			case SLA_EVENT_RINGING_TRUNK:
  				sla_handle_ringing_trunk_event();
  				break;
@@ -792,7 +848,7 @@
  
  	return NULL;
  }
-@@ -6548,7 +6615,8 @@
+@@ -6548,7 +6633,8 @@
  	char conf_name[MAX_CONFNUM];
  	struct ast_conference *conf;
  	struct ast_flags64 conf_flags = { 0 };
@@ -802,7 +858,7 @@
  	int caller_is_saved;
  	struct ast_party_caller caller;
  	int last_state = 0;
-@@ -6620,8 +6688,8 @@
+@@ -6620,8 +6706,8 @@
  			break;
  
  		/* check that SLA station that originated trunk call is still alive */
@@ -813,7 +869,7 @@
  			trunk_ref->trunk->chan = NULL;
  			break;
  		}
-@@ -6674,15 +6742,19 @@
+@@ -6674,15 +6760,19 @@
  	return NULL;
  }
  
@@ -835,7 +891,7 @@
  	}
  
  	return trunk_ref;
-@@ -6691,8 +6763,8 @@
+@@ -6691,8 +6781,8 @@
  static int sla_station_exec(struct ast_channel *chan, const char *data)
  {
  	char *station_name, *trunk_name;
@@ -846,7 +902,7 @@
  	char conf_name[MAX_CONFNUM];
  	struct ast_flags64 conf_flags = { 0 };
  	struct ast_conference *conf;
-@@ -6712,25 +6784,21 @@
+@@ -6712,25 +6802,21 @@
  		return 0;
  	}
  
@@ -876,7 +932,7 @@
  
  	if (!trunk_ref) {
  		if (ast_strlen_zero(trunk_name))
-@@ -6740,8 +6808,6 @@
+@@ -6740,8 +6826,6 @@
  				"'%s' due to access controls.\n", trunk_name);
  		}
  		pbx_builtin_setvar_helper(chan, "SLASTATION_STATUS", "CONGESTION");
@@ -885,7 +941,7 @@
  		return 0;
  	}
  
-@@ -6770,7 +6836,7 @@
+@@ -6770,7 +6854,7 @@
  			answer_trunk_chan(ringing_trunk->trunk->chan);
  			sla_change_trunk_state(ringing_trunk->trunk, SLA_TRUNK_STATE_UP, ALL_TRUNK_REFS, NULL);
  
@@ -894,7 +950,7 @@
  
  			/* Queue up reprocessing ringing trunks, and then ringing stations again */
  			sla_queue_event(SLA_EVENT_RINGING_TRUNK);
-@@ -6790,6 +6856,8 @@
+@@ -6790,6 +6874,8 @@
  			.cond_lock = &cond_lock,
  			.cond = &cond,
  		};
@@ -903,7 +959,7 @@
  		sla_change_trunk_state(trunk_ref->trunk, SLA_TRUNK_STATE_UP, ALL_TRUNK_REFS, NULL);
  		/* Create a thread to dial the trunk and dump it into the conference.
  		 * However, we want to wait until the trunk has been dialed and the
-@@ -6809,8 +6877,6 @@
+@@ -6809,8 +6895,6 @@
  			pbx_builtin_setvar_helper(chan, "SLASTATION_STATUS", "CONGESTION");
  			sla_change_trunk_state(trunk_ref->trunk, SLA_TRUNK_STATE_IDLE, ALL_TRUNK_REFS, NULL);
  			trunk_ref->chan = NULL;
@@ -912,7 +968,7 @@
  			return 0;
  		}
  	}
-@@ -6843,19 +6909,28 @@
+@@ -6843,19 +6927,28 @@
  	
  	pbx_builtin_setvar_helper(chan, "SLASTATION_STATUS", "SUCCESS");
  
@@ -945,7 +1001,7 @@
  	trunk_ref->trunk = trunk;
  
  	return trunk_ref;
-@@ -6865,9 +6940,11 @@
+@@ -6865,9 +6958,11 @@
  {
  	struct sla_ringing_trunk *ringing_trunk;
  
@@ -959,7 +1015,7 @@
  	ringing_trunk->trunk = trunk;
  	ringing_trunk->ring_begin = ast_tvnow();
  
-@@ -6882,6 +6959,16 @@
+@@ -6882,6 +6977,16 @@
  	return ringing_trunk;
  }
  
@@ -976,7 +1032,7 @@
  enum {
  	SLA_TRUNK_OPT_MOH = (1 << 0),
  };
-@@ -6900,7 +6987,7 @@
+@@ -6900,7 +7005,7 @@
  	char conf_name[MAX_CONFNUM];
  	struct ast_conference *conf;
  	struct ast_flags64 conf_flags = { 0 };
@@ -985,7 +1041,7 @@
  	struct sla_ringing_trunk *ringing_trunk;
  	AST_DECLARE_APP_ARGS(args,
  		AST_APP_ARG(trunk_name);
-@@ -6924,16 +7011,11 @@
+@@ -6924,16 +7029,11 @@
  		}
  	}
  
@@ -1002,7 +1058,7 @@
  		return 0;
  	}
  
-@@ -6941,8 +7023,6 @@
+@@ -6941,8 +7041,6 @@
  		ast_log(LOG_ERROR, "Call came in on %s, but the trunk is already in use!\n",
  			args.trunk_name);
  		pbx_builtin_setvar_helper(chan, "SLATRUNK_STATUS", "FAILURE");
@@ -1011,7 +1067,7 @@
  		return 0;
  	}
  
-@@ -6950,8 +7030,6 @@
+@@ -6950,8 +7048,6 @@
  
  	if (!(ringing_trunk = queue_ringing_trunk(trunk))) {
  		pbx_builtin_setvar_helper(chan, "SLATRUNK_STATUS", "FAILURE");
@@ -1020,7 +1076,7 @@
  		return 0;
  	}
  
-@@ -6959,8 +7037,6 @@
+@@ -6959,8 +7055,6 @@
  	conf = build_conf(conf_name, "", "", 1, 1, 1, chan, NULL);
  	if (!conf) {
  		pbx_builtin_setvar_helper(chan, "SLATRUNK_STATUS", "FAILURE");
@@ -1029,7 +1085,7 @@
  		return 0;
  	}
  	ast_set_flag64(&conf_flags, 
-@@ -6994,46 +7070,37 @@
+@@ -6994,46 +7088,37 @@
  	AST_LIST_TRAVERSE_SAFE_END;
  	ast_mutex_unlock(&sla.lock);
  	if (ringing_trunk) {
@@ -1085,7 +1141,7 @@
  
  	if (res == AST_DEVICE_INVALID) {
  		ast_log(LOG_ERROR, "Could not determine state for trunk %s on station %s!\n",
-@@ -7043,26 +7110,39 @@
+@@ -7043,26 +7128,39 @@
  	return res;
  }
  
@@ -1135,7 +1191,7 @@
  		AST_LIST_TRAVERSE(&station->trunks, trunk_ref, entry) {
  			char exten[AST_MAX_EXTENSION];
  			char hint[AST_MAX_APP];
-@@ -7073,31 +7153,43 @@
+@@ -7073,31 +7171,43 @@
  			ast_context_remove_extension(station->autocontext, hint, 
  				PRIORITY_HINT, sla_registrar);
  		}
@@ -1178,10 +1234,10 @@
 +static int sla_station_hash(const void *obj, const int flags)
 +{
 +	const struct sla_station *station = obj;
-+
+ 
 +	return ast_str_case_hash(station->name);
 +}
- 
++
 +static int sla_station_cmp(void *obj, void *arg, int flags)
 +{
 +	struct sla_station *station = obj, *station2 = arg;
@@ -1194,7 +1250,7 @@
  	if (sla.thread != AST_PTHREADT_NULL) {
  		ast_mutex_lock(&sla.lock);
  		sla.stop = 1;
-@@ -7111,6 +7203,15 @@
+@@ -7111,6 +7221,15 @@
  
  	ast_mutex_destroy(&sla.lock);
  	ast_cond_destroy(&sla.cond);
@@ -1210,7 +1266,7 @@
  }
  
  static int sla_check_device(const char *device)
-@@ -7126,11 +7227,27 @@
+@@ -7126,11 +7245,27 @@
  	return 0;
  }
  
@@ -1239,7 +1295,7 @@
  
  	if (!(dev = ast_variable_retrieve(cfg, cat, "device"))) {
  		ast_log(LOG_ERROR, "SLA Trunk '%s' defined with no device!\n", cat);
-@@ -7138,16 +7255,25 @@
+@@ -7138,16 +7273,25 @@
  	}
  
  	if (sla_check_device(dev)) {
@@ -1268,7 +1324,7 @@
  	ast_string_field_set(trunk, device, dev);
  
  	for (var = ast_variable_browse(cfg, cat); var; var = var->next) {
-@@ -7176,54 +7302,65 @@
+@@ -7176,54 +7320,65 @@
  		}
  	}
  
@@ -1349,7 +1405,7 @@
  	trunk_ref->state = SLA_TRUNK_STATE_IDLE;
  
  	while ((cur = strsep(&options, ","))) {
-@@ -7247,41 +7384,73 @@
+@@ -7247,41 +7402,73 @@
  		}
  	}
  
@@ -1436,7 +1492,7 @@
  			if (sscanf(var->value, "%30u", &station->ring_timeout) != 1) {
  				ast_log(LOG_WARNING, "Invalid ringtimeout '%s' specified for station '%s'\n",
  					var->value, station->name);
-@@ -7309,6 +7478,8 @@
+@@ -7309,6 +7496,8 @@
  		}
  	}
  
@@ -1445,7 +1501,7 @@
  	if (!ast_strlen_zero(station->autocontext)) {
  		struct ast_context *context;
  		struct sla_trunk_ref *trunk_ref;
-@@ -7316,7 +7487,6 @@
+@@ -7316,7 +7505,6 @@
  		if (!context) {
  			ast_log(LOG_ERROR, "Failed to automatically find or create "
  				"context '%s' for SLA!\n", station->autocontext);
@@ -1453,7 +1509,7 @@
  			return -1;
  		}
  		/* The extension for when the handset goes off-hook.
-@@ -7325,10 +7495,8 @@
+@@ -7325,10 +7513,8 @@
  			NULL, NULL, slastation_app, ast_strdup(station->name), ast_free_ptr, sla_registrar)) {
  			ast_log(LOG_ERROR, "Failed to automatically create extension "
  				"for trunk '%s'!\n", station->name);
@@ -1464,7 +1520,7 @@
  		AST_LIST_TRAVERSE(&station->trunks, trunk_ref, entry) {
  			char exten[AST_MAX_EXTENSION];
  			char hint[AST_MAX_APP];
-@@ -7340,7 +7508,6 @@
+@@ -7340,7 +7526,6 @@
  				NULL, NULL, slastation_app, ast_strdup(exten), ast_free_ptr, sla_registrar)) {
  				ast_log(LOG_ERROR, "Failed to automatically create extension "
  					"for trunk '%s'!\n", station->name);
@@ -1472,7 +1528,7 @@
  				return -1;
  			}
  			/* Hint for this line button 
-@@ -7349,20 +7516,115 @@
+@@ -7349,20 +7534,115 @@
  				NULL, NULL, hint, NULL, NULL, sla_registrar)) {
  				ast_log(LOG_ERROR, "Failed to automatically create hint "
  					"for trunk '%s'!\n", station->name);
@@ -1507,10 +1563,10 @@
 +	}
 +
 +	ao2_unlock(trunk);
- 
- 	return 0;
- }
- 
++
++	return 0;
++}
++
 +static int sla_station_mark(void *obj, void *arg, int flags)
 +{
 +	struct sla_station *station = obj;
@@ -1525,10 +1581,10 @@
 +	}
 +
 +	ao2_unlock(station);
-+
-+	return 0;
-+}
-+
+ 
+ 	return 0;
+ }
+ 
 +static int sla_trunk_is_marked(void *obj, void *arg, int flags)
 +{
 +	struct sla_trunk *trunk = obj;
@@ -1593,7 +1649,7 @@
  static int sla_load_config(int reload)
  {
  	struct ast_config *cfg;
-@@ -7374,6 +7636,8 @@
+@@ -7374,6 +7654,8 @@
  	if (!reload) {
  		ast_mutex_init(&sla.lock);
  		ast_cond_init(&sla.cond, NULL);
@@ -1602,7 +1658,7 @@
  	}
  
  	if (!(cfg = ast_config_load(SLA_CONFIG_FILE, config_flags))) {
-@@ -7386,21 +7650,8 @@
+@@ -7386,21 +7668,8 @@
  	}
  
  	if (reload) {
@@ -1626,7 +1682,7 @@
  	}
  
  	if ((val = ast_variable_retrieve(cfg, "general", "attemptcallerid")))
-@@ -7427,9 +7678,13 @@
+@@ -7427,9 +7696,13 @@
  
  	ast_config_destroy(cfg);
  
@@ -1643,7 +1699,7 @@
  		ast_pthread_create(&sla.thread, NULL, sla_thread, NULL);
  	}
  
-@@ -7514,15 +7769,7 @@
+@@ -7514,15 +7787,7 @@
  static int load_config(int reload)
  {
  	load_config_meetme();
@@ -1660,7 +1716,7 @@
  }
  
  #define MEETME_DATA_EXPORT(MEMBER)					\
-@@ -7735,8 +7982,6 @@
+@@ -7735,8 +8000,6 @@
  	return res;
  }
  
@@ -1885,7 +1941,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 391241 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396948 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398885 $")
  
  #include <sys/time.h>
  #include <sys/signal.h>
@@ -2566,6 +2622,17 @@
  	penalty = atoi(penalty_s);
  
  	if (set_member_value((char *)queuename, (char *)interface, MEMBER_PENALTY, penalty)) {
+@@ -9006,8 +9013,8 @@
+ 	case CLI_INIT:
+ 		e->command = "queue add member";
+ 		e->usage =
+-			"Usage: queue add member <channel> to <queue> [[[penalty <penalty>] as <membername>] state_interface <interface>]\n"
+-			"       Add a channel to a queue with optionally:  a penalty, membername and a state_interface\n";
++			"Usage: queue add member <dial string> to <queue> [[[penalty <penalty>] as <membername>] state_interface <interface>]\n"
++			"       Add a dial string (Such as a channel,e.g. SIP/6001) to a queue with optionally:  a penalty, membername and a state_interface\n";
+ 		return NULL;
+ 	case CLI_GENERATE:
+ 		return complete_queue_add_member(a->line, a->word, a->pos, a->n);
 @@ -9207,7 +9214,7 @@
  	switch (cmd) {
  	case CLI_INIT:
@@ -2772,6 +2839,22 @@
  static void conf_user_profile_copy(struct user_profile *dst, struct user_profile *src)
  {
  	*dst = *src;
+--- apps/confbridge/conf_state_multi_marked.c
++++ apps/confbridge/conf_state_multi_marked.c
+@@ -95,6 +95,13 @@
+ 		AST_LIST_TRAVERSE_SAFE_BEGIN(&cbu->conference_bridge->active_list, cbu_iter, list) {
+ 			/* Kick ENDMARKED cbu_iters */
+ 			if (ast_test_flag(&cbu_iter->u_profile, USER_OPT_ENDMARKED)) {
++				if (ast_test_flag(&cbu_iter->u_profile, USER_OPT_WAITMARKED) &&
++						  !ast_test_flag(&cbu_iter->u_profile, USER_OPT_MARKEDUSER)) {
++					AST_LIST_REMOVE_CURRENT(list);
++					cbu_iter->conference_bridge->activeusers--;
++					AST_LIST_INSERT_TAIL(&cbu_iter->conference_bridge->waiting_list, cbu_iter, list);
++					cbu_iter->conference_bridge->waitingusers++;
++				}
+ 				cbu_iter->kicked = 1;
+ 				ast_bridge_remove(cbu_iter->conference_bridge->bridge, cbu_iter->chan);
+ 			} else if (ast_test_flag(&cbu_iter->u_profile, USER_OPT_WAITMARKED) &&
 --- apps/confbridge/include/confbridge.h
 +++ apps/confbridge/include/confbridge.h
 @@ -244,7 +244,10 @@
@@ -2786,6 +2869,41 @@
  
  /*! \brief destroy the information loaded from the confbridge.conf file*/
  void conf_destroy_config(void);
+--- bridges/bridge_softmix.c
++++ bridges/bridge_softmix.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 375895 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399353 $")
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -313,6 +313,7 @@
+ 		return -1;
+ 	}
+ 	if (!(softmix_data->timer = ast_timer_open())) {
++		ast_log(AST_LOG_WARNING, "Failed to open timer for softmix bridge\n");
+ 		ao2_ref(softmix_data, -1);
+ 		return -1;
+ 	}
+--- build_tools/prep_tarball
++++ build_tools/prep_tarball
+@@ -19,11 +19,11 @@
+ 
+ cd doc
+ echo "Downloading the PDF and HTML documentation from the Asterisk wiki (this will take a minute) ..."
+-wget https://wiki.asterisk.org/wiki/download/attachments/19005471/Asterisk-Admin-Guide-$branch.pdf
++wget https://wiki.asterisk.org/wiki/download/attachments/19005471/Asterisk-$branch-Reference.pdf
++wget https://wiki.asterisk.org/wiki/download/attachments/19005471/Asterisk-Admin-Guide.pdf
+ wget https://wiki.asterisk.org/wiki/download/attachments/19005471/Asterisk-Admin-Guide-$branch.html.zip
+ echo "Extracting HTML Admin Guide"
+ unzip Asterisk-Admin-Guide-$branch.html.zip
+ mv AST/ Asterisk-Admin-Guide/
+-mv Asterisk-Admin-Guide-$branch.pdf Asterisk-Admin-Guide.pdf
+ rm -f Asterisk-Admin-Guide-$branch.html.zip
+ echo "Documentation downloaded. Goodbye!"
 --- cel/cel_custom.c
 +++ cel/cel_custom.c
 @@ -35,7 +35,7 @@
@@ -3032,7 +3150,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 394181 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398457 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399159 $")
  
  #include <sys/mman.h>
  #include <dirent.h>
@@ -3163,7 +3281,52 @@
  static void reg_source_db(struct iax2_peer *p)
  {
  	char data[80];
-@@ -9701,9 +9706,10 @@
+@@ -8833,6 +8838,22 @@
+ 		}
+ 	}
+ 
++	/* treat an unspecified refresh interval as the minimum */
++	if (!refresh) {
++		refresh = min_reg_expire;
++	}
++	if (refresh > max_reg_expire) {
++		ast_log(LOG_NOTICE, "Restricting registration for peer '%s' to %d seconds (requested %d)\n",
++			p->name, max_reg_expire, refresh);
++		p->expiry = max_reg_expire;
++	} else if (refresh < min_reg_expire) {
++		ast_log(LOG_NOTICE, "Restricting registration for peer '%s' to %d seconds (requested %d)\n",
++			p->name, min_reg_expire, refresh);
++		p->expiry = min_reg_expire;
++	} else {
++		p->expiry = refresh;
++	}
++
+ 	if (ast_sockaddr_cmp(&p->addr, &sockaddr)) {
+ 		if (iax2_regfunk) {
+ 			iax2_regfunk(p->name, 1);
+@@ -8885,20 +8906,7 @@
+ 			peer_unref(p);
+ 		}
+ 	}
+-	/* treat an unspecified refresh interval as the minimum */
+-	if (!refresh)
+-		refresh = min_reg_expire;
+-	if (refresh > max_reg_expire) {
+-		ast_log(LOG_NOTICE, "Restricting registration for peer '%s' to %d seconds (requested %d)\n",
+-			p->name, max_reg_expire, refresh);
+-		p->expiry = max_reg_expire;
+-	} else if (refresh < min_reg_expire) {
+-		ast_log(LOG_NOTICE, "Restricting registration for peer '%s' to %d seconds (requested %d)\n",
+-			p->name, min_reg_expire, refresh);
+-		p->expiry = min_reg_expire;
+-	} else {
+-		p->expiry = refresh;
+-	}
++
+ 	if (p->expiry && sin->sin_addr.s_addr) {
+ 		p->expire = iax2_sched_add(sched, (p->expiry + 10) * 1000, expire_registry, peer_ref(p));
+ 		if (p->expire == -1)
+@@ -9701,9 +9709,10 @@
  
  	if (!(thread = find_idle_thread())) {
  		time(&t);
@@ -3176,7 +3339,7 @@
  		usleep(1);
  		return 1;
  	}
-@@ -10243,6 +10249,7 @@
+@@ -10243,6 +10252,7 @@
  		data_size += strlen(subclass);
  
  		cause_code = ast_alloca(data_size);
@@ -3184,7 +3347,7 @@
  		ast_copy_string(cause_code->chan_name, ast_channel_name(iaxs[fr->callno]->owner), AST_CHANNEL_NAME);
  
  		cause_code->ast_cause = ies.causecode;
-@@ -11509,13 +11516,13 @@
+@@ -11509,13 +11519,13 @@
  				}
  				break;
  			case IAX_COMMAND_TXREJ:
@@ -3205,7 +3368,7 @@
  				}
  
  				iaxs[fr->callno]->transferring = TRANSFER_NONE;
-@@ -11526,20 +11533,21 @@
+@@ -11526,20 +11536,21 @@
  					break;
  				}
  
@@ -3235,7 +3398,7 @@
  				}
  
  				if (iaxs[fr->callno]->transferring == TRANSFER_BEGIN) {
-@@ -11558,8 +11566,9 @@
+@@ -11558,8 +11569,9 @@
  					break;
  				}
  
@@ -3247,7 +3410,7 @@
  					ast_mutex_unlock(&iaxsl[iaxs[fr->callno]->bridgecallno]);
  					break;
  				}
-@@ -11686,12 +11695,13 @@
+@@ -11686,12 +11698,13 @@
  
  			/* Don't actually pass these frames along */
  			if ((f.subclass.integer != IAX_COMMAND_ACK) &&
@@ -3266,7 +3429,7 @@
  			}
  			ast_mutex_unlock(&iaxsl[fr->callno]);
  			return 1;
-@@ -11813,8 +11823,9 @@
+@@ -11813,8 +11826,9 @@
  		/*iaxs[fr->callno]->last = fr->ts; (do it afterwards cos schedule/forward_delivery needs the last ts too)*/
  		fr->outoforder = 0;
  	} else {
@@ -3277,7 +3440,7 @@
  		fr->outoforder = -1;
  	}
  	fr->cacheable = ((f.frametype == AST_FRAME_VOICE) || (f.frametype == AST_FRAME_VIDEO));
-@@ -11943,11 +11954,10 @@
+@@ -11943,11 +11957,10 @@
  			break;
  		}
  
@@ -3291,7 +3454,7 @@
  		case IAX_IOSTATE_READY:
  			thread->actions++;
  			thread->iostate = IAX_IOSTATE_PROCESSING;
-@@ -11960,14 +11970,10 @@
+@@ -11960,14 +11973,10 @@
  #ifdef SCHED_MULTITHREADED
  			thread->schedfunc(thread->scheddata);
  #endif		
@@ -3307,7 +3470,7 @@
  
  		/* The network thread added us to the active_thread list when we were given
  		 * frames to process, Now that we are done, we must remove ourselves from
-@@ -11978,12 +11984,18 @@
+@@ -11978,12 +11987,18 @@
  
  		/* Make sure another frame didn't sneak in there after we thought we were done. */
  		handle_deferred_full_frames(thread);
@@ -3329,7 +3492,7 @@
  	 */
  	AST_LIST_LOCK(&idle_list);
  	AST_LIST_REMOVE(&idle_list, thread, list);
-@@ -14276,7 +14288,7 @@
+@@ -14276,7 +14291,7 @@
  		return res;
  
  	res = AST_DEVICE_UNAVAILABLE;
@@ -3338,7 +3501,7 @@
  		pds.peer, ast_sockaddr_ipv4(&p->addr), p->defaddr.sin_addr.s_addr, p->maxms, p->lastms);
  
  	if ((ast_sockaddr_ipv4(&p->addr) || p->defaddr.sin_addr.s_addr) &&
-@@ -14565,7 +14577,7 @@
+@@ -14565,7 +14580,7 @@
  	struct iax2_thread *thread;
  
  	AST_LIST_LOCK(list_head);
@@ -3347,7 +3510,7 @@
  		pthread_t thread_id = thread->threadid;
  
  		thread->stop = 1;
-@@ -14608,9 +14620,9 @@
+@@ -14608,9 +14623,9 @@
  	}
  
  	/* Call for all threads to halt */
@@ -3479,11 +3642,40 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397828 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398103 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399457 $")
  
  #include <signal.h>
  #include <sys/signal.h>
-@@ -15159,6 +15159,8 @@
+@@ -13282,13 +13282,9 @@
+ 		/* Our T.38 end is */
+ 		ast_udptl_get_us(p->udptl, &udptladdr);
+ 
+-		/* Determine T.38 UDPTL destination */
+-		if (!ast_sockaddr_isnull(&p->udptlredirip)) {
+-			ast_sockaddr_copy(&udptldest, &p->udptlredirip);
+-		} else {
+-			ast_sockaddr_copy(&udptldest, &p->ourip);
+-			ast_sockaddr_set_port(&udptldest, ast_sockaddr_port(&udptladdr));
+-		}
++		/* We don't use directmedia for T.38, so keep the destination the same as our IP address. */
++		ast_sockaddr_copy(&udptldest, &p->ourip);
++		ast_sockaddr_set_port(&udptldest, ast_sockaddr_port(&udptladdr));
+ 
+ 		if (debug) {
+ 			ast_debug(1, "T.38 UDPTL is at %s port %d\n", ast_sockaddr_stringify_addr(&p->ourip), ast_sockaddr_port(&udptladdr));
+@@ -13299,9 +13295,9 @@
+ 
+ 		ast_str_append(&m_modem, 0, "m=image %d udptl t38\r\n", ast_sockaddr_port(&udptldest));
+ 
+-		if (!ast_sockaddr_cmp(&udptldest, &dest)) {
++		if (ast_sockaddr_cmp(&udptldest, &dest)) {
+ 			ast_str_append(&m_modem, 0, "c=IN %s %s\r\n",
+-					(ast_sockaddr_is_ipv6(&dest) && !ast_sockaddr_is_ipv4_mapped(&dest)) ?
++					(ast_sockaddr_is_ipv6(&udptldest) && !ast_sockaddr_is_ipv4_mapped(&udptldest)) ?
+ 					"IP6" : "IP4", ast_sockaddr_stringify_addr_remote(&udptldest));
+ 		}
+ 
+@@ -15159,6 +15155,8 @@
  			append_history(p, "RegistryInit", "Account: %s@%s", r->username, r->hostname);
  		}
  
@@ -3492,7 +3684,7 @@
  		/* Use port number specified if no SRV record was found */
  		if (!ast_sockaddr_isnull(&r->us)) {
  			if (!ast_sockaddr_port(&r->us) && r->portno) {
-@@ -16020,7 +16022,7 @@
+@@ -16020,7 +16018,7 @@
  	if (ast_apply_acl(sip_cfg.contact_acl, &peer->addr, "SIP contact ACL: ") != AST_SENSE_ALLOW ||
  			ast_apply_acl(peer->contactacl, &peer->addr, "SIP contact ACL: ") != AST_SENSE_ALLOW) {
  		ast_log(LOG_WARNING, "Domain '%s' disallowed by contact ACL (violating IP %s)\n", hostport,
@@ -3501,7 +3693,7 @@
  		ast_string_field_set(peer, fullcontact, "");
  		ast_string_field_set(pvt, our_contact, "");
  		return PARSE_REGISTER_DENIED;
-@@ -18558,7 +18560,24 @@
+@@ -18558,7 +18556,24 @@
  		ast_string_field_set(p, context, sip_cfg.messagecontext);
  	}
  
@@ -3527,7 +3719,7 @@
  
  	if (!(msg = ast_msg_alloc())) {
  		transmit_response(p, "500 Internal Server Error", req);
-@@ -23013,8 +23032,8 @@
+@@ -23013,8 +23028,8 @@
  					wait = ast_random() % 2000;
  				}
  				p->waitid = ast_sched_add(sched, wait, sip_reinvite_retry, dialog_ref(p, "passing dialog ptr into sched structure based on waitid for sip_reinvite_retry."));
@@ -3538,7 +3730,7 @@
  			}
  		}
  		break;
-@@ -26830,6 +26849,21 @@
+@@ -26830,6 +26845,21 @@
  
  			sender = ast_strdupa(from);
  			ast_callerid_parse(sender, &name, &location);
@@ -3560,7 +3752,7 @@
  			ast_string_field_set(pvt, fromname, name);
  			if (strchr(location, ':')) { /* Must be a URI */
  				parse_uri(location, "sip:,sips:", &user, NULL, &domain, NULL);
-@@ -28035,6 +28069,7 @@
+@@ -28035,6 +28065,7 @@
  				/* size of the string making up the cause code is "SIP " + cause length */
  				data_size += 4 + strlen(REQ_OFFSET_TO_STR(req, rlpart2));
  				cause_code = ast_alloca(data_size);
@@ -3568,7 +3760,7 @@
  
  				ast_copy_string(cause_code->chan_name, ast_channel_name(p->owner), AST_CHANNEL_NAME);
  
-@@ -28349,9 +28384,7 @@
+@@ -28349,9 +28380,7 @@
  
  	copy_socket_data(&p->socket, &req->socket);
  
@@ -3579,7 +3771,7 @@
  
  	/* if we have an owner, then this request has been authenticated */
  	if (p->owner) {
-@@ -34684,7 +34717,12 @@
+@@ -34684,7 +34713,12 @@
  
  	clear_sip_domains();
  	sip_cfg.contact_acl = ast_free_acl_list(sip_cfg.contact_acl);
@@ -3592,7 +3784,7 @@
  	ast_sched_context_destroy(sched);
  	con = ast_context_find(used_context);
  	if (con) {
-@@ -34698,6 +34736,11 @@
+@@ -34698,6 +34732,11 @@
  	sip_reqresp_parser_exit();
  	sip_unregister_tests();
  
@@ -3893,6 +4085,29 @@
  		dialog_unref(p, "Destroy test object");
  	}
  	ast_rtp_engine_unregister(&test_engine);
+--- configs/chan_dahdi.conf.sample
++++ configs/chan_dahdi.conf.sample
+@@ -582,7 +582,8 @@
+ ; easily be re-attaching to a prior incoming call that was not yet hung up).
+ ; This option changes the hangup to wait for a dialtone on the line, before
+ ; marking the line as once again available for use with outgoing calls.
+-;waitfordialtone=yes
++; Specified in milliseconds, not set by default.
++;waitfordialtone=1000
+ ;
+ ; For analog lines, enables Asterisk to use dialtone detection per channel
+ ; if an incoming call was hung up before it was answered.  If dialtone is
+--- configs/confbridge.conf.sample
++++ configs/confbridge.conf.sample
+@@ -109,7 +109,7 @@
+ 
+ ;denoise=yes ; Sets whether or not a denoise filter should be applied
+              ; to the audio before mixing or not.  Off by default. Requires
+-             ; codec_speex to be built and installed.  Do not confuse this option
++             ; func_speex to be built and installed.  Do not confuse this option
+              ; with drop_silence.  Denoise is useful if there is a lot of background
+              ; noise for a user as it attempts to remove the noise while preserving
+              ; the speech.  This option does NOT remove silence from being mixed into
 --- configs/h323.conf.sample
 +++ configs/h323.conf.sample
 @@ -29,6 +29,8 @@
@@ -4356,6 +4571,35 @@
  
  #define MALLOC_FAILURE_MSG \
  	ast_log(LOG_ERROR, "Memory Allocation Failure in function %s at line %d of %s\n", func, lineno, file);
+--- main/abstract_jb.c
++++ main/abstract_jb.c
+@@ -35,7 +35,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 370387 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399403 $")
+ 
+ #include "asterisk/frame.h"
+ #include "asterisk/channel.h"
+@@ -443,7 +443,7 @@
+ 		char safe_logfile[30] = "/tmp/logfile-XXXXXX";
+ 		int safe_fd;
+ 		snprintf(name2, sizeof(name2), "%s", ast_channel_name(chan));
+-		if ((tmp = strchr(name2, '/'))) {
++		while ((tmp = strchr(name2, '/'))) {
+ 			*tmp = '#';
+ 		}
+ 
+@@ -452,7 +452,7 @@
+ 		ast_assert(bridged != NULL);
+ 
+ 		snprintf(name1, sizeof(name1), "%s", ast_channel_name(bridged));
+-		if ((tmp = strchr(name1, '/'))) {
++		while ((tmp = strchr(name1, '/'))) {
+ 			*tmp = '#';
+ 		}
+ 
 --- main/asterisk.c
 +++ main/asterisk.c
 @@ -1,7 +1,7 @@
@@ -4381,7 +4625,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 379790 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399267 $")
  
  #include "asterisk/_private.h"
  
@@ -4459,14 +4703,12 @@
 +}
 +
 +struct console_state_data {
-+	int newline;
 +	char verbose_line_level;
 +};
 +
 +static int console_state_init(void *ptr)
 +{
 +	struct console_state_data *state = ptr;
-+	state->newline = 1;
 +	state->verbose_line_level = 0;
 +	return 0;
  }
@@ -4480,59 +4722,48 @@
  #define VERBOSE_HASMAGIC(x)	(*(signed char *) (x) < 0)
  
 -static void console_verboser(const char *s)
-+static int console_log_verbose(const char *s)
++static int console_print(const char *s, int local)
  {
 -	char tmp[80];
 -	const char *c = NULL;
 -	char level = 0;
-+	/* verbose level of 0 evaluates to a magic of -1, 1 to -2, etc...
-+	   search up to -7 (level = 6) as this is currently the largest
-+	   level used */
-+	static const char find_set[9] = { -1, -2, -3, -4, -5, -6, -7, '\n'};
++	struct console_state_data *state =
++		ast_threadstorage_get(&console_state, sizeof(*state));
  
 -	if (VERBOSE_HASMAGIC(s)) {
 -		level = VERBOSE_MAGIC2LEVEL(s);
 -		s++;
 -		if (level > option_verbose) {
 -			return;
-+	struct console_state_data *state =
-+		ast_threadstorage_get(&console_state, sizeof(*state));
-+
 +	char prefix[80];
-+	const char *c = s;
++	const char *c;
 +	int num, res = 0;
++	unsigned int newline;
 +
 +	do {
 +		if (VERBOSE_HASMAGIC(s)) {
-+			/* if it has one always use the given line's level,
-+			   otherwise we'll use the last line's level */
++			/* always use the given line's level, otherwise
++			   we'll use the last line's level */
 +			state->verbose_line_level = VERBOSE_MAGIC2LEVEL(s);
 +			/* move past magic */
 +			s++;
- 		}
--	}
- 
--	if ((c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_4)) ||
--	    (c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_3)) ||
--	    (c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_2)) ||
--	    (c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_1))) {
--		fputs(tmp, stdout);
--		fputs(c, stdout);
--	} else {
--		fputs(s, stdout);
-+		c = fix_header(prefix, sizeof(prefix), s,
-+			       state->verbose_line_level);
 +
-+		if (!state->newline) {
-+			/* don't use the prefix if line continuation */
++			if (local) {
++				s = fix_header(prefix, sizeof(prefix), s,
++					       state->verbose_line_level);
++			}
++		} else {
 +			*prefix = '\0';
 +		}
++		c = s;
 +
-+		/* for a given line separate on verbose magic and newlines */
-+		if (!(s = strpbrk(c, find_set))) {
-+			s = strchr(c, '\0');
-+		} else if (*s == '\n') {
++		/* for a given line separate on verbose magic, newline, and eol */
++		if ((s = strchr(c, '\n'))) {
 +			++s;
++			newline = 1;
++		} else {
++			s = strchr(c, '\0');
++			newline = 0;
 +		}
 +
 +		/* check if we should write this line after calculating begin/end
@@ -4540,10 +4771,9 @@
 +		   two lower level lines */
 +		if (state->verbose_line_level > option_verbose) {
 +			continue;
-+		}
+ 		}
 +
-+		state->newline = *(s - 1) == '\n';
-+		if (!ast_strlen_zero(prefix)) {
++		if (local && !ast_strlen_zero(prefix)) {
 +			fputs(prefix, stdout);
 +		}
 +
@@ -4557,9 +4787,22 @@
 +			   we'll want to return true */
 +			res = 1;
 +		}
-+		c = s;
 +	} while (*s);
 +
++	if (newline) {
++		/* if ending on a newline then reset last level to zero
++		    since what follows may be not be logging output */
++		state->verbose_line_level = 0;
+ 	}
+ 
+-	if ((c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_4)) ||
+-	    (c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_3)) ||
+-	    (c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_2)) ||
+-	    (c = fix_header(tmp, sizeof(tmp), s, VERBOSE_PREFIX_1))) {
+-		fputs(tmp, stdout);
+-		fputs(c, stdout);
+-	} else {
+-		fputs(s, stdout);
 +	if (res) {
 +		fflush(stdout);
  	}
@@ -4570,7 +4813,7 @@
 +
 +static void console_verboser(const char *s)
 +{
-+	if (!console_log_verbose(s)) {
++	if (!console_print(s, 1)) {
 +		return;
 +	}
  
@@ -4660,7 +4903,7 @@
 -				state->prev_line_verbosity = level;
 -				curline = nextline;
 -			} while (!ast_strlen_zero(curline));
-+			console_log_verbose(buf);
++			console_print(buf, 0);
  
  			if ((res < EL_BUF_SIZE - 1) && ((buf[res-1] == '\n') || (buf[res-2] == '\n'))) {
  				*cp = CC_REFRESH;
@@ -4916,7 +5159,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388700 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397528 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399099 $")
  
  #include "asterisk/_private.h"
  #include "asterisk/astobj2.h"
@@ -4929,6 +5172,15 @@
  }
  #endif
  
+@@ -842,7 +842,7 @@
+ 	/* compute the container size */
+ 	unsigned int num_buckets = hash_fn ? n_buckets : 1;
+ 	size_t container_size = sizeof(struct ao2_container) + num_buckets * sizeof(struct bucket);
+-	struct ao2_container *c = __ao2_alloc_debug(container_size, container_destruct_debug, options, tag, file, line, func, ref_debug);
++	struct ao2_container *c = __ao2_alloc_debug(container_size, ref_debug ? container_destruct_debug : container_destruct, options, tag, file, line, func, ref_debug);
+ 
+ 	return internal_ao2_container_alloc(c, num_buckets, hash_fn, cmp_fn);
+ }
 --- main/cdr.c
 +++ main/cdr.c
 @@ -37,7 +37,7 @@
@@ -5189,7 +5441,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387038 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398022 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399305 $")
  
  #include "asterisk/_private.h"
  
@@ -5235,6 +5487,43 @@
  	ast_rwlock_unlock(&features_lock);
  
  	if (ast_strlen_zero(dynamic_features_buf) || feature_detected) {
+@@ -6126,19 +6136,9 @@
+ 	);
+ 
+ 	AST_STANDARD_APP_ARGS(args, tmp_val);
+-	if ((new_syn = strchr(args.app, '('))) {
+-		/* New syntax */
+-		args.moh_class = args.app_args;
+-		args.app_args = new_syn;
+-		*args.app_args++ = '\0';
+-		if (args.app_args[strlen(args.app_args) - 1] == ')') {
+-			args.app_args[strlen(args.app_args) - 1] = '\0';
+-		}
+-	}
+ 
+ 	activateon = strsep(&args.activatedby, "/");
+ 
+-	/*! \todo XXX var_name or app_args ? */
+ 	if (ast_strlen_zero(args.app)
+ 		|| ast_strlen_zero(args.exten)
+ 		|| ast_strlen_zero(activateon)
+@@ -6149,6 +6149,16 @@
+ 		return;
+ 	}
+ 
++	if ((new_syn = strchr(args.app, '('))) {
++		/* New syntax */
++		args.moh_class = args.app_args;
++		args.app_args = new_syn;
++		*args.app_args++ = '\0';
++		if (args.app_args[strlen(args.app_args) - 1] == ')') {
++			args.app_args[strlen(args.app_args) - 1] = '\0';
++		}
++	}
++	
+ 	AST_RWLIST_RDLOCK(&feature_list);
+ 	if (find_dynamic_feature(var->name)) {
+ 		AST_RWLIST_UNLOCK(&feature_list);
 @@ -8840,6 +8850,7 @@
  		}
  		res = -1;
@@ -5849,7 +6138,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 389677 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397948 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399267 $")
  
  /* When we include logger.h again it will trample on some stuff in syslog.h, but
   * nothing we care about in here. */
@@ -6000,7 +6289,85 @@
  	} else {
  		ast_debug(1, "Could not allocate memory for backtrace\n");
  	}
-@@ -1999,4 +2009,3 @@
+@@ -1772,10 +1782,11 @@
+ 
+ void __ast_verbose_ap(const char *file, int line, const char *func, int level, struct ast_callid *callid, const char *fmt, va_list ap)
+ {
+-	struct ast_str *buf = NULL;
++	const char *p;
++	struct ast_str *prefixed, *buf = NULL;
+ 	int res = 0;
+ 	const char *prefix = level >= 4 ? VERBOSE_PREFIX_4 : level == 3 ? VERBOSE_PREFIX_3 : level == 2 ? VERBOSE_PREFIX_2 : level == 1 ? VERBOSE_PREFIX_1 : "";
+-	signed char magic = level > 127 ? -128 : -level - 1; /* 0 => -1, 1 => -2, etc.  Can't pass NUL, as it is EOS-delimiter */
++	signed char magic = level > 9 ? -10 : -level - 1; /* 0 => -1, 1 => -2, etc.  Can't pass NUL, as it is EOS-delimiter */
+ 
+ 	/* For compatibility with modules still calling ast_verbose() directly instead of using ast_verb() */
+ 	if (level < 0) {
+@@ -1792,37 +1803,41 @@
+ 		}
+ 	}
+ 
+-	if (!(buf = ast_str_thread_get(&verbose_buf, VERBOSE_BUF_INIT_SIZE))) {
++	if (!(prefixed = ast_str_thread_get(&verbose_buf, VERBOSE_BUF_INIT_SIZE)) ||
++	    !(buf = ast_str_create(VERBOSE_BUF_INIT_SIZE))) {
+ 		return;
+ 	}
+ 
+-	if (ast_opt_timestamp) {
+-		struct timeval now;
+-		struct ast_tm tm;
+-		char date[40];
+-		char *datefmt;
+-
+-		now = ast_tvnow();
+-		ast_localtime(&now, &tm, NULL);
+-		ast_strftime(date, sizeof(date), dateformat, &tm);
+-		datefmt = ast_alloca(strlen(date) + 3 + strlen(prefix) + strlen(fmt) + 1);
+-		sprintf(datefmt, "%c[%s] %s%s", (char) magic, date, prefix, fmt);
+-		fmt = datefmt;
+-	} else {
+-		char *tmp = ast_alloca(strlen(prefix) + strlen(fmt) + 2);
+-		sprintf(tmp, "%c%s%s", (char) magic, prefix, fmt);
+-		fmt = tmp;
+-	}
+-
+-	/* Build string */
+ 	res = ast_str_set_va(&buf, 0, fmt, ap);
+-
+ 	/* If the build failed then we can drop this allocated message */
+ 	if (res == AST_DYNSTR_BUILD_FAILED) {
+ 		return;
+ 	}
+ 
+-	ast_log_callid(__LOG_VERBOSE, file, line, func, callid, "%s", ast_str_buffer(buf));
++	ast_str_reset(prefixed);
++	/* for every newline found in the buffer add verbose prefix data */
++	fmt = ast_str_buffer(buf);
++	do {
++		if (!(p = strchr(fmt, '\n'))) {
++			p = strchr(fmt, '\0') - 1;
++		}
++		++p;
++
++		if (ast_opt_timestamp) {
++			struct ast_tm tm;
++			char date[40];
++			struct timeval now = ast_tvnow();
++			ast_localtime(&now, &tm, NULL);
++			ast_strftime(date, sizeof(date), dateformat, &tm);
++			ast_str_append(&prefixed, 0, "%c[%s] %s", (char) magic, date, prefix);
++		} else {
++			ast_str_append(&prefixed, 0, "%c%s", (char) magic, prefix);
++		}
++		ast_str_append_substr(&prefixed, 0, fmt, p - fmt);
++		fmt = p;
++	} while (p && *p);
++
++	ast_log_callid(__LOG_VERBOSE, file, line, func, callid, "%s", ast_str_buffer(prefixed));
+ }
+ 
+ void __ast_verbose(const char *file, int line, const char *func, int level, const char *fmt, ...)
+@@ -1999,4 +2014,3 @@
  		AST_RWLIST_UNLOCK(&logchannels);
  	}
  }
@@ -6235,23 +6602,25 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377849 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397365 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399442 $")
  
  #include <sys/time.h>
  #include <signal.h>
-@@ -1419,8 +1419,15 @@
- 
+@@ -1420,7 +1420,17 @@
  static void __ast_udptl_reload(int reload)
  {
-+	RAII_VAR(struct udptl_config *, udptl_cfg, udptl_snapshot_alloc(), ao2_cleanup);
-+
  	if (aco_process_config(&cfg_info, reload) == ACO_PROCESS_ERROR) {
 -		ast_log(LOG_WARNING, "Could not reload udptl config\n");
 +		if (!reload) {
-+			if (!aco_set_defaults(&general_option, "general", udptl_cfg->general)) {
-+				ast_log(LOG_WARNING, "Could not load udptl config; using defaults\n");
-+				ao2_global_obj_replace(globals, udptl_cfg);
++			RAII_VAR(struct udptl_config *, udptl_cfg, udptl_snapshot_alloc(), ao2_cleanup);
++
++			if (aco_set_defaults(&general_option, "general", udptl_cfg->general)) {
++				ast_log(LOG_ERROR, "Failed to load udptl.conf and failed to initialize defaults.\n");
++				return;
 +			}
++
++			ast_log(LOG_NOTICE, "Could not load udptl config; using defaults\n");
++			ao2_global_obj_replace_unref(globals, udptl_cfg);
 +		}
  	}
  }
