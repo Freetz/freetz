@@ -1,6 +1,6 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -65,7 +65,7 @@
+@@ -92,7 +92,7 @@
  CONFIG_CLEAN_FILES =
  CONFIG_CLEAN_VPATH_FILES =
  am__installdirs = "$(DESTDIR)$(bindir)"
@@ -9,24 +9,25 @@
  am__haserl_SOURCES_DIST = common.c common.h sliding_buffer.c \
  	sliding_buffer.h h_error.c h_error.h h_script.c h_script.h \
  	rfc2388.c rfc2388.h h_bash.c h_bash.h h_lua_common.c \
-@@ -533,16 +533,16 @@
+@@ -759,16 +759,16 @@
  
  
  # lua2c_LIBS ?= -llua -ldl -lm
 -@USE_LUA_TRUE@lua2c_LDFLAGS ?= -Wl,-E
 -@USE_LUA_TRUE@lua2c:	lua2c.c
--@USE_LUA_TRUE@	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) $(lua2c_LDFLAGS) \
--@USE_LUA_TRUE@		-o $@ $^ $(LIBS)
-+#lua2c_LDFLAGS ?= -Wl,-E
-+#lua2c:	lua2c.c
-+#	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) $(lua2c_LDFLAGS) \
-+#		-o $@ $^ $(LIBS)
- 
+-@USE_LUA_TRUE@	$(CC_FOR_BUILD) $(CFLAGS) $(LUA_CFLAGS) $(LDFLAGS) $(lua2c_LDFLAGS) \
+-@USE_LUA_TRUE@		-o $@ $^ $(LIBS) $(LUA_LIBS)
+-
 -@USE_LUA_TRUE@haserl_lualib.inc : haserl_lualib.lua lua2c
 -@USE_LUA_TRUE@	if ! ./lua2c haserl_lualib haserl_lualib.lua >$@; then \
 -@USE_LUA_TRUE@		rm $@; \
 -@USE_LUA_TRUE@		exit 1 ;\
 -@USE_LUA_TRUE@	fi
++#lua2c_LDFLAGS ?= -Wl,-E
++#lua2c:	lua2c.c
++#(CC_FOR_BUILD) $(CFLAGS) $(LUA_CFLAGS) $(LDFLAGS) $(lua2c_LDFLAGS) \
++#		-o $@ $^ $(LIBS) $(LUA_LIBS)
++
 +#haserl_lualib.inc : haserl_lualib.lua lua2c
 +#	if ! ./lua2c haserl_lualib haserl_lualib.lua >$@; then \
 +#		rm $@; \
