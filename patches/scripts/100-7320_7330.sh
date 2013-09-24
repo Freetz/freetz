@@ -11,11 +11,14 @@ files="css/default/images/kopfbalken_mitte.gif"
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
 for i in $files; do
-	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" "${FILESYSTEM_MOD_DIR}/usr/www/avm/$i"
+	cp -a "${FILESYSTEM_TK_DIR}/usr/www/avm/$i" "${HTML_LANG_MOD_DIR}/$i"
 done
 
 echo2 "moving default config dir"
-mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7322 ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7320
+isFreetzType 7320_7330_XL && defdir=7322
+isFreetzType 7320_7330_SL && defdir=HW188
+mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_${defdir} \
+   ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7320
 
 echo2 "patching rc.S and rc.conf"
 modsed "s/CONFIG_AUDIO=.*$/CONFIG_AUDIO=\"y\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
