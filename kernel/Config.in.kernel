@@ -46,6 +46,7 @@ config FREETZ_KERNEL_VERSION_2_6_32_60
 	default y if \
 		(FREETZ_TYPE_6810 && FREETZ_AVM_VERSION_05_5X) || \
 		(FREETZ_TYPE_6840 && FREETZ_AVM_VERSION_05_5X) || \
+		FREETZ_TYPE_7272 || \
 		FREETZ_TYPE_7490
 	default n
 
@@ -134,6 +135,11 @@ config FREETZ_KERNEL_LAYOUT_AR9
 		FREETZ_TYPE_7320 || \
 		FREETZ_TYPE_7330
 
+config FREETZ_KERNEL_LAYOUT_AR10
+	bool
+	default y if \
+		FREETZ_TYPE_7272
+
 config FREETZ_KERNEL_LAYOUT_IKS
 	bool
 	default y if \
@@ -180,6 +186,7 @@ config FREETZ_KERNEL_LAYOUT
 	string
 	default "ar7"	if FREETZ_KERNEL_LAYOUT_AR7
 	default "ar9"	if FREETZ_KERNEL_LAYOUT_AR9
+	default "ar10"	if FREETZ_KERNEL_LAYOUT_AR10
 	default "iks"	if FREETZ_KERNEL_LAYOUT_IKS
 	default "ohio"	if FREETZ_KERNEL_LAYOUT_OHIO
 	default "ur8"	if FREETZ_KERNEL_LAYOUT_UR8
