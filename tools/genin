@@ -13,7 +13,7 @@ CATTABLE=""
 NONHIDDEN="#"
 
 for mk in $(find make/*/ -maxdepth 1 -name *.mk); do
-	let c++
+	c=$((c+1))
 	[ "$((c%3))" == "0" ] && echo -n "."
 	# set PKG to $mk w/o <PKG>.mk file (resulting in "make/<PKG>")
 	PKG=${mk%/*.mk}
