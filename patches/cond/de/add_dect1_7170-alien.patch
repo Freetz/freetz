@@ -1,0 +1,200 @@
+diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
+--- usr/www/avm/menus/menu_show.lua	2011-01-31 17:16:14.000000000 +0100
++++ usr/www/avm/menus/menu_show.lua	2011-02-24 10:41:42.000000000 +0100
+@@ -165,7 +165,7 @@
+ end
+ local dect_enabled = box.query('dect:settings/enabled') == "1"
+ local dect_with_mtd = dect_enabled and any_avm_handset()
+-menu.exists_submenu['dect'] = config.DECT or config.DECT2
++menu.exists_submenu['dect'] = config.DECT2
+ menu.show_page["/dect/handset.lua"] = dect_enabled
+ local show_dect_moni = false
+ if dect_enabled then
+@@ -205,7 +205,9 @@
+ menu.show_page["/system/ring_block.lua"] = config.FON or box.query("mini:settings/enabled") == "1"
+ menu.exists_page["/system/imexport.lua"] = config.STOREUSRCFG
+ menu.show_page["/system/update_file.lua"] = expert_mode
+-menu.exists_page["/system/timezone.lua"] = box.query("env:status/OEM") == 'avme'
++menu.show_page["/system/update.lua"] = false
++menu.exists_page["/system/timezone.lua"] = false
++menu.exists_submenu['fon'] = config.FON
+ menu.exists_page["/system/language.lua"] = config.MULTI_LANGUAGE
+ menu.show_page["/fon_num/dial.lua"]=config.CAPI_TE or config.CAPI_POTS or config.AB_COUNT > 0
+ menu.show_page["/fon_num/dialbuch.lua"]=config.CAPI_TE or config.CAPI_POTS or config.AB_COUNT > 0
+--- usr/www/all/system/energy.lua	2011-06-15 13:23:48.000000000 +0200
+--- usr/www/all/system/energy.lua	2011-07-26 15:34:26.054141443 +0200
+@@ -9,6 +9,7 @@
+ require("general")
+ require("config")
+ require("href")
++require("bit")
+ g_max_x = 200
+ function get_width(val)
+ if val == 0 or not val then return 0 end
+@@ -145,8 +146,44 @@
+ g_ab_act = tonumber(box.query("power:status/rate_abact"))
+ g_ab_cum = tonumber(box.query("power:status/rate_abcum"))
+ end
++-- DECT
++g_show_dect = config.DECT
++if g_show_dect then
++g_dect_act = tonumber(box.query("power:status/rate_battchargeact"))
++g_dect_cum = tonumber(box.query("power:status/rate_battchargecum"))
++local plugged = g_dect_act > 0
++local eco = tonumber(box.query("power:status/dect_status"))
++local s0state = tonumber(box.query("power:status/isdn_status"))
++local connected = bit.isset(s0state, 2)
++local devs = box.multiquery("dect:settings/Handset/list(Subscribed)")
++local devcnt = 0
++for _,t in ipairs(devs) do
++if t[2]=="1" then devcnt = devcnt+1 end
++end
++g_str_dect_eco = ""
++if plugged then
++g_str_dect_plug = "Schnurlostelefon in Ladeschale"
++if eco then
++g_str_dect_eco = ", Eco-Modus aktiv"
++end
++else
++g_str_dect_plug = "kein Schnurlostelefon in Ladeschale"
++end
++if devcnt > 1 then
++g_str_dect_devs = general.sprintf("%1%Count% Schnurlostelefone angemeldet", devcnt)
++elseif devcnt == 1 then
++g_str_dect_devs = "1 Schnurlostelefon angemeldet"
++else
++g_str_dect_devs = "kein Schnurlostelefon angemeldet"
++end
++if connected then
++g_str_dect_conn = ", aktive Telefonate"
++else
++g_str_dect_conn = ", kein Telefonat"
++end
++end
+ -- USB-Host
+-g_show_usb = config.USB_HOST
++g_show_usb = config.USB_HOST_AVM
+ if g_show_usb then
+ g_usb_act = tonumber(box.query("power:status/rate_usbhostact"))
+ g_usb_cum = tonumber(box.query("power:status/rate_usbhostcum"))
+@@ -227,6 +264,15 @@
+ ]])
+ end
+ end
++if g_show_dect then
++box.out([[
++<tr>
++<td>DECT</td>
++<td>]]..get_bars("dect")..[[</td>
++<td>]]..g_str_dect_plug..g_str_dect_eco..[[<br>]]..g_str_dect_devs..g_str_dect_conn..[[</td>
++</tr>
++]])
++end
+ if g_show_usb then
+ box.out([[
+ <tr>
+--- usr/www/all/lua/href.lua	2011-06-15 13:23:42.000000000 +0200
++++ usr/www/all/lua/href.lua	2011-07-26 21:45:46.175379965 +0200
+@@ -39,6 +39,7 @@
+ avm3["/internet/trafficprio.lua"] = {'internet', 'trafficprio'}
+ avm3["/internet/trafficappl.lua"] = {'internet', 'trafficappl'}
+ --
++avm3["/fon/dect.lua"] = {"fon", "dect"}
+ avm3["/fon_num/foncalls.lua"] = {"fon", "foncalls"}
+ avm3["/fon_num/sperre.lua"] = {"fon", "sperre"}
+ avm3["/fon_num/dial.lua"] = {"fon", "dial"}
+--- usr/www/all/home/home.lua	2011-06-15 13:23:26.000000000 +0200
++++ usr/www/all/home/home.lua	2011-07-26 22:07:58.165391405 +0200
+@@ -799,7 +799,7 @@
+ return str
+ end
+ function tr_connect_info_dect()
+-if (general.get_config_var("CONFIG_DECT2") ~= "1") then
++if (general.get_config_var("CONFIG_DECT") ~= "1") then
+ return ""
+ end
+ local str=""
+@@ -807,7 +807,7 @@
+ local Displaytxt="{?537:338?}"
+ local MajorLink=get_link("/fon_devices/dect_setting.lua")
+ if (g_coninf_data.dect_enabled=="1") then
+-MajorLink = get_link("/dect/handset.lua")
++MajorLink = get_link("/fon/dect.lua")
+ Led="1"
+ local countDect=0
+ if (g_coninf_data.dect_device_list~=nil) then
+--- usr/www/all/html/de/fon/dial.js	2011-06-15 13:23:42.000000000 +0200
++++ usr/www/all/html/de/fon/dial.js	2013-09-23 00:04:06.000000000 +0200
+@@ -7,7 +7,7 @@
+ var g_txtIsdn = "";
+ var g_txtIpPhone = "{?gIPhone?}";
+ var g_txtKlingelTest = "{?825:5167?}";
+-g_txtIsdn = "{?825:4702?}";
++g_txtIsdn = "Schnurlostelefone";
+ var g_txtFonring = "{?825:2221?}";
+ var g_txtPort0 = "... {?825:6297?}";
+ var g_mldNoPort = "{?825:1481?}";
+--- usr/www/all/html/de/fon/wecker.js	2011-06-15 13:23:28.000000000 +0200
++++ usr/www/all/html/de/fon/wecker.js	2013-09-23 00:57:16.000000000 +0200
+@@ -13,7 +13,7 @@
+ var g_Fon1 = "{?684:2027?}";
+ var g_Fon2 = "{?684:5186?}";
+ var g_Fon3 = "{?684:9370?}";
+-var g_txtIsdn = "{?684:6870?}";
++var g_txtIsdn = "Schnurlostelefone";
+ var g_alleTelefone = "{?684:2113?}";
+ var g_AlarmOptionValue = 0;
+ function uiDoOnLoad() {
+--- usr/www/all/html/de/home/fondevlist.js	2011-06-15 13:23:25.000000000 +0200
++++ usr/www/all/html/de/home/fondevlist.js	2013-09-23 00:48:13.000000000 +0200
+@@ -187,6 +187,25 @@
+ }
+ function readDect1() {
+ var list = [];
++var fonName, n, isSubscribed;
++<? repeat [ 0 4 ] `
++isSubscribed = "<? query dect:settings/Handset$0/Subscribed ?>";
++fonName = "<? query dect:settings/Handset$0/Name ?>";
++if (isSubscribed == "1" && fonName != "") {
++n = parseInt("$0",10);
++list.push({
++idx: $0,
++src: g_fonSource.dect1,
++name: fonName,
++portname: "DECT",
++type: 'dect' + ("<? query dect:settings/enabled ?>" || "0"),
++intern: "**61" + n,
++outgoing: "<? query telcfg:settings/MSN/NTDefault ?>",
++allin: true,
++incoming: []
++});
++}
++` ?>
+ return list;
+ }
+ function readFonControl() {
+--- usr/www/all/html/de/fon/fonbuch.js	2011-06-15 13:23:39.000000000 +0200
++++ usr/www/all/html/de/fon/fonbuch.js	2013-09-23 17:37:33.000000000 +0200
+@@ -619,4 +619,7 @@
+ }
+ return deviceName;
+ }
++function uiDoSendBook() {
++jslGoTo("<? print $var:menu ?>", "buchsend");
++}
+ </script>
+--- usr/www/all/html/de/fon/fonbuch.html	2011-06-15 13:23:40.000000000 +0200
++++ usr/www/all/html/de/fon/fonbuch.html	2013-09-23 17:34:22.000000000 +0200
+@@ -85,6 +85,12 @@
+ </div>
+ <? include ../html/de/home/error.html ?>
+ </div></div></div></div></div></div>
++<div class="backdialog" id="uiSendBook"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
++<p class="mb5">Sie können die Telefonbucheinträge an ein Schnurlostelefon senden.</p>
++<div style="text-align: right;">
++<input type="button" value="Telefonbuch senden" onclick="uiDoSendBook()" class="PushbuttonBig">
++</div>
++</div></div></div></div></div></div>
+ <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
+ <input type="button" onclick="uiDoHelp()" value="{?txtHelp?}" class="Pushbutton">
+ </div></div></div></div></div></div>

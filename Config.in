@@ -470,6 +470,14 @@ choice
 			Enable this to compile a mod image for FritzBox FON WLAN 7141 based
 			on a 7170 image.
 
+	config FREETZ_TYPE_7150_7170
+		bool "7150"
+		depends on FREETZ_TYPE_7170
+		select FREETZ_REMOVE_MINID
+		help
+			Enable this to compile a mod image for FritzFON 7150 based
+			on a 7170 image.
+
 	config FREETZ_TYPE_7240_7270
 		bool "7240"
 		depends on FREETZ_TYPE_7270_16
@@ -1756,6 +1764,7 @@ menu "Override options"
 			FREETZ_TYPE_7113_7170 || \
 			FREETZ_TYPE_7140_7170 || \
 			FREETZ_TYPE_7141_7170 || \
+			FREETZ_TYPE_7150_7170 || \
 			FREETZ_TYPE_7240_7270 || \
 			(FREETZ_TYPE_7270 && FREETZ_ADD_ANNEX_A_FIRMWARE) || \
 			FREETZ_TYPE_7320_7330 || \
@@ -1775,6 +1784,7 @@ menu "Override options"
 		default "@AVM/fritzbox.fon_wlan_7113/firmware/deutsch"      if FREETZ_TYPE_7113_7170
 		default "@AVM/fritzbox.fon_wlan_7140/firmware/deutsch"      if FREETZ_TYPE_7140_7170
 		default "@AVM/fritzbox.fon_wlan_7141/firmware/deutsch"      if FREETZ_TYPE_7141_7170
+		default "@AVM/fritzfon.7150/firmware"                       if FREETZ_TYPE_7150_7170
 		default "@AVM/Downgrade/FRITZ!Box Fon WLAN 7240"            if FREETZ_TYPE_7240_7270 && FREETZ_TYPE_FIRMWARE_05_2X
 		default "@AVM/fritzbox.fon_wlan_7240/firmware/deutsch"      if FREETZ_TYPE_7240_7270 && FREETZ_TYPE_FIRMWARE_05_5X
 #		default "@AVM/fritzbox.fon_wlan_7270_v2/firmware/english"   if FREETZ_TYPE_7270_V1 && FREETZ_ADD_ANNEX_A_FIRMWARE
@@ -1797,6 +1807,7 @@ menu "Override options"
 		default "FRITZ.Box_Fon_WLAN_7113.60.04.68.image"                    if FREETZ_TYPE_7113_7170
 		default "fritz.box_fon_wlan_7140.annexb.30.04.33.image"             if FREETZ_TYPE_7140_7170
 		default "FRITZ.Box_Fon_WLAN_7141.40.04.76.image"                    if FREETZ_TYPE_7141_7170
+		default "fritz.fon_7150.annexb.38.04.71.image"                      if FREETZ_TYPE_7150_7170
 		default "FRITZ.Box_Fon_WLAN_7240.73.05.22.image"                    if FREETZ_TYPE_7240_7270 && FREETZ_TYPE_FIRMWARE_05_2X
 		default "FRITZ.Box_Fon_WLAN_7240.73.05.52.image"                    if FREETZ_TYPE_7240_7270 && FREETZ_TYPE_FIRMWARE_05_5X
 		default "FRITZ.Box_Fon_WLAN_7270_v2.en-de-es-it-fr.54.04.90.image"  if FREETZ_TYPE_7270_V1 && FREETZ_ADD_ANNEX_A_FIRMWARE
@@ -1819,6 +1830,7 @@ menu "Override options"
 		default "f5d91a5ce4d9e65a3c526211e4e5f01b"  if FREETZ_TYPE_7113_7170
 		default "08eeaf5239709d8582d730de2bcb10bf"  if FREETZ_TYPE_7140_7170
 		default "b612f315216adf3b230e4d99430194a8"  if FREETZ_TYPE_7141_7170
+		default "5c5ff2e39056220007f145b672d0adc8"  if FREETZ_TYPE_7150_7170
 		default "0f3432079ee4ed93ea18896f38b25e84"  if FREETZ_TYPE_7240_7270 && FREETZ_TYPE_FIRMWARE_05_2X
 		default "d9667e8a3f9a58a1fd3447c2299a5437"  if FREETZ_TYPE_7240_7270 && FREETZ_TYPE_FIRMWARE_05_5X
 		default "716e136d91ab153f028d1a4e13390f71"  if FREETZ_TYPE_7270_V1 && FREETZ_ADD_ANNEX_A_FIRMWARE
@@ -2161,6 +2173,7 @@ config FREETZ_TYPE_PREFIX_ALIEN_HARDWARE
 	default "7113_"             if FREETZ_TYPE_7113_7170
 	default "7140_"             if FREETZ_TYPE_7140_7170
 	default "7141_"             if FREETZ_TYPE_7141_7170
+	default "7150_"             if FREETZ_TYPE_7150_7170
 	default "7240_"             if FREETZ_TYPE_7240_7270
 	default "7270v1_"           if FREETZ_TYPE_7270_7270
 	default "7270v2_"           if FREETZ_TYPE_72702_72701
