@@ -1,5 +1,6 @@
+
 has_swap() {
-	[ "$(/mod/etc/init.d/rc.swap status)" == "running" ] || return 1
+	sed '1d' /proc/swaps | grep -q ''
 }
 
 decim="$(lang de:"," en:".")"
