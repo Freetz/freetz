@@ -41,8 +41,9 @@ formact=$(html "$SCRIPT_NAME${QUERY_STRING:+?$QUERY_STRING}")
 
 sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
 
+decim="$(lang de:"," en:".")"
 format_size() {
-	echo "$1B" | sed -e 's/[KMGT]\?B/ &/; s/KB$/kB/'
+	echo "$1B" | sed -e "s/[KMGT]\?B/ &/;s/KB$/kB/;s/\./$decim/g"
 }
 format_path() {
 	echo "$1" | sed -e 's#/#/\&shy;#g'
