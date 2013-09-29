@@ -49,7 +49,7 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	"Name: lua\n"\
 	"Description: LUA Library\n"\
 	"Version: $(LUA_VERSION)\n"\
-	"Libs: -L\$${libdir} -llua\n"\
+	"Libs: -L\$${libdir} -llua -ldl -lm\n"\
 	"Cflags: -I\$${includedir}\n"\
 	>$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/lua.pc
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib && \
