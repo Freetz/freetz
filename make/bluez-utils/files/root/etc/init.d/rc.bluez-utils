@@ -24,8 +24,9 @@ start() {
 	# /wtc/hotplug/net.pandu set rights
 	[ -e /tmp/flash/bluez/netpandu ] && chmod 755 /tmp/flash/bluez/netpandu
 
-	# Insert bfusb (bluefritz driver), hci_usb and rfcomm module
+	# Insert bfusb (bluefritz driver), btusb, hci_usb and rfcomm module
 	modprobe -q bfusb >/dev/null 2>&1
+	modprobe -q btusb >/dev/null 2>&1
 	modprobe -q hci_usb >/dev/null 2>&1
 
 	if [ "$BLUEZ_UTILS_RFCOMM_START" = "yes" ]; then
@@ -95,7 +96,7 @@ stop() {
 	killall -9 hcid >/dev/null 2>&1
 	exitval1=$?
 
-	rmmod bnep rfcomm l2cap bluetooth hci_usb >/dev/null 2>&1
+	rmmod bnep rfcomm l2cap bluetooth bfusb btusb hci_usb >/dev/null 2>&1
 
 	[ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ] && return 0
 }
