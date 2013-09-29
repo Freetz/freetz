@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 0.13)
-$(PKG)_SOURCE:=pyopenssl_$($(PKG)_VERSION).orig.tar.gz
-$(PKG)_SOURCE_MD5:=767bca18a71178ca353dff9e10941929
-$(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/p/pyopenssl
+$(call PKG_INIT_BIN, 0.13.1)
+$(PKG)_SOURCE:=pyOpenSSL-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=e27a3b76734c39ea03952ca94cc56715
+$(PKG)_SITE:=https://pypi.python.org/packages/source/p/pyOpenSSL
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/pyOpenSSL-$($(PKG)_VERSION)
 
