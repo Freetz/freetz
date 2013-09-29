@@ -301,6 +301,7 @@ config FREETZ_MODULE_ftdi_sio
 
 config FREETZ_MODULE_hci_usb
 	bool "hci_usb.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 #	select FREETZ_MODULE_usbcore
 	select FREETZ_MODULE_bluetooth
 	default n
@@ -310,6 +311,13 @@ config FREETZ_MODULE_bfusb
 #	select FREETZ_MODULE_usbcore
 	select FREETZ_MODULE_bluetooth
 	select FREETZ_MODULE_firmware_class
+	default n
+
+config FREETZ_MODULE_btusb
+	bool "btusb.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+#	select FREETZ_MODULE_usbcore
+	select FREETZ_MODULE_bluetooth
 	default n
 
 config FREETZ_MODULE_firmware_class
