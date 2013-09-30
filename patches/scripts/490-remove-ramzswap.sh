@@ -2,6 +2,8 @@
 echo1 "removing ramzswap files"
 rm_files \
   "${FILESYSTEM_MOD_DIR}/etc/init.d/S40-swap" \
+  "${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/lib/lzo/lzo_compress.ko" \
+  "${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/lib/lzo/lzo_decompress.ko" \
   "${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/drivers/block/compcache/ramzswap.ko"
 
 echo1 "patching rc.conf"
