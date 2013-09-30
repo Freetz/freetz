@@ -5,7 +5,8 @@ has_swap() {
 
 decim="$(lang de:"," en:".")"
 format_value() {
-	echo $1 | sed -r "s/(.*)(..)$/\1$decim\2/"
+	[ $1 -ge 10 ] && local val=$1 || local val="0$1"
+	echo $val | sed -r "s/(.*)(.)$/\1$decim\2/"
 }
 
 read_meminfo() {
@@ -16,9 +17,9 @@ read_meminfo
 
 sec_begin '$(lang de:"Physikalischer Speicher (RAM)" en:"Main memory (RAM)")'
 
-total=$(($mem_MemTotal*100/1024))
-free=$(($mem_MemFree*100/1024))
-cached=$(($mem_Cached*100/1024))
+total=$(($mem_MemTotal*10/1024))
+free=$(($mem_MemFree*10/1024))
+cached=$(($mem_Cached*10/1024))
 let usedwc="total-cached-free"
 let percent="100*usedwc/total"
 let perc_buff="100*cached/total"
@@ -46,9 +47,9 @@ sec_end
 
 if has_swap; then
 	sec_begin '$(lang de:"Swap-Speicher" en:"Swap") (RAM)'
-	total=$(($mem_SwapTotal*100/1024))
-	free=$(($mem_SwapFree*100/1024))
-	cached=$(($mem_SwapCached*100/1024))
+	total=$(($mem_SwapTotal*10/1024))
+	free=$(($mem_SwapFree*10/1024))
+	cached=$(($mem_SwapCached*10/1024))
 	let usedwc="total-cached-free"
 	let percent="100*usedwc/total"
 	let perc_buff="100*cached/total"
