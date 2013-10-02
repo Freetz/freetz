@@ -16,11 +16,13 @@ done
 
 echo1 "remove AVM's e2fsprogs libraries"
 for files in \
-  usr/lib/libblkid* \
-  usr/lib/libcom_err* \
-  usr/lib/libe2p* \
-  usr/lib/libext2fs* \
-  usr/lib/libuuid* \
+  libblkid* \
+  libcom_err* \
+  libe2p* \
+  libext2fs* \
+  libuuid* \
   ; do
-	rm_files "${FILESYSTEM_MOD_DIR}/$files"
+	for filenpath in $(find ${FILESYSTEM_MOD_DIR}/lib/ ${FILESYSTEM_MOD_DIR}/usr/lib/ -name $files); do
+		rm_files "$filenpath"
+	done
 done
