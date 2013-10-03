@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.6)
+$(call PKG_INIT_BIN, 4.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=e537b2b1afeec70c0e6e27a0d0fd671e
+$(PKG)_SOURCE_MD5:=c575ef43829586801f514fd91bfe7575
 $(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/strace
