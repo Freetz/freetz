@@ -1,30 +1,25 @@
 --- src/network.c
 +++ src/network.c
-@@ -27,6 +27,7 @@
- # include <openssl/rand.h>
- # include <openssl/dh.h>
+@@ -29,6 +29,7 @@
+ #  include <openssl/dh.h>
+ # endif
  # include <openssl/bn.h>
 +# include <openssl/bio.h>
  
  # if OPENSSL_VERSION_NUMBER >= 0x0090800fL
  #  ifndef OPENSSL_NO_ECDH
-@@ -498,13 +499,14 @@
- 	network_backend_t backend;
- 
- #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
--#ifndef OPENSSL_NO_ECDH
-+#if !defined(OPENSSL_NO_EC) && !defined(OPENSSL_NO_ECDH)
- 	EC_KEY *ecdh;
- 	int nid;
- #endif
+@@ -505,9 +506,8 @@
  #endif
  
  #ifdef USE_OPENSSL
+-# ifndef OPENSSL_NO_DH
 +#if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
  	DH *dh;
+-# endif
  	BIO *bio;
  
-@@ -547,6 +549,7 @@
+        /* 1024-bit MODP Group with 160-bit prime order subgroup (RFC5114)
+@@ -549,6 +549,7 @@
  		0x85,0x5E,0x6E,0xEB,0x22,0xB3,0xB2,0xE5,
  	};
  #endif
@@ -32,23 +27,12 @@
  
  #ifdef USE_OPENSSL
  	char ssl_error_string_buf[256];
-@@ -649,6 +652,7 @@
+@@ -661,7 +662,7 @@
  			}
  		}
  
+-#ifndef OPENSSL_NO_DH
 +#if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
  		/* Support for Diffie-Hellman key exchange */
  		if (!buffer_is_empty(s->ssl_dh_file)) {
  			/* DH parameters from file */
-@@ -682,9 +686,10 @@
- 		SSL_CTX_set_tmp_dh(s->ssl_ctx,dh);
- 		SSL_CTX_set_options(s->ssl_ctx,SSL_OP_SINGLE_DH_USE);
- 		DH_free(dh);
-+#endif
- 
- #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
--#ifndef OPENSSL_NO_ECDH
-+#if !defined(OPENSSL_NO_EC) && !defined(OPENSSL_NO_ECDH)
- 		/* Support for Elliptic-Curve Diffie-Hellman key exchange */
- 		if (!buffer_is_empty(s->ssl_ec_curve)) {
- 			/* OpenSSL only supports the "named curves" from RFC 4492, section 5.1.1. */

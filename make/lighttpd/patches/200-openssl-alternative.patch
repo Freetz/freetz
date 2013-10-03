@@ -1,13 +1,50 @@
 --- configure
 +++ configure
-	2012-01-13 21:11:06.345273110 +0100
-@@ -14248,13 +14248,25 @@
+@@ -14340,51 +14340,25 @@
  done
  
      OLDLIBS="$LIBS"
 -    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BIO_f_base64 in -lcrypto" >&5
 -$as_echo_n "checking for BIO_f_base64 in -lcrypto... " >&6; }
 -if ${ac_cv_lib_crypto_BIO_f_base64+:} false; then :
+-  $as_echo_n "(cached) " >&6
+-else
+-  ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lcrypto  $LIBS"
+-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-
+-/* Override any GCC internal prototype to avoid an error.
+-   Use char because int might match the return type of a GCC
+-   builtin and then its argument prototype would still apply.  */
+-#ifdef __cplusplus
+-extern "C"
+-#endif
+-char BIO_f_base64 ();
+-int
+-main ()
+-{
+-return BIO_f_base64 ();
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_crypto_BIO_f_base64=yes
+-else
+-  ac_cv_lib_crypto_BIO_f_base64=no
+-fi
+-rm -f core conftest.err conftest.$ac_objext \
+-    conftest$ac_exeext conftest.$ac_ext
+-LIBS=$ac_check_lib_save_LIBS
+-fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_BIO_f_base64" >&5
+-$as_echo "$ac_cv_lib_crypto_BIO_f_base64" >&6; }
+-if test "x$ac_cv_lib_crypto_BIO_f_base64" = xyes; then :
+-
+-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
+-$as_echo_n "checking for SSL_new in -lssl... " >&6; }
+-if ${ac_cv_lib_ssl_SSL_new+:} false; then :
 +    if [ -n "$OPENSSL_ALTERNATIVE" ]; then
 +	SSL_NEW_LIB="$OPENSSL_ALTERNATIVE"
 +	SSL_NEW_FCT_PREFIX="$OPENSSL_ALTERNATIVE_FCT_PREFIX"
@@ -26,75 +63,37 @@
    $as_echo_n "(cached) " >&6
  else
    ac_check_lib_save_LIBS=$LIBS
--LIBS="-lcrypto  $LIBS"
+-LIBS="-lssl  -lcrypto "$DL_LIB"  $LIBS"
 +LIBS="-l${SSL_NEW_LIB} ${SSL_NEW_EXTRALIBS} "$DL_LIB"  $LIBS"
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -14264,73 +14276,34 @@
+@@ -14394,35 +14368,34 @@
  #ifdef __cplusplus
  extern "C"
  #endif
--char BIO_f_base64 ();
+-char SSL_new ();
 +char ${SSL_NEW_FCT_PREFIX}SSL_new ();
  int
  main ()
  {
--return BIO_f_base64 ();
+-return SSL_new ();
 +return ${SSL_NEW_FCT_PREFIX}SSL_new ();
    ;
    return 0;
  }
  _ACEOF
  if ac_fn_c_try_link "$LINENO"; then :
--  ac_cv_lib_crypto_BIO_f_base64=yes
+-  ac_cv_lib_ssl_SSL_new=yes
 +  eval ac_cv_lib_${SSL_NEW_LIB}_SSL_new=yes
  else
--  ac_cv_lib_crypto_BIO_f_base64=no
+-  ac_cv_lib_ssl_SSL_new=no
 +  eval ac_cv_lib_${SSL_NEW_LIB}_SSL_new=no
  fi
  rm -f core conftest.err conftest.$ac_objext \
      conftest$ac_exeext conftest.$ac_ext
  LIBS=$ac_check_lib_save_LIBS
  fi
--{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_BIO_f_base64" >&5
--$as_echo "$ac_cv_lib_crypto_BIO_f_base64" >&6; }
--if test "x$ac_cv_lib_crypto_BIO_f_base64" = xyes; then :
--
--      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
--$as_echo_n "checking for SSL_new in -lssl... " >&6; }
--if ${ac_cv_lib_ssl_SSL_new+:} false; then :
--  $as_echo_n "(cached) " >&6
--else
--  ac_check_lib_save_LIBS=$LIBS
--LIBS="-lssl  -lcrypto "$DL_LIB"  $LIBS"
--cat confdefs.h - <<_ACEOF >conftest.$ac_ext
--/* end confdefs.h.  */
--
--/* Override any GCC internal prototype to avoid an error.
--   Use char because int might match the return type of a GCC
--   builtin and then its argument prototype would still apply.  */
--#ifdef __cplusplus
--extern "C"
--#endif
--char SSL_new ();
--int
--main ()
--{
--return SSL_new ();
--  ;
--  return 0;
--}
--_ACEOF
--if ac_fn_c_try_link "$LINENO"; then :
--  ac_cv_lib_ssl_SSL_new=yes
--else
--  ac_cv_lib_ssl_SSL_new=no
--fi
--rm -f core conftest.err conftest.$ac_objext \
--    conftest$ac_exeext conftest.$ac_ext
--LIBS=$ac_check_lib_save_LIBS
--fi
 -{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_new" >&5
 -$as_echo "$ac_cv_lib_ssl_SSL_new" >&6; }
 -if test "x$ac_cv_lib_ssl_SSL_new" = xyes; then :
@@ -113,9 +112,21 @@
  
      LIBS="$OLDLIBS"
  
+--- src/connections.c
++++ src/connections.c
+@@ -1348,7 +1348,9 @@
+ 			}
+ 
+ 			con->renegotiations = 0;
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 			SSL_set_app_data(con->ssl, con);
++#endif
+ 			SSL_set_accept_state(con->ssl);
+ 
+ 			if (1 != (SSL_set_fd(con->ssl, cnt))) {
 --- src/network.c
 +++ src/network.c
-@@ -37,6 +37,7 @@
+@@ -39,6 +39,7 @@
  #endif
  
  #ifdef USE_OPENSSL
@@ -131,7 +142,7 @@
  
  static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
  	server_socket *srv_socket = (server_socket *)context;
-@@ -619,7 +621,9 @@
+@@ -629,7 +631,9 @@
  		}
  
  		SSL_CTX_set_options(s->ssl_ctx, ssloptions);
@@ -141,7 +152,7 @@
  
  		if (!s->ssl_use_sslv2) {
  			/* disable SSLv2 */
-@@ -713,6 +717,15 @@
+@@ -727,6 +731,15 @@
  #endif
  #endif
  
@@ -157,7 +168,7 @@
  		if (!buffer_is_empty(s->ssl_ca_file)) {
  			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
-@@ -744,6 +757,7 @@
+@@ -758,6 +771,7 @@
  				"SSL: You specified ssl.verifyclient.activate but no ca_file"
  			);
  		}
@@ -177,23 +188,11 @@
  	X509 *xs;
  	X509_NAME *xn;
  	X509_NAME_ENTRY *xe;
-@@ -200,6 +203,7 @@
+@@ -208,6 +211,7 @@
  		}
  	}
  	X509_free(xs);
 +#endif
  }
  #endif
- 
---- src/connections.c
-+++ src/connections.c
-@@ -1369,7 +1369,9 @@
- 			}
- 
- 			con->renegotiations = 0;
-+#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
- 			SSL_set_app_data(con->ssl, con);
-+#endif
- 			SSL_set_accept_state(con->ssl);
- 			con->conf.is_ssl=1;
  
