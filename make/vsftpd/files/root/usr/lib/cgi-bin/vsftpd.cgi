@@ -140,7 +140,7 @@ $(lang de:"Pause nach fehlerhaftem Login in Sekunden:" en:"Delay after failed lo
 $(lang de:"Die beiden folgenden Einstellungen werden haupts&auml;chlich f&uuml;r den Betrieb mit SSL-Verschl&uuml;sselung ben&ouml;tigt, da die Firewall dem Verkehr nicht mehr folgen kann." en:"The following 2 settings are mainly for operating with SSL, because the firewall can't follow the encrypted traffic.")<br>
 <input type="hidden" name="pasv_address" value="no">
 <input id="a2" type="checkbox" name="pasv_address" value="yes"$pasv_add_chk><label for="a2"> $(lang de:"aktuelle &ouml;ffentliche IP als pasv_address eintragen" en:"write actual public IP as pasv_address to config")</label><br>
-<input type="hidden" name="enable_reaload_script" value="no">
+<input type="hidden" name="enable_reload_script" value="no">
 <input id="a3" type="checkbox" name="enable_reload_script" value="yes"$reload_script_chk><label for="a3"> $(lang de:"Script /etc/onlinechanged/reload_vsftpd aktivieren, damit die Konfiguration nach einem IP-Wechsel neu generiert wird." en:"Create script /etc/onlinechanged/reload_vsftpd to recreate config after IP-change.")</label>
 </p>
 EOF
