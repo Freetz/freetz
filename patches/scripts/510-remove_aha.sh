@@ -34,6 +34,12 @@ modsed '/^require("libaha")/d' $sedfile
 modsed 's/^\(var ulepresent = \).*/\10;/' $sedfile
 modsed '/^devicelist = aha.GetDeviceList()/d' $sedfile
 
+# patcht Heimnetz -> Netzwerk -> Netzwerkeinstellungen
+sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
+echo1 "patching ${sedfile##*/}"
+modsed '/^require("libaha")/,/^end/ d' $sedfile
+
+
 sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 echo1 "patching ${sedfile##*/}"
 modsed "s/CONFIG_HOME_AUTO=.*$/CONFIG_HOME_AUTO=\"n\"/g" $sedfile
