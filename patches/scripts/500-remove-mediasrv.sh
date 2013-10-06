@@ -2,25 +2,35 @@
 [ "$FREETZ_AVMPLUGINS_ENABLED" -a "$FREETZ_AVMPLUGINS_MEDIASRV" != "y" ] || \
 return 0
 
+
+sedfile="${HTML_LANG_MOD_DIR}/storage/media_settings.lua"
+if [ -e $sedfile ]; then
+	# patcht Heimnetz > MediaServer >Einstellungen > Mediaserver (ab 05.59)
+	echo1 "patching ${sedfile##*/}"
+	exit1 TODO
+else
+	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
+	if [ -e $sedfile ]; then
+		echo1 "patching ${sedfile##*/}"
+		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?80:1383?}.*$/\1/p')
+		if grep -q uiViewUseMusikBox $sedfile; then
+			# patcht Heimnetz > Speicher (NAS) > Aktivierung > Musikbox aktiv (04.xx)
+			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
+			modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
+		else
+			# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver (05.xx)
+			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
+			modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
+		fi
+	fi
+fi
+
+# see http://freetz.org/ticket/1391 for details
+modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" "${HTML_LANG_MOD_DIR}/storage/settings.lua"
+
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_MEDIASRV=.*$/CONFIG_MEDIASRV=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-
-sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
-if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
-	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?80:1383?}.*$/\1/p')
-	if grep -q uiViewUseMusikBox $sedfile; then
-		# patcht Heimnetz > Speicher (NAS) > Aktivierung > Musikbox aktiv (04.xx)
-		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
-		modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
-	else
-		# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver (05.xx)
-		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
-		modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
-	fi
-	# see http://freetz.org/ticket/1391 for details
-	modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" $sedfile
-fi
 
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
 
@@ -53,7 +63,8 @@ if [ -e "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html" ]; then
 	  D }" "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html"
 fi
 
-# patcht USB-Geräte > USB-Speicher >  Musikbox aktivieren
+
+# patcht USB-Geraete > USB-Speicher >  Musikbox aktivieren
 sedfile="${HTML_SPEC_MOD_DIR}/usb/usbdisk.html"
 if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
