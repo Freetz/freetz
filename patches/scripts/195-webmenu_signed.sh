@@ -10,3 +10,8 @@ for file in /usr/www/all/html/de/home/home.js /usr/www/avme/html/de/home/home.js
 	[ ! -e ${FILESYSTEM_MOD_DIR}${file} ] && continue
 	modsed 's/^.*var signed.*/\tvar signed = 1;/g' ${FILESYSTEM_MOD_DIR}${file}
 done
+
+# patcht System > Diagnose (ab 05.59)
+sedfile="${HTML_LANG_MOD_DIR}/system/diagnosis.lua"
+echo1 "patching ${sedfile##*/}"
+modsed 's/signed_firmware") == "1"/& or true /' $sedfile
