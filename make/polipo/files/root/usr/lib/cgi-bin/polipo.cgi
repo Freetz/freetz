@@ -34,7 +34,7 @@ cat << EOF
   <td style="width:50%"><input type="hidden" name="disableindexing" value="false">
 <i>disableIndexing:</i> &nbsp; <input title="$(lang de:"Indizieren des lokalen Caches deaktivieren" en:"Disable indexing of the local cache")" id="id_index" type="checkbox" name="disableindexing" value="true"$indexdis_chk></td>
   <td style="width:50%"><input type="hidden" name="disableserverslist" value="false">
-<i>disableServersList:</i> &nbsp; <input title="$(lang de:"Liste der bekannten Server deaktivieren" en:"Disable the list of known servers")" id="id_server" type="checkbox" name="disablesersverlist" value="true"$serverdis_chk></td>
+<i>disableServersList:</i> &nbsp; <input title="$(lang de:"Liste der bekannten Server deaktivieren" en:"Disable the list of known servers")" id="id_server" type="checkbox" name="disableserverslist" value="true"$serverdis_chk></td>
  </tr>
 </table>
 
