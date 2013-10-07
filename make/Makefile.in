@@ -161,6 +161,18 @@ DL_SOURCE2_CONTAINER_MD5:=$(call qstrip,$(FREETZ_DL_SOURCE2_CONTAINER_MD5))
 DL_SOURCE2_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE2_CONTAINER))
 endif
 
+ifneq ($(strip $(FREETZ_DL_SOURCE3)),)
+DL_SITE3:=$(call qstrip,$(FREETZ_DL_SITE3))
+DL_SOURCE3:=$(call qstrip,$(FREETZ_DL_SOURCE3))
+DL_SOURCE3_MD5:=$(call qstrip,$(FREETZ_DL_SOURCE3_MD5))
+endif
+
+ifneq ($(strip $(FREETZ_DL_SOURCE3_CONTAINER)),)
+DL_SOURCE3_CONTAINER:=$(call qstrip,$(FREETZ_DL_SOURCE3_CONTAINER))
+DL_SOURCE3_CONTAINER_MD5:=$(call qstrip,$(FREETZ_DL_SOURCE3_CONTAINER_MD5))
+DL_SOURCE3_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE3_CONTAINER))
+endif
+
 ### Convenience macros
 # Since the makefiles for the packages contain many similar parts, we define some macros to simplify
 # the creation and maintenance of the makefiles.

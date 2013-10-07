@@ -293,6 +293,7 @@ endef
 
 $(eval $(call DOWNLOAD_FIRMWARE))
 $(eval $(call DOWNLOAD_FIRMWARE,2))
+$(eval $(call DOWNLOAD_FIRMWARE,3))
 
 package-list: package-list-clean $(PACKAGES_LIST)
 	@touch .static

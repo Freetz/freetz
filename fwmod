@@ -17,7 +17,7 @@
 usage()
 {
 	cat << EOF
-Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
+Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
   actions
     -u         unpack firmware image
     -m         modify previously unpacked image
@@ -33,6 +33,7 @@ Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw>]
     -d <dir>   build directory (default: <orig_firmware>.mod)
     <orig_fw>  original firmware name
     <tk_fw>    2nd firmware name (e.g. for merging in web UI)
+    <aux_fw>   3rd firmware name (e.g. to borrow missing files)
 EOF
 }
 
@@ -77,7 +78,7 @@ done
 shift $((OPTIND-1))
 
 # At least one (non-empty) firmware image name must be specified
-[ $# -ne 1 -a $# -ne 2 -o ! "$1" ] && usage >&2 && exit 1
+[ $# -lt 1 -o $# -gt 3 -o ! "$1" ] && usage >&2 && exit 1
 
 # Freetz base + tools directories
 BASE_DIR="$(dirname "$0")"
@@ -91,6 +92,7 @@ TOOLS_DIR="${ABS_BASE_DIR}/tools"
 # Initialise firmware image names
 FIRMWARE="$1"
 FIRMWARE2="$2"
+FIRMWARE3="$3"
 FIRMWARE_EXTENSION="${FIRMWARE##*.}"
 FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
 
@@ -99,6 +101,8 @@ FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
 	error 1 "firmware image $(basename "$FIRMWARE") not found"
 [ "$FIRMWARE2" -a ! -r "$FIRMWARE2" ] &&
 	error 1 "firmware image $(basename "$FIRMWARE2") not found"
+[ "$FIRMWARE3" -a ! -r "$FIRMWARE3" ] &&
+	error 1 "firmware image $(basename "$FIRMWARE3") not found"
 
 # Config file must exist
 [ -r "$DOT_CONFIG" ] ||
@@ -202,6 +206,11 @@ FIRMWARE_TK_DIR="${TK_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_TK_DIR="${TK_DIR}/${FILESYSTEM_SUBDIR}"
 KERNEL_TK_DIR="${TK_DIR}/${KERNEL_SUBDIR}"
 VARTAR_TK_DIR="${KERNEL_TK_DIR}/${VARTAR_SUBDIR}"
+AUX_DIR="${DIR}/.aux/original"
+FIRMWARE_AUX_DIR="${AUX_DIR}/${FIRMWARE_SUBDIR}"
+FILESYSTEM_AUX_DIR="${AUX_DIR}/${FILESYSTEM_SUBDIR}"
+KERNEL_AUX_DIR="${AUX_DIR}/${KERNEL_SUBDIR}"
+VARTAR_AUX_DIR="${KERNEL_AUX_DIR}/${VARTAR_SUBDIR}"
 
 
 ##########################################################
@@ -488,9 +497,19 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	# Unpack secondary firmware image
 	if [ -n "$FIRMWARE2" ]; then
+		echo0 -b "FINISHED"
 		rm -rf "${DIR}/.tk"
 		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" |
-			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/"
+			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/" |
+			sed "s/main firmware/secondary firmware/"
+	fi
+
+	# Unpack auxiliary firmware image
+	if [ -n "$FIRMWARE3" ]; then
+		rm -rf "${DIR}/.aux"
+		"$0" -u -d "${DIR}/.aux" "$FIRMWARE3" |
+			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK AUXILIARY${FORCE_UNPACK}/" |
+			sed "s/main firmware/auxiliary firmware/"
 	fi
 
 	# Create "unpacked" marker, recording exactly *what* was unpacked (MD5)
@@ -611,8 +630,8 @@ function sizeinfo()
 
 # show avm image details
 avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # newer 4-digits
-[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=.*([0-9]{4}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" #older 4-digits
-[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -n 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=\(FRITZ!Box\|Speedport\)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init |head -n1| sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" #oldest, fon-sl-wlan etc
+[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -n 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=\(FRITZ!Box\|Speedport\|Sinus\|Eumex\)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init |head -n1| sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" #oldest, fon-sl-wlan etc
+[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" #older 4-digits
 avm_fw_produkt="${avm_fw_produkt%% Edition*}"
 avm_fw_produkt="${avm_fw_produkt% }"
 avm_fw_language="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
@@ -623,7 +642,7 @@ avm_fw_version="$(sed -n 's/^export FIRMWARE_VERSION=.*}//p' ${FILESYSTEM_DIR}/e
 avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
 avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
 avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
-echo1 -l "detected firmware ${avm_fw_produkt/ /-}$avm_fw_language $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
+echo1 -l "detected main firmware ${avm_fw_produkt/ /-}$avm_fw_language $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"
