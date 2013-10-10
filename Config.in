@@ -1422,8 +1422,8 @@ menu "Override options"
 
 	config FREETZ_DL_KERNEL_SITE
 		string "Kernel site"                                    if FREETZ_DL_OVERRIDE
+#		default "@AVM/fritzbox.wlan_3370/x_misc/opensrc"        if ...
 		default ""
-	#	default "@AVM/fritzbox.wlan_3370/x_misc/opensrc"        if ...
 
 	config FREETZ_DL_KERNEL_SOURCE
 		string "Kernel source"                     if FREETZ_DL_OVERRIDE
@@ -1666,16 +1666,16 @@ menu "Override options"
 		default "fritz.box..."                                                  if FREETZ_TYPE_CUSTOM
 
 	config FREETZ_DL_SOURCE_CONTAINER 
-		string
-		depends on (FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR) || FREETZ_TYPE_7272
-		default "fritzbox-labor-7272-26508.zip" if FREETZ_TYPE_7272
-		default "fritzbox-labor-7490-26609.zip" if FREETZ_TYPE_7490
+		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
+		default "fritzbox-labor-7272-26508.zip"         if FREETZ_TYPE_7272
+#		default "fritzbox-labor-7490-26609.zip"         if FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR
+		default ""
 
 	config FREETZ_DL_SOURCE_CONTAINER_MD5
-		string
-		depends on (FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR) || FREETZ_TYPE_7272
-		default "bebbab45678f0a0c004328a262612d03" if FREETZ_TYPE_7272
-		default "db5a723624d58b42c907c8c2d0ffcc23" if FREETZ_TYPE_7490
+		string "MD5 checksum for container"             if FREETZ_DL_OVERRIDE
+		default "bebbab45678f0a0c004328a262612d03"      if FREETZ_TYPE_7272
+#		default "db5a723624d58b42c907c8c2d0ffcc23"      if FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR
+		default ""
 
 	config FREETZ_DL_SOURCE_MD5
 		string "MD5 checksum for downloaded Image"  if FREETZ_DL_OVERRIDE
