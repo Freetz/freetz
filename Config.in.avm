@@ -559,17 +559,12 @@ config FREETZ_AVM_HAS_STRACE
 config FREETZ_AVM_HAS_TAM
 	bool "Has TAM"		if FREETZ_TYPE_CUSTOM
 	default y		if \
+		FREETZ_AVM_VERSION_05_2X_MIN || \
 		FREETZ_TYPE_7150 || \
 		FREETZ_TYPE_7141 || \
 		FREETZ_TYPE_7170 || \
 		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570 || \
-		( \
-			FREETZ_AVM_VERSION_05_2X_MIN && \
-			!FREETZ_TYPE_3270 && \
-			!FREETZ_TYPE_3370 && \
-			!FREETZ_TYPE_3390 \
-		)
+		FREETZ_TYPE_7570
 	default n
 	help
 		Select this if you have a box with TAM (Telephone Answering Machine) support.
