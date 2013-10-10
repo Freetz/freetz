@@ -276,7 +276,7 @@ else
 		fi; \
 		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
 			.zip) \
-				if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) */$$(DL_SOURCE$(1)) -d $$(DL_FW_DIR); then \
+				if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *$$(DL_SOURCE$(1)) -d $$(DL_FW_DIR); then \
 					$$(call ERROR,3,Could not unzip firmware image.) \
 				fi \
 				;; \
