@@ -466,24 +466,17 @@ config FREETZ_AVM_HAS_CHRONYD
 config FREETZ_AVM_HAS_DECT
 	bool "Has DECT"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_6842 || \
 		FREETZ_TYPE_7150 || \
 		FREETZ_TYPE_7150_7170 || \
-		FREETZ_TYPE_7240 || \
-		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7272 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360 || \
-		FREETZ_TYPE_7362 || \
-		FREETZ_TYPE_7390 || \
-		FREETZ_TYPE_7490 || \
+		FREETZ_TYPE_7270_V1 || \
 		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_W900V_7170
+		FREETZ_TYPE_W900V_7170 || \
+		( \
+			FREETZ_AVM_VERSION_05_2X_MIN && \
+			!FREETZ_TYPE_3270 && \
+			!FREETZ_TYPE_3370 && \
+			!FREETZ_TYPE_3390 \
+		)
 	default n
 	help
 		Select this if your box has DECT support.
@@ -565,24 +558,17 @@ config FREETZ_AVM_HAS_STRACE
 config FREETZ_AVM_HAS_TAM
 	bool "Has TAM"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_6842 || \
 		FREETZ_TYPE_7150 || \
 		FREETZ_TYPE_7141 || \
 		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7240 || \
-		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7272 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360 || \
-		FREETZ_TYPE_7362 || \
-		FREETZ_TYPE_7390 || \
-		FREETZ_TYPE_7490 || \
-		FREETZ_TYPE_7570
+		FREETZ_TYPE_7270_V1 || \
+		FREETZ_TYPE_7570 || \
+		( \
+			FREETZ_AVM_VERSION_05_2X_MIN && \
+			!FREETZ_TYPE_3270 && \
+			!FREETZ_TYPE_3370 && \
+			!FREETZ_TYPE_3390 \
+		)
 	default n
 	help
 		Select this if you have a box with TAM (Telephone Answering Machine) support.
