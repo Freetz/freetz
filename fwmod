@@ -358,7 +358,7 @@ AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
 if [ "$DO_UNPACK" -gt 0 ]; then
-	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN"
+	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN" && FIRMWARE_MAIN=" main"
 	echo0 -b "STEP 1${UNPACK_SUBSTEP}: UNPACK${UNPACK_MAIN}${FORCE_UNPACK}"
 
 	# Remove old "unpacked" marker to avoid an undefined state in case of
@@ -500,16 +500,14 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		echo0 -b "FINISHED"
 		rm -rf "${DIR}/.tk"
 		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" |
-			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/" |
-			sed "s/main firmware/secondary firmware/"
+			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/;s/ firmware/ secondary&/"
 	fi
 
 	# Unpack auxiliary firmware image
 	if [ -n "$FIRMWARE3" ]; then
 		rm -rf "${DIR}/.aux"
 		"$0" -u -d "${DIR}/.aux" "$FIRMWARE3" |
-			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK AUXILIARY${FORCE_UNPACK}/" |
-			sed "s/main firmware/auxiliary firmware/"
+			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK AUXILIARY${FORCE_UNPACK}/;s/ firmware/ auxiliary&/"
 	fi
 
 	# Create "unpacked" marker, recording exactly *what* was unpacked (MD5)
@@ -642,7 +640,7 @@ avm_fw_version="$(sed -n 's/^export FIRMWARE_VERSION=.*}//p' ${FILESYSTEM_DIR}/e
 avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
 avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
 avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
-echo1 -l "detected main firmware ${avm_fw_produkt/ /-}$avm_fw_language $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
+echo1 -l "detected$FIRMWARE_MAIN firmware ${avm_fw_produkt/ /-}$avm_fw_language $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"
