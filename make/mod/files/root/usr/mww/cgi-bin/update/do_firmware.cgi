@@ -1,4 +1,4 @@
-#!/usr/bin/haserl -u 20000 -U /var/tmp -H /usr/lib/mww/do_update_handler.sh
+#!/usr/bin/haserl -u 70000 -U /var/tmp -H /usr/lib/mww/do_update_handler.sh
 <%
 if [ -e /tmp/fw_update.done ]; then
 	rm -f /tmp/fw_update.done
