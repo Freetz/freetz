@@ -30,7 +30,8 @@ $(PKG)_BINARIES:= \
 	libnet_cv_have_packet_socket \
 	realpath_test \
 	tst_nl_langinfo \
-	zlib_four_byte_unsigned_int
+	zlib_four_byte_unsigned_int \
+	vfwprintf
 
 # doesn't compile
 #	bash_cv_sys_siglist		-> no
