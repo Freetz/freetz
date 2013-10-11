@@ -1443,17 +1443,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
-
-		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
-		let FILESYSTEM_SIZE="$(wc -c < "$RAW_FILESYSTEM_MOD")"
-		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
-
 		echo0 "copying kernel image"
 		cp -a "$RAW_KERNEL_MOD" "$KERNEL_MOD"
-
-		echo0 "copying filesystem image"
-		cp -a "$RAW_FILESYSTEM_MOD" "$FILESYSTEM_MOD"
 	else
 		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
 
@@ -1464,22 +1455,26 @@ if [ "$DO_PACK" -gt 0 ]; then
 		cat "$RAW_FILESYSTEM_MOD" >> "$KERNEL_MOD"
 
 		[ ! -s "$KERNEL_MOD" ] && error 1 "kernel merging failed"
+	fi
 
-		# Check size of kernel image (multiple of 64 kB blocks)
-		if [ -n "$FREETZ_KERNEL_CUSTOM_MTD_SIZE" ]; then
-			let KERNEL_LIMIT="$FREETZ_KERNEL_CUSTOM_MTD_SIZE*64*1024"
-		else
-			KERNEL_LIMIT="$(sed -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
-			[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
-		fi
-		let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
-		let DIFF="KERNEL_SIZE-KERNEL_LIMIT"
+	# Check size of kernel image (multiple of 64 kB blocks)
+	if [ -n "$FREETZ_KERNEL_CUSTOM_MTD_SIZE" ]; then
+		let KERNEL_LIMIT="$FREETZ_KERNEL_CUSTOM_MTD_SIZE*64*1024"
+	else
+		KERNEL_LIMIT="$(sed -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
+		[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
+	fi
+	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
+	let KERNEL_DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
-		echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-DIFF)))"
-		[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
-		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
+	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-KERNEL_DIFF)))"
+	[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
+	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
+		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+				error 1 -b "kernel image is $KERNEL_DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
+		else  
 			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
-				error 1 -b "kernel image is $DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
+				error 1 -b "kernel image is $KERNEL_DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
 			fi
 			if [ "$FORCE_PACK" -gt 0 -a "$DO_ZIP" -eq 0 ]; then
 				echo0   -b "Use for SDK mode only. See http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware"
@@ -1489,6 +1484,45 @@ if [ "$DO_PACK" -gt 0 ]; then
 			fi
 		fi
 	fi
+
+# ---------------------------
+# -- Pack filesystem image --
+# ---------------------------
+
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
+
+		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
+		let FILESYSTEM_SIZE="$(wc -c < "$RAW_FILESYSTEM_MOD")"
+		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
+
+		echo0 "copying filesystem image"
+		cp -a "$RAW_FILESYSTEM_MOD" "$FILESYSTEM_MOD"
+	
+
+		# Check size of filesystem image (multiple of 64 kB blocks)
+		if [ -n "$FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE" ]; then
+			let FILESYSTEM_LIMIT="$FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE*64*1024"
+		else
+			FILESYSTEM_LIMIT="$(sed -nr 's/^filesystem_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
+			[ -z "$FILESYSTEM_LIMIT" ] && error 1 "Can't find filesystem_size in var/install"
+		fi
+		let FILESYSTEM_SIZE="$(wc -c < "$FILESYSTEM_MOD")"
+		let FILESYSTEM_DIFF="FILESYSTEM_SIZE-FILESYSTEM_LIMIT"
+	
+		echo1 "filesystem image size: $FILESYSTEM_SIZE (max: $FILESYSTEM_LIMIT, free: $((-FILESYSTEM_DIFF)))"
+		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
+		if [ "$FILESYSTEM_SIZE" -gt "$FILESYSTEM_LIMIT" ]; then
+			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
+				error 1 -b "filesystem image is $FILESYSTEM_DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
+			fi
+			if [ "$FORCE_PACK" -ne 0 -o "$DO_ZIP" -ne 0 ]; then
+				echo0   -b "Use for USBroot or NFSroot mode only."
+			fi
+		fi
+	fi
+
+
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
 		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
