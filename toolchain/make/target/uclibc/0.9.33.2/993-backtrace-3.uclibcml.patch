@@ -1,0 +1,23 @@
+At least on ARM, building the ld.so with -fasynchronous-unwind-tables
+for backtrace is creating a dependencies against libc through libgcc_eh.
+So it needs to exclude this from the ldso cflags.
+
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+---
+ ldso/ldso/Makefile.in |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git ldso/ldso/Makefile.in ldso/ldso/Makefile.in
+index 91165c6..65f9a46 100644
+--- ldso/ldso/Makefile.in
++++ ldso/ldso/Makefile.in
+@@ -30,6 +30,8 @@
+ 
+ CFLAGS-ldso.c := -DLDSO_ELFINTERP=\"$(TARGET_ARCH)/elfinterp.c\" $(CFLAGS-ldso)
+ 
++CFLAGS-OMIT-ldso.c = -fasynchronous-unwind-tables
++
+ LDFLAGS-$(UCLIBC_FORMAT_DSBT_ELF)-$(UCLIBC_LDSO_NAME).so := -Wl,--dsbt-index=1
+ ifneq ($(SUPPORT_LD_DEBUG),y)
+ LDFLAGS-$(UCLIBC_LDSO_NAME).so := $(LDFLAGS)

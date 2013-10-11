@@ -1,0 +1,23 @@
+Currently the Makefile rules are not removing from the global CFLAGS
+any of the OMIT cflags declared at file level. This patch fixes it.
+
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+---
+ Makerules |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git Makerules Makerules
+index 367daa5..54344c5 100644
+--- Makerules
++++ Makerules
+@@ -226,7 +226,8 @@
+ 
+ CFLAGS_gen.dep = -MT $@ -MD -MP -MF $(dir $@).$(notdir $@).dep
+ 
+-cmd_compile.c = $(CC) -c $< -o $@ $(CFLAGS) \
++cmd_compile.c = $(CC) -c $< -o $@ \
++	$(filter-out $(CFLAGS-OMIT-$(notdir $<)),$(CFLAGS)) \
+ 	$(CFLAGS-$(suffix $@)) \
+ 	$(filter-out $(CFLAGS-OMIT-$(notdir $<)),$(CFLAGS-$(notdir $(<D)))) \
+ 	$(CFLAGS-$(subst $(top_srcdir),,$(dir $<))) \

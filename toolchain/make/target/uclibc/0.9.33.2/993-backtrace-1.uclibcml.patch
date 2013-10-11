@@ -1,0 +1,74 @@
+Add -fasynchronous-unwind-tables compiler flag for all objects, to improve
+backtrace functionality, getting full backtrace whatever functions are
+in the call stack.
+
+Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+---
+ Rules.mak                                          |    5 +++++
+ libc/signal/Makefile.in                            |    4 ----
+ libc/stdlib/Makefile.in                            |    4 ----
+ .../sysdeps/unix/sysv/linux/Makefile.commonarch    |    4 ----
+ 4 files changed, 5 insertions(+), 12 deletions(-)
+
+diff --git Rules.mak Rules.mak
+index 792b794..1cf7adc 100644
+--- Rules.mak
++++ Rules.mak
+@@ -634,6 +634,11 @@
+ 	-I$(top_srcdir)libc/sysdeps/linux \
+ 	-I$(top_srcdir)libc/sysdeps/linux/$(TARGET_ARCH)
+ 
++# Needed to get full backtrace
++ifeq ($(UCLIBC_HAS_BACKTRACE),y)
++CFLAGS += -fasynchronous-unwind-tables
++endif
++
+ # We need this to be checked within libc-symbols.h
+ ifneq ($(HAVE_SHARED),y)
+ CFLAGS += -DSTATIC
+diff --git libc/signal/Makefile.in libc/signal/Makefile.in
+index 6c355b5..ebc4619 100644
+--- libc/signal/Makefile.in
++++ libc/signal/Makefile.in
+@@ -24,10 +24,6 @@
+ CSRC-y := $(filter-out $(notdir $(ARCH_OBJS:.o=.c)),$(CSRC-y))
+ endif
+ 
+-ifneq ($(UCLIBC_HAS_BACKTRACE),)
+-CFLAGS-raise.c = -fasynchronous-unwind-tables
+-endif
+-
+ SIGNAL_DIR := $(top_srcdir)libc/signal
+ SIGNAL_OUT := $(top_builddir)libc/signal
+ 
+diff --git libc/stdlib/Makefile.in libc/stdlib/Makefile.in
+index 880de78..b737708 100644
+--- libc/stdlib/Makefile.in
++++ libc/stdlib/Makefile.in
+@@ -27,10 +27,6 @@
+ 	gcvt.c
+ CSRC-$(UCLIBC_SUSV3_LEGACY) += mktemp.c
+ 
+-ifneq ($(UCLIBC_HAS_BACKTRACE),)
+-CFLAGS-abort.c = -fasynchronous-unwind-tables
+-endif
+-
+ # multi source stdlib.c
+ CSRC-y += abs.c labs.c atoi.c atol.c strtol.c strtoul.c _stdlib_strto_l.c \
+ 	qsort.c qsort_r.c bsearch.c \
+diff --git libpthread/nptl/sysdeps/unix/sysv/linux/Makefile.commonarch libpthread/nptl/sysdeps/unix/sysv/linux/Makefile.commonarch
+index 3372214..2eeb516 100644
+--- libpthread/nptl/sysdeps/unix/sysv/linux/Makefile.commonarch
++++ libpthread/nptl/sysdeps/unix/sysv/linux/Makefile.commonarch
+@@ -128,10 +128,6 @@
+ CFLAGS-timer_routines.c = -I$(top_srcdir)librt -DIS_IN_librt
+ CFLAGS-timer_settime.c = -I$(top_srcdir)librt -DIS_IN_librt
+ 
+-ifneq ($(UCLIBC_HAS_BACKTRACE),)
+-CFLAGS-raise.c = -fasynchronous-unwind-tables
+-endif
+-
+ CFLAGS-linux = -DNOT_IN_libc -DIS_IN_libpthread $(SSP_ALL_CFLAGS)
+ 
+ CFLAGS-OMIT-libc_pthread_init.c = -DNOT_IN_libc -DIS_IN_libpthread
