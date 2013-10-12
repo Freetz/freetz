@@ -8,7 +8,7 @@ sedfile="${HTML_LANG_MOD_DIR}/storage/media_settings.lua"
 if [ -e $sedfile ]; then
 	# patcht Heimnetz > MediaServer >Einstellungen > Mediaserver (ab 05.59)
 	echo1 "patching ${sedfile##*/}"
-	exit1 TODO
+	error 1 TODO
 else
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e $sedfile ]; then
