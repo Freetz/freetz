@@ -102,7 +102,7 @@ modsed()
 	[ $# -le 1 ] && error 1 "modsed failed, not enough parameters."
 	case $2 in
 		#since firmware 05.55 HTML_SPEC_MOD_DIR does not exist anymore
-		*doesnotexist) return ;;
+		*/doesnotexist/*) return ;;
 	esac
 	if [ -f "$2" ]; then
 		echo2 "patching $2"
