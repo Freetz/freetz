@@ -20,7 +20,9 @@ else
 	  "${HTML_SPEC_MOD_DIR}/first/first_SIP_UI_*"
 fi
 
-find "${HTML_SPEC_MOD_DIR}/menus" -type f | xargs sed -s -i -e '/var:menuAssistent/d'
+if [ "$FREETZ_AVM_HAS_ONLY_LUA" != "y" ]; then
+	find "${HTML_SPEC_MOD_DIR}/menus" -type f | xargs sed -s -i -e '/var:menuAssistent/d'
+fi
 
 if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then

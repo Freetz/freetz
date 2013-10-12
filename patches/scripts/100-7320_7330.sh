@@ -8,8 +8,10 @@ fi
 echo1 "adapt firmware for 7320"
 
 files="css/default/images/kopfbalken_mitte.gif"
-files+=" html/de/images/kopfbalken.gif"
-files+=" html/de/images/DectFBoxIcon.png"
+if [ "$FREETZ_AVM_HAS_ONLY_LUA" != "y" ]; then
+	files+=" html/de/images/kopfbalken.gif"
+	files+=" html/de/images/DectFBoxIcon.png"
+fi
 for i in $files; do
 	cp -a "${FILESYSTEM_TK_DIR}/usr/www/avm/$i" "${HTML_LANG_MOD_DIR}/$i"
 done
