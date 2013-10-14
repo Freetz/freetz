@@ -12,7 +12,7 @@ rm_files \
 if [ "$FREETZ_REMOVE_DSLD" = "y" ] || ! ( isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ); then
 	rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman)
 else
-	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman_mod/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
 
 # patcht Internet > Filter > Kindersicherung
