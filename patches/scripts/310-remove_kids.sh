@@ -9,10 +9,10 @@ rm_files \
   ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libuser.so
 
 # Prevent continous reboots on 3170 with replace kernel
-if [ "$FREETZ_REMOVE_DSLD" = "y" ] || ! ( isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ); then
-	rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman)
+if [ "$FREETZ_REMOVE_DSLD" = "y" ] || ! ( [ "$FREETZ_KERNEL_LAYOUT_OHIO" = "y" -a "$FREETZ_REPLACE_KERNEL" = "y" ] ); then
+	rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman -type d)	# removes dir of userman_mod.ko
 else
-	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman_mod/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
 
 # patcht Internet > Filter > Kindersicherung
