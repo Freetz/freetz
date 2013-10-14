@@ -37,6 +37,12 @@ Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
 EOF
 }
 
+byte_to_mb() {
+	local val=$(($1*10/1024/1024))
+	[ $val -le 9 ] && val="0$val"
+	echo "$val" | sed -r "s/(.*)(.)$/\1.\2 MB/"
+}
+
 
 ##################################################
 ## Initialise and check command line parameters ##
@@ -1440,7 +1446,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS_TOOL"
 
 	echo0 "creating filesystem image"
-	echo1 "SquashFS block size: $FREETZ_SQUASHFS_BLOCKSIZE ($(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB)"
+	echo1 "SquashFS block size: $(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB ($FREETZ_SQUASHFS_BLOCKSIZE bytes)"
 
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
@@ -1469,7 +1475,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
 	let KERNEL_DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
-	echo1 "kernel image size: $KERNEL_SIZE (max: $KERNEL_LIMIT, free: $((-KERNEL_DIFF)))"
+	echo1 "kernel image size: $(byte_to_mb $KERNEL_SIZE), max $(byte_to_mb $KERNEL_LIMIT), free $(byte_to_mb $((-KERNEL_DIFF))) ($((-KERNEL_DIFF)) bytes)"
 	[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
 		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
@@ -1512,7 +1518,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		let FILESYSTEM_SIZE="$(wc -c < "$FILESYSTEM_MOD")"
 		let FILESYSTEM_DIFF="FILESYSTEM_SIZE-FILESYSTEM_LIMIT"
 	
-		echo1 "filesystem image size: $FILESYSTEM_SIZE (max: $FILESYSTEM_LIMIT, free: $((-FILESYSTEM_DIFF)))"
+		echo1 "filesystem image size: $(byte_to_mb $FILESYSTEM_SIZE), max $(byte_to_mb $FILESYSTEM_LIMIT), free $(byte_to_mb $((-FILESYSTEM_DIFF))) ($((-FILESYSTEM_DIFF)) bytes)"
 		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
 		if [ "$FILESYSTEM_SIZE" -gt "$FILESYSTEM_LIMIT" ]; then
 			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
@@ -1532,7 +1538,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 327680)))
 			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
 			if [ "$FREE_BYTE_JFFS2" -gt 0 ]; then
-				echo "${L1}Aproximately free time for the answering machine: $((($FREE_BYTE_JFFS2 / 2017)))s (${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))s)"
+				echo "${L1}Aproximately maximal time for the answering machine: ${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))sec ($((($FREE_BYTE_JFFS2 / 2017)))sec)"
 			else
 				if [ "$FREETZ_REMOVE_JFFS2" != "y" ]; then
 					echo "${L1}WARNING: Not enough free flash space for answering machine!"
@@ -1567,6 +1573,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		rm -f "$img_name"
 		error 1 "packing of firmware image failed"
 	fi
+	echo1 "image file size: $(byte_to_mb $(wc -c < "$img_name"))"
 fi
 
 # ----------------------------------------------
@@ -1585,8 +1592,10 @@ if [ "$action_names" ]; then
 			rm -f "$modexternal"
 			error 1 "packing of external tar failed"
 		fi
+		echo1 "external file size: $(byte_to_mb $(wc -c < "$modexternal"))"
 		#dynamic packages
 		if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
+			shopt -s nullglob
 			for pkg in ${EXTERNAL_MOD_DIR}-*; do
 				pkg=${pkg#${EXTERNAL_MOD_DIR}-}
 				pkgexternal="${FW_IMAGES_DIR:-$DIR}/${tplexternal}_${pkg}.external"
@@ -1596,7 +1605,9 @@ if [ "$action_names" ]; then
 					rm -f "$pkgexternal"
 					error 1 "packing of external-$pkg tar failed"
 				fi
+				echo1 "package file size: $(byte_to_mb $(wc -c < "$pkgexternal"))"
 			done
+			shopt -u nullglob
 		fi
 	fi
 
