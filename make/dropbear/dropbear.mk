@@ -53,7 +53,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_UTMP),,--disable-utmp
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_WTMP),,--disable-wtmp)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_WTMP),,--disable-wtmpx)
 $(PKG)_CONFIGURE_OPTIONS += --disable-loginfunc
-$(PKG)_CONFIGURE_OPTIONS += --disable-pututline
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_UTMP),,--disable-pututline)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pututxline
 $(PKG)_CONFIGURE_OPTIONS += --enable-bundled-libtom
 
