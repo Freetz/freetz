@@ -2,7 +2,7 @@ comment "Dropbear (not available, needs replace kernel for pty-support)"
 	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_PTY_SUPPORT && !FREETZ_SHOW_ADVANCED
 
 config FREETZ_PACKAGE_DROPBEAR
-	bool "Dropbear 2013.59"
+	bool "Dropbear 2013.60"
 	depends on FREETZ_REPLACE_KERNEL || FREETZ_AVM_HAS_PTY_SUPPORT || FREETZ_SHOW_ADVANCED
 	select FREETZ_LIB_libutil
 	select FREETZ_PACKAGE_AUTHORIZED_KEYS
@@ -65,6 +65,25 @@ config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 
 		Without this option selected, the ssh server performs a DNS
 		reverse lookup of the client's IP address.
+
+config FREETZ_PACKAGE_DROPBEAR_UTMP
+	bool "enable utmp support"
+	depends on FREETZ_PACKAGE_DROPBEAR
+	select FREETZ_BUSYBOX_FEATURE_UTMP
+	select FREETZ_BUSYBOX_WHO
+	default n
+	help
+		With this option, the logins are logged in /var/run/utmp.
+
+config FREETZ_PACKAGE_DROPBEAR_WTMP
+	bool "enable wtmp support"
+	depends on FREETZ_PACKAGE_DROPBEAR
+	select FREETZ_BUSYBOX_FEATURE_UTMP
+	select FREETZ_BUSYBOX_FEATURE_WTMP
+	select FREETZ_BUSYBOX_LAST
+	default n
+	help
+		With this option, the logins are logged in /var/log/wtmp.
 
 config FREETZ_PACKAGE_DROPBEAR_STATIC
 	bool "Build static binary"
