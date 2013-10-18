@@ -1,14 +1,14 @@
 --- Makefile
 +++ Makefile
-@@ -1729,6 +1729,7 @@
+@@ -1730,6 +1730,7 @@
  
  $(BUILT_INS): git$X
  	$(QUIET_BUILT_IN)$(RM) $@ && \
 +	test -z "$(NO_INSTALL_HARDLINKS)" && \
- 	ln git$X $@ 2>/dev/null || \
- 	ln -s git$X $@ 2>/dev/null || \
- 	cp git$X $@
-@@ -2050,6 +2051,7 @@
+ 	ln $< $@ 2>/dev/null || \
+ 	ln -s $< $@ 2>/dev/null || \
+ 	cp $< $@
+@@ -2057,6 +2058,7 @@
  
  $(REMOTE_CURL_ALIASES): $(REMOTE_CURL_PRIMARY)
  	$(QUIET_LNCP)$(RM) $@ && \
