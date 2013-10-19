@@ -117,8 +117,18 @@ config FREETZ_AVM_HAS_FW4XX
 	help
 		Select this if a 04.xx-firmware is available for your box.
 
-config FREETZ_AVM_HAS_FWEWE
-	bool "Has EWE Edition Firmware"		if FREETZ_TYPE_CUSTOM
+config FREETZ_AVM_HAS_FWEWE_05_2X
+	bool "Has EWE Edition Firmware 05.2x"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7360_XL \
+		)
+	default n
+	help
+		Select this if a EWE Edition 5.2x firmware is available for your box.
+
+config FREETZ_AVM_HAS_FWEWE_05_5X
+	bool "Has EWE Edition Firmware 05.5x"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_LANG_EN && ( \
 			FREETZ_TYPE_7360_XL || \
@@ -126,7 +136,7 @@ config FREETZ_AVM_HAS_FWEWE
 		)
 	default n
 	help
-		Select this if a EWE Edition firmware is available for your box.
+		Select this if a EWE Edition 5.5x firmware is available for your box.
 
 config FREETZ_AVM_HAS_LANG_DE
 	bool "Has AVM Firmware language de/deutsch"			if FREETZ_TYPE_CUSTOM
