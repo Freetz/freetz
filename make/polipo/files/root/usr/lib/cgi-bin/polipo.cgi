@@ -26,7 +26,7 @@ cat << EOF
 <i>Proxy-IP:</i> &nbsp; <input type="text" name="ip" size="20" maxlength="20" value="$(html "$POLIPO_IP")"> &nbsp; &nbsp; &nbsp;
 <i>Proxy-Port:</i> &nbsp; <input type="text" name="port" size="10" maxlength="10" value="$(html "$POLIPO_PORT")">
 
-<h2>Optional: $(lang de:"Liste zu&auml;ssiger Clients" en:"List of allowed clients"):</h2>
+<h2>Optional: $(lang de:"Liste zu&auml;ssiger Clients (mit ',' getrennt)" en:"List of allowed clients (separated by ',')"):</h2>
 <input type="text" name="clients" size="68" maxlength="200" value="$(html "$POLIPO_CLIENTS")">
 
 <table  width="100%" style="table-layout:fixed">
@@ -38,10 +38,8 @@ cat << EOF
  </tr>
 </table>
 
-
-<h2>$(lang de:"Andere Optionen (mit ';' getrennt)" en:"Additional options (separated by ';')"):</h2>
-<p><input type="text" name="options" size="68" maxlength="255" value="$(html "$POLIPO_OPTIONS")"></p>
-
+<h2>$(lang de:"Andere Optionen (eine pro Zeile)" en:"Additional options (one per line)"):</h2>
+<p><textarea name="options" rows="5" cols="65">$(html "$POLIPO_OPTIONS")</textarea></p>
 EOF
 
 sec_end

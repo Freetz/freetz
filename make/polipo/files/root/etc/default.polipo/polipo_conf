@@ -3,13 +3,13 @@
 . /mod/etc/conf/polipo.cfg
 
 echo "daemonise = true"
-
+echo "logFacility = daemon"
 
 [ -n "${POLIPO_PORT// /}" ] && echo "proxyPort = $POLIPO_PORT"
 
-[ -n "${POLIPO_IP// /}" ] && echo "proxyAddress = \"$POLIPO_IP\""
+[ -n "${POLIPO_IP// /}" ] && echo "proxyAddress = $POLIPO_IP"
 
-[ -n "${POLIPO_CLIENTS// /}" ] && echo "allowedClients = \"$POLIPO_CLIENTS\""
+[ -n "${POLIPO_CLIENTS// /}" ] && echo "allowedClients = $POLIPO_CLIENTS"
 
 [ -n "$POLIPO_DISABLESERVERSLIST" ] && echo "disableServersList = $POLIPO_DISABLESERVERSLIST"
 
@@ -21,6 +21,7 @@ echo "daemonise = true"
 
 # optional settings
 if [ -n "$POLIPO_OPTIONS" ]; then
-	echo "$POLIPO_OPTIONS" | sed 's/[[:space:]]*;[[:space:]]*/\n/g'
+	echo "$POLIPO_OPTIONS" | grep -v "^#" | while read -r option; do
+		[ -n "$option" ] && echo "$option"
+	done
 fi
-
