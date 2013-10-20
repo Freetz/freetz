@@ -1,0 +1,34 @@
+pkg_apply_save()
+{
+	/mod/etc/init.d/rc.avm-forwarding save
+}
+
+pkg_apply_def()
+{
+	/mod/etc/init.d/rc.avm-forwarding save defaults_restored
+}
+
+pkg_post_save()
+{
+	[ -f /mod/etc/conf/avm-forwarding.cfg ] && . /mod/etc/conf/avm-forwarding.cfg
+	if echo "$AVM_FORWARDING_DO_ACTIVATE" | grep -q dsld; then
+		[ "$AVM_FORWARDING_LOG_DROPPED" != "yes" ] && LOGD="-n" || LOGD=""
+		[ "$AVM_FORWARDING_LOG" == "yes" ] && LOG ="-D AVM_FW" || LOG=""
+		/mod/etc/init.d/rc.dsld set_options $LOGD $LOG
+	else
+		[ "$AVM_FORWARDING_DO_ACTIVATE" ] && /mod/etc/init.d/rc.dsld reload
+	fi
+	if echo "$AVM_FORWARDING_DO_ACTIVATE" | grep -q ctlmgr; then
+		echo -n "Restarting ctlmgr ... "
+		. /var/env.cache
+		ctlmgr -s
+		sleep 1
+		killall -9 ctlmgr 2> /dev/null
+		ctlmgr 2>&1
+		echo "done."
+	fi
+}
+
+rc_status() { :; }
+
+apply_changes() { :; }

@@ -1,0 +1,89 @@
+#!/bin/sh
+
+DAEMON=avm-forwarding
+. /etc/init.d/modlibrc
+
+# Variablen fuer Pfade
+REAL=/var/flash/ar7.cfg
+REALCOPY=/var/tmp/forwarding.ar7.copy
+CONFIG=/mod/etc/conf/avm-forwarding.cfg
+TEMP1=/var/tmp/forwarding.temp1
+
+# FW-Version als Zahl (xx.05.22 wird zu 522, xx.05.55 zu 555 usw)
+FWVER=$(/etc/version | sed 's/[0-9]*\.[0]*// ; s/\.//')
+
+
+config() {
+	# Vorbereitungen ...
+	# Regeln per ar7cfgctl auslesen. Es muss mindestens eine Regel vorhanden sein!
+	if [ $FWVER -ge 555 ]; then # ist neuere Labor
+		AR7RULES=$(echo ar7cfg.internet_forwardrules | ar7cfgctl -s | sed 's/, /\n/g' | tr -d '"')
+	else
+		AR7RULES=$(echo ar7cfg.dslifaces.dsldpconfig.forwardrules | ar7cfgctl -s | sed 's/, /\n/g' | tr -d '"')
+	fi
+	[ -z "$AR7RULES" ] && echo "No Rules found. Please activate at least one forwarding, e.g. HTTPS (Fernwartung)" && return -1
+	# Die erste (komplette) Regelzeile, mit dem "Header" ([internet_]forwardrules =) suchen.  
+	FIND=$(echo "forwardrules = \"$AR7RULES" | sed -n '1 p')
+	FIRSTRULE=$(grep "$FIND" /var/flash/ar7.cfg) 
+	# der Vorspann ist alles bis zum "
+	HEADER=$(echo "$FIRSTRULE" | sed 's/".*".*//')
+	# ... die weiteren Zeilen sind entsprechend eingerückt, also alle Zeichen in Leerzeichen umwandeln 
+	SPACES=${HEADER//?/ }
+
+}
+
+load() {
+
+	config
+
+	echo "$(cat $CONFIG | grep '_cgi\|_LOG')" > $CONFIG
+	echo "export AVM_FORWARDING_DO_ACTIVATE=''" >> $CONFIG
+	echo "export AVM_FORWARDING_GUI=''" >> $CONFIG
+	echo "export AVM_FORWARDING_RULES='$AR7RULES'" >> $CONFIG
+}
+
+save() {
+	[ "$1" = defaults_restored ] && return
+	config
+	if grep -q "*gui*" /mod/etc/conf/avm-forwarding.cfg ; then
+		echo "$(sed -e "s/\*gui\*//g" $CONFIG)" > $CONFIG
+		echo -n "Saving new forwarding rules ... "
+		# Zusammenbau eins "kompletten" Stings aus den Regeln für die ar7.cfg
+		SECTION=$(echo "$HEADER\"$AVM_FORWARDING_RULES\";" | tr '\n' ',' | sed 's/,[ ]*$/\n/' | sed "s/,/\", \\\n$SPACES\"/g")
+
+		# Sonderfall es gibt nur eine Regel, dann diese Zeile ersetzen ...
+		if [ -n "${FIRSTRULE##*,*}" ]; then
+			sed  "/$FIND/ s/.*$FIND.*$/$SECTION/" $REAL  > $REALCOPY
+		# ... sonst alles von der ersten Zeile bis zur letzten (mit ";") ersetzen
+		else
+			sed  "/$FIND/,/;/ {s/.*$FIND.*$/$SECTION/p;d}" $REAL  > $REALCOPY
+		fi
+		# echte ar7.cfg schreiben
+		cat $REALCOPY > $REAL
+		echo "done."
+	else
+		echo "ERROR: Can only be used by GUI."
+	fi
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON AVM-Forwarding
+		modreg daemon --hide avm-forwarding
+		load
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg daemon avm-forwarding
+		config
+		;;
+	save)
+		save "$2"
+		;;
+	*)
+		echo "Usage: $0 [load|unload|save]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
