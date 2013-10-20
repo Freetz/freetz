@@ -26,7 +26,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398885 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 400623 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401076 $")
  
  #include <sys/time.h>
  #include <sys/signal.h>
@@ -39,6 +39,19 @@
  		}
  	}
  
+@@ -8253,9 +8253,10 @@
+ 		ao2_lock(q);
+ 		/* This check is to make sure we don't print information for realtime
+ 		 * queues which have been deleted from realtime but which have not yet
+-		 * been deleted from the in-core container
++		 * been deleted from the in-core container. Only do this if we're not
++		 * looking for a specific queue.
+ 		 */
+-		if (q->realtime) {
++		if (argc < 3 && q->realtime) {
+ 			realtime_queue = find_load_queue_rt_friendly(q->name);
+ 			if (!realtime_queue) {
+ 				ao2_unlock(q);
 --- apps/confbridge/conf_config_parser.c
 +++ apps/confbridge/conf_config_parser.c
 @@ -29,7 +29,7 @@
@@ -92,11 +105,80 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397744 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399834 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 400909 $")
  
  #if defined(__NetBSD__) || defined(__FreeBSD__)
  #include <pthread.h>
-@@ -17065,8 +17065,10 @@
+@@ -744,9 +744,9 @@
+ 	struct dahdi_pvt *oprpeer;				/*!< "Operator Services" peer tech_pvt ptr */
+ 	/*! \brief Amount of gain to increase during caller id */
+ 	float cid_rxgain;
+-	/*! \brief Rx gain set by chan_dahdi.conf */
++	/*! \brief Software Rx gain set by chan_dahdi.conf */
+ 	float rxgain;
+-	/*! \brief Tx gain set by chan_dahdi.conf */
++	/*! \brief Software Tx gain set by chan_dahdi.conf */
+ 	float txgain;
+ 
+ 	float txdrc; /*!< Dynamic Range Compression factor. a number between 1 and 6ish */
+@@ -15975,15 +15975,20 @@
+ 
+ 	switch (cmd) {
+ 	case CLI_INIT:
+-		e->command = "dahdi set hwgain";
++		e->command = "dahdi set hwgain {rx|tx}";
+ 		e->usage =
+ 			"Usage: dahdi set hwgain <rx|tx> <chan#> <gain>\n"
+-			"	Sets the hardware gain on a a given channel, overriding the\n"
+-			"   value provided at module loadtime, whether the channel is in\n"
+-			"   use or not.  Changes take effect immediately.\n"
++			"   Sets the hardware gain on a given channel.  Changes take effect\n"
++			"   immediately whether the channel is in use or not.\n"
++			"\n"
+ 			"   <rx|tx> which direction do you want to change (relative to our module)\n"
+ 			"   <chan num> is the channel number relative to the device\n"
+-			"   <gain> is the gain in dB (e.g. -3.5 for -3.5dB)\n";
++			"   <gain> is the gain in dB (e.g. -3.5 for -3.5dB)\n"
++			"\n"
++			"   Please note:\n"
++			"   * This is currently the only way to set hwgain by the channel driver.\n"
++			"   * hwgain is only supportable by hardware with analog ports because\n"
++			"     hwgain works on the analog side of an analog-digital conversion.\n";
+ 		return NULL;
+ 	case CLI_GENERATE:
+ 		return NULL;
+@@ -16044,12 +16049,13 @@
+ 
+ 	switch (cmd) {
+ 	case CLI_INIT:
+-		e->command = "dahdi set swgain";
++		e->command = "dahdi set swgain {rx|tx}";
+ 		e->usage =
+ 			"Usage: dahdi set swgain <rx|tx> <chan#> <gain>\n"
+-			"	Sets the software gain on a a given channel, overriding the\n"
+-			"   value provided at module loadtime, whether the channel is in\n"
+-			"   use or not.  Changes take effect immediately.\n"
++			"   Sets the software gain on a given channel and overrides the\n"
++			"   value provided at module loadtime.  Changes take effect\n"
++			"   immediately whether the channel is in use or not.\n"
++			"\n"
+ 			"   <rx|tx> which direction do you want to change (relative to our module)\n"
+ 			"   <chan num> is the channel number relative to the device\n"
+ 			"   <gain> is the gain in dB (e.g. -3.5 for -3.5dB)\n";
+@@ -16093,6 +16099,12 @@
+ 
+ 		ast_cli(a->fd, "software %s gain set to %.1f on channel %d\n",
+ 			tx ? "tx" : "rx", gain, channel);
++
++		if (tx) {
++			tmp->txgain = gain;
++		} else {
++			tmp->rxgain = gain;
++		}
+ 		break;
+ 	}
+ 	ast_mutex_unlock(&iflock);
+@@ -17065,8 +17077,10 @@
  
  #ifdef HAVE_PRI
  	for (i = 0; i < NUM_SPANS; i++) {
@@ -108,7 +190,7 @@
  	}
  	ast_cli_unregister_multiple(dahdi_pri_cli, ARRAY_LEN(dahdi_pri_cli));
  	ast_unregister_application(dahdi_send_keypad_facility_app);
-@@ -17076,9 +17078,11 @@
+@@ -17076,9 +17090,11 @@
  #endif
  #if defined(HAVE_SS7)
  	for (i = 0; i < NUM_SPANS; i++) {
@@ -121,7 +203,7 @@
  	ast_cli_unregister_multiple(dahdi_ss7_cli, ARRAY_LEN(dahdi_ss7_cli));
  #endif	/* defined(HAVE_SS7) */
  #if defined(HAVE_OPENR2)
-@@ -17122,8 +17126,9 @@
+@@ -17122,8 +17138,9 @@
  
  #if defined(HAVE_PRI)
  	for (i = 0; i < NUM_SPANS; i++) {
@@ -132,7 +214,7 @@
  		for (j = 0; j < SIG_PRI_NUM_DCHANS; j++) {
  			dahdi_close_pri_fd(&(pris[i]), j);
  		}
-@@ -17138,8 +17143,9 @@
+@@ -17138,8 +17155,9 @@
  
  #if defined(HAVE_SS7)
  	for (i = 0; i < NUM_SPANS; i++) {
@@ -150,7 +232,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399159 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 400315 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401016 $")
  
  #include <sys/mman.h>
  #include <dirent.h>
@@ -240,6 +322,17 @@
  	}
  
  	/* Make sure our call still exists, an INVAL at the right point may make it go away */
+@@ -10533,9 +10542,9 @@
+ 										ast_set_read_format(iaxs[fr->callno]->owner, ast_channel_readformat(iaxs[fr->callno]->owner));
+ 									}
+ 									ast_format_cap_copy(native, orignative);
+-									ast_channel_unlock(iaxs[fr->callno]->owner);
+ 									orignative = ast_format_cap_destroy(orignative);
+ 								}
++								ast_channel_unlock(iaxs[fr->callno]->owner);
+ 							}
+ 						} else {
+ 							ast_debug(1, "Neat, somebody took away the channel at a magical time but i found it!\n");
 @@ -12681,7 +12690,7 @@
  			peer->pokefreqok = DEFAULT_FREQ_OK;
  			peer->pokefreqnotok = DEFAULT_FREQ_NOTOK;
@@ -265,7 +358,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398986 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 400470 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401182 $")
  
  #include <signal.h>
  #include <sys/signal.h>
@@ -277,7 +370,31 @@
  static int global_shrinkcallerid;   /*!< enable or disable shrinking of caller id  */
  static int global_callcounter;      /*!< Enable call counters for all devices. This is currently enabled by setting the peer
                                       *   call-limit to INT_MAX. When we remove the call-limit from the code, we can make it
-@@ -13282,13 +13283,9 @@
+@@ -7257,6 +7258,7 @@
+ {
+ 	int res = 0;
+ 	struct sip_pvt *p = ast_channel_tech_pvt(ast);
++	int oldsdp = FALSE;
+ 
+ 	if (!p) {
+ 		ast_debug(1, "Asked to answer channel %s without tech pvt; ignoring\n",
+@@ -7267,10 +7269,14 @@
+ 	if (ast_channel_state(ast) != AST_STATE_UP) {
+ 		try_suggested_sip_codec(p);
+ 
++		if (ast_test_flag(&p->flags[0], SIP_PROGRESS_SENT)) {
++			oldsdp = TRUE;
++		}
++
+ 		ast_setstate(ast, AST_STATE_UP);
+ 		ast_debug(1, "SIP answering channel: %s\n", ast_channel_name(ast));
+ 		ast_rtp_instance_update_source(p->rtp);
+-		res = transmit_response_with_sdp(p, "200 OK", &p->initreq, XMIT_CRITICAL, FALSE, TRUE);
++		res = transmit_response_with_sdp(p, "200 OK", &p->initreq, XMIT_CRITICAL, oldsdp, TRUE);
+ 		ast_set_flag(&p->flags[1], SIP_PAGE2_DIALOG_ESTABLISHED);
+ 	}
+ 	sip_pvt_unlock(p);
+@@ -13282,13 +13288,9 @@
  		/* Our T.38 end is */
  		ast_udptl_get_us(p->udptl, &udptladdr);
  
@@ -294,7 +411,7 @@
  
  		if (debug) {
  			ast_debug(1, "T.38 UDPTL is at %s port %d\n", ast_sockaddr_stringify_addr(&p->ourip), ast_sockaddr_port(&udptladdr));
-@@ -13299,9 +13296,9 @@
+@@ -13299,9 +13301,9 @@
  
  		ast_str_append(&m_modem, 0, "m=image %d udptl t38\r\n", ast_sockaddr_port(&udptldest));
  
@@ -306,7 +423,7 @@
  					"IP6" : "IP4", ast_sockaddr_stringify_addr_remote(&udptldest));
  		}
  
-@@ -15912,6 +15909,14 @@
+@@ -15912,6 +15914,14 @@
  		}
  	}
  
@@ -321,7 +438,7 @@
  	copy_socket_data(&pvt->socket, &req->socket);
  
  	do {
-@@ -16051,12 +16056,6 @@
+@@ -16051,12 +16061,6 @@
  	AST_SCHED_DEL_UNREF(sched, peer->expire,
  			sip_unref_peer(peer, "remove register expire ref"));
  
@@ -334,7 +451,7 @@
  	if (peer->is_realtime && !ast_test_flag(&peer->flags[1], SIP_PAGE2_RTCACHEFRIENDS)) {
  		peer->expire = -1;
  	} else {
-@@ -16066,7 +16065,6 @@
+@@ -16066,7 +16070,6 @@
  			sip_unref_peer(peer, "remote registration ref");
  		}
  	}
@@ -342,7 +459,19 @@
  	snprintf(data, sizeof(data), "%s:%d:%s:%s", ast_sockaddr_stringify(&peer->addr),
  		 expire, peer->username, peer->fullcontact);
  	/* We might not immediately be able to reconnect via TCP, but try caching it anyhow */
-@@ -16919,7 +16917,10 @@
+@@ -16884,9 +16887,8 @@
+ 		} else {
+ 
+ 			set_peer_nat(p, peer);
+-			if (p->natdetected && ast_test_flag(&p->flags[2], SIP_PAGE3_NAT_AUTO_RPORT)) {
+-				ast_copy_flags(&p->flags[0], &peer->flags[0], SIP_NAT_FORCE_RPORT);
+-			}
++
++			ast_copy_flags(&p->flags[0], &peer->flags[0], SIP_NAT_FORCE_RPORT);
+ 
+ 			if (!(res = check_auth(p, req, peer->name, peer->secret, peer->md5secret, SIP_REGISTER, uri2, XMIT_UNRELIABLE))) {
+ 				if (sip_cancel_destroy(p))
+@@ -16919,7 +16921,10 @@
  						break;
  					case PARSE_REGISTER_UPDATE:
  						ast_string_field_set(p, fullcontact, peer->fullcontact);
@@ -354,7 +483,20 @@
  						/* Say OK and ask subsystem to retransmit msg counter */
  						transmit_response_with_date(p, "200 OK", req);
  						send_mwi = 1;
-@@ -18276,9 +18277,9 @@
+@@ -17938,9 +17943,9 @@
+ 		return;
+ 	}
+ 
+-	if (ast_sockaddr_cmp(addr, &p->recv)) {
+-		char *tmp_str = ast_strdupa(ast_sockaddr_stringify(addr));
+-		ast_debug(3, "NAT detected for %s / %s\n", tmp_str, ast_sockaddr_stringify(&p->recv));
++	if (ast_sockaddr_cmp_addr(addr, &p->recv)) {
++		char *tmp_str = ast_strdupa(ast_sockaddr_stringify_addr(addr));
++		ast_debug(3, "NAT detected for %s / %s\n", tmp_str, ast_sockaddr_stringify_addr(&p->recv));
+ 		p->natdetected = 1;
+ 		if (ast_test_flag(&p->flags[2], SIP_PAGE3_NAT_AUTO_RPORT)) {
+ 			ast_set_flag(&p->flags[0], SIP_NAT_FORCE_RPORT);
+@@ -18276,9 +18281,9 @@
  					      int sipmethod, const char *uri, enum xmittype reliable,
  					      struct ast_sockaddr *addr, struct sip_peer **authpeer)
  {
@@ -366,7 +508,7 @@
  	char *uri2 = ast_strdupa(uri);
  
  	terminate_uri(uri2);	/* trim extra stuff */
-@@ -20683,6 +20684,7 @@
+@@ -20683,6 +20688,7 @@
  	ast_cli(a->fd, "  Sub. max duration:      %d secs\n", max_subexpiry);
  	ast_cli(a->fd, "  Outbound reg. timeout:  %d secs\n", global_reg_timeout);
  	ast_cli(a->fd, "  Outbound reg. attempts: %d\n", global_regattempts_max);
@@ -374,9 +516,21 @@
  	ast_cli(a->fd, "  Notify ringing state:   %s\n", AST_CLI_YESNO(sip_cfg.notifyringing));
  	if (sip_cfg.notifyringing) {
  		ast_cli(a->fd, "    Include CID:          %s%s\n",
-@@ -22788,6 +22790,15 @@
+@@ -22781,13 +22787,26 @@
+ 		}
+ 		p->authtries = 0;
+ 		if (find_sdp(req)) {
+-			if ((res = process_sdp(p, req, SDP_T38_ACCEPT)) && !req->ignore)
++			if ((res = process_sdp(p, req, SDP_T38_ACCEPT)) && !req->ignore) {
+ 				if (!reinvite) {
+ 					/* This 200 OK's SDP is not acceptable, so we need to ack, then hangup */
+ 					/* For re-invites, we try to recover */
  					ast_set_flag(&p->flags[0], SIP_PENDINGBYE);
++					ast_channel_hangupcause_set(p->owner, AST_CAUSE_BEARERCAPABILITY_NOTAVAIL);
++					p->hangupcause = AST_CAUSE_BEARERCAPABILITY_NOTAVAIL;
++					sip_queue_hangup_cause(p, AST_CAUSE_BEARERCAPABILITY_NOTAVAIL);
  				}
++			}
  			ast_rtp_instance_activate(p->rtp);
 +		} else if (!reinvite) {
 +			struct ast_sockaddr remote_address = {{0,}};
@@ -390,7 +544,16 @@
  		}
  
  		if (!req->ignore && p->owner) {
-@@ -23407,8 +23418,9 @@
+@@ -22847,7 +22866,7 @@
+ 		}
+ 
+ 		if (!req->ignore && p->owner) {
+-			if (!reinvite) {
++			if (!reinvite && !res) {
+ 				ast_queue_control(p->owner, AST_CONTROL_ANSWER);
+ 				if (sip_cfg.callevents) {
+ 					manager_event(EVENT_FLAG_SYSTEM, "ChannelUpdate",
+@@ -23407,8 +23426,9 @@
  			}
  			tmptmp = strcasestr(contact, "expires=");
  			if (tmptmp) {
@@ -401,7 +564,7 @@
  			}
  			
  		}
-@@ -23710,7 +23722,11 @@
+@@ -23710,7 +23730,11 @@
  
  		gettag(req, "To", tag, sizeof(tag));
  		ast_string_field_set(p, theirtag, tag);
@@ -413,7 +576,7 @@
  	/* This needs to be configurable on a channel/peer level,
  	   not mandatory for all communication. Sadly enough, NAT implementations
  	   are not so stable so we can always rely on these headers.
-@@ -31377,6 +31393,7 @@
+@@ -31377,6 +31401,7 @@
  	sip_cfg.compactheaders = DEFAULT_COMPACTHEADERS;
  	global_reg_timeout = DEFAULT_REGISTRATION_TIMEOUT;
  	global_regattempts_max = 0;
@@ -421,7 +584,7 @@
  	sip_cfg.pedanticsipchecking = DEFAULT_PEDANTIC;
  	sip_cfg.autocreatepeer = DEFAULT_AUTOCREATEPEER;
  	global_autoframing = 0;
-@@ -31764,6 +31781,8 @@
+@@ -31764,6 +31789,8 @@
  			}
  		} else if (!strcasecmp(v->name, "registerattempts")) {
  			global_regattempts_max = atoi(v->value);
@@ -769,6 +932,47 @@
  				AST_RWLIST_UNLOCK(&configs);
  				return -1;
  			}
+--- main/channel.c
++++ main/channel.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 390047 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401179 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -6793,6 +6793,8 @@
+ {
+ 	int x;
+ 	int origstate;
++	unsigned int orig_disablestatecache;
++	unsigned int clone_disablestatecache;
+ 	int visible_indication;
+ 	int clone_was_zombie = 0;/*!< TRUE if the clonechan was a zombie before the masquerade. */
+ 	struct ast_frame *current;
+@@ -7029,6 +7031,20 @@
+ 	ast_channel_state_set(original, ast_channel_state(clonechan));
+ 	ast_channel_state_set(clonechan, origstate);
+ 
++	/* And the swap the cachable state too. Otherwise we'd start caching
++	 * Local channels and ignoring real ones. */
++	orig_disablestatecache = ast_test_flag(ast_channel_flags(original), AST_FLAG_DISABLE_DEVSTATE_CACHE);
++	clone_disablestatecache = ast_test_flag(ast_channel_flags(clonechan), AST_FLAG_DISABLE_DEVSTATE_CACHE);
++	if (orig_disablestatecache != clone_disablestatecache) {
++		if (orig_disablestatecache) {
++			ast_clear_flag(ast_channel_flags(original), AST_FLAG_DISABLE_DEVSTATE_CACHE);
++			ast_set_flag(ast_channel_flags(clonechan), AST_FLAG_DISABLE_DEVSTATE_CACHE);
++		} else {
++			ast_set_flag(ast_channel_flags(original), AST_FLAG_DISABLE_DEVSTATE_CACHE);
++			ast_clear_flag(ast_channel_flags(clonechan), AST_FLAG_DISABLE_DEVSTATE_CACHE);
++		}
++	}
++
+ 	/* Mangle the name of the clone channel */
+ 	snprintf(zombn, sizeof(zombn), "%s<ZOMBIE>", orig); /* quick, hide the brains! */
+ 	__ast_change_name_nolink(clonechan, zombn);
 --- main/config_options.c
 +++ main/config_options.c
 @@ -27,7 +27,7 @@
@@ -886,6 +1090,26 @@
  	$(INSTALL) -m 644 contrib/scripts/astgenkey.8 "$(DESTDIR)$(ASTMANDIR)/man8"
  	$(INSTALL) -m 644 contrib/scripts/autosupport.8 "$(DESTDIR)$(ASTMANDIR)/man8"
  	$(INSTALL) -m 644 contrib/scripts/safe_asterisk.8 "$(DESTDIR)$(ASTMANDIR)/man8"
+--- res/res_jabber.c
++++ res/res_jabber.c
+@@ -40,7 +40,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398577 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401120 $")
+ 
+ #include <ctype.h>
+ #include <iksemel.h>
+@@ -3567,7 +3567,7 @@
+ 	iks *orig_pubsub = iks_find(pak->x, "pubsub");
+ 	struct aji_client *client;
+ 	if (!orig_pubsub) {
+-		ast_log(LOG_ERROR, "Error isn't a PubSub error, why are we here?\n");
++		ast_debug(1, "Error isn't a PubSub error, why are we here?\n");
+ 		return IKS_FILTER_EAT;
+ 	}
+ 	orig_request = iks_child(orig_pubsub);
 --- res/res_rtp_asterisk.c
 +++ res/res_rtp_asterisk.c
 @@ -35,7 +35,7 @@
@@ -955,4 +1179,24 @@
 +
  	/* Increment sequence number and wrap to 0 if it overflows 16 bits. */
  	multicast->seqno = 0xFFFF & (multicast->seqno + 1);
+ 
+--- res/res_xmpp.c
++++ res/res_xmpp.c
+@@ -39,7 +39,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398618 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401120 $")
+ 
+ #include <ctype.h>
+ #include <iksemel.h>
+@@ -1382,7 +1382,7 @@
+ 	}
+ 
+ 	if (!orig_pubsub) {
+-		ast_log(LOG_ERROR, "Error isn't a PubSub error, why are we here?\n");
++		ast_debug(1, "Error isn't a PubSub error, why are we here?\n");
+ 		return IKS_FILTER_EAT;
+ 	}
  
