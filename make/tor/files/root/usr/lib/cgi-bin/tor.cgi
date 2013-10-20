@@ -57,6 +57,10 @@ cat << EOF
 <h2>$(lang de:"Liste mit Tor Servern (einer pro Zeile)" en:"List of Tor servers (one per line)")</h2>
 <p><textarea id="accept" name="exit_nodes" rows="4" cols="50" maxlength="255">$(html "$TOR_EXIT_NODES")</textarea></p>
 <p>$(lang de:"Nur diese Server als Ausgang verwenden" en:"Only use these servers as exit nodes"): <input type="hidden" name="strict_exit_nodes" value="no"><input id="e7" type="checkbox" name="strict_exit_nodes" value="yes"$strict_exit_chk></p>
+<p>
+<label for="geoip_file">$(lang de:"Pfad zu GeoIP-Datenbank" en:"Path to GeoIP database"): </label>
+<input type="text" id="geoip_file" name="geoip_file" size="55" maxlength="255" value="$(html "$TOR_GEOIP_FILE")">
+</p>
 EOF
 
 sec_end
@@ -94,4 +98,3 @@ EOF
 fi
 sec_end
 fi
-
