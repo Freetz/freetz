@@ -29,7 +29,7 @@ config() {
 
 	mkdir -p /mod/etc/$DAEMON
 
-	if [ -n "$TOR_GEOIP_FILE" -a ! -e "$TOR_GEOIP_FILE" ]; then
+	if [ "$TOR_FORCE_GEOIP_UPDATE" = "yes" -o -n "$TOR_GEOIP_FILE" -a ! -e "$TOR_GEOIP_FILE" ]; then
 		update_geoip_db
 	fi
 
