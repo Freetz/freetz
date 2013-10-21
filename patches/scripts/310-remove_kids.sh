@@ -15,6 +15,16 @@ else
 	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman_mod/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
 
+# avoid reboot problem, see http://freetz.org/ticket/1716
+if isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ; then
+	# removing userman segfaults
+	modsed "s/^rmmod userman$/# rmmod userman # segfaults/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.dsl.sh"
+	modsed "s/^rmmod userman$/# rmmod userman # segfaults/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
+	# subsequent removal of kdsldmod hangs forever
+	modsed "s/^rmmod kdsldmod/# rmmod kdsldmod # hangs forever/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.dsl.sh"
+	modsed "s/^  rmmod kdsldmod$/  # rmmod kdsldmod # hangs forever/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
+fi
+
 # patcht Internet > Filter > Kindersicherung
 menulua_remove kids
 

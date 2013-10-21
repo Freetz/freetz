@@ -1,5 +1,5 @@
 $(call PKG_INIT_LIB, 1.0.9)
-$(PKG)_SHORT_VERSION:=1.0
+$(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_LIB_VERSION:=0.1.0
 $(PKG)_SOURCE:=libusb-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=7f5a02375ad960d4e33a6dae7d63cfcb
@@ -25,8 +25,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-1.0.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libusb-1.0.pc \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$(LIBUSB1_SHORT_VERSION).la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libusb-$(LIBUSB1_SHORT_VERSION).pc \
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO)
@@ -39,11 +39,11 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBUSB1_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libusb-config \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libusb-1.*\
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-1.* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libusb-1.*.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libusb-$(LIBUSB1_SHORT_VERSION) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$(LIBUSB1_SHORT_VERSION)* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libusb-$(LIBUSB1_SHORT_VERSION).pc
 
 $(pkg)-uninstall:
-	$(RM) $(LIBUSB1_TARGET_DIR)/libusb-1*.so*
+	$(RM) $(LIBUSB1_TARGET_DIR)/libusb-$(LIBUSB1_SHORT_VERSION).so*
 
 $(PKG_FINISH)

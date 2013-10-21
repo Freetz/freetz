@@ -82,7 +82,7 @@ config FREETZ_PACKAGE_HPLIP
 	bool "HPLIP %s (binary only, unstable)"
 	select FREETZ_PACKAGE_SANE_BACKENDS
 	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libusb
+	select FREETZ_LIB_libusb_0
 	default n
 	help
 		HPLIP - HP Linux Imaging and Printing
