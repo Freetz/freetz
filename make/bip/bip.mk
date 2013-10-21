@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN,0.8.8)
+$(call PKG_INIT_BIN,0.8.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=261d53ead8a35d08caa7dc0f76566b98
-$(PKG)_SITE:=http://projects.duckcorp.org/attachments/download/39
+$(PKG)_SOURCE_MD5:=04158ad020db221ed87cdc03660ef6c9
+$(PKG)_SITE:=http://projects.duckcorp.org/attachments/download/61
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
