@@ -1,0 +1,30 @@
+--- src/bip.c
++++ src/bip.c
+@@ -2255,8 +2255,10 @@
+ 			adm_bip_delconn(bip, ic,
+ 					irc_line_elem(line, privmsg + 2));
+ 		}
++#ifdef HAVE_LIBSSL
+ 	} else if (strcasecmp(irc_line_elem(line, privmsg + 1), "TRUST") == 0) {
+ 		return adm_trust(ic, line);
++#endif
+ 	} else {
+ 		bip_notify(ic, "Unknown command.");
+ 	}
+--- src/connection.c
++++ src/connection.c
+@@ -24,13 +24,13 @@
+ extern FILE *conf_global_log_file;
+ static BIO *errbio = NULL;
+ extern char *conf_ssl_certfile;
+-static int cn_want_write(connection_t *cn);
+ static int SSLize(connection_t *cn, int *nc);
+ static SSL_CTX *SSL_init_context(void);
+ /* SSH like trust management */
+ int link_add_untrusted(void *ls, X509 *cert);
+ #endif
+ 
++static int cn_want_write(connection_t *cn);
+ static int connection_timedout(connection_t *cn);
+ static int socket_set_nonblock(int s);
+ static void connection_connected(connection_t *c);
