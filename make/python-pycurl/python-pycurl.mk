@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 7.19.0)
+$(call PKG_INIT_BIN, 7.19.0.2)
 $(PKG)_SOURCE:=pycurl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=919d58fe37e69fe87ce4534d8b6a1c7b
+$(PKG)_SOURCE_MD5:=518be33976dbc6838e42495ada64b43f
 $(PKG)_SITE:=http://pycurl.sourceforge.net/download
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/pycurl-$($(PKG)_VERSION)
