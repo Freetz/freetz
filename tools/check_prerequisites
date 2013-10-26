@@ -17,7 +17,7 @@ check_lib() {
 }
 
 check_header() {
-	[ "" != "$(find /usr/include/ /usr/local/include/ -name "$1")" ]
+	[ -n "$(find /usr/include/ /usr/local/include/ -name "$1" 2>/dev/null)" ]
 	return $?
 }
 
