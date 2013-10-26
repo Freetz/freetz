@@ -31,7 +31,8 @@ $(PKG)_BINARIES:= \
 	realpath_test \
 	tst_nl_langinfo \
 	zlib_four_byte_unsigned_int \
-	vfwprintf
+	vfwprintf \
+	flock_type
 
 # doesn't compile
 #	bash_cv_sys_siglist		-> no
