@@ -5,14 +5,15 @@ rm_files \
   $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*') \
   ${HTML_LANG_MOD_DIR}/internet/kids*.lua \
   ${FILESYSTEM_MOD_DIR}/sbin/contfiltd \
-  ${FILESYSTEM_MOD_DIR}/etc/bpjm.data
+  ${FILESYSTEM_MOD_DIR}/etc/bpjm.data \
+  ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libuser.so
 
 # Prevent continous reboots on 3170 with replace kernel
 if [ "$FREETZ_REMOVE_DSLD" = "y" ] || ! ( [ "$FREETZ_KERNEL_LAYOUT_OHIO" = "y" -a "$FREETZ_REPLACE_KERNEL" = "y" ] ); then
-	rm_files ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libuser.so \
-	  $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman -type d)	# removes dir of userman_mod.ko
+	rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman -type d)	# removes dir of userman_mod.ko
 else
-	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman_mod/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	# patcht Uebersicht (by removing HasRestriction() function)
+	modsed '/^function HasRestriction() {$/,/^}$/d' "${HTML_LANG_MOD_DIR}/html/de/home/home.js"
 fi
 
 # avoid reboot problem, see http://freetz.org/ticket/1716
