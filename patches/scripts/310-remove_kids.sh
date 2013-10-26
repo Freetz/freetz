@@ -13,6 +13,8 @@ if [ "$FREETZ_REMOVE_DSLD" = "y" ] || ! ( isFreetzType 3170 && [ "$FREETZ_REPLAC
 	rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name userman)
 else
 	modsed "s/^modprobe kdsldmod$/modprobe kdsldmod\nmodprobe userman_mod/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	# patcht Uebersicht (by removing HasRestriction() function)
+	modsed '/^function HasRestriction() {$/,/^}$/d' "${HTML_LANG_MOD_DIR}/html/de/home/home.js"
 fi
 
 # avoid reboot problem, see http://freetz.org/ticket/1716
