@@ -75,9 +75,12 @@ via_route() {
 # On IP clients or UMTS, we are mostly behind a NAT and the only way to
 # determine the external IP is to get the information from an external
 # server. The most efficient method is STUN (stun-ip applet will try 3x).
+# ip is cached for max 1 minute
 via_stun() {
+	IP=$(find /tmp/.get_ip -mmin 0 -exec cat {} ';')
+	[ -n "$IP" ] && return 0
 	IP=$(stun-ip $MOD_GET_IP_STUN)
-	[ $? -eq 0 ] && [ "$IP" ] && return 0
+	[ $? -eq 0 -a -n "$IP" ] && echo "$IP" > /tmp/.get_ip && return 0
 	return 1
 }
 
