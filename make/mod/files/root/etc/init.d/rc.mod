@@ -67,6 +67,8 @@ start() {
 		done
 		echo " ... done."
 	fi
+	
+	utmp_wtmp
 
 	if [ -r /tmp/flash/mod/rc.custom ]; then
 		echo -n "Starting rc.custom ... "
@@ -86,6 +88,28 @@ start() {
 	/usr/lib/mod/menu-update
 
 	log "rc.mod finished."
+}
+
+utmp_wtmp() {
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
+	#utmp
+	if [ "$FREETZ_BUSYBOX_FEATURE_UTMP" == "y" ]; then
+		[ ! -e /var/run/utmp ] && touch /var/run/utmp
+	fi
+	#wtmp
+	if [ "$FREETZ_BUSYBOX_FEATURE_WTMP" == "y" ]; then
+		local WTMP="${MOD_PATH_WTMP}/"
+		if [ "${WTMP#/var/log/}" != "$WTMP" ]; then
+			# file, /var/log
+			[ -L /var/log/wtmp ] && rm -rf /var/log/wtmp 
+			[ ! -e /var/log/wtmp ] && touch /var/log/wtmp
+		else
+			# link, other dir
+			rm -rf /var/log/wtmp 2>/dev/null
+			ln -s "${MOD_PATH_WTMP%/}/wtmp" /var/log/wtmp
+			[ ! -e "${MOD_PATH_WTMP%/}/wtmp" ] && touch "${MOD_PATH_WTMP%/}/wtmp" 2>/dev/null
+		fi
+	fi
 }
 
 stop_helper() {
@@ -149,6 +173,9 @@ case $1 in
 		;;
 	stop)
 		stop
+		;;
+	config)
+		utmp_wtmp
 		;;
 	*)
 		echo "Usage: $0 [start|stop]" 1>&2

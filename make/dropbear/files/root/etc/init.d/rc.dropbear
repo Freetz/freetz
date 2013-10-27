@@ -21,9 +21,6 @@ pre_config() {
 		ln -s /tmp/flash/dropbear/rsa_host_key /mod/etc/ssh/rsa_host_key
 		ln -s /tmp/flash/dropbear/dss_host_key /mod/etc/ssh/dss_host_key
 	fi
-
-	[ -e "/var/log/wtmp" ] || touch /var/log/wtmp
-	[ -e "/var/run/utmp" ] || touch /var/run/utmp
 }
 
 start() {

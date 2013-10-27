@@ -50,6 +50,7 @@ apply_changes() {
 			fi
 			/usr/lib/mod/reg-status reload
 			/usr/bin/modhosts load
+			/mod/etc/init.d/rc.mod config
 			;;
 		*)
 			start_stop $startORstop "$package" "$OLDSTATUS_PACKAGE"
