@@ -26,11 +26,12 @@ EOF
 }
 
 # Detect private (RFC 1918) or link-local (RFC 5735) IPs
-# Returns 0 for public IP, 1 for private IP, 2 if IP == ""
-ip_public()
-{
-	[ "$1" ] || return 2
-	local ip=$1
+# Returns 0 for public IP, 1 for private IP and 2 if IP
+# is empty or has invalid format
+ip_public() {
+	# format check (not checking >255)
+	local ip="$(echo "$1" | sed -rn '/^([0-9]{1,3}\.){3}[0-9]{1,3}$/p')"
+	[ -z "$ip" ] && return 2
 	# 10.0.0.0/8 (private), 192.168.0.0/16 (private), 169.254.0.0/16 (link-local)
 	(
 		[ "$ip" != "${ip#10.}" ] ||
