@@ -144,19 +144,19 @@ fi
 
 cat << EOF
 <p>$(lang
-	de:"Ausführen des Firmware-Installationsskripts"
+	de:"Ausf&uuml;hren des Firmware-Installationsskripts"
 	en:"Executing firmware installation script"
 ) /var/install ... </p>
 EOF
 if [ ! -x /var/install ]; then
 	status "failed" "$(lang
-		de:"Installationsskript nicht gefunden oder nicht ausführbar."
+		de:"Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar."
 		en:"Installation script not found or not executable."
 	)"
 	cat << EOF
 <p>$(lang
 	de:"Weiter ohne Neustart. Sie sollten bei Bedarf noch die extrahierten
-	Dateien löschen."
+	Dateien l&ouml;schen."
 	en:"Resuming without reboot. You may want to clean up the extracted
 	files."
 )</p>
@@ -194,15 +194,17 @@ case $result in
 	*) result_txt="$(lang de:"unbekannter Fehlercode" en:"unknown error code")" ;;
 esac
 
+[ $result -le 1 2>/dev/null ] && color=green || color=red
+
 status "done" "$(lang
-	de:"Rückgabewert des Installationsskripts"
+	de:"R&uuml;ckgabewert des Installationsskripts"
 	en:"Installation script return code"
-): $result ($result_txt)"
+): <B>$result (<FONT COLOR=$color>$result_txt</FONT>)</B>"
 
 echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"
 if [ ! -x /var/post_install ]; then
 	print_error "$(lang
-		de:"Nach-Installationsskript nicht gefunden oder nicht ausführbar."
+		de:"Nach-Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar."
 		en:"Post-installation script not found or not executable."
 	)"
 	do_exit 1
@@ -214,10 +216,10 @@ pre_end
 cat << EOF
 <p>
 $(lang
-	de:"Das Nach-Installationsskript läuft beim Neustart (reboot) und führt
-die darin definierten Aktionen aus, z.B. das tatsächliche Flashen der Firmware.
-Sie können immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie das
-Skript und den Rest der extrahierten Firmware-Komponenten löschen."
+	de:"Das Nach-Installationsskript l&auml;uft beim Neustart (reboot) und f&uuml;hrt
+die darin definierten Aktionen aus, z.B. das tats&auml;chliche Flashen der Firmware.
+Sie k&ouml;nnen immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie das
+Skript und den Rest der extrahierten Firmware-Komponenten l&ouml;schen."
 	en:"The post-installation script will be executed upon reboot and
 perform the actions specified therein, e.g. the actual firmware flashing.  You
 may still choose to interrupt this process by removing the script along with
