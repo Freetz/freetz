@@ -10,6 +10,10 @@ $(lang de:"Immer diese Methode nutzen" en:"Always use this method"): <input type
 </p>
 
 <p>
+$(lang de:"Server f&uuml;r STUN/VoIP Methode" en:"Server for STUN/VoIP method"): <input type="text" name="get_ip_stun" size="50" maxlength="250" value="$(html "$MOD_GET_IP_STUN")"></p>
+</p>
+
+<p>
 <div style='margin-top:6px;'>$(lang de:"M&ouml;gliche Methoden" en:"Available methods"):</div>
 <pre>
 EOF

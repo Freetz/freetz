@@ -13,7 +13,7 @@ Usage: $0 [option]
     -a, --all      - use all methods (order: stun, route, dsld, webcm) [recommended]
     -d, --dsld     - use showdsldstat (since firmware 04.86)
     -r, --route    - use routing table
-    -s, --stun     - use STUN server (stun.1und1.de)
+    -s, --stun     - use STUN/VoIP (server: $MOD_GET_IP_STUN)
     -w, --webcm    - use webcm CGI handler / ctlmgr_ctl
     -?, --help     - print this help message
 
@@ -76,7 +76,7 @@ via_route() {
 # determine the external IP is to get the information from an external
 # server. The most efficient method is STUN (stun-ip applet will try 3x).
 via_stun() {
-	IP=$(stun-ip stun.1und1.de)
+	IP=$(stun-ip $MOD_GET_IP_STUN)
 	[ $? -eq 0 ] && [ "$IP" ] && return 0
 	return 1
 }
