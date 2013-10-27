@@ -36,7 +36,8 @@ start() {
 	[ "$NFSD_NO_NFS_V4" == "yes" ] && NO_NFS_VERSION_4="-N 4"
 	/usr/sbin/nfsd $NO_NFS_VERSION_4
  	exitval3=$?
-	/usr/sbin/mountd
+ 	[ -n "$NFSD_MOUNTD_PORT" ] && PORTARG="-p $NFSD_MOUNTD_PORT"
+	/usr/sbin/mountd $PORTARG
 	exitval4=$?
 
 	if [ "$exitval1" -eq 0 ] && [ "$exitval2" -eq 0 ] \
