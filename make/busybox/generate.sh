@@ -72,5 +72,6 @@ default_choice "Buffer allocation policy" FREETZ_BUSYBOX_FEATURE_BUFFERS_GO_ON_S
 depends_on LOCALE_SUPPORT "!FREETZ_TARGET_UCLIBC_0_9_28"
 depends_on FEATURE_IPV6 "FREETZ_TARGET_IPV6_SUPPORT"
 depends_on KLOGD "FREETZ_AVM_HAS_PRINTK"
+depends_on RFKILL "!FREETZ_KERNEL_VERSION_2_6_13"
 
 echo " done."

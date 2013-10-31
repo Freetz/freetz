@@ -5644,6 +5644,7 @@ config FREETZ_BUSYBOX_RFKILL
 	bool "rfkill"
 	default n  # doesn't build on Ubuntu 9.04
 	select FREETZ_BUSYBOX_PLATFORM_LINUX
+	depends on !FREETZ_KERNEL_VERSION_2_6_13
 	help
 	  Enable/disable wireless devices.
 
@@ -5660,7 +5661,7 @@ config FREETZ_BUSYBOX_RUNLEVEL
 	  find the current and previous system runlevel.
 
 	  This applet uses utmp but does not rely on busybox supporing
-	  utmp on purpose. It is used by e.g. emdebian via /mod/etc/init.d/rc.
+	  utmp on purpose. It is used by e.g. emdebian via /etc/init.d/rc.
 
 config FREETZ_BUSYBOX_RX
 	bool "rx"
