@@ -6,6 +6,7 @@ env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | se
 
 DAEMON=mod
 . /etc/init.d/modlibrc
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 log() {
 	[ "$*" == "" ] && return
@@ -27,7 +28,7 @@ start() {
 	[ -d /tmp/flash ] || /usr/bin/modload
 
 	# set ipv6
-	if [ -e /usr/lib/cgi-bin/mod/conf/80-ipv6.sh -a -d /proc/sys/net/ipv6 ]; then
+	if [ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" -a -d /proc/sys/net/ipv6 ]; then
 		echo "$MOD_IPV6_ASSIGN" | grep -v "^ *#" | while read -r if6 ip6; do
 			[ -n "$if6" -a -n "$ip6" ] && ifconfig $if6 $ip6
 		done
@@ -67,7 +68,7 @@ start() {
 		done
 		echo " ... done."
 	fi
-	
+
 	utmp_wtmp
 
 	if [ -r /tmp/flash/mod/rc.custom ]; then
@@ -91,7 +92,6 @@ start() {
 }
 
 utmp_wtmp() {
-	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	#utmp
 	if [ "$FREETZ_BUSYBOX_FEATURE_UTMP" == "y" ]; then
 		[ ! -e /var/run/utmp ] && touch /var/run/utmp
@@ -101,7 +101,7 @@ utmp_wtmp() {
 		local WTMP="${MOD_PATH_WTMP}/"
 		if [ "${WTMP#/var/log/}" != "$WTMP" ]; then
 			# file, /var/log
-			[ -L /var/log/wtmp ] && rm -rf /var/log/wtmp 
+			[ -L /var/log/wtmp ] && rm -rf /var/log/wtmp
 			[ ! -e /var/log/wtmp ] && touch /var/log/wtmp
 		else
 			# link, other dir

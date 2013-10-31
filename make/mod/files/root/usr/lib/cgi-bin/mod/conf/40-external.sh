@@ -1,5 +1,5 @@
-if [ -x /mod/etc/init.d/rc.external ]; then
 [ -r /etc/options.cfg ] && . /etc/options.cfg
+
 check "$MOD_EXTERNAL_WAIT_INFINITE" yes:external_wait_infinite_00 "*":external_wait_infinite_15
 check "$MOD_EXTERNAL_BEHAVIOUR" copy:external_behaviour_copy "*":external_behaviour_link
 
@@ -45,4 +45,3 @@ $(lang de:"Abbrechen falls die Jahreszahl gr&ouml;&szlig;er als dieser Wert ist"
 EOF
 
 sec_end
-fi
