@@ -265,6 +265,9 @@ config FREETZ_AVM_UCLIBC_NPTL_ENABLED
 	bool
 	default y if FREETZ_AVM_UCLIBC_0_9_33
 	default n
+	help
+		To check if NPTL is enabled:
+		nm -D libpthread-0.9.33.2.so | grep nptl
 
 
 ###
