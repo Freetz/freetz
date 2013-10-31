@@ -6,6 +6,7 @@ AVM_UNPACK__INT_.bz2:=j
 
 KERNEL_SUBVERSION:=iln6
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
+KERNEL_PATCHES_DIR:=$(KERNEL_MAKE_DIR)/patches/$(KERNEL_PATCHES)
 KERNEL_BUILD_DIR:=$(KERNEL_DIR)
 KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION)
 
@@ -67,11 +68,11 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
 	fi
 	@$(call _ECHO, preparing... )
-	@set -e; shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/*.patch; do \
+	set -e; shopt -s nullglob; for i in $(KERNEL_PATCHES_DIR)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	#Version specific patches
-	@set -e; shopt -s nullglob; for i in $(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)/$(AVM_VERSION)/*.patch; do \
+	set -e; shopt -s nullglob; for i in $(KERNEL_PATCHES_DIR)/$(AVM_VERSION)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	@for i in $(KERNEL_LINKING_FILES); do \

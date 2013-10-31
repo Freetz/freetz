@@ -1,0 +1,319 @@
+diff -Nurp /dev/nul/Kconfig dsl/Kconfig
+--- linux-2.6.32/drivers/dsl/Kconfig	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.32/drivers/dsl/Kconfig	2011-05-09 14:26:02.000000000 +0200
+@@ -0,0 +1,294 @@
++
++#
++# AVM UR8 DSL configuration
++#
++
++menu "AVM UR8 DSL support"
++
++config UR8_DSL
++    depends on MIPS_UR8
++	tristate "AVM UR8 DSL support"       
++    default y
++#    select TI_DSL
++#    select ATM
++#    select ATM_BR2684
++    help
++      Choose y/m/n, to compile the UR8 DSL driver
++      Should support ADSL/ADSL2+/VDSL2
++      Maintainers: Benoit Kaivers / Ali Borarbi / Sascha Schröder AVM GmbH
++      
++#config TI_LIBATM
++#	depends	on TI_DSL
++#	bool "libatm"
++#	default y
++#	help
++#	 This enables libatm build for DSL-ATM applications.
++
++#config TI_BR2684CTL
++#	depends	on TI_DSL
++#	bool "br2684ctl"
++#	default y
++#	help
++#	 This enables br2684ctl application build.
++
++if UR8_DSL
++      
++#
++# Configuration options common to all avalanche series processors come here.
++#
++
++config DSL_AVM_MITSCHNEIDER
++    depends on UR8_DSL
++    bool "activate trace tool on sample basis (y) or not (n) ?"
++    default n
++    help
++      trivial
++
++config DSL_AVM_DEBUG
++    depends on UR8_DSL
++    bool "activate AVM DSL Debug printk(y)? or not(n)?"
++    default n
++    help 
++      trivial 
++
++#config DSL_LABOR_TRACE
++#    depends on UR8_DSL
++#    bool "activate AVM DSL Labor Trace(y)? or not(n)?"
++#    default n
++#    help 
++#      trivial 
++    
++#config CPU_FREQUENCY_AVALANCHE
++#	depends on UR8_DSL
++#	int "Avalanche SoC CPU frequency (MHz)"
++#	default 360
++#	help
++#      Choose the default value here. The correct value will be read from
++#      the bootloader environment variables.
++
++#config MEMORY_START
++#	depends on UR8_DSL
++#	hex "Avalanche SoC SDRAM start" 
++#	default 0x14000000
++#	help
++#      Choose the default value here. Unless you really know what you are
++#      doing.
++
++#config MIPS_AVALANCHE_LOAD_ADDRESS
++#	depends on UR8_DSL
++#	hex "Avalanche SoC Linux Load address" 
++#	default 0xFFFFFFFF94020000
++#	help
++#      The default value should be good for most cases. Choose a value
++#      higher than the default if you are using more memory at the bottom
++#      than what the bootloader uses. Choosing a lesser value than the 
++#      default is strictly discouraged. You will most likely mess with
++#      the boot process. 
++
++#config MIPS_AVALANCHE_TOP_MEM_RESERVED
++#	depends on UR8_DSL
++#	hex "Amount of memory to be reserved on the top of RAM" 
++#	default 0x0
++#    range 0xfs 0 0x200000
++#	help
++#      Select the amount of RAM you would like to be kept of the control of linux.
++#      This memory is reserved from the top of RAM
++
++#config MIPS_AVALANCHE_PSPBOOT
++#	depends on UR8_DSL
++#	bool "Avalanche SoC PSPBoot Support" 
++#	default n
++#	help
++#      Choose Y here if PSPBoot is your bootloader. If you are using Adam2
++#      or any other bootloader, choose N. If unsure, contact your software
++#      vendor.
++
++#config MIPS_AVALANCHE_ADAM2
++#	depends on MIPS_AVALANCHE_PSPBOOT = 'n'
++#	bool "Avalanche SoC (NSP) Adam2 Support" 
++#	default n
++#	help
++#      Choose Y here if Adam2 shipped by NSP is your bootloader. 
++#      If you are using Adam2 which is not from NSP or any other bootloader,
++#      choose N. If you choose N here, the kernel will be compiled for Adam2
++#      NOT shipped by NSP. (Yes, there is a difference). 
++#      If unsure, contact your software vendor.
++
++#config MIPS_AVALANCHE_ADAM2_JMP_TBL
++#	def_bool MIPS_AVALANCHE_PSPBOOT = 'n' && MIPS_AVALANCHE_ADAM2 = 'n'    
++
++#config MIPS_AVALANCHE_FREE_BOOTMEM
++#	depends on UR8_DSL
++#	def_bool n if MIPS_AVALANCHE_ADAM2_JMP_TBL    
++#	bool "Free the memory occupied by bootloader"  if MIPS_AVALANCHE_PSPBOOT || MIPS_AVALANCHE_ADAM2
++#	default y
++#	help
++#      Saying yes here will free-up the memory from (SDRAM base + 4K) to
++#      the start of linux text section. 
++    
++#config MIPS_AVALANCHE_DMA
++#	depends on UR8_DSL
++#	bool "Avalanche McDMA enable"
++#	default y
++#	help
++#      Choose Y here if you wish to use the Avalanche McDMA facility.
++#      If unsure, choose Y.
++
++#config AVALANCHE_GENERIC_GPIO
++#	depends on UR8_DSL
++#	bool "Avalanche GPIO support"
++#	default n
++#	help
++#      Choose Y here if you wish to use the Avalanche GPIO facility.
++#      If unsure, choose Y.
++
++#config MIPS_AVALANCHE_WDTIMER 
++#	depends on UR8_DSL
++#	bool "Avalanche Watch Dog Timer support"
++#	default n
++#	help
++#      Choose Y here if you wish to use the Avalanche Watch Dog Timer 
++#      facility. If unsure, choose Y.
++
++#config MIPS_AVALANCHE_TIMER16 
++#	depends on UR8_DSL
++#	bool "Avalanche Timer 16 support"
++#	default n
++#	help
++#      Choose Y here if you wish to use the Avalanche Timer 16
++#      facility. If unsure, choose Y.
++
++#config MIPS_AVALANCHE_EXCEPT_HANDLERS_IN_EXTRAM
++#	depends on UR8_DSL
++#	bool "Avalanche Exception handlers placed in External RAM"
++#	default N
++#	help
++#      Choose Y here if you wish to place the MIPS exception handlers in 
++#      the external RAM (as opposed to the internal RAM). By placing 
++#      exception handlers in external RAM there will be two jumps involved
++#      per exception, as well as a page in external RAM will have to be 
++#      dedicated to exception handling (apart from the internal RAM page
++#      already dedicated for this cause.)
++#      If unsure, choose N.
++
++#choice
++#	prompt "Kernel compression method"
++#	depends on UR8_DSL
++#	help
++#      Select the compression algoritm for compressing your kernel.
++#
++#config KERNEL_COMPRESS_7ZIP
++#	bool 'Use 7ZIP to compress the kernel image'
++#    help
++#      Compress the kernel using 7ZIP. Compressed kernel can be
++#      generated by make ram_zimage.
++#
++#config KERNEL_COMPRESS_GZIP
++#	bool 'Use GZIP to compress the kernel image'
++#    help
++#      Choose Y to compress the kernel using GZIP. Compressed kernel can be
++#      generated by make ram_zimage.
++#
++#endchoice
++
++#config K0_COHERENCY_ALGO_WT_WA
++#    depends on DMA_NONCOHERENT
++#    bool 'Force K0 coherency algorithm to "Write-through, Write-allocate"'
++#    default n
++#    help
++#      Choose Y to force the the K0 segment coherency algorithm to 
++#      "Write-through, Write-allocate". If you choose N here, the
++#      "best possible" coherency agorithm for the MIPS core type will be chosen. 
++#      Choose Y on cores on which "Write-through, Write-allocate" is the default
++#      coherency algorithm anyway (chosen by PAGE_CACHABLE_DEFAULT). This will
++#      lead to better performance of TI software on those cores as the cache
++#      flush will be bypassed.
++#      If unsure, choose N.
++
++#config AVALANCHE_SERIAL_AUTOFLOW 
++#	depends on UR8_DSL
++#	bool "Avalanche Serial autoflow"
++#	default n
++#	help
++#      Choose Y here if you want to enable Auto flow control on Avalanche
++#      serial device. In unsure choose Y.
++
++config MIPS_AVALANCHE_INTC 
++    def_bool UR8_DSL    
++
++#config AVALANCHE_INTC_PACING
++#	depends on MIPS_AVALANCHE_INTC
++#	bool "Avalanche Interrupt Pacing Enable"
++#	default y
++#	help
++#      Choose Y here if you wish to use the interrupt pacing feature of the
++#      Avalanche interrupt controller hardware. If unsure, choose Y.
++
++config AVALANCHE_INTC_TYPE
++	depends on MIPS_AVALANCHE_INTC	
++    bool "Avalanche interrupt type setting"
++	default y
++	help
++      Choose Y here if you wish to have the ability to set the interrupt
++	  type (level or edge triggered) in avalanche interrupt controller 
++      hardware. If unsure, choose Y.
++
++#iconfig AVALANCHE_INTC_DISPATCH_ISR_USING_DO_IRQ
++#    depends on MIPS_AVALANCHE_INTC
++#    bool "Use the do_IRQ routine provided by kernel to dispatch interrupts"
++#    default n
++#    help
++#      If you say N, TI specific (possibly optimized) code will be called to
++#      dispatch the ISR instead of the do_IRQ routine provided by the kernel
++#      proper. This may result in slightly better latency. (Benchmarking TBD).
++#      If unsure, choose Y.
++
++#config AVALANCHE_INTC_ALL_FAST_INTERRUPTS
++#	depends on AVALANCHE_INTC_DISPATCH_ISR_USING_DO_IRQ = 'n'
++#	bool "Assume all Avalanche interrupts as 'Fast'"
++#	default n
++#	help
++#      This option ignores the SA_INTERRUPT flag provided with request_irq 
++#      and locks out all the interrupts on the system whenever any 
++#      interrupt is being serviced. This will decrease the time taken 
++#      for ISR to be invoked. Not recommended if any of the interrupts in your
++#      system is expected to take a long time to execute.
++#      If unsure, say N. 
++
++#
++# Get to know which specific SoC type the user wants to compile for.
++#
++choice
++	prompt "TI BroadBand SOC Type (Avalanche Series)"
++	depends on UR8_DSL
++	help
++      Select the TI BoardBand SoC Type that you want the kernel port for. If
++      unsure, contact your software vendor.
++
++config MIPS_YAMUNA
++        bool "TI MIPS YAMUNA (aka TNETD84XX)"
++
++endchoice
++
++#if MIPS_YAMUNA = 'y'
++#    source "arch/mips/mips-boards/ur8/ti_yamuna/Kconfig"
++#endif
++
++#choice
++#    prompt "External Switch Type"
++#    depends on MIPS_EXTERNAL_SWITCH
++#	default MIPS_AVALANCHE_MARVELL_6063 if MIPS_UR8EVM
++
++#config MIPS_AVALANCHE_MARVELL_6060
++#	bool "External Switch Type Marvell 6060"      
++
++#config MIPS_AVALANCHE_MARVELL_6063 
++#    depends on UR8_DSL
++#    bool "External Switch Type Marvell 6063"      
++#    default n
++
++#endchoice
++
++endif #UR8_DSL
++
++endmenu
+diff -Nurp /dev/nul/Makefile.26 dsl/Makefile.26
+--- linux-2.6.32/drivers/dsl/Makefile.26	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.32/drivers/dsl/Makefile.26	2007-05-10 14:39:20.000000000 +0200
+@@ -0,0 +1,8 @@
++###################################################################################################################
++#
++#   vim: noexpandtab
++#
++#	dummy Makefile with no function
++#
++###################################################################################################################
++
+--- linux-2.6.32/drivers/Kconfig	2012-05-08 10:25:31.319869984 +0200
++++ linux-2.6.32/drivers/Kconfig	2012-05-08 10:25:38.399954559 +0200
+@@ -116,5 +116,5 @@ source "drivers/staging/Kconfig"
+ 
+ source "drivers/platform/Kconfig"
+ 
+-
++source "drivers/dsl/Kconfig"
+ endmenu

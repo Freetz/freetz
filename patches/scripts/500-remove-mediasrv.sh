@@ -19,6 +19,7 @@ else
 			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
 			modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
 		else
+#TODO 7320 sed fehler (5.51?)
 			# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver (05.xx)
 			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
 			modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
