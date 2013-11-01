@@ -5,6 +5,8 @@ find . \
 	\( \
 		-name "Config.in" \
 		-o -name "Config.in.avm" \
+		-o -name "Config.in.kernel" \
+		-o -name "Config.in.modules" \
 		-o -name "Config.in.override" \
 		-o -name "Config.in.libs" \
 		-o -name "external.files" \
