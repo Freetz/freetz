@@ -1,0 +1,110 @@
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/common/swi_ifx_common.c
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/common/swi_ifx_common.c
+@@ -469,8 +469,8 @@
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ 
+-#if defined(DEBUG_DUMP_SKB) && DEBUG_DUMP_SKB
+ void dump_skb(struct sk_buff *skb, u32 len, char *title, int port, int ch, int is_tx, int enforce) {
++#if defined(DEBUG_DUMP_SKB) && DEBUG_DUMP_SKB
+     unsigned int i;
+ 
+     if ( !enforce && !(g_dbg_datapath & (is_tx ? DBG_ENABLE_MASK_DUMP_SKB_TX : DBG_ENABLE_MASK_DUMP_SKB_RX)) )
+@@ -500,9 +500,9 @@
+     }
+     if ( (i - 1) % 16 != 0 )
+         printk("\n");
++#endif
+ }
+ EXPORT_SYMBOL(dump_skb);
+-#endif
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/common/swi_ifx_common.h
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/common/swi_ifx_common.h
+@@ -216,11 +216,11 @@
+ \*------------------------------------------------------------------------------------------*/
+ 
+ #define DUMP_SKB_LEN ~0
+-#if defined(DEBUG_DUMP_SKB) && DEBUG_DUMP_SKB
++//#if defined(DEBUG_DUMP_SKB) && DEBUG_DUMP_SKB
+ 	void dump_skb(struct sk_buff *skb, u32 len, char *title, int port, int ch, int is_tx, int enforce);
+-#else
+- #define dump_skb(a, b, c, d, e, f, g)
+-#endif
++//#else
++// #define dump_skb(a, b, c, d, e, f, g)
++//#endif
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/vr9/ifxmips_ppa_datapath_vr9_common.c
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/vr9/ifxmips_ppa_datapath_vr9_common.c
+@@ -1164,9 +1164,9 @@
+     return skb;
+ }
+ 
+-#if defined(DEBUG_DUMP_FLAG_HEADER) && DEBUG_DUMP_FLAG_HEADER
+ void dump_flag_header(int fwcode, struct flag_header *header,
+ 		const char *title, int ch, int is_wlan __attribute__ ((unused))) {
++#if defined(DEBUG_DUMP_FLAG_HEADER) && DEBUG_DUMP_FLAG_HEADER
+ //    static char * mpoa_type_str[] = {
+ //        "EoA w/o FCS",
+ //        "EoA w FCS",
+@@ -1226,14 +1226,14 @@
+         }
+ 		break;
+ 	}
++#endif
+ }
+ EXPORT_SYMBOL(dump_flag_header);
+-#endif
+ 
+-#if defined(DEBUG_DUMP_PMAC_HEADER) && DEBUG_DUMP_PMAC_HEADER
+ 
+ void dump_pmac_header(struct pmac_header *header,
+ 		const char *title) {
++#if defined(DEBUG_DUMP_PMAC_HEADER) && DEBUG_DUMP_PMAC_HEADER
+ 	if (!(g_dbg_datapath & DBG_ENABLE_MASK_DUMP_PMAC_HEADER))
+ 		return;
+ 
+@@ -1251,9 +1251,9 @@
+ 	printk(" SPPID     = %#x\n", (u32) header->SPPID);
+ 	printk(" Eg Tr Cl  = %#x\n", (u32) header->Eg_Tr_CLASS);
+ 
++#endif
+ }
+ EXPORT_SYMBOL(dump_pmac_header);
+-#endif
+ 
+ 
+ int mac_entry_setting(unsigned char *mac __attribute__ ((unused)),
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/vr9/ifxmips_ppa_datapath_vr9_common.h
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/vr9/ifxmips_ppa_datapath_vr9_common.h
+@@ -158,17 +158,17 @@
+ 
+ 
+ 
+-#if defined(DEBUG_DUMP_PMAC_HEADER) && DEBUG_DUMP_PMAC_HEADER
++//#if defined(DEBUG_DUMP_PMAC_HEADER) && DEBUG_DUMP_PMAC_HEADER
+ 	void dump_pmac_header(struct pmac_header *header, const char *title);
+-#else
+-	#define dump_pmac_header(a, b)
+-#endif
++//#else
++//	#define dump_pmac_header(a, b)
++//#endif
+ 
+-#if defined(DEBUG_DUMP_FLAG_HEADER) && DEBUG_DUMP_FLAG_HEADER
++//#if defined(DEBUG_DUMP_FLAG_HEADER) && DEBUG_DUMP_FLAG_HEADER
+ void dump_flag_header(int, struct flag_header *, const char *, int, int);
+-#else
+-#define dump_flag_header(a, b, c, d, e)
+-#endif
++//#else
++//#define dump_flag_header(a, b, c, d, e)
++//#endif
+ 
+ #define FWCODE_ROUTING_ACC_D2                   0x02
+ #define FWCODE_BRIDGING_ACC_D3                  0x03
