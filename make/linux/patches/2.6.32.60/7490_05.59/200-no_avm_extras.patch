@@ -1,5 +1,5 @@
---- linux-2.6.32/drivers/block/compcache/Makefile	2012-05-07 23:30:53+02:00
-+++ linux-2.6.32/drivers/block/compcache/Makefile	2012-05-07 23:30:53+02:00
+--- linux-2.6.32/drivers/block/compcache/Makefile
++++ linux-2.6.32/drivers/block/compcache/Makefile
 @@ -6,7 +6,7 @@
  ramzswap-objs	:=	ramzswap_drv.o xvmalloc.o
  
@@ -9,8 +9,8 @@
  
  rzscontrol-objs	:= rzscontrol.o
  
---- linux-2.6.32/drivers/rtc/Makefile	2012-05-07 23:30:53+02:00
-+++ linux-2.6.32/drivers/rtc/Makefile	2012-05-07 23:30:53+02:00
+--- linux-2.6.32/drivers/rtc/Makefile
++++ linux-2.6.32/drivers/rtc/Makefile
 @@ -91,7 +91,7 @@
  ifeq ($(CONFIG_RTC_DRV_AVM_REF_CLOCK),m)
  CFLAGS_rtc-avm.o += -DRTC_AVM_DEVICE_COUNT=1 # -DRTC_AVM_DEBUG=1
@@ -21,3 +21,12 @@
  $(src)/S09-rtc: FORCE
  	rm -rf $(src)/S09-rtc
 
+--- linux-2.6.32/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile
++++ linux-2.6.32/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile
+@@ -1,5 +1,5 @@
+ 
+-extra-y			+= notify_avmnet
++#extra-y			+= notify_avmnet
+ 
+ clean-files		+= libtest libnotify_avmnet.so.0.1 libnotify_avmnet.so.0 libnotify_avmnet.so notify_avmnet.o
+ 
