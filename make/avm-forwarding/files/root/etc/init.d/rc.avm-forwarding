@@ -22,12 +22,12 @@ config() {
 		AR7RULES=$(echo ar7cfg.dslifaces.dsldpconfig.forwardrules | ar7cfgctl -s | sed 's/, /\n/g' | tr -d '"')
 	fi
 	[ -z "$AR7RULES" ] && echo "No Rules found. Please activate at least one forwarding, e.g. HTTPS (Fernwartung)" && return -1
-	# Die erste (komplette) Regelzeile, mit dem "Header" ([internet_]forwardrules =) suchen.  
+	# Die erste (komplette) Regelzeile, mit dem "Header" ([internet_]forwardrules =) suchen.
 	FIND=$(echo "forwardrules = \"$AR7RULES" | sed -n '1 p')
-	FIRSTRULE=$(grep "$FIND" /var/flash/ar7.cfg) 
+	FIRSTRULE=$(grep "$FIND" /var/flash/ar7.cfg)
 	# der Vorspann ist alles bis zum "
 	HEADER=$(echo "$FIRSTRULE" | sed 's/".*".*//')
-	# ... die weiteren Zeilen sind entsprechend eingerückt, also alle Zeichen in Leerzeichen umwandeln 
+	# ... die weiteren Zeilen sind entsprechend eingerückt, also alle Zeichen in Leerzeichen umwandeln
 	SPACES=${HEADER//?/ }
 
 }

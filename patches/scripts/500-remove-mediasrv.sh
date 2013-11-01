@@ -2,7 +2,7 @@
 [ "$FREETZ_AVMPLUGINS_ENABLED" -a "$FREETZ_AVMPLUGINS_MEDIASRV" != "y" ] || \
 return 0
 
-# if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)  
+# if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)
 
 sedfile="${HTML_LANG_MOD_DIR}/storage/media_settings.lua"
 if [ -e $sedfile ]; then

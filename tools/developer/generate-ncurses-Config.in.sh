@@ -45,15 +45,15 @@ for O in `find . -type f -o -type l | sort`; do
 	else
 		TARGET_ID=""
 	fi
-	
-	
+
+
 	SIZE="$(du -b "$O" | awk '{print $1}')"
 	DEFAULT="$(for I in $DEFAULTSET; do [ "$I" = "$FILE" ] && echo "y"; done)"
 	[ -z "$DEFAULT" ] && DEFAULT="n"
 
 	echo "config FREETZ_SHARE_terminfo_$ID"
 	echo "	bool \"$FILE ($SIZE Bytes)\""
-	
+
 	if [ "$DEFAULT" = "y" ]; then
 		echo "	depends on FREETZ_SHARE_terminfo"
 	else

@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_NAS" == "y" ] || return 0
 
-# if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)  
+# if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)
 [ "$FREETZ_PACKAGE_SAMBA_SMBD" == "y" -o "$FREETZ_REMOVE_SAMBA" == "y" ] &&
   [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] && menulua_remove "storage\/settings"
 

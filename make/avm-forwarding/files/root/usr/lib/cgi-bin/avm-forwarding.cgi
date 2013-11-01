@@ -59,7 +59,7 @@ $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln 
 
 <p><table width="100%" border="1" cellpadding="4" cellspacing="0" align="center" id="id_table_forwardrules">
         <tr><td align="left" colspan="7">internet_forwardrules</td></tr>
-        <tr> <th bgcolor="#bae3ff">$(lang en:"Active" de:"Aktiv")</th> <th bgcolor="#bae3ff">$(lang en:"Protocol" de:"Protokoll")</th> <th bgcolor="#bae3ff">$(lang en:"Source Port" de:"Quell-Port")</th> 
+        <tr> <th bgcolor="#bae3ff">$(lang en:"Active" de:"Aktiv")</th> <th bgcolor="#bae3ff">$(lang en:"Protocol" de:"Protokoll")</th> <th bgcolor="#bae3ff">$(lang en:"Source Port" de:"Quell-Port")</th>
         <th bgcolor="#bae3ff">$(lang en:"Dest. Port" de:"Ziel-Port")</th> <th bgcolor="#bae3ff">$(lang en:"Description" de:"Beschreibung")</th> <th bgcolor="#bae3ff">$(lang en:"Configure" de:"Bearbeiten")</th> </tr>
         <tr style="display:none"><td bgcolor="#CDCDCD" width="40" align="center"><input type="checkbox" onclick='fwddisable[ (this.parentNode.parentNode.rowIndex -3)] = ! this.checked ; rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3));'></td><td><select onchange='rebuild_fwdrule((this.parentNode.parentNode.rowIndex -3), "fwdprot", this.value)'>
         <option value="icmp">icmp</option><option value="gre">gre</option><option value="tcp">tcp</option><option value="udp">udp</option>

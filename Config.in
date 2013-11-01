@@ -109,7 +109,7 @@ choice
 
 	config FREETZ_TYPE_3272
 		bool "3272 - EXPERIMENTAL"
-	
+
 	config FREETZ_TYPE_3370
 		select FREETZ_AVM_VERSION_3370_05_21 if FREETZ_AVM_VERSION_05_2X
 		select FREETZ_AVM_VERSION_7360_05_51 if FREETZ_AVM_VERSION_05_5X
@@ -258,7 +258,7 @@ choice
 		select FREETZ_AVM_VERSION_7360_05_20 if FREETZ_AVM_VERSION_05_2X
 		select FREETZ_AVM_VERSION_7360_05_51 if FREETZ_AVM_VERSION_05_5X
 		bool "7362 SL - EXPERIMENTAL"
-	
+
 	config FREETZ_TYPE_7390
 		select FREETZ_AVM_VERSION_7390_05_21 if FREETZ_AVM_VERSION_05_2X
 		select FREETZ_AVM_VERSION_7390_05_52 if FREETZ_AVM_VERSION_05_5X
@@ -342,7 +342,7 @@ choice
 		bool "FRITZ!OS 06.xx"
 		select FREETZ_AVM_VERSION_06_XX
 		depends on FREETZ_AVM_HAS_FW6XX
-	
+
 	config FREETZ_TYPE_FIRMWARE_LABOR
 		bool "FRITZ! Labor"
 		select FREETZ_AVM_VERSION_05_5X
@@ -370,7 +370,7 @@ choice
 		help
 			http://www.ewe.de/privatkunden/service/hardware.php
 			http://download.ewe.de/avm/
-	
+
 endchoice # "Firmware version" #
 
 config FREETZ_TYPE_FIRMWARE_FINAL
@@ -828,7 +828,7 @@ comment "Additional components ------------------"
 menu "Packages"
 	comment "*** not all packages support selected language ***"
 		depends on ! FREETZ_LANG_DE
-	
+
 	config FREETZ_SELECTED_LANG_ONLY
 		bool "Packages supporting selected language only"
 		depends on ! FREETZ_LANG_DE
@@ -837,8 +837,8 @@ menu "Packages"
 			Show only packages supporting the selected language. Packages not
 			supporting your selected language can be installed, but they will be in
 			default language (usually German).
-	
-	
+
+
 	source make/Config.in.generated
 endmenu # "Package selection" #
 
@@ -925,7 +925,7 @@ menu "External processing"
 			- /usr/lib/cgi-bin/PKG.cgi
 			- /usr/lib/cgi-bin/PKG/
 			Use this, if you do not want to waste ram
-			or have access to your external device.			
+			or have access to your external device.
 
 	config EXTERNAL_CREATEPAK
 		bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
@@ -940,7 +940,7 @@ menu "External processing"
 		depends on EXTERNAL_CREATEPAK && EXTERNAL_DYNAMIC
 		help
 			Creates a file for every package which is an external service.
-	
+
 	config EXTERNAL_OWN_FILES
 		string "own files"
 		default ""
@@ -1693,7 +1693,7 @@ menu "Override options"
 		default "fw_Speedport_W501V_v_28.04.38.image"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_W501V
 		default "fritz.box..."                                                  if FREETZ_TYPE_CUSTOM
 
-	config FREETZ_DL_SOURCE_CONTAINER 
+	config FREETZ_DL_SOURCE_CONTAINER
 		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
 		default "fritzbox-labor-3272-26627.zip"         if FREETZ_TYPE_3272
 		default "fritzbox-labor-7272-26627.zip"         if FREETZ_TYPE_7272
@@ -2239,7 +2239,7 @@ config FREETZ_TYPE_PREFIX_SERIES_SUBDIR
 	default "04_XX"             if FREETZ_AVM_VERSION_04_XX
 	default "05_2X"             if FREETZ_AVM_VERSION_05_2X
 	default "05_5X"
-	
+
 config FREETZ_TYPE_PREFIX_ALIEN_HARDWARE
 	string
 	default "W500V_"            if FREETZ_TYPE_W500V_7150

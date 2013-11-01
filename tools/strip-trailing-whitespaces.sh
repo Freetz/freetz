@@ -1,9 +1,11 @@
 #!/bin/sh
 
-find make \
+find . \
 	-type f \
 	\( \
 		-name "Config.in" \
+		-o -name "Config.in.avm" \
+		-o -name "Config.in.override" \
 		-o -name "Config.in.libs" \
 		-o -name "external.files" \
 		-o -name "external.in" \
