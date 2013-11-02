@@ -3,8 +3,7 @@
 # firmware downloader & unpacker script
 #
 # download:
-#    Downloads everything (~1,1GB) from ftp.avm.de except
-#    sources, then deletes unneded files (~350 MB).
+#    Downloads all files mathing pattern '*.image' from ftp.avm.de
 #    The filename based on the whole directory (s!/!--!).
 # unpack:
 #    Removes unpacked/ folder, unpacks all downloaded firmware
@@ -21,18 +20,33 @@
 
 DL_DIR=~/fw-avm
 
-
 download() {
 	mkdir -p $DL_DIR
 	cd $DL_DIR
 	rm -rf ftp.avm.de 2>/dev/null
-	wget -nv -m -X /*/*/x_misc ftp://ftp.avm.de/fritz.box/
-	find ftp.avm.de -type f ! -name *.image -exec rm -rf {} ';' 2>/dev/null
-	for file in `find ftp.avm.de -type f`; do mv -f $file `echo $file|sed 's!firmware/!!g;s!ftp\.avm\.de/fritz.box/!!g;s!/!--!g'`; done
+
+	# betas/labors
+	wget -nv -m -A '*.zip' ftp://ftp.avm.de/fritz.box/beta/
+	(
+		cd ftp.avm.de/fritz.box/beta/
+		for i in *.zip; do
+			unzip -q -o -j $i
+		done
+		# remove all files with no beta|labor in name
+		find . -type f -regextype posix-egrep ! -iregex '.*(beta|labor).*[.]image' -exec rm -f {} '+' 2>/dev/null
+	)
+
+	# releases
+	wget -nv -m -A '*.image' ftp://ftp.avm.de/fritz.box/
+	find ftp.avm.de -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
+
+	for file in $(find ftp.avm.de -type f); do
+		mv -f $file $(echo $file|sed 's!firmware/!!g;s!ftp\.avm\.de/fritz.box/!!g;s!/!--!g')
+	done
 	rm -rf ftp.avm.de 2>/dev/null
 }
 
-unpack () {
+unpack() {
 	[ ! -d $DL_DIR ] && echo "no $DL_DIR dir with images"
 	cd $DL_DIR
 	rm -rf unpacked 2>/dev/null
@@ -62,11 +76,11 @@ image() {
 		mkdir -p var
 		mv ${img#*/}.unp var/tmp
 	else
-		local size="0x$(printf "%08X\n" $(stat -c %s $img))	"
+		local size="0x$(printf "%08X\n" $(stat -c %s $img))"
 		local grbg="$($FTOOLS/sfk hexfind $img _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
 		[ -z "$grbg" ] && grbg="0x0"
 		[ "$grbg" != "0x0" ] && printf "\tSkipping %d Bytes garbage:\n" $grbg
-		tail -c $(( $size - $grbg )) $img | tar x ./var/tmp/*.image >/dev/null 2>&1 # --wildcard
+		tail -c $(( $size - $grbg )) $img | tar x --wildcards './var/tmp/*.image' >/dev/null 2>&1
 	fi
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
@@ -77,24 +91,22 @@ image() {
 		rm -rf var
 		continue
 	fi
-	$FTOOLS/remove-junk-bytes var/tmp/kernel.image var/tmp/kernel.junked 2>&1 | grep -E "removing junk bytes" | sed 's/.*/\t&:/'  #|No junk header found"
-	mv var/tmp/kernel.junked var/tmp/kernel.image 2>/dev/null
+	($FTOOLS/remove-junk-bytes var/tmp/kernel.image var/tmp/kernel.junked 2>&1 && mv var/tmp/kernel.junked var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*junk bytes.*),\t\1,p'
 	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
 	rm -rf var
 	$FTOOLS/rmtichksum -f x.image >/dev/null 2>&1
 	$FTOOLS/find-squashfs x.image >/dev/null 2>&1
 	rm x.image
 	cat kernelsquashfs.raw kernel.raw > x.raw
-	rm kernel.raw
-	rm kernelsquashfs.raw
+	rm  kernelsquashfs.raw kernel.raw
 	$FTOOLS/unsquashfs3-lzma x.raw >/dev/null 2>&1 || $FTOOLS/unsquashfs3 x.raw >/dev/null 2>&1 || echo FALSE $img #$FTOOLS/unsquashfs-lzma x.raw >/dev/null 2>&1 ||
 	rm x.raw
-	#for newest fw
+	# for recent fw's
 	if [ -e squashfs-root/filesystem_core.squashfs ]; then
 		$FTOOLS/find-squashfs squashfs-root/filesystem_core.squashfs >/dev/null 2>&1
 		rm -rf squashfs-root
 		rm kernel.raw
-		unsquashfs kernelsquashfs.raw >/dev/null 2>&1
+		$FTOOLS/unsquashfs3 kernelsquashfs.raw >/dev/null 2>&1
 		rm kernelsquashfs.raw
 	fi
 
@@ -122,6 +134,7 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
+
 if [ "$download" != "y" -a "$unpack" != "y" ]; then
 	echo "usage: ${0##*/} <download AND/OR unpack [image1 .. imageN]>"
 	exit 1
@@ -147,4 +160,3 @@ if [ "$unpack" == "y" ]; then
 		done
 	fi
 fi
-
