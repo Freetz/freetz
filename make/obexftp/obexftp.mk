@@ -1,15 +1,18 @@
-$(call PKG_INIT_BIN,0.22)
+$(call PKG_INIT_BIN,0.23)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=d167cfdea244e3a5f973a7b16864419c
+$(PKG)_SOURCE_MD5:=f20762061b68bc921e80be4aebc349eb
 $(PKG)_SITE:=http://triq.net/obexftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/apps/obexftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/obexftpd
 
 $(PKG)_DEPENDS_ON := bluez-libs openobex
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-swig
 $(PKG)_CONFIGURE_OPTIONS += --disable-perl
 $(PKG)_CONFIGURE_OPTIONS += --disable-python
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-ruby
 $(PKG)_CONFIGURE_OPTIONS += --disable-tcl
 $(PKG)_CONFIGURE_OPTIONS += --disable-builddocs
