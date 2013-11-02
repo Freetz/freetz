@@ -1,5 +1,5 @@
---- linux-2.6.28/drivers/usb/serial/ftdi_sio.h.orig	2009-12-14 15:57:12.000000000 +0100
-+++ linux-2.6.28/drivers/usb/serial/ftdi_sio.h	2010-10-14 21:25:54.407595965 +0200
+--- linux-2.6.28/drivers/usb/serial/ftdi_sio.h
++++ linux-2.6.28/drivers/usb/serial/ftdi_sio.h
 @@ -91,6 +91,15 @@
  #define FTDI_XF_635_PID 0xFC0D	/* 635: 20x4 Character Display */
  #define FTDI_XF_640_PID 0xFC0E	/* 640: Two line Display */
@@ -16,8 +16,8 @@
  
  /* Video Networks Limited / Homechoice in the UK use an ftdi-based device for their 1Mb */
  /* broadband internet service.  The following PID is exhibited by the usb device supplied */
---- linux-2.6.28/drivers/usb/serial/ftdi_sio.c.orig	2009-12-14 15:57:12.000000000 +0100
-+++ linux-2.6.28/drivers/usb/serial/ftdi_sio.c	2010-10-14 21:25:54.407595965 +0200
+--- linux-2.6.28/drivers/usb/serial/ftdi_sio.c
++++ linux-2.6.28/drivers/usb/serial/ftdi_sio.c
 @@ -666,6 +664,14 @@
  	{ USB_DEVICE(ADI_VID, ADI_GNICE_PID),
  		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },

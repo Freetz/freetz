@@ -1,5 +1,5 @@
---- linux-2.6.19.2/arch/mips/Kconfig.orig	2010-08-05 15:39:23.000000000 +0200
-+++ linux-2.6.19.2/arch/mips/Kconfig	2010-10-12 00:28:28.000000000 +0200
+--- linux-2.6.19.2/arch/mips/Kconfig
++++ linux-2.6.19.2/arch/mips/Kconfig
 @@ -1029,8 +1029,6 @@
  	depends on MACH_IKAN_MIPS
  endchoice
@@ -9,8 +9,8 @@
  config RWSEM_GENERIC_SPINLOCK
  	bool
  	default y
---- linux-2.6.19.2/Makefile.orig	2010-10-12 00:28:24.000000000 +0200
-+++ linux-2.6.19.2/Makefile	2010-10-12 00:28:28.000000000 +0200
+--- linux-2.6.19.2/Makefile
++++ linux-2.6.19.2/Makefile
 @@ -145,14 +145,8 @@
  
  srctree		:= $(if $(KBUILD_SRC),$(KBUILD_SRC),$(CURDIR))

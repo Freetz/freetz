@@ -23,10 +23,8 @@ Signed-off-by: Neil Brown <neilb@suse.de>
 Signed-off-by: Andrew Morton <akpm@osdl.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
-diff --git a/fs/nfsd/nfs3xdr.c linux-2.6.19.2/fs/nfsd/nfs3xdr.c
-index 277df40..e695660 100644
---- linux-2.6.19.2/fs/nfsd/nfs3xdr.c	2013-04-07 14:25:54+02:00
-+++ linux-2.6.19.2/fs/nfsd/nfs3xdr.c	2013-04-07 14:25:54+02:00
+--- linux-2.6.19.2/fs/nfsd/nfs3xdr.c
++++ linux-2.6.19.2/fs/nfsd/nfs3xdr.c
 @@ -994,15 +994,16 @@
  }
  
@@ -48,10 +46,8 @@ index 277df40..e695660 100644
  {
  	return encode_entry(cd, name, namlen, offset, ino, d_type, 1);
  }
-diff --git linux-2.6.19.2/fs/nfsd/nfs4xdr.c linux-2.6.19.2/fs/nfsd/nfs4xdr.c
-index fea4636..18aa944 100644
---- linux-2.6.19.2/fs/nfsd/nfs4xdr.c	2013-04-07 14:25:54+02:00
-+++ linux-2.6.19.2/fs/nfsd/nfs4xdr.c	2013-04-07 14:25:54+02:00
+--- linux-2.6.19.2/fs/nfsd/nfs4xdr.c
++++ linux-2.6.19.2/fs/nfsd/nfs4xdr.c
 @@ -1884,9 +1884,10 @@
  }
  
@@ -65,10 +61,8 @@ index fea4636..18aa944 100644
  	struct nfsd4_readdir *cd = container_of(ccd, struct nfsd4_readdir, common);
  	int buflen;
  	__be32 *p = cd->buffer;
-diff --git linux-2.6.19.2/fs/nfsd/nfsxdr.c linux-2.6.19.2/fs/nfsd/nfsxdr.c
-index f5243f9..6555c50 100644
---- linux-2.6.19.2/fs/nfsd/nfsxdr.c	2013-04-07 14:25:54+02:00
-+++ linux-2.6.19.2/fs/nfsd/nfsxdr.c	2013-04-07 14:25:54+02:00
+--- linux-2.6.19.2/fs/nfsd/nfsxdr.c
++++ linux-2.6.19.2/fs/nfsd/nfsxdr.c
 @@ -467,9 +467,10 @@
  }
  
@@ -82,10 +76,8 @@ index f5243f9..6555c50 100644
  	struct nfsd_readdirres *cd = container_of(ccd, struct nfsd_readdirres, common);
  	__be32	*p = cd->buffer;
  	int	buflen, slen;
-diff --git linux-2.6.19.2/fs/nfsd/vfs.c linux-2.6.19.2/fs/nfsd/vfs.c
-index 4dd49d6..5d32e5f 100644
---- linux-2.6.19.2/fs/nfsd/vfs.c	2013-04-07 14:25:54+02:00
-+++ linux-2.6.19.2/fs/nfsd/vfs.c	2013-04-07 14:25:54+02:00
+--- linux-2.6.19.2/fs/nfsd/vfs.c
++++ linux-2.6.19.2/fs/nfsd/vfs.c
 @@ -1724,7 +1724,7 @@
   */
  __be32
@@ -104,10 +96,8 @@ index 4dd49d6..5d32e5f 100644
  	} while (host_err >=0 && cdp->err == nfs_ok);
  	if (host_err)
  		err = nfserrno(host_err);
-diff --git linux-2.6.19.2/include/linux/nfsd/nfsd.h linux-2.6.19.2/include/linux/nfsd/nfsd.h
-index 0727774..4b7c4b5 100644
---- linux-2.6.19.2/include/linux/nfsd/nfsd.h	2013-04-07 14:25:54+02:00
-+++ linux-2.6.19.2/include/linux/nfsd/nfsd.h	2013-04-07 14:25:54+02:00
+--- linux-2.6.19.2/include/linux/nfsd/nfsd.h
++++ linux-2.6.19.2/include/linux/nfsd/nfsd.h
 @@ -52,8 +52,6 @@
  struct readdir_cd {
  	__be32			err;	/* 0, nfserr, or nfserr_eof */
@@ -126,10 +116,8 @@ index 0727774..4b7c4b5 100644
  __be32		nfsd_statfs(struct svc_rqst *, struct svc_fh *,
  				struct kstatfs *);
  
-diff --git linux-2.6.19.2/include/linux/nfsd/xdr.h linux-2.6.19.2/include/linux/nfsd/xdr.h
-index 877192d..67885d5 100644
---- linux-2.6.19.2/include/linux/nfsd/xdr.h	2013-04-07 14:25:54+02:00
-+++ linux-2.6.19.2/include/linux/nfsd/xdr.h	2013-04-07 14:25:54+02:00
+--- linux-2.6.19.2/include/linux/nfsd/xdr.h
++++ linux-2.6.19.2/include/linux/nfsd/xdr.h
 @@ -165,8 +165,8 @@
  int nfssvc_encode_statfsres(struct svc_rqst *, __be32 *, struct nfsd_statfsres *);
  int nfssvc_encode_readdirres(struct svc_rqst *, __be32 *, struct nfsd_readdirres *);
@@ -141,10 +129,8 @@ index 877192d..67885d5 100644
  
  int nfssvc_release_fhandle(struct svc_rqst *, __be32 *, struct nfsd_fhandle *);
  
-diff --git linux-2.6.19.2/include/linux/nfsd/xdr3.h linux-2.6.19.2/include/linux/nfsd/xdr3.h
-index 7996386..89d9d60 100644
---- linux-2.6.19.2/include/linux/nfsd/xdr3.h	2013-04-07 14:25:54+02:00
-+++ linux-2.6.19.2/include/linux/nfsd/xdr3.h	2013-04-07 14:25:54+02:00
+--- linux-2.6.19.2/include/linux/nfsd/xdr3.h
++++ linux-2.6.19.2/include/linux/nfsd/xdr3.h
 @@ -331,11 +331,11 @@
  				struct nfsd3_attrstat *);
  int nfs3svc_release_fhandle2(struct svc_rqst *, __be32 *,

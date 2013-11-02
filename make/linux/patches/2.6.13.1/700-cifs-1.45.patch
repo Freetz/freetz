@@ -1,6 +1,5 @@
-diff -burN linux-2.6.13.1/fs/cifs/asn1.c linux-2.6.13.1/fs/cifs/asn1.c
---- linux-2.6.13.1/fs/cifs/asn1.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/asn1.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/asn1.c
++++ linux-2.6.13.1/fs/cifs/asn1.c
 @@ -191,7 +191,8 @@
  		   unsigned char **eoc,
  		   unsigned int *cls, unsigned int *con, unsigned int *tag)
@@ -64,9 +63,8 @@ diff -burN linux-2.6.13.1/fs/cifs/asn1.c linux-2.6.13.1/fs/cifs/asn1.c
  						kfree(oid);
  					if (rc)
  						use_ntlmssp = TRUE;
-diff -burN linux-2.6.13.1/fs/cifs/AUTHORS linux-2.6.13.1/fs/cifs/AUTHORS
---- linux-2.6.13.1/fs/cifs/AUTHORS	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/AUTHORS	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/AUTHORS
++++ linux-2.6.13.1/fs/cifs/AUTHORS
 @@ -32,6 +32,10 @@
  Jesper Juhl (in particular for lots of whitespace/formatting cleanup)
  Vince Negri and Dave Stahl (for finding an important caching bug)
@@ -78,9 +76,8 @@ diff -burN linux-2.6.13.1/fs/cifs/AUTHORS linux-2.6.13.1/fs/cifs/AUTHORS
  
  Test case and Bug Report contributors
  -------------------------------------
-diff -burN linux-2.6.13.1/fs/cifs/CHANGES linux-2.6.13.1/fs/cifs/CHANGES
---- linux-2.6.13.1/fs/cifs/CHANGES	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/CHANGES	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/CHANGES
++++ linux-2.6.13.1/fs/cifs/CHANGES
 @@ -1,8 +1,116 @@
 +Version 1.45
 +------------
@@ -262,9 +259,8 @@ diff -burN linux-2.6.13.1/fs/cifs/CHANGES linux-2.6.13.1/fs/cifs/CHANGES
  nor is the symlink support using the Unix extensions
  
  8) Started adding the readlink and follow_link code 
-diff -burN linux-2.6.13.1/fs/cifs/cifsacl.h linux-2.6.13.1/fs/cifs/cifsacl.h
---- linux-2.6.13.1/fs/cifs/cifsacl.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/cifs/cifsacl.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifsacl.h
++++ linux-2.6.13.1/fs/cifs/cifsacl.h
 @@ -0,0 +1,38 @@
 +/*
 + *   fs/cifs/cifsacl.h
@@ -304,9 +300,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifsacl.h linux-2.6.13.1/fs/cifs/cifsacl.h
 +extern const struct cifs_sid sid_user;
 +
 +#endif /* _CIFSACL_H */
-diff -burN linux-2.6.13.1/fs/cifs/cifs_debug.c linux-2.6.13.1/fs/cifs/cifs_debug.c
---- linux-2.6.13.1/fs/cifs/cifs_debug.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifs_debug.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifs_debug.c
++++ linux-2.6.13.1/fs/cifs/cifs_debug.c
 @@ -39,7 +39,7 @@
  	char *charptr = data;
  	char buf[10], line[80];
@@ -799,9 +794,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifs_debug.c linux-2.6.13.1/fs/cifs/cifs_debug
  
  
  #endif
-diff -burN linux-2.6.13.1/fs/cifs/cifs_debug.h linux-2.6.13.1/fs/cifs/cifs_debug.h
---- linux-2.6.13.1/fs/cifs/cifs_debug.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifs_debug.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifs_debug.h
++++ linux-2.6.13.1/fs/cifs/cifs_debug.h
 @@ -24,8 +24,15 @@
  #define _H_CIFS_DEBUG
  
@@ -827,9 +821,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifs_debug.h linux-2.6.13.1/fs/cifs/cifs_debug
  
  #define cFYI(button,prspec) if (button) cifsfyi prspec
  
-diff -burN linux-2.6.13.1/fs/cifs/cifsencrypt.c linux-2.6.13.1/fs/cifs/cifsencrypt.c
---- linux-2.6.13.1/fs/cifs/cifsencrypt.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifsencrypt.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifsencrypt.c
++++ linux-2.6.13.1/fs/cifs/cifsencrypt.c
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/cifsencrypt.c
@@ -1119,9 +1112,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifsencrypt.c linux-2.6.13.1/fs/cifs/cifsencry
  	hmac_md5_final(v2_session_response,&context);
 +/*	cifs_dump_mem("v2_sess_rsp: ", v2_session_response, 32); */
  }
-diff -burN linux-2.6.13.1/fs/cifs/cifsfs.c linux-2.6.13.1/fs/cifs/cifsfs.c
---- linux-2.6.13.1/fs/cifs/cifsfs.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifsfs.c	2006-08-02 23:24:58.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifsfs.c
++++ linux-2.6.13.1/fs/cifs/cifsfs.c
 @@ -32,6 +32,7 @@
  #include <linux/seq_file.h>
  #include <linux/vfs.h>
@@ -1617,9 +1609,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifsfs.c linux-2.6.13.1/fs/cifs/cifsfs.c
  }
  
  MODULE_AUTHOR("Steve French <sfrench@us.ibm.com>");
-diff -burN linux-2.6.13.1/fs/cifs/cifsfs.h linux-2.6.13.1/fs/cifs/cifsfs.h
---- linux-2.6.13.1/fs/cifs/cifsfs.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifsfs.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifsfs.h
++++ linux-2.6.13.1/fs/cifs/cifsfs.h
 @@ -31,8 +31,12 @@
  #ifndef TRUE
  #define TRUE 1
@@ -1680,9 +1671,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifsfs.h linux-2.6.13.1/fs/cifs/cifsfs.h
 -#define CIFS_VERSION   "1.35"
 +#define CIFS_VERSION   "1.45"
  #endif				/* _CIFSFS_H */
-diff -burN linux-2.6.13.1/fs/cifs/cifs_fs_sb.h linux-2.6.13.1/fs/cifs/cifs_fs_sb.h
---- linux-2.6.13.1/fs/cifs/cifs_fs_sb.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifs_fs_sb.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifs_fs_sb.h
++++ linux-2.6.13.1/fs/cifs/cifs_fs_sb.h
 @@ -24,6 +24,10 @@
  #define CIFS_MOUNT_DIRECT_IO    8 /* do not write nor read through page cache */
  #define CIFS_MOUNT_NO_XATTR  0x10 /* if set - disable xattr support */
@@ -1694,9 +1684,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifs_fs_sb.h linux-2.6.13.1/fs/cifs/cifs_fs_sb
  
  struct cifs_sb_info {
  	struct cifsTconInfo *tcon;	/* primary mount */
-diff -burN linux-2.6.13.1/fs/cifs/cifsglob.h linux-2.6.13.1/fs/cifs/cifsglob.h
---- linux-2.6.13.1/fs/cifs/cifsglob.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifsglob.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifsglob.h
++++ linux-2.6.13.1/fs/cifs/cifsglob.h
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/cifsglob.h
@@ -2057,9 +2046,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifsglob.h linux-2.6.13.1/fs/cifs/cifsglob.h
  GLOBAL_EXTERN unsigned int linuxExtEnabled;/*enable Linux/Unix CIFS extensions*/
  GLOBAL_EXTERN unsigned int CIFSMaxBufSize;  /* max size not including hdr */
  GLOBAL_EXTERN unsigned int cifs_min_rcv;    /* min size of big ntwrk buf pool */
-diff -burN linux-2.6.13.1/fs/cifs/cifspdu.h linux-2.6.13.1/fs/cifs/cifspdu.h
---- linux-2.6.13.1/fs/cifs/cifspdu.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifspdu.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifspdu.h
++++ linux-2.6.13.1/fs/cifs/cifspdu.h
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/cifspdu.h
@@ -3580,9 +3568,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifspdu.h linux-2.6.13.1/fs/cifs/cifspdu.h
 -#pragma pack()			/* resume default structure packing */
 -
  #endif				/* _CIFSPDU_H */
-diff -burN linux-2.6.13.1/fs/cifs/cifsproto.h linux-2.6.13.1/fs/cifs/cifsproto.h
---- linux-2.6.13.1/fs/cifs/cifsproto.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifsproto.h	2006-08-02 23:24:04.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifsproto.h
++++ linux-2.6.13.1/fs/cifs/cifsproto.h
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/cifsproto.h
@@ -3809,9 +3796,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifsproto.h linux-2.6.13.1/fs/cifs/cifsproto.h
 +#endif
 +#endif
  #endif			/* _CIFSPROTO_H */
-diff -burN linux-2.6.13.1/fs/cifs/cifssmb.c linux-2.6.13.1/fs/cifs/cifssmb.c
---- linux-2.6.13.1/fs/cifs/cifssmb.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifssmb.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifssmb.c
++++ linux-2.6.13.1/fs/cifs/cifssmb.c
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/cifssmb.c
@@ -5877,9 +5863,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifssmb.c linux-2.6.13.1/fs/cifs/cifssmb.c
  	}
  	cifs_buf_release(pSMB);
  	return rc;	
-diff -burN linux-2.6.13.1/fs/cifs/cifs_unicode.c linux-2.6.13.1/fs/cifs/cifs_unicode.c
---- linux-2.6.13.1/fs/cifs/cifs_unicode.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifs_unicode.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifs_unicode.c
++++ linux-2.6.13.1/fs/cifs/cifs_unicode.c
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/cifs_unicode.c
@@ -5937,9 +5922,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifs_unicode.c linux-2.6.13.1/fs/cifs/cifs_uni
  
  	}
  
-diff -burN linux-2.6.13.1/fs/cifs/cifs_unicode.h linux-2.6.13.1/fs/cifs/cifs_unicode.h
---- linux-2.6.13.1/fs/cifs/cifs_unicode.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifs_unicode.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifs_unicode.h
++++ linux-2.6.13.1/fs/cifs/cifs_unicode.h
 @@ -5,7 +5,7 @@
   *     Convert a unicode character to upper or lower case using
   *     compressed tables.
@@ -5965,9 +5949,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifs_unicode.h linux-2.6.13.1/fs/cifs/cifs_uni
  #endif
  
  /*
-diff -burN linux-2.6.13.1/fs/cifs/cifs_uniupr.h linux-2.6.13.1/fs/cifs/cifs_uniupr.h
---- linux-2.6.13.1/fs/cifs/cifs_uniupr.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/cifs_uniupr.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cifs_uniupr.h
++++ linux-2.6.13.1/fs/cifs/cifs_uniupr.h
 @@ -242,7 +242,7 @@
  /*
   * Lower Case Range
@@ -5977,9 +5960,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cifs_uniupr.h linux-2.6.13.1/fs/cifs/cifs_uniu
  	0x0380, 0x03ab, UniCaseRangeL0380,
  	0x0400, 0x042f, UniCaseRangeL0400,
  	0x0490, 0x04cb, UniCaseRangeL0490,
-diff -burN linux-2.6.13.1/fs/cifs/cn_cifs.h linux-2.6.13.1/fs/cifs/cn_cifs.h
---- linux-2.6.13.1/fs/cifs/cn_cifs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/cifs/cn_cifs.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/cn_cifs.h
++++ linux-2.6.13.1/fs/cifs/cn_cifs.h
 @@ -0,0 +1,37 @@
 +/*
 + *   fs/cifs/cn_cifs.h
@@ -6018,9 +6000,8 @@ diff -burN linux-2.6.13.1/fs/cifs/cn_cifs.h linux-2.6.13.1/fs/cifs/cn_cifs.h
 +};
 +#endif /* CIFS_UPCALL */
 +#endif /* _CN_CIFS_H */
-diff -burN linux-2.6.13.1/fs/cifs/connect.c linux-2.6.13.1/fs/cifs/connect.c
---- linux-2.6.13.1/fs/cifs/connect.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/connect.c	2006-08-02 23:28:52.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/connect.c
++++ linux-2.6.13.1/fs/cifs/connect.c
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/connect.c
@@ -8169,9 +8150,8 @@ diff -burN linux-2.6.13.1/fs/cifs/connect.c linux-2.6.13.1/fs/cifs/connect.c
  			rc = CIFSNTLMSSPNegotiateSessSetup(xid,
  						pSesInfo,
  						&ntlmv2_flag,
-diff -burN linux-2.6.13.1/fs/cifs/dir.c linux-2.6.13.1/fs/cifs/dir.c
---- linux-2.6.13.1/fs/cifs/dir.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/dir.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/dir.c
++++ linux-2.6.13.1/fs/cifs/dir.c
 @@ -3,7 +3,7 @@
   *
   *   vfs operations that deal with dentries
@@ -8646,9 +8626,8 @@ diff -burN linux-2.6.13.1/fs/cifs/dir.c linux-2.6.13.1/fs/cifs/dir.c
 +	.d_hash = cifs_ci_hash,
 +	.d_compare = cifs_ci_compare,
 +};
-diff -burN linux-2.6.13.1/fs/cifs/fcntl.c linux-2.6.13.1/fs/cifs/fcntl.c
---- linux-2.6.13.1/fs/cifs/fcntl.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/fcntl.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/fcntl.c
++++ linux-2.6.13.1/fs/cifs/fcntl.c
 @@ -78,30 +78,34 @@
  	__u32 filter = FILE_NOTIFY_CHANGE_NAME | FILE_NOTIFY_CHANGE_ATTRIBUTES;
  	__u16 netfid;
@@ -8699,9 +8678,8 @@ diff -burN linux-2.6.13.1/fs/cifs/fcntl.c linux-2.6.13.1/fs/cifs/fcntl.c
  		}
  	}
  	
-diff -burN linux-2.6.13.1/fs/cifs/file.c linux-2.6.13.1/fs/cifs/file.c
---- linux-2.6.13.1/fs/cifs/file.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/file.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/file.c
++++ linux-2.6.13.1/fs/cifs/file.c
 @@ -21,11 +21,15 @@
   *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   */
@@ -9792,9 +9770,8 @@ diff -burN linux-2.6.13.1/fs/cifs/file.c linux-2.6.13.1/fs/cifs/file.c
  	.prepare_write = cifs_prepare_write,
  	.commit_write = cifs_commit_write,
  	.set_page_dirty = __set_page_dirty_nobuffers,
-diff -burN linux-2.6.13.1/fs/cifs/inode.c linux-2.6.13.1/fs/cifs/inode.c
---- linux-2.6.13.1/fs/cifs/inode.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/inode.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/inode.c
++++ linux-2.6.13.1/fs/cifs/inode.c
 @@ -41,7 +41,7 @@
  	char *tmp_path;
  
@@ -10589,9 +10566,8 @@ diff -burN linux-2.6.13.1/fs/cifs/inode.c linux-2.6.13.1/fs/cifs/inode.c
  	/* may have to add back in if and when safe distributed caching of
  	   directories added e.g. via FindNotify */
  }
-diff -burN linux-2.6.13.1/fs/cifs/link.c linux-2.6.13.1/fs/cifs/link.c
---- linux-2.6.13.1/fs/cifs/link.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/link.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/link.c
++++ linux-2.6.13.1/fs/cifs/link.c
 @@ -48,10 +48,8 @@
  /* No need to check for cross device links since server will do that
     BB note DFS case in future though (when we may have to check) */
@@ -10755,18 +10731,16 @@ diff -burN linux-2.6.13.1/fs/cifs/link.c linux-2.6.13.1/fs/cifs/link.c
  		kfree(p);
 +#endif
  }
-diff -burN linux-2.6.13.1/fs/cifs/Makefile linux-2.6.13.1/fs/cifs/Makefile
---- linux-2.6.13.1/fs/cifs/Makefile	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/Makefile	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/Makefile
++++ linux-2.6.13.1/fs/cifs/Makefile
 @@ -3,4 +3,4 @@
  #
  obj-$(CONFIG_CIFS) += cifs.o
  
 -cifs-objs := cifsfs.o cifssmb.o cifs_debug.o connect.o dir.o file.o inode.o link.o misc.o netmisc.o smbdes.o smbencrypt.o transport.o asn1.o md4.o md5.o cifs_unicode.o nterr.o xattr.o cifsencrypt.o fcntl.o readdir.o ioctl.o
 +cifs-objs := cifsfs.o cifssmb.o cifs_debug.o connect.o dir.o file.o inode.o link.o misc.o netmisc.o smbdes.o smbencrypt.o transport.o asn1.o md4.o md5.o cifs_unicode.o nterr.o xattr.o cifsencrypt.o fcntl.o readdir.o ioctl.o sess.o
-diff -burN linux-2.6.13.1/fs/cifs/misc.c linux-2.6.13.1/fs/cifs/misc.c
---- linux-2.6.13.1/fs/cifs/misc.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/misc.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/misc.c
++++ linux-2.6.13.1/fs/cifs/misc.c
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/misc.c
@@ -11227,9 +11201,8 @@ diff -burN linux-2.6.13.1/fs/cifs/misc.c linux-2.6.13.1/fs/cifs/misc.c
  				len_remaining -= charlen;
  				/* character may take more than one byte in the
  				   the source string, but will take exactly two
-diff -burN linux-2.6.13.1/fs/cifs/netmisc.c linux-2.6.13.1/fs/cifs/netmisc.c
---- linux-2.6.13.1/fs/cifs/netmisc.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/netmisc.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/netmisc.c
++++ linux-2.6.13.1/fs/cifs/netmisc.c
 @@ -84,11 +84,11 @@
  
  static const struct smb_to_posix_error mapping_table_ERRSRV[] = {
@@ -11319,9 +11292,8 @@ diff -burN linux-2.6.13.1/fs/cifs/netmisc.c linux-2.6.13.1/fs/cifs/netmisc.c
  	return (u64) t.tv_sec * 10000000 + t.tv_nsec/100 + NTFS_TIME_OFFSET;
  }
 +#endif
-diff -burN linux-2.6.13.1/fs/cifs/ntlmssp.h linux-2.6.13.1/fs/cifs/ntlmssp.h
---- linux-2.6.13.1/fs/cifs/ntlmssp.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/ntlmssp.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/ntlmssp.h
++++ linux-2.6.13.1/fs/cifs/ntlmssp.h
 @@ -1,7 +1,7 @@
  /*
   *   fs/cifs/ntlmssp.h
@@ -11375,9 +11347,8 @@ diff -burN linux-2.6.13.1/fs/cifs/ntlmssp.h linux-2.6.13.1/fs/cifs/ntlmssp.h
 -
 -#pragma pack()			/* resume default structure packing */
 +} __attribute__((packed)) AUTHENTICATE_MESSAGE, *PAUTHENTICATE_MESSAGE;
-diff -burN linux-2.6.13.1/fs/cifs/readdir.c linux-2.6.13.1/fs/cifs/readdir.c
---- linux-2.6.13.1/fs/cifs/readdir.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/readdir.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/readdir.c
++++ linux-2.6.13.1/fs/cifs/readdir.c
 @@ -21,6 +21,7 @@
   *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   */
@@ -12054,9 +12025,8 @@ diff -burN linux-2.6.13.1/fs/cifs/readdir.c linux-2.6.13.1/fs/cifs/readdir.c
  	FreeXid(xid);
  	return rc;
  }
-diff -burN linux-2.6.13.1/fs/cifs/README linux-2.6.13.1/fs/cifs/README
---- linux-2.6.13.1/fs/cifs/README	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/README	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/README
++++ linux-2.6.13.1/fs/cifs/README
 @@ -278,7 +278,9 @@
  		(such as Windows), permissions can also be checked at the
  		client, and a crude form of client side permission checking 
@@ -12238,9 +12208,8 @@ diff -burN linux-2.6.13.1/fs/cifs/README linux-2.6.13.1/fs/cifs/README
  
  	echo 1 > /proc/fs/cifs/traceSMB
  
-diff -burN linux-2.6.13.1/fs/cifs/rfc1002pdu.h linux-2.6.13.1/fs/cifs/rfc1002pdu.h
---- linux-2.6.13.1/fs/cifs/rfc1002pdu.h	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/rfc1002pdu.h	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/rfc1002pdu.h
++++ linux-2.6.13.1/fs/cifs/rfc1002pdu.h
 @@ -21,16 +21,14 @@
   *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
   */
@@ -12289,9 +12258,8 @@ diff -burN linux-2.6.13.1/fs/cifs/rfc1002pdu.h linux-2.6.13.1/fs/cifs/rfc1002pdu
 -
 -#pragma pack()		/* resume default structure packing */
 -                                                             
-diff -burN linux-2.6.13.1/fs/cifs/sess.c linux-2.6.13.1/fs/cifs/sess.c
---- linux-2.6.13.1/fs/cifs/sess.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/cifs/sess.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/sess.c
++++ linux-2.6.13.1/fs/cifs/sess.c
 @@ -0,0 +1,538 @@
 +/*
 + *   fs/cifs/sess.c
@@ -12831,9 +12799,8 @@ diff -burN linux-2.6.13.1/fs/cifs/sess.c linux-2.6.13.1/fs/cifs/sess.c
 +
 +	return rc;
 +}
-diff -burN linux-2.6.13.1/fs/cifs/smbencrypt.c linux-2.6.13.1/fs/cifs/smbencrypt.c
---- linux-2.6.13.1/fs/cifs/smbencrypt.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/smbencrypt.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/smbencrypt.c
++++ linux-2.6.13.1/fs/cifs/smbencrypt.c
 @@ -30,6 +30,7 @@
  #include <linux/random.h>
  #include "cifs_unicode.h"
@@ -12842,9 +12809,8 @@ diff -burN linux-2.6.13.1/fs/cifs/smbencrypt.c linux-2.6.13.1/fs/cifs/smbencrypt
  #include "md5.h"
  #include "cifs_debug.h"
  #include "cifsencrypt.h"
-diff -burN linux-2.6.13.1/fs/cifs/TODO linux-2.6.13.1/fs/cifs/TODO
---- linux-2.6.13.1/fs/cifs/TODO	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/TODO	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/TODO
++++ linux-2.6.13.1/fs/cifs/TODO
 @@ -1,4 +1,4 @@
 -version 1.34 April 29, 2005
 +Version 1.39 November 30, 2005
@@ -12943,9 +12909,8 @@ diff -burN linux-2.6.13.1/fs/cifs/TODO linux-2.6.13.1/fs/cifs/TODO
  KNOWN BUGS (updated April 29, 2005)
  ====================================
  See http://bugzilla.samba.org - search on product "CifsVFS" for
-diff -burN linux-2.6.13.1/fs/cifs/transport.c linux-2.6.13.1/fs/cifs/transport.c
---- linux-2.6.13.1/fs/cifs/transport.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/transport.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/transport.c
++++ linux-2.6.13.1/fs/cifs/transport.c
 @@ -3,6 +3,7 @@
   *
   *   Copyright (C) International Business Machines  Corp., 2002,2005
@@ -13658,9 +13623,8 @@ diff -burN linux-2.6.13.1/fs/cifs/transport.c linux-2.6.13.1/fs/cifs/transport.c
  		}
  	}
  cifs_no_response_exit:
-diff -burN linux-2.6.13.1/fs/cifs/xattr.c linux-2.6.13.1/fs/cifs/xattr.c
---- linux-2.6.13.1/fs/cifs/xattr.c	2005-09-14 12:22:35.000000000 +0200
-+++ linux-2.6.13.1/fs/cifs/xattr.c	2006-08-02 23:15:17.000000000 +0200
+--- linux-2.6.13.1/fs/cifs/xattr.c
++++ linux-2.6.13.1/fs/cifs/xattr.c
 @@ -62,9 +62,7 @@
  	cifs_sb = CIFS_SB(sb);
  	pTcon = cifs_sb->tcon;

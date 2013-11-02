@@ -9,10 +9,9 @@ Signed-off-by: OGAWA Hirofumi <hirofumi [at] mail>
 fs/fat/inode.c | 4 ++--
 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff -puN fs/fat/inode.c~fat_bmap-locking-fix fs/fat/inode.c
---- linux-2.6.28/fs/fat/inode.c~fat_bmap-locking-fix 2009-03-12 00:47:15.000000000 +0900
-+++ linux-2.6.28/fs/fat/inode.c 2009-03-12 00:47:42.000000000 +0900
-@@ -202,9 +202,9 @@ static sector_t _fat_bmap(struct address
+--- linux-2.6.28/fs/fat/inode.c
++++ linux-2.6.28/fs/fat/inode.c
+@@ -202,9 +202,9 @@
  	sector_t blocknr;
  
  	/* fat_get_cluster() assumes the requested blocknr isn't truncated. */

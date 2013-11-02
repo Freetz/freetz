@@ -1,6 +1,5 @@
-diff -burN fs/cifs.orig//cifsfs.c fs/cifs/cifsfs.c
---- linux-2.6.32/fs/cifs/cifsfs.c	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/cifsfs.c	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/cifsfs.c
++++ linux-2.6.32/fs/cifs/cifsfs.c
 @@ -64,6 +64,9 @@
  unsigned int extended_security = CIFSSEC_DEF;
  /* unsigned int ntlmv2_support = 0; */
@@ -132,9 +131,8 @@ diff -burN fs/cifs.orig//cifsfs.c fs/cifs/cifsfs.c
  }
  
  MODULE_AUTHOR("Steve French <sfrench@us.ibm.com>");
-diff -burN fs/cifs.orig//cifsglob.h fs/cifs/cifsglob.h
---- linux-2.6.32/fs/cifs/cifsglob.h	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/cifsglob.h	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/cifsglob.h
++++ linux-2.6.32/fs/cifs/cifsglob.h
 @@ -18,7 +18,6 @@
   */
  #include <linux/in.h>
@@ -174,9 +172,8 @@ diff -burN fs/cifs.orig//cifsglob.h fs/cifs/cifsglob.h
  GLOBAL_EXTERN unsigned int cifs_max_pending; /* MAX requests at once to server*/
  
 -extern const struct slow_work_ops cifs_oplock_break_ops;
-diff -burN fs/cifs.orig//cifsproto.h fs/cifs/cifsproto.h
---- linux-2.6.32/fs/cifs/cifsproto.h	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/cifsproto.h	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/cifsproto.h
++++ linux-2.6.32/fs/cifs/cifsproto.h
 @@ -86,6 +86,10 @@
  			     const int stage,
  			     const struct nls_table *nls_cp);
@@ -188,9 +185,8 @@ diff -burN fs/cifs.orig//cifsproto.h fs/cifs/cifsproto.h
  extern struct timespec cifs_NTtimeToUnix(__le64 utc_nanoseconds_since_1601);
  extern u64 cifs_UnixTimeToNT(struct timespec);
  extern struct timespec cnvrtDosUnixTm(__le16 le_date, __le16 le_time,
-diff -burN fs/cifs.orig//cifssmb.c fs/cifs/cifssmb.c
---- linux-2.6.32/fs/cifs/cifssmb.c	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/cifssmb.c	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/cifssmb.c
++++ linux-2.6.32/fs/cifs/cifssmb.c
 @@ -94,7 +94,6 @@
  	list_for_each_safe(tmp, tmp1, &pTcon->openFileList) {
  		open_file = list_entry(tmp, struct cifsFileInfo, tlist);
@@ -199,9 +195,8 @@ diff -burN fs/cifs.orig//cifssmb.c fs/cifs/cifssmb.c
  	}
  	write_unlock(&GlobalSMBSeslock);
  	/* BB Add call to invalidate_inodes(sb) for all superblocks mounted
-diff -burN fs/cifs.orig//connect.c fs/cifs/connect.c
---- linux-2.6.32/fs/cifs/connect.c	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/connect.c	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/connect.c
++++ linux-2.6.32/fs/cifs/connect.c
 @@ -1672,6 +1672,7 @@
  	CIFSSMBTDis(xid, tcon);
  	_FreeXid(xid);
@@ -210,9 +205,8 @@ diff -burN fs/cifs.orig//connect.c fs/cifs/connect.c
  	tconInfoFree(tcon);
  	cifs_put_smb_ses(ses);
  }
-diff -burN fs/cifs.orig//dir.c fs/cifs/dir.c
---- linux-2.6.32/fs/cifs/dir.c	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/dir.c	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/dir.c
++++ linux-2.6.32/fs/cifs/dir.c
 @@ -157,7 +157,6 @@
  	mutex_init(&pCifsFile->lock_mutex);
  	INIT_LIST_HEAD(&pCifsFile->llist);
@@ -221,9 +215,8 @@ diff -burN fs/cifs.orig//dir.c fs/cifs/dir.c
  
  	write_lock(&GlobalSMBSeslock);
  	list_add(&pCifsFile->tlist, &cifs_sb->tcon->openFileList);
-diff -burN fs/cifs.orig//Kconfig fs/cifs/Kconfig
---- linux-2.6.32/fs/cifs/Kconfig	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/Kconfig	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/Kconfig
++++ linux-2.6.32/fs/cifs/Kconfig
 @@ -2,7 +2,6 @@
  	tristate "CIFS support (advanced network filesystem, SMBFS successor)"
  	depends on INET
@@ -232,9 +225,8 @@ diff -burN fs/cifs.orig//Kconfig fs/cifs/Kconfig
  	help
  	  This is the client VFS module for the Common Internet File System
  	  (CIFS) protocol which is the successor to the Server Message Block
-diff -burN fs/cifs.orig//misc.c fs/cifs/misc.c
---- linux-2.6.32/fs/cifs/misc.c	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/misc.c	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/misc.c
++++ linux-2.6.32/fs/cifs/misc.c
 @@ -32,6 +32,7 @@
  
  extern mempool_t *cifs_sm_req_poolp;
@@ -288,9 +280,8 @@ diff -burN fs/cifs.orig//misc.c fs/cifs/misc.c
  				return true;
  			}
  			read_unlock(&GlobalSMBSeslock);
-diff -burN fs/cifs.orig//transport.c fs/cifs/transport.c
---- linux-2.6.32/fs/cifs/transport.c	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/transport.c	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/transport.c
++++ linux-2.6.32/fs/cifs/transport.c
 @@ -103,6 +103,56 @@
  	mempool_free(midEntry, cifs_mid_poolp);
  }
@@ -348,8 +339,8 @@ diff -burN fs/cifs.orig//transport.c fs/cifs/transport.c
  static int
  smb_sendv(struct TCP_Server_Info *server, struct kvec *iov, int n_vec)
  {
---- linux-2.6.32/fs/cifs/file.c	2012-05-08 00:09:52+02:00
-+++ linux-2.6.32/fs/cifs/file.c	2012-05-08 00:09:52+02:00
+--- linux-2.6.32/fs/cifs/file.c
++++ linux-2.6.32/fs/cifs/file.c
 @@ -30,7 +30,6 @@
  #include <linux/writeback.h>
  #include <linux/task_io_accounting_ops.h>

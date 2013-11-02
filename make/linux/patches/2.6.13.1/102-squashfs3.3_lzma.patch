@@ -1,6 +1,5 @@
-diff -burN linux-2.6.13.1.orig/fs/squashfs/inode.c linux-2.6.13.1/fs/squashfs/inode.c
---- linux-2.6.13.1.orig/fs/squashfs/inode.c	2006-02-23 15:45:51.000000000 +0100
-+++ linux-2.6.13.1/fs/squashfs/inode.c	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/fs/squashfs/inode.c
++++ linux-2.6.13.1/fs/squashfs/inode.c
 @@ -1,7 +1,8 @@
  /*
   * Squashfs - a compressed read only filesystem for Linux
@@ -3446,9 +3445,8 @@ diff -burN linux-2.6.13.1.orig/fs/squashfs/inode.c linux-2.6.13.1/fs/squashfs/in
 +MODULE_DESCRIPTION("squashfs 3.3, a compressed read-only filesystem");
  MODULE_AUTHOR("Phillip Lougher <phillip@lougher.demon.co.uk>");
  MODULE_LICENSE("GPL");
-diff -burN linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.c linux-2.6.13.1/fs/squashfs/LzmaDecode.c
---- linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/squashfs/LzmaDecode.c	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.c
++++ linux-2.6.13.1/fs/squashfs/LzmaDecode.c
 @@ -0,0 +1,588 @@
 +/*
 +  LzmaDecode.c
@@ -4038,14 +4036,12 @@ diff -burN linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.c linux-2.6.13.1/fs/squash
 +  *outSizeProcessed = nowPos;
 +  return LZMA_RESULT_OK;
 +}
-diff -burN linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.h linux-2.6.13.1/fs/squashfs/LzmaDecode.h
---- linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/squashfs/LzmaDecode.h	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.h
++++ linux-2.6.13.1/fs/squashfs/LzmaDecode.h
 @@ -0,0 +1 @@
 +#include <linux/LzmaDecode.h>
-diff -burN linux-2.6.13.1.orig/fs/squashfs/LzmaStateDecode.h linux-2.6.13.1/fs/squashfs/LzmaStateDecode.h
---- linux-2.6.13.1.orig/fs/squashfs/LzmaStateDecode.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/squashfs/LzmaStateDecode.h	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/fs/squashfs/LzmaStateDecode.h
++++ linux-2.6.13.1/fs/squashfs/LzmaStateDecode.h
 @@ -0,0 +1,115 @@
 +/* 
 +  LzmaStateDecode.h
@@ -4162,9 +4158,8 @@ diff -burN linux-2.6.13.1.orig/fs/squashfs/LzmaStateDecode.h linux-2.6.13.1/fs/s
 +    int finishDecoding);
 +
 +#endif
-diff -burN linux-2.6.13.1.orig/fs/squashfs/Makefile linux-2.6.13.1/fs/squashfs/Makefile
---- linux-2.6.13.1.orig/fs/squashfs/Makefile	2006-02-23 15:45:51.000000000 +0100
-+++ linux-2.6.13.1/fs/squashfs/Makefile	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/fs/squashfs/Makefile
++++ linux-2.6.13.1/fs/squashfs/Makefile
 @@ -2,6 +2,10 @@
  # Makefile for the linux squashfs routines.
  #
@@ -4177,9 +4172,8 @@ diff -burN linux-2.6.13.1.orig/fs/squashfs/Makefile linux-2.6.13.1/fs/squashfs/M
 +squashfs-y += inode.o
 +squashfs-y += squashfs2_0.o
 +squashfs-y += LzmaDecode.o 
-diff -burN linux-2.6.13.1.orig/fs/squashfs/squashfs2_0.c linux-2.6.13.1/fs/squashfs/squashfs2_0.c
---- linux-2.6.13.1.orig/fs/squashfs/squashfs2_0.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/squashfs/squashfs2_0.c	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/fs/squashfs/squashfs2_0.c
++++ linux-2.6.13.1/fs/squashfs/squashfs2_0.c
 @@ -0,0 +1,743 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -4924,9 +4918,8 @@ diff -burN linux-2.6.13.1.orig/fs/squashfs/squashfs2_0.c linux-2.6.13.1/fs/squas
 +
 +	return 1;
 +}
-diff -burN linux-2.6.13.1.orig/fs/squashfs/squashfs.h linux-2.6.13.1/fs/squashfs/squashfs.h
---- linux-2.6.13.1.orig/fs/squashfs/squashfs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.13.1/fs/squashfs/squashfs.h	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/fs/squashfs/squashfs.h
++++ linux-2.6.13.1/fs/squashfs/squashfs.h
 @@ -0,0 +1,87 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -5015,9 +5008,8 @@ diff -burN linux-2.6.13.1.orig/fs/squashfs/squashfs.h linux-2.6.13.1/fs/squashfs
 +	return 0;
 +}
 +#endif
-diff -burN linux-2.6.13.1.orig/include/linux/LzmaDecode.h linux-2.6.13.1/include/linux/LzmaDecode.h
---- linux-2.6.13.1.orig/include/linux/LzmaDecode.h	2006-02-23 15:45:51.000000000 +0100
-+++ linux-2.6.13.1/include/linux/LzmaDecode.h	2008-02-19 00:47:56.000000000 +0100
+--- linux-2.6.13.1.orig/include/linux/LzmaDecode.h
++++ linux-2.6.13.1/include/linux/LzmaDecode.h
 @@ -22,7 +22,7 @@
  #ifndef __LZMADECODE_H
  #define __LZMADECODE_H
@@ -5027,9 +5019,8 @@ diff -burN linux-2.6.13.1.orig/include/linux/LzmaDecode.h linux-2.6.13.1/include
  /* Use callback for input data */
  
  /* #define _LZMA_OUT_READ */
-diff -burN linux-2.6.13.1.orig/include/linux/squashfs_fs.h linux-2.6.13.1/include/linux/squashfs_fs.h
---- linux-2.6.13.1.orig/include/linux/squashfs_fs.h	2006-02-23 15:45:51.000000000 +0100
-+++ linux-2.6.13.1/include/linux/squashfs_fs.h	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/include/linux/squashfs_fs.h
++++ linux-2.6.13.1/include/linux/squashfs_fs.h
 @@ -1,9 +1,11 @@
  #ifndef SQUASHFS_FS
  #define SQUASHFS_FS
@@ -6136,8 +6127,8 @@ diff -burN linux-2.6.13.1.orig/include/linux/squashfs_fs.h linux-2.6.13.1/includ
 +
  #endif
  #endif
---- linux-2.6.13.1/include/linux/squashfs_fs_i.h	2005-09-14 16:46:50.000000000 +0200
-+++ linux-2.6.13.1/include/linux/squashfs_fs_i.h	2007-11-08 00:08:34.000000000 +0100
+--- linux-2.6.13.1/include/linux/squashfs_fs_i.h
++++ linux-2.6.13.1/include/linux/squashfs_fs_i.h
 @@ -3,7 +3,8 @@
  /*
   * Squashfs
@@ -6178,9 +6169,8 @@ diff -burN linux-2.6.13.1.orig/include/linux/squashfs_fs.h linux-2.6.13.1/includ
 -	} squashfs_inode_info;
 +};
  #endif
-diff -burN linux-2.6.13.1.orig/include/linux/squashfs_fs_sb.h linux-2.6.13.1/include/linux/squashfs_fs_sb.h
---- linux-2.6.13.1.orig/include/linux/squashfs_fs_sb.h	2005-09-14 16:46:50.000000000 +0200
-+++ linux-2.6.13.1/include/linux/squashfs_fs_sb.h	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/include/linux/squashfs_fs_sb.h
++++ linux-2.6.13.1/include/linux/squashfs_fs_sb.h
 @@ -3,7 +3,8 @@
  /*
   * Squashfs
@@ -6268,9 +6258,8 @@ diff -burN linux-2.6.13.1.orig/include/linux/squashfs_fs_sb.h linux-2.6.13.1/inc
 +	CLzmaDecoderState	lzma_decoder_state;
 +};
  #endif
-diff -burN linux-2.6.13.1.orig/init/do_mounts_rd.c linux-2.6.13.1/init/do_mounts_rd.c
---- linux-2.6.13.1.orig/init/do_mounts_rd.c	2005-09-14 16:46:50.000000000 +0200
-+++ linux-2.6.13.1/init/do_mounts_rd.c	2008-02-19 00:47:41.000000000 +0100
+--- linux-2.6.13.1.orig/init/do_mounts_rd.c
++++ linux-2.6.13.1/init/do_mounts_rd.c
 @@ -110,6 +110,9 @@
  		printk(KERN_NOTICE
  		       "RAMDISK: squashfs filesystem found at block %d\n",

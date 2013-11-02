@@ -1,5 +1,5 @@
---- linux-2.6.32/drivers/usb/serial/ftdi_sio_ids.h	2013-02-11 17:39:19.000000000 +0100
-+++ linux-2.6.32/drivers/usb/serial/ftdi_sio_ids.h	2013-10-31 12:17:15.610772525 +0100
+--- linux-2.6.32/drivers/usb/serial/ftdi_sio_ids.h
++++ linux-2.6.32/drivers/usb/serial/ftdi_sio_ids.h
 @@ -478,6 +478,19 @@
  #define FTDI_XF_640_PID 0xFC0E	/* 640: Two line Display */
  #define FTDI_XF_642_PID 0xFC0F	/* 642: Two line Display */
@@ -20,8 +20,8 @@
  /*
   * Video Networks Limited / Homechoice in the UK use an ftdi-based device
   * for their 1Mb broadband internet service.  The following PID is exhibited
---- linux-2.6.32/drivers/usb/serial/ftdi_sio.c	2013-02-11 17:39:19.000000000 +0100
-+++ linux-2.6.32/drivers/usb/serial/ftdi_sio.c	2013-10-31 12:17:17.140771687 +0100
+--- linux-2.6.32/drivers/usb/serial/ftdi_sio.c
++++ linux-2.6.32/drivers/usb/serial/ftdi_sio.c
 @@ -846,6 +846,14 @@
  		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
  	{ USB_DEVICE(ST_VID, ST_STMCLT1030_PID),

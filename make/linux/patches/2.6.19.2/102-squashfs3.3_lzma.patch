@@ -1,6 +1,5 @@
-diff -burN linux-2.6.19.2.old/fs/squashfs/inode.c linux-2.6.19.2/fs/squashfs/inode.c
---- linux-2.6.19.2.old/fs/squashfs/inode.c	2007-05-23 12:18:09.000000000 +0200
-+++ linux-2.6.19.2/fs/squashfs/inode.c	2008-08-23 08:44:36.000000000 +0200
+--- linux-2.6.19.2.old/fs/squashfs/inode.c
++++ linux-2.6.19.2/fs/squashfs/inode.c
 @@ -2,7 +2,7 @@
   * Squashfs - a compressed read only filesystem for Linux
   *
@@ -2778,9 +2777,8 @@ diff -burN linux-2.6.19.2.old/fs/squashfs/inode.c linux-2.6.19.2/fs/squashfs/ino
 +MODULE_DESCRIPTION("squashfs 3.3, a compressed read-only filesystem");
 +MODULE_AUTHOR("Phillip Lougher <phillip@lougher.demon.co.uk>");
  MODULE_LICENSE("GPL");
-diff -burN linux-2.6.19.2.old/fs/squashfs/LzmaDecode.h linux-2.6.19.2/fs/squashfs/LzmaDecode.h
---- linux-2.6.19.2.old/fs/squashfs/LzmaDecode.h	2007-01-11 14:56:14.000000000 +0100
-+++ linux-2.6.19.2/fs/squashfs/LzmaDecode.h	2008-08-14 20:40:20.000000000 +0200
+--- linux-2.6.19.2.old/fs/squashfs/LzmaDecode.h
++++ linux-2.6.19.2/fs/squashfs/LzmaDecode.h
 @@ -1,131 +1 @@
 -/* 
 -  LzmaDecode.h
@@ -2914,9 +2912,8 @@ diff -burN linux-2.6.19.2.old/fs/squashfs/LzmaDecode.h linux-2.6.19.2/fs/squashf
 -
 -#endif
 +#include <linux/LzmaDecode.h>
-diff -burN linux-2.6.19.2.old/fs/squashfs/squashfs2_0.c linux-2.6.19.2/fs/squashfs/squashfs2_0.c
---- linux-2.6.19.2.old/fs/squashfs/squashfs2_0.c	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2/fs/squashfs/squashfs2_0.c	2008-08-23 05:56:46.000000000 +0200
+--- linux-2.6.19.2.old/fs/squashfs/squashfs2_0.c
++++ linux-2.6.19.2/fs/squashfs/squashfs2_0.c
 @@ -2,7 +2,7 @@
   * Squashfs - a compressed read only filesystem for Linux
   *
@@ -2992,9 +2989,8 @@ diff -burN linux-2.6.19.2.old/fs/squashfs/squashfs2_0.c linux-2.6.19.2/fs/squash
  
  			TRACE("File inode %x:%x, start_block %x, "
  					"block_list_start %llx, offset %x\n",
-diff -burN linux-2.6.19.2.old/fs/squashfs/squashfs.h linux-2.6.19.2/fs/squashfs/squashfs.h
---- linux-2.6.19.2.old/fs/squashfs/squashfs.h	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2/fs/squashfs/squashfs.h	2008-08-23 05:56:46.000000000 +0200
+--- linux-2.6.19.2.old/fs/squashfs/squashfs.h
++++ linux-2.6.19.2/fs/squashfs/squashfs.h
 @@ -50,7 +50,7 @@
  extern unsigned int squashfs_read_data(struct super_block *s, char *buffer,
  				long long index, unsigned int length,
@@ -3017,9 +3013,8 @@ diff -burN linux-2.6.19.2.old/fs/squashfs/squashfs.h linux-2.6.19.2/fs/squashfs/
  extern struct inode_operations squashfs_dir_inode_ops;
  #else
  #define SQSH_EXTERN static
-diff -burN linux-2.6.19.2.old/include/linux/LzmaDecode.h linux-2.6.19.2/include/linux/LzmaDecode.h
---- linux-2.6.19.2.old/include/linux/LzmaDecode.h	2007-01-11 14:56:14.000000000 +0100
-+++ linux-2.6.19.2/include/linux/LzmaDecode.h	2008-08-14 20:40:20.000000000 +0200
+--- linux-2.6.19.2.old/include/linux/LzmaDecode.h
++++ linux-2.6.19.2/include/linux/LzmaDecode.h
 @@ -22,7 +22,7 @@
  #ifndef __LZMADECODE_H
  #define __LZMADECODE_H
@@ -3029,9 +3024,8 @@ diff -burN linux-2.6.19.2.old/include/linux/LzmaDecode.h linux-2.6.19.2/include/
  /* Use callback for input data */
  
  /* #define _LZMA_OUT_READ */
-diff -burN linux-2.6.19.2.old/include/linux/squashfs_fs.h linux-2.6.19.2/include/linux/squashfs_fs.h
---- linux-2.6.19.2.old/include/linux/squashfs_fs.h	2007-05-22 12:47:19.000000000 +0200
-+++ linux-2.6.19.2/include/linux/squashfs_fs.h	2008-08-23 05:56:46.000000000 +0200
+--- linux-2.6.19.2.old/include/linux/squashfs_fs.h
++++ linux-2.6.19.2/include/linux/squashfs_fs.h
 @@ -24,6 +24,8 @@
   * squashfs_fs.h
   */
@@ -3081,9 +3075,8 @@ diff -burN linux-2.6.19.2.old/include/linux/squashfs_fs.h linux-2.6.19.2/include
  
  struct squashfs_dir_index {
  	unsigned int		index;
-diff -burN linux-2.6.19.2.old/include/linux/squashfs_fs_sb.h linux-2.6.19.2/include/linux/squashfs_fs_sb.h
---- linux-2.6.19.2.old/include/linux/squashfs_fs_sb.h	2007-03-26 12:56:22.000000000 +0200
-+++ linux-2.6.19.2/include/linux/squashfs_fs_sb.h	2008-08-23 07:18:37.000000000 +0200
+--- linux-2.6.19.2.old/include/linux/squashfs_fs_sb.h
++++ linux-2.6.19.2/include/linux/squashfs_fs_sb.h
 @@ -4,7 +4,7 @@
   * Squashfs
   *

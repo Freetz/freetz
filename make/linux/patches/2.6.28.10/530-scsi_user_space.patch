@@ -13,8 +13,6 @@ Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
  include/scsi/scsi_cmnd.h |   15 +++++++++++++++
  3 files changed, 18 insertions(+), 17 deletions(-)
 
-diff --git linux-2.6.28/block/cmd-filter.c linux-2.6.28/block/cmd-filter.c
-index 504b275..572bbc2 100644
 --- linux-2.6.28/block/cmd-filter.c
 +++ linux-2.6.28/block/cmd-filter.c
 @@ -22,6 +22,7 @@
@@ -25,8 +23,6 @@ index 504b275..572bbc2 100644
  
  #include <scsi/scsi.h>
  #include <linux/cdrom.h>
-diff --git linux-2.6.28/include/scsi/scsi.h linux-2.6.28/include/scsi/scsi.h
-index 80d7f60..084478e 100644
 --- linux-2.6.28/include/scsi/scsi.h
 +++ linux-2.6.28/include/scsi/scsi.h
 @@ -9,7 +9,6 @@
@@ -60,8 +56,6 @@ index 80d7f60..084478e 100644
  #define sense_class(sense)  (((sense) >> 4) & 0x7)
  #define sense_error(sense)  ((sense) & 0xf)
  #define sense_valid(sense)  ((sense) & 0x80);
-diff --git linux-2.6.28/include/scsi/scsi_cmnd.h linux-2.6.28/include/scsi/scsi_cmnd.h
-index 855bf95..43b50d3 100644
 --- linux-2.6.28/include/scsi/scsi_cmnd.h
 +++ linux-2.6.28/include/scsi/scsi_cmnd.h
 @@ -291,4 +291,19 @@

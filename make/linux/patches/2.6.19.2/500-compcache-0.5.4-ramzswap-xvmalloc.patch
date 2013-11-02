@@ -1,6 +1,5 @@
-diff -uaNr a/block/Kconfig linux-2.6.19.2/block/Kconfig
---- linux-2.6.19.2/block/Kconfig	2010-04-16 18:55:25.000000000 +0200
-+++ linux-2.6.19.2/block/Kconfig	2010-04-16 18:50:06.000000000 +0200
+--- linux-2.6.19.2/block/Kconfig
++++ linux-2.6.19.2/block/Kconfig
 @@ -54,3 +54,14 @@
  endif
  
@@ -16,9 +15,8 @@ diff -uaNr a/block/Kconfig linux-2.6.19.2/block/Kconfig
 +	depends on XVMALLOC && LZO_COMPRESS && LZO_DECOMPRESS
 +	default m
 +
-diff -uaNr a/block/Makefile linux-2.6.19.2/block/Makefile
---- linux-2.6.19.2/block/Makefile	2010-04-16 18:55:25.000000000 +0200
-+++ linux-2.6.19.2/block/Makefile	2010-04-16 18:52:11.000000000 +0200
+--- linux-2.6.19.2/block/Makefile
++++ linux-2.6.19.2/block/Makefile
 @@ -10,3 +10,7 @@
  obj-$(CONFIG_IOSCHED_CFQ)	+= cfq-iosched.o
  
@@ -27,9 +25,8 @@ diff -uaNr a/block/Makefile linux-2.6.19.2/block/Makefile
 +obj-$(CONFIG_XVMALLOC)	+= ramzswap/
 +obj-$(CONFIG_RAMZSWAP)	+= ramzswap/
 +
-diff -uaNr a/block/ramzswap/compat.h linux-2.6.19.2/block/ramzswap/compat.h
---- linux-2.6.19.2/block/ramzswap/compat.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/block/ramzswap/compat.h	2010-04-16 18:53:01.000000000 +0200
+--- linux-2.6.19.2/block/ramzswap/compat.h
++++ linux-2.6.19.2/block/ramzswap/compat.h
 @@ -0,0 +1,36 @@
 +#ifndef _RAMZSWAP_COMPAT_H_
 +#define _RAMZSWAP_COMPAT_H_
@@ -67,9 +64,8 @@ diff -uaNr a/block/ramzswap/compat.h linux-2.6.19.2/block/ramzswap/compat.h
 +#define BIT(x)  (1UL << (x))
 +
 +#endif
-diff -uaNr a/block/ramzswap/Makefile linux-2.6.19.2/block/ramzswap/Makefile
---- linux-2.6.19.2/block/ramzswap/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/block/ramzswap/Makefile	2010-04-16 18:51:59.000000000 +0200
+--- linux-2.6.19.2/block/ramzswap/Makefile
++++ linux-2.6.19.2/block/ramzswap/Makefile
 @@ -0,0 +1,8 @@
 +
 +EXTRA_CFLAGS	:=	-DCONFIG_BLK_DEV_RAMZSWAP_STATS	\
@@ -79,9 +75,8 @@ diff -uaNr a/block/ramzswap/Makefile linux-2.6.19.2/block/ramzswap/Makefile
 +obj-m	+= xvmalloc.o
 +obj-m	+= ramzswap.o
 +
-diff -uaNr a/block/ramzswap/ramzswap.c linux-2.6.19.2/block/ramzswap/ramzswap.c
---- linux-2.6.19.2/block/ramzswap/ramzswap.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/block/ramzswap/ramzswap.c	2009-10-17 08:50:06.000000000 +0200
+--- linux-2.6.19.2/block/ramzswap/ramzswap.c
++++ linux-2.6.19.2/block/ramzswap/ramzswap.c
 @@ -0,0 +1,1135 @@
 +/*
 + * Compressed RAM based swap device
@@ -1218,9 +1213,8 @@ diff -uaNr a/block/ramzswap/ramzswap.c linux-2.6.19.2/block/ramzswap/ramzswap.c
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
 +MODULE_DESCRIPTION("Compressed RAM Based Swap Device");
-diff -uaNr a/block/ramzswap/ramzswap.h linux-2.6.19.2/block/ramzswap/ramzswap.h
---- linux-2.6.19.2/block/ramzswap/ramzswap.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/block/ramzswap/ramzswap.h	2009-10-17 08:50:06.000000000 +0200
+--- linux-2.6.19.2/block/ramzswap/ramzswap.h
++++ linux-2.6.19.2/block/ramzswap/ramzswap.h
 @@ -0,0 +1,160 @@
 +/*
 + * Compressed RAM based swap device
@@ -1382,9 +1376,8 @@ diff -uaNr a/block/ramzswap/ramzswap.h linux-2.6.19.2/block/ramzswap/ramzswap.h
 +/*-- */
 +
 +#endif
-diff -uaNr a/block/ramzswap/xvmalloc.c linux-2.6.19.2/block/ramzswap/xvmalloc.c
---- linux-2.6.19.2/block/ramzswap/xvmalloc.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/block/ramzswap/xvmalloc.c	2010-04-16 18:52:53.000000000 +0200
+--- linux-2.6.19.2/block/ramzswap/xvmalloc.c
++++ linux-2.6.19.2/block/ramzswap/xvmalloc.c
 @@ -0,0 +1,557 @@
 +/*
 + * xvmalloc memory allocator
@@ -1943,9 +1936,8 @@ diff -uaNr a/block/ramzswap/xvmalloc.c linux-2.6.19.2/block/ramzswap/xvmalloc.c
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
 +MODULE_DESCRIPTION("xvmalloc memory allocator");
-diff -uaNr a/block/ramzswap/xvmalloc.h linux-2.6.19.2/block/ramzswap/xvmalloc.h
---- linux-2.6.19.2/block/ramzswap/xvmalloc.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/block/ramzswap/xvmalloc.h	2010-04-16 18:32:10.000000000 +0200
+--- linux-2.6.19.2/block/ramzswap/xvmalloc.h
++++ linux-2.6.19.2/block/ramzswap/xvmalloc.h
 @@ -0,0 +1,30 @@
 +/*
 + * xvmalloc memory allocator
@@ -1977,9 +1969,8 @@ diff -uaNr a/block/ramzswap/xvmalloc.h linux-2.6.19.2/block/ramzswap/xvmalloc.h
 +u64 xv_get_total_size_bytes(struct xv_pool *pool);
 +
 +#endif
-diff -uaNr a/block/ramzswap/xvmalloc_int.h linux-2.6.19.2/block/ramzswap/xvmalloc_int.h
---- linux-2.6.19.2/block/ramzswap/xvmalloc_int.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/block/ramzswap/xvmalloc_int.h	2010-04-16 18:32:10.000000000 +0200
+--- linux-2.6.19.2/block/ramzswap/xvmalloc_int.h
++++ linux-2.6.19.2/block/ramzswap/xvmalloc_int.h
 @@ -0,0 +1,86 @@
 +/*
 + * xvmalloc memory allocator

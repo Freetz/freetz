@@ -1,5 +1,5 @@
---- linux-2.6.19.2/fs/Kconfig.orig	2007-02-12 13:59:15.000000000 +0100
-+++ linux-2.6.19.2/fs/Kconfig	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/Kconfig
++++ linux-2.6.19.2/fs/Kconfig
 @@ -468,6 +468,9 @@
  	  This option will enlarge your kernel, but it allows debugging of
  	  ocfs2 filesystem issues.
@@ -10,8 +10,8 @@
  config MINIX_FS
  	tristate "Minix fs support"
  	help
---- linux-2.6.19.2/fs/Makefile.orig	2007-01-11 08:38:19.000000000 +0100
-+++ linux-2.6.19.2/fs/Makefile	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/Makefile
++++ linux-2.6.19.2/fs/Makefile
 @@ -71,6 +71,7 @@
  obj-$(CONFIG_RAMFS)		+= ramfs/
  obj-$(CONFIG_HUGETLBFS)		+= hugetlbfs/
@@ -20,8 +20,8 @@
  obj-$(CONFIG_MINIX_FS)		+= minix/
  obj-$(CONFIG_FAT_FS)		+= fat/
  obj-$(CONFIG_MSDOS_FS)		+= msdos/
---- linux-2.6.19.2/fs/mini_fo/aux.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/aux.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/aux.c
++++ linux-2.6.19.2/fs/mini_fo/aux.c
 @@ -0,0 +1,580 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -603,8 +603,8 @@
 +
 +#endif /* unused */
 +
---- linux-2.6.19.2/fs/mini_fo/ChangeLog.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/ChangeLog	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/ChangeLog
++++ linux-2.6.19.2/fs/mini_fo/ChangeLog
 @@ -0,0 +1,281 @@
 +2006-01-24  Markus Klotzbuecher  <mk@mary.denx.de>
 +
@@ -887,8 +887,8 @@
 +	* Implementation of mini_fo_mknod and mini_fo_rename, support
 +          for device files.
 +	
---- linux-2.6.19.2/fs/mini_fo/dentry.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/dentry.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/dentry.c
++++ linux-2.6.19.2/fs/mini_fo/dentry.c
 @@ -0,0 +1,244 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -1134,8 +1134,8 @@
 +	d_delete:		mini_fo_d_delete,
 +	d_iput:		mini_fo_d_iput,
 +};
---- linux-2.6.19.2/fs/mini_fo/file.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/file.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/file.c
++++ linux-2.6.19.2/fs/mini_fo/file.c
 @@ -0,0 +1,713 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -1850,8 +1850,8 @@
 +		/* not implemented: sendpage */
 +		/* not implemented: get_unmapped_area */
 +	};
---- linux-2.6.19.2/fs/mini_fo/fist.h.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/fist.h	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/fist.h
++++ linux-2.6.19.2/fs/mini_fo/fist.h
 @@ -0,0 +1,252 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -2105,8 +2105,8 @@
 +# define FIST_IOCTL_SET_DEBUG_VALUE	_IOW(0x15, 2, int)
 +
 +#endif /* not __FIST_H_ */
---- linux-2.6.19.2/fs/mini_fo/inode.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/inode.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/inode.c
++++ linux-2.6.19.2/fs/mini_fo/inode.c
 @@ -0,0 +1,1564 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -3672,8 +3672,8 @@
 +		removexattr:    mini_fo_removexattr
 +# endif /* XATTR && LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,20) */
 +	};
---- linux-2.6.19.2/fs/mini_fo/main.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/main.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/main.c
++++ linux-2.6.19.2/fs/mini_fo/main.c
 @@ -0,0 +1,423 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -4098,8 +4098,8 @@
 +
 +module_init(init_mini_fo_fs)
 +module_exit(exit_mini_fo_fs)
---- linux-2.6.19.2/fs/mini_fo/Makefile.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/Makefile	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/Makefile
++++ linux-2.6.19.2/fs/mini_fo/Makefile
 @@ -0,0 +1,17 @@
 +#
 +# Makefile for mini_fo 2.4 and 2.6 Linux kernels
@@ -4118,8 +4118,8 @@
 +# dependencies
 +${mini_fo-objs}: mini_fo.h fist.h
 +
---- linux-2.6.19.2/fs/mini_fo/meta.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/meta.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/meta.c
++++ linux-2.6.19.2/fs/mini_fo/meta.c
 @@ -0,0 +1,1000 @@
 +/*
 + * Copyright (C) 2004, 2005 Markus Klotzbuecher <mk@creamnet.de>
@@ -5121,8 +5121,8 @@
 +	return 0;
 +}
 +
---- linux-2.6.19.2/fs/mini_fo/mini_fo.h.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/mini_fo.h	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/mini_fo.h
++++ linux-2.6.19.2/fs/mini_fo/mini_fo.h
 @@ -0,0 +1,510 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -5634,8 +5634,8 @@
 +/* ioctls */
 +
 +#endif	/* not __MINI_FO_H_ */
---- linux-2.6.19.2/fs/mini_fo/mini_fo-merge.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/mini_fo-merge	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/mini_fo-merge
++++ linux-2.6.19.2/fs/mini_fo/mini_fo-merge
 @@ -0,0 +1,180 @@
 +#!/bin/bash
 +#
@@ -5817,8 +5817,8 @@
 +#rm $TMP/$SKIP_DEL_LIST 
 +
 +echo "Done!"
---- linux-2.6.19.2/fs/mini_fo/mini_fo-overlay.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/mini_fo-overlay	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/mini_fo-overlay
++++ linux-2.6.19.2/fs/mini_fo/mini_fo-overlay
 @@ -0,0 +1,130 @@
 +#!/bin/bash
 +#
@@ -5950,8 +5950,8 @@
 +if [ $? -ne 0 ]; then
 +    echo "Error, mounting failed, maybe no permisson to mount?"
 +fi
---- linux-2.6.19.2/fs/mini_fo/mmap.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/mmap.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/mmap.c
++++ linux-2.6.19.2/fs/mini_fo/mmap.c
 @@ -0,0 +1,637 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
@@ -6590,8 +6590,8 @@
 +	print_exit_status(err);
 +	return err;
 +}
---- linux-2.6.19.2/fs/mini_fo/README.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/README	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/README
++++ linux-2.6.19.2/fs/mini_fo/README
 @@ -0,0 +1,163 @@
 +README for the mini_fo overlay file system
 +=========================================
@@ -6756,8 +6756,8 @@
 +2 of the License, or (at your option) any later version.
 +
 +
---- linux-2.6.19.2/fs/mini_fo/RELEASE_NOTES.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/RELEASE_NOTES	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/RELEASE_NOTES
++++ linux-2.6.19.2/fs/mini_fo/RELEASE_NOTES
 @@ -0,0 +1,111 @@
 +Release:	mini_fo-0.6.1 (v0-6-1)
 +Date:		21.09.2005
@@ -6870,8 +6870,8 @@
 +original state. I hope to fix this someday. Please note that this does
 +not effect the special hard links '.' and '..', that are handled
 +seperately by the lower fs.
---- linux-2.6.19.2/fs/mini_fo/state.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/state.c	2007-12-11 00:42:18.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/state.c
++++ linux-2.6.19.2/fs/mini_fo/state.c
 @@ -0,0 +1,620 @@
 +/*
 + * Copyright (C) 2005 Markus Klotzbuecher <mk@creamnet.de>
@@ -7493,8 +7493,8 @@
 +	return err;
 +}
 +
---- linux-2.6.19.2/fs/mini_fo/super.c.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.19.2/fs/mini_fo/super.c	2007-12-11 00:42:19.000000000 +0100
+--- linux-2.6.19.2/fs/mini_fo/super.c
++++ linux-2.6.19.2/fs/mini_fo/super.c
 @@ -0,0 +1,281 @@
 +/*
 + * Copyright (c) 1997-2003 Erez Zadok
