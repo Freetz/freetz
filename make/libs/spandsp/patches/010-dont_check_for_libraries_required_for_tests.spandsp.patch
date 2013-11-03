@@ -1,0 +1,38 @@
+--- configure
++++ configure
+@@ -27068,6 +27068,7 @@
+ 
+ fi
+ 
++if test "$enable_tests" = "yes"; then
+ # Determine XML2 include path
+ echo "$as_me:$LINENO: checking for libxml/xmlmemory.h" >&5
+ echo $ECHO_N "checking for libxml/xmlmemory.h... $ECHO_C" >&6
+@@ -28535,6 +28536,7 @@
+ fi
+ 
+ done
++fi
+ 
+ 
+ ac_ext=c
+@@ -30404,6 +30406,7 @@
+ 
+ 
+ # Checks for libraries.
++if test "$enable_tests" = "yes"; then
+ echo "$as_me:$LINENO: checking for xmlParseFile in -lxml2" >&5
+ echo $ECHO_N "checking for xmlParseFile in -lxml2... $ECHO_C" >&6
+ if test "${ac_cv_lib_xml2_xmlParseFile+set}" = set; then
+@@ -30475,9 +30478,10 @@
+ _ACEOF
+  SIMLIBS="$SIMLIBS -lxml2"
+ fi
++fi
+ 
+ 
+-if test -n "$enable_tests" ; then
++if test "$enable_tests" = "yes" ; then
+     ac_ext=c
+ ac_cpp='$CPP $CPPFLAGS'
+ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
