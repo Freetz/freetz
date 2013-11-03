@@ -22,6 +22,7 @@ def menuselect2kconfig(menuselectFilename):
 		"ILBC": [],
 		"IXJUSER": [],
 		"PJPROJECT": ["FREETZ_LIB_libpj", "FREETZ_LIB_libpjlib_util", "FREETZ_LIB_libpjnath"],
+		"SPANDSP": ["FREETZ_LIB_libspandsp"],
 		"SPEEX": ["FREETZ_LIB_libspeex"],
 		"SPEEXDSP": ["FREETZ_LIB_libspeexdsp"],
 		"SPEEX_PREPROCESS": ["FREETZ_LIB_libspeex"],

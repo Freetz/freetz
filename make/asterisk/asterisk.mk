@@ -29,6 +29,7 @@ $(PKG)_DEPENDS_ON += ncurses
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_DEPENDS_ON += pjproject2
 $(PKG)_DEPENDS_ON += popt
+$(PKG)_DEPENDS_ON += spandsp
 $(PKG)_DEPENDS_ON += speex
 $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_DEPENDS_ON += srtp
@@ -103,7 +104,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-resample=no
 $(PKG)_CONFIGURE_OPTIONS += --with-SDL_image=no
 $(PKG)_CONFIGURE_OPTIONS += --with-sdl=no
 $(PKG)_CONFIGURE_OPTIONS += --with-sounds-cache=no
-$(PKG)_CONFIGURE_OPTIONS += --with-spandsp=no
+$(PKG)_CONFIGURE_OPTIONS += --with-spandsp="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-speexdsp="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-speex="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-sqlite3="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"

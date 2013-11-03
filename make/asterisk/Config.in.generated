@@ -1277,7 +1277,8 @@ config FREETZ_PACKAGE_ASTERISK_WITH_RESAMPLE
 
 config FREETZ_PACKAGE_ASTERISK_WITH_SPANDSP
 	bool
-	default n
+	select FREETZ_LIB_libspandsp
+	default y
 
 config FREETZ_PACKAGE_ASTERISK_WITH_SPEEX
 	bool
