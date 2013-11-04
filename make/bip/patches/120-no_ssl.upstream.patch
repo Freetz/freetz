@@ -1,0 +1,51 @@
+commit 8d3539a7d0eed8f9074eb5ec42c9f9d39d6b4af4
+Author: Pierre-Louis Bonicoli <pierre-louis.bonicoli@gmx.fr>
+Date:   Mon Nov 4 08:49:06 2013 +0100
+
+    Fix --without-openssl build
+    
+    Reported & fixed by Whoopie, thanks to him !
+    Closes #313
+
+diff --git a/src/bip.c b/src/bip.c
+index 42cba12..37e72d9 100644
+--- src/bip.c
++++ src/bip.c
+@@ -2255,8 +2255,10 @@ int adm_bip(bip_t *bip, struct link_client *ic, struct line *line, int privmsg)
+ 			adm_bip_delconn(bip, ic,
+ 					irc_line_elem(line, privmsg + 2));
+ 		}
++#ifdef HAVE_LIBSSL
+ 	} else if (strcasecmp(irc_line_elem(line, privmsg + 1), "TRUST") == 0) {
+ 		return adm_trust(ic, line);
++#endif
+ 	} else {
+ 		bip_notify(ic, "Unknown command.");
+ 	}
+diff --git a/src/connection.c b/src/connection.c
+index 4ea4ac7..da23996 100644
+--- src/connection.c
++++ src/connection.c
+@@ -24,13 +24,13 @@ static int ssl_cx_idx;
+ extern FILE *conf_global_log_file;
+ static BIO *errbio = NULL;
+ extern char *conf_ssl_certfile;
+-static int cn_want_write(connection_t *cn);
+ static int SSLize(connection_t *cn, int *nc);
+ static SSL_CTX *SSL_init_context(void);
+ /* SSH like trust management */
+ int link_add_untrusted(void *ls, X509 *cert);
+ #endif
+ 
++static int cn_want_write(connection_t *cn);
+ static int connection_timedout(connection_t *cn);
+ static int socket_set_nonblock(int s);
+ static void connection_connected(connection_t *c);
+@@ -1538,6 +1538,7 @@ connection_t *connection_new(char *dsthostname, int dstport, char *srchostname,
+ 	(void)ssl;
+ 	(void)ssl_check_mode;
+ 	(void)ssl_check_store;
++	(void)ssl_client_certfile;
+ #endif
+ 	/* TODO: allow litteral service name in the function interface */
+ 	if (snprintf(dstportbuf, 20, "%d", dstport) >= 20)
