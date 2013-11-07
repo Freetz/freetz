@@ -1,0 +1,226 @@
+--- linux-2.6.28/drivers/net/ppp_generic.c
++++ linux-2.6.28/drivers/net/ppp_generic.c
+@@ -49,10 +49,6 @@
+ #include <asm/atomic.h>
+ 
+ 
+-#if (defined(CONFIG_FUSIV_KERNEL_AP_2_AP) || defined(CONFIG_FUSIV_KERNEL_AP_2_AP_MODULE) ) && defined(CONFIG_ATM)
+-#include <atm/atmencap.h>
+-struct ppp_channel *getPPPChannel(struct net_device *net_dev);
+-#endif
+ 
+ #define PPP_VERSION	"2.4.2"
+ 
+@@ -1566,9 +1562,6 @@
+ 	struct sk_buff *ns;
+ 	int proto, len, npi;
+ 
+-#if (defined(CONFIG_FUSIV_KERNEL_AP_2_AP) || defined(CONFIG_FUSIV_KERNEL_AP_2_AP_MODULE) ) && defined(CONFIG_ATM)
+-	unsigned char encap;
+-#endif
+ 	/*
+ 	 * Decompress the frame, if compressed.
+ 	 * Note that some decompressors need to see uncompressed frames
+@@ -1641,12 +1634,6 @@
+ 	++ppp->dev->stats.rx_packets;
+ 	ppp->dev->stats.rx_bytes += skb->len - 2;
+ 
+-#if (defined(CONFIG_FUSIV_KERNEL_AP_2_AP) || defined(CONFIG_FUSIV_KERNEL_AP_2_AP_MODULE) ) && defined(CONFIG_ATM)
+-	encap = skb->encap;
+-
+-	if ((encap == ENCAPIDROUTEDLLCPPPOA) || (encap == ENCAPIDROUTEDVCPPPOA))
+-		proto = PPP_IP;
+-#endif
+ 
+ 	npi = proto_to_npindex(proto);
+ 	if (npi < 0) {
+@@ -1695,10 +1682,6 @@
+ 			kfree_skb(skb);
+ 		} else {
+ 
+-#if (defined(CONFIG_FUSIV_KERNEL_AP_2_AP) || defined(CONFIG_FUSIV_KERNEL_AP_2_AP_MODULE) ) && defined(CONFIG_ATM)
+-		if((encap != ENCAPIDROUTEDLLCPPPOA) &&
+-			(encap != ENCAPIDROUTEDVCPPPOA))
+-#endif
+ 			/* chop off protocol */
+ 			skb_pull_rcsum(skb, 2);
+ 			skb->dev = ppp->dev;
+@@ -2821,178 +2804,11 @@
+ }
+ 
+ 
+-#if CONFIG_ATM
+-#if defined(CONFIG_PPPOATM) || defined(CONFIG_PPPOATM_MODULE)
+-extern int isPPPModTypePPPoA(struct ppp_channel *);
+-#endif
+-#endif
+-
+-#if defined(CONFIG_PPPOE) || defined(CONFIG_PPPOE_MODULE)
+-extern int isPPPModTypePPPoE(struct ppp_channel *);
+-extern char *getPPPoEIfName(struct ppp_channel *);
+-extern int getPPPoESessIdAndAddr(struct ppp_channel *, unsigned char *);
+-#endif
+-
+-#if (defined(CONFIG_FUSIV_KERNEL_AP_2_AP) || defined(CONFIG_FUSIV_KERNEL_AP_2_AP_MODULE) ) && defined(CONFIG_ATM)
+-struct ppp_channel *getPPPChannel(struct net_device *net_dev)
+-{
+-    struct list_head  *list;
+-    struct ppp        *ppp;
+-    ppp = (struct ppp *) net_dev->priv;
+-    list = &ppp->channels;
+-
+-    if (!list_empty(list))
+-    {
+-        struct ppp_channel *pppchan;
+-        struct channel     *pch;
+-
+-        list = list->next;
+-
+-        pch = list_entry(list, struct channel, clist);
+-
+-        if (!pch)
+-            return NULL;
+-
+-        pppchan = pch->chan;
+-
+-        if (!pppchan)
+-            return NULL;
+-
+-        return pppchan;
+-     }
+-
+-     return NULL;
+-}
+-#endif
+-
+-char *getPhysicalIfName(char *pIfName)
+-{
+-    struct net_device *pDev;
+-    struct list_head  *list;
+-    struct ppp        *ppp;
+-
+-    if (!pIfName)
+-        return NULL;
+-
+-    pDev = dev_get_by_name(&init_net, pIfName);
+-
+-    if (!pDev)
+-        return NULL;
+-
+-    ppp = (struct ppp *) pDev->priv;
+-
+-    dev_put(pDev);
+-
+-    if (!ppp)
+-        return NULL;
+-
+-    list = &ppp->channels;
+-
+-    if (!list_empty(list))
+-    {
+-        struct ppp_channel *pppchan;
+-        struct channel     *pch;
+-
+-        list = list->next;
+-
+-        pch = list_entry(list, struct channel, clist);
+-
+-        if (!pch)
+-            return NULL;
+-
+-        pppchan = pch->chan;
+-
+-        if (!pppchan)
+-            return NULL;
+-
+-        if ((pppchan->ops) && (pppchan->ops->start_xmit))
+-        {
+-#if CONFIG_ATM
+-#if defined(CONFIG_PPPOATM) || defined(CONFIG_PPPOATM_MODULE)
+-            if (isPPPModTypePPPoA(pppchan))
+-                return "atm";
+-#endif
+-#endif
+-
+-#if defined(CONFIG_PPPOE) || defined(CONFIG_PPPOE_MODULE)
+-            if (isPPPModTypePPPoE(pppchan))
+-                return (getPPPoEIfName(pppchan));
+-#endif
+-        }
+-    }
+-
+-    printk("getPhysicalIfName: FAILED..\r\n");
+-
+-    return NULL;
+-}
+-
+-int getSessIdAndAddr(char *pIfName, unsigned char *addr)
+-{
+-    struct net_device *pDev;
+-    struct list_head  *list;
+-    struct ppp        *ppp;
+-
+-    if (!pIfName)
+-        return 0;
+-
+-    pDev = dev_get_by_name(&init_net, pIfName);
+-
+-    if (!pDev)
+-        return 0;
+-
+-    ppp = (struct ppp *) pDev->priv;
+-
+-    dev_put(pDev);
+-
+-    if (!ppp)
+-        return 0;
+-
+-    list = &ppp->channels;
+-
+-    if (!list_empty(list))
+-    {
+-        struct ppp_channel *pppchan;
+-        struct channel     *pch;
+-
+-        list = list->next;
+-
+-        pch = list_entry(list, struct channel, clist);
+-
+-        if (!pch)
+-            return 0;
+-
+-        pppchan = pch->chan;
+-
+-        if (!pppchan)
+-            return 0;
+-
+-        if ((pppchan->ops) && (pppchan->ops->start_xmit))
+-        {
+-#if defined(CONFIG_PPPOE) || defined(CONFIG_PPPOE_MODULE)
+-            if (isPPPModTypePPPoE(pppchan))
+-                return (getPPPoESessIdAndAddr(pppchan, addr));
+-#endif
+-        }
+-    }
+-
+-    printk("getSessIdAndAddr: FAILED..\r\n");
+-
+-    return 0;
+-}
+-
+-
+-
+-
+ /* Module/initialization stuff */
+ 
+ module_init(ppp_init);
+ module_exit(ppp_cleanup);
+-#if (defined(CONFIG_FUSIV_KERNEL_AP_2_AP) || defined(CONFIG_FUSIV_KERNEL_AP_2_AP_MODULE) ) && defined(CONFIG_ATM)
+-EXPORT_SYMBOL(getPPPChannel);
+-#endif
+ 
+-EXPORT_SYMBOL(getPhysicalIfName);
+-EXPORT_SYMBOL(getSessIdAndAddr);
+ EXPORT_SYMBOL(ppp_register_channel);
+ EXPORT_SYMBOL(ppp_unregister_channel);
+ EXPORT_SYMBOL(ppp_channel_index);
