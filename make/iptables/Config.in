@@ -945,6 +945,12 @@ config FREETZ_MODULE_xt_tcpmss
 		This option adds a `tcpmss' match, which allows you to examine the
 		MSS value of TCP SYN packets, which control the maximum packet size
 		for that connection.
+
+config FREETZ_MODULE_xt_time
+	bool "xt_time.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	default n
+
 endmenu
 
 menu "Select kernel modules (IPv6)"
