@@ -1,3 +1,5 @@
+[ "$FREETZ_AVM_HAS_ONLY_LUA" != "y" ] || return 0
+
 echo1 "applying webmenu patch"
 modsed \
   "/^\` ?>/{N;N;N;s/^\` ?>\n\(<.div>\n<.td>\n<td id=.Dataspalte.>\)/\` ?>\n<? include ..\/html\/menu2_freetz.html ?>\n\1/g}" \
