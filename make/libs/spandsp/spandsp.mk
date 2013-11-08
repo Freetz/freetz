@@ -8,7 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libspandsp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libspandsp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libspandsp.so.$($(PKG)_LIB_VERSION)
 
-$(PGK)_DEPENDS_ON += tiff
+$(PKG)_DEPENDS_ON += tiff
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
