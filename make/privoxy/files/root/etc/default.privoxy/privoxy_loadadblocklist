@@ -20,8 +20,7 @@ if [  "$HAVENET" -a "$MYPATH" ]; then
 	FILE=/tmp/${FILE}
 	rm -f ${FILE}
 
-	which wget-gnu >/dev/null && wget=wget-gnu || wget=wget
-	$wget --no-check-certificate -qO ${FILE} ${PRIVOXY_ADBLOCK_URL}
+	wget --no-check-certificate -qO ${FILE} ${PRIVOXY_ADBLOCK_URL}
 
 	if [ $(cat ${FILE} | wc -l) -gt 100 ]; then
 		echo -e "{ +block{${LIST}} }" > ${ACTION}

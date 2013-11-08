@@ -1,7 +1,1 @@
-if [ "$EXTERNAL_FREETZ_PACKAGE_WGET" == "y" ]; then
-	if [ "$FREETZ_BUSYBOX_WGET" == "y" ]; then
-		EXTERNAL_FILES+=" /usr/bin/wget-gnu"
-	else
-		EXTERNAL_FILES+=" /usr/bin/wget"
-	fi
-fi
+[ "$EXTERNAL_FREETZ_PACKAGE_WGET" == "y" ] && EXTERNAL_FILES+=" /usr/bin/wget"

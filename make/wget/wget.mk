@@ -4,7 +4,7 @@ $(PKG)_SOURCE_MD5:=316f6f59292c9098ad81fd54f658c579
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget$(if $(FREETZ_BUSYBOX_WGET),-gnu)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_z_compress)
 # add EXTRA_(C|LD)FLAGS
