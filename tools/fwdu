@@ -25,20 +25,24 @@ download() {
 	cd $DL_DIR
 	rm -rf ftp.avm.de 2>/dev/null
 
-	# betas/labors
-	wget -nv -m -A '*.zip' ftp://ftp.avm.de/fritz.box/beta/
-	(
-		cd ftp.avm.de/fritz.box/beta/
-		for i in *.zip; do
-			unzip -q -o -j $i
-		done
-		# remove all files with no beta|labor in name
-		find . -type f -regextype posix-egrep ! -iregex '.*(beta|labor).*[.]image' -exec rm -f {} '+' 2>/dev/null
-	)
+	# BETA/Labor/LabRC
+	if [ -n "$1" -a "$1" != "stable" ]; then
+		wget -nv -m -A '*.zip' ftp://ftp.avm.de/fritz.box/beta/
+		(
+			cd ftp.avm.de/fritz.box/beta/
+			for i in *.zip; do
+				unzip -q -o -j $i
+			done
+			# remove all files with no beta|labor in name
+			find . -type f -regextype posix-egrep ! -iregex '.*(beta|labor|labrc).*[.]image' -exec rm -f {} '+' 2>/dev/null
+		)
+	fi
 
-	# releases
-	wget -nv -m -A '*.image' ftp://ftp.avm.de/fritz.box/
-	find ftp.avm.de -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
+	# stable
+	if [ -z "$1" -o "$1" == "stable" ]; then
+		wget -nv -m -A '*.image' ftp://ftp.avm.de/fritz.box/
+		find ftp.avm.de -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
+	fi
 
 	for file in $(find ftp.avm.de -type f); do
 		mv -f $file $(echo $file|sed 's!firmware/!!g;s!ftp\.avm\.de/fritz.box/!!g;s!/!--!g')
@@ -124,6 +128,18 @@ while [ $# -gt 0 ]; do
 	case $1 in
 		download)
 			download=y
+			case $2 in
+				stable|labor|beta|all)
+					dl_arg="$2"
+					shift
+					;;
+				unpack|"")
+				;;
+				*)
+				echo "Unknwon argument: $2"
+				exit 1
+				;;
+			esac
 			;;
 		unpack)
 			unpack=y
@@ -136,7 +152,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$download" != "y" -a "$unpack" != "y" ]; then
-	echo "usage: ${0##*/} <download AND/OR unpack [image1 .. imageN]>"
+	echo "usage: ${0##*/} <download [stable|labor|all] AND/OR unpack [image1 .. imageN]>"
 	exit 1
 fi
 
@@ -150,13 +166,10 @@ if [ "$unpack" == "y" ]; then
 fi
 
 # main
-[ "$download" == "y" ] && download
+[ "$download" == "y" ] && download $dl_arg
 if [ "$unpack" == "y" ]; then
-	if [ -z "$image" ]; then
-		unpack
-	else
-		for imgfile in $image; do
-			image $imgfile
-		done
-	fi
+	[ -z "$image" ] && unpack
+	for imgfile in $image; do
+		image $imgfile
+	done
 fi
