@@ -66,10 +66,9 @@ start() {
 	fi
 }
 
-# unused?!?
-#stop_post() {
-#	[ "$TOR_DATADIRPERSISTENT" == "no" ] && rm -rf $TOR_DATADIRECTORY 2>/dev/null
-#}
+stop_post() {
+	[ "$TOR_DATADIRPERSISTENT" == "no" ] && rm -rf $TOR_DATADIRECTORY 2>/dev/null
+}
 
 #
 # $1:          name of the file downloaded GeoIP database to be saved to

@@ -11,11 +11,7 @@ _join() {
 echo "User tor"
 echo "Group tor"
 
-if [ ! -z "$TOR_DATADIRECTORY" ]; then
-    echo "DataDirectory $TOR_DATADIRECTORY"
-else
-    echo "DataDirectory /var/tmp/tor"
-fi
+[ -n "$TOR_DATADIRECTORY" ] && echo "DataDirectory $TOR_DATADIRECTORY" || echo "DataDirectory /var/tmp/tor"
 
 [ "$TOR_SOCKS_PORT" ] && echo "SocksPort $TOR_SOCKS_PORT"
 [ "$TOR_SOCKS_ADDRESS" ] && echo "SocksListenAddress $TOR_SOCKS_ADDRESS"
@@ -31,14 +27,10 @@ if [ "$TOR_SOCKS_POLICY_REJECT" != "no" ]; then
 	echo "SocksPolicy reject *"
 fi
 
-if [ ! -z "$TOR_ENTRY_NODES" ]; then
-	echo "EntryNodes $(_join ',' $(echo "$TOR_ENTRY_NODES" | grep -v "^#"))"
-fi
+[ -n "$TOR_ENTRY_NODES" ] && echo "EntryNodes $(_join ',' $(echo "$TOR_ENTRY_NODES" | grep -v "^#"))"
 [ "$TOR_STRICT_ENTRY_NODES" == "yes" ] && echo "StrictEntryNodes 1"
 
-if [ ! -z "$TOR_EXIT_NODES" ]; then
-	echo "ExitNodes $(_join ',' $(echo "$TOR_EXIT_NODES" | grep -v "^#"))"
-fi
+[ -n "$TOR_EXIT_NODES" ] && echo "ExitNodes $(_join ',' $(echo "$TOR_EXIT_NODES" | grep -v "^#"))"
 [ "$TOR_STRICT_EXIT_NODES" == "yes" ] && echo "StrictExitNodes 1"
 
 if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
