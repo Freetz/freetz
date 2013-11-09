@@ -16,7 +16,7 @@ config FREETZ_PACKAGE_TOR_GEOIP
 	bool "Select features required for automatic fetching of GeoIP database"
 	depends on FREETZ_PACKAGE_TOR
 	select FREETZ_BUSYBOX_UNZIP
-	select FREETZ_BUSYBOX_WGET
+	select FREETZ_BUSYBOX_WGET if !FREETZ_PACKAGE_WGET
 	default n
 	help
 		This option activates busybox features required
