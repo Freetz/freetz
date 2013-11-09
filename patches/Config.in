@@ -101,21 +101,20 @@ menu "Remove piglet"
 
 	config FREETZ_REMOVE_PIGLET_ISDN
 	bool "Remove ISDN piglet file(s)"
-	depends on FREETZ_HAS_AVM_PIGLET
+	depends on FREETZ_HAS_AVM_PIGLET_ISDN_AND_POTS
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
 
-		Hint: If you are using POTS fixed line you could select this patch.
+		Hint: If you are using POTS fixed line you can try to select this
+		patch. Be careful! Sometimes even POTS models are using the ISDN files
+		and not the POTS ones. If your box ends up in a reboot cycle, you
+		should deselect this patch and maybe want to try the other one, even
+		if you are using POTS.
 
 	config FREETZ_REMOVE_PIGLET_POTS
 	bool "Remove POTS piglet file(s)"
-	depends on \
-		FREETZ_TYPE_5010 || \
-		FREETZ_TYPE_5113 || \
-		FREETZ_TYPE_7113 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7340
+	depends on FREETZ_HAS_AVM_PIGLET_ISDN_AND_POTS
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
