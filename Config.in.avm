@@ -14,7 +14,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 		! FREETZ_TYPE_6810 && \
 		! FREETZ_TYPE_6840 && \
 		! FREETZ_TYPE_6842 && \
-		! FREETZ_TYPE_7272 
+		! FREETZ_TYPE_7272
 
 	default y
 	help
@@ -304,23 +304,13 @@ config FREETZ_AVM_HAS_PRINTK
 	help
 		Select this if the original firmware has printk support.
 
-config FREETZ_AVM_HAS_PIGLET
-	bool "Has PIGLET file(s)"	if FREETZ_TYPE_CUSTOM
+config FREETZ_AVM_HAS_PIGLET_ISDN_AND_POTS
+	bool "Has PIGLET files for ISDN and POTS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_2170 || \
-		FREETZ_TYPE_3130 || \
-		FREETZ_TYPE_3131 || \
-		FREETZ_TYPE_3170 || \
-		FREETZ_TYPE_5010 || \
-		FREETZ_TYPE_5113 || \
-		FREETZ_TYPE_5124 || \
-		FREETZ_TYPE_5140 || \
 		FREETZ_TYPE_7113 || \
-		FREETZ_TYPE_7140 || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7340
+		FREETZ_TYPE_7113_7170 || \
+		FREETZ_TYPE_7340 || \
+		FREETZ_TYPE_7340_7390
 	default n
 	help
 		Select this if the original firmware has separate piglet files for ISDN and POTS.
