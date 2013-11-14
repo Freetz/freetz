@@ -210,6 +210,5 @@ config FREETZ_MODULES_KVER
 
 config FREETZ_KERNEL_PATCHES
 	string
-	default "2.6.13.1"                if FREETZ_KERNEL_VERSION_2_6_13
-	default "${FREETZ_MODULES_KVER}"
+	default "${FREETZ_MODULES_KVER/-*/}"
 
