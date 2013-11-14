@@ -776,12 +776,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
 
-	for i in $(set|grep -i "^FREETZ_REMOVE_.*=y$"|sed -e "s/^.\{14\}//;s/=.*//"|tr [A-Z] [a-z]|sort); do
+	for i in $(set|grep -i "^FREETZ_REMOVE_.*=y$"|sed -e "s/^.\{14\}//;s/=.*//"|tr [:upper:] [:lower:]|sort); do
 		OPTIONS+=" -$i"
 	done
 
 	OPTIONS_ADD=" +busybox"
-	for i in $(set|grep -i "^FREETZ_PATCH_.*=y$"|sed -e "s/^.\{13\}//;s/=.*//"|tr [A-Z] [a-z]); do
+	for i in $(set|grep -i "^FREETZ_PATCH_.*=y$"|sed -e "s/^.\{13\}//;s/=.*//"|tr [:upper:] [:lower:]); do
 		OPTIONS_ADD+=" +$i"
 	done
 
@@ -1480,7 +1480,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
 		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 				error 1 -b "kernel image is $KERNEL_DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
-		else  
+		else
 			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
 				error 1 -b "kernel image is $KERNEL_DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
 			fi
@@ -1506,7 +1506,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 		echo0 "copying filesystem image"
 		cp -a "$RAW_FILESYSTEM_MOD" "$FILESYSTEM_MOD"
-	
+
 
 		# Check size of filesystem image (multiple of 64 kB blocks)
 		if [ -n "$FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE" ]; then
@@ -1517,7 +1517,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 		let FILESYSTEM_SIZE="$(wc -c < "$FILESYSTEM_MOD")"
 		let FILESYSTEM_DIFF="FILESYSTEM_SIZE-FILESYSTEM_LIMIT"
-	
+
 		echo1 "filesystem image size: $(byte_to_mb $FILESYSTEM_SIZE), max $(byte_to_mb $FILESYSTEM_LIMIT), free $(byte_to_mb $((-FILESYSTEM_DIFF))) ($((-FILESYSTEM_DIFF)) bytes)"
 		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
 		if [ "$FILESYSTEM_SIZE" -gt "$FILESYSTEM_LIMIT" ]; then
