@@ -30,13 +30,14 @@ if isFreetzType LANG_DE; then
 else
 	OEM="avme"
 fi
-files="css/default/images/kopfbalken_mitte.gif"
-files+=" css/default/images/illu_box.gif"
-files+=" html/de/images/kopfbalken.gif"
-files+=" html/de/images/DectFBoxIcon.png"
-for i in $files; do
-	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" "${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
-done
+# not needed for lua-only
+#files="css/default/images/kopfbalken_mitte.gif"
+#files+=" css/default/images/illu_box.gif"
+#files+=" html/de/images/kopfbalken.gif"
+#files+=" html/de/images/DectFBoxIcon.png"
+#for i in $files; do
+#	cp -a "${DIR}/.tk/original/filesystem/usr/www/avm/$i" "${FILESYSTEM_MOD_DIR}/usr/www/$OEM/$i"
+#done
 
 #echo2 "patching webmenu"
 #modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/7240_7270.patch"
