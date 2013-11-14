@@ -1452,7 +1452,7 @@ menu "Override options"
 		default "7170_04.76-release_kernel.tar.xz" if FREETZ_AVM_VERSION_04_76
 		default "7170_04.80-release_kernel.tar.xz" if FREETZ_AVM_VERSION_04_80
 		default "7170_04.87-release_kernel.tar.xz" if FREETZ_AVM_VERSION_04_87
-		default "${FREETZ_AVM_VERSION_STRING}-release_kernel.tar.xz"
+		default "${FREETZ_AVM_VERSION_STRING}-release_kernel.tar.xz" if FREETZ_REPLACE_MODULE_AVAILABLE
 
 	config FREETZ_DL_KERNEL_SOURCE_MD5
 		string "MD5 checksum for downloaded Kernel source file" if FREETZ_DL_OVERRIDE
