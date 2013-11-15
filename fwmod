@@ -776,12 +776,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
 
-	for i in $(set|grep -i "^FREETZ_REMOVE_.*=y$"|sed -e "s/^.\{14\}//;s/=.*//"|tr [:upper:] [:lower:]|sort); do
+	for i in $(set | sed -rn 's:^FREETZ_REMOVE_(.*)=y$:\1:gp' | tr '[:upper:]' '[:lower:]' | sort); do
 		OPTIONS+=" -$i"
 	done
 
 	OPTIONS_ADD=" +busybox"
-	for i in $(set|grep -i "^FREETZ_PATCH_.*=y$"|sed -e "s/^.\{13\}//;s/=.*//"|tr [:upper:] [:lower:]); do
+	for i in $(set | sed -rn 's:^FREETZ_PATCH_(.*)=y$:\1:gp' | tr '[:upper:]' '[:lower:]'); do
 		OPTIONS_ADD+=" +$i"
 	done
 
