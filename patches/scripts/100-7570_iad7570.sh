@@ -7,7 +7,7 @@ mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7570" "${FILESYSTEM_MOD_DIR}/etc
 
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"Alice IAD 7570 vDSL\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_PRODUKT=.*$/CONFIG_PRODUKT=\"Fritz_Box_7570_HN\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
-modsed "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ur8_16MB_xilinx_4eth_2ab_dect_isdn_pots_wlan_33906\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+modsed "s/CONFIG_INSTALL_TYPE=.*$/CONFIG_INSTALL_TYPE=\"ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_mimo_usb_host_dect_multiannex_hansenet_60170\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"75\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_mimo_usb_host_dect_multiannex_13589/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_mimo_usb_host_dect_multiannex_hansenet_60170/g" "${FIRMWARE_MOD_DIR}/var/install"
 
