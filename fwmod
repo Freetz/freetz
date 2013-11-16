@@ -1106,6 +1106,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
+	echo0 "removing empty kernel module directories"
+	for dir in $(find ${MODULES_DIR} -type d -empty -delete -printf "%P\n"); do
+		echo2 $dir
+	done
+
 	echo0 "installing packages"
 	for pkg in $(static_packages); do
 		sizeinfo "$pkg"
