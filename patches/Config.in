@@ -184,7 +184,7 @@ config FREETZ_REMOVE_ETHERNET_OVER_USB
 config FREETZ_REMOVE_NAS
 	bool "Remove NAS"
 	default n
-	depends on FREETZ_AVM_HAS_NAS
+	depends on FREETZ_AVM_HAS_NAS && FREETZ_REAL_DEVELOPER_ONLY
 	help
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
@@ -976,6 +976,7 @@ config FREETZ_PATCH_ENUM
 config FREETZ_PATCH_DSL_EXPERT
 	bool "Patch extended DSL settings"
 	depends on \
+		FREETZ_REAL_DEVELOPER_ONLY && \
 		! FREETZ_REMOVE_DSLD && \
 		! FREETZ_AVM_VERSION_05_5X && \
 		( \
@@ -1026,6 +1027,7 @@ config FREETZ_ADD_REGEXT_GUI
 config FREETZ_PATCH_GSMVOICE
 	bool "Patch GSM voice"
 	depends on \
+		FREETZ_REAL_DEVELOPER_ONLY && \
 		FREETZ_AVM_HAS_UMTS && \
 		! FREETZ_REMOVE_UMTSD && \
 		! FREETZ_TYPE_7270_V1
