@@ -36,6 +36,7 @@ $(DL_FW_DIR)/$(AVM_SOURCE): | $(DL_FW_DIR)
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
+kernel-unpacked: $(KERNEL_DIR)/.unpacked
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_BUILD_DIR)
@@ -235,4 +236,4 @@ pkg-echo-start:
 pkg-echo-done:
 	@$(call _ECHO_DONE)
 
-.PHONY: kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig target-toolchain-kernel-headers
+.PHONY: kernel-unpacked kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig target-toolchain-kernel-headers
