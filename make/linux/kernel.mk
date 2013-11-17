@@ -221,6 +221,7 @@ kernel-mrproper:
 
 kernel-dirclean:
 	$(RM) -r $(SOURCE_DIR_ROOT)/kernel
+	$(RM) -r $(KERNEL_HEADERS_DEVEL_DIR) $(addprefix $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/,$(KERNEL_HEADERS_SUBDIRS))
 	$(RM) $(KERNEL_TARGET_DIR)/.version-*
 	$(RM) $(KERNEL_TARGET_DIR)/System*
 	$(RM) $(KERNEL_TARGET_DIR)/kernel-*
