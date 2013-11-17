@@ -120,7 +120,7 @@ sec_begin '$(lang de:"Starttyp" en:"Start type")'
 # build hidden input fields
 for var in $ALLVARS; do
 small=$(echo $var | tr 'A-Z' 'a-z')
-echo '<input type="hidden" id="id_'$small'" name="'$small'" value="'$(eval echo "\$OPENVPN_$var")'">'
+echo '<input type="hidden" id="id_'$small'" name="'$small'" value='"'"$(eval echo "\$OPENVPN_$var")"'"'>'
 done
 
 cat << EOF
@@ -349,7 +349,7 @@ $(lang de:"Hier werden die IP-Adressen und das Routing vom VPN konfiguriert." en
 	$(lang de:"Entferntes Netz" en:"Remote Network"):<br>
 </div>
 <div class="textbox">
-	<input id="id_act_remote_net" size="31" maxlength="60" title="$(lang de:"Dieses Netz wird &uuml;ber VPN zum Client geroutet." en:"This network will be routed to the client through VPN.") &nbsp;&nbsp;Syntax TUN: &lt;ip&gt; &lt;mask&gt; &nbsp; Syntax TAP: &lt;ip&gt; &lt;mask&gt; &lt;gateway&gt;" type="text" onblur='(local_remote_net[act_conf]=this.value); Consolidate_Vars();'>
+	<input id="id_act_remote_net" size="31" maxlength="100" title="$(lang de:"Dieses Netz wird &uuml;ber VPN zum Client geroutet." en:"This network will be routed to the client through VPN.") &nbsp;&nbsp;Syntax TUN: &lt;ip&gt; &lt;mask&gt; &nbsp; Syntax TAP: &lt;ip&gt; &lt;mask&gt; &lt;gateway&gt;" type="text" onblur='(local_remote_net[act_conf]=this.value); Consolidate_Vars();'>
 </div>
 </div>
 
@@ -374,7 +374,7 @@ $(lang de:"Hier werden die IP-Adressen und das Routing vom VPN konfiguriert." en
 	$(lang de:"Lokales Netz" en:"Local network"):
 </div>
 <div class="textbox">
-	<input id="id_act_local_net" title="$(lang de:"lokales Netz, Syntax: &lt;ip&gt; &lt;subnetmaske&gt; z.B. &quot;192.168.178.0 255.255.255.0&quot;" en:"Local net, syntax: &lt;ip&gt; &lt;subnetmask&gt; e.g. &quot;192.168.178.0 255.255.255.0&quot;"). $(lang de:"Der Client erh&auml;lt eine Route zu diesem Netz per" en:"Client will receive a network route via") &quot;push&quot;" size="31" maxlength="31" type="text" onblur='(local_local_net[act_conf]=this.value); Consolidate_Vars();'><br>
+	<input id="id_act_local_net" title="$(lang de:"lokales Netz, Syntax: &lt;ip&gt; &lt;subnetmaske&gt; z.B. &quot;192.168.178.0 255.255.255.0&quot;" en:"Local net, syntax: &lt;ip&gt; &lt;subnetmask&gt; e.g. &quot;192.168.178.0 255.255.255.0&quot;"). $(lang de:"Der Client erh&auml;lt eine Route zu diesem Netz per" en:"Client will receive a network route via") &quot;push&quot;" size="31" maxlength="100" type="text" onblur='(local_local_net[act_conf]=this.value); Consolidate_Vars();'><br>
 </div>
 
 <div id="div_allow_clientinfos" style="clear:both; padding-top:10px;">
