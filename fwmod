@@ -1048,7 +1048,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	# check for modules directory / correct configured kernel version
-	[ ! -d "$MODULES_DIR" ] && error 1 "Can not find modules dir '$MODULES_DIR'. Wrong kernel version?"
+	[ ! -d "$MODULES_DIR" ] && warn "Can not find modules dir '$MODULES_DIR'. Wrong kernel version?"
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" -o -n "$(set|grep ^FREETZ_MODULE_.*=y)" ]; then
 		[ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ] && strip_output=" and stripping"
