@@ -794,7 +794,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		}
  		capidev_sendback_info(i, CMSG);
  		break;
-@@ -4260,12 +4468,18 @@
+@@ -4264,12 +4472,18 @@
  		 * get a PROGRESS with a hangupcause set (safer?)
  		 */
  		if (i->doB3 == CAPI_B3_DONT) {
@@ -815,7 +815,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		send_progress(i);
  		break;
  	case 0x8005:	/* SETUP */
-@@ -4925,9 +5139,15 @@
+@@ -4929,9 +5143,15 @@
  					ast_set_callerid(i->owner, NULL, buffer, NULL);
  					Use code from ast_set_callerid but do not update CDR
  					*/
@@ -831,7 +831,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  #else
  				ast_free (i->owner->cid.cid_name);
  				i->owner->cid.cid_name = ast_strdup(buffer);	/* Save name to callerid */
-@@ -5017,8 +5237,13 @@
+@@ -5021,8 +5241,13 @@
  
  	if ((i->owner) && (i->FaxState & CAPI_FAX_STATE_ACTIVE)) {
  		ast_setstate(i->owner, AST_STATE_UP);
@@ -847,7 +847,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return;
  	}
  	
-@@ -5100,7 +5325,15 @@
+@@ -5104,7 +5329,15 @@
  	}
  
  	if (i->fsetting & CAPI_FSETTING_EARLY_BRIDGE) {
@@ -864,7 +864,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  			struct capi_pvt *i1;
  			i1 = CC_CHANNEL_PVT(i->peer);
  			if ((capi_controllers[i->controller]->lineinterconnect) && 
-@@ -5112,6 +5345,7 @@
+@@ -5116,6 +5349,7 @@
  			}
  		}
  	}
@@ -872,7 +872,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  
  	if (i->state == CAPI_STATE_CONNECTED) {
  		capi_signal_answer(i);
-@@ -5240,13 +5474,24 @@
+@@ -5244,13 +5478,24 @@
  	i->reason = DISCONNECT_IND_REASON(CMSG);
  
  	if (i->owner) {
@@ -899,7 +899,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		}
  		/* the real reason could be != 0x34xx, so provide this value in variable */
  		sprintf(buffer, "%d", i->reason);
-@@ -5440,7 +5685,11 @@
+@@ -5444,7 +5689,11 @@
  				break;
  			}
  			i->transfercapability = cip2tcap(i->cip);
@@ -911,7 +911,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  			if (capi_tcap_is_digital(i->transfercapability)) {
  				i->bproto = CC_BPROTO_TRANSPARENT;
  			}
-@@ -5454,15 +5703,32 @@
+@@ -5458,15 +5707,32 @@
  				if (capi_national_prefix[0]      == 0 &&
  						capi_international_prefix[0] == 0 &&
  						capi_subscriber_prefix[0]    == 0) {
@@ -944,7 +944,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  				i->owner->caller.id.number.valid = 1;
  				ast_free(i->owner->caller.id.number.str);
  				i->owner->caller.id.number.str = ast_strdup(effective_cid);
-@@ -5470,6 +5736,7 @@
+@@ -5474,6 +5740,7 @@
  				i->owner->caller.ani.number.valid = 1;
  				ast_free(i->owner->caller.ani.number.str);
  				i->owner->caller.ani.number.str = ast_strdup(effective_cid);
@@ -952,7 +952,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  			}
  #else
  			i->owner->cid.cid_pres = callpres;
-@@ -5882,8 +6149,17 @@
+@@ -5886,8 +6153,17 @@
  		if ((wInfo & 0xff00) == 0) {
  			if (i->state != CAPI_STATE_DISCONNECTING) {
  				i->state = CAPI_STATE_ALERTING;
@@ -971,24 +971,24 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  				}
  			}
  		}
-@@ -6009,8 +6285,15 @@
+@@ -6013,8 +6289,15 @@
  static struct capi_pvt* get_active_plci(struct ast_channel *c)
  {
  	struct capi_pvt* i;
 +	const struct ast_channel_tech *cur_tech;
-+
+ 
+-	if (c->tech == &capi_tech) {
 +#ifdef CC_AST_HAS_VERSION_11_0
 +	cur_tech = ast_channel_tech(c);
 +#else /* !defined(CC_AST_HAS_VERSION_11_0) */
 +	cur_tech = c->tech;
 +#endif /* defined(CC_AST_HAS_VERSION_11_0) */
- 
--	if (c->tech == &capi_tech) {
++
 +	if (cur_tech == &capi_tech) {
  		i = CC_CHANNEL_PVT(c);
  	} else {
  		i = pbx_check_resource_plci(c);
-@@ -6030,6 +6313,12 @@
+@@ -6034,6 +6317,12 @@
  	int numberlen;
  	char facnumber[DEFLECT_NUMBER_MAX_LEN + 4];
  
@@ -1001,7 +1001,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  	if (!param) {
  		cc_log(LOG_WARNING, CC_MESSAGE_NAME
  			" deflection requires an argument (destination phone number)\n");
-@@ -6051,7 +6340,7 @@
+@@ -6055,7 +6344,7 @@
  	}
  	if (!(capi_controllers[i->controller]->CD)) {
  		cc_log(LOG_NOTICE,"%s: CALL DEFLECT for %s not supported by controller.\n",
@@ -1010,7 +1010,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return -1;
  	}
  
-@@ -6116,6 +6405,12 @@
+@@ -6120,6 +6409,12 @@
  	char buffer[32];
  	int id;
  
@@ -1023,7 +1023,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  	id = cc_add_peer_link_id(c);
  
  	if (id >= 0) {
-@@ -6124,7 +6419,7 @@
+@@ -6128,7 +6423,7 @@
  	}
  
  	cc_verbose(2, 1, VERBOSE_PREFIX_3 "Added %s as " CC_MESSAGE_BIGNAME " peer link.\n",
@@ -1032,7 +1032,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  
  	return 0;
  }
-@@ -6137,7 +6432,15 @@
+@@ -6141,7 +6436,15 @@
  	struct capi_pvt *i = CC_CHANNEL_PVT(c); 
  	unsigned int plci = 0;
  
@@ -1049,7 +1049,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		plci = i->onholdPLCI;
  	} else {
  		i = NULL;
-@@ -6158,7 +6461,7 @@
+@@ -6162,7 +6465,7 @@
  
  	if (!i) {
  		cc_log(LOG_WARNING, "%s is not valid or not on hold to retrieve!\n",
@@ -1058,7 +1058,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return 0;
  	}
  
-@@ -6181,7 +6484,7 @@
+@@ -6185,7 +6488,7 @@
  
  	if (!(capi_controllers[i->controller]->holdretrieve)) {
  		cc_log(LOG_NOTICE,"%s: RETRIEVE for %s not supported by controller.\n",
@@ -1067,7 +1067,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return -1;
  	}
  
-@@ -6220,6 +6523,12 @@
+@@ -6224,6 +6527,12 @@
  	char *holdid;
  	int explicit_peer_plci = 0;
  
@@ -1080,7 +1080,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  	if ((id = pbx_builtin_getvar_helper(c, "CALLERHOLDID"))) {
  		plci = (unsigned int)strtoul(id, NULL, 0);
  	}
-@@ -6284,7 +6593,7 @@
+@@ -6288,7 +6597,7 @@
  
  	if (!(capi_controllers[i->controller]->ECT)) {
  		cc_log(LOG_WARNING, "%s: ECT for %s not supported by controller.\n",
@@ -1089,7 +1089,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return -1;
  	}
  
-@@ -6365,22 +6674,28 @@
+@@ -6369,22 +6678,28 @@
  	struct capi_pvt *i = CC_CHANNEL_PVT(c);
  	char buffer[16];
  
@@ -1121,7 +1121,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return 0;
  	}
  
-@@ -6420,9 +6735,15 @@
+@@ -6424,9 +6739,15 @@
  {
  	struct capi_pvt *i = CC_CHANNEL_PVT(c);
  
@@ -1138,7 +1138,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return -1;
  	}
  
-@@ -7327,6 +7648,12 @@
+@@ -7331,6 +7652,12 @@
  	const char	*id;
  	unsigned int	plci = 0;
  
@@ -1151,7 +1151,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  	if ((id = pbx_builtin_getvar_helper(c, "CALLERHOLDID"))) {
  		plci = (unsigned int)strtoul(id, NULL, 0);
  	}
-@@ -7363,12 +7690,12 @@
+@@ -7367,12 +7694,12 @@
  	}
  	if (!(i->isdnstate & CAPI_ISDN_STATE_B3_UP)) {
  		cc_log(LOG_NOTICE,"%s: Cannot initiate conference %s while not connected.\n",
@@ -1166,7 +1166,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		return 0;
  	}
  
-@@ -7534,7 +7861,14 @@
+@@ -7538,7 +7865,14 @@
  		return -1;
  	}
  
@@ -1182,7 +1182,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		if (capicmd->capionly != 0) {
  			struct capi_pvt* resource_plci = pbx_check_resource_plci (chan);
  
-@@ -7552,6 +7886,7 @@
+@@ -7556,6 +7890,7 @@
  			}
  		}
  	}
@@ -1190,7 +1190,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  
  	res = (capicmd->cmd)(chan, params);
  
-@@ -7593,10 +7928,16 @@
+@@ -7597,10 +7932,16 @@
  
  	cc_mutex_lock(&i->lock);
  
@@ -1208,7 +1208,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		/* TODO somehow enable unhold on ringing, but when wanted only */
  		/* 
  		if (i->isdnstate & CAPI_ISDN_STATE_HOLD)
-@@ -7611,7 +7952,7 @@
+@@ -7615,7 +7956,7 @@
  		break;
  	case AST_CONTROL_BUSY:
  		cc_verbose(3, 1, VERBOSE_PREFIX_2 "%s: Requested BUSY-Indication for %s\n",
@@ -1217,7 +1217,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		if ((i->state == CAPI_STATE_ALERTING) ||
  		    (i->state == CAPI_STATE_DID) || (i->state == CAPI_STATE_INCALL)) {
  			capi_sendf(NULL, 0, CAPI_CONNECT_RESP, i->PLCI, i->MessageNumber,
-@@ -7623,7 +7964,7 @@
+@@ -7627,7 +7968,7 @@
  		break;
  	case AST_CONTROL_CONGESTION:
  		cc_verbose(3, 1, VERBOSE_PREFIX_2 "%s: Requested CONGESTION-Indication for %s\n",
@@ -1226,7 +1226,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		if ((i->state == CAPI_STATE_ALERTING) ||
  		    (i->state == CAPI_STATE_DID) || (i->state == CAPI_STATE_INCALL)) {
  			capi_sendf(NULL, 0, CAPI_CONNECT_RESP, i->PLCI, i->MessageNumber,
-@@ -7635,17 +7976,17 @@
+@@ -7639,17 +7980,17 @@
  		break;
  	case AST_CONTROL_PROGRESS:
  		cc_verbose(3, 1, VERBOSE_PREFIX_2 "%s: Requested PROGRESS-Indication for %s\n",
@@ -1247,7 +1247,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		if (i->doholdtype != CC_HOLDTYPE_LOCAL) {
  			ret = pbx_capi_hold(c, NULL);
  		}
-@@ -7657,7 +7998,7 @@
+@@ -7661,7 +8002,7 @@
  		break;
  	case AST_CONTROL_UNHOLD:
  		cc_verbose(3, 1, VERBOSE_PREFIX_2 "%s: Requested UNHOLD-Indication for %s\n",
@@ -1256,7 +1256,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		if (i->doholdtype != CC_HOLDTYPE_LOCAL) {
  			if (i->transfergroup) {
  				/* we assume bridge transfer, so wait a little bit to see
-@@ -7676,7 +8017,7 @@
+@@ -7680,7 +8021,7 @@
  		break;
  	case -1: /* stop indications */
  		cc_verbose(3, 1, VERBOSE_PREFIX_2 "%s: Requested Indication-STOP for %s\n",
@@ -1265,7 +1265,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		if ((i->isdnstate & CAPI_ISDN_STATE_HOLD)) {
  			if (i->transfergroup) {
  				/* we assume bridge transfer, so wait a little bit to see
-@@ -7689,7 +8030,7 @@
+@@ -7693,7 +8034,7 @@
  		break;
  	default:
  		cc_verbose(3, 1, VERBOSE_PREFIX_2 "%s: Requested unknown Indication %d for %s\n",
@@ -1274,7 +1274,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  		break;
  	}
  	cc_mutex_unlock(&i->lock);
-@@ -7699,7 +8040,11 @@
+@@ -7703,7 +8044,11 @@
  /*
   * PBX wants to know the state for a specific device
   */
@@ -1286,7 +1286,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  {
  	char *s;
  	char *target;
-@@ -7830,19 +8175,19 @@
+@@ -7834,19 +8179,19 @@
  	case CAPI_CHANNEL_TASK_PICKUP:
  		if (ast_pickup_call(chan_for_task)) {
  			cc_verbose(3, 1, VERBOSE_PREFIX_2 "%s: Pickup not possible.\n",
@@ -1309,7 +1309,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  			}
  		}
  		break;
-@@ -8946,6 +9291,10 @@
+@@ -8950,6 +9295,10 @@
  	}
  #endif
  
@@ -1320,7 +1320,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  	diva_verbose_load();
  
  #ifdef CC_AST_HAS_VERSION_1_6
-@@ -9009,7 +9358,7 @@
+@@ -9013,7 +9362,7 @@
  	}
  
  	pbx_capi_cli_register();
@@ -1329,7 +1329,7 @@ Patch submitted by Mihai Moldovan to the chan-capi mailing list on July 17th, 20
  	pbx_capi_register_device_state_providers();
  	pbx_capi_chat_init_module();
  	
-@@ -9099,15 +9448,19 @@
+@@ -9103,15 +9452,19 @@
  			cid_name = 0;
  	}
  
