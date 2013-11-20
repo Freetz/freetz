@@ -5,7 +5,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 400741 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402425 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402686 $")
  
  #include <stdio.h>
  #include <stdlib.h>
@@ -53,6 +53,42 @@
  }
  
  void conf_ended(struct conference_bridge *conference_bridge)
+@@ -1558,7 +1582,7 @@
+ 
+ 	if (ast_strlen_zero(data)) {
+ 		ast_log(LOG_WARNING, "%s requires an argument (conference name[,options])\n", app);
+-		res = -1; /* invalid PIN */
++		res = -1;
+ 		goto confbridge_cleanup;
+ 	}
+ 
+@@ -1609,7 +1633,7 @@
+ 		if (conf_set_menu_to_user(conference_bridge_user.menu_name, &conference_bridge_user)) {
+ 			ast_log(LOG_WARNING, "Conference menu %s does not exist and can not be applied to confbridge user.\n",
+ 				args.menu_name);
+-			res = -1; /* invalid PIN */
++			res = -1;
+ 			goto confbridge_cleanup;
+ 		}
+ 	}
+@@ -1631,7 +1655,7 @@
+ 	if (ast_test_flag(&conference_bridge_user.u_profile, USER_OPT_TALKER_DETECT)) {
+ 		char *conf_name = ast_strdup(args.conf_name); /* this is freed during feature cleanup */
+ 		if (!(conf_name)) {
+-			res = -1; /* invalid PIN */
++			res = -1;
+ 			goto confbridge_cleanup;
+ 		}
+ 		ast_bridge_features_set_talk_detector(&conference_bridge_user.features,
+@@ -1642,7 +1666,7 @@
+ 
+ 	/* Look for a conference bridge matching the provided name */
+ 	if (!(conference_bridge = join_conference_bridge(args.conf_name, &conference_bridge_user))) {
+-		res = -1; /* invalid PIN */
++		res = -1;
+ 		goto confbridge_cleanup;
+ 	}
+ 
 @@ -1652,7 +1676,8 @@
  
  	/* If the caller should be joined already muted, make it so */
@@ -211,6 +247,137 @@
  }
  
  void conf_remove_user_waiting(struct conference_bridge *conference_bridge, struct conference_bridge_user *cbu)
+--- apps/app_queue.c
++++ apps/app_queue.c
+@@ -63,7 +63,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401433 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402646 $")
+ 
+ #include <sys/time.h>
+ #include <sys/signal.h>
+@@ -1550,7 +1550,7 @@
+ 	ao2_lock(q);
+ 	mem_iter = ao2_iterator_init(q->members, 0);
+ 	for (; (member = ao2_iterator_next(&mem_iter)); ao2_ref(member, -1)) {
+-		if ((max_penalty && (member->penalty > max_penalty)) || (min_penalty && (member->penalty < min_penalty))) {
++		if ((max_penalty != INT_MAX && member->penalty > max_penalty) || (min_penalty != INT_MAX && member->penalty < min_penalty)) {
+ 			if (conditions & QUEUE_EMPTY_PENALTY) {
+ 				ast_debug(4, "%s is unavailable because his penalty is not between %d and %d\n", member->membername, min_penalty, max_penalty);
+ 				continue;
+@@ -4680,26 +4680,55 @@
+ */
+ static void update_qe_rule(struct queue_ent *qe)
+ {
+-	int max_penalty = qe->pr->max_relative ? qe->max_penalty + qe->pr->max_value : qe->pr->max_value;
+-	int min_penalty = qe->pr->min_relative ? qe->min_penalty + qe->pr->min_value : qe->pr->min_value;
+-	char max_penalty_str[20], min_penalty_str[20];
+-	/* a relative change to the penalty could put it below 0 */
+-	if (max_penalty < 0) {
+-		max_penalty = 0;
+-	}
+-	if (min_penalty < 0) {
+-		min_penalty = 0;
++	int max_penalty = INT_MAX;
++
++	if (qe->max_penalty != INT_MAX) {
++		char max_penalty_str[20];
++
++		if (qe->pr->max_relative) {
++			max_penalty = qe->max_penalty + qe->pr->max_value;
++		} else {
++			max_penalty = qe->pr->max_value;
++		}
++
++		/* a relative change to the penalty could put it below 0 */
++		if (max_penalty < 0) {
++			max_penalty = 0;
++		}
++
++		snprintf(max_penalty_str, sizeof(max_penalty_str), "%d", max_penalty);
++		pbx_builtin_setvar_helper(qe->chan, "QUEUE_MAX_PENALTY", max_penalty_str);
++		qe->max_penalty = max_penalty;
++		ast_debug(3, "Setting max penalty to %d for caller %s since %d seconds have elapsed\n",
++			qe->max_penalty, ast_channel_name(qe->chan), qe->pr->time);
+ 	}
+-	if (min_penalty > max_penalty) {
+-		min_penalty = max_penalty;
++
++	if (qe->min_penalty != INT_MAX) {
++		char min_penalty_str[20];
++		int min_penalty;
++
++		if (qe->pr->min_relative) {
++			min_penalty = qe->min_penalty + qe->pr->min_value;
++		} else {
++			min_penalty = qe->pr->min_value;
++		}
++
++		/* a relative change to the penalty could put it below 0 */
++		if (min_penalty < 0) {
++			min_penalty = 0;
++		}
++
++		if (max_penalty != INT_MAX && min_penalty > max_penalty) {
++			min_penalty = max_penalty;
++		}
++
++		snprintf(min_penalty_str, sizeof(min_penalty_str), "%d", min_penalty);
++		pbx_builtin_setvar_helper(qe->chan, "QUEUE_MIN_PENALTY", min_penalty_str);
++		qe->min_penalty = min_penalty;
++		ast_debug(3, "Setting min penalty to %d for caller %s since %d seconds have elapsed\n",
++			qe->min_penalty, ast_channel_name(qe->chan), qe->pr->time);
+ 	}
+-	snprintf(max_penalty_str, sizeof(max_penalty_str), "%d", max_penalty);
+-	snprintf(min_penalty_str, sizeof(min_penalty_str), "%d", min_penalty);
+-	pbx_builtin_setvar_helper(qe->chan, "QUEUE_MAX_PENALTY", max_penalty_str);
+-	pbx_builtin_setvar_helper(qe->chan, "QUEUE_MIN_PENALTY", min_penalty_str);
+-	qe->max_penalty = max_penalty;
+-	qe->min_penalty = min_penalty;
+-	ast_debug(3, "Setting max penalty to %d and min penalty to %d for caller %s since %d seconds have elapsed\n", qe->max_penalty, qe->min_penalty, ast_channel_name(qe->chan), qe->pr->time);
++
+ 	qe->pr = AST_LIST_NEXT(qe->pr, list);
+ }
+ 
+@@ -4848,8 +4877,8 @@
+ 	unsigned char usepenalty = (membercount <= q->penaltymemberslimit) ? 0 : 1;
+ 
+ 	if (usepenalty) {
+-		if ((qe->max_penalty && (mem->penalty > qe->max_penalty)) ||
+-			(qe->min_penalty && (mem->penalty < qe->min_penalty))) {
++		if ((qe->max_penalty != INT_MAX && mem->penalty > qe->max_penalty) ||
++			(qe->min_penalty != INT_MAX && mem->penalty < qe->min_penalty)) {
+ 			return -1;
+ 		}
+ 	} else {
+@@ -6998,10 +7027,10 @@
+ 		} else {
+ 			ast_log(LOG_WARNING, "${QUEUE_MAX_PENALTY}: Invalid value (%s), channel %s.\n",
+ 				max_penalty_str, ast_channel_name(chan));
+-			max_penalty = 0;
++			max_penalty = INT_MAX;
+ 		}
+ 	} else {
+-		max_penalty = 0;
++		max_penalty = INT_MAX;
+ 	}
+ 
+ 	if ((min_penalty_str = pbx_builtin_getvar_helper(chan, "QUEUE_MIN_PENALTY"))) {
+@@ -7010,10 +7039,10 @@
+ 		} else {
+ 			ast_log(LOG_WARNING, "${QUEUE_MIN_PENALTY}: Invalid value (%s), channel %s.\n",
+ 				min_penalty_str, ast_channel_name(chan));
+-			min_penalty = 0;
++			min_penalty = INT_MAX;
+ 		}
+ 	} else {
+-		min_penalty = 0;
++		min_penalty = INT_MAX;
+ 	}
+ 	ast_channel_unlock(chan);
+ 
 --- apps/confbridge/conf_state.c
 +++ apps/confbridge/conf_state.c
 @@ -57,12 +57,11 @@
@@ -396,6 +563,31 @@
   * \brief Stop MOH for the conference user.
   *
   * \param user Conference user to stop MOH on.
+--- channels/chan_dahdi.c
++++ channels/chan_dahdi.c
+@@ -49,7 +49,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401705 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402709 $")
+ 
+ #if defined(__NetBSD__) || defined(__FreeBSD__)
+ #include <pthread.h>
+@@ -1800,11 +1800,8 @@
+ 		 * a failure and die, and returning 2 means no event was received. */
+ 		res = read(p->subs[index].dfd, buf, sizeof(buf));
+ 		if (res < 0) {
+-			if (errno != ELAST) {
+-				ast_log(LOG_WARNING, "read returned error: %s\n", strerror(errno));
+-				callerid_free(p->cs);
+-				return -1;
+-			}
++			ast_log(LOG_WARNING, "read returned error: %s\n", strerror(errno));
++			return -1;
+ 		}
+ 
+ 		if (analog_p->ringt > 0) {
 --- channels/chan_sip.c
 +++ channels/chan_sip.c
 @@ -210,7 +210,7 @@
@@ -403,11 +595,40 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401884 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402345 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402605 $")
  
  #include <signal.h>
  #include <sys/signal.h>
-@@ -12616,7 +12616,13 @@
+@@ -1619,6 +1619,7 @@
+ static void build_callid_pvt(struct sip_pvt *pvt);
+ static void change_callid_pvt(struct sip_pvt *pvt, const char *callid);
+ static void build_callid_registry(struct sip_registry *reg, const struct ast_sockaddr *ourip, const char *fromdomain);
++static void build_localtag_registry(struct sip_registry *reg);
+ static void make_our_tag(struct sip_pvt *pvt);
+ static int add_header(struct sip_request *req, const char *var, const char *value);
+ static int add_max_forwards(struct sip_pvt *dialog, struct sip_request *req);
+@@ -6106,6 +6107,7 @@
+ 	dialog->chanvars = copy_vars(peer->chanvars);
+ 	if (peer->fromdomainport)
+ 		dialog->fromdomainport = peer->fromdomainport;
++	dialog->callingpres = peer->callingpres;
+ 
+ 	return 0;
+ }
+@@ -8576,6 +8578,12 @@
+ 	ast_string_field_build(reg, callid, "%s@%s", generate_random_string(buf, sizeof(buf)), host);
+ }
+ 
++/*! \brief Build SIP From tag value for REGISTER */
++static void build_localtag_registry(struct sip_registry *reg)
++{
++	ast_string_field_build(reg, localtag, "as%08lx", ast_random());
++}
++
+ /*! \brief Make our SIP dialog tag */
+ static void make_our_tag(struct sip_pvt *pvt)
+ {
+@@ -12616,7 +12624,13 @@
  	while ((candidate = ao2_iterator_next(&i))) {
  		ast_str_append(a_buf, 0, "a=candidate:%s %d %s %d ", candidate->foundation, candidate->id, candidate->transport, candidate->priority);
  		ast_str_append(a_buf, 0, "%s ", ast_sockaddr_stringify_host(&candidate->address));
@@ -422,7 +643,92 @@
  
  		if (candidate->type == AST_RTP_ICE_CANDIDATE_TYPE_HOST) {
  			ast_str_append(a_buf, 0, "host");
-@@ -19019,7 +19025,7 @@
+@@ -14556,29 +14570,51 @@
+ 
+ 				callee = find_ringing_channel(data->device_state_info, p);
+ 				if (callee) {
++					static char *anonymous = "anonymous";
++					static char *invalid = "anonymous.invalid";
+ 					char *cid_num;
+ 					char *connected_num;
+ 					int need;
++					int cid_num_restricted, connected_num_restricted;
+ 
+ 					ast_channel_lock(callee);
++
++					cid_num_restricted = (ast_channel_caller(callee)->id.number.presentation &
++								   AST_PRES_RESTRICTION) == AST_PRES_RESTRICTED;
+ 					cid_num = S_COR(ast_channel_caller(callee)->id.number.valid,
+-						ast_channel_caller(callee)->id.number.str, "");
+-					need = strlen(cid_num) + strlen(p->fromdomain) + sizeof("sip:@");
++							S_COR(cid_num_restricted, anonymous,
++							      ast_channel_caller(callee)->id.number.str), "");
++
++					need = strlen(cid_num) + (cid_num_restricted ? strlen(invalid) :
++								  strlen(p->fromdomain)) + sizeof("sip:@");
+ 					local_target = ast_alloca(need);
+-					snprintf(local_target, need, "sip:%s@%s", cid_num, p->fromdomain);
++
++					snprintf(local_target, need, "sip:%s@%s", cid_num,
++						 cid_num_restricted ? invalid : p->fromdomain);
+ 
+ 					ast_xml_escape(S_COR(ast_channel_caller(callee)->id.name.valid,
+-							     ast_channel_caller(callee)->id.name.str, ""),
++							     S_COR((ast_channel_caller(callee)->id.name.presentation &
++								     AST_PRES_RESTRICTION) == AST_PRES_RESTRICTED, anonymous,
++								   ast_channel_caller(callee)->id.name.str), ""),
+ 						       local_display, sizeof(local_display));
+ 
++					connected_num_restricted = (ast_channel_connected(callee)->id.number.presentation &
++								    AST_PRES_RESTRICTION) == AST_PRES_RESTRICTED;
+ 					connected_num = S_COR(ast_channel_connected(callee)->id.number.valid,
+-						ast_channel_connected(callee)->id.number.str, "");
+-					need = strlen(connected_num) + strlen(p->fromdomain) + sizeof("sip:@");
++							      S_COR(connected_num_restricted, anonymous,
++								    ast_channel_connected(callee)->id.number.str), "");
++
++					need = strlen(connected_num) + (connected_num_restricted ? strlen(invalid) :
++									strlen(p->fromdomain)) + sizeof("sip:@");
+ 					remote_target = ast_alloca(need);
+-					snprintf(remote_target, need, "sip:%s@%s", connected_num, p->fromdomain);
++
++					snprintf(remote_target, need, "sip:%s@%s", connected_num,
++						 connected_num_restricted ? invalid : p->fromdomain);
+ 
+ 					ast_xml_escape(S_COR(ast_channel_connected(callee)->id.name.valid,
+-							     ast_channel_connected(callee)->id.name.str, ""),
++							     S_COR((ast_channel_connected(callee)->id.name.presentation &
++								     AST_PRES_RESTRICTION) == AST_PRES_RESTRICTED, anonymous,
++								    ast_channel_connected(callee)->id.name.str), ""),
+ 						       remote_display, sizeof(remote_display));
+ 
+ 					ast_channel_unlock(callee);
+@@ -15168,13 +15204,13 @@
+ 			return 0;
+ 		} else {
+ 			p = dialog_ref(r->call, "getting a copy of the r->call dialog in transmit_register");
+-			make_our_tag(p);	/* create a new local tag for every register attempt */
+ 			ast_string_field_set(p, theirtag, NULL);	/* forget their old tag, so we don't match tags when getting response */
+ 		}
+ 	} else {
+ 		/* Build callid for registration if we haven't registered before */
+ 		if (!r->callid_valid) {
+ 			build_callid_registry(r, &internip, default_fromdomain);
++			build_localtag_registry(r);
+ 			r->callid_valid = TRUE;
+ 		}
+ 		/* Allocate SIP dialog for registration */
+@@ -15182,6 +15218,9 @@
+ 			ast_log(LOG_WARNING, "Unable to allocate registration transaction (memory or socket error)\n");
+ 			return 0;
+ 		}
++
++		/* reset tag to consistent value from registry */
++		ast_string_field_set(p, tag, r->localtag);
+ 		
+ 		if (p->do_history) {
+ 			append_history(p, "RegistryInit", "Account: %s@%s", r->username, r->hostname);
+@@ -19019,7 +19058,7 @@
  }
  
  /* the last argument is left-aligned, so we don't need a size anyways */
@@ -431,7 +737,7 @@
  
  /*! \brief Used in the sip_show_peers functions to pass parameters */
  struct show_peers_context {
-@@ -19081,7 +19087,7 @@
+@@ -19081,7 +19120,7 @@
  
  	if (!s) {
  		/* Normal list */
@@ -440,7 +746,7 @@
  	}
  
  	ao2_lock(peers);
-@@ -19197,9 +19203,8 @@
+@@ -19197,9 +19236,8 @@
  		ast_cli(fd, PEERS_FORMAT2, name,
  		tmp_host,
  		peer->host_dynamic ? " D " : "   ",	/* Dynamic or not? */
@@ -452,7 +758,7 @@
  		(!ast_acl_list_is_empty(peer->acl)) ? " A " : "   ",       /* permit/deny */
  		tmp_port, status,
  		peer->description ? peer->description : "",
-@@ -19230,7 +19235,7 @@
+@@ -19230,7 +19268,7 @@
  		ast_sockaddr_isnull(&peer->addr) ? "0" : tmp_port,
  		peer->host_dynamic ? "yes" : "no",	/* Dynamic or not? */
  		ast_test_flag(&peer->flags[2], SIP_PAGE3_NAT_AUTO_RPORT) ? "yes" : "no",
@@ -461,6 +767,16 @@
  		ast_test_flag(&peer->flags[2], SIP_PAGE3_NAT_AUTO_COMEDIA) ? "yes" : "no",
  		ast_test_flag(&peer->flags[1], SIP_PAGE2_SYMMETRICRTP) ? "yes" : "no",
  		ast_test_flag(&peer->flags[1], SIP_PAGE2_VIDEOSUPPORT) ? "yes" : "no",	/* VIDEOSUPPORT=yes? */
+--- channels/sip/include/sip.h
++++ channels/sip/include/sip.h
+@@ -1406,6 +1406,7 @@
+ 		AST_STRING_FIELD(md5secret);  /*!< Password in md5 */
+ 		AST_STRING_FIELD(callback);   /*!< Contact extension */
+ 		AST_STRING_FIELD(peername);   /*!< Peer registering to */
++		AST_STRING_FIELD(localtag);   /*!< Local tag generated same time as callid */
+ 	);
+ 	enum sip_transport transport;   /*!< Transport for this registration UDP, TCP or TLS */
+ 	int portno;                     /*!< Optional port override */
 --- configs/confbridge.conf.sample
 +++ configs/confbridge.conf.sample
 @@ -62,7 +62,7 @@
