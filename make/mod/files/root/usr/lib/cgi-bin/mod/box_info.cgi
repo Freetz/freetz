@@ -80,8 +80,8 @@ fi
 if [ -z "$flash_size" -a "${CONFIG_ROMSIZE#*=}" == "${CONFIG_ROMSIZE%=*}" ]; then
 	flash_size="$CONFIG_ROMSIZE"
 fi
-_CONFIG_NAND="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9]*\).*/\1/p")"
-_CONFIG_TFFS="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*nand_size=\([0-9]*\).*/\1/p")"
+_CONFIG_NAND="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*nand_size=\([0-9]*\).*/\1/p")"
+_CONFIG_TFFS="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9]*\).*/\1/p")"
 [ $(which run_clock) ] && run_clock=$(run_clock | sed 's/.*: //')
 
 sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
@@ -99,8 +99,8 @@ echo "</dl>"
 
 if [ -n "$_CONFIG_NAND$_CONFIG_TFFS" ]; then
 echo "<dl class='info'>"
-echo "<dt>NAND</dt><dd>$_CONFIG_NAND</dd>"
-echo "<dt>TFFS</dt><dd>$_CONFIG_TFFS</dd>"
+echo "<dt>NAND</dt><dd>$_CONFIG_NAND MB</dd>"
+echo "<dt>TFFS</dt><dd>$_CONFIG_TFFS MB</dd>"
 echo "</dl>"
 fi
 
