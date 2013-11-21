@@ -45,11 +45,17 @@ else
 	mac_wlan=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
-	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo)
+	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo | sed 's/Ikanos Fusiv.*/IKS/')
 	cpu_model=$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo)
+	cpu_cores=$(grep $'^processor\t*:' /proc/cpuinfo | wc -l)
+	cpu_bogom="$(sed -ne '/BogoMIPS/ s/.*: //p' /proc/cpuinfo)"
+	cpu_bogom="$(echo $cpu_bogom | sed 's! ! / !g')"
+	
 else
 	cpu_family=""
 	cpu_model=""
+	cpu_cores=""
+	cpu_bogom=""
 fi
 if [ -r /etc/version ]; then
 	avm_date=$(sed -ne 's/^export FIRMWARE_DATE\="\(.*\)"/\1/p' /etc/version)
@@ -63,6 +69,7 @@ elif [ -r /etc/version ]; then
 else
 	avm_revision=$notdefined
 fi
+
 if [ -r /proc/sys/urlader/environment ]; then
 	flash_size=$(sed -ne "s/^flashsize.\([0-9x].*\)/\1/p" /proc/sys/urlader/environment)
 	case "$flash_size" in
@@ -70,12 +77,12 @@ if [ -r /proc/sys/urlader/environment ]; then
 		*)      flash_size="";;
 	esac
 fi
-if [ -z $flash_size ]; then
-	flash_size=$CONFIG_ROMSIZE
+if [ -z $flash_size -a "${CONFIG_ROMSIZE#*=}" == "${CONFIG_ROMSIZE%=*}" ]; then
+	flash_size="$CONFIG_ROMSIZE"
 fi
-if [ $(which run_clock) ]; then
-	run_clock=$(run_clock | sed 's/.*: //')
-fi
+_CONFIG_NAND="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9]*\).*/\1/p")"
+_CONFIG_TFFS="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*nand_size=\([0-9]*\).*/\1/p")"
+[ $(which run_clock) ] && run_clock=$(run_clock | sed 's/.*: //')
 
 sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
 
@@ -86,24 +93,37 @@ echo "</dl>"
 
 echo "<dl class='info'>"
 echo "<dt>HWRevision</dt><dd>$HWRevision.$(($HWRevision_ATA)).$((HWRevision_BitFileCount)).$(($HWRevision_Reserved1))</dd>"
-echo "<dt>Flash (ROM)</dt><dd>$flash_size MB</dd>"
+[ -n "$flash_size" ] && echo "<dt>Flash (ROM)</dt><dd>$flash_size MB</dd>"
 echo "<dt>RAM</dt><dd>$CONFIG_RAMSIZE MB</dd>"
 echo "</dl>"
 
+if [ -n "$_CONFIG_NAND$_CONFIG_TFFS" ]; then
 echo "<dl class='info'>"
-if [ ! -z "$cpu_family" ]; then
-	echo "<dt>CPU$(lang de:"-Familie" en:" family")</dt><dd>$cpu_family</dd>"
+echo "<dt>NAND</dt><dd>$_CONFIG_NAND</dd>"
+echo "<dt>TFFS</dt><dd>$_CONFIG_TFFS</dd>"
+echo "</dl>"
 fi
-if [ ! -z "$cpu_model" ]; then
-	echo "<dt>CPU$(lang de:"-Modell" en:" model")</dt><dd>$cpu_model</dd>"
-fi
+
+echo "<dl class='info'>"
+[ -n "$cpu_family" ] && echo "<dt>CPU$(lang de:"-Familie" en:" family")</dt><dd>$cpu_family</dd>"
+[ -n "$cpu_model"  ] && echo "<dt>CPU$(lang de:"-Modell"  en:" model" )</dt><dd>$cpu_model</dd>"
+[ -n "$cpu_cores"  ] && echo "<dt>CPU$(lang de:"-Kerne" en:" cores" )</dt><dd>$cpu_cores</dd>"
+
 echo "</dl>"
 
-if [ -e /proc/clocks ]; then
+if [ -e /proc/clocks -o -e /proc/sys/urlader/environment ]; then
 	echo "<dl class='info'>"
-	echo "<dt>$(lang de:"Taktfrequenzen" en:"Clock frequencies")</dt><dd><dl>"
-	sed 's/ [ ]*/ /g;s/^Clocks: //;s/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*\):[ ]*\([0-9,.]*\)[ ]*\([a-zA-Z]*\) */<dt>\1<\/dt><dd>\2 \3<\/dd>/g;' /proc/clocks 2>/dev/null
-	echo "</dl></dd>"
+	echo "<dt>$(lang de:"Taktfrequenzen" en:"Clock frequencies")</dt><dl>"
+	if [ -e /proc/clocks ]; then
+			sed 's/ [ ]*/ /g;s/^Clocks: //;s/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*\):[ ]*\([0-9,.]*\)[ ]*\([a-zA-Z]*\) */<dt>\1<\/dt><dd>\2 \3<\/dd>/g;' /proc/clocks 2>/dev/null
+	else
+		_CPU_FRQ="$(sed -n 's/^cpufrequency\t//p' /proc/sys/urlader/environment | awk '{ printf "%.0f", $1 /1000/1000 }')"
+		_SYS_FRQ="$(sed -n 's/^sysfrequency\t//p' /proc/sys/urlader/environment | awk '{ printf "%.0f", $1 /1000/1000 }')"
+		echo "<dt>CPU</dt><dd>$_CPU_FRQ MHz</dd>"
+		echo "<dt>SYSTEM</dt><dd>$_SYS_FRQ MHz</dd>"
+	fi
+	[ -n "$cpu_bogom" ] && echo "<dt>BogoMIPS</dt><dd>$cpu_bogom</dd>"
+	echo "</dl>"
 	echo "</dl>"
 fi
 
