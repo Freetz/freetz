@@ -24,7 +24,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 ---
 --- linux-2.6.28/drivers/usb/serial/ftdi_sio.c
 +++ linux-2.6.28/drivers/usb/serial/ftdi_sio.c
-@@ -2193,13 +2193,19 @@
+@@ -2197,13 +2197,19 @@
  
  	cflag = termios->c_cflag;
  
@@ -47,7 +47,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
  	/* Set number of data bits, parity, stop bits */
  
  	termios->c_cflag &= ~CMSPAR;
-@@ -2236,6 +2242,7 @@
+@@ -2240,6 +2246,7 @@
  	}
  
  	/* Now do the baudrate */
@@ -55,7 +55,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
  	if ((cflag & CBAUD) == B0) {
  		/* Disable flow control */
  		if (usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
-@@ -2261,6 +2268,7 @@
+@@ -2265,6 +2272,7 @@
  
  	/* Set flow control */
  	/* Note device also supports DTR/CD (ugh) and Xon/Xoff in hardware */

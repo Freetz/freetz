@@ -1533,7 +1533,7 @@
   *
   * Copyright 1999-2002 Paul Mackerras.
   *
-@@ -85,10 +85,11 @@
+@@ -88,10 +88,11 @@
  	int		dead;		/* unit/channel has been shut down */
  };
  
@@ -1546,7 +1546,7 @@
  
  /*
   * Data structure describing one ppp unit.
-@@ -104,6 +105,7 @@
+@@ -107,6 +108,7 @@
  	spinlock_t	rlock;		/* lock for receive side 58 */
  	spinlock_t	wlock;		/* lock for transmit side 5c */
  	int		mru;		/* max receive unit 60 */
@@ -1554,7 +1554,7 @@
  	unsigned int	flags;		/* control bits 64 */
  	unsigned int	xstate;		/* transmit state bits 68 */
  	unsigned int	rstate;		/* receive state bits 6c */
-@@ -136,14 +138,13 @@
+@@ -139,14 +141,13 @@
  
  /*
   * Bits in flags: SC_NO_TCP_CCID, SC_CCP_OPEN, SC_CCP_UP, SC_LOOP_TRAFFIC,
@@ -1571,7 +1571,7 @@
  
  /*
   * Private data structure for each channel.
-@@ -636,7 +637,9 @@
+@@ -659,7 +660,9 @@
  	case PPPIOCSMRU:
  		if (get_user(val, p))
  			break;
@@ -1582,7 +1582,7 @@
  		err = 0;
  		break;
  
-@@ -1011,56 +1014,6 @@
+@@ -1034,56 +1037,6 @@
  	ppp_xmit_unlock(ppp);
  }
  
@@ -1639,7 +1639,7 @@
  /*
   * Compress and send a frame.
   * The caller should have locked the xmit path,
-@@ -1141,20 +1094,66 @@
+@@ -1164,20 +1117,66 @@
  	case PPP_CCP:
  		/* peek at outbound CCP frames */
  		ppp_ccp_peek(ppp, skb, 0);
@@ -1711,7 +1711,7 @@
  	}
  
  	/*
-@@ -1571,9 +1570,6 @@
+@@ -1597,9 +1596,6 @@
  	    && (ppp->rstate & (SC_DC_FERROR | SC_DC_ERROR)) == 0)
  		skb = ppp_decompress_frame(ppp, skb);
  
@@ -1721,7 +1721,7 @@
  	proto = PPP_PROTO(skb);
  	switch (proto) {
  	case PPP_VJC_COMP:
-@@ -1756,7 +1752,14 @@
+@@ -1796,7 +1792,14 @@
  	return skb;
  
   err:
@@ -1737,7 +1737,7 @@
  	ppp_receive_error(ppp);
  	return skb;
  }
-@@ -2426,6 +2429,7 @@
+@@ -2466,6 +2469,7 @@
  		goto out1;
  
  	ppp->mru = PPP_MRU;

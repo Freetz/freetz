@@ -1,6 +1,6 @@
 --- linux-2.6.28/include/linux/skbuff.h
 +++ linux-2.6.28/include/linux/skbuff.h
-@@ -488,10 +488,6 @@
+@@ -560,10 +560,6 @@
  #endif
  
  	void			(*destructor)(struct sk_buff *skb);
@@ -11,7 +11,7 @@
  #ifdef CONFIG_BRIDGE_NETFILTER
  	struct nf_bridge_info	*nf_bridge;
  #endif
-@@ -563,6 +559,10 @@
+@@ -635,6 +631,10 @@
  				*data;
  	unsigned int		truesize;
  	atomic_t		users;
@@ -24,7 +24,7 @@
  #ifdef __KERNEL__
 --- linux-2.6.28/net/core/skbuff.c
 +++ linux-2.6.28/net/core/skbuff.c
-@@ -201,6 +201,11 @@
+@@ -202,6 +202,11 @@
  	 * the tail pointer in struct sk_buff!
  	 */
  	memset(skb, 0, offsetof(struct sk_buff, tail));

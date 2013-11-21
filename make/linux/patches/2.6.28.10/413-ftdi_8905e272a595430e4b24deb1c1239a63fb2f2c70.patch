@@ -23,7 +23,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
 --- linux-2.6.28/drivers/usb/serial/ftdi_sio.c
 +++ linux-2.6.28/drivers/usb/serial/ftdi_sio.c
-@@ -1541,6 +1541,7 @@
+@@ -1545,6 +1545,7 @@
  static int ftdi_open(struct tty_struct *tty,
  			struct usb_serial_port *port, struct file *filp)
  { /* ftdi_open */
@@ -31,7 +31,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	struct usb_device *dev = port->serial->dev;
  	struct ftdi_private *priv = usb_get_serial_port_data(port);
  	unsigned long flags;
-@@ -1571,9 +1572,10 @@
+@@ -1575,9 +1576,10 @@
  	   This is same behaviour as serial.c/rs_open() - Kuba */
  
  	/* ftdi_set_termios  will send usb control messages */

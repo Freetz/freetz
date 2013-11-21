@@ -1,6 +1,6 @@
 --- linux-2.6.28/Makefile
 +++ linux-2.6.28/Makefile
-@@ -547,6 +547,25 @@
+@@ -566,6 +566,25 @@
  # Defaults vmlinux but it is usually overridden in the arch makefile
  all: vmlinux
  
@@ -26,7 +26,7 @@
  ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
  KBUILD_CFLAGS	+= -Os
  else
-@@ -1202,7 +1221,7 @@
+@@ -1436,7 +1455,7 @@
  
  # Directories & files removed with 'make clean'
  CLEAN_DIRS  += $(MODVERDIR)
@@ -37,7 +37,7 @@
  # Directories & files removed with 'make mrproper'
 --- linux-2.6.28/arch/mips/Makefile
 +++ linux-2.6.28/arch/mips/Makefile
-@@ -745,9 +745,6 @@
+@@ -746,9 +746,6 @@
  
  all:	$(all-y)
  

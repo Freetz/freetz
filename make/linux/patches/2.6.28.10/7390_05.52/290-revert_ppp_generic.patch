@@ -11,7 +11,7 @@
  
  #define PPP_VERSION	"2.4.2"
  
-@@ -1566,9 +1562,6 @@
+@@ -1565,9 +1561,6 @@
  	struct sk_buff *ns;
  	int proto, len, npi;
  
@@ -21,7 +21,7 @@
  	/*
  	 * Decompress the frame, if compressed.
  	 * Note that some decompressors need to see uncompressed frames
-@@ -1641,12 +1634,6 @@
+@@ -1637,12 +1630,6 @@
  	++ppp->dev->stats.rx_packets;
  	ppp->dev->stats.rx_bytes += skb->len - 2;
  
@@ -34,7 +34,7 @@
  
  	npi = proto_to_npindex(proto);
  	if (npi < 0) {
-@@ -1695,10 +1682,6 @@
+@@ -1691,10 +1678,6 @@
  			kfree_skb(skb);
  		} else {
  
@@ -45,7 +45,7 @@
  			/* chop off protocol */
  			skb_pull_rcsum(skb, 2);
  			skb->dev = ppp->dev;
-@@ -2821,178 +2804,11 @@
+@@ -2825,178 +2808,11 @@
  }
  
  
