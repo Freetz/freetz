@@ -77,7 +77,7 @@ if [ -r /proc/sys/urlader/environment ]; then
 		*)      flash_size="";;
 	esac
 fi
-if [ -z $flash_size -a "${CONFIG_ROMSIZE#*=}" == "${CONFIG_ROMSIZE%=*}" ]; then
+if [ -z "$flash_size" -a "${CONFIG_ROMSIZE#*=}" == "${CONFIG_ROMSIZE%=*}" ]; then
 	flash_size="$CONFIG_ROMSIZE"
 fi
 _CONFIG_NAND="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9]*\).*/\1/p")"
@@ -108,7 +108,6 @@ echo "<dl class='info'>"
 [ -n "$cpu_family" ] && echo "<dt>CPU$(lang de:"-Familie" en:" family")</dt><dd>$cpu_family</dd>"
 [ -n "$cpu_model"  ] && echo "<dt>CPU$(lang de:"-Modell"  en:" model" )</dt><dd>$cpu_model</dd>"
 [ -n "$cpu_cores"  ] && echo "<dt>CPU$(lang de:"-Kerne" en:" cores" )</dt><dd>$cpu_cores</dd>"
-
 echo "</dl>"
 
 if [ -e /proc/clocks -o -e /proc/sys/urlader/environment ]; then
