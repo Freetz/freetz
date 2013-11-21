@@ -14,6 +14,11 @@ rm_files \
 echo2 "removing internal memory"
 rm -rf ${FILESYSTEM_MOD_DIR}/etc/internal_memory_default*.tar
 
+# patcht MyFRITZ! Menu
+if [ "$FREETZ_REMOVE_MYFRITZ" != "y" ]; then
+	modsed '/FRITZ!NAS/d' "${FILESYSTEM_MOD_DIR}/usr/www.myfritz/all/index.lua"
+fi
+
 # patcht Uebersicht
 modsed '/.*uiViewTabSpeicherNas.*/{N;N;N;/537:880/d}' "${HTML_LANG_MOD_DIR}/home/home.lua"
 
