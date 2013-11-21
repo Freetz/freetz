@@ -552,6 +552,7 @@ fi
 TARGET_SPECIFIC_ROOT_DIR="${PACKAGES_DIR}/root"
 
 HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/${HTML_SUBDIR}"
+# $LUA_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all/lua
 # $HTML_LANG_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all
 # $HTML_SPEC_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all/html/de
 
@@ -719,6 +720,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 			break
 		fi
 	done
+
+	# Check for LUA directory
+	LUA_MOD_DIR="${HTML_LANG_MOD_DIR}/lua"
+	[ -d "$LUA_MOD_DIR" ] && echo1 "LUA directory: ${LUA_MOD_DIR}"
 
 	# Now check language specific html directory (if there is any)
 	for i in de en; do
