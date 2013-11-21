@@ -980,9 +980,8 @@ config FREETZ_PATCH_ENUM
 config FREETZ_PATCH_DSL_EXPERT
 	bool "Patch extended DSL settings"
 	depends on \
-		FREETZ_REAL_DEVELOPER_ONLY && \
 		! FREETZ_REMOVE_DSLD && \
-		! FREETZ_AVM_VERSION_05_5X && \
+		! FREETZ_AVM_VERSION_05_5X_MIN && \
 		( \
 			FREETZ_TYPE_3270 || \
 			FREETZ_TYPE_3370 || \
@@ -1031,7 +1030,6 @@ config FREETZ_ADD_REGEXT_GUI
 config FREETZ_PATCH_GSMVOICE
 	bool "Patch GSM voice"
 	depends on \
-		FREETZ_REAL_DEVELOPER_ONLY && \
 		FREETZ_AVM_HAS_UMTS && \
 		! FREETZ_REMOVE_UMTSD && \
 		! FREETZ_TYPE_7270_V1
