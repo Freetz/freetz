@@ -46,11 +46,11 @@ else
 fi
 if [ -r /proc/cpuinfo ]; then
 	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo | sed 's/Ikanos Fusiv.*/IKS/')
-	cpu_model=$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo)
+	cpu_model=$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo | head -n1)
 	cpu_cores=$(grep $'^processor\t*:' /proc/cpuinfo | wc -l)
 	cpu_bogom="$(sed -ne '/BogoMIPS/ s/.*: //p' /proc/cpuinfo)"
 	cpu_bogom="$(echo $cpu_bogom | sed 's! ! / !g')"
-	
+
 else
 	cpu_family=""
 	cpu_model=""
