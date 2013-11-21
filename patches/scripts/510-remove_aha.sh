@@ -10,6 +10,10 @@ for files in \
   usr/www/all/net/home_auto_*.lua \
   usr/www/all/mobile/home_auto_*.lua \
   usr/www/all/js/ha_draw.js \
+  usr/www/all/webservices/homeautoswitch.lua \
+  usr/www/all/meter/ \
+  usr/www.myfritz/all/areas/homeauto.lua \
+  usr/www.myfritz/all/lua/ha_func_lib.lua \
   ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
