@@ -9,6 +9,6 @@ if [ "$FREETZ_AVM_HAS_ONLY_LUA" != "y" ]; then
 else
 	modsed \
 	  's/^\(local voice_status=\).*/\11/' \
-	  "{LUA_MOD_DIR}/umts.lua" \
+	  "${LUA_MOD_DIR}/umts.lua" \
 	  'voice_status=1'
 fi
