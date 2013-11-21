@@ -1553,7 +1553,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 327680)))
 			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
 			if [ "$FREE_BYTE_JFFS2" -gt 0 ]; then
-				echo "${L1}Aproximately maximal time for the answering machine: ${FREE_MINUTES}min $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60)))sec ($((($FREE_BYTE_JFFS2 / 2017)))sec)"
+				echo "${L1}Aproximately maximal time for the answering machine: ${FREE_MINUTES} min, $((($FREE_BYTE_JFFS2 / 2017 - $FREE_MINUTES * 60))) sec ($((($FREE_BYTE_JFFS2 / 2017))) sec)"
 			else
 				if [ "$FREETZ_REMOVE_JFFS2" != "y" ]; then
 					echo "${L1}WARNING: Not enough free flash space for answering machine!"
