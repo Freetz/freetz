@@ -77,7 +77,7 @@ via_route() {
 # server. The most efficient method is STUN (stun-ip applet will try 3x).
 # ip is cached for max 1 minute
 via_stun() {
-	IP=$(find /tmp/.get_ip -mmin 0 -exec cat {} ';')
+	IP=$(find /tmp/.get_ip -mmin 0 -exec cat {} ';' 2>/dev/null)
 	[ -n "$IP" ] && return 0
 	IP=$(stun-ip $MOD_GET_IP_STUN)
 	[ $? -eq 0 -a -n "$IP" ] && echo "$IP" > /tmp/.get_ip && return 0
