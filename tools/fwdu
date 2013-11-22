@@ -26,7 +26,7 @@ download() {
 	rm -rf ftp.avm.de 2>/dev/null
 
 	# BETA/Labor/LabRC
-	if [ -n "$1" -a "$1" != "stable" ]; then
+	if [ -n "$1" -a "$1" != "stable" -a "$1" != "s" ]; then
 		wget -nv -m -A '*.zip' ftp://ftp.avm.de/fritz.box/beta/
 		(
 			cd ftp.avm.de/fritz.box/beta/
@@ -39,7 +39,7 @@ download() {
 	fi
 
 	# stable
-	if [ -z "$1" -o "$1" == "stable" ]; then
+	if [ -z "$1" -o "$1" == "stable" -o "$1" == "s" ]; then
 		wget -nv -m -A '*.image' ftp://ftp.avm.de/fritz.box/
 		find ftp.avm.de -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
 	fi
@@ -126,22 +126,22 @@ image() {
 # check args
 while [ $# -gt 0 ]; do
 	case $1 in
-		download)
+		d|download)
 			download=y
 			case $2 in
-				stable|labor|beta|all)
+				s|l|b|a|stable|labor|beta|all)
 					dl_arg="$2"
 					shift
 					;;
-				unpack|"")
-				;;
+				u|unpack|"")
+					;;
 				*)
-				echo "Unknwon argument: $2"
-				exit 1
-				;;
+					echo "Unknwon argument: $2"
+					exit 1
+					;;
 			esac
 			;;
-		unpack)
+		u|unpack)
 			unpack=y
 			;;
 		*)
