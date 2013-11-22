@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.1.0)
+$(call PKG_INIT_BIN, 1.1.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=26484a84af3fceafdee26595aae097f7
+$(PKG)_SOURCE_MD5:=653405555ac3f8eb4aacc54c1be7b5fa
 $(PKG)_SITE:=@SF/minidlna
 
 $(PKG)_BINARY := $($(PKG)_DIR)/minidlnad
