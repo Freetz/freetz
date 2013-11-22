@@ -33,3 +33,8 @@ fi
 
 # delete tr069 config
 echo "echo -n > /var/flash/tr069.cfg" > "${FILESYSTEM_MOD_DIR}/bin/tr069starter"
+
+# remove providers-*.tar
+[ "$FREETZ_REMOVE_TR069_PROVIDERS" == "y" ] || return 0
+rm_files "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*/providers-*.tar"
+

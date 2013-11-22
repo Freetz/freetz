@@ -772,7 +772,7 @@ config FREETZ_REMOVE_TR069_FWUPDATE
 	default n
 	help
 		Removes the file /usr/bin/tr069fwupdate, needed for
-		updating the firmware in MT-D devices
+		updating the firmware in MT-D devices.
 
 config FREETZ_REMOVE_TR069_HTTPSDL
 	bool "Remove httpsdl"
@@ -784,6 +784,16 @@ config FREETZ_REMOVE_TR069_HTTPSDL
 		* firmware updater, with Freetz you don't want it
 		* some more ?
 		This saves 15-45 KB of uncompressed data size.
+
+config FREETZ_REMOVE_TR069_PROVIDERS
+	bool "Remove providers db"
+	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_SHOW_ADVANCED
+	default n
+	help
+		Removes the files /etc/default.{BOX}/{OEM}/providers-{ALC}.tar,
+		filled with defaults for many providers. Every branding has such
+		a file with up to 310 KB of uncompressed data size for each.
+		Use only if you are using currently a self defined provider! 
 
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS (USB GSM)"
