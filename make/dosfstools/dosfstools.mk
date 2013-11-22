@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.0.22)
+$(call PKG_INIT_BIN, 3.0.23)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=301f01ca8a734011c0257134bcf475c8
+$(PKG)_SOURCE_MD5:=bfdca786880a7f1cc9ce8ac68cb1fd51
 $(PKG)_SITE:=http://www.daniel-baumann.ch/files/software/dosfstools
 
 $(PKG)_BINARIES_ALL := fsck.fat fatlabel mkfs.fat
