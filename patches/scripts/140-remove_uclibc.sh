@@ -3,6 +3,8 @@
 [ "$FREETZ_AVM_UCLIBC_0_9_32" == "y" ] && version="0.9.32"
 [ "$FREETZ_AVM_UCLIBC_0_9_33" == "y" ] && version="0.9.33.2"
 
+[ -z "$version" ] && error 1 "FREETZ_AVM_UCLIBC is not configured"
+
 echo1 "removing uClibc-${version} files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/*${version}*"
 

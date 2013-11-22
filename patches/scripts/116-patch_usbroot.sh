@@ -1,5 +1,9 @@
 [ "$FREETZ_PACKAGE_USBROOT" == "y" ] || return 0
 
+echo1 "remove usb host stop from post_install"
+modsed "/^.*usb.pandu stop$/ s/^/: #/g" "$VARTAR_MOD_DIR/var/post_install"
+modsed "/^.*usb.pandu stop$/ s/^/: #/g" "$FILESYSTEM_MOD_DIR/bin/prepare_fwupgrade"
+
 usb_init_file="${FILESYSTEM_MOD_DIR}/etc/init.d/S46-usb"
 
 [ -x "$usb_init_file" ] || return 0

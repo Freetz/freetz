@@ -1,12 +1,11 @@
 
-echo1 "patching /bin/onlinechanged"
-
-rm -f "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
+echo1 "replacing onlinechanged"
 
 if [ "$FREETZ_REPLACE_ONLINECHANGED" == "y" ]; then
 	# Replace AVM onlinechanged by our own handler
 	onlinechanged_cmd='# Do nothing for AVM onlinechanged, let /sbin/ip_watchdog handle it'
-	cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/sbin/ip_watchdog"
+
+cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/sbin/ip_watchdog"
 #!/bin/sh
 
 while true; do
@@ -17,11 +16,14 @@ while true; do
 	sleep 60
 done
 EOF
+
 	chmod +x "${FILESYSTEM_MOD_DIR}/sbin/ip_watchdog"
 else
 	# Run in background, multid terminates the script
 	onlinechanged_cmd='/bin/onlinechanged.sh "$@" &'
 fi
+
+rm -f "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 
 cat << EOF > "${FILESYSTEM_MOD_DIR}/bin/onlinechanged"
 #!/bin/sh

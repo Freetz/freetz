@@ -6,9 +6,9 @@ return 0
 
 sedfile="${HTML_LANG_MOD_DIR}/storage/media_settings.lua"
 if [ -e $sedfile ]; then
-	# patcht Heimnetz > MediaServer >Einstellungen > Mediaserver (ab 05.59)
+	# patcht Heimnetz > MediaServer > Einstellungen > Mediaserver (ab 05.59)
 	echo1 "patching ${sedfile##*/}"
-	error 1 TODO
+#TODO
 else
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e $sedfile ]; then
