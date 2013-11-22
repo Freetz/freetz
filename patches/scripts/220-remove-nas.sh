@@ -12,7 +12,10 @@ rm_files \
   "${FILESYSTEM_MOD_DIR}/bin/showfritznasdbstat"
 # REMOVE_MEDIASRV uses/removes libavmdb*.so
 echo2 "removing internal memory"
-rm -rf ${FILESYSTEM_MOD_DIR}/etc/internal_memory_default*.tar
+rm -rf \
+  ${FILESYSTEM_MOD_DIR}/etc/internal_memory_default_??/ \
+  ${FILESYSTEM_MOD_DIR}/etc/internal_memory_default_??_*/ \
+  ${FILESYSTEM_MOD_DIR}/etc/internal_memory_default*.tar
 
 # patcht MyFRITZ! Menu
 if [ "$FREETZ_REMOVE_MYFRITZ" != "y" ]; then
