@@ -42,7 +42,7 @@ write_to_file() # write to new file
 
 check_args() # check arguments
 {
-	[ -r "$1" ] || return 22 # file can not be read
+	[ -r "$1" ] || return 22 # file cannot be read
 	[ $# -lt 3 ] && return 23 # not enough arguments
 	[ -z "$1" ] && return 24 # filename not defined
 	[ -z "$2" ] && return 25 # sectionname not defined
