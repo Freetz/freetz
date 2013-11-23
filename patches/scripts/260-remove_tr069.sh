@@ -18,6 +18,34 @@ rm_files \
 
 [ "$FREETZ_REMOVE_TR069_FWUPDATE" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/tr069fwupdate"
 [ "$FREETZ_REMOVE_TR069_HTTPSDL" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/httpsdl"
+[ "$FREETZ_REMOVE_TR069_PROVIDERS" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*/providers-*.tar"
+
+# patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Heimnetzfreigaben > Zugriff für Anwendungen zulassen
+sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	#<input type="checkbox" id="uiViewSetTr064" name="set_tr_064" <?lua if g_var.tr064_enabled then box.out('checked') end ?>>
+	#<label for="uiViewSetTr064">{?859:511?}</label>
+	#<p class="form_checkbox_explain">
+	#{?859:2438?}
+	#</p>
+	#<p class="form_checkbox_explain">
+	#{?859:144?}
+	#</p>
+	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewSetTr064".*$/\1/p')
+	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:144?}.*$/\1/p')
+	modsed "$((sedrows)),$((sedrowe+1))d" $sedfile
+	# remove sub header if also upnp is removed
+	if [ "$FREETZ_REMOVE_UPNP" == "y" ]; then
+		#<h4>
+		#{?859:570?}
+		#</h4>
+		sedrow=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:570?}.*$/\1/p')
+		modsed "$((sedrow-1)),$((sedrow+1))d" $sedfile
+		#if (general.is_expert()) then box.out([[<hr>]]) end
+		modsed '/general.is_expert.*then.box.out.*hr.*end/d' $sedfile
+	fi
+fi
 
 echo1 "patching default tr069.cfg"
 find ${FILESYSTEM_MOD_DIR}/etc -name tr069.cfg -exec sed -e 's/enabled = yes/enabled = no/' -i '{}' \;
@@ -33,8 +61,4 @@ fi
 
 # delete tr069 config
 echo "echo -n > /var/flash/tr069.cfg" > "${FILESYSTEM_MOD_DIR}/bin/tr069starter"
-
-# remove providers-*.tar
-[ "$FREETZ_REMOVE_TR069_PROVIDERS" == "y" ] || return 0
-rm_files "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*/providers-*.tar"
 

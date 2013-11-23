@@ -25,6 +25,7 @@ if [ -e $sedfile ]; then
 	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUpnpAktiv".*$/\1/p')
 	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:536?}.*$/\1/p')
 	modsed "$((sedrows)),$((sedrowe+1))d" $sedfile
+	# remove_upnp removes the header if also selected
 fi
 
 _upnp_file="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
