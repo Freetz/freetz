@@ -737,6 +737,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Determine $MODULES_DIR in AVM image, eg: "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2
 	MODULES_DIR="$(find ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.* -maxdepth 0 -type d)"
 	[ ! -d "$MODULES_DIR" ] && error 1 "Cannot find modules dir."
+	# Set $MODULES_SUBDIR relative to root dir in AVM image, eg: "lib/modules/2.6.19.2
+	MODULES_SUBDIR="${MODULES_DIR#${FILESYSTEM_MOD_DIR}/}"
 
 	# Apply (general, version specific, language specific) patches
 	shopt -s nullglob
@@ -1055,12 +1057,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# check for modules directory / correctly configured kernel version
 	if [ "${FILESYSTEM_MOD_DIR}/lib/modules/${FREETZ_MODULES_KVER}" != "$MODULES_DIR" ]; then
 		if [ "$FREETZ_REPLACE_MODULE_AVAILABLE" == "y" ]; then
-			error 1 "Automatically determined kernel modules directory ('${MODULES_DIR#${FILESYSTEM_MOD_DIR}/}') doesn't match the configured one ('lib/modules/${FREETZ_MODULES_KVER}'). Wrong kernel version?"
+			error 1 "Automatically determined kernel modules directory ('${MODULES_SUBDIR}') doesn't match the configured one ('lib/modules/${FREETZ_MODULES_KVER}'). Wrong kernel version?"
 		else
 			warn2 "Kernel modules directory is probably not correctly configured. Wrong kernel version?"
 		fi
 	fi
-	echo1 "kernel modules directory: ${MODULES_DIR#${FILESYSTEM_MOD_DIR}/}"
+	echo1 "kernel modules directory: ${MODULES_SUBDIR}"
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" -o -n "$(set|grep ^FREETZ_MODULE_.*=y)" ]; then
 		[ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ] && strip_output=" and stripping"
