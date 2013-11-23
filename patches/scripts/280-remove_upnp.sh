@@ -7,12 +7,25 @@ rm_files \
   $(find ${FILESYSTEM_MOD_DIR}/etc -maxdepth 1 -type d -name 'default.*' | xargs -I{} find {} -name '*igd*')
 [ "$FREETZ_REMOVE_UPNP_LIBS" == "y" ] && rm_files $(ls -1 ${FILESYSTEM_MOD_DIR}/lib/libavmupnp*)
 
-# patcht Heimetz > Netzwerk > Programme (lua)
-menulua_remove upnp
 # html: Geraete und Benutzer
 modsed "/.*javascript:doNetPage('upnp').*/d" "${HTML_SPEC_MOD_DIR}/home/clients.html"
 # html: Netzwerkeinstellungen
 modsed "/.*javascript:DoTabsUpnp().*/d" "${HTML_SPEC_MOD_DIR}/system/net.html"
+# patcht Heimetz > Netzwerk > Programme (lua)
+menulua_remove upnp
+# patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Heimnetzfreigaben > Statusinformationen über UPnP übertragen
+sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	#<input type="checkbox" id="uiViewUpnpAktiv" name="upnp_activ" <?lua if g_var.upnp_activ then box.out('checked') end ?>>
+	#<label for="uiViewUpnpAktiv">{?859:341?}</label>
+	#<p class="form_checkbox_explain">
+	#{?859:536?}
+	#</p>
+	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUpnpAktiv".*$/\1/p')
+	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:536?}.*$/\1/p')
+	modsed "$((sedrows)),$((sedrowe+1))d" $sedfile
+fi
 
 _upnp_file="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
 for _upnp_name in upnpdevdstart upnpdstart _upnp_name; do
