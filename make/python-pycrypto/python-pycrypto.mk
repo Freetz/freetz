@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.6)
+$(call PKG_INIT_BIN, 2.6.1)
 $(PKG)_SOURCE:=pycrypto-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=88dad0a270d1fe83a39e0467a66a22bb
+$(PKG)_SOURCE_MD5:=55a61a054aa66812daf5161a0d5d7eda
 $(PKG)_SITE:=http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/pycrypto-$($(PKG)_VERSION)
