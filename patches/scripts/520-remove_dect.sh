@@ -22,6 +22,10 @@ modsed "s/document.write(Dect.\{1,10\}(.*))//g" "${HTML_SPEC_MOD_DIR}/home/home.
 modsed "/jslGoTo('dect'/d;/^<?.*[dD]ect.*?>$/d" "${HTML_SPEC_MOD_DIR}/menus/menu2_konfig.html"
 menu2html_remove dect
 
+# patcht Heimnetz > Mediaserver
+menulua_remove dect.internetradio
+menulua_remove dect.podcast
+
 MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
 if [ -e "$MODPROBEPIGLET" ]; then
 	echo1 "patching ${MODPROBEPIGLET##*/}"
