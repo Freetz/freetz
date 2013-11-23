@@ -732,7 +732,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Check for LUA directory
 	LUA_MOD_DIR="${HTML_LANG_MOD_DIR}/lua"
-	[ -d "$LUA_MOD_DIR" ] && echo1 "LUA directory: ${LUA_MOD_DIR}"
+	[ -d "$LUA_MOD_DIR" ] && echo1 "LUA directory: ${LUA_MOD_DIR}" || FREETZ_AVM_HAS_ONLY_HTML=y
 
 	# Determine $MODULES_DIR in AVM image, eg: "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2
 	MODULES_DIR="$(find ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.* -maxdepth 0 -type d)"
