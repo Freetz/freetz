@@ -65,6 +65,12 @@ if [ -e "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html" ]; then
 	  D }" "${HTML_SPEC_MOD_DIR}/nas/einstellungen.html"
 fi
 
+# patcht Heimnetz > Mediaserver
+menulua_remove dect.internetradio 
+menulua_remove dect.podcast
+
+# patcht Dect > Internetdienste
+menulua_remove dect.radiopodcast
 
 # patcht USB-Geraete > USB-Speicher >  Musikbox aktivieren
 sedfile="${HTML_SPEC_MOD_DIR}/usb/usbdisk.html"
