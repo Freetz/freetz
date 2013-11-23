@@ -1,8 +1,8 @@
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -196,6 +196,9 @@
- _PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
- HOST_GNU_TYPE=  @host@
+@@ -200,6 +200,9 @@
+ TCLTK_INCLUDES=	@TCLTK_INCLUDES@
+ TCLTK_LIBS=	@TCLTK_LIBS@
  
 +# override for cross-compile builds
 +PYTHON_FOR_COMPILE=$(PYTHON_FOR_BUILD)
@@ -10,7 +10,7 @@
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
  #PROFILE_TASK=	$(srcdir)/Lib/test/regrtest.py
-@@ -1000,28 +1003,28 @@
+@@ -1005,28 +1008,28 @@
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi

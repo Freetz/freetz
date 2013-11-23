@@ -1,19 +1,21 @@
 --- setup.py
 +++ setup.py
-@@ -436,12 +436,6 @@
+@@ -436,14 +436,6 @@
              os.unlink(tmpfile)
  
      def detect_modules(self):
 -        # Ensure that /usr/local is always used
--        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
--        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
--        self.add_gcc_paths()
+-        if not cross_compiling:
+-            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-            add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+-        if cross_compiling:
+-            self.add_gcc_paths()
 -        self.add_multiarch_paths()
 -
          # Add paths specified in the environment variables LDFLAGS and
          # CPPFLAGS for header and library files.
          # We must get the values from the Makefile and not the environment
-@@ -476,17 +470,6 @@
+@@ -478,17 +470,6 @@
                      for directory in reversed(options.dirs):
                          add_dir_to_list(dir_list, directory)
  
