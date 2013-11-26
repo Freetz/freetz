@@ -14,6 +14,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 		! FREETZ_TYPE_6810 && \
 		! FREETZ_TYPE_6840 && \
 		! FREETZ_TYPE_6842 && \
+		! (FREETZ_TYPE_7360 && FREETZ_TYPE_FIRMWARE_06_XX) && \
 		! FREETZ_TYPE_7272
 
 	default y
@@ -52,6 +53,7 @@ config FREETZ_AVM_HAS_FW6XX
 	bool "Has AVM Firmware 06.xx"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7360_XL || \
 			FREETZ_TYPE_7390 \
 		))
 	default n
