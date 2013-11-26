@@ -976,6 +976,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 
+		echo1 "checking uClibc"
+		DETECTED_UCLIBC_VER="$(find ${FILESYSTEM_DIR}/lib/libuClibc-*.so | sed -rn 's@.*/.*-(.*)\.so@\1@p')"
+		echo2 "configured uClibc version: ${FREETZ_TARGET_UCLIBC_VERSION}"
+		echo2 "version used by AVM image: $DETECTED_UCLIBC_VER"
+		if [ "${FREETZ_TARGET_UCLIBC_VERSION#$DETECTED_UCLIBC_VER}" == "$FREETZ_TARGET_UCLIBC_VERSION" \
+		  -a "${FREETZ_TARGET_UCLIBC_VERSION}" != "$DETECTED_UCLIBC_VER" ]; then
+			warn1 "by AVM used and configured uClibc versions does not match"
+		fi
+		unset DETECTED_UCLIBC_VER
+
 		if [ "$FREETZ_SHARE_terminfo" == "y" ]; then
 			echo1 "installing terminfos"
 			for i in $(set | grep ^FREETZ_SHARE_terminfo_.*=y |grep -v '^FREETZ_SHARE_terminfo_showall=' ); do
@@ -1054,15 +1064,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_VERSION_STRING}.bin" "$RAW_KERNEL_MOD"
 	fi
 
-	# check for modules directory / correctly configured kernel version
-	if [ "${FILESYSTEM_MOD_DIR}/lib/modules/${FREETZ_MODULES_KVER}" != "$MODULES_DIR" ]; then
+	# modules directory / correctly configured kernel version
+	echo1 "checking kernel"
+	echo2 "detected kernel version: ${MODULES_SUBDIR##*/}"
+	echo2 "version used by sources: ${FREETZ_MODULES_KVER}"
+	if [ "lib/modules/${FREETZ_MODULES_KVER}" != "$MODULES_SUBDIR" ]; then
 		if [ "$FREETZ_REPLACE_MODULE_AVAILABLE" == "y" ]; then
-			error 1 "Automatically determined kernel modules directory ('${MODULES_SUBDIR}') doesn't match the configured one ('lib/modules/${FREETZ_MODULES_KVER}'). Wrong kernel version?"
+			error 1 "Determined kernel version '${MODULES_SUBDIR##*/}' doesn't match the configured one '${FREETZ_MODULES_KVER}'. Wrong configured kernel version?"
 		else
-			warn2 "Kernel modules directory is probably not correctly configured. Wrong kernel version?"
+			warn2 "Kernel version is probably not correctly configured. Or no recent sources by AVM?"
 		fi
 	fi
-	echo1 "kernel modules directory: ${MODULES_SUBDIR}"
 
 	if [ "$FREETZ_REPLACE_KERNEL" == "y" -o -n "$(set|grep ^FREETZ_MODULE_.*=y)" ]; then
 		[ "$FREETZ_STRIP_MODULES_FREETZ" == "y" ] && strip_output=" and stripping"
