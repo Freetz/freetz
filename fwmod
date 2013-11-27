@@ -978,8 +978,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo1 "checking uClibc version"
 		DETECTED_UCLIBC_VER="$(find ${FILESYSTEM_DIR}/lib/libuClibc-*.so | sed -rn 's@.*/.*-(.*)\.so@\1@p')"
-		echo2 "uClibc version used by AVM: $DETECTED_UCLIBC_VER"
-		echo2 "uClibc version used by Freetz: ${FREETZ_TARGET_UCLIBC_VERSION}"
+		echo2 "... used by AVM ...... $DETECTED_UCLIBC_VER"
+		echo2 "... used by Freetz ... ${FREETZ_TARGET_UCLIBC_VERSION}"
 		if [ "${FREETZ_TARGET_UCLIBC_VERSION#$DETECTED_UCLIBC_VER}" == "$FREETZ_TARGET_UCLIBC_VERSION" \
 		  -a "${FREETZ_TARGET_UCLIBC_VERSION}" != "$DETECTED_UCLIBC_VER" ]; then
 			warn2 "Freetz and AVM uClibc versions do not match"
@@ -1066,8 +1066,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# modules directory / correctly configured kernel version
 	echo1 "checking kernel version"
-	echo2 "kernel version used by AVM: ${MODULES_SUBDIR##*/}"
-	echo2 "kernel version used by Freetz: ${FREETZ_MODULES_KVER}"
+	echo2 "... used by AVM ...... ${MODULES_SUBDIR##*/}"
+	echo2 "... used by Freetz ... ${FREETZ_MODULES_KVER}"
 	if [ "lib/modules/${FREETZ_MODULES_KVER}" != "$MODULES_SUBDIR" ]; then
 		if [ "$FREETZ_REPLACE_MODULE_AVAILABLE" == "y" ]; then
 			error 1 "Freetz and AVM kernel versions do not match. Wrong kernel version configuration in Freetz?"
