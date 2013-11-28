@@ -185,10 +185,24 @@ config FREETZ_REMOVE_ETHERNET_OVER_USB
 		Removes avalanche_usb.ko to save 60kB uncompressed space.
 		This is the Ethernet-over-USB driver which provides also CDROM emulation.
 
+config FREETZ_REMOVE_MEDIASRV
+	bool "Remove mediasrv"
+	depends on \
+		(FREETZ_AVM_HAS_USB_HOST && !FREETZ_TYPE_7270_V1 && FREETZ_REAL_DEVELOPER_ONLY) || \
+		FREETZ_TYPE_7112_7170 || \
+		FREETZ_TYPE_7113_7170 || \
+		FREETZ_TYPE_W701V_7170
+	default n
+	help
+		Remove the MediaServer-daemon (mediasrv) and some other related files.
+		This patch hides also the MediaServer options in the Web UI, so you must
+		disable it before flashing the new image.
+		Saves compressed 230 KB on a 7270_V2 and 40 KB on a 7170.
+
 config FREETZ_REMOVE_NAS
 	bool "Remove NAS"
 	default n
-	depends on FREETZ_AVM_HAS_NAS && FREETZ_REAL_DEVELOPER_ONLY
+	depends on FREETZ_AVM_HAS_NAS && FREETZ_REMOVE_MEDIASRV && FREETZ_REAL_DEVELOPER_ONLY
 	help
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
@@ -200,22 +214,6 @@ config FREETZ_REMOVE_MYFRITZ
 		FREETZ_REMOVE_NAS
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
-
-config FREETZ_REMOVE_MEDIASRV
-	bool "Remove mediasrv"
-	depends on \
-		(FREETZ_REMOVE_NAS || !FREETZ_AVM_HAS_NAS) && ( \
-			(FREETZ_AVM_HAS_USB_HOST && !FREETZ_TYPE_7270_V1 && FREETZ_REAL_DEVELOPER_ONLY) || \
-			FREETZ_TYPE_7112_7170 || \
-			FREETZ_TYPE_7113_7170 || \
-			FREETZ_TYPE_W701V_7170 \
-		)
-	default n
-	help
-		Remove the MediaServer-daemon (mediasrv) and some other related files.
-		This patch hides also the MediaServer options in the Web UI, so you must
-		disable it before flashing the new image.
-		Saves compressed 230 KB on a 7270_V2 and 40 KB on a 7170.
 
 config FREETZ_REMOVE_FHEM
 	bool "Remove FHEM"
