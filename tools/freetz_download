@@ -26,7 +26,7 @@ helpmsg()
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | [--no-append-servers] ( (<download-dir> | check) <filename> [<main-url>] [<md5>])
+Usage: freetz_download (-?|--help) | [--no-append-servers] ( (<download-dir> | check) <filename> [<main-url>,<mirror1>,<mirror2>,...] [<md5>] )
     check         - check download
     download-dir  - target directory for download file
     filename      - download file name
@@ -37,6 +37,7 @@ Usage: freetz_download (-?|--help) | [--no-append-servers] ( (<download-dir> | c
 Examples:
     freetz_download dl package.tar.bz2
     freetz_download dl package.tar.bz2 http://myserver.com/freetz
+    freetz_download dl package.tar.bz2 http://myserver.com/freetz,ftp://myserver-mirror.com/pub/freetz
 
 Debugging: just set DEBUG=1, like this:
     DEBUG=1 freetz_download dl package.tar.bz2
@@ -45,7 +46,7 @@ EOF
 
 do_download()
 {
-	# $1 = target directory, $2 = download URL without file, $3 = remote & local file name 
+	# $1 = target directory, $2 = download URL without file, $3 = remote & local file name
 	echo
 	[ "$DEBUG" == "1" ] && echo \
 	"wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -O \"${1%/}/$3\" \"${2%/}/$3\""
@@ -147,7 +148,7 @@ fi
 
 DL_DIR="$1"
 DL_FILE="$2"
-MAIN_URL="$3"
+URLs="$3"
 CHECKSUM="$(echo $4)" # trim whitespaces, length is used to determine whether it's MD5 or SHA1
 
 # Import Freetz config variables
@@ -158,60 +159,63 @@ if [ "$DEBUG" == "1" ]; then
 	echo "    DL_DIR=$DL_DIR"
 	echo "    DOT_CONFIG=$DOT_CONFIG"
 	echo "    DL_FILE=$DL_FILE"
-	echo "    MAIN_URL=$MAIN_URL"
+	echo "    URLs=$URLs"
 	echo "    CHECKSUM=$CHECKSUM"
 fi
 
+# fill array 'sites' with download server URLs, first primary site and package specific mirrors (if specified)
 num_sites=0
-# Fill array 'sites' with download server URLs, first primary site (if specified)
-if [ -n "$MAIN_URL" ]; then
-	# give sourceforge a few more tries, because it redirects to different mirrors
-	if [ ${MAIN_URL:0:3} == "@SF" ]; then
-		MAIN_URL=${MAIN_URL/@SF\//}
-		for (( n=0; n < 5; n++ )); do
-			sites[$num_sites]=http://downloads.sourceforge.net/$MAIN_URL
-			(( num_sites++ ))
-		done
-	elif [ ${MAIN_URL:0:4} == "@AVM" ]; then
-		MAIN_URL=${MAIN_URL/@AVM\//}
-		sites[0]=http://download.avm.de/fritz.box/$MAIN_URL
-		sites[1]=ftp://ftp.avm.de/fritz.box/$MAIN_URL
-		sites[2]=ftp://service.avm.de/$MAIN_URL
-		num_sites=3
-	elif [ ${MAIN_URL:0:4} == "@GNU" ]; then
-		MAIN_URL=${MAIN_URL/@GNU\//}
-		sites[0]=http://ftpmirror.gnu.org/$MAIN_URL # automatically chooses a nearby and up-to-date mirror
-		sites[1]=http://ftp.gnu.org/gnu/$MAIN_URL
-		num_sites=2
-	elif [ ${MAIN_URL:0:7} == "@KERNEL" ]; then
-		MAIN_URL=${MAIN_URL/@KERNEL\//}
-		sites[0]=http://ftp.de.kernel.org/pub/$MAIN_URL
-		sites[1]=http://ftp.kernel.org/pub/$MAIN_URL
-		num_sites=2
-	elif [ ${MAIN_URL:0:8} == "@TELEKOM" ]; then
-		MAIN_URL=${MAIN_URL/@TELEKOM\//}
-		sites[0]=http://www.telekom.de/dlp/eki/downloads/$MAIN_URL
-		sites[1]=http://www.t-home.de/dlp/eki/downloads/$MAIN_URL
-		sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$MAIN_URL
-		num_sites=3
-	elif [ ${MAIN_URL:0:7} == "@APACHE" ]; then
-		MAIN_URL=${MAIN_URL/@APACHE\//}
-		sites[0]=http://www.eu.apache.org/dist/$MAIN_URL
-		sites[1]=http://www.apache.org/dist/$MAIN_URL
-		sites[2]=http://apache.openmirror.de/$MAIN_URL
-		sites[3]=http://archive.apache.org/dist/$MAIN_URL
-		num_sites=4
+if [ -n "$URLs" ]; then
+	# check if URLs contains magic sequence corresponding to one of the supported VCSs
+	supportedVCSs="cvs|svn|git|git_archive|bzr|hg|darcs"
+	VCS="$(echo "${URLs}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
+	if [ -n "${VCS}" ]; then
+		URLs="$(echo "${URLs}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
+		num_sites=0
+		CHECKSUM=""
 	else
-		supportedVCSs="cvs|svn|git|git_archive|bzr|hg|darcs"
-		VCS="$(echo "${MAIN_URL}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
-		if [ -n "${VCS}" ]; then
-			MAIN_URL="$(echo "${MAIN_URL}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
-			num_sites=0
-			CHECKSUM=""
-		else
-			sites[$num_sites]=$MAIN_URL
-			(( num_sites++ ))
-		fi
+		for url in $(echo ${URLs} | tr , " "); do
+			if [ ${url:0:3} == "@SF" ]; then
+				# give sourceforge a few more tries, because it redirects to different mirrors
+				subpath=${url/@SF\//}
+				for (( n=0; n < 5; n++ )); do
+					sites[$num_sites]=http://downloads.sourceforge.net/$subpath
+					(( num_sites++ ))
+				done
+			elif [ ${url:0:4} == "@AVM" ]; then
+				subpath=${url/@AVM\//}
+				sites[0]=http://download.avm.de/fritz.box/$subpath
+				sites[1]=ftp://ftp.avm.de/fritz.box/$subpath
+				sites[2]=ftp://service.avm.de/$subpath
+				num_sites=3
+			elif [ ${url:0:4} == "@GNU" ]; then
+				subpath=${url/@GNU\//}
+				sites[0]=http://ftpmirror.gnu.org/$subpath # automatically chooses a nearby and up-to-date mirror
+				sites[1]=http://ftp.gnu.org/gnu/$subpath
+				num_sites=2
+			elif [ ${url:0:7} == "@KERNEL" ]; then
+				subpath=${url/@KERNEL\//}
+				sites[0]=http://ftp.de.kernel.org/pub/$subpath
+				sites[1]=http://ftp.kernel.org/pub/$subpath
+				num_sites=2
+			elif [ ${url:0:8} == "@TELEKOM" ]; then
+				subpath=${url/@TELEKOM\//}
+				sites[0]=http://www.telekom.de/dlp/eki/downloads/$subpath
+				sites[1]=http://www.t-home.de/dlp/eki/downloads/$subpath
+				sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$subpath
+				num_sites=3
+			elif [ ${url:0:7} == "@APACHE" ]; then
+				subpath=${url/@APACHE\//}
+				sites[0]=http://www.eu.apache.org/dist/$subpath
+				sites[1]=http://www.apache.org/dist/$subpath
+				sites[2]=http://apache.openmirror.de/$subpath
+				sites[3]=http://archive.apache.org/dist/$subpath
+				num_sites=4
+			else
+				sites[$num_sites]=$url
+				(( num_sites++ ))
+			fi
+		done
 	fi
 fi
 
@@ -295,7 +299,7 @@ if [ -n "$VCS" ]; then
 		cd "$TMP_DIR" \
 		&& rm -rf "$SUBDIR" \
 		&& [ ! -d "$SUBDIR" ] \
-		&& do_checkout_"$VCS" "$MAIN_URL" "$SUBDIR" "$VERSION" \
+		&& do_checkout_"$VCS" "$URLs" "$SUBDIR" "$VERSION" \
 		&& echo "Packing checkout..." \
 		&& tar c${COMPRESSION_FLAG}f "$DL_FILE" "$SUBDIR" \
 	) \
