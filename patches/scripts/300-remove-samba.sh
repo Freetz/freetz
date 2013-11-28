@@ -25,6 +25,10 @@ if [ "$FREETZ_PACKAGE_SAMBA_SMBD" == "y" -o "$FREETZ_REMOVE_SAMBA" == "y" ]; the
 		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="uiViewHomeSharing">.*$/\1/p')
 		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*write_html_msg(g_val, "uiViewWorkgroup").*$/\1/p')
 		modsed "$((sedrows)),$((sedrowe+2))d" $sedfile
+		# disable value checking		
+		modsed '/uiViewShareName/d;/uiViewWorkgroup/d' $sedfile
+		# disable value saving
+		modsed '/ctlusb.settings.fritznas_share.*/d;/ctlusb.settings.samba-workgroup/d' $sedfile
 	fi
 	
 	echo1 "patching rc.conf"
