@@ -15,14 +15,14 @@ done
 
 # patcht USB-Geraete > Geraeteuebersicht > USB-Fernanschluss aktivieren
 sedfile="${HTML_SPEC_MOD_DIR}/usb/status.html"
-if [ -e $sedfile ]; then
+sedrow=$(cat $sedfile 2>/dev/null |nl| sed -n 's/^ *\([0-9]*\).*"uiAuraEnable".*$/\1/p')
+if [ -n "$sedrow" ]; then
 	echo1 "patching ${sedfile##*/}"
-	sedrow=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*"uiAuraEnable".*$/\1/p')
 	modsed "$((sedrow-2)),$((sedrow+3))d" $sedfile
 	modsed "/.*btnSave.*/d" $sedfile
 fi
 
-# patcht Heimnetz > USB-Geräte > Fernanschluss
+# patcht Heimnetz > USB-Geraete > Fernanschluss
 sedfile="${HTML_SPEC_MOD_DIR}/usb/usb_tabs.html"
 if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
