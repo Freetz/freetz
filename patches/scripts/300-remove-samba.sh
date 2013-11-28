@@ -22,11 +22,11 @@ if [ "$FREETZ_PACKAGE_SAMBA_SMBD" == "y" -o "$FREETZ_REMOVE_SAMBA" == "y" ]; the
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e "$sedfile" ]; then
 		echo1 "patching ${sedfile##*/}"
-		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="page_bottom">.*$/\1/p')
-		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="btn_form_foot">.*$/\1/p')
-		modsed "$((sedrows)),$((sedrowe-1))d" $sedfile
+		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="uiViewHomeSharing">.*$/\1/p')
+		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*write_html_msg(g_val, "uiViewWorkgroup").*$/\1/p')
+		modsed "$((sedrows)),$((sedrowe+2))d" $sedfile
 	fi
-
+	
 	echo1 "patching rc.conf"
 	modsed "s/CONFIG_SAMBA=.*$/CONFIG_SAMBA=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 fi
