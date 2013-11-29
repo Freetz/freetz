@@ -106,7 +106,7 @@ modsed()
 	esac
 	if [ -f "$2" ]; then
 		echo2 "patching $2"
-		sed -i -e "$1" "$2"
+		sed -i -e "$1" "$2" || error 1 "modsed failed editing $2 (bad sed syntax?)"
 		if [ $# -ge 3 ]; then
 			grep -q "$3" "$2" || error 1 "modsed failed editing $2"
 		fi
