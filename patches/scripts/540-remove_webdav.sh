@@ -13,7 +13,7 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
-if [ ! "$FREETZ_PACKAGE_DAVFS2" == "y" ]; then
+if [ "$FREETZ_PACKAGE_DAVFS2" != "y" -o "$FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF" == "y" ]; then
 	rm_files "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libctlwebdav.so"
 
 	# patcht Heimnetz > Speicher (NAS) > Speicher an der FRITZ!Box
@@ -23,7 +23,10 @@ if [ ! "$FREETZ_PACKAGE_DAVFS2" == "y" ]; then
 		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="devices_table_online".*$/\1/p')
 		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="webdavIndexState".*$/\1/p')
 		modsed "$((sedrows)),$((sedrowe+2))d" $sedfile
+		# webdav section, only visible if not disabled
 		modsed 's/if not(g_webdav_enabled)/& or true/' $sedfile
+		# disable value saving 
+ 		modsed '/webdavclient.settings.enabled/d' $sedfile
 	fi
 		
 	echo1 "patching rc.conf"
