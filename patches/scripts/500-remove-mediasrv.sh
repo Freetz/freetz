@@ -6,10 +6,14 @@ return 0
 
 if [ -e "${HTML_LANG_MOD_DIR}/storage/media_settings.lua" ]; then
 	# entfernt Heimnetz > Mediaserver (06.xx)
-	menulua_remove storage.media_settings 
-	menulua_remove dect.internetradio 
-	menulua_remove dect.podcast 
- else
+	menulua_remove storage.media_settings
+	menulua_remove dect.internetradio
+	menulua_remove dect.podcast
+	# Heimnetz > Speicher (NAS) > Speicher an der FRITZ!Box > Speicher (NAS) aktiv > Datei-Index
+	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
+	modsed 's!function get_scan_state.*!&\nif true then return "" end!g' $sedfile
+	modsed 's/{?80:755?}//'  $sedfile
+else
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e $sedfile ]; then
 		echo1 "patching ${sedfile##*/}"
@@ -17,12 +21,11 @@ if [ -e "${HTML_LANG_MOD_DIR}/storage/media_settings.lua" ]; then
 		if grep -q uiViewUseMusikBox $sedfile; then
 			# patcht Heimnetz > Speicher (NAS) > Aktivierung > Musikbox aktiv (04.xx)
 			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
-			modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
+			[ -n "$sedrows" ] && modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
 		else
-#TODO 7320 sed fehler (5.51?)
 			# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver (05.xx)
 			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
-			modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
+			[ -n "$sedrows" ] && modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
 		fi
 	fi
 fi
