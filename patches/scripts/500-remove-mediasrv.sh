@@ -4,12 +4,12 @@ return 0
 
 # if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)
 
-sedfile="${HTML_LANG_MOD_DIR}/storage/media_settings.lua"
-if [ -e $sedfile ]; then
-	# patcht Heimnetz > MediaServer > Einstellungen > Mediaserver (ab 05.59)
-	echo1 "patching ${sedfile##*/}"
-#TODO
-else
+if [ -e "${HTML_LANG_MOD_DIR}/storage/media_settings.lua" ]; then
+	# entfernt Heimnetz > Mediaserver (06.xx)
+	menulua_remove storage.media_settings 
+	menulua_remove dect.internetradio 
+	menulua_remove dect.podcast 
+ else
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e $sedfile ]; then
 		echo1 "patching ${sedfile##*/}"
