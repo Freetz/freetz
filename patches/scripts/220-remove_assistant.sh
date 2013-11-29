@@ -8,8 +8,10 @@ rm_files \
   "${HTML_LANG_MOD_DIR}/html/assistent.html"
 
 if [ "$FREETZ_REMOVE_ASSISTANT_SIP" == "y" ]; then
-	# Don't delete provider.js because it's referenced by other files.
-	find "${HTML_SPEC_MOD_DIR}/first" -type f -not -name "provider.js" -exec rm {} \;
+	if [ "$FREETZ_AVM_HAS_ONLY_LUA" != "y" ]; then
+		# Don't delete provider.js because it's referenced by other files.
+		find "${HTML_SPEC_MOD_DIR}/first" -type f -not -name "provider.js" -exec rm {} \;
+	fi
 else
 	# Needed by "neue Rufnummer": first.frm , lib.js , *bb_backokcancel.html , first_Sip_(1|2|3)*
 	rm_files \
@@ -24,7 +26,12 @@ if [ "$FREETZ_AVM_HAS_ONLY_LUA" != "y" ]; then
 	find "${HTML_SPEC_MOD_DIR}/menus" -type f | xargs sed -s -i -e '/var:menuAssistent/d'
 fi
 
-if [ -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
+if [ ! -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
+	# removes link on the left (06.00)
+	modsed \
+	  's!menu.show_additional_menu("wizards")!false and &!' \
+	  ${HTML_MOD_DIR}/all/templates/menu_page_head.html
+else
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then
 		#lua
 		linkbox_remove wizards
