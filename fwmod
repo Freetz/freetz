@@ -668,7 +668,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	chmod 1777 "${VARTAR_MOD_DIR}/var/tmp"
 
 	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
-	oems="$(grep 'for i in  avm' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
+	oems="$(grep -E 'for i in  (avm|tcom|ewetel)' "${FIRMWARE_MOD_DIR}/var/install" | head -n1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
 	for webdir in \
 	  ${FILESYSTEM_MOD_DIR}/usr/www \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.nas \
@@ -846,8 +846,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oem_removed=0
 	oem_kept=0
 	oem_list=
-
-	oems=$(grep -E 'for i in  (avm|tcom|ewetel)' "${FIRMWARE_MOD_DIR}/var/install" | head -n 1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')
 	[ -z "$oems" ] && error 1 "no oems found"
 
 	ln -sf /usr/www/cgi-bin/freetz_status "${HTML_LANG_MOD_DIR}/cgi-bin/freetz_status"
