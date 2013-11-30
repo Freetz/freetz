@@ -17,7 +17,7 @@ check_lib() {
 }
 
 check_header() {
-	[ -n "$(find /usr/include/ /usr/local/include/ -name "$1" 2>/dev/null)" ]
+	[ -n "$(find /usr/include/ /usr/local/include/ -path "*/$1" 2>/dev/null)" ]
 	return $?
 }
 
@@ -50,17 +50,17 @@ failed_requisite() {
 		required="ERROR"
 	fi
 	case "$2" in
-	        program)
+		program)
 			echo "$required: The program $1 was not found in path."
-		        ;;
+			;;
 		lib)
 			echo "$required: The library $1 was not found in /etc/ld.so.cache."
-		        ;;
+			;;
 		header)
 			echo "$required: The header file $1 was not found in /usr/(local/)include."
 			;;
 		*)
-		        error "Unknown requisite type: $2"
+			error "Unknown requisite type: $2"
 			exit 1
 			;;
 	esac
