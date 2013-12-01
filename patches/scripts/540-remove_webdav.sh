@@ -22,7 +22,7 @@ if [ "$FREETZ_PACKAGE_DAVFS2" != "y" -o "$FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF" ==
 		echo1 "patching ${sedfile##*/}"
 		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="devices_table_online".*$/\1/p')
 		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="webdavIndexState".*$/\1/p')
-		modsed "$((sedrows)),$((sedrowe+2))d" $sedfile
+		[ -n "$sedrowe" ] && modsed "$((sedrows)),$((sedrowe+2))d" $sedfile
 		# webdav section, only visible if not disabled
 		modsed 's/if not(g_webdav_enabled)/& or true/' $sedfile
 		# disable value saving 
