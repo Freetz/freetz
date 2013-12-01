@@ -37,6 +37,6 @@ sedfile="${HTML_SPEC_MOD_DIR}/home/home.html"
 if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
 	sedrow="$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*document.write(DslStateLed(.*$/\1/p')"
-	modsed "$((sedrow-1)),$((sedrow+3))d" $sedfile
+	[ -n "$sedrow" ] && modsed "$((sedrow-1)),$((sedrow+3))d" $sedfile
 fi
 
