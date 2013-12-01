@@ -202,16 +202,16 @@ config FREETZ_REMOVE_MEDIASRV
 config FREETZ_REMOVE_NAS
 	bool "Remove NAS"
 	default n
-	depends on FREETZ_AVM_HAS_NAS && FREETZ_REMOVE_MEDIASRV
+	depends on FREETZ_AVM_HAS_NAS
+	select FREETZ_REMOVE_MEDIASRV
 	help
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
 config FREETZ_REMOVE_MYFRITZ
 	bool "Remove MyFritz"
 	default n
-	depends on \
-		FREETZ_AVM_HAS_MYFRITZ && \
-		FREETZ_REMOVE_NAS
+	depends on FREETZ_AVM_HAS_MYFRITZ
+	select FREETZ_REMOVE_NAS
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
 
