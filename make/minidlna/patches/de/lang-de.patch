@@ -1,0 +1,114 @@
+--- scanner.c
++++ scanner.c
+@@ -162,9 +162,9 @@
+ 		if( date_taken )
+ 			date_taken[10] = '\0';
+ 		else
+-			date_taken = _("Unknown Date");
++			date_taken = _("Unbekanntes Datum");
+ 		if( !camera )
+-			camera = _("Unknown Camera");
++			camera = _("Unbekannte Kamera");
+ 
+ 		if( valid_cache && strcmp(last_date.name, date_taken) == 0 )
+ 		{
+@@ -274,7 +274,7 @@
+ 				strncpyt(last_artist.name, artist, sizeof(last_artist.name));
+ 				last_artistAlbum.name[0] = '\0';
+ 				/* Add this file to the "- All Albums -" container as well */
+-				insert_container(_("- All Albums -"), last_artist.parentID, NULL, "album", artist, genre, NULL, &objectID, &parentID);
++				insert_container(_("- Alle Alben -"), last_artist.parentID, NULL, "album", artist, genre, NULL, &objectID, &parentID);
+ 				sprintf(last_artistAlbumAll.parentID, "%s$%llX", last_artist.parentID, (long long)parentID);
+ 				last_artistAlbumAll.objectID = objectID;
+ 			}
+@@ -282,18 +282,18 @@
+ 			{
+ 				last_artistAlbumAll.objectID++;
+ 			}
+-			if( valid_cache && strcmp(album?album:_("Unknown Album"), last_artistAlbum.name) == 0 )
++			if( valid_cache && strcmp(album?album:_("Unbekanntes Album"), last_artistAlbum.name) == 0 )
+ 			{
+ 				last_artistAlbum.objectID++;
+ 				//DEBUG DPRINTF(E_DEBUG, L_SCANNER, "Using last artist/album item: %s/%s/%X\n", last_artist.name, last_artist.parentID, last_artist.objectID);
+ 			}
+ 			else
+ 			{
+-				insert_container(album?album:_("Unknown Album"), last_artist.parentID, album?last_album.parentID:NULL,
++				insert_container(album?album:_("Unbekanntes Album"), last_artist.parentID, album?last_album.parentID:NULL,
+ 				                 "album.musicAlbum", artist, genre, album_art, &objectID, &parentID);
+ 				sprintf(last_artistAlbum.parentID, "%s$%llX", last_artist.parentID, (long long)parentID);
+ 				last_artistAlbum.objectID = objectID;
+-				strncpyt(last_artistAlbum.name, album ? album : _("Unknown Album"), sizeof(last_artistAlbum.name));
++				strncpyt(last_artistAlbum.name, album ? album : _("Unbekanntes Album"), sizeof(last_artistAlbum.name));
+ 				//DEBUG DPRINTF(E_DEBUG, L_SCANNER, "Creating cached artist/album item: %s/%s/%X\n", last_artist.name, last_artist.parentID, last_artist.objectID);
+ 			}
+ 			sql_exec(db, "INSERT into OBJECTS"
+@@ -315,7 +315,7 @@
+ 				sprintf(last_genre.parentID, MUSIC_GENRE_ID"$%llX", (long long)parentID);
+ 				strncpyt(last_genre.name, genre, sizeof(last_genre.name));
+ 				/* Add this file to the "- All Artists -" container as well */
+-				insert_container(_("- All Artists -"), last_genre.parentID, NULL, "person", NULL, genre, NULL, &objectID, &parentID);
++				insert_container(_("- Alle Interpreten -"), last_genre.parentID, NULL, "person", NULL, genre, NULL, &objectID, &parentID);
+ 				sprintf(last_genreArtistAll.parentID, "%s$%llX", last_genre.parentID, (long long)parentID);
+ 				last_genreArtistAll.objectID = objectID;
+ 			}
+@@ -323,17 +323,17 @@
+ 			{
+ 				last_genreArtistAll.objectID++;
+ 			}
+-			if( valid_cache && strcmp(artist?artist:_("Unknown Artist"), last_genreArtist.name) == 0 )
++			if( valid_cache && strcmp(artist?artist:_("Unbekannter Interpret"), last_genreArtist.name) == 0 )
+ 			{
+ 				last_genreArtist.objectID++;
+ 			}
+ 			else
+ 			{
+-				insert_container(artist?artist:_("Unknown Artist"), last_genre.parentID, artist?last_artist.parentID:NULL,
++				insert_container(artist?artist:_("Unbekannter Interpret"), last_genre.parentID, artist?last_artist.parentID:NULL,
+ 				                 "person.musicArtist", NULL, genre, NULL, &objectID, &parentID);
+ 				sprintf(last_genreArtist.parentID, "%s$%llX", last_genre.parentID, (long long)parentID);
+ 				last_genreArtist.objectID = objectID;
+-				strncpyt(last_genreArtist.name, artist ? artist : _("Unknown Artist"), sizeof(last_genreArtist.name));
++				strncpyt(last_genreArtist.name, artist ? artist : _("Unbekannter Interpret"), sizeof(last_genreArtist.name));
+ 				//DEBUG DPRINTF(E_DEBUG, L_SCANNER, "Creating cached genre/artist item: %s/%s/%X\n", last_genreArtist.name, last_genreArtist.parentID, last_genreArtist.objectID);
+ 			}
+ 			sql_exec(db, "INSERT into OBJECTS"
+@@ -525,25 +525,25 @@
+ {
+ 	int ret, i;
+ 	const char *containers[] = { "0","-1",   "root",
+-	                        MUSIC_ID, "0", _("Music"),
+-	                    MUSIC_ALL_ID, MUSIC_ID, _("All Music"),
++	                        MUSIC_ID, "0", _("Musik"),
++	                    MUSIC_ALL_ID, MUSIC_ID, _("Alle Titel"),
+ 	                  MUSIC_GENRE_ID, MUSIC_ID, _("Genre"),
+-	                 MUSIC_ARTIST_ID, MUSIC_ID, _("Artist"),
++	                 MUSIC_ARTIST_ID, MUSIC_ID, _("Interpret"),
+ 	                  MUSIC_ALBUM_ID, MUSIC_ID, _("Album"),
+-	                    MUSIC_DIR_ID, MUSIC_ID, _("Folders"),
+-	                  MUSIC_PLIST_ID, MUSIC_ID, _("Playlists"),
++	                    MUSIC_DIR_ID, MUSIC_ID, _("Ordner"),
++	                  MUSIC_PLIST_ID, MUSIC_ID, _("Wiedergabelisten"),
+ 
+ 	                        VIDEO_ID, "0", _("Video"),
+-	                    VIDEO_ALL_ID, VIDEO_ID, _("All Video"),
+-	                    VIDEO_DIR_ID, VIDEO_ID, _("Folders"),
++	                    VIDEO_ALL_ID, VIDEO_ID, _("Alle Videos"),
++	                    VIDEO_DIR_ID, VIDEO_ID, _("Ordner"),
+ 
+-	                        IMAGE_ID, "0", _("Pictures"),
+-	                    IMAGE_ALL_ID, IMAGE_ID, _("All Pictures"),
+-	                   IMAGE_DATE_ID, IMAGE_ID, _("Date Taken"),
+-	                 IMAGE_CAMERA_ID, IMAGE_ID, _("Camera"),
+-	                    IMAGE_DIR_ID, IMAGE_ID, _("Folders"),
++	                        IMAGE_ID, "0", _("Bilder"),
++	                    IMAGE_ALL_ID, IMAGE_ID, _("Alle Bilder"),
++	                   IMAGE_DATE_ID, IMAGE_ID, _("Aufnahmedatum"),
++	                 IMAGE_CAMERA_ID, IMAGE_ID, _("Kamera"),
++	                    IMAGE_DIR_ID, IMAGE_ID, _("Ordner"),
+ 
+-	                    BROWSEDIR_ID, "0", _("Browse Folders"),
++	                    BROWSEDIR_ID, "0", _("Ordner durchsuchen"),
+ 			0 };
+ 
+ 	ret = sql_exec(db, create_objectTable_sqlite);

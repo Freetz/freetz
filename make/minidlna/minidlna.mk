@@ -3,9 +3,12 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=653405555ac3f8eb4aacc54c1be7b5fa
 $(PKG)_SITE:=@SF/minidlna
 
+$(PKG)_CONDITIONAL_PATCHES+=$(FREETZ_PACKAGE_MINIDLNA_LANG)
+
 $(PKG)_BINARY := $($(PKG)_DIR)/minidlnad
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/sbin/minidlna
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MINIDLNA_LANG
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MINIDLNA_STATIC
 
 $(PKG)_DEPENDS_ON += ffmpeg libexif flac libid3tag jpeg libogg libvorbis sqlite
