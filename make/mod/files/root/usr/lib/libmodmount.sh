@@ -120,8 +120,7 @@ mount_fs() {
 			err_mo=1
 			;;
 		ntfs)
-			local ntfs_bin="/bin/ntfs-3g"
-			[ -x "$ntfs_bin" ] && { $ntfs_bin $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
+			[ -x "$(which ntfs-3g)" ] && { ntfs-3g $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
 			;;
 		swap)
 			/etc/init.d/rc.swap autostart $dev_node
@@ -189,7 +188,7 @@ do_mount_locked() {
 			msgsend upnpd plugin force_notify libmediasrv.so new_partition    # mediasrv
 			$fritznasdb_control new_partition "$mnt_path"                     # fritznasdb
 		fi
-		[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_done                     # led
+		[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_done                     # led
 	else
 		case "$fs_type" in
 		"crypto_LUKS")
@@ -236,7 +235,7 @@ do_mount_locked() {
 			esac
 			;;
 		*)
-			[ -x /bin/led-ctrl ] && /bin/led-ctrl filesystem_mount_failure
+			[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_mount_failure
 			eventadd 142 "$mnt_name ($mnt_dev)" $fs_type
 			log_freetz err "Partition $mnt_name ($mnt_dev): Unsupported filesystem or wrong partition table ($fs_type)"
 			mnt_failure=1
