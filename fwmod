@@ -674,6 +674,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	  ${FILESYSTEM_MOD_DIR}/usr/www.nas \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.myfritz \
 	  ; do
+	  	for edition in ewetel; do
+	  		[ ! -d ${webdir}/$edition ] && continue
+	  		[ -d ${webdir}/avm ] && continue
+	  		[ -d ${webdir}/all ] && continue
+	  		# force create /usr/www/all/
+	  		mv ${webdir}/$edition ${webdir}/avm
+	  	done
 		if [ -d ${webdir}/avm* ]; then
 			echo0 -n " ${webdir#${FILESYSTEM_MOD_DIR}/}"
 			mv ${webdir}/avm* ${webdir}/all
