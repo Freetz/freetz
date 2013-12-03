@@ -33,10 +33,9 @@ if [ -e $sedfile ]; then
 fi
 
 # patcht Uebersicht > Anschluesse
-sedfile="${HTML_SPEC_MOD_DIR}/home/home.html"
-if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
-	sedrow="$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*document.write(DslStateLed(.*$/\1/p')"
-	[ -n "$sedrow" ] && modsed "$((sedrow-1)),$((sedrow+3))d" $sedfile
-fi
+mod_del_area \
+  'document.write(DslStateLed(' \
+  -1 \
+  +3 \
+  "${HTML_SPEC_MOD_DIR}/home/home.html"
 

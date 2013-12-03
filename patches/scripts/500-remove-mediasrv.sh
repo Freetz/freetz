@@ -17,15 +17,22 @@ else
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e $sedfile ]; then
 		echo1 "patching ${sedfile##*/}"
-		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?80:1383?}.*$/\1/p')
 		if grep -q uiViewUseMusikBox $sedfile; then
 			# patcht Heimnetz > Speicher (NAS) > Aktivierung > Musikbox aktiv (04.xx)
-			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUseMusikBox.*$/\1/p')
-			[ -n "$sedrows" ] && modsed "$((sedrows-1)),$((sedrowe+2))d" $sedfile
+			mod_del_area \
+			  'id="uiViewUseMusikBox"' \
+			  -1 \
+			  '{?80:1383?}' \
+			  +2 \
+			  $sedfile
 		else
 			# patcht Heimnetz > Speicher (NAS) > Speicher (NAS) > Mediaserver (05.xx)
-			sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:609?}<.h4>$/\1/p')
-			[ -n "$sedrows" ] && modsed "$((sedrows-2)),$((sedrowe+1))d" $sedfile
+			mod_del_area \
+			  '<h4>{?80:609?}<.h4>' \
+			  -2 \
+			  '{?80:1383?}' \
+			  +1 \
+			  $sedfile
 		fi
 	fi
 fi
@@ -77,10 +84,9 @@ menulua_remove dect.podcast
 menulua_remove dect.radiopodcast
 
 # patcht USB-Geraete > USB-Speicher >  Musikbox aktivieren
-sedfile="${HTML_SPEC_MOD_DIR}/usb/usbdisk.html"
-if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
-	sedrow=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*"uiViewUseMusik".*$/\1/p')
-	modsed "$((sedrow-1)),$((sedrow+2))d" $sedfile
-fi
+mod_del_area \
+  '"uiViewUseMusik"' \
+  -1 \
+  +2 \
+  "${HTML_SPEC_MOD_DIR}/usb/usbdisk.html"
 

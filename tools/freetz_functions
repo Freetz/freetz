@@ -119,6 +119,56 @@ modsed()
 	fi
 }
 
+#modsed <start-row> <add-to-start> [end-row] <add-to-end> <file> 
+#should be used to remove an area in a file from start-row to end-row
+#without a given end-row the start-row is used as end-row
+#start-row and end-row could be increased by a positive or negative value
+mod_del_area() {
+	# read parameters
+	[ $# -ne 4 -a $# -ne 5 ] && error 1 "mod_del_area: wrong parameter count"
+	for i in 1 2 3 4 5; do
+		case $i in
+			1)	local rowS="$1" ;;
+			2)	local modS="$1" ;;
+			3)	[ $# -gt 2 ] && local rowE="$1" || continue ;;
+			4)	local modE="$1" ;;
+			5)	local file="$1" ;;
+		esac
+		shift
+	done
+	
+	# check file
+	if [ ! -f "$file" ]; then
+		warn3 "mod_del_area: file '$file' does not exist"
+		return
+	fi
+
+	# search row numbers
+	local     sedrowS="$(nl $file | sed -n "s/^ *\([0-9]*\).*${rowS}.*$/\1/p")"
+	if [ -n "$rowE" ]; then
+		local sedrowE="$(nl $file | sed -n "s/^ *\([0-9]*\).*${rowE}.*$/\1/p")"
+	else
+		local sedrowE=$sedrowS
+	fi
+
+	# check row numbers
+	if [ -z "$sedrowS" ]; then
+		warn3 "mod_del_area: start row not found in '$file'"
+		return
+	fi
+	sedrowS="$((sedrowS + modS))"
+	if [ -z "$sedrowE" ]; then
+		warn3 "mod_del_area: end row not found in '$file'"
+		return
+	fi
+	sedrowE="$((sedrowE + modE))"
+
+	# remove lines
+	echo1 "patching ${file##*/}: removing line ${sedrowS} - ${sedrowE}"
+	sed -i -e "${sedrowS},${sedrowE}d" "$file"
+	[ $? -ne 0 ] && error 1 "mod_del_area: error in sed expression"
+}
+
 # General printing (info messages, warnings and errors)
 echoX()
 {

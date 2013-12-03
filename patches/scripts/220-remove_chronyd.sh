@@ -18,9 +18,12 @@ if [ "$FREETZ_REMOVE_CHRONYD" == "y" ]; then
 		#g_var.time_server = box.query("time:settings/ntp_server")
 		#cmtable.add_var(ctlmgr_save, "time:settings/ntp_server" , box.post.time_server)
 		modsed '/^not_empty(uiViewTimeServerList\/time_server, netset)$/d' $sedfile
-		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:445?}.*$/\1/p')
-		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="uiShowOtherIpv6Router">$/\1/p')
-		modsed "$((sedrows+3)),$((sedrowe-1))d" $sedfile
+		mod_del_area \
+		  '{?859:445?}' \
+		  +3 \
+		  '<div id="uiShowOtherIpv6Router">' \
+		  -1 \
+		  $sedfile
 	fi
 else
 	[ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.rtc.sh" ] && \

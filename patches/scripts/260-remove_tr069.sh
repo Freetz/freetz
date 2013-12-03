@@ -32,16 +32,22 @@ if [ -e $sedfile ]; then
 	#<p class="form_checkbox_explain">
 	#{?859:144?}
 	#</p>
-	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewSetTr064".*$/\1/p')
-	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:144?}.*$/\1/p')
-	modsed "$((sedrows)),$((sedrowe+1))d" $sedfile
+	mod_del_area \
+	  'id="uiViewSetTr064"' \
+	  0 \
+	  '{?859:144?}' \
+	  1 \
+	  $sedfile
 	# remove sub header if also upnp is removed
 	if [ "$FREETZ_REMOVE_UPNP" == "y" ]; then
 		#<h4>
 		#{?859:570?}
 		#</h4>
-		sedrow=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:570?}.*$/\1/p')
-		modsed "$((sedrow-1)),$((sedrow+1))d" $sedfile
+		mod_del_area \
+		  '{?859:570?}' \
+		  -1 \
+		  +1 \
+		  $sedfile
 		#if (general.is_expert()) then box.out([[<hr>]]) end
 		modsed '/general.is_expert.*then.box.out.*hr.*end/d' $sedfile
 	fi

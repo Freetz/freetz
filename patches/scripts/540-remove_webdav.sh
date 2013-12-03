@@ -19,10 +19,12 @@ if [ "$FREETZ_PACKAGE_DAVFS2" != "y" -o "$FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF" ==
 	# patcht Heimnetz > Speicher (NAS) > Speicher an der FRITZ!Box
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e "$sedfile" ]; then
-		echo1 "patching ${sedfile##*/}"
-		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="devices_table_online".*$/\1/p')
-		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="webdavIndexState".*$/\1/p')
-		[ -n "$sedrowe" ] && modsed "$((sedrows)),$((sedrowe+2))d" $sedfile
+		mod_del_area \
+		  'id="devices_table_online"' \
+		  0 \
+		  'id="webdavIndexState"' \
+		  2 \
+		  $sedfile
 		# webdav section, only visible if not disabled
 		modsed 's/if not(g_webdav_enabled)/& or true/' $sedfile
 		# disable value saving 

@@ -20,9 +20,12 @@ if [ "$FREETZ_REMOVE_FTPD" == "y" ]; then
 	if [ -e "$sedfile" ]; then
 		echo1 "patching ${sedfile##*/}"
 		# entfernt "Speicher fuer Benutzer aus dem Internet freigeben" (04.xx)
-		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="uiViewInternetSharingBox".*$/\1/p')
-		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="uiViewUseMusikBox".*$/\1/p')
-		[ -n "$sedrows" ] && modsed "$((sedrows)),$((sedrowe-2))d" $sedfile
+		mod_del_area \
+		  '<div id="uiViewInternetSharingBox"' \
+		  +0 \
+		  '<div id="uiViewUseMusikBox"' \
+		  -2 \
+		  $sedfile
 	fi
 
 	return 0

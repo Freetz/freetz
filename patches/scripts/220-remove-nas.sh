@@ -29,10 +29,12 @@ modsed '/.*uiViewTabSpeicherNas.*/{N;N;N;/537:880/d}' "${HTML_LANG_MOD_DIR}/home
 # patcht Heimnetz > Speicher (NAS)
 sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 if [ -e "$sedfile" ]; then
-	echo1 "patching ${sedfile##*/}"
-	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<h4>{?80:518?}<.h4>.*$/\1/p')
-	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="page_bottom">.*$/\1/p')
-	modsed "$((sedrows-1)),$((sedrowe-1))d" $sedfile
+	mod_del_area \
+	  '<h4>{?80:518?}<.h4>' \
+	  -1 \
+	  '<div id="page_bottom">' \
+	  -1 \
+	  $sedfile
 	modsed 's!<div id="btn_form_foot">!<div>\n&!' "$sedfile"
 	modsed 's/\(jxl.disableNode("page_bottom",\).*/\1 false);/g' "$sedfile"
 

@@ -22,9 +22,12 @@ if [ -e $sedfile ]; then
 	#<p class="form_checkbox_explain">
 	#{?859:536?}
 	#</p>
-	sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*id="uiViewUpnpAktiv".*$/\1/p')
-	sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*{?859:536?}.*$/\1/p')
-	modsed "$((sedrows)),$((sedrowe+1))d" $sedfile
+	mod_del_area \
+	  'id="uiViewUpnpAktiv"' \
+	  0 \
+	  '{?859:536?}' \
+	  1 \
+	  $sedfile
 	# remove_upnp removes the header if also selected
 fi
 

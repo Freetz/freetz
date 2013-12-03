@@ -21,10 +21,12 @@ if [ "$FREETZ_PACKAGE_SAMBA_SMBD" == "y" -o "$FREETZ_REMOVE_SAMBA" == "y" ]; the
 	# patcht Heimnetz > Speicher (NAS)
 	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e "$sedfile" ]; then
-		echo1 "patching ${sedfile##*/}"
-		sedrows=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*<div id="uiViewHomeSharing">.*$/\1/p')
-		sedrowe=$(cat $sedfile |nl| sed -n 's/^ *\([0-9]*\).*write_html_msg(g_val, "uiViewWorkgroup").*$/\1/p')
-		[ -n "$sedrows" ] && modsed "$((sedrows)),$((sedrowe+2))d" $sedfile
+		mod_del_area \
+		  '<div id="uiViewHomeSharing">' \
+		  0 \
+		  'write_html_msg(g_val, "uiViewWorkgroup")' \
+		  2 \
+		  "$sedfile"
 		# disable value checking
 		modsed '/uiViewShareName/d;/uiViewWorkgroup/d' $sedfile
 		# disable value saving
