@@ -15,41 +15,34 @@ rm_files \
   ${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libwlan.so \
   ${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-avmwlan-usb
 
+echo1 "patching webif files"
+
 menu2html_remove wlan
 
 # patcht System > Nachtschaltung > Klingelsperre aktivieren
 sedfile="${HTML_SPEC_MOD_DIR}/system/nacht.html"
 if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
 	modsed '/id="uiViewUseNachtWlan"/{N;//d}' $sedfile
 	modsed '/.*id="uiViewUseWlanForcedOff".*/d' $sedfile
 fi
 
 # patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > IPv4-Adressen
 sedfile="${HTML_LANG_MOD_DIR}/net/boxnet.lua"
-if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
-	modsed 's/config.WLAN/0/g' $sedfile
-fi
+[ -e $sedfile ] && modsed 's/config.WLAN/0/g' $sedfile
 
 # patcht Internet > Zugangsdaten > Internetzugang
 sedfile="${HTML_LANG_MOD_DIR}/internet/internet_settings.lua"
 if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
 	modsed '/^require"wlanscan"$/d' $sedfile
 	modsed '/^wlanscanOnload.*$/d' $sedfile
 fi
 
 # patcht Heimnetz > Netzwerk > Geraete und Benutzer
 sedfile="${HTML_LANG_MOD_DIR}/net/network_user_devices.lua"
-if [ -e $sedfile ]; then
-	echo1 "patching ${sedfile##*/}"
-	modsed 's/&& <?lua box.js(tostring(g_dev.wlan_count<2)) ?>//g' $sedfile
-fi
+[ -e $sedfile ] && modsed 's/&& <?lua box.js(tostring(g_dev.wlan_count<2)) ?>//g' $sedfile
 
 # fix AVM-VPN: Set WLAN to "disabled" value "0". Otherwise ctlmgr_ctl reports "no emu" or "" (nothing).
 for sedfile in $(grep -R -l  "wlan:settings/ap_enabled" ${HTML_LANG_MOD_DIR}/* 2>/dev/null); do
-	echo1 "patching ${sedfile##*/}"
 	modsed 's#box.query("wlan:settings/ap_enabled[^"]*")#"0"#g ; s#<? query wlan:settings/ap_enabled[^ ]* ?>#0#g ; s#{ sz_query = "wlan:settings/ap_enabled"}#{ sz_value = "0" }#g' $sedfile
 done
 
