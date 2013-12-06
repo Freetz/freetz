@@ -2,6 +2,7 @@
 
 
 . /usr/lib/libmodcgi.sh
+. /usr/lib/libmodredir.sh
 
 check "$MINIDLNA_ENABLED" yes:auto "*":man
 check "$MINIDLNA_RESCAN_ON_START" yes:rescan_on_start
@@ -15,6 +16,14 @@ cat << EOF
 <input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
 <input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
 </p>
+EOF
+sec_end
+
+sec_begin '$(lang de:"Anzeigen" en:"Show")'
+cat << EOF
+<ul>
+<li><a href="$(href status minidlna minidlna_status)">$(lang de:"Status anzeigen" en:"Show status")</a></li>
+</ul>
 EOF
 sec_end
 

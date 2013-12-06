@@ -21,10 +21,12 @@ case $1 in
 	""|load)
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
+		modreg status $DAEMON "$DAEMON_LONG_NAME" minidlna_status
 
 		modlib_start $MINIDLNA_ENABLED
 		;;
 	unload)
+		modunreg status $DAEMON minidlna_status
 		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modlib_stop
