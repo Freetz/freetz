@@ -23,7 +23,6 @@ start() {
 case $1 in
 	""|load)
 		[ -d "/tmp/flash/knock" ] || mkdir /tmp/flash/knock
-		[ -r /tmp/flash/knockd.conf ] && mv /tmp/flash/knockd.conf /tmp/flash/knock/knockd.conf
 		config
 
 		modreg cgi 'knock' 'Knock'
