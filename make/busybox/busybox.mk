@@ -25,7 +25,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	@cat $(TOPDIR)/.config \
 		| sed -nr 's!^(# )*(FREETZ_BUSYBOX_)([^_].*)!\1CONFIG_\3!p' \
 		> $(BUSYBOX_DIR)/.config ;\
-	for bbsym in $$(sed -rn 's/^depends_on (.*) .*/\1/p' "$(BUSYBOX_MAKE_DIR)/generate.sh"); do \
+	for bbsym in $$(sed -rn 's/^depends_on ([^ ]+) .*/\1/p' "$(BUSYBOX_MAKE_DIR)/generate.sh"); do \
 		if ! grep -q "CONFIG_$$bbsym=" "$(BUSYBOX_DIR)/.config"; then \
 			echo "# CONFIG_$$bbsym is not set" >> $(BUSYBOX_DIR)/.config ;\
 		fi ;\
