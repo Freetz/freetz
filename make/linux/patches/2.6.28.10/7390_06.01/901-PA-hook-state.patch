@@ -1,0 +1,11 @@
+--- linux-2.6.28/net/avm_pa/avm_pa.c
++++ linux-2.6.28/net/avm_pa/avm_pa.c
+@@ -4760,7 +4760,7 @@
+ 
+ void avm_pa_telefon_state(int state)
+ {
+-   printk(KERN_INFO "avm_pa: avm_pa_telefon_state\n");
++   printk(KERN_INFO "avm_pa: avm_pa_telefon_state: %d (%s)\n", state, state ? "talk" : "hook" );
+ }
+ EXPORT_SYMBOL(avm_pa_telefon_state);
+ 
