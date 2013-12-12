@@ -1,6 +1,6 @@
 --- linux-2.6.28/net/avm_pa/avm_pa.c
 +++ linux-2.6.28/net/avm_pa/avm_pa.c
-@@ -5143,11 +5143,13 @@
+@@ -5203,11 +5203,13 @@
  
     if (load_reduce == 0) {
        if (ctx->load_reduce) {
@@ -14,7 +14,7 @@
        }
     } else if (ctx->stats.fw_pps > AVM_PA_MINRATE) {
        int change = ctx->load_reduce - load_reduce;
-@@ -5179,9 +5181,11 @@
+@@ -5239,9 +5241,11 @@
        avm_pa_tbf_update(ctx->rate, ctx->pktbuffer, ctx->pktpeak);
        ctx->tbf_enabled = 1;
     } else {
