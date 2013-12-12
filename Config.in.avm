@@ -8,7 +8,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 	depends on \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		! ( FREETZ_TYPE_FIRMWARE_LABOR && \
-			!(FREETZ_TYPE_7490&&FREETZ_REAL_DEVELOPER_ONLY) \
+			!(FREETZ_TYPE_7490) \
 		) && \
 		! FREETZ_TYPE_3272 && \
 		! FREETZ_TYPE_6810 && \
@@ -16,9 +16,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 		! FREETZ_TYPE_6842 && \
 		! (FREETZ_TYPE_7360 && FREETZ_TYPE_FIRMWARE_06_XX) && \
 		! FREETZ_TYPE_7362 && \
-		! FREETZ_TYPE_7272 && \
-		! (FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_06_XX && !FREETZ_REAL_DEVELOPER_ONLY)
-
+		! FREETZ_TYPE_7272
 	default y
 	help
 		Select this if source code exactly matching the firmware version used is available for your box.
