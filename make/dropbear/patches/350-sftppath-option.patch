@@ -1,3 +1,33 @@
+--- options.h
++++ options.h
+@@ -270,12 +270,14 @@
+ #define XAUTH_COMMAND "/usr/bin/X11/xauth -q"
+ #endif
+ 
++#ifdef DROPBEAR_SFTPSERVER
+ /* if you want to enable running an sftp server (such as the one included with
+  * OpenSSH), set the path below. If the path isn't defined, sftp will not
+  * be enabled */
+ #ifndef SFTPSERVER_PATH
+ #define SFTPSERVER_PATH "/usr/lib/sftp-server"
+ #endif
++#endif
+ 
+ /* This is used by the scp binary when used as a client binary. If you're
+  * not using the Dropbear client, you'll need to change it */
+--- runopts.h
++++ runopts.h
+@@ -62,6 +62,10 @@
+ 
+ typedef struct svr_runopts {
+ 
++#ifdef DROPBEAR_SFTPSERVER
++	char * sftppath;
++#endif
++
+ 	char * bannerfile;
+ 
+ 	int forkbg;
 --- svr-chansession.c
 +++ svr-chansession.c
 @@ -630,10 +630,10 @@
@@ -15,9 +45,9 @@
  			{
 --- svr-runopts.c
 +++ svr-runopts.c
-@@ -49,6 +49,10 @@
- 					"-r rsakeyfile	Use rsakeyfile for the RSA host key\n"
- 					"		(default: %s)\n"
+@@ -58,6 +58,10 @@
+ #ifdef DROPBEAR_DELAY_HOSTKEY
+ 					"-R		Create hostkeys as required\n" 
  #endif
 +#ifdef DROPBEAR_SFTPSERVER
 +					"-S sftpserver	Set path to sftp server\n"
@@ -26,9 +56,9 @@
  					"-F		Don't fork into background\n"
  #ifdef DISABLE_SYSLOG
  					"(Syslog support not compiled in, using stderr)\n"
-@@ -94,6 +98,9 @@
- #ifdef DROPBEAR_RSA
- 					RSA_PRIV_FILENAME,
+@@ -106,6 +110,9 @@
+ #ifdef DROPBEAR_ECDSA
+ 					ECDSA_PRIV_FILENAME,
  #endif
 +#ifdef DROPBEAR_SFTPSERVER
 +					SFTPSERVER_PATH,
@@ -36,18 +66,20 @@
  					DROPBEAR_MAX_PORTS, DROPBEAR_DEFPORT, DROPBEAR_PIDFILE,
  					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
  }
-@@ -110,6 +117,7 @@
+@@ -122,6 +129,9 @@
+ 
+ 
  	/* see printhelp() for options */
- 	svr_opts.rsakeyfile = NULL;
- 	svr_opts.dsskeyfile = NULL;
++#ifdef DROPBEAR_SFTPSERVER
 +	svr_opts.sftppath = NULL;
++#endif
  	svr_opts.bannerfile = NULL;
  	svr_opts.banner = NULL;
  	svr_opts.forkbg = 1;
-@@ -180,6 +188,11 @@
- 					next = &svr_opts.rsakeyfile;
+@@ -195,6 +205,11 @@
+ 				case 'R':
+ 					svr_opts.delay_hostkey = 1;
  					break;
- #endif
 +#ifdef DROPBEAR_SFTPSERVER
 +				case 'S':
 +					next = &svr_opts.sftppath;
@@ -56,23 +88,16 @@
  				case 'F':
  					svr_opts.forkbg = 0;
  					break;
-@@ -278,6 +291,9 @@
- 	if (svr_opts.rsakeyfile == NULL) {
- 		svr_opts.rsakeyfile = RSA_PRIV_FILENAME;
+@@ -287,6 +302,12 @@
+ 		svr_opts.portcount = 1;
  	}
+ 
++#ifdef DROPBEAR_SFTPSERVER
 +	if (svr_opts.sftppath == NULL) {
 +		svr_opts.sftppath = SFTPSERVER_PATH;
 +	}
- 
++#endif
++
  	if (svr_opts.bannerfile) {
  		struct stat buf;
---- runopts.h
-+++ runopts.h
-@@ -62,6 +62,7 @@
- 
- 	char * rsakeyfile;
- 	char * dsskeyfile;
-+	char * sftppath;
- 	char * bannerfile;
- 
- 	int forkbg;
+ 		if (stat(svr_opts.bannerfile, &buf) != 0) {

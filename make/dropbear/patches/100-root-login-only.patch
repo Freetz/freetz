@@ -12,15 +12,15 @@
  	int allowblankpass;
 --- svr-runopts.c
 +++ svr-runopts.c
-@@ -59,6 +59,7 @@
+@@ -68,6 +68,7 @@
  					"-m		Don't display the motd on login\n"
  #endif
  					"-w		Disallow root logins\n"
-+					"-R		Allow only root logins\n"
++					"-0		Allow only root logins\n"
  #if defined(ENABLE_SVR_PASSWORD_AUTH) || defined(ENABLE_SVR_PAM_AUTH)
  					"-s		Disable password logins\n"
  					"-g		Disable password logins for root\n"
-@@ -113,6 +114,7 @@
+@@ -125,6 +126,7 @@
  	svr_opts.banner = NULL;
  	svr_opts.forkbg = 1;
  	svr_opts.norootlogin = 0;
@@ -28,11 +28,11 @@
  	svr_opts.noauthpass = 0;
  	svr_opts.norootpass = 0;
  	svr_opts.allowblankpass = 0;
-@@ -219,6 +221,9 @@
+@@ -234,6 +236,9 @@
  				case 'w':
  					svr_opts.norootlogin = 1;
  					break;
-+				case 'R':
++				case '0':
 +					svr_opts.rootonlylogin = 1;
 +					break;
  				case 'W':
@@ -40,7 +40,7 @@
  					break;
 --- svr-auth.c
 +++ svr-auth.c
-@@ -279,6 +279,14 @@
+@@ -278,6 +278,14 @@
  		return DROPBEAR_FAILURE;
  	}
  

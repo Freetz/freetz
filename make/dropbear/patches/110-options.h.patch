@@ -11,14 +11,10 @@
 -#define RSA_PRIV_FILENAME "/etc/dropbear/dropbear_rsa_host_key"
 +#define RSA_PRIV_FILENAME "/mod/etc/ssh/rsa_host_key"
  #endif
- 
- /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
-@@ -49,10 +49,10 @@
- several kB in binary size however will make the symmetrical ciphers and hashes
- slower, perhaps by 50%. Recommended for small systems that aren't doing
- much traffic. */
--/*#define DROPBEAR_SMALL_CODE*/
-+#define DROPBEAR_SMALL_CODE
+ #ifndef ECDSA_PRIV_FILENAME
+ #define ECDSA_PRIV_FILENAME "/etc/dropbear/dropbear_ecdsa_host_key"
+@@ -55,7 +55,7 @@
+ #define DROPBEAR_SMALL_CODE
  
  /* Enable X11 Forwarding - server only */
 -#define ENABLE_X11FWD
@@ -26,7 +22,7 @@
  
  /* Enable TCP Fowarding */
  /* 'Local' is "-L" style (client listening port forwarded via server)
-@@ -254,12 +254,12 @@
+@@ -272,12 +272,12 @@
   * OpenSSH), set the path below. If the path isn't defined, sftp will not
   * be enabled */
  #ifndef SFTPSERVER_PATH
