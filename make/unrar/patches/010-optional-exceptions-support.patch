@@ -1,9 +1,9 @@
 --- errhnd.cpp
 +++ errhnd.cpp
-@@ -339,7 +339,11 @@
+@@ -343,7 +343,11 @@
      mprintf(L"\n%s\n",St(MProgAborted));
  #endif
-   ErrHandler.SetErrorCode(Code);
+   SetErrorCode(Code);
 +#ifdef ALLOW_EXCEPTIONS
    throw Code;
 +#else
