@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, edf7ebe6ff)
+$(call PKG_INIT_BIN, 37d28e5645)
 $(PKG)_SOURCE:=bjoern-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=git@https://github.com/jonashaag/bjoern.git
 
