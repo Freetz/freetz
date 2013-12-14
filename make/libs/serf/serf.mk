@@ -44,7 +44,7 @@ $(pkg)-clean:
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libserf-1.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/serf-1.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{serf.h,serf_*.h}
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{serf.h,serf_*.h,serf-1}
 
 $(pkg)-uninstall:
 	$(RM) $(SERF_TARGET_DIR)/libserf-1.so*
