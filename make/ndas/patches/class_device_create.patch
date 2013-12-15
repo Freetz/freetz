@@ -1,11 +1,11 @@
---- block/ctrldev.c.orig	2008-04-25 00:05:43.000000000 +0200
-+++ block/ctrldev.c	2009-06-14 21:03:48.000000000 +0200
+--- block/ctrldev.c
++++ block/ctrldev.c
 @@ -1083,6 +1083,18 @@
  #endif
  #endif
  
 +/*
-+ * In 2.6.13 and 2.6.14 kernels class_device_create() had different prototype. 
++ * In 2.6.13 and 2.6.14 kernels class_device_create() had different prototype.
 + */
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15) && \
 +    LINUX_VERSION_CODE > KERNEL_VERSION(2,6,12)
