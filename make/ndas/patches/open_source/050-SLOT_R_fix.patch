@@ -1,0 +1,11 @@
+--- 2.6.32/platform/linux/tarball-tag/block/block.h
++++ 2.6.32/platform/linux/tarball-tag/block/block.h
+@@ -123,7 +123,7 @@
+ #else
+ #define SLOT_I(_inode_) SLOT((_inode_)->i_bdev->bd_disk)
+ #endif
+-#define SLOT_R(_request_) (_request_->rq_disk->private_data)
++#define SLOT_R(_request_) (int) (_request_->rq_disk->private_data)
+ #define SLOT(_gendisk_) \
+ ({ \
+     struct gendisk *__g__ = _gendisk_;\

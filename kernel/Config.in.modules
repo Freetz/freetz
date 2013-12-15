@@ -30,21 +30,21 @@ config FREETZ_MODULE_xvmalloc
 	default n
 
 menu "ndas"
-	depends on FREETZ_TARGET_ARCH_LE
+	depends on FREETZ_PACKAGE_NDAS_AVAILABLE
 
 config FREETZ_MODULE_ndas_block
 	bool "ndas_block.ko"
-	depends on FREETZ_TARGET_ARCH_LE
+	depends on FREETZ_PACKAGE_NDAS_AVAILABLE
 	default n
 
 config FREETZ_MODULE_ndas_core
 	bool "ndas_core.ko"
-	depends on FREETZ_TARGET_ARCH_LE
+	depends on FREETZ_PACKAGE_NDAS_AVAILABLE
 	default n
 
 config FREETZ_MODULE_ndas_sal
 	bool "ndas_sal.ko"
-	depends on FREETZ_TARGET_ARCH_LE
+	depends on FREETZ_PACKAGE_NDAS_AVAILABLE
 	default n
 
 endmenu

@@ -1,0 +1,106 @@
+--- 2.6.32/platform/linux/tarball-tag/Makefile
++++ 2.6.32/platform/linux/tarball-tag/Makefile
+@@ -101,7 +101,9 @@
+ include $(ndas_root)/lib.mk
+ include $(ndas_root)/sal/module.mk
+ include $(ndas_root)/block/module.mk
++ifdef NDAS_SCSI
+ include $(ndas_root)/scsi/module.mk
++endif
+ include $(ndas_root)/admin/module.mk
+ 
+ #
+@@ -210,8 +212,8 @@
+ #
+ # Linux Module Source
+ #
+-ndas-module-src:=ndas_sal_main.c ndas_core_main.c ndas_block_main.c ndas_scsi_main.c ndas_emu_main.c
+-ndas-module-obj:=ndas_sal_main.o ndas_core_main.o ndas_block_main.o ndas_scsi_main.o ndas_emu_main.o
++ndas-module-src:=ndas_sal_main.c ndas_core_main.c ndas_block_main.c $(if $(NDAS_SCSI),ndas_scsi_main.c) ndas_emu_main.c
++ndas-module-obj:=ndas_sal_main.o ndas_core_main.o ndas_block_main.o $(if $(NDAS_SCSI),ndas_scsi_main.o) ndas_emu_main.o
+ 
+ #
+ # NDAS driver administration tools
+@@ -303,14 +305,16 @@
+ 
+ blk-single: $(ndas_root)/ndas_blk_s.ko ndas-admin
+ 
++ifdef NDAS_SCSI
+ scsi-single: $(ndas_root)/ndas_scsi_s.ko ndas-admin
++endif
+ #
+ # Kernel Modules for 2.6.x kernel
+ #
+ ndas-kernel-modules:=$(ndas_root)/ndas_sal.ko \
+                      $(ndas_root)/ndas_core.ko \
+                      $(ndas_root)/ndas_block.ko \
+-                     $(ndas_root)/ndas_scsi.ko \
++                     $(if $(NDAS_SCSI),$(ndas_root)/ndas_scsi.ko) \
+                      $(ndas_root)/ndas_emu.ko
+                      
+ ndas-kernel: $(ndas-kernel-modules) 
+@@ -320,7 +324,9 @@
+ 	install -m 644 $(ndas_root)/ndas_sal.ko $(NDAS_KERNEL_MODULE_PATH)
+ 	install -m 644 $(ndas_root)/ndas_core.ko $(NDAS_KERNEL_MODULE_PATH)
+ 	install -m 644 $(ndas_root)/ndas_block.ko $(NDAS_KERNEL_MODULE_PATH)
++ifdef NDAS_SCSI
+ 	install -m 644 $(ndas_root)/ndas_scsi.ko $(NDAS_KERNEL_MODULE_PATH)
++endif
+ 	install -m 644 $(ndas_root)/CREDITS.txt $(NDAS_KERNEL_MODULE_PATH)
+ 	-depmod > /dev/null 2>&1
+ # module extension is *.ko in 2.6 kerenl
+@@ -341,7 +347,7 @@
+ #obj-m is required for kernel makefile to build modules.
+ #
+ 
+-obj-m:= ndas_sal.o ndas_core.o ndas_block.o ndas_scsi.o ndas_emu.o
++obj-m:= ndas_sal.o ndas_core.o ndas_block.o $(if $(NDAS_SCSI),ndas_scsi.o) ndas_emu.o
+ 
+ ifeq ($(CONFIG_EMU_SINGLE),m)
+ obj-m:= ndas_emu_s.o
+@@ -351,18 +357,24 @@
+ obj-m:= ndas_blk_s.o
+ endif
+ 
++ifdef NDAS_SCSI
+ ifeq ($(CONFIG_SCSI_SINGLE),m)
+ obj-m:= ndas_scsi_s.o
+ endif
++endif
+ 
+ ndas_sal-objs:=  $(ndas-sal-obj) ndas_sal_main.o
+ ndas_core-objs:=  ndas.o ndas_core_main.o
+ ndas_emu-objs:=  ndas_emu_main.o
+ ndas_block-objs:=  $(ndas-block-obj) ndas_block_main.o
++ifdef NDAS_SCSI
+ ndas_scsi-objs:=  $(ndas-scsi-obj) ndas_scsi_main.o
++endif
+ ndas_emu_s-objs:= ndas.o $(ndas-sal-obj) ndas_emu_single.o
+ ndas_blk_s-objs:= ndas.o $(ndas-sal-obj) $(ndas-block-obj) ndas_blk_single.o
++ifdef NDAS_SCSI
+ ndas_scsi_s-objs:= ndas.o $(ndas-sal-obj) $(ndas-scsi-obj) ndas_scsi_single.o
++endif
+ 
+ $(ndas-block-obj) $(ndas-scsi-obj) $(ndas-sal-obj) $(ndas-module-obj): %.o : /%.c
+ 	@mkdir -p $(@D)
+@@ -390,6 +402,7 @@
+ 		CONFIG_BLK_SINGLE=m \
+ 		modules
+ 
++ifdef NDAS_SCSI
+ $(ndas_root)/ndas_scsi_s.ko: FORCE
+ 	@echo Invoking make against the kernel at $(NDAS_KERNEL_PATH)
+ 	$(MAKE) -C $(NDAS_KERNEL_PATH) \
+@@ -398,10 +411,11 @@
+ 		ndas_root=$(ndas_root) \
+ 		CONFIG_SCSI_SINGLE=m \
+ 		modules
++endif
+ 
+ 
+ 
+-$(ndas_root)/ndas_sal.ko $(ndas_root)/ndas_core.ko $(ndas_root)/ndas_block.ko $(ndas_root)/ndas_scsi.ko $(ndas_root)/ndas_emu.ko: FORCE
++$(ndas_root)/ndas_sal.ko $(ndas_root)/ndas_core.ko $(ndas_root)/ndas_block.ko $(if $(NDAS_SCSI),$(ndas_root)/ndas_scsi.ko) $(ndas_root)/ndas_emu.ko: FORCE
+ 	@echo Invoking make against the kernel at $(NDAS_KERNEL_PATH)
+ 	$(MAKE) -C $(NDAS_KERNEL_PATH) \
+ 		SUBDIRS=$(ndas_root) \
