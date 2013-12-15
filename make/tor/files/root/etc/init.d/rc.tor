@@ -29,7 +29,7 @@ config() {
 
 	mkdir -p /mod/etc/$DAEMON
 
-	if [ "$TOR_FORCE_GEOIP_UPDATE" = "yes" -o -n "$TOR_GEOIP_FILE" -a ! -e "$TOR_GEOIP_FILE" ]; then
+	if [ "$TOR_FORCE_GEOIP_UPDATE" = "yes" ] || ( [ -n "$TOR_GEOIP_FILE" ] && [ ! -e "$TOR_GEOIP_FILE.IPv4" -o ! -e "$TOR_GEOIP_FILE.IPv6" ] ); then
 		update_geoip_db
 	fi
 
@@ -74,28 +74,41 @@ stop_post() {
 # $1:          name of the file downloaded GeoIP database to be saved to
 # $2, $3, ...: optional codes of the countries to keep, if omitted all countries are kept
 #
-update_geoip_db_impl() {
-	local outputFilename="$1"
+update_geoipv4_db_impl() {
+	local outputFilename="$1.IPv4"
 	shift
 	local countryCodes="$(IFS='|'; echo -n "$*" | tr [a-z] [A-Z])"
-	[ -n "$countryCodes" ] && local countryCodesPattern="/,\"($countryCodes)\",/ "
+	[ -n "$countryCodes" ] && local countryCodesPattern="/, *\"($countryCodes)\",/ "
 	# note unzipping from stdin is a busybox extension
 	wget -q -O - http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip \
 	| busybox unzip -p - GeoIPCountryWhois.csv \
-	| sed -n -r -e "${countryCodesPattern}s/\"//gp" \
+	| sed -n -r -e "${countryCodesPattern}s/[ \"]//gp" \
 	| cut -d, -f3-5 \
 	> "$outputFilename"
 }
+update_geoipv6_db_impl() {
+	local outputFilename="$1.IPv6"
+	shift
+	local countryCodes="$(IFS='|'; echo -n "$*" | tr [a-z] [A-Z])"
+	[ -n "$countryCodes" ] && local countryCodesPattern="/, *\"($countryCodes)\",/ "
+	wget -q -O - http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz \
+	| gunzip -c \
+	| sed -n -r -e "${countryCodesPattern}s/[ \"]//gp" \
+	| cut -d, -f1,2,5 \
+	> "$outputFilename"
+}
+
 update_geoip_db() {
 	echo -n "fetching GeoIP database ... "
 	if [ $# -gt 0 ]; then
-		update_geoip_db_impl "$@"
+		update_geoipv4_db_impl "$@" && update_geoipv6_db_impl "$@"
 	else
 		if [ -z "$TOR_GEOIP_FILE" ]; then
 			echo "GeoIP file location must be provided, failed."
 			exit 1
 		fi
-		update_geoip_db_impl "$TOR_GEOIP_FILE" $(echo -e "${TOR_ENTRY_NODES}\n${TOR_EXIT_NODES}" | grep -v "^#" | sed -n -r -e 's,[{]([a-zA-Z]{2})[}],\1,gp')
+		local countryCodes="$(echo -e "${TOR_ENTRY_NODES}\n${TOR_EXIT_NODES}" | grep -v "^#" | sed -n -r -e 's,[{]([a-zA-Z]{2})[}],\1,gp')"
+		update_geoipv4_db_impl "$TOR_GEOIP_FILE" $countryCodes && update_geoipv6_db_impl "$TOR_GEOIP_FILE" $countryCodes
 	fi
 	exitval=$?
 	if [ "$exitval" -ne 0 ]; then
@@ -136,7 +149,7 @@ case $1 in
 		;;
 	update-geoip-db)
 		shift
-		update_geoip_db "$@"
+		update_geoip_db "$@" && echo "done."
 		;;
 	*)
 		echo "Usage: $0 [load|unload|start|stop|restart|status|update-geoip-db]" 1>&2
