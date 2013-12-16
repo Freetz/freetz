@@ -25,11 +25,11 @@ $(PKG)_DEPENDS_ON := kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 
-#TODO: add support for 2.6.28 => NDAS_VER_BUILD:=32/28
 NDAS_OPTIONS:= \
 	NDAS_KERNEL_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
 	NDAS_KERNEL_VERSION=$(strip $(FREETZ_KERNEL_VERSION)) \
 	NDAS_KERNEL_ARCH=$(call qstrip,$(FREETZ_TARGET_ARCH)) \
+	NDAS_VER_BUILD=$(word 3,$(subst .,$(_space),$(KERNEL_VERSION))) \
 	NDAS_CROSS_COMPILE=$(TARGET_CROSS) \
 	NDAS_CROSS_COMPILE_UM=$(TARGET_CROSS) \
 	NDAS_EXTRA_CFLAGS="-mlong-calls -Wno-unused-but-set-variable -Wno-unused-function" \
@@ -41,6 +41,7 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_DIR)/.exported: $($(PKG)_DIR)/.configured
 ifeq ($(strip $(FREETZ_PACKAGE_NDAS_OPEN_SOURCE_AVAILABLE)),y)
+	ln -sfT 2.6.32 $(NDAS_DIR)/2.6.28
 	touch $(NDAS_PRELIMINARY_BUILD_DIR)/arch/vendor/freetz.mk
 	$(SUBMAKE) -C $(NDAS_PRELIMINARY_BUILD_DIR) \
 		$(NDAS_OPTIONS) \
@@ -89,7 +90,7 @@ $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NDAS_BUILD_DIR) $(NDAS_OPTIONS) clean
-	$(RM) $(NDAS_DIR)/.exported
+	$(RM) $(NDAS_DIR)/.exported $(NDAS_DIR)/2.6.28
 
 $(pkg)-uninstall:
 	$(RM) $(NDAS_BINARY_TARGET_DIR) $(NDAS_MODULES_TARGET_DIR)
