@@ -1,0 +1,16 @@
+Fix for --as-needed taken from the following upstream commit. Note: the patch doesn't contain any of the testsuite changes.
+
+  https://sourceware.org/git/?p=binutils.git;a=commit;h=ea12435a79d5c61859a3513783a4d268a5b1ecfd
+
+Fix by Gregory Fong (s. https://sourceware.org/ml/binutils/2013-05/msg00328.html)
+
+--- bfd/elfxx-mips.c
++++ bfd/elfxx-mips.c
+@@ -4906,6 +4906,7 @@ mips_elf_create_got_section (bfd *abfd, struct bfd_link_info *info)
+   h->non_elf = 0;
+   h->def_regular = 1;
+   h->type = STT_OBJECT;
++  h->other = (h->other & ~ELF_ST_VISIBILITY (-1)) | STV_HIDDEN;
+   elf_hash_table (info)->hgot = h;
+ 
+   if (info->shared
