@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.0.1a)
-#$(PKG)_CATEGORY:=Web interfaces
-$(PKG)_CATEGORY:=Unstable
+$(PKG)_CATEGORY:=Web interfaces
+
 $(PKG_UNPACKED)
 
 $(pkg):

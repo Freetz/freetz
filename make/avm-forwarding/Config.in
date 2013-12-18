@@ -1,8 +1,7 @@
 config FREETZ_PACKAGE_AVM_FORWARDING
-	bool "Portforwarding solely for new \"Labor-firmwares\" xx.05.55 or higher - EXPERIMENTAL"
-	depends on !FREETZ_REMOVE_DSLD
+	bool "AVM-forwarding - EXPERIMENTAL"
+	depends on !FREETZ_REMOVE_DSLD && FREETZ_AVM_VERSION_05_5X_MIN && FREETZ_REAL_DEVELOPER_ONLY
 	default n
-
 	help
 		Configuration of forwardings to FB itself (open ports).
 		Solely for new "Labor"-firmwares xx.05.55 or higher.
