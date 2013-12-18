@@ -54,8 +54,8 @@ if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
 		for file in $PKG_FILES; do
 			case $file in
 				/etc/default.$pkg/*|/etc/init.d/rc.*|/etc/onlinechanged/*|/etc/cron.d/*|/usr/lib/cgi-bin/$pkg*)
-				[ "$EXTERNAL_DYNAMIC_SCRIPTS" != "y" ] && continue
-				;;
+					[ "$EXTERNAL_DYNAMIC_SCRIPTS" != "y" ] && continue
+					;;
 			esac
 			EXTERNAL_DYNAMIC_FILES+=" $file"
 		done
@@ -108,7 +108,7 @@ for EXTERNAL_FILE in $EXTERNAL_FILES; do
 		else
 			EXTERNAL_MSG="not found"
 		fi
-		
+
 		#link file
 		if [ "$IS_SCRIPT" != "n" ]; then
 			EXTERNAL_LINKED=""
