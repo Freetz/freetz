@@ -1,0 +1,169 @@
+--- configure
++++ configure
+@@ -2742,11 +2742,11 @@
+ build_libs="build-libiberty"
+ 
+ # these tools are built for the build environment
+-build_tools="build-texinfo build-flex build-bison build-m4 build-fixincludes"
++build_tools="build-flex build-bison build-m4 build-fixincludes"
+ 
+ # these libraries are used by various programs built for the host environment
+ #
+-host_libs="intl libiberty opcodes bfd readline tcl tk itcl libgui zlib libbacktrace libcpp libdecnumber gmp mpfr mpc isl cloog libelf libiconv"
++host_libs="libiberty opcodes bfd readline tcl tk itcl libgui zlib libbacktrace libcpp libdecnumber gmp mpfr mpc ppl cloog libelf libiconv"
+ 
+ # these tools are built for the host environment
+ # Note, the powerpc-eabi build depends on sim occurring before gdb in order to
+@@ -2754,7 +2754,7 @@
+ # binutils, gas and ld appear in that order because it makes sense to run
+ # "make check" in that particular order.
+ # If --enable-gold is used, "gold" may replace "ld".
+-host_tools="texinfo flex bison binutils gas ld fixincludes gcc cgen sid sim gdb gprof etc expect dejagnu m4 utils guile fastjar gnattools"
++host_tools="flex bison binutils gas ld fixincludes gcc cgen sid sim gdb gprof etc expect dejagnu m4 utils guile fastjar gnattools"
+ 
+ # libgcj represents the runtime libraries only used by gcj.
+ libgcj="target-libffi \
+--- bfd/Makefile.in
++++ bfd/Makefile.in
+@@ -342,7 +342,7 @@
+ RELEASE = y
+ INCDIR = $(srcdir)/../include
+ CSEARCH = -I. -I$(srcdir) -I$(INCDIR)
+-SUBDIRS = doc po
++SUBDIRS =
+ bfddocdir = doc
+ libbfd_la_LDFLAGS = $(am__append_1) -release `cat libtool-soversion` \
+ 	@SHARED_LDFLAGS@ $(am__empty)
+--- binutils/Makefile.in
++++ binutils/Makefile.in
+@@ -433,7 +433,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = dejagnu no-dist foreign
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = doc po
++SUBDIRS =
+ tooldir = $(exec_prefix)/$(target_alias)
+ 
+ # Automake 1.10+ disables lex and yacc output file regeneration if
+--- gas/Makefile.in
++++ gas/Makefile.in
+@@ -300,7 +300,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.11 dejagnu foreign no-dist
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+-SUBDIRS = doc po
++SUBDIRS =
+ tooldir = $(exec_prefix)/$(target_alias)
+ 
+ # Automake 1.10+ disables lex and yacc output file regeneration if
+--- gold/Makefile.in
++++ gold/Makefile.in
+@@ -407,7 +407,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = foreign
+-SUBDIRS = po testsuite
++SUBDIRS = testsuite
+ tooldir = $(exec_prefix)/$(target_alias)
+ ACLOCAL_AMFLAGS = -I ../bfd -I ../config
+ AM_CFLAGS = $(WARN_CFLAGS) $(LFS_CFLAGS) $(RANDOM_SEED_CFLAGS)
+--- gprof/Makefile.in
++++ gprof/Makefile.in
+@@ -112,13 +112,13 @@
+ 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+ 	$(LDFLAGS) -o $@
+ SOURCES = $(gprof_SOURCES)
+-INFO_DEPS = gprof.info
++INFO_DEPS =
+ am__TEXINFO_TEX_DIR = $(srcdir)/../texinfo
+-DVIS = gprof.dvi
+-PDFS = gprof.pdf
+-PSS = gprof.ps
+-HTMLS = gprof.html
+-TEXINFOS = gprof.texi
++DVIS =
++PDFS =
++PSS =
++HTMLS =
++TEXINFOS =
+ TEXI2PDF = $(TEXI2DVI) --pdf --batch
+ MAKEINFOHTML = $(MAKEINFO) --html
+ AM_MAKEINFOHTMLFLAGS = $(AM_MAKEINFOFLAGS)
+@@ -298,7 +298,7 @@
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+ TEXINFO_TEX = ../texinfo/texinfo.tex
+ SUFFIXES = .m
+-SUBDIRS = po
++SUBDIRS =
+ BASEDIR = $(srcdir)/..
+ BFDDIR = $(BASEDIR)/bfd
+ INCDIR = $(BASEDIR)/include
+@@ -332,7 +332,7 @@
+ POD2MAN = pod2man --center="GNU" --release="binutils-$(VERSION)" --section=1
+ info_TEXINFOS = gprof.texi
+ gprof_TEXINFOS = config.texi
+-man_MANS = gprof.1
++man_MANS =
+ AM_MAKEINFOFLAGS = -I "$(srcdir)" -I "$(top_srcdir)/../bfd/doc" -I ../bfd/doc
+ TEXI2DVI = texi2dvi -I "$(srcdir)" -I "$(top_srcdir)/../bfd/doc" -I ../bfd/doc
+ MAINTAINERCLEANFILES = gprof.info
+--- ld/Makefile.in
++++ ld/Makefile.in
+@@ -136,13 +136,13 @@
+ 	--mode=compile $(YACC) $(YFLAGS) $(AM_YFLAGS)
+ SOURCES = $(libldtestplug_la_SOURCES) $(ld_new_SOURCES) \
+ 	$(EXTRA_ld_new_SOURCES)
+-INFO_DEPS = ld.info
++INFO_DEPS =
+ am__TEXINFO_TEX_DIR = $(srcdir)/../texinfo
+-DVIS = ld.dvi
+-PDFS = ld.pdf
+-PSS = ld.ps
+-HTMLS = ld.html
+-TEXINFOS = ld.texinfo
++DVIS =
++PDFS =
++PSS =
++HTMLS =
++TEXINFOS =
+ TEXI2PDF = $(TEXI2DVI) --pdf --batch
+ MAKEINFOHTML = $(MAKEINFO) --html
+ AM_MAKEINFOHTMLFLAGS = $(AM_MAKEINFOFLAGS)
+@@ -364,7 +364,7 @@
+ AUTOMAKE_OPTIONS = dejagnu no-texinfo.tex no-dist foreign
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+ TEXINFO_TEX = ../texinfo/texinfo.tex
+-SUBDIRS = po
++SUBDIRS =
+ tooldir = $(exec_prefix)/$(target_alias)
+ 
+ # Automake 1.10+ disables lex and yacc output file regeneration if
+@@ -439,7 +439,7 @@
+ info_TEXINFOS = ld.texinfo
+ ld_TEXINFOS = configdoc.texi
+ noinst_TEXINFOS = ldint.texinfo
+-man_MANS = ld.1
++man_MANS =
+ AM_MAKEINFOFLAGS = -I $(srcdir) -I $(BFDDIR)/doc -I ../bfd/doc \
+ 		   -I $(top_srcdir)/../libiberty
+ 
+@@ -3757,7 +3757,7 @@
+ # Both info (ld.info) and ld.1 depend on configdoc.texi.
+ # But info isn't a direct target. Make info-recursive to depend on
+ # ld.1 to support parallel build.
+-info-recursive: ld.1
++info-recursive:
+ distclean-local:
+ 	rm -rf ldscripts
+ 
+--- opcodes/Makefile.in
++++ opcodes/Makefile.in
+@@ -308,7 +308,7 @@
+ ACLOCAL_AMFLAGS = -I .. -I ../config -I ../bfd
+ 
+ # Build '.' first so all generated files exist.
+-SUBDIRS = . po
++SUBDIRS = .
+ INCDIR = $(srcdir)/../include
+ BFDDIR = $(srcdir)/../bfd
+ AM_CFLAGS = $(WARN_CFLAGS)
