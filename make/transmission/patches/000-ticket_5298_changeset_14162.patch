@@ -1,0 +1,18 @@
+--- libtransmission/session.c
++++ libtransmission/session.c
+@@ -2797,5 +2797,4 @@
+ };
+ 
+-/* higher positions come first */
+ static int
+ compareTorrentAndPositions (const void * va, const void * vb)
+@@ -2806,7 +2805,7 @@
+ 
+   if (a->position > b->position)
++    ret = 1;
++  else if (a->position < b->position)
+     ret = -1;
+-  else if (a->position < b->position)
+-    ret = 1;
+   else
+     ret = 0;
