@@ -1,6 +1,40 @@
 --- addons/chan_ooh323.c
 +++ addons/chan_ooh323.c
-@@ -2490,11 +2490,23 @@
+@@ -294,8 +294,6 @@
+ static int usecnt = 0;
+ AST_MUTEX_DEFINE_STATIC(usecnt_lock);
+ 
+-AST_MUTEX_DEFINE_STATIC(ooh323c_cmd_lock);
+-
+ static long callnumber = 0;
+ AST_MUTEX_DEFINE_STATIC(ooh323c_cn_lock);
+ 
+@@ -694,7 +692,7 @@
+ 			ooh323_destroy(p);
+ 			ast_mutex_unlock(&iflock);
+ 			return NULL;
+-		} else if (gH323ep.gkClient && gH323ep.gkClient->state != GkClientRegistered) {
++		} else if (!gH323ep.gkClient || (gH323ep.gkClient && gH323ep.gkClient->state != GkClientRegistered)) {
+ 			ast_log(LOG_ERROR, "Gatekeeper client is configured but not registered\n");
+ 			*cause = AST_CAUSE_NORMAL_TEMPORARY_FAILURE;
+ 			return NULL;
+@@ -749,7 +747,6 @@
+       		}
+ 
+       		ast_mutex_unlock(&p->lock);
+-      		ast_mutex_lock(&ooh323c_cmd_lock);
+ 		ast_cond_init(&p->rtpcond, NULL);
+       		ooMakeCall(data, p->callToken, AST_MAX_EXTENSION, NULL);
+ 		ast_mutex_lock(&p->lock);
+@@ -758,7 +755,6 @@
+ 		}
+ 		ast_mutex_unlock(&p->lock);
+ 		ast_cond_destroy(&p->rtpcond);
+-      		ast_mutex_unlock(&ooh323c_cmd_lock);
+ 	}
+ 
+ 	restart_monitor();
+@@ -2490,11 +2486,23 @@
  					return NULL;
  				}
  			} else if (!strcasecmp(v->name, "e164")) {
@@ -28,7 +62,7 @@
  				}
  			} else  if (!strcasecmp(v->name, "email")) {
  				if (!(peer->email = ast_strdup(v->value))) {
-@@ -2625,6 +2637,9 @@
+@@ -2625,6 +2633,9 @@
  
  static int ooh323_do_reload(void)
  {
@@ -38,7 +72,7 @@
  	if (gH323Debug) {
  		ast_verb(0, "---   ooh323_do_reload\n");
  	}
-@@ -2644,6 +2659,46 @@
+@@ -2644,6 +2655,46 @@
  		ooGkClientStart(gH323ep.gkClient);
  	}
  
@@ -85,7 +119,7 @@
  	if (gH323Debug) {
  		ast_verb(0, "+++   ooh323_do_reload\n");
  	}
-@@ -2727,6 +2782,7 @@
+@@ -2727,6 +2778,7 @@
  	  		free(prev);
  		}
  		gAliasList = NULL;
@@ -93,7 +127,7 @@
  	}
  
  	/* Inintialize everything to default */
-@@ -2843,17 +2899,29 @@
+@@ -2843,17 +2895,29 @@
  			gAliasList = pNewAlias;
  			pNewAlias = NULL;
  		} else if (!strcasecmp(v->name, "e164")) {
@@ -133,6 +167,131 @@
  		} else if (!strcasecmp(v->name, "email")) {
           		pNewAlias = ast_calloc(1, sizeof(struct ooAliases));
  			if (!pNewAlias) {
+@@ -3425,6 +3489,9 @@
+ 	case GkClientFailed:
+ 		ast_cli(a->fd, "%-20s%s\n", "GK state:", "Failed");
+ 		break;
++	case GkClientStopped:
++		ast_cli(a->fd, "%-20s%s\n", "GK state:", "Shutdown");
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -3850,6 +3917,13 @@
+ 			ast_verb(1, "Reloading H.323\n");
+ 			ooh323_do_reload();
+ 		}
++		if (gH323ep.gkClient && gH323ep.gkClient->state == GkClientStopped) {
++			ooGkClientDestroy();
++			ast_verb(0, "Restart stopped gatekeeper client\n");
++			ooGkClientInit(gRasGkMode, (gRasGkMode == RasUseSpecificGatekeeper) ? 
++									gGatekeeper : 0, 0);
++			ooGkClientStart(gH323ep.gkClient);
++		}
+ 
+ 		/* Check for interfaces needing to be killed */
+ 		ast_mutex_lock(&iflock);
+--- addons/ooh323c/src/oochannels.c
++++ addons/ooh323c/src/oochannels.c
+@@ -603,11 +603,7 @@
+       if(gH323ep.gkClient->state == GkClientFailed ||
+          gH323ep.gkClient->state == GkClientGkErr)
+       {
+-         if(ooGkClientHandleClientOrGkFailure(gH323ep.gkClient)!=OO_OK)
+-         {
+-            //ooStopMonitorCalls(); //Function calling ooProcessFDSETsAndTimers is responsible for this.
+-            return OO_FAILED;
+-         }
++         ooGkClientHandleClientOrGkFailure(gH323ep.gkClient);
+       }
+    }
+ 
+--- addons/ooh323c/src/ooGkClient.c
++++ addons/ooh323c/src/ooGkClient.c
+@@ -2851,13 +2851,13 @@
+       {
+          OOTRACEERR1("Error: Gatekeeper error detected. Closing GkClient as "
+                      "Gk mode is UseSpecifcGatekeeper\n");
+-         ooGkClientDestroy();
++	 pGkClient->state = GkClientStopped;
+          return OO_FAILED;
+       }
+       else{
+          OOTRACEERR1("Error: Gatekeeper error detected. Closing GkClient. NEED"
+                     " to implement recovery by rediscovering another gk\n");
+-         ooGkClientDestroy();
++	 pGkClient->state = GkClientStopped;
+          return OO_FAILED;
+       }
+    }
+--- addons/ooh323c/src/ooGkClient.h
++++ addons/ooh323c/src/ooGkClient.h
+@@ -108,7 +108,8 @@
+    GkClientRegistered, /* registered with gk */
+    GkClientUnregistered,
+    GkClientGkErr,/*Gk is not responding, in discover mode can look for new GK*/
+-   GkClientFailed
++   GkClientFailed,
++   GkClientStopped
+ };
+    
+ 
+--- addons/ooh323c/src/ooTimer.c
++++ addons/ooh323c/src/ooTimer.c
+@@ -17,7 +17,6 @@
+ #include "asterisk.h"
+ #include "asterisk/lock.h"
+ 
+-#include "ootypes.h"
+ #include "ooDateTime.h"
+ #include "ooTimer.h"
+ #include "ootrace.h"
+@@ -102,7 +101,6 @@
+ void ooTimerFireExpired (OOCTXT* pctxt, DList *pList)
+ {
+    OOTimer* pTimer;
+-   int ret = OO_OK;
+ 
+    while (pList->count > 0) {
+       pTimer = (OOTimer*) pList->head->data;
+@@ -114,7 +112,7 @@
+           */
+          if (pTimer->reRegister) ooTimerReset (pctxt, pList, pTimer);
+ 
+-	 ret = (*pTimer->timeoutCB)(pTimer->cbData);
++         (*pTimer->timeoutCB)(pTimer->cbData);
+ 
+          if (!pTimer->reRegister) {
+             ooTimerDelete (pctxt, pList, pTimer);
+@@ -122,8 +120,6 @@
+       }
+       else break;
+    }
+-
+-   return (void)ret;
+ }
+ 
+ int ooTimerInsertEntry (OOCTXT* pctxt, DList *pList, OOTimer* pTimer)
+--- apps/app_chanspy.c
++++ apps/app_chanspy.c
+@@ -35,7 +35,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 370955 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
+ 
+ #include <ctype.h>
+ #include <errno.h>
+@@ -363,7 +363,7 @@
+ 	OPTION_NAME              = (1 << 12),   /* Say the name of the person on whom we will spy */
+ 	OPTION_DTMF_SWITCH_MODES = (1 << 13),   /* Allow numeric DTMF to switch between chanspy modes */
+ 	OPTION_DTMF_EXIT         = (1 << 14),	/* Set DTMF to exit, added for DAHDIScan integration */
+-	OPTION_DTMF_CYCLE        = (1 << 15),	/* Custom DTMF for cycling next avaliable channel, (default is '*') */
++	OPTION_DTMF_CYCLE        = (1 << 15),	/* Custom DTMF for cycling next available channel, (default is '*') */
+ 	OPTION_DAHDI_SCAN        = (1 << 16),	/* Scan groups in DAHDIScan mode */
+ 	OPTION_STOP              = (1 << 17),
+ 	OPTION_EXITONHANGUP      = (1 << 18),   /* Hang up when the spied-on channel hangs up. */
 --- apps/app_confbridge.c
 +++ apps/app_confbridge.c
 @@ -34,7 +34,7 @@
@@ -382,6 +541,26 @@
  }
  
  void conf_remove_user_waiting(struct conference_bridge *conference_bridge, struct conference_bridge_user *cbu)
+--- apps/app_mixmonitor.c
++++ apps/app_mixmonitor.c
+@@ -39,7 +39,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398011 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
+ 
+ #include "asterisk/paths.h"	/* use ast_config_AST_MONITOR_DIR */
+ #include "asterisk/stringfields.h"
+@@ -1078,7 +1078,7 @@
+ 
+ 	ast_mutex_lock(&mixmonitor_ds->lock);
+ 
+-	/* closing the filestream here guarantees the file is avaliable to the dialplan
++	/* closing the filestream here guarantees the file is available to the dialplan
+ 	 * after calling StopMixMonitor */
+ 	mixmonitor_ds_close_fs(mixmonitor_ds);
+ 
 --- apps/app_queue.c
 +++ apps/app_queue.c
 @@ -63,7 +63,7 @@
@@ -513,6 +692,17 @@
  	}
  	ast_channel_unlock(chan);
  
+--- apps/app_sms.c
++++ apps/app_sms.c
+@@ -40,7 +40,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403855 $")
+ 
+ #include <dirent.h>
+ #include <ctype.h>
 --- apps/confbridge/conf_state.c
 +++ apps/confbridge/conf_state.c
 @@ -57,12 +57,11 @@
@@ -723,6 +913,26 @@
  		}
  
  		if (analog_p->ringt > 0) {
+--- channels/chan_iax2.c
++++ channels/chan_iax2.c
+@@ -38,7 +38,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401016 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
+ 
+ #include <sys/mman.h>
+ #include <dirent.h>
+@@ -2808,7 +2808,7 @@
+  * \brief Schedules delayed removal of iax2_pvt call number data
+  *
+  * \note After MIN_REUSE_TIME has passed for a destroyed iax2_pvt, the callno is
+- * avaliable again, and the address from the previous connection must be decremented
++ * available again, and the address from the previous connection must be decremented
+  * from the peercnts table.  This function schedules these operations to take place.
+  */
+ static void sched_delay_remove(struct sockaddr_in *sin, struct callno_entry *callno_entry)
 --- channels/chan_sip.c
 +++ channels/chan_sip.c
 @@ -210,7 +210,7 @@
@@ -955,6 +1165,81 @@
  ; no_op ; This action does nothing (No Operation). Its only real purpose exists for
          ; being able to reserve a sequence in the config as a menu exit sequence.
  ; decrease_listening_volume ; Decreases the channel's listening volume.
+--- funcs/func_db.c
++++ funcs/func_db.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
+ 
+ #include <regex.h>
+ 
+--- funcs/func_env.c
++++ funcs/func_env.c
+@@ -27,7 +27,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
+ 
+ #include <sys/stat.h>   /* stat(2) */
+ 
+--- funcs/func_lock.c
++++ funcs/func_lock.c
+@@ -32,7 +32,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
+ 
+ #include <signal.h>
+ 
+--- funcs/func_realtime.c
++++ funcs/func_realtime.c
+@@ -30,7 +30,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
+ 
+ #include "asterisk/file.h"
+ #include "asterisk/channel.h"
+--- funcs/func_shell.c
++++ funcs/func_shell.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
+ 
+ #include "asterisk/module.h"
+ #include "asterisk/channel.h"
+--- funcs/func_strings.c
++++ funcs/func_strings.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396310 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404087 $")
+ 
+ #include <regex.h>
+ #include <ctype.h>
+@@ -353,7 +353,7 @@
+ 			<parameter name="string" required="true" />
+ 		</syntax>
+ 		<description>
+-			<para>Example: ${QUOTE(ab"c"de)} will return "abcde"</para>
++			<para>Example: ${QUOTE(ab"c"de)} will return ""ab\"c\"de""</para>
+ 		</description>
+ 	</function>
+ 	<function name="CSV_QUOTE" language="en_US">
 --- include/asterisk/rtp_engine.h
 +++ include/asterisk/rtp_engine.h
 @@ -322,10 +322,16 @@
@@ -975,6 +1260,28 @@
  	char *transport;                      /*!< Transport for the media */
  	int priority;                         /*!< Priority which is used if multiple candidates can be used */
  	struct ast_sockaddr address;          /*!< Address of the candidate */
+--- include/asterisk/test.h
++++ include/asterisk/test.h
+@@ -45,7 +45,7 @@
+ 
+    Create a callback function for the test using the AST_TEST_DEFINE macro.
+ 
+-   Each defined test has three arguments avaliable to it's test code.
++   Each defined test has three arguments available to it's test code.
+        \param struct ast_test_info *info
+        \param enum ast_test_command cmd
+        \param struct ast_test *test
+--- main/asterisk.c
++++ main/asterisk.c
+@@ -65,7 +65,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
+ 
+ #include "asterisk/_private.h"
+ 
 --- main/channel.c
 +++ main/channel.c
 @@ -29,7 +29,7 @@
@@ -982,9 +1289,18 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401179 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402151 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
  
  #include "asterisk/_private.h"
+ 
+@@ -5590,7 +5590,7 @@
+ 			ast_cdr_setaccount(new_chan, oh->account);
+ 			ast_channel_unlock(new_chan);
+ 		}
+-	} else if (caller) { /* no outgoing helper so use caller if avaliable */
++	} else if (caller) { /* no outgoing helper so use caller if available */
+ 		call_forward_inherit(new_chan, caller, orig);
+ 	}
  
 @@ -6493,18 +6493,19 @@
  			newvar = ast_var_assign(&varname[1], ast_var_value(current));
@@ -1062,6 +1378,59 @@
  				v->lineno = lineno;
  				v->object = object;
  				*last_cat = 0;
+--- main/db.c
++++ main/db.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 375763 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404344 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"	/* use ast_config_AST_DB */
+@@ -145,12 +145,14 @@
+  * \brief Clean up the prepared SQLite3 statement
+  * \note dblock should already be locked prior to calling this method
+  */
+-static int clean_stmt(sqlite3_stmt *stmt, const char *sql)
++static int clean_stmt(sqlite3_stmt **stmt, const char *sql)
+ {
+-	if (sqlite3_finalize(stmt) != SQLITE_OK) {
++	if (sqlite3_finalize(*stmt) != SQLITE_OK) {
+ 		ast_log(LOG_WARNING, "Couldn't finalize statement '%s': %s\n", sql, sqlite3_errmsg(astdb));
++		*stmt = NULL;
+ 		return -1;
+ 	}
++	*stmt = NULL;
+ 	return 0;
+ }
+ 
+@@ -160,15 +162,15 @@
+  */
+ static void clean_statements(void)
+ {
+-	clean_stmt(get_stmt, get_stmt_sql);
+-	clean_stmt(del_stmt, del_stmt_sql);
+-	clean_stmt(deltree_stmt, deltree_stmt_sql);
+-	clean_stmt(deltree_all_stmt, deltree_all_stmt_sql);
+-	clean_stmt(gettree_stmt, gettree_stmt_sql);
+-	clean_stmt(gettree_all_stmt, gettree_all_stmt_sql);
+-	clean_stmt(showkey_stmt, showkey_stmt_sql);
+-	clean_stmt(put_stmt, put_stmt_sql);
+-	clean_stmt(create_astdb_stmt, create_astdb_stmt_sql);
++	clean_stmt(&get_stmt, get_stmt_sql);
++	clean_stmt(&del_stmt, del_stmt_sql);
++	clean_stmt(&deltree_stmt, deltree_stmt_sql);
++	clean_stmt(&deltree_all_stmt, deltree_all_stmt_sql);
++	clean_stmt(&gettree_stmt, gettree_stmt_sql);
++	clean_stmt(&gettree_all_stmt, gettree_all_stmt_sql);
++	clean_stmt(&showkey_stmt, showkey_stmt_sql);
++	clean_stmt(&put_stmt, put_stmt_sql);
++	clean_stmt(&create_astdb_stmt, create_astdb_stmt_sql);
+ }
+ 
+ static int init_statements(void)
 --- main/loader.c
 +++ main/loader.c
 @@ -33,7 +33,7 @@
@@ -1136,18 +1505,89 @@
  	resource_being_loaded = NULL;
  
  	/* start the load process again */
+--- main/manager.c
++++ main/manager.c
+@@ -47,7 +47,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398061 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404275 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"	/* use various ast_config_AST_* */
+@@ -5775,20 +5775,47 @@
+ {
+ 	/* Notify managers of change */
+ 	char hint[512];
+-	int state = info->exten_state;
+-
+-	/* only interested in device state for this right now */
+-	if (info->reason !=  AST_HINT_UPDATE_DEVICE) {
+-		return 0;
+-	}
+ 
+ 	ast_get_hint(hint, sizeof(hint), NULL, 0, NULL, context, exten);
+-	/*** DOCUMENTATION
+-		<managerEventInstance>
+-			<synopsis>Raised when an extension state has changed.</synopsis>
+-		</managerEventInstance>
+-	***/
+-	manager_event(EVENT_FLAG_CALL, "ExtensionStatus", "Exten: %s\r\nContext: %s\r\nHint: %s\r\nStatus: %d\r\n", exten, context, hint, state);
++
++	switch(info->reason) {
++	case AST_HINT_UPDATE_DEVICE:
++		/*** DOCUMENTATION
++			<managerEventInstance>
++				<synopsis>Raised when an extension state has changed.</synopsis>
++			</managerEventInstance>
++		***/
++		manager_event(EVENT_FLAG_CALL, "ExtensionStatus",
++			"Exten: %s\r\n"
++			"Context: %s\r\n"
++			"Hint: %s\r\n"
++			"Status: %d\r\n",
++			exten,
++			context,
++			hint,
++			info->exten_state);
++		break;
++	case AST_HINT_UPDATE_PRESENCE:
++		/*** DOCUMENTATION
++			<managerEventInstance>
++				<synopsis>Raised when a presence state has changed.</synopsis>
++			</managerEventInstance>
++		***/
++		manager_event(EVENT_FLAG_CALL, "PresenceStatus",
++			"Exten: %s\r\n"
++			"Context: %s\r\n"
++			"Hint: %s\r\n"
++			"Status: %s\r\n"
++			"Subtype: %s\r\n"
++			"Message: %s\r\n",
++			exten,
++			context,
++			hint,
++			ast_presence_state2str(info->presence_state),
++			info->presence_subtype,
++			info->presence_message);
++		break;
++	}
+ 	return 0;
+ }
+ 
 --- main/pbx.c
 +++ main/pbx.c
 @@ -29,7 +29,7 @@
  
  #include "asterisk.h"
  
--ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401960 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402151 $")
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
  
  #include "asterisk/_private.h"
  #include "asterisk/paths.h"	/* use ast_config_AST_SYSTEM_NAME */
-@@ -4268,7 +4268,7 @@
+@@ -4516,7 +4516,7 @@
  						ast_log(LOG_ERROR, "Unable to allocate bogus channel for variable substitution.  Function results may be blank.\n");
  					}
  				}
@@ -1156,7 +1596,7 @@
  			} else {
  				/* Retrieve variable value */
  				ast_str_retrieve_variable(&substr3, 0, c, headp, finalvars);
-@@ -4467,7 +4467,7 @@
+@@ -4715,7 +4715,7 @@
  						ast_log(LOG_ERROR, "Unable to allocate bogus channel for variable substitution.  Function results may be blank.\n");
  					}
  				}
@@ -1165,6 +1605,101 @@
  			} else {
  				/* Retrieve variable value */
  				pbx_retrieve_variable(c, vars, &cp4, workspace, VAR_BUF_SIZE, headp);
+@@ -4805,25 +4805,6 @@
+ 	pbx_substitute_variables_helper_full(NULL, headp, cp1, cp2, count, &used);
+ }
+ 
+-static void pbx_substitute_variables(char *passdata, int datalen, struct ast_channel *c, struct ast_exten *e)
+-{
+-	const char *tmp;
+-
+-	/* Nothing more to do */
+-	if (!e->data) {
+-		*passdata = '\0';
+-		return;
+-	}
+-
+-	/* No variables or expressions in e->data, so why scan it? */
+-	if ((!(tmp = strchr(e->data, '$'))) || (!strstr(tmp, "${") && !strstr(tmp, "$["))) {
+-		ast_copy_string(passdata, e->data, datalen);
+-		return;
+-	}
+-
+-	pbx_substitute_variables_helper(c, e->data, passdata, datalen - 1);
+-}
+-
+ /*!
+  * \brief The return value depends on the action:
+  *
+@@ -4848,6 +4829,7 @@
+ {
+ 	struct ast_exten *e;
+ 	struct ast_app *app;
++	char *substitute = NULL;
+ 	int res;
+ 	struct pbx_find_info q = { .stacklen = 0 }; /* the rest is reset in pbx_find_extension */
+ 	char passdata[EXT_DATA_SIZE];
+@@ -4873,6 +4855,18 @@
+ 			if (!e->cached_app)
+ 				e->cached_app = pbx_findapp(e->app);
+ 			app = e->cached_app;
++			if (ast_strlen_zero(e->data)) {
++				*passdata = '\0';
++			} else {
++				const char *tmp;
++				if ((!(tmp = strchr(e->data, '$'))) || (!strstr(tmp, "${") && !strstr(tmp, "$["))) {
++					/* no variables to substitute, copy on through */
++					ast_copy_string(passdata, e->data, sizeof(passdata));
++				} else {
++					/* save e->data on stack for later processing after lock released */
++					substitute = ast_strdupa(e->data);
++				}
++			}
+ 			ast_unlock_contexts();
+ 			if (!app) {
+ 				ast_log(LOG_WARNING, "No application '%s' for extension (%s, %s, %d)\n", e->app, context, exten, priority);
+@@ -4883,7 +4877,9 @@
+ 			if (ast_channel_exten(c) != exten)
+ 				ast_channel_exten_set(c, exten);
+ 			ast_channel_priority_set(c, priority);
+-			pbx_substitute_variables(passdata, sizeof(passdata), c, e);
++			if (substitute) {
++				pbx_substitute_variables_helper(c, substitute, passdata, sizeof(passdata)-1);
++			}
+ #ifdef CHANNEL_TRACE
+ 			ast_channel_trace_update(c);
+ #endif
+--- main/rtp_engine.c
++++ main/rtp_engine.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402042 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
+ 
+ #include <math.h>
+ 
+@@ -2183,7 +2183,7 @@
+ 	}
+ 
+ 	if (map < 0) {
+-		ast_log(LOG_WARNING, "No Dynamic RTP mapping avaliable for format %s\n" ,ast_getformatname(format));
++		ast_log(LOG_WARNING, "No Dynamic RTP mapping available for format %s\n" ,ast_getformatname(format));
+ 		ast_rwlock_unlock(&static_RTP_PT_lock);
+ 		return;
+ 	}
+--- main/tcptls.c
++++ main/tcptls.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
+ 
+ #ifdef HAVE_FCNTL_H
+ #include <fcntl.h>
 --- main/translate.c
 +++ main/translate.c
 @@ -29,7 +29,7 @@
@@ -1275,6 +1810,48 @@
  		return ret;
  	}
  
+--- res/res_calendar.c
++++ res/res_calendar.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 392810 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404136 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/calendar.h"
+@@ -766,7 +766,10 @@
+ 	datastore->inheritance = DATASTORE_INHERIT_FOREVER;
+ 
+ 	ao2_ref(event, +1);
++
++	ast_channel_lock(chan);
+ 	res = ast_channel_datastore_add(chan, datastore);
++	ast_channel_unlock(chan);
+ 
+ 	if (!(tmpstr = ast_str_create(32))) {
+ 		goto notify_cleanup;
+--- res/res_fax.c
++++ res/res_fax.c
+@@ -56,7 +56,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377657 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404351 $")
+ 
+ #include "asterisk/io.h"
+ #include "asterisk/file.h"
+@@ -3343,7 +3343,7 @@
+ 	case AST_FRAME_VOICE:
+ 		/* we have no DSP this means we not detecting CNG */
+ 		if (!faxdetect->dsp) {
+-			break;
++			return f;
+ 		}
+ 		/* We can only process some formats*/
+ 		switch (f->subclass.format.id) {
 --- res/res_fax_spandsp.c
 +++ res/res_fax_spandsp.c
 @@ -50,7 +50,7 @@
