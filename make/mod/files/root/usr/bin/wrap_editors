@@ -78,13 +78,13 @@ edit_file()
 
 
 # Determine editor
-local editor_base=$(basename $0)
+editor_base=$(basename $0)
 if [ "$editor_base" == "wrap_editors" ]; then
 	echo "error: don't call 'wrap_editors' directly, but via symlink" >&2
 	exit 1
 fi
 editor_base=${editor_base#?}
-local editor=$(which $editor_base)
+editor=$(which $editor_base)
 if [ ! -x "$editor" ]; then
 	echo "error: editor '$editor_base' not found or not executable" >&2
 	exit 1
@@ -101,8 +101,8 @@ if [ ! -w "$1" ]; then
 fi
 
 # Determine editing mode (TFFS file or Freetz config)
-local dir=$(dirname "$1")
-local base=$(basename "$1")
+dir=$(dirname "$1")
+base=$(basename "$1")
 case "$(realpath "$dir")/" in
 	/var/flash/)
 		edit_file $editor_base $1
@@ -113,8 +113,8 @@ case "$(realpath "$dir")/" in
 		fi
 		;;
 	/var/mod/etc/conf/*)
-		local pkg=${base%.cfg}
-		local cfg="/mod/etc/default.$pkg/$pkg.cfg"
+		pkg=${base%.cfg}
+		cfg="/mod/etc/default.$pkg/$pkg.cfg"
 		if [ ! -r $cfg ]; then
 			echo "error: file '$cfg' not found or not readable" >&2
 			exit 1
