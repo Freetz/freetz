@@ -1,0 +1,11 @@
+--- Rules.mak
++++ Rules.mak
+@@ -417,7 +417,7 @@
+ 
+ # CFLAGS += $(call check_gcc,-std=gnu99,)
+ 
+-LDFLAGS_NOSTRIP:=$(CPU_LDFLAGS-y) -shared --warn-common --warn-once -z combreloc
++LDFLAGS_NOSTRIP:=$(LD_FLAG_NO_ASNEEDED) $(CPU_LDFLAGS-y) -shared --warn-common --warn-once -z combreloc
+ # binutils-2.16.1 warns about ignored sections, 2.16.91.0.3 and newer are ok
+ #LDFLAGS_NOSTRIP+=$(call check_ld,--gc-sections)
+ 

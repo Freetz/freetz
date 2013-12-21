@@ -1,0 +1,11 @@
+--- Rules.mak
++++ Rules.mak
+@@ -647,7 +647,7 @@
+ $(eval $(call check-ld-var,--warn-once))
+ $(eval $(call check-ld-var,--sort-common))
+ $(eval $(call check-ld-var,--discard-all))
+-LDFLAGS_NOSTRIP:=$(CPU_LDFLAGS-y) -shared \
++LDFLAGS_NOSTRIP:=$(CC_FLAG_NO_ASNEEDED) $(CPU_LDFLAGS-y) -shared \
+ 	-Wl,--warn-common $(CFLAG_-Wl--warn-once) -Wl,-z,combreloc
+ # binutils-2.16.1 warns about ignored sections, 2.16.91.0.3 and newer are ok
+ #$(eval $(call check-ld-var,--gc-sections))
