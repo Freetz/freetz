@@ -41,7 +41,7 @@
 edit_file()
 {
 	local tmp="/tmp/$1-${2##*/}-$$.tmp"
-	cat "$2" > "$tmp"
+	cat "$2" > "$tmp" 2>/dev/null
 	"$1" "$tmp"
 	local exitval=$?
 	if [ $exitval -ne 0 ]; then
@@ -49,7 +49,7 @@ edit_file()
 		echo "editor session aborted" >&2
 		exit $exitval
 	fi
-	if cmp -s "$tmp" "$2" 2>/dev/null; then
+	if [ ! -s "$tmp" -a ! -s "$2" ] || cmp -s "$tmp" "$2" 2>/dev/null; then
 		echo "aborted - file '$2' not changed"
 		rm -f "$tmp"
 		return 1
