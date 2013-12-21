@@ -33,6 +33,7 @@ NDAS_OPTIONS:= \
 	NDAS_CROSS_COMPILE=$(TARGET_CROSS) \
 	NDAS_CROSS_COMPILE_UM=$(TARGET_CROSS) \
 	NDAS_EXTRA_CFLAGS="-mlong-calls -Wno-unused-but-set-variable -Wno-unused-function" \
+	NDAS_EXTRA_ARCH_CFLAGS="$(CFLAGS_MARCH) -Wa,--trap" \
 	XPLAT_OPTIMIZATION="-Os" \
 	I_agree_the_XIMETA_EULA=true
 

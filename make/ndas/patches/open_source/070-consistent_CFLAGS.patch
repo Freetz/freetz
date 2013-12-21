@@ -1,0 +1,21 @@
+--- 2.6.32/arch/cpu/mipsel.mk
++++ 2.6.32/arch/cpu/mipsel.mk
+@@ -4,7 +4,7 @@
+ nxp-cflags:= -D_MIPSEL -DBUG_ALIGNMENT 
+ 
+ ifeq ($(nxp-os),linux)
+-nxp-cflags+=-G 0 -mno-abicalls -fno-pic -mlong-calls -Wa,--trap -msoft-float
++nxp-cflags+=-G 0 -mno-abicalls -fno-pic -mlong-calls -msoft-float $(NDAS_EXTRA_ARCH_CFLAGS)
+ #nxp-cflags+= -G 0 -mno-abicalls -mcpu=r4600 -mips2 -Wa,--trap -mlong-calls -fno-pic
+ endif
+ 
+--- 2.6.32/arch/cpu/mips.mk
++++ 2.6.32/arch/cpu/mips.mk
+@@ -4,6 +4,6 @@
+ nxp-cflags:= -D_MIPS -DBUG_ALIGNMENT 
+ 
+ ifeq ($(nxp-os),linux)
+-nxp-cflags+=-mno-abicalls -fno-pic -msoft-float
++nxp-cflags+=-G 0 -mno-abicalls -fno-pic -mlong-calls -msoft-float $(NDAS_EXTRA_ARCH_CFLAGS)
+ endif
+ 
