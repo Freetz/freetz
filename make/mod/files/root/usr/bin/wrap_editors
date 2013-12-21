@@ -40,7 +40,7 @@
 
 edit_file()
 {
-	local tmp="/var/$1.tmp"
+	local tmp="/tmp/$1-${2##*/}-$$.tmp"
 	cat "$2" > "$tmp"
 	"$1" "$tmp"
 	local exitval=$?
