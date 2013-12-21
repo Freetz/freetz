@@ -18,7 +18,17 @@ function byId(id) {
 </script>
 EOF
 
-
+sec_begin '$(lang en:"Important" de:"Wichtiger Hinweis")' new-forward-rule
+cat << EOF
+$(lang en:"Please note that there is no (known) possibility to enable forwarding to the Fritzbox without severe modifications to the avm configuration files. This results in a risk that these changes render the settings unusable. In addition, the regular firmware might override the settings made here.
+<br>
+It is therefore strongly advised not to use the \"normal\" AVM GUI simultaneously with this GUI (no matter which web page).
+Please close all other web accesses to the box and reboot the box asap after any change made with this GUI." de:"Bitte beachten sie, dass es keine (bekannte) M&ouml;glichkeit gibt, eine Weiterleitung auf die Fritzbox selbst ohne tiefgreifende Eingriffe in die Konfigurationsdateien zu erm&ouml;glichen. Damit ergibt sich ein besonderes Risiko, mit Einstellungen auf dieser Seite die Einstellungen der Fritzbox unbrauchbar zu machen. Zudem wird jede Einstellung auf der Fritzbox die hier gemachten Einstellungen &uuml;berschreiben.
+<br>
+Es ist daher dringend anzuraten, die \"normale\" AVM GUI nicht gleichzeitig mit dieser GUI zu benutzen (egal welche Seite).
+Am besten beenden Sie zuvor alle anderen Zugriffe auf die Box und f&uuml;hren sofort nach der &Uuml;bernahme der &Auml;nderung einen Reboot der Box durch.")
+EOF
+sec_end
 sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")' new-forward-rule
 cat << EOF
 <p>
