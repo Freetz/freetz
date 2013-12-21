@@ -1,0 +1,30 @@
+From 1c8d287e58a3199213b5533136a7a04c8eb231bb Mon Sep 17 00:00:00 2001
+From: Kenneth Soerensen <kenneth.sorensen@spectralink.com>
+Date: Fri, 20 Dec 2013 14:53:01 +0000
+Subject: inet: Fix threaded res_init
+
+In a multi-threaded application where res_init() was called either
+directly or implicitly, getaddrinfo() and others failed to add the
+DNS search domain to hostnames.
+
+This problem made it not possible to look up a hostname without its
+domain appended.
+
+The problem is caused by res_sync_func() overwriting the configuration
+read by __open_nameservers() immediately after it is read.
+
+The suggested solutin is to disable res_sync_func() while reading name
+server configuration in res_init().
+
+Signed-off-by: Kenneth Soerensen <kenneth.sorensen@spectralink.com>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+--- libc/inet/resolv.c
++++ libc/inet/resolv.c
+@@ -3582,6 +3582,7 @@ res_init(void)
+ 	if (!_res.id)
+ 		_res.id = res_randomid();
+ 
++	__res_sync = NULL;
+ 	__res_vinit(&_res, 1);
+ 	__res_sync = res_sync_func;
+ 
