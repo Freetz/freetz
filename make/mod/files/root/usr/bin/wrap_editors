@@ -41,18 +41,18 @@
 edit_file()
 {
 	local tmp="/var/$1.tmp"
-	cat $2 > $tmp
-	$1 $tmp
+	cat "$2" > "$tmp"
+	"$1" "$tmp"
 	local exitval=$?
 	if [ $exitval -ne 0 ]; then
-		rm -f $tmp
+		rm -f "$tmp"
 		echo "editor session aborted" >&2
 		exit $exitval
 	fi
 	local save="y"
-	if cmp -s "$tmp" "$2" 2> /dev/null; then
+	if cmp -s "$tmp" "$2" 2>/dev/null; then
 		echo "aborted - file '$2' not changed"
-		rm -f $tmp
+		rm -f "$tmp"
 		return 1
 	fi
 	local ask="/tmp/flash/mod/editors_ask_save"
@@ -62,14 +62,14 @@ edit_file()
 		echo
 	fi
 	if [ "$save" == "y" ]; then
-		cat $tmp > $2
+		cat "$tmp" > "$2"
 		echo "done - file '$2' saved"
 		exitval=0
 	else
 		echo "aborted - file '$2' not saved"
 		exitval=1
 	fi
-	rm -f $tmp
+	rm -f "$tmp"
 	return $exitval
 }
 
@@ -89,7 +89,7 @@ fi
 
 # Verify name of file to be edited
 if [ -z "$1" ]; then
-	echo "usage: $0 <config-filename>" >&2
+	echo "usage: $editor_base <config-filename>" >&2
 	exit 1
 fi
 if [ ! -w "$1" ]; then
@@ -102,22 +102,22 @@ dir=$(dirname "$1")
 base=$(basename "$1")
 case "$(realpath "$dir")/" in
 	/var/flash/)
-		edit_file $editor_base $1
+		edit_file "$editor_base" "$1"
 		;;
 	/var/tmp/flash/*)
-		if edit_file $editor_base $1; then
+		if edit_file "$editor_base" "$1"; then
 			/usr/bin/modsave flash
 		fi
 		;;
 	/var/mod/etc/conf/*)
-		pkg=${base%.cfg}
+		pkg="${base%.cfg}"
 		cfg="/mod/etc/default.$pkg/$pkg.cfg"
-		if [ ! -r $cfg ]; then
+		if [ ! -r "$cfg" ]; then
 			echo "error: file '$cfg' not found or not readable" >&2
 			exit 1
 		fi
-		if edit_file $editor_base $1; then
-			/usr/bin/modconf save $pkg
+		if edit_file "$editor_base" "$1"; then
+			/usr/bin/modconf save "$pkg"
 			/usr/bin/modsave flash
 		fi
 		;;
