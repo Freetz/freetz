@@ -1,0 +1,17 @@
+Simple fix for Apache bug #51257
+https://issues.apache.org/bugzilla/show_bug.cgi?id=51257
+
+--- Makefile.in
++++ Makefile.in
+@@ -129,9 +129,8 @@
+ etags:
+ 	etags `find . -name '*.[ch]'`
+ 
+-OBJECTS_gen_test_char = tools/gen_test_char.lo $(LOCAL_LIBS)
+-tools/gen_test_char@EXEEXT@: $(OBJECTS_gen_test_char)
+-	$(LINK_PROG) $(OBJECTS_gen_test_char) $(ALL_LIBS)
++tools/gen_test_char@EXEEXT@: tools/gen_test_char.c
++	cc -o $@ $<
+ 
+ include/private/apr_escape_test_char.h: tools/gen_test_char@EXEEXT@
+ 	tools/gen_test_char@EXEEXT@ > $@
