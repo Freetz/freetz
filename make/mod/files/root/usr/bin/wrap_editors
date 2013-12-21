@@ -49,12 +49,12 @@ edit_file()
 		echo "editor session aborted" >&2
 		exit $exitval
 	fi
-	local save="y"
 	if cmp -s "$tmp" "$2" 2>/dev/null; then
 		echo "aborted - file '$2' not changed"
 		rm -f "$tmp"
 		return 1
 	fi
+	local save="y"
 	local ask="/tmp/flash/mod/editors_ask_save"
 	if [ "$(head -n 1 $ask 2>/dev/null)" != "0" ]; then
 		echo -n "Are you sure you want to save the changes made? (y/n) "
