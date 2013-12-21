@@ -56,9 +56,6 @@ edit_file()
 		return 1
 	fi
 	local ask="/tmp/flash/mod/editors_ask_save"
-	# TODO: remove "ask_old" compatibility code in 2 years or so
-	local ask_old="/tmp/flash/ask_save"
-	[ -e $ask_old ] && mv $ask_old $ask
 	if [ "$(head -n 1 $ask 2>/dev/null)" != "0" ]; then
 		echo -n "Are you sure you want to save the changes made? (y/n) "
 		read -n 1 -s save
