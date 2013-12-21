@@ -1,0 +1,26 @@
+--- 2.6.32/netdisk/registrar.c
++++ 2.6.32/netdisk/registrar.c
+@@ -322,7 +322,6 @@
+ 
+ ndas_error_t ndev_register(ndev_t* ndev) 
+ {
+-    ndas_error_t err;
+     debug_registrar(3, "ing ndev=%p", ndev);
+     debug_registrar(5, "ing name=%s", ndev->info.name);
+     debug_registrar(5, "ing id=%s, MAC=%02x:%02x:%02x:%02x:%02x:%02x", 
+@@ -335,13 +334,12 @@
+     }
+     sal_spinlock_take(v_slot.lock);
+     if ( !v_slot.name_2_device ) {
+-        err = NDAS_ERROR_SHUTDOWN;
+-        goto out;
++        sal_spinlock_give(v_slot.lock);
++        return NDAS_ERROR_SHUTDOWN;
+     }
+     debug_registrar(3, "ndev->info.name=%s ndev=%p", ndev->info.name, ndev);
+     xlib_hash_table_insert(v_slot.name_2_device, ndev->info.name, ndev);
+ 
+-out:
+     sal_spinlock_give(v_slot.lock);
+     return NDAS_OK;
+ }
