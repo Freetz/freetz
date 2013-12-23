@@ -37,12 +37,13 @@ check_installed() {
 # Check for required busybox commands and link them to /var/tmp/busybox-tools
 #
 check_busybox() {
-
     if [ ! -s /var/tmp/busybox-tools ] || [ ! -s /var/tmp/sh ] || [ "$1" = "FORCE" ]; then
+	BB=`which busybox`
+
+	if [ "$FREETZ" = "0" ]; then
 	    BB_CMDS="du ftpput gzip gunzip head httpd mkfifo nc tail tar uudecode uuencode"
 	    BB_CMD_MISSING="0"
 
-	    BB=`which busybox`
 	    if [ ! -f "$BB" ]; then BB="`pwd`/busybox-tools"; fi
 	    if [ ! -f "$BB" ]; then BB="/var/dtmfbox/busybox-tools"; fi
 	    if [ ! -f "$BB" ]; then BB_CMD_MISSING="1"; fi
@@ -76,9 +77,11 @@ check_busybox() {
 	    if [ -s /var/tmp/busybox-httpd ]; then rm -f /var/tmp/busybox-httpd; fi
 	    if [ -s /var/tmp/busybox-tools ]; then rm -f /var/tmp/busybox-tools; fi
 	    if [ -s /var/tmp/sh ]; then rm -f /var/tmp/sh; fi
-	    ln -sf "$BB" /var/tmp/busybox-httpd
-	    ln -sf "$BB" /var/tmp/busybox-tools
-	    ln -sf "$BB" /var/tmp/sh
+	fi
+
+	ln -sf "$BB" /var/tmp/busybox-httpd
+	ln -sf "$BB" /var/tmp/busybox-tools
+	ln -sf "$BB" /var/tmp/sh
     fi
 }
 
@@ -283,8 +286,9 @@ install() {
 		if [ "$INSTALL_MODE" = "usb" ]; then
 			echo "Installing $DAEMON using Freetz (USB -> $INSTALL_PATH) ...";
 		else
-			echo "Installing $DAEMON using Freetz (RAM -> /var/dtmfbox-bin) ...";
-			export DTMFBOX_PATH=/var/dtmfbox-bin
+			INSTALL_PATH=/var/dtmfbox-bin
+			echo "Installing $DAEMON using Freetz (RAM -> $INSTALL_PATH) ...";
+			export DTMFBOX_PATH=$INSTALL_PATH
 		fi
 
 		# link/copy required binaries
@@ -298,6 +302,16 @@ install() {
 		if [ ! -f "$INSTALL_PATH/libmenu.plugin.so" ]; then cp -f "/usr/lib/libmenu.plugin.so" "$INSTALL_PATH"; fi
 		if [ ! -f "$INSTALL_PATH/rc.dtmfbox" ]; then cp -f "/mod/etc/init.d/rc.dtmfbox" "$INSTALL_PATH"; fi
 		if [ ! -d "$INSTALL_PATH/default" ]; then cp -Rf "/mod/etc/default.dtmfbox" "$INSTALL_PATH/default"; fi
+		mkdir -p "$INSTALL_PATH/extras"
+		if LMADPLAY=`type madplay 2>/dev/null`; then
+			ln -sf ${LMADPLAY##* } "$INSTALL_PATH/extras/madplay"
+		fi
+		if LESPEAK=`type speak 2>/dev/null`; then
+			ln -sf ${LESPEAK##* } "$INSTALL_PATH/extras/speak"
+		fi
+		if LCHECKMAILD=`type checkmaild 2>/dev/null`; then
+			ln -sf ${LCHECKMAILD##* } "$INSTALL_PATH/extras/checkmaild"
+		fi
 	fi
 
 	echo "Restoring defaults ..."
@@ -449,17 +463,22 @@ if [ "$FREETZ" = "1" ];
 then
 	case "$1" in
 		""|load)
-			ln -sf /usr/lib/cgi-bin/dtmfbox.cgi /mod/usr/lib/dtmfbox.cgi
-			touch /mod/etc/conf/dtmfbox.cfg
 			modreg daemon dtmfbox
-
-			if [ -z "$DTMFBOX_PATH" ]; then DTMFBOX_PATH="/var/dtmfbox-bin"; fi
-
+			if [ -e /mod/usr/lib/cgi-bin/dtmfbox.cgi ]; then
+				modreg cgi dtmfbox 'dtmfbox'
+			fi
 			check_busybox
+			exit
 			;;
 		unload)
 			modunreg daemon dtmfbox
-			stop
+			if [ -e /mod/usr/lib/cgi-bin/dtmfbox.cgi ]; then
+				modunreg cgi dtmfbox
+			fi
+			if [ "$DTMFBOX_INSTALLED" != "0" ]; then
+				stop
+			fi
+			exit
 			;;
 	esac
 fi
@@ -476,10 +495,16 @@ case "$1" in
 	install)
 		if [ "$2" != "usb" ] && [ "$2" != "ram" ] && [ "$2" != "bypath" ] && [ "$2" != "apache" ];
 		then
-			echo "Please specify if you want to install on USB, into RAM (mipsel) or for Apache (i386):"
-			echo "./rc.dtmfbox install ram"
-			echo "./rc.dtmfbox install usb /var/media/path/to/dtmfbox"
-			echo "./rc.dtmfbox install apache /var/www/dtmfbox"
+			if [ "$FREETZ" = "0" ]; then
+				echo "Please specify if you want to install on USB, into RAM (mipsel) or for Apache (i386):"
+			else
+				echo "Please specify if you want to install on USB or into RAM:"
+			fi
+			echo "$0 install ram"
+			echo "$0 install usb /var/media/path/to/dtmfbox"
+			if [ "$FREETZ" = "0" ]; then
+				echo "$0 install apache /var/www/dtmfbox"
+			fi
 		 	exit 1;
 		fi
 		install "$2" "$3"
@@ -487,6 +512,7 @@ case "$1" in
 	uninstall)
 		check_installed
 		check_busybox
+		stop
 		echo "Uninstall dtmfbox ..."
 
 		echo "" |
@@ -553,30 +579,30 @@ case "$1" in
 			echo "running"
 		fi
 		;;
-	"")
-		echo "usage: "
+	*)
+		echo "Usage:"
 		if [ "$FREETZ" = "0" ];
 		then
-			echo "./rc.dtmfbox install apache /path/to/www       - Install for Apache (bash/i386)"
-			echo "./rc.dtmfbox install usb /path/to/dtmfbox      - Install on USB (busybox/mipsel)"
-			echo "./rc.dtmfbox install ram                       - Install to RAM (busybox/mipsel)"
-			echo ""
+			echo "$0 install apache /path/to/www       - Install for Apache (bash/i386)"
 		fi
-		echo "./rc.dtmfbox defaults                          - Restore default cfg/scripts"
-		echo "./rc.dtmfbox uninstall                         - Uninstall dtmfbox"
+		echo "$0 install usb /path/to/dtmfbox      - Install on USB (busybox/mipsel)"
+		echo "$0 install ram                       - Install to RAM (busybox/mipsel)"
 		echo ""
-		echo "./rc.dtmfbox start                             - Start dtmfbox as daemon"
-		echo "./rc.dtmfbox foreground                        - Start dtmfbox in foreground"
-		echo "./rc.dtmfbox log                               - Start dtmfbox logged"
-		echo "./rc.dtmfbox stop                              - Stop dtmfbox"
-		echo "./rc.dtmfbox restart                           - Restart dtmfbox"
-		echo "./rc.dtmfbox status                            - Daemon status"
+		echo "$0 defaults                          - Restore default cfg/scripts"
+		echo "$0 uninstall                         - Uninstall dtmfbox"
+		echo ""
+		echo "$0 start                             - Start dtmfbox as daemon"
+		echo "$0 foreground                        - Start dtmfbox in foreground"
+		echo "$0 log                               - Start dtmfbox logged"
+		echo "$0 stop                              - Stop dtmfbox"
+		echo "$0 restart                           - Restart dtmfbox"
+		echo "$0 status                            - Daemon status"
 		echo ""
 		if [ "$FREETZ" = "0" ];
 		then
-			echo "./rc.dtmfbox start_httpd                       - Start Webinterface"
-			echo "./rc.dtmfbox stop_httpd                        - Stop Webinterface"
-			echo "./rc.dtmfbox restart_httpd                     - Restart Webinterface"
+			echo "$0 start_httpd                       - Start Webinterface"
+			echo "$0 stop_httpd                        - Stop Webinterface"
+			echo "$0 restart_httpd                     - Restart Webinterface"
 			echo ""
 		fi
 		exit 1
