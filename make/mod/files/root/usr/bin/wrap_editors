@@ -73,6 +73,22 @@ edit_file()
 	return $exitval
 }
 
+# has the same signature as the edit_file-function above
+edit_file_exclusively()
+{
+	local canonical_filename="$(realpath "$2")"
+	local lock_file="/var/lock/lock$(echo "$canonical_filename" | tr / _)"
+	(
+		if ! flock -x -n 9; then
+			echo "aborted - failed to acquire an exclusive lock on '$2'"
+			return 99
+		fi
+		edit_file "$@"
+	) 9>"$lock_file"
+	local exitval=$?
+	[ "$exitval" -eq 99 ] || rm -f "$lock_file"
+	return $exitval
+}
 
 # Determine editor
 editor_base=$(basename $0)
@@ -102,10 +118,10 @@ dir=$(dirname "$1")
 base=$(basename "$1")
 case "$(realpath "$dir")/" in
 	/var/flash/)
-		edit_file "$editor_base" "$1"
+		edit_file_exclusively "$editor_base" "$1"
 		;;
 	/var/tmp/flash/*)
-		if edit_file "$editor_base" "$1"; then
+		if edit_file_exclusively "$editor_base" "$1"; then
 			/usr/bin/modsave flash
 		fi
 		;;
@@ -116,7 +132,7 @@ case "$(realpath "$dir")/" in
 			echo "error: file '$cfg' not found or not readable" >&2
 			exit 1
 		fi
-		if edit_file "$editor_base" "$1"; then
+		if edit_file_exclusively "$editor_base" "$1"; then
 			/usr/bin/modconf save "$pkg"
 			/usr/bin/modsave flash
 		fi
