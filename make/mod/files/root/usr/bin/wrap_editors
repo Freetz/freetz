@@ -42,6 +42,7 @@ edit_file()
 {
 	local tmp="/tmp/$1-${2##*/}-$$.tmp"
 	cat "$2" > "$tmp" 2>/dev/null
+	local md5_unmodified="$(md5sum "$tmp")"
 	"$1" "$tmp"
 	local exitval=$?
 	if [ $exitval -ne 0 ]; then
@@ -49,7 +50,7 @@ edit_file()
 		echo "editor session aborted" >&2
 		exit $exitval
 	fi
-	if [ ! -s "$tmp" -a ! -s "$2" ] || cmp -s "$tmp" "$2" 2>/dev/null; then
+	if [ "$md5_unmodified" == "$(md5sum "$tmp")" ]; then
 		echo "aborted - file '$2' not changed"
 		rm -f "$tmp"
 		return 1
@@ -70,23 +71,6 @@ edit_file()
 		exitval=1
 	fi
 	rm -f "$tmp"
-	return $exitval
-}
-
-# has the same signature as the edit_file-function above
-edit_file_exclusively()
-{
-	local canonical_filename="$(realpath "$2")"
-	local lock_file="/var/lock/lock$(echo "$canonical_filename" | tr / _)"
-	(
-		if ! flock -x -n 9; then
-			echo "aborted - failed to acquire an exclusive lock on '$2'"
-			return 99
-		fi
-		edit_file "$@"
-	) 9>"$lock_file"
-	local exitval=$?
-	[ "$exitval" -eq 99 ] || rm -f "$lock_file"
 	return $exitval
 }
 
@@ -118,10 +102,10 @@ dir=$(dirname "$1")
 base=$(basename "$1")
 case "$(realpath "$dir")/" in
 	/var/flash/)
-		edit_file_exclusively "$editor_base" "$1"
+		edit_file "$editor_base" "$1"
 		;;
 	/var/tmp/flash/*)
-		if edit_file_exclusively "$editor_base" "$1"; then
+		if edit_file "$editor_base" "$1"; then
 			/usr/bin/modsave flash
 		fi
 		;;
@@ -132,7 +116,7 @@ case "$(realpath "$dir")/" in
 			echo "error: file '$cfg' not found or not readable" >&2
 			exit 1
 		fi
-		if edit_file_exclusively "$editor_base" "$1"; then
+		if edit_file "$editor_base" "$1"; then
 			/usr/bin/modconf save "$pkg"
 			/usr/bin/modsave flash
 		fi
