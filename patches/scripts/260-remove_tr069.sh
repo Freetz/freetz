@@ -11,6 +11,7 @@ fi
 
 echo1 "removing tr069 stuff"
 rm_files \
+  "${FILESYSTEM_MOD_DIR}/etc/websrv_tr064_ssl_key.pem" \
   "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr064.so" \
   "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so" \
   "${FILESYSTEM_MOD_DIR}/sbin/tr069discover" \
