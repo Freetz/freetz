@@ -1,16 +1,5 @@
-config FREETZ_PACKAGE_NDAS_OPEN_SOURCE_AVAILABLE
-	bool
-	default y if FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
-
-config FREETZ_PACKAGE_NDAS_AVAILABLE
-	bool
-	default y if FREETZ_TARGET_ARCH_LE || FREETZ_PACKAGE_NDAS_OPEN_SOURCE_AVAILABLE
-	default n
-
 config FREETZ_PACKAGE_NDAS
 	bool "ndas (binary only)"
-	depends on FREETZ_PACKAGE_NDAS_AVAILABLE
 	select FREETZ_MODULE_ndas_block
 	select FREETZ_MODULE_ndas_core
 	select FREETZ_MODULE_ndas_sal

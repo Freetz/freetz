@@ -1,18 +1,11 @@
-ifeq ($(strip $(FREETZ_PACKAGE_NDAS_OPEN_SOURCE_AVAILABLE)),y)
 $(call PKG_INIT_BIN, 1aaf88acd0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/iocellnetworks/ndas4linux.git
-$(PKG)_CONDITIONAL_PATCHES+=open_source
-$(PKG)_PRELIMINARY_BUILD_DIR:=$($(PKG)_DIR)/$(KERNEL_VERSION)
-$(PKG)_BUILD_DIR:=$($(PKG)_PRELIMINARY_BUILD_DIR)/build_freetz/ndas-$(KERNEL_VERSION)
-else
-$(call PKG_INIT_BIN, 1.1-22)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).mipsel.tar.bz2
-$(PKG)_SOURCE_MD5:=f6b5d28b638ac074f54d404e4c136d5e
-$(PKG)_SITE:=http://freetz.magenbrot.net
-$(PKG)_CONDITIONAL_PATCHES+=closed_source
-$(PKG)_BUILD_DIR:=$($(PKG)_DIR)
-endif
+
+$(PKG)_KERNEL_VERSION:=$(call GET_MAJOR_VERSION,$(KERNEL_VERSION),3)
+
+$(PKG)_PRELIMINARY_BUILD_DIR:=$($(PKG)_DIR)/2.6.32
+$(PKG)_BUILD_DIR:=$($(PKG)_PRELIMINARY_BUILD_DIR)/build_freetz/ndas-$($(PKG)_KERNEL_VERSION)
 
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_BUILD_DIR)/ndasadmin
 $(PKG)_BINARY_TARGET_DIR:=$($(PKG)_DEST_DIR)/usr/bin/ndasadmin
@@ -25,11 +18,11 @@ $(PKG)_DEPENDS_ON := kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 
-NDAS_OPTIONS:= \
+$(PKG)_OPTIONS := \
 	NDAS_KERNEL_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-	NDAS_KERNEL_VERSION=$(strip $(FREETZ_KERNEL_VERSION)) \
+	NDAS_KERNEL_VERSION="$(NDAS_KERNEL_VERSION)" \
 	NDAS_KERNEL_ARCH=$(call qstrip,$(FREETZ_TARGET_ARCH)) \
-	NDAS_VER_BUILD=$(word 3,$(subst .,$(_space),$(KERNEL_VERSION))) \
+	NDAS_VER_BUILD=$(word 3,$(subst .,$(_space),$(NDAS_KERNEL_VERSION))) \
 	NDAS_CROSS_COMPILE=$(TARGET_CROSS) \
 	NDAS_CROSS_COMPILE_UM=$(TARGET_CROSS) \
 	NDAS_EXTRA_CFLAGS="-mlong-calls -Wno-unused-but-set-variable -Wno-unused-function" \
@@ -42,8 +35,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_DIR)/.exported: $($(PKG)_DIR)/.configured
-ifeq ($(strip $(FREETZ_PACKAGE_NDAS_OPEN_SOURCE_AVAILABLE)),y)
-	ln -sfT 2.6.32 $(NDAS_DIR)/2.6.28
+	$(RM) -r $(NDAS_PRELIMINARY_BUILD_DIR)/platform/linux/tarball-{linux,trunk}
 	touch $(NDAS_PRELIMINARY_BUILD_DIR)/arch/vendor/freetz.mk
 	$(SUBMAKE) -C $(NDAS_PRELIMINARY_BUILD_DIR) \
 		$(NDAS_OPTIONS) \
@@ -63,7 +55,6 @@ ifeq ($(strip $(FREETZ_PACKAGE_NDAS_OPEN_SOURCE_AVAILABLE)),y)
 		nxpo-sio=y \
 		nxpo-uni=y \
 		all
-endif
 	touch $@
 
 $($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured | $($(PKG)_DIR)/.exported
@@ -92,7 +83,7 @@ $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NDAS_BUILD_DIR) $(NDAS_OPTIONS) clean
-	$(RM) $(NDAS_DIR)/.exported $(NDAS_DIR)/2.6.28
+	$(RM) $(NDAS_DIR)/.exported
 
 $(pkg)-uninstall:
 	$(RM) $(NDAS_BINARY_TARGET_DIR) $(NDAS_MODULES_TARGET_DIR)

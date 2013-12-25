@@ -1,39 +1,49 @@
 --- 2.6.32/platform/linux/tarball-tag/sal/io.c
 +++ 2.6.32/platform/linux/tarball-tag/sal/io.c
-@@ -41,7 +41,8 @@
+@@ -41,7 +41,11 @@
  #include <linux/fs.h>
  #include <asm/uaccess.h>
  #include <linux/ide.h>
--#include <linux/smp_lock.h>
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16))
 +#include <linux/mutex.h>
-+
++#else
+ #include <linux/smp_lock.h>
++#endif
  #include <linux/time.h>
  
  #include "sal/sync.h"
-@@ -54,6 +55,8 @@
+@@ -54,6 +58,10 @@
  
  #include "linux_ver.h" // SAL_HZ
  
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16))
 +DEFINE_MUTEX(fs_mutex);
++#endif
 +
  NDAS_SAL_API sal_file sal_file_open(const char * filename, int flags, int mode)
  {
  	int linux_flags = 0;
-@@ -95,7 +98,7 @@
+@@ -95,7 +103,11 @@
  	int size32;
  #endif
  
--	lock_kernel();
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16))
 +	mutex_lock(&fs_mutex);
++#else
+ 	lock_kernel();
++#endif
  
          if (filp->f_dentry &&
  		filp->f_dentry->d_inode &&
-@@ -158,7 +161,7 @@
+@@ -158,7 +170,11 @@
  	} else {
  		ret = FALSE;
  	}
--	unlock_kernel();
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16))
 +	mutex_unlock(&fs_mutex);
++#else
+ 	unlock_kernel();
++#endif
  	return ret;
  }
  

@@ -1,0 +1,38 @@
+--- 2.6.32/platform/linux/tarball-tag/inc/linux_ver.h
++++ 2.6.32/platform/linux/tarball-tag/inc/linux_ver.h
+@@ -199,6 +199,13 @@
+     sock_create(family, type, protocol, res)
+ #endif
+ 
++/* In 2.6.13 and 2.6.14 kernels class_device_create() had different prototype. */
++#if (KERNEL_VERSION(2,6,12) < LINUX_VERSION_CODE) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
++#define ndas_class_device_create(cls, parent, devt, device, fmt) class_device_create(cls,         devt, device, fmt)
++#else
++#define ndas_class_device_create(cls, parent, devt, device, fmt) class_device_create(cls, parent, devt, device, fmt)
++#endif
++
+ #if LINUX_VERSION_25_ABOVE 
+ #define GENDISK_MAX_DISKNAME sizeof(((struct gendisk*)0)->disk_name)
+ #define GENDISK_MAX_DDEVFSNAME sizeof(((struct gendisk*)0)->devfs_name)
+--- 2.6.32/platform/linux/tarball-tag/block/ctrldev.c
++++ 2.6.32/platform/linux/tarball-tag/block/ctrldev.c
+@@ -1151,7 +1151,7 @@
+         MKDEV(NDAS_CHR_DEV_MAJOR, NDAS_CHR_DEV_MINOR),
+         NULL, "ndas");
+ #else
+-    class_device_create(ndas_ctrldev_class, NULL,
++    ndas_class_device_create(ndas_ctrldev_class, NULL,
+         MKDEV(NDAS_CHR_DEV_MAJOR, NDAS_CHR_DEV_MINOR),
+         NULL, "ndas");
+ #endif //#if LINUX_VERSION_HAS_DEVICE_CREATE
+--- 2.6.32/platform/linux/tarball-tag/scsi/ctrldev.c
++++ 2.6.32/platform/linux/tarball-tag/scsi/ctrldev.c
+@@ -1025,7 +1025,7 @@
+         MKDEV(NDAS_CHR_DEV_MAJOR, NDAS_CHR_DEV_MINOR),
+         NULL, "ndas");
+ #else
+-    class_device_create(ndas_ctrldev_class, NULL,
++    ndas_class_device_create(ndas_ctrldev_class, NULL,
+         MKDEV(NDAS_CHR_DEV_MAJOR, NDAS_CHR_DEV_MINOR),
+         NULL, "ndas");
+ #endif //#if LINUX_VERSION_HAS_DEVICE_CREATE
