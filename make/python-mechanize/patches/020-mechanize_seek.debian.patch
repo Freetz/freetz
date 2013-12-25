@@ -1,0 +1,10 @@
+--- mechanize/_html.py
++++ mechanize/_html.py
+@@ -621,6 +621,7 @@
+         Factory.set_response(self, response)
+         if response is not None:
+             data = response.read()
++            response.seek(0)
+             soup = self._soup_class(self.encoding, data)
+             self._forms_factory.set_response(
+                 copy.copy(response), self.encoding)

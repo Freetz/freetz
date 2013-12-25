@@ -1,0 +1,9 @@
+config FREETZ_PACKAGE_PYTHON_MECHANIZE
+	bool "mechanize 0.2.5"
+	depends on FREETZ_PACKAGE_PYTHON
+	select FREETZ_PACKAGE_PYTHON_MOD_SQLITE
+	select FREETZ_PACKAGE_PYTHON_MOD_SSL
+	select FREETZ_LIB_libpython2 if !FREETZ_PACKAGE_PYTHON_STATIC
+	default n
+	help
+		Stateful programmatic web browsing, after Andy Lester's Perl module WWW::Mechanize.

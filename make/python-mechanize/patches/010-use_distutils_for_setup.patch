@@ -1,0 +1,26 @@
+--- setup.py
++++ setup.py
+@@ -62,21 +62,13 @@
+ """
+ 
+ def main():
+-    try:
+-        import setuptools
+-    except ImportError:
+-        import ez_setup
+-        ez_setup.use_setuptools()
+-    import setuptools
+-    setuptools.setup(
++    from distutils.core import setup
++    setup(
+         name = "mechanize",
+         version = VERSION,
+         license = "BSD",  # or ZPL 2.1
+         platforms = ["any"],
+         classifiers = [c for c in CLASSIFIERS.split("\n") if c],
+-        install_requires = [],
+-        zip_safe = True,
+-        test_suite = "test",
+         author = "John J. Lee",
+         author_email = "jjl@pobox.com",
+         description = __doc__.split("\n", 1)[0],
