@@ -12,19 +12,23 @@ CATs=""
 CATTABLE=""
 NONHIDDEN="#"
 
-for mk in $(find make/*/ -maxdepth 1 -name *.mk); do
+for PKG_DIR in $(find make -mindepth 2 -maxdepth 2 -type f -name Config.in -printf "%h\n" | sort); do
+	PKG="${PKG_DIR#make/}"
+
+	# ignore libs
+	[ "$PKG" == "libs" ] && continue
+
 	c=$((c+1))
 	[ "$((c%3))" == "0" ] && echo -n "."
-	# set PKG to $mk w/o <PKG>.mk file (resulting in "make/<PKG>")
-	PKG=${mk%/*.mk}
-	# ignore libs
-	[ "$PKG" == "make/libs" ] && continue
-	# delete everything beside CATEGORY row; delete CAT prefix
-	CAT=$(sed '/^\$(PKG)_CATEGORY[ :]*=/ ! d ; s%.*\=[ ]*%%' $mk)
+
+	# extract CATEGORY from the .mk file
+	CAT=$(sed -r -n -e 's,^[ \t]*\$\(PKG\)_CATEGORY[ \t]*:?=[ \t]*(.*),\1,p' ${PKG_DIR}/${PKG}.mk 2>/dev/null)
 	[ -z "$CAT" ] && CAT=Packages
+
 	NONHIDDEN="${NONHIDDEN//%$CAT/}%${CAT}"
-	# prepend <Categorie>##<PKG> to table
-	CATTABLE="$CATTABLE\n${CAT}##${PKG#make/}"
+
+	# append <Category>##<PKG> to the category-table
+	CATTABLE="$CATTABLE\n${CAT}##${PKG}"
 done
 
 echo ""
