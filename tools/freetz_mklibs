@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 mklibs() {
 	local HOST_TOOLS_DIR="${FREETZ_BASE_DIR}/tools/build"
 	local TARGET_TOOLCHAIN_STAGING_DIR="${FREETZ_BASE_DIR}/toolchain/target"
@@ -10,43 +9,47 @@ mklibs() {
 	# replace all absolute symlinks with relative ones to make mklibs happy
 	symlinks-abs2rel -r "${FILESYSTEM_MOD_DIR}" / "*.so*"
 
-	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
-	mkdir -p ${MOD_DIR}/mklibs-out
+	rm -rf "${MOD_DIR}/mklibs-progs" "${MOD_DIR}/mklibs-out"
+	mkdir -p "${MOD_DIR}/mklibs-out"
 	# first find all programs and add them to the mklibs list
-	find ${FILESYSTEM_MOD_DIR} -type f -perm +100 -exec \
+	find "${FILESYSTEM_MOD_DIR}" -type f -perm +100 -exec \
 		file -r -N -F '' {} + | \
-		awk ' /executable.*dynamically/ { print $1 }' > ${MOD_DIR}/mklibs-progs
+		awk ' /executable.*dynamically/ { print $1 }' > "${MOD_DIR}/mklibs-progs"
 	# find all loadable objects that are not regular libraries and add them to the list as well
-	find ${FILESYSTEM_MOD_DIR} -type f -name \*.so\* -exec \
+	find "${FILESYSTEM_MOD_DIR}" -type f -name "*.so*" -exec \
 		file -r -N -F '' {} + | \
-		awk ' /shared object/ { print $1 }' >> ${MOD_DIR}/mklibs-progs
+		awk ' /shared object/ { print $1 }' >> "${MOD_DIR}/mklibs-progs"
 	# Run mklibs script, needs path to mklibs-readelf and objcopy
 	PATH="${HOST_TOOLS_DIR}/bin:${HOST_TOOLS_DIR}/usr/bin:${TARGET_TOOLCHAIN_STAGING_DIR}/bin:${PATH}" \
 		"${HOST_TOOLS_DIR}/bin/mklibs" \
 		-vvv \
 		-D \
-		-d ${MOD_DIR}/mklibs-out \
-		--sysroot ${FREETZ_BASE_DIR}/ \
+		-d "${MOD_DIR}/mklibs-out" \
+		--sysroot "${FREETZ_BASE_DIR}/" \
 		-P toolchain/target/lib \
-		-L ${FILESYSTEM_MOD_DIR}/usr/lib/freetz \
-		-L ${FILESYSTEM_MOD_DIR}/lib \
-		-L ${FILESYSTEM_MOD_DIR}/usr/lib \
-		--ldlib ${FILESYSTEM_MOD_DIR}/lib/ld-uClibc.so.0 \
+		-L "${FILESYSTEM_MOD_DIR}/usr/lib/freetz" \
+		-L "${FILESYSTEM_MOD_DIR}/lib" \
+		-L "${FILESYSTEM_MOD_DIR}/usr/lib" \
+		--ldlib "${FILESYSTEM_MOD_DIR}/lib/ld-uClibc.so.0" \
 		--target ${REAL_GNU_TARGET_NAME} \
-		$(cat ${MOD_DIR}/mklibs-progs) \
-		> ${MOD_DIR}/mklibs.log 2>&1
+		$(cat "${MOD_DIR}/mklibs-progs") \
+		> "${MOD_DIR}/mklibs.log" 2>&1
 	local rv=$?
 	# Copy stripped libs to their destination directory
-	local lib LIB DEST
-	for lib in $(ls ${MOD_DIR}/mklibs-out/*.so.* 2>/dev/null); do
-		LIB="${lib##*/}"
-		DEST="$(ls "${FILESYSTEM_MOD_DIR}/usr/lib/freetz/$LIB" 2>/dev/null)"
-		[ -n "$DEST" ] || DEST="$(ls "${FILESYSTEM_MOD_DIR}/lib/$LIB" 2>/dev/null)"
-		[ -n "$DEST" ] || continue
-		echo2 "$lib"
-		cp "$lib" "$DEST" || exit 1
+	local LIB DEST DEST_DIR
+	for LIB in $(find "${MOD_DIR}/mklibs-out" -type f -name "*.so.*"); do
+		for DEST_DIR in usr/lib/freetz lib usr/lib; do
+			DEST=$(ls "${FILESYSTEM_MOD_DIR}/${DEST_DIR}/${LIB##*/}" 2>/dev/null)
+			[ -n "$DEST" ] && break
+		done
+		[ -n "$DEST" ] || error 1 "${FUNCNAME}: failed to determine the destination of ${LIB##*/}"
+		if cp "$LIB" "$DEST"; then
+			echo2 "Successfully copied mklibs-processed version of ${LIB##*/} to ${DEST#${FILESYSTEM_MOD_DIR}}"
+		else
+			error 1 "${FUNCNAME}: failed to copy ${LIB##*/} to the destination directory"
+		fi
 	done
-	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
+	rm -rf "${MOD_DIR}/mklibs-progs" "${MOD_DIR}/mklibs-out"
 
 	return $rv
 }
