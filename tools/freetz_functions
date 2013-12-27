@@ -394,3 +394,102 @@ isNeededEntry()
 	local neededEntries=$(getNeededEntries "$@")
 	grep -E -q "$neededPattern" 2>/dev/null <<< "$neededEntries"
 }
+
+#
+# Strips trailing slash if provided
+#
+function stripTrailingSlash() {
+	local path="$1"
+	[ -n "${path}" -a "${path: -1: 1}" == "/" ] && path="${path: 0: -1}"
+	echo -n "$path"
+}
+
+#
+# Adds trailing slash if missing
+#
+function addTrailingSlash() {
+	local path="$1"
+	[ -n "${path}" -a "${path: -1: 1}" != "/" ] && path="$path/"
+	echo -n "$path"
+}
+
+#
+# Converts absolute symlinks to relative ones. See USAGE below for details.
+#
+# Dependencies: readlink, realpath, bash (uses bash specific functions).
+#
+function symlinks-abs2rel() {
+	local USAGE="$(
+		echo -e "Usage:\t${FUNCNAME} [-v|-verbose] [-r|-recursive] TARGET_FS_ROOT DIR [MASK], where"
+		echo -e "\t\tTARGET_FS_ROOT is the directory pointing to the root directory of the target filesystem"
+		echo -e "\t\tDIR is the directory within the target filesystem symlinks to be corrected within (absolute path is expected)"
+		echo -e "\t\tMASK optional filename mask, default *"
+	)"
+
+	local VERBOSE="echo2"
+	local DEPTH="-maxdepth 1"
+	while [ -n "$1" -a "${1:0:1}" == "-" ]; do
+		case "$1" in
+			-v|-verbose|--verbose)
+				VERBOSE="echo0"
+				shift
+				;;
+			-r|-recursive|--recursive)
+				DEPTH=""
+				shift
+				;;
+			--)
+				shift
+				break
+				;;
+			*)
+				error 1 "$USAGE"
+				;;
+		esac
+	done
+	local TARGET_FS_ROOT=$(realpath "$1")
+	TARGET_FS_ROOT=$(stripTrailingSlash "$TARGET_FS_ROOT")
+	local DIR=$(addTrailingSlash "$2")
+	local MASK="$3"; [ -z "$MASK" ] && MASK="*"
+	if [ -z "$TARGET_FS_ROOT" -o ! -d "$TARGET_FS_ROOT" -o -z "$DIR" -o "${DIR:0:1}" != "/" ]; then
+		error 1 "$USAGE"
+	fi
+
+	local LINK LINK_DIR TARGET TARGET_CANONICAL TARGET_RELATIVE
+	for LINK in $(find "${TARGET_FS_ROOT}${DIR}" ${DEPTH} -type l -lname "/*" -name "$MASK"); do
+		LINK_DIR=$(dirname "${LINK#${TARGET_FS_ROOT}}")
+		LINK_DIR=$(addTrailingSlash "$LINK_DIR")
+		TARGET=$(readlink --no-newline "$LINK")
+
+		if [ $? -ne 0 ]; then
+			warn0 "${FUNCNAME}: failed to read symlink from '${LINK#${TARGET_FS_ROOT}}'"
+			continue
+		fi
+
+		TARGET_CANONICAL=$(readlink --canonicalize-missing --no-newline "$LINK")
+		if [ $? -ne 0 ]; then
+			warn0 "${FUNCNAME}: failed to determine canonical name of '${LINK#${TARGET_FS_ROOT}}' -> '$TARGET'"
+			continue
+		fi
+
+		# First try to create the shortest symlink possible. This is possible
+		# if TARGET_CANONICAL points to some target located under LINK_DIR,
+		# i.e. TARGET_CANONICAL starts with LINK_DIR.
+		TARGET_RELATIVE="${TARGET_CANONICAL#${LINK_DIR}}"
+		if [ "$TARGET_CANONICAL" == "$TARGET_RELATIVE" ]; then
+			# TARGET_CANONICAL does NOT point to some target under LINK_DIR.
+			# Create relative symlink by prepending target with mutiple "../"
+			local temp="${LINK#${TARGET_FS_ROOT}/}"
+			TARGET_RELATIVE="${TARGET_CANONICAL:1}"
+			while [ "${temp#*/}" != "$temp" ]; do
+				temp="${temp#*/}"
+				TARGET_RELATIVE="../${TARGET_RELATIVE}"
+			done
+		fi
+
+		$VERBOSE "Converting symlink '${LINK#${TARGET_FS_ROOT}}' from '$TARGET' to '$TARGET_RELATIVE'"
+		if ! ln -sf "$TARGET_RELATIVE" "$LINK"; then
+			error 1 "${FUNCNAME}: failed to convert symlink '${LINK#${TARGET_FS_ROOT}}' from '$TARGET' to '$TARGET_RELATIVE'"
+		fi
+	done
+}

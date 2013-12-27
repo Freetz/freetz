@@ -8,16 +8,7 @@ REAL_GNU_TARGET_NAME=${GNU_TARGET_NAME}-uclibc
 
 mklibs() {
 	# replaces all absolute sym links to make mklibs happy
-	for link in $(find "${FILESYSTEM_MOD_DIR}" -name "*.so*" -lname "/*"); do
-		file="$(realpath ${FILESYSTEM_MOD_DIR}$(readlink $link) | sed  "s#.*$FILESYSTEM_MOD_DIR/##")"
-		temp="${link#$FILESYSTEM_MOD_DIR/}"
-		while [ "${temp#*/}" != "$temp" ]; do
-			temp="${temp#*/}"
-			file="../$file"
-		done
-		echo2 "replacing $link --> $file"
-		ln -sf "$file" "$link"
-	done
+	symlinks-abs2rel -r "${FILESYSTEM_MOD_DIR}" / "*.so*"
 	#
 	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
 	mkdir -p ${MOD_DIR}/mklibs-out
