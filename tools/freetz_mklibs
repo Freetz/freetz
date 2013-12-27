@@ -37,13 +37,14 @@ mklibs() {
 		> ${MOD_DIR}/mklibs.log 2>&1
 	local rv=$?
 	# Copy stripped libs to their destination directory
-	for lib in $(ls ${MOD_DIR}/mklibs-out/*.so.* 2>/dev/null); do \
-		LIB="${lib##*/}"; \
-		DEST="$(ls "${FILESYSTEM_MOD_DIR}/usr/lib/freetz/$LIB" 2>/dev/null)"; \
-		[ -n "$DEST" ] || DEST="$(ls "${FILESYSTEM_MOD_DIR}/lib/$LIB" 2>/dev/null)"; \
-		[ -n "$DEST" ] || continue; \
-		echo2 "$lib"; \
-		cp "$lib" "$DEST" || exit 1; \
+	local lib LIB DEST
+	for lib in $(ls ${MOD_DIR}/mklibs-out/*.so.* 2>/dev/null); do
+		LIB="${lib##*/}"
+		DEST="$(ls "${FILESYSTEM_MOD_DIR}/usr/lib/freetz/$LIB" 2>/dev/null)"
+		[ -n "$DEST" ] || DEST="$(ls "${FILESYSTEM_MOD_DIR}/lib/$LIB" 2>/dev/null)"
+		[ -n "$DEST" ] || continue
+		echo2 "$lib"
+		cp "$lib" "$DEST" || exit 1
 	done
 	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
 
