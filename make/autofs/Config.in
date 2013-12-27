@@ -18,7 +18,7 @@ config FREETZ_PACKAGE_AUTOFS
 config FREETZ_PACKAGE_AUTOFS_NFS
 	bool "select nfs module"
 	depends on FREETZ_PACKAGE_AUTOFS
-	select FREETZ_MODULE_nfs if FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_nfs if FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	default n
 	help
 		select this if you want mount NFS-Shares
