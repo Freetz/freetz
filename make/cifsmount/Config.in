@@ -1,9 +1,9 @@
 comment "Cifsmount (not available, needs replace kernel)"
-	depends on !FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on !FREETZ_MODULE_cifs_AVAILABLE
 
 config FREETZ_PACKAGE_CIFSMOUNT
 	bool "Cifsmount 6.2"
-	depends on FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on FREETZ_MODULE_cifs_AVAILABLE
 	select FREETZ_MODULE_cifs
 	default n
 	help

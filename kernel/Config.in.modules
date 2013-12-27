@@ -342,8 +342,14 @@ config FREETZ_MODULE_autofs4
 	bool "autofs4.ko"
 	default n
 
+config FREETZ_MODULE_cifs_AVAILABLE
+	bool
+	default y if !FREETZ_KERNEL_VERSION_2_6_32_60 || FREETZ_REPLACE_KERNEL
+	default n
+
 config FREETZ_MODULE_cifs
 	bool "cifs.ko"
+	depends on FREETZ_MODULE_cifs_AVAILABLE
 	default n
 
 config FREETZ_MODULE_coda
