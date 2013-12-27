@@ -1,5 +1,5 @@
 comment "autofs (not available, needs replace kernel)"
-	depends on !FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MAX
+	depends on !(FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_32_MIN)
 
 config FREETZ_PACKAGE_AUTOFS
 	bool "autofs 5.0.5"
@@ -21,21 +21,20 @@ config FREETZ_PACKAGE_AUTOFS_NFS
 	select FREETZ_MODULE_nfs if FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	default n
 	help
-		select this if you want mount NFS-Shares
-
+		select this if you want to mount NFS-shares
 
 comment "select cifs package (not available, needs replace kernel)"
 	depends on FREETZ_PACKAGE_AUTOFS && \
-		!FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN
+		!(FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX)
 
 config FREETZ_PACKAGE_AUTOFS_CIFS
 	bool "select cifs package"
 	depends on FREETZ_PACKAGE_AUTOFS && \
-		( FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX )
+		(FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX)
 	select FREETZ_PACKAGE_CIFSMOUNT
 	default n
 	help
-		select this if you want mount Samba-Shares
+		select this if you want to mount Samba-shares
 
 config FREETZ_PACKAGE_AUTOFS_DAVFS2
 	bool "select davfs2 package"
@@ -43,7 +42,7 @@ config FREETZ_PACKAGE_AUTOFS_DAVFS2
 	select FREETZ_PACKAGE_DAVFS2
 	default n
 	help
-		select this if you want mount Webdav-Shares
+		select this if you want to mount WebDAV-shares
 
 config FREETZ_PACKAGE_AUTOFS_SSHFS
 	bool "select sshfs package"
@@ -51,5 +50,4 @@ config FREETZ_PACKAGE_AUTOFS_SSHFS
 	select FREETZ_PACKAGE_SSHFS_FUSE
 	default n
 	help
-		select this if you want mount SSHfs-Shares
-
+		select this if you want to mount SSHfs-shares
