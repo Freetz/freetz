@@ -1,18 +1,17 @@
+comment "nfs-utils (not available, needs replace kernel)"
+	depends on !FREETZ_NFS_SUPPORT_AVAILABLE &&  FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL
+
 comment "nfs-utils (not available, no sources by AVM)"
-	depends on !FREETZ_REPLACE_KERNEL_AVAILABLE && !FREETZ_KERNEL_VERSION_2_6_19
+	depends on !FREETZ_NFS_SUPPORT_AVAILABLE && !FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL
 
 config FREETZ_PACKAGE_NFS_UTILS
 	bool "nfs-utils 1.2.3 (binary only)"
 	default n
-	depends on FREETZ_REPLACE_KERNEL_AVAILABLE || FREETZ_KERNEL_VERSION_2_6_19
+	depends on FREETZ_NFS_SUPPORT_AVAILABLE
 	select FREETZ_ADD_ETCSERVICES
 	select FREETZ_PACKAGE_TCP_WRAPPERS
-	select FREETZ_REPLACE_KERNEL if \
-		FREETZ_TYPE_7270_V1
-	select FREETZ_MODULE_nfsd if \
-		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_nfsd if FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	help
 		Linux NFS utility package
 
-		Select nfsd-cgi if you want a webinterface for configuration.
+		Select nfsd-cgi if you want a configuration web interface.

@@ -1,9 +1,12 @@
-comment "NFSD CGI 0.1 (not available, no sources by AVM)"
-	depends on ! (FREETZ_REPLACE_KERNEL_AVAILABLE || FREETZ_KERNEL_VERSION_2_6_19)
+comment "NFSD CGI (not available, needs replace kernel)"
+	depends on !FREETZ_NFS_SUPPORT_AVAILABLE &&  FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL
+
+comment "NFSD CGI (not available, no sources by AVM)"
+	depends on !FREETZ_NFS_SUPPORT_AVAILABLE && !FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL
 
 config FREETZ_PACKAGE_NFSD_CGI
 	bool "NFSD CGI 0.1"
-	depends on FREETZ_REPLACE_KERNEL_AVAILABLE || FREETZ_KERNEL_VERSION_2_6_19
+	depends on FREETZ_NFS_SUPPORT_AVAILABLE
 	select FREETZ_PACKAGE_NFS_UTILS
 	select FREETZ_PACKAGE_PORTMAP
 	default n

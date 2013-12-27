@@ -425,25 +425,19 @@ config FREETZ_MODULE_minix
 
 config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	select FREETZ_MODULE_lockd
 	select FREETZ_MODULE_exportfs
 	default n
 
 config FREETZ_MODULE_exportfs
 	bool "exportfs.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	default n
 
 config FREETZ_MODULE_nfs
 	bool "nfs.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	select FREETZ_MODULE_lockd
 	default n
 

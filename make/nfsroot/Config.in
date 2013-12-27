@@ -1,7 +1,10 @@
+comment "NFS-root (not available, needs replace kernel)"
+	depends on !FREETZ_REPLACE_KERNEL
+
 config FREETZ_PACKAGE_NFSROOT
 	bool "NFS-root 0.1"
 	depends on FREETZ_REPLACE_KERNEL
-	select FREETZ_MODULE_nfs if FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_nfs if FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	default n
 	help
 		Mount a remote filesystem (fs) from an NFS server and use it as a root fs
