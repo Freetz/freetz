@@ -1,15 +1,15 @@
 #!/bin/bash
 
-MKLIBS_DIR="${FREETZ_BASE_DIR}/tools/build/bin"
-MKLIBS_SCRIPT="${MKLIBS_DIR}/mklibs"
-TARGET_TOOLCHAIN_STAGING_DIR="${FREETZ_BASE_DIR}/toolchain/target"
-GNU_TARGET_NAME=${FREETZ_TARGET_ARCH}-linux
-REAL_GNU_TARGET_NAME=${GNU_TARGET_NAME}-uclibc
 
 mklibs() {
-	# replaces all absolute sym links to make mklibs happy
+	local HOST_TOOLS_DIR="${FREETZ_BASE_DIR}/tools/build"
+	local TARGET_TOOLCHAIN_STAGING_DIR="${FREETZ_BASE_DIR}/toolchain/target"
+	local GNU_TARGET_NAME=${FREETZ_TARGET_ARCH}-linux
+	local REAL_GNU_TARGET_NAME=${GNU_TARGET_NAME}-uclibc
+
+	# replace all absolute symlinks with relative ones to make mklibs happy
 	symlinks-abs2rel -r "${FILESYSTEM_MOD_DIR}" / "*.so*"
-	#
+
 	rm -rf ${MOD_DIR}/mklibs-progs ${MOD_DIR}/mklibs-out
 	mkdir -p ${MOD_DIR}/mklibs-out
 	# first find all programs and add them to the mklibs list
@@ -21,8 +21,10 @@ mklibs() {
 		file -r -N -F '' {} + | \
 		awk ' /shared object/ { print $1 }' >> ${MOD_DIR}/mklibs-progs
 	# Run mklibs script, needs path to mklibs-readelf and objcopy
-	PATH=${MKLIBS_DIR}:${TARGET_TOOLCHAIN_STAGING_DIR}/bin:$PATH \
-		${MKLIBS_SCRIPT} -D -vvv \
+	PATH="${HOST_TOOLS_DIR}/bin:${HOST_TOOLS_DIR}/usr/bin:${TARGET_TOOLCHAIN_STAGING_DIR}/bin:${PATH}" \
+		"${HOST_TOOLS_DIR}/bin/mklibs" \
+		-vvv \
+		-D \
 		-d ${MOD_DIR}/mklibs-out \
 		--sysroot ${FREETZ_BASE_DIR}/ \
 		-P toolchain/target/lib \
