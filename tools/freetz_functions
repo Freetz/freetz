@@ -396,6 +396,15 @@ isNeededEntry()
 }
 
 #
+# Strips trailing slash if provided
+#
+function stripTrailingSlash() {
+	local path="$1"
+	[ -n "${path}" -a "${path: -1: 1}" == "/" ] && path="${path: 0: -1}"
+	echo -n "$path"
+}
+
+#
 # Adds trailing slash if missing
 #
 function addTrailingSlash() {
@@ -439,7 +448,7 @@ function symlinks-abs2rel() {
 		esac
 	done
 	local TARGET_FS_ROOT=$(realpath "$1")
-	TARGET_FS_ROOT="${TARGET_FS_ROOT%/}"
+	TARGET_FS_ROOT=$(stripTrailingSlash "$TARGET_FS_ROOT")
 	local DIR=$(addTrailingSlash "$2")
 	local MASK="$3"; [ -z "$MASK" ] && MASK="*"
 	if [ -z "$TARGET_FS_ROOT" -o ! -d "$TARGET_FS_ROOT" -o -z "$DIR" -o "${DIR:0:1}" != "/" ]; then
