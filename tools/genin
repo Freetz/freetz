@@ -12,7 +12,7 @@ CATs=""
 CATTABLE=""
 NONHIDDEN="#"
 
-for PKG_DIR in $(find make -mindepth 2 -maxdepth 2 -type f -name Config.in -printf "%h\n" | sort); do
+for PKG_DIR in $(find -L make -mindepth 2 -maxdepth 2 -type f -name Config.in -printf "%h\n" | sort); do
 	PKG="${PKG_DIR#make/}"
 
 	# ignore libs

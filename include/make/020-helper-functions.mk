@@ -98,5 +98,5 @@ endef
 # $3 - (optional) subdirs to exclude
 #
 define get-subdirs-containing
-$(shell find $(strip $(1)) -maxdepth 2 -name "$(strip $(2))" -printf "%h\n" $(if $(strip $(3)),| grep -v -E "$(strip $(1))/$(subst $(_space),|,$(strip $(3)))") | sed -r -e 's,^$(strip $(1))/,,' | sort -u)
+$(shell find -L $(strip $(1)) -maxdepth 2 -name "$(strip $(2))" -printf "%h\n" $(if $(strip $(3)),| grep -v -E "$(strip $(1))/$(subst $(_space),|,$(strip $(3)))") | sed -r -e 's,^$(strip $(1))/,,' | sort -u)
 endef
