@@ -119,7 +119,7 @@ modsed()
 	fi
 }
 
-#modsed <start-row> <add-to-start> [end-row] <add-to-end> <file> 
+#modsed <start-row> <add-to-start> [end-row] <add-to-end> <file>
 #should be used to remove an area in a file from start-row to end-row
 #without a given end-row the start-row is used as end-row
 #start-row and end-row could be increased by a positive or negative value
@@ -136,7 +136,7 @@ mod_del_area() {
 		esac
 		shift
 	done
-	
+
 	# check file
 	if [ ! -f "$file" ]; then
 		warn3 "mod_del_area: file '$file' does not exist"
@@ -396,15 +396,6 @@ isNeededEntry()
 }
 
 #
-# Strips trailing slash if provided
-#
-function stripTrailingSlash() {
-	local path="$1"
-	[ -n "${path}" -a "${path: -1: 1}" == "/" ] && path="${path: 0: -1}"
-	echo -n "$path"
-}
-
-#
 # Adds trailing slash if missing
 #
 function addTrailingSlash() {
@@ -448,7 +439,7 @@ function symlinks-abs2rel() {
 		esac
 	done
 	local TARGET_FS_ROOT=$(realpath "$1")
-	TARGET_FS_ROOT=$(stripTrailingSlash "$TARGET_FS_ROOT")
+	TARGET_FS_ROOT="${TARGET_FS_ROOT%/}"
 	local DIR=$(addTrailingSlash "$2")
 	local MASK="$3"; [ -z "$MASK" ] && MASK="*"
 	if [ -z "$TARGET_FS_ROOT" -o ! -d "$TARGET_FS_ROOT" -o -z "$DIR" -o "${DIR:0:1}" != "/" ]; then
