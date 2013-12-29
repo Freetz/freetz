@@ -1,0 +1,24 @@
+mcabber uses HAVE_SNPRINTF throughout the code but its configure script actually never checks for it
+
+--- configure
++++ configure
+@@ -5462,6 +5462,7 @@
+ for ac_func in alarm arc4random bzero gethostbyname gethostname inet_ntoa \
+                 isascii memmove memset modf select setlocale socket strcasecmp \
+                 strchr strdup strncasecmp strrchr strstr strcasestr vsnprintf \
++                snprintf \
+                 iswblank
+ do :
+   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+--- config.h.in
++++ config.h.in
+@@ -246,6 +246,9 @@
+ /* Define to 1 if you have the `vprintf' function. */
+ #undef HAVE_VPRINTF
+ 
++/* Define to 1 if you have the `snprintf' function. */
++#undef HAVE_SNPRINTF
++
+ /* Define to 1 if you have the `vsnprintf' function. */
+ #undef HAVE_VSNPRINTF
+ 
