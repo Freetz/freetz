@@ -24,8 +24,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_CONF): $($(PKG)_DIR)/.unpacked
 
 $($(PKG)_TARGET_CONF): $($(PKG)_CONF)
-	mkdir -p $(dir $@)
-	cp $< $@
+	$(INSTALL_FILE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LTRACE_DIR) \
@@ -43,7 +42,6 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(LTRACE_DIR) clean ARCH=mips
 
 $(pkg)-uninstall:
-	$(RM) $(LTRACE_TARGET_BINARY)
-	$(RM) $(LTRACE_TARGET_CONF)
+	$(RM) $(LTRACE_TARGET_BINARY) $(LTRACE_TARGET_CONF)
 
 $(PKG_FINISH)
