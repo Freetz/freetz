@@ -2,7 +2,9 @@ $(call PKG_INIT_BIN, 7.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=5b9510a17074e2b37d8bb38ae09edbf2
 $(PKG)_SITE:=ftp://ftp.vim.org/pub/vim/unix
+
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)73
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
@@ -40,7 +42,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) $(VIM_MAKE_OPTIONS) -C $(VIM_DIR)
+	$(SUBMAKE) -C $(VIM_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
