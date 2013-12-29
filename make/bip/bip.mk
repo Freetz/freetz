@@ -9,7 +9,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON := openssl
-$(PKG)_LIBS := -lssl -lcrypto -ldl
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_STATIC)),y)
@@ -30,9 +29,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BIP_DIR) \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		LDFLAGS="$(BIP_LDFLAGS)" \
-		LIBS="$(BIP_LIBS)"
+		LDFLAGS="$(BIP_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
