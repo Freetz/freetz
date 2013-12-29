@@ -3,6 +3,7 @@ $(PKG)_SOURCE:=rcapid-cm.tar.gz
 $(PKG)_SOURCE_MD5:=83fbe8c37760ce29ce221320c3189dba
 $(PKG)_SITE:=ftp://ftp.melware.de/capi-utils
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/rcapid-cm
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/rcapid
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/rcapid
 
@@ -13,8 +14,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(RCAPID_DIR) \
-		CFLAGS="$(TARGET_CFLAGS)"
+	$(SUBMAKE) -C $(RCAPID_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
