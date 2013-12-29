@@ -1,4 +1,4 @@
---- pptpgre.c.orig
+--- pptpgre.c
 +++ pptpgre.c
 @@ -403,15 +403,20 @@
  			stats.rx_truncated++;
@@ -9,7 +9,7 @@
 +		/* check for out-of-order sequence number
 +		 * N.B.: some client implementations violate RFC 2637
 +		 * and start their sequence numbers at 1 instead of 0,
-+		 * so we have to introduce a kludge to deal with it. 
++		 * so we have to introduce a kludge to deal with it.
 +		 * on wrap we may allow an out of order packet to pass
 +		*/
 +		if (seq == gre.seq_recv + 1 || seq == 1) {

@@ -1,0 +1,11 @@
+--- Makefile.in
++++ Makefile.in
+@@ -104,7 +104,7 @@
+ AWK = @AWK@
+ CC = @CC@
+ CCDEPMODE = @CCDEPMODE@
+-CFLAGS = -O2 -fno-builtin -Wall -DSBINDIR='"$(sbindir)"'
++CFLAGS = @CFLAGS@ -fno-builtin -Wall -DSBINDIR='"$(sbindir)"'
+ CPP = @CPP@
+ CPPFLAGS = @CPPFLAGS@
+ CYGPATH_W = @CYGPATH_W@
