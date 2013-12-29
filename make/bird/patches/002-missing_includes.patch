@@ -1,5 +1,16 @@
---- client/client.c.orig	2004-06-05 05:26:48.000000000 -0400
-+++ client/client.c	2006-07-13 10:35:11.000000000 -0400
+--- sysdep/linux/netlink/netlink.c
++++ sysdep/linux/netlink/netlink.c
+@@ -11,6 +11,8 @@
+ #include <sys/socket.h>
+ #include <sys/uio.h>
+ #include <errno.h>
++#include <strings.h>
++#include <linux/if.h>
+ 
+ #undef LOCAL_DEBUG
+ 
+--- client/client.c
++++ client/client.c
 @@ -15,9 +15,11 @@
  #include <sys/socket.h>
  #include <sys/un.h>

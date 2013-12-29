@@ -1,6 +1,6 @@
---- client/client.c.orig	2011-03-31 10:29:41.000000000 +0200
-+++ client/client.c	2011-04-30 16:43:02.053451005 +0200
-@@ -368,7 +368,7 @@
+--- client/client.c
++++ client/client.c
+@@ -370,7 +370,7 @@
  
    bzero(&sa, sizeof(sa));
    sa.sun_family = AF_UNIX;
@@ -9,8 +9,8 @@
    if (connect(server_fd, (struct sockaddr *) &sa, SUN_LEN(&sa)) < 0)
      die("Unable to connect to server control socket (%s): %m", server_path);
    if (fcntl(server_fd, F_SETFL, O_NONBLOCK) < 0)
---- sysdep/unix/io.c.orig	2011-03-31 10:29:42.000000000 +0200
-+++ sysdep/unix/io.c	2011-04-30 16:43:02.063451005 +0200
+--- sysdep/unix/io.c
++++ sysdep/unix/io.c
 @@ -1212,7 +1212,7 @@
  
    /* Path length checked in test_old_bird() */

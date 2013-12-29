@@ -6,7 +6,7 @@ $(PKG)_STARTLEVEL=82
 
 $(PKG)_BINARIES_ALL := bird birdc
 ifeq ($(strip $(FREETZ_PACKAGE_BIRDC)),y)
-$(PKG)_DEPENDS_ON := ncurses readline
+$(PKG)_DEPENDS_ON += ncurses readline
 $(PKG)_BINARIES := $($(PKG)_BINARIES_ALL)
 else
 $(PKG)_BINARIES := $(filter-out birdc,$($(PKG)_BINARIES_ALL))
@@ -20,23 +20,18 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIRD_DEBUG
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIRDC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-#$(PKG)_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS) -D_XOPEN_SOURCE=600"
-#$(PKG)_CONFIGURE_ENV += CPPFLAGS="$(TARGET_CPPFLAGS) -D_XOPEN_SOURCE=600"
-$(PKG)_CONFIGURE_ENV += bird_cv_c_endian=little-endian
-
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIRDC),--enable-client,--disable-client)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIRD_DEBUG),--enable-debug,--disable-debug)
 $(PKG)_CONFIGURE_OPTIONS += --disable-memcheck
 $(PKG)_CONFIGURE_OPTIONS += --disable-warnings
-#$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE1) -C $(BIRD_DIR) \
-		LD="$(TARGET_LD)"
+	$(SUBMAKE1) -C $(BIRD_DIR)
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/%
 	$(INSTALL_BINARY_STRIP)
