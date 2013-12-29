@@ -3,14 +3,9 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=1131dc5f27c4f3905a6e7ee0d594fd4d
 $(PKG)_SITE:=@SF/nfs
 
-$(PKG)_EXPORTFS_BINARY:=$($(PKG)_DIR)/utils/exportfs/exportfs
-$(PKG)_EXPORTFS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/exportfs
-$(PKG)_MOUNTD_BINARY:=$($(PKG)_DIR)/utils/mountd/mountd
-$(PKG)_MOUNTD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mountd
-$(PKG)_NFSD_BINARY:=$($(PKG)_DIR)/utils/nfsd/nfsd
-$(PKG)_NFSD_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/nfsd
-$(PKG)_SHOWMOUNT_BINARY:=$($(PKG)_DIR)/utils/showmount/showmount
-$(PKG)_SHOWMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/showmount
+$(PKG)_BINARIES            := exportfs mountd nfsd showmount
+$(PKG)_BINARIES_BUILD_DIR  := $(addprefix $($(PKG)_DIR)/utils/, $(join $($(PKG)_BINARIES),$(addprefix /,$($(PKG)_BINARIES))))
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
 $(PKG)_DEPENDS_ON := tcp_wrappers
 
@@ -38,35 +33,19 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_EXPORTFS_BINARY) $($(PKG)_MOUNTD_BINARY) \
-		$($(PKG)_NFSD_BINARY) $($(PKG)_SHOWMOUNT_BINARY)) : \
-		$($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NFS_UTILS_DIR)
 
-$($(PKG)_EXPORTFS_TARGET_BINARY): $($(PKG)_EXPORTFS_BINARY)
-	$(INSTALL_BINARY_STRIP)
-
-$($(PKG)_MOUNTD_TARGET_BINARY): $($(PKG)_MOUNTD_BINARY)
-	$(INSTALL_BINARY_STRIP)
-
-$($(PKG)_NFSD_TARGET_BINARY): $($(PKG)_NFSD_BINARY)
-	$(INSTALL_BINARY_STRIP)
-
-$($(PKG)_SHOWMOUNT_TARGET_BINARY): $($(PKG)_SHOWMOUNT_BINARY)
-	$(INSTALL_BINARY_STRIP)
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_EXPORTFS_TARGET_BINARY) $($(PKG)_MOUNTD_TARGET_BINARY) \
-			$($(PKG)_NFSD_TARGET_BINARY) $($(PKG)_SHOWMOUNT_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NFS_UTILS_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(NFS_UTILS_EXPORTFS_TARGET_BINARY) \
-		$(NFS_UTILS_MOUNTD_TARGET_BINARY) \
-		$(NFS_UTILS_NFSD_TARGET_BINARY) \
-		$(NFS_UTILS_SHOWMOUNT_TARGET_BINARY)
+	$(RM) $(NFS_UTILS_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
