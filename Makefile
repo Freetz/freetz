@@ -316,7 +316,7 @@ ifdef FWMOD_OPTS
 $(error FWMOD_OPTS is obsolete, please use FREETZ_FWMOD_* or the corresponding menuconfig options instead)
 endif
 
-firmware-nocompile: tools $(DL_IMAGE) package-list
+firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
 ifeq ($(strip $(PACKAGES)),)
 	@echo
 	@echo "WARNING: There are no packages selected. To install packages type"
