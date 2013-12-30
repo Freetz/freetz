@@ -323,11 +323,7 @@ ifeq ($(strip $(PACKAGES)),)
 	@echo "         'make menuconfig' and change to the 'Package selection' submenu."
 	@echo
 endif
-ifneq ($(findstring firmware-nocompile,$(MAKECMDGOALS)),firmware-nocompile)
-	@./fwmod -d $(BUILD_DIR) $(DL_IMAGE)
-else
-	@./fwmod -n -d $(BUILD_DIR) $(DL_IMAGE)
-endif
+	@./fwmod $(if $(filter firmware-nocompile,$(MAKECMDGOALS)),-n) -d $(BUILD_DIR) $(DL_IMAGE)
 
 firmware: precompiled firmware-nocompile
 
