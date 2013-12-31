@@ -312,6 +312,22 @@ config FREETZ_AVM_GCC_4_7
 ###
 
 
+config FREETZ_AVM_HAS_AR7CFG_V12_MIN
+	bool "Has ar7.cfg version 12 minimum"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_AVM_VERSION_06_XX_MIN || \
+		FREETZ_AVM_VERSION_05_5X && ( \
+			FREETZ_TYPE_6810 || \
+			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_7272 || \
+			FREETZ_TYPE_7490 \
+		)		
+	default n
+	help
+		Select this if your ar7.cfg is at least version 12.
+		In your ar7.cfg is a line like 'ar7cfg_version = x;'
+		Used by AVM-firewall/-forwarding
+		
 config FREETZ_AVM_HAS_PRINTK
 	bool "Has AVM printk support"		if FREETZ_TYPE_CUSTOM
 	default y		if \
