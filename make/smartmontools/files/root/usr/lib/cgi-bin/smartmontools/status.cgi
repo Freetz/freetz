@@ -6,7 +6,7 @@
 DEVICES="$(cat /proc/partitions | sed -nr 's/.*[[:space:]](sd.)$/\1/p' | sort)"
 COUNT=0
 
-[ -z "$DEVICES" ] && html "$(lang de:"Keine Ger&auml;te gefunden." en:"No devices found.")"
+[ -z "$DEVICES" ] && echo "<br>$(lang de:"Keine Ger&auml;te gefunden." en:"No devices found.")"
 
 if ! which smartctl >/dev/null 2>&1; then
 	echo "<h1>$(lang de:"smartctl nicht gefunden." en:"smartctl not found.")</h1>"
