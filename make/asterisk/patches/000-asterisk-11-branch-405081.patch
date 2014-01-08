@@ -541,6 +541,63 @@
  }
  
  void conf_remove_user_waiting(struct conference_bridge *conference_bridge, struct conference_bridge_user *cbu)
+--- apps/app_meetme.c
++++ apps/app_meetme.c
+@@ -38,7 +38,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399034 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404773 $")
+ 
+ #include <dahdi/user.h>
+ 
+@@ -2631,7 +2631,8 @@
+  * \param recordingtmp character buffer which may hold the name of the conference recording file
+  * \param dahdic dahdi configuration info used by the main conference loop
+  */
+-static void meetme_menu_admin_extended(enum menu_modes *menu_mode, int *dtmf, struct ast_conference *conf, struct ast_flags64 *confflags, struct ast_channel *chan, struct ast_conf_user *user, char *recordingtmp, struct dahdi_confinfo *dahdic, struct ast_format_cap *cap_slin)
++
++static void meetme_menu_admin_extended(enum menu_modes *menu_mode, int *dtmf, struct ast_conference *conf, struct ast_flags64 *confflags, struct ast_channel *chan, struct ast_conf_user *user, char *recordingtmp, int recordingtmp_size, struct dahdi_confinfo *dahdic, struct ast_format_cap *cap_slin)
+ {
+ 	int keepplaying;
+ 	int playednamerec;
+@@ -2752,7 +2753,7 @@
+ 				}
+ 				ast_channel_unlock(chan);
+ 				if (!conf->recordingfilename) {
+-					snprintf(recordingtmp, sizeof(recordingtmp), "meetme-conf-rec-%s-%s", conf->confno, ast_channel_uniqueid(chan));
++					snprintf(recordingtmp, recordingtmp_size, "meetme-conf-rec-%s-%s", conf->confno, ast_channel_uniqueid(chan));
+ 					conf->recordingfilename = ast_strdup(recordingtmp);
+ 				}
+ 				if (!conf->recordingformat) {
+@@ -2815,7 +2816,7 @@
+  * \param dahdic dahdi configuration info used by the main conference loop
+  */
+ 
+-static void meetme_menu(enum menu_modes *menu_mode, int *dtmf, struct ast_conference *conf, struct ast_flags64 *confflags, struct ast_channel *chan, struct ast_conf_user *user, char *recordingtmp, struct dahdi_confinfo *dahdic, struct ast_format_cap *cap_slin)
++static void meetme_menu(enum menu_modes *menu_mode, int *dtmf, struct ast_conference *conf, struct ast_flags64 *confflags, struct ast_channel *chan, struct ast_conf_user *user, char *recordingtmp, int recordingtmp_size, struct dahdi_confinfo *dahdic, struct ast_format_cap *cap_slin)
+ {
+ 	switch (*menu_mode) {
+ 	case MENU_DISABLED:
+@@ -2830,7 +2831,7 @@
+ 			break;
+ 		}
+ 	case MENU_ADMIN_EXTENDED:
+-		meetme_menu_admin_extended(menu_mode, dtmf, conf, confflags, chan, user, recordingtmp, dahdic, cap_slin);
++		meetme_menu_admin_extended(menu_mode, dtmf, conf, confflags, chan, user, recordingtmp, recordingtmp_size, dahdic, cap_slin);
+ 		break;
+ 	}
+ }
+@@ -3973,7 +3974,7 @@
+ 					}
+ 
+ 					if (dtmf > 0) {
+-						meetme_menu(&menu_mode, &dtmf, conf, confflags, chan, user, recordingtmp, &dahdic, cap_slin);
++						meetme_menu(&menu_mode, &dtmf, conf, confflags, chan, user, recordingtmp, sizeof(recordingtmp), &dahdic, cap_slin);
+ 					}
+ 
+ 					if (musiconhold && !menu_mode) {
 --- apps/app_mixmonitor.c
 +++ apps/app_mixmonitor.c
 @@ -39,7 +39,7 @@
@@ -888,6 +945,51 @@
   * \brief Stop MOH for the conference user.
   *
   * \param user Conference user to stop MOH on.
+--- cel/cel_pgsql.c
++++ cel/cel_pgsql.c
+@@ -44,7 +44,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 372175 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404858 $")
+ 
+ #include <libpq-fe.h>
+ 
+@@ -345,11 +345,12 @@
+ static int my_unload_module(void)
+ {
+ 	struct columns *current;
+-	AST_RWLIST_WRLOCK(&psql_columns);
++
+ 	if (event_sub) {
+ 		event_sub = ast_event_unsubscribe(event_sub);
+-		event_sub = NULL;
+ 	}
++
++	AST_RWLIST_WRLOCK(&psql_columns);
+ 	if (conn) {
+ 		PQfinish(conn);
+ 		conn = NULL;
+@@ -558,6 +559,10 @@
+ 		return AST_MODULE_LOAD_SUCCESS;
+ 	}
+ 
++	if (reload) {
++		my_unload_module();
++	}
++
+ 	process_my_load_module(cfg);
+ 	ast_config_destroy(cfg);
+ 
+@@ -578,7 +583,6 @@
+ 
+ static int reload(void)
+ {
+-	my_unload_module();
+ 	return my_load_module(1);
+ }
+ 
 --- channels/chan_dahdi.c
 +++ channels/chan_dahdi.c
 @@ -49,7 +49,7 @@
@@ -895,7 +997,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401705 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402709 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404785 $")
  
  #if defined(__NetBSD__) || defined(__FreeBSD__)
  #include <pthread.h>
@@ -913,6 +1015,17 @@
  		}
  
  		if (analog_p->ringt > 0) {
+@@ -15544,8 +15541,8 @@
+ 
+ static char *dahdi_show_channels(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
+ {
+-#define FORMAT "%7s %-10.10s %-15.15s %-10.10s %-20.20s %-10.10s %-10.10s %-32.32s\n"
+-#define FORMAT2 "%7s %-10.10s %-15.15s %-10.10s %-20.20s %-10.10s %-10.10s %-32.32s\n"
++#define FORMAT "%7s %-15.15s %-15.15s %-10.10s %-20.20s %-10.10s %-10.10s %-32.32s\n"
++#define FORMAT2 "%7s %-15.15s %-15.15s %-10.10s %-20.20s %-10.10s %-10.10s %-32.32s\n"
+ 	ast_group_t targetnum = 0;
+ 	int filtertype = 0;
+ 	struct dahdi_pvt *tmp = NULL;
 --- channels/chan_iax2.c
 +++ channels/chan_iax2.c
 @@ -38,7 +38,7 @@
@@ -940,7 +1053,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401884 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403635 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405081 $")
  
  #include <signal.h>
  #include <sys/signal.h>
@@ -1112,7 +1225,21 @@
  		ast_test_flag(&peer->flags[2], SIP_PAGE3_NAT_AUTO_COMEDIA) ? "yes" : "no",
  		ast_test_flag(&peer->flags[1], SIP_PAGE2_SYMMETRICRTP) ? "yes" : "no",
  		ast_test_flag(&peer->flags[1], SIP_PAGE2_VIDEOSUPPORT) ? "yes" : "no",	/* VIDEOSUPPORT=yes? */
-@@ -30378,6 +30416,10 @@
+@@ -23352,6 +23390,13 @@
+ 		}
+ 		break;
+ 	case 403:	/* Forbidden */
++		if (global_reg_retry_403) {
++			ast_log(LOG_NOTICE, "Treating 403 response to REGISTER as non-fatal for %s@%s\n",
++				p->registry->username, p->registry->hostname);
++			ast_string_field_set(r, nonce, "");
++			ast_string_field_set(p, nonce, "");
++			break;
++		}
+ 		ast_log(LOG_WARNING, "Forbidden - wrong password on authentication for REGISTER for '%s' to '%s'\n", p->registry->username, p->registry->hostname);
+ 		AST_SCHED_DEL_UNREF(sched, r->timeout, registry_unref(r, "reg ptr unref from handle_response_register 403"));
+ 		r->regstate = REG_STATE_NOAUTH;
+@@ -30378,6 +30423,10 @@
  	peer->disallowed_methods = sip_cfg.disallowed_methods;
  	peer->transports = default_transports;
  	peer->default_outbound_transport = default_primary_transport;
@@ -1227,7 +1354,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396310 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404087 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404675 $")
  
  #include <regex.h>
  #include <ctype.h>
@@ -1240,6 +1367,109 @@
  		</description>
  	</function>
  	<function name="CSV_QUOTE" language="en_US">
+@@ -841,8 +841,7 @@
+ 		 * directly there */
+ 		if (strchr(find, *strptr)) {
+ 			if (ast_strlen_zero(replace)) {
+-				/* Remove character */
+-				strcpy(strptr, strptr + 1); /* SAFE */
++				memmove(strptr, strptr + 1, strlen(strptr + 1) + 1);
+ 				strptr--;
+ 			} else {
+ 				/* Replace character */
+@@ -1726,6 +1725,76 @@
+ 	return res;
+ }
+ 
++AST_TEST_DEFINE(test_REPLACE)
++{
++	int i, res = AST_TEST_PASS;
++	struct ast_channel *chan;
++	struct ast_str *str;
++	char expression[256];
++	struct {
++		const char *test_string;
++		const char *find_chars;
++		const char *replace_char;
++		const char *expected;
++	} test_args[] = {
++		{"abc,def", "\\,", "-", "abc-def"},
++		{"abc,abc", "bc",  "a", "aaa,aaa"},
++		{"abc,def", "x",   "?", "abc,def"},
++		{"abc,def", "\\,", "",  "abcdef"}
++	};
++
++	switch (cmd) {
++	case TEST_INIT:
++		info->name = "func_REPLACE_test";
++		info->category = "/funcs/func_strings/";
++		info->summary = "Test REPLACE function";
++		info->description = "Verify REPLACE behavior";
++		return AST_TEST_NOT_RUN;
++	case TEST_EXECUTE:
++		break;
++	}
++
++	if (!(chan = ast_dummy_channel_alloc())) {
++		ast_test_status_update(test, "Unable to allocate dummy channel\n");
++		return AST_TEST_FAIL;
++	}
++
++	if (!(str = ast_str_create(16))) {
++		ast_test_status_update(test, "Unable to allocate dynamic string buffer\n");
++		ast_channel_release(chan);
++		return AST_TEST_FAIL;
++	}
++
++	for (i = 0; i < ARRAY_LEN(test_args); i++) {
++		struct ast_var_t *var = ast_var_assign("TEST_STRING", test_args[i].test_string);
++		if (!var) {
++			ast_test_status_update(test, "Out of memory\n");
++			res = AST_TEST_FAIL;
++			break;
++		}
++
++		AST_LIST_INSERT_HEAD(ast_channel_varshead(chan), var, entries);
++
++		snprintf(expression, sizeof(expression), "${REPLACE(%s,%s,%s)}", var->name, test_args[i].find_chars, test_args[i].replace_char);
++		ast_str_substitute_variables(&str, 0, chan, expression);
++
++		AST_LIST_REMOVE(ast_channel_varshead(chan), var, entries);
++		ast_var_delete(var);
++
++		if (strcasecmp(ast_str_buffer(str), test_args[i].expected)) {
++			ast_test_status_update(test, "Evaluation of '%s' returned '%s' instead of the expected value '%s'\n",
++				expression, ast_str_buffer(str), test_args[i].expected);
++			res = AST_TEST_FAIL;
++			break;
++		}
++	}
++
++	ast_free(str);
++	ast_channel_release(chan);
++
++	return res;
++}
++
+ AST_TEST_DEFINE(test_FILTER)
+ {
+ 	int i, res = AST_TEST_PASS;
+@@ -1843,6 +1912,7 @@
+ 	int res = 0;
+ 
+ 	AST_TEST_UNREGISTER(test_FIELDNUM);
++	AST_TEST_UNREGISTER(test_REPLACE);
+ 	AST_TEST_UNREGISTER(test_FILTER);
+ 	AST_TEST_UNREGISTER(test_STRREPLACE);
+ 	res |= ast_custom_function_unregister(&fieldqty_function);
+@@ -1879,6 +1949,7 @@
+ 	int res = 0;
+ 
+ 	AST_TEST_REGISTER(test_FIELDNUM);
++	AST_TEST_REGISTER(test_REPLACE);
+ 	AST_TEST_REGISTER(test_FILTER);
+ 	AST_TEST_REGISTER(test_STRREPLACE);
+ 	res |= ast_custom_function_register(&fieldqty_function);
 --- include/asterisk/rtp_engine.h
 +++ include/asterisk/rtp_engine.h
 @@ -322,10 +322,16 @@
@@ -1278,10 +1508,21 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403978 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404888 $")
  
  #include "asterisk/_private.h"
  
+@@ -3421,7 +3421,9 @@
+ 			live_dangerously = ast_true(v->value);
+ 		}
+ 	}
+-	pbx_live_dangerously(live_dangerously);
++	if (!ast_opt_remote) {
++		pbx_live_dangerously(live_dangerously);
++	}
+ 	for (v = ast_variable_browse(cfg, "compat"); v; v = v->next) {
+ 		float version;
+ 		if (sscanf(v->value, "%30f", &version) != 1) {
 --- main/channel.c
 +++ main/channel.c
 @@ -29,7 +29,7 @@
@@ -1289,10 +1530,28 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401179 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404579 $")
  
  #include "asterisk/_private.h"
  
+@@ -289,7 +289,7 @@
+ /*! \brief Show channel types - CLI command */
+ static char *handle_cli_core_show_channeltypes(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
+ {
+-#define FORMAT  "%-10.10s  %-40.40s %-12.12s %-12.12s %-12.12s\n"
++#define FORMAT  "%-15.15s  %-40.40s %-12.12s %-12.12s %-12.12s\n"
+ 	struct chanlist *cl;
+ 	int count_chan = 0;
+ 
+@@ -309,7 +309,7 @@
+ 		return CLI_SHOWUSAGE;
+ 
+ 	ast_cli(a->fd, FORMAT, "Type", "Description",       "Devicestate", "Indications", "Transfer");
+-	ast_cli(a->fd, FORMAT, "----------", "-----------", "-----------", "-----------", "--------");
++	ast_cli(a->fd, FORMAT, "-----------", "-----------", "-----------", "-----------", "-----------");
+ 
+ 	AST_RWLIST_RDLOCK(&backends);
+ 	AST_RWLIST_TRAVERSE(&backends, cl, list) {
 @@ -5590,7 +5590,7 @@
  			ast_cdr_setaccount(new_chan, oh->account);
  			ast_channel_unlock(new_chan);
@@ -1689,6 +1948,26 @@
  		ast_rwlock_unlock(&static_RTP_PT_lock);
  		return;
  	}
+--- main/say.c
++++ main/say.c
+@@ -37,7 +37,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 373775 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404457 $")
+ 
+ #include <netinet/in.h>
+ #include <time.h>
+@@ -5681,7 +5681,7 @@
+ 						if (!res)
+ 							res = wait_file(chan, ints, "digits/second-a", lang);
+ 					} else {
+-						res = ast_say_number(chan, tm.tm_min, ints, lang, "f");
++						res = ast_say_number(chan, tm.tm_sec, ints, lang, "f");
+ 						if (!res) {
+ 							int ten, one;
+ 							ten = tm.tm_sec / 10;
 --- main/tcptls.c
 +++ main/tcptls.c
 @@ -31,7 +31,7 @@
