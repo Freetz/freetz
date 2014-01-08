@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.3.1)
+$(call PKG_INIT_BIN, 1.4.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d11f53b79c7371b76e5c93209dbe2a10
+$(PKG)_SOURCE_MD5:=4e5a47308335b1b0bf4691cac6c4174f
 $(PKG)_SITE:=ftp://bird.network.cz/pub/bird
 $(PKG)_STARTLEVEL=82
 
@@ -23,7 +23,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIRDC),--enable-client,--disable-client)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIRD_DEBUG),--enable-debug,--disable-debug)
 $(PKG)_CONFIGURE_OPTIONS += --disable-memcheck
-$(PKG)_CONFIGURE_OPTIONS += --disable-warnings
 #$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)

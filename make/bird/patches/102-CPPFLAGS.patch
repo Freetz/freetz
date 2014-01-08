@@ -9,3 +9,12 @@
  CFLAGS=$(CPPFLAGS) @CFLAGS@
  LDFLAGS=@LDFLAGS@
  LIBS=@LIBS@
+@@ -68,7 +68,7 @@
+ all.o: $(objs)
+ #       $(LD) -r -o $@ $^
+ #	Changed to $(CC) because $(LD) has problems with crosscompiling
+-	$(CC) -nostdlib -r -o $@ $^
++	$(CC) $(CFLAGS) -nostdlib -r -o $@ $^
+ 
+ endif
+ 

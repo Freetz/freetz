@@ -1,6 +1,6 @@
 --- client/client.c
 +++ client/client.c
-@@ -370,7 +370,7 @@
+@@ -250,7 +250,7 @@
  
    bzero(&sa, sizeof(sa));
    sa.sun_family = AF_UNIX;
@@ -11,7 +11,7 @@
    if (fcntl(server_fd, F_SETFL, O_NONBLOCK) < 0)
 --- sysdep/unix/io.c
 +++ sysdep/unix/io.c
-@@ -1212,7 +1212,7 @@
+@@ -1274,7 +1274,7 @@
  
    /* Path length checked in test_old_bird() */
    sa.sun_family = AF_UNIX;
