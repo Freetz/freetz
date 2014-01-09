@@ -309,16 +309,6 @@ package-list: package-list-clean $(PACKAGES_LIST)
 package-list-clean:
 	@$(RM) .static .dynamic
 
-# compat: TODO remove
-ifdef FWMOD_NOPACK
-$(error FWMOD_NOPACK is obsolete, please use FREETZ_FWMOD_SKIP_PACK=y or the corresponding menuconfig option instead)
-endif
-
-# compat: TODO remove
-ifdef FWMOD_OPTS
-$(error FWMOD_OPTS is obsolete, please use FREETZ_FWMOD_* or the corresponding menuconfig options instead)
-endif
-
 firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
 ifeq ($(strip $(PACKAGES)),)
 	@echo
