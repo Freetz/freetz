@@ -199,7 +199,14 @@ $(TOOLS_BUILD_DIR) \
 $(FW_IMAGES_DIR):
 	@mkdir -p $@
 
-ifeq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
+ifneq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
+
+step: menuconfig
+clean: $(TOOLS_CLEAN) common-clean
+dirclean: $(TOOLS_DIRCLEAN) common-dirclean
+distclean: $(TOOLS_DISTCLEAN) common-distclean
+
+else
 
 step: image world tools firmware
 
@@ -360,14 +367,7 @@ distclean: $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
 	$(LIBS) $(LIBS_CLEAN) $(LIBS_DIRCLEAN) $(LIBS_SOURCE) $(LIBS_PRECOMPILED) \
 	$(TOOLCHAIN) $(TOOLCHAIN_CLEAN) $(TOOLCHAIN_DIRCLEAN) $(TOOLCHAIN_DISTCLEAN) $(TOOLCHAIN_SOURCE)
 
-else
-
-step: menuconfig
-clean: $(TOOLS_CLEAN) common-clean
-dirclean: $(TOOLS_DIRCLEAN) common-dirclean
-distclean: $(TOOLS_DISTCLEAN) common-distclean
-
-endif
+endif # FREETZ_HAVE_DOT_CONFIG!=y
 
 tools: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLS)
 tools-dirclean: $(TOOLS_DIRCLEAN)
