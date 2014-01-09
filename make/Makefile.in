@@ -66,6 +66,9 @@ SOURCE_DIR:=$(SOURCE_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
 PACKAGES_DIR:=$(PACKAGES_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
 TARGET_SPECIFIC_ROOT_DIR:=$(PACKAGES_DIR)/root
 
+$(PACKAGES_DIR):
+	@mkdir -p $@
+
 # If CONFIG_SITE is exported, it can cause errors in the host builds
 unexport CONFIG_SITE
 CONFIG_SITE:=$(FREETZ_BASE_DIR)/$(INCLUDE_DIR)/site/$(TARGET_ARCH)-linux-uclibc
@@ -688,7 +691,7 @@ $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
 
-$(PACKAGES_DIR)/.$(pkg):
+$(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
 	@echo "$($(PKG)_VERSION)" > $(PACKAGES_DIR)/.$(pkg)
 
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PACKAGES_DIR)/.$(pkg)
