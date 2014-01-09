@@ -109,6 +109,7 @@ start() {
 		for src in \
 		  ${EXTERNAL_LINK}/etc/default.$pkg \
 		  ${EXTERNAL_LINK}/etc/init.d/rc.$pkg \
+		  ${EXTERNAL_LINK}/etc/init.d/rc.$pkg.* \
 		  ${EXTERNAL_LINK}/etc/onlinechanged/*$pkg \
 		  ${EXTERNAL_LINK}/etc/cron.d/$pkg \
 		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg.cgi \
@@ -170,7 +171,8 @@ remove_scripts() {
 	#removes script-links (after unload)
 	local pkg=$1
 	rm -rf \
-	  /mod/etc/default.$pkg          /mod/etc/init.d/rc.$pkg \
+	  /mod/etc/default.$pkg \
+	  /mod/etc/init.d/rc.$pkg        /mod/etc/init.d/rc.$pkg.* \
 	  /mod/etc/onlinechanged/*$pkg   /mod/etc/cron.d/$pkg \
 	  /mod/usr/lib/cgi-bin/$pkg.cgi  /mod/usr/lib/cgi-bin/$pkg \
 	  2>/dev/null

@@ -29,15 +29,17 @@ else
 fi
 [ -d /tmp/flash/mod ] || mkdir -p /tmp/flash/mod
 
-#
-# Symlink file (of specific type) into the /mod tree; an absolute path
-# must be passed
-#
+# Symlink files (of specific type) into the /mod tree
+# $1    - file type (as in the shell command 'test')
+# $2..n - files to symlink (absolute paths are expected)
 lnmod() {
-	local test=$1 file=$2
-	if [ "$test" "$file" -a ! -e "/mod${file}" ]; then
-		ln -s "$file" "/mod${file}"
-	fi
+	local test="$1" file
+	shift
+	for file in "$@"; do
+		if [ "$test" "$file" -a ! -e "/mod${file}" ]; then
+			ln -s "$file" "/mod${file}"
+		fi
+	done
 }
 
 echo -n 'Loading users, groups and passwords ... '
@@ -55,6 +57,7 @@ for pkg in $(cat /mod/etc/static.pkg 2>/dev/null) avm; do
 	lnmod -d "/usr/lib/cgi-bin/$pkg"
 	lnmod -x "/usr/lib/cgi-bin/$pkg.cgi"
 	lnmod -x "/etc/init.d/rc.$pkg"
+	lnmod -x $(ls /etc/init.d/rc.$pkg.* 2>/dev/null)
 	[ -r "/mod/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
 done
 /usr/bin/modconf load avm
