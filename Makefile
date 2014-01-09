@@ -157,9 +157,6 @@ include $(TOOLS_DIR)/make/Makefile.in
 
 KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
 
-noconfig_targets:=$(KCONFIG_TARGETS) tools \
-		$(TOOLS) $(CHECK_BUILD_DIR_VERSION)
-
 -include $(TOPDIR)/.config
 
 VERBOSE:=
