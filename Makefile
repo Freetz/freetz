@@ -52,7 +52,6 @@ PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
-CHECK_BUILD_DIR_VERSION:=
 
 # do not use sorted-wildcard here, it's first defined in files included here
 include $(sort $(wildcard include/make/*.mk))
@@ -116,12 +115,6 @@ ifneq (OK,$(shell [ -d make/mod/files/root/sys ] && echo OK ))
 $(error The empty directory root/sys is missing! Please do a clean checkout)
 endif
 
-# Run svn version update if building in working copy
-# TODO: Please check this, BUILD_DIR_VERSION is always empty
-#ifneq ($(BUILD_DIR_VERSION),)
-CHECK_BUILD_DIR_VERSION:=check-builddir-version
-#endif
-
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
 ifneq ($(shell $(CHECK_PREREQ_TOOL) \
@@ -149,8 +142,7 @@ endif
 endif
 
 all: step
-world: $(CHECK_BUILD_DIR_VERSION) $(DL_DIR) $(BUILD_DIR) \
-	$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
+world: check-dot-config-uptodateness $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
@@ -521,22 +513,21 @@ dist: distclean download-clean
 	)
 	$(RM) .exclude-dist-tmp
 
-# Check if last build was with older svn version
-check-builddir-version: $(CONFIG_IN_CACHE)
-	@\
-	if [ -e .config -a \
-		$(CONFIG_IN_CACHE) -nt .config ]; then \
+# Check .config is up-to-date. Any change to any of the menuconfig configuration files (either manual or one caused by 'svn up') require .config to be updated.
+check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
+	@if [ -e .config -a $(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
-		echo "ERROR: You have updated to a newer svn version since last modifying your"; \
-		echo "       config. You should either run 'make oldconfig' once before building"; \
-		echo "       again or 'make menuconfig' and change the config (otherwise it will not"; \
+		echo "ERROR: You have either updated to a newer svn version  or changed one of"; \
+		echo "       the menuconfig files manually  since last modifying  your config."; \
+		echo "       You should either run 'make oldconfig' once before building again"; \
+		echo "       or 'make menuconfig' and change the config (otherwise it will not"; \
 		echo "       be saved and you will see this message again)."; \
 		echo -n -e $(_N); \
 		exit 3; \
-	fi; \
+	fi
 
 .PHONY: all world step $(KCONFIG_TARGETS) config-cache tools recover \
 	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
-	$(CHECK_BUILD_DIR_VERSION)
+	check-dot-config-uptodateness
