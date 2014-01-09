@@ -18,7 +18,7 @@ case $1 in
 	""|load)
 		mkdir -p /mod/etc/netatalk
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
-			ln -s /mod/etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
+			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
 		modreg daemon -h -n netatalk-afpd -r rc.$DAEMON_BIN -p netatalk afpd
 

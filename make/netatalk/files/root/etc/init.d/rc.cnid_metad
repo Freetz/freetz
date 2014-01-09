@@ -15,7 +15,7 @@ start() {
 case $1 in
 	""|load)
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
-			ln -s /mod/etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
+			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
 		modreg daemon -h -n netatalk-cnid_metad -r rc.$DAEMON_BIN -p netatalk cnid_metad
 
