@@ -5,11 +5,11 @@ DAEMON_LONG_NAME=Netatalk
 . /etc/init.d/modlibrc
 
 do_afpd() {
-  /mod/etc/init.d/rc.afpd $1
+  /mod/etc/init.d/rc.netatalk.afpd $1
 }
 
 do_cnid_metad() {
-  /mod/etc/init.d/rc.cnid_metad $1
+  /mod/etc/init.d/rc.netatalk.cnid_metad $1
 }
 
 config() {
@@ -44,7 +44,7 @@ case $1 in
 		do_cnid_metad unload
 		;;
 	start)
-	  config
+		config
 		do_cnid_metad start
 		do_afpd start
 		;;
