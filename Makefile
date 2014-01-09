@@ -53,7 +53,6 @@ PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
 GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
 CHECK_BUILD_DIR_VERSION:=
-CHECK_UCLIBC_VERSION:=$(TOOLS_DIR)/check_uclibc
 
 # do not use sorted-wildcard here, it's first defined in files included here
 include $(sort $(wildcard include/make/*.mk))
