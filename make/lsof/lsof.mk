@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.86)
+$(call PKG_INIT_BIN, 4.87)
 $(PKG)_SOURCE:=lsof_$($(PKG)_VERSION)_src.tar.bz2
-$(PKG)_SOURCE_MD5:=d15653d4bb63b9f520d93c9722d473e8
+$(PKG)_SOURCE_MD5:=f4babd93a6ed08d0da3a8992d523e04f
 $(PKG)_SITE:=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)_src
 
