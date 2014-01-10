@@ -20,6 +20,8 @@ case $1 in
 	status*)
 		cat $STATUS_FILE 2>/dev/null
 		;;
+# TODO: libmodmount might call this script with start/stop as parameter. Should we support
+#       these calls and delegate them to inetd_enable/inetd_disable or simply ignore?
 	*)
 		echo "Usage: $0 [inetd_enable|inetd_disable|status]" 1>&2
 		exit 1
