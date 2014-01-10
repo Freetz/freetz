@@ -103,25 +103,25 @@ start() {
 
 	# create dynamic links (or copy)
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
+	[ "$EXTERNAL_DYNAMIC" == "y" ] && local SRC_DIR="${EXTERNAL_LINK}" || local SRC_DIR=""
 	for pkg in $(cat /mod/etc/external.pkg); do
 		status="$(/mod/etc/init.d/rc.$pkg status 2>/dev/null)"
 		[ -n "$status" -a "$status" != "stopped" ] && continue
 		for src in \
-		  ${EXTERNAL_LINK}/etc/default.$pkg \
-		  ${EXTERNAL_LINK}/etc/init.d/rc.$pkg \
-		  ${EXTERNAL_LINK}/etc/init.d/rc.$pkg.* \
-		  ${EXTERNAL_LINK}/etc/onlinechanged/*$pkg \
-		  ${EXTERNAL_LINK}/etc/cron.d/$pkg \
-		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg.cgi \
-		  ${EXTERNAL_LINK}/usr/lib/cgi-bin/$pkg \
-		  ; do
-			if [ "$EXTERNAL_DYNAMIC" != "y" ]; then
-				src="${src#$EXTERNAL_LINK}"
-				# no links to local scripts in /etc/
-				case $src in
-					/etc/onlinechanged/*|/etc/cron.d/*) continue ;;
-				esac
-			fi
+		  ${SRC_DIR}/etc/default.$pkg \
+		  ${SRC_DIR}/etc/init.d/rc.$pkg \
+		  ${SRC_DIR}/etc/init.d/rc.$pkg.* \
+		  ${SRC_DIR}/etc/onlinechanged/*$pkg \
+		  ${SRC_DIR}/etc/cron.d/$pkg \
+		  ${SRC_DIR}/usr/lib/cgi-bin/$pkg.cgi \
+		  ${SRC_DIR}/usr/lib/cgi-bin/$pkg \
+		; do
+			# no links to local scripts in /etc/
+			# the condition below could only be fulfilled if $EXTERNAL_DYNAMIC != y
+			case $src in
+				/etc/onlinechanged/*|/etc/cron.d/*) continue ;;
+			esac
+
 			[ ! -e "$src" ] && continue
 			dst="/mod${src#$EXTERNAL_LINK}"
 			mkdir -p "${src%/*}"
