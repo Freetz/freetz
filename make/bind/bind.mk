@@ -35,17 +35,29 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
 $(PKG)_CONFIGURE_OPTIONS += --disable-symtable
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
-$(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_LDFLAGS="-Wl,--gc-sections"
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+
+$(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_BINARY_LDFLAGS="-Wl,--gc-sections"
+
+$(PKG)_EXPORT_LIB_DIR := $(FREETZ_BASE_DIR)/$(BIND_DIR)/_exportlib
+$(PKG)_CONFIGURE_OPTIONS += --enable-exportlib
+$(PKG)_CONFIGURE_OPTIONS += --with-export-includedir="$($(PKG)_EXPORT_LIB_DIR)/include"
+$(PKG)_CONFIGURE_OPTIONS += --with-export-libdir="$($(PKG)_EXPORT_LIB_DIR)/lib"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARIES_BUILD_DIR_sbin) $($(PKG)_BINARIES_BUILD_DIR_bin): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(BIND_DIR)/lib/dns $(BIND_MAKE_FLAGS) gen
+$($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BIND_DIR) $(BIND_MAKE_FLAGS)
+	@touch $@
+
+$($(PKG)_EXPORT_LIB_DIR)/.installed: $($(PKG)_DIR)/.compiled
+	$(SUBMAKE) -C $(BIND_DIR)/lib/export $(BIND_MAKE_FLAGS) install
+	@touch $@
+
+$($(PKG)_BINARIES_BUILD_DIR_sbin) $($(PKG)_BINARIES_BUILD_DIR_bin): $($(PKG)_DIR)/.compiled
+	@touch -c $@
 
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR_sbin),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR_bin),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
@@ -61,11 +73,11 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
 		&& echo "etc/init.d/rc.bind" >> $@; \
 	touch $@
 
-$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR_sbin) $($(PKG)_BINARIES_TARGET_DIR_bin)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR_sbin) $($(PKG)_BINARIES_TARGET_DIR_bin) $($(PKG)_EXPORT_LIB_DIR)/.installed
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(BIND_DIR) clean
-	$(RM) $(BIND_DIR)/.configured
+	$(RM) -r $(BIND_DIR)/.configured $(BIND_DIR)/.compiled $(BIND_EXPORT_LIB_DIR)/.installed $(BIND_EXPORT_LIB_DIR)
 
 $(pkg)-uninstall:
 	$(RM) $(BIND_BINARIES_ALL_TARGET_DIR_sbin) $(BIND_BINARIES_ALL_TARGET_DIR_bin)
