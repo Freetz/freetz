@@ -49,11 +49,11 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(BIND_DIR) $(BIND_MAKE_FLAGS)
+	$(SUBMAKE1) -C $(BIND_DIR) $(BIND_MAKE_FLAGS)
 	@touch $@
 
 $($(PKG)_EXPORT_LIB_DIR)/.installed: $($(PKG)_DIR)/.compiled
-	$(SUBMAKE) -C $(BIND_DIR)/lib/export $(BIND_MAKE_FLAGS) install
+	$(SUBMAKE1) -C $(BIND_DIR)/lib/export $(BIND_MAKE_FLAGS) install
 	@touch $@
 
 $($(PKG)_BINARIES_BUILD_DIR_sbin) $($(PKG)_BINARIES_BUILD_DIR_bin): $($(PKG)_DIR)/.compiled
