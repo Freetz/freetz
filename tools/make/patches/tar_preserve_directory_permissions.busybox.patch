@@ -1,14 +1,14 @@
---- archival/libarchive/data_extract_all.c
-+++ archival/libarchive/data_extract_all.c
-@@ -115,6 +115,7 @@
- 			);
- 		bb_copyfd_exact_size(archive_handle->src_fd, dst_fd, file_header->size);
- 		close(dst_fd);
+--- archival/libarchive/data_extract_all.c	2014-01-01 00:45:23.000000000 +0100
++++ archival/libarchive/data_extract_all.c	2014-01-13 21:31:41.454593800 +0100
+@@ -128,6 +128,7 @@
+ 			free(dst_name);
+ 		}
+ #endif
 +		res = 0;
  		break;
  	}
  	case S_IFDIR:
-@@ -155,7 +156,7 @@
+@@ -168,7 +169,7 @@
  		bb_error_msg_and_die("unrecognized file type");
  	}
  

@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.21.1)
+$(call PKG_INIT_BIN, 1.22.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=795394f83903b5eec6567d51eebb417e
+$(PKG)_SOURCE_MD5:=ac1881d1cdeb0729b22c663feaf1c663
 $(PKG)_SITE:=http://www.busybox.net/downloads
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)

@@ -1,20 +1,19 @@
---- coreutils/id.c	2011-10-05 21:09:06+02:00
-+++ coreutils/id.c	2011-10-05 21:09:06+02:00
-@@ -63,10 +63,12 @@
+--- coreutils/id.c	2014-01-01 00:45:23.000000000 +0100
++++ coreutils/id.c	2014-01-13 21:05:04.102664172 +0100
+@@ -63,9 +63,11 @@
  
  /* This is a NOEXEC applet. Be very careful! */
  
 +#define HAVE_GETGROUPLIST 1
 +
  #if !ENABLE_USE_BB_PWD_GRP
- #if defined(__UCLIBC_MAJOR__) && (__UCLIBC_MAJOR__ == 0)
- #if (__UCLIBC_MINOR__ < 9) || (__UCLIBC_MINOR__ == 9 &&  __UCLIBC_SUBLEVEL__ < 30)
+ #if defined(__UCLIBC__) && UCLIBC_VERSION < KERNEL_VERSION(0, 9, 30)
 -#error "Sorry, you need at least uClibc version 0.9.30 for id applet to build"
 +#undef HAVE_GETGROUPLIST
  #endif
  #endif
- #endif
-@@ -128,7 +130,11 @@
+ 
+@@ -126,7 +128,11 @@
  		/* If the user is a member of more than
  		 * *n groups, then -1 is returned. Otherwise >= 0.
  		 * (and no defined way of detecting errors?!) */
@@ -26,7 +25,7 @@
  		/* I guess *n < 0 might indicate error. Anyway,
  		 * malloc'ing -1 bytes won't be good, so: */
  		if (*n < 0)
-@@ -210,6 +216,7 @@
+@@ -208,6 +214,7 @@
  			if (egid != rgid)
  				status |= print_group(egid, " ");
  		}
@@ -34,7 +33,7 @@
  		/* We are supplying largish buffer, trying
  		 * to not run get_groups() twice. That might be slow
  		 * ("user database in remote SQL server" case) */
-@@ -236,6 +243,7 @@
+@@ -234,6 +241,7 @@
  		}
  		if (ENABLE_FEATURE_CLEAN_UP)
  			free(groups);

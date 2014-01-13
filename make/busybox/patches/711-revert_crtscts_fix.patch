@@ -7,9 +7,9 @@ Subject: init: do not clear CRTSCTS (fix from Debian bug 528560)
 
 Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
 ---
---- init/init.c	2012-06-14 17:48:13+02:00
-+++ init/init.c	2012-06-14 17:48:13+02:00
-@@ -340,11 +340,7 @@
+--- init/init.c
++++ init/init.c
+@@ -339,11 +339,7 @@
  #endif
  
  	/* Make it be sane */
@@ -22,7 +22,7 @@ Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
  	tty.c_cflag |= CREAD | HUPCL | CLOCAL;
  
  	/* input modes */
-@@ -354,7 +350,8 @@
+@@ -353,7 +349,8 @@
  	tty.c_oflag = OPOST | ONLCR;
  
  	/* local modes */

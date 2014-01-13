@@ -2,7 +2,7 @@ Use code from older busybox version (1.20) if PACKET_AUXDATA is undefined.
 This allows using udhcpc with older kernels. 
 --- networking/udhcp/dhcpc.c
 +++ networking/udhcp/dhcpc.c
-@@ -836,6 +836,7 @@
+@@ -845,6 +845,7 @@
  	int bytes;
  	struct ip_udp_dhcp_packet packet;
  	uint16_t check;
@@ -10,7 +10,7 @@ This allows using udhcpc with older kernels.
  	unsigned char cmsgbuf[CMSG_LEN(sizeof(struct tpacket_auxdata))];
  	struct iovec iov;
  	struct msghdr msg;
-@@ -861,6 +862,13 @@
+@@ -870,6 +871,13 @@
  			return bytes; /* returns -1 */
  		}
  		break;
@@ -24,7 +24,7 @@ This allows using udhcpc with older kernels.
  	}
  
  	if (bytes < (int) (sizeof(packet.ip) + sizeof(packet.udp))) {
-@@ -896,7 +904,7 @@
+@@ -905,7 +913,7 @@
  		log1("Bad IP header checksum, ignoring");
  		return -2;
  	}
@@ -33,7 +33,7 @@ This allows using udhcpc with older kernels.
  	for (cmsg = CMSG_FIRSTHDR(&msg); cmsg; cmsg = CMSG_NXTHDR(&msg, cmsg)) {
  		if (cmsg->cmsg_level == SOL_PACKET
  		 && cmsg->cmsg_type == PACKET_AUXDATA
-@@ -910,7 +918,7 @@
+@@ -919,7 +927,7 @@
  				goto skip_udp_sum_check;
  		}
  	}
@@ -42,7 +42,7 @@ This allows using udhcpc with older kernels.
  	/* verify UDP checksum. IP header has to be modified for this */
  	memset(&packet.ip, 0, offsetof(struct iphdr, protocol));
  	/* ip.xx fields which are not memset: protocol, check, saddr, daddr */
-@@ -1031,14 +1039,14 @@
+@@ -1040,14 +1048,14 @@
  				sizeof(filter_prog)) >= 0)
  			log1("Attached filter to raw socket fd"); // log?
  	}

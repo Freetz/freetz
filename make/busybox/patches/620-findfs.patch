@@ -31,7 +31,7 @@
  /* Returns:
 --- util-linux/volume_id/get_devname.c
 +++ util-linux/volume_id/get_devname.c
-@@ -296,6 +296,41 @@
+@@ -301,6 +301,41 @@
  	return NULL;
  }
  
@@ -73,7 +73,7 @@
  int resolve_mount_spec(char **fsname)
  {
  	char *tmp = *fsname;
-@@ -304,7 +339,12 @@
+@@ -309,7 +344,12 @@
  		tmp = get_devname_from_uuid(*fsname + 5);
  	else if (strncmp(*fsname, "LABEL=", 6) == 0)
  		tmp = get_devname_from_label(*fsname + 6);

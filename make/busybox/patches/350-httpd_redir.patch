@@ -1,5 +1,5 @@
---- networking/httpd.c	2012-06-14 17:48:09+02:00
-+++ networking/httpd.c	2012-06-14 17:48:09+02:00
+--- networking/httpd.c
++++ networking/httpd.c
 @@ -107,6 +107,7 @@
  //usage:	IF_FEATURE_HTTPD_BASIC_AUTH(" [-r REALM]")
  //usage:       " [-h HOME]\n"
@@ -48,7 +48,7 @@
  				(g_query ? "?" : ""),
  				(g_query ? g_query : ""));
  	}
-@@ -2057,8 +2067,12 @@
+@@ -2073,8 +2083,12 @@
  		tptr++;
  	}
  
@@ -62,7 +62,7 @@
  		if (is_directory(urlcopy + 1, /*followlinks:*/ 1)) {
  			found_moved_temporarily = urlcopy;
  		}
-@@ -2423,7 +2437,9 @@
+@@ -2439,7 +2453,9 @@
  }
  
  enum {
@@ -73,7 +73,7 @@
  	d_opt_decode_url,
  	h_opt_home_httpd,
  	IF_FEATURE_HTTPD_ENCODE_URL_STR(e_opt_encode_url,)
-@@ -2475,13 +2491,14 @@
+@@ -2491,13 +2507,14 @@
  	/* We do not "absolutize" path given by -h (home) opt.
  	 * If user gives relative path in -h,
  	 * $SCRIPT_FILENAME will not be set. */
