@@ -262,6 +262,11 @@ choice
 		bool "7360"
 		select FREETZ_TYPE_7360
 
+	config FREETZ_TYPE_7360_V2
+		select FREETZ_AVM_VERSION_7490_06_01
+		bool "7360 v2"
+		select FREETZ_TYPE_7360
+	
 	config FREETZ_TYPE_7360_SL
 		select FREETZ_AVM_VERSION_7360_05_20 if FREETZ_AVM_VERSION_05_2X
 		select FREETZ_AVM_VERSION_7360_05_51 if FREETZ_AVM_VERSION_05_5X
@@ -1585,6 +1590,7 @@ menu "Override options"
 		default "@AVM/Downgrade/FRITZ!Box_Fon_WLAN_7360_SL"                  if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_05_2X
 		default "@AVM/Downgrade/FRITZ!Box_Fon_WLAN_7360_SL"                  if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_05_5X
 		default "@AVM/fritzbox.fon_wlan_7360_sl/firmware/deutsch"            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_06_XX
+		default "@AVM/fritzbox.fon_wlan_7360_v2/firmware/english"            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_V2
 		default "@AVM/Downgrade/FRITZ!Box_7362_SL"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_05_5X
 		default "@AVM/fritzbox.7362_sl/firmware/deutsch"                     if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_XX
 		default "http://download.ewe.de/avm/7390/download"                   if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE
@@ -1709,6 +1715,7 @@ menu "Override options"
 		default "FRITZ.Box_Fon_WLAN_7360_SL.109.05.22.image"                    if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_05_2X
 		default "FRITZ.Box_Fon_WLAN_7360_SL.109.05.51.image"                    if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_05_5X
 		default "FRITZ.Box_Fon_WLAN_7360_SL.109.06.01.image"                    if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_06_XX
+		default "FRITZ.Box_Fon_WLAN_7360.en-de-es-it-fr.124.06.01.image"        if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7360_V2
 		default "FRITZ.Box_7362_SL.131.05.53.image"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_05_5X
 		default "FRITZ.Box_7362_SL.131.06.01.image"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_XX
 		default "FRITZ.Box_7390_84.05.51.image"                                 if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE
@@ -1847,6 +1854,7 @@ menu "Override options"
 		default "913665f19b1faf5082091b338e3a9283"  if FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_05_2X
 		default "fc8d2d9deb36f783f0965a8534aa4c7c"  if FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_05_5X
 		default "2fd55a0639fb3fa8e1496849a17f8f23"  if FREETZ_TYPE_7360_SL && FREETZ_TYPE_FIRMWARE_06_XX
+		default "232a2b2cfc2d132ed2854da3b71516c4"  if FREETZ_TYPE_7360_V2
 		default "626e20f6e2adc65be50e28946943bd87"  if FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_05_5X
 		default "c47e6159e0a749011fa31f8978fddad3"  if FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_XX
 		default "6113540356e846daf5ad1fafe1d14367"  if FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE
@@ -2225,7 +2233,7 @@ config FREETZ_TYPE_7330
 config FREETZ_TYPE_7320_7330
 	bool
 
-#alias for 7360de(XL)32, 7360en(XL)16 and 7360 SL16
+#alias for 7360enV2, 7360de(XL)32, 7360en(XL)16 and 7360 SL16
 config FREETZ_TYPE_7360
 	bool
 
@@ -2307,6 +2315,7 @@ config FREETZ_TYPE_PREFIX
 	default "7330_SL"           if FREETZ_TYPE_7330_SL
 	default "7340"              if FREETZ_TYPE_7340
 	default "7360"              if FREETZ_TYPE_7360_XL
+	default "7360_v2"           if FREETZ_TYPE_7360_V2
 	default "7360_SL"           if FREETZ_TYPE_7360_SL
 	default "7362"              if FREETZ_TYPE_7362
 	default "7390"              if FREETZ_TYPE_7390
