@@ -21,12 +21,14 @@ case $1 in
 		fi
 		mkdir -p /var/run/dbus /var/lib/dbus
 
+		modreg cgi $DAEMON D-Bus
 		modreg daemon $DAEMON
 
 		modlib_start $DBUS_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)

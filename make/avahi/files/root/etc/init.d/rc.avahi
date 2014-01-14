@@ -18,12 +18,14 @@ case $1 in
 			cp -a /etc/config-template.avahi/* /tmp/flash/avahi/
 		fi
 
+		modreg cgi $DAEMON Avahi
 		modreg daemon $DAEMON
 
 		modlib_start $AVAHI_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)
