@@ -2,6 +2,7 @@
 
 DAEMON=avahi
 DAEMON_BIN=avahi-daemon
+DAEMON_LONG_NAME=Avahi
 PID_FILE=/var/run/avahi-daemon/pid
 . /etc/init.d/modlibrc
 
@@ -18,7 +19,7 @@ case $1 in
 			cp -a /etc/config-template.avahi/* /tmp/flash/avahi/
 		fi
 
-		modreg cgi $DAEMON Avahi
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
 		modlib_start $AVAHI_ENABLED

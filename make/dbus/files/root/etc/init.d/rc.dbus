@@ -2,6 +2,7 @@
 
 DAEMON=dbus
 DAEMON_BIN=dbus-daemon
+DAEMON_LONG_NAME=D-Bus
 PID_FILE=/var/run/dbus/pid
 . /etc/init.d/modlibrc
 
@@ -21,7 +22,7 @@ case $1 in
 		fi
 		mkdir -p /var/run/dbus /var/lib/dbus
 
-		modreg cgi $DAEMON D-Bus
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
 		modlib_start $DBUS_ENABLED
