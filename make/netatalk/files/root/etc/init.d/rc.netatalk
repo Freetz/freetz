@@ -5,17 +5,17 @@ DAEMON_LONG_NAME=Netatalk
 . /etc/init.d/modlibrc
 
 do_afpd() {
-  /mod/etc/init.d/rc.netatalk.afpd $1
+	/mod/etc/init.d/rc.netatalk.afpd $1
 }
 
 do_cnid_metad() {
-  /mod/etc/init.d/rc.netatalk.cnid_metad $1
+	/mod/etc/init.d/rc.netatalk.cnid_metad $1
 }
 
 config() {
-    mkdir -p /mod/etc/netatalk
-    /mod/etc/default.netatalk/afpd_conf_conf > /mod/etc/netatalk/afpd.conf
-    /mod/etc/default.netatalk/applevolumes_default_conf > /mod/etc/netatalk/AppleVolumes.default
+	mkdir -p /mod/etc/netatalk
+	/mod/etc/default.netatalk/afpd_conf_conf > /mod/etc/netatalk/afpd.conf
+	/mod/etc/default.netatalk/applevolumes_default_conf > /mod/etc/netatalk/AppleVolumes.default
 }
 
 case $1 in
