@@ -3,6 +3,8 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA1:=25182857b97478fd44783e41eb28e08a87c19ac8
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
+$(PKG)_CATEGORY:=Unstable
+
 $(PKG)_CONFIG_DIR:=/mod/etc/asterisk
 $(PKG)_MODULES_DIR:=/usr/lib/asterisk/modules
 $(PKG)_INSTALL_DIR:=$($(PKG)_DIR)/_install
@@ -13,12 +15,11 @@ $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/sbin/asterisk
 
 include $(MAKE_DIR)/asterisk/asterisk-modules.mk.in
 $(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL))
+ifneq ($(strip $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES)),y)
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/%.so)
 $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so)
-
-$(PKG)_CATEGORY:=Unstable
-
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
+endif
 
 $(PKG)_BUILD_PREREQ += svn
 
@@ -41,7 +42,12 @@ endif
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_DEBUG
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_EMBED_MODULES
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
+ifeq ($(strip $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES)),y)
+$(PKG)_REBUILD_SUBOPTS += $(foreach module,$($(PKG)_MODULES_ALL),FREETZ_PACKAGE_ASTERISK_$(call TOUPPER_NAME,$(module)))
+endif
 
 # Remove internal pjproject version to ensure that it is not used.
 # We use pjproject version modified by asterisk developers (contains shared libraries support).
@@ -137,13 +143,26 @@ $(PKG)_MAKE_OPTIONS += NOISY_BUILD=yes
 $(PKG)_MAKE_OPTIONS += DEBUG="$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),$(ASTERISK_DEBUG_CFLAGS))"
 $(PKG)_MAKE_OPTIONS += OPTIMIZE=""
 $(PKG)_MAKE_OPTIONS += ASTCFLAGS="-fno-strict-aliasing"
+$(PKG)_MAKE_OPTIONS += AR="$(TARGET_AR)"
+$(PKG)_MAKE_OPTIONS += RANLIB="$(TARGET_RANLIB)"
+$(PKG)_MAKE_OPTIONS += LD="$(TARGET_LD)"
 $(PKG)_MAKE_OPTIONS += PJPROJECT_BUILD_MAK_DIR="$(abspath $(PJPROJECT2_DIR))"
+
+$(PKG)_CATEGORY_PREFIXES := app|bridge|cdr|cel|chan|codec|format|func|pbx|res
+$(PKG)_CATEGORY_DIRS     := addons apps bridges cdr cel channels codecs formats funcs pbx res
+$(PKG)_EMBED_CATEGORIES  := $(foreach cat,$($(PKG)_CATEGORY_DIRS),$(call TOUPPER_NAME,$(cat))) TEST
 
 # $(1): variable name
 # $(2): value (yes or no)
 # $(3): menuselect file
-define asterisk_set_menuselect_default
-$(SED) -i -r -e '/name="$(strip $(1))"/{N;N;s,(<defaultenabled>)(no|yes)(</defaultenabled>),\1$(strip $(2))\3,'} $(strip $(3));
+define $(pkg)_set_option_menuselect_default
+$(SED) -i -r -e '/name="$(strip $(1))"/{N;N;N;N;N;N;s,(<defaultenabled>)(no|yes)(</defaultenabled>),\1$(strip $(2))\3,'} $(strip $(3));
+endef
+
+# $(1): module name
+# $(2): value (yes or no)
+define $(pkg)_set_module_menuselect_default
+$(SED) -i -r -e '/^\/[*]{3}[ \t]+MODULEINFO/{N;N;N;N;N;N;s,(<defaultenabled>)(no|yes)(</defaultenabled>),\1$(strip $(2))\3,'} $(foreach cat,$(ASTERISK_CATEGORY_DIRS),$(cat)/$(strip $(1)).c) 2>/dev/null || true;
 endef
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -156,20 +175,45 @@ $($(PKG)_DIR)/addons/mp3/mpg123.h: $($(PKG)_DIR)/.unpacked
 
 $($(PKG)_DIR)/.configured: | $($(PKG)_DIR)/addons/mp3/mpg123.h
 
+$(pkg)-defaults-adjusted: $($(PKG)_DIR)/.defaults_adjusted
 $($(PKG)_DIR)/.defaults_adjusted: $($(PKG)_DIR)/.unpacked
-	(cd $(ASTERISK_DIR); \
-		$(call asterisk_set_menuselect_default,LOW_MEMORY,$(if $(FREETZ_PACKAGE_ASTERISK_LOWMEMORY),yes,no),./build_tools/cflags.xml) \
-		$(call asterisk_set_menuselect_default,DEBUG_THREADS,$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),yes,no),./build_tools/cflags.xml) \
+# add <defaultenabled> xml-elements to the asterisk .xml and source files menuselect is generated from
+	@(cd $(ASTERISK_DIR); \
+		$(SED) -i -r -e 's,(<member name="EMBED_[^>]*>),\1<defaultenabled>no</defaultenabled>,' ./build_tools/embed_modules.xml; \
+		find \
+			$(ASTERISK_CATEGORY_DIRS) \
+			-maxdepth 1 \
+			-regextype posix-extended -regex "[^/]*/($(strip $(ASTERISK_CATEGORY_PREFIXES)))_.*[.]c" \
+			-exec \
+				$(SED) -i -r -f $(abspath $(ASTERISK_MAKE_DIR)/moduleinfo-add-default-enabled-if-missing.sed) \{\} \+; \
 	)
+# sync options selected in freetz menuconfig with defaults in asterisk's menuselect
+	@(cd $(ASTERISK_DIR); \
+		$(call asterisk_set_option_menuselect_default,LOW_MEMORY,$(if $(FREETZ_PACKAGE_ASTERISK_LOWMEMORY),yes,no),./build_tools/cflags.xml) \
+		$(call asterisk_set_option_menuselect_default,DEBUG_THREADS,$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),yes,no),./build_tools/cflags.xml) \
+		\
+		$(foreach cat,$(ASTERISK_EMBED_CATEGORIES),$(call asterisk_set_option_menuselect_default,EMBED_$(cat),$(if $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES),yes,no),./build_tools/embed_modules.xml)) \
+		\
+		$(call asterisk_set_option_menuselect_default,STATIC_BUILD,$(if $(FREETZ_PACKAGE_ASTERISK_STATIC),yes,no),./build_tools/cflags.xml) \
+		$(call asterisk_set_option_menuselect_default,LOADABLE_MODULES,$(if $(FREETZ_PACKAGE_ASTERISK_STATIC),no,yes),./build_tools/cflags.xml) \
+	)
+ifneq ($(findstring $(pkg)-generate,$(MAKECMDGOALS)),$(pkg)-generate)
+# in "embed modules"-case build only modules selected for embedding
+ifeq ($(strip $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES)),y)
+	@(cd $(ASTERISK_DIR); \
+		$(foreach module,$(ASTERISK_MODULES_ALL),$(call asterisk_set_module_menuselect_default,$(module),$(if $(FREETZ_PACKAGE_ASTERISK_$(call TOUPPER_NAME,$(module))),yes,no))) \
+	)
+endif
+endif
 	touch $@
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.defaults_adjusted
 
 $($(PKG)_DIR)/menuselect-tree: $($(PKG)_DIR)/.configured
-	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) menuselect-tree
+	$(SUBMAKE1) $(ASTERISK_MAKE_OPTIONS) menuselect-tree
 
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
-	$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS)
+	$(SUBMAKE1) $(ASTERISK_MAKE_OPTIONS)
 	touch $@
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
@@ -180,20 +224,22 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	$(SED) -i -r -e 's,(\#define (PACKAGE_[A-Za-z0-9]*)[ \t].*),\#ifndef \2\n\1\n\#endif,g' $(ASTERISK_INSTALL_DIR)/usr/include/asterisk/autoconfig.h
 	touch $@
 
-$($(PKG)_BINARY_BUILD_DIR) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.installed
+$($(PKG)_BINARY_BUILD_DIR) $(if $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES),,$($(PKG)_MODULES_BUILD_DIR)): $($(PKG)_DIR)/.installed
 
 $($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 	$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),$(INSTALL_FILE),$(INSTALL_BINARY_STRIP))
 
+ifneq ($(strip $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES)),y)
 $($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%: $($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/%
 	$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),$(INSTALL_FILE),$(INSTALL_BINARY_STRIP))
+endif
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $(if $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES),,$($(PKG)_MODULES_TARGET_DIR))
 
 $(pkg)-clean:
-	-$(SUBMAKE) $(ASTERISK_MAKE_OPTIONS) distclean
+	-$(SUBMAKE1) $(ASTERISK_MAKE_OPTIONS) distclean
 	$(RM) $(ASTERISK_DIR)/{.defaults_adjusted,.configured,.compiled,.installed}
 
 $(pkg)-uninstall:
@@ -204,19 +250,19 @@ $(pkg)-uninstall:
 $(pkg)-generate: | $($(PKG)_DIR)/menuselect-tree
 	@echo -n "Generating menuconfig file... "
 	@( \
-		$(MAKE_DIR)/asterisk/generate-menuconfig.py $(ASTERISK_DIR)/menuselect-tree > $(MAKE_DIR)/asterisk/Config.in.generated \
+		$(ASTERISK_MAKE_DIR)/generate-menuconfig.py $(ASTERISK_DIR)/menuselect-tree > $(ASTERISK_MAKE_DIR)/Config.in.generated \
 	) && echo "done"
 	@echo -n "Generating modules list... "
 	@( \
-		echo '$$(PKG)_MODULES_ALL := \' > $(MAKE_DIR)/asterisk/asterisk-modules.mk.in \
-		&& cat $(MAKE_DIR)/asterisk/Config.in.generated \
+		echo '$$(PKG)_MODULES_ALL := \' > $(ASTERISK_MAKE_DIR)/asterisk-modules.mk.in \
+		&& cat $(ASTERISK_MAKE_DIR)/Config.in.generated \
 		| grep 'config FREETZ_PACKAGE_ASTERISK' \
 		| grep -v 'FREETZ_PACKAGE_ASTERISK_WITH' \
 		| sort -u \
 		| sed -r -e 's,[ \t]*config FREETZ_PACKAGE_ASTERISK_([0-9A-Za-z_]*).*,\1 \\,g' \
 		| tr [:upper:] [:lower:] \
 		| sed -r -e 's,(res_xmpp) \\,\1,g' \
-		>> $(MAKE_DIR)/asterisk/asterisk-modules.mk.in \
+		>> $(ASTERISK_MAKE_DIR)/asterisk-modules.mk.in \
 	) && echo "done"
 
 $(PKG_FINISH)

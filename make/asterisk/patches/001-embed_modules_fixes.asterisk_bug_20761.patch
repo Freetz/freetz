@@ -1,0 +1,370 @@
+--- build_tools/embed_modules.xml
++++ build_tools/embed_modules.xml
+@@ -1,45 +1,49 @@
+ 	<category name="MENUSELECT_EMBED" displayname="Module Embedding" positive_output="yes" remove_on_change="main/asterisk">
+-		<member name="EMBED_ADDONS" displayname="Add-ons" remove_on_change="addons/*.o addons/*.oo">
++		<member name="EMBED_ADDONS" displayname="Add-ons" remove_on_change="addons/modules.link addons/*.i addons/*/*.i addons/*.ii addons/*/*.ii addons/*.o addons/*/*.o addons/*.oo addons/*/*.oo addons/*.eo addons/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_APPS" displayname="Applications" remove_on_change="apps/*.o apps/*.oo">
++		<member name="EMBED_APPS" displayname="Applications" remove_on_change="apps/modules.link apps/*.i apps/*/*.i apps/*.ii apps/*/*.ii apps/*.o apps/*/*.o apps/*.oo apps/*/*.oo apps/*.eo apps/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_BRIDGES" displayname="Bridging Technologies" remove_on_change="bridges/*.o bridges/*.oo">
++		<member name="EMBED_BRIDGES" displayname="Bridging Technologies" remove_on_change="bridges/modules.link bridges/*.i bridges/*.ii bridges/*.o bridges/*.oo bridges/*.eo bridges/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_CDR" displayname="Call Detail Recording" remove_on_change="cdr/*.o cdr/*.oo">
++		<member name="EMBED_CDR" displayname="Call Detail Recording" remove_on_change="cdr/modules.link cdr/*.i cdr/*.ii cdr/*.o cdr/*.oo cdr/*.eo cdr/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_CHANNELS" displayname="Channels" remove_on_change="channels/*.o channels/*/*.o channels/*.oo channels/*/*.oo">
++		<member name="EMBED_CEL" displayname="Channel Event Logging" remove_on_change="cel/modules.link cel/*.i cel/*.ii cel/*.o cel/*.oo cel/*.eo cel/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_CODECS" displayname="Coders/Decoders" remove_on_change="codecs/*.o codecs/*/*.o codecs/*/*/*.o codecs/*/*.a codecs/*/*/*.a codecs/*.oo codecs/*/*.oo">
++		<member name="EMBED_CHANNELS" displayname="Channels" remove_on_change="channels/modules.link channels/*.i channels/*/*.i channels/*.ii channels/*/*.ii channels/*.o channels/*/*.o channels/*.oo channels/*/*.oo channels/*.eo channels/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_FORMATS" displayname="File Formats" remove_on_change="formats/*.o formats/*.oo">
++		<member name="EMBED_CODECS" displayname="Coders/Decoders" remove_on_change="codecs/modules.link codecs/*.i codecs/*/*.i codecs/*.ii codecs/*/*.ii codecs/*.o codecs/*/*.o codecs/*/*/*.o codecs/*/*.a codecs/*/*/*.a codecs/*.oo codecs/*/*.oo codecs/*.eo codecs/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_FUNCS" displayname="Dialplan Functions" remove_on_change="funcs/*.o funcs/*.oo">
++		<member name="EMBED_FORMATS" displayname="File Formats" remove_on_change="formats/modules.link formats/*.i formats/*.ii formats/*.o formats/*.oo formats/*.eo formats/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_PBX" displayname="PBX Functionality" remove_on_change="pbx/*.o pbx/*/*.o pbx/*.oo pbx/*/*.oo">
++		<member name="EMBED_FUNCS" displayname="Dialplan Functions" remove_on_change="funcs/modules.link funcs/*.i funcs/*.ii funcs/*.o funcs/*.oo funcs/*.eo funcs/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_RES" displayname="Resource Modules" remove_on_change="res/*.o res/*/*.o res/*.oo res/*/*.oo">
++		<member name="EMBED_PBX" displayname="PBX Functionality" remove_on_change="pbx/modules.link pbx/*.i pbx/*/*.i pbx/*/*.ii pbx/*.ii pbx/*.o pbx/*/*.o pbx/*.oo pbx/*/*.oo pbx/*.eo pbx/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+-		<member name="EMBED_TEST" displayname="Test Modules" remove_on_change="tests/*.o tests/*.oo">
++		<member name="EMBED_RES" displayname="Resource Modules" remove_on_change="res/modules.link res/*.i res/*/*.i res/*.ii res/*/*.ii res/*.o res/*/*.o res/*.oo res/*/*.oo res/*.eo res/*.so">
++			<depend>gnu_ld</depend>
++			<support_level>extended</support_level>
++		</member>
++		<member name="EMBED_TESTS" displayname="Test Modules" remove_on_change="tests/modules.link tests/*.i tests/*.ii tests/*.o tests/*.oo tests/*.eo tests/*.so">
+ 			<depend>gnu_ld</depend>
+ 			<support_level>extended</support_level>
+ 		</member>
+--- Makefile.moddir_rules
++++ Makefile.moddir_rules
+@@ -47,9 +47,9 @@
+ CC_MODS:=$(filter-out $(MENUSELECT_$(MENUSELECT_CATEGORY)),$(ALL_CC_MODS))
+ 
+ ifneq ($(findstring EMBED_$(MENUSELECT_CATEGORY),$(MENUSELECT_EMBED)),)
+-    EMBEDDED_MODS:=$(C_MODS) $(CC_MODS)
++    EMBEDDED_MODS:=$(strip $(C_MODS) $(CC_MODS))
+ else
+-    LOADABLE_MODS:=$(C_MODS) $(CC_MODS)
++    LOADABLE_MODS:=$(strip $(C_MODS) $(CC_MODS))
+ endif
+ 
+ # Both C++ and C++ sources need their module name in AST_MODULE
+@@ -132,12 +132,12 @@
+ 	rm -f *.exports
+ 
+ .%.moduleinfo: %.c
+-	@echo "<member name=\"$*\" displayname=\"$(shell $(GREP) -e AST_MODULE_INFO $< | head -n 1 | cut -d '"' -f 2)\" remove_on_change=\"$(SUBDIR)/$*.o $(SUBDIR)/$*.so\">" > $@
++	@echo "<member name=\"$*\" displayname=\"$(shell $(GREP) -e AST_MODULE_INFO $< | head -n 1 | cut -d '"' -f 2)\" remove_on_change=\"$(SUBDIR)/$*.i $(SUBDIR)/$*.o $(SUBDIR)/$*.so $(SUBDIR)/$*.eo\">" > $@
+ 	$(AWK) -f $(ASTTOPDIR)/build_tools/get_moduleinfo $< >> $@
+ 	echo "</member>" >> $@
+ 
+ .%.moduleinfo: %.cc
+-	@echo "<member name=\"$*\" displayname=\"$(shell $(GREP) -e AST_MODULE_INFO $< | head -n 1 | cut -d '"' -f 2)\" remove_on_change=\"$(SUBDIR)/$*.oo $(SUBDIR)/$*.so\">" > $@
++	@echo "<member name=\"$*\" displayname=\"$(shell $(GREP) -e AST_MODULE_INFO $< | head -n 1 | cut -d '"' -f 2)\" remove_on_change=\"$(SUBDIR)/$*.ii $(SUBDIR)/$*.oo $(SUBDIR)/$*.so $(SUBDIR)/$*.eo\">" > $@
+ 	$(AWK) -f $(ASTTOPDIR)/build_tools/get_moduleinfo $< >> $@
+ 	echo "</member>" >> $@
+ 
+--- Makefile.rules
++++ Makefile.rules
+@@ -144,15 +144,15 @@
+ 	$(CMD_PREFIX) $(CXX) $(STATIC_BUILD) -o $@ $(CXX_LDFLAGS_SO) $^ $(CXX_LIBS)
+ 
+ %.eo: %.o
+-	$(ECHO_PREFIX) echo "   [EMBED] $< -> $@"
++	$(ECHO_PREFIX) echo "   [EMBED] $^ -> $@"
+ 	$(CMD_PREFIX) $(ASTTOPDIR)/build_tools/make_linker_eo_script $* > .$@.ld
+-	$(CMD_PREFIX) $(LD) -r -T .$@.ld -o $@ $<
++	$(CMD_PREFIX) $(LD) -r -T .$@.ld -o $@ $^
+ 	$(CMD_PREFIX) rm -f .$@.ld
+ 
+ %.eo: %.oo
+-	$(ECHO_PREFIX) echo "   [EMBED] $< -> $@"
++	$(ECHO_PREFIX) echo "   [EMBED] $^ -> $@"
+ 	$(CMD_PREFIX) $(ASTTOPDIR)/build_tools/make_linker_eo_script $* > .$@.ld
+-	$(CMD_PREFIX) $(LD) -r -T .$@.ld -o $@ $<
++	$(CMD_PREFIX) $(LD) -r -T .$@.ld -o $@ $^
+ 	$(CMD_PREFIX) rm -f .$@.ld
+ 
+ %: %.o
+--- apps/app_skel.c
++++ apps/app_skel.c
+@@ -193,7 +193,7 @@
+ 	.category = "^general$",
+ };
+ 
+-struct aco_type *global_options[] = ACO_TYPES(&global_option);
++static struct aco_type *global_options[] = ACO_TYPES(&global_option);
+ 
+ /*! \brief An aco_type structure to link the "sounds" category to the skel_global_config type */
+ static struct aco_type sound_option = {
+@@ -203,7 +203,7 @@
+ 	.category = "^sounds$",
+ };
+ 
+-struct aco_type *sound_options[] = ACO_TYPES(&sound_option);
++static struct aco_type *sound_options[] = ACO_TYPES(&sound_option);
+ 
+ /*! \brief An aco_type structure to link the everything but the "general" and "sounds" categories to the skel_level type */
+ static struct aco_type level_option = {
+@@ -215,9 +215,9 @@
+ 	.item_offset = offsetof(struct skel_config, levels),
+ };
+ 
+-struct aco_type *level_options[] = ACO_TYPES(&level_option);
++static struct aco_type *level_options[] = ACO_TYPES(&level_option);
+ 
+-struct aco_file app_skel_conf = {
++static struct aco_file app_skel_conf = {
+ 	.filename = "app_skel.conf",
+ 	.types = ACO_TYPES(&global_option, &sound_option, &level_option),
+ };
+--- apps/app_voicemail.c
++++ apps/app_voicemail.c
+@@ -1070,7 +1070,7 @@
+ static int vm_test_create_user(const char *context, const char *mailbox);
+ #endif
+ 
+-struct ao2_container *inprocess_container;
++static struct ao2_container *inprocess_container;
+ 
+ struct inprocess {
+ 	int count;
+--- funcs/func_curl.c
++++ funcs/func_curl.c
+@@ -185,7 +185,7 @@
+ 	void *value;
+ };
+ 
+-AST_LIST_HEAD_STATIC(global_curl_info, curl_settings);
++static AST_LIST_HEAD_STATIC(global_curl_info, curl_settings);
+ 
+ static void curlds_free(void *data)
+ {
+--- funcs/func_env.c
++++ funcs/func_env.c
+@@ -737,8 +737,8 @@
+ 	return 0;
+ }
+ 
+-const char *format2term(enum file_format f) __attribute__((const));
+-const char *format2term(enum file_format f)
++static const char *format2term(enum file_format f) __attribute__((const));
++static const char *format2term(enum file_format f)
+ {
+ 	const char *term[] = { "", "\n", "\r\n", "\r" };
+ 	return term[f + 1];
+--- main/ccss.c
++++ main/ccss.c
+@@ -1019,7 +1019,7 @@
+ 	const struct ast_cc_monitor_callbacks *callbacks;
+ };
+ 
+-AST_RWLIST_HEAD_STATIC(cc_monitor_backends, cc_monitor_backend);
++static AST_RWLIST_HEAD_STATIC(cc_monitor_backends, cc_monitor_backend);
+ 
+ int ast_cc_monitor_register(const struct ast_cc_monitor_callbacks *callbacks)
+ {
+@@ -1074,7 +1074,7 @@
+ 	const struct ast_cc_agent_callbacks *callbacks;
+ };
+ 
+-AST_RWLIST_HEAD_STATIC(cc_agent_backends, cc_agent_backend);
++static AST_RWLIST_HEAD_STATIC(cc_agent_backends, cc_agent_backend);
+ 
+ int ast_cc_agent_register(const struct ast_cc_agent_callbacks *callbacks)
+ {
+@@ -1170,7 +1170,7 @@
+ 	.destructor = cc_generic_monitor_destructor,
+ };
+ 
+-struct ao2_container *generic_monitors;
++static struct ao2_container *generic_monitors;
+ 
+ struct generic_monitor_instance {
+ 	int core_id;
+--- main/data.c
++++ main/data.c
+@@ -172,7 +172,7 @@
+ 	unsigned int is_pattern:1;
+ };
+ 
+-struct {
++static struct {
+ 	/*! \brief The asterisk data main content structure. */
+ 	struct ao2_container *container;
+ 	/*! \brief asterisk data locking mechanism. */
+--- main/db.c
++++ main/db.c
+@@ -116,7 +116,7 @@
+ static void db_sync(void);
+ 
+ #define DEFINE_SQL_STATEMENT(stmt,sql) static sqlite3_stmt *stmt; \
+-	const char stmt##_sql[] = sql;
++	static const char stmt##_sql[] = sql;
+ 
+ DEFINE_SQL_STATEMENT(put_stmt, "INSERT OR REPLACE INTO astdb (key, value) VALUES (?, ?)")
+ DEFINE_SQL_STATEMENT(get_stmt, "SELECT value FROM astdb WHERE key=?")
+--- main/manager.c
++++ main/manager.c
+@@ -1192,7 +1192,7 @@
+ static AST_RWLIST_HEAD_STATIC(manager_hooks, manager_custom_hook);
+ 
+ /*! \brief A container of event documentation nodes */
+-AO2_GLOBAL_OBJ_STATIC(event_docs);
++static AO2_GLOBAL_OBJ_STATIC(event_docs);
+ 
+ static void free_channelvars(void);
+ 
+--- main/named_acl.c
++++ main/named_acl.c
+@@ -86,11 +86,9 @@
+ };
+ 
+ /* This array of aco_type structs is necessary to use aco_option_register */
+-struct aco_type *named_acl_types[] = ACO_TYPES(&named_acl_type);
+-
+-struct aco_type *global_options[] = ACO_TYPES(&global_option);
++static struct aco_type *named_acl_types[] = ACO_TYPES(&named_acl_type);
+ 
+-struct aco_file named_acl_conf = {
++static struct aco_file named_acl_conf = {
+ 	.filename = "acl.conf",
+ 	.types = ACO_TYPES(&named_acl_type, &global_option),
+ };
+--- pbx/pbx_realtime.c
++++ pbx/pbx_realtime.c
+@@ -75,8 +75,8 @@
+ 	char exten[2];
+ };
+ 
+-struct ao2_container *cache;
+-pthread_t cleanup_thread = 0;
++static struct ao2_container *cache;
++static pthread_t cleanup_thread = 0;
+ 
+ static int cache_hash(const void *obj, const int flags)
+ {
+--- res/res_config_sqlite3.c
++++ res/res_config_sqlite3.c
+@@ -61,7 +61,7 @@
+ static int realtime_sqlite3_require(const char *database, const char *table, va_list ap);
+ static int realtime_sqlite3_unload(const char *database, const char *table);
+ 
+-struct ast_config_engine sqlite3_config_engine = {
++static struct ast_config_engine sqlite3_config_engine = {
+ 	.name = "sqlite3",
+ 	.load_func = realtime_sqlite3_load,
+ 	.realtime_func = realtime_sqlite3,
+@@ -96,7 +96,7 @@
+ 	unsigned int batch;
+ };
+ 
+-struct ao2_container *databases;
++static struct ao2_container *databases;
+ #define DB_BUCKETS 7
+ 
+ AST_MUTEX_DEFINE_STATIC(config_lock);
+@@ -107,8 +107,8 @@
+ AST_THREADSTORAGE(escape_value_buf);
+ 
+ static int realtime_sqlite3_execute_handle(struct realtime_sqlite3_db *db, const char *sql, int (*callback)(void*, int, char **, char **), void *arg, int sync);
+-void db_start_batch(struct realtime_sqlite3_db *db);
+-void db_stop_batch(struct realtime_sqlite3_db *db);
++static void db_start_batch(struct realtime_sqlite3_db *db);
++static void db_stop_batch(struct realtime_sqlite3_db *db);
+ 
+ static inline const char *sqlite3_escape_string_helper(struct ast_threadstorage *ts, const char *param)
+ {
+@@ -333,7 +333,7 @@
+ 	ast_cond_signal(&db->cond);
+ }
+ 
+-void db_start_batch(struct realtime_sqlite3_db *db)
++static void db_start_batch(struct realtime_sqlite3_db *db)
+ {
+ 	if (db->batch) {
+ 		ast_cond_init(&db->cond, NULL);
+@@ -342,7 +342,7 @@
+ 	}
+ }
+ 
+-void db_stop_batch(struct realtime_sqlite3_db *db)
++static void db_stop_batch(struct realtime_sqlite3_db *db)
+ {
+ 	if (db->batch) {
+ 		db->exiting = 1;
+--- res/res_fax.c
++++ res/res_fax.c
+@@ -4101,7 +4101,7 @@
+ }
+ 
+ /*! \brief FAXOPT dialplan function */
+-struct ast_custom_function acf_faxopt = {
++static struct ast_custom_function acf_faxopt = {
+ 	.name = "FAXOPT",
+ 	.read = acf_faxopt_read,
+ 	.write = acf_faxopt_write,
+--- res/res_pktccops.c
++++ res/res_pktccops.c
+@@ -165,9 +165,9 @@
+ static int gateinfoperiod = 60;
+ static int gatetimeout = 150;
+ 
+-AST_LIST_HEAD_STATIC(cmts_list, cops_cmts);
+-AST_LIST_HEAD_STATIC(ippool_list, cops_ippool);
+-AST_LIST_HEAD_STATIC(gate_list, cops_gate);
++static AST_LIST_HEAD_STATIC(cmts_list, cops_cmts);
++static AST_LIST_HEAD_STATIC(ippool_list, cops_ippool);
++static AST_LIST_HEAD_STATIC(gate_list, cops_gate);
+ 
+ static int pktccops_add_ippool(struct cops_ippool *ippool);
+ static struct cops_gate *cops_gate_cmd(int cmd, struct cops_cmts *cmts, uint16_t trid, uint32_t mta, uint32_t actcount, float bitrate, uint32_t psize, uint32_t ssip, uint16_t ssport, struct cops_gate *gate);
+--- res/res_xmpp.c
++++ res/res_xmpp.c
+@@ -654,7 +654,7 @@
+ 	.category = "^general$",
+ };
+ 
+-struct aco_type *global_options[] = ACO_TYPES(&global_option);
++static struct aco_type *global_options[] = ACO_TYPES(&global_option);
+ 
+ static struct aco_type client_option = {
+ 	.type = ACO_ITEM,
+@@ -666,9 +666,9 @@
+ 	.item_offset = offsetof(struct xmpp_config, clients),
+ };
+ 
+-struct aco_type *client_options[] = ACO_TYPES(&client_option);
++static struct aco_type *client_options[] = ACO_TYPES(&client_option);
+ 
+-struct aco_file res_xmpp_conf = {
++static struct aco_file res_xmpp_conf = {
+ 	.filename = "xmpp.conf",
+ 	.alias = "jabber.conf",
+ 	.types = ACO_TYPES(&global_option, &client_option),

@@ -43,6 +43,18 @@ config FREETZ_PACKAGE_ASTERISK_DEBUG
 		Note3:
 		  Use "ulimit -c umlimited" to disable core-file size limit.
 
+config FREETZ_PACKAGE_ASTERISK_EMBED_MODULES
+	bool "embed selected modules (non 3rd-party modules only)"
+	depends on FREETZ_PACKAGE_ASTERISK
+	default n
+
+config FREETZ_PACKAGE_ASTERISK_STATIC
+	bool
+# doesn't work yet
+#	bool "create statically linked binary"
+	depends on FREETZ_PACKAGE_ASTERISK && FREETZ_PACKAGE_ASTERISK_EMBED_MODULES
+	default n
+
 source make/asterisk-gui/Config.in
 
 menu "Asterisk modules"
@@ -51,7 +63,7 @@ menu "Asterisk modules"
 endmenu
 
 menu "Asterisk 3rd-party modules"
-	depends on FREETZ_PACKAGE_ASTERISK
+	depends on FREETZ_PACKAGE_ASTERISK && !FREETZ_PACKAGE_ASTERISK_STATIC
 	source make/asterisk-chan-capi/Config.in
 	source make/asterisk-chan-dongle/Config.in
 	source make/asterisk-chan-sccp/Config.in

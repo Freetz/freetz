@@ -1,0 +1,28 @@
+--- Makefile.moddir_rules
++++ Makefile.moddir_rules
+@@ -24,6 +24,7 @@
+ 
+ ifneq ($(findstring STATIC_BUILD,$(MENUSELECT_CFLAGS)),)
+   STATIC_BUILD=-static
++  _ASTCFLAGS+=-D_AST_STATIC_BUILD
+ endif
+ 
+ include $(ASTTOPDIR)/Makefile.rules
+--- main/libasteriskssl.c
++++ main/libasteriskssl.c
+@@ -74,6 +74,7 @@
+ 	}
+ }
+ 
++#if !defined(_AST_STATIC_BUILD)
+ int SSL_library_init(void)
+ {
+ #if defined(AST_DEVMODE)
+@@ -142,6 +143,7 @@
+ {
+ 	/* we can't allow this to be called, ever */
+ }
++#endif /* !defined(_AST_STATIC_BUILD) */
+ 
+ #endif /* HAVE_OPENSSL */
+ 

@@ -1,0 +1,11 @@
+--- configure
++++ configure
+@@ -27565,7 +27565,7 @@
+ 
+    # now check for the header.
+    if test "${AST_OPENSSL_FOUND}" = "yes"; then
+-      OPENSSL_LIB="${pbxlibdir} -lssl -lcrypto"
++      OPENSSL_LIB="${pbxlibdir} -lssl -lcrypto -ldl"
+       # if --with-OPENSSL=DIR has been specified, use it.
+       if test "x${OPENSSL_DIR}" != "x"; then
+          OPENSSL_INCLUDE="-I${OPENSSL_DIR}/include"
