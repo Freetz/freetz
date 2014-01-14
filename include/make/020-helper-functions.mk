@@ -63,10 +63,11 @@ SUBST_MAP_LEGAL_VARNAME := -:_ .:_
 SUBST_MAP_TOUPPER_NAME := $(SUBST_MAP_TOUPPER) $(SUBST_MAP_LEGAL_VARNAME)
 SUBST_MAP_TOLOWER_NAME := $(SUBST_MAP_TOLOWER) $(SUBST_MAP_LEGAL_VARNAME)
 
-# TOUPPER_NAME
-# Converts lower-case letters to upper-case, all characters which cannot be used in identifiers to underscore
+# TOUPPER_NAME/TOLOWER_NAME
+# Changes case of the letters to the opposite one, replaces all characters which cannot be used in identifier names with underscore
 #   $1 = string to convert
 TOUPPER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOUPPER_NAME))
+TOLOWER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOLOWER_NAME))
 
 # LEGAL_VARNAME
 # Converts all characters which cannot be used in identifiers to underscore
