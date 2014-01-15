@@ -1,6 +1,16 @@
 config FREETZ_PACKAGE_HAPROXY
-	bool "HAProxy 1.4.24 (binary only)"
+	bool "HAProxy 1.5-dev21 (binary only)"
 	select FREETZ_LIB_libcrypt
 	default n
 	help
 		haproxy is a loadbalancer.
+
+config FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL
+	bool "with OpenSSL support"
+	depends on FREETZ_PACKAGE_HAPROXY
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	default n
+	help
+		This option enables SSL support in HAProxy.
