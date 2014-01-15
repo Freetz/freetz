@@ -8,7 +8,8 @@ PID_FILE=/var/run/dbus/pid
 
 
 startdaemon_pre() {
-	[ -x /usr/bin/dbus-uuidgen ] && /usr/bin/dbus-uuidgen --ensure
+	[ ! -x /usr/bin/dbus-uuidgen ] && return 0
+	/usr/bin/dbus-uuidgen --ensure
 }
 
 start() {
