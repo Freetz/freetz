@@ -526,6 +526,9 @@ check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 		exit 3; \
 	fi
 
+help:
+	@cat howtos/make_targets.txt
+
 .PHONY: all world step $(KCONFIG_TARGETS) config-cache tools recover \
 	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \
 	clean dirclean distclean common-clean common-dirclean common-distclean dist \
