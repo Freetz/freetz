@@ -140,7 +140,7 @@ def menuselect2kconfig(menuselectFilename):
 		print "config " + packagePrefix + withInfix + externalDependency
 		print "\tbool"
 		if externalDependency == "PJPROJECT":
-			print "\tdepends on !FREETZ_PACKAGE_ASTERISK_EMBED_MODULES"
+			print "\tdepends on !FREETZ_PACKAGE_ASTERISK_STATIC"
 		if supported:
 			for select in dependencyMap[externalDependency]:
 				print "\tselect " + select

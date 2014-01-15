@@ -1,0 +1,11 @@
+--- addons/Makefile
++++ addons/Makefile
+@@ -67,7 +67,7 @@
+ chan_ooh323.o: _ASTCFLAGS+=$(H323CFLAGS)
+ 
+ $(if $(filter chan_ooh323,$(EMBEDDED_MODS)),modules.link,chan_ooh323.so): _ASTCFLAGS+=$(H323CFLAGS)
+-$(if $(filter chan_ooh323,$(EMBEDDED_MODS)),modules.link,chan_ooh323.so): $(addprefix ooh323c/src/,$(H323OBJS)) chan_ooh323.o ooh323cDriver.o
++$(if $(filter chan_ooh323,$(EMBEDDED_MODS)),modules.link,chan_ooh323.so): $(addprefix ooh323c/src/,$(H323OBJS)) $(if $(filter chan_ooh323,$(EMBEDDED_MODS)),,chan_ooh323.o) ooh323cDriver.o
+ $(addprefix ooh323c/src/,$(H323OBJS)) chan_ooh323.o ooh323cDriver.o: _ASTCFLAGS+=$(call MOD_ASTCFLAGS,chan_ooh323)
+ 
+ .PHONY: check_mp3

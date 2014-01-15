@@ -1,6 +1,22 @@
+--- main/Makefile
++++ main/Makefile
+@@ -164,6 +164,13 @@
+ AST_EMBED_LIBS:=$(foreach dep,$(EMBED_LIBS),$(value $(dep)))
+ OBJS:=$(sort $(OBJS))
+ 
++ifneq ($(findstring EMBED_RES,$(MENUSELECT_EMBED)),)
++  ifeq ($(findstring res_rtp_asterisk,$(MENUSELECT_RES)),)
++    AST_EMBED_LDFLAGS+=$(shell $(MAKE) --no-print-directory --quiet -C $(ASTTOPDIR)/res PJPROJECT_EMBED_LDFLAGS)
++    AST_EMBED_LIBS+=$(shell $(MAKE) --no-print-directory --quiet -C $(ASTTOPDIR)/res PJPROJECT_EMBED_LIBS)
++  endif
++endif
++
+ ifneq ($(wildcard ../channels/h323/Makefile.ast),)
+   include ../channels/h323/Makefile.ast
+ else
 --- res/Makefile
 +++ res/Makefile
-@@ -67,29 +67,21 @@
+@@ -67,29 +67,27 @@
  ael/pval.o: ael/pval.c
  
  clean::
@@ -13,8 +29,9 @@
 -pjproject/build.mak: pjproject/aconfigure
 -	(cd pjproject && CFLAGS="-fPIC" ./configure --build=$(BUILD_PLATFORM) --host=$(HOST_PLATFORM) --disable-floating-point --disable-sound --disable-oss --disable-speex-aec --disable-l16-codec --disable-gsm-codec --disable-g722-codec --disable-g7221-codec --disable-speex-codec --disable-ilbc-codec --disable-g711-codec)
  
- ifneq ($(findstring $(MAKECMDGOALS),all),)
+-ifneq ($(findstring $(MAKECMDGOALS),all),)
 --include pjproject/build.mak
++ifneq ($(findstring $(MAKECMDGOALS),all PJPROJECT_EMBED_LDFLAGS PJPROJECT_EMBED_LIBS),)
 +ifeq ($(strip $(PJPROJECT_BUILD_MAK_DIR)),)
 +$(error PJPROJECT_BUILD_MAK_DIR variable pointing to a directory containing pjproject build.mak file is not set)
 +endif
@@ -38,6 +55,12 @@
 \ No newline at end of file
 +res_rtp_asterisk.so: _ASTLDFLAGS+=$(filter-out -L%,$(PJ_LDFLAGS))
 +res_rtp_asterisk.so: LIBS+=-Wl,--as-needed $(PJ_LDLIBS) -Wl,--no-as-needed
++
++PJPROJECT_EMBED_LDFLAGS: FORCE
++	@echo "$(filter-out -L%,$(PJ_LDFLAGS))"
++
++PJPROJECT_EMBED_LIBS: FORCE
++	@echo "-Wl,--as-needed $(PJ_LDLIBS) -Wl,--no-as-needed"
 --- res/res_rtp_asterisk.c
 +++ res/res_rtp_asterisk.c
 @@ -29,7 +29,6 @@
