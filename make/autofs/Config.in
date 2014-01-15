@@ -1,5 +1,5 @@
 comment "autofs (not available, needs replace kernel)"
-	depends on !(FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_32_MIN)
+	depends on !FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MAX
 
 config FREETZ_PACKAGE_AUTOFS
 	bool "autofs 5.0.5"
@@ -25,7 +25,7 @@ config FREETZ_PACKAGE_AUTOFS_NFS
 
 comment "select cifs package (not available, needs replace kernel)"
 	depends on FREETZ_PACKAGE_AUTOFS && \
-		!(FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX)
+		!FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN
 
 config FREETZ_PACKAGE_AUTOFS_CIFS
 	bool "select cifs package"
