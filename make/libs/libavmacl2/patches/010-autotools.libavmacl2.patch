@@ -1,0 +1,90 @@
+--- Makefile.am
++++ Makefile.am
+@@ -1,50 +1,6 @@
+-##
+-## $Id: Makefile.am,v 1.1 2012-03-16 09:01:54 udo Exp $
+-##
+-
+-.SILENT:
+-
+-SHAREDLIBS=$(shell pwd)/../../sharedlibs
+-include $(SHAREDLIBS)/ar7def.mk
+-
+-AUTOMAKE_OPTIONS	= foreign
+-CLEANFILES              = *~ comperr
+-MAINTAINERCLEANFILES    = configure aclocal.m4 Makefile.in config.h.in \
+-			  stamp-h.in comperr core
+-
+-CXX=$(CC)
+-CXXLD=$(CCLD)
+-
+-DEFS = $(PROJECTDEFS)
+-
+-# memory debugging
+-# DEFS += -DUSE_SLAB_WHERE_DEBUG
+-
+-INCLUDES = \
+-   -I. \
+-   $(all_includes)
+-
+-CFLAGS = -D_GNU_SOURCE $(PROJECTCFLAGS)
+-# CFLAGS += -ggdb -save-temps
+-# PROJECTCXXFLAGS kommt aus ar7def.mk und schaltet mit -f
+-# bestimmte C++-Features aus!
+-CXXFLAGS = -D_GNU_SOURCE $(PROJECTCXXFLAGS)
+-CFLAGS += $(PROJECTADDDEFS)
+-
+-CFLAGS +=-D_FILE_OFFSET_BITS=64
+-
+-LIBDIRS = $(TARGETFS)/lib
+-LIBVPATH = $(strip $(LIBDIRS))
+-vpath %.so $(LIBVPATH)
+-vpath %.a $(LIBVPATH)
+-
+-# memory debugging
+-# all_LIBS = -lavmcsock -ldl -lpthread
+-
+ lib_LTLIBRARIES = libavmacl2.la
+ libavmacl2_la_LDFLAGS = -version-info 0:0:0
+-# libavmacl2_la_DEPENDENCIES = $(all_LIBS)
+-# libavmacl2_la_LIBADD = $(patsubst %,-L%,$(subst :, ,$(LIBVPATH))) $(all_LIBS)
+-
+ libavmacl2_la_SOURCES = acl.c logincontrol.c virtual.c
+ 
++libavmacl2includedir = $(includedir)/libavmacl2
++libavmacl2include_HEADERS = avm_acl.h logincontrol.h virtual.h
+--- configure.in
++++ configure.in
+@@ -3,14 +3,12 @@
+ 
+ AC_PREREQ(2.59)
+ AC_INIT
++AC_CONFIG_MACRO_DIR([m4])
+ AC_CONFIG_SRCDIR([acl.c])
+ AM_INIT_AUTOMAKE(avmacllib2, 1.0, u.guenther@avm.de)
+ 
+ # Checks for programs.
+ AC_PROG_CC
+-AC_PROG_CXX
+-AM_PROG_AS
+-AC_PROG_RANLIB
+ AM_PROG_LIBTOOL
+ AC_SUBST(LIBTOOL_DEPS)
+ 
+@@ -18,7 +16,7 @@
+ 
+ # Checks for header files.
+ AC_HEADER_STDC
+-AC_CHECK_HEADERS([malloc.h memory.h stdlib.h string.h])
++AC_CHECK_HEADERS([malloc.h alloca.h memory.h stdlib.h string.h])
+ 
+ # Checks for typedefs, structures, and compiler characteristics.
+ AC_HEADER_STDBOOL
+@@ -31,6 +29,6 @@
+ AC_CHECK_FUNCS([memset strdup])
+ #
+ AC_CONFIG_FILES([Makefile])
+-AC_CONFIG_HEADERS([dummy-config.h])
++AC_CONFIG_HEADERS([config.h])
+ 
+ AC_OUTPUT
