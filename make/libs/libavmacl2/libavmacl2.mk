@@ -42,6 +42,6 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libavmacl2
 
 $(pkg)-uninstall:
-	$(RM) $(FLAC_TARGET_DIR)/libavmacl2*.so*
+	$(RM) $(LIBAVMACL2_TARGET_DIR)/libavmacl2*.so*
 
 $(PKG_FINISH)
