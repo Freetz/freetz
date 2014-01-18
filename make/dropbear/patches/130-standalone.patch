@@ -1,5 +1,5 @@
---- sshpty.c	2011-03-10 21:04:53.000000000 +0100
-+++ sshpty.c	2011-03-10 21:05:52.000000000 +0100
+--- sshpty.c
++++ sshpty.c
 @@ -398,15 +398,19 @@
  
  	if ((st.st_mode & (S_IRWXU|S_IRWXG|S_IRWXO)) != mode) {
@@ -20,3 +20,44 @@
  		}
  	}
  }
+--- options.h
++++ options.h
+@@ -21,13 +21,25 @@
+ 
+ /* Default hostkey paths - these can be specified on the command line */
+ #ifndef DSS_PRIV_FILENAME
++#ifndef DB_NONFREETZ
+ #define DSS_PRIV_FILENAME "/mod/etc/ssh/dss_host_key"
++#else
++#define DSS_PRIV_FILENAME "/var/tmp/dss_host_key"
++#endif
+ #endif
+ #ifndef RSA_PRIV_FILENAME
++#ifndef DB_NONFREETZ
+ #define RSA_PRIV_FILENAME "/mod/etc/ssh/rsa_host_key"
++#else
++#define RSA_PRIV_FILENAME "/var/tmp/rsa_host_key"
++#endif
+ #endif
+ #ifndef ECDSA_PRIV_FILENAME
++#ifndef DB_NONFREETZ
+ #define ECDSA_PRIV_FILENAME "/mod/etc/dropbear/dropbear_ecdsa_host_key"
++#else
++#define ECDSA_PRIV_FILENAME "/var/tmp/dropbear_ecdsa_host_key"
++#endif
+ #endif
+ 
+ /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
+@@ -279,7 +287,12 @@
+ 
+ /* This is used by the scp binary when used as a client binary. If you're
+  * not using the Dropbear client, you'll need to change it */
++#ifndef DB_NONFREETZ
+ #define _PATH_SSH_PROGRAM "/usr/bin/ssh"
++#else
++/* ssh is expected to be in PATH */
++#define _PATH_SSH_PROGRAM "ssh"
++#endif
+ 
+ /* Whether to log commands executed by a client. This only logs the 
+  * (single) command sent to the server, not what a user did in a 

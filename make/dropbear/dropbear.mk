@@ -30,7 +30,8 @@ $(PKG)_DEPENDS_ON := zlib
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_STATIC)),y)
-$(PKG)_CPPFLAGS+=-DDB_NONFREETZ
+# uncomment the following line if you to want to create binary suitable for usage on a non-freetz'ed box
+#$(PKG)_CPPFLAGS+=-DDB_NONFREETZ
 $(PKG)_MAKE_OPTIONS+= STATIC=1
 endif
 

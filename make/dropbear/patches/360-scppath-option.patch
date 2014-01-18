@@ -1,0 +1,116 @@
+--- options.h
++++ options.h
+@@ -300,6 +300,16 @@
+ #define _PATH_SSH_PROGRAM "ssh"
+ #endif
+ 
++#ifdef DB_NONFREETZ
++#ifndef SCP_PATH_OPTION
++#define SCP_PATH_OPTION
++#endif
++#endif
++
++#ifdef SCP_PATH_OPTION
++#define SCP_PATH "scp"
++#endif
++
+ /* Whether to log commands executed by a client. This only logs the 
+  * (single) command sent to the server, not what a user did in a 
+  * shell/sftp session etc. */
+--- runopts.h
++++ runopts.h
+@@ -66,6 +66,10 @@
+ 	char * sftppath;
+ #endif
+ 
++#ifdef SCP_PATH_OPTION
++	char * scppath;
++#endif
++
+ 	char * bannerfile;
+ 
+ 	int forkbg;
+--- svr-chansession.c
++++ svr-chansession.c
+@@ -629,6 +629,23 @@
+ 				return DROPBEAR_FAILURE;
+ 			}
+ 		}
++#ifdef SCP_PATH_OPTION
++		if ((cmdlen == 3) && strncmp(chansess->cmd, "scp", 3) == 0) {
++			m_free(chansess->cmd);
++			chansess->cmd = m_strdup(svr_opts.scppath);
++		} else if ((cmdlen > 3) && strncmp(chansess->cmd, "scp ", 4) == 0) {
++			size_t len = strlen(svr_opts.scppath) + strlen(chansess->cmd) - 3 /* strlen("scp") */ + 1 /* terminating null */;
++			if (len > MAX_CMD_LEN) {
++				m_free(chansess->cmd);
++				return DROPBEAR_FAILURE;
++			} else {
++				char * cmd_with_replaced_scp = (char*)m_malloc(len);
++				snprintf(cmd_with_replaced_scp, len, "%s%s", svr_opts.scppath, ((chansess->cmd) + 3));
++				m_free(chansess->cmd);
++				chansess->cmd = cmd_with_replaced_scp;
++			}
++		}
++#endif
+ 		if (issubsys) {
+ #ifdef DROPBEAR_SFTPSERVER
+ 			if ((cmdlen == 4) && strncmp(chansess->cmd, "sftp", 4) == 0) {
+--- svr-runopts.c
++++ svr-runopts.c
+@@ -62,6 +62,10 @@
+ 					"-S sftpserver	Set path to sftp server\n"
+ 					"		(default: %s)\n"
+ #endif
++#ifdef SCP_PATH_OPTION
++					"-c scppath	Set path to scp command\n"
++					"		(default: %s)\n"
++#endif
+ 					"-F		Don't fork into background\n"
+ #ifdef DISABLE_SYSLOG
+ 					"(Syslog support not compiled in, using stderr)\n"
+@@ -113,6 +117,9 @@
+ #ifdef DROPBEAR_SFTPSERVER
+ 					SFTPSERVER_PATH,
+ #endif
++#ifdef SCP_PATH_OPTION
++					SCP_PATH,
++#endif
+ 					DROPBEAR_MAX_PORTS, DROPBEAR_DEFPORT, DROPBEAR_PIDFILE,
+ 					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
+ }
+@@ -132,6 +139,9 @@
+ #ifdef DROPBEAR_SFTPSERVER
+ 	svr_opts.sftppath = NULL;
+ #endif
++#ifdef SCP_PATH_OPTION
++	svr_opts.scppath = NULL;
++#endif
+ 	svr_opts.bannerfile = NULL;
+ 	svr_opts.banner = NULL;
+ 	svr_opts.forkbg = 1;
+@@ -210,6 +220,11 @@
+ 					next = &svr_opts.sftppath;
+ 					break;
+ #endif
++#ifdef SCP_PATH_OPTION
++				case 'c':
++					next = &svr_opts.scppath;
++					break;
++#endif
+ 				case 'F':
+ 					svr_opts.forkbg = 0;
+ 					break;
+@@ -308,6 +323,12 @@
+ 	}
+ #endif
+ 
++#ifdef SCP_PATH_OPTION
++	if (svr_opts.scppath == NULL) {
++		svr_opts.scppath = SCP_PATH;
++	}
++#endif
++
+ 	if (svr_opts.bannerfile) {
+ 		struct stat buf;
+ 		if (stat(svr_opts.bannerfile, &buf) != 0) {

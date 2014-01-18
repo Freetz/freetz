@@ -1,6 +1,6 @@
 --- options.h
 +++ options.h
-@@ -21,10 +21,10 @@
+@@ -21,13 +21,13 @@
  
  /* Default hostkey paths - these can be specified on the command line */
  #ifndef DSS_PRIV_FILENAME
@@ -12,7 +12,11 @@
 +#define RSA_PRIV_FILENAME "/mod/etc/ssh/rsa_host_key"
  #endif
  #ifndef ECDSA_PRIV_FILENAME
- #define ECDSA_PRIV_FILENAME "/etc/dropbear/dropbear_ecdsa_host_key"
+-#define ECDSA_PRIV_FILENAME "/etc/dropbear/dropbear_ecdsa_host_key"
++#define ECDSA_PRIV_FILENAME "/mod/etc/dropbear/dropbear_ecdsa_host_key"
+ #endif
+ 
+ /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
 @@ -55,7 +55,7 @@
  #define DROPBEAR_SMALL_CODE
  
