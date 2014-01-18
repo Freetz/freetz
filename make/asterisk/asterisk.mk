@@ -53,6 +53,8 @@ endif
 # We use pjproject version modified by asterisk developers (contains shared libraries support).
 $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r res/pjproject;
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_ASTERISK_STATIC),$(SED) -i -r -e 's|-ltiff|$$$$($$$$PKG_CONFIG libtiff-4 --libs-only-l --static)|g' ./configure;)
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-xmldoc
 $(PKG)_CONFIGURE_OPTIONS += --disable-asteriskssl
