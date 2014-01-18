@@ -10,7 +10,27 @@
  include $(ASTTOPDIR)/Makefile.rules
 --- main/libasteriskssl.c
 +++ main/libasteriskssl.c
-@@ -74,6 +74,7 @@
+@@ -36,7 +36,9 @@
+ #include <openssl/err.h>
+ #endif
+ 
++#if !defined(_AST_STATIC_BUILD)
+ #include <dlfcn.h>
++#endif
+ 
+ #include "asterisk/_private.h" /* ast_ssl_init() */
+ 
+@@ -45,7 +47,9 @@
+ 
+ #ifdef HAVE_OPENSSL
+ 
++#if !defined(_AST_STATIC_BUILD)
+ #define get_OpenSSL_function(func) do { real_##func = dlsym(RTLD_NEXT, __stringify(func)); } while(0)
++#endif
+ 
+ static int startup_complete;
+ 
+@@ -74,6 +78,7 @@
  	}
  }
  
@@ -18,11 +38,43 @@
  int SSL_library_init(void)
  {
  #if defined(AST_DEVMODE)
-@@ -142,6 +143,7 @@
+@@ -142,6 +147,7 @@
  {
  	/* we can't allow this to be called, ever */
  }
 +#endif /* !defined(_AST_STATIC_BUILD) */
  
  #endif /* HAVE_OPENSSL */
+ 
+@@ -153,6 +159,23 @@
+ {
+ #ifdef HAVE_OPENSSL
+ 	unsigned int i;
++#if defined(_AST_STATIC_BUILD)
++	SSL_library_init();
++	CRYPTO_set_id_callback(ssl_threadid);
++
++	ssl_num_locks = CRYPTO_num_locks();
++	if (!(ssl_locks = ast_calloc(ssl_num_locks, sizeof(ssl_locks[0])))) {
++		return -1;
++	}
++	for (i = 0; i < ssl_num_locks; i++) {
++		ast_mutex_init(&ssl_locks[i]);
++	}
++	CRYPTO_set_locking_callback(ssl_lock);
++
++	SSL_load_error_strings();
++	ERR_load_SSL_strings();
++	ERR_load_BIO_strings();
++#else
+ 	int (*real_SSL_library_init)(void);
+ 	void (*real_CRYPTO_set_id_callback)(unsigned long (*)(void));
+ 	void (*real_CRYPTO_set_locking_callback)(void (*)(int, int, const char *, int));
+@@ -221,6 +244,7 @@
+ 
+ 	get_OpenSSL_function(ERR_load_BIO_strings);
+ 	real_ERR_load_BIO_strings();
++#endif /* !defined(_AST_STATIC_BUILD) */
+ 
+ 	startup_complete = 1;
  
