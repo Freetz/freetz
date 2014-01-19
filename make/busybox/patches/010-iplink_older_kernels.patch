@@ -1,0 +1,24 @@
+--- networking/libiproute/iplink.c
++++ networking/libiproute/iplink.c
+@@ -28,9 +28,21 @@
+ #undef  IFLA_VLAN_PROTOCOL
+ #define IFLA_VLAN_PROTOCOL      5
+ 
++/* introduced in https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit?id=38f7b870d4a6a5d3ec21557e849620cb7d032965 */
+ #ifndef IFLA_LINKINFO
+ # define IFLA_LINKINFO 18
+ # define IFLA_INFO_KIND 1
++# define IFLA_INFO_DATA 2
++#endif
++
++/* introduced in https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit?id=07b5b17e157b7018d0ca40ca0d1581a23096fb45 */
++#ifndef IFLA_VLAN_MAX
++#define IFLA_VLAN_ID 1
++#define IFLA_VLAN_FLAGS 2
++struct ifla_vlan_flags {
++	__u32	flags;
++	__u32	mask;
++};
+ #endif
+ 
+ /* taken from linux/sockios.h */
