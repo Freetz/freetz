@@ -38,8 +38,8 @@ cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/driver
 echo2 "patching webmenu"
 isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-POTS-7170-alien.patch"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-FON3-7170-alien.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-POTS-7170-alien.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch"
 
 echo2 "moving default config dir"
 mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7112"
