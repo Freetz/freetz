@@ -17,7 +17,7 @@
  
  # Checks for typedefs, structures, and compiler characteristics.
  AC_C_BIGENDIAN(,[APDK_ENDIAN_FLAG="-DAPDK_LITTLE_ENDIAN"])
-@@ -517,8 +515,6 @@
+@@ -519,8 +517,6 @@
  fi
  
  if test "$hpijs_only_build" = "no" && test "$hpcups_only_build" = "no"; then
@@ -28,7 +28,7 @@
        AC_CHECK_HEADERS(usb.h, ,[AC_MSG_ERROR([cannot find libusb-devel support], 11)])
 --- hplip.conf.in
 +++ hplip.conf.in
-@@ -5,14 +5,6 @@
+@@ -5,15 +5,6 @@
  
  [dirs]
  home=@abs_datadir@/hplip
@@ -36,6 +36,7 @@
 -ppd=@abs_hpppddir@
 -ppdbase=@abs_ppddir@
 -doc=@abs_docdir@
+-html=@abs_htmldir@
 -icon=@icondir@
 -cupsbackend=@cupsbackenddir@
 -cupsfilter=@cupsfilterdir@
@@ -208,47 +209,51 @@
     enum HPMUD_RESULT stat;
  
     stat = hpmud_probe_devices(HPMUD_BUS_ALL, message, sizeof(message), &cnt, &bytes_read);
-@@ -299,26 +164,6 @@
+@@ -299,29 +164,6 @@
        }
     }
  
--   /* Ignore localOnly flag (used by saned) and always look for network all-in-one scan devices (defined by cups). */
--   cnt = GetCupsPrinters(&cups_printer);
--   for (i=0; i<cnt; i++)
--   {
--      hpmud_query_model(cups_printer[i], &ma);
--      if (ma.scantype > 0)
--      {
--         hpmud_get_uri_model(cups_printer[i], model, sizeof(model));
--         AddDeviceList(cups_printer[i], model, &DeviceList);
--         total++;
--      }
--      else
--      {
--         DBG(6,"unsupported scantype=%d %s\n", ma.scantype, cups_printer[i]);
--      }
--      free(cups_printer[i]);
--   }
--   if (cups_printer)
--      free(cups_printer);
+-    /* Check localOnly flag (used by saned) to decide whether to look for network all-in-one scan devices (defined by cups). */
+-	if (!localOnly)
+-	{
+-		cnt = GetCupsPrinters(&cups_printer);
+-		for (i=0; i<cnt; i++)
+-		{
+-			hpmud_query_model(cups_printer[i], &ma);
+-			if (ma.scantype > 0)
+-			{
+-				hpmud_get_uri_model(cups_printer[i], model, sizeof(model));
+-				AddDeviceList(cups_printer[i], model, &DeviceList);
+-				total++;
+-			}
+-			else
+-			{
+-				DBG(6,"unsupported scantype=%d %s\n", ma.scantype, cups_printer[i]);
+-			}
+-			free(cups_printer[i]);
+-		}
+-		if (cups_printer)
+-			free(cups_printer);
+-	}
 -
  bugout:
     return total;
  }
 --- Makefile.am
 +++ Makefile.am
-@@ -9,10 +9,6 @@
+@@ -9,11 +9,6 @@
  
  hplipdir = $(datadir)/hplip
  
 -docdir = $(hpdocdir)
+-htmldir = $(hphtmldir)
 -doc_DATA = COPYING copyright prnt/hpijs/README_LIBJPG
 -EXTRA_DIST = prnt/hpijs/gdevijs-krgb-1.5-gs8.61.patch prnt/hpijs/README_LIBJPG copyright
 -
  dist_noinst_SCRIPTS =
  dist_noinst_DATA =
  noinst_PROGRAMS =
-@@ -34,14 +30,6 @@
+@@ -35,14 +30,6 @@
  
  if HPLIP_BUILD
  
@@ -263,7 +268,7 @@
  # hpaio sane backend
  if SCAN_BUILD
  libsane_hpaiodir = $(libdir)/sane
-@@ -58,7 +46,7 @@
+@@ -59,7 +46,7 @@
  libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
  endif
  # The following is a interlibrary dependency that must be compiled first.
@@ -272,17 +277,10 @@
  #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
  libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS)
  endif # SCAN_BUILD
-@@ -102,40 +90,10 @@
- 	ip/xbi2gray.c ip/xcolrspc.c ip/xfakemono.c ip/xgray2bi.c ip/xinvert.c ip/xjpg_enc.c ip/xmatrix.c ip/xpnm.c ip/xscale.c ip/xthumb.c ip/xyxtract.c \
+@@ -104,33 +91,10 @@
  	ip/hpip.h ip/ipdefs.h ip/xform.h ip/xjpg_dct.h ip/xjpg_huf.h ip/xjpg_mrk.h
  
--# hp-mkuri.
--hp_mkuridir = $(bindir)
--hp_mkuri_PROGRAMS = hp-mkuri
--hp_mkuri_SOURCES = io/hpmud/hp-mkuri.c
--hp_mkuri_LDADD = -ldl libhpmud.la
--hp_mkuri_CFLAGS = -DCONFDIR=\"$(hplip_confdir)\"
--
+ 
 -#hpmud rules data dir
 -rulessystemdir=/usr/lib/systemd/system
 -dist_rulessystem_DATA =data/rules/hplip-printer@.service
@@ -311,10 +309,10 @@
 -hplip_statedir = /var/lib/hp
 -dist_hplip_state_DATA =
 -
- # Log Files
- hplip_Logdir=/var/log/hp
- hplip_tmpdir=/var/log/hp/tmp
-@@ -363,13 +321,6 @@
+ if FULL_BUILD
+ 
+ dist_hplip_SCRIPTS = hpssd.py __init__.py hpdio.py
+@@ -352,13 +316,6 @@
  dist_policykit_policy_DATA = data/policykit/com.hp.hplip.policy
  endif
  
@@ -328,7 +326,7 @@
  if GUI_BUILD
  # hplip.desktop
  hplip_desktopdir = $(icondir)
-@@ -394,46 +345,6 @@
+@@ -383,46 +340,6 @@
  dist_rip_SCRIPTS = prnt/hpijs/foomatic-rip-hplip
  endif
  
@@ -375,7 +373,7 @@
  if HPIJS_INSTALL
  # hpijs
  bin_PROGRAMS = hpijs
-@@ -514,62 +425,8 @@
+@@ -503,58 +420,6 @@
  endif # HPCUPS ONLY
  endif # HPCUPS_INSTALL
  
@@ -397,33 +395,8 @@
 -cupsdrv2_DATA = $(cups_drv)
 -endif
 -
--
--install-dist_hplip_LogDATA:
--if FULL_BUILD
--	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
--	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
--	chmod 775 $(DESTDIR)$(hplip_Logdir)
--endif	#FULL_BUILD
+-install-data-hook:
 -if HPLIP_BUILD
--	test -z "$(DESTDIR)$(hplip_Logdir)" || mkdir -p $(DESTDIR)$(hplip_Logdir)
--	chgrp "lp" -R $(DESTDIR)$(hplip_Logdir)
--	chmod 775 $(DESTDIR)$(hplip_Logdir)
--endif	#FULL_BUILD
--
--install-dist_hplip_tmpDATA:
--if FULL_BUILD
--	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
--	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
--	chmod 0775 $(DESTDIR)$(hplip_tmpdir)
--endif	#FULL_BUILD
--if HPLIP_BUILD
--	test -z "$(DESTDIR)$(hplip_tmpdir)" || mkdir -p $(DESTDIR)$(hplip_tmpdir)
--	chgrp "lp" -R $(DESTDIR)$(hplip_tmpdir)
--	chmod 0775 $(DESTDIR)$(hplip_tmpdir)
--endif	#FULL_BUILD
--
- install-data-hook:
- if HPLIP_BUILD
 -#	   If scanner build, add hpaio entry to sane dll.conf.
 -	if [ "$(scan_build)" = "yes" ]; then \
 -	   $(mkinstalldirs) $(DESTDIR)/etc/sane.d; \
@@ -435,6 +408,27 @@
 -		  echo hpaio >>$(DESTDIR)/etc/sane.d/dll.conf ; \
 -	   fi \
 -	fi
- if FULL_BUILD
- #	   Create hp-xxx commands in bindir.
- 	$(mkinstalldirs) $(DESTDIR)$(bindir)
+-if FULL_BUILD
+-#	   Create hp-xxx commands in bindir.
+-	$(mkinstalldirs) $(DESTDIR)$(bindir)
+-	for i in $(dist_cmd_SCRIPTS); do \
+-	   cmd=`basename $$i .py`; \
+-	   if [ ! \( "$$cmd" = "toolbox" -a "$(gui_build)" = "no" \) ]; then \
+-		  ln -sf ../share/$(PACKAGE)/$$i $(DESTDIR)$(bindir)/hp-$$cmd; \
+-	   fi \
+-	done
+-#
+-#	   Install fax support.
+-	if [ "$(fax_build)" = "yes" ]; then \
+-	   mv $(DESTDIR)$(hpfaxdir)/hpfax.py $(DESTDIR)$(hpfaxdir)/hpfax; \
+-	   chmod 700 $(DESTDIR)$(hpfaxdir)/hpfax; \
+-	fi
+-#
+-#       Make backend run as root.
+-#	chmod 700 $(DESTDIR)$(hpdir)/hp
+-endif # FULL_BUILD
+-endif # HPLIP_BUILD
+-
+ uninstall-hook:
+ if HPLIP_BUILD
+ #	   Remove hp-xxx commands.
