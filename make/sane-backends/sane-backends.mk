@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN,1.0.23)
-$(PKG)_LIB_VERSION:=1.0.23
+$(call PKG_INIT_BIN,1.0.24)
+$(PKG)_LIB_VERSION:=1.0.24
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e226a89c54173efea80e91e9a5eb6573
-$(PKG)_SITE:=ftp://ftp3.sane-project.org/pub/sane/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_SOURCE_MD5:=1ca68e536cd7c1852322822f5f6ac3a4
+$(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/sane-backends/$(pkg)_$($(PKG)_VERSION).orig.tar.gz
 
 # saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned
@@ -129,7 +129,9 @@ $(pkg)-config-update: $($(PKG)_DIR)/.unpacked
 		$(SANE_BACKENDS_VERSION) \
 		$(SANE_BACKENDS_DIR)/configure \
 		$(SANE_BACKENDS_MAKE_DIR)/Config.in \
-		$(SANE_BACKENDS_MAKE_DIR)/sane-backends.in
+		$(SANE_BACKENDS_MAKE_DIR)/sane-backends.in \
+		$(SANE_BACKENDS_MAKE_DIR)/external.in \
+		$(SANE_BACKENDS_MAKE_DIR)/external.files
 .PHONY: $(pkg)-config-update
 
 $(PKG_FINISH)

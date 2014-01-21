@@ -1,19 +1,11 @@
 --- configure
 +++ configure
-@@ -9543,6 +9543,8 @@
- 
+@@ -9647,7 +9647,7 @@
  fi
  
-+with_cups="no"
-+if false; then
- nl added by PN 3/2/12 to detect cups
  $as_echo "checking for cups"
- if test -e /usr/include/cups/cups.h ; then
-@@ -9556,6 +9558,7 @@
- 	$as_echo "in order to autodetect network scanners in kodakaio."
- 	with_cups="no"
- fi
-+fi
+-if test -e /usr/include/cups/cups.h ; then
++if false ; then
  
+ $as_echo "#define HAVE_CUPS 1" >>confdefs.h
  
- # Check whether --enable-libusb_1_0 was given.
