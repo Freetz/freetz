@@ -1,8 +1,8 @@
 $(call PKG_INIT_BIN,1.0.24)
 $(PKG)_LIB_VERSION:=1.0.24
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
 $(PKG)_SOURCE_MD5:=1ca68e536cd7c1852322822f5f6ac3a4
-$(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/sane-backends/$(pkg)_$($(PKG)_VERSION).orig.tar.gz
+$(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/$(pkg)
 
 # saned
 $(PKG)_TARGET_saned:=$($(PKG)_DEST_DIR)/usr/sbin/saned
