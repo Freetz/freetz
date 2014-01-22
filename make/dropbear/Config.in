@@ -90,11 +90,15 @@ config FREETZ_PACKAGE_DROPBEAR_STATIC
 	depends on FREETZ_PACKAGE_DROPBEAR
 	default n
 	help
-		This option will build a static binary.
+		With this option enabled, the resulting binary will be independ from libraries.
+		Usually used to build a binary for boxes without "freetz".
+		Newer firmwares (using uClibc >= 0.9.30) should work with dynamically linked
+		binary, if "non-freetz" is selected. 
 
 config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 	bool "Build for non-freetz box"
-	depends on FREETZ_PACKAGE_DROPBEAR_STATIC
+	depends on FREETZ_PACKAGE_DROPBEAR
+	select FREETZ_PACKAGE_DROPBEAR_STATIC if FREETZ_TARGET_UCLIBC_0_9_28 || FREETZ_TARGET_UCLIBC_0_9_29	
 	default n
 	help
 		This option will also enable the use of the binary
