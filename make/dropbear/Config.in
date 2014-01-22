@@ -90,5 +90,13 @@ config FREETZ_PACKAGE_DROPBEAR_STATIC
 	depends on FREETZ_PACKAGE_DROPBEAR
 	default n
 	help
+		This option will build a static binary.
+
+config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
+	bool "Build for non-freetz box"
+	depends on FREETZ_PACKAGE_DROPBEAR_STATIC
+	default n
+	help
 		This option will also enable the use of the binary
-		on non freetz boxes (with missing devfs).
+		on non freetz boxes.
+		(Fix for missing devfs and changes to default paths)
