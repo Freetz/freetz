@@ -98,9 +98,10 @@ config FREETZ_PACKAGE_DROPBEAR_STATIC
 config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 	bool "Build for non-freetz box"
 	depends on FREETZ_PACKAGE_DROPBEAR
-	select FREETZ_PACKAGE_DROPBEAR_STATIC if FREETZ_TARGET_UCLIBC_0_9_28 || FREETZ_TARGET_UCLIBC_0_9_29	
+	select FREETZ_PACKAGE_DROPBEAR_STATIC if FREETZ_AVM_UCLIBC_0_9_28 || FREETZ_AVM_UCLIBC_0_9_29
 	default n
 	help
-		This option will also enable the use of the binary
+		With this option enabled, the resulting binary should also work
 		on non freetz boxes.
 		(Fix for missing devfs and changes to default paths)
+		Will select "static" on firmwares not supporting dynamically linked freetz binaries.
