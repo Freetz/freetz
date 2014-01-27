@@ -1,10 +1,10 @@
-$(call PKG_INIT_LIB, 1.0.17)
+$(call PKG_INIT_LIB, 1.0.18)
 $(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_LIB_VERSION:=0.1.0
-$(PKG)_SOURCE:=libusbx-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=99467ca2cb81c19c4a172de9f30e7576
-$(PKG)_SITE:=@SF/libusbx
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libusbx-$($(PKG)_VERSION)
+$(PKG)_SOURCE:=libusb-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=4a6d049923efc6496f1d383054dac1a6
+$(PKG)_SITE:=@SF/libusb
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libusb-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libusb/.libs/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
