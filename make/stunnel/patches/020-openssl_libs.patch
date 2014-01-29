@@ -1,0 +1,11 @@
+--- configure
++++ configure
+@@ -12398,7 +12398,7 @@
+ 
+ 
+ valid_CPPFLAGS="$CPPFLAGS"; CPPFLAGS="$CPPFLAGS -I$SSLDIR/include"
+-valid_LIBS="$LIBS"; LIBS="$LIBS -L$SSLDIR/lib64 -L$SSLDIR/lib -lssl -lcrypto"
++valid_LIBS="$LIBS"; LIBS="$LIBS -L$SSLDIR/lib -lssl -lcrypto -ldl"
+ 
+ as_ac_Header=`$as_echo "ac_cv_header_$SSLDIR/include/openssl/engine.h" | $as_tr_sh`
+ ac_fn_c_check_header_mongrel "$LINENO" "$SSLDIR/include/openssl/engine.h" "$as_ac_Header" "$ac_includes_default"

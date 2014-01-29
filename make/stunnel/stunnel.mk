@@ -10,7 +10,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 
 $(PKG)_DEPENDS_ON := openssl zlib
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
-$(PKG)_LIBS := -lutil -lssl -lcrypto -lz -ldl -lpthread
 
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_STATIC)),y)
 $(PKG)_LDFLAGS := -all-static
@@ -34,8 +33,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(STUNNEL_DIR) \
-		LDFLAGS="$(STUNNEL_LDFLAGS)" \
-		LIBS="$(STUNNEL_LIBS)"
+		LDFLAGS="$(STUNNEL_LDFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
