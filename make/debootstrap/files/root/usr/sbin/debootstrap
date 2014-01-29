@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-VERSION='1.0.28'
+VERSION='1.0.56'
 
 unset TMP TEMP TMPDIR || true
 
@@ -25,9 +25,29 @@ exec 4>&1
 LANG=C
 USE_COMPONENTS=main
 KEYRING=""
+DISABLE_KEYRING=""
 VARIANT=""
+ARCH=""
+HOST_ARCH=""
+HOST_OS=""
+KEEP_DEBOOTSTRAP_DIR=""
+USE_DEBIANINSTALLER_INTERACTION=""
+SECOND_STAGE_ONLY=""
+PRINT_DEBS=""
+CHROOTDIR=""
+MAKE_TARBALL=""
+KEEP_DEBOOTSTRAP_DIR=""
+EXTRACTOR_OVERRIDE=""
+UNPACK_TARBALL=""
+ADDITIONAL=""
+EXCLUDE=""
+VERBOSE=""
+CERTIFICATE=""
+CHECKCERTIF=""
+PRIVATEKEY=""
 
 DEF_MIRROR="http://ftp.us.debian.org/debian"
+DEF_HTTPS_MIRROR="https://mirrors.kernel.org/debian"
 
 export LANG USE_COMPONENTS
 umask 022
@@ -61,7 +81,7 @@ usage_err()
 usage()
 {
 	echo "Usage: ${0##*/} [OPTION]... <suite> <target> [<mirror> [<script>]]"
-	echo "Bootstrap Debian base system."
+	echo "Bootstrap a Debian base system into a target directory."
 	echo
 	cat <<EOF
       --help                 display this help and exit
@@ -71,7 +91,7 @@ usage()
       --download-only        download packages, but don't perform installation
       --print-debs           print the packages to be installed, and exit
 
-      --arch=A               set the target architecture (use if no dpkg)
+      --arch=A               set the architecture to install (use if no dpkg)
                                [ --arch=powerpc ]
 
       --include=A,B,C        adds specified names to the list of base packages
@@ -80,8 +100,9 @@ usage()
                              archive
       --variant=X            use variant X of the bootstrap scripts
                              (currently supported variants: buildd, fakechroot,
-                              scratchbox)
+                              scratchbox, minbase)
       --keyring=K            check Release files against keyring K
+      --no-check-gpg         avoid checking Release file signatures
       --no-resolve-deps      don't try to resolve dependencies automatically
 
       --unpack-tarball=T     acquire .debs from a tarball instead of http
@@ -92,7 +113,6 @@ usage()
                                (requires --second-stage)
       --extractor=TYPE       override automatic .deb extractor selection
                                (supported: $EXTRACTORS_SUPPORTED)
-      --boot-floppies        used for internal purposes by boot-floppies
       --debian-installer     used for internal purposes by debian-installer
       --private-key=file     read the private key from file
       --certificate=file     use the client certificate stored in file (PEM)
@@ -103,7 +123,7 @@ EOF
 ###########################################################################
 
 if [ -z "$PKGDETAILS" ]; then
-	error 1 NO_PKGDETAILS "No pkgdetails available; either install perl, or build pkgdetails.c from source"
+	error 1 NO_PKGDETAILS "No pkgdetails available; either install perl, or build pkgdetails.c from the base-installer source package"
 fi
 
 ###########################################################################
@@ -119,20 +139,7 @@ if [ $# != 0 ] ; then
 		echo "debootstrap $VERSION"
 		exit 0
 		;;
-	    --boot-floppies)
-		if [ -n "$USE_DEBIANINSTALLER_INTERACTION" ] ; then
-			error 1 ARG_BFDI "Can only use one of --boot-floppies and --debian-installer"
-		fi
-		if ! (echo -n "" >&3) 2>/dev/null; then
-			error 1 ARG_BFBYHAND "If running debootstrap by hand, don't use --boot-floppies"
-		fi
-		USE_BOOTFLOPPIES_INTERACTION=yes
-		shift
-		;;
 	    --debian-installer)
-		if [ -n "$USE_BOOTFLOPPIES_INTERACTION" ] ; then
-			error 1 ARG_BFDI "Can only use one of --boot-floppies and --debian-installer"
-		fi
 		if ! (echo -n "" >&3) 2>/dev/null; then
 			error 1 ARG_DIBYHAND "If running debootstrap by hand, don't use --debian-installer"
 		fi
@@ -140,7 +147,9 @@ if [ $# != 0 ] ; then
 		shift
 		;;
 	    --foreign)
-		WHAT_TO_DO="finddebs dldebs first_stage"
+		if [ "$PRINT_DEBS" != "true" ]; then
+			WHAT_TO_DO="finddebs dldebs first_stage"
+		fi
 		shift
 		;;
 	    --second-stage)
@@ -164,6 +173,7 @@ if [ $# != 0 ] ; then
 		;;
 	    --print-debs)
 		WHAT_TO_DO="finddebs printdebs kill_target"
+		PRINT_DEBS=true
 		shift
 		;;
 	    --download-only)
@@ -240,31 +250,31 @@ if [ $# != 0 ] ; then
 		;;
 	    --include|--include=?*)
 		if [ "$1" = "--include" -a -n "$2" ]; then
-			additional="$2"
+			ADDITIONAL="$2"
 			shift 2
                 elif [ "$1" != "${1#--include=}" ]; then
-			additional="${1#--include=}"
+			ADDITIONAL="${1#--include=}"
 			shift 1
 		else
 			error 1 NEEDARG "option requires an argument %s" "$1"
 		fi
-		additional="$(echo "$additional" | tr , " ")"
+		ADDITIONAL="$(echo "$ADDITIONAL" | tr , " ")"
 		;;
 	    --exclude|--exclude=?*)
 		if [ "$1" = "--exclude" -a -n "$2" ]; then
-			exclude="$2"
+			EXCLUDE="$2"
 			shift 2
                 elif [ "$1" != "${1#--exclude=}" ]; then
-			exclude="${1#--exclude=}"
+			EXCLUDE="${1#--exclude=}"
 			shift 1
 		else
 			error 1 NEEDARG "option requires an argument %s" "$1"
 		fi
-		exclude="$(echo "$exclude" | tr , " ")"
+		EXCLUDE="$(echo "$EXCLUDE" | tr , " ")"
 		;;
 	    --verbose)
-		verbose=true
-		export verbose
+		VERBOSE=true
+		export VERBOSE
 		shift 1
 		;;
 	    --components|--components=?*)
@@ -303,6 +313,10 @@ if [ $# != 0 ] ; then
 		else
 			error 1 NEEDARG "option requires an argument %s" "$1"
 		fi
+		;;
+	    --no-check-gpg)
+			shift 1
+			DISABLE_KEYRING=1
 		;;
 	    --certificate|--certificate=?*)
 		if [ "$1" = "--certificate" -a -n "$2" ]; then
@@ -361,6 +375,7 @@ else
 	fi
 	SUITE="$1"
 	TARGET="$2"
+	USER_MIRROR="$3"
 	TARGET="${TARGET%/}"
 	if [ "${TARGET#/}" = "${TARGET}" ]; then
 		if [ "${TARGET%/*}" = "$TARGET" ] ; then
@@ -382,18 +397,47 @@ fi
 
 ###########################################################################
 
-if [ "$ARCH" != "" ]; then
-	true
-elif [ -x /usr/bin/dpkg ] && \
-     /usr/bin/dpkg --print-architecture >/dev/null 2>&1; then
-	ARCH=`/usr/bin/dpkg --print-architecture`
-elif type udpkg >/dev/null 2>&1 && \
+if in_path dpkg && \
+     dpkg --print-architecture >/dev/null 2>&1; then
+	HOST_ARCH=`/usr/bin/dpkg --print-architecture`
+elif in_path udpkg && \
      udpkg --print-architecture >/dev/null 2>&1; then
-	ARCH=`/usr/bin/udpkg --print-architecture`
+	HOST_ARCH=`/usr/bin/udpkg --print-architecture`
 elif [ -e $DEBOOTSTRAP_DIR/arch ]; then
-	ARCH=`cat $DEBOOTSTRAP_DIR/arch`
-else
-	error 1 WHATARCH "Couldn't work out current architecture"
+	HOST_ARCH=`cat $DEBOOTSTRAP_DIR/arch`
+fi
+HOST_OS="$HOST_ARCH"
+# basic host OS guessing for non-Debian systems
+if [ -z "$HOST_OS" ]; then
+	case `uname` in
+		Linux)
+			HOST_OS=linux
+		;;
+		GNU/kFreeBSD)
+			HOST_OS=kfreebsd
+		;;
+		GNU)
+			HOST_OS=hurd
+		;;
+		FreeBSD*)
+			HOST_OS=freebsd
+		;;
+	esac
+fi
+
+if [ -z "$ARCH" ]; then
+	ARCH=$HOST_ARCH
+fi
+
+if [ -z "$ARCH" ] || [ -z "$HOST_OS" ]; then
+        error 1 WHATARCH "Couldn't work out current architecture"
+
+fi
+
+if [ "$HOST_OS" = "kfreebsd" ] || [ "$HOST_OS" = "freebsd" ]; then
+	for module in linprocfs fdescfs tmpfs linsysfs; do
+		kldstat -m "$module" > /dev/null 2>&1 || warning SANITYCHECK "Probably required module %s is not loaded" "$module"
+	done
 fi
 
 if [ "$TARGET" = "/" ]; then
@@ -415,8 +459,7 @@ fi
 if [ -z "$SHA_SIZE" ]; then
 	SHA_SIZE=256
 fi
-if ! [ -x "/usr/bin/sha${SHA_SIZE}sum" ] && \
-   ! [ -x "/bin/sha${SHA_SIZE}sum" ]; then
+if ! in_path "sha${SHA_SIZE}sum" && ! in_path "sha${SHA_SIZE}"; then
 	SHA_SIZE=1
 fi
 DEBOOTSTRAP_CHECKSUM_FIELD="SHA$SHA_SIZE"
@@ -424,7 +467,7 @@ DEBOOTSTRAP_CHECKSUM_FIELD="SHA$SHA_SIZE"
 export ARCH SUITE TARGET CHROOT_CMD SHA_SIZE DEBOOTSTRAP_CHECKSUM_FIELD
 
 if am_doing_phase first_stage second_stage; then
-	if [ -x /usr/bin/id ] && [ `id -u` -ne 0 ]; then
+	if in_path id && [ `id -u` -ne 0 ]; then
 		error 1 NEEDROOT "debootstrap can only run as root"
 	fi
 	# Ensure that we can create working devices and executables on the target.
@@ -453,10 +496,6 @@ fi
 #    fd 7,8: spare for scripts
 
 if [ "$USE_DEBIANINSTALLER_INTERACTION" = yes ]; then
-	#    stdout=stderr: full log of debootstrap run
-	#    fd 3: I:/W:/etc information
-	exec 4>&3
-elif [ "$USE_BOOTFLOPPIES_INTERACTION" = yes ]; then
 	#    stdout=stderr: full log of debootstrap run
 	#    fd 3: I:/W:/etc information
 	exec 4>&3
@@ -496,8 +535,8 @@ if [ "$SECOND_STAGE_ONLY" = "true" ]; then
 	MIRRORS=null:
 else
 	MIRRORS="$DEF_MIRROR"
-	if [ "$3" != "" ]; then
-		MIRRORS="$3"
+	if [ "$USER_MIRROR" != "" ]; then
+		MIRRORS="$USER_MIRROR"
 		MIRRORS="${MIRRORS%/}"
 	fi
 fi
@@ -523,7 +562,7 @@ if am_doing_phase finddebs; then
 
 	work_out_debs
 
-	base=$(without "$base $additional" "$exclude")
+	base=$(without "$base $ADDITIONAL" "$EXCLUDE")
 
 	if [ "$RESOLVE_DEPS" = true ]; then
 		requiredX=$(echo $(echo $required | tr ' ' '\n' | sort | uniq))
@@ -582,6 +621,7 @@ if am_doing_phase first_stage; then
 	if ! am_doing_phase second_stage; then
 		cp "$0"				 "$TARGET/debootstrap/debootstrap"
 		cp $DEBOOTSTRAP_DIR/functions	 "$TARGET/debootstrap/functions"
+		cp $DEBOOTSTRAP_DIR/devices.tar.gz	 "$TARGET/debootstrap/devices.tar.gz"
 		cp $SCRIPT			 "$TARGET/debootstrap/suite-script"
 		echo "$ARCH"			>"$TARGET/debootstrap/arch"
 		echo "$SUITE"			>"$TARGET/debootstrap/suite"
@@ -612,7 +652,7 @@ if am_doing_phase second_stage; then
 	if [ -e "$TARGET/etc/apt/sources.list" ]; then
 		rm -f "$TARGET/etc/apt/sources.list"
 	fi
-	if [ "${MIRRORS#http*://}" != "$MIRRORS" ]; then
+	if [ "${MIRRORS#http://}" != "$MIRRORS" ]; then
 		setup_apt_sources "${MIRRORS%% *}"
 		mv_invalid_to "${MIRRORS%% *}"
 	else
@@ -648,9 +688,4 @@ if am_doing_phase kill_target; then
 		info KILLTARGET "Deleting target directory"
 		rm -rf "$TARGET"
 	fi
-fi
-
-if [ -n "$USE_BOOTFLOPPIES_INTERACTION" ] ; then
-	echo "I: debootstrap: Successfully completed" # goes to /dev/tty4
-	sleep 1 || true # give the user a second to see the success notice.
 fi

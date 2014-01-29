@@ -2,11 +2,40 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdarg.h>
+#include <errno.h>
 
 #define MAX_LINE 1000
 #define MAX_PKGS 100
 
 char *checksum_field=NULL;
+
+static void oom_die(void)
+{
+    fputs("Out of memory!\n", stderr);
+    exit(1);
+}
+
+static char *xvasprintf(const char *fmt, va_list ap) {
+    char *ret;
+
+    if (vasprintf (&ret, fmt, ap) < 0) {
+        if (errno == ENOMEM)
+            oom_die();
+        return NULL;
+    }
+    return ret;
+}
+
+static char *xasprintf(const char *fmt, ...) {
+    va_list ap;
+    char *ret;
+
+    va_start(ap, fmt);
+    ret = xvasprintf(fmt, ap);
+    va_end(ap);
+    return ret;
+}
 
 static char *fieldcpy(char *dst, char *fld) {
     while (*fld && *fld != ':') 
@@ -17,16 +46,36 @@ static char *fieldcpy(char *dst, char *fld) {
     return strcpy(dst, fld);
 }
 
+static void outputdeps(char *deps) {
+    char *pch = deps;
+
+    while (1) {
+        while (isspace(*pch)) pch++;
+        if (!*pch) break;
+
+        while (*pch && *pch != '(' && *pch != '|' && *pch != ','
+               && !isspace(*pch))
+        {
+            fputc(*pch++, stdout);
+        }
+        fputc('\n', stdout);
+        while (*pch && *pch++ != ',') (void)NULL;
+    }
+}
+
 static void dogetdeps(char *pkgsfile, char **in_pkgs, int pkgc) {
     char buf[MAX_LINE];
     char cur_pkg[MAX_LINE];
     char cur_deps[MAX_LINE];
+    char cur_predeps[MAX_LINE];
+    char prev_pkg[MAX_LINE];
     char *pkgs[MAX_PKGS];
     int i;
     int skip;
     FILE *f;
+    int output_pkg = -1;
 
-    cur_pkg[0] = cur_deps[0] = '\0';
+    cur_pkg[0] = cur_deps[0] = cur_predeps[0] = prev_pkg[0] = '\0';
 
     for (i = 0; i < pkgc; i++) pkgs[i] = in_pkgs[i];
 
@@ -43,37 +92,36 @@ static void dogetdeps(char *pkgsfile, char **in_pkgs, int pkgc) {
             int any = 0;
             skip = 1;
             fieldcpy(cur_pkg, buf);
+            if (strcmp(cur_pkg, prev_pkg) != 0) {
+                if (output_pkg != -1)
+                    pkgs[output_pkg] = NULL;
+                if (cur_deps[0])
+                    outputdeps(cur_deps);
+                if (cur_predeps[0])
+                    outputdeps(cur_predeps);
+                strcpy(prev_pkg, cur_pkg);
+            }
+            cur_deps[0] = cur_predeps[0] = '\0';
+            output_pkg = -1;
 	    for (i = 0; i < pkgc; i++) {
 		if (!pkgs[i]) continue;
 		any = 1;
                 if (strcmp(cur_pkg, pkgs[i]) == 0) {
                     skip = 0;
-                    pkgs[i] = NULL;
+                    output_pkg = i;
                     break;
                 }
             }
             if (!any) break;
-        } else if (!skip && 
-            (strncasecmp(buf, "Depends:", 8) == 0 || 
-             strncasecmp(buf, "Pre-Depends:", 12) == 0)) 
-        {
-            char *pch;
+        } else if (!skip && strncasecmp(buf, "Depends:", 8) == 0)
             fieldcpy(cur_deps, buf);
-            pch = cur_deps;
-            while (1) {
-                while (isspace(*pch)) pch++;
-                if (!*pch) break;
-
-                while (*pch && *pch != '(' && *pch != '|' && *pch != ','
-                       && !isspace(*pch))
-                {
-                    fputc(*pch++, stdout);
-                }
-                fputc('\n', stdout);
-                while (*pch && *pch++ != ',') (void)NULL;
-            }
-        }
+        else if (!skip && strncasecmp(buf, "Pre-Depends:", 12) == 0)
+            fieldcpy(cur_predeps, buf);
     }
+    if (cur_deps[0])
+        outputdeps(cur_deps);
+    if (cur_predeps[0])
+        outputdeps(cur_predeps);
     fclose(f);
 }
 
@@ -88,11 +136,14 @@ static void dopkgmirrorpkgs(int uniq, char *mirror, char *pkgsfile,
     char cur_size[MAX_LINE];
     char cur_checksum[MAX_LINE];
     char cur_filename[MAX_LINE];
+    char prev_pkg[MAX_LINE];
     char *pkgs[MAX_PKGS];
     int i;
     FILE *f;
+    char *output = NULL;
+    int output_pkg = -1;
 
-    cur_pkg[0] = cur_ver[0] = cur_arch[0] = cur_filename[0] = '\0';
+    cur_field[0] = cur_pkg[0] = cur_ver[0] = cur_arch[0] = cur_filename[0] = prev_pkg[0] = '\0';
 
     for (i = 0; i < pkgc; i++) pkgs[i] = in_pkgs[i];
 
@@ -108,6 +159,16 @@ static void dopkgmirrorpkgs(int uniq, char *mirror, char *pkgsfile,
 	}
         if (strncasecmp(buf, "Package:", 8) == 0) {
             fieldcpy(cur_pkg, buf);
+            if (strcmp(cur_pkg, prev_pkg) != 0) {
+                if (output)
+                    fputs(output, stdout);
+                if (uniq && output_pkg != -1)
+                    pkgs[output_pkg] = NULL;
+                strcpy(prev_pkg, cur_pkg);
+            }
+            free(output);
+            output = NULL;
+            output_pkg = -1;
         } else if (strncasecmp(buf, "Version:", 8) == 0) {
             fieldcpy(cur_ver, buf);
         } else if (strncasecmp(buf, "Architecture:", 13) == 0) {
@@ -125,14 +186,20 @@ static void dopkgmirrorpkgs(int uniq, char *mirror, char *pkgsfile,
 		if (!pkgs[i]) continue;
 		any = 1;
                 if (strcmp(cur_field, pkgs[i]) == 0) {
-                    printf("%s %s %s %s %s %s %s\n", cur_pkg, cur_ver, cur_arch, mirror, cur_filename, cur_checksum, cur_size);
-                    if (uniq) pkgs[i] = NULL;
+                    free(output);
+                    output = xasprintf("%s %s %s %s %s %s %s\n", cur_pkg, cur_ver, cur_arch, mirror, cur_filename, cur_checksum, cur_size);
+                    output_pkg = i;
 		    break;
 		}
             }
 	    if (!any) break;
+            cur_field[0] = '\0';
         }
     }
+    if (output)
+        fputs(output, stdout);
+    if (uniq && output_pkg != -1)
+        pkgs[output_pkg] = NULL;
     fclose(f);
 
     /* any that weren't found are returned as "pkg -" */
@@ -143,12 +210,6 @@ static void dopkgmirrorpkgs(int uniq, char *mirror, char *pkgsfile,
             }
         }
     }
-}
-
-static void oom_die(void)
-{
-    fprintf(stderr, "Out of memory!\n");
-    exit(1);
 }
 
 static void dopkgstanzas(char *pkgsfile, char **pkgs, int pkgc)

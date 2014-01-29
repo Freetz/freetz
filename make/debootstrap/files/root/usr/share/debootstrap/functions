@@ -5,6 +5,19 @@ smallyes() {
 	while echo "$YES" 2>/dev/null ; do : ; done
 }
 
+in_path () {
+	local OLD_IFS="$IFS"
+	IFS=":"
+	for dir in $PATH; do
+		if [ -x "$dir/$1" ]; then
+			IFS="$OLD_IFS"
+			return 0
+		fi
+	done
+	IFS="$OLD_IFS"
+	return 1
+}
+
 ############################################################### interaction
 
 error () {
@@ -61,16 +74,13 @@ progress_next () {
 }
 
 wgetprogress () {
-	[ ! "$verbose" ] && QSWITCH="-q"
+	[ ! "$VERBOSE" ] && QSWITCH="-q"
 	local ret=0
 	if [ "$USE_DEBIANINSTALLER_INTERACTION" ] && [ "$PROGRESS_NEXT" ]; then
-		wget "$@" >/dev/null 2>&1 | $PKGDETAILS "WGET%" $PROGRESS_NOW $PROGRESS_NEXT $PROGRESS_END >&3
-		ret=$?
-	elif [ "$USE_BOOTFLOPPIES_INTERACTION" ] && [ "$PROGRESS_NEXT" ]; then
-		wget "$@" >/dev/null 2>&1 | $PKGDETAILS "WGET%" $PROGRESS_NOW $PROGRESS_NEXT $PROGRESS_END "$PROGRESS_WHAT" >&3
+		wget "$@" 2>&1 >/dev/null | $PKGDETAILS "WGET%" $PROGRESS_NOW $PROGRESS_NEXT $PROGRESS_END >&3
 		ret=$?
 	else
-		wget $QSWITCH "$@"
+		wget $QSWITCH "$@" 
 		ret=$?
 	fi
 	return $ret
@@ -90,12 +100,6 @@ progress () {
 		(echo "P: $now $end $name"
 		for x in "$@"; do echo "PA: $x"; done
 		echo "PF: $fmt") >&3
-	elif [ "$USE_BOOTFLOPPIES_INTERACTION" ]; then
-		PROGRESS_NOW="$now"
-		PROGRESS_END="$end"
-		PROGRESS_WHAT="`printf "$fmt" "$@"`"
-		PROGRESS_NEXT=""
-		printf "P: %s %s %s\n" $now $end "$PROGRESS_WHAT" >&3
 	fi
 }
 
@@ -191,6 +195,21 @@ download_style () {
 	esac
 }
 
+keyring () {
+	if [ -z "$KEYRING" ]; then
+		if [ -e "$1" ]; then
+			KEYRING="$1"
+		elif [ -z "$DISABLE_KEYRING" ]; then
+			if [ -n "$DEF_HTTPS_MIRROR" ] && [ -z "$USER_MIRROR" ] ; then
+				info KEYRING "Keyring file not available at %s; switching to https mirror %s" "$1" "$DEF_HTTPS_MIRROR"
+				USER_MIRROR="$DEF_HTTPS_MIRROR"
+			else
+				warning KEYRING "Cannot check Release signature; keyring file not available %s" "$1"
+			fi
+		fi
+	fi
+}
+
 ########################################################## variant handling
 
 doing_variant () {
@@ -228,11 +247,32 @@ mirror_style () {
 	export DOWNLOAD_DEBS
 }
 
+force_md5 () {
+	DEBOOTSTRAP_CHECKSUM_FIELD=MD5SUM
+	export DEBOOTSTRAP_CHECKSUM_FIELD
+}
+
 verify_checksum () {
 	# args: dest checksum size
 	local expchecksum="$2"
 	local expsize="$3"
-	relchecksum=`sha${SHA_SIZE}sum < "$1" | sed 's/ .*$//'`
+	if [ "$DEBOOTSTRAP_CHECKSUM_FIELD" = "MD5SUM" ]; then
+		if in_path md5sum; then
+			relchecksum=`md5sum < "$1" | sed 's/ .*$//'`
+		elif in_path md5; then
+			relchecksum=`md5 < "$1"`
+		else
+			error 1 SIGCHECK "Cannot check md5sum"
+		fi
+	else
+		if in_path "sha${SHA_SIZE}sum"; then
+			relchecksum=`sha${SHA_SIZE}sum < "$1" | sed 's/ .*$//'`
+		elif in_path "sha${SHA_SIZE}"; then
+			relchecksum=`sha${SHA_SIZE} < "$1"`
+		else
+			error 1 SIGCHECK "Cannot check sha${SHA_SIZE}sum"
+		fi
+	fi
 	relsize=`wc -c < "$1"`
 	if [ "$expsize" -ne "$relsize" ] || [ "$expchecksum" != "$relchecksum" ]; then
 		return 1
@@ -244,8 +284,10 @@ get () {
 	# args: from dest 'nocache'
 	# args: from dest [checksum size] [alt {checksum size type}]
 	local displayname
+	local versionname
 	if [ "${2%.deb}" != "$2" ]; then
 		displayname="$(echo "$2" | sed 's,^.*/,,;s,_.*$,,')"
+		versionname="$(echo "$2" | sed 's,^.*/,,' | cut -d_ -f2)"
 	else
 		displayname="$(echo "$1" | sed 's,^.*/,,')"
 	fi
@@ -256,7 +298,7 @@ get () {
 		elif [ "$3" = nocache ]; then
 			rm -f "$2"
 		else
-			info VALIDATING "Validating %s" "$displayname"
+			info VALIDATING "Validating %s %s" "$displayname" "$versionname"
 			if verify_checksum "$2" "$3" "$4"; then
 				return 0
 			else
@@ -283,6 +325,7 @@ get () {
 		local typ="$(eval echo \${$(( $a+2 ))})"
 		local from
 		local dest
+		local iters=0
 
 		case "$typ" in
 		    bz2) from="$1.bz2"; dest="$2.bz2" ;;
@@ -298,24 +341,29 @@ get () {
 			dest2="${dest2%/*}/partial/${dest2##*/}"
 		fi
 
-		info RETRIEVING "Retrieving %s" "$displayname"
-		if ! just_get "$from" "$dest2"; then continue; fi
-		if [ "$checksum" != "" ]; then
-			info VALIDATING "Validating %s" "$displayname"
-			if verify_checksum "$dest2" "$checksum" "$siz"; then
-				checksum=""
+		while [ "$iters" -lt 10 ]; do
+			info RETRIEVING "Retrieving %s %s" "$displayname" "$versionname"
+			if ! just_get "$from" "$dest2"; then continue 2; fi
+			if [ "$checksum" != "" ]; then
+				info VALIDATING "Validating %s %s" "$displayname" "$versionname"
+				if verify_checksum "$dest2" "$checksum" "$siz"; then
+					checksum=""
+				fi
 			fi
-		fi
-		if [ -z "$checksum" ]; then
-			[ "$dest2" = "$dest" ] || mv "$dest2" "$dest"
-			case "$typ" in
-			    gz)  gunzip "$dest" ;;
-			    bz2) bunzip2 "$dest" ;;
-			esac
-			return 0
-		else
-			warning CORRUPTFILE "%s was corrupt" "$from"
-		fi
+			if [ -z "$checksum" ]; then
+				[ "$dest2" = "$dest" ] || mv "$dest2" "$dest"
+				case "$typ" in
+				    gz)  gunzip "$dest" ;;
+				    bz2) bunzip2 "$dest" ;;
+				esac
+				return 0
+			else
+				rm -f "$dest2"
+				warning RETRYING "Retrying failed download of %s" "$from"
+				iters="$(($iters + 1))"
+			fi
+		done
+		warning CORRUPTFILE "%s was corrupt" "$from"
 	done
 	return 1
 }
@@ -331,13 +379,6 @@ just_get () {
 		# http/ftp mirror
 		if wgetprogress -O "$dest" "$from"; then
 			return 0
-		elif [ -s "$dest" ]; then
-			local iters=0
-			while [ "$iters" -lt 3 ]; do
-				warning RETRYING "Retrying failed download of %s" "$from"
-				if wgetprogress -c -O "$dest" "$from"; then break; fi
-				iters="$(($iters + 1))"
-			done
 		else
 			rm -f "$dest"
 			return 1
@@ -346,13 +387,6 @@ just_get () {
 		# http/ftp mirror
 		if wgetprogress $CHECKCERTIF $CERTIFICATE $PRIVATEKEY -O "$dest" "$from"; then
 			return 0
-		elif [ -s "$dest" ]; then
-			local iters=0
-			while [ "$iters" -lt 3 ]; do
-				warning RETRYING "Retrying failed download of %s" "$from"
-				if wgetprogress $CHECKCERTIF $CERTIFICATE $PRIVATEKEY -c -O "$dest" "$from"; then break; fi
-				iters="$(($iters + 1))"
-			done
 		else
 			rm -f "$dest"
 			return 1
@@ -445,18 +479,42 @@ apt_dest () {
 get_release_checksum () {
 	local reldest="$1"
 	local path="$2"
-	sed -n "/^[Sa][Hh][Aa]$SHA_SIZE:/,/^[^ ]/p" < "$reldest" | \
+	if [ "$DEBOOTSTRAP_CHECKSUM_FIELD" = MD5SUM ]; then
+		local match="^[Mm][Dd]5[Ss][Uu][Mm]"
+	else
+		local match="^[Ss][Hh][Aa]$SHA_SIZE:"
+	fi
+	sed -n "/$match/,/^[^ ]/p" < "$reldest" | \
 		while read a b c; do
 			if [ "$c" = "$path" ]; then echo "$a $b"; fi
 		done | head -n 1
 }
 
+extract_release_components () {
+	local reldest="$1"; shift
+	TMPCOMPONENTS="$(sed -n 's/Components: *//p' "$reldest")"
+	for c in $TMPCOMPONENTS ; do
+		eval "
+		case \"\$c\" in
+		    $USE_COMPONENTS)
+			COMPONENTS=\"\$COMPONENTS \$c\"
+			;;
+		esac
+		"
+	done
+	COMPONENTS="$(echo $COMPONENTS)"
+	if [ -z "$COMPONENTS" ]; then
+		mv "$reldest" "$reldest.malformed"
+		error 1 INVALIDREL "Invalid Release file, no valid components"
+	fi
+}
+
 download_release_sig () {
 	local m1="$1"
 	local reldest="$2"
-	local relsigdest="$TARGET/$($DLDEST rel "$SUITE" "$m1" "dists/$SUITE/Release.gpg")"
+	local relsigdest="$3"
 
-	if [ -n "$KEYRING" ]; then
+	if [ -n "$KEYRING" ] && [ -z "$DISABLE_KEYRING" ]; then
 		progress 0 100 DOWNRELSIG "Downloading Release file signature"
 		progress_next 50
 		get "$m1/dists/$SUITE/Release.gpg" "$relsigdest" nocache ||
@@ -476,30 +534,17 @@ download_release_sig () {
 download_release_indices () {
 	local m1="${MIRRORS%% *}"
 	local reldest="$TARGET/$($DLDEST rel "$SUITE" "$m1" "dists/$SUITE/Release")"
+	local relsigdest
 	progress 0 100 DOWNREL "Downloading Release file"
 	progress_next 100
 	get "$m1/dists/$SUITE/Release" "$reldest" nocache ||
 		error 1 NOGETREL "Failed getting release file %s" "$m1/dists/$SUITE/Release"
-
-	TMPCOMPONENTS="$(sed -n 's/Components: *//p' "$reldest")"
-	for c in $TMPCOMPONENTS ; do
-		eval "
-		case \"\$c\" in
-		    $USE_COMPONENTS)
-			COMPONENTS=\"\$COMPONENTS \$c\"
-			;;
-		esac
-		"
-	done
-	COMPONENTS="$(echo $COMPONENTS)"
-
-	if [ -z "$COMPONENTS" ]; then
-		mv "$reldest" "$reldest.malformed"
-		error 1 INVALIDREL "Invalid Release file, no valid components"
-	fi
+	relsigdest="$TARGET/$($DLDEST rel "$SUITE" "$m1" "dists/$SUITE/Release.gpg")"
 	progress 100 100 DOWNREL "Downloading Release file"
 
-	download_release_sig "$m1" "$reldest"
+	download_release_sig "$m1" "$reldest" "$relsigdest"
+
+	extract_release_components $reldest
 
 	local totalpkgs=0
 	for c in $COMPONENTS; do
@@ -510,9 +555,9 @@ download_release_indices () {
 		local i=
 		if [ "$normi" != "" ]; then
 			i="$normi"
-		elif [ -x /bin/bunzip2 ] && [ "$bz2i" != "" ]; then
+		elif in_path bunzip2 && [ "$bz2i" != "" ]; then
 			i="$bz2i"
-		elif [ -x /bin/gunzip ] && [ "$gzi" != "" ]; then
+		elif in_path gunzip && [ "$gzi" != "" ]; then
 			i="$gzi"
 		fi
 		if [ "$i" != "" ]; then
@@ -538,11 +583,11 @@ download_release_indices () {
 			ext="$ext $normi ."
 			i="$normi"
 		fi
-		if [ -x /bin/bunzip2 ] && [ "$bz2i" != "" ]; then
+		if in_path bunzip2 && [ "$bz2i" != "" ]; then
 			ext="$ext $bz2i bz2"
 			i="${i:-$bz2i}"
 		fi
-		if [ -x /bin/gunzip ] && [ "$gzi" != "" ]; then
+		if in_path gunzip && [ "$gzi" != "" ]; then
 			ext="$ext $gzi gz"
 			i="${i:-$gzi}"
 		fi
@@ -598,7 +643,8 @@ download_debs () {
 					dloaddebs="$(($dloaddebs + $size))"
 					echo >>$TARGET/debootstrap/debpaths "$p $debdest"
 				else
-					warning COULDNTDL "Couldn't download package %s" "$p"
+					warning COULDNTDL "Couldn't download package %s (ver %s arch %s)" "$p" "$ver" "$arc"
+					leftover="$leftover $p"
 				fi
 			fi
 		done
@@ -676,7 +722,7 @@ download_main_indices () {
 	    for c in $COMPONENTS; do
 		local path="dists/$SUITE/$c/binary-$ARCH/Packages"
 		local pkgdest="$TARGET/$($DLDEST pkg "$SUITE" "$c" "$ARCH" "$m" "$path")"
-		if [ -x /bin/gunzip ] && get "$m/${path}.gz" "${pkgdest}.gz"; then
+		if in_path gunzip && get "$m/${path}.gz" "${pkgdest}.gz"; then
 			rm -f "$pkgdest"
 			gunzip "$pkgdest.gz"
 		elif get "$m/$path" "$pkgdest"; then
@@ -779,7 +825,7 @@ extract_ar_deb_data () {
 	if type $cat_cmd >/dev/null 2>&1; then
 		ar -p "$pkg" "$tarball" | $cat_cmd | tar -xf -
 	else
-		error 1 UNPACKCMDUNVL "The $cat_cmd is not available on the system"
+		error 1 UNPACKCMDUNVL "Extracting %s requires the %s command, which is not available" "$pkg" "$cat_cmd"
 	fi
 }
 
@@ -846,6 +892,18 @@ in_target_failmsg () {
 	shift; shift; shift
 	if ! $CHROOT_CMD "$@"; then
 		warning "$code" "$msg" "$arg"
+		# Try to point user at actual failing package.
+		msg="See %s for details"
+		if [ -e "$TARGET/debootstrap/debootstrap.log" ]; then
+			arg="$TARGET/debootstrap/debootstrap.log"
+			local pkg="$(grep '^dpkg: error processing ' "$TARGET/debootstrap/debootstrap.log" | head -n 1 | cut -d ' ' -f 4)"
+			if [ -n "$pkg" ]; then
+				msg="$msg (possibly the package $pkg is at fault)"
+			fi
+		else
+			arg="the log"
+		fi
+		warning "$code" "$msg" "$arg"
 		return 1
 	fi
 	return 0
@@ -904,8 +962,11 @@ setup_etc () {
 UMOUNT_DIRS=
 
 umount_exit_function () {
+	local realdir
 	for dir in $UMOUNT_DIRS; do
-		umount "$TARGET/${dir#/}" || true
+		realdir="$(in_target_nofail readlink -f "$dir")"
+		[ "$realdir" ] || continue
+		( cd / ; umount "$TARGET/${realdir#/}" ) || true
 	done
 }
 
@@ -925,14 +986,18 @@ clear_mtab () {
 }
 
 setup_proc () {
-	case "$ARCH" in
-	    kfreebsd-*)
+	case "$HOST_OS" in
+	    *freebsd*)
 		umount_on_exit /dev
 		umount_on_exit /proc
 		umount "$TARGET/proc" 2>/dev/null || true
-		in_target mount -t linprocfs proc /proc
+		if [ "$HOST_OS" = kfreebsd ]; then
+			in_target mount -t linprocfs proc /proc
+		else
+			mount -t linprocfs proc $TARGET/proc
+		fi
 		;;
-	    hurd-*)
+	    hurd*)
 		;;
 	    *)
 		umount_on_exit /dev/pts
@@ -959,10 +1024,17 @@ setup_proc_fakechroot () {
 }
 
 setup_devices () {
-	case "$ARCH" in
-	    kfreebsd-*)
+	if doing_variant fakechroot; then
+		setup_devices_fakechroot
+		return 0
+	fi
+
+	case "$HOST_OS" in
+	    kfreebsd*)
 		in_target mount -t devfs devfs /dev ;;
-	    hurd-*)
+	    freebsd)
+		mount -t devfs devfs $TARGET/dev ;;
+	    hurd*)
 		setup_devices_hurd ;;
 	    *)
 		if [ -e "$DEVICES_TARGZ" ]; then
@@ -1010,40 +1082,52 @@ setup_dselect_method () {
 # For the debootstrap udeb, pkgdetails is provided by the bootstrap-base
 # udeb, so the pkgdetails API needs to be kept in sync with that.
 
-if [ -x /usr/bin/perl ]; then
+if in_path perl; then
 	PKGDETAILS=pkgdetails_perl
 
 	pkgdetails_field () {
 		# uniq field mirror Packages values...
 		perl -le '
 $unique = shift @ARGV; $field = lc(shift @ARGV); $mirror = shift @ARGV;
-$cnt = length(@ARGV);
 %fields = map { $_, 0 } @ARGV;
+$prevpkg = "";
 while (<STDIN>) {
 	chomp;
 	next if (/^ /);
 	if (/^([^:]*:)\s*(.*)$/) {
 		$f = lc($1); $v = $2;
-		$pkg = $v if ($f eq "package:");
+		if ($f eq "package:") {
+			$last = 0;
+			$pkg = $v;
+			if ($pkg ne $prevpkg) {
+				print $output if defined $output;
+				if ($unique && defined $output_val) {
+					delete $fields{$output_val};
+					$last = 1 unless keys %fields;
+				}
+				$prevpkg = $pkg;
+			}
+			undef $output;
+			undef $output_val;
+			last if $last;
+		}
 		$ver = $v if ($f eq "version:");
 		$arc = $v if ($f eq "architecture:");
 		$fil = $v if ($f eq "filename:");
-		$chk = $v if ($f eq lc($ENV{DEBOOTSTRAP_CHECKSUM_FIELD}).":");
+		$chk = $v if (lc $f eq lc($ENV{DEBOOTSTRAP_CHECKSUM_FIELD}).":");
 		$siz = $v if ($f eq "size:");
 		$val = $v if ($f eq $field);
 	} elsif (/^$/) {
 		if (defined $val && defined $fields{$val}) {
-			$cnt++;
-			printf "%s %s %s %s %s %s %s\n",
+			$output = sprintf "%s %s %s %s %s %s %s",
 			 $pkg, $ver, $arc, $mirror, $fil, $chk, $siz;
-			if ($unique) {
-				delete $fields{$val};
-				last if (--$cnt <= 0);
-			}
+			$output_val = $val;
 		}
 		undef $val;
 	}
 }
+print $output if defined $output;
+delete $fields{$output_val} if $unique && defined $output_val;
 for $v (keys %fields) {
 	printf ("%s -\n", $v) if ($unique);
 }
@@ -1069,17 +1153,32 @@ while (read STDIN, $x, 1) {
 		elif [ "$1" = "GETDEPS" ]; then
 			local pkgdest="$2"; shift; shift
 			perl -e '
+$prevpkg = "";
+@d = ();
 while (<STDIN>) {
 	chomp;
-	$in = 1 if (/^Package: (.*)$/ && grep {$_ eq $1} @ARGV);
+	if (/^Package: (.*)$/) {
+		$pkg = $1;
+		if ($pkg ne $prevpkg) {
+			for my $d (@d) {
+				print "$d\n";
+			}
+		}
+		$prevpkg = $1;
+		@d = ();
+	}
+	$in = 1 if (grep {$_ eq $pkg} @ARGV);
 	$in = 0 if (/^$/);
 	if ($in and (/^Depends: (.*)$/ or /^Pre-Depends: (.*)$/)) {
 		for $d (split /\s*,\s*/, $1) {
 			$d =~ s/\s*[|].*$//;
 			$d =~ s/\s*[(].*[)]\s*//;
-			print "$d\n";
+			push @d, $d;
 		}
 	}
+}
+for my $d (@d) {
+	print "$d\n";
 }' <"$pkgdest" "$@" | sort | uniq
 		elif [ "$1" = "PKGS" ]; then
 			local m="$2"
@@ -1125,19 +1224,24 @@ fi
 resolve_deps () {
 	local m1="${MIRRORS%% *}"
 
-	# XXX: I can't think how to deal well with dependency resolution and
-	#      lots of Packages files. -- aj 2005/06/12
-
-	c="${COMPONENTS%% *}"
-	local path="dists/$SUITE/$c/binary-$ARCH/Packages"
-	local pkgdest="$TARGET/$($DLDEST pkg "$SUITE" "$c" "$ARCH" "$m1" "$path")"
-
 	local PKGS="$*"
 	local ALLPKGS="$PKGS";
 	local ALLPKGS2="";
 	while [ "$PKGS" != "" ]; do
-		PKGS=$("$PKGDETAILS" GETDEPS "$pkgdest" $PKGS)
-		PKGS=$("$PKGDETAILS" PKGS REAL "$pkgdest" $PKGS | sed -n 's/ .*REAL.*$//p')
+		local NEWPKGS=""
+		for c in $COMPONENTS; do
+			local path="dists/$SUITE/$c/binary-$ARCH/Packages"
+			local pkgdest="$TARGET/$($DLDEST pkg "$SUITE" "$c" "$ARCH" "$m1" "$path")"
+			NEWPKGS="$NEWPKGS $("$PKGDETAILS" GETDEPS "$pkgdest" $PKGS)"
+		done
+		PKGS=$(echo "$PKGS $NEWPKGS" | tr ' ' '\n' | sort | uniq)
+		local REALPKGS=""
+		for c in $COMPONENTS; do
+			local path="dists/$SUITE/$c/binary-$ARCH/Packages"
+			local pkgdest="$TARGET/$($DLDEST pkg "$SUITE" "$c" "$ARCH" "$m1" "$path")"
+			REALPKGS="$REALPKGS $("$PKGDETAILS" PKGS REAL "$pkgdest" $PKGS | sed -n 's/ .*REAL.*$//p')"
+		done
+		PKGS="$REALPKGS"
 		ALLPKGS2=$(echo "$PKGS $ALLPKGS" | tr ' ' '\n' | sort | uniq)
 		PKGS=$(without "$ALLPKGS2" "$ALLPKGS")
 		ALLPKGS="$ALLPKGS2"
@@ -1175,8 +1279,8 @@ get_next_predep () {
 check_sane_mount () {
 	mkdir -p "$1"
 
-	case "$ARCH" in
-	    kfreebsd-*|hurd-*)
+	case "$HOST_OS" in
+	    *freebsd*|hurd*)
 		;;
 	    *)
 		mknod "$1/test-dev-null" c 1 3 || return 1
@@ -1188,8 +1292,11 @@ check_sane_mount () {
 		;;
 	esac
 
+	SH=/bin/sh
+	[ -x $SH ] || SH=`which sh`
+
 	cat > "$1/test-exec" <<EOF
-#! /bin/sh
+#! $SH
 :
 EOF
 	chmod +x "$1/test-exec"
@@ -1272,6 +1379,10 @@ on_exit () {
 ############################################################## fakechroot tools
 
 install_fakechroot_tools () {
+	if [ "$VARIANT" = "fakechroot" ]; then
+		export PATH=/usr/sbin:/sbin:$PATH
+	fi
+
 	mv "$TARGET/sbin/ldconfig" "$TARGET/sbin/ldconfig.REAL"
 	echo \
 "#!/bin/sh
