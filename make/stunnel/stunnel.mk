@@ -8,16 +8,9 @@ $(PKG)_STARTLEVEL=81
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 
-$(PKG)_DEPENDS_ON := zlib
-ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_USE_CYASSL)),y)
-$(PKG)_DEPENDS_ON += cyassl
-$(PKG)_LIBS := -lutil -lcyassl -lz -lm -lpthread
-$(PKG)_CONFIGURE_ENV += OPENSSL_ALTERNATIVE=cyassl
-else
+$(PKG)_DEPENDS_ON := openssl zlib
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
-$(PKG)_DEPENDS_ON += openssl
 $(PKG)_LIBS := -lutil -lssl -lcrypto -lz -ldl -lpthread
-endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_STATIC)),y)
 $(PKG)_LDFLAGS := -all-static
@@ -33,7 +26,6 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_STUNNEL_STATIC
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_STUNNEL_USE_CYASSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
 $(PKG_SOURCE_DOWNLOAD)
