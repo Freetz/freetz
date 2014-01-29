@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -14340,51 +14340,25 @@
+@@ -14346,51 +14346,25 @@
  done
  
      OLDLIBS="$LIBS"
@@ -68,7 +68,7 @@
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -14394,35 +14368,34 @@
+@@ -14400,35 +14374,34 @@
  #ifdef __cplusplus
  extern "C"
  #endif
@@ -112,6 +112,43 @@
  
      LIBS="$OLDLIBS"
  
+--- src/base.h
++++ src/base.h
+@@ -323,8 +323,10 @@
+ 	/* SNI per host: with COMP_SERVER_SOCKET, COMP_HTTP_SCHEME, COMP_HTTP_HOST */
+ 	EVP_PKEY *ssl_pemfile_pkey;
+ 	X509 *ssl_pemfile_x509;
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 	STACK_OF(X509_NAME) *ssl_ca_file_cert_names;
+ #endif
++#endif
+ } specific_config;
+ 
+ /* the order of the items should be the same as they are processed
+--- src/configfile.c
++++ src/configfile.c
+@@ -344,8 +344,10 @@
+ #endif
+ 	PATCH(ssl_ca_file);
+ #ifdef USE_OPENSSL
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 	PATCH(ssl_ca_file_cert_names);
+ #endif
++#endif
+ 	PATCH(ssl_cipher_list);
+ 	PATCH(ssl_dh_file);
+ 	PATCH(ssl_ec_curve);
+@@ -419,8 +421,10 @@
+ 			} else if (buffer_is_equal_string(du->key, CONST_STR_LEN("ssl.ca-file"))) {
+ 				PATCH(ssl_ca_file);
+ #ifdef USE_OPENSSL
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 				PATCH(ssl_ca_file_cert_names);
+ #endif
++#endif
+ 			} else if (buffer_is_equal_string(du->key, CONST_STR_LEN("ssl.honor-cipher-order"))) {
+ 				PATCH(ssl_honor_cipher_order);
+ 			} else if (buffer_is_equal_string(du->key, CONST_STR_LEN("ssl.empty-fragments"))) {
 --- src/connections.c
 +++ src/connections.c
 @@ -1348,7 +1348,9 @@
@@ -126,7 +163,7 @@
  			if (1 != (SSL_set_fd(con->ssl, cnt))) {
 --- src/network.c
 +++ src/network.c
-@@ -39,6 +39,7 @@
+@@ -40,6 +40,7 @@
  #endif
  
  #ifdef USE_OPENSSL
@@ -134,7 +171,7 @@
  static void ssl_info_callback(const SSL *ssl, int where, int ret) {
  	UNUSED(ret);
  
-@@ -48,6 +49,7 @@
+@@ -49,6 +50,7 @@
  	}
  }
  #endif
@@ -142,7 +179,44 @@
  
  static handler_t network_server_handle_fdevent(server *srv, void *context, int revents) {
  	server_socket *srv_socket = (server_socket *)context;
-@@ -629,7 +631,9 @@
+@@ -137,6 +139,12 @@
+ 	}
+ 
+ 	if (con->conf.ssl_verifyclient) {
++#if (defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
++		log_error_write(
++			srv, __FILE__, __LINE__, "s",
++			"SSL: ssl.verifyclient feature is not available when lighttpd is linked against cyassl"
++		);
++#else
+ 		if (NULL == con->conf.ssl_ca_file_cert_names) {
+ 			log_error_write(srv, __FILE__, __LINE__, "ssb:s", "SSL:",
+ 				"can't verify client without ssl.ca-file for TLS server name", con->tlsext_server_name,
+@@ -152,6 +160,7 @@
+ 			NULL
+ 		);
+ 		SSL_set_verify_depth(ssl, con->conf.ssl_verifyclient_depth);
++#endif
+ 	}
+ 
+ 	return SSL_TLSEXT_ERR_OK;
+@@ -731,6 +740,7 @@
+ 		}
+ 
+ 
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 		if (!buffer_is_empty(s->ssl_ca_file)) {
+ 			s->ssl_ca_file_cert_names = SSL_load_client_CA_file(s->ssl_ca_file->ptr);
+ 			if (NULL == s->ssl_ca_file_cert_names) {
+@@ -738,6 +748,7 @@
+ 						lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)), s->ssl_ca_file);
+ 			}
+ 		}
++#endif
+ 
+ 		if (buffer_is_empty(s->ssl_pemfile) || !s->ssl_enabled) continue;
+ 
+@@ -766,7 +777,9 @@
  		}
  
  		SSL_CTX_set_options(s->ssl_ctx, ssloptions);
@@ -152,30 +226,28 @@
  
  		if (!s->ssl_use_sslv2) {
  			/* disable SSLv2 */
-@@ -727,6 +731,15 @@
- #endif
- #endif
+@@ -878,6 +891,13 @@
+ 		}
  
+ 		if (s->ssl_verifyclient) {
 +#if (defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
 +#	warning client verification is not available when linking against cyassl
-+		if (s->ssl_verifyclient) {
 +			log_error_write(
 +				srv, __FILE__, __LINE__, "s",
 +				"SSL: ssl.verifyclient feature is not available when lighttpd is linked against cyassl"
 +			);
-+		}
 +#else
- 		if (!buffer_is_empty(s->ssl_ca_file)) {
- 			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
- 				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
-@@ -758,6 +771,7 @@
- 				"SSL: You specified ssl.verifyclient.activate but no ca_file"
+ 			if (NULL == s->ssl_ca_file_cert_names) {
+ 				log_error_write(srv, __FILE__, __LINE__, "s",
+ 					"SSL: You specified ssl.verifyclient.activate but no ca_file"
+@@ -891,6 +911,7 @@
+ 				NULL
  			);
- 		}
+ 			SSL_CTX_set_verify_depth(s->ssl_ctx, s->ssl_verifyclient_depth);
 +#endif
+ 		}
  
- 		if (SSL_CTX_use_certificate_file(s->ssl_ctx, s->ssl_pemfile->ptr, SSL_FILETYPE_PEM) < 0) {
- 			log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
+ 		if (SSL_CTX_use_certificate(s->ssl_ctx, s->ssl_pemfile_x509) < 0) {
 --- src/response.c
 +++ src/response.c
 @@ -133,6 +133,9 @@
@@ -196,3 +268,16 @@
  }
  #endif
  
+--- src/server.c
++++ src/server.c
+@@ -316,8 +316,10 @@
+ 			SSL_CTX_free(s->ssl_ctx);
+ 			EVP_PKEY_free(s->ssl_pemfile_pkey);
+ 			X509_free(s->ssl_pemfile_x509);
++#if !(defined(USE_OPENSSL_ALTERNATIVE) && USE_OPENSSL_ALTERNATIVE==cyassl)
+ 			if (NULL != s->ssl_ca_file_cert_names) sk_X509_NAME_pop_free(s->ssl_ca_file_cert_names, X509_NAME_free);
+ #endif
++#endif
+ 			free(s);
+ 		}
+ 		free(srv->config_storage);

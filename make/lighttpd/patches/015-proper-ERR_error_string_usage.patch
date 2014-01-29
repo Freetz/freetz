@@ -113,85 +113,137 @@
  						break;
 --- src/network.c
 +++ src/network.c
-@@ -550,6 +550,10 @@
- 	};
- #endif
+@@ -121,24 +121,27 @@
  
-+#ifdef USE_OPENSSL
-+	char ssl_error_string_buf[256];
-+#endif
-+
- 	struct nb_map {
- 		network_backend_t nb;
- 		const char *name;
-@@ -609,7 +613,7 @@
+ 	/* first set certificate! setting private key checks whether certificate matches it */
+ 	if (!SSL_use_certificate(ssl, con->conf.ssl_pemfile_x509)) {
++		char ssl_error_string_buf[256];
+ 		log_error_write(srv, __FILE__, __LINE__, "ssb:s", "SSL:",
+ 			"failed to set certificate for TLS server name", con->tlsext_server_name,
+-			ERR_error_string(ERR_get_error(), NULL));
++			lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+ 		return SSL_TLSEXT_ERR_ALERT_FATAL;
+ 	}
+ 
+ 	if (!SSL_use_PrivateKey(ssl, con->conf.ssl_pemfile_pkey)) {
++		char ssl_error_string_buf[256];
+ 		log_error_write(srv, __FILE__, __LINE__, "ssb:s", "SSL:",
+ 			"failed to set private key for TLS server name", con->tlsext_server_name,
+-			ERR_error_string(ERR_get_error(), NULL));
++			lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+ 		return SSL_TLSEXT_ERR_ALERT_FATAL;
+ 	}
+ 
+ 	if (con->conf.ssl_verifyclient) {
+ 		if (NULL == con->conf.ssl_ca_file_cert_names) {
++			char ssl_error_string_buf[256];
+ 			log_error_write(srv, __FILE__, __LINE__, "ssb:s", "SSL:",
+ 				"can't verify client without ssl.ca-file for TLS server name", con->tlsext_server_name,
+-				ERR_error_string(ERR_get_error(), NULL));
++				lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+ 			return SSL_TLSEXT_ERR_ALERT_FATAL;
+ 		}
+ 
+@@ -597,9 +600,10 @@
+ 	if (NULL == (s->ssl_pemfile_pkey = evp_pkey_load_pem_file(srv, s->ssl_pemfile->ptr))) return -1;
+ 
+ 	if (!X509_check_private_key(s->ssl_pemfile_x509, s->ssl_pemfile_pkey)) {
++		char ssl_error_string_buf[256];
+ 		log_error_write(srv, __FILE__, __LINE__, "sssb", "SSL:",
+ 				"Private key does not match the certificate public key, reason:",
+-				ERR_error_string(ERR_get_error(), NULL),
++				lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)),
+ 				s->ssl_pemfile);
+ 		return -1;
+ 	}
+@@ -728,24 +732,27 @@
+ 		if (!buffer_is_empty(s->ssl_ca_file)) {
+ 			s->ssl_ca_file_cert_names = SSL_load_client_CA_file(s->ssl_ca_file->ptr);
+ 			if (NULL == s->ssl_ca_file_cert_names) {
++				char ssl_error_string_buf[256];
+ 				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
+-						ERR_error_string(ERR_get_error(), NULL), s->ssl_ca_file);
++						lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)), s->ssl_ca_file);
+ 			}
+ 		}
+ 
+ 		if (buffer_is_empty(s->ssl_pemfile) || !s->ssl_enabled) continue;
  
  		if (NULL == (s->ssl_ctx = SSL_CTX_new(SSLv23_server_method()))) {
++			char ssl_error_string_buf[256];
  			log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
 -					ERR_error_string(ERR_get_error(), NULL));
 +					lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
  			return -1;
  		}
  
-@@ -630,7 +634,7 @@
+ 		/* completely useless identifier; required for client cert verification to work with sessions */
+ 		if (0 == SSL_CTX_set_session_id_context(s->ssl_ctx, (const unsigned char*) CONST_STR_LEN("lighttpd"))) {
++			char ssl_error_string_buf[256];
+ 			log_error_write(srv, __FILE__, __LINE__, "ss:s", "SSL:",
+ 				"failed to set session context",
+-				ERR_error_string(ERR_get_error(), NULL));
++				lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+ 			return -1;
+ 		}
+ 
+@@ -765,8 +772,9 @@
+ 		if (!s->ssl_use_sslv2) {
  			/* disable SSLv2 */
  			if (!(SSL_OP_NO_SSLv2 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv2))) {
++				char ssl_error_string_buf[256];
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
 -						ERR_error_string(ERR_get_error(), NULL));
 +						lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
  				return -1;
  			}
  		}
-@@ -639,7 +643,7 @@
+@@ -774,8 +782,9 @@
+ 		if (!s->ssl_use_sslv3) {
  			/* disable SSLv3 */
  			if (!(SSL_OP_NO_SSLv3 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv3))) {
++				char ssl_error_string_buf[256];
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
 -						ERR_error_string(ERR_get_error(), NULL));
 +						lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
  				return -1;
  			}
  		}
-@@ -648,7 +652,7 @@
+@@ -783,8 +792,9 @@
+ 		if (!buffer_is_empty(s->ssl_cipher_list)) {
  			/* Disable support for low encryption ciphers */
  			if (SSL_CTX_set_cipher_list(s->ssl_ctx, s->ssl_cipher_list->ptr) != 1) {
++				char ssl_error_string_buf[256];
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
 -						ERR_error_string(ERR_get_error(), NULL));
 +						lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
  				return -1;
  			}
  
-@@ -725,18 +729,18 @@
- 		if (!buffer_is_empty(s->ssl_ca_file)) {
- 			if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s->ssl_ca_file->ptr, NULL)) {
- 				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
--						ERR_error_string(ERR_get_error(), NULL), s->ssl_ca_file);
-+						lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)), s->ssl_ca_file);
- 				return -1;
- 			}
- 			if (s->ssl_verifyclient) {
- 				STACK_OF(X509_NAME) *certs = SSL_load_client_CA_file(s->ssl_ca_file->ptr);
- 				if (!certs) {
+@@ -864,8 +874,9 @@
+ 
+ 			if (!buffer_is_empty(s1->ssl_ca_file)) {
+ 				if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s1->ssl_ca_file->ptr, NULL)) {
++					char ssl_error_string_buf[256];
  					log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
--							ERR_error_string(ERR_get_error(), NULL), s->ssl_ca_file);
-+							lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)), s->ssl_ca_file);
- 				}
- 				if (SSL_CTX_set_session_id_context(s->ssl_ctx, (void*) &srv, sizeof(srv)) != 1) {
- 					log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
--						ERR_error_string(ERR_get_error(), NULL));
-+						lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+-							ERR_error_string(ERR_get_error(), NULL), s1->ssl_ca_file);
++							lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)), s1->ssl_ca_file);
  					return -1;
  				}
- 				SSL_CTX_set_client_CA_list(s->ssl_ctx, certs);
-@@ -756,20 +760,20 @@
+ 			}
+@@ -888,21 +899,24 @@
+ 		}
  
- 		if (SSL_CTX_use_certificate_file(s->ssl_ctx, s->ssl_pemfile->ptr, SSL_FILETYPE_PEM) < 0) {
+ 		if (SSL_CTX_use_certificate(s->ssl_ctx, s->ssl_pemfile_x509) < 0) {
++			char ssl_error_string_buf[256];
  			log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
 -					ERR_error_string(ERR_get_error(), NULL), s->ssl_pemfile);
 +					lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)), s->ssl_pemfile);
  			return -1;
  		}
  
- 		if (SSL_CTX_use_PrivateKey_file (s->ssl_ctx, s->ssl_pemfile->ptr, SSL_FILETYPE_PEM) < 0) {
+ 		if (SSL_CTX_use_PrivateKey(s->ssl_ctx, s->ssl_pemfile_pkey) < 0) {
++			char ssl_error_string_buf[256];
  			log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
 -					ERR_error_string(ERR_get_error(), NULL), s->ssl_pemfile);
 +					lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)), s->ssl_pemfile);
@@ -199,6 +251,7 @@
  		}
  
  		if (SSL_CTX_check_private_key(s->ssl_ctx) != 1) {
++			char ssl_error_string_buf[256];
  			log_error_write(srv, __FILE__, __LINE__, "sssb", "SSL:",
  					"Private key does not match the certificate public key, reason:",
 -					ERR_error_string(ERR_get_error(), NULL),
@@ -208,16 +261,11 @@
  		}
 --- src/network_openssl.c
 +++ src/network_openssl.c
-@@ -31,6 +31,8 @@
- 	int ssl_r;
- 	chunk *c;
- 
-+	char ssl_error_string_buf[256];
-+
- 	/* this is a 64k sendbuffer
- 	 *
- 	 * it has to stay at the same location all the time to satisfy the needs
-@@ -106,7 +108,7 @@
+@@ -103,10 +103,11 @@
+ 				case SSL_ERROR_SYSCALL:
+ 					/* perhaps we have error waiting in our error-queue */
+ 					if (0 != (err = ERR_get_error())) {
++						char ssl_error_string_buf[256];
  						do {
  							log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
  									ssl_r, r,
@@ -226,16 +274,26 @@
  						} while((err = ERR_get_error()));
  					} else if (r == -1) {
  						/* no, but we have errno */
-@@ -138,7 +140,7 @@
+@@ -135,10 +136,13 @@
+ 
+ 					/* fall through */
+ 				default:
++					{
++					char ssl_error_string_buf[256];
  					while((err = ERR_get_error())) {
  						log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
  								ssl_r, r,
 -								ERR_error_string(err, NULL));
 +								lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
++					}
  					}
  
  					return  -1;
-@@ -219,7 +221,7 @@
+@@ -216,10 +220,11 @@
+ 					case SSL_ERROR_SYSCALL:
+ 						/* perhaps we have error waiting in our error-queue */
+ 						if (0 != (err = ERR_get_error())) {
++							char ssl_error_string_buf[256];
  							do {
  								log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
  										ssl_r, r,
@@ -244,18 +302,24 @@
  							} while((err = ERR_get_error()));
  						} else if (r == -1) {
  							/* no, but we have errno */
-@@ -251,7 +253,7 @@
+@@ -248,10 +253,13 @@
+ 
+ 						/* fall thourgh */
+ 					default:
++						{
++						char ssl_error_string_buf[256];
  						while((err = ERR_get_error())) {
  							log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
  									ssl_r, r,
 -									ERR_error_string(err, NULL));
 +									lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
++						}
  						}
  
  						return -1;
 --- src/server.c
 +++ src/server.c
-@@ -1562,3 +1562,10 @@
+@@ -1573,3 +1573,10 @@
  
  	return 0;
  }
