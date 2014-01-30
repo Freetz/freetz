@@ -14,7 +14,53 @@ menu "Override options"
 			Necessary means that the regular Freetz mirrors are currently unavailable
 			or the desired package cannot be found on either of them.
 
-	source toolchain/Config.in.override
+
+	config FREETZ_DL_TOOLCHAIN_OVERRIDE
+		bool "Override precompiled toolchain options" if FREETZ_SHOW_EXPERT
+		depends on FREETZ_DOWNLOAD_TOOLCHAIN
+		default n
+		help
+			Enable this to override precompiled-toolchain related options.
+
+	config FREETZ_DL_TOOLCHAIN_SITE
+		string "Download toolchain site"              if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default ""
+
+	config FREETZ_DL_KERNEL_TOOLCHAIN_VERSION
+		string "Kernel toolchain version"             if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "r10510"                              if FREETZ_TARGET_ARCH_BE && FREETZ_KERNEL_GCC_4_7
+		default "r10381"
+
+	config FREETZ_DL_KERNEL_TOOLCHAIN_MD5
+		string "Kernel toolchain MD5"                 if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "bef1bfcad26bca350267f85ad4ec334b"    if FREETZ_TARGET_ARCH_LE && FREETZ_KERNEL_GCC_3_4
+		default "bfb124a63693dc982aaa713325a9ebea"    if FREETZ_TARGET_ARCH_LE && FREETZ_KERNEL_GCC_4_6
+		default "4622c6e00b05f6369ed3d777acb57ad2"    if FREETZ_TARGET_ARCH_BE && FREETZ_KERNEL_GCC_4_6
+		default "78d7f1d221f0f59afa7a65a20bf01209"    if FREETZ_TARGET_ARCH_BE && FREETZ_KERNEL_GCC_4_7
+
+	config FREETZ_DL_TARGET_TOOLCHAIN_VERSION
+		string "Target toolchain version"             if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "r10946"                              if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_28
+		default "r10946"                              if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_29
+		default "r11090"                              if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_33 && FREETZ_KERNEL_VERSION_2_6_32
+		default "r11090"                              if FREETZ_TARGET_ARCH_BE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_33 && FREETZ_KERNEL_VERSION_2_6_32
+		default "r10946"                              if FREETZ_TARGET_ARCH_BE && FREETZ_TARGET_GCC_4_7 && FREETZ_TARGET_UCLIBC_0_9_33
+		default "r10381"
+
+	config FREETZ_DL_TARGET_TOOLCHAIN_MD5
+		string "Target toolchain MD5"                 if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "f6ff57a1a7f43a1167b8eb990c51f78c"    if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_28
+		default "2d83ec723fc35ddcb4caee1911cf3854"    if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_29
+		default "5bf2f39f33f4e9d810f78ab0a5d48c26"    if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_32
+		default "2ca1b8f6888684dbb7dbb8b575733396"    if FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_33 && FREETZ_KERNEL_VERSION_2_6_32
+		default "b3d4da39d502edb1efa35930cd612a8c"    if FREETZ_TARGET_ARCH_BE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_32
+		default "0f312a36c93b4de8b12fbfc97d6f4905"    if FREETZ_TARGET_ARCH_BE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_33 && FREETZ_KERNEL_VERSION_2_6_32
+		default "bf7f3e045f372f09669276c27963f9cd"    if FREETZ_TARGET_ARCH_BE && FREETZ_TARGET_GCC_4_7 && FREETZ_TARGET_UCLIBC_0_9_33
+
+	config FREETZ_DL_TOOLCHAIN_SUFFIX
+		string "Precompiled toolchain suffix"         if FREETZ_DL_TOOLCHAIN_OVERRIDE
+		default "shared-glibc"
+
 
 	config FREETZ_DL_OVERRIDE
 		bool "Override firmware source" if FREETZ_SHOW_EXPERT

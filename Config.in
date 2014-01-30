@@ -291,13 +291,13 @@ menu "Shared libraries"
 endmenu # "Shared libraries" #
 
 
-source kernel/Config.in.kernel
+source config/avm/Config.in.kernel
 comment "Kernel modules (not available, no sources by AVM)"
 	depends on ! FREETZ_REPLACE_MODULE_AVAILABLE
 menu "Kernel modules"
 	visible if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
-	source kernel/Config.in.modules
+	source config/gui/Config.in.modules
 endmenu # "Kernel modules" #
 
 menu "Busybox applets"
