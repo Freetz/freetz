@@ -1,0 +1,229 @@
+###
+### firmware definitions
+###
+
+config FREETZ_REPLACE_KERNEL_AVAILABLE
+	bool
+	depends on \
+		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
+		! ( FREETZ_TYPE_FIRMWARE_LABOR && \
+			!(FREETZ_TYPE_7490) \
+		) && \
+		! FREETZ_TYPE_3272 && \
+		! FREETZ_TYPE_6810 && \
+		! FREETZ_TYPE_6840 && \
+		! FREETZ_TYPE_6842 && \
+		! (FREETZ_TYPE_7340 && FREETZ_TYPE_FIRMWARE_06_XX) && \
+		! (FREETZ_TYPE_7360 && FREETZ_TYPE_FIRMWARE_06_XX) && \
+		! FREETZ_TYPE_7362 && \
+		! (FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_06_XX && !FREETZ_TYPE_LANG_DE) && \
+		! FREETZ_TYPE_7272
+	default y
+	help
+		Select this if source code exactly matching the firmware version used is available for your box.
+
+config FREETZ_REPLACE_MODULE_AVAILABLE
+	bool
+	depends on \
+		FREETZ_REPLACE_KERNEL_AVAILABLE
+#		FREETZ_REPLACE_KERNEL_AVAILABLE || \
+#		( FREETZ_TYPE_FIRMWARE_LABOR && \
+#			!FREETZ_TYPE_3272 && \
+#			!FREETZ_TYPE_7330 \
+#		)
+	default y
+	help
+		Select this if only source code from a previous firmware version is available for your box.
+		Note: Loading of the modules built by Freetz may work or may not!
+
+config FREETZ_AVM_HAS_LABOR
+	bool "Has AVM Labor Firmware"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7490 \
+		)
+	default n
+	help
+		Select this if a labor firmware is available for your box.
+
+config FREETZ_AVM_HAS_FW6XX
+	bool "Has AVM Firmware 06.xx"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_3272 || \
+			FREETZ_TYPE_3370 || \
+			FREETZ_TYPE_3390 || \
+			FREETZ_TYPE_6810 || \
+			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_6842 || \
+			FREETZ_TYPE_7272 || \
+			FREETZ_TYPE_7312 || \
+			FREETZ_TYPE_7320 || \
+			FREETZ_TYPE_7330 || \
+			FREETZ_TYPE_7360_SL || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7362 || \
+			FREETZ_TYPE_7390 || \
+			FREETZ_TYPE_7490 \
+		)) \
+		|| \
+		(  FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7340 || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7360_V2 || \
+			FREETZ_TYPE_7390 \
+		))
+	default n
+	help
+		Select this if a Fritz!OS-06.xx based firmware is available for your box.
+
+config FREETZ_AVM_HAS_FW55X
+	bool "Has AVM Firmware 05.5x"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_3270 || \
+			FREETZ_TYPE_3272 || \
+			FREETZ_TYPE_3370 || \
+			FREETZ_TYPE_3390 || \
+			FREETZ_TYPE_6810 || \
+			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_6842 || \
+			FREETZ_TYPE_7240 || \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7272 || \
+			FREETZ_TYPE_7312 || \
+			FREETZ_TYPE_7320 || \
+			FREETZ_TYPE_7330 || \
+			FREETZ_TYPE_7360_SL || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7362 || \
+			FREETZ_TYPE_7390 || \
+			FREETZ_TYPE_7490 \
+		)) \
+		|| \
+		( FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_3270 || \
+			FREETZ_TYPE_3370 || \
+			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7330_XL || \
+			FREETZ_TYPE_7340 || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7390 \
+		)) \
+		|| \
+		( FREETZ_TYPE_LANG_IT && ( \
+			FREETZ_TYPE_3270_V3 \
+		))
+	default n
+	help
+		Select this if a Fritz!OS-05.5x based firmware is available for your box.
+
+config FREETZ_AVM_HAS_FW52X
+	bool "Has AVM Firmware 05.2x"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_3270 && !FREETZ_TYPE_LANG_IT ) || \
+		FREETZ_TYPE_3370 || \
+		FREETZ_TYPE_6810 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_7240 || \
+		FREETZ_TYPE_7270_16 || \
+		FREETZ_TYPE_7312 || \
+		FREETZ_TYPE_7320 || \
+		FREETZ_TYPE_7330 || \
+		FREETZ_TYPE_7340 || \
+		FREETZ_TYPE_7360_SL || \
+		FREETZ_TYPE_7360_XL || \
+		FREETZ_TYPE_7390
+	default n
+	help
+		Select this if a Fritz!OS-05.2x based firmware is available for your box.
+
+config FREETZ_AVM_HAS_FW4XX
+	bool "Has AVM Firmware 04.xx"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		! FREETZ_AVM_HAS_FW52X && \
+		! FREETZ_AVM_HAS_FW55X && \
+		! FREETZ_AVM_HAS_FW6XX
+	default n
+	help
+		Select this if a 04.xx-firmware is available for your box.
+
+config FREETZ_AVM_HAS_FWEWE_05_2X
+	bool "Has EWE Edition Firmware 05.2x"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7360_XL \
+		)
+	default n
+	help
+		Select this if a EWE Edition 5.2x firmware is available for your box.
+
+config FREETZ_AVM_HAS_FWEWE_05_5X
+	bool "Has EWE Edition Firmware 05.5x"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7390 \
+		)
+	default n
+	help
+		Select this if a EWE Edition 5.5x firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_DE
+	bool "Has AVM Firmware language de/deutsch"			if FREETZ_TYPE_CUSTOM
+	default y		if \
+		! ( \
+			FREETZ_TYPE_5010 || \
+			FREETZ_TYPE_5124 || \
+			FREETZ_TYPE_7340 || \
+			FREETZ_TYPE_7360_V2 || \
+			FREETZ_TYPE_7570 \
+		)
+	default n
+	help
+		Select this if a de/german firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_A_CH
+	bool "Has AVM Firmware language a-ch/deutsch"		if FREETZ_TYPE_CUSTOM
+	default y 		if \
+		FREETZ_TYPE_5010 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7170
+	default n
+	help
+		Select this if a a-ch/german firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_EN
+	bool "Has AVM Firmware language en/international"	if FREETZ_TYPE_CUSTOM
+	default y 		if \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_300IP || \
+		FREETZ_TYPE_5124 || \
+		FREETZ_TYPE_WLAN || \
+		FREETZ_TYPE_3270 || \
+		FREETZ_TYPE_3370 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_7113 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7170 || \
+		FREETZ_TYPE_7270_16 || \
+		FREETZ_TYPE_7330_XL || \
+		FREETZ_TYPE_7340 || \
+		FREETZ_TYPE_7360_XL || \
+		FREETZ_TYPE_7360_V2 || \
+		FREETZ_TYPE_7390 || \
+		FREETZ_TYPE_7570
+	default n
+	help
+		Select this if an en/international firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_IT
+	bool "Has AVM Firmware language italian"	if FREETZ_TYPE_CUSTOM
+	default y 		if \
+		FREETZ_TYPE_3270_V3
+	default n
+	help
+		Select this if an italian firmware is available for your box.
+
