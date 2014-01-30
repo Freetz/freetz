@@ -1,0 +1,77 @@
+###
+###
+###
+
+comment "Build system ---------------------------"
+	depends on FREETZ_SHOW_ADVANCED
+
+menu "Toolchain options"
+	visible if FREETZ_SHOW_EXPERT
+
+	choice
+		prompt "Toolchains"
+		default FREETZ_DOWNLOAD_TOOLCHAIN
+		help
+			Download Toolchain, build toolchain
+
+		config FREETZ_DOWNLOAD_TOOLCHAIN
+			bool "Download and use precompiled toolchains"
+
+		config FREETZ_BUILD_TOOLCHAIN
+			bool "Build own toolchains (requires 4GB diskspace)"
+
+	endchoice # "Toolchains" #
+
+	source toolchain/Config.in
+
+endmenu # "Toolchain options" #
+
+
+menu "Build system options"
+	visible if FREETZ_SHOW_ADVANCED
+
+	config FREETZ_VERBOSITY_LEVEL
+		int "Verbosity level (0-3)"
+		default 2
+		help
+			Verbosity level of the fwmod script and tar.
+			0 is the least and 3 the most information.
+
+	config FREETZ_SIZEINFO_COMPRESSED
+		bool "Show compressed sizes during build"
+		default y
+		help
+			Show compressed sizes of libs, packages & modules during build"
+
+	config FREETZ_SIZEINFO_UNCOMPRESSED
+		bool "Show uncompressed sizes too"
+		depends on FREETZ_SIZEINFO_COMPRESSED
+		default n
+		help
+			Show uncompressed sizes of libs, packages & modules too"
+
+
+	config FREETZ_JLEVEL
+		int "Number of jobs to run simultaneously"
+		default 2
+		help
+			Number of jobs to run simultanesouly
+
+	config FREETZ_CHECK_CHANGED
+		bool "Force package clean if it has changed"
+		default y
+		help
+			If this is activated, all packages are checked for changes in make/<pkg>/files
+			and make/<pkg>/patches. If so, the package will be recreated.
+
+	config FREETZ_BACKUP_CONFIG_CACHE
+		bool "Backup config.cache"
+		default n
+		help
+			This is a developer only option.
+			It causes config.cache to be backed up before calling package configure script and after that.
+			This might simplify searching for a missing/wrong config.cache entry.
+
+
+endmenu # "Build system options" #
+

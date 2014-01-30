@@ -1,0 +1,93 @@
+###
+###
+###
+
+menu "External processing"
+
+	config EXTERNAL_ENABLED
+		bool "Enable external processing"
+		default n
+		help
+			Enable this to move (big) files out of the firmware-image onto
+			an attached USB device or a mounted network share like SMB or NFS.
+
+			-------------------------- WARNING ----------------------------------
+			Move all the files from build/modified/external to your choosen
+			directory on the box BEFORE you flash the reduced image!
+
+			-------------------------- WARNING ----------------------------------
+			Do NOT external files needed to boot up Freetz!
+
+	config EXTERNAL_DOWNLOADER
+		bool "Prepare files for Downloader"
+		default n
+		depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOWNLOADER
+		help
+			Prepare files for Downloader package.
+			Downloader loads usualy files from a http or ftp server into the RAM of the box.
+
+	config EXTERNAL_SUBDIRS
+		bool "Keep subdirectories"
+		default y
+		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER
+		help
+			Keep the original directory structure.
+
+			Not all packages are shown if you disable this.
+
+	config EXTERNAL_LINKS
+		bool "Do not ignore symbolic links"
+		default n
+		depends on EXTERNAL_ENABLED
+		help
+			Allows externalisation of symbolic links.
+
+	config EXTERNAL_DYNAMIC
+		bool "Dynamic packages"
+		default y
+		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS
+		help
+			Enable dynamic package processing.
+
+	config EXTERNAL_DYNAMIC_SCRIPTS
+		bool "Process scripts too"
+		default y
+		depends on EXTERNAL_ENABLED && EXTERNAL_DYNAMIC
+		help
+			Do not exclude these files:
+			- /etc/default.PKG/
+			- /etc/init.d/rc.PKG
+			- /etc/onlinechanged/*PKG
+			- /etc/cron.d/PKG
+			- /usr/lib/cgi-bin/PKG.cgi
+			- /usr/lib/cgi-bin/PKG/
+			Use this, if you do not want to waste ram
+			or have access to your external device.
+
+	config EXTERNAL_CREATEPAK
+		bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
+		default y
+		depends on EXTERNAL_ENABLED && ! EXTERNAL_DOWNLOADER
+		help
+			Creates a file for upload with the webinterface.
+
+	config EXTERNAL_CREATEPAK_DYNAMIC
+		bool "For every package a file" if ! EXTERNAL_DOWNLOADER
+		default n
+		depends on EXTERNAL_CREATEPAK && EXTERNAL_DYNAMIC
+		help
+			Creates a file for every package which is an external service.
+
+	config EXTERNAL_OWN_FILES
+		string "own files"
+		default ""
+		depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
+		help
+			Put your own files/directories here (space separated)
+
+	source make/external.in.generated
+	source make/libs/external.in
+	source kernel/external.in
+
+endmenu # "External processing" #
+

@@ -1,0 +1,159 @@
+###
+###
+###
+
+menu "Firmware packaging (fwmod) options"
+	visible if FREETZ_SHOW_EXPERT
+
+	comment "ATTENTION: you probably want to activate unpacking"
+		depends on FREETZ_FWMOD_SKIP_UNPACK
+
+	config FREETZ_FWMOD_SKIP_UNPACK
+	bool "Skip unpacking original firmware"
+	default n
+		help
+			In 99,9% of all cases you want this option deactivated because usually
+			it makes a lot of sense to unpack a firmware before modifying it. ;-)
+
+	config FREETZ_FWMOD_SKIP_MODIFY
+		bool "Skip modifying unpacked firmware, adding Freetz stuff"
+		default n
+		help
+			Usually you want this option deactivated, but maybe you want to use
+			the Freetz build infrastructure to build your own custom firmware mod
+			without actually adding any Freetz-specific stuff. If so, activate
+			this option.
+
+	config FREETZ_FWMOD_SKIP_PACK
+		bool "Skip packing modified firmware"
+		default n
+		help
+			If you are a USB root or NFS root user, you probably do not need a
+			packed firmware image for flashing. It might not fit into the box's
+			flash memory anyway if you have chosen a lot of packages. In that
+			case you want to activate this option.
+
+	config FREETZ_FWMOD_SDK
+		bool "Force pack even if image is too big (SDK stick mode)"
+		depends on ! FREETZ_FWMOD_SKIP_PACK
+		default n
+		help
+			Choose this option if you intend to use the packed image on an SDK
+			stick (see http://wehavemorefun.de/fritzbox/index.php/SDK-Firmware).
+			At the time of writing this, SDK stick mode is only supported on
+			7270_v2/3, but maybe you found a way to port it to another firmware,
+			so you are free to use this option at will.
+
+	config FREETZ_FWMOD_USBROOT
+		bool "Pack file system into archive (USB root mode)"
+		default n
+		help
+			Choose this option if you intend to use the modified file system as a
+			USB root and want it packed into a .tar.gz archive for later transfer
+			to the USB medium.
+
+			This option can also be useful for NFS root, if you want to archive
+			the file system in addition to or instead of copying it to a target
+			directory directly using the next option.
+
+	config FREETZ_FWMOD_NFSROOT
+		bool "Copy file system to target folder (NFS root mode)"
+		default n
+		select FREETZ_FWMOD_USBROOT
+		help
+			Choose this option if you intend to use the modified file system as
+			an NFS root and want it copied to a target folder of your choice.
+
+			This option can also be useful for USB root, if the target USB medium
+			is already attached to your workstation or accessible via NFS (*not*
+			Samba/CIFS!).
+
+			ATTENTION: Make sure that the target folder is *not* mounted as a
+			USB/NFS root while copying files into it. This would probably cause
+			your box to reboot and lead to an inconsistent root file system.
+			You should also be aware of the fact that in order to cleanly unpack
+			file root system to the target folder we need to be root (fakeroot is
+			enough to pack, but not to unpack). So please be ready to enter your
+			user password for sudo.
+
+	comment "ATTENTION: target folder name must not be empty"
+		depends on FREETZ_FWMOD_NFSROOT
+
+	config FREETZ_FWMOD_NFSROOT_DIR
+		string "Target folder name"
+		depends on FREETZ_FWMOD_NFSROOT
+		default ""
+		help
+			Enter the target folder name here. It can be either absolute or
+			relative to the Freetz build system's base directory (where e.g.
+			fwmod is located).
+
+endmenu # Firmware packaging (fwmod) special options
+
+menu "Strip options"
+	visible if FREETZ_SHOW_EXPERT
+
+	config FREETZ_STRIP_BINARIES
+		bool "Strip leftover unstripped binaries/libraries"
+		default y
+		help
+			This option shrinks unstripped binaries/libraries via fwmod script.
+			In case of problems, you can disable it (Default: enabled).
+
+	config FREETZ_STRIP_LIBRARIES
+		bool "Run mklibs on the built root filesystem - EXPERIMENTAL"
+		depends on FREETZ_SHOW_ADVANCED
+		default n
+		help
+			Recompiles all the shared libraries to only include the
+			symbols actually needed to run the binaries on the target.
+
+			Note that this will make the system libraries incompatible
+			with most of the packages that are not selected during the
+			build process.
+
+	choice
+
+		prompt "Strip kernel modules"
+			depends on FREETZ_SHOW_ADVANCED
+			default FREETZ_STRIP_MODULES_FREETZ
+
+		config FREETZ_STRIP_MODULES_NONE
+			bool "none"
+			help
+				Disables shrinking of modules.
+
+		config FREETZ_STRIP_MODULES_FREETZ
+			bool "Freetz only"
+			help
+				Shrinks modules added by Freetz only.
+
+		config FREETZ_STRIP_MODULES_ALL
+			bool "Freetz & AVM - EXPERIMENTAL"
+			help
+				Shrinks all modules. May cause weird effects, like
+				all LEDs flashing. See http://freetz.org/ticket/1249
+
+	endchoice
+
+	config FREETZ_STRIP_SCRIPTS
+		bool "Strip comments from shell scripts - EXPERIMENTAL"
+		default n
+		help
+			Shrinks shell scripts by removing comments and whitespace. Saves up to
+			37K (compressed), depending on firmware and package selection.
+
+			DO NOT USE this option unless you absolutely have to because you are in
+			desparate need for some more space in your firmware image. This mostly
+			applies to hardware with just 4 MB flash memory, maybe 8 MB in some cases.
+
+			ATTENTION: This option has a runtime of 1 minute!
+
+			CAVEAT: The stripping code is a simple heuristic, so theoretically there
+			could be problems caused by mutilated scripts (unlikely, but possible).
+			In case of strange firmware behaviour you might want to disable this patch
+			and retry to see if that fixes the problem. If so, please report to the
+			Freetz team.
+
+endmenu # "Strip options" #
+

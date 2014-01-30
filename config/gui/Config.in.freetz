@@ -1,0 +1,236 @@
+###
+###
+###
+
+comment "Mod customizations ---------------------"
+
+menu "Web Interface"
+
+	choice
+		prompt "Freetz language"
+		default FREETZ_LANG_DE	if FREETZ_TYPE_LANG_DE || FREETZ_TYPE_LANG_A_CH
+		default FREETZ_LANG_EN
+
+		config FREETZ_LANG_DE
+			bool "de - deutsch"
+
+		config FREETZ_LANG_EN
+			bool "en - english"
+
+	endchoice # "Freetz language" #
+
+	config FREETZ_LANG_STRING
+		string
+		default "de"            if FREETZ_LANG_DE
+		default "en"            if FREETZ_LANG_EN
+
+
+	config FREETZ_SECURITY_LEVEL
+		int "Freetz security level (0-2)"
+		default 1
+		help
+			There are several security levels.
+			0 : no restrictions
+			1 : only configuration files without shell commands might be edited
+			2 : no configuration files might be edited.
+
+	choice
+		prompt "Freetz style"
+		default FREETZ_STYLE_COLORED
+		help
+			Changes the style sheet file for Freetz web interface.
+			For example, look of the Freetz status-bars can be changed
+			from colored to grey by change of the Freetz style.
+
+		config FREETZ_STYLE_COLORED
+			bool "green status-bars"
+
+		config FREETZ_STYLE_GREY
+			bool "grey status-bars"
+
+	endchoice # "Freetz style" #
+
+	config FREETZ_STYLE
+		string
+		default "colored" if FREETZ_STYLE_COLORED
+		default "grey"    if FREETZ_STYLE_GREY
+
+	menu "Freetz skins"
+
+	comment "CAUTION: You should select at least one skin."
+	depends on \
+		!FREETZ_SKIN_legacy && \
+		!FREETZ_SKIN_phoenix && \
+		!FREETZ_SKIN_newfreetz
+
+	config FREETZ_SKIN_legacy
+		bool "legacy"
+		default y
+		help
+			Main color blue, menu at right.
+			Size: about 12 kB (uncompressed)
+
+	config FREETZ_SKIN_newfreetz
+		bool "newfreetz"
+		default n
+		help
+			Main color green, menu at left.
+			Size: about 33 kB (uncompressed)
+
+	config FREETZ_SKIN_phoenix
+		bool "phoenix"
+		default n
+		help
+			Main color red, menu at top.
+			Size: about 15 kB (uncompressed)
+
+	endmenu # "Freetz skins" #
+
+	choice
+		prompt "Favicons"
+		default FREETZ_FAVICON_NONE
+		help
+			Adds small favicons to the document root.
+
+		config FREETZ_FAVICON_NONE
+			bool "none"
+
+		config FREETZ_FAVICON_ATOMPHIL
+			bool "atomphil's favicon"
+
+		config FREETZ_FAVICON_CUMA
+			bool "cuma's favicons"
+
+		config FREETZ_FAVICON_DSL123
+			bool "dsl123's favicons"
+
+		config FREETZ_FAVICON_HANSOLO
+			bool "han-solo's favicons"
+
+	endchoice # "Favicons" #
+
+	config FREETZ_FAVICON_STRING
+		string
+		default "none"          if FREETZ_FAVICON_NONE
+		default "atomphil"      if FREETZ_FAVICON_ATOMPHIL
+		default "cuma"          if FREETZ_FAVICON_CUMA
+		default "dsl123"        if FREETZ_FAVICON_DSL123
+		default "hansolo"       if FREETZ_FAVICON_HANSOLO
+
+	choice
+		prompt "AVM tagging"
+		default FREETZ_TAGGING_NONE
+		help
+			Adds a tag to the AVM web-interface, so it is obvious to
+			everybody that this box was modified by Freetz.
+
+		config FREETZ_TAGGING_NONE
+			bool "none"
+
+		config FREETZ_TAGGING_CUMA
+			bool "cuma's tagging"
+
+	endchoice # "AVM tagging" #
+
+	config FREETZ_TAGGING_STRING
+		string
+		default "none"          if FREETZ_TAGGING_NONE
+		default "cuma"          if FREETZ_TAGGING_CUMA
+
+endmenu # "Webif customization" #
+
+menu "Additional image/box information"
+	visible if FREETZ_SHOW_ADVANCED
+
+	# TODO: invert logic
+	config FREETZ_REMOVE_BOX_INFO
+		bool "Remove BOX-Info page"
+		default n
+		help
+			BOX-Info is a special status page for compact presentation of important
+			information about your Fritz!Box: ROM/RAM size, processor type,
+			DSL driver information, etc.
+
+			If you do not have enough space in your image, you can remove BOX-Info
+			from your image. But usualy it is not necessary: The size of BOX-Info cgi
+			is very small (2-3 kByte).
+
+	# TODO: invert logic
+	config FREETZ_REMOVE_FREETZ_INFO
+		bool "Remove FREETZ-Info page"
+		default n
+		help
+			FREETZ-Info is a special status page for compact presentation of important
+			information about FREETZ. This status page can also show the .config,
+			if it is included into image (s. "Remove .config from Image").
+
+			If you do not have enough space in your image, you can remove FREETZ-Info
+			from your image. But usualy it is not necessary: The size of FREETZ-Info
+			is very small (2-3 kByte).
+
+	config FREETZ_MODIFY_AVM_VERSION
+		bool "Add Freetz version to AVM version data"
+		default n
+		help
+			Add or append freetz version string (e.g. freetz-devel or freetz-devel-8849M)
+			to AVM firmware version data stored in /etc/.subversion, /etc/version and some
+			other places within the firmware itself.
+
+			Note: AVM firmware version data is exchanged with AVMs firmware update server
+			during automatic firmware update checks and in some other situations.
+			Enable this if you dont care if AVM or your ISP are knowing that you're running
+			a box with customized firmware.
+
+			Disable this if you have trouble with your isp or plugin downloads from
+			AVM don't work.
+
+			Maybe you want to change this too: http://wehavemorefun.de/fritzbox/AVM-Dienste
+
+	config FREETZ_USER_DEFINED_COMMENT
+		string "User defined comment"
+		default ""
+		help
+			User defined comment for generated image.
+
+	config FREETZ_CUSTOM_IMAGE_NAME
+		bool "Add user defined comment to image name"
+		depends on FREETZ_SHOW_ADVANCED
+		default n
+		help
+			Add the user defined comment to the file name of the created image
+
+	config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
+		bool "Add custom string as prefix"
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_CUSTOM_IMAGE_NAME
+		default n
+		help
+			Add the user defined comment as a prefix in front of the image file name.
+			Otherwise the user defined comment will be added between the language setting
+			and the build date
+
+	config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
+		bool "Create options.cfg as a separate file"
+		depends on FREETZ_SHOW_ADVANCED
+		default y
+		help
+			When unchecked causes options.cfg to be created as a symbolic link to .config
+
+			When checked causes options.cfg to be created as a separate file containing
+			a much smaller subset of options included in .config. This increases image
+			size by about 160 bytes but reduces memory footprint at run-time.
+
+	config FREETZ_REMOVE_DOT_CONFIG
+		bool "Remove .config from image"
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_CREATE_SEPARATE_OPTIONS_CFG
+		default n
+		help
+			Usually, a stripped version of the FREETZ configuration file .config
+			is integrated into the image for better trouble-shooting.
+
+			It is not recommended to remove .config from the image,
+			but if you want to save a few bytes in your image and
+			you are sure that removing this file is the last chance to have
+			a working image, you can do it on your own risk!
+
+endmenu # "Additional image/box information" #
+
