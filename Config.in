@@ -42,7 +42,7 @@ config FREETZ_SHOW_EXPERT
 	bool
 
 
-source config/gui/Config.in.firmware 
+source config/gui/firmware.in 
 
 
 comment "Original components --------------------"
@@ -262,7 +262,7 @@ menu "Plugin selection"
 endmenu # "Plugin selection" #
 
 
-source config/gui/Config.in.patches
+source config/gui/patches.in
 
 
 comment "Additional components ------------------"
@@ -291,13 +291,13 @@ menu "Shared libraries"
 endmenu # "Shared libraries" #
 
 
-source config/avm/Config.in.kernel
+source config/avm/kernel.in
 comment "Kernel modules (not available, no sources by AVM)"
 	depends on ! FREETZ_REPLACE_MODULE_AVAILABLE
 menu "Kernel modules"
 	visible if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
-	source config/gui/Config.in.modules
+	source config/gui/modules.in
 endmenu # "Kernel modules" #
 
 menu "Busybox applets"
@@ -307,20 +307,20 @@ menu "Busybox applets"
 endmenu # "Busybox applets" #
 
 
-source config/gui/Config.in.external
-source config/gui/Config.in.freetz
-source config/gui/Config.in.building
-source config/gui/Config.in.packing
-source config/mod/Config.in.download
-source Config.in.custom
+source config/gui/external.in
+source config/gui/freetz.in
+source config/gui/building.in
+source config/gui/packing.in
+source config/mod/download.in
+source config/custom.in
 
 ### everything below is not visible
 
-source config/mod/Config.in.firmware
-source config/avm/Config.in.uclibc
-source config/avm/Config.in.compiler
-source config/mod/Config.in.packages
-source config/avm/Config.in.features
+source config/mod/firmware.in
+source config/avm/uclibc.in
+source config/avm/compiler.in
+source config/mod/packages.in
+source config/avm/features.in
 
 
 comment "Custom options -------------------------"
