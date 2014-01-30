@@ -13,7 +13,7 @@
 TOPDIR=.
 CONFIG_IN=Config.in
 CONFIG_IN_CACHE=$(CONFIG_IN).cache
-CONFIG_IN_CUSTOM=config/custom.in
+CONFIG_IN_CUSTOM=custom.in
 CONFIG=tools/config
 
 SHELL:=/bin/bash
@@ -408,7 +408,7 @@ menuconfig: config-cache $(CONFIG)/mconf
 menuconfig-single: config-cache $(CONFIG)/mconf
 	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-nocache: $(CONFIG_IN_CUSTOM) $(CONFIG)/mconf
+menuconfig-nocache: config/$(CONFIG_IN_CUSTOM) $(CONFIG)/mconf
 	@$(CONFIG)/mconf $(CONFIG_IN)
 
 config: config-cache $(CONFIG)/conf
@@ -427,12 +427,12 @@ config-cache: $(CONFIG_IN_CACHE)
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 -include include/config/cache.conf.cmd
 
-$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(CONFIG_IN_CUSTOM) $(PARSE_CONFIG_TOOL) $(deps_config_cache)
+$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: config/$(CONFIG_IN_CUSTOM) $(PARSE_CONFIG_TOOL) $(deps_config_cache)
 	@mkdir -p include/config include/generated
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 endif
 
-$(CONFIG_IN_CUSTOM):
+config/$(CONFIG_IN_CUSTOM):
 	@touch $@
 
 # Macro to clean up config dependencies
