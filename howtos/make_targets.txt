@@ -1,20 +1,20 @@
 
 
-targets of 'make'
+Targets of Freetz's "make"
 
 
-help
+help								Shows this help text
 
-menuconfig	
-menuconfig-single
-oldconfig
+menuconfig							Configuration of Freetz	
+menuconfig-single					Alternative configuration
+oldconfig							Updates old .config file
 
-config-clean-deps
-config-clean-deps-modules
-config-clean-deps-libs
-config-clean-deps-busybox
-config-clean-deps-terminfo
-config-clean-deps-keep-busybox
+config-clean-deps					Deselects everything not mandatory
+config-clean-deps-keep-busybox		Deselects all except BusyBox applets 
+config-clean-deps-modules			Deselects all modules
+config-clean-deps-libs				Deselects all libraries
+config-clean-deps-busybox			Deselects all BusyBox applets
+config-clean-deps-terminfo			Deselects all terminfos
 
 common-clean
 common-dirclean
@@ -24,20 +24,20 @@ clean
 dirclean
 distclean
 
-PKG-precompiled
-PKG-dirclean
+XXX-precompiled						Compiles the package/library XXX 
+XXX-dirclean						Temoves everything of the package/library XXX
 
-kernel-menuconfig
-kernel-precompiled
-kernel-dirclean
+kernel-menuconfig					Configuration of selected kernel
+kernel-precompiled					Compiles the selected kernel
+kernel-dirclean						Cleans everything of the selected kernel
 
-tools
-tools-dirclean
+tools								Builds some tools required by Freetz
+tools-dirclean						Cleans everything of the Freetz tools
 
-uclibc-menuconfig
+uclibc-menuconfig					Configuration of selected uClibc
 	
-firmware-nocompile
-mirror
-recover
+firmware-nocompile					Creates firmware without packages and libraries 
+mirror								Downloads all package sources files
+recover								
 
 
