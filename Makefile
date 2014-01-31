@@ -12,7 +12,7 @@
 #--------------------------------------------------------------
 TOPDIR=.
 CONFIG_IN=Config.in
-CONFIG_IN_CACHE=$(CONFIG_IN).cache
+CONFIG_IN_CACHE=cache.in
 CONFIG_IN_CUSTOM=custom.in
 CONFIG=tools/config
 
@@ -403,33 +403,33 @@ recover:
 	fi
 
 menuconfig: config-cache $(CONFIG)/mconf
-	@$(CONFIG)/mconf $(CONFIG_IN_CACHE)
+	@$(CONFIG)/mconf config/$(CONFIG_IN_CACHE)
 
 menuconfig-single: config-cache $(CONFIG)/mconf
-	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
+	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf config/$(CONFIG_IN_CACHE)
 
 menuconfig-nocache: config/$(CONFIG_IN_CUSTOM) $(CONFIG)/mconf
-	@$(CONFIG)/mconf $(CONFIG_IN)
+	@$(CONFIG)/mconf config/$(CONFIG_IN)
 
 config: config-cache $(CONFIG)/conf
-	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
+	@$(CONFIG)/conf config/$(CONFIG_IN_CACHE)
 
 config-compress: config-cache $(CONFIG)/conf
-	@$(CONFIG)/conf --savedefconfig .config_compressed $(CONFIG_IN_CACHE)
+	@$(CONFIG)/conf --savedefconfig .config_compressed config/$(CONFIG_IN_CACHE)
 	@echo "Compressed configuration written to .config_compressed."; \
 	echo  "It is equivalent to .config, but contains only non-default user selections."
 
 oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
-	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE)
+	@$(CONFIG)/conf --$@ config/$(CONFIG_IN_CACHE)
 
-config-cache: $(CONFIG_IN_CACHE)
+config-cache: config/$(CONFIG_IN_CACHE)
 
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 -include include/config/cache.conf.cmd
 
-$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: config/$(CONFIG_IN_CUSTOM) $(PARSE_CONFIG_TOOL) $(deps_config_cache)
+config/$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: config/$(CONFIG_IN_CUSTOM) $(PARSE_CONFIG_TOOL) $(deps_config_cache)
 	@mkdir -p include/config include/generated
-	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
+	@$(PARSE_CONFIG_TOOL) config/$(CONFIG_IN) > config/$(CONFIG_IN_CACHE)
 endif
 
 config/$(CONFIG_IN_CUSTOM):
@@ -475,7 +475,7 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_
 common-clean:
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
-	$(RM) .static .dynamic .packages .exclude-dist-tmp $(CONFIG_IN_CACHE)
+	$(RM) .static .dynamic .packages .exclude-dist-tmp config/$(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
 
@@ -515,8 +515,8 @@ dist: distclean download-clean
 	$(RM) .exclude-dist-tmp
 
 # Check .config is up-to-date. Any change to any of the menuconfig configuration files (either manual or one caused by 'svn up') require .config to be updated.
-check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
-	@if [ -e .config -a $(CONFIG_IN_CACHE) -nt .config ]; then \
+check-dot-config-uptodateness: $config/(CONFIG_IN_CACHE)
+	@if [ -e .config -a config/$(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
 		echo "ERROR: You have either updated to a newer svn version  or changed one of"; \
 		echo "       the menuconfig files manually  since last modifying  your config."; \
