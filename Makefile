@@ -515,7 +515,7 @@ dist: distclean download-clean
 	$(RM) .exclude-dist-tmp
 
 # Check .config is up-to-date. Any change to any of the menuconfig configuration files (either manual or one caused by 'svn up') require .config to be updated.
-check-dot-config-uptodateness: $config/(CONFIG_IN_CACHE)
+check-dot-config-uptodateness: config/$(CONFIG_IN_CACHE)
 	@if [ -e .config -a config/$(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
 		echo "ERROR: You have either updated to a newer svn version  or changed one of"; \
