@@ -4,19 +4,21 @@
 
 gen_files() {
 
-	nmbr=$(cat Config.in | wc -l)
+	file="config/mod/download.in"
+
+	nmbr=$(cat $file | wc -l)
 
 	config=FREETZ_DL_SITE
-	pathS=$(cat Config.in |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
-	pathE=$(cat Config.in | tail -n $(($nmbr-$pathS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
+	pathS=$(cat $file |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
+	pathE=$(cat $file | tail -n $(($nmbr-$pathS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
 
 	config=FREETZ_DL_SOURCE
-	fileS=$(cat Config.in |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
-	fileE=$(cat Config.in | tail -n $(($nmbr-$fileS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
+	fileS=$(cat $file |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
+	fileE=$(cat $file | tail -n $(($nmbr-$fileS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
 
 	config=FREETZ_DL_SOURCE_MD5
-	md5sS=$(cat Config.in |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
-	md5sE=$(cat Config.in | tail -n $(($nmbr-$md5sS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
+	md5sS=$(cat $file |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
+	md5sE=$(cat $file | tail -n $(($nmbr-$md5sS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
 
 #	echo $nmbr
 #	echo "$pathS -- $pathS"
@@ -24,9 +26,9 @@ gen_files() {
 #	echo "$md5sS -- $md5sS"
 #	echo
 
-	cat Config.in | tail -n $(($nmbr-$fileS+1)) | head -n $fileE | grep -e '^.*default "' > Config.tmp.file
-	cat Config.in | tail -n $(($nmbr-$pathS+1)) | head -n $pathE | grep -e '^.*default "' > Config.tmp.path
-	cat Config.in | tail -n $(($nmbr-$md5sS+1)) | head -n $md5sE | grep -e '^.*default "' > Config.tmp.md5s
+	cat $file | tail -n $(($nmbr-$fileS+1)) | head -n $fileE | grep -e '^.*default "' > Config.tmp.file
+	cat $file | tail -n $(($nmbr-$pathS+1)) | head -n $pathE | grep -e '^.*default "' > Config.tmp.path
+	cat $file | tail -n $(($nmbr-$md5sS+1)) | head -n $md5sE | grep -e '^.*default "' > Config.tmp.md5s
 
 }
 
@@ -83,8 +85,8 @@ check_web() {
 	done
 }
 
-if [ ! -e Config.in ]; then
-	echo "File ./Config.in not found!"
+if [ ! -d config/ ]; then
+	echo "Directory ./config/ not found!"
 	exit 1
 fi
 
