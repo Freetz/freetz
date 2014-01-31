@@ -12,7 +12,7 @@
 #--------------------------------------------------------------
 TOPDIR=.
 CONFIG_IN=Config.in
-CONFIG_IN_CACHE=cache.in
+CONFIG_IN_CACHE=.cache.in
 CONFIG_IN_CUSTOM=custom.in
 CONFIG=tools/config
 
