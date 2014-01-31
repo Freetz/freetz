@@ -1,0 +1,64 @@
+###
+###
+###
+
+menu "SquashFS options"
+	visible if FREETZ_SHOW_EXPERT
+
+	comment "CAUTION: SquashFS block sizes >64 KB can cause an unstable box due to extensive memory usage"
+		depends on ! (FREETZ_SQUASHFS_BLOCKSIZE_ORIG || FREETZ_SQUASHFS_BLOCKSIZE_65536)
+
+	choice
+		prompt "SquashFS block size"
+		default FREETZ_SQUASHFS_BLOCKSIZE_65536
+
+		config FREETZ_SQUASHFS_BLOCKSIZE_ORIG
+			bool "original (usually 64 KB)"
+			help
+				Block size of the root filesystem. SquashFS 2.x can use block sizes
+				up to 64 KB, SquashFS 3.x (only available for kernel 2.6.19.2 or
+				with "replace kernel") up to 1024 KB. Bigger block sizes achieve
+				better compression ratios than smaller ones.
+
+				64 KB is the default for kernel 2.6 firmwares.
+
+		config FREETZ_SQUASHFS_BLOCKSIZE_65536
+			bool "64 KB"
+			help
+				Block size of the root filesystem. SquashFS 2.x can use block sizes
+				up to 64 KB, SquashFS 3.x (only available for kernel 2.6.19.2 or
+				with "replace kernel") up to 1024 KB. Bigger block sizes achieve
+				better compression ratios than smaller ones.
+
+				64 KB is the default for kernel 2.6 firmwares.
+
+		if FREETZ_REPLACE_KERNEL && !FREETZ_KERNEL_VERSION_2_6_32_60
+			config FREETZ_SQUASHFS_BLOCKSIZE_131072
+				bool "128 KB - EXPERIMENTAL"
+				help
+					Block size of the root filesystem. SquashFS 3.4 can use block sizes
+					up to 1MB but the Default used by Freetz is 64KB. SquashFS 3.4 which
+					is included in Kernel 2.6.32 has a default Block size of 128 KB.
+
+			config FREETZ_SQUASHFS_BLOCKSIZE_262144
+				bool "256 KB - EXPERIMENTAL"
+			config FREETZ_SQUASHFS_BLOCKSIZE_524288
+				bool "512 KB - EXPERIMENTAL"
+			config FREETZ_SQUASHFS_BLOCKSIZE_1048576
+				bool "1024 KB - EXPERIMENTAL"
+		endif
+
+	endchoice # "SquashFS block size" #
+
+config FREETZ_SQUASHFS_BLOCKSIZE
+	int
+	default 65536 if FREETZ_SQUASHFS_BLOCKSIZE_65536
+	default 131072 if FREETZ_SQUASHFS_BLOCKSIZE_131072
+	default 262144 if FREETZ_SQUASHFS_BLOCKSIZE_262144
+	default 524288 if FREETZ_SQUASHFS_BLOCKSIZE_524288
+	default 1048576 if FREETZ_SQUASHFS_BLOCKSIZE_1048576
+	help
+		Numeric SquashFS block size in bytes
+
+endmenu # SquashFS options #
+

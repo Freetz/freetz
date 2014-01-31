@@ -1,0 +1,78 @@
+###
+###	processor architecture
+###
+
+config FREETZ_TARGET_ARCH_LE
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_2170 || \
+		FREETZ_TYPE_300IP || \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_5010 || \
+		FREETZ_TYPE_5050 || \
+		FREETZ_TYPE_5124 || \
+		FREETZ_TYPE_5140 || \
+		FREETZ_TYPE_WLAN || \
+		FREETZ_TYPE_7050 || \
+		FREETZ_TYPE_7112 || \
+		FREETZ_TYPE_7113 || \
+		FREETZ_TYPE_7141 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7150 || \
+		FREETZ_TYPE_7170 || \
+		FREETZ_TYPE_7240 || \
+		FREETZ_TYPE_7270 || \
+		FREETZ_TYPE_7570 || \
+		FREETZ_TYPE_7570 || \
+		FREETZ_TYPE_3020 || \
+		FREETZ_TYPE_3030 || \
+		FREETZ_TYPE_3130 || \
+		FREETZ_TYPE_3131 || \
+		FREETZ_TYPE_3170 || \
+		FREETZ_TYPE_3270 || \
+		FREETZ_TYPE_W501V
+
+config FREETZ_TARGET_ARCH_BE
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_3272 || \
+		FREETZ_TYPE_3370 || \
+		FREETZ_TYPE_3390 || \
+		FREETZ_TYPE_6810 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_6842 || \
+		FREETZ_TYPE_7272 || \
+		FREETZ_TYPE_7312 || \
+		FREETZ_TYPE_7320 || \
+		FREETZ_TYPE_7330 || \
+		FREETZ_TYPE_7340 || \
+		FREETZ_TYPE_7360 || \
+		FREETZ_TYPE_7362 || \
+		FREETZ_TYPE_7390 || \
+		FREETZ_TYPE_7490
+
+config FREETZ_TARGET_ARCH
+	string
+	default "mips" if FREETZ_TARGET_ARCH_BE
+	default "mipsel" if FREETZ_TARGET_ARCH_LE
+
+config FREETZ_TARGET_CROSS
+	string
+	default "mips-linux-uclibc-" if FREETZ_TARGET_ARCH_BE
+	default "mipsel-linux-uclibc-" if FREETZ_TARGET_ARCH_LE
+
+config FREETZ_TARGET_MAKE_PATH
+	string
+	default "toolchain/target/bin"
+
+config FREETZ_KERNEL_CROSS
+	string
+	default "mips-unknown-linux-gnu-" if FREETZ_TARGET_ARCH_BE
+	default "mipsel-unknown-linux-gnu-" if FREETZ_TARGET_ARCH_LE
+
+config FREETZ_KERNEL_MAKE_PATH
+	string
+	default "toolchain/kernel/bin"
+

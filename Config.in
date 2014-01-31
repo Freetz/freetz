@@ -77,130 +77,9 @@ config FREETZ_TARGET_IPV6_SUPPORT
 		It is also recommended to include the package iptables/ip6tables for
 		firewall settings.
 
-if FREETZ_SHOW_ADVANCED
 
-comment "Replace kernel (not available, no sources by AVM)"
-	depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
-
-config FREETZ_REPLACE_KERNEL
-	bool "Replace kernel"
-	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
-	# until http://freetz.org/ticket/1716 is fixed:
-	select FREETZ_REMOVE_KIDS if \
-		( \
-			FREETZ_TYPE_2170 || \
-			FREETZ_TYPE_3170 \
-		)
-	select FREETZ_MODULE_fuse if \
-		( \
-			FREETZ_AVM_VERSION_3370_05_21 || \
-			FREETZ_AVM_VERSION_7270_04_86 || \
-			FREETZ_AVM_VERSION_7270_05_21 || \
-			FREETZ_AVM_VERSION_7270_05_50 || \
-			FREETZ_AVM_VERSION_7270_05_51 || \
-			FREETZ_AVM_VERSION_7330_05_20 || \
-			FREETZ_AVM_VERSION_7330_05_50 || \
-			FREETZ_AVM_VERSION_7360_05_20 || \
-			FREETZ_AVM_VERSION_7360_05_50 || \
-			FREETZ_AVM_VERSION_7360_05_51 || \
-			FREETZ_AVM_VERSION_7390_05_21 || \
-			FREETZ_AVM_VERSION_7390_05_52 || \
-			FREETZ_AVM_VERSION_7390_06_00 || \
-			FREETZ_AVM_VERSION_7390_06_01 \
-		) && \
-		! (FREETZ_REMOVE_NTFS && FREETZ_REMOVE_WEBDAV)
-	select FREETZ_MODULE_jffs2 if \
-		! FREETZ_REMOVE_JFFS2 && \
-		( \
-			FREETZ_AVM_VERSION_7330_05_20 || \
-			FREETZ_AVM_VERSION_7330_05_50 || \
-			FREETZ_AVM_VERSION_7360_05_20 || \
-			FREETZ_AVM_VERSION_7360_05_50 || \
-			FREETZ_AVM_VERSION_7360_05_51 \
-				)
-	select FREETZ_MODULE_usbcore if \
-		FREETZ_KERNEL_LAYOUT_UR8 && FREETZ_AVM_VERSION_7270_04_86
-	select FREETZ_MODULE_msdos if \
-		! FREETZ_REMOVE_FAT && \
-		( \
-			FREETZ_AVM_VERSION_7270_05_21 || \
-			FREETZ_AVM_VERSION_7270_05_50 || \
-			FREETZ_AVM_VERSION_7270_05_51 \
-		)
-	select FREETZ_MODULE_vfat if \
-		! FREETZ_REMOVE_FAT && \
-		( \
-			FREETZ_AVM_VERSION_7270_05_21 || \
-			FREETZ_AVM_VERSION_7270_05_50 || \
-			FREETZ_AVM_VERSION_7270_05_51 \
-		)
-	default n
-	help
-		Replace AVM kernel with self-built kernel.
-
-endif # FREETZ_SHOW_ADVANCED #
-
-menu "SquashFS options"
-	visible if FREETZ_SHOW_EXPERT
-
-	comment "CAUTION: SquashFS block sizes >64 KB can cause an unstable box due to extensive memory usage"
-		depends on ! (FREETZ_SQUASHFS_BLOCKSIZE_ORIG || FREETZ_SQUASHFS_BLOCKSIZE_65536)
-
-	choice
-		prompt "SquashFS block size"
-		default FREETZ_SQUASHFS_BLOCKSIZE_65536
-
-		config FREETZ_SQUASHFS_BLOCKSIZE_ORIG
-			bool "original (usually 64 KB)"
-			help
-				Block size of the root filesystem. SquashFS 2.x can use block sizes
-				up to 64 KB, SquashFS 3.x (only available for kernel 2.6.19.2 or
-				with "replace kernel") up to 1024 KB. Bigger block sizes achieve
-				better compression ratios than smaller ones.
-
-				64 KB is the default for kernel 2.6 firmwares.
-
-		config FREETZ_SQUASHFS_BLOCKSIZE_65536
-			bool "64 KB"
-			help
-				Block size of the root filesystem. SquashFS 2.x can use block sizes
-				up to 64 KB, SquashFS 3.x (only available for kernel 2.6.19.2 or
-				with "replace kernel") up to 1024 KB. Bigger block sizes achieve
-				better compression ratios than smaller ones.
-
-				64 KB is the default for kernel 2.6 firmwares.
-
-		if FREETZ_REPLACE_KERNEL && !FREETZ_KERNEL_VERSION_2_6_32_60
-			config FREETZ_SQUASHFS_BLOCKSIZE_131072
-				bool "128 KB - EXPERIMENTAL"
-				help
-					Block size of the root filesystem. SquashFS 3.4 can use block sizes
-					up to 1MB but the Default used by Freetz is 64KB. SquashFS 3.4 which
-					is included in Kernel 2.6.32 has a default Block size of 128 KB.
-
-			config FREETZ_SQUASHFS_BLOCKSIZE_262144
-				bool "256 KB - EXPERIMENTAL"
-			config FREETZ_SQUASHFS_BLOCKSIZE_524288
-				bool "512 KB - EXPERIMENTAL"
-			config FREETZ_SQUASHFS_BLOCKSIZE_1048576
-				bool "1024 KB - EXPERIMENTAL"
-		endif
-
-	endchoice # "SquashFS block size" #
-
-config FREETZ_SQUASHFS_BLOCKSIZE
-	int
-	default 65536 if FREETZ_SQUASHFS_BLOCKSIZE_65536
-	default 131072 if FREETZ_SQUASHFS_BLOCKSIZE_131072
-	default 262144 if FREETZ_SQUASHFS_BLOCKSIZE_262144
-	default 524288 if FREETZ_SQUASHFS_BLOCKSIZE_524288
-	default 1048576 if FREETZ_SQUASHFS_BLOCKSIZE_1048576
-	help
-		Numeric SquashFS block size in bytes
-
-endmenu # SquashFS options #
-
-
+source config/gui/kernel.in
+source config/gui/squashfs.in
 source config/gui/patches.in
 
 
@@ -258,7 +137,8 @@ source config/custom.in
 source config/mod/firmware.in
 source config/avm/uclibc.in
 source config/avm/compiler.in
-source config/mod/packages.in
+source config/pkg/cifs.in
+source config/pkg/nfs.in
 source config/avm/features.in
 
 
@@ -293,109 +173,7 @@ config FREETZ_REPLACE_BUSYBOX
 		This is mandatory
 
 
-config FREETZ_TARGET_ARCH_LE
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_2170 || \
-		FREETZ_TYPE_300IP || \
-		FREETZ_TYPE_FON || \
-		FREETZ_TYPE_5010 || \
-		FREETZ_TYPE_5050 || \
-		FREETZ_TYPE_5124 || \
-		FREETZ_TYPE_5140 || \
-		FREETZ_TYPE_WLAN || \
-		FREETZ_TYPE_7050 || \
-		FREETZ_TYPE_7112 || \
-		FREETZ_TYPE_7113 || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7140 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7240 || \
-		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_3020 || \
-		FREETZ_TYPE_3030 || \
-		FREETZ_TYPE_3130 || \
-		FREETZ_TYPE_3131 || \
-		FREETZ_TYPE_3170 || \
-		FREETZ_TYPE_3270 || \
-		FREETZ_TYPE_W501V
-
-config FREETZ_TARGET_ARCH_BE
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_3272 || \
-		FREETZ_TYPE_3370 || \
-		FREETZ_TYPE_3390 || \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_6842 || \
-		FREETZ_TYPE_7272 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360 || \
-		FREETZ_TYPE_7362 || \
-		FREETZ_TYPE_7390 || \
-		FREETZ_TYPE_7490
-
-config FREETZ_TARGET_ARCH
-	string
-	default "mips" if FREETZ_TARGET_ARCH_BE
-	default "mipsel" if FREETZ_TARGET_ARCH_LE
-
-config FREETZ_TARGET_CROSS
-	string
-	default "mips-linux-uclibc-" if FREETZ_TARGET_ARCH_BE
-	default "mipsel-linux-uclibc-" if FREETZ_TARGET_ARCH_LE
-
-config FREETZ_TARGET_MAKE_PATH
-	string
-	default "toolchain/target/bin"
-
-config FREETZ_KERNEL_CROSS
-	string
-	default "mips-unknown-linux-gnu-" if FREETZ_TARGET_ARCH_BE
-	default "mipsel-unknown-linux-gnu-" if FREETZ_TARGET_ARCH_LE
-
-config FREETZ_KERNEL_MAKE_PATH
-	string
-	default "toolchain/kernel/bin"
-
-
-config FREETZ_FILESYSTEM_MTD_SIZE
-	int "FILESYSTEM (64K blocks)"   if FREETZ_TYPE_CUSTOM
-	default 768         if \
-		FREETZ_TYPE_3370 || \
-		FREETZ_TYPE_3390 || \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_6842
-	default 0
-	help
-		Number of 64K blocks in the filesystem mtd device.
-
-
-config FREETZ_KERNEL_CUSTOM_MTD_SIZE
-	int "Kernel (64K blocks)"   if FREETZ_TYPE_CUSTOM
-	default 59	if FREETZ_TYPE_3170_7170
-	default 119	if FREETZ_TYPE_7270_V1_V2
-	default 122	if FREETZ_TYPE_7570_IAD && ! FREETZ_REPLACE_KERNEL
-	default 244	if FREETZ_TYPE_7570_IAD && FREETZ_REPLACE_KERNEL
-	default 246	if FREETZ_TYPE_7270_V2_V1
-	help
-		Custom number of 64K blocks in the kernel mtd device.
-
-config FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE
-	int "Filesystem (64K blocks)"   if FREETZ_TYPE_CUSTOM
-	help
-		Custom number of 64K blocks in the filesystem mtd device.
-
-
+source config/avm/architecture.in
+source config/gui/mtd.in
 source config/avm/firmware.in
 
