@@ -1,7 +1,203 @@
+#
+# firmware versions available
+#
+
+config FREETZ_AVM_HAS_FW4XX
+	bool "AVM 04.xx-firmware available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		! FREETZ_AVM_HAS_FW52X && \
+		! FREETZ_AVM_HAS_FW55X && \
+		! FREETZ_AVM_HAS_FW6XX
+	default n
+	help
+		Select this if a 04.xx-firmware is available for your box.
+
+config FREETZ_AVM_HAS_FW52X
+	bool "AVM 05.2x-firmware available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_3270 && !FREETZ_TYPE_LANG_IT ) || \
+		FREETZ_TYPE_3370 || \
+		FREETZ_TYPE_6810 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_7240 || \
+		FREETZ_TYPE_7270_16 || \
+		FREETZ_TYPE_7312 || \
+		FREETZ_TYPE_7320 || \
+		FREETZ_TYPE_7330 || \
+		FREETZ_TYPE_7340 || \
+		FREETZ_TYPE_7360_SL || \
+		FREETZ_TYPE_7360_XL || \
+		FREETZ_TYPE_7390
+	default n
+	help
+		Select this if a Fritz!OS-05.2x based firmware is available for your box.
+
+config FREETZ_AVM_HAS_FW55X
+	bool "AVM 05.5x-firmware available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_3270 || \
+			FREETZ_TYPE_3272 || \
+			FREETZ_TYPE_3370 || \
+			FREETZ_TYPE_3390 || \
+			FREETZ_TYPE_6810 || \
+			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_6842 || \
+			FREETZ_TYPE_7240 || \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7272 || \
+			FREETZ_TYPE_7312 || \
+			FREETZ_TYPE_7320 || \
+			FREETZ_TYPE_7330 || \
+			FREETZ_TYPE_7360_SL || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7362 || \
+			FREETZ_TYPE_7390 || \
+			FREETZ_TYPE_7490 \
+		)) \
+		|| \
+		( FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_3270 || \
+			FREETZ_TYPE_3370 || \
+			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7330_XL || \
+			FREETZ_TYPE_7340 || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7390 \
+		)) \
+		|| \
+		( FREETZ_TYPE_LANG_IT && ( \
+			FREETZ_TYPE_3270_V3 \
+		))
+	default n
+	help
+		Select this if a Fritz!OS-05.5x based firmware is available for your box.
+
+config FREETZ_AVM_HAS_FW6XX
+	bool "AVM 06.xx-firmware available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_3272 || \
+			FREETZ_TYPE_3370 || \
+			FREETZ_TYPE_3390 || \
+			FREETZ_TYPE_6810 || \
+			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_6842 || \
+			FREETZ_TYPE_7272 || \
+			FREETZ_TYPE_7312 || \
+			FREETZ_TYPE_7320 || \
+			FREETZ_TYPE_7330 || \
+			FREETZ_TYPE_7360_SL || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7362 || \
+			FREETZ_TYPE_7390 || \
+			FREETZ_TYPE_7490 \
+		)) \
+		|| \
+		(  FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7340 || \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7360_V2 || \
+			FREETZ_TYPE_7390 \
+		))
+	default n
+	help
+		Select this if a Fritz!OS-06.xx based firmware is available for your box.
+
+config FREETZ_AVM_HAS_LABOR
+	bool "AVM Labor-firmware available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7490 \
+		)
+	default n
+	help
+		Select this if a labor firmware is available for your box.
+
+
+config FREETZ_AVM_HAS_FWEWE_05_2X
+	bool "AVM 05.2x-firmware (EWE edition) available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7360_XL \
+		)
+	default n
+	help
+		Select this if an EWE Edition of Fritz!OS-05.2x based firmware is available for your box.
+
+config FREETZ_AVM_HAS_FWEWE_05_5X
+	bool "AVM 05.5x-firmware (EWE edition) available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7360_XL || \
+			FREETZ_TYPE_7390 \
+		)
+	default n
+	help
+		Select this if an EWE Edition of Fritz!OS-05.5x based firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_DE
+	bool "German (DE) language firmware available"			if FREETZ_TYPE_CUSTOM
+	default y		if \
+		! ( \
+			FREETZ_TYPE_5010 || \
+			FREETZ_TYPE_5124 || \
+			FREETZ_TYPE_7340 || \
+			FREETZ_TYPE_7360_V2 || \
+			FREETZ_TYPE_7570 \
+		)
+	default n
+	help
+		Select this if a German language (DE) firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_A_CH
+	bool "German (AT,CH) language firmware available"		if FREETZ_TYPE_CUSTOM
+	default y 		if \
+		FREETZ_TYPE_5010 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7170
+	default n
+	help
+		Select this if a German language (AT,CH) firmware is available for your box.
+
+config FREETZ_AVM_HAS_LANG_EN
+	bool "English language or international firmware available"	if FREETZ_TYPE_CUSTOM
+	default y 		if \
+		FREETZ_TYPE_FON || \
+		FREETZ_TYPE_300IP || \
+		FREETZ_TYPE_5124 || \
+		FREETZ_TYPE_WLAN || \
+		FREETZ_TYPE_3270 || \
+		FREETZ_TYPE_3370 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_7113 || \
+		FREETZ_TYPE_7140 || \
+		FREETZ_TYPE_7170 || \
+		FREETZ_TYPE_7270_16 || \
+		FREETZ_TYPE_7330_XL || \
+		FREETZ_TYPE_7340 || \
+		FREETZ_TYPE_7360_XL || \
+		FREETZ_TYPE_7360_V2 || \
+		FREETZ_TYPE_7390 || \
+		FREETZ_TYPE_7570
+	default n
+	help
+		Select this if an English language firmware or firmware containing
+		multiple languages (=international) is available for your box.
+
+config FREETZ_AVM_HAS_LANG_IT
+	bool "Italian language firmware available"	if FREETZ_TYPE_CUSTOM
+	default y 		if \
+		FREETZ_TYPE_3270_V3
+	default n
+	help
+		Select this if an Italian language firmware is available for your box.
+
 ###
 ###	firmware properties
 ###
-
 
 config FREETZ_AVM_HAS_AR7CFG_V12_MIN
 	bool "Has ar7.cfg version 12 minimum"		if FREETZ_TYPE_CUSTOM
@@ -12,13 +208,13 @@ config FREETZ_AVM_HAS_AR7CFG_V12_MIN
 			FREETZ_TYPE_6840 || \
 			FREETZ_TYPE_7272 || \
 			FREETZ_TYPE_7490 \
-		)		
+		)
 	default n
 	help
 		Select this if your ar7.cfg is at least version 12.
 		In your ar7.cfg is a line like 'ar7cfg_version = x;'
 		Used by AVM-firewall/-forwarding
-		
+
 config FREETZ_AVM_HAS_PRINTK
 	bool "Has AVM printk support"		if FREETZ_TYPE_CUSTOM
 	default y		if \
