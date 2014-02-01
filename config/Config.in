@@ -137,6 +137,8 @@ source config/custom.in
 source config/mod/firmware.in
 source config/avm/uclibc.in
 source config/avm/compiler.in
+
+source config/pkg/mandatory.in
 source config/pkg/cifs.in
 source config/pkg/nfs.in
 
@@ -144,33 +146,6 @@ comment "Custom options -------------------------"
 	depends on FREETZ_TYPE_CUSTOM
 
 source config/avm/features.in
-
-config FREETZ_INSTALL_BASE
-	bool
-	select FREETZ_PACKAGE_MOD
-	select FREETZ_PACKAGE_HASERL
-	select FREETZ_LIB_ld_uClibc
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libgcc_s
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libnsl
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libubacktrace if FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
-	select FREETZ_LIB_libuClibc
-	select FREETZ_LIB_libctlmgr if FREETZ_AVM_HAS_USB_HOST
-	default y
-	help
-		This is mandatory
-
-config FREETZ_REPLACE_BUSYBOX
-	bool
-	select FREETZ_BUSYBOX__MANDATORY
-	select FREETZ_BUSYBOX__MANDATORY_05_XX if FREETZ_AVM_VERSION_05_2X_MIN
-	default y
-	help
-		This is mandatory
 
 source config/avm/architecture.in
 source config/gui/mtd.in
