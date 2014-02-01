@@ -139,11 +139,11 @@ source config/avm/uclibc.in
 source config/avm/compiler.in
 source config/pkg/cifs.in
 source config/pkg/nfs.in
-source config/avm/features.in
-
 
 comment "Custom options -------------------------"
 	depends on FREETZ_TYPE_CUSTOM
+
+source config/avm/features.in
 
 config FREETZ_INSTALL_BASE
 	bool
@@ -172,8 +172,6 @@ config FREETZ_REPLACE_BUSYBOX
 	help
 		This is mandatory
 
-
 source config/avm/architecture.in
 source config/gui/mtd.in
 source config/avm/firmware.in
-
