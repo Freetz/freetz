@@ -1,13 +1,26 @@
 --- libbb/appletlib.c
 +++ libbb/appletlib.c
-@@ -146,12 +146,14 @@
+@@ -146,12 +146,27 @@
  	return strcmp(name, APPLET_NAME(i));
  }
  #endif
++#if ENABLE_HTTPD
 +static const char httpd_applet_name[] ALIGN1 = "httpd";
++#endif
++#if ENABLE_WGET
++static const char wget_applet_name[] ALIGN1 = "wget";
++#endif
  int FAST_FUNC find_applet_by_name(const char *name)
  {
-+	const char *name_to_search_for = (strncmp(name, httpd_applet_name, 5) != 0) ? name : httpd_applet_name;
++	const char *name_to_search_for =
++#if ENABLE_HTTPD
++	(strncmp(name, httpd_applet_name, 5) == 0) ? httpd_applet_name :
++#endif
++#if ENABLE_WGET
++	(strncmp(name, wget_applet_name, 4) == 0) ? wget_applet_name :
++#endif
++	name;
++
  #if NUM_APPLETS > 8
  	/* Do a binary search to find the applet entry given the name. */
  	const char *p;
@@ -16,7 +29,7 @@
  	/*
  	 * if (!p) return -1;
  	 * ^^^^^^^^^^^^^^^^^^ the code below will do this if p == NULL :)
-@@ -162,7 +164,7 @@
+@@ -162,7 +177,7 @@
  	int i = 0;
  	const char *p = applet_names;
  	while (i < NUM_APPLETS) {

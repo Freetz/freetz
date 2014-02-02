@@ -1,14 +1,18 @@
+config FREETZ_WGET
+	bool
+	select FREETZ_BUSYBOX_WGET if !FREETZ_PACKAGE_WGET || FREETZ_WGET_ALWAYS_AVAILABLE
+	select FREETZ_BUSYBOX_FEATURE_WGET_AUTHENTICATION if FREETZ_BUSYBOX_WGET
+	select FREETZ_BUSYBOX_FEATURE_WGET_STATUSBAR if FREETZ_BUSYBOX_WGET
+	select FREETZ_BUSYBOX_FEATURE_WGET_TIMEOUT if FREETZ_BUSYBOX_WGET
+
 config FREETZ_PACKAGE_WGET
-	bool "Wget 1.14 (binary only)"
+	bool "GNU Wget 1.14 (binary only)"
 	default n
 	help
 		GNU Wget is a free software package for retrieving files using
 		HTTP, HTTPS and FTP, the most widely-used Internet protocols. It
 		is a non-interactive commandline tool, so it may easily be
 		called from scripts, cron jobs, terminals, etc.
-
-		This package *replaces* busybox's wget applet. But this one adds
-		about 240 KB.
 
 config FREETZ_PACKAGE_WGET_WITH_SSL
 	bool "build with SSL support"

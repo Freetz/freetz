@@ -13,7 +13,7 @@ _SENSOR_HEX=$(grep "^ROM " $_SENSOR_CNF 2>/dev/null | sed 's/^ROM [0-9]*//g;s/ 0
 
 detect_wget() {
 	# detect installed wget version, in case of wget-gnu, don't wait forever:
-	wget --version >/dev/null 2>&1 && echo "wget -t 1" || echo "wget"
+	wget-gnu --version >/dev/null 2>&1 && echo "wget-gnu -t 1" || echo "wget"
 }
 
 collect_cpu() {

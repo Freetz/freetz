@@ -4,4 +4,15 @@ config EXTERNAL_FREETZ_PACKAGE_WGET
 	default n
 	help
 		externals the following file(s):
-		 /usr/bin/wget(-gnu)
+		 /usr/bin/wget-gnu
+
+config FREETZ_WGET_ALWAYS_AVAILABLE
+	depends on EXTERNAL_FREETZ_PACKAGE_WGET
+	bool "ensure wget is always available"
+	default n
+	help
+		Ensure wget is available even if external medium is not plugged in.
+
+		This is achieved by providing both GNU and busybox versions of wget.
+		The GNU one is available under the name "wget-gnu" and the busybox one
+		under the name "wget-busybox". "wget" is a symlink to the busybox version.

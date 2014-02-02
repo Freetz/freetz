@@ -7032,7 +7032,7 @@ config FREETZ_BUSYBOX_VCONFIG
 config FREETZ_BUSYBOX_WGET
 	bool "wget"
 	default n
-	depends on !FREETZ_PACKAGE_WGET && !FREETZ_PACKAGE_RRDSTATS_CABLEMODEM_WGET
+	depends on !FREETZ_PACKAGE_WGET || FREETZ_WGET_ALWAYS_AVAILABLE
 	help
 	  wget is a utility for non-interactive download of files from HTTP
 	  and FTP servers.
