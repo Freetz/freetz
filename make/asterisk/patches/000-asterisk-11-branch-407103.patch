@@ -1,0 +1,2809 @@
+--- apps/app_confbridge.c
++++ apps/app_confbridge.c
+@@ -34,7 +34,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405215 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406217 $")
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -182,7 +182,9 @@
+ 		<syntax>
+ 			<xi:include xpointer="xpointer(/docs/manager[@name='Login']/syntax/parameter[@name='ActionID'])" />
+ 			<parameter name="Conference" required="true" />
+-			<parameter name="Channel" required="true" />
++			<parameter name="Channel" required="true">
++				<para>If this parameter is not a complete channel name, the first channel with this prefix will be used.</para>
++			</parameter>
+ 		</syntax>
+ 		<description>
+ 		</description>
+@@ -194,7 +196,9 @@
+ 		<syntax>
+ 			<xi:include xpointer="xpointer(/docs/manager[@name='Login']/syntax/parameter[@name='ActionID'])" />
+ 			<parameter name="Conference" required="true" />
+-			<parameter name="Channel" required="true" />
++			<parameter name="Channel" required="true">
++				<para>If this parameter is not a complete channel name, the first channel with this prefix will be used.</para>
++			</parameter>
+ 		</syntax>
+ 		<description>
+ 		</description>
+@@ -264,7 +268,9 @@
+ 		<syntax>
+ 			<xi:include xpointer="xpointer(/docs/manager[@name='Login']/syntax/parameter[@name='ActionID'])" />
+ 			<parameter name="Conference" required="true" />
+-			<parameter name="Channel" required="true" />
++			<parameter name="Channel" required="true">
++				<para>If this parameter is not a complete channel name, the first channel with this prefix will be used.</para>
++			</parameter>
+ 		</syntax>
+ 		<description>
+ 		</description>
+@@ -2421,7 +2427,10 @@
+ 		e->command = "confbridge mute";
+ 		e->usage =
+ 			"Usage: confbridge mute <conference> <channel>\n"
+-			"       Mute a channel in a conference.\n";
++			"       Mute a channel in a conference.\n"
++			"       If the specified channel is a prefix,\n"
++			"       the action will be taken on the first\n"
++			"       matching channel.\n";
+ 		return NULL;
+ 	case CLI_GENERATE:
+ 		if (a->pos == 2) {
+@@ -2448,7 +2457,10 @@
+ 		e->command = "confbridge unmute";
+ 		e->usage =
+ 			"Usage: confbridge unmute <conference> <channel>\n"
+-			"       Unmute a channel in a conference.\n";
++			"       Unmute a channel in a conference.\n"
++			"       If the specified channel is a prefix,\n"
++			"       the action will be taken on the first\n"
++			"       matching channel.\n";
+ 		return NULL;
+ 	case CLI_GENERATE:
+ 		if (a->pos == 2) {
+--- apps/app_dial.c
++++ apps/app_dial.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 381880 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407074 $")
+ 
+ #include <sys/time.h>
+ #include <sys/signal.h>
+@@ -2880,8 +2880,9 @@
+ 					/* perform a transfer to a new extension */
+ 					if (strchr(macro_transfer_dest, '^')) { /* context^exten^priority*/
+ 						ast_replace_subargument_delimiter(macro_transfer_dest);
+-						if (!ast_parseable_goto(chan, macro_transfer_dest))
+-							ast_set_flag64(peerflags, OPT_GO_ON);
++					}
++					if (!ast_parseable_goto(chan, macro_transfer_dest)) {
++						ast_set_flag64(peerflags, OPT_GO_ON);
+ 					}
+ 				}
+ 			} else {
+@@ -2961,8 +2962,9 @@
+ 					/* perform a transfer to a new extension */
+ 					if (strchr(gosub_transfer_dest, '^')) { /* context^exten^priority*/
+ 						ast_replace_subargument_delimiter(gosub_transfer_dest);
+-						if (!ast_parseable_goto(chan, gosub_transfer_dest))
+-							ast_set_flag64(peerflags, OPT_GO_ON);
++					}
++					if (!ast_parseable_goto(chan, gosub_transfer_dest)) {
++						ast_set_flag64(peerflags, OPT_GO_ON);
+ 					}
+ 				}
+ 			} else {
+--- apps/app_queue.c
++++ apps/app_queue.c
+@@ -63,7 +63,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402646 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405792 $")
+ 
+ #include <sys/time.h>
+ #include <sys/signal.h>
+@@ -230,7 +230,7 @@
+ 				<para>Will run a macro on the calling party's channel once they are connected to a queue member.</para>
+ 			</parameter>
+ 			<parameter name="gosub">
+-				<para>Will run a gosub on the calling party's channel once they are connected to a queue member.</para>
++				<para>Will run a gosub on the called party's channel (the queue member) once the parties are connected.</para>
+ 			</parameter>
+ 			<parameter name="rule">
+ 				<para>Will cause the queue's defaultrule to be overridden by the rule specified.</para>
+--- apps/app_stack.c
++++ apps/app_stack.c
+@@ -32,7 +32,7 @@
+ 
+ #include "asterisk.h"
+  
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407103 $")
+ 
+ #include "asterisk/pbx.h"
+ #include "asterisk/module.h"
+@@ -763,6 +763,12 @@
+ 	}
+ 
+ 	AST_STANDARD_RAW_ARGS(args, data);
++
++	if (ast_strlen_zero(args.n) || ast_strlen_zero(args.name)) {
++		ast_log(LOG_ERROR, "LOCAL_PEEK requires parameters n and varname\n");
++		return -1;
++	}
++
+ 	n = atoi(args.n);
+ 	*buf = '\0';
+ 
+@@ -802,6 +808,11 @@
+ 	data = ast_strdupa(data);
+ 	AST_STANDARD_APP_ARGS(args, data);
+ 
++	if (ast_strlen_zero(args.n) || ast_strlen_zero(args.which)) {
++		ast_log(LOG_ERROR, "STACK_PEEK requires parameters n and which\n");
++		return -1;
++	}
++
+ 	n = atoi(args.n);
+ 	if (n <= 0) {
+ 		ast_log(LOG_ERROR, "STACK_PEEK must be called with a positive peek value\n");
+--- apps/app_transfer.c
++++ apps/app_transfer.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 361042 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405792 $")
+ 
+ #include "asterisk/pbx.h"
+ #include "asterisk/module.h"
+@@ -54,7 +54,7 @@
+ 		<description>
+ 			<para>Requests the remote caller be transferred
+ 			to a given destination. If TECH (SIP, IAX2, LOCAL etc) is used, only
+-			an incoming call with the same channel technology will be transfered.
++			an incoming call with the same channel technology will be transferred.
+ 			Note that for SIP, if you transfer before call is setup, a 302 redirect
+ 			SIP message will be returned to the caller.</para>
+ 			<para>The result of the application will be reported in the <variable>TRANSFERSTATUS</variable>
+--- cdr/cdr_radius.c
++++ cdr/cdr_radius.c
+@@ -34,9 +34,13 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 328259 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406802 $")
+ 
++#ifdef FREERADIUS_CLIENT
++#include <freeradius-client.h>
++#else
+ #include <radiusclient-ng.h>
++#endif
+ 
+ #include "asterisk/channel.h"
+ #include "asterisk/cdr.h"
+@@ -82,7 +86,11 @@
+ static const char name[] = "radius";
+ static const char cdr_config[] = "cdr.conf";
+ 
++#ifdef FREERADIUS_CLIENT
++static char radiuscfg[PATH_MAX] = "/etc/radiusclient/radiusclient.conf";
++#else
+ static char radiuscfg[PATH_MAX] = "/etc/radiusclient-ng/radiusclient.conf";
++#endif
+ 
+ static struct ast_flags global_flags = { RADIUS_FLAG_USEGMTIME | RADIUS_FLAG_LOGUNIQUEID | RADIUS_FLAG_LOGUSERFIELD };
+ 
+--- cel/cel_manager.c
++++ cel/cel_manager.c
+@@ -35,7 +35,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 353648 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405582 $")
+ 
+ #include "asterisk/channel.h"
+ #include "asterisk/cel.h"
+@@ -153,7 +153,12 @@
+ 		return 0;
+ 	}
+ 
+-	if (!cfg) {
++	if (cfg == CONFIG_STATUS_FILEINVALID) {
++		ast_log(LOG_WARNING, "Configuration file '%s' is invalid. CEL manager Module not activated.\n",
++			CONF_FILE);
++		enablecel = 0;
++		return -1;
++	} else if (!cfg) {
+ 		ast_log(LOG_WARNING, "Failed to load configuration file. CEL manager Module not activated.\n");
+ 		enablecel = 0;
+ 		return -1;
+--- cel/cel_radius.c
++++ cel/cel_radius.c
+@@ -33,9 +33,13 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Rev: 328259 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Rev: 406802 $")
+ 
++#ifdef FREERADIUS_CLIENT
++#include <freeradius-client.h>
++#else
+ #include <radiusclient-ng.h>
++#endif
+ 
+ #include "asterisk/channel.h"
+ #include "asterisk/cel.h"
+@@ -79,7 +83,11 @@
+ 
+ static char *cel_config = "cel.conf";
+ 
++#ifdef FREERADIUS_CLIENT
++static char radiuscfg[PATH_MAX] = "/etc/radiusclient/radiusclient.conf";
++#else
+ static char radiuscfg[PATH_MAX] = "/etc/radiusclient-ng/radiusclient.conf";
++#endif
+ 
+ static struct ast_flags global_flags = { RADIUS_FLAG_USEGMTIME | RADIUS_FLAG_LOGUNIQUEID | RADIUS_FLAG_LOGUSERFIELD };
+ 
+--- channels/chan_iax2.c
++++ channels/chan_iax2.c
+@@ -38,7 +38,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405792 $")
+ 
+ #include <sys/mman.h>
+ #include <dirent.h>
+@@ -5602,7 +5602,7 @@
+ 			unlock_both(callno0, callno1);
+ 			return AST_BRIDGE_FAILED_NOWARN;
+ 		}
+-		/* check if transfered and if we really want native bridging */
++		/* check if transferred and if we really want native bridging */
+ 		if (!transferstarted && !ast_test_flag64(iaxs[callno0], IAX_NOTRANSFER) && !ast_test_flag64(iaxs[callno1], IAX_NOTRANSFER)) {
+ 			/* Try the transfer */
+ 			if (iax2_start_transfer(callno0, callno1, (flags & (AST_BRIDGE_DTMF_CHANNEL_0 | AST_BRIDGE_DTMF_CHANNEL_1)) ||
+--- channels/chan_mgcp.c
++++ channels/chan_mgcp.c
+@@ -36,7 +36,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 401538 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406038 $")
+ 
+ #include <sys/socket.h>
+ #include <sys/ioctl.h>
+@@ -200,7 +200,8 @@
+ 
+ static int adsi = 0;
+ 
+-static unsigned int oseq;
++static unsigned int oseq_global = 0;
++AST_MUTEX_DEFINE_STATIC(oseq_lock);
+ 
+ /*! Wait up to 16 seconds for first digit (FXO logic) */
+ static int firstdigittimeout = 16000;
+@@ -2111,7 +2112,7 @@
+ 	return 0;
+ }
+ 
+-static int init_req(struct mgcp_endpoint *p, struct mgcp_request *req, char *verb)
++static int init_req(struct mgcp_endpoint *p, struct mgcp_request *req, char *verb, unsigned int oseq)
+ {
+ 	/* Initialize a response */
+ 	if (req->headers || req->len) {
+@@ -2144,13 +2145,17 @@
+ 
+ static int reqprep(struct mgcp_request *req, struct mgcp_endpoint *p, char *verb)
+ {
++	unsigned int oseq;
+ 	memset(req, 0, sizeof(struct mgcp_request));
+-	oseq++;
+-	if (oseq > 999999999) {
+-		oseq = 1;
++	ast_mutex_lock(&oseq_lock);
++	oseq_global++;
++	if (oseq_global > 999999999) {
++		oseq_global = 1;
+ 	}
+-	init_req(p, req, verb);
+-	return 0;
++	oseq = oseq_global;
++	ast_mutex_unlock(&oseq_lock);
++	init_req(p, req, verb, oseq);
++	return oseq;
+ }
+ 
+ static int transmit_response(struct mgcp_subchannel *sub, char *msg, struct mgcp_request *req, char *msgrest)
+@@ -2288,6 +2293,7 @@
+ 	struct mgcp_endpoint *p = sub->parent;
+ 	struct ast_format tmpfmt;
+ 	struct ast_sockaddr sub_tmpdest_tmp;
++	unsigned int oseq;
+ 
+ 	if (ast_strlen_zero(sub->cxident) && rtp) {
+ 		/* We don't have a CXident yet, store the destination and
+@@ -2324,7 +2330,7 @@
+ 	}
+ 
+ 
+-	reqprep(&resp, p, "MDCX");
++	oseq = reqprep(&resp, p, "MDCX");
+ 	add_header(&resp, "C", sub->callid);
+ 	add_header(&resp, "L", local);
+ 	add_header(&resp, "M", mgcp_cxmodes[sub->cxmode]);
+@@ -2346,6 +2352,7 @@
+ 	char tmp[80];
+ 	struct ast_format tmpfmt;
+ 	struct mgcp_endpoint *p = sub->parent;
++	unsigned int oseq;
+ 
+ 	ast_debug(3, "Creating connection for %s@%s-%d in cxmode: %s callid: %s\n",
+ 		 p->name, p->parent->name, sub->id, mgcp_cxmodes[sub->cxmode], sub->callid);
+@@ -2372,7 +2379,7 @@
+ 		}
+ 	}
+ 	sub->sdpsent = 1;
+-	reqprep(&resp, p, "CRCX");
++	oseq = reqprep(&resp, p, "CRCX");
+ 	add_header(&resp, "C", sub->callid);
+ 	add_header(&resp, "L", local);
+ 	add_header(&resp, "M", mgcp_cxmodes[sub->cxmode]);
+@@ -2443,6 +2450,7 @@
+ 	char tmp[80];
+ 	struct ast_format tmpfmt;
+ 	struct mgcp_endpoint *p = sub->parent;
++	unsigned int oseq;
+ 
+ 	ast_copy_string(local, "p:20, s:off, e:on", sizeof(local));
+ 
+@@ -2458,7 +2466,7 @@
+ 	ast_debug(3, "Creating connection for %s@%s-%d in cxmode: %s callid: %s\n",
+ 		    p->name, p->parent->name, sub->id, mgcp_cxmodes[sub->cxmode], sub->callid);
+ 	sub->sdpsent = 0;
+-	reqprep(&resp, p, "CRCX");
++	oseq = reqprep(&resp, p, "CRCX");
+ 	add_header(&resp, "C", sub->callid);
+ 	add_header(&resp, "L", local);
+ 	add_header(&resp, "M", "inactive");
+@@ -2475,11 +2483,12 @@
+ {
+ 	struct mgcp_request resp;
+ 	struct mgcp_endpoint *p = sub->parent;
++	unsigned int oseq;
+ 
+ 	ast_debug(3, "MGCP Asked to indicate tone: %s on  %s@%s-%d in cxmode: %s\n",
+ 		tone, p->name, p->parent->name, sub->id, mgcp_cxmodes[sub->cxmode]);
+ 	ast_copy_string(p->curtone, tone, sizeof(p->curtone));
+-	reqprep(&resp, p, "RQNT");
++	oseq = reqprep(&resp, p, "RQNT");
+ 	add_header(&resp, "X", p->rqnt_ident);
+ 	switch (p->hookstate) {
+ 	case MGCP_ONHOOK:
+@@ -2506,6 +2515,7 @@
+ 	struct timeval t = ast_tvnow();
+ 	struct ast_tm tm;
+ 	struct mgcp_endpoint *p = sub->parent;
++	unsigned int oseq;
+ 
+ 	ast_localtime(&t, &tm, NULL);
+ 	n = callername;
+@@ -2521,7 +2531,7 @@
+ 	snprintf(tone2, sizeof(tone2), "%s,L/ci(%02d/%02d/%02d/%02d,%s,%s)", tone,
+ 		tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, l, n);
+ 	ast_copy_string(p->curtone, tone, sizeof(p->curtone));
+-	reqprep(&resp, p, "RQNT");
++	oseq = reqprep(&resp, p, "RQNT");
+ 	add_header(&resp, "X", p->rqnt_ident);
+ 	switch (p->hookstate) {
+ 	case MGCP_ONHOOK:
+@@ -2550,6 +2560,7 @@
+ 	int fc = 1;
+ 	char local[256];
+ 	char tmp[80];
++	unsigned int oseq;
+ 
+ 	if (ast_strlen_zero(sub->cxident)) {
+ 		/* We don't have a CXident yet, store the destination and
+@@ -2585,7 +2596,7 @@
+ 		}
+ 	}
+ 
+-	reqprep(&resp, p, "MDCX");
++	oseq = reqprep(&resp, p, "MDCX");
+ 	add_header(&resp, "C", sub->callid);
+ 	if (!sub->sdpsent) {
+ 		add_header(&resp, "L", local);
+@@ -2644,7 +2655,8 @@
+ static int transmit_audit_endpoint(struct mgcp_endpoint *p)
+ {
+ 	struct mgcp_request resp;
+-	reqprep(&resp, p, "AUEP");
++	unsigned int oseq;
++	oseq = reqprep(&resp, p, "AUEP");
+ 	/* removed unknown param VS */
+ 	/*add_header(&resp, "F", "A,R,D,S,X,N,I,T,O,ES,E,MD,M");*/
+ 	add_header(&resp, "F", "A");
+@@ -2658,10 +2670,11 @@
+ {
+ 	struct mgcp_endpoint *p = sub->parent;
+ 	struct mgcp_request resp;
++	unsigned int oseq;
+ 
+ 	ast_debug(3, "Delete connection %s %s@%s-%d with new mode: %s on callid: %s\n",
+ 		sub->cxident, p->name, p->parent->name, sub->id, mgcp_cxmodes[sub->cxmode], sub->callid);
+-	reqprep(&resp, p, "DLCX");
++	oseq = reqprep(&resp, p, "DLCX");
+ 	/* check if call id is avail */
+ 	if (sub->callid[0])
+ 		add_header(&resp, "C", sub->callid);
+@@ -2679,10 +2692,11 @@
+ static int transmit_connection_del_w_params(struct mgcp_endpoint *p, char *callid, char *cxident)
+ {
+ 	struct mgcp_request resp;
++	unsigned int oseq;
+ 
+ 	ast_debug(3, "Delete connection %s %s@%s on callid: %s\n",
+ 		cxident ? cxident : "", p->name, p->parent->name, callid ? callid : "");
+-	reqprep(&resp, p, "DLCX");
++	oseq = reqprep(&resp, p, "DLCX");
+ 	/* check if call id is avail */
+ 	if (callid && *callid)
+ 		add_header(&resp, "C", callid);
+--- channels/chan_sip.c
++++ channels/chan_sip.c
+@@ -210,7 +210,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405487 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406171 $")
+ 
+ #include <signal.h>
+ #include <sys/signal.h>
+@@ -6292,7 +6292,7 @@
+ 		} else if (!strcasecmp(ast_var_name(current), "SIPFROMDOMAIN")) {
+ 			ast_string_field_set(p, fromdomain, ast_var_value(current));
+ 		} else if (!strcasecmp(ast_var_name(current), "SIPTRANSFER")) {
+-			/* This is a transfered call */
++			/* This is a transferred call */
+ 			p->options->transfer = 1;
+ 		} else if (!strcasecmp(ast_var_name(current), "SIPTRANSFER_REFERER")) {
+ 			/* This is the referrer */
+@@ -6349,7 +6349,7 @@
+ 
+ 		if (referer) {
+ 			if (sipdebug)
+-				ast_debug(3, "Call for %s transfered by %s\n", p->username, referer);
++				ast_debug(3, "Call for %s transferred by %s\n", p->username, referer);
+ 			snprintf(buf, sizeof(buf)-1, "-> %s (via %s)", p->cid_name, referer);
+ 		} else
+ 			snprintf(buf, sizeof(buf)-1, "-> %s", p->cid_name);
+@@ -10382,6 +10382,18 @@
+ 					 * respond with the EC they want to use */
+ 					ast_udptl_set_error_correction_scheme(p->udptl, UDPTL_ERROR_CORRECTION_NONE);
+ 				}
++			} else if (sscanf(m, "image %30u %17s t38%n", &x, protocol, &len) == 2 && len > 0) {
++				ast_log(LOG_WARNING, "Declining image stream due to unsupported transport: %s\n", m);
++				/* produce zero-port m-line since this is guaranteed to be declined
++				 * length is "m=image 0 strlen(protocol) t38" + "\r\n\0" */
++				if (!(offer->decline_m_line = ast_malloc(10 + strlen(protocol) + 7))) {
++					ast_log(LOG_WARNING, "Failed to allocate memory for SDP offer declination\n");
++					res = -1;
++					goto process_sdp_cleanup;
++				}
++				/* guaranteed to be exactly the right length */
++				sprintf(offer->decline_m_line, "m=image 0 %s t38\r\n", protocol);
++				continue;
+ 			} else {
+ 				ast_log(LOG_WARNING, "Rejecting image media offer due to invalid or unsupported syntax: %s\n", m);
+ 				res = -1;
+@@ -24566,7 +24578,7 @@
+ 
+ 		/* EventID for each transfer... EventID is basically the REFER cseq
+ 
+-		 We are getting notifications on a call that we transfered
++		 We are getting notifications on a call that we transferred
+ 		 We should hangup when we are getting a 200 OK in a sipfrag
+ 		 Check if we have an owner of this event */
+ 
+--- channels/sig_pri.c
++++ channels/sig_pri.c
+@@ -665,12 +665,7 @@
+  */
+ static void sig_pri_set_subaddress(struct ast_party_subaddress *ast_subaddress, const struct pri_party_subaddress *pri_subaddress)
+ {
+-	char *cnum, *ptr;
+-	int x, len;
+-
+-	if (ast_subaddress->str) {
+-		ast_free(ast_subaddress->str);
+-	}
++	ast_free(ast_subaddress->str);
+ 	if (pri_subaddress->length <= 0) {
+ 		ast_party_subaddress_init(ast_subaddress);
+ 		return;
+@@ -680,8 +675,14 @@
+ 		/* NSAP */
+ 		ast_subaddress->str = ast_strdup((char *) pri_subaddress->data);
+ 	} else {
++		char *cnum;
++		char *ptr;
++		int x;
++		int len;
++
+ 		/* User Specified */
+-		if (!(cnum = ast_malloc(2 * pri_subaddress->length + 1))) {
++		cnum = ast_malloc(2 * pri_subaddress->length + 1);
++		if (!cnum) {
+ 			ast_party_subaddress_init(ast_subaddress);
+ 			return;
+ 		}
+@@ -4213,14 +4214,11 @@
+ 
+ 				pri->pvts[chanpos]->cid_subaddr[0] = '\0';
+ #if defined(HAVE_PRI_SUBADDR)
+-				if (ast_connected.id.subaddress.valid) {
+-					ast_party_subaddress_set(&ast_channel_caller(owner)->id.subaddress,
+-						&ast_connected.id.subaddress);
+-					if (ast_connected.id.subaddress.str) {
+-						ast_copy_string(pri->pvts[chanpos]->cid_subaddr,
+-							ast_connected.id.subaddress.str,
+-							sizeof(pri->pvts[chanpos]->cid_subaddr));
+-					}
++				if (ast_connected.id.subaddress.str) {
++					ast_copy_string(pri->pvts[chanpos]->cid_subaddr,
++						ast_connected.id.subaddress.str,
++						sizeof(pri->pvts[chanpos]->cid_subaddr));
++					caller_id_update = 1;
+ 				}
+ #endif	/* defined(HAVE_PRI_SUBADDR) */
+ 				if (caller_id_update) {
+@@ -4234,12 +4232,13 @@
+ 					ast_caller.id = ast_connected.id;
+ 					ast_caller.ani = ast_connected.id;
+ 					ast_channel_set_caller_event(owner, &ast_caller, NULL);
+-				}
+ 
+-				/* Update the connected line information on the other channel */
+-				if (event_id != PRI_EVENT_RING) {
+-					/* This connected_line update was not from a SETUP message. */
+-					ast_channel_queue_connected_line_update(owner, &ast_connected, NULL);
++					/* Update the connected line information on the other channel */
++					if (event_id != PRI_EVENT_RING) {
++						/* This connected_line update was not from a SETUP message. */
++						ast_channel_queue_connected_line_update(owner, &ast_connected,
++							NULL);
++					}
+ 				}
+ 
+ 				ast_party_connected_line_free(&ast_connected);
+--- configs/manager.conf.sample
++++ configs/manager.conf.sample
+@@ -94,12 +94,13 @@
+ ; user.
+ ;
+ ;eventfilter=Event: Newchannel
+-;eventfilter=!Channel: DAHDI*
+-; The eventfilter option is used to whitelist or blacklist events per user to be
+-; reported with regular expressions and are allowed if both the regex matches
+-; and the user has read access set below. Filters are assumed to be for whitelisting
+-; unless preceeded by an exclamation point, which marks it as being black.
+-; Evaluation of the filters is as follows:
++;eventfilter=!Channel: DAHDI.*
++; The eventfilter option is used to whitelist or blacklist events per user.
++; A filter consists of a (basic/old-style and unanchored) regular expression
++; that is run on the entire event data. If the first character of the filter
++; is an exclamation mark (!), the filter is appended to the blacklist instead
++; of the whitelist. After first checking the read access below, the regular
++; expression filters are processed as follows:
+ ; - If no filters are configured all events are reported as normal.
+ ; - If there are white filters only: implied black all filter processed first,
+ ; then white filters.
+--- configs/queues.conf.sample
++++ configs/queues.conf.sample
+@@ -5,7 +5,7 @@
+ ; Persistent Members
+ ;    Store each dynamic member in each queue in the astdb so that
+ ;    when asterisk is restarted, each member will be automatically
+-;    read into their recorded queues. Default is 'yes'.
++;    read into their recorded queues. Default is 'no'.
+ ;
+ persistentmembers = yes
+ ;
+--- configs/res_fax.conf.sample
++++ configs/res_fax.conf.sample
+@@ -8,8 +8,8 @@
+ 
+ ; Minimum Transmission Rate
+ ; Possible values are { 2400 | 4800 | 7200 | 9600 | 12000 | 14400 }
+-; Set this value to the minimum desired transfer rate.  Default: 2400
+-minrate=2400
++; Set this value to the minimum desired transfer rate.  Default: 4800
++minrate=4800
+ 
+ ; Send Progress/Status events to manager session
+ ; Manager events with 'call' class permissions will receive events indicating the
+--- configs/sip.conf.sample
++++ configs/sip.conf.sample
+@@ -396,6 +396,9 @@
+                                 ; certain transferred calls to use always use video when
+                                 ; available. [yes|NO|always]
+ 
++;textsupport=no                 ; Support for ITU-T T.140 realtime text.
++                                ; The default value is "no".
++
+ ;maxcallbitrate=384             ; Maximum bitrate for video calls (default 384 kb/s)
+                                 ; Videosupport and maxcallbitrate is settable
+                                 ; for peers and users as well
+--- configure
++++ configure
+@@ -1,5 +1,5 @@
+ #! /bin/sh
+-# From configure.ac Revision: 400768 .
++# From configure.ac Revision: 405091 .
+ # Guess values for system-dependent variables and create Makefiles.
+ # Generated by GNU Autoconf 2.69 for asterisk trunk.
+ #
+@@ -26648,6 +26648,117 @@
+ 
+ 
+ 
++# Accept either RADIUS client library, their APIs are fully compatible,
++# just different header filenames and different SONAMEs
++
++if test "x${PBX_RADIUS}" != "x1" -a "${USE_RADIUS}" != "no"; then
++   pbxlibdir=""
++   # if --with-RADIUS=DIR has been specified, use it.
++   if test "x${RADIUS_DIR}" != "x"; then
++      if test -d ${RADIUS_DIR}/lib; then
++         pbxlibdir="-L${RADIUS_DIR}/lib"
++      else
++         pbxlibdir="-L${RADIUS_DIR}"
++      fi
++   fi
++   pbxfuncname="rc_read_config"
++   if test "x${pbxfuncname}" = "x" ; then   # empty lib, assume only headers
++      AST_RADIUS_FOUND=yes
++   else
++      ast_ext_lib_check_save_CFLAGS="${CFLAGS}"
++      CFLAGS="${CFLAGS} "
++      as_ac_Lib=`$as_echo "ac_cv_lib_freeradius-client_${pbxfuncname}" | $as_tr_sh`
++{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ${pbxfuncname} in -lfreeradius-client" >&5
++$as_echo_n "checking for ${pbxfuncname} in -lfreeradius-client... " >&6; }
++if eval \${$as_ac_Lib+:} false; then :
++  $as_echo_n "(cached) " >&6
++else
++  ac_check_lib_save_LIBS=$LIBS
++LIBS="-lfreeradius-client ${pbxlibdir}  $LIBS"
++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++/* end confdefs.h.  */
++
++/* Override any GCC internal prototype to avoid an error.
++   Use char because int might match the return type of a GCC
++   builtin and then its argument prototype would still apply.  */
++#ifdef __cplusplus
++extern "C"
++#endif
++char ${pbxfuncname} ();
++int
++main ()
++{
++return ${pbxfuncname} ();
++  ;
++  return 0;
++}
++_ACEOF
++if ac_fn_c_try_link "$LINENO"; then :
++  eval "$as_ac_Lib=yes"
++else
++  eval "$as_ac_Lib=no"
++fi
++rm -f core conftest.err conftest.$ac_objext \
++    conftest$ac_exeext conftest.$ac_ext
++LIBS=$ac_check_lib_save_LIBS
++fi
++eval ac_res=\$$as_ac_Lib
++	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
++$as_echo "$ac_res" >&6; }
++if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
++  AST_RADIUS_FOUND=yes
++else
++  AST_RADIUS_FOUND=no
++fi
++
++      CFLAGS="${ast_ext_lib_check_save_CFLAGS}"
++   fi
++
++   # now check for the header.
++   if test "${AST_RADIUS_FOUND}" = "yes"; then
++      RADIUS_LIB="${pbxlibdir} -lfreeradius-client "
++      # if --with-RADIUS=DIR has been specified, use it.
++      if test "x${RADIUS_DIR}" != "x"; then
++         RADIUS_INCLUDE="-I${RADIUS_DIR}/include"
++      fi
++      RADIUS_INCLUDE="${RADIUS_INCLUDE} "
++      if test "xfreeradius-client.h" = "x" ; then	# no header, assume found
++         RADIUS_HEADER_FOUND="1"
++      else				# check for the header
++         ast_ext_lib_check_saved_CPPFLAGS="${CPPFLAGS}"
++         CPPFLAGS="${CPPFLAGS} ${RADIUS_INCLUDE}"
++         ac_fn_c_check_header_mongrel "$LINENO" "freeradius-client.h" "ac_cv_header_freeradius_client_h" "$ac_includes_default"
++if test "x$ac_cv_header_freeradius_client_h" = xyes; then :
++  RADIUS_HEADER_FOUND=1
++else
++  RADIUS_HEADER_FOUND=0
++fi
++
++
++         CPPFLAGS="${ast_ext_lib_check_saved_CPPFLAGS}"
++      fi
++      if test "x${RADIUS_HEADER_FOUND}" = "x0" ; then
++         RADIUS_LIB=""
++         RADIUS_INCLUDE=""
++      else
++         if test "x${pbxfuncname}" = "x" ; then		# only checking headers -> no library
++            RADIUS_LIB=""
++         fi
++         PBX_RADIUS=1
++         cat >>confdefs.h <<_ACEOF
++#define HAVE_RADIUS 1
++_ACEOF
++
++      fi
++   fi
++fi
++
++
++if test "x${PBX_RADIUS}" = "x1"; then
++
++$as_echo "#define FREERADIUS_CLIENT /**/" >>confdefs.h
++
++else
+ 
+ if test "x${PBX_RADIUS}" != "x1" -a "${USE_RADIUS}" != "no"; then
+    pbxlibdir=""
+@@ -26752,6 +26863,7 @@
+ fi
+ 
+ 
++fi
+ 
+ 
+ if test "x${PBX_COROSYNC}" != "x1" -a "${USE_COROSYNC}" != "no"; then
+--- doc/asterisk.8
++++ doc/asterisk.8
+@@ -16,27 +16,27 @@
+ \fBasterisk\fR \kx
+ .if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+ 'in \n(.iu+\nxu
+-[\fB-BcdfFghiImnpqRtTvVW\fR] [\fB-C \fR\fIfile\fR] [\fB-e \fR\fImemory\fR] [\fB-G \fR\fIgroup\fR] [\fB-L \fR\fIloadaverage\fR] [\fB-M \fR\fIvalue\fR] [\fB-U \fR\fIuser\fR] [\fB-s \fR\fIsocket-file\fR]
+-'in \n(.iu-\nxu
++[\fB\-BcdfFghiImnpqRtTvVW\fR] [\fB\-C \fR\fIfile\fR] [\fB\-e \fR\fImemory\fR] [\fB\-G \fR\fIgroup\fR] [\fB\-L \fR\fIloadaverage\fR] [\fB\-M \fR\fIvalue\fR] [\fB\-U \fR\fIuser\fR] [\fB\-s \fR\fIsocket\-file\fR]
++'in \n(.iu\-\nxu
+ .ad b
+ 'hy
+ 'nh
+ .fi
+ .ad l
+-\fBasterisk -r\fR \kx
++\fBasterisk \-r\fR \kx
+ .if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+ 'in \n(.iu+\nxu
+-[\fB-v\fR] [\fB-d\fR] [\fB-x \fR\fIcommand\fR]
++[\fB\-v\fR] [\fB\-d\fR] [\fB\-x \fR\fIcommand\fR]
+ 'in \n(.iu-\nxu
+ .ad b
+ 'hy
+ 'nh
+ .fi
+ .ad l
+-\fBasterisk -R\fR \kx
++\fBasterisk \-R\fR \kx
+ .if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+ 'in \n(.iu+\nxu
+-[\fB-v\fR] [\fB-d\fR] [\fB-x \fR\fIcommand\fR]
++[\fB\-v\fR] [\fB\-d\fR] [\fB\-x \fR\fIcommand\fR]
+ 'in \n(.iu-\nxu
+ .ad b
+ 'hy
+@@ -52,12 +52,12 @@
+ .PP
+ At start, Asterisk reads the /etc/asterisk/asterisk.conf main configuration
+ file and locates the rest of the configuration files from the configuration
+-in that file. The -C option specifies an alternate main configuration file.
++in that file. The \-C option specifies an alternate main configuration file.
+ Virtually all aspects of the operation of asterisk's configuration files
+ can be found in the sample configuration files. The format for those files
+ is generally beyond the scope of this man page.
+ .PP
+-When running with \fB-c\fR, \fB-r\fR or \fB-R\fR
++When running with \fB\-c\fR, \fB\-r\fR or \fB\-R\fR
+ options, Asterisk supplies a powerful command line, including command
+ completion, which may be used to monitors its status, perform a variety
+ of administrative actions and even explore the applications that are
+@@ -70,26 +70,26 @@
+ \*(T<\fB\-R\fR\*(T> connects to an existing Asterisk instance through
+ a remote console.
+ .TP 
+--B
++\-B
+ Force the background of the terminal to be black, in order for
+ terminal colors to show up properly. Equivalent to
+ \*(T<\fBforceblackbackground = yes\fR\*(T> in
+ \*(T<\fIasterisk.conf\fR\*(T>. See also
+ \*(T<\fB\-n\fR\*(T> and \*(T<\fB\-W\fR\*(T>.
+ .TP 
+--C \fIfile\fR
++\-C \fIfile\fR
+ Use \*(T<\fIfile\fR\*(T> as master configuration file
+ instead of the default, /etc/asterisk/asterisk.conf
+ .TP 
+--c
++\-c
+ Provide a control console on the calling terminal. The
+ console is similar to the remote console provided by
+ \*(T<\fB\-r\fR\*(T>. Specifying this option implies 
+-\fB-f\fR and will cause asterisk to no longer 
++\fB\-f\fR and will cause asterisk to no longer 
+ fork or detach from the controlling terminal. Equivalent 
+ to \*(T<\fBconsole = yes\fR\*(T> in \*(T<\fIasterisk.conf\fR\*(T>.
+ .TP 
+--d
++\-d
+ Enable extra debugging statements. This parameter may be used several
+ times, and each increases the debug level. Equivalent to \*(T<\fBdebug = \fR\*(T>\fInum\fR
+ in \*(T<\fIasterisk.conf\fR\*(T> to explicitly set the initian debug
+@@ -104,62 +104,62 @@
+ Equivalent to \*(T<\fBminmemfree = \fR\*(T>\fImemory\fR in
+ \*(T<\fIasterisk.conf\fR\*(T>.
+ .TP 
+--f
++\-f
+ Do not fork or detach from controlling terminal. Overrides any
+-preceding specification of \fB-F\fR on the command line.
++preceding specification of \fB\-F\fR on the command line.
+ Equivalent to \*(T<\fBnofork = yes\fR\*(T> in \*(T<\fIasterisk.conf\fR\*(T>.
+ See also \*(T<\fB\-c\fR\*(T>.
+ .TP 
+--F
++\-F
+ Always fork and detach from controlling terminal. Overrides any
+-preceding specification of \fB-f\fR on the command line.
++preceding specification of \fB\-f\fR on the command line.
+ May also be used to prevent \*(T<\fB\-d\fR\*(T> and \*(T<\fB\-v\fR\*(T> to imply
+ no forking. Equivalent to \*(T<\fBalwaysfork = yes\fR\*(T> in \*(T<\fIasterisk.conf\fR\*(T>.
+ .TP 
+--g
++\-g
+ Remove resource limit on core size, thus forcing Asterisk to dump
+ core in the unlikely event of a segmentation fault or abort signal.
+ \fBNOTE:\fR in some cases this may be incompatible
+-with the \fB-U\fR or \fB-G\fR flags.
++with the \fB\-U\fR or \fB\-G\fR flags.
+ .TP 
+--G \fIgroup\fR
++\-G \fIgroup\fR
+ Run as group \fIgroup\fR instead of the
+ calling group. \fBNOTE:\fR this requires substantial work
+ to be sure that Asterisk's environment has permission to write
+ the files required for its operation, including logs, its comm
+ socket, the asterisk database, etc.
+ .TP 
+--h
++\-h
+ Provide brief summary of command line arguments and terminate.
+ .TP 
+--i
++\-i
+ Prompt user to intialize any encrypted private keys for IAX2
+ secure authentication during startup.
+ .TP 
+--I
++\-I
+ Enable internal timing if DAHDI timing is available.
+ The default behaviour is that outbound packets are phase locked
+ to inbound packets. Enabling this switch causes them to be
+ locked to the internal DAHDI timer instead.
+ .TP 
+--L \fIloadaverage\fR
++\-L \fIloadaverage\fR
+ Limits the maximum load average before rejecting new calls. This can
+ be useful to prevent a system from being brought down by terminating
+ too many simultaneous calls.
+ .TP 
+--m
++\-m
+ Temporarily mutes output to the console and logs. To return to normal,
+ use \fBlogger mute\fR.
+ .TP 
+--M \fIvalue\fR
++\-M \fIvalue\fR
+ Limits the maximum number of calls to the specified value. This can
+ be useful to prevent a system from being brought down by terminating
+ too many simultaneous calls.
+ .TP 
+--n
++\-n
+ Disable ANSI colors even on terminals capable of displaying them.
+ .TP 
+--p
++\-p
+ If supported by the operating system (and executing as root),
+ attempt to run with realtime priority for increased performance and
+ responsiveness within the Asterisk process, at the expense of other
+@@ -170,77 +170,77 @@
+ running or is killed, \fBasterisk\fR will slow down to
+ normal process priority, to avoid locking up the machine.
+ .TP 
+--q
++\-q
+ Reduce default console output when running in conjunction with
+-console mode (\fB-c\fR).
++console mode (\fB\-c\fR).
+ .TP 
+--r
++\-r
+ Instead of running a new Asterisk process, attempt to connect
+ to a running Asterisk process and provide a console interface
+ for controlling it.
+ .TP 
+--R
+-Much like \fB-r\fR. Instead of running a new Asterisk process, attempt to connect
++\-R
++Much like \fB\-r\fR. Instead of running a new Asterisk process, attempt to connect
+ to a running Asterisk process and provide a console interface
+ for controlling it. Additionally, if connection to the Asterisk 
+ process is lost, attempt to reconnect for as long as 30 seconds.
+ .TP 
+--s \fIsocket file name\fR
+-In combination with \fB-r\fR, connect directly to a specified
++\-s \fIsocket file name\fR
++In combination with \fB\-r\fR, connect directly to a specified
+ Asterisk server socket.
+ .TP 
+--t
++\-t
+ When recording files, write them first into a temporary holding directory, 
+ then move them into the final location when done.
+ .TP 
+--T
++\-T
+ Add timestamp to all non-command related output going to the console
+ when running with verbose and/or logging to the console.
+ .TP 
+--U \fIuser\fR
++\-U \fIuser\fR
+ Run as user \fIuser\fR instead of the
+ calling user. \fBNOTE:\fR this requires substantial work
+ to be sure that Asterisk's environment has permission to write
+ the files required for its operation, including logs, its comm
+ socket, the asterisk database, etc.
+ .TP 
+--v
++\-v
+ Increase the level of verboseness on the console. The more times
+-\fB-v\fR is specified, the more verbose the output is.
+-Specifying this option implies \fB-f\fR and will cause
++\fB\-v\fR is specified, the more verbose the output is.
++Specifying this option implies \fB\-f\fR and will cause
+ asterisk to no longer fork or detach from the controlling terminal.
+-This option may also be used in conjunction with \fB-r\fR
+-and \fB-R\fR.
++This option may also be used in conjunction with \fB\-r\fR
++and \fB\-R\fR.
+ 
+ Note: This always sets the verbose level in the asterisk process,
+ even if it is running in the background. This will affect the size
+ of your log files.
+ .TP 
+--V
++\-V
+ Display version information and exit immediately.
+ .TP 
+--W
++\-W
+ Display colored terminal text as if the background were white
+ or otherwise light in color. Normally, terminal text is displayed
+ as if the background were black or otherwise dark in color.
+ .TP 
+--x \fIcommand\fR
++\-x \fIcommand\fR
+ Connect to a running Asterisk process and execute a command on
+ a command line, passing any output through to standard out and
+ then terminating when the command execution completes. Implies
+-\fB-r\fR when \fB-R\fR is not explicitly
++\fB\-r\fR when \fB\-R\fR is not explicitly
+ supplied.
+ .TP 
+--X
++\-X
+ Enables executing of includes via \fB#exec\fR directive.
+ This can be useful if You want to do \fB#exec\fR inside
+ \*(T<\fIasterisk.conf\fR\*(T>
+ .SH EXAMPLES
+ \fBasterisk\fR - Begin Asterisk as a daemon
+ .PP
+-\fBasterisk -vvvgc\fR - Run on controlling terminal
++\fBasterisk \-vvvgc\fR - Run on controlling terminal
+ .PP
+-\fBasterisk -rx "core show channels"\fR - Display channels on running server
++\fBasterisk \-rx "core show channels"\fR - Display channels on running server
+ .SH BUGS
+ Bug reports and feature requests may be filed at https://issues.asterisk.org
+ .SH "SEE ALSO"
+--- include/asterisk/autoconfig.h.in
++++ include/asterisk/autoconfig.h.in
+@@ -29,6 +29,9 @@
+ /* Define to 1 if using `alloca.c'. */
+ #undef C_ALLOCA
+ 
++/* Use the FreeRADIUS-client library */
++#undef FREERADIUS_CLIENT
++
+ /* Define to 1 if you have the `acos' function. */
+ #undef HAVE_ACOS
+ 
+--- include/asterisk/channel.h
++++ include/asterisk/channel.h
+@@ -901,6 +901,10 @@
+ 	 * to continue.
+ 	 */
+ 	AST_FLAG_BRIDGE_DUAL_REDIRECT_WAIT = (1 << 22),
++	/*!
++	 * The data on chan->timingdata is an astobj2 object.
++	 */
++	AST_FLAG_TIMINGDATA_IS_AO2_OBJ = (1 << 23),
+ };
+ 
+ /*! \brief ast_bridge_config flags */
+@@ -2286,6 +2290,7 @@
+  * \version 1.6.1 changed samples parameter to rate, accomodates new timing methods
+  */
+ int ast_settimeout(struct ast_channel *c, unsigned int rate, int (*func)(const void *data), void *data);
++int ast_settimeout_full(struct ast_channel *c, unsigned int rate, int (*func)(const void *data), void *data, unsigned int is_ao2_obj);
+ 
+ /*!
+  * \brief Transfer a channel (if supported).
+--- main/cel.c
++++ main/cel.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 397034 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406418 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -47,6 +47,9 @@
+ #include "asterisk/cli.h"
+ #include "asterisk/astobj2.h"
+ 
++/*! Config file to load for the CEL feature. */
++static const char cel_conf_file[] = "cel.conf";
++
+ /*! Is the CEL subsystem enabled ? */
+ static unsigned char cel_enabled;
+ 
+@@ -77,13 +80,38 @@
+ #define NUM_APP_BUCKETS		97
+ 
+ /*!
++ * \brief Lock protecting CEL.
++ *
++ * \note It protects during reloads, shutdown, and accesses to
++ * the appset and linkedids containers.
++ */
++AST_MUTEX_DEFINE_STATIC(reload_lock);
++
++/*!
+  * \brief Container of Asterisk application names
+  *
+  * The apps in this container are the applications that were specified
+  * in the configuration as applications that CEL events should be generated
+  * for when they start and end on a channel.
++ *
++ * \note Accesses to the appset container must be done while
++ * holding the reload_lock.
+  */
+ static struct ao2_container *appset;
++
++struct cel_linkedid {
++	/*! Number of channels with this linkedid. */
++	unsigned int count;
++	/*! Linkedid stored at end of struct. */
++	char id[0];
++};
++
++/*!
++ * \brief Container of channel references to a linkedid for CEL purposes.
++ *
++ * \note Accesses to the linkedids container must be done while
++ * holding the reload_lock.
++ */
+ static struct ao2_container *linkedids;
+ 
+ /*!
+@@ -138,15 +166,6 @@
+ 	return cel_enabled;
+ }
+ 
+-static int print_app(void *obj, void *arg, int flags)
+-{
+-	struct ast_cli_args *a = arg;
+-
+-	ast_cli(a->fd, "CEL Tracking Application: %s\n", (const char *) obj);
+-
+-	return 0;
+-}
+-
+ static void print_cel_sub(const struct ast_event *event, void *data)
+ {
+ 	struct ast_cli_args *a = data;
+@@ -196,7 +215,28 @@
+ 		}
+ 	}
+ 
+-	ao2_callback(appset, OBJ_NODATA, print_app, a);
++	/* Accesses to the appset container must be done while holding the reload_lock. */
++	ast_mutex_lock(&reload_lock);
++	if (appset) {
++		struct ao2_iterator iter;
++		char *app;
++
++		iter = ao2_iterator_init(appset, 0);
++		for (;;) {
++			app = ao2_iterator_next(&iter);
++			if (!app) {
++				break;
++			}
++			ast_mutex_unlock(&reload_lock);
++
++			ast_cli(a->fd, "CEL Tracking Application: %s\n", app);
++
++			ao2_ref(app, -1);
++			ast_mutex_lock(&reload_lock);
++		}
++		ao2_iterator_destroy(&iter);
++	}
++	ast_mutex_unlock(&reload_lock);
+ 
+ 	if (!(sub = ast_event_subscribe_new(AST_EVENT_SUB, print_cel_sub, a))) {
+ 		return CLI_FAILURE;
+@@ -278,10 +318,12 @@
+ 			continue;
+ 		}
+ 
+-		if (!(app = ao2_alloc(strlen(cur_app) + 1, NULL))) {
++		/* The app object is immutable so it doesn't need a lock of its own. */
++		app = ao2_alloc_options(strlen(cur_app) + 1, NULL, AO2_ALLOC_OPT_LOCK_NOLOCK);
++		if (!app) {
+ 			continue;
+ 		}
+-		strcpy(app, cur_app);
++		strcpy(app, cur_app);/* Safe */
+ 
+ 		ao2_link(appset, app);
+ 		ao2_ref(app, -1);
+@@ -289,9 +331,15 @@
+ 	}
+ }
+ 
+-AST_MUTEX_DEFINE_STATIC(reload_lock);
++static void set_defaults(void)
++{
++	cel_enabled = CEL_ENABLED_DEFAULT;
++	eventset = CEL_DEFAULT_EVENTS;
++	*cel_dateformat = '\0';
++	ao2_callback(appset, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL);
++}
+ 
+-static int do_reload(void)
++static int do_reload(int is_reload)
+ {
+ 	struct ast_config *config;
+ 	const char *enabled_value;
+@@ -302,19 +350,32 @@
+ 
+ 	ast_mutex_lock(&reload_lock);
+ 
+-	/* Reset all settings before reloading configuration */
+-	cel_enabled = CEL_ENABLED_DEFAULT;
+-	eventset = CEL_DEFAULT_EVENTS;
+-	*cel_dateformat = '\0';
+-	ao2_callback(appset, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL);
+-
+-	config = ast_config_load2("cel.conf", "cel", config_flags);
++	if (!is_reload) {
++		/* Initialize all settings before first configuration load. */
++		set_defaults();
++	}
+ 
+-	if (config == CONFIG_STATUS_FILEMISSING || config == CONFIG_STATUS_FILEUNCHANGED || config == CONFIG_STATUS_FILEINVALID) {
++	/*
++	 * Unfortunately we have to always load the config file because
++	 * other modules read the same file.
++	 */
++	config = ast_config_load2(cel_conf_file, "cel", config_flags);
++	if (!config || config == CONFIG_STATUS_FILEINVALID) {
++		ast_log(LOG_WARNING, "Could not load %s\n", cel_conf_file);
++		config = NULL;
++		goto return_cleanup;
++	}
++	if (config == CONFIG_STATUS_FILEUNCHANGED) {
++		/* This should never happen because we always load the config file. */
+ 		config = NULL;
+ 		goto return_cleanup;
+ 	}
+ 
++	if (is_reload) {
++		/* Reset all settings before reloading configuration */
++		set_defaults();
++	}
++
+ 	if ((enabled_value = ast_variable_retrieve(config, "general", "enable"))) {
+ 		cel_enabled = ast_true(enabled_value);
+ 	}
+@@ -368,24 +429,46 @@
+ void ast_cel_check_retire_linkedid(struct ast_channel *chan)
+ {
+ 	const char *linkedid = ast_channel_linkedid(chan);
+-	char *lid;
++	struct cel_linkedid *lid;
+ 
+-	/* make sure we need to do all this work */
++	if (ast_strlen_zero(linkedid)) {
++		return;
++	}
+ 
+-	if (ast_strlen_zero(linkedid) || !ast_cel_track_event(AST_CEL_LINKEDID_END)) {
++	/* Get the lock in case any CEL events are still in flight when we shutdown. */
++	ast_mutex_lock(&reload_lock);
++
++	if (!cel_enabled || !ast_cel_track_event(AST_CEL_LINKEDID_END)
++		|| !linkedids) {
++		/*
++		 * CEL is disabled or we are not tracking linkedids
++		 * or the CEL module is shutdown.
++		 */
++		ast_mutex_unlock(&reload_lock);
+ 		return;
+ 	}
+ 
+-	if (!(lid = ao2_find(linkedids, (void *) linkedid, OBJ_POINTER))) {
++	lid = ao2_find(linkedids, (void *) linkedid, OBJ_KEY);
++	if (!lid) {
++		ast_mutex_unlock(&reload_lock);
++
++		/*
++		 * The user may have done a reload to start tracking linkedids
++		 * when a call was already in progress.  This is an unusual kind
++		 * of change to make after starting Asterisk.
++		 */
+ 		ast_log(LOG_ERROR, "Something weird happened, couldn't find linkedid %s\n", linkedid);
+ 		return;
+ 	}
+ 
+-	/* We have a ref for each channel with this linkedid, the link and the above find, so if
+-	 * before unreffing the channel we have a refcount of 3, we're done. Unlink and report. */
+-	if (ao2_ref(lid, -1) == 3) {
++	if (!--lid->count) {
++		/* No channels use this linkedid anymore. */
+ 		ao2_unlink(linkedids, lid);
++		ast_mutex_unlock(&reload_lock);
++
+ 		ast_cel_report_event(chan, AST_CEL_LINKEDID_END, NULL, NULL, NULL);
++	} else {
++		ast_mutex_unlock(&reload_lock);
+ 	}
+ 	ao2_ref(lid, -1);
+ }
+@@ -517,26 +600,47 @@
+ 
+ int ast_cel_linkedid_ref(const char *linkedid)
+ {
+-	char *lid;
++	struct cel_linkedid *lid;
+ 
+ 	if (ast_strlen_zero(linkedid)) {
+ 		ast_log(LOG_ERROR, "The linkedid should never be empty\n");
+ 		return -1;
+ 	}
+ 
+-	if (!(lid = ao2_find(linkedids, (void *) linkedid, OBJ_POINTER))) {
+-		if (!(lid = ao2_alloc(strlen(linkedid) + 1, NULL))) {
+-			return -1;
+-		}
+-		strcpy(lid, linkedid);
+-		if (!ao2_link(linkedids, lid)) {
+-			ao2_ref(lid, -1);
++	/* Get the lock in case any CEL events are still in flight when we shutdown. */
++	ast_mutex_lock(&reload_lock);
++
++	if (!cel_enabled || !ast_cel_track_event(AST_CEL_LINKEDID_END)) {
++		/* CEL is disabled or we are not tracking linkedids. */
++		ast_mutex_unlock(&reload_lock);
++		return 0;
++	}
++	if (!linkedids) {
++		/* The CEL module is shutdown.  Abort. */
++		ast_mutex_unlock(&reload_lock);
++		return -1;
++	}
++
++	lid = ao2_find(linkedids, (void *) linkedid, OBJ_KEY);
++	if (!lid) {
++		/*
++		 * Changes to the lid->count member are protected by the
++		 * reload_lock so the lid object does not need its own lock.
++		 */
++		lid = ao2_alloc_options(sizeof(*lid) + strlen(linkedid) + 1, NULL,
++			AO2_ALLOC_OPT_LOCK_NOLOCK);
++		if (!lid) {
++			ast_mutex_unlock(&reload_lock);
+ 			return -1;
+ 		}
+-		/* Leave both the link and the alloc refs to show a count of 1 + the link */
++		strcpy(lid->id, linkedid);/* Safe */
++
++		ao2_link(linkedids, lid);
+ 	}
+-	/* If we've found, go ahead and keep the ref to increment count of how many channels
+-	 * have this linkedid. We'll clean it up in check_retire */
++	++lid->count;
++	ast_mutex_unlock(&reload_lock);
++	ao2_ref(lid, -1);
++
+ 	return 0;
+ }
+ 
+@@ -554,6 +658,12 @@
+ 	 * process otherwise. */
+ 	ast_mutex_lock(&reload_lock);
+ 
++	if (!appset) {
++		/* The CEL module is shutdown.  Abort. */
++		ast_mutex_unlock(&reload_lock);
++		return -1;
++	}
++
+ 	/* Record the linkedid of new channels if we are tracking LINKEDID_END even if we aren't
+ 	 * reporting on CHANNEL_START so we can track when to send LINKEDID_END */
+ 	if (cel_enabled && ast_cel_track_event(AST_CEL_LINKEDID_END) && event_type == AST_CEL_CHANNEL_START && linkedid) {
+@@ -702,42 +812,83 @@
+ 
+ static int app_cmp(void *obj, void *arg, int flags)
+ {
+-	const char *app1 = obj, *app2 = arg;
++	const char *app1 = obj;
++	const char *app2 = arg;
+ 
+-	return !strcasecmp(app1, app2) ? CMP_MATCH | CMP_STOP : 0;
++	return !strcasecmp(app1, app2) ? CMP_MATCH : 0;
+ }
+ 
+-#define lid_hash app_hash
+-#define lid_cmp app_cmp
+-
+-static void ast_cel_engine_term(void)
++static int lid_hash(const void *obj, const int flags)
+ {
+-	if (appset) {
+-		ao2_ref(appset, -1);
+-		appset = NULL;
++	const struct cel_linkedid *lid = obj;
++	const char *key = obj;
++
++	switch (flags & (OBJ_POINTER | OBJ_KEY)) {
++	case OBJ_POINTER:
++	default:
++		key = lid->id;
++		break;
++	case OBJ_KEY:
++		break;
+ 	}
+-	if (linkedids) {
+-		ao2_ref(linkedids, -1);
+-		linkedids = NULL;
++
++	return ast_str_case_hash(key);
++}
++
++static int lid_cmp(void *obj, void *arg, int flags)
++{
++	struct cel_linkedid *lid1 = obj;
++	struct cel_linkedid *lid2 = arg;
++	const char *key = arg;
++
++	switch (flags & (OBJ_POINTER | OBJ_KEY)) {
++	case OBJ_POINTER:
++	default:
++		key = lid2->id;
++		break;
++	case OBJ_KEY:
++		break;
+ 	}
++
++	return !strcasecmp(lid1->id, key) ? CMP_MATCH : 0;
++}
++
++static void ast_cel_engine_term(void)
++{
++	/* Get the lock in case any CEL events are still in flight when we shutdown. */
++	ast_mutex_lock(&reload_lock);
++
++	ao2_cleanup(appset);
++	appset = NULL;
++	ao2_cleanup(linkedids);
++	linkedids = NULL;
++
++	ast_mutex_unlock(&reload_lock);
++
+ 	ast_cli_unregister(&cli_status);
+ }
+ 
+ int ast_cel_engine_init(void)
+ {
+-	if (!(appset = ao2_container_alloc(NUM_APP_BUCKETS, app_hash, app_cmp))) {
++	/*
++	 * Accesses to the appset and linkedids containers have to be
++	 * protected by the reload_lock so they don't need a lock of
++	 * their own.
++	 */
++	appset = ao2_container_alloc_options(AO2_ALLOC_OPT_LOCK_NOLOCK, NUM_APP_BUCKETS,
++		app_hash, app_cmp);
++	if (!appset) {
+ 		return -1;
+ 	}
+-	if (!(linkedids = ao2_container_alloc(NUM_APP_BUCKETS, lid_hash, lid_cmp))) {
+-		ao2_ref(appset, -1);
++	linkedids = ao2_container_alloc_options(AO2_ALLOC_OPT_LOCK_NOLOCK, NUM_APP_BUCKETS,
++		lid_hash, lid_cmp);
++	if (!linkedids) {
++		ast_cel_engine_term();
+ 		return -1;
+ 	}
+ 
+-	if (do_reload() || ast_cli_register(&cli_status)) {
+-		ao2_ref(appset, -1);
+-		appset = NULL;
+-		ao2_ref(linkedids, -1);
+-		linkedids = NULL;
++	if (do_reload(0) || ast_cli_register(&cli_status)) {
++		ast_cel_engine_term();
+ 		return -1;
+ 	}
+ 
+@@ -748,6 +899,6 @@
+ 
+ int ast_cel_engine_reload(void)
+ {
+-	return do_reload();
++	return do_reload(1);
+ }
+ 
+--- main/channel.c
++++ main/channel.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404579 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406567 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -3555,6 +3555,11 @@
+ 
+ int ast_settimeout(struct ast_channel *c, unsigned int rate, int (*func)(const void *data), void *data)
+ {
++	return ast_settimeout_full(c, rate, func, data, 0);
++}
++
++int ast_settimeout_full(struct ast_channel *c, unsigned int rate, int (*func)(const void *data), void *data, unsigned int is_ao2_obj)
++{
+ 	int res;
+ 	unsigned int real_rate = rate, max_rate;
+ 
+@@ -3578,9 +3583,20 @@
+ 
+ 	res = ast_timer_set_rate(ast_channel_timer(c), real_rate);
+ 
++	if (ast_channel_timingdata(c) && ast_test_flag(ast_channel_flags(c), AST_FLAG_TIMINGDATA_IS_AO2_OBJ)) {
++		ao2_ref(ast_channel_timingdata(c), -1);
++	}
++
+ 	ast_channel_timingfunc_set(c, func);
+ 	ast_channel_timingdata_set(c, data);
+ 
++	if (data && is_ao2_obj) {
++		ao2_ref(data, 1);
++		ast_set_flag(ast_channel_flags(c), AST_FLAG_TIMINGDATA_IS_AO2_OBJ);
++	} else {
++		ast_clear_flag(ast_channel_flags(c), AST_FLAG_TIMINGDATA_IS_AO2_OBJ);
++	}
++
+ 	if (func == NULL && rate == 0 && ast_channel_fdno(c) == AST_TIMING_FD) {
+ 		/* Clearing the timing func and setting the rate to 0
+ 		 * means that we don't want to be reading from the timingfd
+@@ -3913,9 +3929,17 @@
+ 				/* save a copy of func/data before unlocking the channel */
+ 				ast_timing_func_t func = ast_channel_timingfunc(chan);
+ 				void *data = ast_channel_timingdata(chan);
++				int got_ref = 0;
++				if (data && ast_test_flag(ast_channel_flags(chan), AST_FLAG_TIMINGDATA_IS_AO2_OBJ)) {
++					ao2_ref(data, 1);
++					got_ref = 1;
++				}
+ 				ast_channel_fdno_set(chan, -1);
+ 				ast_channel_unlock(chan);
+ 				func(data);
++				if (got_ref) {
++					ao2_ref(data, -1);
++				}
+ 			} else {
+ 				ast_timer_set_rate(ast_channel_timer(chan), 0);
+ 				ast_channel_fdno_set(chan, -1);
+--- main/config.c
++++ main/config.c
+@@ -32,7 +32,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 402407 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406644 $")
+ 
+ #include "asterisk/paths.h"	/* use ast_config_AST_CONFIG_DIR */
+ #include "asterisk/network.h"	/* we do some sockaddr manipulation here */
+@@ -2287,7 +2287,6 @@
+ 		ast_log(LOG_ERROR, "Unable to allocate memory for new config\n");
+ 		return -1;
+ 	}
+-	configtmp->max_include_level = 1;
+ 	config = ast_config_internal_load(extconfig_conf, configtmp, flags, "", "extconfig");
+ 	if (config == CONFIG_STATUS_FILEINVALID) {
+ 		return -1;
+--- main/features.c
++++ main/features.c
+@@ -30,7 +30,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399305 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405792 $")
+ 
+ #include "asterisk/_private.h"
+ 
+@@ -2497,7 +2497,7 @@
+ 
+ /*!
+  * \brief Blind transfer user to another extension
+- * \param chan channel to be transfered
++ * \param chan channel to be transferred
+  * \param peer channel initiated blind transfer
+  * \param config
+  * \param code
+@@ -2661,7 +2661,7 @@
+ 
+ /*!
+  * \brief Attended transfer
+- * \param chan transfered user
++ * \param chan transferred user
+  * \param peer person transfering call
+  * \param config
+  * \param code
+@@ -3845,7 +3845,7 @@
+  * \details
+  * Request channel, set channel variables, initiate call,
+  * check if they want to disconnect, go into loop, check if timeout has elapsed,
+- * check if person to be transfered hung up, check for answer break loop,
++ * check if person to be transferred hung up, check for answer break loop,
+  * set cdr return channel.
+  *
+  * \retval Channel Connected channel for transfer.
+@@ -4463,7 +4463,7 @@
+ 				ast_set_flag(peer_cdr, AST_CDR_FLAG_BRIDGED);
+ 			}
+ 		}
+-		/* the DIALED flag may be set if a dialed channel is transfered
++		/* the DIALED flag may be set if a dialed channel is transferred
+ 		 * and then bridged to another channel.  In order for the
+ 		 * bridge CDR to be written, the DIALED flag must not be
+ 		 * present. */
+@@ -8157,7 +8157,7 @@
+  *
+  * Split data, check we aren't bridging with ourself, check valid channel,
+  * answer call if not already, check compatible channels, setup bridge config
+- * now bridge call, if transfered party hangs up return to PBX extension.
++ * now bridge call, if transferred party hangs up return to PBX extension.
+  */
+ static int bridge_exec(struct ast_channel *chan, const char *data)
+ {
+--- main/file.c
++++ main/file.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 380211 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406567 $")
+ 
+ #include <dirent.h>
+ #include <sys/stat.h>
+@@ -845,7 +845,7 @@
+ 
+ 			rate = (unsigned int) roundf(samp_rate / ((float) whennext));
+ 
+-			ast_settimeout(s->owner, rate, ast_fsread_audio, s);
++			ast_settimeout_full(s->owner, rate, ast_fsread_audio, s, 1);
+ 		} else {
+ 			ast_channel_streamid_set(s->owner, ast_sched_add(ast_channel_sched(s->owner), whennext / (ast_format_rate(&s->fmt->format) / 1000), ast_fsread_audio, s));
+ 		}
+--- main/manager.c
++++ main/manager.c
+@@ -47,7 +47,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405431 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406918 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"	/* use various ast_config_AST_* */
+@@ -1150,7 +1150,8 @@
+ 	ast_mutex_t lock;
+ };
+ 
+-static struct ao2_container *sessions = NULL;
++/*! Active manager connection sessions container. */
++static AO2_GLOBAL_OBJ_STATIC(mgr_sessions);
+ 
+ struct manager_channel_variable {
+ 	AST_LIST_ENTRY(manager_channel_variable) entry;
+@@ -1192,7 +1193,7 @@
+ static AST_RWLIST_HEAD_STATIC(manager_hooks, manager_custom_hook);
+ 
+ /*! \brief A container of event documentation nodes */
+-AO2_GLOBAL_OBJ_STATIC(event_docs);
++static AO2_GLOBAL_OBJ_STATIC(event_docs);
+ 
+ static void free_channelvars(void);
+ 
+@@ -1468,7 +1469,7 @@
+ 	if (manager_debug) {
+ 		ast_debug(1, "Mansession: %p refcount now %d\n", s, refcount - 1);
+ 	}
+-	return s;
++	return NULL;
+ }
+ 
+ static void event_filter_destructor(void *obj)
+@@ -1500,42 +1501,43 @@
+ 	}
+ 
+ 	if (session->whitefilters) {
+-		ao2_t_callback(session->whitefilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all white filters");
+-		ao2_t_ref(session->whitefilters, -1 , "decrement ref for white container, should be last one");
++		ao2_t_ref(session->whitefilters, -1, "decrement ref for white container, should be last one");
+ 	}
+ 
+ 	if (session->blackfilters) {
+-		ao2_t_callback(session->blackfilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all black filters");
+-		ao2_t_ref(session->blackfilters, -1 , "decrement ref for black container, should be last one");
++		ao2_t_ref(session->blackfilters, -1, "decrement ref for black container, should be last one");
+ 	}
+ }
+ 
+ /*! \brief Allocate manager session structure and add it to the list of sessions */
+ static struct mansession_session *build_mansession(const struct ast_sockaddr *addr)
+ {
++	struct ao2_container *sessions;
+ 	struct mansession_session *newsession;
+ 
+-	if (!(newsession = ao2_alloc(sizeof(*newsession), session_destructor))) {
++	newsession = ao2_alloc(sizeof(*newsession), session_destructor);
++	if (!newsession) {
+ 		return NULL;
+ 	}
+ 
+-	if (!(newsession->whitefilters = ao2_container_alloc(1, NULL, NULL))) {
++	newsession->whitefilters = ao2_container_alloc(1, NULL, NULL);
++	newsession->blackfilters = ao2_container_alloc(1, NULL, NULL);
++	if (!newsession->whitefilters || !newsession->blackfilters) {
+ 		ao2_ref(newsession, -1);
+ 		return NULL;
+ 	}
+ 
+-	if (!(newsession->blackfilters = ao2_container_alloc(1, NULL, NULL))) {
+-		ao2_ref(newsession, -1); /* session_destructor will cleanup the other filter */
+-		return NULL;
+-	}
+-
+ 	newsession->fd = -1;
+ 	newsession->waiting_thread = AST_PTHREADT_NULL;
+ 	newsession->writetimeout = 100;
+ 	newsession->send_events = -1;
+ 	ast_sockaddr_copy(&newsession->addr, addr);
+ 
+-	ao2_link(sessions, newsession);
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (sessions) {
++		ao2_link(sessions, newsession);
++		ao2_ref(sessions, -1);
++	}
+ 
+ 	return newsession;
+ }
+@@ -1549,19 +1551,31 @@
+ 
+ static void session_destroy(struct mansession_session *s)
+ {
++	struct ao2_container *sessions;
++
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (sessions) {
++		ao2_unlink(sessions, s);
++		ao2_ref(sessions, -1);
++	}
+ 	unref_mansession(s);
+-	ao2_unlink(sessions, s);
+ }
+ 
+ 
+ static int check_manager_session_inuse(const char *name)
+ {
+-	struct mansession_session *session = ao2_find(sessions, (char *) name, 0);
++	struct ao2_container *sessions;
++	struct mansession_session *session;
+ 	int inuse = 0;
+ 
+-	if (session) {
+-		inuse = 1;
+-		unref_mansession(session);
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (sessions) {
++		session = ao2_find(sessions, (char *) name, 0);
++		ao2_ref(sessions, -1);
++		if (session) {
++			unref_mansession(session);
++			inuse = 1;
++		}
+ 	}
+ 	return inuse;
+ }
+@@ -1852,6 +1866,7 @@
+ /*! \brief CLI command manager list connected */
+ static char *handle_showmanconn(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
+ {
++	struct ao2_container *sessions;
+ 	struct mansession_session *session;
+ 	time_t now = time(NULL);
+ #define HSMCONN_FORMAT1 "  %-15.15s  %-55.55s  %-10.10s  %-10.10s  %-8.8s  %-8.8s  %-5.5s  %-5.5s\n"
+@@ -1873,15 +1888,26 @@
+ 
+ 	ast_cli(a->fd, HSMCONN_FORMAT1, "Username", "IP Address", "Start", "Elapsed", "FileDes", "HttpCnt", "Read", "Write");
+ 
+-	i = ao2_iterator_init(sessions, 0);
+-	while ((session = ao2_iterator_next(&i))) {
+-		ao2_lock(session);
+-		ast_cli(a->fd, HSMCONN_FORMAT2, session->username, ast_sockaddr_stringify_addr(&session->addr), (int)(session->sessionstart), (int)(now - session->sessionstart), session->fd, session->inuse, session->readperm, session->writeperm);
+-		count++;
+-		ao2_unlock(session);
+-		unref_mansession(session);
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (sessions) {
++		i = ao2_iterator_init(sessions, 0);
++		ao2_ref(sessions, -1);
++		while ((session = ao2_iterator_next(&i))) {
++			ao2_lock(session);
++			ast_cli(a->fd, HSMCONN_FORMAT2, session->username,
++				ast_sockaddr_stringify_addr(&session->addr),
++				(int) (session->sessionstart),
++				(int) (now - session->sessionstart),
++				session->fd,
++				session->inuse,
++				session->readperm,
++				session->writeperm);
++			count++;
++			ao2_unlock(session);
++			unref_mansession(session);
++		}
++		ao2_iterator_destroy(&i);
+ 	}
+-	ao2_iterator_destroy(&i);
+ 	ast_cli(a->fd, "%d users connected.\n", count);
+ 
+ 	return CLI_SUCCESS;
+@@ -3343,7 +3369,8 @@
+ 
+ 	if (name_or_regex[0] != '/') {
+ 		if (!(c = ast_channel_get_by_name(name_or_regex))) {
+-			ast_log(LOG_NOTICE, "!!!!!!!!!! Can't find channel to hang up!\n");
++			ast_log(LOG_NOTICE, "Request to hangup non-existent channel: %s\n",
++				name_or_regex);
+ 			astman_send_error(s, m, "No such channel");
+ 			return 0;
+ 		}
+@@ -4372,6 +4399,7 @@
+ 
+ 	if (!cap) {
+ 		astman_send_error(s, m, "Internal Error. Memory allocation failure.");
++		return 0;
+ 	}
+ 	ast_format_cap_add(cap, ast_format_set(&tmp_fmt, AST_FORMAT_SLINEAR, 0));
+ 
+@@ -4771,8 +4799,8 @@
+ 		is_blackfilter = 0;
+ 	}
+ 
+-	if (regcomp(new_filter, filter_pattern, 0)) {
+-		ao2_t_ref(new_filter, -1, "failed to make regx");
++	if (regcomp(new_filter, filter_pattern, 0)) { /* XXX: the only place we use non-REG_EXTENDED */
++		ao2_t_ref(new_filter, -1, "failed to make regex");
+ 		return FILTER_COMPILE_FAIL;
+ 	}
+ 
+@@ -5569,15 +5597,17 @@
+ /*! \brief remove at most n_max stale session from the list. */
+ static void purge_sessions(int n_max)
+ {
++	struct ao2_container *sessions;
+ 	struct mansession_session *session;
+ 	time_t now = time(NULL);
+ 	struct ao2_iterator i;
+ 
++	sessions = ao2_global_obj_ref(mgr_sessions);
+ 	if (!sessions) {
+ 		return;
+ 	}
+-
+ 	i = ao2_iterator_init(sessions, 0);
++	ao2_ref(sessions, -1);
+ 	while ((session = ao2_iterator_next(&i)) && n_max > 0) {
+ 		ao2_lock(session);
+ 		if (session->sessiontimeout && (now > session->sessiontimeout) && !session->inuse) {
+@@ -5656,9 +5686,11 @@
+ AST_THREADSTORAGE(manager_event_buf);
+ #define MANAGER_EVENT_BUF_INITSIZE   256
+ 
+-int __ast_manager_event_multichan(int category, const char *event, int chancount, struct
+-	ast_channel **chans, const char *file, int line, const char *func, const char *fmt, ...)
++int __ast_manager_event_multichan(int category, const char *event, int chancount,
++	struct ast_channel **chans, const char *file, int line, const char *func,
++	const char *fmt, ...)
+ {
++	RAII_VAR(struct ao2_container *, sessions, ao2_global_obj_ref(mgr_sessions), ao2_cleanup);
+ 	struct mansession_session *session;
+ 	struct manager_custom_hook *hook;
+ 	struct ast_str *auth = ast_str_alloca(80);
+@@ -5969,6 +6001,7 @@
+  */
+ static struct mansession_session *find_session(uint32_t ident, int incinuse)
+ {
++	struct ao2_container *sessions;
+ 	struct mansession_session *session;
+ 	struct ao2_iterator i;
+ 
+@@ -5976,7 +6009,12 @@
+ 		return NULL;
+ 	}
+ 
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (!sessions) {
++		return NULL;
++	}
+ 	i = ao2_iterator_init(sessions, 0);
++	ao2_ref(sessions, -1);
+ 	while ((session = ao2_iterator_next(&i))) {
+ 		ao2_lock(session);
+ 		if (session->managerid == ident && !session->needdestroy) {
+@@ -6003,13 +6041,19 @@
+ static struct mansession_session *find_session_by_nonce(const char *username, unsigned long nonce, int *stale)
+ {
+ 	struct mansession_session *session;
++	struct ao2_container *sessions;
+ 	struct ao2_iterator i;
+ 
+ 	if (nonce == 0 || username == NULL || stale == NULL) {
+ 		return NULL;
+ 	}
+ 
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (!sessions) {
++		return NULL;
++	}
+ 	i = ao2_iterator_init(sessions, 0);
++	ao2_ref(sessions, -1);
+ 	while ((session = ao2_iterator_next(&i))) {
+ 		ao2_lock(session);
+ 		if (!strcasecmp(session->username, username) && session->managerid == nonce) {
+@@ -6023,6 +6067,7 @@
+ 		unref_mansession(session);
+ 	}
+ 	ao2_iterator_destroy(&i);
++
+ 	return session;
+ }
+ 
+@@ -6046,13 +6091,19 @@
+ {
+ 	int result = 0;
+ 	struct mansession_session *session;
++	struct ao2_container *sessions;
+ 	struct ao2_iterator i;
+ 
+ 	if (ident == 0) {
+ 		return 0;
+ 	}
+ 
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (!sessions) {
++		return 0;
++	}
+ 	i = ao2_iterator_init(sessions, 0);
++	ao2_ref(sessions, -1);
+ 	while ((session = ao2_iterator_next(&i))) {
+ 		ao2_lock(session);
+ 		if ((session->managerid == ident) && (session->readperm & perm)) {
+@@ -6065,6 +6116,7 @@
+ 		unref_mansession(session);
+ 	}
+ 	ao2_iterator_destroy(&i);
++
+ 	return result;
+ }
+ 
+@@ -6072,13 +6124,19 @@
+ {
+ 	int result = 0;
+ 	struct mansession_session *session;
++	struct ao2_container *sessions;
+ 	struct ao2_iterator i;
+ 
+ 	if (ident == 0) {
+ 		return 0;
+ 	}
+ 
++	sessions = ao2_global_obj_ref(mgr_sessions);
++	if (!sessions) {
++		return 0;
++	}
+ 	i = ao2_iterator_init(sessions, 0);
++	ao2_ref(sessions, -1);
+ 	while ((session = ao2_iterator_next(&i))) {
+ 		ao2_lock(session);
+ 		if ((session->managerid == ident) && (session->writeperm & perm)) {
+@@ -6091,6 +6149,7 @@
+ 		unref_mansession(session);
+ 	}
+ 	ao2_iterator_destroy(&i);
++
+ 	return result;
+ }
+ 
+@@ -6562,12 +6621,8 @@
+ 	if (method == AST_HTTP_POST && params) {
+ 		ast_variables_destroy(params);
+ 	}
+-	if (http_header) {
+-		ast_free(http_header);
+-	}
+-	if (out) {
+-		ast_free(out);
+-	}
++	ast_free(http_header);
++	ast_free(out);
+ 
+ 	if (session && blastaway) {
+ 		session_destroy(session);
+@@ -7053,7 +7108,13 @@
+ 
+ 	if (!strcasecmp(args.param, "sessions")) {
+ 		int no_sessions = 0;
+-		ao2_callback_data(sessions, 0, get_manager_sessions_cb, /*login name*/ data, &no_sessions);
++		struct ao2_container *sessions;
++
++		sessions = ao2_global_obj_ref(mgr_sessions);
++		if (sessions) {
++			ao2_callback_data(sessions, 0, get_manager_sessions_cb, /*login name*/ data, &no_sessions);
++			ao2_ref(sessions, -1);
++		}
+ 		snprintf(buf, len, "%d", no_sessions);
+ 	} else {
+ 		ast_log(LOG_ERROR, "Invalid arguments provided to function AMI_CLIENT: %s\n", args.param);
+@@ -7072,7 +7133,6 @@
+ 	.read_max = 12,
+ };
+ 
+-static int registered = 0;
+ static int webregged = 0;
+ 
+ /*! \brief cleanup code called at each iteration of server_root,
+@@ -7383,16 +7443,14 @@
+ /*! \internal \brief Free a user record.  Should already be removed from the list */
+ static void manager_free_user(struct ast_manager_user *user)
+ {
+-	if (user->a1_hash) {
+-		ast_free(user->a1_hash);
++	ast_free(user->a1_hash);
++	ast_free(user->secret);
++	if (user->whitefilters) {
++		ao2_t_ref(user->whitefilters, -1, "decrement ref for white container, should be last one");
+ 	}
+-	if (user->secret) {
+-		ast_free(user->secret);
++	if (user->blackfilters) {
++		ao2_t_ref(user->blackfilters, -1, "decrement ref for black container, should be last one");
+ 	}
+-	ao2_t_callback(user->whitefilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all white filters");
+-	ao2_t_callback(user->blackfilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all black filters");
+-	ao2_t_ref(user->whitefilters, -1, "decrement ref for white container, should be last one");
+-	ao2_t_ref(user->blackfilters, -1, "decrement ref for black container, should be last one");
+ 	user->acl = ast_free_acl_list(user->acl);
+ 	ast_variables_destroy(user->chanvars);
+ 	ast_free(user);
+@@ -7403,45 +7461,43 @@
+ {
+ 	struct ast_manager_user *user;
+ 
+-	if (registered) {
+-		ast_manager_unregister("Ping");
+-		ast_manager_unregister("Events");
+-		ast_manager_unregister("Logoff");
+-		ast_manager_unregister("Login");
+-		ast_manager_unregister("Challenge");
+-		ast_manager_unregister("Hangup");
+-		ast_manager_unregister("Status");
+-		ast_manager_unregister("Setvar");
+-		ast_manager_unregister("Getvar");
+-		ast_manager_unregister("GetConfig");
+-		ast_manager_unregister("GetConfigJSON");
+-		ast_manager_unregister("UpdateConfig");
+-		ast_manager_unregister("CreateConfig");
+-		ast_manager_unregister("ListCategories");
+-		ast_manager_unregister("Redirect");
+-		ast_manager_unregister("Atxfer");
+-		ast_manager_unregister("Originate");
+-		ast_manager_unregister("Command");
+-		ast_manager_unregister("ExtensionState");
+-		ast_manager_unregister("PresenceState");
+-		ast_manager_unregister("AbsoluteTimeout");
+-		ast_manager_unregister("MailboxStatus");
+-		ast_manager_unregister("MailboxCount");
+-		ast_manager_unregister("ListCommands");
+-		ast_manager_unregister("SendText");
+-		ast_manager_unregister("UserEvent");
+-		ast_manager_unregister("WaitEvent");
+-		ast_manager_unregister("CoreSettings");
+-		ast_manager_unregister("CoreStatus");
+-		ast_manager_unregister("Reload");
+-		ast_manager_unregister("CoreShowChannels");
+-		ast_manager_unregister("ModuleLoad");
+-		ast_manager_unregister("ModuleCheck");
+-		ast_manager_unregister("AOCMessage");
+-		ast_manager_unregister("Filter");
+-		ast_custom_function_unregister(&managerclient_function);
+-		ast_cli_unregister_multiple(cli_manager, ARRAY_LEN(cli_manager));
+-	}
++	ast_manager_unregister("Ping");
++	ast_manager_unregister("Events");
++	ast_manager_unregister("Logoff");
++	ast_manager_unregister("Login");
++	ast_manager_unregister("Challenge");
++	ast_manager_unregister("Hangup");
++	ast_manager_unregister("Status");
++	ast_manager_unregister("Setvar");
++	ast_manager_unregister("Getvar");
++	ast_manager_unregister("GetConfig");
++	ast_manager_unregister("GetConfigJSON");
++	ast_manager_unregister("UpdateConfig");
++	ast_manager_unregister("CreateConfig");
++	ast_manager_unregister("ListCategories");
++	ast_manager_unregister("Redirect");
++	ast_manager_unregister("Atxfer");
++	ast_manager_unregister("Originate");
++	ast_manager_unregister("Command");
++	ast_manager_unregister("ExtensionState");
++	ast_manager_unregister("PresenceState");
++	ast_manager_unregister("AbsoluteTimeout");
++	ast_manager_unregister("MailboxStatus");
++	ast_manager_unregister("MailboxCount");
++	ast_manager_unregister("ListCommands");
++	ast_manager_unregister("SendText");
++	ast_manager_unregister("UserEvent");
++	ast_manager_unregister("WaitEvent");
++	ast_manager_unregister("CoreSettings");
++	ast_manager_unregister("CoreStatus");
++	ast_manager_unregister("Reload");
++	ast_manager_unregister("CoreShowChannels");
++	ast_manager_unregister("ModuleLoad");
++	ast_manager_unregister("ModuleCheck");
++	ast_manager_unregister("AOCMessage");
++	ast_manager_unregister("Filter");
++	ast_custom_function_unregister(&managerclient_function);
++	ast_cli_unregister_multiple(cli_manager, ARRAY_LEN(cli_manager));
+ 
+ #ifdef AST_XML_DOCS
+ 	ao2_t_global_obj_release(event_docs, "Dispose of event_docs");
+@@ -7450,35 +7506,49 @@
+ 	ast_tcptls_server_stop(&ami_desc);
+ 	ast_tcptls_server_stop(&amis_desc);
+ 
+-	if (ami_tls_cfg.certfile) {
+-		ast_free(ami_tls_cfg.certfile);
+-		ami_tls_cfg.certfile = NULL;
+-	}
+-	if (ami_tls_cfg.pvtfile) {
+-		ast_free(ami_tls_cfg.pvtfile);
+-		ami_tls_cfg.pvtfile = NULL;
+-	}
+-	if (ami_tls_cfg.cipher) {
+-		ast_free(ami_tls_cfg.cipher);
+-		ami_tls_cfg.cipher = NULL;
+-	}
++	ast_free(ami_tls_cfg.certfile);
++	ami_tls_cfg.certfile = NULL;
++	ast_free(ami_tls_cfg.pvtfile);
++	ami_tls_cfg.pvtfile = NULL;
++	ast_free(ami_tls_cfg.cipher);
++	ami_tls_cfg.cipher = NULL;
+ 
+-	if (sessions) {
+-		ao2_ref(sessions, -1);
+-		sessions = NULL;
+-	}
++	ao2_global_obj_release(mgr_sessions);
+ 
+ 	while ((user = AST_LIST_REMOVE_HEAD(&users, list))) {
+ 		manager_free_user(user);
+ 	}
+ }
+ 
++static void manager_set_defaults(void)
++{
++	manager_enabled = 0;
++	displayconnects = 1;
++	broken_events_action = 0;
++	authtimeout = 30;
++	authlimit = 50;
++	manager_debug = 0;		/* Debug disabled by default */
++
++	/* default values */
++	ast_copy_string(global_realm, S_OR(ast_config_AST_SYSTEM_NAME, DEFAULT_REALM),
++		sizeof(global_realm));
++	ast_sockaddr_setnull(&ami_desc.local_address);
++	ast_sockaddr_setnull(&amis_desc.local_address);
++
++	ami_tls_cfg.enabled = 0;
++	ast_free(ami_tls_cfg.certfile);
++	ami_tls_cfg.certfile = ast_strdup(AST_CERTFILE);
++	ast_free(ami_tls_cfg.pvtfile);
++	ami_tls_cfg.pvtfile = ast_strdup("");
++	ast_free(ami_tls_cfg.cipher);
++	ami_tls_cfg.cipher = ast_strdup("");
++
++	free_channelvars();
++}
++
+ static int __init_manager(int reload, int by_external_config)
+ {
+ 	struct ast_config *ucfg = NULL, *cfg = NULL;
+-#ifdef AST_XML_DOCS
+-	struct ao2_container *temp_event_docs;
+-#endif
+ 	const char *val;
+ 	char *cat = NULL;
+ 	int newhttptimeout = 60;
+@@ -7492,9 +7562,14 @@
+ 	int tls_was_enabled = 0;
+ 	int acl_subscription_flag = 0;
+ 
+-	manager_enabled = 0;
++	if (!reload) {
++		struct ao2_container *sessions;
++#ifdef AST_XML_DOCS
++		struct ao2_container *temp_event_docs;
++#endif
++
++		ast_register_atexit(manager_shutdown);
+ 
+-	if (!registered) {
+ 		/* Register default actions */
+ 		ast_manager_register_xml_core("Ping", 0, action_ping);
+ 		ast_manager_register_xml_core("Events", 0, action_events);
+@@ -7535,33 +7610,37 @@
+ 		ast_cli_register_multiple(cli_manager, ARRAY_LEN(cli_manager));
+ 		__ast_custom_function_register(&managerclient_function, NULL);
+ 		ast_extension_state_add(NULL, NULL, manager_state_cb, NULL);
+-		registered = 1;
++
+ 		/* Append placeholder event so master_eventq never runs dry */
+-		append_event("Event: Placeholder\r\n\r\n", 0);
+-	}
++		if (append_event("Event: Placeholder\r\n\r\n", 0)) {
++			return -1;
++		}
+ 
+ #ifdef AST_XML_DOCS
+-	temp_event_docs = ast_xmldoc_build_documentation("managerEvent");
+-	if (temp_event_docs) {
+-		ao2_t_global_obj_replace_unref(event_docs, temp_event_docs, "Toss old event docs");
+-		ao2_t_ref(temp_event_docs, -1, "Remove creation ref - container holds only ref now");
+-	}
++		temp_event_docs = ast_xmldoc_build_documentation("managerEvent");
++		if (temp_event_docs) {
++			ao2_t_global_obj_replace_unref(event_docs, temp_event_docs, "Toss old event docs");
++			ao2_t_ref(temp_event_docs, -1, "Remove creation ref - container holds only ref now");
++		}
+ #endif
+ 
+-	ast_register_atexit(manager_shutdown);
++		/* If you have a NULL hash fn, you only need a single bucket */
++		sessions = ao2_container_alloc(1, NULL, mansession_cmp_fn);
++		if (!sessions) {
++			return -1;
++		}
++		ao2_global_obj_replace_unref(mgr_sessions, sessions);
++		ao2_ref(sessions, -1);
+ 
+-	if ((cfg = ast_config_load2("manager.conf", "manager", config_flags)) == CONFIG_STATUS_FILEUNCHANGED) {
+-		return 0;
++		/* Initialize all settings before first configuration load. */
++		manager_set_defaults();
+ 	}
+ 
+-	displayconnects = 1;
+-	broken_events_action = 0;
+-	authtimeout = 30;
+-	authlimit = 50;
+-	manager_debug = 0;		/* Debug disabled by default */
+-
+-	if (!cfg || cfg == CONFIG_STATUS_FILEINVALID) {
+-		ast_log(LOG_NOTICE, "Unable to open AMI configuration manager.conf, or configuration is invalid. Asterisk management interface (AMI) disabled.\n");
++	cfg = ast_config_load2("manager.conf", "manager", config_flags);
++	if (cfg == CONFIG_STATUS_FILEUNCHANGED) {
++		return 0;
++	} else if (!cfg || cfg == CONFIG_STATUS_FILEINVALID) {
++		ast_log(LOG_NOTICE, "Unable to open AMI configuration manager.conf, or configuration is invalid.\n");
+ 		return 0;
+ 	}
+ 
+@@ -7570,32 +7649,15 @@
+ 		acl_change_event_unsubscribe();
+ 	}
+ 
+-	/* default values */
+-	ast_copy_string(global_realm, S_OR(ast_config_AST_SYSTEM_NAME, DEFAULT_REALM), sizeof(global_realm));
+-	ast_sockaddr_setnull(&ami_desc.local_address);
+-	ast_sockaddr_setnull(&amis_desc.local_address);
++	if (reload) {
++		/* Reset all settings before reloading configuration */
++		tls_was_enabled = ami_tls_cfg.enabled;
++		manager_set_defaults();
++	}
+ 
+ 	ast_sockaddr_parse(&ami_desc_local_address_tmp, "[::]", 0);
+ 	ast_sockaddr_set_port(&ami_desc_local_address_tmp, DEFAULT_MANAGER_PORT);
+ 
+-	tls_was_enabled = (reload && ami_tls_cfg.enabled);
+-
+-	ami_tls_cfg.enabled = 0;
+-	if (ami_tls_cfg.certfile) {
+-		ast_free(ami_tls_cfg.certfile);
+-	}
+-	ami_tls_cfg.certfile = ast_strdup(AST_CERTFILE);
+-	if (ami_tls_cfg.pvtfile) {
+-		ast_free(ami_tls_cfg.pvtfile);
+-	}
+-	ami_tls_cfg.pvtfile = ast_strdup("");
+-	if (ami_tls_cfg.cipher) {
+-		ast_free(ami_tls_cfg.cipher);
+-	}
+-	ami_tls_cfg.cipher = ast_strdup("");
+-
+-	free_channelvars();
+-
+ 	for (var = ast_variable_browse(cfg, "general"); var; var = var->next) {
+ 		val = var->value;
+ 
+@@ -7754,9 +7816,7 @@
+ 				}
+ 
+ 				if (!ast_strlen_zero(user_secret)) {
+-					if (user->secret) {
+-						ast_free(user->secret);
+-					}
++					ast_free(user->secret);
+ 					user->secret = ast_strdup(user_secret);
+ 				}
+ 
+@@ -7807,6 +7867,10 @@
+ 			user->writetimeout = 100;
+ 			user->whitefilters = ao2_container_alloc(1, NULL, NULL);
+ 			user->blackfilters = ao2_container_alloc(1, NULL, NULL);
++			if (!user->whitefilters || !user->blackfilters) {
++				manager_free_user(user);
++				break;
++			}
+ 
+ 			/* Insert into list */
+ 			AST_RWLIST_INSERT_TAIL(&users, user, list);
+@@ -7824,9 +7888,7 @@
+ 		var = ast_variable_browse(cfg, cat);
+ 		for (; var; var = var->next) {
+ 			if (!strcasecmp(var->name, "secret")) {
+-				if (user->secret) {
+-					ast_free(user->secret);
+-				}
++				ast_free(user->secret);
+ 				user->secret = ast_strdup(var->value);
+ 			} else if (!strcasecmp(var->name, "deny") ||
+ 				       !strcasecmp(var->name, "permit") ||
+@@ -7886,9 +7948,7 @@
+ 			/* Calculate A1 for Digest auth */
+ 			snprintf(a1, sizeof(a1), "%s:%s:%s", user->username, global_realm, user->secret);
+ 			ast_md5_hash(a1_hash,a1);
+-			if (user->a1_hash) {
+-				ast_free(user->a1_hash);
+-			}
++			ast_free(user->a1_hash);
+ 			user->a1_hash = ast_strdup(a1_hash);
+ 			continue;
+ 		}
+@@ -7901,14 +7961,8 @@
+ 
+ 	AST_RWLIST_UNLOCK(&users);
+ 
+-	if (!reload) {
+-		/* If you have a NULL hash fn, you only need a single bucket */
+-		sessions = ao2_container_alloc(1, NULL, mansession_cmp_fn);
+-	}
+-
+ 	if (webmanager_enabled && manager_enabled) {
+ 		if (!webregged) {
+-
+ 			ast_http_uri_link(&rawmanuri);
+ 			ast_http_uri_link(&manageruri);
+ 			ast_http_uri_link(&managerxmluri);
+@@ -7935,7 +7989,11 @@
+ 		httptimeout = newhttptimeout;
+ 	}
+ 
+-	manager_event(EVENT_FLAG_SYSTEM, "Reload", "Module: Manager\r\nStatus: %s\r\nMessage: Manager reload Requested\r\n", manager_enabled ? "Enabled" : "Disabled");
++	manager_event(EVENT_FLAG_SYSTEM, "Reload",
++		"Module: Manager\r\n"
++		"Status: %s\r\n"
++		"Message: Manager reload Requested\r\n",
++		manager_enabled ? "Enabled" : "Disabled");
+ 
+ 	ast_tcptls_server_start(&ami_desc);
+ 	if (tls_was_enabled && !ami_tls_cfg.enabled) {
+--- main/pbx.c
++++ main/pbx.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405431 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406245 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"	/* use ast_config_AST_SYSTEM_NAME */
+@@ -9281,6 +9281,8 @@
+ 	char *info;
+ 	int j, num_fields, last_sep = -1;
+ 
++	i->timezone = NULL;
++
+ 	/* Check for empty just in case */
+ 	if (ast_strlen_zero(info_in)) {
+ 		return 0;
+@@ -9300,8 +9302,6 @@
+ 	/* save the timezone, if it is specified */
+ 	if (num_fields == 5) {
+ 		i->timezone = ast_strdup(info + last_sep + 1);
+-	} else {
+-		i->timezone = NULL;
+ 	}
+ 
+ 	/* Assume everything except time */
+--- main/rtp_engine.c
++++ main/rtp_engine.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406722 $")
+ 
+ #include <math.h>
+ 
+@@ -1925,11 +1925,15 @@
+ 	}
+ 
+ 	glue->get_rtp_info(peer, &peer_instance);
+-
+-	if (!peer_instance || peer_instance->engine != instance->engine) {
++	if (!peer_instance) {
++		ast_log(LOG_ERROR, "Unable to get_rtp_info for peer type %s\n", glue->type);
++		ast_channel_unlock(peer);
++		return -1;
++	}
++	if (peer_instance->engine != instance->engine) {
++		ast_log(LOG_ERROR, "Peer engine mismatch for type %s\n", glue->type);
+ 		ast_channel_unlock(peer);
+ 		ao2_ref(peer_instance, -1);
+-		peer_instance = NULL;
+ 		return -1;
+ 	}
+ 
+--- main/tcptls.c
++++ main/tcptls.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406515 $")
+ 
+ #ifdef HAVE_FCNTL_H
+ #include <fcntl.h>
+@@ -172,6 +172,8 @@
+ 	 */
+ 	if (ast_thread_inhibit_escalations()) {
+ 		ast_log(LOG_ERROR, "Failed to inhibit privilege escalations; killing connection\n");
++		ast_tcptls_close_session_file(tcptls_session);
++		ao2_ref(tcptls_session, -1);
+ 		return NULL;
+ 	}
+ 
+--- main/udptl.c
++++ main/udptl.c
+@@ -54,7 +54,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 399442 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406934 $")
+ 
+ #include <sys/time.h>
+ #include <signal.h>
+@@ -1009,7 +1009,7 @@
+ 		if (ast_bind(udptl->fd, &udptl->us) == 0) {
+ 			break;
+ 		}
+-		if (errno != EADDRINUSE) {
++		if (errno != EADDRINUSE && errno != EACCES) {
+ 			ast_log(LOG_WARNING, "Unexpected bind error: %s\n", strerror(errno));
+ 			close(udptl->fd);
+ 			ast_free(udptl);
+--- res/res_config_pgsql.c
++++ res/res_config_pgsql.c
+@@ -29,7 +29,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 387823 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406361 $")
+ 
+ #include <libpq-fe.h>			/* PostgreSQL */
+ 
+@@ -252,8 +252,8 @@
+ 	struct columns *column;
+ 	struct tables *table;
+ 	struct ast_str *sql = ast_str_thread_get(&findtable_buf, 330);
+-        PGresult *result;
+-        int exec_result;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
++	int exec_result;
+ 	char *fname, *ftype, *flen, *fnotnull, *fdef;
+ 	int i, rows;
+ 
+@@ -339,14 +339,12 @@
+ 	ast_debug(1, "Query of table structure complete.  Now retrieving results.\n");
+ 	if (exec_result != 0) {
+ 		ast_log(LOG_ERROR, "Failed to query database columns for table %s\n", orig_tablename);
+-		PQclear(result);
+ 		AST_LIST_UNLOCK(&psql_tables);
+ 		return NULL;
+ 	}
+ 
+ 	if (!(table = ast_calloc(1, sizeof(*table) + strlen(orig_tablename) + 1))) {
+ 		ast_log(LOG_ERROR, "Unable to allocate memory for new table structure\n");
+-		PQclear(result);
+ 		AST_LIST_UNLOCK(&psql_tables);
+ 		return NULL;
+ 	}
+@@ -365,7 +363,6 @@
+ 
+ 		if (!(column = ast_calloc(1, sizeof(*column) + strlen(fname) + strlen(ftype) + 2))) {
+ 			ast_log(LOG_ERROR, "Unable to allocate column element for %s, %s\n", orig_tablename, fname);
+-			PQclear(result);
+ 			destroy_table(table);
+ 			AST_LIST_UNLOCK(&psql_tables);
+ 			return NULL;
+@@ -395,7 +392,6 @@
+ 		}
+ 		AST_LIST_INSERT_TAIL(&table->columns, column, list);
+ 	}
+-	PQclear(result);
+ 
+ 	AST_LIST_INSERT_TAIL(&psql_tables, table, list);
+ 	ast_rwlock_rdlock(&table->lock);
+@@ -420,7 +416,7 @@
+ 
+ static struct ast_variable *realtime_pgsql(const char *database, const char *tablename, va_list ap)
+ {
+-	PGresult *result = NULL;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
+ 	int num_rows = 0, pgresult;
+ 	struct ast_str *sql = ast_str_thread_get(&sql_buf, 100);
+ 	struct ast_str *escapebuf = ast_str_thread_get(&escapebuf_buf, 100);
+@@ -485,7 +481,6 @@
+ 	ast_mutex_lock(&pgsql_lock);
+ 
+         if (pgsql_exec(database, tablename, ast_str_buffer(sql), &result) != 0) {
+-		PQclear(result);
+ 		ast_mutex_unlock(&pgsql_lock);
+ 		return NULL;
+         }
+@@ -501,7 +496,6 @@
+ 		ast_debug(1, "PostgreSQL RealTime: Found %d rows.\n", num_rows);
+ 
+ 		if (!(fieldnames = ast_calloc(1, numFields * sizeof(char *)))) {
+-			PQclear(result);
+ 			ast_mutex_unlock(&pgsql_lock);
+ 			return NULL;
+ 		}
+@@ -530,7 +524,6 @@
+ 		ast_debug(1, "Postgresql RealTime: Could not find any rows in table %s@%s.\n", tablename, database);
+ 	}
+ 
+-	PQclear(result);
+ 	ast_mutex_unlock(&pgsql_lock);
+ 
+ 	return var;
+@@ -538,7 +531,7 @@
+ 
+ static struct ast_config *realtime_multi_pgsql(const char *database, const char *table, va_list ap)
+ {
+-	PGresult *result = NULL;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
+ 	int num_rows = 0, pgresult;
+ 	struct ast_str *sql = ast_str_thread_get(&sql_buf, 100);
+ 	struct ast_str *escapebuf = ast_str_thread_get(&escapebuf_buf, 100);
+@@ -639,7 +632,6 @@
+ 			ast_debug(1, "PostgreSQL RealTime: Query: %s\n", ast_str_buffer(sql));
+ 			ast_debug(1, "PostgreSQL RealTime: Query Failed because: %s (%s)\n",
+ 						PQresultErrorMessage(result), PQresStatus(result_status));
+-			PQclear(result);
+ 			ast_mutex_unlock(&pgsql_lock);
+ 			ast_config_destroy(cfg);
+ 			return NULL;
+@@ -657,7 +649,6 @@
+ 		ast_debug(1, "PostgreSQL RealTime: Found %d rows.\n", num_rows);
+ 
+ 		if (!(fieldnames = ast_calloc(1, numFields * sizeof(char *)))) {
+-			PQclear(result);
+ 			ast_mutex_unlock(&pgsql_lock);
+ 			ast_config_destroy(cfg);
+ 			return NULL;
+@@ -689,7 +680,6 @@
+ 		ast_debug(1, "PostgreSQL RealTime: Could not find any rows in table %s.\n", table);
+ 	}
+ 
+-	PQclear(result);
+ 	ast_mutex_unlock(&pgsql_lock);
+ 
+ 	return cfg;
+@@ -698,7 +688,7 @@
+ static int update_pgsql(const char *database, const char *tablename, const char *keyfield,
+ 						const char *lookup, va_list ap)
+ {
+-	PGresult *result = NULL;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
+ 	int numrows = 0, pgresult;
+ 	const char *newparam, *newval;
+ 	struct ast_str *sql = ast_str_thread_get(&sql_buf, 100);
+@@ -805,7 +795,6 @@
+ 			ast_debug(1, "PostgreSQL RealTime: Query: %s\n", ast_str_buffer(sql));
+ 			ast_debug(1, "PostgreSQL RealTime: Query Failed because: %s (%s)\n",
+ 						PQresultErrorMessage(result), PQresStatus(result_status));
+-			PQclear(result);
+ 			ast_mutex_unlock(&pgsql_lock);
+ 			return -1;
+ 		}
+@@ -830,7 +819,7 @@
+ 
+ static int update2_pgsql(const char *database, const char *tablename, va_list ap)
+ {
+-	PGresult *result = NULL;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
+ 	int numrows = 0, pgresult, first = 1;
+ 	struct ast_str *escapebuf = ast_str_thread_get(&escapebuf_buf, 16);
+ 	const char *newparam, *newval;
+@@ -945,7 +934,7 @@
+ 
+ static int store_pgsql(const char *database, const char *table, va_list ap)
+ {
+-	PGresult *result = NULL;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
+ 	Oid insertid;
+ 	struct ast_str *buf = ast_str_thread_get(&escapebuf_buf, 256);
+ 	struct ast_str *sql1 = ast_str_thread_get(&sql_buf, 256);
+@@ -1007,7 +996,6 @@
+         }
+ 
+ 	insertid = PQoidValue(result);
+-	PQclear(result);
+ 	ast_mutex_unlock(&pgsql_lock);
+ 
+ 	ast_debug(1, "PostgreSQL RealTime: row inserted on table: %s, id: %u\n", table, insertid);
+@@ -1026,7 +1014,7 @@
+ 
+ static int destroy_pgsql(const char *database, const char *table, const char *keyfield, const char *lookup, va_list ap)
+ {
+-	PGresult *result = NULL;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
+ 	int numrows = 0;
+ 	int pgresult;
+ 	struct ast_str *sql = ast_str_thread_get(&sql_buf, 256);
+@@ -1108,7 +1096,7 @@
+ 									   const char *file, struct ast_config *cfg,
+ 									   struct ast_flags flags, const char *suggested_incl, const char *who_asked)
+ {
+-	PGresult *result = NULL;
++	RAII_VAR(PGresult *, result, NULL, PQclear);
+ 	long num_rows;
+ 	struct ast_variable *new_v;
+ 	struct ast_category *cur_cat = NULL;
+@@ -1155,7 +1143,6 @@
+ 			char *field_cat_metric = PQgetvalue(result, rowIndex, 3);
+ 			if (!strcmp(field_var_name, "#include")) {
+ 				if (!ast_config_internal_load(field_var_val, cfg, flags, "", who_asked)) {
+-					PQclear(result);
+ 					ast_mutex_unlock(&pgsql_lock);
+ 					return NULL;
+ 				}
+@@ -1178,7 +1165,6 @@
+ 				"PostgreSQL RealTime: Could not find config '%s' in database.\n", file);
+ 	}
+ 
+-	PQclear(result);
+ 	ast_mutex_unlock(&pgsql_lock);
+ 
+ 	return cfg;
+@@ -1298,7 +1284,7 @@
+ 				ast_debug(1, "About to run ALTER query on table '%s' to add column '%s'\n", tablename, elm);
+ 
+ 			        if (pgsql_exec(database, tablename, ast_str_buffer(sql), &result) != 0) {
+-					ast_mutex_unlock(&pgsql_lock);
++						ast_mutex_unlock(&pgsql_lock);
+ 				        return -1;
+ 			        }
+ 
+--- res/res_fax.c
++++ res/res_fax.c
+@@ -56,7 +56,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404351 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405693 $")
+ 
+ #include "asterisk/io.h"
+ #include "asterisk/file.h"
+@@ -323,7 +323,7 @@
+ };
+ static AST_RWLIST_HEAD_STATIC(faxmodules, fax_module);
+ 
+-#define RES_FAX_MINRATE 2400
++#define RES_FAX_MINRATE 4800
+ #define RES_FAX_MAXRATE 14400
+ #define RES_FAX_STATUSEVENTS 0
+ #define RES_FAX_MODEM (AST_FAX_MODEM_V17 | AST_FAX_MODEM_V27 | AST_FAX_MODEM_V29)
+@@ -704,7 +704,7 @@
+ {
+ 	switch (rate) {
+ 	case 2400:
+-		if (!(modems & (AST_FAX_MODEM_V27 | AST_FAX_MODEM_V34))) {
++		if (!(modems & (AST_FAX_MODEM_V34))) {
+ 			return 1;
+ 		}
+ 		break;
+@@ -714,11 +714,15 @@
+ 		}
+ 		break;
+ 	case 7200:
+-	case 9600:
+ 		if (!(modems & (AST_FAX_MODEM_V17 | AST_FAX_MODEM_V29 | AST_FAX_MODEM_V34))) {
+ 			return 1;
+ 		}
+ 		break;
++	case 9600:
++		if (!(modems & (AST_FAX_MODEM_V17 | AST_FAX_MODEM_V27 | AST_FAX_MODEM_V29 | AST_FAX_MODEM_V34))) {
++			return 1;
++		}
++		break;
+ 	case 12000:
+ 	case 14400:
+ 		if (!(modems & (AST_FAX_MODEM_V17 | AST_FAX_MODEM_V34))) {
+--- res/res_pktccops.c
++++ res/res_pktccops.c
+@@ -37,7 +37,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 350791 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406038 $")
+ 
+ #include <sys/types.h>
+ #include <sys/socket.h>
+@@ -1347,7 +1347,7 @@
+ 	if (a->argc < 9)
+ 		return CLI_SHOWUSAGE;
+ 
+-	if (!strncmp(a->argv[2], "null", sizeof(a->argv[2]))) {
++	if (!strcmp(a->argv[2], "null")) {
+ 		cmts = NULL;
+ 	} else {
+ 		AST_LIST_LOCK(&cmts_list);
+--- res/res_rtp_asterisk.c
++++ res/res_rtp_asterisk.c
+@@ -35,7 +35,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405234 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406934 $")
+ 
+ #include <sys/time.h>
+ #include <signal.h>
+@@ -1823,7 +1823,7 @@
+ 		}
+ 
+ 		/* See if we ran out of ports or if the bind actually failed because of something other than the address being in use */
+-		if (x == startplace || errno != EADDRINUSE) {
++		if (x == startplace || (errno != EADDRINUSE && errno != EACCES)) {
+ 			ast_log(LOG_ERROR, "Oh dear... we couldn't allocate a port for RTP instance '%p'\n", instance);
+ 			close(rtp->s);
+ 			ast_free(rtp);
+--- utils/extconf.c
++++ utils/extconf.c
+@@ -4439,6 +4439,8 @@
+ 	char *info;
+ 	int j, num_fields, last_sep = -1;
+ 
++	i->timezone = NULL;
++
+ 	/* Check for empty just in case */
+ 	if (ast_strlen_zero(info_in)) {
+ 		return 0;
+@@ -4458,8 +4460,6 @@
+ 	/* save the timezone, if it is specified */
+ 	if (num_fields == 5) {
+ 		i->timezone = ast_strdup(info + last_sep + 1);
+-	} else {
+-		i->timezone = NULL;
+ 	}
+ 
+ 	/* Assume everything except time */

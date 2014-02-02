@@ -230,17 +230,6 @@
  
  DEFINE_SQL_STATEMENT(put_stmt, "INSERT OR REPLACE INTO astdb (key, value) VALUES (?, ?)")
  DEFINE_SQL_STATEMENT(get_stmt, "SELECT value FROM astdb WHERE key=?")
---- main/manager.c
-+++ main/manager.c
-@@ -1192,7 +1192,7 @@
- static AST_RWLIST_HEAD_STATIC(manager_hooks, manager_custom_hook);
- 
- /*! \brief A container of event documentation nodes */
--AO2_GLOBAL_OBJ_STATIC(event_docs);
-+static AO2_GLOBAL_OBJ_STATIC(event_docs);
- 
- static void free_channelvars(void);
- 
 --- main/named_acl.c
 +++ main/named_acl.c
 @@ -86,11 +86,9 @@
