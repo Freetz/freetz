@@ -1,6 +1,6 @@
 --- libbb/appletlib.c
 +++ libbb/appletlib.c
-@@ -146,12 +146,27 @@
+@@ -146,12 +146,28 @@
  	return strcmp(name, APPLET_NAME(i));
  }
  #endif
@@ -9,6 +9,7 @@
 +#endif
 +#if ENABLE_WGET
 +static const char wget_applet_name[] ALIGN1 = "wget";
++static const char wget_alias_applet_name[] ALIGN1 = "wget-busybox";
 +#endif
  int FAST_FUNC find_applet_by_name(const char *name)
  {
@@ -17,7 +18,7 @@
 +	(strncmp(name, httpd_applet_name, 5) == 0) ? httpd_applet_name :
 +#endif
 +#if ENABLE_WGET
-+	(strncmp(name, wget_applet_name, 4) == 0) ? wget_applet_name :
++	(strncmp(name, wget_alias_applet_name, 12) == 0) ? wget_applet_name :
 +#endif
 +	name;
 +
@@ -29,7 +30,7 @@
  	/*
  	 * if (!p) return -1;
  	 * ^^^^^^^^^^^^^^^^^^ the code below will do this if p == NULL :)
-@@ -162,7 +177,7 @@
+@@ -162,7 +178,7 @@
  	int i = 0;
  	const char *p = applet_names;
  	while (i < NUM_APPLETS) {
