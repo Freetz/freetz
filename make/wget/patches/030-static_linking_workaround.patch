@@ -1,11 +1,11 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -1331,7 +1331,7 @@
- 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+@@ -1422,7 +1422,7 @@
+ 
  wget$(EXEEXT): $(wget_OBJECTS) $(wget_DEPENDENCIES) $(EXTRA_wget_DEPENDENCIES) 
  	@rm -f wget$(EXEEXT)
--	$(LINK) $(wget_OBJECTS) $(wget_LDADD) $(LIBS)
-+	$(LINK) $(wget_OBJECTS) $(wget_LDADD) $(LIBS) $(STATIC_LIBS)
+-	$(AM_V_CCLD)$(LINK) $(wget_OBJECTS) $(wget_LDADD) $(LIBS)
++	$(AM_V_CCLD)$(LINK) $(wget_OBJECTS) $(wget_LDADD) $(LIBS) $(STATIC_LIBS)
  
  mostlyclean-compile:
  	-rm -f *.$(OBJEXT)

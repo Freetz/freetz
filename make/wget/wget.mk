@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,1.14)
+$(call PKG_INIT_BIN, 1.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=316f6f59292c9098ad81fd54f658c579
+$(PKG)_SOURCE_MD5:=7a279d5ac5594919124d5526e7143e28
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
@@ -19,7 +19,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ssl=gnutls
 $(PKG)_CONFIGURE_OPTIONS += --with-libgnutls-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-libssl-prefix
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
-$(PKG)_STATIC_LIBS := -ltasn1 -lz
+$(PKG)_STATIC_LIBS := -lgcrypt -lgpg-error -ltasn1 -lz
 endif
 else
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
