@@ -1,6 +1,6 @@
 diff -Naur a/man/inadyn.8 b/man/inadyn.8
---- man/inadyn.8	2013-01-19 08:39:22.000000000 +0100
-+++ man/inadyn.8	2013-06-09 15:44:48.104802122 +0200
+--- man/inadyn.8
++++ man/inadyn.8
 @@ -79,6 +79,8 @@
  .TP
  http://www.tunnelbroker.net,
@@ -20,8 +20,8 @@ diff -Naur a/man/inadyn.8 b/man/inadyn.8
  .I \-\-proxy_server[:port]
  An http proxy server name and port. The default is none.
 diff -Naur a/man/inadyn-mt.8 b/man/inadyn-mt.8
---- man/inadyn-mt.8	2013-01-19 08:39:22.000000000 +0100
-+++ man/inadyn-mt.8	2013-06-09 15:44:48.104802122 +0200
+--- man/inadyn-mt.8
++++ man/inadyn-mt.8
 @@ -79,6 +79,8 @@
  .TP
  http://www.tunnelbroker.net,
@@ -41,8 +41,8 @@ diff -Naur a/man/inadyn-mt.8 b/man/inadyn-mt.8
  .I \-\-proxy_server[:port]
  An http proxy server name and port. The default is none.
 diff -Naur a/readme.html b/readme.html
---- readme.html	2013-06-09 15:48:51.988791866 +0200
-+++ readme.html	2013-06-09 15:44:48.108802122 +0200
+--- readme.html
++++ readme.html
 @@ -57,6 +57,7 @@
    <li><a href="http://www.sitelutions.com">sitelutions.com</a></li>
    <li><a href="http://www.dnsomatic.com">dnsomatic.com</a></li>
@@ -60,8 +60,8 @@ diff -Naur a/readme.html b/readme.html
  -For dynsip.org:  default@dynsip.org<br>
  -For dhis.org:  default@dhis.org<br>
 diff -Naur a/src/dyndns.c b/src/dyndns.c
---- src/dyndns.c	2013-06-09 15:48:51.992791866 +0200
-+++ src/dyndns.c	2013-06-09 15:47:47.384794583 +0200
+--- src/dyndns.c
++++ src/dyndns.c
 @@ -225,6 +225,7 @@
  static int get_req_for_sitelutions_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info);
  static int get_req_for_tzo_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
@@ -106,8 +106,8 @@ diff -Naur a/src/dyndns.c b/src/dyndns.c
  {
  
 diff -Naur a/src/dyndns.h b/src/dyndns.h
---- src/dyndns.h	2013-06-09 15:48:51.992791866 +0200
-+++ src/dyndns.h	2013-06-09 15:44:48.108802122 +0200
+--- src/dyndns.h
++++ src/dyndns.h
 @@ -97,6 +97,7 @@
  	TZO_DEFAULT,
  	DNSOMATIC_DEFAULT,
@@ -134,8 +134,8 @@ diff -Naur a/src/dyndns.h b/src/dyndns.h
  #define DHIS_MY_IP_UPDATE_REQUEST_FORMAT				\
  	"GET %s" \
 diff -Naur a/src/inadyn_cmd.c b/src/inadyn_cmd.c
---- src/inadyn_cmd.c	2013-06-09 15:48:51.996791866 +0200
-+++ src/inadyn_cmd.c	2013-06-09 15:44:48.108802122 +0200
+--- src/inadyn_cmd.c
++++ src/inadyn_cmd.c
 @@ -196,6 +196,7 @@
  		 "\t\t-For sitelutions.com:  default@sitelutions.com\n"
  		 "\t\t-For dnsomatic.com:  default@dnsomatic.com\n"
