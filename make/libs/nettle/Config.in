@@ -1,0 +1,13 @@
+config FREETZ_LIB_libnettle
+	bool "libnettle (libnettle.so)"
+	default n
+	help
+		A low level cryptographic library (symmetric and one-way cryptos)
+
+config FREETZ_LIB_libhogweed
+	bool "libhogweed (libhogweed.so)"
+	default n
+	select FREETZ_LIB_libgmp
+	select FREETZ_LIB_libnettle
+	help
+		A low level cryptographic library (public-key cryptos)
