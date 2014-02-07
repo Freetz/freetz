@@ -14,7 +14,10 @@ config FREETZ_PACKAGE_ASTERISK
 config FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 	depends on FREETZ_PACKAGE_ASTERISK
 	bool "optimize asterisk for low-memory usage"
-	default y
+	default n
+	help
+		Warning: this feature is known to cause problems with some modules (e.g. chan_sip).
+		Please try disabling it if you experience problems like segmentation faults.
 
 config FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
 	depends on FREETZ_PACKAGE_ASTERISK && FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
