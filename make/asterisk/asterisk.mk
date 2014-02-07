@@ -193,6 +193,7 @@ $($(PKG)_DIR)/.defaults_adjusted: $($(PKG)_DIR)/.unpacked
 	@(cd $(ASTERISK_DIR); \
 		$(call asterisk_set_option_menuselect_default,LOW_MEMORY,$(if $(FREETZ_PACKAGE_ASTERISK_LOWMEMORY),yes,no),./build_tools/cflags.xml) \
 		$(call asterisk_set_option_menuselect_default,DEBUG_THREADS,$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),yes,no),./build_tools/cflags.xml) \
+		$(call asterisk_set_option_menuselect_default,DONT_OPTIMIZE,$(if $(FREETZ_PACKAGE_ASTERISK_DEBUG),yes,no),./build_tools/cflags.xml) \
 		\
 		$(foreach cat,$(ASTERISK_EMBED_CATEGORIES),$(call asterisk_set_option_menuselect_default,EMBED_$(cat),$(if $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES),yes,no),./build_tools/embed_modules.xml)) \
 		\
