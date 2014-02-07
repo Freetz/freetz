@@ -267,11 +267,104 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404045 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405792 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407765 $")
  
  #include <sys/mman.h>
  #include <dirent.h>
-@@ -5602,7 +5602,7 @@
+@@ -1303,6 +1303,92 @@
+ 	}
+ }
+ 
++/*!
++ * \internal
++ * \brief Check if a control subtype is allowed on the wire.
++ *
++ * \param subtype Control frame subtype to check if allowed to/from the wire.
++ *
++ * \retval non-zero if allowed.
++ */
++static int iax2_is_control_frame_allowed(int subtype)
++{
++	enum ast_control_frame_type control = subtype;
++	int is_allowed;
++
++	/*
++	 * Note: If we compare the enumeration type, which does not have any
++	 * negative constants, the compiler may optimize this code away.
++	 * Therefore, we must perform an integer comparison here.
++	 */
++	if (subtype == -1) {
++		return -1;
++	}
++
++	/* Default to not allowing control frames to pass. */
++	is_allowed = 0;
++
++	/*
++	 * The switch default is not present in order to take advantage
++	 * of the compiler complaining of a missing enum case.
++	 */
++	switch (control) {
++	/*
++	 * These control frames make sense to send/receive across the link.
++	 */
++	case AST_CONTROL_HANGUP:
++	case AST_CONTROL_RING:
++	case AST_CONTROL_RINGING:
++	case AST_CONTROL_ANSWER:
++	case AST_CONTROL_BUSY:
++	case AST_CONTROL_TAKEOFFHOOK:
++	case AST_CONTROL_OFFHOOK:
++	case AST_CONTROL_CONGESTION:
++	case AST_CONTROL_FLASH:
++	case AST_CONTROL_WINK:
++	case AST_CONTROL_OPTION:
++	case AST_CONTROL_RADIO_KEY:
++	case AST_CONTROL_RADIO_UNKEY:
++	case AST_CONTROL_PROGRESS:
++	case AST_CONTROL_PROCEEDING:
++	case AST_CONTROL_HOLD:
++	case AST_CONTROL_UNHOLD:
++	case AST_CONTROL_VIDUPDATE:
++	case AST_CONTROL_CONNECTED_LINE:
++	case AST_CONTROL_REDIRECTING:
++	case AST_CONTROL_T38_PARAMETERS:
++	case AST_CONTROL_AOC:
++	case AST_CONTROL_INCOMPLETE:
++	case AST_CONTROL_MCID:
++		is_allowed = -1;
++		break;
++
++	/*
++	 * These control frames do not make sense to send/receive across the link.
++	 */
++	case _XXX_AST_CONTROL_T38:
++		/* The control value is deprecated in favor of AST_CONTROL_T38_PARAMETERS. */
++	case AST_CONTROL_SRCUPDATE:
++		/* Across an IAX link the source is still the same. */
++	case AST_CONTROL_TRANSFER:
++		/* A success/fail status report from calling ast_transfer() on this machine. */
++	case AST_CONTROL_CC:
++		/* The payload contains pointers that are valid for the sending machine only. */
++	case AST_CONTROL_SRCCHANGE:
++		/* Across an IAX link the source is still the same. */
++	case AST_CONTROL_READ_ACTION:
++		/* The action can only be done by the sending machine. */
++	case AST_CONTROL_END_OF_Q:
++		/* This frame would cause the call to unexpectedly hangup. */
++	case AST_CONTROL_UPDATE_RTP_PEER:
++		/* Only meaningful across a bridge on this machine for direct-media exchange. */
++	case AST_CONTROL_PVT_CAUSE_CODE:
++		/* Intended only for the sending machine's local channel structure. */
++		break;
++	}
++	return is_allowed;
++}
++
+ static void mwi_event_cb(const struct ast_event *event, void *userdata)
+ {
+ 	/* The MWI subscriptions exist just so the core knows we care about those
+@@ -5602,7 +5688,7 @@
  			unlock_both(callno0, callno1);
  			return AST_BRIDGE_FAILED_NOWARN;
  		}
@@ -280,6 +373,156 @@
  		if (!transferstarted && !ast_test_flag64(iaxs[callno0], IAX_NOTRANSFER) && !ast_test_flag64(iaxs[callno1], IAX_NOTRANSFER)) {
  			/* Try the transfer */
  			if (iax2_start_transfer(callno0, callno1, (flags & (AST_BRIDGE_DTMF_CHANNEL_0 | AST_BRIDGE_DTMF_CHANNEL_1)) ||
+@@ -5752,8 +5838,13 @@
+ 		}
+ 		break;
+ 	case AST_CONTROL_CONNECTED_LINE:
+-		if (!ast_test_flag64(pvt, IAX_SENDCONNECTEDLINE))
++	case AST_CONTROL_REDIRECTING:
++		if (!ast_test_flag64(pvt, IAX_SENDCONNECTEDLINE)) {
++			/* We are not configured to allow sending these updates. */
++			ast_debug(2, "Callno %u: Config blocked sending control frame %d.\n",
++				callno, condition);
+ 			goto done;
++		}
+ 		break;
+ 	case AST_CONTROL_PVT_CAUSE_CODE:
+ 		res = -1;
+@@ -7599,6 +7690,12 @@
+ 
+ static int send_command(struct chan_iax2_pvt *i, char type, int command, unsigned int ts, const unsigned char *data, int datalen, int seqno)
+ {
++	if (type == AST_FRAME_CONTROL && !iax2_is_control_frame_allowed(command)) {
++		/* Control frame should not go out on the wire. */
++		ast_debug(2, "Callno %u: Blocked sending control frame %d.\n",
++			i->callno, command);
++		return 0;
++	}
+ 	return __send_command(i, type, command, ts, data, datalen, seqno, 0, 0, 0);
+ }
+ 
+@@ -10566,13 +10663,6 @@
+ 				iaxs[fr->callno]->videoformat = ast_format_to_old_bitfield(&f.subclass.format);
+ 			}
+ 		}
+-		if (f.frametype == AST_FRAME_CONTROL && iaxs[fr->callno]->owner) {
+-			if (f.subclass.integer == AST_CONTROL_BUSY) {
+-				ast_channel_hangupcause_set(iaxs[fr->callno]->owner, AST_CAUSE_BUSY);
+-			} else if (f.subclass.integer == AST_CONTROL_CONGESTION) {
+-				ast_channel_hangupcause_set(iaxs[fr->callno]->owner, AST_CAUSE_CONGESTION);
+-			}
+-		}
+ 		if (f.frametype == AST_FRAME_IAX) {
+ 			AST_SCHED_DEL(sched, iaxs[fr->callno]->initid);
+ 			/* Handle the IAX pseudo frame itself */
+@@ -11777,23 +11867,58 @@
+ 		fr->ts = (iaxs[fr->callno]->last & 0xFFFF0000L) | ntohs(mh->ts);
+ 		/* FIXME? Surely right here would be the right place to undo timestamp wraparound? */
+ 	}
++
+ 	/* Don't pass any packets until we're started */
+-	if (!ast_test_flag(&iaxs[fr->callno]->state, IAX_STATE_STARTED)) {
++	if (!iaxs[fr->callno]
++		|| !ast_test_flag(&iaxs[fr->callno]->state, IAX_STATE_STARTED)) {
+ 		ast_variables_destroy(ies.vars);
+ 		ast_mutex_unlock(&iaxsl[fr->callno]);
+ 		return 1;
+ 	}
+-	/* Don't allow connected line updates unless we are configured to */
+-	if (f.frametype == AST_FRAME_CONTROL && f.subclass.integer == AST_CONTROL_CONNECTED_LINE) {
+-		struct ast_party_connected_line connected;
+ 
+-		if (!ast_test_flag64(iaxs[fr->callno], IAX_RECVCONNECTEDLINE)) {
++	if (f.frametype == AST_FRAME_CONTROL) {
++		if (!iax2_is_control_frame_allowed(f.subclass.integer)) {
++			/* Control frame not allowed to come from the wire. */
++			ast_debug(2, "Callno %u: Blocked receiving control frame %d.\n",
++				fr->callno, f.subclass.integer);
+ 			ast_variables_destroy(ies.vars);
+ 			ast_mutex_unlock(&iaxsl[fr->callno]);
+ 			return 1;
+ 		}
++		if (f.subclass.integer == AST_CONTROL_CONNECTED_LINE
++			|| f.subclass.integer == AST_CONTROL_REDIRECTING) {
++			if (iaxs[fr->callno]
++				&& !ast_test_flag64(iaxs[fr->callno], IAX_RECVCONNECTEDLINE)) {
++				/* We are not configured to allow receiving these updates. */
++				ast_debug(2, "Callno %u: Config blocked receiving control frame %d.\n",
++					fr->callno, f.subclass.integer);
++				ast_variables_destroy(ies.vars);
++				ast_mutex_unlock(&iaxsl[fr->callno]);
++				return 1;
++			}
++		}
+ 
+-		/* Initialize defaults */
++		iax2_lock_owner(fr->callno);
++		if (iaxs[fr->callno] && iaxs[fr->callno]->owner) {
++			if (f.subclass.integer == AST_CONTROL_BUSY) {
++				ast_channel_hangupcause_set(iaxs[fr->callno]->owner, AST_CAUSE_BUSY);
++			} else if (f.subclass.integer == AST_CONTROL_CONGESTION) {
++				ast_channel_hangupcause_set(iaxs[fr->callno]->owner, AST_CAUSE_CONGESTION);
++			}
++			ast_channel_unlock(iaxs[fr->callno]->owner);
++		}
++	}
++
++	if (f.frametype == AST_FRAME_CONTROL
++		&& f.subclass.integer == AST_CONTROL_CONNECTED_LINE
++		&& iaxs[fr->callno]) {
++		struct ast_party_connected_line connected;
++
++		/*
++		 * Process a received connected line update.
++		 *
++		 * Initialize defaults.
++		 */
+ 		ast_party_connected_line_init(&connected);
+ 		connected.id.number.presentation = iaxs[fr->callno]->calling_pres;
+ 		connected.id.name.presentation = iaxs[fr->callno]->calling_pres;
+@@ -11816,6 +11941,7 @@
+ 		}
+ 		ast_party_connected_line_free(&connected);
+ 	}
++
+ 	/* Common things */
+ 	f.src = "IAX2";
+ 	f.mallocd = 0;
+@@ -11841,9 +11967,11 @@
+ 		fr->outoforder = -1;
+ 	}
+ 	fr->cacheable = ((f.frametype == AST_FRAME_VOICE) || (f.frametype == AST_FRAME_VIDEO));
+-	duped_fr = iaxfrdup2(fr);
+-	if (duped_fr) {
+-		schedule_delivery(duped_fr, updatehistory, 0, &fr->ts);
++	if (iaxs[fr->callno]) {
++		duped_fr = iaxfrdup2(fr);
++		if (duped_fr) {
++			schedule_delivery(duped_fr, updatehistory, 0, &fr->ts);
++		}
+ 	}
+ 	if (iaxs[fr->callno] && iaxs[fr->callno]->last < fr->ts) {
+ 		iaxs[fr->callno]->last = fr->ts;
+--- channels/chan_local.c
++++ channels/chan_local.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 378321 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407457 $")
+ 
+ #include <fcntl.h>
+ #include <sys/signal.h>
+@@ -1006,7 +1006,7 @@
+ 		      "LocalOptimization: %s\r\n",
+ 			ast_channel_name(p->owner), ast_channel_name(p->chan), ast_channel_uniqueid(p->owner), ast_channel_uniqueid(p->chan),
+ 			p->context, p->exten,
+-			ast_test_flag(p, LOCAL_NO_OPTIMIZATION) ? "Yes" : "No");
++			ast_test_flag(p, LOCAL_NO_OPTIMIZATION) ? "No" : "Yes");
+ 
+ 
+ 	/* Start switch on sub channel */
 --- channels/chan_mgcp.c
 +++ channels/chan_mgcp.c
 @@ -36,7 +36,7 @@
@@ -596,6 +839,91 @@
  				}
  
  				ast_party_connected_line_free(&ast_connected);
+--- configs/iax.conf.sample
++++ configs/iax.conf.sample
+@@ -607,14 +607,18 @@
+ ; IPs can also optionally be given but are not required.  Caller*ID can be
+ ; suggested to the other side as well if it is for example a phone instead of
+ ; another PBX.
+-;connectedline=yes ; Set how connected line information is handled for this
+-;                  ; peer. If set to "yes", both sending and receiving
+-;                  ; connected line information will be enabled. If set to
+-;                  ; "send", this peer will send connected line information
+-;                  ; but will not process connected line updates. If set to
+-;                  ; "receive", connected line updates will be processed
+-;                  ; but not sent. If set to "no", connected line updates
+-;                  ; will be disabled. Default is "no".
++;connectedline=yes ; Set if connected line and redirecting information updates
++;                  ; are passed between Asterisk servers for this peer.
++;                  ; yes - Sending and receiving updates are enabled.
++;                  ; send - Only send updates.
++;                  ; receive - Only process received updates.
++;                  ; no - Sending and receiving updates are disabled.
++;                  ; Default is "no".
++;                  ;
++;                  ; Note: Because of an incompatibility between Asterisk v1.4
++;                  ; and Asterisk v1.8 or later, this option must be set
++;                  ; to "no" toward the Asterisk v1.4 peer.  A symptom of the
++;                  ; incompatibility is the call gets disconnected unexpectedly.
+ 
+ 
+ ;[dynamichost]
+--- configs/indications.conf.sample
++++ configs/indications.conf.sample
+@@ -285,6 +285,8 @@
+ record = 1400/500,0/15000
+ info = 950/330,0/1000
+ dialout = 500
++; STUTTER not specified
++stutter = !425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,425
+ 
+ 
+ [fi]
+@@ -371,7 +373,7 @@
+ dialrecall = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,350+440
+ record = 1400/500,0/15000
+ info = !950/330,!1400/330,!1800/330,0/1000
+-stutter = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,350+440
++stutter = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,400*25
+ 
+ [it]
+ description = Italy
+@@ -427,7 +429,7 @@
+ dialrecall = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,350+440
+ record = 1400/500,0/15000
+ info = 950/330,0/30,1400/330,0/30,1800/330,0/1000
+-stutter = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,350+440
++stutter = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,425
+ 
+ [my]
+ description = Malaysia
+@@ -436,6 +438,8 @@
+ busy = 425/500,0/500
+ ring = 425/400,0/200,425/400,0/2000
+ congestion = 425/500,0/500
++; STUTTER - not specified
++stutter = !425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,425
+ 
+ [nl]
+ description = Netherlands
+@@ -500,7 +504,7 @@
+ ; INFO - not specified
+ info = !950/330,!1400/330,!1800/330,0
+ ; STUTTER - not specified
+-stutter = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,350+440
++stutter = !350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,!350+440/100,!0/100,425
+ 
+ 
+ [pl]
+@@ -702,6 +706,8 @@
+ dialrecall = 425
+ record = 1400/500,0/15000
+ info = !950/330,!1440/330,!1800/330,0/1000
++; STUTTER - not specified
++stutter = !425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,!425/100,!0/100,425
+ 
+ 
+ [za]
 --- configs/manager.conf.sample
 +++ configs/manager.conf.sample
 @@ -94,12 +94,13 @@
@@ -654,6 +982,19 @@
  ;maxcallbitrate=384             ; Maximum bitrate for video calls (default 384 kb/s)
                                  ; Videosupport and maxcallbitrate is settable
                                  ; for peers and users as well
+@@ -523,8 +526,10 @@
+ 
+ ;
+ ;------------------------ TLS settings ------------------------------------------------------------
+-;tlscertfile=</path/to/certificate.pem> ; Certificate file (*.pem format only) to use for TLS connections
+-                                        ; default is to look for "asterisk.pem" in current directory
++;tlscertfile=</path/to/certificate.pem> ; Certificate chain (*.pem format only) to use for TLS connections
++                                        ; The certificates must be sorted starting with the subject's certificate
++                                        ; and followed by intermediate CA certificates if applicable.
++                                        ; Default is to look for "asterisk.pem" in current directory
+ 
+ ;tlsprivatekey=</path/to/private.pem> ; Private key file (*.pem format only) for TLS connections.
+                                       ; If no tlsprivatekey is specified, tlscertfile is searched for
 --- configure
 +++ configure
 @@ -1,5 +1,5 @@
@@ -1050,6 +1391,26 @@
  .SH BUGS
  Bug reports and feature requests may be filed at https://issues.asterisk.org
  .SH "SEE ALSO"
+--- formats/format_wav.c
++++ formats/format_wav.c
+@@ -30,7 +30,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 364580 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407512 $")
+ 
+ #include "asterisk/mod_format.h"
+ #include "asterisk/module.h"
+@@ -91,7 +91,7 @@
+ 		return -1;
+ 	}
+ 	if (ltohs(format) != 1) {
+-		ast_log(LOG_WARNING, "Not a wav file %d\n", ltohs(format));
++		ast_log(LOG_WARNING, "Not a supported wav file format (%d). Only PCM encoded, 16 bit, mono, 8kHz files are supported with a lowercase '.wav' extension.\n", ltohs(format));
+ 		return -1;
+ 	}
+ 	if (fread(&chans, 1, 2, f) != 2) {
 --- include/asterisk/autoconfig.h.in
 +++ include/asterisk/autoconfig.h.in
 @@ -29,6 +29,9 @@
@@ -1083,6 +1444,58 @@
  
  /*!
   * \brief Transfer a channel (if supported).
+--- include/asterisk/devicestate.h
++++ include/asterisk/devicestate.h
+@@ -129,7 +129,6 @@
+  * active channels list for the device.
+  *
+  * \retval an AST_DEVICE_??? state
+- * \retval -1 on failure
+  */
+ enum ast_device_state ast_device_state(const char *device);
+ 
+--- include/asterisk/frame.h
++++ include/asterisk/frame.h
+@@ -233,6 +233,18 @@
+ /*! Reject link request */
+ #define AST_HTML_LINKREJECT	20
+ 
++/*!
++ * \brief Internal control frame subtype field values.
++ *
++ * \warning
++ * IAX2 sends these values out over the wire.  To prevent future
++ * incompatibilities, pick the next value in the enum from whatever
++ * is on the current trunk.  If you lose the merge race you need to
++ * fix the previous branches to match what is on trunk.  In addition
++ * you need to change chan_iax2 to explicitly allow the control
++ * frame over the wire if it makes sense for the frame to be passed
++ * to another Asterisk instance.
++ */
+ enum ast_control_frame_type {
+ 	AST_CONTROL_HANGUP = 1,			/*!< Other end has hungup */
+ 	AST_CONTROL_RING = 2,			/*!< Local ring */
+@@ -267,6 +279,20 @@
+ 	AST_CONTROL_MCID = 31,			/*!< Indicate that the caller is being malicious. */
+ 	AST_CONTROL_UPDATE_RTP_PEER = 32, /*!< Interrupt the bridge and have it update the peer */
+ 	AST_CONTROL_PVT_CAUSE_CODE = 33, /*!< Contains an update to the protocol-specific cause-code stored for branching dials */
++
++	/*
++	 * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
++	 *
++	 * IAX2 sends these values out over the wire.  To prevent future
++	 * incompatibilities, pick the next value in the enum from whatever
++	 * is on the current trunk.  If you lose the merge race you need to
++	 * fix the previous branches to match what is on trunk.  In addition
++	 * you need to change chan_iax2 to explicitly allow the control
++	 * frame over the wire if it makes sense for the frame to be passed
++	 * to another Asterisk instance.
++	 *
++	 * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
++	 */
+ };
+ 
+ enum ast_frame_read_action {
 --- main/cel.c
 +++ main/cel.c
 @@ -33,7 +33,7 @@
@@ -1582,6 +1995,26 @@
  	config = ast_config_internal_load(extconfig_conf, configtmp, flags, "", "extconfig");
  	if (config == CONFIG_STATUS_FILEINVALID) {
  		return -1;
+--- main/devicestate.c
++++ main/devicestate.c
+@@ -119,7 +119,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 385917 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407338 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/channel.h"
+@@ -505,7 +505,7 @@
+ 		AST_LIST_UNLOCK(&state_changes);
+ 	}
+ 
+-	return 1;
++	return 0;
+ }
+ 
+ int ast_device_state_changed_literal(const char *dev)
 --- main/features.c
 +++ main/features.c
 @@ -30,7 +30,7 @@
@@ -1658,6 +2091,53 @@
  		} else {
  			ast_channel_streamid_set(s->owner, ast_sched_add(ast_channel_sched(s->owner), whennext / (ast_format_rate(&s->fmt->format) / 1000), ast_fsread_audio, s));
  		}
+--- main/logger.c
++++ main/logger.c
+@@ -31,7 +31,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405431 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407456 $")
+ 
+ /* When we include logger.h again it will trample on some stuff in syslog.h, but
+  * nothing we care about in here. */
+@@ -319,13 +319,22 @@
+ 		ast_copy_string(chan->filename, channel, sizeof(chan->filename));
+ 		openlog("asterisk", LOG_PID, chan->facility);
+ 	} else {
++		const char *log_dir_prefix = "";
++		const char *log_dir_separator = "";
++
++		if (channel[0] != '/') {
++			log_dir_prefix = ast_config_AST_LOG_DIR;
++			log_dir_separator = "/";
++		}
++
+ 		if (!ast_strlen_zero(hostname)) {
+-			snprintf(chan->filename, sizeof(chan->filename), "%s/%s.%s",
+-				 channel[0] != '/' ? ast_config_AST_LOG_DIR : "", channel, hostname);
++			snprintf(chan->filename, sizeof(chan->filename), "%s%s%s.%s",
++				log_dir_prefix, log_dir_separator, channel, hostname);
+ 		} else {
+-			snprintf(chan->filename, sizeof(chan->filename), "%s/%s",
+-				 channel[0] != '/' ? ast_config_AST_LOG_DIR : "", channel);
++			snprintf(chan->filename, sizeof(chan->filename), "%s%s%s",
++				log_dir_prefix, log_dir_separator, channel);
+ 		}
++
+ 		if (!(chan->fileptr = fopen(chan->filename, "a"))) {
+ 			/* Can't do real logging here since we're called with a lock
+ 			 * so log to any attached consoles */
+@@ -996,7 +1005,7 @@
+ 	AST_CLI_DEFINE(handle_logger_show_channels, "List configured log channels"),
+ 	AST_CLI_DEFINE(handle_logger_reload, "Reopens the log files"),
+ 	AST_CLI_DEFINE(handle_logger_rotate, "Rotates and reopens the log files"),
+-	AST_CLI_DEFINE(handle_logger_set_level, "Enables/Disables a specific logging level for this console")
++	AST_CLI_DEFINE(handle_logger_set_level, "Enables/Disables a specific logging level for this console"),
+ };
+ 
+ static void _handle_SIGXFSZ(int sig)
 --- main/manager.c
 +++ main/manager.c
 @@ -47,7 +47,7 @@
@@ -2463,7 +2943,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403917 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406515 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407273 $")
  
  #ifdef HAVE_FCNTL_H
  #include <fcntl.h>
@@ -2476,6 +2956,15 @@
  		return NULL;
  	}
  
+@@ -391,7 +393,7 @@
+ 
+ 	if (!ast_strlen_zero(cfg->certfile)) {
+ 		char *tmpprivate = ast_strlen_zero(cfg->pvtfile) ? cfg->certfile : cfg->pvtfile;
+-		if (SSL_CTX_use_certificate_file(cfg->ssl_ctx, cfg->certfile, SSL_FILETYPE_PEM) == 0) {
++		if (SSL_CTX_use_certificate_chain_file(cfg->ssl_ctx, cfg->certfile) == 0) {
+ 			if (!client) {
+ 				/* Clients don't need a certificate, but if its setup we can use it */
+ 				ast_verb(0, "SSL error loading cert file. <%s>\n", cfg->certfile);
 --- main/udptl.c
 +++ main/udptl.c
 @@ -54,7 +54,7 @@
@@ -2496,6 +2985,87 @@
  			ast_log(LOG_WARNING, "Unexpected bind error: %s\n", strerror(errno));
  			close(udptl->fd);
  			ast_free(udptl);
+--- res/res_clialiases.c
++++ res/res_clialiases.c
+@@ -32,7 +32,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 377843 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 407210 $")
+ 
+ #include "asterisk/module.h"
+ #include "asterisk/config.h"
+@@ -68,15 +68,25 @@
+ 	return (alias0->cli_entry.command == alias1->cli_entry.command ? CMP_MATCH | CMP_STOP : 0);
+ }
+ 
+-/*! \brief Destruction function used for aliases */
+-static void alias_destroy(void *obj)
++/*! \brief Callback for unregistering an alias */
++static int alias_unregister_cb(void *obj, void *arg, int flags)
+ {
+ 	struct cli_alias *alias = obj;
+ 
+ 	/* Unregister the CLI entry from the core */
+ 	ast_cli_unregister(&alias->cli_entry);
+ 
+-	return;
++	/* We can determine if this worked or not by looking at the cli_entry itself */
++	return !alias->cli_entry.command ? CMP_MATCH : 0;
++}
++
++/*! \brief Callback for finding an alias based on name */
++static int alias_name_cb(void *obj, void *arg, int flags)
++{
++	struct cli_alias *alias = obj;
++	char *name = arg;
++
++	return !strcmp(alias->alias, name) ? CMP_MATCH | CMP_STOP : 0;
+ }
+ 
+ /*! \brief Function which passes through an aliased CLI command to the real one */
+@@ -188,7 +198,7 @@
+ 
+ 	/* Destroy any existing CLI aliases */
+ 	if (reload) {
+-		ao2_callback(cli_aliases, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL);
++		ao2_callback(cli_aliases, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, alias_unregister_cb, NULL);
+ 	}
+ 
+ 	for (v = ast_variable_browse(cfg, "general"); v; v = v->next) {
+@@ -198,7 +208,16 @@
+ 		}
+ 		/* Read in those there CLI aliases */
+ 		for (v1 = ast_variable_browse(cfg, v->value); v1; v1 = v1->next) {
+-			if (!(alias = ao2_alloc((sizeof(*alias) + strlen(v1->name) + strlen(v1->value) + 2), alias_destroy))) {
++			struct cli_alias *existing = ao2_callback(cli_aliases, 0, alias_name_cb, (char*)v1->name);
++
++			if (existing) {
++				ast_log(LOG_WARNING, "Alias '%s' could not be unregistered and has been retained\n",
++					existing->alias);
++				ao2_ref(existing, -1);
++				continue;
++			}
++
++			if (!(alias = ao2_alloc((sizeof(*alias) + strlen(v1->name) + strlen(v1->value) + 2), NULL))) {
+ 				continue;
+ 			}
+ 			alias->alias = ((char *) alias) + sizeof(*alias);
+@@ -234,6 +253,13 @@
+ /*! \brief Function called to unload the module */
+ static int unload_module(void)
+ {
++	ao2_callback(cli_aliases, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, alias_unregister_cb, NULL);
++
++	if (ao2_container_count(cli_aliases)) {
++		ast_log(LOG_ERROR, "Could not unregister all CLI aliases\n");
++		return -1;
++	}
++
+ 	ao2_ref(cli_aliases, -1);
+ 
+ 	ast_cli_unregister_multiple(cli_alias, ARRAY_LEN(cli_alias));
 --- res/res_config_pgsql.c
 +++ res/res_config_pgsql.c
 @@ -29,7 +29,7 @@
