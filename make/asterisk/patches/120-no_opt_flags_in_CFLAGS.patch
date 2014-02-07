@@ -1,0 +1,11 @@
+--- configure
++++ configure
+@@ -3537,7 +3537,7 @@
+ # we don't want those default flags to be carried over into the
+ # rest of the build system since we have other means of controlling
+ # debugging symbol generation and optimization.
+-CONFIG_CFLAGS="${CFLAGS}"
++CONFIG_CFLAGS=$(echo "${CFLAGS}" | sed -r -e 's,-O[^ ]*( |$),,g') # asterisk expects optimization flags to be passed in OPTIMIZE, CFLAGS should not contain any of the optimization flags
+ CONFIG_LDFLAGS="${LDFLAGS}"
+ 
+ 
