@@ -19,6 +19,7 @@ for i in 0 1 2 3 4; do
 		no-ip.com:noip$i \
 		tunnelbroker.net:tunnelbroker$i \
 		dns.he.net:dnshenet$i \
+		changeip.com:changeip$i \
 		userdefined:userdef$i
 done
 
@@ -99,6 +100,7 @@ document.write("<div id='Account0' style='display:block'>" +
       "<OPTION VALUE='no-ip.com' $noip0_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='tunnelbroker.net' $tunnelbroker0_sel>tunnelbroker.net</OPTION>" +
       "<OPTION VALUE='dns.he.net' $dnshenet0_sel>dns.he.net</OPTION>" +
+      "<OPTION VALUE='changeip.com' $changeip0_sel>changeip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef0_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -134,6 +136,7 @@ document.write("<div id='Account1' style='display:none'>" +
       "<OPTION VALUE='no-ip.com' $noip1_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='tunnelbroker.net' $tunnelbroker1_sel>tunnelbroker.net</OPTION>" +
       "<OPTION VALUE='dns.he.net' $dnshenet1_sel>dns.he.net</OPTION>" +
+      "<OPTION VALUE='changeip.com' $changeip1_sel>changeip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef1_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -169,6 +172,7 @@ document.write("<div id='Account2' style='display:none'>" +
       "<OPTION VALUE='no-ip.com' $noip2_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='tunnelbroker.net' $tunnelbroker2_sel>tunnelbroker.net</OPTION>" +
       "<OPTION VALUE='dns.he.net' $dnshenet2_sel>dns.he.net</OPTION>" +
+      "<OPTION VALUE='changeip.com' $changeip2_sel>changeip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef2_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -205,6 +209,7 @@ document.write("<div id='Account3' style='display:none'>" +
       "<OPTION VALUE='no-ip.com' $noip3_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='tunnelbroker.net' $tunnelbroker3_sel>tunnelbroker.net</OPTION>" +
       "<OPTION VALUE='dns.he.net' $dnshenet3_sel>dns.he.net</OPTION>" +
+      "<OPTION VALUE='changeip.com' $changeip3_sel>changeip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef3_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
@@ -241,6 +246,7 @@ document.write("<div id='Account4' style='display:none'>" +
       "<OPTION VALUE='no-ip.com' $noip4_sel>no-ip.com</OPTION>" +
       "<OPTION VALUE='tunnelbroker.net' $tunnelbroker4_sel>tunnelbroker.net</OPTION>" +
       "<OPTION VALUE='dns.he.net' $dnshenet4_sel>dns.he.net</OPTION>" +
+      "<OPTION VALUE='changeip.com' $changeip4_sel>changeip.com</OPTION>" +
       "<OPTION VALUE='userdefined' $userdef4_sel>$(lang de:"Benutzerdefiniert" en:"User defined")</OPTION>" +
     "</SELECT></td>" +
   "</tr><tr>" +
