@@ -16,6 +16,11 @@ log() {
 start() {
 	log "rc.mod version $(cat /etc/.freetz-version)"
 
+	if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
+		ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
+		log "Disabled remote https access."
+	fi
+
 	# Basic Packages
 	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv smbd; do
 		local pkg_default=/etc/default.$pkg
