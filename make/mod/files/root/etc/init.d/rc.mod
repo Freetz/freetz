@@ -120,7 +120,7 @@ modreg_file() {
 
 register() {
 	modreg cgi mod "Freetz"
-	modreg conf mod webcfg "$(lang de:"Weboberfl�che" en:"Web interface")"
+	modreg conf mod webcfg "$(lang de:"Weboberfläche" en:"Web interface")"
 	modreg cgi avm "$(lang de:"AVM-Dienste" en:"AVM services")"
 
 	modreg_file  .profile    0
