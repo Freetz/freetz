@@ -3,6 +3,21 @@
 ###
 
 
+config FREETZ_AVM_HAS_HTTPS_FIX
+	bool "Has security fix for https"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_AVM_VERSION_06_XX && ( \
+			FREETZ_TYPE_7240 || \
+			FREETZ_TYPE_7270_16 || \
+			FREETZ_TYPE_7390 || \
+			FREETZ_TYPE_7490 \
+		)		
+	default n
+	help
+		Select this if the device has a firmware with a security
+		fix for remote acces via https (Fernwartung). See
+		http://www.heise.de/netze/meldung/Angriffe-auf-Fritzboxen-AVM-empfiehlt-Abschaltung-der-Fernkonfiguration-2106542.html
+
 config FREETZ_AVM_HAS_AR7CFG_V12_MIN
 	bool "Has ar7.cfg version 12 minimum"		if FREETZ_TYPE_CUSTOM
 	default y		if \
@@ -18,7 +33,7 @@ config FREETZ_AVM_HAS_AR7CFG_V12_MIN
 		Select this if your ar7.cfg is at least version 12.
 		In your ar7.cfg is a line like 'ar7cfg_version = x;'
 		Used by AVM-firewall/-forwarding
-		
+
 config FREETZ_AVM_HAS_PRINTK
 	bool "Has AVM printk support"		if FREETZ_TYPE_CUSTOM
 	default y		if \
