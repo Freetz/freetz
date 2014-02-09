@@ -17,9 +17,13 @@ log() {
 start() {
 	log "rc.mod version $(cat /etc/.freetz-version)"
 
-	if [ "$FREETZ_AVM_HAS_HTTPS_FIX" != "y" -a ! -e /tmp/flash/mod/dont_touch_https ]; then
-		ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
-		log "Disabled remote https access."
+	# 27349 is the revision of the 1st firmware remote access vulnerability has been fixed in
+	if [ $(cat /etc/.revision 2>/dev/null || echo 0) -lt 27349 ]; then
+		log "Firmware with remote access vulnerability detected."
+		if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
+			log "Remote access via https will be disabled. Create /tmp/flash/mod/dont_touch_https if you don't want this behavior."
+			ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
+		fi
 	fi
 
 	# Basic Packages
