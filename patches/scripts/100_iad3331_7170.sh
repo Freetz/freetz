@@ -7,7 +7,7 @@ echo2 "patching webmenu"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch" || exit 2
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/iad2fritz-3331_7170.patch" || exit 2
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-POTS-7170-alien.patch" || exit 2
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-POTS-7170-alien.patch" || exit 2
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2
 
 modsed "s/CONFIG_AB_COUNT=.*$/CONFIG_AB_COUNT=\"2\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
