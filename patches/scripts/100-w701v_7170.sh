@@ -33,7 +33,7 @@ cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYS
 echo2 "patching webmenu"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/sp2fritz-W701V_7170.patch" || exit 2
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove-FON3-7170-alien.patch" || exit 2
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2
 
 echo2 "moving default config dir, creating tcom and congstar symlinks"
 ln -sf /usr/www/all "${FILESYSTEM_MOD_DIR}/usr/www/tcom"
