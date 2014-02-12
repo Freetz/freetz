@@ -35,7 +35,7 @@ if [ isFreetzType LANG_DE -a "$FREETZ_REMOVE_DECT" != "y" ]; then
 	echo2 "Add dect sites to webmenu"
 	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/add_dect1_7170-alien.patch"
 fi
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/remove_infoled_7170-alien.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/remove_infoled_7170-alien.patch"
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7150
