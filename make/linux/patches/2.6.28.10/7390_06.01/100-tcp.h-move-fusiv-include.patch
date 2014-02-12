@@ -1,0 +1,34 @@
+From 5ce5060e127c24b6948b0e94a04cc9f93e012702 Mon Sep 17 00:00:00 2001
+From: Oliver Metz <oliver.metz@tqs.de>
+Date: Tue, 11 Feb 2014 21:56:15 +0100
+Subject: [PATCH] tcp.h: move fusiv include
+
+---
+ include/linux/tcp.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+index 8cffa64..91bdca0 100644
+--- linux-2.6.28/include/linux/tcp.h
++++ linux-2.6.28/include/linux/tcp.h
+@@ -21,8 +21,6 @@
+ #include <asm/byteorder.h>
+ #include <linux/socket.h>
+ 
+-#include <fusiv_align.h>
+-
+ struct tcphdr {
+ 	__be16	source;
+ 	__be16	dest;
+@@ -184,6 +182,8 @@ struct tcp_md5sig {
+ #include <net/inet_connection_sock.h>
+ #include <net/inet_timewait_sock.h>
+ 
++#include <fusiv_align.h>
++
+ static inline struct tcphdr *tcp_hdr(const struct sk_buff *skb)
+ {
+ 	return (struct tcphdr *)skb_transport_header(skb);
+-- 
+1.8.4.1
+
