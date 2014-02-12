@@ -36,7 +36,7 @@ cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/driver
 cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
 
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-POTS-7170-alien.patch"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch"

@@ -4,8 +4,8 @@ isFreetzType IAD_3331_7170 || return 0
 echo1 "adapt firmware for IAD 3331"
 
 echo2 "patching webmenu"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch" || exit 2
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/iad2fritz-3331_7170.patch" || exit 2
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch" || exit 2
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/iad2fritz-3331_7170.patch" || exit 2
 
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-POTS-7170-alien.patch" || exit 2
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2

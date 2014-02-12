@@ -27,7 +27,7 @@ for i in \
 done
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170

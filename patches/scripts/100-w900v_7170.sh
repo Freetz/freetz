@@ -22,7 +22,7 @@ cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYS
 #cp "${DIR}/.tk/original/filesystem/etc/init.d/rc.init" "${FILESYSTEM_MOD_DIR}/etc/init.d"
 
 echo2 "patching webmenu"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2
 
 if [ ! "$FREETZ_REMOVE_DECT" == "y" ];then

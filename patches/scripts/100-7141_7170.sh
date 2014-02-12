@@ -15,7 +15,7 @@ cp -a "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FIL
 
 echo2 "patching webmenu"
 if isFreetzType LANG_DE; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/intro_bar_middle_alien_7170.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
 	#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/7141_7170.patch"
 fi
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2

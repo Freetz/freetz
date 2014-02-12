@@ -29,7 +29,7 @@ if [ "$FREETZ_REMOVE_DECT" != "y" ]; then
 fi
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_DIR}/cond/de/intro_bar_middle_alien_7170.patch"
 
 if [ isFreetzType LANG_DE -a "$FREETZ_REMOVE_DECT" != "y" ]; then
 	echo2 "Add dect sites to webmenu"
