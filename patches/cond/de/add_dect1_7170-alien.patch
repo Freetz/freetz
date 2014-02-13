@@ -1,6 +1,5 @@
-diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
---- usr/www/avm/menus/menu_show.lua	2011-01-31 17:16:14.000000000 +0100
-+++ usr/www/avm/menus/menu_show.lua	2011-02-24 10:41:42.000000000 +0100
+--- usr/www/avm/menus/menu_show.lua
++++ usr/www/avm/menus/menu_show.lua
 @@ -165,7 +165,7 @@
  end
  local dect_enabled = box.query('dect:settings/enabled') == "1"
@@ -21,8 +20,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  menu.exists_page["/system/language.lua"] = config.MULTI_LANGUAGE
  menu.show_page["/fon_num/dial.lua"]=config.CAPI_TE or config.CAPI_POTS or config.AB_COUNT > 0
  menu.show_page["/fon_num/dialbuch.lua"]=config.CAPI_TE or config.CAPI_POTS or config.AB_COUNT > 0
---- usr/www/all/system/energy.lua	2011-06-15 13:23:48.000000000 +0200
---- usr/www/all/system/energy.lua	2011-07-26 15:34:26.054141443 +0200
+--- usr/www/all/system/energy.lua
+--- usr/www/all/system/energy.lua
 @@ -9,6 +9,7 @@
  require("general")
  require("config")
@@ -93,8 +92,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  if g_show_usb then
  box.out([[
  <tr>
---- usr/www/all/lua/href.lua	2011-06-15 13:23:42.000000000 +0200
-+++ usr/www/all/lua/href.lua	2011-07-26 21:45:46.175379965 +0200
+--- usr/www/all/lua/href.lua
++++ usr/www/all/lua/href.lua
 @@ -39,6 +39,7 @@
  avm3["/internet/trafficprio.lua"] = {'internet', 'trafficprio'}
  avm3["/internet/trafficappl.lua"] = {'internet', 'trafficappl'}
@@ -103,8 +102,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  avm3["/fon_num/foncalls.lua"] = {"fon", "foncalls"}
  avm3["/fon_num/sperre.lua"] = {"fon", "sperre"}
  avm3["/fon_num/dial.lua"] = {"fon", "dial"}
---- usr/www/all/home/home.lua	2011-06-15 13:23:26.000000000 +0200
-+++ usr/www/all/home/home.lua	2011-07-26 22:07:58.165391405 +0200
+--- usr/www/all/home/home.lua
++++ usr/www/all/home/home.lua
 @@ -799,7 +799,7 @@
  return str
  end
@@ -123,8 +122,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  Led="1"
  local countDect=0
  if (g_coninf_data.dect_device_list~=nil) then
---- usr/www/all/html/de/home/dial.js	2011-06-15 13:23:42.000000000 +0200
-+++ usr/www/all/html/de/home/dial.js	2013-09-23 00:04:06.000000000 +0200
+--- usr/www/all/html/de/home/dial.js
++++ usr/www/all/html/de/home/dial.js
 @@ -7,7 +7,7 @@
  var g_txtIsdn = "";
  var g_txtIpPhone = "{?gIPhone?}";
@@ -134,8 +133,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  var g_txtFonring = "{?825:2221?}";
  var g_txtPort0 = "... {?825:6297?}";
  var g_mldNoPort = "{?825:1481?}";
---- usr/www/all/html/de/fon/wecker.js	2011-06-15 13:23:28.000000000 +0200
-+++ usr/www/all/html/de/fon/wecker.js	2013-09-23 00:57:16.000000000 +0200
+--- usr/www/all/html/de/fon/wecker.js
++++ usr/www/all/html/de/fon/wecker.js
 @@ -13,7 +13,7 @@
  var g_Fon1 = "{?684:2027?}";
  var g_Fon2 = "{?684:5186?}";
@@ -145,8 +144,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  var g_alleTelefone = "{?684:2113?}";
  var g_AlarmOptionValue = 0;
  function uiDoOnLoad() {
---- usr/www/all/html/de/home/fondevlist.js	2011-06-15 13:23:25.000000000 +0200
-+++ usr/www/all/html/de/home/fondevlist.js	2013-09-23 00:48:13.000000000 +0200
+--- usr/www/all/html/de/home/fondevlist.js
++++ usr/www/all/html/de/home/fondevlist.js
 @@ -187,6 +187,25 @@
  }
  function readDect1() {
@@ -173,8 +172,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  return list;
  }
  function readFonControl() {
---- usr/www/all/html/de/home/fonbuch.js	2011-06-15 13:23:39.000000000 +0200
-+++ usr/www/all/html/de/home/fonbuch.js	2013-09-23 17:37:33.000000000 +0200
+--- usr/www/all/html/de/home/fonbuch.js
++++ usr/www/all/html/de/home/fonbuch.js
 @@ -619,4 +619,7 @@
  }
  return deviceName;
@@ -183,8 +182,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
 +jslGoTo("<? print $var:menu ?>", "buchsend");
 +}
  </script>
---- usr/www/all/html/de/home/fonbuch.html	2011-06-15 13:23:40.000000000 +0200
-+++ usr/www/all/html/de/home/fonbuch.html	2013-09-23 17:34:22.000000000 +0200
+--- usr/www/all/html/de/home/fonbuch.html
++++ usr/www/all/html/de/home/fonbuch.html
 @@ -85,6 +85,12 @@
  </div>
  <? include ../html/de/home/error.html ?>
@@ -198,8 +197,8 @@ diff -burN usr/www/avm/menus/menu_show.lua usr/www/avm/menus/menu_show.lua
  <div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
  <input type="button" onclick="uiDoHelp()" value="{?txtHelp?}" class="Pushbutton">
  </div></div></div></div></div></div>
---- usr/www/all/html/de/home/foncalls.js	2013-09-25 14:19:18.683881163 +0200
-+++ usr/www/all/html/de/home/foncalls.js	2013-10-08 03:16:34.000000000 +0200
+--- usr/www/all/html/de/home/foncalls.js
++++ usr/www/all/html/de/home/foncalls.js
 @@ -97,12 +97,12 @@
  var g_Port1 = "{?2844:4806?}";
  var g_Port2 = "{?2844:3912?}";

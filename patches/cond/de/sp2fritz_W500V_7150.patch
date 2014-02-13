@@ -1,5 +1,5 @@
---- usr/www/all/html/de/first/first_Sip_1.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/first/first_Sip_1.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/first/first_Sip_1.html
++++ usr/www/all/html/de/first/first_Sip_1.html
 @@ -16,6 +16,23 @@
  <? if eq $var:OEM arcor `
  					<option value="Arcor">$var:Text7</option>
@@ -24,8 +24,8 @@
  <? if eq $var:OEM freenet 	`
  					<option value="1u1">$var:Text4</option>
  					<option value="AOL">$var:Text9</option>
---- usr/www/all/html/de/first/first_Sip_1.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/first/first_Sip_1.js	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/first/first_Sip_1.js
++++ usr/www/all/html/de/first/first_Sip_1.js
 @@ -130,6 +131,10 @@
  <? if eq $var:OEM avme `
  		provider = "Sonst";
@@ -37,8 +37,8 @@
  <? if eq $var:OEM freenet 	`
  		provider = jslGetValue("uiPppProvider");
  		jslDisplay( "uiShowProvider", true);
---- usr/www/all/html/de/fon/dect.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/dect.html	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/dect.html
++++ usr/www/all/html/de/fon/dect.html
 @@ -12,6 +12,10 @@
  <? if eq '<? query box:settings/expertmode/activated ?>' '1' `
   		<li><a href="javascript:uiDoListDect()"><? echo '$var:Text23' ?></a></li>
@@ -50,8 +50,8 @@
   	</ul>
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  		<p class="mb10"><? echo $var:Text3 ?></p>
---- usr/www/all/html/de/fon/dect.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/dect.inc	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/dect.inc
++++ usr/www/all/html/de/fon/dect.inc
 @@ -11,5 +11,7 @@
  <? setvariable var:Text19 'Telefonbuch senden' ?>
  <? setvariable var:Text20 'Geben Sie hier Ihre Festnetzrufnummern ein:' ?>
@@ -61,8 +61,8 @@
  <? setvariable var:Text23 'Interne Nummern' ?>
 +<? setvariable var:Text28 'Zuordnung' ?>
 +<? setvariable var:Text29 'Basisstation' ?>
---- usr/www/all/html/de/fon/dect.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/dect.js	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/dect.js
++++ usr/www/all/html/de/fon/dect.js
 @@ -81,6 +81,18 @@
  function uiDoDectMsn() {
  	jslGoTo("", "dectmsn");
@@ -82,8 +82,8 @@
  function uiDoHelp() {
  	jslPopHelp("hilfe_fon_dect");
  }
---- usr/www/all/html/de/fon/fon1dect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.frm	2007-12-18 10:15:22.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/fon1dect.frm
 @@ -0,0 +1,19 @@
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/MSN" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/MSN ?>" id="uiPostThisMSN">
 +<input type="hidden" name="dect:settings/MSN<? echo $var:MsnNr ?>/Name" value="<? query dect:settings/MSN<? echo $var:MsnNr ?>/Name ?>" id="uiPostThisUser">
@@ -104,8 +104,8 @@
 +<input type="hidden" name="dect:settings/MSN$0/MSN" value="<? query dect:settings/MSN$0/MSN ?>" id="uiPostMSN$0" disabled>
 +<input type="hidden" name="dect:settings/MSN$0/Name" value="<? query dect:settings/MSN$0/Name ?>" id="uiPostUser$0" disabled>
 +` ?>
---- usr/www/all/html/de/fon/fon1dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.html	2007-12-18 10:22:48.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/fon1dect.html
 @@ -0,0 +1,41 @@
 +<? include ../html/$var:lang/fon/fon1dect.inc ?>
 +<div id="content">
@@ -148,8 +148,8 @@
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
---- usr/www/all/html/de/fon/fon1dect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.inc	2007-12-18 09:38:38.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/fon1dect.inc
 @@ -0,0 +1,15 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'MSN zuordnen' ?>
@@ -166,8 +166,8 @@
 +<? setvariable var:Text18 'Mobilteil 4' ?>
 +<? setvariable var:Text19 'Mobilteil 5' ?>
 +<? setvariable var:Text20 'Mobilteil 6' ?>
---- usr/www/all/html/de/fon/fon1dect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fon1dect.js	2007-12-18 10:21:36.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/fon1dect.js
 @@ -0,0 +1,177 @@
 +<!--		../fon/fon1dect.js		-->
 +<style type="text/css">
@@ -346,8 +346,8 @@
 +	return g_Index[Number(nr)];
 +}
 +</script>
---- usr/www/all/html/de/fon/fondevices.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fondevices.html	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/fondevices.html
++++ usr/www/all/html/de/fon/fondevices.html
 @@ -14,6 +14,10 @@
  		<li><a href="javascript:uiDoListIsdn()"><? echo '$var:Text22' ?></a></li>
  ` ?>
@@ -359,8 +359,8 @@
  	</ul>
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  		<p class="mb10"><? echo $var:Text3 ?></p>
---- usr/www/all/html/de/fon/fondevices.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fondevices.inc	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/fondevices.inc
++++ usr/www/all/html/de/fon/fondevices.inc
 @@ -15,7 +15,9 @@
  <? setvariable var:Text19 'Bearbeiten' ?>
  <? setvariable var:Text18 'Löschen' ?>
@@ -373,8 +373,8 @@
 +<? setvariable var:Text28 'Zuordnung' ?>
 +<? setvariable var:Text29 'Basisstation' ?>
  <? setvariable var:Text24 'Hinweis: Es können keine weiteren Telefoniegeräte eingerichtet werden, da alle Anschlüsse belegt sind.' ?>
---- usr/www/all/html/de/fon/fondevices.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fondevices.js	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/fondevices.js
++++ usr/www/all/html/de/fon/fondevices.js
 @@ -65,6 +65,22 @@
  	}
  	jslSubmitFormEx( "fon_config", "fon_config_Start", "fondevices");
@@ -399,8 +399,8 @@
  	jslPopHelp("hilfe_fon_fondevices");
  }
 iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
---- usr/www/all/html/de/fon/foneditdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.frm	2007-12-18 22:18:20.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/foneditdect.frm
 @@ -0,0 +1,11 @@
 +<input type="hidden" name="dect:command/StartSubscription" id="uiPostStartSubscription" disabled>
 +<input type="hidden" name="dect:command/Unsubscribe" id="uiPostUnsubscribe" disabled>
@@ -413,8 +413,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +<input type="hidden" name="dect:settings/Handset$0/Subscribed" value="<? query dect:settings/Handset$0/Subscribed ?>" id="uiPostSubscribed$0" disabled>
 +<input type="hidden" name="dect:settings/Handset$0/Type" value="<? query dect:settings/Handset$0/Type ?>" id="uiPostType$0" disabled>
 +` ?>
---- usr/www/all/html/de/fon/foneditdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.html	2007-12-26 03:36:10.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/foneditdect.html
 @@ -0,0 +1,80 @@
 +<? include ../html/$var:lang/fon/foneditdect.inc ?> 
 +<div id="content">
@@ -496,8 +496,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	</div></div></div></div></div></div>
 +	</div></div></div></div></div></div></div>
 +</div>
---- usr/www/all/html/de/fon/foneditdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.inc	2007-12-26 03:36:10.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/foneditdect.inc
 @@ -0,0 +1,27 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'Hier können Sie Einstellungen für Ihre DECT-Basisstation vornehmen. ' ?>
@@ -526,8 +526,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +<? setvariable var:Text33 'Mobilteile pagen' ?>
 +<? setvariable var:Text34 'Datum und Uhrzeit setzen' ?>
 +<? setvariable var:Text35 'Mit Hilfe der Paging-Funktion können Sie Mobilteile lokalisieren. Per Knopfdruck können auch Datum und Uhrzeit der DECT-Telefone gesetzt werden.' ?>
---- usr/www/all/html/de/fon/foneditdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditdect.js	2007-12-19 21:36:50.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/foneditdect.js
 @@ -0,0 +1,157 @@
 +<!--		../fon/foneditdect.js		-->
 +<style type="text/css">
@@ -686,20 +686,20 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	jslSubmitFormEx("fon", "", "");
 +}
 +</script>
---- usr/www/all/html/de/fon/foneditisdn.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditisdn.frm	2007-04-03 10:42:14.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/foneditisdn.frm
 @@ -0,0 +1 @@
 +<? include ../html/$var:lang/fon/foneditdect.frm ?>
---- usr/www/all/html/de/fon/foneditisdn.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditisdn.html	2007-04-03 10:42:50.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/foneditisdn.html
 @@ -0,0 +1 @@
 +<? include ../html/$var:lang/fon/foneditdect.html ?>
---- usr/www/all/html/de/fon/foneditisdn.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/foneditisdn.js	2007-04-03 10:43:36.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/foneditisdn.js
 @@ -0,0 +1 @@
 +<? include ../html/$var:lang/fon/foneditdect.js ?>
---- usr/www/all/html/de/fon/fonlistisdn.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fonlistisdn.html	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/fonlistisdn.html
++++ usr/www/all/html/de/fon/fonlistisdn.html
 @@ -9,6 +9,10 @@
  		<li><a href="javascript:uiDoDect()"><? echo '$var:Text24' ?></a></li>
  		<li><a href="javascript:uiDoDectMsn()"><? echo '$var:Text25' ?></a></li>
@@ -723,8 +723,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  ` ?>
  ` ?>
  	</ul>
---- usr/www/all/html/de/fon/fonlistisdn.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fonlistisdn.inc	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/fonlistisdn.inc
++++ usr/www/all/html/de/fon/fonlistisdn.inc
 @@ -19,6 +19,8 @@
  <? setvariable var:Text23 'ISDN-Endgeräte' ?>
  ` ?>
@@ -736,8 +736,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +<? setvariable var:Text27 'Optionen' ?>
 +<? setvariable var:Text28 'Zuordnung' ?>
 +<? setvariable var:Text29 'Basisstation' ?>
---- usr/www/all/html/de/fon/fonlistisdn.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/fonlistisdn.js	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/fonlistisdn.js
++++ usr/www/all/html/de/fon/fonlistisdn.js
 @@ -29,6 +29,18 @@
  	if (g_New == 0) jslDisable("uiViewNew");
  	jslZebrastreifen("tISDN");
@@ -757,8 +757,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  function uiDoHelp() {
  <? if eq '$var:pagename' 'fonlistdect' `
  	jslPopHelp("hilfe_fon_listdect");
---- usr/www/all/html/de/fon/fonsetupdect1.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect1.html	2007-04-25 23:41:46.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupdect1.html
 @@ -0,0 +1,72 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.inc ?> 
 +<div id="content">
@@ -832,8 +832,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	</div></div></div></div></div></div>
 +	</div></div></div></div></div></div></div>
 +</div>
---- usr/www/all/html/de/fon/fonsetupdect.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.frm	2007-04-07 12:17:26.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupdect.frm
 @@ -0,0 +1,9 @@
 +<input type="hidden" name="var:MsnNr" value="<? echo $var:MsnNr ?>" id="uiPostMsnNr">
 +<input type="hidden" name="dect:settings/RingOnAllMSNs" value="<? query dect:settings/RingOnAllMSNs ?>" id="uiPostRingOnAllMSNs" disabled>
@@ -844,8 +844,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +<input type="hidden" name="dect:settings/MSN$0/BusyOnBusy" value="<? query dect:settings/MSN$0/BusyOnBusy ?>" id="uiPostBusyOnBusy$0" disabled>
 +<input type="hidden" name="dect:settings/MSN$0/Handsets" value="<? query dect:settings/MSN$0/Handsets ?>" id="uiPostHandsets$0" disabled>
 +` ?>
---- usr/www/all/html/de/fon/fonsetupdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.html	2007-12-19 21:26:56.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupdect.html
 @@ -0,0 +1,72 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.inc ?> 
 +<div id="content">
@@ -919,8 +919,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	</div></div></div></div></div></div>
 +	</div></div></div></div></div></div></div>
 +</div>
---- usr/www/all/html/de/fon/fonsetupdect.inc	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.inc	2007-12-26 03:36:10.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupdect.inc
 @@ -0,0 +1,31 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'Die Mobilteile können so eingerichtet werden, dass sie auf alle eingehenden Anrufe reagieren. Durch das Setzen dieser Option gehen alle Rufnummernzuordnungen verloren.' ?>
@@ -953,8 +953,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +<? setvariable var:Text52 'C' ?>
 +<? setvariable var:Text53 'D' ?>
 +<? setvariable var:Text54 'E' ?>
---- usr/www/all/html/de/fon/fonsetupdect.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupdect.js	2007-10-07 21:19:50.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupdect.js
 @@ -0,0 +1,141 @@
 +<!--		../fon/fonsetupdect.js		-->
 +<style type="text/css">
@@ -1097,20 +1097,20 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	return list;
 +}
 +</script>
---- usr/www/all/html/de/fon/fonsetupisdn.frm	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupisdn.frm	2007-04-03 10:28:14.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupisdn.frm
 @@ -0,0 +1 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.frm ?>
---- usr/www/all/html/de/fon/fonsetupisdn.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupisdn.html	2007-04-03 10:29:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupisdn.html
 @@ -0,0 +1 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.html ?>
---- usr/www/all/html/de/fon/fonsetupisdn.js	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonsetupisdn.js	2007-04-03 10:28:58.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonsetupisdn.js
 @@ -0,0 +1 @@
 +<? include ../html/$var:lang/fon/fonsetupdect.js ?>
---- usr/www/all/html/de/fon/isdn.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/isdn.html	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/isdn.html
++++ usr/www/all/html/de/fon/isdn.html
 @@ -20,6 +20,10 @@
  ` ?>
  ` ?>
@@ -1122,8 +1122,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  	</ul>
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  		<p class="mb10"><? echo $var:Text3 ?></p>
---- usr/www/all/html/de/fon/isdn.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/isdn.inc	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/isdn.inc
++++ usr/www/all/html/de/fon/isdn.inc
 @@ -14,16 +14,18 @@
  <? setvariable var:Text18 'Übersicht' ?>
  <? setvariable var:Text24 'Interne Nummer' ?>
@@ -1147,8 +1147,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? setvariable var:Text32 'Ruf abweisen bei besetzt (Busy on busy).' ?>
  <? setvariable var:Text33 'Einkommende Rufe werden abgelehnt, wenn mit der angerufenen MSN bereits ein Gespräch geführt wird.' ?>
  <? setvariable var:Text34 'Eigene Rufnummer unterdrücken (COLR).' ?>
---- usr/www/all/html/de/fon/isdn.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/isdn.js	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/isdn.js
++++ usr/www/all/html/de/fon/isdn.js
 @@ -93,6 +93,18 @@
  	jslGoTo("fon", "isdn");
  ` ?>
@@ -1168,8 +1168,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  function uiDoHelp() {
  	jslPopHelp("hilfe_fon_isdn");
  }
---- usr/www/all/html/de/fon/isdnoptionen.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/isdnoptionen.html	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/isdnoptionen.html
++++ usr/www/all/html/de/fon/isdnoptionen.html
 @@ -20,6 +20,10 @@
  ` ?>
  ` ?>
@@ -1181,8 +1181,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  	</ul>
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  		<p class="mb5"><? echo $var:Text2 ?></p>
---- usr/www/all/html/de/fon/isdnoptionen.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/isdnoptionen.inc	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/isdnoptionen.inc
++++ usr/www/all/html/de/fon/isdnoptionen.inc
 @@ -1,6 +1,6 @@
  <? include ../html/$var:lang/global.inc ?>
 -<? setvariable var:Text1 'Weitere Leistungsmerkmale für ISDN-Telefone' ?>
@@ -1210,8 +1210,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? setvariable var:Text51 'Interne Nummern' ?>
 -<? setvariable var:Text52 'Leistungsmerkmale' ?>
 +<? setvariable var:Text52 'Optionen' ?>
---- usr/www/all/html/de/fon/isdnoptionen.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/isdnoptionen.js	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/isdnoptionen.js
++++ usr/www/all/html/de/fon/isdnoptionen.js
 @@ -245,6 +245,18 @@
  function uiDoListIsdn() {
  	jslGoTo("fon", "fonlistisdn");
@@ -1231,8 +1231,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  function uiDoHelp() {
  	jslPopHelp("hilfe_fon_isdnoptionen");
  }
---- usr/www/all/html/de/fon/msn.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/msn.html	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/msn.html
++++ usr/www/all/html/de/fon/msn.html
 @@ -4,7 +4,7 @@
  <? if eq '$var:pagename' 'dectmsn' `
  		<? echo '$var:Text25' ?>
@@ -1303,8 +1303,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  		<p class="mb10"><? echo $var:Text18 ?></p>
  		<p class="ml25"><label for="uiViewPots"><? echo $var:Text19 ?></label>&nbsp;<input type="text" id="uiViewPots" size="21" maxlength="20" class="Eingabefeld"></p>
  	</div></div></div></div></div></div>
---- usr/www/all/html/de/fon/msn.inc	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/msn.inc	2007-12-26 03:36:10.000000000 +0100
+--- usr/www/all/html/de/fon/msn.inc
++++ usr/www/all/html/de/fon/msn.inc
 @@ -1,5 +1,5 @@
  <? include ../html/$var:lang/global.inc ?>
 -<? setvariable var:Text1 'Festnetzrufnummern' ?>
@@ -1321,8 +1321,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? setvariable var:Text23 'ISDN-Endgeräte' ?>
  <? setvariable var:Text24 'Nebenstellen' ?>
  <? setvariable var:Text25 'DECT-Endgeräte' ?>
---- usr/www/all/html/de/fon/msn.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/msn.js	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/fon/msn.js
++++ usr/www/all/html/de/fon/msn.js
 @@ -52,6 +52,18 @@
  function uiDoDect() {
  	jslGoTo("", "dect");
@@ -1342,8 +1342,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  function uiDoHelp() {
  <? if eq '$var:pagename' 'dectmsn' `
  	jslPopHelp("hilfe_fon_dect_festnetzrufnummer");
---- usr/www/all/html/de/fon/routing.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/routing.js	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/fon/routing.js
++++ usr/www/all/html/de/fon/routing.js
 @@ -14,6 +14,7 @@
  <script type="text/javascript">
  <? setvariable var:showLCRdata 0 ?>
@@ -1352,8 +1352,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? if eq $var:OEM avme `<? setvariable var:showLCRdata 1 ?>` ?>
  <? if eq $var:OEM freenet `<? setvariable var:showLCRdata 1 ?>` ?>
  <? include ../html/$var:lang/js/val.js ?>
---- usr/www/all/html/de/fon/sip1.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/fon/sip1.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/fon/sip1.html
++++ usr/www/all/html/de/fon/sip1.html
 @@ -20,6 +20,23 @@
  <? if eq $var:OEM arcor `
  						<option value="Arcor">$var:Text7</option>
@@ -1378,8 +1378,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? if eq $var:OEM freenet 	`
  						<option value="1u1">$var:Text4</option>
  						<option value="AOL">$var:Text9</option>
---- usr/www/all/html/de/help/hilfe_fon_editdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_fon_editdect.html	2007-04-06 01:19:50.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/help/hilfe_fon_editdect.html
 @@ -0,0 +1,19 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Mobilteile</div></div></div></div></div></div>
@@ -1400,8 +1400,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
---- usr/www/all/html/de/help/hilfe_fon_fon1dect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_fon_fon1dect.html	2007-04-24 22:52:52.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/help/hilfe_fon_fon1dect.html
 @@ -0,0 +1,25 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">MSN zuordnen</div></div></div></div></div></div>
@@ -1428,8 +1428,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +		</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
---- usr/www/all/html/de/help/hilfe_fon_setupdect.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_fon_setupdect.html	2007-04-06 00:56:26.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/help/hilfe_fon_setupdect.html
 @@ -0,0 +1,21 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Rufnummernzuordnung</div></div></div></div></div></div>
@@ -1452,8 +1452,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
---- usr/www/all/html/de/help/hilfe_mod_info.html	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_mod_info.html	2007-12-26 03:36:12.000000000 +0100
+--- /dev/null
++++ usr/www/all/html/de/help/hilfe_mod_info.html
 @@ -0,0 +1,34 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Informationen</div></div></div></div></div></div>
@@ -1489,8 +1489,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
---- usr/www/all/html/de/help/home.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/help/home.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/help/home.html
++++ usr/www/all/html/de/help/home.html
 @@ -52,14 +52,6 @@
  				</td>
  			</tr>
@@ -1514,8 +1514,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? setvariable var:shownacht 0 ?>
  <? setvariable var:shownacht 1 ?>
  <? setvariable var:shownacht 1 ?>
---- usr/www/all/html/de/help/popup.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/help/popup.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/help/popup.html
++++ usr/www/all/html/de/help/popup.html
 @@ -61,7 +61,6 @@
  function OnPortal() {
  	var url = jslGetValue("uiPostPortal");
@@ -1524,8 +1524,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  		var pp = window.open(url, "_blank");
  	}
  }
---- usr/www/all/html/de/home/home.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/home/home.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/home/home.html
++++ usr/www/all/html/de/home/home.html
 @@ -32,11 +32,6 @@
  							<td><? echo $var:txt008 ?></td>
  							<td><script type="text/javascript">document.write(WlanStateDisplay());</script></td>
@@ -1538,8 +1538,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  					</table>
  				</td>
  				<td>
---- usr/www/all/html/de/internet/authform.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/internet/authform.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/internet/authform.html
++++ usr/www/all/html/de/internet/authform.html
 @@ -13,6 +13,7 @@
  <? if eq $var:OEM freenet `<? setvariable var:allprovider 1 ?>` ?>
  <? if eq $var:OEM aol `<? setvariable var:allprovider 1 ?>` ?>
@@ -1548,8 +1548,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? if eq $var:allprovider 1 `
  		<option value="1u1">$var:afTxt02</option>
  		<option value="AOL">$var:afTxt06</option>
---- usr/www/all/html/de/internet/pp_wanbridge.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/internet/pp_wanbridge.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/internet/pp_wanbridge.html
++++ usr/www/all/html/de/internet/pp_wanbridge.html
 @@ -3,7 +3,7 @@
  <? include ../html/config.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -1559,8 +1559,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
  <head>
  <title><? echo $var:txt00 ?></title>
---- usr/www/all/html/de/menus/menu2_fon.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_fon.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/menus/menu2_fon.html
++++ usr/www/all/html/de/menus/menu2_fon.html
 @@ -18,6 +18,9 @@
  <? setvariable var:classname 'LSubitem' ?>
  <? if eq $var:pagename dect `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
@@ -1582,8 +1582,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
  <? if eq $var:isWizz 1 `
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
---- usr/www/all/html/de/menus/menu2_homehome.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/menus/menu2_homehome.html
++++ usr/www/all/html/de/menus/menu2_homehome.html
 @@ -32,8 +32,6 @@
  <? if eq $var:pagename syslog `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','syslog')"><? echo $var:evtxt04 ?></a></li>
@@ -1593,8 +1593,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? setvariable var:show 1 ?>
  <? if eq <? query box:settings/ata_mode ?> 1 `
  <? if eq '<? query connection0:settings/type ?>' 'bridge' '<? setvariable var:show 0 ?>' ?>
---- usr/www/all/html/de/menus/menu2_homekonfig.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/menus/menu2_homekonfig.html
++++ usr/www/all/html/de/menus/menu2_homekonfig.html
 @@ -5,10 +5,8 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -1606,8 +1606,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
  <? if eq $var:isWizz 1 `
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
---- usr/www/all/html/de/menus/menu2_internet.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_internet.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/menus/menu2_internet.html
++++ usr/www/all/html/de/menus/menu2_internet.html
 @@ -19,9 +19,6 @@
  <? if neq <? query connection0:settings/type ?> pppoe `
  <? if eq $var:pagename internet `<? setvariable var:class1 'LSubitemaktiv' ?>` ?>
@@ -1629,8 +1629,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
  <? if eq $var:isWizz 1 `
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
---- usr/www/all/html/de/menus/menu2_system.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_system.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/menus/menu2_system.html
++++ usr/www/all/html/de/menus/menu2_system.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -1648,8 +1648,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? if eq $var:isWizz 1 `
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
 -</ul>
---- usr/www/all/html/de/menus/menu2_wlan.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_wlan.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/menus/menu2_wlan.html
++++ usr/www/all/html/de/menus/menu2_wlan.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -1666,8 +1666,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslPopHelp('home')"><? echo $var:menuHilfe ?></a></li>
  <? if eq $var:isWizz 1 `
  	<li class="LMenuitem" style="margin-top:24px"><img src="<? echo '$var:pfeil' ?>"> <a href="javascript:jslGoTo('first','direkt')">$var:menuAssistent</a></li>
---- usr/www/all/html/de/menus/menuwatch.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/menus/menuwatch.html	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/menus/menuwatch.html
++++ usr/www/all/html/de/menus/menuwatch.html
 @@ -5,7 +5,7 @@
  <? include ../html/$var:lang/menus/menu2.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -1677,8 +1677,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <head>
  <title><? echo $var:BoxName ?></title>
  <meta http-equiv=content-type content="text/html; charset=iso-8859-1">
---- usr/www/all/html/de/system/energy.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/system/energy.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/system/energy.html
++++ usr/www/all/html/de/system/energy.html
 @@ -56,15 +56,6 @@
  		</tr></table>
  	</div></div></div></div></div></div>
@@ -1695,8 +1695,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  		<p class="mb10"><b><? echo $var:Text48 ?></b></p>
  		<p>
  			<img src="../html/de/images/led_<? if eq `<? query eth0:status/carrier ?>` 1 `green` `gray` ?>.gif" /> <? echo `$var:Text33` ?>
---- usr/www/all/html/de/system/energy.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/system/energy.js	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/system/energy.js
++++ usr/www/all/html/de/system/energy.js
 @@ -110,15 +110,6 @@
  		}
  	}
@@ -1713,8 +1713,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  }
  function SetPowerDisplay(id, act, cum, max, unit)
  {
---- usr/www/all/html/de/system/extended.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/system/extended.js	2007-12-26 03:36:12.000000000 +0100
+--- usr/www/all/html/de/system/extended.js
++++ usr/www/all/html/de/system/extended.js
 @@ -13,6 +13,7 @@
  	jslSetChecked("uiViewExpertMode", jslGetValue("uiPostExpertMode") == "1");
  <? setvariable var:ShowUsePstn 0 ?>
@@ -1723,8 +1723,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  <? if eq $var:OEM freenet `<? setvariable var:ShowUsePstn 1 ?>` ?>
  <? if eq $var:OEM 1und1 `<? setvariable var:ShowUsePstn 1 ?>` ?>
  <? if eq $var:ShowUsePstn 1 `
---- usr/www/all/html/de/system/syslog.html	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/system/syslog.html	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/system/syslog.html
++++ usr/www/all/html/de/system/syslog.html
 @@ -9,9 +9,8 @@
  	 		<li class="tabs_on"><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
  	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
@@ -1795,8 +1795,8 @@ iff -burN html/de/fon/foneditdect.frm usr/www/all/html/de/fon/foneditdect.frm
  	 	</ul>
  	</div>	 	
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
---- usr/www/all/html/de/system/syslog.js	2007-05-22 15:02:59.000000000 +0200
-+++ usr/www/all/html/de/system/syslog.js	2007-12-26 03:36:11.000000000 +0100
+--- usr/www/all/html/de/system/syslog.js
++++ usr/www/all/html/de/system/syslog.js
 @@ -18,11 +18,10 @@
  function uiDoOnLoad() {
  	var filter = jslGetValue("uiPostFilter");
