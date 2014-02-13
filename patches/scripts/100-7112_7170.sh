@@ -42,7 +42,11 @@ modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-POTS-7170-alien.patch
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch"
 
 echo2 "moving default config dir"
-mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7112"
+if isFreetzType ANNEX_A; then
+	mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7112_AnnexA" || exit 2
+else
+	mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7112" || exit 2
+fi
 
 echo2 "patching rc.S and rc.conf"
 modsed "s/piglet_bitfile=\/lib\/modules\/microvoip_isdn_top\.bit.*$/piglet_bitfile=\/lib\/modules\/bitfile\.bit/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
@@ -70,4 +74,8 @@ modsed "s/CONFIG_USB_STORAGE_SPINDOWN=.*$/CONFIG_USB_STORAGE_SPINDOWN=\"n\"/g" "
 
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7112_7170.patch" || exit 2
+if isFreetzType ANNEX_A; then
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7112_7170_Annex_A.patch" || exit 2
+else
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7112_7170.patch" || exit 2
+fi
