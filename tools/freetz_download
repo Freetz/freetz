@@ -174,7 +174,7 @@ if [ -n "$URLs" ]; then
 		num_sites=0
 		CHECKSUM=""
 	else
-		for url in $(echo ${URLs} | tr , " "); do
+		for url in $(echo ${URLs} | sed -e 's, ,%20,g' -e 's/,/ /g'); do
 			if [ ${url:0:3} == "@SF" ]; then
 				# give sourceforge a few more tries, because it redirects to different mirrors
 				subpath=${url/@SF\//}
