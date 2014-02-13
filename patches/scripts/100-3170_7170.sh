@@ -39,10 +39,12 @@ RC_S_FILE="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 ${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "copy_telefonie_defaults" -o ${RC_S_FILE}
 ${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "link_telefonie_defaults" -o ${RC_S_FILE}
 
-if isFreetzType LANG_DE || isFreetzType ANNEX_B; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170.patch" || exit 2
-else
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170_a_ch.patch" || exit 2
+if isFreetzType LANG_DE; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170_de_Annex_B.patch" || exit 2
+else if isFreetzType LANG_EN ANNEX_B; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170_en_Annex_B.patch" || exit 2
+else if isFreetzType LANG_A_CH || isFreetzType LANG_EN ANNEX_A; then
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170_Annex_A.patch" || exit 2
 fi
 
 modsed "s/piglet_bitfile_offset=0/piglet_bitfile_offset=0x4b/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
