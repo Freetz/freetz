@@ -19,12 +19,7 @@ isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/i
 modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2
 
 echo2 "moving default config dir"
-
-if isFreetzType ANNEX_A; then
-	mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7141_AnnexA" || exit 2
-else
-	mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7141" || exit 2
-fi
+mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7141" || exit 2
 
 echo2 "patching rc.S and rc.conf"
 
@@ -41,7 +36,7 @@ modsed "s/HWRevision_ATA=0$/HWRevision_ATA=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d
 
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
-if isFreetzType ANNEX_A; then
+if isFreetzType LANG_A_CH ANNEX_A; then
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7141_7170_Annex_A.patch" || exit 2
 else
 	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7141_7170.patch" || exit 2
