@@ -231,8 +231,7 @@ fi
 if [ "$opt_append_servers" = y ]; then
 	for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
 		p=$(( RANDOM % n ))
-		sites[$num_sites]=${FREETZ_SITES[$p]}
-		(( num_sites++ ))
+		sites[(( num_sites++ ))]=${FREETZ_SITES[$p]}
 		FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
 	done
 fi
