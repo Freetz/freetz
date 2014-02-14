@@ -184,33 +184,28 @@ if [ -n "$URLs" ]; then
 				done
 			elif [ ${url:0:4} == "@AVM" ]; then
 				subpath=${url/@AVM\//}
-				sites[0]=http://download.avm.de/fritz.box/$subpath
-				sites[1]=ftp://ftp.avm.de/fritz.box/$subpath
-				sites[2]=ftp://service.avm.de/$subpath
-				num_sites=3
+				sites[(( num_sites++ ))]=http://download.avm.de/fritz.box/$subpath
+				sites[(( num_sites++ ))]=ftp://ftp.avm.de/fritz.box/$subpath
+				sites[(( num_sites++ ))]=ftp://service.avm.de/$subpath
 			elif [ ${url:0:4} == "@GNU" ]; then
 				subpath=${url/@GNU\//}
-				sites[0]=http://ftpmirror.gnu.org/$subpath # automatically chooses a nearby and up-to-date mirror
-				sites[1]=http://ftp.gnu.org/gnu/$subpath
-				num_sites=2
+				sites[(( num_sites++ ))]=http://ftpmirror.gnu.org/$subpath # automatically chooses a nearby and up-to-date mirror
+				sites[(( num_sites++ ))]=http://ftp.gnu.org/gnu/$subpath
 			elif [ ${url:0:7} == "@KERNEL" ]; then
 				subpath=${url/@KERNEL\//}
-				sites[0]=http://ftp.de.kernel.org/pub/$subpath
-				sites[1]=http://ftp.kernel.org/pub/$subpath
-				num_sites=2
+				sites[(( num_sites++ ))]=http://ftp.de.kernel.org/pub/$subpath
+				sites[(( num_sites++ ))]=http://ftp.kernel.org/pub/$subpath
 			elif [ ${url:0:8} == "@TELEKOM" ]; then
 				subpath=${url/@TELEKOM\//}
-				sites[0]=http://www.telekom.de/dlp/eki/downloads/$subpath
-				sites[1]=http://www.t-home.de/dlp/eki/downloads/$subpath
-				sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$subpath
-				num_sites=3
+				sites[(( num_sites++ ))]=http://www.telekom.de/dlp/eki/downloads/$subpath
+				sites[(( num_sites++ ))]=http://www.t-home.de/dlp/eki/downloads/$subpath
+				sites[(( num_sites++ ))]=http://hilfe.telekom.de/dlp/eki/downloads/$subpath
 			elif [ ${url:0:7} == "@APACHE" ]; then
 				subpath=${url/@APACHE\//}
-				sites[0]=http://www.eu.apache.org/dist/$subpath
-				sites[1]=http://www.apache.org/dist/$subpath
-				sites[2]=http://apache.openmirror.de/$subpath
-				sites[3]=http://archive.apache.org/dist/$subpath
-				num_sites=4
+				sites[(( num_sites++ ))]=http://www.eu.apache.org/dist/$subpath
+				sites[(( num_sites++ ))]=http://www.apache.org/dist/$subpath
+				sites[(( num_sites++ ))]=http://apache.openmirror.de/$subpath
+				sites[(( num_sites++ ))]=http://archive.apache.org/dist/$subpath
 			else
 				sites[$num_sites]=$url
 				(( num_sites++ ))
