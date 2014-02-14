@@ -6,6 +6,7 @@ env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | se
 
 DAEMON=mod
 . /etc/init.d/modlibrc
+. /etc/init.d/modlibfw
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 log() {
@@ -17,8 +18,7 @@ log() {
 start() {
 	log "rc.mod version $(cat /etc/.freetz-version)"
 
-	# 27349 is the revision of the 1st firmware remote access vulnerability has been fixed in
-	if [ $(cat /etc/.revision 2>/dev/null || echo 0) -lt 27349 ]; then
+	if is_affected_by_remote_access_vulnerability; then
 		log "Firmware with remote access vulnerability detected."
 		if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
 			log "Remote access via https will be disabled. Create /tmp/flash/mod/dont_touch_https if you don't want this behavior."
