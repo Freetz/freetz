@@ -200,6 +200,9 @@ if [ -n "$URLs" ]; then
 				sites[(( num_sites++ ))]=http://www.telekom.de/dlp/eki/downloads/$subpath
 				sites[(( num_sites++ ))]=http://www.t-home.de/dlp/eki/downloads/$subpath
 				sites[(( num_sites++ ))]=http://hilfe.telekom.de/dlp/eki/downloads/$subpath
+			elif [ ${url:0:4} == "@1&1" ]; then
+				subpath=${url/@1&1\//}
+				sites[(( num_sites++ ))]=http://acsfwdl.1und1.de/avm/$subpath
 			elif [ ${url:0:7} == "@APACHE" ]; then
 				subpath=${url/@APACHE\//}
 				sites[(( num_sites++ ))]=http://www.eu.apache.org/dist/$subpath
