@@ -179,8 +179,7 @@ if [ -n "$URLs" ]; then
 				# give sourceforge a few more tries, because it redirects to different mirrors
 				subpath=${url/@SF\//}
 				for (( n=0; n < 5; n++ )); do
-					sites[$num_sites]=http://downloads.sourceforge.net/$subpath
-					(( num_sites++ ))
+					sites[(( num_sites++ ))]=http://downloads.sourceforge.net/$subpath
 				done
 			elif [ ${url:0:4} == "@AVM" ]; then
 				subpath=${url/@AVM\//}
@@ -210,8 +209,7 @@ if [ -n "$URLs" ]; then
 				sites[(( num_sites++ ))]=http://apache.openmirror.de/$subpath
 				sites[(( num_sites++ ))]=http://archive.apache.org/dist/$subpath
 			else
-				sites[$num_sites]=$url
-				(( num_sites++ ))
+				sites[(( num_sites++ ))]=$url
 			fi
 		done
 	fi
