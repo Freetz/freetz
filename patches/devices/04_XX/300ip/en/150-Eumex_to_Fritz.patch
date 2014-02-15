@@ -1,5 +1,5 @@
---- usr/www/all/en/html/en/fon/routing.js.orig	2008-04-17 17:48:43.000000000 +0200
-+++ usr/www/all/en/html/en/fon/routing.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/fon/routing.js
++++ usr/www/all/en/html/en/fon/routing.js
 @@ -14,6 +14,7 @@
  <script type="text/javascript">
  <? setvariable var:showLCRdata 0 ?>
@@ -8,8 +8,8 @@
  <? if eq $var:OEM avme `<? setvariable var:showLCRdata 1 ?>` ?>
  <? if eq $var:OEM freenet `<? setvariable var:showLCRdata 1 ?>` ?>
  <? include ../html/$var:lang/js/val.js ?>
---- usr/www/all/en/html/en/fon/sip1.html.orig	2008-04-17 17:48:40.000000000 +0200
-+++ usr/www/all/en/html/en/fon/sip1.html	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/fon/sip1.html
++++ usr/www/all/en/html/en/fon/sip1.html
 @@ -62,6 +62,20 @@
  <option value="TOnline">$var:Text12</option>
  <option value="Webde">$var:Text11</option>
@@ -31,8 +31,8 @@
  <option value="Sonst">$var:Text14</option>
  </select></td>
  </tr>
---- usr/www/all/en/html/en/fon/sip1.js.orig	2009-09-30 11:53:53.000000000 +0200
-+++ usr/www/all/en/html/en/fon/sip1.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/fon/sip1.js
++++ usr/www/all/en/html/en/fon/sip1.js
 @@ -1,5 +1,6 @@
  <? setvariable var:showtcom 0 ?>
  <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
@@ -48,8 +48,8 @@
  case "other":
  <? if eq $var:OEM avme `
  jslSetValue("uiPostAKN", "0"); break;
---- usr/www/all/en/html/en/fon/sipoptionen.js.orig	2008-04-17 17:48:38.000000000 +0200
-+++ usr/www/all/en/html/en/fon/sipoptionen.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/fon/sipoptionen.js
++++ usr/www/all/en/html/en/fon/sipoptionen.js
 @@ -121,11 +121,9 @@
  kompress = jslGetValue("uiPostLowCodecs")=="1" ? 2 : 1;
  }
@@ -76,8 +76,8 @@
  jslSetValue("uiPostUseSepVcc", jslGetChecked("uiViewUseVcc") ? "1" : "0");
  jslEnable("uiPostUseSepVcc");
  if (jslGetChecked("uiViewUseVcc")) {
---- usr/www/all/en/html/en/internet/authform.html.orig	2008-04-17 17:48:43.000000000 +0200
-+++ usr/www/all/en/html/en/internet/authform.html	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/internet/authform.html
++++ usr/www/all/en/html/en/internet/authform.html
 @@ -13,6 +13,7 @@
  <? if eq $var:OEM freenet `<? setvariable var:allprovider 1 ?>` ?>
  <? if eq $var:OEM aol `<? setvariable var:allprovider 1 ?>` ?>
@@ -86,8 +86,8 @@
  <? if eq $var:allprovider 1 `
  <option value="1u1">$var:afTxt02</option>
  <option value="AOL">$var:afTxt06</option>
---- usr/www/all/en/html/en/internet/pp_user.html.orig	2008-04-17 17:48:41.000000000 +0200
-+++ usr/www/all/en/html/en/internet/pp_user.html	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/internet/pp_user.html
++++ usr/www/all/en/html/en/internet/pp_user.html
 @@ -3,7 +3,7 @@
  <? include ../html/config.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -97,8 +97,8 @@
  <? include ../html/$var:lang/internet/pp_user.inc ?>
  <head>
  <title><? echo $var:txt00 ?></title>
---- usr/www/all/en/html/en/internet/pp_wanbridge.html.orig	2008-04-17 17:48:45.000000000 +0200
-+++ usr/www/all/en/html/en/internet/pp_wanbridge.html	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/internet/pp_wanbridge.html
++++ usr/www/all/en/html/en/internet/pp_wanbridge.html
 @@ -3,7 +3,7 @@
  <? include ../html/config.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -108,8 +108,8 @@
  <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
  <head>
  <title><? echo $var:txt00 ?></title>
---- usr/www/all/en/html/en/menus/menuwatch.html.orig	2008-04-17 17:48:40.000000000 +0200
-+++ usr/www/all/en/html/en/menus/menuwatch.html	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/menus/menuwatch.html
++++ usr/www/all/en/html/en/menus/menuwatch.html
 @@ -5,7 +5,7 @@
  <? include ../html/$var:lang/menus/menu2.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -119,8 +119,8 @@
  <head>
  <title><? echo $var:BoxName ?></title>
  <meta http-equiv=content-type content="text/html; charset=iso-8859-1">
---- usr/www/all/en/html/en/system/extended.js.orig	2008-04-17 17:48:38.000000000 +0200
-+++ usr/www/all/en/html/en/system/extended.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/system/extended.js
++++ usr/www/all/en/html/en/system/extended.js
 @@ -13,6 +13,7 @@
  jslSetChecked("uiViewExpertMode", jslGetValue("uiPostExpertMode") == "1");
  <? setvariable var:ShowUsePstn 0 ?>
@@ -129,8 +129,8 @@
  <? if eq $var:OEM freenet `<? setvariable var:ShowUsePstn 1 ?>` ?>
  <? if eq $var:ShowUsePstn 1 `
  jslSetChecked("uiViewPstn", jslGetValue("uiPostPstn") == "1");
---- usr/www/all/en/html/en/first/first_ISP_3.js.orig	2008-04-17 17:48:42.000000000 +0200
-+++ usr/www/all/en/html/en/first/first_ISP_3.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/first/first_ISP_3.js
++++ usr/www/all/en/html/en/first/first_ISP_3.js
 @@ -1,5 +1,6 @@
  <? setvariable var:showpustefix 0 ?>
  <? if eq $var:OEM avm '<? setvariable var:showpustefix 1 ?>' ?>
@@ -138,8 +138,8 @@
  <? if eq $var:OEM 1und1 '<? setvariable var:showpustefix 1 ?>' ?>
  <!-- ../first/first_ISP_3.js -->
  <style type="text/css">
---- usr/www/all/en/html/en/first/first_Sip_1.html.orig	2008-04-17 17:48:46.000000000 +0200
-+++ usr/www/all/en/html/en/first/first_Sip_1.html	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/first/first_Sip_1.html
++++ usr/www/all/en/html/en/first/first_Sip_1.html
 @@ -58,6 +58,20 @@
  <option value="TOnline">$var:Text12</option>
  <option value="Webde">$var:Text11</option>
@@ -161,8 +161,8 @@
  <option value="Sonst"><? echo $var:Text14 ?></option>
  </select>
  </p>
---- usr/www/all/en/html/en/first/first_Sip_1.js.orig	2008-04-17 17:48:46.000000000 +0200
-+++ usr/www/all/en/html/en/first/first_Sip_1.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/first/first_Sip_1.js
++++ usr/www/all/en/html/en/first/first_Sip_1.js
 @@ -1,5 +1,6 @@
  <? setvariable var:showtcom 0 ?>
  <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
@@ -181,8 +181,8 @@
  } else {
  jslCopyValue("uiView1u1Username", "uiSipRufnr");
  jslSetValue("uiViewArcorUsername", ArcorUsername());
---- usr/www/all/en/html/en/first/first_Sip_2.js.orig	2008-04-17 17:48:40.000000000 +0200
-+++ usr/www/all/en/html/en/first/first_Sip_2.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/first/first_Sip_2.js
++++ usr/www/all/en/html/en/first/first_Sip_2.js
 @@ -25,6 +25,10 @@
  var g_txtRufnr_TOnline = "Internet-Telefonnummer:";
  var g_txtUsername_TOnline = "eMail-Adresse:";
@@ -215,8 +215,8 @@
  case "other":
  <? if eq $var:OEM avme `
  jslSetValue("uiPostAKN", "0"); break;
---- usr/www/all/en/html/en/first/first_Sip_3.js.orig	2009-09-30 11:53:53.000000000 +0200
-+++ usr/www/all/en/html/en/first/first_Sip_3.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/first/first_Sip_3.js
++++ usr/www/all/en/html/en/first/first_Sip_3.js
 @@ -30,6 +30,10 @@
  var g_txtRufnr_TOnline = "Internet-Telefonnummer:";
  var g_txtUsername_TOnline = "eMail-Adresse:";
@@ -242,8 +242,8 @@
  } else if (provider == "Webde") {
  username = jslGetValue("uiSipUsername");
  registrar = "sip.web.de";
---- usr/www/all/en/html/en/first/first_Start_Sip.js.orig	2008-04-17 17:48:44.000000000 +0200
-+++ usr/www/all/en/html/en/first/first_Start_Sip.js	2009-09-30 11:53:53.000000000 +0200
+--- usr/www/all/en/html/en/first/first_Start_Sip.js
++++ usr/www/all/en/html/en/first/first_Start_Sip.js
 @@ -1,8 +1,10 @@
  <? setvariable var:showtcom 0 ?>
  <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>

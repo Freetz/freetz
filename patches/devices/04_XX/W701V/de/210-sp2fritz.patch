@@ -1,5 +1,5 @@
---- usr/www/all/html/de/fon/fonab.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonab.frm	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonab.frm
 @@ -0,0 +1,10 @@
 +<input type="hidden" name="tam:settings/TAM0/Active" value="<? query tam:settings/TAM0/Active ?>" id="uiPostAktiv">
 +<input type="hidden" name="tam:settings/TAM0/MSNBitmap" value="<? query tam:settings/TAM0/MSNBitmap ?>" id="uiPostBitmap">
@@ -11,8 +11,8 @@
 +<input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
 +<? repeat [ 0 9 ] `
 +<input type="hidden" name="tam:settings/MSN$0" value="<? query tam:settings/MSN$0 ?>" id="uiPostTamMsn$0">` ?>
---- usr/www/all/html/de/fon/fonab.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonab.html	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonab.html
 @@ -0,0 +1,35 @@
 +<? include ../html/$var:lang/fon/fonab.inc ?>
 +<div id="content">
@@ -49,16 +49,16 @@
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
---- usr/www/all/html/de/fon/fonab.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonab.inc	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonab.inc
 @@ -0,0 +1,5 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'Anrufbeantworter ' ?>
 +<? setvariable var:Text2 'Anrufbeantworter aktivieren' ?>
 +<? setvariable var:Text3 'Rufnummer des Anrufbeantworters' ?>
 +<? setvariable var:Text4 'zusätzliche Rufnummern' ?>
---- usr/www/all/html/de/fon/fonab.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/fonab.js	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/fonab.js
 @@ -0,0 +1,119 @@
 +<!--		../fon/fonab.js		-->
 +<style type="text/css">
@@ -179,8 +179,8 @@
 +	jslSetValue(postid, jslGetChecked(viewid) ? "1":"0");
 +}
 +</script>
---- usr/www/all/html/de/fon/fondevices.html.orig	2007-07-10 13:47:43.000000000 +0200
-+++ usr/www/all/html/de/fon/fondevices.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/fondevices.html
++++ usr/www/all/html/de/fon/fondevices.html
 @@ -7,7 +7,9 @@
  	<ul class="tabs">
  		<li class="tabs_on"><a href="javascript:uiDoCancel()"><? echo $var:Text20 ?></a></li>
@@ -231,8 +231,8 @@
  	</div></div></div></div></div></div>
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
  		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
---- usr/www/all/html/de/fon/msn.html.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/msn.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/msn.html
++++ usr/www/all/html/de/fon/msn.html
 @@ -4,46 +4,22 @@
  		<? echo '$var:Text26' ?>
  	</div></div></div></div></div></div>
@@ -295,8 +295,8 @@
 -` ?>
 +
  	<? include ../html/$var:lang/home/rbb_applycancel.html ?></div></div></div></div></div></div></div></div>
---- usr/www/all/html/de/fon/msn.inc.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/msn.inc	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/msn.inc
++++ usr/www/all/html/de/fon/msn.inc
 @@ -18,11 +18,17 @@
  <? setvariable var:Text18 'Geben Sie hier die Rufnummer Ihres Analog-Anschlusses ein:' ?>
  <? setvariable var:Text19 'Rufnummer' ?>
@@ -320,8 +320,8 @@
 +
 +
 +<? setvariable var:Text30 'Das Festnetz kann deaktiviert werden, wenn die FRITZ!Box nur mit dem DSL-Anschluss und nicht mit einem Festnetz verbunden ist. Alle Telefonate werden dann über das Internet geführt. Der Internettelefonie-Anbieter muss in diesem Fall alle Anrufe weiterleiten.' ?>
---- usr/www/all/html/de/fon/msn.js.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/msn.js	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/msn.js
++++ usr/www/all/html/de/fon/msn.js
 @@ -11,21 +11,15 @@
  <script type="text/javascript">
  <? include ../html/$var:lang/js/val.js ?>
@@ -382,8 +382,8 @@
  }
 -` ?>
  </script>
---- usr/www/all/html/de/fon/sip1.frm.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sip1.frm	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/sip1.frm
++++ usr/www/all/html/de/fon/sip1.frm
 @@ -10,11 +10,6 @@
  <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/stunserver" value="" id="uiPostStun">
  <input type="hidden" name="sip:settings/<? echo $var:sipnr ?>/authname_needed" value="0" id="uiPostSipUri">
@@ -446,8 +446,8 @@
  <input type="hidden" name="telcfg:settings/MSN/Port0/MSN0" value="<? query telcfg:settings/MSN/Port0/MSN0 ?>" id="uiPostNr00" disabled>
  <input type="hidden" name="telcfg:settings/MSN/Port1/MSN0" value="<? query telcfg:settings/MSN/Port1/MSN0 ?>" id="uiPostNr10" disabled>
  <input type="hidden" name="connection0:pppoe:settings/username" value="<? query connection0:pppoe:settings/username ?>" id="uiPostPppUsername" disabled>
---- usr/www/all/html/de/fon/sip1.html.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sip1.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/sip1.html
++++ usr/www/all/html/de/fon/sip1.html
 @@ -52,8 +52,6 @@
  						<option value="1u1">$var:Text4</option>
  						<option value="AOL">$var:Text9</option>
@@ -613,8 +613,8 @@
  		<? include ../html/$var:lang/home/error.html ?>
  	</div></div></div></div></div></div>
  <? if eq $var:showtcom 1 '
---- usr/www/all/html/de/fon/sip1.inc.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sip1.inc	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/sip1.inc
++++ usr/www/all/html/de/fon/sip1.inc
 @@ -24,11 +24,16 @@
  <? setvariable var:Text23 'Kennwortbestätigung' ?>
  <? setvariable var:Text24 'Registrar' ?>
@@ -633,8 +633,8 @@
  <? setvariable var:Text40 'Landeskennzahl-Prefix beibehalten' ?>
  <? setvariable var:Text41 'Der Anbieter unterstützt die Online-Liste' ?>
  <? setvariable var:Text42 'Internetrufnummer für die Anmeldung verwenden' ?>
---- usr/www/all/html/de/fon/sip1.js.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/fon/sip1.js	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/sip1.js
++++ usr/www/all/html/de/fon/sip1.js
 @@ -12,11 +12,9 @@
  .c0 {padding: 1px 15px 1px 0px; width: 300px;}
  .c00 {padding: 1px 15px 1px 0px; width: 325px;}
@@ -1488,8 +1488,8 @@
  <? if eq $var:showtcom 1 '
  function OnEMailAdresse() {
  	var pp = window.open("http://www.t-online.de/service/redir/ata_emailadresse.htm", "_blank");
---- usr/www/all/html/de/fon/sipoptionen.frm.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sipoptionen.frm	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/sipoptionen.frm
++++ usr/www/all/html/de/fon/sipoptionen.frm
 @@ -5,8 +5,6 @@
  <input type="hidden" name="sipextra:settings/sip/sip_prio" value="<? query sipextra:settings/sip/sip_prio ?>" id="uiPostSipPrio">
  <input type="hidden" name="sipextra:settings/sip/rtp_prio" value="<? query sipextra:settings/sip/rtp_prio ?>" id="uiPostRtpPrio">
@@ -1507,8 +1507,8 @@
 -<input type="hidden" name="telcfg:settings/Location/LKZ" value="<? query telcfg:settings/Location/LKZ ?>" id="uiPostLKZ">
 -<input type="hidden" name="telcfg:settings/Location/OKZPrefix" value="<? query telcfg:settings/Location/OKZPrefix ?>" id="uiPostOKZPrefix">
 -<input type="hidden" name="telcfg:settings/Location/LKZPrefix" value="<? query telcfg:settings/Location/LKZPrefix ?>" id="uiPostLKZPrefix">
---- usr/www/all/html/de/fon/sipoptionen.html.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sipoptionen.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/sipoptionen.html
++++ usr/www/all/html/de/fon/sipoptionen.html
 @@ -1,15 +1,12 @@
  <? include ../html/$var:lang/fon/sipoptionen.inc ?>
  <div id="content">
@@ -1590,8 +1590,8 @@
  	</div>
  	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
  	</div></div></div></div></div></div></div>
---- usr/www/all/html/de/fon/sipoptionen.js.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sipoptionen.js	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/fon/sipoptionen.js
++++ usr/www/all/html/de/fon/sipoptionen.js
 @@ -1,7 +1,7 @@
  <!--		../fon/sipoptionen.js		-->
  <style type="text/css">
@@ -1801,16 +1801,16 @@
 -	}
 -}
  </script>
---- usr/www/all/html/de/fon/tam.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tam.frm	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tam.frm
 @@ -0,0 +1,5 @@
 +<input type="hidden" name="tam:settings/TAM0/Active" value="<? query tam:settings/TAM0/Active ?>" id="uiPostActive" />
 +<input type="hidden" name="tam:settings/TAM0/Mode" value="<? query tam:settings/TAM0/Mode ?>" id="uiPostMode" />
 +<input type="hidden" name="tam:settings/TAM0/RingCount" value="<? query tam:settings/TAM0/RingCount ?>" id="uiPostRing" />
 +<input type="hidden" name="tam:settings/TAM0/RecordLength" value="<? query tam:settings/TAM0/RecordLength ?>" id="uiPostLen" />
 +<input type="hidden" name="tam:settings/TAM0/PIN" value="<? query tam:settings/TAM0/PIN ?>" id="uiPostPin" />
---- usr/www/all/html/de/fon/tam.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tam.html	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tam.html
 @@ -0,0 +1,53 @@
 +<? include ../html/$var:lang/fon/tam.inc ?>
 +<div id="content">
@@ -1865,8 +1865,8 @@
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +</div>
---- usr/www/all/html/de/fon/tam.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tam.inc	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tam.inc
 @@ -0,0 +1,13 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'Anrufbeantworter' ?>
@@ -1881,8 +1881,8 @@
 +<? setvariable var:Text10 'Wenn Sie den Anrufbeantworter von einem anderen Telefonanschluss aus abfragen möchten, benötigen Sie eine PIN. Die PIN muß aus genau vier Ziffern bestehen.' ?>
 +<? setvariable var:Text11 'PIN' ?>
 +<? setvariable var:Text12 'PIN Bestätigung' ?>
---- usr/www/all/html/de/fon/tam.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tam.js	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tam.js
 @@ -0,0 +1,62 @@
 +<!--		../fon/tam.js		-->
 +<style type="text/css">
@@ -1946,8 +1946,8 @@
 +	jslSetEnabled("uiViewLen", value=="1");
 +}
 +</script>
---- usr/www/all/html/de/fon/tamlist.frm.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tamlist.frm	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tamlist.frm
 @@ -0,0 +1,23 @@
 +<? if eq '$var:TamNr' '' `<? setvariable var:TamNr '0' ?>` ?>
 +<input type="hidden" name="var:TamNr" value="<? echo $var:TamNr ?>" id="uiPostTamNr">
@@ -1972,8 +1972,8 @@
 +<input type="hidden" name="telcfg:settings/MSN/MSN$0" value="<? query telcfg:settings/MSN/MSN$0 ?>" id="uiMsn$0" disabled>
 +` ?>
 +<input type="hidden" name="telcfg:settings/MSN/POTS" value="<? query telcfg:settings/MSN/POTS ?>" id="uiPots" disabled>
---- usr/www/all/html/de/fon/tamlist.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tamlist.html	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tamlist.html
 @@ -0,0 +1,120 @@
 +<? include ../html/$var:lang/fon/tamlist.inc ?>
 +<div id="content">
@@ -2095,8 +2095,8 @@
 +		<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 +	</div></div></div></div></div></div></div>
 +</div>
---- usr/www/all/html/de/fon/tamlist.inc.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tamlist.inc	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tamlist.inc
 @@ -0,0 +1,14 @@
 +<? include ../html/$var:lang/global.inc ?>
 +<? setvariable var:Text1 'Anrufbeantworter' ?>
@@ -2112,8 +2112,8 @@
 +<? setvariable var:Text11 'PIN' ?>
 +<? setvariable var:Text12 'PIN Bestätigung' ?>
 +<? setvariable var:Text13 'Über die Registerkarten können Sie zwischen den unterschiedlichen Anrufbeantwortern auswählen. Die Nummern entsprechen dabei den internen Rufnummern, über die die Anrufbeantworter erreichbar sind.' ?>
---- usr/www/all/html/de/fon/tamlist.js.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/fon/tamlist.js	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/fon/tamlist.js
 @@ -0,0 +1,259 @@
 +<!--		../fon/tamlist.js		-->
 +<style type="text/css">
@@ -2374,8 +2374,8 @@
 +	jslFormSubmitEx("", "");
 +}
 +</script>
---- usr/www/all/html/de/help/hilfe_fon_anrufbeantworter.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/help/hilfe_fon_anrufbeantworter.html	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/help/hilfe_fon_anrufbeantworter.html
 @@ -0,0 +1,28 @@
 +<div class="Hilfe">
 + 	<div class="backtitel"><div class="rundrt"><div class="rundlt"><div class="ecklb"><div class="eckrb"><div class="foretitel">Anrufbeantworter</div></div></div></div></div></div>
@@ -2405,8 +2405,8 @@
 +	</div></div></div></div></div></div>
 +	<? include ../html/$var:lang/help/rback.html ?>
 +</div>
---- usr/www/all/html/de/help/home.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/help/home.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/help/home.html
++++ usr/www/all/html/de/help/home.html
 @@ -54,14 +54,6 @@
  				</td>
  			</tr>
@@ -2430,8 +2430,8 @@
  <? setvariable var:shownacht 0 ?>
  <? setvariable var:shownacht 1 ?>
  <? setvariable var:shownacht 1 ?>
---- usr/www/all/html/de/help/popup.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/help/popup.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/help/popup.html
++++ usr/www/all/html/de/help/popup.html
 @@ -61,7 +61,6 @@
  function OnPortal() {
  	var url = jslGetValue("uiPostPortal");
@@ -2440,8 +2440,8 @@
  		var pp = window.open(url, "_blank");
  	}
  }
---- usr/www/all/html/de/home/home.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/home/home.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/home/home.html
++++ usr/www/all/html/de/home/home.html
 @@ -32,11 +32,6 @@
  							<td><? echo $var:txt008 ?></td>
  							<td><script type="text/javascript">document.write(WlanStateDisplay());</script></td>
@@ -2461,16 +2461,16 @@
 -	<? include ../html/$var:lang/home/rbb_refresh.html ?>
 +	<? include ../html/$var:lang/home/rbb_refresh1.html ?>
  </div>
---- usr/www/all/html/de/home/rbb_refresh1.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/de/home/rbb_refresh1.html	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/de/home/rbb_refresh1.html
 @@ -0,0 +1,5 @@
 +	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="rundrb"><div class="rundlb"><div class="forebuttons">
 +		<input type="button" onclick="uiDoInfo()" value="Info" class=Pushbutton>
 +		<input type="button" onclick="uiDoRefresh()" value="<? echo $var:txtRefresh ?>" class=Pushbutton>
 +		<input type="button" onclick="uiDoHelp()" value="<? echo $var:txtHelp ?>" class="Pushbutton" id="buttonHilfe">
 +	</div></div></div></div></div></div>
---- usr/www/all/html/de/menus/menu2_fon.html.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_fon.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_fon.html
++++ usr/www/all/html/de/menus/menu2_fon.html
 @@ -17,11 +17,7 @@
  	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','siplist')"><? echo $var:txt01 ?></a></li>
  <? setvariable var:classname 'LSubitem' ?>
@@ -2501,8 +2501,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2_homehome.html.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_homehome.html
++++ usr/www/all/html/de/menus/menu2_homehome.html
 @@ -36,8 +36,6 @@
  <? if eq $var:pagename syslog `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
  	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('home','syslog')"><? echo $var:evtxt04 ?></a></li>
@@ -2512,8 +2512,8 @@
  <? setvariable var:show 1 ?>
  <? if eq <? query box:settings/ata_mode ?> 1 `
  <? if eq '<? query connection0:settings/type ?>' 'bridge' '<? setvariable var:show 0 ?>' ?>
---- usr/www/all/html/de/menus/menu2_homekonfig.html.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_homekonfig.html
++++ usr/www/all/html/de/menus/menu2_homekonfig.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -2522,8 +2522,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2_internet.html.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_internet.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_internet.html
++++ usr/www/all/html/de/menus/menu2_internet.html
 @@ -87,7 +87,6 @@
  	` ?>
  `?>
@@ -2532,8 +2532,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2_software.html.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_software.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_software.html
++++ usr/www/all/html/de/menus/menu2_software.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -2542,8 +2542,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitemaktiv"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2_system.html.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_system.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_system.html
++++ usr/www/all/html/de/menus/menu2_system.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -2562,8 +2562,8 @@
  <? setvariable var:classnacht 'LSubitem' ?>
  <? if eq $var:pagename nacht `<? setvariable var:classnacht 'LSubitemaktiv' ?>` ?>
  <? setvariable var:shownacht 0 ?>
---- usr/www/all/html/de/menus/menu2_wlan.html.orig	2007-10-24 00:13:30.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_wlan.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_wlan.html
++++ usr/www/all/html/de/menus/menu2_wlan.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -2572,8 +2572,8 @@
  <li class="LMenuitem"><img src="<? echo $var:aktivpfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
  <? setvariable var:showWlan 0 ?>
---- usr/www/all/html/de/menus/menuwatch.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menuwatch.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/menus/menuwatch.html
++++ usr/www/all/html/de/menus/menuwatch.html
 @@ -5,7 +5,7 @@
  <? include ../html/$var:lang/menus/menu2.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -2583,8 +2583,8 @@
  <head>
  <title><? echo $var:BoxName ?></title>
  <meta http-equiv=content-type content="text/html; charset=iso-8859-1">
---- usr/www/all/html/de/internet/pp_wanbridge.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/internet/pp_wanbridge.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/internet/pp_wanbridge.html
++++ usr/www/all/html/de/internet/pp_wanbridge.html
 @@ -3,7 +3,7 @@
  <? include ../html/config.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -2594,12 +2594,12 @@
  <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
  <head>
  <title><? echo $var:txt00 ?></title>
---- usr/www/all/html/de/system/infoled.frm.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/system/infoled.frm	1970-01-01 01:00:00.000000000 +0100
+--- usr/www/all/html/de/system/infoled.frm
++++ /dev/null
 @@ -1 +0,0 @@
 -<input type="hidden" name="box:settings/infoled_reason" value="<? query box:settings/infoled_reason ?>" id="uiPostInfoled">
---- usr/www/all/html/de/system/infoled.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/system/infoled.html	1970-01-01 01:00:00.000000000 +0100
+--- usr/www/all/html/de/system/infoled.html
++++ /dev/null
 @@ -1,24 +0,0 @@
 -<? include ../html/$var:lang/system/infoled.inc ?>
 -<? setvariable var:showstick 0 ?>
@@ -2625,8 +2625,8 @@
 -	</div></div></div></div></div></div>
 -	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
 -</div>
---- usr/www/all/html/de/system/infoled.inc.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/system/infoled.inc	1970-01-01 01:00:00.000000000 +0100
+--- usr/www/all/html/de/system/infoled.inc
++++ /dev/null
 @@ -1,15 +0,0 @@
 -<? include ../html/$var:lang/global.inc ?>
 -<? setvariable var:Text1 'INFO-Anzeige' ?>
@@ -2643,8 +2643,8 @@
 -<? setvariable var:Text12 'Die INFO-LED blinkt immer beim Firmware-Update und während der Übertragung der Sicherheitseinstellungen auf den FRITZ!WLAN USB Stick.' ?>
 -<? setvariable var:Text13 'Die INFO-LED blinkt immer beim Firmware-Update.' ?>
 -<? setvariable var:Text14 'zeigt neue Nachrichten im AB an' ?>
---- usr/www/all/html/de/system/infoled.js.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/system/infoled.js	1970-01-01 01:00:00.000000000 +0100
+--- usr/www/all/html/de/system/infoled.js
++++ /dev/null
 @@ -1,24 +0,0 @@
 -<!--		../system/infoled.js		-->
 -<style type="text/css">
@@ -2670,8 +2670,8 @@
 -	jslPopHelp("hilfe_system_infoanzeige");
 -}
 -</script>
---- usr/www/all/html/de/system/net.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/system/net.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/system/net.html
++++ usr/www/all/html/de/system/net.html
 @@ -14,7 +14,7 @@
  	</div></div></div></div></div></div>
  	<div id="uiExpert" style="display:none">
@@ -2681,8 +2681,8 @@
  <? if eq '$var:showTr069Switch' 1 `
  		<div class="backdialog" id="uiSetTr069" style="display:none"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
  			<p class="pCheck25"><input type="checkbox" id="uiViewSetTr069" onclick="OnChangeSetTr069()">&nbsp;<label for="uiViewSetTr069">$var:tx12</label></p>
---- usr/www/all/html/de/system/net.inc.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/system/net.inc	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/system/net.inc
++++ usr/www/all/html/de/system/net.inc
 @@ -11,7 +11,7 @@
  <? setvariable var:tx10 'IP-Adressen' ?>
  <? setvariable var:tx11 'IP-Routen' ?>
@@ -2692,8 +2692,8 @@
  <? setvariable var:tx12 'Automatische Einrichtung durch den Dienstanbieter zulassen' ?>
  <? setvariable var:tx13 'Diese Einstellung ermöglicht dem DSL-Dienstanbieter die sichere (verschlüsselte) Übertragung der Internetzugangsdaten und Anmeldedaten für Internettelefonie auf diese FRITZ!Box. Diese Funktion wird nicht von allen Internet- und Internettelefonieanbietern unterstützt.' ?>
  <? setvariable var:tx14 'Hinweis:' ?>
---- usr/www/all/html/de/system/net.js.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/system/net.js	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/system/net.js
++++ usr/www/all/html/de/system/net.js
 @@ -19,7 +19,7 @@
  	OnChangeUpnpAktiv();
  	if (g_ExpertMode == "1") {
@@ -2712,8 +2712,8 @@
  	jslSetValue("uiPostSetTr069", jslGetChecked("uiViewSetTr069") ? "1":"0");
  	jslEnable("uiPostSetTr069");
  	jslSetValue("uiPostUpdateTr069", jslGetChecked("uiViewUpdateTr069") ? "1":"0");
---- usr/www/all/html/de/system/syslog.html.orig	2007-07-10 13:47:43.000000000 +0200
-+++ usr/www/all/html/de/system/syslog.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/system/syslog.html
++++ usr/www/all/html/de/system/syslog.html
 @@ -9,9 +9,8 @@
  	 		<li class="tabs_on"><a href="javascript:Tabs(0)"><? echo $var:txt03 ?></a></li>
  	 		<li><a href="javascript:Tabs(1)"><? echo $var:txt04 ?></a></li>
@@ -2784,8 +2784,8 @@
  	 	</ul>
  	</div>	 	
  	<div class="backdialog"><div class="ecklm"><div class="eckrm"><div class="ecklb"><div class="eckrb"><div class="foredialog">
---- usr/www/all/html/de/system/syslog.js.orig	2007-07-10 13:47:43.000000000 +0200
-+++ usr/www/all/html/de/system/syslog.js	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/system/syslog.js
++++ usr/www/all/html/de/system/syslog.js
 @@ -18,11 +18,10 @@
  function uiDoOnLoad() {
  	var filter = jslGetValue("uiPostFilter");
@@ -2836,8 +2836,8 @@
  	
  }
  function uiShowAll() {
---- usr/www/all/html/de/wlan/common.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/wlan/common.html	2007-10-24 00:13:30.000000000 +0200
+--- usr/www/all/html/de/wlan/common.html
++++ usr/www/all/html/de/wlan/common.html
 @@ -64,7 +64,6 @@
  				<p class="pCheck25 mb10"><input type="checkbox" id="uiViewIpTv">&nbsp;<label for="uiViewIpTv"><? echo $var:Text35 ?></label></p>
  				<p class="pCheck25"><input type="checkbox" id="uiView_UserIsolation">&nbsp;<label for="uiView_UserIsolation"><? echo $var:Text30 ?></label></p>
@@ -2846,8 +2846,8 @@
  		</div>
  	</div></div></div></div></div></div>
  	<? include ../html/$var:lang/home/rbb_applycancel.html ?>
---- usr/www/all/html/tam.html.orig	1970-01-01 01:00:00.000000000 +0100
-+++ usr/www/all/html/tam.html	2007-10-24 00:13:30.000000000 +0200
+--- /dev/null
++++ usr/www/all/html/tam.html
 @@ -0,0 +1,640 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 +<html>

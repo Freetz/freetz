@@ -1,5 +1,5 @@
---- usr/www/all/html/de/fon/sip1.html.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sip1.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/fon/sip1.html
++++ usr/www/all/html/de/fon/sip1.html
 @@ -20,7 +20,7 @@
  <? if eq $var:OEM arcor `
  						<option value="Arcor">$var:Text7</option>
@@ -9,8 +9,8 @@
  						<option value="1u1">$var:Text4</option>
  						<option value="AOL">$var:Text9</option>
  						<option value="Arcor">$var:Text7</option>
---- usr/www/all/html/de/fon/sip1.js.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/fon/sip1.js	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/fon/sip1.js
++++ usr/www/all/html/de/fon/sip1.js
 @@ -1,6 +1,7 @@
  <? setvariable var:showtcom 0 ?>
  <? if eq $var:OEM avm '<? setvariable var:showtcom 1 ?>' ?>
@@ -19,8 +19,8 @@
  <!--		../fon/sip.js		-->
  <style type="text/css">
  <!--
---- usr/www/all/html/de/home/home.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/home/home.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/home/home.html
++++ usr/www/all/html/de/home/home.html
 @@ -32,11 +32,6 @@
  							<td><? echo $var:txt008 ?></td>
  							<td><script type="text/javascript">document.write(WlanStateDisplay());</script></td>
@@ -33,8 +33,8 @@
  					</table>
  				</td>
  				<td>
---- usr/www/all/html/de/home/home.js.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/home/home.js	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/home/home.js
++++ usr/www/all/html/de/home/home.js
 @@ -143,13 +143,6 @@
  	}
  	return rc;
@@ -49,24 +49,24 @@
  function WlanStateLed (state){
  	return StateLed("<? query wlan:settings/ap_enabled ?>");
  }
---- usr/www/all/html/de/home/status.frm.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/home/status.frm	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/home/status.frm
++++ usr/www/all/html/de/home/status.frm
 @@ -1,2 +1 @@
 -<input type="hidden" name="var:showsetup" value="<? echo $var:showsetup ?>" id="uiPostKonfig">
 -<? include ../html/$var:lang/usb/status.frm ?>
 +
---- usr/www/all/html/de/home/status.html.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/home/status.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/home/status.html
++++ usr/www/all/html/de/home/status.html
 @@ -1 +1 @@
 -<? include ../html/$var:lang/usb/status.html ?>
 +
---- usr/www/all/html/de/home/status.js.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/home/status.js	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/home/status.js
++++ usr/www/all/html/de/home/status.js
 @@ -1 +1 @@
 -<? include ../html/$var:lang/usb/status.js ?>
 +
---- usr/www/all/html/de/internet/authform.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/internet/authform.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/internet/authform.html
++++ usr/www/all/html/de/internet/authform.html
 @@ -13,6 +13,7 @@
  <? if eq $var:OEM freenet `<? setvariable var:allprovider 1 ?>` ?>
  <? if eq $var:OEM aol `<? setvariable var:allprovider 1 ?>` ?>
@@ -75,8 +75,8 @@
  <? if eq $var:allprovider 1 `
  		<option value="1u1">$var:afTxt02</option>
  		<option value="AOL">$var:afTxt06</option>
---- usr/www/all/html/de/internet/pp_wanbridge.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/internet/pp_wanbridge.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/internet/pp_wanbridge.html
++++ usr/www/all/html/de/internet/pp_wanbridge.html
 @@ -3,7 +3,7 @@
  <? include ../html/config.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
@@ -86,8 +86,8 @@
  <? include ../html/$var:lang/internet/pp_wanbridge.inc ?>
  <head>
  <title><? echo $var:txt00 ?></title>
---- usr/www/all/html/de/menus/menu2_fon.html.orig	2007-07-10 13:47:41.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_fon.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_fon.html
++++ usr/www/all/html/de/menus/menu2_fon.html
 @@ -64,7 +64,6 @@
  	<li class="<? echo $var:classname ?>"><img src="<? echo $var:subpfeil ?>"> <a href="javascript:jslGoTo('fon','laender')">$var:txt06</a></li>
  ` ?>
@@ -96,8 +96,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2_homehome.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homehome.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_homehome.html
++++ usr/www/all/html/de/menus/menu2_homehome.html
 @@ -35,9 +35,6 @@
  <? setvariable var:classname 'LSubitem' ?>
  <? if eq $var:pagename syslog `<? setvariable var:classname 'LSubitemaktiv' ?>` ?>
@@ -108,8 +108,8 @@
  <? setvariable var:show 1 ?>
  <? if eq <? query box:settings/ata_mode ?> 1 `
  <? if eq '<? query connection0:settings/type ?>' 'bridge' '<? setvariable var:show 0 ?>' ?>
---- usr/www/all/html/de/menus/menu2_homekonfig.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_homekonfig.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_homekonfig.html
++++ usr/www/all/html/de/menus/menu2_homekonfig.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -118,8 +118,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2.inc.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2.inc	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2.inc
++++ usr/www/all/html/de/menus/menu2.inc
 @@ -7,7 +7,6 @@
  <? setvariable var:menuTelefonie "Telefonie" ?>
  <? setvariable var:menuTelefonieConfig "Telefoniegeräte einrichten" ?>
@@ -136,8 +136,8 @@
  <? setvariable var:evtxt06 "Netzwerkgeräte" ?>
  <? setvariable var:evtxt07 "Einstellungen" ?>
  <? setvariable var:evtxt08 "Online-Zähler" ?>
---- usr/www/all/html/de/menus/menu2_internet.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_internet.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_internet.html
++++ usr/www/all/html/de/menus/menu2_internet.html
 @@ -87,7 +87,6 @@
  	` ?>
  `?>
@@ -146,8 +146,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2_software.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_software.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_software.html
++++ usr/www/all/html/de/menus/menu2_software.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -156,8 +156,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  	<li class="LMenuitemaktiv"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('software','extern')"><? echo $var:menuSoftware ?></a></li>
---- usr/www/all/html/de/menus/menu2_system.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_system.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_system.html
++++ usr/www/all/html/de/menus/menu2_system.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -166,8 +166,8 @@
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  	<li class="LMenuitem"><img src="<? echo $var:aktivpfeil ?>"> <a href="javascript:jslGoTo('system','syslog')"><? echo $var:menuSystem ?></a></li>
  <? setvariable var:classname 'LSubitem' ?>
---- usr/www/all/html/de/menus/menu2_wlan.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menu2_wlan.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menu2_wlan.html
++++ usr/www/all/html/de/menus/menu2_wlan.html
 @@ -5,7 +5,6 @@
  <? setvariable var:title $var:menuInternet ?>
  	<li class="LMenuitem"><img src="<? echo $var:pfeil ?>"> <a href="<? echo $var:pagepath ?>var:menu=internet&var:pagename=internet&var:activtype=<? query connection0:settings/type ?>"><? echo $var:title ?></a></li>
@@ -176,8 +176,8 @@
  <li class="LMenuitem"><img src="<? echo $var:aktivpfeil ?>"> <a href="javascript:jslGoTo('wlan','wlan')"><? echo $var:menuWLAN ?></a></li>
  <!-- wlan:settings/ap_enabled = '<? query wlan:settings/ap_enabled ?>' -->
  <? setvariable var:showWlan 0 ?>
---- usr/www/all/html/de/menus/menuwatch.html.orig	2007-07-10 13:47:42.000000000 +0200
-+++ usr/www/all/html/de/menus/menuwatch.html	2007-10-15 04:16:44.000000000 +0200
+--- usr/www/all/html/de/menus/menuwatch.html
++++ usr/www/all/html/de/menus/menuwatch.html
 @@ -5,7 +5,7 @@
  <? include ../html/$var:lang/menus/menu2.def ?>
  <? setvariable var:OEM <? query env:status/OEM ?> ?>
