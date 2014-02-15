@@ -66,7 +66,7 @@ modpatch()
 		_auto_fix_patches=""
 		local patch_target="$3"
 		if [ -z "$patch_target" ]; then
-			patch_target="$(grep -m1 '^+++ ' $patch_file/*.patch 2>/dev/null | sed -n 's/.*patch:+++ \(.*\)\t.*/\1/p' | sort -u)"
+			patch_target="$(grep -m1 '^+++ ' $patch_file/*.patch 2>/dev/null | sed -r -n 's,.*patch:[+]{3} ([^\t]*)(\t.*)?,\1,p' | sort -u)"
 			echo "$patch_target" | grep -q " " && patch_target=""
 			[ -z "$patch_target" ] && error 2 "modpatch: Could not determine target file"
 		fi
