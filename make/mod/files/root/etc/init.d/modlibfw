@@ -1,0 +1,17 @@
+# returns AVM firmware version as integer (i.e. with all dots removed)
+get_avm_firmware_version() {
+	# use CONFIG_VERSION if set, /etc/.version otherwise
+	local v="${CONFIG_VERSION:-$(cat /etc/.version 2>/dev/null || echo 0000)}"
+	echo "${v//.}"
+}
+
+# returns AVM firmware revision as integer
+get_avm_firmware_revision() {
+	cat /etc/.revision 2>/dev/null || echo 0
+}
+
+is_affected_by_remote_access_vulnerability() {
+	# 04.55 is the version of the first firmware with support for remote access (according to AVM)
+	# 27349 is the revision of the first firmware remote access vulnerability has been fixed in
+	[ $(get_avm_firmware_version) -ge 0455 -a $(get_avm_firmware_revision) -lt 27349 ]
+}

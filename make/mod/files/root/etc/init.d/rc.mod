@@ -6,6 +6,7 @@ env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | se
 
 DAEMON=mod
 . /etc/init.d/modlibrc
+. /etc/init.d/modlibfw
 
 log() {
 	[ "$*" == "" ] && return
@@ -16,9 +17,12 @@ log() {
 start() {
 	log "rc.mod version $(cat /etc/.freetz-version)"
 
-	if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
-		ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
-		log "Disabled remote https access."
+	if is_affected_by_remote_access_vulnerability; then
+		log "Firmware with remote access vulnerability detected."
+		if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
+			log "Remote access via https will be disabled. Create /tmp/flash/mod/dont_touch_https if you don't want this behavior."
+			ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
+		fi
 	fi
 
 	# Basic Packages
