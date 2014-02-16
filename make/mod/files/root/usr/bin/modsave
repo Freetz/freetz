@@ -30,8 +30,8 @@ save() {
 	cat $TMPFILE > /var/flash/freetz 2>/dev/null
 	local rv=$?
 	rm -f $TMPFILE
-	# check if anything was written (only if md5sum is available)
-	which md5sum >/dev/null && [ "$(md5sum /var/flash/freetz)" == "$FLASHSUM" ] && local rv=9
+	# check if write was successful (only if no error has been signaled and md5sum is available)
+	[ $rv -eq 0 ] && which md5sum >/dev/null && [ "$(md5sum /var/flash/freetz)" == "$FLASHSUM" ] && local rv=9
 	if [ $rv -ne 0 ]; then
 		echo 'failed.'
 		exit $rv
