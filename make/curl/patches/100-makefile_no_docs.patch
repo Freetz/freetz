@@ -5,7 +5,7 @@
  
  SUBDIRS = lib src include
 -DIST_SUBDIRS = $(SUBDIRS) tests packages docs
-+DIST_SUBDIRS = $(SUBDIRS) packages
++DIST_SUBDIRS = $(SUBDIRS)       packages
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
@@ -33,16 +33,16 @@
  # dir. The extra check for the Makefiles being present is necessary because
 --- Makefile.in
 +++ Makefile.in
-@@ -493,7 +493,7 @@
+@@ -506,7 +506,7 @@
  CLEANFILES = $(VC6LIBDSP) $(VC8LIBPRJ)
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src include
 -DIST_SUBDIRS = $(SUBDIRS) tests packages docs
-+DIST_SUBDIRS = $(SUBDIRS) packages
++DIST_SUBDIRS = $(SUBDIRS)       packages
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
- CSOURCES = file.c timeval.c base64.c hostip.c progress.c formdata.c	\
-@@ -1085,10 +1085,10 @@
+ VSOURCES = vtls/openssl.c vtls/gtls.c vtls/vtls.c vtls/nss.c vtls/qssl.c	\
+@@ -1103,10 +1103,10 @@
  	done)
  
  html:
@@ -55,7 +55,7 @@
  
  check: test examples
  
-@@ -1111,7 +1111,7 @@
+@@ -1129,7 +1129,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all am-test)
  
  examples:
@@ -64,7 +64,7 @@
  
  # This is a hook to have 'make clean' also clean up the docs and the tests
  # dir. The extra check for the Makefiles being present is necessary because
-@@ -1172,12 +1172,12 @@
+@@ -1190,12 +1190,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
