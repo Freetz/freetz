@@ -3,9 +3,9 @@
 # Usage: modsave [flash|all]
 
 save() {
-	TMPFILE=/tmp/.save.tmp
+	local TMPFILE=/tmp/.save.tmp
 
-	let MOD_LIMIT=32*1024
+	local MOD_LIMIT=$((32*1024))
 
 	# not really a lock
 	if [ -e "$TMPFILE" ]; then
@@ -25,7 +25,7 @@ save() {
 		exit 1
 	fi
 
-	FLASHSUM="$(md5sum /var/flash/freetz 2>/dev/null)"
+	local FLASHSUM="$(md5sum /var/flash/freetz 2>/dev/null)"
 	echo -n "Writing $size bytes to /var/flash/freetz ... "
 	cat $TMPFILE > /var/flash/freetz 2>/dev/null
 	local rv=$?
