@@ -43,10 +43,21 @@ config FREETZ_PACKAGE_PHP_WITH_GD
 
 config FREETZ_PACKAGE_PHP_WITH_ICONV
 	bool "build with ICONV support"
-	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28 && ! FREETZ_PACKAGE_PHP_STATIC
+	select FREETZ_PACKAGE_PHP_WITH_LIBICONV if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
 	help
 		This option enables the ICONV support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_LIBICONV
+	depends on FREETZ_PACKAGE_PHP_WITH_ICONV
+	bool "prefer libiconv to libc"
+	select FREETZ_LIB_libiconv if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option causes PHP to use libiconv implementation of iconv function
+		instead of the libc one. Select this option if you need more charsets
+		than supported by libc (ISO-8859-1 and UTF-8 only) or your application
+		relies on libiconv specific features like TRANSLIT, IGNORE, etc.
 
 config FREETZ_PACKAGE_PHP_WITH_JSON
 	bool "build with JSON support"
