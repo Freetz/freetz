@@ -1,0 +1,27 @@
+--- lib/loop_unicode.h
++++ lib/loop_unicode.h
+@@ -24,6 +24,7 @@
+ static int unicode_transliterate (conv_t cd, ucs4_t wc,
+                                   unsigned char* outptr, size_t outleft)
+ {
++#if 0 /* Korean */
+   if (cd->oflags & HAVE_HANGUL_JAMO) {
+     /* Decompose Hangul into Jamo. Use double-width Jamo (contained
+        in all Korean encodings and ISO-2022-JP-2), not half-width Jamo
+@@ -56,6 +57,8 @@
+         return RET_TOOSMALL;
+     }
+   }
++#endif
++#if 0 /* CJKV */
+   {
+     /* Try to use a variant, but postfix it with
+        U+303E IDEOGRAPHIC VARIATION INDICATOR
+@@ -104,6 +107,7 @@
+       }
+     }
+   }
++#endif
+   if (wc >= 0x2018 && wc <= 0x201a) {
+     /* Special case for quotation marks 0x2018, 0x2019, 0x201a */
+     ucs4_t substitute =
