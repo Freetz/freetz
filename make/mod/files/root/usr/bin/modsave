@@ -4,6 +4,8 @@
 
 save() {
 	local TMPFILE=/tmp/.save.tmp
+	local FLASHFILE=/var/flash/freetz
+	local rc=0
 
 	local MOD_LIMIT=$((32*1024))
 
@@ -13,7 +15,6 @@ save() {
 		exit 1
 	fi
 
-	touch -c /tmp/flash # change timestamp to ensure that the new tarball differs (and thus also its MD5SUM) from /var/flash/freetz
 	tar -cf $TMPFILE flash -C /tmp/
 
 	# compressed config size must be less than 32 KB (~32330Bytes)
@@ -25,18 +26,24 @@ save() {
 		exit 1
 	fi
 
-	local FLASHSUM="$(md5sum /var/flash/freetz 2>/dev/null)"
-	echo -n "Writing $size bytes to /var/flash/freetz ... "
-	cat $TMPFILE > /var/flash/freetz 2>/dev/null
-	local rv=$?
-	rm -f $TMPFILE
-	# check if write was successful (only if no error has been signaled and md5sum is available)
-	[ $rv -eq 0 ] && which md5sum >/dev/null && [ "$(md5sum /var/flash/freetz)" == "$FLASHSUM" ] && local rv=9
-	if [ $rv -ne 0 ]; then
-		echo 'failed.'
-		exit $rv
+	if cmp -s $FLASHFILE $TMPFILE; then
+		echo "unchanged."
+	else
+		echo -n "Writing $size bytes to /var/flash/freetz ... "
+		cat $TMPFILE > /var/flash/freetz 2>/dev/null
+		rc=$?
+		if [ $rc -ne 0 ]; then
+			echo "write failed"
+			rc=1
+		elif ! cmp -s $FLASHFILE $TMPFILE; then
+			echo "verify failed"
+			rc=1
+		else
+			echo "done."
+		fi
 	fi
-	echo "done."
+	rm -f $TMPFILE
+	exit $rc
 }
 
 case $1 in
