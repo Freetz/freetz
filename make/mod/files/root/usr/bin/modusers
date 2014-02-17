@@ -35,12 +35,14 @@ load() {
 }
 
 save() {
+	local rc=0
 	[ ! -e /tmp/.usersloaded ] && return 1
 	rm -rf $SAVE_DIR
 	mkdir -pm 700 $SAVE_DIR
 	for f in $FILES; do
-		cat "/tmp/$f" > "$SAVE_DIR/$f" 2>/dev/null
+		cp -p "/tmp/$f" "$SAVE_DIR/$f" || rc=1		
 	done
+	return $rc
 }
 
 case $1 in
