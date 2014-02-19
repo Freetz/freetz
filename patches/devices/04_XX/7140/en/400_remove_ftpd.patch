@@ -1,6 +1,6 @@
 --- etc/hotplug/storage
 +++ etc/hotplug/storage
-@@ -12,6 +12,10 @@
+@@ -13,6 +13,10 @@
  FIRST=$6
  MSTART=/sbin/start_mediasrv
  MSTOP=/sbin/stop_mediasrv
@@ -11,15 +11,15 @@
  ## Wait for removal of filesystem semaphores (mask: $1, maximal wait period: $2)
  wait4remove () {
  local COUNT=0
-@@ -139,6 +143,7 @@
+@@ -182,6 +186,7 @@
  ## ftp server control
- ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+ ENABLED=`echo usbhost.ftp_server_enabled|usbcfgctl -s`
  if [ "$ENABLED" != "no" ] ; then
 +if [ "$_ftpd" ] ; then
  if test -x /bin/inetdctl ; then
  inetdctl enable ftpd
  else
-@@ -155,6 +160,7 @@
+@@ -198,6 +203,7 @@
  ftpd -D -q $READONLYOPTION -t 120 -m 15 $USERSOPTION -h "$CONFIG_PRODUKT_NAME" &
  fi
  fi
@@ -40,19 +40,19 @@
  ## Generate a frontend'able 'nice name' to be used as mount point:
  nicename () {
  ## Find device's strings, remove/translate evil chars...
-@@ -80,6 +84,7 @@
+@@ -84,6 +88,7 @@
  eventadd 140 $MNTNAME
- ENABLED=`echo usbhost.ftp_server_enabled|ar7cfgctl -s`
+ ENABLED=`echo usbhost.ftp_server_enabled|usbcfgctl -s`
  if [ "$ENABLED" != "no" ] ; then
 +if [ "$_ftpd" ] ; then
  if test -x /bin/inetdctl; then
  inetdctl enable ftpd
  else
-@@ -99,6 +104,7 @@
+@@ -102,6 +107,7 @@
  fi
  fi
  fi
 +fi
+ fi
  test -x $TR069START && $TR069START $MNTNAME
  if test -x /etc/samba_control ; then
- /etc/samba_control reconfig
