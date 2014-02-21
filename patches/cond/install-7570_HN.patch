@@ -2,15 +2,15 @@
 +++ var/install	2011-06-27 09:45:48.415248764 +0200
 @@ -180,6 +180,11 @@
  urlader_size=262144
- newFWver=04.91
+ newFWver=04.92
  flash_start=268435456
 +
 +found=$(grep  -e  '^mtd[1\|5]' /proc/sys/urlader/environment | \
 +	grep -c -e  '0x90040000,0x907E0000\|0x907E0000,0x90F80000')
 +[ 2 -eq $found ] || korrekt_version=0
 +
- # Versioninfo:	75.04.91
- # Checkpoint:	r19965
+ # Versioninfo:	75.04.92
+ # Checkpoint:	r27423
  #! /bin/sh
 @@ -470,6 +475,10 @@
      echo install: ${kversion} setting files to install...
