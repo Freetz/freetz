@@ -50,7 +50,7 @@ fi
 echo2 "applying install patch"
 modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_[a-z_0-9]*/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_mimo_usb_host_dect_multiannex_hansenet_60170/g" "${FIRMWARE_MOD_DIR}/var/install"
 
-# if not allready patched by "7270 to 7570", there is still the original "testing acceptance for device" 
+# if not allready patched by "7270 to 7570", there is still the original "testing acceptance for device"
 # and we need a patch to accept firmware despite of OEM just by matching HWRevision
 SEDSTRING='   # just check for HWRewision of 7570, Speedport W920V or 7570_HN\
     hwrev="$(IFS="$IFS."; set $(grep HWRevision /proc/sys/urlader/environment); echo $2)"\
@@ -66,4 +66,3 @@ SEDSTRING='   # just check for HWRewision of 7570, Speedport W920V or 7570_HN\
 '
 modsed "/testing acceptance for device .* done/a\ ${SEDSTRING}" "${FIRMWARE_MOD_DIR}/var/install"
 modsed "/testing acceptance for device .* \.\.\./,/testing acceptance for device .* done/ d" "${FIRMWARE_MOD_DIR}/var/install"
-

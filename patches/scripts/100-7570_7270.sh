@@ -6,10 +6,10 @@ echo1 "adapt firmware for 7570 as alien"
 # 7270v2 has modules:	c55fw.hex dectfw_firstlevel.hex dectfw_secondlevel.hex microvoip_isdn_top.bit pm_info.in wlan_eeprom_hw0.bin
 # 7570 has modules:	bitfile.bit c55fw.hex dectfw_firstlevel.hex dectfw_secondlevel.hex pm_info.in vinax_fw_adsl_A.bin vinax_fw_adsl_B.bin vinax_fw_vdsl.bin wlan_eeprom_hw0.bin
 
-echo2 "copying 7570 piglet modules" 
+echo2 "copying 7570 piglet modules"
 cp -a "${DIR}/.tk/original/filesystem/lib/modules/bitfile.bit" "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit"
 
-echo2 "Remove obsolete 7270 DSL (ur8-)modules" 
+echo2 "Remove obsolete 7270 DSL (ur8-)modules"
 rm -rf "${FILESYSTEM_MOD_DIR}/lib/modules/dsp_ur8"
 
 # DECT-Anlage braucht den 96 MHz Takt NICHT (250E): 'piglet_use_pll3_clk=1' entfällt, da fpga den 96 MHz Takt aus dem DECT Takt selbst erzeugt.
@@ -64,5 +64,3 @@ SEDSTRING='   # just check for HWRewision of 7570, Speedport W920V or 7570_HN\
     esac\
 '
 modsed "/testing acceptance for device .* \.\.\./,/testing acceptance for device .* done/ d; /\$DISABLE_/a\ ${SEDSTRING}" "${FIRMWARE_MOD_DIR}/var/install"
-
-

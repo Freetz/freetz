@@ -24,7 +24,7 @@ if [ "$FREETZ_PATCH_W920V_LED_MODULE" == "y" -a -n "$FIRMWARE2" ]; then
 	cp -a "${DIR}/.tk/original/filesystem/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2/kernel/drivers/char/led_module.ko"
 fi
 
-# if not allready patched by "7270 to 7570", there is still the original "testing acceptance for device" 
+# if not allready patched by "7270 to 7570", there is still the original "testing acceptance for device"
 # and we need a patch to accept firmware despite of OEM just by matching HWRevision
 SEDSTRING='   # just check for HWRewision of 7570, Speedport W920V or 7570_HN\
     hwrev="$(IFS="$IFS."; set $(grep HWRevision /proc/sys/urlader/environment); echo $2)"\
@@ -40,4 +40,3 @@ SEDSTRING='   # just check for HWRewision of 7570, Speedport W920V or 7570_HN\
 '
 modsed "/testing acceptance for device .* done/a\ ${SEDSTRING}" "${FIRMWARE_MOD_DIR}/var/install"
 modsed "/testing acceptance for device .* \.\.\./,/testing acceptance for device .* done/ d" "${FIRMWARE_MOD_DIR}/var/install"
-

@@ -100,4 +100,3 @@ fi
 # patch install script to accept firmware from FBF on Speedport
 echo1 "applying install patch"
 modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-W900V_7170.patch" || exit 2
-
