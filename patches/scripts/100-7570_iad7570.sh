@@ -9,9 +9,9 @@ ln -sf all "${FILESYSTEM_MOD_DIR}/usr/www/hansenet"
 echo2 "moving default config dir, creating default symlink"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7570_HN
 if isFreetzType LANG_DE; then
-ln -s avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_DECT_W920V/hansenet" 2>/dev/null
+ln -s avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7570_HN/hansenet" 2>/dev/null
 else
-ln -s avme "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_DECT_W920V/hansenet" 2>/dev/null
+ln -s avme "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7570_HN/hansenet" 2>/dev/null
 fi
 
 echo2 "patching rc.conf"

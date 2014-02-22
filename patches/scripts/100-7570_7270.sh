@@ -33,9 +33,9 @@ ln -s all "${FILESYSTEM_MOD_DIR}/usr/www/avm" 2>/dev/null
 echo2 "moving default config dir, creating default symlinks for avm and avme"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7270_16 ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7570
 if isFreetzType LANG_DE; then
-ln -s avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_DECT_W920V/avme" 2>/dev/null
+ln -s avm "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7570/avme" 2>/dev/null
 else
-ln -s avme "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_DECT_W920V/avm" 2>/dev/null
+ln -s avme "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7570/avm" 2>/dev/null
 fi
 
 echo2 "patching rc.conf"
