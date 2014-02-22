@@ -26,17 +26,19 @@ save() {
 		exit 1
 	fi
 
+	echo -n "Checking Freetz configuration ... "
 	if cmp -s $FLASHFILE $TMPFILE; then
 		echo "unchanged."
 	else
+		echo "changed."
 		echo -n "Writing $size bytes to /var/flash/freetz ... "
 		cat $TMPFILE > /var/flash/freetz 2>/dev/null
 		rc=$?
 		if [ $rc -ne 0 ]; then
-			echo "write failed"
+			echo "write failed."
 			rc=1
 		elif ! cmp -s $FLASHFILE $TMPFILE; then
-			echo "verify failed"
+			echo "verify failed."
 			rc=1
 		else
 			echo "done."
