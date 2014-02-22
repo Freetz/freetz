@@ -1,0 +1,13 @@
+--- linux-2.6.32/arch/mips/ur8/ur8_mtd.c
++++ linux-2.6.32/arch/mips/ur8/ur8_mtd.c
+@@ -732,6 +732,10 @@
+             mtd_end  = CPHYSADDR((unsigned int)simple_strtoul(p, NULL, 16));
+             ur8_partitions[5].size       = mtd_end - mtd_start;
+             ur8_partitions[5].offset     = mtd_start - flashoffset;
++            if (ur8_partitions[5].size != 0){
++                printk("[mtdflash_setup] set mtd1 to full size: 0x%08x - 0x%08x\n", (unsigned int)ur8_partitions[1].offset, (unsigned int) (ur8_partitions[5].offset+ur8_partitions[5].size));
++                ur8_partitions[1].size += ur8_partitions[5].size ;
++            }
+         }
+     }
+ 	use_ur8_flash_device = 1;
