@@ -1,4 +1,5 @@
-# 7570 or 7270v2 firmware on W920V hardware
+# 7570 or 7270v2 firmware on W920V hardware (both defines FREETZ_TYPE_W920V_7570)
+isFreetzType W920V_7570 || return 0
 
 echo2 "creating tcom web symlink"
 ln -s all "${FILESYSTEM_MOD_DIR}/usr/www/tcom" 2>/dev/null
