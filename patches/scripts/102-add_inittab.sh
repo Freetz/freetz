@@ -1,5 +1,5 @@
-if isFreetzType 7320 7330; then
-	console="/dev/ttyS1" # 7320 uses ttyS1 as serial console
+if isFreetzType 7312 7320 7330; then
+	console="/dev/ttyS1" # 7312, 7320 and 7330 all use ttyS1 as serial console
 else
 	console="/dev/ttyS0"
 fi
