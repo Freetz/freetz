@@ -1,12 +1,12 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -80,9 +80,9 @@
+@@ -82,9 +82,9 @@
  STRIP=@STRIP@
  INSTALL=@INSTALL@
  CPPFLAGS=@CPPFLAGS@
 -CFLAGS+=-I. -I$(srcdir) $(CPPFLAGS) @CFLAGS@
 +CFLAGS+=-I. -I$(srcdir) $(CPPFLAGS) @CFLAGS@ $(EXTRA_CFLAGS)
- LIBS+=@CRYPTLIB@ @LIBS@
+ LIBS+=@LIBS@
 -LDFLAGS=@LDFLAGS@
 +LDFLAGS=@LDFLAGS@ $(EXTRA_LDFLAGS)
  
