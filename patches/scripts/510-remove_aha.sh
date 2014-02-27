@@ -18,7 +18,10 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
-homelua_disable tr_smart_home
+# 3272 doesn't have tr_smart_home
+if ! isFreetzType 3272; then
+	homelua_disable tr_smart_home
+fi
 menulua_remove home_auto_overview
 
 sedfile="${HTML_LANG_MOD_DIR}/home/home.lua"
