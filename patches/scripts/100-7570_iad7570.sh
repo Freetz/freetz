@@ -27,7 +27,7 @@ modsed 's/urlader_size=131072/urlader_size=262144/' "${FIRMWARE_MOD_DIR}/var/ins
 if [ "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 	SEDSTRING='\
 found=$(grep  -e  "^mtd[1|5]" /proc/sys/urlader/environment | \\\
-grep -c -e  "0x90040000,0x907E0000\|0x907E0000,0x90F80000") \
+grep -c -e  "0x90040000,0x907E0000\\|0x907E0000,0x90F80000") \
 [ 2 -eq $found ] || korrekt_version=0 \
 '
 	# set mtd1 to 16 MB (244 * 64KB)
