@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 217740d994)
+$(call PKG_INIT_LIB, 1dfcc3db3d)
 $(PKG)_LIB_VERSION:=2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/asterisk/pjproject.git
