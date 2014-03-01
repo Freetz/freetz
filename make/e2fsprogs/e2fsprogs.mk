@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.42.8)
+$(call PKG_INIT_BIN, 1.42.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=8ef664b6eb698aa6b733df59b17b9ed4
+$(PKG)_SOURCE_MD5:=3f8e41e63b432ba114b33f58674563f7
 $(PKG)_SITE:=@SF/e2fsprogs
 
 $(PKG)_LIBNAMES_SHORT_ALL := blkid com_err e2p ext2fs ss uuid

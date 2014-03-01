@@ -23,7 +23,7 @@
  #ifdef RESOURCE_TRACK
  	/*
  	 * For timing purposes
-@@ -460,8 +464,10 @@
+@@ -459,8 +463,10 @@
  /* logfile.c */
  extern void set_up_logging(e2fsck_t ctx);
  
@@ -90,9 +90,9 @@
  			}
 +#endif
  		} else if (ino < EXT2_FIRST_INODE(fs->super)) {
- 			int	problem = 0;
+ 			problem_t problem = 0;
  
-@@ -2093,9 +2095,11 @@
+@@ -2104,9 +2106,11 @@
  	}
  
  	if (ino == EXT2_ROOT_INO || ino >= EXT2_FIRST_INODE(ctx->fs->super)) {
@@ -106,7 +106,7 @@
  	if (!(fs->super->s_feature_ro_compat &
 --- e2fsck/pass3.c
 +++ e2fsck/pass3.c
-@@ -490,8 +490,10 @@
+@@ -491,8 +491,10 @@
  	ext2fs_icount_store(ctx->inode_count, ino, 2);
  	ext2fs_icount_store(ctx->inode_link_info, ino, 2);
  	ctx->lost_and_found = ino;
@@ -117,9 +117,9 @@
  #if 0
  	printf("/lost+found created; inode #%lu\n", ino);
  #endif
-@@ -794,7 +796,9 @@
- 
- 	inode.i_size = (es.last_block + 1) * fs->blocksize;
+@@ -844,7 +846,9 @@
+ 	inode.i_size = sz;
+ 	inode.i_size_high = sz >> 32;
  	ext2fs_iblk_add_blocks(fs, &inode, es.newblocks);
 +#ifdef CONFIG_QUOTA
  	quota_data_add(ctx->qctx, &inode, dir, es.newblocks * fs->blocksize);
@@ -154,7 +154,7 @@
  
  	/* Superblock has invalid MMP block. */
  	{ PR_0_MMP_INVALID_BLK,
-@@ -921,20 +923,26 @@
+@@ -926,20 +928,26 @@
  	  N_("Error converting subcluster @b @B: %m\n"),
  	  PROMPT_NONE, PR_FATAL },
  
@@ -181,7 +181,7 @@
  
  	/* Invalid bad inode */
  	{ PR_1_INVALID_BAD_INODE,
-@@ -1705,10 +1713,12 @@
+@@ -1710,10 +1718,12 @@
  	  N_("Recreate @j"),
  	  PROMPT_NULL, PR_PREEN_OK | PR_NO_OK },
  
@@ -207,7 +207,7 @@
  
  /* Superblock has invalid MMP block. */
  #define PR_0_MMP_INVALID_BLK			0x000042
-@@ -543,14 +545,20 @@
+@@ -546,14 +548,20 @@
  /* Failed to convert subcluster bitmap */
  #define PR_1_CONVERT_SUBCLUSTER		0x010061
  
@@ -228,7 +228,7 @@
  
  /* Invalid bad inode */
  #define PR_1_INVALID_BAD_INODE		0x010065
-@@ -1031,8 +1039,10 @@
+@@ -1034,8 +1042,10 @@
  /* Recreate the journal if E2F_FLAG_JOURNAL_INODE flag is set */
  #define PR_6_RECREATE_JOURNAL		0x060001
  
@@ -256,7 +256,7 @@
 +#endif
 --- e2fsck/super.c
 +++ e2fsck/super.c
-@@ -855,10 +855,12 @@
+@@ -864,10 +864,12 @@
  	 */
  	e2fsck_fix_dirhash_hint(ctx);
  
@@ -271,7 +271,7 @@
  }
 --- e2fsck/unix.c
 +++ e2fsck/unix.c
-@@ -1609,6 +1609,7 @@
+@@ -1616,6 +1616,7 @@
  	else
  		journal_size = -1;
  
@@ -279,7 +279,7 @@
  	if (sb->s_feature_ro_compat & EXT4_FEATURE_RO_COMPAT_QUOTA) {
  		/* Quotas were enabled. Do quota accounting during fsck. */
  		if ((sb->s_usr_quota_inum && sb->s_grp_quota_inum) ||
-@@ -1619,6 +1620,7 @@
+@@ -1626,6 +1627,7 @@
  
  		quota_init_context(&ctx->qctx, ctx->fs, qtype);
  	}
@@ -287,7 +287,7 @@
  
  	run_result = e2fsck_run(ctx);
  	e2fsck_clear_progbar(ctx);
-@@ -1652,6 +1654,7 @@
+@@ -1660,6 +1662,7 @@
  	}
  no_journal:
  
@@ -295,14 +295,14 @@
  	if (ctx->qctx) {
  		int i, needs_writeout;
  		for (i = 0; i < MAXQUOTAS; i++) {
-@@ -1667,6 +1670,7 @@
+@@ -1675,6 +1678,7 @@
  		}
  		quota_release_context(&ctx->qctx);
  	}
 +#endif
  
  	if (run_result == E2F_FLAG_RESTART) {
- 		log_out(ctx, _("Restarting e2fsck from the beginning...\n"));
+ 		log_out(ctx, "%s",
 --- misc/Makefile.in
 +++ misc/Makefile.in
 @@ -11,6 +11,13 @@
@@ -332,16 +332,16 @@
  #define STRIDE_LENGTH 8
  
 @@ -95,7 +97,9 @@
- int	lazy_itable_init;
- char	*bad_blocks_filename;
- __u32	fs_stride;
+ static int	lazy_itable_init;
+ static char	*bad_blocks_filename = NULL;
+ static __u32	fs_stride;
 +#ifdef CONFIG_QUOTA
- int	quotatype = -1;  /* Initialize both user and group quotas by default */
+ static int	quotatype = -1;  /* Initialize both user and group quotas by default */
 +#endif
  
- struct ext2_super_block fs_param;
- char *fs_uuid = NULL;
-@@ -820,6 +824,7 @@
+ static struct ext2_super_block fs_param;
+ static char *fs_uuid = NULL;
+@@ -851,6 +855,7 @@
  			discard = 1;
  		} else if (!strcmp(token, "nodiscard")) {
  			discard = 0;
@@ -349,7 +349,7 @@
  		} else if (!strcmp(token, "quotatype")) {
  			if (!arg) {
  				r_usage++;
-@@ -837,6 +842,7 @@
+@@ -868,6 +873,7 @@
  				r_usage++;
  				continue;
  			}
@@ -357,7 +357,7 @@
  		} else {
  			r_usage++;
  			badopt = token;
-@@ -858,7 +864,11 @@
+@@ -889,7 +895,11 @@
  			"\ttest_fs\n"
  			"\tdiscard\n"
  			"\tnodiscard\n"
@@ -370,7 +370,7 @@
  			badopt ? badopt : "");
  		free(buf);
  		exit(1);
-@@ -2287,6 +2297,7 @@
+@@ -2344,6 +2354,7 @@
  	ext2fs_free_blocks_count_set(fs->super, EXT2FS_C2B(fs, tot_free));
  }
  
@@ -378,7 +378,7 @@
  static int create_quota_inodes(ext2_filsys fs)
  {
  	quota_ctx_t qctx;
-@@ -2298,6 +2309,7 @@
+@@ -2355,6 +2366,7 @@
  
  	return 0;
  }
@@ -386,7 +386,7 @@
  
  int main (int argc, char *argv[])
  {
-@@ -2661,9 +2673,11 @@
+@@ -2722,9 +2734,11 @@
  	if (EXT2_HAS_RO_COMPAT_FEATURE(&fs_param,
  				       EXT4_FEATURE_RO_COMPAT_BIGALLOC))
  		fix_cluster_bg_counts(fs);
@@ -397,10 +397,10 @@
 +#endif
  
  	if (!quiet)
- 		printf(_("Writing superblocks and "
+ 		printf("%s", _("Writing superblocks and "
 --- misc/tune2fs.c
 +++ misc/tune2fs.c
-@@ -56,7 +56,9 @@
+@@ -60,7 +60,9 @@
  #include "jfs_user.h"
  #include "util.h"
  #include "blkid/blkid.h"
@@ -410,7 +410,7 @@
  
  #include "../version.h"
  #include "nls-enable.h"
-@@ -71,7 +73,11 @@
+@@ -75,7 +77,11 @@
  char *new_label, *new_last_mounted, *new_UUID;
  char *io_options;
  static int c_flag, C_flag, e_flag, f_flag, g_flag, i_flag, l_flag, L_flag;
@@ -423,7 +423,7 @@
  static int I_flag;
  static int clear_mmp;
  static time_t last_check_time;
-@@ -90,7 +96,9 @@
+@@ -94,7 +100,9 @@
  static char *extended_cmd;
  static unsigned long new_inode_size;
  static char *ext_mount_opts;
@@ -433,7 +433,7 @@
  
  int journal_size, journal_flags;
  char *journal_device;
-@@ -570,6 +578,7 @@
+@@ -587,6 +595,7 @@
  		fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
  	}
  
@@ -441,7 +441,7 @@
  	if (FEATURE_ON(E2P_FEATURE_RO_INCOMPAT,
  				EXT4_FEATURE_RO_COMPAT_QUOTA)) {
  		/*
-@@ -599,6 +608,7 @@
+@@ -616,6 +625,7 @@
  		usrquota = QOPT_DISABLE;
  		grpquota = QOPT_DISABLE;
  	}
@@ -449,7 +449,7 @@
  
  	if (sb->s_rev_level == EXT2_GOOD_OLD_REV &&
  	    (sb->s_feature_compat || sb->s_feature_ro_compat ||
-@@ -702,6 +712,7 @@
+@@ -719,6 +729,7 @@
  	return 1;
  }
  
@@ -457,29 +457,15 @@
  static void handle_quota_options(ext2_filsys fs)
  {
  	quota_ctx_t qctx;
-@@ -794,6 +805,7 @@
- 	}
- 	free(buf);
+@@ -768,6 +779,7 @@
+ 
+ 	return;
  }
 +#endif
  
- 
- 
-@@ -1015,11 +1027,13 @@
- 			features_cmd = optarg;
- 			open_flag = EXT2_FLAG_RW;
- 			break;
-+#ifdef CONFIG_QUOTA
- 		case 'Q':
- 			Q_flag = 1;
- 			parse_quota_opts(optarg);
- 			open_flag = EXT2_FLAG_RW;
- 			break;
-+#endif
- 		case 'r':
- 			reserved_blocks = strtoul(optarg, &tmp, 0);
- 			if (*tmp) {
-@@ -2121,6 +2135,7 @@
+ #ifdef CONFIG_QUOTA
+ static void parse_quota_opts(const char *opts)
+@@ -2144,6 +2156,7 @@
  			goto closefs;
  	}
  
@@ -487,7 +473,7 @@
  	if (Q_flag) {
  		if (mount_flags & EXT2_MF_MOUNTED) {
  			fputs(_("The quota feature may only be changed when "
-@@ -2130,6 +2145,7 @@
+@@ -2153,6 +2166,7 @@
  		}
  		handle_quota_options(fs);
  	}

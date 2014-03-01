@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -4655,7 +4655,7 @@
+@@ -4656,7 +4656,7 @@
  else
  	PROFILE_CMT=
  	MAKEFILE_PROFILE=$srcdir/lib/Makefile.profile
@@ -11,16 +11,16 @@
  fi
 --- e2fsck/Makefile.in
 +++ e2fsck/Makefile.in
-@@ -38,7 +38,7 @@
- .c.o:
+@@ -39,7 +39,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -o profiled/$*.o -c $<
  
  #
  # Flags for using Checker
-@@ -131,7 +131,7 @@
+@@ -132,7 +132,7 @@
  
  e2fsck.profiled: $(OBJS)  $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -31,16 +31,16 @@
  gen_crc32table: $(srcdir)/gen_crc32table.c
 --- lib/blkid/Makefile.in
 +++ lib/blkid/Makefile.in
-@@ -55,7 +55,7 @@
- .c.o:
+@@ -56,7 +56,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) $(ALL_CFLAGS) -c $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o profiled/$*.o -c $<
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c $<
  @ELF_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o elfshared/$*.o -c $<
  @BSDLIB_CMT@	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
-@@ -178,7 +178,7 @@
+@@ -179,7 +179,7 @@
  		tst_devno tst_getsize tst_probe tst_read tst_resolve tst_save \
  		tst_tag tst_types tests/*.out tests/*.ok \
  		tests/*.img results test_probe core profiled/* \
@@ -51,16 +51,16 @@
  	@(rmdir tests/tmp tests 2> /dev/null ; exit 0)
 --- lib/e2p/Makefile.in
 +++ lib/e2p/Makefile.in
-@@ -55,7 +55,7 @@
- .c.o:
+@@ -56,7 +56,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) $(ALL_CFLAGS) -c $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o profiled/$*.o -c $<
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c $<
  @ELF_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o elfshared/$*.o -c $<
  @BSDLIB_CMT@	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
-@@ -102,7 +102,7 @@
+@@ -103,7 +103,7 @@
  
  clean::
  	$(RM) -f \#* *.s *.o *.a *~ *.bak core profiled/* checker/*
@@ -71,16 +71,16 @@
  distclean:: clean
 --- lib/et/Makefile.in
 +++ lib/et/Makefile.in
-@@ -43,7 +43,7 @@
- .c.o:
+@@ -44,7 +44,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) $(ALL_CFLAGS) -c $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o profiled/$*.o -c $<
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c $<
  @ELF_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o elfshared/$*.o -c $<
  @BSDLIB_CMT@	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
-@@ -153,12 +153,12 @@
+@@ -151,12 +151,12 @@
  	done
  
  clean::
@@ -97,16 +97,16 @@
  distclean:: clean
 --- lib/ext2fs/Makefile.in
 +++ lib/ext2fs/Makefile.in
-@@ -200,7 +200,7 @@
- .c.o:
+@@ -201,7 +201,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) $(ALL_CFLAGS) -c $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o profiled/$*.o -c $<
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c $<
  @ELF_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o elfshared/$*.o -c $<
  @BSDLIB_CMT@	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
-@@ -461,7 +461,7 @@
+@@ -466,7 +466,7 @@
  		tst_bitmaps tst_bitmaps_out tst_extents tst_inline \
  		tst_inline_data tst_inode_size tst_bitmaps_cmd.c \
  		ext2_tdbtool mkjournal debug_cmds.c extent_cmds.c \
@@ -155,16 +155,16 @@
 +	$(RM) -f $(DESTDIR)$(libdir)/$(LIBRARY)_pic.a
 --- lib/quota/Makefile.in
 +++ lib/quota/Makefile.in
-@@ -47,7 +47,7 @@
- .c.o:
+@@ -48,7 +48,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) $(ALL_CFLAGS) -c $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o profiled/$*.o -c $<
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c $<
  #ELF_CMT#	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o elfshared/$*.o -c $<
  #BSDLIB_CMT#	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
-@@ -61,7 +61,7 @@
+@@ -62,7 +62,7 @@
  dict.o:
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $(top_srcdir)/e2fsck/dict.c -o $@
@@ -173,7 +173,7 @@
  @PROFILE_CMT@	$(top_srcdir)/e2fsck/dict.c
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c \
  @CHECKER_CMT@	$(top_srcdir)/e2fsck/dict.c
-@@ -100,7 +100,7 @@
+@@ -101,7 +101,7 @@
  
  clean::
  	$(RM) -f \#* *.s *.o *.a *~ *.bak core profiled/* checker/*
@@ -184,16 +184,16 @@
  #	LD_LIBRARY_PATH=$(LIB) DYLD_LIBRARY_PATH=$(LIB) ./tst_uuid
 --- lib/ss/Makefile.in
 +++ lib/ss/Makefile.in
-@@ -34,7 +34,7 @@
- .c.o:
+@@ -35,7 +35,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) $(ALL_CFLAGS) -c $<
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -DSHARED_ELF_LIB -fPIC -o profiled/$*.o -c $<
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c $<
  @ELF_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -DSHARED_ELF_LIB -fPIC -o elfshared/$*.o -c $<
  @BSDLIB_CMT@	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
-@@ -88,7 +88,7 @@
+@@ -89,7 +89,7 @@
  	ss_err.et std_rqs.ct Makefile \
  	test_ss.c ss 
  
@@ -204,16 +204,16 @@
  	$(E) "	MK_CMDS $@"
 --- lib/uuid/Makefile.in
 +++ lib/uuid/Makefile.in
-@@ -62,7 +62,7 @@
- .c.o:
+@@ -63,7 +63,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) $(ALL_CFLAGS) -c $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o profiled/$*.o -c $<
  @CHECKER_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -checker -g -o checker/$*.o -c $<
  @ELF_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o elfshared/$*.o -c $<
  @BSDLIB_CMT@	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
-@@ -168,7 +168,7 @@
+@@ -169,7 +169,7 @@
  
  clean::
  	$(RM) -f \#* *.s *.o *.a *~ *.bak core profiled/* checker/* uuid.h
@@ -224,16 +224,16 @@
  	LD_LIBRARY_PATH=$(LIB) DYLD_LIBRARY_PATH=$(LIB) ./tst_uuid
 --- misc/Makefile.in
 +++ misc/Makefile.in
-@@ -102,7 +102,7 @@
- .c.o:
+@@ -103,7 +103,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $< -o $@
+ 	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
 -@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -g -pg -o profiled/$*.o -c $<
 +@PROFILE_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -o profiled/$*.o -c $<
  
  all:: profiled $(SPROGS) $(UPROGS) $(USPROGS) $(SMANPAGES) $(UMANPAGES) \
  	$(FMANPAGES) $(LPROGS) $(E4DEFRAG_PROG)
-@@ -138,7 +138,7 @@
+@@ -139,7 +139,7 @@
  profile.o:
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $(srcdir)/../e2fsck/profile.c -o $@
@@ -242,7 +242,7 @@
  @PROFILE_CMT@	$(srcdir)/../e2fsck/profile.c
  
  findsuper: findsuper.o
-@@ -171,7 +171,7 @@
+@@ -172,7 +172,7 @@
  		$(PROFILED_E2P) $(DEPPROFILED_LIBBLKID) $(DEPPROFILED_LIBUUID) \
  		$(DEPPROFILED_LIBQUOTA)
  	$(E) "	LD $@"
@@ -251,7 +251,7 @@
  		$(PROFILED_TUNE2FS_OBJS) $(PROFILED_LIBBLKID) \
  		$(PROFILED_LIBUUID) $(PROFILED_LIBQUOTA) $(PROFILED_LIBE2P) \
  		$(LIBINTL) $(PROFILED_LIBS)
-@@ -189,7 +189,7 @@
+@@ -190,7 +190,7 @@
  blkid.profiled: $(BLKID_OBJS) $(DEPPROFILED_LIBBLKID) \
  		$(PROFILED_LIBEXT2FS)
  	$(E) "	LD $@"
@@ -260,7 +260,7 @@
  		$(PROFILED_LIBBLKID) $(LIBINTL) $(PROFILED_LIBEXT2FS)
  
  e2image: $(E2IMAGE_OBJS) $(DEPLIBS)
-@@ -198,7 +198,7 @@
+@@ -199,7 +199,7 @@
  
  e2image.profiled: $(E2IMAGE_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -269,7 +269,7 @@
  		$(PROFILED_E2IMAGE_OBJS) $(PROFILED_LIBS) $(LIBINTL)
  
  e2undo: $(E2UNDO_OBJS) $(DEPLIBS)
-@@ -207,7 +207,7 @@
+@@ -208,7 +208,7 @@
  
  e2undo.profiled: $(E2UNDO_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -278,7 +278,7 @@
  		$(PROFILED_E2UNDO_OBJS) $(PROFILED_LIBS) $(LIBINTL)
  
  e4defrag: $(E4DEFRAG_OBJS) $(DEPLIBS)
-@@ -216,7 +216,7 @@
+@@ -217,7 +217,7 @@
  
  e4defrag.profiled: $(E4DEFRAG_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -287,7 +287,7 @@
  		$(PROFILED_E4DEFRAG_OBJS) $(PROFILED_LIBS)
  
  base_device: base_device.c
-@@ -249,7 +249,7 @@
+@@ -250,7 +250,7 @@
  	$(PROFILED_LIBE2P) $(PROFILED_DEPLIBBLKID) $(PROFILED_DEPLIBUUID) \
  	$(PROFILED_LIBQUOTA)
  	$(E) "	LD $@"
@@ -296,7 +296,7 @@
  		$(PROFILED_MKE2FS_OBJS) $(PROFILED_LIBBLKID) \
  		$(PROFILED_LIBUUID) $(PROFILED_LIBQUOTA) $(PROFILED_LIBE2P) $(LIBINTL) \
  		$(PROFILED_LIBS)
-@@ -268,7 +268,7 @@
+@@ -269,7 +269,7 @@
  
  uuidgen.profiled: $(UUIDGEN_OBJS) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -305,7 +305,7 @@
  		$(PROFILED_UUIDGEN_OBJS) $(PROFILED_LIBUUID) $(LIBINTL)
  
  uuidd: $(UUIDD_OBJS) $(DEPLIBUUID)
-@@ -277,7 +277,7 @@
+@@ -278,7 +278,7 @@
  
  uuidd.profiled: $(UUIDD_OBJS) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -314,7 +314,7 @@
  		$(PROFILED_LIBUUID) $(LIBINTL)
  
  dumpe2fs: $(DUMPE2FS_OBJS) $(DEPLIBS) $(DEPLIBS_E2P) $(DEPLIBUUID)
-@@ -288,7 +288,7 @@
+@@ -289,7 +289,7 @@
  dumpe2fs.profiled: $(DUMPE2FS_OBJS) $(PROFILED_DEPLIBS) \
  		$(PROFILED_LIBE2P) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -323,7 +323,7 @@
  		$(PROFILED_DUMPE2FS_OBJS) $(PROFILED_LIBS) \
  		$(PROFILED_LIBE2P) $(PROFILED_LIBUUID) $(LIBINTL)
  
-@@ -298,7 +298,7 @@
+@@ -299,7 +299,7 @@
  
  fsck.profiled: $(FSCK_OBJS) $(PROFILED_DEPLIBBLKID)
  	$(E) "	LD $@"
@@ -332,7 +332,7 @@
  		$(PROFILED_LIBBLKID) $(LIBINTL)
  
  badblocks: $(BADBLOCKS_OBJS) $(DEPLIBS)
-@@ -307,7 +307,7 @@
+@@ -308,7 +308,7 @@
  
  badblocks.profiled: $(BADBLOCKS_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -341,7 +341,7 @@
  		$(PROFILED_BADBLOCKS_OBJS) $(PROFILED_LIBS) $(LIBINTL)
  
  logsave: logsave.o
-@@ -316,7 +316,7 @@
+@@ -317,7 +317,7 @@
  
  logsave.profiled: logsave.o
  	$(E) "	LD $@"
@@ -350,7 +350,7 @@
  
  e2freefrag: $(E2FREEFRAG_OBJS)
  	$(E) "	LD $@"
-@@ -324,7 +324,7 @@
+@@ -325,7 +325,7 @@
  
  e2freefrag.profiled: $(E2FREEFRAG_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -359,7 +359,7 @@
  		$(PROFILED_E2FREEFRAG_OBJS) $(PROFILED_LIBS)
  
  filefrag: $(FILEFRAG_OBJS)
-@@ -333,7 +333,7 @@
+@@ -334,7 +334,7 @@
  
  filefrag.profiled: $(FILEFRAG_OBJS)
  	$(E) "	LD $@"
