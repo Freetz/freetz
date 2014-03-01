@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.3.1)
+$(call PKG_INIT_BIN, 2.3.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=af09f8828744b0ea0808d6c19a2b4bfd
+$(PKG)_SOURCE_MD5:=6451aeae836471cadea8567c44a46c99
 $(PKG)_SITE:=http://www.nano-editor.org/dist/v2.3
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
@@ -29,6 +29,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-utf8
 $(PKG)_CONFIGURE_OPTIONS += --disable-mouse
 $(PKG)_CONFIGURE_OPTIONS += --disable-speller
 $(PKG)_CONFIGURE_OPTIONS += --disable-extra
+$(PKG)_CONFIGURE_OPTIONS += --with-wordbounds
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),--enable-tiny)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_HELP),--enable-help,--disable-help))
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_TINY),,$(if $(FREETZ_PACKAGE_NANO_TABCOMP),--enable-tabcomp,--disable-tabcomp))
@@ -70,9 +71,8 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 
 $($(PKG)_SYNTAX_FILES): $($(PKG)_DIR)/.unpacked
 
-$($(PKG)_TARGET_SYNTAX_FILES): $($(PKG)_SYNTAX_FILES)
-	mkdir -p $(dir $@)
-	cp $^ $(dir $@)
+$($(PKG)_TARGET_SYNTAX_FILES): $($(PKG)_TARGET_SYNTAX_FILES_DIR)%: $($(PKG)_SYNTAX_FILES_DIR)%
+	$(INSTALL_FILE)
 
 $(pkg):
 
