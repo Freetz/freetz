@@ -27,27 +27,31 @@ download() {
 
 	# BETA/Labor/LabRC
 	if [ -n "$1" -a "$1" != "stable" -a "$1" != "s" ]; then
-		wget -nv -m -A '*.zip' ftp://ftp.avm.de/fritz.box/beta/
-		(
-			cd ftp.avm.de/fritz.box/beta/
-			for i in *.zip; do
-				unzip -q -o -j $i
-			done
-			# remove all files with no beta|labor in name
-			find . -type f -regextype posix-egrep ! -iregex '.*(beta|labor|labrc).*[.]image' -exec rm -f {} '+' 2>/dev/null
-		)
+		for url in ftp://ftp.avm.de/fritz.box/beta/ ftp://service.avm.de/Beta/; do
+			wget -nv -m -A '*.zip' $url
+			(
+				cd ${url#ftp://}
+				for i in $(find . -type f -iname '*.zip'); do
+					unzip -q -o -j $i
+				done
+				# remove all files with no beta|labor in name
+				find . -type f -regextype posix-egrep ! -iregex '.*(beta|labor|labrc).*[.]image' -exec rm -f {} '+' 2>/dev/null
+			)
+		done
 	fi
 
 	# stable
 	if [ -z "$1" -o "$1" == "stable" -o "$1" == "s" ]; then
-		wget -nv -m -A '*.image' ftp://ftp.avm.de/fritz.box/
-		find ftp.avm.de -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
+		for url in ftp://ftp.avm.de/fritz.box/ ftp://service.avm.de/Downgrade/; do
+			wget -nv -m -A '*.image' -R '*Powerline*,*powerline*,*Repeater*,*repeater*,*VoIP-Gateway*' $url
+			find ${url#ftp://} -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
+		done
 	fi
 
-	for file in $(find ftp.avm.de -type f); do
-		mv -f $file $(echo $file|sed 's!firmware/!!g;s!ftp\.avm\.de/fritz.box/!!g;s!/!--!g')
+	for file in $(find ftp.avm.de service.avm.de -type f); do
+		mv -f $file $(echo $file | sed -r -e 's,(ftp[.]avm[.]de/fritz.box/|service[.]avm[.]de/|firmware/),,g;s,/,--,g')
 	done
-	rm -rf ftp.avm.de 2>/dev/null
+	rm -rf ftp.avm.de service.avm.de 2>/dev/null
 }
 
 unpack() {
