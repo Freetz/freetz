@@ -1,0 +1,108 @@
+# HG changeset patch
+# User Matt Johnston <matt@ucc.asn.au>
+# Date 1393063329 -28800
+# Node ID 4696755c4cacb8f03c2c4283ef90ef40a9447af7
+# Parent  f98618496f82388d16ddb891d72f2072f9a861b3
+A few fixes for cases where compression increases payload sizes, and
+be more precise about maximum channel sizes
+
+--- common-channel.c
++++ common-channel.c
+@@ -59,6 +59,13 @@
+ #define ERRFD_IS_READ(channel) ((channel)->extrabuf == NULL)
+ #define ERRFD_IS_WRITE(channel) (!ERRFD_IS_READ(channel))
+ 
++/* allow space for:
++ * 1 byte  byte      SSH_MSG_CHANNEL_DATA
++ * 4 bytes uint32    recipient channel
++ * 4 bytes string    data
++ */
++#define RECV_MAX_CHANNEL_DATA_LEN (RECV_MAX_PAYLOAD_LEN-(1+4+4))
++
+ /* Initialise all the channels */
+ void chaninitialise(const struct ChanType *chantypes[]) {
+ 
+@@ -165,7 +172,7 @@
+ 
+ 	newchan->extrabuf = NULL; /* The user code can set it up */
+ 	newchan->recvdonelen = 0;
+-	newchan->recvmaxpacket = RECV_MAX_PAYLOAD_LEN;
++	newchan->recvmaxpacket = RECV_MAX_CHANNEL_DATA_LEN;
+ 
+ 	ses.channels[i] = newchan;
+ 	ses.chancount++;
+@@ -1028,7 +1035,7 @@
+ 	buf_putstring(ses.writepayload, type->name, strlen(type->name));
+ 	buf_putint(ses.writepayload, chan->index);
+ 	buf_putint(ses.writepayload, opts.recv_window);
+-	buf_putint(ses.writepayload, RECV_MAX_PAYLOAD_LEN);
++	buf_putint(ses.writepayload, RECV_MAX_CHANNEL_DATA_LEN);
+ 
+ 	TRACE(("leave send_msg_channel_open_init()"))
+ 	return DROPBEAR_SUCCESS;
+--- packet.c
++++ packet.c
+@@ -41,7 +41,11 @@
+ 		unsigned char *output_mac);
+ static int checkmac();
+ 
+-#define ZLIB_COMPRESS_INCR 100
++/* For exact details see http://www.zlib.net/zlib_tech.html
++ * 5 bytes per 16kB block, plus 6 bytes for the stream.
++ * We might allocate 5 unnecessary bytes here if it's an
++ * exact multiple. */
++#define ZLIB_COMPRESS_EXPANSION (((RECV_MAX_PAYLOAD_LEN/16384)+1)*5 + 6)
+ #define ZLIB_DECOMPRESS_INCR 1024
+ #ifndef DISABLE_ZLIB
+ static buffer* buf_decompress(buffer* buf, unsigned int len);
+@@ -333,7 +337,7 @@
+ 	/* payload length */
+ 	/* - 4 - 1 is for LEN and PADLEN values */
+ 	len = ses.readbuf->len - padlen - 4 - 1 - macsize;
+-	if ((len > RECV_MAX_PAYLOAD_LEN) || (len < 1)) {
++	if ((len > RECV_MAX_PAYLOAD_LEN+ZLIB_COMPRESS_EXPANSION) || (len < 1)) {
+ 		dropbear_exit("Bad packet size %d", len);
+ 	}
+ 
+@@ -422,6 +426,8 @@
+ 		if (zstream->avail_out == 0) {
+ 			int new_size = 0;
+ 			if (ret->size >= RECV_MAX_PAYLOAD_LEN) {
++				/* Already been increased as large as it can go,
++				 * yet didn't finish up the decompression */
+ 				dropbear_exit("bad packet, oversized decompressed");
+ 			}
+ 			new_size = MIN(RECV_MAX_PAYLOAD_LEN, ret->size + ZLIB_DECOMPRESS_INCR);
+@@ -526,7 +532,7 @@
+ 				+ mac_size
+ #ifndef DISABLE_ZLIB
+ 	/* some extra in case 'compression' makes it larger */
+-				+ ZLIB_COMPRESS_INCR
++				+ ZLIB_COMPRESS_EXPANSION
+ #endif
+ 	/* and an extra cleartext (stripped before transmission) byte for the
+ 	 * packet type */
+@@ -539,14 +545,7 @@
+ #ifndef DISABLE_ZLIB
+ 	/* compression */
+ 	if (is_compress_trans()) {
+-		int compress_delta;
+ 		buf_compress(writebuf, ses.writepayload, ses.writepayload->len);
+-		compress_delta = (writebuf->len - PACKET_PAYLOAD_OFF) - ses.writepayload->len;
+-
+-		/* Handle the case where 'compress' increased the size. */
+-		if (compress_delta > ZLIB_COMPRESS_INCR) {
+-			buf_resize(writebuf, writebuf->size + compress_delta);
+-		}
+ 	} else
+ #endif
+ 	{
+@@ -694,7 +693,7 @@
+ 		/* the buffer has been filled, we must extend. This only happens in
+ 		 * unusual circumstances where the data grows in size after deflate(),
+ 		 * but it is possible */
+-		buf_resize(dest, dest->size + ZLIB_COMPRESS_INCR);
++		buf_resize(dest, dest->size + ZLIB_COMPRESS_EXPANSION);
+ 
+ 	}
+ 	TRACE2(("leave buf_compress"))
