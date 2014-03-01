@@ -67,16 +67,24 @@ function push_fw() {
 	if [ $ISALICE ]; then
 		echo "$basename: Trying to flash an image to an \"Alice\" 7570 FritzBox."
 		[ $(which telnet) ] || { echo "$basename: Error finding required binary \"telnet\"." ; exit 1 ;}
-		VALUES="$(telnet_hn | telnet | grep -e '^mtd[1\|5]\|^HWRevision')" || { echo "$basename: Error trying to get values from \"Alice\" FritzBox."; exit 1; }
+		VALUES="$(telnet_hn | telnet 2>/dev/null| grep -e '^mtd[1\|5]\|^HWRevision')" || { echo "$basename: Error trying to get values from \"Alice\" FritzBox."; exit 1; }
 		HWR=$(echo "$VALUES" | sed -n '/^HWRev/ s/HWRevision[^0-9]*//p')
 		[ "153" = "$HWR" ] || { echo "$basename: Error veryfing HWRevision=153 as required for \"Alice\" FritzBox. Found: HWRevision=$HWR." ; exit 1 ;}
 		MTD=$(echo "$VALUES" | sed -n '/^mtd/ s/mtd.[^0]*// p')
 		$(echo $MTD | tr -d '\n' | grep '0x90040000,0x907E0000' | grep -q '0x907E0000,0x90F80000') || \
 			{ echo -e "$basename: Error veryfing mtd values for \"Alice\" box. Found values:\n$MTD" ; exit 1 ;}
-		kernel_mtd1=$(mktemp -t freetz_mtd1_XXX) || { echo "$basename: Error creating temporary file for mtd1."; exit 1; }
-		kernel_mtd5=$(mktemp -t freetz_mtd5_XXX) || { echo "$basename: Error creating temporary file for mtd5."; exit 1; }
-		dd if=${arg1} of=${kernel_mtd1} bs=1k count=7808 || { echo "$basename: Error creating image part for mtd1."; exit 1; }
-		dd if=${arg1} of=${kernel_mtd5} bs=1k skip=7808 || { echo "$basename: Error creating image part for mtd5."; exit 1; }
+
+		size=$(stat -c %s $1)
+		let max_size=7808*1024
+		if [ $size -ge $max_size ]; then
+			kernel_mtd1=$(mktemp -t freetz_mtd1_XXX) || { echo "$basename: Error creating temporary file for mtd1."; exit 1; }
+			kernel_mtd5=$(mktemp -t freetz_mtd5_XXX) || { echo "$basename: Error creating temporary file for mtd5."; exit 1; }
+			dd if=${arg1} of=${kernel_mtd1} bs=1k count=7808 >/dev/null 2>&1 || { echo "$basename: Error creating image part for mtd1."; exit 1; }
+			dd if=${arg1} of=${kernel_mtd5} bs=1k skip=7808 >/dev/null 2>&1 || { echo "$basename: Error creating image part for mtd5."; exit 1; }
+		else
+			ISALICE=false
+			kernel_mtd1=$1
+		fi
 	else
 		kernel_mtd1=$1
 	fi
@@ -118,18 +126,19 @@ EOT
 
 telnet_hn () {
 	echo open $ip 21
-	sleep 1
+	sleep 0.2
 	echo USER adam2
-	sleep 1
+	sleep 0.2
 	echo PASS adam2
-	sleep 1
+	sleep 0.2
 	echo GETENV mtd1
-	sleep 1
+	sleep 0.2
 	echo GETENV mtd5
-	sleep 1
+	sleep 0.2
 	echo GETENV HWRevision
-	sleep 1
+	sleep 0.2
 	echo QUIT
+	sleep 0.2
 }
 
 usage()
@@ -216,12 +225,12 @@ elif [ "$(uname -o)" == "Cygwin" ]; then
 	ping_params="-n 1 -w 500"
 fi
 
-if [ "$(uname -s)" != "Darwin" -a -n "`which ftp`" -a -x "`which ftp`" ] ; then
-  FOUND_FTP=1
-  echo "ftp command found"
-elif [ -n "`which ncftp`" -a -x "`which ncftp`" ] ; then
+if [ -n "`which ncftp`" -a -x "`which ncftp`" ] ; then
   FOUND_NCFTP=1
   echo "ncftp command found"
+elif [ "$(uname -s)" == "Linux" -a -n "`which ftp`" -a -x "`which ftp`" ] ; then
+  FOUND_FTP=1
+  echo "ftp command found"
 else
   echo "you have to install 'ftp' or 'ncftp' in order to use this script."
 fi
