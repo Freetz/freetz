@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.13)
+$(call PKG_INIT_BIN, 0.2.14)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=c9345b67213f52688fef2113132c62d2edbf4bea
+$(PKG)_SOURCE_SHA1:=7ebaac3b43517662006c7bdc51e44b4f9aecf5cd
 $(PKG)_SITE:=http://$(pkg).googlecode.com/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)d
@@ -12,8 +12,6 @@ $(PKG)_DEPENDS_ON := libconfig protobuf-c
 ifeq ($(strip $(FREETZ_PACKAGE_UMURMUR_USE_POLARSSL)),y)
 $(PKG)_DEPENDS_ON += polarssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=polarssl
-$(PKG)_CONFIGURE_OPTIONS += --disable-polarssl-test-certificate
-$(PKG)_CONFIGURE_OPTIONS += --disable-polarssl-havege
 else
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
