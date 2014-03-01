@@ -1,4 +1,5 @@
 echo1 "applying /dev/led patch"
 
-[ -f "${FILESYSTEM_MOD_DIR}/bin/update_led_on" ] && modsed 's/\/var\/led/\/dev\/led/' "${FILESYSTEM_MOD_DIR}/bin/update_led_on"
-[ -f "${FILESYSTEM_MOD_DIR}/bin/update_led_off" ] && modsed 's/\/var\/led/\/dev\/led/' "${FILESYSTEM_MOD_DIR}/bin/update_led_off"
+for f in /bin/update_led_on /bin/update_led_off; do
+	[ -f "${FILESYSTEM_MOD_DIR}${f}" ] && modsed 's,/var/led,/dev/led,g' "${FILESYSTEM_MOD_DIR}${f}"
+done
