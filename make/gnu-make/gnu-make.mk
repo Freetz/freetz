@@ -1,13 +1,14 @@
-$(call PKG_INIT_BIN, 3.82)
+$(call PKG_INIT_BIN, 4.0)
 $(PKG)_SOURCE:=make-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=1a11100f3c63fcf5753818e59d63088f
+$(PKG)_SOURCE_MD5:=571d470a7647b455e3af3f92d79f1c18
 $(PKG)_SITE:=@GNU/make
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/make-$($(PKG)_VERSION)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/make
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/make
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_elf_elf_begin)
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_elf_elf_begin struct_st_mtim_nsec)
 $(PKG)_CONFIGURE_ENV += gnu_make_lib_elf_elf_begin=no
 
 $(PKG)_CONFIGURE_ENV += make_cv_sys_gnu_glob=no
