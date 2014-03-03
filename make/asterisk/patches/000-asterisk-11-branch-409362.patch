@@ -1225,7 +1225,7 @@
  
  #include "asterisk.h"
  
--ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405487 $")
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 409303 $")
 +ASTERISK_FILE_VERSION(__FILE__, "$Revision: 409255 $")
  
  #include <signal.h>
@@ -1396,21 +1396,7 @@
  	if (ast_exists_extension(NULL, transfer_context, c, 1, NULL)) {
  		/* This is a blind transfer */
  		ast_debug(1, "SIP Bye-also transfer to Extension %s@%s \n", c, transfer_context);
-@@ -22856,9 +22876,11 @@
- 					/* This 200 OK's SDP is not acceptable, so we need to ack, then hangup */
- 					/* For re-invites, we try to recover */
- 					ast_set_flag(&p->flags[0], SIP_PENDINGBYE);
--					ast_channel_hangupcause_set(p->owner, AST_CAUSE_BEARERCAPABILITY_NOTAVAIL);
- 					p->hangupcause = AST_CAUSE_BEARERCAPABILITY_NOTAVAIL;
--					sip_queue_hangup_cause(p, AST_CAUSE_BEARERCAPABILITY_NOTAVAIL);
-+					if (p->owner) {
-+						ast_channel_hangupcause_set(p->owner, AST_CAUSE_BEARERCAPABILITY_NOTAVAIL);
-+						sip_queue_hangup_cause(p, AST_CAUSE_BEARERCAPABILITY_NOTAVAIL);
-+					}
- 				}
- 			}
- 			ast_rtp_instance_activate(p->rtp);
-@@ -24434,7 +24456,9 @@
+@@ -24436,7 +24456,9 @@
  
  	if (peera && peerb && peerc && (peerb != peerc)) {
  		ast_quiet_chan(peera);		/* Stop generators */
@@ -1421,7 +1407,7 @@
  		ast_quiet_chan(peerc);
  		if (peerd)
  			ast_quiet_chan(peerd);
-@@ -24566,7 +24590,7 @@
+@@ -24568,7 +24590,7 @@
  
  		/* EventID for each transfer... EventID is basically the REFER cseq
  
@@ -1430,7 +1416,7 @@
  		 We should hangup when we are getting a 200 OK in a sipfrag
  		 Check if we have an owner of this event */
  
-@@ -25439,12 +25463,6 @@
+@@ -25441,12 +25463,6 @@
  			ast_debug(2, "No SDP in Invite, third party call control\n");
  		}
  
@@ -1443,7 +1429,7 @@
  		/* Initialize the context if it hasn't been already */
  		if (ast_strlen_zero(p->context))
  			ast_string_field_set(p, context, sip_cfg.default_context);
-@@ -26091,7 +26109,6 @@
+@@ -26093,7 +26109,6 @@
  
  		ast_do_masquerade(target.chan1);
  
@@ -1451,7 +1437,7 @@
  		if (target.chan2) {
  			ast_indicate(target.chan2, AST_CONTROL_UNHOLD);
  		}
-@@ -29938,7 +29955,7 @@
+@@ -29940,7 +29955,7 @@
  	if (sip_cfg.callevents)
  		manager_event(EVENT_FLAG_SYSTEM, "ChannelUpdate",
  			"Channel: %s\r\nChanneltype: %s\r\nSIPcallid: %s\r\nSIPfullcontact: %s\r\nPeername: %s\r\n",
@@ -2292,6 +2278,26 @@
  	void (*get_codec)(struct ast_channel *chan, struct ast_format_cap *result_cap);
  	/*! Linked list information */
  	AST_RWLIST_ENTRY(ast_rtp_glue) entry;
+--- main/asterisk.c
++++ main/asterisk.c
+@@ -41,7 +41,7 @@
+  *
+  * Copyright (C) 1999 - 2013, Digium, Inc.
+  * Asterisk is a <a href="http://www.digium.com/en/company/view-policy.php?id=Trademark-Policy">registered trademark</a>
+- * of <a href="http://www.digium.com">Digium, Inc</a>.
++ * of <a rel="nofollow" href="http://www.digium.com">Digium, Inc</a>.
+  *
+  * \author Mark Spencer <markster@digium.com>
+  * Also see \ref AstCREDITS
+@@ -65,7 +65,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405431 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 409362 $")
+ 
+ #include "asterisk/_private.h"
+ 
 --- main/cel.c
 +++ main/cel.c
 @@ -33,7 +33,7 @@
@@ -4107,6 +4113,17 @@
  else
      # Windows: we need to build main (i.e. the asterisk dll) first,
      # followed by res, followed by the other directories, because
+--- Makefile.rules
++++ Makefile.rules
+@@ -35,7 +35,7 @@
+     CMD_PREFIX=
+ endif
+ 
+-OPTIMIZE?=-O6
++OPTIMIZE?=-O3
+ ifneq ($(findstring darwin,$(OSARCH)),)
+   ifeq ($(shell if test `/usr/bin/sw_vers -productVersion | cut -c4` -gt 5; then echo 6; else echo 0; fi),6)
+     # Snow Leopard/Lion has an issue with this optimization flag on large files (like chan_sip)
 --- res/ael/pval.c
 +++ res/ael/pval.c
 @@ -29,7 +29,7 @@
