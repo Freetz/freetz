@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.1.1)
+$(call PKG_INIT_BIN, 1.1.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=653405555ac3f8eb4aacc54c1be7b5fa
+$(PKG)_SOURCE_MD5:=65cebffaf9b57bf30fbfcf2a3a3253e6
 $(PKG)_SITE:=@SF/minidlna
 
 $(PKG)_CONDITIONAL_PATCHES+=$(FREETZ_PACKAGE_MINIDLNA_LANG)

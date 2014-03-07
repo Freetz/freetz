@@ -73,7 +73,7 @@
  				//DEBUG DPRINTF(E_DEBUG, L_SCANNER, "Creating cached genre/artist item: %s/%s/%X\n", last_genreArtist.name, last_genreArtist.parentID, last_genreArtist.objectID);
  			}
  			sql_exec(db, "INSERT into OBJECTS"
-@@ -525,25 +525,25 @@
+@@ -526,25 +526,25 @@
  {
  	int ret, i;
  	const char *containers[] = { "0","-1",   "root",
@@ -114,18 +114,31 @@
  	ret = sql_exec(db, create_objectTable_sqlite);
 --- upnphttp.c
 +++ upnphttp.c
-@@ -595,10 +595,10 @@
- 	l = snprintf(body, sizeof(body),
+@@ -608,20 +608,20 @@
+ 	strcatf(&str,
  		"<HTML><HEAD><TITLE>" SERVER_NAME " " MINIDLNA_VERSION "</TITLE></HEAD>"
  		"<BODY><div style=\"text-align: center\">"
--                "<h3>" SERVER_NAME " status</h3>"
--                "Audio files: %d<br>"
--                "Video files: %d<br>"
--                "Image files: %d</div>"
-+                "<h3>" SERVER_NAME " Status</h3>"
-+                "Audio: %d<br>"
-+                "Video: %d<br>"
-+                "Bilder: %d</div>"
- 		"</BODY></HTML>\r\n", a, v, p);
- #endif
- 	BuildResp_upnphttp(h, body, l);
+-		"<h2>" SERVER_NAME " status</h2></div>");
++		"<h2>" SERVER_NAME " Status</h2></div>");
+ 
+ 	strcatf(&str,
+-		"<h3>Media library</h3>"
++		"<h3>Medienbibliothek</h3>"
+ 		"<table border=1 cellpadding=10>"
+-		"<tr><td>Audio files</td><td>%d</td></tr>"
+-		"<tr><td>Video files</td><td>%d</td></tr>"
+-		"<tr><td>Image files</td><td>%d</td></tr>"
++		"<tr><td>Audio</td><td>%d</td></tr>"
++		"<tr><td>Video</td><td>%d</td></tr>"
++		"<tr><td>Bilder</td><td>%d</td></tr>"
+ 		"</table>", a, v, p);
+ 
+ 	strcatf(&str,
+-		"<h3>Connected clients</h3>"
++		"<h3>Verbundene Clients</h3>"
+ 		"<table border=1 cellpadding=10>"
+-		"<tr><td>ID</td><td>Type</td><td>IP Address</td><td>HW Address</td></tr>");
++		"<tr><td>ID</td><td>Typ</td><td>IP Adresse</td><td>HW Adresse</td></tr>");
+ 	for (i = 0; i < CLIENT_CACHE_SLOTS; i++)
+ 	{
+ 		if (!clients[i].addr.s_addr)

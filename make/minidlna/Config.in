@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_MINIDLNA
-	bool "minidlna 1.1.1"
+	bool "minidlna 1.1.2"
 	select FREETZ_LIB_libpthread if ! FREETZ_PACKAGE_MINIDLNA_STATIC
 	select FREETZ_LIB_libavcodec if ! FREETZ_PACKAGE_MINIDLNA_STATIC
 	select FREETZ_LIB_libavformat if ! FREETZ_PACKAGE_MINIDLNA_STATIC
@@ -34,6 +34,7 @@ depends on FREETZ_PACKAGE_MINIDLNA
 endchoice
 
 config FREETZ_PACKAGE_MINIDLNA_LANG
+	depends on FREETZ_PACKAGE_MINIDLNA
 	string
 	default "en" if FREETZ_PACKAGE_MINIDLNA_LANG_EN
 	default "de" if FREETZ_PACKAGE_MINIDLNA_LANG_DE
