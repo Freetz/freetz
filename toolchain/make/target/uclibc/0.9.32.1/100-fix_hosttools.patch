@@ -1,0 +1,47 @@
+--- ../utils/ldd.c.orig	2011-12-30 12:11:07.000000000 +0100
++++ ../utils/ldd.c	2014-03-08 23:40:27.284106597 +0100
+@@ -152,10 +152,10 @@
+ 	}
+ }
+ 
+-#if ELFCLASSM == ELFCLASS32
+-# define byteswap_to_host(x) byteswap32_to_host(x)
+-#else
++#if __WORDSIZE == 64
+ # define byteswap_to_host(x) byteswap64_to_host(x)
++#else
++# define byteswap_to_host(x) byteswap32_to_host(x)
+ #endif
+ 
+ static ElfW(Shdr) *elf_find_section_type(uint32_t key, ElfW(Ehdr) *ehdr)
+@@ -217,7 +217,8 @@
+ static int check_elf_header(ElfW(Ehdr) *const ehdr)
+ {
+ 	if (!ehdr || *(uint32_t*)ehdr != ELFMAG_U32
+-	 || ehdr->e_ident[EI_CLASS] != ELFCLASSM
++	 /* Use TARGET_WORDSIZE, not ELFCLASSM which depends on the host */
++	 || ehdr->e_ident[EI_CLASS] != (TARGET_WORDSIZE >> 5)
+ 	 || ehdr->e_ident[EI_VERSION] != EV_CURRENT
+ 	) {
+ 		return 1;
+--- ../utils/porting.h~	2011-12-30 12:11:07.000000000 +0100
++++ ../utils/porting.h	2014-03-08 23:39:31.019492532 +0100
+@@ -41,6 +41,18 @@
+ #include "dl-defs.h"
+ #endif
+ 
++/* __WORDSIZE ist used for __ELF_NATIVE_CLASS, which is used for ElfW().
++  We want to provide the wordsize of the target, not of the host, when
++   compiling readelf.host
++ */
++#include <link.h>
++#ifdef TARGET_WORDSIZE
++#undef __WORDSIZE
++#define __WORDSIZE TARGET_WORDSIZE
++#else
++#define TARGET_WORDSIZE __WORDSIZE
++#endif
++
+ #ifdef DMALLOC
+ #include <dmalloc.h>
+ #endif
