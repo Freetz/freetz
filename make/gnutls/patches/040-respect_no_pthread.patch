@@ -1,0 +1,15 @@
+--- lib/configure
++++ lib/configure
+@@ -28219,7 +28219,11 @@
+   rpathdirs=
+   ltrpathdirs=
+   names_already_handled=
+-  names_next_round='pthread '
++  if test "${with_libpthread_prefix}" != "no"; then
++    names_next_round='pthread '
++  else
++    names_next_round=''
++  fi
+   while test -n "$names_next_round"; do
+     names_this_round="$names_next_round"
+     names_next_round=
