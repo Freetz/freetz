@@ -20,7 +20,7 @@ cat << EOF
 <center>
 
 <pre class="log">
-<iframe src="http://$(self_host):${MINIDLNA_PORT}/" frameborder="0" allowTransparency="true"></iframe>
+<iframe src="http://$(self_host):${MINIDLNA_PORT}/" frameborder="0" width="100%" height="400" allowTransparency="true"></iframe>
 </pre>
 
 <form class="btn" action="$(href status minidlna minidlna_status)" method="post" style="display:inline;">
