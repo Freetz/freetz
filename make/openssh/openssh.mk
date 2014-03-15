@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 6.4p1)
+$(call PKG_INIT_BIN, 6.5p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=cf5fe0eb118d7e4f9296fbc5d6884965885fc55d
+$(PKG)_SOURCE_SHA1:=3363a72b4fee91b29cf2024ff633c17f6cd2f86d
 $(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
 $(PKG)_BIN_BINARIES             := ssh scp ssh-add ssh-agent ssh-keygen ssh-keysign ssh-keyscan sftp
@@ -37,6 +37,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-wtmp
 $(PKG)_CONFIGURE_OPTIONS += --disable-wtmpx
 $(PKG)_CONFIGURE_OPTIONS += --without-bsd-auth
 $(PKG)_CONFIGURE_OPTIONS += --without-kerberos5
+$(PKG)_CONFIGURE_OPTIONS += --without-pie
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
