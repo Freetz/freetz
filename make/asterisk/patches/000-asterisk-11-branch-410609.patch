@@ -462,6 +462,18 @@
  
  	ao2_ref(b_profile->sounds, -1); /* sounds struct copied over to it from the template by reference only. */
  	ao2_ref(oldsounds, -1);    /* original sounds struct we don't need anymore */
+--- apps/confbridge/conf_state.c
++++ apps/confbridge/conf_state.c
+@@ -74,6 +74,9 @@
+ void conf_default_leave_waitmarked(struct conference_bridge_user *cbu)
+ {
+ 	conf_remove_user_waiting(cbu->conference_bridge, cbu);
++	if (cbu->playing_moh) {
++		conf_moh_stop(cbu);
++	}
+ }
+ 
+ void conf_change_state(struct conference_bridge_user *cbu, struct conference_state *newstate)
 --- apps/confbridge/conf_state_empty.c
 +++ apps/confbridge/conf_state_empty.c
 @@ -73,7 +73,6 @@
@@ -472,6 +484,17 @@
  
  	conf_change_state(cbu, CONF_STATE_SINGLE_MARKED);
  }
+--- apps/confbridge/conf_state_inactive.c
++++ apps/confbridge/conf_state_inactive.c
+@@ -68,7 +68,7 @@
+ 
+ static void leave_waitmarked(struct conference_bridge_user *cbu)
+ {
+-	conf_remove_user_waiting(cbu->conference_bridge, cbu);
++	conf_default_leave_waitmarked(cbu);
+ 	if (cbu->conference_bridge->waitingusers == 0) {
+ 		conf_change_state(cbu, CONF_STATE_EMPTY);
+ 	}
 --- apps/confbridge/conf_state_multi_marked.c
 +++ apps/confbridge/conf_state_multi_marked.c
 @@ -169,14 +169,21 @@
@@ -516,6 +539,30 @@
 +		&& waitmarked_moved) {
 +		conf_add_post_join_action(cbu, post_join_play_begin);
 +	}
+ }
+--- apps/confbridge/conf_state_single.c
++++ apps/confbridge/conf_state_single.c
+@@ -72,6 +72,9 @@
+ static void leave_unmarked(struct conference_bridge_user *cbu)
+ {
+ 	conf_remove_user_active(cbu->conference_bridge, cbu);
++	if (cbu->playing_moh) {
++		conf_moh_stop(cbu);
++	}
+ 
+ 	if (cbu->conference_bridge->waitingusers) {
+ 		conf_change_state(cbu, CONF_STATE_INACTIVE);
+--- apps/confbridge/conf_state_single_marked.c
++++ apps/confbridge/conf_state_single_marked.c
+@@ -71,6 +71,9 @@
+ static void leave_marked(struct conference_bridge_user *cbu)
+ {
+ 	conf_remove_user_marked(cbu->conference_bridge, cbu);
++	if (cbu->playing_moh) {
++		conf_moh_stop(cbu);
++	}
+ 
+ 	conf_change_state(cbu, CONF_STATE_EMPTY);
  }
 --- apps/confbridge/include/confbridge.h
 +++ apps/confbridge/include/confbridge.h
@@ -1225,8 +1272,8 @@
  
  #include "asterisk.h"
  
--ASTERISK_FILE_VERSION(__FILE__, "$Revision: 409303 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 409473 $")
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 410431 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 410311 $")
  
  #include <signal.h>
  #include <sys/signal.h>
@@ -1425,7 +1472,7 @@
  		 We should hangup when we are getting a 200 OK in a sipfrag
  		 Check if we have an owner of this event */
  
-@@ -25441,12 +25463,6 @@
+@@ -25570,12 +25592,6 @@
  			ast_debug(2, "No SDP in Invite, third party call control\n");
  		}
  
@@ -1438,7 +1485,7 @@
  		/* Initialize the context if it hasn't been already */
  		if (ast_strlen_zero(p->context))
  			ast_string_field_set(p, context, sip_cfg.default_context);
-@@ -26093,7 +26109,6 @@
+@@ -26110,7 +26126,6 @@
  
  		ast_do_masquerade(target.chan1);
  
@@ -1446,7 +1493,7 @@
  		if (target.chan2) {
  			ast_indicate(target.chan2, AST_CONTROL_UNHOLD);
  		}
-@@ -29940,7 +29955,7 @@
+@@ -29957,7 +29972,7 @@
  	if (sip_cfg.callevents)
  		manager_event(EVENT_FLAG_SYSTEM, "ChannelUpdate",
  			"Channel: %s\r\nChanneltype: %s\r\nSIPcallid: %s\r\nSIPfullcontact: %s\r\nPeername: %s\r\n",
@@ -1455,6 +1502,67 @@
  	sip_pvt_unlock(p);
  	if (!tmpc) {
  		dialog_unlink_all(p);
+@@ -31195,21 +31210,26 @@
+ 		peer->socket.port = htons(((peer->socket.type & SIP_TRANSPORT_TLS) ? STANDARD_TLS_PORT : STANDARD_SIP_PORT));
+ 	}
+ 
+-	if (!sip_cfg.ignore_regexpire && peer->host_dynamic && realtime) {
+-		time_t nowtime = time(NULL);
++	if (realtime) {
++		int enablepoke = 1;
+ 
+-		if ((nowtime - regseconds) > 0) {
+-			destroy_association(peer);
+-			memset(&peer->addr, 0, sizeof(peer->addr));
+-			peer->lastms = -1;
+-			ast_debug(1, "Bah, we're expired (%d/%d/%d)!\n", (int)(nowtime - regseconds), (int)regseconds, (int)nowtime);
++		if (!sip_cfg.ignore_regexpire && peer->host_dynamic) {
++			time_t nowtime = time(NULL);
++
++			if ((nowtime - regseconds) > 0) {
++				destroy_association(peer);
++				memset(&peer->addr, 0, sizeof(peer->addr));
++				peer->lastms = -1;
++				enablepoke = 0;
++				ast_debug(1, "Bah, we're expired (%d/%d/%d)!\n", (int)(nowtime - regseconds), (int)regseconds, (int)nowtime);
++			}
+ 		}
+-	}
+ 
+-	/* Startup regular pokes */
+-	if (!devstate_only && realtime && peer->lastms > 0) {
+-		sip_ref_peer(peer, "schedule qualify");
+-		sip_poke_peer(peer, 0);
++		/* Startup regular pokes */
++		if (!devstate_only && enablepoke) {
++			sip_ref_peer(peer, "schedule qualify");
++			sip_poke_peer(peer, 0);
++		}
+ 	}
+ 
+ 	if (ast_test_flag(&peer->flags[1], SIP_PAGE2_ALLOWSUBSCRIBE)) {
+@@ -34767,12 +34787,16 @@
+ 
+ 	ast_mutex_lock(&monlock);
+ 	if (monitor_thread && (monitor_thread != AST_PTHREADT_STOP) && (monitor_thread != AST_PTHREADT_NULL)) {
+-		pthread_cancel(monitor_thread);
+-		pthread_kill(monitor_thread, SIGURG);
+-		pthread_join(monitor_thread, NULL);
++		pthread_t th = monitor_thread;
++		monitor_thread = AST_PTHREADT_STOP;
++		pthread_cancel(th);
++		pthread_kill(th, SIGURG);
++		ast_mutex_unlock(&monlock);
++		pthread_join(th, NULL);
++	} else {
++		monitor_thread = AST_PTHREADT_STOP;
++		ast_mutex_unlock(&monlock);
+ 	}
+-	monitor_thread = AST_PTHREADT_STOP;
+-	ast_mutex_unlock(&monlock);
+ 
+ 	/* Destroy all the dialogs and free their memory */
+ 	i = ao2_iterator_init(dialogs, 0);
 --- channels/chan_unistim.c
 +++ channels/chan_unistim.c
 @@ -38,7 +38,7 @@
@@ -3251,6 +3359,76 @@
  	config = ast_config_internal_load(extconfig_conf, configtmp, flags, "", "extconfig");
  	if (config == CONFIG_STATUS_FILEINVALID) {
  		return -1;
+--- main/db.c
++++ main/db.c
+@@ -33,7 +33,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 404344 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 410606 $")
+ 
+ #include "asterisk/_private.h"
+ #include "asterisk/paths.h"	/* use ast_config_AST_DB */
+@@ -112,6 +112,7 @@
+ static sqlite3 *astdb;
+ static pthread_t syncthread;
+ static int doexit;
++static int dosync;
+ 
+ static void db_sync(void);
+ 
+@@ -939,6 +940,7 @@
+  */
+ static void db_sync(void)
+ {
++	dosync = 1;
+ 	ast_cond_signal(&dbcond);
+ }
+ 
+@@ -957,8 +959,14 @@
+ 	ast_mutex_lock(&dblock);
+ 	ast_db_begin_transaction();
+ 	for (;;) {
+-		/* We're ok with spurious wakeups, so we don't worry about a predicate */
+-		ast_cond_wait(&dbcond, &dblock);
++		/* If dosync is set, db_sync() was called during sleep(1), 
++		 * and the pending transaction should be committed. 
++		 * Otherwise, block until db_sync() is called.
++		 */
++		while (!dosync) {
++			ast_cond_wait(&dbcond, &dblock);
++		}
++		dosync = 0;
+ 		if (ast_db_commit_transaction()) {
+ 			ast_db_rollback_transaction();
+ 		}
+@@ -970,15 +978,6 @@
+ 		ast_mutex_unlock(&dblock);
+ 		sleep(1);
+ 		ast_mutex_lock(&dblock);
+-		/* Unfortunately, it is possible for signaling to happen
+-		 * when we're not waiting: in the bit when we're unlocked
+-		 * above. Do the do-exit check here again. (We could do
+-		 * it once, but that would impose a forced delay of 1
+-		 * second always.) */
+-		if (doexit) {
+-			ast_mutex_unlock(&dblock);
+-			break;
+-		}
+ 	}
+ 
+ 	return NULL;
+@@ -995,8 +994,8 @@
+ 
+ 	/* Set doexit to 1 to kill thread. db_sync must be called with
+ 	 * mutex held. */
+-	doexit = 1;
+ 	ast_mutex_lock(&dblock);
++	doexit = 1;
+ 	db_sync();
+ 	ast_mutex_unlock(&dblock);
+ 
 --- main/devicestate.c
 +++ main/devicestate.c
 @@ -119,7 +119,7 @@
@@ -3376,6 +3554,17 @@
  		ao2_unlock(wrapper);
  		ao2_ref(wrapper, -1);
  		return;
+--- main/http.c
++++ main/http.c
+@@ -36,7 +36,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 410431 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 410381 $")
+ 
+ #include <time.h>
+ #include <sys/time.h>
 --- main/logger.c
 +++ main/logger.c
 @@ -31,7 +31,7 @@
@@ -3430,7 +3619,7 @@
  #include "asterisk.h"
  
 -ASTERISK_FILE_VERSION(__FILE__, "$Revision: 405431 $")
-+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 406918 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 410609 $")
  
  #include "asterisk/_private.h"
  #include "asterisk/paths.h"	/* use various ast_config_AST_* */
@@ -3627,7 +3816,16 @@
  		return FILTER_COMPILE_FAIL;
  	}
  
-@@ -5569,15 +5597,17 @@
+@@ -4782,6 +4810,8 @@
+ 		ao2_t_link(whitefilters, new_filter, "link new filter into white user container");
+ 	}
+ 
++	ao2_ref(new_filter, -1);
++
+ 	return FILTER_SUCCESS;
+ }
+ 
+@@ -5569,15 +5599,17 @@
  /*! \brief remove at most n_max stale session from the list. */
  static void purge_sessions(int n_max)
  {
@@ -3646,7 +3844,7 @@
  	while ((session = ao2_iterator_next(&i)) && n_max > 0) {
  		ao2_lock(session);
  		if (session->sessiontimeout && (now > session->sessiontimeout) && !session->inuse) {
-@@ -5656,9 +5686,11 @@
+@@ -5656,9 +5688,11 @@
  AST_THREADSTORAGE(manager_event_buf);
  #define MANAGER_EVENT_BUF_INITSIZE   256
  
@@ -3660,7 +3858,7 @@
  	struct mansession_session *session;
  	struct manager_custom_hook *hook;
  	struct ast_str *auth = ast_str_alloca(80);
-@@ -5969,6 +6001,7 @@
+@@ -5969,6 +6003,7 @@
   */
  static struct mansession_session *find_session(uint32_t ident, int incinuse)
  {
@@ -3668,7 +3866,7 @@
  	struct mansession_session *session;
  	struct ao2_iterator i;
  
-@@ -5976,7 +6009,12 @@
+@@ -5976,7 +6011,12 @@
  		return NULL;
  	}
  
@@ -3681,7 +3879,7 @@
  	while ((session = ao2_iterator_next(&i))) {
  		ao2_lock(session);
  		if (session->managerid == ident && !session->needdestroy) {
-@@ -6003,13 +6041,19 @@
+@@ -6003,13 +6043,19 @@
  static struct mansession_session *find_session_by_nonce(const char *username, unsigned long nonce, int *stale)
  {
  	struct mansession_session *session;
@@ -3701,7 +3899,7 @@
  	while ((session = ao2_iterator_next(&i))) {
  		ao2_lock(session);
  		if (!strcasecmp(session->username, username) && session->managerid == nonce) {
-@@ -6023,6 +6067,7 @@
+@@ -6023,6 +6069,7 @@
  		unref_mansession(session);
  	}
  	ao2_iterator_destroy(&i);
@@ -3709,7 +3907,7 @@
  	return session;
  }
  
-@@ -6046,13 +6091,19 @@
+@@ -6046,13 +6093,19 @@
  {
  	int result = 0;
  	struct mansession_session *session;
@@ -3729,7 +3927,7 @@
  	while ((session = ao2_iterator_next(&i))) {
  		ao2_lock(session);
  		if ((session->managerid == ident) && (session->readperm & perm)) {
-@@ -6065,6 +6116,7 @@
+@@ -6065,6 +6118,7 @@
  		unref_mansession(session);
  	}
  	ao2_iterator_destroy(&i);
@@ -3737,7 +3935,7 @@
  	return result;
  }
  
-@@ -6072,13 +6124,19 @@
+@@ -6072,13 +6126,19 @@
  {
  	int result = 0;
  	struct mansession_session *session;
@@ -3757,7 +3955,7 @@
  	while ((session = ao2_iterator_next(&i))) {
  		ao2_lock(session);
  		if ((session->managerid == ident) && (session->writeperm & perm)) {
-@@ -6091,6 +6149,7 @@
+@@ -6091,6 +6151,7 @@
  		unref_mansession(session);
  	}
  	ao2_iterator_destroy(&i);
@@ -3765,7 +3963,7 @@
  	return result;
  }
  
-@@ -6562,12 +6621,8 @@
+@@ -6562,12 +6623,8 @@
  	if (method == AST_HTTP_POST && params) {
  		ast_variables_destroy(params);
  	}
@@ -3780,7 +3978,7 @@
  
  	if (session && blastaway) {
  		session_destroy(session);
-@@ -7053,7 +7108,13 @@
+@@ -7053,7 +7110,13 @@
  
  	if (!strcasecmp(args.param, "sessions")) {
  		int no_sessions = 0;
@@ -3795,7 +3993,7 @@
  		snprintf(buf, len, "%d", no_sessions);
  	} else {
  		ast_log(LOG_ERROR, "Invalid arguments provided to function AMI_CLIENT: %s\n", args.param);
-@@ -7072,7 +7133,6 @@
+@@ -7072,7 +7135,6 @@
  	.read_max = 12,
  };
  
@@ -3803,7 +4001,7 @@
  static int webregged = 0;
  
  /*! \brief cleanup code called at each iteration of server_root,
-@@ -7383,16 +7443,14 @@
+@@ -7383,16 +7445,14 @@
  /*! \internal \brief Free a user record.  Should already be removed from the list */
  static void manager_free_user(struct ast_manager_user *user)
  {
@@ -3826,7 +4024,7 @@
  	user->acl = ast_free_acl_list(user->acl);
  	ast_variables_destroy(user->chanvars);
  	ast_free(user);
-@@ -7403,45 +7461,43 @@
+@@ -7403,45 +7463,43 @@
  {
  	struct ast_manager_user *user;
  
@@ -3909,7 +4107,7 @@
  
  #ifdef AST_XML_DOCS
  	ao2_t_global_obj_release(event_docs, "Dispose of event_docs");
-@@ -7450,35 +7506,49 @@
+@@ -7450,35 +7508,49 @@
  	ast_tcptls_server_stop(&ami_desc);
  	ast_tcptls_server_stop(&amis_desc);
  
@@ -3978,7 +4176,7 @@
  	const char *val;
  	char *cat = NULL;
  	int newhttptimeout = 60;
-@@ -7492,9 +7562,14 @@
+@@ -7492,9 +7564,14 @@
  	int tls_was_enabled = 0;
  	int acl_subscription_flag = 0;
  
@@ -3995,7 +4193,7 @@
  		/* Register default actions */
  		ast_manager_register_xml_core("Ping", 0, action_ping);
  		ast_manager_register_xml_core("Events", 0, action_events);
-@@ -7535,33 +7610,37 @@
+@@ -7535,33 +7612,37 @@
  		ast_cli_register_multiple(cli_manager, ARRAY_LEN(cli_manager));
  		__ast_custom_function_register(&managerclient_function, NULL);
  		ast_extension_state_add(NULL, NULL, manager_state_cb, NULL);
@@ -4052,7 +4250,7 @@
  		return 0;
  	}
  
-@@ -7570,32 +7649,15 @@
+@@ -7570,32 +7651,15 @@
  		acl_change_event_unsubscribe();
  	}
  
@@ -4090,7 +4288,7 @@
  	for (var = ast_variable_browse(cfg, "general"); var; var = var->next) {
  		val = var->value;
  
-@@ -7754,9 +7816,7 @@
+@@ -7754,9 +7818,7 @@
  				}
  
  				if (!ast_strlen_zero(user_secret)) {
@@ -4101,7 +4299,7 @@
  					user->secret = ast_strdup(user_secret);
  				}
  
-@@ -7807,6 +7867,10 @@
+@@ -7807,6 +7869,10 @@
  			user->writetimeout = 100;
  			user->whitefilters = ao2_container_alloc(1, NULL, NULL);
  			user->blackfilters = ao2_container_alloc(1, NULL, NULL);
@@ -4112,7 +4310,7 @@
  
  			/* Insert into list */
  			AST_RWLIST_INSERT_TAIL(&users, user, list);
-@@ -7824,9 +7888,7 @@
+@@ -7824,9 +7890,7 @@
  		var = ast_variable_browse(cfg, cat);
  		for (; var; var = var->next) {
  			if (!strcasecmp(var->name, "secret")) {
@@ -4123,7 +4321,7 @@
  				user->secret = ast_strdup(var->value);
  			} else if (!strcasecmp(var->name, "deny") ||
  				       !strcasecmp(var->name, "permit") ||
-@@ -7886,9 +7948,7 @@
+@@ -7886,9 +7950,7 @@
  			/* Calculate A1 for Digest auth */
  			snprintf(a1, sizeof(a1), "%s:%s:%s", user->username, global_realm, user->secret);
  			ast_md5_hash(a1_hash,a1);
@@ -4134,7 +4332,7 @@
  			user->a1_hash = ast_strdup(a1_hash);
  			continue;
  		}
-@@ -7901,14 +7961,8 @@
+@@ -7901,14 +7963,8 @@
  
  	AST_RWLIST_UNLOCK(&users);
  
@@ -4149,7 +4347,7 @@
  			ast_http_uri_link(&rawmanuri);
  			ast_http_uri_link(&manageruri);
  			ast_http_uri_link(&managerxmluri);
-@@ -7935,7 +7989,11 @@
+@@ -7935,7 +7991,11 @@
  		httptimeout = newhttptimeout;
  	}
  
@@ -4833,6 +5031,61 @@
  	if (check_modem_rate(options.modems, options.minrate)) {
  		ast_fax_modem_to_str(options.modems, modems, sizeof(modems));
  		ast_log(LOG_ERROR, "'modems' setting '%s' is incompatible with 'minrate' setting %d\n", modems, options.minrate);
+--- res/res_fax_spandsp.c
++++ res/res_fax_spandsp.c
+@@ -50,7 +50,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 403450 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 409990 $")
+ 
+ #define SPANDSP_EXPOSE_INTERNAL_STRUCTURES
+ #include <spandsp.h>
+@@ -649,6 +649,8 @@
+ 
+ static int spandsp_v21_detect(struct ast_fax_session *s, const struct ast_frame *f) {
+ 	struct spandsp_pvt *p = s->tech_pvt;
++	int16_t *slndata;
++	g711_state_t *decoder;
+ 
+ 	if (p->v21_detected) {
+ 		return 0;
+@@ -659,10 +661,33 @@
+ 		return -1;
+ 	}
+ 
+-	modem_connect_tones_rx(p->tone_state, f->data.ptr, f->samples);
++	ast_debug(5, "frame={ datalen=%d, samples=%d, mallocd=%d, src=%s, flags=%d, ts=%ld, len=%ld, seqno=%d, data.ptr=%p, subclass.format.id=%d  }\n", f->datalen, f->samples, f->mallocd, f->src, f->flags, f->ts, f->len, f->seqno, f->data.ptr, f->subclass.format.id);
++
++	/* slinear frame can be passed to spandsp */
++	if (f->subclass.format.id == AST_FORMAT_SLINEAR) {
++		modem_connect_tones_rx(p->tone_state, f->data.ptr, f->samples);
++
++	/* alaw/ulaw frame must be converted to slinear before passing to spandsp */
++	} else if (f->subclass.format.id == AST_FORMAT_ALAW || f->subclass.format.id == AST_FORMAT_ULAW) {
++		if (!(slndata = ast_malloc(sizeof(*slndata) * f->samples))) {
++			return -1;
++		}
++		decoder = g711_init(NULL, (f->subclass.format.id == AST_FORMAT_ALAW ? G711_ALAW : G711_ULAW));
++		g711_decode(decoder, slndata, f->data.ptr, f->samples);
++		ast_debug(5, "spandsp transcoding frame from %s to slinear for v21 detection\n", (f->subclass.format.id == AST_FORMAT_ALAW ? "G711_ALAW" : "G711_ULAW"));
++		modem_connect_tones_rx(p->tone_state, slndata, f->samples);
++		g711_release(decoder);
++		ast_free(slndata);
++
++	/* frame in other formats cannot be passed to spandsp, it could cause segfault */
++	} else {
++		ast_log(LOG_WARNING, "Unknown frame format %d, v.21 detection skipped\n", f->subclass.format.id);
++		return -1;
++	}
+ 
+ 	if (p->v21_detected) {
+ 		s->details->option.v21_detected = 1;
++		ast_debug(5, "v.21 detected\n");
+ 	}
+ 
+ 	return 0;
 --- res/res_http_websocket.c
 +++ res/res_http_websocket.c
 @@ -29,7 +29,7 @@
@@ -5167,6 +5420,39 @@
  	ast_websocket_unref(session);
  }
  
+--- res/res_musiconhold.c
++++ res/res_musiconhold.c
+@@ -32,7 +32,7 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 398758 $")
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 410044 $")
+ 
+ #include <ctype.h>
+ #include <signal.h>
+@@ -1471,12 +1471,6 @@
+ 				if (state && state->class) {
+ 					/* Class already exist for this channel */
+ 					ast_log(LOG_NOTICE, "This channel already has a MOH class attached (%s)!\n", state->class->name);
+-					if (state->class->realtime && !ast_test_flag(global_flags, MOH_CACHERTCLASSES) && !strcasecmp(mohclass->name, state->class->name)) {
+-						/* we found RT class with the same name, seems like we should continue playing existing one */
+-						/* XXX This code is impossible to reach */
+-						mohclass = mohclass_unref(mohclass, "unreffing potential mohclass (channel already has a class)");
+-						mohclass = state->class;
+-					}
+ 				}
+ 				/* We don't want moh_register to unref the mohclass because we do it at the end of this function as well.
+ 				 * If we allowed moh_register to unref the mohclass,too, then the count would be off by one. The result would
+@@ -1529,7 +1523,7 @@
+ 						if (state->class->realtime && !ast_test_flag(global_flags, MOH_CACHERTCLASSES) && !strcasecmp(mohclass->name, state->class->name)) {
+ 							/* we found RT class with the same name, seems like we should continue playing existing one */
+ 							mohclass = mohclass_unref(mohclass, "unreffing potential mohclass (channel already has one)");
+-							mohclass = state->class;
++							mohclass = mohclass_ref(state->class, "using existing class from state");
+ 						}
+ 					} else {
+ 						if (ast_pthread_create_background(&mohclass->thread, NULL, monmp3thread, mohclass)) {
 --- res/res_pktccops.c
 +++ res/res_pktccops.c
 @@ -37,7 +37,7 @@
