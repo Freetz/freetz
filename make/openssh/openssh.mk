@@ -39,13 +39,18 @@ $(PKG)_CONFIGURE_OPTIONS += --without-bsd-auth
 $(PKG)_CONFIGURE_OPTIONS += --without-kerberos5
 $(PKG)_CONFIGURE_OPTIONS += --without-pie
 
+$(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
+$(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
+$(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BIN_BINARIES_BUILD_DIR) $($(PKG)_SBIN_BINARIES_BUILD_DIR) $($(PKG)_LIB_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(OPENSSH_DIR) \
-		EXTRA_LDFLAGS="$(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static)" \
+		EXTRA_CFLAGS="$(OPENSSH_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS="$(OPENSSH_EXTRA_LDFLAGS)" \
 		all
 
 $(foreach binary,$($(PKG)_BIN_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
