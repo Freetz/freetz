@@ -2,15 +2,15 @@
 # => HAVE_* symbol below get never defined => we use the else-branch
 --- src/libs/zbxsysinfo/common/net.c
 +++ src/libs/zbxsysinfo/common/net.c
-@@ -455,6 +455,7 @@
- #else	/* not _WINDOWS */
- 	res_init();	/* initialize always, settings might have changed */
+@@ -461,6 +461,7 @@
+ 	if (-1 == res_init())	/* initialize always, settings might have changed */
+ 		return SYSINFO_RET_FAIL;
  
 +#if defined(HAVE_RES_MKQUERY) && defined(HAVE_RES_SEND)
  	if (-1 == (res = res_mkquery(QUERY, zone, C_IN, type, NULL, 0, NULL, buf, sizeof(buf))))
  		return SYSINFO_RET_FAIL;
  
-@@ -473,6 +474,11 @@
+@@ -485,6 +486,11 @@
  	_res.retry = retry;
  
  	res = res_send(buf, res, answer.buffer, sizeof(answer.buffer));
@@ -20,5 +20,5 @@
 +		return SYSINFO_RET_FAIL;
 +#endif 
  
- 	hp = (HEADER *)answer.buffer;
- 
+ 	_res.retrans = saved_retrans;
+ 	_res.retry = saved_retry;
