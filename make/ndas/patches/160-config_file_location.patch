@@ -1,0 +1,36 @@
+--- 2.6.32/platform/linux/tarball-tag/admin/ndasadmin.c
++++ 2.6.32/platform/linux/tarball-tag/admin/ndasadmin.c
+@@ -199,7 +199,7 @@
+ 
+ 
+ /* 
+- * cat /proc/ndas > /etc/ndas.conf
++ * cat /proc/ndas > /mod/etc/ndas.conf
+  */
+ static int save_registration_info() {
+     int ifd,ofd,c, err = 0;
+@@ -209,7 +209,7 @@
+     dbg_ndadmin(1,"ifd=%d", ifd);
+     if ( ifd < 0 ) return ifd;
+ 
+-    ofd = open("/etc/ndas.conf", O_CREAT|O_NDELAY|O_TRUNC|O_WRONLY, 0600);
++    ofd = open("/mod/etc/ndas.conf", O_CREAT|O_NDELAY|O_TRUNC|O_WRONLY, 0600);
+     dbg_ndadmin(1,"ofd=%d", ofd);
+     if ( ofd < 0 ) {
+         goto out;
+@@ -233,13 +233,13 @@
+     return err;
+ }
+ /* 
+- * cat /etc/ndas.conf > /proc/ndas
++ * cat /mod/etc/ndas.conf > /proc/ndas
+  */
+ static int restore_registration_info() 
+ {
+     int ifd,ofd,c, err = 0;
+     char buf[1024];
+-    ifd = open("/etc/ndas.conf",O_NDELAY|O_RDONLY);
++    ifd = open("/mod/etc/ndas.conf",O_NDELAY|O_RDONLY);
+     if ( ifd < 0 ) return ifd;
+     ofd = open("/proc/ndas/regdata", O_NDELAY|O_WRONLY);
+     if ( ofd < 0 ) 
