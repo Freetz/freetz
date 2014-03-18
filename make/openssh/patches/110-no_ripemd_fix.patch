@@ -1,3 +1,35 @@
+--- digest.h
++++ digest.h
+@@ -22,6 +22,21 @@
+ #define SSH_DIGEST_MAX_LENGTH	64
+ 
+ /* Digest algorithms */
++enum E_SSH_DIGEST {
++	SSH_DIGEST_MD5,
++#ifndef OPENSSL_NO_RIPEMD
++	SSH_DIGEST_RIPEMD160,
++#endif
++	SSH_DIGEST_SHA1,
++/* TODO: #ifdef HAVE_EVP_SHA256 */
++	SSH_DIGEST_SHA256,
++	SSH_DIGEST_SHA384,
++	SSH_DIGEST_SHA512,
++/* #endif */
++	SSH_DIGEST_MAX
++};
++
++#if 0 /* original code */
+ #define SSH_DIGEST_MD5		0
+ #define SSH_DIGEST_RIPEMD160	1
+ #define SSH_DIGEST_SHA1		2
+@@ -29,6 +44,7 @@
+ #define SSH_DIGEST_SHA384	4
+ #define SSH_DIGEST_SHA512	5
+ #define SSH_DIGEST_MAX		6
++#endif
+ 
+ /* Returns the algorithm's digest length in bytes or 0 for invalid algorithm */
+ size_t ssh_digest_bytes(int alg);
 --- digest.c
 +++ digest.c
 @@ -44,7 +44,9 @@
