@@ -68,6 +68,27 @@ config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 	help
 		LZO2 Compression for VPN Traffic
 
+config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
+	bool "With traffic obfuscation"
+	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_VERSION_2_3
+	default n
+	help
+		Adds support for an additional configuration option 'scramble'
+		with the following possible values:
+		 * "xormask" xormask
+		 * "xorptrpos"
+		 * "reverse"
+		 * "obfuscate" xormask
+
+		WARNING:
+		 'scramble'-option and SSLH are NOT compatible. SSLH is not
+		 able to recognize OpenVPN traffic if 'scramble'-option
+		 is enabled in OpenVPN config. Don't enable it if you plan
+		 to use SSLH to demultiplex OpenVPN protocol.
+
+comment "Warning: OpenVPN traffic obfuscation and SSLH are not compatible"
+	depends on FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION && FREETZ_PACKAGE_SSLH
+
 config FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
 	bool "Enable Management Console"
 	depends on FREETZ_PACKAGE_OPENVPN
@@ -103,4 +124,3 @@ config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
 		New quite simple OpenVPN configuration interface.
 		It will not generate a configuration file based on GUI settings
 		but just ask for an existing configuration.
-
