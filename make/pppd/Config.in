@@ -1,15 +1,3 @@
-comment "Point-to-Point (not available, no sources by AVM)"
-	depends on !FREETZ_REPLACE_KERNEL_AVAILABLE
-
-comment "Point-to-Point (not available, needs replace kernel)"
-	depends on FREETZ_KERNEL_VERSION_2_6_28 && !FREETZ_REPLACE_KERNEL
-
-config FREETZ_PACKAGE_PPP
-	bool "Point-to-Point"
-	depends on (FREETZ_REPLACE_KERNEL_AVAILABLE && !FREETZ_KERNEL_VERSION_2_6_28) || \
-		FREETZ_REPLACE_KERNEL
-
-
 comment "Without 'replace kernel' you can not use mppe/mppc."
 	depends on FREETZ_PACKAGE_PPPD && ! FREETZ_REPLACE_KERNEL
 
