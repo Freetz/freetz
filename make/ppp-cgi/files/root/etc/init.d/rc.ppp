@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=ppp
+DAEMON_LONG_NAME=PPP
 . /etc/init.d/modlibrc
 
 
@@ -22,7 +23,7 @@ disconnect() {
 }
 
 start() {
-	echo -n 'Starting ppp-cgi ... '
+	echo -n 'Starting $DAEMON_LONG_NAME ... '
 	if [ -n "$(pidof ppp_observer ppp_dialer pppd)" ]; then
 		echo 'already running.'
 		exit 1
@@ -40,7 +41,7 @@ start() {
 }
 
 stop() {
-	echo -n 'Stopping ppp-cgi ... '
+	echo -n 'Stopping $DAEMON_LONG_NAME ... '
 	if [ -z "$(pidof ppp_observer ppp_dialer pppd)" ]; then
 		echo 'not running.'
 		return 1
@@ -67,9 +68,9 @@ case $1 in
 		[ ! -e "/tmp/flash/ppp/peers/dun" ] && /mod/etc/default.${DAEMON}/peers_options > /tmp/flash/ppp/peers/dun
 		[ ! -e "/tmp/flash/ppp/peers/dun.chat" ] && /mod/etc/default.${DAEMON}/peers_chat > /tmp/flash/ppp/peers/dun.chat
 
-		modreg cgi 'ppp' 'PPP'
+		modreg cgi 'ppp' "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-		modreg status ppp ppp-cgi ppplog
+		modreg status ppp "$DAEMON_LONG_NAME" ppplog
 		modreg file ppp 'peers_options' 'PEERS: options' 0 "peers_options"
 		modreg file ppp 'peers_chat' 'PEERS: chat' 0 "peers_chat"
 
