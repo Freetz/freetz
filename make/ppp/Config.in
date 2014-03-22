@@ -7,3 +7,12 @@ comment "Point-to-Point (not available, needs replace kernel)"
 config FREETZ_PACKAGE_PPP
 	bool "Point-to-Point"
 	depends on (FREETZ_REPLACE_KERNEL_AVAILABLE && !FREETZ_KERNEL_VERSION_2_6_28) || FREETZ_REPLACE_KERNEL
+
+config FREETZ_PACKAGE_PPP_COMGT
+	bool "With support for GPRS/EDGE/3G/HSDPA datacards"
+	depends on FREETZ_PACKAGE_PPP
+	select FREETZ_PACKAGE_PPPD_CHAT
+	select FREETZ_PACKAGE_COMGT
+	default n
+	help
+		This option adds comgt, a GPRS/EDGE/3G/HSDPA datacard control tool, to the image.
