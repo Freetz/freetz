@@ -382,6 +382,28 @@ pkg_menuconfig_symbol_name()
 }
 
 #
+# $1 .. * - pkg1 pkg2 ...
+#
+# requires GNU tar because of the '--null' option (not supported by
+#
+collect_pkg_files()
+{
+	local pkg=, pkg_ver=, pkg_menuconfig_symbol=
+	for pkg in "$@"; do
+		pkg_menuconfig_symbol=$(pkg_menuconfig_symbol_name ${pkg})
+		[ "$(eval echo \$${pkg_menuconfig_symbol})" != y ] && continue
+
+		[ ! -f "${PACKAGES_DIR}/.${pkg}" ] && error 1 "Package ${pkg} is selected but no ${PACKAGES_DIR}/.${pkg} file is available."
+
+		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
+		(
+			cd "${PACKAGES_DIR}/${pkg_ver}/root/"
+			find . -type f -print0 | tar -cv --null -T - $([ -r "../.exclude" ] && echo "--exclude-from=../.exclude") -f /dev/null
+		)
+	done | sed -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
+}
+
+#
 # Returns "(NEEDED)"-entries for all binaries/libraries supplied
 #
 getNeededEntries()
