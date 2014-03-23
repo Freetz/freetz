@@ -2,6 +2,19 @@
 #external by cuma
 [ "$EXTERNAL_ENABLED" == "y" ] || error 1 "external is used by make"
 
+collect_pkg_files() {
+	local pkg=, pkg_ver=, pkg_menuconfig_symbol=
+	for pkg in "$@"; do
+		pkg_menuconfig_symbol=$(pkg_menuconfig_symbol_name ${pkg})
+		[ "$(eval echo \$${pkg_menuconfig_symbol})" != y ] && continue
+
+		[ ! -f "$PACKAGES_DIR/.${pkg}" ] && error 1 "Package ${pkg} is selected but no $PACKAGES_DIR/.${pkg} file is available."
+
+		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
+		(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f)
+	done | sed 's|^[.]||'
+}
+
 #TODO: move the definition to fwmod, replace all occurrences of it in there
 FREETZ_LIBRARY_DIR="/usr/lib/freetz"
 
@@ -50,18 +63,9 @@ if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
 	# search files
 	for pkg in $EXTERNAL_SERVICES; do
 		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
-		pkg_files="$(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-
 		# check if along with ${pkg} a package named ${pkg}-cgi is available, for some packages (e.g. openvpn, ppp, transmission)
 		# pkg-files (rc.$pkg, etc.) are provided by the package named ${pkg}-cgi and not by ${pkg}.
-		for pkg_suffix in -cgi -v2-cgi; do
-			if [ -f "$PACKAGES_DIR/.${pkg}${pkg_suffix}" ]; then
-				pkg_cgi_ver="${pkg}${pkg_suffix}-$(cat "$PACKAGES_DIR/.${pkg}${pkg_suffix}")"
-				if [ -d "$PACKAGES_DIR/${pkg_cgi_ver}" ]; then
-					pkg_files+="$(cd $PACKAGES_DIR/${pkg_cgi_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-				fi
-			fi
-		done
+		pkg_files="$(collect_pkg_files ${pkg} ${pkg}-cgi ${pkg}-v2-cgi)"
 
 		for file in $pkg_files; do
 			case $file in
@@ -137,18 +141,9 @@ if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
 	for pkg in $EXTERNAL_SERVICES; do
 		pkg_dir="${EXTERNAL_MOD_DIR}-${pkg}"
 		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
-		pkg_files="$(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-
 		# check if along with ${pkg} a package named ${pkg}-cgi is available, for some packages (e.g. openvpn, ppp, transmission)
 		# pkg-files (rc.$pkg, etc.) are provided by the package named ${pkg}-cgi and not by ${pkg}.
-		for pkg_suffix in -cgi -v2-cgi; do
-			if [ -f "$PACKAGES_DIR/.${pkg}${pkg_suffix}" ]; then
-				pkg_cgi_ver="${pkg}${pkg_suffix}-$(cat "$PACKAGES_DIR/.${pkg}${pkg_suffix}")"
-				if [ -d "$PACKAGES_DIR/${pkg_cgi_ver}" ]; then
-					pkg_files+="$(cd $PACKAGES_DIR/${pkg_cgi_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-				fi
-			fi
-		done
+		pkg_files="$(collect_pkg_files ${pkg} ${pkg}-cgi ${pkg}-v2-cgi)"
 
 		for file in $pkg_files; do
 			[ ! -e "${EXTERNAL_MOD_DIR}$file" ] && continue

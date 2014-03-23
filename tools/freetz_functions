@@ -373,6 +373,13 @@ pkg_name()
 	echo "$name" | sed -r -e 's/-(alpha|beta|rc|(un)?stable|.)[0-9]*$//i' -e 's/-[0-9a-f]{10}$//' -e 's/-[0-9][^-]*$//' -e 's/(-v2)?-cgi$//'
 }
 
+#
+# $1 .. * - pkg-dir1 pkg-dir2 ...
+#
+pkg_menuconfig_symbol_name()
+{
+	echo "$@" | sed -r -e 's,-,_,g' -e 's,([^ \t]*),FREETZ_PACKAGE_\U\1,g'
+}
 
 #
 # Returns "(NEEDED)"-entries for all binaries/libraries supplied
