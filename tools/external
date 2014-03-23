@@ -11,13 +11,10 @@ collect_pkg_files() {
 		[ ! -f "$PACKAGES_DIR/.${pkg}" ] && error 1 "Package ${pkg} is selected but no $PACKAGES_DIR/.${pkg} file is available."
 
 		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
-
-		# TODO: find a more elegant way to achieve the same result.
-		# Known limitations: files with spaces in name are not (yet) supported.
-		"$TAR" -c \
-		  -C "${PACKAGES_DIR}/${pkg_ver}/root" \
-		  $([ -r "${PACKAGES_DIR}/${pkg_ver}/.exclude" ] && echo "--exclude-from=${PACKAGES_DIR}/${pkg_ver}/.exclude") . \
-		| "$TAR" -tv | gawk '/^-/ {print $NF}'
+		(
+			cd "${PACKAGES_DIR}/${pkg_ver}/root/"
+			find . -type f -print0 | tar -cv --null -T - $([ -r "../.exclude" ] && echo "--exclude-from=../.exclude") -f /dev/null
+		)
 	done | sed -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
 }
 
