@@ -54,7 +54,7 @@ if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
 
 		# check if along with ${pkg} a package named ${pkg}-cgi is available, for some packages (e.g. openvpn, ppp, transmission)
 		# pkg-files (rc.$pkg, etc.) are provided by the package named ${pkg}-cgi and not by ${pkg}.
-		for pkg_suffix in -cgi; do
+		for pkg_suffix in -cgi -v2-cgi; do
 			if [ -f "$PACKAGES_DIR/.${pkg}${pkg_suffix}" ]; then
 				pkg_cgi_ver="${pkg}${pkg_suffix}-$(cat "$PACKAGES_DIR/.${pkg}${pkg_suffix}")"
 				if [ -d "$PACKAGES_DIR/${pkg_cgi_ver}" ]; then
@@ -141,7 +141,7 @@ if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
 
 		# check if along with ${pkg} a package named ${pkg}-cgi is available, for some packages (e.g. openvpn, ppp, transmission)
 		# pkg-files (rc.$pkg, etc.) are provided by the package named ${pkg}-cgi and not by ${pkg}.
-		for pkg_suffix in -cgi; do
+		for pkg_suffix in -cgi -v2-cgi; do
 			if [ -f "$PACKAGES_DIR/.${pkg}${pkg_suffix}" ]; then
 				pkg_cgi_ver="${pkg}${pkg_suffix}-$(cat "$PACKAGES_DIR/.${pkg}${pkg_suffix}")"
 				if [ -d "$PACKAGES_DIR/${pkg_cgi_ver}" ]; then
