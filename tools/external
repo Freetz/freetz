@@ -50,8 +50,20 @@ if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
 	# search files
 	for pkg in $EXTERNAL_SERVICES; do
 		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
-		PKG_FILES="$(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-		for file in $PKG_FILES; do
+		pkg_files="$(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+
+		# check if along with ${pkg} a package named ${pkg}-cgi is available, for some packages (e.g. openvpn, ppp, transmission)
+		# pkg-files (rc.$pkg, etc.) are provided by the package named ${pkg}-cgi and not by ${pkg}.
+		for pkg_suffix in -cgi; do
+			if [ -f "$PACKAGES_DIR/.${pkg}${pkg_suffix}" ]; then
+				pkg_cgi_ver="${pkg}${pkg_suffix}-$(cat "$PACKAGES_DIR/.${pkg}${pkg_suffix}")"
+				if [ -d "$PACKAGES_DIR/${pkg_cgi_ver}" ]; then
+					pkg_files+="$(cd $PACKAGES_DIR/${pkg_cgi_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+				fi
+			fi
+		done
+
+		for file in $pkg_files; do
 			case $file in
 				/etc/default.$pkg/*|/etc/init.d/rc.*|/etc/onlinechanged/*|/etc/cron.d/*|/usr/lib/cgi-bin/$pkg*)
 					[ "$EXTERNAL_DYNAMIC_SCRIPTS" != "y" ] && continue
@@ -125,8 +137,20 @@ if [ "$EXTERNAL_CREATEPAK_DYNAMIC" == "y" ]; then
 	for pkg in $EXTERNAL_SERVICES; do
 		pkg_dir="${EXTERNAL_MOD_DIR}-${pkg}"
 		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
-		files=" $(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
-		for file in $files; do
+		pkg_files="$(cd $PACKAGES_DIR/${pkg_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+
+		# check if along with ${pkg} a package named ${pkg}-cgi is available, for some packages (e.g. openvpn, ppp, transmission)
+		# pkg-files (rc.$pkg, etc.) are provided by the package named ${pkg}-cgi and not by ${pkg}.
+		for pkg_suffix in -cgi; do
+			if [ -f "$PACKAGES_DIR/.${pkg}${pkg_suffix}" ]; then
+				pkg_cgi_ver="${pkg}${pkg_suffix}-$(cat "$PACKAGES_DIR/.${pkg}${pkg_suffix}")"
+				if [ -d "$PACKAGES_DIR/${pkg_cgi_ver}" ]; then
+					pkg_files+="$(cd $PACKAGES_DIR/${pkg_cgi_ver}/root/; find -type f | sed 's|^\.||g' | tr "\n" " ")"
+				fi
+			fi
+		done
+
+		for file in $pkg_files; do
 			[ ! -e "${EXTERNAL_MOD_DIR}$file" ] && continue
 			mkdir -p "${pkg_dir}${file%/*}"
 			mv "${EXTERNAL_MOD_DIR}$file" "${pkg_dir}${file}"
