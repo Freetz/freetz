@@ -10,10 +10,9 @@ config EXTERNAL_FREETZ_PACKAGE_PPPD
 
 config EXTERNAL_FREETZ_PACKAGE_PPPD_CHAT
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_PPPD_CHAT
-	select EXTERNAL_FREETZ_PACKAGE_PPP_CGI if FREETZ_PACKAGE_PPP_CGI
+	select EXTERNAL_FREETZ_PACKAGE_PPP if FREETZ_PACKAGE_PPP_CGI
 	bool "pppd chat"
 	default n
 	help
 		externals the following file(s):
 		 /usr/sbin/chat
-
