@@ -367,10 +367,20 @@ static_addons()
 	fi
 }
 
+#
+# returns package name with the version number stripped
+#
+real_pkg_name()
+{
+	echo "$1" | sed -r -e 's/-(alpha|beta|rc|(un)?stable|.)[0-9]*$//i' -e 's/-[0-9a-f]{10}$//' -e 's/-[0-9][^-]*$//'
+}
+
+#
+# returns package name the with version number and special suffixes (e.g. -cgi) stripped
+#
 pkg_name()
 {
-	local name=$1
-	echo "$name" | sed -r -e 's/-(alpha|beta|rc|(un)?stable|.)[0-9]*$//i' -e 's/-[0-9a-f]{10}$//' -e 's/-[0-9][^-]*$//' -e 's/(-v2)?-cgi$//'
+	real_pkg_name "$1" | sed -r -e 's/(-v2)?-cgi$//'
 }
 
 #
