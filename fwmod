@@ -1166,6 +1166,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		pkgfiles="$(find ${PACKAGES_DIR}/${pkg}/root -type f)"
+		# TODO: is the following "exclude"-code correct? Probably not...
+		# grep expects regular expression pattern, patterns in ${pkg}/.exclude are shell patterns.
 		excludes="$(cat ${PACKAGES_DIR}/${pkg}/.exclude 2>/dev/null | sed ':a;N;$!ba;s/\n/|/g')"
 		[ -n "$excludes" ] && pkgfiles=$(echo "$pkgfiles" | grep -vE "$excludes" )
 		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
