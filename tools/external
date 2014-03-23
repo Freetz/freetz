@@ -87,7 +87,10 @@ fi
 #own files
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES $EXTERNAL_DYNAMIC_FILES"
 for EXT_FILE in $(find make make/libs -maxdepth 2 -name external.files) kernel/external.files; do
-	[ "$EXTERNAL_DYNAMIC" == "y" -a -e "${EXT_FILE/external.files/external.services}" ] && continue
+	if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
+		pkg=$(basename "${EXT_FILE%/external.files}")
+		echo "$EXTERNAL_SERVICES" | grep -qE "(^| )${pkg}( |$)" && continue
+	fi
 	. $EXT_FILE
 done
 EXTERNAL_FILES=$(echo $EXTERNAL_FILES | sed -e 's| |\n/|g;s|//\+|/|g' | sort -u)
