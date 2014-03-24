@@ -384,7 +384,7 @@ pkg_name()
 }
 
 #
-# $1 .. * - pkg-dir1 pkg-dir2 ...
+# $1 .. * - pkgname1 pkgname2 ...
 #
 pkg_menuconfig_symbol_name()
 {
@@ -392,22 +392,34 @@ pkg_menuconfig_symbol_name()
 }
 
 #
-# $1 .. * - pkg1 pkg2 ...
+# $1 .. * - pkgname1 pkgname-pkgver2 ...
+#
+# Each parameter is expected to be either just
+#   - the package name (pkgname), or
+#   - the package name followed by the package version (pkgname-pkgversion)
 #
 # requires GNU tar because of the '--null' option (not supported by busybox tar)
 #
 collect_pkg_files()
 {
-	local pkg=, pkg_ver=, pkg_menuconfig_symbol=
-	for pkg in "$@"; do
+	local p=, pkg=, pkg_dir=, pkg_menuconfig_symbol=
+	for p in "$@"; do
+		pkg=$(real_pkg_name "${p}")
+
 		pkg_menuconfig_symbol=$(pkg_menuconfig_symbol_name ${pkg})
 		[ "$(eval echo \$${pkg_menuconfig_symbol})" != y ] && continue
 
-		[ ! -f "${PACKAGES_DIR}/.${pkg}" ] && error 1 "Package ${pkg} is selected but no ${PACKAGES_DIR}/.${pkg} file is available."
+		if [ "${p}" == "${pkg}" ]; then
+			# p is pkgname
+			[ ! -f "${PACKAGES_DIR}/.${pkg}" ] && error 1 "Package ${pkg} is selected but no ${PACKAGES_DIR}/.${pkg} file is available."
+			pkg_dir="${pkg}-$(cat "${PACKAGES_DIR}/.${pkg}")"
+		else
+			# p is (assumed to be) pkgname-pkgver
+			pkg_dir="${p}"
+		fi
 
-		pkg_ver="${pkg}-$(cat "$PACKAGES_DIR/.${pkg}")"
 		(
-			cd "${PACKAGES_DIR}/${pkg_ver}/root/"
+			cd "${PACKAGES_DIR}/${pkg_dir}/root/"
 			find . -type f -print0 | tar -cv --null -T - $([ -r "../.exclude" ] && echo "--exclude-from=../.exclude") -f /dev/null
 		)
 	done | sed -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
