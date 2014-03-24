@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.5-dev21)
+$(call PKG_INIT_BIN, 1.5-dev22)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c784f55537c8718ed024b2b725cd3770
+$(PKG)_SOURCE_MD5:=980332c79ab0ffa908c77fafdf61b8cc
 $(PKG)_SITE:=http://haproxy.1wt.eu/download/1.5/src/devel
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/haproxy
