@@ -1165,7 +1165,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
 		fi
 
-		pkgfiles=$(collect_pkg_files $(real_pkg_name "${pkg}") | sed -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
+		pkgfiles=$(collect_pkg_files "${pkg}" | sed -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
 		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
 	done
 	for pkg in $(static_addons); do
