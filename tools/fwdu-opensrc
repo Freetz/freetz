@@ -1,0 +1,244 @@
+#!/bin/bash
+
+usage() {
+cat << EOF
+
+Usage: ${SELF} [-d <dir>] [-p] [l|list] [d|download|da|download-all] [e|extract-config]
+  options
+    -d <dir>            save all downloaded files to <dir> (default ~/fw-avm/opensrc)
+    -p                  prefer previously fetched ftp server content listing
+  actions
+    l|list              fetch content listing of AVM's ftp server
+    d|download          download opensrc packages of up-to-date firmwares only (implies "list" if -p is not specified)
+    da|download-all     download opensrc packages of all firmwares             (implies "list" if -p is not specified)
+    e|extract-config    extract kernel .config's of all opensrc-packages in download-dir
+
+EOF
+}
+
+#
+# $1 - ftp-dir to be (recursively) listed
+# ftp-dir is expected to have the following format: ftp://some.site/some/dir/
+# 'ftp://' might be omitted
+#
+# returns ftp server content listing as string, one file per line
+#
+function list_ftp_dir() {
+	if [ $# -ne 1 -o -z "$1" ]; then
+		echo "Error[${FUNCNAME}]: ${FUNCNAME} expects exactly one non-empty parameter" >&2
+		exit 1
+	fi
+
+	if ! which lftp >/dev/null 2>&1; then
+		echo "Error[${FUNCNAME}]: ${FUNCNAME} requires lftp to be installed" >&2
+		exit 1
+	fi
+
+	local url="${1#ftp://}"
+	[ "${url: -1: 1}" != "/" ] && url="${url}/"
+	if [ "${url//:\/\/}" != "${url}" ]; then
+		echo "Error[${FUNCNAME}]: unsupported protocol in '${url}', only ftp:// is supported" >&2
+		exit 1
+	fi
+
+	local ftp_site="${url%%/*}"
+	local ftp_dir="/${url#*/}"
+
+	local lftp_output=$(lftp -e "find ${ftp_dir}; bye" ${ftp_site})
+	if [ $? != 0 ]; then
+		echo "Error[${FUNCNAME}]: failed to list content of '${url}'" >&2
+		exit 1
+	fi
+
+	echo "$lftp_output" | sed -r -e '/\/$/ d' -e "s,^,ftp://${ftp_site}," #-e 's, ,%20,g'
+}
+
+#
+# $1 - list of URLs, one URL per line
+#
+# returns list of URLs of all opensrc packages, one URL per line
+#
+function get_opensrc_packages() {
+	if [ $# -ne 1 -o -z "$1" ]; then
+		echo "Error[${FUNCNAME}]: ${FUNCNAME} expects exactly one parameter" >&2
+		exit 1
+	fi
+
+	echo "$1" | grep -E "/fritzbox[._]" | grep "opensrc"
+}
+
+#
+# $1 - opensrc package URL
+#
+# returns ID of opensrc package, e.g. 7270v3.05.51
+#
+function get_opensrc_package_id() {
+	if [ $# -ne 1 -o -z "$1" ]; then
+		echo "Error[${FUNCNAME}]: ${FUNCNAME} expects exactly one parameter" >&2
+		exit 1
+	fi
+
+	echo "$1" | sed -r -e 's,.*([0-9]{4})(_(sl|v[1-3]|lte))?/.*(0[4-6][.][0-9]{2})(-([0-9]{2}))?[.]tar[.]gz,\1\3.\4,'
+}
+
+#
+# $1 - any string containing 04.xx, 05.xx, 06.xx as substring
+#
+function is_uptodate_firmware() {
+	echo "$1" | grep -qE "(0[46][.][0-9]{2}|05[.][25][0-9])"
+}
+
+#
+# $1..$* - path(s) to AVM open-source tarball(s)
+#
+function extract_kernel_config() {
+	local opensrc_tarball=, kernel_tarball=, id=, tmp=, config=, makefile=
+	for opensrc_tarball in "$@"; do
+		id="$(basename "${opensrc_tarball%.tar.gz}")"
+
+		echo -n "${id}: "
+
+		tmp=$(mktemp -q -d /tmp/${id}-XXXXXX)
+		if [ $? != 0 ]; then
+			echo "failed to create temporary dir"
+			shift
+			continue
+		fi
+
+		echo -n "extracting opensrc-tarball ... "
+		tar -C ${tmp} -xaf ${opensrc_tarball} --wildcards '*kernel*.tar.gz' >/dev/null 2>&1
+
+		echo -n "searching for kernel sources ... "
+		kernel_tarball=$(find ${tmp} -name '*kernel*.tar.gz')
+		if [ -z "${kernel_tarball}" ]; then
+			echo -n "not found ... assuming opensrc-tarball is kernel-tarball ... "
+			kernel_tarball="${opensrc_tarball}"
+		else
+			echo -n "found ${kernel_tarball#${tmp}/} ... "
+		fi
+		echo -n "searching for .config ... "
+		config=$(tar -C ${tmp} -taf ${kernel_tarball} | grep -E "[.]config$")
+		if [ $? -ne 0 ]; then
+			echo "failed"
+		else
+			makefile="${config%.config}Makefile"
+			echo -n "found ${config} ... extracting ... "
+			if ! tar -C ${tmp} -xaf ${kernel_tarball} ${config} ${makefile}; then
+				echo "failed"
+			else
+				unset VERSION PATCHLEVEL SUBLEVEL EXTRAVERSION
+				cat ${tmp}/${makefile} | sed -n -r -e "s,^(VERSION|PATCHLEVEL|SUBLEVEL|EXTRAVERSION)[ \t]*=[ \t]*([^ \t]+),\1=\2,p" > ${tmp}/${makefile}.version
+				. ${tmp}/${makefile}.version
+				mv ${tmp}/${config} "$(dirname "${opensrc_tarball}")/.config-AVM-${id}-${VERSION}.${PATCHLEVEL}.${SUBLEVEL}${EXTRAVERSION}" && echo "done" || echo "failed"
+			fi
+		fi
+		rm -rf ${tmp}
+		shift
+	done
+}
+
+#
+# returns current timestamp in YYYYMMDD-HHMMSS format
+#
+function get_current_timestamp() {
+	date +%Y%m%d-%H%M%S
+}
+
+############################################
+
+SELF=$(basename "$0")
+
+DL_DIR=~/fw-avm/opensrc
+PREFER_PREVIOUS_LISTING=
+DO_FETCH_LISTING=
+DO_DOWNLOAD=
+DO_EXTRACT_CONFIG=
+
+# parse options
+while getopts d:p opt; do
+	case "$opt" in
+		d) DL_DIR="$OPTARG" ;;
+		p) PREFER_PREVIOUS_LISTING=true ;;
+		*) usage >&2; exit 1 ;;
+	esac
+done
+shift $((OPTIND-1))
+
+# parse actions
+for opt in "$@"; do
+	case "$opt" in
+		l|list)
+			if [ -n "$PREFER_PREVIOUS_LISTING" ]; then
+				echo "Error: specifying both '-p' and 'list' at the same time doesn't make sense" >&2
+				usage >&2
+				exit 1
+			fi
+			DO_FETCH_LISTING=true
+			;;
+		d|download)
+			DO_DOWNLOAD=recent-only
+			[ -z "$PREFER_PREVIOUS_LISTING" ] && DO_FETCH_LISTING=true
+			;;
+		da|download-all)
+			DO_DOWNLOAD=all
+			[ -z "$PREFER_PREVIOUS_LISTING" ] && DO_FETCH_LISTING=true
+			;;
+		e|extract-config)
+			DO_EXTRACT_CONFIG=false ;;
+		*)
+			usage >&2; exit 1 ;;
+	esac
+done
+
+# check if at least one action is specified
+[ -n "$DO_FETCH_LISTING" -o -n "$DO_DOWNLOAD" -o -n "$DO_EXTRACT_CONFIG" ] || { usage >&2; exit 1; }
+
+# create DL_DIR if missing
+[ ! -e "$DL_DIR" ] && mkdir -p "$DL_DIR"
+
+(
+	cd "$DL_DIR" || exit 1
+
+	# check if curl is available as early as possible
+	if [ -n "$DO_DOWNLOAD" ] && ! which curl >/dev/null 2>&1; then
+		echo "Error: ${SELF} requires curl to be installed" >&2
+		exit 1
+	fi
+
+	# check if any previously fetched listing is available and use it if requested
+	if [ -n "$PREFER_PREVIOUS_LISTING" ]; then
+		listing_fn=$(ls ftp.avm.de-fritz.box-????????-??????.listing 2>/dev/null)
+		if [ $? -ne 0 ]; then
+			echo "No previously fetched listing found, forcing fetching of ftp server content listing"
+			DO_FETCH_LISTING=true
+		else
+			listing_fn=$(echo "$listing_fn" | sort | tail -n 1)
+			echo "Using previously fetched ftp server content listing from $listing_fn"
+			listing=$(cat "$listing_fn")
+		fi
+	fi
+
+	# fetch ftp server content listing and save it to a file
+	if [ -n "$DO_FETCH_LISTING" ]; then
+		listing="$(list_ftp_dir ftp.avm.de/fritz.box/)"
+		echo "$listing" > ftp.avm.de-fritz.box-$(get_current_timestamp).listing
+	fi
+
+	# download opensrc packages, avoid redownloading of already downloaded files
+	if [ -n "$DO_DOWNLOAD" ]; then
+		get_opensrc_packages "$listing" | while read url; do
+			id=$(get_opensrc_package_id "$url")
+			if [ "$DO_DOWNLOAD" == all ] || is_uptodate_firmware "${id}"; then
+				#TODO: progress bar
+				curl -R -C - -o "${id}.tar.gz" "${url}"
+			else
+				echo "Skipping opensrc package ${url} - old firmware version"
+			fi
+		done
+	fi
+
+	# extract kernel .config's
+	if [ -n "$DO_EXTRACT_CONFIG" ]; then
+		extract_kernel_config *.tar.gz
+	fi
+)
