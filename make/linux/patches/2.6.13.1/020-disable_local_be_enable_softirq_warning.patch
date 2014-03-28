@@ -1,0 +1,18 @@
+see http://freetz.org/ticket/2003 for details
+
+--- linux-2.6.13.1/kernel/softirq.c
++++ linux-2.6.13.1/kernel/softirq.c
+@@ -146,7 +146,12 @@
+ 
+ void local_bh_enable(void)
+ {
+-	WARN_ON(irqs_disabled());
++	// no warning needed as we know it's broken but there appears
++	// to be a race condition causing deadlocks/reboots more often
++	// if we give the system time to log errors (FBF 7170)
++	//WARN_ON(irqs_disabled());
++	irqs_disabled();
++
+ 	/*
+ 	 * Keep preemption disabled until we are done with
+ 	 * softirq processing:
