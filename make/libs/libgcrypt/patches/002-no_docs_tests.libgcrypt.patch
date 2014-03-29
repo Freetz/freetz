@@ -1,13 +1,11 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -281,8 +281,8 @@
- DISTCHECK_CONFIGURE_FLAGS = --enable-random-daemon \
-   --enable-ciphers=arcfour:blowfish:cast5:des:aes:twofish:serpent:rfc2268:seed:camellia
- 
--DIST_SUBDIRS = m4 compat mpi cipher random src doc tests
+@@ -313,7 +313,7 @@
+ # (A suitable gitlog-to-changelog script can be found in GnuPG master.)
+ GITLOG_TO_CHANGELOG = gitlog-to-changelog
+ DIST_SUBDIRS = m4 compat mpi cipher random src doc tests
 -SUBDIRS = compat mpi cipher random src doc tests
-+DIST_SUBDIRS = m4 compat mpi cipher random src
 +SUBDIRS = compat mpi cipher random src
- EXTRA_DIST = autogen.sh README.SVN
- DISTCLEANFILES = 
- all: config.h
+ EXTRA_DIST = autogen.sh README.GIT \
+ 	     scripts/ChangeLog-2011 doc/ChangeLog-2011 ChangeLog-2011 \
+              m4/ChangeLog-2011 cipher/ChangeLog-2011 src/ChangeLog-2011 \

@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.5.0)
-$(PKG)_LIB_VERSION:=11.7.0
+$(call PKG_INIT_LIB, 1.5.3)
+$(PKG)_LIB_VERSION:=11.8.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=693f9c64d50c908bc4d6e01da3ff76d8
+$(PKG)_SOURCE_MD5:=993159b2924ae7b0e4eaff0743c2db35
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgcrypt
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -9,7 +9,7 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DIGESTS            := crc md4 md5 rmd160 sha1 sha256 sha512 tiger whirlpool
-$(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des rfc2268 seed serpent twofish
+$(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des idea rfc2268 seed serpent twofish
 $(PKG)_ASYMMETRIC_CIPHERS := dsa ecc elgamal rsa
 $(foreach i,DIGEST SYMMETRIC_CIPHER ASYMMETRIC_CIPHER, \
   $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(i)_%,$($(PKG)_$(i)S))) \
