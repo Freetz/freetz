@@ -1,0 +1,25 @@
+## 412786_xmlwf_man_standard_fix.dpatch by Cameron McCormack and
+##     Ardo van Rangelrooij <ardo@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: GROFF expects a macro name after a leading point. So remove
+## DP:   the linebreak and avoid the warning.
+## DP:
+## DP: There is no well-formedness constraint in XML
+## DP:   that requires the XML declaration.
+## DP:
+## DP: <URL:http://bugs.debian.org/412786>
+
+diff -urNad doc/xmlwf.sgml doc/xmlwf.sgml
+--- doc/xmlwf.sgml
++++ doc/xmlwf.sgml
+@@ -286,8 +286,7 @@
+   This gives a fairly accurate idea of the raw speed of Expat itself
+   without client overhead.
+   <option>-t</option> turns off most of the output options
+-  (<option>-d</option>, <option>-m</option>, <option>-c</option>,
+-  ...).
++  (<option>-d</option>, <option>-m</option>, <option>-c</option>, ...).
+ 	   </para>
+         </listitem>
+       </varlistentry>

@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.0.1)
-$(PKG)_LIB_VERSION:=1.5.2
+$(call PKG_INIT_LIB, 2.1.0)
+$(PKG)_LIB_VERSION:=1.6.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ee8b492592568805593f81f8cdf2a04c
+$(PKG)_SOURCE_MD5:=dd7dab7a5fea97d2a6a43f511449b7cd
 $(PKG)_SITE:=@SF/expat
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libexpat.so.$($(PKG)_LIB_VERSION)
@@ -23,7 +23,8 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.la
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/expat.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -34,7 +35,9 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(EXPAT_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.* \
+	$(RM) \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/expat.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/expat*.h
 
 $(pkg)-uninstall:
