@@ -120,18 +120,7 @@
  	if (!str1 || !str2 || !p) {
  		return False;
  	}
-@@ -2987,6 +2999,10 @@ static bool api_SetUserPassword(struct s
- 	int min_pwd_length;
- 	struct dcerpc_binding_handle *b = NULL;
- 
-+#ifndef SAMR_SUPPORT
-+	return False;
-+#endif
-+
- 	/* Skip 2 strings. */
- 	p = skip_string(param,tpscnt,np);
- 	p = skip_string(param,tpscnt,p);
-@@ -3232,6 +3248,10 @@ static bool api_SamOEMChangePassword(str
+@@ -2979,6 +2991,10 @@ static bool api_SamOEMChangePassword(str
  	int bufsize;
  	struct dcerpc_binding_handle *b;
  
@@ -142,7 +131,7 @@
  	*rparam_len = 4;
  	*rparam = smb_realloc_limit(*rparam,*rparam_len);
  	if (!*rparam) {
-@@ -4273,6 +4293,10 @@ static bool api_RNetUserGetInfo(struct s
+@@ -4020,6 +4036,10 @@ static bool api_RNetUserGetInfo(struct s
  	union samr_UserInfo *info;
  	struct dcerpc_binding_handle *b = NULL;
  
