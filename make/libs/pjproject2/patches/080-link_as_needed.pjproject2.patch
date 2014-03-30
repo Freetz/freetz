@@ -1,0 +1,11 @@
+--- build/rules.mak
++++ build/rules.mak
+@@ -109,7 +109,7 @@
+ $(subst /,$(HOST_PSEP),$(LIBDIR)/$(SHLIB)): $(OBJDIRS) $(OBJS) $($(APP)_EXTRA_DEP)
+ 	if test ! -d $(LIBDIR); then $(subst @@,$(subst /,$(HOST_PSEP),$(LIBDIR)),$(HOST_MKDIR)); fi
+ 	$(LD) $(LDOUT)$(subst /,$(HOST_PSEP),$@) \
+-	    $(subst /,$(HOST_PSEP),$(OBJS)) $($(APP)_LDFLAGS) $(SHLIB_OPT)
++	    $(subst /,$(HOST_PSEP),$(OBJS)) -Wl,--as-needed $($(APP)_LDFLAGS) -Wl,--no-as-needed $(SHLIB_OPT)
+ endif
+  
+ ifneq ($(SONAME),)

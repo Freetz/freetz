@@ -6,7 +6,6 @@ config FREETZ_LIB_libpj
 	select FREETZ_PJPROJECT2
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
 	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
@@ -14,170 +13,87 @@ config FREETZ_LIB_libpjlib_util
 	bool "libpjlib-util (libpjlib-util.so)"
 	select FREETZ_PJPROJECT2
 	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjmedia
 	bool "libpjmedia (libpjmedia.so)"
 	select FREETZ_PJPROJECT2
 	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libilbccodec
 	select FREETZ_LIB_libpjlib_util
 	select FREETZ_LIB_libpjmedia_audiodev
-	select FREETZ_LIB_libpjmedia_videodev
 	select FREETZ_LIB_libpjnath
 	select FREETZ_LIB_libpj
 	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libspeex
 	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjmedia_audiodev
 	bool "libpjmedia-audiodev (libpjmedia-audiodev.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libilbccodec
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjmedia_codec
 	bool "libpjmedia-codec (libpjmedia-codec.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
 	select FREETZ_LIB_libgsm
 	select FREETZ_LIB_libilbccodec
 	select FREETZ_LIB_libpjmedia
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libspeexdsp
 	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjmedia_videodev
 	bool "libpjmedia-videodev (libpjmedia-videodev.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libilbccodec
-	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjnath
 	bool "libpjnath (libpjnath.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
 	select FREETZ_LIB_libpjlib_util
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjsip
 	bool "libpjsip (libpjsip.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libilbccodec
 	select FREETZ_LIB_libpjlib_util
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjsip_simple
 	bool "libpjsip-simple (libpjsip-simple.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libilbccodec
 	select FREETZ_LIB_libpjlib_util
 	select FREETZ_LIB_libpjsip
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjsip_ua
 	bool "libpjsip-ua (libpjsip-ua.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libilbccodec
 	select FREETZ_LIB_libpjlib_util
 	select FREETZ_LIB_libpjmedia
 	select FREETZ_LIB_libpjsip_simple
 	select FREETZ_LIB_libpjsip
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 config FREETZ_LIB_libpjsua
 	bool "libpjsua (libpjsua.so)"
 	select FREETZ_PJPROJECT2
 	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libg7221codec
-	select FREETZ_LIB_libgsm
-	select FREETZ_LIB_libilbccodec
 	select FREETZ_LIB_libpjlib_util
 	select FREETZ_LIB_libpjmedia_audiodev
 	select FREETZ_LIB_libpjmedia_codec
 	select FREETZ_LIB_libpjmedia
-	select FREETZ_LIB_libpjmedia_videodev
 	select FREETZ_LIB_libpjnath
 	select FREETZ_LIB_libpjsip_simple
 	select FREETZ_LIB_libpjsip
 	select FREETZ_LIB_libpjsip_ua
 	select FREETZ_LIB_libpj
-	select FREETZ_LIB_libspeexdsp
-	select FREETZ_LIB_libspeex
-	select FREETZ_LIB_libsrtp
-	select FREETZ_LIB_libuuid if !FREETZ_PACKAGE_E2FSPROGS_STATIC
 	default n
 
 comment "3rdparty libraries"
