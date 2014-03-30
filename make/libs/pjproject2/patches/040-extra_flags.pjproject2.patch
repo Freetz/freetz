@@ -1,6 +1,6 @@
 --- build.mak.in
 +++ build.mak.in
-@@ -166,7 +166,7 @@
+@@ -168,7 +168,7 @@
  export APP_CC := @CC@
  export APP_CXX := @CXX@
  export APP_CFLAGS := -DPJ_AUTOCONF=1\
@@ -9,15 +9,15 @@
  	$(PJ_VIDEO_CFLAGS) \
  	-I$(PJDIR)/pjlib/include\
  	-I$(PJDIR)/pjlib-util/include\
-@@ -181,7 +181,7 @@
+@@ -183,7 +183,7 @@
  	-L$(PJDIR)/pjsip/lib\
  	-L$(PJDIR)/third_party/lib\
  	$(PJ_VIDEO_LDFLAGS) \
 -	@LDFLAGS@
 +	@LDFLAGS@ $(EXTRA_LDFLAGS)
- export APP_LIB_FILES = $(PJ_DIR)/pjsip/lib/libpjsua-$(LIB_SUFFIX) \
- 	$(PJ_DIR)/pjsip/lib/libpjsip-ua-$(LIB_SUFFIX) \
- 	$(PJ_DIR)/pjsip/lib/libpjsip-simple-$(LIB_SUFFIX) \
+ export APP_LDXXFLAGS := $(APP_LDFLAGS)
+ 
+ export APP_LIB_FILES = \
 --- build/os-auto.mak.in
 +++ build/os-auto.mak.in
 @@ -1,10 +1,10 @@

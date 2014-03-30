@@ -1,0 +1,31 @@
+--- build.mak.in
++++ build.mak.in
+@@ -28,6 +28,14 @@
+ export APP_THIRD_PARTY_LIBS :=
+ export APP_THIRD_PARTY_LIB_FILES :=
+ 
++APP_THIRD_PARTY_LIB_FILES += $(PJ_DIR)/third_party/lib/libmilenage-$(LIB_SUFFIX)
++ifeq ($(PJ_SHARED_LIBRARIES),)
++#APP_THIRD_PARTY_LIBS += -lmilenage-$(TARGET_NAME)
++else
++#APP_THIRD_PARTY_LIBS += -lmilenage
++APP_THIRD_PARTY_LIB_FILES += $(PJ_DIR)/third_party/lib/libmilenage.$(SHLIB_SUFFIX).$(PJ_VERSION_MAJOR) $(PJ_DIR)/third_party/lib/libmilenage.$(SHLIB_SUFFIX)
++endif
++
+ ifeq (@ac_external_srtp@,1)
+ # External SRTP library
+ APP_THIRD_PARTY_EXT += -lsrtp
+--- third_party/build/os-auto.mak.in
++++ third_party/build/os-auto.mak.in
+@@ -1,3 +1,4 @@
++DIRS += milenage
+ 
+ ifneq (@ac_no_gsm_codec@,1)
+ ifeq (@ac_external_gsm@,1)
+--- third_party/build/os-linux.mak
++++ third_party/build/os-linux.mak
+@@ -1,3 +1,4 @@
++DIRS += milenage
+ DIRS += gsm
+ DIRS += ilbc
+ DIRS += speex

@@ -1,0 +1,19 @@
+APP_LIB(XX)_FILES contains some files more than once, this causes the following cp warning
+  cp: warning: source file `X' specified more than once
+  cp: warning: source file `Y' specified more than once
+  cp: warning: source file `Z' specified more than once
+
+Silence it by using sort (sorts and removes duplicates).
+--- Makefile
++++ Makefile
+@@ -107,8 +107,8 @@
+ 
+ install:
+ 	mkdir -p $(DESTDIR)$(libdir)/
+-#	cp -af $(APP_LIB_FILES) $(DESTDIR)$(libdir)/
+-	cp -af $(APP_LIBXX_FILES) $(DESTDIR)$(libdir)/
++#	cp -af $(sort $(APP_LIB_FILES)) $(DESTDIR)$(libdir)/
++	cp -af $(sort $(APP_LIBXX_FILES)) $(DESTDIR)$(libdir)/
+ 	mkdir -p $(DESTDIR)$(includedir)/
+ 	for d in pjlib pjlib-util pjnath pjmedia pjsip; do \
+ 		cp -RLf $$d/include/* $(DESTDIR)$(includedir)/; \

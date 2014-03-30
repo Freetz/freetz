@@ -1,0 +1,109 @@
+--- build.mak.in
++++ build.mak.in
+@@ -190,7 +190,7 @@
+ 	$(APP_THIRD_PARTY_LIB_FILES) \
+ 	$(PJ_DIR)/pjlib/lib/libpj-$(LIB_SUFFIX)
+ export APP_LIBXX_FILES = \
+-	$(PJ_DIR)/pjsip/lib/libpjsua2-$(LIB_SUFFIX) \
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(PJ_DIR)/pjsip/lib/libpjsua2-$(LIB_SUFFIX)) \
+ 	$(APP_LIB_FILES)
+ 
+ ifeq ($(PJ_SHARED_LIBRARIES),)
+@@ -234,7 +234,7 @@
+ 
+ APP_LIB_FILES += $(ADD_LIB_FILES)
+ 
+-APP_LIBXX_FILES += $(PJ_DIR)/pjsip/lib/libpjsua2.$(SHLIB_SUFFIX).$(PJ_VERSION_MAJOR) $(PJ_DIR)/pjsip/lib/libpjsua2.$(SHLIB_SUFFIX) \
++APP_LIBXX_FILES += $(if $(DO_BUILD_CXX_COMPONENTS),$(PJ_DIR)/pjsip/lib/libpjsua2.$(SHLIB_SUFFIX).$(PJ_VERSION_MAJOR) $(PJ_DIR)/pjsip/lib/libpjsua2.$(SHLIB_SUFFIX)) \
+ 	$(ADD_LIB_FILES)
+ endif
+ 
+@@ -253,8 +253,7 @@
+ 	$(APP_THIRD_PARTY_EXT)\
+ 	$(PJLIB_LDLIB) \
+ 	@LIBS@
+-export APP_LDXXLIBS := $(PJSUA2_LIB_LDLIB) \
+-	-lstdc++ \
++export APP_LDXXLIBS := $(if $(DO_BUILD_CXX_COMPONENTS),$(PJSUA2_LIB_LDLIB)) \
+ 	$(APP_LDLIBS)
+ 
+ # Here are the variabels to use if application is using the library
+--- pjsip/build/Makefile
++++ pjsip/build/Makefile
+@@ -152,8 +152,7 @@
+ 			     $(PJNATH_LDLIB) \
+ 			     $(PJLIB_UTIL_LDLIB) \
+ 			     $(PJLIB_LDLIB) \
+-			     $(_LDFLAGS) \
+-			     -lstdc++
++			     $(_LDFLAGS)
+ 
+ 
+ ###############################################################################
+@@ -207,8 +206,8 @@
+ 	   $(PJSIP_SIMPLE_LIB) $(PJSIP_SIMPLE_SONAME) \
+ 	   $(PJSIP_UA_LIB) $(PJSIP_UA_SONAME) \
+ 	   $(PJSUA_LIB_LIB) $(PJSUA_LIB_SONAME) \
+-	   $(PJSUA2_LIB_LIB) $(PJSUA2_LIB_SONAME)
+-TARGETS_EXE := $(TEST_EXE) $(PJSUA2_TEST_EXE)
++	   $(if $(DO_BUILD_CXX_COMPONENTS),$(PJSUA2_LIB_LIB) $(PJSUA2_LIB_SONAME))
++TARGETS_EXE := $(TEST_EXE) $(if $(DO_BUILD_CXX_COMPONENTS),$(PJSUA2_TEST_EXE))
+ 
+ all: $(TARGETS) $(TARGETS_EXE)
+ 
+@@ -309,35 +308,35 @@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP_UA app=pjsip-ua $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP_SIMPLE app=pjsip-simple $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSUA_LIB app=pjsua-lib $@
+-	$(MAKE) -f $(RULES_MAK) APP=PJSUA2_LIB app=pjsua2-lib $@
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(MAKE) -f $(RULES_MAK) APP=PJSUA2_LIB app=pjsua2-lib $@)
+ 	$(MAKE) -f $(RULES_MAK) APP=TEST app=pjsip-test $@
+-	$(MAKE) -f $(RULES_MAK) APP=PJSUA2_TEST app=pjsua2-test $@
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(MAKE) -f $(RULES_MAK) APP=PJSUA2_TEST app=pjsua2-test $@)
+ 
+ depend:
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP app=pjsip $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP_UA app=pjsip-ua $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP_SIMPLE app=pjsip-simple $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSUA_LIB app=pjsua-lib $@
+-	$(MAKE) -f $(RULES_MAK) APP=PJSUA2_LIB app=pjsua2-lib $@
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(MAKE) -f $(RULES_MAK) APP=PJSUA2_LIB app=pjsua2-lib $@)
+ 	$(MAKE) -f $(RULES_MAK) APP=TEST app=pjsip-test $@
+-	$(MAKE) -f $(RULES_MAK) APP=PJSUA2_TEST app=pjsua2-test $@
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(MAKE) -f $(RULES_MAK) APP=PJSUA2_TEST app=pjsua2-test $@)
+ 	echo '$(BINDIR)/$(TEST_EXE): $(PJMEDIA_LIB) $(LIBDIR)/$(PJSUA_LIB_LIB) $(LIBDIR)/$(PJSIP_SIMPLE_LIB) $(LIBDIR)/$(PJSIP_UA_LIB) $(LIBDIR)/$(PJSIP_LIB) $(PJNATH_LIB) $(PJLIB_UTIL_LIB) $(PJLIB_LIB)' >> .pjsip-test-$(TARGET_NAME).depend
+-	echo '$(BINDIR)/$(PJSUA2_TEST_EXE): $(LIBDIR)/$(PJSUA2_LIB_LIB) $(PJMEDIA_LIB) $(LIBDIR)/$(PJSUA_LIB_LIB) $(LIBDIR)/$(PJSIP_SIMPLE_LIB) $(LIBDIR)/$(PJSIP_UA_LIB) $(LIBDIR)/$(PJSIP_LIB) $(PJNATH_LIB) $(PJLIB_UTIL_LIB) $(PJLIB_LIB)' >> .pjsua2-test-$(TARGET_NAME).depend
++	$(if $(DO_BUILD_CXX_COMPONENTS),echo '$(BINDIR)/$(PJSUA2_TEST_EXE): $(LIBDIR)/$(PJSUA2_LIB_LIB) $(PJMEDIA_LIB) $(LIBDIR)/$(PJSUA_LIB_LIB) $(LIBDIR)/$(PJSIP_SIMPLE_LIB) $(LIBDIR)/$(PJSIP_UA_LIB) $(LIBDIR)/$(PJSIP_LIB) $(PJNATH_LIB) $(PJLIB_UTIL_LIB) $(PJLIB_LIB)' >> .pjsua2-test-$(TARGET_NAME).depend)
+ 
+ realclean:
+ 	$(subst @@,$(subst /,$(HOST_PSEP),.pjsip-$(TARGET_NAME).depend),$(HOST_RMR))
+ 	$(subst @@,$(subst /,$(HOST_PSEP),.pjsip-ua-$(TARGET_NAME).depend),$(HOST_RMR))
+ 	$(subst @@,$(subst /,$(HOST_PSEP),.pjsip-simple-$(TARGET_NAME).depend),$(HOST_RMR))
+ 	$(subst @@,$(subst /,$(HOST_PSEP),.pjsua-lib-$(TARGET_NAME).depend),$(HOST_RMR))
+-	$(subst @@,$(subst /,$(HOST_PSEP),.pjsua2-lib-$(TARGET_NAME).depend),$(HOST_RMR))
+-	$(subst @@,$(subst /,$(HOST_PSEP),.pjsua2-test-$(TARGET_NAME).depend),$(HOST_RMR))
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(subst @@,$(subst /,$(HOST_PSEP),.pjsua2-lib-$(TARGET_NAME).depend),$(HOST_RMR)))
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(subst @@,$(subst /,$(HOST_PSEP),.pjsua2-test-$(TARGET_NAME).depend),$(HOST_RMR)))
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP app=pjsip $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP_UA app=pjsip-ua $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSIP_SIMPLE app=pjsip-simple $@
+ 	$(MAKE) -f $(RULES_MAK) APP=TEST app=pjsip-test $@
+ 	$(MAKE) -f $(RULES_MAK) APP=PJSUA_LIB app=pjsua-lib $@
+-	$(MAKE) -f $(RULES_MAK) APP=PJSUA2_LIB app=pjsua2-lib $@
+-	$(MAKE) -f $(RULES_MAK) APP=PJSUA2_TEST app=pjsua2-test $@
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(MAKE) -f $(RULES_MAK) APP=PJSUA2_LIB app=pjsua2-lib $@)
++	$(if $(DO_BUILD_CXX_COMPONENTS),$(MAKE) -f $(RULES_MAK) APP=PJSUA2_TEST app=pjsua2-test $@)
+ 
+ 
+ 
+--- pjsip-apps/build/Samples.mak
++++ pjsip-apps/build/Samples.mak
+@@ -55,7 +55,7 @@
+ .PHONY: $(EXES)
+ .PHONY: $(PJSUA2_EXES)
+ 
+-all: $(EXES) $(PJSUA2_EXES)
++all: $(EXES) $(if $(DO_BUILD_CXX_COMPONENTS),$(PJSUA2_EXES))
+ 
+ $(EXES):
+ 	$(MAKE) --no-print-directory -f $(RULES_MAK) SAMPLE_SRCDIR=$(SRCDIR) SAMPLE_OBJS=$@.o SAMPLE_CFLAGS="$(_CFLAGS)" SAMPLE_CXXFLAGS="$(_CXXFLAGS)" SAMPLE_LDFLAGS="$(_LDFLAGS)" SAMPLE_EXE=$@ APP=SAMPLE app=sample $(subst /,$(HOST_PSEP),$(BINDIR)/$@)

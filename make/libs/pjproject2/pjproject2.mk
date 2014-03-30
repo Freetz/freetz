@@ -1,7 +1,9 @@
-$(call PKG_INIT_LIB, 1dfcc3db3d)
+$(call PKG_INIT_LIB, 2.2.1)
 $(PKG)_LIB_VERSION:=2
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=git@https://github.com/asterisk/pjproject.git
+$(PKG)_SOURCE:=pjproject-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_MD5:=6ed4bb7750c827dc1d881e209a3b62db
+$(PKG)_SITE:=http://www.pjsip.org/release/$($(PKG)_VERSION)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/pjproject-$($(PKG)_VERSION)
 
 $(PKG)_INSTALL_SUBDIR:=_install
 
@@ -11,8 +13,8 @@ $(PKG)_LIBS_BUILD_DIR   := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/$($(PKG)_INSTA
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 $(PKG)_LIBS_TARGET_DIR  := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_DIR)/%)
 
-$(PKG)_INCLUDES           := pj pj++ pjlib-util pjmedia pjmedia-audiodev pjmedia-codec pjmedia-videodev pjnath pjsip pjsip-simple pjsip-ua pjsua-lib
-$(PKG)_INCLUDES           += pjlib.h pjlib++.hpp pjlib-util.h pjmedia_audiodev.h pjmedia-codec.h pjmedia.h pjmedia_videodev.h pjnath.h pjsip_auth.h pjsip.h pjsip_simple.h pjsip_ua.h pjsua.h
+$(PKG)_INCLUDES           := pj pjlib-util pjmedia pjmedia-audiodev pjmedia-codec pjmedia-videodev pjnath pjsip pjsip-simple pjsip-ua pjsua-lib
+$(PKG)_INCLUDES           += pjlib.h pjlib-util.h pjmedia_audiodev.h pjmedia-codec.h pjmedia.h pjmedia_videodev.h pjnath.h pjsip_auth.h pjsip.h pjsip_simple.h pjsip_ua.h pjsua.h
 $(PKG)_HEADER_BUILD_DIR   := $($(PKG)_DIR)/$($(PKG)_INSTALL_SUBDIR)/usr/include/pjlib.h
 $(PKG)_HEADER_STAGING_DIR := $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/pjlib.h
 
@@ -82,7 +84,8 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	$(SUBMAKE1) -C $(PJPROJECT2_DIR) \
 		DESTDIR="$(abspath $(PJPROJECT2_DIR)/$(PJPROJECT2_INSTALL_SUBDIR))" \
 		install
-	find $(PJPROJECT2_DIR)/$(PJPROJECT2_INSTALL_SUBDIR) -name "*.h.in" -exec rm \{\} \+
+	find $(PJPROJECT2_DIR)/$(PJPROJECT2_INSTALL_SUBDIR) -type f \( -name "*.h.in" -o -name "*.hpp" \) -exec rm \{\} \+
+	find $(PJPROJECT2_DIR)/$(PJPROJECT2_INSTALL_SUBDIR) -type d -empty -delete
 	@touch $@
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_HEADER_BUILD_DIR): $($(PKG)_DIR)/.installed
