@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 1.7.10p8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=4620e31c28b387dd9582dfd42e930cfb
 $(PKG)_SITE:=http://www.sudo.ws/sudo/dist
-$(PKG)_BINARIY:=$(pkg)
+$(PKG)_BINARY:=$(pkg)
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_BINARY_TARGET_DIR:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
@@ -46,6 +46,6 @@ $(pkg)-clean:
 	$(RM) $(SUDO_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(SUDO_BINARIES_TARGET_DIR) $(TRICKLE_LIBS_TARGET_DIR)
+	$(RM) $(SUDO_BINARY_TARGET_DIR) $(SUDO_LIBS_TARGET_DIR)
 
 $(PKG_FINISH)
