@@ -1,0 +1,25 @@
+#!/bin/sh
+
+case $1 in
+	""|load)
+		mkdir -p /tmp/flash/sudo/
+		modreg file sudo sudoers "sudoers" 0 sudoers
+		ln -sf /tmp/flash/sudo/sudoers /mod/etc/sudoers
+		;;
+	unload)
+		modunreg file sudo
+		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		;;
+	*)
+		exit 1
+		;;
+esac
+
+exit 0
