@@ -12,8 +12,7 @@ $(PKG)_LIBS_TARGET_DIR:=$($(PKG)_LIBS:%=$($(PKG)_DEST_LIBDIR)/%)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_CONFIGURE_OPTIONS += --with-editor=/bin/nano \
-			    --without-lecture \
+$(PKG)_CONFIGURE_OPTIONS += --without-lecture \
 			    --without-pam \
 			    --without-sendmail \
 			    --disable-pam-session \
