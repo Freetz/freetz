@@ -11,7 +11,7 @@
    if (hand >= 0 && hand < pool->size_ipv6 )
 --- src/openvpn/socket.c
 +++ src/openvpn/socket.c
-@@ -1149,6 +1149,7 @@
+@@ -1151,6 +1151,7 @@
  	    {
  	      int status;
  	      int err;
@@ -19,7 +19,7 @@
  	      CLEAR(sock->info.lsa->local.addr.in6);
  	      if (sock->local_host)
  		{
-@@ -1164,7 +1165,7 @@
+@@ -1166,7 +1167,7 @@
  	      else
  		{
  		  sock->info.lsa->local.addr.in6.sin6_family = AF_INET6;
@@ -28,7 +28,7 @@
  		  status = 0;
  		}
  	      if (!status == 0)
-@@ -1200,6 +1201,7 @@
+@@ -1202,6 +1203,7 @@
  {
    struct gc_arena gc = gc_new ();
    int af;
@@ -36,7 +36,7 @@
  
    if (!sock->did_resolve_remote)
      {
-@@ -1216,7 +1218,7 @@
+@@ -1218,7 +1220,7 @@
                case AF_INET6:
                  CLEAR(sock->info.lsa->remote.addr.in6);
                  sock->info.lsa->remote.addr.in6.sin6_family = AF_INET6;
@@ -45,7 +45,7 @@
                  break;
              }
  
-@@ -2319,10 +2321,11 @@
+@@ -2321,10 +2323,11 @@
  const char *
  print_in6_addr (struct in6_addr a6, unsigned int flags, struct gc_arena *gc)
  {
