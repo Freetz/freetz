@@ -139,7 +139,7 @@
 +        err_multid = errno;
      }
    
-   /* Set alarm for when the first lease expires + slop. */
+   /* Set alarm for when the first lease expires. */
 @@ -344,6 +429,11 @@
  		(unsigned int)difftime(next_event, now));
      }
@@ -152,7 +152,7 @@
    send_alarm(next_event, now);
  }
  
-@@ -970,6 +1060,7 @@
+@@ -979,6 +1069,7 @@
  
    lease->last_interface = interface;
    lease->flags |= LEASE_CHANGED; 
