@@ -1,6 +1,6 @@
 --- src/subshell.c
 +++ src/subshell.c
-@@ -268,11 +268,14 @@
+@@ -255,11 +255,14 @@
          putenv (g_strdup (sid_str));
      }
  
@@ -15,7 +15,7 @@
          if (access (init_file, R_OK) == -1)
          {
              g_free (init_file);
-@@ -287,9 +290,9 @@
+@@ -274,9 +277,9 @@
              char *input_file = mc_config_get_full_path ("inputrc");
              if (access (input_file, R_OK) == 0)
              {
@@ -27,7 +27,7 @@
              }
              g_free (input_file);
          }
-@@ -352,6 +355,7 @@
+@@ -339,6 +342,7 @@
  
      /* If we get this far, everything failed miserably */
      g_free (init_file);
