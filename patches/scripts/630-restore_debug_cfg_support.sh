@@ -1,3 +1,5 @@
+[ "${FREETZ_TYPE_FIRMWARE_04_XX}" == y ] && return 0
+
 grep -q "mknod /var/flash/debug.cfg" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh" 2>/dev/null && return 0
 
 echo1 "restoring support for /var/flash/debug.cfg"
