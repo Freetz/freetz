@@ -1,0 +1,10 @@
+config EXTERNAL_FREETZ_PACKAGE_IPTABLES
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_IPTABLES
+	bool "iptables"
+	default n
+	help
+		externals the following file(s):
+		 /usr/sbin/xtables-multi
+		 /usr/lib/freetz/libip4tc.so.0.0.0   (if available)
+		 /usr/lib/freetz/libxtables.so.6.0.0 (if available)
+		 /usr/lib/freetz/libip6tc.so.0.0.0   (if available)
