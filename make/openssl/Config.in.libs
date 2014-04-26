@@ -18,6 +18,12 @@ config FREETZ_LIB_libcrypto
 		cryptographic hash functions and a cryptographic pseudo-random number
 		generator.
 
+config FREETZ_LIB_libcrypto_WITH_EC
+	bool "Support elliptic curve cryptography" if FREETZ_LIB_libcrypto
+	default n
+	help
+		Enable support for elliptic curve cryptography (ECDSA/ECDH/ECDHE)
+
 config FREETZ_LIB_libssl
 	bool "OpenSSL SSL/TLS library (libssl.so)"
 	depends on FREETZ_LIB_libcrypto

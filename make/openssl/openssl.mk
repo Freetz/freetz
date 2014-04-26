@@ -17,11 +17,13 @@ $(PKG)_LIBS_BUILD_DIR :=$($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/%)
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcrypto_WITH_EC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_0
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1
 
 OPENSSL_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5
-OPENSSL_OPTIONS    := shared no-ec no-err no-fips no-hw no-engines no-sse2 no-capieng no-cms no-seed
+OPENSSL_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-cms no-seed
+OPENSSL_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
 OPENSSL_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm)
 OPENSSL_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
 
