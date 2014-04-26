@@ -1,6 +1,6 @@
 --- ext/openssl/openssl.c
 +++ ext/openssl/openssl.c
-@@ -69,12 +69,18 @@
+@@ -70,12 +70,18 @@
  #endif
  #define OPENSSL_ALGO_DSS1	5
  #if OPENSSL_VERSION_NUMBER >= 0x0090708fL
@@ -18,8 +18,8 @@
 +#endif
  #define DEBUG_SMIME	0
  
- /* FIXME: Use the openssl constants instead of
-@@ -972,22 +978,28 @@
+ #if !defined(OPENSSL_NO_EC) && defined(EVP_PKEY_EC)
+@@ -964,22 +970,28 @@
  			mdtype = (EVP_MD *) EVP_dss1();
  			break;
  #if OPENSSL_VERSION_NUMBER >= 0x0090708fL
@@ -48,7 +48,7 @@
  		default:
  			return NULL;
  			break;
-@@ -1083,12 +1095,18 @@
+@@ -1075,12 +1087,18 @@
  #endif
  	REGISTER_LONG_CONSTANT("OPENSSL_ALGO_DSS1", OPENSSL_ALGO_DSS1, CONST_CS|CONST_PERSISTENT);
  #if OPENSSL_VERSION_NUMBER >= 0x0090708fL
