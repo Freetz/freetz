@@ -1,0 +1,24 @@
+--- Makefile
++++ Makefile
+@@ -4,7 +4,7 @@
+ PKG=noip-2.1.tgz
+ 
+ PREFIX=/usr/local
+-CONFDIR=${PREFIX}/etc
++CONFDIR=/var/tmp/flash/noip
+ BINDIR=${PREFIX}/bin
+ 
+ # these defines are for Linux
+--- noip2.c
++++ noip2.c
+@@ -242,8 +242,8 @@
+ #ifndef PREFIX
+   #define PREFIX		"/usr/local"
+ #endif
+-#define CONFIG_FILEPATH		PREFIX"/etc"
+-#define CONFIG_FILENAME		PREFIX"/etc/no-ip2.conf"
++#define CONFIG_FILEPATH		"/var/tmp/flash/noip"
++#define CONFIG_FILENAME		CONFIG_FILEPATH"/no-ip2.conf"
+ #define CONFSTRLEN		1024
+ #define MAX_DEVLEN		16
+ #define MAX_INSTANCE		4

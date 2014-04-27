@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 2.1.9)
+$(call PKG_INIT_BIN, 2.1.9-1)
 $(PKG)_SOURCE:=noip-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=eed8e9ef9edfb7ddc36e187de867fe64
+$(PKG)_SOURCE_MD5:=3b0f5f2ff8637c73ab337be403252a60
 $(PKG)_SITE:=http://www.no-ip.com/client/linux
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/noip2
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/noip2
 
@@ -11,7 +12,6 @@ $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(NOIP_DIR) \
-	ARCH="$(TARGET_ARCH)" \
 	CC="$(TARGET_CC)" \
 	CFLAGS="$(TARGET_CFLAGS)"
 

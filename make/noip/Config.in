@@ -1,5 +1,6 @@
 config FREETZ_PACKAGE_NOIP
-	bool "noip 2.1.9 (binary only)"
+	bool "noip 2.1.9-1 (binary only)"
+	select FREETZ_WGET
 	default n
 	help
 		This is No-IP.com's dynamic DNS update client. When configured correctly,
@@ -7,4 +8,3 @@ config FREETZ_PACKAGE_NOIP
 		any changes. If the local IP address has changed it will notify the DNS
 		servers at No-IP.com and update the IP corresponding to your No-IP/No-IP+
 		hostname.
-		WWW: http://www.No-IP.com/

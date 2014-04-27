@@ -1,0 +1,18 @@
+--- Makefile
++++ Makefile
+@@ -1,5 +1,6 @@
+ TGT=noip2
+ CC=gcc
++CFLAGS=-Wall -g
+ PKG=noip-2.1.tgz
+ 
+ PREFIX=/usr/local
+@@ -22,7 +23,7 @@
+ # ARCH=sun
+ 
+ ${TGT}: Makefile ${TGT}.c 
+-	${CC} -Wall -g -D${ARCH} -DPREFIX=\"${PREFIX}\" ${TGT}.c -o ${TGT} ${LIBS}
++	${CC} ${CFLAGS} -D${ARCH} -DPREFIX=\"${PREFIX}\" ${TGT}.c -o ${TGT} ${LIBS}
+ 
+ install: ${TGT} 
+ 	if [ ! -d ${BINDIR} ]; then mkdir -p ${BINDIR};fi
