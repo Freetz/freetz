@@ -1,7 +1,9 @@
-[ "$EXTERNAL_FREETZ_PACKAGE_IPTABLES" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/xtables-multi"
+if [ "$EXTERNAL_FREETZ_PACKAGE_IPTABLES" == "y" ]; then
+	EXTERNAL_FILES+=" /usr/sbin/xtables-multi"
 
-if [ "$FREETZ_PACKAGE_IPTABLES_STATIC" != "y" ]; then
-	for lib in libip4tc.so.0.0.0 libxtables.so.6.0.0 $([ "$FREETZ_TARGET_IPV6_SUPPORT" == y ] && echo libip6tc.so.0.0.0); do
-		EXTERNAL_FILES+=" $FREETZ_LIBRARY_DIR/$lib"
-	done
+	if [ "$FREETZ_PACKAGE_IPTABLES_STATIC" != "y" ]; then
+		for lib in libip4tc.so.0.0.0 libxtables.so.6.0.0 $([ "$FREETZ_TARGET_IPV6_SUPPORT" == y ] && echo libip6tc.so.0.0.0); do
+			EXTERNAL_FILES+=" $FREETZ_LIBRARY_DIR/$lib"
+		done
+	fi
 fi
