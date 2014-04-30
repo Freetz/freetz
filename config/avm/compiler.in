@@ -15,5 +15,64 @@ config FREETZ_AVM_GCC_4_6
 
 config FREETZ_AVM_GCC_4_7
 	bool
-	default y if FREETZ_KERNEL_VERSION_2_6_28_MIN && FREETZ_AVM_UCLIBC_0_9_33
+	default y if FREETZ_KERNEL_VERSION_2_6_28_MIN && FREETZ_AVM_UCLIBC_0_9_33 && !FREETZ_TYPE_7490
+	default n
+
+config FREETZ_AVM_GCC_4_8
+	bool
+	default y if FREETZ_KERNEL_VERSION_2_6_28_MIN && FREETZ_AVM_UCLIBC_0_9_33 && FREETZ_TYPE_7490
+	default n
+
+config FREETZ_AVM_GCC_3_4_MIN
+	bool
+	default y if \
+		FREETZ_AVM_GCC_3_4 || \
+		FREETZ_AVM_GCC_4_6_MIN
+	default n
+
+config FREETZ_AVM_GCC_4_6_MIN
+	bool
+	default y if \
+		FREETZ_AVM_GCC_4_6 || \
+		FREETZ_AVM_GCC_4_7_MIN
+	default n
+
+config FREETZ_AVM_GCC_4_7_MIN
+	bool
+	default y if \
+		FREETZ_AVM_GCC_4_7 || \
+		FREETZ_AVM_GCC_4_8_MIN
+	default n
+
+config FREETZ_AVM_GCC_4_8_MIN
+	bool
+	default y if \
+		FREETZ_AVM_GCC_4_8
+	default n
+
+config FREETZ_AVM_GCC_3_4_MAX
+	bool
+	default y if \
+		FREETZ_AVM_GCC_3_4
+	default n
+
+config FREETZ_AVM_GCC_4_6_MAX
+	bool
+	default y if \
+		FREETZ_AVM_GCC_3_4_MAX || \
+		FREETZ_AVM_GCC_4_6
+	default n
+
+config FREETZ_AVM_GCC_4_7_MAX
+	bool
+	default y if \
+		FREETZ_AVM_GCC_4_6_MAX || \
+		FREETZ_AVM_GCC_4_7
+	default n
+
+config FREETZ_AVM_GCC_4_8_MAX
+	bool
+	default y if \
+		FREETZ_AVM_GCC_4_7_MAX || \
+		FREETZ_AVM_GCC_4_8
 	default n

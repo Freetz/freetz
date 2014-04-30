@@ -2,7 +2,8 @@ comment "Kernel toolchain options ----------------------------------"
 choice
 	prompt "Kernel binutils"
 	default FREETZ_KERNEL_BINUTILS_2_18 if FREETZ_AVM_GCC_3_4
-	default FREETZ_KERNEL_BINUTILS_2_22 if (FREETZ_AVM_GCC_4_6 || FREETZ_AVM_GCC_4_7)
+	default FREETZ_KERNEL_BINUTILS_2_22 if FREETZ_AVM_GCC_4_6 || FREETZ_AVM_GCC_4_7
+	default FREETZ_KERNEL_BINUTILS_2_23 if FREETZ_AVM_GCC_4_8
 
 	config FREETZ_KERNEL_BINUTILS_2_18
 		bool "binutils-2.18"
@@ -10,15 +11,17 @@ choice
 
 	config FREETZ_KERNEL_BINUTILS_2_22
 		bool "binutils-2.22"
-		depends on FREETZ_AVM_GCC_4_6 || FREETZ_AVM_GCC_4_7
+		depends on (FREETZ_AVM_GCC_4_6 || FREETZ_AVM_GCC_4_7) \
+			|| (FREETZ_AVM_GCC_4_6_MIN && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 
 	config FREETZ_KERNEL_BINUTILS_2_23
-		bool "binutils-2.23.2 - EXPERIMENTAL"
-		depends on (FREETZ_AVM_GCC_4_6 || FREETZ_AVM_GCC_4_7) && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
+		bool "binutils-2.23.2"
+		depends on FREETZ_AVM_GCC_4_8 \
+			|| (FREETZ_AVM_GCC_4_6_MIN && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 
 	config FREETZ_KERNEL_BINUTILS_2_24
 		bool "binutils-2.24 - EXPERIMENTAL"
-		depends on (FREETZ_AVM_GCC_4_6 || FREETZ_AVM_GCC_4_7) && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
+		depends on (FREETZ_AVM_GCC_4_6_MIN && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 endchoice
 
 choice
@@ -26,6 +29,7 @@ choice
 	default FREETZ_KERNEL_GCC_3_4 if FREETZ_AVM_GCC_3_4
 	default FREETZ_KERNEL_GCC_4_6 if FREETZ_AVM_GCC_4_6
 	default FREETZ_KERNEL_GCC_4_7 if FREETZ_AVM_GCC_4_7
+	default FREETZ_KERNEL_GCC_4_8 if FREETZ_AVM_GCC_4_8
 
 	config FREETZ_KERNEL_GCC_3_4
 		bool "gcc-3.4.6"
@@ -38,6 +42,10 @@ choice
 	config FREETZ_KERNEL_GCC_4_7
 		bool "gcc-4.7.3"
 		depends on FREETZ_AVM_GCC_4_7
+
+	config FREETZ_KERNEL_GCC_4_8
+		bool "gcc-4.8.2"
+		depends on FREETZ_AVM_GCC_4_8
 endchoice
 
 config FREETZ_KERNEL_BINUTILS_VERSION
@@ -52,6 +60,7 @@ config FREETZ_KERNEL_GCC_VERSION
 	default "3.4.6" if FREETZ_KERNEL_GCC_3_4
 	default "4.6.4" if FREETZ_KERNEL_GCC_4_6
 	default "4.7.3" if FREETZ_KERNEL_GCC_4_7
+	default "4.8.2" if FREETZ_KERNEL_GCC_4_8
 
 comment "Target toolchain options ----------------------------------"
 choice
@@ -99,37 +108,43 @@ config FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
 
 choice
 	prompt "Target binutils"
-	default FREETZ_TARGET_BINUTILS_2_22
+	default FREETZ_TARGET_BINUTILS_2_22 if FREETZ_AVM_GCC_4_7_MAX
+	default FREETZ_TARGET_BINUTILS_2_23 if FREETZ_AVM_GCC_4_8_MIN
 
 	config FREETZ_TARGET_BINUTILS_2_22
 		bool "binutils-2.22"
+		depends on FREETZ_AVM_GCC_4_7_MAX \
+			|| (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 
 	config FREETZ_TARGET_BINUTILS_2_23
 		bool "binutils-2.23.2"
-		depends on FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE
+		depends on FREETZ_AVM_GCC_4_8_MIN \
+			|| (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 
 	config FREETZ_TARGET_BINUTILS_2_24
 		bool "binutils-2.24 - EXPERIMENTAL"
-		depends on FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE
+		depends on (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 endchoice
 
 choice
 	prompt "Target compiler"
-	default FREETZ_TARGET_GCC_4_6 if !FREETZ_AVM_GCC_4_7
-	default FREETZ_TARGET_GCC_4_7 if  FREETZ_AVM_GCC_4_7
+	default FREETZ_TARGET_GCC_4_6 if FREETZ_AVM_GCC_4_6_MAX
+	default FREETZ_TARGET_GCC_4_7 if FREETZ_AVM_GCC_4_7
+	default FREETZ_TARGET_GCC_4_8 if FREETZ_AVM_GCC_4_8
 
 	config FREETZ_TARGET_GCC_4_6
 		bool "gcc-4.6.4"
-		depends on !FREETZ_AVM_GCC_4_7
+		depends on FREETZ_AVM_GCC_4_6_MAX
 
 	config FREETZ_TARGET_GCC_4_7
 		bool "gcc-4.7.3"
 		depends on FREETZ_AVM_GCC_4_7 \
-			|| FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE
+			|| (FREETZ_AVM_GCC_4_7_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 
 	config FREETZ_TARGET_GCC_4_8
-		bool "gcc-4.8.2 - EXPERIMENTAL"
-		depends on FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE
+		bool "gcc-4.8.2"
+		depends on FREETZ_AVM_GCC_4_8 \
+			|| (FREETZ_AVM_GCC_4_8_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 endchoice
 
 choice
