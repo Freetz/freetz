@@ -1,8 +1,8 @@
 #!/bin/bash
 
-KERNEL_TOOLCHAIN_VERSION=r10510
+KERNEL_TOOLCHAIN_VERSION=r11967
 KERNEL_TOOLCHAIN_FILENAME_SUFFIX=freetz-${KERNEL_TOOLCHAIN_VERSION}-shared-glibc
-TARGET_TOOLCHAIN_VERSION=r10946
+TARGET_TOOLCHAIN_VERSION=r11967
 TARGET_TOOLCHAIN_FILENAME_SUFFIX=freetz-${TARGET_TOOLCHAIN_VERSION}-shared-glibc
 
 TOOL_CONF=tools/config/conf
@@ -24,29 +24,43 @@ EOF
 #     3.4 LE
 #     4.6 LE/BE
 #     4.7 BE
+#     4.8 BE
 #
 # required uClibc versions:
 #     0.9.28   LE
 #     0.9.29   LE
 #     0.9.32.x LE/BE
+#     0.9.33.x LE/BE (as part of freetz uClibc-0.9.33.x test program)
+#     0.9.33.x BE-NPTL
 #
 
 #                               kernel       uClibc
 # FREETZ_TYPE_WLAN              3.4 LE     0.9.28   LE
 # FREETZ_TYPE_7270_V1+IPv6      3.4 LE     0.9.29   LE
 # FREETZ_TYPE_7270_V3           4.6 LE     0.9.32.x LE
+# FREETZ_TYPE_7270_V3+0.9.33    4.6 LE     0.9.33.x LE
 #
-# FREETZ_TYPE_7390              4.6 BE     0.9.32.x BE
-# FREETZ_TYPE_7390+LABOR        4.7 BE     0.9.33.x BE NPTL
+# FREETZ_TYPE_7390+05.5X        4.6 BE     0.9.32.x BE
+# FREETZ_TYPE_7390+05.5X+0.9.33 4.6 BE     0.9.33.x BE
+# FREETZ_TYPE_7390+06.XX        4.7 BE     0.9.33.x BE NPTL
+# FREETZ_TYPE_7490+LABOR        4.8 BE     0.9.33.x BE NPTL
 #
 
 mkdir -p $DOWNLOADS
 for options in \
-	FREETZ_TYPE_WLAN \
+	"FREETZ_TYPE_WLAN" \
+	\
 	"FREETZ_TYPE_7270_V1 FREETZ_TARGET_IPV6_SUPPORT" \
-	FREETZ_TYPE_7270_V3 \
-	FREETZ_TYPE_7390 \
-	"FREETZ_TYPE_7390 FREETZ_TYPE_FIRMWARE_LABOR" \
+	\
+	"FREETZ_TYPE_7270_V3" \
+	"FREETZ_TYPE_7270_V3 FREETZ_TARGET_UCLIBC_0_9_33" \
+	\
+	"FREETZ_TYPE_7390 FREETZ_TYPE_FIRMWARE_05_5X" \
+	"FREETZ_TYPE_7390 FREETZ_TYPE_FIRMWARE_05_5X FREETZ_TARGET_UCLIBC_0_9_33" \
+	\
+	"FREETZ_TYPE_7390 FREETZ_TYPE_FIRMWARE_06_XX" \
+	\
+	"FREETZ_TYPE_7490 FREETZ_TYPE_FIRMWARE_LABOR" \
 ; do
 	optionsCommaSep=$(echo $options | sed -e 's| |,|g')
 	optionsUnderscoreSep=$(echo $options | sed -e 's| |_|g')
@@ -56,7 +70,7 @@ for options in \
 	ln -sf $DOWNLOADS dl
 	make $TOOL_CONF
 	miniconfig $options > $DOT_CONFIG
-	$TOOL_CONF --oldnoconfig Config.in
+	$TOOL_CONF --oldnoconfig config/Config.in
 	cp -a $DOT_CONFIG $DOT_CONFIG.$optionsUnderscoreSep
 	make KTV=${KERNEL_TOOLCHAIN_FILENAME_SUFFIX} TTV=${TARGET_TOOLCHAIN_FILENAME_SUFFIX} toolchain
 done
