@@ -1,0 +1,65 @@
+--- PATCHES
++++ PATCHES
+@@ -0,0 +1 @@
++exp3
+--- VERSION
++++ VERSION
+@@ -1 +1 @@
+-3.1.2-p6
++3.1.2-p7
+--- src/exp3.c
++++ src/exp3.c
+@@ -283,7 +283,7 @@
+             }
+         }
+ 
+-      if (mpfr_can_round (shift_x > 0 ? t : tmp, realprec, MPFR_RNDD, MPFR_RNDZ,
++      if (mpfr_can_round (shift_x > 0 ? t : tmp, realprec, MPFR_RNDN, MPFR_RNDZ,
+                           MPFR_PREC(y) + (rnd_mode == MPFR_RNDN)))
+         {
+           inexact = mpfr_set (y, shift_x > 0 ? t : tmp, rnd_mode);
+--- src/mpfr.h
++++ src/mpfr.h
+@@ -27,7 +27,7 @@
+ #define MPFR_VERSION_MAJOR 3
+ #define MPFR_VERSION_MINOR 1
+ #define MPFR_VERSION_PATCHLEVEL 2
+-#define MPFR_VERSION_STRING "3.1.2-p6"
++#define MPFR_VERSION_STRING "3.1.2-p7"
+ 
+ /* Macros dealing with MPFR VERSION */
+ #define MPFR_VERSION_NUM(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
+--- src/version.c
++++ src/version.c
+@@ -25,5 +25,5 @@
+ const char *
+ mpfr_get_version (void)
+ {
+-  return "3.1.2-p6";
++  return "3.1.2-p7";
+ }
+--- tests/texp.c
++++ tests/texp.c
+@@ -150,6 +150,22 @@
+       exit (1);
+     }
+ 
++  mpfr_set_prec (x, 118);
++  mpfr_set_str_binary (x, "0.1110010100011101010000111110011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000E-86");
++  mpfr_set_prec (y, 118);
++  mpfr_exp_2 (y, x, MPFR_RNDU);
++  mpfr_exp_3 (x, x, MPFR_RNDU);
++  if (mpfr_cmp (x, y))
++    {
++      printf ("mpfr_exp_2 and mpfr_exp_3 differ for prec=118\n");
++      printf ("mpfr_exp_2 gives ");
++      mpfr_out_str (stdout, 2, 0, y, MPFR_RNDN);
++      printf ("\nmpfr_exp_3 gives ");
++      mpfr_out_str (stdout, 2, 0, x, MPFR_RNDN);
++      printf ("\n");
++      exit (1);
++    }
++
+   mpfr_clear (x);
+   mpfr_clear (y);
+   return 0;
