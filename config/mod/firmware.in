@@ -50,7 +50,7 @@ config FREETZ_AVM_HAS_LABOR
 	help
 		Select this if a labor firmware is available for your box.
 
-config FREETZ_AVM_HAS_FW6XX
+config FREETZ_AVM_HAS_FIRMWARE_06_XX
 	bool "Has AVM Firmware 06.xx"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
@@ -86,7 +86,7 @@ config FREETZ_AVM_HAS_FW6XX
 	help
 		Select this if a Fritz!OS-06.xx based firmware is available for your box.
 
-config FREETZ_AVM_HAS_FW55X
+config FREETZ_AVM_HAS_FIRMWARE_05_5X
 	bool "Has AVM Firmware 05.5x"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
@@ -132,7 +132,7 @@ config FREETZ_AVM_HAS_FW55X
 	help
 		Select this if a Fritz!OS-05.5x based firmware is available for your box.
 
-config FREETZ_AVM_HAS_FW52X
+config FREETZ_AVM_HAS_FIRMWARE_05_2X
 	bool "Has AVM Firmware 05.2x"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_3270 && !FREETZ_TYPE_LANG_IT ) || \
@@ -153,17 +153,17 @@ config FREETZ_AVM_HAS_FW52X
 	help
 		Select this if a Fritz!OS-05.2x based firmware is available for your box.
 
-config FREETZ_AVM_HAS_FW4XX
+config FREETZ_AVM_HAS_FIRMWARE_04_XX
 	bool "Has AVM Firmware 04.xx"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		! FREETZ_AVM_HAS_FW52X && \
-		! FREETZ_AVM_HAS_FW55X && \
-		! FREETZ_AVM_HAS_FW6XX
+		! FREETZ_AVM_HAS_FIRMWARE_05_2X && \
+		! FREETZ_AVM_HAS_FIRMWARE_05_5X && \
+		! FREETZ_AVM_HAS_FIRMWARE_06_XX
 	default n
 	help
 		Select this if a 04.xx-firmware is available for your box.
 
-config FREETZ_AVM_HAS_FWEWE_05_5X
+config FREETZ_AVM_HAS_FIRMWARE_EWE_05_5X
 	bool "Has EWE Edition Firmware 05.5x"		if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_LANG_EN && ( \
