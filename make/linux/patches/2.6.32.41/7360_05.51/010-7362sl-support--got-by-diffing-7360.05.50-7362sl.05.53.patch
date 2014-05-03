@@ -1,0 +1,1050 @@
+--- linux-2.6.32/drivers/char/avm_new/Makefile
++++ linux-2.6.32/drivers/char/avm_new/Makefile
+@@ -122,4 +122,4 @@
+ 
+ EXTRA_CFLAGS	+= -Wall -Wextra
+ # EXTRA_CFLAGS	+= -g -ggdb -save-temps
+-EXTRA_CFLAGS	+= -DAVM_NEW_HWREV_LIST="\" 156 191 171 137 168 197 139 145 167 141 144 170 175 177 181 183 196 185 193 192 198 189 179 188 180 96 184 195 190 194 200 172 173 \""
++EXTRA_CFLAGS	+= -DAVM_NEW_HWREV_LIST="\" 156 191 171 137 168 197 139 145 167 141 144 170 175 177 181 183 196 203 185 193 192 198 189 179 188 180 96 184 195 190 194 200 172 173 \""
+--- linux-2.6.32/arch/mips/include/asm/avm_cache.h
++++ linux-2.6.32/arch/mips/include/asm/avm_cache.h
+@@ -57,6 +57,8 @@
+     { 185, CONF_CM_CACHABLE_NONCOHERENT }, /*--- FRITZ!Box Fon WLAN 7391 ---*/
+     { 193, CONF_CM_CACHABLE_NONCOHERENT }, /*--- FRITZ!Box Fon WLAN 3390 ---*/
+     { 196, CONF_CM_CACHABLE_NONCOHERENT }, /*--- FRITZ!Box Fon WLAN 7360v2 ---*/
++    { 202, CONF_CM_CACHABLE_NONCOHERENT }, /*--- FRITZ!Box Fon WLAN 7362 ---*/
++    { 203, CONF_CM_CACHABLE_NONCOHERENT }, /*--- FRITZ!Box Fon WLAN 7362 SL ---*/
+ /*--- AR10 ---*/
+     { 198, CONF_CM_CACHABLE_NONCOHERENT }, /*--- Italo-R ---*/
+     { 192, CONF_CM_CACHABLE_NONCOHERENT }, /*--- Italo ---*/
+--- linux-2.6.32/arch/mips/mach-infineon/vr9/avm_hw_config.c
++++ linux-2.6.32/arch/mips/mach-infineon/vr9/avm_hw_config.c
+@@ -13,6 +13,8 @@
+ #include "avm_hw_config_hw183.h"
+ #include "avm_hw_config_hw185.h"
+ #include "avm_hw_config_hw193.h"
++#include "avm_hw_config_hw202.h"
++#include "avm_hw_config_hw203.h"
+ 
+ 
+ extern void prom_printf(const char * fmt, ...);
+@@ -29,6 +31,8 @@
+     { .hwrev = 185,                .table = avm_hardware_config_hw185 },          /*--- FRITZ!Box Fon 7391 ---*/
+     { .hwrev = 193,                .table = avm_hardware_config_hw193 },          /*--- FRITZ!Box Fon 3390 ---*/
+     { .hwrev = 196,                .table = avm_hardware_config_hw183 },          /*--- FRITZ!Box Fon 7360v2 ---*/
++    { .hwrev = 202,                .table = avm_hardware_config_hw202 },          /*--- FRITZ!Box Fon 7362 ---*/
++    { .hwrev = 203,                .table = avm_hardware_config_hw203 },          /*--- FRITZ!Box Fon 7362 SL (identische GPIOs zur 7362) ---*/
+ };
+ EXPORT_SYMBOL(avm_hw_config_tables);
+ 
+--- linux-2.6.32/drivers/net/avm_cpmac/configs/avmnet_hw_config.h
++++ linux-2.6.32/drivers/net/avm_cpmac/configs/avmnet_hw_config.h
+@@ -27,6 +27,7 @@
+ #include "config_6840.h"
+ #include "config_7360.h"
+ #include "config_7391.h"
++#include "config_HW202.h"
+ #endif
+ 
+ #if defined(CONFIG_AR9)
+@@ -150,6 +151,20 @@
+         .avm_devices = hw181_avmnet_avm_devices
+     },
+     {
++         // 7362
++        .hw_id = 202,
++        .config = &hw202_avmnet,
++        .nr_avm_devices = NUM_ENTITY( hw202_avmnet_avm_devices ),
++        .avm_devices = hw202_avmnet_avm_devices
++    },
++    {
++         // 7362 SL
++        .hw_id = 203,
++        .config = &hw202_avmnet,
++        .nr_avm_devices = NUM_ENTITY( hw202_avmnet_avm_devices ),
++        .avm_devices = hw202_avmnet_avm_devices
++    },
++    {
+          // 7391
+         .hw_id = 185,
+         .config = &hw185_avmnet,
+--- /dev/null
++++ linux-2.6.32/arch/mips/mach-infineon/vr9/avm_hw_config_hw202.h
+@@ -0,0 +1,302 @@
++/*------------------------------------------------------------------------------------------*\
++ *
++ * Hardware Config für FRITZ!Box Fon 7362
++ *
++\*------------------------------------------------------------------------------------------*/
++
++#undef AVM_HARDWARE_CONFIG
++#define AVM_HARDWARE_CONFIG  avm_hardware_config_hw202
++
++
++struct _avm_hw_config AVM_HARDWARE_CONFIG[] = {
++
++
++    /****************************************************************************************\
++     *
++     * GPIO Config
++     *
++    \****************************************************************************************/
++
++
++    /*------------------------------------------------------------------------------------------*\
++     * LEDs / Taster
++    \*------------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_led_power",   /* LED 5 */
++        .value  = 32,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_power_red",   /* LED 5_R */
++        .value  = 33,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_internet",   /* LED 4 */
++        .value  = 38,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_festnetz",   /* LED 3 */
++        .value  = 35,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_wlan",   /* LED 2 */
++        .value  = 36,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_info",   /* LED 1 */
++        .value  = 47,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_info_red",   /* LED 1_R */
++        .value  = 34,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++
++    /*--- DECT button connected to EXTIN 1 ---*/
++    {
++        .name   = "gpio_avm_button_dect",
++        .value  = 1,
++        .param  = avm_hw_param_gpio_in_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN  | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR 
++        }
++    },
++    /*--- WLAN button connected to EXTIN 0 ---*/
++    {
++        .name   = "gpio_avm_button_wlan",
++        .value  = 29,
++        .param  = avm_hw_param_gpio_in_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN  | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET 
++        }
++    },
++
++
++    /*--------------------------------------------------------------------------------------*\
++     * DECT
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_dect_reset",
++        .value  = 30,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PIGLET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_dect_uart_rx",
++        .value  = 11,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PIGLET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_dect_uart_tx",
++        .value  = 12,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PIGLET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    /*--------------------------------------------------------------------------------*\
++     * TDM-Check (Clockmessung)
++    \*--------------------------------------------------------------------------------*/
++    { 
++        .name   = "gpio_avm_tdm_fsc",              
++        .value  = 0,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_TDMCHECK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_tdm_dcl",
++        .value  = 40,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_TDMCHECK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++
++    /*--------------------------------------------------------------------------------------*\
++     * PCM-BUS
++    \*--------------------------------------------------------------------------------------*/
++    { 
++        .name   = "gpio_avm_pcmlink_fsc",              
++        .value  = 0,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDSEL_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDEN_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_pcmlink_do",
++        .value  = 25,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_pcmlink_di",
++        .value  = 41,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDSEL_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDEN_SET 
++        }
++    },
++    {
++        .name   = "gpio_avm_pcmlink_dcl",
++        .value  = 40,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDSEL_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDEN_SET 
++        }
++    },
++
++
++    /*--------------------------------------------------------------------------------------*\
++     * USB
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_usb_pwr_en0",
++        .value  =  14,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_USB,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_usb_fault_det0",
++        .value  =  9,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_USB,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++
++    /*--------------------------------------------------------------------------------------*\
++     * ETHERNET
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_extphy_25mhz",
++        .value  =  3,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_25MHZ_CLOCK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_extphy1_reset",
++        .value  = 45,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_RESET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR| IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_extphy2_reset",
++        .value  = 44,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_RESET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR| IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_extphy_int",
++        .value  = 39,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++           .module_id = IFX_GPIO_MODULE_EXTPHY_INT,
++           .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_mii_mdio",
++        .value  = 42,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_MDIO,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_mii_mdc",
++        .value  = 43,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_MDIO,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++
++
++    /*--------------------------------------------------------------------------------------*\
++     * PCIE / WLAN / Ext. WASP
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_pcie_reset",
++        .value  = 21,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCIE,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET 
++        }
++    },
++
++
++
++
++    {   .name   = NULL }
++};
++EXPORT_SYMBOL(AVM_HARDWARE_CONFIG);
++
++
+--- /dev/null
++++ linux-2.6.32/arch/mips/mach-infineon/vr9/avm_hw_config_hw203.h
+@@ -0,0 +1,302 @@
++/*------------------------------------------------------------------------------------------*\
++ *
++ * Hardware Config für FRITZ!Box Fon 7362 SL
++ *
++\*------------------------------------------------------------------------------------------*/
++
++#undef AVM_HARDWARE_CONFIG
++#define AVM_HARDWARE_CONFIG  avm_hardware_config_hw203
++
++
++struct _avm_hw_config AVM_HARDWARE_CONFIG[] = {
++
++
++    /****************************************************************************************\
++     *
++     * GPIO Config
++     *
++    \****************************************************************************************/
++
++
++    /*------------------------------------------------------------------------------------------*\
++     * LEDs / Taster
++    \*------------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_led_power",   /* LED 5 */
++        .value  = 32,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_power_red",   /* LED 5_R */
++        .value  = 33,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_internet",   /* LED 4 */
++        .value  = 38,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_dect",   /* LED 3 */
++        .value  = 35,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_wlan",   /* LED 2 */
++        .value  = 36,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_info",   /* LED 1 */
++        .value  = 47,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_led_info_red",   /* LED 1_R */
++        .value  = 34,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OUTPUT_SET
++        }
++    },
++
++    /*--- DECT button connected to EXTIN 1 ---*/
++    {
++        .name   = "gpio_avm_button_dect",
++        .value  = 1,
++        .param  = avm_hw_param_gpio_in_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN  | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR 
++        }
++    },
++    /*--- WLAN button connected to EXTIN 0 ---*/
++    {
++        .name   = "gpio_avm_button_wlan",
++        .value  = 29,
++        .param  = avm_hw_param_gpio_in_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_LED,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN  | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET 
++        }
++    },
++
++
++    /*--------------------------------------------------------------------------------------*\
++     * DECT
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_dect_reset",
++        .value  = 30,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PIGLET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_dect_uart_rx",
++        .value  = 11,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PIGLET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_dect_uart_tx",
++        .value  = 12,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PIGLET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    /*--------------------------------------------------------------------------------*\
++     * TDM-Check (Clockmessung)
++    \*--------------------------------------------------------------------------------*/
++    { 
++        .name   = "gpio_avm_tdm_fsc",              
++        .value  = 0,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_TDMCHECK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_tdm_dcl",
++        .value  = 40,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_TDMCHECK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++
++    /*--------------------------------------------------------------------------------------*\
++     * PCM-BUS
++    \*--------------------------------------------------------------------------------------*/
++    { 
++        .name   = "gpio_avm_pcmlink_fsc",              
++        .value  = 0,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDSEL_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDEN_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_pcmlink_do",
++        .value  = 25,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_pcmlink_di",
++        .value  = 41,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDSEL_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDEN_SET 
++        }
++    },
++    {
++        .name   = "gpio_avm_pcmlink_dcl",
++        .value  = 40,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCMLINK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDSEL_SET | IFX_GPIO_IOCTL_PIN_CONFIG_PUDEN_SET 
++        }
++    },
++
++
++    /*--------------------------------------------------------------------------------------*\
++     * USB
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_usb_pwr_en0",
++        .value  =  14,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_USB,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_usb_fault_det0",
++        .value  =  9,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_USB,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++
++    /*--------------------------------------------------------------------------------------*\
++     * ETHERNET
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_extphy_25mhz",
++        .value  =  3,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_25MHZ_CLOCK,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_extphy1_reset",
++        .value  = 45,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_RESET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR| IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_extphy2_reset",
++        .value  = 44,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_RESET,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR| IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_extphy_int",
++        .value  = 39,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++           .module_id = IFX_GPIO_MODULE_EXTPHY_INT,
++           .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_IN | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_SET
++        }
++    },
++    {
++        .name   = "gpio_avm_mii_mdio",
++        .value  = 42,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_MDIO,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++    {
++        .name   = "gpio_avm_mii_mdc",
++        .value  = 43,
++        .param  = avm_hw_param_no_param,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_EXTPHY_MDIO,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_SET   | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR
++        }
++    },
++
++
++    /*--------------------------------------------------------------------------------------*\
++     * PCIE / WLAN / Ext. WASP
++    \*--------------------------------------------------------------------------------------*/
++    {
++        .name   = "gpio_avm_pcie_reset",
++        .value  = 21,
++        .param  = avm_hw_param_gpio_out_active_low,
++        .manufactor_hw_config.manufactor_lantiq_gpio_config = {
++            .module_id = IFX_GPIO_MODULE_PCIE,
++            .config    = IFX_GPIO_IOCTL_PIN_CONFIG_DIR_OUT | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL0_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_ALTSEL1_CLEAR | IFX_GPIO_IOCTL_PIN_CONFIG_OD_SET 
++        }
++    },
++
++
++
++
++    {   .name   = NULL }
++};
++EXPORT_SYMBOL(AVM_HARDWARE_CONFIG);
++
++
+--- /dev/null
++++ linux-2.6.32/drivers/net/avm_cpmac/configs/config_HW202.h
+@@ -0,0 +1,367 @@
++#if !defined(__AVM_NET_CFG_HW202_)
++#define __AVM_NET_CFG_HW202_
++
++#ifdef CONFIG_AVM_PA
++#include <linux/avm_pa.h>
++#include <linux/avm_pa_hw.h>
++#include <linux/avm_pa_intern.h>
++#endif
++
++#include <avmnet_module.h>
++#include <avmnet_config.h>
++#include "../phy/phy_11G.h"
++#include "../switch/ifx/common/swi_ifx_common.h"
++#include "../switch/ifx/vr9/swi_vr9.h"
++#include "../switch/ifx/vr9/mac_vr9.h"
++#include "../phy/avmnet_ar803x.h"
++#include "../phy/phy_wasp.h"
++
++extern avmnet_module_t hw202_avmnet_mac_vr9_0;
++extern avmnet_module_t hw202_avmnet_mac_vr9_1;
++extern avmnet_module_t hw202_avmnet_mac_vr9_2;
++extern avmnet_module_t hw202_avmnet_mac_vr9_4;
++
++avmnet_device_t hw202_avmnet_avm_device_0 =
++{
++   .device            = NULL,
++   .device_name       = "eth0",
++   .external_port_no  = 0,
++   .device_ops        = {
++                         .ndo_init             = ifx_ppa_eth_init,
++                         .ndo_get_stats        = avmnet_swi_vr9_get_net_device_stats,
++                         .ndo_open             = avmnet_netdev_open,
++                         .ndo_stop             = avmnet_netdev_stop,
++                         .ndo_set_mac_address  = ifx_ppa_eth_set_mac_address,
++                         .ndo_do_ioctl         = ifx_ppa_eth_ioctl,
++                         .ndo_tx_timeout       = ifx_ppa_eth_tx_timeout,
++                         .ndo_start_xmit       = ifx_ppa_eth_hard_start_xmit
++                        },
++   .sizeof_priv       = sizeof(avmnet_netdev_priv_t),
++   .device_setup      = ifx_ppa_setup_eth,
++   .device_setup_priv = ifx_ppa_setup_priv,
++    .flags		  	  = AVMNET_DEVICE_IFXPPA_ETH_LAN,
++   .mac_module        = &hw202_avmnet_mac_vr9_4,
++};
++
++avmnet_device_t hw202_avmnet_avm_device_1 =
++{
++   .device            = NULL,
++   .device_name       = "eth1",
++   .external_port_no  = 1,
++   .device_ops        = {
++                         .ndo_init             = ifx_ppa_eth_init,
++                         .ndo_get_stats        = avmnet_swi_vr9_get_net_device_stats,
++                         .ndo_open             = avmnet_netdev_open,
++                         .ndo_stop             = avmnet_netdev_stop,
++                         .ndo_set_mac_address  = ifx_ppa_eth_set_mac_address,
++                         .ndo_do_ioctl         = ifx_ppa_eth_ioctl,
++                         .ndo_tx_timeout       = ifx_ppa_eth_tx_timeout,
++                         .ndo_start_xmit       = ifx_ppa_eth_hard_start_xmit
++                        },
++   .sizeof_priv       = sizeof(avmnet_netdev_priv_t),
++   .device_setup      = ifx_ppa_setup_eth,
++   .device_setup_priv = ifx_ppa_setup_priv,
++   .flags		  	  = AVMNET_DEVICE_IFXPPA_ETH_LAN,
++   .mac_module        = &hw202_avmnet_mac_vr9_2,
++};
++
++avmnet_device_t hw202_avmnet_avm_device_2 =
++{
++   .device            = NULL,
++   .device_name       = "eth2",
++   .external_port_no  = 2,
++   .device_ops        = {
++                         .ndo_init             = ifx_ppa_eth_init,
++                         .ndo_get_stats        = avmnet_swi_vr9_get_net_device_stats,
++                         .ndo_open             = avmnet_netdev_open,
++                         .ndo_stop             = avmnet_netdev_stop,
++                         .ndo_set_mac_address  = ifx_ppa_eth_set_mac_address,
++                         .ndo_do_ioctl         = ifx_ppa_eth_ioctl,
++                         .ndo_tx_timeout       = ifx_ppa_eth_tx_timeout,
++                         .ndo_start_xmit       = ifx_ppa_eth_hard_start_xmit
++                        },
++   .sizeof_priv       = sizeof(avmnet_netdev_priv_t),
++   .device_setup      = ifx_ppa_setup_eth,
++   .device_setup_priv = ifx_ppa_setup_priv,
++   .flags		  	  = AVMNET_DEVICE_IFXPPA_ETH_LAN,
++   .mac_module        = &hw202_avmnet_mac_vr9_0,
++};
++
++avmnet_device_t hw202_avmnet_avm_device_3 =
++{
++   .device            = NULL,
++   .device_name       = "eth3",
++   .external_port_no  = 3,
++   .device_ops        = {
++                         .ndo_init             = ifx_ppa_eth_init,
++                         .ndo_get_stats        = avmnet_swi_vr9_get_net_device_stats,
++                         .ndo_open             = avmnet_netdev_open,
++                         .ndo_stop             = avmnet_netdev_stop,
++                         .ndo_set_mac_address  = ifx_ppa_eth_set_mac_address,
++                         .ndo_do_ioctl         = ifx_ppa_eth_ioctl,
++                         .ndo_tx_timeout       = ifx_ppa_eth_tx_timeout,
++                         .ndo_start_xmit       = ifx_ppa_eth_hard_start_xmit
++                        },
++   .sizeof_priv       = sizeof(avmnet_netdev_priv_t),
++   .device_setup      = ifx_ppa_setup_eth,
++   .device_setup_priv = ifx_ppa_setup_priv,
++   .flags		  	  = AVMNET_DEVICE_IFXPPA_ETH_LAN,
++   .mac_module        = &hw202_avmnet_mac_vr9_1,
++};
++
++avmnet_device_t hw202_avmnet_avm_device_4 =
++{
++   .device            = NULL,
++   .device_name       = "ptm_vr9",
++   .external_port_no  = 255,
++   .device_ops        = {
++                      /*--- .ndo_get_stats          = ptm_get_stats, ---*/
++                            .ndo_set_mac_address    = ifx_ppa_eth_set_mac_address,
++                        },
++   .sizeof_priv       = sizeof(avmnet_netdev_priv_t),
++   .device_setup_priv = ifx_ppa_setup_priv,
++   .flags			  = AVMNET_DEVICE_IFXPPA_PTM_WAN | AVMNET_DEVICE_FLAG_WAIT_FOR_MODULE_FUNCTIONS,
++   .mac_module        = NULL,
++};
++
++avmnet_device_t *hw202_avmnet_avm_devices[] = {
++    &hw202_avmnet_avm_device_0,
++    &hw202_avmnet_avm_device_1,
++    &hw202_avmnet_avm_device_2,
++    &hw202_avmnet_avm_device_3,
++    &hw202_avmnet_avm_device_4,
++}; 
++
++avmnet_module_t hw202_avmnet =
++{
++    .name               = "swi_vr9",
++    .type               = avmnet_modtype_switch,
++    .priv               = NULL,
++    .initdata.swi       = {
++                            .flags = SWI_DISABLE_LEARNING,
++                           },
++    .init               = avmnet_swi_vr9_init,
++    .setup              = avmnet_swi_vr9_setup,
++    .exit               = avmnet_swi_vr9_exit,
++    
++    .reg_read           = avmnet_swi_vr9_reg_read,
++    .reg_write          = avmnet_swi_vr9_reg_write,
++    .lock               = avmnet_swi_vr9_lock,
++    .unlock             = avmnet_swi_vr9_unlock,
++    .status_changed     = avmnet_swi_vr9_status_changed,
++    .set_status         = avmnet_swi_vr9_set_status,
++    .poll               = avmnet_swi_vr9_poll,
++    .setup_irq          = avmnet_swi_vr9_setup_irq,
++    .powerup            = avmnet_swi_vr9_powerup,
++    .powerdown          = avmnet_swi_vr9_powerdown,
++    .suspend            = avmnet_swi_vr9_suspend,
++    .resume             = avmnet_swi_vr9_resume,
++    
++    .parent             = NULL,
++    .num_children       = 4,
++    .children           = { &hw202_avmnet_mac_vr9_0,
++                            &hw202_avmnet_mac_vr9_1,
++                            &hw202_avmnet_mac_vr9_2,
++                            &hw202_avmnet_mac_vr9_4
++                          }
++};
++
++
++extern avmnet_module_t hw202_avmnet_phy_ar803x_0;
++extern avmnet_module_t hw202_avmnet_phy_ar803x_1;
++extern avmnet_module_t hw202_avmnet_phy_11G_0;
++extern avmnet_module_t hw202_avmnet_phy_11G_1;
++
++avmnet_module_t hw202_avmnet_mac_vr9_0 =
++{
++    .name               = "mac_vr9_0",
++    .type               = avmnet_modtype_mac,
++    .priv               = NULL,
++    .initdata.mac       = { 
++                            //.flags = AVMNET_CONFIG_FLAG_MDIOPOLLING,
++                            .mac_nr = 0,
++                            .mac_mode = MAC_MODE_RMII,
++                          },
++
++     MAC_VR9_STDFUNCS,
++
++    .parent             = &hw202_avmnet,
++    .num_children       = 1,
++    .children           = { &hw202_avmnet_phy_ar803x_0 }
++};
++
++avmnet_module_t hw202_avmnet_mac_vr9_1 =
++{
++    .name               = "mac_vr9_1",
++    .type               = avmnet_modtype_mac,
++    .priv               = NULL,
++    .initdata.mac       = { 
++                            //.flags = AVMNET_CONFIG_FLAG_MDIOPOLLING,
++                            .mac_nr = 1,
++                            .mac_mode = MAC_MODE_RMII,
++                          },
++
++     MAC_VR9_STDFUNCS,
++    
++    .parent             = &hw202_avmnet,
++    .num_children       = 1,
++    .children           = { &hw202_avmnet_phy_ar803x_1 }
++};
++
++avmnet_module_t hw202_avmnet_mac_vr9_2 =
++{
++    .name               = "mac_vr9_2",
++    .type               = avmnet_modtype_mac,
++    .priv               = NULL,
++    .initdata.mac       = { 
++                            // .flags = AVMNET_CONFIG_FLAG_MDIOPOLLING,
++                            .mac_nr = 2,
++                            .mac_mode = MAC_MODE_GMII,
++                          },
++
++     MAC_VR9_STDFUNCS,
++    
++    .parent             = &hw202_avmnet,
++    .num_children       = 1,
++    .children           = { &hw202_avmnet_phy_11G_1 }
++};
++
++avmnet_module_t hw202_avmnet_mac_vr9_4 =
++{
++    .name               = "mac_vr9_4",
++    .type               = avmnet_modtype_mac,
++    .priv               = NULL,
++    .initdata.mac       = { 
++                            //.flags = AVMNET_CONFIG_FLAG_MDIOPOLLING,
++                            .mac_nr = 4,
++                            .mac_mode =  MAC_MODE_GMII,
++                          },
++
++     MAC_VR9_STDFUNCS,
++    
++    .parent             = &hw202_avmnet,
++    .num_children       = 1,
++    .children           = { &hw202_avmnet_phy_11G_0 }
++};
++
++avmnet_module_t hw202_avmnet_phy_ar803x_0 =
++{
++    .name               = "phy_ar803x_0",
++    .device_id          = &hw202_avmnet_avm_device_2,
++    .type               = avmnet_modtype_phy,
++    .priv               = NULL,
++    .initdata.phy       = {
++                            .flags = ( AVMNET_CONFIG_FLAG_MDIOADDR
++                                     | AVMNET_CONFIG_FLAG_RESET
++                                     | AVMNET_CONFIG_FLAG_RST_ON_LINKFAIL
++                                     | AVMNET_CONFIG_FLAG_LINKFAIL_TIME
++                                     | AVMNET_CONFIG_FLAG_IRQ
++                                     | AVMNET_CONFIG_FLAG_IRQ_ON
++                                     ),
++                            .mdio_addr = 0x00,
++                            .reset = 45,
++                            .lnkf_time = HZ,
++                            .irq = IFX_EIU_IR3,
++                          },
++
++     AR803X_STDFUNCS,
++
++    .ethtool_ops        = AR803X_ETHOPS,
++
++    .parent             = &hw202_avmnet_mac_vr9_0,
++    .num_children       = 0,
++    .children           = {}
++};
++
++avmnet_module_t hw202_avmnet_phy_ar803x_1 =
++{
++    .name               = "phy_ar803x_1",
++    .device_id          = &hw202_avmnet_avm_device_3,
++    .type               = avmnet_modtype_phy,
++    .priv               = NULL,
++    .initdata.phy       = {
++                            .flags = ( AVMNET_CONFIG_FLAG_MDIOADDR
++                                     | AVMNET_CONFIG_FLAG_RESET
++                                     | AVMNET_CONFIG_FLAG_RST_ON_LINKFAIL
++                                     | AVMNET_CONFIG_FLAG_LINKFAIL_TIME
++                                     | AVMNET_CONFIG_FLAG_IRQ
++                                     | AVMNET_CONFIG_FLAG_IRQ_ON
++                                     ),
++                            .mdio_addr = 0x01,
++                            .reset = 44,
++                            .lnkf_time = HZ,
++                            .irq = IFX_EIU_IR3,
++                          },
++     AR803X_STDFUNCS,
++
++    .ethtool_ops        = AR803X_ETHOPS,
++    
++    .parent             = &hw202_avmnet_mac_vr9_1,
++    .num_children       = 0,
++    .children           = {}
++};
++
++avmnet_module_t hw202_avmnet_phy_11G_0 =
++{
++    .name               = "phy_11G_0",
++    .device_id          = &hw202_avmnet_avm_device_0,
++    .type               = avmnet_modtype_phy,
++    .priv               = NULL,
++    .initdata.phy       = {
++                            .flags = (AVMNET_CONFIG_FLAG_PHY_GBIT
++                                     |AVMNET_CONFIG_FLAG_MDIOADDR
++                                     |AVMNET_CONFIG_FLAG_INTERNAL
++                                     |AVMNET_CONFIG_FLAG_POLARITY
++                                     ),
++                            .mdio_addr = 0x13,
++                            .polarity =
++                                    (AVMNET_POLARITY_MDIX
++                                     | AVMNET_POLARITY_10MBIT
++//                                     | AVMNET_POLARITY_100MBIT
++//                                     | AVMNET_POLARITY_1000MBIT
++                                     )
++                                    << AVMNET_POLARITY_B_SHIFT,
++                          },
++
++     PHY_11G_STDFUNCS,
++
++    .ethtool_ops        = PHY_11G_ETHOPS,
++
++    .parent             = &hw202_avmnet_mac_vr9_4,
++    .num_children       = 0,
++    .children           = {}
++};
++
++avmnet_module_t hw202_avmnet_phy_11G_1 =
++{
++    .name               = "phy_11G_1",
++    .device_id          = &hw202_avmnet_avm_device_1,
++    .type               = avmnet_modtype_phy,
++    .priv               = NULL,
++    .initdata.phy       = {
++                            .flags = (AVMNET_CONFIG_FLAG_PHY_GBIT
++                                     |AVMNET_CONFIG_FLAG_MDIOADDR
++                                     |AVMNET_CONFIG_FLAG_INTERNAL
++                                     |AVMNET_CONFIG_FLAG_POLARITY
++                                     ),
++                            .mdio_addr = 0x11,
++                            .polarity =
++                                    (AVMNET_POLARITY_MDIX
++                                     | AVMNET_POLARITY_10MBIT
++//                                     | AVMNET_POLARITY_100MBIT
++//                                     | AVMNET_POLARITY_1000MBIT
++                                     )
++                                    << AVMNET_POLARITY_B_SHIFT,
++                          },
++
++     PHY_11G_STDFUNCS,
++
++    .ethtool_ops        = PHY_11G_ETHOPS,
++    
++    .parent             = &hw202_avmnet_mac_vr9_2,
++    .num_children       = 0,
++    .children           = {}
++};
++
++
++#endif // __AVM_NET_CFG_HW202_
