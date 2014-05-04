@@ -77,6 +77,11 @@ menu "Override options"
 #		default "@AVM/fritzbox.wlan_3370/x_misc/opensrc"        if ...
 		default ""
 
+	config FREETZ_DL_KERNEL_SOURCE_ID
+		string
+		default "7490_06.01"                       if FREETZ_AVM_VERSION_7330_06_01
+		default FREETZ_AVM_VERSION_STRING
+
 	config FREETZ_DL_KERNEL_SOURCE
 		string "Kernel source"                     if FREETZ_DL_OVERRIDE
 		default "04.67-release_kernel.tar.xz"      if FREETZ_AVM_VERSION_04_67 && FREETZ_TYPE_5140
@@ -85,7 +90,7 @@ menu "Override options"
 		default "7170_04.76-release_kernel.tar.xz" if FREETZ_AVM_VERSION_04_76
 		default "7170_04.80-release_kernel.tar.xz" if FREETZ_AVM_VERSION_04_80
 		default "7170_04.87-release_kernel.tar.xz" if FREETZ_AVM_VERSION_04_87
-		default "${FREETZ_AVM_VERSION_STRING}-release_kernel.tar.xz"
+		default "${FREETZ_DL_KERNEL_SOURCE_ID}-release_kernel.tar.xz"
 
 	config FREETZ_DL_KERNEL_SOURCE_MD5
 		string "MD5 checksum for downloaded Kernel source file" if FREETZ_DL_OVERRIDE
@@ -111,7 +116,7 @@ menu "Override options"
 		default "ec2130c7ff5238a8f78e12fa95681dbe"  if FREETZ_AVM_VERSION_7390_05_52
 		default "93522806e71da89b5cf7d474e1fe9eac"  if FREETZ_AVM_VERSION_7390_06_01
 		default "41279902c9d19635072d2adcf59d9c6b"  if FREETZ_AVM_VERSION_7490_05_59
-		default "80bab95f103b2ad29e1af07ff0006e20"  if FREETZ_AVM_VERSION_7490_06_01
+		default "80bab95f103b2ad29e1af07ff0006e20"  if FREETZ_AVM_VERSION_7490_06_01 || FREETZ_AVM_VERSION_7330_06_01
 		default "f3d0b2245b0b6442297eb211b0f39692"  if FREETZ_AVM_VERSION_7490_06_05
 		default "eb82c0948e81288253f63f63915489a2"  if FREETZ_AVM_VERSION_r7203
 

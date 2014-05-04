@@ -1,0 +1,2450 @@
+
+This patch has been created from AVM's opensrc packages for 7490.06.01 and 7330.06.01
+by applying to the kernel sources they contain the following command:
+
+    diff -durN --no-dereference -x fusiv_src 7490.06.01 7330.06.01 > this.patch
+
+--- linux-2.6.32/.config
++++ linux-2.6.32/.config
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.32.60
+-# Mon Oct  7 12:14:51 2013
++# Tue Sep  3 19:12:42 2013
+ #
+ CONFIG_MIPS=y
+ 
+@@ -58,30 +58,30 @@
+ # CONFIG_MACH_QCA955x is not set
+ # CONFIG_MACH_HORNET is not set
+ # CONFIG_DANUBE is not set
+-CONFIG_IFX_DMA_DESCRIPTOR_NUMBER=128
++CONFIG_IFX_DMA_DESCRIPTOR_NUMBER=64
+ CONFIG_NAPI_ENABLED=y
+ # CONFIG_DMA_HW_POLL_DISABLED is not set
+ # CONFIG_AMAZON_SE is not set
+-# CONFIG_AR9 is not set
+-CONFIG_IFX_CLOCK_CHANGE=y
+-CONFIG_VR9=y
++CONFIG_AR9=y
+ 
+ #
+-# VR9 Boards
++# AR9 Boards
+ #
+-# CONFIG_VR9_REF_BOARD is not set
+-CONFIG_VR9_AVM_FRITZ_BOX=y
+-# CONFIG_LTQ_RT288 is not set
++# CONFIG_AR9_REF_BOARD is not set
++# CONFIG_AR9_CUSTOM_BOARD is not set
++CONFIG_AR9_AVM_FRITZ_BOX=y
++# CONFIG_IFX_GW188 is not set
++# CONFIG_LTQ_VB300 is not set
+ 
+ #
+ # Extra Configuration
+ #
+-CONFIG_DMA_PACKET_ARBITRATION_ENABLED=y
+-# CONFIG_GRX_25M_MODEL is not set
++CONFIG_IFX_CLOCK_CHANGE=y
++# CONFIG_VR9 is not set
+ # CONFIG_HN1 is not set
+ # CONFIG_AR10 is not set
+-CONFIG_AR9VR9_C55_MEMORY_SIZE=0x0
+-CONFIG_AR9VR9_C55_MEMORY_START=0x0
++CONFIG_AR9VR9_C55_MEMORY_SIZE=0x80
++CONFIG_AR9VR9_C55_MEMORY_START=0xFC0000
+ # CONFIG_AR9VR9_AVM_CPUFREQ is not set
+ # CONFIG_AR9VR9_AVM_CPUIDLE is not set
+ # CONFIG_ALCHEMY_GPIO_INDIRECT is not set
+@@ -90,6 +90,7 @@
+ # CONFIG_ARCH_HAS_ILOG2_U64 is not set
+ # CONFIG_MIPS_FUSIV is not set
+ # CONFIG_MACH_ATHEROS is not set
++CONFIG_ARCH_SUPPORTS_OPROFILE=y
+ CONFIG_GENERIC_FIND_NEXT_BIT=y
+ CONFIG_GENERIC_HWEIGHT=y
+ CONFIG_GENERIC_CALIBRATE_DELAY=y
+@@ -114,7 +115,7 @@
+ # CONFIG_MIPS_MACHINE is not set
+ # CONFIG_IMAGE_CMDLINE_HACK is not set
+ # CONFIG_NO_IOPORT is not set
+-CONFIG_CPU_HAS_DSP_ASE=y
++# CONFIG_CPU_HAS_DSP_ASE is not set
+ CONFIG_CPU_BIG_ENDIAN=y
+ # CONFIG_CPU_LITTLE_ENDIAN is not set
+ CONFIG_SYS_SUPPORTS_BIG_ENDIAN=y
+@@ -174,23 +175,22 @@
+ CONFIG_THREAD_SIZE_ORDER=2
+ CONFIG_CPU_HAS_PREFETCH=y
+ # CONFIG_AVM_WP is not set
+-# CONFIG_MIPS_MT_DISABLED is not set
++CONFIG_MIPS_MT_DISABLED=y
+ # CONFIG_MIPS_MT_SMP is not set
+-CONFIG_MIPS_MT_SMTC=y
++# CONFIG_MIPS_MT_SMTC is not set
+ CONFIG_MIPS_MT=y
+ CONFIG_SYS_SUPPORTS_MULTITHREADING=y
+-CONFIG_MIPS_MT_FPAFF=y
+-# CONFIG_MIPS_VPE_LOADER is not set
+-CONFIG_PERFCTRS=y
+-CONFIG_MTSCHED=y
+-# CONFIG_MIPS_MT_SMTC_IM_BACKSTOP is not set
+-# CONFIG_MIPS_MT_SMTC_IRQAFF is not set
++CONFIG_MIPS_VPE_LOADER=y
++# CONFIG_IFX_VPE_EXT is not set
++# CONFIG_PERFCTRS is not set
++# CONFIG_MTSCHED is not set
++CONFIG_MIPS_VPE_LOADER_TOM=y
++# CONFIG_MIPS_VPE_APSP_API is not set
+ CONFIG_CPU_MIPSR2_IRQ_VI=y
+ CONFIG_CPU_MIPSR2_IRQ_EI=y
+ CONFIG_CPU_HAS_SYNC=y
+ CONFIG_GENERIC_HARDIRQS=y
+ CONFIG_GENERIC_IRQ_PROBE=y
+-CONFIG_IRQ_PER_CPU=y
+ CONFIG_ARCH_FLATMEM_ENABLE=y
+ CONFIG_ARCH_POPULATES_NODE_MAP=y
+ CONFIG_SELECT_MEMORY_MODEL=y
+@@ -206,14 +206,9 @@
+ CONFIG_VIRT_TO_BUS=y
+ CONFIG_HAVE_MLOCK=y
+ CONFIG_HAVE_MLOCKED_PAGE_BIT=y
+-CONFIG_KSM=y
++# CONFIG_KSM is not set
+ CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
+-# CONFIG_AVM_LOW_MEMORY_STRATEGY is not set
+-CONFIG_SMP=y
+-CONFIG_SMP_UP=y
+-CONFIG_SYS_SUPPORTS_SMP=y
+-CONFIG_NR_CPUS_DEFAULT_8=y
+-CONFIG_NR_CPUS=2
++CONFIG_AVM_LOW_MEMORY_STRATEGY=y
+ CONFIG_TICK_ONESHOT=y
+ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
+@@ -226,7 +221,6 @@
+ # CONFIG_HZ_1000 is not set
+ # CONFIG_HZ_1024 is not set
+ CONFIG_SYS_SUPPORTS_100HZ=y
+-CONFIG_SYS_SUPPORTS_250HZ=y
+ CONFIG_SYS_SUPPORTS_1000HZ=y
+ CONFIG_HZ=100
+ CONFIG_PREEMPT_NONE=y
+@@ -243,7 +237,7 @@
+ # General setup
+ #
+ CONFIG_EXPERIMENTAL=y
+-CONFIG_LOCK_KERNEL=y
++CONFIG_BROKEN_ON_SMP=y
+ CONFIG_INIT_ENV_ARG_LIMIT=32
+ CONFIG_LOCALVERSION=""
+ # CONFIG_LOCALVERSION_AUTO is not set
+@@ -255,7 +249,7 @@
+ CONFIG_BSD_PROCESS_ACCT=y
+ CONFIG_BSD_PROCESS_ACCT_V3=y
+ # CONFIG_TASKSTATS is not set
+-# CONFIG_AUDIT is not set
++CONFIG_AUDIT=y
+ 
+ #
+ # RCU Subsystem
+@@ -274,22 +268,20 @@
+ # CONFIG_NAMESPACES is not set
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_INITRAMFS_SOURCE=""
+-# CONFIG_RD_GZIP is not set
++CONFIG_RD_GZIP=y
+ # CONFIG_RD_BZIP2 is not set
+ # CONFIG_RD_LZMA is not set
+-# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_SYSCTL=y
+ CONFIG_ANON_INODES=y
+ CONFIG_EMBEDDED=y
+ CONFIG_SYSCTL_SYSCALL=y
+-CONFIG_KALLSYMS=y
+-CONFIG_KALLSYMS_ALL=y
+-CONFIG_KALLSYMS_EXTRA_PASS=y
++# CONFIG_KALLSYMS is not set
+ CONFIG_HOTPLUG=y
+ CONFIG_PRINTK=y
+-CONFIG_BUG=y
++# CONFIG_BUG is not set
+ CONFIG_ELF_CORE=y
+-# CONFIG_PCSPKR_PLATFORM is not set
++CONFIG_PCSPKR_PLATFORM=y
+ CONFIG_BASE_FULL=y
+ CONFIG_FUTEX=y
+ CONFIG_EPOLL=y
+@@ -312,8 +304,8 @@
+ CONFIG_AVM_SIMPLE_PROFILING=y
+ # CONFIG_AVM_SIMPLE_PROFILING_YIELD is not set
+ CONFIG_HAVE_OPROFILE=y
+-CONFIG_USE_GENERIC_SMP_HELPERS=y
+-# CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY is not set
++CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY=y
++CONFIG_AVM_ARCH_STATIC_WLAN_MEMORY_SIZE=392
+ 
+ #
+ # GCOV-based kernel profiling
+@@ -330,7 +322,6 @@
+ # CONFIG_MODULE_FORCE_UNLOAD is not set
+ # CONFIG_MODVERSIONS is not set
+ # CONFIG_MODULE_SRCVERSION_ALL is not set
+-CONFIG_STOP_MACHINE=y
+ CONFIG_BLOCK=y
+ CONFIG_LBDAF=y
+ # CONFIG_BLK_DEV_BSG is not set
+@@ -358,28 +349,22 @@
+ # CONFIG_ATH_HAS_PCI_RC2 is not set
+ CONFIG_PCI=y
+ CONFIG_PCI_DOMAINS=y
+-CONFIG_PCIEPORTBUS=y
+-CONFIG_PCIEAER=y
+-# CONFIG_PCIE_ECRC is not set
+-# CONFIG_PCIEAER_INJECT is not set
+-CONFIG_IFX_PCIE=y
+-CONFIG_IFX_PCIE_PHY_36MHZ_MODE=y
+-# CONFIG_IFX_PCIE_PHY_25MHZ_MODE is not set
+-# CONFIG_IFX_PCIE_PHY_100MHZ_MODE is not set
+-CONFIG_IFX_PCIE_1ST_CORE=y
+-CONFIG_IFX_PCIE_HW_SWAP=y
+-# CONFIG_IFX_PCIE_INBOUND_NO_HW_SWAP is not set
+-# CONFIG_IFX_PCIE_VR9_A11_HRST is not set
+-# CONFIG_PCIEASPM is not set
+-CONFIG_ARCH_SUPPORTS_MSI=y
+-# CONFIG_PCI_MSI is not set
++# CONFIG_PCIEPORTBUS is not set
++# CONFIG_ARCH_SUPPORTS_MSI is not set
+ CONFIG_PCI_LEGACY=y
+ # CONFIG_PCI_INIT_IN_MONITOR is not set
+ # CONFIG_PCI_DEBUG is not set
+ # CONFIG_PCI_STUB is not set
+ # CONFIG_PCI_DISABLE_COMMON_QUIRKS is not set
+ # CONFIG_PCI_IOV is not set
+-# CONFIG_IFX_PCI is not set
++CONFIG_IFX_PCI=y
++CONFIG_IFX_PCI_HW_SWAP=y
++CONFIG_IFX_PCI_INTERNAL_CLK_SRC_33=y
++# CONFIG_IFX_PCI_INTERNAL_CLK_SRC_60 is not set
++# CONFIG_IFX_PCI_EXTERNAL_CLK_SRC is not set
++CONFIG_IFX_PCI_CLOCK_DELAY_NANO_SECONDS=1
++CONFIG_IFX_PCI_CLOCK_DELAY_TENTH_NANO_SECOND=0
++# CONFIG_IFX_DUAL_MINI_PCI is not set
+ CONFIG_MMU=y
+ # CONFIG_PCCARD is not set
+ # CONFIG_HOTPLUG_PCI is not set
+@@ -396,6 +381,8 @@
+ #
+ # Power management options
+ #
++CONFIG_ARCH_HIBERNATION_POSSIBLE=y
++# CONFIG_ARCH_SUSPEND_POSSIBLE is not set
+ # CONFIG_PM is not set
+ # CONFIG_CPU_FREQ is not set
+ # CONFIG_CPU_IDLE is not set
+@@ -532,8 +519,7 @@
+ CONFIG_BRIDGE=y
+ # CONFIG_BRIDGE_SNOOPING is not set
+ # CONFIG_NET_DSA is not set
+-CONFIG_VLAN_8021Q=y
+-# CONFIG_VLAN_8021Q_GVRP is not set
++# CONFIG_VLAN_8021Q is not set
+ # CONFIG_DECNET is not set
+ CONFIG_LLC=y
+ # CONFIG_LLC2 is not set
+@@ -630,9 +616,7 @@
+ # CONFIG_DEVTMPFS is not set
+ CONFIG_STANDALONE=y
+ CONFIG_PREVENT_FIRMWARE_BUILD=y
+-CONFIG_FW_LOADER=y
+-# CONFIG_FIRMWARE_IN_KERNEL is not set
+-CONFIG_EXTRA_FIRMWARE=""
++# CONFIG_FW_LOADER is not set
+ # CONFIG_DEBUG_DRIVER is not set
+ # CONFIG_DEBUG_DEVRES is not set
+ # CONFIG_SYS_HYPERVISOR is not set
+@@ -724,21 +708,7 @@
+ # CONFIG_MTD_ATH_FLASH is not set
+ # CONFIG_MTD_AR7100_SPI_FLASH is not set
+ # CONFIG_MTD_AR9100_PARALLEL_FLASH is not set
+-CONFIG_MTD_NAND=y
+-CONFIG_MTD_NAND_VERIFY_WRITE=y
+-# CONFIG_MTD_NAND_ECC_SMC is not set
+-# CONFIG_MTD_NAND_MUSEUM_IDS is not set
+-CONFIG_MTD_NAND_IDS=y
+-# CONFIG_MTD_NAND_DISKONCHIP is not set
+-# CONFIG_MTD_NAND_CAFE is not set
+-# CONFIG_MTD_NAND_NANDSIM is not set
+-# CONFIG_MTD_NAND_PLATFORM is not set
+-# CONFIG_MTD_ALAUDA is not set
+-# CONFIG_MTD_NAND_COMPLETE_AVM is not set
+-CONFIG_MTD_IFX_NAND_LATCH_ENABLE=y
+-CONFIG_MTD_IFX_NAND=y
+-CONFIG_MTD_IFX_NAND_FLASH_SIZE=128
+-# CONFIG_MTD_IFX_HSNAND is not set
++# CONFIG_MTD_NAND is not set
+ # CONFIG_MTD_ONENAND is not set
+ 
+ #
+@@ -841,7 +811,7 @@
+ CONFIG_AVM_CPMAC=y
+ CONFIG_AVM_CPMAC_NUM_RX_BUFFERS=256
+ CONFIG_AVM_CPMAC_SWITCH=y
+-CONFIG_AVM_SCATTER_GATHER=y
++# CONFIG_AVM_SCATTER_GATHER is not set
+ # CONFIG_AVMNET_DEBUG is not set
+ # CONFIG_AVMNET_DEBUG_HAL is not set
+ # CONFIG_AX88796 is not set
+@@ -901,10 +871,12 @@
+ # CONFIG_AR7240_S26_PHY is not set
+ # CONFIG_ATHRS27_PHY is not set
+ CONFIG_LANTIQ_11G_PHY=y
+-CONFIG_WLAN_OFFLOAD_PHY=y
++# CONFIG_WLAN_OFFLOAD_PHY is not set
+ # CONFIG_NETDEV_10000 is not set
+ # CONFIG_TR is not set
+-# CONFIG_WLAN is not set
++CONFIG_WLAN=y
++# CONFIG_WLAN_PRE80211 is not set
++# CONFIG_WLAN_80211 is not set
+ 
+ #
+ # Enable WiMAX (Networking options) to see the WiMAX drivers
+@@ -949,8 +921,10 @@
+ # CONFIG_ATM_SOLOS is not set
+ # CONFIG_IFX_ATM is not set
+ # CONFIG_IFX_PTM is not set
+-# CONFIG_IFX_ADTRAN_PTM is not set
+ CONFIG_IFX_ETHSW_API=y
++# CONFIG_BOTH_INTERFACE is not set
++CONFIG_INTERNAL_AR9=y
++# CONFIG_EXTERNAL_T3G is not set
+ 
+ #
+ # IFX_ETHSW_API
+@@ -963,26 +937,26 @@
+ # CONFIG_LTQ_WOL is not set
+ # CONFIG_IFX_ETHSW_API_COC is not set
+ # CONFIG_IFX_ETHSW_API_COC_PMCU is not set
+-# CONFIG_GPHY_DRIVER is not set
+ CONFIG_IFX_PPA_NAPI_ENABLE=y
+ CONFIG_IFX_PPA=y
+ CONFIG_IFX_PPA_AVM_USAGE=y
+-CONFIG_IFX_PPA_API=n
++CONFIG_IFX_PPA_API=m
+ # CONFIG_IFX_PPA_API_DIRECTPATH is not set
+ # CONFIG_DEBUG_AVM_PPA_VDEV is not set
+-CONFIG_IFX_PPA_API_PROC=n
++CONFIG_IFX_PPA_API_PROC=m
+ CONFIG_IFX_PPA_MFE=y
+-CONFIG_IFX_PPA_QOS=y
+-CONFIG_IFX_PPA_QOS_WFQ=y
+-CONFIG_IFX_PPA_QOS_RATE_SHAPING=y
+-CONFIG_IFX_PPA_DATAPATH=n
+-# CONFIG_IFX_PPA_A5 is not set
++# CONFIG_IFX_PPA_QOS is not set
++CONFIG_IFX_PPA_DATAPATH=m
++CONFIG_IFX_PPA_A5=y
+ # CONFIG_IFX_PPA_D5 is not set
+-CONFIG_IFX_PPA_E5=y
+-# CONFIG_IFX_PPE_E5_OFFCHIP_BONDING is not set
++# CONFIG_IFX_PPA_E5 is not set
+ CONFIG_IFX_PPA_IPv6_ENABLE=y
+-CONFIG_PTM_VECTORING=y
+-# CONFIG_IFX_7PORT_SWITCH is not set
++# CONFIG_PTM_VECTORING is not set
++# CONFIG_IFX_3PORT_SWITCH is not set
++# CONFIG_MII1_AUTONEG is not set
++# CONFIG_MII1_RGMII_MODE_100MB is not set
++# CONFIG_MII1_RGMII_MODE is not set
++CONFIG_MII_SETUP_AVMNET=y
+ CONFIG_IFX_ETH_FRAMEWORK=y
+ # CONFIG_FDDI is not set
+ # CONFIG_HIPPI is not set
+@@ -1106,7 +1080,6 @@
+ CONFIG_SERIAL_AVM_ASC=y
+ CONFIG_SERIAL_AVM_ASC_CONSOLE=y
+ # CONFIG_SERIAL_IFX_ASC is not set
+-# CONFIG_SERIAL_IFX_USIF_UART is not set
+ CONFIG_UNIX98_PTYS=y
+ # CONFIG_DEVPTS_MULTIPLE_INSTANCES is not set
+ CONFIG_LEGACY_PTYS=y
+@@ -1152,20 +1125,17 @@
+ CONFIG_AVM_PIGLET_DECT=y
+ CONFIG_UBIK2=n
+ CONFIG_UBIK2_DEVELOPMENT_SUPPORT=0
+-CONFIG_UBIK2_MSEC_PER_IRQ=4
++CONFIG_UBIK2_MSEC_PER_IRQ=8
+ CONFIG_IFX_PMCU=y
+-# CONFIG_IFX_CPUFREQ is not set
++CONFIG_IFX_CPUFREQ=y
+ CONFIG_IFX_PMU=y
+-CONFIG_IFX_PMU_POWER_GATING=y
+ CONFIG_IFX_GPIO=y
+ CONFIG_IFX_RCU=y
+ # CONFIG_IFX_SI is not set
+ # CONFIG_IFX_LEDC is not set
+ CONFIG_IFX_WDT=y
++CONFIG_IFXMIPS_DSL_CPE_MEI=y
+ CONFIG_DSL_MEI_CPE_DRV=y
+-# CONFIG_IFX_PMON is not set
+-# CONFIG_IFX_DCDC is not set
+-CONFIG_IFX_TS=y
+ CONFIG_I2C=y
+ CONFIG_I2C_BOARDINFO=y
+ CONFIG_I2C_COMPAT=y
+@@ -1244,10 +1214,9 @@
+ CONFIG_SPI_BITBANG=y
+ CONFIG_IFX_SPI=y
+ # CONFIG_IFX_SPI_DEBUG is not set
+-# CONFIG_IFX_SPI_ASYNCHRONOUS is not set
++CONFIG_IFX_SPI_ASYNCHRONOUS=y
+ CONFIG_IFX_SPI_FLASH=y
+ # CONFIG_IFX_SPI_AT45_FLASH is not set
+-# CONFIG_IFX_USIF_SPI is not set
+ 
+ #
+ # SPI Protocol Masters
+@@ -1338,7 +1307,7 @@
+ # CONFIG_USB_OTG is not set
+ # CONFIG_USB_OTG_WHITELIST is not set
+ # CONFIG_USB_OTG_BLACKLIST_HUB is not set
+-# CONFIG_USB_MON is not set
++CONFIG_USB_MON=n
+ # CONFIG_USB_WUSB is not set
+ # CONFIG_USB_WUSB_CBAF is not set
+ 
+@@ -1346,8 +1315,7 @@
+ # USB Host Controller Drivers
+ #
+ # CONFIG_USB_C67X00_HCD is not set
+-CONFIG_USB_XHCI_HCD=n
+-# CONFIG_USB_XHCI_HCD_DEBUGGING is not set
++# CONFIG_USB_XHCI_HCD is not set
+ # CONFIG_USB_EHCI_HCD is not set
+ # CONFIG_USB_OXU210HP_HCD is not set
+ # CONFIG_USB_ISP116X_HCD is not set
+@@ -1373,7 +1341,7 @@
+ #
+ # USB Device Class drivers
+ #
+-CONFIG_USB_ACM=n
++# CONFIG_USB_ACM is not set
+ CONFIG_USB_PRINTER=n
+ # CONFIG_USB_WDM is not set
+ # CONFIG_USB_TMC is not set
+@@ -1418,7 +1386,7 @@
+ # CONFIG_USB_SERIAL_CH341 is not set
+ # CONFIG_USB_SERIAL_WHITEHEAT is not set
+ # CONFIG_USB_SERIAL_DIGI_ACCELEPORT is not set
+-CONFIG_USB_SERIAL_CP210X=n
++# CONFIG_USB_SERIAL_CP210X is not set
+ # CONFIG_USB_SERIAL_CYPRESS_M8 is not set
+ # CONFIG_USB_SERIAL_EMPEG is not set
+ CONFIG_USB_SERIAL_FTDI_SIO=n
+@@ -1609,18 +1577,7 @@
+ # CONFIG_OCFS2_FS is not set
+ # CONFIG_BTRFS_FS is not set
+ # CONFIG_NILFS2_FS is not set
+-CONFIG_YAFFS_FS=y
+-CONFIG_YAFFS_YAFFS1=y
+-# CONFIG_YAFFS_9BYTE_TAGS is not set
+-# CONFIG_YAFFS_DOES_ECC is not set
+-CONFIG_YAFFS_YAFFS2=y
+-CONFIG_YAFFS_AUTO_YAFFS2=y
+-CONFIG_YAFFS_DISABLE_TAGS_ECC=y
+-# CONFIG_YAFFS_ALWAYS_CHECK_CHUNK_ERASED is not set
+-CONFIG_YAFFS_EMPTY_LOST_AND_FOUND=y
+-# CONFIG_YAFFS_DISABLE_BLOCK_REFRESHING is not set
+-# CONFIG_YAFFS_DISABLE_BACKGROUND is not set
+-CONFIG_YAFFS_XATTR=y
++# CONFIG_YAFFS_FS is not set
+ CONFIG_FILE_LOCKING=y
+ CONFIG_FSNOTIFY=y
+ # CONFIG_DNOTIFY is not set
+@@ -1674,7 +1631,7 @@
+ # CONFIG_BEFS_FS is not set
+ # CONFIG_BFS_FS is not set
+ # CONFIG_EFS_FS is not set
+-CONFIG_JFFS2_FS=n
++CONFIG_JFFS2_FS=y
+ CONFIG_JFFS2_FS_DEBUG=0
+ CONFIG_JFFS2_FS_WRITEBUFFER=y
+ # CONFIG_JFFS2_FS_WBUF_VERIFY is not set
+@@ -1778,15 +1735,13 @@
+ CONFIG_ENABLE_MUST_CHECK=y
+ CONFIG_FRAME_WARN=1024
+ CONFIG_MAGIC_SYSRQ=y
+-# CONFIG_STRIP_ASM_SYMS is not set
++CONFIG_STRIP_ASM_SYMS=y
+ CONFIG_UNUSED_SYMBOLS=y
+ # CONFIG_DEBUG_FS is not set
+ # CONFIG_HEADERS_CHECK is not set
+ CONFIG_DEBUG_KERNEL=y
+ # CONFIG_DEBUG_SHIRQ is not set
+-CONFIG_DETECT_SOFTLOCKUP=y
+-CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=y
+-CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=1
++# CONFIG_DETECT_SOFTLOCKUP is not set
+ # CONFIG_DETECT_HUNG_TASK is not set
+ # CONFIG_SCHED_DEBUG is not set
+ # CONFIG_SCHEDSTATS is not set
+@@ -1795,7 +1750,7 @@
+ # CONFIG_DEBUG_SLAB is not set
+ # CONFIG_DEBUG_RT_MUTEXES is not set
+ # CONFIG_RT_MUTEX_TESTER is not set
+-CONFIG_DEBUG_SPINLOCK=y
++# CONFIG_DEBUG_SPINLOCK is not set
+ # CONFIG_DEBUG_MUTEXES is not set
+ # CONFIG_DEBUG_LOCK_ALLOC is not set
+ # CONFIG_PROVE_LOCKING is not set
+@@ -1832,9 +1787,8 @@
+ # CONFIG_KGDB is not set
+ CONFIG_CMDLINE=""
+ # CONFIG_DEBUG_STACK_USAGE is not set
+-# CONFIG_SMTC_IDLE_HOOK_DEBUG is not set
+ # CONFIG_RUNTIME_DEBUG is not set
+-CONFIG_BDI_SWITCH=y
++# CONFIG_BDI_SWITCH is not set
+ 
+ #
+ # Security options
+@@ -1846,6 +1800,7 @@
+ CONFIG_SECURITY_NETWORK=y
+ # CONFIG_SECURITY_PATH is not set
+ # CONFIG_SECURITY_FILE_CAPABILITIES is not set
++# CONFIG_SECURITY_SELINUX is not set
+ # CONFIG_SECURITY_TOMOYO is not set
+ CONFIG_CRYPTO=y
+ 
+@@ -1962,10 +1917,12 @@
+ CONFIG_CRC32=y
+ # CONFIG_CRC7 is not set
+ CONFIG_LIBCRC32C=n
++CONFIG_AUDIT_GENERIC=y
+ CONFIG_ZLIB_INFLATE=y
+ CONFIG_ZLIB_DEFLATE=y
+ CONFIG_LZO_COMPRESS=n
+ CONFIG_LZO_DECOMPRESS=n
++CONFIG_DECOMPRESS_GZIP=y
+ # CONFIG_TEXTSEARCH is not set
+ # CONFIG_TEXTSEARCH_KMP is not set
+ # CONFIG_TEXTSEARCH_BM is not set
+--- linux-2.6.32/arch/mips/atheros/934x.c
++++ linux-2.6.32/arch/mips/atheros/934x.c
+@@ -388,16 +388,27 @@
+         case 190:
+         case 201:
+         case 194:
++        case 207:
+             /*--- printk(KERN_ERR "{%s} HWRevision %d\n", __func__, HWRevision); ---*/
+             ath_reg_wr(0x18116c40, 0x633c8166);
+             ath_reg_wr(0x18116c44, 0x10000000);     /*--- AR_PHY_PMU2 ---*/
+-            ath_reg_wr(0x18116cc0, 0x1061060e);     /*--- change PCIE to reduce power about 18mA ---*/
+-            ath_reg_wr(0x18116d00, 0x1061060e);     /*--- change PCIE to reduce power about 18mA ---*/
++
+             break;
+         default:
+             break;
+     }
+ 
++#if !defined(CONFIG_PCI)
++    printk("[%s] disable PCIe\n", __func__);
++    ath_reg_wr(ATH_PCIE_PHY_REG1,    0x1061060e);     /*--- change PCIE to reduce power about 18mA ---*/
++    ath_reg_wr(ATH_PCIE_EP_PHY_REG1, 0x1061060e);     /*--- change PCIE to reduce power about 18mA ---*/
++
++	ath_reg_wr_nf(ATH_PLL_BASE + PCIE_PLL_CONFIG_OFFSET,
++		PCIE_PLL_CONFIG_REFDIV_SET(1) |
++		PCIE_PLL_CONFIG_BYPASS_SET(1) |
++		PCIE_PLL_CONFIG_PLLPWD_SET(1));
++#endif
++
+ 	return 0;
+ }
+ 
+--- linux-2.6.32/arch/mips/atheros/Makefile
++++ linux-2.6.32/arch/mips/atheros/Makefile
+@@ -23,6 +23,7 @@
+ 		irq.o	\
+ 		setup.o	\
+ 		misc.o \
++		sram_panic.o \
+ 		platform.o \
+ 		mtd.o \
+         avm_hw_config.o
+--- linux-2.6.32/arch/mips/atheros/setup.c
++++ linux-2.6.32/arch/mips/atheros/setup.c
+@@ -49,184 +49,34 @@
+  * Export Ref freq value to be used by I2S module.
+  */
+ EXPORT_SYMBOL(ath_ref_freq);
+-
+-
+-static char *reboot_status[] = {
+-#define RS_FIRMWARE_UPDATE         0
+-    "Firmware-Update",
+-#define RS_SOFT_REBOOT             1
+-    "Software-Reboot",
+-#define RS_SOFT_WATCHDOG           2
+-    "Software-NMI-Watchdog",
+-#define RS_NMI_WA                  3
+-    "Software-NMI-Workaround",
+-#define RS_BUS_ERROR               4
+-    "Bus Error",
+-#define RS_NMI_PON                 5
+-    "Power-On-Reboot"   /*--- last entry ---*/
+-};
+-
+-#if defined(CONFIG_MACH_AR934x)
+-/*--- nutze internen SRAM ---*/
+-#define ATH_SRAM_PRINTKLEN      ((ATH_SRAM_SIZE / 2) + (ATH_SRAM_SIZE / 4))
+-#define ATH_REBOOT_LOGBUFFER    (ATH_SRAM_BASE_UNCACHED + ATH_SRAM_SIZE - ATH_SRAM_PRINTKLEN)  	
+-#else/*--- #if defined(CONFIG_MACH_AR934x) ---*/
+-#undef ATH_SRAM_PRINTKLEN 
+-#define ATH_REBOOT_LOGBUFFER    (0xA1000000 - 512)
+-#endif/*--- #else ---*//*--- #if defined(CONFIG_MACH_AR934x) ---*/
+-
+-#define MAGIC_PRINK_WORD          0x5352414D
+-#define MAGIC_REBOOT_STATUS_WORD  0x53544130
+-
+-#define MAGIC_REBOOT_STATUS_WORD_SET(a)   (((a) & 0xF) | MAGIC_REBOOT_STATUS_WORD)
+-#define MAGIC_REBOOT_STATUS_WORD_CHECK(a) (((a) & ~0xF)  == MAGIC_REBOOT_STATUS_WORD)
+-
+-struct _ram_print_data {
+-    volatile unsigned int rebootstatus;
+-    volatile unsigned int magic_word;
+-    volatile unsigned int len;
+-    unsigned char data[1];
+-};
+-/*--------------------------------------------------------------------------------*\
+- * im internen SRAM ablegen
+-\*--------------------------------------------------------------------------------*/
+-static void ath_savelog_to_ram(void) {
+-#if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN)
+-    extern unsigned long printk_get_buffer(char **p_log_buf, unsigned long *p_log_end, unsigned long *p_anzahl);
+-    struct _ram_print_data *psram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
+-    char *buf;
+-    unsigned long end, len;
+-    unsigned long log_bufsize, limit;
+-    
+-    restore_printk();
+-    log_bufsize = printk_get_buffer(&buf, &end, &len);
+-    psram_print->len        = 0;
+-    psram_print->magic_word = MAGIC_PRINK_WORD;
+-    limit =  ATH_SRAM_PRINTKLEN - sizeof(struct _ram_print_data);
+-    
+-    /*--- printk("%s %d: len=%lu end=%lu log_bufsize =%lu limit=%lu\n",__func__, __LINE__, len, end, log_bufsize, limit); ---*/
+-    if(log_bufsize >= len) {
+-        /*--- alles im Buffer ---*/
+-        unsigned int start;
+-        if(limit > len) {
+-            start = 0;
+-            limit = len;
+-        } else {
+-            start = len - limit;
+-        }
+-        memcpy(psram_print->data, buf + start, limit);
+-    } else {
+-        if(limit > end) {
+-            unsigned int start_rest   = limit - end;
+-            unsigned int start_offset = log_bufsize - start_rest;
+-            memcpy(psram_print->data, buf + start_offset, start_rest);
+-            memcpy(psram_print->data + start_rest, buf, limit - start_rest);
+-        } else {
+-            unsigned int start = end - limit;
+-            memcpy(psram_print->data, buf + start, limit);
+-        }
+-    }
+-    psram_print->len        = limit;
+-    psram_print->magic_word = MAGIC_PRINK_WORD;
+-#endif /*--- #ifdef CONFIG_TFFS_PANIC_LOG ---*/
+-}
+-/*--------------------------------------------------------------------------------*\
+-\*--------------------------------------------------------------------------------*/
+-static void ath_restore_log_from_ram(void) {
+-#if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN)
+-    struct _ram_print_data *psram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
+-    char buf[128];
+-
+-    if((psram_print->len < ATH_SRAM_PRINTKLEN) && (psram_print->magic_word == MAGIC_PRINK_WORD)) {
+-        char *p          = psram_print->data;
+-        unsigned int idx = 0;
+-        unsigned int len = psram_print->len;
+-        psram_print->magic_word = 0;
+-        psram_print->len        = 0;
+-        printk("--------------- LOG found in SRAM (len = %u) ------------------------\n", len);
+-        while(len) {
+-            if(idx < (sizeof(buf) - 2)) {  
+-                if((*p != '\r') && (*p != '\n')) {
+-                    if((*p >= 0x80) || (*p < 0x20) && (*p != '\t')) {
+-                        buf[idx] = '?';
+-                    } else {
+-                        buf[idx] = *p;
+-                    }
+-                    p++, idx++, len--;
+-                    continue;
+-                }
+-                p++, len--;
+-            }
+-            if(idx) {
+-                buf[idx] = 0;
+-                printk("LOG:%s\n", buf);
+-                idx = 0;
+-            }
+-        }
+-        if(idx) printk("LOG: %s\n", buf);
+-        printk("---------------------------------------------------------------------\n");
+-    }
+-#endif/*--- #if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN) ---*/
+-}
+-/*--------------------------------------------------------------------------------*\
+-\*--------------------------------------------------------------------------------*/
+-static void ath_save_rebootstatus_to_ram(unsigned int idx) {
+-    struct _ram_print_data *pram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
+-    
+-    if(!MAGIC_REBOOT_STATUS_WORD_CHECK(pram_print->rebootstatus)) {
+-        pram_print->rebootstatus = MAGIC_REBOOT_STATUS_WORD_SET(idx);
+-    }
+-}
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+-static void ath_reboot_status_from_ram(void) {
+-    struct _ram_print_data *pram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
+-    unsigned int status = RS_NMI_PON;
+-
+-    if(MAGIC_REBOOT_STATUS_WORD_CHECK(pram_print->rebootstatus)) {
+-        status =  pram_print->rebootstatus & 0xF;
+-        pram_print->rebootstatus = 0x0;
+-    }
+-    if((status >= sizeof(reboot_status) / sizeof(reboot_status[0]))) {
+-        status = sizeof(reboot_status) / sizeof(reboot_status[0]) - 1;
+-    }
+-    printk(KERN_ERR"(c) AVM 2013, Reboot Status is: %s\n", reboot_status[status]);
+-    ath_restore_log_from_ram();
+-}
+-arch_initcall(ath_reboot_status_from_ram);
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+-void set_reboot_status_to_NMI(void) {
+-    ath_save_rebootstatus_to_ram(RS_SOFT_WATCHDOG);
+-}
+-
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+-void set_reboot_status_to_Update(void) {
+-    ath_save_rebootstatus_to_ram(RS_FIRMWARE_UPDATE);
+-}
++extern void ath_savelog_to_ram(void);
++extern void set_reboot_status_to_NMI(void);
++extern void set_reboot_status_to_NMI_WA(void);
++extern void set_reboot_status_to_BusError(void);
++extern void set_reboot_status_to_SoftReboot(void);
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+-void ath_restart(char *command)
+-{
++void ath_restart(char *command) {
+     unsigned int val = (1<<0);
+ 
+     if (command) {
+         if ( ! strncmp(command, "watchdog", sizeof("watchdog") - 1)) {
+             val = (1<<1);
+-            ath_save_rebootstatus_to_ram(RS_SOFT_WATCHDOG);
++            set_reboot_status_to_NMI();
+             ath_savelog_to_ram();
+         } else if ( ! strncmp(command, "nmi_workaround", sizeof("nmi_workaround") - 1)) {
+             val = (1<<2);
+-            ath_save_rebootstatus_to_ram(RS_NMI_WA);
++            set_reboot_status_to_NMI_WA();
+             ath_savelog_to_ram();
+         } else if ( ! strncmp(command, "bus_error", sizeof("bus_error") - 1)) {
+-            ath_save_rebootstatus_to_ram(RS_BUS_ERROR);
++            set_reboot_status_to_BusError();
+             ath_savelog_to_ram();
+         }
+     } else {
+-        ath_save_rebootstatus_to_ram(RS_SOFT_REBOOT);
++        set_reboot_status_to_SoftReboot();
+         if(oops_in_progress) {
+             /*--- wir kommen aus panic() ---*/
+             ath_savelog_to_ram();
+--- /dev/null
++++ linux-2.6.32/arch/mips/atheros/sram_panic.c
+@@ -0,0 +1,246 @@
++/*--------------------------------------------------------------------------------*\
++ *
++ *   Copyright (C) 2013 AVM GmbH <fritzbox_info@avm.de>
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
++ *
++ *
++ *
++ *
++ *    Log printk-buffer and Reboot-Status to internal SRAM (wasp)
++ *    all other atheros-chipsets we use as small DRAM-Area to save Reboot-Status
++ *
++ * Author: mbahr@avm.de
++\*--------------------------------------------------------------------------------*/
++#include <linux/version.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/fs.h>
++#include <linux/types.h>
++#include <linux/string.h>
++#include <linux/pci.h>
++#include <linux/mtd/mtd.h>
++
++#include <atheros.h>
++#include <asm/bootinfo.h>
++#include <asm/bugs.h>
++#include <asm/prom.h>
++#include <asm/reboot.h>
++
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static char *reboot_status[] = {
++#define RS_FIRMWARE_UPDATE         0
++    "Firmware-Update",
++#define RS_SOFT_REBOOT             1
++    "Software-Reboot",
++#define RS_SOFT_WATCHDOG           2
++    "Software-NMI-Watchdog",
++#define RS_NMI_WA                  3
++    "Software-NMI-Workaround",
++#define RS_BUS_ERROR               4
++    "Bus Error",
++#define RS_NMI_PON                 5
++    "Power-On-Reboot"   /*--- last entry ---*/
++};
++
++#if defined(CONFIG_MACH_AR934x)
++/*--- use internal sram, but not at the begin, because here maybe data from mni-workarround (aprox first 0x500 bytes) ---*/
++#define ATH_SRAM_PRINTKLEN      ((ATH_SRAM_SIZE / 2) + (ATH_SRAM_SIZE / 4))
++#define ATH_REBOOT_LOGBUFFER    (ATH_SRAM_BASE_UNCACHED + ATH_SRAM_SIZE - ATH_SRAM_PRINTKLEN)  	
++#else/*--- #if defined(CONFIG_MACH_AR934x) ---*/
++#undef ATH_SRAM_PRINTKLEN 
++#define ATH_REBOOT_LOGBUFFER    (0xA1000000 - 512)
++#endif/*--- #else ---*//*--- #if defined(CONFIG_MACH_AR934x) ---*/
++
++#define MAGIC_PRINK_WORD          0x5352414D
++#define MAGIC_REBOOT_STATUS_WORD  0x53544130
++
++#define MAGIC_REBOOT_STATUS_WORD_SET(a)   (((a) & 0xF) | MAGIC_REBOOT_STATUS_WORD)
++#define MAGIC_REBOOT_STATUS_WORD_CHECK(a) (((a) & ~0xF)  == MAGIC_REBOOT_STATUS_WORD)
++
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++struct _ram_print_data {
++    volatile unsigned int rebootstatus;
++    volatile unsigned int magic_word;
++    volatile unsigned int len;
++    unsigned char data[1];
++};
++/*--------------------------------------------------------------------------------*\
++ * save log to internal SRAM
++\*--------------------------------------------------------------------------------*/
++void ath_savelog_to_ram(void) {
++#if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN)
++    char time_stamp_buf[sizeof("UPTIME: \n") + 10 + sizeof("SRAM LOG VERSION 1.0\n")];
++    unsigned long time_stamp_buf_len;
++    struct timespec uptime;
++    extern unsigned long printk_get_buffer(char **p_log_buf, unsigned long *p_log_end, unsigned long *p_anzahl);
++    struct _ram_print_data *psram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
++    char *buf, *pdata;
++    unsigned long end, len;
++    unsigned long log_bufsize, limit;
++    
++    do_posix_clock_monotonic_gettime(&uptime);
++    monotonic_to_bootbased(&uptime);
++    time_stamp_buf_len = snprintf(time_stamp_buf, sizeof(time_stamp_buf), "UPTIME: %lu\nSRAM LOG VERSION 1.0\n", (unsigned long) uptime.tv_sec);
++
++    restore_printk();
++    log_bufsize = printk_get_buffer(&buf, &end, &len);
++    psram_print->len        = 0;
++    psram_print->magic_word = MAGIC_PRINK_WORD;
++    limit =  ATH_SRAM_PRINTKLEN - sizeof(struct _ram_print_data);
++    pdata = psram_print->data;
++    memcpy(pdata, time_stamp_buf, time_stamp_buf_len);
++    pdata += time_stamp_buf_len, limit -= time_stamp_buf_len;
++    /*--- printk(KERN_INFO"%s %d: len=%lu end=%lu log_bufsize =%lu limit=%lu\n",__func__, __LINE__, len, end, log_bufsize, limit); ---*/
++    if(log_bufsize >= len) {
++        /*--- alles im Buffer ---*/
++        unsigned int start;
++        if(limit > len) {
++            start = 0;
++            limit = len;
++        } else {
++            start = len - limit;
++        }
++        memcpy(pdata, buf + start, limit);
++    } else {
++        if(limit > end) {
++            unsigned int start_rest   = limit - end;
++            unsigned int start_offset = log_bufsize - start_rest;
++            memcpy(pdata, buf + start_offset, start_rest);
++            memcpy(pdata + start_rest, buf, limit - start_rest);
++        } else {
++            unsigned int start = end - limit;
++            memcpy(pdata, buf + start, limit);
++        }
++    }
++    psram_print->len        = limit;
++    psram_print->magic_word = MAGIC_PRINK_WORD;
++#endif /*--- #ifdef CONFIG_TFFS_PANIC_LOG ---*/
++}
++#define rprint(buf, buf_len, args...) if(buf) { \
++                                         if(buf_len > 0) { \
++                                             unsigned int slen = snprintf(buf, buf_len, args); \
++                                             buf += slen, buf_len -= slen; \
++                                         } \
++                                      } else { \
++                                         printk(KERN_ERR args);\
++                                      }
++/*--------------------------------------------------------------------------------*\
++ * Restore Log from internal SRAM (if exist)
++ * txtbuf, txtlen: destination (if NULL use printk)
++ * ret: Laenge
++\*--------------------------------------------------------------------------------*/
++int ath_restore_log_from_ram(char *txtbuf, unsigned int txtlen) {
++    char *txtstart = txtbuf;
++#if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN)
++    struct _ram_print_data *psram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
++    char buf[128];
++    /*--- printk(KERN_INFO"%s: %p len=%d/%d %x\n", __func__, txtbuf, txtlen,psram_print->len, psram_print->magic_word); ---*/
++    if((psram_print->len < ATH_SRAM_PRINTKLEN) && (psram_print->magic_word == MAGIC_PRINK_WORD)) {
++        char *p          = psram_print->data;
++        unsigned int idx = 0;
++        unsigned int len = psram_print->len;
++        /*--- rprint(txtbuf, txtlen, "--------------- LOG found in SRAM (len = %u) ------------------------\n", len); ---*/
++        while(len) {
++            if(idx < (sizeof(buf) - 2)) {  
++                if((*p != '\r') && (*p != '\n')) {
++                    if(((*p >= 0x80) || (*p < 0x20)) && (*p != '\t')) {
++                        buf[idx] = '?';
++                    } else {
++                        buf[idx] = *p;
++                    }
++                    p++, idx++, len--;
++                    continue;
++                }
++                p++, len--;
++            }
++            if(idx) {
++                buf[idx] = 0;
++                rprint(txtbuf, txtlen,"%s\n", buf);
++                idx = 0;
++            }
++        }
++        if(idx) { 
++            rprint(txtbuf, txtlen,"%s\n", buf);
++        }
++        /*--- rprint(txtbuf, txtlen,"---------------------------------------------------------------------\n"); ---*/
++    }
++#endif/*--- #if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN) ---*/
++    return txtbuf - txtstart;
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++void ath_inval_log_from_ram(void) {
++#if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN)
++    struct _ram_print_data *psram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
++    psram_print->magic_word = 0;
++#endif/*--- #if defined(CONFIG_TFFS_PANIC_LOG) && defined(ATH_SRAM_PRINTKLEN) ---*/
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static void ath_save_rebootstatus_to_ram(unsigned int idx) {
++    struct _ram_print_data *pram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
++    
++    if(!MAGIC_REBOOT_STATUS_WORD_CHECK(pram_print->rebootstatus)) {
++        pram_print->rebootstatus = MAGIC_REBOOT_STATUS_WORD_SET(idx);
++    }
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static int ath_reboot_status_from_ram(void) {
++    struct _ram_print_data *pram_print = (struct _ram_print_data *)ATH_REBOOT_LOGBUFFER;
++    unsigned int status = RS_NMI_PON;
++
++    if(MAGIC_REBOOT_STATUS_WORD_CHECK(pram_print->rebootstatus)) {
++        status =  pram_print->rebootstatus & 0xF;
++        pram_print->rebootstatus = 0x0;
++    }
++    if((status >= sizeof(reboot_status) / sizeof(reboot_status[0]))) {
++        status = sizeof(reboot_status) / sizeof(reboot_status[0]) - 1;
++    }
++    printk(KERN_ERR"(c) AVM 2013, Reboot Status is: %s\n", reboot_status[status]);
++    /*--- ath_restore_log_from_ram(NULL, 0); ---*/
++    return 0;
++}
++arch_initcall(ath_reboot_status_from_ram);
++
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++void set_reboot_status_to_NMI(void) {
++    ath_save_rebootstatus_to_ram(RS_SOFT_WATCHDOG);
++}
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++void set_reboot_status_to_Update(void) {
++    ath_save_rebootstatus_to_ram(RS_FIRMWARE_UPDATE);
++}
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++void set_reboot_status_to_NMI_WA(void) {
++    ath_save_rebootstatus_to_ram(RS_NMI_WA);
++}
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++void set_reboot_status_to_BusError(void) {
++    ath_save_rebootstatus_to_ram(RS_BUS_ERROR);
++}
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++void set_reboot_status_to_SoftReboot(void) {
++    ath_save_rebootstatus_to_ram(RS_SOFT_REBOOT);
++}
+--- linux-2.6.32/arch/mips/include/asm/mach-atheros/934x.h
++++ linux-2.6.32/arch/mips/include/asm/mach-atheros/934x.h
+@@ -2653,7 +2653,6 @@
+ #define PCIE_PLL_CONFIG_REFDIV_GET(x)                                (((x) & PCIE_PLL_CONFIG_REFDIV_MASK) >> PCIE_PLL_CONFIG_REFDIV_LSB)
+ #define PCIE_PLL_CONFIG_REFDIV_SET(x)                                (((x) << PCIE_PLL_CONFIG_REFDIV_LSB) & PCIE_PLL_CONFIG_REFDIV_MASK)
+ #define PCIE_PLL_CONFIG_REFDIV_RESET                                 1
+-#define PCIE_PLL_CONFIG_ADDRESS                                      0x0010
+ #define PCIE_PLL_CONFIG_OFFSET                                       0x0010
+ // SW modifiable bits
+ #define PCIE_PLL_CONFIG_SW_MASK                                      0xc0017c00
+@@ -2687,7 +2686,6 @@
+ #define PCIE_PLL_DITHER_DIV_MAX_DIV_MAX_FRAC_GET(x)                  (((x) & PCIE_PLL_DITHER_DIV_MAX_DIV_MAX_FRAC_MASK) >> PCIE_PLL_DITHER_DIV_MAX_DIV_MAX_FRAC_LSB)
+ #define PCIE_PLL_DITHER_DIV_MAX_DIV_MAX_FRAC_SET(x)                  (((x) << PCIE_PLL_DITHER_DIV_MAX_DIV_MAX_FRAC_LSB) & PCIE_PLL_DITHER_DIV_MAX_DIV_MAX_FRAC_MASK)
+ #define PCIE_PLL_DITHER_DIV_MAX_DIV_MAX_FRAC_RESET                   16383
+-#define PCIE_PLL_DITHER_DIV_MAX_ADDRESS                              0x0014
+ #define PCIE_PLL_DITHER_DIV_MAX_OFFSET                               0x0014
+ // SW modifiable bits
+ #define PCIE_PLL_DITHER_DIV_MAX_SW_MASK                              0xc01ffffe
+@@ -2712,7 +2710,6 @@
+ #define PCIE_PLL_DITHER_DIV_MIN_DIV_MIN_FRAC_GET(x)                  (((x) & PCIE_PLL_DITHER_DIV_MIN_DIV_MIN_FRAC_MASK) >> PCIE_PLL_DITHER_DIV_MIN_DIV_MIN_FRAC_LSB)
+ #define PCIE_PLL_DITHER_DIV_MIN_DIV_MIN_FRAC_SET(x)                  (((x) << PCIE_PLL_DITHER_DIV_MIN_DIV_MIN_FRAC_LSB) & PCIE_PLL_DITHER_DIV_MIN_DIV_MIN_FRAC_MASK)
+ #define PCIE_PLL_DITHER_DIV_MIN_DIV_MIN_FRAC_RESET                   14749
+-#define PCIE_PLL_DITHER_DIV_MIN_ADDRESS                              0x0018
+ #define PCIE_PLL_DITHER_DIV_MIN_OFFSET                               0x0018
+ // SW modifiable bits
+ #define PCIE_PLL_DITHER_DIV_MIN_SW_MASK                              0x001ffffe
+@@ -2740,7 +2737,6 @@
+ #define PCIE_PLL_DITHER_STEP_STEP_FRAC_GET(x)                        (((x) & PCIE_PLL_DITHER_STEP_STEP_FRAC_MASK) >> PCIE_PLL_DITHER_STEP_STEP_FRAC_LSB)
+ #define PCIE_PLL_DITHER_STEP_STEP_FRAC_SET(x)                        (((x) << PCIE_PLL_DITHER_STEP_STEP_FRAC_LSB) & PCIE_PLL_DITHER_STEP_STEP_FRAC_MASK)
+ #define PCIE_PLL_DITHER_STEP_STEP_FRAC_RESET                         10
+-#define PCIE_PLL_DITHER_STEP_ADDRESS                                 0x001c
+ #define PCIE_PLL_DITHER_STEP_OFFSET                                  0x001c
+ // SW modifiable bits
+ #define PCIE_PLL_DITHER_STEP_SW_MASK                                 0xf1fffffe
+@@ -2780,7 +2776,6 @@
+ #define LDO_POWER_CONTROL_SELECT_DDR1_GET(x)                         (((x) & LDO_POWER_CONTROL_SELECT_DDR1_MASK) >> LDO_POWER_CONTROL_SELECT_DDR1_LSB)
+ #define LDO_POWER_CONTROL_SELECT_DDR1_SET(x)                         (((x) << LDO_POWER_CONTROL_SELECT_DDR1_LSB) & LDO_POWER_CONTROL_SELECT_DDR1_MASK)
+ #define LDO_POWER_CONTROL_SELECT_DDR1_RESET                          0
+-#define LDO_POWER_CONTROL_ADDRESS                                    0x0020
+ #define LDO_POWER_CONTROL_OFFSET                                     0x0020
+ // SW modifiable bits
+ #define LDO_POWER_CONTROL_SW_MASK                                    0x0000003f
+@@ -2876,7 +2871,6 @@
+ #define CURRENT_PCIE_PLL_DITHER_FRAC_GET(x)                          (((x) & CURRENT_PCIE_PLL_DITHER_FRAC_MASK) >> CURRENT_PCIE_PLL_DITHER_FRAC_LSB)
+ #define CURRENT_PCIE_PLL_DITHER_FRAC_SET(x)                          (((x) << CURRENT_PCIE_PLL_DITHER_FRAC_LSB) & CURRENT_PCIE_PLL_DITHER_FRAC_MASK)
+ #define CURRENT_PCIE_PLL_DITHER_FRAC_RESET                           0
+-#define CURRENT_PCIE_PLL_DITHER_ADDRESS                              0x0028
+ #define CURRENT_PCIE_PLL_DITHER_OFFSET                               0x0028
+ // SW modifiable bits
+ #define CURRENT_PCIE_PLL_DITHER_SW_MASK                              0x001fbfff
+@@ -2940,7 +2934,6 @@
+ #define ETH_XMII_PHASE0_COUNT_GET(x)                                 (((x) & ETH_XMII_PHASE0_COUNT_MASK) >> ETH_XMII_PHASE0_COUNT_LSB)
+ #define ETH_XMII_PHASE0_COUNT_SET(x)                                 (((x) << ETH_XMII_PHASE0_COUNT_LSB) & ETH_XMII_PHASE0_COUNT_MASK)
+ #define ETH_XMII_PHASE0_COUNT_RESET                                  1
+-#define ETH_XMII_ADDRESS                                             0x002c
+ #define ETH_XMII_OFFSET                                              0x002c
+ // SW modifiable bits
+ #define ETH_XMII_SW_MASK                                             0xffffffff
+@@ -3064,7 +3057,6 @@
+ #define CURRENT_AUDIO_PLL_MODULATION_INT_GET(x)                      (((x) & CURRENT_AUDIO_PLL_MODULATION_INT_MASK) >> CURRENT_AUDIO_PLL_MODULATION_INT_LSB)
+ #define CURRENT_AUDIO_PLL_MODULATION_INT_SET(x)                      (((x) << CURRENT_AUDIO_PLL_MODULATION_INT_LSB) & CURRENT_AUDIO_PLL_MODULATION_INT_MASK)
+ #define CURRENT_AUDIO_PLL_MODULATION_INT_RESET                       0
+-#define CURRENT_AUDIO_PLL_MODULATION_ADDRESS                         0x003c
+ #define CURRENT_AUDIO_PLL_MODULATION_OFFSET                          0x003c
+ // SW modifiable bits
+ #define CURRENT_AUDIO_PLL_MODULATION_SW_MASK                         0x0ffffc7e
+@@ -3110,7 +3102,6 @@
+ #define BB_PLL_CONFIG_NFRAC_GET(x)                                   (((x) & BB_PLL_CONFIG_NFRAC_MASK) >> BB_PLL_CONFIG_NFRAC_LSB)
+ #define BB_PLL_CONFIG_NFRAC_SET(x)                                   (((x) << BB_PLL_CONFIG_NFRAC_LSB) & BB_PLL_CONFIG_NFRAC_MASK)
+ #define BB_PLL_CONFIG_NFRAC_RESET                                    3276
+-#define BB_PLL_CONFIG_ADDRESS                                        0x0040
+ #define BB_PLL_CONFIG_OFFSET                                         0x0040
+ // SW modifiable bits
+ #define BB_PLL_CONFIG_SW_MASK                                        0xff3f3fff
+@@ -3150,7 +3141,6 @@
+ #define DDR_PLL_DITHER_NFRAC_MAX_GET(x)                              (((x) & DDR_PLL_DITHER_NFRAC_MAX_MASK) >> DDR_PLL_DITHER_NFRAC_MAX_LSB)
+ #define DDR_PLL_DITHER_NFRAC_MAX_SET(x)                              (((x) << DDR_PLL_DITHER_NFRAC_MAX_LSB) & DDR_PLL_DITHER_NFRAC_MAX_MASK)
+ #define DDR_PLL_DITHER_NFRAC_MAX_RESET                               1000
+-#define DDR_PLL_DITHER_ADDRESS                                       0x0044
+ #define DDR_PLL_DITHER_OFFSET                                        0x0044
+ // SW modifiable bits
+ #define DDR_PLL_DITHER_SW_MASK                                       0xffffffff
+@@ -3190,7 +3180,6 @@
+ #define CPU_PLL_DITHER_NFRAC_MAX_GET(x)                              (((x) & CPU_PLL_DITHER_NFRAC_MAX_MASK) >> CPU_PLL_DITHER_NFRAC_MAX_LSB)
+ #define CPU_PLL_DITHER_NFRAC_MAX_SET(x)                              (((x) << CPU_PLL_DITHER_NFRAC_MAX_LSB) & CPU_PLL_DITHER_NFRAC_MAX_MASK)
+ #define CPU_PLL_DITHER_NFRAC_MAX_RESET                               60
+-#define CPU_PLL_DITHER_ADDRESS                                       0x0048
+ #define CPU_PLL_DITHER_OFFSET                                        0x0048
+ // SW modifiable bits
+ #define CPU_PLL_DITHER_SW_MASK                                       0x80ffffff
+@@ -3915,6 +3904,15 @@
+ 		ATH_PCI_CTRL_DESCRIPTOR(0)
+ #	undef ATH_PCI_RC2_IRQ
+ 
++#define ATH_PCIE_PHY_REG1        0x18116CC0
++#define ATH_PCIE_PHY_REG2        0x18116CC4
++#define ATH_PCIE_PHY_REG3        0x18116CC8
++
++#define ATH_PCIE_EP_PHY_REG1     0x18116D00
++#define ATH_PCIE_EP_PHY_REG2     0x18116D04
++#define ATH_PCIE_EP_PHY_REG3     0x18116D08
++
++
+ #if defined(CONFIG_NMI_ARBITER_WORKAROUND)
+ 
+ #define	ATH_SRAM_BASE_UNCACHED	0xbd000000
+--- linux-2.6.32/arch/mips/pci/pci-ath.c
++++ linux-2.6.32/arch/mips/pci/pci-ath.c
+@@ -314,6 +314,15 @@
+          */
+         if (!(ath_reg_rd(pcie_reset[i]) & PCIE_RESET_LINK_UP_MASK)) {
+             printk("***** Warning PCIe %d H/W not found !!!\n", i);
++
++#if defined(CONFIG_MACH_QCA955x)
++            ath_reg_wr(0x18116dc0, 0x1061060e);     /*--- change PCIE to reduce power about 18mA ---*/
++#endif
++            ath_reg_wr_nf(ATH_PCIE_PLL_CONFIG,
++                PCIE_PLL_CONFIG_REFDIV_SET(1) |
++                PCIE_PLL_CONFIG_BYPASS_SET(1) |
++                PCIE_PLL_CONFIG_PLLPWD_SET(1));
++
+             return 0;
+         } else {
+             ath_pci_link[i] = 1;
+--- linux-2.6.32/drivers/char/avm_new/ar7wdt_main.c
++++ linux-2.6.32/drivers/char/avm_new/ar7wdt_main.c
+@@ -41,6 +41,7 @@
+ #include <linux/mm.h>
+ #include <linux/vmstat.h>
+ 
++static void AVM_WATCHDOG_check_all_triggered(void);
+ 
+ /*-----------------------------------------------------------------------------------------------*\
+ \*-----------------------------------------------------------------------------------------------*/
+@@ -491,6 +492,7 @@
+     ar7wdt_data.appl[handle].pagefaults  = get_act_pagefaults();
+     /*--- timer neu aufsetzen ---*/
+     _AVM_WATCHDOG_ctrl_timer(AVM_WATCHDOG_DEL_TIMER | AVM_WATCHDOG_SET_TIMER, handle);
++    AVM_WATCHDOG_check_all_triggered();
+ 
+ #if defined(WATCHDOG_LIST_TASK_STATISTIC)
+     show_task_statistic();
+@@ -746,9 +748,8 @@
+     saved_printk = printk;
+     set_printk(__printk); /*--- folgende Ausgaben sofort ausgeben: ---*/
+     /*--- printk("utime_sum: %lld unorm %d\n", utime_sum, unorm); ---*/
+-    printk(KERN_EMERG "[%lu][%x]AVM_WATCHDOG_reboot(hdl=%u, name=%s): reboot (current: %s pgfault %lu)\n", 
++    printk(KERN_EMERG "[%lu]AVM_WATCHDOG_reboot(hdl=%u, name=%s): reboot (current: %s pgfault %lu)\n", 
+                                     jiffies,
+-                                    smp_processor_id(),
+                                     notrigger_handle + 1, ar7wdt_data.appl[notrigger_handle].Name, 
+                                     current->comm,
+                                     current->signal->cmaj_flt
+@@ -868,11 +869,7 @@
+         return -EINVAL; /*--- inval argument ---*/
+     }
+     if(ar7wdt_data.states & (1 << handle)) {
+-        struct task_struct *hungtask;
+-        if(!ar7wdt_no_reboot) {
+-            ar7wdt_hw_trigger();
+-        }
+-        hungtask = watchdog_task_list(handle);
++        struct task_struct *hungtask = watchdog_task_list(handle);
+ #ifdef CONFIG_SCHEDSTATS
+         if (ar7wdt_no_reboot == 1) {
+ #if KERNEL_VERSION(2, 6, 19) >= LINUX_VERSION_CODE
+@@ -935,7 +932,6 @@
+                 } 
+             }
+ #endif       
+-            AVM_WATCHDOG_deinit();
+             init_timer(&PanicTimer);
+             PanicTimer.data     = (unsigned long)hungtask;
+             PanicTimer.function = panic_function;
+@@ -950,6 +946,32 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
++static void AVM_WATCHDOG_check_all_triggered(void) {
++    int i;
++    unsigned int mask    = 0;
++    unsigned int trigger = 0;
++    unsigned long flags;
++
++    spin_lock_irqsave(&ar7_wdt_lock, flags);
++    for( i = 0 ; i < MAX_WDT_APPLS ; i++) {
++        if(ar7wdt_data.mask & (1 << i)) {
++            mask |= 1 << i;
++            if(ar7wdt_data.triggered & (1 << i)) {
++                trigger |= 1 << i;
++            }
++        }
++    }
++    if(mask == trigger) {
++        ar7wdt_data.triggered = 0;
++        spin_unlock_irqrestore(&ar7_wdt_lock, flags);
++        ar7wdt_hw_trigger();
++    } else {
++        spin_unlock_irqrestore(&ar7_wdt_lock, flags);
++        DBG(KERN_INFO "%s(): not triggered mask 0x%x\n", __func__, mask ^ trigger);
++    }
++}
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
+ static void AVM_WATCHDOG_timer_handler_action(unsigned int handle) {
+     unsigned long flags;
+     spin_lock_irqsave(&ar7_wdt_lock, flags);
+--- linux-2.6.32/drivers/char/avm_new/ath_wdt.c
++++ linux-2.6.32/drivers/char/avm_new/ath_wdt.c
+@@ -73,7 +73,11 @@
+ #endif/*--- #if defined(CONFIG_NMI_ARBITER_WORKAROUND) ---*/
+     {
+         ath_reg_wr(ATH_WATCHDOG_TMR, (TIME_OUT_SECS * ath_ahb_freq));
+-        ath_reg_wr(ATH_WATCHDOG_TMR_CONTROL, ATH_WD_ACT_RESET);
++#if defined(CONFIG_MACH_AR724x)
++        ath_reg_wr(ATH_WATCHDOG_TMR_CONTROL, ATH_WD_ACT_RESET); 
++#else
++        ath_reg_wr(ATH_WATCHDOG_TMR_CONTROL, ATH_WD_ACT_NMI);
++#endif
+     }
+     DBG_ERR( "[ath:watchdog] action: %u (hardware reset) - ticks: %u (= %u seconds * %u hz)\n", 
+             ath_reg_rd(ATH_WATCHDOG_TMR_CONTROL), 
+--- linux-2.6.32/drivers/char/avm_new/ifxmips_wdt.h
++++ linux-2.6.32/drivers/char/avm_new/ifxmips_wdt.h
+@@ -1,7 +1,7 @@
+ #ifndef _ifxmips_wdt_h_
+ #define _ifxmips_wdt_h_
+ 
+-#define WDT_TIMEOUT_SEC 25
++#define WDT_TIMEOUT_SEC 10
+ 
+ #define IFX_WDT_PW1 0x000000BE /**< First password for access */
+ #define IFX_WDT_PW2 0x000000DC /**< Second password for access */
+--- linux-2.6.32/drivers/char/avm_new/Makefile
++++ linux-2.6.32/drivers/char/avm_new/Makefile
+@@ -1,6 +1,6 @@
+ #############################################
+ # Makefile: automaticly genereated by ./init_avm
+-#           Mo 9. Dez 15:13:15 CET 2013
++#           Fr 25. Apr 17:55:11 CEST 2014
+ #############################################
+ 
+ #####################################################################################
+--- linux-2.6.32/drivers/char/avm_power/avm_power_file.c
++++ linux-2.6.32/drivers/char/avm_power/avm_power_file.c
+@@ -269,7 +269,30 @@
+ #endif/*--- #if defined(CONFIG_MIPS_UR8) ---*/
+     { NULL, 0, 0 }
+ };
+-
++/*-------------------------------------------------------------------------------------*\
++\*-------------------------------------------------------------------------------------*/
++static struct _power_managment_dest_entry multicast_profile_on[] =  {
++    { "avm_event", AVM_PM_CB_IGNORE, LOAD_CONTROL_MULTICAST | 0x1 },                   /*--- Loadcontrols setzt LOAD_CONTROL_MULTICAST ---*/
++    { NULL, 0, 0 }
++};
++/*-------------------------------------------------------------------------------------*\
++\*-------------------------------------------------------------------------------------*/
++static struct _power_managment_dest_entry multicast_profile_off[] =  {
++    { "avm_event", AVM_PM_CB_IGNORE, LOAD_CONTROL_MULTICAST | 0x0 },                   /*--- Loadcontrols ruecksetzen LOAD_CONTROL_MULTICAST ---*/
++    { NULL, 0, 0 }
++};
++/*-------------------------------------------------------------------------------------*\
++\*-------------------------------------------------------------------------------------*/
++static struct _power_managment_dest_entry voip_profile_on[] =  {
++    { "avm_event", AVM_PM_CB_IGNORE, LOAD_CONTROL_VOIPCALL | 0x1 },                   /*--- Loadcontrols setzt LOAD_CONTROL_MULTICAST ---*/
++    { NULL, 0, 0 }
++};
++/*-------------------------------------------------------------------------------------*\
++\*-------------------------------------------------------------------------------------*/
++static struct _power_managment_dest_entry voip_profile_off[] =  {
++    { "avm_event", AVM_PM_CB_IGNORE, LOAD_CONTROL_VOIPCALL | 0x0 },                   /*--- Loadcontrols ruecksetzen LOAD_CONTROL_MULTICAST ---*/
++    { NULL, 0, 0 }
++};
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ static struct _power_managment_dest_entry usbcurrentreq_entries[] =  {
+@@ -328,13 +351,13 @@
+     { "isdn",  AVM_PM_CB_FAILED, 0x21 },         /*--- ueber PCM-Register anschalten ---*/
+     { NULL, 0, 0 }
+ };
+-#endif/*--- #if defined(CONFIG_MIPS_UR8) ---*/
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ static struct _power_managment_dest_entry speedstep_status_entries[] =  {
+     { "speedstep",AVM_PM_CB_UNINSTALLED_OR_FAILED, 0x40 },        /*---  Speedstep Status abfragen ! ---*/
+     { NULL, 0, 0 }
+ };
++#endif/*--- #if defined(CONFIG_MIPS_UR8) ---*/
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ static struct _power_managment_dest_entry pcmlinkbus_stop_entries[] =  {
+@@ -418,11 +441,14 @@
+     { "ata",                    atamode_entries,        PM_ACESS_ALL},
+     { "vdsl",                   vdslmode_entries,       PM_ACESS_ALL},        /*--- im VDSL-Mode DSL auf ATA stellen ---*/
+     { "update",                 updatemode_entries,     PM_ACESS_ALL},
+-    { "speedstep_status",       speedstepstatus_entries,PM_ACESS_APPL},
+     { "speedstep_on",           speedstepon_entries,    PM_ACESS_APPL},
+     { "speedstep_off",          speedstepoff_entries,   PM_ACESS_APPL},
+     { "telefon_profile_on",     telefon_profile_on,     PM_ACESS_ALL},   /*--- schalte auf normalspeed - niemals runter  ---*/ 
+     { "telefon_profile_off",    telefon_profile_off,    PM_ACESS_ALL},   /*--- vorhergehendes Profil ---*/
++    { "multicast_profile_on",   multicast_profile_on,   PM_ACESS_ALL},   /*--- signalisiert das Multicast an ---*/ 
++    { "multicast_profile_off",  multicast_profile_off,  PM_ACESS_ALL},   /*--- signalisiert, dass Multicast aus ---*/
++    { "voip_profile_on",        voip_profile_on,        PM_ACESS_ALL},   /*--- signalisiert das Voip an ---*/ 
++    { "voip_profile_off",       voip_profile_off,       PM_ACESS_ALL},   /*--- signalisiert, dass Voip aus ---*/
+ #if defined(CONFIG_MIPS_UR8)
+     { "usb_poweron",            usbpoweron_entries,       PM_ACESS_ALL},
+     { "usb_poweroff",           usbpoweroff_entries,      PM_ACESS_ALL},
+@@ -434,9 +460,11 @@
+     { "powerup_slic2",          powerup_slic2_entries,    PM_ACESS_ALL},
+     { "wlan_booston",           powerup_wlan_entries,     PM_ACESS_ALL},    /*--- anheben der Spannung 7212 auf 1.2V ---*/
+     { "wlan_boostoff",          powerdown_wlan_entries,   PM_ACESS_ALL},
++    { "speedstep_status",       speedstep_status_entries, PM_ACESS_ALL},
++#else
++    { "speedstep_status",       speedstepstatus_entries,PM_ACESS_APPL},
+ #endif/*--- #if defined(CONFIG_MIPS_UR8) ---*/
+     { "usb_current_req",        usbcurrentreq_entries,    PM_ACESS_ALL},
+-    { "speedstep_status",       speedstep_status_entries, PM_ACESS_ALL},
+     { "pcmlink_bus_off",        pcmlinkbus_stop_entries,  PM_ACESS_DRIVER},
+     { "pcmlink_bus_on",         pcmlinkbus_start_entries, PM_ACESS_DRIVER},
+     { "pots_load",              pots_load_entries,        PM_ACESS_ALL},
+@@ -1189,6 +1217,14 @@
+ \*--------------------------------------------------------------------------------*/
+ static int avm_power_event_Callback(int state){
+     /*--- printk("avm_power_event_Callback: %d\n", state); ---*/
++    if(state & LOAD_CONTROL_VOIPCALL) {
++        avm_powermanager_load_control_setflags(state & 0x1 ? LOAD_CONTROL_VOIPCALL : 0 , LOAD_CONTROL_VOIPCALL);
++        return 0;
++    }
++    if(state & LOAD_CONTROL_MULTICAST) {
++        avm_powermanager_load_control_setflags(state & 0x1 ? LOAD_CONTROL_MULTICAST : 0 , LOAD_CONTROL_MULTICAST);
++        return 0;
++    }
+     if(telefonevent.on != (unsigned)state) {
+         telefonevent.on = state;
+ #if defined(DECTSYNC_PATCH) 
+@@ -1840,7 +1876,7 @@
+         }
+         pm_info->stat.rate_usbhostact    = (unsigned char) usbmwatt;
+         pm_info->stat.usb_status         = PM_GET_RATE(pm_info->deviceinfo[powerdevice_usb_client].power_rate) ? 1 : 0;  /*--- USB-Client connected ---*/
+-        pm_info->stat.rate_lteact        = PM_GET_RATE(pm_info->deviceinfo[powerdevice_lte].power_rate);                 /*--- aktueller Verbrauch LTE Prozent ---*/
++        pm_info->stat.rate_lteact        = PM_GET_NORM_MWATT(&pm_info->deviceinfo[powerdevice_lte]);                 /*--- aktueller Verbrauch LTE Prozent ---*/
+         avm_power_speedstep_mode();
+ #if 0
+         printk(KERN_DEBUG"SUM:%d(%d) SYST:%d(%d)-%x DSP:%d(%d) WLAN:%d(%d)-%d-%x ETH:%d(%d)-%x ISDN:%x AB:%d(%d) DECT:%d(%d) USB:%d(%d)-%x TEMP(%d, %d min %d max %d) want:%d\n",
+@@ -2055,6 +2091,25 @@
+     }
+     return run / NR_CPUS;
+ }
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 32)
++/**
++ * get_avenrun - get the load average array
++ * @loads:	pointer to dest load array
++ * @offset:	offset to add
++ * @shift:	shift count to shift the result left
++ *
++ * These values are estimates at best, so no need for locking.
++ */
++void get_avenrun(unsigned long *loads, unsigned long offset, int shift) {
++	loads[0] = (avenrun[0] + offset) << shift;
++	loads[1] = (avenrun[1] + offset) << shift;
++	loads[2] = (avenrun[2] + offset) << shift;
++}
++#endif/*--- #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 32) ---*/
++
++#define LOAD_INT(x) ((x) >> FSHIFT)
++#define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
++
+ /*--------------------------------------------------------------------------------*\
+  * Funktion wird von Treibern aufgerufen um Infos ueber den aktuellen Power-Status zu liefern
+ \*--------------------------------------------------------------------------------*/
+@@ -2119,14 +2174,24 @@
+ #if defined(DECTSYNC_PATCH)
+             if(display_dectsync(pm_ressourceinfo.loadcntrl)) {
+ #endif/*--- #else ---*//*--- #if defined(DECTSYNC_PATCH) ---*/
++                unsigned long avnrun[3];
++                get_avenrun(avnrun, FIXED_1/200, 0);
+ #if NR_CPUS == 2
+-                printk(KERN_ERR"idle: %d/%d %%(%d/%d %%) loadcntrl %d\n", 
++                printk(KERN_ERR"idle: %d/%d %%(%d/%d %%) loadavg %lu.%lu %lu.%lu %lu.%lu loadcntrl 0x%x\n", 
+                                        100 - ((cpus_loadrate >> 0) & 0xFF), 100 - ((cpus_loadrate >> 8) & 0xFF), 
+                                        (cpus_loadrate >> 0) & 0xFF, (cpus_loadrate >> 8) & 0xFF, 
++                                       LOAD_INT(avnrun[0]), LOAD_FRAC(avnrun[0]),
++                                       LOAD_INT(avnrun[1]), LOAD_FRAC(avnrun[1]),
++                                       LOAD_INT(avnrun[2]), LOAD_FRAC(avnrun[2]),
+                                        pm_ressourceinfo.loadcntrl
+                                        );
+ #else
+-                printk(KERN_ERR"[%lu]idle: %d %%(%d %%) loadcntrl %d\n", jiffies, 100 - power_rate, power_rate, pm_ressourceinfo.loadcntrl);
++                printk(KERN_ERR"[%lu]idle: %d %%(%d %%) loadavg %lu.%lu %lu.%lu %lu.%lu loadcntrl 0x%x\n", jiffies, 
++                                    100 - power_rate, power_rate, 
++                                    LOAD_INT(avnrun[0]), LOAD_FRAC(avnrun[0]),
++                                    LOAD_INT(avnrun[1]), LOAD_FRAC(avnrun[1]),
++                                    LOAD_INT(avnrun[2]), LOAD_FRAC(avnrun[2]),
++                                    pm_ressourceinfo.loadcntrl);
+ #endif
+ 
+ #if defined(DECTSYNC_PATCH)
+--- linux-2.6.32/drivers/char/avm_power/avm_power.h
++++ linux-2.6.32/drivers/char/avm_power/avm_power.h
+@@ -110,6 +110,7 @@
+ };
+ void avm_powermanager_load_control_set(enum _load_control_set mode, int scale);
+ int avm_powermanager_load_control_handler(int run);
++void avm_powermanager_load_control_setflags(unsigned int value, unsigned int mask);
+ 
+ #ifdef CONFIG_AVM_POWERMETER
+ /*--------------------------------------------------------------------------------*\
+--- linux-2.6.32/drivers/char/avm_power/avm_power_loadcontrol.c
++++ linux-2.6.32/drivers/char/avm_power/avm_power_loadcontrol.c
+@@ -39,6 +39,8 @@
+     enum _load_control_set loadcontrol_mode;
+     int countdown;
+     int load_control_val;
++    unsigned int load_control_flags;
++    int load_control_status;
+     int load_control_scale;
+ } PwLoadControl;
+ 
+@@ -46,19 +48,16 @@
+ 
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+-inline static void lavm_powermanager_load_control_setmoduleval(int val) {
++static inline void lavm_powermanager_load_control_setmoduleval(struct _power_managment_loadcontrol *pwlc, int val) {
+     struct _power_managment_loadcontrol_modules *module;
+-    struct _power_managment_loadcontrol *pwlc = &PwLoadControl;
+-    unsigned long flags;
+ 
+-    /*--- printk("[%d][%s] %d\n", jiffies, __func__, val); ---*/
+-    spin_lock_irqsave(&lock, flags);
++
++    /*--- printk(KERN_INFO"[%s] %x\n", __func__, val); ---*/
+     module = (struct _power_managment_loadcontrol_modules *)pwlc->anchor;
+     while(module) {
+         module->load_control_callback(val, module->context);
+         module = module->next;
+     }
+-    spin_unlock_irqrestore(&lock, flags);
+ }
+ /*--------------------------------------------------------------------------------*\
+  * mode: 0 auto
+@@ -66,23 +65,28 @@
+ \*--------------------------------------------------------------------------------*/
+ void avm_powermanager_load_control_set(enum _load_control_set mode, int scale) {
+     struct _power_managment_loadcontrol *pwlc = &PwLoadControl;
++    unsigned long flags;
+     int erg;
+ 
+     if(mode >= load_control_off) {
+         erg = min(10, (int)(mode - load_control_off));
+-        printk(KERN_INFO"[loadcontrol] set level to %d\n", erg);
++        erg |= scale;   /*--- hier als scale = flag ---*/
++        printk(KERN_INFO"[loadcontrol] set level to %x\n", erg);
+     } else {
+         pwlc->load_control_scale = min(8, max(0, scale));
+         printk(KERN_INFO"[loadcontrol] set auto - scale=%d\n", pwlc->load_control_scale);
+         erg = 0;
+     }
+-    lavm_powermanager_load_control_setmoduleval(erg);
+-    pwlc->loadcontrol_mode   = mode;
++    spin_lock_irqsave(&lock, flags);
++    lavm_powermanager_load_control_setmoduleval(pwlc, erg);
++    pwlc->loadcontrol_mode = mode;
++    spin_unlock_irqrestore(&lock, flags);
+ }
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ int avm_powermanager_load_control_handler(int run) {
+     struct _power_managment_loadcontrol *pwlc = &PwLoadControl;
++    unsigned long flags;
+     int load_control_val;
+ 
+     if(pwlc->loadcontrol_mode != load_control_auto) {
+@@ -94,13 +98,14 @@
+         pwlc->countdown = max(pwlc->countdown - ((100 - run) >> 1), 0);
+     }
+     load_control_val = pwlc->countdown >> pwlc->load_control_scale;
+-    /*--- printk("[%lu][%s] run=%d countdown=%d val=%d\n", jiffies, __func__, run, pwlc->countdown, load_control_val); ---*/
+-
++    /*--- printk(KERN_INFO"[%s] run=%d countdown=%d val=%d\n", __func__, run, pwlc->countdown, load_control_val); ---*/
++    spin_lock_irqsave(&lock, flags);
+     if(pwlc->load_control_val != load_control_val) {
+         pwlc->load_control_val = load_control_val;
+-        lavm_powermanager_load_control_setmoduleval(load_control_val);
++        lavm_powermanager_load_control_setmoduleval(pwlc, load_control_val | pwlc->load_control_flags);
+     }
+-    return load_control_val;
++    spin_unlock_irqrestore(&lock, flags);
++    return load_control_val | pwlc->load_control_flags;
+ }
+ /*--------------------------------------------------------------------------------*\
+  * Callback registrieren
+@@ -166,3 +171,26 @@
+     spin_unlock_irqrestore(&lock, flags);
+ }
+ EXPORT_SYMBOL(avm_powermanager_load_control_release);
++/*--------------------------------------------------------------------------------*\
++ * setze load_reduce-flags (eingeschraenkt durch mask)
++ * Achtung! die unteren 4 Bit sind grundsetzlich nicht aenderbar (load_reduce-Wert) !
++\*--------------------------------------------------------------------------------*/
++void avm_powermanager_load_control_setflags(unsigned int value, unsigned int mask){
++    struct _power_managment_loadcontrol *pwlc = &PwLoadControl;
++    unsigned long flags;
++    unsigned int load_control_flags;
++
++    /*--- printk(KERN_INFO"[%s] %d\n", __func__, value); ---*/
++    if(pwlc->loadcontrol_mode != load_control_auto) {
++        return;
++    }
++    spin_lock_irqsave(&lock, flags);
++    load_control_flags  = pwlc->load_control_flags & ~(mask | LOAD_CONTROL_REDUCEMASK);
++    load_control_flags |= value & (mask & ~LOAD_CONTROL_REDUCEMASK);
++    
++    if(load_control_flags != pwlc->load_control_flags) {
++        pwlc->load_control_flags = load_control_flags;
++        lavm_powermanager_load_control_setmoduleval(pwlc, pwlc->load_control_val | load_control_flags);
++    }
++    spin_unlock_irqrestore(&lock, flags);
++}
+--- linux-2.6.32/drivers/char/avm_power/dectsync.c
++++ linux-2.6.32/drivers/char/avm_power/dectsync.c
+@@ -436,7 +436,7 @@
+     if(gdectsync.state < calibrate_timerirq) {
+         return 1;
+     }
+-    printk(KERN_ERR"[%lu]idle(%d MHz) loadcntrl=%d: %d %%(%d %%) lost %ld wp=%d %% good=%lu.%02lu %% - v/l/t=%lu/%lu/%lu low=%lu us drift=%ld ns\n",
++    printk(KERN_ERR"[%lu]idle(%d MHz) loadcntrl=0x%x: %d %%(%d %%) lost %ld wp=%d %% good=%lu.%02lu %% - v/l/t=%lu/%lu/%lu low=%lu us drift=%ld ns\n",
+        jiffies,
+        gdectsync.clk * 2,
+        loadcontrol,
+--- linux-2.6.32/drivers/char/avm_power/linux_avm_power.h
++++ linux-2.6.32/drivers/char/avm_power/linux_avm_power.h
+@@ -88,8 +88,15 @@
+ /*--------------------------------------------------------------------------------*\
+  * Load-Control-Callback-Schnittstelle
+  * load_reduce: 0 - 10 (0 keine Lastreduzierung, 10 max. Lastreduzierung) 
++ * load_reduce: verodert:  LOAD_CONTROL_VOIPCALL
++ *                         LOAD_CONTROL_MULTICAST
+  * context:     Pointer der in avm_powermanager_load_control_register angegeben wurde
+ \*--------------------------------------------------------------------------------*/
++#define LOAD_CONTROL_REDUCEMASK  0xF
++#define LOAD_CONTROL_REDUCE(a)  ((a) & LOAD_CONTROL_REDUCEMASK)
++#define LOAD_CONTROL_VOIPCALL   (0x1 << 8)
++#define LOAD_CONTROL_MULTICAST  (0x1 << 9)
++
+ typedef void (*load_control_callback_t)(int load_reduce, void *context);
+ /*--------------------------------------------------------------------------------*\
+  * Callback registrieren
+@@ -103,7 +110,6 @@
+ \*--------------------------------------------------------------------------------*/
+ void avm_powermanager_load_control_release(void *handle) __attribute__ ((weak));
+ 
+-
+ #define POWERMANAGEMENT_THROTTLE_ETH
+ 
+ /*--------------------------------------------------------------------------------*\
+@@ -159,7 +165,7 @@
+     powerdevice_usb_host3     = 18,       /*--- power_rate in Milli-Ampere ---*/ 
+     powerdevice_dsp_loadrate  = 19,       /*--- (ADSL/VDSL-)DSP power_rate in % (100 - % Idle-Wert) ---*/    
+     powerdevice_vdsp_loadrate = 20,       /*--- Voice-DSP power_rate in % (100 - % Idle-Wert) ---*/    
+-    powerdevice_lte           = 21,       /*--- power_rate in Milli-Ampere ---*/
++    powerdevice_lte           = 21,       /*--- power_rate in Milliwatt ---*/
+     powerdevice_maxdevices    = 22
+ };
+ 
+--- linux-2.6.32/drivers/char/tffs-2.0/tffs_local.h
++++ linux-2.6.32/drivers/char/tffs-2.0/tffs_local.h
+@@ -102,6 +102,7 @@
+     unsigned int init_flag;
+     unsigned int id;
+     unsigned int panic_mode;
++    unsigned int kernel_context;    /*--- set kernel_context: only used for tffs_read  ---*/
+     unsigned char *z_Buffer;
+     unsigned int z_length;
+     z_stream stream;
+--- linux-2.6.32/drivers/char/tffs-2.0/tffs_panic.c
++++ linux-2.6.32/drivers/char/tffs-2.0/tffs_panic.c
+@@ -18,6 +18,7 @@
+ \*------------------------------------------------------------------------------------------*/
+ #include <linux/module.h>
+ #include <linux/kernel.h>
++#include <linux/version.h>
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
+ #include <linux/sched.h>
+@@ -32,11 +33,18 @@
+ #include <linux/tffs.h>
+ #include <linux/zlib.h>
+ #include <linux/vmalloc.h>
++#include <linux/rtc.h>
+ #if defined(CONFIG_PROC_FS)
+ #include <linux/proc_fs.h>
++#include <linux/seq_file.h>
+ #endif /*--- #if defined(CONFIG_PROC_FS) ---*/
+ #include "tffs_local.h"
+ 
++#if defined(CONFIG_MACH_AR934x)
++extern int ath_restore_log_from_ram(char *txtbuf, unsigned int txtlen);
++extern void ath_inval_log_from_ram(void);
++#endif/*--- #if defined(CONFIG_MACH_AR934x) ---*/
++
+ unsigned int tffs_spi_mode = 0;
+ 
+ static struct file tffs_panic_file;
+@@ -51,7 +59,7 @@
+     memset(&tffs_panic_inode, 0, sizeof(tffs_panic_inode));
+ 
+     tffs_panic_file.f_flags = O_WRONLY;
+-    tffs_panic_inode.i_rdev = CONFIG_TFFS_PANIC_LOG_ID;   /*--- major muss 0 sein fuer Kernel Mode ---*/
++    tffs_panic_inode.i_rdev = MKDEV(0,CONFIG_TFFS_PANIC_LOG_ID);   /*--- major muss 0 sein fuer Kernel Mode ---*/
+ 
+     ret = tffs_open(&tffs_panic_inode, &tffs_panic_file);
+     if(ret)
+@@ -77,3 +85,185 @@
+ void tffs_panic_log_register_spi(void) {
+     tffs_spi_mode = 1;
+ }
++
++#if defined(CONFIG_PROC_FS)
++static int read_once_cr = 0; 
++
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static int tffs_panic_log_read(unsigned char *buf, int buf_len) {
++    struct _tffs_open *open_data;
++    loff_t offp;
++    int ret;
++    struct file tffs_file;
++    struct inode tffs_inode;
++    memset(&tffs_file, 0, sizeof(tffs_file));
++    memset(&tffs_inode, 0, sizeof(tffs_inode));
++
++    tffs_file.f_flags = O_RDONLY;
++    tffs_inode.i_rdev = MKDEV(MAJOR(tffs.device),CONFIG_TFFS_PANIC_LOG_ID);
++
++    ret = tffs_open(&tffs_inode, &tffs_file);
++    if(ret) {
++        printk(KERN_ERR"%s tffs_open failed ret=%d\n", __func__, ret);
++        return ret;
++    }
++    open_data = (struct _tffs_open *)tffs_file.private_data;
++    open_data->kernel_context = 1;  /*--- readaccess in kernel-context ---*/
++    ret = tffs_read(&tffs_file, buf, buf_len, &offp);
++    /*--- printk(KERN_INFO"%s tffs_read ret=%d\n", __func__, ret); ---*/
++    tffs_release(&tffs_inode, &tffs_file);
++    return ret;
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static unsigned int calc_sum_and_correct(unsigned char *buf, int buf_len) {
++    unsigned int i, sum = 0;
++    for(i = 0; i < buf_len; i++) {
++        if(buf[i] == 0) buf[i] = ' ';   /*--- correct buffer (support null-teminated string) ---*/
++        sum += buf[i];
++    }
++    return sum ^ (buf_len << 16);
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static char *time_to_ascii(char *buf, int len, char *prefix) {
++    static char *month[] = { "Jan",  "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
++    static char *day[]   = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
++    struct rtc_time tm;
++    struct timeval now;
++    unsigned int local_time;
++    do_gettimeofday(&now);
++    /*--- local_time = (u32)(now.tv_sec - (sys_tz.tz_minuteswest * 60)); ---*//*---  tz_minuteswest == 0 ?  ---*/
++    local_time = (u32)(now.tv_sec);
++    rtc_time_to_tm(local_time, &tm);
++    snprintf(buf, len, "%s %s %d %d:%d:%d %d GMT %s", day[tm.tm_wday],  month[tm.tm_mon], tm.tm_mday, 
++                                                  tm.tm_hour, tm.tm_min, tm.tm_sec, tm.tm_year + 1900,
++                                                  prefix
++                                                  );
++    return buf;
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static int paniclog_show(struct seq_file *seq, void *data __attribute__((unused))) {
++
++    /*--- printk(KERN_INFO"%s %p %p\n", __func__, seq->private, data); ---*/
++	if(seq->private) {
++        seq_printf(seq, "%s", (char *)seq->private);
++    }
++    return 0;
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static int __panicclog_proc_open(struct inode *inode __attribute__((unused)), struct file *file, int *readonce) {
++    char crashenv[128];
++    char timebuf[128];
++    char *timestart;
++    int buf_len = (0x1 << 17) - 64; /*--- ReserveTimestamp ---*/
++    unsigned int sram_len __attribute__((unused));
++    int len = buf_len;
++    unsigned int lastpanic_sum = 0, lastpanic_sram_sum = 0, new_sram_sum = 0, new_sum = 0;
++    char *buf;
++    if(readonce && *readonce) {
++        return -ENODATA;
++    }
++	buf = kmalloc(len, GFP_KERNEL);
++    if(buf == NULL) {
++		return -ENOMEM;
++    }
++    len = sizeof(crashenv);
++    crashenv[0] = 0;
++    if(TFFS_Read(NULL, FLASH_FS_CRASH, crashenv, &len) == 0) {
++        sscanf(crashenv, "0x%x,0x%x,0x%x;", &lastpanic_sum, &lastpanic_sram_sum, &read_once_cr);
++    }
++    timestart = crashenv;
++    /*--- Timestamp extrahieren: ---*/
++    while(*timestart && *timestart != ';') timestart++;
++    if(*timestart == ';') timestart++;
++
++    /*--- printk(KERN_INFO"%s: lastpanic_sum=%x read_once_cr=%x", __func__, lastpanic_sum, read_once_cr); ---*/
++    buf[0] = 0;
++    if((len = tffs_panic_log_read(buf, buf_len)) > 0) {
++        new_sum = calc_sum_and_correct(buf, len);
++        /*--- printk(KERN_INFO"%s: new_sum=%x len=%d\n", __func__, new_sum, len); ---*/
++        if(new_sum != lastpanic_sum) {
++            /*--- new panic-log: clear counter ---*/
++            read_once_cr = 0;
++            timestart = time_to_ascii(timebuf, sizeof(timebuf), readonce ? "by crash report" : "by support data");
++        }
++    } else {
++        len = 0;
++    }
++#if defined(CONFIG_MACH_AR934x)
++    sram_len = ath_restore_log_from_ram(buf, buf_len);
++    if(sram_len) {
++        /*--- prefer sram-log---*/
++        len = sram_len;
++        new_sram_sum = calc_sum_and_correct(buf, len);
++        /*--- printk(KERN_INFO"%s: prefer sram-trace len=%d", __func__, sram_len); ---*/
++        if(new_sram_sum != lastpanic_sram_sum) {
++            struct timeval now;
++            /*--- new sram-panic-log: clear counter ---*/
++            read_once_cr = 0;
++            timestart = time_to_ascii(timebuf, sizeof(timebuf), readonce ? "by crash report" : "by support data");
++        }
++    }
++#endif/*--- #if defined(CONFIG_MACH_AR934x) ---*/
++    if(readonce && *readonce) {
++        /*--- check if sent ---*/
++        kfree(buf);
++        return -ENODATA;
++    }
++    if(readonce) *readonce = 1;
++    sprintf(&buf[len], "-----\n(first) sent on: %s\n", timestart);
++    snprintf(crashenv, sizeof(crashenv), "0x%x,0x%x,0x%x;%s", new_sum, new_sram_sum, read_once_cr, timestart);
++    TFFS_Write(NULL, FLASH_FS_CRASH, crashenv, strlen(crashenv) + 1, 0);
++
++    return single_open(file, paniclog_show, buf);
++}
++/*--------------------------------------------------------------------------------*\
++ * read once crashreport
++\*--------------------------------------------------------------------------------*/
++static int panicclog_open_cr(struct inode *inode, struct file *file) {
++    return __panicclog_proc_open(inode, file, &read_once_cr);
++}
++/*--------------------------------------------------------------------------------*\
++ * supportdata 
++ * read every time possible
++\*--------------------------------------------------------------------------------*/
++static int panicclog_open_sd(struct inode *inode, struct file *file) {
++    return __panicclog_proc_open(inode, file, NULL);
++}
++/*--------------------------------------------------------------------------------*\
++ * for crashreport
++\*--------------------------------------------------------------------------------*/
++static const struct file_operations paniclog_fops_cr = {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 32)
++   .owner   = THIS_MODULE,
++#endif
++   .open    = panicclog_open_cr,
++   .read    = seq_read,
++   .llseek  = seq_lseek,
++   .release = seq_release_private,  /*--- gibt txtbuf frei ---*/
++};
++/*--------------------------------------------------------------------------------*\
++ * for supportdata 
++\*--------------------------------------------------------------------------------*/
++static const struct file_operations paniclog_fops_sd = {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 32)
++   .owner   = THIS_MODULE,
++#endif
++   .open    = panicclog_open_sd,
++   .read    = seq_read,
++   .llseek  = seq_lseek,
++   .release = seq_release_private,      /*--- gibt txtbuf frei ---*/
++};
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static int __init panic_prepare_log_proc(void) {
++    proc_create("avm_panic_cr", 0, NULL, &paniclog_fops_cr);
++    proc_create("avm_panic_sd", 0, NULL, &paniclog_fops_sd);
++    return 0;
++}
++late_initcall(panic_prepare_log_proc);
++#endif/*--- #if defined(CONFIG_PROC_FS) ---*/
+--- linux-2.6.32/drivers/char/tffs-2.0/tffs_read.c
++++ linux-2.6.32/drivers/char/tffs-2.0/tffs_read.c
+@@ -62,7 +62,7 @@
+     }
+ 
+     if(open_data->stream.avail_in == 0) {
+-        DBG((KERN_INFO "tff_read: input streem empty, return 0 bytes\n"));
++        DBG((KERN_INFO "tff_read: input stream empty, return 0 bytes\n"));
+         vfree(local_read_buffer);
+         return 0;
+     }
+@@ -88,6 +88,14 @@
+             /*--- kein break ---*/
+         case Z_OK:
+             copy_count = max_read_length - open_data->stream.avail_out;
++            if(open_data->kernel_context) {
++                /*--- read-access in kernel-context (for panic-log read) ---*/
++                memcpy(read_buffer, local_read_buffer, copy_count);
++                *offp += open_data->stream.total_out;
++                DBG((KERN_INFO "%s: tffs_read (kernel): status %d read %u bytes\n", MODULE_NAME, status, copy_count));
++                vfree(local_read_buffer);
++                return (int)copy_count;
++            }
+             if(!copy_to_user(read_buffer, local_read_buffer, copy_count)) {
+                 *offp += open_data->stream.total_out;
+                 DBG((KERN_INFO "%s: tffs_read: status %d read %u bytes\n", MODULE_NAME, status, copy_count));
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/7port/swi_7port.c
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/7port/swi_7port.c
+@@ -72,6 +72,7 @@
+ static int read_rmon_all_open(struct inode *inode, struct file *file);
+ static int mac_table_show(struct seq_file *seq, void *data);
+ static int mac_table_open(struct inode *inode, struct file *file);
++static ssize_t proc_mac_table_write(struct file *filp, const char __user *buff, size_t len, loff_t *offset);
+ 
+ static int proc_mirror_show(struct seq_file *seq, void *data);
+ static int proc_mirror_open(struct inode *inode, struct file *file);
+@@ -85,6 +86,7 @@
+ #endif
+    .open    = mac_table_open,
+    .read    = seq_read,
++   .write   = proc_mac_table_write,
+    .llseek  = seq_lseek,
+    .release = seq_release,
+ };
+@@ -679,11 +681,13 @@
+             }
+         }
+ 
+-        AVMNET_INFOTRC("[%s] setup learning limit = 0 for CPU-Port \n", __func__);
+-        ifx_ethsw_ll_DirectAccessWrite(NULL,
+-                                       (VR9_PCE_PCTRL_1_LRNLIM_OFFSET + (0xA * 6)),
++        AVMNET_INFOTRC("[%s] setup learning limit = 0 for CPU-Port and virtual (DSL) Ports \n", __func__);
++        for (i = 6; i < 12; i++){
++        	ifx_ethsw_ll_DirectAccessWrite(NULL,
++                                       (VR9_PCE_PCTRL_1_LRNLIM_OFFSET + (0xA * i)),
+                                         VR9_PCE_PCTRL_1_LRNLIM_SHIFT,
+                                         VR9_PCE_PCTRL_1_LRNLIM_SIZE, 0);
++        }
+ 
+         AVMNET_INFOTRC("[%s] Configuring CPU-port to receive all unknown unicast frames \n", __func__);
+         /*--- unicast ---*/
+@@ -1303,6 +1307,83 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
++static ssize_t proc_mac_table_write(struct file *filp, const char __user *buff,
++                                    size_t len, loff_t *offset __attribute__ ((unused)) )
++{
++    char mybuff[128];
++    struct seq_file *seq;
++    avmnet_module_t *this;
++    int mac, reg, value;
++    int status;
++    struct avmnet_swi_7port_context *ctx;
++
++    if(len >= 128){
++        return -ENOMEM;
++    }
++
++    seq = (struct seq_file *) filp->private_data;
++    this = (avmnet_module_t *) seq->private;
++    ctx = (struct avmnet_swi_7port_context *) this->priv;
++
++    copy_from_user(&mybuff[0], buff, len);
++    mybuff[len] = 0;
++
++    status = len;
++
++    if(sscanf(mybuff, "read_pctrl %i", &mac) == 1){
++
++    	if (mac < 0 || mac > 11 ){
++    		status = -EINVAL;
++    	} else {
++    		unsigned int i;
++    		for (i = 0; i < 3; i++){
++    			ifx_ethsw_ll_DirectAccessRead(NULL, (0x480 + i + (0xA * mac)), 0, 16, &value);
++    			printk(KERN_ERR "[mac=%d reg=%d] = %#x\n", mac, i, value);
++    		}
++    	}
++
++    }
++    else if(sscanf(mybuff, "write_pctrl %i %i %i", &mac, &reg, &value) == 3){
++
++    	if ( ( mac < 0 ) || ( mac > 11 ) || (reg < 0 ) || (reg > 2)){
++    		status = -EINVAL;
++    	} else {
++    		ifx_ethsw_ll_DirectAccessWrite(NULL, (0x480 + reg + (0xA * mac)), 0, 16, value);
++    		printk(KERN_ERR "[write_ctl mac=%d, reg=%d] = %#x\n", mac, reg, value);
++    	}
++
++    }
++    else if(strncmp(mybuff, "reset_table", 11 ) == 0) {
++    	avmnet_swi_7port_disable_learning(avmnet_hw_config_entry->config);
++
++    }
++    else if(strncmp(mybuff, "flush_table", 11 ) == 0) {
++        ifx_ethsw_ll_DirectAccessWrite(NULL,
++                                       VR9_PCE_GCTRL_0_MTFL_OFFSET,
++                                       VR9_PCE_GCTRL_0_MTFL_SHIFT,
++                                       VR9_PCE_GCTRL_0_MTFL_SIZE,
++                                       1);
++    }
++    else if(strncmp(mybuff, "setup_non_ethernet", 18) == 0) {
++        setup_non_ethernet_deault_port();
++
++    } else {
++        status = -EINVAL;
++    }
++
++    if(status == -EINVAL){
++        printk(KERN_ERR "[%s] Usage:\n", __func__);
++        printk(KERN_ERR "[%s]     read_pctrl <mac> \n", __func__);
++        printk(KERN_ERR "[%s]     write_pctrl <mac> <reg> <value>\n", __func__);
++        printk(KERN_ERR "[%s]     flush_table \n", __func__);
++        printk(KERN_ERR "[%s]     setup_non_ethernet \n", __func__);
++        printk(KERN_ERR "[%s]     reset_table \n", __func__);
++    }
++
++    return status;
++}
++
++
+ 
+ static int mac_table_show(struct seq_file *seq, void *data __attribute__ ((unused)) )
+ {
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/ar10/ifxmips_ppa_datapath_ar10_a5.c
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/ar10/ifxmips_ppa_datapath_ar10_a5.c
+@@ -565,6 +565,12 @@
+ #define AR10_CGU_CLKFSR                          ((volatile u32*)(AR10_CGU + 0x0010))
+ 
+ /*
++  * Chip ID Registers
++*/
++#define AR10_MIPS_CHIPID_BASE                   (KSEG1 | 0x1F107340)
++#define AR10_MIPS_CHIPID                        (volatile u32*)(AR10_MIPS_CHIPID_BASE + 0x4)
++
++/*
+  * ####################################
+  *              Data Type
+  * ####################################
+@@ -579,6 +585,18 @@
+ } ppe_u64_t;
+ 
+ /*
++ *CHIP ID
++ */
++struct ar10_chipid{
++    unsigned int   res0     :1;
++    unsigned int   version  :3;
++    unsigned int   pnum     :16;
++    unsigned int   manid    :11;
++    unsigned int   res1     :1;
++};
++
++
++/*
+  *  PPE ATM Cell Header
+  */
+ #if defined(__BIG_ENDIAN)
+@@ -6166,7 +6184,7 @@
+     return len;
+ }
+ 
+-#if 0
++#if defined(DEBUG_FIRMWARE_TABLES_PROC) && DEBUG_FIRMWARE_TABLES_PROC
+ static int print_dsl_dma_desc(char *buf, volatile u32 *desc_base, int desc_pos) {
+     int len = 0;
+     u32 *p;
+@@ -6206,9 +6224,7 @@
+ 
+     return len;
+ }
+-#endif
+ 
+-#if 0
+ static int proc_read_dsl_tx_dma_descr(IFX_char_t *page, IFX_char_t **start, off_t off __attribute__((unused)),
+ 		int count, int *eof, void *data __attribute__((unused)))
+ {
+@@ -11752,6 +11768,20 @@
+ 		ops->ndo_do_ioctl = &ifx_ppa_eth_ioctl_a5;
+ 	}
+ }
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++static uint32_t get_mailbox1_irq_num(void)
++{
++    volatile struct ar10_chipid *chipid = (volatile struct ar10_chipid *)AR10_MIPS_CHIPID;
++    printk("CHIPID: %d, chipid address: 0x%x\n", chipid->version, (uint32_t)chipid);
++    if(chipid->version > 1){
++        return IFX_PPE_MBOX_INT1; //24
++    }
++
++    return IFX_PPE_MBOX_INT2; //29
++}
++
++
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+@@ -11872,7 +11902,7 @@
+ 
+ 
+ 
+-	ret = request_irq(IFX_PPE_MBOX_INT2, mailbox1_irq_handler, IRQF_DISABLED, "a5_mailbox1_isr", NULL);
++	ret = request_irq(get_mailbox1_irq_num(), mailbox1_irq_handler, IRQF_DISABLED, "a5_mailbox1_isr", NULL);
+ 	if (ret) {
+ 		if (ret == -EBUSY)
+ 			err( "IRQ may be occupied by other PPE driver, please reconfig to disable it.\n");
+@@ -12054,7 +12084,7 @@
+ 	PP32_START_FAIL: 
+         free_irq(IFX_PPE_MBOX_INT0, NULL);
+ 	REQUEST_IRQ_FAIL: 
+-        free_irq(IFX_PPE_MBOX_INT2, NULL);
++        free_irq(get_mailbox1_irq_num(), NULL);
+ 
+     REQUEST_IGU0_IRQ_FAIL:
+ 	ATM_DEV_REGISTER_FAIL: 
+@@ -12153,7 +12183,7 @@
+ 	pp32_stop();
+ 
+ 	free_irq(IFX_PPE_MBOX_INT0 , NULL);
+-    free_irq(IFX_PPE_MBOX_INT2 , NULL);
++    free_irq(get_mailbox1_irq_num() , NULL);
+ 
+ 
+ #if 0
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/ar9/ifxmips_ppa_datapath_ar9_a5.c
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/ar9/ifxmips_ppa_datapath_ar9_a5.c
+@@ -300,7 +300,6 @@
+ 
+ #else // defined(CONFIG_AVMNET_DEBUG) 
+ 
+-#define CONFIG_AVMNET_DEBUG                            0
+ 
+ #define ENABLE_ASSERT                           0
+ 
+--- linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/common/ifx_ppa_mini_sessions.c
++++ linux-2.6.32/drivers/net/avm_cpmac/switch/ifx/common/ifx_ppa_mini_sessions.c
+@@ -727,7 +727,7 @@
+ 
+     int aass = 0; //AVM_ADD_SESSION_STATE
+     uint16_t outgoing_vlan_tci[MAX_SUPPORTED_VLAN_TAGS];
+-    uint16_t incoming_vlan_tci[MAX_SUPPORTED_VLAN_TAGS];
++    //uint16_t incoming_vlan_tci[MAX_SUPPORTED_VLAN_TAGS]; IFX_PPA doesn't match on incomming VLAN ID
+ 
+     uint16_t nr_vlan_out = 0;
+     uint16_t nr_vlan_in = 0;
+@@ -918,6 +918,7 @@
+             case AVM_PA_IPV4:
+                 aass |= AASS_INGRESS_IPV4;
+                 if ( aass & AASS_INGRESS_IPV6 ){
++
+                     // das sollte eigentlich nicht passieren, da erst ipv4 u. danach ipv6 header geparsed wird
+                     session_debug(DBG_ENABLE_MASK_ADD_SESSION_TRACE,"Session seems to be 6RD, put IPv4-addresses into tunnel field\n");
+                     p_item->tun_saddr.ip = hdr->iph.saddr;
+@@ -951,14 +952,15 @@
+                 /* WAN ingress */
+                 p_item->pppoe_session_id = hdr->pppoeh.sid;
+                 session_debug(DBG_ENABLE_MASK_ADD_SESSION, "[%s] incoming pppoe_id %d\n", __FUNCTION__, p_item->pppoe_session_id);
+-                p_item->flags |= SESSION_VALID_PPPOE;
+                 aass |= AASS_INGRESS_PPPOE;
++                p_item->flags |= SESSION_VALID_PPPOE;
+                 break;
+ 
+             case AVM_PA_VLAN:
+                 session_debug(DBG_ENABLE_MASK_ADD_SESSION_TRACE," got incoming vlan id %d\n", VLAN_ID( &hdr->vlanh ));
+                 if ( nr_vlan_in < num_supported_ingerss_vlan_tags ) {
+-                    incoming_vlan_tci[nr_vlan_in++] = htons(hdr->vlanh.vlan_tci);
++                    // incoming_vlan_tci[nr_vlan_in] = htons(hdr->vlanh.vlan_tci);
++                    nr_vlan_in++;
+                 } else {
+                     session_error("to many incoming vlan tags (>%d) ", num_supported_ingerss_vlan_tags);
+                     goto ERR_FREE_PITEM;
+@@ -1074,10 +1076,20 @@
+                 session_debug(DBG_ENABLE_MASK_ADD_SESSION_TRACE,"egress PPPOE\n" );
+                 {
+                     struct pppoehdr *pppoe_hdr = (struct pppoehdr *)(avm_session->egress[0].match.hdrcopy +avm_session->egress[0].match.hdroff + avm_session->egress[0].pppoe_offset);
+-                    p_item->pppoe_session_id = pppoe_hdr->sid;
+-                    session_debug(DBG_ENABLE_MASK_ADD_SESSION, "[%s] outgoing pppoe_id %d\n", __FUNCTION__, p_item->pppoe_session_id);
+-                    p_item->flags |= SESSION_VALID_PPPOE;
++                    u16 outgoing_pppoe_sid = pppoe_hdr->sid;
++
+                     aass |= AASS_EGRESS_PPPOE;
++                    session_debug( DBG_ENABLE_MASK_ADD_SESSION, "[%s] outgoing pppoe_id %d\n", __FUNCTION__, outgoing_pppoe_sid );
++
++                    if (( aass & AASS_INGRESS_PPPOE ) && (outgoing_pppoe_sid == p_item->pppoe_session_id)){
++                    	// PPPOE NQOS-PATH-THROUGH ppa shall not add additional pppoe header
++                    	session_debug( DBG_ENABLE_MASK_ADD_SESSION, "[%s] outgoing and incoming pppoe_sid are equivalent -> Box seems to be trunk port mode\n", __FUNCTION__, outgoing_pppoe_sid );
++                    	p_item->flags &= ~SESSION_VALID_PPPOE;
++                    } else {
++
++                    	p_item->pppoe_session_id = outgoing_pppoe_sid;
++                    	p_item->flags |= SESSION_VALID_PPPOE;
++                    }
+                 }
+                 break;
+ 
+--- linux-2.6.32/drivers/serial/serial_avm_8250.c
++++ linux-2.6.32/drivers/serial/serial_avm_8250.c
+@@ -190,9 +190,7 @@
+ ignore_char:
+ 		lsr = base_8250->lsr; 
+ 	}
+-	spin_unlock(&port->lock);
+ 	tty_flip_buffer_push(tty);
+-	spin_lock(&port->lock);
+ 	*lsrp = lsr;
+ }
+ /*------------------------------------------------------------------------------------------*\
+@@ -239,7 +237,7 @@
+ 	struct uart_port *port = dev_id;
+ 	struct avm_serial_priv *port_priv_data = port->private_data;
+     struct avm_8250_regs *base_8250 = ((struct _port8250_priv *)(port_priv_data->port_specificdata))->regs;
+-	unsigned int handled = 0;
++	enum irqreturn handled = IRQ_NONE;
+ 	unsigned int iir;
+ 
+ 	iir = base_8250->iir_fcr;
+@@ -251,12 +249,12 @@
+ 
+ 		if ( port_priv_data->rx_enabled && (lsr & (UART_LSR_DR | UART_LSR_BI))){
+ 			uart_avm_8250_rx_chars(port, &lsr);
+-			handled = 1;
++			handled = IRQ_HANDLED;
+ 		}
+ 		if ( port_priv_data->tx_enabled && (lsr & UART_LSR_THRE)) { 
+             /* tx_fifo komplett leer */
+             uart_avm_8250_tx_chars(port);
+-            handled = 1;
++            handled = IRQ_HANDLED;
+         }
+     }
+ 	return IRQ_RETVAL(handled);
+--- linux-2.6.32/drivers/serial/serial_avm_ath_hi.c
++++ linux-2.6.32/drivers/serial/serial_avm_ath_hi.c
+@@ -160,9 +160,7 @@
+ 
+ 
+             uart_insert_char(port, 0, 0, ch, flag);
+-            spin_unlock(&port->lock);
+             tty_flip_buffer_push(tty);
+-            spin_lock(&port->lock);
+         }
+ 
+ ignore_char:
+@@ -238,7 +236,6 @@
+ 	struct uart_port *port = dev_id;
+ 	struct avm_serial_priv *port_priv_data = port->private_data;
+     struct avm_ath_hi_regs *base_ath_hi = ((struct _portath_hi_priv *)(port_priv_data->port_specificdata))->regs;
+-	unsigned int handled = 0;
+     union avm_ath_hi_regs_irq_status status = base_ath_hi->status;
+     /*--- union avm_ath_hi_regs_config config; ---*/
+ 
+@@ -360,13 +357,10 @@
+             printk(KERN_ERR "[%s] unhandle irq 0x%x\n", __FUNCTION__, status.Register);
+ 
+         status = base_ath_hi->status;
+-        handled = 1;
+         /*--- printk(KERN_ERR "[%s] uart (end) config 0x%x\n", __FUNCTION__, base_ath_hi->config.Register); ---*/
+     }
+ 
+-    /*--- printk(KERN_ERR "[%s] handled %d \n", __FUNCTION__, handled); ---*/
+-        handled = 1;
+-	return IRQ_RETVAL(handled);
++	return IRQ_RETVAL(IRQ_HANDLED);
+ }
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+@@ -376,12 +370,12 @@
+ 	unsigned long flags;
+ 	unsigned int status;
+     /*--- printk(KERN_ERR "[%s] \n", __FUNCTION__); ---*/
+-	spin_lock_irqsave(port->lock, flags);
++	spin_lock_irqsave(&port->lock, flags);
+     /*--- if(base_ath_hi->status.Bits.tx_empty || base_ath_hi->status.Bits.tx_ready_int) { ---*/
+     if(base_ath_hi->status.Bits.tx_empty) {
+         status = 1;
+     }
+-	spin_unlock_irqrestore(port->lock, flags);
++	spin_unlock_irqrestore(&port->lock, flags);
+ 	return status;
+ }
+ 
+@@ -420,7 +414,7 @@
+     int baudClockFreq = port_priv_data->baudval;
+     int serialClockFreq = uart_avm_ath_hi_get_serial_clock();
+ 
+-    printk(KERN_ERR "[%s/%d] set baudrate to '%d' baud clock '%d' serial clock '%d'\n", __FUNCTION__, __LINE__, port_priv_data->baudval, baudClockFreq, serialClockFreq );
++    printk(KERN_INFO "[%s/%d] set baudrate to '%d' baud clock '%d' serial clock '%d'\n", __FUNCTION__, __LINE__, port_priv_data->baudval, baudClockFreq, serialClockFreq );
+     base_ath_hi->clock.Bits.clock_scale = ((serialClockFreq >> 17) * 1310) / baudClockFreq;
+     base_ath_hi->clock.Bits.clock_step = ((128 * (baudClockFreq / 100) * (base_ath_hi->clock.Bits.clock_scale + 1)) << 10) / (serialClockFreq / 100);
+     /*--- printk(KERN_ERR "[%s/%d] scale %d step %d\n", __FUNCTION__, __LINE__, base_ath_hi->clock.Bits.clock_scale, base_ath_hi->clock.Bits.clock_step); ---*/
+--- linux-2.6.32/drivers/usb/musb/ifxhcd.c
++++ linux-2.6.32/drivers/usb/musb/ifxhcd.c
+@@ -1420,8 +1420,11 @@
+ 	}
+ 
+ 	ifxhc->do_ping=0;
++	/* 20131126 AVM/WK - FIX: never start new URB with PING, some USB devices don't like it. */ 
++#if 0
+ 	if (_ifxhcd->core_if.snpsid < 0x4f54271a && ifxhc->speed == IFXUSB_EP_SPEED_HIGH)
+ 		ifxhc->do_ping=1;
++#endif
+ 
+ 
+ 	/* Set the split attributes */
+@@ -2040,8 +2043,12 @@
+ 
+ 	_ifxhc->nak_countdown=_ifxhc->nak_countdown_r;
+ 
+-	/* AVM/BC 20101111 Workaround: Always PING if HI-Speed Out and xfer_len > 0 */
+-	if(/*_ifxhc->do_ping &&*/
++/* AVM/WK 20131126 Fix: Only start PING if necessary
++	(if do_ping is set (after NAK/NYET), mostly on AR9)
++	VR9 and AR10 should handle automatically 
++*/
++
++	if(_ifxhc->do_ping &&
+ 		(!_ifxhc->is_in) &&
+ 		(_ifxhc->speed == IFXUSB_EP_SPEED_HIGH) &&
+ 		((_ifxhc->ep_type == IFXUSB_EP_TYPE_BULK) || ((_ifxhc->ep_type == IFXUSB_EP_TYPE_CTRL) && (_ifxhc->control_phase != IFXHCD_CONTROL_SETUP))) &&
+--- linux-2.6.32/drivers/usb/musb/ifxhcd_intr.c
++++ linux-2.6.32/drivers/usb/musb/ifxhcd_intr.c
+@@ -29,6 +29,8 @@
+ #error AVM/WK: CONFIG_USB_HOST_IFX_WITH_ISO currently not supported!
+ #endif
+ 
++#define MAX_ERROR_CNT 15
++
+ /* Macro used to clear one channel interrupt */
+ #define clear_hc_int(_hc_regs_,_intr_) \
+ 	do { \
+@@ -754,7 +756,7 @@
+ 				_urbd->error_count++;
+ 			}
+ 
+-			if (_urbd->error_count >= 3)
++			if (_urbd->error_count >= MAX_ERROR_CNT)
+ 			{
+ 				_urbd->error_count     =0;
+ 				_ifxhc->wait_for_sof   =0;
+@@ -967,7 +969,7 @@
+ 			else
+ 			{
+ 				_urbd->error_count ++ ;
+-				if (_urbd->error_count == 3)
++				if (_urbd->error_count >= MAX_ERROR_CNT)
+ 				{
+ 					disable_hc_int(_hc_regs,ack);
+ 					disable_hc_int(_hc_regs,nak);
+@@ -1219,7 +1221,7 @@
+ 				_urbd->error_count++;
+ 			}
+ 
+-			if(_urbd->error_count>=3)
++			if(_urbd->error_count >= MAX_ERROR_CNT)
+ 			{
+ 				_urbd->error_count     =0;
+ 				_ifxhc->wait_for_sof   =0;
+@@ -1394,7 +1396,7 @@
+ 				_urbd->error_count++;
+ 			}
+ 
+-			if(_urbd->error_count>=3)
++			if(_urbd->error_count >= MAX_ERROR_CNT)
+ 			{
+ 				_urbd->error_count     =0;
+ 				_ifxhc->wait_for_sof   =0;
+@@ -1487,7 +1489,7 @@
+ 					_ifxhc->xfer_count         = _urbd->urb->actual_length;
+ 					_ifxhc->data_pid_start = read_data_toggle(_hc_regs);
+ 					_urbd->error_count++;
+-					if(_urbd->error_count>=3)
++					if(_urbd->error_count >= MAX_ERROR_CNT)
+ 					{
+ 						_urbd->error_count=0;
+ 						_ifxhc->wait_for_sof   = 0;
+@@ -1582,7 +1584,7 @@
+ 					_ifxhc->xfer_count         = _urbd->urb->actual_length;
+ 					_ifxhc->data_pid_start = read_data_toggle(_hc_regs);
+ 					_urbd->error_count++;
+-					if(_urbd->error_count>=3)
++					if(_urbd->error_count >= MAX_ERROR_CNT)
+ 					{
+ 						_urbd->error_count=0;
+ 						_ifxhc->wait_for_sof   = 0;
+@@ -1607,7 +1609,7 @@
+ 				return 1;
+ 			}
+ 			_urbd->error_count++;
+-			if(_urbd->error_count>=3)
++			if(_urbd->error_count >= MAX_ERROR_CNT)
+ 			{
+ 				_urbd->error_count=0;
+ 				_ifxhc->wait_for_sof   = 0;
+@@ -1669,7 +1671,7 @@
+ 	else if (hcint.b.xacterr)
+ 	{
+ 		_urbd->error_count++;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof =0;
+@@ -1809,7 +1811,7 @@
+ 	else if(hcint.b.xacterr    )
+ 	{
+ 		_urbd->error_count++;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof  =0;
+@@ -1910,7 +1912,7 @@
+ 		hcchar_data_t 	hcchar;
+ 		hcchar.d32 = ifxusb_rreg(&_hc_regs->hcchar);
+ 		_urbd->error_count=hcchar.b.multicnt;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof   = 0;
+@@ -2029,7 +2031,7 @@
+ 		hcchar_data_t 	hcchar;
+ 		hcchar.d32 = ifxusb_rreg(&_hc_regs->hcchar);
+ 		_urbd->error_count=hcchar.b.multicnt;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof =0;
+@@ -2253,7 +2255,7 @@
+ 	else if(hcint.b.xacterr    )
+ 	{
+ 		_urbd->error_count++;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof   = 0;
+@@ -2398,7 +2400,7 @@
+ 	else if(hcint.b.xacterr    )
+ 	{
+ 		_urbd->error_count++;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof   = 0;
+@@ -2526,7 +2528,7 @@
+ 		hcchar_data_t 	hcchar;
+ 		hcchar.d32 = ifxusb_rreg(&_hc_regs->hcchar);
+ 		_urbd->error_count=hcchar.b.multicnt;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof   = 0;
+@@ -2638,7 +2640,7 @@
+ 		hcchar_data_t 	hcchar;
+ 		hcchar.d32 = ifxusb_rreg(&_hc_regs->hcchar);
+ 		_urbd->error_count=hcchar.b.multicnt;
+-		if(_urbd->error_count>=3)
++		if(_urbd->error_count >= MAX_ERROR_CNT)
+ 		{
+ 			_urbd->error_count=0;
+ 			_ifxhc->wait_for_sof   = 0;
+--- linux-2.6.32/include/linux/tffs.h
++++ linux-2.6.32/include/linux/tffs.h
+@@ -473,7 +473,7 @@
+     { FLASH_FS_MAC_BLUETOOTH,     "bluetooth" },
+     { FLASH_FS_COUNTRY,           "country" },
+     { FLASH_FS_CPUFREQUENCY,      "cpufrequency" },
+-    { FLASH_FS_CRASH,             "crash" },
++    { FLASH_FS_CRASH,             "crash" },        /*--- genutzt fuer panic-log-marker  ---*/
+     /*--- { FLASH_FS_ETHADDR,           "ethaddr" }, ---*/
+     { FLASH_FS_FIRSTFREEADDRESS,  "firstfreeaddress" },
+     { FLASH_FS_FIRMWARE_INFO,     "firmware_info" },
+--- linux-2.6.32/net/avm_pa/avm_pa.c
++++ linux-2.6.32/net/avm_pa/avm_pa.c
+@@ -2924,6 +2924,14 @@
+       session = next;
+    }
+ 
++#if 0
++   while ((session = ctx->sess_lru[AVM_PA_LRU_ACTIVE].lru_head) != 0
++         && time_is_before_eq_jiffies(session->endtime)) {
++      pa_kill_session_unlocked(session, "timeout");
++      ctx->stats.sess_timedout++;
++   }
++#endif
++
+    session = ctx->sess_lru[AVM_PA_LRU_ACTIVE].lru_head;
+    while (session) {
+       next = session->lru_next;
+@@ -5202,9 +5210,8 @@
+       ctx->load_reduce = 0;
+       return;
+    }
+-
+-   if (load_reduce < 0) load_reduce = 0;
+-   else if (load_reduce > 10) load_reduce = 10;
++   load_reduce = LOAD_CONTROL_REDUCE(load_reduce);
++   if (load_reduce > 10) load_reduce = 10;
+ 
+    if (load_reduce == 0) {
+       if (ctx->load_reduce) {
