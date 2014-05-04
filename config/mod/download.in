@@ -95,6 +95,7 @@ menu "Override options"
 		#
 		# delta concept: KERNEL_SOURCE_ID-value + patch = target version
 		#
+		default "7490_05.59"                       if FREETZ_AVM_VERSION_7272_05_59
 		default "7490_06.01"                       if FREETZ_AVM_VERSION_7330_06_01
 		#
 		default FREETZ_AVM_VERSION_STRING
@@ -126,7 +127,7 @@ menu "Override options"
 		default "2e8b43c176c1cbe9f815078109d88e61"  if FREETZ_AVM_VERSION_7390_05_21
 		default "ec2130c7ff5238a8f78e12fa95681dbe"  if FREETZ_AVM_VERSION_7390_05_52
 		default "93522806e71da89b5cf7d474e1fe9eac"  if FREETZ_AVM_VERSION_7390_06_01
-		default "41279902c9d19635072d2adcf59d9c6b"  if FREETZ_AVM_VERSION_7490_05_59
+		default "41279902c9d19635072d2adcf59d9c6b"  if FREETZ_AVM_VERSION_7490_05_59 || FREETZ_AVM_VERSION_7272_05_59
 		default "80bab95f103b2ad29e1af07ff0006e20"  if FREETZ_AVM_VERSION_7490_06_01 || FREETZ_AVM_VERSION_7330_06_01
 		default "f3d0b2245b0b6442297eb211b0f39692"  if FREETZ_AVM_VERSION_7490_06_05
 		default "eb82c0948e81288253f63f63915489a2"  if FREETZ_AVM_VERSION_r7203

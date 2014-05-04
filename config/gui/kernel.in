@@ -7,8 +7,37 @@ if FREETZ_SHOW_ADVANCED
 comment "Replace kernel (not available, no sources by AVM)"
 	depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
 
+if !FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"
+	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
+	select FREETZ_REPLACE_KERNEL_IMPL
+	help
+		Replace AVM kernel with self-built kernel.
+
+endif
+
+if FREETZ_REPLACE_KERNEL_EXPERIMENTAL
+config FREETZ_REPLACE_KERNEL
+	bool "Replace kernel (EXPERIMENTAL, read help please)"
+	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
+	select FREETZ_REPLACE_KERNEL_IMPL
+	help
+		Replace AVM kernel with self-built kernel.
+
+		BIG FAT WARNING:
+		  Replace kernel is EXPERIMENTAL and provided for testing
+		  purposes only. Be prepared to recover your box if necessary.
+
+		  In either case we would highly appreciate it if you could
+		  provide us feedback as to if it works for you or not on either
+		    - Freetz-Trac (http://freetz.org) or
+		    - IP-Phone-Forum (http://www.ip-phone-forum.de/forumdisplay.php?f=525)
+
+endif
+
+config FREETZ_REPLACE_KERNEL_IMPL
+	bool
 	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
 	# until http://freetz.org/ticket/1716 is fixed:
 	select FREETZ_REMOVE_KIDS if \
@@ -55,7 +84,5 @@ config FREETZ_REPLACE_KERNEL
 			FREETZ_AVM_VERSION_7270_05_51 \
 		)
 	default n
-	help
-		Replace AVM kernel with self-built kernel.
 
 endif # FREETZ_SHOW_ADVANCED #
