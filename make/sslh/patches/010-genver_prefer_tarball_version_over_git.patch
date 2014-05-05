@@ -1,0 +1,42 @@
+--- genver.sh
++++ genver.sh
+@@ -7,25 +7,23 @@
+ 	QUIET=0
+ fi
+ 
++# If downloaded from the release page, the directory
++# has the version number.
++release=`pwd | sed s/.*sslh-// | grep "[[:digit:]]"`
++
++if [ "x$release" = "x" ]; then
+ if ! `(git status | grep -q "On branch") 2> /dev/null`; then
+         # If we don't have git, we can't work out what
+         # version this is. It must have been downloaded as a
+         # zip file.
+ 
+-        # If downloaded from the release page, the directory
+-        # has the version number.
+-        release=`pwd | sed s/.*sslh-// | grep "[[:digit:]]"`
+ 
+-        if [ "x$release" = "x" ]; then
+             # If downloaded from the head, Github creates the
+             # zip file with all files dated from the last
+             # change: use the Makefile's modification time as a
+             # release number
+             release=head-`stat -c "%y" Makefile | sed 's/ .*//'`
+-        fi
+-fi
+-
+-if head=`git rev-parse --verify HEAD 2>/dev/null`; then
++else
+ 	# generate the version info based on the tag
+ 	release=`(git describe --tags || git --describe || git describe --all --long) \
+ 		2>/dev/null | tr -d '\n'`
+@@ -37,6 +35,7 @@
+ 		release="$release-dirty"
+ 	fi
+ fi
++fi
+ 
+ 
+ if [ $QUIET -ne 1 ]; then

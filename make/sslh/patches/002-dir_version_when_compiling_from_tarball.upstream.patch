@@ -1,0 +1,31 @@
+From 9beacc63f9235ceec1af6e81bc69f1ffc33b84ff Mon Sep 17 00:00:00 2001
+From: Yves Rutschle <git1@rutschle.net>
+Date: Sun, 23 Feb 2014 10:41:47 +0100
+Subject: [PATCH] use directory version when compiling from a tarball without git
+
+--- genver.sh
++++ genver.sh
+@@ -10,10 +10,19 @@ fi
+ if ! `(git status | grep -q "On branch") 2> /dev/null`; then
+         # If we don't have git, we can't work out what
+         # version this is. It must have been downloaded as a
+-        # zip file. Github creates the zip file with all
+-        # files dated from the last change: use the
+-        # Makefile's modification time as a release number
+-	release=zip-`stat -c "%y" Makefile | sed 's/ .*//'`
++        # zip file.
++
++        # If downloaded from the release page, the directory
++        # has the version number.
++        release=`pwd | sed s/.*sslh-// | grep "[[:digit:]]"`
++
++        if [ "x$release" = "x" ]; then
++            # If downloaded from the head, Github creates the
++            # zip file with all files dated from the last
++            # change: use the Makefile's modification time as a
++            # release number
++            release=head-`stat -c "%y" Makefile | sed 's/ .*//'`
++        fi
+ fi
+ 
+ if head=`git rev-parse --verify HEAD 2>/dev/null`; then
