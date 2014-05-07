@@ -1,0 +1,4 @@
+[ "$EXTERNAL_FREETZ_PACKAGE_NETSNMP" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/snmpd"
+for f in encode_keychange snmpbulkget snmpbulkwalk snmpdelta snmpdf snmpget snmpgetnext snmpset snmpstatus snmptable snmptest snmptranslate snmptrap snmpusm snmpvacm snmpwalk; do
+	eval test x\${EXTERNAL_FREETZ_PACKAGE_NETSNMP_${f}} = xy && EXTERNAL_FILES+=" /usr/bin/$f"
+done
