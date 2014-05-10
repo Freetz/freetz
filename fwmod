@@ -775,7 +775,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			for ((jj=j+1; jj<${#PATCHES_DEVICES_DIR_FULL_LIST[@]}; jj++)); do
 				if [ -f "${PATCHES_DEVICES_DIR_FULL_LIST[$jj]}/${i_basename}" ]; then
 					#echo1 "more specific version of $i found: ${PATCHES_DEVICES_DIR_FULL_LIST[$jj]}/${i_basename}, skipping $i"
-					break 2
+					continue 2
 				fi
 			done
 
