@@ -757,8 +757,28 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Apply firmware-series-specific and box-specific patches (both common for all languages and language-specific)
 	shopt -s nullglob
-	for j in ${PATCHES_DEVICES_DIR_FULL_LIST[@]}; do
-		for i in $j/*.patch; do
+	for ((j=0; j<${#PATCHES_DEVICES_DIR_FULL_LIST[@]}; j++)); do
+		for i in ${PATCHES_DEVICES_DIR_FULL_LIST[$j]}/*.patch; do
+			# Check if a more specific version of the patch exists,
+			# i.e. define an order on all patches with the same name
+			#   FW_SERIES/XY.patch
+			#   FW_SERIES/LANG/XY.patch
+			#   FW_SERIES/BOXID/XY.patch
+			#   FW_SERIES/BOXID/LANG/XY.patch
+			# and do NOT apply patch XY.patch from dir FOO
+			# if it also exists in a directory with a higher order.
+			#
+			# This makes it possible in situations where one box needs
+			# a box-specific version of the patch to have just two versions
+			# of it: one box-specific and one for all other boxes.
+			i_basename=$(basename "$i")
+			for ((jj=j+1; jj<${#PATCHES_DEVICES_DIR_FULL_LIST[@]}; jj++)); do
+				if [ -f "${PATCHES_DEVICES_DIR_FULL_LIST[$jj]}/${i_basename}" ]; then
+					#echo1 "more specific version of $i found: ${PATCHES_DEVICES_DIR_FULL_LIST[$jj]}/${i_basename}, skipping $i"
+					break 2
+				fi
+			done
+
 			modpatch "$FILESYSTEM_MOD_DIR" "$i"
 		done
 	done
