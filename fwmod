@@ -716,8 +716,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Execute firmware-series-specific and box-specific patch scripts (both common for all languages and language-specific)
 	shopt -s nullglob
-	for j in ${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC} ${PATCHES_DEVICES_DIR_BOX_SPECIFIC}; do
-		for i in $j/*.sh $j/${FREETZ_TYPE_LANGUAGE}/*.sh; do
+	for j in ${PATCHES_DEVICES_DIR_FULL_LIST[@]}; do
+		for i in $j/*.sh; do
 			echo2 "applying patch file $i"
 			. $i
 		done
@@ -757,8 +757,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Apply firmware-series-specific and box-specific patches (both common for all languages and language-specific)
 	shopt -s nullglob
-	for j in ${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC} ${PATCHES_DEVICES_DIR_BOX_SPECIFIC}; do
-		for i in $j/*.patch $j/${FREETZ_TYPE_LANGUAGE}/*.patch; do
+	for j in ${PATCHES_DEVICES_DIR_FULL_LIST[@]}; do
+		for i in $j/*.patch; do
 			modpatch "$FILESYSTEM_MOD_DIR" "$i"
 		done
 	done
