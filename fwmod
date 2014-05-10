@@ -697,24 +697,32 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Include patching helper function (modpatch)
 	. "${TOOLS_DIR}/freetz_patch" || error 1 "cannot find script freetz_patch"
 
-	PATCHES_DEVICES_DIR_EXTRA="${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}/${FREETZ_TYPE_PREFIX%_*}"
-	PATCHES_DEVICES_DIR_MULTI="${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}"
+	PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC="${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}"
+	PATCHES_DEVICES_DIR_BOX_SPECIFIC="${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC}/${FREETZ_TYPE_PREFIX%_*}"
 
-	echo1 "applying patches: ${FREETZ_TYPE_PREFIX}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}-${FREETZ_TYPE_LANGUAGE} (${FREETZ_TYPE_PREFIX_SERIES_SUBDIR})"
+	declare -a PATCHES_DEVICES_FULL_SUBDIR_LIST=($(
+		for j in ${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC} ${PATCHES_DEVICES_DIR_BOX_SPECIFIC}; do
+			for i in $j $j/${FREETZ_TYPE_LANGUAGE}; do
+				echo "${i#${PATCHES_DEVICES_DIR}/}"
+			done
+		done
+	))
+	echo1 "applying patches: ${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}/${FREETZ_TYPE_PREFIX}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}-${FREETZ_TYPE_LANGUAGE} (${PATCHES_DEVICES_FULL_SUBDIR_LIST[@]})"
 
 	# Apply patches
-	if [ ! -d "$PATCHES_DEVICES_DIR_EXTRA" -a ! -d "$PATCHES_DEVICES_DIR_MULTI" ]; then
-		error 1 "missing $PATCHES_DEVICES_DIR_EXTRA"
+	if [ ! -d "${PATCHES_DEVICES_DIR_BOX_SPECIFIC}" -a ! -d "${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC}" ]; then
+		error 1 "missing ${PATCHES_DEVICES_DIR_BOX_SPECIFIC}"
 	fi
 
-	# Execute version specific patch scripts
-	for j in $PATCHES_DEVICES_DIR_MULTI $PATCHES_DEVICES_DIR_EXTRA; do
+	# Execute firmware-series-specific and box-specific patch scripts (both common for all languages and language-specific)
+	shopt -s nullglob
+	for j in ${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC} ${PATCHES_DEVICES_DIR_BOX_SPECIFIC}; do
 		for i in $j/*.sh $j/${FREETZ_TYPE_LANGUAGE}/*.sh; do
-			[ -r "$i" ] || continue
 			echo2 "applying patch file $i"
 			. $i
 		done
 	done
+	shopt -u nullglob
 
 	# Now we are in place to check html directory
 	for i in all/en all ewetel; do
@@ -747,9 +755,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Set $MODULES_SUBDIR relative to root dir in AVM image, eg: "lib/modules/2.6.19.2
 	MODULES_SUBDIR="${MODULES_DIR#${FILESYSTEM_MOD_DIR}/}"
 
-	# Apply (general, version specific, language specific) patches
+	# Apply firmware-series-specific and box-specific patches (both common for all languages and language-specific)
 	shopt -s nullglob
-	for j in $PATCHES_DEVICES_DIR_MULTI $PATCHES_DEVICES_DIR_EXTRA; do
+	for j in ${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC} ${PATCHES_DEVICES_DIR_BOX_SPECIFIC}; do
 		for i in $j/*.patch $j/${FREETZ_TYPE_LANGUAGE}/*.patch; do
 			modpatch "$FILESYSTEM_MOD_DIR" "$i"
 		done
