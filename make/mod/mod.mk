@@ -1,10 +1,5 @@
 $(call PKG_INIT_BIN,1.0)
 
-# We need a dependecy to build the fuse module outside the kernel tree
-ifeq ($(and $(strip $(FREETZ_MODULE_fuse)),$(strip $(FREETZ_KERNEL_VERSION_2_6_13))),y)
-$(PKG)_DEPENDS_ON := fuse
-endif
-
 $(PKG_UNPACKED)
 
 $(pkg): $($(PKG)_TARGET_DIR)/.exclude
