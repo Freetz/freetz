@@ -27,6 +27,7 @@ DL_DIR:=dl
 FAKEROOT_CACHE_DIR:=.fakeroot-cache
 INCLUDE_DIR:=include
 MAKE_DIR:=make
+KERNEL_TARGET_DIR:=kernel
 PACKAGES_DIR_ROOT:=packages
 SOURCE_DIR_ROOT:=source
 TOOLCHAIN_DIR:=toolchain
@@ -143,7 +144,7 @@ endif
 endif
 
 all: step
-world: check-dot-config-uptodateness $(DL_DIR) $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
+world: check-dot-config-uptodateness $(DL_DIR) $(BUILD_DIR) $(KERNEL_TARGET_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
 include $(TOOLS_DIR)/make/Makefile.in
 
@@ -184,6 +185,7 @@ $(DL_DIR) \
 $(DL_FW_DIR) \
 $(MIRROR_DIR) \
 $(BUILD_DIR) \
+$(KERNEL_TARGET_DIR) \
 $(PACKAGES_DIR_ROOT) \
 $(SOURCE_DIR_ROOT) \
 $(TOOLCHAIN_BUILD_DIR) \
@@ -332,7 +334,7 @@ libs: $(DL_DIR) $(SOURCE_DIR_ROOT) $(LIBS_PRECOMPILED)
 sources: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR_ROOT) $(DL_IMAGE) \
 	$(TARGETS_SOURCE) $(PACKAGES_SOURCE) $(LIBS_SOURCE) $(TOOLCHAIN_SOURCE) $(TOOLS_SOURCE)
 
-precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(PACKAGES_DIR_ROOT) toolchain-depend \
+precompiled: $(DL_DIR) $(FW_IMAGES_DIR) $(SOURCE_DIR_ROOT) $(KERNEL_TARGET_DIR) $(PACKAGES_DIR_ROOT) toolchain-depend \
 	$(LIBS_PRECOMPILED) $(TARGETS_PRECOMPILED) $(PACKAGES_PRECOMPILED)
 
 check-downloads: $(PACKAGES_CHECK_DOWNLOADS)
@@ -480,14 +482,15 @@ common-clean:
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
 
 common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
-	$(RM) -r $(BUILD_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
+	$(RM) -r $(if $(FREETZ_HAVE_DOT_CONFIG),$(PACKAGES_DIR) $(SOURCE_DIR) $(TARGET_TOOLCHAIN_DIR),$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT))
 	-cp .defstatic $(ADDON_DIR)/static.pkg
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
-common-distclean: common-dirclean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-distclean)
+common-distclean: common-dirclean
 	$(RM) -r .config .config_compressed .config.old .config.cmd .tmpconfig.h include/config include/generated
 	$(RM) -r $(FW_IMAGES_DIR)
-	$(RM) -r $(SOURCE_DIR_ROOT)
+	$(RM) -r $(KERNEL_TARGET_DIR)
+	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
 	@echo "Use 'make download-clean' to remove the download directory"
