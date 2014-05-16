@@ -34,6 +34,5 @@ sfk-clean:
 sfk-dirclean:
 	$(RM) -r $(SFK_DIR)
 
-sfk-distclean:
+sfk-distclean: sfk-dirclean
 	$(RM) $(TOOLS_DIR)/sfk
-
