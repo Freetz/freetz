@@ -1,0 +1,90 @@
+###
+### AVM opensrc package used by Freetz
+###
+
+config FREETZ_AVM_SOURCE_04_30
+	bool
+config FREETZ_AVM_SOURCE_04_33
+	bool
+config FREETZ_AVM_SOURCE_04_40
+	bool
+config FREETZ_AVM_SOURCE_04_49
+	bool
+config FREETZ_AVM_SOURCE_04_57
+	bool
+config FREETZ_AVM_SOURCE_04_67
+	bool
+config FREETZ_AVM_SOURCE_04_70
+	bool
+config FREETZ_AVM_SOURCE_04_76
+	bool
+config FREETZ_AVM_SOURCE_04_80
+	bool
+config FREETZ_AVM_SOURCE_04_87
+	bool
+config FREETZ_AVM_SOURCE_3370_05_21
+	bool
+config FREETZ_AVM_SOURCE_7270_04_86
+	bool
+config FREETZ_AVM_SOURCE_7270_05_21
+	bool
+config FREETZ_AVM_SOURCE_7270_05_51
+	bool
+config FREETZ_AVM_SOURCE_7272_05_59
+	bool
+config FREETZ_AVM_SOURCE_7330_05_20
+	bool
+config FREETZ_AVM_SOURCE_7330_05_50
+	bool
+config FREETZ_AVM_SOURCE_7330_06_01
+	bool
+config FREETZ_AVM_SOURCE_7360_05_20
+	bool
+config FREETZ_AVM_SOURCE_7360_05_51
+	bool
+config FREETZ_AVM_SOURCE_7390_05_21
+	bool
+config FREETZ_AVM_SOURCE_7390_05_52
+	bool
+config FREETZ_AVM_SOURCE_7390_06_01
+	bool
+config FREETZ_AVM_SOURCE_7490_05_59
+	bool
+config FREETZ_AVM_SOURCE_7490_06_01
+	bool
+config FREETZ_AVM_SOURCE_7490_06_05
+	bool
+config FREETZ_AVM_SOURCE_r7203
+	bool
+
+config FREETZ_AVM_SOURCE_ID
+	string
+	default "04.30"         if FREETZ_AVM_SOURCE_04_30
+	default "04.33"         if FREETZ_AVM_SOURCE_04_33 && !FREETZ_TYPE_7140
+	default "7140_04.33"    if FREETZ_AVM_SOURCE_04_33 && FREETZ_TYPE_7140
+	default "04.40"         if FREETZ_AVM_SOURCE_04_40
+	default "04.49"         if FREETZ_AVM_SOURCE_04_49
+	default "04.57"         if FREETZ_AVM_SOURCE_04_57
+	default "04.67"         if FREETZ_AVM_SOURCE_04_67 && !FREETZ_TYPE_5140
+	default "5140_04.67"    if FREETZ_AVM_SOURCE_04_67 && FREETZ_TYPE_5140
+	default "04.70"         if FREETZ_AVM_SOURCE_04_70
+	default "04.76"         if FREETZ_AVM_SOURCE_04_76
+	default "04.80"         if FREETZ_AVM_SOURCE_04_80
+	default "04.87"         if FREETZ_AVM_SOURCE_04_87
+	default "r7203"         if FREETZ_AVM_SOURCE_r7203
+	default "7270_04.86"    if FREETZ_AVM_SOURCE_7270_04_86
+	default "7330_05.20"    if FREETZ_AVM_SOURCE_7330_05_20
+	default "7330_05.50"    if FREETZ_AVM_SOURCE_7330_05_50
+	default "7330_06.01"    if FREETZ_AVM_SOURCE_7330_06_01
+	default "7360_05.20"    if FREETZ_AVM_SOURCE_7360_05_20
+	default "7360_05.51"    if FREETZ_AVM_SOURCE_7360_05_51
+	default "3370_05.21"    if FREETZ_AVM_SOURCE_3370_05_21
+	default "7270_05.21"    if FREETZ_AVM_SOURCE_7270_05_21
+	default "7270_05.51"    if FREETZ_AVM_SOURCE_7270_05_51
+	default "7272_05.59"    if FREETZ_AVM_SOURCE_7272_05_59
+	default "7390_05.21"    if FREETZ_AVM_SOURCE_7390_05_21
+	default "7390_05.52"    if FREETZ_AVM_SOURCE_7390_05_52
+	default "7390_06.01"    if FREETZ_AVM_SOURCE_7390_06_01
+	default "7490_05.59"    if FREETZ_AVM_SOURCE_7490_05_59
+	default "7490_06.01"    if FREETZ_AVM_SOURCE_7490_06_01
+	default "7490_06.05"    if FREETZ_AVM_SOURCE_7490_06_05
