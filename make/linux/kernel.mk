@@ -12,7 +12,7 @@ KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION)
 
 KERNEL_IMAGE:=vmlinux.eva_pad
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_ID).bin
-KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT).$(AVM_VERSION)
+KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/Config.$(KERNEL_LAYOUT).$(AVM_SOURCE_ID)
 
 KERNEL_COMMON_MAKE_OPTIONS := -C $(KERNEL_BUILD_ROOT_DIR)
 KERNEL_COMMON_MAKE_OPTIONS += CROSS_COMPILE="$(KERNEL_CROSS)"
@@ -73,7 +73,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	#Version specific patches
-	@set -e; shopt -s nullglob; for i in $(KERNEL_PATCHES_DIR)/$(AVM_VERSION)/*.patch; do \
+	@set -e; shopt -s nullglob; for i in $(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID)/*.patch; do \
 		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
 	done
 	@for i in $(KERNEL_LINKING_FILES); do \
