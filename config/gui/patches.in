@@ -303,7 +303,7 @@ config FREETZ_REMOVE_AVM_VPN
 config FREETZ_REMOVE_WEBSRV
 	bool "Remove websrv"
 	depends on \
-		! FREETZ_AVM_VERSION_05_2X_MIN \
+		FREETZ_AVM_VERSION_04_XX_MAX \
 		&& ! FREETZ_TYPE_2170 \
 		&& ! FREETZ_TYPE_3131 \
 		&& ! FREETZ_TYPE_3170 \
@@ -1056,7 +1056,7 @@ config FREETZ_PATCH_DSL_EXPERT
 	bool "Patch extended DSL settings"
 	depends on \
 		! FREETZ_REMOVE_DSLD && \
-		! FREETZ_AVM_VERSION_05_5X_MIN && \
+		FREETZ_AVM_VERSION_05_2X_MAX && \
 		( \
 			FREETZ_TYPE_3270 || \
 			FREETZ_TYPE_3370 || \
