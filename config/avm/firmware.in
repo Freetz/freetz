@@ -5,22 +5,65 @@
 config FREETZ_AVM_VERSION_04_XX
 	bool
 
-config FREETZ_AVM_VERSION_05_2X_MIN
-	bool
 config FREETZ_AVM_VERSION_05_2X
 	bool
-	select FREETZ_AVM_VERSION_05_2X_MIN
+
+config FREETZ_AVM_VERSION_05_5X
+	bool
+
+config FREETZ_AVM_VERSION_06_XX
+	bool
+
+config FREETZ_AVM_VERSION_04_XX_MIN
+	bool
+	default y if \
+		FREETZ_AVM_VERSION_04_XX || \
+		FREETZ_AVM_VERSION_05_2X_MIN
+	default n
+
+config FREETZ_AVM_VERSION_05_2X_MIN
+	bool
+	default y if \
+		FREETZ_AVM_VERSION_05_2X || \
+		FREETZ_AVM_VERSION_05_5X_MIN
+	default n
 
 config FREETZ_AVM_VERSION_05_5X_MIN
 	bool
-	select FREETZ_AVM_VERSION_05_2X_MIN
-config FREETZ_AVM_VERSION_05_5X
-	bool
-	select FREETZ_AVM_VERSION_05_5X_MIN
+	default y if \
+		FREETZ_AVM_VERSION_05_5X || \
+		FREETZ_AVM_VERSION_06_XX_MIN
+	default n
 
 config FREETZ_AVM_VERSION_06_XX_MIN
 	bool
-	select FREETZ_AVM_VERSION_05_5X_MIN
-config FREETZ_AVM_VERSION_06_XX
+	default y if \
+		FREETZ_AVM_VERSION_06_XX
+	default n
+
+config FREETZ_AVM_VERSION_04_XX_MAX
 	bool
-	select FREETZ_AVM_VERSION_06_XX_MIN
+	default y if \
+		FREETZ_AVM_VERSION_04_XX
+	default n
+
+config FREETZ_AVM_VERSION_05_2X_MAX
+	bool
+	default y if \
+		FREETZ_AVM_VERSION_04_XX_MAX || \
+		FREETZ_AVM_VERSION_05_2X
+	default n
+
+config FREETZ_AVM_VERSION_05_5X_MAX
+	bool
+	default y if \
+		FREETZ_AVM_VERSION_05_2X_MAX || \
+		FREETZ_AVM_VERSION_05_5X
+	default n
+
+config FREETZ_AVM_VERSION_06_XX_MAX
+	bool
+	default y if \
+		FREETZ_AVM_VERSION_05_5X_MAX || \
+		FREETZ_AVM_VERSION_06_XX
+	default n
