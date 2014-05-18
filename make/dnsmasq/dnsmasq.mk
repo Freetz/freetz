@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.70)
+$(call PKG_INIT_BIN, 2.71)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=1d654e80888ab5dbba015548fd284d46
+$(PKG)_SOURCE_MD5:=9e2e4d59c75e71ee3ca817ff0f9be69e
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
