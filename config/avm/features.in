@@ -265,6 +265,7 @@ config FREETZ_AVM_HAS_OPENSSL_VERSION_0_LIBS
 		FREETZ_TYPE_W501V || \
 		FREETZ_TYPE_3020 || \
 		FREETZ_TYPE_3030 || \
+		(FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_LABOR) || \
 		(FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR)
 	default y
 	help
@@ -272,7 +273,9 @@ config FREETZ_AVM_HAS_OPENSSL_VERSION_0_LIBS
 
 config FREETZ_AVM_HAS_OPENSSL_VERSION_1_LIBS
 	bool "Has OpenSSL-1.0.x libraries"	if FREETZ_TYPE_CUSTOM
-	default y		if (FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR)
+	default y		if \
+		(FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_LABOR) || \
+		(FREETZ_TYPE_7490 && FREETZ_TYPE_FIRMWARE_LABOR)
 	default n
 	help
 		Select this if the original firmware contains AVM version of OpenSSL-1.0.x libraries (libcrypto/libssl).

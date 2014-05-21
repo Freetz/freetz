@@ -1,0 +1,58 @@
+--- usr/www/all/templates/menu_page_end.html
++++ usr/www/all/templates/menu_page_end.html
+@@ -32,9 +32,10 @@
+ box.out([[<a class="nocancel" href=']]..config.NEWSLETTER_URL..[[' target='_blank'>{?22:606?}</a> | ]])
+ end
+ if (config.language=="de") then
+-box.out([[<a class="nocancel" href='http://www.avm.de' target='_blank' style='margin-right:0px;'>avm.de</a> ]])
++box.out([[<a class="nocancel" href='http://www.avm.de' target='_blank'>www.avm.de</a> | ]])
+ else
+-box.out([[<a class="nocancel" href='http://www.avm.de/en' target='_blank' style='margin-right:0px;'>avm.de</a> ]])
++box.out([[<a class="nocancel" href='http://www.avm.de/en' target='_blank'>www.avm.de</a> | ]])
+ end
++box.out([[<a class="nocancel" href='http://freetz.org' target='_blank' style='margin-right:0px;'>freetz.org</a> ]])
+ ?>
+ </div>
+--- usr/www/all/menus/menu_freetz.lua
++++ usr/www/all/menus/menu_freetz.lua
+@@ -0,0 +1,16 @@
++menu.add_item{
++page = "/cgi-bin/freetz_status",
++target = "_blank",
++text = "Freetz",
++menu = "freetz",
++explain = "Freetz Webinterface",
++subpages = {}
++}
++menu.add_item{
++page = "/cgi-bin/freetz_wol",
++target = "_blank",
++text = "Freetz WOL",
++menu = "freetz-wol",
++explain = "Freetz WOL Webinterface",
++subpages = {}
++}
+--- usr/www/all/templates/menu_page_head.html
++++ usr/www/all/templates/menu_page_head.html
+@@ -97,4 +97,21 @@
+ box.out([[</div>]])
+ end
+ ?>
++<div class="clear_float"></div>
++<div id="MainWizardheadBox">
++<div class="small_bar_left_head"></div>
++<div class="small_bar_right_head"></div>
++<div class="small_bar_back_head"></div>
++<div id="MainWizardhead">
++<?lua
++<?include "menus/menu_freetz.lua" ?>
++menu.write_menu('freetz')
++?>
++</div>
++<div id="MainWizardbottom">
++<div class="small_bar_left_bottom"></div>
++<div class="small_bar_right_bottom"></div>
++<div class="small_bar_back_bottom"></div>
++</div>
++</div>
+ </div>
