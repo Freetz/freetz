@@ -1,0 +1,106 @@
+--- etc/init.d/rc.conf
++++ etc/init.d/rc.conf
+@@ -316,13 +316,12 @@
+ export CONFIG_ANNEX="B"
+ export CONFIG_INSTALL_TYPE="ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_61056"
+ export CONFIG_VERSION="05.23"
+-export CONFIG_SUBVERSION="-27582"
++export CONFIG_SUBVERSION=""
+ export CONFIG_VERSION_MAJOR="54"
+ export CONFIG_ROMSIZE="16"
+ export CONFIG_RAMSIZE="64"
+-export CONFIG_RELEASE="2"
+-export CONFIG_BETA_RELEASE="1"
+-export CONFIG_LABOR_ID_NAME="BETA"
++export CONFIG_RELEASE="1"
++export CONFIG_BETA_RELEASE="0"
+ ##########################################################################################
+ ## OEM Ermitteln
+ ##########################################################################################
+--- etc/init.d/S11-config_def
++++ etc/init.d/S11-config_def
+@@ -1102,5 +1102,4 @@
+ echo "<? setvariable var:UpdatefeatureUrl '${CONFIG_UPDATEFEATURE_URL}' ?>" >>${CONFIG_DEF}
+ echo "<? setvariable var:OnlinehelpUrl '${CONFIG_ONLINEHELP_URL}' ?>" >>${CONFIG_DEF}
+ echo "<? setvariable var:FirmwareVersion '${CONFIG_VERSION}${CONFIG_SUBVERSION}' ?>" >>${CONFIG_DEF}
+-echo "<? setvariable var:LabIdName '${CONFIG_LABOR_ID_NAME}' ?>" >>${CONFIG_DEF}
+ fi
+--- etc/.subversion
++++ etc/.subversion
+@@ -1 +1 @@
+--27582
++
+--- etc/version
++++ etc/version
+@@ -3,7 +3,7 @@
+ SILENT=y
+ . /etc/init.d/rc.conf
+ export FIRMWARE_VERSION=${CONFIG_VERSION_MAJOR}.05.23
+-export FIRMWARE_SUBVERSION=-27582
++export FIRMWARE_SUBVERSION=
+ export FIRMWARE_DATE="20.02.2014 15:55:23"
+ 
+ 
+--- usr/www/all/home/home.lua
++++ usr/www/all/home/home.lua
+@@ -126,7 +126,7 @@
+ g_coninf_data.FirmwareSigned = box.query("box:status/signed_firmware")
+ g_coninf_data.ShowDefaults = box.query("box:status/provider_default_config")
+ g_coninf_data.morphstick_enabled = box.query("morphstick:settings/enabled")
+-g_coninf_data.isLabor = true
++g_coninf_data.isLabor = false
+ g_coninf_data.ipv6firewall_rules = {}
+ if (g_coninf_data.ipv6_enabled=="1") then
+ g_coninf_data.ipv6firewall_rules = general.listquery("ipv6firewall:settings/rule/list(enabled)")
+--- usr/www/all/html/de/home/home.html
++++ usr/www/all/html/de/home/home.html
+@@ -10,7 +10,7 @@
+ <tr>
+ <td style="padding-top:2px;"><? echo $var:ProduktName ?></td>
+ <td style="padding-top:2px;text-align:right;">
+-<? echo `$var:LabIdName` ?>&nbsp;{?272:8404?}&nbsp;<? query logic:status/nspver ?>
++{?272:9613?}&nbsp;<? query logic:status/nspver ?>
+ </td>
+ </tr>
+ <script type="text/javascript">document.write(TrProduktInfo());</script>
+--- usr/www/all/html/de/home/home.js
++++ usr/www/all/html/de/home/home.js
+@@ -1579,7 +1579,6 @@
+ var str = "";
+ var pwInfo = "<? query security:settings/password ?>" == "";
+ var laborInfo = false;
+-laborInfo = true;
+ var updateInfo = "<? query updatecheck:status/update_available_hint ?>" == "1";
+ if (pwInfo || laborInfo || updateInfo) {
+ var colspan2 = true;
+--- usr/www/all/internet/dsl_line_settings.lua
++++ usr/www/all/internet/dsl_line_settings.lua
+@@ -76,7 +76,7 @@
+ end
+ function get_var()
+ InitMode()
+-g_advice_quality = "0"
++g_advice_quality = tostring(box.query( "sar:settings/AdviseQuality"))
+ if ( config.oem ~= "avme") then
+ g_data.data_pump = tostring(box.query( "sar:settings/IsLastReleasedDP"))
+ end
+@@ -209,14 +209,11 @@
+ if ( next(box.post) and ((box.post.apply) or (box.post.reset))) then
+ local saveset={}
+ if (box.post.reset=="1") then
+-cmtable.add_var( saveset, "sar:settings/DownstreamMarginOffset", "0")
+-cmtable.add_var( saveset, "sar:settings/DsINP", "0")
+-cmtable.add_var( saveset, "sar:settings/RFI_mode", "0")
+-cmtable.add_var( saveset, "sar:settings/UsNoiseBits", "0")
+-g_data.marge_receive = "0"
+-g_data.inp = "0"
+-g_data.rfi = "0"
+-g_data.marge_send = "0"
++cmtable.add_var( saveset, "sar:settings/AdviseQuality", "0")
++-- g_data.marge_receive = "0"
++-- g_data.inp = "0"
++-- g_data.rfi = "0"
++-- g_data.marge_send = "0"
+ elseif ( box.post.apply) then
+ refill_user_input()
+ cmtable.add_var( saveset, "sar:settings/DownstreamMarginOffset", g_data.marge_receive)
