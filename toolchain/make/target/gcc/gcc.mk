@@ -81,7 +81,7 @@ $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -r $(GCC_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(GCC_SOURCE)
 	set -e; \
-	for i in $(GCC_MAKE_DIR)/$(GCC_VERSION)/*.patch; do \
+	for i in $(GCC_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(GCC_VERSION))/*.patch; do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \
 	done
 	for f in $$(find $(GCC_DIR) \( -name "configure" -o -name "config.rpath" \)); do $(call PKG_PREVENT_RPATH_HARDCODING1,$$f) done

@@ -23,7 +23,7 @@ $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR
 	$(RM) -r $(BINUTILS_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(BINUTILS_SOURCE)
 	set -e; \
-	for i in $(BINUTILS_MAKE_DIR)/$(BINUTILS_VERSION)/*.patch; do \
+	for i in $(BINUTILS_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(BINUTILS_VERSION))/*.patch; do \
 		$(PATCH_TOOL) $(BINUTILS_DIR) $$i; \
 	done
 	# fool zlib test in all configure scripts so it doesn't find zlib and thus no zlib gets linked in

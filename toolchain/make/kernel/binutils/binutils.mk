@@ -22,7 +22,7 @@ $(BINUTILS_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 	mkdir -p $(KERNEL_TOOLCHAIN_DIR)
 	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 	set -e; \
-	for i in $(BINUTILS_KERNEL_MAKE_DIR)/$(BINUTILS_KERNEL_VERSION)/*.patch; do \
+	for i in $(BINUTILS_KERNEL_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(BINUTILS_KERNEL_VERSION))/*.patch; do \
 		$(PATCH_TOOL) $(BINUTILS_KERNEL_DIR) $$i; \
 	done
 	# fool zlib test in all configure scripts so it doesn't find zlib and thus no zlib gets linked in
