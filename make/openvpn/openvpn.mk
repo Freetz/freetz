@@ -5,9 +5,9 @@ $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 
-$(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
+$(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION)),y)
-$(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)/obfuscation
+$(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))/obfuscation
 endif
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2),openvpn,src/openvpn/openvpn)
