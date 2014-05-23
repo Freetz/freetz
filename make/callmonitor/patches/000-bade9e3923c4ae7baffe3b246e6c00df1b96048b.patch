@@ -1,0 +1,54 @@
+From bade9e3923c4ae7baffe3b246e6c00df1b96048b Mon Sep 17 00:00:00 2001
+From: Alexander Kriegisch <Alexander@Kriegisch.name>
+Date: Thu, 22 May 2014 16:29:08 +0200
+Subject: [PATCH] Fix reverse number search for dastelefonbuch.de
+
+--- root/usr/lib/callmonitor/reverse/telefonbuch.sh
++++ root/usr/lib/callmonitor/reverse/telefonbuch.sh
+@@ -9,22 +9,37 @@
+ }
+ _reverse_telefonbuch_extract() {
+ sed -n -e '
+-/wget: server returned error: HTTP.* 410 Gone\|kein Teilnehmer gefunden/ {
++/wget: server returned error: HTTP.* 410 Gone\|Kein Treffer gefunden/ {
+ '"$REVERSE_NA"'
+ }
+-/<table[^>]*class="[^"]*\(bg-0[12]\|entry\)/,\#<td class="col4"# {
+-\#<div class="[^"]*hide#,\#</div># b
+-s#<br */>#,#
++/<a id="name0"/,/<\/address>/ {
++s/^[ \t]*//
++/<a id="name0"/,/<\/a>/ {
++/<\/a>/ {
++s/^[ \t]*\(.*\)<\/a>/<rev:name>\1<\/rev:name>/
++h
++}
++}
++/<address class=/,/<\/address>/ {
++/<\/address>/ {
++s/<[^>]*>/#/g
++s/&nbsp;/ /g
++s/,/#/g
++s/\([ \t]*#[ \t]*\)\+/#/g
++s/#$//
+ H
+-\#<td class="col3"# b cleanup
+ }
+-b
+-: cleanup
++}
++}
++$ {
+ g
+-s/'$'\r''\?\n/ /g
+-s#<a [^>]*href[^>]*>\(.*\)</a>#<rev:name>&</rev:name>#
++s/\n//g
++s/#\+/\; /
++s/#\+/, /g
+ '"$REVERSE_DECODE_ENTITIES"'
+ '"$REVERSE_SANITIZE"'
+ '"$REVERSE_OK"'
++p
++}
+ '
+ }

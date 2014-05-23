@@ -1,0 +1,33 @@
+From 0ab721bef19e7a8ec61ee0ed9ccd3eab219bcf4f Mon Sep 17 00:00:00 2001
+From: Alexander Kriegisch <Alexander@Kriegisch.name>
+Date: Fri, 23 May 2014 00:45:23 +0200
+Subject: [PATCH] Fix reverse number search for herold.at
+
+--- root/usr/lib/callmonitor/reverse/herold_at.sh
++++ root/usr/lib/callmonitor/reverse/herold_at.sh
+@@ -12,17 +12,19 @@
+ /keine Treffer/ {
+ '"$REVERSE_NA"'
+ }
+-/^[[:space:]]*<div class="result_parent"/,\#<br/>[[:space:]]*$# {
+-\#<br/>[[:space:]]*$# b cleanup
+-H
++/myMap\.addMarker/ {
++s/.*new Map([^)]\+);myMap\.addMarker/\n###/
++s/myMap\.addMarker.*//
++s/.*###.*.title.:.\(.*\).,.tel.:.*.,.addr.:.\(.*\).,.icon.*/<rev:name>\1<\/rev:name>\2/
++h
+ }
+-b
+-: cleanup
++$ {
+ g
+-s#.*<b>\([^<]*\)</b>#<rev:name>\1</rev:name>#
+ s#<br/>#, #g
+ '"$REVERSE_DECODE_ENTITIES_UTF8"'
+ '"$REVERSE_SANITIZE"'
+ '"$REVERSE_OK"'
++p
++}
+ ' | utf8_latin1
+ }
