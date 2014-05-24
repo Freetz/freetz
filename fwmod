@@ -374,7 +374,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	if [ "$FIRMWARE_EXTENSION" != "exe" ]; then
 		# Check and skip garbage
-		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))	"
+		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))"
 		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
 		[ "$grbg" != "0x0" ] && printf "Skipping %d Bytes garbage..." $grbg
 		# Unpack standard *.image file in tar format
@@ -449,7 +449,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 		echo "unpacking update image"
 		modunsqfs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
-		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] &&	error 1 "copying kernel or filesystem image failed"
+		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] && error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
 		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
@@ -674,13 +674,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	  ${FILESYSTEM_MOD_DIR}/usr/www.nas \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.myfritz \
 	  ; do
-	  	for edition in ewetel; do
-	  		[ ! -d ${webdir}/$edition ] && continue
-	  		[ -d ${webdir}/avm ] && continue
-	  		[ -d ${webdir}/all ] && continue
-	  		# force create /usr/www/all/
-	  		mv ${webdir}/$edition ${webdir}/avm
-	  	done
+		for edition in ewetel; do
+			[ ! -d ${webdir}/$edition ] && continue
+			[ -d ${webdir}/avm ] && continue
+			[ -d ${webdir}/all ] && continue
+			# force create /usr/www/all/
+			mv ${webdir}/$edition ${webdir}/avm
+		done
 		if [ -d ${webdir}/avm* ]; then
 			echo0 -n " ${webdir#${FILESYSTEM_MOD_DIR}/}"
 			mv ${webdir}/avm* ${webdir}/all
@@ -1614,14 +1614,14 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 	# Do we have the tool ?
-	[ ! -x "$TICHKSUM" ] &&	error 1 "cannot find tool $TICHKSUM_TOOL"
+	[ ! -x "$TICHKSUM" ] && error 1 "cannot find tool $TICHKSUM_TOOL"
 
 	# Write checksum
 	"$TICHKSUM" "$KERNEL_MOD" > "${MOD_DIR}/kernelchksum.log"
 
 	# Consistency check
 	if [ -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ] || \
-		[ ! -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ];	then
+		[ ! -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ]; then
 		error 1 "inconsistency comparing size of old and new kernel.image"
 	fi
 
