@@ -10,10 +10,11 @@
  	"INSTALL=$(INSTALL)" \
 --- gcc/configure
 +++ gcc/configure
-@@ -11703,6 +11703,7 @@
+@@ -11706,7 +11706,7 @@
  if test x$build != x$host || test "x$coverage_flags" != x
  then
      BUILD_CFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(CFLAGS_FOR_BUILD)'
+-    BUILD_CXXFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(CXXFLAGS_FOR_BUILD)'
 +    BUILD_CXXFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(NOEXCEPTION_FLAGS) $(CXXFLAGS_FOR_BUILD)'
      BUILD_LDFLAGS='$(LDFLAGS_FOR_BUILD)'
  fi
