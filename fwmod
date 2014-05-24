@@ -1384,6 +1384,7 @@ fi
 ## Pack, zip, copy the modified firmware ##
 ###########################################
 
+DO_AVOID_MOD_IN_STEP3=0
 [ "$DO_PACK" -gt 0 ] && action_names+="/PACK"
 [ "$DO_ZIP"  -gt 0 ] && action_names+="/ZIP"
 [ "$COPY_FS_DIR"   ] && action_names+="/COPY"
@@ -1412,6 +1413,7 @@ if [ "$action_names" ]; then
 	# Check if firmware is modified by the script
 	if [ ! -r "${DIR}/.modified" ]; then
 		warn "firmware does not seem to be modified by the script"
+		DO_AVOID_MOD_IN_STEP3=1
 
 		if [ ! -d "$MOD_DIR" ]; then
 			# Copy the unpacked directory
@@ -1454,18 +1456,22 @@ if [ "$action_names" ]; then
 	modstring="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate"
 	modimage="${modstring}.image"
 
-	# Create freetz-info
-	echo1 "integrate freetz info file into image"
-	freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
-	echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}'" > "$freetz_info_file"
-	echo "export FREETZ_INFO_FIRMWAREVERSION='${FIRMWAREVERSION}'" >> "$freetz_info_file"
-	echo "export FREETZ_INFO_SUBVERSION='${SUBVERSION}'" >> "$freetz_info_file"
-	echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANGUAGE}'" >> "$freetz_info_file"
-	echo "export FREETZ_INFO_MAKEDATE='$modmakedate'" >> "$freetz_info_file"
-	echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
-	echo "export FREETZ_INFO_COMMENT='${FREETZ_USER_DEFINED_COMMENT}'" >> "$freetz_info_file"
+	# collect externalized files
 	externalised_files=$(find "$EXTERNAL_MOD_DIR/" -type f 2>/dev/null | sed -e "/external[.]pkg/d;/[.]external/d;s,$EXTERNAL_MOD_DIR/,,")
-	echo "export FREETZ_INFO_EXTERNAL_FILES='${externalised_files}'" >> "$freetz_info_file"
+
+	if [ ! "$DO_AVOID_MOD_IN_STEP3" -gt 0 ]; then
+		# Create freetz-info
+		echo1 "integrate freetz info file into image"
+		freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
+		echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}'" > "$freetz_info_file"
+		echo "export FREETZ_INFO_FIRMWAREVERSION='${FIRMWAREVERSION}'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_SUBVERSION='${SUBVERSION}'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANGUAGE}'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_MAKEDATE='$modmakedate'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_COMMENT='${FREETZ_USER_DEFINED_COMMENT}'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_EXTERNAL_FILES='${externalised_files}'" >> "$freetz_info_file"
+	fi
 
 	# Pack var.tar (use old tar for compatibility)
 	echo0 "packing var.tar"
@@ -1619,10 +1625,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "inconsistency comparing size of old and new kernel.image"
 	fi
 
-	# Last, but not least, include .config and addon/static.pkg into firmware
-	# image for further reference, e.g. user support
-	[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
-	[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
+	if [ ! "$DO_AVOID_MOD_IN_STEP3" -gt 0 ]; then
+		# Last, but not least, include .config and addon/static.pkg into firmware
+		# image for further reference, e.g. user support
+		[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
+		[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
+	fi
 
 	# Pack firmware image (use old tar for compatibility)
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
