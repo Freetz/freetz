@@ -12,20 +12,24 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl12_WITH_BLOWFISH
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl12_WITH_GENRSA
 
-$(PKG)_SYMBOLS_TO_COMMENT_OUT += $(if $(FREETZ_LIB_libpolarssl12_WITH_BLOWFISH),,POLARSSL_BLOWFISH_C)
-$(PKG)_SYMBOLS_TO_COMMENT_OUT += $(if $(FREETZ_LIB_libpolarssl12_WITH_GENRSA),,POLARSSL_GENPRIME)
+# disable some features to reduce library size
+$(PKG)_FEATURES_TO_DISABLE += POLARSSL_SELF_TEST
+$(PKG)_FEATURES_TO_DISABLE += POLARSSL_CAMELLIA_C
+$(PKG)_FEATURES_TO_DISABLE += POLARSSL_CERTS_C
+$(PKG)_FEATURES_TO_DISABLE += POLARSSL_DEBUG_C
+$(PKG)_FEATURES_TO_DISABLE += POLARSSL_PADLOCK_C
+$(PKG)_FEATURES_TO_DISABLE += POLARSSL_XTEA_C
+$(PKG)_FEATURES_TO_DISABLE += $(if $(FREETZ_LIB_libpolarssl12_WITH_BLOWFISH),,POLARSSL_BLOWFISH_C)
+$(PKG)_FEATURES_TO_DISABLE += $(if $(FREETZ_LIB_libpolarssl12_WITH_GENRSA),,POLARSSL_GENPRIME)
+
+# Don't use -D/-U to define/undefine required symbols, patch config.h instead. The installed headers must contain properly defined symbols.
+$(PKG)_PATCH_POST_CMDS += $(SED) -ri $(foreach f,$(POLARSSL12_FEATURES_TO_DISABLE),-e 's|^([ \t]*$(_hash)define[ \t]+$(f)[ \t]*)$$$$|/* \1 */|') include/polarssl/config.h;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-# Don't use -D/-U to define/undefine required symbols, patch config.h instead. The installed headers must contain properly defined symbols.
-	$(if $(strip $(POLARSSL12_SYMBOLS_TO_COMMENT_OUT)), \
-		for d in $(POLARSSL12_SYMBOLS_TO_COMMENT_OUT); do \
-			$(SED) -ri -e "s|^([ \t]*#define[ \t]+$$d[ \t]*)$$|/* \1 */|" $(POLARSSL12_DIR)/include/polarssl/config.h; \
-		done \
-	)
 	$(SUBMAKE) -C $(POLARSSL12_DIR)/library \
 		VERSION="$(POLARSSL12_VERSION)" \
 		CC="$(TARGET_CC)" \
