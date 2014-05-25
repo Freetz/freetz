@@ -1,0 +1,37 @@
+--- library/Makefile
++++ library/Makefile
+@@ -35,9 +35,10 @@
+ VERSION=0.0.0
+ VERSION_MAJOR=$(word 1,$(subst ., ,$(VERSION)))
+ VERSION_MINOR=$(word 2,$(subst ., ,$(VERSION)))
+-LIB_SO=libpolarssl.$(DLEXT)
++LIB_SO=libpolarssl$(VERSION_MAJOR)$(VERSION_MINOR).$(DLEXT)
+ LIB_SO_VERSION=$(LIB_SO).$(VERSION)
+ LIB_SO_SONAME=$(LIB_SO).$(VERSION_MAJOR).$(VERSION_MINOR)
++LIB_A=libpolarssl$(VERSION_MAJOR)$(VERSION_MINOR).a
+ 
+ OBJS=	aes.o		aesni.o		arc4.o			\
+ 		asn1parse.o								\
+@@ -76,11 +77,11 @@
+ all: shared
+ endif
+ 
+-static: libpolarssl.a
++static: $(LIB_A)
+ 
+ shared: $(LIB_SO_VERSION)
+ 
+-libpolarssl.a: $(OBJS)
++$(LIB_A): $(OBJS)
+ 	echo "  AR    $@"
+ 	$(AR) r $@ $(OBJS)
+ 	echo "  RL    $@"
+@@ -106,7 +107,7 @@
+ 
+ clean:
+ ifndef WINDOWS
+-	rm -f *.o libpolarssl.*
++	rm -f *.o libpolarssl*.*
+ endif
+ ifdef WINDOWS
+ 	del /Q /F *.o libpolarssl.*

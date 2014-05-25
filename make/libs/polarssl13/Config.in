@@ -1,0 +1,19 @@
+config FREETZ_LIB_libpolarssl13
+	bool "PolarSSL-1.3.x (libpolarssl13.so)"
+	default n
+	help
+		The aim of the PolarSSL project is to provide a quality, open-source
+		cryptographic library written in C and targeted at embedded systems.
+		See https://polarssl.org for more details.
+
+config FREETZ_LIB_libpolarssl13_WITH_BLOWFISH
+	bool "With Blowfish cipher" if FREETZ_LIB_libpolarssl13
+	default n
+	help
+		Enables support for the Blowfish block cipher.
+
+config FREETZ_LIB_libpolarssl13_WITH_GENRSA
+	bool "With RSA prime-number generation" if FREETZ_LIB_libpolarssl13
+	default n
+	help
+		Enables the RSA prime-number generation code.
