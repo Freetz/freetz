@@ -8,7 +8,9 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/xrelayd
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_XRELAYD_GENSTUFF
 
-$(PKG)_DEPENDS_ON := polarssl
+$(PKG)_DEPENDS_ON := polarssl12
+
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,Makefile xrelayd.c)
 
 $(PKG)_CFLAGS := $(TARGET_CFLAGS)
 $(PKG)_CFLAGS += -Werror-implicit-function-declaration

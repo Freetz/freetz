@@ -1,5 +1,5 @@
-config FREETZ_LIB_libpolarssl
-	bool "PolarSSL (libpolarssl.so)"
+config FREETZ_LIB_libpolarssl12
+	bool "PolarSSL-1.2.x (libpolarssl12.so)"
 	default n
 	help
 		The aim of the PolarSSL project is to provide a quality, open-source
@@ -14,14 +14,14 @@ config FREETZ_LIB_libpolarssl
 		http://polarssl.org/?page=contact
 		Web site: http://polarssl.org/
 
-config FREETZ_LIB_libpolarssl_WITH_BLOWFISH
-	bool "With Blowfish cipher" if FREETZ_LIB_libpolarssl
+config FREETZ_LIB_libpolarssl12_WITH_BLOWFISH
+	bool "With Blowfish cipher" if FREETZ_LIB_libpolarssl12
 	default n
 	help
 		Enables support for the Blowfish block cipher.
 
-config FREETZ_LIB_libpolarssl_WITH_GENRSA
-	bool "With RSA prime-number generation" if FREETZ_LIB_libpolarssl
+config FREETZ_LIB_libpolarssl12_WITH_GENRSA
+	bool "With RSA prime-number generation" if FREETZ_LIB_libpolarssl12
 	default n
 	help
 		Enables the RSA prime-number generation code.

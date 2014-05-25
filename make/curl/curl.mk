@@ -18,7 +18,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 endif
 ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_POLARSSL)),y)
-$(PKG)_DEPENDS_ON += polarssl
+$(PKG)_DEPENDS_ON += polarssl12
 endif
 ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_ZLIB)),y)
 $(PKG)_DEPENDS_ON += zlib

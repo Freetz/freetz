@@ -11,9 +11,11 @@ $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
-$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_RTMPDUMP_WITH_SSL),polarssl zlib)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_RTMPDUMP_WITH_SSL),polarssl12 zlib)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_RTMPDUMP_WITH_SSL
+
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,Makefile librtmp/Makefile librtmp/*.h librtmp/*.c)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

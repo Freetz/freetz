@@ -10,13 +10,15 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_UMURMUR_USE_POLARSSL
 
 $(PKG)_DEPENDS_ON := libconfig protobuf-c
 ifeq ($(strip $(FREETZ_PACKAGE_UMURMUR_USE_POLARSSL)),y)
-$(PKG)_DEPENDS_ON += polarssl
+$(PKG)_DEPENDS_ON += polarssl12
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=polarssl
 else
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 endif
+
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,configure src/crypt.h src/crypt.c src/ssl.h src/ssl.c)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

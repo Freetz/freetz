@@ -11,7 +11,7 @@ ALLVARS="$MYVARS ENABLED CONFIG_COUNT CONFIG_CHANGED EXPERT"
 #	HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true)
 #	HASLZO=$(openvpn --version | grep -q LZO && echo true)
 #else
-	HASBLOWFISH=$([ "$FREETZ_PACKAGE_OPENVPN_POLARSSL" != y -o "$FREETZ_LIB_libpolarssl_WITH_BLOWFISH" == y ] && echo true)
+	HASBLOWFISH=$([ "$FREETZ_PACKAGE_OPENVPN_POLARSSL" != y -o "$FREETZ_LIB_libpolarssl12_WITH_BLOWFISH" == y ] && echo true)
 	HASLZO=$([ "$FREETZ_PACKAGE_OPENVPN_WITH_LZO" == y ] && echo true)
 #fi
 
