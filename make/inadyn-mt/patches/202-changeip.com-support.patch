@@ -9,7 +9,7 @@
  http://www.dynsip.org
  .TP
  http://www.dhis.org
-@@ -161,7 +163,7 @@
+@@ -165,7 +167,7 @@
  
  There is only one acceptable service for http://freedns.afraid.org, which is default@freedns.afraid.org. 
  
@@ -29,7 +29,7 @@
  http://www.dynsip.org
  .TP
  http://www.dhis.org
-@@ -161,7 +163,7 @@
+@@ -165,7 +167,7 @@
  
  There is only one acceptable service for http://freedns.afraid.org, which is default@freedns.afraid.org. 
  
@@ -48,7 +48,7 @@
    <li><a href="http://www.tzo.com">tzo.com</a></li>
    <li><a href="http://www.dynsip.org">dynsip.org</a></li>
    <li><a href="http://www.dhis.org">dhis.org</a></li>
-@@ -323,6 +324,7 @@
+@@ -327,6 +328,7 @@
  -For dnsomatic.com:  default@dnsomatic.com<br>
  -For tunnelbroker.net:  ipv6tb@he.net<br>
  -For dns.he.net:  default@he.net<br>
@@ -58,7 +58,7 @@
  -For dhis.org:  default@dhis.org<br>
 --- src/dyndns.c
 +++ src/dyndns.c
-@@ -226,6 +226,7 @@
+@@ -230,6 +230,7 @@
  static int get_req_for_tzo_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
  static int get_req_for_he_ipv6_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
  static int get_req_for_he_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
@@ -66,7 +66,7 @@
  static int get_req_for_dhis_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
  static int get_req_for_majimoto_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
  static int get_req_for_zerigo_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
-@@ -368,6 +369,14 @@
+@@ -372,6 +373,14 @@
  			"checkip.dns.he.net", "/",
  			"dyn.dns.he.net", "/nic/update?", NULL}},
  
@@ -81,7 +81,7 @@
  		/* Support for dynsip.org by milkfish, from DD-WRT */
  		{DYNSIP_DEFAULT,
  			{"default@dynsip.org", NULL,
-@@ -728,6 +737,17 @@
+@@ -732,6 +741,17 @@
  				   p_self->info[srv_cnt].dyndns_server_name.name);
  }
  
@@ -109,7 +109,7 @@
  	DYNSIP_DEFAULT,
  	DHIS_DEFAULT,
  	MAJIMOTO_DEFAULT,
-@@ -252,6 +253,13 @@
+@@ -251,6 +252,13 @@
  	"Host: %s\r\n"							\
  	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
  
@@ -125,7 +125,7 @@
  	"GET %s" \
 --- src/inadyn_cmd.c
 +++ src/inadyn_cmd.c
-@@ -197,6 +197,7 @@
+@@ -198,6 +198,7 @@
  		 "\t\t-For dnsomatic.com:  default@dnsomatic.com\n"
  		 "\t\t-For tunnelbroker.net:  ipv6tb@he.net\n"
  		 "\t\t-For dns.he.net:  default@he.net\n"
