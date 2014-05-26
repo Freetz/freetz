@@ -1,6 +1,6 @@
 --- include/Makefile.in
 +++ include/Makefile.in
-@@ -250,7 +250,7 @@
+@@ -314,7 +314,7 @@
  AUTOMAKE_OPTIONS = foreign
  DISTCLEANFILES = ffitarget.h
  EXTRA_DIST = ffi.h.in ffi_common.h
@@ -11,12 +11,17 @@
  
 --- libffi.pc.in
 +++ libffi.pc.in
-@@ -1,7 +1,7 @@
+@@ -1,11 +1,10 @@
  prefix=@prefix@
  exec_prefix=@exec_prefix@
  libdir=@libdir@
+-toolexeclibdir=@toolexeclibdir@
 -includedir=${libdir}/@PACKAGE_NAME@-@PACKAGE_VERSION@/include
 +includedir=@includedir@
  
  Name: @PACKAGE_NAME@
  Description: Library supporting Foreign Function Interfaces
+ Version: @PACKAGE_VERSION@
+-Libs: -L${toolexeclibdir} -lffi
++Libs: -L${libdir} -lffi
+ Cflags: -I${includedir}
