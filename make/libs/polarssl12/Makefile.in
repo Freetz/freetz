@@ -5,5 +5,5 @@ endif
 # $1 - version suffix, i.e. 12 or 13
 # $2 - list of files to modify
 define POLARSSL_HARDCODE_VERSION
-$(SED) -i -r -e 's,(-lpolarssl|ac_cv_lib_polarssl),\1$(1),g' -e 's,(polarssl)((/[a-z0-9_]+[.]|[a-z0-9_]+)h)([^a-z_]),\1$(1)\2\4,g' $(2);
+$(SED) -i -r -e 's,(-lpolarssl|ac_cv_lib_polarssl),\1$(1),g' -e 's,(polarssl)((/[a-z0-9_-.]+[.]|[a-z0-9_]+)h)([^a-z_]),\1$(1)\2\4,g' $(2);
 endef
