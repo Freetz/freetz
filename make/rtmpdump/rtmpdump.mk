@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 3a1e20c08c)
+$(call PKG_INIT_BIN, 79459a2b43)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=git://git.ffmpeg.org/rtmpdump.git
 
