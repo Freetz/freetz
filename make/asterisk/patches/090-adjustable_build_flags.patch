@@ -1,6 +1,6 @@
 --- build_tools/cflags.xml
 +++ build_tools/cflags.xml
-@@ -1,15 +1,14 @@
+@@ -1,18 +1,17 @@
  	<category name="MENUSELECT_CFLAGS" displayname="Compiler Flags" positive_output="yes" remove_on_change=".lastclean">
 -		<member name="DONT_OPTIMIZE" displayname="Disable Optimizations by the Compiler">
 +		<member name="DONT_OPTIMIZE" displayname="Disable Optimizations by the Compiler"><defaultenabled>no</defaultenabled>
@@ -9,6 +9,10 @@
 -		<member name="DEBUG_THREADS" displayname="Enable Thread Debugging">
 +		<member name="DEBUG_THREADS" displayname="Enable Thread Debugging"><defaultenabled>no</defaultenabled>
  			<support_level>core</support_level>
+ 		</member>
+-		<member name="REF_DEBUG" displayname="Enable reference count debugging">
++		<member name="REF_DEBUG" displayname="Enable reference count debugging"><defaultenabled>no</defaultenabled>
+ 			<support_level>extended</support_level>
  		</member>
 -		<member name="STATIC_BUILD" displayname="Build static binaries">
 +		<member name="STATIC_BUILD" displayname="Build static binaries"><defaultenabled>no</defaultenabled>
@@ -20,7 +24,7 @@
  			<support_level>core</support_level>
  		</member>
  		<member name="DEBUG_FD_LEAKS" displayname="Enable File Descriptor Leak Detection">
-@@ -21,7 +20,7 @@
+@@ -24,7 +23,7 @@
  			<defaultenabled>no</defaultenabled>
  			<support_level>extended</support_level>
  		</member>
