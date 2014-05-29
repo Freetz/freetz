@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 4837)
+$(call PKG_INIT_BIN, 5393)
 $(PKG)_NAME_NO_HYPHEN:=$(subst -,,$(pkg))
 $(PKG)_SOURCE:=$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=svn@https://svn.code.sf.net/p/chan-sccp-b/code/branches/V4.1
