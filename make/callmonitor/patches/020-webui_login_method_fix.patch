@@ -1,0 +1,13 @@
+--- root/usr/lib/callmonitor/modules/webui.sh
++++ root/usr/lib/callmonitor/modules/webui.sh
+@@ -33,6 +33,10 @@
+ }
+ webui_login_sid_lua() {
+ [ -e "/var/html/login_sid.lua" ] || return 1
++type ctlmgr_ctl >/dev/null || return 1
++case $(ctlmgr_ctl r boxusers settings/skip_auth_from_homenetwork) in
++no-emu|err|er) return 1 ;;
++esac
+ local info=$(webui_post_lua "${1:+$1&}script=/login_sid.lua")
+ case $info in
+ *SessionInfo*)
