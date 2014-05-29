@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.9.3)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=8306305c4d39ac4fc07c9cf343241f12f7b69df2
+$(call PKG_INIT_BIN, 2.0.0)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA1:=85061efe1dbfde3e7b28987d0bc27d66aaba18a8
 $(PKG)_SITE:=http://git-core.googlecode.com/files,@KERNEL/software/scm/git
 
 # files to be moved from /usr/lib/git-core to /usr/bin
