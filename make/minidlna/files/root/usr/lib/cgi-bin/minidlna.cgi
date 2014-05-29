@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 . /usr/lib/libmodredir.sh
 
@@ -28,7 +27,7 @@ EOF
 sec_end
 
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
-local MINIDLNA_AVAILABLE_NIFS="$(ifconfig | sed -ne 's/^\([a-zA-Z.][a-zA-Z0-9]*\) .*/\1/p')"
+MINIDLNA_AVAILABLE_NIFS=$(ifconfig | sed -rne 's,^([a-zA-Z.][a-zA-Z0-9]*) .*,\1,p')
 cat << EOF
 
 <p>
@@ -42,8 +41,8 @@ $(lang de:"Bezeichnung" en:"Description"):<br>
 </p>
 
 <p>
-$(lang de:"Netzwerk-Interface" en:"Network interface"):&nbsp;
-<input type="text" name="network_interface" size="9" maxlength="9" value="$(html "$MINIDLNA_NETWORK_INTERFACE")">
+$(lang de:"Netzwerk-Interfaces (durch ',' getrennt)" en:"Network interfaces (separated by ',')"):&nbsp;
+<input type="text" name="network_interfaces" size="9" maxlength="55" value="$(html "$MINIDLNA_NETWORK_INTERFACES")">
 <font size=-2><br>($(lang de:"verf&uuml;gbar" en:"available"): $MINIDLNA_AVAILABLE_NIFS)</font>
 </p>
 

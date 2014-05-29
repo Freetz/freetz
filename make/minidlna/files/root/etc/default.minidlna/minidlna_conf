@@ -1,21 +1,22 @@
 #!/bin/sh
 
 for MINIDLNA_MEDIA_DIR_CURRENT in $MINIDLNA_MEDIA_DIR; do
-	local MINIDLNA_MEDIA_DIR_SHORT="$(echo $MINIDLNA_MEDIA_DIR_CURRENT | grep -vE '^ *#|^ *;|^ *$' | sed 's/.*,//g' )"
+	MINIDLNA_MEDIA_DIR_SHORT=$(echo $MINIDLNA_MEDIA_DIR_CURRENT | grep -vE '^ *#|^ *;|^ *$' | sed 's/.*,//g')
 	[ -d "$MINIDLNA_MEDIA_DIR_SHORT" ] && echo "media_dir=$MINIDLNA_MEDIA_DIR_CURRENT"
 done
 
-if [ -n "$MINIDLNA_NETWORK_INTERFACE" ]; then
-	echo "network_interface=$MINIDLNA_NETWORK_INTERFACE"
-	MINIDLNA_NIF=$MINIDLNA_NETWORK_INTERFACE
+if [ -n "$MINIDLNA_NETWORK_INTERFACES" ]; then
+	echo "network_interface=$MINIDLNA_NETWORK_INTERFACES"
+	# first interface only
+	MINIDLNA_NIF1=$(echo "$MINIDLNA_NETWORK_INTERFACES" | sed -rne 's/([^,]+).*/\1/p')
 else
-	MINIDLNA_NIF=lan
+	MINIDLNA_NIF1=lan
 fi
-MINIDLNA_NIP="$(ifconfig $MINIDLNA_NIF | sed -ne 's/^ *inet addr: *\([0-9.]*\) *.*/\1/p')"
-[ -z "$MINIDLNA_NIP" ] && MINIDLNA_NIP="192.168.178.1"
+MINIDLNA_NIP1=$(ifconfig $MINIDLNA_NIF1 2>/dev/null | sed -rne 's,^ *inet addr: *([0-9.]+) *.*,\1,p')
+[ -z "$MINIDLNA_NIP1" ] && MINIDLNA_NIP1="192.168.178.1"
 
 cat <<EOF
-presentation_url=http://$MINIDLNA_NIP:$MINIDLNA_PORT
+presentation_url=http://$MINIDLNA_NIP1:$MINIDLNA_PORT
 port=$MINIDLNA_PORT
 friendly_name=$MINIDLNA_FRIENDLY_NAME
 db_dir=$MINIDLNA_DB_DIR
