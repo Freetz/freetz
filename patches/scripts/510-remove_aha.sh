@@ -44,7 +44,13 @@ modsed '/^devicelist = aha.GetDeviceList()/d' $sedfile
 # patcht Heimnetz -> Netzwerk -> Netzwerkeinstellungen
 sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
 echo1 "patching ${sedfile##*/}"
-modsed '/^require("libaha")/,/^end/ d' $sedfile
+# modify show_smarthome_broadcast so that it always returns false
+mod_del_area \
+	'function show_smarthome_broadcast' \
+	1 \
+	'function show_buttons' \
+	-3 \
+	$sedfile
 
 
 sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
