@@ -1,0 +1,16 @@
+--- root/usr/lib/callmonitor/modules/webui.sh
++++ root/usr/lib/callmonitor/modules/webui.sh
+@@ -1,3 +1,4 @@
++require system
+ require url
+ require user
+ webui_post_form_generic() {
+@@ -33,6 +34,8 @@
+ }
+ webui_login_sid_lua() {
+ [ -e "/var/html/login_sid.lua" ] || return 1
++[ "$SYSTEM_METHOD" = "webui" ] && return 1
++[ -z "$(system_query boxusers:settings/skip_auth_from_homenetwork)" ] && return 1
+ local info=$(webui_post_lua "${1:+$1&}script=/login_sid.lua")
+ case $info in
+ *SessionInfo*)

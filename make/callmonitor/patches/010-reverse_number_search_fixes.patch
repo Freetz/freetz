@@ -1,0 +1,73 @@
+A cumulative patch containing the following upstream fixes:
+
+ * https://github.com/kriegaex/callmonitor/commit/bade9e3923c4ae7baffe3b246e6c00df1b96048b
+ * https://github.com/kriegaex/callmonitor/commit/0ab721bef19e7a8ec61ee0ed9ccd3eab219bcf4f
+ * https://github.com/kriegaex/callmonitor/commit/24db0a187635aed29386ca3f58b462d3897085cc
+ * https://github.com/kriegaex/callmonitor/commit/471f23c761dee88e23168dcbeb66662421ee106a
+
+--- root/usr/lib/callmonitor/reverse/herold_at.sh
++++ root/usr/lib/callmonitor/reverse/herold_at.sh
+@@ -12,17 +12,14 @@
+ /keine Treffer/ {
+ '"$REVERSE_NA"'
+ }
+-/^[[:space:]]*<div class="result_parent"/,\#<br/>[[:space:]]*$# {
+-\#<br/>[[:space:]]*$# b cleanup
+-H
+-}
+-b
+-: cleanup
+-g
+-s#.*<b>\([^<]*\)</b>#<rev:name>\1</rev:name>#
++/myMap\.addMarker/ {
++s/.*new Map([^)]\+);myMap\.addMarker//
++s/myMap\.addMarker.*//
++s/^.*.title.:.\(.*\).,.tel.:.*.,.addr.:.\(.*\).,.icon.*/<rev:name>\1<\/rev:name> \2/
+ s#<br/>#, #g
+ '"$REVERSE_DECODE_ENTITIES_UTF8"'
+ '"$REVERSE_SANITIZE"'
+ '"$REVERSE_OK"'
++}
+ ' | utf8_latin1
+ }
+--- root/usr/lib/callmonitor/reverse/telefonbuch.sh
++++ root/usr/lib/callmonitor/reverse/telefonbuch.sh
+@@ -7,22 +7,30 @@
+ _reverse_telefonbuch_url "$@"
+ wget_callmonitor -q -O - "$URL" 2>&1
+ }
++REVERSE_TELEFONBUCH_NBSP=$(echo -e '\xa0')
+ _reverse_telefonbuch_extract() {
+ sed -n -e '
+-/wget: server returned error: HTTP.* 410 Gone\|kein Teilnehmer gefunden/ {
++/wget: server returned error: HTTP.* 410 Gone\|Kein Treffer gefunden/ {
+ '"$REVERSE_NA"'
+ }
+-/<table[^>]*class="[^"]*\(bg-0[12]\|entry\)/,\#<td class="col4"# {
+-\#<div class="[^"]*hide#,\#</div># b
+-s#<br */>#,#
++/<a id="name0"/,/<\/address>/ {
++/<a id="name0"/,/<\/a>/ {
+ H
+-\#<td class="col3"# b cleanup
++/<\/a>/ {
++g
++s/.*/<rev:name>&<\/rev:name>/
++h
++}
++}
++/<address class=/,/<\/address>/ {
++H
++/<\/address>/ b found
++}
+ }
+ b
+-: cleanup
++:found
+ g
+-s/'$'\r''\?\n/ /g
+-s#<a [^>]*href[^>]*>\(.*\)</a>#<rev:name>&</rev:name>#
++s/'$REVERSE_TELEFONBUCH_NBSP'/ /g
+ '"$REVERSE_DECODE_ENTITIES"'
+ '"$REVERSE_SANITIZE"'
+ '"$REVERSE_OK"'
