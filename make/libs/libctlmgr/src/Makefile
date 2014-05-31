@@ -8,7 +8,7 @@ all: libctlmgr.so.$(LIB_VERSION)
 	ln -sf libctlmgr.so.$(LIB_VERSION) libctlmgr.so
 
 libctlmgr.so.$(LIB_VERSION): libctlmgr.o
-	$(CC) $(LDFLAGS) $(LIBS) -o $@ $<
+	$(CC) $(LDFLAGS) -o $@ $< $(LIBS)
 
 clean:
 	$(RM) libctlmgr.o libctlmgr.so*

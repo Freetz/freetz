@@ -8,7 +8,7 @@ all: libmultid.so.$(LIB_VERSION)
 	ln -sf libmultid.so.$(LIB_VERSION) libmultid.so
 
 libmultid.so.$(LIB_VERSION): libmultid.o
-	$(CC) $(LDFLAGS) $(LIBS) -o $@ $<
+	$(CC) $(LDFLAGS) -o $@ $< $(LIBS)
 
 clean:
 	$(RM) libmultid.o libmultid.so*
