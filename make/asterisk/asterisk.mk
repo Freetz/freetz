@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 11.10.0-rc1)
+$(call PKG_INIT_BIN, 11.10.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=048ec91fdff2324024adc9b0bf55cd853a7224bd
+$(PKG)_SOURCE_SHA1:=5e39e3184501260ae900d11ce515d706c9939d0c
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
 $(PKG)_CATEGORY:=Unstable
