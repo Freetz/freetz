@@ -78,10 +78,8 @@ homelua_disable() {
 
 isFreetzType()
 {
-	while [ $# -gt 0 ]; do
-		varname=`echo "\\$FREETZ_TYPE"_$1`
-		[ "`eval echo $varname`" == "y" ] && return 0
-		shift
+	for i; do
+		eval [ \"\$FREETZ_TYPE_$i\" == y ] && return 0
 	done
 	return 1
 }
