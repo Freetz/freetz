@@ -9,6 +9,8 @@
 
 //#define DEBUG
 
+#define CHECK_ENV_ON_EACH_INVOCATION 1
+
 #include <dlfcn.h>      // dlopen, dlsym
 #include <stdarg.h>     // vprintf
 #include <stdio.h>      // printf, fprintf, rename...
@@ -44,11 +46,15 @@ static FILE *debug_stream = NULL;
 static int (*real_open)(const char *, int, ...) = NULL;
 static int (*real_open64)(const char *, int, ...) = NULL;
 
+#if defined(__UCLIBC__)
 static int (*real___libc_open)(const char *, int, ...) = NULL;
 static int (*real___libc_open64)(const char *, int, ...) = NULL;
+#endif
 
+#if !CHECK_ENV_ON_EACH_INVOCATION
 static char *filename = NULL;
 static char *filecontent = NULL;
+#endif
 
 static void debug_printf(char *fmt, ...);
 
@@ -77,18 +83,24 @@ static void _libfakefile_init (void) {
 
 	real_open = dlsym_fail_on_error(libc_handle, "open");
 	real_open64 = dlsym_fail_on_error(libc_handle, "open64");
+#if defined(__UCLIBC__)
 	real___libc_open = dlsym_fail_on_error(libc_handle, "__libc_open");
 	real___libc_open64 = dlsym_fail_on_error(libc_handle, "__libc_open64");
+#endif
 
+#if !CHECK_ENV_ON_EACH_INVOCATION
 	filename = getenv_fail_on_error("FAKE_FILE_NAME");
 	filecontent = getenv_fail_on_error("FAKE_FILE_CONTENT");
+#endif
 
 #ifdef DEBUG
 	char *FAKE_FILE_DEBUG_TO = getenv("FAKE_FILE_DEBUG_TO");
 	if (!FAKE_FILE_DEBUG_TO || strcmp(FAKE_FILE_DEBUG_TO, "stderr") == 0) {
 		debug_stream = stderr;
 	} else {
-		debug_stream = fopen(FAKE_FILE_DEBUG_TO, "a");
+		char buf[strlen(FAKE_FILE_DEBUG_TO) + 1/* dot */+ 10/* 32bit signed int */ + 1/* terminating 0 */];
+		snprintf(buf, sizeof(buf), "%s.%i", FAKE_FILE_DEBUG_TO, getpid());
+		debug_stream = fopen(buf, "a");
 		if (!debug_stream) {
 			char errmsgbuf[BUFSIZ];
 			fprintf(stderr, "[libfakefile] unable to open debug stream for writing errno=%i, msg=%s\n", errno, strerror_r(errno, errmsgbuf, BUFSIZ));
@@ -166,6 +178,14 @@ static int get_readonly_fd_pointing_to(const char *membuf) {
 #define OPEN_ALIAS(sym) \
 int sym(char const *, int, ...) __attribute__ ((alias("libfakefile_" #sym)));
 
+#if CHECK_ENV_ON_EACH_INVOCATION
+#define GETENV_VARS \
+	char *filename = getenv("FAKE_FILE_NAME"); \
+	char *filecontent = filename ? getenv("FAKE_FILE_CONTENT") : NULL;
+#else
+#define GETENV_VARS
+#endif
+
 #define OPEN_FCT(sym) \
 int libfakefile_##sym(const char *pathname, int flags, ...) { \
 	mode_t mode = 0; \
@@ -178,9 +198,12 @@ int libfakefile_##sym(const char *pathname, int flags, ...) { \
 \
 	debug_printf("[libfakefile] " #sym "(%s, %i, %u)\n", pathname, flags, mode); \
 \
-	if (filename && filecontent && flags == O_RDONLY && strcmp(pathname, filename) == 0) { \
-		debug_printf("[libfakefile] faking content of \"%s\"\n", pathname); \
-		return get_readonly_fd_pointing_to(filecontent); \
+	if (flags == O_RDONLY) { \
+		GETENV_VARS \
+		if (filename && filecontent && strcmp(pathname, filename) == 0) { \
+			debug_printf("[libfakefile] faking content of \"%s\"\n", pathname); \
+			return get_readonly_fd_pointing_to(filecontent); \
+		} \
 	} \
 \
 	return real_##sym(pathname, flags, mode); \
@@ -189,5 +212,7 @@ OPEN_ALIAS(sym)
 
 OPEN_FCT(open)
 OPEN_FCT(open64)
+#if defined(__UCLIBC__)
 OPEN_FCT(__libc_open)
 OPEN_FCT(__libc_open64)
+#endif
