@@ -135,11 +135,6 @@ menu "Override options"
 	config FREETZ_DL_SITE
 		string "Firmware site"                                                  if FREETZ_DL_OVERRIDE
 		#
-		default "@AVM/fritz.wlan_repeater_300E/firmware/deutsch"                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_300E && FREETZ_TYPE_LANG_DE
-		default "@AVM/fritz.wlan_repeater_300E/firmware/english"                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_300E && FREETZ_TYPE_LANG_EN
-		#
-		default "@AVM/fritz.powerline_546E/deutsch"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_546E
-		#
 		default "@AVM/fritzbox.fon/firmware/deutsch"                            if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 		default "@AVM/fritzbox.fon/firmware/english/annex_a"                    if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
 		default "@AVM/fritzbox.fon/firmware/english/annex_b"                    if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_B
@@ -310,11 +305,6 @@ menu "Override options"
 
 	config FREETZ_DL_SOURCE
 		string "Firmware source"                                                if FREETZ_DL_OVERRIDE
-		#
-		default "fritz.wlan_repeater_300E.101.06.00.image"                      if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_300E && FREETZ_TYPE_LANG_DE
-		default "FRITZ.Box_WLAN_Repeater_300E.en.101.05.10.image"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_300E && FREETZ_TYPE_LANG_EN
-		#
-		default "FRITZ.Powerline_546E.118.05.53.image"                          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_546E
 		#
 		default "fritz.box_fon.06.04.33.image"                                  if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 		default "fritz.box_fon.annexa.en.06.04.49.image"                        if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -487,11 +477,6 @@ menu "Override options"
 	config FREETZ_DL_SOURCE_MD5
 		string "MD5 checksum for downloaded Image"  if FREETZ_DL_OVERRIDE
 		depends on FREETZ_TYPE_FIRMWARE_FINAL
-		#
-		default "b961ef2de8aae4cf5770009f6bf41f30"  if FREETZ_TYPE_300E && FREETZ_TYPE_LANG_DE
-		default "c95936b91875da84a4091b0bdb67676c"  if FREETZ_TYPE_300E && FREETZ_TYPE_LANG_EN
-		#
-		default "dca39713823b13e65ae906c93ce52912"  if FREETZ_TYPE_546E
 		#
 		default "57692fa45d7d8cfa9c97be2cbe3879ad"  if (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 		default "8acd3c4d936b7ff8c5d2065ee7bc7f9b"  if (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
