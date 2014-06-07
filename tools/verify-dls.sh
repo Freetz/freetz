@@ -1,98 +1,102 @@
 #!/bin/bash
-#cuma, 2013-06-29
-#rubbish script to verify download-urls
 
-gen_files() {
+#
+# (c) freetz.org
+#
+# a simple script to verify (firmware) download-URLs
+#
 
-	file="config/mod/download.in"
-
-	nmbr=$(cat $file | wc -l)
-
-	config=FREETZ_DL_SITE
-	pathS=$(cat $file |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
-	pathE=$(cat $file | tail -n $(($nmbr-$pathS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
-
-	config=FREETZ_DL_SOURCE
-	fileS=$(cat $file |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
-	fileE=$(cat $file | tail -n $(($nmbr-$fileS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
-
-	config=FREETZ_DL_SOURCE_MD5
-	md5sS=$(cat $file |nl -ba| sed -n "s/^ *\([0-9]*\).*config $config$/\1/p")
-	md5sE=$(cat $file | tail -n $(($nmbr-$md5sS+1)) |nl -ba | sed -n "s/^ *\([0-9]*\)\t$/\1/p"|head -n1)
-
-#	echo $nmbr
-#	echo "$pathS -- $pathS"
-#	echo "$fileS -- $fileS"
-#	echo "$md5sS -- $md5sS"
-#	echo
-
-	cat $file | tail -n $(($nmbr-$fileS+1)) | head -n $fileE | grep -e '^.*default "' > Config.tmp.file
-	cat $file | tail -n $(($nmbr-$pathS+1)) | head -n $pathE | grep -e '^.*default "' > Config.tmp.path
-	cat $file | tail -n $(($nmbr-$md5sS+1)) | head -n $md5sE | grep -e '^.*default "' > Config.tmp.md5s
-
+#
+# stdin - content to search in
+# $1    - menuconfig option name
+#
+extract_menuconfig_defaults() {
+	sed -r -n \
+	-e '/^[ \t]*config[ \t]+'"$1"'[ \t]*$/,/^[ \t]*config[ \t]+.*$/ {
+		//! {
+			s,^[ \t]*default[ \t]+(.*),\1,p
+		}
+	}'
 }
 
-del_files() {
-	rm -rf \
-	  Config.tmp.file \
-	  Config.tmp.path \
-	  Config.tmp.md5s \
-	  2>/dev/null
+normalize_white_spaces() {
+	sed -r -e 's/[\t]+/ /g' -e 's/[ ]{2,}/ /g'  -e 's/^[ ]+//' -e 's/[ ]+$//' -e 's/(!) /\1/g' -e 's/ ([)])/\1/g'
 }
 
-check_web() {
-	c=0
-	cnt="$(grep -vEi 'FREETZ_TYPE_CUSTOM|BETA|Labor' Config.tmp.file| sed "s/.*default \"//g" |wc -l)"
-	echo -e "\nFound $cnt URLs\n"
-	cat Config.tmp.file |grep -vEi "FREETZ_TYPE_CUSTOM|BETA|Labor"| sed 's/.*default "//g' | while read line; do
-		let c++
-		firm="${line%%\"*}"
-		cond="${line#*if }"
-		path="$(cat Config.tmp.path | sed -n "s/.*default \"\(.*\)\".*if $cond$/\1/p")"
-		[ -z "$path" ] && echo -e "$c/$cnt $firm\nPATH\n"
-		[ -z "$path" ] && continue
-		full="$path/$firm"
-		echo -en "$c/$cnt $full "
+limit_to() {
+	sed -r -n -e '/'"$1"'/ {s, && '"$1"',,p;s,'"$1"' && ,,p;}'
+}
 
-		if [ ${full:0:4} == "@AVM" ]; then
-			full=${full/@AVM\//}
-			sites[0]=http://download.avm.de/fritz.box/$full
-			sites[1]=ftp://service.avm.de/$full
-			sites[2]=ftp://ftp.avm.de/fritz.box/$full
-			num_sites=3
-		elif [ ${full:0:8} == "@TELEKOM" ]; then
-			full=${full/@TELEKOM\//}
-			sites[0]=http://www.telekom.de/dlp/eki/downloads/$full
-			sites[1]=http://www.t-home.de/dlp/eki/downloads/$full
-			sites[2]=http://hilfe.telekom.de/dlp/eki/downloads/$full
-			num_sites=3
-		else
-			sites[0]=$full
-			num_sites=1
+to_associative_array() {
+	sed -r -e 's,^"([^"]*)" (.*),["\2"]="\1",'
+}
+
+#
+# $1 - "site" menuconfig symbol (e.g. FREETZ_DL_SITE)
+# $2 - "filename" menuconfig symbol (e.g. FREETZ_DL_SOURCE)
+# $3 - filter symbol (e.g. FREETZ_TYPE_FIRMWARE_FINAL)
+#
+extract_urls() {
+	local site_symbol="$1" filename_symbol="$2" filter_symbol="$3"
+	local menuconfigfile= site= filename= condition=
+
+	menuconfigfile="./config/mod/download.in"
+	if [ ! -f "$menuconfigfile" ]; then
+		echo >&2 "Menuconfig file \"$file\" not found."
+		exit 1
+	fi
+
+	eval "local -A sites=($(cat "${menuconfigfile}" | extract_menuconfig_defaults "${site_symbol}" | normalize_white_spaces | limit_to "${filter_symbol}" | to_associative_array))"
+	eval "local -A filenames=($(cat "${menuconfigfile}" | extract_menuconfig_defaults "${filename_symbol}" | normalize_white_spaces | limit_to "${filter_symbol}" | to_associative_array))"
+
+	if [ ${#sites[@]} != ${#filenames[@]} ]; then
+		echo >&2 "Inconsistent ${site_symbol} and "${filename_symbol}" values"
+		exit 1
+	fi
+
+	for condition in "${!filenames[@]}"; do
+		filename=${filenames["$condition"]}
+		site=${sites["$condition"]}
+		if [ -z "${site}" ]; then
+			echo >&2 "No ${site_symbol}-entry for \"${filename}\" found."
+			exit 1
 		fi
-
-		head=""
-		for (( i=0; i<num_sites; i++ )); do
-			rets="$(curl -I "${sites[$i]}" 2>/dev/null | grep '^Content-Length: .......')"
-			[ -n "$rets" ] && retv="0" || retv="1"
-			head="$retv$head"
-			echo -n "... "
-#			echo -e "\n${sites[$i]}"
-			[ "${head:0:1}" == "0" ] && break
-		done
-		echo
-		[ "$head" != "${head//0/}" ] && echo -e "$c/$cnt $rets\n" || echo -e "FAIL\n"
-	done
+		echo -e "${site}\t${filename}"
+	done | sort -t $'\t' -f -k 2
 }
 
-if [ ! -d config/ ]; then
-	echo "Directory ./config/ not found!"
-	exit 1
-fi
+check_urls() {
+	local line= site= filename= dl_tool=./tools/freetz_download
+	local -i c=0 c_failed=0 total=0
 
-# main
-gen_files
-check_web
-del_files
+	if [ ! -x "${dl_tool}" ]; then
+		echo >&2 "Freetz-download-tool (${dl_tool}) not found."
+		exit 1
+	fi
 
+	total=$(echo "$1" | wc -l)
+	echo "Found ${total} URLs"
 
+	while read line; do
+		c=$((c+1))
+		filename=$(echo "${line}" | cut -d $'\t' -s -f 2)
+		site=$(echo "${line}" | cut -d $'\t' -s -f 1)
+
+		echo -ne "${c}/${total} ${filename} <-- ${site} ... "
+		if ${dl_tool} --no-append-servers check "${filename}" "${site}"; then
+			echo OK
+		else
+			echo FAILED
+			c_failed=$((c_failed+1))
+		fi
+	done <<< "${1}"
+
+	if [ "${c_failed}" -gt 0 ]; then
+		echo >&2 "Warning: ${c_failed} out of ${total} downloads failed."
+	fi
+}
+
+final_firmwares="$(extract_urls FREETZ_DL_SITE FREETZ_DL_SOURCE FREETZ_TYPE_FIRMWARE_FINAL)"
+labor_firmwares="$(extract_urls FREETZ_DL_SITE FREETZ_DL_SOURCE_CONTAINER FREETZ_TYPE_FIRMWARE_LABOR)"
+
+check_urls "$(echo -e "${final_firmwares}\n${labor_firmwares}")"
