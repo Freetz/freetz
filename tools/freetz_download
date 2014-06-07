@@ -62,27 +62,41 @@ do_download()
 
 do_check()
 {
-	[ "$DEBUG" == "1" ] && echo \
-	"LC_ALL=C wget -t3 --timeout=20 --no-check-certificate --passive-ftp --spider -S \"$1\" 2>&1"
-	wget_output=$(LC_ALL=C wget -t3 --timeout=20 --no-check-certificate --passive-ftp --spider -S "$1" 2>&1)
-	wget_result=$?
-	if [ "$wget_result" != "0" ]; then
-		return $wget_result
-	fi
+	local mode wget_output wget_result
+	for mode in --spider --output-document=/dev/null; do
+		[ "$DEBUG" == "1" ] && \
+		echo         "LC_ALL=C wget -t3 --timeout=20 --no-check-certificate --passive-ftp -S $mode \"$1\" 2>&1"
+		wget_output=$(LC_ALL=C wget -t3 --timeout=20 --no-check-certificate --passive-ftp -S $mode "$1" 2>&1)
+		wget_result=$?
+		if [ "$wget_result" != "0" ]; then
+			# workaround wget spider-mode bug (false negative): known to happen with all sites
+			# with forbidden directory listing. wget in spider-mode first checks the directory
+			# containing the downloaded file. After getting "403 Forbidden" it stops and doesn't
+			# make any further checks.
+			if echo "$wget_output" | grep -qEi "403 Forbidden"; then
+				continue
+			fi
 
-	# workaround wget-bug: while checking availability of a file on an ftp-site
-	# it prints "no such file" but doesn't set return code appropriately
-	if echo "$wget_output" | grep -qEi "(no such file|file does not exist)"; then
-		return 1
-	fi
+			# real negative
+			return $wget_result
+		fi
 
-	# workaround yet another hassle: web-servers redirecting to some "file does not exist"-page, e.g. 404.html.
-	# heuristic - we never download html-pages, so the content type of the downloaded file should be something other than 'text/html'.
-	# note: disabling redirection with "--max-redirect=0" does not work as it's a legitimate behavior
-	# for the mirror sites to redirect to some geographically nearby location.
-	if echo "$wget_output" | grep -i "Content-Type" | tail -1 | grep -qi "text/html"; then
-		return 1
-	fi
+		# workaround wget-bug: while checking availability of a file on an ftp-site
+		# it prints "no such file" but doesn't set return code appropriately
+		if echo "$wget_output" | grep -qEi "(no such file|file does not exist)"; then
+			return 1
+		fi
+
+		# workaround yet another hassle: web-servers redirecting to some "file does not exist"-page, e.g. 404.html.
+		# heuristic - we never download html-pages, so the content type of the downloaded file should be something other than 'text/html'.
+		# note: disabling redirection with "--max-redirect=0" does not work as it's a legitimate behavior
+		# for the mirror sites to redirect to some geographically nearby location.
+		if echo "$wget_output" | grep -i "Content-Type" | tail -1 | grep -qi "text/html"; then
+			return 1
+		fi
+
+		break
+	done
 
 	return 0
 }
