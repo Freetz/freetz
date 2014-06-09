@@ -1,0 +1,128 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:simpleType name="TCategory">
+		<xsd:annotation>
+			<xsd:documentation>
+				0 - not a VIP
+				1 - VIP
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:integer">
+			<xsd:enumeration value="0"/>
+			<xsd:enumeration value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="TNumberType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="home"/>
+			<xsd:enumeration value="work"/>
+			<xsd:enumeration value="mobile"/>
+			<xsd:enumeration value="fax_work"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="TNumber">
+		<xsd:attribute name="type" type="TNumberType" use="required"/>
+		<xsd:attribute name="quickdial" type="xsd:unsignedLong" use="optional"/>
+		<xsd:attribute name="vanity" type="xsd:string" use="optional"/>
+		<xsd:attribute name="id" type="xsd:unsignedLong" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					Missing when bookType = 4.
+					Required since bookType = 5.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="prio" type="xsd:unsignedLong" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="TPerson">
+		<xsd:sequence>
+			<xsd:element name="realName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="TTelephony">
+		<xsd:sequence>
+			<xsd:element name="number" type="TNumber" minOccurs="1" maxOccurs="9">
+				<xsd:annotation>
+					<xsd:documentation>
+						bookType=3: maxOccurs="1"
+						bookType=4: maxOccurs="3"
+						bookType=5: maxOccurs="9"
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="nid" type="xsd:unsignedLong" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					Missing when bookType = 4.
+					Required since bookType = 5.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="TContact">
+		<xsd:sequence>
+			<xsd:element name="category" type="TCategory" minOccurs="1" maxOccurs="1" default="0"/>
+
+			<xsd:element name="person" type="TPerson" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="telephony" type="TTelephony" minOccurs="1" maxOccurs="1"/>
+
+			<!-- TODO: type is unknown, only empty value has been seen so far -->
+			<xsd:element name="services" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+
+			<!-- TODO: type is unknown, only empty value has been seen so far -->
+			<xsd:element name="setup" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+
+			<xsd:element name="mod_time" type="xsd:unsignedLong" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Number of seconds since 01.01.2000 01:00:00.
+						Appears since bookType = 5.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="uniqueid" type="xsd:unsignedLong" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Appears since bookType = 5.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="TPhonebook">
+		<xsd:sequence>
+			<xsd:element name="contact" type="TContact" minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="TPhonebooks">
+		<xsd:sequence>
+			<xsd:element name="phonebook" type="TPhonebook" minOccurs="0" maxOccurs="unbounded"/>
+			<!--
+			The following two elements appear only in "cat /var/flash/phonebook"-version.
+			-->
+			<!--
+			<xsd:element name="uniqueid" type="xsd:unsignedLong" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="featureflags" type="xsd:unsignedLong" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Observed values: 8 (booktype5) & 9 (booktype4)
+						Meaning: not (yet) known.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			-->
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="phonebooks" type="TPhonebooks"/>
+
+</xsd:schema>
