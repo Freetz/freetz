@@ -1,0 +1,84 @@
+sidType
+-------
+
+LCR method:
+if [ -f "$Rlink/login_sid.lua" ]; then
+	if ! type ctlmgr_ctl >/dev/null; then
+		sidType=1
+	else
+		value="$(ctlmgr_ctl r boxusers settings/skip_auth_from_homenetwork)"
+		case $value in
+			no-emu|err|er) sidType=1 ;;
+			*) sidType=2 ;;
+		esac
+	fi
+	if [ $sidType = 1 -a ! -f "$Rlink/html/login_sid.xml" ]; then
+		l "Session Management kann nicht ausgewertet werden" 'R'
+	fi
+elif [ -f "$Rlink/html/login_sid.xml" ]; then
+	sidType=1
+fi
+
+alternative (fw_version based) method:
+if fw_version < 05.50; then
+	sidType=1
+else
+	sidType=2
+fi
+
+
+bookType
+--------
+
+LCR method:
+if [ $sidType = 2 ]; then
+	l 'Firmware ermoeglicht Verwaltung mehrerer Telefonbuecher, jeder Eintrag bis zu 9 Rufnummern'
+	bookType=5
+elif [ -f "$Rlink/html/login_sid.xml" ] && grep -q "EditPhonebook" "$Rlink/html/de/home/fonbuch.frm" 2>/dev/null; then
+	# ER: die Log-Meldung unten ist etwas verwirrend. Auf einer 7170.04.88 (als Beipsiel) gibt es keine Möglichkeit
+	# _mehrere_ Telefonbücher über Web-If zu verwalten. Das Format, in dem das eine Telefonbuch gespeichert wird,
+	# ist jedoch gleich dem Format der Firmwares mit der Unterstützung für mehrere Telefonbücher.
+	l 'Firmware ermoeglicht Verwaltung mehrerer Telefonbuecher'
+	bookType=4
+else
+	for file in $Rlink/html/de/home/fonbuch.frm $Rlink/html/de/fon/fonbuch.html $Rlink/html/de/home/fonbuch.html; do
+		if [ -f $file ]; then
+			l "Pruefe Datei: $file"
+			if grep -q 'telcfg:settings/Phonebook/Entry/list' $file; then
+				bookType=3
+				break
+			fi
+		fi
+	done
+	if [ "$bookType" = 3 ]; then
+		l 'Telefonbuch ermoeglicht mehrere Rufnummern pro Eintrag'
+	else
+		bookType=2 # added by ER, original LCR code sets bookType to 2 a bit later
+		l 'Telefonbuch ermoeglicht eine Rufnummer pro Eintrag'
+	fi
+fi
+
+phonebook encoding
+------------------
+
+LCR method:
+f=$Rlink/html/login.html
+code=
+if [ -f $f ]; then
+	code="$(grep 'charset=' $f |sed -n "s/.*charset=\\(.*\\)\">.*/\\1/p")"
+	[ $code = 'utf-8' ] && utf8=1
+	l "Telefonbuch ist [$code] kodiert"
+fi
+if [ -z "$code" ]; then
+	f=$Rlink/html/de/login.html
+	if [ -f $f ]; then
+	code="$(grep 'charset=' $f |sed -n "s/.*charset=\\(.*\\)\">.*/\\1/p")"
+	[ $code = 'utf-8' ] && utf8=1
+	l "Telefonbuch ist [$code] kodiert"
+fi
+if [ -z "$code" ];then
+	l "Telefonbuchkodierung konnte nicht ermittelt werden (verwende Standard Kodierung ISO-8859-15)." R
+fi
+
+alternative method:
+grep /var/flash/phonebook or one of the exported files (e.g. /var/tmp/pbd.export)
