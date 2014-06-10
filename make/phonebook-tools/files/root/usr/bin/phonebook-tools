@@ -1,0 +1,72 @@
+#!/bin/busybox sh
+
+SED="busybox sed"
+TR="busybox tr"
+DOS2UNIX="busybox dos2unix"
+
+linearize() {
+	$TR $'\n' ' '
+}
+
+# prerequisite: input is linearized
+normalize_whitespaces() {
+	$SED -r -e '{
+		s,\t, ,g             # replace tabs with spaces
+		s/[ ]{2,}/ /g        # replace multiple spaces with a single one (also within xml-element value, design decision)
+		s, ?(<[/?]?) ?,\1,g  # remove unnecessary spaces before/after
+		s, ?([/?]?>) ?,\1,g  # xml-element open/close tokens
+	}'
+}
+
+# prerequisite: input is linearized && whitespace-normalized
+ensure_well_formed_xml() {
+	# xml in /var/flash/phonebook is not well-formed
+	$SED -r -e '{
+		s,(<[?][^?>]+)(>),\1?\2,                   # xml-declaration is wrong: <? ... > instead of <? ... ?>
+		s,([?]>)(<phonebook[ >]),\1<phonebooks>\2, # multiple root elements (<phonebook>), fix it by surrounding it with
+		s,(</phonebook>)$,\1</phonebooks>,         # <phonebooks> (AVM uses the same xml-element in the exported version)
+	}'
+}
+
+# prerequisite: input is linearized && whitespace-normalized && well-formed
+remove_unnecessary_var_flash_only_elements() {
+	$SED -r -e '{
+		s,<featureflags>[^<]*</featureflags>,,g
+		s,<uniqueid>[^<]*</uniqueid>(<phonebook[ >]),\1,g
+	}'
+}
+
+# prerequisite: input is linearized && whitespace-normalized && well-formed
+pretty_print_xml() {
+	# TODO: indentation?
+	$SED -r -e '{
+		s,>$,>\n,
+		s,><,>\n<,g
+	}'
+}
+
+# prerequisite: input is linearized && whitespace-normalized && well-formed
+to_csv() {
+	$SED -r -e '{
+		s,(<contact[ >]),\n\1,g
+		s,(</contact>)<,\1\n<,g
+	}' \
+	| $SED -r -n \
+	-e '/^<contact[ >]/ {                                                                       # consider only contact lines
+		/(<number[^>]+type="intern"|@hd-telefonie|realName>(Wecker|ISDN\/DECT Rundruf))/ !{ # not containing some internal numbers
+			                                                                            # TODO: looks like a contact without category (i.e. <category/>) is an internal number
+			s,<(mod_time|uniqueid)>[^<]*</\1>,,g                                        # remove
+			s,<(services|setup)/>,,g                                                    #        irrelevant
+			s,</?(contact|person|telephony)[^>]*>,,g                                    #                   elements
+			s, (prio|id)="[^"]*",,g                                                     #                       and attributes
+			s,(type="fax)_work",\1",g                                                   # replace "fax_work" with just "fax" (cosmetic only)
+			p
+		}
+	}'
+}
+
+# phonebook2xml
+#cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | remove_unnecessary_var_flash_only_elements | pretty_print_xml
+
+# phonebook2csv
+cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_csv
