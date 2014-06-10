@@ -70,6 +70,7 @@
 		<xsd:attribute name="nid" type="xsd:unsignedLong" use="optional">
 			<xsd:annotation>
 				<xsd:documentation>
+					Number of phone numbers.
 					Missing when bookType = 4.
 					Required since bookType = 5.
 				</xsd:documentation>
@@ -113,6 +114,8 @@
 		<xsd:sequence>
 			<xsd:element name="contact" type="TContact" minOccurs="1" maxOccurs="unbounded"/>
 		</xsd:sequence>
+		<xsd:attribute name="owner" type="xsd:unsignedLong" use="optional"/>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
 	</xsd:complexType>
 
 	<xsd:complexType name="TPhonebooks">
