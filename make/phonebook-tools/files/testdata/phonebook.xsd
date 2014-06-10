@@ -19,6 +19,7 @@
 			<xsd:enumeration value="work"/>
 			<xsd:enumeration value="mobile"/>
 			<xsd:enumeration value="fax_work"/>
+			<xsd:enumeration value="memo"/>
 			<xsd:enumeration value="intern"/>
 		</xsd:restriction>
 	</xsd:simpleType>
@@ -26,14 +27,14 @@
 	<xsd:simpleType name="TNumberPattern">
 		<xsd:restriction base="xsd:string">
 			<xsd:minLength value="1"/>
-			<xsd:pattern value="(([*#][*#0-9]*[*#])?([+]?[0-9][-0-9]*[0-9])?|[0-9]+@hd-telefonie.avm.de)"/>
+			<xsd:pattern value="(([*#][*#0-9]*[*#])?([+]?[0-9]([-0-9]*[0-9])?)?|[0-9]+@hd-telefonie.avm.de)"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:complexType name="TNumber">
 		<xsd:simpleContent>
 			<xsd:extension base="TNumberPattern">
-				<xsd:attribute name="type" type="TNumberType" use="required"/>
+				<xsd:attribute name="type" type="TNumberType" use="optional"/>
 				<xsd:attribute name="quickdial" type="xsd:unsignedLong" use="optional"/>
 				<xsd:attribute name="vanity" type="xsd:string" use="optional"/>
 				<xsd:attribute name="id" type="xsd:unsignedLong" use="optional">
