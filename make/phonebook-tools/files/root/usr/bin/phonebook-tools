@@ -45,23 +45,82 @@ pretty_print_xml() {
 	}'
 }
 
+unescape_xml_entity_references() {
+	# see http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
+	$SED -r -e '{
+		s,&lt\;,<,g
+		s,&gt\;,>,g
+		s,&amp\;,\&,g
+		s,&quot\;,",g
+		s,&apos;,'"'"',g
+	}'
+}
+
 # prerequisite: input is linearized && whitespace-normalized && well-formed
-to_csv() {
+to_tsv() {
+	# TODO: consider encoding
+	# write header line
+	echo -e "VIP\tContactName\tNumber\tNumberType\tQuickDialNumber\tVanityNumber"
 	$SED -r -e '{
 		s,(<contact[ >]),\n\1,g
 		s,(</contact>)<,\1\n<,g
 	}' \
 	| $SED -r -n \
 	-e '/^<contact[ >]/ {                                                                       # consider only contact lines
-		/(<number[^>]+type="intern"|@hd-telefonie|realName>(Wecker|ISDN\/DECT Rundruf))/ !{ # not containing some internal numbers
-			                                                                            # TODO: looks like a contact without category (i.e. <category/>) is an internal number
+		/<category\/>/ !{                                                                   # not containing some internal numbers (a contact without category - i.e. <category/> - is an internal number)
 			s,<(mod_time|uniqueid)>[^<]*</\1>,,g                                        # remove
 			s,<(services|setup)/>,,g                                                    #        irrelevant
 			s,</?(contact|person|telephony)[^>]*>,,g                                    #                   elements
-			s, (prio|id)="[^"]*",,g                                                     #                       and attributes
+			s, (prio|id)="[^"]*",,g                                                     #                           and attributes
 			s,(type="fax)_work",\1",g                                                   # replace "fax_work" with just "fax" (cosmetic only)
 			p
 		}
+	}' \
+	| $SED -r -e '{
+		s,(<number[ >]),\n\1,g                                                              # put each phone number on its own line
+	}' \
+	| $SED -r -n -e '{                                                                          # convert xml to tsv (tab separated values)
+		/^<(category)>[^<]*<\/\1><(realName)>[^<]*<\/\2>$/ {
+			s,<(category|realName)>([^<]*)<\/\1>,\2\t,g                                 # keep category & realName in the hold buffer
+			h
+		}
+		/^<number[ >]/ {                                                                    # and add it to each phone number line
+			s,<(number)([^>]*)>([^<]*)<\/\1>,\3\t\2,g                                   # extract number, keep other number attributes
+			#
+			/ type="[^"]*"/ !{                                                          # if type-attribute does not exist
+				s,(.*[\t])([^\t]*),\1\t\2,                                          # append empty cell
+			}
+			/ type="[^"]*"/ {                                                           # if type-attribute exists
+				s,(.*[\t])([^\t]*) type="([^"]*)"(.*),\1\3\t\2\4,                   # extract it
+			}
+			#
+			/ quickdial="[^"]*"/ !{                                                     # if quickdial-attribute does not exist
+				s,(.*[\t])([^\t]*),\1\t\2,                                          # append empty cell
+			}
+			/ quickdial="[^"]*"/ {                                                      # if quickdial-attribute exists
+				s,(.*[\t])([^\t]*) quickdial="([^"]*)"(.*),\1\3\t\2\4,              # extract it
+			}
+			#
+			/ vanity="[^"]*"/ !{                                                        # if vanity-attribute does not exist
+				s,(.*[\t])([^\t]*),\1\t\2,                                          # append empty cell
+			}
+			/ vanity="[^"]*"/ {                                                         # if vanity-attribute exists
+				s,(.*[\t])([^\t]*) vanity="([^"]*)"(.*),\1\3\t\2\4,                 # extract it
+			}
+			#
+			G                                                                           # append category & realName to the pattern space by getting them from the hold buffer
+			s,([^\n]*)\n([^\n]*),\2\1,                                                  # put category & realName in front of the number and its attributes
+			p
+		}
+	}' \
+	| unescape_xml_entity_references
+}
+
+tsv_to_csv() {
+	$SED -r -e '{
+		s,","",g                                                                            # unescape double-quote sign according to RFC4180 2.7
+		s,([^\t]*),"\1",g                                                                   # escape each cell with "
+		s/\t/,/g                                                                            # replace tab with comma
 	}'
 }
 
@@ -69,4 +128,4 @@ to_csv() {
 #cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | remove_unnecessary_var_flash_only_elements | pretty_print_xml
 
 # phonebook2csv
-cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_csv
+cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_tsv | tsv_to_csv
