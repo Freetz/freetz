@@ -187,7 +187,7 @@ while true; do
 					BOOK="$2"
 					;;
 				*)
-					if ! echo $2 | grep -qE "^[0-9]+([, ][ ]*[0-9]+)*$"; then
+					if ! echo $2 | $GREP -qE "^[0-9]+([, ][ ]*[0-9]+)*$"; then
 						echo >&2 "Error: invalid $1 parameter \"$2\""
 						usage
 						exit 1
