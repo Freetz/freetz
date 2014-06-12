@@ -1,8 +1,37 @@
 #!/bin/busybox sh
 
+#
+# (c) 2014 freetz.org
+#
+
+DOS2UNIX="busybox dos2unix"
+GETOPT="busybox getopt"
+GREP="busybox grep"
 SED="busybox sed"
 TR="busybox tr"
-DOS2UNIX="busybox dos2unix"
+
+SELF=$(basename "$0")
+
+usage() {
+	local to_usage= to_help=
+	case "${SELF}" in
+		*2tsv|*2csv|*2xml)
+			;;
+		*)
+			to_usage=" <-t|--to tsv|csv|xml>"
+			to_help=$'\n'"    -t|--to     tsv|csv|xml                      output format, default: tsv"
+			;;
+	esac
+cat << EOF
+Usage: ${SELF} [-h|--help] [-b|--book <active|bookid1,bookid2,...|all>] [-m|--method <pbd|cat>|-]${to_usage}
+    -h|--help                                    print this help and exit
+    -b|--book   active|bookid1,bookid2,...|all   phonebooks to export, default: active
+    -m|--method pbd|cat|-                        phonebook read method, default: pbd
+                                                  * pbd --exportbook <bookid>
+                                                  * cat /var/flash/phonebook
+                                                  * stdin${to_help}
+EOF
+}
 
 linearize() {
 	$TR $'\n' ' '
@@ -124,8 +153,102 @@ tsv_to_csv() {
 	}'
 }
 
-# phonebook2xml
-#cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | remove_unnecessary_var_flash_only_elements | pretty_print_xml
 
-# phonebook2csv
-cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_tsv | tsv_to_csv
+# parse arguments
+BOOK="active"
+METHOD="-" # TODO: change to pbd as soon as implemented
+case "${SELF}" in
+	*2tsv|*2csv|*2xml)
+		TO="${SELF:$((${#SELF}-3)):3}"
+		ARGS=$($GETOPT -o hb:m:   --long help,book:,method:     -n "${SELF}" -- "$@")
+		;;
+	*)
+		TO="tsv"
+		ARGS=$($GETOPT -o hb:m:t: --long help,book:,method:,to: -n "${SELF}" -- "$@")
+		;;
+esac
+# we assume getopt call is the last command in both case-branches above
+if [ "$?" -ne 0 ]; then
+	usage
+	exit 1
+fi
+
+eval set -- "${ARGS}"
+
+while true; do
+	case "$1" in
+		-h|--help)
+			usage
+			exit 1
+			;;
+		-b|--book)
+			case "$2" in
+				active|all)
+					BOOK="$2"
+					;;
+				*)
+					if ! echo $2 | grep -qE "^[0-9]+([, ][ ]*[0-9]+)*$"; then
+						echo >&2 "Error: invalid $1 parameter \"$2\""
+						usage
+						exit 1
+					fi
+					BOOK=$(echo $2 | $TR "," " ")
+					;;
+			esac
+			shift 2
+			;;
+		-m|--method)
+			case "$2" in
+				pbd|cat|-)
+					METHOD="$2"
+					;;
+				*)
+					echo >&2 "Error: invalid $1 parameter \"$2\""
+					usage
+					exit 1
+					;;
+			esac
+			shift 2
+			;;
+		-t|--to)
+			case "$2" in
+				tsv|csv|xml)
+					TO="$2"
+					;;
+				*)
+					echo >&2 "Error: invalid $1 parameter \"$2\""
+					usage
+					exit 1
+					;;
+			esac
+			shift 2
+			;;
+		--)
+			shift
+			break
+			;;
+		*)
+			echo >&2 "Error: internal error!"
+			exit 1
+			;;
+	esac
+done
+
+if [ "$#" -ne 0 ]; then
+	echo >&2 "Error: unexpected parameter(s) $@"
+	usage
+	exit 1
+fi
+
+# process
+case "${TO}" in
+	tsv)
+		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_tsv
+		;;
+	csv)
+		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_tsv | tsv_to_csv
+		;;
+	xml)
+		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | remove_unnecessary_var_flash_only_elements | pretty_print_xml
+		;;
+esac
