@@ -65,6 +65,21 @@ remove_unnecessary_var_flash_only_elements() {
 	}'
 }
 
+# creates regex or-pattern from all arguments, i.e. $1|$2|$3|...
+regex_or_pattern() {
+	(IFS=$'|'; echo -n "$*")
+}
+
+# prerequisite: input is whitespace-normalized
+xml_element_per_line() {
+	# tags like <element/> are not supported yet (just not necessary as of now)
+	local element_name_pattern=$(regex_or_pattern "$@")
+	$SED -r -e '{
+		s,(.)(<('"${element_name_pattern}"')[ >]),\1\n\2,g           # put each xml-element
+		s,(</('"${element_name_pattern}"')>)(.),\1\n\3,g             # on a separate line
+	}'
+}
+
 # prerequisite: input is linearized && whitespace-normalized && well-formed
 pretty_print_xml() {
 	# TODO: indentation?
@@ -83,7 +98,7 @@ determine_active_phonebook_id() {
 filter_by_book_id_pattern() {
 	local filter_pattern="<phonebook[ >]" # all pattern
 	if [ "${BOOK}" != "all" ]; then
-		local filter_pattern="<phonebook[^>]* owner=\"$(echo ${BOOK} | $SED -r -e 's, ,|,g')\"[^>]*>"
+		local filter_pattern="<phonebook[^>]* owner=\"$(regex_or_pattern ${BOOK})\"[^>]*>"
 		if echo ${BOOK} | $GREP -qE "(^| )0( |$)"; then
 			# book with id 0 has no attributes
 			filter_pattern="(${filter_pattern}|<phonebook>)"
@@ -100,10 +115,7 @@ filter_by_book_id() {
 		return
 	fi
 
-	$SED -r -e '{
-		s,(<phonebook[ >]),\n\1,g              # put each phonebook-element
-		s,(</phonebook>)<,\1\n<,g              # on a separate line
-	}' \
+	xml_element_per_line phonebook \
 	| $SED -r -n -e '{
 		/^<phonebook[ >]/ !p                   # keep all non-phonebook-lines
 		/^'"$(filter_by_book_id_pattern)"'/ p  # keep all phonebook-lines with id contained in $BOOK
@@ -127,10 +139,8 @@ to_tsv() {
 	# TODO: consider encoding
 	# write header line
 	echo -e "VIP\tContactName\tNumber\tNumberType\tQuickDialNumber\tVanityNumber"
-	$SED -r -e '{
-		s,(<contact[ >]),\n\1,g
-		s,(</contact>)<,\1\n<,g
-	}' \
+
+	xml_element_per_line contact \
 	| $SED -r -n \
 	-e '/^<contact[ >]/ {                                                                       # consider only contact lines
 		/<category\/>/ !{                                                                   # not containing some internal numbers (a contact without category - i.e. <category/> - is an internal number)
