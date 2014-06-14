@@ -19,17 +19,18 @@ usage() {
 			;;
 		*)
 			to_usage=" <-t|--to tsv|csv|xml>"
-			to_help=$'\n'"    -t|--to     tsv|csv|xml                      output format, default: tsv"
+			to_help=$'\n'"    -t|--to tsv|csv|xml                        output format, default: tsv"
 			;;
 	esac
 cat << EOF
 Usage: ${SELF} [-h|--help] [-b|--book <active|bookid1,bookid2,...|all>] [-m|--method <pbd|cat>|-]${to_usage}
-    -h|--help                                    print this help and exit
-    -b|--book   active|bookid1,bookid2,...|all   phonebooks to export, default: active
-    -m|--method pbd|cat|-                        phonebook read method, default: pbd
-                                                  * pbd --exportbook <bookid>
-                                                  * cat /var/flash/phonebook
-                                                  * stdin${to_help}
+    -h|--help                                  print this help and exit
+    -b|--book active|bookid1,bookid2,...|all   phonebooks to export, default: active
+    -i|--internal                              show internal contacts (tsv,csv only), default: do not show them
+    -m|--method pbd|cat|-                      phonebook read method, default: pbd
+                                                * pbd --exportbook <bookid>
+                                                * cat /var/flash/phonebook
+                                                * stdin${to_help}
 EOF
 }
 
@@ -140,10 +141,20 @@ to_tsv() {
 	# write header line
 	echo -e "VIP\tContactName\tNumber\tNumberType\tQuickDialNumber\tVanityNumber"
 
+	local filter_internal_contacts_pattern=
+	if [ "$SHOW_INTERNAL" -eq 0 ]; then
+		# a contact without category - i.e. <category/> - is an internal contact like Telefon, Wecker, HD-Ansage, etc.
+		filter_internal_contacts_pattern='/<category\/>/ !'
+	else
+		# do not filter internal contacts out, transform <category/>
+		# to <category></category> to simplify further processing
+		filter_internal_contacts_pattern='s,<(category)/>,<\1></\1>,; '
+	fi
+
 	xml_element_per_line contact \
 	| $SED -r -n \
 	-e '/^<contact[ >]/ {                                                                       # consider only contact lines
-		/<category\/>/ !{                                                                   # not containing some internal numbers (a contact without category - i.e. <category/> - is an internal number)
+		'"${filter_internal_contacts_pattern}"'{                                            # filter internal contacts out if necessary
 			s,<(mod_time|uniqueid)>[^<]*</\1>,,g                                        # remove
 			s,<(services|setup)/>,,g                                                    #        irrelevant
 			s,</?(contact|person|telephony)[^>]*>,,g                                    #                   elements
@@ -152,9 +163,7 @@ to_tsv() {
 			p
 		}
 	}' \
-	| $SED -r -e '{
-		s,(<number[ >]),\n\1,g                                                              # put each phone number on its own line
-	}' \
+	| xml_element_per_line number \
 	| $SED -r -n -e '{                                                                          # convert xml to tsv (tab separated values)
 		/^<(category)>[^<]*<\/\1><(realName)>[^<]*<\/\2>$/ {
 			s,<(category|realName)>([^<]*)<\/\1>,\2\t,g                                 # keep category & realName in the hold buffer
@@ -203,15 +212,16 @@ tsv_to_csv() {
 
 # parse arguments
 BOOK="active"
+SHOW_INTERNAL=0
 METHOD="-" # TODO: change to pbd as soon as implemented
 case "${SELF}" in
 	*2tsv|*2csv|*2xml)
 		TO="${SELF:$((${#SELF}-3)):3}"
-		ARGS=$($GETOPT -o hb:m:   --long help,book:,method:     -n "${SELF}" -- "$@")
+		ARGS=$($GETOPT -o hb:im:   --long help,book:,internal,method:     -n "${SELF}" -- "$@")
 		;;
 	*)
 		TO="tsv"
-		ARGS=$($GETOPT -o hb:m:t: --long help,book:,method:,to: -n "${SELF}" -- "$@")
+		ARGS=$($GETOPT -o hb:im:t: --long help,book:,internal,method:,to: -n "${SELF}" -- "$@")
 		;;
 esac
 # we assume getopt call is the last command in both case-branches above
@@ -243,6 +253,10 @@ while true; do
 					;;
 			esac
 			shift 2
+			;;
+		-i|--internal)
+			SHOW_INTERNAL=1
+			shift
 			;;
 		-m|--method)
 			case "$2" in
