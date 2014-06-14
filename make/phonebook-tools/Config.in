@@ -1,0 +1,13 @@
+config FREETZ_PACKAGE_PHONEBOOK_TOOLS
+	bool "Phone book tools (UNDER DEVELOPMENT)"
+	select FREETZ_BUSYBOX_GETOPT
+	select FREETZ_BUSYBOX_GREP
+	select FREETZ_BUSYBOX_FEATURE_GREP_EGREP_ALIAS
+	select FREETZ_BUSYBOX_SED
+	select FREETZ_BUSYBOX_TR
+	default n
+	help
+		A set of tools for reading and converting Fritz!Box phone book
+		to such (easy parseable) formats like:
+		 - .csv (comma-separated values), or
+		 - .tsv (tab-separated values).
