@@ -74,6 +74,43 @@ pretty_print_xml() {
 	}'
 }
 
+# TODO: implement me
+determine_active_phonebook_id() {
+	echo -n 0
+}
+
+# prerequisite: BOOK variable is set and its value is valid
+filter_by_book_id_pattern() {
+	local filter_pattern="<phonebook[ >]" # all pattern
+	if [ "${BOOK}" != "all" ]; then
+		local filter_pattern="<phonebook[^>]* owner=\"$(echo ${BOOK} | $SED -r -e 's, ,|,g')\"[^>]*>"
+		if echo ${BOOK} | $GREP -qE "(^| )0( |$)"; then
+			# book with id 0 has no attributes
+			filter_pattern="(${filter_pattern}|<phonebook>)"
+		fi
+	fi
+	echo -n "${filter_pattern}"
+}
+
+# prerequisite: input is linearized && whitespace-normalized
+filter_by_book_id() {
+	if [ "${BOOK}" = "all" ]; then
+		# don't filter anything, just pass the input through
+		cat -
+		return
+	fi
+
+	$SED -r -e '{
+		s,(<phonebook[ >]),\n\1,g              # put each phonebook-element
+		s,(</phonebook>)<,\1\n<,g              # on a separate line
+	}' \
+	| $SED -r -n -e '{
+		/^<phonebook[ >]/ !p                   # keep all non-phonebook-lines
+		/^'"$(filter_by_book_id_pattern)"'/ p  # keep all phonebook-lines with id contained in $BOOK
+	}' \
+	| linearize
+}
+
 unescape_xml_entity_references() {
 	# see http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
 	$SED -r -e '{
@@ -240,15 +277,19 @@ if [ "$#" -ne 0 ]; then
 	exit 1
 fi
 
+if [ "${BOOK}" = "active" ]; then
+	BOOK="$(determine_active_phonebook_id)"
+fi
+
 # process
 case "${TO}" in
 	tsv)
-		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_tsv
+		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | to_tsv
 		;;
 	csv)
-		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | to_tsv | tsv_to_csv
+		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | to_tsv | tsv_to_csv
 		;;
 	xml)
-		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | remove_unnecessary_var_flash_only_elements | pretty_print_xml
+		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | remove_unnecessary_var_flash_only_elements | pretty_print_xml
 		;;
 esac
