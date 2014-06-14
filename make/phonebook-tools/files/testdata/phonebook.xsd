@@ -3,11 +3,13 @@
 	<xsd:simpleType name="TCategory">
 		<xsd:annotation>
 			<xsd:documentation>
-				0 - not a VIP
-				1 - VIP
+				"" - internal contact like Telefon, Anrufbeantworter, Wecker, HD-Ansage, etc.
+				0  - not a VIP
+				1  - VIP
 			</xsd:documentation>
 		</xsd:annotation>
-		<xsd:restriction base="xsd:integer">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value=""/>
 			<xsd:enumeration value="0"/>
 			<xsd:enumeration value="1"/>
 		</xsd:restriction>
@@ -31,11 +33,17 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="TQuickDial">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[0-9]*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:complexType name="TNumber">
 		<xsd:simpleContent>
 			<xsd:extension base="TNumberPattern">
 				<xsd:attribute name="type" type="TNumberType" use="optional"/>
-				<xsd:attribute name="quickdial" type="xsd:unsignedLong" use="optional"/>
+				<xsd:attribute name="quickdial" type="TQuickDial" use="optional"/>
 				<xsd:attribute name="vanity" type="xsd:string" use="optional"/>
 				<xsd:attribute name="id" type="xsd:unsignedLong" use="optional">
 					<xsd:annotation>
@@ -53,6 +61,8 @@
 	<xsd:complexType name="TPerson">
 		<xsd:sequence>
 			<xsd:element name="realName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="ImageURL" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="imageURL" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -115,7 +125,7 @@
 		<xsd:sequence>
 			<xsd:element name="contact" type="TContact" minOccurs="1" maxOccurs="unbounded"/>
 		</xsd:sequence>
-		<xsd:attribute name="owner" type="xsd:unsignedLong" use="optional"/>
+		<xsd:attribute name="owner" type="xsd:unsignedLong" use="optional" default="0"/>
 		<xsd:attribute name="name" type="xsd:string" use="optional"/>
 	</xsd:complexType>
 

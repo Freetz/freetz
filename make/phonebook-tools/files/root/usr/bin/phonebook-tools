@@ -36,7 +36,11 @@ EOF
 }
 
 linearize() {
-	$TR $'\n' ' '
+	if [ -n "$1" ]; then
+		$TR $'\n' "$1"
+	else
+		$TR -d $'\n'
+	fi
 }
 
 # prerequisite: input is linearized
@@ -49,7 +53,7 @@ normalize_whitespaces() {
 	}'
 }
 
-# prerequisite: input is linearized && whitespace-normalized
+# prerequisite: input is linearized && whitespace-normalized && "unnecessary var flash only elements are removed"
 ensure_well_formed_xml() {
 	# xml in /var/flash/phonebook is not well-formed
 	$SED -r -e '{
@@ -59,7 +63,7 @@ ensure_well_formed_xml() {
 	}'
 }
 
-# prerequisite: input is linearized && whitespace-normalized && well-formed
+# prerequisite: input is linearized && whitespace-normalized
 remove_unnecessary_var_flash_only_elements() {
 	$SED -r -e '{
 		s,<featureflags>[^<]*</featureflags>,,g
@@ -76,10 +80,10 @@ regex_or_pattern() {
 xml_element_per_line() {
 	# tags like <element/> are not supported yet (just not necessary as of now)
 	local element_name_pattern=$(regex_or_pattern "$@")
-	$SED -r -e '{
-		s,(.)(<('"${element_name_pattern}"')[ >]),\1\n\2,g           # put each xml-element
-		s,(</('"${element_name_pattern}"')>)(.),\1\n\3,g             # on a separate line
-	}'
+
+	# put each xml-element on a separate line
+	$SED -r -e 's,(.)(<('"${element_name_pattern}"')[ >]),\1\n\2,g' \
+	| $SED -r -e 's,(</('"${element_name_pattern}"')>)(.),\1\n\3,g'
 }
 
 # prerequisite: input is linearized && whitespace-normalized && well-formed
@@ -156,8 +160,8 @@ to_tsv() {
 	| $SED -r -n \
 	-e '/^<contact[ >]/ {                                                                       # consider only contact lines
 		'"${filter_internal_contacts_pattern}"'{                                            # filter internal contacts out if necessary
-			s,<(mod_time|uniqueid)>[^<]*</\1>,,g                                        # remove
-			s,<(services|setup)/>,,g                                                    #        irrelevant
+			s,<([Ii]mageURL|services|setup|mod_time|uniqueid)>[^<]*</\1>,,g             # remove
+			s,<([Ii]mageURL|services|setup)/>,,g                                        #        irrelevant
 			s,</?(contact|person|telephony)[^>]*>,,g                                    #                   elements
 			s, (prio|id)="[^"]*",,g                                                     #                           and attributes
 			s,(type="fax)_work",\1",g                                                   # replace "fax_work" with just "fax" (cosmetic only)
@@ -353,7 +357,7 @@ if [ "${BOOK}" = "active" ]; then
 fi
 
 # process
-retrieve_book_${METHOD} | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | {
+retrieve_book_${METHOD} | $DOS2UNIX | linearize ' ' | normalize_whitespaces | remove_unnecessary_var_flash_only_elements | ensure_well_formed_xml | filter_by_book_id | {
 	case "${TO}" in
 		tsv)
 			to_tsv
@@ -362,7 +366,7 @@ retrieve_book_${METHOD} | $DOS2UNIX | linearize | normalize_whitespaces | ensure
 			to_tsv | tsv_to_csv
 			;;
 		xml)
-			remove_unnecessary_var_flash_only_elements | pretty_print_xml
+			pretty_print_xml
 			;;
 	esac
 }
