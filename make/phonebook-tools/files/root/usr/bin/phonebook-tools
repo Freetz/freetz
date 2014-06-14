@@ -4,11 +4,11 @@
 # (c) 2014 freetz.org
 #
 
-DOS2UNIX="busybox dos2unix"
 GETOPT="busybox getopt"
 GREP="busybox grep"
 SED="busybox sed"
 TR="busybox tr"
+DOS2UNIX="$TR -d $'\15\32'" # dos2unix is not available by default
 
 SELF=$(basename "$0")
 
@@ -27,10 +27,11 @@ Usage: ${SELF} [-h|--help] [-b|--book <active|bookid1,bookid2,...|all>] [-m|--me
     -h|--help                                  print this help and exit
     -b|--book active|bookid1,bookid2,...|all   phonebooks to export, default: active
     -i|--internal                              show internal contacts (tsv,csv only), default: do not show them
-    -m|--method pbd|cat|-                      phonebook read method, default: pbd
+    -m|--method pbd|cat|stdin|-                phonebook retrieval method, default: $(get_default_retrieval_method)
                                                 * pbd --exportbook <bookid>
                                                 * cat /var/flash/phonebook
-                                                * stdin${to_help}
+                                                * stdin
+                                                * - same as stdin${to_help}
 EOF
 }
 
@@ -209,11 +210,54 @@ tsv_to_csv() {
 	}'
 }
 
+# default phonebook retrieval method
+get_default_retrieval_method() {
+	# heuristic for "started on a Fritz!Box"
+	if uname -m | $GREP -qi "^mips"; then
+		# TODO: change to pbd as soon as implemented
+		echo -n cat
+	else
+		echo -n stdin
+	fi
+}
+
+check_if_fritzbox_uses_xml_based_phonebook() {
+	# source: http://www.wehavemorefun.de/fritzbox/CONFIG_FONBOOK2
+	if [ "${CONFIG_FONBOOK2}" != "y" ]; then
+		echo >&2 "Error: this box doesn't seem to use XML-based phonebook"
+		exit 1
+	fi
+}
+
+retrieve_book_pbd() {
+	check_if_fritzbox_uses_xml_based_phonebook
+	echo >&2 "Error: NOT IMPLEMENTED YET"
+	exit 1
+}
+
+retrieve_book_cat() {
+	check_if_fritzbox_uses_xml_based_phonebook
+
+	local flash_phonebook="/var/flash/phonebook"
+	if [ ! -e "${flash_phonebook}" ]; then
+		echo >&2 "Error: \"${flash_phonebook}\" doesn't exist"
+		exit 1
+	fi
+	if checkempty "${flash_phonebook}" 2>/dev/null; then
+		echo >&2 "Error: \"${flash_phonebook}\" is empty"
+		exit 1
+	fi
+	cat "${flash_phonebook}"
+}
+
+retrieve_book_stdin() {
+	cat -
+}
 
 # parse arguments
 BOOK="active"
 SHOW_INTERNAL=0
-METHOD="-" # TODO: change to pbd as soon as implemented
+METHOD=$(get_default_retrieval_method)
 case "${SELF}" in
 	*2tsv|*2csv|*2xml)
 		TO="${SELF:$((${#SELF}-3)):3}"
@@ -260,8 +304,11 @@ while true; do
 			;;
 		-m|--method)
 			case "$2" in
-				pbd|cat|-)
+				pbd|cat|stdin)
 					METHOD="$2"
+					;;
+				-)
+					METHOD="stdin"
 					;;
 				*)
 					echo >&2 "Error: invalid $1 parameter \"$2\""
@@ -306,14 +353,16 @@ if [ "${BOOK}" = "active" ]; then
 fi
 
 # process
-case "${TO}" in
-	tsv)
-		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | to_tsv
-		;;
-	csv)
-		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | to_tsv | tsv_to_csv
-		;;
-	xml)
-		cat - | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | remove_unnecessary_var_flash_only_elements | pretty_print_xml
-		;;
-esac
+retrieve_book_${METHOD} | $DOS2UNIX | linearize | normalize_whitespaces | ensure_well_formed_xml | filter_by_book_id | {
+	case "${TO}" in
+		tsv)
+			to_tsv
+			;;
+		csv)
+			to_tsv | tsv_to_csv
+			;;
+		xml)
+			remove_unnecessary_var_flash_only_elements | pretty_print_xml
+			;;
+	esac
+}
