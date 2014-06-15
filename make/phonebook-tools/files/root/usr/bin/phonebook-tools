@@ -25,9 +25,9 @@ usage() {
 cat << EOF
 Usage: ${SELF} [-h|--help] [-b|--book <active|bookid1,bookid2,...|all>] [-m|--method <pbd|cat>|-]${to_usage}
     -h|--help                                  print this help and exit
-    -b|--book active|bookid1,bookid2,...|all   phonebooks to export, default: active
+    -b|--book active|bookid1,bookid2,...|all   phonebooks to export, default: $(default_book)
     -i|--internal                              show internal contacts (tsv,csv only), default: do not show them
-    -m|--method pbd|cat|stdin|-                phonebook retrieval method, default: $(get_default_retrieval_method)
+    -m|--method pbd|cat|stdin|-                phonebook retrieval method, default: $(default_retrieval_method)
                                                 * pbd --exportbook <bookid>
                                                 * cat /var/flash/phonebook
                                                 * stdin
@@ -106,11 +106,6 @@ pretty_print_xml() {
 		s,>$,>\n,
 		s,><,>\n<,g
 	}'
-}
-
-# TODO: implement me
-determine_active_phonebook_id() {
-	echo -n 0
 }
 
 # prerequisite: BOOK variable is set and its value is valid
@@ -227,8 +222,19 @@ tsv_to_csv() {
 	}'
 }
 
+# TODO: implement me
+determine_active_book_id() {
+	# "ctlmgr_ctl r telcfg settings/Phonebook/Id" doesn't work for firmwares >=05.50 (empty response)
+	echo -n 0
+}
+
+# TODO: change to "active" as soon as we know how to determine the id of the active phone book
+default_book() {
+	echo -n all
+}
+
 # default phonebook retrieval method
-get_default_retrieval_method() {
+default_retrieval_method() {
 	# heuristic for "started on a Fritz!Box"
 	if uname -m | $GREP -qi "^mips"; then
 		echo -n pbd
@@ -302,9 +308,9 @@ retrieve_book_stdin() {
 }
 
 # parse arguments
-BOOK="active"
+BOOK=$(default_book)
 SHOW_INTERNAL=0
-METHOD=$(get_default_retrieval_method)
+METHOD=$(default_retrieval_method)
 case "${SELF}" in
 	*2tsv|*2csv|*2xml)
 		TO="${SELF:$((${#SELF}-3)):3}"
@@ -396,7 +402,7 @@ if [ "$#" -ne 0 ]; then
 fi
 
 if [ "${BOOK}" = "active" ]; then
-	BOOK="$(determine_active_phonebook_id)"
+	BOOK="$(determine_active_book_id)"
 fi
 
 # process
