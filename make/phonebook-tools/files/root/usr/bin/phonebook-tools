@@ -63,6 +63,13 @@ ensure_well_formed_xml() {
 	}'
 }
 
+# pbd retrieval method joins multiple xml documents together without taking care of the proper xml structure (for reasons of simplicity)
+# this function fixes the resulting (invalid) xml document by removing unnecessary parts
+# prerequisite: input is linearized && whitespace-normalized
+fix_join_effects() {
+	$SED -r -e 's,</phonebooks><[?][^>]+><phonebooks>,,g'
+}
+
 # prerequisite: input is linearized && whitespace-normalized
 remove_unnecessary_var_flash_only_elements() {
 	$SED -r -e '{
@@ -71,9 +78,15 @@ remove_unnecessary_var_flash_only_elements() {
 	}'
 }
 
+# joins all arguments starting from the 2nd one together using the 1st character of $1 as delimiter
+# i.e. converts $1 $2 $3 ... to $2${DELIMITER}$3${DELIMITER}$4${DELIMITER}... whereas DELIMITER=${1:0:1}
+join() {
+	(IFS="$1"; shift; echo -n "$*")
+}
+
 # creates regex or-pattern from all arguments, i.e. $1|$2|$3|...
 regex_or_pattern() {
-	(IFS=$'|'; echo -n "$*")
+	join $'|' "$@"
 }
 
 # prerequisite: input is whitespace-normalized
@@ -147,7 +160,7 @@ to_tsv() {
 	echo -e "VIP\tContactName\tNumber\tNumberType\tQuickDialNumber\tVanityNumber"
 
 	local filter_internal_contacts_pattern=
-	if [ "$SHOW_INTERNAL" -eq 0 ]; then
+	if [ "${SHOW_INTERNAL}" -eq 0 ]; then
 		# a contact without category - i.e. <category/> - is an internal contact like Telefon, Wecker, HD-Ansage, etc.
 		filter_internal_contacts_pattern='/<category\/>/ !'
 	else
@@ -208,7 +221,7 @@ to_tsv() {
 
 tsv_to_csv() {
 	$SED -r -e '{
-		s,","",g                                                                            # unescape double-quote sign according to RFC4180 2.7
+		s,","",g                                                                            # escape double-quote sign according to RFC4180 2.7
 		s,([^\t]*),"\1",g                                                                   # escape each cell with "
 		s/\t/,/g                                                                            # replace tab with comma
 	}'
@@ -218,8 +231,7 @@ tsv_to_csv() {
 get_default_retrieval_method() {
 	# heuristic for "started on a Fritz!Box"
 	if uname -m | $GREP -qi "^mips"; then
-		# TODO: change to pbd as soon as implemented
-		echo -n cat
+		echo -n pbd
 	else
 		echo -n stdin
 	fi
@@ -235,8 +247,37 @@ check_if_fritzbox_uses_xml_based_phonebook() {
 
 retrieve_book_pbd() {
 	check_if_fritzbox_uses_xml_based_phonebook
-	echo >&2 "Error: NOT IMPLEMENTED YET"
-	exit 1
+
+	if ! type pbd >/dev/null 2>&1; then
+		echo >&2 "Warning: pbd not found, falling back to the cat-method"
+		retrieve_book_cat
+		return $?
+	fi
+
+
+	local cmd xml_content="" pbd_export="/var/tmp/pbd.export"
+
+	# the 1st command exports all phonebooks except for the internal one (=that with id=255)
+	# the 2nd one - the internal one
+	for cmd in \
+		"pbd --export" \
+		"$([ "${SHOW_INTERNAL}" -ne 0 ] && echo -n pbd --exportbook 255)" \
+	; do
+		rm -f "${pbd_export}"
+
+		${cmd}
+		if [ "$?" -ne 0 -o ! -f "${pbd_export}" ]; then
+			echo >&2 "Warning: failed while doing ${cmd}, falling back to the cat-method"
+			rm -f "${pbd_export}"
+			retrieve_book_cat
+			return $?
+		fi
+
+		xml_content=$(join $'\n' "${xml_content}" "$(cat "${pbd_export}")")
+		rm -f "${pbd_export}"
+	done
+
+	echo -n "${xml_content}"
 }
 
 retrieve_book_cat() {
@@ -357,7 +398,7 @@ if [ "${BOOK}" = "active" ]; then
 fi
 
 # process
-retrieve_book_${METHOD} | $DOS2UNIX | linearize ' ' | normalize_whitespaces | remove_unnecessary_var_flash_only_elements | ensure_well_formed_xml | filter_by_book_id | {
+retrieve_book_${METHOD} | $DOS2UNIX | linearize ' ' | normalize_whitespaces | fix_join_effects | remove_unnecessary_var_flash_only_elements | ensure_well_formed_xml | filter_by_book_id | {
 	case "${TO}" in
 		tsv)
 			to_tsv
