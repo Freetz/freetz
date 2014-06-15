@@ -263,6 +263,8 @@ retrieve_book_pbd() {
 		"pbd --export" \
 		"$([ "${SHOW_INTERNAL}" -ne 0 ] && echo -n pbd --exportbook 255)" \
 	; do
+		[ -z "${cmd}" ] && continue
+
 		rm -f "${pbd_export}"
 
 		${cmd}
