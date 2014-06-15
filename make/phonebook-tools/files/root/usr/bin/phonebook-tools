@@ -26,6 +26,7 @@ cat << EOF
 Usage: ${SELF} [-h|--help] [-b|--book <active|bookid1,bookid2,...|all>] [-m|--method <pbd|cat>|-]${to_usage}
     -h|--help                                  print this help and exit
     -b|--book active|bookid1,bookid2,...|all   phonebooks to export, default: $(default_book)
+    -e|--encoding                              include encoding in the header line (tsv,csv only), default: no encoding included
     -i|--internal                              show internal contacts (tsv,csv only), default: do not show them
     -m|--method pbd|cat|stdin|-                phonebook retrieval method, default: $(default_retrieval_method)
                                                 * pbd --exportbook <bookid>
@@ -150,9 +151,16 @@ unescape_xml_entity_references() {
 
 # prerequisite: input is linearized && whitespace-normalized && well-formed
 to_tsv() {
-	# TODO: consider encoding
-	# write header line
-	echo -e "VIP\tContactName\tNumber\tNumberType\tQuickDialNumber\tVanityNumber"
+	# header line
+	echo -ne "VIP\tContactName\tNumber\tNumberType\tQuickDialNumber\tVanityNumber"
+
+	local encoding_related_code=
+	if [ "${INCLUDE_ENCODING}" -eq 0 ]; then
+		# finish header line, no encoding requested
+		echo
+	else
+		encoding_related_code='/^<[?][^>]* encoding="[^"]*"[^>]*>$/ {s,^.* (encoding="[^"]*").*$,\t\1,p}'
+	fi
 
 	local filter_internal_contacts_pattern=
 	if [ "${SHOW_INTERNAL}" -eq 0 ]; then
@@ -164,20 +172,23 @@ to_tsv() {
 		filter_internal_contacts_pattern='s,<(category)/>,<\1></\1>,; '
 	fi
 
-	xml_element_per_line contact \
-	| $SED -r -n \
-	-e '/^<contact[ >]/ {                                                                       # consider only contact lines
-		'"${filter_internal_contacts_pattern}"'{                                            # filter internal contacts out if necessary
-			s,<([Ii]mageURL|services|setup|mod_time|uniqueid)>[^<]*</\1>,,g             # remove
-			s,<([Ii]mageURL|services|setup)/>,,g                                        #        irrelevant
-			s,</?(contact|person|telephony)[^>]*>,,g                                    #                   elements
-			s, (prio|id)="[^"]*",,g                                                     #                           and attributes
-			s,(type="fax)_work",\1",g                                                   # replace "fax_work" with just "fax" (cosmetic only)
-			p
+	xml_element_per_line phonebooks contact \
+	| $SED -r -n -e '{
+		'"${encoding_related_code}"'                                                        # extract encoding and keep it if requested
+		/^<contact[ >]/ {                                                                   # consider only contact lines
+			'"${filter_internal_contacts_pattern}"'{                                    # filter internal contacts out if necessary
+				s,<([Ii]mageURL|services|setup|mod_time|uniqueid)>[^<]*</\1>,,g     # remove
+				s,<([Ii]mageURL|services|setup)/>,,g                                #        irrelevant
+				s,</?(contact|person|telephony)[^>]*>,,g                            #                   elements
+				s, (prio|id)="[^"]*",,g                                             #                           and attributes
+				s,(type="fax)_work",\1",g                                           # replace "fax_work" with just "fax" (cosmetic only)
+				p
+			}
 		}
 	}' \
 	| xml_element_per_line number \
 	| $SED -r -n -e '{                                                                          # convert xml to tsv (tab separated values)
+		/^[ \t]*encoding="[^"]*"$/ p                                                        # keep encoding
 		/^<(category)>[^<]*<\/\1><(realName)>[^<]*<\/\2>$/ {
 			s,<(category|realName)>([^<]*)<\/\1>,\2\t,g                                 # keep category & realName in the hold buffer
 			h
@@ -309,16 +320,17 @@ retrieve_book_stdin() {
 
 # parse arguments
 BOOK=$(default_book)
+INCLUDE_ENCODING=0
 SHOW_INTERNAL=0
 METHOD=$(default_retrieval_method)
 case "${SELF}" in
 	*2tsv|*2csv|*2xml)
 		TO="${SELF:$((${#SELF}-3)):3}"
-		ARGS=$($GETOPT -o hb:im:   --long help,book:,internal,method:     -n "${SELF}" -- "$@")
+		ARGS=$($GETOPT -o hb:eim:   --long help,book:,encoding,internal,method:     -n "${SELF}" -- "$@")
 		;;
 	*)
 		TO="tsv"
-		ARGS=$($GETOPT -o hb:im:t: --long help,book:,internal,method:,to: -n "${SELF}" -- "$@")
+		ARGS=$($GETOPT -o hb:eim:t: --long help,book:,encoding,internal,method:,to: -n "${SELF}" -- "$@")
 		;;
 esac
 # we assume getopt call is the last command in both case-branches above
@@ -353,6 +365,10 @@ while true; do
 			;;
 		-i|--internal)
 			SHOW_INTERNAL=1
+			shift
+			;;
+		-e|--encoding)
+			INCLUDE_ENCODING=1
 			shift
 			;;
 		-m|--method)
