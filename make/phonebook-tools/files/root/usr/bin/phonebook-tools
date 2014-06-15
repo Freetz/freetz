@@ -256,10 +256,15 @@ default_retrieval_method() {
 
 check_if_fritzbox_uses_xml_based_phonebook() {
 	# source: http://www.wehavemorefun.de/fritzbox/CONFIG_FONBOOK2
-	if [ "${CONFIG_FONBOOK2}" != "y" ]; then
-		echo >&2 "Error: this box doesn't seem to use XML-based phonebook"
-		exit 1
-	fi
+	[ "${CONFIG_FONBOOK2}" = "y" ] && return 0
+
+	local f
+	for f in /etc/init.d/rc.conf /etc/init.d/rc.init; do
+		[ -e "${f}" ] && grep -qE "^export CONFIG_FONBOOK2=([\"']?)y\1$" "${f}" && return 0
+	done
+
+	echo >&2 "Error: this box doesn't seem to use XML-based phonebook"
+	exit 1
 }
 
 retrieve_book_pbd() {
