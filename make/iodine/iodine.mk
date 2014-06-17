@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,0.6.0-rc1)
+$(call PKG_INIT_BIN,0.7.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a15bb4faba020d217016fde6e231074a
+$(PKG)_SOURCE_MD5:=fdbf3b81cd69caf5230d76a8b039fd99
 $(PKG)_SITE:=http://code.kryo.se/iodine
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/iodined
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/iodined
