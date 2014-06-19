@@ -1,6 +1,6 @@
 #!/bin/sh
 PID_FILE=/var/run/onlinechanged
-OC_STATE="$@"
+OC_STATE="$1"
 
 # multid is preloaded with libmultid
 unset LD_PRELOAD
@@ -67,7 +67,7 @@ log "approved"
 for i in /etc/onlinechanged/* /mod/etc/onlinechanged/* /tmp/onlinechanged/* /tmp/flash/onlinechanged/*; do
 	[ ! -s "$i" ] && continue
 	log "executing $i"
-	sh "$i" "$OC_STATE" 2>&1 | while read line; do [ -n "$line" ] && log " * $line"; done
+	sh "$i" "$@" 2>&1 | while read line; do [ -n "$line" ] && log " * $line"; done
 done
 log -e "finished"
 
