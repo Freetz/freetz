@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.1.7)
+$(call PKG_INIT_BIN, 0.1.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ee7f9b766adbf22facfc2f98a908de67
+$(PKG)_SOURCE_MD5:=212a03b32c3e3668f5890f8779a86ded
 $(PKG)_SITE:=http://dumpsterventures.com/jason/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
