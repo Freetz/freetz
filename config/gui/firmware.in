@@ -259,6 +259,10 @@ choice
 		bool "en - international"
 		depends on FREETZ_AVM_HAS_LANG_EN
 
+	config FREETZ_TYPE_LANG_EN_BE
+		bool "be - international/belgian"
+		depends on FREETZ_AVM_HAS_LANG_EN_BE
+
 	config FREETZ_TYPE_LANG_IT
 		bool "it - italian"
 		depends on FREETZ_AVM_HAS_LANG_IT
@@ -320,6 +324,7 @@ config FREETZ_TYPE_LANGUAGE
 	default "de"        if FREETZ_TYPE_LANG_DE
 	default "a-ch"      if FREETZ_TYPE_LANG_A_CH
 	default "en"        if FREETZ_TYPE_LANG_EN
+	default "en"        if FREETZ_TYPE_LANG_EN_BE
 	default "it"        if FREETZ_TYPE_LANG_IT
 
 config FREETZ_TYPE_ALIEN_HARDWARE
