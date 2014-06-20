@@ -109,7 +109,6 @@ menu "Shared libraries"
 endmenu # "Shared libraries" #
 
 
-source config/avm/kernel.in
 comment "Kernel modules (not available, no sources by AVM)"
 	depends on ! FREETZ_REPLACE_MODULE_AVAILABLE
 menu "Kernel modules"
@@ -124,7 +123,6 @@ menu "Busybox applets"
 	source make/busybox/Config.in
 endmenu # "Busybox applets" #
 
-
 source config/gui/external.in
 source config/gui/freetz.in
 source config/gui/building.in
@@ -132,23 +130,24 @@ source config/gui/packing.in
 source config/mod/download.in
 source config/custom.in
 
-### everything below is not visible
-
-source config/mod/firmware.in
-source config/avm/uclibc.in
-source config/avm/compiler.in
-
-source config/pkg/mandatory.in
-source config/pkg/cifs.in
-source config/pkg/nfs.in
+comment "Firmware availability ------------------"
+	depends on FREETZ_TYPE_CUSTOM
+source config/avm/availability.in
 
 comment "Custom options -------------------------"
 	depends on FREETZ_TYPE_CUSTOM
-
 source config/avm/features.in
+source config/avm/mtd.in
 
+### everything below is not visible
+source config/avm/version.in
 source config/avm/architecture.in
-source config/gui/mtd.in
-source config/avm/firmware.in
+source config/avm/compiler.in
+source config/avm/kernel.in
+source config/avm/uclibc.in
 source config/avm/source.in
+source config/mod/kernel.in
 source config/mod/prefix.in
+source config/pkg/mandatory.in
+source config/pkg/cifs.in
+source config/pkg/nfs.in
