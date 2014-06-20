@@ -233,15 +233,35 @@ tsv_to_csv() {
 	}'
 }
 
-# TODO: implement me
 determine_active_book_id() {
-	# "ctlmgr_ctl r telcfg settings/Phonebook/Id" doesn't work for firmwares >=05.50 (empty response)
-	echo -n 0
+	local active_book_id= flash_configd="/var/flash/configd"
+
+	if [ -e "${flash_configd}" ] && ! checkempty "${flash_configd}" 2>/dev/null; then
+		# This branch works for firmware versions >= 05.5x. Firmware versions 05.2x
+		# do have non-empty /var/flash/configd (so we enter the branch) but don't
+		# contain <current_book> element in it.
+
+		# TODO: it should be possible to query the active book id using something like
+		# "ctlmgr_ctl r configd settings/.../current_book" (key is unknown)
+		# "ctlmgr_ctl r configd settings/PBDLUA/current_book" doesn't work unfortunately
+		active_book_id=$(cat "${flash_configd}" | linearize ' ' | normalize_whitespaces | $SED -r -n -e 's,.*<(current_book)>([^<]+)</\1>.*,\2,p')
+	fi
+
+	if [ -z "${active_book_id}" ]; then
+		# This branch seems to work for firmware versions < 05.5x.
+		active_book_id=$(ctlmgr_ctl r telcfg settings/Phonebook/Id 2>/dev/null)
+	fi
+
+	if [ -z "${active_book_id}" ]; then
+		echo >&2 "Warning: failed to determine active-book-id, assuming 0"
+		active_book_id="0"
+	fi
+
+	echo -n ${active_book_id}
 }
 
-# TODO: change to "active" as soon as we know how to determine the id of the active phone book
 default_book() {
-	echo -n all
+	echo -n active
 }
 
 # default phonebook retrieval method
