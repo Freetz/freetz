@@ -36,7 +36,7 @@ $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_DEPENDS_ON += srtp
 $(PKG)_DEPENDS_ON += zlib
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
-$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_DEPENDS_ON += iconv
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY

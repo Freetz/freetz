@@ -14,7 +14,7 @@ $(PKG)_DEPENDS_ON := neon fuse
 $(PKG)_LIBS := \$$(NEON_LIBS)
 
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
-$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_DEPENDS_ON += iconv
 $(PKG)_LIBS += -liconv
 endif
 

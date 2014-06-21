@@ -15,7 +15,7 @@ $(PKG)_CATEGORY:=Unstable
 
 $(PKG)_DEPENDS_ON += sqlite
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
-$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_DEPENDS_ON += iconv
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT

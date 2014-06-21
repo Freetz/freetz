@@ -18,7 +18,7 @@ $(PKG)_NOT_INCLUDED:=$(if $(FREETZ_PACKAGE_SLANG_MODULES),,$($(PKG)_DEST_DIR)$($
 
 $(PKG)_DEPENDS_ON += pcre zlib
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
-$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_DEPENDS_ON += iconv
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --without-onig

@@ -33,7 +33,7 @@ $(PKG)_CODEPAGES_TARGET_DIR:=$($(PKG)_CODEPAGES:%=$($(PKG)_DEST_DIR)$($(PKG)_COD
 
 $(PKG)_DEPENDS_ON += popt ncurses readline
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
-$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_DEPENDS_ON += iconv
 $(PKG)_TARGET_LDFLAGS += -liconv
 endif
 

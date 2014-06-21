@@ -25,7 +25,7 @@ endif
 
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
-$(PKG)_DEPENDS_ON += libiconv
+$(PKG)_DEPENDS_ON += iconv
 $(PKG)_LIBICONV:=-liconv
 else
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
