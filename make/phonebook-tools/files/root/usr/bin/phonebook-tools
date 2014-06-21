@@ -164,12 +164,11 @@ to_tsv() {
 
 	local filter_internal_contacts_pattern=
 	if [ "${SHOW_INTERNAL}" -eq 0 ]; then
-		# a contact without category - i.e. <category/> - is an internal contact like Telefon, Wecker, HD-Ansage, etc.
-		filter_internal_contacts_pattern='/<category\/>/ !'
-	else
-		# do not filter internal contacts out, transform <category/>
-		# to <category></category> to simplify further processing
-		filter_internal_contacts_pattern='s,<(category)/>,<\1></\1>,; '
+		# the following contacts are considered to be internal:
+		#  - containing at least one number with type "intern" or "memo"
+		#  - containing at least one "@hd-telefonie"-number
+		#  - having the following words in their realName: Anrufbeantworter, Wecker, Rundruf
+		filter_internal_contacts_pattern='/(<number[^>]+type="(intern|memo)"|<number[^>]*>[^<]*@hd-telefonie|<realName[^>]*>[^<]*(Anrufbeantworter|Wecker|Rundruf))/ !'
 	fi
 
 	xml_element_per_line phonebooks contact \
@@ -177,11 +176,12 @@ to_tsv() {
 		'"${encoding_related_code}"'                                                        # extract encoding and keep it if requested
 		/^<contact[ >]/ {                                                                   # consider only contact lines
 			'"${filter_internal_contacts_pattern}"'{                                    # filter internal contacts out if necessary
+				s,<(category)/>,<\1></\1>,                                          # transform <category/> to <category></category>
 				s,<([Ii]mageURL|services|setup|mod_time|uniqueid)>[^<]*</\1>,,g     # remove
 				s,<([Ii]mageURL|services|setup)/>,,g                                #        irrelevant
 				s,</?(contact|person|telephony)[^>]*>,,g                            #                   elements
 				s, (prio|id)="[^"]*",,g                                             #                           and attributes
-				s,(type="fax)_work",\1",g                                           # replace "fax_work" with just "fax" (cosmetic only)
+				s,(type="fax)_(home|work)",\1",g                                    # replace "fax_*" with just "fax" (cosmetic only)
 				p
 			}
 		}
