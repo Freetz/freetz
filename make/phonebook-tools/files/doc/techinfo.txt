@@ -82,3 +82,14 @@ fi
 
 alternative method:
 grep /var/flash/phonebook or one of the exported files (e.g. /var/tmp/pbd.export)
+
+phonebook id
+------------
+
+from fon_book.lua:
+if book_id == 0 then return 'standard'
+elseif book_id < 240 then return 'userdefined'
+elseif book_id < 255 then return 'online'
+elseif book_id == 255 then return 'intern'
+elseif book_id == 256 then return 'temporary'
+else return 'unknown'
