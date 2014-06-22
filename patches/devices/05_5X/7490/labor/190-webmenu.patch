@@ -15,7 +15,10 @@
  </div>
 --- usr/www/all/menus/menu_freetz.lua
 +++ usr/www/all/menus/menu_freetz.lua
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,19 @@
++--[[Access denied<?lua
++box.end_page()
++?>]]
 +menu.add_item{
 +page = "/cgi-bin/freetz_status",
 +target = "_blank",
@@ -34,14 +37,13 @@
 +}
 --- usr/www/all/templates/menu_page_head.html
 +++ usr/www/all/templates/menu_page_head.html
-@@ -33,4 +33,10 @@
+@@ -32,5 +32,9 @@
+ menu.write_menu('livetv')
  box.out([[</div>]])
  end
- ?>
-+<div id="MainFreetzhead" class='main_menu_bubble'>
-+<?lua
-+<?include "menus/menu_freetz.lua" ?>
++dofile("../menus/menu_freetz.lua")
++box.out([[<div id="MainFreetzhead" class='main_menu_bubble'>]])
 +menu.write_menu('freetz')
-+?>
-+</div>
++box.out([[</div>]])
+ ?>
  </div>
