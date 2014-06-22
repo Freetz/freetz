@@ -3,18 +3,7 @@
 #linkbox_remove <menu-name>
 #removes links within a box on the left
 linkbox_remove() {
-	# - removes all lines within the following lua-code-block:
-	#   if menu.show_addition_menu("$menuname") then
-	#   ...
-	#   end
-	# - assumes the 1st "end" following "if menu..." is the closing "end" of this "if",
-	#   i.e. no other if's are started within the block
-#	modsed -r \
-#	  "/^[ \t]*if[ \t]+menu[.]show_additional_menu[(]([\"'])$1\1[)][ \t]+then[ \t]*$/,/^[ \t]*end[ \t]*$/ d" \
-#	  "${HTML_LANG_MOD_DIR}/templates/menu_page_head.html"
-
-	# alternative (a more safe) version: instead of removing the block like the version above
-	# it replaces "if menu.show_addition_menu("$menuname") then" with "if false then"
+	# replaces "if menu.show_addition_menu("$menuname") then" with "if false and ... then"
 	modsed -r \
 	  "s,(menu[.]show_additional_menu[(]([\"'])$1\2[)]),false and \1," \
 	  "${HTML_LANG_MOD_DIR}/templates/menu_page_head.html"
