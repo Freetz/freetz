@@ -28,9 +28,7 @@ fi
 
 if [ ! -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 	# removes link on the left (06.00)
-	modsed \
-	  's!menu.show_additional_menu("wizards")!false and &!' \
-	  ${HTML_MOD_DIR}/all/templates/menu_page_head.html
+	linkbox_remove wizards
 else
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then
 		#lua
