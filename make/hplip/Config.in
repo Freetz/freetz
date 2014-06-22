@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_HPLIP
-	bool "HPLIP 3.14.1 (binary only, unstable)"
+	bool "HPLIP 3.14.6 (binary only, unstable)"
 	select FREETZ_PACKAGE_SANE_BACKENDS
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libusb_0
@@ -55,6 +55,7 @@ choice
 		help
 			Supported models:
 			HP Deskjet 1010 Printer
+			HP Deskjet 1011 Printer
 			HP Deskjet 1012 Printer
 			HP Deskjet Ink Advantage 1010 Printer Series
 			HP Deskjet Ink Advantage 1015 Printer
@@ -115,13 +116,14 @@ choice
 		help
 			Supported models:
 			HP Deskjet 1510 All-in-One Printer
+			HP Deskjet 1511 All-in-One Printer
 			HP Deskjet 1512 All-in-One Printer
 			HP Deskjet 1513 All-in-One Printer
+			HP Deskjet 1514 All-in-One Printer
 			HP Deskjet Ink Advantage 1510 All-in-One Printer Series
 			HP Deskjet Ink Advantage 1515 All-in-One Printer
 			HP Deskjet Ink Advantage 1516 All-in-One Printer
 			HP Deskjet Ink Advantage 1518 All-in-One Printer
-			HP Deskjet 1514 All-in-One Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_1600C
 		bool "deskjet_1600c"
@@ -183,11 +185,13 @@ choice
 			Supported models:
 			HP Deskjet 2540 All-in-One Printer
 			HP Deskjet 2542 All-in-One Printer
+			HP Deskjet 2543 All-in-One Printer
+			HP Deskjet 2544 All-in-One Printer
+			HP Deskjet 2549 All-in-One Printer
+			HP Deskjet Ink Advantage 2540 All-in-One Printer Series
 			HP Deskjet Ink Advantage 2545 All-in-One Printer
 			HP Deskjet Ink Advantage 2546 All-in-One Printer
-			HP Deskjet Ink Advantage 2540 All-in-One Printer Series
 			HP Deskjet Ink Advantage 2548 All-in-One Printer
-			HP Deskjet 2544 All-in-One Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_2640_SERIES
 		bool "deskjet_2640_series"
@@ -458,6 +462,15 @@ choice
 			Supported models:
 			HP Deskjet Ink Advantage 4620 e-All-in-One Printer
 			HP Deskjet Ink Advantage 4625 e-All-in-One Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_4640_SERIES
+		bool "deskjet_4640_series"
+		help
+			Supported models:
+			HP Deskjet Ink Advantage 4640 e-All-in-One Printer series
+			HP Deskjet Ink Advantage 4645 e-All-in-One Printer
+			HP Deskjet Ink Advantage 4646 e-All-in-One Printer
+			HP Deskjet Ink Advantage 4648 e-All-in-One Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_500
 		bool "deskjet_500"
@@ -2554,6 +2567,26 @@ choice
 	help
 		Select your printer type here.
 
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_COLOR_FLOWMFP_X585
+		bool "hp_officejet_color_flowmfp_x585"
+		help
+			Supported models:
+			HP Officejet Enterprise Color Flow X585z Multifunction Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_COLOR_MFP_X585
+		bool "hp_officejet_color_mfp_x585"
+		help
+			Supported models:
+			HP Officejet Enterprise Color X585dn Multifunction Printer
+			HP Officejet Enterprise Color X585f Multifunction Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_COLOR_X555
+		bool "hp_officejet_color_x555"
+		help
+			Supported models:
+			HP Officejet Enterprise Color X555dn Printer
+			HP Officejet Enterprise Color X555xh Printer
+
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_251DW_PRINTER
 		bool "hp_officejet_pro_251dw_printer"
 		help
@@ -2565,6 +2598,38 @@ choice
 		help
 			Supported models:
 			HP Officejet Pro 276dw Multifunction Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8610
+		bool "hp_officejet_pro_8610"
+		help
+			Supported models:
+			HP OfficeJet Pro 8610 e-All-in-One Printer
+			HP OfficeJet Pro 8615 e-All-in-One Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8620
+		bool "hp_officejet_pro_8620"
+		help
+			Supported models:
+			HP OfficeJet Pro 8620 e-All-in-One Printer
+			HP OfficeJet Pro 8625 e-All-in-One Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8630
+		bool "hp_officejet_pro_8630"
+		help
+			Supported models:
+			HP OfficeJet Pro 8630 e-All-in-One Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8640
+		bool "hp_officejet_pro_8640"
+		help
+			Supported models:
+			HP OfficeJet Pro 8640 e-All-in-One Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8660
+		bool "hp_officejet_pro_8660"
+		help
+			Supported models:
+			HP OfficeJet Pro 8660 e-All-in-One Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_X451DN_PRINTER
 		bool "hp_officejet_pro_x451dn_printer"
@@ -2750,9 +2815,12 @@ choice
 		bool "officejet_4630_series"
 		help
 			Supported models:
-			HP Officejet 4630 e-All-in-One
+			HP Officejet 4630 e-All-in-One Printer
+			HP Officejet 4631 e-All-in-One Printer
 			HP Officejet 4632 e-All-in-One Printer
+			HP Officejet 4634 e-All-in-One Printer
 			HP Officejet 4635 e-All-in-One Printer
+			HP Officejet 4636 e-All-in-One Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_5100_SERIES
 		bool "officejet_5100_series"
@@ -4321,6 +4389,12 @@ choice
 			HP Color LaserJet CP6015de Printer
 			HP Color LaserJet CP6015n Printer
 
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_FLOW_MFP_M680
+		bool "hp_color_laserjet_flow_mfp_m680"
+		help
+			Supported models:
+			HP Color LaserJet Enterprise Flow Multifunction M680z Printer
+
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_FLOW_MFP_M880
 		bool "hp_color_laserjet_flow_mfp_m880"
 		help
@@ -4328,6 +4402,14 @@ choice
 			HP Color LaserJet Enterprise flow M880 Multifunction Printer series
 			HP Color LaserJet Enterprise flow M880z Multifunction Printer
 			HP Color LaserJet Enterprise flow M880z+ Multifunction Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_M651
+		bool "hp_color_laserjet_m651"
+		help
+			Supported models:
+			HP Color LaserJet Enterprise M651dn Printer
+			HP Color LaserJet Enterprise M651n Printer
+			HP Color LaserJet Enterprise M651xh Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_M750
 		bool "hp_color_laserjet_m750"
@@ -4346,6 +4428,31 @@ choice
 			HP Color LaserJet Enterprise M855dn Printer
 			HP Color LaserJet Enterprise M855xh Printer
 			HP Color LaserJet Enterprise M855x+ Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M476DN
+		bool "hp_color_laserjet_mfp_m476dn"
+		help
+			Supported models:
+			HP Color Laserjet Pro MFP M476dn
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M476DW
+		bool "hp_color_laserjet_mfp_m476dw"
+		help
+			Supported models:
+			HP Color Laserjet Pro MFP M476dw
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M476NW
+		bool "hp_color_laserjet_mfp_m476nw"
+		help
+			Supported models:
+			HP Color Laserjet Pro MFP M476nw
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M680
+		bool "hp_color_laserjet_mfp_m680"
+		help
+			Supported models:
+			HP Color LaserJet Enterprise Multifunction M680dn Printer
+			HP Color LaserJet Enterprise Multifunction M680f Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_PRO_MFP_M176N
 		bool "hp_color_laserjet_pro_mfp_m176n"
@@ -5995,17 +6102,89 @@ choice
 			Supported models:
 			HP LaserJet P4515xm Printer
 
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_M701A
+		bool "hp_laserjet_pro_m701a"
+		help
+			Supported models:
+			HP LaserJet Pro M701a Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_M701N
+		bool "hp_laserjet_pro_m701n"
+		help
+			Supported models:
+			HP LaserJet Pro M701n Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_M706N
+		bool "hp_laserjet_pro_m706n"
+		help
+			Supported models:
+			HP LaserJet Pro M706n Printer
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M125A
+		bool "hp_laserjet_pro_mfp_m125a"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M125a
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M125NW
+		bool "hp_laserjet_pro_mfp_m125nw"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M125nw
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M125RNW
+		bool "hp_laserjet_pro_mfp_m125rnw"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M125rnw
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M126A
+		bool "hp_laserjet_pro_mfp_m126a"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M126a
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M126NW
+		bool "hp_laserjet_pro_mfp_m126nw"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M126nw
+
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M127FN
 		bool "hp_laserjet_pro_mfp_m127fn"
 		help
 			Supported models:
 			HP LaserJet Pro MFP M127fn
 
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M127FP
+		bool "hp_laserjet_pro_mfp_m127fp"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M127fp
+
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M127FW
 		bool "hp_laserjet_pro_mfp_m127fw"
 		help
 			Supported models:
 			HP LaserJet Pro MFP M127fw
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M128FN
+		bool "hp_laserjet_pro_mfp_m128fn"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M128fn
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M128FP
+		bool "hp_laserjet_pro_mfp_m128fp"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M128fp
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M128FW
+		bool "hp_laserjet_pro_mfp_m128fw"
+		help
+			Supported models:
+			HP LaserJet Pro MFP M128fw
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M435NW
 		bool "hp_laserjet_pro_mfp_m435nw"
@@ -6017,7 +6196,7 @@ choice
 		bool "hp_laserjet_pro_mfp_m521dn"
 		help
 			Supported models:
-			HP LaserJet Pro M521dn Multifunction Printer 
+			HP LaserJet Pro M521dn Multifunction Printer
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M521DW
 		bool "hp_laserjet_pro_mfp_m521dw"
@@ -6628,6 +6807,12 @@ choice
 			HP Designjet ColorPro GA Printer
 			HP Designjet ColorPro CAD Printer
 
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_D5800PS_PHOTO
+		bool "hp_designjet_d5800ps_photo"
+		help
+			Supported models:
+			HP DesignJet D5800 60-in Production Printer
+
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_SCANNER_4200
 		bool "hp_designjet_scanner_4200"
 		help
@@ -6709,6 +6894,12 @@ choice
 			Supported models:
 			HP DesignJet T2500 36-in PostScript eMultifunction Printer
 
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T3500PS
+		bool "hp_designjet_t3500ps"
+		help
+			Supported models:
+			HP DesignJet T3500 36-in Production eMFP
+
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T610
 		bool "hp_designjet_t610"
 		help
@@ -6734,6 +6925,12 @@ choice
 			Supported models:
 			HP Designjet t7100 Monochrome
 
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T7200PS
+		bool "hp_designjet_t7200ps"
+		help
+			Supported models:
+			HP Designjet T7200 42-in Production Printer
+
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T770_POSTSCRIPT
 		bool "hp_designjet_t770_postscript"
 		help
@@ -6758,6 +6955,12 @@ choice
 			Supported models:
 			HP Designjet T790ps 24in
 			HP Designjet T790ps 44in
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T795PS_44IN
+		bool "hp_designjet_t795ps_44in"
+		help
+			Supported models:
+			HP Designjet T795 44-in ePrinter
 
 	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T920_POSTSCRIPT
 		bool "hp_designjet_t920_postscript"
@@ -6834,6 +7037,18 @@ choice
 		help
 			Supported models:
 			HP Designjet z6200PS 60in Photo
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z6600PS
+		bool "hp_designjet_z6600ps"
+		help
+			Supported models:
+			HP DesignJet Z6600 PostScript
+
+	config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z6800PS_PHOTO
+		bool "hp_designjet_z6800ps_photo"
+		help
+			Supported models:
+			HP DesignJet Z6800PS Photo
 
 endchoice
 
@@ -7382,6 +7597,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "deskjet_5650" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_5650
 	default "deskjet_3000_j310_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_3000_J310_SERIES
 	default "deskjet_6800" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_6800
+	default "deskjet_4640_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_4640_SERIES
 	default "deskjet_5652" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_5652
 	default "deskjet_890c" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_890C
 	default "deskjet_959c" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_DESKJET_959C
@@ -7531,7 +7747,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "photosmart_a320_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_PHOTOSMART_A320_SERIES
 	default "officejet_4500_g510g-m" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4500_G510G_M
 	default "officejet_4500_g510a-f" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4500_G510A_F
-	default "officejet_series_700" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_700
+	default "officejet_pro_3610" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_3610
 	default "officejet_7200_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_7200_SERIES
 	default "officejet_series_570" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_570
 	default "officejet_4300_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4300_SERIES
@@ -7551,6 +7767,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_r40" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_R40
 	default "officejet_6200_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6200_SERIES
 	default "officejet_r45" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_R45
+	default "officejet_series_700" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_700
 	default "officejet_pro_8500_a910" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_8500_A910
 	default "officejet_pro_l7400" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_L7400
 	default "officejet_d_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_D_SERIES
@@ -7560,6 +7777,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_v40" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_V40
 	default "officejet_k7100" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_K7100
 	default "officejet_series_300" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_300
+	default "hp_officejet_pro_8660" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8660
 	default "officejet_6100" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6100
 	default "officejet_j3500_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_J3500_SERIES
 	default "officejet_4610_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4610_SERIES
@@ -7572,6 +7790,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_pro_k850" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_K850
 	default "officejet_4630_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4630_SERIES
 	default "officejet_pro_8000_enterprise_a811a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_8000_ENTERPRISE_A811A
+	default "hp_officejet_color_x555" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_COLOR_X555
 	default "officejet_j4680_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_J4680_SERIES
 	default "officejet_2620_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_2620_SERIES
 	default "hp_officejet_pro_276dw_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_276DW_MFP
@@ -7590,12 +7809,13 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_5500_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_5500_SERIES
 	default "officejet_4500_k710" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4500_K710
 	default "officejet_6500_e709n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6500_E709N
+	default "hp_officejet_pro_8640" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8640
 	default "officejet_7110_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_7110_SERIES
 	default "officejet_r80xi" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_R80XI
 	default "officejet_7610_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_7610_SERIES
 	default "officejet_150_mobile_l511" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_150_MOBILE_L511
 	default "officejet_g85xi" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_G85XI
-	default "officejet_pro_3610" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_3610
+	default "hp_officejet_color_mfp_x585" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_COLOR_MFP_X585
 	default "officejet_6700" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6700
 	default "officejet_series_580" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_580
 	default "officejet_pro_1170c_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_1170C_SERIES
@@ -7606,6 +7826,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_9100_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_9100_SERIES
 	default "officejet_4500_g510n-z" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4500_G510N_Z
 	default "officejet_6500_e710n-z" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6500_E710N_Z
+	default "hp_officejet_pro_8630" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8630
 	default "officejet_5100_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_5100_SERIES
 	default "officejet_k60" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_K60
 	default "officejet_j6400_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_J6400_SERIES
@@ -7619,7 +7840,8 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_7000_e809a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_7000_E809A
 	default "officejet_6100_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6100_SERIES
 	default "hp_officejet_pro_x551dw_printer" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_X551DW_PRINTER
-	default "officejet_pro_l7300" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_L7300
+	default "officejet_series_520" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_520
+	default "hp_officejet_pro_8620" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8620
 	default "officejet_7100_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_7100_SERIES
 	default "officejet_v40xi" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_V40XI
 	default "officejet_5110" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_5110
@@ -7631,6 +7853,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_6000_e609n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6000_E609N
 	default "officejet_6000_e609a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6000_E609A
 	default "officejet_series_330" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_330
+	default "hp_officejet_pro_8610" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_PRO_8610
 	default "officejet_k80" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_K80
 	default "officejet_r80" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_R80
 	default "officejet_pro_l7600" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_L7600
@@ -7649,9 +7872,10 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "officejet_5600_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_5600_SERIES
 	default "officejet_j4500_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_J4500_SERIES
 	default "officejet_series_320" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_320
-	default "officejet_series_520" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_SERIES_520
+	default "hp_officejet_color_flowmfp_x585" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_OFFICEJET_COLOR_FLOWMFP_X585
 	default "officejet_4200_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_4200_SERIES
 	default "officejet_6150_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_6150_SERIES
+	default "officejet_pro_l7300" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_L7300
 	default "officejet_g85" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_G85
 	default "officejet_pro_k5400" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_K5400
 	default "officejet_pro_8600" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_OFFICEJET_PRO_8600
@@ -7692,6 +7916,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_color_laserjet_cp5225n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP5225N
 	default "hp_color_laserjet_3000" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3000
 	default "hp_color_laserjet_2605dtn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2605DTN
+	default "hp_color_laserjet_2830" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2830
 	default "hp_color_laserjet_3500" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3500
 	default "hp_color_laserjet_cp4520_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP4520_SERIES
 	default "hp_color_laserjet_2500_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2500_SERIES
@@ -7700,10 +7925,13 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_color_laserjet_cm6030_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM6030_MFP
 	default "hp_color_laserjet_2700n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2700N
 	default "hp_color_laserjet_cp6015" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP6015
+	default "hp_color_laserjet_cm3530_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM3530_MFP
 	default "hp_color_laserjet_4610" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_4610
 	default "hp_color_laserjet_cm2320fxi_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM2320FXI_MFP
 	default "hp_color_laserjet_cp3505" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP3505
+	default "hp_color_laserjet_flow_mfp_m680" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_FLOW_MFP_M680
 	default "hp_color_laserjet_2500" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2500
+	default "hp_color_laserjet_cp5225" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP5225
 	default "hp_color_laserjet_cm2320nf_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM2320NF_MFP
 	default "hp_color_laserjet_cm2320n_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM2320N_MFP
 	default "hp_color_laserjet_3600" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3600
@@ -7717,20 +7945,21 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_color_laserjet_2700" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2700
 	default "hp_color_laserjet_1500" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_1500
 	default "hp_color_laserjet_cp1518ni" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP1518NI
-	default "hp_color_laserjet_2830" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2830
+	default "hp_color_laserjet_m651" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_M651
 	default "hp_color_laserjet_3700" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3700
 	default "hp_color_laserjet_3800" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3800
 	default "hp_color_laserjet_cp1515n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP1515N
 	default "hp_color_laserjet_m750" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_M750
 	default "hp_color_laserjet_m855" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_M855
 	default "hp_color_laserjet_cp2025dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP2025DN
+	default "hp_color_laserjet_mfp_m680" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M680
 	default "hp_color_laserjet_5500" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_5500
 	default "hp_color_laserjet_cp2025x" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP2025X
 	default "hp_color_laserjet_5" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_5
 	default "hp_color_laserjet_cm1312nfi_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM1312NFI_MFP
 	default "hp_color_laserjet_3500n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3500N
 	default "hp_color_laserjet_5m" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_5M
-	default "hp_color_laserjet_cm3530_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM3530_MFP
+	default "hp_color_laserjet_cp1514n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP1514N
 	default "hp_color_laserjet_cm4730_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM4730_MFP
 	default "hp_color_laserjet_5550" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_5550
 	default "hp_color_laserjet_cm4540_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM4540_MFP
@@ -7753,19 +7982,20 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_color_laserjet_pro_mfp_m176n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_PRO_MFP_M176N
 	default "hp_color_laserjet_cm1015" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM1015
 	default "hp_color_laserjet_cm1017" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM1017
+	default "hp_color_laserjet_mfp_m476dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M476DN
 	default "hp_color_laserjet_2840" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2840
 	default "hp_color_laserjet_2820" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2820
 	default "hp_color_laserjet_cm1312_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM1312_MFP
 	default "hp_color_laserjet_cp1217" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP1217
 	default "hp_color_laserjet_cp1215" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP1215
-	default "hp_color_laserjet_cp1514n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP1514N
+	default "hp_color_laserjet_mfp_m476dw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M476DW
 	default "hp_color_laserjet_cp2025" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP2025
 	default "hp_color_laserjet_cm2320_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM2320_MFP
-	default "hp_color_laserjet_cp5225" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP5225
+	default "hp_color_laserjet_3700n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3700N
 	default "hp_color_laserjet_2800" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_2800
 	default "hp_color_laserjet_cm6049_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CM6049_MFP
 	default "hp_color_laserjet_cp5225dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_CP5225DN
-	default "hp_color_laserjet_3700n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_3700N
+	default "hp_color_laserjet_mfp_m476nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_COLOR_LASERJET_MFP_M476NW
 	default "hp_laserjet_4l" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4L
 	default "hp_laserjet_700_m712" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_700_M712
 	default "hp_laserjet_3300_3310_3320" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_3300_3310_3320
@@ -7781,7 +8011,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_1200" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1200
 	default "hp_laserjet_pro_mfp_m435nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M435NW
 	default "hp_laserjet_4v" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4V
-	default "hp_laserjet_mfp_m725" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_MFP_M725
+	default "hp_laserjet_pro_mfp_m126a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M126A
 	default "hp_laserjet_400_m401a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_400_M401A
 	default "hp_laserjet_p2015x_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P2015X_SERIES
 	default "hp_laserjet_flow_mfp_m525" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_FLOW_MFP_M525
@@ -7800,18 +8030,21 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_m9059_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M9059_MFP
 	default "hp_laserjet_400_mfp_m425dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_400_MFP_M425DN
 	default "hp_laserjet_p4014dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4014DN
+	default "hp_laserjet_professional_m1137_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1137_MFP
 	default "hp_laserjet_m1537dnf_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M1537DNF_MFP
 	default "hp_laserjet_p4515x" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4515X
-	default "hp_laserjet_m806" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M806
+	default "hp_laserjet_pro_mfp_m125a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M125A
 	default "hp_laserjet_400_color_m451dw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_400_COLOR_M451DW
 	default "hp_laserjet_professional_m1218nfg_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1218NFG_MFP
 	default "hp_laserjet_m3035_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M3035_MFP
-	default "hp_laserjet_m2727nf_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M2727NF_MFP
+	default "hp_laserjet_pro_mfp_m128fn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M128FN
 	default "hp_laserjet_professional_m1138_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1138_MFP
 	default "hp_laserjet_pro_mfp_m521dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M521DN
 	default "hp_laserjet_m9040_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M9040_MFP
 	default "hp_laserjet_p2015_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P2015_SERIES
+	default "hp_laserjet_pro_mfp_m128fp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M128FP
 	default "hp_laserjet_cp1025" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CP1025
+	default "hp_laserjet_pro_mfp_m128fw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M128FW
 	default "hp_laserjet_pro_mfp_m521dw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M521DW
 	default "hp_laserjet_professional_m1132_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1132_MFP
 	default "hp_laserjet_professional_m1136_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1136_MFP
@@ -7823,7 +8056,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_4240" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4240
 	default "hp_laserjet_1320_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1320_SERIES
 	default "hp_laserjet_500_colormfp_m570dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_500_COLORMFP_M570DN
-	default "hp_laserjet_100_colormfp_m175nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_100_COLORMFP_M175NW
+	default "hp_laserjet_1000" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1000
 	default "hp_laserjet_professional_m1213nf_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1213NF_MFP
 	default "hp_laserjet_p4015" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4015
 	default "hp_laserjet_500_colormfp_m570dw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_500_COLORMFP_M570DW
@@ -7839,17 +8072,18 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_6l" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_6L
 	default "hp_laserjet_5si" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5SI
 	default "hp_laserjet_500_color_m551" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_500_COLOR_M551
-	default "hp_laserjet_5l" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5L
+	default "hp_laserjet_600_m601" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_600_M601
 	default "hp_laserjet_m4555_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M4555_MFP
 	default "hp_laserjet_professional_p1107w" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_P1107W
 	default "hp_laserjet_1300" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1300
-	default "hp_laserjet_9000_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_9000_SERIES
+	default "hp_laserjet_pro_mfp_m125rnw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M125RNW
 	default "hp_laserjet_p4515n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4515N
 	default "hp_laserjet_p4015x" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4015X
 	default "hp_laserjet_2430" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_2430
 	default "hp_laserjet_2300_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_2300_SERIES
 	default "hp_laserjet_cp1525n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CP1525N
 	default "hp_laserjet_5200l" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5200L
+	default "hp_laserjet_mfp_m725" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_MFP_M725
 	default "hp_laserjet_6p" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_6P
 	default "hp_laserjet_400_m401dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_400_M401DN
 	default "hp_laserjet_5si_mopier" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5SI_MOPIER
@@ -7858,6 +8092,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_m4345_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M4345_MFP
 	default "hp_laserjet_2200" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_2200
 	default "hp_laserjet_m4349_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M4349_MFP
+	default "hp_laserjet_9000_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_9000_SERIES
 	default "hp_laserjet_4150_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4150_SERIES
 	default "hp_laserjet_4250" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4250
 	default "hp_laserjet_1300n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1300N
@@ -7866,10 +8101,11 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_300_color_m351a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_300_COLOR_M351A
 	default "hp_laserjet_m5035_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M5035_MFP
 	default "hp_laserjet_professional_m1219nf_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1219NF_MFP
+	default "hp_laserjet_pro_m706n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_M706N
 	default "hp_laserjet_5000" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5000
 	default "hp_laserjet_5100_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5100_SERIES
 	default "hp_laserjet_cp1522n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CP1522N
-	default "hp_laserjet_600_m601" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_600_M601
+	default "hp_laserjet_5l" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5L
 	default "hp_laserjet_600_m602" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_600_M602
 	default "hp_laserjet_600_m603" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_600_M603
 	default "hp_laserjet_3030" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_3030
@@ -7917,8 +8153,9 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_4ml" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4ML
 	default "hp_laserjet_cm1417fnw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CM1417FNW
 	default "hp_laserjet_cm1412fn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CM1412FN
-	default "hp_laserjet_9000_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_9000_MFP
-	default "hp_laserjet_professional_m1137_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1137_MFP
+	default "hp_laserjet_pro_m701a" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_M701A
+	default "hp_laserjet_pro_m701n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_M701N
+	default "hp_laserjet_1018" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1018
 	default "hp_laserjet_p2055d" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P2055D
 	default "hp_laserjet_1100xi" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1100XI
 	default "hp_laserjet_professional_m1218nfs_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1218NFS_MFP
@@ -7941,12 +8178,13 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_p4015n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4015N
 	default "hp_laserjet_1012" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1012
 	default "hp_laserjet_m1539dnf_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M1539DNF_MFP
-	default "hp_laserjet_1018" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1018
+	default "hp_laserjet_pro_mfp_m125nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M125NW
 	default "hp_laserjet_1150" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1150
 	default "hp_laserjet_m2727nfs_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M2727NFS_MFP
 	default "hp_laserjet_1320nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1320NW
 	default "hp_laserjet_1200n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1200N
 	default "hp_laserjet_m2727_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M2727_MFP
+	default "hp_laserjet_9000_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_9000_MFP
 	default "hp_laserjet_p2055dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P2055DN
 	default "hp_laserjet_p4515" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4515
 	default "hp_laserjet_4100_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4100_MFP
@@ -7973,11 +8211,11 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_9050" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_9050
 	default "hp_laserjet_cp1527nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CP1527NW
 	default "hp_laserjet_5000_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5000_SERIES
-	default "hp_laserjet_1000" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1000
+	default "hp_laserjet_100_colormfp_m175nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_100_COLORMFP_M175NW
 	default "hp_laserjet_cm1416fnw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CM1416FNW
 	default "hp_laserjet_p1009" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P1009
 	default "hp_laserjet_p2015d_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P2015D_SERIES
-	default "hp_laserjet_1220se" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1220SE
+	default "hp_laserjet_m806" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M806
 	default "hp_laserjet_cp1525nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CP1525NW
 	default "hp_laserjet_4050_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4050_SERIES
 	default "hp_laserjet_300_colormfp_m375nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_300_COLORMFP_M375NW
@@ -7985,6 +8223,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_3100" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_3100
 	default "hp_laserjet_m3027_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M3027_MFP
 	default "hp_laserjet_5200lx" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_5200LX
+	default "hp_laserjet_1220se" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1220SE
 	default "hp_laserjet_professional_p_1102w" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_P_1102W
 	default "hp_laserjet_1300xi" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1300XI
 	default "hp_laserjet_p3004" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P3004
@@ -8004,12 +8243,14 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_p2015dn_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P2015DN_SERIES
 	default "hp_laserjet_professional_m1214nfh_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_M1214NFH_MFP
 	default "hp_laserjet_1100" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1100
+	default "hp_laserjet_pro_mfp_m127fp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M127FP
 	default "hp_laserjet_flow_mfp_m830" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_FLOW_MFP_M830
 	default "hp_laserjet_8150_series" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_8150_SERIES
 	default "hp_laserjet_8000" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_8000
 	default "hp_laserjet_pro_mfp_m127fw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M127FW
 	default "hp_laserjet_professional_p1608dn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_P1608DN
 	default "hp_laserjet_p2014n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P2014N
+	default "hp_laserjet_m2727nf_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M2727NF_MFP
 	default "hp_laserjet_m1319f_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M1319F_MFP
 	default "hp_laserjet_3392" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_3392
 	default "hp_laserjet_pro_mfp_m127fn" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M127FN
@@ -8027,11 +8268,12 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_200_colormfp_m276k" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_200_COLORMFP_M276K
 	default "hp_laserjet_200_colormfp_m276u" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_200_COLORMFP_M276U
 	default "hp_laserjet_200_colormfp_m276v" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_200_COLORMFP_M276V
+	default "hp_laserjet_9065mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_9065MFP
 	default "hp_laserjet_200_colormfp_m276p" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_200_COLORMFP_M276P
 	default "hp_laserjet_200_colormfp_m276q" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_200_COLORMFP_M276Q
 	default "hp_laserjet_200_colormfp_m276r" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_200_COLORMFP_M276R
 	default "hp_laserjet_cp_1025" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CP_1025
-	default "hp_laserjet_p4014n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4014N
+	default "hp_laserjet_pro_mfp_m126nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PRO_MFP_M126NW
 	default "hp_laserjet_m1522_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M1522_MFP
 	default "hp_laserjet_4_plus" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_4_PLUS
 	default "hp_laserjet_3015" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_3015
@@ -8041,7 +8283,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_p1505" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P1505
 	default "hp_laserjet_professional_p1102" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_PROFESSIONAL_P1102
 	default "hp_laserjet_1020" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1020
-	default "hp_laserjet_9065mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_9065MFP
+	default "hp_laserjet_p4014n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_P4014N
 	default "hp_laserjet_1022" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1022
 	default "hp_laserjet_cp1528nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_CP1528NW
 	default "hp_laserjet_m5025_mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M5025_MFP
@@ -8050,6 +8292,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_laserjet_1320n" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_1320N
 	default "hp_laserjet_m1005" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_M1005
 	default "hp_laserjet_400_color_m451nw" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_LASERJET_400_COLOR_M451NW
+	default "hp_designjet_t3500ps" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T3500PS
 	default "hp_designjet_z3100" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z3100
 	default "hp_designjet_4000" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4000
 	default "hp_designjet_350" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_350
@@ -8067,6 +8310,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_designjet_200" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_200
 	default "hp_designjet_t7100ps_monochrome" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T7100PS_MONOCHROME
 	default "hp_designjet_30" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_30
+	default "hp_designjet_t7200ps" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T7200PS
 	default "hp_designjet_110" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_110
 	default "hp_designjet_4520ps" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4520PS
 	default "hp_designjet_815" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_815
@@ -8074,9 +8318,10 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_designjet_2000cp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_2000CP
 	default "hp_designjet_t1200_postscript" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T1200_POSTSCRIPT
 	default "hp_designjet_5500" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_5500
+	default "hp_designjet_z6800ps_photo" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z6800PS_PHOTO
 	default "hp_designjet_3800cp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_3800CP
 	default "hp_designjet_250c" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_250C
-	default "hp_designjet_z5400_postscript" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z5400_POSTSCRIPT
+	default "hp_designjet_4500mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4500MFP
 	default "hp_designjet_4500" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4500
 	default "hp_designjet_800" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_800
 	default "hp_designjet_600" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_600
@@ -8085,6 +8330,7 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_designjet_90" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_90
 	default "hp_designjet_488ca" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_488CA
 	default "hp_designjet_5100" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_5100
+	default "hp_designjet_d5800ps_photo" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_D5800PS_PHOTO
 	default "hp_designjet_t1500_postscript" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T1500_POSTSCRIPT
 	default "hp_designjet_4500ps" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4500PS
 	default "hp_designjet_4000ps_(q1274a)" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4000PS__Q1274A_
@@ -8109,11 +8355,13 @@ config FREETZ_PACKAGE_HPLIP_PRINTER_TYPE
 	default "hp_designjet_820" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_820
 	default "hp_designjet_t770ps_24in" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T770PS_24IN
 	default "hp_designjet_120" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_120
+	default "hp_designjet_z5400_postscript" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z5400_POSTSCRIPT
 	default "hp_designjet_4000ps" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4000PS
 	default "hp_designjet_t1300_postscript" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T1300_POSTSCRIPT
 	default "hp_designjet_z5200_postscript" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z5200_POSTSCRIPT
+	default "hp_designjet_t795ps_44in" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_T795PS_44IN
 	default "hp_designjet_z6100" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z6100
-	default "hp_designjet_4500mfp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_4500MFP
+	default "hp_designjet_z6600ps" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_Z6600PS
 	default "hp_designjet_3500cp" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_3500CP
 	default "hp_designjet_1055cm_plus" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_1055CM_PLUS
 	default "hp_designjet_650c" if FREETZ_PACKAGE_HPLIP_PRINTER_TYPE_HP_DESIGNJET_650C

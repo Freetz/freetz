@@ -17,7 +17,7 @@
  
  # Checks for typedefs, structures, and compiler characteristics.
  AC_C_BIGENDIAN(,[APDK_ENDIAN_FLAG="-DAPDK_LITTLE_ENDIAN"])
-@@ -519,8 +517,6 @@
+@@ -509,8 +507,6 @@
  fi
  
  if test "$hpijs_only_build" = "no" && test "$hpcups_only_build" = "no"; then
@@ -253,7 +253,7 @@
  dist_noinst_SCRIPTS =
  dist_noinst_DATA =
  noinst_PROGRAMS =
-@@ -35,14 +30,6 @@
+@@ -35,14 +31,6 @@
  
  if HPLIP_BUILD
  
@@ -268,7 +268,7 @@
  # hpaio sane backend
  if SCAN_BUILD
  libsane_hpaiodir = $(libdir)/sane
-@@ -59,7 +46,7 @@
+@@ -59,7 +47,7 @@
  libsane_hpaio_la_LDFLAGS = -version-info 1:0:0
  endif
  # The following is a interlibrary dependency that must be compiled first.
@@ -277,7 +277,7 @@
  #libsane_hpaio_la_CFLAGS = -DWITH_NONAMESPACES -DSOAP_DEBUG
  libsane_hpaio_la_CFLAGS = $(DBUS_CFLAGS)
  endif # SCAN_BUILD
-@@ -104,33 +91,10 @@
+@@ -104,33 +92,10 @@
  	ip/hpip.h ip/ipdefs.h ip/xform.h ip/xjpg_dct.h ip/xjpg_huf.h ip/xjpg_mrk.h
  
  
@@ -312,7 +312,7 @@
  if FULL_BUILD
  
  dist_hplip_SCRIPTS = hpssd.py __init__.py hpdio.py
-@@ -352,13 +316,6 @@
+@@ -352,13 +317,6 @@
  dist_policykit_policy_DATA = data/policykit/com.hp.hplip.policy
  endif
  
@@ -326,7 +326,7 @@
  if GUI_BUILD
  # hplip.desktop
  hplip_desktopdir = $(icondir)
-@@ -383,46 +340,6 @@
+@@ -383,46 +341,6 @@
  dist_rip_SCRIPTS = prnt/hpijs/foomatic-rip-hplip
  endif
  
@@ -373,7 +373,7 @@
  if HPIJS_INSTALL
  # hpijs
  bin_PROGRAMS = hpijs
-@@ -503,58 +420,6 @@
+@@ -503,58 +421,6 @@
  endif # HPCUPS ONLY
  endif # HPCUPS_INSTALL
  

@@ -1,0 +1,29 @@
+--- Makefile.am
++++ Makefile.am
+@@ -4,8 +4,8 @@
+ #  (c) 2004-2015 Copyright Hewlett-Packard Development Company, LP
+ #  Author: David Suffield, Naga Samrat Chowdary Narla, Sarbeswar Meher
+ INCLUDES = -Iip -Iio/hpmud -Iscan/sane -Iprnt/hpijs -Icommon/
+-CFLAGS+= -DCONFDIR=\"$(hplip_confdir)\"
+-CXXFLAGS+= -DCONFDIR=\"$(hplip_confdir)\"
++CFLAGS+= -DCONFDIR=\"/mod/etc/default.hplip\"
++CXXFLAGS+= -DCONFDIR=\"/mod/etc/default.hplip\"
+ 
+ hplipdir = $(datadir)/hplip
+ 
+@@ -56,13 +56,13 @@
+ lib_LTLIBRARIES += libhpmud.la
+ 
+ if LIBUSB01_BUILD
+-libhpmud_la_CFLAGS = -DMUDNAME=\"$(MUDNAME)\" -DCONFDIR=\"$(hplip_confdir)\"
++libhpmud_la_CFLAGS = -DMUDNAME=\"$(MUDNAME)\" -DCONFDIR=\"/mod/etc/default.hplip\"
+ libhpmud_la_SOURCES = io/hpmud/hpmud.c io/hpmud/mlc.c io/hpmud/model.c io/hpmud/pml.c \
+ 	  io/hpmud/hpmud.h io/hpmud/hpmudi.h io/hpmud/list.h io/hpmud/mlc.h io/hpmud/pml.h io/hpmud/dot4.c \
+ 	  io/hpmud/dot4.h io/hpmud/jd.c io/hpmud/jd.h io/hpmud/pp.c io/hpmud/pp.h io/hpmud/musb.h io/hpmud/musb_libusb01.c \
+ 	  common/utils.c common/utils.h
+ else
+-libhpmud_la_CFLAGS = -I/usr/include/libusb-1.0 -DMUDNAME=\"$(MUDNAME)\" -DCONFDIR=\"$(hplip_confdir)\"
++libhpmud_la_CFLAGS = -I/usr/include/libusb-1.0 -DMUDNAME=\"$(MUDNAME)\" -DCONFDIR=\"/mod/etc/default.hplip\"
+ libhpmud_la_SOURCES = io/hpmud/hpmud.c io/hpmud/mlc.c io/hpmud/model.c io/hpmud/pml.c \
+ 	  io/hpmud/hpmud.h io/hpmud/hpmudi.h io/hpmud/list.h io/hpmud/mlc.h io/hpmud/pml.h io/hpmud/dot4.c \
+ 	  io/hpmud/dot4.h io/hpmud/jd.c io/hpmud/jd.h io/hpmud/pp.c io/hpmud/pp.h io/hpmud/musb.h io/hpmud/musb.c \
