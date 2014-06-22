@@ -260,18 +260,18 @@ determine_active_book_id() {
 	echo -n ${active_book_id}
 }
 
+running_on_fritzbox() {
+	# heuristic
+	uname -m | $GREP -qi "^mips"
+}
+
 default_book() {
-	echo -n active
+	running_on_fritzbox && echo -n active || echo -n all
 }
 
 # default phonebook retrieval method
 default_retrieval_method() {
-	# heuristic for "started on a Fritz!Box"
-	if uname -m | $GREP -qi "^mips"; then
-		echo -n pbd
-	else
-		echo -n stdin
-	fi
+	running_on_fritzbox && echo -n pbd || echo -n stdin
 }
 
 check_if_fritzbox_uses_xml_based_phonebook() {
