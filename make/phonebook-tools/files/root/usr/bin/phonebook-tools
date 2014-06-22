@@ -177,10 +177,11 @@ to_tsv() {
 		/^<contact[ >]/ {                                                                   # consider only contact lines
 			'"${filter_internal_contacts_pattern}"'{                                    # filter internal contacts out if necessary
 				s,<(category)/>,<\1></\1>,                                          # transform <category/> to <category></category>
-				s,<([Ii]mageURL|services|setup|mod_time|uniqueid)>[^<]*</\1>,,g     # remove
-				s,<([Ii]mageURL|services|setup)/>,,g                                #        irrelevant
-				s,</?(contact|person|telephony)[^>]*>,,g                            #                   elements
-				s, (prio|id)="[^"]*",,g                                             #                           and attributes
+				s,<([Ii]mageURL|id|selfId|mod_time|uniqueid)>[^<]*</\1>,,g          # remove
+				s,<(services|setup)[^>]*>.*</\1>,,g                                 #        irrelevant
+				s,<([Ii]mageURL|services|setup)/>,,g                                #                   elements
+				s,</?(contact|person|telephony)[^>]*>,,g                            #                            and
+				s, (prio|id)="[^"]*",,g                                             #                                attributes
 				s,(type="fax)_(home|work)",\1",g                                    # replace "fax_*" with just "fax" (cosmetic only)
 				p
 			}
@@ -274,6 +275,13 @@ default_retrieval_method() {
 	running_on_fritzbox && echo -n pbd || echo -n stdin
 }
 
+# returns AVM firmware version as integer (i.e. with all dots removed)
+get_avm_firmware_version() {
+	# use CONFIG_VERSION if set, /etc/.version otherwise
+	local v="${CONFIG_VERSION:-$(cat /etc/.version 2>/dev/null || echo 0000)}"
+	echo "${v//.}"
+}
+
 check_if_fritzbox_uses_xml_based_phonebook() {
 	# source: http://www.wehavemorefun.de/fritzbox/CONFIG_FONBOOK2
 	[ "${CONFIG_FONBOOK2}" = "y" ] && return 0
@@ -296,18 +304,21 @@ retrieve_book_pbd() {
 		return $?
 	fi
 
+	local book_id book_ids="" xml_content="" cmd
 
-	local cmd xml_content="" pbd_export="/var/tmp/pbd.export"
+	# AVM constants
+	local pbd_export="/var/tmp/pbd.export"
+	local online_book_ids="240 241 242 243 244 245 246 247 248 249 250 251 252 253 254"
+	local internal_book_id=255
 
-	# the 1st command exports all phonebooks except for the internal one (=that with id=255)
-	# the 2nd one - the internal one
-	for cmd in \
-		"pbd --export" \
-		"$([ "${SHOW_INTERNAL}" -ne 0 ] && echo -n pbd --exportbook 255)" \
-	; do
-		[ -z "${cmd}" ] && continue
+	book_ids="all_user_defined"
+	[ $(get_avm_firmware_version) -ge 0550 ] && book_ids="${book_ids} ${online_book_ids}"
+	[ "${SHOW_INTERNAL}" -ne 0 ]             && book_ids="${book_ids} ${internal_book_id}"
 
+	for book_id in ${book_ids}; do
 		rm -f "${pbd_export}"
+
+		[ "${book_id}" == "all_user_defined" ] && cmd="pbd --export" || cmd="pbd --exportbook ${book_id}"
 
 		${cmd}
 		if [ "$?" -ne 0 -o ! -f "${pbd_export}" ]; then
