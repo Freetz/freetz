@@ -275,6 +275,29 @@ default_retrieval_method() {
 	running_on_fritzbox && echo -n pbd || echo -n stdin
 }
 
+get_avm_config_variable() {
+	local name="$1" value=""
+	eval "value=\$${name}"
+	if [ -n "${value}" ]; then
+		echo -n "${value}"
+		return 0
+	fi
+
+	local f
+	for f in /etc/init.d/rc.conf /etc/init.d/rc.init; do
+		[ -e "${f}" ] || continue
+
+		value=$(cat "${f}" | $SED -r -n -e "s,^export ${name}=([\"']?)([^\"'])+\1$",\2,p)
+
+		if [ -n "${value}" ]; then
+			echo -n "${value}"
+			return 0
+		fi
+	done
+
+	return 1
+}
+
 # returns AVM firmware version as integer (i.e. with all dots removed)
 get_avm_firmware_version() {
 	# use CONFIG_VERSION if set, /etc/.version otherwise
@@ -284,12 +307,7 @@ get_avm_firmware_version() {
 
 check_if_fritzbox_uses_xml_based_phonebook() {
 	# source: http://www.wehavemorefun.de/fritzbox/CONFIG_FONBOOK2
-	[ "${CONFIG_FONBOOK2}" = "y" ] && return 0
-
-	local f
-	for f in /etc/init.d/rc.conf /etc/init.d/rc.init; do
-		[ -e "${f}" ] && $GREP -qE "^export CONFIG_FONBOOK2=([\"']?)y\1$" "${f}" && return 0
-	done
+	[ "$(get_avm_config_variable CONFIG_FONBOOK2)" = "y" ] && return 0
 
 	echo >&2 "Error: this box doesn't seem to use XML-based phonebook"
 	exit 1
@@ -312,8 +330,9 @@ retrieve_book_pbd() {
 	local internal_book_id=255
 
 	book_ids="all_user_defined"
-	[ $(get_avm_firmware_version) -ge 0550 ] && book_ids="${book_ids} ${online_book_ids}"
-	[ "${SHOW_INTERNAL}" -ne 0 ]             && book_ids="${book_ids} ${internal_book_id}"
+	# source: http://www.wehavemorefun.de/fritzbox/Online-Telefonbuch
+	[ "$(get_avm_config_variable CONFIG_ONLINEPB)" = "y" ] && book_ids="${book_ids} ${online_book_ids}"
+	[ "${SHOW_INTERNAL}" -ne 0 ]                           && book_ids="${book_ids} ${internal_book_id}"
 
 	for book_id in ${book_ids}; do
 		rm -f "${pbd_export}"
