@@ -121,6 +121,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_XX
 		)) \
 		|| \
 		( FREETZ_TYPE_LANG_EN_BE && ( \
+			FREETZ_TYPE_7360_V1 || \
 			FREETZ_TYPE_7360_V2 \
 		))
 	default n
@@ -196,6 +197,7 @@ config FREETZ_AVM_HAS_LANG_EN
 config FREETZ_AVM_HAS_LANG_EN_BE
 	bool "Belgian edition of international firmware available"	if FREETZ_TYPE_CUSTOM
 	default y		if \
+		FREETZ_TYPE_7360_V1 || \
 		FREETZ_TYPE_7360_V2
 	default n
 	help
