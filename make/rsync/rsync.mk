@@ -17,6 +17,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(P
 $(PKG)_CONFIGURE_OPTIONS += --disable-iconv
 $(PKG)_CONFIGURE_OPTIONS += --disable-locale
 $(PKG)_CONFIGURE_OPTIONS += --without-included-popt
+$(PKG)_CONFIGURE_OPTIONS += --without-included-zlib
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
