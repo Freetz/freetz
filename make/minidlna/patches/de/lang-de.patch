@@ -114,7 +114,7 @@
  	ret = sql_exec(db, create_objectTable_sqlite);
 --- upnphttp.c
 +++ upnphttp.c
-@@ -608,20 +608,20 @@
+@@ -602,24 +602,24 @@
  	strcatf(&str,
  		"<HTML><HEAD><TITLE>" SERVER_NAME " " MINIDLNA_VERSION "</TITLE></HEAD>"
  		"<BODY><div style=\"text-align: center\">"
@@ -132,6 +132,11 @@
 +		"<tr><td>Video</td><td>%d</td></tr>"
 +		"<tr><td>Bilder</td><td>%d</td></tr>"
  		"</table>", a, v, p);
+ 
+ 	if (scanning)
+ 		strcatf(&str,
+-			"<br><i>* Media scan in progress</i><br>");
++			"<br><i>* Medienbibliothek wird erstellt</i><br>");
  
  	strcatf(&str,
 -		"<h3>Connected clients</h3>"
