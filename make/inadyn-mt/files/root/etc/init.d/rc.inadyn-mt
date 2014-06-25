@@ -71,7 +71,7 @@ configure () {
 
 			local alias="$(ivalueof INADYN_MT_ALIAS $ii)"
 			for value in $alias; do
-				echo "alias $value"
+				echo "alias ${value/:/ }"
 			done
 			local url_hostname="${url#*[?&]hostname=}"
 			if [ -z "$alias" -a "$url_hostname" != "$url" ]; then
