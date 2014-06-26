@@ -93,6 +93,6 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man{1,5,8}/avahi*
 
 $(pkg)-uninstall:
-	$(RM) $(AVAHI_TARGET_BINARY) $(AVAHI_DEST_LIBDIR)/libavahi-*
+	$(RM) $(AVAHI_TARGET_BINARY) $(AVAHI_TARGET_LIBDIR)/libavahi-*
 
 $(PKG_FINISH)
