@@ -5,3 +5,11 @@ config EXTERNAL_FREETZ_PACKAGE_BIP
 	help
 		externals the following file(s):
 		 /usr/bin/bip
+
+config EXTERNAL_FREETZ_PACKAGE_BIP_BIPMKPW
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_BIP_BIPMKPW
+	bool "bipmkpw"
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/bipmkpw
