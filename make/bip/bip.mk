@@ -3,8 +3,9 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=04158ad020db221ed87cdc03660ef6c9
 $(PKG)_SITE:=http://projects.duckcorp.org/attachments/download/61
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/bip
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/bip
+$(PKG)_BINARIES:=bip $(if $(FREETZ_PACKAGE_BIP_BIPMKPW),bipmkpw)
+$(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/%)
+$(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
@@ -19,6 +20,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_SSL),--with-openssl,-
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_OIDENTD),--enable-oidentd)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pie
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_BIPMKPW
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_WITH_OIDENTD
@@ -27,22 +29,21 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BIP_DIR) \
 		LDFLAGS="$(BIP_LDFLAGS)"
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	$(INSTALL_BINARY_STRIP)
+$(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(BIP_DIR) clean
 	$(RM) $(BIP_FREETZ_CONFIG_FILE)
 
 $(pkg)-uninstall:
-	$(RM) $(BIP_TARGET_BINARY)
+	$(RM) $(BIP_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)

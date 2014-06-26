@@ -10,6 +10,14 @@ config FREETZ_PACKAGE_BIP
 		workstations, or when you simply want to have a playback of what
 		was said while you were away.
 
+config FREETZ_PACKAGE_BIP_BIPMKPW
+	bool "build password hasher for BIP"
+	depends on FREETZ_PACKAGE_BIP
+	default n
+	help
+		bipmkpw converts a password into the double-hash used by bip.
+		Copy the generated output from bipmkpw into bip config file.
+
 config FREETZ_PACKAGE_BIP_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_BIP
@@ -39,3 +47,4 @@ config FREETZ_PACKAGE_BIP_OIDENTD
 	depends on FREETZ_PACKAGE_BIP_WITH_OIDENTD
 	select FREETZ_PACKAGE_OIDENTD
 	default n
+
