@@ -1,6 +1,6 @@
 --- errhnd.cpp
 +++ errhnd.cpp
-@@ -343,7 +343,11 @@
+@@ -325,7 +325,11 @@
      mprintf(L"\n%s\n",St(MProgAborted));
  #endif
    SetErrorCode(Code);
@@ -12,6 +12,20 @@
  }
  
  
+--- extract.cpp
++++ extract.cpp
+@@ -599,7 +599,11 @@
+             // in Android, so if free memory is set, check it here
+             // trying to prevent crash.
+             if (Cmd->FreeMem!=0 && Cmd->FreeMem < Arc.FileHead.WinSize)
++#ifdef ALLOW_EXCEPTIONS
+               throw std::bad_alloc();
++#else
++              ErrHandler.MemoryError();
++#endif
+ #endif
+             Unp->Init(Arc.FileHead.WinSize,Arc.FileHead.Solid);
+             Unp->SetDestSize(Arc.FileHead.UnpSize);
 --- rar.cpp
 +++ rar.cpp
 @@ -32,7 +32,9 @@
@@ -24,7 +38,7 @@
    {
    
      CommandData *Cmd=new CommandData;
-@@ -78,6 +80,7 @@
+@@ -79,6 +81,7 @@
      Cmd->ProcessCommand();
      delete Cmd;
    }
@@ -32,7 +46,7 @@
    catch (RAR_EXIT ErrCode)
    {
      ErrHandler.SetErrorCode(ErrCode);
-@@ -91,6 +94,7 @@
+@@ -92,6 +95,7 @@
    {
      ErrHandler.SetErrorCode(RARX_FATAL);
    }
@@ -42,7 +56,7 @@
    if (ShutdownOnClose)
 --- unpack50frag.cpp
 +++ unpack50frag.cpp
-@@ -36,7 +36,11 @@
+@@ -47,7 +47,11 @@
        Size-=Size/32;
      }
      if (NewMem==NULL)
@@ -54,7 +68,7 @@
      
      // Clean the window to generate the same output when unpacking corrupt
      // RAR files, which may access to unused areas of sliding dictionary.
-@@ -48,7 +52,11 @@
+@@ -59,7 +63,11 @@
      BlockNum++;
    }
    if (TotalSize<WinSize) // Not found enough free blocks.
@@ -68,23 +82,27 @@
  
 --- unpack.cpp
 +++ unpack.cpp
-@@ -91,11 +91,19 @@
+@@ -89,7 +89,11 @@
  
-   // We do not handle growth for fragmented window now.
-   if (Grow && (NewWindow==NULL || Fragmented))
+   // We do not handle growth for existing fragmented window.
+   if (Grow && Fragmented)
 +#ifdef ALLOW_EXCEPTIONS
      throw std::bad_alloc();
 +#else
 +    ErrHandler.MemoryError();
 +#endif
  
-   if (NewWindow==NULL)
-     if (WinSize<0x1000000) // Exclude RAR4 and small dictionaries.
+   byte *NewWindow=Fragmented ? NULL : (byte *)malloc(WinSize);
+ 
+@@ -98,7 +102,11 @@
+     {
+       // We do not support growth for new fragmented window.
+       // Also exclude RAR4 and small dictionaries.
 +#ifdef ALLOW_EXCEPTIONS
        throw std::bad_alloc();
 +#else
 +      ErrHandler.MemoryError();
 +#endif
+     }
      else
      {
-       FragWindow.Init(WinSize);
