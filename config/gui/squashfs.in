@@ -32,7 +32,7 @@ menu "SquashFS options"
 
 				64 KB is the default for kernel 2.6 firmwares.
 
-		if FREETZ_REPLACE_KERNEL && !FREETZ_KERNEL_VERSION_2_6_32_60
+		if FREETZ_REPLACE_KERNEL && (!FREETZ_KERNEL_VERSION_2_6_32_60 && !FREETZ_KERNEL_VERSION_2_6_32_61)
 			config FREETZ_SQUASHFS_BLOCKSIZE_131072
 				bool "128 KB - EXPERIMENTAL"
 				help
