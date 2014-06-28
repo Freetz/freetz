@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 1.8.10)
+$(call PKG_INIT_BIN, 1.8.11)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=7268cc5ef8fc01b785c7cea87adb1ade
-$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/file/3963
+$(PKG)_SOURCE_MD5:=73502ca4ba6526727f9f49c63d805408
+$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/file/3991
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/pcscd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/pcscd
@@ -22,8 +22,8 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-scf
 $(PKG)_CONFIGURE_OPTIONS += --disable-libhal
 $(PKG)_CONFIGURE_OPTIONS += --disable-libudev
-#$(PKG)_CONFIGURE_OPTIONS += --enable-embedded
-#$(PKG)_CONFIGURE_OPTIONS += --enable-usbdropdir=/mod/usr/lib/pcsc/drivers
+$(PKG)_CONFIGURE_OPTIONS += --enable-embedded
+$(PKG)_CONFIGURE_OPTIONS += --enable-usbdropdir=$(PCSC_LITE_USBDROPDIR)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
