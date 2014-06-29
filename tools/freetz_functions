@@ -550,3 +550,32 @@ function symlinks-abs2rel() {
 		fi
 	done
 }
+
+# joins all arguments starting from the 2nd one together using the 1st character of $1 as delimiter
+# i.e. converts $1 $2 $3 ... to $2${DELIMITER}$3${DELIMITER}$4${DELIMITER}... whereas DELIMITER=${1:0:1}
+join() {
+	(IFS="$1"; shift; echo -n "$*")
+}
+
+# $1 - file to wrap
+# $2 $3 ... - libraries to preload
+function create_LD_PRELOAD_wrapper() {
+	local file_to_wrap="$1"; shift
+	[ -f "${FILESYSTEM_MOD_DIR}${file_to_wrap}" -a -x "${FILESYSTEM_MOD_DIR}${file_to_wrap}" ] || error 1 "${FUNCNAME}: ${file_to_wrap} is expected to exist and be executable"
+	local libraries_to_preload=$(join ':' "$@")
+	[ -n "${libraries_to_preload}" ] || error 1 "${FUNCNAME}(${file_to_wrap}): no LD_PRELOAD library specified"
+
+	local bname=$(basename "$file_to_wrap")
+	local dname=$(dirname "$file_to_wrap")/avm
+
+	mkdir -p "${FILESYSTEM_MOD_DIR}${dname}"
+	mv "${FILESYSTEM_MOD_DIR}${file_to_wrap}" "${FILESYSTEM_MOD_DIR}${dname}/"
+
+	cat <<- EOF >> "${FILESYSTEM_MOD_DIR}${file_to_wrap}"
+		#!/bin/sh
+		export LD_PRELOAD="${libraries_to_preload}\${LD_PRELOAD:+:}\${LD_PRELOAD}"
+		exec ${dname}/${bname} "\$@"
+	EOF
+
+	chmod 755 "${FILESYSTEM_MOD_DIR}${file_to_wrap}"
+}
