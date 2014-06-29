@@ -1,0 +1,238 @@
+--- capi20.c
++++ capi20.c
+@@ -117,7 +117,7 @@
+ #include <linux/capi.h>
+ #include <linux/limits.h>
+ #include "capi20.h"
+-#include "zugriff.h"
++#include "llaccess.h"
+ 
+ #ifndef CAPI_GET_FLAGS
+ #define CAPI_GET_FLAGS		_IOR('C',0x23, unsigned)
+--- capi20_sock.c
++++ capi20_sock.c
+@@ -122,7 +122,7 @@
+ #include <arpa/inet.h>
+ #include <sys/poll.h>
+ #include "capi20.h"
+-#include "zugriff.h"
++#include "llaccess.h"
+ 
+ #ifndef CAPI_GET_FLAGS
+ #define CAPI_GET_FLAGS        _IOR('C',0x23, unsigned)
+--- convert.c
++++ convert.c
+@@ -85,80 +85,7 @@
+ #include <ctype.h>
+ 
+ #include "capi20.h"
+-
+-/*------------------------------------------------------------------------------------------*\
+- * neue Methode mit dem Big-Endian Port eingeführt
+-\*------------------------------------------------------------------------------------------*/
+-static inline unsigned char copy_byte_from_le_unaligned (unsigned char *source);
+-static inline unsigned short copy_word_from_le_unaligned (unsigned char *source);
+-static inline unsigned int copy_dword_from_le_unaligned (unsigned char *source);
+-static inline unsigned long long copy_qword_from_le_unaligned (unsigned char *source);
+-static inline void copy_byte_to_le_unaligned (unsigned char *dest, unsigned char source);
+-static inline void copy_word_to_le_unaligned (unsigned char *dest, unsigned short source);
+-static inline void copy_dword_to_le_unaligned (unsigned char *dest, unsigned int source);
+-static inline void copy_qword_to_le_unaligned (unsigned char *dest, unsigned long long source);
+-
+-static inline void copy_qword_to_le_unaligned (unsigned char *dest, unsigned long long source) {
+-    dest[0] = (unsigned char)(source >> 0);
+-	dest[1] = (unsigned char)(source >> 8);
+-	dest[2] = (unsigned char)(source >> 16);
+-	dest[3] = (unsigned char)(source >> 24);
+-    dest[4] = (unsigned char)(source >> 32);
+-	dest[5] = (unsigned char)(source >> 40);
+-	dest[6] = (unsigned char)(source >> 48);
+-	dest[7] = (unsigned char)(source >> 56);
+-}
+-
+-static inline void copy_dword_to_le_unaligned (unsigned char *dest, unsigned int source) {
+-    dest[0] = (unsigned char)(source >> 0);
+-	dest[1] = (unsigned char)(source >> 8);
+-	dest[2] = (unsigned char)(source >> 16);
+-	dest[3] = (unsigned char)(source >> 24);
+-}
+-
+-static inline void copy_word_to_le_unaligned (unsigned char *dest, unsigned short source) {
+-    dest[0] = (unsigned char)(source >> 0);
+-	dest[1] = (unsigned char)(source >> 8);
+-}
+-
+-static inline void copy_byte_to_le_unaligned (unsigned char *dest, unsigned char source) {
+-    dest[0] = (unsigned char)(source >> 0);
+-}
+-
+-static inline unsigned long long copy_qword_from_le_unaligned (unsigned char *source) {
+-    return 
+-        ((unsigned long long)source[0] <<  0) | 
+-        ((unsigned long long)source[1] <<  8) | 
+-        ((unsigned long long)source[2] << 16) | 
+-        ((unsigned long long)source[3] << 24) |
+-        ((unsigned long long)source[4] << 32) | 
+-        ((unsigned long long)source[5] << 40) | 
+-        ((unsigned long long)source[6] << 48) | 
+-        ((unsigned long long)source[7] << 56) |
+-        0;
+-}
+-
+-static inline unsigned int copy_dword_from_le_unaligned (unsigned char *source) {
+-    return 
+-        ((unsigned int)source[0] <<  0) | 
+-        ((unsigned int)source[1] <<  8) | 
+-        ((unsigned int)source[2] << 16) | 
+-        ((unsigned int)source[3] << 24) |
+-        0;
+-}
+-
+-static inline unsigned short copy_word_from_le_unaligned (unsigned char *source) {
+-    return 
+-        ((unsigned short)source[0] <<  0) | 
+-        ((unsigned short)source[1] <<  8) | 
+-        0;
+-}
+-
+-static inline unsigned char copy_byte_from_le_unaligned (unsigned char *source) {
+-    return *source;
+-}
+-
+-/*-------------------------------------------------------*/
++#include "llaccess.h"
+ 
+ #if !defined(CPROT)
+ 
+--- /dev/null
++++ llaccess.c
+@@ -0,0 +1,78 @@
++#include "llaccess.h"
++
++unsigned short extract_unaligned_word(void *_source) {
++	unsigned short _dest;
++	unsigned char *source = _source;
++	unsigned char *dest = (unsigned char *)&_dest;
++	dest[0] = source[0];
++	dest[1] = source[1];
++	return _dest;
++}
++
++void *set_unaligned_word(void *_dest, unsigned short _source) {
++	unsigned char *source = (unsigned char *)&_source;
++	unsigned char *dest = (unsigned char *)_dest;
++	dest[0] = source[0];
++	dest[1] = source[1];
++	return dest + sizeof(unsigned short);
++}
++
++void copy_qword_to_le_unaligned(unsigned char *dest, unsigned long long source) {
++	dest[0] = (unsigned char)(source >> 0);
++	dest[1] = (unsigned char)(source >> 8);
++	dest[2] = (unsigned char)(source >> 16);
++	dest[3] = (unsigned char)(source >> 24);
++	dest[4] = (unsigned char)(source >> 32);
++	dest[5] = (unsigned char)(source >> 40);
++	dest[6] = (unsigned char)(source >> 48);
++	dest[7] = (unsigned char)(source >> 56);
++}
++
++void copy_dword_to_le_unaligned(unsigned char *dest, unsigned int source) {
++	dest[0] = (unsigned char)(source >> 0);
++	dest[1] = (unsigned char)(source >> 8);
++	dest[2] = (unsigned char)(source >> 16);
++	dest[3] = (unsigned char)(source >> 24);
++}
++
++void copy_word_to_le_unaligned(unsigned char *dest, unsigned short source) {
++	dest[0] = (unsigned char)(source >> 0);
++	dest[1] = (unsigned char)(source >> 8);
++}
++
++void copy_byte_to_le_unaligned(unsigned char *dest, unsigned char source) {
++	dest[0] = (unsigned char)(source >> 0);
++}
++
++unsigned long long copy_qword_from_le_unaligned(unsigned char *source) {
++	return
++	((unsigned long long)source[0] <<  0) |
++	((unsigned long long)source[1] <<  8) |
++	((unsigned long long)source[2] << 16) |
++	((unsigned long long)source[3] << 24) |
++	((unsigned long long)source[4] << 32) |
++	((unsigned long long)source[5] << 40) |
++	((unsigned long long)source[6] << 48) |
++	((unsigned long long)source[7] << 56) |
++	0;
++}
++
++unsigned int copy_dword_from_le_unaligned(unsigned char *source) {
++	return
++	((unsigned int)source[0] <<  0) |
++	((unsigned int)source[1] <<  8) |
++	((unsigned int)source[2] << 16) |
++	((unsigned int)source[3] << 24) |
++	0;
++}
++
++unsigned short copy_word_from_le_unaligned(unsigned char *source) {
++	return
++	((unsigned short)source[0] <<  0) |
++	((unsigned short)source[1] <<  8) |
++	0;
++}
++
++unsigned char copy_byte_from_le_unaligned(unsigned char *source) {
++	return *source;
++}
+--- /dev/null
++++ llaccess.h
+@@ -0,0 +1,28 @@
++#ifndef __CAPI_LLACCESS_H__
++#define __CAPI_LLACCESS_H__
++
++/*
++ * A simple replacement for AVM's zugriff.h (actually a copy of small function subset from it.
++ */
++
++#if __GNUC__ >= 4
++#define DLL_PUBLIC __attribute__ ((visibility ("default")))
++#define DLL_LOCAL  __attribute__ ((visibility ("hidden")))
++#else
++#define DLL_PUBLIC
++#define DLL_LOCAL
++#endif
++
++DLL_LOCAL unsigned short extract_unaligned_word(void *_source);
++DLL_LOCAL void *set_unaligned_word(void *_dest, unsigned short _source);
++
++DLL_LOCAL unsigned char copy_byte_from_le_unaligned(unsigned char *source);
++DLL_LOCAL unsigned short copy_word_from_le_unaligned(unsigned char *source);
++DLL_LOCAL unsigned int copy_dword_from_le_unaligned(unsigned char *source);
++DLL_LOCAL unsigned long long copy_qword_from_le_unaligned (unsigned char *source);
++DLL_LOCAL void copy_byte_to_le_unaligned(unsigned char *dest, unsigned char source);
++DLL_LOCAL void copy_word_to_le_unaligned(unsigned char *dest, unsigned short source);
++DLL_LOCAL void copy_dword_to_le_unaligned(unsigned char *dest, unsigned int source);
++DLL_LOCAL void copy_qword_to_le_unaligned(unsigned char *dest, unsigned long long source);
++
++#endif
+--- Makefile
++++ Makefile
+@@ -36,7 +36,7 @@
+ 
+ CFLAGS		   += $(CAPI20DEFS) $(CAPI20OPTS) $(CAPI20INCS) $(DEBUG_FLAGS) $(EXTRA_INCLUDE_FLAGS) -Wno-unused-parameter #-fdiagnostics-show-option
+ 
+-CAPI20SRCS	   := capi20.c capifunc.c convert.c
++CAPI20SRCS	   := capi20.c capifunc.c convert.c llaccess.c
+ CAPI20OBJS	   := $(patsubst %.c,%.o,$(CAPI20SRCS))
+ CAPI20LOBJS	   := $(patsubst %.c,%.lo,$(CAPI20SRCS))
+ 
+@@ -45,7 +45,7 @@
+ CAPI20_SOCK_SO := $(CAPI20_SOCK_NAME).so
+ CAPI20_SOCK_SO_VM := $(CAPI20_SOCK_SO).$(CAPI20VMAJOR)
+ CAPI20_SOCK_SO_VT := $(CAPI20_SOCK_SO).$(CAPI20VTOTAL)
+-CAPI20_SOCK_SRCS := capi20_sock.c capifunc.c convert.c
++CAPI20_SOCK_SRCS := capi20_sock.c capifunc.c convert.c llaccess.c
+ CAPI20_SOCK_OBJS := $(patsubst %.c,%.o,$(CAPI20_SOCK_SRCS))
+ CAPI20_SOCK_LOBJS := $(patsubst %.c,%.lo,$(CAPI20_SOCK_SRCS))
+ 

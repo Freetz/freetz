@@ -1,0 +1,73 @@
+--- capi20.c
++++ capi20.c
+@@ -763,6 +763,7 @@
+         if (unit < 0)
+ 		return 0;
+ 	snprintf(buf, size, "/dev/capi/%d", unit);
++	buf[size-1] = 0;
+ 	return buf;
+ }
+ 
+@@ -774,6 +775,7 @@
+         if (unit < 0)
+ 		return 0;
+ 	snprintf(buf, size, "/dev/capi/r%d", unit);
++	buf[size-1] = 0;
+ 	return buf;
+ }
+ 
+--- capi20_sock.c
++++ capi20_sock.c
+@@ -122,6 +122,7 @@
+ #include <arpa/inet.h>
+ #include <sys/poll.h>
+ #include "capi20.h"
++#include "zugriff.h"
+ 
+ #ifndef CAPI_GET_FLAGS
+ #define CAPI_GET_FLAGS        _IOR('C',0x23, unsigned)
+@@ -264,8 +265,10 @@
+         pollfd.events = POLLIN;
+ 
+         err = write(fd, (void*)hello, 6);
+-        err = poll(&pollfd, 1, 1000);
+-        if (err > 0) break;
++        if (err > 0) {
++            err = poll(&pollfd, 1, 1000);
++            if (err > 0) break;
++        }
+         if (timeout > 0) {
+             now = getclock();
+             if ((now - start) > (unsigned long)timeout) timeout = 0;
+@@ -576,11 +579,11 @@
+     memcpy((void*)&buffer[13], (void*)&MaxB3Blks, 4);
+     memcpy((void*)&buffer[17], (void*)&MaxSizeB3, 4);
+ 
+-    *(unsigned short*)&buffer[1] = 20;
+-    *(unsigned short*)&buffer[3] = 0;
++    set_unaligned_word((void*)&buffer[1], 20);
++    set_unaligned_word((void*)&buffer[3], 0);
+     buffer[5] = 0xfd;   /* REGISTER */
+     buffer[6] = 0x80;
+-    *(unsigned short*)&buffer[7] = 0;
++    set_unaligned_word((void*)&buffer[7], 0);
+ 
+     err = write(fd, &buffer[0], 21);
+     if (err < 21) {
+@@ -603,13 +606,13 @@
+         close(fd);
+         return CapiRegOSResourceErr;
+     }
+-    if (*(unsigned short*)&buffer[9]) {
++    if (extract_unaligned_word(&buffer[9])) {
+         /*--- printf("register conf has result %04x\n", *(unsigned short*)&buffer[9]); ---*/
+         close(fd);
+-        return *(unsigned short*)&buffer[9];
++        return extract_unaligned_word(&buffer[9]);
+     }
+     /* ApplID steht im Message Header */
+-    applid = *(unsigned short*)&buffer[3];
++    applid = extract_unaligned_word(&buffer[3]);
+     /*--- printf("got applid: %d\n", applid); ---*/
+ 
+     if (remember_applid(applid, fd) < 0) {
