@@ -7,22 +7,23 @@ DAEMON_LONG_NAME="dropbear SSH server"
 pre_config() {
 	mkdir -p /tmp/flash/dropbear
 
-	if [ ! -e "/tmp/flash/dropbear/rsa_host_key" -o ! -e "/tmp/flash/dropbear/dss_host_key" -o ! -e "/tmp/flash/dropbear/ecdsa_host_key" ]; then
-		echo "Creating RSA, DSS and ECDSA host keys"
-		rm -f /tmp/flash/dropbear/rsa_host_key
-		rm -f /tmp/flash/dropbear/dss_host_key
-		rm -f /tmp/flash/dropbear/ecdsa_host_key
-		dropbearkey -t rsa -f /tmp/flash/dropbear/rsa_host_key
-		dropbearkey -t dss -f /tmp/flash/dropbear/dss_host_key
-		dropbearkey -t ecdsa -f /tmp/flash/dropbear/ecdsa_host_key
-		/usr/bin/modsave flash
-	fi
+	local alg do_save=false
+	for alg in rsa dss ecdsa; do
+		local key_file=/tmp/flash/dropbear/${alg}_host_key
+		if [ ! -e "${key_file}" ]; then
+			do_save=true
+			rm -f "${key_file}"
+			echo "Creating $(echo ${alg} | tr [a-z] [A-Z]) host key"
+			dropbearkey -t ${alg} -f "${key_file}"
+		fi
+	done
+	$do_save && /usr/bin/modsave flash
 
 	if [ ! -d "/mod/etc/ssh" ]; then
 		mkdir -p /mod/etc/ssh
-		ln -s /tmp/flash/dropbear/rsa_host_key /mod/etc/ssh/rsa_host_key
-		ln -s /tmp/flash/dropbear/dss_host_key /mod/etc/ssh/dss_host_key
-		ln -s /tmp/flash/dropbear/ecdsa_host_key /mod/etc/ssh/ecdsa_host_key
+		for alg in rsa dss ecdsa; do
+			ln -sf /tmp/flash/dropbear/${alg}_host_key /mod/etc/ssh/${alg}_host_key
+		done
 	fi
 }
 
