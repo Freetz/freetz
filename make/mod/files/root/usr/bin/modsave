@@ -6,6 +6,7 @@ save() {
 	local TMPFILE=/tmp/.save.tmp
 	local FLASHFILE=/var/flash/freetz
 	local rc=0
+	local MSG
 
 	local MOD_LIMIT=$((32*1024))
 
@@ -21,8 +22,7 @@ save() {
 	size=$(gzip -c $TMPFILE | wc -c)
 	if [ "$size" -gt "$MOD_LIMIT" ]; then
 		rm -f $TMPFILE
-		echo "size: $size limit: $MOD_LIMIT" 1>&2
-		echo "ERROR: /var/flash/freetz too big" 1>&2
+		echo "ERROR: $FLASHFILE too big: compressed size: $size, limit: $MOD_LIMIT" 1>&2
 		exit 1
 	fi
 
@@ -31,11 +31,11 @@ save() {
 		echo "unchanged."
 	else
 		echo "changed."
-		echo -n "Writing $size bytes to /var/flash/freetz ... "
-		cat $TMPFILE > /var/flash/freetz 2>/dev/null
+		echo -n "Writing $size bytes to $FLASHFILE ... "
+		MSG=$(cat $TMPFILE 2>&1 > $FLASHFILE)
 		rc=$?
 		if [ $rc -ne 0 ]; then
-			echo "write failed."
+			echo "write failed: $MSG"
 			rc=1
 		elif ! cmp -s $FLASHFILE $TMPFILE; then
 			echo "verify failed."
@@ -43,6 +43,9 @@ save() {
 		else
 			echo "done."
 		fi
+	fi
+	if [ $rc -ne 0 ]; then
+		mv -f $TMPFILE $TMPFILE.sav
 	fi
 	rm -f $TMPFILE
 	exit $rc
