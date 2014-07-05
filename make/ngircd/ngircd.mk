@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 21)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5:=bb2527c7ef18807662831db74bd0b7f6
-$(PKG)_SITE:=ftp://ftp.berlios.de/pub/$(pkg)
+$(PKG)_SITE:=http://ngircd.barton.de/pub/ngircd
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
