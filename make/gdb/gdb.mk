@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_GDB_VERSION_7_3),7.3.1,6.8))
+$(call PKG_INIT_BIN, $(if $(FREETZ_GDB_VERSION_6_8),6.8,7.3.1))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)$(if $(FREETZ_GDB_VERSION_6_8),a).tar.bz2
 $(PKG)_SOURCE_MD5_6.8 := da20d043e6729f74b909bd507bcae5c9
 $(PKG)_SOURCE_MD5_7.3.1 := b89a5fac359c618dda97b88645ceab47
