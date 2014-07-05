@@ -49,8 +49,8 @@ do_download()
 	# $1 = target directory, $2 = download URL without file, $3 = (remote) file name
 	echo
 	[ "$DEBUG" == "1" ] && echo \
-	"wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P \"${1%/}/\" \"${2%/}/$3\""
-	 wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -P  "${1%/}/"   "${2%/}/$3"
+	"wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P \"${1%/}/\" \"${2%/}/$3\""
+	 wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P  "${1%/}/"   "${2%/}/$3"
 	wget_result=$?
 	if [ "$wget_result" != "0" ]; then
 		echo "Download failed - \"$2\"  ->  error code $wget_result" >&2
