@@ -1,22 +1,13 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
-
-check "$CPMACCFG_ENABLED" yes:auto "*":man
 
 sec_begin 'Enable/Disable cpmaccfg'
 
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1">Activated</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2">Deactivated</label>
-EOF
-cat << EOF
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$CPMACCFG_ENABLED" "" "" 0
 
 sec_end
+
 sec_begin 'Port Status'
 
 cat << EOF
@@ -96,7 +87,7 @@ EOF
 # Dropdown für Einstellungen anzeigen
 [ -r /var/env.cache ] && . /var/env.cache
 BOXTYPE=${CONFIG_PRODUKT#Fritz_Box_}
-if [ "$BOXTYPE" != "7170" ];then drop="disabled"; fi
+if [ "$BOXTYPE" != "7170" ]; then drop="disabled"; fi
 
 row=1
 while [ $row -le $EXTPORTS ]; do
@@ -142,7 +133,7 @@ sec_end
 SetToNull=''
 sec_begin 'Advanced VLAN/IP Settings'
 
-if [ $CPMACCFG_VLAN2 = "eth1" -o $CPMACCFG_VLAN2 = "eth1" -o $CPMACCFG_VLAN3 = "eth1" -o $CPMACCFG_VLAN4 = "eth1" ]; then
+if [ $CPMACCFG_VLAN1 = "eth1" -o $CPMACCFG_VLAN2 = "eth1" -o $CPMACCFG_VLAN3 = "eth1" -o $CPMACCFG_VLAN4 = "eth1" ]; then
 	echo -n '<p>IP eth1: <input type="text" name="eth1_ip" value="'$(html "$CPMACCFG_ETH1_IP")'">'
 	echo -n ' Subnet: <input type="text" name="eth1_subnet" value="'$(html "$CPMACCFG_ETH1_SUBNET")'">'
 	echo -n '</p>'
@@ -150,7 +141,7 @@ else
 	SetToNull=$SetToNull'<input type="hidden" name="eth1_ip" value="">'
 fi
 
-if [ $CPMACCFG_VLAN2 = "eth2" -o $CPMACCFG_VLAN2 = "eth2" -o $CPMACCFG_VLAN3 = "eth2" -o $CPMACCFG_VLAN4 = "eth2" ]; then
+if [ $CPMACCFG_VLAN1 = "eth2" -o $CPMACCFG_VLAN2 = "eth2" -o $CPMACCFG_VLAN3 = "eth2" -o $CPMACCFG_VLAN4 = "eth2" ]; then
 	echo -n '<p>IP eth2: <input type="text" name="eth2_ip" value="'$(html "$CPMACCFG_ETH2_IP")'">'
 	echo -n ' Subnet: <input type="text" name="eth2_subnet" value="'$(html "$CPMACCFG_ETH2_SUBNET")'">'
 	echo -n '</p>'
@@ -158,16 +149,16 @@ else
 	SetToNull=$SetToNull'<input type="hidden" name="eth2_ip" value="">'
 fi
 
-if [ $CPMACCFG_VLAN2 = "eth3" -o $CPMACCFG_VLAN2 = "eth3" -o $CPMACCFG_VLAN3 = "eth3" -o $CPMACCFG_VLAN4 = "eth3" ]; then
-	echo -n '<p>IP eth1: <input type="text" name="eth3_ip" value="'$(html "$CPMACCFG_ETH3_IP")'">'
+if [ $CPMACCFG_VLAN1 = "eth3" -o $CPMACCFG_VLAN2 = "eth3" -o $CPMACCFG_VLAN3 = "eth3" -o $CPMACCFG_VLAN4 = "eth3" ]; then
+	echo -n '<p>IP eth3: <input type="text" name="eth3_ip" value="'$(html "$CPMACCFG_ETH3_IP")'">'
 	echo -n ' Subnet: <input type="text" name="eth3_subnet" value="'$(html "$CPMACCFG_ETH3_SUBNET")'">'
 	echo -n '</p>'
 else
 	SetToNull=$SetToNull'<input type="hidden" name="eth3_ip" value="">'
 fi
 
-if [ $CPMACCFG_VLAN2 = "eth4" -o $CPMACCFG_VLAN2 = "eth4" -o $CPMACCFG_VLAN3 = "eth4" -o $CPMACCFG_VLAN4 = "eth4" ]; then
-	echo -n '<p>IP eth1: <input type="text" name="eth4_ip" value="'$(html "$CPMACCFG_ETH4_IP")'">'
+if [ $CPMACCFG_VLAN1 = "eth4" -o $CPMACCFG_VLAN2 = "eth4" -o $CPMACCFG_VLAN3 = "eth4" -o $CPMACCFG_VLAN4 = "eth4" ]; then
+	echo -n '<p>IP eth4: <input type="text" name="eth4_ip" value="'$(html "$CPMACCFG_ETH4_IP")'">'
 	echo -n ' Subnet: <input type="text" name="eth4_subnet" value="'$(html "$CPMACCFG_ETH4_SUBNET")'">'
 	echo -n '</p>'
 else
