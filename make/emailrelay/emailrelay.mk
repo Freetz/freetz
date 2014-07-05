@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.8.2)
+$(call PKG_INIT_BIN, 1.9)
 $(PKG)_SOURCE:=emailrelay-$($(PKG)_VERSION)-src.tar.gz
-$(PKG)_SOURCE_MD5:=957e61cbf6f8015cadef47f75866f35d
+$(PKG)_SOURCE_MD5:=0892fbf993407c6b5a16f96e23299b62
 $(PKG)_SITE:=@SF/emailrelay
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/main/emailrelay
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/emailrelay
