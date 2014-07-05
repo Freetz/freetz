@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5_5.3.24:=9820604df98c648297dcd31ffb8214e8
 $(PKG)_SOURCE_MD5_5.4.14:=cfdc044be2c582991a1fe0967898fa38
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
-$(PKG)_SITE:=http://de.php.net/distributions
+$(PKG)_SITE:=http://museum.php.net/php5
 
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
