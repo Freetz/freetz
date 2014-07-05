@@ -4,7 +4,7 @@
 
 sec_begin 'Enable/Disable cpmaccfg'
 
-cgi_print_radiogroup_service_starttype "enabled" "$CPMACCFG_ENABLED" "" "" 0
+cgi_print_radiogroup_active "enabled" "$CPMACCFG_ENABLED" "" ""
 
 sec_end
 
