@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 6b)
+$(call PKG_INIT_LIB, 6b2)
 $(PKG)_LIB_VERSION:=62.0.0
 $(PKG)_SOURCE:=jpegsrc.v$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=dbd5f3b47ed13132f04c685d608a7547
-$(PKG)_SITE:=http://ijg.org/files
+$(PKG)_SOURCE_MD5:=f453ae54062c14b0b8deec9c7de6cf58
+$(PKG)_SITE:=http://jpegclub.org/support/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libjpeg.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so.$($(PKG)_LIB_VERSION)
@@ -20,9 +20,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(JPEG_DIR) \
-		libdir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
-		includedir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include" \
-		install-headers install-lib
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install-libLTLIBRARIES install-includeHEADERS
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.la
 
