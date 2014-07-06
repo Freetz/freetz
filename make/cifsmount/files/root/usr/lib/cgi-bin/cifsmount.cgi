@@ -1,19 +1,10 @@
 #!/bin/sh
 
-
-
 . /usr/lib/libmodcgi.sh
-
-check "$CIFSMOUNT_ENABLED" yes:auto "*":man
 
 sec_begin 'Starttyp'
 
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> Automatisch</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> Manuell</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$CIFSMOUNT_ENABLED" "" "" 0
 
 sec_end
 
