@@ -1,6 +1,6 @@
 --- daemon/daemon.c
 +++ daemon/daemon.c
-@@ -99,6 +99,8 @@
+@@ -97,6 +97,8 @@
      { 'C', "no-watch-dir", "Disable the watch-dir", "C", 0, NULL },
      { 941, "incomplete-dir", "Where to store new torrents until they're complete", NULL, 1, "<directory>" },
      { 942, "no-incomplete-dir", "Don't store incomplete torrents in a different location", NULL, 0, NULL },
@@ -9,7 +9,7 @@
      { 'd', "dump-settings", "Dump the settings and exit", "d", 0, NULL },
      { 'e', "logfile", "Dump the log messages to this filename", "e", 1, "<filename>" },
      { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
-@@ -409,6 +411,11 @@
+@@ -430,6 +432,11 @@
                        break;
              case 942: tr_variantDictAddBool (&settings, TR_KEY_incomplete_dir_enabled, false);
                        break;
@@ -23,7 +23,7 @@
              case 'e': logfile = fopen (optarg, LOGFILE_MODE_STR);
 --- daemon/remote.c
 +++ daemon/remote.c
-@@ -240,6 +240,8 @@
+@@ -237,6 +237,8 @@
      { 963, "blocklist-update",       "Blocklist update", NULL, 0, NULL },
      { 'c', "incomplete-dir",         "Where to store new torrents until they're complete", "c", 1, "<dir>" },
      { 'C', "no-incomplete-dir",      "Don't store incomplete torrents in a different location", "C", 0, NULL },
@@ -32,7 +32,7 @@
      { 'b', "debug",                  "Print debugging information", "b",  0, NULL },
      { 'd', "downlimit",              "Set the max download speed in "SPEED_K_STR" for the current torrent(s) or globally", "d", 1, "<speed>" },
      { 'D', "no-downlimit",           "Disable max download speed for the current torrent(s) or globally", "D", 0, NULL },
-@@ -408,6 +410,8 @@
+@@ -405,6 +407,8 @@
        case 991: /* no-start-paused */
        case 992: /* trash-torrent */
        case 993: /* no-trash-torrent */
@@ -103,7 +103,7 @@
  
 --- libtransmission/quark.c
 +++ libtransmission/quark.c
-@@ -390,7 +390,9 @@
+@@ -399,7 +399,9 @@
    { "watch-dir", 9 },
    { "watch-dir-enabled", 17 },
    { "webseeds", 8 },
@@ -116,7 +116,7 @@
  static int
 --- libtransmission/quark.h
 +++ libtransmission/quark.h
-@@ -401,6 +401,8 @@
+@@ -398,6 +398,8 @@
    TR_KEY_watch_dir_enabled,
    TR_KEY_webseeds,
    TR_KEY_webseedsSendingToUs,
@@ -127,7 +127,7 @@
  
 --- libtransmission/rpcimpl.c
 +++ libtransmission/rpcimpl.c
-@@ -1871,6 +1871,12 @@
+@@ -1881,6 +1881,12 @@
    if (tr_variantDictFindBool (args_in, TR_KEY_incomplete_dir_enabled, &boolVal))
      tr_sessionSetIncompleteDirEnabled (session, boolVal);
  
@@ -140,7 +140,7 @@
    if (tr_variantDictFindInt (args_in, TR_KEY_peer_limit_global, &i))
      tr_sessionSetPeerLimit (session, i);
  
-@@ -2037,6 +2043,8 @@
+@@ -2047,6 +2053,8 @@
    tr_variantDictAddInt  (d, TR_KEY_peer_limit_per_torrent, tr_sessionGetPeerLimitPerTorrent (s));
    tr_variantDictAddStr  (d, TR_KEY_incomplete_dir, tr_sessionGetIncompleteDir (s));
    tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled, tr_sessionIsIncompleteDirEnabled (s));
@@ -151,7 +151,7 @@
    tr_variantDictAddBool (d, TR_KEY_dht_enabled, tr_sessionIsDHTEnabled (s));
 --- libtransmission/session.c
 +++ libtransmission/session.c
-@@ -330,6 +330,8 @@
+@@ -328,6 +328,8 @@
    tr_variantDictAddBool (d, TR_KEY_idle_seeding_limit_enabled,      false);
    tr_variantDictAddStr  (d, TR_KEY_incomplete_dir,                  tr_getDefaultDownloadDir ());
    tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled,          false);
@@ -160,7 +160,7 @@
    tr_variantDictAddInt  (d, TR_KEY_message_level,                   TR_LOG_INFO);
    tr_variantDictAddInt  (d, TR_KEY_download_queue_size,             5);
    tr_variantDictAddBool (d, TR_KEY_download_queue_enabled,          true);
-@@ -403,6 +405,8 @@
+@@ -401,6 +403,8 @@
    tr_variantDictAddBool (d, TR_KEY_idle_seeding_limit_enabled,   tr_sessionIsIdleLimited (s));
    tr_variantDictAddStr  (d, TR_KEY_incomplete_dir,               tr_sessionGetIncompleteDir (s));
    tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled,       tr_sessionIsIncompleteDirEnabled (s));
@@ -169,7 +169,7 @@
    tr_variantDictAddInt  (d, TR_KEY_message_level,                tr_logGetLevel ());
    tr_variantDictAddInt  (d, TR_KEY_peer_limit_global,            s->peerLimit);
    tr_variantDictAddInt  (d, TR_KEY_peer_limit_per_torrent,       s->peerLimitPerTorrent);
-@@ -839,6 +843,10 @@
+@@ -837,6 +841,10 @@
      tr_sessionSetIncompleteDirEnabled (session, boolVal);
    if (tr_variantDictFindBool (settings, TR_KEY_rename_partial_files, &boolVal))
      tr_sessionSetIncompleteFileNamingEnabled (session, boolVal);
@@ -180,7 +180,7 @@
  
    /* rpc server */
    if (session->rpcServer != NULL) /* close the old one */
-@@ -1065,6 +1073,49 @@
+@@ -1063,6 +1071,49 @@
  ****
  ***/
  
@@ -230,7 +230,7 @@
  void
  tr_sessionLock (tr_session * session)
  {
-@@ -1930,6 +1981,7 @@
+@@ -1928,6 +1979,7 @@
    tr_free (session->resumeDir);
    tr_free (session->torrentDir);
    tr_free (session->incompleteDir);
@@ -240,7 +240,7 @@
    tr_free (session);
 --- libtransmission/session.h
 +++ libtransmission/session.h
-@@ -116,6 +116,7 @@
+@@ -111,6 +111,7 @@
      bool                         isRatioLimited;
      bool                         isIdleLimited;
      bool                         isIncompleteDirEnabled;
@@ -248,7 +248,7 @@
      bool                         pauseAddedTorrent;
      bool                         deleteSourceTorrent;
      bool                         scrapePausedTorrents;
-@@ -188,6 +189,7 @@
+@@ -183,6 +184,7 @@
      char *                       resumeDir;
      char *                       torrentDir;
      char *                       incompleteDir;
@@ -258,7 +258,7 @@
  
 --- libtransmission/torrent.c
 +++ libtransmission/torrent.c
-@@ -500,6 +500,12 @@
+@@ -498,6 +498,12 @@
  
        tor->isStopping = true;
  
@@ -273,7 +273,7 @@
          tor->ratio_limit_hit_func (tor, tor->ratio_limit_hit_func_user_data);
 --- libtransmission/transmission.h
 +++ libtransmission/transmission.h
-@@ -339,6 +339,27 @@
+@@ -351,6 +351,27 @@
  
  
  /**
