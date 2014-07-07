@@ -1,0 +1,20 @@
+--- configure
++++ configure
+@@ -6795,6 +6795,9 @@
+ else
+    MISC_TERMINFO_DIRS=""
+ fi
++if test "$cross_compiling" = yes; then
++      { $as_echo "$as_me:${as_lineno-$LINENO}: result: assuming yes" >&5; $as_echo " assuming yes" >&6; }
++else
+ JD_Terminfo_Dirs="$MISC_TERMINFO_DIRS \
+                   /usr/lib/terminfo \
+                   /usr/share/terminfo \
+@@ -6812,6 +6815,7 @@
+       break
+    fi
+ done
++fi
+ if test "$TERMCAP"; then
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ $as_echo "no" >&6; }
