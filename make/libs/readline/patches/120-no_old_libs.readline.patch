@@ -1,6 +1,6 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -225,10 +225,8 @@
+@@ -235,10 +235,8 @@
  maybe-uninstall-headers: uninstall-headers
  
  install-static: installdirs $(STATIC_LIBS) install-headers
@@ -11,7 +11,7 @@
  	$(INSTALL_DATA) libhistory.a $(DESTDIR)$(libdir)/libhistory.a
  	-test -n "$(RANLIB)" && $(RANLIB) $(DESTDIR)$(libdir)/libhistory.a
  
-@@ -239,7 +237,7 @@
+@@ -249,7 +247,7 @@
  
  uninstall: uninstall-headers
  	-test -n "$(DESTDIR)$(libdir)" && cd $(DESTDIR)$(libdir) && \

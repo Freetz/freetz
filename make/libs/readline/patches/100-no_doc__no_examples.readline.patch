@@ -1,6 +1,6 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -224,7 +224,7 @@
+@@ -234,7 +234,7 @@
  
  maybe-uninstall-headers: uninstall-headers
  
@@ -9,9 +9,9 @@
  	-$(MV) $(DESTDIR)$(libdir)/libreadline.a $(DESTDIR)$(libdir)/libreadline.old
  	$(INSTALL_DATA) libreadline.a $(DESTDIR)$(libdir)/libreadline.a
  	-test -n "$(RANLIB)" && $(RANLIB) $(DESTDIR)$(libdir)/libreadline.a
-@@ -237,12 +237,12 @@
+@@ -247,12 +247,12 @@
  		$(DESTDIR)$(includedir)/readline $(DESTDIR)$(libdir) \
- 		$(DESTDIR)$(infodir) $(DESTDIR)$(man3dir)
+ 		$(DESTDIR)$(infodir) $(DESTDIR)$(man3dir) $(DESTDIR)$(docdir)
  
 -uninstall: uninstall-headers uninstall-doc uninstall-examples
 +uninstall: uninstall-headers
@@ -21,6 +21,6 @@
  
 -install-shared: installdirs install-headers shared install-doc
 +install-shared: installdirs install-headers shared
- 	-( cd shlib ; ${MAKE} ${MFLAGS} DESTDIR=${DESTDIR} install )
+ 	( cd shlib ; ${MAKE} ${MFLAGS} DESTDIR=${DESTDIR} install )
  	
  uninstall-shared: maybe-uninstall-headers

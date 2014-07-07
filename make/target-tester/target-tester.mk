@@ -25,6 +25,7 @@ $(PKG)_BINARIES:= \
 	bash_cv_printf_a_format \
 	bash_cv_ulimit_maxfds \
 	bash_cv_unusable_rtsigs \
+	bash_cv_wcwidth_broken \
 	ettercap-nsget32 \
 	gt_cv_int_divbyzero_sigfpe \
 	libnet_cv_have_packet_socket \

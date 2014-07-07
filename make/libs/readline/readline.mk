@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 6.2)
+$(call PKG_INIT_LIB, 6.3)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=67948acb2ca081f23359d0256e9a271c
+$(PKG)_SOURCE_MD5:=33c8fb279e981274f485fd91da77e94a
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/shlib/libreadline.so.$($(PKG)_LIB_VERSION)
@@ -18,6 +18,7 @@ $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present
 $(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
 $(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
 $(PKG)_CONFIGURE_ENV += bash_cv_termcap_lib=libncurses
+$(PKG)_CONFIGURE_ENV += bash_cv_wcwidth_broken=no
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
