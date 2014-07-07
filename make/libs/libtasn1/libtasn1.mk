@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 3.4)
-$(PKG)_LIB_VERSION:=6.2.0
+$(call PKG_INIT_LIB, 4.0)
+$(PKG)_LIB_VERSION:=6.3.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=21ec021c534b0f30b2834ce233c70f15
+$(PKG)_SOURCE_MD5:=d3d2d9bce3b6668b9827a9df52635be1
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
