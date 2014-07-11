@@ -1,11 +1,11 @@
 --- res/res_rtp_asterisk.c
 +++ res/res_rtp_asterisk.c
-@@ -1917,7 +1917,7 @@
+@@ -2068,7 +2068,7 @@
  
  	/* Create an ICE session for ICE negotiation */
  	if (pj_ice_sess_create(&stun_config, NULL, PJ_ICE_SESS_ROLE_UNKNOWN, 2,
 -			&ast_rtp_ice_sess_cb, &ufrag, &passwd, &rtp->ice) == PJ_SUCCESS) {
 +			&ast_rtp_ice_sess_cb, &ufrag, &passwd, NULL, &rtp->ice) == PJ_SUCCESS) {
  		/* Make this available for the callbacks */
- 		rtp->ice->user_data = rtp;
+ 		rtp->ice->user_data = instance;
  
