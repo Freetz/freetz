@@ -1,8 +1,8 @@
 --- include/istream
 +++ include/istream
-@@ -592,6 +592,25 @@
- #endif
- 	
+@@ -573,6 +573,25 @@
+ #ifdef __UCLIBCXX_EXPAND_ISTREAM_CHAR__
+ #ifndef __UCLIBCXX_COMPILE_ISTREAM__
  
 +#ifndef __STRICT_ANSI__
 +
@@ -24,11 +24,11 @@
 +
 +#endif // __STRICT_ANSI__
  
- }
- 
+ 	template <> _UCXXEXPORT istream & basic_istream<char, char_traits<char> >::get(char & c);
+ 	template <> _UCXXEXPORT istream::int_type basic_istream<char, char_traits<char> >::get();
 --- include/istream_helpers
 +++ include/istream_helpers
-@@ -275,6 +275,58 @@
+@@ -300,6 +300,58 @@
  		}
  	};
  

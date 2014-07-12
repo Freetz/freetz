@@ -1,0 +1,16 @@
+Fix static linking of C++ applications, see http://freetz.org/ticket/976 for details.
+
+--- bin/Makefile.in
++++ bin/Makefile.in
+@@ -40,9 +40,9 @@
+ 	$(Q)echo '	then' >> $@.tmp
+ 	$(Q)echo '		WRAPPER_INCLIB="N"' >> $@.tmp
+ 	$(Q)echo '	fi' >> $@.tmp
+-	$(Q)echo '	if [ "$$1" = "-static" -a "$$WRAPPER_LIBS" != "$(strip $(STATIC_LIBS))" ]' >> $@.tmp
++	$(Q)echo '	if [ "$$1" = "-static" -a "$$WRAPPER_LIBS" != "-Wl,--start-group $(strip $(STATIC_LIBS)) -Wl,--end-group" ]' >> $@.tmp
+ 	$(Q)echo '	then' >> $@.tmp
+-	$(Q)echo '		WRAPPER_LIBS="$(strip $(STATIC_LIBS))"' >> $@.tmp
++	$(Q)echo '		WRAPPER_LIBS="-Wl,--start-group $(strip $(STATIC_LIBS)) -Wl,--end-group"' >> $@.tmp
+ 	$(Q)echo '	fi' >> $@.tmp
+ 	$(Q)echo '	shift' >> $@.tmp
+ 	$(Q)echo 'done' >> $@.tmp

@@ -1,0 +1,16 @@
+Prevent the wrapper from linking when generating dependency files
+
+taken from http://git.uclibc.org/uClibc++/commit?id=8edee59c4bfe26b9a88332f6ce4b80e1b0cfea94
+lost for unknown reason in http://git.uclibc.org/uClibc++/commit?id=03028c2b51ca3bb0f44007800cba931608ddb2a4
+
+--- bin/Makefile.in
++++ bin/Makefile.in
+@@ -36,7 +36,7 @@
+ 	$(Q)echo 'while [ -n "$$1" ]' >> $@.tmp
+ 	$(Q)echo 'do' >> $@.tmp
+ 	$(Q)echo '	WRAPPER_OPTIONS="$$WRAPPER_OPTIONS $$1"' >> $@.tmp
+-	$(Q)echo '	if [ "$$1" = "-c" -o "$$1" = "-E" -o "$$1" = "-S" ]' >> $@.tmp
++	$(Q)echo '	if [ "$$1" = "-c" -o "$$1" = "-E" -o "$$1" = "-S" -o "$$1" = "-MF" ]' >> $@.tmp
+ 	$(Q)echo '	then' >> $@.tmp
+ 	$(Q)echo '		WRAPPER_INCLIB="N"' >> $@.tmp
+ 	$(Q)echo '	fi' >> $@.tmp
