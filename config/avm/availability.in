@@ -15,19 +15,22 @@ config FREETZ_AVM_HAS_FIRMWARE_04_XX
 config FREETZ_AVM_HAS_FIRMWARE_05_2X
 	bool "05.2x-firmware available"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		( FREETZ_TYPE_3270 && !FREETZ_TYPE_LANG_IT ) || \
-		FREETZ_TYPE_3370 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_7240 || \
 		FREETZ_TYPE_7270_16 || \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330 || \
 		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360_SL || \
-		FREETZ_TYPE_7360_V1 || \
-		( FREETZ_TYPE_7360_V2 && FREETZ_TYPE_LANG_DE ) || \
 		FREETZ_TYPE_7390
+#
+# firmwares with no security fix from AVM
+#		( FREETZ_TYPE_3270 && !FREETZ_TYPE_LANG_IT ) || \
+#		FREETZ_TYPE_3370 || \
+#		FREETZ_TYPE_6840 || \
+#		FREETZ_TYPE_7240 || \
+#		FREETZ_TYPE_7312 || \
+#		FREETZ_TYPE_7320 || \
+#		FREETZ_TYPE_7330 || \
+#		FREETZ_TYPE_7360_SL || \
+#		FREETZ_TYPE_7360_V1 || \
+#		( FREETZ_TYPE_7360_V2 && FREETZ_TYPE_LANG_DE ) || \
+#
 	default n
 	help
 		Select this if a Fritz!OS-05.2x based firmware is available for your box.
