@@ -1,0 +1,48 @@
+Rewrite script so that it properly handles/passes parameters like -DMY_STRING='"X Y"'
+
+See http://www.ip-phone-forum.de/showthread.php?t=271505 for details
+
+--- bin/Makefile.in
++++ bin/Makefile.in
+@@ -29,31 +29,19 @@
+ 	$(Q)echo 'WRAPPER_INCLUDEDIR="$${WRAPPER_INCLUDEDIR:=-I$(UCLIBCXX_RUNTIME_INCLUDEDIR)}"' >> $@.tmp
+ 	$(Q)echo 'WRAPPER_LIBDIR="$${WRAPPER_LIBDIR:=-L$(UCLIBCXX_RUNTIME_LIBDIR)}"' >> $@.tmp
+ 	$(Q)echo '' >> $@.tmp
+-	$(Q)echo 'WRAPPER_OPTIONS=""' >> $@.tmp
+-	$(Q)echo 'WRAPPER_LIBS="$(strip $(LIBS))"' >> $@.tmp
+-	$(Q)echo '' >> $@.tmp
+-	$(Q)echo 'WRAPPER_INCLIB="Y"' >> $@.tmp
+-	$(Q)echo 'while [ -n "$$1" ]' >> $@.tmp
+-	$(Q)echo 'do' >> $@.tmp
+-	$(Q)echo '	WRAPPER_OPTIONS="$$WRAPPER_OPTIONS $$1"' >> $@.tmp
+-	$(Q)echo '	if [ "$$1" = "-c" -o "$$1" = "-E" -o "$$1" = "-S" ]' >> $@.tmp
+-	$(Q)echo '	then' >> $@.tmp
+-	$(Q)echo '		WRAPPER_INCLIB="N"' >> $@.tmp
+-	$(Q)echo '	fi' >> $@.tmp
+-	$(Q)echo '	if [ "$$1" = "-static" -a "$$WRAPPER_LIBS" != "$(strip $(STATIC_LIBS))" ]' >> $@.tmp
+-	$(Q)echo '	then' >> $@.tmp
+-	$(Q)echo '		WRAPPER_LIBS="$(strip $(STATIC_LIBS))"' >> $@.tmp
+-	$(Q)echo '	fi' >> $@.tmp
+-	$(Q)echo '	shift' >> $@.tmp
+-	$(Q)echo 'done' >> $@.tmp
+-	$(Q)echo 'if [ "$$WRAPPER_INCLIB" = "Y" ]' >> $@.tmp
+-	$(Q)echo 'then' >> $@.tmp
+-	$(Q)echo '	WRAPPER_OPTIONS="$$WRAPPER_OPTIONS -nodefaultlibs $$WRAPPER_LIBDIR -l$(LNAME) $$WRAPPER_LIBS"' >> $@.tmp
++	$(Q)echo 'if echo " $$@ " | grep -qE " -static "; then' >> $@.tmp
++	$(Q)echo '	WRAPPER_LIBS="$(strip $(STATIC_LIBS))"' >> $@.tmp
++	$(Q)echo 'else' >> $@.tmp
++	$(Q)echo '	WRAPPER_LIBS="$(strip $(LIBS))"' >> $@.tmp
+ 	$(Q)echo 'fi' >> $@.tmp
+ 	$(Q)echo '' >> $@.tmp
+-	$(Q)echo '[ -n "$$V" ] && [ $$V -gt 1 ] && echo $(CXX) $(GEN_CFLAGS) $(GEN_CXXFLAGS) $(EH_CXXFLAGS) $$WRAPPER_INCLUDEDIR $$WRAPPER_OPTIONS' >> $@.tmp
+-	$(Q)echo 'exec $(CXX) $(GEN_CFLAGS) $(GEN_CXXFLAGS) $(EH_CXXFLAGS) $$WRAPPER_INCLUDEDIR $$WRAPPER_OPTIONS' >> $@.tmp
++	$(Q)echo 'if ! echo " $$@ " | grep -qE " -([cES]|MF) "; then' >> $@.tmp
++	$(Q)echo '	WRAPPER_LIBS_OPTIONS="-nodefaultlibs $$WRAPPER_LIBDIR -l$(LNAME) $$WRAPPER_LIBS"' >> $@.tmp
++	$(Q)echo 'fi' >> $@.tmp
+ 	$(Q)echo '' >> $@.tmp
++	$(Q)echo '[ -n "$$V" ] && [ $$V -gt 1 ] && \\' >> $@.tmp
++	$(Q)echo '	echo $(strip $(CXX) $(GEN_CFLAGS) $(GEN_CXXFLAGS) $(EH_CXXFLAGS)) $$WRAPPER_INCLUDEDIR "$$@" $$WRAPPER_LIBS_OPTIONS' >> $@.tmp
++	$(Q)echo '	exec $(strip $(CXX) $(GEN_CFLAGS) $(GEN_CXXFLAGS) $(EH_CXXFLAGS)) $$WRAPPER_INCLUDEDIR "$$@" $$WRAPPER_LIBS_OPTIONS' >> $@.tmp
+ 	$(Q)chmod 0755 $@.tmp
+ 	$(Q)mv $@.tmp $@
+ endef

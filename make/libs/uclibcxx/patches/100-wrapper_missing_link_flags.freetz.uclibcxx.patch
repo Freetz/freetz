@@ -1,0 +1,19 @@
+1. Fix dynamic linking of applications linked against uClibc++ by adding -lgcc_s
+2. Fix static linking of applications linked against uClibc++ by wrapping all static libs with start-group/end-group (see http://freetz.org/ticket/976 for details)
+
+--- Rules.mak
++++ Rules.mak
+@@ -257,11 +257,13 @@
+ LIBS-ASNEEDED-$(LIBNAME).so = -lgcc_s
+ endif
+ ifneq ($(IMPORT_LIBGCC_EH),y)
++  LIBS += $(call link.asneeded,-lgcc_s)
+   STATIC_LIBS += -lgcc_eh
+ #ifeq ($(GCC_MAJOR_VER),3)
+ #  LIBS += -lgcc_eh
+ #endif
+ endif
++STATIC_LIBS := -Wl$(comma)--start-group $(STATIC_LIBS) -Wl$(comma)--end-group
+ 
+ # We do not need built-in implicit rules
+ MAKEFLAGS += -r
