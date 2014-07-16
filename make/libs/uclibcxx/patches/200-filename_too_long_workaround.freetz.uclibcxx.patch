@@ -1,0 +1,34 @@
+--- Rules.mak
++++ Rules.mak
+@@ -238,6 +238,9 @@
+ list-archive-members = $(if $(1),$(shell $(AR) t $(1)))
+ variablify = $(strip $(subst /,_,$(subst :,_,$(subst ;,_,$(subst |,_,$(subst >,_,$(subst <,_,$(1))))))))
+ 
++MD5SUM = md5sum
++md5sum = $(shell echo -n '$1' | $(MD5SUM) | tr -d -c "0-9a-f")
++
+ GEN_LIBS:=
+ ifneq ($(LIBGCC_DIR),$(UCLIBCXX_RUNTIME_LIBDIR))
+ GEN_LIBS += -L$(LIBGCC_DIR)
+--- src/abi/libgcc_eh/Makefile.in
++++ src/abi/libgcc_eh/Makefile.in
+@@ -3,7 +3,7 @@
+ OBJS = $(call list-archive-members,$(LIBGCC_EH))
+ libgcc_eh-$(IMPORT_LIBGCC_EH) := $(OBJS)
+ 
+-LIBGCC_EH_VAR := $(call variablify,$(LIBGCC_EH))
++LIBGCC_EH_VAR := $(if $(LIBGCC_EH),$(call md5sum,$(LIBGCC_EH)))
+ LIBGCC_EH_DEP := $(LIBGCC_EH_OUT).$(LIBGCC_EH_VAR).dep
+ 
+ ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
+--- src/abi/libsupc/Makefile.in
++++ src/abi/libsupc/Makefile.in
+@@ -4,7 +4,7 @@
+ OBJS-OMIT = $(filter new_op%.o del_op%.o pure.o new_handler.o eh_alloc.o eh_globals.o,$(OBJS))
+ libsupc-$(IMPORT_LIBSUP) := $(filter-out $(OBJS-OMIT),$(OBJS))
+ 
+-LIBSUP_VAR := $(call variablify,$(LIBSUP))
++LIBSUP_VAR := $(if $(LIBSUP),$(call md5sum,$(LIBSUP)))
+ LIBSUP_DEP :=$(LIBSUPC_OUT).$(LIBSUP_VAR).dep
+ 
+ ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)
