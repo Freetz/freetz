@@ -1,0 +1,22 @@
+#!/bin/sh
+
+cat <<EOF
+# default sample config
+global
+	tune.ssl.default-dh-param 2048
+	pidfile /var/run/haproxy.pid
+	log /dev/log daemon notice
+
+defaults
+	log global
+	mode http
+	option http-server-close
+
+frontend myfrontend
+	bind :443 ssl crt /tmp/flash/haproxy/haproxy.pem
+	default_backend mybackend
+
+backend mybackend
+	# freetz http backend
+	server server1 127.0.0.1:81 maxconn 5
+EOF

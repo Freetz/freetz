@@ -1,0 +1,50 @@
+#!/bin/sh
+
+DAEMON=haproxy
+DAEMON_LONG_NAME=HAProxy
+DAEMON_CONFIG=/tmp/flash/$DAEMON/$DAEMON.conf
+
+. /etc/init.d/modlibrc
+
+start() {
+	modlib_startdaemon start-stop-daemon -S -b -q -m -p $PID_FILE -n $DAEMON -a $DAEMON -- -f $DAEMON_CONFIG
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/haproxy_conf > $DAEMON_CONFIG
+
+		modreg file $DAEMON config '$(lang de:"Konfiguration" en:"Configuration")' 1 "haproxy_conf"
+		[ -r /etc/options.cfg ] && . /etc/options.cfg
+		[ "$FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL" == "y" ] && modreg file $DAEMON cert '$(lang de:"Zertifikat" en:"Certificate")' 0 "haproxy_cert"
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg daemon $DAEMON
+
+		modlib_start $HAPROXY_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
