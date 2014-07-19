@@ -1,0 +1,13 @@
+--- libgcc/unwind-dw2.c
++++ libgcc/unwind-dw2.c
+@@ -1546,7 +1546,9 @@
+ static inline void
+ init_dwarf_reg_size_table (void)
+ {
+-  __builtin_init_dwarf_reg_size_table (dwarf_reg_size_table);
++  unsigned char *table = dwarf_reg_size_table;
++  asm ("" : "=r" (table) : "0" (table));
++  __builtin_init_dwarf_reg_size_table (table);
+ }
+ 
+ static void __attribute__((noinline))

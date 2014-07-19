@@ -1,0 +1,54 @@
+--- gcc/Makefile.in
++++ gcc/Makefile.in
+@@ -2779,7 +2779,8 @@
+ 
+ # Remake the info files.
+ 
+-doc: $(BUILD_INFO) $(GENERATED_MANPAGES)
++doc:
++doc-orig: $(BUILD_INFO) $(GENERATED_MANPAGES)
+ 
+ INFOFILES = doc/cpp.info doc/gcc.info doc/gccint.info \
+             doc/gccinstall.info doc/cppinternals.info
+@@ -2923,7 +2924,8 @@
+ 
+ generated-manpages: man
+ 
+-man: $(MANFILES) lang.man @GENINSRC@ srcman lang.srcman
++man:
++man-orig: $(MANFILES) lang.man @GENINSRC@ srcman lang.srcman
+ 
+ srcman: $(MANFILES)
+ 	-cp -p $^ $(srcdir)/doc
+@@ -3283,7 +3285,8 @@
+ 	done
+ 
+ # Install the man pages.
+-install-man: lang.install-man \
++install-man:
++install-man-orig: lang.install-man \
+ 	$(DESTDIR)$(man1dir)/$(GCC_INSTALL_NAME)$(man1ext) \
+ 	$(DESTDIR)$(man1dir)/$(CPP_INSTALL_NAME)$(man1ext) \
+ 	$(DESTDIR)$(man1dir)/$(GCOV_INSTALL_NAME)$(man1ext) \
+--- libjava/classpath/Makefile.in
++++ libjava/classpath/Makefile.in
+@@ -316,7 +316,7 @@
+ vm_classes = @vm_classes@
+ 
+ # lib first, to compile .class files before native code, last examples
+-SUBDIRS = lib doc external include native resource scripts tools $(EXAMPLESDIR)
++SUBDIRS = lib external include native resource scripts tools $(EXAMPLESDIR)
+ DIST_SUBDIRS = lib doc external include native resource scripts tools examples
+ 
+ # Allow users to pass site-specific flags to autoreconf via an env var. 
+--- libstdc++-v3/Makefile.in
++++ libstdc++-v3/Makefile.in
+@@ -316,7 +316,7 @@
+ 
+ # -I/-D flags to pass when compiling.
+ AM_CPPFLAGS = $(GLIBCXX_INCLUDES)
+-@GLIBCXX_HOSTED_TRUE@hosted_source = src doc po testsuite
++@GLIBCXX_HOSTED_TRUE@hosted_source = src po testsuite
+ SUBDIRS = include libsupc++ $(hosted_source) python
+ ACLOCAL_AMFLAGS = -I . -I .. -I ../config
+ @BUILD_XML_FALSE@STAMP_XML = 

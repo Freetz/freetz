@@ -131,6 +131,7 @@ choice
 	default FREETZ_TARGET_GCC_4_6 if FREETZ_AVM_GCC_4_6_MAX
 	default FREETZ_TARGET_GCC_4_7 if FREETZ_AVM_GCC_4_7
 	default FREETZ_TARGET_GCC_4_8 if FREETZ_AVM_GCC_4_8
+	default FREETZ_TARGET_GCC_4_9 if FREETZ_AVM_GCC_4_9
 
 	config FREETZ_TARGET_GCC_4_6
 		bool "gcc-4.6.4"
@@ -145,6 +146,11 @@ choice
 		bool "gcc-4.8.3"
 		depends on FREETZ_AVM_GCC_4_8 \
 			|| (FREETZ_AVM_GCC_4_8_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
+
+	config FREETZ_TARGET_GCC_4_9
+		bool "gcc-4.9.1 - EXPERIMENTAL"
+		depends on FREETZ_AVM_GCC_4_9 \
+			|| (FREETZ_AVM_GCC_4_9_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 endchoice
 
 choice
@@ -194,12 +200,14 @@ config FREETZ_TARGET_GCC_VERSION
 	default "4.6.4"		if FREETZ_TARGET_GCC_4_6
 	default "4.7.4"		if FREETZ_TARGET_GCC_4_7
 	default "4.8.3"		if FREETZ_TARGET_GCC_4_8
+	default "4.9.1"		if FREETZ_TARGET_GCC_4_9
 
 config FREETZ_GNULIBSTDCXX_VERSION
 	string
 	default "6.0.16"	if FREETZ_TARGET_GCC_4_6
 	default "6.0.17"	if FREETZ_TARGET_GCC_4_7
 	default "6.0.19"	if FREETZ_TARGET_GCC_4_8
+	default "6.0.20"	if FREETZ_TARGET_GCC_4_9
 
 config FREETZ_STDCXXLIB
 	string

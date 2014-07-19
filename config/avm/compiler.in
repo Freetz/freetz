@@ -25,6 +25,10 @@ config FREETZ_AVM_GCC_4_8
 		 (FREETZ_TYPE_FIRMWARE_LABOR && (FREETZ_TYPE_7390 || FREETZ_TYPE_7490))
 	default n
 
+config FREETZ_AVM_GCC_4_9
+	bool
+	default n
+
 config FREETZ_AVM_GCC_3_4_MIN
 	bool
 	default y if \
@@ -49,7 +53,14 @@ config FREETZ_AVM_GCC_4_7_MIN
 config FREETZ_AVM_GCC_4_8_MIN
 	bool
 	default y if \
-		FREETZ_AVM_GCC_4_8
+		FREETZ_AVM_GCC_4_8 || \
+		FREETZ_AVM_GCC_4_9_MIN
+	default n
+
+config FREETZ_AVM_GCC_4_9_MIN
+	bool
+	default y if \
+		FREETZ_AVM_GCC_4_9
 	default n
 
 config FREETZ_AVM_GCC_3_4_MAX
@@ -77,4 +88,11 @@ config FREETZ_AVM_GCC_4_8_MAX
 	default y if \
 		FREETZ_AVM_GCC_4_7_MAX || \
 		FREETZ_AVM_GCC_4_8
+	default n
+
+config FREETZ_AVM_GCC_4_9_MAX
+	bool
+	default y if \
+		FREETZ_AVM_GCC_4_8_MAX || \
+		FREETZ_AVM_GCC_4_9
 	default n
