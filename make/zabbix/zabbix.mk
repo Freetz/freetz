@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.2.4)
+$(call PKG_INIT_BIN, 2.2.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ea595612988b925ffcd702bee5a2deda
+$(PKG)_SOURCE_MD5:=e7b74a0208743f743585d9cc1d46eccf
 $(PKG)_SITE:=@SF/$(pkg)
 
 # sender & get should actually be installed to 'bin' and not 'sbin'... but in order to simplify the Makefile we install them all to 'sbin'
