@@ -41,7 +41,7 @@ See http://www.ip-phone-forum.de/showthread.php?t=271505 for details
 +	$(Q)echo 'fi' >> $@.tmp
  	$(Q)echo '' >> $@.tmp
 +	$(Q)echo '[ -n "$$UCLIBCXX_WRAPPER_DEBUG" ] && [ $$UCLIBCXX_WRAPPER_DEBUG -gt 1 ] && \\' >> $@.tmp
-+	$(Q)echo '	echo $(strip $(CXX) $(GEN_CFLAGS) $(GEN_CXXFLAGS) $(EH_CXXFLAGS)) $$WRAPPER_INCLUDEDIR "$$@" $$WRAPPER_LIBS_OPTIONS' >> $@.tmp
++	$(Q)echo '	echo $(strip $(CXX) $(GEN_CFLAGS) $(GEN_CXXFLAGS) $(EH_CXXFLAGS)) $$WRAPPER_INCLUDEDIR "$$@" $$WRAPPER_LIBS_OPTIONS >&2' >> $@.tmp
 +	$(Q)echo '	exec $(strip $(CXX) $(GEN_CFLAGS) $(GEN_CXXFLAGS) $(EH_CXXFLAGS)) $$WRAPPER_INCLUDEDIR "$$@" $$WRAPPER_LIBS_OPTIONS' >> $@.tmp
  	$(Q)chmod 0755 $@.tmp
  	$(Q)mv $@.tmp $@
