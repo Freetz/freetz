@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_RUBY
-	bool "Ruby 1.8.6-p368 (binary only)"
+	bool "Ruby (binary only)"
 	default n
 	help
 		Ruby is a dynamic, open source programming language with a focus on
@@ -34,6 +34,17 @@ config FREETZ_PACKAGE_RUBY
 
 		ATTENTION: You should have installed the same Ruby version on your host
 		in order to be able to successfully build the target version!
+
+choice
+	depends on FREETZ_PACKAGE_RUBY
+	prompt "version"
+	default FREETZ_RUBY_VERSION_1_8
+
+	config FREETZ_RUBY_VERSION_1_8
+		bool "ruby 1.8.6-p368"
+#	config FREETZ_RUBY_VERSION_1_9
+#		bool "ruby 1.9.3-p547"
+endchoice
 
 # Include ruby-fcgi here
 source make/ruby-fcgi/Config.in
