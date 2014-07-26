@@ -1,5 +1,9 @@
 config FREETZ_PACKAGE_RUBY
 	bool "Ruby (binary only)"
+	select FREETZ_LIB_libcrypt
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_librt
 	default n
 	help
 		Ruby is a dynamic, open source programming language with a focus on
