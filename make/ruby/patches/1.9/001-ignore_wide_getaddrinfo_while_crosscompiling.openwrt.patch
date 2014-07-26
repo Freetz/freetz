@@ -1,0 +1,10 @@
+--- ext/socket/extconf.rb
++++ ext/socket/extconf.rb
+@@ -254,6 +254,7 @@
+ end
+ 
+ getaddr_info_ok = (enable_config("wide-getaddrinfo") && :wide) ||
++  (CROSS_COMPILING && :cross) ||
+   (checking_for("wide getaddrinfo") {try_run(<<EOF)} && :os)
+ #{cpp_include(headers)}
+ #include <stdlib.h>
