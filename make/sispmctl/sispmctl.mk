@@ -10,6 +10,7 @@ $(PKG)_DEPENDS_ON := libusb
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_SISPMCTL_WEB),--with-webdir=/usr/share/sispmctl,--enable-webless)
 
+$(PKG)_REBUILD_SUBOPTS += $(LIBUSB_REBUILD_SUBOPTS)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_SISPMCTL_WEB
 
 $(PKG_SOURCE_DOWNLOAD)

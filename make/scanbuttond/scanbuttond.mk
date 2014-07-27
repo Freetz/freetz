@@ -27,6 +27,7 @@ $(PKG)_META_TARGET_DIR    := $($(PKG)_DEST_DIR)/etc/default.scanbuttond/meta.con
 $(PKG)_CATEGORY:=Unstable
 
 $(PKG)_REBUILD_SUBOPTS += $(foreach backend,$($(PKG)_BACKENDS_ALL),FREETZ_PACKAGE_SCANBUTTOND_BACKEND_$(backend))
+$(PKG)_REBUILD_SUBOPTS += $(LIBUSB_REBUILD_SUBOPTS)
 
 $(PKG)_DEPENDS_ON += libusb
 

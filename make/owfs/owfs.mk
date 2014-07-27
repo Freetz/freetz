@@ -23,6 +23,8 @@ $(PKG)_BINARIES_TARGET_DIR := $(OWFS_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 $(PKG)_DEPENDS_ON := libusb fuse
 
+$(PKG)_REBUILD_SUBOPTS += $(LIBUSB_REBUILD_SUBOPTS)
+
 $(call REPLACE_LIBTOOL,,src/scripts/install,)
 # Note: Replacing libtool and specifying "--disable-shared" at the same time
 # doesn't make any sense as replaced libtool is built with shared libraries enabled.
