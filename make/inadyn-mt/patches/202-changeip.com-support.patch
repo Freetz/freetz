@@ -9,7 +9,7 @@
  http://www.dynsip.org
  .TP
  http://www.dhis.org
-@@ -165,7 +167,7 @@
+@@ -167,7 +169,7 @@
  
  There is only one acceptable service for http://freedns.afraid.org, which is default@freedns.afraid.org. 
  
@@ -29,7 +29,7 @@
  http://www.dynsip.org
  .TP
  http://www.dhis.org
-@@ -165,7 +167,7 @@
+@@ -167,7 +169,7 @@
  
  There is only one acceptable service for http://freedns.afraid.org, which is default@freedns.afraid.org. 
  
@@ -48,7 +48,7 @@
    <li><a href="http://www.tzo.com">tzo.com</a></li>
    <li><a href="http://www.dynsip.org">dynsip.org</a></li>
    <li><a href="http://www.dhis.org">dhis.org</a></li>
-@@ -327,6 +328,7 @@
+@@ -326,6 +327,7 @@
  -For dnsomatic.com:  default@dnsomatic.com<br>
  -For tunnelbroker.net:  ipv6tb@he.net<br>
  -For dns.he.net:  default@he.net<br>
@@ -66,7 +66,7 @@
  static int get_req_for_dhis_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
  static int get_req_for_majimoto_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
  static int get_req_for_zerigo_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
-@@ -372,6 +373,14 @@
+@@ -373,6 +374,14 @@
  			"checkip.dns.he.net", "/",
  			"dyn.dns.he.net", "/nic/update?", NULL}},
  
@@ -81,7 +81,7 @@
  		/* Support for dynsip.org by milkfish, from DD-WRT */
  		{DYNSIP_DEFAULT,
  			{"default@dynsip.org", NULL,
-@@ -732,6 +741,17 @@
+@@ -741,6 +750,17 @@
  				   p_self->info[srv_cnt].dyndns_server_name.name);
  }
  
@@ -102,15 +102,15 @@
 --- src/dyndns.h
 +++ src/dyndns.h
 @@ -98,6 +98,7 @@
- 	DNSOMATIC_DEFAULT,
- 	HE_IPV6TB,
- 	HE_DEFAULT,
-+	CHANGEIP_DEFAULT,
- 	DYNSIP_DEFAULT,
- 	DHIS_DEFAULT,
- 	MAJIMOTO_DEFAULT,
-@@ -251,6 +252,13 @@
- 	"Host: %s\r\n"							\
+     DNSOMATIC_DEFAULT,
+     HE_IPV6TB,
+     HE_DEFAULT,
++    CHANGEIP_DEFAULT,
+     DYNSIP_DEFAULT,
+     DHIS_DEFAULT,
+     MAJIMOTO_DEFAULT,
+@@ -252,6 +253,13 @@
+ 	"Host: %s\r\n" \
  	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
  
 +#define GENERIC_CHANGEIP_AUTH_MY_IP_REQUEST_FORMAT \
@@ -121,15 +121,15 @@
 +	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
 +
  /* is.dhis.org specific update request format */
- #define DHIS_MY_IP_UPDATE_REQUEST_FORMAT				\
+ #define DHIS_MY_IP_UPDATE_REQUEST_FORMAT \
  	"GET %s" \
 --- src/inadyn_cmd.c
 +++ src/inadyn_cmd.c
 @@ -198,6 +198,7 @@
- 		 "\t\t-For dnsomatic.com:  default@dnsomatic.com\n"
- 		 "\t\t-For tunnelbroker.net:  ipv6tb@he.net\n"
- 		 "\t\t-For dns.he.net:  default@he.net\n"
-+		 "\t\t-For changeip.com:  default@changeip.com\n"
- 		 "\t\t-For tzo.com:  default@tzo.com\n"
- 		 "\t\t-For dynsip.org:  default@dynsip.org\n"
- 		 "\t\t-For dhis.org:  default@dhis.org\n"
+          "\t\t-For dnsomatic.com:  default@dnsomatic.com\n"
+          "\t\t-For tunnelbroker.net:  ipv6tb@he.net\n"
+          "\t\t-For dns.he.net:  default@he.net\n"
++         "\t\t-For changeip.com:  default@changeip.com\n"
+          "\t\t-For tzo.com:  default@tzo.com\n"
+          "\t\t-For dynsip.org:  default@dynsip.org\n"
+          "\t\t-For dhis.org:  default@dhis.org\n"

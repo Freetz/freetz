@@ -1,32 +1,5 @@
---- debian/control	2013-01-19 02:39:22.000000000 -0500
-+++ debian/control	2014-05-16 14:52:14.000000000 -0400
-@@ -2,13 +2,13 @@
- Section: net
- Priority: optional
- Maintainer: Bryan Hoover <bhoover@wecs.com>
--Build-Depends: debhelper (>= 7), autotools-dev
-+Build-Depends: debhelper (>= 7), autotools-dev, libao-dev, quilt, cdbs
- Standards-Version: 3.8.3
- Homepage: <http://sourceforge.net/projects/inadyn-mt>
- 
- Package: inadyn-mt
--Architecture: i386
--Depends: ${shlibs:Depends}, ${misc:Depends}, libao-dev
-+Architecture: any
-+Depends: ${shlibs:Depends}, ${misc:Depends}
- Description: Dynamic DNS Client
-  INADYN-MT is a dynamic DNS client. It maintains the IP address of
-  a host name. It periodically checks wheather the IP address stored
---- debian/rules	2013-01-19 02:39:22.000000000 -0500
-+++ debian/rules	2014-05-16 14:52:14.000000000 -0400
-@@ -10,4 +10,4 @@
- #export DH_VERBOSE=1
- 
- %:
--	dh  $@
-+	dh  $@ --with quilt
---- man/inadyn.8	2013-01-19 02:39:22.000000000 -0500
-+++ man/inadyn.8	2014-05-16 14:52:15.000000000 -0400
+--- man/inadyn.8
++++ man/inadyn.8
 @@ -79,6 +79,8 @@
  .TP
  http://www.tunnelbroker.net,
@@ -36,19 +9,15 @@
  http://www.dynsip.org
  .TP
  http://www.dhis.org
-@@ -121,7 +123,11 @@
- 
- Use ip type coupled instead of dual in cases where ip server update specification requires dual stack updates in a single
+@@ -125,6 +127,7 @@
  update request, i.e., both ip address types may be sent in a comma delimited list fashion.
-+.TP
-+.I \-\-addr_pref
- 
-+ipv6 privacy extensions address preference.  Valid parameters are 'pub,' 'policy,' 'home,' 'careof,' 'crypto,' 'nocrypto,' 'tmp,' 'pubtmp.'  Defaults to 'pub.'  
-+See rfc5014.  Combining via logical OR not presently supported.
  .TP
- .I \-\-input_file
- The file name that contains inadyn-mt command options exactly as specified in
-@@ -159,7 +165,7 @@
+ .I \-\-addr_pref
++
+ ipv6 privacy extensions address preference.  Valid parameters are 'pub,' 'policy,' 'home,' 'careof,' 'crypto,' 'nocrypto,' 'tmp,' 'pubtmp.'  Defaults to 'pub.'  
+ See rfc5014.  Combining via logical OR not presently supported.
+ .TP
+@@ -164,7 +167,7 @@
  
  There is only one acceptable service for http://freedns.afraid.org, which is default@freedns.afraid.org. 
  
@@ -57,8 +26,8 @@
  .TP
  .I \-\-proxy_server[:port]
  An http proxy server name and port. The default is none.
---- man/inadyn-mt.8	2013-01-19 02:39:22.000000000 -0500
-+++ man/inadyn-mt.8	2014-05-16 14:52:15.000000000 -0400
+--- man/inadyn-mt.8
++++ man/inadyn-mt.8
 @@ -79,6 +79,8 @@
  .TP
  http://www.tunnelbroker.net,
@@ -68,19 +37,15 @@
  http://www.dynsip.org
  .TP
  http://www.dhis.org
-@@ -121,7 +123,11 @@
- 
- Use ip type coupled instead of dual in cases where ip server update specification requires dual stack updates in a single
+@@ -125,6 +127,7 @@
  update request, i.e., both ip address types may be sent in a comma delimited list fashion.
-+.TP
-+.I \-\-addr_pref
- 
-+ipv6 privacy extensions address preference.  Valid parameters are 'pub,' 'policy,' 'home,' 'careof,' 'crypto,' 'nocrypto,' 'tmp,' 'pubtmp.'  Defaults to 'pub.'  
-+See rfc5014.  Combining via logical OR not presently supported.
  .TP
- .I \-\-input_file
- The file name that contains inadyn-mt command options exactly as specified in
-@@ -159,7 +165,7 @@
+ .I \-\-addr_pref
++
+ ipv6 privacy extensions address preference.  Valid parameters are 'pub,' 'policy,' 'home,' 'careof,' 'crypto,' 'nocrypto,' 'tmp,' 'pubtmp.'  Defaults to 'pub.'  
+ See rfc5014.  Combining via logical OR not presently supported.
+ .TP
+@@ -164,7 +167,7 @@
  
  There is only one acceptable service for http://freedns.afraid.org, which is default@freedns.afraid.org. 
  
@@ -89,14 +54,14 @@
  .TP
  .I \-\-proxy_server[:port]
  An http proxy server name and port. The default is none.
---- readme.html	2013-01-19 02:39:22.000000000 -0500
-+++ readme.html	2014-05-16 17:52:27.000000000 -0400
+--- readme.html
++++ readme.html
 @@ -6,7 +6,7 @@
  <body>
  <p><b>inadyn-mt - Simple DYNAMIC DNS client.<br>
  </b></p>
--<p><b>Version 02.24.38, January 2013<br>
-+<p><b>Version 02.24.38-ms_pid_07_patch, May 2014<br>
+-<p><b>Version 02.24.40, June 2014<br>
++<p><b>Version 02.24.40-ms_pid_00_patch, June 2014<br>
  </b></p>
  <p><b>INADYN Advanced Help<br>
  </b></p>
@@ -108,18 +73,20 @@
    <li><a href="http://www.tzo.com">tzo.com</a></li>
    <li><a href="http://www.dynsip.org">dynsip.org</a></li>
    <li><a href="http://www.dhis.org">dhis.org</a></li>
-@@ -270,6 +271,10 @@
+@@ -269,9 +270,9 @@
  update request, i.e., both ip address types may be sent in a comma delimited list fashion.</p>
  
  </p>
+-<p style="margin-left: 20px;">'--addr_pref &#60;pub | policy | home | careof | crypto | nocrypto | tmp | pubtmp&#62;': ipv6 privacy extensions address 
+-preference - public (value, pub - public ipv6 address), policy (value, policy - system policy tables), defaults to pub.  See rfc5014.  Combining via logical OR 
+-not presently supported.<br>
 +
 +<p style="margin-left: 20px;">'--addr_pref &#60;pub | policy | home | careof | crypto | nocrypto | tmp | pubtmp&#62;': ipv6 privacy extensions address preference - public 
 +(value, pub - public ipv6 address), policy (value, policy - system policy tables), defaults to pub.  See rfc5014.  Combining via logical OR not presently supported.<br>
-+</p>
+ </p>
  <p style="margin-left: 20px;">'--debug': &#60;#&#62; - debug level 1..7 (higher = more output)<br>
  '-d': debug level 1..7 (higher = more output).<br>
- </p>
-@@ -299,6 +304,9 @@
+@@ -302,6 +303,9 @@
  information.<br>
  </p>
  
@@ -129,7 +96,7 @@
  </p>
  <p style="margin-left: 20px;">'--dyndns_server_name &#60;name&#62;[:port]': dynamic dns server name, and optional port.</name>
  </p>
-@@ -318,13 +326,18 @@
+@@ -321,13 +325,18 @@
  -For sitelutions.com:  default@sitelutions.com<br>
  -For dnsomatic.com:  default@dnsomatic.com<br>
  -For tunnelbroker.net:  ipv6tb@he.net<br>
@@ -149,7 +116,7 @@
  </p>
  
  <p style="margin-left: 20px;">
-@@ -333,6 +346,7 @@
+@@ -336,6 +345,7 @@
  '--update_period_sec &#60;#&#62;': how often the IP is checked. The period is in [sec]. 30..864000.  Default is about 10 min. Max is 10 days<br>
  '--forced_update_period &#60;#&#62;': how often, in seconds, the IP is updated even if it is not changed. 30 sec..30 days, default, 30 days.<br>
  '--log_file &#60;path/file&#62;': log file path and name<br>
@@ -157,83 +124,63 @@
  '--background': runs in background.&nbsp; Output to syslog or to log file [if specified].<br>
  '--verbose &#60;#&#62;': set dbg level. 0 to 5<br>
  '--iterations &#60;#&#62;': set the number of DNS updates. Default is 0, which means infinity.<br>
-@@ -481,6 +495,50 @@
+@@ -484,6 +494,11 @@
  <b>HISTORY<br>
  <br>
  </b>
 +
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_07 - May 2014<br>
++Ver.&nbsp; inadyn-mt 2.24.40-ms_pid_patch_00 - June 2014<br>
 +&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added ipv6 privacy extensions option --addr_pref<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - refactored to decouple sockets init, and connect<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - ip server request format supports vanity domains<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows missing _vsnprintf conditional compile updated<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - additional ipv6 privacy extensions address types<br><br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Multiple services, in single program instance<br><br>
 +
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_06 - March 2014<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added Grundik debian build package fixes<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Restores support for dyn.dns.he.net<br><br>
-+
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_05 - March 2014<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Fixed coupled alias type parse error<br><br>
-+
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_04_he - June 2013<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - adds support for dyn.dns.he.net<br><br>
-+
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_04 - June 2013<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows version patch type-o fixed<br><br>
-+
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_03 - May 2013<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - dns server port allocation error fixed<br><br>
-+
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_02 - April 2013<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - architectural/flow control problems fixed<br><br>
-+
-+Ver.&nbsp; inadyn-mt 2.24.38-ms_pid_patch_01 - February 2013<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows version shell execute bug fixed<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - pid file related variable inits<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - unicode pid file name and path<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - pid file related snprintf return check<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - multiple update servers, single program instance<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added defaults override option, ip_server_name_global<br>
-+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added pid file name and path option, pid_file<br><br>
-+
- Ver.&nbsp; inadyn-mt 2.24.38 - January 2013<br>
+ Ver.&nbsp; inadyn-mt 2.24.40 - June 2014<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
- &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - fatal configuration selector fault fixed<br><br>
-Only in inadyn-mt.v.02.24.38/src: config.h.in~
---- src/dyndns.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/dyndns.c	2014-05-16 15:00:41.000000000 -0400
-@@ -61,6 +61,10 @@
- */
+ &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - change config w/o cache deletion<br>
+--- src/dyndns.c
++++ src/dyndns.c
+@@ -125,9 +125,9 @@
  
- /*
-+Win 95/98/ME
-+
-+non-NT (Win32) define _NOT_NT (_Win32 define does not distinguish between Win32, and NT)
-+
- UNICODE (Win 95/98/ME)
+ 	DYN_DNS_CLIENT	*p_dyndns;
+ #ifndef _WIN32
+-	void		*p_data;
++	void			*p_data;
+ #else
+-	RAS_THREAD_DATA	*p_data;
++	RAS_THREAD_DATA *p_data;
+ #endif
  
- For Windows 32 non-NT (95/98/ME) unicode, Define UNICOWS.  Then compile and link with 
-@@ -143,7 +147,9 @@
- static volatile	BOOL		global_is_online=true;
- static volatile BOOL		is_online_thread_exit=false;
- static volatile BOOL		is_alert_thread_exit=false;
--static volatile BOOL		is_update_pending=false;
+ } CB_ALERT_DATA;
+@@ -144,10 +144,12 @@
+ 
+ #endif
+ 
+-static volatile	BOOL	global_is_online=true;
+-static volatile BOOL	is_online_thread_exit=false;
+-static volatile BOOL	is_alert_thread_exit=false;
+-static volatile BOOL	is_update_pending=false;
++static volatile	BOOL		global_is_online=true;
++static volatile BOOL		is_online_thread_exit=false;
++static volatile BOOL		is_alert_thread_exit=false;
 +static volatile BOOL		is_global_update_pending=false;
 +static volatile BOOL		is_global_in_proc_update_pending=false;
 +static volatile BOOL		is_global_success_updates=false;
  
  #ifdef USE_THREADS
  
-@@ -185,7 +191,7 @@
+@@ -174,9 +176,9 @@
+ #include "debug_service.h"
+ #include "unicode_util.h"
+ 
+-static BOOL				returnSignaled=false;
+-static unsigned long			thread_online_test=0;
+-static unsigned	long			thread_alert=0;
++static BOOL		returnSignaled=false;
++static unsigned long	thread_online_test=0;
++static unsigned	long	thread_alert=0;
+ 
+ char get_mutex_dyn(DYN_DNS_CLIENT *p_dyndns,HANDLE *hMutex,int *is_waited);
+ DWORD get_mutex_wait_dyn(DYN_DNS_CLIENT *p_dyndns,HANDLE *hMutex);
+@@ -189,7 +191,7 @@
  int is_exit_requested_void(void *p_self);
  int do_is_dyndns_online(DYN_DNS_CLIENT *p_self);
  static int increment_iterations(DYN_DNS_CLIENT *p_dyndns);
@@ -242,10 +189,14 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  #ifdef USE_SNDFILE
  #ifdef USE_THREADS
-@@ -215,29 +221,30 @@
- DYNDNS_ORG_SPECIFIC_DATA dyndns_org_custom = {"custom"};
- DYNDNS_ORG_SPECIFIC_DATA dyndns_org_static = {"statdns"};
+@@ -215,34 +217,35 @@
  
+ /* DNS systems specific configurations*/
+ 
+-DYNDNS_ORG_SPECIFIC_DATA dyndns_org_dynamic =	{"dyndns"};
+-DYNDNS_ORG_SPECIFIC_DATA dyndns_org_custom =	{"custom"};
+-DYNDNS_ORG_SPECIFIC_DATA dyndns_org_static =	{"statdns"};
+-
 -static int get_req_for_dyndns_server(DYN_DNS_CLIENT *this, int nr, DYNDNS_SYSTEM *p_sys_info);
 -static int get_req_for_freedns_server(DYN_DNS_CLIENT *p_self, int cnt,  DYNDNS_SYSTEM *p_sys_info);
 -static int get_req_for_generic_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt,  DYNDNS_SYSTEM *p_sys_info);
@@ -257,6 +208,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -static int get_req_for_dhis_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt, DYNDNS_SYSTEM *p_sys_info);
 -static int get_req_for_majimoto_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt, DYNDNS_SYSTEM *p_sys_info);
 -static int get_req_for_zerigo_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt, DYNDNS_SYSTEM *p_sys_info);
+-static int get_req_for_twodns_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt, DYNDNS_SYSTEM *p_sys_info);
 -
 -static BOOL is_dyndns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char*p_rsp, char* p_ok_string);
 -static BOOL is_freedns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char*p_rsp, char* p_ok_string);
@@ -269,6 +221,10 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -static BOOL is_dhis_server_rsp_ok( DYN_DNS_CLIENT *p_self, char*p_rsp, char* p_ok_string);
 -static BOOL is_majimoto_server_rsp_ok( DYN_DNS_CLIENT *p_self, char*p_rsp, char* p_ok_string);
 -static BOOL is_zerigo_server_rsp_ok( DYN_DNS_CLIENT *p_self, char*p_rsp, char* p_ok_string);
++DYNDNS_ORG_SPECIFIC_DATA dyndns_org_dynamic = {"dyndns"};
++DYNDNS_ORG_SPECIFIC_DATA dyndns_org_custom = {"custom"};
++DYNDNS_ORG_SPECIFIC_DATA dyndns_org_static = {"statdns"};
++
 +static int get_req_for_dyndns_server(DYN_DNS_CLIENT *this,char srv_cnt, int nr, DYNDNS_SYSTEM *p_sys_info);
 +static int get_req_for_freedns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info);
 +static int get_req_for_generic_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info);
@@ -281,6 +237,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +static int get_req_for_dhis_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
 +static int get_req_for_majimoto_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
 +static int get_req_for_zerigo_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
++static int get_req_for_twodns_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info);
 +
 +static BOOL is_dyndns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char*p_rsp, char* p_ok_string,char srv_cnt);
 +static BOOL is_freedns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char*p_rsp, char* p_ok_string,char srv_cnt);
@@ -296,7 +253,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  static BOOL is_dyndns_server_rsp_config(DYN_DNS_CLIENT *p_self, char*p_rsp);
  static BOOL is_freedns_server_rsp_config(DYN_DNS_CLIENT *p_self, char*p_rsp);
-@@ -357,6 +364,14 @@
+@@ -362,6 +365,14 @@
  			DYNDNS_MY_IP_SERVER, DYNDNS_MY_IP_SERVER_URL,
  			"ipv4.tunnelbroker.net", "/ipv4_end.php?", NULL}},
  
@@ -311,7 +268,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		/* Support for dynsip.org by milkfish, from DD-WRT */
  		{DYNSIP_DEFAULT,
  			{"default@dynsip.org", NULL,
-@@ -474,7 +489,7 @@
+@@ -487,7 +498,7 @@
  	DYN_DNS_CMD	old_cmd;
  
  
@@ -320,7 +277,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	if (old_cmd != NO_CMD)
  	{
-@@ -514,7 +529,7 @@
+@@ -527,7 +538,7 @@
  
  		if (!(p_self->forced_update_counter)) {
  
@@ -329,7 +286,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  				/*
  					If not retrying pendings, forced update retries fallback to update_period.
-@@ -528,9 +543,9 @@
+@@ -541,9 +552,9 @@
  					turned off.
  				*/
  
@@ -341,7 +298,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  						DBG_PRINTF((LOG_INFO,"I:DYNDNS: Command loop breaking for forced update...\n"));
  
-@@ -568,7 +583,7 @@
+@@ -581,10 +592,10 @@
  	return RC_OK;
  }
  
@@ -349,8 +306,12 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +static int get_req_for_dyndns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,DYNDNS_SYSTEM *p_sys_info)
  {
  
- 	int bytes_stored=0;
-@@ -581,64 +596,64 @@
+-	int	bytes_stored=0;
++	int bytes_stored=0;
+ 
+ 
+ 	DYNDNS_ORG_SPECIFIC_DATA *p_dyndns_specific =
+@@ -594,64 +605,64 @@
  
  
  	bytes_stored=sprintf(p_self->p_req_buffer, DYNDNS_GET_MY_IP_HTTP_REQUEST_FORMAT,
@@ -384,7 +345,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -	               p_self->info.dyndns_server_name.name[ip_store]);
 +	               p_self->info[srv_cnt].dyndns_server_name.url,
 +	               p_self->info[srv_cnt].alias_info.hashes[cnt].str,
-+				   p_self->info[srv_cnt].i_face.my_ip_address.name[ip_store],
++	               p_self->info[srv_cnt].i_face.my_ip_address.name[ip_store],
 +	               p_self->info[srv_cnt].dyndns_server_name.name);
  }
  
@@ -444,7 +405,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  {
  	(void)p_sys_info;
  
-@@ -649,28 +664,28 @@
+@@ -662,28 +673,28 @@
  	}
  
  	return sprintf(p_self->p_req_buffer, GENERIC_TZO_AUTH_MY_IP_REQUEST_FORMAT,
@@ -485,9 +446,9 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -static int get_req_for_he_ipv6_server(DYN_DNS_CLIENT *p_self, int cnt, DYNDNS_SYSTEM *p_sys_info)
 +static int get_req_for_he_ipv6_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt, DYNDNS_SYSTEM *p_sys_info)
  {
- 	unsigned char digestbuf[MD5_DIGEST_BYTES];
- 	char digeststr[MD5_DIGEST_BYTES*2+1];
-@@ -689,116 +704,129 @@
+ 	unsigned char	digestbuf[MD5_DIGEST_BYTES];
+ 	char		digeststr[MD5_DIGEST_BYTES*2+1];
+@@ -702,129 +713,142 @@
  		return 0;
  	}
  
@@ -583,13 +544,32 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +				   p_self->info[srv_cnt].dyndns_server_name.name);
  }
  
+-static int get_req_for_twodns_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt,  DYNDNS_SYSTEM *p_sys_info)
++static int get_req_for_twodns_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info)
+ {
+ 
+ 	(void)p_sys_info;
+ 
+ 	return sprintf(p_self->p_req_buffer, TWODNS_MY_IP_UPDATE_REQUEST_FORMAT,
+-	               p_self->info.dyndns_server_url,
+-				   p_self->alias_info.names[cnt].name,
+-				   p_self->info.my_ip_address.name[ip_store],
+-				   p_self->info.credentials.p_enc_usr_passwd_buffer,				   
+-				   p_self->info.dyndns_server_name.name[ip_store]);
++	               p_self->info[srv_cnt].dyndns_server_name.url,
++				   p_self->info[srv_cnt].alias_info.names[cnt].name,
++				   p_self->info[srv_cnt].i_face.my_ip_address.name[ip_store],
++				   p_self->info[srv_cnt].credentials.p_enc_usr_passwd_buffer,				   
++				   p_self->info[srv_cnt].dyndns_server_name.name);
+ }
+ 
 -static int get_req_for_ip_server(DYN_DNS_CLIENT *p_self, void *p_specific_data)
 +static int get_req_for_ip_server(DYN_DNS_CLIENT *p_self,char srv_cnt, void *p_specific_data)
  {
  	(void)p_specific_data;
  
  	return sprintf(p_self->p_req_buffer, DYNDNS_GET_MY_IP_HTTP_REQUEST,
--	               p_self->info.ip_server_name.name[ip_store], p_self->info.ip_server_url);
+-	               p_self->info.ip_server_url, p_self->info.ip_server_name.name[ip_store]);
 +	               p_self->info[srv_cnt].ip_server_name.url,p_self->info[srv_cnt].ip_server_name.name);
  }
  
@@ -661,33 +641,24 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	}
  
  
-@@ -807,10 +835,14 @@
+@@ -833,10 +857,14 @@
  
  RC_TYPE dyn_dns_set_http_clients(DYN_DNS_CLIENT *p_self)
  {
 +	char	i;
++
  
 -	dyn_dns_set_ip_server_dest(&p_self->http_to_ip_server,p_self);
 -	dyn_dns_set_dyndns_server_dest(&p_self->http_to_dyndns,p_self);
- 
 +	for (i=0;i<p_self->srv_cnt;i++) {
-+
+ 
 +		dyn_dns_set_ip_server_dest(&p_self->info[i].http_to_ip_server,p_self,i);
 +		dyn_dns_set_dyndns_server_dest(&p_self->info[i].http_to_dyndns,p_self,i);
 +	}
  
  	return RC_OK;
  }
-@@ -829,7 +861,7 @@
- 	dyn_dns_set_online_check_dest(http_to_ip_server,p_self);
- 
- #ifndef USE_THREADS
--	rc=http_client_init(http_to_ip_server);
-+	rc=http_client_init_and_connect(http_to_ip_server);
- #else
- 	rc=http_client_test_connect(http_to_ip_server,is_exit_requested_void,p_self);	
- #endif
-@@ -847,7 +879,7 @@
+@@ -873,7 +901,7 @@
      Note:
          it updates the flag: info->'my_ip_has_changed' if the old address was different 
  */
@@ -696,7 +667,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  {
  
  	RC_TYPE		rc=RC_OK;
-@@ -873,13 +905,13 @@
+@@ -899,13 +927,13 @@
  		else
  			ip_enum=ip_6;
  
@@ -714,21 +685,19 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  		free(p_ip_str);
  
-@@ -895,20 +927,23 @@
+@@ -921,16 +949,23 @@
  	iterate over any fallback addresses
  	break on first success
  */
 -static RC_TYPE check_my_ip_address(DYN_DNS_CLIENT *p_self)
 +static RC_TYPE check_my_ip_address(DYN_DNS_CLIENT *p_self,char srv_index)
  {
--	RC_TYPE rc;
--	HTTP_CLIENT *p_http;
-+	RC_TYPE				rc;
-+	HTTP_CLIENT			*p_http;
+-	RC_TYPE	rc;
++	RC_TYPE			rc;
++	HTTP_CLIENT		*p_http;
 +	DYNDNS_INFO_TYPE	*info;
- 	
- 
--	p_http = &p_self->http_to_ip_server;
++	
++
 +	info=&p_self->info[srv_index];
  
 +	p_http = &info->http_to_ip_server;
@@ -744,8 +713,8 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  		return rc;
  	}
-@@ -929,8 +964,8 @@
- 			BOOL				is_got_afinet=false;
+@@ -951,8 +986,8 @@
+ 			BOOL			is_got_afinet=false;
  
  
 -			p_tr->req_len = get_req_for_ip_server((DYN_DNS_CLIENT*) p_self,
@@ -755,7 +724,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  			if (p_self->dbg.level > LOG_CRIT) {
  
  				DBG_PRINTF((LOG_DEBUG,"The request for IP server:\n%s\n",p_self->p_req_buffer));
-@@ -943,12 +978,12 @@
+@@ -965,12 +1000,12 @@
  
  
  			DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "Entering Loop.  Got %d sockets...\n",
@@ -772,7 +741,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  				/*on *nix, IPv4 precedence could mean no IPv6 routes which could cause a crash on socket send*/
  				if (((is_got_afinet=(is_got_afinet || addr->ai_family==AF_INET)) && addr->ai_family==AF_INET6))
-@@ -968,19 +1003,39 @@
+@@ -990,35 +1025,39 @@
  					continue;
  					
  				/*doing any ip4?*/
@@ -787,23 +756,26 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  					continue;
  
--				if (!(RC_OK==(rc=http_client_transaction(&p_self->http_to_ip_server,&p_self->http_tr)))) {
-+				if (strcmp(p_self->ipv6_priv_ext.addr_pref,"policy")) {
-+
-+					/*as per above flags=IPV6_PREFER_SRC_PUBLIC, connect with our "normal" IPV6 address*/
+ 				if (strcmp(p_self->ipv6_priv_ext.addr_pref,"policy")) {
+ 
+ 					/*as per above flags=IPV6_PREFER_SRC_PUBLIC, connect with our "normal" IPV6 address*/
+-					setsockopt(p_self->http_to_ip_server.super.super.socket[i],IPPROTO_IPV6,IPV6_ADDR_PREFERENCES,
 +					setsockopt(info->http_to_ip_server.super.super.socket[i],IPPROTO_IPV6,IPV6_ADDR_PREFERENCES,
-+						(void *) &p_self->ipv6_priv_ext.flags,sizeof (&p_self->ipv6_priv_ext.flags));
-+				}
-+
+ 						(void *) &p_self->ipv6_priv_ext.flags,sizeof (&p_self->ipv6_priv_ext.flags));
+ 				}
+ 
+-				if (!(RC_OK==(rc=http_client_connect_socket(&p_self->http_to_ip_server)))) {
 +				if (!(RC_OK==(rc=http_client_connect_socket(&info->http_to_ip_server)))) {
-+
-+					DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "connect failed getting %s ip from %s%s in check_my_ip_address...\n",
+ 
+ 					DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "connect failed getting %s ip from %s%s in check_my_ip_address...\n",
+-						addr_family_get_name(addr->ai_family),p_self->info.ip_server_name.name[ip_store],p_self->info.ip_server_url));
 +						addr_family_get_name(addr->ai_family),info->ip_server_name.name,info->ip_server_name.url));
-+
-+					continue;
-+
-+				}
-+
+ 
+ 					continue;
+ 
+ 				}
+ 
+-				if (!(RC_OK==(rc=http_client_transaction(&p_self->http_to_ip_server,&p_self->http_tr)))) {
 +				
 +				memset(p_self->p_work_buffer,0,p_self->work_buffer_size);
 +
@@ -816,7 +788,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  				}
  				else {
  
-@@ -993,22 +1048,22 @@
+@@ -1031,22 +1070,22 @@
  
  					DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "GONNA PARSE...\n"));
  
@@ -845,7 +817,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  								break;
  					}
-@@ -1019,7 +1074,7 @@
+@@ -1057,224 +1096,12 @@
  	while(0);
  
  	/*close*/
@@ -854,203 +826,615 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  
  	return rc;
-@@ -1033,53 +1088,57 @@
-         Check if my IP address has changed. -> ALL names have to be updated.
-         Note: In the update function the property will set to false if update was successful.
- */
--static RC_TYPE do_check_alias_update_table(DYN_DNS_CLIENT *p_self)
-+static RC_TYPE do_check_alias_update_table(DYN_DNS_CLIENT *p_self,char srv_index)
+ }
+ 
+-/* DynDNS org.specific response validator.
+-    'good' or 'nochange' are the good answers,
+-
+-  3 conditions:
+-  pass/good/success/nochange, etc.
+-  bad config
+-  dyn dns server error (server side trouble)
+-  So, for supported servers, we'll have 2 functions to check results:
+-  --The present (legacy) function indicating pass/fail
+-  --Added function indicating whether it was config error
+-
+-  'cause on config error, client should stop attempting updates
+-  'till config fixed.
+-
+-  dyndns.org has a fourth condition -- includes "badagent", "good 127.0.0.1" -- 
+-  both indicating non-conforming update client:
+-
+-  badagent 		The user agent was not sent or HTTP method is not permitted (we recommend use of GET request method).
+-
+-  good 127.0.0.1	This answer indicates good update only when 127.0.0.1 address is requested by update. 
+-			In all other cases it warns user that request was ignored because of agent that does not 
+-			follow our specifications. 
+-*/
+-static BOOL is_dyndns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
+-{
+-	/*fail on (badauth, nohost, notfqdn, !yours, etc)*/
+-
+-	(void) p_ok_string;
+-	return ( (strstr(p_rsp, DYNDNS_OK_RESPONSE) != NULL) ||
+-	         (strstr(p_rsp, DYNDNS_OK_NOCHANGE) != NULL) );
+-}
+-
+-static BOOL is_dyndns_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-/*Sharing this with servers other than dyndns.org - notes here to distinguish between dyndns.org codes, and those
+-  NOT used by dyndns.org*/
+-
+-/*"Access denied" on bad user or pass from two-dns.de*/
+-
+-	return (strstr(p_rsp, "!donator")  != NULL || strstr(p_rsp, "badauth") != NULL 
+-			|| strstr(p_rsp, "notfqdn") != NULL || strstr(p_rsp, "nohost") != NULL 
+-			|| strstr(p_rsp, "numhost")  != NULL || strstr(p_rsp, "badagent") != NULL 
+-			|| strstr(p_rsp, "abuse") != NULL || strstr(p_rsp, "good 127.0.0.1") != NULL
+-			|| strstr(p_rsp, "!yours") != NULL || strstr(p_rsp, "badsys") != NULL
+-			|| strstr(p_rsp, "911") != NULL) || strstr(p_rsp, "Access denied") !=NULL;
+-}
+-
+-/* Freedns afraid.org.specific response validator.
+-    ok blabla and n.n.n.n
+-    fail blabla and n.n.n.n
+-    are the good answers. We search our own IP address in response and that's enough.
+-*/
+-static BOOL is_freedns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
+-{
+-
+-	return (((strstr(p_rsp, "ERROR") == NULL) && strstr(p_rsp, p_self->info.my_ip_address.name[ip_store]) != NULL)
+-			|| strstr(p_rsp, "has not changed") != NULL);	
+-}
+-
+-static BOOL is_freedns_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	return (strstr(p_rsp,"Invalid update URL") != NULL);
+-}
+-
+-/** generic http dns server ok parser
+-	parses a given string. If found is ok,
+-	Example : 'SUCCESS CODE='
+-*/
+-static BOOL is_generic_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
+-{
+-	if (p_ok_string == NULL)
+-	{
+-		return FALSE;
+-	}
+-	return (strstr(p_rsp, p_ok_string) != NULL);
+-}
+-
+-static BOOL is_generic_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	/*caveat emptor*/
+-
+-	return false;
+-}
+-
+-/**
+-	the OK codes are:
+-	CODE=200
+-	CODE=707, for duplicated updates
+-*/
+-BOOL is_zoneedit_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
+-{
+-	(void) p_ok_string;
+-
+-	return ((strstr(p_rsp, "CODE=\"200\"") != NULL) || (strstr(p_rsp, "CODE=\"707\"") != NULL)
+-			 || (strstr(p_rsp, "CODE=\"201\"") != NULL));
+-}
+-
+-static BOOL is_zoneedit_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	return (strstr(p_rsp, "CODE=\"703\"") != NULL || strstr(p_rsp, "CODE=\"707\"") != NULL 
+-			|| strstr(p_rsp, "CODE=\"704\"") != NULL || strstr(p_rsp, "CODE=\"701\"") != NULL 
+-			|| strstr(p_rsp, "CODE=\"705\"") != NULL || strstr(p_rsp, "CODE=\"708\"") != NULL);
+-}
+-
+-/**
+-	NOERROR is the OK code here
+-*/
+-BOOL is_easydns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
+-{
+-	return (strstr(p_rsp, "NOERROR") != NULL);
+-}
+-
+-static BOOL is_easydns_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	return (strstr(p_rsp, "NOACCESS")  != NULL || strstr(p_rsp, "NOSERVICE")  != NULL || strstr(p_rsp, "ILLEGAL INPUT") 
+-			 != NULL || strstr(p_rsp, "TOOSOON") != NULL);
+-}
+-
+-static BOOL is_sitelutions_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
+-{
+-
+-	return (strstr(p_rsp,"success") != NULL);
+-}
+-
+-static BOOL is_sitelutions_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	return (strstr(p_rsp, "noauth")  != NULL || strstr(p_rsp, "invalid ip")  != NULL || strstr(p_rsp, "invalid ttl") 
+-			 != NULL || strstr(p_rsp, "no record")  != NULL || strstr(p_rsp, "not owner") != NULL);
+-}
+-
+-/* HE ipv6 tunnelbroker specific response validator.
+-   own IP address and 'already in use' are the good answers.
+-*/
+-static BOOL is_he_ipv6_server_rsp_ok(DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
+-{
+-	(void)p_ok_string;
+-
+-	return ((strstr(p_rsp, p_self->info.my_ip_address.name[ip_store]) != NULL) ||
+-		(strstr(p_rsp, "already in use") != NULL));
+-}
+-
+-/*not yet implemented
+-*/
+-static BOOL is_he_ipv6_server_rsp_config( DYN_DNS_CLIENT *p_self, char*p_rsp)
+-{
+-
+-	return false;
+-}
+-
+-/* TZO specific response validator.
+-   If we have an HTTP 302 the update wasn't good and we're being redirected 
+-*/
+-static BOOL is_tzo_server_rsp_ok(DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
+-{
+-	
+-	return strstr(p_rsp,"200")  != NULL || strstr(p_rsp,"304") != NULL;
+-}
+-
+-static BOOL is_tzo_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	return (strstr(p_rsp, "480") != NULL || strstr(p_rsp, "405")  != NULL || strstr(p_rsp, "401")  != NULL 
+-			|| strstr(p_rsp, "403") != NULL || strstr(p_rsp, "414") != NULL || strstr(p_rsp, "405") 
+-			 != NULL || strstr(p_rsp, "407") != NULL || strstr(p_rsp, "415") != NULL);
+-}
+-
+-static BOOL is_dhis_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
+-{
+-
+-	return (strstr(p_rsp,p_self->info.my_ip_address.name[ip_store]) != NULL);
+-}
+-
+-/*not yet implemented -- at moment, this seems only failure returned
+-*/
+-static BOOL is_dhis_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	return !(strstr(p_rsp,"Authorization Required")==NULL);
+-}
+-
+-/*the quiet type*/
+-static BOOL is_majimoto_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
+-{
+-
+-	return (!(strlen(p_rsp)));
+-}
+-
+-/*not yet implemented -- there *are* relevant return codes on error --
+-  presently, use dyndns server config fuction
+-*/
+-static BOOL is_majimoto_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-
+-	return false;
+-}
+-
+-static BOOL is_zerigo_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
+-{
+-	return (strstr(p_rsp,"Status: 200")!=NULL);
+-}
+-
+-static BOOL is_zerigo_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
+-{
+-	return (strstr(p_rsp,"Status: 400")!=NULL || strstr(p_rsp,"Status: 403")!=NULL || strstr(p_rsp,"Status: 404")!=NULL);
+-}
+-
+ /*find the alias given by parameter alias in list of p_dyndns structure alias names and set
+   correponding update state boolean to parameter is_updated
+ 
+@@ -1287,6 +1114,7 @@
  {
--	int			i;
--	DYNDNS_IPV	ip_v;
--	BOOL		is_ip_changed;
--	BOOL		is_dyndns_dual;
-+	int					i;
-+	DYNDNS_IPV			ip_v;
-+	BOOL				is_ip_changed;
-+	BOOL				is_dyndns_dual;
+ 
+ 	int	i;
++	int	ii;
+ 	char	*alias_in=NULL;
+ 	char	*alias_ip_v=alias;
+ 	char	*p_alias_ip_v=NULL;
+@@ -1321,39 +1149,42 @@
+ 		is_auto=true;
+ 	}
+ 
+-	for (i=0;i<p_dyndns->alias_info.count;i++) {
++	for (ii=0;ii<p_dyndns->srv_cnt;ii++) {
+ 
+-		/*add ip type [auto,coupled,ip6,ip4] to name[i].name to do compare*/
++		for (i=0;i<p_dyndns->info[ii].alias_info.count;i++) {
+ 
+-		alias_cmp_src=safe_malloc(strlen(p_dyndns->alias_info.names[i].name)+9);
+-		sprintf(alias_cmp_src,"%s:%s",p_dyndns->alias_info.names[i].name,p_dyndns->alias_info.names[i].ip_v);
++			/*add ip type [auto,coupled,ip6,ip4] to name[i].name to do compare*/
+ 
+-		if (!(strcmp(alias_cmp_src,alias_ip_v)) || (strstr(p_dyndns->alias_info.names[i].ip_v,DUAL_LIST) 
+-			&& !(strcmp(p_dyndns->alias_info.names[i].name,alias_in)))) {
++			alias_cmp_src=safe_malloc(strlen(p_dyndns->info[ii].alias_info.names[i].name)+9);
++			sprintf(alias_cmp_src,"%s:%s",p_dyndns->info[ii].alias_info.names[i].name,p_dyndns->info[ii].alias_info.names[i].ip_v);
+ 
+-			p_dyndns->alias_info.update_succeeded[i]=is_updated;
++			if (!(strcmp(alias_cmp_src,alias_ip_v)) || (strstr(p_dyndns->info[ii].alias_info.names[i].ip_v,DUAL_LIST) 
++				&& !(strcmp(p_dyndns->info[ii].alias_info.names[i].name,alias_in)))) {
+ 
+-			is_found=true;
+-		}
+-		else {
++				p_dyndns->info[ii].alias_info.update_succeeded[i]=is_updated;
+ 
+-			/*for aliases of type auto, set update state for either ip6, ip4*/
++				is_found=true;
++			}
++			else {
+ 
+-			if (is_auto)
++				/*for aliases of type auto, set update state for either ip6, ip4*/
+ 
+-				if (!(strcmp(p_dyndns->alias_info.names[i].name,alias_in))) {
++				if (is_auto)
+ 
+-					p_dyndns->alias_info.update_succeeded[i]=is_updated;
++					if (!(strcmp(p_dyndns->info[ii].alias_info.names[i].name,alias_in))) {
+ 
+-					is_found=true;
+-				}
+-		}
++						p_dyndns->info[ii].alias_info.update_succeeded[i]=is_updated;
+ 
+-		free(alias_cmp_src);
++						is_found=true;
++					}
++			}
+ 
+-		if (is_found)
++			free(alias_cmp_src);
+ 
+-			break;
++			if (is_found)
++
++				break;
++		}
+ 	}
+ 
+ 	free(p_alias_ip_v);
+@@ -1386,7 +1217,7 @@
+ 		char	*in_str;
+ 		char	*ip;
+ 		char	server[256];
+-                char   	*alias,ip_type[8],*ip_alias_type;
++                char    *alias,ip_type[8],*ip_alias_type;
+ 
+ 		int	i=0;
+ 		int	alias_count=0;
+@@ -1510,7 +1341,7 @@
+ 
+ 		}
+ 
+-		is_update_pending=(alias_count<p_dyndns->alias_info.count);
++		is_global_update_pending=(alias_count<number_of_aliases(p_dyndns));
+ 
+ 		fclose(fp);
+ 
+@@ -1567,113 +1398,429 @@
+ 	return -1;
+ }
+ 
++/*
++    Updates for every maintained name the property: 'update_required'.
++    The property will be checked in another function and updates performed.
++        
++      Action:
++        Check if my IP address has changed. -> ALL names have to be updated.
++        Note: In the update function the property will set to false if update was successful.
++*/
++static RC_TYPE do_check_alias_update_table(DYN_DNS_CLIENT *p_self,char srv_index)
++{
++	int			i;
++	DYNDNS_IPV		ip_v;
++	BOOL			is_dyndns_dual;
++	BOOL			is_cache_current;
 +	DYNDNS_INFO_TYPE	*info;
- 
- 
--	for (i = 0; i < p_self->alias_info.count; ++i)
++	char			*ip_alias_type;
++	char			*ip_alias_type2;
++
 +	info=&p_self->info[srv_index];
 +
 +
 +	for (i = 0; i < info->alias_info.count; ++i)
- 	{
- 
--		ip_v=p_self->alias_info.names[i].ip_v_enum;		
-+		ip_v=info->alias_info.names[i].ip_v_enum;		
- 
- 		/*ip type DUAL_LIST is dual of form, 1.1.1.1,::1 -- both ip types in one update connection*/
--		if (!(is_dyndns_dual=(NULL!=strstr(p_self->alias_info.names[i].ip_v,DUAL_LIST))))
-+		if (!(is_dyndns_dual=(NULL!=strstr(info->alias_info.names[i].ip_v,DUAL_LIST))))
- 
--			is_ip_changed=p_self->info.my_ip_has_changed[ip_v];
-+			is_ip_changed=p_self->info[srv_index].i_face.my_ip_has_changed[ip_v];
- 		else
--			is_ip_changed=(p_self->info.my_ip_has_changed[ip_4] || p_self->info.my_ip_has_changed[ip_6]);
-+			is_ip_changed=(p_self->info[srv_index].i_face.my_ip_has_changed[ip_4] || p_self->info[srv_index].i_face.my_ip_has_changed[ip_6]);
- 
--		p_self->alias_info.update_required[i] = 
++	{
++		ip_alias_type2=NULL;
++
++		ip_v=info->alias_info.names[i].ip_v_enum;
++
++		/*ip type DUAL_LIST is dual of form, 1.1.1.1,::1 -- both ip types in one update connection*/
++		if (!(is_dyndns_dual=(NULL!=strstr(info->alias_info.names[i].ip_v,DUAL_LIST)))) {
++
++			ip_alias_type=safe_malloc(strlen(p_self->info[srv_index].i_face.my_ip_address.name[ip_v])+strlen(info->alias_info.names[i].name)+strlen(info->alias_info.names[i].ip_v)+3);
++			sprintf(ip_alias_type,"%s %s:%s",p_self->info[srv_index].i_face.my_ip_address.name[ip_v],info->alias_info.names[i].name,info->alias_info.names[i].ip_v);
++
++			is_cache_current=!(ip_cache_list_index_of(&p_self->ip_cache_list,ip_alias_type)==-1);
++		}
++		else {
++
++			ip_alias_type=safe_malloc(strlen(p_self->info[srv_index].i_face.my_ip_address.name[ip_4])+strlen(info->alias_info.names[i].name)+6);
++			sprintf(ip_alias_type,"%s %s:ip4",p_self->info[srv_index].i_face.my_ip_address.name[ip_4],info->alias_info.names[i].name);
++
++			ip_alias_type2=safe_malloc(strlen(p_self->info[srv_index].i_face.my_ip_address.name[ip_6])+strlen(info->alias_info.names[i].name)+6);
++			sprintf(ip_alias_type2,"%s %s:ip6",p_self->info[srv_index].i_face.my_ip_address.name[ip_6],info->alias_info.names[i].name);
++
++			is_cache_current=!(ip_cache_list_index_of(&p_self->ip_cache_list,ip_alias_type)==-1 || ip_cache_list_index_of(&p_self->ip_cache_list,ip_alias_type2)==-1);
++		}
++
 +		info->alias_info.update_required[i] = 
- 
- 			/*ip address changed?*/
- 			(is_ip_changed
- 
- 			/*pending failed update?*/
--			|| (is_update_pending && !(p_self->alias_info.update_succeeded[i]))
++
++			/*ip address changed, or failed update?*/
++			(!is_cache_current
++
++			/*pending failed update?*/
 +			|| (is_global_update_pending && !(info->alias_info.update_succeeded[i]))
- 
- 			/*administrative update?*/
- 			|| (!(p_self->forced_update_counter)));
- 
--		if (p_self->alias_info.update_required[i]) {	
++
++			/*administrative update?*/
++			|| (!(p_self->forced_update_counter)));
++
 +		if (info->alias_info.update_required[i]) {	
- 	
- 			if (is_dyndns_dual)
- 
- 				DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IP address for alias '%s:%s' needs update to '%s%s%s'...\n",
--				        p_self->alias_info.names[i].name,p_self->alias_info.names[i].ip_v, 
--						p_self->info.my_ip_address.name[ip_4],",",p_self->info.my_ip_address.name[ip_6]));
++	
++			if (is_dyndns_dual)
++
++				DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IP address for alias '%s:%s' needs update to '%s,%s'...\n",
 +				        info->alias_info.names[i].name,info->alias_info.names[i].ip_v, 
-+						p_self->info[srv_index].i_face.my_ip_address.name[ip_4],",",p_self->info[srv_index].i_face.my_ip_address.name[ip_6]));
- 
- 
- 			else
- 
- 				DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IP address for alias '%s:%s' needs update to '%s'...\n",
--				        p_self->alias_info.names[i].name,p_self->alias_info.names[i].ip_v, 
--						p_self->info.my_ip_address.name[ip_v]));
++						p_self->info[srv_index].i_face.my_ip_address.name[ip_4],
++						p_self->info[srv_index].i_face.my_ip_address.name[ip_6]));
++
++
++			else
++
++				DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IP address for alias '%s:%s' needs update to '%s'...\n",
 +				        info->alias_info.names[i].name,info->alias_info.names[i].ip_v, 
 +						p_self->info[srv_index].i_face.my_ip_address.name[ip_v]));
- 
--			p_self->alias_info.update_required[i]=!(p_self->alias_info.fatal_error[i]);
++			
 +			info->alias_info.update_required[i]=!(info->alias_info.fatal_error[i]);
- 		}
- 	}
- 	
-@@ -1109,7 +1168,7 @@
- 					In all other cases it warns user that request was ignored because of agent that does not 
- 					follow our specifications. 
- */
--static BOOL is_dyndns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
++		}
++
++		free(ip_alias_type); free(ip_alias_type2);
++	}
++	
++	return RC_OK;
++}
++
++/* DynDNS org.specific response validator.
++    'good' or 'nochange' are the good answers,
++
++  3 conditions:
++  pass/good/success/nochange, etc.
++  bad config
++  dyn dns server error (server side trouble)
++  So, for supported servers, we'll have 2 functions to check results:
++  --The present (legacy) function indicating pass/fail
++  --Added function indicating whether it was config error
++
++  'cause on config error, client should stop attempting updates
++  'till config fixed.
++
++  dyndns.org has a fourth condition -- includes "badagent", "good 127.0.0.1" -- 
++  both indicating non-conforming update client:
++
++  badagent 			The user agent was not sent or HTTP method is not permitted (we recommend use of GET request method).
++
++  good 127.0.0.1	This answer indicates good update only when 127.0.0.1 address is requested by update. 
++					In all other cases it warns user that request was ignored because of agent that does not 
++					follow our specifications. 
++*/
 +static BOOL is_dyndns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string,char srv_cnt)
- {
- 	/*fail on (badauth, nohost, notfqdn, !yours, etc)*/
- 
-@@ -1133,10 +1192,10 @@
-     fail blabla and n.n.n.n
-     are the good answers. We search our own IP address in response and that's enough.
- */
--static BOOL is_freedns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
++{
++	/*fail on (badauth, nohost, notfqdn, !yours, etc)*/
++
++	(void) p_ok_string;
++	return ( (strstr(p_rsp, DYNDNS_OK_RESPONSE) != NULL) ||
++	         (strstr(p_rsp, DYNDNS_OK_NOCHANGE) != NULL) );
++}
++
++static BOOL is_dyndns_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++/*Sharing this with servers other than dyndns.org - notes here to distinguish between dyndns.org codes, and those
++  NOT used by dyndns.org*/
++
++/*"Access denied" on bad user or pass from two-dns.de*/
++
++	return (strstr(p_rsp, "!donator")  != NULL || strstr(p_rsp, "badauth") != NULL 
++			|| strstr(p_rsp, "notfqdn") != NULL || strstr(p_rsp, "nohost") != NULL 
++			|| strstr(p_rsp, "numhost")  != NULL || strstr(p_rsp, "badagent") != NULL 
++			|| strstr(p_rsp, "abuse") != NULL || strstr(p_rsp, "good 127.0.0.1") != NULL
++			|| strstr(p_rsp, "!yours") != NULL || strstr(p_rsp, "badsys") != NULL
++			|| strstr(p_rsp, "911") != NULL) || strstr(p_rsp, "Access denied") !=NULL;
++}
++
++/* Freedns afraid.org.specific response validator.
++    ok blabla and n.n.n.n
++    fail blabla and n.n.n.n
++    are the good answers. We search our own IP address in response and that's enough.
++*/
 +static BOOL is_freedns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string,char srv_cnt)
- {
- 
--	return (((strstr(p_rsp, "ERROR") == NULL) && strstr(p_rsp, p_self->info.my_ip_address.name[ip_store]) != NULL)
++{
++
 +	return (((strstr(p_rsp, "ERROR") == NULL) && strstr(p_rsp, p_self->info[srv_cnt].i_face.my_ip_address.name[ip_store]) != NULL)
- 			|| strstr(p_rsp, "has not changed") != NULL);	
- }
- 
-@@ -1150,7 +1209,7 @@
- 	parses a given string. If found is ok,
- 	Example : 'SUCCESS CODE='
- */
--static BOOL is_generic_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
++			|| strstr(p_rsp, "has not changed") != NULL);	
++}
++
++static BOOL is_freedns_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	return (strstr(p_rsp,"Invalid update URL") != NULL);
++}
++
++/** generic http dns server ok parser
++	parses a given string. If found is ok,
++	Example : 'SUCCESS CODE='
++*/
 +static BOOL is_generic_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string,char srv_cnt)
- {
- 	if (p_ok_string == NULL)
- 	{
-@@ -1172,7 +1231,7 @@
- 		CODE=200
- 		CODE=707, for duplicated updates
- */
--BOOL is_zoneedit_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
++{
++	if (p_ok_string == NULL)
++	{
++		return FALSE;
++	}
++	return (strstr(p_rsp, p_ok_string) != NULL);
++}
++
++static BOOL is_generic_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	/*caveat emptor*/
++
++	return false;
++}
++
++/**
++	the OK codes are:
++		CODE=200
++		CODE=707, for duplicated updates
++*/
 +BOOL is_zoneedit_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string,char srv_cnt)
- {
- 	(void) p_ok_string;
- 
-@@ -1191,7 +1250,7 @@
- /**
- 	NOERROR is the OK code here
- */
--BOOL is_easydns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
++{
++	(void) p_ok_string;
++
++	return ((strstr(p_rsp, "CODE=\"200\"") != NULL) || (strstr(p_rsp, "CODE=\"707\"") != NULL)
++			 || (strstr(p_rsp, "CODE=\"201\"") != NULL));
++}
++
++static BOOL is_zoneedit_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	return (strstr(p_rsp, "CODE=\"703\"") != NULL || strstr(p_rsp, "CODE=\"707\"") != NULL 
++			|| strstr(p_rsp, "CODE=\"704\"") != NULL || strstr(p_rsp, "CODE=\"701\"") != NULL 
++			|| strstr(p_rsp, "CODE=\"705\"") != NULL || strstr(p_rsp, "CODE=\"708\"") != NULL);
++}
++
++/**
++	NOERROR is the OK code here
++*/
 +BOOL is_easydns_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string,char srv_cnt)
- {
- 	return (strstr(p_rsp, "NOERROR") != NULL);
- }
-@@ -1203,7 +1262,7 @@
- 			 != NULL || strstr(p_rsp, "TOOSOON") != NULL);
- }
- 
--static BOOL is_sitelutions_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
++{
++	return (strstr(p_rsp, "NOERROR") != NULL);
++}
++
++static BOOL is_easydns_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	return (strstr(p_rsp, "NOACCESS")  != NULL || strstr(p_rsp, "NOSERVICE")  != NULL || strstr(p_rsp, "ILLEGAL INPUT") 
++			 != NULL || strstr(p_rsp, "TOOSOON") != NULL);
++}
++
 +static BOOL is_sitelutions_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string,char srv_cnt)
- {
- 
- 	return (strstr(p_rsp,"success") != NULL);
-@@ -1219,11 +1278,11 @@
- /* HE ipv6 tunnelbroker specific response validator.
-    own IP address and 'already in use' are the good answers.
- */
--static BOOL is_he_ipv6_server_rsp_ok(DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
++{
++
++	return (strstr(p_rsp,"success") != NULL);
++}
++
++static BOOL is_sitelutions_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	return (strstr(p_rsp, "noauth")  != NULL || strstr(p_rsp, "invalid ip")  != NULL || strstr(p_rsp, "invalid ttl") 
++			 != NULL || strstr(p_rsp, "no record")  != NULL || strstr(p_rsp, "not owner") != NULL);
++}
++
++/* HE ipv6 tunnelbroker specific response validator.
++   own IP address and 'already in use' are the good answers.
++*/
 +static BOOL is_he_ipv6_server_rsp_ok(DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string,char srv_cnt)
- {
- 	(void)p_ok_string;
- 
--	return ((strstr(p_rsp, p_self->info.my_ip_address.name[ip_store]) != NULL) ||
++{
++	(void)p_ok_string;
++
 +	return ((strstr(p_rsp, p_self->info[srv_cnt].i_face.my_ip_address.name[ip_store]) != NULL) ||
- 		(strstr(p_rsp, "already in use") != NULL));
- }
- 
-@@ -1238,7 +1297,7 @@
- /* TZO specific response validator.
-    If we have an HTTP 302 the update wasn't good and we're being redirected 
- */
--static BOOL is_tzo_server_rsp_ok(DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string)
++		(strstr(p_rsp, "already in use") != NULL));
++}
++
++/*not yet implemented
++*/
++static BOOL is_he_ipv6_server_rsp_config( DYN_DNS_CLIENT *p_self, char*p_rsp)
++{
++
++	return false;
++}
++
++/* TZO specific response validator.
++   If we have an HTTP 302 the update wasn't good and we're being redirected 
++*/
 +static BOOL is_tzo_server_rsp_ok(DYN_DNS_CLIENT *p_self, char *p_rsp, char *p_ok_string,char srv_cnt)
- {
- 	
- 	return strstr(p_rsp,"200")  != NULL || strstr(p_rsp,"304") != NULL;
-@@ -1252,10 +1311,10 @@
- 			 != NULL || strstr(p_rsp, "407") != NULL || strstr(p_rsp, "415") != NULL);
- }
- 
--static BOOL is_dhis_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
++{
++	
++	return strstr(p_rsp,"200")  != NULL || strstr(p_rsp,"304") != NULL;
++}
++
++static BOOL is_tzo_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	return (strstr(p_rsp, "480") != NULL || strstr(p_rsp, "405")  != NULL || strstr(p_rsp, "401")  != NULL 
++			|| strstr(p_rsp, "403") != NULL || strstr(p_rsp, "414") != NULL || strstr(p_rsp, "405") 
++			 != NULL || strstr(p_rsp, "407") != NULL || strstr(p_rsp, "415") != NULL);
++}
++
 +static BOOL is_dhis_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string,char srv_cnt)
- {
- 
--	return (strstr(p_rsp,p_self->info.my_ip_address.name[ip_store]) != NULL);
++{
++
 +	return (strstr(p_rsp,p_self->info[srv_cnt].i_face.my_ip_address.name[ip_store]) != NULL);
- }
- 
- /*not yet implemented -- at moment, this seems only failure returned
-@@ -1267,7 +1326,7 @@
- }
- 
- /*the quiet type*/
--static BOOL is_majimoto_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
++}
++
++/*not yet implemented -- at moment, this seems only failure returned
++*/
++static BOOL is_dhis_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	return !(strstr(p_rsp,"Authorization Required")==NULL);
++}
++
++/*the quiet type*/
 +static BOOL is_majimoto_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string,char srv_cnt)
- {
- 
- 	return (!(strlen(p_rsp)));
-@@ -1282,7 +1341,7 @@
- 	return false;
- }
- 
--static BOOL is_zerigo_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string)
++{
++
++	return (!(strlen(p_rsp)));
++}
++
++/*not yet implemented -- there *are* relevant return codes on error --
++  presently, use dyndns server config fuction
++*/
++static BOOL is_majimoto_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++
++	return false;
++}
++
 +static BOOL is_zerigo_server_rsp_ok( DYN_DNS_CLIENT *p_self, char *p_rsp, char* p_ok_string,char srv_cnt)
- {
- 	return (strstr(p_rsp,"Status: 200")!=NULL);
- }
-@@ -1293,110 +1352,133 @@
- }
- 
++{
++	return (strstr(p_rsp,"Status: 200")!=NULL);
++}
++
++static BOOL is_zerigo_server_rsp_config( DYN_DNS_CLIENT *p_self, char *p_rsp)
++{
++	return (strstr(p_rsp,"Status: 400")!=NULL || strstr(p_rsp,"Status: 403")!=NULL || strstr(p_rsp,"Status: 404")!=NULL);
++}
++
  static RC_TYPE update_update_state(DYN_DNS_CLIENT *p_self,int updates_needed,int success_updates,
 -										  int config_fails,RC_TYPE *rc)
 +										  int config_fails,RC_TYPE rc,char srv_index)
  {
 -	FILE *fp;
-+	FILE				*fp;
++	FILE			*fp;
 +	DYNDNS_INFO_TYPE	*info;
  
  
@@ -1095,20 +1479,20 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -			if ((fp=utf_fopen(p_self->ip_cache, "w"))) {
 +			fclose(fp);
 +		}
++
++		if ((fp=utf_fopen(p_self->ip_cache, "w"))) {
  
 -				int			i;
 -				DYNDNS_IPV	ip_enum;
 -				BOOL		is_dyndns_dual;
-+		if ((fp=utf_fopen(p_self->ip_cache, "w"))) {
-+
-+			int			i;
-+			int			ii;
++			int		i;
++			int		ii;
 +			DYNDNS_IPV	ip_enum;
 +			BOOL		is_dyndns_dual;
- 				
--				for (i=0;i<p_self->alias_info.count;i++) {
++				
 +			for (ii=0;ii<p_self->srv_cnt;ii++) {
-+
+ 
+-				for (i=0;i<p_self->alias_info.count;i++) {
 +				for (i=0;i<p_self->info[ii].alias_info.count;i++) {
  
 -					is_dyndns_dual=(NULL!=strstr(p_self->alias_info.names[i].ip_v,DUAL_LIST));
@@ -1117,45 +1501,48 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -					ip_enum=p_self->alias_info.names[i].ip_v_enum;
 +					ip_enum=p_self->info[ii].alias_info.names[i].ip_v_enum;
  
--					if (p_self->alias_info.update_succeeded[i]) { 						
+-					if (p_self->alias_info.update_succeeded[i]) {
 +					if (p_self->info[ii].alias_info.update_succeeded[i]) { 						
  
  						if (!(is_dyndns_dual))
  
--							fprintf(fp,"%s %s%s%s\n",p_self->info.my_ip_address.name[ip_enum],
--								p_self->alias_info.names[i].name,":",p_self->alias_info.names[i].ip_v);
-+							fprintf(fp,"%s %s%s%s\n",p_self->info[ii].i_face.my_ip_address.name[ip_enum],
-+									p_self->info[ii].alias_info.names[i].name,":",p_self->info[ii].
-+									alias_info.names[i].ip_v);
+-							fprintf(fp,"%s %s:%s %s\n",p_self->info.my_ip_address.name[ip_enum],
+-								p_self->alias_info.names[i].name,p_self->alias_info.names[i].ip_v,p_self->info.dyndns_server_name.name[ip_store]);
++							fprintf(fp,"%s %s:%s %s\n",p_self->info[ii].i_face.my_ip_address.name[ip_enum],
++									p_self->info[ii].alias_info.names[i].name,p_self->info[ii].
++									alias_info.names[i].ip_v,p_self->info[ii].dyndns_server_name.name);
  
  						else {
  
--							fprintf(fp,"%s %s%s%s\n",p_self->info.my_ip_address.name[ip_4],
--								p_self->alias_info.names[i].name,":","ip4");
-+							fprintf(fp,"%s %s%s%s\n",p_self->info[ii].i_face.my_ip_address.name[ip_4],
-+									p_self->info[ii].alias_info.names[i].name,":","ip4");
+-							fprintf(fp,"%s %s:ip4 %s\n",p_self->info.my_ip_address.name[ip_4],
+-								p_self->alias_info.names[i].name,p_self->info.dyndns_server_name.name[ip_store]);
++							fprintf(fp,"%s %s:ip4 %s\n",p_self->info[ii].i_face.my_ip_address.name[ip_4],
++									p_self->info[ii].alias_info.names[i].name,p_self->info[ii].dyndns_server_name.name);
  
--							fprintf(fp,"%s %s%s%s\n",p_self->info.my_ip_address.name[ip_6],
--								p_self->alias_info.names[i].name,":","ip6");
-+							fprintf(fp,"%s %s%s%s\n",p_self->info[ii].i_face.my_ip_address.name[ip_6],
-+									p_self->info[ii].alias_info.names[i].name,":","ip6");
+-							fprintf(fp,"%s %s:ip6 %s\n",p_self->info.my_ip_address.name[ip_6],
+-								p_self->alias_info.names[i].name,p_self->info.dyndns_server_name.name[ip_store]);
++							fprintf(fp,"%s %s:ip6 %s\n",p_self->info[ii].i_face.my_ip_address.name[ip_6],
++									p_self->info[ii].alias_info.names[i].name,p_self->info[ii].dyndns_server_name.name);
  						}
  					}
  				}
 -
 -				fclose(fp);
+-
+-				ip_cache_list_update(p_self);
  			}
 -		}
 -	
 -		/*any pending?*/
 -		if (!(updates_needed && !(success_updates==updates_needed))) {
--
+ 
 -			/*no pendings*/
 -			if (success_updates) {
- 
--				p_self->is_forced_update_attempted=false;
 +			fclose(fp);
 +		}		
+ 
+-				p_self->is_forced_update_attempted=false;
++		ip_cache_list_update(p_self);
 +	}
  
 -				*rc=RC_OK;
@@ -1196,19 +1583,19 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -static RC_TYPE do_update_alias_table(DYN_DNS_CLIENT *p_self,char *is_forced_update_reset)
 +static RC_TYPE do_update_alias_table(DYN_DNS_CLIENT *p_self,char *is_forced_update_reset,char srv_index)
  {
--	int		i;
--	int		success_updates=0;	
--	int		update_ok=false;
--	int		config_fails=0;
--	int		updates_needed=p_self->alias_info.count;
+-	int	i;
+-	int	success_updates=0;	
+-	int	update_ok=false;
+-	int	config_fails=0;
+-	int	updates_needed=p_self->alias_info.count;
 -	BOOL	is_ipv4;
 +	DYNDNS_INFO_TYPE	*info;
-+	int					i;
-+	int					success_updates=0;	
-+	int					update_ok=false;
-+	int					config_fails=0;
-+	int					updates_needed=p_self->info[srv_index].alias_info.count;
-+	BOOL				is_ipv4;
++	int			i;
++	int			success_updates=0;	
++	int			update_ok=false;
++	int			config_fails=0;
++	int			updates_needed=p_self->info[srv_index].alias_info.count;
++	BOOL			is_ipv4;
  
  	RC_TYPE rc = RC_OK;
  
@@ -1232,7 +1619,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  					config_fails++;
  				}
-@@ -1406,48 +1488,48 @@
+@@ -1683,46 +1830,49 @@
  			else {
  
  				/*dual stack with ip's updated in comma delimited list fashion?*/
@@ -1248,16 +1635,16 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +								p_self->info[srv_index].i_face.my_ip_address.name[info->alias_info.names[i].ip_v_enum]);
  				}
  				else {
- 
--					strcat(strcat(strcpy(p_self->info.my_ip_address.name[ip_store],p_self->info.my_ip_address.name[ip_4]),
--							","),p_self->info.my_ip_address.name[ip_6]);
-+					strcat(strcat(strcpy(p_self->info[srv_index].i_face.my_ip_address.name[ip_store],p_self->info[srv_index].i_face.my_ip_address.name[ip_4]),
-+							","),p_self->info[srv_index].i_face.my_ip_address.name[ip_6]);
+-					sprintf(p_self->info.my_ip_address.name[ip_store],"%s,%s",p_self->info.my_ip_address.name[ip_4],p_self->info.my_ip_address.name[ip_6]);
  
 -					if (!(p_self->info.is_got_ip4 && p_self->info.is_got_ip6)) {
-+					if (!(p_self->info[srv_index].is_got_ip4 && p_self->info[srv_index].is_got_ip6)) {
++					sprintf(p_self->info[srv_index].i_face.my_ip_address.name[ip_store],"%s,%s",
++						p_self->info[srv_index].i_face.my_ip_address.name[ip_4],
++						p_self->info[srv_index].i_face.my_ip_address.name[ip_6]);
  
 -						p_self->alias_info.update_succeeded[i]=false;
++					if (!(p_self->info[srv_index].is_got_ip4 && p_self->info[srv_index].is_got_ip6)) {
++
 +						info->alias_info.update_succeeded[i]=false;
  
  						DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "Skipping partially empty address (%s) update of alias "\
@@ -1287,7 +1674,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -				http_client_set_is_ipv4(&p_self->http_to_dyndns,is_ipv4);
 +				http_client_set_is_ipv4(&info->http_to_dyndns,is_ipv4);
  
--				if (!((rc=http_client_init(&p_self->http_to_dyndns))==RC_OK)) {
+-				if (!((rc=http_client_init_and_connect(&p_self->http_to_dyndns))==RC_OK)) {
 +				if (!((rc=http_client_init_and_connect(&info->http_to_dyndns))==RC_OK)) {
  
 -					DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "Init error:  %s updating alias %s\n",errorcode_get_name(rc),p_self->alias_info.names[i].name));
@@ -1298,21 +1685,23 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  				}
  				else {
  
-@@ -1455,9 +1537,10 @@
+@@ -1730,18 +1880,18 @@
  					{
  						HTTP_TRANSACTION http_tr;
  						
 -						http_tr.req_len = p_self->info.p_dns_system->p_dns_update_req_func(
--							                  (struct _DYN_DNS_CLIENT*) p_self,i,
--								              (struct DYNDNS_SYSTEM*) p_self->info.p_dns_system);
+-							(struct _DYN_DNS_CLIENT*) p_self,i,(struct DYNDNS_SYSTEM*) 
+-							p_self->info.p_dns_system);
 +						http_tr.req_len = 
 +							info->p_dns_system->p_dns_update_req_func((struct _DYN_DNS_CLIENT*) p_self,srv_index,i,
 +							(struct DYNDNS_SYSTEM*) info->p_dns_system);
 +
  						http_tr.p_req = (char*) p_self->p_req_buffer;
  						http_tr.p_rsp = (char*) p_self->p_work_buffer;
- 						http_tr.max_rsp_len = p_self->work_buffer_size - 1;/*save place for a \0 at the end*/
-@@ -1465,7 +1548,7 @@
+-						/*save place for a \0 at the end*/
+-						http_tr.max_rsp_len = p_self->work_buffer_size - 1;
++						http_tr.max_rsp_len = p_self->work_buffer_size - 1;/*save place for a \0 at the end*/
+ 						http_tr.rsp_len = 0;
  						p_self->p_work_buffer[http_tr.rsp_len+1] = 0;				
  
  						/*send it*/
@@ -1321,7 +1710,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  						http_tr.p_rsp[http_tr.rsp_len]=0;
  
  						if (p_self->dbg.level > 2)
-@@ -1477,14 +1560,13 @@
+@@ -1753,13 +1903,13 @@
  						/*error in send?*/
  						if (!(rc == RC_OK))
  
@@ -1332,14 +1721,13 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  							update_ok =
 -								p_self->info.p_dns_system->p_rsp_ok_func((struct _DYN_DNS_CLIENT*)p_self,
--									    http_tr.p_rsp,
--										p_self->info.p_dns_system->p_success_string);
+-									    http_tr.p_rsp,p_self->info.p_dns_system->p_success_string);
 +								info->p_dns_system->p_rsp_ok_func((struct _DYN_DNS_CLIENT*)p_self,
 +									    http_tr.p_rsp,info->p_dns_system->p_success_string,srv_index);
  
  							if (update_ok)
  							{
-@@ -1498,12 +1580,12 @@
+@@ -1773,12 +1923,12 @@
  									*is_forced_update_reset=true;
  								}
  #endif
@@ -1356,7 +1744,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  								if (p_self->external_command)
  
-@@ -1511,24 +1593,24 @@
+@@ -1786,24 +1936,24 @@
  							}
  							else {
  
@@ -1386,7 +1774,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  									config_fails++;
  									updates_needed--;
-@@ -1545,7 +1627,7 @@
+@@ -1820,7 +1970,7 @@
  				}
  
  				{
@@ -1395,7 +1783,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  					if (!(rc2==RC_OK))
  
-@@ -1553,7 +1635,7 @@
+@@ -1828,7 +1978,7 @@
  
  				}				
  
@@ -1404,7 +1792,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  					os_sleep_ms(1000);
  			}
-@@ -1564,7 +1646,7 @@
+@@ -1839,7 +1989,7 @@
  	}
  	while(0);
  
@@ -1413,7 +1801,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  }
  
  RC_TYPE get_default_config_data(DYN_DNS_CLIENT *p_self)
-@@ -1576,8 +1658,9 @@
+@@ -1851,8 +2001,9 @@
  
  	do
  	{
@@ -1425,26 +1813,17 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		{
  			rc = RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT;
  			break;
-@@ -1645,13 +1728,16 @@
- #endif
- 
- 		p_self->dbg.level=DYNDNS_DEFAULT_DEBUG_LEVEL;
-+
-+		strcpy(p_self->ipv6_priv_ext.addr_pref,"pub");
-+		p_self->ipv6_priv_ext.flags=IPV6_PREFER_SRC_PUBLIC;
- 	}
- 	while(0);
- 
+@@ -1929,7 +2080,7 @@
  	return rc;
  }
  
 -static RC_TYPE get_encoded_user_passwd(DYN_DNS_CLIENT *p_self)
 +static RC_TYPE get_encoded_user_passwd(DYN_DNS_CLIENT *p_self,char srv_cnt)
  {
- 	RC_TYPE			rc=RC_OK;
- 	char			*str_uri_encoded;
-@@ -1661,23 +1747,23 @@
- 	int				actual_len;
+ 	RC_TYPE		rc=RC_OK;
+ 	char		*str_uri_encoded;
+@@ -1939,23 +2090,23 @@
+ 	int		actual_len;
  
  
 -	if (!(p_self->info.credentials.my_password) && !(p_self->info.credentials.my_username))
@@ -1474,7 +1853,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	do
  	{
-@@ -1689,8 +1775,8 @@
+@@ -1967,8 +2118,8 @@
  		}
  
  		actual_len = sprintf(p_tmp_buff, format,
@@ -1485,7 +1864,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  		if (actual_len >= size)
  		{
-@@ -1700,15 +1786,15 @@
+@@ -1978,15 +2129,15 @@
  
  		/*encode*/
  
@@ -1505,16 +1884,16 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	}
  	while(0);
  
-@@ -1741,6 +1827,8 @@
- 	DYN_DNS_CLIENT *p_self;
- 	BOOL http_to_dyndns_constructed = FALSE;
- 	BOOL http_to_ip_constructed = FALSE;
+@@ -2019,6 +2170,8 @@
+ 	DYN_DNS_CLIENT	*p_self;
+ 	BOOL		http_to_dyndns_constructed = FALSE;
+ 	BOOL		http_to_ip_constructed = FALSE;
 +	char i;
 +
  
  	if (pp_self == NULL)
  	{
-@@ -1777,25 +1865,30 @@
+@@ -2055,25 +2208,30 @@
  		}
  
  
@@ -1560,7 +1939,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		http_to_dyndns_constructed = TRUE;
  
  		(p_self)->cmd = NO_CMD;
-@@ -1803,8 +1896,6 @@
+@@ -2081,8 +2239,6 @@
  		(p_self)->total_iterations = DYNDNS_DEFAULT_ITERATIONS;
  		(p_self)->initialized = FALSE;
  
@@ -1569,12 +1948,12 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		p_self->lang_file = NULL;
  
  	}
-@@ -1824,25 +1915,33 @@
+@@ -2102,25 +2258,33 @@
  		{
  			free (p_self->p_work_buffer);
  		}
 -		if (http_to_dyndns_constructed)
- 		{
+-		{
 -			http_client_destruct(&p_self->http_to_dyndns);
 -		}
 -		if (http_to_ip_constructed)
@@ -1586,7 +1965,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -			free(p_self->info.my_ip_address.name[ip_store]);
 -		}
 -		if (p_self->info.my_ip_address.name[ip_4])
--		{
+ 		{
 -			free(p_self->info.my_ip_address.name[ip_4]);
 +			for (i=0;i<MAX_DNS_SERVER;i++) {
 +
@@ -1619,7 +1998,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		}
  	}
  
-@@ -1855,7 +1954,10 @@
+@@ -2133,7 +2297,10 @@
  */	
  RC_TYPE dyn_dns_destruct(DYN_DNS_CLIENT *p_self)
  {
@@ -1631,7 +2010,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	if (p_self == NULL)
  	{
  		return RC_OK;
-@@ -1866,15 +1968,51 @@
+@@ -2144,15 +2311,51 @@
  		dyn_dns_shutdown(p_self);
  	}
  
@@ -1690,7 +2069,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	}
  
-@@ -1890,11 +2028,6 @@
+@@ -2168,11 +2371,6 @@
  		p_self->p_req_buffer = NULL;
  	}
  
@@ -1702,7 +2081,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	if (p_self->lang_file != NULL)
  	{
-@@ -1922,51 +2055,6 @@
+@@ -2200,51 +2398,6 @@
  		p_self->time_cache=NULL;
  	}
  
@@ -1754,7 +2133,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	if (p_self->external_command != NULL)
  	{
-@@ -1975,40 +2063,9 @@
+@@ -2253,40 +2406,8 @@
  		p_self->external_command=NULL;
  	}
  
@@ -1781,9 +2160,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -
 -	if (p_self->info.my_ip_address.name[ip_4] != NULL)
 -	{
-+	free(p_self->p_pidfilename);
-+	p_self->p_pidfilename = NULL;
- 
+-
 -		free(p_self->info.my_ip_address.name[ip_4]);
 -		p_self->info.my_ip_address.name[ip_4]=NULL;
 -	}
@@ -1794,13 +2171,85 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -		free(p_self->info.my_ip_address.name[ip_6]);
 -		p_self->info.my_ip_address.name[ip_6]=NULL;
 -	}
++	free(p_self->p_pidfilename);
++	p_self->p_pidfilename = NULL;
  
- 	free(p_self);
- 	p_self = NULL;
-@@ -2080,12 +2137,12 @@
+ 	ip_cache_list_destruct(&p_self->ip_cache_list);
+ 
+@@ -2360,82 +2481,12 @@
  	return RC_OK;
  }
  
+-static RC_TYPE do_check_alias_update_table(DYN_DNS_CLIENT *p_self)
+-{
+-	int		i;
+-	DYNDNS_IPV	ip_v;
+-	BOOL		is_dyndns_dual;
+-	BOOL		is_cache_current;
+-	char		*ip_alias_type;
+-	char		*ip_alias_type2;
+-
+-
+-	for (i = 0; i < p_self->alias_info.count; ++i)
+-	{
+-		ip_alias_type2=NULL;
+-
+-		ip_v=p_self->alias_info.names[i].ip_v_enum;
+-
+-		/*ip type DUAL_LIST is dual of form, 1.1.1.1,::1 -- both ip types in one update connection*/
+-		if (!(is_dyndns_dual=(NULL!=strstr(p_self->alias_info.names[i].ip_v,DUAL_LIST)))) {
+-
+-			ip_alias_type=safe_malloc(strlen(p_self->info.my_ip_address.name[ip_v])+strlen(p_self->alias_info.names[i].name)+strlen(p_self->alias_info.names[i].ip_v)+3);
+-			sprintf(ip_alias_type,"%s %s:%s",p_self->info.my_ip_address.name[ip_v],p_self->alias_info.names[i].name,p_self->alias_info.names[i].ip_v);
+-
+-			is_cache_current=!(ip_cache_list_index_of(&p_self->ip_cache_list,ip_alias_type)==-1);
+-		}
+-		else {
+-
+-			ip_alias_type=safe_malloc(strlen(p_self->info.my_ip_address.name[ip_4])+strlen(p_self->alias_info.names[i].name)+6);
+-			sprintf(ip_alias_type,"%s %s:ip4",p_self->info.my_ip_address.name[ip_4],p_self->alias_info.names[i].name);
+-
+-			ip_alias_type2=safe_malloc(strlen(p_self->info.my_ip_address.name[ip_6])+strlen(p_self->alias_info.names[i].name)+6);
+-			sprintf(ip_alias_type2,"%s %s:ip6",p_self->info.my_ip_address.name[ip_6],p_self->alias_info.names[i].name);
+-
+-			is_cache_current=!(ip_cache_list_index_of(&p_self->ip_cache_list,ip_alias_type)==-1 || ip_cache_list_index_of(&p_self->ip_cache_list,ip_alias_type2)==-1);
+-		}
+-
+-		p_self->alias_info.update_required[i] = 
+-
+-			/*ip address changed, or failed update?*/
+-			(!is_cache_current
+-
+-			/*pending failed update?*/
+-			|| (is_update_pending && !(p_self->alias_info.update_succeeded[i]))
+-
+-			/*administrative update?*/
+-			|| (!(p_self->forced_update_counter)));
+-
+-		if (p_self->alias_info.update_required[i]) {	
+-	
+-			if (is_dyndns_dual)
+-
+-				DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IP address for alias '%s:%s' needs update to '%s,%s'...\n",
+-				        p_self->alias_info.names[i].name,p_self->alias_info.names[i].ip_v, 
+-						p_self->info.my_ip_address.name[ip_4],p_self->info.my_ip_address.name[ip_6]));
+-
+-
+-			else
+-
+-				DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IP address for alias '%s:%s' needs update to '%s'...\n",
+-				        p_self->alias_info.names[i].name,p_self->alias_info.names[i].ip_v, 
+-						p_self->info.my_ip_address.name[ip_v]));
+-			
+-			p_self->alias_info.update_required[i]=!(p_self->alias_info.fatal_error[i]);
+-		}
+-
+-		free(ip_alias_type); free(ip_alias_type2);
+-	}
+-	
+-	return RC_OK;
+-}
+-
 -static RC_TYPE do_handle_bad_config(DYN_DNS_CLIENT *p_self,int i)
 +static RC_TYPE do_handle_bad_config(DYN_DNS_CLIENT *p_self,int i,char srv_cnt)
  {
@@ -1812,7 +2261,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  		DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "\n"\
  					ERROR_FLAG \
-@@ -2093,7 +2150,7 @@
+@@ -2443,7 +2494,7 @@
  					"fatal dyndns server update error for "\
  					"alias, %s.\nThis client should be stopped and corrected for "\
  					"configuration errors, and restarted...\n" \
@@ -1821,7 +2270,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	else
  
  		DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "\n"\
-@@ -2107,21 +2164,21 @@
+@@ -2457,21 +2508,21 @@
  	return RC_ERROR;
  }
  
@@ -1847,7 +2296,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  }
  
  /*
-@@ -2134,7 +2191,7 @@
+@@ -2484,7 +2535,7 @@
  		- get the current DYN DNS address from DYN DNS server
  		- compare and update if neccessary
  */
@@ -1855,8 +2304,8 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +RC_TYPE dyn_dns_update_ip(DYN_DNS_CLIENT *p_self,char srv_cnt)
  {
  
- 	RC_TYPE		rc=RC_ERROR;
-@@ -2149,9 +2206,9 @@
+ 	RC_TYPE	rc=RC_ERROR;
+@@ -2499,9 +2550,9 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -1868,7 +2317,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	do
  	{
-@@ -2164,7 +2221,7 @@
+@@ -2514,7 +2565,7 @@
  
  				if ((is_exit=(p_self->net_retries<net_attempts++))) {
  
@@ -1877,7 +2326,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  					break;
  				}
-@@ -2174,7 +2231,7 @@
+@@ -2524,7 +2575,7 @@
  			else {
  
  				/*ask IP server something so will respond and give me my IP */
@@ -1886,7 +2335,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  				if (rc==RC_OK)
  
-@@ -2184,7 +2241,7 @@
+@@ -2534,7 +2585,7 @@
  
  				if (p_self->net_retries<ip_attempts++) {
  
@@ -1895,7 +2344,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  					break;
  				}
-@@ -2211,7 +2268,7 @@
+@@ -2561,7 +2612,7 @@
  			DBG_PRINTF((LOG_INFO,"I:DYNDNS: dyn_dns_update_ip checking alias table...\n"));
  
  			/*step through aliases list, resolve them and check if they point to my IP*/
@@ -1904,7 +2353,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  			if (rc != RC_OK)
  			{
  				break;
-@@ -2227,7 +2284,7 @@
+@@ -2577,7 +2628,7 @@
  
  					if (p_self->net_retries<net_attempts++) {
  
@@ -1913,7 +2362,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  						break;
  					}
-@@ -2237,11 +2294,13 @@
+@@ -2587,11 +2638,13 @@
  				else {
  
  					/*update IPs marked as not identical with my IP*/
@@ -1929,7 +2378,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  						break;
  					}
-@@ -2250,14 +2309,18 @@
+@@ -2600,14 +2653,18 @@
  
  					if (p_self->net_retries<ip_attempts++) {
  
@@ -1950,7 +2399,16 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  						break;
  					}
-@@ -2875,7 +2938,7 @@
+@@ -2882,7 +2939,7 @@
+ static void alert_if_offline_thread(void *p_data)
+ #endif
+ {
+-	DYN_DNS_CLIENT		*p_dyndns;
++	DYN_DNS_CLIENT	*p_dyndns;
+ 
+ 	if (p_data) {
+ 
+@@ -3225,7 +3282,7 @@
  
  
  	*p_ras_thread_data=construct_and_launch_trap_ras_events(dyn_dns_update_ip_handler,p_dyndns,p_dyndns->\
@@ -1959,14 +2417,14 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		                   p_dyndns->dbg.level);
  
  	if (*p_ras_thread_data) {
-@@ -2913,20 +2976,6 @@
+@@ -3263,20 +3320,6 @@
  	*src+=inc;
  }
  
 -RC_TYPE dyn_dns_reinit(DYN_DNS_CLIENT *p_dyndns)
 -{
 -
--	RC_TYPE		rc=RC_OK;
+-	RC_TYPE	rc=RC_OK;
 -
 -
 -	dyn_dns_shutdown(p_dyndns);
@@ -1977,101 +2435,17 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -	return rc;
 -}
 -
- /*find the alias given by parameter alias in list of p_dyndns structure alias names and set
-   correponding update state boolean to parameter is_updated
- 
-@@ -2939,6 +2988,7 @@
- {
- 
- 	int		i;
-+	int		ii;
- 	char	*alias_in=NULL;
- 	char	*alias_ip_v=alias;
- 	char	*p_alias_ip_v=NULL;
-@@ -2973,39 +3023,42 @@
- 		is_auto=true;
- 	}
- 
--	for (i=0;i<p_dyndns->alias_info.count;i++) {
-+	for (ii=0;ii<p_dyndns->srv_cnt;ii++) {
- 
--		/*add ip type [auto,coupled,ip6,ip4] to name[i].name to do compare*/
-+		for (i=0;i<p_dyndns->info[ii].alias_info.count;i++) {
- 
--		alias_cmp_src=safe_malloc(strlen(p_dyndns->alias_info.names[i].name)+9);
--		strcat(strcat(strcpy(alias_cmp_src,p_dyndns->alias_info.names[i].name),":"),p_dyndns->alias_info.names[i].ip_v);
-+			/*add ip type [auto,coupled,ip6,ip4] to name[i].name to do compare*/
- 
--		if (!(strcmp(alias_cmp_src,alias_ip_v)) || (strstr(p_dyndns->alias_info.names[i].ip_v,DUAL_LIST) 
--			&& !(strcmp(p_dyndns->alias_info.names[i].name,alias_in)))) {
-+			alias_cmp_src=safe_malloc(strlen(p_dyndns->info[ii].alias_info.names[i].name)+9);
-+			strcat(strcat(strcpy(alias_cmp_src,p_dyndns->info[ii].alias_info.names[i].name),":"),p_dyndns->info[ii].alias_info.names[i].ip_v);
- 
--			p_dyndns->alias_info.update_succeeded[i]=is_updated;
-+			if (!(strcmp(alias_cmp_src,alias_ip_v)) || (strstr(p_dyndns->info[ii].alias_info.names[i].ip_v,DUAL_LIST) 
-+				&& !(strcmp(p_dyndns->info[ii].alias_info.names[i].name,alias_in)))) {
- 
--			is_found=true;
--		}
--		else {
-+				p_dyndns->info[ii].alias_info.update_succeeded[i]=is_updated;
- 
--			/*for aliases of type auto, set update state for either ip6, ip4*/
-+				is_found=true;
-+			}
-+			else {
- 
--			if (is_auto)
-+				/*for aliases of type auto, set update state for either ip6, ip4*/
- 
--				if (!(strcmp(p_dyndns->alias_info.names[i].name,alias_in))) {
-+				if (is_auto)
- 
--					p_dyndns->alias_info.update_succeeded[i]=is_updated;
-+					if (!(strcmp(p_dyndns->info[ii].alias_info.names[i].name,alias_in))) {
- 
--					is_found=true;
--				}
--		}
-+						p_dyndns->info[ii].alias_info.update_succeeded[i]=is_updated;
- 
--		free(alias_cmp_src);
-+						is_found=true;
-+					}
-+			}
- 
--		if (is_found)
-+			free(alias_cmp_src);
- 
--			break;
-+			if (is_found)
-+
-+				break;
-+		}
- 	}
- 
- 	free(p_alias_ip_v);
-@@ -3029,9 +3082,9 @@
- 
- 		char	ch;
- 		char	*in_str[DYNDNS_MAX_ALIAS_NUMBER*2]; /*multiply for dual alias type*/
--		int		i=0;
--		int		line_count=0;
--		int		max_len=256;
-+		int	i=0;
-+		int	line_count=0;
-+		int	max_len=256;
- 		BOOL	is_rewrite=false;
- 
- 		in_str[line_count]=safe_malloc(max_len);
-@@ -3129,11 +3182,30 @@
+ /*
+ 	read in ip cache file lines containing ip address, alias pairs
+ 	rewrite the file so lines not containing an ip type (ip4, ip6, auto) get ip type, auto
+@@ -3394,6 +3437,20 @@
  	return rc;
  }
  
 +int number_of_aliases(DYN_DNS_CLIENT *p_dyndns)
 +{
 +	char	i;
-+	int		alias_count=0;
++	int	alias_count=0;
 +
 +
 +	for (i=0;i<MAX_DNS_SERVER;i++) {
@@ -2082,79 +2456,58 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +	return alias_count;
 +}
 +
- /*  Record the last ip as per that in ip cache file.  Report it via log output.
+ static int increment_iterations(DYN_DNS_CLIENT *p_dyndns)
+ {
+ 	int	iterations;
+@@ -3428,17 +3485,17 @@
  
- 	Set update need for each space separated ip, alias pair line read.  
- 	
- 	Set global is_update_pending if number of aliases read less than p_dyndns->alias_info.count.
-+
-+	Multiple servers patch moving in direction of providing for multiple ip interfaces as well.
-+	So far, this patch provides for multiple instances of stored reference ip -- one per dyndns 
-+	server.  Here, we'll update all of them to the same ip, since we're not yet providing for
-+	multiple interfaces.
- */
+ #ifdef USE_THREADS
  
- RC_TYPE check_ip_cache(DYN_DNS_CLIENT *p_dyndns)
-@@ -3145,6 +3217,7 @@
+-	void	**p_ras_thread_data=p_data;
++	void			**p_ras_thread_data=p_data;
+ #endif
  
- 	fp=utf_fopen(p_dyndns->ip_cache,"r");
+ #else
+ 	RAS_THREAD_DATA	**p_ras_thread_data= (RAS_THREAD_DATA **) p_data;
+-	int		regParamsC=1;
+-	wchar_t		*regArgs[50];
+-	char		*utf_8_argv[50];
+-	int		i=0;
++	int             regParamsC=1;
++	wchar_t         *regArgs[50];
++	char            *utf_8_argv[50];
++	int             i=0;
  
-+
- 	if (fp)	{
+-	RC_TYPE		rc_reg=RC_ERROR;
++	RC_TYPE         rc_reg=RC_ERROR;
+ #endif
  
- 		char	ch;
-@@ -3181,13 +3254,18 @@
- 
- 					/*redundant for multi-aliases.  and aliases needing update won't be here*/
- 
--					if (strstr(in_str,".")) {
-+					char i;
- 
--						strcpy(p_dyndns->info.my_ip_address.name[ip_4],in_str);
--					}
--					else {
-+					for (i=0;i<MAX_DNS_SERVER;i++) {
-+
-+						if (strstr(in_str,".")) {
- 
--						strcpy(p_dyndns->info.my_ip_address.name[ip_6],in_str);
-+							strcpy(p_dyndns->info[i].i_face.my_ip_address.name[ip_4],in_str);
-+						}
-+						else {
-+
-+							strcpy(p_dyndns->info[i].i_face.my_ip_address.name[ip_6],in_str);
-+						}
- 					}
- 				}
- 				else { /*alias*/
-@@ -3209,17 +3287,21 @@
- 			}
- 		}
- 
--		is_update_pending=(alias_count<p_dyndns->alias_info.count);
-+		is_global_update_pending=(alias_count<number_of_aliases(p_dyndns));
- 
- 		fclose(fp);
- 
--		if (strlen(p_dyndns->info.my_ip_address.name[ip_4]))
-+/*
-+	see function comments above concerning multiple server/multiple ip present circumstances, and plans -- this section here, will
-+	need to be changed accordingly.
-+*/
-+		if (strlen(p_dyndns->info[0].i_face.my_ip_address.name[ip_4]))
- 
--			DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IPv4 address read from cache file (%s):  '%s'...\n",p_dyndns->ip_cache, p_dyndns->info.my_ip_address.name[ip_4]));
-+			DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IPv4 address read from cache file (%s):  '%s'...\n",p_dyndns->ip_cache, p_dyndns->info[0].i_face.my_ip_address.name[ip_4]));
- 
--		if (strlen(p_dyndns->info.my_ip_address.name[ip_6]))
-+		if (strlen(p_dyndns->info[0].i_face.my_ip_address.name[ip_6]))
- 
--			DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IPv6 address read from cache file (%s):  '%s'...\n",p_dyndns->ip_cache, p_dyndns->info.my_ip_address.name[ip_6]));
-+			DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "IPv6 address read from cache file (%s):  '%s'...\n",p_dyndns->ip_cache, p_dyndns->info[0].i_face.my_ip_address.name[ip_6]));
- 
- 		free(in_str);
+ #ifdef USE_THREADS
+@@ -3460,7 +3517,6 @@
+ 		return rc;
  	}
-@@ -3412,6 +3494,35 @@
+ 
+-
+ #ifdef _WIN32
+ 
+ 	SetLastError(0);
+@@ -3494,7 +3550,6 @@
+ 	/* read cmd line options and set object properties*/
+ 	rc_cmd_line = get_config_data(p_dyndns, argc, argv);
+ 
+-
+ #ifndef _WIN32
+ 
+ 	if (rc_cmd_line != RC_OK || p_dyndns->abort)
+@@ -3507,7 +3562,6 @@
+ 
+ 		return rc_cmd_line;
+ 
+-
+ 	if (p_dyndns->lang_hard_coded) {
+ 
+ 		/*use hard coded defaults -- don't use default locale file*/
+@@ -3578,6 +3632,35 @@
  		}
  	}
  
@@ -2190,7 +2543,15 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	dyn_dns_print_hello(NULL);
  
  	/*  now that log is open, report any command line errors eventhough registry params made up for them --
-@@ -3444,7 +3555,18 @@
+@@ -3597,6 +3680,7 @@
+ 
+ 	rc = dyn_dns_init(p_dyndns);
+ 
++
+ 	if (rc==RC_OK) {
+ 
+ 		*init_flag=true;
+@@ -3610,7 +3694,18 @@
  
  	if (rc==RC_OK) {
  
@@ -2210,17 +2571,17 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  #ifdef _WIN32
  
-@@ -3492,6 +3614,9 @@
- 	RC_TYPE				rc=RC_OK;
- 	BOOL				init_flag=FALSE;
- 	int					current_iteration=0;
-+	char				bad_config_count;
-+	char				i;
-+	int					success_count;
+@@ -3658,6 +3753,9 @@
+ 	RC_TYPE	rc=RC_OK;
+ 	BOOL	init_flag=FALSE;
+ 	int	current_iteration=0;
++	char	bad_config_count;
++	char	i;
++	int	success_count;
  
  #ifdef _WIN32
  
-@@ -3513,23 +3638,45 @@
+@@ -3679,23 +3777,45 @@
  
  		do
  		{
@@ -2240,25 +2601,25 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
 -			else {
 +					break;
-+
+ 
+-				DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
+-					        errorcode_get_name(rc), rc, current_iteration));
 +				if (((rc=dyn_dns_update_ip(p_dyndns,i))==RC_OK))
-+
+ 
+-				p_dyndns->is_bad_config=(rc==RC_DYNDNS_RSP_CONFIG);
 +					success_count++;
-+
+ 
+-				rc=dyn_dns_reinit(p_dyndns);
 +				else {
 +
 +					DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
 +								errorcode_get_name(rc), rc, current_iteration));
- 
--				DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
--					        errorcode_get_name(rc), rc, current_iteration));
++
 +					if (p_dyndns->info[i].is_bad_config)
- 
--				p_dyndns->is_bad_config=(rc==RC_DYNDNS_RSP_CONFIG);
++
 +						bad_config_count++;
 +				}
- 
--				rc=dyn_dns_reinit(p_dyndns);
++
 +				is_global_in_proc_update_pending=(is_global_in_proc_update_pending || p_dyndns->info[i].is_update_pending);
  			}
  
@@ -2275,7 +2636,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  #ifdef USE_SNDFILE
  
  #ifndef USE_THREADS
-@@ -3539,8 +3686,7 @@
+@@ -3705,8 +3825,7 @@
  
  #endif
  
@@ -2285,7 +2646,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  				DBG_PRINTF((LOG_DEBUG,"D:" MODULE_TAG "STOP command received. Exiting.\n"));
  
-@@ -3553,15 +3699,6 @@
+@@ -3719,15 +3838,6 @@
  
  				break;
  			} 
@@ -2301,7 +2662,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  			/* sleep the time set in the ->sleep_sec data memeber*/
  			dyn_dns_wait_for_cmd(p_dyndns);
-@@ -3570,8 +3707,8 @@
+@@ -3736,8 +3846,8 @@
  			inc_update_times(p_dyndns,&(p_dyndns->times_since_last_update),1);
  
  			/*reset the command*/
@@ -2312,7 +2673,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  				p_dyndns->cmd=NO_CMD;
  			}
  			else {
-@@ -3602,8 +3739,8 @@
+@@ -3768,8 +3878,8 @@
  #endif
  
  
@@ -2323,54 +2684,183 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		/* dyn_dns_shutdown object */
  		rc = dyn_dns_shutdown(p_dyndns);
  	}
---- src/dyndns.h	2013-01-19 02:39:22.000000000 -0500
-+++ src/dyndns.h	2014-05-16 14:52:15.000000000 -0400
+--- src/dyndns.h
++++ src/dyndns.h
+@@ -23,7 +23,7 @@
+ 
+ 	History:
+ 		Dec 2007 -- Added get_cmd.h include, for get_config_data_with_error_handling 
+-			prototype.
++					prototype.
+ */
+ 
+ /*interface for main dydns functions */
 @@ -75,7 +75,7 @@
  
  #endif
  
 -#define	DYNDNS_EXTRA_VERSION
-+#define	DYNDNS_EXTRA_VERSION	"-ms_pid_patch_07"
++#define	DYNDNS_EXTRA_VERSION	"-ms_pid_patch_01"
  
- #define DYNDNS_VERSION_STRING	"02.24.38" DYNDNS_VERSION_SND DYNDNS_VERSION_THD DYNDNS_EXTRA_VERSION
- #define DYNDNS_AGENT_NAME		"inadyn-mt/" DYNDNS_VERSION_STRING
-@@ -97,6 +97,7 @@
- 	TZO_DEFAULT,
- 	DNSOMATIC_DEFAULT,
- 	HE_IPV6TB,
-+	HE_DEFAULT,
- 	DYNSIP_DEFAULT,
- 	DHIS_DEFAULT,
- 	MAJIMOTO_DEFAULT,
-@@ -151,8 +152,7 @@
+ #define DYNDNS_VERSION_STRING	"02.24.40" DYNDNS_VERSION_SND DYNDNS_VERSION_THD DYNDNS_EXTRA_VERSION
+ #define DYNDNS_AGENT_NAME	"inadyn-mt/" DYNDNS_VERSION_STRING
+@@ -83,26 +83,27 @@
  
+ typedef enum
+ {
+-	DYNDNS_DYNAMIC,
+-	DYNDNS_STATIC,
+-	DYNDNS_CUSTOM,
+-	DYNDNS_DEFAULT,
+-	FREEDNS_AFRAID_ORG_DEFAULT,
+-	ZONE_EDIT_DEFAULT,
+-	CUSTOM_HTTP_BASIC_AUTH,
+-	NOIP_DEFAULT,
+-	EASYDNS_DEFAULT,
+-	DYNDNS_3322_DYNAMIC,
+-	SITELUTIONS_DOMAIN,
+-	TZO_DEFAULT,
+-	DNSOMATIC_DEFAULT,
+-	HE_IPV6TB,
+-	DYNSIP_DEFAULT,
+-	DHIS_DEFAULT,
+-	MAJIMOTO_DEFAULT,
+-	ZERIGO_DEFAULT,
+-	TWODNS_DEFAULT,
+-	LAST_DNS_SYSTEM = -1
++    DYNDNS_DYNAMIC,
++    DYNDNS_STATIC,
++    DYNDNS_CUSTOM,
++    DYNDNS_DEFAULT,
++    FREEDNS_AFRAID_ORG_DEFAULT,
++    ZONE_EDIT_DEFAULT,
++    CUSTOM_HTTP_BASIC_AUTH,
++    NOIP_DEFAULT,
++    EASYDNS_DEFAULT,
++    DYNDNS_3322_DYNAMIC,
++    SITELUTIONS_DOMAIN,
++    TZO_DEFAULT,
++    DNSOMATIC_DEFAULT,
++    HE_IPV6TB,
++    HE_DEFAULT,
++    DYNSIP_DEFAULT,
++    DHIS_DEFAULT,
++    MAJIMOTO_DEFAULT,
++    ZERIGO_DEFAULT,
++    TWODNS_DEFAULT,
++    LAST_DNS_SYSTEM = -1
+ } DYNDNS_SYSTEM_ID;
+ 
+ /*test values*/
+@@ -153,7 +154,6 @@
  /* Conversation with the IP server */
  #define DYNDNS_GET_MY_IP_HTTP_REQUEST  \
--	"GET http://%s%s HTTP/1.0\r\n\r\n"
+ 	"GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: " DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR "\r\n\r\n"
 -
-+	"GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: " DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR "\r\n\r\n"
  /* dyndns.org specific update address format */
  /* 3322.org has the same parameters ...*/
  #define DYNDNS_GET_MY_IP_HTTP_REQUEST_FORMAT \
-@@ -241,6 +241,16 @@
- 	"Host: %s\r\n"							\
+@@ -226,7 +226,7 @@
+ 	"GET %s%s&" \
+ 	"Email=%s&" \
+ 	"TZOKey=%s&" \
+-	"IPAddress=%s " \
++	"IPAddress=%s "	\
+ 	"HTTP/1.0\r\n" \
+ 	"Host: %s\r\n" \
  	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
- 
-+/* HE DynDNS specific update request format */
-+#define HE_DEFAULT_UPDATE_MY_IP_REQUEST_FORMAT				\
-+	"GET %s"							\
-+	"hostname=%s&"							\
-+	"myip=%s "							\
-+	"HTTP/1.0\r\n"							\
-+	"Authorization: Basic %s\r\n"	\
-+	"Host: %s\r\n"							\
+@@ -237,8 +237,18 @@
+ 	"ipv4b=%s&" \
+ 	"user_id=%s&" \
+ 	"pass=%s&" \
+-	"tunnel_id=%s " \
++	"tunnel_id=%s "	\
+ 	"HTTP/1.0\r\n" \
++	"Host: %s\r\n"	\
 +	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
 +
- /* is.dhis.org specific update request format */
- #define DHIS_MY_IP_UPDATE_REQUEST_FORMAT				\
++/* HE DynDNS specific update request format */
++#define HE_DEFAULT_UPDATE_MY_IP_REQUEST_FORMAT	\
++	"GET %s" \
++	"hostname=%s&"	\
++	"myip=%s " \
++	"HTTP/1.0\r\n"	\
++	"Authorization: Basic %s\r\n"	\
+ 	"Host: %s\r\n" \
+ 	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
+ 
+@@ -257,13 +267,13 @@
+ #define MAJIMOTO_MY_IP_UPDATE_REQUEST_FORMAT \
  	"GET %s" \
-@@ -360,6 +370,8 @@
- #define DUAL_LIST			"coupled"
+ 	"hostname=%s&" \
+-	"myip=%s "		\
++	"myip=%s " \
+ 	"HTTP/1.0\r\n" \
+ 	"Authorization: Basic %s\r\n" \
+ 	"Host: %s\r\n" \
+ 	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
+ 
+-/* zerogo.net specific update request format */
++/* zerigo.net specific update request format */
+ #define ZERIGO_MY_IP_UPDATE_REQUEST_FORMAT \
+ 	"GET %s%s&" \
+ 	"ip=%s " \
+@@ -289,11 +299,11 @@
+ 
+ 
+ /* SOME DEFAULT CONFIGURATIONS */
+-#define DYNDNS_DEFAULT_SLEEP			(600)					/*s*/
+-#define DYNDNS_MIN_SLEEP			(30)					/*s*/
+-#define DYNDNS_MAX_SLEEP			(10 * 24 * 3600)			/*10 days in s*/
+-#define DYNDNS_MIN_FORCED_UPDATE_PERIOD_S	DYNDNS_MIN_SLEEP					
+-#define DYNDNS_MAX_FORCED_UPDATE_PERIOD_S	(30 * 24 * 3600)			/* 30 days in sec*/
++#define DYNDNS_DEFAULT_SLEEP			(600)	/*s*/
++#define DYNDNS_MIN_SLEEP			(30)	/*s*/
++#define DYNDNS_MAX_SLEEP			(10 * 24 * 3600)	/*10 days in s*/
++#define DYNDNS_MIN_FORCED_UPDATE_PERIOD_S	DYNDNS_MIN_SLEEP	
++#define DYNDNS_MAX_FORCED_UPDATE_PERIOD_S	(30 * 24 * 3600)	/* 30 days in sec*/
+ #define DYNDNS_MY_FORCED_UPDATE_PERIOD_S	DYNDNS_MAX_FORCED_UPDATE_PERIOD_S	/* 30 days in sec*/
+ #define DYNDNS_DEFAULT_UPDATE_ADJUST		.5
+ #define DYNDNS_MIN_FORCED_UPDATE_ADJUST		-4
+@@ -325,13 +335,13 @@
+ 
+ /*attenuation max, min constants -- translate to [-40..0], [-120db..0db]*/
+ #define DYNDNS_MAX_WAVE_RANGE			120
+-#define DYNDNS_MIN_WAVE_GAIN			-10		/*minimum wave play volume*/
+-#define DYNDNS_MAX_WAVE_GAIN			10		/*maximum wave play volume*/
++#define DYNDNS_MIN_WAVE_GAIN			-10	/*minimum wave play volume*/
++#define DYNDNS_MAX_WAVE_GAIN			10	/*maximum wave play volume*/
+ 
+-#define DYNDNS_INFINITE_WAVE			-1		/*infinite times per wave play call to play wave file*/
+-#define DYNDNS_DEFAULT_INAUDIBLE		1		/*audible alerts default as on*/
+-#define DYNDNS_DEFAULT_ALERT_RETRIES		0		/*network retries before sounding alert*/
+-#define DYNDNS_DEFAULT_ALERT_INTERVAL		0		/*ms time between audible alerts*/
++#define DYNDNS_INFINITE_WAVE			-1	/*infinite times per wave play call to play wave file*/
++#define DYNDNS_DEFAULT_INAUDIBLE		1	/*audible alerts default as on*/
++#define DYNDNS_DEFAULT_ALERT_RETRIES		0	/*network retries before sounding alert*/
++#define DYNDNS_DEFAULT_ALERT_INTERVAL		0	/*ms time between audible alerts*/
+ #define DYNDNS_DEFAULT_WAVE_FILE		"alarm.wav"	/*default wave file, and path ("current working dir")*/
+ #define DYNDNS_DEFAULT_WAVE_BUFF_FACTOR		.25		/*max by which to divide or multiply wave file bytes per second for buffer size*/
+ 
+@@ -347,12 +357,12 @@
+ #define DYNDNS_DEFAULT_USER_WAVE_GAIN		10
+ 
+ /*allow attenuate to 120db in DYNDNS_MAX_WAVE_RANGE increments*/
+-#define DYNDNS_DECIBEL_STEP			DYNDNS_MAX_WAVE_RANGE/(-1*DYNDNS_MIN_WAVE_GAIN+DYNDNS_MAX_WAVE_GAIN)
++#define DYNDNS_DECIBEL_STEP		DYNDNS_MAX_WAVE_RANGE/(-1*DYNDNS_MIN_WAVE_GAIN+DYNDNS_MAX_WAVE_GAIN)
+ 
+-#define DYNDNS_DEFAULT_WAVE_LOOPS		0		/*default number of times per wave play call to play wave file*/
++#define DYNDNS_DEFAULT_WAVE_LOOPS		0	/*default number of times per wave play call to play wave file*/
+ 
+-#define DYNDNS_DEFAULT_STATUS_INTERVAL		600		/*seconds online status check interval default*/
+-#define DYNDNS_DEFAULT_STATUS_OFFLINE_INTERVAL	15		/*seconds online status check interval default, after offline detect*/
++#define DYNDNS_DEFAULT_STATUS_INTERVAL		600	/*seconds online status check interval default*/
++#define DYNDNS_DEFAULT_STATUS_OFFLINE_INTERVAL	15	/*seconds online status check interval default, after offline detect*/
+ 
+ /*local configs*/
+ /*address str may contain both ip4,ip6 separated by semi colon*/
+@@ -371,6 +381,8 @@
+ #define DUAL_LIST		"coupled"
  #define MAX_IP_TYPE_SIZE	8
  
 +#define MAX_DNS_SERVER		10
@@ -2378,7 +2868,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  /* typedefs */
  struct _DYN_DNS_CLIENT;
  struct DYNDNS_SYSTEM;
-@@ -369,8 +381,8 @@
+@@ -380,8 +392,8 @@
  /** Function to prepare DNS system specific server requests
  */
  
@@ -2389,14 +2879,15 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  typedef int (*DNS_SYSTEM_SRV_RESPONSE_CONFIG_FUNC)(struct _DYN_DNS_CLIENT *this, char *p_rsp);
  typedef struct
  {
-@@ -432,10 +444,17 @@
+@@ -443,10 +455,17 @@
  
  typedef struct 
  {
--	char *name[3];
+-	char	*name[3];
+-	int	port;
 +	char *name;
 +	char *url;
- 	int port;
++	int port;
  } DYNDNS_SERVER_NAME;
  
 +typedef struct 
@@ -2408,24 +2899,24 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  /*a given alias (dyn domain names) can
    be associated with one "ip type", of
    'dual', 'coupled', 'ip4', 'ip6', 'auto',
-@@ -454,12 +473,20 @@
+@@ -465,12 +484,20 @@
  
  typedef struct 
  {
--    BOOL my_ip_has_changed[3];
--	BOOL is_update_ip4;
--	BOOL is_update_ip6;
--	BOOL is_update_auto;
--	BOOL is_got_ip4;
--	BOOL is_got_ip6;
+-    	BOOL			my_ip_has_changed[3];
+-	BOOL			is_update_ip4;
+-	BOOL			is_update_ip6;
+-	BOOL			is_update_auto;
+-	BOOL			is_got_ip4;
+-	BOOL			is_got_ip6;
 +	/*multiple of ip types (2 -- IPv4, IPv6)*/
-+	DYNDNS_ALIAS_NAME names[DYNDNS_MAX_ALIAS_NUMBER*2];	
-+	int update_required[DYNDNS_MAX_ALIAS_NUMBER*2];
-+	int update_succeeded[DYNDNS_MAX_ALIAS_NUMBER*2];
-+	int fatal_error[DYNDNS_MAX_ALIAS_NUMBER*2];
-+	DYNDNS_HASH_TYPE hashes[DYNDNS_MAX_ALIAS_NUMBER*2]; 
-+	int count;
-+	int count_dual;
++	DYNDNS_ALIAS_NAME	names[DYNDNS_MAX_ALIAS_NUMBER*2];	
++	int			update_required[DYNDNS_MAX_ALIAS_NUMBER*2];
++	int			update_succeeded[DYNDNS_MAX_ALIAS_NUMBER*2];
++	int			fatal_error[DYNDNS_MAX_ALIAS_NUMBER*2];
++	DYNDNS_HASH_TYPE	hashes[DYNDNS_MAX_ALIAS_NUMBER*2]; 
++	int			count;
++	int			count_dual;
 +} DYNDNS_ALIAS_INFO;
 +
 +typedef struct
@@ -2435,11 +2926,11 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	/*3 strings - ip_4, ip_6 address,
  	  and temp store, ip_store for
-@@ -469,28 +496,33 @@
+@@ -480,28 +507,33 @@
  	  convenient) -- for instance, 
  	  ip type "auto" (based on first 
  	  address returned by ip server)*/
--	DYNDNS_SERVER_NAME my_ip_address;
+-	DYNDNS_SERVER_NAME	my_ip_address;
 +	DYNDNS_MY_IP my_ip_address;
 +} DYNDNS_IFACE_INFO;
 +
@@ -2452,94 +2943,135 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +	BOOL is_got_ip4;
 +	BOOL is_got_ip6;
 +
-+	HTTP_CLIENT			http_to_ip_server;
-+	HTTP_CLIENT			http_to_dyndns;
++	HTTP_CLIENT	http_to_ip_server;
++	HTTP_CLIENT	http_to_dyndns;
 +
 +	DYNDNS_IFACE_INFO	i_face;
  
- 	DYNDNS_CREDENTIALS credentials;
- 	DYNDNS_SYSTEM *p_dns_system;
- 	DYNDNS_SERVER_NAME dyndns_server_name;
--	char *dyndns_server_url;
- 	DYNDNS_SERVER_NAME ip_server_name;
--	char *ip_server_url;
- 	DYNDNS_SERVER_NAME proxy_server_name;
+ 	DYNDNS_CREDENTIALS	credentials;
+ 	DYNDNS_SYSTEM		*p_dns_system;
+ 	DYNDNS_SERVER_NAME	dyndns_server_name;
+-	char			*dyndns_server_url;
+ 	DYNDNS_SERVER_NAME	ip_server_name;
+-	char			*ip_server_url;
+ 	DYNDNS_SERVER_NAME	proxy_server_name;
 -} DYNDNS_INFO_TYPE;
  
 -typedef struct 
 -{
 -	/*multiple of ip types (2 -- IPv4, IPv6)*/
--	DYNDNS_ALIAS_NAME names[DYNDNS_MAX_ALIAS_NUMBER*2];	
--	int update_required[DYNDNS_MAX_ALIAS_NUMBER*2];
--	int update_succeeded[DYNDNS_MAX_ALIAS_NUMBER*2];
--	int fatal_error[DYNDNS_MAX_ALIAS_NUMBER*2];
--	DYNDNS_HASH_TYPE hashes[DYNDNS_MAX_ALIAS_NUMBER*2]; 
--	int count;
--	int count_dual;
+-	DYNDNS_ALIAS_NAME	names[DYNDNS_MAX_ALIAS_NUMBER*2];	
+-	int			update_required[DYNDNS_MAX_ALIAS_NUMBER*2];
+-	int			update_succeeded[DYNDNS_MAX_ALIAS_NUMBER*2];
+-	int			fatal_error[DYNDNS_MAX_ALIAS_NUMBER*2];
+-	DYNDNS_HASH_TYPE	hashes[DYNDNS_MAX_ALIAS_NUMBER*2]; 
+-	int			count;
+-	int			count_dual;
 -} DYNDNS_ALIAS_INFO;
 +	DYNDNS_ALIAS_INFO	alias_info;
-+	BOOL is_bad_config;
-+	BOOL is_update_pending;
++	BOOL			is_bad_config;
++	BOOL			is_update_pending;
 +} DYNDNS_INFO_TYPE;
  
  typedef struct
  {
-@@ -498,6 +530,12 @@
- 	int gid;
- } USER_INFO;
- 
-+typedef struct IPV6_PRIV_EXT
-+{
-+	char 		addr_pref[26];	/*ipv6 address preference - pub, policy - possibly future others*/
-+	unsigned	flags;
-+} IPV6_PRIV_EXT;
-+
+@@ -533,40 +565,38 @@
  typedef struct DYN_DNS_CLIENT
  {
  	DYN_DNS_CMD	cmd;
-@@ -533,8 +571,6 @@
+-	int		sleep_sec;				/* time between 2 updates*/
++	int		sleep_sec;			/* time between 2 updates*/
+ 	unsigned	forced_update_period_sec;
+-	float		forced_update_adjust;			/* how to round forced update calculation */
+-	unsigned	forced_update_period_sec_orig;		/* original read from cmd line */
++	float		forced_update_adjust;		/* how to round forced update calculation */
++	unsigned	forced_update_period_sec_orig;	/* original read from cmd line */
+ 	int		times_since_last_update;
+-	int		forced_update_times;			/* the same forced update period counted in sleep periods*/
+-	unsigned	cmd_check_period;			/*time to wait for a command*/
+-	unsigned	forced_update_counter;			/*cmd_check_periods tracking forced_update_period expiration*/	
++	int		forced_update_times;		/* the same forced update period counted in sleep periods*/
++	unsigned	cmd_check_period;		/*time to wait for a command*/
++	unsigned	forced_update_counter;		/*cmd_check_periods tracking forced_update_period expiration*/	
+ 	int		is_forced_update_attempted;
+ 	int		total_iterations;
+ 	int		iterations;
+-	int		net_retries;				/*failed comm retries*/
+-	long		retry_interval;				/*miliseconds wait interval between retries*/
++	int		net_retries;			/*failed comm retries*/
++	long		retry_interval;			/*miliseconds wait interval between retries*/
+ 	long		retry_pending_interval;
+ 	int		retry_pending_off;
+-	char		*lang_file;				/*language (locale) file full path, and file name*/
+-	int		lang_hard_coded;			/*flagged when --lang_file parameter with empty option*/
+-	int		audible_off;				/*compiled with USE_SNDFILE defined, but want run without*/
+-	char		*wave_file;				/*network status alerts wave file full path, and file name*/
+-	int		wave_loops;				/*number of times per wave play call to play wave file*/
+-	float		wave_gain;				/*volume at which to play wave file*/
+-	int		alert_retries;				/*network retries before sounding alert*/
+-	int		alert_interval;				/*time betweens sounding network status alarm*/
+-	int		status_interval;			/*ms between online status checks*/
+-	int		status_offline_interval;		/*ms between online status checks, after offline detect*/
+-	float		wave_buff_factor;			/*multiple of wave file bytes per second*/
++	char		*lang_file;			/*language (locale) file full path, and file name*/
++	int		lang_hard_coded;		/*flagged when --lang_file parameter with empty option*/
++	int		audible_off;			/*compiled with USE_SNDFILE defined, but want run without*/
++	char		*wave_file;			/*network status alerts wave file full path, and file name*/
++	int		wave_loops;			/*number of times per wave play call to play wave file*/
++	float		wave_gain;			/*volume at which to play wave file*/
++	int		alert_retries;			/*network retries before sounding alert*/
++	int		alert_interval;			/*time betweens sounding network status alarm*/
++	int		status_interval;		/*ms between online status checks*/
++	int		status_offline_interval;	/*ms between online status checks, after offline detect*/
++	float		wave_buff_factor;		/*multiple of wave file bytes per second*/
+ 
+ 	BOOL		initialized;
+ 	BOOL		run_in_background;
  	BOOL		debug_to_syslog;
  	BOOL		change_persona;
  
--	HTTP_CLIENT			http_to_ip_server;
--	HTTP_CLIENT			http_to_dyndns;
+-	HTTP_CLIENT		http_to_ip_server;
+-	HTTP_CLIENT		http_to_dyndns;
  	HTTP_TRANSACTION	http_tr;
- 	char				*p_work_buffer;		/* for HTTP responses*/
- 	int					work_buffer_size;
-@@ -544,19 +580,27 @@
- 	char				*time_cache;
- 	char				*ip_cache;
+ 	char			*p_work_buffer;		/* for HTTP responses*/
+ 	int			work_buffer_size;
+@@ -576,23 +606,29 @@
+ 	char			*time_cache;
+ 	char			*ip_cache;
  
-+	USER_INFO			sys_usr_info;			/*info about the current account running inadyn*/
- 
--	USER_INFO			sys_usr_info;		/*info about the current account running inadyn*/
--	DYNDNS_INFO_TYPE	info;				/*servers, names, passwd*/
+-
+ 	USER_INFO		sys_usr_info;		/*info about the current account running inadyn*/
+-	DYNDNS_INFO_TYPE	info;			/*servers, names, passwd*/
 -	DYNDNS_INFO_TYPE	info_online_status;	/*info about url to reach to confirm online status -- defaults to info*/
  
 -	DYNDNS_ALIAS_INFO	alias_info;
 +
++
 +	DYNDNS_INFO_TYPE	info[MAX_DNS_SERVER];	/*servers, names, passwd*/
-+	char				srv_cnt;
-+
-+	DYNDNS_SERVER_NAME	info_online_status;		/*info about url to reach to confirm online status -- defaults to info*/
++	char			srv_cnt;
  
- 	BOOL				abort_on_network_errors;
- 	BOOL				force_addr_update;
- 	BOOL				use_proxy;
- 	BOOL				abort;
- 	BOOL				wildcard;
--	BOOL				is_bad_config;
-+	BOOL				is_global_bad_config; /*all servers*/
+ 	IP_CACHE_LIST		ip_cache_list;		/*read in from ip cache file written on ddns update*/
+ 
++	DYNDNS_SERVER_NAME	info_online_status;	/*info about url to reach to confirm online status -- defaults to info*/
 +
-+	DYNDNS_SERVER_NAME ip_server_name_global;
+ 	BOOL			abort_on_network_errors;
+ 	BOOL			force_addr_update;
+ 	BOOL			use_proxy;
+ 	BOOL			abort;
+ 	BOOL			wildcard;
+-	BOOL			is_bad_config;
++	BOOL			is_global_bad_config;	/*all servers*/
 +
-+	char *p_pidfilename;
++	DYNDNS_SERVER_NAME	ip_server_name_global;
 +
-+	IPV6_PRIV_EXT	ipv6_priv_ext;
++	char 			*p_pidfilename;
+ 
+-	IPV6_PRIV_EXT	ipv6_priv_ext;
++	IPV6_PRIV_EXT		ipv6_priv_ext;
  
  	/*dbg*/
- 	DBG_TYPE			dbg;
-@@ -633,7 +677,7 @@
+ 	DBG_TYPE		dbg;
+@@ -669,7 +705,7 @@
  		- compare and update if neccessary
  */
  
@@ -2548,258 +3080,236 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  /* MAIN - Dyn DNS update entry point.*/
  
---- src/errorcode.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/errorcode.c	2014-05-16 14:52:15.000000000 -0400
-@@ -56,6 +56,7 @@
-         {RC_HTTP_OBJECT_NOT_INITIALIZED,"RC_HTTP_OBJECT_NOT_INITIALIZED"},
-         {RC_HTTP_BAD_PARAMETER,"RC_HTTP_BAD_PARAMETER"},
+--- src/errorcode.c
++++ src/errorcode.c
+@@ -32,56 +32,57 @@
+ } ERROR_NAME;
  
-+		{RC_DYNDNS_TOO_MANY_SERVERS,"RC_DYNDNS_TOO_MANY_SERVERS"},
- 		{RC_DYNDNS_INVALID_IP_ADDR,"RC_DYNDNS_INVALID_IP_ADDR"},
-         {RC_DYNDNS_BUFFER_TOO_SMALL,"RC_DYNDNS_BUFFER_TOO_SMALL"},
-         {RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE,"RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE"},
---- src/errorcode.h	2013-01-19 02:39:22.000000000 -0500
-+++ src/errorcode.h	2014-05-16 14:52:15.000000000 -0400
-@@ -46,6 +46,7 @@
-     RC_HTTP_OBJECT_NOT_INITIALIZED				= 0x30,
-     RC_HTTP_BAD_PARAMETER						= 0x31,
+ static const ERROR_NAME global_error_table[]  =
+-{
+-	{RC_OK,"RC_OK"},
+-	{RC_ERROR,"RC_ERROR"},
+-	{RC_INVALID_POINTER,"RC_INVALID_POINTER"},
+-	{RC_OUT_OF_MEMORY,"RC_OUT_OF_MEMORY"},
+-	{RC_OUT_BUFFER_OVERFLOW,"RC_OUT_BUFFER_OVERFLOW"},
+-
+-
+-	{RC_IP_SOCKET_CREATE_ERROR,"RC_IP_SOCKET_CREATE_ERROR"},
+-	{RC_IP_BAD_PARAMETER,"RC_IP_BAD_PARAMETER"},
+-	{RC_IP_INVALID_REMOTE_ADDR,"RC_IP_INVALID_REMOTE_ADDR"},
+-	{RC_IP_CONNECT_FAILED,"RC_IP_CONNECT_FAILED"},
+-	{RC_IP_SEND_ERROR,"RC_IP_SEND_ERROR"},
+-	{RC_IP_RECV_ERROR,"RC_IP_RECV_ERROR"},
+-	{RC_IP_OBJECT_NOT_INITIALIZED,"RC_IP_OBJECT_NOT_INITIALIZED"},
+-	{RC_IP_OS_SOCKET_INIT_FAILED,"RC_IP_OS_SOCKET_INIT_FAILED"},
+-	{RC_IP_PARSER_INVALID_IP,"RC_IP_PARSER_INVALID_IP"},
+-	{RC_IP_INVALID_SOCKET,"RC_IP_INVALID_SOCKET"},
+-
+-	{RC_TCP_OBJECT_NOT_INITIALIZED,"RC_TCP_OBJECT_NOT_INITIALIZED"},
+-
+-	{RC_HTTP_OBJECT_NOT_INITIALIZED,"RC_HTTP_OBJECT_NOT_INITIALIZED"},
+-	{RC_HTTP_BAD_PARAMETER,"RC_HTTP_BAD_PARAMETER"},
+-
+-	{RC_DYNDNS_INVALID_IP_ADDR,"RC_DYNDNS_INVALID_IP_ADDR"},
+-	{RC_DYNDNS_BUFFER_TOO_SMALL,"RC_DYNDNS_BUFFER_TOO_SMALL"},
+-	{RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE,"RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE"},
+-	{RC_DYNDNS_INVALID_RSP_FROM_IP_SERVER,"RC_DYNDNS_INVALID_RSP_FROM_IP_SERVER"},
+-	{RC_DYNDNS_TOO_MANY_ALIASES,"RC_DYNDNS_TOO_MANY_ALIASES"},
+-	{RC_DYNDNS_INVALID_OPTION,"RC_DYNDNS_INVALID_OPTION"},
+-	{RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS,"RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS"},
+-	{RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT,"RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT"},
+-	{RC_DYNDNS_UNRESOLVED_ALIAS,"RC_DYNDNS_UNRESOLVED_ALIAS"},
+-	{RC_DYNDNS_RSP_NOTOK,"RC_DYNDNS_RSP_NOTOK"},
+-	{RC_DYNDNS_RSP_CONFIG,"RC_DYNDNS_RSP_CONFIG"},
+-
+-	{RC_CMD_PARSER_INVALID_OPTION,"RC_CMD_PARSER_INVALID_OPTION"},
+-	{RC_CMD_PARSER_INVALID_OPTION_ARGUMENT,"RC_CMD_PARSER_INVALID_OPTION_ARGUMENT"},
+-
+-	{RC_OS_ERROR_INSTALLING_SIGNAL_HANDLER,"RC_OS_ERROR_INSTALLING_SIGNAL_HANDLER"},
+-	{RC_OS_INVALID_IP_ADDRESS,"RC_OS_INVALID_IP_ADDRESS"},
+-	{RC_OS_FORK_FAILURE,"RC_FORK_FAILURE"},
+-	{RC_OS_CHANGE_PERSONA_FAILURE,"RC_OS_CHANGE_PERSONA_FAILURE"},
+-
+-	{RC_FILE_IO_OPEN_ERROR,"RC_FILE_IO_OPEN_ERROR"},
+-	{RC_FILE_IO_READ_ERROR,"RC_FILE_IO_READ_ERROR"},
+-	{RC_FILE_IO_OUT_OF_BUFFER,"RC_FILE_IO_OUT_OF_BUFFER"},
++    {
++        {RC_OK,"RC_OK"},
++        {RC_ERROR,"RC_ERROR"},
++        {RC_INVALID_POINTER,"RC_INVALID_POINTER"},
++        {RC_OUT_OF_MEMORY,"RC_OUT_OF_MEMORY"},
++        {RC_OUT_BUFFER_OVERFLOW,"RC_OUT_BUFFER_OVERFLOW"},
++
++
++        {RC_IP_SOCKET_CREATE_ERROR,"RC_IP_SOCKET_CREATE_ERROR"},
++        {RC_IP_BAD_PARAMETER,"RC_IP_BAD_PARAMETER"},
++        {RC_IP_INVALID_REMOTE_ADDR,"RC_IP_INVALID_REMOTE_ADDR"},
++        {RC_IP_CONNECT_FAILED,"RC_IP_CONNECT_FAILED"},
++        {RC_IP_SEND_ERROR,"RC_IP_SEND_ERROR"},
++        {RC_IP_RECV_ERROR,"RC_IP_RECV_ERROR"},
++        {RC_IP_OBJECT_NOT_INITIALIZED,"RC_IP_OBJECT_NOT_INITIALIZED"},
++        {RC_IP_OS_SOCKET_INIT_FAILED,"RC_IP_OS_SOCKET_INIT_FAILED"},
++        {RC_IP_PARSER_INVALID_IP,"RC_IP_PARSER_INVALID_IP"},
++        {RC_IP_INVALID_SOCKET,"RC_IP_INVALID_SOCKET"},
++
++        {RC_TCP_OBJECT_NOT_INITIALIZED,"RC_TCP_OBJECT_NOT_INITIALIZED"},
++
++        {RC_HTTP_OBJECT_NOT_INITIALIZED,"RC_HTTP_OBJECT_NOT_INITIALIZED"},
++        {RC_HTTP_BAD_PARAMETER,"RC_HTTP_BAD_PARAMETER"},
++
++        {RC_DYNDNS_TOO_MANY_SERVERS,"RC_DYNDNS_TOO_MANY_SERVERS"},
++        {RC_DYNDNS_INVALID_IP_ADDR,"RC_DYNDNS_INVALID_IP_ADDR"},
++        {RC_DYNDNS_BUFFER_TOO_SMALL,"RC_DYNDNS_BUFFER_TOO_SMALL"},
++        {RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE,"RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE"},
++        {RC_DYNDNS_INVALID_RSP_FROM_IP_SERVER,"RC_DYNDNS_INVALID_RSP_FROM_IP_SERVER"},
++        {RC_DYNDNS_TOO_MANY_ALIASES,"RC_DYNDNS_TOO_MANY_ALIASES"},
++        {RC_DYNDNS_INVALID_OPTION,"RC_DYNDNS_INVALID_OPTION"},
++        {RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS,"RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS"},
++        {RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT,"RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT"},
++        {RC_DYNDNS_UNRESOLVED_ALIAS,"RC_DYNDNS_UNRESOLVED_ALIAS"},
++        {RC_DYNDNS_RSP_NOTOK,"RC_DYNDNS_RSP_NOTOK"},
++        {RC_DYNDNS_RSP_CONFIG,"RC_DYNDNS_RSP_CONFIG"},
++
++        {RC_CMD_PARSER_INVALID_OPTION,"RC_CMD_PARSER_INVALID_OPTION"},
++        {RC_CMD_PARSER_INVALID_OPTION_ARGUMENT,"RC_CMD_PARSER_INVALID_OPTION_ARGUMENT"},
++
++        {RC_OS_ERROR_INSTALLING_SIGNAL_HANDLER,"RC_OS_ERROR_INSTALLING_SIGNAL_HANDLER"},
++        {RC_OS_INVALID_IP_ADDRESS,"RC_OS_INVALID_IP_ADDRESS"},
++        {RC_OS_FORK_FAILURE,"RC_FORK_FAILURE"},
++        {RC_OS_CHANGE_PERSONA_FAILURE,"RC_OS_CHANGE_PERSONA_FAILURE"},
++
++        {RC_FILE_IO_OPEN_ERROR,"RC_FILE_IO_OPEN_ERROR"},
++        {RC_FILE_IO_READ_ERROR,"RC_FILE_IO_READ_ERROR"},
++        {RC_FILE_IO_OUT_OF_BUFFER,"RC_FILE_IO_OUT_OF_BUFFER"},
  
-+	RC_DYNDNS_TOO_MANY_SERVERS					= 0x38,
- 	RC_DYNDNS_INVALID_IP_ADDR					= 0x39,
-     RC_DYNDNS_BUFFER_TOO_SMALL					= 0x40,
-     RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE	= 0x41,
---- src/get_cmd.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/get_cmd.c	2014-05-16 14:52:15.000000000 -0400
-@@ -185,6 +185,33 @@
- 	return arg_nr-i;
+-	{RC_OK,NULL}
+-};
++        {RC_OK,NULL}
++    };
+ 
+ static const char* unknown_error = "Unknown error";
+ 
+--- src/errorcode.h
++++ src/errorcode.h
+@@ -24,51 +24,52 @@
+ 
+ typedef enum
+ {
+-	RC_OK						= 0,
+-	RC_ERROR					= 1,
+-	RC_INVALID_POINTER				= 2,
+-	RC_OUT_OF_MEMORY				= 3,
+-	RC_OUT_BUFFER_OVERFLOW				= 4,
+-
+-	RC_IP_SOCKET_CREATE_ERROR			= 0x10,
+-	RC_IP_BAD_PARAMETER				= 0x11,
+-	RC_IP_INVALID_REMOTE_ADDR			= 0x12,
+-	RC_IP_CONNECT_FAILED				= 0x13,
+-	RC_IP_SEND_ERROR				= 0x14,
+-	RC_IP_RECV_ERROR				= 0x15,
+-	RC_IP_OBJECT_NOT_INITIALIZED			= 0x16,
+-	RC_IP_OS_SOCKET_INIT_FAILED			= 0x17,
+-	RC_IP_PARSER_INVALID_IP				= 0x18,
+-	RC_IP_INVALID_SOCKET				= 0x19,
+-
+-    RC_TCP_OBJECT_NOT_INITIALIZED			= 0x20,
+-
+-    RC_HTTP_OBJECT_NOT_INITIALIZED			= 0x30,
+-    RC_HTTP_BAD_PARAMETER				= 0x31,
+-
+-	RC_DYNDNS_INVALID_IP_ADDR			= 0x39,
+-    RC_DYNDNS_BUFFER_TOO_SMALL				= 0x40,
+-	RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE	= 0x41,
+-    RC_DYNDNS_INVALID_RSP_FROM_IP_SERVER		= 0x42,
+-    RC_DYNDNS_TOO_MANY_ALIASES				= 0x43,
+-    RC_DYNDNS_INVALID_OPTION				= 0x44,
+-    RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS		= 0x45,
+-    RC_DYNDNS_UNRESOLVED_ALIAS				= 0x46,
+-    RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT		= 0x47,
+-    RC_DYNDNS_RSP_NOTOK					= 0x48,
+-	RC_DYNDNS_RSP_CONFIG				= 0x49,
+-
+-    RC_CMD_PARSER_INVALID_OPTION			= 0x50,
+-    RC_CMD_PARSER_INVALID_OPTION_ARGUMENT		= 0x51,
+-
+-    RC_OS_ERROR_INSTALLING_SIGNAL_HANDLER		= 0x60,
+-    RC_OS_INVALID_IP_ADDRESS				= 0x61,
+-    RC_OS_FORK_FAILURE					= 0x62,
+-    RC_OS_CHANGE_PERSONA_FAILURE			= 0x63,
+-
+-    RC_FILE_IO_OPEN_ERROR				= 0x70,
+-    RC_FILE_IO_READ_ERROR				= 0x71,
+-    RC_FILE_IO_OUT_OF_BUFFER				= 0x72
++    RC_OK					= 0,
++    RC_ERROR					= 1,
++    RC_INVALID_POINTER				= 2,
++    RC_OUT_OF_MEMORY				= 3,
++    RC_OUT_BUFFER_OVERFLOW			= 4,
++
++    RC_IP_SOCKET_CREATE_ERROR			= 0x10,
++    RC_IP_BAD_PARAMETER				= 0x11,
++    RC_IP_INVALID_REMOTE_ADDR			= 0x12,
++    RC_IP_CONNECT_FAILED			= 0x13,
++    RC_IP_SEND_ERROR				= 0x14,
++    RC_IP_RECV_ERROR				= 0x15,
++    RC_IP_OBJECT_NOT_INITIALIZED		= 0x16,
++    RC_IP_OS_SOCKET_INIT_FAILED			= 0x17,
++    RC_IP_PARSER_INVALID_IP			= 0x18,
++    RC_IP_INVALID_SOCKET			= 0x19,
++
++    RC_TCP_OBJECT_NOT_INITIALIZED		= 0x20,
++
++    RC_HTTP_OBJECT_NOT_INITIALIZED		= 0x30,
++    RC_HTTP_BAD_PARAMETER			= 0x31,
++
++    RC_DYNDNS_TOO_MANY_SERVERS			= 0x38,
++    RC_DYNDNS_INVALID_IP_ADDR			= 0x39,
++    RC_DYNDNS_BUFFER_TOO_SMALL			= 0x40,
++    RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE	= 0x41,
++    RC_DYNDNS_INVALID_RSP_FROM_IP_SERVER	= 0x42,
++    RC_DYNDNS_TOO_MANY_ALIASES			= 0x43,
++    RC_DYNDNS_INVALID_OPTION			= 0x44,
++    RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS	= 0x45,
++    RC_DYNDNS_UNRESOLVED_ALIAS			= 0x46,
++    RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT	= 0x47,
++    RC_DYNDNS_RSP_NOTOK				= 0x48,
++    RC_DYNDNS_RSP_CONFIG			= 0x49,
++
++    RC_CMD_PARSER_INVALID_OPTION		= 0x50,
++    RC_CMD_PARSER_INVALID_OPTION_ARGUMENT	= 0x51,
++
++    RC_OS_ERROR_INSTALLING_SIGNAL_HANDLER	= 0x60,
++    RC_OS_INVALID_IP_ADDRESS			= 0x61,
++    RC_OS_FORK_FAILURE				= 0x62,
++    RC_OS_CHANGE_PERSONA_FAILURE		= 0x63,
++
++    RC_FILE_IO_OPEN_ERROR			= 0x70,
++    RC_FILE_IO_READ_ERROR			= 0x71,
++    RC_FILE_IO_OUT_OF_BUFFER			= 0x72
+ 
+ } RC_TYPE;
+ 
+--- src/get_cmd.c
++++ src/get_cmd.c
+@@ -211,7 +211,7 @@
+ 	
+ 	return 1;
  }
- 
-+/*make sure proper number of option args*/
-+int is_has_option_args(int curr_arg_nr,CMD_DATA *cmd,CMD_DESCRIPTION_TYPE *p_curr_opt) 
-+{
-+
-+	int args_required=p_curr_opt->arg_nr-p_curr_opt->p_handler.num_defaults;
-+
-+
-+	if (curr_arg_nr + args_required > cmd->argc) {
-+
-+		return 0;
-+	}
-+	else {
-+
-+		int i;
-+
-+		for (i=0;i<args_required;i++) { /*if arg has a hyphen ('-') it's a new option*/
-+
-+			if ((char) cmd->argv[curr_arg_nr+i][0]=='-') {
-+
-+				return 0;
-+			}
-+		}
-+	}
-+	
-+	return 1;
-+}
+-
 +		
  /*
  	Parses the incoming argv list.
  	Arguments:
-@@ -271,9 +298,8 @@
+@@ -298,7 +298,6 @@
  					            curr_arg_nr, cmd.argv[curr_arg_nr-1]));
  
  				else {
 -
  					/*check arg nr required by the current option*/
--					if (curr_arg_nr + p_curr_opt->arg_nr - p_curr_opt->p_handler.num_defaults > cmd.argc)
-+					if (!(is_has_option_args(curr_arg_nr,&cmd,p_curr_opt)))
+ 					if (!(is_has_option_args(curr_arg_nr,&cmd,p_curr_opt)))
  					{
- 						rc = RC_CMD_PARSER_INVALID_OPTION_ARGUMENT;
- 						DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "Missing option value at position %d ('%s')\n",
---- src/http_client.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/http_client.c	2014-05-16 14:54:02.000000000 -0400
-@@ -38,14 +38,20 @@
- #include "errorcode.h"
- 
- 
--#define super_construct(p)					tcp_construct(p)
--#define super_destruct(p)					tcp_destruct(p)
--#define super_initialize(p,is_init_all)		tcp_do_initialize(p,is_init_all)
--#define super_init_async(p)					tcp_initialize_async(p,p_exit_func,p_cb_data)
--#define super_test_connect(p)				tcp_test_connect(p,p_exit_func,p_cb_data)
--#define super_shutdown(p)					tcp_shutdown(p)
--#define super_set_port(p_self,p)			tcp_set_port(p_self,p)
--#define super_get_port(p_self,p)			tcp_get_port(p_self,p)
-+#define super_construct(p)			tcp_construct(p)
-+#define super_destruct(p)			tcp_destruct(p)
-+#define super_initialize_and_connect(p)		tcp_initialize_and_connect(p)
-+#define super_initialize_and_connect_all(p)	tcp_initialize_and_connect_all(p)
-+#define super_initialize(p)			tcp_initialize(p)
-+#define super_initialize_all(p)			tcp_initialize_all(p)
-+#define super_init_async(p)			tcp_initialize_async(p,p_exit_func,p_cb_data)
-+#define super_connect(p)			tcp_connect(p)
-+#define super_connect_all(p)			tcp_connect_all(p)
-+#define super_connect_socket(p)			tcp_connect_socket(p)
-+#define super_test_connect(p)			tcp_test_connect(p,p_exit_func,p_cb_data)
-+#define super_shutdown(p)			tcp_shutdown(p)
-+#define super_set_port(p_self,p)		tcp_set_port(p_self,p)
-+#define super_get_port(p_self,p)		tcp_get_port(p_self,p)
- #define super_set_remote_name(p_self,p)		tcp_set_remote_name(p_self,p)
- #define super_get_remote_name(p_self,p)		tcp_get_remote_name(p_self,p)
- #define super_set_remote_timeout(p_self,p)	tcp_set_remote_timeout(p_self,p)
-@@ -116,7 +122,6 @@
- 	return rc;
- }
- 
--
- static RC_TYPE local_set_params(HTTP_CLIENT *p_self)
- {
- 	{
-@@ -142,6 +147,51 @@
- 	return RC_OK;
- }
- 
-+RC_TYPE http_client_do_connect(HTTP_CLIENT *p_self,int is_init_all)
-+{
-+	RC_TYPE rc;
-+
-+	do
-+	{
-+		rc = local_set_params(p_self);
-+
-+		if (rc != RC_OK)
-+		{
-+			break;
-+		}
-+
-+
-+		if (is_init_all) {
-+
-+			rc = super_connect_all(&p_self->super);
-+		} 
-+		else {
-+
-+			rc = super_connect(&p_self->super);
-+		}
-+
-+		if (rc != RC_OK)
-+		{
-+			break;
-+		}
-+
-+		/*local init*/
-+
-+	}
-+	while(0);
-+
-+	if (rc != RC_OK)
-+	{
-+		http_client_shutdown(p_self);
-+	}
-+	else
-+	{
-+		p_self->initialized = TRUE;
-+	}
-+
-+	return rc;
-+}
-+
- RC_TYPE http_client_do_init(HTTP_CLIENT *p_self,int is_init_all)
- {
- 	RC_TYPE rc;
-@@ -156,7 +206,14 @@
- 		}
- 
- 
--		rc = super_initialize(&p_self->super,is_init_all);
-+		if (is_init_all) {
-+
-+			rc = super_initialize_all(&p_self->super);
-+		} 
-+		else {
-+
-+			rc = super_initialize(&p_self->super);
-+		}
- 
- 		if (rc != RC_OK)
- 		{
-@@ -180,6 +237,31 @@
- 	return rc;
- }
- 
-+RC_TYPE http_client_init_and_connect(HTTP_CLIENT *p_self)
-+{
-+
-+	RC_TYPE	rc;
-+
-+	if (RC_OK==(rc=http_client_do_init(p_self,0))) {
-+
-+		rc=http_client_do_connect(p_self,0);
-+	}
-+
-+	return rc;
-+}
-+
-+RC_TYPE http_client_init_and_connect_all(HTTP_CLIENT *p_self)
-+{
-+	RC_TYPE	rc;
-+
-+	if (RC_OK==(rc=http_client_do_init(p_self,1))) {
-+
-+		rc=http_client_do_connect(p_self,1);
-+	}
-+
-+	return rc;
-+}
-+
- RC_TYPE http_client_init(HTTP_CLIENT *p_self)
- {
- 
-@@ -192,6 +274,24 @@
- 	return http_client_do_init(p_self,1);
- }
- 
-+RC_TYPE http_client_connect_all(HTTP_CLIENT *p_self)
-+{
-+
-+	return http_client_do_connect(p_self,1);
-+}
-+
-+RC_TYPE http_client_connect(HTTP_CLIENT *p_self)
-+{
-+
-+	return http_client_do_connect(p_self,0);
-+}
-+
-+RC_TYPE http_client_connect_socket(HTTP_CLIENT *p_self)
-+{
-+
-+	return super_connect_socket(&p_self->super);
-+}
-+
- /*
- 	Disconnect and some other clean up.
- */
---- src/http_client.h	2013-01-19 02:39:22.000000000 -0500
-+++ src/http_client.h	2014-05-16 14:54:07.000000000 -0400
-@@ -70,10 +70,13 @@
- 	- ...
- */
- RC_TYPE http_client_init(HTTP_CLIENT *p_self);
--
--/*return connections to all given by getaddrinfo*/
- RC_TYPE http_client_init_all(HTTP_CLIENT *p_self);
--RC_TYPE http_client_do_init(HTTP_CLIENT *p_self,int is_init_all);
-+/*return connections to all given by getaddrinfo*/
-+RC_TYPE http_client_init_and_connect(HTTP_CLIENT *p_self);
-+RC_TYPE http_client_init_and_connect_all(HTTP_CLIENT *p_self);
-+RC_TYPE http_client_connect(HTTP_CLIENT *p_self);
-+RC_TYPE http_client_connect_all(HTTP_CLIENT *p_self);
-+RC_TYPE http_client_connect_socket(HTTP_CLIENT *p_self);
- 
- #ifdef USE_THREADS
- 
---- src/inadyn_cmd.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/inadyn_cmd.c	2014-05-16 14:52:15.000000000 -0400
+--- src/inadyn_cmd.c
++++ src/inadyn_cmd.c
 @@ -72,6 +72,7 @@
  static RC_TYPE get_dns_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
  static RC_TYPE get_dns_server_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
@@ -2816,15 +3326,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  static RC_TYPE set_silent_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
  static RC_TYPE set_verbose_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
  static RC_TYPE get_proxy_server_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
-@@ -100,6 +102,7 @@
- static RC_TYPE get_retry_pending_interval_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
- static RC_TYPE get_retry_pending_off_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
- static RC_TYPE get_lang_file_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
-+static RC_TYPE get_addr_pref_handler(CMD_DATA *p_cmd, int current_nr, void *p_context);
- 
- #ifdef USE_SNDFILE
- 
-@@ -120,6 +123,13 @@
+@@ -121,6 +123,13 @@
  
  #endif
  
@@ -2837,8 +3339,24 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +
  static CMD_DESCRIPTION_TYPE cmd_options_table[] =
      {
-         {"--help",		0,	{help_handler, NULL,0},	"help" },
-@@ -160,6 +170,10 @@
+         {"--help",	0,	{help_handler, NULL,0},	"help" },
+@@ -132,11 +141,11 @@
+         {"--password",	1,	{get_password_handler, NULL,0},	"<password> - your password. Optional."},
+         {"-p",		1,	{get_password_handler, NULL,0},	"<password> - your password"},
+ 
+-        {"--alias",	4,	{get_alias_handler, NULL,3},	"<alias host name>[,hash] [dual | " DUAL_LIST " | ip4 | ip6 | auto] - alias host name, optional comma delimted hash, and optional ip version, default auto. This option can appear multiple times." },
+-        {"-a",		4,	{get_alias_handler, NULL,3},	"<alias host name>[,hash] [dual | " DUAL_LIST " | ip4 | ip6 | auto] - alias host name, optional comma delimited hash, and optional ip version, default auto. This option can appear multiple times." },
++        {"--alias",	3,	{get_alias_handler, NULL,2},	"<alias host name>[,hash] [dual | " DUAL_LIST " | ip4 | ip6 | auto] - alias host name, optional comma delimted hash, and optional ip version, default auto. This option can appear multiple times." },
++        {"-a",		3,	{get_alias_handler, NULL,2},	"<alias host name>[,hash] [dual | " DUAL_LIST " | ip4 | ip6 | auto] - alias host name, optional comma delimited hash, and optional ip version, default auto. This option can appear multiple times." },
+ 
+-        {"--debug",     1,  {get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
+-        {"-d",          1,  {get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
++        {"--debug",     1,	{get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
++        {"-d",          1,	{get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
+ 
+         /*
+         for help display only -- service_main takes care of these handlers
+@@ -161,16 +170,20 @@
           "<srv_name[:port] local_url> - local IP is detected by parsing the response after returned by this server and URL.  "\
           "The first IP in found http response is considered 'my IP'."},
  
@@ -2846,36 +3364,110 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +         "<srv_name[:port] local_url> - local IP is detected by parsing the response after returned by this server and URL.  "\
 +         "The first IP in found http response is considered 'my IP'.  Same as ip_server_name option, but overrides unchanged dyndns_system default ip servers."},
 +
-         {"--online_check_url",	2,	{get_online_check_url_handler, NULL,0},
+         {"--online_check_url",		2,	{get_online_check_url_handler, NULL,0},
           "<srv_name[:port] local_url> - URL to reach to confirm online status.  "\
           "Default value:  " DYNDNS_MY_ONLINE_CHECK " /"},
-@@ -183,6 +197,7 @@
- 		 "\t\t-For sitelutions.com:  default@sitelutions.com\n"
- 		 "\t\t-For dnsomatic.com:  default@dnsomatic.com\n"
- 		 "\t\t-For tunnelbroker.net:  ipv6tb@he.net\n"
-+		 "\t\t-For dns.he.net:  default@he.net\n"
- 		 "\t\t-For tzo.com:  default@tzo.com\n"
- 		 "\t\t-For dynsip.org:  default@dynsip.org\n"
- 		 "\t\t-For dhis.org:  default@dhis.org\n"
-@@ -203,6 +218,7 @@
+ 
+-        {"--dyndns_server_name",	1,	{get_dns_server_name_handler, NULL,0},
++        {"--dyndns_server_name", 	1,	{get_dns_server_name_handler, NULL,0},
+          "<NAME>[:port] - The server that receives the update DNS request.  Allows the use of unknown DNS services that "\
+-         "accept HTTP updates.  If no proxy is wanted, then it is enough to set the dyndns system. The default servers "\
+-         "will be taken."},
++		 "accept HTTP updates.  If no proxy is wanted, then it is enough to set the dyndns system. The default servers "\
++		 "will be taken."},
+ 
+-        {"--dyndns_server_url",		1,	{get_dns_server_url_handler, NULL,0},
++        {"--dyndns_server_url", 	1, {get_dns_server_url_handler, NULL,0},
+          "<name> - full URL relative to DynDNS server root.  Ex: /some_script.php?hostname="},
+ 
+         {"--dyndns_system",		1,	{get_dyndns_system_handler, NULL,0},
+@@ -184,6 +197,7 @@
+          "\t\t-For sitelutions.com:  default@sitelutions.com\n"
+          "\t\t-For dnsomatic.com:  default@dnsomatic.com\n"
+          "\t\t-For tunnelbroker.net:  ipv6tb@he.net\n"
++         "\t\t-For dns.he.net:  default@he.net\n"
+          "\t\t-For tzo.com:  default@tzo.com\n"
+          "\t\t-For dynsip.org:  default@dynsip.org\n"
+          "\t\t-For dhis.org:  default@dhis.org\n"
+@@ -197,7 +211,7 @@
+          "[NAME[:port]]  - the http proxy server name and port. Default is none."},
+         {"--update_period",		1,	{get_update_period_handler, NULL,0},"<#> - how often the IP is checked. The period is in [ms]. 30000..864000000.  Default is about 10 min. Max is 10 days"},
+         {"--update_period_sec",		1,	{get_update_period_sec_handler, NULL,0},"<#> - how often the IP is checked. The period is in [sec]. 30..864000.  Default is about 10 min. Max is 10 days"},
+-        {"--forced_update_period",	1,	{get_forced_update_period_handler, NULL,0},"<#> - how often, in seconds, the IP is updated even if it is not changed. 30 sec..30 days, default, 30 days."},
++        {"--forced_update_period", 	1,	{get_forced_update_period_handler, NULL,0},"<#> - how often, in seconds, the IP is updated even if it is not changed. 30 sec..30 days, default, 30 days."},
+ 
+ #ifdef USE_THREADS
+ 
+@@ -205,36 +219,35 @@
  #endif
  
-         {"--log_file",	1,	{get_logfile_name, NULL,0},		"<path/file> - log file path and name"},
-+        {"--pid_file",	1,	{get_pidfile_name, NULL,0},		"pid file path and name"},
-         {"--background", 0,	{set_silent_handler, NULL,0},		"run in background. output to log file or to syslog"},
- 
- 		{"--verbose",	1,	{set_verbose_handler, NULL,0},	"<#> - set dbg level. 0 to 5"},
-@@ -219,7 +235,7 @@
- 		{"--retry_pending", 0, {get_retry_pending_off_handler, NULL,0}, "<#> - retry ip update even after network comm retries exhausted,  default on"},
- 		{"--retry_pending_interval", 1, {get_retry_pending_interval_handler, NULL,0}, "<#> - network comm seconds update retry interval, after retries exhausted.  5..3600, default 300"},
-         {"--lang_file", 1, {get_lang_file_handler, NULL,1}, "[path/file] - language file path, and file name, defaults to either ../inadyn-mt/lang/en.lng, or etc/inadyn-mt/en.lng.  Empty parameter option gives hard coded english defaults."},
+         {"--log_file",			1,	{get_logfile_name, NULL,0},"<path/file> - log file path and name"},
++        {"--pid_file",			1,	{get_pidfile_name, NULL,0},"pid file path and name"},
+         {"--background",		0,	{set_silent_handler, NULL,0},"run in background. output to log file or to syslog"},
 -
-+        {"--addr_pref", 1, {get_addr_pref_handler, NULL,0}, "<pub | policy | home | careof | crypto | nocrypto | tmp | pubtmp> -  ipv6 address preference for DDNS update.  Defaults to pub."},
+ 	{"--verbose",			1,	{set_verbose_handler, NULL,0},"<#> - set dbg level. 0 to 5"},
+ 
+ 	{"--iterations",		1,	{set_iterations_handler, NULL,0},"<#> - set the number of DNS updates. Default is 0, which means infinity."},
+-        {"--syslog",			0,	{set_syslog_handler, NULL,0},	"force logging to syslog . (e.g. /var/log/mepossages). Works on **NIX systems only."},
+-        {"--change_persona",		1,	{set_change_persona_handler, NULL,0}, "<uid[:gid]> - after init switch to a new user/group. Parameters: <uid[:gid]> to change to. Works on **NIX systems only."},
+-        {"--version",			0,	{print_version_handler, NULL,0}, "print the version number\n"},
+-        {"--exec",			1,	{get_exec_handler, NULL,0}, "<command> - external command to exec after an IP update. Include the full path."},
+-        {"--cache_dir",			1,	{get_cache_dir, NULL,0}, "<path> - cache directory name. (e.g. /tmp/ddns). Defaults to /tmp on **NIX systems."},
+-        {"--wildcard",			0,	{wildcard_handler, NULL,0}, "enable domain wildcarding for dyndns.org, 3322.org, or easydns.com."},
+-        {"--retries",			1,	{get_retries_handler, NULL,0}, "<#> - network comm retry attempts.  0 to 100, default 0"},
+-        {"--retry_interval",		1,	{get_retry_interval_handler, NULL,0}, "<#> - network comm miliseconds retry interval.  0 to 30,000, default 1,000"},
+-	{"--retry_pending",		0,	{get_retry_pending_off_handler, NULL,0}, "<#> - retry ip update even after network comm retries exhausted,  default on"},
+-	{"--retry_pending_interval",	1,	{get_retry_pending_interval_handler, NULL,0}, "<#> - network comm seconds update retry interval, after retries exhausted.  5..3600, default 300"},
+-	{"--lang_file",			1,	{get_lang_file_handler, NULL,1}, "[path/file] - language file path, and file name, defaults to either ../inadyn-mt/lang/en.lng, or etc/inadyn-mt/en.lng.  Empty parameter option gives hard coded english defaults."},
+-	{"--addr_pref",			1,	{get_addr_pref_handler, NULL,0}, "<pub | policy | home | careof | crypto | nocrypto | tmp | pubtmp> -  ipv6 address preference for DDNS update.  Defaults to pub."},
+-
++        {"--syslog",			0,	{set_syslog_handler, NULL,0},"force logging to syslog . (e.g. /var/log/messages). Works on **NIX systems only."},
++        {"--change_persona",		1,	{set_change_persona_handler, NULL,0},"<uid[:gid]> - after init switch to a new user/group. Parameters: <uid[:gid]> to change to. Works on **NIX systems only."},
++        {"--version",			0,	{print_version_handler, NULL,0},"print the version number\n"},
++        {"--exec",			1,	{get_exec_handler, NULL,0},"<command> - external command to exec after an IP update. Include the full path."},
++        {"--cache_dir",			1,	{get_cache_dir, NULL,0},"<path> - cache directory name. (e.g. /tmp/ddns). Defaults to /tmp on **NIX systems."},
++        {"--wildcard",			0,	{wildcard_handler, NULL,0},"enable domain wildcarding for dyndns.org, 3322.org, or easydns.com."},
++        {"--retries",			1,	{get_retries_handler, NULL,0},"<#> - network comm retry attempts.  0 to 100, default 0"},
++        {"--retry_interval",		1, 	{get_retry_interval_handler, NULL,0},"<#> - network comm miliseconds retry interval.  0 to 30,000, default 1,000"},
++	{"--retry_pending",		0,	{get_retry_pending_off_handler, NULL,0},"<#> - retry ip update even after network comm retries exhausted,  default on"},
++	{"--retry_pending_interval",	1,	{get_retry_pending_interval_handler, NULL,0},"<#> - network comm seconds update retry interval, after retries exhausted.  5..3600, default 300"},
++        {"--lang_file",			1,	{get_lang_file_handler, NULL,1},"[path/file] - language file path, and file name, defaults to either ../inadyn-mt/lang/en.lng, or etc/inadyn-mt/en.lng.  Empty parameter option gives hard coded english defaults."},
++        {"--addr_pref",			1,	{get_addr_pref_handler, NULL,0},"<pub | policy | home | careof | crypto | nocrypto | tmp | pubtmp> -  ipv6 address preference for DDNS update.  Defaults to pub."},
  #ifdef USE_SNDFILE
- 		{"--audible", 0, {get_audible_on_handler, NULL,0}, "audible network status alerts toggle.  default off"},
- 		{"--wave_file", 2, {get_wave_file_handler, NULL,1}, "<path/file [#] - audible network status alerts wave file path, and file name. defaults\n" \
-@@ -257,6 +273,22 @@
-         {NULL,		0,	{0, NULL,0},	"" }
+-	{"--audible",			0,	{get_audible_on_handler, NULL,0}, "audible network status alerts toggle.  default off"},
+-	{"--wave_file",			2,	{get_wave_file_handler, NULL,1}, "<path/file [#] - audible network status alerts wave file path, and file name. defaults\n" \
++	{"--audible",			0,	{get_audible_on_handler, NULL,0},"audible network status alerts toggle.  default off"},
++	{"--wave_file",			2,	{get_wave_file_handler, NULL,1},"<path/file [#] - audible network status alerts wave file path, and file name. defaults\n" \
+          "\t\tto either ../inadyn-mt/extra/wav/alarm.wav, or etc/inadyn-mt/extra/wav/alarm.wav \n"\
+          "\t\t[wave loops: 0..100; -1 for infinite] same as wave_loops below -- optional number of\n"\
+          "\t\ttimes per wave play call to repeat wave file play, default 0"},
+-	{"--wave_loops",		1,	{get_wave_loops_handler, NULL,0}, "<#> - same as wave_file parameter optional parameter --\n"\
++	{"--wave_loops",		1,	{get_wave_loops_handler, NULL,0},"<#> - same as wave_file parameter optional parameter --\n"\
+          "\t\t0..100; -1 for infinite number of times per wave play call to repeat wave file play, default 0"},
+-	{"--alert_retries",		1,	{get_alert_retries_handler, NULL,0}, "<#> - network retries before audible network status alerts. [0..100], default 0"},
+-	{"--alert_interval",		1,	{get_alert_interval_handler, NULL,0}, "<#> - time in miliseconds between consecutive audible network status alerts. [0..3600000], default 0"},
+-	{"--wave_gain",			1,	{get_wave_gain_handler, NULL,0}, "<#> - gain (amplitude adjust) at which to play audible alert (beware clipping), integer or float. [-10..10], default 10 (0db, no attenuation)."},
+-	{"--wave_buff",			1,	{get_wave_buff_handler, NULL,0}, "<#> - wave file output buffer size control -- integer or float multiple of wave file bytes per sec. [.25..10], default .25"},
++	{"--alert_retries",		1,	{get_alert_retries_handler, NULL,0},"<#> - network retries before audible network status alerts. [0..100], default 0"},
++	{"--alert_interval",		1,	{get_alert_interval_handler, NULL,0},"<#> - time in miliseconds between consecutive audible network status alerts. [0..3600000], default 0"},
++	{"--wave_gain",			1,	{get_wave_gain_handler, NULL,0},"<#> - gain (amplitude adjust) at which to play audible alert (beware clipping), integer or float. [-10..10], default 10 (0db, no attenuation)."},
++	{"--wave_buff",			1,	{get_wave_buff_handler, NULL,0},"<#> - wave file output buffer size control -- integer or float multiple of wave file bytes per sec. [.25..10], default .25"},
+ 
+ /*possible other options:
+ 		-time before go into rest period
+@@ -252,14 +265,30 @@
+ 
+ #ifdef USE_THREADS
+ 
+-	{"--status_interval",		1, {get_status_interval_handler, NULL,0}, "<#> - seconds [30..864000] interval at which to check online status.  defaults to 600"},
+-	{"--status_offline_interval",	1, {get_status_offline_interval_handler, NULL,0}, "<#> - seconds [0..864000] interval at which to check online status, after offline detected.  defaults to 15"},
++	{"--status_interval",		1,	{get_status_interval_handler, NULL,0},"<#> - seconds [30..864000] interval at which to check online status.  defaults to 600"},
++	{"--status_offline_interval",	1,	{get_status_offline_interval_handler, NULL,0},"<#> - seconds [0..864000] interval at which to check online status, after offline detected.  defaults to 15"},
+ 
+ #endif
+ #endif
+-	{NULL,				0,{0, NULL,0},"" }
++        {NULL,				0,	{0,NULL,0},"" }
      };
  
 +static RC_TYPE get_pidfile_name(CMD_DATA *p_cmd, int current_nr, void *p_context)
@@ -2897,7 +3489,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  void print_help_page(void)
  {
-@@ -398,15 +430,15 @@
+@@ -401,15 +430,15 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2917,7 +3509,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	return RC_OK;
  }
-@@ -419,14 +451,14 @@
+@@ -422,14 +451,14 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2936,7 +3528,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	return RC_OK;
  }
  
-@@ -452,7 +484,8 @@
+@@ -455,7 +484,8 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2946,7 +3538,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  		return RC_DYNDNS_TOO_MANY_ALIASES;
  	}
-@@ -462,42 +495,46 @@
+@@ -465,42 +495,46 @@
  
  	if (p_hash)	{
  
@@ -3005,7 +3597,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		}
  		else {
  
-@@ -510,7 +547,7 @@
+@@ -513,7 +547,7 @@
  			}
  			else {
  
@@ -3014,7 +3606,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  				if (strcmp(ip_ver_str,"auto")) {
  
-@@ -518,24 +555,24 @@
+@@ -521,24 +555,24 @@
  
  						if (strcmp(ip_ver_str,"ip4"))
  
@@ -3045,7 +3637,14 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  
  	return RC_OK;
-@@ -550,20 +587,20 @@
+@@ -547,19 +581,19 @@
+ static RC_TYPE get_alias_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
+ {
+ 	DYN_DNS_CLIENT	*p_self=(DYN_DNS_CLIENT *) p_context;
+-	char		ip_ver_str[8];
++	char		ip_ver_str[8]={'\0'};
+ 	RC_TYPE		rc=RC_OK;
+ 
  
  	if (!(current_nr+1<p_cmd->argc)) {
  
@@ -3061,16 +3660,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		}
  		else {
  
- #ifndef _WIN32
--			if (snprintf(ip_ver_str, 7, "%s", p_cmd->argv[current_nr+1]) < 0) {
-+			if (snprintf(ip_ver_str, 8, "%s", p_cmd->argv[current_nr+1]) < 0) {
- #else
--			if (_snprintf(ip_ver_str, 7, "%s", p_cmd->argv[current_nr+1]) < 0)	{
-+			if (_snprintf(ip_ver_str, 8, "%s", p_cmd->argv[current_nr+1]) < 0)	{
- #endif
- 				
- 				return RC_DYNDNS_INVALID_OPTION;
-@@ -583,7 +620,7 @@
+@@ -586,7 +620,7 @@
  
  		if ((RC_OK==(rc=do_get_alias_handler(p_cmd,current_nr,p_context,"ip6"))))
  
@@ -3079,25 +3669,20 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	}
  
  	return rc;
-@@ -611,7 +648,7 @@
-         *p_dest_port = port_nr;
-         len = p_port - p_src;
- 
--	  *p_dest_name=safe_malloc(len);
-+	  *p_dest_name=safe_malloc(len+1);
- 	  memcpy(*p_dest_name, p_src, len);
- 
-         *(*p_dest_name+len) = '\0';
-@@ -629,7 +666,7 @@
+@@ -632,10 +666,10 @@
  /** Returns the svr name and port if the format is :
   * name[:port] url.
   */
 -static RC_TYPE set_url_param(CMD_DATA *p_cmd, int current_nr,DYNDNS_INFO_TYPE *info)
 +static RC_TYPE set_url_param(CMD_DATA *p_cmd, int current_nr,DYNDNS_SERVER_NAME *info)
  {
- 	RC_TYPE rc;
-     int port = -1;
-@@ -640,22 +677,22 @@
+ 	RC_TYPE	rc;
+-	int	port = -1;
++    	int	port = -1;
+ 
+ 	if (info == NULL)
+ 	{
+@@ -643,22 +677,22 @@
  	}
  
  	/*user*/
@@ -3127,7 +3712,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
      return rc;
  }
-@@ -663,7 +700,34 @@
+@@ -666,7 +700,34 @@
  static RC_TYPE get_ip_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
  
@@ -3137,9 +3722,9 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +
 +static RC_TYPE get_global_ip_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
 +{
-+	RC_TYPE			rc;
++	RC_TYPE		rc;
 +	DYN_DNS_CLIENT	*p_self=(DYN_DNS_CLIENT *) p_context;
-+	int				i;
++	int		i;
 +
 +
 +    if ((RC_OK==(rc=set_url_param(p_cmd,current_nr,&p_self->ip_server_name_global)))) {
@@ -3163,7 +3748,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  }
  
  static RC_TYPE get_online_check_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
-@@ -672,26 +736,112 @@
+@@ -675,42 +736,128 @@
      return set_url_param(p_cmd,current_nr,&(((DYN_DNS_CLIENT *) (p_context))->info_online_status));
  }
  
@@ -3185,9 +3770,9 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +
  static RC_TYPE get_dns_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
- 	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
- 	RC_TYPE rc;
- 	int port = -1;
+ 	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
+ 	RC_TYPE		rc;
+ 	int		port = -1;
  
 +
  	if (p_self == NULL)
@@ -3226,8 +3811,8 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +*/
 +static RC_TYPE get_dyndns_system_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
 +{
-+	DYNDNS_SYSTEM *p_dns_system = NULL;
-+	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
++	DYNDNS_SYSTEM	*p_dns_system = NULL;
++	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
 +	if (p_self == NULL)
 +	{
 +		return RC_INVALID_POINTER;
@@ -3282,8 +3867,10 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +
  RC_TYPE get_dns_server_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
- 	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
-@@ -700,14 +850,14 @@
+-	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
++	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
+ 	if (p_self == NULL)
+ 	{
  		return RC_INVALID_POINTER;
  	}
  
@@ -3302,7 +3889,18 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  	return RC_OK;
  }
-@@ -726,11 +876,11 @@
+@@ -720,8 +867,8 @@
+ static RC_TYPE get_proxy_server_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
+ {
+ 	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
+-	RC_TYPE		rc;
+-	int		port = -1;
++    	RC_TYPE		rc;
++    	int		port = -1;
+ 
+ 	if (p_self == NULL)
+ 	{
+@@ -729,11 +876,11 @@
  	}
  
  	/*user*/
@@ -3317,7 +3915,21 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
      }                                   
  	return rc;    
  }
-@@ -995,43 +1145,6 @@
+@@ -963,10 +1110,10 @@
+ static RC_TYPE get_cache_dir(CMD_DATA *p_cmd, int current_nr, void *p_context)
+ {
+ 
+-	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
++	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
+ 
+-	char *ip_cache=NULL;
+-	char *time_cache=NULL;
++	char		*ip_cache=NULL;
++	char		*time_cache=NULL;
+ 
+ 
+ 	if (p_self == NULL)
+@@ -998,49 +1145,12 @@
  	return RC_OK;
  }
  
@@ -3361,108 +3973,72 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  static RC_TYPE get_debug_level_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
  
-@@ -1229,6 +1342,100 @@
- 	return RC_OK;
- }
+-	#define ASCII_ZERO     48
++	#define ASCII_ZERO	48
  
-+/*map inadyn-mt user interface ipv6 privacy extensions address preference specifier to corresponding rfc constant.
-+addr_pref string member for specifier, not really needed, but we'll hang on to it - may come in handy for something*/
-+static RC_TYPE set_priv_ext(char *pref_arg,IPV6_PRIV_EXT *ipv6_priv_ext)
-+{
-+	if (!strcmp(pref_arg,"pub")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=IPV6_PREFER_SRC_PUBLIC;
-+
-+		return RC_OK;
-+	}
-+
-+	if (!strcmp(pref_arg,"policy")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=0;
-+
-+		return RC_OK;
-+	}
-+
-+	if (!strcmp(pref_arg,"tmp")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=IPV6_PREFER_SRC_TMP;
-+
-+		return RC_OK;
-+	}
-+
-+	if (!strcmp(pref_arg,"careof")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=IPV6_PREFER_SRC_COA;
-+
-+		return RC_OK;
-+	}
-+
-+	if (!strcmp(pref_arg,"crypto")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=IPV6_PREFER_SRC_CGA;
-+
-+		return RC_OK;
-+	}
-+
-+	if (!strcmp(pref_arg,"nocrypto")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=IPV6_PREFER_SRC_NONCGA;
-+
-+		return RC_OK;
-+	}
-+
-+	if (!strcmp(pref_arg,"home")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=IPV6_PREFER_SRC_HOME;
-+
-+		return RC_OK;
-+	}
-+
-+	if (!strcmp(pref_arg,"pubtmp")) {
-+
-+		strcpy(ipv6_priv_ext->addr_pref,pref_arg);
-+		ipv6_priv_ext->flags=IPV6_PREFER_SRC_PUBTMP_DEFAULT;
-+
-+		return RC_OK;
-+	}
-+
-+	DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "Invalid option parameter, %s...\n",pref_arg));
-+
-+	return RC_DYNDNS_INVALID_OPTION;
-+}
-+
-+static RC_TYPE get_addr_pref_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
-+{
-+
-+	DYN_DNS_CLIENT *p_self=(DYN_DNS_CLIENT *) p_context;
-+
-+
-+	if (p_self==NULL)
-+
-+		return RC_INVALID_POINTER;
-+
-+	if (current_nr>=p_cmd->argc)
-+
-+		return RC_DYNDNS_INVALID_OPTION;
-+
-+	if (!(strncmp(p_cmd->argv[current_nr],"-",1)))
-+
-+		return RC_DYNDNS_INVALID_OPTION;
-+
-+	return set_priv_ext(p_cmd->argv[current_nr],&p_self->ipv6_priv_ext);
-+}
-+
- #ifdef USE_SNDFILE
+-	int                    dwLevel=0;
++	int	dwLevel=0;
  
- static RC_TYPE get_audible_on_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
-@@ -2223,8 +2430,7 @@
+ 
+ 	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
+@@ -1662,7 +1772,7 @@
+ 
+ typedef struct
+ {
+-	FILE		*p_file;
++	FILE 		*p_file;
+ 	PARSER_STATE	state;
+ } OPTION_FILE_PARSER;
+ 
+@@ -1889,10 +1999,10 @@
+ */
+ static RC_TYPE parser_utf_8_read_option(OPTION_FILE_PARSER *p_cfg, char *p_buffer, int maxlen)
+ {
+-	RC_TYPE rc = RC_OK;
+-	BOOL parse_end = FALSE;
+-	int count = 0;
+-	char c_buff[7];
++	RC_TYPE	rc = RC_OK;
++	BOOL	parse_end = FALSE;
++	int	count = 0;
++	char	c_buff[7];
+ 
+ 
+ 	*p_buffer = 0;
+@@ -1945,11 +2055,11 @@
+ 		- add data to buffer
+ 		- do not forget a 0 at the end
+  * States:
+- * NEW_LINE - wait here until some option. Add '--' if not already there
+- * SPACE - between options. Like NEW_LINE but no additions
+- * DATA - real data. Stop on space.
+- * COMMENT - everything beginning with # until EOLine
+- * ESCAPE - everything that is otherwise (incl. spaces). Next char is raw copied.
++ * NEW_LINE	- wait here until some option. Add '--' if not already there
++ * SPACE	- between options. Like NEW_LINE but no additions
++ * DATA		- real data. Stop on space.
++ * COMMENT	- everything beginning with # until EOLine
++ * ESCAPE	- everything that is otherwise (incl. spaces). Next char is raw copied.
+ */
+ static RC_TYPE parser_utf_16_read_option(OPTION_FILE_PARSER *p_cfg, char *p_buffer, int maxlen)
+ {
+@@ -2029,12 +2139,12 @@
+ 	const int		buffer_size = DYNDNS_SERVER_NAME_LENGTH;
+ 	OPTION_FILE_PARSER	parser;
+ 
+-	UTF_PARSE_FUNC		parse_func=parser_utf_8_read_option;
++	UTF_PARSE_FUNC parse_func=parser_utf_8_read_option;
+ 
+ #ifdef _WIN32
+ 
+-	int		is_bom=0;	/*win32 utf byte order mark?*/
+-	int		is_bom_8=0;
++	int	is_bom=0;	/*win32 utf byte order mark?*/
++	int	is_bom_8=0;
+ #endif
+ 
+ 
+@@ -2320,8 +2430,7 @@
  			rc = get_cmd_parse_data_with_error_handling(argv, argc, cmd_options_table,pf_err_handler);
  		}
  
@@ -3472,11 +4048,11 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  		{
  			break;
  		}
-@@ -2232,52 +2438,61 @@
+@@ -2329,63 +2438,73 @@
  		/*settings that may change due to cmd line options*/
  		{
  			int	len=0;
-+			int i;
++			int	i;
  
  			
 -    		/*ip server*/
@@ -3484,46 +4060,48 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -            {
 -				p_self->info.ip_server_name.name[ip_store]=safe_malloc(strlen(p_self->info.p_dns_system->p_ip_server_name)+1);
 -				strcpy(p_self->info.ip_server_name.name[ip_store], p_self->info.p_dns_system->p_ip_server_name);
-+            if (!(p_self->info_online_status.name))
-+			{
+-
+-				p_self->info.ip_server_url=safe_malloc(strlen(p_self->info.p_dns_system->p_ip_server_url)+1);
+-				strcpy(p_self->info.ip_server_url, p_self->info.p_dns_system->p_ip_server_url);				
+-            }
+-
+-            if (!(p_self->info_online_status.ip_server_name.name[ip_store]))
++			if (!(p_self->info_online_status.name)) 
+ 			{
+-				p_self->info_online_status.ip_server_name.name[ip_store]=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK)+1);
+-				strcpy(p_self->info_online_status.ip_server_name.name[ip_store],DYNDNS_MY_ONLINE_CHECK);
 +				p_self->info_online_status.name=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK)+1);
 +				strcpy(p_self->info_online_status.name,DYNDNS_MY_ONLINE_CHECK);
  
--				p_self->info.ip_server_url=safe_malloc(strlen(p_self->info.p_dns_system->p_ip_server_url)+1);
--				strcpy(p_self->info.ip_server_url, p_self->info.p_dns_system->p_ip_server_url);				
-+				p_self->info_online_status.url=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK_URL)+1);
-+				strcpy(p_self->info_online_status.url,DYNDNS_MY_ONLINE_CHECK_URL);
-+
-+				p_self->info_online_status.port=80;
-             }
- 
--            if (!(p_self->info_online_status.ip_server_name.name[ip_store]))
--			{
--				p_self->info_online_status.ip_server_name.name[ip_store]=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK)+1);
--				strcpy(p_self->info_online_status.ip_server_name.name[ip_store],DYNDNS_MY_ONLINE_CHECK);
-+			if (!(p_self->srv_cnt))
- 
 -				p_self->info_online_status.ip_server_url=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK_URL)+1);
 -				strcpy(p_self->info_online_status.ip_server_url,DYNDNS_MY_ONLINE_CHECK_URL);
-+				p_self->srv_cnt=1; /*default server set in main*/
++				p_self->info_online_status.url=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK_URL)+1);
++				strcpy(p_self->info_online_status.url,DYNDNS_MY_ONLINE_CHECK_URL);
  
 -				p_self->info_online_status.ip_server_name.port=80;
 -            }
-+			for (i=0;i<p_self->srv_cnt;i++) {
++				p_self->info_online_status.port=80;
++			}
++
++			if (!(p_self->srv_cnt))
++
++				p_self->srv_cnt=1; /*default server set in main*/
  
 -    		/*dyndns server*/
 -            if (!(p_self->info.dyndns_server_name.name[ip_store]))
 -            {
 -				if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_name)))) {
-+    			/*dyndns server*/
++			for (i=0;i<p_self->srv_cnt;i++) {
++
++    				/*dyndns server*/
 +				if (!(p_self->info[i].dyndns_server_name.name))
 +				{
 +					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_name)))) {
  
 -					p_self->info.dyndns_server_name.name[ip_store]=safe_malloc(len+1);
--        			strcpy(p_self->info.dyndns_server_name.name[ip_store], p_self->info.p_dns_system->p_dyndns_server_name);
+-        				strcpy(p_self->info.dyndns_server_name.name[ip_store], p_self->info.p_dns_system->p_dyndns_server_name);
 +						p_self->info[i].dyndns_server_name.name=safe_malloc(len+1);
-+        				strcpy(p_self->info[i].dyndns_server_name.name, p_self->info[i].p_dns_system->p_dyndns_server_name);
++        					strcpy(p_self->info[i].dyndns_server_name.name, p_self->info[i].p_dns_system->p_dyndns_server_name);
 +					}				
 +				}
 +
@@ -3532,7 +4110,7 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 +				{
 +					p_self->info[i].ip_server_name.name=safe_malloc(strlen(p_self->info[i].p_dns_system->p_ip_server_name)+1);
 +					strcpy(p_self->info[i].ip_server_name.name, p_self->info[i].p_dns_system->p_ip_server_name);
-+				
++					
 +					p_self->info[i].ip_server_name.url=safe_malloc(strlen(p_self->info[i].p_dns_system->p_ip_server_url)+1);
 +					strcpy(p_self->info[i].ip_server_name.url, p_self->info[i].p_dns_system->p_ip_server_url);				
  				}
@@ -3543,13 +4121,13 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
 -				if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_url)))) {
  
 -					p_self->info.dyndns_server_url=safe_malloc(len+1);
--      				strcpy(p_self->info.dyndns_server_url, p_self->info.p_dns_system->p_dyndns_server_url);
+-      					strcpy(p_self->info.dyndns_server_url, p_self->info.p_dns_system->p_dyndns_server_url);
 +				if (!(p_self->info[i].dyndns_server_name.url)) 
 +				{
 +					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_url)))) {
 +
 +						p_self->info[i].dyndns_server_name.url=safe_malloc(len+1);
-+    					strcpy(p_self->info[i].dyndns_server_name.url, p_self->info[i].p_dns_system->p_dyndns_server_url);
++    						strcpy(p_self->info[i].dyndns_server_name.url, p_self->info[i].p_dns_system->p_dyndns_server_url);
 +					}
  				}
  			}
@@ -3563,89 +4141,31 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  		{
  			rc = RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS;
---- src/ip.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/ip.c	2014-05-16 14:52:15.000000000 -0400
-@@ -231,12 +231,12 @@
- 
- RC_TYPE ip_initialize(IP_SOCKET *p_self)
- {
--	RC_TYPE			rc=RC_OK;
--	struct addrinfo *result=NULL;
--    struct addrinfo hints;
--	int				resolv_ret=0;
--	char			port_str[128];
--	BOOL			is_ip_support_ok;
-+	RC_TYPE	rc=RC_OK;
-+	struct 	addrinfo *result=NULL;
-+	struct	addrinfo hints;
-+	int	resolv_ret=0;
-+	char	port_str[128];
-+	BOOL	is_ip_support_ok;
- 
- 	
- 	if (p_self->initialized==TRUE) {
---- src/ip.h	2013-01-19 02:39:22.000000000 -0500
-+++ src/ip.h	2014-05-16 14:52:15.000000000 -0400
-@@ -43,6 +43,21 @@
- #define SD_SEND         0x01
- #define SD_BOTH         0x02
- 
-+/*snag from linux/in6.h because of namespace conflicts otherwise - not yet impemented here for Windows
-+  I don't know whether win32 defines these so they should really just be renamed here to avoid re-
-+  introducing the same problem I'm avoiding in linux.  No problem compiling on Windows 2000 though.
-+*/
-+/* RFC5014: Source address selection */
-+#define IPV6_ADDR_PREFERENCES   72 
+ 			break;
+ 		}
 +
-+#define IPV6_PREFER_SRC_TMP             0x0001
-+#define IPV6_PREFER_SRC_PUBLIC          0x0002
-+#define IPV6_PREFER_SRC_PUBTMP_DEFAULT  0x0100
-+#define IPV6_PREFER_SRC_COA             0x0004
-+#define IPV6_PREFER_SRC_HOME            0x0400
-+#define IPV6_PREFER_SRC_CGA             0x0008
-+#define IPV6_PREFER_SRC_NONCGA          0x0800
-+
- /* typedefs */
+ 		/*forced update*/
+ 		if ((fp=utf_fopen(p_self->time_cache, "r")))
+ 		{
+ 			if (fgets (cached_time, sizeof (cached_time), fp)) {
  
- #ifndef _WIN32
-@@ -65,22 +80,22 @@
+-				time_t			current;
++				time_t		current;
+ 				unsigned long	cached;
+ 				unsigned long	dif;
+ 				unsigned long	fup_store=p_self->forced_update_period_sec;
+@@ -2404,7 +2523,6 @@
  
- typedef struct
- {
--	BOOL				initialized;
--	BOOL				is_constructed;
--	BOOL				is_ipv4;
--	int					type;
--	SOCKET				*socket;
--	int					sock_index;
-+	BOOL			initialized;
-+	BOOL			is_constructed;
-+	BOOL			is_ipv4;
-+	int			type;
-+	SOCKET			*socket;
-+	int			sock_index;
- 	struct sockaddr_in	remote_addr;
--	const char			*p_remote_host_name;
-+	const char		*p_remote_host_name;
+ 					p_self->forced_update_period_sec-=dif;
  
- 	unsigned short		port;
--	int					timeout;
-+	int			timeout;
+-
+ 					/*unsigned wrap around?*/
  
- 	/*IPv6 trans*/
--	struct				addrinfo *addr;
--	struct				addrinfo **addr_ar;
--	int					server_socket_count;
-+	struct			addrinfo *addr;
-+	struct			addrinfo **addr_ar;
-+	int			server_socket_count;
- } IP_SOCKET;
- 
- /*public functions*/
---- src/lang.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/lang.c	2014-05-16 14:52:15.000000000 -0400
+ 					if (fup_store<p_self->forced_update_period_sec)
+--- src/lang.c
++++ src/lang.c
 @@ -659,14 +659,20 @@
- 	RC_TYPE				rc=RC_OK;
+ 	RC_TYPE	rc=RC_OK;
  
  
 -	DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "Language file search locale:  %s...\n",szLocale));
@@ -3668,8 +4188,55 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  
  
  	rc=do_init_lang_strings(pLOG_FILE,lang_file_and_path);
---- src/os.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/os.c	2014-05-16 14:52:15.000000000 -0400
+--- src/os.c
++++ src/os.c
+@@ -28,7 +28,7 @@
+ */
+ 
+ #define SLEEP_INTERVAL	125
+-#define MAXSTRING		2048
++#define MAXSTRING	2048
+ 
+ #ifndef EXCLUDE_CONFIG_H
+ 
+@@ -58,7 +58,7 @@
+ HANDLE	hLogWriteMutex=0;
+ 
+ /*Win32 unicode console output*/
+-int	is_console=1;
++int		is_console=1;
+ 
+ #endif
+ 
+@@ -70,17 +70,17 @@
+ 
+ char *print_time(void)
+ {
+-	time_t now;
+-	struct tm *timeptr;
+-	static const char wday_name[7][3] = {
+-	                                        "Sun", "Mon", "Tue", "Wed",
+-	                                        "Thu", "Fri", "Sat"
+-	                                    };
+-	static const char mon_name[12][3] = {
+-	                                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+-	                                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+-	                                    };
+-	static char result[26];
++	time_t			now;
++	struct			tm *timeptr;
++	static const char	wday_name[7][3] =	{
++	                                        		"Sun", "Mon", "Tue", "Wed",
++	                                        		"Thu", "Fri", "Sat"
++	                                    		};
++	static const char	mon_name[12][3] =	{
++								"Jan", "Feb", "Mar", "Apr", "May", "Jun",
++								"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
++							};
++	static char		result[26];
+ 
+ 
+ 	time(&now);
 @@ -272,7 +272,7 @@
  
  	tmp_buff[MAXSTRING-1]='\0';
@@ -3679,46 +4246,202 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  	vsnprintf(message, buff_size-1, langStr(szLangStr,tmp_buff,MAXSTRING), args);
  
  	return message;
---- src/os.h	2013-01-19 02:39:22.000000000 -0500
-+++ src/os.h	2014-05-16 14:52:15.000000000 -0400
-@@ -54,7 +54,13 @@
- 		#ifndef _WINDEF_ 
+@@ -323,7 +323,7 @@
+ 		unsigned int	b1;
+ 		unsigned int	b0;
+ 		unsigned long	ipa;
+-		int n;
++		int		n;
+ 
+ 		ipa = 0x0;
+ 		n = sscanf(p_name, IP_V4_IP_ADDR_FORMAT, &b3, &b2, &b1, &b0);
+@@ -492,9 +492,9 @@
+ void os_printf(int prio,char *fmt,...)
+ {
+ 
+-	va_list	args;
+-	int	is_wide=0;
+-	char	message[MAXSTRING];
++	va_list		args;
++	int		is_wide=0;
++	char		message[MAXSTRING];
+ 
+ 
+ 	flush_buffers();
+--- src/os.h
++++ src/os.h
+@@ -46,8 +46,8 @@
+ 	#include <winsock2.h>
+ 	#include <windows.h> 
+ 
+-	#undef	OS_DEF_OK
+-	#define	OS_DEF_OK 1
++	#undef						OS_DEF_OK
++	#define						OS_DEF_OK 1
+ 
+ 	#ifndef BOOL 
+ 
+@@ -55,14 +55,14 @@
  			#define				BOOL WINBOOL 
  		#else
--			#define vsnprintf	_vsnprintf 
-+
-+			/*misnomer, inadyn's ubiquitous VC++ _WIN32 includes NT
-+			so distinguish with _NOT_NT for Win32 proper systems*/
-+			#ifdef _NOT_NT
-+
-+				#define vsnprintf	_vsnprintf
-+			#endif
+ 
+-			/*Lagacy Windows functions*/
++			/*Legacy Windows functions*/
+ 			#ifdef _WIN_LEG
+ 
+ 				#define vsnprintf	_vsnprintf
+ 			#endif
  		#endif
- 
- 		#define					HAVE_OS_BOOL 1 
---- src/os_windows.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/os_windows.c	2014-05-16 14:52:15.000000000 -0400
-@@ -322,14 +322,13 @@
- 
- 		shellInfo.lpFile = utf_8_to_16(utf_malloc_8_to_16(&utf_16,p_cmd),p_cmd);
- 
--
--		free(utf_16);
--
- 		if(!ShellExecuteExW(&shellInfo))
- 
- 		{
- 			rc = RC_OS_FORK_FAILURE;
- 		}
+-	
+-		#define	HAVE_OS_BOOL 1 
 +
-+		free(utf_16);
- 	}
++		#define					HAVE_OS_BOOL 1 
+ 	#endif 
+ 
+ 	int isWinNT();
+@@ -71,14 +71,14 @@
+ #ifdef RMC_DEBUG_VERSION
+ 
+ 	#undef		OS_DEF_OK
+-    	#define		OS_DEF_OK 1
+-    	#define		PSOS_OS 1    
++	#define		OS_DEF_OK 1
++	#define		PSOS_OS 1    
+ 
+ 	#include	<rmctypes.h>
+ 	#include	<rmcmacros.h>
+ 
+ 	#define		HAVE_OS_BOOL 1    
+-    
++
+ 	#include	<psos.h>    
+ 	#include	"psos_net.h"
+ #endif
+@@ -86,29 +86,29 @@
+ #if OS_DEF_OK == 0
+ 
+ /*default to Unix*/
+-    #define	UNIX_OS  1
+-    #define	HAVE_OS_SYSLOG 1
++	#define	UNIX_OS  1
++	#define	HAVE_OS_SYSLOG 1
+ 
+-    #include <unistd.h>
+-    #include <stdio.h>
+-    #include <stdlib.h>
+-    #include <errno.h>
+-    #include <string.h>
+-    #include <sys/types.h>
+-    #include <sys/socket.h>
+-    #include <netinet/in.h>
+-    #include <arpa/inet.h>
+-    #include <sys/wait.h>
+-    #include <signal.h>
+-    #include <sys/socket.h>
+-    #include <netdb.h>
+-    #include <syslog.h>
++	#include <unistd.h>
++	#include <stdio.h>
++	#include <stdlib.h>
++	#include <errno.h>
++	#include <string.h>
++	#include <sys/types.h>
++	#include <sys/socket.h>
++	#include <netinet/in.h>
++	#include <arpa/inet.h>
++	#include <sys/wait.h>
++	#include <signal.h>
++	#include <sys/socket.h>
++	#include <netdb.h>
++	#include <syslog.h>
+ 
+-typedef int SOCKET;
+-    #define closesocket close
++	typedef int SOCKET;
++	#define closesocket close
+ 
+-    #define FAR         
+-typedef struct hostent HOSTENT;
++	#define FAR         
++	typedef struct hostent HOSTENT;
+ 
+ #endif
+ 
+@@ -160,26 +160,26 @@
+ 
+ 	typedef enum
+ 	{
+-		OS_CTRL_C_SIGNAL = 0,
+-		OS_CTRL_CLOSE_SIGNAL = 1,
+-		OS_CTRL_BREAK_SIGNAL = 2,
+-		OS_CTRL_LOGOFF_SIGNAL = 3,
+-		OS_CTRL_SHUTDOWN_SIGNAL = 4,
+-		LAST_SIGNAL = -1
++		OS_CTRL_C_SIGNAL	= 0,
++		OS_CTRL_CLOSE_SIGNAL	= 1,
++		OS_CTRL_BREAK_SIGNAL	= 2,
++		OS_CTRL_LOGOFF_SIGNAL	= 3,
++		OS_CTRL_SHUTDOWN_SIGNAL	= 4,
++		LAST_SIGNAL		= -1
+ 	} OS_SIGNALS;
+ 
+ 	typedef struct
+ 	{
+-		OS_SIGNALS signal;
+-		void *p_in_data;
+-		void *p_out_data;
++		OS_SIGNALS	signal;
++		void		*p_in_data;
++		void		*p_out_data;
+ 	} OS_SIGNAL_TYPE;
+ 
+ 	typedef int (*OS_SIGNAL_HANDLER_FUNC) (OS_SIGNAL_TYPE, void*);
+ 	typedef struct
+ 	{
+-		OS_SIGNAL_HANDLER_FUNC p_func;
+-		void *p_in_data;
++		OS_SIGNAL_HANDLER_FUNC	p_func;
++		void			*p_in_data;
+ 	} OS_SIGNAL_HANDLER_TYPE;
+ 
+ 	typedef struct
+@@ -230,11 +230,11 @@
+ 	/* Threads */
+ 	typedef struct
+ 	{
+-		void (*p_func) (void*);
+-		void *p_params;
+-		int priority;
+-		unsigned int nStackSize;
+-		unsigned int dwCreateFlags;
++		void		(*p_func) (void*);
++		void		*p_params;
++		int		priority;
++		unsigned int	nStackSize;
++		unsigned int	dwCreateFlags;
+ 	} OS_THREAD_TYPE;
  
  
---- src/path.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/path.c	2014-05-16 14:52:15.000000000 -0400
+@@ -282,14 +282,13 @@
+ #ifndef _WIN32
+ 	pthread_t		timer_thread;
+ #else
+-	unsigned long	timer_thread;
++	unsigned long		timer_thread;
+ #endif
+ 
+ 	semaphore_t		sem;
+ 	mutex_t			mutex_timer;
+ 
+ 	unsigned		interval_ms;
+-
+ 	/*be careful of overflow*/
+ 	volatile unsigned long	time_ms;
+ 
+--- src/path.c
++++ src/path.c
 @@ -635,7 +635,7 @@
- 	FILE    *fp=NULL;
+ 	FILE	*fp=NULL;
  
  
 -	if (!(root_dir))
@@ -3745,242 +4468,3 @@ Only in inadyn-mt.v.02.24.38/src: config.h.in~
  #ifdef _WIN32
  
  	if (!(progMetaFile(pLOG_FILE,dest,normed_path,path_len,langFileName,str_to_lwr(ancestor_path(&a_path,root,cwd)),cwd))) {
---- src/tcp.c	2013-01-19 02:39:22.000000000 -0500
-+++ src/tcp.c	2014-05-16 14:53:31.000000000 -0400
-@@ -42,15 +42,15 @@
- #include "safe_mem.h"
- #include "debug_if.h"
- 
--#define super_construct(p)					ip_construct(p)
--#define super_clone(p_dest,p_src)			ip_clone(p_dest,p_src)
--#define super_destruct(p)					ip_destruct(p)
--#define super_initialize(p)					ip_initialize(p)
--#define super_shutdown(p)					ip_shutdown(p)
--#define super_send(p,p_buf,len)				ip_send(p,p_buf,len)
-+#define super_construct(p)			ip_construct(p)
-+#define super_clone(p_dest,p_src)		ip_clone(p_dest,p_src)
-+#define super_destruct(p)			ip_destruct(p)
-+#define super_initialize(p)			ip_initialize(p)
-+#define super_shutdown(p)			ip_shutdown(p)
-+#define super_send(p,p_buf,len)			ip_send(p,p_buf,len)
- #define super_recv(p,p_buf,len,p_len)		ip_recv(p,p_buf,len,p_len)
--#define super_set_port(p_self, p)			ip_set_port(p_self, p)
--#define super_get_port(p_self, p)			ip_get_port(p_self, p)
-+#define super_set_port(p_self, p)		ip_set_port(p_self, p)
-+#define super_get_port(p_self, p)		ip_get_port(p_self, p)
- #define super_set_remote_name(p_self, p)	ip_set_remote_name(p_self, p)
- #define super_get_remote_name(p_self, p)	ip_get_remote_name(p_self, p)
- #define super_set_remote_timeout(p_self, p)	ip_set_remote_timeout(p_self, p)
-@@ -65,7 +65,7 @@
- static mutex_t		timer_loop_mutex=MUTEX_T_INIT;
- static mutex_t		test_timer_loop_mutex=MUTEX_T_INIT;
- 
--static volatile int			is_connect_in_progress=0;
-+static volatile int		is_connect_in_progress=0;
- static volatile RC_TYPE		global_is_online=RC_OK;
- 
- #endif
-@@ -168,7 +168,7 @@
- 	return RC_OK;
- }
- 
--static RC_TYPE do_tcp_create_socket(TCP_SOCKET *p_self,LINGER so_linger,int timeout)
-+static RC_TYPE tcp_do_create_socket(TCP_SOCKET *p_self,LINGER so_linger,int timeout)
- {
- 	RC_TYPE	rc=RC_IP_SOCKET_CREATE_ERROR;
- 
-@@ -192,7 +192,7 @@
- 		else {			
- 
- 			struct addrinfo *addr=p_self->super.addr;
--			int				socket_index=0;
-+			int		socket_index=0;
- 
- 
- 			do {
-@@ -217,7 +217,7 @@
- 						(char*) &timeout,sizeof(timeout));
- 
- 					setsockopt(p_self->super.socket[socket_index],SOL_SOCKET,SO_LINGER,
--						(char *) &so_linger,sizeof(LINGER));									
-+						(char *) &so_linger,sizeof(LINGER));							
- 
- 					if (!(addr)) {
- 
-@@ -261,48 +261,44 @@
- 	so_linger.l_onoff=1;
- 
- 
--	return do_tcp_create_socket(p_self,so_linger,p_self->super.timeout);
-+	return tcp_do_create_socket(p_self,so_linger,p_self->super.timeout);
- }
- 
--/* 
--	Sets up the object.
--	- ...
--*/
--RC_TYPE tcp_do_initialize(TCP_SOCKET *p_self,int is_connect_all)
-+static int tcp_do_connect_socket(TCP_SOCKET *p_self)
- {
--	RC_TYPE			rc;
--	int				i=0;
- 
-+	int	sock_index=p_self->super.sock_index;
- 
--	do
--	{
--		if (!(RC_OK==(rc=tcp_create_socket(p_self))))
- 
--			break;
-+	return connect(p_self->super.socket[sock_index],p_self->super.addr_ar[sock_index]->ai_addr,
-+		p_self->super.addr_ar[sock_index]->ai_addrlen);
-+}
-+
-+RC_TYPE tcp_do_connect(TCP_SOCKET *p_self,int is_connect_all)
-+{
-+	RC_TYPE	rc;
-+
- 
-+	do
-+	{
- 		rc=RC_IP_CONNECT_FAILED;
- 
- 
--		for (i=0;i<p_self->super.server_socket_count;i++) {
-+		for (p_self->super.sock_index=0;p_self->super.sock_index<p_self->super.server_socket_count;p_self->super.sock_index++) {
- 
- 			/*connect*/
--			if (0 == connect(p_self->super.socket[i],p_self->super.addr_ar[i]->ai_addr,
--				p_self->super.addr_ar[i]->ai_addrlen)) {
-+			if (0 == tcp_do_connect_socket(p_self)) {
- 
- 				rc=RC_OK;
- 
--				if (is_connect_all) {
--
--					p_self->super.sock_index=0;
--				}
--				else {
--
--					p_self->super.sock_index=i;
-+				if (!(is_connect_all)) {
- 
- 					break;
- 				}
- 			}
- 		}
-+
-+		p_self->super.sock_index=0;
- 	}
- 	while(0);
- 
-@@ -318,6 +314,81 @@
- 	return rc;
- }
- 
-+RC_TYPE tcp_do_initialize(TCP_SOCKET *p_self,int is_connect_all)
-+{
-+	RC_TYPE	rc;
-+
-+
-+	do 
-+	{
-+
-+		if (!(RC_OK==(rc=tcp_create_socket(p_self))))
-+
-+			break;
-+	} 
-+	while(0);
-+
-+
-+	if (rc != RC_OK)
-+	{
-+		tcp_shutdown(p_self);		
-+	}
-+	else
-+	{
-+		p_self->initialized = TRUE;
-+	}
-+			
-+	return rc;
-+}
-+
-+RC_TYPE tcp_connect_all(TCP_SOCKET *p_self)
-+{
-+	return tcp_do_connect(p_self,1);
-+}
-+
-+RC_TYPE tcp_connect(TCP_SOCKET *p_self)
-+{
-+	return tcp_do_connect(p_self,0);
-+}
-+
-+RC_TYPE tcp_connect_socket(TCP_SOCKET *p_self)
-+{
-+
-+	if ((0==tcp_do_connect_socket(p_self))) {
-+
-+		return RC_OK;
-+
-+	}
-+	else {
-+
-+		return RC_IP_CONNECT_FAILED;
-+	}
-+}
-+
-+RC_TYPE tcp_initialize_and_connect_all(TCP_SOCKET *p_self)
-+{
-+	RC_TYPE	rc;
-+
-+	if (RC_OK==(rc=tcp_do_initialize(p_self,1))) {
-+
-+		rc=tcp_do_connect(p_self,1);
-+	}
-+
-+	return rc;
-+}
-+
-+RC_TYPE tcp_initialize_and_connect(TCP_SOCKET *p_self)
-+{
-+	RC_TYPE	rc;
-+
-+	if (RC_OK==(rc=tcp_initialize(p_self))) {
-+
-+		rc=tcp_connect(p_self);
-+	}
-+
-+	return rc;
-+}
-+
- RC_TYPE tcp_initialize_all(TCP_SOCKET *p_self)
- {
- 
-@@ -441,7 +512,7 @@
- 	so_linger.l_linger=0;
- 	so_linger.l_onoff=1;
- 	
--	return do_tcp_create_socket(p_self,so_linger,5000);	
-+	return tcp_do_create_socket(p_self,so_linger,5000);	
- }
- 
- static RC_TYPE do_connect(TCP_SOCKET *p_self)
---- src/tcp.h	2013-01-19 02:39:22.000000000 -0500
-+++ src/tcp.h	2014-05-16 14:53:36.000000000 -0400
-@@ -104,10 +104,13 @@
- 	- ...
- */
- RC_TYPE tcp_initialize(TCP_SOCKET *p_self);
--/*return connections to all can from getaddrinfo*/
- RC_TYPE tcp_initialize_all(TCP_SOCKET *p_self);
--RC_TYPE tcp_do_initialize(TCP_SOCKET *p_self,int is_connect_all);
--
-+RC_TYPE tcp_initialize_and_connect(TCP_SOCKET *p_self);
-+/*return connections to all can from getaddrinfo*/
-+RC_TYPE tcp_initialize_and_connect_all(TCP_SOCKET *p_self);
-+RC_TYPE tcp_connect(TCP_SOCKET *p_self);
-+RC_TYPE tcp_connect_all(TCP_SOCKET *p_self);
-+RC_TYPE tcp_connect_socket(TCP_SOCKET *p_self);
- /* 
- 	Disconnect and some other clean up.
- */
