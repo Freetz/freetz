@@ -658,6 +658,12 @@ define PKG_PATCH__INT
 	done;
 endef
 
+# $1: commands to execute
+# $2: optional directory $1 to be executed within, default $($(PKG)_DIR)
+define PKG_EXECUTE_WITHIN__INT
+	$(if $(strip $(1)),(cd $(if $(strip $(2)),$(strip $(2)),$($(PKG)_DIR)); $(strip $(1))))
+endef
+
 # Patch binary package
 define PKG_BIN_PATCH
 	$(call \
@@ -665,8 +671,7 @@ define PKG_BIN_PATCH
 		$($(PKG)_MAKE_DIR)/patches \
 		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
 		$($(PKG)_DIR), \
-	) \
-	$(if $(strip $($(PKG)_PATCH_POST_CMDS)),(cd $($(PKG)_DIR); $(strip $($(PKG)_PATCH_POST_CMDS))))
+	)
 endef
 
 # Patch library package
@@ -677,8 +682,7 @@ define PKG_LIB_PATCH
 		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
 		$($(PKG)_DIR), \
 		.$(strip $(pkg)) \
-	) \
-	$(if $(strip $($(PKG)_PATCH_POST_CMDS)),(cd $($(PKG)_DIR); $(strip $($(PKG)_PATCH_POST_CMDS))))
+	)
 endef
 
 # Removes all files under $1 except for those in $2
@@ -694,7 +698,9 @@ $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK)
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
 	$(call PKG_BIN_PATCH)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
 	@touch $$@
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
@@ -721,7 +727,9 @@ $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK)
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
 	$(call PKG_LIB_PATCH)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
 	@touch $$@
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
