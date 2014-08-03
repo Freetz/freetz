@@ -1,0 +1,11 @@
+--- etc/hotplug/printer
++++ etc/hotplug/printer
+@@ -68,6 +68,8 @@
+ 		# Starting printserver...
+ 		if ! $BIN -d $USB_DEVICE -p $PORT -c $CONSOLE; then
+ 			eventadd 153
++			vrijgeven
++			exit 1
+ 		fi
+ 
+ 		echo "1" > $HANDLE
