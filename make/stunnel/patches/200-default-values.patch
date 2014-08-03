@@ -1,9 +1,9 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -276,8 +276,10 @@
+@@ -310,8 +310,10 @@
  
  # Additional preprocesor definitions
- stunnel_CPPFLAGS = -I$(SSLDIR)/include \
+ stunnel_CPPFLAGS =                         -I$(SSLDIR)/include \
 -	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' \
 -	-DPIDFILE='"$(localstatedir)/run/stunnel/stunnel.pid"'
 +	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"/mod/etc"' \
@@ -15,7 +15,7 @@
  EXTRA_DIST = make.bat makece.bat makew32.bat mingw.mak evc.mak vc.mak \
 --- src/options.c
 +++ src/options.c
-@@ -786,7 +786,7 @@
+@@ -916,7 +916,7 @@
      /* cert */
      switch(cmd) {
      case CMD_BEGIN:
@@ -24,7 +24,7 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "cert"))
-@@ -800,7 +800,8 @@
+@@ -933,7 +933,8 @@
      case CMD_FREE:
          break;
      case CMD_DEFAULT:
@@ -34,7 +34,7 @@
      case CMD_HELP:
          s_log(LOG_NOTICE, "%-22s = certificate chain", "cert");
          break;
-@@ -1144,7 +1145,7 @@
+@@ -1302,7 +1303,7 @@
      /* key */
      switch(cmd) {
      case CMD_BEGIN:
@@ -43,7 +43,7 @@
          break;
      case CMD_EXEC:
          if(strcasecmp(opt, "key"))
-@@ -1156,6 +1157,7 @@
+@@ -1314,6 +1315,7 @@
      case CMD_FREE:
          break;
      case CMD_DEFAULT:

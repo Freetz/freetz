@@ -1,0 +1,31 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -310,7 +310,8 @@
+ 
+ # Additional preprocesor definitions
+ stunnel_CPPFLAGS = -I/usr/kerberos/include -I$(SSLDIR)/include \
+-	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"'
++	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"' \
++	-DPIDFILE='"$(localstatedir)/run/stunnel/stunnel.pid"'
+ 
+ # Win32 executable
+ EXTRA_DIST = make.bat makece.bat makew32.bat mingw.mak evc.mak vc.mak \
+--- src/options.c
++++ src/options.c
+@@ -497,7 +497,7 @@
+ #ifndef USE_WIN32
+     switch(cmd) {
+     case CMD_BEGIN:
+-        new_global_options.pidfile=NULL; /* do not create a pid file */
++        new_global_options.pidfile=PIDFILE;
+         break;
+     case CMD_EXEC:
+         if(strcasecmp(opt, "pid"))
+@@ -512,6 +512,7 @@
+     case CMD_FREE:
+         break;
+     case CMD_DEFAULT:
++        s_log(LOG_NOTICE, "%-22s = %s", "pid", PIDFILE);
+         break;
+     case CMD_HELP:
+         s_log(LOG_NOTICE, "%-22s = pid file", "pid");
