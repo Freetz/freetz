@@ -1,10 +1,10 @@
 #!/bin/sh
 
 DAEMON=bird
+DAEMON_CONFIG=/tmp/flash/bird.conf
 . /etc/init.d/modlibrc
 
-CFGFILE='/tmp/flash/bird.conf'
-[ -e /etc/bird.conf -a ! -e $CFGFILE ] && CFGFILE='/etc/bird.conf'
+[ -e /etc/bird.conf -a ! -e $DAEMON_CONFIG ] && DAEMON_CONFIG=/etc/bird.conf
 
 ar7ipaddr () {
 	local SEC=$1
@@ -34,8 +34,8 @@ getipaddr () {
 }
 
 config() {
-	if [ ! -e "$CFGFILE" ]; then
-		echo "Creating $CFGFILE"
+	if [ ! -e "$DAEMON_CONFIG" ]; then
+		echo "Creating $DAEMON_CONFIG"
 		{
 			echo "router id $(getipaddr);"
 			cat <<"EOF"
@@ -71,13 +71,13 @@ protocol ospf mainospf {
   };
 }
 EOF
-		} > $CFGFILE
+		} > $DAEMON_CONFIG
 		/usr/bin/modsave flash
 	fi
 }
 
 start() {
-	modlib_startdaemon $DAEMON -c $CFGFILE
+	modlib_startdaemon $DAEMON -c $DAEMON_CONFIG
 }
 
 stop() {
@@ -88,7 +88,7 @@ case $1 in
 	''|load)
 		modreg cgi 'bird' 'BIRD'
 		modreg daemon $DAEMON
-		[ "$CFGFILE" != '/etc/bird.conf' ] && modreg file bird conf 'bird.conf' 0 "bird_conf"
+		[ "$DAEMON_CONFIG" != '/etc/bird.conf' ] && modreg file bird conf 'bird.conf' 0 "bird_conf"
 
 		[ "$BIRD_AUTOSTARTDELAY" -gt 0 -a "$BIRD_ENABLED" = 'yes' ] && sleep $BIRD_AUTOSTARTDELAY
 		modlib_start $BIRD_ENABLED

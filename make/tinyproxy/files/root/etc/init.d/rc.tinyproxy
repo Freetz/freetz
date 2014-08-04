@@ -7,7 +7,7 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 
 config() {
 	modlib_config
-	chown nobody:nobody /mod/etc/$DAEMON.conf
+	chown nobody:nobody $DAEMON_CONFIG
 	[ -e /var/tmp/tinyproxy.filter ] && chown nobody:nobody /var/tmp/tinyproxy.filter
 	if [ ! "$TINYPROXY_SYSLOG" = "yes" ]; then
 		touch "$TINYPROXY_LOGFILE"
@@ -16,7 +16,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON -c /mod/etc/$DAEMON.conf
+	modlib_startdaemon $DAEMON -c $DAEMON_CONFIG
 }
 
 start_addons() {

@@ -10,7 +10,7 @@ config() {
 
 start() {
 	modprobe ipv6 2>/dev/null
-	modlib_startdaemon $DAEMON_BIN -f /mod/etc/$DAEMON.conf
+	modlib_startdaemon $DAEMON_BIN -f $DAEMON_CONFIG
 }
 
 case $1 in

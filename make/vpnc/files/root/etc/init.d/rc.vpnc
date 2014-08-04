@@ -22,7 +22,7 @@ start() {
 		VPNC_SCRIPT="/mod/etc/default.vpnc/vpnc-script"
 	fi
 
-	modlib_startdaemon $DAEMON --script $VPNC_SCRIPT /mod/etc/$DAEMON.conf
+	modlib_startdaemon $DAEMON --script $VPNC_SCRIPT $DAEMON_CONFIG
 }
 
 stop () {

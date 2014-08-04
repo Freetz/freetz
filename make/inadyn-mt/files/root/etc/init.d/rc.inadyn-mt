@@ -91,15 +91,15 @@ configure () {
 }
 
 config() {
-	configure >/mod/etc/$DAEMON.conf
-	if [ 5 -gt $(cat /mod/etc/$DAEMON.conf | wc -l) ]; then
+	configure > $DAEMON_CONFIG
+	if [ 5 -gt $(cat $DAEMON_CONFIG | wc -l) ]; then
 		echo -n 'not configured, failed.'
 		exit 1
 	fi
 }
 
 start() {
-	modlib_startdaemon $DAEMON --input_file /mod/etc/$DAEMON.conf 2>/dev/null
+	modlib_startdaemon $DAEMON --input_file $DAEMON_CONFIG 2>/dev/null
 }
 
 case $1 in

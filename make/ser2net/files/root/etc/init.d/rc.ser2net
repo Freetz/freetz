@@ -1,17 +1,16 @@
 #!/bin/sh
 
 DAEMON=ser2net
+DAEMON_CONFIG=/tmp/flash/ser2net.conf
 DAEMON_LONG_NAME="Serial to Network Proxy"
-PID_FILE=/var/run/$DAEMON.pid
 . /etc/init.d/modlibrc
 
-CFGFILE="/tmp/flash/ser2net.conf"
-[ -e /etc/ser2net.conf ] && CFGFILE="/etc/ser2net.conf"
+[ -e /etc/ser2net.conf ] && DAEMON_CONFIG=/etc/ser2net.conf
 
 config() {
-		if [ ! -e "$CFGFILE" ]; then
-			echo -n "Creating $CFGFILE ... "
-			cat <<"EOF" > $CFGFILE
+		if [ ! -e "$DAEMON_CONFIG" ]; then
+			echo -n "Creating $DAEMON_CONFIG ... "
+			cat <<"EOF" > $DAEMON_CONFIG
 # This is the configuration file for ser2net.  It has the following format:
 #  <TCP port>:<state>:<timeout>:<device>:<options>
 
@@ -25,12 +24,12 @@ EOF
 }
 
 start() {
-	modlib_startdaemon $DAEMON -c $CFGFILE -P $PID_FILE
+	modlib_startdaemon $DAEMON -c $DAEMON_CONFIG -P $PID_FILE
 }
 
 case $1 in
 	""|load)
-		[ "$CFGFILE" != "/etc/ser2net.conf" ] && modreg file ser2net conf 'ser2net.conf' 0 "ser2net_conf"
+		[ "$DAEMON_CONFIG" != "/etc/ser2net.conf" ] && modreg file ser2net conf 'ser2net.conf' 0 "ser2net_conf"
 
 		modreg cgi 'ser2net' 'ser2net'
 		modreg daemon $DAEMON

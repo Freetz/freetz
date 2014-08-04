@@ -23,7 +23,7 @@ start() {
 
 	# try to load kernel module
 	[ -d /proc/sys/net/ipv6 ] || modprobe ipv6 2>/dev/null
-	modlib_startdaemon $DAEMON start /mod/etc/$DAEMON.conf
+	modlib_startdaemon $DAEMON start $DAEMON_CONFIG
 	retval=$?
 	local _timer=30
 	while [ $_timer -gt 0 ]; do
@@ -42,7 +42,7 @@ start() {
 }
 
 stop () {
-	$DAEMON stop /mod/etc/$DAEMON.conf
+	$DAEMON stop $DAEMON_CONFIG
 	local retval=$?
 	#aiccu terminates slow, so wait for it:
 	local tries=0

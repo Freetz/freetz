@@ -39,7 +39,7 @@ stop_ipv6_interface() {
 
 start() {
 	start_ipv6_interface
-	modlib_startdaemon $DAEMON -C /mod/etc/$DAEMON.conf
+	modlib_startdaemon $DAEMON -C $DAEMON_CONFIG
 }
 
 stop_post() {

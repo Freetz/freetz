@@ -18,7 +18,7 @@ set_cron() {
 
 update_ip() {
 	echo "$1" > /tmp/.opendd.ip
-	$DAEMON -c /mod/etc/$DAEMON.conf
+	$DAEMON -c $DAEMON_CONFIG
 	rm -rf /tmp/.opendd.ip 2>/dev/null
 }
 
@@ -38,7 +38,7 @@ run() {
 	fi
 
 	modlib_config
-	chmod 600 /mod/etc/$DAEMON.conf
+	chmod 600 $DAEMON_CONFIG
 
 	NEW_IP=$(get_ip)
 	if [ -z "$NEW_IP" ]; then

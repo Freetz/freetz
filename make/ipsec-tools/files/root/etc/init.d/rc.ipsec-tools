@@ -2,6 +2,7 @@
 
 DAEMON=ipsec-tools
 DAEMON_BIN=racoon
+DAEMON_CONFIG=/mod/etc/racoon/racoon.conf
 
 . /etc/init.d/modlibrc
 
@@ -14,7 +15,7 @@ start() {
 	for x in `find /lib/modules/2.6.*/kernel/crypto/*.ko /lib/modules/2.6.*/kernel/net/*/*.ko | sed 's%^.*/\([^/]*\)\.ko%\1%'`; do modprobe $x; done
 	config
 	setkey -f /mod/etc/racoon/setkey.conf
-	modlib_startdaemon $DAEMON_BIN -f /mod/etc/racoon/racoon.conf
+	modlib_startdaemon $DAEMON_BIN -f $DAEMON_CONFIG
 }
 
 case "$1" in

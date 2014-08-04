@@ -10,9 +10,9 @@ mypidof() {
 
 config(){
 	if [ -r "/tmp/flash/openvpn/own_${DAEMON}.conf" ]; then
-		cp /tmp/flash/openvpn/own_${DAEMON}.conf /mod/etc/${DAEMON}.conf
+		cp /tmp/flash/openvpn/own_${DAEMON}.conf ${DAEMON_CONFIG}
 	else
-		modlib_config ${DAEMON} /mod/etc/${DAEMON}.conf
+		modlib_config ${DAEMON} ${DAEMON_CONFIG}
 	fi
 }
 
@@ -33,12 +33,12 @@ start() {
 		fi
 	done
 
-	trap 'echo -e "You may get some more hints by starting ${DAEMON} w/o \"--daemon\":\n\t$DAEMON --config /mod/etc/${DAEMON}.conf"' EXIT
-	modlib_startdaemon ${DAEMON} --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid --daemon
+	trap 'echo -e "You may get some more hints by starting ${DAEMON} w/o \"--daemon\":\n\t$DAEMON --config ${DAEMON_CONFIG}"' EXIT
+	modlib_startdaemon ${DAEMON} --config ${DAEMON_CONFIG} --writepid /var/run/${DAEMON}.pid --daemon
 	trap - EXIT
 
 	# if we have brctl, then try to add tap to "lan" if requestet (ignore errors)
-	if [ $(which brctl) ] && TAP=$(grep "#Helperline" /mod/etc/${DAEMON}.conf | grep -o tap[0-9] ); then
+	if [ $(which brctl) ] && TAP=$(grep "#Helperline" ${DAEMON_CONFIG} | grep -o tap[0-9] ); then
 		brctl addif lan $TAP 2> /dev/null
 	fi
 }
@@ -89,7 +89,7 @@ case $1 in
 			mkdir -p /tmp/openvpn/etc
 			mkdir -p /tmp/openvpn/dev
 			mkdir -p /tmp/flash/openvpn
-			[ "$OPENVPN_CONFIG_COUNT" -eq 1 -a "$OPENVPN_ENABLED" = inetd ] && /mod/etc/default.openvpn/openvpn_conf  > /mod/etc/openvpn.conf
+			[ "$OPENVPN_CONFIG_COUNT" -eq 1 -a "$OPENVPN_ENABLED" = inetd ] && /mod/etc/default.openvpn/openvpn_conf  > $DAEMON_CONFIG
 		fi
 		if [ ! -e "/tmp/flash/openvpn/static.key" ]; then
 			echo -n "creating static.key ... "
