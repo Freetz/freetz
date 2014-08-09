@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2014.64)
+$(call PKG_INIT_BIN, 2014.65)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=c9c92f0bf622e6395462a906727d830f
+$(PKG)_SOURCE_MD5:=1918604238817385a156840fa2c39490
 $(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
