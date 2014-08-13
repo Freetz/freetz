@@ -1,5 +1,5 @@
---- pppd/lcp.c.orig	2010-08-16 14:26:38.000000000 +0200
-+++ pppd/lcp.c	2010-08-16 14:26:38.000000000 +0200
+--- pppd/lcp.c
++++ pppd/lcp.c
 @@ -73,6 +73,7 @@
   */
  int	lcp_echo_interval = 0; 	/* Interval between LCP echo-requests */
@@ -17,10 +17,11 @@
      { "lcp-restart", o_int, &lcp_fsm[0].timeouttime,
        "Set time in seconds between LCP retransmissions", OPT_PRIO },
      { "lcp-max-terminate", o_int, &lcp_fsm[0].maxtermtransmits,
-@@ -2332,6 +2335,22 @@
+@@ -2331,6 +2334,22 @@
+ 	}
      }
  
-     /*
++    /*
 +     * If adaptive echos have been enabled, only send the echo request if
 +     * no traffic was received since the last one.
 +     */
@@ -36,13 +37,12 @@
 +	}
 +    }
 +
-+    /*
+     /*
       * Make and send the echo request frame.
       */
-     if (f->state == OPENED) {
---- pppd/pppd.8.orig	2010-08-16 14:26:38.000000000 +0200
-+++ pppd/pppd.8	2010-08-16 14:26:38.000000000 +0200
-@@ -562,6 +562,11 @@
+--- pppd/pppd.8
++++ pppd/pppd.8
+@@ -563,6 +563,11 @@
  dynamic IP address option (i.e. set /proc/sys/net/ipv4/ip_dynaddr to
  1) in demand mode if the local address changes.
  .TP

@@ -1,6 +1,6 @@
 --- pppd/ipv6cp.c
 +++ pppd/ipv6cp.c
-@@ -234,6 +234,8 @@ static option_t ipv6cp_option_list[] = {
+@@ -245,6 +245,8 @@
  
      { "ipv6cp-accept-local", o_bool, &ipv6cp_allowoptions[0].accept_local,
        "Accept peer's interface identifier for us", 1 },
@@ -9,7 +9,7 @@
  
      { "ipv6cp-use-ipaddr", o_bool, &ipv6cp_allowoptions[0].use_ip,
        "Use (default) IPv4 address as interface identifier", 1 },
-@@ -426,6 +428,7 @@ ipv6cp_init(unit)
+@@ -435,6 +437,7 @@
      memset(ao, 0, sizeof(*ao));
  
      wo->accept_local = 1;
@@ -17,7 +17,7 @@
      wo->neg_ifaceid = 1;
      ao->neg_ifaceid = 1;
  
-@@ -951,7 +954,7 @@ ipv6cp_reqci(f, inp, len, reject_if_disa
+@@ -960,7 +963,7 @@
  		orc = CONFREJ;		/* Reject CI */
  		break;
  	    }
@@ -40,7 +40,7 @@
      int use_ip;			/* use IP as interface identifier */
 --- pppd/pppd.8
 +++ pppd/pppd.8
-@@ -462,6 +462,11 @@ With this option, pppd will accept the p
+@@ -463,6 +463,11 @@
  interface identifier, even if the local IPv6 interface identifier
  was specified in an option.
  .TP

@@ -1,5 +1,5 @@
---- pppd/plugins/pppoatm/pppoatm.c.orig	2008-11-26 11:02:29.000000000 +0100
-+++ pppd/plugins/pppoatm/pppoatm.c	2009-11-06 15:08:09.000000000 +0100
+--- pppd/plugins/pppoatm/pppoatm.c
++++ pppd/plugins/pppoatm/pppoatm.c
 @@ -70,18 +70,20 @@
  {
  	struct sockaddr_atmpvc addr;
@@ -51,7 +51,7 @@
  	if (ioctl(fd, ATM_SETBACKEND, &be) < 0)
  		fatal("ioctl(ATM_SETBACKEND): %m");
  }
-@@ -170,7 +173,7 @@
+@@ -168,7 +171,7 @@
  
  void plugin_init(void)
  {
@@ -60,7 +60,7 @@
  	extern int new_style_driver;	/* From sys-linux.c */
  	if (!ppp_available() && !new_style_driver)
  		fatal("Kernel doesn't support ppp_generic - "
-@@ -178,9 +181,9 @@
+@@ -176,9 +179,9 @@
  #else
  	fatal("No PPPoATM support on this OS");
  #endif

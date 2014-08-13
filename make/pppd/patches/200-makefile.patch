@@ -1,6 +1,6 @@
---- pppd/Makefile.linux	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/Makefile.linux	2009-11-22 20:13:35.000000000 +0100
-@@ -48,7 +48,7 @@ MPPE=y
+--- pppd/Makefile.linux
++++ pppd/Makefile.linux
+@@ -48,7 +48,7 @@
  # Uncomment the next line to include support for PPP packet filtering.
  # This requires that the libpcap library and headers be installed
  # and that the kernel driver support PPP packet filtering.
@@ -9,7 +9,7 @@
  
  # Uncomment the next line to enable multilink PPP (enabled by default)
  # Linux distributions: Please leave multilink ENABLED in your builds
-@@ -58,14 +58,16 @@ HAVE_MULTILINK=y
+@@ -58,14 +58,16 @@
  # Uncomment the next line to enable the TDB database (enabled by default.)
  # If you enable multilink, then TDB is automatically enabled also.
  # Linux distributions: Please leave TDB ENABLED in your builds.
@@ -19,9 +19,8 @@
 -HAS_SHADOW=y
 +#HAS_SHADOW=y
  #USE_PAM=y
--#HAVE_INET6=y
 +#ifdef FREETZ_TARGET_IPV6_SUPPORT
-+HAVE_INET6=y
+ HAVE_INET6=y
 +#endif
  
  # Enable plugins
@@ -30,7 +29,7 @@
  
  # Enable Microsoft proprietary Callback Control Protocol
  #CBCP=y
-@@ -77,7 +79,7 @@ MAXOCTETS=y
+@@ -80,7 +82,7 @@
  
  INCLUDE_DIRS= -I../include
  
@@ -39,7 +38,7 @@
  
  CFLAGS= $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS) '-DDESTDIR="@DESTDIR@"'
  
-@@ -117,10 +119,8 @@ CFLAGS   += -DHAS_SHADOW
+@@ -120,10 +122,8 @@
  #LIBS     += -lshadow $(LIBS)
  endif
  
@@ -48,5 +47,5 @@
  LIBS	+= -lcrypt
 -endif
  
- ifdef NEEDDES
- ifndef USE_CRYPT
+ ifdef USE_LIBUTIL
+ CFLAGS	+= -DHAVE_LOGWTMP=1

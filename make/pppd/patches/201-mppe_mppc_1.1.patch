@@ -1,5 +1,5 @@
---- include/linux/ppp-comp.h.orig	2009-11-16 23:26:07.000000000 +0100
-+++ include/linux/ppp-comp.h	2010-08-16 14:26:38.000000000 +0200
+--- include/linux/ppp-comp.h
++++ include/linux/ppp-comp.h
 @@ -36,7 +36,7 @@
   */
  
@@ -61,8 +61,8 @@
  /*
   * Definitions for other, as yet unsupported, compression methods.
   */
---- include/net/ppp-comp.h.orig	2009-11-16 23:26:07.000000000 +0100
-+++ include/net/ppp-comp.h	2010-08-16 14:26:38.000000000 +0200
+--- include/net/ppp-comp.h
++++ include/net/ppp-comp.h
 @@ -168,6 +168,33 @@
  #define CI_MPPE			18	/* config option for MPPE */
  #define CILEN_MPPE		6	/* length of config option */
@@ -97,8 +97,8 @@
  /*
   * Definitions for other, as yet unsupported, compression methods.
   */
---- pppd/ccp.c.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/ccp.c	2010-08-16 14:26:38.000000000 +0200
+--- pppd/ccp.c
++++ pppd/ccp.c
 @@ -62,12 +62,10 @@
  static char bsd_value[8];
  static char deflate_value[8];
@@ -1461,8 +1461,8 @@
  	ccp_localstate[f->unit] &= ~RACK_PENDING;
  }
 -
---- pppd/ccp.h.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/ccp.h	2010-08-16 14:26:38.000000000 +0200
+--- pppd/ccp.h
++++ pppd/ccp.h
 @@ -37,9 +37,17 @@
      bool predictor_2;		/* do Predictor-2? */
      bool deflate_correct;	/* use correct code for deflate? */
@@ -1481,9 +1481,9 @@
      short method;		/* code for chosen compression method */
  } ccp_options;
  
---- pppd/chap_ms.c.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/chap_ms.c	2010-08-16 14:26:38.000000000 +0200
-@@ -898,13 +898,17 @@
+--- pppd/chap_ms.c
++++ pppd/chap_ms.c
+@@ -963,13 +963,17 @@
      /*
       * Disable undesirable encryption types.  Note that we don't ENABLE
       * any encryption types, to avoid overriding manual configuration.
@@ -1503,9 +1503,9 @@
  	    break;
  	default:
  	    break;
---- pppd/pppd.8.orig	2010-08-16 14:26:38.000000000 +0200
-+++ pppd/pppd.8	2010-08-16 14:26:38.000000000 +0200
-@@ -661,9 +661,29 @@
+--- pppd/pppd.8
++++ pppd/pppd.8
+@@ -670,9 +670,29 @@
  Enables the use of PPP multilink; this is an alias for the `multilink'
  option.  This option is currently only available under Linux.
  .TP
@@ -1538,7 +1538,7 @@
  .TP
  .B mpshortseq
  Enables the use of short (12-bit) sequence numbers in multilink
-@@ -806,17 +826,11 @@
+@@ -815,17 +835,11 @@
  Disables the use of PPP multilink.  This option is currently only
  available under Linux.
  .TP
@@ -1547,12 +1547,12 @@
 -.TP
 -.B nomppe\-40
 -Disable 40-bit encryption with MPPE.
+-.TP
+-.B nomppe\-128
+-Disable 128-bit encryption with MPPE.
 +.B nomppc
 +Disables MPPC (Microsoft Point to Point Compression).
  .TP
--.B nomppe\-128
--Disable 128-bit encryption with MPPE.
--.TP
 -.B nomppe\-stateful
 -Disable MPPE stateful mode.  This is the default.
 +.B nomppe
@@ -1560,7 +1560,7 @@
  .TP
  .B nompshortseq
  Disables the use of short (12-bit) sequence numbers in the PPP
-@@ -1008,19 +1022,6 @@
+@@ -1018,19 +1032,6 @@
  Require the peer to authenticate itself using CHAP [Challenge
  Handshake Authentication Protocol] authentication.
  .TP

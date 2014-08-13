@@ -1,5 +1,5 @@
---- pppd/ipcp.c.orig	2010-08-16 14:26:38.000000000 +0200
-+++ pppd/ipcp.c	2010-08-16 14:26:38.000000000 +0200
+--- pppd/ipcp.c
++++ pppd/ipcp.c
 @@ -198,6 +198,14 @@
        "disable defaultroute option", OPT_ALIAS | OPT_A2CLR,
        &ipcp_wantoptions[0].default_route },
@@ -24,7 +24,7 @@
  static void ipcp_script __P((char *, int));	/* Run an up/down script */
  static void ipcp_script_done __P((void *));
  
-@@ -1742,7 +1750,8 @@
+@@ -1761,7 +1769,8 @@
      if (!sifnpmode(u, PPP_IP, NPMODE_QUEUE))
  	return 0;
      if (wo->default_route)
@@ -34,7 +34,7 @@
  	    default_route_set[u] = 1;
      if (wo->proxy_arp)
  	if (sifproxyarp(u, wo->hisaddr))
-@@ -1830,7 +1839,8 @@
+@@ -1849,7 +1858,8 @@
       */
      if (demand) {
  	if (go->ouraddr != wo->ouraddr || ho->hisaddr != wo->hisaddr) {
@@ -44,7 +44,7 @@
  	    if (go->ouraddr != wo->ouraddr) {
  		warn("Local IP address changed to %I", go->ouraddr);
  		script_setenv("OLDIPLOCAL", ip_ntoa(wo->ouraddr), 0);
-@@ -1855,7 +1865,8 @@
+@@ -1874,7 +1884,8 @@
  
  	    /* assign a default route through the interface if required */
  	    if (ipcp_wantoptions[f->unit].default_route) 
@@ -54,7 +54,7 @@
  		    default_route_set[f->unit] = 1;
  
  	    /* Make a proxy ARP entry if requested. */
-@@ -1905,7 +1916,8 @@
+@@ -1924,7 +1935,8 @@
  
  	/* assign a default route through the interface if required */
  	if (ipcp_wantoptions[f->unit].default_route) 
@@ -64,7 +64,7 @@
  		default_route_set[f->unit] = 1;
  
  	/* Make a proxy ARP entry if requested. */
-@@ -1983,7 +1995,7 @@
+@@ -2002,7 +2014,7 @@
  	sifnpmode(f->unit, PPP_IP, NPMODE_DROP);
  	sifdown(f->unit);
  	ipcp_clear_addrs(f->unit, ipcp_gotoptions[f->unit].ouraddr,
@@ -73,7 +73,7 @@
      }
  
      /* Execute the ip-down script */
-@@ -1999,16 +2011,25 @@
+@@ -2018,16 +2030,25 @@
   * proxy arp entries, etc.
   */
  static void
@@ -101,8 +101,8 @@
  	cifdefaultroute(unit, ouraddr, hisaddr);
  	default_route_set[unit] = 0;
      }
---- pppd/ipcp.h.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/ipcp.h	2010-08-16 14:26:38.000000000 +0200
+--- pppd/ipcp.h
++++ pppd/ipcp.h
 @@ -70,6 +70,7 @@
      bool old_addrs;		/* Use old (IP-Addresses) option? */
      bool req_addr;		/* Ask peer to send IP address? */
@@ -111,8 +111,8 @@
      bool proxy_arp;		/* Make proxy ARP entry for peer? */
      bool neg_vj;		/* Van Jacobson Compression? */
      bool old_vj;		/* use old (short) form of VJ option? */
---- pppd/pppd.8.orig	2010-08-16 14:26:38.000000000 +0200
-+++ pppd/pppd.8	2010-08-16 14:26:38.000000000 +0200
+--- pppd/pppd.8
++++ pppd/pppd.8
 @@ -121,6 +121,11 @@
  This entry is removed when the PPP connection is broken.  This option
  is privileged if the \fInodefaultroute\fR option has been specified.
@@ -125,7 +125,7 @@
  .B disconnect \fIscript
  Execute the command specified by \fIscript\fR, by passing it to a
  shell, after
-@@ -725,7 +730,12 @@
+@@ -734,7 +739,12 @@
  .TP
  .B nodefaultroute
  Disable the \fIdefaultroute\fR option.  The system administrator who
@@ -139,9 +139,9 @@
  can do so by placing this option in the /etc/ppp/options file.
  .TP
  .B nodeflate
---- pppd/pppd.h.orig	2010-08-16 14:26:38.000000000 +0200
-+++ pppd/pppd.h	2010-08-16 14:26:38.000000000 +0200
-@@ -645,7 +645,7 @@
+--- pppd/pppd.h
++++ pppd/pppd.h
+@@ -667,7 +667,7 @@
  int  cif6addr __P((int, eui64_t, eui64_t));
  				/* Remove an IPv6 address from i/f */
  #endif
@@ -150,18 +150,18 @@
  				/* Create default route through i/f */
  int  cifdefaultroute __P((int, u_int32_t, u_int32_t));
  				/* Delete default route through i/f */
---- pppd/sys-linux.c.orig	2010-08-16 14:26:38.000000000 +0200
-+++ pppd/sys-linux.c	2010-08-16 14:26:38.000000000 +0200
-@@ -206,6 +206,8 @@
- 
+--- pppd/sys-linux.c
++++ pppd/sys-linux.c
+@@ -207,6 +207,8 @@
  static int	if_is_up;	/* Interface has been marked up */
+ static int	if6_is_up;	/* Interface has been marked up for IPv6, to help differentiate */
  static int	have_default_route;	/* Gateway for default route added */
 +static struct	rtentry old_def_rt;	/* Old default route */
 +static int	default_rt_repl_rest;	/* replace and restore old default rt */
  static u_int32_t proxy_arp_addr;	/* Addr for proxy arp entry added */
  static char proxy_arp_dev[16];		/* Device for proxy arp entry */
  static u_int32_t our_old_addr;		/* for detecting address changes */
-@@ -1544,6 +1546,9 @@
+@@ -1552,6 +1554,9 @@
  	p = NULL;
      }
  
@@ -171,7 +171,7 @@
      SIN_ADDR(rt->rt_dst) = strtoul(cols[route_dest_col], NULL, 16);
      SIN_ADDR(rt->rt_gateway) = strtoul(cols[route_gw_col], NULL, 16);
      SIN_ADDR(rt->rt_genmask) = strtoul(cols[route_mask_col], NULL, 16);
-@@ -1613,20 +1618,51 @@
+@@ -1621,20 +1626,51 @@
  /********************************************************************
   *
   * sifdefaultroute - assign a default route through the address given.
@@ -236,7 +236,7 @@
      }
  
      memset (&rt, 0, sizeof (rt));
-@@ -1641,10 +1677,16 @@
+@@ -1649,10 +1685,16 @@
  
      rt.rt_flags = RTF_UP;
      if (ioctl(sock_fd, SIOCADDRT, &rt) < 0) {
@@ -254,7 +254,7 @@
  
      have_default_route = 1;
      return 1;
-@@ -1675,11 +1717,21 @@
+@@ -1683,11 +1725,21 @@
      rt.rt_flags = RTF_UP;
      if (ioctl(sock_fd, SIOCDELRT, &rt) < 0 && errno != ESRCH) {
  	if (still_ppp()) {
@@ -277,9 +277,9 @@
  
      return 1;
  }
---- pppd/sys-solaris.c.orig	2009-11-16 23:26:07.000000000 +0100
-+++ pppd/sys-solaris.c	2010-08-16 14:26:38.000000000 +0200
-@@ -2036,12 +2036,18 @@
+--- pppd/sys-solaris.c
++++ pppd/sys-solaris.c
+@@ -2039,12 +2039,18 @@
   * sifdefaultroute - assign a default route through the address given.
   */
  int
