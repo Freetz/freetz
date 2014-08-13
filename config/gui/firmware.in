@@ -301,7 +301,8 @@ choice
 
 	config FREETZ_TYPE_FIRMWARE_LABOR
 		bool "FRITZ! Labor"
-		select FREETZ_AVM_VERSION_06_0X
+		select FREETZ_AVM_VERSION_06_0X    if !(FREETZ_TYPE_7390 || FREETZ_TYPE_7490)
+		select FREETZ_AVM_VERSION_06_2X    if  (FREETZ_TYPE_7390 || FREETZ_TYPE_7490)
 		depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
