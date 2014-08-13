@@ -271,7 +271,7 @@ endchoice # "Firmware language" #
 
 choice
 	prompt "Firmware version"
-	default FREETZ_TYPE_FIRMWARE_06_XX
+	default FREETZ_TYPE_FIRMWARE_06_0X
 	default FREETZ_TYPE_FIRMWARE_05_5X
 
 	config FREETZ_TYPE_FIRMWARE_04_XX
@@ -289,14 +289,14 @@ choice
 		select FREETZ_AVM_VERSION_05_5X
 		depends on FREETZ_AVM_HAS_FIRMWARE_05_5X
 
-	config FREETZ_TYPE_FIRMWARE_06_XX
-		bool "FRITZ!OS 06.xx"
-		select FREETZ_AVM_VERSION_06_XX
-		depends on FREETZ_AVM_HAS_FIRMWARE_06_XX
+	config FREETZ_TYPE_FIRMWARE_06_0X
+		bool "FRITZ!OS 06.0x"
+		select FREETZ_AVM_VERSION_06_0X
+		depends on FREETZ_AVM_HAS_FIRMWARE_06_0X
 
 	config FREETZ_TYPE_FIRMWARE_LABOR
 		bool "FRITZ! Labor"
-		select FREETZ_AVM_VERSION_06_XX
+		select FREETZ_AVM_VERSION_06_0X
 		depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
