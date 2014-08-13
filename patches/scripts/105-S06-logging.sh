@@ -1,3 +1,7 @@
+[ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ] || return 0
+
+echo1 "adding /etc/init.d/S06-logging"
+
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/etc/init.d/S06-logging"
 #!/bin/sh
 

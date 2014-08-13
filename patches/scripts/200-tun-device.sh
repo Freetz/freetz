@@ -1,3 +1,5 @@
+[ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ] || return 0
+
 # Create symlink for tun device
 # Kernel version 2.6.28 creates device file in /dev
 # and others in /dev/net.
