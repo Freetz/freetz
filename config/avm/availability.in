@@ -7,7 +7,8 @@ config FREETZ_AVM_HAS_FIRMWARE_04_XX
 	default y		if \
 		! FREETZ_AVM_HAS_FIRMWARE_05_2X && \
 		! FREETZ_AVM_HAS_FIRMWARE_05_5X && \
-		! FREETZ_AVM_HAS_FIRMWARE_06_0X
+		! FREETZ_AVM_HAS_FIRMWARE_06_0X && \
+		! FREETZ_AVM_HAS_FIRMWARE_06_2X
 	default n
 	help
 		Select this if a 04.xx-firmware is available for your box.
@@ -131,6 +132,12 @@ config FREETZ_AVM_HAS_FIRMWARE_06_0X
 	default n
 	help
 		Select this if a Fritz!OS-06.0x based firmware is available for your box.
+
+config FREETZ_AVM_HAS_FIRMWARE_06_2X
+	bool "06.2x-firmware available"		if FREETZ_TYPE_CUSTOM
+	default n
+	help
+		Select this if a Fritz!OS-06.2x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_LABOR
 	bool "Labor-firmware available"		if FREETZ_TYPE_CUSTOM
