@@ -23,3 +23,13 @@ config FREETZ_PACKAGE_PPPD_CHAT
 	default n
 	help
 		Automated conversational script with a modem
+
+config FREETZ_PACKAGE_PPPD_WITH_EAPTLS
+	bool "with EAP-TLS support"
+	depends on FREETZ_PACKAGE_PPPD
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	default n
+	help
+		Adds support for EAP-TLS.
+

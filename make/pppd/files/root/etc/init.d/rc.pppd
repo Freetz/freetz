@@ -1,6 +1,8 @@
 #!/bin/sh
 
-#. /etc/init.d/modlibrc
+. /etc/init.d/modlibrc
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 case $1 in
 	""|load)
@@ -12,25 +14,35 @@ case $1 in
 		#[ ! -e "/tmp/flash/ppp/options" -a ! -e /tmp/flash/ppp/options ] && /mod/etc/default.pppd/pppd_options > /tmp/flash/ppp/options
 
 		[ -e "/tmp/flash/ppp/chap-secrets" -a ! -e /mod/etc/ppp/chap-secrets ] && ln -s /tmp/flash/ppp/chap-secrets /mod/etc/ppp/chap-secrets
-		#[ -e "/tmp/flash/ppp/pap-secrets" -a ! -e /mod/etc/ppp/pap-secrets ] && ln -s /tmp/flash/ppp/pap_secrets /mod/etc/ppp/pap-secrets
+		#[ -e "/tmp/flash/ppp/pap-secrets" -a ! -e /mod/etc/ppp/pap-secrets ] && ln -s /tmp/flash/ppp/pap-secrets /mod/etc/ppp/pap-secrets
 		#[ -e "/tmp/flash/ppp/options" -a ! -e /mod/etc/ppp/options ] && ln -s /tmp/flash/ppp/options /mod/etc/ppp/options
 
 		modreg file pppd 'chap_secrets' 'chap-secrets' 0 "chap_secrets"
+		#modreg file pppd 'pap_secrets' 'pap-secrets' 0 "pap_secrets"
+		#modreg file pppd 'pppd_options' 'options' 0 "pppd_options"
+
+		if [ "$FREETZ_PACKAGE_PPPD_WITH_EAPTLS" == "y" ]; then
+			#[ ! -e "/tmp/flash/ppp/eaptls-client" -a ! -e /tmp/flash/ppp/eaptls-client ] && /mod/etc/default.pppd/eaptls_client > /tmp/flash/ppp/eaptls-client
+			[ ! -e "/tmp/flash/ppp/eaptls-server" -a ! -e /tmp/flash/ppp/eaptls-server ] && /mod/etc/default.pppd/eaptls_server > /tmp/flash/ppp/eaptls-server
+
+			#[ -e "/tmp/flash/ppp/eaptls-client" -a ! -e /mod/etc/ppp/eaptls-client ] && ln -s /tmp/flash/ppp/eaptls-client /mod/etc/ppp/eaptls-client
+			[ -e "/tmp/flash/ppp/eaptls-server" -a ! -e /mod/etc/ppp/eaptls-server ] && ln -s /tmp/flash/ppp/eaptls-server /mod/etc/ppp/eaptls-server
+
+			#modreg file pppd 'eaptls_client' 'eaptls-client' 0 "eaptls_client"
+			modreg file pppd 'eaptls_server' 'eaptls-server' 0 "eaptls_server"
+			modreg file pppd 'ca_crt' 'CA Cert' 0 "ca_crt"
+			modreg file pppd 'crl_pem' 'CRL' 0 "crl_pem"
+			#modreg file pppd 'client_crt' 'Client Cert' 0 "client_crt"
+			#modreg file pppd 'client_key' 'Client Private Key' 0 "client_key"
+			modreg file pppd 'server_crt' 'Server Cert' 0 "server_crt"
+			modreg file pppd 'server_key' 'Server Private Key' 0 "server_key"
+		fi
+
 		modreg daemon --hide pppd
-
-		#deffile='/mod/etc/default.pppd/pap_secrets.def'
-		#[ -r "/tmp/flash/pap_secrets.def" ] && deffile='/tmp/flash/pap_secrets.def'
-		#modreg file 'pap_secrets' 'pap-secrets' 0 "$deffile"
-
-		#deffile='/mod/etc/default.pppd/pppd_options.def'
-		#[ -r "/tmp/flash/pppd_options.def" ] && deffile='/tmp/flash/pppd_options.def'
-		#modreg file 'pppd_options' 'options' 0 "$deffile"
 		;;
 	unload)
 		modunreg file pppd
 		modunreg daemon pppd
-		#modunreg file 'pap_secrets'
-		#modunreg file 'pppd_options'
 		;;
 	*)
 		echo "pppd is only used by ppp, pptp and pptpd." 1>&2

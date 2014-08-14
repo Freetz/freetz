@@ -28,6 +28,13 @@ sec_begin '$(lang de:"Weitere Konfigurationsdateien" en:"Other configuration fil
 cat << EOF
 <ul>
 <li><a href="$(href file pppd chap_secrets)">PPPD: $(lang de:"chap-secrets bearbeiten" en:"edit chap-secrets")</a></li>
+EOF
+if [ "$FREETZ_PACKAGE_PPPD_WITH_EAPTLS" == "y" ]; then
+cat << EOF
+<li><a href="$(href file pppd eaptls_server)">PPPD: $(lang de:"eaptls-server bearbeiten" en:"edit eaptls-server")</a></li>
+EOF
+fi
+cat << EOF
 </ul>
 EOF
 sec_end

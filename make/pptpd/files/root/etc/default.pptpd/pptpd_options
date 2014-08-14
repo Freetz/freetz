@@ -17,11 +17,15 @@ refuse-mschap
 # Challenge Handshake Authentication Protocol, Version 2] authentication.
 require-mschap-v2
 
+# EAP-TLS settings (mutually exclusive to require-mschap-v2)
+#require-eap
+#crl /tmp/flash/ppp/crl.pem
+
 # Encryption
 # Require MPPE 128-bit encryption
-# (note that MPPE requires the use of MSCHAP-V2 during authentication)
+# (note that MPPE requires the use of MSCHAP-V2 or EAP-TLS during authentication)
 mppe required
-#mppe stateless
+mppe stateless
 
 # Network and Routing
 
