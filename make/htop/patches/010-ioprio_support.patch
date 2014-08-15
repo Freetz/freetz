@@ -1,0 +1,271 @@
+--- htop.c
++++ htop.c
+@@ -22,6 +22,7 @@
+ #include "TraceScreen.h"
+ #include "OpenFilesScreen.h"
+ #include "AffinityPanel.h"
++#include "ioprio_syscalls.h"
+ #include "IOPriorityPanel.h"
+ #include "IncSet.h"
+ 
+@@ -856,6 +857,7 @@
+          }
+          break;
+       }
++#if defined(HAVE_IOPRIO_SYSCALLS)
+       case 'i':
+       {
+          Process* p = (Process*) Panel_getSelected(panel);
+@@ -875,6 +877,7 @@
+          refreshTimeout = 0;
+          break;
+       }
++#endif /* HAVE_IOPRIO_SYSCALLS */
+       case 'I':
+       {
+          refreshTimeout = 0;
+--- IOPriority.c
++++ IOPriority.c
+@@ -11,6 +11,8 @@
+ 
+ #include "IOPriority.h"
+ 
++#if defined(HAVE_IOPRIO_SYSCALLS)
++
+ /*{
+ 
+ enum {
+@@ -39,3 +41,4 @@
+ 
+ }*/
+ 
++#endif /* HAVE_IOPRIO_SYSCALLS */
+--- IOPriority.h
++++ IOPriority.h
+@@ -14,6 +14,10 @@
+ */
+ 
+ 
++#include "ioprio_syscalls.h"
++
++#if defined(HAVE_IOPRIO_SYSCALLS)
++
+ enum {
+    IOPRIO_CLASS_NONE,
+    IOPRIO_CLASS_RT,
+@@ -38,6 +42,7 @@
+ #define IOPriority_None IOPriority_tuple(IOPRIO_CLASS_NONE, 0)
+ #define IOPriority_Idle IOPriority_tuple(IOPRIO_CLASS_IDLE, 0)
+ 
++#endif /* HAVE_IOPRIO_SYSCALLS */
+ 
+ 
+ #endif
+--- IOPriorityPanel.c
++++ IOPriorityPanel.c
+@@ -7,6 +7,8 @@
+ 
+ #include "IOPriorityPanel.h"
+ 
++#if defined(HAVE_IOPRIO_SYSCALLS)
++
+ /*{
+ #include "Panel.h"
+ #include "IOPriority.h"
+@@ -41,3 +43,5 @@
+ IOPriority IOPriorityPanel_getIOPriority(Panel* this) {
+    return (IOPriority) ( ((ListItem*) Panel_getSelected(this))->key );
+ }
++
++#endif /* HAVE_IOPRIO_SYSCALLS */
+--- IOPriorityPanel.h
++++ IOPriorityPanel.h
+@@ -9,6 +9,10 @@
+ in the source distribution for its full text.
+ */
+ 
++#include "ioprio_syscalls.h"
++
++#if defined(HAVE_IOPRIO_SYSCALLS)
++
+ #include "Panel.h"
+ #include "IOPriority.h"
+ #include "ListItem.h"
+@@ -17,4 +21,6 @@
+ 
+ IOPriority IOPriorityPanel_getIOPriority(Panel* this);
+ 
++#endif /* HAVE_IOPRIO_SYSCALLS */
++
+ #endif
+--- ioprio_syscalls.h
++++ ioprio_syscalls.h
+@@ -0,0 +1,25 @@
++#ifndef _IOPRIO_SYSCALLS_H_
++#define _IOPRIO_SYSCALLS_H_
++
++#include <sys/syscall.h>
++#include <unistd.h>
++
++#define HAVE_IOPRIO_SYSCALLS 1
++
++#if defined(SYS_ioprio_set)
++# define SYSCALL___ioprio_set SYS_ioprio_set
++#elif defined(_NR_ioprio_set)
++# define SYSCALL___ioprio_set _NR_ioprio_set
++#else
++# undef HAVE_IOPRIO_SYSCALLS
++#endif
++
++#if defined(SYS_ioprio_get)
++# define SYSCALL___ioprio_get SYS_ioprio_get
++#elif defined(_NR_ioprio_get)
++# define SYSCALL___ioprio_get _NR_ioprio_get
++#else
++# undef HAVE_IOPRIO_SYSCALLS
++#endif
++
++#endif /* _IOPRIO_SYSCALLS_H_ */
+--- Process.c
++++ Process.c
+@@ -12,6 +12,8 @@
+ #include "String.h"
+ #include "RichString.h"
+ 
++#include "ioprio_syscalls.h"
++
+ #include <stdio.h>
+ #include <sys/time.h>
+ #include <sys/resource.h>
+@@ -220,7 +222,9 @@
+ #ifdef HAVE_OOM
+    "OOM",
+ #endif
++#if defined(HAVE_IOPRIO_SYSCALLS)
+    "IO_PRIORITY",
++#endif /* HAVE_IOPRIO_SYSCALLS */
+ "*** report bug! ***"
+ };
+ 
+@@ -277,7 +281,9 @@
+ #ifdef HAVE_OOM
+    "    OOM ",
+ #endif
++#if defined(HAVE_IOPRIO_SYSCALLS)
+    "IO ",
++#endif /* HAVE_IOPRIO_SYSCALLS */
+ "*** report bug! ***"
+ };
+ 
+@@ -617,6 +623,7 @@
+    #ifdef HAVE_OOM
+    case OOM: snprintf(buffer, n, Process_pidFormat, this->oom); break;
+    #endif
++#if defined(HAVE_IOPRIO_SYSCALLS)
+    case IO_PRIORITY: {
+       int klass = IOPriority_class(this->ioPriority);
+       if (klass == IOPRIO_CLASS_NONE) {
+@@ -635,6 +642,7 @@
+       }
+       break;
+    }
++#endif /* HAVE_IOPRIO_SYSCALLS */
+    default:
+       snprintf(buffer, n, "- ");
+    }
+@@ -709,14 +717,15 @@
+    return Process_setPriority(this, this->nice + delta);
+ }
+ 
++#if defined(HAVE_IOPRIO_SYSCALLS)
+ IOPriority Process_updateIOPriority(Process* this) {
+-   IOPriority ioprio = syscall(SYS_ioprio_get, IOPRIO_WHO_PROCESS, this->pid);
++   IOPriority ioprio = syscall(SYSCALL___ioprio_get, IOPRIO_WHO_PROCESS, this->pid);
+    this->ioPriority = ioprio;
+    return ioprio;
+ }
+ 
+ bool Process_setIOPriority(Process* this, IOPriority ioprio) {
+-   syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, this->pid, ioprio);
++   syscall(SYSCALL___ioprio_set, IOPRIO_WHO_PROCESS, this->pid, ioprio);
+    return (Process_updateIOPriority(this) == ioprio);
+ }
+ 
+@@ -729,6 +738,7 @@
+ io_priority = (cpu_nice + 20) / 5. -- From ionice(1) man page
+ */
+ #define Process_effectiveIOPriority(p_) (IOPriority_class(p_->ioPriority) == IOPRIO_CLASS_NONE ? IOPriority_tuple(IOPRIO_CLASS_BE, (p_->nice + 20) / 5) : p_->ioPriority)
++#endif /* HAVE_IOPRIO_SYSCALLS */
+ 
+ #ifdef HAVE_LIBHWLOC
+ 
+@@ -891,8 +901,10 @@
+    case OOM:
+       return (p1->oom - p2->oom);
+    #endif
++   #if defined(HAVE_IOPRIO_SYSCALLS)
+    case IO_PRIORITY:
+       return Process_effectiveIOPriority(p1) - Process_effectiveIOPriority(p2);
++   #endif /* HAVE_IOPRIO_SYSCALLS */
+    default:
+       return (p1->pid - p2->pid);
+    }
+--- Process.h
++++ Process.h
+@@ -21,6 +21,7 @@
+ 
+ #include "Object.h"
+ #include "Affinity.h"
++#include "ioprio_syscalls.h"
+ #include "IOPriority.h"
+ #include <sys/types.h>
+ 
+@@ -63,7 +64,9 @@
+    #ifdef HAVE_OOM
+    OOM,
+    #endif
++   #if defined(HAVE_IOPRIO_SYSCALLS)
+    IO_PRIORITY,
++   #endif /* HAVE_IOPRIO_SYSCALLS */
+    LAST_PROCESSFIELD
+ } ProcessField;
+ 
+@@ -101,7 +104,9 @@
+    long int priority;
+    long int nice;
+    long int nlwp;
++   #if defined(HAVE_IOPRIO_SYSCALLS)
+    IOPriority ioPriority;
++   #endif /* HAVE_IOPRIO_SYSCALLS */
+    char starttime_show[8];
+    time_t starttime_ctime;
+ 
+@@ -202,6 +207,7 @@
+ 
+ bool Process_changePriorityBy(Process* this, size_t delta);
+ 
++#if defined(HAVE_IOPRIO_SYSCALLS)
+ IOPriority Process_updateIOPriority(Process* this);
+ 
+ bool Process_setIOPriority(Process* this, IOPriority ioprio);
+@@ -215,6 +221,7 @@
+ extern io_priority;
+ */
+ #define Process_effectiveIOPriority(p_) (IOPriority_class(p_->ioPriority) == IOPRIO_CLASS_NONE ? IOPriority_tuple(IOPRIO_CLASS_BE, (p_->nice + 20) / 5) : p_->ioPriority)
++#endif /* HAVE_IOPRIO_SYSCALLS */
+ 
+ #ifdef HAVE_LIBHWLOC
+ 
+--- ProcessList.c
++++ ProcessList.c
+@@ -791,8 +791,10 @@
+       unsigned long long int lasttimes = (process->utime + process->stime);
+       if (! ProcessList_readStatFile(process, dirname, name, command))
+          goto errorReadingProcess;
++      #if defined(HAVE_IOPRIO_SYSCALLS)
+       if (this->flags & PROCESS_FLAG_IOPRIO)
+          Process_updateIOPriority(process);
++      #endif /* HAVE_IOPRIO_SYSCALLS */
+       float percent_cpu = (process->utime + process->stime - lasttimes) / period * 100.0;
+       process->percent_cpu = MAX(MIN(percent_cpu, cpus*100.0), 0.0);
+       if (isnan(process->percent_cpu)) process->percent_cpu = 0.0;
