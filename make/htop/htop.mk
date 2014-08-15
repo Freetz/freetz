@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.0.2)
+$(call PKG_INIT_BIN, 1.0.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0d01cca8df3349c74569cefebbd9919e
-$(PKG)_SITE:=@SF/htop
+$(PKG)_SOURCE_MD5:=e768b9b55c033d9c1dffda72db3a6ac7
+$(PKG)_SITE:=http://hisham.hm/htop/releases/$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/htop
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/htop
