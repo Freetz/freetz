@@ -361,7 +361,7 @@
  MAXOCTETS=y
  
  INCLUDE_DIRS= -I../include
-@@ -117,6 +120,15 @@
+@@ -117,6 +122,15 @@
  PPPDOBJS += sha1.o
  endif
  
@@ -2960,12 +2960,14 @@
  #define _PATH_IPDOWN	 _ROOT_PATH "/etc/ppp/ip-down"
 --- pppd/plugins/Makefile.linux
 +++ pppd/plugins/Makefile.linux
-@@ -4,6 +4,9 @@
+@@ -4,6 +4,11 @@
  LDFLAGS	= -shared
  INSTALL	= install
  
++#ifdef FREETZ_PACKAGE_PPPD_WITH_EAPTLS
 +# EAP-TLS
 +CFLAGS += -DUSE_EAPTLS=1
++#endif
 +
  DESTDIR = $(INSTROOT)@DESTDIR@
  BINDIR = $(DESTDIR)/sbin
