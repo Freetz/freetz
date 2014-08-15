@@ -987,7 +987,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 			found=0
 			conf=${i%%=*}
 			[ "$conf" != "${conf%%_WITH_*}" ] && continue # skip suboptions
+
 			bn=${conf#FREETZ_LIB_}
+
+			if [ "$FREETZ_KEEP_AVM_UCLIBC" == "y" ]; then
+				# libutil is actually also a uClibc lib, but it's not provided by AVM, so keep installing Freetz version
+				if echo "${bn}" | grep -qE '^(ld_uClibc|libcrypt|libdl|libm|libpthread|librt|libthread_db|libubacktrace|libuClibc)$'; then
+					echo1 "keeping AVM version of uClibc library $bn"
+					continue
+				fi
+			fi
+
 			fn=${bn//_/[-+._]}
 			sizeinfo "$bn"
 			for dn in lib usr/lib usr/lib/freetz usr/lib/xtables; do
@@ -1006,7 +1016,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				sizeinfo lib "$all_files"
 			fi
 		done
-		[ "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
+		[ "$FREETZ_KEEP_AVM_UCLIBC" != "y" -a "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
 
 		echo1 "checking uClibc version"
 		DETECTED_UCLIBC_VER="$(find ${FILESYSTEM_DIR}/lib/libuClibc-*.so | sed -rn 's@.*/.*-(.*)\.so@\1@p')"
