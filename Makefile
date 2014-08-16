@@ -429,7 +429,7 @@ ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 -include include/config/cache.conf.cmd
 
 $(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(CONFIG_IN_CUSTOM) $(PARSE_CONFIG_TOOL) $(deps_config_cache)
-	@mkdir -p include/config include/generated
+	@mkdir -p include/config
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 endif
 
@@ -486,7 +486,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean
-	$(RM) -r .config .config_compressed .config.old .config.cmd .tmpconfig.h include/config include/generated
+	$(RM) -r .config .config_compressed .config.old .config.cmd .tmpconfig.h include/config
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(KERNEL_TARGET_DIR)
 	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
