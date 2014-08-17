@@ -349,19 +349,17 @@
  	$(INSTALL) -d -m 755 $@
 --- pppd/Makefile.linux
 +++ pppd/Makefile.linux
-@@ -78,6 +78,11 @@
+@@ -76,6 +76,9 @@
  # Use libutil
  USE_LIBUTIL=y
  
 +# Enable EAP-TLS authentication (requires libssl and libcrypto)
-+#ifdef FREETZ_PACKAGE_PPPD_WITH_EAPTLS
 +USE_EAPTLS=y
-+#endif
 +
  MAXOCTETS=y
  
  INCLUDE_DIRS= -I../include
-@@ -117,6 +122,15 @@
+@@ -115,6 +118,15 @@
  PPPDOBJS += sha1.o
  endif
  
@@ -2960,14 +2958,16 @@
  #define _PATH_IPDOWN	 _ROOT_PATH "/etc/ppp/ip-down"
 --- pppd/plugins/Makefile.linux
 +++ pppd/plugins/Makefile.linux
-@@ -4,6 +4,11 @@
+@@ -4,6 +4,13 @@
  LDFLAGS	= -shared
  INSTALL	= install
  
-+#ifdef FREETZ_PACKAGE_PPPD_WITH_EAPTLS
-+# EAP-TLS
++# EAP-TLS (this setting should match the one in ../Makefile.linux)
++USE_EAPTLS=y
++
++ifdef USE_EAPTLS
 +CFLAGS += -DUSE_EAPTLS=1
-+#endif
++endif
 +
  DESTDIR = $(INSTROOT)@DESTDIR@
  BINDIR = $(DESTDIR)/sbin

@@ -1,0 +1,28 @@
+--- pppd/Makefile.linux
++++ pppd/Makefile.linux
+@@ -132,9 +132,9 @@
+ #LIBS     += -lshadow $(LIBS)
+ endif
+ 
+-ifneq ($(wildcard /usr/include/crypt.h),)
+-CFLAGS  += -DHAVE_CRYPT_H=1
+-LIBS	+= -lcrypt
++ifneq ($(wildcard $(STAGING_DIR)/usr/include/crypt.h),)
++CFLAGS  += -DHAVE_CRYPT_H=1 -I$(STAGING_DIR)/usr/include
++LIBS	+= -lcrypt -L$(STAGING_DIR)/usr/lib
+ endif
+ 
+ ifdef USE_LIBUTIL
+@@ -189,9 +189,9 @@
+ endif
+ 
+ ifdef FILTER
+-ifneq ($(wildcard /usr/include/pcap-bpf.h),)
+-LIBS    += -lpcap
+-CFLAGS  += -DPPP_FILTER
++ifneq ($(wildcard $(STAGING_DIR)/usr/include/pcap-bpf.h),)
++LIBS    += -lpcap -L$(STAGING_DIR)/usr/lib
++CFLAGS  += -DPPP_FILTER -I$(STAGING_DIR)/usr/include
+ endif
+ endif
+ 

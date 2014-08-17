@@ -9,19 +9,16 @@
  
  # Uncomment the next line to enable multilink PPP (enabled by default)
  # Linux distributions: Please leave multilink ENABLED in your builds
-@@ -58,14 +58,16 @@
- # Uncomment the next line to enable the TDB database (enabled by default.)
- # If you enable multilink, then TDB is automatically enabled also.
+@@ -60,12 +60,14 @@
  # Linux distributions: Please leave TDB ENABLED in your builds.
--USE_TDB=y
-+#USE_TDB=y
+ USE_TDB=y
  
 -HAS_SHADOW=y
 +#HAS_SHADOW=y
  #USE_PAM=y
-+#ifdef FREETZ_TARGET_IPV6_SUPPORT
++ifdef FREETZ_USE_INET6
  HAVE_INET6=y
-+#endif
++endif
  
  # Enable plugins
 -PLUGIN=y
@@ -29,23 +26,32 @@
  
  # Enable Microsoft proprietary Callback Control Protocol
  #CBCP=y
-@@ -80,7 +82,7 @@
+@@ -77,13 +79,15 @@
+ USE_LIBUTIL=y
+ 
+ # Enable EAP-TLS authentication (requires libssl and libcrypto)
++ifdef FREETZ_USE_EAPTLS
+ USE_EAPTLS=y
++endif
+ 
+ MAXOCTETS=y
  
  INCLUDE_DIRS= -I../include
  
 -COMPILE_FLAGS= -DHAVE_PATHS_H -DIPX_CHANGE -DHAVE_MMAP
-+COMPILE_FLAGS= -DHAVE_PATHS_H -DHAVE_MMAP
++COMPILE_FLAGS= -DHAVE_PATHS_H              -DHAVE_MMAP
  
  CFLAGS= $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS) '-DDESTDIR="@DESTDIR@"'
  
-@@ -120,10 +122,8 @@
- #LIBS     += -lshadow $(LIBS)
- endif
+--- pppd/plugins/Makefile.linux
++++ pppd/plugins/Makefile.linux
+@@ -5,7 +5,9 @@
+ INSTALL	= install
  
--ifneq ($(wildcard /usr/include/crypt.h),)
- CFLAGS  += -DHAVE_CRYPT_H=1
- LIBS	+= -lcrypt
--endif
+ # EAP-TLS (this setting should match the one in ../Makefile.linux)
++ifdef FREETZ_USE_EAPTLS
+ USE_EAPTLS=y
++endif
  
- ifdef USE_LIBUTIL
- CFLAGS	+= -DHAVE_LOGWTMP=1
+ ifdef USE_EAPTLS
+ CFLAGS += -DUSE_EAPTLS=1

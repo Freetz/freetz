@@ -16,14 +16,6 @@ config FREETZ_PACKAGE_PPPD
 
 		http://www.samba.org/ppp/
 
-config FREETZ_PACKAGE_PPPD_CHAT
-	bool "pppd chat"
-	depends on FREETZ_PACKAGE_PPP
-	select FREETZ_PACKAGE_PPPD
-	default n
-	help
-		Automated conversational script with a modem
-
 config FREETZ_PACKAGE_PPPD_WITH_EAPTLS
 	bool "with EAP-TLS support"
 	depends on FREETZ_PACKAGE_PPPD
@@ -33,3 +25,10 @@ config FREETZ_PACKAGE_PPPD_WITH_EAPTLS
 	help
 		Adds support for EAP-TLS.
 
+config FREETZ_PACKAGE_PPPD_CHAT
+	bool "pppd chat"
+	depends on FREETZ_PACKAGE_PPP
+	select FREETZ_PACKAGE_PPPD
+	default n
+	help
+		Automated conversational script with a modem
