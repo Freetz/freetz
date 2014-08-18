@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.5)
+$(call PKG_INIT_BIN, 0.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ca09d61458974cff90a700aba6120891
+$(PKG)_SOURCE_MD5:=cb6373fd4ccb42eeca3ff406b7fdb8a7
 $(PKG)_SITE:=http://www.zeroflux.org/proj/knock/files
 $(PKG)_KNOCK_BINARY:=$($(PKG)_DIR)/knock
 $(PKG)_KNOCKD_BINARY:=$($(PKG)_DIR)/knockd
