@@ -2,12 +2,13 @@
 
 DAEMON=knock
 DAEMON_BIN=knockd
+DAEMON_CONFIG=/tmp/flash/knock/knockd.conf
+
 . /etc/init.d/modlibrc
 
-
 config() {
-	if [ ! -e "/tmp/flash/knock/knockd.conf" ]; then
-		cat /usr/share/doc/knock/knockd.conf > /tmp/flash/knock/knockd.conf
+	if [ ! -e $DAEMON_CONFIG ]; then
+		modlib_config
 	fi
 }
 
@@ -17,17 +18,16 @@ start() {
 	while [ $((countdown--)) -gt 0 ] && ! ifconfig $KNOCK_INTERFACE > /dev/null 2>&1; do
 		sleep 1
 	done
-	modlib_startdaemon $DAEMON_BIN -d -c /tmp/flash/knock/knockd.conf -i "$KNOCK_INTERFACE"
+	modlib_startdaemon $DAEMON_BIN -d -c $DAEMON_CONFIG -i "$KNOCK_INTERFACE"
 }
 
 case $1 in
 	""|load)
 		[ -d "/tmp/flash/knock" ] || mkdir /tmp/flash/knock
-		config
 
 		modreg cgi 'knock' 'Knock'
 		modreg daemon $DAEMON
-		modreg file knock conf 'config' 0 "knockd_conf"
+		modreg file knock conf '$(lang de:"Konfiguration" en:"Configuration")' 0 "knockd_conf"
 
 		modlib_start $KNOCK_ENABLED
 		;;

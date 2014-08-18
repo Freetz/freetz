@@ -1,24 +1,16 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
-
-check "$KNOCK_ENABLED" yes:auto "*":man
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$KNOCK_ENABLED" "" "" 0
 
 sec_end
 sec_begin 'Port-Knock Server'
 
 cat << EOF
-<h2>$(lang de:"Der Port-Knock Server hört an:" en:"Knockd server listens on:")</h2>
+<h2>$(lang de:"Der Port-Knock Server h&ouml;rt an:" en:"Knockd server listens on:")</h2>
 <p>Interface: <input type="text" name="interface" size="6" maxlength="8" value="$(html "$KNOCK_INTERFACE")"></p>
 EOF
 
