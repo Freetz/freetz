@@ -24,6 +24,7 @@ start() {
 case $1 in
 	""|load)
 		[ -d "/tmp/flash/knock" ] || mkdir /tmp/flash/knock
+		config
 
 		modreg cgi 'knock' 'Knock'
 		modreg daemon $DAEMON
