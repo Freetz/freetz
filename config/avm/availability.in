@@ -147,6 +147,17 @@ config FREETZ_AVM_HAS_FIRMWARE_06_0X
 	help
 		Select this if a Fritz!OS-06.0x based firmware is available for your box.
 
+config FREETZ_AVM_HAS_FIRMWARE_EWE_06_0X
+	bool "06.0x-firmware (EWE edition) available"		if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7360_V1 || \
+			FREETZ_TYPE_7390 \
+		)
+	default n
+	help
+		Select this if an EWE Edition of Fritz!OS-06.0x based firmware is available for your box.
+
 config FREETZ_AVM_HAS_FIRMWARE_06_2X
 	bool "06.2x-firmware available"		if FREETZ_TYPE_CUSTOM
 	default y		if \
