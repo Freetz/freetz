@@ -353,19 +353,20 @@ config FREETZ_MODULE_coda
 
 config FREETZ_MODULE_ext2
 	bool "ext2.ko"
+	depends on ! FREETZ_AVM_HAS_EXT2_BUILTIN # && any kernel version
 	select FREETZ_MODULE_mbcache
 	default n
 
 config FREETZ_MODULE_ext3
 	bool "ext3.ko"
-	depends on ! FREETZ_AVM_HAS_EXT3
+	depends on ! FREETZ_AVM_HAS_EXT3_BUILTIN # && any kernel version
 	select FREETZ_MODULE_jbd if FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_mbcache
 	default n
 
 config FREETZ_MODULE_ext4
 	bool "ext4.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on ! FREETZ_AVM_HAS_EXT4_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_crc16
 	select FREETZ_MODULE_jbd2
 	select FREETZ_MODULE_mbcache

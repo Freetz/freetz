@@ -154,14 +154,46 @@ config FREETZ_AVM_HAS_INETD
 	help
 		Select this if the original firmware contains inetd daemon.
 
-# TODO: some firmwares contain ext2 module -> add FREETZ_AVM_HAS_EXT2 and consider it in FREETZ_AUTOMOUNT_EXT2
-
-config FREETZ_AVM_HAS_EXT3
-	bool "Has AVM ext3 built into the kernel"	if FREETZ_TYPE_CUSTOM
-	default y		if FREETZ_AVM_VERSION_05_2X_MIN
+config FREETZ_AVM_HAS_EXT2_BUILTIN
+	bool "Has AVM ext2 built into the kernel"	if FREETZ_TYPE_CUSTOM
+	default y	if FREETZ_AVM_VERSION_05_2X_MIN \
+			&& ( \
+			FREETZ_KERNEL_LAYOUT_AR9  || \
+			FREETZ_KERNEL_LAYOUT_AR10 || \
+			FREETZ_KERNEL_LAYOUT_IKS  || \
+			FREETZ_KERNEL_LAYOUT_UR8  || \
+			FREETZ_KERNEL_LAYOUT_VR9     \
+			)
 	default n
 	help
-		Select this if the original firmware has ext3 module built into the kernel.
+		Select this if the original firmware has support for ext2 filesystem built into the kernel.
+
+config FREETZ_AVM_HAS_EXT3_BUILTIN
+	bool "Has AVM ext3 built into the kernel"	if FREETZ_TYPE_CUSTOM
+	default y	if FREETZ_AVM_VERSION_05_2X_MIN \
+			&& ( \
+			FREETZ_KERNEL_LAYOUT_AR9  || \
+			FREETZ_KERNEL_LAYOUT_AR10 || \
+			FREETZ_KERNEL_LAYOUT_IKS  || \
+			FREETZ_KERNEL_LAYOUT_UR8  || \
+			FREETZ_KERNEL_LAYOUT_VR9     \
+			)
+	default n
+	help
+		Select this if the original firmware has support for ext3 filesystem built into the kernel.
+
+config FREETZ_AVM_HAS_EXT4_BUILTIN
+	bool "Has AVM ext4 built into the kernel"	if FREETZ_TYPE_CUSTOM
+	default y	if FREETZ_AVM_VERSION_05_2X_MIN \
+			&& ( \
+			FREETZ_KERNEL_LAYOUT_AR9  || \
+			FREETZ_KERNEL_LAYOUT_AR10 || \
+			FREETZ_KERNEL_LAYOUT_VR9     \
+			)
+	# disabled in AVM's kernel .config's for IKS & UR8
+	default n
+	help
+		Select this if the original firmware has support for ext4 filesystem built into the kernel.
 
 config FREETZ_AVM_HAS_ISOFS
 	bool "Has AVM isofs kernel module"	if FREETZ_TYPE_CUSTOM

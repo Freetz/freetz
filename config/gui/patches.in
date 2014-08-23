@@ -1194,31 +1194,32 @@ config FREETZ_USBSTORAGE_AUTOMOUNT
 if FREETZ_USBSTORAGE_AUTOMOUNT
 config FREETZ_AUTOMOUNT_EXT2
 	bool "ext2"
-	depends on FREETZ_REPLACE_MODULE_AVAILABLE
+	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT2_BUILTIN) # && any kernel version
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXT
-	select FREETZ_MODULE_ext2
+	select FREETZ_MODULE_ext2 if ! FREETZ_AVM_HAS_EXT2_BUILTIN
 	default n
 	help
-		This adds ext2 module to your firmware.
+		This adds support for ext2 filesystem to your firmware.
 
 config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
-	depends on FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT3
+	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT3_BUILTIN) # && any kernel version
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXT
-	select FREETZ_MODULE_ext3 if ! FREETZ_AVM_HAS_EXT3
-	default y if FREETZ_AVM_HAS_EXT3
+	select FREETZ_MODULE_ext3 if ! FREETZ_AVM_HAS_EXT3_BUILTIN
+	default y if FREETZ_AVM_HAS_EXT3_BUILTIN
 	default n
 	help
-		This adds ext3 module to your firmware.
+		This adds support for ext3 filesystem to your firmware.
 
 config FREETZ_AUTOMOUNT_EXT4
 	bool "ext4"
-	depends on FREETZ_REPLACE_MODULE_AVAILABLE && FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT4_BUILTIN) && FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXT
-	select FREETZ_MODULE_ext4
+	select FREETZ_MODULE_ext4 if ! FREETZ_AVM_HAS_EXT4_BUILTIN
+	default y if FREETZ_AVM_HAS_EXT4_BUILTIN
 	default n
 	help
-		This adds ext4 module to your firmware.
+		This adds support for ext4 filesystem to your firmware.
 
 config FREETZ_AUTOMOUNT_FAT
 	bool "fat"
