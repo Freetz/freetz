@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.42.9)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3f8e41e63b432ba114b33f58674563f7
-$(PKG)_SITE:=@SF/e2fsprogs
+$(call PKG_INIT_BIN, 1.42.11)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=cc267f88eaedf81709b144d1fe722f8c
+$(PKG)_SITE:=@SF/e2fsprogs,@KERNEL/linux/kernel/people/tytso/e2fsprogs/v$($(PKG)_VERSION)
 
 $(PKG)_LIBNAMES_SHORT_ALL := blkid com_err e2p ext2fs ss uuid
 $(PKG)_LIBNAMES_SHORT :=
@@ -84,6 +84,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
 $(PKG)_CONFIGURE_ENV += ac_cv_path_LDCONFIG=$(TARGET_LDCONFIG)
 $(PKG)_CONFIGURE_ENV += gt_cv_func_printf_posix=yes
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,gnu_library_2_1)
 
 # uClibc-0.9.29 yields yes, 0.9.28 to be evaluated, it's however absolutely safe to say no
 $(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
