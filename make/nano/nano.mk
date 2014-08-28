@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.3.2)
+$(call PKG_INIT_BIN, 2.3.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=6451aeae836471cadea8567c44a46c99
+$(PKG)_SOURCE_MD5:=df3d201aecb3155a80633990cc467831
 $(PKG)_SITE:=http://www.nano-editor.org/dist/v2.3
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
