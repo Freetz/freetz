@@ -1,4 +1,4 @@
-if [ "$FREETZ_REPLACE_SSL_LIBS" == "y" ]; then
+if [ "$FREETZ_REPLACE_OPENSSL" == "y" ]; then
 	if [ "$FREETZ_LIB_libcrypto" == "y" ]; then
 		echo1 "removing avm's libcrypto and create symlinks"
 		rm_files "${FILESYSTEM_MOD_DIR}/lib/libcrypto.so.0.9.8"
