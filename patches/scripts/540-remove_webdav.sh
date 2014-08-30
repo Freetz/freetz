@@ -27,8 +27,8 @@ if [ "$FREETZ_PACKAGE_DAVFS2" != "y" -o "$FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF" ==
 		  $sedfile
 		# webdav section, only visible if not disabled
 		modsed 's/if not(g_webdav_enabled)/& or true/' $sedfile
-		# disable value saving 
- 		modsed '/webdavclient.settings.enabled/d' $sedfile
+		# disable value saving
+		modsed '/webdavclient.settings.enabled/d' $sedfile
 	fi
 		
 	echo1 "patching rc.conf"
