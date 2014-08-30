@@ -1,3 +1,10 @@
+comment "Kernel modules (not available, no sources by AVM)"
+	depends on ! FREETZ_REPLACE_MODULE_AVAILABLE
+
+menu "Kernel modules"
+	visible if FREETZ_SHOW_ADVANCED
+	depends on FREETZ_REPLACE_MODULE_AVAILABLE
+
 config FREETZ_MODULES_ALL
 	bool "All Modules"
 	depends on FREETZ_REPLACE_KERNEL
@@ -624,4 +631,6 @@ config FREETZ_MODULE_sunrpc
 		FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
-endmenu
+endmenu # "net" #
+
+endmenu # "Kernel modules" #

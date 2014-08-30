@@ -16,48 +16,14 @@ source config/gui/kernel.in
 source config/gui/avm-plugins.in
 source config/gui/patches.in
 
-
 comment "Additional components ------------------"
-
-menu "Packages"
-	comment "*** not all packages support selected language ***"
-		depends on ! FREETZ_LANG_DE
-
-	config FREETZ_SELECTED_LANG_ONLY
-		bool "Packages supporting selected language only"
-		depends on ! FREETZ_LANG_DE
-		default n
-		help
-			Show only packages supporting the selected language. Packages not
-			supporting your selected language can be installed, but they will be in
-			default language (usually German).
-
-
-	source make/Config.in.generated
-endmenu # "Package selection" #
-
-
-menu "Shared libraries"
-	visible if FREETZ_SHOW_ADVANCED
-	source make/libs/Config.in
-endmenu # "Shared libraries" #
-
-
-comment "Kernel modules (not available, no sources by AVM)"
-	depends on ! FREETZ_REPLACE_MODULE_AVAILABLE
-menu "Kernel modules"
-	visible if FREETZ_SHOW_ADVANCED
-	depends on FREETZ_REPLACE_MODULE_AVAILABLE
-	source config/gui/modules.in
-endmenu # "Kernel modules" #
-
-menu "Busybox applets"
-	visible if FREETZ_SHOW_ADVANCED
-	depends on FREETZ_REPLACE_BUSYBOX
-	source make/busybox/Config.in
-endmenu # "Busybox applets" #
-
+source config/gui/packages.in
+source config/gui/shared-libraries.in
+source config/gui/modules.in
+source config/gui/busybox.in
 source config/gui/external.in
+
+comment "Mod customizations ---------------------"
 source config/gui/freetz.in
 
 comment "Build system ---------------------------"

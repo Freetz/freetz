@@ -1,0 +1,15 @@
+menu "Packages"
+	comment "*** not all packages support selected language ***"
+		depends on ! FREETZ_LANG_DE
+
+	config FREETZ_SELECTED_LANG_ONLY
+		bool "Packages supporting selected language only"
+		depends on ! FREETZ_LANG_DE
+		default n
+		help
+			Show only packages supporting the selected language. Packages not
+			supporting your selected language can be installed, but they will be in
+			default language (usually German).
+
+	source make/Config.in.generated
+endmenu
