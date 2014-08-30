@@ -1,32 +1,3 @@
-###
-###
-###
-
-comment "Build system ---------------------------"
-	depends on FREETZ_SHOW_ADVANCED
-
-menu "Toolchain options"
-	visible if FREETZ_SHOW_EXPERT
-
-	choice
-		prompt "Toolchains"
-		default FREETZ_DOWNLOAD_TOOLCHAIN
-		help
-			Download Toolchain, build toolchain
-
-		config FREETZ_DOWNLOAD_TOOLCHAIN
-			bool "Download and use precompiled toolchains"
-
-		config FREETZ_BUILD_TOOLCHAIN
-			bool "Build own toolchains (requires 4GB diskspace)"
-
-	endchoice # "Toolchains" #
-
-	source config/gui/toolchain.in
-
-endmenu # "Toolchain options" #
-
-
 menu "Build system options"
 	visible if FREETZ_SHOW_ADVANCED
 
@@ -50,7 +21,6 @@ menu "Build system options"
 		help
 			Show uncompressed sizes of libs, packages & modules too"
 
-
 	config FREETZ_JLEVEL
 		int "Number of jobs to run simultaneously"
 		default 2
@@ -71,6 +41,5 @@ menu "Build system options"
 			This is a developer only option.
 			It causes config.cache to be backed up before calling package configure script and after that.
 			This might simplify searching for a missing/wrong config.cache entry.
-
 
 endmenu # "Build system options" #

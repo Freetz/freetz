@@ -1,3 +1,20 @@
+menu "Toolchain options"
+	visible if FREETZ_SHOW_EXPERT
+
+choice
+	prompt "Toolchains"
+	default FREETZ_DOWNLOAD_TOOLCHAIN
+	help
+		Download Toolchain, build toolchain
+
+	config FREETZ_DOWNLOAD_TOOLCHAIN
+		bool "Download and use precompiled toolchains"
+
+	config FREETZ_BUILD_TOOLCHAIN
+		bool "Build own toolchains (requires 4GB diskspace)"
+
+endchoice # "Toolchains" #
+
 comment "Kernel toolchain options ----------------------------------"
 choice
 	prompt "Kernel binutils"
@@ -340,3 +357,5 @@ config FREETZ_TOOLCHAIN_CCACHE
 		The idea came from Erik Thiele wrote the original compilercache program
 		as a bourne shell script. ccache is a re-implementation of Erik's idea
 		in C with more features and better performance.
+
+endmenu # "Toolchain options" #

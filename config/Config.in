@@ -126,7 +126,11 @@ endmenu # "Busybox applets" #
 
 source config/gui/external.in
 source config/gui/freetz.in
-source config/gui/building.in
+
+comment "Build system ---------------------------"
+	depends on FREETZ_SHOW_ADVANCED
+source config/gui/toolchain.in
+source config/gui/build-system.in
 source config/gui/fwmod.in
 source config/gui/strip.in
 source config/mod/download.in
