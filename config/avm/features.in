@@ -350,9 +350,8 @@ config FREETZ_AVM_HAS_PTY_SUPPORT
 
 config FREETZ_AVM_HAS_PRINTK
 	bool "printk support"	if FREETZ_TYPE_CUSTOM
-	default y		if \
-		! (FREETZ_TYPE_3170 && !FREETZ_REPLACE_KERNEL)
-	default n
+	default n		if (FREETZ_TYPE_3170 && !FREETZ_REPLACE_KERNEL)
+	default y
 	help
 		Select this if the original firmware has printk support.
 
