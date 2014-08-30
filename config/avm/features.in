@@ -7,7 +7,15 @@ menu "Hardware / AVM Fritz!OS components"
 
 config FREETZ_AVM_HAS_AHA
 	bool "AHA support (AVM Home Automation)"	if FREETZ_TYPE_CUSTOM
-	default y		if FREETZ_AVM_VERSION_05_5X_MIN && FREETZ_AVM_HAS_DECT
+	default y		if \
+		FREETZ_AVM_VERSION_05_5X_MIN && \
+		( \
+			!FREETZ_TYPE_3270 && \
+			!FREETZ_TYPE_3272 && \
+			!FREETZ_TYPE_3370 && \
+			!FREETZ_TYPE_3390 && \
+			!FREETZ_TYPE_7312 \
+		)
 	default n
 	help
 		Select this if the original firmware contains support for AHA (AVM Home Automation).
