@@ -93,9 +93,13 @@ config FREETZ_AVM_HAS_NAS
 config FREETZ_AVM_HAS_NTFS
 	bool "NTFS support"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_AVM_VERSION_05_2X_MIN || \
 		(FREETZ_TYPE_7270_V1 && FREETZ_AVMPLUGINS_NTFS) || \
-		FREETZ_TYPE_7570
+		FREETZ_TYPE_7570 || \
+		( \
+			FREETZ_AVM_VERSION_05_2X_MIN && \
+			!FREETZ_TYPE_6810 && \
+			!FREETZ_TYPE_7312 \
+		)
 	default n
 	help
 		Select this if the original firmware has NTFS support.
