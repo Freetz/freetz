@@ -14,7 +14,6 @@ cat << EOF | sed -r 's/(.+[^>])$/\1<br>/g'
 <h1>Developers</h1>
 abraxXl
 buehmann
-cuma
 er13
 markuschen
 olistudent
@@ -37,6 +36,7 @@ sf3978
 <p>
 <h1>Retired</h1>
 aholler
+cuma
 johnbock
 kriegaex
 maz
