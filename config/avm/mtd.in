@@ -2,7 +2,7 @@ menu "MTD options"
 	visible if FREETZ_TYPE_CUSTOM
 
 config FREETZ_FILESYSTEM_MTD_SIZE
-	int "FILESYSTEM (64K blocks)"
+	int "FILESYSTEM (64K blocks)" if FREETZ_TYPE_CUSTOM
 	default 768         if \
 		FREETZ_TYPE_3370 || \
 		FREETZ_TYPE_3390 || \
@@ -14,7 +14,7 @@ config FREETZ_FILESYSTEM_MTD_SIZE
 		Number of 64K blocks in the filesystem mtd device.
 
 config FREETZ_KERNEL_CUSTOM_MTD_SIZE
-	int "Kernel (64K blocks)"
+	int "Kernel (64K blocks)" if FREETZ_TYPE_CUSTOM
 	default 59	if FREETZ_TYPE_3170_7170
 	default 119	if FREETZ_TYPE_7270_V1_V2
 	default 122	if FREETZ_TYPE_7570_IAD && ! FREETZ_REPLACE_KERNEL
@@ -24,7 +24,7 @@ config FREETZ_KERNEL_CUSTOM_MTD_SIZE
 		Custom number of 64K blocks in the kernel mtd device.
 
 config FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE
-	int "Filesystem (64K blocks)"
+	int "Filesystem (64K blocks)" if FREETZ_TYPE_CUSTOM
 	help
 		Custom number of 64K blocks in the filesystem mtd device.
 
