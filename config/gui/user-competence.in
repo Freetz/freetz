@@ -1,0 +1,33 @@
+choice
+	prompt "Level of user competence"
+	default FREETZ_USER_LEVEL_BEGINNER
+	help
+		Select your level of competence in regard to such aspects as:
+		- modifying firmware of embedded devices
+		- Linux based operating systems
+		- cross-compiling software
+		- tracking software/hardware problems down
+
+		The higher the selected level (beginner << advanced << expert)
+		the more options for customizing the firmware are shown.
+
+		Please select levels greater than beginner only
+		if you really need to and know what you're doing.
+
+	config FREETZ_USER_LEVEL_BEGINNER
+		bool "Beginner"
+
+	config FREETZ_USER_LEVEL_ADVANCED
+		bool "Advanced"
+		select FREETZ_SHOW_ADVANCED
+
+	config FREETZ_USER_LEVEL_EXPERT
+		bool "Expert"
+		select FREETZ_SHOW_ADVANCED
+		select FREETZ_SHOW_EXPERT
+endchoice
+
+config FREETZ_SHOW_ADVANCED
+	bool
+config FREETZ_SHOW_EXPERT
+	bool
