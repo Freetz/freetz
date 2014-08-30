@@ -1,7 +1,3 @@
-###
-###
-###
-
 menu "Firmware packaging (fwmod) options"
 	visible if FREETZ_SHOW_EXPERT
 
@@ -89,70 +85,3 @@ menu "Firmware packaging (fwmod) options"
 			fwmod is located).
 
 endmenu # Firmware packaging (fwmod) special options
-
-menu "Strip options"
-	visible if FREETZ_SHOW_EXPERT
-
-	config FREETZ_STRIP_BINARIES
-		bool "Strip leftover unstripped binaries/libraries"
-		default y
-		help
-			This option shrinks unstripped binaries/libraries via fwmod script.
-			In case of problems, you can disable it (Default: enabled).
-
-	config FREETZ_STRIP_LIBRARIES
-		bool "Run mklibs on the built root filesystem - EXPERIMENTAL"
-		depends on FREETZ_SHOW_ADVANCED
-		default n
-		help
-			Recompiles all the shared libraries to only include the
-			symbols actually needed to run the binaries on the target.
-
-			Note that this will make the system libraries incompatible
-			with most of the packages that are not selected during the
-			build process.
-
-	choice
-
-		prompt "Strip kernel modules"
-			depends on FREETZ_SHOW_ADVANCED
-			default FREETZ_STRIP_MODULES_FREETZ
-
-		config FREETZ_STRIP_MODULES_NONE
-			bool "none"
-			help
-				Disables shrinking of modules.
-
-		config FREETZ_STRIP_MODULES_FREETZ
-			bool "Freetz only"
-			help
-				Shrinks modules added by Freetz only.
-
-		config FREETZ_STRIP_MODULES_ALL
-			bool "Freetz & AVM - EXPERIMENTAL"
-			help
-				Shrinks all modules. May cause weird effects, like
-				all LEDs flashing. See http://freetz.org/ticket/1249
-
-	endchoice
-
-	config FREETZ_STRIP_SCRIPTS
-		bool "Strip comments from shell scripts - EXPERIMENTAL"
-		default n
-		help
-			Shrinks shell scripts by removing comments and whitespace. Saves up to
-			37K (compressed), depending on firmware and package selection.
-
-			DO NOT USE this option unless you absolutely have to because you are in
-			desparate need for some more space in your firmware image. This mostly
-			applies to hardware with just 4 MB flash memory, maybe 8 MB in some cases.
-
-			ATTENTION: This option has a runtime of 1 minute!
-
-			CAVEAT: The stripping code is a simple heuristic, so theoretically there
-			could be problems caused by mutilated scripts (unlikely, but possible).
-			In case of strange firmware behaviour you might want to disable this patch
-			and retry to see if that fixes the problem. If so, please report to the
-			Freetz team.
-
-endmenu # "Strip options" #
