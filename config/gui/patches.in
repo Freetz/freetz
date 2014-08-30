@@ -127,16 +127,46 @@ config FREETZ_REMOVE_DSL_CONTROL
 		Select this only if you don't use the the DSL modem. See
 		http://wehavemorefun.de/fritzbox/Dsl_control
 
-menu "Remove piglet"
-# TODO: make menu invisible if none of the options is available
-
-	config FREETZ_REMOVE_PIGLET_V1
-	bool "Remove v1 piglet file(s)"
-	depends on \
+config FREETZ_REMOVE_PIGLET_V1_AVAILABLE
+	bool
+	default y if \
 		(FREETZ_TYPE_7170 && ! FREETZ_TYPE_ALIEN_HARDWARE) || \
 		FREETZ_TYPE_W701V_7170 || \
 		FREETZ_TYPE_W900V_7170 || \
 		FREETZ_TYPE_IAD_3331_7170
+	default n
+
+config FREETZ_REMOVE_PIGLET_V2_AVAILABLE
+	bool
+	default y if FREETZ_TYPE_7170
+	default n
+
+config FREETZ_REMOVE_PIGLET_ISDN_AVAILABLE
+	bool
+	default y if \
+		(FREETZ_AVM_HAS_PIGLET_ISDN && FREETZ_REMOVE_DSLD && FREETZ_REMOVE_TELEPHONY) || \
+		FREETZ_TYPE_7113 || FREETZ_TYPE_7113_7170 || \
+		FREETZ_TYPE_7340 || FREETZ_TYPE_7340_7390
+	default n
+
+config FREETZ_REMOVE_PIGLET_POTS_AVAILABLE
+	bool
+	default y if \
+		(FREETZ_AVM_HAS_PIGLET_POTS && FREETZ_REMOVE_DSLD && FREETZ_REMOVE_TELEPHONY) || \
+		FREETZ_TYPE_7113 || FREETZ_TYPE_7113_7170 || \
+		FREETZ_TYPE_7340 || FREETZ_TYPE_7340_7390
+	default n
+
+menu "Remove piglet"
+	depends on \
+		FREETZ_REMOVE_PIGLET_V1_AVAILABLE   || \
+		FREETZ_REMOVE_PIGLET_V2_AVAILABLE   || \
+		FREETZ_REMOVE_PIGLET_ISDN_AVAILABLE || \
+		FREETZ_REMOVE_PIGLET_POTS_AVAILABLE
+
+	config FREETZ_REMOVE_PIGLET_V1
+	bool "Remove v1 piglet file(s)"
+	depends on FREETZ_REMOVE_PIGLET_V1_AVAILABLE
 	help
 		The firmware of this model contains double piglet files. Which instance is needed depends
 		on the hardware version (v1 or v2) of your box. You can safely remove the
@@ -146,7 +176,7 @@ menu "Remove piglet"
 
 	config FREETZ_REMOVE_PIGLET_V2
 	bool "Remove v2 piglet file(s)"
-	depends on FREETZ_TYPE_7170
+	depends on FREETZ_REMOVE_PIGLET_V2_AVAILABLE
 	help
 		The firmware of this model contains double piglet files. Which instance is needed depends
 		on the hardware version (v1 or v2) of your box. You can safely remove the
@@ -155,16 +185,11 @@ menu "Remove piglet"
 		Hint: If "echo $HWRevision_BitFileCount" returns "" (nothing) you could select this patch.
 
 	comment "WARNING: Both (v1 and v2) piglet files are selected for removal."
-		depends on \
-			FREETZ_REMOVE_PIGLET_V1 && \
-			FREETZ_REMOVE_PIGLET_V2
-
+	depends on FREETZ_REMOVE_PIGLET_V1 && FREETZ_REMOVE_PIGLET_V2
 
 	config FREETZ_REMOVE_PIGLET_ISDN
 	bool "Remove ISDN piglet file(s)"
-	depends on (FREETZ_AVM_HAS_PIGLET_ISDN && FREETZ_REMOVE_DSLD && FREETZ_REMOVE_TELEPHONY) || \
-		FREETZ_TYPE_7113 || FREETZ_TYPE_7113_7170 || \
-		FREETZ_TYPE_7340 || FREETZ_TYPE_7340_7390
+	depends on FREETZ_REMOVE_PIGLET_ISDN_AVAILABLE
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -177,9 +202,7 @@ menu "Remove piglet"
 
 	config FREETZ_REMOVE_PIGLET_POTS
 	bool "Remove POTS piglet file(s)"
-	depends on (FREETZ_AVM_HAS_PIGLET_POTS && FREETZ_REMOVE_DSLD && FREETZ_REMOVE_TELEPHONY) || \
-		FREETZ_TYPE_7113 || FREETZ_TYPE_7113_7170 || \
-		FREETZ_TYPE_7340 || FREETZ_TYPE_7340_7390
+	depends on FREETZ_REMOVE_PIGLET_POTS_AVAILABLE
 	help
 		The firmware of this model contains separate piglet files for ISDN and POTS. Depending
 		on your type of fixed line usage you can safely remove the unneeded bitfile(s).
@@ -187,9 +210,7 @@ menu "Remove piglet"
 		Hint: If you are using ISDN fixed line you could select this patch.
 
 	comment "WARNING: Both (ISDN and POTS) piglet files are selected for removal."
-		depends on \
-			FREETZ_REMOVE_PIGLET_ISDN && \
-			FREETZ_REMOVE_PIGLET_POTS
+	depends on FREETZ_REMOVE_PIGLET_ISDN && FREETZ_REMOVE_PIGLET_POTS
 
 endmenu
 
