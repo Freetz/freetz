@@ -231,7 +231,7 @@ config FREETZ_REMOVE_MYFRITZ
 	bool "Remove MyFritz"
 	default n
 	depends on FREETZ_AVM_HAS_MYFRITZ
-	select FREETZ_REMOVE_NAS
+	select FREETZ_REMOVE_NAS if FREETZ_AVM_HAS_NAS
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
 

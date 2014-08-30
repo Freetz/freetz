@@ -85,7 +85,10 @@ config FREETZ_AVM_HAS_ANNEX_A_AND_B
 config FREETZ_AVM_HAS_NAS
 	bool "NAS support"	if FREETZ_TYPE_CUSTOM
 	select FREETZ_BUSYBOX_FEATURE_TAR_OLDGNU_COMPATIBILITY
-	default y		if FREETZ_AVM_VERSION_05_2X_MIN
+	default y		if \
+			FREETZ_AVM_VERSION_05_2X_MIN && \
+			!FREETZ_TYPE_6810 && \
+			!FREETZ_TYPE_7312
 	default n
 	help
 		Select this if you have a box with NAS support.
