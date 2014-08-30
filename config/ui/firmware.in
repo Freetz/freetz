@@ -60,8 +60,8 @@ choice
 		bool "3270 v3"
 
 	config FREETZ_TYPE_3272
-		depends on FREETZ_REAL_DEVELOPER_ONLY
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_AR10
+		select FREETZ_SUPPORT_UNSTABLE
 		bool "3272 - EXPERIMENTAL"
 
 	config FREETZ_TYPE_3370
@@ -95,8 +95,8 @@ choice
 	comment "LTE"
 
 	config FREETZ_TYPE_6810
-		depends on FREETZ_REAL_DEVELOPER_ONLY
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_VR9
+		select FREETZ_SUPPORT_UNSTABLE
 		bool "6810 - EXPERIMENTAL"
 
 	config FREETZ_TYPE_6840
@@ -104,8 +104,8 @@ choice
 		bool "6840"
 
 	config FREETZ_TYPE_6842
-		depends on FREETZ_REAL_DEVELOPER_ONLY
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_VR9
+		select FREETZ_SUPPORT_UNSTABLE
 		bool "6842 - EXPERIMENTAL"
 
 
@@ -166,8 +166,8 @@ choice
 		bool "7270 v3"
 
 	config FREETZ_TYPE_7272
-		depends on FREETZ_REAL_DEVELOPER_ONLY
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_AR10
+		select FREETZ_SUPPORT_UNSTABLE
 		bool "7272 - EXPERIMENTAL"
 
 	config FREETZ_TYPE_7312
@@ -324,8 +324,13 @@ endchoice # "Firmware version" #
 comment "WARNING: VULNERABLE FIRMWARE - USE AT YOUR OWN RISK"
 	depends on FREETZ_TYPE_FIRMWARE_VULNERABLE
 
-comment "WARNING: freetz support UNSTABLE - not suitable for production use"
-	depends on FREETZ_AVM_VERSION_06_2X
+comment "WARNING: freetz support is UNSTABLE - not suitable for production use"
+	depends on FREETZ_SUPPORT_UNSTABLE
+
+config FREETZ_SUPPORT_UNSTABLE
+	bool
+	default y if FREETZ_AVM_VERSION_06_2X
+	default n
 
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
