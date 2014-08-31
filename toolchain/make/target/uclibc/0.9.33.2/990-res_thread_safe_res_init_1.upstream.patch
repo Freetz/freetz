@@ -12,7 +12,7 @@ Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
 ---
 --- libc/inet/resolv.c
 +++ libc/inet/resolv.c
-@@ -3433,6 +3433,7 @@ static void res_sync_func(void)
+@@ -3432,6 +3432,7 @@ static void res_sync_func(void)
  	 */
  }
  
@@ -20,7 +20,7 @@ Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
  static int
  __res_vinit(res_state rp, int preinit)
  {
-@@ -3441,7 +3442,6 @@ __res_vinit(res_state rp, int preinit)
+@@ -3440,7 +3441,6 @@ __res_vinit(res_state rp, int preinit)
  	int m = 0;
  #endif
  
@@ -28,7 +28,7 @@ Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
  	__close_nameservers();
  	__open_nameservers();
  
-@@ -3533,7 +3533,6 @@ __res_vinit(res_state rp, int preinit)
+@@ -3532,7 +3532,6 @@ __res_vinit(res_state rp, int preinit)
  
  	rp->options |= RES_INIT;
  
@@ -36,7 +36,7 @@ Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
  	return 0;
  }
  
-@@ -3583,11 +3582,11 @@ res_init(void)
+@@ -3582,11 +3581,11 @@ res_init(void)
  	if (!_res.id)
  		_res.id = res_randomid();
  
@@ -50,7 +50,7 @@ Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
  	return 0;
  }
  libc_hidden_def(res_init)
-@@ -3688,7 +3687,11 @@ struct __res_state *__resp = &_res;
+@@ -3687,7 +3686,11 @@ struct __res_state *__resp = &_res;
  int
  res_ninit(res_state statp)
  {
