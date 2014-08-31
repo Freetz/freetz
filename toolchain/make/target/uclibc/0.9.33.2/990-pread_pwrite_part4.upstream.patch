@@ -1,0 +1,21 @@
+From 8165f1616a95ecef7b407b11368bfd138889d82c Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 17 Feb 2014 21:35:09 +0000
+Subject: linux: pread: fix __NR___syscall_pread define
+
+We set up __NR_pread to be the right value, but the code then uses
+__NR_pread64 all the time.  Fix it to use __NR_pread as we intended.
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+
+--- libc/sysdeps/linux/common/pread_write.c
++++ libc/sysdeps/linux/common/pread_write.c
+@@ -42,7 +42,7 @@ extern __typeof(pwrite64) __libc_pwrite64;
+ 
+ #include <bits/kernel_types.h>
+ 
+-# define __NR___syscall_pread __NR_pread64
++# define __NR___syscall_pread __NR_pread
+ static __inline__ _syscall5(ssize_t, __syscall_pread, int, fd, void *, buf,
+ 		size_t, count, off_t, offset_hi, off_t, offset_lo)
+ 

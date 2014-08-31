@@ -1,0 +1,392 @@
+From e619d79c98316388638354d79a12ee6d80911bba Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 01 Apr 2013 08:47:08 +0000
+Subject: libc: rename TRUNCATE64_HAS_4_ARGS to SYSCALL_ALIGN_64BIT
+
+The reason truncate64 takes 4 args on some arches is that their ABI
+requires 64bit values to be aligned on register pair boundaries.
+Since this alignment affects more than just truncate64, rename the
+define to properly document its purpose.  This also allows us to
+expand it to the other impacted syscalls (which will be done in a
+follow up commit).
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+(cherry picked from commit e8cc14e59ed3f66b84eedcc6ece65d40540edf47)
+
+--- libc/sysdeps/linux/alpha/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/alpha/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #define __UCLIBC_SLIGHTLY_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/arm/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/arm/bits/uClibc_arch_features.h
+@@ -11,11 +11,11 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
+ #ifdef __ARM_EABI__
+-#define __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++#define __UCLIBC_SYSCALL_ALIGN_64BIT__
+ #else
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ #endif
+ 
+ /* does your target have a broken create_module() ? */
+--- libc/sysdeps/linux/avr32/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/avr32/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/bfin/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/bfin/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/c6x/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/c6x/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/common/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/common/bits/uClibc_arch_features.h
+@@ -14,8 +14,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/common/ftruncate64.c
++++ libc/sysdeps/linux/common/ftruncate64.c
+@@ -36,7 +36,7 @@ int ftruncate64 (int fd, __off64_t length)
+ {
+     uint32_t low = length & 0xffffffff;
+     uint32_t high = length >> 32;
+-#   if defined(__UCLIBC_TRUNCATE64_HAS_4_ARGS__)
++#   if defined(__UCLIBC_SYSCALL_ALIGN_64BIT__)
+     return INLINE_SYSCALL(ftruncate64,
+ 	    4, fd, 0, __LONG_LONG_PAIR (high, low));
+ #   else
+--- libc/sysdeps/linux/common/truncate64.c
++++ libc/sysdeps/linux/common/truncate64.c
+@@ -34,7 +34,7 @@ int truncate64(const char * path, __off64_t length)
+ {
+ 	uint32_t low = length & 0xffffffff;
+ 	uint32_t high = length >> 32;
+-#if defined(__UCLIBC_TRUNCATE64_HAS_4_ARGS__)
++#if defined(__UCLIBC_SYSCALL_ALIGN_64BIT__)
+ 	return INLINE_SYSCALL(truncate64, 4, path, 0,
+ 			__LONG_LONG_PAIR(high, low));
+ #else
+--- libc/sysdeps/linux/cris/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/cris/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #define __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/e1/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/e1/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/frv/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/frv/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/h8300/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/h8300/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/hppa/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/hppa/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/i386/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/i386/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #define __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/i960/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/i960/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #define __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/ia64/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/ia64/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/m68k/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/m68k/bits/uClibc_arch_features.h
+@@ -15,8 +15,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #define __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/microblaze/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/microblaze/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/mips/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/mips/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#define __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#define __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/nios/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/nios/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/nios2/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/nios2/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/powerpc/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/powerpc/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#define __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#define __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/sh/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/sh/bits/uClibc_arch_features.h
+@@ -15,8 +15,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/sh64/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/sh64/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/sparc/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/sparc/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/v850/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/v850/bits/uClibc_arch_features.h
+@@ -12,8 +12,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #undef __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/vax/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/vax/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/x86_64/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/x86_64/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#undef __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#undef __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__
+--- libc/sysdeps/linux/xtensa/bits/uClibc_arch_features.h
++++ libc/sysdeps/linux/xtensa/bits/uClibc_arch_features.h
+@@ -11,8 +11,8 @@
+ /* can your target use syscall6() for mmap ? */
+ #define __UCLIBC_MMAP_HAS_6_ARGS__
+ 
+-/* does your target use syscall4() for truncate64 ? (32bit arches only) */
+-#define __UCLIBC_TRUNCATE64_HAS_4_ARGS__
++/* does your target align 64bit values in register pairs ? (32bit arches only) */
++#define __UCLIBC_SYSCALL_ALIGN_64BIT__
+ 
+ /* does your target have a broken create_module() ? */
+ #undef __UCLIBC_BROKEN_CREATE_MODULE__

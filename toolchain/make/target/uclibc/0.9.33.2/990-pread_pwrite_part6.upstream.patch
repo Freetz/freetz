@@ -1,0 +1,43 @@
+From 525d31e51fca97051978aabd5a6295ffb8f82a17 Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 17 Feb 2014 21:36:30 +0000
+Subject: linux: pread/pwrite: fix 64bit handling
+
+This is a fix similar to 458076d59ef9849f79d27e21b6094b0b3a85fbb4.
+But master has been rewritten heavily, so do a minor backport.
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+
+--- libc/sysdeps/linux/common/pread_write.c
++++ libc/sysdeps/linux/common/pread_write.c
+@@ -43,8 +43,15 @@ extern __typeof(pwrite64) __libc_pwrite64;
+ #include <bits/kernel_types.h>
+ 
+ # define __NR___syscall_pread __NR_pread
++
++#if defined(__UCLIBC_SYSCALL_ALIGN_64BIT__)
++static __inline__ _syscall6(ssize_t, __syscall_pread, int, fd, void *, buf,
++		 size_t, count, int, dummy, off_t, offset_hi, off_t, offset_lo)
++# define __syscall_pread(fd, buf, count, ...) __syscall_pread(fd, buf, count, 0, __VA_ARGS__)
++#else
+ static __inline__ _syscall5(ssize_t, __syscall_pread, int, fd, void *, buf,
+ 		size_t, count, off_t, offset_hi, off_t, offset_lo)
++#endif
+ 
+ ssize_t __libc_pread(int fd, void *buf, size_t count, off_t offset)
+ {
+@@ -75,8 +82,14 @@ weak_alias(__libc_pread64,pread64)
+ #endif
+ 
+ # define __NR___syscall_pwrite __NR_pwrite
++#if defined(__UCLIBC_SYSCALL_ALIGN_64BIT__)
++static __inline__ _syscall6(ssize_t, __syscall_pwrite, int, fd, const void *, buf,
++		size_t, count, int, dummy, off_t, offset_hi, off_t, offset_lo)
++# define __syscall_pwrite(fd, buf, count, ...) __syscall_pwrite(fd, buf, count, 0, __VA_ARGS__)
++#else
+ static __inline__ _syscall5(ssize_t, __syscall_pwrite, int, fd, const void *, buf,
+ 		size_t, count, off_t, offset_hi, off_t, offset_lo)
++#endif
+ 
+ ssize_t __libc_pwrite(int fd, const void *buf, size_t count, off_t offset)
+ {
