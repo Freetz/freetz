@@ -228,8 +228,8 @@ if [ -n "$URLs" ]; then
 				sites[(( num_sites++ ))]=http://ftp.gnu.org/gnu/$subpath
 			elif [ ${url:0:7} == "@KERNEL" ]; then
 				subpath=${url/@KERNEL\//}
-				sites[(( num_sites++ ))]=http://ftp.de.kernel.org/pub/$subpath
-				sites[(( num_sites++ ))]=http://ftp.kernel.org/pub/$subpath
+				sites[(( num_sites++ ))]=https://kernel.org/pub/$subpath
+				sites[(( num_sites++ ))]=ftp://ftp.kernel.org/pub/$subpath
 			elif [ ${url:0:8} == "@TELEKOM" ]; then
 				subpath=${url/@TELEKOM\//}
 				sites[(( num_sites++ ))]=http://www.telekom.de/dlp/eki/downloads/$subpath
