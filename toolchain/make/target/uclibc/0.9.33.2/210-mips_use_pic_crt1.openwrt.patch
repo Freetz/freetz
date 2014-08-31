@@ -1,0 +1,15 @@
+use position independent code for crt1, slightly reduces size of all executables
+
+Signed-off-by: Felix Fietkau <nbd@...>
+
+--- libc/sysdeps/linux/mips/Makefile.arch
++++ libc/sysdeps/linux/mips/Makefile.arch
+@@ -20,6 +20,8 @@ ifneq ($(UCLIBC_HAS_THREADS_NATIVE),y)
+ SSRC += vfork.S clone.S
+ endif
+ 
++CFLAGS-crt1.S += $(PICFLAG)
++
+ ASFLAGS-syscall_error.S += -D_LIBC_REENTRANT
+ 
+ ARCH_HEADERS := sgidefs.h
