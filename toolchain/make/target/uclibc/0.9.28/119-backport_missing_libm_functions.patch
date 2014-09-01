@@ -1,5 +1,5 @@
---- libm/float_wrappers.c	2005-08-18 00:49:41.000000000 +0200
-+++ libm/float_wrappers.c	2010-11-16 00:00:00.000000000 +0100
+--- libm/float_wrappers.c
++++ libm/float_wrappers.c
 @@ -306,7 +306,7 @@
  #ifdef L_ilogbf
  int ilogbf (float x)
@@ -66,8 +66,8 @@
  #ifdef L_scalblnf
  float scalblnf (float x, long exp)
  {
---- libm/Makefile	2005-08-18 00:49:41.000000000 +0200
-+++ libm/Makefile	2010-11-16 00:00:00.000000000 +0100
+--- libm/Makefile
++++ libm/Makefile
 @@ -66,15 +66,16 @@
           w_cosh.c w_drem.c w_exp.c w_fmod.c w_gamma.c w_gamma_r.c\
           w_hypot.c w_j0.c w_j1.c w_jn.c w_lgamma.c w_lgamma_r.c\
@@ -92,8 +92,8 @@
  else
  # This list of math functions was taken from POSIX/IEEE 1003.1b-1993
  CSRC =   w_acos.c w_asin.c s_atan.c w_atan2.c s_ceil.c s_cos.c \
---- libm/s_llrint.c	1970-01-01 01:00:00.000000000 +0100
-+++ libm/s_llrint.c	2010-11-16 00:00:00.000000000 +0100
+--- /dev/null
++++ libm/s_llrint.c
 @@ -0,0 +1,88 @@
 +/* Round argument to nearest integral value according to current rounding
 +   direction.
@@ -183,8 +183,8 @@
 +  return sx ? -result : result;
 +}
 +
---- libm/s_llround.c	1970-01-01 01:00:00.000000000 +0100
-+++ libm/s_llround.c	2010-11-16 00:00:00.000000000 +0100
+--- /dev/null
++++ libm/s_llround.c
 @@ -0,0 +1,74 @@
 +/* Round double value to long long int.
 +   Copyright (C) 1997 Free Software Foundation, Inc.
@@ -260,8 +260,8 @@
 +
 +  return sign * result;
 +}
---- libm/s_lrint.c	1970-01-01 01:00:00.000000000 +0100
-+++ libm/s_lrint.c	2010-11-16 00:00:00.000000000 +0100
+--- /dev/null
++++ libm/s_lrint.c
 @@ -0,0 +1,92 @@
 +/* Round argument to nearest integral value according to current rounding
 +   direction.
@@ -355,8 +355,8 @@
 +
 +  return sx ? -result : result;
 +}
---- libm/s_lround.c	1970-01-01 01:00:00.000000000 +0100
-+++ libm/s_lround.c	2010-11-16 00:00:00.000000000 +0100
+--- /dev/null
++++ libm/s_lround.c
 @@ -0,0 +1,74 @@
 +/* Round double value to long int.
 +   Copyright (C) 1997, 2004 Free Software Foundation, Inc.
@@ -432,8 +432,8 @@
 +
 +  return sign * result;
 +}
---- libm/s_round.c	1970-01-01 01:00:00.000000000 +0100
-+++ libm/s_round.c	2010-11-16 00:00:00.000000000 +0100
+--- /dev/null
++++ libm/s_round.c
 @@ -0,0 +1,91 @@
 +/* Round double to integer away from zero.
 +   Copyright (C) 1997 Free Software Foundation, Inc.

@@ -1,5 +1,5 @@
---- ldso/ldso/dl-elf.c	2005-08-18 00:49:41.000000000 +0200
-+++ ldso/ldso/dl-elf.c	2010-11-14 00:00:00.000000000 +0100
+--- ldso/ldso/dl-elf.c
++++ ldso/ldso/dl-elf.c
 @@ -864,26 +864,3 @@
  {
  	__dl_parse_dynamic_info(dpnt, dynamic_info, debug_addr, load_off);
@@ -27,8 +27,8 @@
 -strong_alias(__dl_iterate_phdr, dl_iterate_phdr);
 -#endif
 -#endif
---- ldso/ldso/dl-hash.c	2005-08-18 00:49:41.000000000 +0200
-+++ ldso/ldso/dl-hash.c	2010-11-14 00:00:00.000000000 +0100
+--- ldso/ldso/dl-hash.c
++++ ldso/ldso/dl-hash.c
 @@ -32,14 +32,6 @@
  
  
@@ -44,8 +44,8 @@
  /*
   * This is the list of modules that are loaded when the image is first
   * started.  As we add more via dlopen, they get added into other
---- ldso/ldso/dl-symbols.c	1970-01-01 01:00:00.000000000 +0100
-+++ ldso/ldso/dl-symbols.c	2010-11-14 00:00:00.000000000 +0100
+--- /dev/null
++++ ldso/ldso/dl-symbols.c
 @@ -0,0 +1,21 @@
 +/*
 + * This contains all symbols shared between
@@ -68,8 +68,8 @@
 +
 +struct elf_resolve *_dl_loaded_modules = NULL;
 +
---- ldso/ldso/ldso.c	2005-08-18 00:49:41.000000000 +0200
-+++ ldso/ldso/ldso.c	2010-11-14 00:00:00.000000000 +0100
+--- ldso/ldso/ldso.c
++++ ldso/ldso/ldso.c
 @@ -66,6 +66,7 @@
  unsigned long attribute_hidden _dl_skip_args = 0;
  const char *_dl_progname = UCLIBC_LDSO;      /* The name of the executable being run */
@@ -78,8 +78,8 @@
  /* Forward function declarations */
  static int _dl_suid_ok(void);
  
---- libc/Makefile	2005-08-18 00:49:48.000000000 +0200
-+++ libc/Makefile	2010-11-14 00:00:00.000000000 +0100
+--- libc/Makefile
++++ libc/Makefile
 @@ -71,6 +71,8 @@
  	done
  	cp $(LIBNAME) shared_$(LIBNAME)
@@ -89,8 +89,8 @@
  	$(RANLIB) $(LIBNAME)
  
  $(LIBNAME_TARGET): $(LIBNAME)
---- libc/misc/elf/dl-core.c	1970-01-01 01:00:00.000000000 +0100
-+++ libc/misc/elf/dl-core.c	2010-11-14 00:00:00.000000000 +0100
+--- /dev/null
++++ libc/misc/elf/dl-core.c
 @@ -0,0 +1,19 @@
 +/*
 + * This contains all symbols and functions to support
@@ -111,8 +111,8 @@
 +/* Include ldso symbols and functions used into static libc */
 +#include "../../../ldso/ldso/dl-symbols.c"
 +#endif
---- libc/misc/elf/dl-iterate-phdr.c	1970-01-01 01:00:00.000000000 +0100
-+++ libc/misc/elf/dl-iterate-phdr.c	2010-11-14 00:00:00.000000000 +0100
+--- /dev/null
++++ libc/misc/elf/dl-iterate-phdr.c
 @@ -0,0 +1,84 @@
 +/* Get loaded objects program headers.
 +   Copyright (C) 2001,2002,2003,2004,2006,2007 Free Software Foundation, Inc.
@@ -198,8 +198,8 @@
 +
 +# endif
 +#endif
---- libc/misc/elf/dl-support.c	1970-01-01 01:00:00.000000000 +0100
-+++ libc/misc/elf/dl-support.c	2010-11-14 00:00:00.000000000 +0100
+--- /dev/null
++++ libc/misc/elf/dl-support.c
 @@ -0,0 +1,38 @@
 +/* Support for dynamic linking code in static libc.
 +   Copyright (C) 1996-2002, 2003, 2004, 2005 Free Software Foundation, Inc.
@@ -239,8 +239,8 @@
 +   /* Get the number of program headers from the aux vect */
 +   _dl_phnum = (size_t) av[AT_PHNUM].a_un.a_val;
 +}
---- libc/misc/elf/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ libc/misc/elf/Makefile	2010-11-14 00:00:00.000000000 +0100
+--- /dev/null
++++ libc/misc/elf/Makefile
 @@ -0,0 +1,49 @@
 +# Makefile for uClibc
 +#
@@ -291,8 +291,8 @@
 +
 +clean:
 +	$(RM) *.[oa] *~ core
---- libc/misc/internals/Makefile	2005-08-18 00:49:48.000000000 +0200
-+++ libc/misc/internals/Makefile	2010-11-14 00:00:00.000000000 +0100
+--- libc/misc/internals/Makefile
++++ libc/misc/internals/Makefile
 @@ -31,7 +31,7 @@
  
  OBJ_LIST=../../obj.misc.internals
@@ -312,8 +312,8 @@
 +
  clean:
  	$(RM) *.[oa] interp.c *~ core
---- libc/misc/internals/__uClibc_main.c	2005-08-18 00:49:48.000000000 +0200
-+++ libc/misc/internals/__uClibc_main.c	2010-11-14 00:00:00.000000000 +0100
+--- libc/misc/internals/__uClibc_main.c
++++ libc/misc/internals/__uClibc_main.c
 @@ -17,6 +17,7 @@
  #include <stdlib.h>
  #include <string.h>
@@ -349,8 +349,8 @@
      /* Make certain getpagesize() gives the correct answer */
      __pagesize = (auxvt[AT_PAGESZ].a_un.a_val)? auxvt[AT_PAGESZ].a_un.a_val : PAGE_SIZE;
  
---- libc/misc/Makefile	2005-08-18 00:49:48.000000000 +0200
-+++ libc/misc/Makefile	2010-11-14 00:00:00.000000000 +0100
+--- libc/misc/Makefile
++++ libc/misc/Makefile
 @@ -25,7 +25,7 @@
  include $(TOPDIR)Rules.mak
  
