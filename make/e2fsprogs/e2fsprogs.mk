@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.42.11)
+$(call PKG_INIT_BIN, 1.42.12)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=cc267f88eaedf81709b144d1fe722f8c
+$(PKG)_SOURCE_MD5:=f54fc83e4c974d4efcb60c29a1a4cd6f
 $(PKG)_SITE:=@SF/e2fsprogs,@KERNEL/linux/kernel/people/tytso/e2fsprogs/v$($(PKG)_VERSION)
 
 $(PKG)_LIBNAMES_SHORT_ALL := blkid com_err e2p ext2fs ss uuid

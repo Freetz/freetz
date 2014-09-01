@@ -9,17 +9,7 @@
  @IMAGER_CMT@E2IMAGE_PROG= e2image
  @IMAGER_CMT@E2IMAGE_MAN= e2image.8
  
-@@ -61,7 +61,8 @@
- PROFILED_TUNE2FS_OBJS=	profiled/tune2fs.o profiled/util.o
- PROFILED_MKLPF_OBJS=	profiled/mklost+found.o
- PROFILED_MKE2FS_OBJS=	profiled/mke2fs.o profiled/util.o profiled/profile.o \
--			profiled/prof_err.o profiled/default_profile.o
-+			profiled/prof_err.o profiled/default_profile.o \
-+			profiled/mk_hugefiles.o
- PROFILED_CHATTR_OBJS=	profiled/chattr.o
- PROFILED_LSATTR_OBJS=	profiled/lsattr.o
- PROFILED_UUIDGEN_OBJS=	profiled/uuidgen.o
-@@ -110,7 +112,7 @@
+@@ -111,7 +113,7 @@
  @PROFILE_CMT@all:: tune2fs.profiled blkid.profiled e2image.profiled \
  	e2undo.profiled mke2fs.profiled dumpe2fs.profiled fsck.profiled \
  	logsave.profiled filefrag.profiled uuidgen.profiled uuidd.profiled \
