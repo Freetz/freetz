@@ -42,7 +42,8 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(FREETYPE_DIR) clean
+	-$(SUBMAKE) -C $(FREETYPE_DIR) distclean
+	$(RM) $(FREETYPE_DIR)/.configured
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/freetype-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ft2build.h \
