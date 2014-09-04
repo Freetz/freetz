@@ -77,12 +77,15 @@ $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GCC_SOURCE) $(GCC_SITE) $(GCC_MD5)
 endif
 
+GCC_PATCHES_ROOT_DIR := $(GCC_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(GCC_VERSION))
+GCC_CONDITIONAL_PATCHES += $(if $(FREETZ_TARGET_GCC_DEFAULT_AS_NEEDED),default-as-needed)
+
 gcc-unpacked: $(GCC_DIR)/.unpacked
 $(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
 	$(RM) -r $(GCC_DIR)
 	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(GCC_SOURCE)
 	set -e; \
-	for i in $(GCC_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(GCC_VERSION))/*.patch; do \
+	for i in $(foreach dir,$(GCC_PATCHES_ROOT_DIR) $(addprefix $(GCC_PATCHES_ROOT_DIR)/,$(strip $(GCC_CONDITIONAL_PATCHES))),$(dir)/*.patch); do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \
 	done
 	for f in $$(find $(GCC_DIR) \( -name "configure" -o -name "config.rpath" \)); do $(call PKG_PREVENT_RPATH_HARDCODING1,$$f) done

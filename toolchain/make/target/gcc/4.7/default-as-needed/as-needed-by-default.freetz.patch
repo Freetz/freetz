@@ -1,0 +1,13 @@
+
+Pass --as-needed by default to the linker.
+
+--- gcc/config/mips/gnu-user.h
++++ gcc/config/mips/gnu-user.h
+@@ -58,6 +58,7 @@
+ #undef LINK_SPEC
+ #define LINK_SPEC \
+  "%(endian_spec) \
++  --as-needed \
+   %{shared:-shared} \
+   %{!shared: \
+     %{!static: \

@@ -170,6 +170,13 @@ choice
 			|| (FREETZ_AVM_GCC_4_9_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 endchoice
 
+config FREETZ_TARGET_GCC_DEFAULT_AS_NEEDED
+	bool
+	default n if FREETZ_TARGET_UCLIBC_0_9_28 || FREETZ_TARGET_UCLIBC_0_9_29
+	default y
+	help
+		Enabling this option changes linker default from '--no-as-needed' to '--as-needed'.
+
 choice
 
 	prompt "Standard C++ Library"
