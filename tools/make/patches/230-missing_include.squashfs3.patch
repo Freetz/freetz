@@ -1,0 +1,10 @@
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -57,6 +57,7 @@
+ #define __LITTLE_ENDIAN LITTLE_ENDIAN
+ #else
+ #include <endian.h>
++#include <sys/sysinfo.h> // get_nprocs()
+ #endif
+ 
+ #include "squashfs_fs.h"
