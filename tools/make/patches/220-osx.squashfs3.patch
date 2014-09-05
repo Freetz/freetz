@@ -1,6 +1,5 @@
-diff -Naur squashfs-tools.orig/mksquashfs.c squashfs-tools/mksquashfs.c
---- squashfs-tools.orig/mksquashfs.c	2012-07-23 06:00:00.000000000 +0200
-+++ squashfs-tools/mksquashfs.c	2012-07-23 06:00:00.000000000 +0200
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
 @@ -3468,10 +3468,15 @@
  		struct pathname *path = paths->path[n];
  
@@ -19,9 +18,8 @@ diff -Naur squashfs-tools.orig/mksquashfs.c squashfs-tools/mksquashfs.c
  			if(match && path->name[i].paths == NULL) {
  				/* match on a leaf component, any subdirectories in the
  				 * filesystem should be excluded */
-diff -Naur squashfs-tools.orig/unsquashfs.c squashfs-tools/unsquashfs.c
---- squashfs-tools.orig/unsquashfs.c	2012-07-23 06:00:00.000000000 +0200
-+++ squashfs-tools/unsquashfs.c	2012-07-23 06:00:00.000000000 +0200
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
 @@ -28,6 +28,9 @@
  #define FALSE 0
  #include <stdio.h>
