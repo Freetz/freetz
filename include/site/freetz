@@ -75,11 +75,12 @@ ac_cv_func_epoll_wait=no
 # rt_tgsigqueueinfo  referenced from libpthread/nptl/sysdeps/unix/sysv/linux/pthread_sigqueue.c
 # perf_event_open    not used/supported by uClibc (as of 0.9.33.x)
 # accept4            supported by uClibc since 0.9.32.x, which provides two implementations: _NR_accept4- and __NR_socketcall-based one
+#                    freetz uses the __NR_socketcall-based one which works on both 2.6.28 and 2.6.32
 #
 # avoid using the corresponding libc-functions in packages compiled using the freetz-toolchain
 # as long as it's not kernel specific (i.e. identical for both 2.6.28 and 2.6.32 based boxes)
 #
-for name in accept4 pthread_sigqueue; do
+for name in pthread_sigqueue; do
 	eval ac_cv_func_$name=no
 done
 
