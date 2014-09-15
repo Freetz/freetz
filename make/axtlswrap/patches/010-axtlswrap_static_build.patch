@@ -1,0 +1,25 @@
+--- config/Config.in
++++ config/Config.in
+@@ -117,6 +117,11 @@
+         axtlswrap is similar to sslwrap - http://www.rickk.com/sslwrap. 
+         It enables SSL for processes that don't have native SSL support.
+ 
++config CONFIG_AXTLSWRAP_STATIC_BUILD
++    depends on CONFIG_AXTLSWRAP
++    bool "Static Build"
++    default n
++
+ config CONFIG_AXHTTPD
+     bool "Enable HTTP/HTTPS Web Server"
+     default y
+--- axtlswrap/Makefile
++++ axtlswrap/Makefile
+@@ -41,7 +41,7 @@
+ TARGET=$(AXTLS_HOME)/$(STAGE)/axtlswrap
+ endif
+ 
+-ifdef CONFIG_HTTP_STATIC_BUILD
++ifdef CONFIG_AXTLSWRAP_STATIC_BUILD
+ LIBS=$(AXTLS_HOME)/$(STAGE)/libaxtls.a
+ else
+ LIBS=-L$(AXTLS_HOME)/$(STAGE) -laxtls
