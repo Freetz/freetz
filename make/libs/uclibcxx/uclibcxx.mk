@@ -1,4 +1,4 @@
-$(call PKG_INIT_LIB, 7c90261eb9e5cff4ea3a4e5580e4f2bc7543cb21, uclibcxx)
+$(call PKG_INIT_LIB, 7c90261eb9e5cff4ea3a4e5580e4f2bc7543cb21)
 $(PKG)_LIB_VERSION:=0.2.5
 $(PKG)_SOURCE:=uClibc++-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=b7b81b8ffa75e6b530b850fddd00e83b
