@@ -58,18 +58,18 @@ $($(PKG)_STAGING_WRAPPER): $($(PKG)_BINARY)
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO)
 
-uclibcxx: $($(PKG)_STAGING_BINARY) $($(PKG)_STAGING_WRAPPER)
+$(pkg): $($(PKG)_STAGING_BINARY) $($(PKG)_STAGING_WRAPPER)
 
-uclibcxx-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
-uclibcxx-clean:
+$(pkg)-clean:
 	-$(SUBMAKE) $(UCLIBCXX_COMMON_MAKE_OPTS) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/*-g++-uc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/uClibc++
 
-uclibcxx-uninstall:
+$(pkg)-uninstall:
 	$(RM) $(UCLIBCXX_TARGET_DIR)/libuClibc++*.so*
 
 $(PKG_FINISH)
