@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.37.1)
+$(call PKG_INIT_BIN, 7.38.0)
 $(PKG)_LIB_VERSION:=4.3.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=95c627abcf6494f5abe55effe7cd6a57
+$(PKG)_SOURCE_MD5:=af6b3c299bd891f43cb5f76c4091b7b4
 $(PKG)_SITE:=http://curl.haxx.se/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src$(if $(FREETZ_PACKAGE_CURL_STATIC),,/.libs)/curl
@@ -37,6 +37,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_ENV += curl_cv_writable_argv=yes
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_cyassl_error_ssl_h)
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
