@@ -113,18 +113,14 @@ $(error Cygwin is not supported! Please use a real Linux environment)
 endif
 
 # git-svn removes empty directories, check for one of them
-ifneq (OK,$(shell [ -d make/mod/files/root/sys ] && echo OK ))
+ifneq (OK,$(shell [ -d make/mod/files/root/sys ] && echo OK))
 $(error The empty directory root/sys is missing! Please do a clean checkout)
 endif
 
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
-ifneq ($(shell $(CHECK_PREREQ_TOOL) \
-	$$(cat .build-prerequisites) \
-	>&2 \
-	&& echo OK\
-),OK)
-$(error Some build prerequisites are missing! Please install the missing packages before trying again)
+ifneq (OK,$(shell $(CHECK_PREREQ_TOOL) $$(cat .build-prerequisites) >&2 && echo OK))
+$(error Some build prerequisites are missing! Please install the missing packages before trying again. See http://freetz.org/wiki/help/howtos/common/install#NotwendigePakete for installation hints)
 endif
 endif
 
