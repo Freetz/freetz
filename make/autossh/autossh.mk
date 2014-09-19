@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4c)
+$(call PKG_INIT_BIN, 1.4d)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_SHA1:=d9a1d5a2987e7e5a444b00e63d6590936da1e1f2
+$(PKG)_SOURCE_SHA1:=27da23c357f8d263aba6ecf3e8792a3552d90e50
 $(PKG)_SITE:=http://www.harding.motd.ca/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
