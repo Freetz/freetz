@@ -1,0 +1,40 @@
+--- configure
++++ configure
+@@ -2610,14 +2610,19 @@
+ # Checks for libraries.
+ # Checks for libmatrixssl.
+ 
++MATRIXSSL_LIB=matrixssl
++if test "$enable_semistatic" = yes; then
++	MATRIXSSL_LIB=matrixsslstatic
++	LIBS="-lpthread $LIBS"
++fi
+ 
+-echo "$as_me:$LINENO: checking for matrixSslOpen in -lmatrixssl" >&5
+-echo $ECHO_N "checking for matrixSslOpen in -lmatrixssl... $ECHO_C" >&6
++echo "$as_me:$LINENO: checking for matrixSslOpen in -l${MATRIXSSL_LIB}" >&5
++echo $ECHO_N "checking for matrixSslOpen in -l${MATRIXSSL_LIB}... $ECHO_C" >&6
+ if test "${ac_cv_lib_matrixssl_matrixSslOpen+set}" = set; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lmatrixssl  $LIBS"
++LIBS="-l${MATRIXSSL_LIB} $LIBS"
+ cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+ _ACEOF
+@@ -2679,11 +2684,11 @@
+ #define HAVE_LIBMATRIXSSL 1
+ _ACEOF
+ 
+-  LIBS="-lmatrixssl $LIBS"
++  LIBS="-l${MATRIXSSL_LIB} $LIBS"
+ 
+ else
+-  { { echo "$as_me:$LINENO: error: You need to have matrixssl installed." >&5
+-echo "$as_me: error: You need to have matrixssl installed." >&2;}
++  { { echo "$as_me:$LINENO: error: You need to have ${MATRIXSSL_LIB} installed." >&5
++echo "$as_me: error: You need to have ${MATRIXSSL_LIB} installed." >&2;}
+    { (exit 1); exit 1; }; }
+ fi
+ 

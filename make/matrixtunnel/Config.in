@@ -11,17 +11,16 @@ config FREETZ_PACKAGE_MATRIXTUNNEL
 		Rudi-Shell.
 
 config FREETZ_PACKAGE_MATRIXTUNNEL_STATIC
-	bool "Create a semistatic binary (link in matrixssl library)"
+	bool "Create semistatic binary (link in matrixssl library only)"
 	depends on FREETZ_PACKAGE_MATRIXTUNNEL
 	default n
 	help
-		Remove dependence on matrixssl library by linking it statically.
+		Eliminate run-time dependency on matrixssl by linking it statically.
 
 config FREETZ_PACKAGE_MATRIXTUNNEL_STATIC_FULL
-	bool "Create a completly static binary (link in all libraries)"
+	bool "Create completely static binary (link in all libraries)"
 	depends on FREETZ_PACKAGE_MATRIXTUNNEL
-	select FREETZ_PACKAGE_MATRIXTUNNEL_STATIC 
+	select FREETZ_PACKAGE_MATRIXTUNNEL_STATIC
 	default n
 	help
-		Build a statically linked binary.
-
+		Create statically linked binary.
