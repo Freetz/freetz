@@ -309,14 +309,14 @@ menu "Override options"
 		default "@AVM/fritzbox.fon_wlan_7390/firmware/english"                  if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_7390 || FREETZ_TYPE_7340_7390) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_0X
 		default "http://download.ewe.de/avm/7390/download"                      if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE_05_5X
 		default "http://download.ewe.de/avm/7390/download"                      if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE_06_0X
-		default "@AVM/fileadmin/user_upload/DE/Labor/Download"                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7390
+#		default "@AVM/fileadmin/user_upload/DE/Labor/Download"                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7390
 		#
 		default "@AVM/Downgrade/FRITZ!Box_7490/deutsch,@1&1/7490"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_05_5X
 		default "@AVM/Downgrade/FRITZ!Box_7490/deutsch,@1&1/7490"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_0X
 		default "@AVM/fritzbox.7490/firmware/deutsch,@1&1/7490"                 if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@AVM/fritzbox.7490/firmware/english"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_0X
 		default "@AVM/fritzbox.7490/firmware/belgium"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN_BE && FREETZ_TYPE_FIRMWARE_06_0X
-		default "@AVM/fileadmin/user_upload/DE/Labor/Download"                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
+#		default "@AVM/fileadmin/user_upload/DE/Labor/Download"                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
 		#
 		default "@AVM/fritzbox.fon_wlan_7570/firmware/english"                  if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
@@ -494,14 +494,14 @@ menu "Override options"
 		default "FRITZ.Box_Fon_WLAN_7390.en-de-es-it-fr.84.06.06.image"         if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_7390 || FREETZ_TYPE_7340_7390) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_0X
 		default "FRITZ.Box_Fon_WLAN_7390.AnnexB.84.05.52.image"                 if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE_05_5X
 		default "FRITZ.Box_Fon_WLAN_7390.AnnexB.84.06.03.image"                 if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE_06_0X
-		default "FRITZ.Box_Fon_WLAN_7390_LabBETA.AnnexB.84.06.10-28634.image"   if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7390
+#		default ""                                                              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7390
 		#
 		default "FRITZ.Box_7490.113.05.59.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_05_5X
 		default "FRITZ.Box_7490.113.06.05.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_0X
 		default "FRITZ.Box_7490.113.06.20.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.04.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_0X
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.06.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN_BE && FREETZ_TYPE_FIRMWARE_06_0X
-		default "FRITZ.Box_7490_Labor.113.06.10-28510.image"                    if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
+#		default ""                                                              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
 		#
 		default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.92.image"          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
@@ -692,8 +692,6 @@ menu "Override options"
 		default "fritzbox-labor_7312-28581.zip"         if FREETZ_TYPE_7312         && FREETZ_TYPE_FIRMWARE_LABOR
 		default "fritzbox-labor_7360-28905.zip"         if FREETZ_TYPE_7360_V2      && FREETZ_TYPE_FIRMWARE_LABOR
 		default "fritzbox-labor_7362_SL-28905.zip"      if FREETZ_TYPE_7362         && FREETZ_TYPE_FIRMWARE_LABOR
-		default "fritzbox-labor_7390-28634.ZIP"         if FREETZ_TYPE_7390         && FREETZ_TYPE_FIRMWARE_LABOR
-		default "fritzbox-labor_7490-28510.zip"         if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR
 		default ""
 
 	config FREETZ_DL_SOURCE_CONTAINER_MD5
@@ -704,8 +702,6 @@ menu "Override options"
 		default "7d7cf28dfc38e5c55bcfa7d3900a191b"      if FREETZ_TYPE_7312         && FREETZ_TYPE_FIRMWARE_LABOR
 		default "e487f4b05fc0df5d0dcdf045fe275c6d"      if FREETZ_TYPE_7360_V2      && FREETZ_TYPE_FIRMWARE_LABOR
 		default "d260f083ff290ca7cdb6c1dc64c5abbd"      if FREETZ_TYPE_7362         && FREETZ_TYPE_FIRMWARE_LABOR
-		default "516b872ba5eddaf9b82ddb706910c349"      if FREETZ_TYPE_7390         && FREETZ_TYPE_FIRMWARE_LABOR
-		default "9ce238f77e759ca04d89f8ad8ca387c0"      if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR
 		default ""
 
 	config FREETZ_DL_ALIEN
