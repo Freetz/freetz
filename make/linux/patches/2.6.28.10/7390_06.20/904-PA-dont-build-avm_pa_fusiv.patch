@@ -1,0 +1,27 @@
+Compiling avm_pa_fusiv.ko fails with
+
+ERROR: "apAddBridgeEntry" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apBridgeCalculateHash" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apAddFlowEntry" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apCalculateHash" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apIpv6AddFlowEntry" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apIpv6CalculateHash" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apArray" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apIpv6DeleteFlowEntry" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apDeleteBridgeEntry" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apDeleteFlowEntry" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apBridgeTable" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "apClassify" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "translateMbuf2Apbuf" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "putCluster" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "translateApbuf2Mbuf" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+ERROR: "wlan_pkt_from_ap_ptr" [net/avm_pa/avm_pa_fusiv.ko] undefined!
+
+--- linux-2.6.28/net/avm_pa/Makefile
++++ linux-2.6.28/net/avm_pa/Makefile
+@@ -7,4 +7,4 @@
+ 
+ obj-y += avm_pa.o 
+ 
+-obj-m += avm_pa_fusiv.o
++#obj-m += avm_pa_fusiv.o
