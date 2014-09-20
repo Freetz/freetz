@@ -33,7 +33,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(POLARSSL12_DIR)/library \
 		VERSION="$(POLARSSL12_VERSION)" \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -I../include" \
+		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -I../include -ffunction-sections -fdata-sections" \
 		OFLAGS="" \
 		AR="$(TARGET_AR)" \
 		shared static

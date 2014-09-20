@@ -15,6 +15,7 @@ $(PKG)_DEPENDS_ON := polarssl12
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,Makefile xrelayd.c)
 
 $(PKG)_CFLAGS := $(TARGET_CFLAGS)
+$(PKG)_CFLAGS += -ffunction-sections -fdata-sections
 $(PKG)_CFLAGS += -Werror-implicit-function-declaration
 $(PKG)_CFLAGS += $(if $(FREETZ_PACKAGE_XRELAYD_GENSTUFF),-DGENSTUFF)
 
@@ -28,6 +29,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(XRELAYD_CFLAGS)" \
 		LD="$(TARGET_CC)" \
+		LDFLAGS="-Wl,--gc-sections" \
 		LIBS="$(if $(FREETZ_PACKAGE_XRELAYD_STATIC_FULL),-static,$(if $(FREETZ_PACKAGE_XRELAYD_STATIC),-Wl$(_comma)-static)) -lpolarssl12 $(if $(FREETZ_PACKAGE_XRELAYD_STATIC_FULL),,-Wl$(_comma)-Bdynamic)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
