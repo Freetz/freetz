@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_MATRIXTUNNEL
 	bool "Matrixtunnel 0.2 (binary only)"
-	select FREETZ_LIB_libmatrixssl
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libmatrixssl if ! FREETZ_PACKAGE_MATRIXTUNNEL_STATIC
+	select FREETZ_LIB_libpthread 
 	default n
 	help
 		SSL tunnel based on matrixssl. Matrixtunnel is a stripped down version
@@ -9,3 +9,19 @@ config FREETZ_PACKAGE_MATRIXTUNNEL
 		your router's websrv or httpd SSL-enabled, offering you the option of
 		remote configuration via WWW or secure remote use of features like
 		Rudi-Shell.
+
+config FREETZ_PACKAGE_MATRIXTUNNEL_STATIC
+	bool "Create a semistatic binary (link in matrixssl library)"
+	depends on FREETZ_PACKAGE_MATRIXTUNNEL
+	default n
+	help
+		Remove dependence on matrixssl library by linking it statically.
+
+config FREETZ_PACKAGE_MATRIXTUNNEL_STATIC_FULL
+	bool "Create a completly static binary (link in all libraries)"
+	depends on FREETZ_PACKAGE_MATRIXTUNNEL
+	select FREETZ_PACKAGE_MATRIXTUNNEL_STATIC 
+	default n
+	help
+		Build a statically linked binary.
+
