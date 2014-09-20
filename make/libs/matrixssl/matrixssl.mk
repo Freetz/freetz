@@ -22,12 +22,16 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		STRIP="$(TARGET_STRIP)"
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl
-	cp $(MATRIXSSL_DIR)/matrixSsl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl
+	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/{include/matrixSsl,lib}
+# install headers and convert all local #include's within them to the global ones
+	for f in matrixSsl.h matrixCommon.h src/matrixConfig.h; do \
+		cat $(MATRIXSSL_DIR)/$$f | $(SED) -r -e 's,(#include[ \t]+)"([^"]+/)?([^"/]+)",\1<matrixSsl/\3>,g' \
+		> $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl/$$(basename $$f); \
+	done
 	ln -sf matrixSsl/matrixSsl.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/matrixSsl.h
-	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
+# install libraries
 	cp $(MATRIXSSL_DIR)/src/libmatrixsslstatic.a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
-	cp -a $(MATRIXSSL_DIR)/src/libmatrixssl.so* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/
+	$(INSTALL_LIBRARY_STRIP)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
