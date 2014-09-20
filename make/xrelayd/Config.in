@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_XRELAYD
 	bool "Xrelayd 0.2.1pre2"
-	select FREETZ_LIB_libpolarssl12
+	select FREETZ_LIB_libpolarssl12 if ! FREETZ_PACKAGE_XRELAYD_STATIC
 	default n
 	help
 		SSL tunnel based on PolarSSL. Xrelayd is a stripped down version of
@@ -20,3 +20,18 @@ config FREETZ_PACKAGE_XRELAYD_GENSTUFF
 	default n
 	help
 		Include support for private key and x509 certificate generation.
+
+config FREETZ_PACKAGE_XRELAYD_STATIC
+	bool "Create semistatic binary (link in polarssl library only)"
+	depends on FREETZ_PACKAGE_XRELAYD
+	default n
+	help
+		Eliminate run-time dependency on polarssl by linking it statically.
+
+config FREETZ_PACKAGE_XRELAYD_STATIC_FULL
+	bool "Create completely static binary (link in all libraries)"
+	depends on FREETZ_PACKAGE_XRELAYD
+	select FREETZ_PACKAGE_XRELAYD_STATIC
+	default n
+	help
+		Create statically linked binary.
