@@ -15,7 +15,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(MATRIXSSL_DIR)/src \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -DLINUX" \
+		CFLAGS="$(TARGET_CFLAGS) $(FPIC) -DLINUX -ffunction-sections -fdata-sections" \
 		LDFLAGS="-pthread" \
 		AR="$(TARGET_AR)" \
 		RANLIB="$(TARGET_RANLIB)" \

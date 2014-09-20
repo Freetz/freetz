@@ -1,0 +1,17 @@
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -92,12 +92,12 @@
+ 
+ DEFS = @DEFS@ -I. -I$(srcdir) -I..
+ CPPFLAGS = @CPPFLAGS@
+-LDFLAGS = @LDFLAGS@
++LDFLAGS = @LDFLAGS@ $(EXTRA_LDFLAGS)
+ matrixtunnel_OBJECTS =  matrixtunnel.o sslSocket.o
+ matrixtunnel_LDADD = $(LDADD)
+ matrixtunnel_DEPENDENCIES = 
+ matrixtunnel_LDFLAGS = 
+-CFLAGS = @CFLAGS@
++CFLAGS = @CFLAGS@ $(EXTRA_CFLAGS)
+ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+ CCLD = $(CC)
+ LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
