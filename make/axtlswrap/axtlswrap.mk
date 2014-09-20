@@ -9,6 +9,9 @@ $(PKG)_CATEGORY:=Unstable
 $(PKG)_BINARY:=$($(PKG)_DIR)/_stage/axtlswrap
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/axtlswrap
 
+# work around problem with patching source with DOS line endings
+$(PKG)_PATCH_PRE_CMDS += $(SED) -i -e 's%\r$$$$%%' axtlswrap/axtlswrap.c
+
 $(PKG)_PATCH_POST_CMDS += cp $(abspath $($(PKG)_MAKE_DIR)/Config.axtls) config/.config;
 
 $(PKG_SOURCE_DOWNLOAD)

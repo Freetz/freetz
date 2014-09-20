@@ -1,0 +1,64 @@
+--- axtlswrap/axtlswrap.c
++++ axtlswrap/axtlswrap.c
+@@ -49,6 +49,10 @@
+ 
+ static int opt_verbose = 0;
+ 
++/* allow setting paths to cert/key (w/o password)*/
++char *opt_keypath = NULL;
++char *opt_certpath = NULL;
++
+ int main(int argc, char *argv[])
+ {
+ 	int log_opts = LOG_PERROR;
+@@ -66,6 +71,20 @@
+ 
+ 	while (argc > 2 && argv[1][0] == '-') 
+     {
++		if (argc > 3 && strcmp(argv[1], "-k") == 0) 
++        {
++			opt_keypath = argv[2];
++			argv += 2;
++			argc -= 2;
++			continue;
++		}
++		if (argc > 3 && strcmp(argv[1], "-c") == 0) 
++        {
++			opt_certpath = argv[2];
++			argv += 2;
++			argc -= 2;
++			continue;
++		}
+ 		if (argc > 3 && strcmp(argv[1], "-t") == 0) 
+         {
+ 			opt_timeout = atoi(argv[2]);
+@@ -94,7 +113,7 @@
+ 	if (argc < 2) 
+     {
+ 		fprintf(stderr, "Usage: axtlswrap [-v] [-q] "
+-                "[-t timeout] command ...\n");
++                "[-t timeout] [-k <key path>] [-c <cert path>] command ...\n");
+ 		return 1;
+ 	}
+ 
+@@ -116,6 +135,20 @@
+ 		return 1;
+ 	}
+ 
++	if (opt_keypath && strlen(opt_keypath) > 0 &&
++		ssl_obj_load(ssl_ctx, SSL_OBJ_RSA_KEY, opt_keypath, NULL) < 0)
++    {
++		syslog(LOG_ERR, "Failed to read key %s",opt_keypath);
++		return 1;
++    	}
++
++	if (opt_certpath && strlen(opt_certpath) > 0 &&
++		ssl_obj_load(ssl_ctx, SSL_OBJ_X509_CERT, opt_certpath, NULL) < 0)
++    {
++		syslog(LOG_ERR, "Failed to read cert %s",opt_certpath);
++		return 1;
++    	}
++
+ 	/* And create an ssl session attached to sslfd */
+ 	ssl = ssl_server_new(ssl_ctx, sslfd);
+ 	if (ssl == NULL) 
