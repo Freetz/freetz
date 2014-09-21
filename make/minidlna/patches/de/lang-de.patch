@@ -1,6 +1,6 @@
 --- scanner.c
 +++ scanner.c
-@@ -162,9 +162,9 @@
+@@ -163,9 +163,9 @@
  		if( date_taken )
  			date_taken[10] = '\0';
  		else
@@ -12,7 +12,7 @@
  
  		if( valid_cache && strcmp(last_date.name, date_taken) == 0 )
  		{
-@@ -274,7 +274,7 @@
+@@ -275,7 +275,7 @@
  				strncpyt(last_artist.name, artist, sizeof(last_artist.name));
  				last_artistAlbum.name[0] = '\0';
  				/* Add this file to the "- All Albums -" container as well */
@@ -21,7 +21,7 @@
  				sprintf(last_artistAlbumAll.parentID, "%s$%llX", last_artist.parentID, (long long)parentID);
  				last_artistAlbumAll.objectID = objectID;
  			}
-@@ -282,18 +282,18 @@
+@@ -283,18 +283,18 @@
  			{
  				last_artistAlbumAll.objectID++;
  			}
@@ -43,7 +43,7 @@
  				//DEBUG DPRINTF(E_DEBUG, L_SCANNER, "Creating cached artist/album item: %s/%s/%X\n", last_artist.name, last_artist.parentID, last_artist.objectID);
  			}
  			sql_exec(db, "INSERT into OBJECTS"
-@@ -315,7 +315,7 @@
+@@ -316,7 +316,7 @@
  				sprintf(last_genre.parentID, MUSIC_GENRE_ID"$%llX", (long long)parentID);
  				strncpyt(last_genre.name, genre, sizeof(last_genre.name));
  				/* Add this file to the "- All Artists -" container as well */
@@ -52,7 +52,7 @@
  				sprintf(last_genreArtistAll.parentID, "%s$%llX", last_genre.parentID, (long long)parentID);
  				last_genreArtistAll.objectID = objectID;
  			}
-@@ -323,17 +323,17 @@
+@@ -324,17 +324,17 @@
  			{
  				last_genreArtistAll.objectID++;
  			}
@@ -73,7 +73,7 @@
  				//DEBUG DPRINTF(E_DEBUG, L_SCANNER, "Creating cached genre/artist item: %s/%s/%X\n", last_genreArtist.name, last_genreArtist.parentID, last_genreArtist.objectID);
  			}
  			sql_exec(db, "INSERT into OBJECTS"
-@@ -526,25 +526,25 @@
+@@ -527,25 +527,25 @@
  {
  	int ret, i;
  	const char *containers[] = { "0","-1",   "root",
@@ -114,7 +114,7 @@
  	ret = sql_exec(db, create_objectTable_sqlite);
 --- upnphttp.c
 +++ upnphttp.c
-@@ -602,24 +602,24 @@
+@@ -603,24 +603,24 @@
  	strcatf(&str,
  		"<HTML><HEAD><TITLE>" SERVER_NAME " " MINIDLNA_VERSION "</TITLE></HEAD>"
  		"<BODY><div style=\"text-align: center\">"
@@ -142,8 +142,17 @@
 -		"<h3>Connected clients</h3>"
 +		"<h3>Verbundene Clients</h3>"
  		"<table border=1 cellpadding=10>"
--		"<tr><td>ID</td><td>Type</td><td>IP Address</td><td>HW Address</td></tr>");
-+		"<tr><td>ID</td><td>Typ</td><td>IP Adresse</td><td>HW Adresse</td></tr>");
+-		"<tr><td>ID</td><td>Type</td><td>IP Address</td><td>HW Address</td><td>Connections</td></tr>");
++		"<tr><td>ID</td><td>Typ</td><td>IP Adresse</td><td>HW Adresse</td><td>Verbindungen</td></tr>");
  	for (i = 0; i < CLIENT_CACHE_SLOTS; i++)
  	{
  		if (!clients[i].addr.s_addr)
+@@ -632,7 +632,7 @@
+ 	}
+ 	strcatf(&str, "</table>");
+ 
+-	strcatf(&str, "<br>%d connection%s currently open<br>", number_of_children, (number_of_children == 1 ? "" : "s"));
++	strcatf(&str, "<br>%d Verbindung%s derzeit offen<br>", number_of_children, (number_of_children == 1 ? "" : "en"));
+ 	strcatf(&str, "</BODY></HTML>\r\n");
+ 
+ 	BuildResp_upnphttp(h, str.data, str.off);
