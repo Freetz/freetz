@@ -1,0 +1,11 @@
+--- src/sslSocket.c.ori	2014-09-21 18:39:48.295273658 +0200
++++ src/sslSocket.c	2014-09-21 18:44:04.707271766 +0200
+@@ -154,7 +154,7 @@
+ 	memset((char *) &addr, 0x0, sizeof(addr));
+ 	addr.sin_family = AF_INET;
+ 	addr.sin_port = htons(port);
+-	bcopy(hent->h_addr, &addr.sin_addr, hent->h_length);
++	memcpy(&addr.sin_addr, hent->h_addr, hent->h_length);
+ 	rc = connect(fd, (struct sockaddr *)&addr, sizeof(addr));
+ #if WIN
+ 	if (rc != 0) {
