@@ -10,6 +10,6 @@ cgi_print_checkbox_p "stor_autorunend" "$MOD_STOR_AUTORUNEND" \
 cgi_print_checkbox_p "stor_killblocker" "$MOD_STOR_KILLBLOCKER" \
 	"$(lang de:"Alle Programme beenden die das Aush&auml;ngen verhindern." en:"Kill all programs blocking unmount.")"
 
-cgi_print_textline_p "stor_prefix" "$MOD_STOR_PREFIX" 20 "$(lang de:"Pr&auml;fix f&uuml;r Mountpoints" en:"Prefix for mountpoints") (uStor): "
+cgi_print_textline_p "stor_prefix" "$MOD_STOR_PREFIX" 20 "$(lang de:"Pr&auml;fix f&uuml;r Mountpoints" en:"Prefix for mountpoints") (UStor): "
 
 sec_end

@@ -77,7 +77,7 @@ find_mnt_name() {
 	local retfind=0
 	local mnt_name=""
 	[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
-	local storage_prefix="${MOD_STOR_PREFIX-uStor}"
+	local storage_prefix="${MOD_STOR_PREFIX-UStor}"
 	[ "$MOD_STOR_PREFIX"=="$storage_prefix" ] || retfind=10 # User defined prefix
 	[ "$MOD_STOR_USELABEL" == "yes" ] && mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
 	if [ -z "$mnt_name" ]; then # Name was generated using prefix and numbers like uStorXY
@@ -85,6 +85,13 @@ find_mnt_name() {
 	else # Name was generated using LABEL
 		retfind=20
 	fi
+
+	# ensure the 1st character of the mount point is an upper-case one
+	# needed to workaround deficiencies of 6.20 firmware series (s. http://freetz.org/ticket/2499 for details)
+	mnt_name=$(echo $mnt_name)                                                         # trim leading and trailing spaces
+	mnt_name="$(echo ${mnt_name:0:1} | tr '[:lower:]' '[:upper:]')${mnt_name:1}"       # (try to) capitalize
+	[ -z "$(echo ${mnt_name:0:1} | tr -d -c '[:upper:]')" ] && mnt_name="U${mnt_name}" # 1st character is still not in upper-case => prefix mnt_name with "U"
+
 	echo $mnt_name
 	return $retfind
 }
