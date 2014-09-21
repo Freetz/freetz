@@ -72,6 +72,9 @@ remove_swap() {
 	return $retval
 }
 
+
+. /etc/init.d/modlibfw # needed for get_avm_firmware_version used in find_mnt_name
+
 # modified name generation for automatic mount point
 find_mnt_name() {
 	local retfind=0
@@ -86,11 +89,13 @@ find_mnt_name() {
 		retfind=20
 	fi
 
+if [ $(get_avm_firmware_version) -ge 610 ]; then
 	# ensure the 1st character of the mount point is an upper-case one
 	# needed to workaround deficiencies of 6.20 firmware series (s. http://freetz.org/ticket/2499 for details)
 	mnt_name=$(echo $mnt_name)                                                         # trim leading and trailing spaces
 	mnt_name="$(echo ${mnt_name:0:1} | tr '[:lower:]' '[:upper:]')${mnt_name:1}"       # (try to) capitalize
 	[ -z "$(echo ${mnt_name:0:1} | tr -d -c '[:upper:]')" ] && mnt_name="U${mnt_name}" # 1st character is still not in upper-case => prefix mnt_name with "U"
+fi
 
 	echo $mnt_name
 	return $retfind
