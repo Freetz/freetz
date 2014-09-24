@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.4.17)
+$(call PKG_INIT_BIN, 1.4.18)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=a227a20a0dd034cd4bb7400806a0a2d0
-$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/file/4091
+$(PKG)_SOURCE_MD5:=8d57342bda53aaee706ef2d02409c4f4
+$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/file/4111
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libccid.so
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PCSC_LITE_USBDROPDIR)/ifd-ccid.bundle/Contents/Linux/libccid.so
