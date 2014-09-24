@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 1.8.11)
+$(call PKG_INIT_BIN, 1.8.12)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=73502ca4ba6526727f9f49c63d805408
-$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/file/3991
+$(PKG)_SOURCE_MD5:=0be8ccfe749314dc8200bddcd2d5fa43
+$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/file/4115
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/pcscd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/pcscd
