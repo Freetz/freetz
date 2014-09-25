@@ -1432,6 +1432,27 @@ config FREETZ_DISABLE_SERIAL_CONSOLE
 		want to use the serial port exclusively with another application,
 		e.g. minicom.
 
+config FREETZ_RESTORE_DEBUG_CFG_SUPPORT
+	bool "Restore support for /var/flash/debug.cfg"
+	depends on !FREETZ_AVM_HAS_DEBUG_CFG_SUPPORT
+	default y
+	help
+		Restores support for /var/flash/debug.cfg removed by AVM
+		for security reasons in Fritz!OS 6.20 (6.0x on some boxes).
+
+config FREETZ_DISABLE_DEBUG_CFG_SUPPORT
+	bool "Disable processing of /var/flash/debug.cfg"
+	depends on FREETZ_AVM_HAS_DEBUG_CFG_SUPPORT
+	default n
+	help
+		Disables processing of /var/flash/debug.cfg while booting.
+
+		Note: /var/flash/debug.cfg is still available, it's however
+		not processed while booting.
+
+		Warning: if selected you won't be able to install/start
+		such 3rd-party extensions like FHEM, LCR Updater, etc.
+
 comment "AVM daemons ----------------------------"
 
 config FREETZ_AVMDAEMON_DISABLE_IGD
