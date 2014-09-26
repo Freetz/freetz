@@ -76,23 +76,43 @@ remove_swap() {
 . /etc/init.d/modlibfw # needed for get_avm_firmware_version used in find_mnt_name
 
 # modified name generation for automatic mount point
+#
+# $1 - block device name (without /dev/ prefix)
+# $2 - medium number (in mount order), ignored by this function
+# $3 - partition number
+#
 find_mnt_name() {
 	local retfind=0
 	local mnt_name=""
-	[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
-	local storage_prefix="${MOD_STOR_PREFIX-UStor}"
-	[ "$MOD_STOR_PREFIX"=="$storage_prefix" ] || retfind=10 # User defined prefix
-	[ "$MOD_STOR_USELABEL" == "yes" ] && mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
-	if [ -z "$mnt_name" ]; then # Name was generated using prefix and numbers like uStorXY
-		mnt_name="$storage_prefix$(echo $1 | sed 's/^..//;s/a/0/;s/b/1/;s/c/2/;s/d/3/;s/e/4/;s/f/5/;s/g/6/;s/h/7/;s/i/8/;s/j/9/')$3"
-	else # Name was generated using LABEL
+
+	local storage_prefix="${MOD_STOR_PREFIX:-UStor}"
+	local dev_idx=$(echo -n ${1:2} | tr '[a-j]' '[0-9]')
+	local part_idx=$3
+	[ $part_idx -gt 9 ] && part_idx=$(echo $((part_idx-10)) | tr "0-5" "A-F") # partition index in HEX
+
+	if [ "$MOD_STOR_NAMING_SCHEME" == "PARTITION_LABEL" ]; then
+		[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
+		mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
+		mnt_name=$(echo $mnt_name) # trim leading, trailing, and multiple spaces in-between
 		retfind=20
+	elif [ "$MOD_STOR_NAMING_SCHEME" == "VENDOR_PRODUCT" ]; then
+		# a slightly modified version of AVMs nicename from the 6.20 firmware series
+		local VENDOR=$(cat /sys/block/$1/device/vendor 2>/dev/null | tr -d ' ' | tr -c "\na-zA-Z0-9" '-')
+		local MODEL=$(cat  /sys/block/$1/device/model  2>/dev/null | tr -d ' ' | tr -c "\na-zA-Z0-9" '-')
+
+		mnt_name="${VENDOR}${VENDOR:+-}${MODEL:-${storage_prefix}}" # build "Vendor-Product" prefix, limit it to 30 characters,
+		mnt_name="${mnt_name:0:30}-${dev_idx}${part_idx}"           # and add "-<device index><partition index>" suffix
+		retfind=30
+	fi
+
+	if [ -z "$mnt_name" ]; then
+		mnt_name="${storage_prefix:0:30}${dev_idx}${part_idx}"
+		retfind=10
 	fi
 
 if [ $(get_avm_firmware_version) -ge 610 ]; then
 	# ensure the 1st character of the mount point is an upper-case one
 	# needed to workaround deficiencies of 6.20 firmware series (s. http://freetz.org/ticket/2499 for details)
-	mnt_name=$(echo $mnt_name)                                                         # trim leading and trailing spaces
 	mnt_name="$(echo ${mnt_name:0:1} | tr '[:lower:]' '[:upper:]')${mnt_name:1}"       # (try to) capitalize
 	[ -z "$(echo ${mnt_name:0:1} | tr -d -c '[:upper:]')" ] && mnt_name="U${mnt_name}" # 1st character is still not in upper-case => prefix mnt_name with "U"
 fi
