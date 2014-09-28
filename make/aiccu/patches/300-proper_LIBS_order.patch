@@ -1,0 +1,16 @@
+
+aiccu build system misuses LDFLAGS variable to collect the libraries to be linked in. In a correct linking rule
+these must follow the object files (fixed by this patch). The proper fix would require renaming LDFLAGS to LIBS
+all over the makefiles of aiccu.
+
+--- unix-console/Makefile
++++ unix-console/Makefile
+@@ -144,7 +144,7 @@
+ all: aiccu
+ 
+ aiccu:	$(OBJS) ${SRCS} ${INCS}
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS)
++	$(CC) $(CFLAGS)            -o $@ $(OBJS) $(LDFLAGS)
+ #ifeq ($(shell echo $(CFLAGS) | grep -c "DEBUG"),0)
+ #ifeq ($(shell echo "$(RPM_OPT_FLAGS)" | wc -c),1)
+ #	strip $@
