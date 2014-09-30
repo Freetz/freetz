@@ -21,6 +21,8 @@ $(PKG)_CONFIGURE_ENV += ac_cv_test_checkforhugeobjects=no
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SQUID_TRANSPARENT),--enable-linux-netfilter,--disable-linux-netfilter)
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
