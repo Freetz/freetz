@@ -8,11 +8,24 @@ sec_begin '$(lang de:"Weboberfl&auml;che" en:"Web interface")'
 cgi_print_radiogroup_service_starttype \
 	"httpd" "$MOD_HTTPD" "$(lang de:"Starttyp der Weboberfl&auml;che" en:"Web interface start type")" "" 1
 
-cgi_print_textline_p "httpd_user" "$MOD_HTTPD_USER" 15 "$(lang de:"Benutzername" en:"Username"):" \
-	'<a href="/cgi-bin/passwd.cgi" target="_blank">$(lang de:"Passwort &auml;ndern" en:"change password")</a>'
+if [ "$MOD_HTTPD_NEWLOGIN" = yes ]; then
+echo "<input type='button' value='$(lang de:"Passwort &auml;ndern" en:"change password")' onclick='window.open(\"/cgi-bin/pwchange.cgi\",\"_self\")'>"
+else
+cgi_print_textline "httpd_user" "$MOD_HTTPD_USER" 15 "$(lang de:"Benutzername" en:"Username"):" \
+	' &nbsp;  <a href="/cgi-bin/passwd.cgi" target="_blank">$(lang de:"Passwort &auml;ndern" en:"change password")</a>'
+fi
 cgi_print_textline_p "httpd_port" "$MOD_HTTPD_PORT" 5 "$(lang de:"Port" en:"Port"):"
 
+cgi_print_checkbox "httpd_newlogin" "$MOD_HTTPD_NEWLOGIN" "$(lang de:"Neue Loginversion mit Session-ID" en:"New login with session id")" "&nbsp; &nbsp;"
+cgi_print_textline "httpd_sessiontimeout" "$MOD_HTTPD_SESSIONTIMEOUT" 5 "$(lang de:"Session-ID Timeout:" en:"Session id timeout:")" "$(lang de:"sek " en:" sec")"
+
 cat << EOF
+<script >
+var el=document.getElementById('httpd_newlogin_yes');
+var eltime=document.getElementById('httpd_sessiontimeout');
+$([ "$MOD_HTTPD_NEWLOGIN" = yes ] || echo "eltime.disabled = true;")
+el.onchange=function(){eltime.disabled = this.checked ? false : true; };
+</script>
 <h2>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h2>
 <p>
 $(lang de:"Eingeh&auml;ngte Partitionen auf" en:"Mounted partitions on"):

@@ -17,6 +17,8 @@ if [ "$result" -ne 0 ]; then
 	fi
 else
 	echo '<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>'
+	echo -n "$MOD_HTTPD_USER$MOD_CGI_PASSWORD" | md5sum | sed 's/[ ]*-.*//' > /tmp/flash/mod/webmd5
+	rm /tmp/*.webcfg
 	echo '<p>$(lang de:"Starte Weboberfl&auml;che neu ..." en:"Restarting webcfg ...")</p>'
 	/mod/etc/init.d/rc.webcfg restart > /dev/null 2>&1
 
