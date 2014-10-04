@@ -1141,10 +1141,10 @@ config FREETZ_PATCH_FREETZMOUNT
 
 		It is highly recommended to select this patch.
 
+if FREETZ_PATCH_FREETZMOUNT && FREETZ_AVM_VERSION_06_2X
 comment "WARNING: FREETZMOUNT is known to be UNSTABLE when used with Fritz!OS 6.20"
-	depends on FREETZ_PATCH_FREETZMOUNT && FREETZ_AVM_VERSION_06_2X
 comment "WARNING: see http://freetz.org/ticket/2499 for details"
-	depends on FREETZ_PATCH_FREETZMOUNT && FREETZ_AVM_VERSION_06_2X
+endif
 
 config FREETZ_USBSTORAGE_AUTOMOUNT
 	bool "Automount filesystems"
