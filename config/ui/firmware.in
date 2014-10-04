@@ -73,7 +73,6 @@ choice
 
 	config FREETZ_TYPE_3490
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_VR9
-		select FREETZ_SUPPORT_UNSTABLE
 		bool "3490 - EXPERIMENTAL"
 
 	comment "Fon"
@@ -99,7 +98,6 @@ choice
 
 	config FREETZ_TYPE_6810
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_VR9
-		select FREETZ_SUPPORT_UNSTABLE
 		bool "6810 - EXPERIMENTAL"
 
 	config FREETZ_TYPE_6840
@@ -108,7 +106,6 @@ choice
 
 	config FREETZ_TYPE_6842
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_VR9
-		select FREETZ_SUPPORT_UNSTABLE
 		bool "6842 - EXPERIMENTAL"
 
 
@@ -325,14 +322,6 @@ endchoice # "Firmware version" #
 
 comment "WARNING: VULNERABLE FIRMWARE - USE AT YOUR OWN RISK"
 	depends on FREETZ_TYPE_FIRMWARE_VULNERABLE
-
-comment "WARNING: freetz support is UNSTABLE - not suitable for production use"
-	depends on FREETZ_SUPPORT_UNSTABLE
-
-config FREETZ_SUPPORT_UNSTABLE
-	bool
-	default y if FREETZ_AVM_VERSION_06_2X
-	default n
 
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
