@@ -81,7 +81,6 @@ remove_swap() {
 # $2 - partition number
 #
 find_mnt_name() {
-	local retfind=0
 	local mnt_name=""
 
 	local storage_prefix="${MOD_STOR_PREFIX:-UStor}"
@@ -93,7 +92,6 @@ find_mnt_name() {
 		[ "$2" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$2"
 		mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
 		mnt_name=$(echo $mnt_name) # trim leading, trailing, and multiple spaces in-between
-		retfind=20
 	elif [ "$MOD_STOR_NAMING_SCHEME" == "VENDOR_PRODUCT" ]; then
 		# a slightly modified version of AVMs nicename from the 6.20 firmware series
 		local VENDOR=$(cat /sys/block/$1/device/vendor 2>/dev/null | tr -d ' ' | tr -c "\na-zA-Z0-9" '-')
@@ -101,12 +99,10 @@ find_mnt_name() {
 
 		mnt_name="${VENDOR}${VENDOR:+-}${MODEL:-${storage_prefix}}" # build "Vendor-Product" prefix, limit it to 30 characters,
 		mnt_name="${mnt_name:0:30}-${dev_idx}${part_idx}"           # and add "-<device index><partition index>" suffix
-		retfind=30
 	fi
 
 	if [ -z "$mnt_name" ]; then
 		mnt_name="${storage_prefix:0:30}${dev_idx}${part_idx}"
-		retfind=10
 	fi
 
 if [ $(get_avm_firmware_version) -ge 610 ]; then
@@ -117,7 +113,6 @@ if [ $(get_avm_firmware_version) -ge 610 ]; then
 fi
 
 	echo $mnt_name
-	return $retfind
 }
 
 # mount according to type of filesystem
