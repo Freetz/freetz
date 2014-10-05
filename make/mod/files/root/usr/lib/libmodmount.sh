@@ -174,24 +174,20 @@ do_mount_locked() {
 	[ $# -ge 3 ] && local mnt_part_num=$3 || return 1
 	local mnt_blk_dev=${mnt_dev##/dev/}
 	local mnt_main_dev=$(echo $mnt_blk_dev | sed -e 's#\(.\{0,3\}\).*#\1#g')
-	local mnt_med_num=0
 	local mnt_name
 	local mnt_path
 	local fs_type
 
 	mount | grep -q "$mnt_dev on /var/media/" && return 0                      # device already mounted
 
-	# TODO: while loop is completely unnecessary as find_mnt_name ignores the 2nd parameter
-	while [ $mnt_med_num -le 9 ]; do                                           # sda1...sda9
-		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_part_num) # find mount name
-		mnt_path=$FTPDIR/$mnt_name
-		if [ ! -d $mnt_path ]; then
-			log_freetz notice "Mounting device $mnt_dev ... "
-			mkdir -p $mnt_path
-			break
-		fi
-		let mnt_med_num++
-	done
+	mnt_name=$(find_mnt_name $mnt_main_dev $mnt_part_num)
+	mnt_path=$FTPDIR/$mnt_name
+	log_freetz notice "Mounting device $mnt_dev at $mnt_path ... "
+	if [ ! -d $mnt_path ]; then
+		mkdir -p $mnt_path
+	else
+		log_freetz notice "$mnt_path already exists, after mounting $mnt_dev its contents (if any) will become invisible ... "
+	fi
 
 	chmod 755 $FTPDIR                                                          # chmod for ftp top directory
 	local old_umask=$(umask)                                                   # store actual umask
