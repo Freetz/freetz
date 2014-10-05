@@ -198,9 +198,11 @@ do_mount_locked() {
 		fi
 		let mnt_med_num++
 	done
+
 	chmod 755 $FTPDIR                                                          # chmod for ftp top directory
 	local old_umask=$(umask)                                                   # store actual umask
 	umask 0
+
 	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID)             # FREETZ mount
 	local err_fs_mount=$?
 
@@ -214,8 +216,9 @@ do_mount_locked() {
 		fi
 	fi
 
+	umask $old_umask                                                           # restore umask
+
 	if [ $err_fs_mount -eq 0 ]; then
-		umask $old_umask
 		eventadd 140 "$mnt_name ($mnt_dev)"
 		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully ($fs_type)"
 		if [ -x $rcftpd ]; then                                                   # start/enable ftpd
@@ -287,7 +290,6 @@ do_mount_locked() {
 			mnt_failure=1
 			;;
 		esac
-		umask $old_umask
 		rmdir $mnt_path
 	fi
 
