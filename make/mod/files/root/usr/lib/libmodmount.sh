@@ -184,7 +184,10 @@ do_mount_locked() {
 	local mnt_name
 	local mnt_path
 	local fs_type
+
 	mount | grep -q "$mnt_dev on /var/media/" && return 0                      # device already mounted
+
+	# TODO: while loop is completely unnecessary as find_mnt_name ignores the 2nd parameter
 	while [ $mnt_med_num -le 9 ]; do                                           # sda1...sda9
 		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_med_num $mnt_part_num) # find mount name
 		mnt_path=$FTPDIR/$mnt_name
@@ -196,7 +199,7 @@ do_mount_locked() {
 		let mnt_med_num++
 	done
 	chmod 755 $FTPDIR                                                          # chmod for ftp top directory
-	local old_umask=$(umask)                                                   # store actual mask
+	local old_umask=$(umask)                                                   # store actual umask
 	umask 0
 	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID)             # FREETZ mount
 	local err_fs_mount=$?
