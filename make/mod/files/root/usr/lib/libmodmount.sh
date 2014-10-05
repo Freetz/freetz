@@ -78,8 +78,7 @@ remove_swap() {
 # modified name generation for automatic mount point
 #
 # $1 - block device name (without /dev/ prefix)
-# $2 - medium number (in mount order), ignored by this function
-# $3 - partition number
+# $2 - partition number
 #
 find_mnt_name() {
 	local retfind=0
@@ -87,11 +86,11 @@ find_mnt_name() {
 
 	local storage_prefix="${MOD_STOR_PREFIX:-UStor}"
 	local dev_idx=$(echo -n ${1:2} | tr '[a-j]' '[0-9]')
-	local part_idx=$3
+	local part_idx=$2
 	[ $part_idx -gt 9 ] && part_idx=$(echo $((part_idx-10)) | tr "0-5" "A-F") # partition index in HEX
 
 	if [ "$MOD_STOR_NAMING_SCHEME" == "PARTITION_LABEL" ]; then
-		[ "$3" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$3"
+		[ "$2" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$2"
 		mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
 		mnt_name=$(echo $mnt_name) # trim leading, trailing, and multiple spaces in-between
 		retfind=20
@@ -189,7 +188,7 @@ do_mount_locked() {
 
 	# TODO: while loop is completely unnecessary as find_mnt_name ignores the 2nd parameter
 	while [ $mnt_med_num -le 9 ]; do                                           # sda1...sda9
-		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_med_num $mnt_part_num) # find mount name
+		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_part_num) # find mount name
 		mnt_path=$FTPDIR/$mnt_name
 		if [ ! -d $mnt_path ]; then
 			log_freetz notice "Mounting device $mnt_dev ... "
