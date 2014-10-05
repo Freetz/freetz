@@ -184,9 +184,9 @@ do_mount_locked() {
 	local mnt_name
 	local mnt_path
 	local fs_type
-	mount | grep -q "$mnt_dev on /var/media/" && return 0                     # device already mounted
-	while [ $mnt_med_num -le 9 ]; do                                          # sda1...sda9
-		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_med_num $mnt_part_num)    # find name
+	mount | grep -q "$mnt_dev on /var/media/" && return 0                      # device already mounted
+	while [ $mnt_med_num -le 9 ]; do                                           # sda1...sda9
+		mnt_name=$(find_mnt_name $mnt_main_dev $mnt_med_num $mnt_part_num) # find mount name
 		mnt_path=$FTPDIR/$mnt_name
 		if [ ! -d $mnt_path ]; then
 			log_freetz notice "Mounting device $mnt_dev ... "
@@ -195,10 +195,10 @@ do_mount_locked() {
 		fi
 		let mnt_med_num++
 	done
-	chmod 755 $FTPDIR                                                         # chmod for ftp top directory
-	local old_umask=$(umask)                                                  # store actual mask
+	chmod 755 $FTPDIR                                                          # chmod for ftp top directory
+	local old_umask=$(umask)                                                   # store actual mask
 	umask 0
-	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID)            # FREETZ mount
+	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID)             # FREETZ mount
 	local err_fs_mount=$?
 	if [ $err_fs_mount -eq 0 ]; then
 		umask $old_umask
@@ -220,7 +220,7 @@ do_mount_locked() {
 			msgsend upnpd plugin force_notify libmediasrv.so new_partition    # mediasrv
 			$fritznasdb_control new_partition "$mnt_path"                     # fritznasdb
 		fi
-		[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_done                     # led
+		[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_done                    # led
 	else
 		case "$fs_type" in
 		"crypto_LUKS")
@@ -365,7 +365,7 @@ do_umount_locked() {
 	fi
 
 	if grep -q " $mnt_path " /proc/mounts; then                               # umount failed
-		for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do                        # log blocker
+		for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do                    # log blocker
 			umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
 			if [ -n "$umount_files" ]; then
 				umount_blocker="$mnt_path ($mnt_dev) - still used by $(realpath /proc/$pid/exe):"
@@ -414,11 +414,11 @@ do_mount() {
 do_umount() {
 	if [ "${1:1:3}" == "dev" ]
 	then                                                                      # old parameter style
-		local mnt_path=$2                                                     # /var/media/ftp/uStorMN
-		local mnt_name=$3                                                     # uStorMN or LABEL
+		local mnt_path=$2                                                 # /var/media/ftp/uStorMN
+		local mnt_name=$3                                                 # uStorMN or LABEL
 	else                                                                      # new parameter style
-		local mnt_path=$1                                                     # /var/media/ftp/uStorMN
-		local mnt_name=$2                                                     # uStorMN or LABEL
+		local mnt_path=$1                                                 # /var/media/ftp/uStorMN
+		local mnt_name=$2                                                 # uStorMN or LABEL
 	fi
 	local err_code=0
 	passeeren                                                                 # semaphore on
@@ -495,8 +495,8 @@ storage_unplug() {
 	[ -x $webdav_control ] && $webdav_control lost_all_partitions
 	do_umount "$mnt_path" "$mnt_name"                                         # unmount device
 	unplug_ret=$?
-	remained_devs=`grep "$mnt_main_dev" /proc/mounts`                         # check for remained partitions on main device
-	[ -z "$remained_devs" ] && check_parent $parent_process && remove_swap dummy /proc "$mnt_main_dev"     # remove swap partition if required
-	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start      # restart media_serv if MP available
+	remained_devs=`grep "$mnt_main_dev" /proc/mounts`                                                   # check for remained partitions on main device
+	[ -z "$remained_devs" ] && check_parent $parent_process && remove_swap dummy /proc "$mnt_main_dev"  # remove swap partition if required
+	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start   # restart media_serv if MP available
 	return $unplug_ret
 }
