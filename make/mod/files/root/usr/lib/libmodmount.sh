@@ -200,6 +200,17 @@ do_mount_locked() {
 	umask 0
 	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID)             # FREETZ mount
 	local err_fs_mount=$?
+
+	# update device map, do it before notifying other components about changes
+	# TODO: it should be enough to do it on successful mount only, i.e. if err_fs_mount==0
+	if grep -q $mnt_path /proc/mounts; then
+		if [ -f "$1" ]; then
+			grep -v "^$1=$2:" $DEVMAP > /var/dev-$$.map
+			echo "$1=$2:$mnt_name" >> /var/dev-$$.map
+			mv -f /var/dev-$$.map $DEVMAP
+		fi
+	fi
+
 	if [ $err_fs_mount -eq 0 ]; then
 		umask $old_umask
 		eventadd 140 "$mnt_name ($mnt_dev)"
@@ -277,13 +288,6 @@ do_mount_locked() {
 		rmdir $mnt_path
 	fi
 
-	if grep -q $mnt_path /proc/mounts; then
-		if [ -f "$1" ]; then
-			grep -v "^$1=$2:" $DEVMAP > /var/dev-$$.map
-			echo "$1=$2:$mnt_name" >> /var/dev-$$.map
-			mv -f /var/dev-$$.map $DEVMAP
-		fi
-	fi
 	return $mnt_failure
 }
 
