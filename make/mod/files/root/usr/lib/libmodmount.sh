@@ -165,7 +165,6 @@ mount_fs() {
 # used by /etc/hotplug/run_mount
 # separated from do_mount since fw 04.89
 do_mount_locked() {
-	local mnt_failure=0
 	local rcftpd="/etc/init.d/rc.ftpd"
 	local fritznasdb_control="/etc/fritznasdb_control"
 	local tammnt="/var/tam/mount"
@@ -228,8 +227,14 @@ do_mount_locked() {
 			$fritznasdb_control new_partition "$mnt_path"                     # fritznasdb
 		fi
 		[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_done                    # led
-	else
-		case "$fs_type" in
+
+		return 0
+	fi
+
+	# mount failed
+	local mnt_failure=0
+	rmdir $mnt_path
+	case "$fs_type" in
 		"crypto_LUKS")
 				eventadd 140 "LUKS ($mnt_dev) detected/erkannt, NOT/NICHT"
 				log_freetz notice "LUKS partition $mnt_dev was detected"
@@ -279,9 +284,7 @@ do_mount_locked() {
 			log_freetz err "Partition $mnt_name ($mnt_dev): Unsupported filesystem or wrong partition table ($fs_type)"
 			mnt_failure=1
 			;;
-		esac
-		rmdir $mnt_path
-	fi
+	esac
 
 	return $mnt_failure
 }
