@@ -172,7 +172,7 @@ do_mount_locked() {
 	[ $# -ge 2 ] && local mnt_dev=$2 || return 1
 	[ $# -ge 3 ] && local mnt_part_num=$3 || return 1
 	local mnt_blk_dev=${mnt_dev##/dev/}
-	local mnt_main_dev=$(echo $mnt_blk_dev | sed -e 's#\(.\{0,3\}\).*#\1#g')
+	local mnt_main_dev=${mnt_blk_dev:0:3}
 	local mnt_name
 	local mnt_path
 	local fs_type
