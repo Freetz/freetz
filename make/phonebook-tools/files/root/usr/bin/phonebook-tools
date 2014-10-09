@@ -477,7 +477,12 @@ if [ "${BOOK}" = "active" ]; then
 fi
 
 # process
-retrieve_book_${METHOD} | $DOS2UNIX | linearize ' ' | normalize_whitespaces | fix_join_effects | remove_unnecessary_var_flash_only_elements | ensure_well_formed_xml | filter_by_book_id | {
+set -o pipefail
+
+pb_content=$(retrieve_book_${METHOD}) # might fail, thus no direct piping
+rc=$?; [ $rc -ne 0 ] && exit $rc
+
+echo -n "${pb_content}" | $DOS2UNIX | linearize ' ' | normalize_whitespaces | fix_join_effects | remove_unnecessary_var_flash_only_elements | ensure_well_formed_xml | filter_by_book_id | {
 	case "${TO}" in
 		tsv)
 			to_tsv
