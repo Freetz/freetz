@@ -1,0 +1,11 @@
+--- Makefile
++++ Makefile
+@@ -5,7 +5,7 @@
+ all: br2684ctl
+ 
+ br2684ctl: br2684ctl.c
+-	$(CC) $(OPTS) $(CFLAGS) $(LIBS) $< -o $@
++	$(CC) $(OPTS) $(CFLAGS)         $< -o $@ $(LIBS)
+ 
+ distclean: clean
+ clean:
