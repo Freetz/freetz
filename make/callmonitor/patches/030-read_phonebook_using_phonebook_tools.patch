@@ -1,13 +1,14 @@
 --- root/usr/lib/callmonitor/modules/phonebook.sh
 +++ root/usr/lib/callmonitor/modules/phonebook.sh
-@@ -38,6 +38,23 @@
+@@ -38,6 +38,24 @@
  done
  }
  _pb_fonbuch_read() {
 +_pb_fonbuch_read_phonebook_tools || _pb_fonbuch_read_webui
 +}
 +_pb_fonbuch_read_phonebook_tools() {
-+local pb_content="$(phonebook-tools -e -b all -t tsv 2>/dev/null)"
++local pb_content
++pb_content="$(phonebook-tools -e -b all -t tsv 2>/dev/null)"
 +if [ $? -ne 0 ]; then
 +return 1
 +fi
