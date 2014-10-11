@@ -132,7 +132,6 @@ mount_fs() {
 	[ $# -ge 4 ] && local ftp_uid=$4 || local ftp_uid=0                       # ftp user id
 	[ $# -ge 5 ] && local ftp_gid=$5 || local ftp_gid=0                       # ftp group id
 	local err_mo=1                                                            # set mount error as default
-	local err_fst=1                                                           # set file system detection error as default
 	local fs_type="$(blkid $dev_node | sed -nr 's!.*TYPE="([^"]*).*!\1!p')"   # fs type detection
 	[ -z "$fs_type" ] && local fs_type="unknown"                              # set unknown file system type if detection failed
 	case $fs_type in
