@@ -115,9 +115,6 @@ mount_fs() {
 # $3 - partition number
 #
 do_mount_locked() {
-	local rcftpd="/etc/init.d/rc.ftpd"
-	local fritznasdb_control="/etc/fritznasdb_control"
-	local tammnt="/var/tam/mount"
 	local mnt_rw=rw
 	[ $# -ge 2 ] && local mnt_dev=$2 || return 1
 	[ $# -ge 3 ] && local mnt_part_num=$3 || return 1
@@ -158,13 +155,18 @@ do_mount_locked() {
 	umask $old_umask                                                           # restore umask
 
 	if [ $err_fs_mount -eq 0 ]; then
+		local rcftpd="/etc/init.d/rc.ftpd"
+		local fritznasdb_control="/etc/fritznasdb_control"
+		local tammnt="/var/tam/mount"
+		local autorun="$mnt_path/autorun.sh"
+
 		eventadd 140 "$mnt_name ($mnt_dev)"
 		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully ($fs_type)"
+
 		if [ -x $rcftpd ]; then                                                   # start/enable ftpd
 			[ -x "$(which inetdctl)" ] && inetdctl enable ftpd || $rcftpd start
 		fi
 		/etc/init.d/rc.swap autostart $mnt_path                                   # swap
-		local autorun="$mnt_path/autorun.sh"
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &          # autorun
 		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path & # external
 		[ -x $TR069START ] && $TR069START $mnt_name                               # tr069
