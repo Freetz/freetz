@@ -256,11 +256,10 @@ do_mount_locked() {
 # separated from do_umount() since FW XX.04.86
 #
 # $1 - full mount point path (e.g. /var/media/ftp/UStor01)
-# $2 - mount name, i.e. the last component of $1 (e.g. UStor01)
 #
 do_umount_locked() {
 	local mnt_path=$1                                                         # /var/media/ftp/uStorMN
-	local mnt_name=$2                                                         # uStorMN or LABEL
+	local mnt_name="${mnt_path##*/}"                                          # uStorMN or LABEL
 	local mnt_dev=$(grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//')       # /dev/sdXY
 
 	local rcftpd="/etc/init.d/rc.ftpd"
@@ -398,14 +397,12 @@ do_umount() {
 	if [ "${1:1:3}" == "dev" ]
 	then                                                                      # old parameter style
 		local mnt_path=$2                                                 # /var/media/ftp/uStorMN
-		local mnt_name=$3                                                 # uStorMN or LABEL
 	else                                                                      # new parameter style
 		local mnt_path=$1                                                 # /var/media/ftp/uStorMN
-		local mnt_name=$2                                                 # uStorMN or LABEL
 	fi
 	local err_code=0
 	passeeren                                                                 # semaphore on
-	do_umount_locked "$mnt_path" "$mnt_name"
+	do_umount_locked "$mnt_path"
 	err_code=$?
 	vrijgeven                                                                 # semaphore off
 	return $err_code
