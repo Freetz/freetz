@@ -15,7 +15,7 @@ log_freetz() {
 
 # check if ctlmgr is the parent process of 'sh -c /etc/hotplug/storage unplug'
 # if so, the unplug was initiated via AVM-web-if
-# TODO: find a better (more readable) way to so the same
+# TODO: find a better (more readable) way to do the same
 is_ctlmgr_parent_of_storage_unplug() {
 	local top_filtered=$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')
 	local storage_unplug_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c /etc/hotplug/storage unplug'
