@@ -15,7 +15,6 @@ log_freetz() {
 	return 0
 }
 
-#XXX
 # check, if ctlmgr is parent process for storage unplug
 check_parent() {
 	local parent_pid=$1
