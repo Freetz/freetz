@@ -2,8 +2,6 @@
 
 [ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
 
-parent_process=$PPID
-
 # Log to Syslog & Console
 log_freetz() {
 	local log_prio="user.notice"
@@ -17,7 +15,6 @@ log_freetz() {
 
 # check, if ctlmgr is parent process for storage unplug
 check_parent() {
-	local parent_pid=$1
 	local retval=1
 	local top_filtered="$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')"
 	local ctlmgr_pids=$(echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p') # pids of all ctlmgr instances
@@ -511,7 +508,7 @@ storage_unplug() {
 	do_umount "$mnt_path" "$mnt_name"                                         # unmount device
 	unplug_ret=$?
 	remained_devs=$(grep "$mnt_main_dev" /proc/mounts)                                                  # check for remained partitions on main device
-	[ -z "$remained_devs" ] && check_parent $parent_process && remove_swap dummy /proc "$mnt_main_dev"  # remove swap partition if required
+	[ -z "$remained_devs" ] && check_parent && remove_swap dummy /proc "$mnt_main_dev"                  # remove swap partition if required
 	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start   # restart media_serv if MP available
 	return $unplug_ret
 }
