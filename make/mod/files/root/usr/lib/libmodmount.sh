@@ -13,15 +13,17 @@ log_freetz() {
 	return 0
 }
 
-# check, if ctlmgr is parent process for storage unplug
-check_parent() {
-	local retval=1
-	local top_filtered="$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')"
+# check if ctlmgr is the parent process of 'sh -c /etc/hotplug/storage unplug'
+# if so, the unplug was initiated via AVM-web-if
+# TODO: find a better (more readable) way to so the same
+is_ctlmgr_parent_of_storage_unplug() {
+	local top_filtered=$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')
+	local storage_unplug_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c /etc/hotplug/storage unplug'
+
+	[ -z "$storage_unplug_parent_pid" ] && return 1 # storage unplug is not listed under running process => return false
+
 	local ctlmgr_pids=$(echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p') # pids of all ctlmgr instances
-	local shc_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c'
-	local matched_pid=$(echo "$ctlmgr_pids" | grep "$shc_parent_pid") # is ctlmgr a parent process of 'sh -c /etc/hotplug/storage unplug' ?
-	[ -n "$matched_pid" ] && retval=0 # unplug was initiated via AVM-WebIF
-	return $retval
+	echo "$ctlmgr_pids" | grep -q "$storage_unplug_parent_pid" 2>/dev/null
 }
 
 # remove swap partition
@@ -507,8 +509,8 @@ storage_unplug() {
 	[ -x $webdav_control ] && $webdav_control lost_all_partitions
 	do_umount "$mnt_path" "$mnt_name"                                         # unmount device
 	unplug_ret=$?
-	remained_devs=$(grep "$mnt_main_dev" /proc/mounts)                                                  # check for remained partitions on main device
-	[ -z "$remained_devs" ] && check_parent && remove_swap dummy /proc "$mnt_main_dev"                  # remove swap partition if required
-	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start   # restart media_serv if MP available
+	remained_devs=$(grep "$mnt_main_dev" /proc/mounts)                                                       # check for remained partitions on main device
+	[ -z "$remained_devs" ] && is_ctlmgr_parent_of_storage_unplug && remove_swap dummy /proc "$mnt_main_dev" # remove swap partition if required
+	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start        # restart media_serv if MP available
 	return $unplug_ret
 }
