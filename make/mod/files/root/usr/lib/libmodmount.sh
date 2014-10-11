@@ -13,66 +13,6 @@ log_freetz() {
 	return 0
 }
 
-# check if ctlmgr is the parent process of 'sh -c /etc/hotplug/storage unplug'
-# if so, the unplug was initiated via AVM-web-if
-# freetz internal function
-# TODO: find a better (more readable) way to do the same
-is_ctlmgr_parent_of_storage_unplug() {
-	local top_filtered=$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')
-	local storage_unplug_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c /etc/hotplug/storage unplug'
-
-	[ -z "$storage_unplug_parent_pid" ] && return 1 # storage unplug is not listed under running process => return false
-
-	local ctlmgr_pids=$(echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p') # pids of all ctlmgr instances
-	echo "$ctlmgr_pids" | grep -q "$storage_unplug_parent_pid" 2>/dev/null
-}
-
-# remove swap partition
-# freetz internal function
-remove_swap() {
-	if [ "${2:1:4}" == "proc" ]; then
-		local mnt_dev_name=$3                                                 # new parameter style
-	else
-		local mnt_dev_name=$4                                                 # old parameter style
-	fi
-	local tmpret='/tmp/remove_swap.tmp'
-	local retval=20                                                           # no swap devices found
-	local swap_map="/proc/swaps"
-	local swap_devs=$(grep "^/dev/$mnt_dev_name" $swap_map | sed 's/\t[\t]*/ /g;s/ [ ]*/ /g')
-	if [ -n "$swap_devs" ]; then
-		retval=21                                                             # swap devices found
-		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio; do
-			if [ "$swap_type" == "partition" ]; then
-				/etc/init.d/rc.swap autostop $swap_dev
-				retval=$?
-				echo $retval > ${tmpret}
-				case "$retval" in
-					0)
-						eventadd 141 "SWAP Partition ($swap_dev)"
-						log_freetz notice "SWAP Partition ($swap_dev) removed."
-						;;
-					2)
-						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
-						log_freetz notice "SWAP Partition ($swap_dev) not removed, not the defined swap-partition."
-						;;
-					3)
-						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
-						log_freetz notice "SWAP Partition ($swap_dev) not removed, auto-mode is disabled."
-						;;
-					*)
-						eventadd 135 "SWAP Partition ($swap_dev)"
-						log_freetz err "SWAP Partition ($swap_dev) could not be removed, error $retval."
-						;;
-				esac
-			fi
-		done
-		retval="$(cat ${tmpret} 2>/dev/null)"
-		rm -f ${tmpret} > /dev/null 2>&1
-	fi
-	return $retval
-}
-
-
 . /etc/init.d/modlibfw # needed for get_avm_firmware_version used in find_mnt_name
 
 # modified name generation for automatic mount point
@@ -487,6 +427,65 @@ storage_reload() {
 	[ -x $rcftpd ] && $rcftpd restart
 	hd_spindown_control loadconfig
 	return 0
+}
+
+# check if ctlmgr is the parent process of 'sh -c /etc/hotplug/storage unplug'
+# if so, the unplug was initiated via AVM-web-if
+# freetz internal function
+# TODO: find a better (more readable) way to do the same
+is_ctlmgr_parent_of_storage_unplug() {
+	local top_filtered=$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')
+	local storage_unplug_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c /etc/hotplug/storage unplug'
+
+	[ -z "$storage_unplug_parent_pid" ] && return 1 # storage unplug is not listed under running process => return false
+
+	local ctlmgr_pids=$(echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p') # pids of all ctlmgr instances
+	echo "$ctlmgr_pids" | grep -q "$storage_unplug_parent_pid" 2>/dev/null
+}
+
+# remove swap partition
+# freetz internal function
+remove_swap() {
+	if [ "${2:1:4}" == "proc" ]; then
+		local mnt_dev_name=$3                                                 # new parameter style
+	else
+		local mnt_dev_name=$4                                                 # old parameter style
+	fi
+	local tmpret='/tmp/remove_swap.tmp'
+	local retval=20                                                           # no swap devices found
+	local swap_map="/proc/swaps"
+	local swap_devs=$(grep "^/dev/$mnt_dev_name" $swap_map | sed 's/\t[\t]*/ /g;s/ [ ]*/ /g')
+	if [ -n "$swap_devs" ]; then
+		retval=21                                                             # swap devices found
+		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio; do
+			if [ "$swap_type" == "partition" ]; then
+				/etc/init.d/rc.swap autostop $swap_dev
+				retval=$?
+				echo $retval > ${tmpret}
+				case "$retval" in
+					0)
+						eventadd 141 "SWAP Partition ($swap_dev)"
+						log_freetz notice "SWAP Partition ($swap_dev) removed."
+						;;
+					2)
+						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
+						log_freetz notice "SWAP Partition ($swap_dev) not removed, not the defined swap-partition."
+						;;
+					3)
+						eventadd 141 "SWAP Partition ($swap_dev) NOT/NICHT"
+						log_freetz notice "SWAP Partition ($swap_dev) not removed, auto-mode is disabled."
+						;;
+					*)
+						eventadd 135 "SWAP Partition ($swap_dev)"
+						log_freetz err "SWAP Partition ($swap_dev) could not be removed, error $retval."
+						;;
+				esac
+			fi
+		done
+		retval="$(cat ${tmpret} 2>/dev/null)"
+		rm -f ${tmpret} > /dev/null 2>&1
+	fi
+	return $retval
 }
 
 # patched section unplug)
