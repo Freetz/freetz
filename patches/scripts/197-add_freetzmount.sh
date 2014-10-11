@@ -1,14 +1,23 @@
-[ "$FREETZ_PATCH_FREETZMOUNT" == "y" ] || return 0
-echo1 "applying FREETZMOUNT patch"
+echo1 "applying 'remove components'-part of FREETZMOUNT patch"
 
-PATCHED_BY_FREETZ=" # patched by FREETZ"
-SCRIPTPATCHER="${TOOLS_DIR}/scriptpatcher.sh"
 STORAGE_FILE="${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mount-sd" ]; then
 	RUN_MOUNT_FILE="${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mount-sd"
 else
 	RUN_MOUNT_FILE="${FILESYSTEM_MOD_DIR}/etc/hotplug/run_mount"
 fi
+
+# we might have removed some of the components, prepend corresponding msgsend's with [ -e "some_maybe_removed_component" ] && msgsend
+for file in "${STORAGE_FILE}" "${RUN_MOUNT_FILE}"; do
+	modsed -r 's,^([ \t]*)(msgsend.* ((libmediasrv|libcloudcds|libgpmsrv)[.]so) ),\1[ -e /lib/\3 ] \&\& \2,' "${file}"
+	modsed -r 's,^([ \t]*)(msgsend.* (gpmdb) ),\1[ -e /sbin/\3 ] \&\& \2,' "${file}"
+done
+
+[ "$FREETZ_PATCH_FREETZMOUNT" == "y" ] || return 0
+echo1 "applying FREETZMOUNT patch"
+
+PATCHED_BY_FREETZ=" # patched by FREETZ"
+SCRIPTPATCHER="${TOOLS_DIR}/scriptpatcher.sh"
 RUN_LIBMODMOUNT="[ -x /usr/lib/libmodmount.sh ] && . /usr/lib/libmodmount.sh$PATCHED_BY_FREETZ"
 
 # first of all old usbstorage stuff
