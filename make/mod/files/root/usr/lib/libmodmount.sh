@@ -1,5 +1,6 @@
 #! /bin/sh
 
+. /etc/init.d/modlibfw
 [ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
 
 # Log to Syslog & Console
@@ -12,8 +13,6 @@ log_freetz() {
 	echo "$c_prefix $2" >> /var/log/mod_mount.log
 	return 0
 }
-
-. /etc/init.d/modlibfw # needed for get_avm_firmware_version used in find_mnt_name
 
 # modified name generation for automatic mount point
 # freetz internal function
@@ -156,6 +155,7 @@ do_mount_locked() {
 
 	if [ $err_fs_mount -eq 0 ]; then
 		local rcftpd="/etc/init.d/rc.ftpd"
+		local samba_control="/etc/samba_control"
 		local fritznasdb_control="/etc/fritznasdb_control"
 		local tammnt="/var/tam/mount"
 		local autorun="$mnt_path/autorun.sh"
@@ -163,22 +163,32 @@ do_mount_locked() {
 		eventadd 140 "$mnt_name ($mnt_dev)"
 		log_freetz notice "Partition $mnt_name ($mnt_dev) was mounted successfully ($fs_type)"
 
-		if [ -x $rcftpd ]; then                                                   # start/enable ftpd
+		if [ -x $rcftpd ]; then                                                                                 # start/enable ftpd
 			[ -x "$(which inetdctl)" ] && inetdctl enable ftpd || $rcftpd start
 		fi
-		/etc/init.d/rc.swap autostart $mnt_path                                   # swap
-		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &          # autorun
-		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path & # external
-		[ -x $TR069START ] && $TR069START $mnt_name                               # tr069
-		[ -x /etc/samba_control ] && /etc/samba_control reconfig                  # SAMBA reconfiguration
-		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                             # tam
-		rm -f /var/media/NEW_LINK && ln -f -s $mnt_path /var/media/NEW_LINK       # mark last mounted partition
-		msgsend multid update_usb_infos                                           # upnp
-		if [ -x $fritznasdb_control ]; then
-			msgsend upnpd plugin force_notify libmediasrv.so new_partition    # mediasrv
-			$fritznasdb_control new_partition "$mnt_path"                     # fritznasdb
+
+		# freetz extras
+		/etc/init.d/rc.swap autostart $mnt_path                                                                 # swap
+		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &                                        # autorun
+		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &                               # external
+
+		[ -x $TR069START ] && $TR069START $mnt_name                                                             # tr069
+		[ -x $samba_control ] && $samba_control reconfig                                                        # SAMBA reconfiguration
+		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                                                           # tam
+
+		rm -f /var/media/NEW_LINK && ln -fs $mnt_path /var/media/NEW_LINK                                       # mark last mounted partition
+
+		# notify other components that a new partition has been mounted
+		if [ $(get_avm_firmware_version) -lt 557 ]; then                                                        # existence of /sbin/upnpdevd could NOT be used as a criterion (available since 05.50)
+			msgsend multid update_usb_infos                                                                 # Fritz!OS < 5.57
+		else
+			msgsend upnpdevd update_usb_infos                                                               # Fritz!OS >= 5.57
 		fi
-		[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_done                    # led
+		[ -e /lib/libmediasrv.so ] && msgsend upnpd plugin force_notify libmediasrv.so new_partition            # mediasrv
+		[ -e /lib/libgpmsrv.so   ] && msgsend upnpd plugin force_notify libgpmsrv.so "new_partition:$mnt_path"  # google play music
+		[ -x $fritznasdb_control ] && $fritznasdb_control new_partition "$mnt_path"                             # fritznasdb
+
+		[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_done                                                  # led
 
 		return 0
 	fi
@@ -249,51 +259,54 @@ do_mount_locked() {
 # $2 - mount name, i.e. the last component of $1 (e.g. UStor01)
 #
 do_umount_locked() {
-	local rcftpd="/etc/init.d/rc.ftpd"
-	[ -e /mod/etc/init.d/rc.smbd ] && local rcsmbd="/mod/etc/init.d/rc.smbd" || local rcsmbd="/etc/init.d/rc.smbd"
-	local fritznasdb_control="/etc/fritznasdb_control"
-	local kill_daemon=""
-	local ftpd_needs_start=0
-	local smbd_needs_start=0
 	local mnt_path=$1                                                         # /var/media/ftp/uStorMN
 	local mnt_name=$2                                                         # uStorMN or LABEL
-	local err_code=0
-	local autoend="$mnt_path/autoend.sh"
 	local mnt_dev=$(grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//')       # /dev/sdXY
+
+	local rcftpd="/etc/init.d/rc.ftpd"
+	[ -e /mod/etc/init.d/rc.smbd ] && local rcsmbd="/mod/etc/init.d/rc.smbd" || local rcsmbd="/etc/init.d/rc.smbd"
+	local webdav_control="/etc/webdav_control"
+	local fritznasdb_control="/etc/fritznasdb_control"
+	local tammnt="/var/tam/mount"
+	local autoend="$mnt_path/autoend.sh"
+
+	# freetz extras
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
 	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
 	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
-	if [ -x $fritznasdb_control ]; then
-		$fritznasdb_control lost_partition $mnt_path                          # fritznasdb
-		msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path" # medisrv
-	fi
-	[ -p "/var/tam/mount" ] && echo "u$mnt_path" > /var/tam/mount             # TAM
+
+	# notify webdav & TAM unconditionally, i.e. before actual unmount (this is what AVM does)
+	[ -x $webdav_control ] && $webdav_control lost_partition "$mnt_path"      # webdav
+	[ -p $tammnt ] && echo "u$mnt_path" > $tammnt                             # TAM
 
 	umount $mnt_path > /dev/null 2>&1                                         # umount
 
-	if grep -q " $mnt_path " /proc/mounts; then                               # stop smbd
+	local smbd_needs_start=0
+	if grep -q " $mnt_path " /proc/mounts; then                               # still mounted? try to stop smbd
 		if [ -x $rcsmbd ]; then
 			if [ "$($rcsmbd status)" != "stopped" ]; then
 				smbd_needs_start=1
-			 	$rcsmbd stop
-			 	umount $mnt_path > /dev/null 2>&1
-			 fi
+				$rcsmbd stop
+				umount $mnt_path > /dev/null 2>&1
+			fi
 		fi
 	fi
 
-	if grep -q " $mnt_path " /proc/mounts; then                               # stop ftpd
+	local ftpd_needs_start=0
+	if grep -q " $mnt_path " /proc/mounts; then                               # still mounted? try to stop ftpd
 		if [ -x $rcftpd ]; then
 			if [ "$($rcftpd status)" != "stopped" ]; then
 				ftpd_needs_start=1
-			 	$rcftpd stop
-			 	umount $mnt_path > /dev/null 2>&1
-			 fi
+				$rcftpd stop
+				umount $mnt_path > /dev/null 2>&1
+			fi
 		fi
 	fi
 
+	local SIGN pid umount_file umount_files umount_blocker
 	if [ "$MOD_STOR_KILLBLOCKER" == "yes" ]; then                              # kill blocker
 		for SIGN in TERM KILL; do
-			if grep -q " $mnt_path " /proc/mounts; then
+			if grep -q " $mnt_path " /proc/mounts; then                # still mounted?
 				for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do
 					umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
 					if [ -n "$umount_files" ]; then
@@ -313,10 +326,11 @@ do_umount_locked() {
 	if grep -v " hfsplus " /proc/mounts | grep -q " $mnt_path "; then         # mount ro
 		log_freetz notice "$mnt_path ($mnt_dev) - mounting read-only"
 		mount "$mnt_path" -o remount,ro
-	 	umount $mnt_path > /dev/null 2>&1
+		umount $mnt_path > /dev/null 2>&1
 	fi
 
-	if grep -q " $mnt_path " /proc/mounts; then                               # force umount
+	local err_code=0
+	if grep -q " $mnt_path " /proc/mounts; then                               # still mounted? force unmount
 		log_freetz notice "$mnt_path ($mnt_dev) - forcing unmount"
 		umount -f $mnt_path
 		err_code=$?
@@ -332,13 +346,24 @@ do_umount_locked() {
 				done
 			fi
 		done
+
 		eventadd 135 "$mnt_path ($mnt_dev)"
 		log_freetz err "$mnt_path ($mnt_dev) - could not be unmounted"
-	else                                                                      # umount sucessfully
+	else                                                                      # umount succeeded
+		# notify other components that a partition has been unmounted
+		[ -x $fritznasdb_control ] && $fritznasdb_control lost_partition $mnt_path                           # fritznasdb
+		[ -e /lib/libmediasrv.so ] && msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path"  # mediasrv
+		[ -e /lib/libcloudcds.so ] && msgsend upnpd plugin notify libcloudcds.so "lost_partition:$mnt_path"  # webdav based media server
+		[ -e /lib/libgpmsrv.so   ] && msgsend upnpd plugin notify libgpmsrv.so   "lost_partition:$mnt_path"  # google play music
+		[ -e /sbin/gpmdb         ] && msgsend gpmdb "lost_partition:$mnt_path"                               # google play music database
+
+		# update device map
 		grep -v ":$mnt_name$" $DEVMAP > /var/dev-$$.map
 		mv -f /var/dev-$$.map $DEVMAP
+
 		rmdir $mnt_path
 		[ -d "$mnt_path" ] && log_freetz err "Directory $mnt_path could not be removed"
+
 		eventadd 141 "Partition $mnt_name ($mnt_dev)"
 		log_freetz notice "$mnt_path ($mnt_dev) - unmounted successfully"
 	fi
