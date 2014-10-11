@@ -21,9 +21,9 @@ check_parent() {
 	local parent_pid=$1
 	local retval=1
 	local top_filtered="$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')"
-	local ctlmgr_pids=`echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p'` # pids of all ctlmgr instances
+	local ctlmgr_pids=$(echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p') # pids of all ctlmgr instances
 	local shc_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c'
-	local matched_pid=`echo "$ctlmgr_pids" | grep "$shc_parent_pid"` # is ctlmgr a parent process of 'sh -c /etc/hotplug/storage unplug' ?
+	local matched_pid=$(echo "$ctlmgr_pids" | grep "$shc_parent_pid") # is ctlmgr a parent process of 'sh -c /etc/hotplug/storage unplug' ?
 	[ -n "$matched_pid" ] && retval=0 # unplug was initiated via AVM-WebIF
 	return $retval
 }
@@ -38,7 +38,7 @@ remove_swap() {
 	local tmpret='/tmp/remove_swap.tmp'
 	local retval=20                                                           # no swap devices found
 	local swap_map="/proc/swaps"
-	local swap_devs=`grep "^/dev/$mnt_dev_name" $swap_map | sed 's/\t[\t]*/ /g;s/ [ ]*/ /g'`
+	local swap_devs=$(grep "^/dev/$mnt_dev_name" $swap_map | sed 's/\t[\t]*/ /g;s/ [ ]*/ /g')
 	if [ -n "$swap_devs" ]; then
 		retval=21                                                             # swap devices found
 		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio; do
@@ -303,7 +303,7 @@ do_umount_locked() {
 	local mnt_name=$2                                                         # uStorMN or LABEL
 	local err_code=0
 	local autoend="$mnt_path/autoend.sh"
-	local mnt_dev=`grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//'`        # /dev/sdXY
+	local mnt_dev=$(grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//')       # /dev/sdXY
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
 	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
 	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
@@ -497,7 +497,7 @@ storage_unplug() {
 	[ -x $webdav_control ] && $webdav_control lost_all_partitions
 	do_umount "$mnt_path" "$mnt_name"                                         # unmount device
 	unplug_ret=$?
-	remained_devs=`grep "$mnt_main_dev" /proc/mounts`                                                   # check for remained partitions on main device
+	remained_devs=$(grep "$mnt_main_dev" /proc/mounts)                                                  # check for remained partitions on main device
 	[ -z "$remained_devs" ] && check_parent $parent_process && remove_swap dummy /proc "$mnt_main_dev"  # remove swap partition if required
 	[ -x $mserver_start ] && ! [ -f /var/DONTPLUG ] && [ -d /var/InternerSpeicher ] && $mserver_start   # restart media_serv if MP available
 	return $unplug_ret
