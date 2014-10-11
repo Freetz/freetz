@@ -15,6 +15,7 @@ log_freetz() {
 
 # check if ctlmgr is the parent process of 'sh -c /etc/hotplug/storage unplug'
 # if so, the unplug was initiated via AVM-web-if
+# freetz internal function
 # TODO: find a better (more readable) way to do the same
 is_ctlmgr_parent_of_storage_unplug() {
 	local top_filtered=$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')
@@ -27,6 +28,7 @@ is_ctlmgr_parent_of_storage_unplug() {
 }
 
 # remove swap partition
+# freetz internal function
 remove_swap() {
 	if [ "${2:1:4}" == "proc" ]; then
 		local mnt_dev_name=$3                                                 # new parameter style
