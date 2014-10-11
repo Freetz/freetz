@@ -522,7 +522,6 @@ storage_unplug() {
 	set $MOUNT
 	local mnt_dev=$1                                                          # /dev/sda1
 	local mnt_path=$2                                                         # /var/media/ftp/uStorXY or LABEL
-	local mnt_name="${mnt_path##*/}"                                          # uStorXY or LABEL
 	local mnt_main_dev=${mnt_dev:5:3}                                         # sda
 	local mserver_start="/sbin/start_mediasrv"
 	local mserver_stop="/sbin/stop_mediasrv"
@@ -532,7 +531,7 @@ storage_unplug() {
 	[ -x $mserver_stop ] && $mserver_stop
 	mount "$mnt_path" -o remount,ro
 	[ -x $webdav_control ] && $webdav_control lost_all_partitions
-	do_umount "$mnt_path" "$mnt_name"                                         # unmount device
+	do_umount "$mnt_path"                                                     # unmount device
 	unplug_ret=$?
 	remained_devs=$(grep "$mnt_main_dev" /proc/mounts)                                                       # check for remained partitions on main device
 	[ -z "$remained_devs" ] && is_ctlmgr_parent_of_storage_unplug && remove_swap dummy /proc "$mnt_main_dev" # remove swap partition if required
