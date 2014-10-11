@@ -76,6 +76,7 @@ remove_swap() {
 . /etc/init.d/modlibfw # needed for get_avm_firmware_version used in find_mnt_name
 
 # modified name generation for automatic mount point
+# freetz internal function
 #
 # $1 - block device name (without /dev/ prefix)
 # $2 - partition number
@@ -115,10 +116,15 @@ fi
 	echo $mnt_name
 }
 
-# mount according to type of filesystem
-# return code:
-#  true - all went well
-#  other - something went wrong
+# mount filesystem according to its type
+# freetz internal function
+#
+# $1 - block device name (including /dev/ prefix, e.g. /dev/sda1)
+# $2 - full mount point path (e.g. /var/media/ftp/UStor01)
+# $3 (optional) - read/write mode (e.g. rw, rw if omitted)
+# $4 (optional) - uid of the mounted files (0 if omitted)
+# $5 (optional) - gid of the mounted files (0 if omitted)
+#
 mount_fs() {
 	local dev_node=$1                                                         # device node
 	local mnt_path=$2                                                         # mount path
@@ -164,6 +170,11 @@ mount_fs() {
 # mount function
 # used by /etc/hotplug/run_mount
 # separated from do_mount since fw 04.89
+#
+# $1 - proc device (e.g. /proc/bus/usb/001/002)
+# $2 - block device name (including /dev/ prefix, e.g. /dev/sda1)
+# $3 - partition number
+#
 do_mount_locked() {
 	local rcftpd="/etc/init.d/rc.ftpd"
 	local fritznasdb_control="/etc/fritznasdb_control"
@@ -292,6 +303,10 @@ do_mount_locked() {
 # ummount function
 # used by /etc/hotplug/storage
 # separated from do_umount() since FW XX.04.86
+#
+# $1 - full mount point path (e.g. /var/media/ftp/UStor01)
+# $2 - mount name, i.e. the last component of $1 (e.g. UStor01)
+#
 do_umount_locked() {
 	local rcftpd="/etc/init.d/rc.ftpd"
 	[ -e /mod/etc/init.d/rc.smbd ] && local rcsmbd="/mod/etc/init.d/rc.smbd" || local rcsmbd="/etc/init.d/rc.smbd"
