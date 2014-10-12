@@ -456,15 +456,11 @@ storage_reload() {
 # check if ctlmgr is the parent process of 'sh -c /etc/hotplug/storage unplug'
 # if so, the unplug was initiated via AVM-web-if
 # freetz internal function
-# TODO: find a better (more readable) way to do the same
 is_ctlmgr_parent_of_storage_unplug() {
-	local top_filtered=$(top -b -n1 | sed '1,4d;s/\t/ /g;s/ [ ]*/ /g;/ \[.*]$/d;s/^ //;s/\([0-9]* [0-9]*\)[^%]*%[^%]*%\( .*\)/\1\2/')
-	local storage_unplug_parent_pid=$(echo "$top_filtered" | sed -n '/sh -c \/etc\/hotplug\/storage unplug/s/^[0-9]* \([0-9]*\).*/\1/p') # pid of parent of 'sh -c /etc/hotplug/storage unplug'
+	local storage_unplug_parent_pid=$(ps -l | awk '/sh -c \/etc\/hotplug\/storage unplug/ { print $4; }') # pid of parent of 'sh -c /etc/hotplug/storage unplug'
+	[ -z "${storage_unplug_parent_pid}" ] && return 1                                                     # storage unplug is not listed under running process => return false
 
-	[ -z "$storage_unplug_parent_pid" ] && return 1 # storage unplug is not listed under running process => return false
-
-	local ctlmgr_pids=$(echo "$top_filtered" | sed -n '/sed/d;/ctlmgr/s/\(^[0-9]*\) [0-9]*.*/\1/p') # pids of all ctlmgr instances
-	echo "$ctlmgr_pids" | grep -q "$storage_unplug_parent_pid" 2>/dev/null
+	cat "/proc/${storage_unplug_parent_pid}/cmdline" 2>/dev/null | grep -q ctlmgr 2>/dev/null
 }
 
 # remove swap partition
