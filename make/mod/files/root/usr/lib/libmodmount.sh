@@ -274,9 +274,24 @@ do_umount_locked() {
 	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
 	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
 
-	# notify webdav & TAM unconditionally, i.e. before actual unmount (this is what AVM does)
+	# notify webdav & TAM unconditionally, i.e. before both "mount -o move" & the actual unmount (this is what AVM does)
 	[ -x $webdav_control ] && $webdav_control lost_partition "$mnt_path"      # webdav
 	[ -p $tammnt ] && echo "u$mnt_path" > $tammnt                             # TAM
+
+	# notify other components before the actual unmount, this is NOT exactly the same what AVM does but quite close to it
+	# AVM does it after "mount -o move" and before the actual unmount
+	[ -x $fritznasdb_control ] && $fritznasdb_control lost_partition $mnt_path                           # fritznasdb
+	[ -e /lib/libmediasrv.so ] && msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path"  # mediasrv
+	[ -e /lib/libcloudcds.so ] && msgsend upnpd plugin notify libcloudcds.so "lost_partition:$mnt_path"  # webdav based media server
+	[ -e /lib/libgpmsrv.so   ] && msgsend upnpd plugin notify libgpmsrv.so   "lost_partition:$mnt_path"  # google play music
+	[ -e /sbin/gpmdb         ] && msgsend gpmdb "lost_partition:$mnt_path"                               # google play music database
+
+	# still some open files under $mnt_path ?
+	if ls -l /proc/*/cwd /proc/*/fd/* 2>/dev/null | grep -q "$mnt_path"; then
+		# wait some time to give AVM components a chance
+		# to flush / to close the files under $mnt_path
+		sleep 1
+	fi
 
 	umount $mnt_path > /dev/null 2>&1                                         # umount
 
@@ -349,13 +364,6 @@ do_umount_locked() {
 		eventadd 135 "$mnt_path ($mnt_dev)"
 		log_freetz err "$mnt_path ($mnt_dev) - could not be unmounted"
 	else                                                                      # umount succeeded
-		# notify other components that a partition has been unmounted
-		[ -x $fritznasdb_control ] && $fritznasdb_control lost_partition $mnt_path                           # fritznasdb
-		[ -e /lib/libmediasrv.so ] && msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path"  # mediasrv
-		[ -e /lib/libcloudcds.so ] && msgsend upnpd plugin notify libcloudcds.so "lost_partition:$mnt_path"  # webdav based media server
-		[ -e /lib/libgpmsrv.so   ] && msgsend upnpd plugin notify libgpmsrv.so   "lost_partition:$mnt_path"  # google play music
-		[ -e /sbin/gpmdb         ] && msgsend gpmdb "lost_partition:$mnt_path"                               # google play music database
-
 		# update device map
 		grep -v ":$mnt_name$" $DEVMAP > /var/dev-$$.map
 		mv -f /var/dev-$$.map $DEVMAP
