@@ -47,6 +47,7 @@ NETSNMP_MIB_MODULES_INCLUDED:=\
 	mibII/udp \
 	mibII/vacm_context \
 	mibII/vacm_vars \
+	snmpv3mibs \
 	snmpv3/snmpEngine \
 	snmpv3/snmpMPDStats \
 	snmpv3/usmStats \
@@ -74,7 +75,6 @@ NETSNMP_MIB_MODULES_EXCLUDED:=\
 	mibII \
 	notification \
 	notification-log-mib \
-	snmpv3mibs \
 	target \
 	tcp-mib \
 	ucd_snmp \
