@@ -1,0 +1,11 @@
+--- daemon/Makefile
++++ daemon/Makefile
+@@ -30,7 +30,7 @@
+ all: automount
+ 
+ automount: $(OBJS) $(AUTOFS_LIB)
+-	$(CC) $(LDFLAGS) $(DAEMON_LDFLAGS) -o automount $(OBJS) $(AUTOFS_LIB) $(LIBS)
++	$(CC)                              -o automount $(OBJS) $(AUTOFS_LIB) $(LIBS) $(LDFLAGS) $(DAEMON_LDFLAGS)
+ 	$(STRIP) automount
+ 
+ clean:
