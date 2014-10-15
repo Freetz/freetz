@@ -72,8 +72,12 @@ $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/backend \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install-libLTLIBRARIES
+	$(SUBMAKE) -C $(SANE_BACKENDS_DIR)/tools \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install-pkgconfigDATA
 	$(PKG_FIX_LIBTOOL_LA) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane.la
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane.la \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/sane-backends.pc
 
 $($(PKG)_TARGET_saned): $($(PKG)_saned)
 	$(INSTALL_BINARY_STRIP)
