@@ -107,7 +107,7 @@ image() {
 	rm x.image
 	cat kernelsquashfs.raw kernel.raw > x.raw
 	rm  kernelsquashfs.raw kernel.raw
-	$FTOOLS/unsquashfs3-lzma x.raw >/dev/null 2>&1 || $FTOOLS/unsquashfs3 x.raw >/dev/null 2>&1 || echo FALSE $img #$FTOOLS/unsquashfs-lzma x.raw >/dev/null 2>&1 ||
+	$FTOOLS/unsquashfs3-lzma x.raw >/dev/null 2>&1 || $FTOOLS/unsquashfs3 x.raw >/dev/null 2>&1 || echo FALSE $img #$FTOOLS/unsquashfs2-lzma x.raw >/dev/null 2>&1 ||
 	rm x.raw
 	# for recent fw's
 	if [ -e squashfs-root/filesystem_core.squashfs ]; then

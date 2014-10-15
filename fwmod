@@ -257,7 +257,7 @@ if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	MKSQUASHFS_TOOL="mksquashfs3"
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 elif [ "$FREETZ_KERNEL_VERSION_2_6_13" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then
-	MKSQUASHFS_TOOL="mksquashfs-lzma"
+	MKSQUASHFS_TOOL="mksquashfs2-lzma"
 else
 	MKSQUASHFS_TOOL="mksquashfs3-lzma"
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
