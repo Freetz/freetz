@@ -666,6 +666,19 @@ config FREETZ_AVM_HAS_JUNK_BYTES
 		Select this if the original firmware image contains junk bytes in SquashFS,
 		see http://freetz.org/ticket/1614#comment:70 for more information.
 
+# TODO: check the default values, at the moment pure assumption
+config FREETZ_AVM_HAS_MULTID_LEASES_FORMAT_V2
+	bool "multid.leases format >= 2"	if FREETZ_TYPE_CUSTOM
+	default n		if \
+		FREETZ_AVM_VERSION_04_XX
+	default y
+	help
+		Select this option if each line of multid.leases file used by AVM
+		to store lease descriptions contains 8 (v2) instead of 7 (v1) columns.
+
+		Note: v2 is a Freetz internal name, it is unknown if and how AVM
+		distinguishes the file format version.
+
 config FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE
 	bool "Has update filesystem image"	if FREETZ_TYPE_CUSTOM
 	default y		if \

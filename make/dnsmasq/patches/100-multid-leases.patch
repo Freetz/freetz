@@ -62,7 +62,7 @@
        
        for (lease = leases; lease; lease = lease->next)
  	{
-@@ -250,14 +280,66 @@
+@@ -250,14 +280,70 @@
  	  ourprintf(&err, " %s ", daemon->addrbuff);
  	  ourprintf(&err, "%s ", lease->hostname ? lease->hostname : "*");
  	  	  
@@ -117,7 +117,11 @@
 +	  ourprintf3(
 +	    multid_leases,
 +	    &err_multid,
++#ifdef MULTID_LEASES_FORMAT_V2
 +	    " %.2x:%.2x:%.2x:%.2x:%.2x:%.2x \"\"",
++#else
++	    " %.2x:%.2x:%.2x:%.2x:%.2x:%.2x",
++#endif
 +	    lease->hwaddr[0],
 +	    lease->hwaddr[1],
 +	    lease->hwaddr[2],
@@ -130,7 +134,7 @@
  	}
        
  #ifdef HAVE_DHCP6  
-@@ -304,6 +386,9 @@
+@@ -304,6 +390,9 @@
        
        if (!err)
  	file_dirty = 0;
@@ -140,7 +144,7 @@
      }
    
    /* Set alarm for when the first lease expires. */
-@@ -344,6 +429,11 @@
+@@ -344,6 +433,11 @@
  		(unsigned int)difftime(next_event, now));
      }
  
@@ -152,7 +156,7 @@
    send_alarm(next_event, now);
  }
  
-@@ -999,6 +1089,7 @@
+@@ -999,6 +1093,7 @@
  
    lease->last_interface = interface;
    lease->flags |= LEASE_CHANGED; 

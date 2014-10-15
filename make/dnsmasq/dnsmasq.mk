@@ -9,12 +9,16 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/dnsmasq
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dnsmasq
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_AVM_HAS_MULTID_LEASES_FORMAT_V2
 
 $(PKG)_COPTS := -DCONFFILE=\\\"/mod/etc/dnsmasq.conf\\\"
 $(PKG)_COPTS += -DRUNFILE=\\\"/var/run/dnsmasq/dnsmasq.pid\\\"
 $(PKG)_COPTS += -DLEASEFILE=\\\"/var/tmp/dnsmasq.leases\\\"
 ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_COPTS += -DNO_IPV6
+endif
+ifeq ($(FREETZ_AVM_HAS_MULTID_LEASES_FORMAT_V2),y)
+$(PKG)_COPTS += -DMULTID_LEASES_FORMAT_V2
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
