@@ -6,7 +6,7 @@ TI_CHKSUM_DIR:=$(TOOLS_SOURCE_DIR)/TI-chksum-$(TI_CHKSUM_VERSION)
 $(TI_CHKSUM_DIR)/.unpacked: $(wildcard $(TI_CHKSUM_SRC)/*) | $(TOOLS_SOURCE_DIR)
 	$(RM) -r $(TI_CHKSUM_DIR)
 	mkdir -p $(TI_CHKSUM_DIR)
-	tar cC $(TI_CHKSUM_SRC) . | tar xC $(TI_CHKSUM_DIR) $(VERBOSE) --exclude=.svn
+	tar -C $(TI_CHKSUM_SRC) -c . | tar --exclude=.svn -C $(TI_CHKSUM_DIR) -x $(VERBOSE)
 	touch $@
 
 $(TI_CHKSUM_DIR)/tichksum: $(TI_CHKSUM_DIR)/.unpacked

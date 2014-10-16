@@ -1,10 +1,12 @@
-LZMA2EVA_SOURCE:=lzma2eva.tar.bz2
+LZMA2EVA_SRC:=$(TOOLS_DIR)/make/lzma2eva/src
 LZMA2EVA_DIR:=$(TOOLS_SOURCE_DIR)/lzma2eva
 
 LZMA2EVA_TOOLS:=lzma2eva eva2lzma
 
-$(LZMA2EVA_DIR)/.unpacked: $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(TOOLS_DIR)/source/$(LZMA2EVA_SOURCE)
+$(LZMA2EVA_DIR)/.unpacked: $(wildcard $(LZMA2EVA_SRC)/*) | $(TOOLS_SOURCE_DIR)
+	$(RM) -r $(LZMA2EVA_DIR)
+	mkdir -p $(LZMA2EVA_DIR)
+	tar -C $(LZMA2EVA_SRC) -c . | tar --exclude=.svn -C $(LZMA2EVA_DIR) -x $(VERBOSE)
 	touch $@
 
 $(LZMA2EVA_TOOLS:%=$(LZMA2EVA_DIR)/%): $(LZMA2EVA_DIR)/.unpacked

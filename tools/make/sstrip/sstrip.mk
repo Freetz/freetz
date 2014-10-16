@@ -1,9 +1,10 @@
-SSTRIP_VERSION:=1.0
-SSTRIP_SOURCE:=sstrip-$(SSTRIP_VERSION).tar.bz2
-SSTRIP_DIR:=$(TOOLS_SOURCE_DIR)/sstrip-$(SSTRIP_VERSION)
+SSTRIP_SRC:=$(TOOLS_DIR)/make/sstrip/src
+SSTRIP_DIR:=$(TOOLS_SOURCE_DIR)/sstrip
 
-$(SSTRIP_DIR)/.unpacked: $(TOOLS_DIR)/source/$(SSTRIP_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(TOOLS_DIR)/source/$(SSTRIP_SOURCE)
+$(SSTRIP_DIR)/.unpacked: $(wildcard $(SSTRIP_SRC)/*) | $(TOOLS_SOURCE_DIR)
+	$(RM) -r $(SSTRIP_DIR)
+	mkdir -p $(SSTRIP_DIR)
+	tar -C $(SSTRIP_SRC) -c . | tar --exclude=.svn -C $(SSTRIP_DIR) -x $(VERBOSE)
 	touch $@
 
 $(SSTRIP_DIR)/sstrip: $(SSTRIP_DIR)/.unpacked
