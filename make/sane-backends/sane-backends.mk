@@ -120,6 +120,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARIES) $($(PKG)_LIB_TARGET_BINARY) $(PKG)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(SANE_BACKENDS_DIR) clean
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsane* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/sane-backends.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/sane
 
 $(pkg)-uninstall:
