@@ -7,7 +7,7 @@ MKLIBS_SOURCE:=mklibs_$(MKLIBS_VERSION).tar.gz
 MKLIBS_SOURCE_MD5:=afe0ed527ba96b8a882b5de350603007
 MKLIBS_SITE:=http://ftp.de.debian.org/debian/pool/main/m/mklibs
 MKLIBS_DIR:=$(TOOLS_SOURCE_DIR)/mklibs-$(MKLIBS_VERSION)
-MKLIBS_MAKE_DIR:=$(TOOLS_DIR)/make
+MKLIBS_MAKE_DIR:=$(TOOLS_DIR)/make/mklibs
 MKLIBS_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
 MKLIBS_SCRIPT:=$(MKLIBS_DIR)/src/mklibs
 MKLIBS_TARGET_SCRIPT:=$(MKLIBS_DESTDIR)/mklibs
@@ -21,7 +21,7 @@ mklibs-source: $(DL_DIR)/$(MKLIBS_SOURCE)
 
 $(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(MKLIBS_SOURCE)
-	for i in $(MKLIBS_MAKE_DIR)/patches/*.mklibs.patch; do \
+	for i in $(MKLIBS_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(MKLIBS_DIR) $$i; \
 	done
 	touch $@

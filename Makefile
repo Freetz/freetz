@@ -175,7 +175,7 @@ TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
 TOOLS_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLS))
 TOOLS_SOURCE:=$(patsubst %,%-source,$(TOOLS))
 
-include $(call sorted-wildcard,$(TOOLS_DIR)/make/*.mk)
+include $(call sorted-wildcard,$(TOOLS_DIR)/make/*/*.mk)
 
 $(DL_DIR) \
 $(DL_FW_DIR) \

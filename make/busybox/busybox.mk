@@ -16,7 +16,7 @@ $(PKG)_MAKE_FLAGS += ARCH="mips"
 
 include $(MAKE_DIR)/busybox/busybox.rebuild-subopts.mk.in
 
-ifneq ($(strip $(DL_DIR)/$(BUSYBOX_SOURCE)), $(strip $(DL_DIR)/$(BUSYBOX_TOOLS_SOURCE)))
+ifneq ($(strip $(DL_DIR)/$(BUSYBOX_SOURCE)), $(strip $(DL_DIR)/$(BUSYBOX_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
 $(PKG_UNPACKED)

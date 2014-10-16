@@ -15,15 +15,15 @@ $(SSTRIP_DIR)/sstrip: $(SSTRIP_DIR)/.unpacked
 $(TOOLS_DIR)/sstrip: $(SSTRIP_DIR)/sstrip
 	cp $(SSTRIP_DIR)/sstrip $(TOOLS_DIR)/sstrip
 
-host-sstrip: $(TOOLS_DIR)/sstrip
+sstrip: $(TOOLS_DIR)/sstrip
 
-host-sstrip-source: $(SSTRIP_DIR)/.unpacked
+sstrip-source: $(SSTRIP_DIR)/.unpacked
 
-host-sstrip-clean:
+sstrip-clean:
 	-$(MAKE) -C $(SSTRIP_DIR) clean
 
-host-sstrip-dirclean:
+sstrip-dirclean:
 	$(RM) -r $(SSTRIP_DIR)
 
-host-sstrip-distclean: host-sstrip-dirclean
+sstrip-distclean: sstrip-dirclean
 	$(RM) $(TOOLS_DIR)/sstrip

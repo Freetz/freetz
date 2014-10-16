@@ -3,7 +3,7 @@ SQUASHFS3_SOURCE:=squashfs$(SQUASHFS3_VERSION).tar.gz
 SQUASHFS3_SOURCE_MD5:=2a4d2995ad5aa6840c95a95ffa6b1da6
 SQUASHFS3_SITE:=@SF/squashfs
 
-SQUASHFS3_MAKE_DIR:=$(TOOLS_DIR)/make
+SQUASHFS3_MAKE_DIR:=$(TOOLS_DIR)/make/squashfs3
 SQUASHFS3_DIR:=$(TOOLS_SOURCE_DIR)/squashfs$(SQUASHFS3_VERSION)
 SQUASHFS3_BUILD_DIR:=$(SQUASHFS3_DIR)/squashfs-tools
 
@@ -16,7 +16,7 @@ $(DL_DIR)/$(SQUASHFS3_SOURCE): | $(DL_DIR)
 
 $(SQUASHFS3_DIR)/.unpacked: $(DL_DIR)/$(SQUASHFS3_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(SQUASHFS3_SOURCE)
-	for i in $(SQUASHFS3_MAKE_DIR)/patches/*.squashfs3.patch; do \
+	for i in $(SQUASHFS3_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(SQUASHFS3_DIR) $$i; \
 	done
 	touch $@

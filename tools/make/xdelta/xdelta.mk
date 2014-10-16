@@ -3,7 +3,6 @@ XDELTA_SOURCE:=xdelta$(XDELTA_VERSION).tar.gz
 XDELTA_SOURCE_MD5:=633717fb1b3fa77374dc1f3549cc7b59
 XDELTA_SITE:=http://xdelta.googlecode.com/files
 XDELTA_DIR:=$(TOOLS_SOURCE_DIR)/xdelta$(XDELTA_VERSION)
-XDELTA_MAKE_DIR:=$(TOOLS_DIR)/make
 XDELTA_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)
 
 
@@ -32,4 +31,3 @@ xdelta-dirclean:
 
 xdelta-distclean:
 	$(RM) $(TOOLS_DIR)/xdelta3
-

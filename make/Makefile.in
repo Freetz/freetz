@@ -617,7 +617,7 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 # Naming conventions for patches are different for library vs. binary packages,
 # therefore we have two different macros.
 
-# XXX: Temporarily use system's unzip and not from busybox-tools (see #1535, r7199)
+# XXX: Temporarily use system's unzip and not from busybox-host (see #1535, r7199)
 # $1: path to the file to be unpacked
 # $2: directory files to be unpacked to
 # $3: file extension
@@ -694,7 +694,7 @@ endef
 
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-tools
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-host
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
@@ -723,7 +723,7 @@ endef
 
 ## Unpack and patch library package
 define PKG_UNPACKED_LIB__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-tools
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-host
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)

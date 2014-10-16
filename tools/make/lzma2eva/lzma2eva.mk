@@ -1,6 +1,5 @@
 LZMA2EVA_SOURCE:=lzma2eva.tar.bz2
 LZMA2EVA_DIR:=$(TOOLS_SOURCE_DIR)/lzma2eva
-LZMA2EVA_MAKE_DIR:=$(TOOLS_DIR)/make
 
 LZMA2EVA_TOOLS:=lzma2eva eva2lzma
 

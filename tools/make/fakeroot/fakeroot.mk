@@ -3,7 +3,7 @@ FAKEROOT_SOURCE:=fakeroot_$(FAKEROOT_VERSION).orig.tar.bz2
 FAKEROOT_SOURCE_MD5:=ef246a7cadf85282180a1e27f7377a26
 FAKEROOT_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
 
-FAKEROOT_MAKE_DIR:=$(TOOLS_DIR)/make
+FAKEROOT_MAKE_DIR:=$(TOOLS_DIR)/make/fakeroot
 FAKEROOT_DIR:=$(TOOLS_SOURCE_DIR)/fakeroot-$(FAKEROOT_VERSION)
 FAKEROOT_MAINARCH_DIR:=$(FAKEROOT_DIR)/build/arch
 FAKEROOT_BIARCH_DIR:=$(FAKEROOT_DIR)/build/biarch
@@ -32,7 +32,7 @@ $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(FAKEROOT_SOURCE)
 	$(SED) -i "s,getopt --version,getopt --version 2>/dev/null," \
 		$(FAKEROOT_DIR)/scripts/fakeroot.in
-	for i in $(FAKEROOT_MAKE_DIR)/patches/*.fakeroot.patch; do \
+	for i in $(FAKEROOT_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(FAKEROOT_DIR) $$i; \
 	done
 	touch $@
