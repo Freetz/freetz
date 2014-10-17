@@ -103,6 +103,8 @@ define UNPACK_TARBALL
 	$(strip $(call UNPACK_TARBALL__INT,$(strip $(1)),$(strip $(2)),$(suffix $(strip $(1)))))
 endef
 
+UNPACK_TARBALL_PREREQUISITES := busybox-host tar-host
+
 #
 # $1 - git repository
 # $2 - (optional) branch name, if omitted "master" is used
