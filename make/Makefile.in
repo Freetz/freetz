@@ -308,13 +308,6 @@ define REPLACE_LIBTOOL
 $(eval $(call REPLACE_LIBTOOL__INT2,$(1),$(2),$(3)))
 endef
 
-# Use $< (first prerequisite) rather than $^ (all prerequisites), because
-# otherwise there will be errors when make tries to copy multiple source files
-# into one target binary.
-define INSTALL_FILE
-mkdir -p $(dir $@); \
-cp $< $@;
-endef
 define INSTALL_BINARY_STRIP
 $(INSTALL_FILE) \
 $(TARGET_STRIP) $@;

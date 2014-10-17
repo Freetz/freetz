@@ -74,6 +74,14 @@ TOLOWER_NAME = $(call SUBST_MAP,$1,$(SUBST_MAP_TOLOWER_NAME))
 #   $1 = string to convert
 LEGAL_VARNAME = $(call SUBST_MAP,$1,$(SUBST_MAP_LEGAL_VARNAME))
 
+# Use $< (first prerequisite) rather than $^ (all prerequisites), because
+# otherwise there will be errors when make tries to copy multiple source files
+# into one target binary.
+define INSTALL_FILE
+mkdir -p $(dir $@); \
+cp $< $@;
+endef
+
 #
 # $1 - git repository
 # $2 - (optional) branch name, if omitted "master" is used
