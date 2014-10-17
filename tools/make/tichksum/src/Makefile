@@ -1,6 +1,6 @@
 CC = gcc
 LD = ld
-CFLAGS = -W -Wall -O2
+CFLAGS = -W -Wall -Wno-unused-result -O2 -fno-strict-aliasing
 PROGS = tichksum
 OBJS += ckmain.o cksum.o
 
