@@ -610,31 +610,10 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 # Naming conventions for patches are different for library vs. binary packages,
 # therefore we have two different macros.
 
-# XXX: Temporarily use system's unzip and not from busybox-host (see #1535, r7199)
-# $1: path to the file to be unpacked
-# $2: directory files to be unpacked to
-# $3: file extension
-define UNPACK_CMD__INT
-	$(if $(filter .gz .tgz .taz,$(3)),$(TOOLS_DIR)/gunzip -c $(1)) \
-	$(if $(filter .bzip2 .bz2 .bz .tbz2 .tbz .tz2,$(3)),$(TOOLS_DIR)/bunzip2 -c $(1)) \
-	$(if $(filter .xz .txz,$(3)),$(TOOLS_DIR)/unxz -c $(1)) \
-	$(if $(filter .lzma .tlz,$(3)),$(TOOLS_DIR)/unlzma -c $(1)) \
-	$(if $(filter .Z .taZ,$(3)),$(TOOLS_DIR)/uncompress -c $(1)) \
-	$(if $(filter .tar,$(3)),cat $(1)) \
-	$(if $(filter .zip,$(3)),unzip $(QUIETSHORT) -u $(1) -d $(2)) \
-	$(if $(filter .gz .tgz .taz .bzip2 .bz2 .bz .tbz2 .tbz .tz2 .xz .txz .lzma .tlz .Z .taZ .tar,$(3)),| tar -C $(2) $(VERBOSE) -x)
-endef
-
-# $1: path to the file to be unpacked
-# $2: directory files to be unpacked to
-define UNPACK_CMD
-	$(strip $(call UNPACK_CMD__INT,$(strip $(1)),$(strip $(2)),$(suffix $(strip $(1)))))
-endef
-
 # Unpack, without patch, but only if source package is defined
-# Call $(PKG)_CUSTOM_UNPACK if UNPACK_CMD evaluates to an empty string (because of unknown extension)
+# Call $(PKG)_CUSTOM_UNPACK if UNPACK_TARBALL evaluates to an empty string (because of unknown extension)
 define PKG_UNPACK
-	$(if $($(PKG)_SOURCE),$(strip $(call $(if $($(PKG)_CUSTOM_UNPACK),$(PKG)_CUSTOM_UNPACK,UNPACK_CMD),$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR))))
+	$(if $($(PKG)_SOURCE),$(strip $(call $(if $($(PKG)_CUSTOM_UNPACK),$(PKG)_CUSTOM_UNPACK,UNPACK_TARBALL),$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR))))
 endef
 
 ### PKG_PATCH - apply patches
@@ -680,14 +659,14 @@ endef
 
 # Removes all files under $1 except for those in $2
 define RMDIR_KEEP_FILES__INT
-	$(if $2,if [ -d "$1" ]; then TMPFILE=`mktemp`; tar -C $1 -cf $$$$TMPFILE $2; fi;) \
+	$(if $2,if [ -d "$1" ]; then TMPFILE=`mktemp`; $(TAR) -C $1 -cf $$$$TMPFILE $2; fi;) \
 	$(RM) -r $1; \
-	$(if $2,if [ -n "$$$$TMPFILE" ]; then mkdir -p $1; tar -C $1 -xf $$$$TMPFILE; rm -f $$$$TMPFILE; fi;)
+	$(if $2,if [ -n "$$$$TMPFILE" ]; then mkdir -p $1; $(TAR) -C $1 -xf $$$$TMPFILE; rm -f $$$$TMPFILE; fi;)
 endef
 
 ## Unpack and patch binary package
 define PKG_UNPACKED_BIN__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-host
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-host tar-host
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
@@ -705,7 +684,7 @@ $(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PACKAGES_DIR)/.$(pkg)
 	mkdir -p $($(PKG)_TARGET_DIR)/root
 	if test -d $($(PKG)_MAKE_DIR)/files; then \
-		tar -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | tar -x -C $($(PKG)_TARGET_DIR) ; \
+		$(TAR) -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | $(TAR) -x -C $($(PKG)_TARGET_DIR); \
 	fi
 	@touch $$@
 $(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
@@ -716,7 +695,7 @@ endef
 
 ## Unpack and patch library package
 define PKG_UNPACKED_LIB__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-host
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR busybox-host tar-host
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
@@ -745,7 +724,7 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
 	mkdir -p $($(PKG)_TARGET_DIR)/root
 	if test -d $($(PKG)_MAKE_DIR)/files; then \
-		tar -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | tar -x -C $($(PKG)_TARGET_DIR) ; \
+		$(TAR) -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | $(TAR) -x -C $($(PKG)_TARGET_DIR); \
 	fi
 	@touch $$@
 $(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)

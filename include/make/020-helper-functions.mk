@@ -82,6 +82,27 @@ mkdir -p $(dir $@); \
 cp $< $@;
 endef
 
+# XXX: Temporarily use system's unzip and not from busybox-host (see #1535, r7199)
+# $1: path to the file to be unpacked
+# $2: directory files to be unpacked to
+# $3: file extension
+define UNPACK_TARBALL__INT
+	$(if $(filter .gz .tgz .taz,$(3)),$(TOOLS_DIR)/gunzip -c $(1)) \
+	$(if $(filter .bzip2 .bz2 .bz .tbz2 .tbz .tz2,$(3)),$(TOOLS_DIR)/bunzip2 -c $(1)) \
+	$(if $(filter .xz .txz,$(3)),$(TOOLS_DIR)/unxz -c $(1)) \
+	$(if $(filter .lzma .tlz,$(3)),$(TOOLS_DIR)/unlzma -c $(1)) \
+	$(if $(filter .Z .taZ,$(3)),$(TOOLS_DIR)/uncompress -c $(1)) \
+	$(if $(filter .tar,$(3)),cat $(1)) \
+	$(if $(filter .zip,$(3)),unzip $(QUIETSHORT) -u $(1) -d $(2)) \
+	$(if $(filter .gz .tgz .taz .bzip2 .bz2 .bz .tbz2 .tbz .tz2 .xz .txz .lzma .tlz .Z .taZ .tar,$(3)),| $(TAR) -C $(2) $(VERBOSE) -x)
+endef
+
+# $1: path to the file to be unpacked
+# $2: directory files to be unpacked to
+define UNPACK_TARBALL
+	$(strip $(call UNPACK_TARBALL__INT,$(strip $(1)),$(strip $(2)),$(suffix $(strip $(1)))))
+endef
+
 #
 # $1 - git repository
 # $2 - (optional) branch name, if omitted "master" is used
