@@ -1,0 +1,30 @@
+--- src/options.c
++++ src/options.c
+@@ -2119,15 +2119,18 @@
+     case CMD_END:
+ #ifdef USE_FIPS
+         if(new_global_options.option.fips) {
+-            if(section->option.client) {
+-                if(section->client_method==(SSL_METHOD *)SSLv2_client_method() ||
+-                        section->client_method==(SSL_METHOD *)SSLv3_client_method())
+-                    return "FIPS mode requires sslVersion to be TLSv1 or later";
+-            } else {
+-                if(section->server_method==(SSL_METHOD *)SSLv2_server_method() ||
+-                        section->server_method==(SSL_METHOD *)SSLv3_server_method())
+-                    return "FIPS mode requires sslVersion to be TLSv1 or later";
+-            }
++#ifndef OPENSSL_NO_SSL2
++            if(section->option.client ?
++                    section->client_method==(SSL_METHOD *)SSLv2_client_method() :
++                    section->server_method==(SSL_METHOD *)SSLv2_server_method())
++                return "\"sslVersion = SSLv2\" not supported in FIPS mode";
++#endif
++#ifndef OPENSSL_NO_SSL3
++            if(section->option.client ?
++                    section->client_method==(SSL_METHOD *)SSLv3_client_method() :
++                    section->server_method==(SSL_METHOD *)SSLv3_server_method())
++                return "\"sslVersion = SSLv3\" not supported in FIPS mode";
++#endif
+         }
+ #endif /* USE_FIPS */
+         break;
