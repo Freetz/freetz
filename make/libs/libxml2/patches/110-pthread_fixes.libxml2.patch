@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -14485,12 +14485,12 @@
+@@ -14890,12 +14890,12 @@
  	       if test "${THREAD_LIBS}" = "-lpthread" ; then
  	           if expr ${GCC_MEDIUM} \> 2 \& ${GCC_MAJOR} = 3 > /dev/null
  		   then
@@ -40,16 +40,16 @@
  Description: libXML library version2.
  Requires:
 -Libs: -L${libdir} -lxml2
--Libs.private: @ICU_LIBS@ @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @WIN32_EXTRA_LIBADD@ @LIBS@
+-Libs.private: @ICU_LIBS@ @THREAD_LIBS@ @Z_LIBS@ @LZMA_LIBS@ @ICONV_LIBS@ @M_LIBS@ @WIN32_EXTRA_LIBADD@ @LIBS@
 -Cflags: @XML_INCLUDEDIR@ @XML_CFLAGS@
-+Libs: -L${libdir} @ICU_LIBS@ @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @WIN32_EXTRA_LIBADD@ @LIBS@ -lxml2
++Libs: -L${libdir} @ICU_LIBS@ @THREAD_LIBS@ @Z_LIBS@ @LZMA_LIBS@ @ICONV_LIBS@ @M_LIBS@ @WIN32_EXTRA_LIBADD@ @LIBS@ -lxml2
 +Cflags: @THREAD_CFLAGS@ @XML_INCLUDEDIR@ @XML_CFLAGS@
 --- libxml-2.0-uninstalled.pc.in
 +++ libxml-2.0-uninstalled.pc.in
 @@ -9,4 +9,4 @@
  Description: libXML library version2.
  Requires:
- Libs: -L${libdir} -lxml2 @ICU_LIBS@ @THREAD_LIBS@ @Z_LIBS@ @ICONV_LIBS@ @M_LIBS@ @LIBS@
+ Libs: -L${libdir} -lxml2 @ICU_LIBS@ @THREAD_LIBS@ @Z_LIBS@ @LZMA_LIBS@ @ICONV_LIBS@ @M_LIBS@ @LIBS@
 -Cflags: -I${includedir} @XML_INCLUDEDIR@ @XML_CFLAGS@
 +Cflags: -I${includedir} @THREAD_CFLAGS@ @XML_INCLUDEDIR@ @XML_CFLAGS@
 --- xml2-config.in

@@ -1,39 +1,40 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -336,7 +336,7 @@
+@@ -376,7 +376,7 @@
  man3dir = $(mandir)/man3
  NROFF = nroff
  MANS = $(man_MANS)
--DATA = $(confexec_DATA) $(m4data_DATA) $(pkgconfig_DATA)
-+DATA = $(pkgconfig_DATA)
+-DATA = $(cmake_DATA) $(confexec_DATA) $(m4data_DATA) $(pkgconfig_DATA)
++DATA =                                               $(pkgconfig_DATA)
  RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
    distclean-recursive maintainer-clean-recursive
- AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
-@@ -611,7 +611,7 @@
+ am__recursive_targets = \
+@@ -678,7 +678,7 @@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
  ACLOCAL_AMFLAGS = -I m4
 -SUBDIRS = include . doc example xstc $(PYTHON_SUBDIR)
-+SUBDIRS = include . xstc $(PYTHON_SUBDIR)
++SUBDIRS = include .             xstc $(PYTHON_SUBDIR)
  DIST_SUBDIRS = include . doc example python xstc
  AM_CPPFLAGS = -I$(top_builddir)/include -I$(srcdir)/include
  AM_CFLAGS = $(THREAD_CFLAGS) $(Z_CFLAGS) $(LZMA_CFLAGS)
-@@ -1635,7 +1635,7 @@
+@@ -1712,7 +1712,7 @@
  check-am: all-am
  check: $(BUILT_SOURCES)
  	$(MAKE) $(AM_MAKEFLAGS) check-recursive
 -all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
-+all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(DATA) \
++all-am: Makefile $(LTLIBRARIES)             $(SCRIPTS)         $(DATA) \
  		config.h
  install-binPROGRAMS: install-libLTLIBRARIES
  
-@@ -1703,15 +1703,15 @@
+@@ -1780,15 +1780,15 @@
  
  info-am:
  
--install-data-am: install-data-local install-m4dataDATA install-man \
+-install-data-am: install-cmakeDATA install-data-local \
+-	install-m4dataDATA install-man install-pkgconfigDATA
 +install-data-am: \
- 	install-pkgconfigDATA
++	install-pkgconfigDATA
  
  install-dvi: install-dvi-recursive
  
