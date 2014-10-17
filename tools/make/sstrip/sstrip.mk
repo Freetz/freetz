@@ -10,7 +10,6 @@ $(SSTRIP_DIR)/.unpacked: $(wildcard $(SSTRIP_SRC)/*) | $(TOOLS_SOURCE_DIR)
 $(SSTRIP_DIR)/sstrip: $(SSTRIP_DIR)/.unpacked
 	$(MAKE) -C $(SSTRIP_DIR) \
 		CC="$(TOOLS_CC)" \
-		CFLAGS="-Wall -O2" \
 		all
 
 $(TOOLS_DIR)/sstrip: $(SSTRIP_DIR)/sstrip
