@@ -27,7 +27,7 @@ $(SQUASHFS3_TOOLS_BUILD_DIR): $(SQUASHFS3_DIR)/.unpacked $(LZMA_DIR)/liblzma.a
 	touch -c $@
 
 $(SQUASHFS3_TOOLS_TARGET_DIR): $(TOOLS_DIR)/%: $(SQUASHFS3_BUILD_DIR)/%
-	cp $^ $@
+	$(INSTALL_FILE)
 	strip $@
 
 squashfs3: $(SQUASHFS3_TOOLS_TARGET_DIR)

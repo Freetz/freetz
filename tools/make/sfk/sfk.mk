@@ -23,7 +23,7 @@ else
 endif
 
 $(TOOLS_DIR)/sfk: $(SFK_DIR)/sfk
-	cp $(SFK_DIR)/sfk $(TOOLS_DIR)/sfk
+	$(INSTALL_FILE)
 
 sfk: $(TOOLS_DIR)/sfk
 

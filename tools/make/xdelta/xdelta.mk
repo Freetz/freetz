@@ -19,7 +19,7 @@ $(XDELTA_DIR)/xdelta3: $(XDELTA_DIR)/.unpacked
 	$(MAKE) CC="$(TOOLS_CC)" -C $(XDELTA_DIR) xdelta3
 
 $(TOOLS_DIR)/xdelta3: $(XDELTA_DIR)/xdelta3
-	cp $(XDELTA_DIR)/xdelta3 $(TOOLS_DIR)/xdelta3
+	$(INSTALL_FILE)
 
 xdelta: $(TOOLS_DIR)/xdelta3
 

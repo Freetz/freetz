@@ -12,7 +12,7 @@ $(FIND_SQUASHFS_DIR)/find-squashfs: $(FIND_SQUASHFS_DIR)/.unpacked
 		-C $(FIND_SQUASHFS_DIR)
 
 $(TOOLS_DIR)/find-squashfs: $(FIND_SQUASHFS_DIR)/find-squashfs
-	cp $(FIND_SQUASHFS_DIR)/find-squashfs $(TOOLS_DIR)/find-squashfs
+	$(INSTALL_FILE)
 
 find-squashfs: $(TOOLS_DIR)/find-squashfs
 

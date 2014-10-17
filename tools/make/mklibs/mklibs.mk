@@ -40,12 +40,10 @@ $(MKLIBS_READELF_BINARY): $(MKLIBS_DIR)/.configured
 	$(MAKE) -C $(MKLIBS_DIR) all
 
 $(MKLIBS_TARGET_SCRIPT): $(MKLIBS_SCRIPT)
-	mkdir -p $(dir $@)
-	cp $^ $@
+	$(INSTALL_FILE)
 
 $(MKLIBS_READELF_TARGET_BINARY): $(MKLIBS_READELF_BINARY)
-	mkdir -p $(dir $@)
-	cp $^ $@
+	$(INSTALL_FILE)
 
 mklibs: $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_READELF_TARGET_BINARY)
 

@@ -27,10 +27,10 @@ $(LZMA_LIB_DIR)/liblzma.a: $(LZMA_DIR)/.unpacked
 	touch -c $@
 
 $(LZMA_DIR)/liblzma.a: $(LZMA_LIB_DIR)/liblzma.a
-	cp -f $(LZMA_LIB_DIR)/liblzma.a $(LZMA_DIR)/liblzma.a
+	$(INSTALL_FILE)
 
 $(TOOLS_DIR)/lzma: $(LZMA_ALONE_DIR)/lzma
-	cp $(LZMA_ALONE_DIR)/lzma $(TOOLS_DIR)/lzma
+	$(INSTALL_FILE)
 
 lzma: $(LZMA_DIR)/liblzma.a $(TOOLS_DIR)/lzma
 

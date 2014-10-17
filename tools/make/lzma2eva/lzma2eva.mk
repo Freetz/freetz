@@ -13,7 +13,7 @@ $(LZMA2EVA_TOOLS:%=$(LZMA2EVA_DIR)/%): $(LZMA2EVA_DIR)/.unpacked
 	$(MAKE) CC="$(TOOLS_CC)" LD="$(TOOLS_LD)" -C $(LZMA2EVA_DIR)
 
 $(LZMA2EVA_TOOLS:%=$(TOOLS_DIR)/%): $(TOOLS_DIR)/%: $(LZMA2EVA_DIR)/%
-	cp $< $@
+	$(INSTALL_FILE)
 
 lzma2eva: $(LZMA2EVA_TOOLS:%=$(TOOLS_DIR)/%)
 

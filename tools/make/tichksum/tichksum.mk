@@ -14,7 +14,7 @@ $(TI_CHKSUM_DIR)/tichksum: $(TI_CHKSUM_DIR)/.unpacked
 		-C $(TI_CHKSUM_DIR)
 
 $(TOOLS_DIR)/tichksum: $(TI_CHKSUM_DIR)/tichksum
-	cp $(TI_CHKSUM_DIR)/tichksum $(TOOLS_DIR)/tichksum
+	$(INSTALL_FILE)
 
 tichksum: $(TOOLS_DIR)/tichksum
 

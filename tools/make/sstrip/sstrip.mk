@@ -13,7 +13,7 @@ $(SSTRIP_DIR)/sstrip: $(SSTRIP_DIR)/.unpacked
 		all
 
 $(TOOLS_DIR)/sstrip: $(SSTRIP_DIR)/sstrip
-	cp $(SSTRIP_DIR)/sstrip $(TOOLS_DIR)/sstrip
+	$(INSTALL_FILE)
 
 sstrip: $(TOOLS_DIR)/sstrip
 

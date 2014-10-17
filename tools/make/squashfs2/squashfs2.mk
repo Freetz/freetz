@@ -27,7 +27,7 @@ $(SQUASHFS2_TOOLS_BUILD_DIR): $(SQUASHFS2_DIR)/.unpacked $(LZMA_DIR)/liblzma.a
 	touch -c $@
 
 $(SQUASHFS2_TOOLS_TARGET_DIR): $(TOOLS_DIR)/%2-lzma: $(SQUASHFS2_BUILD_DIR)/%-lzma
-	cp $^ $@
+	$(INSTALL_FILE)
 	strip $@
 
 squashfs2: $(SQUASHFS2_TOOLS_TARGET_DIR)
