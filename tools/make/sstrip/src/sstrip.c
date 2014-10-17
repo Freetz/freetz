@@ -427,7 +427,7 @@ int main(int argc, char *argv[])
 	union {
 		Elf32_Phdr	*phdrs32;
 		Elf64_Phdr	*phdrs64;
-	} p;
+	} p = { 0 };
 	unsigned long	newsize;
 	int				failures = 0;
 
