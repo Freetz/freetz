@@ -611,7 +611,6 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 # therefore we have two different macros.
 
 # Unpack, without patch, but only if source package is defined
-# Call $(PKG)_CUSTOM_UNPACK if UNPACK_TARBALL evaluates to an empty string (because of unknown extension)
 define PKG_UNPACK
 	$(if $($(PKG)_SOURCE),$(strip $(call $(if $($(PKG)_CUSTOM_UNPACK),$(PKG)_CUSTOM_UNPACK,UNPACK_TARBALL),$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR))))
 endef
