@@ -81,9 +81,9 @@ GCC_PATCHES_ROOT_DIR := $(GCC_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(GCC_VERSION))
 GCC_CONDITIONAL_PATCHES += $(if $(FREETZ_TARGET_GCC_DEFAULT_AS_NEEDED),default-as-needed)
 
 gcc-unpacked: $(GCC_DIR)/.unpacked
-$(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
+$(GCC_DIR)/.unpacked: $(DL_DIR)/$(GCC_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(GCC_DIR)
-	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(GCC_SOURCE)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(GCC_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	set -e; \
 	for i in $(foreach dir,$(GCC_PATCHES_ROOT_DIR) $(addprefix $(GCC_PATCHES_ROOT_DIR)/,$(strip $(GCC_CONDITIONAL_PATCHES))),$(dir)/*.patch); do \
 		$(PATCH_TOOL) $(GCC_DIR) $$i; \

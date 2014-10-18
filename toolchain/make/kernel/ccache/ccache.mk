@@ -16,9 +16,9 @@ $(DL_DIR)/$(CCACHE_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(CCACHE_KERNEL_SOURCE) $(CCACHE_KERNEL_SITE) $(CCACHE_KERNEL_MD5)
 
 ccache-kernel-unpacked: $(CCACHE_KERNEL_DIR)/.unpacked
-$(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR)
+$(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(CCACHE_KERNEL_DIR)
-	tar -C $(KERNEL_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_KERNEL_SOURCE),$(KERNEL_TOOLCHAIN_DIR))
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
 	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_KERNEL_BIN_DIR)\",g" \

@@ -18,9 +18,9 @@ $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
 endif
 
 ccache-unpacked: $(CCACHE_DIR)/.unpacked
-$(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR)
+$(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -f $(CCACHE_DIR)
-	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(CCACHE_SOURCE)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
 	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_BIN_DIR)\",g" \

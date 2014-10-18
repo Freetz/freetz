@@ -9,15 +9,16 @@ LIBTOOL_HOST_TARGET_SCRIPT:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libtool
 
 GLOBAL_LIBDIR=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 
+libtool-host-source: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(LIBTOOL_HOST_SOURCE)), $(strip $(DL_DIR)/$(LIBTOOL_SOURCE)))
 $(DL_DIR)/$(LIBTOOL_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(LIBTOOL_HOST_SOURCE) $(LIBTOOL_HOST_SITE) $(LIBTOOL_HOST_SOURCE_MD5)
 endif
 
-$(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
+libtool-host-unpacked: $(LIBTOOL_HOST_DIR)/.unpacked
+$(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(LIBTOOL_HOST_DIR)
-	mkdir -p $(LIBTOOL_HOST_DIR)
-	tar -C $(TARGET_TOOLCHAIN_DIR) $(VERBOSE) -xf $(DL_DIR)/$(LIBTOOL_HOST_SOURCE)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(LIBTOOL_HOST_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	for i in $(LIBTOOL_HOST_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(LIBTOOL_HOST_DIR) $$i; \
 	done
@@ -27,6 +28,7 @@ $(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TOOLS_SOURCE
 	done; \
 	touch $@
 
+libtool-host-configured: $(LIBTOOL_HOST_DIR)/.configured
 $(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked | $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP)
 	(cd $(LIBTOOL_HOST_DIR); rm -rf config.cache; \
 		CC=$(TARGET_CC) \
@@ -59,11 +61,7 @@ $(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
 		install
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 
-libtool-host: $(STDCXXLIB) $(LIBTOOL_HOST_TARGET_SCRIPT)
-
-libtool-host-source: $(LIBTOOL_HOST_DIR)/.unpacked
-
-libtool-host-configured: $(LIBTOOL_HOST_DIR)/.configured
+libtool-host: $(LIBTOOL_HOST_TARGET_SCRIPT) | $(STDCXXLIB)
 
 libtool-host-clean:
 	-$(MAKE) -C $(LIBTOOL_HOST_DIR) clean
