@@ -2,10 +2,10 @@ FIND_SQUASHFS_SRC:=$(TOOLS_DIR)/make/find-squashfs/src
 FIND_SQUASHFS_DIR:=$(TOOLS_SOURCE_DIR)/find-squashfs
 
 find-squashfs-unpacked: $(FIND_SQUASHFS_DIR)/.unpacked
-$(FIND_SQUASHFS_DIR)/.unpacked: $(wildcard $(FIND_SQUASHFS_SRC)/*) | $(TOOLS_SOURCE_DIR)
+$(FIND_SQUASHFS_DIR)/.unpacked: $(wildcard $(FIND_SQUASHFS_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
 	$(RM) -r $(FIND_SQUASHFS_DIR)
 	mkdir -p $(FIND_SQUASHFS_DIR)
-	tar -C $(FIND_SQUASHFS_SRC) -c . | tar --exclude=.svn -C $(FIND_SQUASHFS_DIR) -x $(VERBOSE)
+	$(TAR) -C $(FIND_SQUASHFS_SRC) -c . | $(TAR) --exclude=.svn -C $(FIND_SQUASHFS_DIR) -x $(VERBOSE)
 	touch $@
 
 $(FIND_SQUASHFS_DIR)/find-squashfs: $(FIND_SQUASHFS_DIR)/.unpacked

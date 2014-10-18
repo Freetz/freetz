@@ -2,10 +2,10 @@ SSTRIP_SRC:=$(TOOLS_DIR)/make/sstrip/src
 SSTRIP_DIR:=$(TOOLS_SOURCE_DIR)/sstrip
 
 sstrip-unpacked: $(SSTRIP_DIR)/.unpacked
-$(SSTRIP_DIR)/.unpacked: $(wildcard $(SSTRIP_SRC)/*) | $(TOOLS_SOURCE_DIR)
+$(SSTRIP_DIR)/.unpacked: $(wildcard $(SSTRIP_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
 	$(RM) -r $(SSTRIP_DIR)
 	mkdir -p $(SSTRIP_DIR)
-	tar -C $(SSTRIP_SRC) -c . | tar --exclude=.svn -C $(SSTRIP_DIR) -x $(VERBOSE)
+	$(TAR) -C $(SSTRIP_SRC) -c . | $(TAR) --exclude=.svn -C $(SSTRIP_DIR) -x $(VERBOSE)
 	touch $@
 
 $(SSTRIP_DIR)/sstrip: $(SSTRIP_DIR)/.unpacked
