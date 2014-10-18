@@ -9,14 +9,13 @@ kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
 $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE) $(KCONFIG_SITE)
 
+kconfig-unpacked: $(KCONFIG_DIR)/.unpacked
 $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(KCONFIG_SOURCE)
 	for i in $(KCONFIG_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(KCONFIG_DIR) $$i; \
 	done;
 	touch $@
-
-kconfig-unpacked: $(KCONFIG_DIR)/.unpacked
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
 	$(MAKE) -C $(KCONFIG_DIR) config
