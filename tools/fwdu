@@ -102,7 +102,7 @@ image() {
 	($FTOOLS/remove-junk-bytes var/tmp/kernel.image var/tmp/kernel.junked 2>&1 && mv var/tmp/kernel.junked var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*junk bytes.*),\t\1,p'
 	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
 	rm -rf var
-	$FTOOLS/rmtichksum -f x.image >/dev/null 2>&1
+	$FTOOLS/tichksum -r x.image >/dev/null 2>&1
 	$FTOOLS/find-squashfs x.image >/dev/null 2>&1
 	rm x.image
 	cat kernelsquashfs.raw kernel.raw > x.raw
