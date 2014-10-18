@@ -4,9 +4,11 @@ TAR_HOST_SOURCE_MD5:=8f32b2bc1ed7ddf4cf4e4a39711341b0
 TAR_HOST_SITE:=@GNU/tar
 TAR_HOST_DIR:=$(TOOLS_SOURCE_DIR)/tar-$(TAR_HOST_VERSION)
 
+tar-host-source: $(DL_DIR)/$(TAR_HOST_SOURCE)
 $(DL_DIR)/$(TAR_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TAR_HOST_SOURCE) $(TAR_HOST_SITE) $(TAR_HOST_SOURCE_MD5)
 
+tar-host-unpacked: $(TAR_HOST_DIR)/.unpacked
 $(TAR_HOST_DIR)/.unpacked: $(DL_DIR)/$(TAR_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(TAR_HOST_SOURCE)
 	touch $@
@@ -31,8 +33,6 @@ $(TOOLS_DIR)/tar-gnu: $(TAR_HOST_DIR)/src/tar
 	strip $@
 
 tar-host: $(TOOLS_DIR)/tar-gnu
-
-tar-host-source: $(TAR_HOST_DIR)/.unpacked
 
 tar-host-clean:
 	-$(MAKE) -C $(TAR_HOST_DIR) clean

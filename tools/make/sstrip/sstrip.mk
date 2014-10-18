@@ -1,6 +1,7 @@
 SSTRIP_SRC:=$(TOOLS_DIR)/make/sstrip/src
 SSTRIP_DIR:=$(TOOLS_SOURCE_DIR)/sstrip
 
+sstrip-unpacked: $(SSTRIP_DIR)/.unpacked
 $(SSTRIP_DIR)/.unpacked: $(wildcard $(SSTRIP_SRC)/*) | $(TOOLS_SOURCE_DIR)
 	$(RM) -r $(SSTRIP_DIR)
 	mkdir -p $(SSTRIP_DIR)
@@ -16,8 +17,6 @@ $(TOOLS_DIR)/sstrip: $(SSTRIP_DIR)/sstrip
 	$(INSTALL_FILE)
 
 sstrip: $(TOOLS_DIR)/sstrip
-
-sstrip-source: $(SSTRIP_DIR)/.unpacked
 
 sstrip-clean:
 	-$(MAKE) -C $(SSTRIP_DIR) clean

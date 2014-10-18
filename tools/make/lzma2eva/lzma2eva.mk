@@ -3,6 +3,7 @@ LZMA2EVA_DIR:=$(TOOLS_SOURCE_DIR)/lzma2eva
 
 LZMA2EVA_TOOLS:=lzma2eva eva2lzma
 
+lzma2eva-unpacked: $(LZMA2EVA_DIR)/.unpacked
 $(LZMA2EVA_DIR)/.unpacked: $(wildcard $(LZMA2EVA_SRC)/*) | $(TOOLS_SOURCE_DIR)
 	$(RM) -r $(LZMA2EVA_DIR)
 	mkdir -p $(LZMA2EVA_DIR)
@@ -16,8 +17,6 @@ $(LZMA2EVA_TOOLS:%=$(TOOLS_DIR)/%): $(TOOLS_DIR)/%: $(LZMA2EVA_DIR)/%
 	$(INSTALL_FILE)
 
 lzma2eva: $(LZMA2EVA_TOOLS:%=$(TOOLS_DIR)/%)
-
-lzma2eva-source: $(LZMA2EVA_DIR)/.unpacked
 
 lzma2eva-clean:
 	-$(MAKE) -C $(LZMA2EVA_DIR) clean
