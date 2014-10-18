@@ -51,5 +51,5 @@ mklibs-clean:
 mklibs-dirclean:
 	$(RM) -r $(MKLIBS_DIR)
 
-mklibs-distclean:
+mklibs-distclean: mklibs-dirclean
 	$(RM) -r $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_READELF_TARGET_BINARY)

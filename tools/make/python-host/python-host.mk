@@ -52,8 +52,10 @@ python-host-clean:
 	-$(MAKE) -C $(PYTHON_HOST_DIR) clean
 
 python-host-dirclean:
+	$(RM) -r $(PYTHON_HOST_DIR)
+
+python-host-distclean: python-host-dirclean
 	$(RM) -r \
-		$(PYTHON_HOST_DIR) \
 		$(PYTHON_HOST_TARGET_BINARY) \
 		$(HOST_TOOLS_DIR)/usr/bin/2to3 \
 		$(HOST_TOOLS_DIR)/usr/bin/easy_install* \
@@ -69,4 +71,4 @@ python-host-dirclean:
 		$(HOST_TOOLS_DIR)/usr/share/python2.7 \
 		$(HOST_TOOLS_DIR)/usr/share/man/man1/python*
 
-.PHONY: python-host-source python-host-unpacked python-host-configured python-host python-host-clean python-host-dirclean
+.PHONY: python-host-source python-host-unpacked python-host-configured python-host python-host-clean python-host-dirclean python-host-distclean

@@ -44,9 +44,7 @@ kconfig-clean:
 kconfig-dirclean:
 	$(RM) -r $(KCONFIG_DIR)
 
-kconfig-distclean:
-	$(RM) \
-		$(KCONFIG_TARGET_DIR)/conf \
-		$(KCONFIG_TARGET_DIR)/mconf
+kconfig-distclean: kconfig-dirclean
+	$(RM) $(KCONFIG_TARGET_DIR)/conf $(KCONFIG_TARGET_DIR)/mconf
 
 .PHONY: kconfig-source kconfig-unpacked kconfig kconfig-clean kconfig-dirclean kconfig-distclean

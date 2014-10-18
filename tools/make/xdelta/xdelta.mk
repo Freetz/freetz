@@ -27,5 +27,5 @@ xdelta-clean:
 xdelta-dirclean:
 	$(RM) -r $(XDELTA_DIR)
 
-xdelta-distclean:
+xdelta-distclean: xdelta-dirclean
 	$(RM) $(TOOLS_DIR)/xdelta3
