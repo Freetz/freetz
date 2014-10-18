@@ -7,13 +7,14 @@ LZMA_MAKE_DIR:=$(TOOLS_DIR)/make/lzma
 LZMA_ALONE_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Alone
 LZMA_LIB_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Lib
 
-
+lzma-source: $(DL_DIR)/$(LZMA_SOURCE)
 $(DL_DIR)/$(LZMA_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(LZMA_SOURCE) $(LZMA_SITE) $(LZMA_SOURCE_MD5)
 
-$(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE) | $(TOOLS_SOURCE_DIR)
+lzma-unpacked: $(LZMA_DIR)/.unpacked
+$(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	mkdir -p $(LZMA_DIR)
-	tar -C $(LZMA_DIR) $(VERBOSE) -xf $(DL_DIR)/$(LZMA_SOURCE)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(LZMA_SOURCE),$(LZMA_DIR))
 	for i in $(LZMA_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(LZMA_DIR) $$i; \
 	done
@@ -33,8 +34,6 @@ $(TOOLS_DIR)/lzma: $(LZMA_ALONE_DIR)/lzma
 	$(INSTALL_FILE)
 
 lzma: $(LZMA_DIR)/liblzma.a $(TOOLS_DIR)/lzma
-
-lzma-source: $(LZMA_DIR)/.unpacked
 
 lzma-clean:
 	-$(MAKE) -C $(LZMA_LIB_DIR) clean

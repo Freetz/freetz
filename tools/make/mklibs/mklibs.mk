@@ -14,13 +14,13 @@ MKLIBS_TARGET_SCRIPT:=$(MKLIBS_DESTDIR)/mklibs
 MKLIBS_READELF_BINARY:=$(MKLIBS_DIR)/src/mklibs-readelf/mklibs-readelf
 MKLIBS_READELF_TARGET_BINARY:=$(MKLIBS_DESTDIR)/mklibs-readelf
 
+mklibs-source: $(DL_DIR)/$(MKLIBS_SOURCE)
 $(DL_DIR)/$(MKLIBS_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(MKLIBS_SOURCE) $(MKLIBS_SITE) $(MKLIBS_SOURCE_MD5)
 
-mklibs-source: $(DL_DIR)/$(MKLIBS_SOURCE)
-
-$(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(MKLIBS_SOURCE)
+mklibs-unpacked: $(MKLIBS_DIR)/.unpacked
+$(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(MKLIBS_SOURCE),$(TOOLS_SOURCE_DIR))
 	for i in $(MKLIBS_MAKE_DIR)/patches/*.patch; do \
 		$(PATCH_TOOL) $(MKLIBS_DIR) $$i; \
 	done

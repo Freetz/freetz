@@ -23,13 +23,13 @@ BIARCH_BUILD_SYSTEM:=$(and \
 	$(or $(FREETZ_DOWNLOAD_TOOLCHAIN),$(FREETZ_TOOLCHAIN_32BIT)), \
 	$(findstring $(shell uname -m),x86_64))
 
+fakeroot-source: $(DL_DIR)/$(FAKEROOT_SOURCE)
 $(DL_DIR)/$(FAKEROOT_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(FAKEROOT_SOURCE) $(FAKEROOT_SITE) $(FAKEROOT_SOURCE_MD5)
 
-fakeroot-source: $(DL_DIR)/$(FAKEROOT_SOURCE)
-
-$(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(FAKEROOT_SOURCE)
+fakeroot-unpacked: $(FAKEROOT_DIR)/.unpacked
+$(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(FAKEROOT_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(SED) -i "s,getopt --version,getopt --version 2>/dev/null," \
 		$(FAKEROOT_DIR)/scripts/fakeroot.in
 	for i in $(FAKEROOT_MAKE_DIR)/patches/*.patch; do \

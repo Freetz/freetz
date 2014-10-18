@@ -6,13 +6,13 @@ SFK_SITE:=@SF/swissfileknife/1-swissfileknife/$(SFK_VERSION)
 SFK_DIR:=$(TOOLS_SOURCE_DIR)/sfk$(SFK_VERSION_SHORT)
 SFK_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)
 
+sfk-source: $(DL_DIR)/$(SFK_SOURCE)
 $(DL_DIR)/$(SFK_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(SFK_SOURCE) $(SFK_SITE) $(SFK_SOURCE_MD5)
 
-sfk-source: $(DL_DIR)/$(SFK_SOURCE)
-
-$(SFK_DIR)/.unpacked: $(DL_DIR)/$(SFK_SOURCE) | $(TOOLS_SOURCE_DIR)
-	unzip -d $(TOOLS_SOURCE_DIR) $(DL_DIR)/$(SFK_SOURCE)
+sfk-unpacked: $(SFK_DIR)/.unpacked
+$(SFK_DIR)/.unpacked: $(DL_DIR)/$(SFK_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(SFK_SOURCE),$(TOOLS_SOURCE_DIR))
 	touch $@
 
 $(SFK_DIR)/sfk: $(SFK_DIR)/.unpacked
