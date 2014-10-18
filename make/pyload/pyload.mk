@@ -51,7 +51,7 @@ $($(PKG)_DIR)/.exclude: $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.exclude
 	@mkdir -p $(dir $@); \
-	tar -c -C $(PYLOAD_DIR) --exclude-from=$< . | tar -x -C $(dir $@); \
+	$(TAR) -c -C $(PYLOAD_DIR) --exclude-from=$< . | $(TAR) -x -C $(dir $@); \
 	touch -c $@
 
 $(pkg):

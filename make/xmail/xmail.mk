@@ -49,7 +49,7 @@ $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/%: $($(PK
 
 $($(PKG)_TAR_CONFIG):
 	mkdir -p $(dir $@)
-	tar --exclude='./bin' --exclude='./domains/*' -C $(XMAIL_DIR)/MailRoot -cf $(XMAIL_TAR_CONFIG) .
+	$(TAR) --exclude='./bin' --exclude='./domains/*' -C $(XMAIL_DIR)/MailRoot -cf $(XMAIL_TAR_CONFIG) .
 
 $(pkg):
 

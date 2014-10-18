@@ -16,8 +16,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(PHPXMAIL_DEST_DIR)/usr/mww/phpxmail
-	tar -c -C $(PHPXMAIL_DIR) --exclude=config.php --exclude=.unpacked --exclude=.configured \
-		--exclude=.build-* . | tar -x -C $(PHPXMAIL_DEST_DIR)/usr/mww/phpxmail
+	$(TAR) -c -C $(PHPXMAIL_DIR) --exclude=config.php --exclude=.unpacked --exclude=.configured \
+		--exclude=.build-* . | $(TAR) -x -C $(PHPXMAIL_DEST_DIR)/usr/mww/phpxmail
 	cp $(PHPXMAIL_DIR)/config.php $(PHPXMAIL_TARGET_BINARY)
 
 $(pkg):

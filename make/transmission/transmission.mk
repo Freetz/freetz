@@ -77,7 +77,7 @@ $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP
 $($(PKG)_TARGET_WEBINTERFACE_INDEX_HTML): $($(PKG)_DIR)/.unpacked
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 	mkdir -p $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
-	tar -c -C $(TRANSMISSION_WEBINTERFACE_DIR) --exclude=.svn --exclude=LICENSE --exclude='Makefile*' . | tar -x -C $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
+	$(TAR) -c -C $(TRANSMISSION_WEBINTERFACE_DIR) --exclude=.svn --exclude=LICENSE --exclude='Makefile*' . | $(TAR) -x -C $(TRANSMISSION_TARGET_WEBINTERFACE_DIR)
 	chmod 644 $@
 	touch $@
 endif
