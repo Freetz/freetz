@@ -1,6 +1,5 @@
-TI_CHKSUM_VERSION:=0.2
 TI_CHKSUM_SRC:=$(TOOLS_DIR)/make/tichksum/src
-TI_CHKSUM_DIR:=$(TOOLS_SOURCE_DIR)/TI-chksum-$(TI_CHKSUM_VERSION)
+TI_CHKSUM_DIR:=$(TOOLS_SOURCE_DIR)/tichksum
 
 tichksum-unpacked: $(TI_CHKSUM_DIR)/.unpacked
 $(TI_CHKSUM_DIR)/.unpacked: $(wildcard $(TI_CHKSUM_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
