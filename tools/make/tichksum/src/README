@@ -1,18 +1,7 @@
-We used to have a version 0.1 without source code copyright notice in our
-repository for tichksum because we did not know exactly where it was from.
-Just the name implied that it was from Texas Instruments. I still could not
-find a download location at ti.com, but at least I found a version of the
-source code which contains original TI copyright notices. I copied them into
-our own bug-fixed version.
+This is an upward compatible rewrite of the tichksum program.
 
-I got the copyright notices from
-  * https://dev.openwrt.org/attachment/ticket/1411/dsl-502t-openwrt-2.4-1.patch
-    (where I actually found it via web search)
-  * http://itee.uq.edu.au/~chrisp/DSL-502T_OpenWRT/dsl-502t-openwrt-2.4-1.patch
-    (this is the place mentioned as the origin of the OpenWrt patch)
+It works on big endian, lillte endian, 32 bit and 64 bit machines.
 
-Where this guy Chris Pascoe got the source code from I have no idea, but we do
-gratefully acknowledge TI's copyright.
---
-Alexander Kriegisch
-http://freetz.org
+It has options to add, verify and remove a checksum. When called with
+no arguments, the default is compatible with the original program: If
+a checksum is present, then verify it, else add it.

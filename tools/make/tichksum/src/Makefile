@@ -1,11 +1,12 @@
 CC = gcc
 LD = ld
-CFLAGS = -W -Wall -Wno-unused-result -O2 -fno-strict-aliasing
-PROGS = tichksum
-OBJS += ckmain.o cksum.o
+CFLAGS = -W -Wall -O2
 
-all: $(OBJS)
-	$(CC) -o tichksum $(OBJS)
+PROGS = tichksum
+OBJS = ckmain.o cksum.o
+
+tichksum: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS)
 
 clean:
 	rm -f $(PROGS) $(OBJS)
