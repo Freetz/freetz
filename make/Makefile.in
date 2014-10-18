@@ -607,53 +607,34 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 
 
 ### PKG_UNPACK - unpack source archive & apply patches
-# Naming conventions for patches are different for library vs. binary packages,
-# therefore we have two different macros.
-
 # Unpack, without patch, but only if source package is defined
 define PKG_UNPACK
 	$(if $($(PKG)_SOURCE),$(strip $(call $(if $($(PKG)_CUSTOM_UNPACK),$(PKG)_CUSTOM_UNPACK,UNPACK_TARBALL),$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR))))
 endef
 
 ### PKG_PATCH - apply patches
-
 # $1: list of directories containing the patches
 # $2: directory to apply the patches to
-# $3: optional name for library patches
-
-#TODO: Update
-
 define PKG_PATCH__INT
-	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*$(strip $3).patch)); do \
+	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*.patch)); do \
 		$(PATCH_TOOL) $(strip $2) $$$$i; \
 	done;
+endef
+
+# Patch package
+define PKG_PATCH
+	$(call \
+		PKG_PATCH__INT, \
+		$($(PKG)_MAKE_DIR)/patches \
+		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
+		$($(PKG)_DIR), \
+	)
 endef
 
 # $1: commands to execute
 # $2: optional directory $1 to be executed within, default $($(PKG)_DIR)
 define PKG_EXECUTE_WITHIN__INT
 	$(if $(strip $(1)),(cd $(if $(strip $(2)),$(strip $(2)),$($(PKG)_DIR)); $(strip $(1))))
-endef
-
-# Patch binary package
-define PKG_BIN_PATCH
-	$(call \
-		PKG_PATCH__INT, \
-		$($(PKG)_MAKE_DIR)/patches \
-		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
-		$($(PKG)_DIR), \
-	)
-endef
-
-# Patch library package
-define PKG_LIB_PATCH
-	$(call \
-		PKG_PATCH__INT, \
-		$($(PKG)_MAKE_DIR)/patches \
-		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
-		$($(PKG)_DIR), \
-		.$(strip $(pkg)) \
-	)
 endef
 
 # Removes all files under $1 except for those in $2
@@ -670,7 +651,7 @@ $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK)
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
 	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
-	$(call PKG_BIN_PATCH)
+	$(call PKG_PATCH)
 	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
 	@touch $$@
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
@@ -699,7 +680,7 @@ $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK)
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
 	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
-	$(call PKG_LIB_PATCH)
+	$(call PKG_PATCH)
 	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
 	@touch $$@
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
