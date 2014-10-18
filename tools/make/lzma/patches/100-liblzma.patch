@@ -1,0 +1,43 @@
+--- /dev/null
++++ C/7zip/Compress/LZMA_Lib/makefile
+@@ -0,0 +1,40 @@
++CXX = g++
++CPPFLAGS = -I ../../../
++CFLAGS = -W -Wall -O3
++
++AR = ar
++RM = rm -f
++
++PROG = liblzma.a
++
++vpath %.cpp ../LZMA:../LZ:../RangeCoder:../../Common:../../../Common
++
++OBJS = \
++	LZMADecoder.o \
++	LZMAEncoder.o \
++	LZInWindow.o \
++	LZOutWindow.o \
++	RangeCoderBit.o \
++	InBuffer.o \
++	OutBuffer.o \
++	FileStreams.o \
++	StreamUtils.o \
++	Alloc.o \
++	C_FileIO.o \
++	CommandLineParser.o \
++	CRC.o \
++	String.o \
++	StringConvert.o \
++	StringToInt.o \
++	Vector.o
++
++all: $(PROG)
++
++$(PROG): $(OBJS)
++	$(AR) r $(PROG) $(OBJS)
++
++$(OBJS): %.o: %.cpp
++	@$(CXX) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
++
++clean:
++	-$(RM) $(PROG) $(OBJS)
