@@ -18,9 +18,7 @@ $(DL_DIR)/$(SQUASHFS3_SOURCE): | $(DL_DIR)
 squashfs3-unpacked: $(SQUASHFS3_DIR)/.unpacked
 $(SQUASHFS3_DIR)/.unpacked: $(DL_DIR)/$(SQUASHFS3_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(SQUASHFS3_SOURCE),$(TOOLS_SOURCE_DIR))
-	for i in $(SQUASHFS3_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(SQUASHFS3_DIR) $$i; \
-	done
+	$(call APPLY_PATCHES,$(SQUASHFS3_MAKE_DIR)/patches,$(SQUASHFS3_DIR))
 	touch $@
 
 $(SQUASHFS3_TOOLS_BUILD_DIR): $(SQUASHFS3_DIR)/.unpacked $(LZMA_DIR)/liblzma.a

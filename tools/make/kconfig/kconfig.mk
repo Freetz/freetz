@@ -12,9 +12,7 @@ $(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
 kconfig-unpacked: $(KCONFIG_DIR)/.unpacked
 $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(KCONFIG_SOURCE)
-	for i in $(KCONFIG_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(KCONFIG_DIR) $$i; \
-	done;
+	$(call APPLY_PATCHES,$(KCONFIG_MAKE_DIR)/patches,$(KCONFIG_DIR))
 	touch $@
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked

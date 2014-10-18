@@ -21,9 +21,7 @@ $(DL_DIR)/$(MKLIBS_SOURCE): | $(DL_DIR)
 mklibs-unpacked: $(MKLIBS_DIR)/.unpacked
 $(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(MKLIBS_SOURCE),$(TOOLS_SOURCE_DIR))
-	for i in $(MKLIBS_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(MKLIBS_DIR) $$i; \
-	done
+	$(call APPLY_PATCHES,$(MKLIBS_MAKE_DIR)/patches,$(MKLIBS_DIR))
 	touch $@
 
 $(MKLIBS_SCRIPT): $(MKLIBS_DIR)/.unpacked

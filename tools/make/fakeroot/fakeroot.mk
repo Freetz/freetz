@@ -32,9 +32,7 @@ $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE) | $(TOOLS_SOURCE_DIR) $(
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(FAKEROOT_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(SED) -i "s,getopt --version,getopt --version 2>/dev/null," \
 		$(FAKEROOT_DIR)/scripts/fakeroot.in
-	for i in $(FAKEROOT_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(FAKEROOT_DIR) $$i; \
-	done
+	$(call APPLY_PATCHES,$(FAKEROOT_MAKE_DIR)/patches,$(FAKEROOT_DIR))
 	touch $@
 
 $(FAKEROOT_MAINARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked

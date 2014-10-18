@@ -19,9 +19,7 @@ libtool-host-unpacked: $(LIBTOOL_HOST_DIR)/.unpacked
 $(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(LIBTOOL_HOST_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(LIBTOOL_HOST_SOURCE),$(TARGET_TOOLCHAIN_DIR))
-	for i in $(LIBTOOL_HOST_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(LIBTOOL_HOST_DIR) $$i; \
-	done
+	$(call APPLY_PATCHES,$(LIBTOOL_HOST_MAKE_DIR)/patches,$(LIBTOOL_HOST_DIR))
 # touch some patched files to ensure no file except for ltmain.sh gets regenerated
 	for i in $$(find $(LIBTOOL_HOST_DIR) -type f \( \( -name "*.m4" -o -name "*.am" \) -a ! -name "aclocal.m4" \)); do \
 		touch -t 200001010000.00 $$i; \

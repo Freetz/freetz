@@ -15,9 +15,7 @@ lzma-unpacked: $(LZMA_DIR)/.unpacked
 $(LZMA_DIR)/.unpacked: $(DL_DIR)/$(LZMA_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	mkdir -p $(LZMA_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(LZMA_SOURCE),$(LZMA_DIR))
-	for i in $(LZMA_MAKE_DIR)/patches/*.patch; do \
-		$(PATCH_TOOL) $(LZMA_DIR) $$i; \
-	done
+	$(call APPLY_PATCHES,$(LZMA_MAKE_DIR)/patches,$(LZMA_DIR))
 	touch $@
 
 $(LZMA_ALONE_DIR)/lzma: $(LZMA_DIR)/.unpacked

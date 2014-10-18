@@ -69,13 +69,10 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
 	fi
 	@$(call _ECHO, preparing... )
-	@set -e; shopt -s nullglob; for i in $(KERNEL_PATCHES_DIR)/*.patch; do \
-		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
-	done
-	#Version specific patches
-	@set -e; shopt -s nullglob; for i in $(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID)/*.patch; do \
-		$(PATCH_TOOL) $(KERNEL_BUILD_DIR) $$i; \
-	done
+	#kernel version specific patches
+	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_BUILD_DIR))
+	#firmware version specific patches
+	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_BUILD_DIR))
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if [ -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_} ]; then \
