@@ -105,6 +105,14 @@ endef
 
 UNPACK_TARBALL_PREREQUISITES := busybox-host tar-host
 
+# $1: list of directories containing the patches
+# $2: directory to apply the patches to
+define APPLY_PATCHES
+	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*.patch)); do \
+		$(PATCH_TOOL) $(strip $2) $(_dollar)i; \
+	done;
+endef
+
 #
 # $1 - git repository
 # $2 - (optional) branch name, if omitted "master" is used

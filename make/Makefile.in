@@ -613,21 +613,14 @@ define PKG_UNPACK
 endef
 
 ### PKG_PATCH - apply patches
-# $1: list of directories containing the patches
-# $2: directory to apply the patches to
-define PKG_PATCH__INT
-	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*.patch)); do \
-		$(PATCH_TOOL) $(strip $2) $$$$i; \
-	done;
-endef
-
-# Patch package
 define PKG_PATCH
-	$(call \
-		PKG_PATCH__INT, \
-		$($(PKG)_MAKE_DIR)/patches \
-		$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
-		$($(PKG)_DIR), \
+	$(subst $(_dollar),$(_dollar)$(_dollar), \
+		$(call \
+			APPLY_PATCHES, \
+			$($(PKG)_MAKE_DIR)/patches \
+			$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
+			$($(PKG)_DIR) \
+		) \
 	)
 endef
 
