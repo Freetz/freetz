@@ -10,8 +10,7 @@ $(TI_CHKSUM_DIR)/.unpacked: $(wildcard $(TI_CHKSUM_SRC)/*) | $(TOOLS_SOURCE_DIR)
 	touch $@
 
 $(TI_CHKSUM_DIR)/tichksum: $(TI_CHKSUM_DIR)/.unpacked
-	$(MAKE) CC="$(TOOLS_CC)" LD="$(TOOLS_LD)" \
-		-C $(TI_CHKSUM_DIR)
+	$(MAKE) CC="$(TOOLS_CC)" -C $(TI_CHKSUM_DIR)
 
 $(TOOLS_DIR)/tichksum: $(TI_CHKSUM_DIR)/tichksum
 	$(INSTALL_FILE)
