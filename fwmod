@@ -440,8 +440,8 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		mv -f "$JUNK_BYTES_FILE.nojunk" "$JUNK_BYTES_FILE"
 	fi
 
-	"$RMTICHKSUM" -f "${KERNEL}" > /dev/null
-	"$RMTICHKSUM" -f "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
+	"$TICHKSUM" -r "${KERNEL}" > /dev/null
+	"$TICHKSUM" -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
 
 	mkdir -p "$KERNEL_DIR"
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
