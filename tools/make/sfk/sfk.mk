@@ -1,9 +1,9 @@
-SFK_VERSION:=1.6.5
-SFK_VERSION_SHORT:=165
-SFK_SOURCE:=sfk$(SFK_VERSION_SHORT).zip
-SFK_SOURCE_MD5:=8694d73033dde496c023258f08daa918
-SFK_SITE:=@SF/swissfileknife/1-swissfileknife/$(SFK_VERSION)
-SFK_DIR:=$(TOOLS_SOURCE_DIR)/sfk$(SFK_VERSION_SHORT)
+SFK_VERSION:=1.7.2
+SFK_SOURCE:=sfk-$(SFK_VERSION).tar.gz
+SFK_SOURCE_MD5:=1f924e8118b044ab61fdfd6dbc4fcd47
+SFK_SITE:=@SF/swissfileknife
+
+SFK_DIR:=$(TOOLS_SOURCE_DIR)/sfk-$(SFK_VERSION)
 SFK_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)
 
 sfk-source: $(DL_DIR)/$(SFK_SOURCE)
@@ -15,15 +15,20 @@ $(SFK_DIR)/.unpacked: $(DL_DIR)/$(SFK_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TAR
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(SFK_SOURCE),$(TOOLS_SOURCE_DIR))
 	touch $@
 
-$(SFK_DIR)/sfk: $(SFK_DIR)/.unpacked
-ifeq ($(shell uname), Darwin)
-	$(TOOLS_CXX) -DMAC_OS_X $(SFK_DIR)/sfk.cpp $(SFK_DIR)/sfknet.cpp $(SFK_DIR)/patch.cpp $(SFK_DIR)/inst.cpp -o $(SFK_DIR)/sfk
-else
-	$(TOOLS_CXX) -s $(SFK_DIR)/sfk.cpp $(SFK_DIR)/sfknet.cpp $(SFK_DIR)/patch.cpp $(SFK_DIR)/inst.cpp -o $(SFK_DIR)/sfk
-endif
+$(SFK_DIR)/.configured: $(SFK_DIR)/.unpacked
+	(cd $(SFK_DIR); rm -rf config.cache; \
+		./configure \
+		--prefix=$(SFK_DESTDIR) \
+		$(DISABLE_NLS) \
+	);
+	touch $@
+
+$(SFK_DIR)/sfk: $(SFK_DIR)/.configured
+	$(MAKE) -C $(SFK_DIR) all
 
 $(TOOLS_DIR)/sfk: $(SFK_DIR)/sfk
 	$(INSTALL_FILE)
+	strip $@
 
 sfk: $(TOOLS_DIR)/sfk
 
