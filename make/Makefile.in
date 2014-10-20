@@ -557,6 +557,10 @@ endif
 
 $(pkg)-clean-not-included--int:
 	@$(if $($(PKG)_NOT_INCLUDED),$(RM) -r $($(PKG)_NOT_INCLUDED),)
+
+$(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
+.PHONY: $(pkg)-distclean $(pkg)-clean $(pkg)-uninstall
+
 PKG:=
 PKG_TYPE:=
 PKG_MAKEFILE:=

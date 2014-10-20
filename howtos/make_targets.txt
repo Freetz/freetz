@@ -21,8 +21,9 @@ dirclean                                Clean sources (except tools and .config)
 distclean                               Clean everything except the download directory
 download-clean                          Remove the download directory
 
-XXX-precompiled                         Compiles the package/library XXX
-XXX-dirclean                            Removes everything of the package/library XXX
+$(pkg)-precompiled                      Compiles package/library $(pkg)
+$(pkg)-dirclean                         Removes build-directory of $(pkg)
+$(pkg)-distclean                        Removes build-directory and all target files of $(pkg)
 
 kernel-menuconfig                       Configuration of selected kernel
 kernel-precompiled                      Compiles the selected kernel
