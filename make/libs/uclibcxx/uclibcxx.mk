@@ -5,9 +5,9 @@ $(PKG)_SOURCE_MD5:=b7b81b8ffa75e6b530b850fddd00e83b
 $(PKG)_SITE:=http://git.uclibc.org/uClibc++/snapshot
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/uClibc++-$($(PKG)_VERSION)
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/libuClibc++-$($(PKG)_LIB_VERSION).so
-$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++-$($(PKG)_LIB_VERSION).so
-$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libuClibc++-$($(PKG)_LIB_VERSION).so
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/libuClibc++.so.$($(PKG)_LIB_VERSION)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++.so.$($(PKG)_LIB_VERSION)
+$(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libuClibc++.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_STAGING_WRAPPER:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-g++-uc
 
@@ -56,7 +56,7 @@ $($(PKG)_STAGING_WRAPPER): $($(PKG)_BINARY)
 	ln -sf $(notdir $@) $(dir $@)$(GNU_TARGET_NAME)-g++-uc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
-	$(INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO)
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_STAGING_BINARY) $($(PKG)_STAGING_WRAPPER)
 
