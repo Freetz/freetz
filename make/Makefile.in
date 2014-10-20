@@ -315,6 +315,7 @@ endef
 define INSTALL_LIBRARY__INT
 chmod 755 $<; \
 mkdir -p $(dir $@); \
+$(RM) $(addprefix $(dir $@),$(call LIBRARY_NAME_TO_SHELL_PATTERN,$(notdir $@),$(if $(1),-$(1)),$(2))); \
 cp -a $(addprefix $(dir $<),$(call LIBRARY_NAME_TO_SHELL_PATTERN,$(notdir $<),$(1),$(2))) $(dir $@);
 endef
 INSTALL_LIBRARY = $(call INSTALL_LIBRARY__INT)
