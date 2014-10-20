@@ -155,7 +155,6 @@ SHELL=$BASH
 # Tools used by fwmod
 FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
-RMTICHKSUM_TOOL="rmtichksum"
 MAKEDEVS_TOOL="makedevs"
 UNSQUASHFS_TOOL="unsquashfs3"
 UNSQUASHFS_LZMA_TOOL="unsquashfs3-lzma"
@@ -176,7 +175,6 @@ FINDSQUASHFS="${TOOLS_DIR}/${FINDSQUASHFS_TOOL}"
 MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL}"
 MKSQUASHFS_LZMA="${TOOLS_DIR}/${MKSQUASHFS_LZMA_TOOL}"
 TICHKSUM="${TOOLS_DIR}/${TICHKSUM_TOOL}"
-RMTICHKSUM="${TOOLS_DIR}/${RMTICHKSUM_TOOL}"
 MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
 MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
@@ -423,7 +421,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	[ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && error 1 "cannot find filesystem.image"
 
 	# Do we have the tool ?
-	for tool in "$RMTICHKSUM" "$UNSQUASHFS" "$FINDSQUASHFS"; do
+	for tool in "$UNSQUASHFS" "$FINDSQUASHFS"; do
 		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
 	done
 
