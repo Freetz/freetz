@@ -58,6 +58,6 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libusb.pc
 
 $(pkg)-uninstall:
-	$(RM) $(LIBUSB_TARGET_DIR)/libusb-$(LIBUSB_SHORT_VERSION).so*
+	$(RM) $(LIBUSB_TARGET_DIR)/libusb-$(LIBUSB_SHORT_VERSION).so* $(LIBUSB_TARGET_DIR)/libusb.so
 
 $(PKG_FINISH)
