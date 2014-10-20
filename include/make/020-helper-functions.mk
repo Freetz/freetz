@@ -113,6 +113,20 @@ define APPLY_PATCHES
 	done;
 endef
 
+PATTERN_LIBRARY_NAME             := lib[a-zA-Z]([a-zA-Z0-9_+-])*
+PATTERN_NUMERIC_VERSION_OPTIONAL := ([.][0-9]+)*
+PATTERN_NUMERIC_VERSION          := [0-9]+$(PATTERN_NUMERIC_VERSION_OPTIONAL)
+
+# $1: shared library basename, e.g. libz.so.1.2.8
+# $2: optional replacement for the version number right before .so
+# $3: optional additional library name suffix, e.g. a for static library name
+define LIBRARY_NAME_TO_SHELL_PATTERN
+$(shell echo "$(1)" | $(SED) -r -n \
+	-e 's,^($(PATTERN_LIBRARY_NAME))(-$(PATTERN_NUMERIC_VERSION))[.]so($(PATTERN_NUMERIC_VERSION_OPTIONAL))$(_dollar),\1$(if $2,$2,\3).so*$(if $3, \1.$3),p' \
+	-e 's,^($(PATTERN_LIBRARY_NAME))[.]so($(PATTERN_NUMERIC_VERSION_OPTIONAL))$(_dollar),\1.so*$(if $3, \1.$3),p' \
+)
+endef
+
 #
 # $1 - git repository
 # $2 - (optional) branch name, if omitted "master" is used
