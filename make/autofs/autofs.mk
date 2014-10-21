@@ -23,7 +23,7 @@ $(PKG)_MODULES := \
 	mount_nfs.so \
 	parse_sun.so
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_DIR)/modules/%)
-$(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_LIBDIR)/%)
+$(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_LIBDIR)/autofs/%)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -34,12 +34,13 @@ $($(PKG)_BINARY) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		FREETZ=1 \
 		CC="$(TARGET_CC)" \
 		AUTOFS_CFLAGS="$(TARGET_CFLAGS)" \
+		autofslibdir=$(FREETZ_LIBRARY_PATH)/autofs \
 		daemon
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/modules/%
+$($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/autofs/%: $($(PKG)_DIR)/modules/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):

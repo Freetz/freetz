@@ -1,1 +1,22 @@
-[ "$EXTERNAL_FREETZ_PACKAGE_AUTOFS" == "y" ] && EXTERNAL_FILES+=" /usr/bin/automount /usr/lib/freetz/lookup_file.so /usr/lib/freetz/lookup_hosts.so /usr/lib/freetz/lookup_multi.so /usr/lib/freetz/lookup_program.so /usr/lib/freetz/lookup_userhome.so /usr/lib/freetz/mount_afs.so /usr/lib/freetz/mount_autofs.so /usr/lib/freetz/mount_bind.so /usr/lib/freetz/mount_changer.so /usr/lib/freetz/mount_generic.so /usr/lib/freetz/mount_nfs.so /usr/lib/freetz/parse_sun.so"
+if [ "$EXTERNAL_FREETZ_PACKAGE_AUTOFS" == "y" ]; then
+
+	EXTERNAL_FILES+=" /usr/bin/automount"
+
+	for f in \
+		lookup_file \
+		lookup_hosts \
+		lookup_multi \
+		lookup_program \
+		lookup_userhome \
+		mount_afs \
+		mount_autofs \
+		mount_bind \
+		mount_changer \
+		mount_generic \
+		mount_nfs \
+		parse_sun \
+	; do
+		EXTERNAL_FILES+=" $FREETZ_LIBRARY_DIR/autofs/$f.so"
+	done
+
+fi
