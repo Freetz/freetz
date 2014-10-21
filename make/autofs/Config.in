@@ -3,6 +3,8 @@ comment "autofs (not available, needs replace kernel)"
 
 config FREETZ_PACKAGE_AUTOFS
 	bool "autofs 5.0.5"
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libpthread
 	select FREETZ_MODULE_autofs4
 	select FREETZ_BUSYBOX_FEATURE_MOUNT_HELPERS
 	select FREETZ_BUSYBOX_FEATURE_MOUNT_LABEL
