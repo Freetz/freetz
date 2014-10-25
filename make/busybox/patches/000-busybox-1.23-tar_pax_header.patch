@@ -1,0 +1,24 @@
+From 0f592d7fb94c5887528d0ee24020c2225ab71c28 Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Fri, 10 Jan 2014 17:02:38 +0000
+Subject: tar: tighten up pax header validity check
+
+function                                             old     new   delta
+get_header_tar                                      1785    1795     +10
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+index 32f8420..54d9104 100644
+--- archival/libarchive/get_header_tar.c
++++ archival/libarchive/get_header_tar.c
+@@ -115,7 +115,9 @@ static void process_pax_hdr(archive_handle_t *archive_handle, unsigned sz, int g
+ 		 */
+ 		p += len;
+ 		sz -= len;
+-		if ((int)sz < 0
++		if (
++		/** (int)sz < 0 - not good enough for huge malicious VALUE of 2^32-1 */
++		    (int)(sz|len) < 0 /* this works */
+ 		 || len == 0
+ 		 || errno != EINVAL
+ 		 || *end != ' '
