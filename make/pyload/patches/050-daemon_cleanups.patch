@@ -1,0 +1,16 @@
+--- pyLoadCore.py
++++ pyLoadCore.py
+@@ -630,9 +630,10 @@
+         except OSError:    # ERROR, fd wasn't open to begin with (ignored)
+             pass
+ 
+-    os.open(os.devnull, os.O_RDWR)    # standard input (0)
+-    os.dup2(0, 1)            # standard output (1)
+-    os.dup2(0, 2)
++    devnull_fd = os.open(os.devnull, os.O_RDWR)
++    os.dup2(devnull_fd, sys.stdin.fileno())
++    os.dup2(devnull_fd, sys.stdout.fileno())
++    os.dup2(devnull_fd, sys.stderr.fileno())
+ 
+     pyload_core = Core()
+     pyload_core.start()
