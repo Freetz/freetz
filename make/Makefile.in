@@ -433,7 +433,7 @@ $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 $(PKG)_TARGET_LIBDIR:=$(TARGET_SPECIFIC_ROOT_DIR)$(FREETZ_LIBRARY_PATH)
 $(PKG)_DEST_DIR:=$($(PKG)_TARGET_DIR)/root
 $(PKG)_DEST_LIBDIR:=$($(PKG)_TARGET_DIR)/root$(FREETZ_LIBRARY_PATH)
-$(PKG)_CLEAN_TARGET_DIR__INT:= $(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
+$(PKG)_CLEAN_TARGET_DIR__INT:=$(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
 endef
 
 # Stage 2b: initialise other package-specific variables for library packages
@@ -507,8 +507,6 @@ define PKG_FINISH_BIN__INT
 $(pkg)-dirclean--int:
 	$(RM) -r $($(PKG)_DIR)
 	$(RM) -r $($(PKG)_TARGET_DIR)
-	$(RM) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
-	$(RM) $(PACKAGES_DIR)/.$(pkg)
 	$($(PKG)_CLEAN_TARGET_DIR__INT)
 $(PKG_LIST)
 $(call PKG_ADD_BIN__INT,$(PKG))
