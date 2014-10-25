@@ -1,5 +1,5 @@
---- src/Makefile.orig	2009-02-07 15:51:29.000000000 +0100
-+++ src/Makefile	2009-02-07 15:51:33.000000000 +0100
+--- src/Makefile
++++ src/Makefile
 @@ -1,5 +1,5 @@
  # remove -fno-exceptions  if it causes problems with stdio library on some platforms (ARM)
 -
@@ -31,7 +31,7 @@
  SRCS3 = espeak.cpp
  OBJS3=$(patsubst %.cpp,%.o,$(SRCS3))
 -LIBS3=-lstdc++ -L . -lespeak
-+LIBS3=-lm -L . -lespeak
++LIBS3=-L . -lespeak -lm
  
 -CXXFLAGS=-O2
 +CXXFLAGS=-Os -march=mips32 -mips32 -pipe
