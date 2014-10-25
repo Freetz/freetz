@@ -2,6 +2,8 @@ TAR_HOST_VERSION:=1.28
 TAR_HOST_SOURCE:=tar-$(TAR_HOST_VERSION).tar.bz2
 TAR_HOST_SOURCE_MD5:=8f32b2bc1ed7ddf4cf4e4a39711341b0
 TAR_HOST_SITE:=@GNU/tar
+
+TAR_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/tar-host
 TAR_HOST_DIR:=$(TOOLS_SOURCE_DIR)/tar-$(TAR_HOST_VERSION)
 
 tar-host-source: $(DL_DIR)/$(TAR_HOST_SOURCE)
@@ -11,6 +13,7 @@ $(DL_DIR)/$(TAR_HOST_SOURCE): | $(DL_DIR)
 tar-host-unpacked: $(TAR_HOST_DIR)/.unpacked
 $(TAR_HOST_DIR)/.unpacked: $(DL_DIR)/$(TAR_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(TAR_HOST_SOURCE)
+	$(call APPLY_PATCHES,$(TAR_HOST_MAKE_DIR)/patches,$(TAR_HOST_DIR))
 	touch $@
 
 $(TAR_HOST_DIR)/.configured: $(TAR_HOST_DIR)/.unpacked
