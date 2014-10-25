@@ -178,10 +178,9 @@ TICHKSUM="${TOOLS_DIR}/${TICHKSUM_TOOL}"
 MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
 MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
+TAR_GNU="${TOOLS_DIR}/tar-gnu"
 MD5SUM="${TOOLS_DIR}/${MD5SUM_TOOL}"
 BUSYBOX="${TOOLS_DIR}/${BUSYBOX_TOOL}"
-# Temporarily use system's tar to unpack AVM firmware-images (see #1535)
-UNTAR="$(which tar)"
 
 # Freetz directores relative to base dir
 PACKAGES_DIR_ROOT="${BASE_DIR}/packages"
@@ -377,7 +376,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ "$grbg" != "0x0" ] && printf "Skipping %d Bytes garbage..." $grbg
 		# Unpack standard *.image file in tar format
 		tail -c $(( $image_size - $image_grbg )) "$FIRMWARE" | \
-		  "$UNTAR" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
+		  "$TAR_GNU" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
 	fi
 	if [ "$FIRMWARE_EXTENSION" == "exe" ] || [ "$untar_failed" ]; then
 		# Unpack Windows recover.exe file or mtdblock dump
@@ -469,7 +468,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ -r "$AVMPLUGINS" ]; then
 		echo0 "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
-		"$UNTAR" -xf "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
+		"$TAR_GNU" -xf "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
 
 		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
 			AVMPLUGIN="${i##*/plugin-}"
@@ -490,7 +489,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking var.tar"
 	mkdir "$VARTAR_DIR"
-	"$UNTAR" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
+	"$TAR_GNU" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
 	echo -e "done.\n"
 
