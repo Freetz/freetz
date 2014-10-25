@@ -42,7 +42,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 	mkdir -p $(KERNEL_BUILD_DIR)
 	@$(call _ECHO,checking structure... )
 	@KERNEL_SOURCE_CONTENT=` \
-		tar -t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
+		$(TAR) -t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
 		grep -e '^.*\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-$(AVM_KERNEL_VERSION)/\)$$'|head -n1`; \
 	if [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
@@ -50,15 +50,15 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 	else \
 		$(call _ECHO, unpacking... ) \
 		if [ ! -z $$(echo "$$KERNEL_SOURCE_CONTENT"|grep -e '.*\/GPL-\(release_\|\)kernel\.tar\.gz') ]; then \
-			tar	-O $(VERBOSE) \
+			$(TAR)	-O $(VERBOSE) \
 				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
 				--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
-			tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
+			$(TAR)	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 				-xz \
 				--transform="s|^.*\(linux-$(AVM_KERNEL_VERSION)/\)|\1|g" --show-transformed; \
 		else \
-			tar	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
+			$(TAR)	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
 				--transform="s|^.*\(linux-$(AVM_KERNEL_VERSION)/\)|\1|g" --show-transformed \
@@ -180,7 +180,7 @@ $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL
 	$(RM) -r $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
 	KERNEL_MODULES_SOURCE_DIR=$(KERNEL_DIR)/lib/modules/*/kernel; \
-	tar -cf - -C $$KERNEL_MODULES_SOURCE_DIR . | tar -xf - -C $(KERNEL_MODULES_DIR)
+	$(TAR) -cf - -C $$KERNEL_MODULES_SOURCE_DIR . | $(TAR) -xf - -C $(KERNEL_MODULES_DIR)
 	touch $@
 
 kernel-precompiled: pkg-echo-start $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT) pkg-echo-done
