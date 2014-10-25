@@ -41,15 +41,16 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_BUILD_DIR)
 	@$(call _ECHO,checking structure... )
-	@KERNEL_SOURCE_CONTENT=` \
-		$(TAR) -t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
-			-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE)| \
-		grep -e '^.*\(GPL-\(release_\|\)kernel\.tar\.gz\|linux-$(AVM_KERNEL_VERSION)/\)$$'|head -n1`; \
+	@KERNEL_SOURCE_CONTENT=$$( \
+		$(TAR) -t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) -f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
+		| grep -E '(GPL-(release_)?kernel\.tar\.gz|linux-$(AVM_KERNEL_VERSION)/)$$' \
+		| head -n1 \
+	); \
 	if [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
 		$(call ERROR,1,KERNEL_SOURCE_CONTENT is empty) \
 	else \
 		$(call _ECHO, unpacking... ) \
-		if [ ! -z $$(echo "$$KERNEL_SOURCE_CONTENT"|grep -e '.*\/GPL-\(release_\|\)kernel\.tar\.gz') ]; then \
+		if echo "$${KERNEL_SOURCE_CONTENT}" | grep -qE 'GPL-(release_)?kernel\.tar\.gz$$'; then \
 			$(TAR)	-O $(VERBOSE) \
 				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
@@ -61,8 +62,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 			$(TAR)	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
 				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-				--transform="s|^.*\(linux-$(AVM_KERNEL_VERSION)/\)|\1|g" --show-transformed \
-				"$$KERNEL_SOURCE_CONTENT"; \
+				--transform="s|^.*\(linux-$(AVM_KERNEL_VERSION)/\)|\1|g" --show-transformed "$${KERNEL_SOURCE_CONTENT}"; \
 		fi \
 	fi
 	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
@@ -94,38 +94,43 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 			ln -sf Makefile.26 $$i/Makefile; \
 		fi \
 	done
-	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile -exec \
+	@for i in $$( \
+		find $(KERNEL_BUILD_ROOT_DIR) -name Makefile -exec \
 		awk '/(obj|subdir)-.*=/ && !/(obj|subdir)-ccflags.*=/ { \
-		while (match ($$0,/\\/)) {sub(/\\/," "); getline l;$$0=$$0""l} \
-		gsub(/(#.*|.*=)/,""); \
-		if (! match ($$0,/,/)) { \
-			dirname=substr(FILENAME,1,length(FILENAME)-8); \
-			for (i=1;i<=NF;i++) { \
-				if (match ($$i,/\.o$$|\$$/)) { \
-					$$i=""; \
-				} else if (substr($$i,length($$i))!="/") { \
-					$$i=$$i"/"; \
-				} \
-				if ($$i!="") { \
-					if (system("test -e "dirname""$$i"Makefile")) { \
-						print dirname""$$i"Makefile"; \
+			while (match ($$0,/\\/)) {sub(/\\/," "); getline l;$$0=$$0""l} \
+			gsub(/(#.*|.*=)/,""); \
+			if (! match ($$0,/,/)) { \
+				dirname=substr(FILENAME,1,length(FILENAME)-8); \
+				for (i=1;i<=NF;i++) { \
+					if (match ($$i,/\.o$$|\$$/)) { \
+						$$i=""; \
+					} else if (substr($$i,length($$i))!="/") { \
+						$$i=$$i"/"; \
+					} \
+					if ($$i!="") { \
+						if (system("test -e "dirname""$$i"Makefile")) { \
+							print dirname""$$i"Makefile"; \
+						} \
 					} \
 				} \
 			} \
-		} \
-	}' {} '+'|sort -u); do \
+		}' {} '+' \
+		| sort -u \
+	); do \
 		$(call MESSAGE, Creating $$i); \
 		mkdir -p $$(dirname "$$i"); \
 		[ -h $$i ] && $(RM) $$i; \
 		touch $$i; \
 	done
-	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {} '+'| \
-		sed -e 's/\(.*\)#.*/\1/g;s/.*source //g;s/"//g'|sort -u); do \
+	@for i in $$( \
+		find $(KERNEL_BUILD_ROOT_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {} '+' \
+		| sed -e 's/\(.*\)#.*/\1/g;s/.*source //g;s/"//g' \
+		| sort -u \
+	); do \
 		if [ ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ]; then \
 			$(call MESSAGE, Creating $(KERNEL_BUILD_ROOT_DIR)/$$i); \
 			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$${i%\/*}; \
-			[ -h $(KERNEL_BUILD_ROOT_DIR)/$$i ] && \
-				$(RM) $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+			[ -h $(KERNEL_BUILD_ROOT_DIR)/$$i ] && $(RM) $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 		fi \
 	done
