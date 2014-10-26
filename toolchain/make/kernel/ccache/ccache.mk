@@ -31,7 +31,7 @@ $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOO
 
 $(CCACHE_KERNEL_DIR)/.configured: $(CCACHE_KERNEL_DIR)/.unpacked
 	mkdir -p $(CCACHE_KERNEL_DIR)/
-	( cd $(CCACHE_KERNEL_DIR); rm -f config.cache; \
+	(cd $(CCACHE_KERNEL_DIR); $(RM) config.cache; \
 		CC="$(TOOLCHAIN_HOSTCC)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		./configure \

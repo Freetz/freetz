@@ -56,7 +56,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_DIR)/.configured $($(PKG)_DIR)/sablevm/.configured $($(PKG)_DIR)/sablevm-classpath/.configured : $($(PKG)_DIR)/jikes/.compiled $($(PKG)_DIR)/fastjar/.compiled
 
 $($(PKG)_DIR)/sablevm/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(SABLEVM_SDK_DIR)/sablevm; $(RM) -f config.cache; \
+	(cd $(SABLEVM_SDK_DIR)/sablevm; $(RM) config.cache; \
 		$(TARGET_CONFIGURE_ENV) \
 		./configure \
 		$(TARGET_CONFIGURE_OPTIONS) \
@@ -69,7 +69,7 @@ $($(PKG)_DIR)/sablevm/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_DIR)/sablevm-classpath/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(SABLEVM_SDK_DIR)/sablevm-classpath; $(RM) -f config.cache; \
+	(cd $(SABLEVM_SDK_DIR)/sablevm-classpath; $(RM) config.cache; \
 		$(TARGET_CONFIGURE_ENV) \
 		./configure \
 		$(TARGET_CONFIGURE_OPTIONS) \

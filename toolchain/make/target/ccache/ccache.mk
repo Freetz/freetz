@@ -32,7 +32,7 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(
 	touch $@
 
 $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
-	( cd $(CCACHE_DIR); rm -f config.cache; \
+	(cd $(CCACHE_DIR); $(RM) config.cache; \
 		CC=$(TOOLCHAIN_HOSTCC) \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		./configure \

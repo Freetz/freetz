@@ -17,7 +17,7 @@ $(TAR_HOST_DIR)/.unpacked: $(DL_DIR)/$(TAR_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
 	touch $@
 
 $(TAR_HOST_DIR)/.configured: $(TAR_HOST_DIR)/.unpacked
-	(cd $(TAR_HOST_DIR); rm -rf config.cache; \
+	(cd $(TAR_HOST_DIR); $(RM) config.cache; \
 		CFLAGS="-Wall -O2" \
 		CC="$(TOOLS_CC)" \
 		./configure \

@@ -28,7 +28,7 @@ $(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TARGET_TOOLC
 
 libtool-host-configured: $(LIBTOOL_HOST_DIR)/.configured
 $(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked | $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP)
-	(cd $(LIBTOOL_HOST_DIR); rm -rf config.cache; \
+	(cd $(LIBTOOL_HOST_DIR); $(RM) config.cache; \
 		CC=$(TARGET_CC) \
 		CXX=$(TARGET_CXX) \
 		CFLAGS="$(TARGET_CFLAGS)" \

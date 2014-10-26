@@ -27,7 +27,7 @@ $(MKLIBS_DIR)/.unpacked: $(DL_DIR)/$(MKLIBS_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPA
 $(MKLIBS_SCRIPT): $(MKLIBS_DIR)/.unpacked
 
 $(MKLIBS_DIR)/.configured: $(MKLIBS_DIR)/.unpacked
-	(cd $(MKLIBS_DIR); rm -rf config.cache; \
+	(cd $(MKLIBS_DIR); $(RM) config.cache; \
 		./configure \
 		--prefix=/ \
 		$(DISABLE_NLS) \

@@ -16,7 +16,7 @@ $(SFK_DIR)/.unpacked: $(DL_DIR)/$(SFK_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TAR
 	touch $@
 
 $(SFK_DIR)/.configured: $(SFK_DIR)/.unpacked
-	(cd $(SFK_DIR); rm -rf config.cache; \
+	(cd $(SFK_DIR); $(RM) config.cache; \
 		./configure \
 		--prefix=$(SFK_DESTDIR) \
 		$(DISABLE_NLS) \
