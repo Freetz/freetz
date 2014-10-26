@@ -22,7 +22,7 @@ $(TOOLS_DIR)/xdelta3: $(XDELTA_DIR)/xdelta3
 xdelta: $(TOOLS_DIR)/xdelta3
 
 xdelta-clean:
-	$(MAKE) -C $(XDELTA_DIR) clean
+	-$(MAKE) -C $(XDELTA_DIR) clean
 
 xdelta-dirclean:
 	$(RM) -r $(XDELTA_DIR)

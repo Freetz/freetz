@@ -39,7 +39,6 @@ busybox-host: $(BUSYBOX_HOST_TARGET_BINARY)
 
 busybox-host-clean:
 	-$(MAKE) -C $(BUSYBOX_HOST_DIR) clean
-	find $(BUSYBOX_HOST_TARGET_DIR) \( -lname busybox -o -name busybox \) -delete
 
 busybox-host-dirclean:
 	$(RM) -r $(BUSYBOX_HOST_DIR)

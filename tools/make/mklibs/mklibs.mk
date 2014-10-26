@@ -46,7 +46,7 @@ $(MKLIBS_READELF_TARGET_BINARY): $(MKLIBS_READELF_BINARY)
 mklibs: $(MKLIBS_TARGET_SCRIPT) $(MKLIBS_READELF_TARGET_BINARY)
 
 mklibs-clean:
-	$(MAKE) -C $(MKLIBS_DIR) clean
+	-$(MAKE) -C $(MKLIBS_DIR) clean
 
 mklibs-dirclean:
 	$(RM) -r $(MKLIBS_DIR)

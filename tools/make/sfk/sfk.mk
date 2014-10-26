@@ -33,7 +33,7 @@ $(TOOLS_DIR)/sfk: $(SFK_DIR)/sfk
 sfk: $(TOOLS_DIR)/sfk
 
 sfk-clean:
-	$(RM) $(SFK_DIR)/sfk
+	-$(MAKE) -C $(SFK_DIR) clean
 
 sfk-dirclean:
 	$(RM) -r $(SFK_DIR)
