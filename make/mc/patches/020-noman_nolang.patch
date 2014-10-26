@@ -56,28 +56,34 @@
  uninstall: uninstall-recursive
 --- misc/Makefile.am
 +++ misc/Makefile.am
-@@ -18,8 +18,7 @@
- 	mc.keymap \
- 	mc.default.keymap \
- 	mc.emacs.keymap \
--	mc.menu \
--	mc.menu.sr
-+	mc.menu
+@@ -14,12 +14,10 @@
  
- LIBFILES_SCRIPT = \
- 	edit.indent.rc
+ SCRIPTS_IN = \
+ 	mc.menu.in \
+-	mc.menu.sr.in \
+ 	mcedit.menu.in
+ 
+ SCRIPTS_OUT = \
+ 	mc.menu \
+-	mc.menu.sr \
+ 	mcedit.menu
+ 
+ LIBFILES_CONST = \
 --- misc/Makefile.in
 +++ misc/Makefile.in
-@@ -476,8 +476,7 @@
- 	mc.keymap \
- 	mc.default.keymap \
- 	mc.emacs.keymap \
--	mc.menu \
--	mc.menu.sr
-+	mc.menu
+@@ -474,12 +474,10 @@
+ pkgdata_DATA = mc.lib $(am__append_1)
+ SCRIPTS_IN = \
+ 	mc.menu.in \
+-	mc.menu.sr.in \
+ 	mcedit.menu.in
  
- LIBFILES_SCRIPT = \
- 	edit.indent.rc
+ SCRIPTS_OUT = \
+ 	mc.menu \
+-	mc.menu.sr \
+ 	mcedit.menu
+ 
+ LIBFILES_CONST = \
 --- src/vfs/extfs/helpers/Makefile.am
 +++ src/vfs/extfs/helpers/Makefile.am
 @@ -3,7 +3,7 @@

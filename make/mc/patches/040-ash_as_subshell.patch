@@ -1,6 +1,6 @@
 --- lib/global.h
 +++ lib/global.h
-@@ -248,6 +248,7 @@ typedef struct
+@@ -248,6 +248,7 @@
  
          /* The user's shell */
          char *shell;
@@ -10,7 +10,7 @@
          /* It is used by function view_other_cmd() */
 --- lib/global.c
 +++ lib/global.c
-@@ -95,6 +95,7 @@ mc_global_t mc_global = {
+@@ -95,6 +95,7 @@
  #endif /* !ENABLE_SUBSHELL */
  
          .shell = NULL,
@@ -28,7 +28,7 @@
  
  /*** file scope functions ************************************************************************/
  /* --------------------------------------------------------------------------------------------- */
-@@ -128,6 +129,7 @@ OS_Setup (void)
+@@ -128,6 +129,7 @@
      shell_env = getenv ("SHELL");
      if ((shell_env == NULL) || (shell_env[0] == '\0'))
      {
@@ -36,7 +36,7 @@
          struct passwd *pwd;
  
          pwd = getpwuid (geteuid ());
-@@ -135,13 +137,37 @@ OS_Setup (void)
+@@ -135,13 +137,37 @@
              mc_global.tty.shell = g_strdup (pwd->pw_shell);
      }
      else
@@ -77,7 +77,7 @@
      /* and can be overriden by the MC_DATADIR environment variable */
 --- src/subshell.c
 +++ src/subshell.c
-@@ -115,6 +115,8 @@ enum
+@@ -115,6 +115,8 @@
  static enum
  {
      BASH,
@@ -86,7 +86,7 @@
      TCSH,
      ZSH,
      FISH
-@@ -269,8 +271,9 @@ init_subshell_child (const char *pty_nam
+@@ -269,8 +271,9 @@
              init_file = g_strdup (".bashrc");
          }
  
@@ -98,7 +98,7 @@
  
          /* Allow alternative readline settings for MC */
          {
-@@ -286,7 +289,26 @@ init_subshell_child (const char *pty_nam
+@@ -286,7 +289,26 @@
  
          break;
  
@@ -126,7 +126,7 @@
      case TCSH:
      case ZSH:
      case FISH:
-@@ -324,19 +346,17 @@ init_subshell_child (const char *pty_nam
+@@ -324,19 +346,17 @@
          execl (mc_global.tty.shell, "bash", "-rcfile", init_file, (char *) NULL);
          break;
  
@@ -150,17 +150,15 @@
          break;
      }
  
-@@ -763,7 +783,8 @@ init_subshell (void)
+@@ -763,6 +783,7 @@
  {
      /* This must be remembered across calls to init_subshell() */
      static char pty_name[BUF_SMALL];
--    char precmd[BUF_SMALL];
 +    /* Must be considerably longer than BUF_SMALL (128) to support fancy shell prompts */
-+    char precmd[300];
+     char precmd[BUF_MEDIUM];
  
      switch (check_sid ())
-     {
-@@ -779,21 +800,36 @@ init_subshell (void)
+@@ -779,21 +800,36 @@
      /* Take the current (hopefully pristine) tty mode and make */
      /* a raw mode based on it now, before we do anything else with it */
      init_raw_mode ();
@@ -205,7 +203,7 @@
          else
          {
              mc_global.tty.use_subshell = FALSE;
-@@ -844,7 +880,7 @@ init_subshell (void)
+@@ -844,7 +880,7 @@
                  return;
              }
          }
@@ -214,7 +212,7 @@
          {
              perror (__FILE__ ": couldn't create pipe");
              mc_global.tty.use_subshell = FALSE;
-@@ -872,30 +908,113 @@ init_subshell (void)
+@@ -872,33 +908,113 @@
          init_subshell_child (pty_name);
      }
  
@@ -312,6 +310,7 @@
          break;
 +
      case FISH:
+-        /* Use fish_prompt_mc function for prompt, if not present then copy fish_prompt to it. */
 +        /* We also want a fancy user@host:cwd prompt here, but fish makes it very easy to also
 +         * use colours, which is what we will do. But first here is a simpler, uncoloured version:
 +         * "function fish_prompt; "
@@ -324,18 +323,20 @@
 +         * Find out how to fix this.
 +         */
          g_snprintf (precmd, sizeof (precmd),
--                    "function fish_prompt ; pwd>&%d;kill -STOP %%self; end\n",
+-                    "if not functions -q fish_prompt_mc;"
+-                    "functions -c fish_prompt fish_prompt_mc; end;"
+-                    "function fish_prompt; echo $PWD>&%d; fish_prompt_mc; kill -STOP %%self; end\n",
 -                    subshell_pipe[WRITE]);
 +             "function fish_prompt; "
 +                 "echo (whoami)@(hostname -s):(set_color $fish_color_cwd)(pwd)(set_color normal)\\$\\ ; "
 +                 "echo \"$PWD\">&%d; "
 +                 "kill -STOP %%self; "
 +             "end\n",
-+            subshell_pipe[WRITE]);
++             subshell_pipe[WRITE]);
          break;
  
      }
-@@ -1102,6 +1221,13 @@ subshell_name_quote (const char *s)
+@@ -1105,6 +1221,13 @@
          quote_cmd_start = "(printf \"%b\" '";
          quote_cmd_end = "')";
      }
