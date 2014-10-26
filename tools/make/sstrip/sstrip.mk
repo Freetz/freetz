@@ -5,7 +5,7 @@ sstrip-unpacked: $(SSTRIP_DIR)/.unpacked
 $(SSTRIP_DIR)/.unpacked: $(wildcard $(SSTRIP_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
 	$(RM) -r $(SSTRIP_DIR)
 	mkdir -p $(SSTRIP_DIR)
-	$(TAR) -C $(SSTRIP_SRC) -c . | $(TAR) --exclude=.svn -C $(SSTRIP_DIR) -x $(VERBOSE)
+	$(call COPY_USING_TAR,$(SSTRIP_SRC),$(SSTRIP_DIR))
 	touch $@
 
 $(SSTRIP_DIR)/sstrip: $(SSTRIP_DIR)/.unpacked

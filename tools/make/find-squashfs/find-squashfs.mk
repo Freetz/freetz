@@ -5,7 +5,7 @@ find-squashfs-unpacked: $(FIND_SQUASHFS_DIR)/.unpacked
 $(FIND_SQUASHFS_DIR)/.unpacked: $(wildcard $(FIND_SQUASHFS_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
 	$(RM) -r $(FIND_SQUASHFS_DIR)
 	mkdir -p $(FIND_SQUASHFS_DIR)
-	$(TAR) -C $(FIND_SQUASHFS_SRC) -c . | $(TAR) --exclude=.svn -C $(FIND_SQUASHFS_DIR) -x $(VERBOSE)
+	$(call COPY_USING_TAR,$(FIND_SQUASHFS_SRC),$(FIND_SQUASHFS_DIR))
 	touch $@
 
 $(FIND_SQUASHFS_DIR)/find-squashfs: $(FIND_SQUASHFS_DIR)/.unpacked

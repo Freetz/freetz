@@ -123,7 +123,7 @@ $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.compiled
 	touch $@
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_DIR)/.installed
-	@$(TAR) -c -C $(PYTHON_LOCAL_INSTALL_DIR)/usr --exclude='*.pyc' . | $(TAR) -x -C $(TARGET_TOOLCHAIN_STAGING_DIR)/usr; \
+	@$(call COPY_USING_TAR,$(PYTHON_LOCAL_INSTALL_DIR)/usr,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,--exclude='*.pyc' .) \
 	$(PKG_FIX_LIBTOOL_LA) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/python-$(PYTHON_MAJOR_VERSION).pc; \
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python$(PYTHON_MAJOR_VERSION).bin ; \
 	cp $(HOST_TOOLS_DIR)/usr/bin/python$(PYTHON_MAJOR_VERSION) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/hostpython; \
@@ -132,7 +132,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_DIR)/.installed
 	touch -c $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.installed
-	@$(TAR) -c -C $(PYTHON_LOCAL_INSTALL_DIR) --exclude='libpython$(PYTHON_MAJOR_VERSION).so*' . | $(TAR) -x -C $(PYTHON_DEST_DIR); \
+	@$(call COPY_USING_TAR,$(PYTHON_LOCAL_INSTALL_DIR),$(PYTHON_DEST_DIR),--exclude='libpython$(PYTHON_MAJOR_VERSION).so*' .) \
 	(cd $(PYTHON_DEST_DIR); \
 		echo -n > usr/lib/python$(PYTHON_MAJOR_VERSION)/config/Makefile; \
 		find usr/include/python$(PYTHON_MAJOR_VERSION)/ -name "*.h" \! -name "pyconfig.h" \! -name "Python.h" -delete; \

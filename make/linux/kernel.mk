@@ -184,8 +184,7 @@ $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_BUILD_ROOT_DIR)/$(KERNEL_IMAGE
 $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT): $(KERNEL_DIR)/.modules-$(KERNEL_LAYOUT)
 	$(RM) -r $(KERNEL_MODULES_DIR)/lib
 	mkdir -p $(KERNEL_MODULES_DIR)
-	KERNEL_MODULES_SOURCE_DIR=$(KERNEL_DIR)/lib/modules/*/kernel; \
-	$(TAR) -cf - -C $$KERNEL_MODULES_SOURCE_DIR . | $(TAR) -xf - -C $(KERNEL_MODULES_DIR)
+	$(call COPY_USING_TAR,$(KERNEL_DIR)/lib/modules/*/kernel,$(KERNEL_MODULES_DIR))
 	touch $@
 
 kernel-precompiled: pkg-echo-start $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(KERNEL_LAYOUT) pkg-echo-done

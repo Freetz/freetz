@@ -657,7 +657,7 @@ $(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PACKAGES_DIR)/.$(pkg)
 	mkdir -p $($(PKG)_TARGET_DIR)/root
 	if test -d $($(PKG)_MAKE_DIR)/files; then \
-		$(TAR) -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | $(TAR) -x -C $($(PKG)_TARGET_DIR); \
+		$(call COPY_USING_TAR,$($(PKG)_MAKE_DIR)/files,$($(PKG)_TARGET_DIR)) \
 	fi
 	@touch $$@
 $(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
@@ -697,7 +697,7 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
 	mkdir -p $($(PKG)_TARGET_DIR)/root
 	if test -d $($(PKG)_MAKE_DIR)/files; then \
-		$(TAR) -c -C $($(PKG)_MAKE_DIR)/files --exclude=.svn . | $(TAR) -x -C $($(PKG)_TARGET_DIR); \
+		$(call COPY_USING_TAR,$($(PKG)_MAKE_DIR)/files,$($(PKG)_TARGET_DIR)) \
 	fi
 	@touch $$@
 $(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)

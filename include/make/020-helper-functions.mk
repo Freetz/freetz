@@ -112,6 +112,22 @@ define APPLY_PATCHES
 	done;
 endef
 
+# $1: from dir
+# $2: to dir
+# $3: (optional) tar parameters specifying files to be copied, default all except for version control and freetz build-system related files
+define COPY_USING_TAR
+	$(TAR) -cf - -C $(strip $(1)) \
+		--exclude=.svn \
+		--exclude=.gitignore \
+		--exclude=.build-prereq-checked \
+		--exclude=.unpacked \
+		--exclude=.configured \
+		--exclude=.compiled \
+		--exclude=.installed \
+		$(if $(strip $(3)),$(strip $(3)),.) \
+	| $(TAR) -xf - -C $(strip $(2));
+endef
+
 PATTERN_LIBRARY_NAME             := lib[a-zA-Z]([a-zA-Z0-9_+-])*
 PATTERN_NUMERIC_VERSION_OPTIONAL := ([.][0-9]+)*
 PATTERN_NUMERIC_VERSION          := [0-9]+$(PATTERN_NUMERIC_VERSION_OPTIONAL)

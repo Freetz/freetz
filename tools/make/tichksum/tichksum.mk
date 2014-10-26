@@ -5,7 +5,7 @@ tichksum-unpacked: $(TICHKSUM_DIR)/.unpacked
 $(TICHKSUM_DIR)/.unpacked: $(wildcard $(TICHKSUM_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
 	$(RM) -r $(TICHKSUM_DIR)
 	mkdir -p $(TICHKSUM_DIR)
-	$(TAR) -C $(TICHKSUM_SRC) -c . | $(TAR) --exclude=.svn -C $(TICHKSUM_DIR) -x $(VERBOSE)
+	$(call COPY_USING_TAR,$(TICHKSUM_SRC),$(TICHKSUM_DIR))
 	touch $@
 
 $(TICHKSUM_DIR)/tichksum: $(TICHKSUM_DIR)/.unpacked

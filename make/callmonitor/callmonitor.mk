@@ -33,7 +33,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_DIR)/.packaged
 
 $($(PKG)_TARGET_DIR)/.packaged: $($(PKG)_DIR)/.configured $($(PKG)_TARGET_BINARY)
-	$(TAR) -c -C $(CALLMONITOR_DIR)/root --files-from=$(CALLMONITOR_DIR)/.files | $(TAR) -x -C $(CALLMONITOR_DEST_DIR)
+	$(call COPY_USING_TAR,$(CALLMONITOR_DIR)/root,$(CALLMONITOR_DEST_DIR),--files-from=$(CALLMONITOR_DIR)/.files)
 	cp $(CALLMONITOR_DIR)/.language $(CALLMONITOR_TARGET_DIR)/
 	@touch $@
 

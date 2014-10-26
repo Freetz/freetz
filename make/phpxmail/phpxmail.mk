@@ -2,11 +2,13 @@ $(call PKG_INIT_BIN, 1.5)
 $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).zip
 $(PKG)_SOURCE_MD5:=97ca3f2f9805dbc54d6ad763435cd9fd
 $(PKG)_SITE:=@SF/$(pkg)
-$(PKG)_SOURCE_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
-$(PKG)_BINARY:=$($(PKG)_DIR)/index.php
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/default.$(pkg)/config.php.default
+
 $(PKG)_CATEGORY:=Web interfaces
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/config.php
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/default.$(pkg)/config.php.default
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -16,9 +18,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(PHPXMAIL_DEST_DIR)/usr/mww/phpxmail
-	$(TAR) -c -C $(PHPXMAIL_DIR) --exclude=config.php --exclude=.unpacked --exclude=.configured \
-		--exclude=.build-* . | $(TAR) -x -C $(PHPXMAIL_DEST_DIR)/usr/mww/phpxmail
-	cp $(PHPXMAIL_DIR)/config.php $(PHPXMAIL_TARGET_BINARY)
+	$(call COPY_USING_TAR,$(PHPXMAIL_DIR),$(PHPXMAIL_DEST_DIR)/usr/mww/phpxmail,--exclude=config.php .)
+	$(INSTALL_FILE)
 
 $(pkg):
 
@@ -26,9 +27,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	$(RM) $(PHPXMAIL_DIR)/.configured
-
-$(pkg)-dirclean:
-	$(RM) -r $(PHPXMAIL_SOURCE_DIR)
 
 $(pkg)-uninstall:
 	$(RM) $(PHPXMAIL_TARGET_BINARY)
