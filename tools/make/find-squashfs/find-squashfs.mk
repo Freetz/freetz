@@ -9,8 +9,7 @@ $(FIND_SQUASHFS_DIR)/.unpacked: $(wildcard $(FIND_SQUASHFS_SRC)/*) | $(TOOLS_SOU
 	touch $@
 
 $(FIND_SQUASHFS_DIR)/find-squashfs: $(FIND_SQUASHFS_DIR)/.unpacked
-	$(MAKE) CC="$(TOOLS_CC)" LD="$(TOOLS_LD) -static" \
-		-C $(FIND_SQUASHFS_DIR)
+	$(MAKE) CC="$(TOOLS_CC)" -C $(FIND_SQUASHFS_DIR)
 
 $(TOOLS_DIR)/find-squashfs: $(FIND_SQUASHFS_DIR)/find-squashfs
 	$(INSTALL_FILE)

@@ -11,7 +11,7 @@ $(LZMA2EVA_DIR)/.unpacked: $(wildcard $(LZMA2EVA_SRC)/*) | $(TOOLS_SOURCE_DIR) t
 	touch $@
 
 $(LZMA2EVA_TOOLS:%=$(LZMA2EVA_DIR)/%): $(LZMA2EVA_DIR)/.unpacked
-	$(MAKE) CC="$(TOOLS_CC)" LD="$(TOOLS_LD)" -C $(LZMA2EVA_DIR)
+	$(MAKE) CC="$(TOOLS_CC)" -C $(LZMA2EVA_DIR)
 
 $(LZMA2EVA_TOOLS:%=$(TOOLS_DIR)/%): $(TOOLS_DIR)/%: $(LZMA2EVA_DIR)/%
 	$(INSTALL_FILE)

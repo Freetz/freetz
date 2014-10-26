@@ -1,5 +1,4 @@
 CC = gcc
-LD = ld
 CFLAGS = -W -Wall -O2
 PROGS = find-squashfs
 OBJS += find-squashfs.o
