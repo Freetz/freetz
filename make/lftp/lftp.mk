@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://lftp.yar.ru/ftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lftp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lftp
 
-$(PKG)_DEPENDS_ON := ncurses readline $(STDCXXLIB) expat
+$(PKG)_DEPENDS_ON += ncurses readline $(STDCXXLIB) expat
 
 ifeq ($(strip $(FREETZ_PACKAGE_LFTP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl

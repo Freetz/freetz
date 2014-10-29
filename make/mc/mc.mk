@@ -7,7 +7,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/mc
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc
 $(PKG)_TARGET_CONS_SAVER_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/mc/cons.saver
 
-$(PKG)_DEPENDS_ON := ncurses-terminfo glib2
+$(PKG)_DEPENDS_ON += ncurses-terminfo glib2
 
 $(PKG)_CONFIGURE_ENV += fu_cv_sys_stat_statfs2_bsize=yes
 

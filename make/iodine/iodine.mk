@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://code.kryo.se/iodine
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/iodined
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/iodined
 
-$(PKG)_DEPENDS_ON := zlib
+$(PKG)_DEPENDS_ON += zlib
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

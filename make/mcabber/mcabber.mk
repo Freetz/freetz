@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://mirror.mcabber.com/files
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/mcabber
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mcabber
 
-$(PKG)_DEPENDS_ON := glib2 ncurses
+$(PKG)_DEPENDS_ON += glib2 ncurses
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MCABBER_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MCABBER_WITH_SSL

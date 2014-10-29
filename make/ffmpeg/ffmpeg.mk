@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=da71eac556435356a6d6ff3be88ed38d
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
-$(PKG)_DEPENDS_ON := zlib
+$(PKG)_DEPENDS_ON += zlib
 ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg)),y)
 $(PKG)_DEPENDS_ON += openjpeg
 endif

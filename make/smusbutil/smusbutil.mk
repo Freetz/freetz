@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/smusbutil
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/smusbutil
 
-$(PKG)_DEPENDS_ON := libftdi
+$(PKG)_DEPENDS_ON += libftdi
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

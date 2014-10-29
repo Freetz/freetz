@@ -12,7 +12,7 @@ $(PKG)_TARGET_LIB_BINARY:=$($(PKG)_DEST_LIBDIR)/libjvm.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CLASSES_ZIP:=$($(PKG)_DIR)/lib/classes.zip
 $(PKG)_TARGET_CLASSES_ZIP:=$($(PKG)_DEST_DIR)/usr/share/jamvm/classes.zip
 
-$(PKG)_DEPENDS_ON := zlib libffi classpath
+$(PKG)_DEPENDS_ON += zlib libffi classpath
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-ffi
 $(PKG)_CONFIGURE_OPTIONS += --disable-int-threading

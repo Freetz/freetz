@@ -6,7 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/main/emailrelay
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/emailrelay
 
 # uClibc causes stalling while pop3 access
-$(PKG)_DEPENDS_ON := $(STDCXXLIB) openssl zlib
+$(PKG)_DEPENDS_ON += $(STDCXXLIB) openssl zlib
 
 #daemon does not start if ipv6 enabled but unused (no valid dns configuration)
 #$(PKG)_REBUILD_SUBOPTS := FREETZ_TARGET_IPV6_SUPPORT

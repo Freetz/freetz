@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/bjoern-$($(PKG)_VERSION)
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/bjoern.so
 
-$(PKG)_DEPENDS_ON := python libev
+$(PKG)_DEPENDS_ON += python libev
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_STATIC
 

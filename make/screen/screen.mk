@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://ftp.uni-erlangen.de/pub/utilities/screen
 $(PKG)_BINARY:=$($(PKG)_DIR)/screen
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/screen.bin
 
-$(PKG)_DEPENDS_ON := ncurses
+$(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_CONFIGURE_ENV += $(foreach flag,rename fchmod fchown strerror lstat _exit utimes vsnprintf getcwd setlocale strftime,ac_cv_func_$(flag)=yes)
 

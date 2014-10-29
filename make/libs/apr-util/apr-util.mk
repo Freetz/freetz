@@ -15,7 +15,7 @@ $(PKG)_INCLUDE_DIR:=/usr/include/apr-util-$(APR_UTIL_MAJOR_VERSION)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libaprutil_WITH_LIBDB
 
-$(PKG)_DEPENDS_ON := apr
+$(PKG)_DEPENDS_ON += apr
 ifeq ($(strip $(FREETZ_LIB_libaprutil_WITH_LIBDB)),y)
 $(PKG)_DEPENDS_ON += db
 endif

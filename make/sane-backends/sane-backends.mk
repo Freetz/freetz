@@ -31,7 +31,7 @@ endif
 
 $(PKG)_CATEGORY:=Unstable
 
-$(PKG)_DEPENDS_ON:= libusb
+$(PKG)_DEPENDS_ON+= libusb
 ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI)),y)
 $(PKG)_DEPENDS_ON += avahi
 endif

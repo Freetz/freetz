@@ -92,7 +92,7 @@ endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_NETSNMP_WITH_OPENSSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
-$(PKG)_DEPENDS_ON := openssl
+$(PKG)_DEPENDS_ON += openssl
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_NETSNMP_WITH_ZLIB)),y)

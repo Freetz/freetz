@@ -5,7 +5,7 @@ $(PKG)_SITE:=@SF/project/unfs3/unfs3/0.9.22
 $(PKG)_BINARY:=$($(PKG)_DIR)/unfsd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/unfsd
 
-$(PKG)_DEPENDS_ON := portmap
+$(PKG)_DEPENDS_ON += portmap
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

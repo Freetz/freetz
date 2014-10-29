@@ -10,7 +10,7 @@ $(PKG)_MOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mount.davfs
 $(PKG)_UMOUNT_BINARY:=$($(PKG)_DIR)/src/umount.davfs
 $(PKG)_UMOUNT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/umount.davfs
 
-$(PKG)_DEPENDS_ON := neon fuse
+$(PKG)_DEPENDS_ON += neon fuse
 $(PKG)_LIBS := \$$(NEON_LIBS)
 
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)

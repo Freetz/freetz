@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/portmap
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/portmap
 
-$(PKG)_DEPENDS_ON := tcp_wrappers
+$(PKG)_DEPENDS_ON += tcp_wrappers
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

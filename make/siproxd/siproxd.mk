@@ -18,7 +18,7 @@ $(PKG)_MODULES_LA_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MO
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/plugin_%.so,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/plugin_%.la,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
 
-$(PKG)_DEPENDS_ON := libosip2 libtool
+$(PKG)_DEPENDS_ON += libosip2 libtool
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

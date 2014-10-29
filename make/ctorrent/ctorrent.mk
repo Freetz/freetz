@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://www.rahul.net/dholmes/ctorrent/
 $(PKG)_BINARY:=$($(PKG)_DIR)/ctorrent
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ctorrent
 
-$(PKG)_DEPENDS_ON := $(STDCXXLIB)
+$(PKG)_DEPENDS_ON += $(STDCXXLIB)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=no

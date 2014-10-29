@@ -7,7 +7,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/mechanize-$($(PKG)_VERSION)
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/mechanize/__init__.py
 
-$(PKG)_DEPENDS_ON := python
+$(PKG)_DEPENDS_ON += python
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_STATIC
 

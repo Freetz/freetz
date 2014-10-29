@@ -7,7 +7,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/rcapid-cm
 $(PKG)_BINARY:=$($(PKG)_DIR)/rcapid
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/rcapid
 
-$(PKG)_DEPENDS_ON := libcapi
+$(PKG)_DEPENDS_ON += libcapi
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

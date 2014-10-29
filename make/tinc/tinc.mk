@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.tinc-vpn.org/packages/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/tincd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tincd
 
-$(PKG)_DEPENDS_ON := lzo openssl zlib
+$(PKG)_DEPENDS_ON += lzo openssl zlib
 
 $(PKG)_LIBS := -lssl -lcrypto -llzo2 -lz -ldl
 

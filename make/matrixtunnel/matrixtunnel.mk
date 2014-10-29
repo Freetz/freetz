@@ -7,7 +7,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/matrixtunnel
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/matrixtunnel
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/matrixtunnel
 
-$(PKG)_DEPENDS_ON := matrixssl
+$(PKG)_DEPENDS_ON += matrixssl
 
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix

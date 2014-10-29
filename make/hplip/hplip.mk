@@ -17,7 +17,7 @@ $(PKG)_LIB_HPAIO_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/li
 $(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_CATEGORY:=Unstable
 
-$(PKG)_DEPENDS_ON := libusb sane-backends
+$(PKG)_DEPENDS_ON += libusb sane-backends
 
 $(PKG)_REBUILD_SUBOPTS += $(LIBUSB_REBUILD_SUBOPTS)
 

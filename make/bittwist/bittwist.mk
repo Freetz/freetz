@@ -7,7 +7,7 @@ $(PKG)_BINARIES:=bittwist bittwiste bittwistb
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-$(PKG)_DEPENDS_ON := libpcap
+$(PKG)_DEPENDS_ON += libpcap
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

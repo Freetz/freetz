@@ -5,7 +5,7 @@ $(PKG)_SITE:=ftp://ftp.bitwizard.nl/mtr
 $(PKG)_BINARY:=$($(PKG)_DIR)/mtr
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/mtr
 
-$(PKG)_DEPENDS_ON := ncurses
+$(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 

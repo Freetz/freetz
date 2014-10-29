@@ -27,7 +27,7 @@ endif
 $(PKG)_BINS_DBD_BUILD_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DIR)/etc/cnid_dbd/%)
 $(PKG)_BINS_DBD_TARGET_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DEST_DIR)/sbin/%)
 
-$(PKG)_DEPENDS_ON := db
+$(PKG)_DEPENDS_ON += db
 ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF)),y)
 $(PKG)_DEPENDS_ON += avahi
 endif

@@ -5,7 +5,7 @@ $(PKG)_SITE:=@SF/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/streamripper
 
-$(PKG)_DEPENDS_ON := pcre glib2 libmad
+$(PKG)_DEPENDS_ON += pcre glib2 libmad
 
 $(PKG)_CONFIGURE_OPTIONS += --with-included-argv
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix

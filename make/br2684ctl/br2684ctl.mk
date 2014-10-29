@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION).orig
 $(PKG)_BINARY:=$($(PKG)_DIR)/br2684ctl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/br2684ctl
 
-$(PKG)_DEPENDS_ON := linux-atm
+$(PKG)_DEPENDS_ON += linux-atm
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_LAYOUT
 

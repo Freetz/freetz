@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://triq.net/obexftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/apps/obexftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/obexftpd
 
-$(PKG)_DEPENDS_ON := bluez-libs openobex
+$(PKG)_DEPENDS_ON += bluez-libs openobex
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

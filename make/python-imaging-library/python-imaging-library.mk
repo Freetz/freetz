@@ -7,7 +7,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Imaging-$($(PKG)_VERSION)
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/PIL/_imaging.so
 
-$(PKG)_DEPENDS_ON := python freetype jpeg zlib
+$(PKG)_DEPENDS_ON += python freetype jpeg zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYTHON_STATIC
 

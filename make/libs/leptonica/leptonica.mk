@@ -8,7 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/liblept.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblept.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/liblept.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DEPENDS_ON := jpeg libpng tiff zlib
+$(PKG)_DEPENDS_ON += jpeg libpng tiff zlib
 
 # touch some autotools' files to prevent configure from being regenerated
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 configure.ac aclocal.m4;

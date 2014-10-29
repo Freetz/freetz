@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.tcpdump.org/release
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpdump
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tcpdump
 
-$(PKG)_DEPENDS_ON := libpcap
+$(PKG)_DEPENDS_ON += libpcap
 
 ifeq ($(strip $(FREETZ_PACKAGE_TCPDUMP_MINI)),y)
 $(PKG)_CFLAGS := -DTCPDUMP_MINI

@@ -13,7 +13,7 @@ $(PKG)_TARGET_LIB:=$($(PKG)_TARGET_LIBDIR)/libpcsclite.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_DEPENDS_ON := libusb1
+$(PKG)_DEPENDS_ON += libusb1
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

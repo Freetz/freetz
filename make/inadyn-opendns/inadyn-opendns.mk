@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/inadyn.source.v$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/linux/inadyn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/inadyn-opendns
 
-$(PKG)_DEPENDS_ON := curl
+$(PKG)_DEPENDS_ON += curl
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

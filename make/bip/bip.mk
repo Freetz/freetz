@@ -9,7 +9,7 @@ $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
-$(PKG)_DEPENDS_ON := openssl
+$(PKG)_DEPENDS_ON += openssl
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_STATIC)),y)

@@ -9,7 +9,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/madplay
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac;
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_DEPENDS_ON := zlib libid3tag libmad
+$(PKG)_DEPENDS_ON += zlib libid3tag libmad
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

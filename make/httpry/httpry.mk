@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://dumpsterventures.com/jason/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
-$(PKG)_DEPENDS_ON := libpcap
+$(PKG)_DEPENDS_ON += libpcap
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

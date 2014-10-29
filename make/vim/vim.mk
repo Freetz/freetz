@@ -8,7 +8,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)73
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
-$(PKG)_DEPENDS_ON := ncurses
+$(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_CONFIGURE_ENV += vim_cv_getcwd_broken=no
 $(PKG)_CONFIGURE_ENV += vim_cv_memmove_handles_overlap=yes

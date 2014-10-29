@@ -7,7 +7,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/PyRRD-$($(PKG)_VERSION)
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/pyrrd/__init__.py
 
-$(PKG)_DEPENDS_ON := python
+$(PKG)_DEPENDS_ON += python
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

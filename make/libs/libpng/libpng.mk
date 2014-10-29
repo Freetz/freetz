@@ -8,7 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpng12.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libpng12.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DEPENDS_ON := zlib
+$(PKG)_DEPENDS_ON += zlib
 
 $(PKG)_CONFIGURE_ENV += gl_cv_func_malloc_0_nonnull=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_func_strtod=yes

@@ -19,7 +19,7 @@ $(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-$(PKG)_DEPENDS_ON := pcre libffi zlib
+$(PKG)_DEPENDS_ON += pcre libffi zlib
 
 # NB: glib2 does require iconv-functions, see glib/gconvert.c
 # The configure option "--with-libiconv=no" means

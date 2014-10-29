@@ -7,7 +7,7 @@ $(PKG)_BINARY:=$(BASH_DIR)/bash
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/bash
 
 ifeq ($(strip $(FREETZ_PACKAGE_BASH_READLINE)),y)
-$(PKG)_DEPENDS_ON := ncurses readline
+$(PKG)_DEPENDS_ON += ncurses readline
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BASH_MINIMAL

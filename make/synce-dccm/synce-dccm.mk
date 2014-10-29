@@ -6,7 +6,7 @@ $(PKG)_SITE:=@SF/synce
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/dccm
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/dccm
 
-$(PKG)_DEPENDS_ON := libsynce
+$(PKG)_DEPENDS_ON += libsynce
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

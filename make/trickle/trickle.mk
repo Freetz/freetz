@@ -11,7 +11,7 @@ $(PKG)_LIBS:=$(pkg)-overload.so
 $(PKG)_LIBS_BUILD_DIR:=$($(PKG)_LIBS:%=$($(PKG)_DIR)/%)
 $(PKG)_LIBS_TARGET_DIR:=$($(PKG)_LIBS:%=$($(PKG)_DEST_LIBDIR)/%)
 
-$(PKG)_DEPENDS_ON := libevent
+$(PKG)_DEPENDS_ON += libevent
 
 # touch some patched files to prevent configure from being regenerated
 $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.in ./config.h.in ./acconfig.h;

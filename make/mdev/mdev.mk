@@ -13,7 +13,7 @@ $(PKG)_CATEGORY:=Unstable
 
 $(PKG)_KERNEL_VERSION := $(shell echo $(KERNEL_VERSION) | $(SED) 's/\.[^.]*$$//')
 
-$(PKG)_DEPENDS_ON := e2fsprogs
+$(PKG)_DEPENDS_ON += e2fsprogs
 
 $(PKG)_REBUILD_SUBOPTS := FREETZ_TYPE_PREFIX
 

@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5:=d43ab9f680435a7fff35b4ace8d45b80
 $(PKG)_SITE:=@KERNEL/linux/libs/security/linux-privs/libcap2
 
-$(PKG)_DEPENDS_ON := attr
+$(PKG)_DEPENDS_ON += attr
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)/$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_VERSION)

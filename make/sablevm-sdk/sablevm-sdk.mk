@@ -17,7 +17,7 @@ $(PKG)_LIB_CLASSPATH_BINARY:=$($(PKG)_DIR)/sablevm-classpath/native/jni/java-io/
 $(PKG)_LIB_STAGING_CLASSPATH_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sablevm-classpath/libjavaio-$($(PKG)_VERSION).so
 $(PKG)_LIB_TARGET_CLASSPATH_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/sablevm-classpath/libjavaio-$($(PKG)_VERSION).so
 
-$(PKG)_DEPENDS_ON := libffi libtool popt zlib
+$(PKG)_DEPENDS_ON += libffi libtool popt zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SABLEVM_SDK_MINI
 

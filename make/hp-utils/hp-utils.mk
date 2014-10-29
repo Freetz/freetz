@@ -6,7 +6,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/hp-levels
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/hp-levels
 $(PKG)_CATEGORY:=Unstable
 
-$(PKG)_DEPENDS_ON:= hplip
+$(PKG)_DEPENDS_ON+= hplip
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

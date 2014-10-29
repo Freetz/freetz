@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://www.dest-unreach.org/socat/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/socat
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/socat
 
-$(PKG)_DEPENDS_ON := openssl
+$(PKG)_DEPENDS_ON += openssl
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SOCAT_WITHTERMIOS),--enable-termios,--disable-termios)
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"

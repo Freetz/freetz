@@ -8,7 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libopenobex.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libopenobex.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libopenobex.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DEPENDS_ON := bluez-libs
+$(PKG)_DEPENDS_ON += bluez-libs
 
 # as we (want to) build the package with no libusb support, change prefix of libusb related variables to ensure that no libusb dependent package is affected
 $(PKG)_AC_VARIABLES := header_usb_h lib_usb_usb_open lib_usb_usb_get_busses lib_usb_usb_interrupt_read

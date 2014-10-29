@@ -5,7 +5,7 @@ $(PKG)_SITE:=@SF/fuse
 $(PKG)_BINARY:=$($(PKG)_DIR)/sshfs
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sshfs
 
-$(PKG)_DEPENDS_ON := fuse glib2
+$(PKG)_DEPENDS_ON += fuse glib2
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-sshnodelay
 

@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/PingTunnel
 $(PKG)_BINARY:=$($(PKG)_DIR)/ptunnel
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ptunnel
 
-$(PKG)_DEPENDS_ON := libpcap
+$(PKG)_DEPENDS_ON += libpcap
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -8,7 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmpfr.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DEPENDS_ON := gmp
+$(PKG)_DEPENDS_ON += gmp
 
 # prevent configure from being regenerated (008-gmp6-compat contains all changes needed)
 $(PKG)_PATCH_POST_CMDS += touch -t 200001010000.00 configure.ac;

@@ -9,7 +9,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/haserl
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_HASERL_WITH_LUA
 
 ifeq ($(strip $(FREETZ_PACKAGE_HASERL_WITH_LUA)),y)
-$(PKG)_DEPENDS_ON := lua
+$(PKG)_DEPENDS_ON += lua
 $(PKG)_CONFIGURE_OPTIONS += --enable-luashell
 $(PKG)_CONFIGURE_OPTIONS += --enable-luacshell
 $(PKG)_CONFIGURE_OPTIONS += --with-lua

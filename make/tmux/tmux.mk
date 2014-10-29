@@ -8,7 +8,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tmux
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TMUX_STATIC
 
-$(PKG)_DEPENDS_ON := ncurses libevent
+$(PKG)_DEPENDS_ON += ncurses libevent
 
 $(PKG)_CONFIGURE_ENV += ac_cv_search_event_init="-lpthread -levent"
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_TMUX_STATIC),--enable-static)

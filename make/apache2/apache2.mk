@@ -10,7 +10,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_APXS_SCRIPT:=$($(PKG)_DIR)/support/apxs
 $(PKG)_APXS_SCRIPT_STAGING_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apxs
 
-$(PKG)_DEPENDS_ON := apr apr-util pcre
+$(PKG)_DEPENDS_ON += apr apr-util pcre
 ifeq ($(strip $(FREETZ_PACKAGE_APACHE2_DEFLATE)),y)
 $(PKG)_DEPENDS_ON += zlib
 endif

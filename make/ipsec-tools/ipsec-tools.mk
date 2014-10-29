@@ -33,7 +33,7 @@ endif
 $(PKG)_LIBS_BUILD_DIR:=$(join $($(PKG)_LIBS_PATH:%=$($(PKG)_DIR)/src/%/),$($(PKG)_LIBS:%=%))
 $(PKG)_LIBS_TARGET_DIR:=$($(PKG)_LIBS:%=$($(PKG)_DEST_LIBDIR)/%)
 
-$(PKG)_DEPENDS_ON := openssl
+$(PKG)_DEPENDS_ON += openssl
 
 ifeq ($(strip $(FREETZ_PACKAGE_IPSEC_TOOLS_WITH_LZO)),y)
 $(PKG)_DEPENDS_ON += lzo

@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://www-e.uni-magdeburg.de/jschulen/ocr
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
-$(PKG)_DEPENDS_ON := netpbm
+$(PKG)_DEPENDS_ON += netpbm
 
 $(PKG)_CONFIGURE_OPTIONS += --with-netpbm="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 

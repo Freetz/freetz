@@ -6,7 +6,7 @@ $(PKG)_SITE:=@SF/sispmctl
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sispmctl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sispmctl
 
-$(PKG)_DEPENDS_ON := libusb
+$(PKG)_DEPENDS_ON += libusb
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_SISPMCTL_WEB),--with-webdir=/usr/share/sispmctl,--enable-webless)
 

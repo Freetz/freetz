@@ -7,7 +7,7 @@ $(PKG)_BINARIES            := exportfs mountd nfsd showmount
 $(PKG)_BINARIES_BUILD_DIR  := $(addprefix $($(PKG)_DIR)/utils/, $(join $($(PKG)_BINARIES),$(addprefix /,$($(PKG)_BINARIES))))
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
-$(PKG)_DEPENDS_ON := tcp_wrappers
+$(PKG)_DEPENDS_ON += tcp_wrappers
 
 # IPv6 support requires TIRPC
 #$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT

@@ -11,7 +11,7 @@ $(PKG)_SBIN_BINARIES_BUILD_DIR:=$(addprefix $($(PKG)_DIR)/,$(join hcid/ sdpd/ to
 
 $(PKG)_BINARIES_TARGET_DIR:=$(addprefix $($(PKG)_DEST_DIR)/usr/bin/,$($(PKG)_BIN_BINARIES)) $(addprefix $($(PKG)_DEST_DIR)/usr/sbin/,$($(PKG)_SBIN_BINARIES))
 
-$(PKG)_DEPENDS_ON := bluez-libs
+$(PKG)_DEPENDS_ON += bluez-libs
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

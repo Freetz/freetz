@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://hisham.hm/htop/releases/$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/htop
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/htop
 
-$(PKG)_DEPENDS_ON := ncurses
+$(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_stat=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_meminfo=yes

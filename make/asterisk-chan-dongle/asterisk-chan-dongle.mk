@@ -13,7 +13,7 @@ $(PKG)_CONFIG_TARGET := $($(PKG)_DEST_DIR)$(ASTERISK_CONFIG_DIR)/dongle.conf
 
 $(PKG)_BUILD_PREREQ += autoreconf
 
-$(PKG)_DEPENDS_ON := asterisk
+$(PKG)_DEPENDS_ON += asterisk
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += iconv
 $(PKG)_LIBS += -liconv

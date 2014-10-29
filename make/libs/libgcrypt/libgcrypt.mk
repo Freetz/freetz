@@ -15,7 +15,7 @@ $(foreach i,DIGEST SYMMETRIC_CIPHER ASYMMETRIC_CIPHER, \
   $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(i)_%,$($(PKG)_$(i)S))) \
 )
 
-$(PKG)_DEPENDS_ON := libgpg-error
+$(PKG)_DEPENDS_ON += libgpg-error
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

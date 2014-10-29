@@ -7,7 +7,7 @@ $(PKG)_SITE:=http://freetz.magenbrot.net
 $(PKG)_BINARY:=$($(PKG)_DIR)/tspc-advanced/bin/gw6c
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/gw6c
 
-$(PKG)_DEPENDS_ON := $(STDCXXLIB)
+$(PKG)_DEPENDS_ON += $(STDCXXLIB)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 
 $(PKG)_MAKE_DEFINES += CC="$(TARGET_CC)"

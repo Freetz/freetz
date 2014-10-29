@@ -7,7 +7,7 @@ $(PKG)_KNOCKD_BINARY:=$($(PKG)_DIR)/knockd
 $(PKG)_TARGET_KNOCK_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/knock
 $(PKG)_TARGET_KNOCKD_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/knockd
 
-$(PKG)_DEPENDS_ON := libpcap
+$(PKG)_DEPENDS_ON += libpcap
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

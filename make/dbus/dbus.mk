@@ -22,7 +22,7 @@ $(PKG)_CONFIG_TEMPLATE_FILES := session.conf system.conf
 $(PKG)_CONFIG_TEMPLATE_FILES_BUILD_DIR := $(addprefix $($(PKG)_DIR)/bus/,$($(PKG)_CONFIG_TEMPLATE_FILES))
 $(PKG)_CONFIG_TEMPLATE_FILES_TARGET_DIR := $(addprefix $($(PKG)_DEST_DIR)/etc/config-template.dbus/,$($(PKG)_CONFIG_TEMPLATE_FILES))
 
-$(PKG)_DEPENDS_ON := expat
+$(PKG)_DEPENDS_ON += expat
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

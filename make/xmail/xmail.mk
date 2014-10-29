@@ -8,7 +8,7 @@ $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/bin/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/%)
 $(PKG)_TAR_CONFIG := $($(PKG)_DEST_DIR)/etc/default.xmail/default_config/default_config.tar
 
-$(PKG)_DEPENDS_ON := $(STDCXXLIB)
+$(PKG)_DEPENDS_ON += $(STDCXXLIB)
 $(PKG)_LDFLAGS := -ldl -lpthread
 $(PKG)_CFLAGS := -I$(XMAIL_DIR) -D__LINUX__ -DSYS_HAS_SENDFILE -D_REENTRANT=1 -D_THREAD_SAFE=1 -DHAS_SYSMACHINE -D_GNU_SOURCE -D_POSIX_PTHREAD_SEMANTICS
 

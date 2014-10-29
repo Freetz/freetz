@@ -14,7 +14,7 @@ $(PKG)_MODULES:=ndas_block.ko ndas_core.ko ndas_sal.ko
 $(PKG)_MODULES_BUILD_DIR:=$($(PKG)_MODULES:%=$($(PKG)_BUILD_DIR)/%)
 $(PKG)_MODULES_TARGET_DIR:=$($(PKG)_MODULES:%=$(KERNEL_MODULES_DIR)/fs/ndas/%)
 
-$(PKG)_DEPENDS_ON := kernel
+$(PKG)_DEPENDS_ON += kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 

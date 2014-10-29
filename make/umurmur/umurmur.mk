@@ -8,7 +8,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)d
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_UMURMUR_USE_POLARSSL
 
-$(PKG)_DEPENDS_ON := libconfig protobuf-c
+$(PKG)_DEPENDS_ON += libconfig protobuf-c
 ifeq ($(strip $(FREETZ_PACKAGE_UMURMUR_USE_POLARSSL)),y)
 $(PKG)_DEPENDS_ON += polarssl13
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=polarssl

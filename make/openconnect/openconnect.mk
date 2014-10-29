@@ -8,7 +8,7 @@ $(PKG)_STARTLEVEL=81
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 
-$(PKG)_DEPENDS_ON := libxml2 zlib openssl
+$(PKG)_DEPENDS_ON += libxml2 zlib openssl
 $(PKG)_LIBS := -lcrypto -lssl
 
 $(PKG_SOURCE_DOWNLOAD)

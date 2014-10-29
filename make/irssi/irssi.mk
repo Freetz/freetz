@@ -16,7 +16,7 @@ $(PKG)_LIBPROXY_BINARY:=$($(PKG)_DIR)/src/irc/proxy/.libs/libirc_proxy.so
 $(PKG)_LIBPROXY_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/irssi/modules/libirc_proxy.so
 endif
 
-$(PKG)_DEPENDS_ON := glib2 ncurses
+$(PKG)_DEPENDS_ON += glib2 ncurses
 
 ifeq ($(strip $(FREETZ_PACKAGE_IRSSI_WITH_OPENSSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION

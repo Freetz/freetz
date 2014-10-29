@@ -5,7 +5,7 @@ $(PKG)_SITE:=svn://svn.chan-capi.org/chan-capi/trunk
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION)
 
-$(PKG)_DEPENDS_ON := libcapi asterisk
+$(PKG)_DEPENDS_ON += libcapi asterisk
 
 $(PKG)_BINARY := $($(PKG)_DIR)/chan_capi.so
 $(PKG)_BINARY_TARGET := $($(PKG)_DEST_DIR)/$(ASTERISK_MODULES_DIR)/chan_capi.so

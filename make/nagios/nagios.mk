@@ -7,7 +7,7 @@ $(PKG)_STATS_BINARY:=$($(PKG)_DIR)/base/nagiostats
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nagios
 $(PKG)_STATS_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nagiostats
 
-$(PKG)_DEPENDS_ON := microperl
+$(PKG)_DEPENDS_ON += microperl
 
 $(PKG)_CONFIGURE_OPTIONS += --with-nagios-user="root"
 $(PKG)_CONFIGURE_OPTIONS += --with-nagios-group="root"

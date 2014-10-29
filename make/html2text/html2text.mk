@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://www.mbayer.de/html2text/downloads
 $(PKG)_BINARY:=$($(PKG)_DIR)/html2text
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/html2text
 
-$(PKG)_DEPENDS_ON := $(STDCXXLIB)
+$(PKG)_DEPENDS_ON += $(STDCXXLIB)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 

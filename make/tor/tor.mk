@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://www.torproject.org/dist
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
 
-$(PKG)_DEPENDS_ON := zlib openssl libevent
+$(PKG)_DEPENDS_ON += zlib openssl libevent
 
 $(PKG)_CONFIGURE_ENV += tor_cv_malloc_zero_works=no
 $(PKG)_CONFIGURE_ENV += tor_cv_null_is_zero=yes

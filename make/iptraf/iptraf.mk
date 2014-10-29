@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=iptraf-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=004c2c005a1b78739e22bc49d33e244d
 $(PKG)_SITE:=ftp://iptraf.seul.org/pub/iptraf
 
-$(PKG)_DEPENDS_ON := ncurses
+$(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_BINARIES_ALL := iptraf rvnamed
 ifeq ($(strip $(FREETZ_PACKAGE_IPTRAF_RVNAMED)),y)

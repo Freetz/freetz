@@ -6,7 +6,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/deco$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/deco
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/deco
 
-$(PKG)_DEPENDS_ON := ncurses
+$(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf --force ;
 

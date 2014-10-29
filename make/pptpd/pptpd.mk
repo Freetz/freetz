@@ -7,7 +7,7 @@ $(PKG)_BINARIES:=bcrelay pptpctrl pptpd
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
-$(PKG)_DEPENDS_ON := pppd
+$(PKG)_DEPENDS_ON += pppd
 
 # disable NLS related code
 $(PKG)_AC_VARIABLES := lib_c_gettext lib_intl_gettext header_libintl_h

@@ -25,7 +25,7 @@ $(PKG)_CPPFLAGS+=-DNO_HOST_LOOKUP
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB)),y)
-$(PKG)_DEPENDS_ON := zlib
+$(PKG)_DEPENDS_ON += zlib
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_STATIC)),y)

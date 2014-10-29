@@ -10,7 +10,7 @@ $(PKG)_CATEGORY:=Unstable
 $(PKG)_TYPES_DB:=$($(PKG)_DIR)/src/types.db
 $(PKG)_TARGET_TYPES_DB:=$($(PKG)_DEST_DIR)/usr/share/$(pkg)/types.db
 
-$(PKG)_DEPENDS_ON := libtool
+$(PKG)_DEPENDS_ON += libtool
 # ensure system libltdl is used and not the included one
 $(PKG)_CONFIGURE_PRE_CMDS += $(RM) -r libltdl; sed -i -r -e '/SUBDIRS/ s/libltdl//g' ./Makefile.in;
 $(PKG)_CONFIGURE_ENV += LIBLTDL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
