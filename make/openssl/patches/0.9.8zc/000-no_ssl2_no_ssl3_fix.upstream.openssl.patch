@@ -1,0 +1,42 @@
+From b82924741b4bd590da890619be671f4635e46c2b Mon Sep 17 00:00:00 2001
+From: Kurt Roeckx <kurt@roeckx.be>
+Date: Tue, 21 Oct 2014 20:45:15 +0200
+Subject: [PATCH] Keep old method in case of an unsupported protocol
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When we're configured with no-ssl3 and we receive an SSL v3 Client Hello, we set
+the method to NULL.  We didn't used to do that, and it breaks things.  This is a
+regression introduced in 62f45cc27d07187b59551e4fad3db4e52ea73f2c.  Keep the old
+method since the code is not able to deal with a NULL method at this time.
+
+CVE-2014-3569, PR#3571
+
+Reviewed-by: Emilia Käsper <emilia@openssl.org>
+(cherry picked from commit 392fa7a952e97d82eac6958c81ed1e256e6b8ca5)
+---
+ ssl/s23_srvr.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/ssl/s23_srvr.c b/ssl/s23_srvr.c
+index 3d0069b..bfbe5bc 100644
+--- ssl/s23_srvr.c
++++ ssl/s23_srvr.c
+@@ -559,12 +559,14 @@ int ssl23_get_client_hello(SSL *s)
+ 	if ((type == 2) || (type == 3))
+ 		{
+ 		/* we have SSLv3/TLSv1 (type 2: SSL2 style, type 3: SSL3/TLS style) */
+-                s->method = ssl23_get_server_method(s->version);
+-		if (s->method == NULL)
++		const SSL_METHOD *new_method;
++		new_method = ssl23_get_server_method(s->version);
++		if (new_method == NULL)
+ 			{
+ 			SSLerr(SSL_F_SSL23_GET_CLIENT_HELLO,SSL_R_UNSUPPORTED_PROTOCOL);
+ 			goto err;
+ 			}
++		s->method = new_method;
+ 
+ 		if (!ssl_init_wbio_buffer(s,1)) goto err;
+ 
