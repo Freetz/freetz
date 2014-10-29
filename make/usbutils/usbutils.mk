@@ -12,7 +12,7 @@ $(PKG)_TARGET_IDS:=$($(PKG)_DEST_DIR)/usr/share/usb.ids
 $(PKG)_CATEGORY:=Debug helpers
 
 ifneq ($(strip $(FREETZ_PACKAGE_USBUTILS_IDS)),y)
-$(PKG)_EXCLUDED:=$($(PKG)_TARGET_IDS)
+$(PKG)_EXCLUDED+=$($(PKG)_TARGET_IDS)
 endif
 
 $(PKG)_DEPENDS_ON := libusb1

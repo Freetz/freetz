@@ -411,11 +411,17 @@ PKG:=$(if $(strip $3),$(strip $3),$(call TOUPPER_NAME,$(pkg)))
 ALL_PACKAGES+=$(pkg)
 #
 $(PKG)_VERSION:=$(strip $1)
+#
 $(PKG)_BUILD_PREREQ:=
 $(PKG)_BUILD_PREREQ_HINT:=
-$(PKG)_CONFIGURE_DEFOPTS:=y
+#
 $(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+#
+$(PKG)_EXCLUDED:=
+#
+$(PKG)_CONFIGURE_DEFOPTS:=y
+#
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
 $(pkg)-precompiled: $(pkg)-precompiled--int $(pkg)-clean-echo-item $(pkg) $(pkg)-clean-excluded--int
 $(pkg)-clean-echo-item:
@@ -554,7 +560,7 @@ endif
 	@mkdir -p $$(dir $$@); touch $$@;
 
 $(pkg)-clean-excluded--int:
-	@$(if $($(PKG)_EXCLUDED),$(RM) -r $($(PKG)_EXCLUDED),)
+	@$(if $(strip $($(PKG)_EXCLUDED)),$(RM) -r $(strip $($(PKG)_EXCLUDED)),)
 
 $(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
 .PHONY: $(pkg)-distclean $(pkg)-clean $(pkg)-uninstall

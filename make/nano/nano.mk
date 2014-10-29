@@ -54,7 +54,7 @@ $(PKG)_SYNTAX_FILES_LIST += $(if $(FREETZ_PACKAGE_NANO_SYNTAX_FILE_PATCH),patch.
 $(PKG)_SYNTAX_FILES_LIST += $(if $(FREETZ_PACKAGE_NANO_SYNTAX_FILE_XML),xml.nanorc)
 
 $(PKG)_SYNTAX_FILES_ALL:=sh.nanorc nanorc.nanorc c.nanorc css.nanorc html.nanorc php.nanorc tex.nanorc patch.nanorc xml.nanorc
-$(PKG)_EXCLUDED:=$(addprefix $($(PKG)_TARGET_SYNTAX_FILES_DIR),$(filter-out $($(PKG)_SYNTAX_FILES_LIST),$($(PKG)_SYNTAX_FILES_ALL)))
+$(PKG)_EXCLUDED+=$(addprefix $($(PKG)_TARGET_SYNTAX_FILES_DIR),$(filter-out $($(PKG)_SYNTAX_FILES_LIST),$($(PKG)_SYNTAX_FILES_ALL)))
 
 $(PKG)_SYNTAX_FILES:=$(addprefix $($(PKG)_SYNTAX_FILES_DIR),$($(PKG)_SYNTAX_FILES_LIST))
 $(PKG)_TARGET_SYNTAX_FILES:=$(addprefix $($(PKG)_TARGET_SYNTAX_FILES_DIR),$($(PKG)_SYNTAX_FILES_LIST))
