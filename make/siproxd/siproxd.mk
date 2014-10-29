@@ -15,8 +15,8 @@ $(PKG)_MODULES_SO_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MO
 $(PKG)_MODULES_LA_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_DIR)/src/plugin_%.la)
 $(PKG)_MODULES_LA_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/plugin_%.la)
 
-$(PKG)_NOT_INCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/plugin_%.so,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
-$(PKG)_NOT_INCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/plugin_%.la,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
+$(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/plugin_%.so,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
+$(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/plugin_%.la,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
 
 $(PKG)_DEPENDS_ON := libosip2 libtool
 

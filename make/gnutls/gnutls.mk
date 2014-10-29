@@ -15,14 +15,14 @@ $(PKG)_BINARIES_ALL := $($(PKG)_CERTTOOL) $($(PKG)_UTILS)
 $(PKG)_BINARIES := $(filter-out $(if $(FREETZ_PACKAGE_GNUTLS_CERTTOOL),,$($(PKG)_CERTTOOL)) $(if $(FREETZ_PACKAGE_GNUTLS_UTILS),,$($(PKG)_UTILS)),$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/.libs/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
-$(PKG)_NOT_INCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
 $(PKG)_LIBS_ALL := $($(PKG)_LIB) $($(PKG)_LIB_EXTRA) $($(PKG)_LIB_OPENSSL)
 $(PKG)_LIBS_EXTRA := $(if $(FREETZ_LIB_libgnutls_extra),$($(PKG)_LIB_EXTRA)) $(if $(FREETZ_LIB_libgnutls_openssl),$($(PKG)_LIB_OPENSSL))
 $(PKG)_LIBS_BUILD_DIR := $($(PKG)_LIB:%=$($(PKG)_DIR)/lib/.libs/%) $($(PKG)_LIBS_EXTRA:%=$($(PKG)_DIR)/libextra/.libs/%)
 $(PKG)_LIBS_STAGING_DIR := $(addprefix $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/,$($(PKG)_LIB) $($(PKG)_LIBS_EXTRA))
 $(PKG)_LIBS_TARGET_DIR := $(addprefix $($(PKG)_TARGET_LIBDIR)/,$($(PKG)_LIB) $($(PKG)_LIBS_EXTRA))
-$(PKG)_NOT_INCLUDED += $(addprefix $($(PKG)_TARGET_LIBDIR)/, \
+$(PKG)_EXCLUDED += $(addprefix $($(PKG)_TARGET_LIBDIR)/, \
 	$(if $(FREETZ_LIB_libgnutls_extra),,$($(PKG)_LIB_EXTRA) libgnutls-extra.so.$(call GET_MAJOR_VERSION,$($(PKG)_LIB_VERSION),1) libgnutls-extra.so) \
 	$(if $(FREETZ_LIB_libgnutls_openssl),,$($(PKG)_LIB_OPENSSL) libgnutls-openssl.so.$(call GET_MAJOR_VERSION,$($(PKG)_OPENSSL_LIB_VERSION),1) libgnutls-openssl.so) \
 )

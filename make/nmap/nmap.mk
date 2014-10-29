@@ -25,8 +25,8 @@ $(PKG)_DBS            := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_DBS_ALL))
 $(PKG)_DBS_BUILD_DIR  := $($(PKG)_DBS:%=$($(PKG)_DIR)/nmap-%)
 $(PKG)_DBS_TARGET_DIR := $($(PKG)_DBS:%=$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%)
 
-$(PKG)_NOT_INCLUDED   := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
-$(PKG)_NOT_INCLUDED   += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%,$(filter-out $($(PKG)_DBS),$($(PKG)_DBS_ALL)))
+$(PKG)_EXCLUDED       := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_EXCLUDED       += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%,$(filter-out $($(PKG)_DBS),$($(PKG)_DBS_ALL)))
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_VERSION_4
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NMAP_VERSION_5

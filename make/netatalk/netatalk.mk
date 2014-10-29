@@ -22,7 +22,7 @@ $(PKG)_BINS_DBD := cnid_dbd cnid_metad
 ifeq ($(strip $(FREETZ_PACKAGE_NETATALK_DBD)),y)
 $(PKG)_BINS_DBD += dbd
 else
-$(PKG)_NOT_INCLUDED += $(NETATALK_DEST_DIR)/sbin/dbd
+$(PKG)_EXCLUDED += $(NETATALK_DEST_DIR)/sbin/dbd
 endif
 $(PKG)_BINS_DBD_BUILD_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DIR)/etc/cnid_dbd/%)
 $(PKG)_BINS_DBD_TARGET_DIR := $($(PKG)_BINS_DBD:%=$($(PKG)_DEST_DIR)/sbin/%)

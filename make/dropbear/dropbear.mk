@@ -10,7 +10,7 @@ $(PKG)_STARTLEVEL=30
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dropbearkey" MULTI=1
-$(PKG)_NOT_INCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,ssh scp)
+$(PKG)_EXCLUDED := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,ssh scp)
 else
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dbclient dropbearkey scp" MULTI=1 SCPPROGRESS=1
 endif

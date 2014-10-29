@@ -12,7 +12,7 @@ $(PKG)_TOOLS_ALL           := monitor send uuidgen
 $(PKG)_TOOLS               := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_TOOLS_ALL))
 $(PKG)_TOOLS_BUILD_DIR     := $(addprefix $($(PKG)_DIR)/tools/.libs/dbus-, $($(PKG)_TOOLS_ALL))
 $(PKG)_TOOLS_TARGET_DIR    := $($(PKG)_TOOLS:%=$($(PKG)_DEST_DIR)/usr/bin/dbus-%)
-$(PKG)_NOT_INCLUDED        := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/dbus-%,$(filter-out $($(PKG)_TOOLS),$($(PKG)_TOOLS_ALL)))
+$(PKG)_EXCLUDED            := $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/dbus-%,$(filter-out $($(PKG)_TOOLS),$($(PKG)_TOOLS_ALL)))
 
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/dbus/.libs/lib$(pkg)-1.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib$(pkg)-1.so.$($(PKG)_LIB_VERSION)

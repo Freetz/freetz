@@ -6,10 +6,10 @@ $(PKG)_WEBPHONE_TARGET:=$(DTMFBOX_CGI_TARGET_DIR)/root/usr/mww-dtmfbox-cgi/sWebP
 $(PKG)_CATEGORY:=Unstable
 
 ifneq ($(strip $(FREETZ_PACKAGE_DTMFBOX_WITH_HELP)),y)
-$(PKG)_NOT_INCLUDED += $(DTMFBOX_CGI_TARGET_DIR)/root/usr/mww-dtmfbox-cgi/cgi-bin/dtmfbox_help.cgi
+$(PKG)_EXCLUDED += $(DTMFBOX_CGI_TARGET_DIR)/root/usr/mww-dtmfbox-cgi/cgi-bin/dtmfbox_help.cgi
 endif
 ifneq ($(strip $(FREETZ_PACKAGE_DTMFBOX_WITH_WEBPHONE)),y)
-$(PKG)_NOT_INCLUDED += $(DTMFBOX_CGI_TARGET_DIR)/root/usr/mww/cgi-bin-dtmfbox-cgi/dtmfbox_webphone.cgi \
+$(PKG)_EXCLUDED += $(DTMFBOX_CGI_TARGET_DIR)/root/usr/mww/cgi-bin-dtmfbox-cgi/dtmfbox_webphone.cgi \
 	$($(PKG)_WEBPHONE_TARGET)
 endif
 

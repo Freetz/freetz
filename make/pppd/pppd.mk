@@ -11,7 +11,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pppd
 $(PKG)_CHAT_BINARY:=$(PPPD_DIR)/chat/chat
 $(PKG)_CHAT_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/chat
 ifneq ($(strip $(FREETZ_PACKAGE_PPPD_CHAT)),y)
-$(PKG)_NOT_INCLUDED := $($(PKG)_CHAT_TARGET_BINARY)
+$(PKG)_EXCLUDED := $($(PKG)_CHAT_TARGET_BINARY)
 endif
 
 $(PKG)_MAKE_OPTS := -C $(PPPD_DIR)
