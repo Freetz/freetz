@@ -521,14 +521,14 @@ $(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
 	@echo "$($(PKG)_VERSION)" > $(PACKAGES_DIR)/.$(pkg)
 
 # copy files under make/$(pkg)/files to the package target dir
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PACKAGES_DIR)/.$(pkg) | $(PACKAGES_DIR)
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): | $(PACKAGES_DIR)
 	mkdir -p $($(PKG)_TARGET_DIR)/root
 	if test -d $($(PKG)_MAKE_DIR)/files; then \
 		$(call COPY_USING_TAR,$($(PKG)_MAKE_DIR)/files,$($(PKG)_TARGET_DIR)) \
 	fi
 	@touch $$@
 
-$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION) | $(PACKAGES_DIR)
+$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
 # Binary dirclean
 $(pkg)-dirclean--int:
