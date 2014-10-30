@@ -77,7 +77,7 @@ $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINS_AFPD_BUILD_DIR) $($(PKG)_BINS_DBD_BUILD_D
 	$(SUBMAKE) -C $(NETATALK_DIR)
 
 $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/etc/uams/.libs/%
-	$(INSTALL_LIBRARY_STRIP)
+	$(INSTALL_BINARY_STRIP)
 	$(if $(findstring _passwd,$@),ln -sf $(notdir $@) $(NETATALK_DEST_LIBDIR)/$(subst _passwd,,$(notdir $@)))
 
 $($(PKG)_BINS_AFPD_TARGET_DIR): $($(PKG)_DEST_DIR)/sbin/%: $($(PKG)_DIR)/etc/afpd/%
