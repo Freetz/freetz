@@ -442,6 +442,7 @@ $(PKG)_TARGET_LIBDIR:=$(TARGET_SPECIFIC_ROOT_DIR)$(FREETZ_LIBRARY_PATH)
 $(PKG)_DEST_DIR:=$($(PKG)_TARGET_DIR)/root
 $(PKG)_DEST_LIBDIR:=$($(PKG)_TARGET_DIR)/root$(FREETZ_LIBRARY_PATH)
 $(PKG)_CLEAN_TARGET_DIR__INT:=$(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
+$(pkg)-precompiled $(pkg): | $(PKG)_TARGET_DIR
 endef
 
 # Stage 2b: initialise other package-specific variables for library packages
@@ -511,6 +512,24 @@ endef
 
 # Finalise binary packages
 define PKG_FINISH_BIN__INT
+$(PKG)_TARGET_DIR:
+	@mkdir -p $($(PKG)_TARGET_DIR)
+.PHONY: $(PKG)_TARGET_DIR
+
+# create marker containing package version
+$(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
+	@echo "$($(PKG)_VERSION)" > $(PACKAGES_DIR)/.$(pkg)
+
+# copy files under make/$(pkg)/files to the package target dir
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PACKAGES_DIR)/.$(pkg) | $(PACKAGES_DIR)
+	mkdir -p $($(PKG)_TARGET_DIR)/root
+	if test -d $($(PKG)_MAKE_DIR)/files; then \
+		$(call COPY_USING_TAR,$($(PKG)_MAKE_DIR)/files,$($(PKG)_TARGET_DIR)) \
+	fi
+	@touch $$@
+
+$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION) | $(PACKAGES_DIR)
+
 # Binary dirclean
 $(pkg)-dirclean--int:
 	$(RM) -r $($(PKG)_DIR)
@@ -658,17 +677,6 @@ $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK)
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
-
-$(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
-	@echo "$($(PKG)_VERSION)" > $(PACKAGES_DIR)/.$(pkg)
-
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $(PACKAGES_DIR)/.$(pkg)
-	mkdir -p $($(PKG)_TARGET_DIR)/root
-	if test -d $($(PKG)_MAKE_DIR)/files; then \
-		$(call COPY_USING_TAR,$($(PKG)_MAKE_DIR)/files,$($(PKG)_TARGET_DIR)) \
-	fi
-	@touch $$@
-$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 endef
 
 ## Unpack and patch library package
@@ -689,6 +697,7 @@ endef
 define PKG_LOCALSOURCE_PACKAGE__INT
 $(PKG)_SOURCE_DIR:
 	@mkdir -p $($(PKG)_SOURCE_DIR)
+.PHONY: $(PKG)_SOURCE_DIR
 $($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(PKG)_SOURCE_DIR
 	@$(call _ECHO,preparing... )
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
@@ -698,19 +707,12 @@ $($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(PKG)_SOURCE_DI
 $(pkg)-source: $($(PKG)_DIR)/.unpacked
 $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
-
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION):
-	mkdir -p $($(PKG)_TARGET_DIR)/root
-	if test -d $($(PKG)_MAKE_DIR)/files; then \
-		$(call COPY_USING_TAR,$($(PKG)_MAKE_DIR)/files,$($(PKG)_TARGET_DIR)) \
-	fi
-	@touch $$@
-$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 endef
 
 define PKG_UNPACKED_SOURCE__INT
 $(PKG)_SOURCE_DIR:
 	@mkdir -p $($(PKG)_SOURCE_DIR)
+.PHONY: $(PKG)_SOURCE_DIR
 endef
 
 ## check for changed suboptions
