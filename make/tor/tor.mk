@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.4.25)
+$(call PKG_INIT_BIN, 0.2.5.10)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=454744ebff5033ae353f2dd6b1bc425e
+$(PKG)_SOURCE_MD5:=4bde375229a7a7f77c0596ae05556527
 $(PKG)_SITE:=http://www.torproject.org/dist
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
@@ -21,6 +21,7 @@ $(PKG)_CONFIGURE_ENV += tor_cv_cflags__fPIE=no
 $(PKG)_CONFIGURE_ENV += tor_cv_ldflags__pie=no
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
+$(PKG)_CONFIGURE_OPTIONS += --disable-tool-name-check
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 $(PKG)_CONFIGURE_OPTIONS += --with-libevent-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 
