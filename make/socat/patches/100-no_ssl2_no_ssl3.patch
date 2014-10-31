@@ -1,0 +1,93 @@
+--- sslcls.c
++++ sslcls.c
+@@ -35,38 +35,6 @@
+    return result;
+ }
+ 
+-SSL_METHOD *sycSSLv2_client_method(void) {
+-   SSL_METHOD *result;
+-   Debug("SSLv2_client_method()");
+-   result = SSLv2_client_method();
+-   Debug1("SSLv2_client_method() -> %p", result);
+-   return result;
+-}
+-
+-SSL_METHOD *sycSSLv2_server_method(void) {
+-   SSL_METHOD *result;
+-   Debug("SSLv2_server_method()");
+-   result = SSLv2_server_method();
+-   Debug1("SSLv2_server_method() -> %p", result);
+-   return result;
+-}
+-
+-SSL_METHOD *sycSSLv3_client_method(void) {
+-   SSL_METHOD *result;
+-   Debug("SSLv3_client_method()");
+-   result = SSLv3_client_method();
+-   Debug1("SSLv3_client_method() -> %p", result);
+-   return result;
+-}
+-
+-SSL_METHOD *sycSSLv3_server_method(void) {
+-   SSL_METHOD *result;
+-   Debug("SSLv3_server_method()");
+-   result = SSLv3_server_method();
+-   Debug1("SSLv3_server_method() -> %p", result);
+-   return result;
+-}
+-
+ SSL_METHOD *sycSSLv23_client_method(void) {
+    SSL_METHOD *result;
+    Debug("SSLv23_client_method()");
+--- sslcls.h
++++ sslcls.h
+@@ -10,10 +10,6 @@
+ 
+ void sycSSL_load_error_strings(void);
+ int sycSSL_library_init(void);
+-SSL_METHOD *sycSSLv2_client_method(void);
+-SSL_METHOD *sycSSLv2_server_method(void);
+-SSL_METHOD *sycSSLv3_client_method(void);
+-SSL_METHOD *sycSSLv3_server_method(void);
+ SSL_METHOD *sycSSLv23_client_method(void);
+ SSL_METHOD *sycSSLv23_server_method(void);
+ SSL_METHOD *sycTLSv1_client_method(void);
+@@ -57,10 +53,6 @@
+ 
+ #define sycSSL_load_error_strings() SSL_load_error_strings()
+ #define sycSSL_library_init() SSL_library_init()
+-#define sycSSLv2_client_method() SSLv2_client_method()
+-#define sycSSLv2_server_method() SSLv2_server_method()
+-#define sycSSLv3_client_method() SSLv3_client_method()
+-#define sycSSLv3_server_method() SSLv3_server_method()
+ #define sycSSLv23_client_method() SSLv23_client_method()
+ #define sycSSLv23_server_method() SSLv23_server_method()
+ #define sycTLSv1_client_method() TLSv1_client_method()
+--- xio-openssl.c
++++ xio-openssl.c
+@@ -667,11 +667,7 @@
+ 
+    if (!server) {
+       if (me_str != 0) {
+-	 if (!strcasecmp(me_str, "SSLv2") || !strcasecmp(me_str, "SSL2")) {
+-	    method = sycSSLv2_client_method();
+-	 } else if (!strcasecmp(me_str, "SSLv3") || !strcasecmp(me_str, "SSL3")) {
+-	    method = sycSSLv3_client_method();
+-	 } else if (!strcasecmp(me_str, "SSLv23") || !strcasecmp(me_str, "SSL23") ||
++	 if (!strcasecmp(me_str, "SSLv23") || !strcasecmp(me_str, "SSL23") ||
+ 		    !strcasecmp(me_str, "SSL")) {
+ 	    method = sycSSLv23_client_method();
+ 	 } else if (!strcasecmp(me_str, "TLSv1") || !strcasecmp(me_str, "TLS1") ||
+@@ -686,11 +682,7 @@
+       }
+    } else /* server */ {
+       if (me_str != 0) {
+-	 if (!strcasecmp(me_str, "SSLv2") || !strcasecmp(me_str, "SSL2")) {
+-	    method = sycSSLv2_server_method();
+-	 } else if (!strcasecmp(me_str, "SSLv3") || !strcasecmp(me_str, "SSL3")) {
+-	    method = sycSSLv3_server_method();
+-	 } else if (!strcasecmp(me_str, "SSLv23") || !strcasecmp(me_str, "SSL23") ||
++	 if (!strcasecmp(me_str, "SSLv23") || !strcasecmp(me_str, "SSL23") ||
+ 		    !strcasecmp(me_str, "SSL")) {
+ 	    method = sycSSLv23_server_method();
+ 	 } else if (!strcasecmp(me_str, "TLSv1") || !strcasecmp(me_str, "TLS1") ||
