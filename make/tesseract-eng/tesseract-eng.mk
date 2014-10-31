@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://tesseract-ocr.googlecode.com/files
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/share/tessdata/eng.traineddata
 
 define $(PKG)_CUSTOM_UNPACK
-mkdir -p $($(PKG)_DIR); $(call UNPACK_CMD,$(1),$($(PKG)_DIR))
+mkdir -p $($(PKG)_DIR); $(call UNPACK_TARBALL,$(1),$($(PKG)_DIR))
 endef
 
 $(PKG_SOURCE_DOWNLOAD)

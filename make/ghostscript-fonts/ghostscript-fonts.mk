@@ -9,7 +9,7 @@ $(PKG)_MARKER_FILE:=a010013l.afm
 $(PKG)_MARKER_TARGET_DIR:=$($(PKG)_DEST_DIR)/$($(PKG)_RUNTIME_DIR)/$($(PKG)_MARKER_FILE)
 
 define $(PKG)_CUSTOM_UNPACK
-	mkdir -p $($(PKG)_DIR); $(call UNPACK_CMD,$(1),$($(PKG)_DIR))
+	mkdir -p $($(PKG)_DIR); $(call UNPACK_TARBALL,$(1),$($(PKG)_DIR))
 endef
 
 $(PKG_SOURCE_DOWNLOAD)
