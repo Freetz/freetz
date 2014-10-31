@@ -185,7 +185,7 @@ endef
 # Writes list entries to a file, each entry on a new line
 #
 # $1 - list
-# $2 - name of the file list entries to written to
+# $2 - name of the file list entries to be written to
 #
 define write-list-to-file
 (set -f; $(RM) $(strip $(2)); printf $(if $(strip $(1)),"%s\n" $(strip $(1)) | sort -u,"") >$(strip $(2)));
