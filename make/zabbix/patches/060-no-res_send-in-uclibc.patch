@@ -2,15 +2,15 @@
 # => HAVE_* symbol below get never defined => we use the else-branch
 --- src/libs/zbxsysinfo/common/net.c
 +++ src/libs/zbxsysinfo/common/net.c
-@@ -462,6 +462,7 @@
- 	if (-1 == res_init())	/* initialize always, settings might have changed */
+@@ -487,6 +487,7 @@
  		return SYSINFO_RET_FAIL;
+ 	}
  
 +#if defined(HAVE_RES_MKQUERY) && defined(HAVE_RES_SEND)
  	if (-1 == (res = res_mkquery(QUERY, zone, C_IN, type, NULL, 0, NULL, buf, sizeof(buf))))
- 		return SYSINFO_RET_FAIL;
- 
-@@ -486,6 +487,11 @@
+ 	{
+ 		SET_MSG_RESULT(result, zbx_dsprintf(NULL, "Cannot create DNS query: %s", zbx_strerror(errno)));
+@@ -517,6 +518,11 @@
  	_res.retry = retry;
  
  	res = res_send(buf, res, answer.buffer, sizeof(answer.buffer));
