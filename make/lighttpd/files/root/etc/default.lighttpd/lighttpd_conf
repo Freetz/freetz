@@ -120,6 +120,7 @@ cat << EOF
 ssl.engine = "$LIGHTTPD_SSLENABLE"
 ssl.pemfile = "/tmp/flash/lighttpd/crt.pem"
 ssl.use-sslv2 = "disable"
+ssl.use-sslv3 = "disable"
 EOF
 if [ -r "/tmp/flash/lighttpd/ca.pem" ]; then
 	if grep -q "BEGIN CERTIFICATE" /tmp/flash/lighttpd/ca.pem; then
