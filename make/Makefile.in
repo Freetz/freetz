@@ -425,10 +425,10 @@ $(PKG)_EXCLUDED:=
 $(PKG)_CONFIGURE_DEFOPTS:=y
 #
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
-$(pkg)-precompiled: $(pkg)-precompiled--int $(pkg)-clean-echo-item $(pkg) $(pkg)-clean-excluded--int
+$(pkg)-precompiled: $(pkg)-precompiled--int $(pkg)-clean-echo-item $(pkg)
 $(pkg)-clean-echo-item:
 	@$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
-.PHONY: $(pkg)-clean-echo-item $(pkg)-precompiled $(pkg)-precompiled--int $(pkg) $(pkg)-clean-excluded--int
+.PHONY: $(pkg)-clean-echo-item $(pkg)-precompiled $(pkg)-precompiled--int $(pkg)
 endef
 
 # Stage 2a: initialise other package-specific variables for binary packages
@@ -530,6 +530,11 @@ $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): | $(PACKAGES_DIR)
 
 $(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config | $(PKG)_TARGET_DIR
+	@$(call write-list-to-file,$(patsubst /%,%,$(patsubst $($(PKG)_DEST_DIR)/%,%,$(strip $($(PKG)_EXCLUDED)))),$$@)
+
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
 # Binary dirclean
 $(pkg)-dirclean--int:
 	$(RM) -r $($(PKG)_DIR)
@@ -579,9 +584,6 @@ ifneq ($($(PKG)_BUILD_PREREQ),)
 	fi;
 endif
 	@mkdir -p $$(dir $$@); touch $$@;
-
-$(pkg)-clean-excluded--int:
-	@$(if $(strip $($(PKG)_EXCLUDED)),$(RM) -r $(strip $($(PKG)_EXCLUDED)),)
 
 $(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
 .PHONY: $(pkg)-distclean $(pkg)-clean $(pkg)-uninstall

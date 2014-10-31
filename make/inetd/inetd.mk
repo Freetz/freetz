@@ -1,18 +1,12 @@
 $(call PKG_INIT_BIN, 0.2)
-$(PKG)_PKG_VERSION:=$($(PKG)_VERSION)
-$(PKG)_PKG_NAME:=inetd-$($(PKG)_PKG_VERSION)
 $(PKG)_STARTLEVEL=14
 
-$(PKG_UNPACKED)
+$(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_WEBSRV),,etc/default.websrv)
+$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_FTPD)),etc/default.ftpd bin/inetdftp)
+$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_SAMBA),$(FREETZ_PACKAGE_SAMBA_SMBD)),etc/default.smbd bin/inetdsamba)
+$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(and $(or $(FREETZ_REMOVE_SAMBA),$(FREETZ_PACKAGE_SAMBA_SMBD)),$(FREETZ_REMOVE_FTPD))),bin/inetdctl)
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_REMOVE_WEBSRV)" != "y" ] && echo "etc/default.websrv" >> $@; \
-	[ "$(FREETZ_AVM_HAS_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo -e "etc/default.ftpd/\nbin/inetdftp" >> $@; \
-	[ "$(FREETZ_AVM_HAS_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_SAMBA)" == "y" -o "$(FREETZ_PACKAGE_SAMBA_SMBD)" == "y" ] && echo -e "etc/default.smbd/\nbin/inetdsamba" >> $@; \
-	[ "$(FREETZ_AVM_HAS_USB_HOST)" != "y" ] || ( [ "$(FREETZ_REMOVE_SAMBA)" == "y" -o "$(FREETZ_PACKAGE_SAMBA_SMBD)" == "y" ] && [ "$(FREETZ_REMOVE_FTPD)" == "y" ] ) && echo "bin/inetdctl" >> $@; \
-	touch $@
+$(PKG_UNPACKED)
 
 $(pkg):
 

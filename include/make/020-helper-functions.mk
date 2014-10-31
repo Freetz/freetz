@@ -1,4 +1,15 @@
 #
+# function imitating logical NOT
+#
+# returns:
+#   empty value for any non-empty input
+#   y for empty input
+#
+define not-y
+$(if $(strip $(1)),,y)
+endef
+
+#
 # $1 - some string possibly quoted with double quotes
 #
 # returns:
@@ -168,4 +179,14 @@ endef
 #
 define get-subdirs-containing
 $(shell find -L $(strip $(1)) -maxdepth 2 -name "$(strip $(2))" -printf "%h\n" $(if $(strip $(3)),| grep -v -E "$(strip $(1))/$(subst $(_space),|,$(strip $(3)))") | sed -r -e 's,^$(strip $(1))/,,' | sort -u)
+endef
+
+#
+# Writes list entries to a file, each entry on a new line
+#
+# $1 - list
+# $2 - name of the file list entries to written to
+#
+define write-list-to-file
+(set -f; $(RM) $(strip $(2)); printf $(if $(strip $(1)),"%s\n" $(strip $(1)) | sort -u,"") >$(strip $(2)));
 endef

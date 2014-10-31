@@ -31,6 +31,16 @@ $(PKG)_CODEPAGES_DIR:=/etc/samba
 $(PKG)_CODEPAGES_BUILD_DIR:=$($(PKG)_CODEPAGES:%=$($(PKG)_DIR)/codepages/%)
 $(PKG)_CODEPAGES_TARGET_DIR:=$($(PKG)_CODEPAGES:%=$($(PKG)_DEST_DIR)$($(PKG)_CODEPAGES_DIR)/%)
 
+ifneq ($(strip $(FREETZ_PACKAGE_SAMBA_SMBD)),y)
+$(PKG)_EXCLUDED += sbin/samba_multicall sbin/smbd sbin/smbpasswd
+$(PKG)_EXCLUDED += etc/default.samba etc/init.d/rc.nmbd etc/init.d/rc.samba etc/init.d/rc.smbd etc/samba_control
+$(PKG)_EXCLUDED += usr/lib/cgi-bin/samba.cgi
+$(PKG)_EXCLUDED += $(if $(FREETZ_SAMBA_VERSION_3_6),etc/samba/lowcase.dat etc/samba/upcase.dat etc/samba/valid.dat)
+endif
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_SAMBA_NMBD),,sbin/nmbd)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_SAMBA_SMBCLIENT),,usr/bin/smbclient)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_SAMBA_NMBLOOKUP),,usr/bin/nmblookup)
+
 $(PKG)_DEPENDS_ON += popt ncurses readline
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += iconv
@@ -76,17 +86,7 @@ $($(PKG)_SYMLINKS_TARGET_DIR): $($(PKG)_BINARY_TARGET_DIR)
 $($(PKG)_CODEPAGES_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_CODEPAGES_DIR)/%: $($(PKG)_DIR)/codepages/%
 	$(INSTALL_FILE)
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" ] && echo -e "sbin/samba_multicall\nsbin/smbd\nsbin/smbpasswd" >> $@; \
-	[ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" ] && echo -e "etc/default.samba\netc/init.d/rc.nmbd\netc/init.d/rc.samba\netc/init.d/rc.smbd\netc/samba_control\nusr/lib/cgi-bin/samba.cgi" >> $@; \
-	[ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" -a "$(FREETZ_SAMBA_VERSION_3_6)" == "y" ] && echo -e "etc/samba/lowcase.dat\netc/samba/upcase.dat\netc/samba/valid.dat" >> $@; \
-	[ "$(FREETZ_PACKAGE_SAMBA_NMBD)" != "y" ] && echo "sbin/nmbd" >> $@; \
-	[ "$(FREETZ_PACKAGE_SAMBA_SMBCLIENT)" != "y" ] && echo "usr/bin/smbclient" >> $@; \
-	[ "$(FREETZ_PACKAGE_SAMBA_NMBLOOKUP)" != "y" ] && echo "usr/bin/nmblookup" >> $@; \
-	touch $@
+$(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_CLIENT_BINARIES_TARGET_DIR) $($(PKG)_SYMLINKS_TARGET_DIR) $(if $(FREETZ_SAMBA_VERSION_3_0),,$($(PKG)_CODEPAGES_TARGET_DIR))
 

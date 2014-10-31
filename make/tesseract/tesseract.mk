@@ -23,6 +23,7 @@ $(PKG)_LIBRARY_TARGET_DIR:=$($(PKG)_TARGET_LIBDIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_DEPENDS_ON += $(STDCXXLIB) leptonica
 $(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
+$(PKG)_EXCLUDED += $($(PKG)_TOOLS_EXCLUDED:%=usr/bin/%)
 
 # remove optimization flags
 $(PKG)_CONFIGURE_PRE_CMDS += $(foreach flag,-O[0-9],$(SED) -i -r -e 's,(C(XX|PP)?FLAGS="[^"]*)$(flag)(( [^"]*)?"),\1\3,g' ./configure;)
@@ -66,10 +67,7 @@ $($(PKG)_TOOLS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/training
 $($(PKG)_LIBRARY_TARGET_DIR): $($(PKG)_LIBRARY_STAGING_DIR)
 	$(INSTALL_LIBRARY_STRIP)
 
-$(pkg): $($(PKG)_LIBRARY_STAGING_DIR) $($(PKG)_TARGET_DIR)/.exclude
-
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -e $(TESSERACT_TOOLS_EXCLUDED:%=usr/bin/%) | tr " " "\n" > $@
+$(pkg): $($(PKG)_LIBRARY_STAGING_DIR)
 
 $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_TOOLS_TARGET_DIR) $($(PKG)_LIBRARY_TARGET_DIR)
 

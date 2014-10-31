@@ -13,6 +13,10 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_SISPMCTL_WEB),--with-webdir=/usr/share
 $(PKG)_REBUILD_SUBOPTS += $(LIBUSB_REBUILD_SUBOPTS)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_SISPMCTL_WEB
 
+$(PKG)_EXCLUDED += $(if $(FREETZ_SISPMCTL_CGI),,usr/lib/cgi-bin/sispmctl.cgi etc/init.d/rc.sispmctl etc/default.sispmctl/sispmctl.cfg etc/default.sispmctl)
+$(PKG)_EXCLUDED += $(if $(FREETZ_SISPMCTL_WEB),,usr/share/sispmctl-web1 usr/share/sispmctl)
+$(PKG)_EXCLUDED += $(if $(FREETZ_SISPMCTL_SKIN2),,usr/share/sispmctl-web2)
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -21,23 +25,14 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(SISPMCTL_DIR)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	$(INSTALL_BINARY_STRIP)
-ifeq ($(strip $(FREETZ_SISPMCTL_WEB)),y)
-	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web1
+	for d in web1 web2; do \
+		mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-$$d; \
+		cp $(SISPMCTL_DIR)/src/$$d/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-$$d; \
+	done; \
 	ln -s /usr/share/sispmctl-web1 $(SISPMCTL_DEST_DIR)/usr/share/sispmctl
-	cp $(SISPMCTL_DIR)/src/web1/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web1
-ifeq ($(strip $(FREETZ_SISPMCTL_SKIN2)),y)
-	mkdir -p $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web2
-	cp $(SISPMCTL_DIR)/src/web2/* $(SISPMCTL_DEST_DIR)/usr/share/sispmctl-web2
-endif
-endif
+	$(INSTALL_BINARY_STRIP)
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-
-# List all files that are optional with their dependecies
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	[ ! "$(FREETZ_SISPMCTL_CGI)" == "y" ] && echo -e "usr/lib/cgi-bin/sispmctl.cgi\netc/init.d/rc.sispmctl\netc/default.sispmctl/sispmctl.cfg\netc/default.sispmctl" > $@; \
-	touch $@
+$(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 

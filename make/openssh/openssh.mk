@@ -23,6 +23,11 @@ $(PKG)_DEPENDS_ON += openssl zlib
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSH_STATIC
 
+$(PKG)_EXCLUDED += $(addprefix usr/bin/,$(filter-out $($(PKG)_BIN_BINARIES_INCLUDED),$($(PKG)_BIN_BINARIES)))
+$(PKG)_EXCLUDED += $(addprefix usr/sbin/,$(filter-out $($(PKG)_SBIN_BINARIES_INCLUDED),$($(PKG)_SBIN_BINARIES)))
+$(PKG)_EXCLUDED += $(addprefix usr/lib/,$(filter-out $($(PKG)_LIB_BINARIES_INCLUDED),$($(PKG)_LIB_BINARIES)))
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_sshd),,etc/default.openssh etc/init.d/rc.openssh usr/lib/cgi-bin/openssh.cgi)
+
 $(PKG)_AC_VARIABLES := have_decl_LLONG_MAX search_logout search_openpty
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
 
@@ -57,22 +62,7 @@ $(foreach binary,$($(PKG)_BIN_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_S
 $(foreach binary,$($(PKG)_SBIN_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
 $(foreach binary,$($(PKG)_LIB_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/lib)))
 
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	for f in \
-		$(addprefix usr/bin/,$(filter-out $(OPENSSH_BIN_BINARIES_INCLUDED),$(OPENSSH_BIN_BINARIES))) \
-		$(addprefix usr/sbin/,$(filter-out $(OPENSSH_SBIN_BINARIES_INCLUDED),$(OPENSSH_SBIN_BINARIES))) \
-		$(addprefix usr/lib/,$(filter-out $(OPENSSH_LIB_BINARIES_INCLUDED),$(OPENSSH_LIB_BINARIES))); \
-	do \
-		echo "$$f" >> $@; \
-	done; \
-	[ "$(FREETZ_PACKAGE_OPENSSH_sshd)" != "y" ] \
-		&& echo "etc/default.openssh" >> $@ \
-		&& echo "etc/init.d/rc.openssh" >> $@ \
-		&& echo "usr/lib/cgi-bin/openssh.cgi" >> $@; \
-	touch $@
-
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+$(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BIN_BINARIES_TARGET_DIR) $($(PKG)_SBIN_BINARIES_TARGET_DIR) $($(PKG)_LIB_BINARIES_TARGET_DIR)
 

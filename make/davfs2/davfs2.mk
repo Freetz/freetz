@@ -18,6 +18,8 @@ $(PKG)_DEPENDS_ON += iconv
 $(PKG)_LIBS += -liconv
 endif
 
+$(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF),etc/init.d/rc.davfs2 etc/default.davfs2 usr/lib/cgi-bin/davfs2.cgi)
+
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DAVFS2_WITH_SSL
 ifeq ($(strip $(FREETZ_PACKAGE_DAVFS2_WITH_SSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
@@ -41,15 +43,7 @@ $($(PKG)_MOUNT_TARGET_BINARY): $($(PKG)_MOUNT_BINARY)
 $($(PKG)_UMOUNT_TARGET_BINARY): $($(PKG)_UMOUNT_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF)" == "y" ] \
-		&& echo "etc/init.d/rc.davfs2" >> $@ \
-		&& echo "etc/default.davfs2/" >> $@ \
-		&& echo "usr/lib/cgi-bin/davfs2.cgi" >> $@; \
-	touch $@
+$(pkg):
 
 $(pkg)-precompiled: $($(PKG)_MOUNT_TARGET_BINARY) $($(PKG)_UMOUNT_TARGET_BINARY)
 

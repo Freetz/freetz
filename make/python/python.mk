@@ -147,7 +147,7 @@ $($(PKG)_LIB_PYTHON_TARGET_DIR): $($(PKG)_DIR)/.installed
 	touch -c $@
 endif
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude-extra
 
 $($(PKG)_TARGET_DIR)/py.lst $($(PKG)_TARGET_DIR)/pyc.lst: $($(PKG)_DIR)/.installed $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
 	@(cd $(FREETZ_BASE_DIR)/$(PYTHON_LOCAL_INSTALL_DIR); \
@@ -167,7 +167,7 @@ $($(PKG)_ZIPPED_PYC_TARGET_DIR): $($(PKG)_TARGET_DIR)/excluded-module-files-zip.
 	); \
 	touch $@
 
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config $($(PKG)_TARGET_DIR)/py.lst $($(PKG)_TARGET_DIR)/pyc.lst $($(PKG)_TARGET_DIR)/excluded-module-files.lst
+$($(PKG)_TARGET_DIR)/.exclude-extra: $(TOPDIR)/.config $($(PKG)_TARGET_DIR)/py.lst $($(PKG)_TARGET_DIR)/pyc.lst $($(PKG)_TARGET_DIR)/excluded-module-files.lst
 	@echo -n "" > $@; \
 	[ "$(FREETZ_PACKAGE_PYTHON_PY)"  != y ] && cat $(PYTHON_TARGET_DIR)/py.lst >> $@; \
 	[ "$(FREETZ_PACKAGE_PYTHON_PYC)" != y -o "$(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC)" == y ] && cat $(PYTHON_TARGET_DIR)/pyc.lst >> $@; \
@@ -183,7 +183,7 @@ $(pkg)-clean:
 	$(RM) $(PYTHON_FREETZ_CONFIG_FILE)
 	$(RM) $(PYTHON_DIR)/.configured $(PYTHON_DIR)/.compiled $(PYTHON_DIR)/.installed
 	$(RM) $(PYTHON_TARGET_DIR)/py.lst $(PYTHON_TARGET_DIR)/pyc.lst
-	$(RM) $(PYTHON_TARGET_DIR)/excluded-module-files.lst $(PYTHON_TARGET_DIR)/excluded-module-files-zip.lst $(PYTHON_TARGET_DIR)/.excluded
+	$(RM) $(PYTHON_TARGET_DIR)/excluded-module-files.lst $(PYTHON_TARGET_DIR)/excluded-module-files-zip.lst $(PYTHON_TARGET_DIR)/.exclude-extra
 	$(RM) -r $(PYTHON_LOCAL_INSTALL_DIR)
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/python* $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/hostpython
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/python$(PYTHON_MAJOR_VERSION)

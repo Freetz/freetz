@@ -39,6 +39,7 @@ $(PKG)_MODULES_STAGING_DIR := $(SUBVERSION_MODULES:%=$(TARGET_TOOLCHAIN_STAGING_
 $(PKG)_MODULES_TARGET_DIR := $(SUBVERSION_MODULES:%=$($(PKG)_DEST_DIR)$(APACHE2_LIBEXECDIR)/%.so)
 
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF),etc/default.subversion etc/init.d/rc.subversion usr/lib/cgi-bin/subversion/ usr/lib/cgi-bin/subversion.cgi)
 
 $(PKG)_DEPENDS_ON += apr
 $(PKG)_DEPENDS_ON += apr-util
@@ -129,7 +130,7 @@ $($(PKG)_MODULES_TARGET_DIR): \
 	$(INSTALL_BINARY_STRIP)
 
 .PHONY: subversion-keep-required-files-only
-$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR) | $(pkg)-clean-excluded--int
+$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
 ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	@#compute transitive closure of all required svn-libraries
 	@getlibs() { $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-readelf -d "$$@" | grep -i "Shared library" | sed -r -e 's|^.*\[(.+)\].*$$|\1|g' | sort -u; }; \
@@ -149,16 +150,7 @@ ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
 	done
 endif
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF)" == "y" ] \
-	  && echo "etc/init.d/rc.subversion" >> $@ \
-	  && echo "etc/default.subversion/" >> $@ \
-	  && echo "usr/lib/cgi-bin/subversion/" >> $@ \
-	  && echo "usr/lib/cgi-bin/subversion.cgi" >> $@; \
-	touch $@
+$(pkg):
 
 $(pkg)-precompiled: $(pkg)-keep-required-files-only
 

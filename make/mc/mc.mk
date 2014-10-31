@@ -61,6 +61,9 @@ $(PKG)_CONFIGURE_OPTIONS      += $(foreach option,$($(PKG)_WITH_OPTIONS_YES),--w
 $(PKG)_CONFIGURE_OPTIONS      += $(foreach option,$($(PKG)_WITH_OPTIONS_NO),--without-$(option))
 
 $(PKG)_REBUILD_SUBOPTS += $(foreach i,$($(PKG)_ENDIS_OPTIONS) $($(PKG)_WITH_OPTIONS),FREETZ_PACKAGE_MC_WITH_$(call TOUPPER_NAME,$(i)))
+$(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_MC_WITH_HELP),,usr/share/mc/help/mc.hlp)
+$(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_MC_WITH_HELP),,usr/share/mc/hints)
+$(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_MC_WITH_SYNTAX),,usr/share/mc/syntax)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -75,14 +78,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 		install
 	$(TARGET_STRIP) $@ $(MC_TARGET_CONS_SAVER_BINARY)
 
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_MC_WITH_HELP)" != "y" ] && echo "usr/share/mc/help/mc.hlp" >> $@; \
-	[ "$(FREETZ_PACKAGE_MC_WITH_HELP)" != "y" ] && echo "usr/share/mc/hints" >> $@; \
-	[ "$(FREETZ_PACKAGE_MC_WITH_SYNTAX)" != "y" ] && echo "usr/share/mc/syntax" >> $@; \
-	touch $@
-
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+$(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 

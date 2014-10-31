@@ -2,31 +2,32 @@ $(call PKG_INIT_BIN,1.0)
 
 $(PKG_UNPACKED)
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+$(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_legacy),,usr/share/*/legacy)
+$(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_phoenix),,usr/share/*/phoenix)
+$(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_newfreetz),,usr/share/*/newfreetz)
+$(PKG)_EXCLUDED += $(if $(FREETZ_STYLE_COLORED),usr/share/style/colorscheme-grey.css,usr/share/style/colorscheme-colored.css)
 
-# List all files that are optional with their dependecies
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_SKIN_legacy)" != "y" ] && echo "usr/share/*/legacy" >> $@; \
-	[ "$(FREETZ_SKIN_phoenix)" != "y" ] && echo "usr/share/*/phoenix" >> $@; \
-	[ "$(FREETZ_SKIN_newfreetz)" != "y" ] && echo "usr/share/*/newfreetz" >> $@; \
-	[ "$(FREETZ_REMOVE_BOX_INFO)" == "y" ] && echo "usr/lib/cgi-bin/mod/box_info.cgi" >> $@; \
-	[ "$(FREETZ_REMOVE_FREETZ_INFO)" == "y" ] && echo -e "usr/lib/cgi-bin/mod/do_download_config.cgi\nusr/lib/cgi-bin/mod/info.cgi" >> $@; \
-	[ "$(FREETZ_STYLE_COLORED)" == "y" ] && echo "usr/share/style/colorscheme-grey.css" >> $@ || echo "usr/share/style/colorscheme-colored.css" >> $@; \
-	[ "$(FREETZ_STRIP_SCRIPTS)" == "y" ] && echo "usr/share/abo??.txt" >> $@; \
-	[ "$(FREETZ_AVM_HAS_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_FTPD)" == "y" ] && echo "etc/init.d/rc.ftpd" >> $@; \
-	[ "$(FREETZ_REMOVE_DSLD)" == "y" ] && echo -e "usr/bin/wrapper/dsld\netc/init.d/rc.dsld" >> $@; \
-	[ "$(FREETZ_AVM_HAS_USB_HOST)" != "y" -o "$(FREETZ_REMOVE_SAMBA)" == "y" ] && [ "$(FREETZ_PACKAGE_SAMBA_SMBD)" != "y" ] && echo "etc/init.d/rc.smbd" >> $@; \
-	[ "$(FREETZ_PACKAGE_MDEV)" == "y" -o "$(FREETZ_AVM_HAS_UDEV)" == "y" ] && echo "etc/device.table" >> $@; \
-	[ "$(FREETZ_PACKAGE_MOD_ETCSERVICES)" != "y" ] && echo "etc/services" >> $@; \
-	[ "$(FREETZ_CUSTOM_UDEV_RULES)" != "y" ] && echo -e "etc/default.mod/udev_*.def\netc/udev/rules.d/??-custom.rules" >> $@; \
-	[ "$(FREETZ_AVM_HAS_UDEV)" != "y" ] && echo "etc/udev" >> $@; \
-	[ "$(FREETZ_REMOVE_WEBSRV)" != "y" ] && echo -e "etc/init.d/rc.websrv\nusr/bin/websrv\nusr/lib/cgi-bin/conf.avm/30-websrv.sh" >> $@; \
-	[ "$(FREETZ_PATCH_FREETZMOUNT)" != "y" ] && echo -e "usr/lib/libmodmount.sh\nusr/lib/cgi-bin/mod/conf/30-mount.sh" >> $@; \
-	[ "$(EXTERNAL_ENABLED)" != "y" -o "$(EXTERNAL_DOWNLOADER)" == "y" ] && echo -e "usr/lib/cgi-bin/mod/conf/40-external.sh\netc/init.d/rc.external\netc/external.pkg" >> $@; \
-	[ "$(FREETZ_BUSYBOX_FEATURE_WTMP)" != "y" ] && echo "usr/lib/cgi-bin/mod/conf/60-utmp_wtmp.sh" >> $@; \
-	[ "$(FREETZ_TARGET_IPV6_SUPPORT)" != "y" ] && echo "usr/lib/cgi-bin/mod/conf/90-ipv6.sh" >> $@; \
-	touch $@
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_ETCSERVICES),,etc/services)
+
+$(PKG)_EXCLUDED += $(if $(or $(FREETZ_PACKAGE_MDEV),$(FREETZ_AVM_HAS_UDEV)),etc/device.table)
+$(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_UDEV),,etc/udev)
+$(PKG)_EXCLUDED += $(if $(FREETZ_CUSTOM_UDEV_RULES),,etc/default.mod/udev_*.def etc/udev/rules.d/??-custom.rules)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PATCH_FREETZMOUNT),,usr/lib/libmodmount.sh usr/lib/cgi-bin/mod/conf/30-mount.sh)
+
+$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_FTPD)),etc/init.d/rc.ftpd)
+$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_SAMBA),$(FREETZ_PACKAGE_SAMBA_SMBD)),etc/init.d/rc.smbd)
+$(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_DSLD),usr/bin/wrapper/dsld etc/init.d/rc.dsld)
+$(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_WEBSRV),,etc/init.d/rc.websrv usr/bin/websrv usr/lib/cgi-bin/conf.avm/30-websrv.sh)
+$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(EXTERNAL_ENABLED)),$(EXTERNAL_DOWNLOADER)),usr/lib/cgi-bin/mod/conf/40-external.sh etc/init.d/rc.external etc/external.pkg)
+
+$(PKG)_EXCLUDED += $(if $(FREETZ_BUSYBOX_FEATURE_WTMP),,usr/lib/cgi-bin/mod/conf/60-utmp_wtmp.sh)
+$(PKG)_EXCLUDED += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,usr/lib/cgi-bin/mod/conf/90-ipv6.sh)
+
+$(PKG)_EXCLUDED += $(if $(FREETZ_STRIP_SCRIPTS),usr/share/abo??.txt)
+$(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_BOX_INFO),usr/lib/cgi-bin/mod/box_info.cgi)
+$(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_FREETZ_INFO),usr/lib/cgi-bin/mod/do_download_config.cgi usr/lib/cgi-bin/mod/info.cgi)
+
+$(pkg):
 
 $(pkg)-precompiled:
 

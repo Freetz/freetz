@@ -45,9 +45,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_DIR)/.exclude: $($(PKG)_DIR)/.configured
-	@echo -n > $@; \
-	echo $(call newline2space,$(pyLoad/build/files)) | tr " " "\n" >> $@; \
-	echo $(call newline2space,$(pyLoad/unnecessary/files)) | tr " " "\n" >> $@;
+	@$(call write-list-to-file,$(call newline2space,$(pyLoad/build/files)) $(call newline2space,$(pyLoad/unnecessary/files)),$@)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.exclude
 	@mkdir -p $(dir $@); \

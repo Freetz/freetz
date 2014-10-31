@@ -17,6 +17,8 @@ endef
 $(eval $(call $(PKG)_DEFS,sbin,named rndc))
 $(eval $(call $(PKG)_DEFS,bin,nsupdate dig))
 
+$(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_BIND_NAMED),,usr/lib/bind usr/lib/cgi-bin/bind.cgi etc/default.bind etc/init.d/rc.bind)
+
 $(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -62,16 +64,7 @@ $($(PKG)_BINARIES_BUILD_DIR_sbin) $($(PKG)_BINARIES_BUILD_DIR_bin): $($(PKG)_DIR
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR_sbin),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR_bin),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_BIND_NAMED)" != "y" ] \
-		&& echo "usr/lib/bind" >> $@ \
-		&& echo "usr/lib/cgi-bin/bind.cgi" >> $@ \
-		&& echo "etc/default.bind" >> $@ \
-		&& echo "etc/init.d/rc.bind" >> $@; \
-	touch $@
+$(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR_sbin) $($(PKG)_BINARIES_TARGET_DIR_bin) $($(PKG)_EXPORT_LIB_DIR)/.installed
 

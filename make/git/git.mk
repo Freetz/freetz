@@ -16,6 +16,8 @@ ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += iconv
 endif
 
+$(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_GIT_REMOVE_WEBIF),etc/default.git etc/init.d/rc.git usr/lib/cgi-bin/git.cgi)
+
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_GIT_WITH_PCRE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += $(filter FREETZ_LIB_libcurl_%,$(CURL_REBUILD_SUBOPTS))
@@ -63,16 +65,6 @@ $($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 		rm -f $(GIT_DEST_DIR)/usr/lib/git-core/$$binary \
 		&& ln -fs ../../bin/$$binary $(GIT_DEST_DIR)/usr/lib/git-core/; \
 	done
-
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_GIT_REMOVE_WEBIF)" == "y" ] \
-		&& echo "usr/lib/cgi-bin/git.cgi" >> $@ \
-		&& echo "etc/default.git" >> $@ \
-		&& echo "etc/init.d/rc.git" >> $@; \
-	touch $@
 
 $(pkg):
 

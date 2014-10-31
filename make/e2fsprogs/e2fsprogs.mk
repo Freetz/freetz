@@ -79,6 +79,9 @@ $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/misc/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/sbin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_E2FSCK),,usr/sbin/fsck.ext2 usr/sbin/fsck.ext3 usr/sbin/fsck.ext4 usr/sbin/fsck.ext4dev)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_E2MAKING),,usr/sbin/mkfs.ext2 usr/sbin/mkfs.ext3)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_BLKID),,sbin/blkid)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
@@ -149,14 +152,7 @@ endif
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/misc/%
 	$(INSTALL_BINARY_STRIP)
 
-$(pkg): $($(PKG)_TARGET_DIR)/.exclude
-
-$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config
-	@echo -n "" > $@; \
-	[ "$(FREETZ_PACKAGE_E2FSPROGS_E2FSCK)"   != "y" ] && echo -e "usr/sbin/fsck.ext2\nusr/sbin/fsck.ext3\nusr/sbin/fsck.ext4\nusr/sbin/fsck.ext4dev" >> $@; \
-	[ "$(FREETZ_PACKAGE_E2FSPROGS_E2MAKING)" != "y" ] && echo -e "usr/sbin/mkfs.ext2\nusr/sbin/mkfs.ext3" >> $@; \
-	[ "$(FREETZ_PACKAGE_E2FSPROGS_BLKID)"    != "y" ] && echo "sbin/blkid" >> $@; \
-	touch $@
+$(pkg):
 
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 $(pkg)-precompiled: $($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_TARGET_DIR)
