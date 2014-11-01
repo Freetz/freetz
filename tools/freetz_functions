@@ -426,7 +426,7 @@ collect_pkg_files()
 
 		(
 			cd "${PACKAGES_DIR}/${pkg_dir}/root/"
-			find . -type f -print0 | tar -cv --null -T - $([ -r "../.exclude" ] && echo "--exclude-from=../.exclude") -f /dev/null
+			find . -type f -print0 | tar -cv --null -T - $(find "../" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') -f /dev/null
 		)
 	done | sed -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
 }
