@@ -129,30 +129,29 @@ $($(PKG)_MODULES_TARGET_DIR): \
 	$(TARGET_TOOLCHAIN_STAGING_DIR)$(APACHE2_LIBEXECDIR)/%
 	$(INSTALL_BINARY_STRIP)
 
-.PHONY: subversion-keep-required-files-only
-$(pkg)-keep-required-files-only: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
-ifneq ($(strip $(FREETZ_PACKAGE_SUBVERSION_STATIC)),y)
+$($(PKG)_TARGET_DIR)/.exclude-libraries: $(TOPDIR)/.config $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
 	@#compute transitive closure of all required svn-libraries
 	@getlibs() { $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-readelf -d "$$@" | grep -i "Shared library" | sed -r -e 's|^.*\[(.+)\].*$$|\1|g' | sort -u; }; \
 	getsvnlibs() { getlibs "$$@" | grep "libsvn"; }; \
 	getsvnlibslist() { local ret=""; for l in `getsvnlibs $$bins \`[ -n "$$libs" ] && (echo "$$libs" | sed -e 's| | '"$(SUBVERSION_DEST_LIBDIR)/"'|g')\``; do ret="$$ret $$l"; done; echo -n "$$ret"; }; \
 	\
+	$(RM) $@; \
+	\
 	bins="$(SUBVERSION_BINARIES_TARGET_DIR) $(SUBVERSION_MODULES_TARGET_DIR)"; libs=""; \
-	$(call MESSAGE, Determining required svn-libraries: ); \
 	libs=`getsvnlibslist`; previouslibs=""; \
 	while [ "$$libs" != "$$previouslibs" ]; do \
 		previouslibs="$$libs"; libs=`getsvnlibslist`; \
 	done; \
-	$(call MESSAGE, $$libs); \
 	for l in $(SUBVERSION_DEST_LIBDIR)/libsvn*; do \
 		lbasename=`echo "$$l" | sed -r -e 's|'"$(SUBVERSION_DEST_LIBDIR)/"'(libsvn[^.]+)[.]so.*|\1|g'`; \
-		(echo $$libs | grep -q "$$lbasename" >/dev/null 2>&1) || ($(call MESSAGE, Removing unneeded svn-library: $$l); rm -f $$l) \
-	done
-endif
+		if echo $$libs | grep -q "$$lbasename"; then \
+			echo $$l | sed -r -e 's,$(SUBVERSION_DEST_DIR)/,,g'; \
+		fi; \
+	done > $@
 
-$(pkg):
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude-libraries
 
-$(pkg)-precompiled: $(pkg)-keep-required-files-only
+$(pkg)-precompiled:
 
 $(pkg)-clean:
 	-$(SUBMAKE1) -C $(SUBVERSION_DIR) clean
