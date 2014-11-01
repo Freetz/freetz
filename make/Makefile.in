@@ -535,29 +535,21 @@ $($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config | $(PKG)_TARGET_DIR
 
 $(pkg): $($(PKG)_TARGET_DIR)/.exclude
 
-# Binary dirclean
-$(pkg)-dirclean--int:
-	$(RM) -r $($(PKG)_DIR)
-	$(RM) -r $($(PKG)_TARGET_DIR)
-	$($(PKG)_CLEAN_TARGET_DIR__INT)
 $(PKG_LIST)
 $(call PKG_ADD_BIN__INT,$(PKG))
 endef
 
 # Finalise library packages
 define PKG_FINISH_LIB__INT
-# Library dirclean
-$(pkg)-dirclean--int:
-	$(RM) -r $($(PKG)_DIR)
 endef
 
 # Finalise packages (general functionality + call to type specifics)
 define PKG_FINISH__INT
-$(pkg)-dirclean: $(pkg)-dirclean--int
-.PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-build-prereq
 $(pkg)-precompiled--int: $(pkg)-build-prereq $(TOOLCHAIN) $($(PKG)_HOST_DEPENDS_ON) $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 $(pkg)-precompiled:
 	@$(call _ECHO_DONE)
+
+.PHONY: $(pkg)-build-prereq
 $(pkg)-build-prereq: $($(PKG)_DIR)/.build-prereq-checked
 $($(PKG)_DIR)/.build-prereq-checked:
 ifneq ($($(PKG)_BUILD_PREREQ),)
@@ -585,8 +577,13 @@ ifneq ($($(PKG)_BUILD_PREREQ),)
 endif
 	@mkdir -p $$(dir $$@); touch $$@;
 
+$(pkg)-dirclean--int:
+	$(RM) -r $($(PKG)_DIR)
+	$($(PKG)_CLEAN_TARGET_DIR__INT)
+
+$(pkg)-dirclean: $(pkg)-dirclean--int
 $(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
-.PHONY: $(pkg)-distclean $(pkg)-clean $(pkg)-uninstall
+.PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-distclean $(pkg)-clean $(pkg)-uninstall
 
 PKG:=
 PKG_TYPE:=
