@@ -462,6 +462,7 @@ $(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
 $(PKG)_DEST_USR_BIN:=$($(PKG)_DEST_DIR)/usr/bin
 $(PKG)_DEST_USR_SBIN:=$($(PKG)_DEST_DIR)/usr/sbin
 $(PKG)_DEST_USR_LIB:=$($(PKG)_DEST_DIR)/usr/lib
+$(PKG)_CLEAN_STAGING_DIR__INT:=$(MAKE_ENV) $(MAKE) --quiet --ignore-errors $(pkg)-clean >/dev/null 2>&1;
 endef
 
 define PKG_INIT_BIN__INTV
@@ -580,6 +581,7 @@ endif
 $(pkg)-dirclean--int:
 	$(RM) -r $($(PKG)_DIR)
 	$($(PKG)_CLEAN_TARGET_DIR__INT)
+#	$($(PKG)_CLEAN_STAGING_DIR__INT)
 
 $(pkg)-dirclean: $(pkg)-dirclean--int
 $(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
@@ -736,6 +738,7 @@ $(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
 					mv $($(PKG)_FREETZ_CHANGES_FILE).temp $($(PKG)_FREETZ_CHANGES_FILE); \
 					[ $$$$i == 1 ] && $(RM) -r $($(PKG)_DIR); \
 					$($(PKG)_CLEAN_TARGET_DIR__INT) \
+					$($(PKG)_CLEAN_STAGING_DIR__INT) \
 					break; \
 				fi \
 			fi \
