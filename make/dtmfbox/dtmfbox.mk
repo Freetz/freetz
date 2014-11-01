@@ -45,7 +45,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_BINARY_MENU_SO): $($(PKG)_BINARY_MENU_SO)
-	$(INSTALL_LIBRARY_STRIP)
+	$(INSTALL_BINARY_STRIP)
 	for i in "" ".0"; do ln -sf $(notdir $@) $(dir $@)libmenu.plugin.so$$i; done
 
 $(pkg):
