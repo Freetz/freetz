@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.1.2)
+$(call PKG_INIT_BIN, 2.1.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA1:=b0d38bf2161286f2039a9a2adb4c8f7e5308e824
-$(PKG)_SITE:=http://git-core.googlecode.com/files,@KERNEL/software/scm/git
+$(PKG)_SOURCE_SHA1:=42a850edee36170f70a1b6231b80c50f77ac237e
+$(PKG)_SITE:=@KERNEL/software/scm/git
 
 # files to be moved from /usr/lib/git-core to /usr/bin
 $(PKG)_FILES_TO_MOVE := git-daemon
