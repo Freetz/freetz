@@ -144,7 +144,7 @@ $($(PKG)_TARGET_DIR)/.exclude-libraries: $(TOPDIR)/.config $($(PKG)_LIBS_TARGET_
 	done; \
 	for l in $(SUBVERSION_DEST_LIBDIR)/libsvn*; do \
 		lbasename=`echo "$$l" | sed -r -e 's|'"$(SUBVERSION_DEST_LIBDIR)/"'(libsvn[^.]+)[.]so.*|\1|g'`; \
-		if echo $$libs | grep -q "$$lbasename"; then \
+		if ! echo $$libs | grep -q "$$lbasename"; then \
 			echo $$l | sed -r -e 's,$(SUBVERSION_DEST_DIR)/,,g'; \
 		fi; \
 	done > $@
