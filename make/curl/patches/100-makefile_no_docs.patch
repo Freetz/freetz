@@ -1,6 +1,6 @@
 --- Makefile.am
 +++ Makefile.am
-@@ -128,7 +128,7 @@
+@@ -129,7 +129,7 @@
  bin_SCRIPTS = curl-config
  
  SUBDIRS = lib src include
@@ -9,7 +9,7 @@
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -147,10 +147,10 @@
+@@ -148,10 +148,10 @@
  	done)
  
  html:
@@ -22,7 +22,7 @@
  
  check: test examples
  
-@@ -178,7 +178,7 @@
+@@ -179,7 +179,7 @@
  endif
  
  examples:
@@ -33,7 +33,7 @@
  # dir. The extra check for the Makefiles being present is necessary because
 --- Makefile.in
 +++ Makefile.in
-@@ -574,7 +574,7 @@
+@@ -575,7 +575,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src include
@@ -42,7 +42,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  LIB_VTLS_CFILES = vtls/openssl.c vtls/gtls.c vtls/vtls.c vtls/nss.c	\
-@@ -1275,10 +1275,10 @@
+@@ -1276,10 +1276,10 @@
  	done)
  
  html:
@@ -55,7 +55,7 @@
  
  check: test examples
  
-@@ -1301,7 +1301,7 @@
+@@ -1302,7 +1302,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all am-test)
  
  examples:
@@ -64,7 +64,7 @@
  
  # This is a hook to have 'make clean' also clean up the docs and the tests
  # dir. The extra check for the Makefiles being present is necessary because
-@@ -1362,12 +1362,12 @@
+@@ -1363,12 +1363,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
