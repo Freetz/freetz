@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.06)
+$(call PKG_INIT_BIN, 5.07)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=827901cd4690796eadf17f792b658573
+$(PKG)_SOURCE_MD5:=c10edd84ecbc676a5a48c7e34ab3d1c5
 $(PKG)_SITE:=http://www.stunnel.org/downloads/archive/5.x
 
 $(PKG)_STARTLEVEL=81
@@ -30,6 +30,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_ptc=no
 $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_urandom=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-libwrap
+$(PKG)_CONFIGURE_OPTIONS += --disable-systemd
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=pthread
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)

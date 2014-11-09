@@ -1,0 +1,289 @@
+
+Upstream: fix improper hangup condition handling
+
+--- src/client.c
++++ src/client.c
+@@ -515,6 +515,11 @@
+     int write_wants_read=0, write_wants_write=0;
+     /* actual conditions on file descriptors */
+     int sock_can_rd, sock_can_wr, ssl_can_rd, ssl_can_wr;
++#ifdef USE_WIN32
++    unsigned long bytes;
++#else
++    int bytes;
++#endif
+ 
+     c->sock_ptr=c->ssl_ptr=0;
+ 
+@@ -653,6 +658,24 @@
+             }
+         }
+ 
++        /****************************** write to socket */
++        if(sock_open_wr && sock_can_wr) {
++            num=writesocket(c->sock_wfd->fd, c->ssl_buff, c->ssl_ptr);
++            switch(num) {
++            case -1: /* error */
++                if(parse_socket_error(c, "writesocket"))
++                    break; /* a non-critical error: retry */
++                sock_open_rd=sock_open_wr=0;
++                break;
++            default:
++                memmove(c->ssl_buff, c->ssl_buff+num, c->ssl_ptr-num);
++                c->ssl_ptr-=num;
++                memset(c->ssl_buff+c->ssl_ptr, 0, num); /* paranoia */
++                c->sock_bytes+=num;
++                watchdog=0; /* reset watchdog */
++            }
++        }
++
+         /****************************** read from socket */
+         if(sock_open_rd && sock_can_rd) {
+             num=readsocket(c->sock_rfd->fd,
+@@ -673,24 +696,6 @@
+             }
+         }
+ 
+-        /****************************** write to socket */
+-        if(sock_open_wr && sock_can_wr) {
+-            num=writesocket(c->sock_wfd->fd, c->ssl_buff, c->ssl_ptr);
+-            switch(num) {
+-            case -1: /* error */
+-                if(parse_socket_error(c, "writesocket"))
+-                    break; /* a non-critical error: retry */
+-                sock_open_rd=sock_open_wr=0;
+-                break;
+-            default:
+-                memmove(c->ssl_buff, c->ssl_buff+num, c->ssl_ptr-num);
+-                c->ssl_ptr-=num;
+-                memset(c->ssl_buff+c->ssl_ptr, 0, num); /* paranoia */
+-                c->sock_bytes+=num;
+-                watchdog=0; /* reset watchdog */
+-            }
+-        }
+-
+         /****************************** update *_wants_* based on new *_ptr */
+         /* this update is also required for SSL_pending() to be used */
+         read_wants_read|=!(SSL_get_shutdown(c->ssl)&SSL_RECEIVED_SHUTDOWN)
+@@ -698,144 +703,158 @@
+         write_wants_write|=!(SSL_get_shutdown(c->ssl)&SSL_SENT_SHUTDOWN)
+             && c->sock_ptr && !write_wants_read;
+ 
+-        /****************************** read from SSL */
+-        if((read_wants_read && (ssl_can_rd || SSL_pending(c->ssl))) ||
+-                /* it may be possible to read some pending data after
+-                 * writesocket() above made some room in c->ssl_buff */
+-                (read_wants_write && ssl_can_wr)) {
+-            read_wants_read=0;
+-            read_wants_write=0;
+-            num=SSL_read(c->ssl, c->ssl_buff+c->ssl_ptr, BUFFSIZE-c->ssl_ptr);
++        /****************************** write to SSL */
++        if((write_wants_read && ssl_can_rd) ||
++                (write_wants_write && ssl_can_wr)) {
++            write_wants_read=0;
++            write_wants_write=0;
++            num=SSL_write(c->ssl, c->sock_buff, c->sock_ptr);
+             switch(err=SSL_get_error(c->ssl, num)) {
+             case SSL_ERROR_NONE:
+                 if(num==0)
+-                    s_log(LOG_DEBUG, "SSL_read returned 0");
+-                c->ssl_ptr+=num;
++                    s_log(LOG_DEBUG, "SSL_write returned 0");
++                memmove(c->sock_buff, c->sock_buff+num, c->sock_ptr-num);
++                c->sock_ptr-=num;
++                memset(c->sock_buff+c->sock_ptr, 0, num); /* paranoia */
++                c->ssl_bytes+=num;
+                 watchdog=0; /* reset watchdog */
+                 break;
+-            case SSL_ERROR_WANT_WRITE:
+-                s_log(LOG_DEBUG, "SSL_read returned WANT_WRITE: retrying");
+-                read_wants_write=1;
++            case SSL_ERROR_WANT_WRITE: /* buffered data? */
++                s_log(LOG_DEBUG, "SSL_write returned WANT_WRITE: retrying");
++                write_wants_write=1;
+                 break;
+-            case SSL_ERROR_WANT_READ: /* is it possible? */
+-                s_log(LOG_DEBUG, "SSL_read returned WANT_READ: retrying");
+-                read_wants_read=1;
++            case SSL_ERROR_WANT_READ:
++                s_log(LOG_DEBUG, "SSL_write returned WANT_READ: retrying");
++                write_wants_read=1;
+                 break;
+             case SSL_ERROR_WANT_X509_LOOKUP:
+                 s_log(LOG_DEBUG,
+-                    "SSL_read returned WANT_X509_LOOKUP: retrying");
++                    "SSL_write returned WANT_X509_LOOKUP: retrying");
+                 break;
+-            case SSL_ERROR_SYSCALL:
+-                if(num && parse_socket_error(c, "SSL_read"))
++            case SSL_ERROR_SYSCALL: /* socket error */
++                if(num && parse_socket_error(c, "SSL_write"))
+                     break; /* a non-critical error: retry */
+                 /* EOF -> buggy (e.g. Microsoft) peer:
+                  * SSL socket closed without close_notify alert */
+-                if(c->sock_ptr || write_wants_write) {
++                if(c->sock_ptr) { /* TODO: what about buffered data? */
+                     s_log(LOG_ERR,
+-                        "SSL socket closed (SSL_read) with %d unsent byte(s)",
++                        "SSL socket closed (SSL_write) with %d unsent byte(s)",
+                         c->sock_ptr);
+                     longjmp(c->err, 1); /* reset the socket */
+                 }
+-                s_log(LOG_INFO, "SSL socket closed (SSL_read)");
++                s_log(LOG_INFO, "SSL socket closed (SSL_write)");
+                 SSL_set_shutdown(c->ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
+                 break;
+             case SSL_ERROR_ZERO_RETURN: /* close_notify alert received */
+-                s_log(LOG_INFO, "SSL closed (SSL_read)");
++                s_log(LOG_INFO, "SSL closed (SSL_write)");
+                 if(SSL_version(c->ssl)==SSL2_VERSION)
+                     SSL_set_shutdown(c->ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
+                 break;
+             case SSL_ERROR_SSL:
+-                sslerror("SSL_read");
++                sslerror("SSL_write");
+                 longjmp(c->err, 1);
+             default:
+-                s_log(LOG_ERR, "SSL_read/SSL_get_error returned %d", err);
++                s_log(LOG_ERR, "SSL_write/SSL_get_error returned %d", err);
+                 longjmp(c->err, 1);
+             }
+         }
+ 
+-        /****************************** write to SSL */
+-        if((write_wants_read && ssl_can_rd) ||
+-                (write_wants_write && ssl_can_wr)) {
+-            write_wants_read=0;
+-            write_wants_write=0;
+-            num=SSL_write(c->ssl, c->sock_buff, c->sock_ptr);
++        /****************************** read from SSL */
++        if((read_wants_read && (ssl_can_rd || SSL_pending(c->ssl))) ||
++                /* it may be possible to read some pending data after
++                 * writesocket() above made some room in c->ssl_buff */
++                (read_wants_write && ssl_can_wr)) {
++            read_wants_read=0;
++            read_wants_write=0;
++            num=SSL_read(c->ssl, c->ssl_buff+c->ssl_ptr, BUFFSIZE-c->ssl_ptr);
+             switch(err=SSL_get_error(c->ssl, num)) {
+             case SSL_ERROR_NONE:
+                 if(num==0)
+-                    s_log(LOG_DEBUG, "SSL_write returned 0");
+-                memmove(c->sock_buff, c->sock_buff+num, c->sock_ptr-num);
+-                c->sock_ptr-=num;
+-                memset(c->sock_buff+c->sock_ptr, 0, num); /* paranoia */
+-                c->ssl_bytes+=num;
++                    s_log(LOG_DEBUG, "SSL_read returned 0");
++                c->ssl_ptr+=num;
+                 watchdog=0; /* reset watchdog */
+                 break;
+-            case SSL_ERROR_WANT_WRITE: /* buffered data? */
+-                s_log(LOG_DEBUG, "SSL_write returned WANT_WRITE: retrying");
+-                write_wants_write=1;
++            case SSL_ERROR_WANT_WRITE:
++                s_log(LOG_DEBUG, "SSL_read returned WANT_WRITE: retrying");
++                read_wants_write=1;
+                 break;
+-            case SSL_ERROR_WANT_READ:
+-                s_log(LOG_DEBUG, "SSL_write returned WANT_READ: retrying");
+-                write_wants_read=1;
++            case SSL_ERROR_WANT_READ: /* is it possible? */
++                s_log(LOG_DEBUG, "SSL_read returned WANT_READ: retrying");
++                read_wants_read=1;
+                 break;
+             case SSL_ERROR_WANT_X509_LOOKUP:
+                 s_log(LOG_DEBUG,
+-                    "SSL_write returned WANT_X509_LOOKUP: retrying");
++                    "SSL_read returned WANT_X509_LOOKUP: retrying");
+                 break;
+-            case SSL_ERROR_SYSCALL: /* socket error */
+-                if(num && parse_socket_error(c, "SSL_write"))
++            case SSL_ERROR_SYSCALL:
++                if(num && parse_socket_error(c, "SSL_read"))
+                     break; /* a non-critical error: retry */
+                 /* EOF -> buggy (e.g. Microsoft) peer:
+                  * SSL socket closed without close_notify alert */
+-                if(c->sock_ptr) { /* TODO: what about buffered data? */
++                if(c->sock_ptr || write_wants_write) {
+                     s_log(LOG_ERR,
+-                        "SSL socket closed (SSL_write) with %d unsent byte(s)",
++                        "SSL socket closed (SSL_read) with %d unsent byte(s)",
+                         c->sock_ptr);
+                     longjmp(c->err, 1); /* reset the socket */
+                 }
+-                s_log(LOG_INFO, "SSL socket closed (SSL_write)");
+-                SSL_set_shutdown(c->ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
++                s_log(LOG_INFO, "SSL socket closed (SSL_read)");
++                SSL_set_shutdown(c->ssl,
++                    SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
+                 break;
+             case SSL_ERROR_ZERO_RETURN: /* close_notify alert received */
+-                s_log(LOG_INFO, "SSL closed (SSL_write)");
++                s_log(LOG_INFO, "SSL closed (SSL_read)");
+                 if(SSL_version(c->ssl)==SSL2_VERSION)
+-                    SSL_set_shutdown(c->ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
++                    SSL_set_shutdown(c->ssl,
++                        SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
+                 break;
+             case SSL_ERROR_SSL:
+-                sslerror("SSL_write");
++                sslerror("SSL_read");
+                 longjmp(c->err, 1);
+             default:
+-                s_log(LOG_ERR, "SSL_write/SSL_get_error returned %d", err);
++                s_log(LOG_ERR, "SSL_read/SSL_get_error returned %d", err);
+                 longjmp(c->err, 1);
+             }
+         }
+ 
+         /****************************** check for hangup conditions */
+-        if(s_poll_rdhup(c->fds, c->sock_rfd->fd)) {
+-            s_log(LOG_INFO, "Read socket closed (hangup)");
++        /* http://marc.info/?l=linux-man&m=128002066306087 */
++        /* readsocket() must be the last sock_rfd operation before FIONREAD */
++        if(sock_open_rd && s_poll_rdhup(c->fds, c->sock_rfd->fd) &&
++                (ioctlsocket(c->sock_rfd->fd, FIONREAD, &bytes) || !bytes)) {
++            s_log(LOG_INFO, "Read socket closed (read hangup)");
+             sock_open_rd=0;
+         }
+-        if(s_poll_hup(c->fds, c->sock_wfd->fd)) {
++        if(sock_open_wr && s_poll_hup(c->fds, c->sock_wfd->fd)) {
+             if(c->ssl_ptr) {
+                 s_log(LOG_ERR,
+-                    "Write socket closed (hangup) with %d unsent byte(s)",
++                    "Write socket closed (write hangup) with %d unsent byte(s)",
+                     c->ssl_ptr);
+                 longjmp(c->err, 1); /* reset the socket */
+             }
+-            s_log(LOG_INFO, "Write socket closed (hangup)");
++            s_log(LOG_INFO, "Write socket closed (write hangup)");
+             sock_open_wr=0;
+         }
+-        if(s_poll_hup(c->fds, c->ssl_rfd->fd) ||
+-                s_poll_hup(c->fds, c->ssl_wfd->fd)) {
++        /* SSL_read() must be the last ssl_rfd operation before FIONREAD */
++        if(!(SSL_get_shutdown(c->ssl)&SSL_RECEIVED_SHUTDOWN) &&
++                s_poll_rdhup(c->fds, c->ssl_rfd->fd) &&
++                (ioctlsocket(c->ssl_rfd->fd, FIONREAD, &bytes) || !bytes)) {
+             /* hangup -> buggy (e.g. Microsoft) peer:
+              * SSL socket closed without close_notify alert */
++            s_log(LOG_INFO, "SSL socket closed (read hangup)");
++            SSL_set_shutdown(c->ssl,
++                SSL_get_shutdown(c->ssl)|SSL_RECEIVED_SHUTDOWN);
++        }
++        if(!(SSL_get_shutdown(c->ssl)&SSL_SENT_SHUTDOWN) &&
++                s_poll_hup(c->fds, c->ssl_wfd->fd)) {
+             if(c->sock_ptr || write_wants_write) {
+                 s_log(LOG_ERR,
+-                    "SSL socket closed (hangup) with %d unsent byte(s)",
++                    "SSL socket closed (write hangup) with %d unsent byte(s)",
+                     c->sock_ptr);
+                 longjmp(c->err, 1); /* reset the socket */
+             }
+-            s_log(LOG_INFO, "SSL socket closed (hangup)");
+-            SSL_set_shutdown(c->ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
++            s_log(LOG_INFO, "SSL socket closed (write hangup)");
++            SSL_set_shutdown(c->ssl,
++                SSL_get_shutdown(c->ssl)|SSL_SENT_SHUTDOWN);
+         }
+ 
+         /****************************** check write shutdown conditions */
