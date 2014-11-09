@@ -1,0 +1,11 @@
+--- build/serf.pc.in
++++ build/serf.pc.in
+@@ -7,7 +7,6 @@
+ Name: serf
+ Description: HTTP client library
+ Version: @VERSION@
+-Requires.private: libssl libcrypto
+-Libs: -L${libdir} -lserf-${SERF_MAJOR_VERSION}
++Libs: -L${libdir} -lserf-${SERF_MAJOR_VERSION} -lssl -lcrypto -ldl
+ Libs.private: @LIBS@
+ Cflags: -I${includedir}
