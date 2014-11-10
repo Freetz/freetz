@@ -7,12 +7,12 @@ config FREETZ_PACKAGE_NZBGET
 	select FREETZ_LIB_STDCXXLIB if ! FREETZ_PACKAGE_NZBGET_STATIC
 	default n
 	help
-		NZBGet is a command-line based binary newsgrabber 
-		for nzb files, written in C++. It supports 
-		client/server mode, automatic par-check/-repair and 
-		web-interface (via additional package). NZBGet requires 
-		low system resources and runs great on routers, 
-		NAS-devices and media players. 
+		NZBGet is a command-line based binary news grabber
+		for nzb files, written in C++. It supports
+		client/server mode, automatic par-check/-repair and
+		web-interface (via additional package). NZBGet requires
+		low system resources and runs great on routers,
+		NAS-devices and media players.
 
 config FREETZ_PACKAGE_NZBGET_WITH_CURSES
 	bool "With curses user interface"
@@ -32,14 +32,13 @@ config FREETZ_PACKAGE_NZBGET_WITH_TLS
 	help
 		Enables SSL/TLS-encrypted connection support.
 
-
 config FREETZ_PACKAGE_NZBGET_DISABLE_PAR_CHECK
 	bool "Disable parity-check and -repair support"
 	depends on FREETZ_PACKAGE_NZBGET
 	default n
 	help
 		Disables parity checking and automatic
-		repairing of downloaded files. 
+		repairing of downloaded files.
 
 config FREETZ_PACKAGE_NZBGET_STATIC
 	bool "Build static binary"
@@ -47,4 +46,3 @@ config FREETZ_PACKAGE_NZBGET_STATIC
 	default n
 	help
 		Link all libraries into the binary.
-
