@@ -2,9 +2,9 @@ config FREETZ_PACKAGE_NZBGET
 	bool "NZBGet 14.0"
 	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libpthread if ! FREETZ_PACKAGE_NZBGET_STATIC
-	select FREETZ_LIB_libdl if ! FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libm if ! FREETZ_PACKAGE_NZBGET_STATIC
+	select FREETZ_LIB_STDCXXLIB if ! FREETZ_PACKAGE_NZBGET_STATIC
 	default n
 	help
 		NZBGet is a command-line based binary newsgrabber 
