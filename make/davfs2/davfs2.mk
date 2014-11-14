@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,1.4.7)
+$(call PKG_INIT_BIN,1.5.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c75f9d7d260e7364362b89beba2b3186
+$(PKG)_SOURCE_MD5:=376bc9346454135cba78afacbcb23f86
 $(PKG)_SITE:=http://download.savannah.gnu.org/releases/davfs2
 
 $(PKG)_STARTLEVEL=50
@@ -25,9 +25,6 @@ ifeq ($(strip $(FREETZ_PACKAGE_DAVFS2_WITH_SSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 endif
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DAVFS2_WITH_ZLIB
-
-# accept neon 0.30.x
-$(PKG)_PATCH_POST_CMDS += $(SED) -ri -e 's,(25 26 27 28 29),\1 30,g' ./configure;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

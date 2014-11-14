@@ -1,22 +1,41 @@
 --- src/mount_davfs.c
 +++ src/mount_davfs.c
-@@ -98,6 +98,7 @@
- 
- /* The mointpoint as taken from the command line. */
- static char *mpoint;
-+static char mpoint_canonicalized_buf[PATH_MAX+1];
- 
- /* The type of the kernel file system used. */
- static char *kernel_fs;
-@@ -758,7 +759,7 @@
-     struct passwd *pw;
- 
-     if (*mpoint != '/') {
--        char *mp = canonicalize_file_name(mpoint);
-+        char *mp = realpath(mpoint, mpoint_canonicalized_buf);
-         if (!mp)
+@@ -694,7 +694,7 @@
+     struct mntent *ft = getmntent(fstab);
+     while (ft) {
+         if (ft->mnt_dir) {
+-            char *mp = canonicalize_file_name(ft->mnt_dir);
++            char *mp = realpath(ft->mnt_dir, NULL);
+             if (mp) {
+                 if (strcmp(mp, mpoint) == 0) {
+                     free(mp);
+@@ -956,7 +956,7 @@
+             url = ne_strdup(argv[i]);
+         }
+         i++;
+-        mpoint = canonicalize_file_name(argv[i]);
++        mpoint = realpath(argv[i], NULL);
+         if (!mpoint)
              error(EXIT_FAILURE, 0,
                    _("can't evaluate path of mount point %s"), mpoint);
+@@ -2154,7 +2154,7 @@
+                 error_at_line(EXIT_FAILURE, 0, filename, lineno,
+                               _("malformed line"));
+             *(parmv[0] + strlen(parmv[0]) - 1) = '\0';
+-            char *mp = canonicalize_file_name(parmv[0] + 1);
++            char *mp = realpath(parmv[0] + 1, NULL);
+             if (mp) {
+                 applies = (strcmp(mp, mpoint) == 0);
+                 free(mp);
+@@ -2406,7 +2406,7 @@
+             if (scheme && !port)
+                 port = ne_uri_defaultport(scheme);
+ 
+-            char *mp = canonicalize_file_name(parmv[0]);
++            char *mp = realpath(parmv[0], NULL);
+ 
+             char *ccert = NULL;
+             if (args->clicert) {
 --- src/umount_davfs.c
 +++ src/umount_davfs.c
 @@ -26,6 +26,9 @@
@@ -29,13 +48,12 @@
  #ifdef HAVE_LOCALE_H
  #include <locale.h>
  #endif
-@@ -120,7 +123,8 @@
+@@ -121,7 +124,7 @@
      if (optind < (argc - 1))
          error(EXIT_FAILURE, 0, _("too many arguments"));
  
 -    char *mpoint = canonicalize_file_name(argv[optind]);
-+    char mpoint_canonicalized_buf[PATH_MAX+1];
-+    char *mpoint = realpath(argv[optind], mpoint_canonicalized_buf);
-     if (!mpoint)
-         mpoint = argv[optind];
-     if (!mpoint || *mpoint != '/')
++    char *mpoint = realpath(argv[optind], NULL);
+ 
+     char *umount_command = NULL;
+     if (mpoint) {
