@@ -1,10 +1,11 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_GDB_VERSION_6_8),6.8,7.8))
+$(call PKG_INIT_BIN, $(if $(FREETZ_GDB_VERSION_6_8),6.8,7.8.1))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)$(if $(FREETZ_GDB_VERSION_6_8),a).tar.$(if $(FREETZ_GDB_VERSION_6_8),bz2,xz)
-$(PKG)_SOURCE_MD5_6.8 := da20d043e6729f74b909bd507bcae5c9
-$(PKG)_SOURCE_MD5_7.8 := bd958fe9019d7c7896f29f6724a764ed
-$(PKG)_SOURCE_MD5     := $($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
+$(PKG)_SOURCE_MD5_6.8   := da20d043e6729f74b909bd507bcae5c9
+$(PKG)_SOURCE_MD5_7.8.1 := 8072be87a94be0936bc3b4b6941b0862
+$(PKG)_SOURCE_MD5       := $($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=@GNU/gdb
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
+$(PKG)_PATCH_POST_CMDS += $(RM) -r ./readline;
 
 $(PKG)_DEPENDS_ON += ncurses readline
 
@@ -20,11 +21,6 @@ $(PKG)_CATEGORY:=Debug helpers
 $(PKG)_REBUILD_SUBOPTS += FREETZ_GDB_VERSION_6_8
 $(PKG)_REBUILD_SUBOPTS += FREETZ_GDB_VERSION_7_8
 
-$(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
-$(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
-$(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present
-$(PKG)_CONFIGURE_ENV += bash_cv_have_mbstate_t=yes
-
 $(PKG)_CONFIGURE_ENV += CFLAGS_FOR_TARGET="$(TARGET_CFLAGS)"
 $(PKG)_CONFIGURE_ENV += CPPFLAGS_FOR_TARGET="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
 $(PKG)_CONFIGURE_ENV += LDFLAGS_FOR_TARGET="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
@@ -38,6 +34,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-werror
 
 $(PKG)_CONFIGURE_OPTIONS += --with-system-readline=yes
 $(PKG)_CONFIGURE_OPTIONS += --without-expat
+$(PKG)_CONFIGURE_OPTIONS += --without-guile
 $(PKG)_CONFIGURE_OPTIONS += --without-included-gettext
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-python
