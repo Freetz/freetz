@@ -100,7 +100,7 @@ endif
 
 # Folder root/ needs 755 permissions
 ifneq ($(shell stat -c %a make/mod/files/root),755)
-$(error Please set umask to 0022 and then unpack/checkout again)
+$(error Wrong build directory permissions. Please set umask to 0022 and then unpack/checkout again in a directory having no uid-/gid-bits set)
 endif
 
 # We need umask 0022
