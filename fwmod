@@ -625,9 +625,14 @@ function sizeinfo()
 }
 
 # show avm image details
-avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # newer 4-digits
-[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -n 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=\(FRITZ!Box\|Speedport\|Sinus\|Eumex\)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init |head -n1| sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" #oldest, fon-sl-wlan etc
-[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" #older 4-digits
+avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
+[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
+if [ -e "${FILESYSTEM_DIR}/etc/init.d/rc.init" ]; then
+	# /etc/init.d/rc.init is not available in all firmwares
+	[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=(FRITZ!Box|Speedport|Sinus|Eumex)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init | head -n1 | sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" # symbolic name in /etc/init.d/rc.init
+	[ -z "$avm_fw_produkt" ] && avm_fw_produkt="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # 4-digits in /etc/init.d/rc.init
+fi
+[ -z "$avm_fw_produkt" ] && warn "Failed to determine avm_fw_produkt, even though this is a cosmetic bug only please report it to the Freetz developers and provide your .config"
 avm_fw_produkt="${avm_fw_produkt%% Edition*}"
 avm_fw_produkt="${avm_fw_produkt% }"
 avm_fw_language="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
