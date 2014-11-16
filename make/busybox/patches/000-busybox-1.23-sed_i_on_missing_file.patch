@@ -1,0 +1,31 @@
+From cd738711782d5860eeab4e7cefdd1f72dfb83810 Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Sun, 05 Oct 2014 00:44:34 +0000
+Subject: sed: fix "sed CMD -i nonexistent_file". Closes 7484 (https://bugs.busybox.net/show_bug.cgi?id=7484)
+
+sed -i on missing file creates output with random permissions
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+index e1b8352..2c64ad5 100644
+--- editors/sed.c
++++ editors/sed.c
+@@ -1519,12 +1519,16 @@ int sed_main(int argc UNUSED_PARAM, char **argv)
+ 
+ 			/* -i: process each FILE separately: */
+ 
++			if (stat(*argv, &statbuf) != 0) {
++				bb_simple_perror_msg(*argv);
++				G.exitcode = EXIT_FAILURE;
++				G.current_input_file++;
++				continue;
++			}
+ 			G.outname = xasprintf("%sXXXXXX", *argv);
+ 			nonstdoutfd = xmkstemp(G.outname);
+ 			G.nonstdout = xfdopen_for_write(nonstdoutfd);
+-
+ 			/* Set permissions/owner of output file */
+-			stat(*argv, &statbuf);
+ 			/* chmod'ing AFTER chown would preserve suid/sgid bits,
+ 			 * but GNU sed 4.2.1 does not preserve them either */
+ 			fchmod(nonstdoutfd, statbuf.st_mode);
