@@ -1,14 +1,10 @@
 [ "$FREETZ_REMOVE_CDROM_ISO" == "y" ] || return 0
+
 echo1 "removing cdrom.iso"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/cdrom.iso"
-modsed 's/cdrom_fallback=0/cdrom_fallback=1/g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-if isFreetzType 5050; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-no-cdrom-fallback_5050.patch"
-elif isFreetzType 3020 3030 || \
-	( isFreetzType 300IP FON WLAN && isFreetzType LANG_DE ); then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-no-cdrom-fallback_fon.patch"
-elif isFreetzType 300IP FON WLAN && isFreetzType LANG_EN; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-no-cdrom-fallback_fon_04.49.patch"
-else
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-no-cdrom-fallback.patch"
-fi
+
+# remove unnecessary lines
+modsed -r '/[ \t]*(tmp_iso_path=|## Fallback: Wenn nach 200 Sekunden das CDROM nicht aktiviert wird|echo "usb client: CDROM Fallback).*/ d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+
+# replace 'modprobe avalanche_usb use_cdrom=...' with 'modprobe avalanche_usb use_cdrom=0'
+modsed -r 's,^([ \t]*modprobe avalanche_usb use_cdrom)=.*$,\1=0,' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
