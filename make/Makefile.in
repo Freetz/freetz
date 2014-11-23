@@ -519,7 +519,7 @@ $(PKG)_TARGET_DIR:
 
 # create marker containing package version
 $(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
-	@echo "$($(PKG)_VERSION)" > $(PACKAGES_DIR)/.$(pkg)
+	@echo "$($(PKG)_VERSION)" > $$@
 
 # copy files under make/$(pkg)/files to the package target dir
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): | $(PACKAGES_DIR)
