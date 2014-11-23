@@ -714,6 +714,7 @@ $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
 		$(RM) $($(PKG)_FREETZ_CONFIG_FILE).temp; \
 	fi
 $($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
+$(PACKAGES_DIR)/.$(pkg): $($(PKG)_FREETZ_CONFIG_FILE)
 $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $($(PKG)_FREETZ_CONFIG_FILE)
 endef
 
