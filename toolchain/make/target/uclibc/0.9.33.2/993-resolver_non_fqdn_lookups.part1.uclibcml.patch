@@ -1,0 +1,110 @@
+RFC1034 3.1 suggests that
+
+  a character string that represents the starting labels of a
+  domain name which is incomplete, and should be completed by
+  local software using knowledge of the local domain (often
+  called "relative").
+
+Following this advice, the patch eliminates an incompatibility with
+dnsmasq > 2.57. dnsmasq always returns NOERROR when it receives a hostname for
+resolving, because it is handled like a TLD by dnsmasq. The dnsmasq authors
+explains it as the following:
+
+  Consider doing a query for "com". If dnsmasq returns NXDOMAIN then
+  whatever gets that answer can assume the nothing that ends on ".com"
+  exists, which is clearly wrong, and breaks a lot of stuff. Simple
+  resolvers won't break, but anything more complex will, so reverting the
+  behaviour is no possible.
+
+To be compliant with RFC1034 on one side and still fast on the other side, its
+implemented using the following logic:
+
+a) The supplied name is a fqdn (ends with a dot):
+    1. send the name
+b) The supplied name contains (but doesn't end with) a dot:
+    1. send the name, as it could be a fqdn with a missing trailing dot
+    2. if the name couldn't be found, append the search domains and send
+c) The supplied name doesn't contain any dots:
+    1. append the search domains and send
+    2. if the name couldn't be found, send the original name
+
+Signed-off-by: Mathias Kresin <openwrt@kresin.me>
+---
+ libc/inet/resolv.c | 38 +++++++++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 11 deletions(-)
+
+diff --git libc/inet/resolv.c libc/inet/resolv.c
+index cfc1eee..3d3a540 100644
+--- libc/inet/resolv.c
++++ libc/inet/resolv.c
+@@ -1260,7 +1260,8 @@ int __dns_lookup(const char *name,
+ 	int local_ns_num = -1; /* Nth server to use */
+ 	int local_id = local_id; /* for compiler */
+ 	int sdomains;
+-	bool ends_with_dot;
++	bool is_fqdn;
++	bool looks_like_fqdn;
+ 	sockaddr46_t sa;
+ 
+ 	fd = -1;
+@@ -1271,11 +1272,13 @@ int __dns_lookup(const char *name,
+ 	lookup = malloc(name_len + 1/*for '.'*/ + MAXLEN_searchdomain + 1);
+ 	if (!packet || !lookup || !name[0])
+ 		goto fail;
+-	ends_with_dot = (name[name_len - 1] == '.');
++	is_fqdn = (name[name_len - 1] == '.');
++	looks_like_fqdn = (!is_fqdn && strchr(name, '.') != NULL) ? 1 : 0;
+ 	/* no strcpy! paranoia, user might change name[] under us */
+ 	memcpy(lookup, name, name_len);
+ 
+ 	DPRINTF("Looking up type %d answer for '%s'\n", type, name);
++	DPRINTF("is_fqdn:%d looks_like_fqdn:%d\n", is_fqdn, looks_like_fqdn);
+ 	retries_left = 0; /* for compiler */
+ 	do {
+ 		int pos;
+@@ -1299,11 +1302,24 @@ int __dns_lookup(const char *name,
+ 		__open_nameservers();
+ 		sdomains = __searchdomains;
+ 		lookup[name_len] = '\0';
+-		if ((unsigned)variant < sdomains) {
+-			/* lookup is name_len + 1 + MAXLEN_searchdomain + 1 long */
+-			/* __searchdomain[] is not bigger than MAXLEN_searchdomain */
+-			lookup[name_len] = '.';
+-			strcpy(&lookup[name_len + 1], __searchdomain[variant]);
++
++		/* add the first search domain if the name isn't a FQDN and doesn't look
++		 * like a one (contains a dot). If we're here again and the name looked
++		 * like a FQDN add the first search domain. If all search domains were
++		 * added, and we are here again, send the name without any searchdomains
++		 * as last effort */
++		if (!is_fqdn) {
++			if (!looks_like_fqdn || variant != -1) {
++				if (variant == -1)
++					variant = 0;
++
++				if (variant < sdomains) {
++					/* lookup is name_len + 1 + MAXLEN_searchdomain + 1 long */
++					/* __searchdomain[] is not bigger than MAXLEN_searchdomain */
++					lookup[name_len] = '.';
++					strcpy(&lookup[name_len + 1], __searchdomain[variant]);
++				}
++			}
+ 		}
+ 		/* first time? pick starting server etc */
+ 		if (local_ns_num < 0) {
+@@ -1463,11 +1479,11 @@ int __dns_lookup(const char *name,
+ 		 * and retry, which is, eh, an error. :)
+ 		 * We were incurring long delays because of this. */
+ 		if (h.rcode == NXDOMAIN || h.rcode == SERVFAIL) {
+-			/* if possible, try next search domain */
+-			if (!ends_with_dot) {
++			/* if possible, try first/next search domain */
++			if (!is_fqdn) {
+ 				DPRINTF("variant:%d sdomains:%d\n", variant, sdomains);
+-				if (variant < sdomains - 1) {
+-					/* next search domain */
++				if (variant < sdomains - 1 || (variant == sdomains -1 && !looks_like_fqdn)) {
++					/* first/next search domain */
+ 					variant++;
+ 					continue;
+ 				}

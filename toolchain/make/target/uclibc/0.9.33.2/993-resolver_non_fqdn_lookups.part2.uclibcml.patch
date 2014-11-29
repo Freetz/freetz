@@ -1,0 +1,20 @@
+The "IN-ADDR.ARPA" domain is fixed and never needs a search domain.
+
+Signed-off-by: Mathias Kresin <openwrt@kresin.me>
+---
+ libc/inet/resolv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git libc/inet/resolv.c libc/inet/resolv.c
+index 3d3a540..7638526 100644
+--- libc/inet/resolv.c
++++ libc/inet/resolv.c
+@@ -1480,7 +1480,7 @@ int __dns_lookup(const char *name,
+ 		 * We were incurring long delays because of this. */
+ 		if (h.rcode == NXDOMAIN || h.rcode == SERVFAIL) {
+ 			/* if possible, try first/next search domain */
+-			if (!is_fqdn) {
++			if (!is_fqdn && q.qtype != T_PTR) {
+ 				DPRINTF("variant:%d sdomains:%d\n", variant, sdomains);
+ 				if (variant < sdomains - 1 || (variant == sdomains -1 && !looks_like_fqdn)) {
+ 					/* first/next search domain */
