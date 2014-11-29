@@ -1,0 +1,60 @@
+replace all '#ifdef HAVE_BACKTRACE' with '#ifdef HAVE_BACKTRACE_SYMBOLS' (samba configure script checks for 'backtrace_symbols' but not for 'backtrace')
+
+--- lib/util/fault.c
++++ lib/util/fault.c
+@@ -35,7 +35,7 @@
+ 
+ static const char *progname;
+ 
+-#ifdef HAVE_BACKTRACE
++#ifdef HAVE_BACKTRACE_SYMBOLS
+ #include <execinfo.h>
+ #elif HAVE_LIBEXC_H
+ #include <libexc.h>
+@@ -46,7 +46,7 @@
+  */
+ _PUBLIC_ void call_backtrace(void)
+ {
+-#ifdef HAVE_BACKTRACE
++#ifdef HAVE_BACKTRACE_SYMBOLS
+ #ifndef BACKTRACE_STACK_SIZE
+ #define BACKTRACE_STACK_SIZE 64
+ #endif
+--- source4/smbd/process_thread.c
++++ source4/smbd/process_thread.c
+@@ -24,7 +24,7 @@
+ #include "includes.h"
+ #include "version.h"
+ #include <pthread.h>
+-#ifdef HAVE_BACKTRACE
++#ifdef HAVE_BACKTRACE_SYMBOLS
+ #include <execinfo.h>
+ #endif
+ #include "system/wait.h"
+@@ -383,7 +383,7 @@
+ static void thread_log_suspicious_usage(const char* from, const char* info)
+ {
+ 	DEBUG(1,("log_suspicious_usage: from %s info='%s'\n", from, info));
+-#ifdef HAVE_BACKTRACE
++#ifdef HAVE_BACKTRACE_SYMBOLS
+ 	{
+ 		void *addresses[10];
+ 		int num_addresses = backtrace(addresses, 8);
+@@ -407,7 +407,7 @@
+ static void thread_print_suspicious_usage(const char* from, const char* info)
+ {
+ 	printf("log_suspicious_usage: from %s info='%s'\n", from, info);
+-#ifdef HAVE_BACKTRACE
++#ifdef HAVE_BACKTRACE_SYMBOLS
+ 	{
+ 		void *addresses[10];
+ 		int num_addresses = backtrace(addresses, 8);
+@@ -490,7 +490,7 @@
+ 		SAMBA_VERSION_STRING));
+ 	DEBUG(0,("Please read the file BUGS.txt in the distribution\n"));
+ 	DEBUG(0,("===============================================================\n"));
+-#ifdef HAVE_BACKTRACE
++#ifdef HAVE_BACKTRACE_SYMBOLS
+ 	{
+ 		void *addresses[10];
+ 		int num_addresses = backtrace(addresses, 8);
