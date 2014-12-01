@@ -1,5 +1,6 @@
-$(call PKG_INIT_BIN, 14.0)
+$(call PKG_INIT_BIN, 14.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA1:=671c0d0b554643e1b58665004c65519a330766db
 $(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
