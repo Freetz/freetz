@@ -34,11 +34,11 @@ define STRIP_TOOLCHAIN_BINARIES
 endef
 
 # $1 - toolchain base dir
-# $2 - gcc version
+# $2 - gcc major version (e.g. 4.8)
 # $3 - target name
 # $4 - strip command to be used
 define STRIP_GCC_LIBEXEC_BINARIES
-	-$(4) $(addprefix $(1)/libexec/gcc/$(3)/$(2)/,$(GCC_BINARIES_LIBEXEC)) >/dev/null 2>&1
+	-$(4) $(addprefix $(1)/libexec/gcc/$(3)/$(2).[0-9]/,$(GCC_BINARIES_LIBEXEC)) >/dev/null 2>&1
 endef
 
 # $1 - toolchain base dir
@@ -59,11 +59,11 @@ define GCC_ENSURE_CC_CXX
 endef
 
 # $1 - toolchain base dir
-# $2 - gcc version
+# $2 - gcc major version (e.g. 4.8)
 # $3 - target name
 # $4 - strip command to be used
 define GCC_INSTALL_COMMON
-	$(RM) $(1)/bin/*-$(2) # remove unnecessary *-$(GCC_VERSION) files
+	$(RM) $(1)/bin/*-$(2).[0-9] # remove unnecessary *-$(2).[0-9] files
 	$(call STRIP_TOOLCHAIN_BINARIES,$(1),$(GCC_BINARIES_BIN),$(3),$(4))
 	$(call STRIP_GCC_LIBEXEC_BINARIES,$(1),$(2),$(3),$(4))
 	$(call GCC_ENSURE_CC_CXX,$(1),$(3))

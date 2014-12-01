@@ -1,6 +1,7 @@
 GCC_VERSION:=$(TARGET_TOOLCHAIN_GCC_VERSION)
+GCC_MAJOR_VERSION:=$(TARGET_TOOLCHAIN_GCC_MAJOR_VERSION)
 GCC_SOURCE:=gcc-$(GCC_VERSION).tar.bz2
-GCC_SITE:=@GNU/gcc/gcc-$(GCC_VERSION)
+GCC_SITE:=$(if $(FREETZ_TARGET_GCC_SNAPSHOT),ftp://gcc.gnu.org/pub/gcc/snapshots/$(GCC_VERSION),@GNU/gcc/gcc-$(GCC_VERSION))
 GCC_DIR:=$(TARGET_TOOLCHAIN_DIR)/gcc-$(GCC_VERSION)
 GCC_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/gcc
 
@@ -52,7 +53,7 @@ endif
 
 GCC_EXTRA_MAKE_OPTIONS := MAKEINFO=true
 
-GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
+GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$$(cat $(abspath $(GCC_DIR))/gcc/BASE-VER)
 # This macro exists for the following reason:
 #   uClibc depends on some gcc internal headers located under $(GCC_LIB_SUBDIR).
 #   uClibc is compiled using gcc-initial, after that gcc-final (which depends on uClibc)
@@ -77,7 +78,8 @@ $(DL_DIR)/$(GCC_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GCC_SOURCE) $(GCC_SITE) $(GCC_MD5)
 endif
 
-GCC_PATCHES_ROOT_DIR := $(GCC_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(GCC_VERSION))
+GCC_PATCHES_ROOT_DIR := $(GCC_MAKE_DIR)/$(GCC_MAJOR_VERSION)
+GCC_CONDITIONAL_PATCHES += $(if $(FREETZ_TARGET_GCC_SNAPSHOT),snapshot,release)
 GCC_CONDITIONAL_PATCHES += $(if $(FREETZ_TARGET_GCC_DEFAULT_AS_NEEDED),default-as-needed)
 
 gcc-unpacked: $(GCC_DIR)/.unpacked
@@ -132,7 +134,7 @@ $(GCC_BUILD_DIR1)/.installed: $(GCC_BUILD_DIR1)/.compiled
 		$(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR1) \
 		install-gcc \
 		$(if $(GCC_BUILD_TARGET_LIBGCC),install-target-libgcc)
-	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
+	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_MAJOR_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	touch $@
@@ -188,12 +190,13 @@ $(GCC_BUILD_DIR2)/.compiled: $(GCC_BUILD_DIR2)/.configured
 
 $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	PATH=$(TARGET_PATH) $(MAKE) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR2) install
-	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
+	$(call GCC_INSTALL_COMMON,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_MAJOR_VERSION),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call GCC_SET_HEADERS_TIMESTAMP,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	# Link some files to make mklibs happy
-	ln -sf ../usr/lib/gcc/$(REAL_GNU_TARGET_NAME)/$(TARGET_TOOLCHAIN_GCC_VERSION)/libgcc_pic.a $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgcc_s_pic.a; \
-	ln -sf ../usr/lib/gcc/$(REAL_GNU_TARGET_NAME)/$(TARGET_TOOLCHAIN_GCC_VERSION)/libgcc.map $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libgcc_s_pic.map
+	for i in libgcc_pic.a libgcc.map; do \
+		ln -sf ../usr/$(GCC_LIB_SUBDIR)/$$i $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/; \
+	done
 	# strip libraries
 	-(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* libgcc_s.so.1 >/dev/null 2>&1)
 	# set up the symlinks to enable lying about target name
@@ -256,7 +259,7 @@ GCC_INCLUDE_DIR:=include-fixed
 
 $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 	$(MAKE_ENV) $(MAKE1) $(GCC_EXTRA_MAKE_OPTIONS) -C $(GCC_BUILD_DIR3) DESTDIR=$(TARGET_UTILS_DIR) install
-	$(call GCC_INSTALL_COMMON,$(TARGET_UTILS_DIR)/usr,$(GCC_VERSION),$(REAL_GNU_TARGET_NAME),$(TARGET_STRIP))
+	$(call GCC_INSTALL_COMMON,$(TARGET_UTILS_DIR)/usr,$(GCC_MAJOR_VERSION),$(REAL_GNU_TARGET_NAME),$(TARGET_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
 	# strip libraries
 	-(cd $(TARGET_UTILS_DIR)/usr/lib && $(TARGET_STRIP) libstdc++.so.*.*.* libgcc_s.so.1 >/dev/null 2>&1)
