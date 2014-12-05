@@ -1585,7 +1585,7 @@
        if (options->real_hash_size != defaults.real_hash_size
  	  || options->virtual_hash_size != defaults.virtual_hash_size)
  	msg (M_USAGE, "--hash-size requires --mode server");
-@@ -2525,6 +2657,8 @@
+@@ -2526,6 +2658,8 @@
  		     o->topology,
  		     o->ifconfig_local,
  		     o->ifconfig_remote_netmask,
@@ -1594,7 +1594,7 @@
  		     (in_addr_t)0,
  		     (in_addr_t)0,
  		     false,
-@@ -3850,6 +3984,30 @@
+@@ -3851,6 +3985,30 @@
  	  goto err;
  	}
      }
@@ -1625,7 +1625,7 @@
    else if (streq (p[0], "ifconfig-noexec"))
      {
        VERIFY_PERMISSION (OPT_P_UP);
-@@ -4650,6 +4808,26 @@
+@@ -4651,6 +4809,26 @@
  	}
        add_route_to_option_list (options->routes, p[1], p[2], p[3], p[4]);
      }
@@ -1652,7 +1652,7 @@
    else if (streq (p[0], "max-routes") && p[1])
      {
        int max_routes;
-@@ -4861,6 +5039,33 @@
+@@ -4862,6 +5040,33 @@
  	    }
  	}
      }
@@ -1686,7 +1686,7 @@
    else if (streq (p[0], "server-bridge") && p[1] && p[2] && p[3] && p[4])
      {
        const int lev = M_WARN;
-@@ -4945,6 +5150,28 @@
+@@ -4946,6 +5151,28 @@
        VERIFY_PERMISSION (OPT_P_GENERAL);
        options->topology = TOP_P2P;
      }
@@ -1715,7 +1715,7 @@
    else if (streq (p[0], "hash-size") && p[1] && p[2])
      {
        int real, virtual;
-@@ -5140,6 +5367,11 @@
+@@ -5141,6 +5368,11 @@
  	}
        option_iroute (options, p[1], netmask, msglevel);
      }
@@ -1727,7 +1727,7 @@
    else if (streq (p[0], "ifconfig-push") && p[1] && p[2])
      {
        in_addr_t local, remote_netmask;
-@@ -5178,6 +5410,43 @@
+@@ -5179,6 +5411,43 @@
  	  goto err;
  	}
      }
@@ -1831,7 +1831,7 @@
    bool enable_c2c;
    bool duplicate_cn;
    int cf_max;
-@@ -723,6 +740,10 @@
+@@ -724,6 +741,10 @@
  			    unsigned int *option_types_found,
  			    struct env_set *es);
  
@@ -2046,7 +2046,7 @@
  struct openvpn_udphdr {
 --- push.c
 +++ push.c
-@@ -189,8 +189,26 @@
+@@ -191,8 +191,26 @@
    const int safe_cap = BCAP (&buf) - extra;
    bool push_sent = false;
  

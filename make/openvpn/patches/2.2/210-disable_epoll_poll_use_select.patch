@@ -1,36 +1,34 @@
---- configure
-+++ configure
-@@ -5792,7 +5792,7 @@
+--- configure.ac
++++ configure.ac
+@@ -385,7 +385,7 @@
+ 		 netinet/in.h netinet/in_systm.h dnl
+ 		 netinet/tcp.h arpa/inet.h dnl
+ 		 netdb.h sys/uio.h linux/if_tun.h linux/sockios.h dnl
+-		 linux/types.h sys/poll.h sys/epoll.h err.h dnl
++		 linux/types.h err.h dnl
+    )
+    AC_CHECK_HEADERS(net/if.h,,,
+ 		 [#ifdef HAVE_SYS_TYPES_H
+@@ -510,7 +510,7 @@
+ # Windows use stdcall for winsock so we cannot auto detect these
+ m4_define([SOCKET_FUNCS], [socket recv recvfrom send sendto listen dnl
+           accept connect bind select gethostbyname inet_ntoa])
+-m4_define([SOCKET_OPT_FUNCS], [setsockopt getsockopt getsockname poll])
++m4_define([SOCKET_OPT_FUNCS], [setsockopt getsockopt getsockname])
  
- fi
+ if test "${WIN32}" = "yes"; then
  
--   for ac_header in sys/time.h sys/socket.h sys/un.h sys/ioctl.h sys/stat.h 		 sys/mman.h fcntl.h sys/file.h stdlib.h stdint.h 		 stdarg.h unistd.h signal.h stdio.h string.h 		 strings.h ctype.h errno.h syslog.h pwd.h grp.h 		 net/if_tun.h net/tun/if_tun.h stropts.h sys/sockio.h 		 netinet/in.h netinet/in_systm.h 		 netinet/tcp.h arpa/inet.h 		 netdb.h sys/uio.h linux/if_tun.h linux/sockios.h 		 linux/types.h sys/poll.h sys/epoll.h err.h
-+   for ac_header in sys/time.h sys/socket.h sys/un.h sys/ioctl.h sys/stat.h 		 sys/mman.h fcntl.h sys/file.h stdlib.h stdint.h 		 stdarg.h unistd.h signal.h stdio.h string.h 		 strings.h ctype.h errno.h syslog.h pwd.h grp.h 		 net/if_tun.h net/tun/if_tun.h stropts.h sys/sockio.h 		 netinet/in.h netinet/in_systm.h 		 netinet/tcp.h arpa/inet.h 		 netdb.h sys/uio.h linux/if_tun.h linux/sockios.h 		 linux/types.h err.h
- do :
-   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
- ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
-@@ -6752,7 +6752,7 @@
- fi
- done
+@@ -565,13 +565,6 @@
+ dnl check libraries
+ dnl
  
--	for ac_func in setsockopt getsockopt getsockname poll sendmsg recvmsg
-+	for ac_func in setsockopt getsockopt getsockname sendmsg recvmsg
- do :
-   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
- ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-@@ -6863,6 +6863,7 @@
-     conftest$ac_exeext conftest.$ac_ext
- 
- 
-+if false; then
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working epoll implementation..." >&5
- $as_echo "$as_me: checking for working epoll implementation..." >&6;}
- OLDLDFLAGS="$LDFLAGS"
-@@ -6875,6 +6876,7 @@
- fi
- 
- LDFLAGS="$OLDLDFLAGS"
-+fi
- 
+-dnl Checking for a working epoll
+-AC_CHECKING([for working epoll implementation])
+-OLDLDFLAGS="$LDFLAGS"
+-LDFLAGS="$LDFLAGS -Wl,--fatal-warnings"
+-AC_CHECK_FUNC(epoll_create, AC_DEFINE(HAVE_EPOLL_CREATE, 1, [epoll_create function is defined]))
+-LDFLAGS="$OLDLDFLAGS"
+-
+ dnl ipv6 support
  if test "$PF_INET6" = "yes"; then
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for struct sockaddr_in6 for IPv6 support..." >&5
+   AC_CHECKING([for struct sockaddr_in6 for IPv6 support])

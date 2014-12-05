@@ -1,5 +1,5 @@
-$(call PKG_INIT_BIN,$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2),2.2.2,2.3.6))
-$(PKG)_SOURCE_MD5_2.2.2:=c5181e27b7945fa6276d21873329c5c7
+$(call PKG_INIT_BIN,$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2),2.2.3,2.3.6))
+$(PKG)_SOURCE_MD5_2.2.3:=19265405cbcbf7c86be81418ecb02f4b
 $(PKG)_SOURCE_MD5_2.3.6:=6ca03fe0fd093e0d01601abee808835c
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
@@ -14,6 +14,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2),openvpn,
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
 
 $(PKG)_STARTLEVEL=81
+
+$(PKG)_BUILD_PREREQ += autoreconf
 
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_OPENSSL),openssl)
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_POLARSSL),polarssl12)
@@ -40,8 +42,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl12_WITH_BLOWFISH
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2)),y)
 $(PKG)_EXTRA_LIBS += $(if $(FREETZ_PACKAGE_OPENVPN_OPENSSL),-ldl)
 $(PKG)_CONFIGURE_OPTIONS += --disable-http
-# ipv6 patch modifies both files, touch them to prevent configure from being regenerated
-$(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac; touch ./Makefile.in ./configure;
+$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i;
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_VERSION_2_3)),y)
