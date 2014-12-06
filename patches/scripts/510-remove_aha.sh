@@ -48,7 +48,7 @@ echo1 "patching ${sedfile##*/}"
 mod_del_area \
 	'function show_smarthome_broadcast' \
 	1 \
-	'function show_buttons' \
+	'function \(show_buttons\|is_lan4_vpn\)' \
 	-3 \
 	$sedfile
 
