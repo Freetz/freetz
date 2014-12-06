@@ -15,7 +15,8 @@ config FREETZ_AVM_HAS_AHA
 			!FREETZ_TYPE_3370 && \
 			!FREETZ_TYPE_3390 && \
 			!FREETZ_TYPE_3490 && \
-			!FREETZ_TYPE_7312 \
+			!FREETZ_TYPE_7312 && \
+			!FREETZ_TYPE_7412    \
 		)
 	default n
 	help
@@ -102,7 +103,8 @@ config FREETZ_AVM_HAS_NAS
 	default y		if \
 			FREETZ_AVM_VERSION_05_2X_MIN && \
 			!FREETZ_TYPE_6810 && \
-			!FREETZ_TYPE_7312
+			!FREETZ_TYPE_7312 && \
+			!FREETZ_TYPE_7412
 	default n
 	help
 		Select this if you have a box with NAS support.
@@ -115,7 +117,8 @@ config FREETZ_AVM_HAS_NTFS
 		( \
 			FREETZ_AVM_VERSION_05_2X_MIN && \
 			!FREETZ_TYPE_6810 && \
-			!FREETZ_TYPE_7312 \
+			!FREETZ_TYPE_7312 && \
+			!FREETZ_TYPE_7412    \
 		)
 	default n
 	help
@@ -237,6 +240,7 @@ config FREETZ_AVM_HAS_USB_HOST
 		FREETZ_TYPE_7112 || \
 		FREETZ_TYPE_7113 || \
 		FREETZ_TYPE_7312 || \
+		FREETZ_TYPE_7412 || \
 		FREETZ_TYPE_W500V_7150 || \
 		FREETZ_TYPE_W501V || \
 		FREETZ_TYPE_W701V_7170 || \
@@ -302,7 +306,8 @@ config FREETZ_AVM_HAS_WEBDAV
 		( \
 			FREETZ_AVM_VERSION_05_2X_MIN && \
 			!FREETZ_TYPE_6810 && \
-			!FREETZ_TYPE_7312 \
+			!FREETZ_TYPE_7312 && \
+			!FREETZ_TYPE_7412    \
 		)
 	default n
 	help
@@ -689,6 +694,7 @@ config FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE
 		FREETZ_TYPE_6840 || \
 		FREETZ_TYPE_7272 || \
 		FREETZ_TYPE_7362 || \
+		FREETZ_TYPE_7412 || \
 		FREETZ_TYPE_7490
 	default n
 	help
