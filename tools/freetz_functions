@@ -128,10 +128,11 @@ modsed()
 # Input:
 #  stdin - file content
 #  $1 - regexp pattern
+#  $2 - optional range start line (useful for something like "find first occurrence of the pattern starting from the line $2")
 # Output:
 #  returns line number of the 1st pattern match or empty if the pattern doesn't match any line
 get_line_number_of_1st_match() {
-	sed -n -e '/'"$1"'/{=;q}'
+	sed -n -e "${2:+${2},$}"'{ /'"$1"'/ {=;q} }'
 }
 
 #modsed <start-row> <add-to-start> [end-row] <add-to-end> <file>
@@ -152,34 +153,36 @@ mod_del_area() {
 		shift
 	done
 
-	# check file
+	# check file exists
 	if [ ! -f "$file" ]; then
 		warn3 "mod_del_area: file '$file' does not exist"
 		return
 	fi
 
-	# search row numbers
+	# determine start-pattern line
 	local sedrowS=$(cat "$file" | get_line_number_of_1st_match "${rowS}")
-	if [ -n "$rowE" ]; then
-		local sedrowE=$(cat "$file" | get_line_number_of_1st_match "${rowE}")
-	else
-		local sedrowE=$sedrowS
-	fi
-
-	# check row numbers
 	if [ -z "$sedrowS" ]; then
 		warn3 "mod_del_area: start row not found in '$file'"
 		return
 	fi
-	sedrowS="$((sedrowS + modS))"
-	if [ -z "$sedrowE" ]; then
-		warn3 "mod_del_area: end row not found in '$file'"
-		return
+
+	# determine end-pattern line
+	if [ -z "$rowE" ]; then
+		local sedrowE=$sedrowS
+	else
+		local sedrowE=$(cat "$file" | get_line_number_of_1st_match "${rowE}" "$(($sedrowS + 1))")
+		if [ -z "$sedrowE" ]; then
+			warn3 "mod_del_area: end row not found in '$file'"
+			return
+		fi
 	fi
+
+	# add offsets
+	sedrowS="$((sedrowS + modS))"
 	sedrowE="$((sedrowE + modE))"
 
 	# remove lines
-	echo1 "patching ${file##*/}: removing line ${sedrowS} - ${sedrowE}"
+	echo1 "patching ${file##*/}: removing lines ${sedrowS} - ${sedrowE}"
 	sed -i -e "${sedrowS},${sedrowE}d" "$file"
 	[ $? -ne 0 ] && error 1 "mod_del_area: error in sed expression"
 }
