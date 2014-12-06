@@ -125,6 +125,15 @@ modsed()
 	fi
 }
 
+# Input:
+#  stdin - file content
+#  $1 - regexp pattern
+# Output:
+#  returns line number of the 1st pattern match or empty if the pattern doesn't match any line
+get_line_number_of_1st_match() {
+	sed -n -e '/'"$1"'/{=;q}'
+}
+
 #modsed <start-row> <add-to-start> [end-row] <add-to-end> <file>
 #should be used to remove an area in a file from start-row to end-row
 #without a given end-row the start-row is used as end-row
@@ -150,9 +159,9 @@ mod_del_area() {
 	fi
 
 	# search row numbers
-	local     sedrowS="$(nl $file | sed -n "s/^ *\([0-9]*\).*${rowS}.*$/\1/p")"
+	local sedrowS=$(cat "$file" | get_line_number_of_1st_match "${rowS}")
 	if [ -n "$rowE" ]; then
-		local sedrowE="$(nl $file | sed -n "s/^ *\([0-9]*\).*${rowE}.*$/\1/p")"
+		local sedrowE=$(cat "$file" | get_line_number_of_1st_match "${rowE}")
 	else
 		local sedrowE=$sedrowS
 	fi
