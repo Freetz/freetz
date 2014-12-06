@@ -135,20 +135,25 @@ get_line_number_of_1st_match() {
 	sed -n -e "${2:+${2},$}"'{ /'"$1"'/ {=;q} }'
 }
 
-#modsed <start-row> <add-to-start> [end-row] <add-to-end> <file>
-#should be used to remove an area in a file from start-row to end-row
-#without a given end-row the start-row is used as end-row
-#start-row and end-row could be increased by a positive or negative value
+# Usage:
+#   mod_del_area <start-line-pattern> <start-line-offset> [end-line-pattern] <end-line-offset> <file>
+#
+# Removes all lines of the file starting from the 1st line matching the start-line-pattern
+# until the 1st line following the start one and matching the end-line-pattern.
+#
+# If the end-line-pattern is omitted the end line is equal to the start one.
+#
+# Both start and end lines could be fine adjusted by a positive or a negative offset.
 mod_del_area() {
 	# read parameters
 	[ $# -ne 4 -a $# -ne 5 ] && error 1 "mod_del_area: wrong parameter count"
 	for i in 1 2 3 4 5; do
 		case $i in
-			1)	local rowS="$1" ;;
-			2)	local modS="$1" ;;
-			3)	[ $# -gt 2 ] && local rowE="$1" || continue ;;
-			4)	local modE="$1" ;;
-			5)	local file="$1" ;;
+			1) local startPattern="$1" ;;
+			2) local startOffset="$1" ;;
+			3) [ $# -gt 2 ] && local endPattern="$1" || continue ;;
+			4) local endOffset="$1" ;;
+			5) local file="$1" ;;
 		esac
 		shift
 	done
@@ -160,30 +165,30 @@ mod_del_area() {
 	fi
 
 	# determine start-pattern line
-	local sedrowS=$(cat "$file" | get_line_number_of_1st_match "${rowS}")
-	if [ -z "$sedrowS" ]; then
+	local startLine=$(cat "$file" | get_line_number_of_1st_match "${startPattern}")
+	if [ -z "$startLine" ]; then
 		warn3 "mod_del_area: start row not found in '$file'"
 		return
 	fi
 
 	# determine end-pattern line
-	if [ -z "$rowE" ]; then
-		local sedrowE=$sedrowS
+	if [ -z "$endPattern" ]; then
+		local endLine=$startLine
 	else
-		local sedrowE=$(cat "$file" | get_line_number_of_1st_match "${rowE}" "$(($sedrowS + 1))")
-		if [ -z "$sedrowE" ]; then
+		local endLine=$(cat "$file" | get_line_number_of_1st_match "${endPattern}" "$(($startLine + 1))")
+		if [ -z "$endLine" ]; then
 			warn3 "mod_del_area: end row not found in '$file'"
 			return
 		fi
 	fi
 
 	# add offsets
-	sedrowS="$((sedrowS + modS))"
-	sedrowE="$((sedrowE + modE))"
+	startLine="$((startLine + startOffset))"
+	endLine="$((endLine + endOffset))"
 
 	# remove lines
-	echo1 "patching ${file##*/}: removing lines ${sedrowS} - ${sedrowE}"
-	sed -i -e "${sedrowS},${sedrowE}d" "$file"
+	echo1 "patching ${file##*/}: removing lines ${startLine} - ${endLine}"
+	sed -i -e "${startLine},${endLine}d" "$file"
 	[ $? -ne 0 ] && error 1 "mod_del_area: error in sed expression"
 }
 
