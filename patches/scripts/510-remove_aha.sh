@@ -48,9 +48,10 @@ echo1 "patching ${sedfile##*/}"
 mod_del_area \
 	'function show_smarthome_broadcast' \
 	1 \
-	'function \(show_buttons\|is_lan4_vpn\)' \
-	-3 \
+	'^function ' \
+	-1 \
 	$sedfile
+modsed -r 's,(function show_smarthome_broadcast.*),\1\nreturn false\nend,' $sedfile
 
 
 sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
