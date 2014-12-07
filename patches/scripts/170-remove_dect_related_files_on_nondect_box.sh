@@ -1,4 +1,4 @@
-[ "$FREETZ_AVM_HAS_DECT" == "y" -o "$FREETZ_AVM_VERSION_06_0X_MAX" == "y" ] && return 0
+[ "$FREETZ_AVM_HAS_DECT" != "y" -a "$FREETZ_AVM_VERSION_06_2X_MIN" == "y" ] || return 0
 
 for f in \
 	"${MODULES_DIR}/kernel/drivers/net/nlaudio/nlaudio.ko" \
