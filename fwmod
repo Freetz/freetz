@@ -1159,6 +1159,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
+	if [ -e "$MODULES_DIR/modules.dep.bin" ]; then
+		echo1 "removing (unused) modules.dep.bin"
+		rm -f "$MODULES_DIR/modules.dep.bin"
+	fi
+
 	kolinecnt="$(cat $MODULES_DIR/modules.dep | wc -l)"
 	kofilecnt="$(find $MODULES_DIR -type f -name '*.ko' | wc -l)"
 	echo1 "kernel modules installed: $kolinecnt entries in modules.dep and $kofilecnt .ko-files found."
