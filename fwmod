@@ -670,7 +670,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	chmod 1777 "${VARTAR_MOD_DIR}/var/tmp"
 
 	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
-	oems="$(grep -E 'for i in  (avm|tcom|ewetel)' "${FIRMWARE_MOD_DIR}/var/install" | head -n1 | sed -e 's/^.*for i in\(.*\); do.*$/\1/')"
+	oems=$(sed -n -r -e '/for[ ]+i[ ]+in[ ]+(avm|tcom|ewetel)[ ]+/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
 	for webdir in \
 	  ${FILESYSTEM_MOD_DIR}/usr/www \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.nas \
@@ -910,7 +910,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if isFreetzType W501V; then
 		oem_list="tcom avm"
 	fi
-	sed -i -r -e 's/for i in  (avm|tcom).*; do/for i in '"$oem_list"' ; do/g' "${FIRMWARE_MOD_DIR}/var/install"
+	sed -i -r -e 's/for[ ]+i[ ]+in[ ]+(avm|tcom)[^;]*;[ ]+do/for i in '"$oem_list"' ; do/' "${FIRMWARE_MOD_DIR}/var/install"
 
 	if [ "$oem_kept" -eq 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
