@@ -669,8 +669,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# NB: The permissions set are the regular temp-directory permissions on Unix-like systems.
 	chmod 1777 "${VARTAR_MOD_DIR}/var/tmp"
 
-	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
+	# determine OEMs supported by the original firmware
 	oems=$(sed -n -r -e '/for[ ]+i[ ]+in[ ]+(avm|tcom|ewetel)[ ]+/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
+	[ -z "$oems" ] && error 1 "failed to determine OEMs supported by the original firmware"
+
+	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
 	for webdir in \
 	  ${FILESYSTEM_MOD_DIR}/usr/www \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.nas \
