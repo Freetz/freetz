@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.16)
+$(call PKG_INIT_BIN, 1.16.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=fe102975ab3a6c049777883f1bb9ad07
+$(PKG)_SOURCE_MD5:=78942cc0cce0a23e18114d982789e360
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
@@ -35,8 +35,10 @@ $(PKG)_EXTRA_LDFLAGS += -static
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
-$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-iri
+$(PKG)_CONFIGURE_OPTIONS += --disable-pcre
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --without-libuuid
 $(PKG)_CONFIGURE_OPTIONS += --without-zlib # is only required for compressing warc files
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_WGET_WITH_SSL),,--without-ssl)
