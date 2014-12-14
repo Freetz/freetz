@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -13433,7 +13433,7 @@
+@@ -13501,7 +13501,7 @@
  
  
  valid_CPPFLAGS="$CPPFLAGS"; CPPFLAGS="$CPPFLAGS -I$SSLDIR/include"
@@ -11,12 +11,14 @@
  ac_fn_c_check_header_mongrel "$LINENO" "$SSLDIR/include/openssl/engine.h" "$as_ac_Header" "$ac_includes_default"
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -281,7 +281,7 @@
- stunnel_LDFLAGF = @stunnel_LDFLAGF@
+@@ -352,8 +352,8 @@
+ stunnel_CFLAGS = @stunnel_CFLAGS@
  
  # SSL library
--stunnel_LDFLAGS = -L$(SSLDIR)/lib64 -L$(SSLDIR)/lib -lssl -lcrypto
-+stunnel_LDFLAGS =                   -L$(SSLDIR)/lib -lssl -lcrypto -ldl
+-stunnel_LDFLAGS = @stunnel_LDFLAGS@ -L$(SSLDIR)/lib64 -L$(SSLDIR)/lib \
+-	-lssl -lcrypto
++stunnel_LDFLAGS = @stunnel_LDFLAGS@                   -L$(SSLDIR)/lib \
++	-lssl -lcrypto -ldl
  sysconfdir = @sysconfdir@
  target_alias = @target_alias@
  top_build_prefix = @top_build_prefix@
