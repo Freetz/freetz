@@ -29,7 +29,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(USBIP_DIR)/src \
 		CPPFLAGS="-std=gnu99 -fgnu89-inline"
 
-$($(PKG)_MOD_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(USBIP_DIR)/drivers/2.6.21 \
 		KSOURCE="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
 		ARCH="$(KERNEL_ARCH)" \
