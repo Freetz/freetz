@@ -118,7 +118,7 @@ do_checkout_svn()
 }
 do_checkout_git()
 {
-	git clone "$1" "$2" || return $?
+	GIT_SSL_NO_VERIFY=true git clone "$1" "$2" || return $?
 	(
 		cd "$2" && git checkout "$3" || return $?
 		if [ -f ".gitmodules" ]; then
