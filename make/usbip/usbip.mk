@@ -38,7 +38,6 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(USBIP_DEST_DIR)/usr/share/usbip
 	cp $(USBIP_DIR)/src/cmd/usbipd $(USBIP_DEST_DIR)/usr/bin
 	cp $(USBIP_DIR)/src/cmd/bind_driver $(USBIP_DEST_DIR)/usr/bin
-	cp $(USBIP_DIR)/src/usb.ids $(USBIP_DEST_DIR)/usr/share/usbip/usb.ids
 	$(TARGET_STRIP) $(USBIP_DEST_USR_BIN)/usbipd \
 		$(USBIP_DEST_USR_BIN)/bind_driver
 
@@ -58,6 +57,5 @@ $(pkg)-clean:
 $(pkg)-uninstall:
 	$(RM) $(USBIP_DEST_DIR)/usr/bin/usbipd
 	$(RM) $(USBIP_DEST_DIR)/usr/bin/bind_driver
-	$(RM) $(USBIP_DEST_DIR)/usr/share/usbip/usb.ids
 
 $(PKG_FINISH)

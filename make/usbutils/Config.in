@@ -7,16 +7,7 @@ config FREETZ_PACKAGE_USBUTILS
 
 		To avoid name conflicts with AVM's lsusb the binary is renamed to lsusb-freetz.
 
-config FREETZ_PACKAGE_USBUTILS_IDS
+config FREETZ_PACKAGE_USBIDS
 	bool "usb.ids"
 	depends on FREETZ_PACKAGE_USBUTILS
 	default y
-	help
-		Add usb.ids file (357 KB)
-
-config FREETZ_PACKAGE_USBUTILS_IDS_UPDATE
-	bool "Update usb.ids"
-	depends on FREETZ_PACKAGE_USBUTILS_IDS
-	default y
-	help
-		Download the latest version of usb.ids file (~503 KB).
