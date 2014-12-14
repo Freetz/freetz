@@ -1,13 +1,9 @@
 config FREETZ_PACKAGE_USBUTILS
 	bool "usbutils 007 (binary only)"
 	select FREETZ_LIB_libusb_1
+	select FREETZ_PACKAGE_USBIDS
 	default n
 	help
 		USB devices listing utilities
 
 		To avoid name conflicts with AVM's lsusb the binary is renamed to lsusb-freetz.
-
-config FREETZ_PACKAGE_USBIDS
-	bool "usb.ids"
-	depends on FREETZ_PACKAGE_USBUTILS
-	default y
