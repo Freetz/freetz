@@ -7,6 +7,10 @@ $(PKG)_BINARIES:=bcrelay pptpctrl pptpd
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
+$(PKG)_PLUGINS:=pptpd-logwtmp.so
+$(PKG)_PLUGINS_BUILD_DIR:=$($(PKG)_PLUGINS:%=$($(PKG)_DIR)/plugins/%)
+$(PKG)_PLUGINS_TARGET_DIR:=$($(PKG)_PLUGINS:%=$($(PKG)_DEST_DIR)/usr/lib/pptpd/%)
+
 $(PKG)_DEPENDS_ON += pppd
 
 # disable NLS related code
@@ -20,7 +24,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR) $($(PKG)_PLUGINS_BUILD_DIR): $($(PKG)_DIR)/.configured
 # CC/COPTS overrides are necessary because of the plugins subdir (plain Makefile, not controlled by automake)
 	$(SUBMAKE) -C $(PPTPD_DIR) \
 		CC="$(TARGET_CC)" \
@@ -30,14 +34,19 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/%
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_PLUGINS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/pptpd/%: $($(PKG)_DIR)/plugins/%
+	$(INSTALL_BINARY_STRIP)
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_PLUGINS_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PPTPD_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(PPTPD_BINARIES:%=$(PPTPD_DEST_DIR)/usr/sbin/%)
+	$(RM) \
+		$(PPTPD_BINARIES:%=$(PPTPD_DEST_DIR)/usr/sbin/%) \
+		$(PPTPD_PLUGINS:%=$(PPTPD_DEST_DIR)/usr/lib/pptpd/%)
 
 $(PKG_FINISH)
