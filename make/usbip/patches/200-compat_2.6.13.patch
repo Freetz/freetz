@@ -1,5 +1,5 @@
---- drivers/2.6.21/stub_rx.c.orig	2008-04-20 15:19:42.000000000 +0200
-+++ drivers/2.6.21/stub_rx.c	2009-03-08 06:39:07.000000000 +0100
+--- drivers/2.6.21/stub_rx.c
++++ drivers/2.6.21/stub_rx.c
 @@ -464,28 +464,28 @@
  	}
  #endif
@@ -69,8 +69,8 @@
  	memcpy(priv->urb->setup_packet, &pdu->u.cmd_submit.setup, 8);
  
  	/* set other members from the base header of pdu */
---- drivers/2.6.21/stub_tx.c.orig	2008-04-20 15:19:42.000000000 +0200
-+++ drivers/2.6.21/stub_tx.c	2009-03-08 06:39:07.000000000 +0100
+--- drivers/2.6.21/stub_tx.c
++++ drivers/2.6.21/stub_tx.c
 @@ -45,13 +45,21 @@
  {
  	struct stub_unlink *unlink;
@@ -93,8 +93,8 @@
  	unlink->seqnum = seqnum;
  	unlink->status = status;
  
---- drivers/2.6.21/usbip_common.c.orig	2008-04-20 15:19:42.000000000 +0200
-+++ drivers/2.6.21/usbip_common.c	2009-03-08 06:39:07.000000000 +0100
+--- drivers/2.6.21/usbip_common.c
++++ drivers/2.6.21/usbip_common.c
 @@ -847,10 +847,18 @@
  	ssize_t size = np * sizeof(*iso);
  	int i;
@@ -133,8 +133,8 @@
  	ret = usbip_xmit(0, ud->tcp_socket, buff, size, 0);
  	if (ret != size) {
  		uerr("recv iso_frame_descriptor, %d\n", ret);
---- drivers/2.6.21/stub_dev.c.orig	2008-04-20 15:19:42.000000000 +0200
-+++ drivers/2.6.21/stub_dev.c	2009-03-08 06:39:07.000000000 +0100
+--- drivers/2.6.21/stub_dev.c
++++ drivers/2.6.21/stub_dev.c
 @@ -322,12 +322,20 @@
  
  	udbg("allocating stub device");

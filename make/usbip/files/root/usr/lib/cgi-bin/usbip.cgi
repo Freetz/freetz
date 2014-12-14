@@ -18,7 +18,7 @@ EOF
 sec_end
 
 sec_begin '$(lang de:"Momentan verbundene Ger&auml;te" en:"Currently connected devices")'
-USBIP_DEVICES_CONNECTED="$(bind_driver --list | grep -v "^List USB devices$")"
+USBIP_DEVICES_CONNECTED="$(usbip_bind_driver --list | grep -v "^List USB devices$")"
 cat << EOF
 
 <pre class='log'>

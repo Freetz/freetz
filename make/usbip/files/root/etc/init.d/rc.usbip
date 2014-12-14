@@ -9,25 +9,25 @@ share() {
 	local USBIP_BUSID=""
 
 	if [ "$USBIP_ALL" == "yes" ]; then
-		USBIP_BUSID="$USBIP_BUSID $(bind_driver --list | grep -vE " hub$| usb-storage$" | sed -n 's/^ *\([0-9\.-]*\)\:.*/\1/p')"
+		USBIP_BUSID="$USBIP_BUSID $(usbip_bind_driver --list | grep -vE " hub$| usb-storage$" | sed -n 's/^ *\([0-9\.-]*\)\:.*/\1/p')"
 	fi
 
 	if [ "$USBIP_STORAGES" == "yes" ]; then
-		USBIP_BUSID="$USBIP_BUSID $(bind_driver --list | sed -n 's/^ *\([0-9\.-]*\)\:.* usb-storage$/\1/p')"
+		USBIP_BUSID="$USBIP_BUSID $(usbip_bind_driver --list | sed -n 's/^ *\([0-9\.-]*\)\:.* usb-storage$/\1/p')"
 	fi
 
 	if [ "$USBIP_HUBS" == "yes" ]; then
-		USBIP_BUSID="$USBIP_BUSID $(bind_driver --list | sed -n 's/^ *\([0-9\.-]*\)\:.* hub$/\1/p')"
+		USBIP_BUSID="$USBIP_BUSID $(usbip_bind_driver --list | sed -n 's/^ *\([0-9\.-]*\)\:.* hub$/\1/p')"
 	fi
 
 	local USBIP_CUSTOM_CLEANED="$(echo $USBIP_CUSTOM | grep -vE '^ *#|^ *;|^ *$')"
 	for USBIP_CUSTOM_CURRENT in $USBIP_CUSTOM_CLEANED; do
-		USBIP_BUSID="$USBIP_BUSID $(bind_driver --list | grep -i "($USBIP_CUSTOM_CURRENT)$" | sed 's/ - busid //;s/ .*//g')"
+		USBIP_BUSID="$USBIP_BUSID $(usbip_bind_driver --list | grep -i "($USBIP_CUSTOM_CURRENT)$" | sed 's/ - busid //;s/ .*//g')"
 	done
 
 	local USBIP_BUSID="$(echo $USBIP_BUSID | tr ' ' '\n' | sort -u)"
 	for USBIP_BUSID_CURRENT in $USBIP_BUSID; do
-		bind_driver --usbip $USBIP_BUSID_CURRENT >/dev/null 2>&1
+		usbip_bind_driver --usbip $USBIP_BUSID_CURRENT >/dev/null 2>&1
 	done
 }
 

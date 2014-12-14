@@ -1,7 +1,7 @@
 Index: drivers/2.6.21/Makefile
 ===================================================================
---- drivers/2.6.21/Makefile	(Revision 49)
-+++ drivers/2.6.21/Makefile	(Arbeitskopie)
+--- drivers/2.6.21/Makefile
++++ drivers/2.6.21/Makefile
 @@ -38,11 +38,11 @@
  
  usbip_common_mod-objs := usbip_common.o usbip_event.o
@@ -21,7 +21,7 @@ Index: drivers/2.6.21/Makefile
  
  default:
 -	make -C $(KSOURCE) LANG=C KBUILD_VERBOSE=${KBUILD_VERBOSE}  M=`pwd` modules
-+	#make -C $(KSOURCE) LANG=C KBUILD_VERBOSE=${KBUILD_VERBOSE}  M=`pwd` modules
++#	make -C $(KSOURCE) LANG=C KBUILD_VERBOSE=${KBUILD_VERBOSE}  M=`pwd` modules
 +	make -C "$(KSOURCE)" SUBDIRS=`pwd` ARCH="$(ARCH)" CROSS_COMPILE="$(CROSS_COMPILE)" modules
  
  check:
