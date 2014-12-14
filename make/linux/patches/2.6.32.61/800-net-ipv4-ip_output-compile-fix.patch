@@ -1,0 +1,10 @@
+--- linux-2.6.32/net/ipv4/ip_output.c
++++ linux-2.6.32/net/ipv4/ip_output.c
+@@ -81,7 +81,6 @@
+ #include <linux/tcp.h>
+ 
+ #if defined(CONFIG_NF_CONNTRACK) && ( defined(CONFIG_IFX_PPA_API) || defined(CONFIG_IFX_PPA_API_MODULE))
+-IFX_int32_t cpu_port_extended_cfg_get( int fd ) {
+   #include <net/ifx_ppa_api.h>
+ #endif
+ #ifdef  CONFIG_MAPPING
