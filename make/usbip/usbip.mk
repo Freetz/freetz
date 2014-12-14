@@ -2,6 +2,8 @@ $(call PKG_INIT_BIN, 182)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=svn://svn.code.sf.net/p/usbip/code/obsolete/linux/tags/usbip-0.1.8
 
+$(PKG)_CATEGORY:=Unstable
+
 $(PKG)_BINARIES            := usbipd usbip_bind_driver
 $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/cmd/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
