@@ -1,0 +1,183 @@
+#!/bin/sh
+
+DAEMON=ndas
+. /etc/init.d/modlibrc
+
+NDAS_CONF="/mod/etc/ndas.conf"
+NDAS_NAME="ndas-01"
+
+# display a failure message (passed in $1) and exit with return code 1
+die() {
+	echo "failed:$1"
+	exit 1
+}
+
+call_rc_script() {
+	local service="$1"; shift
+	[ -x "/mod/etc/init.d/rc.$service" ] && /mod/etc/init.d/rc.$service "$@"
+}
+
+# return cell value of a tabular organized file
+# $1 - row specifier (usually NDAS name), the 1st cell of the row must exactly match given specifier
+# $2 - column index
+# $3 - input file e.g. /proc/ndas/devs or /proc/modules
+cellValue() {
+	awk '$1 == "'"$1"'" { print $'"$2"' }' $3 2>/dev/null
+}
+
+# override modlib_check_running from modlibrc (this makes it possible to reuse some functions from it, e.g. modlib_status, modlib_start)
+modlib_check_running() {
+	local admin_active=$(cellValue ndas_sal 3 /proc/modules) # obtain number of dependencies of the module ndas_sal
+	[ -z "$admin_active" ] && admin_active=0
+
+	# if number of dependencies is greater than 2 then NDAS is already running, TODO: find a more reliable way to determine it?
+	[ "$admin_active" -gt 2 ] && return 0 # running
+	return 3 # stopped
+}
+
+config() {
+	[ ! -c /dev/ndas ] && mknod -m 644 /dev/ndas c 60 0  # create necessary character/block device nodes
+	[ ! -b /dev/nda  ] && mknod -m 644 /dev/nda  b 60 0  # if these don't exist yet
+
+	# create a block device node for each partition on the network disk
+	partition=1
+	while [ $partition -le "$NDAS_NUMBEROFPARTITIONS" ]; do
+		[ ! -b /dev/nda${partition} ] && mknod -m 644 /dev/nda${partition} b 60 $partition
+		let partition++
+	done
+}
+
+start() {
+	[ -z "$NDAS_ID" ] && die "NDAS Device-ID is missing"
+
+	config
+
+	# load required modules
+	modprobe ndas_sal                                                || die "ndas module ndas_sal could not be loaded"
+	modprobe ndas_core ${NDAS_INTERFACE:+ndas_dev=${NDAS_INTERFACE}} || die "ndas module ndas_core could not be loaded"
+	modprobe ndas_block                                              || die "ndas module ndas_block could not be loaded"
+
+	# start admin if not yet running
+	modlib_check_running || /usr/bin/ndasadmin start
+
+	if [ ! -e "$NDAS_CONF" ]; then
+		# no config file exists => NDAS is not registered yet => register it
+		/usr/bin/ndasadmin register "${NDAS_ID}$([ "$NDAS_ACCESSMODE" == 'w' ] && echo "-${NDAS_WRITEKEY}")" --name "$NDAS_NAME" | sed -n -r -e '/^.+$/ { p; q }'
+		[ -e "$NDAS_CONF" ] || die "NDAS could not be registered"
+	fi
+
+	# give the system some time to found NDAS
+	local count=0
+	while [ "$count" -lt 5 -a "$(tail -1 /proc/ndas/devs 2>/dev/null | awk '{ print $6 }')" == "N/A" ]; do
+		sleep 1
+		let count++
+	done
+
+	local slot_number="$(cellValue "$NDAS_NAME" 7 /proc/ndas/devs)"
+	[ -n "$slot_number" ] || die "NDAS slot number could not be determined"
+
+	# enable the registered netdisk using the slot number
+	/usr/bin/ndasadmin enable -s "$slot_number" -o "$NDAS_ACCESSMODE" 2>&1 | head -n 1
+
+	# TODO: very unreliable code, do it better
+	#       instead of specifying the mound cmd, user should specify the mount point and if necessary the filesystem type
+	#       mount device could and should be determined automatically (/dev/nda$partition)
+	#       any attempts to parse mount parameters should be eliminated
+	local partition=1
+	while [ $partition -le "$NDAS_NUMBEROFPARTITIONS" ]; do  # for each partition determine the device and the mount point from the mount cmd
+		eval ndas_mountcmd=\$NDAS_MOUNTCMD$partition
+		if [ -n "$ndas_mountcmd" ]; then
+			for m in $ndas_mountcmd; do
+				if [ "${m:0:5}" == "/dev/" ]; then
+					local mountdevice=$m
+				fi
+			done
+			local mountpoint=$m
+			[ ! -d $mountpoint ] && mkdir -p $mountpoint
+
+			# TODO: is it a right thing to do? should not we fail instead if the partition is already mounted
+			if ! grep -q "$mountdevice" /proc/mounts; then
+				# TODO: what if the user specified wrong mount cmd?
+				$ndas_mountcmd
+			fi
+		fi
+		let partition++
+	done
+
+	[ "$NDAS_RESTART_SMB" == 'yes' ] && call_rc_script samba restart
+	[ "$NDAS_RESTART_NFS" == 'yes' ] && call_rc_script nfsd restart
+}
+
+stop() {
+	[ "$NDAS_RESTART_SMB" == 'yes' ] && call_rc_script samba stop
+	[ "$NDAS_RESTART_NFS" == 'yes' ] && call_rc_script nfsd stop
+
+	# TODO: rewrite me, s. comment above
+	local partition=1
+	while [ $partition -le "$NDAS_NUMBEROFPARTITIONS" ]; do # for each partition determint the device and unmount the device
+		eval ndas_mountcmd=\$NDAS_MOUNTCMD$partition
+		if [ -n "$ndas_mountcmd" ]; then
+			for i in $ndas_mountcmd; do
+				if [ "${i:0:5}" == "/dev/" ]; then
+					local mountdevice=$i
+				fi
+			done
+			if ! grep -q "$mountdevice" /proc/mounts; then
+				# if mounted, unmount the device
+				umount $mountdevice
+			fi
+		fi
+		let partition++
+	done
+
+	[ "$NDAS_RESTART_SMB" == 'yes' ] && call_rc_script samba start
+	[ "$NDAS_RESTART_NFS" == 'yes' ] && call_rc_script nfsd start
+
+	if [ "$(cat /proc/ndas/devs 2>/dev/null | wc -l)" -ge "2" ]; then
+		local slot_number=$(cellValue "$NDAS_NAME" 7 /proc/ndas/devs)
+		if [ -n "$slot_number" ]; then
+			local diskstatus=$(cellValue "$NDAS_NAME" 6 /proc/ndas/devs)
+			if echo "${diskstatus}" | grep -qiE "^(online|offline|error)$"; then
+				/usr/bin/ndasadmin disable -s "$slot_number"
+			fi
+		fi
+	fi
+
+	#TODO: are the following three lines really necessary?
+	[ -c /dev/ndas ] && /usr/bin/ndasadmin stop                 # if character device exists stop NDAS
+	#TODO: what about other modules?
+	modprobe -r ndas_block                                      # remove ndas_block kernel module
+	[ -e "$NDAS_CONF" -a ! -s "$NDAS_CONF" ] && rm "$NDAS_CONF" # delete the NDAS config file if it has a zero size
+}
+
+case $1 in
+	""|load)
+		modreg cgi 'ndas' 'ndas'
+		modreg daemon ndas
+		modlib_start $NDAS_ENABLED
+		;;
+	unload)
+		modunreg daemon ndas
+		nodunreg cgi 'ndas'
+		stop
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		start
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
