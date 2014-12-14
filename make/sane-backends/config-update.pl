@@ -10,7 +10,7 @@ sub write_config_in {
 menu SANE
 
 config FREETZ_PACKAGE_SANE_BACKENDS
-	bool "SANE $version (unstable)"
+	bool "SANE $version"
 	select FREETZ_PACKAGE_INETD
 	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
 	select FREETZ_LIB_libm
