@@ -61,7 +61,7 @@ choice
 		depends on FREETZ_AVM_GCC_4_7
 
 	config FREETZ_KERNEL_GCC_4_8
-		bool "gcc-4.8.3"
+		bool "gcc-4.8.4"
 		depends on FREETZ_AVM_GCC_4_8
 endchoice
 
@@ -77,7 +77,7 @@ config FREETZ_KERNEL_GCC_VERSION
 	default "3.4.6" if FREETZ_KERNEL_GCC_3_4
 	default "4.6.4" if FREETZ_KERNEL_GCC_4_6
 	default "4.7.4" if FREETZ_KERNEL_GCC_4_7
-	default "4.8.3" if FREETZ_KERNEL_GCC_4_8
+	default "4.8.4" if FREETZ_KERNEL_GCC_4_8
 
 comment "Target toolchain options ----------------------------------"
 choice
@@ -160,7 +160,7 @@ choice
 			|| (FREETZ_AVM_GCC_4_7_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 
 	config FREETZ_TARGET_GCC_4_8
-		bool "gcc-4.8.3"
+		bool "gcc-4.8.4"
 		depends on FREETZ_AVM_GCC_4_8 \
 			|| (FREETZ_AVM_GCC_4_8_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 
@@ -242,7 +242,7 @@ config FREETZ_TARGET_GCC_MINOR_VERSION
 	string
 	default "4"		if FREETZ_TARGET_GCC_4_6
 	default "4"		if FREETZ_TARGET_GCC_4_7
-	default "3"		if FREETZ_TARGET_GCC_4_8
+	default "4"		if FREETZ_TARGET_GCC_4_8
 	default "2"		if FREETZ_TARGET_GCC_4_9
 
 config FREETZ_TARGET_GCC_VERSION
