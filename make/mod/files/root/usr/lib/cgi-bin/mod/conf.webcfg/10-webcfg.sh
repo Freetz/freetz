@@ -21,7 +21,7 @@ cgi_print_textline "httpd_sessiontimeout" "$MOD_HTTPD_SESSIONTIMEOUT" 5 "$(lang 
 
 cat << EOF
 <script >
-var conftext='$(lang de:"Noch in der Erprobung!\nZur Sicherheit sollte ein anderer Zugang zur Box vorhanden sein (telnet/ssh)\nStandard PW ist "freetz"!\n" en:"Still under development!\nPlease make sure, you have an alternate way to access your box (telnet/ssh).\nDefault password is "freetz"!\n")'
+var conftext='$(lang de:"Noch in der Erprobung!\\nZur Sicherheit sollte ein anderer Zugang zur Box vorhanden sein (telnet/ssh).\\nStandard PW ist \"freetz\"!\\n" en:"Still under development!\\nPlease make sure, you have an alternate way to access your box (telnet/ssh).\\nDefault password is \"freetz\"!\\n")'
 var el=document.getElementById('httpd_newlogin_yes');
 var eltime=document.getElementById('httpd_sessiontimeout');
 $([ "$MOD_HTTPD_NEWLOGIN" = yes ] || echo "eltime.disabled = true;")
