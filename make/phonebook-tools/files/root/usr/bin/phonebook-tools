@@ -28,6 +28,7 @@ Usage: ${SELF} [-h|--help] [-b|--book <active|bookid1,bookid2,...|all>] [-m|--me
     -b|--book active|bookid1,bookid2,...|all   phonebooks to export, default: $(default_book)
     -e|--encoding                              include encoding in the header line (tsv,csv only), default: no encoding included
     -i|--internal                              show internal contacts (tsv,csv only), default: do not show them
+    -a|--anonymize                             apply a simple anonymization algorithm to the data, default: disabled
     -m|--method pbd|cat|stdin|-                phonebook retrieval method, default: $(default_retrieval_method)
                                                 * pbd --exportbook <bookid>
                                                 * cat /var/flash/phonebook
@@ -136,6 +137,19 @@ filter_by_book_id() {
 		/^'"$(filter_by_book_id_pattern)"'/ p  # keep all phonebook-lines with id contained in $BOOK
 	}' \
 	| linearize
+}
+
+# prerequisite: input is linearized && whitespace-normalized
+anonymize() {
+	if [ "${ANONYMIZE}" -eq 0 ]; then
+		cat -
+		return
+	fi
+
+	$SED -r -e '{
+		s,(<(realName|number|id|selfId|email|mod_time)( [^>]+)?>)[^<]+(</\2>),\1anonymized\4,g
+		s,(name=")[^"]+("),\1anonymized\2,g
+	}'
 }
 
 unescape_xml_entity_references() {
@@ -377,15 +391,16 @@ retrieve_book_stdin() {
 BOOK=$(default_book)
 INCLUDE_ENCODING=0
 SHOW_INTERNAL=0
+ANONYMIZE=0
 METHOD=$(default_retrieval_method)
 case "${SELF}" in
 	*2tsv|*2csv|*2xml)
 		TO="${SELF:$((${#SELF}-3)):3}"
-		ARGS=$($GETOPT -o hb:eim:   --long help,book:,encoding,internal,method:     -n "${SELF}" -- "$@")
+		ARGS=$($GETOPT -o hb:eiam:   --long help,book:,encoding,internal,anonymize,method:     -n "${SELF}" -- "$@")
 		;;
 	*)
 		TO="tsv"
-		ARGS=$($GETOPT -o hb:eim:t: --long help,book:,encoding,internal,method:,to: -n "${SELF}" -- "$@")
+		ARGS=$($GETOPT -o hb:eiam:t: --long help,book:,encoding,internal,anonymize,method:,to: -n "${SELF}" -- "$@")
 		;;
 esac
 # we assume getopt call is the last command in both case-branches above
@@ -420,6 +435,10 @@ while true; do
 			;;
 		-i|--internal)
 			SHOW_INTERNAL=1
+			shift
+			;;
+		-a|--anonymize)
+			ANONYMIZE=1
 			shift
 			;;
 		-e|--encoding)
@@ -482,7 +501,7 @@ set -o pipefail
 pb_content=$(retrieve_book_${METHOD}) # might fail, thus no direct piping
 rc=$?; [ $rc -ne 0 ] && exit $rc
 
-echo -n "${pb_content}" | $DOS2UNIX | linearize ' ' | normalize_whitespaces | fix_join_effects | remove_unnecessary_var_flash_only_elements | ensure_well_formed_xml | filter_by_book_id | {
+echo -n "${pb_content}" | $DOS2UNIX | linearize ' ' | normalize_whitespaces | fix_join_effects | remove_unnecessary_var_flash_only_elements | ensure_well_formed_xml | filter_by_book_id | anonymize | {
 	case "${TO}" in
 		tsv)
 			to_tsv
