@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$1" = "successfull" ]; then
+if [ "$1" = "successful" ]; then
 . /usr/lib/libmodcgi.sh
 cgi --id=PW_changed
 cgi_begin '$(lang de:"Passwort ge&auml;ndert!" en:"Password changed!")'

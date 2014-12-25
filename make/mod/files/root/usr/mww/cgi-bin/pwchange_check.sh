@@ -14,7 +14,7 @@ if [ "$REMOTE_ADDR" = "$IP" -a  "$oldhash" = "$myhash" ]; then
 	echo "$newhash" > /tmp/flash/mod/webmd5
 	modsave flash > /dev/null 2>&1
 	QUERY_STRING=""
-	. /usr/mww/cgi-bin/pwchange.cgi successfull
+	. /usr/mww/cgi-bin/pwchange.cgi successful
 else
 	WRONGPW=1
 	QUERY_STRING=""
