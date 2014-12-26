@@ -191,11 +191,12 @@ to_tsv() {
 		/^<contact[ >]/ {                                                                   # consider only contact lines
 			'"${filter_internal_contacts_pattern}"'{                                    # filter internal contacts out if necessary
 				s,<(category)/>,<\1></\1>,                                          # transform <category/> to <category></category>
-				s,<([Ii]mageURL|id|selfId|mod_time|uniqueid)>[^<]*</\1>,,g          # remove
+				s,<([Ii]mage[Uu][Rr][Ll]|id|selfId|mod_time|uniqueid)>[^<]*</\1>,,g # remove
 				s,<(services|setup)[^>]*>.*</\1>,,g                                 #        irrelevant
-				s,<([Ii]mageURL|services|setup)/>,,g                                #                   elements
+				s,<([Ii]mage[Uu][Rr][Ll]|services|setup)/>,,g                       #                   elements
 				s,</?(contact|person|telephony)[^>]*>,,g                            #                            and
 				s, (prio|id)="[^"]*",,g                                             #                                attributes
+				s,<number[^>]*/>,,g                                                 # remove number elements with no number
 				s,(type="fax)_(home|work)",\1",g                                    # replace "fax_*" with just "fax" (cosmetic only)
 				p
 			}
