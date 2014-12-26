@@ -196,7 +196,8 @@ to_tsv() {
 				s,<([Ii]mage[Uu][Rr][Ll]|services|setup)/>,,g                       #                   elements
 				s,</?(contact|person|telephony)[^>]*>,,g                            #                            and
 				s, (prio|id)="[^"]*",,g                                             #                                attributes
-				s,<number[^>]*/>,,g                                                 # remove number elements with no number
+				s,<number[^>]*/>,,g                                                 # remove number elements
+				s,<number[^>]*></number>,,g                                         #                        with no number
 				s,(type="fax)_(home|work)",\1",g                                    # replace "fax_*" with just "fax" (cosmetic only)
 				p
 			}
