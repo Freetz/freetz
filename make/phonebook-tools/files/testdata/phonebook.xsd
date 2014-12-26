@@ -22,7 +22,7 @@
 
 	<xsd:simpleType name="TNumberPattern">
 		<xsd:restriction base="xsd:string">
-			<xsd:minLength value="1"/>
+			<xsd:minLength value="0"/>
 			<xsd:pattern value="(([*#][*#0-9]*[*#])?([+]?[0-9]([-0-9]*[0-9])?)?|[0-9]+@hd-telefonie.avm.de)"/>
 		</xsd:restriction>
 	</xsd:simpleType>
@@ -55,8 +55,14 @@
 	<xsd:complexType name="TPerson">
 		<xsd:sequence>
 			<xsd:element name="realName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-			<xsd:element name="ImageURL" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-			<xsd:element name="imageURL" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+				<xsd:choice>
+					<xsd:element name="ImageURL" type="xsd:string"/>
+					<xsd:element name="ImageUrl" type="xsd:string"/>
+					<xsd:element name="imageURL" type="xsd:string"/>
+					<xsd:element name="imageUrl" type="xsd:string"/>
+				</xsd:choice>
+			</xsd:sequence>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -85,7 +91,7 @@
 
 	<xsd:simpleType name="TEmailAddress">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="([a-zA-Z0-9_\-])([a-zA-Z0-9_\-\.]*)@(\[((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}|((([a-zA-Z0-9\-]+)\.)+))([a-zA-Z]{2,}|(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\])"/>
+			<xsd:pattern value="(|([a-zA-Z0-9_\-])([a-zA-Z0-9_\-\.]*)@(\[((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}|((([a-zA-Z0-9\-]+)\.)+))([a-zA-Z]{2,}|(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\]))"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -106,6 +112,15 @@
 		<xsd:attribute name="nid" type="xsd:unsignedLong" use="optional"/>
 	</xsd:complexType>
 
+	<xsd:complexType name="TSetup">
+		<xsd:sequence>
+			<!-- TODO: type is unknown, only empty value has been seen so far -->
+			<xsd:element name="ringTone" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- TODO: type is unknown, only empty value has been seen so far -->
+			<xsd:element name="ringVolume" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
 	<xsd:complexType name="TContact">
 		<xsd:sequence>
 			<xsd:element name="category" type="TThreeValuedBoolean" minOccurs="1" maxOccurs="1"/>
@@ -118,8 +133,7 @@
 
 			<xsd:element name="services" type="TServices" minOccurs="1" maxOccurs="1"/>
 
-			<!-- TODO: type is unknown, only empty value has been seen so far -->
-			<xsd:element name="setup" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="setup" type="TSetup" minOccurs="1" maxOccurs="1"/>
 
 			<xsd:element name="mod_time" type="xsd:unsignedLong" minOccurs="0" maxOccurs="1">
 				<xsd:annotation>
