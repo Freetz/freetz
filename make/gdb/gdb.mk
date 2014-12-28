@@ -89,6 +89,7 @@ $(GDB_HOST_DIR)/.configured: | $(GDB_DIR)/.unpacked
 		--disable-tui \
 		--disable-gdbtk \
 		--disable-werror \
+		--with-system-readline=yes \
 		--without-uiout \
 		--without-x \
 		--without-included-gettext \
