@@ -17,7 +17,7 @@ $(lang de:"Altes Passwort" en:"old password"): <input  type="password" id="old_p
 $(lang de:"Neues Passwort" en:"new password"): <input  type="password" id="inp_pw" maxlength="45">
 $(lang de:"Wiederholung" en:"retype password"): <input  type="password" id="inp_pw2" maxlength="45"><p>
 
-<script>function checkpw(pw1 pw2){
+<script>function checkpw(pw1, pw2){
 var ret=true;
 if ( pw1 != pw2 ){
 	alert( "$(lang de:"PW nicht gleich!" en:"passwords not equal!")");
@@ -31,7 +31,7 @@ return ret;
 }</script>
 
 <input type="button" name="go" value="$(lang de:"&Auml;ndern" en:"Change")"
-      onclick='if (checkpw (document.getElementById("inp_pw").value ; document.getElementById("inp_pw2").value)) {   location.href="/cgi-bin/pwchange.cgi?oldhash="+makemd5(document.getElementById("old_pw").value, challenge)+"&newhash="+md5(document.getElementById("inp_pw").value) ; }'>
+      onclick='if (checkpw (document.getElementById("inp_pw").value , document.getElementById("inp_pw2").value)) {   location.href="/cgi-bin/pwchange.cgi?oldhash="+makemd5(document.getElementById("old_pw").value, challenge)+"&newhash="+md5(document.getElementById("inp_pw").value) ; }'>
 
 EOF
 
