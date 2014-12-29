@@ -97,7 +97,8 @@ $(GDB_HOST_DIR)/.configured: | $(GDB_DIR)/.unpacked
 	touch $@
 
 $(GDB_HOST_BINARY_BUILDDIR): $(GDB_HOST_DIR)/.configured
-	$(MAKE) -C $(GDB_HOST_DIR)
+	$(MAKE) -C $(GDB_HOST_DIR) \
+		MAKEINFO=true
 	strip $(GDB_HOST_BINARY_BUILDDIR)
 
 $(GDB_HOST_BINARY_DESTDIR): $(GDB_HOST_BINARY_BUILDDIR)
