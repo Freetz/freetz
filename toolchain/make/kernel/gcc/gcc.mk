@@ -55,6 +55,7 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_IN
 		--with-gnu-as \
 		--without-headers \
 		--disable-threads \
+		--with-float=soft \
 		$(GCC_KERNEL_DECIMAL_FLOAT) \
 		$(GCC_KERNEL_WITH_HOST_GMP) \
 		$(GCC_KERNEL_WITH_HOST_MPFR) \
