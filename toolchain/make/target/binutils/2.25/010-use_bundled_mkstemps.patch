@@ -1,0 +1,75 @@
+
+mkstemps was added in GLIBC-2.11 (http://sourceware.org/git/?p=glibc.git;a=commitdiff;h=3a83202db6e5591f2b72974c1ad98602c6620770)
+Pretend not to have it (even on systems with GLIBC >= 2.11) and use the bundled version of it instead in order to avoid the dependency on GLIBC-2.11
+
+--- libiberty/configure
++++ libiberty/configure
+@@ -5366,7 +5366,7 @@
+ funcs="$funcs memmove"
+ funcs="$funcs mempcpy"
+ funcs="$funcs memset"
+-funcs="$funcs mkstemps"
++funcs="$funcs mkstemps"; ac_cv_func_mkstemps=no
+ funcs="$funcs putenv"
+ funcs="$funcs random"
+ funcs="$funcs rename"
+--- libiberty/make-temp-file.c
++++ libiberty/make-temp-file.c
+@@ -48,7 +48,7 @@
+ #endif
+ 
+ #include "libiberty.h"
+-extern int mkstemps (char *, int);
++extern int mkstemps_libiberty (char *, int);
+ 
+ /* '/' works just fine on MS-DOS based systems.  */
+ #ifndef DIR_SEPARATOR
+@@ -202,7 +202,7 @@
+   strcpy (temp_filename + base_len, TEMP_FILE);
+   strcpy (temp_filename + base_len + TEMP_FILE_LEN, suffix);
+ 
+-  fd = mkstemps (temp_filename, suffix_len);
++  fd = mkstemps_libiberty (temp_filename, suffix_len);
+   /* Mkstemps failed.  It may be EPERM, ENOSPC etc.  */
+   if (fd == -1)
+     {
+--- libiberty/mkstemps.c
++++ libiberty/mkstemps.c
+@@ -55,7 +55,7 @@
+ 
+ /*
+ 
+-@deftypefn Replacement int mkstemps (char *@var{pattern}, int @var{suffix_len})
++@deftypefn Replacement int mkstemps_libiberty (char *@var{pattern}, int @var{suffix_len})
+ 
+ Generate a unique temporary file name from @var{pattern}.
+ @var{pattern} has the form:
+@@ -75,7 +75,7 @@
+ */
+ 
+ int
+-mkstemps (char *pattern, int suffix_len)
++mkstemps_libiberty (char *pattern, int suffix_len)
+ {
+   static const char letters[]
+     = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+--- libiberty/pex-common.c
++++ libiberty/pex-common.c
+@@ -37,7 +37,7 @@
+ #include <unistd.h>
+ #endif
+ 
+-extern int mkstemps (char *, int);
++extern int mkstemps_libiberty (char *, int);
+ 
+ /* This file contains subroutines for the program execution routines
+    (pex_init, pex_run, etc.).  This file is compiled on all
+@@ -119,7 +119,7 @@
+           else
+             name = concat (obj->tempbase, "XXXXXX", NULL);
+ 
+-          out = mkstemps (name, 0);
++          out = mkstemps_libiberty (name, 0);
+           if (out < 0)
+             {
+               free (name);
