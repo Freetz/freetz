@@ -19,22 +19,35 @@ GCC_BUILD_TARGET_LIBGCC:=y
 
 GCC_STAGING_PREREQ+=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
 
-GCC_COMMON_CONFIGURE_OPTIONS := \
-	--with-gnu-ld \
-	--disable-__cxa_atexit \
-	--disable-libgomp \
-	--disable-libmudflap \
-	--disable-multilib \
-	$(if $(FREETZ_AVM_UCLIBC_NPTL_ENABLED),--enable-tls,--disable-tls) \
-	--disable-fixed-point \
-	--with-float=soft --enable-cxx-flags=-msoft-float --disable-libssp \
-	$(if $(FREETZ_TARGET_ARCH_LE),--with-march=4kc) \
-	$(if $(FREETZ_TARGET_ARCH_BE),--with-march=24kc) \
-	$(DISABLE_NLS) \
-	$(DISABLE_LARGEFILE) \
-	$(QUIET)
+TOOLCHAIN_TARGET_CFLAGS:=$(TARGET_CFLAGS)
 
-TOOLCHAIN_TARGET_CFLAGS:=$(TARGET_CFLAGS) -msoft-float
+GCC_COMMON_CONFIGURE_OPTIONS := --enable-option-checking
+GCC_COMMON_CONFIGURE_OPTIONS += --with-gnu-as
+GCC_COMMON_CONFIGURE_OPTIONS += --with-gnu-ld
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-__cxa_atexit
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-libgomp
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-libmudflap
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-libssp
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-multilib
+GCC_COMMON_CONFIGURE_OPTIONS += $(if $(FREETZ_AVM_UCLIBC_NPTL_ENABLED),--enable-tls,--disable-tls)
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-fixed-point
+GCC_COMMON_CONFIGURE_OPTIONS += --with-float=soft
+
+# it looks like passing this option is unnecessary, we override all necessary CFLAGS/CXXFLAGS and these in turn contain all necessary arch/soft flags.
+# we however do pass a dummy define just in order to be able to check the assumption above, each build-log-line containing the dummy define must also
+# contain all necessary arch/soft flags, i.e.
+#   cat build.log | grep FREETZ_DUMMY_ENABLE_CXX_FLAGS
+#   cat build.log | grep FREETZ_DUMMY_ENABLE_CXX_FLAGS | grep -- "-march"
+# must produce identical output except for the configure output related lines.
+GCC_COMMON_CONFIGURE_OPTIONS += --enable-cxx-flags='-DFREETZ_DUMMY_ENABLE_CXX_FLAGS'
+
+# according to gcc documentation there is no such parameter '--with-march', there is '--with-arch' but no '--with-March', so passing this option has no effect.
+#GCC_COMMON_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_ARCH_LE),--with-march=4kc)
+#GCC_COMMON_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_ARCH_BE),--with-march=24kc)
+
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-nls
+GCC_COMMON_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
+GCC_COMMON_CONFIGURE_OPTIONS += $(QUIET)
 
 ifneq ($(strip $(FREETZ_TARGET_TOOLCHAIN_AVM_COMPATIBLE)),y)
 # enable non-PIC for mips* targets

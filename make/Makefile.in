@@ -47,6 +47,7 @@ CFLAGS_MARCH:=-march=24kc
 else
 CFLAGS_MARCH:=-march=4kc
 endif
+CFLAGS_MARCH+=-msoft-float -Wa,-msoft-float
 
 FPIC:=-fPIC
 
@@ -54,8 +55,8 @@ TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
 KERNEL_ARCH:=mips
 KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
 
-ifneq ($(filter -march=% -mcpu=% -mtune=%,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
-$(error Please remove any CPU and architecture related flags (-march/-mcpu/-mtune) \
+ifneq ($(filter -march=% -mcpu=% -mtune=% -m%-float,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
+$(error Please remove any CPU and architecture related flags (-march/-mcpu/-mtune/-m*-float) \
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
 	These flags are automatically set by freetz build environment now)
 endif

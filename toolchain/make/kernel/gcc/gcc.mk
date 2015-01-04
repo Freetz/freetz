@@ -43,6 +43,7 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_IN
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		CXXFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		$(GCC_KERNEL_DIR)/configure \
+		--enable-option-checking \
 		--prefix=$(KERNEL_TOOLCHAIN_STAGING_DIR) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
@@ -51,8 +52,8 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_IN
 		--disable-shared \
 		--with-newlib \
 		--disable-libssp \
-		--with-gnu-ld \
 		--with-gnu-as \
+		--with-gnu-ld \
 		--without-headers \
 		--disable-threads \
 		--with-float=soft \

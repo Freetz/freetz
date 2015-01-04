@@ -1,0 +1,11 @@
+--- Rules.mak
++++ Rules.mak
+@@ -279,7 +279,7 @@
+ ifneq ($(TARGET_ARCH),nios2)
+ ifneq ($(TARGET_ARCH),sh)
+ ifneq ($(TARGET_ARCH),c6x)
+-CPU_CFLAGS-y += -msoft-float
++CPU_CFLAGS-y += -msoft-float -Wa,-msoft-float
+ endif
+ endif
+ endif
