@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.7.8)
+$(call PKG_INIT_BIN, 2.7.9)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=d235bdfa75b8396942e360a70487ee00
+$(PKG)_SOURCE_MD5:=38d530f7efc373d64a8fb1637e3baaa7
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
@@ -21,7 +21,7 @@ include $(MAKE_DIR)/python/python-filelists.mk.in
 
 $(PKG)_MODULES_ALL := \
 	audiodev audioop bsddb cmath cprofile crypt csv ctypes curses \
-	eastern_codecs elementtree grp hotshot json \
+	eastern_codecs elementtree ensurepip grp hotshot json \
 	mmap multiprocessing readline spwd sqlite ssl \
 	syslog termios test unicodedata unittest wsgiref
 $(PKG)_MODULES_SELECTED := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)

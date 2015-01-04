@@ -139,6 +139,15 @@ usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-dynload/_elementtree.so
 usr/lib/python$(PYTHON_MAJOR_VERSION)/xml/etree/*.py*
 endef
 
+define PyMod/ensurepip/dirs
+usr/lib/python$(PYTHON_MAJOR_VERSION)/ensurepip
+usr/lib/python$(PYTHON_MAJOR_VERSION)/ensurepip/_bundled
+endef
+define PyMod/ensurepip/files
+usr/lib/python$(PYTHON_MAJOR_VERSION)/ensurepip/*.py*
+usr/lib/python$(PYTHON_MAJOR_VERSION)/ensurepip/_bundled/*.whl
+endef
+
 define PyMod/grp/files
 usr/lib/python$(PYTHON_MAJOR_VERSION)/lib-dynload/grp.so
 endef
