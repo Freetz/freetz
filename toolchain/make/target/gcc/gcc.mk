@@ -32,15 +32,6 @@ GCC_COMMON_CONFIGURE_OPTIONS += --disable-multilib
 GCC_COMMON_CONFIGURE_OPTIONS += $(if $(FREETZ_AVM_UCLIBC_NPTL_ENABLED),--enable-tls,--disable-tls)
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-fixed-point
 GCC_COMMON_CONFIGURE_OPTIONS += --with-float=soft
-
-# it looks like passing this option is unnecessary, we override all necessary CFLAGS/CXXFLAGS and these in turn contain all necessary arch/soft flags.
-# we however do pass a dummy define just in order to be able to check the assumption above, each build-log-line containing the dummy define must also
-# contain all necessary arch/soft flags, i.e.
-#   cat build.log | grep FREETZ_DUMMY_ENABLE_CXX_FLAGS
-#   cat build.log | grep FREETZ_DUMMY_ENABLE_CXX_FLAGS | grep -- "-march"
-# must produce identical output except for the configure output related lines.
-GCC_COMMON_CONFIGURE_OPTIONS += --enable-cxx-flags='-DFREETZ_DUMMY_ENABLE_CXX_FLAGS'
-
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-nls
 GCC_COMMON_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
 GCC_COMMON_CONFIGURE_OPTIONS += $(QUIET)
