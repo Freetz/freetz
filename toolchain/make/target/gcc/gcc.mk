@@ -41,10 +41,6 @@ GCC_COMMON_CONFIGURE_OPTIONS += --with-float=soft
 # must produce identical output except for the configure output related lines.
 GCC_COMMON_CONFIGURE_OPTIONS += --enable-cxx-flags='-DFREETZ_DUMMY_ENABLE_CXX_FLAGS'
 
-# according to gcc documentation there is no such parameter '--with-march', there is '--with-arch' but no '--with-March', so passing this option has no effect.
-#GCC_COMMON_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_ARCH_LE),--with-march=4kc)
-#GCC_COMMON_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_ARCH_BE),--with-march=24kc)
-
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-nls
 GCC_COMMON_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
 GCC_COMMON_CONFIGURE_OPTIONS += $(QUIET)
