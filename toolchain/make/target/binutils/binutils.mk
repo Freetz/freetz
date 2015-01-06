@@ -41,7 +41,6 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked
 		--target=$(REAL_GNU_TARGET_NAME) \
 		--disable-multilib \
 		--disable-libssp \
-		--enable-softfloat \
 		$(DISABLE_NLS) \
 		--disable-werror \
 		$(QUIET) \
