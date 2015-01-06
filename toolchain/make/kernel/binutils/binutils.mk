@@ -37,6 +37,7 @@ $(BINUTILS_KERNEL_DIR1)/.configured: $(BINUTILS_KERNEL_DIR)/.unpacked
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(REAL_GNU_KERNEL_NAME) \
+		--disable-multilib \
 		--enable-softfloat \
 		$(DISABLE_NLS) \
 		--disable-werror \
