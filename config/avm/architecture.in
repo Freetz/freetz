@@ -61,8 +61,7 @@ config FREETZ_TARGET_ARCH
 
 config FREETZ_TARGET_CROSS
 	string
-	default "mips-linux-uclibc-" if FREETZ_TARGET_ARCH_BE
-	default "mipsel-linux-uclibc-" if FREETZ_TARGET_ARCH_LE
+	default "${FREETZ_TARGET_ARCH}-linux-uclibc-"
 
 config FREETZ_TARGET_MAKE_PATH
 	string
@@ -70,8 +69,7 @@ config FREETZ_TARGET_MAKE_PATH
 
 config FREETZ_KERNEL_CROSS
 	string
-	default "mips-unknown-linux-gnu-" if FREETZ_TARGET_ARCH_BE
-	default "mipsel-unknown-linux-gnu-" if FREETZ_TARGET_ARCH_LE
+	default "${FREETZ_TARGET_ARCH}-unknown-linux-gnu-"
 
 config FREETZ_KERNEL_MAKE_PATH
 	string
