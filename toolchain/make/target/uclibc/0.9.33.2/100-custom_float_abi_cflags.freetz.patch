@@ -5,7 +5,7 @@
  ifneq ($(TARGET_ARCH),sh)
  ifneq ($(TARGET_ARCH),c6x)
 -CPU_CFLAGS-y += -msoft-float
-+CPU_CFLAGS-y += -msoft-float -Wa,-msoft-float
++CPU_CFLAGS-y += $(if $(strip $(CUSTOM_FLOAT_ABI_CFLAGS)),$(strip $(CUSTOM_FLOAT_ABI_CFLAGS)),-msoft-float)
  endif
  endif
  endif

@@ -1,0 +1,17 @@
+config FREETZ_GCC_ABI
+	string
+	default "32"
+
+config FREETZ_GCC_ARCH
+	string
+	default "mips32"   if FREETZ_TARGET_ARCH_LE
+	default "mips32r2" if FREETZ_TARGET_ARCH_BE
+
+config FREETZ_GCC_TUNE
+	string
+	default "4kc"      if FREETZ_TARGET_ARCH_LE
+	default "24kc"     if FREETZ_TARGET_ARCH_BE
+
+config FREETZ_GCC_FLOAT_ABI
+	string
+	default "soft"

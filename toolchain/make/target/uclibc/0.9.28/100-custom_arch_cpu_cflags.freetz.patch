@@ -1,0 +1,20 @@
+--- Rules.mak
++++ Rules.mak
+@@ -162,6 +162,9 @@
+ endif
+ 
+ ifeq ($(strip $(TARGET_ARCH)),mips)
++ifneq ($(strip $(CUSTOM_ARCH_CPU_CFLAGS)),)
++	CPU_CFLAGS-y+=$(strip $(CUSTOM_ARCH_CPU_CFLAGS))
++else
+ 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_1)+=-mips1
+ 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_2)+=-mips2 -mtune=mips2
+ 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_3)+=-mips3 -mtune=mips3
+@@ -169,6 +172,7 @@
+ 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS32)+=-mips32 -mtune=mips32
+ 	CPU_CFLAGS-$(CONFIG_MIPS_ISA_MIPS64)+=-mips64 -mtune=mips32
+ endif
++endif
+ 
+ ifeq ($(strip $(TARGET_ARCH)),sh)
+ 	OPTIMIZATION+=-fstrict-aliasing
