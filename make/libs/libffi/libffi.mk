@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 3.1)
-$(PKG)_LIB_VERSION:=6.0.2
+$(call PKG_INIT_LIB, 3.2.1)
+$(PKG)_LIB_VERSION:=6.0.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=f5898b29bbfd70502831a212d9249d10
+$(PKG)_SOURCE_MD5:=83b89587607e3eb65c70d361f13bab43
 $(PKG)_SITE:=ftp://sourceware.org/pub/libffi
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(TARGET_ARCH)-unknown-linux-gnu/.libs/libffi.so.$($(PKG)_LIB_VERSION)
