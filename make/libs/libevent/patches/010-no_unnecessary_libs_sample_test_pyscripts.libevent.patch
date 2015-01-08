@@ -1,6 +1,6 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -510,7 +510,7 @@
+@@ -513,7 +513,7 @@
  # series won't be binary-compatible.
  @INSTALL_LIBEVENT_TRUE@dist_bin_SCRIPTS = event_rpcgen.py
  pkgconfigdir = $(libdir)/pkgconfig
@@ -9,7 +9,7 @@
  
  # These sources are conditionally added by configure.in or conditionally
  # included from other files.
-@@ -529,12 +529,11 @@
+@@ -532,12 +532,11 @@
  	Makefile.nmake test/Makefile.nmake \
  	$(PLATFORM_DEPENDENT_SRC)
  
@@ -24,12 +24,12 @@
  @BUILD_WIN32_FALSE@SYS_LIBS = 
  @BUILD_WIN32_TRUE@SYS_LIBS = -lws2_32 -lshell32 -ladvapi32
  @BUILD_WIN32_FALSE@SYS_SRC = $(am__append_5) $(am__append_6) \
-@@ -1241,7 +1240,7 @@
+@@ -1243,7 +1242,7 @@
  
  install-dvi-am:
  
 -install-exec-am: install-dist_binSCRIPTS install-libLTLIBRARIES
-+install-exec-am: install-libLTLIBRARIES
++install-exec-am:                         install-libLTLIBRARIES
  
  install-html: install-html-recursive
  
