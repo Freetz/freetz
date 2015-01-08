@@ -1,8 +1,9 @@
-$(call PKG_INIT_BIN, 1.8.12)
-$(PKG)_LIB_VERSION:=3.8.9
+$(call PKG_INIT_BIN, 1.8.14)
+$(PKG)_LIB_VERSION:=3.8.10
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0ca23fc84c09cb3d29b9c27811ff4475
+$(PKG)_SOURCE_MD5:=dfb810eda8780cf9debf7169b3ca5fe1
 $(PKG)_SITE:=http://$(pkg).freedesktop.org/releases/$(pkg)
+
 $(PKG)_STARTLEVEL=90 # before avahi
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/bus/dbus-daemon
