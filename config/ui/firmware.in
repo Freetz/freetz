@@ -327,6 +327,16 @@ endchoice # "Firmware version" #
 comment "WARNING: VULNERABLE FIRMWARE - USE AT YOUR OWN RISK"
 	depends on FREETZ_TYPE_FIRMWARE_VULNERABLE
 
+if FREETZ_SUPPORT_UNSTABLE
+comment "WARNING: Freetz support is UNSTABLE - not suitable for production use"
+comment "WARNING: see http://freetz.org/ticket/2499 for details
+endif
+
+config FREETZ_SUPPORT_UNSTABLE
+	bool
+	default y if FREETZ_AVM_VERSION_06_2X
+	default n
+
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
 	default y
