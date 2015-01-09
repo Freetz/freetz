@@ -1,24 +1,33 @@
 --- Makefile.org
 +++ Makefile.org
-@@ -273,21 +273,21 @@
- build_libs: build_crypto build_ssl build_engines
+@@ -326,7 +326,7 @@
+ build_libs: build_crypto build_fips build_ssl build_shared build_engines
  
  build_crypto:
--	@dir=crypto; target=all; $(BUILD_ONE_CMD)
-+	@+dir=crypto; target=all; $(BUILD_ONE_CMD)
- build_ssl:
+-	if [ -n "$(FIPSCANLIB)" ]; then \
++	+if [ -n "$(FIPSCANLIB)" ]; then \
+ 		EXCL_OBJ='$(AES_ASM_OBJ) $(BN_ASM) $(DES_ENC) $(CPUID_OBJ) $(SHA1_ASM_OBJ) $(FIPS_EX_OBJ)' ; export EXCL_OBJ ; \
+ 		ARX='$(PERL) $${TOP}/util/arx.pl $(AR)' ; \
+ 	else \
+@@ -334,21 +334,21 @@
+ 	fi ; export ARX ; \
+ 		dir=crypto; target=all; $(BUILD_ONE_CMD)
+ build_fips:
+-	@dir=fips; target=all; [ -z "$(FIPSCANLIB)" ] || $(BUILD_ONE_CMD)
++	@+dir=fips; target=all; [ -z "$(FIPSCANLIB)" ] || $(BUILD_ONE_CMD)
+ build_ssl: build_crypto
 -	@dir=ssl; target=all; $(BUILD_ONE_CMD)
 +	@+dir=ssl; target=all; $(BUILD_ONE_CMD)
- build_engines:
+ build_engines: build_crypto
 -	@dir=engines; target=all; $(BUILD_ONE_CMD)
 +	@+dir=engines; target=all; $(BUILD_ONE_CMD)
- build_apps:
+ build_apps: build_libs
 -	@dir=apps; target=all; $(BUILD_ONE_CMD)
 +	@+dir=apps; target=all; $(BUILD_ONE_CMD)
- build_tests:
+ build_tests: build_libs
 -	@dir=test; target=all; $(BUILD_ONE_CMD)
 +	@+dir=test; target=all; $(BUILD_ONE_CMD)
- build_tools:
+ build_tools: build_libs
 -	@dir=tools; target=all; $(BUILD_ONE_CMD)
 +	@+dir=tools; target=all; $(BUILD_ONE_CMD)
  
@@ -27,9 +36,18 @@
 -	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
 +	@+dir=crypto; target=testapps; $(BUILD_ONE_CMD)
  
- fips_premain_dso$(EXE_EXT): libcrypto.a
- 	[ -z "$(FIPSCANLIB)" ] || $(CC) $(CFLAG) -Iinclude \
-@@ -407,7 +407,7 @@
+ build_shared:	$(SHARED_LIBS)
+ libcrypto$(SHLIB_EXT): libcrypto.a $(SHARED_FIPS)
+@@ -395,7 +395,7 @@
+ 	fi
+ 
+ libfips.a:
+-	dir=fips; target=all; $(BUILD_ONE_CMD)
++	+dir=fips; target=all; $(BUILD_ONE_CMD)
+ 
+ clean-shared:
+ 	@set -e; for i in $(SHLIBDIRS); do \
+@@ -484,7 +484,7 @@
  
  clean:	libclean
  	rm -f shlib/*.o *.o core a.out fluff rehash.time testlog make.log cctest cctest.c
@@ -38,7 +56,7 @@
  	rm -f $(LIBS)
  	rm -f openssl.pc libssl.pc libcrypto.pc
  	rm -f speed.* .pure
-@@ -423,12 +423,12 @@
+@@ -500,12 +500,12 @@
  
  files:
  	$(PERL) $(TOP)/util/files.pl Makefile > $(TOP)/MINFO
@@ -50,19 +68,19 @@
  	@$(PERL) $(TOP)/util/mklink.pl include/openssl $(EXHEADER)
 -	@set -e; target=links; $(RECURSIVE_BUILD_CMD)
 +	@+set -e; target=links; $(RECURSIVE_BUILD_CMD)
- 
- gentests:
- 	@(cd test && echo "generating dummy tests (if needed)..." && \
-@@ -436,7 +436,7 @@
+ 	@if [ -z "$(FIPSCANLIB)" ]; then \
+ 		set -e; target=links; dir=fips ; $(BUILD_CMD) ; \
+ 	fi
+@@ -516,7 +516,7 @@
  
  dclean:
- 	rm -rf *.bak include/openssl certs/.0
+ 	rm -f *.bak
 -	@set -e; target=dclean; $(RECURSIVE_BUILD_CMD)
 +	@+set -e; target=dclean; $(RECURSIVE_BUILD_CMD)
  
  rehash: rehash.time
  rehash.time: certs apps
-@@ -460,10 +460,10 @@
+@@ -539,10 +539,10 @@
  	@$(PERL) util/selftest.pl
  
  depend:
@@ -75,18 +93,18 @@
  
  tags:
  	rm -f TAGS
-@@ -554,7 +554,7 @@
+@@ -631,7 +631,7 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;
 -	@set -e; target=install; $(RECURSIVE_BUILD_CMD)
 +	@+set -e; target=install; $(RECURSIVE_BUILD_CMD)
- 	@set -e; liblist="$(LIBS)"; for i in $$liblist ;\
+ 	@set -e; for i in $(LIBS) ;\
  	do \
  		if [ -f "$$i" ]; then \
 --- crypto/Makefile
 +++ crypto/Makefile
-@@ -90,17 +90,17 @@
+@@ -84,17 +84,17 @@
  	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
  
  subdirs:
@@ -105,9 +123,9 @@
 -	@target=links; $(RECURSIVE_MAKE)
 +	@+target=links; $(RECURSIVE_MAKE)
  
- # lib: $(LIB): are splitted to avoid end-less loop
- lib:	$(LIB)
-@@ -116,7 +116,7 @@
+ # lib: and $(LIB): are splitted to avoid end-less loop
+ lib:	buildinf.h $(LIB) subdirs
+@@ -109,7 +109,7 @@
  	fi
  
  libs:
@@ -116,7 +134,7 @@
  
  install:
  	@[ -n "$(INSTALLTOP)" ] # should be set by top Makefile...
-@@ -125,27 +125,27 @@
+@@ -118,26 +118,26 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;
@@ -143,18 +161,17 @@
  dclean:
  	$(PERL) -pe 'if (/^# DO NOT DELETE THIS LINE/) {print; exit(0);}' $(MAKEFILE) >Makefile.new
  	mv -f Makefile.new $(MAKEFILE)
- 	rm -f opensslconf.h
 -	@target=dclean; $(RECURSIVE_MAKE)
 +	@+target=dclean; $(RECURSIVE_MAKE)
  
  # DO NOT DELETE THIS LINE -- make depend depends on it.
  
---- engines/Makefile
-+++ engines/Makefile
-@@ -89,14 +89,14 @@
+--- fips/Makefile
++++ fips/Makefile
+@@ -130,16 +130,16 @@
+ 	fi
  
  subdirs:
- 	echo $(EDIRS)
 -	@target=all; $(RECURSIVE_MAKE)
 +	@+target=all; $(RECURSIVE_MAKE)
  
@@ -164,45 +181,59 @@
 +	@+target=files; $(RECURSIVE_MAKE)
  
  links:
+ 	@$(PERL) $(TOP)/util/mklink.pl ../include/openssl $(EXHEADER)
+ 	@$(PERL) $(TOP)/util/mklink.pl ../test $(TEST)
 -	@target=links; $(RECURSIVE_MAKE)
 +	@+target=links; $(RECURSIVE_MAKE)
  
- # XXXXX This currently only works on systems that use .so as suffix
- # for shared libraries as well as for Cygwin which uses the
-@@ -128,7 +128,7 @@
- 			  mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/engines/$$pfx$$l$$sfx.new $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/engines/$$pfx$$l$$sfx ); \
- 		done; \
- 	fi
+ # lib: and $(LIB): are splitted to avoid end-less loop
+ lib:	$(LIB)
+@@ -162,10 +162,10 @@
+ shared:	lib subdirs fips_premain_dso$(EXE_EXT)
+ 
+ libs:
+-	@target=lib; $(RECURSIVE_MAKE)
++	@+target=lib; $(RECURSIVE_MAKE)
+ 
+ fips_test: top
+-	@target=fips_test; $(RECURSIVE_MAKE)
++	@+target=fips_test; $(RECURSIVE_MAKE)
+ 
+ fips_test_diff:
+ 	@if diff -b -B -I '^\#' -cr -X fips-nodiff.txt $(FIPS_TVDIR) $(FIPS_TVOK) ; then \
+@@ -182,7 +182,7 @@
+ 	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
+ 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
+ 	done;
 -	@target=install; $(RECURSIVE_MAKE)
 +	@+target=install; $(RECURSIVE_MAKE)
- 
- tags:
- 	ctags $(SRC)
-@@ -144,23 +144,23 @@
+ 	for i in $(EXE) ; \
+ 	do \
+ 		echo "installing $$i"; \
+@@ -196,22 +196,22 @@
+ 	chmod 0444 $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/fips*
  
  lint:
- 	lint -DLINT $(INCLUDES) $(SRC)>fluff
 -	@target=lint; $(RECURSIVE_MAKE)
 +	@+target=lint; $(RECURSIVE_MAKE)
  
  depend:
- 	@if [ -z "$(THIS)" ]; then \
- 	    $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; \
- 	fi
- 	@[ -z "$(THIS)" ] || $(MAKEDEPEND) -- $(CFLAG) $(INCLUDES) $(DEPFLAG) -- $(PROGS) $(LIBSRC)
+ 	@[ -z "$(THIS)" ] || $(MAKEDEPEND) -- $(CFLAG) $(INCLUDE) $(DEPFLAG) -- $(PROGS) $(LIBSRC)
 -	@[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
 +	@+[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+ 
+ clean:
+ 	rm -f fipscanister.o.sha1 fips_premain_dso$(EXE_EXT) fips_standalone_sha1$(EXE_EXT) \
+ 		*.s *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
+-	@target=clean; $(RECURSIVE_MAKE)
++	@+target=clean; $(RECURSIVE_MAKE)
  
  dclean:
  	$(PERL) -pe 'if (/^# DO NOT DELETE THIS LINE/) {print; exit(0);}' $(MAKEFILE) >Makefile.new
  	mv -f Makefile.new $(MAKEFILE)
 -	@target=dclean; $(RECURSIVE_MAKE)
 +	@+target=dclean; $(RECURSIVE_MAKE)
- 
- clean:
- 	rm -f *.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
--	@target=clean; $(RECURSIVE_MAKE)
-+	@+target=clean; $(RECURSIVE_MAKE)
  
  # DO NOT DELETE THIS LINE -- make depend depends on it.
  
