@@ -122,7 +122,7 @@ stop() {
 					local mountdevice=$i
 				fi
 			done
-			if ! grep -q "$mountdevice" /proc/mounts; then
+			if grep -q "$mountdevice" /proc/mounts; then
 				# if mounted, unmount the device
 				umount $mountdevice
 			fi
@@ -158,7 +158,7 @@ case $1 in
 		;;
 	unload)
 		modunreg daemon ndas
-		nodunreg cgi 'ndas'
+		modunreg cgi 'ndas'
 		stop
 		;;
 	start)
