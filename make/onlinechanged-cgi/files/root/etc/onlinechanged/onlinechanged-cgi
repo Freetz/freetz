@@ -1,9 +1,0 @@
-#!/bin/sh
-DAEMON=onlinechanged-cgi
-[ ! -f /tmp/flash/$DAEMON ] && exit 0
-
-case "$1" in
-	online|offline)
-		sh /tmp/flash/$DAEMON $1
-		;;
-esac

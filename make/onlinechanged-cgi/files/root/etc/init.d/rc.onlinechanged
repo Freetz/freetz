@@ -3,14 +3,18 @@
 DAEMON=onlinechanged
 . /etc/init.d/modlibrc
 
+DAEMON_CONFIG=/tmp/flash/$DAEMON/$DAEMON-cgi
+
 case $1 in
 	""|load)
 		modreg file onlinechanged conf 'Onlinechanged' 0 "onlinechanged"
 		modreg daemon --hide onlinechanged
 
 		echo -n 'Setting up onlinechanged scripting ... '
-		[ ! -f /tmp/flash/$DAEMON-cgi ] && cp /mod/etc/default.$DAEMON/$DAEMON-cgi /tmp/flash/
-		sh /tmp/flash/$DAEMON-cgi start
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ -r /tmp/flash/$DAEMON-cgi ] && mv /tmp/flash/$DAEMON-cgi $DAEMON_CONFIG
+		[ ! -e "$DAEMON_CONFIG" ] && cat /mod/etc/default.$DAEMON/$DAEMON-cgi > $DAEMON_CONFIG
+		sh /tmp/flash/$DAEMON/$DAEMON-cgi start
 		echo 'done.'
 		;;
 	unload)
