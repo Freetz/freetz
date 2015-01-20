@@ -1,11 +1,16 @@
 --- configure
 +++ configure
-@@ -23490,7 +23490,7 @@
+@@ -19870,12 +19870,10 @@
+ 
+ if test "x$debug" = xtrue; then
+ 	CPPFLAGS="-DDEBUG $CPPFLAGS"
+-	CFLAGS=$(echo "$CFLAGS" | sed 's/-g//')
+ 	CFLAGS="-g $CFLAGS"
+ else
  	CPPFLAGS="-DNDEBUG $CPPFLAGS"
- 	if test "x$GCC" = xyes; then
- 		CPPFLAGS="-DFLaC__INLINE=__inline__ $CPPFLAGS"
--		CFLAGS="-O3 -funroll-loops -finline-functions -Wall -W -Winline $CFLAGS"
-+		CFLAGS="-Wall -W $CFLAGS"
- 	fi
+-	CFLAGS=$(echo "$CFLAGS" | sed 's/-O2//;s/-g//')
+-	CFLAGS="-O3 -funroll-loops $CFLAGS"
++	CFLAGS="$CFLAGS"
  fi
+ 
  

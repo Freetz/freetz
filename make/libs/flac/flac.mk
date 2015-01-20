@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.2.1)
-$(PKG)_LIB_VERSION:=8.2.0
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=153c8b15a54da428d1f0fadc756c22c7
-$(PKG)_SITE:=@SF/flac
+$(call PKG_INIT_LIB, 1.3.1)
+$(PKG)_LIB_VERSION:=8.3.0
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=b9922c9a0378c88d3e901b234f852698
+$(PKG)_SITE:=http://downloads.xiph.org/releases/flac
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libFLAC/.libs/libFLAC.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libFLAC.so.$($(PKG)_LIB_VERSION)
@@ -21,6 +21,14 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-ogg
 $(PKG)_CONFIGURE_OPTIONS += --disable-oggtest
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --disable-stack-smash-protection
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,c_inline)
+$(PKG)_CONFIGURE_ENV += $(pkg)_c_inline=no
+
+# don't cache and don't use cached values for ac_cv_c_bswap16 and ac_cv_c_bswap32
+# when cached values are used HAVE_BSWAP16 and HAVE_BSWAP32 are not defined (configure test bug)
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,c_bswap16 c_bswap32)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

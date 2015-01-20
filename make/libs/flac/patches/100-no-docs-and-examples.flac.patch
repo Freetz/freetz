@@ -1,73 +1,67 @@
 --- Makefile.am
 +++ Makefile.am
-@@ -30,7 +30,7 @@
+@@ -31,7 +31,7 @@
  
- AUTOMAKE_OPTIONS = foreign 1.7
+ ACLOCAL_AMFLAGS = -I m4
  
--SUBDIRS = doc include m4 man src examples test build obj
-+SUBDIRS = include src build obj
- 
- DISTCLEANFILES = libtool-disable-static
- 
---- Makefile.in
-+++ Makefile.in
-@@ -234,7 +234,7 @@ target_alias = @target_alias@
- 
- AUTOMAKE_OPTIONS = foreign 1.7
- 
--SUBDIRS = doc include m4 man src examples test build obj
-+SUBDIRS = include src build obj
- 
- DISTCLEANFILES = libtool-disable-static
- 
---- src/Makefile.am
-+++ src/Makefile.am
-@@ -30,12 +30,6 @@ SUBDIRS = \
- 	metaflac \
- 	monkeys_audio_utilities \
- 	$(XMMS_DIRS) \
--	plugin_winamp2 \
--	test_grabbag \
--	test_libs_common \
--	test_libFLAC \
--	test_seeking \
--	test_streams \
- 	$(CPPLIBS_DIRS)
+-SUBDIRS = doc include m4 man src examples test build objs
++SUBDIRS =     include        src               build objs
  
  EXTRA_DIST = \
---- src/Makefile.in
-+++ src/Makefile.in
-@@ -221,7 +221,7 @@ target_alias = @target_alias@
+ 	COPYING.FDL \
+--- Makefile.in
++++ Makefile.in
+@@ -382,7 +382,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ ACLOCAL_AMFLAGS = -I m4
+-SUBDIRS = doc include m4 man src examples test build objs
++SUBDIRS =     include        src               build objs
+ EXTRA_DIST = \
+ 	COPYING.FDL \
+ 	COPYING.GPL \
+--- src/Makefile.am
++++ src/Makefile.am
+@@ -21,7 +21,7 @@
+ endif
  
- @FLaC__HAS_XMMS_TRUE@XMMS_DIRS = plugin_common plugin_xmms
- 
--@FLaC__WITH_CPPLIBS_TRUE@CPPLIBS_DIRS = libFLAC++ test_libFLAC++
-+@FLaC__WITH_CPPLIBS_TRUE@CPPLIBS_DIRS = libFLAC++
+ if FLaC__WITH_CPPLIBS
+-CPPLIBS_DIRS = libFLAC++ test_libFLAC++
++CPPLIBS_DIRS = libFLAC++
+ endif
  
  SUBDIRS = \
- 	libFLAC \
-@@ -230,12 +230,6 @@ SUBDIRS = \
+@@ -30,11 +30,6 @@
+ 	flac \
  	metaflac \
- 	monkeys_audio_utilities \
  	$(XMMS_DIRS) \
--	plugin_winamp2 \
 -	test_grabbag \
 -	test_libs_common \
 -	test_libFLAC \
 -	test_seeking \
 -	test_streams \
+ 	utils \
  	$(CPPLIBS_DIRS)
  
+--- src/Makefile.in
++++ src/Makefile.in
+@@ -347,18 +347,13 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ @FLaC__HAS_XMMS_TRUE@XMMS_DIRS = plugin_common plugin_xmms
+-@FLaC__WITH_CPPLIBS_TRUE@CPPLIBS_DIRS = libFLAC++ test_libFLAC++
++@FLaC__WITH_CPPLIBS_TRUE@CPPLIBS_DIRS = libFLAC++
+ SUBDIRS = \
+ 	share \
+ 	libFLAC \
+ 	flac \
+ 	metaflac \
+ 	$(XMMS_DIRS) \
+-	test_grabbag \
+-	test_libs_common \
+-	test_libFLAC \
+-	test_seeking \
+-	test_streams \
+ 	utils \
+ 	$(CPPLIBS_DIRS)
  
-@@ -256,9 +250,8 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
- 	check-recursive installcheck-recursive
- DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
- DIST_SUBDIRS = libFLAC share flac metaflac monkeys_audio_utilities \
--	plugin_common plugin_xmms plugin_winamp2 test_grabbag \
--	test_libs_common test_libFLAC test_seeking test_streams \
--	libFLAC++ test_libFLAC++
-+	plugin_common plugin_xmms plugin_winamp2 \
-+	libFLAC++
- all: all-recursive
- 
- .SUFFIXES:
