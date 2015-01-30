@@ -17,6 +17,7 @@
 			<xsd:enumeration value="fax_work"/>
 			<xsd:enumeration value="memo"/>
 			<xsd:enumeration value="intern"/>
+			<xsd:enumeration value="label:Andere"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -52,16 +53,23 @@
 		</xsd:simpleContent>
 	</xsd:complexType>
 
+	<xsd:group name="GImageURL">
+		<xsd:choice>
+			<xsd:element name="ImageURL" type="xsd:string"/>
+			<xsd:element name="ImageUrl" type="xsd:string"/>
+			<xsd:element name="imageURL" type="xsd:string"/>
+			<xsd:element name="imageUrl" type="xsd:string"/>
+		</xsd:choice>
+	</xsd:group>
+
 	<xsd:complexType name="TPerson">
 		<xsd:sequence>
+			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+				<xsd:group ref="GImageURL"/>
+			</xsd:sequence>
 			<xsd:element name="realName" type="xsd:string" minOccurs="1" maxOccurs="1"/>
 			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
-				<xsd:choice>
-					<xsd:element name="ImageURL" type="xsd:string"/>
-					<xsd:element name="ImageUrl" type="xsd:string"/>
-					<xsd:element name="imageURL" type="xsd:string"/>
-					<xsd:element name="imageUrl" type="xsd:string"/>
-				</xsd:choice>
+				<xsd:group ref="GImageURL"/>
 			</xsd:sequence>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -133,7 +141,7 @@
 
 			<xsd:element name="services" type="TServices" minOccurs="1" maxOccurs="1"/>
 
-			<xsd:element name="setup" type="TSetup" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="setup" type="TSetup" minOccurs="0" maxOccurs="1"/>
 
 			<xsd:element name="mod_time" type="xsd:unsignedLong" minOccurs="0" maxOccurs="1">
 				<xsd:annotation>
