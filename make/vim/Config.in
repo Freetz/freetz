@@ -32,3 +32,12 @@ choice
 			bool "huge - EXPERIMENTAL"
 
 endchoice
+
+config FREETZ_PACKAGE_VIM_MULTIBYTE
+	depends on FREETZ_PACKAGE_VIM
+	bool "Enable multibyte encodings support"
+	default n
+	help
+		Enables support for multibyte encodings (like UTF-8) in vim.
+
+		Note: enabling this option increases binary size by about 65KB.

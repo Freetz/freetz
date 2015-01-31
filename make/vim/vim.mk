@@ -13,6 +13,7 @@ $(PKG)_DEPENDS_ON += ncurses
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_TINY
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_NORMAL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_HUGE
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_MULTIBYTE
 
 $(PKG)_CONFIGURE_ENV += vim_cv_getcwd_broken=no
 $(PKG)_CONFIGURE_ENV += vim_cv_memmove_handles_overlap=yes
@@ -36,7 +37,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-features=tiny
 endif
 endif
 $(PKG)_CONFIGURE_OPTIONS += --without-x
-$(PKG)_CONFIGURE_OPTIONS += --disable-multibyte
+$(PKG)_CONFIGURE_OPTIONS += --$(if $(FREETZ_PACKAGE_VIM_MULTIBYTE),enable,disable)-multibyte
 $(PKG)_CONFIGURE_OPTIONS += --disable-netbeans
 $(PKG)_CONFIGURE_OPTIONS += --disable-gpm
 $(PKG)_CONFIGURE_OPTIONS += --with-tlib=ncurses
