@@ -147,7 +147,10 @@ anonymize() {
 	fi
 
 	$SED -r -e '{
-		s,(<(realName|number|id|selfId|email|mod_time)( [^>]+)?>)[^<]+(</\2>),\1anonymized\4,g
+		s,(<(realName|id|selfId|[Ii]mage[Uu][Rr][Ll])( [^>]+)?>)[^<]+(</\2>),\1anonymized\4,g
+		s,(<(number)( [^>]+)?>)[^<]+(</\2>),\1\+49-000-1234567890\4,g
+		s,(<(email)( [^>]+)?>)[^<]+(</\2>),\1anonymized@server.com\4,g
+		s,(<(mod_time)( [^>]+)?>)[^<]+(</\2>),\11234567890\4,g
 		s,(name=")[^"]+("),\1anonymized\2,g
 	}'
 }
