@@ -1,6 +1,6 @@
 --- options.h
 +++ options.h
-@@ -339,7 +339,7 @@
+@@ -352,7 +352,7 @@
  #define DEFAULT_IDLE_TIMEOUT 0
  
  /* The default path. This will often get replaced by the shell */
@@ -11,7 +11,7 @@
   * in sysoptions.h */
 --- runopts.h
 +++ runopts.h
-@@ -115,6 +115,7 @@
+@@ -119,6 +119,7 @@
  	buffer * banner;
  	char * pidfile;
  
@@ -57,7 +57,7 @@
  #ifdef ENABLE_SVR_LOCALTCPFWD
  	svr_opts.nolocaltcp = 0;
  #endif
-@@ -243,6 +247,9 @@
+@@ -249,6 +253,9 @@
  				case 'P':
  					next = &svr_opts.pidfile;
  					break;
@@ -67,7 +67,7 @@
  #ifdef DO_MOTD
  				/* motd is displayed by default, -m turns it off */
  				case 'm':
-@@ -313,6 +320,10 @@
+@@ -319,6 +326,10 @@
  	}
  #endif
  
