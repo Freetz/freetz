@@ -14,7 +14,7 @@ else
 $(call PKG_INIT_BIN, 2.84)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_SHA1:=455359bc1fa34aeecc1bac9255ad0c884b94419c
-$(PKG)_SITE:=http://download.m0k.org/transmission/files
+$(PKG)_SITE:=https://transmission.cachefly.net
 endif
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
