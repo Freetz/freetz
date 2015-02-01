@@ -1,0 +1,52 @@
+From ff3f3accc68c84851d1ea8cd995f9491b32bedef Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Thu, 29 Jan 2015 15:31:36 +0000
+Subject: ntpd: get rid of G.initial_poll_complete
+
+This speeds up syncing - now happens only just
+two replies from a peer. Especially useful for "ntpd -q".
+Shouldn't have ill effects: if we chose a bad peer,
+we will discover it later and switch to another one.
+
+The code is even smaller this way.
+
+Suggested by Miroslav Lichvar <mlichvar@redhat.com>
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+--- networking/ntpd.c
++++ networking/ntpd.c
+@@ -363,8 +363,6 @@
+ 	 */
+ #define G_precision_sec  0.002
+ 	uint8_t  stratum;
+-	/* Bool. After set to 1, never goes back to 0: */
+-	smallint initial_poll_complete;
+ 
+ #define STATE_NSET      0       /* initial state, "nothing is set" */
+ //#define STATE_FSET    1       /* frequency set from file */
+@@ -1071,7 +1069,7 @@
+ 
+ 	num_points = 0;
+ 	item = G.ntp_peers;
+-	if (G.initial_poll_complete) while (item != NULL) {
++	while (item != NULL) {
+ 		double rd, offset;
+ 
+ 		p = (peer_t *) item->data;
+@@ -1636,7 +1634,7 @@
+ 	if (G.ntp_status & LI_MINUSSEC)
+ 		tmx.status |= STA_DEL;
+ 
+-	tmx.constant = G.poll_exp - 4;
++	tmx.constant = (int)G.poll_exp - 4 > 0 ? (int)G.poll_exp - 4 : 0;
+ 	/* EXPERIMENTAL.
+ 	 * The below if statement should be unnecessary, but...
+ 	 * It looks like Linux kernel's PLL is far too gentle in changing
+@@ -2272,7 +2270,6 @@
+ 						VERB4 bb_error_msg("disabling burst mode");
+ 						G.polladj_count = 0;
+ 						G.poll_exp = MINPOLL;
+-						G.initial_poll_complete = 1;
+ 					}
+ 					send_query_to_peer(p);
+ 				} else {
