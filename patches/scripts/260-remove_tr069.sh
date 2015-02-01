@@ -4,7 +4,7 @@ if [ "$FREETZ_REMOVE_TR069" == "y" -o "$FREETZ_REMOVE_ASSISTANT" == "y" ]; then
 	  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
 	modsed \
 	  's!http.redirect("/tr69_autoconfig/.*!go_home()!g' \
-	  "${HTML_LANG_MOD_DIR}/lua/first.lua"
+	  "${LUA_MOD_DIR}/first.lua"
 fi
 
 [ "$FREETZ_REMOVE_TR069" == "y" ] || return 0

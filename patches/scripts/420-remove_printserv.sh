@@ -14,7 +14,7 @@ rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-printer-lp"
 	rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/drivers/usb/class/usblp.ko
 
 # patcht System > Diagnose (ab 5.59)
-sedfile="${HTML_LANG_MOD_DIR}/lua/usb_devices.lua"
+sedfile="${LUA_MOD_DIR}/usb_devices.lua"
 echo1 "patching ${sedfile##*/}"
 modsed "s/config\.USB_PRINT_SERV/true/g" $sedfile
 

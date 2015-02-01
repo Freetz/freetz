@@ -60,4 +60,4 @@ modsed \
 # '/uiPostPageName",.*first_/{N;s/.*\n.*$/jslSetValue("uiPostPageName", "home");\njslSetValue("uiPostMenu", "home");/g}' \
 modsed \
   's/^http.redirect(get_goto_oldassi_href.*/go_home()/' \
-  "${HTML_LANG_MOD_DIR}/lua/first.lua"
+  "${LUA_MOD_DIR}/first.lua"
