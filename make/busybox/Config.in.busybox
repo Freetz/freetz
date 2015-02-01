@@ -5212,6 +5212,14 @@ config FREETZ_BUSYBOX_FEATURE_CROND_CALL_SENDMAIL
 	help
 	  Command output will be sent to corresponding user via email.
 
+config FREETZ_BUSYBOX_FEATURE_CROND_ROOT_NOLOG
+	bool "Suppress logging of start information for a job (root user only)"
+	default n
+	depends on FREETZ_BUSYBOX_CROND
+	help
+	  A dash character (-) at the first position of the minute field of
+	  an entry prevents crond from logging every start of that job.
+
 config FREETZ_BUSYBOX_FEATURE_CROND_DIR
 	string "crond spool directory"
 	default "/var/spool/cron"
