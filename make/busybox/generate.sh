@@ -53,7 +53,10 @@ done
 echo -n " replacing ..."
 sed -i -r \
 	-e "s,([ (!])(${feature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g" \
-	-e "/^[ \t#]*(config|default|depends|select)/{s,([ (!])(${nonfeature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g}" \
+	-e "/^[ \t#]*(config|default|depends|select|range)/{
+		s,([ (!])(${nonfeature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g
+		s,([ (!])(${nonfeature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g
+	}" \
 	"$BBOUT"
 sed -i '/^mainmenu /d' "$BBOUT"
 sed -i 's!\(^#*[\t ]*default \)y\(.*\)$!\1n\2!g;' "$BBOUT"
@@ -86,5 +89,8 @@ depends_on UBIUPDATEVOL "FREETZ_KERNEL_VERSION_2_6_28_MIN"
 # Make DESKTOP depend on some non-existing symbol to prevent the user from (accidentally) selecting it
 # in Freetz menuconfig. This ensures (as a side effect) that "ps -l" is always available.
 depends_on DESKTOP "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
+
+# from-file-to-file mode is supported since 2.6.33, thus disabled
+depends_on FEATURE_USE_SENDFILE "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
 
 echo " done."

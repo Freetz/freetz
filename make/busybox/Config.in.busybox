@@ -263,6 +263,27 @@ config FREETZ_BUSYBOX_UNICODE_PRESERVE_BROKEN
 	  at shell prompt will list file named 0xff (single char name
 	  with char value 255), not file named '?'.
 
+config FREETZ_BUSYBOX_PAM
+	bool "Support for PAM (Pluggable Authentication Modules)"
+	default n
+	help
+	  Use PAM in some busybox applets (currently login and httpd) instead
+	  of direct access to password database.
+
+config FREETZ_BUSYBOX_FEATURE_USE_SENDFILE
+	bool "Use sendfile system call"
+	default n
+	select FREETZ_BUSYBOX_PLATFORM_LINUX
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
+	help
+	  When enabled, busybox will use the kernel sendfile() function
+	  instead of read/write loops to copy data between file descriptors
+	  (for example, cp command does this a lot).
+	  If sendfile() doesn't work, copying code falls back to read/write
+	  loop. sendfile() was originally implemented for faster I/O
+	  from files to sockets, but since Linux 2.6.33 it was extended
+	  to work for many more file types.
+
 config FREETZ_BUSYBOX_LONG_OPTS
 	bool "Support for --long-options"
 	default n
@@ -422,10 +443,7 @@ config FREETZ_BUSYBOX_SELINUX
 	  the option of compiling in SELinux applets.
 
 	  If you do not have a complete SELinux userland installed, this stuff
-	  will not compile. Go visit
-		http://www.nsa.gov/selinux/index.html
-	  to download the necessary stuff to allow busybox to compile with
-	  this option enabled. Specifially, libselinux 1.28 or better is
+	  will not compile.  Specifially, libselinux 1.28 or better is
 	  directly required by busybox. If the installation is located in a
 	  non-standard directory, provide it by invoking make as follows:
 		CFLAGS=-I<libselinux-include-path> \
@@ -676,6 +694,14 @@ config FREETZ_BUSYBOX_DEBUG_PESSIMIZE
 	  stepping through it with a debugger. This switches it off, resulting
 	  in a much bigger executable that more closely matches the source
 	  code.
+
+config FREETZ_BUSYBOX_UNIT_TEST
+	bool "Build unit tests"
+	default n
+	help
+	  Say Y here if you want to build unit tests (both the framework and
+	  test cases) as a Busybox applet. This results in bigger code, so you
+	  probably don't want this option in production builds.
 
 config FREETZ_BUSYBOX_WERROR
 	bool "Abort compilation on any warning"
@@ -1506,6 +1532,11 @@ config FREETZ_BUSYBOX_GROUPS
 	default n
 	help
 	  Print the group names associated with current user id.
+config FREETZ_BUSYBOX_SHUF
+	bool "shuf"
+	default n
+	help
+	  Generate random permutations
 config FREETZ_BUSYBOX_TEST
 	bool "test"
 	default n
@@ -1566,6 +1597,11 @@ config FREETZ_BUSYBOX_FEATURE_TR_EQUIV
 	  replace all instances of 'a' with 'xyz'. This option is mainly
 	  useful for cases when no other way of expressing a character
 	  is possible.
+config FREETZ_BUSYBOX_UNLINK
+	bool "unlink"
+	default n
+	help
+	  unlink deletes a file by calling unlink()
 config FREETZ_BUSYBOX_BASE64
 	bool "base64"
 	default n
@@ -2210,12 +2246,13 @@ config FREETZ_BUSYBOX_FEATURE_FANCY_TAIL
 	default n
 	depends on FREETZ_BUSYBOX_TAIL
 	help
-	  The options (-q, -s, and -v) are provided by GNU tail, but
+	  The options (-q, -s, -v and -F) are provided by GNU tail, but
 	  are not specific in the SUSv3 standard.
 
 	    -q      Never output headers giving file names
 	    -s SEC  Wait SEC seconds between reads with -f
 	    -v      Always output headers giving file names
+	    -F      Same as -f, but keep retrying
 
 config FREETZ_BUSYBOX_TEE
 	bool "tee"
@@ -2314,6 +2351,16 @@ config FREETZ_BUSYBOX_YES
 	help
 	  yes is used to repeatedly output a specific string, or
 	  the default string `y'.
+
+comment "Common options"
+
+config FREETZ_BUSYBOX_FEATURE_VERBOSE
+	bool "Support verbose options (usually -v) for various applets"
+	default n
+	help
+	  Enable cp -v, rm -v and similar messages.
+	  Also enables long option (--verbose) if it exists.
+	  Without this option, -v is accepted but ignored.
 
 comment "Common options for cp and mv"
 	depends on FREETZ_BUSYBOX_CP || FREETZ_BUSYBOX_MV
@@ -2827,6 +2874,36 @@ config FREETZ_BUSYBOX_FEATURE_VI_ASK_TERMINAL
 	  cursor position using "ESC [ 6 n" escape sequence, then read stdin.
 
 	  This is not clean but helps a lot on serial lines and such.
+config FREETZ_BUSYBOX_FEATURE_VI_UNDO
+	bool "Support undo command 'u'"
+	default n
+	depends on FREETZ_BUSYBOX_VI
+	help
+	  Support the 'u' command to undo insertion, deletion, and replacement
+	  of text.
+config FREETZ_BUSYBOX_FEATURE_VI_UNDO_QUEUE
+	bool "Enable undo operation queuing"
+	default n
+	depends on FREETZ_BUSYBOX_FEATURE_VI_UNDO
+	help
+	  The vi undo functions can use an intermediate queue to greatly lower
+	  malloc() calls and overhead. When the maximum size of this queue is
+	  reached, the contents of the queue are committed to the undo stack.
+	  This increases the size of the undo code and allows some undo
+	  operations (especially un-typing/backspacing) to be far more useful.
+config FREETZ_BUSYBOX_FEATURE_VI_UNDO_QUEUE_MAX
+	int "Maximum undo character queue size"
+	default 256
+	range 32 65536
+	depends on FREETZ_BUSYBOX_FEATURE_VI_UNDO_QUEUE
+	help
+	  This option sets the number of bytes used at runtime for the queue.
+	  Smaller values will create more undo objects and reduce the amount
+	  of typed or backspaced characters that are grouped into one undo
+	  operation; larger values increase the potential size of each undo
+	  and will generally malloc() larger objects and less frequently.
+	  Unless you want more (or less) frequent "undo points" while typing,
+	  you should probably leave this unchanged.
 
 config FREETZ_BUSYBOX_FEATURE_ALLOW_EXEC
 	bool "Allow vi and awk to execute shell commands"
@@ -2931,6 +3008,16 @@ config FREETZ_BUSYBOX_FEATURE_FIND_EXEC
 	help
 	  Support the 'find -exec' option for executing commands based upon
 	  the files matched.
+
+config FREETZ_BUSYBOX_FEATURE_FIND_EXEC_PLUS
+	bool "Enable -exec ... {} +"
+	default n
+	depends on FREETZ_BUSYBOX_FEATURE_FIND_EXEC
+	help
+	  Support the 'find -exec ... {} +' option for executing commands
+	  for all matched files at once.
+	  Without this option, -exec + is a synonym for -exec ;
+	  (IOW: it works correctly, but without expected speedup)
 
 config FREETZ_BUSYBOX_FEATURE_FIND_USER
 	bool "Enable -user: username/uid matching"
@@ -3090,6 +3177,13 @@ config FREETZ_BUSYBOX_FEATURE_XARGS_SUPPORT_ZERO_TERM
 	  Support -0: input items are terminated by a NUL character
 	  instead of whitespace, and the quotes and backslash
 	  are not special.
+
+config FREETZ_BUSYBOX_FEATURE_XARGS_SUPPORT_REPL_STR
+	bool "Enable -I STR: string to replace"
+	default n
+	depends on FREETZ_BUSYBOX_XARGS
+	help
+	  Support -I STR and -i[STR] options.
 
 endmenu
 
@@ -3413,10 +3507,17 @@ config FREETZ_BUSYBOX_FEATURE_CHECK_NAMES
 	  For compatibility with Samba machine accounts "$" is also supported
 	  at the end of the user or group name.
 
+config FREETZ_BUSYBOX_LAST_ID
+	int "Last valid uid or gid for adduser and addgroup"
+	depends on FREETZ_BUSYBOX_ADDUSER || FREETZ_BUSYBOX_ADDGROUP
+	default 60000
+	help
+	  Last valid uid or gid for adduser and addgroup
+
 config FREETZ_BUSYBOX_FIRST_SYSTEM_ID
 	int "First valid system uid or gid for adduser and addgroup"
 	depends on FREETZ_BUSYBOX_ADDUSER || FREETZ_BUSYBOX_ADDGROUP
-	range 0 64900
+	range 0 FREETZ_BUSYBOX_LAST_ID
 	default 100
 	help
 	  First valid system uid or gid for adduser and addgroup
@@ -3424,7 +3525,7 @@ config FREETZ_BUSYBOX_FIRST_SYSTEM_ID
 config FREETZ_BUSYBOX_LAST_SYSTEM_ID
 	int "Last valid system uid or gid for adduser and addgroup"
 	depends on FREETZ_BUSYBOX_ADDUSER || FREETZ_BUSYBOX_ADDGROUP
-	range 0 64900
+	range FREETZ_BUSYBOX_FIRST_SYSTEM_ID FREETZ_BUSYBOX_LAST_ID
 	default 999
 	help
 	  Last valid system uid or gid for adduser and addgroup
@@ -3510,13 +3611,6 @@ config FREETZ_BUSYBOX_LOGIN_SESSION_AS_CHILD
 	  when the login session is complete.  If you use PAM, you
 	  almost always would want this to be set to Y, else PAM session
 	  will not be cleaned up.
-
-config FREETZ_BUSYBOX_PAM
-	bool "Support for PAM (Pluggable Authentication Modules)"
-	default n
-	depends on FREETZ_BUSYBOX_LOGIN
-	help
-	  Use PAM in login(1) instead of direct access to password database.
 
 config FREETZ_BUSYBOX_LOGIN_SCRIPTS
 	bool "Support for login scripts"
@@ -3986,6 +4080,12 @@ config FREETZ_BUSYBOX_BLOCKDEV
 	default n
 	help
 	  Performs some ioctls with block devices.
+config FREETZ_BUSYBOX_FATATTR
+	bool "fatattr"
+	default n
+	select FREETZ_BUSYBOX_PLATFORM_LINUX
+	help
+	  fatattr lists or changes the file attributes on a fat file system.
 config FREETZ_BUSYBOX_FSTRIM
 	bool "fstrim"
 	default n
@@ -4647,6 +4747,15 @@ config FREETZ_BUSYBOX_SWAPONOFF
 	  space. If you are not using any swap space, you can leave this
 	  option disabled.
 
+config FREETZ_BUSYBOX_FEATURE_SWAPON_DISCARD
+	bool "Support discard option -d"
+	default n
+	depends on FREETZ_BUSYBOX_SWAPONOFF
+	help
+	  Enable support for discarding swap area blocks at swapon and/or as
+	  the kernel frees them. This option enables both the -d option on
+	  'swapon' and the 'discard' option for swap entries in /etc/fstab.
+
 config FREETZ_BUSYBOX_FEATURE_SWAPON_PRI
 	bool "Support priority option -p"
 	default n
@@ -5076,6 +5185,39 @@ config FREETZ_BUSYBOX_CONSPY
 	  example:  conspy NUM      shared access to console num
 	  or        conspy -nd NUM  screenshot of console num
 	  or        conspy -cs NUM  poor man's GNU screen like
+config FREETZ_BUSYBOX_CROND
+	bool "crond"
+	default n
+	select FREETZ_BUSYBOX_FEATURE_SYSLOG
+	help
+	  Crond is a background daemon that parses individual crontab
+	  files and executes commands on behalf of the users in question.
+	  This is a port of dcron from slackware. It uses files of the
+	  format /var/spool/cron/crontabs/<username> files, for example:
+	      $ cat /var/spool/cron/crontabs/root
+	      # Run daily cron jobs at 4:40 every day:
+	      40 4 * * * /etc/cron/daily > /dev/null 2>&1
+
+config FREETZ_BUSYBOX_FEATURE_CROND_D
+	bool "Support option -d to redirect output to stderr"
+	depends on FREETZ_BUSYBOX_CROND
+	default n
+	help
+	  -d N sets loglevel (0:most verbose) and directs all output to stderr.
+
+config FREETZ_BUSYBOX_FEATURE_CROND_CALL_SENDMAIL
+	bool "Report command output via email (using sendmail)"
+	default n
+	depends on FREETZ_BUSYBOX_CROND
+	help
+	  Command output will be sent to corresponding user via email.
+
+config FREETZ_BUSYBOX_FEATURE_CROND_DIR
+	string "crond spool directory"
+	default "/var/spool/cron"
+	depends on FREETZ_BUSYBOX_CROND || FREETZ_BUSYBOX_CRONTAB
+	help
+	  Location of crond spool.
 config FREETZ_BUSYBOX_LESS
 	bool "less"
 	default n
@@ -5183,6 +5325,21 @@ config FREETZ_BUSYBOX_SETSERIAL
 	select FREETZ_BUSYBOX_PLATFORM_LINUX
 	help
 	  Retrieve or set Linux serial port.
+config FREETZ_BUSYBOX_TASKSET
+	bool "taskset"
+	default n  # doesn't build on some non-x86 targets (m68k)
+	help
+	  Retrieve or set a processes's CPU affinity.
+	  This requires sched_{g,s}etaffinity support in your libc.
+
+config FREETZ_BUSYBOX_FEATURE_TASKSET_FANCY
+	bool "Fancy output"
+	default n
+	depends on FREETZ_BUSYBOX_TASKSET
+	help
+	  Add code for fancy output. This merely silences a compiler-warning
+	  and adds about 135 Bytes. May be needed for machines with alot
+	  of CPUs.
 config FREETZ_BUSYBOX_UBIATTACH
 	bool "ubiattach"
 	default n
@@ -5362,40 +5519,6 @@ config FREETZ_BUSYBOX_CHRT
 	help
 	  manipulate real-time attributes of a process.
 	  This requires sched_{g,s}etparam support in your libc.
-
-config FREETZ_BUSYBOX_CROND
-	bool "crond"
-	default n
-	select FREETZ_BUSYBOX_FEATURE_SYSLOG
-	help
-	  Crond is a background daemon that parses individual crontab
-	  files and executes commands on behalf of the users in question.
-	  This is a port of dcron from slackware. It uses files of the
-	  format /var/spool/cron/crontabs/<username> files, for example:
-	      $ cat /var/spool/cron/crontabs/root
-	      # Run daily cron jobs at 4:40 every day:
-	      40 4 * * * /etc/cron/daily > /dev/null 2>&1
-
-config FREETZ_BUSYBOX_FEATURE_CROND_D
-	bool "Support option -d to redirect output to stderr"
-	depends on FREETZ_BUSYBOX_CROND
-	default n
-	help
-	  -d sets loglevel to 0 (most verbose) and directs all output to stderr.
-
-config FREETZ_BUSYBOX_FEATURE_CROND_CALL_SENDMAIL
-	bool "Report command output via email (using sendmail)"
-	default n
-	depends on FREETZ_BUSYBOX_CROND
-	help
-	  Command output will be sent to corresponding user via email.
-
-config FREETZ_BUSYBOX_FEATURE_CROND_DIR
-	string "crond spool directory"
-	default "/var/spool/cron"
-	depends on FREETZ_BUSYBOX_CROND || FREETZ_BUSYBOX_CRONTAB
-	help
-	  Location of crond spool.
 
 config FREETZ_BUSYBOX_CRONTAB
 	bool "crontab"
@@ -5763,22 +5886,6 @@ config FREETZ_BUSYBOX_STRINGS
 	  strings prints the printable character sequences for each file
 	  specified.
 
-config FREETZ_BUSYBOX_TASKSET
-	bool "taskset"
-	default n  # doesn't build on some non-x86 targets (m68k)
-	help
-	  Retrieve or set a processes's CPU affinity.
-	  This requires sched_{g,s}etaffinity support in your libc.
-
-config FREETZ_BUSYBOX_FEATURE_TASKSET_FANCY
-	bool "Fancy output"
-	default n
-	depends on FREETZ_BUSYBOX_TASKSET
-	help
-	  Add code for fancy output. This merely silences a compiler-warning
-	  and adds about 135 Bytes. May be needed for machines with alot
-	  of CPUs.
-
 config FREETZ_BUSYBOX_TIME
 	bool "time"
 	default n
@@ -6061,6 +6168,13 @@ config FREETZ_BUSYBOX_FEATURE_FTPD_ACCEPT_BROKEN_LIST
 	  it increases the code size by ~40 bytes.
 	  Most other ftp servers seem to behave similar to this.
 
+config FREETZ_BUSYBOX_FEATURE_FTP_AUTHENTICATION
+	bool "Enable authentication"
+	default n
+	depends on FREETZ_BUSYBOX_FTPD
+	help
+	  Enable basic system login as seen in telnet etc.
+
 config FREETZ_BUSYBOX_FTPGET
 	bool "ftpget"
 	default n
@@ -6100,14 +6214,6 @@ config FREETZ_BUSYBOX_FEATURE_HTTPD_RANGES
 	  Makes httpd emit "Accept-Ranges: bytes" header and understand
 	  "Range: bytes=NNN-[MMM]" header. Allows for resuming interrupted
 	  downloads, seeking in multimedia players etc.
-
-config FREETZ_BUSYBOX_FEATURE_HTTPD_USE_SENDFILE
-	bool "Use sendfile system call"
-	default n
-	depends on FREETZ_BUSYBOX_HTTPD
-	help
-	  When enabled, httpd will use the kernel sendfile() function
-	  instead of read/write loop.
 
 config FREETZ_BUSYBOX_FEATURE_HTTPD_SETUID
 	bool "Enable -u <user> option"
@@ -6591,6 +6697,14 @@ config FREETZ_BUSYBOX_FEATURE_NTPD_SERVER
 	  Make ntpd usable as a NTP server. If you disable this option
 	  ntpd will be usable only as a NTP client.
 
+config FREETZ_BUSYBOX_FEATURE_NTPD_CONF
+	bool "Make ntpd understand /etc/ntp.conf"
+	default n
+	depends on FREETZ_BUSYBOX_NTPD
+	help
+	  Make ntpd look in /etc/ntp.conf for peers. Only "server address"
+	  is supported.
+
 config FREETZ_BUSYBOX_PSCAN
 	bool "pscan"
 	default n
@@ -6935,6 +7049,17 @@ config FREETZ_BUSYBOX_FEATURE_UDHCPC_ARPING
 	  the offered address is really not in use by anyone. The client
 	  will DHCPDECLINE the offer if the address is in use,
 	  and restart the discover process.
+
+config FREETZ_BUSYBOX_FEATURE_UDHCPC_SANITIZEOPT
+	bool "Do not pass malformed host and domain names"
+	default n
+	depends on FREETZ_BUSYBOX_UDHCPC
+	help
+	  If selected, udhcpc will check some options (such as option 12 -
+	  hostname) and if they don't look like valid hostnames
+	  (for example, if they start with dash or contain spaces),
+	  they will be replaced with string "bad" when exporting
+	  to the environment.
 
 config FREETZ_BUSYBOX_FEATURE_UDHCP_PORT
 	bool "Enable '-P port' option for udhcpd and udhcpc"
@@ -7748,6 +7873,13 @@ config FREETZ_BUSYBOX_ASH_BUILTIN_TEST
 	depends on FREETZ_BUSYBOX_ASH
 	help
 	  Enable support for test builtin in ash.
+
+config FREETZ_BUSYBOX_ASH_HELP
+	bool "help builtin"
+	default n
+	depends on FREETZ_BUSYBOX_ASH
+	help
+	  Enable help builtin in ash.
 
 config FREETZ_BUSYBOX_ASH_CMDCMD
 	bool "'command' command to override shell builtins"
