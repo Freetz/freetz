@@ -1,9 +1,19 @@
 config FREETZ_PACKAGE_OPENCONNECT
-	bool "Openconnect 2.24 (binary only)"
-	select FREETZ_LIB_libxml2
-	select FREETZ_LIB_libz
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
+	bool "OpenConnect 7.04 (binary only)"
+	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libdl if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libm if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libpthread if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
 	default n
 	help
 		Cisco AnyConnect VPN Client
+
+config FREETZ_PACKAGE_OPENCONNECT_STATIC
+        bool "Statically link libraries"
+        depends on FREETZ_PACKAGE_OPENCONNECT
+        default n
+        help
+		Build OpenConnect binary with statically linked libraries.
