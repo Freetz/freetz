@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=828fe81388b7ea1155419b8be64a350f
 $(PKG)_SITE:=ftp://ftp.infradead.org/pub/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/$(pkg)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 $(PKG)_STARTLEVEL=81
 
 $(PKG)_DEPENDS_ON += libxml2 openssl zlib
