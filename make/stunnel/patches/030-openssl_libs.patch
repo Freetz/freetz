@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -13186,7 +13186,7 @@
+@@ -14970,7 +14970,7 @@
  
  
  valid_CPPFLAGS="$CPPFLAGS"; CPPFLAGS="$CPPFLAGS -I$SSLDIR/include"
@@ -11,14 +11,12 @@
  ac_fn_c_check_header_mongrel "$LINENO" "$SSLDIR/include/openssl/engine.h" "$as_ac_Header" "$ac_includes_default"
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -352,8 +352,8 @@
- stunnel_CFLAGS = @stunnel_CFLAGS@
+@@ -390,7 +390,7 @@
+ 	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"'
  
  # SSL library
--stunnel_LDFLAGS = @stunnel_LDFLAGS@ -L$(SSLDIR)/lib64 -L$(SSLDIR)/lib \
--	-lssl -lcrypto
-+stunnel_LDFLAGS = @stunnel_LDFLAGS@                   -L$(SSLDIR)/lib \
-+	-lssl -lcrypto -ldl
- sysconfdir = @sysconfdir@
- target_alias = @target_alias@
- top_build_prefix = @top_build_prefix@
+-stunnel_LDFLAGS = -L$(SSLDIR)/lib64 -L$(SSLDIR)/lib -lssl -lcrypto
++stunnel_LDFLAGS =                   -L$(SSLDIR)/lib -lssl -lcrypto -ldl
+ 
+ # Win32 executable
+ EXTRA_DIST = make.bat makece.bat makew32.bat mingw.mak evc.mak vc.mak \

@@ -1,18 +1,34 @@
 --- configure
 +++ configure
-@@ -4175,6 +4175,7 @@
-     conftest$ac_exeext conftest.$ac_ext
- CFLAGS="$valid_CFLAGS"; LDFLAGS="$valid_LDFLAGS"
+@@ -5711,6 +5711,7 @@
+ 
+ 
  
 +if false; then
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC accepts -pie" >&5
- $as_echo_n "checking whether $CC accepts -pie... " >&6; }
- valid_CFLAGS="$CFLAGS"; CFLAGS="$CFLAGS -fPIE"
-@@ -4201,6 +4202,7 @@
- rm -f core conftest.err conftest.$ac_objext \
-     conftest$ac_exeext conftest.$ac_ext
- CFLAGS="$valid_CFLAGS"; LDFLAGS="$valid_LDFLAGS"
+ for flag in -fPIE; do
+   as_CACHEVAR=`$as_echo "ax_cv_check_cflags__$flag" | $as_tr_sh`
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts $flag" >&5
+@@ -5771,6 +5772,7 @@
+ fi
+ 
+ done
 +fi
  
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC accepts -Wall" >&5
- $as_echo_n "checking whether $CC accepts -Wall... " >&6; }
+ 
+ 
+@@ -5841,6 +5843,7 @@
+ 
+ 
+ 
++if false; then
+ for flag in -fPIE -pie; do
+   as_CACHEVAR=`$as_echo "ax_cv_check_ldflags__$flag" | $as_tr_sh`
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts $flag" >&5
+@@ -5902,6 +5905,7 @@
+ fi
+ 
+ done
++fi
+ 
+ 
+ 
