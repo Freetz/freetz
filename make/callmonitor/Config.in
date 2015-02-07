@@ -13,6 +13,12 @@ config FREETZ_PACKAGE_CALLMONITOR
 		favorite set-top box, to wake up your PC, or to send you a mail when
 		you have missed a call).
 
+if FREETZ_PACKAGE_CALLMONITOR && !FREETZ_AVM_HAS_ALLCFGCONV_WITH_DECRYPTION_SUPPORT && !FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
+comment "Warning: Firmware with no password decryption capability from AVM detected."
+comment "Warning: Please select 'decrypt FRITZ!OS configs' package or implement"
+comment "Warning: an alternative workaround described in its help."
+endif
+
 config FREETZ_PACKAGE_CALLMONITOR_webif
 	bool "Web interface"
 	default y
