@@ -1,0 +1,56 @@
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
+	bool "decrypt FRITZ!OS configs"
+	depends on FREETZ_AVM_VERSION_06_0X_MIN
+	select FREETZ_BUSYBOX_CAT
+	select FREETZ_BUSYBOX_SED
+	select FREETZ_BUSYBOX_GREP
+	select FREETZ_BUSYBOX_MOUNT
+	select FREETZ_BUSYBOX_UMOUNT
+	select FREETZ_BUSYBOX_CP
+	select FREETZ_BUSYBOX_MKDIR
+	select FREETZ_BUSYBOX_DATE
+	select FREETZ_BUSYBOX_ECHO
+	select FREETZ_BUSYBOX_CHROOT
+	select FREETZ_BUSYBOX_EXPR
+	select FREETZ_BUSYBOX_TEST
+	select FREETZ_BUSYBOX_ASH_BUILTIN_TEST
+	default n
+	help
+		This package provides a script making it possible to decrypt
+		encrypted parts (usually credentials) of FRITZ!OS configuration
+		files. See http://www.ip-phone-forum.de/showthread.php?t=276183
+		for usage details.
+
+		NO RESPONSIBILITY DISCLAIMER:
+		  Adding easy callable scripts like this providing password
+		  decryption capabilities decreases the SECURITY of your box.
+		  Use it on YOUR OWN RISK, Freetz is not responsible
+		  for any potential losses or damages resulting/arising
+		  from adding this script to your firmware.
+
+		Note for boxes without WebDAV support:
+		  This packages requires AVM binary webdavcfginfo (including
+		  its dependencies) to be available in your firmware image.
+		  Please copy all required files manually if the original
+		  firmware for your box doesn't contain them. A firmware
+		  image for some other box with the same kernel layout and
+		  of the same FRITZ!OS version might be a good source, i.e.
+		    7312       <- 7330  (webdavcfginfo, libusbcfg.so*)
+		    6810, 7412 <- 7490  (webdavcfginfo, libusbcfg.so*)
+
+		  Instead of copying webdavcfginfo and its dependencies
+		  from the firmware of the other box you might just copy
+		  the allcfginfo binary from an older firmware version
+		  for your box. You don't necessarily need to overwrite
+		  the original allcfginfo, you might also save it as
+		  allcfginfo-c. Callmonitor package will automatically
+		  detect and use it.
+
+if FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
+comment "WARNING: See help for the NO RESPONSIBILITY DISCLAIMER."
+
+if !FREETZ_AVM_HAS_WEBDAV
+comment "WARNING: Required files missing! See help for details."
+endif
+
+endif
