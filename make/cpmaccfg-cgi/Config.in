@@ -1,12 +1,9 @@
 config FREETZ_PACKAGE_CPMACCFG_CGI
 	bool "Cpmaccfg CGI 1.0"
-	depends on \
-		FREETZ_KERNEL_LAYOUT_OHIO || \
-		FREETZ_KERNEL_LAYOUT_UR8
+	depends on FREETZ_PACKAGE_CPMACCFG_AVAILABLE
 	select FREETZ_PACKAGE_CPMACCFG
 	select FREETZ_PACKAGE_BRIDGE_UTILS
 	default n
-
 	help
 		Configuration front-end to cpmaccfg
 
