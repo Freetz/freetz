@@ -155,6 +155,7 @@ do_mount_locked() {
 
 	if [ $err_fs_mount -eq 0 ]; then
 		local rcftpd="/etc/init.d/rc.ftpd"
+		local tr069starter="/bin/tr069starter"
 		local samba_control="/etc/samba_control"
 		local fritznasdb_control="/etc/fritznasdb_control"
 		local tammnt="/var/tam/mount"
@@ -172,7 +173,7 @@ do_mount_locked() {
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &                                        # autorun
 		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &                               # external
 
-		[ -x $TR069START ] && $TR069START $mnt_name                                                             # tr069
+		[ -x $tr069starter ] && $tr069starter $mnt_name                                                         # tr069
 		[ -x $samba_control ] && $samba_control reconfig                                                        # SAMBA reconfiguration
 		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                                                           # tam
 
