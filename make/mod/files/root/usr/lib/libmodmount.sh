@@ -75,7 +75,7 @@ mount_fs() {
 	[ -z "$fs_type" ] && local fs_type="unknown"                              # set unknown file system type if detection failed
 	case $fs_type in
 		vfat)
-			mount -t vfat -o $rw_mode,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node $mnt_path
+			mount -t vfat -o $rw_mode,noatime,shortname=winnt,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node $mnt_path
 			err_mo=$?
 			;;
 		ext2|ext3|ext4|reiserfs)
