@@ -1164,10 +1164,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	fi
 
-	if [ -e "$MODULES_DIR/modules.dep.bin" ]; then
-		echo1 "removing (unused) modules.dep.bin"
-		rm -f "$MODULES_DIR/modules.dep.bin"
-	fi
+	for f in modules.dep.bin modules.alias.bin modules.symbols.bin; do
+		if [ -e "$MODULES_DIR/$f" ]; then
+			echo1 "removing (unused) $f"
+			rm -f "$MODULES_DIR/$f"
+		fi
+	done
 
 	kolinecnt="$(cat $MODULES_DIR/modules.dep | wc -l)"
 	kofilecnt="$(find $MODULES_DIR -type f -name '*.ko' | wc -l)"
