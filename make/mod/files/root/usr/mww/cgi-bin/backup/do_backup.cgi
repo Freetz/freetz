@@ -2,7 +2,7 @@
 # include environment variables
 [ -r /var/env.cache ] && . /var/env.cache
 
-fname=$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}-$(cat /etc/.freetz-version)$(date '+_%Y-%m-%d_%H%M_settings.tgz') | tr ' !' '_.')
+fname=$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}${CONFIG_LABOR_ID_NAME:+${CONFIG_SUBVERSION}}-$(cat /etc/.freetz-version)$(date '+_%Y-%m-%d_%H%M_settings.tgz') | tr ' !' '_.')
 CR=$'\r'
 echo "Content-Type: application/x-gzip${CR}"
 echo "Content-Disposition: attachment; filename=\"$fname\"${CR}"
