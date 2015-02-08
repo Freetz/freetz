@@ -300,7 +300,7 @@ package-list: package-list-clean $(PACKAGES_LIST)
 package-list-clean:
 	@$(RM) .static .dynamic
 
-firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list
+firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list .config.compressed
 ifeq ($(strip $(PACKAGES)),)
 	@echo
 	@echo "WARNING: There are no packages selected. To install packages type"
@@ -412,9 +412,10 @@ menuconfig-nocache: $(CONFIG_IN_CUSTOM) $(CONFIG)/mconf
 config: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
-config-compress: config-cache $(CONFIG)/conf
-	@$(CONFIG)/conf --savedefconfig .config_compressed $(CONFIG_IN_CACHE)
-	@echo "Compressed configuration written to .config_compressed."; \
+config-compress: .config.compressed
+.config.compressed: .config config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf --savedefconfig $@ $(CONFIG_IN_CACHE)
+	@echo "Compressed configuration written to $@."; \
 	echo  "It is equivalent to .config, but contains only non-default user selections."
 
 oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
@@ -483,7 +484,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean
-	$(RM) -r .config .config_compressed .config.old .config.cmd .tmpconfig.h include/config
+	$(RM) -r .config .config.compressed .config.old .config.cmd .tmpconfig.h include/config
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(KERNEL_TARGET_DIR)
 	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
