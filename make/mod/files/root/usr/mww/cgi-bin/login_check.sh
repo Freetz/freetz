@@ -18,4 +18,4 @@ else
 fi
 # still default-PW "freetz"? Change
 [ "$UPWHASH" = "465d0ff27bb239292778dc3a0c2f28d9" ] && . /usr/mww/cgi-bin/pwchange.cgi && exit
-. /usr/mww/cgi-bin/index.cgi
+. $PWD/index.cgi
