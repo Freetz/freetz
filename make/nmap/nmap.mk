@@ -7,6 +7,9 @@ $(PKG)_SITE:=http://nmap.org/dist
 
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
+# make sure nmap never fallbacks to using the bundled libraries by deleting them
+$(PKG)_PATCH_POST_CMDS += $(RM) -r libpcap libdnet-stripped $(if $(FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA),liblua) $(if $(FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE),libpcre);
+
 ifeq ($(strip $(FREETZ_PACKAGE_NMAP_VERSION_5)),y)
 $(PKG)_BINARIES5_ALL       := ncat nping
 $(PKG)_BINARIES5           := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES5_ALL))
