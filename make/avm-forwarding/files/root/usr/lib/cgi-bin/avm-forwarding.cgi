@@ -23,45 +23,38 @@ cat << EOF
 $(lang en:"Please note that there is no (known) reliable way to enable port forwarding to the Fritzbox without doing severe modifications to the AVM configuration files. This results in a risk that these changes might render the AVM settings unusable. In addition, the regular firmware might overwrite the settings made here.
 <br>
 It is therefore strongly recommended not to use the regular AVM GUI simultaneously with this GUI (no matter which web page).
-Please close all other web sessions to the box and reboot it asap after making changes using this GUI." de:"Bitte beachten sie, dass es keine (bekannte) M&ouml;glichkeit gibt, eine Weiterleitung auf die Fritzbox selbst ohne tiefgreifende Eingriffe in die Konfigurationsdateien zu erm&ouml;glichen. Damit ergibt sich ein besonderes Risiko, mit Einstellungen auf dieser Seite die Einstellungen der Fritzbox unbrauchbar zu machen. Zudem wird jede Einstellung auf der Fritzbox die hier gemachten Einstellungen &uuml;berschreiben.
+Please close all other web sessions to the box and reboot it asap after making changes using this GUI.
+<br><br>
+This package will only open ports to the fritzbox itself. To forward ports to other devices use the AVM GUI instead!" de:"Bitte beachten Sie, dass es keine (bekannte) M&ouml;glichkeit gibt, eine Weiterleitung auf die Fritzbox selbst ohne tiefgreifende Eingriffe in die Konfigurationsdateien zu erm&ouml;glichen. Damit ergibt sich ein besonderes Risiko, mit Einstellungen auf dieser Seite die Einstellungen der Fritzbox unbrauchbar zu machen. Zudem wird jede Einstellung auf der Fritzbox die hier gemachten Einstellungen &uuml;berschreiben.
 <br>
 Es ist daher dringend anzuraten, die \"normale\" AVM GUI nicht gleichzeitig mit dieser GUI zu benutzen (egal welche Seite).
-Am besten beenden Sie zuvor alle anderen Zugriffe auf die Box und f&uuml;hren sofort nach der &Uuml;bernahme der &Auml;nderung einen Reboot der Box durch.")
+Am besten beenden Sie zuvor alle anderen Zugriffe auf die Box und f&uuml;hren sofort nach der &Uuml;bernahme der &Auml;nderung einen Reboot der Box durch.<br><br>Nur Ports (Dienste) auf der Box selbst k&ouml;nnen freigegeben werden. Weiterleitungen zu anderen Ger&auml;ten erm&ouml;glicht nur die AVM-GUI!")
 EOF
 sec_end
-sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")' new-forward-rule
+sec_begin '$(lang en:"Open new port on fritzbox" de:"Neue Port Freigabe auf der Fritzbox")' new-forward-rule
 cat << EOF
-<p>
-<table border="0">
-<tr><td>$(lang en:"Protocol" de:"Protokoll"): </td><td><select name="fwdprotokoll" id="id_fwdproto" onchange=" (fdprot=this.value); build_new_fwdrule()">
+<table><tr><td>
+ <select name="fwdprotokoll" id="id_fwdproto" onchange=" (fdprot=this.value); build_new_fwdrule()">
 	<option title="tcp" value="tcp">tcp</option>
 	<option title="udp" value="udp">udp</option>
 	<option title="gre" value="gre">gre</option>
 	<option title="icmp" value="icmp">icmp</option>
-</select> </td>
-<td><div id="div_fwdsport">
-&nbsp; &nbsp; (Start-)Port: <input size="5" id="id_fwd_in_sport" title="startport" value="22" onblur="onlynum(this);(fdsport=this.value);build_new_fwdrule()">
-&nbsp; &nbsp; (End-)Port: <input type="text" size="5" id="id_fwd_in_eport" title="endport" value="" onblur="onlynum(this);fdeport=this.value;build_new_fwdrule()" >
-</div></td>
-</tr>
-<tr><td colspan="2"></td>
-<td colspan="2">
-<div id="div_fwddport" style="display:inline"> &nbsp; &nbsp; $(lang en:"Destination" de:"Ziel"): (Start-)Port: <input type="text" size="5" id='id_fwd_out_sport' value='22' onblur='onlynum(this);fdoport=this.value;build_new_fwdrule()'>
-</div>
-</td>
-</tr>
-<tr> <td>Name: </td><td colspan="3"> <input type="text" name="fwd_name" id="id_fwdname" size="18" maxlength="18" value="" onblur="fdname=this.value;build_new_fwdrule()"></td> </tr>
-</p>
-</table>
-<hr>
-<p>$(lang en:"Rule" de:"Regel"): <input id="id_new_fwdrule" size="60" value=""> &nbsp; &nbsp; <input type="button" value="$(lang en:"Add rule" de:"Hinzuf&uuml;gen")" onclick='allfwdrules.push(document.getElementById("id_new_fwdrule").value);fwdrulescount += 1; Init_FWDTable();' />
-</p>
+</select></td><td><div id="div_fwdsport"> &nbsp; &nbsp; Port: <input size="5" id="id_fwd_in_sport" title="startport" value="22" onblur="onlynumplus(this);(fdsport=this.value);build_new_fwdrule()">
+</div></td><td>
+<div id="div_fwddport" style="display:inline"> &nbsp; &nbsp; $(lang en:"Destination port" de:"Ziel Port"): <input type="text" size="5" id='id_fwd_out_sport' value='22' onblur='onlynum(this);fdoport=this.value;build_new_fwdrule()'>
+</div></td><td>
+&nbsp; &nbsp; 
+Name: <input type="text" name="fwd_name" id="id_fwdname" size="18" maxlength="18" value="" onblur="fdname=this.value;build_new_fwdrule()">
+</td><td>
+&nbsp; &nbsp;
+<input id="id_new_fwdrule" size="60" type="hidden" value=""> &nbsp; &nbsp; <input type="button" value="$(lang en:"Add rule" de:"Regel hinzuf&uuml;gen")" onclick='allfwdrules.push(document.getElementById("id_new_fwdrule").value);fwdrulescount += 1; Init_FWDTable();' />
+</td></tr></table>
 
 EOF
 sec_end
 
-sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")' forward-rules
-[ $FWVER -ge 550 ] && echo '<p><small>$(lang en:"This firmware prevents forwarding to FTP (port 21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe f&uuml;r FTP (Port 21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>'
+sec_begin '$(lang en:"Port forwarding rules to box itself" de:"Port Forwarding-Regeln auf die Fritzbox")' forward-rules
+[ $FWVER -ge 550 ] && echo '<p><small>$(lang en:"This firmware prevents opening FTP port (21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe des FTP-Ports (21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>'
 cat << EOF
 
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("rules").style.display=(this.checked)? "block" : "none"' >
@@ -83,19 +76,8 @@ $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln 
 
 EOF
 #rm /var/tmp/forwarding.*
-cat << EOF
 
-<script>
-rules="";
-
-action=new Array();
-proto=new Array();
-source=new Array();
-dest=new Array();
-param=new Array();
-remark=new Array();
-rulescount=0;
-EOF
+echo '<script>'
 
 if [ $FWVER -lt 555 ]; then # "alte" firmware
 echo 'allfwdrules=new Array ('$(echo ar7cfg.dslifaces.dsldpconfig.forwardrules | ar7cfgctl -s)')';
@@ -104,13 +86,9 @@ else
 echo 'allfwdrules=new Array ('$(echo ar7cfg.internet_forwardrules | ar7cfgctl -s)')';
 fi
 cat << EOF
-
-
-
 fwdproto=new Array();
 fwdsport=new Array();
 fwddport=new Array();
-fwddest=new Array();
 fwddisable=new Array();
 fwdname=new Array();
 
@@ -134,6 +112,11 @@ function onlynumpoint(elem){
         elem.value=elem.value.replace(/[^0-9\.]+/g,'');
 }
 
+function onlynumplus(elem){
+        elem.value=elem.value.replace(/[^0-9\+]+/g,'');
+}
+
+
 function split_fwdrules(){
   count=0;
     while ( allfwdrules[count]){
@@ -143,7 +126,6 @@ function split_fwdrules(){
             fwdproto[count]=splitrules[next];
             if ( fwdproto[count] != "gre" && fwdproto[count] != "icmp" ) {fwdsport[count]=splitrules[(next+1)].split(":")[1]; fwddport[count]=splitrules[(next+2)].split(":")[1];}
             	else {fwdsport[count]=""; fwddport[count]=""};
-            fwddest[count]=splitrules[(next+2)].split(":")[0];
             if (fwdname[count]=splitrules.slice(next+5).join(" ")){}else {fwdname[count]=""};
             count +=1 ;
     }
@@ -154,9 +136,8 @@ function build_new_fwdrule(){
  document.getElementById("div_fwdsport").style.display= ( fdprot != "gre" && fdprot != "icmp" )? "inline" : "none";
 
  var tmp=fdprot + " 0.0.0.0";
- fddest="0.0.0.0";
  if ( fdprot != "gre" && fdprot != "icmp" ){ tmp +=":"+fdsport; if (fdeport > fdsport) {tmp+="+" + ((fdeport-fdsport)+1) } };
- tmp += " "+fddest;
+ tmp += " 0.0.0.0";
  if ( fdprot != "gre" && fdprot != "icmp" ){tmp +=":"+fdoport+" 0";};
  if ( fdname != "" ){tmp +=" # "+fdname;};
  document.getElementById("id_new_fwdrule").value = tmp;
@@ -170,7 +151,7 @@ function rebuild_fwdrule(num, name , val){
   if (name) { tmp=name +"[" + num + "] = '" + val +"'" ; eval (tmp)}
   allfwdrules[num]= (fwddisable[num]) ? "# " : "" ;
   allfwdrules[num]+=fwdproto[num]+" 0.0.0.0";
-  allfwdrules[num]+= (fwdproto[num] == "gre" || fwdproto[num] == "icmp") ? " "+fwddest[num] : ":"+fwdsport[num]+" "+fwddest[num]+":"+fwddport[num];
+  allfwdrules[num]+= (fwdproto[num] == "gre" || fwdproto[num] == "icmp") ? " "+"0.0.0.0" : ":"+fwdsport[num]+" 0.0.0.0:"+fwddport[num];
   allfwdrules[num] +=" 0";
   if (fwdname[num]){ allfwdrules[num] +=" # "+fwdname[num] ;}
   showfwdrules();
