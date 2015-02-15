@@ -1,10 +1,10 @@
-$(call PKG_INIT_LIB, 0.15)
-$(PKG)_LIB_VERSION:=0.0.0
+$(call PKG_INIT_LIB, 1.1.0)
+$(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=73ff0c8df50d2eee75269ad8f8c07dc8
-$(PKG)_SITE:=http://$(pkg).googlecode.com/files
+$(PKG)_SOURCE_SHA1:=20bfcf3663ae56b125a5bfc3b4dca8c7f0ef1e48
+$(PKG)_SITE:=https://github.com/$(pkg)/$(pkg)/releases/download/v$($(PKG)_VERSION)
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libprotobuf-c.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/protobuf-c/.libs/libprotobuf-c.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libprotobuf-c.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libprotobuf-c.so.$($(PKG)_LIB_VERSION)
 
@@ -38,6 +38,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PROTOBUF_C_DIR) clean
 	$(RM) -r \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/protobuf-c \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/include/google/protobuf-c \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libprotobuf-c* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/libprotobuf-c.pc
