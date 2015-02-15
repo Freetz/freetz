@@ -828,14 +828,17 @@ config FREETZ_REMOVE_TR069_HTTPSDL
 		This saves 15-45 KB of uncompressed data size.
 
 config FREETZ_REMOVE_TR069_PROVIDERS
-	bool "Remove providers db"
-	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_SHOW_ADVANCED
+	bool "Remove providers db (s. help)"
+	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_SHOW_EXPERT
 	default n
 	help
-		Removes the files /etc/default.{BOX}/{OEM}/providers-{ALC}.tar,
-		filled with defaults for many providers. Every branding has such
+		Removes /etc/default.${BOX}/${OEM}/providers-${ALC}.tar  files
+		containing the defaults for many ISPs. Every branding has such
 		a file with up to 310 KB of uncompressed data size for each.
-		Use only if you are using currently a self defined provider!
+
+		WARNING: Enable this patch only if
+		  - you already have configured your internet connection, and
+		  - don't use any predefined ISP.
 
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS (USB GSM)"
