@@ -1135,6 +1135,13 @@ config FREETZ_PATCH_SIGNED
 	help
 		Hides the "unsupported changes" message from the web interface.
 
+config FREETZ_ENABLE_LED_DEACTIVATION
+	bool "Enables LED deactivation page"
+	depends on FREETZ_AVM_VERSION_06_0X_MIN
+	default n
+	help
+		Re-enables access to the LED deactivation page in expert mode.
+
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches --------------------"
 

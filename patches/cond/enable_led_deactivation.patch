@@ -1,0 +1,13 @@
+--- usr/www/all/menus/menu_show.lua
++++ usr/www/all/menus/menu_show.lua
+@@ -588,8 +588,8 @@
+ menu.exists_page["/system/led_display.lua"] = function()
+ return box.query("box:settings/led_display") ~= ""
+ end
+-menu.exists_page["/system/led_display.lua"] = function()
+-return false
++menu.show_page["/system/led_display.lua"] = function()
++return expert_mode
+ end
+ menu.exists_page["/system/infoled.lua"] = function()
+ return true
