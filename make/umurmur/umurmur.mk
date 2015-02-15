@@ -1,10 +1,12 @@
-$(call PKG_INIT_BIN, 0.2.14)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=7ebaac3b43517662006c7bdc51e44b4f9aecf5cd
-$(PKG)_SITE:=http://$(pkg).googlecode.com/files
+$(call PKG_INIT_BIN, 0.2.15)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SITE:=git@https://github.com/umurmur/umurmur
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)d
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)d
+
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure.ac src/crypt.h src/ssl.h src/ssli_polarssl.c)
+$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh;
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_UMURMUR_USE_POLARSSL
 
@@ -17,8 +19,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 endif
-
-$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure src/crypt.h src/crypt.c src/ssl.h src/ssl.c)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
