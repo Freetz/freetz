@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 21)
+$(call PKG_INIT_BIN, 22)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=bb2527c7ef18807662831db74bd0b7f6
+$(PKG)_SOURCE_SHA1:=39e8c2c354a5f820e84ad9284009b7d5d80d50cc
 $(PKG)_SITE:=http://ngircd.barton.de/pub/ngircd
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)/$(pkg)

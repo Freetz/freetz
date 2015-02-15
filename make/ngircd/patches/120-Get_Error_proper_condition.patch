@@ -1,0 +1,13 @@
+--- src/ngircd/resolve.c
++++ src/ngircd/resolve.c
+@@ -109,8 +109,8 @@
+ } /* Resolve_Name */
+ 
+ 
+-#if !defined(HAVE_GETADDRINFO) || !defined(HAVE_GETNAMEINFO)
+-#if !defined(WANT_IPV6) && defined(h_errno)
++#if !defined(HAVE_WORKING_GETADDRINFO) || !defined(HAVE_GETNAMEINFO)
++#if defined(h_errno)
+ static char *
+ Get_Error( int H_Error )
+ {
