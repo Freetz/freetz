@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# decode_passwords for FRITZ!OS versions > 06.05
+# decrypt-fritzos-cfg (aka decode_passwords) for FRITZ!OS versions > 06.05
 #
 # Copyright (C) 2014 P.Haemmerlein (http://www.yourfritz.de)
 #
@@ -36,7 +36,7 @@
 # Usage:
 # ------
 #
-#   decode_passwords < {input_data}
+#   decrypt-fritzos-cfg < {input_data}
 #
 # The script is designed as a filter using standard input and standard output.
 #
@@ -80,17 +80,17 @@
 # messages or any comments and line indentations to stdout. The pure content will be
 # put into a short wrapper script like this:
 #
-# cat >/var/decode_passwords <<-"LEANANDMEAN"
+# cat >/var/decrypt-fritzos-cfg <<-"LEANANDMEAN"
 # >> script code is placed here <<
 # LEANANDMEAN
-# chmod 550 /var/decode_passwords
-# [ $(md5sum </var/decode_passwords | sed -n -e 's/^\([0-9a-f]*\).*/\1/p') \
+# chmod 550 /var/decrypt-fritzos-cfg
+# [ $(md5sum </var/decrypt-fritzos-cfg | sed -n -e 's/^\([0-9a-f]*\).*/\1/p') \
 # (cont)  == 39f69aa3fb14198462c45fe56f7ed4cc ] || \
 # (cont)  echo "Hash difference found, transmission failed." 1>&2
 #
 # You can customize the above "wrapper" script with some more arguments. The target
 # file name at the device may be specified as second parameter, default value is
-# '/var/decode_passwords' which will write the script to volatile storage at tmpfs.
+# '/var/decrypt-fritzos-cfg' which will write the script to volatile storage at tmpfs.
 # If you'd prefer to do without the final hash check, you can specify *any* item as
 # third argument. If its length is greater than zero, no MD5 check will take place
 # at the wrapper.
@@ -128,7 +128,7 @@
 # every TR-069 INFORM request too), you can try to decrypt the secret data from
 # that file, if you specify the two values mentioned above as parameters:
 #
-# decode_passwords wlan_key mac_address < input_file
+# decrypt-fritzos-cfg wlan_key mac_address < input_file
 #
 # Currently this has been tested to be interoperable between the following
 # FRITZ!Box models:
@@ -229,7 +229,7 @@ shl=/bin/sh
 pm=/proc/mounts
 tddef=/var/tmp
 # LAM-EXCLUDE 1
-leanname=/var/decode_passwords
+leanname=/var/decrypt-fritzos-cfg
 #
 # here we'll store our temporary files ...
 #
@@ -325,7 +325,7 @@ if [ x$1 == xleanandmean ]; then
 	urenv=/proc/sys/urlader/environment
 	key="wlan_key"
 	mac="maca"
-	decode="decode_passwords"
+	decode="decrypt-fritzos-cfg"
 	encoded="username = \"\$\$\$\$GDAC24NUP3BNNQZ2SUWNFP2FH5ZLOA6ORXMYP1UOUEZE2UI3SYXXVVS15SRGNUW1C2I4V2FZLARCYKXO\";\npassword = \"\$\$\$\$WDLEUNJT1IJWZSQBBQMGXXXHTX2FV3ZQYMYCZPJEREFYXQ4CAYIWSXIXRVITC4HSA6AY65IRK5SSOKXO\";"
 	original_key="$(sed -n -e "/^$key/s/^[^\t]*\t\(.*\)/\1/p" <$urenv)"
 	original_mac="$(sed -n -e "/^$mac/s/^[^\t]*\t\(.*\)/\1/p" <$urenv)"
