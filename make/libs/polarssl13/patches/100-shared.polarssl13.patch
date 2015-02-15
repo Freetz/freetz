@@ -6,7 +6,7 @@
  
 -SONAME=libpolarssl.so.7
 -
--DLEXT=so.7
+-DLEXT=so.8
 +DLEXT=so
  # OSX shared library extension:
  # DLEXT=dylib
@@ -29,7 +29,7 @@
  
  static: libpolarssl.a
  
--shared: libpolarssl.$(DLEXT) libpolarssl.so
+-shared: libpolarssl.so
 +shared: $(LIB_SO_VERSION)
  
  libpolarssl.a: $(OBJS)
@@ -38,7 +38,7 @@
  	echo "  RL    $@"
  	$(AR) s $@
  
--libpolarssl.${DLEXT}: libpolarssl.a
+-libpolarssl.${DLEXT}: $(OBJS)
 +$(LIB_SO_VERSION): $(OBJS)
  	echo "  LD    $@"
 -	$(CC) ${LDFLAGS} -shared -Wl,-soname,$(SONAME) -o $@ $(OBJS)
@@ -50,5 +50,5 @@
 +	&& ln -fs $@ $(LIB_SO_SONAME) \
 +	&& ln -fs $(LIB_SO_SONAME) $(LIB_SO)
  
- libpolarssl.dylib: libpolarssl.a
+ libpolarssl.dylib: $(OBJS)
  	echo "  LD    $@"

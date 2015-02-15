@@ -1,0 +1,71 @@
+--- library/Makefile
++++ library/Makefile
+@@ -22,7 +22,7 @@
+ CFLAGS += -fPIC
+ endif
+ 
+-SONAME=libmbedtls.so.7
++SONAME=libpolarssl.so.7
+ 
+ DLEXT=so.8
+ # OSX shared library extension:
+@@ -75,41 +75,25 @@
+ 
+ shared: libpolarssl.so
+ 
+-libpolarssl.a: libmbedtls.a
+-	echo "  LN    $@ -> $?"
+-ifndef WINDOWS
+-	ln -sf $? $@
+-else
+-	copy /y /b $? $@
+-endif
+-
+-libmbedtls.a: $(OBJS)
++libpolarssl.a: $(OBJS)
+ 	echo "  AR    $@"
+ 	$(AR) r $@ $(OBJS)
+ 	echo "  RL    $@"
+ 	$(AR) s $@
+ 
+-libpolarssl.so: libmbedtls.so
+-	echo "  LN    $@ -> $?"
+-ifndef WINDOWS
+-	ln -sf $? $@
+-else
+-	copy /y /b $? $@
+-endif
+-
+-libmbedtls.${DLEXT}: $(OBJS)
++libpolarssl.${DLEXT}: $(OBJS)
+ 	echo "  LD    $@"
+ 	$(CC) ${LDFLAGS} -shared -Wl,-soname,$(SONAME) -o $@ $(OBJS)
+ 
+-libmbedtls.so: libmbedtls.${DLEXT}
+-	echo "  LN    $@ -> libmbedtls.${DLEXT}"
+-	ln -sf libmbedtls.${DLEXT} $@
++libpolarssl.so: libpolarssl.${DLEXT}
++	echo "  LN    $@ -> libpolarssl.${DLEXT}"
++	ln -sf libpolarssl.${DLEXT} $@
+ 
+-libmbedtls.dylib: $(OBJS)
++libpolarssl.dylib: $(OBJS)
+ 	echo "  LD    $@"
+ 	$(CC) ${LDFLAGS} -dynamiclib -o $@ $(OBJS)
+ 
+-libmbedtls.dll: $(OBJS)
++libpolarssl.dll: $(OBJS)
+ 	echo "  LD    $@"
+ 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS) -lws2_32 -lwinmm -lgdi32
+ 
+@@ -119,8 +103,8 @@
+ 
+ clean:
+ ifndef WINDOWS
+-	rm -f *.o libpolarssl.* libmbedtls.*
++	rm -f *.o libpolarssl.*
+ endif
+ ifdef WINDOWS
+-	del /Q /F *.o libpolarssl.* libmbedtls.*
++	del /Q /F *.o libpolarssl.*
+ endif
