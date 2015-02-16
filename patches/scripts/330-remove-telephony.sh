@@ -12,13 +12,22 @@ else
 	rm_files $(find ${FILESYSTEM_MOD_DIR} -name '*isdn*' -o -name '*iglet*' -o -name '*voip' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/')
 fi
 
-# libcapi cannot be removed in firmwares having libfaxsendlua.so, libfaxsendlua.so is required by /usr/www/cgi-bin/firmwarecfg
-# this is also the reason why we don't remove libfaxsendlua.so
+# libcapi cannot be removed in firmwares containing libfaxsend(lua).so, libfaxsend(lua).so is required by /usr/www/cgi-bin/firmwarecfg
+# this is also the reason why we don't remove libfaxsend(lua).so
 # TODO: AVM's version of libcapi can be removed if freetz' version of it is available. In order this to work we however need to symlink
 # AVM's version to the freetz one (i.e. "to replace it"). AVM binaries know nothing about /usr/lib/freetz and will not find libcapi there.
-if [ ! -e "${FILESYSTEM_MOD_DIR}/lib/libfaxsendlua.so" ] || ! isNeededEntry libcapi20.so "${FILESYSTEM_MOD_DIR}/lib/libfaxsendlua.so"; then
-	rm_files $(find ${FILESYSTEM_MOD_DIR} -name 'libcapi*')
+libcapi_could_be_removed=y
+for binary in \
+	${FILESYSTEM_MOD_DIR}/lib/libfaxsend.so \
+	${FILESYSTEM_MOD_DIR}/lib/libfaxsendlua.so \
+	${FILESYSTEM_MOD_DIR}/usr/bin/csvd \
+; do
+	if [ -e "$binary" ] && isNeededEntry libcapi20.so "$binary"; then
+		libcapi_could_be_removed=n
+		break
+	fi
 fi
+[ "$libcapi_could_be_removed" == "y" ] && rm_files $(find ${FILESYSTEM_MOD_DIR} -name 'libcapi*')
 
 rm_files \
   $(find ${FILESYSTEM_MOD_DIR} \( -name '*capi*' -a ! -name 'libcapi*' \) -o -name '*tam*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
