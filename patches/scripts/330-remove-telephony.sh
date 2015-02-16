@@ -26,7 +26,7 @@ for binary in \
 		libcapi_could_be_removed=n
 		break
 	fi
-fi
+done
 [ "$libcapi_could_be_removed" == "y" ] && rm_files $(find ${FILESYSTEM_MOD_DIR} -name 'libcapi*')
 
 rm_files \
