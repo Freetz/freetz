@@ -1,6 +1,6 @@
 --- include/polarssl/x509.h
 +++ include/polarssl/x509.h
-@@ -64,6 +64,8 @@
+@@ -73,6 +73,8 @@
  #define POLARSSL_ERR_X509_FILE_IO_ERROR                    -0x2B00  /**< Read/write of file failed. */
  #define POLARSSL_ERR_X509_PASSWORD_REQUIRED                -0x2B80  /**< Private key password can't be empty. */
  #define POLARSSL_ERR_X509_PASSWORD_MISMATCH                -0x2C00  /**< Given private key password does not allow for correct decryption. */
@@ -9,7 +9,7 @@
  /* \} name */
  
  
-@@ -385,11 +387,9 @@
+@@ -394,11 +396,9 @@
  
  /**
   * \name Structures for writing X.509 certificates.
@@ -21,7 +21,7 @@
  typedef struct _x509_node
  {
      unsigned char *data;
-@@ -417,7 +417,6 @@
+@@ -426,7 +426,6 @@
      x509_node sign;
  }
  x509_raw;
@@ -29,7 +29,7 @@
  
  #ifdef __cplusplus
  extern "C" {
-@@ -785,6 +784,229 @@
+@@ -794,6 +793,229 @@
   */
  int x509_self_test( int verbose );
  
@@ -1400,4 +1400,4 @@
 +/*
   * X509 buffer writing functionality
   *
-  *  Copyright (C) 2006-2012, Brainspark B.V.
+  *  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
