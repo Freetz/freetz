@@ -1,0 +1,40 @@
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -61,6 +61,7 @@
+ 
+ #define EXIT_UNSQUASH(s, args...)	do { \
+ 						fprintf(stderr, "FATAL ERROR aborting: "s, ## args); \
++						exit(1); \
+ 					} while(0)
+ 
+ struct hash_table_entry {
+@@ -166,11 +167,11 @@
+ 
+ 		if((res = uncompress((unsigned char *) block, &bytes, (const unsigned char *) buffer, c_byte)) != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				ERROR("zlib::uncompress failed, not enough memory\n");
++				EXIT_UNSQUASH("zlib::uncompress failed, not enough memory\n");
+ 			else if(res == Z_BUF_ERROR)
+-				ERROR("zlib::uncompress failed, not enough room in output buffer\n");
++				EXIT_UNSQUASH("zlib::uncompress failed, not enough room in output buffer\n");
+ 			else
+-				ERROR("zlib::uncompress failed, unknown error %d\n", res);
++				EXIT_UNSQUASH("zlib::uncompress failed, unknown error %d\n", res);
+ 			goto failed;
+ 		}
+ 		if(next)
+@@ -204,11 +205,11 @@
+ 
+ 		if((res = uncompress((unsigned char *) block, &bytes, (const unsigned char *) data, c_byte)) != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				ERROR("zlib::uncompress failed, not enough memory\n");
++				EXIT_UNSQUASH("zlib::uncompress failed, not enough memory\n");
+ 			else if(res == Z_BUF_ERROR)
+-				ERROR("zlib::uncompress failed, not enough room in output buffer\n");
++				EXIT_UNSQUASH("zlib::uncompress failed, not enough room in output buffer\n");
+ 			else
+-				ERROR("zlib::uncompress failed, unknown error %d\n", res);
++				EXIT_UNSQUASH("zlib::uncompress failed, unknown error %d\n", res);
+ 			return 0;
+ 		}
+ 

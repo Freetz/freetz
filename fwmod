@@ -449,7 +449,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] && error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
-		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM"
+		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
 	else
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
@@ -462,7 +462,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		fi
 
 		echo "unpacking filesystem image"
-		modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM"
+		modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
 	fi
 
 	if [ -r "$AVMPLUGINS" ]; then
