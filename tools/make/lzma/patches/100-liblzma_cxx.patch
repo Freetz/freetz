@@ -1,11 +1,12 @@
 --- /dev/null
 +++ C/7zip/Compress/LZMA_Lib/makefile
-@@ -0,0 +1,40 @@
+@@ -0,0 +1,43 @@
 +CXX = g++
 +CPPFLAGS = -I ../../../
 +CFLAGS = -W -Wall -O2
 +
 +AR = ar
++RANLIB = ranlib
 +RM = rm -f
 +
 +PROG = liblzma.a
@@ -34,10 +35,12 @@
 +all: $(PROG)
 +
 +$(PROG): $(OBJS)
-+	$(AR) r $(PROG) $(OBJS)
++	$(RM) $@
++	$(AR) rcu $@ $(OBJS)
++	$(RANLIB) $@
 +
 +$(OBJS): %.o: %.cpp
 +	@$(CXX) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 +
 +clean:
-+	-$(RM) $(PROG) $(OBJS)
++	-$(RM) *.a *.o
