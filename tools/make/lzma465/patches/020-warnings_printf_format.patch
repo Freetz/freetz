@@ -1,0 +1,48 @@
+--- CPP/7zip/Compress/LZMA_Alone/LzmaAlone.cpp
++++ CPP/7zip/Compress/LZMA_Alone/LzmaAlone.cpp
+@@ -464,7 +464,7 @@
+       Byte b = Byte(fileSize >> (8 * i));
+       if (outStream->Write(&b, 1, 0) != S_OK)
+       {
+-        fprintf(stderr, kWriteError);
++        fprintf(stderr, "%s", kWriteError);
+         return 1;
+       }
+     }
+@@ -489,7 +489,7 @@
+     Byte header[kPropertiesSize + 8];
+     if (ReadStream_FALSE(inStream, header, kPropertiesSize + 8) != S_OK)
+     {
+-      fprintf(stderr, kReadError);
++      fprintf(stderr, "%s", kReadError);
+       return 1;
+     }
+     if (decoderSpec->SetDecoderProperties2(header, kPropertiesSize) != S_OK)
+--- CPP/7zip/Compress/LZMA_Alone/LzmaBenchCon.cpp
++++ CPP/7zip/Compress/LZMA_Alone/LzmaBenchCon.cpp
+@@ -142,7 +142,7 @@
+   if (final)
+   {
+     UInt64 rating = GetDecompressRating(info.GlobalTime, info.GlobalFreq, info.UnpackSize, info.PackSize, info.NumIterations);
+-    fprintf(f, kSep);
++    fprintf(f, "%s", kSep);
+     CBenchInfo info2 = info;
+     info2.UnpackSize *= info2.NumIterations;
+     info2.PackSize *= info2.NumIterations;
+@@ -201,14 +201,14 @@
+   {
+     fprintf(f, "   Speed Usage    R/U Rating");
+     if (j == 0)
+-      fprintf(f, kSep);
++      fprintf(f, "%s", kSep);
+   }
+   fprintf(f, "\n   ");
+   for (j = 0; j < 2; j++)
+   {
+     fprintf(f, "    KB/s     %%   MIPS   MIPS");
+     if (j == 0)
+-      fprintf(f, kSep);
++      fprintf(f, "%s", kSep);
+   }
+   fprintf(f, "\n\n");
+   for (UInt32 i = 0; i < numIterations; i++)

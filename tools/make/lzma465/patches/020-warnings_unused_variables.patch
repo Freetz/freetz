@@ -1,0 +1,11 @@
+--- CPP/7zip/Compress/LZMA_Alone/makefile.gcc
++++ CPP/7zip/Compress/LZMA_Alone/makefile.gcc
+@@ -3,7 +3,7 @@
+ CXX_C = gcc -O2 -Wall
+ LIB = -lm
+ RM = rm -f
+-CFLAGS = -c -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
++CFLAGS = -c -Wno-unused-but-set-variable -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+ 
+ ifdef SystemDrive
+ IS_MINGW = 1
