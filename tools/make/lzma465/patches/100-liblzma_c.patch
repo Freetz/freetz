@@ -1,0 +1,36 @@
+--- /dev/null
++++ C/LzmaLib/makefile.gcc
+@@ -0,0 +1,33 @@
++CC = gcc
++CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -I ../
++CFLAGS = -W -Wall -O2
++
++AR = ar
++RANLIB = ranlib
++RM = rm -f
++
++PROG = liblzma.a
++
++vpath %.c ../
++
++OBJS = \
++	Alloc.o \
++	LzFind.o \
++	LzmaDec.o \
++	LzmaEnc.o \
++	LzmaLib.o \
++	7zFile.o \
++	7zStream.o
++
++all: $(PROG)
++
++$(PROG): $(OBJS)
++	$(RM) $@
++	$(AR) rcu $@ $(OBJS)
++	$(RANLIB) $@
++
++$(OBJS): %.o: %.c
++	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
++
++clean:
++	-$(RM) *.a *.o

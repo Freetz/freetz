@@ -1,0 +1,57 @@
+--- /dev/null
++++ CPP/7zip/Compress/LZMA_Lib/makefile.gcc
+@@ -0,0 +1,54 @@
++CC = gcc
++CXX = g++
++CPPFLAGS = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -I../../../../C -I../ -I../../Common -I../../../Common
++CFLAGS = -W -Wall -O2
++
++AR = ar
++RANLIB = ranlib
++RM = rm -f
++
++PROG = liblzma.a
++
++vpath %.c   ../../../../C
++vpath %.cpp ../:../../Common:../../../Common
++
++C_OBJS = \
++	7zCrc.o \
++	Alloc.o \
++	LzFind.o \
++	LzmaDec.o \
++	LzmaEnc.o \
++	LzmaLib.o \
++	7zFile.o \
++	7zStream.o
++
++CPP_OBJS = \
++	LzmaDecoder.o \
++	LzmaEncoder.o \
++	InBuffer.o \
++	OutBuffer.o \
++	FileStreams.o \
++	StreamUtils.o \
++	C_FileIO.o \
++	CRC.o \
++	IntToString.o \
++	MyString.o \
++	StringConvert.o \
++	StringToInt.o \
++	MyVector.o
++
++all: $(PROG)
++
++$(PROG): $(C_OBJS) $(CPP_OBJS)
++	$(RM) $@
++	$(AR) rcu $@ $(C_OBJS) $(CPP_OBJS)
++	$(RANLIB) $@
++
++$(C_OBJS): %.o: %.c
++	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
++
++$(CPP_OBJS): %.o: %.cpp
++	@$(CXX) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
++
++clean:
++	-$(RM) *.a *.o

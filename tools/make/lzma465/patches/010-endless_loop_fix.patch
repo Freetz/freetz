@@ -1,0 +1,12 @@
+Prevent endless loop if input is not compressible. May be fixed in 4.56 beta
+--- CPP/7zip/Common/OutBuffer.cpp
++++ CPP/7zip/Common/OutBuffer.cpp
+@@ -77,6 +77,8 @@
+     UInt32 processedSize = 0;
+     result = _stream->Write(_buffer + _streamPos, size, &processedSize);
+     size = processedSize;
++    if (!size)
++      result = -1;
+   }
+   _streamPos += size;
+   if (_streamPos == _bufferSize)
