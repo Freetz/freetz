@@ -104,14 +104,14 @@
 +
 +  STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 *newPosition)
 +  {
-+	  UInt64 _offset;
++	  Int64 _offset;
 +
 +	  if (seekOrigin == STREAM_SEEK_SET) _offset = offset;
 +	  else if (seekOrigin == STREAM_SEEK_CUR) _offset = m_offset + offset; 
 +	  else if (seekOrigin == STREAM_SEEK_END) _offset = m_size;
 +	  else return STG_E_INVALIDFUNCTION;
 +
-+	  if (_offset < 0 || _offset > m_size)
++	  if (_offset < 0 || ((UInt64)_offset) > m_size)
 +		  return STG_E_SEEKERROR;
 +
 +	  m_offset = _offset;
@@ -171,14 +171,14 @@
 +
 +  STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 *newPosition)
 +  {
-+	  UInt64 _offset;
++	  Int64 _offset;
 +
 +	  if (seekOrigin == STREAM_SEEK_SET) _offset = offset;
 +	  else if (seekOrigin == STREAM_SEEK_CUR) _offset = m_offset + offset; 
 +	  else if (seekOrigin == STREAM_SEEK_END) _offset = m_size;
 +	  else return STG_E_INVALIDFUNCTION;
 +
-+	  if (_offset < 0 || _offset > m_maxsize)
++	  if (_offset < 0 || ((UInt64)_offset) > m_maxsize)
 +		  return STG_E_SEEKERROR;
 +
 +	  m_offset = _offset;
