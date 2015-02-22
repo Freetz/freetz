@@ -1,0 +1,52 @@
+--- C/7zip/Compress/LZMA_Alone/LzmaAlone.cpp
++++ C/7zip/Compress/LZMA_Alone/LzmaAlone.cpp
+@@ -444,7 +444,7 @@
+       Byte b = Byte(fileSize >> (8 * i));
+       if (outStream->Write(&b, 1, 0) != S_OK)
+       {
+-        fprintf(stderr, kWriteError);
++        fprintf(stderr, "%s", kWriteError);
+         return 1;
+       }
+     }
+@@ -470,12 +470,12 @@
+     UInt32 processedSize;
+     if (ReadStream(inStream, properties, kPropertiesSize, &processedSize) != S_OK)
+     {
+-      fprintf(stderr, kReadError);
++      fprintf(stderr, "%s", kReadError);
+       return 1;
+     }
+     if (processedSize != kPropertiesSize)
+     {
+-      fprintf(stderr, kReadError);
++      fprintf(stderr, "%s", kReadError);
+       return 1;
+     }
+     if (decoderSpec->SetDecoderProperties2(properties, kPropertiesSize) != S_OK)
+@@ -489,12 +489,12 @@
+       Byte b;
+       if (inStream->Read(&b, 1, &processedSize) != S_OK)
+       {
+-        fprintf(stderr, kReadError);
++        fprintf(stderr, "%s", kReadError);
+         return 1;
+       }
+       if (processedSize != 1)
+       {
+-        fprintf(stderr, kReadError);
++        fprintf(stderr, "%s", kReadError);
+         return 1;
+       }
+       fileSize |= ((UInt64)b) << (8 * i);
+--- C/7zip/Compress/LZMA_Alone/LzmaBench.cpp
++++ C/7zip/Compress/LZMA_Alone/LzmaBench.cpp
+@@ -363,7 +363,7 @@
+   if (result == E_OUTOFMEMORY)
+     fprintf(f, "Can not allocate memory");
+   else
+-    fprintf(f, s);
++    fprintf(f, "%s", s);
+   fprintf(f, "\n");
+ }
+ 
