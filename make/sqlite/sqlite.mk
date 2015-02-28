@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3080802)
+$(call PKG_INIT_BIN, 3080803)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=1db237523419af7110e1d92c6b766e965f9322e4
+$(PKG)_SOURCE_SHA1:=2fe3f6226a2a08a2e814b97cd53e36bb3c597112
 $(PKG)_SITE:=http://www.sqlite.org/2015
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-autoconf-$($(PKG)_VERSION)
