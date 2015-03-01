@@ -791,6 +791,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 	shopt -u nullglob
 
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		# TODO: temporary workaround - move this code to patches/scripts/102-add_inittab.sh
+		sed -i -r -e 's,(/dev/)?ttyS[0-9](::(sysinit|shutdown):),\2,' "${FILESYSTEM_CORE_MOD_DIR}/etc/inittab"
+	fi
+
 	echo1 "creating symlinks /tmp, /mod and /home"
 	rm -rf "$FILESYSTEM_MOD_DIR"/tmp
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
