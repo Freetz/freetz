@@ -1074,16 +1074,19 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo0 "installing busybox"
 
+		DIRS_BUSYBOX_TO_REPLACE_WITHIN="${FILESYSTEM_MOD_DIR}"
+		[ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_CORE_MOD_DIR}"
+
 		echo1 "replacing busybox"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox" ] && error 1 "cannot find busybox replacement"
-		cp -pf "${PACKAGES_DIR}/busybox/busybox" "${FILESYSTEM_MOD_DIR}/bin/busybox"
+		for d in ${DIRS_BUSYBOX_TO_REPLACE_WITHIN}; do cp -pf "${PACKAGES_DIR}/busybox/busybox" "${d}/bin/busybox"; done
 
 		echo1 "installing symlinks"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox.links" ] && error 1 "cannot find busybox links"
 
 		# Remove old busybox links
 		# be compatible: do not use -delete (not found in older versions of find)
-		find "$FILESYSTEM_MOD_DIR" \( -lname "busybox" -or -lname "*/busybox" \) -print0 | xargs -0 rm
+		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "busybox" -or -lname "*/busybox" \) -print0 | xargs -0 rm
 
 		# Install new busybox links
 		for link in $(cat "${PACKAGES_DIR}/busybox/busybox.links"); do
@@ -1108,8 +1111,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 					;;
 			esac
 
-			ln -sf "$BUSYBOX_PATH" "${FILESYSTEM_MOD_DIR}${LINK_DIR}/$LINK_NAME" ||
-			error 1 "could not create link for $link"
+			for d in ${DIRS_BUSYBOX_TO_REPLACE_WITHIN}; do
+				mkdir -p "${d}${LINK_DIR}"
+				ln -sf "$BUSYBOX_PATH" "${d}${LINK_DIR}/$LINK_NAME" || error 1 "could not create link for $link"
+			done
 		done || exit 1
 	fi
 
