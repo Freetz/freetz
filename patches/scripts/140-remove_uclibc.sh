@@ -30,6 +30,11 @@ for link in \
   ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/$link"
 	rm_files "${FILESYSTEM_MOD_DIR}/usr/lib/$link"
+
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		rm_files "${FILESYSTEM_CORE_MOD_DIR}/lib/$link"
+		rm_files "${FILESYSTEM_CORE_MOD_DIR}/usr/lib/$link"
+	fi
 done
 
 echo1 "linking ld.so.1"

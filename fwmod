@@ -1020,6 +1020,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 				found=1
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a $files "${FILESYSTEM_MOD_DIR}/${dn}/"
+				if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && echo "${bn}" | grep -qE '^(ld_uClibc|libuClibc)$'; then
+					cp -a $files "${FILESYSTEM_CORE_MOD_DIR}/${dn}/"
+				fi
 				all_files="$all_files $files"
 			done
 			if [ "$found" = 0 ]; then
@@ -1028,7 +1031,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 				sizeinfo lib "$all_files"
 			fi
 		done
-		[ "$FREETZ_KEEP_AVM_UCLIBC" != "y" -a "$FREETZ_LIB_libuClibc" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
+		if [ "$FREETZ_KEEP_AVM_UCLIBC" != "y" -a "$FREETZ_LIB_libuClibc" == "y" ]; then
+			cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
+			[ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_CORE_MOD_DIR}/lib/"
+		fi
 
 		echo1 "checking uClibc version"
 		DETECTED_UCLIBC_VER="$(find ${FILESYSTEM_DIR}/lib/libuClibc-*.so | sed -rn 's@.*/.*-(.*)\.so@\1@p')"
@@ -1385,8 +1391,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 	if [ "$FREETZ_STRIP_BINARIES" == "y" ]; then
 		echo0 "stripping leftover unstripped binaries"
-		for i in `find ${FILESYSTEM_MOD_DIR} ! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
-			\( -perm /100 -o -name "*.so*" \) -type f -exec file {} '+'|sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p'`; do
+		for i in $(find \
+				"${FILESYSTEM_MOD_DIR}" "$([ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && echo "${FILESYSTEM_CORE_MOD_DIR}")" \
+				! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
+				\( -perm /100 -o -name "*.so*" \) \
+				-type f \
+				-exec file {} '+' | sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p' \
+		); do
 			echo2 $i
 			chmod u+r $i
 			$STRIP -p --remove-section={.comment,.note,.pdr} $i
