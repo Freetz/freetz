@@ -2,6 +2,32 @@ config EXTERNAL_FREETZ_PACKAGE_PHP
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_PHP
 	bool "PHP"
 	default n
+
+menu PHP
+	depends on EXTERNAL_FREETZ_PACKAGE_PHP
+
+config EXTERNAL_FREETZ_PACKAGE_PHP_cgi
+	depends on FREETZ_PACKAGE_PHP_cgi
+	bool "PHP CGI"
+	default n
 	help
 		externals the following file(s):
 		 /usr/bin/php-cgi
+
+config EXTERNAL_FREETZ_PACKAGE_PHP_cli
+	depends on FREETZ_PACKAGE_PHP_cli
+	bool "PHP CLI"
+	default n
+	help
+		externals the following file(s):
+		 /usr/bin/php
+
+config EXTERNAL_FREETZ_PACKAGE_PHP_apxs2
+	depends on FREETZ_PACKAGE_PHP_apxs2
+	bool "Apache2 module"
+	default n
+	help
+		externals the following file(s):
+		 /usr/lib/apache2/libphp5.so
+
+endmenu

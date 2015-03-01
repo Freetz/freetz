@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_PHP
 	bool "PHP (binary only)"
-	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
+	select FREETZ_PACKAGE_PHP_cgi
 	default n
 	help
 		PHP: Hypertext Preprocessor
@@ -24,6 +24,35 @@ choice
 		bool "php 5.5.22"
 endchoice
 
+menu "Binaries"
+depends on FREETZ_PACKAGE_PHP
+
+config FREETZ_PACKAGE_PHP_cgi
+	bool "PHP CGI"
+	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
+	default y
+
+config FREETZ_PACKAGE_PHP_cli
+	bool "PHP CLI"
+	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+
+config FREETZ_PACKAGE_PHP_apxs2
+	bool "Apache2 module"
+	select FREETZ_LIB_libpcre
+	select FREETZ_LIB_libcurl            if FREETZ_PACKAGE_PHP_WITH_CURL
+	select FREETZ_LIB_libgd              if FREETZ_PACKAGE_PHP_WITH_GD
+	select FREETZ_LIB_libiconv           if FREETZ_PACKAGE_PHP_WITH_LIBICONV
+	select FREETZ_LIB_libsqlite3         if FREETZ_PACKAGE_PHP_WITH_SQLITE3
+	select FREETZ_LIB_libcrypto          if FREETZ_PACKAGE_PHP_WITH_SSL
+	select FREETZ_LIB_libssl             if FREETZ_PACKAGE_PHP_WITH_SSL
+	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_PHP_WITH_SSL
+	select FREETZ_LIB_libxml2            if FREETZ_PACKAGE_PHP_WITH_LIBXML
+	select FREETZ_LIB_libz               if FREETZ_PACKAGE_PHP_WITH_ZLIB
+	default n
+
+endmenu
+
 menu "PHP features"
 depends on FREETZ_PACKAGE_PHP
 
@@ -33,6 +62,12 @@ config FREETZ_PACKAGE_PHP_WITH_CURL
 	default n
 	help
 		This option enables the CURL support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_FILEINFO
+	bool "build with FILEINFO support"
+	default n
+	help
+		This option enables the FILEINFO support for PHP
 
 config FREETZ_PACKAGE_PHP_WITH_GD
 	bool "build with GD support"
@@ -64,6 +99,18 @@ config FREETZ_PACKAGE_PHP_WITH_JSON
 	default n
 	help
 		This option enables the JSON support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_MEMORY_LIMIT
+	bool "build with MEMORY_LIMIT support"
+	default n
+	help
+		This option enables the MEMORY_LIMIT support for PHP
+
+config FREETZ_PACKAGE_PHP_WITH_MHASH
+	bool "build with MHASH support"
+	default n
+	help
+		This option enables the MHASH support for PHP
 
 config FREETZ_PACKAGE_PHP_WITH_PCNTL
 	bool "build with PCNTL support"
