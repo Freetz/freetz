@@ -112,16 +112,17 @@ image() {
 	# for recent fw's
 	if [ -e squashfs-root/filesystem_core.squashfs ]; then
 		$FTOOLS/find-squashfs squashfs-root/filesystem_core.squashfs >/dev/null 2>&1
-		rm -rf squashfs-root
-		rm kernel.raw
+		rm squashfs-root/filesystem_core.squashfs kernel.raw
+		mv squashfs-root filesystem_envelope
 		$FTOOLS/unsquashfs3 kernelsquashfs.raw >/dev/null 2>&1
 		rm kernelsquashfs.raw
+		[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
 	fi
 
 	if [ -d squashfs-root ]; then
-		echo -e "`find squashfs-root -type f | wc -l`\t$img" # | tee -a _failed.log
+		local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem_envelope*' | wc -l)
+		echo -e "${numberOfFiles}\t${img}"
 		mv squashfs-root "${dst}$(echo ${img%.*} |sed 's!.*/!!')"
-	##rm -rf $img
 	else
 		echo -e "====\t$img" | tee -a _failed.log
 	fi
