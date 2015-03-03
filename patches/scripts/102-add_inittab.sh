@@ -13,9 +13,8 @@ fi
 ::respawn:/sbin/ip_watchdog
 "
 
+# actual filesystem
 cat << EOF > "${FILESYSTEM_MOD_DIR}/etc/inittab"
-#
-::restart:/sbin/init
 ::sysinit:/etc/init.d/rc.S
 
 # Start an "askfirst" shell on the console (whatever that may be)
@@ -24,4 +23,12 @@ $ip_watchdog
 # Stuff to do before rebooting
 ::shutdown:/bin/sh -c /etc/inittab.shutdown
 
+::restart:/sbin/init
 EOF
+
+# wrapper filesystem
+if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	# keep all AVM sysinit lines except for that containing /etc/init.d/rc.S (we provide our own)
+	sed -i -n -e '/::sysinit:/ { /\/etc\/init\.d\/rc\.S/ !p }' "${FILESYSTEM_CORE_MOD_DIR}/etc/inittab"
+	cat "${FILESYSTEM_MOD_DIR}/etc/inittab" >> "${FILESYSTEM_CORE_MOD_DIR}/etc/inittab"
+fi
