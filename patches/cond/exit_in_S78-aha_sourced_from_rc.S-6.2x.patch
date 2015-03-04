@@ -1,0 +1,20 @@
+Files _sourced_ from rc.S are not allowed to use 'exit'-statement as this would cause rc.S to exit
+
+--- etc/init.d/S78-aha
++++ etc/init.d/S78-aha
+@@ -23,9 +23,7 @@
+ echo "!!! AHA läuft bereits !!!" > /dev/console
+ ps > /dev/console
+ echo "!!!!!!!!!!!!!!!!!!!!!!!!!" > /dev/console
+-exit 0
+-## aha -s
+-fi
++else
+ rm -f /var/tmp/homeauto
+ rm -f /var/tmp/me_avm_home_external.ctl
+ if [ -n $1 ] && [ "$1" = "date" ]; then
+@@ -43,3 +41,4 @@
+ /usr/bin/aha 2> /dev/console >/dev/console &
+ ## [ -x /usr/bin/aha ] && /usr/bin/aha &
+ sleep 1 # up zeit zu gewinnen damit die signal handler installiert werden können
++fi
