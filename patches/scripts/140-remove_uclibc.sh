@@ -9,6 +9,7 @@
 
 echo1 "removing uClibc-${version} files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/*${version}*"
+[ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && rm_files "${FILESYSTEM_CORE_MOD_DIR}/lib/*${version}*"
 
 echo1 "removing uClibc links"
 for link in \
