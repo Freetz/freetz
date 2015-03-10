@@ -1,5 +1,5 @@
---- genver.sh
-+++ genver.sh
+--- genver.sh.orig	2015-03-10 14:12:15.776046877 +0100
++++ genver.sh	2015-03-10 14:12:22.944046600 +0100
 @@ -7,25 +7,23 @@
  	QUIET=0
  fi
@@ -12,18 +12,18 @@
  if ! `(git status | grep -q "On branch") 2> /dev/null`; then
          # If we don't have git, we can't work out what
          # version this is. It must have been downloaded as a
-         # zip file.
- 
+         # zip file. 
+         
 -        # If downloaded from the release page, the directory
 -        # has the version number.
 -        release=`pwd | sed s/.*sslh-// | grep "[[:digit:]]"`
- 
+         
 -        if [ "x$release" = "x" ]; then
              # If downloaded from the head, Github creates the
              # zip file with all files dated from the last
              # change: use the Makefile's modification time as a
              # release number
-             release=head-`stat -c "%y" Makefile | sed 's/ .*//'`
+             release=head-`perl -MPOSIX -e 'print strftime "%Y-%m-%d",localtime((stat "Makefile")[9])'`
 -        fi
 -fi
 -
