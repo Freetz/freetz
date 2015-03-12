@@ -56,16 +56,17 @@
  An http proxy server name and port. The default is none.
 --- readme.html
 +++ readme.html
-@@ -6,7 +6,7 @@
+@@ -6,8 +6,7 @@
  <body>
  <p><b>inadyn-mt - Simple DYNAMIC DNS client.<br>
  </b></p>
--<p><b>Version 02.24.43, August 2014<br>
-+<p><b>Version 02.24.43-ms_pid_00_patch, August 2014<br>
+-<p><b>Version 02.24.44, January 2015<br>
+-
++<p><b>Version 02.24.44-ms_pid_01_patch, January 2015<br>
  </b></p>
  <p><b>INADYN Advanced Help<br>
  </b></p>
-@@ -57,6 +57,7 @@
+@@ -58,6 +57,7 @@
    <li><a href="http://www.sitelutions.com">sitelutions.com</a></li>
    <li><a href="http://www.dnsomatic.com">dnsomatic.com</a></li>
    <li><a href="http://ipv6tb.he.net">ipv6tb.he.net</a></li>
@@ -73,7 +74,7 @@
    <li><a href="http://www.tzo.com">tzo.com</a></li>
    <li><a href="http://www.dynsip.org">dynsip.org</a></li>
    <li><a href="http://www.dhis.org">dhis.org</a></li>
-@@ -269,9 +270,9 @@
+@@ -270,9 +270,9 @@
  update request, i.e., both ip address types may be sent in a comma delimited list fashion.</p>
  
  </p>
@@ -86,7 +87,7 @@
  </p>
  <p style="margin-left: 20px;">'--debug': &#60;#&#62; - debug level 1..7 (higher = more output)<br>
  '-d': debug level 1..7 (higher = more output).<br>
-@@ -302,6 +303,9 @@
+@@ -303,6 +303,9 @@
  information.<br>
  </p>
  
@@ -96,7 +97,7 @@
  </p>
  <p style="margin-left: 20px;">'--dyndns_server_name &#60;name&#62;[:port]': dynamic dns server name, and optional port.</name>
  </p>
-@@ -321,13 +325,18 @@
+@@ -322,13 +325,18 @@
  -For sitelutions.com:  default@sitelutions.com<br>
  -For dnsomatic.com:  default@dnsomatic.com<br>
  -For tunnelbroker.net:  ipv6tb@he.net<br>
@@ -116,7 +117,7 @@
  </p>
  
  <p style="margin-left: 20px;">
-@@ -336,6 +345,7 @@
+@@ -337,6 +345,7 @@
  '--update_period_sec &#60;#&#62;': how often the IP is checked. The period is in [sec]. 30..864000.  Default is about 10 min. Max is 10 days<br>
  '--forced_update_period &#60;#&#62;': how often, in seconds, the IP is updated even if it is not changed. 30 sec..30 days, default, 30 days.<br>
  '--log_file &#60;path/file&#62;': log file path and name<br>
@@ -124,18 +125,22 @@
  '--background': runs in background.&nbsp; Output to syslog or to log file [if specified].<br>
  '--verbose &#60;#&#62;': set dbg level. 0 to 5<br>
  '--iterations &#60;#&#62;': set the number of DNS updates. Default is 0, which means infinity.<br>
-@@ -484,6 +494,11 @@
+@@ -485,6 +494,15 @@
  <b>HISTORY<br>
  <br>
  </b>
++Ver.&nbsp; inadyn-mt 2.24.44-ms_pid_patch_01 - Janurary 2015<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - added /usr/local/ to shared library search<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - fixes missing 2.24.44-ms_pid_patch_00 missing extra version<br><br>
 +
-+Ver.&nbsp; inadyn-mt 2.24.43-ms_pid_patch_00 - August 2014<br>
++Ver.&nbsp; inadyn-mt 2.24.44-ms_pid_patch_00 - Janurary 2015<br>
 +&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
 +&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Multiple services, in single program instance<br><br>
 +
- Ver.&nbsp; inadyn-mt 2.24.43 - August 2014<br>
+ Ver.&nbsp; inadyn-mt 2.24.44 - January 2015<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
- &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - pre v.02.24.40 ip cache read incompatibility fixed<br>
+ &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - fixes shared library, libao open failure<br><br>
 --- src/dyndns.c
 +++ src/dyndns.c
 @@ -125,9 +125,9 @@
@@ -2729,10 +2734,10 @@
  
  #endif
  
--#define	DYNDNS_EXTRA_VERSION
-+#define	DYNDNS_EXTRA_VERSION	"-ms_pid_patch_00"
+-#define DYNDNS_EXTRA_VERSION
++#define	DYNDNS_EXTRA_VERSION    "-ms_pid_patch_01"
  
- #define DYNDNS_VERSION_STRING	"02.24.43" DYNDNS_VERSION_SND DYNDNS_VERSION_THD DYNDNS_EXTRA_VERSION
+ #define DYNDNS_VERSION_STRING	"02.24.44" DYNDNS_VERSION_SND DYNDNS_VERSION_THD DYNDNS_EXTRA_VERSION
  #define DYNDNS_AGENT_NAME	"inadyn-mt/" DYNDNS_VERSION_STRING
 @@ -83,26 +83,27 @@
  
@@ -4498,3 +4503,21 @@
  #ifdef _WIN32
  
  	if (!(progMetaFile(pLOG_FILE,dest,normed_path,path_len,langFileName,str_to_lwr(ancestor_path(&a_path,root,cwd)),cwd))) {
+--- src/wave_util.c
++++ src/wave_util.c
+@@ -306,6 +306,15 @@
+ 	if (dl_ret=do_open_shared_lib(s_lib,"/usr/lib/"))
+ 		return dl_ret;
+ 
++	if (dl_ret=do_open_shared_lib(s_lib,"/usr/local/lib/"))
++		return dl_ret;
++
++	if (dl_ret=do_open_shared_lib(s_lib,"/usr/local/lib32/"))
++		return dl_ret;
++
++	if (dl_ret=do_open_shared_lib(s_lib,"/usr/local/lib64/"))
++		return dl_ret;
++
+ 	if (dl_ret=do_open_shared_lib(s_lib,"/usr/lib64/"))
+ 		return dl_ret;
+ 
