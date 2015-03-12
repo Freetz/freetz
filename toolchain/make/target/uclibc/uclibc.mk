@@ -55,7 +55,7 @@ $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DA
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(UCLIBC_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	$(call APPLY_PATCHES,$(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION),$(UCLIBC_DIR))
 ifeq ($(FREETZ_TARGET_UCLIBC_0_9_33),y)
-# "remove"-part of 993-nptl_remove_duplicate_vfork_in_libpthread
+# "remove"-part of 980-nptl_remove_duplicate_vfork_in_libpthread
 # instead of removing files using patch, we remove them using rm
 # see http://lists.uclibc.org/pipermail/uclibc/2014-September/048597.html for details
 	find $(UCLIBC_DIR)/libpthread/nptl -name "*pt-vfork*" -exec $(RM) {} \+
