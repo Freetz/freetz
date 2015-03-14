@@ -23,7 +23,7 @@ log_freetz() {
 find_mnt_name() {
 	local mnt_name=""
 
-	local storage_prefix="${MOD_STOR_PREFIX:-UStor}"
+	local storage_prefix="${MOD_STOR_PREFIX:-uStor}"
 	local dev_idx=$(echo -n ${1:2} | tr '[a-j]' '[0-9]')
 	local part_idx=$2
 	[ $part_idx -gt 9 ] && part_idx=$(echo $((part_idx-10)) | tr "0-5" "A-F") # partition index in HEX
@@ -52,7 +52,7 @@ find_mnt_name() {
 # freetz internal function
 #
 # $1 - block device name (including /dev/ prefix, e.g. /dev/sda1)
-# $2 - full mount point path (e.g. /var/media/ftp/UStor01)
+# $2 - full mount point path (e.g. /var/media/ftp/uStor01)
 # $3 (optional) - read/write mode (e.g. rw, rw if omitted)
 # $4 (optional) - uid of the mounted files (0 if omitted)
 # $5 (optional) - gid of the mounted files (0 if omitted)
@@ -249,7 +249,7 @@ do_mount_locked() {
 # used by /etc/hotplug/storage
 # separated from do_umount() since FW XX.04.86
 #
-# $1 - full mount point path (e.g. /var/media/ftp/UStor01)
+# $1 - full mount point path (e.g. /var/media/ftp/uStor01)
 #
 do_umount_locked() {
 	local mnt_path=$1                                                         # /var/media/ftp/uStorMN

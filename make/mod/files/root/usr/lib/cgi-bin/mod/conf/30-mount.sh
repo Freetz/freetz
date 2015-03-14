@@ -14,7 +14,7 @@ cat << EOF
 </p>
 EOF
 
-cgi_print_textline_p "stor_prefix" "$MOD_STOR_PREFIX" 20 "$(lang de:"Festes Pr&auml;fix f&uuml;r Mountpoints" en:"Fixed prefix for mount points") (UStor): "
+cgi_print_textline_p "stor_prefix" "$MOD_STOR_PREFIX" 20 "$(lang de:"Festes Pr&auml;fix f&uuml;r Mountpoints" en:"Fixed prefix for mount points") (uStor): "
 
 cgi_print_checkbox_p "stor_autorunend" "$MOD_STOR_AUTORUNEND" \
 	"$(lang de:"Automatisch autorun.sh und autoend.sh ausf&uuml;hren." en:"Run autorun.sh and autoend.sh automatically.")"
