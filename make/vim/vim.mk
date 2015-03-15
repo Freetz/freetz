@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, v7-4-608)
+$(call PKG_INIT_BIN, v7-4-663)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=hg@https://vim.googlecode.com/hg
 
@@ -21,20 +21,13 @@ $(PKG)_CONFIGURE_ENV += vim_cv_toupper_broken=no
 $(PKG)_CONFIGURE_ENV += vim_cv_tty_group=root
 $(PKG)_CONFIGURE_ENV += vim_cv_tty_mode=0620
 
+$(PKG)_CONFIGURE_OPTIONS += --with-features=$(if $(FREETZ_PACKAGE_VIM_HUGE),huge,$(if $(FREETZ_PACKAGE_VIM_NORMAL),normal,tiny))
+$(PKG)_CONFIGURE_OPTIONS += --$(if $(FREETZ_PACKAGE_VIM_MULTIBYTE),enable,disable)-multibyte
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-gui
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtktest
 $(PKG)_CONFIGURE_OPTIONS += --disable-xim
-ifeq ($(strip $(FREETZ_PACKAGE_VIM_HUGE)),y)
-$(PKG)_CONFIGURE_OPTIONS += --with-features=huge
-else
-ifeq ($(strip $(FREETZ_PACKAGE_VIM_NORMAL)),y)
-$(PKG)_CONFIGURE_OPTIONS += --with-features=normal
-else
-$(PKG)_CONFIGURE_OPTIONS += --with-features=tiny
-endif
-endif
 $(PKG)_CONFIGURE_OPTIONS += --without-x
-$(PKG)_CONFIGURE_OPTIONS += --$(if $(FREETZ_PACKAGE_VIM_MULTIBYTE),enable,disable)-multibyte
 $(PKG)_CONFIGURE_OPTIONS += --disable-netbeans
 $(PKG)_CONFIGURE_OPTIONS += --disable-gpm
 $(PKG)_CONFIGURE_OPTIONS += --with-tlib=ncurses
