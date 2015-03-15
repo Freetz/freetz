@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0c996b3e69)
+$(call PKG_INIT_BIN, 98d3ccce65)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/er13/callmonitor.git
 
