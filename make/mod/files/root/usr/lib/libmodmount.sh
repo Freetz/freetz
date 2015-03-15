@@ -459,8 +459,8 @@ storage_reload() {
 # if so, the unplug was initiated via AVM-web-if
 # freetz internal function
 is_ctlmgr_parent_of_storage_unplug() {
-	local storage_unplug_parent_pid=$(ps -l | awk '/sh -c \/etc\/hotplug\/storage unplug/ { print $4; }') # pid of parent of 'sh -c /etc/hotplug/storage unplug'
-	[ -z "${storage_unplug_parent_pid}" ] && return 1                                                     # storage unplug is not listed under running processes => return false
+	local storage_unplug_parent_pid=$(ps -l | awk '/sh -c \/etc\/hotplug\/storage (unplug|umount_usb)/ { print $4; }') # pid of parent of 'sh -c /etc/hotplug/storage unplug' (umount_usb since 5.5x)
+	[ -z "${storage_unplug_parent_pid}" ] && return 1                                                                  # storage unplug is not listed under running processes => return false
 
 	cat "/proc/${storage_unplug_parent_pid}/cmdline" 2>/dev/null | grep -q ctlmgr 2>/dev/null
 }

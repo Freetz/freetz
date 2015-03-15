@@ -48,5 +48,12 @@ ${SCRIPTPATCHER} -fdi ${STORAGE_FILE} -s "do_umount_locked" -o ${STORAGE_FILE} #
 ${SCRIPTPATCHER} -fri ${STORAGE_FILE} -s "do_umount" -o ${STORAGE_FILE} -n "$RUN_LIBMODMOUNT" # replace do_umount()
 ${SCRIPTPATCHER} -fdi ${STORAGE_FILE} -s "hd_spindown_control" -o ${STORAGE_FILE} # delete hd_spindown_control()
 ${SCRIPTPATCHER} -tri ${STORAGE_FILE} -s "reload" -o ${STORAGE_FILE} -n "reload)$PATCHED_BY_FREETZ\nstorage_reload$PATCHED_BY_FREETZ\n;;" # replace case section reload)
+if [ "$FREETZ_AVM_VERSION_05_2X_MAX" == "y" ]; then
 ${SCRIPTPATCHER} -tri ${STORAGE_FILE} -s "unplug" -o ${STORAGE_FILE} -n "unplug)$PATCHED_BY_FREETZ\nstorage_unplug "'$'"* $PATCHED_BY_FREETZ\n;;" # replace case section unplug)
+else
+modsed '/umount_usb)/ i \
+unplug)'"$PATCHED_BY_FREETZ"'\
+storage_unplug $*'"$PATCHED_BY_FREETZ"'\
+;;' ${STORAGE_FILE}
+fi
 modsed "/remove)/a remove_swap "'$'"*$PATCHED_BY_FREETZ" ${STORAGE_FILE} # add removing of swap partitions to section remove)
