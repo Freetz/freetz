@@ -1,0 +1,18 @@
+sys/timeb.h / ftime are legacy, so don't enable them for uClibc 
+---
+ apps/speed.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: apps/speed.c
+===================================================================
+--- apps/speed.c
++++ apps/speed.c
+@@ -114,7 +114,7 @@
+ #  define TIMES
+ # endif
+ /* FIXME */
+-# if !defined(_UNICOS) && !defined(__OpenBSD__) && !defined(sgi) && !defined(__FreeBSD__) && !(defined(__bsdi) || defined(__bsdi__)) && !defined(_AIX) && !defined(OPENSSL_SYS_MPE) && !defined(__NetBSD__) && !defined(OPENSSL_SYS_VXWORKS)
++# if !defined(_UNICOS) && !defined(__OpenBSD__) && !defined(sgi) && !defined(__FreeBSD__) && !(defined(__bsdi) || defined(__bsdi__)) && !defined(_AIX) && !defined(OPENSSL_SYS_MPE) && !defined(__NetBSD__) && !defined(OPENSSL_SYS_VXWORKS) && !defined(__UCLIBC__)
+ #  define TIMEB
+ # endif
+ 

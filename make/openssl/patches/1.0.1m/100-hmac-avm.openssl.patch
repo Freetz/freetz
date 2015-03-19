@@ -1,9 +1,9 @@
 --- crypto/hmac/hmac.c
 +++ crypto/hmac/hmac.c
-@@ -249,3 +249,12 @@
- 	EVP_MD_CTX_set_flags(&ctx->o_ctx, flags);
- 	EVP_MD_CTX_set_flags(&ctx->md_ctx, flags);
- 	}
+@@ -241,3 +241,12 @@
+     EVP_MD_CTX_set_flags(&ctx->o_ctx, flags);
+     EVP_MD_CTX_set_flags(&ctx->md_ctx, flags);
+ }
 +
 +// Define alias names for compatibility with AVMs libcrypto
 +#define	DEFINE_ALIAS(n)	extern __typeof (n) ossl_##n __attribute__ ((alias (#n)));

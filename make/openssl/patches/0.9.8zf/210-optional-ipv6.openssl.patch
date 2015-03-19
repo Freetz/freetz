@@ -1,0 +1,55 @@
+[PATCH] openssl: fix build without IPv6 support
+
+Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+---
+ crypto/bio/bss_dgram.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+Index: crypto/bio/bss_dgram.c
+===================================================================
+--- crypto/bio/bss_dgram.c
++++ crypto/bio/bss_dgram.c
+@@ -59,6 +59,12 @@
+ 
+ #include <stdio.h>
+ #include <errno.h>
++#include <features.h>
++
++#if defined(__UCLIBC__) && !defined (__UCLIBC_HAS_IPV6__)
++#define NO_IPV6
++#endif
++
+ #define USE_SOCKETS
+ #include "cryptlib.h"
+ 
+@@ -425,12 +431,14 @@
+                                   &sockopt_val, sizeof(sockopt_val))) < 0)
+                 perror("setsockopt");
+             break;
++#ifndef NO_IPV6
+         case AF_INET6:
+             sockopt_val = IPV6_PMTUDISC_DO;
+             if ((ret = setsockopt(b->num, IPPROTO_IPV6, IPV6_MTU_DISCOVER,
+                                   &sockopt_val, sizeof(sockopt_val))) < 0)
+                 perror("setsockopt");
+             break;
++#endif
+         default:
+             ret = -1;
+             break;
+@@ -463,6 +471,7 @@
+                 ret = data->mtu;
+             }
+             break;
++#ifndef NO_IPV6
+         case AF_INET6:
+             if ((ret =
+                  getsockopt(b->num, IPPROTO_IPV6, IPV6_MTU,
+@@ -478,6 +487,7 @@
+                 ret = data->mtu;
+             }
+             break;
++#endif
+         default:
+             ret = 0;
+             break;
