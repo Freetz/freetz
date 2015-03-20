@@ -102,7 +102,7 @@ mount_fs() {
 # used by /etc/hotplug/run_mount
 # separated from do_mount since fw 04.89
 #
-# $1 - proc device (e.g. /proc/bus/usb/001/002)
+# $1 - proc device, e.g. /proc/bus/usb/001/002 (before 6.25) or just 001/002 (since 6.25)
 # $2 - block device name (including /dev/ prefix, e.g. /dev/sda1)
 # $3 - partition number
 #
@@ -137,7 +137,7 @@ do_mount_locked() {
 	# update device map, do it before notifying other components about changes
 	# TODO: it should be enough to do it on successful mount only, i.e. if err_fs_mount==0
 	if grep -q $mnt_path /proc/mounts; then
-		if [ -f "$1" ]; then
+		if [ -f "$1" -o -f "/proc/bus/usb/$1" -o -f "/dev/bus/usb/$1" ]; then
 			grep -v "^$1=$2:" $DEVMAP > /var/dev-$$.map
 			echo "$1=$2:$mnt_name" >> /var/dev-$$.map
 			mv -f /var/dev-$$.map $DEVMAP
