@@ -1,0 +1,568 @@
+This patch has been created from AVM's opensrc packages for 7390.06.20 and 7390.06.23
+by applying to the kernel sources they contain the following command:
+
+    diff -durN --no-dereference -x fusiv_src 7390.06.20 7390.06.23 > this.patch
+
+--- linux-2.6.28/drivers/char/avm_new/ar7wdt_main.c
++++ linux-2.6.28/drivers/char/avm_new/ar7wdt_main.c
+@@ -982,6 +982,30 @@
+ 	}
+ }
+ #endif
++
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++int __get_userinfo(char *buf, unsigned int maxbuflen, struct mm_struct *mmm, unsigned long addr) {
++    struct vm_area_struct *vm;
++    unsigned int i = 0;
++    if(mmm == NULL) {
++        return 1;
++    }
++    vm = mmm->mmap;
++    while(vm) {
++        /*--- printk(KERN_INFO"%s[%x]:%p %x -%x\n", __func__, addr, vm, vm->vm_start, vm->vm_end); ---*/
++        if((addr >= vm->vm_start) && (addr < vm->vm_end)) {
++            snprintf(buf, maxbuflen,"seg=%3u of=0x%08lx [%s]", i, addr - (unsigned long)vm->vm_start, 
++                         (vm->vm_file && vm->vm_file->f_path.dentry) ? (char *)vm->vm_file->f_path.dentry->d_name.name : "");
++            /*--- printk(KERN_INFO"%s", buf); ---*/
++            return 0;
++        }
++        vm = vm->vm_next;
++        i++;
++    }
++    return 1;
++}
++
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ static void __sched_show_user_task(struct task_struct *task){
+--- linux-2.6.28/drivers/char/avm_new/avm_debug.c
++++ linux-2.6.28/drivers/char/avm_new/avm_debug.c
+@@ -432,7 +432,7 @@
+     return idx;
+ }
+ 
+-inline void avm_debug_enable_avm_printk(void)
++void avm_debug_enable_avm_printk(void)
+ {
+ #ifdef CONFIG_PRINTK
+ 
+@@ -448,7 +448,7 @@
+ #endif /* CONFIG_PRINTK */
+ }
+ 
+-inline void avm_debug_disable_avm_printk(void)
++void avm_debug_disable_avm_printk(void)
+ {
+ #ifdef CONFIG_PRINTK
+ 
+@@ -474,7 +474,7 @@
+ 
+     /* Always use original Linux printk */
+     printk_linux(KERN_ERR "\nblock cpu%x for %lu ms\n",
+-		smp_processor_id(), timer);
++		raw_smp_processor_id(), timer);
+ 
+     while(timer--) {
+         udelay(1000);
+@@ -490,7 +490,7 @@
+ static void torture_function(unsigned long context)
+ {
+ 	printk_linux(KERN_ERR "\nblock timer on cpu%x for %lu ms\n",
+-		     smp_processor_id(), context);
++		     raw_smp_processor_id(), context);
+ 
+ 	while (context--)
+ 		udelay(1000);
+@@ -646,7 +646,7 @@
+                 add_timer_on(&torture_Timer[cpu], cpu);
+             } else 
+ #if defined(CONFIG_SMP)
+-            if(cpu != smp_processor_id()) {
++            if(cpu != raw_smp_processor_id()) {
+                 smp_call_function_single(cpu, torture, (void *)val, 0);
+             } else 
+ #endif /*--- #if defined(CONFIG_SMP) ---*/
+@@ -1219,7 +1219,7 @@
+     if(pud->NextIsLong == TRUE) {
+         signed long long lValue;
+         lValue = va_arg(*marker, long long);
+-        sprintf(Data, "%llx", lValue);
++        snprintf(Data, sizeof(Data), "%llx", lValue);
+     } else {
+         Val = va_arg(*marker, int); 
+         if((mode == 1) && (Val == 0)) {
+@@ -1369,7 +1369,7 @@
+         return;
+     }
+     if(check_memory_pointer(B)){
+-        sprintf(tmp, "(inval=0x%x)", (unsigned int)B);
++        snprintf(tmp, sizeof(tmp), "(inval=0x%x)", (unsigned int)B);
+         B = tmp;
+     }
+     if(pud->Leftjust == TRUE) { /*--- reverse ---*/
+@@ -1408,7 +1408,7 @@
+         pstring = "(null)";
+     }
+     if(check_memory_pointer(pstring)){
+-        sprintf(tmp, "(inval=0x%x)", (unsigned int)pstring);
++        snprintf(tmp, sizeof(tmp), "(inval=0x%x)", (unsigned int)pstring);
+         pstring = tmp;
+     }
+     if (pud->field_prec == 0) {
+@@ -1472,7 +1472,7 @@
+ 
+ #if defined(CONFIG_SMP)
+ #define CPU_ARGUMENT_STRING()  "[%x] "
+-#define CPU_ID()    ,smp_processor_id()
++#define CPU_ID()    ,raw_smp_processor_id()
+ #else
+ #define CPU_ARGUMENT_STRING() " "
+ #define CPU_ID()    
+@@ -1505,7 +1505,7 @@
+ #if defined(CONFIG_PRINTK_TIME)
+         /* Follow the token with the time */
+         unsigned long clk_rem;
+-        unsigned long long clk = cpu_clock(smp_processor_id());
++        unsigned long long clk = cpu_clock(raw_smp_processor_id());
+         clk_rem = do_div(clk, 1000000000);
+ #endif /*--- #if defined(CONFIG_PRINTK_TIME) ---*/
+         if(lost) {
+@@ -1546,6 +1546,8 @@
+ #ifdef CONFIG_KALLSYMS
+    if(Mode && (*Mode & 0x2)) {
+ #else
++       /*--- wir benoetigen Modul-Textaufloesung: ---*/
++#endif/*--- #ifdef CONFIG_KALLSYMS ---*/
+         if(Mode && (*Mode & 0x1)) {
+             len = debug_prefix(DebugData, 0);
+             if(len > 0) {
+@@ -1553,8 +1555,6 @@
+                 pud->Sum = len;
+             }
+         }
+-       /*--- wir benoetigen Modul-Textaufloesung: ---*/
+-#endif/*--- #ifdef CONFIG_KALLSYMS ---*/
+         pud->Pos        = 0;
+         pud->NextIsLong = FALSE;
+         pud->p_ext = no_extension;
+@@ -1730,13 +1730,17 @@
+ /*-------------------------------------------------------------------------------------*\
+ \*-------------------------------------------------------------------------------------*/
+ void avm_DebugPrintf(const char *format, ...) {
+-    int print_time = 0x1| 0x2;
++    int print_time = 0x2;
++	const char *start_format = format;
+     va_list marker;
+ 
+     int level = skip_loglevel(&format, 0);
+     if (console_loglevel < level) {
+         return;
+     }
++	if(start_format != format) {
++		print_time |= 0x1;	/*--- Loglevel gefunden -> Timestamp davor ---*/
++    }
+     va_start(marker,format);
+     if(likely(avm_debug.init)) {
+         avm_DebugvPrintf(&print_time, format, marker);
+--- linux-2.6.28/drivers/char/avm_new/avm_proc_profile.c
++++ linux-2.6.28/drivers/char/avm_new/avm_proc_profile.c
+@@ -572,28 +572,6 @@
+ 
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+-int __get_userinfo(char *buf, unsigned int maxbuflen, struct mm_struct *mmm, unsigned long addr) {
+-    struct vm_area_struct *vm;
+-    unsigned int i = 0;
+-    if(mmm == NULL) {
+-        return 1;
+-    }
+-    vm = mmm->mmap;
+-    while(vm) {
+-        /*--- printk(KERN_INFO"%s[%x]:%p %x -%x\n", __func__, addr, vm, vm->vm_start, vm->vm_end); ---*/
+-        if((addr >= vm->vm_start) && (addr < vm->vm_end)) {
+-            snprintf(buf, maxbuflen,"seg=%3u of=0x%08lx [%s]", i, addr - (unsigned long)vm->vm_start, 
+-                         (vm->vm_file && vm->vm_file->f_path.dentry) ? (char *)vm->vm_file->f_path.dentry->d_name.name : "");
+-            /*--- printk(KERN_INFO"%s", buf); ---*/
+-            return 0;
+-        }
+-        vm = vm->vm_next;
+-        i++;
+-    }
+-    return 1;
+-}
+-/*--------------------------------------------------------------------------------*\
+-\*--------------------------------------------------------------------------------*/
+ int get_user_info(char *buf, unsigned int maxbuflen, pid_t pid, unsigned long addr) {
+     struct pid *ppid;
+     unsigned int pc_value __attribute__((unused)), ret = 1;
+@@ -1075,15 +1053,17 @@
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ static void performance_counter_action(char *p __attribute__((unused))) {
+-		char *p1  __attribute__((unused));
+ #if defined(CONFIG_MIPS) && !defined(CONFIG_MIPS_UR8)
+         unsigned int perf_reg_number = 0;
+         int perf_reg_flags = 0;
+         int perf_reg_index = 0;
+         unsigned int i;
+         unsigned int perf_max_registers;
++#if defined(CONFIG_CPU_MIPS_34K)
++		char *p1  __attribute__((unused));
+         int perf_vpeid = -1;
+         int perf_tcid = -1;
++#endif
+         int new_perf_ctl = 0;
+ 
+ #if defined(CONFIG_CPU_MIPS_34K)
+@@ -1224,6 +1204,7 @@
+         SKIP_NON_SPACE(p);
+         SKIP_SPACE(p);
+ 
++#if defined(CONFIG_CPU_MIPS_34K)
+         if((p1 = strstr(p, "examine_vpe="))){
+ 			unsigned int param;
+             sscanf(p1, "examine_vpe=%x", &param);
+@@ -1239,7 +1220,6 @@
+             SKIP_NON_SPACE(p);
+             SKIP_SPACE(p);
+         }
+-#if defined(CONFIG_CPU_MIPS_34K)
+         if((p1 = strstr(p, "counting_tc_mask="))) {
+ 			unsigned int param;
+             sscanf(p1 , "counting_tc_mask=%x", &param);
+--- linux-2.6.28/drivers/char/avm_new/avm_sammel.c
++++ linux-2.6.28/drivers/char/avm_new/avm_sammel.c
+@@ -107,10 +107,6 @@
+             *p++ = ' ';
+             *p   = '\0';
+         }
+-
+-        if(strstr(AVM_NEW_HWREV_LIST, buff)) {
+-            avm_event_enable_push_button = 1;
+-        }
+     }
+ 
+     /*--------------------------------------------------------------------------------------*\
+--- linux-2.6.28/drivers/char/avm_new/init_avm
++++ linux-2.6.28/drivers/char/avm_new/init_avm
+@@ -25,20 +25,6 @@
+     KERNEL_CLASS=26
+ fi
+ 
+-tmp=`grep 'BUTTON=y' $FRITZ_BOX_BUILD_DIR/arch/etc/init.d/rc.${KERNEL_LAYOUT}.init`
+-
+-AVM_NEW_HWREV_LIST=""
+-for i in $tmp ; do
+-    case $i in
+-        HW=*)
+-            HWREV=${i##HW=}
+-            AVM_NEW_HWREV_LIST="$AVM_NEW_HWREV_LIST ${HWREV%%[a-zA-Z]*}"
+-            ;;
+-        *)
+-            ;;
+-    esac
+-done
+-
+ for i in `find . -name Makefile.$KERNEL_CLASS` ; do
+     dest=${i%.$KERNEL_CLASS}
+     source="`pwd`/$i"
+@@ -49,7 +35,6 @@
+     echo -e "#############################################" >>$dest
+     echo -e "" >>$dest
+     cat  $source >> $dest
+-    echo "EXTRA_CFLAGS	+= -DAVM_NEW_HWREV_LIST=\"\\\"$AVM_NEW_HWREV_LIST \\\"\"" >>$dest
+ done
+ 
+ ln -fs `pwd`/linux_avm_event.h ../../../include/linux/avm_event.h 
+--- linux-2.6.28/drivers/char/avm_new/Makefile
++++ linux-2.6.28/drivers/char/avm_new/Makefile
+@@ -1,6 +1,6 @@
+ #############################################
+ # Makefile: automaticly generated by ./init_avm
+-#           Mi 17. Sep 16:31:22 CEST 2014
++#           Fr 30. Jan 15:37:31 CET 2015
+ #############################################
+ 
+ #############################################
+@@ -104,5 +104,3 @@
+ 
+ EXTRA_CFLAGS	+= -Wall -Wextra
+ # EXTRA_CFLAGS	+= -g -ggdb -save-temps
+-EXTRA_CFLAGS	+= -DAVM_NEW_HWREV_LIST="\" 156 191 171 137 168 197 139 145 167 141 144 170 175 177 181 183 196 202 203 209 185 193 212 192 198 210 211 189 179 188 180 96 184 195 207 190 201 194 200 205 206 172 173 \""
+-EXTRA_CFLAGS	+= -DAVM_NEW_HWREV_LIST="\" 156 191 171 137 168 197 139 145 167 141 144 170 175 177 181 183 196 202 203 209 185 193 212 192 198 210 211 189 179 188 180 96 184 195 207 190 201 194 200 205 206 214 172 173 \""
+--- linux-2.6.28/drivers/char/avm_new/Makefile.26
++++ linux-2.6.28/drivers/char/avm_new/Makefile.26
+@@ -99,4 +99,3 @@
+ 
+ EXTRA_CFLAGS	+= -Wall -Wextra
+ # EXTRA_CFLAGS	+= -g -ggdb -save-temps
+-EXTRA_CFLAGS	+= -DAVM_NEW_HWREV_LIST="\" 156 191 171 137 168 197 139 145 167 141 144 170 175 177 181 183 196 202 203 209 185 193 212 192 198 210 211 189 179 188 180 96 184 195 207 190 201 194 200 205 206 172 173 \""
+--- linux-2.6.28/drivers/char/avm_power/avm_power.h
++++ linux-2.6.28/drivers/char/avm_power/avm_power.h
+@@ -80,6 +80,7 @@
+     struct _power_managment_clients *next;
+     char *client_name;
+     int (*CallBackPowerManagmentControl)(int state);
++    atomic_t link;
+ };
+ 
+ /*--------------------------------------------------------------------------------*\
+--- linux-2.6.28/drivers/char/avm_power/avm_power_if.c
++++ linux-2.6.28/drivers/char/avm_power/avm_power_if.c
+@@ -28,6 +28,7 @@
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/avm_power.h>
++#include <linux/sched.h>
+ #include "avm_power.h"
+ #if defined(DECTSYNC_PATCH)
+ #include "dectsync.h"
+@@ -42,6 +43,8 @@
+ #define DEB_TRC_PT(args...)
+ #endif/*--- #else ---*//*--- #if defined(DEBUG_TRACE_POWERTAB) ---*/
+ 
++static DEFINE_SPINLOCK(gpw_client_lock);
++
+ /*-------------------------------------------------------------------------------------*\
+  * Liste von registrierten Treibern, die den PowermanagmentCallback-Befehl bekommen
+ \*-------------------------------------------------------------------------------------*/
+@@ -375,17 +378,38 @@
+     }
+     return NULL;
+ }
++/*--------------------------------------------------------------------------------*\
++ * ret: 0 freigegeben 
++\*--------------------------------------------------------------------------------*/
++static inline int put_pwclient(struct _power_managment_clients *client) {
++	if(atomic_read(&client->link) == 0) {
++		printk(KERN_ERR"%s error link already zero\n", __func__);
++		return 0;
++	}
++	if (atomic_dec_and_test(&client->link)) {
++		/*--- printk(KERN_INFO"%s free\n", __func__); ---*/
++		kfree(client);
++		return 0;
++	}
++	return 1;
++}
+ /*-------------------------------------------------------------------------------------*\
+ \*-------------------------------------------------------------------------------------*/
+-struct _power_managment_clients *find_pwclient_by_name(char *client_name) {
+-    struct _power_managment_clients *client = (struct _power_managment_clients *)PwClientAnker;
++struct _power_managment_clients *get_pwclient_by_name(char *client_name) {
++    struct _power_managment_clients *client;
++	unsigned long flags;
+ 
++	spin_lock_irqsave(&gpw_client_lock, flags);
++    client = (struct _power_managment_clients *)PwClientAnker;
+     while(client) {
+         if(strcmp(client_name, client->client_name) == 0) {
++			atomic_add(1, &client->link);
++			spin_unlock_irqrestore(&gpw_client_lock, flags);
+             return client;
+         }
+         client = client->next;
+     }
++	spin_unlock_irqrestore(&gpw_client_lock, flags);
+     return NULL; 
+ }
+ /*-------------------------------------------------------------------------------------*\
+@@ -398,22 +422,26 @@
+     if(new == NULL) {
+         return NULL;
+     }
++	atomic_set(&new->link, 1);
+     new->client_name = (char *)new + sizeof(struct _power_managment_clients);
+     strcpy(new->client_name, client_name);
+     new->CallBackPowerManagmentControl = CallBackPowerManagmentControl;
+-    new->next = NULL;
+-    flags = avm_power_lock();
++
++	spin_lock_irqsave(&gpw_client_lock, flags);
+     new->next     = (struct _power_managment_clients *)PwClientAnker;
+     PwClientAnker = new;
+-    avm_power_unlock(flags);
++	spin_unlock_irqrestore(&gpw_client_lock, flags);
+     return new; 
+ }
+ /*-------------------------------------------------------------------------------------*\
+ \*-------------------------------------------------------------------------------------*/
+-static void del_pwclient(struct _power_managment_clients *delclient) {
++static int del_pwclient(struct _power_managment_clients *delclient) {
++	unsigned long flags;
+     struct _power_managment_clients *prevclient = NULL; 
+-    unsigned long flags = avm_power_lock();
+-    struct _power_managment_clients *client = (struct _power_managment_clients *)PwClientAnker;
++    struct _power_managment_clients *client;
++
++	spin_lock_irqsave(&gpw_client_lock, flags);
++    client = (struct _power_managment_clients *)PwClientAnker;
+     while(client) {
+         if(client == delclient) {
+             if(prevclient == NULL) {
+@@ -422,14 +450,14 @@
+             } else {
+                 prevclient->next = client->next;
+             }
+-            avm_power_unlock(flags);
+-            kfree(client);
+-            return;
++			spin_unlock_irqrestore(&gpw_client_lock, flags);
++            return put_pwclient(client);
+         }
+         prevclient = client;
+         client     = client->next;
+     }
+-    avm_power_unlock(flags);
++	spin_unlock_irqrestore(&gpw_client_lock, flags);
++	return 0;
+ }
+ /*-------------------------------------------------------------------------------------*\
+  * Powermanagment des Treibers anmelden
+@@ -439,13 +467,13 @@
+ void *PowerManagmentRegister(char *client_name, int (*CallBackPowerManagmentControl)(int state)){
+     struct _power_managment_clients *client;
+     DEB_INFO("[avm_power] PowerManagmentRegister(\"%s\", 0x%p)\n", client_name, CallBackPowerManagmentControl);
+-
+     if(client_name == NULL || CallBackPowerManagmentControl == NULL) {
+         DEB_ERR("[avm_power]PowerManagmentRegister: invalid param %p %p\n", client_name, CallBackPowerManagmentControl);
+         return NULL;
+     }
+-    client = find_pwclient_by_name(client_name);
++    client = get_pwclient_by_name(client_name);
+     if(client) {
++		put_pwclient(client);
+         return client;
+     }
+     return add_pwclient(client_name, CallBackPowerManagmentControl);
+@@ -456,11 +484,14 @@
+ \*-------------------------------------------------------------------------------------*/
+ void PowerManagmentRelease(void *Handle){
+     struct _power_managment_clients *delclient = (struct _power_managment_clients *)Handle;
++    printk(KERN_ERR"[avm_power] PowerManagmentRelease(0x%p)\n", Handle);
+     if(Handle == NULL) {
+         DEB_ERR("[avm_power]%s: invalid Handle\n", __func__);
+         return;
+     }
+-    del_pwclient(delclient);
++    if(del_pwclient(delclient)) {
++		schedule_timeout(HZ/10); /*--- er scheint noch in CallBackPowerManagmentControl zu haengen: hier warten ! ---*/
++	}
+ }
+ EXPORT_SYMBOL(PowerManagmentRelease);
+ 
+@@ -509,7 +540,7 @@
+         return 1;
+     }
+     while(powermodetab[i].client_name) {
+-        registered_client = find_pwclient_by_name(powermodetab[i].client_name);
++        registered_client = get_pwclient_by_name(powermodetab[i].client_name);
+         if(registered_client == NULL) {
+             if(powermodetab[i].mandatory & AVM_PM_CB_UNINSTALLED_OR_FAILED) {
+                 DEB_TRC_PT("[avm_power] '%s' not registered can't execute powermanagment ->stop\n", powermodetab[i].client_name);
+@@ -519,6 +550,7 @@
+             }
+         } else {
+             if((async_context == 0) && (powermodetab[i].mandatory & AVM_PM_ASYNC)) {
++				put_pwclient(registered_client);
+                 return powermode_action_async(&powermodetab[i]);
+             }
+             if((powermodetab[i].mandatory & AVM_PM_LOCK) && (locked == 0)) {
+@@ -535,6 +567,7 @@
+             } else {
+                 /*--- DEB_TRC_PT("[avm_power] '%s'=0x%x powermanagment ok\n", powermodetab[i].client_name, powermodetab[i].state); ---*/
+             }
++			put_pwclient(registered_client);
+         }
+         if(ret) {
+             break;
+@@ -553,14 +586,14 @@
+ \*--------------------------------------------------------------------------------*/
+ int powermode_action_nolist(char *client_name, int State) {
+     struct _power_managment_clients *registered_client;
+-    registered_client = find_pwclient_by_name(client_name);
++	int ret;
++    registered_client = get_pwclient_by_name(client_name);
+     if(registered_client == NULL) {
+         return 2;
+     }
+-    if(registered_client->CallBackPowerManagmentControl(State)) {
+-        return 1;
+-    }
+-    return 0;
++    ret = registered_client->CallBackPowerManagmentControl(State);
++	put_pwclient(registered_client);
++    return ret ? 1 : 0;
+ }
+ /*-------------------------------------------------------------------------------------*\
+ \*-------------------------------------------------------------------------------------*/
+--- linux-2.6.28/drivers/net/avm_cpmac/cpmac_product_conf.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpmac_product_conf.c
+@@ -1,7 +1,7 @@
+ #include "cpphy_types.h"
+ 
+ cpmac_product_struct cpmac_products = {
+-    41,
++    42,
+     {
+         { /* Fritz_Box_3270 */
+             "137 ",
+@@ -756,6 +756,26 @@
+                 },
+                 {
+                     CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                }
++            }
++        },
++        { /* Fritz_Box_HW218 */
++            "218 ",
++            0,
++            {
++                {
++                    CPMAC_PHY_TYPE_NONE,
++                    CPMAC_PHY_MODE_DEFAULT,
++                    0x1,
++                    0xffff,
++                    0x0
++                },
++                {
++                    CPMAC_PHY_TYPE_NONE,
+                     CPMAC_PHY_MODE_DEFAULT,
+                     0x1,
+                     0xffff,
+--- linux-2.6.28/net/avm_pa/avm_pa_fusiv.c
++++ linux-2.6.28/net/avm_pa/avm_pa_fusiv.c
+@@ -584,12 +584,14 @@
+    priority = (priority & TC_H_MIN_MASK);
+    if (priority > 7)
+       priority = 7;
+-   flow.egressList[0].pFlowID = (void *) priority;
++   flow.egressList[0].pFlowID = (void *) (priority << 16);
+ 
+-   mtu = avm_session->egress[0].mtu;
+-   flow.egressList[0].pFlowID = (void *) ((UINT32) flow.egressList[0].pFlowID |
+-                                          (UINT32) (mtu) <<
+-                                          MTU_SIZE_OFFSET_INSIDE_FLOW_ID);
++   if (egress_hw->apId != PERI_ID) {
++      mtu = avm_session->egress[0].mtu;
++      flow.egressList[0].pFlowID = (void *) ((UINT32) flow.egressList[0].pFlowID |
++                                             (UINT32) (mtu) <<
++                                             MTU_SIZE_OFFSET_INSIDE_FLOW_ID);
++   }
+ 
+    if (egress_hw->apId == PERI_ID) {
+       flow.egressList[0].pEgress = (void *) 0xFFFFFFFF;
+@@ -851,7 +853,7 @@
+       (unsigned int) &fusiv_session_array[avm_session->session_handle];
+    flow.egressList[0].pEgress =
+       (void *) (K1_TO_PHYS(apArray[egress_hw->apId].apTxFifo));
+-   flow.egressList[0].pFlowID = (void *) priority;
++   flow.egressList[0].pFlowID = (void *) (priority << 16);
+    flow.operations |= (0x1 << AP_ROUTE_VALID_BIT);
+ 
+    flowhash = apIpv6CalculateHash(ingress_hw->apId, &flow);
