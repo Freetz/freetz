@@ -13,9 +13,6 @@ $(PKG)_DEPENDS_ON += iconv
 $(PKG)_LIBS += -liconv
 endif
 
-# always compile with LFS enabled
-$(PKG)_CFLAGS := $(subst $(CFLAGS_LARGEFILE),,$(TARGET_CFLAGS)) $(CFLAGS_LFS_ENABLED) -fomit-frame-pointer
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -23,7 +20,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(DOSFSTOOLS_DIR) \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(DOSFSTOOLS_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		LDFLAGS="$(DOSFSTOOLS_LIBS)" \
 		all
 
