@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.1a)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.tar.gz
-$(PKG)_SOURCE_MD5:=102d9652681db11c813610882332ae48
-$(PKG)_SITE:=http://freetz.magenbrot.net
+$(call PKG_INIT_BIN, 7.2)
+$(PKG)_SOURCE:=TrueCrypt-$($(PKG)_VERSION)-source-unix.tar.gz
+$(PKG)_SOURCE_MD5:=ec3ab06022bbd00a7a94fde170c4df36
+$(PKG)_SITE:=@SF/truecrypt
 
 $(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
 

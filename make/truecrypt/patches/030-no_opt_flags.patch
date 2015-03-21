@@ -1,0 +1,11 @@
+--- Makefile
++++ Makefile
+@@ -87,7 +87,7 @@
+ 
+ ifeq "$(TC_BUILD_CONFIG)" "Release"
+ 
+-	C_CXX_FLAGS += -O2 -fno-strict-aliasing  # Do not enable strict aliasing
++	C_CXX_FLAGS +=     -fno-strict-aliasing  # Do not enable strict aliasing
+ 	export WX_BUILD_DIR ?= $(BASE_DIR)/wxrelease
+ 	WX_CONFIGURE_FLAGS += --disable-debug_flag --disable-debug_gdb --disable-debug_info
+ 
