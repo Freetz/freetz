@@ -2,6 +2,7 @@ LZMA_VERSION:=443
 LZMA_SOURCE:=lzma$(LZMA_VERSION).tar.bz2
 LZMA_SOURCE_MD5:=c4e1b467184c7cffd4371c74df2baf0f
 LZMA_SITE:=@SF/sevenzip
+
 LZMA_DIR:=$(TOOLS_SOURCE_DIR)/lzma$(LZMA_VERSION)
 LZMA_MAKE_DIR:=$(TOOLS_DIR)/make/lzma
 LZMA_ALONE_DIR:=$(LZMA_DIR)/C/7zip/Compress/LZMA_Alone
@@ -22,7 +23,7 @@ $(LZMA_ALONE_DIR)/lzma: $(LZMA_DIR)/.unpacked
 	$(MAKE) -f makefile.gcc -C $(LZMA_ALONE_DIR)
 
 $(LZMA_LIB_DIR)/liblzma.a: $(LZMA_DIR)/.unpacked
-	$(MAKE) -C $(LZMA_LIB_DIR)
+	$(MAKE) -f makefile.gcc -C $(LZMA_LIB_DIR)
 	touch -c $@
 
 $(LZMA_DIR)/liblzma.a: $(LZMA_LIB_DIR)/liblzma.a
