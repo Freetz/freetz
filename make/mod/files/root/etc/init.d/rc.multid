@@ -87,6 +87,7 @@ start() {
 
 	# overwrite upstream-dnsserver for avm-daemons like multid (dnsserver) or voipd
 	if [ -n "$AVM_MULTID_DNS" ]; then
+		sleep 1 # give multid some time to create its own version of /var/tmp/avm-resolv.conf and then overwrite it
 		for dnsserver in $AVM_MULTID_DNS; do
 			echo "nameserver $dnsserver"
 		done > /var/tmp/avm-resolv.conf
