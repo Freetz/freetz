@@ -50,16 +50,12 @@ config FREETZ_MODULE_crypto_algapi
 
 config FREETZ_MODULE_crypto_blkcipher
 	bool "crypto_blkcipher.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32_MIN
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
 config FREETZ_MODULE_crypto_hash
 	bool "crypto_hash.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_28 || \
-		FREETZ_KERNEL_VERSION_2_6_32_MIN
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_crypto_algapi if FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
