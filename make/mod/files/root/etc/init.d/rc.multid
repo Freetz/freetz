@@ -87,10 +87,9 @@ start() {
 
 	# overwrite upstream-dnsserver for avm-daemons like multid (dnsserver) or voipd
 	if [ -n "$AVM_MULTID_DNS" ]; then
-		echo > /var/tmp/avm-resolv.conf
 		for dnsserver in $AVM_MULTID_DNS; do
-			echo "nameserver $dnsserver" >>/var/tmp/avm-resolv.conf
-		done
+			echo "nameserver $dnsserver"
+		done > /var/tmp/avm-resolv.conf
 		cat /var/tmp/avm-resolv.conf > /var/tmp/resolv.conf
 	fi
 	# do we have another local dns-sever? multid doesn't create /var/tmp/avm-resolv.conf itself if port 53 is in use.
