@@ -206,7 +206,7 @@ SQUASHFS_MAGIC_BE="73717368"
 BOOTLOADER_MAGIC_LE="00908040"
 BOOTLOADER_MAGIC_BE="40809000"
 
-input_file_size=$(stat -c %s "$input_file")
+input_file_size=$(stat -L -c %s "$input_file")
 
 output_dir="$(basename "$input_file").unp"
 rm -rf "$output_dir"
