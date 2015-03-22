@@ -21,20 +21,19 @@ config FREETZ_MODULE_block2mtd
 		FREETZ_KERNEL_LAYOUT_UR8
 	default n
 
+if FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
 config FREETZ_MODULE_ramzswap
 	bool "ramzswap.ko"
-	depends on FREETZ_REPLACE_KERNEL && \
-			FREETZ_KERNEL_VERSION_2_6_19_MIN
 	select FREETZ_MODULE_xvmalloc
 	select FREETZ_MODULE_lzo_compress
 	select FREETZ_MODULE_lzo_decompress
 	default n
 
+# available as module only in 2.6.19, part of ramzswap since 2.6.2X
 config FREETZ_MODULE_xvmalloc
 	bool "xvmalloc.ko"
-	depends on FREETZ_REPLACE_KERNEL && \
-			FREETZ_KERNEL_VERSION_2_6_19_MIN
 	default n
+endif
 
 source make/ndas/Config.in.modules
 
