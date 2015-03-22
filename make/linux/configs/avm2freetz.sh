@@ -47,6 +47,10 @@ fs_related() {
 	m_if_disabled CONFIG_HFS_FS CONFIG_HFSPLUS_FS
 }
 
+block_related() {
+	m_if_disabled CONFIG_MTD_BLOCK2MTD
+}
+
 SELF=$(basename "$0")
 
-fs_related
+fs_related | block_related
