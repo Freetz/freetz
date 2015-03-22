@@ -7,7 +7,7 @@ if [ "$FREETZ_CREATE_SEPARATE_OPTIONS_CFG" != "y" ]; then
 	ln -snf .config $OPTIONS_CFG
 else
 	OPTIONS_FILES="$(find make/*/files/root/etc/init.d/rc.* make/*/files/root/etc/default.*/*_conf; \
-	  find make/*/files/root/usr/lib/cgi-bin/ -name *.cgi -o -name *.sh)"
+	  find make/*/files/root/usr/lib/cgi-bin/ -name '*.cgi' -o -name '*.sh')"
 	OPTIONS_NAMES="$(grep -hoE "FREETZ_REPLACE_KERNEL|FREETZ_AVMDAEMON_DISABLE_[A-Z0-9]*|FREETZ_AVM_VERSION_[X0-9_]*(_MIN)?|FREETZ_(TARGET|BUSYBOX)_[A-Z0-9_]*|EXTERNAL_DYNAMIC[a-zA-Z0-9_]*|(EXTERNAL_)?FREETZ_(PACKAGE|LIB)[a-zA-Z0-9_]*" $OPTIONS_FILES | sort -u)"
 	for OPTIONS_CURRENT in $OPTIONS_NAMES; do
 		OPTIONS_VALUE="$(eval echo \$$OPTIONS_CURRENT)"
