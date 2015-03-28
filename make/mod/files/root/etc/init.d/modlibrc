@@ -52,8 +52,8 @@ stop_post() { :; }
 # modlib_addgroup:
 #   check for group and create it if not found.
 #   No check is done for a change in the optional arguments!
-#	$1: group name
-#	$2-n: optional arguments for addgroup
+#   $1: group name
+#   $2-n: optional arguments for addgroup
 modlib_addgroup() {
 	local group=$1
 	shift
@@ -72,8 +72,9 @@ modlib_addgroup() {
 # modlib_adduser:
 #   check for user and create it if not found.
 #   No check is done for a change in the optional arguments!
-#	$1: user name
-#	$2-n: optional arguments for adduser
+#   parameters:
+#    $1: user name
+#    $2-n: optional arguments for adduser
 modlib_adduser() {
 	local user=$1
 	shift
@@ -91,22 +92,23 @@ modlib_adduser() {
 
 # modlib_add_user_and_group:
 #   check for user & group and create them if not found.
-#	$1: user name
-#	$2: group name (optional)
+#   parameters:
+#    $1: user name
+#    $2: group name (optional)
 modlib_add_user_and_group() {
 	local user=$1
 	[ $# -gt 1 ] && local group=$2 || local group=$1
 	modlib_addgroup $group
- 	modlib_adduser $user -s /bin/false -D -S -H -G $group -g "$user"
+	modlib_adduser $user -s /bin/false -D -S -H -G $group -g "$user"
 }
 
 # modlib_check_running
 #   checks if the daemon is currently running.
-#	return values:
-#	 0:	running
-#	 3:	stopped
-#	 5:	inetd
-#	use CONF_ENABLED for other variablename with manual/automatic/inetd in .cfg-file
+#   return values:
+#    0: running
+#    3: stopped
+#    5: inetd
+#   use CONF_ENABLED for other variablename with manual/automatic/inetd in .cfg-file
 modlib_check_running() {
 	[ -n "$FORCE_STATUS" ] && return $FORCE_STATUS
 	if [ -x /mod/etc/init.d/rc.inetd ]; then
@@ -132,7 +134,7 @@ modlib_check_running() {
 #    creates /mod/etc/$DAEMON.conf
 #    parameters:
 #     $1 (optional): overwrites the $DAEMON part in input filenames
-#	  $2 (optional): overwrites output path+filename, default is $DAEMON_CONFIG (=/mod/etc/${DAEMON}.conf)
+#     $2 (optional): overwrites output path+filename, default is $DAEMON_CONFIG (=/mod/etc/${DAEMON}.conf)
 modlib_config() {
 	local in_files=${1-$DAEMON}
 	local out_file=${2-$DAEMON_CONFIG}
@@ -272,7 +274,7 @@ stop() {
 
 # modlib_stop
 #   stops the daemon
-#	kills daemon with "stop" of rc.$DAEMON if available
+#   kills daemon with "stop" of rc.$DAEMON if available
 modlib_stop() {
 	local fn=$PID_FILE
 	local id=$(cat "$fn" 2>/dev/null)
@@ -355,7 +357,7 @@ reload() {
 # modlib_reload
 #   reloads the daemon with SIGHUP
 #   if available runs "config" of rc.$DAEMON
-#	reloads daemon with "reload" of rc.$DAEMON if available
+#   reloads daemon with "reload" of rc.$DAEMON if available
 modlib_reload() {
 	local fn=$PID_FILE
 	echo -n "Reloading ${DAEMON_LONG_NAME} ... "
@@ -392,11 +394,11 @@ modlib_reload() {
 
 # modlib_status
 #   checks if the daemon is running
-#	return values:
-#	0:			running
-#	3:			stopped
-#	5:			inetd
-#	<other>:	unknown
+#   return values:
+#    0:       running
+#    3:       stopped
+#    5:       inetd
+#    <other>: unknown
 modlib_status() {
 	modlib_check_running
 	retval=$?
