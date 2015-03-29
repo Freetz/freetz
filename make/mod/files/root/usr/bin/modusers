@@ -5,32 +5,56 @@ SAVE_DIR=/tmp/flash/users
 FILES="passwd group shadow gshadow"
 
 load() {
+	local f=, u=, perm=
+
 	mkdir -pm 700 $SAVE_DIR
-	# temporary file
-	touch "/tmp/passwd.mod"
-	chmod 644 "/tmp/passwd.mod"
-	cat /tmp/passwd > /tmp/passwd.mod
+
 	for f in $FILES; do
-		# set permissions: 644 for passwd & group, 600 for shadow & gshadow
 		touch "/tmp/$f"
-		[ "$f" == "${f%shadow}" ] && chmod 644 "/tmp/$f" || chmod 600 "/tmp/$f"
-		# existing settings available?
-		if [ ! -e "$SAVE_DIR/$f" ]; then
-			# save default users&groups from var.tar
-			cat "/tmp/$f" > "$SAVE_DIR/$f" 2>/dev/null
+
+		# set permissions: 644 for passwd & group, 600 for shadow & gshadow
+		[ "$f" == "${f%shadow}" ] && perm=644 || perm=600
+		chmod $perm "/tmp/$f"
+
+		# freetz users/groups available?
+		if [ -e "$SAVE_DIR/$f" ]; then
+			# do load them, ignore
+			#  boxusr*/ftpuser-internet (are always taken from AVM's passwd)
+			#  ftpuser & nobody (used both by AVM and by freetz and thus treated specially)
+			# note: ftpuser & ftpuser-internet are matched using common prefix ftpuser
+			grep -vE "^(boxusr|ftpuser|nobody:)" "$SAVE_DIR/$f" > "/tmp/${f/passwd/passwd.mod}" 2>/dev/null
 		else
-			# load saved users&groups from flash
-			grep -vE "^boxusr|^ftpuser" "$SAVE_DIR/$f" > "/tmp/${f/passwd/passwd.mod}" 2>/dev/null
+			# save default users/groups from var.tar
+			cat "/tmp/$f" > "$SAVE_DIR/$f" 2>/dev/null
+			chmod $perm "$SAVE_DIR/$f"
 		fi
 	done
+
+	# the very 1st invocation of load => no freetz passwd is available/loaded
+	if [ ! -e /tmp/passwd.mod ]; then
+		# create passwd.mod from var.tar
+		cat /tmp/passwd > /tmp/passwd.mod 2>/dev/null
+	fi
+	chmod 644 /tmp/passwd.mod
+
 	# /var/tmp/passwd.tmp is created by ctlmgr, do NOT MoVe due to libctlmgr
 	cp /var/tmp/passwd.tmp /var/tmp/passwd.avm 2>/dev/null && rm -rf /var/tmp/passwd.tmp
-	# load AVM's boxusers (and ftpuser) which were created by ctlmgr
-	[ -e /var/tmp/passwd.avm ] && grep -v "^root:" /var/tmp/passwd.avm >> /tmp/passwd.mod
-	# special case: ftpuser is created and/or used by avm and/or freetz
-	grep -q "^ftpuser" /tmp/passwd.mod || grep "^ftpuser" "$SAVE_DIR/passwd" >> /tmp/passwd.mod
-	# prevent race-condition while creating /etc/passwd
+
+	# load AVM's boxusr* / ftpuser* (created by ctlmgr)
+	# ignore ftpuser (no suffix) & nobody, both treated specially below
+	[ -e /var/tmp/passwd.avm ] && grep -vE "^(root|ftpuser|nobody):" /var/tmp/passwd.avm >> /tmp/passwd.mod
+
+	# users ftpuser & nobody are created/used by both AVM and freetz
+	# do always prefer AVM version of them, add freetz one only if AVM's one is missing
+	for u in ftpuser nobody; do
+		cat /var/tmp/passwd.avm "$SAVE_DIR/passwd" 2>/dev/null | grep -m1 "^${u}:"
+	done >> /tmp/passwd.mod
+
+	# all passwd related entries has been so far written to /tmp/passwd.mod
+	# this was done in order to prevent possible race-conditions
+	# we're done, move it to /tmp/passwd now
 	mv /tmp/passwd.mod /tmp/passwd
+
 	touch /tmp/.usersloaded
 }
 
