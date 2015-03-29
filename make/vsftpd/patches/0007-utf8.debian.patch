@@ -1,0 +1,54 @@
+Author: Chuck Short <zulcss@ubuntu.com>
+Description: Adding support for UTF8.
+
+--- features.c
++++ features.c
+@@ -27,6 +27,10 @@ handle_feat(struct vsf_session* p_sess)
+       vsf_cmdio_write_raw(p_sess, " AUTH TLS\r\n");
+     }
+   }
++  if (tunable_utf8_filesystem)
++  {
++     vsf_cmdio_write_raw(p_sess, " UTF8\r\n");
++  }
+   if (tunable_port_enable)
+   {
+     vsf_cmdio_write_raw(p_sess, " EPRT\r\n");
+--- parseconf.c
++++ parseconf.c
+@@ -28,6 +28,7 @@ static struct parseconf_bool_setting
+ parseconf_bool_array[] =
+ {
+   { "anonymous_enable", &tunable_anonymous_enable },
++  { "utf8_filesystem", &tunable_utf8_filesystem },
+   { "local_enable", &tunable_local_enable },
+   { "pasv_enable", &tunable_pasv_enable },
+   { "port_enable", &tunable_port_enable },
+--- tunables.c
++++ tunables.c
+@@ -10,6 +10,7 @@
+ 
+ int tunable_anonymous_enable;
+ int tunable_local_enable;
++int tunable_utf8_filesystem;
+ int tunable_pasv_enable;
+ int tunable_port_enable;
+ int tunable_chroot_local_user;
+@@ -150,6 +151,7 @@ tunables_load_defaults()
+ {
+   tunable_anonymous_enable = 1;
+   tunable_local_enable = 0;
++  tunable_utf8_filesystem = 0;
+   tunable_pasv_enable = 1;
+   tunable_port_enable = 1;
+   tunable_chroot_local_user = 0;
+--- tunables.h
++++ tunables.h
+@@ -11,6 +11,7 @@ void tunables_load_defaults();
+ /* Booleans */
+ extern int tunable_anonymous_enable;          /* Allow anon logins */
+ extern int tunable_local_enable;              /* Allow local logins */
++extern int tunable_utf8_filesystem;           /* Server uses UTF8 Filesystem */
+ extern int tunable_pasv_enable;               /* Allow PASV */
+ extern int tunable_port_enable;               /* Allow PORT */
+ extern int tunable_chroot_local_user;         /* Restrict local to home dir */
