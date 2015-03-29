@@ -186,12 +186,14 @@ while [ -z "$img" ]; do
 			echo >&2
 			echo "Hint: file seems to be a full firmware image archive in 'tar' format" >&2
 			echo "containing the 'kernel.image'. Now trying to unpack and use that image." >&2
+			echo >&2
 			tar -Oxf "$arg1" ./var/tmp/kernel.image > $tmpimg
 			arg1=$tmpimg
 		else
 			echo >&2
 			echo "Error: file is not a valid image to be written to mtd1. Please use a" >&2
 			echo "hidden root 'kernel.image' containing both Linux kernel and file system." >&2
+			echo >&2
 			exit 1
 		fi
 	fi
@@ -225,14 +227,15 @@ elif [ "$(uname -o)" == "Cygwin" ]; then
 	ping_params="-n 1 -w 500"
 fi
 
-if [ -n "`which ncftp`" -a -x "`which ncftp`" ] ; then
+if [ -n "$(which ncftp)" -a -x "$(which ncftp)" ] ; then
   FOUND_NCFTP=1
-  echo "ncftp command found"
-elif [ "$(uname -s)" == "Linux" -a -n "`which ftp`" -a -x "`which ftp`" ] ; then
+  echo "ncftp command found."
+elif [ "$(uname -s)" == "Linux" -a -n "$(which ftp)" -a -x "$(which ftp)" ] ; then
   FOUND_FTP=1
-  echo "ftp command found"
+  echo "ftp command found."
 else
-  echo "you have to install 'ftp' or 'ncftp' in order to use this script."
+  echo "You have to install 'ncftp' or 'ftp' in order to use this script."
+  exit 1
 fi
 
 if [ $ISFORCE ]; then
