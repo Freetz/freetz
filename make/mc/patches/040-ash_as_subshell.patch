@@ -1,6 +1,6 @@
 --- lib/global.h
 +++ lib/global.h
-@@ -248,6 +248,7 @@
+@@ -251,6 +251,7 @@
  
          /* The user's shell */
          char *shell;
@@ -10,7 +10,7 @@
          /* It is used by function view_other_cmd() */
 --- lib/global.c
 +++ lib/global.c
-@@ -95,6 +95,7 @@
+@@ -97,6 +97,7 @@
  #endif /* !ENABLE_SUBSHELL */
  
          .shell = NULL,
@@ -20,7 +20,7 @@
          .disable_x11 = FALSE,
 --- src/main.c
 +++ src/main.c
-@@ -84,6 +84,7 @@
+@@ -85,6 +85,7 @@
  /*** file scope type declarations ****************************************************************/
  
  /*** file scope variables ************************************************************************/
@@ -28,7 +28,7 @@
  
  /*** file scope functions ************************************************************************/
  /* --------------------------------------------------------------------------------------------- */
-@@ -128,6 +129,7 @@
+@@ -129,6 +130,7 @@
      shell_env = getenv ("SHELL");
      if ((shell_env == NULL) || (shell_env[0] == '\0'))
      {
@@ -36,7 +36,7 @@
          struct passwd *pwd;
  
          pwd = getpwuid (geteuid ());
-@@ -135,13 +137,37 @@
+@@ -136,13 +138,37 @@
              mc_global.tty.shell = g_strdup (pwd->pw_shell);
      }
      else
@@ -212,7 +212,7 @@
          {
              perror (__FILE__ ": couldn't create pipe");
              mc_global.tty.use_subshell = FALSE;
-@@ -872,33 +908,113 @@
+@@ -872,34 +908,113 @@
          init_subshell_child (pty_name);
      }
  
@@ -228,8 +228,9 @@
      {
      case BASH:
          g_snprintf (precmd, sizeof (precmd),
--                    " PROMPT_COMMAND='pwd>&%d;kill -STOP $$'\n", subshell_pipe[WRITE]);
-+            " PROMPT_COMMAND='pwd>&%d; kill -STOP $$'; "
+-                    " PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'pwd>&%d;kill -STOP $$'\n",
+-                    subshell_pipe[WRITE]);
++            " PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'pwd>&%d;kill -STOP $$'; "
 +            "PS1='\\u@\\h:\\w\\$ '\n",
 +            subshell_pipe[WRITE]);
 +        break;
@@ -336,7 +337,7 @@
          break;
  
      }
-@@ -1105,6 +1221,13 @@
+@@ -1106,6 +1221,13 @@
          quote_cmd_start = "(printf \"%b\" '";
          quote_cmd_end = "')";
      }
