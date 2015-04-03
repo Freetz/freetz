@@ -1,6 +1,6 @@
 --- main/Makefile
 +++ main/Makefile
-@@ -164,6 +164,13 @@
+@@ -165,6 +165,13 @@
  AST_EMBED_LIBS:=$(foreach dep,$(EMBED_LIBS),$(value $(dep)))
  OBJS:=$(sort $(OBJS))
  
@@ -26,10 +26,10 @@
  dist-clean:: distclean
  distclean::
 -	rm -f pjproject/build.mak
--
+ 
 -pjproject/build.mak: pjproject/aconfigure
 -	(cd pjproject && CFLAGS="-fPIC" ./configure --build=$(BUILD_PLATFORM) --host=$(HOST_PLATFORM) --disable-floating-point --disable-sound --disable-oss --disable-speex-aec --disable-l16-codec --disable-gsm-codec --disable-g722-codec --disable-g7221-codec --disable-speex-codec --disable-ilbc-codec --disable-g711-codec)
- 
+-
 -ifneq ($(findstring $(MAKECMDGOALS),all),)
 --include pjproject/build.mak
 +ifneq ($(findstring $(MAKECMDGOALS),all PJPROJECT_EMBED_LDFLAGS PJPROJECT_EMBED_LIBS),)
