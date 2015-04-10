@@ -190,3 +190,21 @@ endef
 define write-list-to-file
 (set -f; $(RM) $(strip $(2)); printf $(if $(strip $(1)),"%s\n" $(strip $(1)) | sort -u,"") >$(strip $(2)));
 endef
+
+#
+# Joins list with given string, i.e. creates from list "foo1 foo2 bar" and the separator string XYZ the string "foo1XYZfoo2XYZbar"
+#
+# $1 - separator string
+# $2 - (space-separated) list to join
+define join-with
+$(subst $(_space),$(1),$(strip $(2)))
+endef
+
+#
+# Calculates complement to a file set specified by list of files (shell patterns are allowed) to include
+#
+# $1 - dir
+# $2 - list of patterns defining the file set complement to be found to
+define fileset-complement
+	(cd $(strip $(1)); find . -type f $(if $(strip $(2)),\! \( $(subst =,$(_space),$(call join-with, -o ,$(foreach p,$(strip $(2)),-path="./$(p)"))) \)) | $(SED) -e 's,^./,,' | sort)
+endef
