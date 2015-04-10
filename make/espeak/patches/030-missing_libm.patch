@@ -1,0 +1,20 @@
+--- src/Makefile
++++ src/Makefile
+@@ -83,7 +83,7 @@
+ 
+ SRCS1=$(speak_SOURCES)
+ OBJS1=$(patsubst %.cpp,%.o,$(SRCS1))
+-LIBS1=         $(LIB_AUDIO)           $(EXTRA_LIBS)
++LIBS1=         $(LIB_AUDIO)           -lm $(EXTRA_LIBS)
+ 
+ SRCS2=$(libespeak_SOURCES)
+ OBJS2=$(patsubst %.cpp,x_%.o,$(SRCS2))
+@@ -91,7 +91,7 @@
+ 
+ SRCS3 = espeak.cpp
+ OBJS3=$(patsubst %.cpp,%.o,$(SRCS3))
+-LIBS3=         -L . -lespeak
++LIBS3=         -L . -lespeak -lm
+ 
+ CXXFLAGS=-O2
+ 
