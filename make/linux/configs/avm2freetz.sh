@@ -50,6 +50,8 @@ fs_related() {
 	| \
 	m_if_disabled CONFIG_NLS_ISO8859_1 \
 	| \
+	m_if_disabled CONFIG_NLS_ISO8859_15 \
+	| \
 	m_if_disabled CONFIG_NLS_UTF8
 }
 

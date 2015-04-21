@@ -437,6 +437,7 @@ config FREETZ_MODULE_nls_iso8859_1
 
 config FREETZ_MODULE_nls_iso8859_15
 	bool "nls_iso8859-15.ko"
+	depends on !FREETZ_AVM_HAS_NLS_ISO8859_15_BUILTIN # && any kernel version
 	default n
 
 config FREETZ_MODULE_nls_utf8
