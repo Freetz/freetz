@@ -1,0 +1,38 @@
+--- SetupConfig.py
++++ SetupConfig.py
+@@ -54,7 +54,7 @@
+            'bin/cheetah-analyze',
+         )
+ 
+-data_files = ['recursive: cheetah *.tmpl *.txt LICENSE README TODO CHANGES',]
++data_files = ['cheetah/*/*.tmpl', 'cheetah/*/*.txt', 'cheetah/*/LICENSE', 'cheetah/*/README', 'cheetah/*/TODO', 'cheetah/*/CHANGES']
+ 
+ if not os.getenv('CHEETAH_INSTALL_WITHOUT_SETUPTOOLS'):
+     try:
+--- SetupTools.py
++++ SetupTools.py
+@@ -22,8 +22,6 @@
+ from distutils.errors import CCompilerError, DistutilsExecError, \
+     DistutilsPlatformError
+ 
+-#imports from Cheetah ...
+-from cheetah.FileUtils import findFiles
+ 
+ if sys.platform == 'win32' and sys.version_info > (2, 6):
+    # 2.6's distutils.msvc9compiler can raise an IOError when failing to
+@@ -81,14 +79,7 @@
+                 raise ValueError('The entries in "data_files" must be strings')
+             
+             entry = string.join(string.split(entry, '/'), os.sep)
+-            # entry is a filename or glob pattern
+-            if entry.startswith('recursive:'):
+-                entry = entry[len('recursive:'):]
+-                dir = entry.split()[0]
+-                globPatterns = entry.split()[1:]
+-                filenames = findFiles(dir, globPatterns)
+-            else:
+-                filenames = glob.glob(entry)
++            filenames = glob.glob(entry)
+             
+             for filename in filenames:
+                 ## generate the dstPath from the filename
