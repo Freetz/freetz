@@ -370,7 +370,7 @@ config FREETZ_MODULE_hfs
 
 config FREETZ_MODULE_hfsplus
 	bool "hfsplus.ko"
-	select FREETZ_MODULE_nls_utf8
+	select FREETZ_MODULE_nls_utf8 if !FREETZ_AVM_HAS_NLS_UTF8_BUILTIN
 	default n
 
 config FREETZ_MODULE_fuse
@@ -443,6 +443,7 @@ config FREETZ_MODULE_nls_iso8859_1
 
 config FREETZ_MODULE_nls_utf8
 	bool "nls_utf8.ko"
+	depends on !FREETZ_AVM_HAS_NLS_UTF8_BUILTIN # && any kernel version
 	default n
 
 config FREETZ_MODULE_reiserfs
