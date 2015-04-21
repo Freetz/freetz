@@ -46,6 +46,8 @@ fs_related() {
 	| \
 	m_if_disabled CONFIG_HFS_FS CONFIG_HFSPLUS_FS \
 	| \
+	m_if_disabled CONFIG_NLS_CODEPAGE_437 \
+	| \
 	m_if_disabled CONFIG_NLS_UTF8
 }
 
