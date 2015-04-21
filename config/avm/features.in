@@ -415,6 +415,16 @@ config FREETZ_AVM_HAS_NLS_CP437_BUILTIN
 	help
 		Select this if the original firmware has NLS/CP437 support built into the kernel.
 
+config FREETZ_AVM_HAS_NLS_ISO8859_1_BUILTIN
+	bool "ISO8859-1 support built into the kernel"	if FREETZ_TYPE_CUSTOM
+	default y	if FREETZ_AVM_VERSION_05_2X_MIN \
+			&& ( \
+			FREETZ_KERNEL_LAYOUT_UR8     \
+			)
+	default n
+	help
+		Select this if the original firmware has NLS/ISO8859-1 support built into the kernel.
+
 config FREETZ_AVM_HAS_NLS_UTF8_BUILTIN
 	bool "UTF-8 support built into the kernel"	if FREETZ_TYPE_CUSTOM
 	default y	if FREETZ_AVM_VERSION_05_2X_MIN \
