@@ -464,17 +464,20 @@ config FREETZ_AVM_HAS_ISOFS
 config FREETZ_AVM_HAS_JFFS2
 	bool "jffs2.ko"		if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_7150 || \
 		(FREETZ_TYPE_7140 && !FREETZ_TYPE_LANG_DE) || \
 		FREETZ_TYPE_7141 || \
+		FREETZ_TYPE_7150 || \
 		FREETZ_TYPE_7170 || \
+		\
+		FREETZ_TYPE_3270 || \
 		FREETZ_TYPE_7240 || \
 		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7360 || \
-		FREETZ_TYPE_7362 || \
 		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_3270
+		\
+		FREETZ_TYPE_7340 || \
+		\
+		FREETZ_TYPE_7360 || \
+		FREETZ_TYPE_7362
 	default n
 	help
 		Select this if you have a box with optional JFFS2 filesystem support (jffs2.ko).
