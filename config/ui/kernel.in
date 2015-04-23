@@ -35,12 +35,14 @@ endif
 config FREETZ_REPLACE_KERNEL_IMPL
 	bool
 	depends on FREETZ_REPLACE_KERNEL_AVAILABLE
+	#
 	# until http://freetz.org/ticket/1716 is fixed:
 	select FREETZ_REMOVE_KIDS if \
 		( \
 			FREETZ_TYPE_2170 || \
 			FREETZ_TYPE_3170 \
 		)
+	#
 	select FREETZ_MODULE_fuse if \
 		( \
 			FREETZ_KERNEL_LAYOUT_AR9 || \
@@ -48,16 +50,16 @@ config FREETZ_REPLACE_KERNEL_IMPL
 			FREETZ_KERNEL_LAYOUT_UR8    \
 		) && \
 		! (FREETZ_REMOVE_NTFS && FREETZ_REMOVE_WEBDAV)
+	# TODO:
+	#  do we really need to do so? could Freetz kernel be used with AVM's jffs2.ko module?
+	#  it looks like the only reason for doing so is jffs2.ko size, Freetz one is smaller.
 	select FREETZ_MODULE_jffs2 if \
-		! FREETZ_REMOVE_JFFS2 && \
-		( \
-			FREETZ_AVM_SOURCE_7330_05_20 || \
-			FREETZ_AVM_SOURCE_7330_05_50 || \
-			FREETZ_AVM_SOURCE_7360_05_20 || \
-			FREETZ_AVM_SOURCE_7360_05_51 \
-		)
+		FREETZ_AVM_VERSION_05_2X_MIN && \
+		FREETZ_AVM_HAS_JFFS2_MODULE && !FREETZ_REMOVE_JFFS2
+	#
 	select FREETZ_MODULE_usbcore if \
 		FREETZ_KERNEL_LAYOUT_UR8 && FREETZ_AVM_SOURCE_7270_04_86
+	#
 	select FREETZ_MODULE_msdos if \
 		! FREETZ_REMOVE_FAT && \
 		( \
@@ -65,6 +67,7 @@ config FREETZ_REPLACE_KERNEL_IMPL
 			FREETZ_AVM_SOURCE_7270_05_51 || \
 			FREETZ_AVM_SOURCE_7270_06_05    \
 		)
+	#
 	select FREETZ_MODULE_vfat if \
 		! FREETZ_REMOVE_FAT && \
 		( \

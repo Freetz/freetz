@@ -20,7 +20,7 @@ config FREETZ_PACKAGE_MINI_FO
 config FREETZ_PACKAGE_MINI_FO_JFFS2
 	bool "Use jffs2 for data storage (persistent) "
 	depends on FREETZ_PACKAGE_MINI_FO && ! FREETZ_REMOVE_JFFS2
-	select FREETZ_MODULE_jffs2
+	select FREETZ_MODULE_jffs2 if !FREETZ_AVM_HAS_JFFS2_BUILTIN
 	default n
 	help
 		Enables possibility to store filesystem changes persistent to jffs2.

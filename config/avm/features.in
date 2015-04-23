@@ -461,8 +461,8 @@ config FREETZ_AVM_HAS_ISOFS
 	help
 		Select this if the original firmware contains isofs kernel module.
 
-config FREETZ_AVM_HAS_JFFS2
-	bool "jffs2.ko"		if FREETZ_TYPE_CUSTOM
+config FREETZ_AVM_HAS_JFFS2_MODULE
+	bool "jffs2 support as module (jffs2.ko)"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		(FREETZ_TYPE_7140 && !FREETZ_TYPE_LANG_DE) || \
 		FREETZ_TYPE_7141 || \
@@ -476,11 +476,24 @@ config FREETZ_AVM_HAS_JFFS2
 		\
 		FREETZ_TYPE_7340 || \
 		\
-		FREETZ_TYPE_7360 || \
-		FREETZ_TYPE_7362
+		FREETZ_TYPE_6810 || \
+		(FREETZ_TYPE_6842 && FREETZ_AVM_VERSION_06_0X_MAX) || \
+		(FREETZ_TYPE_7360_V1 && FREETZ_AVM_VERSION_06_0X_MAX) || \
+		FREETZ_TYPE_7360_V2 || \
+		(FREETZ_TYPE_7360_SL && FREETZ_AVM_VERSION_06_0X_MAX)
 	default n
 	help
-		Select this if you have a box with optional JFFS2 filesystem support (jffs2.ko).
+		Select this if you have a box with JFFS2 filesystem support built as module (jffs2.ko).
+
+config FREETZ_AVM_HAS_JFFS2_BUILTIN
+	bool "jffs2 support built into the kernel"	if FREETZ_TYPE_CUSTOM
+	default y	if \
+		FREETZ_TYPE_7312 || \
+		FREETZ_TYPE_7320 || \
+		FREETZ_TYPE_7330
+	default n
+	help
+		Select this if you have a box with JFFS2 filesystem support built into the kernel.
 
 config FREETZ_AVM_HAS_RAMZSWAP
 	bool "ramzswap.ko"	if FREETZ_TYPE_CUSTOM

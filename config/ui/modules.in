@@ -468,11 +468,8 @@ config FREETZ_MODULE_msdos
 
 config FREETZ_MODULE_jffs2
 	bool "jffs2.ko"
-	depends on ! FREETZ_REMOVE_JFFS2
+	depends on !FREETZ_REMOVE_JFFS2 && !FREETZ_AVM_HAS_JFFS2_BUILTIN
 	default n
-	help
-		This option is *not* available if you select patch "Remove jffs2.ko"
-		(FREETZ_REMOVE_JFFS2).
 
 config FREETZ_MODULE_mbcache
 	bool "mbcache.ko"
