@@ -9,12 +9,12 @@
    ld_shlibs=yes
  
    # On some targets, GNU ld is compatible enough with the native linker
-@@ -23555,7 +23557,7 @@
+@@ -23638,7 +23640,7 @@
  done
  
  
--      LIBS="-lcyassl -lm $LIBS"
-+      LIBS="-lcyassl -lpthread -lm $LIBS"
+-      LIBS="-l$cyassllibname -lm $LIBS"
++      LIBS="-l$cyassllibname -lpthread -lm $LIBS"
  
        if test -n "$cyassllib"; then
                                          if test "x$cross_compiling" != "xyes"; then

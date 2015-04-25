@@ -20,7 +20,7 @@
 -	cd docs; make pdf
 +	#cd docs; make pdf
  
- check: test examples
+ check: test examples check-docs
  
 @@ -179,7 +179,7 @@
  endif
@@ -29,8 +29,8 @@
 -	@(cd docs/examples; $(MAKE) check)
 +	#@(cd docs/examples; $(MAKE) check)
  
- # This is a hook to have 'make clean' also clean up the docs and the tests
- # dir. The extra check for the Makefiles being present is necessary because
+ check-docs:
+ 	@(cd docs/libcurl; $(MAKE) check)
 --- Makefile.in
 +++ Makefile.in
 @@ -577,7 +577,7 @@
@@ -42,7 +42,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  LIB_VTLS_CFILES = vtls/openssl.c vtls/gtls.c vtls/vtls.c vtls/nss.c     \
-@@ -1279,10 +1279,10 @@
+@@ -1280,10 +1280,10 @@
  	done)
  
  html:
@@ -53,18 +53,18 @@
 -	cd docs; make pdf
 +	#cd docs; make pdf
  
- check: test examples
+ check: test examples check-docs
  
-@@ -1305,7 +1305,7 @@
+@@ -1306,7 +1306,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all am-test)
  
  examples:
 -	@(cd docs/examples; $(MAKE) check)
 +	#@(cd docs/examples; $(MAKE) check)
  
- # This is a hook to have 'make clean' also clean up the docs and the tests
- # dir. The extra check for the Makefiles being present is necessary because
-@@ -1366,12 +1366,12 @@
+ check-docs:
+ 	@(cd docs/libcurl; $(MAKE) check)
+@@ -1370,12 +1370,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
