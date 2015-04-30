@@ -3,12 +3,15 @@ https://issues.apache.org/bugzilla/show_bug.cgi?id=51257
 
 --- Makefile.in
 +++ Makefile.in
-@@ -132,10 +132,8 @@
- make_tools_dir:
- 	$(APR_MKDIR) tools
+@@ -129,13 +129,8 @@
+ etags:
+ 	etags `find . -name '*.[ch]'`
  
 -OBJECTS_gen_test_char = tools/gen_test_char.lo $(LOCAL_LIBS)
--tools/gen_test_char.lo: make_tools_dir
+-tools/gen_test_char.lo: tools/gen_test_char.c
+-	$(APR_MKDIR) tools
+-	$(LT_COMPILE)
+-
 -tools/gen_test_char@EXEEXT@: $(OBJECTS_gen_test_char)
 -	$(LINK_PROG) $(OBJECTS_gen_test_char) $(ALL_LIBS)
 +tools/gen_test_char@EXEEXT@: tools/gen_test_char.c
