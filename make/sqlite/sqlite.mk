@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3080900)
+$(call PKG_INIT_BIN, 3081001)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=db70dee268700b312cbaa5b3e5cf8454e1c8b7b9
+$(PKG)_SOURCE_SHA1:=86bfed5752783fb24c051f3efac5972ce11023f0
 $(PKG)_SITE:=http://www.sqlite.org/2015
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-autoconf-$($(PKG)_VERSION)
@@ -10,8 +10,9 @@ ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
 $(PKG)_DEPENDS_ON += readline
 endif
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/sqlite3
+$(PKG)_BINARY:=$($(PKG)_DIR)/sqlite3
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sqlite3
+
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/.libs/libsqlite3.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libsqlite3.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libsqlite3.so.$($(PKG)_LIB_VERSION)
@@ -24,8 +25,11 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(SQLITE_DIR)
+
+$($(PKG)_BINARY): $($(PKG)_LIB_BINARY)
+	@touch -c $@
 
 $($(PKG)_LIB_STAGING_BINARY): $($(PKG)_LIB_BINARY)
 	$(SUBMAKE) -C $(SQLITE_DIR) \
