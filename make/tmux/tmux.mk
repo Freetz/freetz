@@ -3,6 +3,9 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=9fb6b443392c3978da5d599f1e814eaa
 $(PKG)_SITE:=@SF/$(pkg)
 
+# workaround tmux-2.0 packaging error - dependency files from other platform are included in the tarball
+$(PKG)_PATCH_PRE_CMDS += $(RM) -r compat/.dirstamp compat/.deps;
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/tmux
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/tmux
 
