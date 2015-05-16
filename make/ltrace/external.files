@@ -1,4 +1,10 @@
 if [ "$EXTERNAL_FREETZ_PACKAGE_LTRACE" == "y" ]; then
 	EXTERNAL_FILES+=" /usr/sbin/ltrace"
-	[ "$EXTERNAL_SUBDIRS" == "y" ] && EXTERNAL_FILES+=" /usr/share/ltrace" || EXTERNAL_FILES+=" /usr/share/ltrace/libacl.so.conf /usr/share/ltrace/libc.so.conf /usr/share/ltrace/libm.so.conf /usr/share/ltrace/syscalls.conf"
+	if [ "$EXTERNAL_SUBDIRS" == "y" ]; then
+		EXTERNAL_FILES+=" /usr/share/ltrace"
+	else
+		for f in libacl.so.conf libc.so.conf libc.so-types.conf libm.so.conf libpthread.so.conf libpthread.so-types.conf syscalls.conf; do
+			EXTERNAL_FILES+=" /usr/share/ltrace/$f"
+		done
+	fi
 fi

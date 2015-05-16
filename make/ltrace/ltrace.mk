@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, c18a46eff7)
+$(call PKG_INIT_BIN, be0c6870e0)
 $(PKG)_SOURCE:=ltrace-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git://git.debian.org/git/collab-maint/ltrace.git
 
@@ -7,7 +7,7 @@ $(PKG)_CATEGORY:=Debug helpers
 $(PKG)_BINARY:=$($(PKG)_DIR)/ltrace
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ltrace
 
-$(PKG)_CONFIGS            := libacl.so.conf libc.so.conf libm.so.conf syscalls.conf
+$(PKG)_CONFIGS            := libacl.so.conf libc.so.conf libc.so-types.conf libm.so.conf libpthread.so.conf libpthread.so-types.conf syscalls.conf
 $(PKG)_CONFIGS_BUILD_DIR  := $($(PKG)_CONFIGS:%=$($(PKG)_DIR)/etc/%)
 $(PKG)_CONFIGS_TARGET_DIR := $($(PKG)_CONFIGS:%=$($(PKG)_DEST_DIR)/usr/share/ltrace/%)
 
