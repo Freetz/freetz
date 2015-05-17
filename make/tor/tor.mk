@@ -29,6 +29,9 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-unittests
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TOR_STATIC
 
+# touch some patched files to prevent auto*-tools from being executed
+$(PKG)_PATCH_POST_CMDS += touch -t 200001010000.00 ./configure.ac;
+
 # add EXTRA_(C|LD)FLAGS
 $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
 
