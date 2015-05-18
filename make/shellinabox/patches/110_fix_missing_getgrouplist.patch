@@ -1,55 +1,112 @@
---- shellinabox/launcher.c.ori	2010-11-23 09:20:33.000000000 +0100
-+++ shellinabox/launcher.c	2010-11-23 09:53:29.000000000 +0100
-@@ -1145,6 +1145,52 @@
+getgrouplist is available in uClibc since 0.9.30 (s. http://git.uclibc.org/uClibc/commit/libc/pwd_grp/pwd_grp.c?id=9385a9419d98aeb56fe54b7452d1310ef20cea95)
+
+check if it's available and provide a replacement if necessary
+
+--- config.h.in
++++ config.h.in
+@@ -21,6 +21,9 @@
+ /* Define to 1 if you have the `getgrnam_r' function. */
+ #undef HAVE_GETGRNAM_R
+ 
++/* Define to 1 if you have the `getgrouplist' function. */
++#undef HAVE_GETGROUPLIST
++
+ /* Define to 1 if getgrouplist() takes ints as arguments */
+ #undef HAVE_GETGROUPLIST_TAKES_INTS
+ 
+--- configure.ac
++++ configure.ac
+@@ -34,7 +34,7 @@
+ 
+ dnl Prefer thread-safe functions, if available
+ AC_CHECK_FUNCS([getgrgid_r getgrnam_r gethostbyname_r getpwnam_r getpwuid_r  \
+-                openpty strcasestr getresuid getresgid setresuid setresgid ])
++                openpty strcasestr getresuid getresgid setresuid setresgid getgrouplist ])
+ 
+ dnl We prefer ptsname_r(), but will settle for ptsname() if necessary
+ AC_TRY_LINK([#ifndef _XOPEN_SOURCE
+--- configure
++++ configure
+@@ -10655,7 +10655,7 @@
+ 
+ 
+ for ac_func in getgrgid_r getgrnam_r gethostbyname_r getpwnam_r getpwuid_r  \
+-                openpty strcasestr getresuid getresgid setresuid setresgid
++                openpty strcasestr getresuid getresgid setresuid setresgid getgrouplist
+ do :
+   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+--- shellinabox/launcher.c
++++ shellinabox/launcher.c
+@@ -170,6 +170,62 @@
+ static int   launcher = -1;
+ static uid_t restricted;
+ 
++#if !defined(HAVE_GETGROUPLIST)
++/*
++ * define own getgrouplist (here taken from freebsd, s. http://svnweb.freebsd.org/base/stable/9/lib/libc/gen/getgrouplist.c?revision=165903&view=markup)
++ * note: this implementation is known to be buggy, it doesn't support calls like getgrouplist(*, *, NULL, *)
++ */
++int
++freebsd_getgrouplist(const char *uname, gid_t agroup, gid_t *groups, int *grpcnt)
++{
++	const struct group *grp;
++	int i, maxgroups, ngroups, ret;
++
++	ret = 0;
++	ngroups = 0;
++	maxgroups = *grpcnt;
++	/*
++	 * When installing primary group, duplicate it;
++	 * the first element of groups is the effective gid
++	 * and will be overwritten when a setgid file is executed.
++	 */
++	groups[ngroups++] = agroup;
++
++/* DISABLED as it's FreeBSD specific
++	if (maxgroups > 1)
++		groups[ngroups++] = agroup;
++*/
++
++	/*
++	 * Scan the group file to find additional groups.
++	 */
++	setgrent();
++	while ((grp = getgrent()) != NULL) {
++		for (i = 0; i < ngroups; i++) {
++			if (grp->gr_gid == groups[i])
++				goto skip;
++		}
++		for (i = 0; grp->gr_mem[i]; i++) {
++			if (!strcmp(grp->gr_mem[i], uname)) {
++				if (ngroups >= maxgroups) {
++					ret = -1;
++					break;
++				}
++				groups[ngroups++] = grp->gr_gid;
++				break;
++			}
++		}
++skip:
++		;
++	}
++	endgrent();
++	*grpcnt = ngroups;
++	return (ret);
++}
++#define getgrouplist freebsd_getgrouplist
++#define GETGROUPLIST_NULL_AS_3RD_ARG_IS_UNSAFE
++#endif
++
+ // MacOS X has a somewhat unusual definition of getgrouplist() which can
+ // trigger a compile warning.
+ #if defined(HAVE_GETGROUPLIST_TAKES_INTS)
+@@ -1145,7 +1201,7 @@
  
    // Retrieve supplementary group ids.
    int ngroups;
-+
-+//define own getgrouplist here taken from freebsd, for it's missing in uclib
-+int
-+getgrouplist(const char *uname, gid_t agroup, gid_t *groups, int *grpcnt)
-+{
-+        const struct group *grp;
-+        int i, maxgroups, ngroups, ret;
-+
-+        ret = 0;
-+        ngroups = 0;
-+        maxgroups = *grpcnt;
-+        /*
-+         * When installing primary group, duplicate it;
-+         * the first element of groups is the effective gid
-+         * and will be overwritten when a setgid file is executed.
-+         */
-+        groups[ngroups++] = agroup;
-+        if (maxgroups > 1)
-+                groups[ngroups++] = agroup;
-+        /*
-+         * Scan the group file to find additional groups.
-+         */
-+        setgrent();
-+        while ((grp = getgrent()) != NULL) {
-+                for (i = 0; i < ngroups; i++) {
-+                        if (grp->gr_gid == groups[i])
-+                                goto skip;
-+                }
-+                for (i = 0; grp->gr_mem[i]; i++) {
-+                        if (!strcmp(grp->gr_mem[i], uname)) {
-+                                if (ngroups >= maxgroups) {
-+                                        ret = -1;
-+                                        break;
-+                                }
-+                                groups[ngroups++] = grp->gr_gid;
-+                                break;
-+                        }
-+                }
-+skip:
-+                ;
-+        }
-+        endgrent();
-+        *grpcnt = ngroups;
-+        return (ret);
-+}
-+
- #if defined(__linux__)
+-#if defined(__linux__)
++#if defined(__linux__) && !defined(GETGROUPLIST_NULL_AS_3RD_ARG_IS_UNSAFE)
    // On Linux, we can query the number of supplementary groups. On all other
    // platforms, we play it safe and just assume a fixed upper bound.
+   ngroups                      = 0;
