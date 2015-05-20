@@ -9,13 +9,14 @@ SFK_TOOL="$(dirname "$0")/sfk"
 HEADER_MAGIC_HEX="3C1A8000375A038003400008"
 INTRA_MAGIC_TXT="NMI Boot"
 INTRA_MAGIC_HEX="4E4D4920 426F6F74"
+HEX_DIGIT_PATTERN="[0-9A-F]"
 
 if [ $# -ne 2 -o ! -e "$INPUT_FILE" ]; then
 	echo "Usage: ${0##*/} input.image output.image"
 	exit 2
 fi
 
-hexdumps="$("$SFK_TOOL" hexfind "$INPUT_FILE" -bin /$HEADER_MAGIC_HEX/ -quiet -context=32)"
+hexdumps="$("$SFK_TOOL" hexfind "$INPUT_FILE" -bin /$HEADER_MAGIC_HEX/ -quiet -context=64)"
 offsets=($(echo "$hexdumps" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
 
 count=${#offsets[@]}
@@ -31,12 +32,12 @@ for (( i=0; i<count; i++ )); do
 	case "$offs" in
 		BE0000)
 			junkver=1
-			img_size_junk=$(echo "${hexdumps}" | sed -rn "s/^.(.{8}) .{8} ${INTRA_MAGIC_HEX}.*/\1/p" )
+			img_size_junk=$(echo "${hexdumps}" | sed -rn "s/^.*(${HEX_DIGIT_PATTERN}{8}) ${HEX_DIGIT_PATTERN}{8} ${INTRA_MAGIC_HEX}.*/\1/p")
 			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") -  256 - 8 )))
 			;;
 		BE0004)
 			junkver=2
-			img_size_junk=$(echo "${hexdumps}" | grep -b1 "$INTRA_MAGIC_HEX" | head -n1 | sed -rn "s/^.* (.{8})< .*/\1/p" )
+			img_size_junk=$(echo "${hexdumps}" | grep -b1 "$INTRA_MAGIC_HEX" | head -n1 | sed -rn "s/^.* (${HEX_DIGIT_PATTERN}{8})< .*/\1/p")
 			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") - 4096 - 8 )))
 			;;
 		*)
