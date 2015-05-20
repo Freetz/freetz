@@ -45,7 +45,7 @@ check if it's available and provide a replacement if necessary
 +#if !defined(HAVE_GETGROUPLIST)
 +/*
 + * define own getgrouplist (here taken from freebsd, s. http://svnweb.freebsd.org/base/stable/9/lib/libc/gen/getgrouplist.c?revision=165903&view=markup)
-+ * note: this implementation is known to be buggy, it doesn't support calls like getgrouplist(*, *, NULL, *)
++ * note: this implementation is fixed to support calls like getgrouplist(*, *, NULL, *)
 + */
 +int
 +freebsd_getgrouplist(const char *uname, gid_t agroup, gid_t *groups, int *grpcnt)
@@ -61,7 +61,7 @@ check if it's available and provide a replacement if necessary
 +	 * the first element of groups is the effective gid
 +	 * and will be overwritten when a setgid file is executed.
 +	 */
-+	groups[ngroups++] = agroup;
++	groups ? groups[ngroups++] = agroup : ngroups++;
 +
 +/* DISABLED as it's FreeBSD specific
 +	if (maxgroups > 1)
@@ -73,7 +73,7 @@ check if it's available and provide a replacement if necessary
 +	 */
 +	setgrent();
 +	while ((grp = getgrent()) != NULL) {
-+		for (i = 0; i < ngroups; i++) {
++		for (i = 0;  groups && i < ngroups; i++) {
 +			if (grp->gr_gid == groups[i])
 +				goto skip;
 +		}
@@ -83,7 +83,7 @@ check if it's available and provide a replacement if necessary
 +					ret = -1;
 +					break;
 +				}
-+				groups[ngroups++] = grp->gr_gid;
++				groups ? groups[ngroups++] = grp->gr_gid : ngroups++;
 +				break;
 +			}
 +		}
