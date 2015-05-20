@@ -31,12 +31,12 @@ for (( i=0; i<count; i++ )); do
 	case "$offs" in
 		BE0000)
 			junkver=1
-			img_size_junk=$(echo "${hexdumps[i]}" | sed -rn "s/^.(.{8}) .{8} ${INTRA_MAGIC_HEX}.*/\1/p" )
+			img_size_junk=$(echo "${hexdumps}" | sed -rn "s/^.(.{8}) .{8} ${INTRA_MAGIC_HEX}.*/\1/p" )
 			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") -  256 - 8 )))
 			;;
 		BE0004)
 			junkver=2
-			img_size_junk=$(echo "${hexdumps[i]}" | grep -b1 "$INTRA_MAGIC_HEX" | head -n1 | sed -rn "s/^.* (.{8})< .*/\1/p" )
+			img_size_junk=$(echo "${hexdumps}" | grep -b1 "$INTRA_MAGIC_HEX" | head -n1 | sed -rn "s/^.* (.{8})< .*/\1/p" )
 			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") - 4096 - 8 )))
 			;;
 		*)
