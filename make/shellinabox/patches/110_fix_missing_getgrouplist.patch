@@ -38,7 +38,7 @@ check if it's available and provide a replacement if necessary
  ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 --- shellinabox/launcher.c
 +++ shellinabox/launcher.c
-@@ -170,6 +170,62 @@
+@@ -170,6 +170,61 @@
  static int   launcher = -1;
  static uid_t restricted;
  
@@ -79,11 +79,9 @@ check if it's available and provide a replacement if necessary
 +		}
 +		for (i = 0; grp->gr_mem[i]; i++) {
 +			if (!strcmp(grp->gr_mem[i], uname)) {
-+				if (ngroups >= maxgroups) {
-+					ret = -1;
-+					break;
-+				}
-+				groups ? groups[ngroups++] = grp->gr_gid : ngroups++;
++				ngroups++;
++				if (groups && ngroups < maxgroups)
++					groups[ngroups] = grp->gr_gid;
 +				break;
 +			}
 +		}
@@ -91,22 +89,14 @@ check if it's available and provide a replacement if necessary
 +		;
 +	}
 +	endgrent();
++	if (ngroups > maxgroups)
++		ret = -1;
 +	*grpcnt = ngroups;
 +	return (ret);
 +}
 +#define getgrouplist freebsd_getgrouplist
-+#define GETGROUPLIST_NULL_AS_3RD_ARG_IS_UNSAFE
 +#endif
 +
  // MacOS X has a somewhat unusual definition of getgrouplist() which can
  // trigger a compile warning.
  #if defined(HAVE_GETGROUPLIST_TAKES_INTS)
-@@ -1145,7 +1201,7 @@
- 
-   // Retrieve supplementary group ids.
-   int ngroups;
--#if defined(__linux__)
-+#if defined(__linux__) && !defined(GETGROUPLIST_NULL_AS_3RD_ARG_IS_UNSAFE)
-   // On Linux, we can query the number of supplementary groups. On all other
-   // platforms, we play it safe and just assume a fixed upper bound.
-   ngroups                      = 0;
