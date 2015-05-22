@@ -79,9 +79,9 @@ check if it's available and provide a replacement if necessary
 +		}
 +		for (i = 0; grp->gr_mem[i]; i++) {
 +			if (!strcmp(grp->gr_mem[i], uname)) {
-+				ngroups++;
 +				if (groups && ngroups < maxgroups)
 +					groups[ngroups] = grp->gr_gid;
++				ngroups++;
 +				break;
 +			}
 +		}
