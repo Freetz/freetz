@@ -38,7 +38,7 @@ check if it's available and provide a replacement if necessary
  ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 --- shellinabox/launcher.c
 +++ shellinabox/launcher.c
-@@ -170,6 +170,61 @@
+@@ -170,6 +170,63 @@
  static int   launcher = -1;
  static uid_t restricted;
  
@@ -79,6 +79,8 @@ check if it's available and provide a replacement if necessary
 +		}
 +		for (i = 0; grp->gr_mem[i]; i++) {
 +			if (!strcmp(grp->gr_mem[i], uname)) {
++				if (grp->gr_gid == agroup)
++					goto skip;
 +				if (groups && ngroups < maxgroups)
 +					groups[ngroups] = grp->gr_gid;
 +				ngroups++;
