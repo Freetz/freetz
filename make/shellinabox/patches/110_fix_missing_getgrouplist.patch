@@ -38,7 +38,7 @@ check if it's available and provide a replacement if necessary
  ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 --- shellinabox/launcher.c
 +++ shellinabox/launcher.c
-@@ -170,6 +170,52 @@
+@@ -170,6 +170,48 @@
  static int   launcher = -1;
  static uid_t restricted;
  
@@ -57,7 +57,9 @@ check if it's available and provide a replacement if necessary
 +	ngroups = 0;
 +	maxgroups = *grpcnt;
 +
-+	groups ? groups[ngroups++] = agroup : ngroups++;
++	if (groups)
++		groups[ngroups] = agroup;
++	ngroups++;
 +
 +	/*
 +	 * Scan the group file to find additional groups.
@@ -65,11 +67,7 @@ check if it's available and provide a replacement if necessary
 +	setgrent();
 +	while ((grp = getgrent()) != NULL) {
 +		if (grp->gr_gid == agroup)
-+			goto skip;
-+		for (i = 0;  groups && i < (ngroups < maxgroups ? ngroups : maxgroups); i++) {
-+			if (grp->gr_gid == groups[i])
-+				goto skip;
-+		}
++			continue;
 +		for (i = 0; grp->gr_mem[i]; i++) {
 +			if (!strcmp(grp->gr_mem[i], uname)) {
 +				if (groups && ngroups < maxgroups)
@@ -78,8 +76,6 @@ check if it's available and provide a replacement if necessary
 +				break;
 +			}
 +		}
-+skip:
-+		;
 +	}
 +	endgrent();
 +
