@@ -38,49 +38,40 @@ check if it's available and provide a replacement if necessary
  ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 --- shellinabox/launcher.c
 +++ shellinabox/launcher.c
-@@ -170,6 +170,63 @@
+@@ -170,6 +170,52 @@
  static int   launcher = -1;
  static uid_t restricted;
  
 +#if !defined(HAVE_GETGROUPLIST)
 +/*
-+ * define own getgrouplist (here taken from freebsd, s. http://svnweb.freebsd.org/base/stable/9/lib/libc/gen/getgrouplist.c?revision=165903&view=markup)
-+ * note: this implementation is fixed to support calls like getgrouplist(*, *, NULL, *)
++ * define own getgrouplist
++ * based on the freebsd implementation (s. http://svnweb.freebsd.org/base/stable/9/lib/libc/gen/getgrouplist.c?revision=165903&view=markup)
++ * modified to support calls like getgrouplist(*, *, NULL, *)
 + */
 +int
-+freebsd_getgrouplist(const char *uname, gid_t agroup, gid_t *groups, int *grpcnt)
++getgrouplist(const char *uname, gid_t agroup, gid_t *groups, int *grpcnt)
 +{
 +	const struct group *grp;
-+	int i, maxgroups, ngroups, ret;
++	int i, maxgroups, ngroups;
 +
-+	ret = 0;
 +	ngroups = 0;
 +	maxgroups = *grpcnt;
-+	/*
-+	 * When installing primary group, duplicate it;
-+	 * the first element of groups is the effective gid
-+	 * and will be overwritten when a setgid file is executed.
-+	 */
-+	groups ? groups[ngroups++] = agroup : ngroups++;
 +
-+/* DISABLED as it's FreeBSD specific
-+	if (maxgroups > 1)
-+		groups[ngroups++] = agroup;
-+*/
++	groups ? groups[ngroups++] = agroup : ngroups++;
 +
 +	/*
 +	 * Scan the group file to find additional groups.
 +	 */
 +	setgrent();
 +	while ((grp = getgrent()) != NULL) {
++		if (grp->gr_gid == agroup)
++			goto skip;
 +		for (i = 0;  groups && i < ngroups; i++) {
 +			if (grp->gr_gid == groups[i])
 +				goto skip;
 +		}
 +		for (i = 0; grp->gr_mem[i]; i++) {
 +			if (!strcmp(grp->gr_mem[i], uname)) {
-+				if (grp->gr_gid == agroup)
-+					goto skip;
 +				if (groups && ngroups < maxgroups)
 +					groups[ngroups] = grp->gr_gid;
 +				ngroups++;
@@ -91,12 +82,10 @@ check if it's available and provide a replacement if necessary
 +		;
 +	}
 +	endgrent();
-+	if (ngroups > maxgroups)
-+		ret = -1;
++
 +	*grpcnt = ngroups;
-+	return (ret);
++	return (ngroups > maxgroups) ? -1 : ngroups;
 +}
-+#define getgrouplist freebsd_getgrouplist
 +#endif
 +
  // MacOS X has a somewhat unusual definition of getgrouplist() which can
