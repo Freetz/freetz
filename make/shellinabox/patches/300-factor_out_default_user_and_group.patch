@@ -1,0 +1,88 @@
+--- shellinabox/privileges.h
++++ shellinabox/privileges.h
+@@ -48,6 +48,9 @@
+ 
+ #include <sys/types.h>
+ 
++#define DEFAULT_USER	"nobody"
++#define DEFAULT_GROUP	"nogroup"
++
+ extern int   runAsUser;
+ extern int   runAsGroup;
+ 
+--- shellinabox/privileges.c
++++ shellinabox/privileges.c
+@@ -119,8 +119,8 @@
+       // If we were started as a set-gid binary, drop these permissions, now.
+       check(!setresgid(rg, rg, rg));
+     } else {
+-      // If we are running as root, switch to "nogroup"
+-      gid_t ng = getGroupId("nogroup");
++      // If we are running as root, switch to DEFAULT_GROUP
++      gid_t ng = getGroupId(DEFAULT_GROUP);
+       check(!setresgid(ng, ng, ng));
+     }
+   }
+@@ -150,8 +150,8 @@
+       // permissions.
+       check(!setresuid(r, r, -1));
+     } else {
+-      // If we are running as "root", temporarily switch to "nobody".
+-      uid_t n = getUserId("nobody");
++      // If we are running as "root", temporarily switch to DEFAULT_USER.
++      uid_t n = getUserId(DEFAULT_USER);
+       check(!setresuid(n, n, -1));
+     }
+   }
+@@ -176,8 +176,8 @@
+       // permissions.
+       check(!setresuid(r, r, r));
+     } else {
+-      // If we are running as "root", permanently switch to "nobody".
+-      uid_t n = getUserId("nobody");
++      // If we are running as "root", permanently switch to DEFAULT_USER.
++      uid_t n = getUserId(DEFAULT_USER);
+       check(!setresuid(n, n, n));
+     }
+   }
+@@ -375,9 +375,9 @@
+   #endif
+   check(buf       = malloc(gr_len));
+   if (getgrnam_r(name, &grbuf, buf, gr_len, &gr) || !gr) {
+-    // Maybe, this system does not have a "nogroup" group. Substitute the
+-    // group of the "nobody" user.
+-    if (!strcmp(name, "nogroup")) {
++    // Maybe, this system does not have a DEFAULT_GROUP group. Substitute the
++    // group of the DEFAULT_USER user.
++    if (!strcmp(name, DEFAULT_GROUP)) {
+       struct passwd pwbuf, *pw;
+       #ifdef _SC_GETPW_R_SIZE_MAX
+       int pw_len  = sysconf(_SC_GETPW_R_SIZE_MAX);
+@@ -390,8 +390,8 @@
+       if (pw_len > gr_len) {
+         check(buf = realloc(buf, pw_len));
+       }
+-      if (!getpwnam_r("nobody", &pwbuf, buf, pw_len, &pw) && pw) {
+-        debug("Substituting \"nobody's\" primary group for \"nogroup\"");
++      if (!getpwnam_r(DEFAULT_USER, &pwbuf, buf, pw_len, &pw) && pw) {
++        debug("Substituting DEFAULT_USER's primary group for DEFAULT_GROUP");
+         gid_t gid = pw->pw_gid;
+         free(buf);
+         return gid;
+--- shellinabox/launcher.c
++++ shellinabox/launcher.c
+@@ -1060,12 +1060,12 @@
+       if (runAsUser >= 0) {
+         service->uid           = runAsUser;
+       } else {
+-        service->uid           = getUserId("nobody");
++        service->uid           = getUserId(DEFAULT_USER);
+       }
+       if (runAsGroup >= 0) {
+         service->gid           = runAsGroup;
+       } else {
+-        service->gid           = getGroupId("nogroup");
++        service->gid           = getGroupId(DEFAULT_GROUP);
+       }
+     }
+     pw                         = getPWEnt(service->uid);
