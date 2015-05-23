@@ -1,0 +1,32 @@
+--- shellinabox/shellinaboxd.c
++++ shellinabox/shellinaboxd.c
+@@ -736,6 +736,7 @@
+ }
+ 
+ static void usage(void) {
++#if defined(PROBE_UID_GID_BY_DROPPING_PRIVILEGES)
+   // Drop privileges so that we can tell which uid/gid we would normally
+   // run at.
+   dropPrivileges();
+@@ -745,6 +746,10 @@
+   check(!getresgid(&r_gid, &e_gid, &s_gid));
+   const char *user  = getUserName(r_uid);
+   const char *group = getGroupName(r_gid);
++#else
++  const char user[]  = DEFAULT_USER;
++  const char group[] = DEFAULT_GROUP;
++#endif
+ 
+   message("Usage: shellinaboxd [OPTIONS]...\n"
+           "Starts an HTTP server that serves terminal emulators to AJAX "
+@@ -819,8 +824,10 @@
+           "  -t, --disable-ssl           disable transparent SSL support\n"
+           "      --disable-ssl-menu      disallow changing transport mode\n",
+           user, supportsPAM() ? "'AUTH' | " : "");
++#if defined(PROBE_UID_GID_BY_DROPPING_PRIVILEGES)
+   free((char *)user);
+   free((char *)group);
++#endif
+ }
+ 
+ static void destroyExternalFileHashEntry(void *arg ATTR_UNUSED, char *key,
