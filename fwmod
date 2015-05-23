@@ -1342,14 +1342,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 				done
 			}
 			echo1 "tagging avm webif (tag by ${FREETZ_TAGGING_STRING})"
-			# newest lua (small logo @left, eg 7270 04.88)
-			tagging "+0+0" "center" $(find ${HTML_MOD_DIR} -name kopfbalken_links.gif -o -name kopfbalken_links.png)
-			# newer html (big header @top, eg 7320 05.29)
-			tagging "-20+0" "west" $(find ${HTML_MOD_DIR} -name kopfbalken.gif)
-			# older (big header @top, eg 7141 04.76)
-			tagging "+0+0" "west" $(find ${HTML_MOD_DIR} -name fw_header980.gif)
-			# even older (big header @top, eg 7050 04.03)
-			tagging "+0-5" "west" $(find ${HTML_MOD_DIR} -name fw_header.gif)
+			for d in "${HTML_MOD_DIR}" "${HTML_MOD_DIR}.nas"; do
+				[ -d "${d}" ] || continue
+				# newest lua (small logo @left, eg 7270 04.88)
+				tagging "+0+0" "center" $(find "${d}" -name kopfbalken_links.gif -o -name kopfbalken_links.png)
+				# newer html (big header @top, eg 7320 05.29)
+				tagging "-20+0" "west" $(find "${d}" -name kopfbalken.gif)
+				# older (big header @top, eg 7141 04.76)
+				tagging "+0+0" "west" $(find "${d}" -name fw_header980.gif)
+				# even older (big header @top, eg 7050 04.03)
+				tagging "+0-5" "west" $(find "${d}" -name fw_header.gif)
+			done
 		fi
 
 	fi
