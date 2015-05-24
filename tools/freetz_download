@@ -244,6 +244,10 @@ if [ -n "$URLs" ]; then
 				sites[(( num_sites++ ))]=http://www.apache.org/dist/$subpath
 				sites[(( num_sites++ ))]=http://apache.openmirror.de/$subpath
 				sites[(( num_sites++ ))]=http://archive.apache.org/dist/$subpath
+			elif [ ${url:0:6} == "@SAMBA" ]; then
+				subpath=${url/@SAMBA\//}
+				sites[(( num_sites++ ))]=https://www.samba.org/ftp/$subpath
+				sites[(( num_sites++ ))]=https://ftp.samba.org/pub/$subpath
 			else
 				sites[(( num_sites++ ))]=$url
 			fi

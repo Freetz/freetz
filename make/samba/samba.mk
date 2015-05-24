@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5_3.0.37:=11ed2bfef4090bd5736b194b43f67289
 $(PKG)_SOURCE_MD5_3.6.25:=76da2fa64edd94a0188531e7ecb27c4e
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
-$(PKG)_SITE:=http://samba.org/samba/ftp/stable,http://ftp.heanet.ie/mirrors/ftp.samba.org/stable
+$(PKG)_SITE:=@SAMBA/samba/stable,http://ftp.heanet.ie/mirrors/ftp.samba.org/stable
 
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 

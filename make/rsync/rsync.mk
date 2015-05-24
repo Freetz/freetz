@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 3.1.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=43bd6676f0b404326eee2d63be3cdcfe
-$(PKG)_SITE:=http://samba.org/ftp/rsync/src
+$(PKG)_SITE:=@SAMBA/rsync/src
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/rsync
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/rsync
