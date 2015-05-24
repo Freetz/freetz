@@ -1344,8 +1344,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo1 "tagging avm webif (tag by ${FREETZ_TAGGING_STRING})"
 			for d in "${HTML_MOD_DIR}" "${HTML_MOD_DIR}.nas"; do
 				[ -d "${d}" ] || continue
-				# newest lua (small logo @left, eg 7270 04.88)
-				tagging "+0+0" "center" $(find "${d}" -name kopfbalken_links.gif -o -name kopfbalken_links.png)
+				# lua since  Fritz!OS 6.2x (small logo @left, eg 7390 06.23)
+				tagging "+0+6" "center" $(find "${d}" -name kopfbalken_links.png)
+				# lua before Fritz!OS 6.2x (small logo @left, eg 7270 04.88)
+				tagging "+0+0" "center" $(find "${d}" -name kopfbalken_links.gif)
 				# newer html (big header @top, eg 7320 05.29)
 				tagging "-20+0" "west" $(find "${d}" -name kopfbalken.gif)
 				# older (big header @top, eg 7141 04.76)
