@@ -123,3 +123,30 @@ int get_private_key_password(char *password_buf, size_t password_buf_size) {
 	}
 	return invoke_capture_stdout(proxy, password_buf, password_buf_size);
 }
+
+/*
+ * a possible implementation of OpenSSL's pem_password_cb function (s. https://www.openssl.org/docs/crypto/pem.html for details)
+ * returns password length or 0 in case of an error
+ */
+int get_private_key_password_OpenSSL_callback(char *buf, int size, int rwflag, void *userdata) {
+#if 0
+	if (rwflag) {
+		// encryption (writing out data in PEM format) is not supported
+		return 0;
+	}
+#endif
+
+	if (userdata) {
+		// TODO: find out if it's really necessary to zero-terminate the string, default OpenSSL callback doesn't do it
+		int len = strlen(userdata);
+		if (len >= size) {
+			len = size - 1;
+		}
+		strncpy(buf, userdata, len);
+		buf[len] = '\0';
+		return len;
+	}
+
+	int len = get_private_key_password(buf, size);
+	return len > 0 ? len : 0;
+}
