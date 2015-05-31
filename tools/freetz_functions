@@ -596,3 +596,17 @@ function create_LD_PRELOAD_wrapper() {
 
 	chmod 755 "${FILESYSTEM_MOD_DIR}${file_to_wrap}"
 }
+
+# $1 - number (or mathematical expression) in bytes
+function byte_to_mb() {
+	echo $(($1)) | awk '{ printf "%.1f MB", $1 /1024/1024 }'
+}
+
+# $1 - tarball filename
+function is_valid_tarball() {
+	# integrity check by listing the content
+	[ -s "$1" ] && "$TAR" -tf "$1"    >/dev/null 2>&1
+
+	# integrity check by decompressing to stdout
+#	[ -s "$1" ] && "$TAR" -xf "$1" -O >/dev/null 2>&1
+}

@@ -37,19 +37,6 @@ Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
 EOF
 }
 
-byte_to_mb() {
-	echo $(($1)) | awk ' { printf "%.1f MB", $1 /1024/1024 } '
-}
-
-# $1 - tarball filename
-is_valid_tarball() {
-	# integrity check by listing the content
-	[ -s "$1" ] && "$TAR" -tf "$1"    >/dev/null 2>&1
-
-	# integrity check by decompressing to stdout
-#	[ -s "$1" ] && "$TAR" -xf "$1" -O >/dev/null 2>&1
-}
-
 ##################################################
 ## Initialise and check command line parameters ##
 ##################################################
