@@ -68,16 +68,16 @@ done
 
 # Default values for unset command line parameters
 DOT_CONFIG="$(dirname "$0")/.config"
-DO_UNPACK=0; DO_MOD=0; DO_PACK=0; FORCE_PACK=0; DO_ZIP=0; _OPT=0
+DO_UNPACK=0; DO_MOD=0; DO_PACK=0; FORCE_PACK=0; DO_ZIP=0; _REQUIRED_ACTION_PROVIDED=0
 COPY_FS_DIR=; DIR=
 
 # Parse command line parameters
 while getopts umpanfzc:i:d: opt; do
 	case "$opt" in
-		u) DO_UNPACK=1; _OPT=1 ;;
-		m) DO_MOD=1; _OPT=1 ;;
-		p) DO_PACK=1; _OPT=1 ;;
-		a) DO_UNPACK=1; DO_MOD=1; DO_PACK=1; _OPT=1 ;;
+		u) DO_UNPACK=1; _REQUIRED_ACTION_PROVIDED=1 ;;
+		m) DO_MOD=1; _REQUIRED_ACTION_PROVIDED=1 ;;
+		p) DO_PACK=1; _REQUIRED_ACTION_PROVIDED=1 ;;
+		a) DO_UNPACK=1; DO_MOD=1; DO_PACK=1; _REQUIRED_ACTION_PROVIDED=1 ;;
 		n) FIRMWARE_NOCOMPILE=1 ;;
 		f) FORCE_PACK=1 ;;
 		z) DO_ZIP=1 ;;
@@ -121,7 +121,7 @@ FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
 	error 1 "not configured"
 
 # No -u/-m/-p/-a options = default = -a = -ump
-[ "$_OPT" -eq 0 ] && DO_UNPACK=1 && DO_MOD=1 && DO_PACK=1
+[ "$_REQUIRED_ACTION_PROVIDED" -eq 0 ] && DO_UNPACK=1 && DO_MOD=1 && DO_PACK=1
 
 # Set default output directory, if not specified on command line
 : ${DIR:=$FIRMWARE.mod}
