@@ -39,6 +39,7 @@ config FREETZ_PACKAGE_SUBVERSION_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_SUBVERSION
 	select FREETZ_LIB_libneon_WITH_SSL if FREETZ_PACKAGE_SUBVERSION_VERSION_1_7
+	select FREETZ_OPENSSL_VERSION_PROMPT
 	default y
 	help
 		Enables ssl support in subversion.
