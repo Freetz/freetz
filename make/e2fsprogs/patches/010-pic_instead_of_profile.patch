@@ -106,7 +106,7 @@
  @ELF_CMT@	$(Q) $(CC) $(ALL_CFLAGS) -fPIC -o elfshared/$*.o -c $<
  @BSDLIB_CMT@	$(Q) $(CC) $(ALL_CFLAGS) $(BSDLIB_PIC_FLAG) -o pic/$*.o -c $<
  
-@@ -510,7 +510,7 @@
+@@ -507,7 +507,7 @@
  		tst_bitmaps tst_bitmaps_out tst_extents tst_inline \
  		tst_inline_data tst_inode_size tst_bitmaps_cmd.c \
  		ext2_tdbtool mkjournal debug_cmds.c tst_cmds.c extent_cmds.c \
@@ -223,7 +223,7 @@
  	LD_LIBRARY_PATH=$(LIB) DYLD_LIBRARY_PATH=$(LIB) ./tst_uuid
 --- misc/Makefile.in
 +++ misc/Makefile.in
-@@ -105,7 +105,7 @@
+@@ -106,7 +106,7 @@
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $< -o $@
  	$(Q) $(CHECK_CMD) $(ALL_CFLAGS) $<
@@ -232,7 +232,7 @@
  
  all:: profiled $(SPROGS) $(UPROGS) $(USPROGS) $(SMANPAGES) $(UMANPAGES) \
  	$(FMANPAGES) $(LPROGS) $(E4DEFRAG_PROG)
-@@ -141,7 +141,7 @@
+@@ -142,7 +142,7 @@
  profile.o:
  	$(E) "	CC $<"
  	$(Q) $(CC) -c $(ALL_CFLAGS) $(srcdir)/../e2fsck/profile.c -o $@
@@ -241,7 +241,7 @@
  @PROFILE_CMT@	$(srcdir)/../e2fsck/profile.c
  
  findsuper: findsuper.o
-@@ -174,7 +174,7 @@
+@@ -175,7 +175,7 @@
  		$(PROFILED_E2P) $(DEPPROFILED_LIBBLKID) $(DEPPROFILED_LIBUUID) \
  		$(DEPPROFILED_LIBQUOTA)
  	$(E) "	LD $@"
@@ -250,7 +250,7 @@
  		$(PROFILED_TUNE2FS_OBJS) $(PROFILED_LIBBLKID) \
  		$(PROFILED_LIBUUID) $(PROFILED_LIBQUOTA) $(PROFILED_LIBE2P) \
  		$(LIBINTL) $(PROFILED_LIBS) $(SYSLIBS)
-@@ -192,7 +192,7 @@
+@@ -193,7 +193,7 @@
  blkid.profiled: $(BLKID_OBJS) $(DEPPROFILED_LIBBLKID) \
  		$(PROFILED_LIBEXT2FS)
  	$(E) "	LD $@"
@@ -259,7 +259,7 @@
  		$(PROFILED_LIBBLKID) $(LIBINTL) $(PROFILED_LIBEXT2FS) $(SYSLIBS)
  
  e2image: $(E2IMAGE_OBJS) $(DEPLIBS)
-@@ -202,7 +202,7 @@
+@@ -203,7 +203,7 @@
  
  e2image.profiled: $(E2IMAGE_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -268,7 +268,7 @@
  		$(PROFILED_E2IMAGE_OBJS) $(PROFILED_LIBS) $(LIBINTL) $(SYSLIBS)
  
  e2undo: $(E2UNDO_OBJS) $(DEPLIBS)
-@@ -212,7 +212,7 @@
+@@ -213,7 +213,7 @@
  
  e2undo.profiled: $(E2UNDO_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -277,7 +277,7 @@
  		$(PROFILED_E2UNDO_OBJS) $(PROFILED_LIBS) $(LIBINTL) $(SYSLIBS)
  
  e4defrag: $(E4DEFRAG_OBJS) $(DEPLIBS)
-@@ -222,7 +222,7 @@
+@@ -223,7 +223,7 @@
  
  e4defrag.profiled: $(E4DEFRAG_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -286,7 +286,7 @@
  		$(PROFILED_E4DEFRAG_OBJS) $(PROFILED_LIBS) $(SYSLIBS)
  
  base_device: base_device.c
-@@ -257,7 +257,7 @@
+@@ -258,7 +258,7 @@
  	$(PROFILED_LIBE2P) $(PROFILED_DEPLIBBLKID) $(PROFILED_DEPLIBUUID) \
  	$(PROFILED_LIBQUOTA)
  	$(E) "	LD $@"
@@ -295,7 +295,7 @@
  		$(PROFILED_MKE2FS_OBJS) $(PROFILED_LIBBLKID) \
  		$(PROFILED_LIBUUID) $(PROFILED_LIBQUOTA) $(PROFILED_LIBE2P) \
  		$(LIBINTL) $(PROFILED_LIBS) $(SYSLIBS)
-@@ -279,7 +279,7 @@
+@@ -280,7 +280,7 @@
  
  uuidgen.profiled: $(UUIDGEN_OBJS) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -304,7 +304,7 @@
  		$(PROFILED_UUIDGEN_OBJS) $(PROFILED_LIBUUID) $(LIBINTL) \
  		$(SYSLIBS)
  
-@@ -290,7 +290,7 @@
+@@ -291,7 +291,7 @@
  
  uuidd.profiled: $(UUIDD_OBJS) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -313,7 +313,7 @@
  		$(PROFILED_LIBUUID) $(LIBINTL) $(SYSLIBS)
  
  dumpe2fs: $(DUMPE2FS_OBJS) $(DEPLIBS) $(DEPLIBS_E2P) $(DEPLIBUUID)
-@@ -301,7 +301,7 @@
+@@ -302,7 +302,7 @@
  dumpe2fs.profiled: $(DUMPE2FS_OBJS) $(PROFILED_DEPLIBS) \
  		$(PROFILED_LIBE2P) $(PROFILED_DEPLIBUUID)
  	$(E) "	LD $@"
@@ -322,7 +322,7 @@
  		$(PROFILED_DUMPE2FS_OBJS) $(PROFILED_LIBS) \
  		$(PROFILED_LIBE2P) $(PROFILED_LIBUUID) $(LIBINTL) $(SYSLIBS)
  
-@@ -312,7 +312,7 @@
+@@ -313,7 +313,7 @@
  
  fsck.profiled: $(FSCK_OBJS) $(PROFILED_DEPLIBBLKID)
  	$(E) "	LD $@"
@@ -331,7 +331,7 @@
  		$(PROFILED_LIBBLKID) $(LIBINTL) $(SYSLIBS)
  
  badblocks: $(BADBLOCKS_OBJS) $(DEPLIBS)
-@@ -322,7 +322,7 @@
+@@ -323,7 +323,7 @@
  
  badblocks.profiled: $(BADBLOCKS_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -340,7 +340,7 @@
  		$(PROFILED_BADBLOCKS_OBJS) $(PROFILED_LIBS) $(LIBINTL) \
  		$(SYSLIBS)
  
-@@ -332,7 +332,7 @@
+@@ -333,7 +333,7 @@
  
  logsave.profiled: logsave.o
  	$(E) "	LD $@"
@@ -349,7 +349,7 @@
  		profiled/logsave.o $(SYSLIBS)
  
  e2freefrag: $(E2FREEFRAG_OBJS)
-@@ -342,7 +342,7 @@
+@@ -343,7 +343,7 @@
  
  e2freefrag.profiled: $(E2FREEFRAG_OBJS) $(PROFILED_DEPLIBS)
  	$(E) "	LD $@"
@@ -358,7 +358,7 @@
  		$(PROFILED_E2FREEFRAG_OBJS) $(PROFILED_LIBS) $(SYSLIBS)
  
  filefrag: $(FILEFRAG_OBJS)
-@@ -351,7 +351,7 @@
+@@ -352,7 +352,7 @@
  
  filefrag.profiled: $(FILEFRAG_OBJS)
  	$(E) "	LD $@"

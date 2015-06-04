@@ -92,7 +92,7 @@
  		} else if (ino < EXT2_FIRST_INODE(fs->super)) {
  			problem_t problem = 0;
  
-@@ -2292,9 +2294,11 @@
+@@ -2293,9 +2295,11 @@
  	}
  
  	if (ino == EXT2_ROOT_INO || ino >= EXT2_FIRST_INODE(ctx->fs->super)) {
@@ -433,7 +433,7 @@
  
  int journal_size, journal_flags;
  char *journal_device;
-@@ -634,6 +642,7 @@
+@@ -635,6 +643,7 @@
  		fs->flags &= ~EXT2_FLAG_SUPER_ONLY;
  	}
  
@@ -441,7 +441,7 @@
  	if (FEATURE_ON(E2P_FEATURE_RO_INCOMPAT,
  				EXT4_FEATURE_RO_COMPAT_QUOTA)) {
  		/*
-@@ -663,6 +672,7 @@
+@@ -664,6 +673,7 @@
  		usrquota = QOPT_DISABLE;
  		grpquota = QOPT_DISABLE;
  	}
@@ -449,7 +449,7 @@
  
  	if (sb->s_rev_level == EXT2_GOOD_OLD_REV &&
  	    (sb->s_feature_compat || sb->s_feature_ro_compat ||
-@@ -773,6 +783,7 @@
+@@ -774,6 +784,7 @@
  	return 1;
  }
  
@@ -457,7 +457,7 @@
  static void handle_quota_options(ext2_filsys fs)
  {
  	quota_ctx_t qctx;
-@@ -818,6 +829,7 @@
+@@ -819,6 +830,7 @@
  
  	return;
  }
@@ -465,7 +465,7 @@
  
  #ifdef CONFIG_QUOTA
  static void parse_quota_opts(const char *opts)
-@@ -2264,6 +2276,7 @@
+@@ -2266,6 +2278,7 @@
  			goto closefs;
  	}
  
@@ -473,7 +473,7 @@
  	if (Q_flag) {
  		if (mount_flags & EXT2_MF_MOUNTED) {
  			fputs(_("The quota feature may only be changed when "
-@@ -2273,6 +2286,7 @@
+@@ -2275,6 +2288,7 @@
  		}
  		handle_quota_options(fs);
  	}
