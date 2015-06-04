@@ -38,7 +38,7 @@
  int SSL_library_init(void)
  {
  #if defined(AST_DEVMODE)
-@@ -142,6 +147,7 @@
+@@ -115,6 +120,7 @@
  {
  	/* we can't allow this to be called, ever */
  }
@@ -46,7 +46,7 @@
  
  #endif /* HAVE_OPENSSL */
  
-@@ -153,6 +159,23 @@
+@@ -126,6 +132,21 @@
  {
  #ifdef HAVE_OPENSSL
  	unsigned int i;
@@ -64,16 +64,14 @@
 +	CRYPTO_set_locking_callback(ssl_lock);
 +
 +	SSL_load_error_strings();
-+	ERR_load_SSL_strings();
-+	ERR_load_BIO_strings();
 +#else
  	int (*real_SSL_library_init)(void);
  	void (*real_CRYPTO_set_id_callback)(unsigned long (*)(void));
  	void (*real_CRYPTO_set_locking_callback)(void (*)(int, int, const char *, int));
-@@ -221,6 +244,7 @@
+@@ -186,6 +207,7 @@
  
- 	get_OpenSSL_function(ERR_load_BIO_strings);
- 	real_ERR_load_BIO_strings();
+ 	get_OpenSSL_function(SSL_load_error_strings);
+ 	real_SSL_load_error_strings();
 +#endif /* !defined(_AST_STATIC_BUILD) */
  
  	startup_complete = 1;

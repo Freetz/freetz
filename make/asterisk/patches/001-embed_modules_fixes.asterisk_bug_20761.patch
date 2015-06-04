@@ -92,7 +92,7 @@
  
 --- Makefile.rules
 +++ Makefile.rules
-@@ -148,15 +148,15 @@
+@@ -160,15 +160,15 @@
  	$(CMD_PREFIX) $(CXX) $(STATIC_BUILD) -o $@ $(CXX_LDFLAGS_SO) $^ $(CXX_LIBS)
  
  %.eo: %.o
@@ -310,7 +310,7 @@
  		db->exiting = 1;
 --- res/res_fax.c
 +++ res/res_fax.c
-@@ -4156,7 +4156,7 @@
+@@ -4141,7 +4141,7 @@
  }
  
  /*! \brief FAXOPT dialplan function */
@@ -336,7 +336,7 @@
  static struct cops_gate *cops_gate_cmd(int cmd, struct cops_cmts *cmts, uint16_t trid, uint32_t mta, uint32_t actcount, float bitrate, uint32_t psize, uint32_t ssip, uint16_t ssport, struct cops_gate *gate);
 --- res/res_xmpp.c
 +++ res/res_xmpp.c
-@@ -654,7 +654,7 @@
+@@ -653,7 +653,7 @@
  	.category = "^general$",
  };
  
@@ -345,7 +345,7 @@
  
  static struct aco_type client_option = {
  	.type = ACO_ITEM,
-@@ -666,9 +666,9 @@
+@@ -665,9 +665,9 @@
  	.item_offset = offsetof(struct xmpp_config, clients),
  };
  

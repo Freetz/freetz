@@ -3,11 +3,11 @@ revert parts of http://svnview.digium.com/svn/asterisk?view=revision&revision=43
 
 --- Makefile
 +++ Makefile
-@@ -901,7 +902,7 @@
+@@ -933,7 +933,7 @@
  	-@menuselect/nmenuselect menuselect.makeopts && (echo "menuselect changes saved!"; rm -f channels/h323/Makefile.ast main/asterisk) || echo "menuselect changes NOT saved!"
  
  # options for make in menuselect/
--MAKE_MENUSELECT=CC="$(CC)" CXX="$(CXX)" LD="" AR="" RANLIB="" \
+-MAKE_MENUSELECT=CC="$(BUILD_CC)" CXX="$(CXX)" LD="" AR="" RANLIB="" \
 +MAKE_MENUSELECT=CC="$(BUILD_CC)" CXX="" LD="" AR="" RANLIB="" \
  		CFLAGS="$(BUILD_CFLAGS)" LDFLAGS="$(BUILD_LDFLAGS)" \
  		$(MAKE) -C menuselect CONFIGURE_SILENT="--silent"

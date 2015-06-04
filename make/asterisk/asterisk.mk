@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 11.17.1)
+$(call PKG_INIT_BIN, 11.18.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=90a83350623cd0d3638e526504107aafe6df4cc5
+$(PKG)_SOURCE_SHA1:=92646d621b3265e3bb6ed24ba95f602f86ee72b5
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk/releases
 
 $(PKG)_CATEGORY:=Unstable
@@ -21,7 +21,7 @@ $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MODUL
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
 endif
 
-$(PKG)_BUILD_PREREQ += svn
+$(PKG)_BUILD_PREREQ += svn xml2-config
 
 $(PKG)_DEPENDS_ON += curl
 $(PKG)_DEPENDS_ON += iksemel
@@ -210,7 +210,11 @@ endif
 endif
 	touch $@
 
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.defaults_adjusted
+$($(PKG)_DIR)/menuselect/menuselect: $($(PKG)_DIR)/.defaults_adjusted
+	(cd $(ASTERISK_DIR)/menuselect && ./configure)
+	$(SUBMAKE1) -C $(ASTERISK_DIR)/menuselect
+
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.defaults_adjusted $($(PKG)_DIR)/menuselect/menuselect
 
 $($(PKG)_DIR)/menuselect-tree: $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) $(ASTERISK_MAKE_OPTIONS) menuselect-tree

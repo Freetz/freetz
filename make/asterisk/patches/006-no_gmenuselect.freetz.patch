@@ -1,0 +1,13 @@
+Drop (actually optional) dependency on GTK+2.0, we don't need gmenuselect.
+
+--- menuselect/configure
++++ menuselect/configure
+@@ -4845,7 +4845,7 @@
+   PKGCONFIG="$ac_cv_prog_PKGCONFIG"
+ fi
+ 
+-if test ! "x${PKGCONFIG}" = xNo; then
++if false && test ! "x${PKGCONFIG}" = xNo; then
+    GTK2_INCLUDE=$(${PKGCONFIG} gtk+-2.0 --cflags 2>/dev/null)
+    GTK2_LIB=$(${PKGCONFIG} gtk+-2.0 --libs)
+    PBX_GTK2=1
