@@ -1,18 +1,18 @@
 --- configure
 +++ configure
-@@ -5987,6 +5987,7 @@
- ALIGNOF_UINT64_T="$ac_cv_alignof_uint64_t"
+@@ -5478,6 +5478,7 @@
+ 
  
  
 +if test "$enable_openssl" = yes; then
- for ac_header in openssl/blowfish.h openssl/des.h openssl/cast.h openssl/aes.h
+ for ac_header in openssl/blowfish.h openssl/des.h openssl/cast.h openssl/aes.h openssl/ecdsa.h
  do :
    as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
-@@ -6002,6 +6003,7 @@
+@@ -5493,6 +5494,7 @@
  fi
  
  done
 +fi
  
  
- # The Ultrix 4.2 mips builtin alloca declared by alloca.h only works
+ for ac_header in valgrind/memcheck.h

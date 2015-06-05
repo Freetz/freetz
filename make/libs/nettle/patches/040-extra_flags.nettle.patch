@@ -1,20 +1,11 @@
---- config.make.in
-+++ config.make.in
-@@ -2,7 +2,7 @@
+--- Makefile.in
++++ Makefile.in
+@@ -22,7 +22,7 @@
+ include config.make
  
- CC = @CC@
- CXX = @CXX@
--CFLAGS = @CFLAGS@
-+CFLAGS = @CFLAGS@ $(EXTRA_CFLAGS)
- CXXFLAGS = @CXXFLAGS@
- CCPIC = @CCPIC@
- CCPIC_MAYBE = @CCPIC_MAYBE@
-@@ -29,7 +29,7 @@
- PACKAGE_TARNAME = @PACKAGE_TARNAME@
- PACKAGE_VERSION = @PACKAGE_VERSION@
+ PRE_CPPFLAGS = -I.
+-EXTRA_CFLAGS = $(CCPIC)
++override EXTRA_CFLAGS += $(CCPIC)
  
--SHLIBCFLAGS = @SHLIBCFLAGS@
-+SHLIBCFLAGS = @SHLIBCFLAGS@ $(EXTRA_CFLAGS)
- 
- LIBNETTLE_MAJOR = @LIBNETTLE_MAJOR@
- LIBNETTLE_MINOR = @LIBNETTLE_MINOR@
+ # FIXME: Add configuration of LIBEXT?
+ LIBTARGETS = @IF_STATIC@ libnettle.a @IF_HOGWEED@ libhogweed.a
