@@ -395,7 +395,7 @@ static_addons()
 #
 real_pkg_name()
 {
-	echo "$1" | sed -r -e 's/-(alpha|beta|rc|(un)?stable|.)[0-9]*$//i' -e 's/-[0-9a-f]{10}$//' -e 's/-[0-9][^-]*$//'
+	echo "$1" | sed -r -e 's/-(alpha|beta|rc|(un)?stable|.)[0-9]*$//i' -e 's/-[0-9a-f]{10}$//' -e 's/-v?[0-9][^-]*$//'
 }
 
 #
