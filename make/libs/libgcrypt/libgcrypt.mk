@@ -1,18 +1,18 @@
-$(call PKG_INIT_LIB, 1.5.3)
-$(PKG)_LIB_VERSION:=11.8.2
+$(call PKG_INIT_LIB, 1.6.3)
+$(PKG)_LIB_VERSION:=20.0.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=993159b2924ae7b0e4eaff0743c2db35
+$(PKG)_SOURCE_MD5:=4262c3aadf837500756c2051a5c4ae5e
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgcrypt
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DIGESTS            := crc md4 md5 rmd160 sha1 sha256 sha512 tiger whirlpool
-$(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des idea rfc2268 seed serpent twofish
+$(PKG)_DIGESTS            := crc gostr3411-94 md4 md5 rmd160 sha1 sha256 sha512 stribog tiger whirlpool
+$(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des gost28147 idea rfc2268 salsa20 seed serpent twofish
 $(PKG)_ASYMMETRIC_CIPHERS := dsa ecc elgamal rsa
 $(foreach i,DIGEST SYMMETRIC_CIPHER ASYMMETRIC_CIPHER, \
-  $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(i)_%,$($(PKG)_$(i)S))) \
+  $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(call LEGAL_VARNAME,$(i))_%,$($(PKG)_$(i)S))) \
 )
 
 $(PKG)_DEPENDS_ON += libgpg-error

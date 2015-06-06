@@ -5,6 +5,7 @@ config FREETZ_LIB_libgcrypt
 	select FREETZ_LIB_libgcrypt_WITH_DIGEST_rmd160
 	select FREETZ_LIB_libgcrypt_WITH_DIGEST_sha1
 	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_aes
+	select FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_ecc
 	select FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_rsa
 	default n
 	help
@@ -21,6 +22,9 @@ menu "Configuration"
 comment "Digests ---"
 config FREETZ_LIB_libgcrypt_WITH_DIGEST_crc
 	bool "CRC"
+config FREETZ_LIB_libgcrypt_WITH_DIGEST_gostr3411_94
+	bool "GOST R 34.11-94"
+	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_gost28147
 config FREETZ_LIB_libgcrypt_WITH_DIGEST_md4
 	bool "MD4"
 config FREETZ_LIB_libgcrypt_WITH_DIGEST_md5
@@ -33,6 +37,8 @@ config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha256
 	bool "SHA256"
 config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha512
 	bool "SHA512"
+config FREETZ_LIB_libgcrypt_WITH_DIGEST_stribog
+	bool "Stribog"
 config FREETZ_LIB_libgcrypt_WITH_DIGEST_tiger
 	bool "TIGER"
 config FREETZ_LIB_libgcrypt_WITH_DIGEST_whirlpool
@@ -50,10 +56,14 @@ config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_cast5
 	bool "CAST5"
 config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_des
 	bool "DES"
+config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_gost28147
+	bool "GOST 28147-89"
 config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_idea
 	bool "IDEA"
 config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_rfc2268
 	bool "RFC2268"
+config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_salsa20
+	bool "Salsa20"
 config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_seed
 	bool "SEED"
 config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_serpent
