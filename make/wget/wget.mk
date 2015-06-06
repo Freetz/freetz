@@ -19,7 +19,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ssl=gnutls
 $(PKG)_CONFIGURE_OPTIONS += --with-libgnutls-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-libssl-prefix
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
-$(PKG)_STATIC_LIBS := -lgcrypt -lgpg-error -ltasn1 -lz
+$(PKG)_STATIC_LIBS := -ltasn1 -lz -lhogweed -lnettle -lgmp
 endif
 else
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
