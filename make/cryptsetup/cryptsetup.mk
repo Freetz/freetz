@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.6.0)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=99002ac59a65ea371e7a98200943cb80
-$(PKG)_SITE:=http://cryptsetup.googlecode.com/files
+$(call PKG_INIT_BIN, 1.6.7)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=918406eb5d2e2f5a7348c432ea9b1473
+$(PKG)_SITE:=@KERNEL/linux/utils/cryptsetup/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/cryptsetup

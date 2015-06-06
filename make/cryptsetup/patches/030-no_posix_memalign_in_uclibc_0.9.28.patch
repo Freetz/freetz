@@ -1,0 +1,72 @@
+--- lib/libcryptsetup.h
++++ lib/libcryptsetup.h
+@@ -1222,6 +1222,8 @@
+ 
+ /** @} */
+ 
++void *aligned_malloc(void **base, int size, int alignment);
++
+ #ifdef __cplusplus
+ }
+ #endif
+--- lib/utils.c
++++ lib/utils.c
+@@ -48,7 +48,7 @@
+ 	return alignment;
+ }
+ 
+-static void *aligned_malloc(void **base, int size, int alignment)
++       void *aligned_malloc(void **base, int size, int alignment)
+ {
+ #ifdef HAVE_POSIX_MEMALIGN
+ 	return posix_memalign(base, alignment, size) ? NULL : *base;
+--- lib/tcrypt/tcrypt.c
++++ lib/tcrypt/tcrypt.c
+@@ -501,7 +501,7 @@
+ 	unsigned int i, skipped = 0;
+ 	int r = -EPERM;
+ 
+-	if (posix_memalign((void*)&key, crypt_getpagesize(), TCRYPT_HDR_KEY_LEN))
++	if (!aligned_malloc((void*)&key, TCRYPT_HDR_KEY_LEN, crypt_getpagesize()))
+ 		return -ENOMEM;
+ 
+ 	if (params->keyfiles_count)
+--- lib/utils_benchmark.c
++++ lib/utils_benchmark.c
+@@ -23,6 +23,7 @@
+ #include <errno.h>
+ #include <time.h>
+ 
++#include "libcryptsetup.h"
+ #include "internal.h"
+ 
+ /*
+@@ -145,7 +146,7 @@
+ 	int r, repeat_enc, repeat_dec;
+ 	void *buf = NULL;
+ 
+-	if (posix_memalign(&buf, crypt_getpagesize(), cp->buffer_size))
++	if (!aligned_malloc(&buf, cp->buffer_size, crypt_getpagesize()))
+ 		return -ENOMEM;
+ 
+ 	ms_enc = 0.0;
+--- src/cryptsetup_reencrypt.c
++++ src/cryptsetup_reencrypt.c
+@@ -157,7 +157,7 @@
+ 		goto out;
+ 	}
+ 
+-	if (posix_memalign((void *)&buf, alignment(devfd), buf_size)) {
++	if (!aligned_malloc((void *)&buf, buf_size, alignment(devfd))) {
+ 		log_err(_("Allocation of aligned memory failed.\n"));
+ 		r = -ENOMEM;
+ 		goto out;
+@@ -889,7 +889,7 @@
+ 	else
+ 		rc->device_size = rc->device_size_new_real;
+ 
+-	if (posix_memalign((void *)&buf, alignment(fd_new), block_size)) {
++	if (!aligned_malloc((void *)&buf, block_size, alignment(fd_new))) {
+ 		log_err(_("Allocation of aligned memory failed.\n"));
+ 		r = -ENOMEM;
+ 		goto out;
