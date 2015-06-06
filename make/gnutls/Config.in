@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_GNUTLS
-	bool "gnutls 2.12.23 (binary only)"
+	bool "gnutls 3.4.1 (binary only)"
 	select FREETZ_LIB_libgnutls
 	default n
 	help
@@ -10,7 +10,6 @@ config FREETZ_PACKAGE_GNUTLS
 config FREETZ_PACKAGE_GNUTLS_CERTTOOL
 	bool "certtool"
 	depends on FREETZ_PACKAGE_GNUTLS
-	select FREETZ_LIB_libgnutls_extra
 	default n
 	help
 		Provides GnuTLS certtool utility.
@@ -18,7 +17,6 @@ config FREETZ_PACKAGE_GNUTLS_CERTTOOL
 config FREETZ_PACKAGE_GNUTLS_UTILS
 	bool "utils"
 	depends on FREETZ_PACKAGE_GNUTLS
-	select FREETZ_LIB_libgnutls_extra
 	default n
 	help
 		Provides gnutls-cli, gnutls-serv, psktool and srptool utilities.
