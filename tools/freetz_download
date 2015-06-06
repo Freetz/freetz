@@ -10,11 +10,11 @@
 # at a relative location '../.config' to this script. The variables are:
 #   - FREETZ_DL_SITE_USER     (URL, e.g. http://my.server.org)
 
-# XXX: Temporarily use system's md5sum/sha1sum if busybox applet is not yet build (see #1535)
-MD5SUM=$(dirname $0)/md5sum
-[ ! -x $MD5SUM ] && MD5SUM="$(which md5sum)"
-SHA1SUM=$(dirname $0)/sha1sum
-[ ! -x $SHA1SUM ] && SHA1SUM="$(which sha1sum)"
+# supported checksum algorithms
+CHECKSUM_ALGOS[32]="md5"
+CHECKSUM_ALGOS[40]="sha1"
+CHECKSUM_ALGOS[64]="sha256"
+CHECKSUM_ALGOS[128]="sha512"
 
 DOT_CONFIG=$FREETZ_BASE_DIR/.config
 FREETZ_DL_SITE_1="http://freetz.magenbrot.net"
@@ -26,12 +26,12 @@ helpmsg()
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | [--no-append-servers] ( (<download-dir> | check) <filename> [<main-url>,<mirror1>,<mirror2>,...] [<md5>] )
+Usage: freetz_download (-?|--help) | [--no-append-servers] ( (<download-dir> | check) <filename> [<main-url>,<mirror1>,<mirror2>,...] [<checksum>] )
     check         - check download
     download-dir  - target directory for download file
     filename      - download file name
     main-url      - url without filename for primary download
-    md5           - md5 of file
+    checksum      - file checksum (supported algorithms: md5, sha1, sha256, sha512)
     -?, --help    - print this help text
 
 Examples:
@@ -183,7 +183,7 @@ fi
 DL_DIR="$1"
 DL_FILE="$2"
 URLs="$3"
-CHECKSUM="$(echo $4)" # trim whitespaces, length is used to determine whether it's MD5 or SHA1
+CHECKSUM="$(echo ${4,,})" # convert to lower-case and trim whitespaces (checksum length is used to determine the checksum algorithm)
 
 # Import Freetz config variables
 [ -e $DOT_CONFIG ] && . $DOT_CONFIG
@@ -291,22 +291,20 @@ for i in ${sites[@]}; do
 		fi
 
 		if [ -n "$CHECKSUM" ]; then
-			if [ "${#CHECKSUM}" == 40 ]; then
-				CHECKSUM_PROG="$SHA1SUM"
-				CHECKSUM_ALGO="SHA1"
-			elif [ "${#CHECKSUM}" == 32 ]; then
-				CHECKSUM_PROG="$MD5SUM"
-				CHECKSUM_ALGO="MD5"
+			CHECKSUM_ALGO="${CHECKSUM_ALGOS[${#CHECKSUM}]}"
+			if [ -n "${CHECKSUM_ALGO}" ]; then
+				CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
+				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
 			fi
 
 			if [ -x "$CHECKSUM_PROG" ]; then
 				FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//')
-				if [ "$(echo $CHECKSUM | tr A-Z a-z)" != "$FILE_CHECKSUM" ]; then
-					echo "$CHECKSUM_ALGO mismatch for $DL_DIR/$DL_FILE: $CHECKSUM $FILE_CHECKSUM" 1>&1
+				if [ "$CHECKSUM" != "$FILE_CHECKSUM" ]; then
+					echo "${CHECKSUM_ALGO^^} mismatch for $DL_DIR/$DL_FILE: $CHECKSUM $FILE_CHECKSUM" 1>&1
 					rm -f "$DL_DIR/$DL_FILE"
 					continue;
 				else
-					echo "$CHECKSUM_ALGO verified for $DL_DIR/$DL_FILE: $FILE_CHECKSUM"
+					echo "${CHECKSUM_ALGO^^} verified for $DL_DIR/$DL_FILE: $FILE_CHECKSUM"
 				fi
 			fi
 		fi
