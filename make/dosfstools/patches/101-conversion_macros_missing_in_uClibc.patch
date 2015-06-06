@@ -30,19 +30,19 @@
   * Fetch the FAT entry for a specified cluster.
 --- src/lfn.c
 +++ src/lfn.c
-@@ -31,6 +31,7 @@
+@@ -32,6 +32,7 @@
  #include "fsck.fat.h"
  #include "lfn.h"
  #include "file.h"
 +#include "conversion.h"
  
  typedef struct {
-     __u8 id;			/* sequence number for slot */
+     uint8_t id;			/* sequence number for slot */
 --- src/mkfs.fat.c
 +++ src/mkfs.fat.c
 @@ -70,6 +70,8 @@
  
- #include <asm/types.h>
+ #include "msdos_fs.h"
  
 +#include "conversion.h"
 +

@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, v3.0.27)
+$(call PKG_INIT_BIN, v3.0.28)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git://github.com/dosfstools/dosfstools.git
 
