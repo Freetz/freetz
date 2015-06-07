@@ -17,17 +17,18 @@
 usage()
 {
 	cat << EOF
-Usage: $SELF [-u|-m|-p|-a] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
-  actions
+Usage: $SELF [-u|-m|-p|-a] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
+  main actions
     -u         unpack firmware image
     -m         modify previously unpacked image
     -p         pack firmware image
     -a         all: unpack, modify and pack firmware image (-u -m -p, default)
   special actions
-    -n         firmware-nocompile: do not install kernel and busybox
-    -f         force pack even if image is too big for flash (AVM SDK)
     -z         zip file system into archive for USB/NFS root
     -c <dir>   copy file system to target directory for NFS/USB root (implies -z)
+  options
+    -n         firmware-nocompile: do not install kernel and busybox
+    -f         force pack even if image is too big for flash (AVM SDK)
   input/output
     -i <cfg>   input file for configuration data (default: .config)
     -d <dir>   build directory (default: <orig_firmware>.mod)
