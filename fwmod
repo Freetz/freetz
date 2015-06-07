@@ -55,8 +55,8 @@ done
 
 # Default values for unset command line parameters
 DOT_CONFIG="$(dirname "$0")/.config"
-DO_UNPACK=0; DO_MOD=0; DO_PACK=0; FORCE_PACK=0; DO_ZIP=0; _REQUIRED_ACTION_PROVIDED=0
-COPY_FS_DIR=; DIR=
+DO_UNPACK=0; DO_MOD=0; DO_PACK=0; _REQUIRED_ACTION_PROVIDED=0
+FIRMWARE_NOCOMPILE=0; FORCE_PACK=0; DO_ZIP=0; COPY_FS_DIR=; DIR=
 
 # Parse command line parameters
 while getopts umpanfzc:i:d: opt; do
@@ -75,6 +75,9 @@ while getopts umpanfzc:i:d: opt; do
 	esac
 done
 shift $((OPTIND-1))
+
+# No -u/-m/-p/-a options = default = -a = -ump
+[ "$_REQUIRED_ACTION_PROVIDED" -eq 0 ] && DO_UNPACK=1 && DO_MOD=1 && DO_PACK=1
 
 # At least one (non-empty) firmware image name must be specified
 [ $# -lt 1 -o $# -gt 3 -o ! "$1" ] && usage >&2 && exit 1
@@ -106,9 +109,6 @@ FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
 # Config file must exist
 [ -r "$DOT_CONFIG" ] ||
 	error 1 "not configured"
-
-# No -u/-m/-p/-a options = default = -a = -ump
-[ "$_REQUIRED_ACTION_PROVIDED" -eq 0 ] && DO_UNPACK=1 && DO_MOD=1 && DO_PACK=1
 
 # Set default output directory, if not specified on command line
 : ${DIR:=$FIRMWARE.mod}
