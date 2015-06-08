@@ -1,6 +1,6 @@
 --- src/openvpn/forward.c
 +++ src/openvpn/forward.c
-@@ -674,7 +674,10 @@
+@@ -675,7 +675,10 @@
    status = link_socket_read (c->c2.link_socket,
  			     &c->c2.buf,
  			     MAX_RW_SIZE_LINK (&c->c2.frame),
@@ -12,7 +12,7 @@
  
    if (socket_connection_reset (c->c2.link_socket, status))
      {
-@@ -1150,7 +1153,10 @@
+@@ -1151,7 +1154,10 @@
  	    /* Send packet */
  	    size = link_socket_write (c->c2.link_socket,
  				      &c->c2.to_link,
@@ -26,7 +26,7 @@
  	    /* Undo effect of prepend */
 --- src/openvpn/options.c
 +++ src/openvpn/options.c
-@@ -790,6 +790,9 @@
+@@ -789,6 +789,9 @@
    o->max_routes = MAX_ROUTES_DEFAULT;
    o->resolve_retry_seconds = RESOLV_RETRY_INFINITE;
    o->proto_force = -1;
@@ -36,7 +36,7 @@
  #ifdef ENABLE_OCC
    o->occ = true;
  #endif
-@@ -914,6 +917,9 @@
+@@ -907,6 +910,9 @@
    setenv_int_i (es, "local_port", e->local_port, i);
    setenv_str_i (es, "remote", e->remote, i);
    setenv_int_i (es, "remote_port", e->remote_port, i);
@@ -46,7 +46,7 @@
  
  #ifdef ENABLE_HTTP_PROXY
    if (e->http_proxy_options)
-@@ -1359,6 +1365,9 @@
+@@ -1352,6 +1358,9 @@
    SHOW_INT (connect_retry_seconds);
    SHOW_INT (connect_timeout);
    SHOW_INT (connect_retry_max);
@@ -56,7 +56,7 @@
  
  #ifdef ENABLE_HTTP_PROXY
    if (o->http_proxy_options)
-@@ -5086,6 +5095,35 @@
+@@ -5100,6 +5109,35 @@
        options->proto_force = proto_force;
        options->force_connection_list = true;
      }
