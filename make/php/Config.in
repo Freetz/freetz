@@ -69,6 +69,12 @@ config FREETZ_PACKAGE_PHP_WITH_FILEINFO
 	help
 		This option enables the FILEINFO support for PHP
 
+config FREETZ_PACKAGE_PHP_WITH_FTP
+	bool "build with FTP support"
+	default n
+	help
+		This option enables the FTP support for PHP
+
 config FREETZ_PACKAGE_PHP_WITH_GD
 	bool "build with GD support"
 	select FREETZ_LIB_libgd if ! FREETZ_PACKAGE_PHP_STATIC
