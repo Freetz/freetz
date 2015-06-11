@@ -1,0 +1,30 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -42,6 +42,7 @@
+ 	#include <endian.h>
+ #endif
+ #include <stdlib.h>
++#include <stdint.h>
+ #include <signal.h>
+ #include <setjmp.h>
+ #include <sys/mman.h>
+@@ -1453,7 +1454,7 @@
+ 				squashfs_type = SQUASHFS_FILE_TYPE;
+ 				if(!sorted) {
+ 					result = write_file(inode, filename, buf.st_size, &duplicate_file);
+-					INFO("file %s, uncompressed size %lld bytes, %s\n", filename, buf.st_size, duplicate_file ? "DUPLICATE" : "");
++					INFO("file %s, uncompressed size %jd bytes, %s\n", filename, (intmax_t)buf.st_size, duplicate_file ? "DUPLICATE" : "");
+ 				} else
+ 					result = get_sorted_inode(inode, &buf);
+ 				break;
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -559,7 +559,7 @@
+ 			} else
+ 				ERROR("create_inode: could not create %s device %s, because you're not superuser!\n",
+ 					inodep->inode_type == SQUASHFS_CHRDEV_TYPE ? "character" : "block",
+-					pathname, strerror(errno));
++					pathname);
+ 			break;
+ 			}
+ 		case SQUASHFS_FIFO_TYPE:
