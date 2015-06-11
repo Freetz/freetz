@@ -1,0 +1,11 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -1263,7 +1263,7 @@
+ };
+ 
+ 
+-void inline add_dir_entry(char *name, char *pathname, void *data, struct directory *dir)
++void        add_dir_entry(char *name, char *pathname, void *data, struct directory *dir)
+ {
+ 		if((dir->count % DIR_ENTRIES) == 0)
+ 			if((dir->list = realloc(dir->list, (dir->count + DIR_ENTRIES) * sizeof(struct dir_ent *))) == NULL)

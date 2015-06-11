@@ -1,0 +1,36 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -672,13 +672,13 @@
+ #define MKINODE(A)	((squashfs_inode)(((squashfs_inode) inode_bytes << 16) + (((char *)A) - data_cache)))
+ 
+ 
+-inline void inc_progress_bar()
++static inline void inc_progress_bar()
+ {
+ 	cur_uncompressed ++;
+ }
+ 
+ 
+-inline void update_progress_bar()
++static inline void update_progress_bar()
+ {
+ 	pthread_mutex_lock(&progress_mutex);
+ 	pthread_cond_signal(&progress_wait);
+@@ -686,7 +686,7 @@
+ }
+ 
+ 
+-inline void waitforthread(int i)
++static inline void waitforthread(int i)
+ {
+ 	TRACE("Waiting for thread %d\n", i);
+ 	while(thread[i] != 0)
+@@ -2732,7 +2732,7 @@
+ }
+ 
+ 
+-inline void add_dir_entry(char *name, char *pathname, struct dir_info *sub_dir, struct inode_info *inode_info, void *data, struct dir_info *dir)
++       void add_dir_entry(char *name, char *pathname, struct dir_info *sub_dir, struct inode_info *inode_info, void *data, struct dir_info *dir)
+ {
+ 	if((dir->count % DIR_ENTRIES) == 0)
+ 		if((dir->list = realloc(dir->list, (dir->count + DIR_ENTRIES) * sizeof(struct dir_ent *))) == NULL)
