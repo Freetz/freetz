@@ -1,7 +1,7 @@
 --- Makefile.org
 +++ Makefile.org
-@@ -273,21 +273,21 @@
- build_libs: build_crypto build_ssl build_engines
+@@ -276,21 +276,21 @@
+ build_libssl: build_ssl libssl.pc
  
  build_crypto:
 -	@dir=crypto; target=all; $(BUILD_ONE_CMD)
@@ -29,7 +29,7 @@
  
  fips_premain_dso$(EXE_EXT): libcrypto.a
  	[ -z "$(FIPSCANLIB)" ] || $(CC) $(CFLAG) -Iinclude \
-@@ -407,7 +407,7 @@
+@@ -410,7 +410,7 @@
  
  clean:	libclean
  	rm -f shlib/*.o *.o core a.out fluff rehash.time testlog make.log cctest cctest.c
@@ -38,7 +38,7 @@
  	rm -f $(LIBS)
  	rm -f openssl.pc libssl.pc libcrypto.pc
  	rm -f speed.* .pure
-@@ -423,12 +423,12 @@
+@@ -426,12 +426,12 @@
  
  files:
  	$(PERL) $(TOP)/util/files.pl Makefile > $(TOP)/MINFO
@@ -53,7 +53,7 @@
  
  gentests:
  	@(cd test && echo "generating dummy tests (if needed)..." && \
-@@ -436,7 +436,7 @@
+@@ -439,7 +439,7 @@
  
  dclean:
  	rm -rf *.bak include/openssl certs/.0
@@ -62,8 +62,12 @@
  
  rehash: rehash.time
  rehash.time: certs apps
-@@ -460,10 +460,10 @@
+@@ -463,13 +463,13 @@
  	@$(PERL) util/selftest.pl
+ 
+ update: errors stacks util/libeay.num util/ssleay.num TABLE
+-	@set -e; target=update; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=update; $(RECURSIVE_BUILD_CMD)
  
  depend:
 -	@set -e; target=depend; $(RECURSIVE_BUILD_CMD)
@@ -75,7 +79,7 @@
  
  tags:
  	rm -f TAGS
-@@ -554,7 +554,7 @@
+@@ -544,7 +544,7 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;
@@ -116,7 +120,7 @@
  
  install:
  	@[ -n "$(INSTALLTOP)" ] # should be set by top Makefile...
-@@ -120,27 +120,27 @@
+@@ -120,17 +120,17 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;
@@ -127,13 +131,18 @@
 -	@target=lint; $(RECURSIVE_MAKE)
 +	@+target=lint; $(RECURSIVE_MAKE)
  
- depend:
- 	@[ -z "$(THIS)" -o -f buildinf.h ] || touch buildinf.h # fake buildinf.h if it does not exist
- 	@[ -z "$(THIS)" ] || $(MAKEDEPEND) -- $(CFLAG) $(INCLUDE) $(DEPFLAG) -- $(PROGS) $(LIBSRC)
- 	@[ -z "$(THIS)" -o -s buildinf.h ] || rm buildinf.h
+ update: local_depend
+-	@[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
++	@+[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+ 
+ depend: local_depend
 -	@[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
 +	@+[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
  	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+ local_depend:
+ 	@[ -z "$(THIS)" -o -f buildinf.h ] || touch buildinf.h # fake buildinf.h if it does not exist
+@@ -139,13 +139,13 @@
  
  clean:
  	rm -f buildinf.h *.s *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
@@ -178,20 +187,24 @@
  
  tags:
  	ctags $(SRC)
-@@ -144,23 +144,23 @@
+@@ -144,26 +144,26 @@
  
  lint:
  	lint -DLINT $(INCLUDES) $(SRC)>fluff
 -	@target=lint; $(RECURSIVE_MAKE)
 +	@+target=lint; $(RECURSIVE_MAKE)
  
- depend:
- 	@if [ -z "$(THIS)" ]; then \
- 	    $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; \
- 	fi
- 	@[ -z "$(THIS)" ] || $(MAKEDEPEND) -- $(CFLAG) $(INCLUDES) $(DEPFLAG) -- $(PROGS) $(LIBSRC)
+ update: local_depend
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+-	@[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
++	@+[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
+ 
+ depend: local_depend
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
 -	@[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
 +	@+[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
+ local_depend:
+ 	@[ -z "$(THIS)" ] || $(MAKEDEPEND) -- $(CFLAG) $(INCLUDES) $(DEPFLAG) -- $(PROGS) $(LIBSRC)
  
  dclean:
  	$(PERL) -pe 'if (/^# DO NOT DELETE THIS LINE/) {print; exit(0);}' $(MAKEFILE) >Makefile.new
