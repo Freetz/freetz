@@ -1,7 +1,8 @@
-$(call PKG_INIT_BIN, 2.72)
+$(call PKG_INIT_BIN, 2.73)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=0256e0a71e27c8d8a5c89a0d18f3cfe2
+$(PKG)_SOURCE_MD5:=b8bfe96d22945c8cf4466826ba9b21bd
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
+#$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
 
@@ -17,6 +18,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_AVM_VERSION_05_5X_MAX
 $(PKG)_COPTS := -DCONFFILE=\\\"/mod/etc/dnsmasq.conf\\\"
 $(PKG)_COPTS += -DRUNFILE=\\\"/var/run/dnsmasq/dnsmasq.pid\\\"
 $(PKG)_COPTS += -DLEASEFILE=\\\"/var/tmp/dnsmasq.leases\\\"
+$(PKG)_COPTS += -DNO_INOTIFY
 ifneq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_COPTS += -DNO_IPV6
 endif
@@ -33,7 +35,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		COPTS="$(DNSMASQ_COPTS)" \
 		CFLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections" \
-		LDFLAGS="-Wl,--gc-sections"
+		LDFLAGS="-Wl,--gc-sections" \
+		version=-DVERSION=\'\\\"$(DNSMASQ_VERSION)\\\"\'
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

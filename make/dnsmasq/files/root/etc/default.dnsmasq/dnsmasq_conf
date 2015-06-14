@@ -35,6 +35,7 @@ fi
 if [ "$DNSMASQ_TFTP" = 'yes' -a -n "$DNSMASQ_TFTP_TFTPROOT" ]; then
 	echo "enable-tftp"
 	echo "tftp-root=$DNSMASQ_TFTP_TFTPROOT"
+	echo "tftp-no-fail"
 fi
 
 if [ "$DNSMASQ_DHCP" = "yes" -a "$DNSMASQ_DHCP_BOOT" = "yes" -a "$DNSMASQ_DHCP_BOOTFILE" ]; then
