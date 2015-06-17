@@ -304,8 +304,14 @@ choice
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
-			NOTE: Firmware files have to be downloaded manually and unpacked
-			into dl/fw/ directory.
+
+	config FREETZ_TYPE_FIRMWARE_LABOR_PHONE
+		bool "FRITZ! Labor Phone"
+		select FREETZ_AVM_VERSION_06_2X
+		depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR_PHONE
+		help
+			Enable this to use an AVM Labor Phone firmware as base for modding.
+			For more details see <http://www.avm.de/Labor/>.
 
 	config FREETZ_TYPE_FIRMWARE_EWE_05_5X
 		bool "EWE Edition 05.5x"
@@ -331,7 +337,7 @@ comment "WARNING: VULNERABLE FIRMWARE - USE AT YOUR OWN RISK"
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
 	default y
-	depends on !FREETZ_TYPE_FIRMWARE_LABOR
+	depends on !FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_LABOR_PHONE
 
 config FREETZ_TYPE_FIRMWARE_VULNERABLE
 	bool
