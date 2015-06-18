@@ -1,0 +1,20 @@
+--- src/ban.c
++++ src/ban.c
+@@ -30,6 +30,7 @@
+ */
+ 
+ #include <stdlib.h>
++#include <string.h>
+ #include <time.h>
+ #include "log.h"
+ #include "list.h"
+--- src/ssl.h
++++ src/ssl.h
+@@ -81,6 +81,7 @@
+ 
+ #include "types.h"
+ #include <inttypes.h>
++#include <string.h>
+ 
+ #ifdef USE_POLARSSL
+ #define SSLI_ERROR_WANT_READ -0x0F300 /* PolarSSL v0.x.x uses -0x0f00 -> --0x0f90, v1.x.x uses -0x7080 -> -0x7e80 */
