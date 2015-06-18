@@ -1,6 +1,6 @@
 --- library/Makefile
 +++ library/Makefile
-@@ -35,9 +35,10 @@
+@@ -43,9 +43,10 @@
  VERSION=0.0.0
  VERSION_MAJOR=$(word 1,$(subst ., ,$(VERSION)))
  VERSION_MINOR=$(word 2,$(subst ., ,$(VERSION)))
@@ -12,7 +12,7 @@
  
  OBJS=	aes.o		aesni.o		arc4.o			\
  		asn1parse.o								\
-@@ -76,11 +77,11 @@
+@@ -84,11 +85,11 @@
  all: shared static
  endif
  
@@ -24,9 +24,9 @@
 -libpolarssl.a: $(OBJS)
 +$(LIB_A): $(OBJS)
  	echo "  AR    $@"
- 	$(AR) r $@ $(OBJS)
+ 	$(AR) rc $@ $(OBJS)
  	echo "  RL    $@"
-@@ -106,7 +107,7 @@
+@@ -114,7 +115,7 @@
  
  clean:
  ifndef WINDOWS

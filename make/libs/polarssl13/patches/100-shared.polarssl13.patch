@@ -1,18 +1,16 @@
 --- library/Makefile
 +++ library/Makefile
-@@ -22,9 +22,7 @@
- CFLAGS += -fPIC
+@@ -31,8 +31,6 @@
+ endif
  endif
  
--SONAME=libpolarssl.so.8
+-SOEXT=so.9
 -
--DLEXT=so.8
-+DLEXT=so
+ DLEXT=so
  # OSX shared library extension:
  # DLEXT=dylib
- 
-@@ -34,6 +32,13 @@
- LDFLAGS += -lws2_32
+@@ -42,6 +40,13 @@
+ DLEXT=dll
  endif
  
 +VERSION=0.0.0
@@ -25,28 +23,28 @@
  OBJS=	aes.o		aesni.o		arc4.o			\
  		asn1parse.o								\
  		asn1write.o base64.o	bignum.o		\
-@@ -73,7 +78,7 @@
+@@ -81,7 +86,7 @@
  
  static: libpolarssl.a
  
--shared: libpolarssl.so
+-shared: libpolarssl.$(DLEXT)
 +shared: $(LIB_SO_VERSION)
  
  libpolarssl.a: $(OBJS)
  	echo "  AR    $@"
-@@ -81,13 +86,11 @@
+@@ -89,13 +94,11 @@
  	echo "  RL    $@"
  	$(AR) s $@
  
--libpolarssl.${DLEXT}: $(OBJS)
+-libpolarssl.$(SOEXT): $(OBJS)
 +$(LIB_SO_VERSION): $(OBJS)
  	echo "  LD    $@"
--	$(CC) ${LDFLAGS} -shared -Wl,-soname,$(SONAME) -o $@ $(OBJS)
+-	$(CC) -shared -Wl,-soname,$@ $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@ $(OBJS)
 -
--libpolarssl.so: libpolarssl.${DLEXT}
--	echo "  LN    $@ -> libpolarssl.${DLEXT}"
--	ln -sf libpolarssl.${DLEXT} $@
-+	$(CC) ${LDFLAGS} -shared -Wl,-soname,$(LIB_SO_SONAME) -o $@ $(OBJS) \
+-libpolarssl.so: libpolarssl.$(SOEXT)
+-	echo "  LN    $@ -> libpolarssl.$(SOEXT)"
+-	ln -sf libpolarssl.$(SOEXT) $@
++	$(CC) -shared -Wl,-soname,$(LIB_SO_SONAME) $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@ $(OBJS) \
 +	&& ln -fs $@ $(LIB_SO_SONAME) \
 +	&& ln -fs $(LIB_SO_SONAME) $(LIB_SO)
  
