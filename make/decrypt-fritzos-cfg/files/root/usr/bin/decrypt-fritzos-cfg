@@ -38,7 +38,9 @@
 #
 #   decrypt-fritzos-cfg < {input_data}
 #
-# The script is designed as a filter using standard input and standard output.
+# The script is designed as a filter using standard input and standard output. If you
+# use it as standard input for a command interpreter via a pipe, you can use file
+# descriptor 3 to provide the data stream to process instead of stdin.
 #
 # The input data may be any text. Any data looking like an encrypted item as it is
 # used by AVMs reversible encryption (that is a string starting with four dollar signs
@@ -449,7 +451,8 @@ if [ -t 0 -a $igntty -eq 0 ]; then
 	echo -e "It looks like you've missed redirecting any input data to that script.\nFor intentional reading of stdin from a terminal, specify 'tty' as first argument." 1>&2
 	exit 122
 fi
-cat - >$tmpdir/$in
+[ -L /proc/self/fd/3 ] && fd=3 || fd=0
+cat /proc/self/fd/$fd >$tmpdir/$in
 #
 # an empty input file isn't an error, but we can avoid all that stress
 #
