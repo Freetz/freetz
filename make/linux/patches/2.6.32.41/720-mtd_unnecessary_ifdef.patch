@@ -1,0 +1,18 @@
+--- linux-2.6.32/include/mtd/mtd-abi.h
++++ linux-2.6.32/include/mtd/mtd-abi.h
+@@ -17,7 +17,6 @@
+ 	__u64 length;
+ };
+ 
+-#ifdef __KERNEL__
+ struct mtd_oob_buf {
+ 	__u32 start;
+ 	__u32 length;
+@@ -30,7 +29,6 @@
+ 	__u32 length;
+ 	__u64 usr_ptr;
+ };
+-#endif
+ 
+ #define MTD_ABSENT		0
+ #define MTD_RAM			1
