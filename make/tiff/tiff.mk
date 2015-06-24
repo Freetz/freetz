@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 4.0.3)
-$(PKG)_LIB_VERSION:=5.2.0
+$(call PKG_INIT_BIN, 4.0.4)
+$(PKG)_LIB_VERSION:=5.2.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=051c1068e6a0627f461948c365290410
+$(PKG)_SOURCE_MD5:=9aee7107408a128c0c7b24286c0db900
 $(PKG)_SITE:=http://download.osgeo.org/libtiff
 
 $(PKG)_BINARIES_ALL := bmp2tiff fax2ps fax2tiff gif2tiff ppm2tiff raw2tiff tiff2bw tiff2pdf tiff2ps tiffinfo tiffsplit
