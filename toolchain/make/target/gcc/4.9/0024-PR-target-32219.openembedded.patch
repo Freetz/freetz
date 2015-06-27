@@ -29,7 +29,7 @@ Upstream-Status: Backport
 +
 --- gcc/varasm.c
 +++ gcc/varasm.c
-@@ -6773,6 +6773,10 @@ default_binds_local_p_1 (const_tree exp, int shlib)
+@@ -6770,6 +6770,10 @@ default_binds_local_p_1 (const_tree exp, int shlib)
    /* Static variables are always local.  */
    else if (! TREE_PUBLIC (exp))
      local_p = true;
@@ -40,7 +40,7 @@ Upstream-Status: Backport
    /* A variable is local if the user has said explicitly that it will
       be.  */
    else if ((DECL_VISIBILITY_SPECIFIED (exp)
-@@ -6786,11 +6790,6 @@ default_binds_local_p_1 (const_tree exp, int shlib)
+@@ -6783,11 +6787,6 @@ default_binds_local_p_1 (const_tree exp, int shlib)
       local.  */
    else if (DECL_VISIBILITY (exp) != VISIBILITY_DEFAULT)
      local_p = true;
