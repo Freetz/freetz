@@ -82,6 +82,13 @@ config FREETZ_PACKAGE_PHP_WITH_GD
 	help
 		This option enables the GD support for PHP
 
+config FREETZ_PACKAGE_PHP_WITH_GETTEXT
+	bool "build with gettext support"
+	select FREETZ_LIB_libintl if ! FREETZ_PACKAGE_PHP_STATIC
+	default n
+	help
+		This option enables the gettext support for PHP
+
 config FREETZ_PACKAGE_PHP_WITH_ICONV
 	bool "build with ICONV support"
 	select FREETZ_PACKAGE_PHP_WITH_LIBICONV if FREETZ_TARGET_UCLIBC_0_9_28
