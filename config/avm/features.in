@@ -502,6 +502,82 @@ config FREETZ_AVM_HAS_RAMZSWAP
 	help
 		Select this if the original firmware contains ramzswap.ko module.
 
+# crypto modules
+config FREETZ_AVM_HAS_CRYPTO_ALGAPI_BUILTIN
+	bool "CRYPTO_ALGAPI support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_IKS || FREETZ_KERNEL_LAYOUT_UR8
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_AEAD_BUILTIN
+	bool "CRYPTO_AEAD support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_IKS
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_AES_BUILTIN
+	bool "CRYPTO_AES support built into the kernel"			if FREETZ_TYPE_CUSTOM
+	# depends on any kernel version
+	default y	if FREETZ_KERNEL_LAYOUT_IKS || FREETZ_KERNEL_LAYOUT_UR8
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_ARC4_BUILTIN
+	bool "CRYPTO_ARC4 support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	# depends on any kernel version
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_BLKCIPHER_BUILTIN
+	bool "CRYPTO_BLKCIPHER support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_IKS
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_CBC_BUILTIN
+	bool "CRYPTO_CBC support built into the kernel"			if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_IKS
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_HASH_BUILTIN
+	bool "CRYPTO_HASH support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_IKS
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_MANAGER_BUILTIN
+	bool "CRYPTO_MANAGER support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_IKS
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_PCOMP_BUILTIN
+	bool "CRYPTO_PCOMP support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_32_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_UR8
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_RNG_BUILTIN
+	bool "CRYPTO_RNG support built into the kernel"			if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	default y	if FREETZ_KERNEL_LAYOUT_IKS
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_SHA1_BUILTIN
+	bool "CRYPTO_SHA1 support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	# depends on any kernel version
+	default y	if FREETZ_KERNEL_LAYOUT_IKS
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_SHA256_BUILTIN
+	bool "CRYPTO_SHA256 support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	# depends on any kernel version
+	default n
+
+config FREETZ_AVM_HAS_CRYPTO_WORKQUEUE_BUILTIN
+	bool "CRYPTO_WORKQUEUE support built into the kernel"		if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_KERNEL_VERSION_2_6_32_MIN
+	default n
+
 endmenu
 
 
