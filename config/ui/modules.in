@@ -260,8 +260,11 @@ config FREETZ_MODULE_usb_storage
 #	select FREETZ_MODULE_usbcore
 	default n
 
+# could be built as module since 2.6.32
+# up to 2.6.28 could only be built in (enabled in all freetz .config's for 2.6.13 & 2.6.19, disabled for 2.6.28)
 config FREETZ_MODULE_usbmon
 	bool "usbmon.ko"
+	depends on FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
 
 config FREETZ_MODULE_usbcore
