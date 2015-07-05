@@ -1,0 +1,14 @@
+--- squashfs-tools/Makefile
++++ squashfs-tools/Makefile
+@@ -151,6 +151,11 @@
+ endif
+ 
+ ifeq ($(XZ_SUPPORT),1)
++# freetz specific locations
++ifdef XZ_DIR
++INCLUDEDIR += -I$(XZ_DIR)/src/liblzma/api
++LIBS += -L$(XZ_DIR)
++endif
+ CFLAGS += -DXZ_SUPPORT
+ MKSQUASHFS_OBJS += xz_wrapper.o
+ UNSQUASHFS_OBJS += xz_wrapper.o
