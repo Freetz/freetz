@@ -245,6 +245,16 @@ config FREETZ_AVM_HAS_FIRMWARE_LABOR_PHONE
 	help
 		Select this if a phone labor firmware is available for your box.
 
+config FREETZ_AVM_HAS_FIRMWARE_LABOR_635
+	bool "Labor-6.25 firmware available" if FREETZ_TYPE_CUSTOM
+	default y		if \
+		FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7490 \
+		)
+	default n
+	help
+		Select this if a labor-6.35 firmware is available for your box.
+
 config FREETZ_AVM_HAS_LANG_DE
 	bool "German (DE) language firmware available" if FREETZ_TYPE_CUSTOM
 	default y		if \

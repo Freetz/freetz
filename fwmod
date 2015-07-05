@@ -154,6 +154,7 @@ TICHKSUM_TOOL="tichksum"
 MAKEDEVS_TOOL="makedevs"
 UNSQUASHFS_TOOL="unsquashfs3"
 UNSQUASHFS_LZMA_TOOL="unsquashfs3-lzma"
+UNSQUASHFS4_LZMA_TOOL="unsquashfs4-lzma"
 EXTERNAL_TOOL="external"
 TAR_TOOL="tar"
 MD5SUM_TOOL="md5sum"
@@ -296,10 +297,10 @@ else
 	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
 	if [ -s "$FAKEROOT_CACHE" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
 		# Yes -> use existing cache and firmwares (no unpack necessary)
-		FWMOD_RECURSIVE=$$ "$FAKEROOT" -i "$FAKEROOT_CACHE" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
+		NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ "$FAKEROOT" -i "$FAKEROOT_CACHE" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
 	else
 		# No -> create new fakeroot cache and unpack firmwares
-		FWMOD_RECURSIVE=$$ "$FAKEROOT" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
+		NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ "$FAKEROOT" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
 	fi
 	retval=$?
 	[ $retval -eq 0 ] || exit $retval
@@ -441,11 +442,20 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
 
 		echo "unpacking update image"
-		modunsqfs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
+		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_635}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
+			modunext2 "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
+		else
+			modunsqfs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
+		fi
 		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] && error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
-		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
+		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_635}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
+			# TODO: hack, implement properly
+			UNSQUASHFS_LZMA="${TOOLS_DIR}/${UNSQUASHFS4_LZMA_TOOL}" modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
+		else
+			modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
+		fi
 	else
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
@@ -640,6 +650,10 @@ avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYST
 avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
 avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
 echo1 -l "detected$FIRMWARE_MAIN firmware ${avm_fw_product/ /-}$avm_fw_language $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
+
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_635}" == "y" ]; then
+	error 1 "Modifying, packing of Fritz!OS 6.35 is not supported yet"
+fi
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"

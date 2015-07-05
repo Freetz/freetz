@@ -260,6 +260,28 @@ error()
 	exit $err_no
 }
 
+modunext2()
+{
+	warn0 "in order unpacking works you need to be a user with sudo permissions"
+
+	local NON_FAKEROOT_GROUPNAME=$(id -g -n $NON_FAKEROOT_USERNAME)
+	local tmp_mount_dir="$1.tmp"
+
+	# TODO: find a way to do it without the need to mount the filesystem (and thus requiring the root permissions)
+	#       and without all this user/group name quirks
+	dd if="$2" of="$2.ext2" bs=256 skip=1 conv=sync \
+	&& mkdir -p "${tmp_mount_dir}" \
+	&& LD_PRELOAD="" sudo mount -o loop,ro "$2.ext2" "${tmp_mount_dir}" \
+	&& LD_PRELOAD="" sudo cp -a "${tmp_mount_dir}" "$1" \
+	&& LD_PRELOAD="" sudo umount "${tmp_mount_dir}" \
+	&& rm -rf "${tmp_mount_dir}" \
+	&& LD_PRELOAD="" sudo chown -R $NON_FAKEROOT_USERNAME:$NON_FAKEROOT_GROUPNAME "$1"
+
+	if [ $? -gt 0 ]; then
+		error 1 "modunext2: Error in $2"
+	fi
+}
+
 modunsqfs()
 {
 	local STATUS
