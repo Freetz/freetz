@@ -14,7 +14,7 @@ $(PKG)_BUILD_DIR := $($(PKG)_DIR)/squashfs-tools
 
 $(PKG)_BINARIES            := mksquashfs unsquashfs
 $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_BUILD_DIR)/%)
-$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%3)
 
 ifneq ($(strip $(DL_DIR)/$(SQUASHFS3_TOOLS_SOURCE)),$(strip $(DL_DIR)/$(SQUASHFS3_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
@@ -27,7 +27,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -D_GNU_SOURCE"
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_BUILD_DIR)/%
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%3: $($(PKG)_BUILD_DIR)/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
