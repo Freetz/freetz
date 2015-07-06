@@ -1,0 +1,12 @@
+config FREETZ_PACKAGE_XZ
+	bool "xz-utils (binary only)"
+	select FREETZ_LIB_liblzma
+	default n
+	help
+		XZ is the successor to the Lempel-Ziv/Markov-chain Algorithm compression format,
+		which provides memory-hungry but powerful compression (often better than bzip2)
+		and fast, easy decompression.
+
+		This package provides the command line tools for working with XZ compression.
+		They can also handle the older LZMA format, and if invoked via appropriate
+		symlinks will emulate the behavior of the commands in the lzma package.

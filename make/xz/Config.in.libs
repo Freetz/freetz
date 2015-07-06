@@ -1,0 +1,11 @@
+config FREETZ_LIB_liblzma
+	bool "LZMA (liblzma.so)"
+	select FREETZ_LIB_libpthread
+	default n
+	help
+		XZ is the successor to the Lempel-Ziv/Markov-chain Algorithm compression format,
+		which provides memory-hungry but powerful compression (often better than bzip2)
+		and fast, easy decompression.
+
+		The native format of liblzma is XZ; it also supports raw (headerless) streams
+		and the older LZMA format used by lzma.
