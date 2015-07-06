@@ -16,14 +16,14 @@ $(PKG)_BINARIES            := mksquashfs unsquashfs
 $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_BUILD_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-ifneq ($(strip $(DL_DIR)/$(SQUASHFS_TOOLS_SOURCE)),$(strip $(DL_DIR)/$(SQUASHFS3_SOURCE)))
+ifneq ($(strip $(DL_DIR)/$(SQUASHFS3_TOOLS_SOURCE)),$(strip $(DL_DIR)/$(SQUASHFS3_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(SQUASHFS_TOOLS_BUILD_DIR) \
+	$(SUBMAKE) -C $(SQUASHFS3_TOOLS_BUILD_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -D_GNU_SOURCE"
 
@@ -35,9 +35,9 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(SQUASHFS_TOOLS_BUILD_DIR) clean
+	-$(SUBMAKE) -C $(SQUASHFS3_TOOLS_BUILD_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(SQUASHFS_TOOLS_BINARIES_TARGET_DIR)
+	$(RM) $(SQUASHFS3_TOOLS_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
