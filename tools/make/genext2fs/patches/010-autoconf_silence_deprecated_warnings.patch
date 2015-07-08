@@ -1,0 +1,19 @@
+--- configure.in
++++ configure.in
+@@ -2,12 +2,14 @@
+ # Process this file with autoconf to produce a configure script.
+ 
+ AC_PREREQ(2.59)
+-AC_INIT(genext2fs.c)
+ 
+ builtin(include, [m4/ac_func_snprintf.m4])dnl
+ builtin(include, [m4/ac_func_scanf_can_malloc.m4])dnl
+ 
+-AM_INIT_AUTOMAKE(genext2fs,1.4.1)
++AC_INIT([genext2fs], [1.4.1])
++AC_CONFIG_SRCDIR([genext2fs.c])
++AM_INIT_AUTOMAKE
++
+ AC_CONFIG_HEADER([config.h])
+ 
+ AC_GNU_SOURCE
