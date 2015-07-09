@@ -1,0 +1,18 @@
+--- configure
++++ configure
+@@ -13084,6 +13084,7 @@
+ 
+ fi
+ 
++if test "${enable_threads}" != no; then
+ SEM_INIT_LIB=''
+ ac_fn_c_check_func "$LINENO" "sem_init" "ac_cv_func_sem_init"
+ if test "x$ac_cv_func_sem_init" = xyes; then :
+@@ -13218,6 +13219,7 @@
+ fi
+ 
+ fi
++fi
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for unified diff option" >&5
+ $as_echo_n "checking for unified diff option... " >&6; }

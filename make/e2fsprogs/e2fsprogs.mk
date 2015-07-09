@@ -112,7 +112,9 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-quota
 $(PKG)_CONFIGURE_OPTIONS += --disable-testio-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
 
+ifneq ($(strip $(DL_DIR)/$(E2FSPROGS_SOURCE)),$(strip $(DL_DIR)/$(E2FSPROGS_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
+endif
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
