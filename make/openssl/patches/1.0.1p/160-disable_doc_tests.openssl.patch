@@ -18,17 +18,17 @@
  WDIRS=  windows
  LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -268,7 +268,7 @@
- 	@[ -n "$(THIS)" ] && $(CLEARENV) && $(MAKE) $(THIS) -e $(BUILDENV)
+@@ -269,7 +269,7 @@
  
  sub_all: build_all
+ 
 -build_all: build_libs build_apps build_tests build_tools
 +build_all: build_libs build_apps             build_tools
  
  build_libs: build_libcrypto build_libssl openssl.pc
  
-@@ -288,7 +288,7 @@
- build_tools:
+@@ -289,7 +289,7 @@
+ build_tools: build_libs
  	@dir=tools; target=all; $(BUILD_ONE_CMD)
  
 -all_testapps: build_libs build_testapps
@@ -36,7 +36,7 @@
  build_testapps:
  	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
  
-@@ -528,7 +528,7 @@
+@@ -529,7 +529,7 @@
  dist_pem_h:
  	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
  

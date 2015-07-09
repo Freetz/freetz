@@ -1,24 +1,24 @@
 --- Makefile.org
 +++ Makefile.org
-@@ -276,21 +276,21 @@
+@@ -277,21 +277,21 @@
  build_libssl: build_ssl libssl.pc
  
  build_crypto:
 -	@dir=crypto; target=all; $(BUILD_ONE_CMD)
 +	@+dir=crypto; target=all; $(BUILD_ONE_CMD)
- build_ssl:
+ build_ssl: build_crypto
 -	@dir=ssl; target=all; $(BUILD_ONE_CMD)
 +	@+dir=ssl; target=all; $(BUILD_ONE_CMD)
- build_engines:
+ build_engines: build_crypto
 -	@dir=engines; target=all; $(BUILD_ONE_CMD)
 +	@+dir=engines; target=all; $(BUILD_ONE_CMD)
- build_apps:
+ build_apps: build_libs
 -	@dir=apps; target=all; $(BUILD_ONE_CMD)
 +	@+dir=apps; target=all; $(BUILD_ONE_CMD)
- build_tests:
+ build_tests: build_libs
 -	@dir=test; target=all; $(BUILD_ONE_CMD)
 +	@+dir=test; target=all; $(BUILD_ONE_CMD)
- build_tools:
+ build_tools: build_libs
 -	@dir=tools; target=all; $(BUILD_ONE_CMD)
 +	@+dir=tools; target=all; $(BUILD_ONE_CMD)
  
@@ -29,7 +29,7 @@
  
  fips_premain_dso$(EXE_EXT): libcrypto.a
  	[ -z "$(FIPSCANLIB)" ] || $(CC) $(CFLAG) -Iinclude \
-@@ -410,7 +410,7 @@
+@@ -411,7 +411,7 @@
  
  clean:	libclean
  	rm -f shlib/*.o *.o core a.out fluff rehash.time testlog make.log cctest cctest.c
@@ -38,7 +38,7 @@
  	rm -f $(LIBS)
  	rm -f openssl.pc libssl.pc libcrypto.pc
  	rm -f speed.* .pure
-@@ -426,12 +426,12 @@
+@@ -427,12 +427,12 @@
  
  files:
  	$(PERL) $(TOP)/util/files.pl Makefile > $(TOP)/MINFO
@@ -53,7 +53,7 @@
  
  gentests:
  	@(cd test && echo "generating dummy tests (if needed)..." && \
-@@ -439,7 +439,7 @@
+@@ -440,7 +440,7 @@
  
  dclean:
  	rm -rf *.bak include/openssl certs/.0
@@ -62,7 +62,7 @@
  
  rehash: rehash.time
  rehash.time: certs apps
-@@ -463,13 +463,13 @@
+@@ -464,13 +464,13 @@
  	@$(PERL) util/selftest.pl
  
  update: errors stacks util/libeay.num util/ssleay.num TABLE
@@ -79,7 +79,7 @@
  
  tags:
  	rm -f TAGS
-@@ -544,7 +544,7 @@
+@@ -545,7 +545,7 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;
