@@ -1,0 +1,15 @@
+--- debugfs/dump.c
++++ debugfs/dump.c
+@@ -285,8 +285,12 @@
+ 		 * expect to have to create entries it.  Then fix its perms
+ 		 * once we've done the traversal. */
+ 		if (mkdir(fullname, S_IRWXU) == -1) {
++			if (strcmp(name, "") == 0) {
++				com_err("rdump", errno, "while making root directory %s, ignoring", fullname);
++			} else {
+ 			com_err("rdump", errno, "while making directory %s", fullname);
+ 			goto errout;
++			}
+ 		}
+ 
+ 		retval = ext2fs_dir_iterate(current_fs, ino, 0, 0,
