@@ -18,7 +18,7 @@ $(E2TOOLS_HOST_DIR)/.unpacked: $(DL_DIR)/$(E2TOOLS_HOST_SOURCE) | $(TOOLS_SOURCE
 	$(call APPLY_PATCHES,$(E2TOOLS_HOST_MAKE_DIR)/patches,$(E2TOOLS_HOST_DIR))
 	touch $@
 
-$(E2TOOLS_HOST_DIR)/.configured: e2fsprogs-host-devel $(E2TOOLS_HOST_DIR)/.unpacked
+$(E2TOOLS_HOST_DIR)/.configured: $(E2FSPROGS_HOST_DIR)/.devel $(E2TOOLS_HOST_DIR)/.unpacked
 	(cd $(E2TOOLS_HOST_DIR); \
 		autoreconf -f -i && \
 		PKG_CONFIG_PATH="$(E2FSPROGS_HOST_DEVEL_ROOT)/lib/pkgconfig" \
