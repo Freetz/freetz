@@ -262,7 +262,7 @@ error()
 
 modunext2()
 {
-	dd if="$2" of="$2.ext2" bs=256 skip=1 conv=sync \
+	dd if="$2" of="$2.ext2" bs=256 skip=1 conv=sync >/dev/null 2>&1 \
 	&& { mkdir -p "$1"; echo "rdump / $1" | "$DEBUGFS" "$2.ext2" >"$1.debugfs-rdump.log" 2>&1; }
 
 	if [ $? -gt 0 ]; then

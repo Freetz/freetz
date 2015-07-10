@@ -653,10 +653,6 @@ avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/
 avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
 echo1 -l "detected$FIRMWARE_MAIN firmware ${avm_fw_product/ /-}$avm_fw_language $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
-	error 1 "Modifying, packing of Fritz!OS 06.3x is not supported yet"
-fi
-
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"
 
@@ -671,7 +667,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Copy the unpacked directory
 	mkdir -p "$MOD_DIR"
 	[ "$FREETZ_AVM_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
-	"$TAR" -c -C "$ORG_DIR" $exclude_dev . | "$TAR" -x -C "$MOD_DIR" || exit 1
+	"$TAR" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' --exclude='./firmware/var/tmp/*.ext2' . | "$TAR" -x -C "$MOD_DIR" || exit 1
 
 	# Fix some permissions
 	chmod -R u+w "$FILESYSTEM_MOD_DIR"
@@ -686,6 +682,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 	iterate_over_oems_pattern='for[ ]+i[ ]+in[ ]+('"${all_known_oems// /|}"')[^;]*;[ ]*do'
 	oems=$(sed -n -r -e '/'"${iterate_over_oems_pattern}"'/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
 	[ -z "$oems" ] && error 1 "failed to determine OEMs supported by the original firmware"
+
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
+	warn1 "Modifying of Fritz!OS 06.3x is not supported yet, skipping"
+else
 
 	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
 	for webdir in \
@@ -1432,6 +1432,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		. "${EXTERNAL}"
 	fi
 
+fi # EndOf: Modifying of Fritz!OS 06.3x is not supported yet, skipping
+
 	touch "${DIR}/.modified"
 	echo -e "done.\n"
 fi
@@ -1572,6 +1574,10 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo0 "creating filesystem image"
 	echo1 "SquashFS block size: $(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB ($FREETZ_SQUASHFS_BLOCKSIZE bytes)"
 
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
+	warn1 "Creating AVM-BE squashfs4 image is not supported yet, temporary using old squashfs3 format - DO NOT FLASH THIS IMAGE!"
+fi
+
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
@@ -1622,7 +1628,19 @@ if [ "$DO_PACK" -gt 0 ]; then
 # ---------------------------
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
+		# TODO: debugfs doesn't dump device file, we either need to patch debugfs so that it dumps the device files
+		#       or create the device files via genext2fs --devtable ...
+		PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
+		[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
+		# TODO: AVM uses a header which looks like a SquashFS header, we use a "zeros only"-header, check if it's OK, i.e. if AVM verifies these 256 bytes somewhere
+		dd if=/dev/zero of="$RAW_FILESYSTEM_MOD" bs=1 count=0 seek=256 >> $MOD_DIR/filesystem.log 2>&1 && \
+		cat "$RAW_FILESYSTEM_MOD.ext2" >> "$RAW_FILESYSTEM_MOD" && \
+		rm -f "$RAW_FILESYSTEM_MOD.ext2"
+else
 		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
+fi
 
 		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
 		let FILESYSTEM_SIZE="$(wc -c < "$RAW_FILESYSTEM_MOD")"
