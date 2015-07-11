@@ -667,7 +667,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Copy the unpacked directory
 	mkdir -p "$MOD_DIR"
 	[ "$FREETZ_AVM_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
-	"$TAR" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' --exclude='./firmware/var/tmp/*.ext2' . | "$TAR" -x -C "$MOD_DIR" || exit 1
+	"$TAR" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | "$TAR" -x -C "$MOD_DIR" || exit 1
 
 	# Fix some permissions
 	chmod -R u+w "$FILESYSTEM_MOD_DIR"
@@ -1630,6 +1630,7 @@ fi
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 
 if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
+		rm -f "$RAW_FILESYSTEM_MOD.ext2"
 		PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
 		[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
 		# TODO: AVM uses a header which looks like a SquashFS header, we use a "zeros only"-header, check if it's OK, i.e. if AVM verifies these 256 bytes somewhere
