@@ -1,0 +1,55 @@
+
+ Add support for dumping device files and FIFOs
+
+ Signed-off-by: gene@freetz.org
+
+--- debugfs/dump.c
++++ debugfs/dump.c
+@@ -278,7 +278,8 @@
+ 			goto errout;
+ 		}
+ 	}
+-	else if (LINUX_S_ISDIR(inode->i_mode) && strcmp(name, ".") && strcmp(name, "..")) {
++	else if (LINUX_S_ISDIR(inode->i_mode)) {
++	    if (strcmp(name, ".") && strcmp(name, "..")) {
+ 		errcode_t retval;
+ 
+ 		/* Create the directory with 0700 permissions, because we
+@@ -299,8 +300,36 @@
+ 			com_err("rdump", retval, "while dumping %s", fullname);
+ 
+ 		fix_perms("rdump", inode, -1, fullname);
++	    }
++	} else if (LINUX_S_ISCHR(inode->i_mode) || LINUX_S_ISBLK(inode->i_mode)) {
++		int chrdev = LINUX_S_ISCHR(inode->i_mode);
++
++		int major, minor;
++		if (inode->i_block[0]) {
++			major = (inode->i_block[0] >> 8) & 255;
++			minor = inode->i_block[0] & 255;
++		} else {
++			/* new-style */
++			major = (inode->i_block[1] & 0xfff00) >> 8;
++			minor = ((inode->i_block[1] & 0xff) | ((inode->i_block[1] >> 12) & 0xfff00));
++		}
++
++		if (mknod(fullname, chrdev ? S_IFCHR : S_IFBLK, makedev(major, minor)) == -1) {
++			com_err("rdump", errno, "while creating %s device file %s", (chrdev ? "character" : "block"), fullname);
++			goto errout;
++		}
++		fix_perms("rdump", inode, -1, fullname);
++	} else if (LINUX_S_ISFIFO(inode->i_mode)) {
++		if (mknod(fullname, S_IFIFO, 0) == -1) {
++			com_err("rdump", errno, "while creating FIFO %s", fullname);
++			goto errout;
++		}
++		fix_perms("rdump", inode, -1, fullname);
++	} else if (LINUX_S_ISSOCK(inode->i_mode)) {
++		com_err("rdump", 0, "skipping creating socket file %s (not supported yet)", fullname);
++	} else {
++		com_err("rdump", 0, "skipping creating file of unknown type %s (not supported yet)", fullname);
+ 	}
+-	/* else do nothing (don't dump device files, sockets, fifos, etc.) */
+ 
+ errout:
+ 	free(fullname);
