@@ -1,8 +1,8 @@
 
  Remove support for the append mode.
 
---- squashfs-tools/Makefile
-+++ squashfs-tools/Makefile
+--- squashfs-tools-mksquashfs-avm-be/Makefile
++++ squashfs-tools-mksquashfs-avm-be/Makefile
 @@ -111,7 +111,7 @@
  INSTALL_DIR = /usr/local/bin
  
@@ -12,7 +12,7 @@
  	caches-queues-lists.o
  
  UNSQUASHFS_OBJS = unsquashfs.o unsquash-1.o unsquash-2.o unsquash-3.o \
-@@ -234,7 +234,7 @@
+@@ -235,7 +235,7 @@
  
  mksquashfs.o: Makefile mksquashfs.c squashfs_fs.h squashfs_swap.h mksquashfs.h \
  	sort.h pseudo.h compressor.h xattr.h action.h error.h progressbar.h \
@@ -21,8 +21,8 @@
  
  read_fs.o: read_fs.c squashfs_fs.h squashfs_swap.h compressor.h xattr.h \
  	error.h mksquashfs.h
---- squashfs-tools/mksquashfs.c
-+++ squashfs-tools/mksquashfs.c
+--- squashfs-tools-mksquashfs-avm-be/mksquashfs.c
++++ squashfs-tools-mksquashfs-avm-be/mksquashfs.c
 @@ -74,10 +74,8 @@
  #include "info.h"
  #include "caches-queues-lists.h"
