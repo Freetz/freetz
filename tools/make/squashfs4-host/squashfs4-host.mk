@@ -47,6 +47,7 @@ $(SQUASHFS4_HOST_unsquashfs_TARGET): $(SQUASHFS4_HOST_unsquashfs)
 $(SQUASHFS4_HOST_mksquashfs): $(SQUASHFS4_HOST_DIR)/.unpacked $(LZMA2_DIR)/liblzma.a
 	$(MAKE) -C $(SQUASHFS4_HOST_mksquashfs_BUILD_DIR) \
 		$(SQUASHFS4_HOST_COMMON_MAKE_OPTS) \
+		EXTRA_CFLAGS=-DMKSQUASHFS_AVM_BE \
 		mksquashfs
 	touch -c $@
 
