@@ -26,6 +26,8 @@ $(SQUASHFS4_HOST_TOOLS_BUILD_DIR): $(SQUASHFS4_HOST_DIR)/.unpacked $(LZMA2_DIR)/
 		CC="$(TOOLS_CC)" \
 		XZ_SUPPORT=1 \
 		XZ_DIR="$(abspath $(LZMA2_DIR))" \
+		GZIP_SUPPORT=1 \
+		COMP_DEFAULT=xz \
 		$(SQUASHFS4_HOST_TOOLS) mksquashfs
 	touch -c $@
 
