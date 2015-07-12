@@ -240,17 +240,24 @@ rm "$DOT_CONFIG.fwmod"
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
-# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
-if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
-	MKSQUASHFS_OPTIONS+=" -be"
-else
-	MKSQUASHFS_OPTIONS+=" -le"
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" != "y" ]; then
+	# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
+	if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
+		MKSQUASHFS_OPTIONS+=" -be"
+	else
+		MKSQUASHFS_OPTIONS+=" -le"
+	fi
 fi
 
 # Use FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE etc. to determine correct mksquashfs tool
 # TODO: Add new symbols for SquashFS version and LZMA compression to Config.in
 if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	MKSQUASHFS_TOOL="mksquashfs3"
+	if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
+		MKSQUASHFS_TOOL="mksquashfs4-lzma-avm-be"
+		MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS//-noappend}"
+	else
+		MKSQUASHFS_TOOL="mksquashfs3"
+	fi
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 elif [ "$FREETZ_KERNEL_VERSION_2_6_13" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 	MKSQUASHFS_TOOL="mksquashfs2-lzma"
@@ -1574,10 +1581,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo0 "creating filesystem image"
 	echo1 "SquashFS block size: $(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB ($FREETZ_SQUASHFS_BLOCKSIZE bytes)"
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
-	warn1 "Creating AVM-BE squashfs4 image is not supported yet, temporary using old squashfs3 format - DO NOT FLASH THIS IMAGE!"
-fi
-
+	rm -f $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD
 	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
