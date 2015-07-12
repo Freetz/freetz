@@ -301,7 +301,7 @@
 + *   first
 + * - the filesystem structures are swapped, but the block length value at
 + *   the very beginning of each compressed block is kept in little endian
-+ *   order -> the normal unsquashfs code gets confused here
++ *   order -> the regular unsquashfs code gets confused here
 + *
 + */
 +
@@ -464,7 +464,7 @@
 +			i.block_ptr = block_ptr + sizeof(*inode);
 +			i.xattr = SQUASHFS_INVALID_XATTR;
 +			break;
-+		}	
++		}
 +		case SQUASHFS_LREG_TYPE: {
 +			struct squashfs_lreg_inode_header *inode = &header.lreg;
 +
@@ -484,7 +484,7 @@
 +			i.block_ptr = block_ptr + sizeof(*inode);
 +			i.xattr = inode->xattr;
 +			break;
-+		}	
++		}
 +		case SQUASHFS_SYMLINK_TYPE:
 +		case SQUASHFS_LSYMLINK_TYPE: {
 +			struct squashfs_symlink_inode_header *inode = &header.symlink;
@@ -605,7 +605,7 @@
 +			SQUASHFS_SWAP_DIR_HEADER_4_BE(&dirh, &sdirh);
 +		} else
 +			memcpy(&dirh, directory_table + bytes, sizeof(dirh));
-+	
++
 +		dir_count = dirh.count + 1;
 +		TRACE("squashfs_opendir: Read directory header @ byte position "
 +			"%d, %d directory entries\n", bytes, dir_count);
