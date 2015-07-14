@@ -240,7 +240,7 @@ rm "$DOT_CONFIG.fwmod"
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" != "y" ]; then
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" != "y" ]; then
 	# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
 	if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
 		MKSQUASHFS_OPTIONS+=" -be"
@@ -252,7 +252,7 @@ fi
 # Use FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE etc. to determine correct mksquashfs tool
 # TODO: Add new symbols for SquashFS version and LZMA compression to Config.in
 if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
+	if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
 		MKSQUASHFS_TOOL="mksquashfs4-lzma-avm-be"
 		MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS//-noappend}"
 	else
@@ -451,7 +451,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
 
 		echo "unpacking update image"
-		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
+		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
 			modunext2 "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 		else
 			modunsqfs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
@@ -459,7 +459,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] && error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
-		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
+		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
 			# TODO: hack, implement properly
 			UNSQUASHFS_LZMA="${TOOLS_DIR}/${UNSQUASHFS4_LZMA_TOOL}" modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
 		else
@@ -690,8 +690,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oems=$(sed -n -r -e '/'"${iterate_over_oems_pattern}"'/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
 	[ -z "$oems" ] && error 1 "failed to determine OEMs supported by the original firmware"
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
-	warn1 "Modifying of Fritz!OS 06.3x is not supported yet, skipping"
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
+	warn1 "Modifying of Fritz!OS 06.35 is not supported yet, skipping"
 else
 
 	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
@@ -1439,7 +1439,7 @@ else
 		. "${EXTERNAL}"
 	fi
 
-fi # EndOf: Modifying of Fritz!OS 06.3x is not supported yet, skipping
+fi # EndOf: Modifying of Fritz!OS 06.35 is not supported yet, skipping
 
 	touch "${DIR}/.modified"
 	echo -e "done.\n"
@@ -1633,7 +1633,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_06_3X}" == "y" ]; then
+if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
 		PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
 		[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
 
