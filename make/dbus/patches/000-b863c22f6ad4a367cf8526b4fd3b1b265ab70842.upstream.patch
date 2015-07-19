@@ -1,0 +1,26 @@
+From b863c22f6ad4a367cf8526b4fd3b1b265ab70842 Mon Sep 17 00:00:00 2001
+From: Jacek Bukarewicz <j.bukarewicz@samsung.com>
+Date: Wed, 17 Jun 2015 18:53:41 +0100
+Subject: Fix memleak in GetConnectionCredentials handler
+
+Reply message was not unreferenced when GetConnectionCredentials
+handler was successful.
+
+Signed-off-by: Jacek Bukarewicz <j.bukarewicz@samsung.com>
+[smcv: changed bus_message_unref() to dbus_message_unref()]
+Reviewed-by: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Bug: https://bugs.freedesktop.org/show_bug.cgi?id=91008
+
+diff --git bus/driver.c bus/driver.c
+index f5d3ebe..888c7ca 100644
+--- bus/driver.c
++++ bus/driver.c
+@@ -1613,6 +1613,8 @@ bus_driver_handle_get_connection_credentials (DBusConnection *connection,
+       goto oom;
+     }
+ 
++  dbus_message_unref (reply);
++
+   return TRUE;
+ 
+  oom:
