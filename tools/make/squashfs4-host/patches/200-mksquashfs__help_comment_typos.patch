@@ -1,6 +1,6 @@
---- squashfs-tools-mksquashfs-avm-be/mksquashfs.c
-+++ squashfs-tools-mksquashfs-avm-be/mksquashfs.c
-@@ -653,7 +653,7 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -651,7 +651,7 @@
  
  	TRACE("write_id_table: ids %d, id_bytes %d\n", id_count, id_bytes);
  	for(i = 0; i < id_count; i++) {
@@ -9,7 +9,7 @@
  		SQUASHFS_SWAP_INTS(&id_table[i]->id, p + i, 1);
  	}
  
-@@ -5278,7 +5278,7 @@
+@@ -5276,7 +5276,7 @@
  			ERROR("%s: invalid option\n\n", argv[0]);
  printOptions:
  			ERROR("SYNTAX:%s source1 source2 ...  dest [options] "
@@ -18,7 +18,7 @@
  			ERROR("\nFilesystem build options:\n");
  			ERROR("-comp <comp>\t\tselect <comp> compression\n");
  			ERROR("\t\t\tCompressors available:\n");
-@@ -5489,7 +5489,7 @@
+@@ -5487,7 +5487,7 @@
  				add_exclude(argv[i++]);
  	}
  

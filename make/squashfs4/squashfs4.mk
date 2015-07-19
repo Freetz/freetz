@@ -13,9 +13,9 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SQUASHFS4_ALL_STAT
 
 $(PKG)_BUILD_DIR := $($(PKG)_DIR)/squashfs-tools
 
-$(PKG)_BINARIES            := unsquashfs
+$(PKG)_BINARIES            := mksquashfs unsquashfs
 $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_BUILD_DIR)/%)
-$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%4-avm-be)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%4-lzma-avm-be)
 
 ifneq ($(strip $(DL_DIR)/$(SQUASHFS4_SOURCE)),$(strip $(DL_DIR)/$(SQUASHFS4_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
@@ -26,7 +26,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(SQUASHFS4_BUILD_DIR) \
 		CC="$(TARGET_CC)" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS)" \
+		EXTRA_CFLAGS="$(TARGET_CFLAGS) -DTARGET_FORMAT=AVM_BE" \
 		GZIP_SUPPORT=0 \
 		XZ_SUPPORT=1 \
 		COMP_DEFAULT=xz \
@@ -36,7 +36,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		$(if $(FREETZ_PACKAGE_SQUASHFS4_ALL_STAT),EXTRA_LDFLAGS=-static) \
 		$(SQUASHFS4_BINARIES)
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%4-avm-be: $($(PKG)_BUILD_DIR)/%
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%4-lzma-avm-be: $($(PKG)_BUILD_DIR)/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):

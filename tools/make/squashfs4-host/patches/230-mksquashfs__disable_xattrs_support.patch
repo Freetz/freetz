@@ -1,9 +1,9 @@
 
-Disable XATTRS support by default, remove all related command line options.
+ Disable XATTRS support by default, remove all related command line options.
 
---- squashfs-tools-mksquashfs-avm-be/mksquashfs.c
-+++ squashfs-tools-mksquashfs-avm-be/mksquashfs.c
-@@ -83,8 +83,8 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -81,8 +81,8 @@
  
  /* filesystem flags for building */
  int comp_opts = FALSE;
@@ -14,7 +14,7 @@ Disable XATTRS support by default, remove all related command line options.
  int duplicate_checking = TRUE;
  int noF = FALSE;
  int no_fragments = FALSE;
-@@ -5245,16 +5245,6 @@
+@@ -5257,16 +5257,6 @@
  				strcmp(argv[i], "-noFragmentCompression") == 0)
  			noF = TRUE;
  
@@ -31,7 +31,7 @@ Disable XATTRS support by default, remove all related command line options.
  		else if(strcmp(argv[i], "-nopad") == 0)
  			nopad = TRUE;
  
-@@ -5299,15 +5289,9 @@
+@@ -5311,15 +5301,9 @@
  			ERROR("-no-exports\t\tdon't make the filesystem "
  				"exportable via NFS\n");
  			ERROR("-no-sparse\t\tdon't detect sparse files\n");
@@ -47,7 +47,7 @@ Disable XATTRS support by default, remove all related command line options.
  			ERROR("-no-fragments\t\tdo not use fragments\n");
  			ERROR("-always-use-fragments\tuse fragment blocks for "
  				"files larger than block size\n");
-@@ -5381,8 +5365,6 @@
+@@ -5393,8 +5377,6 @@
  				"\n");
  			ERROR("-noFragmentCompression\talternative name for "
  				"-noF\n");
@@ -56,7 +56,7 @@ Disable XATTRS support by default, remove all related command line options.
  			ERROR("\n-Xhelp\t\t\tprint compressor options for"
  				" selected compressor\n");
  			ERROR("\nCompressors available and compressor specific "
-@@ -5616,7 +5598,7 @@
+@@ -5621,7 +5603,7 @@
  		printf("Appending to existing %d.%d filesystem on %s, block "
  			"size %d\n", SQUASHFS_MAJOR, SQUASHFS_MINOR, argv[source + 1],
  			block_size);

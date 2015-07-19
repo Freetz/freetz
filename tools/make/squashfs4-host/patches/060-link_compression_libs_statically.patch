@@ -1,6 +1,6 @@
 --- squashfs-tools/Makefile
 +++ squashfs-tools/Makefile
-@@ -123,12 +123,17 @@
+@@ -122,12 +122,17 @@
  	-D_LARGEFILE_SOURCE -D_GNU_SOURCE -DCOMP_DEFAULT=\"$(COMP_DEFAULT)\" \
  	-Wall
  
@@ -19,7 +19,7 @@
  COMPRESSORS += gzip
  endif
  
-@@ -146,7 +151,7 @@
+@@ -145,7 +150,7 @@
  CFLAGS += -DLZMA_SUPPORT
  MKSQUASHFS_OBJS += lzma_xz_wrapper.o
  UNSQUASHFS_OBJS += lzma_xz_wrapper.o
@@ -28,7 +28,7 @@
  COMPRESSORS += lzma
  endif
  
-@@ -154,7 +159,7 @@
+@@ -158,7 +163,7 @@
  CFLAGS += -DXZ_SUPPORT
  MKSQUASHFS_OBJS += xz_wrapper.o
  UNSQUASHFS_OBJS += xz_wrapper.o
@@ -37,7 +37,7 @@
  COMPRESSORS += xz
  endif
  
-@@ -166,7 +171,7 @@
+@@ -170,7 +175,7 @@
  endif
  MKSQUASHFS_OBJS += lzo_wrapper.o
  UNSQUASHFS_OBJS += lzo_wrapper.o
@@ -46,7 +46,7 @@
  COMPRESSORS += lzo
  endif
  
-@@ -174,7 +179,7 @@
+@@ -178,7 +183,7 @@
  CFLAGS += -DLZ4_SUPPORT
  MKSQUASHFS_OBJS += lz4_wrapper.o
  UNSQUASHFS_OBJS += lz4_wrapper.o

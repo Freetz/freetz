@@ -1,8 +1,8 @@
 
  Remove support for the append mode.
 
---- squashfs-tools-mksquashfs-avm-be/Makefile
-+++ squashfs-tools-mksquashfs-avm-be/Makefile
+--- squashfs-tools/Makefile
++++ squashfs-tools/Makefile
 @@ -111,7 +111,7 @@
  INSTALL_DIR = /usr/local/bin
  
@@ -12,7 +12,7 @@
  	caches-queues-lists.o
  
  UNSQUASHFS_OBJS = unsquashfs.o unsquash-1.o unsquash-2.o unsquash-3.o \
-@@ -235,7 +235,7 @@
+@@ -239,7 +239,7 @@
  
  mksquashfs.o: Makefile mksquashfs.c squashfs_fs.h squashfs_swap.h mksquashfs.h \
  	sort.h pseudo.h compressor.h xattr.h action.h error.h progressbar.h \
@@ -21,9 +21,9 @@
  
  read_fs.o: read_fs.c squashfs_fs.h squashfs_swap.h compressor.h xattr.h \
  	error.h mksquashfs.h
---- squashfs-tools-mksquashfs-avm-be/mksquashfs.c
-+++ squashfs-tools-mksquashfs-avm-be/mksquashfs.c
-@@ -74,10 +74,8 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -72,10 +72,8 @@
  #include "info.h"
  #include "caches-queues-lists.h"
  #include "read_fs.h"
@@ -34,7 +34,7 @@
  int fd;
  struct squashfs_super_block sBlk;
  
-@@ -220,23 +218,10 @@
+@@ -218,23 +216,10 @@
  };
  struct old_root_entry_info *old_root_entry;
  
@@ -59,7 +59,7 @@
  
  /* flag indicating whether files are sorted using sort list(s) */
  int sorted = FALSE;
-@@ -244,10 +229,6 @@
+@@ -242,10 +227,6 @@
  /* save destination file name for deleting on error */
  char *destination_file = NULL;
  
@@ -70,7 +70,7 @@
  struct id *id_hash_table[ID_ENTRIES];
  struct id *id_table[SQUASHFS_IDS], *sid_table[SQUASHFS_IDS];
  unsigned int uid_count = 0, guid_count = 0;
-@@ -260,7 +241,6 @@
+@@ -258,7 +239,6 @@
  struct seq_queue *to_main;
  pthread_t reader_thread, writer_thread, main_thread;
  pthread_t *deflator_thread, *frag_deflator_thread, *frag_thread;
@@ -78,7 +78,7 @@
  pthread_mutex_t	fragment_mutex = PTHREAD_MUTEX_INITIALIZER;
  pthread_mutex_t	pos_mutex = PTHREAD_MUTEX_INITIALIZER;
  pthread_mutex_t	dup_mutex = PTHREAD_MUTEX_INITIALIZER;
-@@ -277,8 +257,6 @@
+@@ -275,8 +255,6 @@
  /* xattr stats */
  unsigned int xattr_bytes = 0, total_xattr_bytes = 0;
  
@@ -87,7 +87,7 @@
  struct append_file **file_mapping;
  
  static char *read_from_disk(long long start, unsigned int avail_bytes);
-@@ -300,7 +278,6 @@
+@@ -298,7 +276,6 @@
  	unsigned short checksum, unsigned short fragment_checksum,
  	int checksum_flag, int checksum_frag_flag);
  long long generic_write_table(int, void *, int, void *, int);
@@ -95,7 +95,7 @@
  struct dir_info *scan1_opendir(char *pathname, char *subpath, int depth);
  void write_filesystem_tables(struct squashfs_super_block *sBlk, int nopad);
  unsigned short get_checksum_mem(char *buff, int bytes);
-@@ -309,26 +286,8 @@
+@@ -307,26 +284,8 @@
  
  void prep_exit()
  {
@@ -124,7 +124,7 @@
  }
  
  
-@@ -360,39 +319,6 @@
+@@ -358,39 +317,6 @@
  			+ (((char *)A) - data_cache)))
  
  
@@ -164,7 +164,7 @@
  void sighandler()
  {
  	EXIT_MKSQUASHFS();
-@@ -3166,19 +3092,6 @@
+@@ -3159,19 +3085,6 @@
  		generate_file_priorities(dir_info, 0,
  			&dir_info->dir_ent->inode->buf);
  
@@ -184,7 +184,7 @@
  	queue_put(to_reader, dir_info);
  
  	if(sorted)
-@@ -4189,7 +4102,7 @@
+@@ -4181,7 +4094,7 @@
  	int i, inode_number, lookup_bytes = SQUASHFS_LOOKUP_BYTES(inode_count);
  	void *it;
  
@@ -193,7 +193,7 @@
  		goto skip_inode_hash_table;
  
  	it = realloc(inode_lookup_table, lookup_bytes);
-@@ -4514,143 +4427,6 @@
+@@ -4506,143 +4419,6 @@
  }
  
  
@@ -337,7 +337,7 @@
  void write_filesystem_tables(struct squashfs_super_block *sBlk, int nopad)
  {
  	int i;
-@@ -4687,9 +4463,6 @@
+@@ -4679,9 +4455,6 @@
  
  	close(fd);
  
@@ -347,7 +347,7 @@
  	total_bytes += total_inode_bytes + total_directory_bytes +
  		sizeof(struct squashfs_super_block) + total_xattr_bytes;
  
-@@ -4917,7 +4690,7 @@
+@@ -4931,7 +4704,7 @@
  {
  	struct stat buf, source_buf;
  	int res, i;
@@ -356,7 +356,7 @@
  	int keep_as_directory = FALSE;
  	squashfs_inode inode;
  	int readq;
-@@ -4976,7 +4749,7 @@
+@@ -4990,7 +4763,7 @@
  
  		} else if(strcmp(argv[i], "-e") == 0)
  			break;
@@ -365,7 +365,7 @@
  				strcmp(argv[i], "-ef") == 0 ||
  				strcmp(argv[i], "-pf") == 0 ||
  				strcmp(argv[i], "-af") == 0 ||
-@@ -5061,15 +4834,7 @@
+@@ -5073,15 +4846,7 @@
  			}
  			if(read_pseudo_def(argv[i]) == FALSE)
  				exit(1);
@@ -382,7 +382,7 @@
  		else if(strcmp(argv[i], "-wildcards") == 0) {
  			old_exclude = FALSE;
  			use_regex = FALSE;
-@@ -5254,23 +5019,13 @@
+@@ -5266,23 +5031,13 @@
  		else if(strcmp(argv[i], "-e") == 0)
  			break;
  
@@ -407,7 +407,7 @@
  			VERSION();
  		} else {
  			ERROR("%s: invalid option\n\n", argv[0]);
-@@ -5324,25 +5079,11 @@
+@@ -5336,25 +5091,11 @@
  				"dirs/files\n");
  			ERROR("-regex\t\t\tAllow POSIX regular expressions to "
  				"be used in exclude\n\t\t\tdirs/files\n");
@@ -433,7 +433,7 @@
  			ERROR("-info\t\t\tprint files written to filesystem\n");
  			ERROR("-no-progress\t\tdon't display the progress "
  				"bar\n");
-@@ -5420,35 +5161,14 @@
+@@ -5428,35 +5169,14 @@
  				perror("Could not create destination file");
  				exit(1);
  			}
@@ -471,7 +471,7 @@
  	}
  
  	/*
-@@ -5464,7 +5184,7 @@
+@@ -5472,7 +5192,7 @@
  			process_exclude_file(argv[++i]);
  		else if(strcmp(argv[i], "-e") == 0)
  			break;
@@ -480,7 +480,7 @@
  				strcmp(argv[i], "-sort") == 0 ||
  				strcmp(argv[i], "-pf") == 0 ||
  				strcmp(argv[i], "-af") == 0 ||
-@@ -5493,7 +5213,7 @@
+@@ -5501,44 +5221,21 @@
  			sorted ++;
  		} else if(strcmp(argv[i], "-e") == 0)
  			break;
@@ -489,9 +489,8 @@
  				strcmp(argv[i], "-ef") == 0 ||
  				strcmp(argv[i], "-pf") == 0 ||
  				strcmp(argv[i], "-af") == 0 ||
-@@ -5501,30 +5221,7 @@
+ 				strcmp(argv[i], "-comp") == 0)
  			i++;
- 	TRACE("Options processed ...\n");
  
 -	if(!delete) {
 -	        comp = read_super(fd, &sBlk, argv[source + 1]);
@@ -519,18 +518,17 @@
 -	initialise_threads(readq, fragq, bwriteq, fwriteq, delete,
 +	initialise_threads(readq, fragq, bwriteq, fwriteq, TRUE /*delete*/,
  		destination_file);
- 	TRACE("Threads initialized ...\n");
  
-@@ -5533,7 +5230,7 @@
+ 	res = compressor_init(comp, &stream, SQUASHFS_METADATA_SIZE, 0);
+ 	if(res)
  		BAD_ERROR("compressor_init failed\n");
- 	TRACE("Compressor initialized ...\n");
  
 -	if(delete) {
 +	{
  		int size;
  		void *comp_data = compressor_dump_options(comp, block_size,
  			&size);
-@@ -5559,135 +5256,6 @@
+@@ -5564,135 +5261,6 @@
  			comp_opts = TRUE;
  		} else			
  			bytes = sizeof(struct squashfs_super_block);
@@ -666,7 +664,7 @@
  	}
  
  	if(path)
-@@ -5696,12 +5264,9 @@
+@@ -5701,12 +5269,9 @@
  	dump_actions(); 
  	dump_pseudos();
  
