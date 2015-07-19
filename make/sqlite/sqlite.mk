@@ -26,7 +26,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(SQLITE_DIR)
+	$(SUBMAKE1) -C $(SQLITE_DIR)
 
 $($(PKG)_BINARY): $($(PKG)_LIB_BINARY)
 	@touch -c $@
