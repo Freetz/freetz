@@ -1,0 +1,57 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -38,6 +38,7 @@
+ #include <string.h>
+ #include <zlib.h>
+ #include <stdlib.h>
++#include <stdint.h>
+ #include <signal.h>
+ #include <setjmp.h>
+ #include <sys/ioctl.h>
+@@ -3023,7 +3024,7 @@
+ 				case S_IFREG:
+ 					squashfs_type = SQUASHFS_FILE_TYPE;
+ 					write_file(inode, dir_ent, &duplicate_file);
+-					INFO("file %s, uncompressed size %lld bytes %s\n", filename, buf->st_size, duplicate_file ? "DUPLICATE" : "");
++					INFO("file %s, uncompressed size %jd bytes %s\n", filename, (intmax_t)buf->st_size, duplicate_file ? "DUPLICATE" : "");
+ 					break;
+ 
+ 				case S_IFDIR:
+@@ -3077,7 +3078,7 @@
+ 			switch(squashfs_type) {
+ 				case SQUASHFS_FILE_TYPE:
+ 					if(!sorted)
+-						INFO("file %s, uncompressed size %lld bytes LINK\n", filename, buf->st_size);
++						INFO("file %s, uncompressed size %jd bytes LINK\n", filename, (intmax_t)buf->st_size);
+ 					break;
+ 				case SQUASHFS_SYMLINK_TYPE:
+ 					INFO("symbolic link %s inode 0x%llx LINK\n", dir_name, *inode);
+--- squashfs-tools/sort.c
++++ squashfs-tools/sort.c
+@@ -33,6 +33,7 @@
+ #include <dirent.h>
+ #include <string.h>
+ #include <stdlib.h>
++#include <stdint.h>
+ 
+ #include <squashfs_fs.h>
+ #include "global.h"
+@@ -235,14 +236,14 @@
+ 			TRACE("%d: %s\n", i - 32768, entry->dir->pathname);
+ 			if(entry->dir->inode->inode == SQUASHFS_INVALID_BLK) {
+ 				write_file(&inode, entry->dir, &duplicate_file);
+-				INFO("file %s, uncompressed size %lld bytes %s\n",
++				INFO("file %s, uncompressed size %jd bytes %s\n",
+ 					entry->dir->pathname,
+-					entry->dir->inode->buf.st_size,
++					(intmax_t)entry->dir->inode->buf.st_size,
+ 					duplicate_file ? "DUPLICATE" : "");
+ 				entry->dir->inode->inode = inode;
+ 				entry->dir->inode->type = SQUASHFS_FILE_TYPE;
+ 			} else
+-				INFO("file %s, uncompressed size %lld bytes LINK\n",
+-					entry->dir->pathname, entry->dir->inode->buf.st_size);
++				INFO("file %s, uncompressed size %jd bytes LINK\n",
++					entry->dir->pathname, (intmax_t)entry->dir->inode->buf.st_size);
+ 		}
+ }

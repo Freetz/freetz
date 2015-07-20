@@ -1,0 +1,12 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -3588,6 +3588,9 @@
+ 	int readb_mbytes = READER_BUFFER_DEFAULT, writeb_mbytes = WRITER_BUFFER_DEFAULT, fragmentb_mbytes = FRAGMENT_BUFFER_DEFAULT;
+ 	int s_minor;
+ 
++	/* set struct sBlk to zero */
++	memset(&sBlk, 0, sizeof (sBlk));
++
+ #if __BYTE_ORDER == __BIG_ENDIAN
+ 	be = TRUE;
+ #else

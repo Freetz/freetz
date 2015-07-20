@@ -1,0 +1,24 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -48,6 +48,9 @@
+ #include <math.h>
+ #include <regex.h>
+ #include <fnmatch.h>
++#if !defined(FNM_EXTMATCH) // GNU_EXTENSION
++#define FNM_EXTMATCH 0
++#endif
+ 
+ #ifndef linux
+ #define __BYTE_ORDER BYTE_ORDER
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -42,6 +42,9 @@
+ #include <time.h>
+ #include <regex.h>
+ #include <fnmatch.h>
++#if !defined(FNM_EXTMATCH) // GNU_EXTENSION
++#define FNM_EXTMATCH 0
++#endif
+ #include <signal.h>
+ #include <pthread.h>
+ #include <math.h>

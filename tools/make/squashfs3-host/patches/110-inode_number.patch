@@ -1,0 +1,34 @@
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -1330,6 +1330,7 @@
+ }
+ 
+ 
++int inode_number = 1;
+ struct inode *read_inode_2(unsigned int start_block, unsigned int offset)
+ {
+ 	static squashfs_inode_header_2 header;
+@@ -1337,7 +1338,6 @@
+ 	int bytes = lookup_entry(inode_table_hash, start);
+ 	char *block_ptr = inode_table + bytes + offset;
+ 	static struct inode i;
+-	static int inode_number = 1;
+ 
+ 	if(bytes == -1)
+ 		goto error;
+@@ -1463,7 +1463,6 @@
+ 	int bytes = lookup_entry(inode_table_hash, start);
+ 	char *block_ptr = inode_table + bytes + offset;
+ 	static struct inode i;
+-	static int inode_number = 1;
+ 
+ 	if(bytes == -1)
+ 		goto error;
+@@ -2694,6 +2693,7 @@
+ 	pre_scan(dest, SQUASHFS_INODE_BLK(sBlk.root_inode), SQUASHFS_INODE_OFFSET(sBlk.root_inode), paths);
+ 
+ 	memset(created_inode, 0, sBlk.inodes * sizeof(char *));
++	inode_number = 1;
+ 
+ 	printf("%d inodes (%d blocks) to write\n\n", total_inodes, total_inodes - total_files + total_blocks);
+ 

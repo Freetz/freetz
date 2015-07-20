@@ -1,0 +1,13 @@
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -52,8 +52,10 @@
+ #define __BYTE_ORDER BYTE_ORDER
+ #define __BIG_ENDIAN BIG_ENDIAN
+ #define __LITTLE_ENDIAN LITTLE_ENDIAN
++#include <sys/sysctl.h> // sysctl
+ #else
+ #include <endian.h>
++#include <sys/sysinfo.h> // get_nprocs()
+ #endif
+ 
+ #include "squashfs_fs.h"
