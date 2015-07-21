@@ -26,7 +26,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 
-ifneq ($(strip $(DL_DIR)/$(XZ_SOURCE)), $(strip $(DL_DIR)/$(LZMA2_SOURCE)))
+ifneq ($(strip $(DL_DIR)/$(XZ_SOURCE)), $(strip $(DL_DIR)/$(LZMA2_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
 $(PKG_UNPACKED)
