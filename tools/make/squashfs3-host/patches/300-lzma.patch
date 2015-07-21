@@ -1,59 +1,53 @@
 --- squashfs-tools/Makefile
 +++ squashfs-tools/Makefile
-@@ -4,22 +4,41 @@
- 
+@@ -5,6 +5,7 @@
  CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -O2
  
--all: mksquashfs unsquashfs
-+all: mksquashfs3 unsquashfs3 mksquashfs3-lzma unsquashfs3-lzma
+ all: mksquashfs unsquashfs
++all-lzma: mksquashfs-lzma unsquashfs-lzma
  
--mksquashfs: mksquashfs.o read_fs.o sort.o
-+mksquashfs3: mksquashfs.o read_fs.o sort.o
- 	$(CC) mksquashfs.o read_fs.o sort.o -lz -lpthread -lm -o $@
+ mksquashfs: mksquashfs.o read_fs.o sort.o
+ 	$(CC) $^ -lz -lpthread -lm -o $@
+@@ -20,9 +21,29 @@
  
-+mksquashfs3-lzma: mksquashfs-lzma.o read_fs.o sort.o
-+	$(CXX) mksquashfs-lzma.o read_fs.o sort.o -L$(LZMA_DIR) -llzma -lpthread -lm -o $@
-+
- mksquashfs.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
- 
-+mksquashfs-lzma.o: mksquashfs-lzma.c squashfs_fs.h mksquashfs.h global.h sort.h
-+
- read_fs.o: read_fs.c squashfs_fs.h read_fs.h global.h
- 
- sort.o: sort.c squashfs_fs.h global.h sort.h
- 
--unsquashfs: unsquashfs.o
-+unsquashfs3: unsquashfs.o
- 	$(CC) unsquashfs.o -lz -lpthread -lm -o $@
- 
-+unsquashfs3-lzma: unsquashfs-lzma.o
-+	$(CXX) unsquashfs-lzma.o -L$(LZMA_DIR) -llzma -lpthread -lm -o $@
-+
-+unsquashfs-lzma.o: unsquashfs-lzma.c squashfs_fs.h read_fs.h global.h
-+
  unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
  
-+squashfs_fs-lzma.h: squashfs_fs.h
-+	sed -r -e 's/(#define SQUASHFS_MINOR[ \t]+)0/\176/' squashfs_fs.h > $@
 +
-+mksquashfs-lzma.c: mksquashfs.c squashfs_fs-lzma.h
-+	sed -e 's/squashfs_fs\.h/squashfs_fs-lzma.h/g' mksquashfs.c > $@
++# LZMA
++mksquashfs-lzma.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
++read_fs-lzma.o: read_fs.c squashfs_fs.h read_fs.h global.h
++sort-lzma.o: sort.c squashfs_fs.h global.h sort.h
++mksquashfs-lzma: mksquashfs-lzma.o read_fs-lzma.o sort-lzma.o
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -lpthread -lm -o $@
 +
-+unsquashfs-lzma.c: unsquashfs.c squashfs_fs-lzma.h
-+	sed -e 's/squashfs_fs\.h/squashfs_fs-lzma.h/g' unsquashfs.c > $@
++unsquashfs-lzma.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
++unsquashfs-lzma: unsquashfs-lzma.o
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -lpthread -lm -o $@
++
++%-lzma.o: CPPFLAGS+=-DUSE_LZMA_COMPRESSION
++%-lzma.o: %.c
++	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 +
  clean:
- 	-rm -f *.o mksquashfs unsquashfs
+-	-rm -f *.o mksquashfs unsquashfs
++	-rm -f *.o mksquashfs unsquashfs mksquashfs-lzma unsquashfs-lzma
  
+ install: mksquashfs unsquashfs
+ 	mkdir -p $(INSTALL_DIR)
+ 	cp $^ $(INSTALL_DIR)
++
++install-lzma: mksquashfs-lzma unsquashfs-lzma
++	mkdir -p $(INSTALL_DIR)
++	cp $^ $(INSTALL_DIR)
 --- squashfs-tools/mksquashfs.c
 +++ squashfs-tools/mksquashfs.c
 @@ -809,6 +809,12 @@
  	if(uncompressed)
  		goto notcompressed;
  
-+#if 1
++#if defined(USE_LZMA_COMPRESSION)
 +	c_byte = block_size;
-+	res = compress2 (d, &c_byte, s, size, 9);
++	res = compress2(d, &c_byte, s, size, 9);
 +	if (res == 0)
 +		res = Z_STREAM_END;
 +#else
@@ -68,37 +62,57 @@
  
  	if(res != Z_STREAM_END || c_byte >= size) {
  notcompressed:
-@@ -3889,9 +3896,9 @@
+@@ -3889,10 +3896,14 @@
  	writer_buffer_size = writeb_mbytes << (20 - block_log);
  	fragment_buffer_size = fragmentb_mbytes << (20 - block_log);
  
--	if(block_size <= 65536 && sparse_files == FALSE)
-+/*	if(block_size <= 65536 && sparse_files == FALSE)
++#if defined(USE_LZMA_COMPRESSION)
++	s_minor = SQUASHFS_MINOR_LZMA;
++#else
+ 	if(block_size <= 65536 && sparse_files == FALSE)
  		s_minor = 0;
--	else
-+	else */
+ 	else
  		s_minor = SQUASHFS_MINOR;
++#endif
  
  	for(i = 0; i < source; i++)
+ 		if(lstat(source_path[i], &source_buf) == -1) {
+--- squashfs-tools/read_fs.c
++++ squashfs-tools/read_fs.c
+@@ -365,7 +365,11 @@
+ 	}
+ 
+ 	/* Check the MAJOR & MINOR versions */
++#if defined(USE_LZMA_COMPRESSION)
++	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor != SQUASHFS_MINOR_LZMA) {
++#else
+ 	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor > SQUASHFS_MINOR) {
++#endif
+ 		if(sBlk->s_major < 3)
+ 			ERROR("Filesystem on %s is a SQUASHFS %d.%d filesystem.  Appending\nto SQUASHFS %d.%d filesystems is not supported.  Please convert it to a SQUASHFS 3 filesystem\n", source, sBlk->s_major, sBlk->s_minor, sBlk->s_major, sBlk->s_minor);
+ 		else
 --- squashfs-tools/squashfs_fs.h
 +++ squashfs-tools/squashfs_fs.h
-@@ -37,7 +37,7 @@
- #endif
+@@ -38,6 +38,7 @@
  #define SQUASHFS_CACHED_FRAGMENTS	CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE	
  #define SQUASHFS_MAJOR			3
--#define SQUASHFS_MINOR			1
-+#define SQUASHFS_MINOR			0
+ #define SQUASHFS_MINOR			1
++#define SQUASHFS_MINOR_LZMA		76
  #define SQUASHFS_MAGIC			0x73717368
  #define SQUASHFS_MAGIC_SWAP		0x68737173
  #define SQUASHFS_START			0
 --- squashfs-tools/unsquashfs.c
 +++ squashfs-tools/unsquashfs.c
-@@ -2201,7 +2201,7 @@
+@@ -2201,7 +2201,11 @@
  			s_ops.read_block_list = read_block_list;
  			s_ops.read_inode = read_inode_2;
  		}
 -	} else if(sBlk.s_major == 3 && sBlk.s_minor <= 1) {
++#if defined(USE_LZMA_COMPRESSION)
++	} else if(sBlk.s_major == 3 && sBlk.s_minor == SQUASHFS_MINOR_LZMA) {
++#else
 +	} else if(sBlk.s_major == 3 && sBlk.s_minor <= SQUASHFS_MINOR) {
++#endif
  		s_ops.squashfs_opendir = squashfs_opendir;
  		s_ops.read_fragment = read_fragment;
  		s_ops.read_fragment_table = read_fragment_table;

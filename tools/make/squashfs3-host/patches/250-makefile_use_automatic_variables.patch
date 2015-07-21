@@ -1,0 +1,26 @@
+--- squashfs-tools/Makefile
++++ squashfs-tools/Makefile
+@@ -7,7 +7,7 @@
+ all: mksquashfs unsquashfs
+ 
+ mksquashfs: mksquashfs.o read_fs.o sort.o
+-	$(CC) mksquashfs.o read_fs.o sort.o -lz -lpthread -lm -o $@
++	$(CC) $^ -lz -lpthread -lm -o $@
+ 
+ mksquashfs.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
+ 
+@@ -16,7 +16,7 @@
+ sort.o: sort.c squashfs_fs.h global.h sort.h
+ 
+ unsquashfs: unsquashfs.o
+-	$(CC) unsquashfs.o -lz -lpthread -lm -o $@
++	$(CC) $^ -lz -lpthread -lm -o $@
+ 
+ unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
+ 
+@@ -25,4 +25,4 @@
+ 
+ install: mksquashfs unsquashfs
+ 	mkdir -p $(INSTALL_DIR)
+-	cp mksquashfs unsquashfs $(INSTALL_DIR)
++	cp $^ $(INSTALL_DIR)
