@@ -33,7 +33,7 @@ $(GENEXT2FS_DIR)/.tests-passed: $(GENEXT2FS_DIR)/genext2fs
 	(cd $(GENEXT2FS_DIR); ./test.sh)
 	touch $@
 
-$(TOOLS_DIR)/genext2fs: $(GENEXT2FS_DIR)/genext2fs $(GENEXT2FS_DIR)/.tests-passed
+$(TOOLS_DIR)/genext2fs: $(GENEXT2FS_DIR)/genext2fs
 	$(INSTALL_FILE)
 	strip $@
 
