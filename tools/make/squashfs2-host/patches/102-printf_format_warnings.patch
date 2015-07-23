@@ -17,14 +17,3 @@
  				} else
  					result = get_sorted_inode(inode, &buf);
  				break;
---- squashfs-tools/unsquashfs.c
-+++ squashfs-tools/unsquashfs.c
-@@ -559,7 +559,7 @@
- 			} else
- 				ERROR("create_inode: could not create %s device %s, because you're not superuser!\n",
- 					inodep->inode_type == SQUASHFS_CHRDEV_TYPE ? "character" : "block",
--					pathname, strerror(errno));
-+					pathname);
- 			break;
- 			}
- 		case SQUASHFS_FIFO_TYPE:

@@ -1,0 +1,11 @@
+--- squashfs-tools/Makefile
++++ squashfs-tools/Makefile
+@@ -3,7 +3,7 @@
+ CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -g
+ 
+ mksquashfs: mksquashfs.o read_fs.o sort.o
+-	$(CC) mksquashfs.o read_fs.o sort.o -lz -o $@
++	$(CC) $^ -lz -o $@
+ 
+ mksquashfs.o: mksquashfs.c mksquashfs.h
+ 

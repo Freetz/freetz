@@ -5,7 +5,7 @@
  #include <string.h>
  #include <zlib.h>
 -#include <endian.h>
-+#ifdef __APPLE__
++#ifndef linux
 +	#include <machine/endian.h>
 +	#define __BYTE_ORDER BYTE_ORDER
 +	#define __BIG_ENDIAN BIG_ENDIAN
@@ -23,13 +23,13 @@
  #include <sys/mman.h>
 -#include <endian.h>
 -
-+#ifdef __APPLE__
++#ifndef linux
 +	#include <machine/endian.h>
 +	#define __BYTE_ORDER BYTE_ORDER
 +	#define __BIG_ENDIAN BIG_ENDIAN
 +#else
 +	#include <endian.h>
-+#endif 
++#endif
  #include <squashfs_fs.h>
  #include "read_fs.h"
  #include "global.h"

@@ -1,46 +1,26 @@
 --- squashfs-tools/Makefile
 +++ squashfs-tools/Makefile
-@@ -1,12 +1,38 @@
- INCLUDEDIR = .
-+#LZMA_DIR = ../../lzma443
+@@ -2,6 +2,8 @@
  
  CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -g
  
++all: mksquashfs unsquashfs
++
  mksquashfs: mksquashfs.o read_fs.o sort.o
- 	$(CC) mksquashfs.o read_fs.o sort.o -lz -o $@
+ 	$(CC) $^ -lz -o $@
  
-+mksquashfs-lzma: mksquashfs-lzma.o read_fs.o sort.o
-+	$(CXX) mksquashfs-lzma.o read_fs.o sort.o -L$(LZMA_DIR) -llzma -o $@
-+
-+unsquashfs: unsquashfs.o
-+	$(CC) unsquashfs.o -lz -o $@
-+	
-+unsquashfs-lzma: unsquashfs-lzma.o
-+	$(CXX) unsquashfs-lzma.o -L$(LZMA_DIR) -llzma -o $@
-+
-+squashfs_fs-lzma.h: squashfs_fs.h
-+	sed -e 's/#define SQUASHFS_MINOR\t\t\t1/#define SQUASHFS_MINOR\t\t\t76/g' squashfs_fs.h > $@
-+
-+mksquashfs-lzma.c: mksquashfs.c squashfs_fs-lzma.h
-+	sed -e 's/squashfs_fs\.h/squashfs_fs-lzma.h/g' mksquashfs.c > $@
-+
-+unsquashfs-lzma.c: unsquashfs.c squashfs_fs-lzma.h
-+	sed -e 's/squashfs_fs\.h/squashfs_fs-lzma.h/g' unsquashfs.c > $@
-+
-+mksquashfs-lzma.o: mksquashfs-lzma.c mksquashfs.h
-+
-+unsquashfs-lzma.o: unsquashfs-lzma.c squashfs_fs.h read_fs.h global.h
-+
- mksquashfs.o: mksquashfs.c mksquashfs.h
- 
-+unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
-+
+@@ -10,3 +12,11 @@
  read_fs.o: read_fs.c read_fs.h
  
  sort.o: sort.c
 +
++unsquashfs: unsquashfs.o
++	$(CC) $^ -lz -o $@
++
++unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
++
 +clean:
-+	rm -f *.o mksquashfs mksquashfs-lzma unsquashfs unsquashfs-lzma mksquashfs-lzma.c unsquashfs-lzma.c squashfs_fs-lzma.h
++	-rm -f *.o mksquashfs unsquashfs
 --- squashfs-tools/squashfs_fs.h
 +++ squashfs-tools/squashfs_fs.h
 @@ -50,6 +50,7 @@
@@ -51,7 +31,7 @@
  
  /* Filesystem flags */
  #define SQUASHFS_NOI			0
---- squashfs-tools/unsquashfs.c
+--- /dev/null
 +++ squashfs-tools/unsquashfs.c
 @@ -0,0 +1,953 @@
 +/*
@@ -197,13 +177,13 @@
 +{
 +	unsigned short c_byte;
 +	int offset = 2;
-+	
++
 +	if(swap) {
 +		if(read_bytes(start, 2, block) == FALSE)
 +			goto failed;
 +		((unsigned char *) &c_byte)[1] = block[0];
-+		((unsigned char *) &c_byte)[0] = block[1]; 
-+	} else 
++		((unsigned char *) &c_byte)[0] = block[1];
++	} else
 +		if(read_bytes(start, 2, (char *)&c_byte) == FALSE)
 +			goto failed;
 +
@@ -460,7 +440,7 @@
 +	free(block_list);
 +	return FALSE;
 +}
-+		
++
 +
 +int create_inode(char *pathname, unsigned int start_block, unsigned int offset, squashfs_super_block *sBlk)
 +{
@@ -509,9 +489,9 @@
 +			} else
 +				memcpy(inode, block_ptr, sizeof(*inode));
 +
-+			frag_bytes = inode->fragment == SQUASHFS_INVALID_FRAG ? 0 : inode->file_size % sBlk->block_size; 
++			frag_bytes = inode->fragment == SQUASHFS_INVALID_FRAG ? 0 : inode->file_size % sBlk->block_size;
 +			offset = inode->offset;
-+			blocks = inode->fragment == SQUASHFS_INVALID_FRAG ? (inode->file_size	+ sBlk->block_size - 1) >> sBlk->block_log : inode->file_size >>
++			blocks = inode->fragment == SQUASHFS_INVALID_FRAG ? (inode->file_size + sBlk->block_size - 1) >> sBlk->block_log : inode->file_size >>
 +				sBlk->block_log;
 +			start = inode->start_block;
 +
@@ -523,7 +503,7 @@
 +				file_count ++;
 +			}
 +			break;
-+		}	
++		}
 +		/*case SQUASHFS_LREG_TYPE: {
 +			unsigned int frag_bytes;
 +			unsigned int blocks;
@@ -553,7 +533,7 @@
 +				file_count ++;
 +			}
 +			break;
-+		}*/	
++		}*/
 +		case SQUASHFS_SYMLINK_TYPE: {
 +			squashfs_symlink_inode_header *inodep = &header.symlink;
 +			char name[65536];
@@ -587,8 +567,8 @@
 +			sym_count ++;
 +			break;
 +		}
-+ 		case SQUASHFS_BLKDEV_TYPE:
-+	 	case SQUASHFS_CHRDEV_TYPE: {
++		case SQUASHFS_BLKDEV_TYPE:
++		case SQUASHFS_CHRDEV_TYPE: {
 +			squashfs_dev_inode_header *inodep = &header.dev;
 +
 +			if(swap) {
@@ -614,7 +594,7 @@
 +			} else
 +				ERROR("create_inode: could not create %s device %s, because you're not superuser!\n",
 +					inodep->inode_type == SQUASHFS_CHRDEV_TYPE ? "character" : "block",
-+					pathname, strerror(errno));
++					pathname);
 +			break;
 +			}
 +		case SQUASHFS_FIFO_TYPE:
@@ -671,7 +651,7 @@
 +
 +struct dir {
 +	int		dir_count;
-+	int 		cur_entry;
++	int		cur_entry;
 +	unsigned int	mode;
 +	unsigned int	uid;
 +	unsigned int	guid;
@@ -753,14 +733,14 @@
 +	dir->mtime = header.dir.mtime;
 +	dir->dirs = NULL;
 +
-+	while(bytes < size) {			
++	while(bytes < size) {
 +		if(swap) {
 +			squashfs_dir_header sdirh;
 +			memcpy(&sdirh, directory_table + bytes, sizeof(sdirh));
 +			SQUASHFS_SWAP_DIR_HEADER(&dirh, &sdirh);
 +		} else
 +			memcpy(&dirh, directory_table + bytes, sizeof(dirh));
-+	
++
 +		dir_count = dirh.count + 1;
 +		TRACE("squashfs_opendir: Read directory header @ byte position %d, %d directory entries\n", bytes, dir_count);
 +		bytes += sizeof(dirh);
@@ -923,7 +903,7 @@
 +#define VERSION() \
 +	printf("unsquashfs version 1.0 (2006/05/21)\n");\
 +	printf("copyright (C) 2006 Phillip Lougher <phillip@lougher.org.uk>\n\n"); \
-+    	printf("This program is free software; you can redistribute it and/or\n");\
++	printf("This program is free software; you can redistribute it and/or\n");\
 +	printf("modify it under the terms of the GNU General Public License\n");\
 +	printf("as published by the Free Software Foundation; either version 2,\n");\
 +	printf("or (at your option) any later version.\n\n");\

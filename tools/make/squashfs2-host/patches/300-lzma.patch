@@ -1,0 +1,118 @@
+--- squashfs-tools/Makefile
++++ squashfs-tools/Makefile
+@@ -3,6 +3,7 @@
+ CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -g
+ 
+ all: mksquashfs unsquashfs
++all-lzma: mksquashfs-lzma unsquashfs-lzma
+ 
+ mksquashfs: mksquashfs.o read_fs.o sort.o
+ 	$(CC) $^ -lz -o $@
+@@ -18,5 +19,22 @@
+ 
+ unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
+ 
++# LZMA
++mksquashfs-lzma: mksquashfs-lzma.o read_fs-lzma.o sort-lzma.o
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -o $@
++
++mksquashfs-lzma.o: mksquashfs.c mksquashfs.h global.h
++read_fs-lzma.o: read_fs.c read_fs.h global.h
++sort-lzma.o: sort.c global.h
++
++unsquashfs-lzma: unsquashfs-lzma.o
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -o $@
++
++unsquashfs-lzma.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
++
++%-lzma.o: CPPFLAGS+=-DUSE_LZMA_COMPRESSION
++%-lzma.o: %.c
++	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
++
+ clean:
+-	-rm -f *.o mksquashfs unsquashfs
++	-rm -f *.o mksquashfs unsquashfs mksquashfs-lzma unsquashfs-lzma
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -77,7 +77,11 @@
+ int noI = 0, noD = 0, check_data = 0;
+ int swap, silent = TRUE;
+ long long global_uid = -1, global_gid = -1;
++#if defined(USE_LZMA_COMPRESSION)
++int filesystem_minor_version = SQUASHFS_MINOR_LZMA;
++#else
+ int filesystem_minor_version = SQUASHFS_MINOR;
++#endif
+ 
+ /* superblock attributes */
+ int block_size = SQUASHFS_FILE_SIZE, block_log;
+@@ -1642,8 +1646,12 @@
+ 				ERROR("%s: -ef missing filename\n", argv[0]);
+ 				exit(1);
+ 			}
++#if defined(USE_LZMA_COMPRESSION)
++		}
++#else
+ 		} else if(strcmp(argv[i], "-2.0") == 0)
+ 			filesystem_minor_version = 0;
++#endif
+ 
+ 		else if(strcmp(argv[i], "-no-duplicates") == 0)
+ 			duplicate_checking = FALSE;
+@@ -1753,7 +1761,9 @@
+ 			ERROR("-version\t\tprint version, licence and copyright message\n");
+ 			ERROR("-info\t\t\tprint files written to filesystem\n");
+ 			ERROR("-b <block_size>\t\tset data block to <block_size>.  Default %d bytes\n", SQUASHFS_FILE_SIZE);
++#if !defined(USE_LZMA_COMPRESSION)
+ 			ERROR("-2.0\t\t\tcreate a 2.0 filesystem\n");
++#endif
+ 			ERROR("-noI\t\t\tdo not compress inode table\n");
+ 			ERROR("-noD\t\t\tdo not compress data blocks\n");
+ 			ERROR("-noF\t\t\tdo not compress fragment blocks\n");
+--- squashfs-tools/read_fs.c
++++ squashfs-tools/read_fs.c
+@@ -299,12 +299,20 @@
+ 	}
+ 
+ 	/* Check the MAJOR & MINOR versions */
++#if defined(USE_LZMA_COMPRESSION)
++	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor != SQUASHFS_MINOR_LZMA) {
++#else
+ 	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor > SQUASHFS_MINOR) {
++#endif
+ 		if(sBlk->s_major == 1)
+ 			ERROR("Filesystem on %s is a SQUASHFS 1.x filesystem.  Appending\nto SQUASHFS 1.x filesystems is not supported.  Please convert it\nto a SQUASHFS 2.1 filesystem...\n", source);
+ 		else
+ 			ERROR("Major/Minor mismatch, filesystem on %s is (%d:%d), I support (%d: <= %d)\n",
++#if defined(USE_LZMA_COMPRESSION)
++				source, sBlk->s_major, sBlk->s_minor, SQUASHFS_MAJOR, SQUASHFS_MINOR_LZMA);
++#else
+ 				source, sBlk->s_major, sBlk->s_minor, SQUASHFS_MAJOR, SQUASHFS_MINOR);
++#endif
+ 		goto failed_mount;
+ 	}
+ 
+--- squashfs-tools/squashfs_fs.h
++++ squashfs-tools/squashfs_fs.h
+@@ -26,6 +26,7 @@
+ 
+ #define SQUASHFS_MAJOR			2
+ #define SQUASHFS_MINOR			1
++#define SQUASHFS_MINOR_LZMA		76
+ #define SQUASHFS_MAGIC			0x73717368
+ #define SQUASHFS_MAGIC_SWAP		0x68737173
+ #define SQUASHFS_START			0
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -826,7 +826,11 @@
+ 	}
+ 
+ 	/* Check the MAJOR & MINOR versions */
++#if defined(USE_LZMA_COMPRESSION)
++	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor != SQUASHFS_MINOR_LZMA) {
++#else
+ 	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor > SQUASHFS_MINOR) {
++#endif
+ 		ERROR("Major/Minor mismatch, filesystem on %s is (%d:%d)\n",
+ 				source, sBlk->s_major, sBlk->s_minor);
+ 		ERROR("I only support Squashfs 3.0 filesystems!  Later releases will support older Squashfs filesystems\n");
