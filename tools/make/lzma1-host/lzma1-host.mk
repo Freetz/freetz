@@ -23,21 +23,21 @@ $(LZMA1_HOST_DIR)/.unpacked: $(DL_DIR)/$(LZMA1_HOST_SOURCE) | $(TOOLS_SOURCE_DIR
 $(LZMA1_HOST_ALONE_DIR)/lzma: $(LZMA1_HOST_DIR)/.unpacked
 	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_ALONE_DIR)
 
-$(LZMA1_HOST_LIB_DIR)/liblzma.a: $(LZMA1_HOST_DIR)/.unpacked
+$(LZMA1_HOST_LIB_DIR)/liblzma++.a: $(LZMA1_HOST_DIR)/.unpacked
 	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIB_DIR)
 	touch -c $@
 
-$(LZMA1_HOST_DIR)/liblzma.a: $(LZMA1_HOST_LIB_DIR)/liblzma.a
+$(LZMA1_HOST_DIR)/liblzma1++.a: $(LZMA1_HOST_LIB_DIR)/liblzma++.a
 	$(INSTALL_FILE)
 
 $(TOOLS_DIR)/lzma: $(LZMA1_HOST_ALONE_DIR)/lzma
 	$(INSTALL_FILE)
 
-lzma1-host: $(LZMA1_HOST_DIR)/liblzma.a $(TOOLS_DIR)/lzma
+lzma1-host: $(LZMA1_HOST_DIR)/liblzma1++.a $(TOOLS_DIR)/lzma
 
 lzma1-host-clean:
 	-$(MAKE) -C $(LZMA1_HOST_LIB_DIR) clean
-	$(RM) $(LZMA1_HOST_DIR)/liblzma.a
+	$(RM) $(LZMA1_HOST_DIR)/liblzma1++.a
 
 lzma1-host-dirclean:
 	$(RM) -r $(LZMA1_HOST_DIR)

@@ -1,0 +1,44 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -47,7 +47,7 @@
+ #include <setjmp.h>
+ #include <sys/mman.h>
+ 
+-#include <squashfs_fs.h>
++#include "squashfs_fs.h"
+ #include "mksquashfs.h"
+ #include "global.h"
+ 
+--- squashfs-tools/read_fs.c
++++ squashfs-tools/read_fs.c
+@@ -41,7 +41,7 @@
+ #else
+ 	#include <endian.h>
+ #endif
+-#include <squashfs_fs.h>
++#include "squashfs_fs.h"
+ #include "read_fs.h"
+ #include "global.h"
+ 
+--- squashfs-tools/sort.c
++++ squashfs-tools/sort.c
+@@ -34,7 +34,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ 
+-#include <squashfs_fs.h>
++#include "squashfs_fs.h"
+ #include "global.h"
+ 
+ #ifdef SQUASHFS_TRACE
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -41,7 +41,7 @@
+ #include <endian.h>
+ #endif
+ 
+-#include <squashfs_fs.h>
++#include "squashfs_fs.h"
+ #include "read_fs.h"
+ #include "global.h"
+ 

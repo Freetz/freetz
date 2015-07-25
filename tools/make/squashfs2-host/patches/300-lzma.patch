@@ -14,18 +14,18 @@
  
 +# LZMA
 +mksquashfs-lzma: mksquashfs-lzma.o read_fs-lzma.o sort-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -o $@
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -o $@
 +
 +mksquashfs-lzma.o: mksquashfs.c mksquashfs.h global.h
 +read_fs-lzma.o: read_fs.c read_fs.h global.h
 +sort-lzma.o: sort.c global.h
 +
 +unsquashfs-lzma: unsquashfs-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -o $@
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -o $@
 +
 +unsquashfs-lzma.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
 +
-+%-lzma.o: CPPFLAGS+=-DUSE_LZMA_COMPRESSION
++%-lzma.o: CPPFLAGS+=-DUSE_LZMA_COMPRESSION $(if $(strip $(LZMA_DIR)),-I$(strip $(LZMA_DIR))/C)
 +%-lzma.o: %.c
 +	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 +
@@ -34,7 +34,20 @@
 +	-rm -f *.o mksquashfs unsquashfs mksquashfs-lzma unsquashfs-lzma
 --- squashfs-tools/mksquashfs.c
 +++ squashfs-tools/mksquashfs.c
-@@ -77,7 +77,11 @@
+@@ -47,6 +47,12 @@
+ #include <setjmp.h>
+ #include <sys/mman.h>
+ 
++#if defined(USE_LZMA_COMPRESSION)
++#include "LZMA_ZLibCompat.h"
++#define compress2  LZMA_ZLIB_COMPAT(compress2)
++#define uncompress LZMA_ZLIB_COMPAT(uncompress)
++#endif
++
+ #include "squashfs_fs.h"
+ #include "mksquashfs.h"
+ #include "global.h"
+@@ -77,7 +83,11 @@
  int noI = 0, noD = 0, check_data = 0;
  int swap, silent = TRUE;
  long long global_uid = -1, global_gid = -1;
@@ -46,7 +59,7 @@
  
  /* superblock attributes */
  int block_size = SQUASHFS_FILE_SIZE, block_log;
-@@ -1642,8 +1646,12 @@
+@@ -1642,8 +1652,12 @@
  				ERROR("%s: -ef missing filename\n", argv[0]);
  				exit(1);
  			}
@@ -59,7 +72,7 @@
  
  		else if(strcmp(argv[i], "-no-duplicates") == 0)
  			duplicate_checking = FALSE;
-@@ -1753,7 +1761,9 @@
+@@ -1753,7 +1767,9 @@
  			ERROR("-version\t\tprint version, licence and copyright message\n");
  			ERROR("-info\t\t\tprint files written to filesystem\n");
  			ERROR("-b <block_size>\t\tset data block to <block_size>.  Default %d bytes\n", SQUASHFS_FILE_SIZE);
@@ -71,7 +84,21 @@
  			ERROR("-noF\t\t\tdo not compress fragment blocks\n");
 --- squashfs-tools/read_fs.c
 +++ squashfs-tools/read_fs.c
-@@ -299,12 +299,20 @@
+@@ -41,6 +41,13 @@
+ #else
+ 	#include <endian.h>
+ #endif
++
++#if defined(USE_LZMA_COMPRESSION)
++#include "LZMA_ZLibCompat.h"
++#define compress2  LZMA_ZLIB_COMPAT(compress2)
++#define uncompress LZMA_ZLIB_COMPAT(uncompress)
++#endif
++
+ #include "squashfs_fs.h"
+ #include "read_fs.h"
+ #include "global.h"
+@@ -299,12 +306,20 @@
  	}
  
  	/* Check the MAJOR & MINOR versions */
@@ -104,7 +131,20 @@
  #define SQUASHFS_START			0
 --- squashfs-tools/unsquashfs.c
 +++ squashfs-tools/unsquashfs.c
-@@ -826,7 +826,11 @@
+@@ -41,6 +41,12 @@
+ #include <endian.h>
+ #endif
+ 
++#if defined(USE_LZMA_COMPRESSION)
++#include "LZMA_ZLibCompat.h"
++#define compress2  LZMA_ZLIB_COMPAT(compress2)
++#define uncompress LZMA_ZLIB_COMPAT(uncompress)
++#endif
++
+ #include "squashfs_fs.h"
+ #include "read_fs.h"
+ #include "global.h"
+@@ -826,7 +832,11 @@
  	}
  
  	/* Check the MAJOR & MINOR versions */

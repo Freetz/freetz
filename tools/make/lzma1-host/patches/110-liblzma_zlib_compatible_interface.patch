@@ -1,11 +1,11 @@
 --- CPP/7zip/Compress/LZMA_Lib/makefile.gcc
 +++ CPP/7zip/Compress/LZMA_Lib/makefile.gcc
 @@ -10,7 +10,7 @@
- PROG = liblzma.a
+ PROG = liblzma++.a
  
  vpath %.c   ../../../../C
 -vpath %.cpp ../:../../Common:../../../Common
-+vpath %.cpp ../:../../Common:../../../Common:../ZLib
++vpath %.cpp ../:../../Common:../../../Common:../LZMA_ZLibCompat
  
  C_OBJS = \
  	7zCrc.o \
@@ -13,14 +13,14 @@
  	StringToInt.o \
  	MyVector.o
  
-+CPP_OBJS += ZLib.o
++CPP_OBJS += LZMA_ZLibCompat.o
 +
  all: $(PROG)
  
  $(PROG): $(C_OBJS) $(CPP_OBJS)
 --- /dev/null
-+++ CPP/7zip/Compress/ZLib/ZLib.cpp
-@@ -0,0 +1,273 @@
++++ CPP/7zip/Compress/LZMA_ZLibCompat/LZMA_ZLibCompat.cpp
+@@ -0,0 +1,281 @@
 +/*
 + * lzma zlib simplified wrapper
 + *
@@ -48,7 +48,7 @@
 + * default values for encoder/decoder used by wrapper
 + */
 +
-+#include <zlib.h>
++#include "LZMA_ZLibCompat.h"
 +
 +#define ZLIB_LC 3
 +#define ZLIB_LP 0
@@ -203,7 +203,11 @@
 +	UInt64 m_offset;
 +};
 +
-+ZEXTERN int ZEXPORT compress2 (Bytef *dest,   uLongf *destLen,
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress2) (Bytef *dest,   uLongf *destLen,
 +                                  const Bytef *source, uLong sourceLen,
 +                                  int level)
 +{
@@ -256,7 +260,7 @@
 +	}
 +	else if (result != S_OK)
 +	{
-+		return Z_BUF_ERROR;	// should not happen
++		return Z_BUF_ERROR; // should not happen
 +	}
 +
 +	UInt64 fileSize;
@@ -266,7 +270,7 @@
 +	return Z_OK;
 +}
 +
-+ZEXTERN int ZEXPORT uncompress (Bytef *dest,   uLongf *destLen,
++ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(uncompress) (Bytef *dest,   uLongf *destLen,
 +                                   const Bytef *source, uLong sourceLen)
 +{
 +	CInMemoryStream *inStreamSpec = new CInMemoryStream(source, sourceLen);
@@ -294,3 +298,32 @@
 +
 +	return Z_OK;
 +}
++
++#ifdef __cplusplus
++}
++#endif
+--- /dev/null
++++ C/LZMA_ZLibCompat.h
+@@ -0,0 +1,22 @@
++#ifndef LZMA_ZLibCompat
++#define LZMA_ZLibCompat
++
++#include <zlib.h>
++
++#define LZMA_ZLIB_COMPAT(name) name##_lzma_zlib_compat
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++typedef int (*zlib_compress2_t)                  (Bytef *    , uLongf *       , const Bytef *      , uLong          , int      );
++ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress2)  (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen, int level);
++
++typedef int (*zlib_uncompress_t)                 (Bytef *    , uLongf *       , const Bytef *      , uLong          );
++ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(uncompress) (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif

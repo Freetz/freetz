@@ -18,13 +18,13 @@
 +read_fs-lzma.o: read_fs.c squashfs_fs.h read_fs.h global.h
 +sort-lzma.o: sort.c squashfs_fs.h global.h sort.h
 +mksquashfs-lzma: mksquashfs-lzma.o read_fs-lzma.o sort-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -lpthread -lm -o $@
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -lpthread -lm -o $@
 +
 +unsquashfs-lzma.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
 +unsquashfs-lzma: unsquashfs-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma -lpthread -lm -o $@
++	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -lpthread -lm -o $@
 +
-+%-lzma.o: CPPFLAGS+=-DUSE_LZMA_COMPRESSION
++%-lzma.o: CPPFLAGS+=-DUSE_LZMA_COMPRESSION $(if $(strip $(LZMA_DIR)),-I$(strip $(LZMA_DIR))/C)
 +%-lzma.o: %.c
 +	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 +
@@ -41,7 +41,20 @@
 +	cp $^ $(INSTALL_DIR)
 --- squashfs-tools/mksquashfs.c
 +++ squashfs-tools/mksquashfs.c
-@@ -809,6 +809,12 @@
+@@ -62,6 +62,12 @@
+ #include <sys/sysinfo.h>
+ #endif
+ 
++#if defined(USE_LZMA_COMPRESSION)
++#include <LZMA_ZLibCompat.h>
++#define compress2  LZMA_ZLIB_COMPAT(compress2)
++#define uncompress LZMA_ZLIB_COMPAT(uncompress)
++#endif
++
+ #include "squashfs_fs.h"
+ #include "mksquashfs.h"
+ #include "global.h"
+@@ -809,6 +815,12 @@
  	if(uncompressed)
  		goto notcompressed;
  
@@ -54,7 +67,7 @@
  	if(stream == NULL) {
  		if((stream = *strm = malloc(sizeof(z_stream))) == NULL)
  			BAD_ERROR("mangle::compress failed, not enough memory\n");
-@@ -850,6 +856,7 @@
+@@ -850,6 +862,7 @@
  	}
  
  	c_byte = stream->total_out;
@@ -62,7 +75,7 @@
  
  	if(res != Z_STREAM_END || c_byte >= size) {
  notcompressed:
-@@ -3889,10 +3896,14 @@
+@@ -3889,10 +3902,14 @@
  	writer_buffer_size = writeb_mbytes << (20 - block_log);
  	fragment_buffer_size = fragmentb_mbytes << (20 - block_log);
  
@@ -79,7 +92,20 @@
  		if(lstat(source_path[i], &source_buf) == -1) {
 --- squashfs-tools/read_fs.c
 +++ squashfs-tools/read_fs.c
-@@ -365,7 +365,11 @@
+@@ -43,6 +43,12 @@
+ #include <endian.h>
+ #endif
+ 
++#if defined(USE_LZMA_COMPRESSION)
++#include <LZMA_ZLibCompat.h>
++#define compress2  LZMA_ZLIB_COMPAT(compress2)
++#define uncompress LZMA_ZLIB_COMPAT(uncompress)
++#endif
++
+ #include "squashfs_fs.h"
+ #include "read_fs.h"
+ #include "global.h"
+@@ -365,7 +371,11 @@
  	}
  
  	/* Check the MAJOR & MINOR versions */
@@ -103,7 +129,20 @@
  #define SQUASHFS_START			0
 --- squashfs-tools/unsquashfs.c
 +++ squashfs-tools/unsquashfs.c
-@@ -2201,7 +2201,11 @@
+@@ -61,6 +61,12 @@
+ #include <sys/sysinfo.h> // get_nprocs()
+ #endif
+ 
++#if defined(USE_LZMA_COMPRESSION)
++#include <LZMA_ZLibCompat.h>
++#define compress2  LZMA_ZLIB_COMPAT(compress2)
++#define uncompress LZMA_ZLIB_COMPAT(uncompress)
++#endif
++
+ #include "squashfs_fs.h"
+ #include "read_fs.h"
+ #include "global.h"
+@@ -2201,7 +2207,11 @@
  			s_ops.read_block_list = read_block_list;
  			s_ops.read_inode = read_inode_2;
  		}
