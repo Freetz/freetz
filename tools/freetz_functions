@@ -274,32 +274,16 @@ modunsqfs()
 {
 	local STATUS
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ]; then
-		"$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L2}/g"
+		"$UNSQUASHFS" $UNSQUASHFS_OPTIONS -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
 	else
-		"$UNSQUASHFS" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" > /dev/null
+		"$UNSQUASHFS" $UNSQUASHFS_OPTIONS -dest "$1" "$2" > /dev/null
 		STATUS=$?
 	fi
 	if [ $STATUS -gt 0 ]; then
 		error 1 "modunsqfs: Error in $2"
 	fi
 }
-
-modunsqfs_lzma()
-{
-	local STATUS
-	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ]; then
-		"$UNSQUASHFS_LZMA" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L2}/g"
-		STATUS=${PIPESTATUS[0]}
-	else
-		"$UNSQUASHFS_LZMA" "$UNSQUASHFS_OPTIONS" -dest "$1" "$2" > /dev/null
-		STATUS=$?
-	fi
-	if [ $STATUS -gt 0 ]; then
-		error 1 "modunsqfs: Error in $2"
-	fi
-}
-
 
 modlangsubst()
 {

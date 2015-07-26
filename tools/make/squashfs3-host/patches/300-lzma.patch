@@ -1,157 +1,476 @@
+--- /dev/null
++++ squashfs-tools/compression_method.c
+@@ -0,0 +1,12 @@
++#include "compression_method.h"
++
++const char* compression_method_str(enum compression_method_t compression_method) {
++	switch (compression_method) {
++#if defined(LZMA1_SUPPORT)
++		case LZMA1:
++			return "LZMA1";
++#endif
++		default:
++			return "ZLIB";
++	}
++}
+--- /dev/null
++++ squashfs-tools/compression_method.h
+@@ -0,0 +1,13 @@
++#ifndef COMPRESSION_METHOD_H
++#define COMPRESSION_METHOD_H
++
++enum compression_method_t {
++	ZLIB
++#if defined(LZMA1_SUPPORT)
++	, LZMA1
++#endif
++};
++
++extern const char* compression_method_str(enum compression_method_t compression_method);
++
++#endif
 --- squashfs-tools/Makefile
 +++ squashfs-tools/Makefile
-@@ -5,6 +5,7 @@
+@@ -3,26 +3,41 @@
+ INCLUDEDIR = .
+ 
  CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -O2
++LINKER = $(CC)
  
- all: mksquashfs unsquashfs
-+all-lzma: mksquashfs-lzma unsquashfs-lzma
+-all: mksquashfs unsquashfs
++LIBS := -lz
++ifeq ($(LZMA1_SUPPORT),1)
++SUFFIX := -multi
++CPPFLAGS += -DLZMA1_SUPPORT $(if $(strip $(LZMA_DIR)),-I$(strip $(LZMA_DIR))/C)
++LINKER = $(CXX)
++LIBS += $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++
++endif
++LIBS += -lpthread -lm
  
- mksquashfs: mksquashfs.o read_fs.o sort.o
- 	$(CC) $^ -lz -lpthread -lm -o $@
-@@ -20,9 +21,29 @@
+-mksquashfs: mksquashfs.o read_fs.o sort.o
+-	$(CC) $^ -lz -lpthread -lm -o $@
++all: mksquashfs$(SUFFIX) unsquashfs$(SUFFIX)
  
- unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
+-mksquashfs.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
++mksquashfs$(SUFFIX): mksquashfs$(SUFFIX).o read_fs$(SUFFIX).o sort$(SUFFIX).o compression_method$(SUFFIX).o
++	$(LINKER) $(LDFLAGS) $^ $(LIBS) -o $@
  
+-read_fs.o: read_fs.c squashfs_fs.h read_fs.h global.h
++mksquashfs$(SUFFIX).o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
+ 
+-sort.o: sort.c squashfs_fs.h global.h sort.h
++read_fs$(SUFFIX).o: read_fs.c squashfs_fs.h read_fs.h global.h
+ 
+-unsquashfs: unsquashfs.o
+-	$(CC) $^ -lz -lpthread -lm -o $@
++sort$(SUFFIX).o: sort.c squashfs_fs.h global.h sort.h
+ 
+-unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
++compression_method$(SUFFIX).o: compression_method.c compression_method.h
 +
-+# LZMA
-+mksquashfs-lzma.o: mksquashfs.c squashfs_fs.h mksquashfs.h global.h sort.h
-+read_fs-lzma.o: read_fs.c squashfs_fs.h read_fs.h global.h
-+sort-lzma.o: sort.c squashfs_fs.h global.h sort.h
-+mksquashfs-lzma: mksquashfs-lzma.o read_fs-lzma.o sort-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -lpthread -lm -o $@
++unsquashfs$(SUFFIX): unsquashfs$(SUFFIX).o compression_method$(SUFFIX).o
++	$(LINKER) $(LDFLAGS) $^ $(LIBS) -o $@
 +
-+unsquashfs-lzma.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
-+unsquashfs-lzma: unsquashfs-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -lpthread -lm -o $@
++unsquashfs$(SUFFIX).o: unsquashfs.c squashfs_fs.h read_fs.h global.h
 +
-+%-lzma.o: CPPFLAGS+=-DUSE_LZMA_COMPRESSION $(if $(strip $(LZMA_DIR)),-I$(strip $(LZMA_DIR))/C)
-+%-lzma.o: %.c
++%$(SUFFIX).o: %.c
 +	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
-+
+ 
  clean:
 -	-rm -f *.o mksquashfs unsquashfs
-+	-rm -f *.o mksquashfs unsquashfs mksquashfs-lzma unsquashfs-lzma
++	-rm -f *.o mksquashfs unsquashfs mksquashfs-multi unsquashfs-multi
  
- install: mksquashfs unsquashfs
+-install: mksquashfs unsquashfs
++install: mksquashfs$(SUFFIX) unsquashfs$(SUFFIX)
  	mkdir -p $(INSTALL_DIR)
  	cp $^ $(INSTALL_DIR)
-+
-+install-lzma: mksquashfs-lzma unsquashfs-lzma
-+	mkdir -p $(INSTALL_DIR)
-+	cp $^ $(INSTALL_DIR)
 --- squashfs-tools/mksquashfs.c
 +++ squashfs-tools/mksquashfs.c
-@@ -62,6 +62,12 @@
+@@ -62,6 +62,11 @@
  #include <sys/sysinfo.h>
  #endif
  
-+#if defined(USE_LZMA_COMPRESSION)
++#if defined(LZMA1_SUPPORT)
 +#include <LZMA_ZLibCompat.h>
-+#define compress2  LZMA_ZLIB_COMPAT(compress2)
-+#define uncompress LZMA_ZLIB_COMPAT(uncompress)
 +#endif
++#include "compression_method.h"
 +
  #include "squashfs_fs.h"
  #include "mksquashfs.h"
  #include "global.h"
-@@ -809,6 +815,12 @@
+@@ -104,6 +109,15 @@
+ 					EXIT_MKSQUASHFS();\
+ 				} while(0)
+ 
++enum compression_method_t compression_method = ZLIB; // ZLIB by default
++#if defined(LZMA1_SUPPORT)
++zlib_uncompress_t uncompress_fct = &uncompress;      // ZLIB by default
++zlib_compress2_t  compress2_fct  = &compress2;       // ZLIB by default
++#else
++#define uncompress_fct uncompress
++#define compress2_fct  compress2
++#endif
++
+ int delete = FALSE;
+ int fd;
+ int cur_uncompressed = 0, estimated_uncompressed = 0;
+@@ -809,6 +823,14 @@
  	if(uncompressed)
  		goto notcompressed;
  
-+#if defined(USE_LZMA_COMPRESSION)
++#if defined(LZMA1_SUPPORT)
++if (compression_method == LZMA1) {
 +	c_byte = block_size;
-+	res = compress2(d, &c_byte, s, size, 9);
++	res = compress2_fct(d, &c_byte, s, size, 9);
 +	if (res == 0)
 +		res = Z_STREAM_END;
-+#else
++} else {
++#endif
  	if(stream == NULL) {
  		if((stream = *strm = malloc(sizeof(z_stream))) == NULL)
  			BAD_ERROR("mangle::compress failed, not enough memory\n");
-@@ -850,6 +862,7 @@
+@@ -819,19 +841,19 @@
+ 
+ 		if((res = deflateInit(stream, 9)) != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				BAD_ERROR("zlib::compress failed, not enough memory\n");
++				BAD_ERROR("%s::compress failed, not enough memory\n", compression_method_str(compression_method));
+ 			else if(res == Z_STREAM_ERROR)
+-				BAD_ERROR("zlib::compress failed, not a valid compression level\n");
++				BAD_ERROR("%s::compress failed, not a valid compression level\n", compression_method_str(compression_method));
+ 			else if(res == Z_VERSION_ERROR)
+-				BAD_ERROR("zlib::compress failed, incorrect zlib version\n");
++				BAD_ERROR("%s::compress failed, incorrect zlib version\n", compression_method_str(compression_method));
+ 			else
+-				BAD_ERROR("zlib::compress failed, unknown error %d\n", res);
++				BAD_ERROR("%s::compress failed, unknown error %d\n", compression_method_str(compression_method), res);
+ 		}
+ 	} else if((res = deflateReset(stream)) != Z_OK) {
+ 		if(res == Z_STREAM_ERROR)
+-			BAD_ERROR("zlib::compress failed, stream state inconsistent\n");
++			BAD_ERROR("%s::compress failed, stream state inconsistent\n", compression_method_str(compression_method));
+ 		else
+-			BAD_ERROR("zlib::compress failed, unknown error %d\n", res);
++			BAD_ERROR("%s::compress failed, unknown error %d\n", compression_method_str(compression_method), res);
+ 	}
+ 
+ 	stream->next_in = (unsigned char *) s;
+@@ -842,14 +864,17 @@
+ 	res = deflate(stream, Z_FINISH);
+ 	if(res != Z_STREAM_END && res != Z_OK) {
+ 		if(res == Z_STREAM_ERROR)
+-			BAD_ERROR("zlib::compress failed, stream state inconsistent\n");
++			BAD_ERROR("%s::compress failed, stream state inconsistent\n", compression_method_str(compression_method));
+ 		else if(res == Z_BUF_ERROR)
+-			BAD_ERROR("zlib::compress failed, no progress possible\n");
++			BAD_ERROR("%s::compress failed, no progress possible\n", compression_method_str(compression_method));
+ 		else
+-			BAD_ERROR("zlib::compress failed, unknown error %d\n", res);
++			BAD_ERROR("%s::compress failed, unknown error %d\n", compression_method_str(compression_method), res);
  	}
  
  	c_byte = stream->total_out;
++#if defined(LZMA1_SUPPORT)
++}
 +#endif
  
  	if(res != Z_STREAM_END || c_byte >= size) {
  notcompressed:
-@@ -3889,10 +3902,14 @@
+@@ -1490,13 +1515,13 @@
+ 			read_destination(fd, start_block, size, data);
+ 		}
+ 
+-		if((res = uncompress((unsigned char *) buffer->data, &bytes, (const unsigned char *) data, size)) != Z_OK) {
++		if((res = uncompress_fct((unsigned char *) buffer->data, &bytes, (const unsigned char *) data, size)) != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				BAD_ERROR("zlib::uncompress failed, not enough memory\n");
++				BAD_ERROR("%s::uncompress failed, not enough memory\n", compression_method_str(compression_method));
+ 			else if(res == Z_BUF_ERROR)
+-				BAD_ERROR("zlib::uncompress failed, not enough room in output buffer\n");
++				BAD_ERROR("%s::uncompress failed, not enough room in output buffer\n", compression_method_str(compression_method));
+ 			else
+-				BAD_ERROR("zlib::uncompress failed, unknown error %d\n", res);
++				BAD_ERROR("%s::uncompress failed, unknown error %d\n", compression_method_str(compression_method), res);
+ 		}
+ 	} else if(compressed_buffer)
+ 		memcpy(buffer->data, compressed_buffer->data, size);
+@@ -3788,6 +3813,12 @@
+ 					exit(1);
+ 				}
+ 			}
++#if defined(LZMA1_SUPPORT)
++		} else if (strcmp(argv[i], "-lzma1") == 0) {
++			compression_method = LZMA1;
++			uncompress_fct = &LZMA_ZLIB_COMPAT(uncompress);
++			compress2_fct  = &LZMA_ZLIB_COMPAT(compress2);
++#endif
+ 		} else if(strcmp(argv[i], "-noI") == 0 ||
+ 				strcmp(argv[i], "-noInodeCompression") == 0)
+ 			noI = TRUE;
+@@ -3850,6 +3881,9 @@
+ 			ERROR("-read-queue <size>\tSet input queue to <size> Mbytes.  Default %d Mbytes\n", READER_BUFFER_DEFAULT);
+ 			ERROR("-write-queue <size>\tSet output queue to <size> Mbytes.  Default %d Mbytes\n", WRITER_BUFFER_DEFAULT);
+ 			ERROR("-fragment-queue <size>\tSet fagment queue to <size> Mbytes.  Default %d Mbytes\n", FRAGMENT_BUFFER_DEFAULT);
++#if defined(LZMA1_SUPPORT)
++			ERROR("-lzma1\t\t\tuse LZMA1 compression instead of default ZLIB\n");
++#endif
+ 			ERROR("-noI\t\t\tdo not compress inode table\n");
+ 			ERROR("-noD\t\t\tdo not compress data blocks\n");
+ 			ERROR("-noF\t\t\tdo not compress fragment blocks\n");
+@@ -3889,10 +3923,18 @@
  	writer_buffer_size = writeb_mbytes << (20 - block_log);
  	fragment_buffer_size = fragmentb_mbytes << (20 - block_log);
  
-+#if defined(USE_LZMA_COMPRESSION)
-+	s_minor = SQUASHFS_MINOR_LZMA;
-+#else
++#if defined(LZMA1_SUPPORT)
++if (compression_method == LZMA1) {
++	s_minor = SQUASHFS_MINOR_LZMA1;
++} else {
++#endif
  	if(block_size <= 65536 && sparse_files == FALSE)
  		s_minor = 0;
  	else
  		s_minor = SQUASHFS_MINOR;
++#if defined(LZMA1_SUPPORT)
++}
 +#endif
  
  	for(i = 0; i < source; i++)
  		if(lstat(source_path[i], &source_buf) == -1) {
+@@ -4001,6 +4043,12 @@
+ 		always_use_fragments = SQUASHFS_ALWAYS_FRAGMENTS(sBlk.flags);
+ 		duplicate_checking = SQUASHFS_DUPLICATES(sBlk.flags);
+ 		exportable = SQUASHFS_EXPORTABLE(sBlk.flags);
++
++#if defined(LZMA1_SUPPORT)
++		// compression_method is set by read_super
++		uncompress_fct = (compression_method == LZMA1) ? &LZMA_ZLIB_COMPAT(uncompress) : &uncompress;
++		compress2_fct  = (compression_method == LZMA1) ? &LZMA_ZLIB_COMPAT(compress2)  : &compress2;
++#endif
+ 	}
+ 
+ 	initialise_threads();
+@@ -4032,7 +4080,7 @@
+ 
+ 		printf("Appending to existing %s %d.%d filesystem on %s, block size %d\n", be ? "big endian" :
+ 			"little endian", SQUASHFS_MAJOR, s_minor, argv[source + 1], block_size);
+-		printf("All -be, -le, -b, -noI, -noD, -noF, -check_data, no-duplicates, no-fragments, -always-use-fragments and -exportable options ignored\n");
++		printf("All -be, -le, -b, -noI, -noD, -noF, -check_data, no-duplicates, no-fragments, -always-use-fragments, -exportable and -lzma1 options ignored\n");
+ 		printf("\nIf appending is not wanted, please re-run with -noappend specified!\n\n");
+ 
+ 		compressed_data = (inode_dir_offset + inode_dir_file_size) & ~(SQUASHFS_METADATA_SIZE - 1);
 --- squashfs-tools/read_fs.c
 +++ squashfs-tools/read_fs.c
-@@ -43,6 +43,12 @@
+@@ -43,6 +43,11 @@
  #include <endian.h>
  #endif
  
-+#if defined(USE_LZMA_COMPRESSION)
++#if defined(LZMA1_SUPPORT)
 +#include <LZMA_ZLibCompat.h>
-+#define compress2  LZMA_ZLIB_COMPAT(compress2)
-+#define uncompress LZMA_ZLIB_COMPAT(uncompress)
 +#endif
++#include "compression_method.h"
 +
  #include "squashfs_fs.h"
  #include "read_fs.h"
  #include "global.h"
-@@ -365,7 +371,11 @@
+@@ -61,6 +66,13 @@
+ 						fprintf(stderr, s, ## args); \
+ 					} while(0)
+ 
++extern enum compression_method_t compression_method;
++#if defined(LZMA1_SUPPORT)
++extern zlib_uncompress_t uncompress_fct;
++#else
++#define uncompress_fct uncompress
++#endif
++
+ int swap;
+ 
+ int read_block(int fd, long long start, long long *next, unsigned char *block, squashfs_super_block *sBlk)
+@@ -85,13 +97,13 @@
+ 		c_byte = SQUASHFS_COMPRESSED_SIZE(c_byte);
+ 		read_bytes(fd, start + offset, c_byte, buffer);
+ 
+-		if((res = uncompress(block, &bytes, (const unsigned char *) buffer, c_byte)) != Z_OK) {
++		if((res = uncompress_fct(block, &bytes, (const unsigned char *) buffer, c_byte)) != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				ERROR("zlib::uncompress failed, not enough memory\n");
++				ERROR("%s::uncompress failed, not enough memory\n", compression_method_str(compression_method));
+ 			else if(res == Z_BUF_ERROR)
+-				ERROR("zlib::uncompress failed, not enough room in output buffer\n");
++				ERROR("%s::uncompress failed, not enough room in output buffer\n", compression_method_str(compression_method));
+ 			else
+-				ERROR("zlib::uncompress failed, unknown error %d\n", res);
++				ERROR("%s::uncompress failed, unknown error %d\n", compression_method_str(compression_method), res);
+ 			return 0;
+ 		}
+ 		if(next)
+@@ -365,7 +377,11 @@
  	}
  
  	/* Check the MAJOR & MINOR versions */
-+#if defined(USE_LZMA_COMPRESSION)
-+	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor != SQUASHFS_MINOR_LZMA) {
++#if defined(LZMA1_SUPPORT)
++	if(sBlk->s_major != SQUASHFS_MAJOR || (sBlk->s_minor > SQUASHFS_MINOR && sBlk->s_minor != SQUASHFS_MINOR_LZMA1)) {
 +#else
  	if(sBlk->s_major != SQUASHFS_MAJOR || sBlk->s_minor > SQUASHFS_MINOR) {
 +#endif
  		if(sBlk->s_major < 3)
  			ERROR("Filesystem on %s is a SQUASHFS %d.%d filesystem.  Appending\nto SQUASHFS %d.%d filesystems is not supported.  Please convert it to a SQUASHFS 3 filesystem\n", source, sBlk->s_major, sBlk->s_minor, sBlk->s_major, sBlk->s_minor);
  		else
+@@ -374,6 +390,17 @@
+ 		goto failed_mount;
+ 	}
+ 
++#if defined(LZMA1_SUPPORT)
++	if (sBlk->s_minor == SQUASHFS_MINOR_LZMA1) {
++		compression_method = LZMA1;
++	} else {
++		if (compression_method != ZLIB) {
++			ERROR("Reading a ZLIB compressed SQUASHFS filesystem on %s - ignoring -lzma1 option\n", source);
++		}
++		compression_method = ZLIB;
++	}
++#endif
++
+ #if __BYTE_ORDER == __BIG_ENDIAN
+ 	*be = !swap;
+ #else
+@@ -384,6 +411,7 @@
+ 	printf("\tInodes are %scompressed\n", SQUASHFS_UNCOMPRESSED_INODES(sBlk->flags) ? "un" : "");
+ 	printf("\tData is %scompressed\n", SQUASHFS_UNCOMPRESSED_DATA(sBlk->flags) ? "un" : "");
+ 	printf("\tFragments are %scompressed\n", SQUASHFS_UNCOMPRESSED_FRAGMENTS(sBlk->flags) ? "un" : "");
++	printf("\tCompression method is %s\n", compression_method_str(compression_method));
+ 	printf("\tCheck data is %spresent in the filesystem\n", SQUASHFS_CHECK_DATA(sBlk->flags) ? "" : "not ");
+ 	printf("\tFragments are %spresent in the filesystem\n", SQUASHFS_NO_FRAGMENTS(sBlk->flags) ? "not " : "");
+ 	printf("\tAlways_use_fragments option is %sspecified\n", SQUASHFS_ALWAYS_FRAGMENTS(sBlk->flags) ? "" : "not ");
 --- squashfs-tools/squashfs_fs.h
 +++ squashfs-tools/squashfs_fs.h
 @@ -38,6 +38,7 @@
  #define SQUASHFS_CACHED_FRAGMENTS	CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE	
  #define SQUASHFS_MAJOR			3
  #define SQUASHFS_MINOR			1
-+#define SQUASHFS_MINOR_LZMA		76
++#define SQUASHFS_MINOR_LZMA1		76
  #define SQUASHFS_MAGIC			0x73717368
  #define SQUASHFS_MAGIC_SWAP		0x68737173
  #define SQUASHFS_START			0
 --- squashfs-tools/unsquashfs.c
 +++ squashfs-tools/unsquashfs.c
-@@ -61,6 +61,12 @@
+@@ -61,6 +61,11 @@
  #include <sys/sysinfo.h> // get_nprocs()
  #endif
  
-+#if defined(USE_LZMA_COMPRESSION)
++#if defined(LZMA1_SUPPORT)
 +#include <LZMA_ZLibCompat.h>
-+#define compress2  LZMA_ZLIB_COMPAT(compress2)
-+#define uncompress LZMA_ZLIB_COMPAT(uncompress)
 +#endif
++#include "compression_method.h"
 +
  #include "squashfs_fs.h"
  #include "read_fs.h"
  #include "global.h"
-@@ -2201,7 +2207,11 @@
+@@ -186,6 +191,13 @@
+ /* default size of data buffer in Mbytes */
+ #define DATA_BUFFER_DEFAULT 256
+ 
++enum compression_method_t compression_method = ZLIB; // ZLIB by default
++#if defined(LZMA1_SUPPORT)
++zlib_uncompress_t uncompress_fct = &uncompress;      // ZLIB by default
++#else
++#define uncompress_fct uncompress
++#endif
++
+ squashfs_super_block sBlk;
+ squashfs_operations s_ops;
+ 
+@@ -697,15 +709,15 @@
+ 		if(read_bytes(start + offset, c_byte, buffer) == FALSE)
+ 			goto failed;
+ 
+-		res = uncompress((unsigned char *) block, &bytes, (const unsigned char *) buffer, c_byte);
++		res = uncompress_fct((unsigned char *) block, &bytes, (const unsigned char *) buffer, c_byte);
+ 
+ 		if(res != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				EXIT_UNSQUASH("zlib::uncompress failed, not enough memory\n");
++				EXIT_UNSQUASH("%s::uncompress failed, not enough memory\n", compression_method_str(compression_method));
+ 			else if(res == Z_BUF_ERROR)
+-				EXIT_UNSQUASH("zlib::uncompress failed, not enough room in output buffer\n");
++				EXIT_UNSQUASH("%s::uncompress failed, not enough room in output buffer\n", compression_method_str(compression_method));
+ 			else
+-				EXIT_UNSQUASH("zlib::uncompress failed, unknown error %d\n", res);
++				EXIT_UNSQUASH("%s::uncompress failed, unknown error %d\n", compression_method_str(compression_method), res);
+ 			goto failed;
+ 		}
+ 		if(next)
+@@ -737,15 +749,15 @@
+ 		if(read_bytes(start, c_byte, data) == FALSE)
+ 			return 0;
+ 
+-		res = uncompress((unsigned char *) block, &bytes, (const unsigned char *) data, c_byte);
++		res = uncompress_fct((unsigned char *) block, &bytes, (const unsigned char *) data, c_byte);
+ 
+ 		if(res != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				EXIT_UNSQUASH("zlib::uncompress failed, not enough memory\n");
++				EXIT_UNSQUASH("%s::uncompress failed, not enough memory\n", compression_method_str(compression_method));
+ 			else if(res == Z_BUF_ERROR)
+-				EXIT_UNSQUASH("zlib::uncompress failed, not enough room in output buffer\n");
++				EXIT_UNSQUASH("%s::uncompress failed, not enough room in output buffer\n", compression_method_str(compression_method));
+ 			else
+-				EXIT_UNSQUASH("zlib::uncompress failed, unknown error %d\n", res);
++				EXIT_UNSQUASH("%s::uncompress failed, unknown error %d\n", compression_method_str(compression_method), res);
+ 			return 0;
+ 		}
+ 
+@@ -2132,6 +2144,7 @@
+ 	printf("Data is %scompressed\n", SQUASHFS_UNCOMPRESSED_DATA(sBlk.flags) ? "un" : "");
+ 	if(sBlk.s_major > 1 && !SQUASHFS_NO_FRAGMENTS(sBlk.flags))
+ 		printf("Fragments are %scompressed\n", SQUASHFS_UNCOMPRESSED_FRAGMENTS(sBlk.flags) ? "un" : "");
++	printf("Compression method is %s\n", compression_method_str(compression_method));
+ 	printf("Check data is %spresent in the filesystem\n", SQUASHFS_CHECK_DATA(sBlk.flags) ? "" : "not ");
+ 	if(sBlk.s_major > 1) {
+ 		printf("Fragments are %spresent in the filesystem\n", SQUASHFS_NO_FRAGMENTS(sBlk.flags) ? "not " : "");
+@@ -2201,7 +2214,11 @@
  			s_ops.read_block_list = read_block_list;
  			s_ops.read_inode = read_inode_2;
  		}
 -	} else if(sBlk.s_major == 3 && sBlk.s_minor <= 1) {
-+#if defined(USE_LZMA_COMPRESSION)
-+	} else if(sBlk.s_major == 3 && sBlk.s_minor == SQUASHFS_MINOR_LZMA) {
++#if defined(LZMA1_SUPPORT)
++	} else if(sBlk.s_major == 3 && (sBlk.s_minor <= SQUASHFS_MINOR || sBlk.s_minor == SQUASHFS_MINOR_LZMA1)) {
 +#else
 +	} else if(sBlk.s_major == 3 && sBlk.s_minor <= SQUASHFS_MINOR) {
 +#endif
  		s_ops.squashfs_opendir = squashfs_opendir;
  		s_ops.read_fragment = read_fragment;
  		s_ops.read_fragment_table = read_fragment_table;
+@@ -2213,6 +2230,12 @@
+ 		goto failed_mount;
+ 	}
+ 
++#if defined(LZMA1_SUPPORT)
++	compression_method = (sBlk.s_minor == SQUASHFS_MINOR_LZMA1) ? LZMA1 : ZLIB;
++	uncompress_fct = (compression_method == LZMA1) ? &LZMA_ZLIB_COMPAT(uncompress) : &uncompress;
++#endif
++	ERROR("Filesystem on %s is %s compressed (%d:%d)\n", source, compression_method_str(compression_method), sBlk.s_major, sBlk.s_minor);
++
+ 	return TRUE;
+ 
+ failed_mount:
+@@ -2344,15 +2367,15 @@
+ 		int res;
+ 		unsigned long bytes = block_size;
+ 
+-		res = uncompress((unsigned char *) tmp, &bytes, (const unsigned char *) entry->data, SQUASHFS_COMPRESSED_SIZE_BLOCK(entry->size));
++		res = uncompress_fct((unsigned char *) tmp, &bytes, (const unsigned char *) entry->data, SQUASHFS_COMPRESSED_SIZE_BLOCK(entry->size));
+ 
+ 		if(res != Z_OK) {
+ 			if(res == Z_MEM_ERROR)
+-				EXIT_UNSQUASH("zlib::uncompress failed, not enough memory\n");
++				EXIT_UNSQUASH("%s::uncompress failed, not enough memory\n", compression_method_str(compression_method));
+ 			else if(res == Z_BUF_ERROR)
+-				EXIT_UNSQUASH("zlib::uncompress failed, not enough room in output buffer\n");
++				EXIT_UNSQUASH("%s::uncompress failed, not enough room in output buffer\n", compression_method_str(compression_method));
+ 			else
+-				EXIT_UNSQUASH("zlib::uncompress failed, unknown error %d\n", res);
++				EXIT_UNSQUASH("%s::uncompress failed, unknown error %d\n", compression_method_str(compression_method), res);
+ 		} else
+ 			memcpy(entry->data, tmp, bytes);
+ 

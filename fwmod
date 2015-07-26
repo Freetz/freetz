@@ -152,27 +152,21 @@ SHELL=$BASH
 FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 MAKEDEVS_TOOL="makedevs"
-UNSQUASHFS_TOOL="unsquashfs3"
-UNSQUASHFS_LZMA_TOOL="unsquashfs3-lzma"
-UNSQUASHFS4_LZMA_TOOL="unsquashfs4-lzma-avm-be"
+UNSQUASHFS_TOOL="unsquashfs3-multi"
+UNSQUASHFS_AVM_BE_TOOL="unsquashfs4-lzma-avm-be"
+MKSQUASHFS2_TOOL="mksquashfs2-lzma"
+MKSQUASHFS3_TOOL="mksquashfs3-multi"
+MKSQUASHFS_AVM_BE_TOOL="mksquashfs4-lzma-avm-be"
 DEBUGFS_TOOL="debugfs"
 EXTERNAL_TOOL="external"
 TAR_TOOL="tar"
 MD5SUM_TOOL="md5sum"
 BUSYBOX_TOOL="busybox"
 
-# Options for (un)packing SquashFS
-MKSQUASHFS_OPTIONS="-noappend -all-root -info"
-UNSQUASHFS_OPTIONS="-no-progress"
-
 # Absolute tools paths
 EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
-UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
-UNSQUASHFS_LZMA="${TOOLS_DIR}/${UNSQUASHFS_LZMA_TOOL}"
 DEBUGFS="${TOOLS_DIR}/${DEBUGFS_TOOL}"
 FINDSQUASHFS="${TOOLS_DIR}/${FINDSQUASHFS_TOOL}"
-MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL}"
-MKSQUASHFS_LZMA="${TOOLS_DIR}/${MKSQUASHFS_LZMA_TOOL}"
 TICHKSUM="${TOOLS_DIR}/${TICHKSUM_TOOL}"
 MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
 MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
@@ -240,30 +234,36 @@ rm "$DOT_CONFIG.fwmod"
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
+# Options for (un)packing SquashFS
+UNSQUASHFS_OPTIONS="-no-progress -processors 1"
+MKSQUASHFS_OPTIONS="-all-root -info"
+
+if [ "$FREETZ_KERNEL_VERSION_2_6_13" -a "$FREETZ_REPLACE_KERNEL" != "y" ]; then
+	UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
+	MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS2_TOOL}"
+else
+	if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
+		UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_AVM_BE_TOOL}"
+		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_AVM_BE_TOOL}"
+	else
+		UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
+		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS3_TOOL}"
+	fi
+
+	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
+		MKSQUASHFS_OPTIONS+=" -lzma1"
+	fi
+fi
+
 if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" != "y" ]; then
+	MKSQUASHFS_OPTIONS+=" -noappend"
 	# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
 	if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
 		MKSQUASHFS_OPTIONS+=" -be"
 	else
 		MKSQUASHFS_OPTIONS+=" -le"
 	fi
-fi
-
-# Use FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE etc. to determine correct mksquashfs tool
-# TODO: Add new symbols for SquashFS version and LZMA compression to Config.in
-if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
-		MKSQUASHFS_TOOL="mksquashfs4-lzma-avm-be"
-		MKSQUASHFS_OPTIONS="${MKSQUASHFS_OPTIONS//-noappend}"
-	else
-		MKSQUASHFS_TOOL="mksquashfs3"
-	fi
-	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
-elif [ "$FREETZ_KERNEL_VERSION_2_6_13" -a ! "$FREETZ_REPLACE_KERNEL" == "y" ]; then
-	MKSQUASHFS_TOOL="mksquashfs2-lzma"
-else
-	MKSQUASHFS_TOOL="mksquashfs3-lzma"
-	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
 fi
 
 
@@ -459,12 +459,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] && error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
-		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
-			# TODO: hack, implement properly
-			UNSQUASHFS_LZMA="${TOOLS_DIR}/${UNSQUASHFS4_LZMA_TOOL}" modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
-		else
-			modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
-		fi
+		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
 	else
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
@@ -477,7 +472,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		fi
 
 		echo "unpacking filesystem image"
-		modunsqfs_lzma "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
+		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
 	fi
 
 	if [ -r "$AVMPLUGINS" ]; then
@@ -489,7 +484,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 			AVMPLUGIN="${i##*/plugin-}"
 			AVMPLUGIN="${AVMPLUGIN%\.image}"
 			echo2 "$AVMPLUGIN image"
-			modunsqfs_lzma "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
+			modunsqfs "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
 		done
 		chmod -R +w "$AVMPLUGINS_DIR"
 	fi
@@ -568,8 +563,16 @@ HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/${HTML_SUBDIR}"
 # $HTML_LANG_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all
 # $HTML_SPEC_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all/html/de
 
-[ "$FREETZ_SQUASHFS_BLOCKSIZE" ] ||
-	FREETZ_SQUASHFS_BLOCKSIZE=$("$UNSQUASHFS_LZMA" -s "$FILESYSTEM" 2>/dev/null | sed -nr 's/Block size ([0-9]+)/\1/p')
+
+if [ -z "$FREETZ_SQUASHFS_BLOCKSIZE" ]; then # expected to be empty only if FREETZ_SQUASHFS_BLOCKSIZE_ORIG is set
+	echo -n "determining SquashFS block size of the original firmware: "
+	FREETZ_SQUASHFS_BLOCKSIZE=$("$UNSQUASHFS" -s "$FILESYSTEM" 2>/dev/null | sed -nr 's/Block size ([0-9]+)/\1/p')
+	[ -z "$FREETZ_SQUASHFS_BLOCKSIZE" ] && error 1 "failed" || echo -e "$((FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB\n"
+fi
+MKSQUASHFS_OPTIONS+=" -b $FREETZ_SQUASHFS_BLOCKSIZE"
+#echo "Using '$MKSQUASHFS_OPTIONS' as MKSQUASHFS_OPTIONS"
+
+
 
 if [ "$FREETZ_SIZEINFO_COMPRESSED" == "y" ]; then
 	let FILESYSTEM_BLOCKSIZE_KB=$FREETZ_SQUASHFS_BLOCKSIZE/1024
@@ -620,10 +623,10 @@ function sizeinfo()
 	#compressed size
 	if [ ! -s "$sfile" ]; then
 		if [ $# -eq 0 ]; then
-			echo -n "    0.00 Kb (uncompressed:    0.00 Kb)" > ${sfile}
+			echo -n "    0.00 kB (uncompressed:    0.00 kB)" > ${sfile}
 		else
 			local tempf=/tmp/freetz-sizeinfo-$$.tmp
-			$TOOLS_DIR/$MKSQUASHFS_TOOL $@ $tempf $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE 2>/dev/null | grep -A1 ^Filesystem \
+			"$MKSQUASHFS" $@ $tempf $MKSQUASHFS_OPTIONS 2>/dev/null | grep -A1 ^Filesystem \
 				| sed -n 'N;s!Filesystem size \(.*\)ytes (.*\n.*(\(.*\)ytes.*$!\1 \2!p' \
 				| awk '{printf "%8s%3s (uncompressed:%8s%3s)",$1,$2,$3,$4}' > ${sfile}
 			rm -rf $tempf 2>/dev/null
@@ -1575,14 +1578,13 @@ fi
 # -------------------------
 
 if [ "$DO_PACK" -gt 0 ]; then
-	# Do we have the tool ?
-	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS_TOOL"
+	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS"
 
 	echo0 "creating filesystem image"
 	echo1 "SquashFS block size: $(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB ($FREETZ_SQUASHFS_BLOCKSIZE bytes)"
 
 	rm -f $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD
-	$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
+	"$MKSQUASHFS" $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		echo0 "copying kernel image"
@@ -1642,7 +1644,7 @@ if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
 		cat "$RAW_FILESYSTEM_MOD.ext2" >> "$RAW_FILESYSTEM_MOD" && \
 		rm -f "$RAW_FILESYSTEM_MOD.ext2"
 else
-		$TOOLS_DIR/$MKSQUASHFS_TOOL $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS -b $FREETZ_SQUASHFS_BLOCKSIZE >> $MOD_DIR/filesystem.log 2>&1
+		"$MKSQUASHFS" $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
 fi
 
 		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
