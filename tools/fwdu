@@ -107,14 +107,14 @@ image() {
 	rm x.image
 	cat kernelsquashfs.raw kernel.raw > x.raw
 	rm  kernelsquashfs.raw kernel.raw
-	$FTOOLS/unsquashfs3-lzma x.raw >/dev/null 2>&1 || $FTOOLS/unsquashfs3 x.raw >/dev/null 2>&1 || echo FALSE $img #$FTOOLS/unsquashfs2-lzma x.raw >/dev/null 2>&1 ||
+	$FTOOLS/unsquashfs3-multi x.raw >/dev/null 2>&1 || echo FALSE $img
 	rm x.raw
 	# for recent fw's
 	if [ -e squashfs-root/filesystem_core.squashfs ]; then
 		$FTOOLS/find-squashfs squashfs-root/filesystem_core.squashfs >/dev/null 2>&1
 		rm squashfs-root/filesystem_core.squashfs kernel.raw
 		mv squashfs-root filesystem_envelope
-		$FTOOLS/unsquashfs3 kernelsquashfs.raw >/dev/null 2>&1
+		$FTOOLS/unsquashfs3-multi kernelsquashfs.raw >/dev/null 2>&1
 		rm kernelsquashfs.raw
 		[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
 	fi
