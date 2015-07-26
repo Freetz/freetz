@@ -7,7 +7,8 @@ LZMA1_HOST_DIR:=$(TOOLS_SOURCE_DIR)/lzma$(LZMA1_HOST_VERSION)
 LZMA1_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/lzma1-host
 
 LZMA1_HOST_ALONE_DIR:=$(LZMA1_HOST_DIR)/CPP/7zip/Compress/LZMA_Alone
-LZMA1_HOST_LIB_DIR:=$(LZMA1_HOST_DIR)/CPP/7zip/Compress/LZMA_Lib
+LZMA1_HOST_LIBC_DIR:=$(LZMA1_HOST_DIR)/C/LzmaLib
+LZMA1_HOST_LIBCXX_DIR:=$(LZMA1_HOST_DIR)/CPP/7zip/Compress/LZMA_Lib
 
 lzma1-host-source: $(DL_DIR)/$(LZMA1_HOST_SOURCE)
 $(DL_DIR)/$(LZMA1_HOST_SOURCE): | $(DL_DIR)
@@ -23,21 +24,29 @@ $(LZMA1_HOST_DIR)/.unpacked: $(DL_DIR)/$(LZMA1_HOST_SOURCE) | $(TOOLS_SOURCE_DIR
 $(LZMA1_HOST_ALONE_DIR)/lzma: $(LZMA1_HOST_DIR)/.unpacked
 	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_ALONE_DIR)
 
-$(LZMA1_HOST_LIB_DIR)/liblzma++.a: $(LZMA1_HOST_DIR)/.unpacked
-	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIB_DIR)
+$(LZMA1_HOST_LIBC_DIR)/liblzma.a: $(LZMA1_HOST_DIR)/.unpacked
+	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIBC_DIR)
 	touch -c $@
 
-$(LZMA1_HOST_DIR)/liblzma1++.a: $(LZMA1_HOST_LIB_DIR)/liblzma++.a
+$(LZMA1_HOST_LIBCXX_DIR)/liblzma++.a: $(LZMA1_HOST_DIR)/.unpacked
+	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIBCXX_DIR)
+	touch -c $@
+
+$(LZMA1_HOST_DIR)/liblzma1.a: $(LZMA1_HOST_LIBC_DIR)/liblzma.a
+	$(INSTALL_FILE)
+
+$(LZMA1_HOST_DIR)/liblzma1++.a: $(LZMA1_HOST_LIBCXX_DIR)/liblzma++.a
 	$(INSTALL_FILE)
 
 $(TOOLS_DIR)/lzma: $(LZMA1_HOST_ALONE_DIR)/lzma
 	$(INSTALL_FILE)
 
-lzma1-host: $(LZMA1_HOST_DIR)/liblzma1++.a $(TOOLS_DIR)/lzma
+lzma1-host: $(LZMA1_HOST_DIR)/liblzma1.a $(LZMA1_HOST_DIR)/liblzma1++.a $(TOOLS_DIR)/lzma
 
 lzma1-host-clean:
-	-$(MAKE) -C $(LZMA1_HOST_LIB_DIR) clean
-	$(RM) $(LZMA1_HOST_DIR)/liblzma1++.a
+	-$(MAKE) -C $(LZMA1_HOST_ALONE_DIR) clean
+	-$(MAKE) -C $(LZMA1_HOST_LIBCXX_DIR) clean
+	$(RM) $(LZMA1_HOST_DIR)/liblzma1*.a
 
 lzma1-host-dirclean:
 	$(RM) -r $(LZMA1_HOST_DIR)
