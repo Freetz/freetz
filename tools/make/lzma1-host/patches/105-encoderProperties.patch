@@ -1,0 +1,93 @@
+--- C/LzmaLib.h
++++ C/LzmaLib.h
+@@ -106,7 +106,11 @@
+   int lc,        /* 0 <= lc <= 8, default = 3  */
+   int lp,        /* 0 <= lp <= 4, default = 0  */
+   int pb,        /* 0 <= pb <= 4, default = 2  */
++  int algo,      /* 0 - fast, 1 - normal, default = 1 */
+   int fb,        /* 5 <= fb <= 273, default = 32 */
++  const wchar_t *matchFinderMode, /* valid values are HC4, BT2, BT3, BT4. HC stands for "hash chain"-mode, BT for "bin tree"-mode, default BT4 */
++  UInt32 mc,     /* 1 <= mc <= (1 << 30), default = 32, mc stands for matchFinderCycles/matchFinderCutValue */
++  Bool writeEndMark,
+   int numThreads /* 1 or 2, default = 2 */
+   );
+ 
+--- C/LzmaLib.c
++++ C/LzmaLib.c
+@@ -12,6 +12,46 @@
+ static void SzFree(void *p, void *address) { p = p; MyFree(address); }
+ static ISzAlloc g_Alloc = { SzAlloc, SzFree };
+ 
++
++#if 1 /* copy&pasted from CPP/7zip/Compress/LzmaEncoder.cpp */
++inline wchar_t GetUpperChar(wchar_t c) {
++  if (c >= 'a' && c <= 'z')
++    c -= 0x20;
++  return c;
++}
++
++static int ParseMatchFinder(const wchar_t *s, int *btMode, int *numHashBytes) {
++  wchar_t c = GetUpperChar(*s++);
++  if (c == L'H')
++  {
++    if (GetUpperChar(*s++) != L'C')
++      return 0;
++    int numHashBytesLoc = (int)(*s++ - L'0');
++    if (numHashBytesLoc < 4 || numHashBytesLoc > 4)
++      return 0;
++    if (*s++ != 0)
++      return 0;
++    *btMode = 0;
++    *numHashBytes = numHashBytesLoc;
++    return 1;
++  }
++  if (c != L'B')
++    return 0;
++
++  if (GetUpperChar(*s++) != L'T')
++    return 0;
++  int numHashBytesLoc = (int)(*s++ - L'0');
++  if (numHashBytesLoc < 2 || numHashBytesLoc > 4)
++    return 0;
++  c = GetUpperChar(*s++);
++  if (c != L'\0')
++    return 0;
++  *btMode = 1;
++  *numHashBytes = numHashBytesLoc;
++  return 1;
++}
++#endif
++
+ MY_STDAPI LzmaCompress(unsigned char *dest, size_t  *destLen, const unsigned char *src, size_t  srcLen,
+   unsigned char *outProps, size_t *outPropsSize,
+   int level, /* 0 <= level <= 9, default = 5 */
+@@ -19,7 +59,11 @@
+   int lc, /* 0 <= lc <= 8, default = 3  */
+   int lp, /* 0 <= lp <= 4, default = 0  */
+   int pb, /* 0 <= pb <= 4, default = 2  */
++  int algo, /* 0 - fast, 1 - normal, default = 1 */
+   int fb,  /* 5 <= fb <= 273, default = 32 */
++  const wchar_t *matchFinderMode, /* HC4, BT2, BT3, BT4 */
++  UInt32 mc, /* 1 <= mc <= (1 << 30), default = 32 */
++  Bool writeEndMark,
+   int numThreads /* 1 or 2, default = 2 */
+ )
+ {
+@@ -30,10 +74,16 @@
+   props.lc = lc;
+   props.lp = lp;
+   props.pb = pb;
++  props.algo = algo;
+   props.fb = fb;
++  if (matchFinderMode && !ParseMatchFinder(matchFinderMode, &props.btMode, &props.numHashBytes))
++    return SZ_ERROR_PARAM;
++  props.mc = mc;
++  props.writeEndMark = writeEndMark;
+   props.numThreads = numThreads;
++  LzmaEncProps_Normalize(&props);
+ 
+-  return LzmaEncode(dest, destLen, src, srcLen, &props, outProps, outPropsSize, 0,
++  return LzmaEncode(dest, destLen, src, srcLen, &props, outProps, outPropsSize, writeEndMark,
+       NULL, &g_Alloc, &g_Alloc);
+ }
+ 

@@ -1,3 +1,45 @@
+--- /dev/null
++++ C/LZMA_ZLibCompat.h
+@@ -0,0 +1,39 @@
++#ifndef LZMA_ZLibCompat
++#define LZMA_ZLibCompat
++
++#include <stddef.h>
++
++#include <zlib.h>
++
++/* CLzmaEncProps */
++#define ZLIB_COMPAT__THE_ONLY_SUPPORTED_COMPRESSION_LEVEL 9
++#define ZLIB_COMPAT__DICT_SIZE (1 << (ZLIB_COMPAT__THE_ONLY_SUPPORTED_COMPRESSION_LEVEL + 14))
++#define ZLIB_COMPAT__LC 3
++#define ZLIB_COMPAT__LP 0
++#define ZLIB_COMPAT__PB 2
++#define ZLIB_COMPAT__ALGO 2
++#define ZLIB_COMPAT__FB 128
++#define ZLIB_COMPAT__MATCH_FINDER_MODE ((const wchar_t *)L"BT4") /* BinTree-mode with numHashBytes=4 */
++#define ZLIB_COMPAT__MC 0 /* 0 means "use default autocalculated value", autocalculated from fb and btMode values, see LzmaEncProps_Normalize for details */
++#define ZLIB_COMPAT__WRITE_END_MARK 1
++
++#define LZMA_ZLIB_COMPAT(name) name##_lzma_zlib_compat
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++typedef int (*zlib_compress_t)                   (Bytef *    , uLongf *       , const Bytef *      , uLong          );
++ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress)   (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen);
++
++typedef int (*zlib_compress2_t)                  (Bytef *    , uLongf *       , const Bytef *      , uLong          , int      );
++ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress2)  (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen, int level);
++
++typedef int (*zlib_uncompress_t)                 (Bytef *    , uLongf *       , const Bytef *      , uLong          );
++ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(uncompress) (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
 --- C/LzmaLib/makefile.gcc
 +++ C/LzmaLib/makefile.gcc
 @@ -17,6 +17,8 @@
@@ -9,92 +51,9 @@
  all: $(PROG)
  
  $(PROG): $(OBJS)
---- C/LzmaLib.c
-+++ C/LzmaLib.c
-@@ -12,6 +12,46 @@
- static void SzFree(void *p, void *address) { p = p; MyFree(address); }
- static ISzAlloc g_Alloc = { SzAlloc, SzFree };
- 
-+
-+#if 1 /* copy&pasted from CPP/7zip/Compress/LzmaEncoder.cpp */
-+inline wchar_t GetUpperChar(wchar_t c) {
-+  if (c >= 'a' && c <= 'z')
-+    c -= 0x20;
-+  return c;
-+}
-+
-+static int ParseMatchFinder(const wchar_t *s, int *btMode, int *numHashBytes) {
-+  wchar_t c = GetUpperChar(*s++);
-+  if (c == L'H')
-+  {
-+    if (GetUpperChar(*s++) != L'C')
-+      return 0;
-+    int numHashBytesLoc = (int)(*s++ - L'0');
-+    if (numHashBytesLoc < 4 || numHashBytesLoc > 4)
-+      return 0;
-+    if (*s++ != 0)
-+      return 0;
-+    *btMode = 0;
-+    *numHashBytes = numHashBytesLoc;
-+    return 1;
-+  }
-+  if (c != L'B')
-+    return 0;
-+
-+  if (GetUpperChar(*s++) != L'T')
-+    return 0;
-+  int numHashBytesLoc = (int)(*s++ - L'0');
-+  if (numHashBytesLoc < 2 || numHashBytesLoc > 4)
-+    return 0;
-+  c = GetUpperChar(*s++);
-+  if (c != L'\0')
-+    return 0;
-+  *btMode = 1;
-+  *numHashBytes = numHashBytesLoc;
-+  return 1;
-+}
-+#endif
-+
- MY_STDAPI LzmaCompress(unsigned char *dest, size_t  *destLen, const unsigned char *src, size_t  srcLen,
-   unsigned char *outProps, size_t *outPropsSize,
-   int level, /* 0 <= level <= 9, default = 5 */
-@@ -20,6 +60,8 @@
-   int lp, /* 0 <= lp <= 4, default = 0  */
-   int pb, /* 0 <= pb <= 4, default = 2  */
-   int fb,  /* 5 <= fb <= 273, default = 32 */
-+  const wchar_t *matchFinder,
-+  Bool writeEndMark,
-   int numThreads /* 1 or 2, default = 2 */
- )
- {
-@@ -31,9 +73,12 @@
-   props.lp = lp;
-   props.pb = pb;
-   props.fb = fb;
-+  if (matchFinder && !ParseMatchFinder(matchFinder, &props.btMode, &props.numHashBytes))
-+    return SZ_ERROR_PARAM;
-+  props.writeEndMark = writeEndMark;
-   props.numThreads = numThreads;
- 
--  return LzmaEncode(dest, destLen, src, srcLen, &props, outProps, outPropsSize, 0,
-+  return LzmaEncode(dest, destLen, src, srcLen, &props, outProps, outPropsSize, writeEndMark,
-       NULL, &g_Alloc, &g_Alloc);
- }
- 
---- C/LzmaLib.h
-+++ C/LzmaLib.h
-@@ -107,6 +107,8 @@
-   int lp,        /* 0 <= lp <= 4, default = 0  */
-   int pb,        /* 0 <= pb <= 4, default = 2  */
-   int fb,        /* 5 <= fb <= 273, default = 32 */
-+  const wchar_t *matchFinder,
-+  Bool writeEndMark,
-   int numThreads /* 1 or 2, default = 2 */
-   );
- 
 --- /dev/null
 +++ C/LZMA_ZLibCompat.c
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,105 @@
 +#include <stdio.h>
 +
 +#include "LZMA_ZLibCompat.h"
@@ -107,7 +66,7 @@
 +#endif
 +
 +ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress) (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen) {
-+	return LZMA_ZLIB_COMPAT(compress2)(dest, destLen, source, sourceLen, ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL);
++	return LZMA_ZLIB_COMPAT(compress2)(dest, destLen, source, sourceLen, ZLIB_COMPAT__THE_ONLY_SUPPORTED_COMPRESSION_LEVEL);
 +}
 +
 +/*
@@ -118,11 +77,10 @@
 +   - Z_STREAM_ERROR if the level parameter is invalid.
 +*/
 +ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress2) (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen, int level) {
-+	if (level != ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL) {
++	if (level != ZLIB_COMPAT__THE_ONLY_SUPPORTED_COMPRESSION_LEVEL) {
 +		return Z_STREAM_ERROR;
 +	}
 +
-+	UInt32 dictSize = 1 << (ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL + 14);
 +	Byte props[LZMA_PROPS_SIZE];
 +	size_t propsSize = LZMA_PROPS_SIZE;
 +	SRes result = LzmaCompress(
@@ -133,13 +91,15 @@
 +		props,
 +		&propsSize,
 +		level,
-+		dictSize,
-+		ZLIB_LC,
-+		ZLIB_LP,
-+		ZLIB_PB,
-+		ZLIB_FB,
-+		(const wchar_t *)L"BT4", /* matchFinder */
-+		True, /* writeEndMark */
++		ZLIB_COMPAT__DICT_SIZE,
++		ZLIB_COMPAT__LC,
++		ZLIB_COMPAT__LP,
++		ZLIB_COMPAT__PB,
++		ZLIB_COMPAT__ALGO,
++		ZLIB_COMPAT__FB,
++		ZLIB_COMPAT__MATCH_FINDER_MODE,
++		ZLIB_COMPAT__MC,
++		ZLIB_COMPAT__WRITE_END_MARK,
 +		1 /* numThreads */
 +	);
 +
@@ -163,8 +123,8 @@
 +	Byte props[LZMA_PROPS_SIZE];
 +	{
 +		int i;
-+		UInt32 dictSize = 1 << (ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL + 14);
-+		props[0] = (Byte)((ZLIB_PB * 5 + ZLIB_LP) * 9 + ZLIB_LC);
++		UInt32 dictSize = ZLIB_COMPAT__DICT_SIZE;
++		props[0] = (Byte)((ZLIB_COMPAT__PB * 5 + ZLIB_COMPAT__LP) * 9 + ZLIB_COMPAT__LC);
 +		for (i = 1; i<LZMA_PROPS_SIZE; i++) {
 +			props[i] = (Byte)(dictSize >> (8 * (i-1)));
 +		}
@@ -199,51 +159,8 @@
 +#ifdef __cplusplus
 +}
 +#endif
---- /dev/null
-+++ C/LZMA_ZLibCompat.h
-@@ -0,0 +1,31 @@
-+#ifndef LZMA_ZLibCompat
-+#define LZMA_ZLibCompat
-+
-+#include <zlib.h>
-+
-+#define ZLIB_LC 3
-+#define ZLIB_LP 0
-+#define ZLIB_PB 2
-+#define ZLIB_FB 128
-+#define ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL 9
-+
-+#define LZMA_ZLIB_COMPAT(name) name##_lzma_zlib_compat
-+
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
-+
-+typedef int (*zlib_compress_t)                   (Bytef *    , uLongf *       , const Bytef *      , uLong          );
-+ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress)   (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen);
-+
-+typedef int (*zlib_compress2_t)                  (Bytef *    , uLongf *       , const Bytef *      , uLong          , int      );
-+ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress2)  (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen, int level);
-+
-+typedef int (*zlib_uncompress_t)                 (Bytef *    , uLongf *       , const Bytef *      , uLong          );
-+ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(uncompress) (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen);
-+
-+#ifdef __cplusplus
-+}
-+#endif
-+
-+#endif
 --- CPP/7zip/Compress/LZMA_Lib/makefile.gcc
 +++ CPP/7zip/Compress/LZMA_Lib/makefile.gcc
-@@ -10,7 +10,7 @@
- PROG = liblzma++.a
- 
- vpath %.c   ../../../../C
--vpath %.cpp ../:../../Common:../../../Common
-+vpath %.cpp ../:../../Common:../../../Common:../LZMA_ZLibCompat
- 
- C_OBJS = \
- 	7zCrc.o \
 @@ -37,6 +37,8 @@
  	StringToInt.o \
  	MyVector.o
@@ -254,8 +171,8 @@
  
  $(PROG): $(C_OBJS) $(CPP_OBJS)
 --- /dev/null
-+++ CPP/7zip/Compress/LZMA_ZLibCompat/LZMA_ZLibCompat.cpp
-@@ -0,0 +1,272 @@
++++ CPP/7zip/Compress/LZMA_ZLibCompat.cpp
+@@ -0,0 +1,271 @@
 +/*
 + * lzma zlib simplified wrapper
 + *
@@ -287,9 +204,9 @@
 +#define INITGUID
 +#endif
 +
-+#include "../../../Common/MyWindows.h"
-+#include "../LzmaDecoder.h"
-+#include "../LzmaEncoder.h"
++#include "../../Common/MyWindows.h"
++#include "LzmaDecoder.h"
++#include "LzmaEncoder.h"
 +
 +#define STG_E_SEEKERROR                  ((HRESULT)0x80030019L)
 +#define STG_E_MEDIUMFULL                 ((HRESULT)0x80030070L)
@@ -435,11 +352,11 @@
 +#endif
 +
 +ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress) (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen) {
-+	return LZMA_ZLIB_COMPAT(compress2)(dest, destLen, source, sourceLen, ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL);
++	return LZMA_ZLIB_COMPAT(compress2)(dest, destLen, source, sourceLen, ZLIB_COMPAT__THE_ONLY_SUPPORTED_COMPRESSION_LEVEL);
 +}
 +
 +ZEXTERN int ZEXPORT LZMA_ZLIB_COMPAT(compress2) (Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen, int level) {
-+	if (level != ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL) {
++	if (level != ZLIB_COMPAT__THE_ONLY_SUPPORTED_COMPRESSION_LEVEL) {
 +		return Z_STREAM_ERROR;
 +	}
 +
@@ -469,18 +386,18 @@
 +	PROPVARIANT properties[kNumProps];
 +	for (int p = 0; p < 6; p++)
 +		properties[p].vt = VT_UI4;
-+	properties[0].ulVal = UInt32(1 << (level + 14)); // kDictionarySize
-+	properties[1].ulVal = UInt32(ZLIB_PB);           // kPosStateBits
-+	properties[2].ulVal = UInt32(ZLIB_LC);           // kLitContextBits
-+	properties[3].ulVal = UInt32(ZLIB_LP);           // kLitPosBits
-+	properties[4].ulVal = UInt32(2);                 // kAlgorithm
-+	properties[5].ulVal = UInt32(ZLIB_FB);           // kNumFastBytes
++	properties[0].ulVal = UInt32(ZLIB_COMPAT__DICT_SIZE);         // kDictionarySize
++	properties[1].ulVal = UInt32(ZLIB_COMPAT__PB);                // kPosStateBits
++	properties[2].ulVal = UInt32(ZLIB_COMPAT__LC);                // kLitContextBits
++	properties[3].ulVal = UInt32(ZLIB_COMPAT__LP);                // kLitPosBits
++	properties[4].ulVal = UInt32(ZLIB_COMPAT__ALGO);              // kAlgorithm
++	properties[5].ulVal = UInt32(ZLIB_COMPAT__FB);                // kNumFastBytes
 +
 +	properties[6].vt = VT_BSTR;
-+	properties[6].bstrVal = (BSTR)(const wchar_t *)L"BT4"; // kMatchFinder
++	properties[6].bstrVal = (BSTR)ZLIB_COMPAT__MATCH_FINDER_MODE; // kMatchFinder
 +
 +	properties[7].vt = VT_BOOL;
-+	properties[7].boolVal = VARIANT_TRUE;                  // kEndMarker
++	properties[7].boolVal = ZLIB_COMPAT__WRITE_END_MARK ? VARIANT_TRUE : VARIANT_FALSE; // kEndMarker
 +
 +	if (encoderSpec->SetCoderProperties(propIDs, properties, kNumProps) != S_OK)
 +		return Z_MEM_ERROR;
@@ -509,8 +426,7 @@
 +	NCompress::NLzma::CDecoder *decoderSpec = new NCompress::NLzma::CDecoder;
 +	CMyComPtr<ICompressCoder> decoder = decoderSpec;
 +
-+	UInt32 dictionarySize = 1 << (ZLIB_THE_ONLY_SUPPORTED_COMPRESSION_LEVEL + 14);
-+	if (decoderSpec->SetDecoderPropertiesRaw(ZLIB_LC, ZLIB_LP, ZLIB_PB, dictionarySize) != S_OK) {
++	if (decoderSpec->SetDecoderPropertiesRaw(ZLIB_COMPAT__LC, ZLIB_COMPAT__LP, ZLIB_COMPAT__PB, ZLIB_COMPAT__DICT_SIZE) != S_OK) {
 +		return Z_DATA_ERROR;
 +	}
 +
