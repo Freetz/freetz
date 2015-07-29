@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_SQUASHFS3
 	bool "squashfs-tools 3.4"
-	depends on FREETZ_TYPE_7490
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libz
@@ -8,5 +8,3 @@ config FREETZ_PACKAGE_SQUASHFS3
 	help
 		mksquashfs and unsquashfs are small utilities to handle
 		(inspect and create) SquashFS formatted filesystem images.
-		Due to missing LZMA support this package is only suitable
-		for 7490 yet.
