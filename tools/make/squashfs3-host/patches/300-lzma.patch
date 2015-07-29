@@ -31,7 +31,7 @@
 +#endif
 --- squashfs-tools/Makefile
 +++ squashfs-tools/Makefile
-@@ -3,26 +3,41 @@
+@@ -3,26 +3,42 @@
  INCLUDEDIR = .
  
  CFLAGS := -I$(INCLUDEDIR) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -O2
@@ -40,10 +40,11 @@
 -all: mksquashfs unsquashfs
 +LIBS := -lz
 +ifeq ($(LZMA1_SUPPORT),1)
++LZMA_LIBNAME := lzma
 +SUFFIX := -multi
 +CPPFLAGS += -DLZMA1_SUPPORT $(if $(strip $(LZMA_DIR)),-I$(strip $(LZMA_DIR))/C)
-+LINKER = $(CXX)
-+LIBS += $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++
++LINKER = $(if $(findstring ++,$(LZMA_LIBNAME)),$(CXX),$(CC))
++LIBS += $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -l$(strip $(LZMA_LIBNAME))
 +endif
 +LIBS += -lpthread -lm
  

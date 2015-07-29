@@ -8,20 +8,23 @@
  
  mksquashfs: mksquashfs.o read_fs.o sort.o
  	$(CC) $^ -lz -o $@
-@@ -18,5 +19,22 @@
+@@ -18,5 +19,25 @@
  
  unsquashfs.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
  
 +# LZMA
++LZMA_LIBNAME := lzma
++LINKER = $(if $(findstring ++,$(LZMA_LIBNAME)),$(CXX),$(CC))
++
 +mksquashfs-lzma: mksquashfs-lzma.o read_fs-lzma.o sort-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -o $@
++	$(LINKER) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -l$(strip $(LZMA_LIBNAME)) -o $@
 +
 +mksquashfs-lzma.o: mksquashfs.c mksquashfs.h global.h
 +read_fs-lzma.o: read_fs.c read_fs.h global.h
 +sort-lzma.o: sort.c global.h
 +
 +unsquashfs-lzma: unsquashfs-lzma.o
-+	$(CXX) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -llzma1++ -o $@
++	$(LINKER) $^ $(if $(strip $(LZMA_DIR)),-L$(strip $(LZMA_DIR))) -l$(strip $(LZMA_LIBNAME)) -o $@
 +
 +unsquashfs-lzma.o: unsquashfs.c squashfs_fs.h read_fs.h global.h
 +
