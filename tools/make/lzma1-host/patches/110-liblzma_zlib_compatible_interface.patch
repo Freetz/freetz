@@ -85,7 +85,7 @@
 +	size_t propsSize = LZMA_PROPS_SIZE;
 +	SRes result = LzmaCompress(
 +		dest,
-+		destLen,
++		(size_t*)destLen,
 +		source,
 +		sourceLen,
 +		props,
@@ -130,10 +130,10 @@
 +		}
 +	}
 +
-+	uLong processedLen = sourceLen;
++	size_t processedLen = sourceLen;
 +	SRes result = LzmaUncompress(
 +		dest,
-+		destLen,
++		(size_t*)destLen,
 +		source,
 +		&processedLen,
 +		props,
@@ -141,7 +141,7 @@
 +	);
 +
 +	if (sourceLen - processedLen > 7) { /* TODO: understand where these 5 till 7 extra bytes come from - props encoded within the stream ? */
-+		fprintf(stderr, "%s: warning sourceLen!=processedLen, sourceLen = %lu, processedLen = %lu, delta = %ld\n", __FUNCTION__, sourceLen, processedLen, sourceLen-processedLen);
++		fprintf(stderr, "%s: warning sourceLen!=processedLen, sourceLen = %lu, processedLen = %zu, delta = %ld\n", __FUNCTION__, sourceLen, processedLen, sourceLen-processedLen);
 +	}
 +
 +	switch (result) {

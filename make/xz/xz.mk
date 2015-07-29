@@ -58,7 +58,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(XZ_DIR) clean
 	$(RM) -r \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzma* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzma.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/pkgconfig/liblzma.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/lzma.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/lzma \
