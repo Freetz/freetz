@@ -1,0 +1,32 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -2473,7 +2473,8 @@
+ 		queue_put(to_writer, NULL);
+ 		if(queue_get(from_writer) != 0)
+ 			EXIT_MKSQUASHFS();
+-		ftruncate(fd, bytes);
++		if (ftruncate(fd, bytes) != 0)
++			BAD_ERROR("Failed to truncate dest file because %s\n", strerror(errno));
+ 	}
+ 	unlock_fragments();
+ 	free(block_list);
+@@ -2569,7 +2570,8 @@
+ 			queue_put(to_writer, NULL);
+ 			if(queue_get(from_writer) != 0)
+ 				EXIT_MKSQUASHFS();
+-			ftruncate(fd, bytes);
++			if (ftruncate(fd, bytes)  != 0)
++				BAD_ERROR("Failed to truncate dest file because %s\n", strerror(errno));
+ 		}
+ 	}
+ 
+@@ -2597,7 +2599,8 @@
+ 		queue_put(to_writer, NULL);
+ 		if(queue_get(from_writer) != 0)
+ 			EXIT_MKSQUASHFS();
+-		ftruncate(fd, bytes);
++		if (ftruncate(fd, bytes) != 0)
++			BAD_ERROR("Failed to truncate dest file because %s\n", strerror(errno));
+ 	}
+ 	unlock_fragments();
+ 	for(blocks = thresh; blocks < block; blocks ++)

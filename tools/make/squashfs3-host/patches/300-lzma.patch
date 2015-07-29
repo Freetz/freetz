@@ -195,7 +195,7 @@
  		}
  	} else if(compressed_buffer)
  		memcpy(buffer->data, compressed_buffer->data, size);
-@@ -3788,6 +3813,12 @@
+@@ -3791,6 +3816,12 @@
  					exit(1);
  				}
  			}
@@ -208,7 +208,7 @@
  		} else if(strcmp(argv[i], "-noI") == 0 ||
  				strcmp(argv[i], "-noInodeCompression") == 0)
  			noI = TRUE;
-@@ -3850,6 +3881,9 @@
+@@ -3853,6 +3884,9 @@
  			ERROR("-read-queue <size>\tSet input queue to <size> Mbytes.  Default %d Mbytes\n", READER_BUFFER_DEFAULT);
  			ERROR("-write-queue <size>\tSet output queue to <size> Mbytes.  Default %d Mbytes\n", WRITER_BUFFER_DEFAULT);
  			ERROR("-fragment-queue <size>\tSet fagment queue to <size> Mbytes.  Default %d Mbytes\n", FRAGMENT_BUFFER_DEFAULT);
@@ -218,7 +218,7 @@
  			ERROR("-noI\t\t\tdo not compress inode table\n");
  			ERROR("-noD\t\t\tdo not compress data blocks\n");
  			ERROR("-noF\t\t\tdo not compress fragment blocks\n");
-@@ -3889,10 +3923,18 @@
+@@ -3892,10 +3926,18 @@
  	writer_buffer_size = writeb_mbytes << (20 - block_log);
  	fragment_buffer_size = fragmentb_mbytes << (20 - block_log);
  
@@ -237,7 +237,7 @@
  
  	for(i = 0; i < source; i++)
  		if(lstat(source_path[i], &source_buf) == -1) {
-@@ -4001,6 +4043,12 @@
+@@ -4004,6 +4046,12 @@
  		always_use_fragments = SQUASHFS_ALWAYS_FRAGMENTS(sBlk.flags);
  		duplicate_checking = SQUASHFS_DUPLICATES(sBlk.flags);
  		exportable = SQUASHFS_EXPORTABLE(sBlk.flags);
@@ -250,7 +250,7 @@
  	}
  
  	initialise_threads();
-@@ -4032,7 +4080,7 @@
+@@ -4035,7 +4083,7 @@
  
  		printf("Appending to existing %s %d.%d filesystem on %s, block size %d\n", be ? "big endian" :
  			"little endian", SQUASHFS_MAJOR, s_minor, argv[source + 1], block_size);
