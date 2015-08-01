@@ -23,7 +23,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LZMA1_DIR)/C/LzmaLib -f makefile.gcc \
 		CC=$(TARGET_CC) \
 		CPPFLAGS="-I ../ -D_GNU_SOURCE" \
-		CFLAGS="-std=c99 -W -Wall -Wno-unused-but-set-variable -Wno-unused-parameter $(TARGET_CFLAGS)" \
+		CFLAGS="-std=c99 -W -Wall -Wno-unused-but-set-variable -Wno-unused-parameter $(TARGET_CFLAGS) -ffunction-sections -fdata-sections" \
 		AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
