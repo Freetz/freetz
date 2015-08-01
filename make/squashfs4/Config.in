@@ -6,8 +6,13 @@ config FREETZ_PACKAGE_SQUASHFS4
 	select FREETZ_LIB_liblzma     if  FREETZ_PACKAGE_SQUASHFS4_ALL_DYN
 	default n
 	help
-		As of now this package provides only unsquashfs utility modified
-		to be able to expand BE images for AVM's 3.10.73 kernel based systems
+		This package provides unsquashfs/mksquashfs utilities modified
+		to be able to expand/create images in AVM-BE format.
+
+		AVM-BE is not an official name, it's a name given by the user
+		community to a non-standard SquashFS format used by AVM since
+		Fritz!OS Labor 6.35 - ths first kernel 3.10.73 based Fritz!OS
+		version.
 
 choice
 	depends on FREETZ_PACKAGE_SQUASHFS4
