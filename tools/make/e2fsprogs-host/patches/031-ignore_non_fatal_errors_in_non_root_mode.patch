@@ -1,0 +1,45 @@
+
+ Signed-off-by: gene@freetz.org
+
+--- debugfs/dump.c
++++ debugfs/dump.c
+@@ -67,6 +67,14 @@
+ 	return mode;
+ }
+ 
++static int is_root_process() {
++	static int value = -1;
++	if (value < 0) {
++		value = (geteuid() == 0) ? 1 : 0;
++	}
++	return value;
++}
++
+ static void fix_perms(const char *cmd, const struct ext2_inode *inode,
+ 		      int fd, const char *name)
+ {
+@@ -88,7 +96,7 @@
+ 	else
+ 		i = chown(name, inode->i_uid, inode->i_gid);
+ #endif
+-	if (i == -1)
++	if (i == -1 && is_root_process())
+ 		com_err(cmd, errno, "while changing ownership of %s", name);
+ 
+ 	ut.actime = inode->i_atime;
+@@ -315,13 +323,13 @@
+ 		}
+ 
+ 		if (mknod(fullname, chrdev ? S_IFCHR : S_IFBLK, makedev(major, minor)) == -1) {
+-			com_err("rdump", errno, "while creating %s device file %s", (chrdev ? "character" : "block"), fullname);
++			com_err("rdump", is_root_process() ? errno : 0, is_root_process() ? "while creating %s device file %s" : "skipping creating %s device file %s in non-root mode", (chrdev ? "character" : "block"), fullname);
+ 			goto errout;
+ 		}
+ 		fix_perms("rdump", inode, -1, fullname);
+ 	} else if (LINUX_S_ISFIFO(inode->i_mode)) {
+ 		if (mknod(fullname, S_IFIFO, 0) == -1) {
+-			com_err("rdump", errno, "while creating FIFO %s", fullname);
++			com_err("rdump", is_root_process() ? errno : 0, is_root_process() ? "while creating FIFO %s" : "skipping creating FIFO %s", fullname);
+ 			goto errout;
+ 		}
+ 		fix_perms("rdump", inode, -1, fullname);
