@@ -5,7 +5,7 @@ $(PKG)_SOURCE:=$($(PKG)_PRJNAME)$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=2a4d2995ad5aa6840c95a95ffa6b1da6
 $(PKG)_SITE:=@SF/$($(PKG)_PRJNAME)
 
-$(PKG)_DEPENDS_ON += zlib liblzma1
+$(PKG)_DEPENDS_ON += zlib lzma1
 
 $(PKG)_BUILD_DIR := $($(PKG)_DIR)/squashfs-tools
 

@@ -13,21 +13,21 @@ define $(PKG)_CUSTOM_UNPACK
 mkdir -p $($(PKG)_DIR); $(call UNPACK_TARBALL,$(1),$($(PKG)_DIR))
 endef
 
-ifneq ($(strip $(DL_DIR)/$(LIBLZMA1_SOURCE)),$(strip $(DL_DIR)/$(LZMA1_HOST_SOURCE)))
+ifneq ($(strip $(DL_DIR)/$(LZMA1_SOURCE)),$(strip $(DL_DIR)/$(LZMA1_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(LIBLZMA1_DIR)/C/LzmaLib -f makefile.gcc \
+	$(SUBMAKE) -C $(LZMA1_DIR)/C/LzmaLib -f makefile.gcc \
 		CC=$(TARGET_CC) \
 		CPPFLAGS="-I ../ -D_GNU_SOURCE" \
 		CFLAGS="-std=c99 -W -Wall -Wno-unused-but-set-variable -Wno-unused-parameter $(TARGET_CFLAGS)" \
 		AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	cp -a $(LIBLZMA1_DIR)/C/LZMA_ZLibCompat.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/
+	cp -a $(LZMA1_DIR)/C/LZMA_ZLibCompat.h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/
 	$(INSTALL_FILE)
 
 $(pkg): $($(PKG)_STAGING_BINARY)
@@ -35,7 +35,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled:
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(LIBLZMA1_DIR)/C/LzmaLib -f makefile.gcc clean
+	-$(SUBMAKE) -C $(LZMA1_DIR)/C/LzmaLib -f makefile.gcc clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzma1.a \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/LZMA_ZLibCompat.h
