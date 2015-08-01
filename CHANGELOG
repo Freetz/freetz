@@ -14,13 +14,22 @@ Latest changes:
     + add EXPERIMENTAL support for gcc-4.9.x
   * support for a 3rd (auxiliary) firmware
   * fakeroot: bump version to 1.20.2
+  * lzma SDK: bump lzma SDK version to 4.65
   * sfk: bump version to 1.7.2
+  * squashfs* tools:
+    + unify all host- and target-patches (i.e. use the same set of patches for both the host and the target packages)
+    + switch to using a C only version of liblzma instead of the C++ version used so far
+  * squashfs3 tools: revise LZMA related patches so that the resulting binaries support
+                     both ZLIB and LZMA compression methods at the same time
 
 - New tools and hooks:
-  * fwdu: script to download (and unpack) all firmwares by ftp.avm.de
+  * fwdu: script to download (and unpack) all firmwares from ftp.avm.de
   * verify-dls.sh: script to validate download urls in Config.in
   * scons: python based software construction tool (s. http://www.scons.org/ for details)
   * genext2fs: a tool to generate an ext2 filesystem as a normal (non-root) user
+  * mke2img: a script taken from the Buildroot project making it possible to create
+             an ext2 filesystem image as a normal (non-root) user
+  * squashfs-tools-4.3: a special version of squashfs-tools modified to support AVM-BE format
 
 - New patches (read online help for more info):
 
@@ -44,6 +53,7 @@ Latest changes:
     * libnettle 3.1.1
     * libsrtp-1.4.4+20100615
     * libusb-compat 0.1.5
+    * lzma1 4.65
     * nzbget 14.1
     * PJProject 2.2.1
     * Fritz!Box private key password framework
@@ -191,7 +201,7 @@ Latest changes:
     * add basic web interface for HAProxy
 
 - Other stuff:
-	* menuconfig help (shows howtos/make_targets.txt)
+    * menuconfig help (shows howtos/make_targets.txt)
 
 === Freetz-2.0 ===
 
