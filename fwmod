@@ -174,6 +174,7 @@ TAR="${TOOLS_DIR}/${TAR_TOOL}"
 TAR_GNU="${TOOLS_DIR}/tar-gnu"
 MD5SUM="${TOOLS_DIR}/${MD5SUM_TOOL}"
 BUSYBOX="${TOOLS_DIR}/${BUSYBOX_TOOL}"
+BLKID="${TOOLS_DIR}/blkid"
 
 # Freetz directores relative to base dir
 PACKAGES_DIR_ROOT="${BASE_DIR}/packages"
@@ -451,15 +452,11 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
 
 		echo "unpacking update image"
-		if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then # TODO: use other symbol as soon as we know more about the other boxes
-			modunext2 "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
-		else
-			modunsqfs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
-		fi
+		modunpack_autodetect_fs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] && error 1 "copying kernel or filesystem image failed"
 
 		echo "unpacking filesystem image"
-		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
+		modunpack_autodetect_fs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
 	else
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
@@ -472,7 +469,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		fi
 
 		echo "unpacking filesystem image"
-		modunsqfs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
+		modunpack_autodetect_fs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
 	fi
 
 	if [ -r "$AVMPLUGINS" ]; then
@@ -484,7 +481,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 			AVMPLUGIN="${i##*/plugin-}"
 			AVMPLUGIN="${AVMPLUGIN%\.image}"
 			echo2 "$AVMPLUGIN image"
-			modunsqfs "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
+			modunpack_autodetect_fs "$AVMPLUGINS_DIR/plugin-${AVMPLUGIN}" "$i" > /dev/null
 		done
 		chmod -R +w "$AVMPLUGINS_DIR"
 	fi

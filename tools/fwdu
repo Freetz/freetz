@@ -71,6 +71,17 @@ unpack() {
 	fi
 }
 
+# $1 is expected to be junk-bytes-removed and kernel-filesystem-splitted
+unfs_probe() {
+	{
+		{ $FTOOLS/blkid -O 256 "$1" 2>/dev/null | grep -q 'TYPE="ext2"'; } \
+		&& dd if="$1" of="$1.ext2" bs=256 skip=1 conv=sync >/dev/null 2>&1   \
+		&& { mkdir -p "squashfs-root"; echo "rdump / squashfs-root" | $FTOOLS/debugfs "$1.ext2"; }
+	} \
+	|| $FTOOLS/unsquashfs3-multi       "$1" \
+	|| $FTOOLS/unsquashfs4-lzma-avm-be "$1"
+}
+
 image() {
 	local img=$1
 	local dst=$2
@@ -107,19 +118,14 @@ image() {
 	rm x.image
 	cat kernelsquashfs.raw kernel.raw > x.raw
 	rm  kernelsquashfs.raw kernel.raw
-	$FTOOLS/unsquashfs3-multi x.raw >/dev/null 2>&1 || {
-		# try if it's an ext2 image
-		dd if="x.raw" of="x.ext2" bs=256 skip=1 conv=sync >/dev/null 2>&1 \
-		&& $FTOOLS/tune2fs -l "x.ext2" >/dev/null 2>&1 \
-		&& { mkdir -p "squashfs-root"; echo "rdump / squashfs-root" | $FTOOLS/debugfs "x.ext2" >/dev/null 2>&1; }
-	} || echo FALSE $img
-	rm x.raw x.ext2
+	unfs_probe x.raw >/dev/null 2>&1 || echo FALSE $img
+	rm -f x.raw x.raw.ext2
 	# for recent fw's
 	if [ -e squashfs-root/filesystem_core.squashfs ]; then
 		$FTOOLS/find-squashfs squashfs-root/filesystem_core.squashfs >/dev/null 2>&1
 		rm squashfs-root/filesystem_core.squashfs kernel.raw
 		mv squashfs-root filesystem_envelope
-		$FTOOLS/unsquashfs3-multi kernelsquashfs.raw >/dev/null 2>&1 || $FTOOLS/unsquashfs4-lzma-avm-be kernelsquashfs.raw >/dev/null 2>&1
+		unfs_probe kernelsquashfs.raw >/dev/null 2>&1
 		rm kernelsquashfs.raw
 		[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
 	fi

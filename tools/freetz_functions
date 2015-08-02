@@ -285,6 +285,17 @@ modunsqfs()
 	fi
 }
 
+modunpack_autodetect_fs()
+{
+	if $BLKID -O 256 "$2" 2>/dev/null | grep -q 'TYPE="ext2"'; then
+		modunext2 "$@"
+	elif $BLKID -O 0 "$2" 2>/dev/null | grep -q 'TYPE="squashfs"'; then
+		modunsqfs "$@"
+	else
+		error 1 "modunpack_autodetect_fs: failed to detect file system type of '$2'"
+	fi
+}
+
 modlangsubst()
 {
 	# modlangsubst <lang> <file>
