@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.0.2)
+$(call PKG_INIT_LIB, 1.0.3)
 $(PKG)_LIB_VERSION:=3.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=5072d82ab50ec36cc8c0e320b5c377adb48abe70
+$(PKG)_SOURCE_SHA1:=b8be66396c726fdc36ebb0f692ed8a8cca3bcc66
 $(PKG)_SITE:=http://www.multiprecision.org/mpc/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpc.so.$($(PKG)_LIB_VERSION)
