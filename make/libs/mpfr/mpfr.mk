@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 3.1.2)
-$(PKG)_LIB_VERSION:=4.1.2
+$(call PKG_INIT_LIB, 3.1.3)
+$(PKG)_LIB_VERSION:=4.1.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=e3d203d188b8fe60bb6578dd3152e05c
+$(PKG)_SOURCE_MD5:=6969398cd2fbc56a6af570b5273c56a9
 $(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
@@ -9,9 +9,6 @@ $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.so.$($(PK
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libmpfr.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON += gmp
-
-# prevent configure from being regenerated (008-gmp6-compat contains all changes needed)
-$(PKG)_PATCH_POST_CMDS += touch -t 200001010000.00 configure.ac;
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
