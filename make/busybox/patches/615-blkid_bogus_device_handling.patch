@@ -15,9 +15,9 @@
  		scan_devices = 0;
  	}
  
+-	display_uuid_cache(scan_devices);
 +	// show all partitions only, if blkid called without arguments or if uuidCache not empty
-+	if ((scan_devices == 1) || (part_found))
- 	display_uuid_cache(scan_devices);
++	if (scan_devices || part_found)
++		display_uuid_cache(scan_devices);
  	return 0;
  }
-

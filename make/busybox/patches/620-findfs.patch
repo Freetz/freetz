@@ -31,7 +31,7 @@
  /* Returns:
 --- util-linux/volume_id/get_devname.c
 +++ util-linux/volume_id/get_devname.c
-@@ -301,6 +301,41 @@
+@@ -306,6 +306,41 @@
  	return NULL;
  }
  
@@ -39,7 +39,7 @@
 +{
 +	struct uuidCache_s *uc;
 +
-+	add_to_uuid_cache(spec);
++	add_to_uuid_cache(spec, (uint64_t)0);
 +	uc = uuidCache;
 +	if (uc != NULL)
 +	{
@@ -57,7 +57,7 @@
 +{
 +	struct uuidCache_s *uc;
 +
-+	add_to_uuid_cache(spec);
++	add_to_uuid_cache(spec, (uint64_t)0);
 +	uc = uuidCache;
 +	if (uc != NULL)
 +	{
@@ -73,7 +73,7 @@
  int resolve_mount_spec(char **fsname)
  {
  	char *tmp = *fsname;
-@@ -309,7 +344,12 @@
+@@ -314,7 +349,12 @@
  		tmp = get_devname_from_uuid(*fsname + 5);
  	else if (strncmp(*fsname, "LABEL=", 6) == 0)
  		tmp = get_devname_from_label(*fsname + 6);
