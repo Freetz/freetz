@@ -1,6 +1,6 @@
 --- src/connections.c
 +++ src/connections.c
-@@ -254,6 +254,8 @@
+@@ -240,6 +240,8 @@
  
  			return 0;
  		case SSL_ERROR_SYSCALL:
@@ -9,7 +9,7 @@
  			/**
  			 * man SSL_get_error()
  			 *
-@@ -269,7 +271,7 @@
+@@ -255,7 +257,7 @@
  			while((ssl_err = ERR_get_error())) {
  				/* get all errors from the error-queue */
  				log_error_write(srv, __FILE__, __LINE__, "sds", "SSL:",
@@ -18,7 +18,7 @@
  			}
  
  			switch(oerrno) {
-@@ -279,6 +281,7 @@
+@@ -265,6 +267,7 @@
  						strerror(oerrno));
  				break;
  			}
@@ -26,7 +26,7 @@
  
  			break;
  		case SSL_ERROR_ZERO_RETURN:
-@@ -290,6 +293,9 @@
+@@ -276,6 +279,9 @@
  
  			/* fall thourgh */
  		default:
@@ -36,7 +36,7 @@
  			while((ssl_err = ERR_get_error())) {
  				switch (ERR_GET_REASON(ssl_err)) {
  				case SSL_R_SSL_HANDSHAKE_FAILURE:
-@@ -303,7 +309,8 @@
+@@ -289,7 +295,8 @@
  				}
  				/* get all errors from the error-queue */
  				log_error_write(srv, __FILE__, __LINE__, "sds", "SSL:",
@@ -46,7 +46,7 @@
  			}
  			break;
  		}
-@@ -1331,8 +1338,9 @@
+@@ -1151,8 +1158,9 @@
  		/* connect FD to SSL */
  		if (srv_socket->is_ssl) {
  			if (NULL == (con->ssl = SSL_new(srv_socket->ssl_ctx))) {
@@ -57,7 +57,7 @@
  
  				return NULL;
  			}
-@@ -1342,8 +1350,9 @@
+@@ -1162,8 +1170,9 @@
  			SSL_set_accept_state(con->ssl);
  
  			if (1 != (SSL_set_fd(con->ssl, cnt))) {
@@ -68,7 +68,7 @@
  				return NULL;
  			}
  		}
-@@ -1555,8 +1564,12 @@
+@@ -1375,8 +1384,12 @@
  
  						break;
  					default:
@@ -82,7 +82,7 @@
  					}
  				}
  #endif
-@@ -1678,10 +1691,11 @@
+@@ -1494,10 +1507,11 @@
  					case SSL_ERROR_SYSCALL:
  						/* perhaps we have error waiting in our error-queue */
  						if (0 != (err = ERR_get_error())) {
@@ -95,7 +95,7 @@
  							} while((err = ERR_get_error()));
  						} else if (errno != 0) { /* ssl bug (see lighttpd ticket #2213): sometimes errno == 0 */
  							switch(errno) {
-@@ -1698,10 +1712,14 @@
+@@ -1514,10 +1528,14 @@
  
  						break;
  					default:
@@ -144,7 +144,7 @@
  			return SSL_TLSEXT_ERR_ALERT_FATAL;
  		}
  
-@@ -600,9 +603,10 @@
+@@ -601,9 +604,10 @@
  	if (NULL == (s->ssl_pemfile_pkey = evp_pkey_load_pem_file(srv, s->ssl_pemfile->ptr))) return -1;
  
  	if (!X509_check_private_key(s->ssl_pemfile_x509, s->ssl_pemfile_pkey)) {
@@ -156,8 +156,8 @@
  				s->ssl_pemfile);
  		return -1;
  	}
-@@ -731,24 +735,27 @@
- 		if (!buffer_is_empty(s->ssl_ca_file)) {
+@@ -732,24 +736,27 @@
+ 		if (!buffer_string_is_empty(s->ssl_ca_file)) {
  			s->ssl_ca_file_cert_names = SSL_load_client_CA_file(s->ssl_ca_file->ptr);
  			if (NULL == s->ssl_ca_file_cert_names) {
 +				char ssl_error_string_buf[256];
@@ -167,7 +167,7 @@
  			}
  		}
  
- 		if (buffer_is_empty(s->ssl_pemfile) || !s->ssl_enabled) continue;
+ 		if (buffer_string_is_empty(s->ssl_pemfile) || !s->ssl_enabled) continue;
  
  		if (NULL == (s->ssl_ctx = SSL_CTX_new(SSLv23_server_method()))) {
 +			char ssl_error_string_buf[256];
@@ -187,7 +187,7 @@
  			return -1;
  		}
  
-@@ -768,8 +775,9 @@
+@@ -769,8 +776,9 @@
  		if (!s->ssl_use_sslv2) {
  			/* disable SSLv2 */
  			if (!(SSL_OP_NO_SSLv2 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv2))) {
@@ -198,7 +198,7 @@
  				return -1;
  			}
  		}
-@@ -777,8 +785,9 @@
+@@ -778,8 +786,9 @@
  		if (!s->ssl_use_sslv3) {
  			/* disable SSLv3 */
  			if (!(SSL_OP_NO_SSLv3 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv3))) {
@@ -209,8 +209,8 @@
  				return -1;
  			}
  		}
-@@ -786,8 +795,9 @@
- 		if (!buffer_is_empty(s->ssl_cipher_list)) {
+@@ -787,8 +796,9 @@
+ 		if (!buffer_string_is_empty(s->ssl_cipher_list)) {
  			/* Disable support for low encryption ciphers */
  			if (SSL_CTX_set_cipher_list(s->ssl_ctx, s->ssl_cipher_list->ptr) != 1) {
 +				char ssl_error_string_buf[256];
@@ -220,9 +220,9 @@
  				return -1;
  			}
  
-@@ -867,8 +877,9 @@
+@@ -868,8 +878,9 @@
  
- 			if (!buffer_is_empty(s1->ssl_ca_file)) {
+ 			if (!buffer_string_is_empty(s1->ssl_ca_file)) {
  				if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s1->ssl_ca_file->ptr, NULL)) {
 +					char ssl_error_string_buf[256];
  					log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -231,7 +231,7 @@
  					return -1;
  				}
  			}
-@@ -891,21 +902,24 @@
+@@ -892,21 +903,24 @@
  		}
  
  		if (SSL_CTX_use_certificate(s->ssl_ctx, s->ssl_pemfile_x509) < 0) {
@@ -319,7 +319,7 @@
  						return -1;
 --- src/server.c
 +++ src/server.c
-@@ -1574,3 +1574,10 @@
+@@ -1579,3 +1579,10 @@
  
  	return 0;
  }
@@ -332,9 +332,9 @@
 +#endif
 --- src/server.h
 +++ src/server.h
-@@ -14,4 +14,8 @@
+@@ -6,4 +6,8 @@
+ int config_read(server *srv, const char *fn);
  int config_set_defaults(server *srv);
- buffer *config_get_value_buffer(server *srv, connection *con, config_var_t field);
  
 +#ifdef USE_OPENSSL
 +char* lighttpd_ERR_error_string_n(unsigned long e, char* buf, unsigned long len);

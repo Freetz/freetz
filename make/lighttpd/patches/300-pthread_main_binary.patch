@@ -1,6 +1,6 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -582,7 +582,7 @@
+@@ -583,7 +583,7 @@
  CCDEPMODE = @CCDEPMODE@
  CFLAGS = @CFLAGS@
  CPP = @CPP@
@@ -9,12 +9,12 @@
  CRYPT_LIB = @CRYPT_LIB@
  CYGPATH_W = @CYGPATH_W@
  DEFS = @DEFS@ -DHAVE_VERSION_H -DLIBRARY_DIR="\"$(libdir)\"" -DSBIN_DIR="\"$(sbindir)\""
-@@ -881,7 +881,7 @@
-       version.h
+@@ -884,7 +884,7 @@
+ 	version.h
  
  lighttpd_SOURCES = $(src)
--lighttpd_LDADD = $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS) $(LIBEV_LIBS)
-+lighttpd_LDADD = $(strip $(filter -lpthread,$(FAM_LIBS) $(LUA_LIBS) $(MYSQL_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) $(XML_LIBS))) $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS) $(LIBEV_LIBS)
+-lighttpd_LDADD = $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS)
++lighttpd_LDADD = $(strip $(filter -lpthread,$(FAM_LIBS) $(LUA_LIBS) $(MYSQL_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) $(XML_LIBS))) $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS)
  lighttpd_LDFLAGS = -export-dynamic
  lighttpd_CCPFLAGS = $(FAM_CFLAGS) $(LIBEV_CFLAGS)
  proc_open_SOURCES = proc_open.c buffer.c
