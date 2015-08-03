@@ -33,7 +33,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(XZ_DIR)
+	$(SUBMAKE) -C $(XZ_DIR) EXTRA_CFLAGS="-ffunction-sections -fdata-sections"
 
 $($(PKG)_BINARY): $($(PKG)_LIB_BINARY)
 	@touch -c $@
