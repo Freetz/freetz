@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -14982,7 +14982,7 @@
+@@ -14998,7 +14998,7 @@
  
  
  valid_CPPFLAGS="$CPPFLAGS"; CPPFLAGS="$CPPFLAGS -I$SSLDIR/include"
@@ -11,12 +11,12 @@
  ac_fn_c_check_header_mongrel "$LINENO" "$SSLDIR/include/openssl/engine.h" "$as_ac_Header" "$ac_includes_default"
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -382,7 +382,7 @@
+@@ -400,7 +400,7 @@
  	-DLIBDIR='"$(pkglibdir)"' -DCONFDIR='"$(sysconfdir)/stunnel"'
  
  # SSL library
 -stunnel_LDFLAGS = -L$(SSLDIR)/lib64 -L$(SSLDIR)/lib -lssl -lcrypto
 +stunnel_LDFLAGS =                   -L$(SSLDIR)/lib -lssl -lcrypto -ldl
+ stunnel_exe_SOURCES = $(common_headers) $(common_sources) $(win32_gui_sources)
+ tstunnel_exe_SOURCES = $(common_headers) $(common_sources) $(win32_cli_sources)
  
- # OPENSSLDIR = /usr/src/openssl-0.9.8u-fips
- # WINCPPFLAGS = -I$(OPENSSLDIR)/inc32

@@ -1,59 +1,20 @@
 --- configure
 +++ configure
-@@ -13833,7 +13833,7 @@
+@@ -13843,7 +13843,7 @@
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: **************************************** PTY device files" >&5
  $as_echo "$as_me: **************************************** PTY device files" >&6;}
--if test "$cross_compiling" = "no"; then
-+#if test "$cross_compiling" = "no"; then
+-if test "x$cross_compiling" = "xno"; then
++if true || test "x$cross_compiling" = "xno"; then
      as_ac_File=`$as_echo "ac_cv_file_"/dev/ptmx"" | $as_tr_sh`
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for \"/dev/ptmx\"" >&5
  $as_echo_n "checking for \"/dev/ptmx\"... " >&6; }
-@@ -13880,15 +13880,15 @@
- 
- fi
- 
--else
--    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming /dev/ptmx and /dev/ptc are not available" >&5
--$as_echo "$as_me: WARNING: cross-compilation: assuming /dev/ptmx and /dev/ptc are not available" >&2;}
--fi
-+#else
-+#    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming /dev/ptmx and /dev/ptc are not available" >&5
-+#$as_echo "$as_me: WARNING: cross-compilation: assuming /dev/ptmx and /dev/ptc are not available" >&2;}
-+#fi
- 
+@@ -13898,7 +13898,7 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: **************************************** entropy sources" >&5
  $as_echo "$as_me: **************************************** entropy sources" >&6;}
  
--if test "$cross_compiling" = "no"; then
-+#if test "$cross_compiling" = "no"; then
+-if test "x$cross_compiling" = "xno"; then
++if true || test "x$cross_compiling" = "xno"; then
  
  # Check whether --with-egd-socket was given.
  if test "${with_egd_socket+set}" = set; then :
-@@ -13945,20 +13945,22 @@
- _ACEOF
- 
-     fi
--else
--    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming entropy sources are not available" >&5
--$as_echo "$as_me: WARNING: cross-compilation: assuming entropy sources are not available" >&2;}
--fi
-+#else
-+#    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming entropy sources are not available" >&5
-+#$as_echo "$as_me: WARNING: cross-compilation: assuming entropy sources are not available" >&2;}
-+#fi
- 
- { $as_echo "$as_me:${as_lineno-$LINENO}: **************************************** default group" >&5
- $as_echo "$as_me: **************************************** default group" >&6;}
- DEFAULT_GROUP=nobody
-+if false; then
- if test "$cross_compiling" = "no"; then
-     grep '^nogroup:' /etc/group >/dev/null && DEFAULT_GROUP=nogroup
- else
-     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cross-compilation: assuming nogroup is not available" >&5
- $as_echo "$as_me: WARNING: cross-compilation: assuming nogroup is not available" >&2;}
- fi
-+fi
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking for default group" >&5
- $as_echo_n "checking for default group... " >&6; }
- { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DEFAULT_GROUP" >&5
