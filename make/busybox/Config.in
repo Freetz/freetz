@@ -295,7 +295,7 @@ config FREETZ_BUSYBOX__MANDATORY_05_XX
 	select FREETZ_BUSYBOX_UNIQ
 	select FREETZ_BUSYBOX_UNXZ
 	select FREETZ_BUSYBOX_UNZIP
-	select FREETZ_BUSYBOX_XZ
+	select FREETZ_BUSYBOX_XZ if !FREETZ_PACKAGE_XZ
 	help
 		Selects everything Freetz needs to run properly (with Fritz!OS 05.xx and up)
 
@@ -324,7 +324,7 @@ config FREETZ_BUSYBOX__PACKER
 	select FREETZ_BUSYBOX_UNXZ
 	select FREETZ_BUSYBOX_UNZIP
 	select FREETZ_BUSYBOX_UUENCODE
-	select FREETZ_BUSYBOX_XZ
+	select FREETZ_BUSYBOX_XZ if !FREETZ_PACKAGE_XZ
 	help
 		Selects base64, b(un)zip2, unlzma, unzip, unxz,
 		uuencode and some tar features.

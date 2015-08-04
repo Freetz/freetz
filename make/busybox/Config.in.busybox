@@ -1219,7 +1219,7 @@ config FREETZ_BUSYBOX_UNXZ
 config FREETZ_BUSYBOX_XZ
 	bool "Provide xz alias which supports only unpacking"
 	default n
-	depends on FREETZ_BUSYBOX_UNXZ
+	depends on FREETZ_BUSYBOX_UNXZ && !FREETZ_PACKAGE_XZ
 	help
 	  Enable this option if you want commands like "xz -d" to work.
 	  IOW: you'll get xz applet, but it will always require -d option.
