@@ -1,0 +1,50 @@
+From 2d9740a65a81fe050f99479c2a2f38b6a3198a8e Mon Sep 17 00:00:00 2001
+From: Tony Wu <tung7970@gmail.com>
+Date: Fri, 25 Jul 2014 05:52:11 +0000
+Subject: uclibc: nptl: fix __lll_lock_wait_private multiple definition
+
+Mark non-pthread __lll_lock_wait_private weak to avoid multiple
+definition error in static link mode.
+
+Signed-off-by: Tony Wu <tung7970@gmail.com>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+index af864b3..cd42135 100644
+--- libpthread/nptl/sysdeps/unix/sysv/linux/arm/lowlevellock.c
++++ libpthread/nptl/sysdeps/unix/sysv/linux/arm/lowlevellock.c
+@@ -24,6 +24,9 @@
+ #include <tls.h>
+ 
+ void
++#ifndef IS_IN_libpthread
++weak_function
++#endif
+ __lll_lock_wait_private (int *futex)
+ {
+   do
+index 1aa7960..2a5bf6d 100644
+--- libpthread/nptl/sysdeps/unix/sysv/linux/lowlevellock.c
++++ libpthread/nptl/sysdeps/unix/sysv/linux/lowlevellock.c
+@@ -27,6 +27,9 @@
+ 
+ 
+ void
++#ifndef IS_IN_libpthread
++weak_function
++#endif
+ __lll_lock_wait_private (int *futex)
+ {
+   if (*futex == 2)
+index 3ff1b73..35c678e 100644
+--- libpthread/nptl/sysdeps/unix/sysv/linux/sparc/lowlevellock.c
++++ libpthread/nptl/sysdeps/unix/sysv/linux/sparc/lowlevellock.c
+@@ -26,6 +26,9 @@
+ 
+ 
+ void
++#ifndef IS_IN_libpthread
++weak_function
++#endif
+ __lll_lock_wait_private (int *futex)
+ {
+   do
