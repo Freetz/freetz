@@ -1,0 +1,29 @@
+
+ Revert some of the upstream "5.21 to 5.22" OCSP-related changes as these break the compilation against OpenSSL 0.9.8
+
+--- src/verify.c
++++ src/verify.c
+@@ -717,17 +717,23 @@
+     s_log(LOG_DEBUG, "OCSP: Connected %s:%s", host, port);
+ 
+     /* OCSP protocol communication loop */
++#if OPENSSL_VERSION_NUMBER>=0x10000000L
+     req_ctx=OCSP_sendreq_new(bio, path, NULL, -1);
++#else
++    req_ctx=OCSP_sendreq_new(bio, path, req,  -1);
++#endif
+     if(!req_ctx) {
+         sslerror("OCSP: OCSP_sendreq_new");
+         goto cleanup;
+     }
++#if OPENSSL_VERSION_NUMBER>=0x10000000L
+     if(!OCSP_REQ_CTX_add1_header(req_ctx, "Host", host)) {
+         sslerror("OCSP: OCSP_REQ_CTX_add1_header");
+         goto cleanup;
+     }
+     if(!OCSP_REQ_CTX_set1_req(req_ctx, req))
+         goto cleanup;
++#endif
+     while(OCSP_sendreq_nbio(&resp, req_ctx)==-1) {
+         s_poll_init(c->fds);
+         s_poll_add(c->fds, c->fd, BIO_should_read(bio), BIO_should_write(bio));
