@@ -690,10 +690,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oems=$(sed -n -r -e '/'"${iterate_over_oems_pattern}"'/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
 	[ -z "$oems" ] && error 1 "failed to determine OEMs supported by the original firmware"
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
-	warn1 "Modifying of Fritz!OS 06.35 is not supported yet, skipping"
-else
-
 	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
 	for webdir in \
 	  ${FILESYSTEM_MOD_DIR}/usr/www \
@@ -781,7 +777,7 @@ else
 	[ -d "$LUA_MOD_DIR" ] && echo1 "LUA directory: ${LUA_MOD_DIR}" || FREETZ_AVM_HAS_ONLY_HTML=y
 
 	# Determine $MODULES_DIR in AVM image, eg: "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.19.2
-	MODULES_DIR="$(find ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.* -maxdepth 0 -type d)"
+	MODULES_DIR="$(find ${FILESYSTEM_MOD_DIR}/lib/modules/2.6.* ${FILESYSTEM_MOD_DIR}/lib/modules/3.*.* -maxdepth 0 -type d 2>/dev/null)"
 	[ ! -d "$MODULES_DIR" ] && error 1 "Cannot find modules dir."
 	# Set $MODULES_SUBDIR relative to root dir in AVM image, eg: "lib/modules/2.6.19.2
 	MODULES_SUBDIR="${MODULES_DIR#${FILESYSTEM_MOD_DIR}/}"
@@ -1438,8 +1434,6 @@ else
 		[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
 		. "${EXTERNAL}"
 	fi
-
-fi # EndOf: Modifying of Fritz!OS 06.35 is not supported yet, skipping
 
 	touch "${DIR}/.modified"
 	echo -e "done.\n"
