@@ -555,7 +555,7 @@ menu "Override options"
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.20.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_EN_BE) && FREETZ_TYPE_FIRMWARE_06_2X
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.06.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN_BE && FREETZ_TYPE_FIRMWARE_06_0X
 		default "FRITZ.Box_7490_Labor.113.06.29-30480.image"                    if FREETZ_TYPE_FIRMWARE_LABOR_PHONE && FREETZ_TYPE_7490
-		default "FRITZ.Box_7490_Labor.113.06.35-30987.image"                    if FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR && FREETZ_TYPE_7490
+		default "FRITZ.Box_7490_Labor.113.06.35-31026.image"                    if FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR && FREETZ_TYPE_7490
 		#
 		default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.92.image"          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
@@ -772,13 +772,13 @@ menu "Override options"
 	config FREETZ_DL_SOURCE_CONTAINER
 		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
 		default "fritzbox-labor_7490-30480.zip"         if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR_PHONE
-		default "fritzbox-labor_7490-30987.zip"         if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR
+		default "fritzbox-labor_7490-31026.zip"         if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR
 		default ""
 
 	config FREETZ_DL_SOURCE_CONTAINER_MD5
 		string "MD5 checksum for container"             if FREETZ_DL_OVERRIDE
 		default "50e81b02c2a084faf4e8fa4e93069318"      if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR_PHONE
-		default "e78fe4bd2d0175679776841756b3d73c"      if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR
+		default "63e33ad5f920dddd2a02ea4b0882338d"      if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR
 		default ""
 
 	config FREETZ_DL_ALIEN
