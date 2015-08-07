@@ -1,11 +1,13 @@
-$(call PKG_INIT_BIN,02.24.44)
+$(call PKG_INIT_BIN,02.24.47)
 $(PKG)_SOURCE:=$(pkg).v.$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0652d99aab1249d6a3afe4d65861e77b
+$(PKG)_SOURCE_MD5:=ed63035b114ace5dffbbc349966df732
 $(PKG)_SITE:=@SF/inadyn-mt
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg).v.$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/inadyn-mt
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/inadyn-mt
+$(PKG)_SERVERS_CONF:=$($(PKG)_DIR)/extra/servers_additional.cfg
+$(PKG)_TARGET_SERVERS_CONF:=$($(PKG)_DEST_DIR)/etc/inadyn-mt/servers_additional.cfg
 
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-dynamic
@@ -25,9 +27,12 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_TARGET_SERVERS_CONF): $($(PKG)_SERVERS_CONF)
+	$(INSTALL_FILE)
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_SERVERS_CONF)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(INADYN_MT_DIR) clean

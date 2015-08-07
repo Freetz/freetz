@@ -1,0 +1,181 @@
+--- extra/servers_additional.cfg
++++ extra/servers_additional.cfg
+@@ -1,25 +1,11 @@
+-#File format is utf-8.  If you make changes, additions, be sure and save the file as type utf-8, otherwise things will break (sorry for rhyme).
+-#At minimum each entry requires a key, such as, 'default@server.com' followed by dyndns_server_name, and dyndns_server_url options with respective server name, and url parameters.  Excluding svr_rsp_success, and to a lesser extent svr_rsp_other, and if needed svr_ip_param <ip> [usr pw], kind of defeats the purpose here, but it probably won't crash the program - it just may not give expected results.  In short, kind of have an idea of what you're doing, your intentions, etcetera, if you take it upon yourself to edit this file.  Good luck.  And may the Schwartz be with you.
+-
+-#Your submissions, or requests at help, or feature requests forums at http://sourceforge.net/projects/inadyn-mt much appreciated.
+-
+-#Servers
+-#Example (usable) of natively supported dyndns.com (default@dyndns.org)
+-default@ddns_server_of_your_dreams --dyndns_server_name members.dyndns.org --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
+-#Some examples (usable) mapped from the INADYN project
+ default@dtdns.com --dyndns_server_name www.dtdns.com --dyndns_server_url /api/autodns.cfm?id= --ip_server_name myip.dtdns.com / --svr_ip_param ip usr pw --svr_rsp_success "Host ($ALIAS) now points to ($IP_ADDR)."
+ default@changeip.com --dyndns_server_name ip.changeip.com --dyndns_server_url /nic/update?system=dyndns&hostname= --ip_server_name ip.changeip.com / --svr_rsp_success "good,nochg" --svr_ip_param myip
+-#no change -- 4=, #try later (etc.) 11=
+ default@dnsexit.com --dyndns_server_name update.dnsexit.com --dyndns_server_url /RemoteUpdate.sv?host= --ip_server_name ip.dnsexit.com / --svr_ip_param myip login password --svr_rsp_success "0=,1=" --svr_rsp_other "11="
+ ipv4@nsupdate.info --dyndns_server_name ipv4.nsupdate.info --dyndns_server_url /nic/update?system=dyndns&hostname= --ip_server_name ipv4.nsupdate.info /myip --svr_rsp_success "good,nochg" --svr_ip_param myip
+ ipv6@nsupdate.info --dyndns_server_name ipv6.nsupdate.info --dyndns_server_url /nic/update?system=dyndns&hostname= --ip_server_name ipv6.nsupdate.info /myip --svr_rsp_success "good,nochg" --svr_ip_param myip
+ default@loopia.com --dyndns_server_name dns.loopia.se --dyndns_server_url /XDynDNSServer/XDynDNS.php?system=dyndns&hostname= --ip_server_name dns.loopia.se /checkip/checkip.php --svr_rsp_success "good,nochg" --svr_ip_param myip
+-
+-#SSL required for domains.google.com (install stunnel -- see related at http://sourceforge.com/projects/inadyn-mt help forum)
+ default@domains.google.com --dyndns_server_name domains.google.com --dyndns_server_url /nic/update?hostname= --ip_server_name checkip.dyndns.org / --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
+-
+ default@duckdns.org --dyndns_server_name duckdns.org --dyndns_server_url /update?domains= --ip_server_name ipv4.wtfismyip.com /text --svr_ip_param ip token mumble --svr_rsp_success "good"
+-
+ default@dnsdynamic.org --dyndns_server_name www.dnsdynamic.org --dyndns_server_url /api/hostname= --ip_server_name myip.dnsdynamic.com / --svr_rsp_success "good,nochg" --svr_ip_param myip
+ default@dnspark.com --dyndns_server_name control.dnspark.com --dyndns_server_url /api/dynamic/update.php?hostname= --ip_server_name ipdetect.dnspark.com --srv_rsp_success "ok,nochg" / svr_ip_param ip
+ ipv4@regfish.de --dyndns_server_name dyndns.regfish.de --dyndns_server_url /?thisisipv4=1&FQDN= --svr_rsp_success "SUCCESS,SUCCESS_NONEED" --svr_rsp_other "STATUS_UNKNOWN_ERROR" --svr_ip_param ipv4 blahblah token
+@@ -28,152 +14,4 @@
+ default@joker.com --dyndns_server_name svc.joker.com --dyndns_server_url /nic/update?hostname= --ip_server.name svc.joker.com /nic/checkip --svr_rsp_success "good,nochg" --svr_ip_param myip username password
+ default@strato.com --dyndns_server_name dyndns.strato.com --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_ip_param myip
+ default@system-ns.com --dyndns_server_name system-ns.com --dyndns_server_url /api?type=dynamic&command=set&domain= --svr_rsp_success "0" --svr_rsp_other "99" --svr_ip_param ip blahblah token
+-
+ mondo@freedns.afraid.org --dyndns_server_name freedns.afraid.org --dyndns_server_url /dynamic/update.php? --svr_rsp_success "has not changed" --svr_ip_in_rsp --svr_ip_param address blah blah
+-
+-#Additional Dynamic DNS Servers Documentation
+-
+-#***************************
+-#File Location
+-#***************************
+-
+-#On *nix systems, inadyn-mt looks for this file in /etc, /etc/inadyn-mt, /etc/inadyn-mt/extra, ./extra, or current working directory from 
+-#which inadyn-mt is executed.  On Windows, inadyn-mt looks for this file in the inadyn-mt.exe directory, the current working directory, the 
+-#./extra directory above inadyn-mt.exe directory, and additionally (if run as a service), \winnt\system32.
+-
+-#The file location may also be specified using inadyn-mt configuration option --svr_add_cfg <path and file name>
+-
+-#**************************
+-#Synopsis
+-#**************************
+-
+-#Add new natively functioning dynamic dns servers to inadyn-mt by learning - via, for instance, server site docs - a given server's api, and
+-#adding a corresponding entry here.
+-
+-#As new entries to accomodate additional dynamic dns servers are added to this file, it will be made available as a download separate from the
+-#main project archive at the inadyn-mt sourceforge projects site.
+-
+-#**************************
+-#Description
+-#**************************
+-
+-#Dynamic dns servers info contained in this file precludes the need of user having to enter configuration parameters for return codes, etc.,
+-#so that additional servers may be more easily accomodated, and used in the same fashion as those inadyn-mt "natively" supports.  While the
+-#associated inadyn-mt options may be used in inadyn-mt.conf to accomodate a user defined server of type custom@http_svr_basic_auth without 
+-#need for inadyn-mt recompilation, the present servers_additional.cfg provides a mechanism by which new servers may be easily included, and
+-#shared in future inadyn-mt releases.
+-
+-#For instance, instead of an inadyn-mt.conf containing a server entry such as:
+-
+-#--dyndns_system custom@http_svr_basic_auth
+-#--dyndns_server_name members.dyndns.org
+-#--dyndns_server_url /nic/update?
+-#--alias hostname=test.dyndns.org&system=dyndns&wildcard="OFF"&mx=test.dyndns.org&backmx=NO&offline=NO
+-#--username test
+-#--password test
+-#--svr_rsp_success "good,nochg"
+-#--svr_rsp_other "dnserr,911"
+-#--svr_ip_param myip
+-
+-#if the given server is defined here in the present file, and keyed as, for instance,  default@ddns_server_of_your_dreams, inadyn-mt.conf may 
+-#instead include such as:
+-
+-#--dyndns_system default@ddns_server_of_your_dreams
+-#--alias test.dyndns.org
+-#--username test
+-#--password test
+-
+-#just as inadyn-mt "natively" supported servers.
+-
+-#**************************
+-#Server Entry Format
+-#**************************
+-
+-#server id
+-#such as 'default@server_domain.com', or 'default@server_name_blah_blah', or 'whatever@blah_blah' without the quotes.  Really this
+-#id can be just about anything as long as it is unique among server id's appearing in this file, and those natively supported by inadyn-mt.
+-
+-#server id should always be the first entry for the given server.
+-
+-#server id should be, in no particular order, followed by server domain name, url, string of codes returned by server after a successful 
+-#update, string of codes returned by server after an update fails because of a bad config - such as wrong password, user name, alias, etc., 
+-#and the url variable to which ip address is assigned in the update url.  Finally, there may be a flag, --svr_ip_in_rsp, to indicate whether 
+-#the server returns the ip address as part of successful update return value(s).
+-
+-#After server id, parameters may appear in any order.  dyndns_server_name, and dyndns_server_url are required.  The others are optional
+-#though highly recommended.  All of them are documented in the man file, and ./readme.html.  As shown in the server entries near the be-
+-#ginning of this file, they are used just as they might be in inadyn-mt.conf, or the command line.  Aside from the usual parameters there are:
+-
+-#svr_rsp_success - e.g. "good,nochg"
+-
+-#svr_rsp_other -  similar to svr_rsp_success, with the list of comma delimited responses those the servers returns upon unknown error -
+-		  anything other than a fatal error, i.e., a configuration error, such as bad password, user name, host, etcetera.  
+-
+-#Any server response not covered by either of the two above is evaluated as a fatal error - inadyn-mt will stop attempting updates for
+-#the given failed host name.
+-
+-#It's also possible to define a server's ip, user name, and password url variable names.  Do this with the svr_ip_param option:
+-
+-#svr_ip_param <ip param name> [user name param] [password name param]
+-
+-#These must be in the given order.  If there is no user name, a place holder can be entered in case it's necessary to enter a password name
+-#parameter.  For instance, say a server's update url requires ip parameter, and password parameter, but no user name parameter.  The following
+-#would suffice:
+-
+-#--svr_ip_param ip_addr blahblah pw
+-
+-#and might show up in the update request url like:
+-
+-#/nic/update?host=myhost.server.com&ip_addr=127.0.0.1&pw=yourpassword&blahblah=usernameifentered
+-
+-#and likewise, if a given server requires no ip parameter (server detects ip), but defines a password, and/or user name parameter.
+-
+-#Finally, upon update success, some servers may simply respond by returning the ip address to which you updated.  Indicate a server does
+-#this with the svr_ip_in_rsp option, i.e., simply:
+-
+-#--svr_ip_in_rsp
+-
+-#***Variable Expansions***
+-
+-#Comma delimted string parameters to options --svr_rsp_success, and --svr_rsp_other may include variables of the form ($_var_name).
+-
+-#At this writing, supported variables are:
+-
+-#ALIAS
+-#IP_ADDR
+-
+-#Adding others requires inadyn-mt recompilation, but it's pretty painless.  If you're up for it, 
+-#see src/inadyn_cmd.c function, arg_to_val - it maps above variables to corresponding values in main 
+-#inadyn-mt data structure.  If you prefer, ask me about additions in help, or feature requests
+-#at http://sourceforge.net/projects/inadyn-mt.
+-
+-#Variables are expanded to corresponding values on update success/failure checking.
+-
+-#Example:  Include a supported variable in one or more of the --svr_rsp_success, --svr_rsp_other comma 
+-#delimited string option parameters (hypothetical DDNS server success response, to be matched by inadyn-mt 
+-#upon update success/fail check):
+-
+-#--svr_rsp_success "Dynamic DNS Host, ($ALIAS) successfully updated to address ($IP_ADDR)"
+-
+-#***Escape Sequences
+-
+-#Variable delimiters, e.g., ($IP_ADDR) (delimiters are '(', '$', and ')') may be consumed
+-#in processing so if you add server(s), it's best to test, and escape, e.g. '\' when used
+-#literally.  For instance, (\$good) will consume (, and give, $good), but \($good) will
+-#give ($good) as expected.
+-
+-#Response strings may include the following escape sequences:
+-
+-#\n (carriage return)
+-#\(
+-#\$
+-#\\
+-
+-#Example entry:
+-#svr_ip_param option requires server update ip variable name, e.g., myip, 
+-#and may be followed by user id, and password parameter names in that order.
+-
+-#default@ddns_server_of_your_dreams --dyndns_server_name members.dyndns.org --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
+-
+-#--alias your_host&pw=your_password
+-#default@dtdns.com --dyndns_server_name www.dtdns.com --dyndns_server_url /api/autodns.cfm?id= --svr_ip_param ip usr pw --svr_rsp_success "Host ($ALIAS) now points to ($IP_ADDR)."
