@@ -1,5 +1,5 @@
---- makefile	2005-11-29 23:21:50.000000000 +0100
-+++ makefile	2011-09-01 02:20:17.000000000 +0200
+--- makefile
++++ makefile
 @@ -1,7 +1,10 @@
  PRG            = smusbutil
  SRC            = $(PRG).c
@@ -11,4 +11,4 @@
 
  all:
 -	gcc -lftdi -o $(PRG) $(SRC)
-+	$(CC) $(CFLAGS) $(LIBS) -o $(PRG) $(SRC)
++	$(CC) $(CFLAGS) -o $(PRG) $(SRC) $(LIBS)
