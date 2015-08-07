@@ -25,7 +25,6 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LUA_DIR) \
 		CC="$(TARGET_CC)" \
-		LD="$(TARGET_LD)" \
 		MYCFLAGS="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include $(TARGET_CFLAGS) $(FPIC)" \
 		AR="$(TARGET_AR) rcu" \
 		RANLIB="$(TARGET_RANLIB)" \
