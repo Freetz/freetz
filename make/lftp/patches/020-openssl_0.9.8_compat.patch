@@ -1,0 +1,15 @@
+--- src/lftp_ssl.cc
++++ src/lftp_ssl.cc
+@@ -798,8 +798,12 @@
+       } opt_table[]={
+ 	 {"-SSL3.0",SSL_OP_NO_SSLv3},
+ 	 {"-TLS1.0",SSL_OP_NO_TLSv1},
++#ifdef SSL_OP_NO_TLSv1_1
+ 	 {"-TLS1.1",SSL_OP_NO_TLSv1_1},
++#endif
++#ifdef SSL_OP_NO_TLSv1_2
+ 	 {"-TLS1.2",SSL_OP_NO_TLSv1_2},
++#endif
+ 	 {"",0}
+       };
+       char *to_parse=alloca_strdup(priority);
