@@ -3,6 +3,7 @@ config FREETZ_PACKAGE_SQUASHFS4
 	depends on FREETZ_TYPE_7490
 	select FREETZ_LIB_libm        if !FREETZ_PACKAGE_SQUASHFS4_ALL_STAT
 	select FREETZ_LIB_libpthread  if !FREETZ_PACKAGE_SQUASHFS4_ALL_STAT
+	select FREETZ_LIB_libz        if  FREETZ_PACKAGE_SQUASHFS4_ALL_DYN && FREETZ_PACKAGE_SQUASHFS4_LEGACY
 	select FREETZ_LIB_liblzma     if  FREETZ_PACKAGE_SQUASHFS4_ALL_DYN
 	default n
 	help
@@ -13,6 +14,15 @@ config FREETZ_PACKAGE_SQUASHFS4
 		community to a non-standard SquashFS format used by AVM since
 		Fritz!OS Labor 6.35 - ths first kernel 3.10.73 based Fritz!OS
 		version.
+
+config FREETZ_PACKAGE_SQUASHFS4_LEGACY
+	depends on FREETZ_PACKAGE_SQUASHFS4
+	bool "with SquashFS-1/2/3 support"
+	default n
+	help
+		Enables support (unsquashfs only) for legacy SquashFS-1/2/3 formats
+		including a special header-less/LZMA1-compressed format used by AVM
+		on many boxes.
 
 choice
 	depends on FREETZ_PACKAGE_SQUASHFS4

@@ -1,0 +1,98 @@
+--- squashfs-tools/lzma_xz_wrapper.c
++++ squashfs-tools/lzma_xz_wrapper.c
+@@ -35,6 +35,7 @@
+ #define LZMA_OPTIONS 5
+ #define MEMLIMIT (32 * 1024 * 1024)
+ 
++#ifndef LZMA1_HEADER_LESS
+ static int lzma_compress(void *dummy, void *dest, void *src,  int size,
+ 	int block_size, int *error)
+ {
+@@ -94,6 +95,7 @@
+ 	*error = res;
+ 	return -1;
+ }
++#endif
+ 
+ 
+ static int lzma_uncompress(void *dest, void *src, int size, int outsize,
+@@ -109,6 +111,21 @@
+ 		goto failed;
+ 	}
+ 
++#ifdef LZMA1_HEADER_LESS
++	uncompressed_size = outsize;
++	{
++		#define _DICT_SIZE (1 << (9 + 14))
++		#define _LC        3
++		#define _LP        0
++		#define _PB        2
++		int i;
++		unsigned int dictSize = _DICT_SIZE;
++		lzma_header[0] = (unsigned char)((_PB * 5 + _LP) * 9 + _LC);
++		for (i = 1; i<LZMA_PROPS_SIZE; i++) {
++			lzma_header[i] = (unsigned char)(dictSize >> (8 * (i-1)));
++		}
++	}
++#else
+ 	memcpy(lzma_header, src, LZMA_HEADER_SIZE);
+ 	uncompressed_size = lzma_header[LZMA_PROPS_SIZE] |
+ 		(lzma_header[LZMA_PROPS_SIZE + 1] << 8) |
+@@ -119,6 +136,7 @@
+ 		res = 0;
+ 		goto failed;
+ 	}
++#endif
+ 
+ 	memset(lzma_header + LZMA_PROPS_SIZE, 255, LZMA_UNCOMP_SIZE);
+ 
+@@ -134,8 +152,13 @@
+ 		goto failed;
+ 	}
+ 
++#ifdef LZMA1_HEADER_LESS
++	strm.next_in = src;
++	strm.avail_in = size;
++#else
+ 	strm.next_in = src + LZMA_HEADER_SIZE;
+ 	strm.avail_in = size - LZMA_HEADER_SIZE;
++#endif
+ 
+ 	res = lzma_code(&strm, LZMA_FINISH);
+ 	lzma_end(&strm);
+@@ -152,7 +175,11 @@
+ 
+ struct compressor lzma_comp_ops = {
+ 	.init = NULL,
++#ifdef LZMA1_HEADER_LESS
++	.compress = NULL,
++#else
+ 	.compress = lzma_compress,
++#endif
+ 	.uncompress = lzma_uncompress,
+ 	.options = NULL,
+ 	.usage = NULL,
+--- squashfs-tools/Makefile
++++ squashfs-tools/Makefile
+@@ -148,6 +148,7 @@
+ 
+ ifeq ($(LZMA_XZ_SUPPORT),1)
+ CFLAGS += -DLZMA_SUPPORT
++CFLAGS += -DLZMA1_HEADER_LESS
+ MKSQUASHFS_OBJS += lzma_xz_wrapper.o
+ UNSQUASHFS_OBJS += lzma_xz_wrapper.o
+ LIBS += $(LINK_STATICALLY_PRE) -llzma $(LINK_STATICALLY_POST)
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -1900,9 +1900,9 @@
+ 	}
+ 
+ 	/*
+-	 * 1.x, 2.x and 3.x filesystems use gzip compression.
++	 * 1.x, 2.x and 3.x filesystems use gzip or lzma1 (superblock.minor==76) compression.
+ 	 */
+-	comp = lookup_compressor("gzip");
++	comp = lookup_compressor((sBlk.s.s_minor == 76) ? "lzma" : "gzip");
+ 	return TRUE;
+ 
+ failed_mount:
