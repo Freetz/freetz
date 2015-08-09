@@ -428,8 +428,11 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		else
 			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk"
 		fi
-		[ $? -eq 0 ] || error 1 "AVM SquashFS junk bytes not found"
-		mv -f "$JUNK_BYTES_FILE.nojunk" "$JUNK_BYTES_FILE"
+		if [ $? -ne 0 ]; then
+			warn2 "AVM SquashFS junk bytes not found. Assuming Freetz or Freetz-repacked image."
+		else
+			mv -f "$JUNK_BYTES_FILE.nojunk" "$JUNK_BYTES_FILE"
+		fi
 	fi
 
 	"$TICHKSUM" -r "${KERNEL}" > /dev/null
