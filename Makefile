@@ -307,7 +307,16 @@ ifeq ($(strip $(PACKAGES)),)
 	@echo "         'make menuconfig' and change to the 'Package selection' submenu."
 	@echo
 endif
-	@./fwmod $(if $(filter firmware-nocompile,$(MAKECMDGOALS)),-n) -d $(BUILD_DIR) $(DL_IMAGE)
+	@./fwmod \
+		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_UNPACK)),,-u)                                   \
+		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_MODIFY)),,-m)                                   \
+		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_PACK)),,-p)                                     \
+		$(if $(call is-y,$(FREETZ_FWMOD_USBROOT)),-z)                                        \
+		$(if $(strip $(FREETZ_FWMOD_NFSROOT_DIR)),-c "$(strip $(FREETZ_FWMOD_NFSROOT_DIR))") \
+		$(if $(filter firmware-nocompile,$(MAKECMDGOALS)),-n)                                \
+		$(if $(call is-y,$(FREETZ_FWMOD_FORCE_PACK)),-f)                                     \
+		-d $(BUILD_DIR)                                                                      \
+		$(DL_IMAGE)
 
 firmware: precompiled firmware-nocompile
 

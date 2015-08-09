@@ -22,7 +22,7 @@ Usage: $SELF [-u|-m|-p|-a] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig
     -u         unpack firmware image
     -m         modify previously unpacked image
     -p         pack firmware image
-    -a         all: unpack, modify and pack firmware image (-u -m -p, default)
+    -a         all: unpack, modify and pack firmware image
   special actions
     -z         zip file system into archive for USB/NFS root
     -c <dir>   copy file system to target directory for NFS/USB root (implies -z)
@@ -56,16 +56,16 @@ done
 
 # Default values for unset command line parameters
 DOT_CONFIG="$(dirname "$0")/.config"
-DO_UNPACK=0; DO_MOD=0; DO_PACK=0; _REQUIRED_ACTION_PROVIDED=0
+DO_UNPACK=0; DO_MOD=0; DO_PACK=0
 FIRMWARE_NOCOMPILE=0; FORCE_PACK=0; DO_ZIP=0; COPY_FS_DIR=; DIR=
 
 # Parse command line parameters
 while getopts umpanfzc:i:d: opt; do
 	case "$opt" in
-		u) DO_UNPACK=1; _REQUIRED_ACTION_PROVIDED=1 ;;
-		m) DO_MOD=1; _REQUIRED_ACTION_PROVIDED=1 ;;
-		p) DO_PACK=1; _REQUIRED_ACTION_PROVIDED=1 ;;
-		a) DO_UNPACK=1; DO_MOD=1; DO_PACK=1; _REQUIRED_ACTION_PROVIDED=1 ;;
+		u) DO_UNPACK=1 ;;
+		m) DO_MOD=1 ;;
+		p) DO_PACK=1 ;;
+		a) DO_UNPACK=1; DO_MOD=1; DO_PACK=1 ;;
 		n) FIRMWARE_NOCOMPILE=1 ;;
 		f) FORCE_PACK=1 ;;
 		z) DO_ZIP=1 ;;
@@ -77,11 +77,8 @@ while getopts umpanfzc:i:d: opt; do
 done
 shift $((OPTIND-1))
 
-# No -u/-m/-p/-a options = default = -a = -ump
-[ "$_REQUIRED_ACTION_PROVIDED" -eq 0 ] && DO_UNPACK=1 && DO_MOD=1 && DO_PACK=1
-
-# At least one (non-empty) firmware image name must be specified
-[ $# -lt 1 -o $# -gt 3 -o ! "$1" ] && usage >&2 && exit 1
+# At least one action and one (non-empty) firmware image name must be specified
+[ $(($DO_UNPACK + $DO_MOD + $DO_PACK + $DO_ZIP)) -eq 0 -o $# -lt 1 -o $# -gt 3 -o ! "$1" ] && usage >&2 && exit 1
 
 # Freetz base + tools directories
 BASE_DIR="$(dirname "$0")"
@@ -221,15 +218,6 @@ rm "$DOT_CONFIG.fwmod"
 # Set default verbosity level, just in case none was defined in the (possibly
 # user-defined and minimal) config file
 : ${FREETZ_VERBOSITY_LEVEL:=0}
-
-# If FREETZ_FWMOD_* options have been defined via config file or command line,
-# they overrule(!) normal command line options -u, -m, -p, -a, -f, -z, -c.
-[ "$FREETZ_FWMOD_SKIP_UNPACK" == "y" ] && DO_UNPACK=0
-[ "$FREETZ_FWMOD_SKIP_MODIFY" == "y" ] && DO_MOD=0
-[ "$FREETZ_FWMOD_SKIP_PACK"   == "y" ] && DO_PACK=0
-[ "$FREETZ_FWMOD_USBROOT"     == "y" ] && DO_ZIP=1
-[ "$FREETZ_FWMOD_FORCE_PACK"  == "y" ] && FORCE_PACK=1
-[ "$FREETZ_FWMOD_NFSROOT_DIR"        ] && COPY_FS_DIR="$FREETZ_FWMOD_NFSROOT_DIR" && DO_ZIP=1
 
 # Use FREETZ_TARGET_CROSS to determine build tool paths
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"

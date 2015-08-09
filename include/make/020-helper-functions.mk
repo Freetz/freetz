@@ -1,4 +1,13 @@
 #
+# returns:
+#   $(1)   if it is equal to one of the values considered to be a logical true: y yes true 1 (case insensitive)
+#   empty  otherwise
+#
+define is-y
+$(if $(filter y yes true 1,$(call SUBST_MAP,$(subst $(_space),_,$(strip $(1))),$(SUBST_MAP_TOLOWER))),$(strip $(1)))
+endef
+
+#
 # function imitating logical NOT
 #
 # returns:
