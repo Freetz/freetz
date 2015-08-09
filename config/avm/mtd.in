@@ -1,12 +1,14 @@
 menu "MTD options"
 	visible if FREETZ_TYPE_CUSTOM
 
+# TODO: check 4020 value
 config FREETZ_FILESYSTEM_MTD_SIZE
 	int "FILESYSTEM (64K blocks)" if FREETZ_TYPE_CUSTOM
 	default 768         if \
 		FREETZ_TYPE_3370 || \
 		FREETZ_TYPE_3390 || \
 		FREETZ_TYPE_3490 || \
+		FREETZ_TYPE_4020 || \
 		FREETZ_TYPE_6810 || \
 		FREETZ_TYPE_6840 || \
 		FREETZ_TYPE_6842
