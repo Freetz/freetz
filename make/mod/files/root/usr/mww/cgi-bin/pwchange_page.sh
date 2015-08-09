@@ -6,7 +6,7 @@ CHALLENGE="$(echo -n "$(date +%s)" | md5sum | sed 's/[ ]*-//')"
 
 cgi_begin '$(lang de:"Passwort &auml;ndern!" en:"Change password!")'
 # Waren wir schonmal hier? Dann war was falsch!
-[ "$WRONGPW" ] && echo "<b>$(lang de:"altes Passwort war falsch!" en:"Wrong old password!")</b><p>"
+[ "$WRONGPW" = 1 ] && echo "<b>$(lang de:"Altes Passwort war falsch!" en:"Wrong old password!")</b><p>"
 [ "$(cat /tmp/flash/mod/webmd5 | tr -d '\n' )" = "465d0ff27bb239292778dc3a0c2f28d9" ] && echo "<b>$(lang de:"Standard Passwort gesetzt. Bitte &auml;ndern!" en:"Default password set! Please change it.")</b><p>"
 
 . /usr/mww/cgi-bin/md5hash.sh

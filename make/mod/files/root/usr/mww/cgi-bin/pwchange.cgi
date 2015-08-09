@@ -10,7 +10,7 @@ cgi_end
 exit
 fi
 
-if [ -n "${QUERY_STRING##*newhash=}" ]; then
+if [ -n "$(echo $QUERY_STRING | sed -n 's%.*newhash=\([0-9a-f]*\).*%\1% p')" ]; then
         source /usr/mww/cgi-bin/pwchange_check.sh
 else                                    
         source /usr/mww/cgi-bin/pwchange_page.sh

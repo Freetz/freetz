@@ -8,7 +8,7 @@ echo "Set-Cookie: SID=$SENDSID;Path=/"
 
 cgi_begin 'login'
 # Waren wir schonmal hier? Dann war was falsch!
-[ "$WRONGPW" ] && echo "<b>$(lang de:"Passwort falsch!" en:"Wrong password!")</b><p>"
+[ "$WRONGPW" = 1 ] && echo "<b>$(lang de:"Passwort falsch!" en:"Wrong password!")</b><p>"
 
 . /usr/mww/cgi-bin/md5hash.sh
 
@@ -17,7 +17,8 @@ $(lang de:"Passwort" en:"Password"): <input  type="password" id="inp_pw" maxleng
                                    
 <input type="button" name="go" id="id_go" value="$(lang de:"Anmelden" en:"Login")"
 EOF
-echo -n "onclick='location.href=\"/cgi-bin/login.cgi?hash=\"+makemd5(document.getElementById(\"inp_pw\").value, \"$SENDSID\"); '>"
+echo "onclick='location.href=\"/cgi-bin/login.cgi?hash=\"+makemd5(document.getElementById(\"inp_pw\").value, \"$SENDSID\"); '>"
+echo "<script> document.getElementById(\"inp_pw\").focus(); </script>"
 
 cgi_end
 
