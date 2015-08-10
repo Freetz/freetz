@@ -36,6 +36,10 @@ for (( i=0; i<count; i++ )); do
 			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") -  256 - 8 )))
 			;;
 		BE0004)
+			# TODO: the proper pattern vor v2 is 409AE805${HEADER_MAGIC_HEX}
+			#       the real offset is also BE0000 and not BE0004
+			#       rewrite the code instead of applying the hack below
+			offs=BE0000 # hack
 			junkver=2
 			img_size_junk=$(echo "${hexdumps}" | grep -b1 "$INTRA_MAGIC_HEX" | head -n1 | sed -rn "s/^.* (${HEX_DIGIT_PATTERN}{8})< .*/\1/p")
 			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") - 4096 - 8 )))
@@ -45,7 +49,7 @@ for (( i=0; i<count; i++ )); do
 			continue
 			;;
 	esac
-	echo "Junk header found at V$junkver offset 0x$offs"
+	echo "Junk header V$junkver found at offset 0x$offs"
 
 	if [ "$img_size_junk" != "$img_size_file" ]; then
 		echo "Image size encoded in junk block does not match real file size"
