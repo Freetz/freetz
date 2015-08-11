@@ -3,61 +3,100 @@
 # Remove junk bytes from AVM image files (http://freetz.org/ticket/1614)
 # Author: Alexander Kriegisch (http://scrum-master.de)
 
+SFK_TOOL="$(dirname "$0")/sfk"
+
 INPUT_FILE="$1"
 OUTPUT_FILE="$2"
-SFK_TOOL="$(dirname "$0")/sfk"
-HEADER_MAGIC_HEX="3C1A8000375A038003400008"
-INTRA_MAGIC_TXT="NMI Boot"
-INTRA_MAGIC_HEX="4E4D4920 426F6F74"
-HEX_DIGIT_PATTERN="[0-9A-F]"
 
 if [ $# -ne 2 -o ! -e "$INPUT_FILE" ]; then
 	echo "Usage: ${0##*/} input.image output.image"
 	exit 2
 fi
 
-hexdumps="$("$SFK_TOOL" hexfind "$INPUT_FILE" -bin /$HEADER_MAGIC_HEX/ -quiet -context=64)"
-offsets=($(echo "$hexdumps" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
+declare -A headerStartPattern=(
+		[v1]=3C1A8000375A038003400008
+	[v2]=409AE8053C1A8000375A038003400008
+)
+declare -A expectedHeaderOffset=(
+	[v1]=0xBE0000
+	[v2]=0xBE0000
+)
+declare -A expectedHeaderLength=(
+	[v1]=256
+	[v2]=4096
+)
+NMI_BOOT_PATTERN="4E4D4920426F6F74" # "NMI Boot" as hex pattern
+declare -A expectedNmiBootOffset=(
+	[v1]=0xBE0048
+	[v2]=0xBE0048
+)
 
-count=${#offsets[@]}
-case $count in
-	0) echo "No junk header found" >&2; exit 1 ;;
-	1) echo "Junk header found, inspecting ..." ;;
-	*) echo "Multiple junk headers found, inspecting ..." ;;
-esac
+HEX_DIGIT_PATTERN="[0-9A-F]"
 
-for (( i=0; i<count; i++ )); do
-	offs=${offsets[i]}
+IMAGE_CHECKSUM_SIZE=8 # number of bytes needed to store image checksum
 
-	case "$offs" in
-		BE0000)
-			junkver=1
-			img_size_junk=$(echo "${hexdumps}" | sed -rn "s/^.*(${HEX_DIGIT_PATTERN}{8}) ${HEX_DIGIT_PATTERN}{8} ${INTRA_MAGIC_HEX}.*/\1/p")
-			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") -  256 - 8 )))
-			;;
-		BE0004)
-			# TODO: the proper pattern vor v2 is 409AE805${HEADER_MAGIC_HEX}
-			#       the real offset is also BE0000 and not BE0004
-			#       rewrite the code instead of applying the hack below
-			offs=BE0000 # hack
-			junkver=2
-			img_size_junk=$(echo "${hexdumps}" | grep -b1 "$INTRA_MAGIC_HEX" | head -n1 | sed -rn "s/^.* (${HEX_DIGIT_PATTERN}{8})< .*/\1/p")
-			img_size_file=$(printf "%08X\n" $(( $(stat -L -c %s "$INPUT_FILE") - 4096 - 8 )))
-			;;
-		*)
-			echo "Junk header not valid, unexpected offset 0x$offs" >&2
-			continue
-			;;
-	esac
-	echo "Junk header V$junkver found at offset 0x$offs"
+#
+# $1 - binary pattern
+#
+# returns:
+#   offsets of all pattern matches
+getHexOffsetsOfAllMatches() {
+	"$SFK_TOOL" hexfind "$INPUT_FILE" -bin "/$1/" -quiet | sed -nr -e 's|.*hit at offset (0x'"${HEX_DIGIT_PATTERN}"'+)|\1|p'
+}
 
-	if [ "$img_size_junk" != "$img_size_file" ]; then
-		echo "Image size encoded in junk block does not match real file size"
+#
+# $1 - offset
+# $2 - length
+#
+getHexContentAtOffset() {
+	"$SFK_TOOL" hexdump -offlen "$1" "$2" -nofile -pure "$INPUT_FILE" | tr -d $'\n'
+}
+
+getInputFileSize() {
+	stat -L -c "%s" "$INPUT_FILE"
+}
+
+
+for v in v2 v1; do
+	declare -a offsets=($(getHexOffsetsOfAllMatches "${headerStartPattern[${v}]}"))
+	noOffsets=${#offsets[@]}
+
+	[ ${noOffsets} -eq 0 ] && continue # no matches found, probe next header pattern
+
+	if [ ${noOffsets} -gt 1 ]; then
+		echo "[Error] Multiple $v junk headers found at the following offsets: ${offsets[@]}" >&2
+		exit 2
+	fi
+
+	offset=${offsets[0]}
+	if [ "${offset}" != "${expectedHeaderOffset[${v}]}" ]; then
+		echo "[Error] Junk header $v found at unexpected offset ${offset}" >&2
+		exit 2
+	fi
+
+	echo "Junk header $v found at offset ${offset}"
+
+	declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches "${NMI_BOOT_PATTERN}"))
+	if [ ${#nmiBootOffsets[@]} -ne 1 ]; then
+		echo "[Error] No or multiple 'NMI Boot'-matches found: ${nmiBootOffsets[@]}" >&2
+		exit 2
+	fi
+	nmiBootOffset="${nmiBootOffsets[0]}"
+	if [ "${nmiBootOffset}" != "${expectedNmiBootOffset[${v}]}" ]; then
+		echo "[Warning] 'NMI Boot'-match found at unexpected offset ${nmiBootOffset}" >&2
+	fi
+
+	# real image size is encoded within the junk block 8 bytes before 'NMI Boot'
+	imageSizeJunk="0x$(getHexContentAtOffset $((${nmiBootOffset} - 8)) 4)"
+	imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${expectedHeaderLength[${v}]} - ${IMAGE_CHECKSUM_SIZE} )))
+	if [ "${imageSizeJunk}" != "${imageSizeExpected}" ]; then
+		echo "[Warning] Image size encoded in junk block ($((${imageSizeJunk}))) does not match calculated size ($((${imageSizeExpected})))" >&2
 		continue
 	fi
-	echo -n "Image size encoded in junk block matches real file size, removing junk bytes ... "
-	head -c $((0x$offs)) "$INPUT_FILE" > "$OUTPUT_FILE"
-	tail -c $((0x${img_size_file} - 0x$offs + 8)) "$INPUT_FILE" >> "$OUTPUT_FILE"
+
+	echo -n "Image size encoded in junk block matches calculated size, removing ${v} junk bytes ... "
+	head -c $((${offset})) "$INPUT_FILE" > "$OUTPUT_FILE"
+	tail -c $((${imageSizeExpected} - ${offset} + ${IMAGE_CHECKSUM_SIZE})) "$INPUT_FILE" >> "$OUTPUT_FILE"
 	echo "done."
 	exit 0
 done
