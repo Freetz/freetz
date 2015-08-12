@@ -1,7 +1,27 @@
 #!/bin/bash
 
-# Remove junk bytes from AVM image files (http://freetz.org/ticket/1614)
+#
+# Remove junk bytes from AVM image files
 # Author: Alexander Kriegisch (http://scrum-master.de)
+#
+# The code below tries to be a bit generic, this is however not really necessary
+# as all junk-byte blocks used by AVM so far use fixed offsets and fixed lengths.
+#
+# Junk-byte block v1:
+#  1. starts with byte sequence 3C1A8000375A038003400008
+#  2. located at (fixed) offset 0xBE0000
+#  3. has (fixed) length of 256 bytes
+#  4. image size without the junk block and without the image checksum is saved
+#     in 4 bytes at (fixed) offset 0xBE0040, the same offset could also be
+#     determined by locating the string "NMI Boot" and subtracting 8 bytes
+#     from its offset
+#
+# Junk-byte block v2:
+#  1. starts with byte sequence 409AE8053C1A8000375A038003400008 (v1 sequence prefixed with 409AE805)
+#  2. same as v1
+#  3. has (fixed) length of 4096 bytes
+#  4. same as v1
+#
 
 SFK_TOOL="$(dirname "$0")/sfk"
 
