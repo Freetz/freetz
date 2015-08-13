@@ -1,0 +1,63 @@
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -78,6 +78,16 @@
+ int no_xattrs = XATTR_DEF;
+ int user_xattrs = FALSE;
+ 
++int exit_on_decompression_errors = FALSE;
++#define DECOMPRESSION_ERROR(s, args...)\
++	do {\
++		if (exit_on_decompression_errors) {\
++			EXIT_UNSQUASH(s, ##args);\
++		} else {\
++			ERROR(s, ##args);\
++		}\
++	} while(0)
++
+ int lookup_type[] = {
+ 	0,
+ 	S_IFDIR,
+@@ -700,7 +710,7 @@
+ 			outlen, &error);
+ 
+ 		if(res == -1) {
+-			ERROR("%s uncompress failed with error code %d\n",
++			DECOMPRESSION_ERROR("%s uncompress failed with error code %d\n",
+ 				comp->name, error);
+ 			goto failed;
+ 		}
+@@ -746,7 +756,7 @@
+ 			block_size, &error);
+ 
+ 		if(res == -1) {
+-			ERROR("%s uncompress failed with error code %d\n",
++			DECOMPRESSION_ERROR("%s uncompress failed with error code %d\n",
+ 				comp->name, error);
+ 			goto failed;
+ 		}
+@@ -2123,7 +2133,7 @@
+ 			&error);
+ 
+ 		if(res == -1)
+-			ERROR("%s uncompress failed with error code %d\n",
++			DECOMPRESSION_ERROR("%s uncompress failed with error code %d\n",
+ 				comp->name, error);
+ 		else
+ 			memcpy(entry->data, tmp, res);
+@@ -2627,6 +2637,8 @@
+ 		} else if(strcmp(argv[i], "-regex") == 0 ||
+ 				strcmp(argv[i], "-r") == 0)
+ 			use_regex = TRUE;
++		else if(strcmp(argv[i], "-exit-on-decomp-error") == 0)
++			exit_on_decompression_errors = TRUE;
+ 		else
+ 			goto options;
+ 	}
+@@ -2690,6 +2702,7 @@
+ 				"regular expressions\n");
+ 			ERROR("\t\t\t\trather than use the default shell "
+ 				"wildcard\n\t\t\t\texpansion (globbing)\n");
++			ERROR("\t-exit-on-decomp-error\texit on decompression errors\n");
+ 			ERROR("\nDecompressors available:\n");
+ 			display_compressors("", "");
+ 		}
