@@ -6,7 +6,7 @@ SQUASHFS4_HOST_SITE:=@SF/squashfs
 # Enable legacy SquashFS formats support (SquashFS-1/2/3, ZLIB/LZMA1 compressed)
 # 1 - to enable
 # 0 - to disable
-SQUASHFS4_ENABLE_LEGACY_FORMATS_SUPPORT:=0
+SQUASHFS4_ENABLE_LEGACY_FORMATS_SUPPORT:=1
 
 SQUASHFS4_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/squashfs4-host
 SQUASHFS4_HOST_DIR:=$(TOOLS_SOURCE_DIR)/squashfs$(SQUASHFS4_HOST_VERSION)
