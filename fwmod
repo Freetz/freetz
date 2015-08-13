@@ -149,8 +149,7 @@ SHELL=$BASH
 FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 MAKEDEVS_TOOL="makedevs"
-UNSQUASHFS_TOOL="unsquashfs3-multi"
-UNSQUASHFS_AVM_BE_TOOL="unsquashfs4-lzma-avm-be"
+UNSQUASHFS_TOOL="unsquashfs4-lzma-avm-be"
 MKSQUASHFS2_TOOL="mksquashfs2-lzma"
 MKSQUASHFS3_TOOL="mksquashfs3-multi"
 MKSQUASHFS_AVM_BE_TOOL="mksquashfs4-lzma-avm-be"
@@ -224,18 +223,16 @@ NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
 # Options for (un)packing SquashFS
-UNSQUASHFS_OPTIONS="-no-progress -processors 1"
+UNSQUASHFS_OPTIONS="-no-progress -processors 1 -exit-on-decomp-error"
 MKSQUASHFS_OPTIONS="-all-root -info"
 
+UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 if [ "$FREETZ_KERNEL_VERSION_2_6_13" -a "$FREETZ_REPLACE_KERNEL" != "y" ]; then
-	UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 	MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS2_TOOL}"
 else
 	if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
-		UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_AVM_BE_TOOL}"
 		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_AVM_BE_TOOL}"
 	else
-		UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS3_TOOL}"
 	fi
 
