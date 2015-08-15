@@ -3,7 +3,7 @@
 #linkbox_remove <menu-name>
 #removes links within a box on the left
 linkbox_remove() {
-	# replaces "if menu.show_addition_menu("$menuname") then" with "if false and ... then"
+	# replaces "if menu.show_additional_menu("$menuname") then" with "if false and ... then"
 	modsed -r \
 	  "s,(menu[.]show_additional_menu[(]([\"'])$1\2[)]),false and \1," \
 	  "${HTML_LANG_MOD_DIR}/templates/menu_page_head.html"

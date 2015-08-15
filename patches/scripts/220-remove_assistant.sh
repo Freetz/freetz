@@ -52,7 +52,7 @@ else
 	fi
 fi
 
-# even if box is unconfigured do not try to adress assistant-pages but home
+# even if box is unconfigured do not try to address assistant-pages but home
 modsed \
   '/uiPostPageName", "first_/{N;s/.*\n.*$/jslSetValue("uiPostPageName", "home");\njslSetValue("uiPostMenu", "home");/g}' \
   "${HTML_LANG_MOD_DIR}/html/logincheck.html"
