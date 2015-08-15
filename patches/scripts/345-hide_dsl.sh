@@ -11,7 +11,7 @@ rm_files \
 
 if [ -e "${HTML_LANG_MOD_DIR}/home/home.lua" ]; then
 	# patcht Hauptseite > Kasten Anschluesse > DSL
-	homelua_disable tr_connect_info_dsl
+	homelua_disable_wrapper connect_info_dsl
 	# patcht Internet > Online-Monitor > Online-Monitor
 	modsed \
 	  '/^box.out(connection.create_connection_row("inetmon"))$/d' \

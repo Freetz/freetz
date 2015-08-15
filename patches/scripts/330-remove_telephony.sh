@@ -97,12 +97,12 @@ if [ -e "$HOME_LUA" ]; then
 	echo1 "patching home.lua"
 
 	# patcht Hauptseite > Kasten Komfortfunktionen
-	homelua_disable tr_call_redirect  # Rufumleitung
-	homelua_disable tr_tam.*          # Anrufbeantworter (5.2x=tr_tam 5.50=tr_tamcalls)
-	homelua_disable IntFax_Display    # Facksimile
-	homelua_disable tr_fonbook        # Telefonbuch
-	homelua_disable tr_foncalls       # Anrufliste
-	homelua_disable tr_internet_Sips  # Verbindungen (7570)
+	homelua_disable_wrapper call_redirect  # Rufumleitung
+	homelua_disable_wrapper tam.*          # Anrufbeantworter (5.2x=tr_tam 5.50=tr_tamcalls)
+	homelua_disable IntFax_Display ''      # Facksimile
+	homelua_disable_wrapper fonbook        # Telefonbuch
+	homelua_disable_wrapper foncalls       # Anrufliste
+	homelua_disable_wrapper internet_Sips  # Verbindungen (7570)
 
 	# patcht Hauptseite > Kasten Anrufe
 	modsed '/^{?537:759?}$/d' "$HOME_LUA"

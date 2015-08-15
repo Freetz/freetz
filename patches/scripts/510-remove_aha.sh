@@ -20,7 +20,7 @@ done
 
 # 3272 doesn't have tr_smart_home
 if ! isFreetzType 3272; then
-	homelua_disable tr_smart_home
+	homelua_disable_wrapper smart_home
 fi
 menulua_remove home_auto_overview
 

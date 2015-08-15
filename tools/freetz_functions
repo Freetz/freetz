@@ -27,9 +27,23 @@ quickstart_remove() {
 #menulua_remove <page-link>
 #removes links within menu_data.lua (left menu)
 menulua_remove() {
-	modsed \
-	  "/{* *page = \".*\/$1.lua\",/d" \
-	  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	local file="${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	if [ "$FREETZ_AVM_HAS_LUA_SCALABLE" == "y" ]; then
+		# find ["lua"] line
+		local pattern='\["lua"\] = "[^"]*'"$1"'.lua"'
+		local matchLine=$(cat "$file" | get_line_number_of_1st_match "${pattern}")
+		[ -z "${matchLine}" ] && error 1 "menulua_remove: no matches for '${pattern}' found"
+		# the  ["show"] line is either one or two lines before
+		modsed -r \
+		  "$((${matchLine}-2)),$((${matchLine}-1))"' {
+		      s!^(\["show"\] = ).+,$!\1false,!
+		  }' \
+		  "$file"
+	else
+		modsed \
+		  "/{* *page = \".*\/$1.lua\",/d" \
+		  "$file"
+	fi
 }
 
 #menu2html_remove <menu-name>
@@ -40,13 +54,21 @@ menu2html_remove() {
 	  "${HTML_SPEC_MOD_DIR}/menus/menu2_home.html"
 }
 
-#homelua_disable <function-name>
-#easily disable functions within home.lua by returning nothing
+#homelua_disable <function-name> [optional return value]
+#easily disable functions within home.lua by returning $2, if $2 is omitted the function is assumed to return void
 homelua_disable() {
-	modsed \
-	  "s/^\(function $1\)()$/\1()\nreturn ''\nend\n\1_()/" \
+	local return_statement="${2:+return }${2}"
+	modsed -r \
+	  "s/^(((local )?function $1)([(][^)]*[)]))$/\1\n${return_statement}\nend\n\2_\4/" \
 	  "${HTML_LANG_MOD_DIR}/home/home.lua" \
 	  " $1_("
+}
+homelua_disable_wrapper() {
+	if [ "$FREETZ_AVM_HAS_LUA_SCALABLE" == "y" ]; then
+		homelua_disable "add_$1" "false"
+	else
+		homelua_disable "tr_$1" "''"
+	fi
 }
 
 # -------------------------------------------------------------------
