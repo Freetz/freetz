@@ -1,6 +1,6 @@
 --- Makefile.am
 +++ Makefile.am
-@@ -129,7 +129,7 @@
+@@ -141,7 +141,7 @@
  bin_SCRIPTS = curl-config
  
  SUBDIRS = lib src include
@@ -9,7 +9,7 @@
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -148,10 +148,10 @@
+@@ -160,10 +160,10 @@
  	done)
  
  html:
@@ -22,7 +22,7 @@
  
  check: test examples check-docs
  
-@@ -179,7 +179,7 @@
+@@ -191,7 +191,7 @@
  endif
  
  examples:
@@ -33,7 +33,7 @@
  	@(cd docs/libcurl; $(MAKE) check)
 --- Makefile.in
 +++ Makefile.in
-@@ -577,7 +577,7 @@
+@@ -598,7 +598,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src include
@@ -42,7 +42,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  LIB_VTLS_CFILES = vtls/openssl.c vtls/gtls.c vtls/vtls.c vtls/nss.c     \
-@@ -1280,10 +1280,10 @@
+@@ -1302,10 +1302,10 @@
  	done)
  
  html:
@@ -55,7 +55,7 @@
  
  check: test examples check-docs
  
-@@ -1306,7 +1306,7 @@
+@@ -1328,7 +1328,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all am-test)
  
  examples:
@@ -64,7 +64,7 @@
  
  check-docs:
  	@(cd docs/libcurl; $(MAKE) check)
-@@ -1370,12 +1370,12 @@
+@@ -1392,12 +1392,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
