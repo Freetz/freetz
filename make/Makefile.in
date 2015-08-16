@@ -546,6 +546,23 @@ endef
 define PKG_FINISH_LIB__INT
 endef
 
+# check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
+define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT1
+$(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
+endef
+define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2
+$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config | $(SOURCE_DIR)
+	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_hash) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
+	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
+		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
+		$($(PKG)_CLEAN_TARGET_DIR__INT) \
+	else \
+		$(RM) $($(PKG)_FREETZ_CONFIG_FILE).temp; \
+	fi
+$(PACKAGES_DIR)/.$(pkg): $($(PKG)_FREETZ_CONFIG_FILE)
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $($(PKG)_FREETZ_CONFIG_FILE)
+endef
+
 # Finalise packages (general functionality + call to type specifics)
 define PKG_FINISH__INT
 $(pkg)-precompiled--int: $(pkg)-build-prereq $(TOOLCHAIN) $($(PKG)_HOST_DEPENDS_ON) $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
@@ -595,8 +612,10 @@ PKG_MAKEFILE:=
 PKG_BASENAME:=
 pkg:=
 endef
-PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))$(eval $(PKG_FINISH__INT))
 
+PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))
+PKG_FINISH+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT1))$(eval $(PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2)))
+PKG_FINISH+=$(eval $(PKG_FINISH__INT))
 
 ### PKG_SOURCE_DOWNLOAD - download source packages
 
@@ -701,23 +720,9 @@ $(PKG)_SOURCE_DIR:
 .PHONY: $(PKG)_SOURCE_DIR
 endef
 
-## check for changed suboptions
-# should only be called if $(PKG)_REBUILD_SUBOPTS is defined
-define PKG_UNPACKED_CHECK_SUBOPTS__INT1
-$(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
-endef
-define PKG_UNPACKED_CHECK_SUBOPTS__INT2
-$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config
-	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_hash) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
-	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
-		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
-		$($(PKG)_CLEAN_TARGET_DIR__INT) \
-	else \
-		$(RM) $($(PKG)_FREETZ_CONFIG_FILE).temp; \
-	fi
+## check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
+define PKG_UNPACKED_CHECK_REBUILD_SUBOPTS
 $($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
-$(PACKAGES_DIR)/.$(pkg): $($(PKG)_FREETZ_CONFIG_FILE)
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $($(PKG)_FREETZ_CONFIG_FILE)
 endef
 
 ## check for changed files in files and patches folder
@@ -765,8 +770,8 @@ endif
 PKG_UNPACKED           +=$(eval $(PKG_UNPACKED__INT))
 PKG_LOCALSOURCE_PACKAGE+=$(eval $(PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT))
 #
-PKG_UNPACKED           +=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT1))$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT2)))
-PKG_LOCALSOURCE_PACKAGE+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT1))$(eval $(PKG_UNPACKED_CHECK_SUBOPTS__INT2)))
+PKG_UNPACKED           +=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_REBUILD_SUBOPTS)))
+PKG_LOCALSOURCE_PACKAGE+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_REBUILD_SUBOPTS)))
 
 ### Configure package
 define PKG_CONFIGURED_COMMON__INT
