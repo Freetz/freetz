@@ -13,37 +13,37 @@
 +box.out([[<a class="nocancel" href='http://freetz.org' target='_blank' style='margin-right:0px;'>freetz.org</a> ]])
  ?>
  </div>
---- usr/www/all/menus/menu_freetz.lua
-+++ usr/www/all/menus/menu_freetz.lua
-@@ -0,0 +1,19 @@
-+--[[Access denied<?lua
-+box.end_page()
-+?>]]
-+menu.add_item{
-+page = "/cgi-bin/freetz_status",
-+target = "_blank",
-+text = "Freetz",
-+menu = "freetz",
-+explain = "Freetz Webinterface",
-+subpages = {}
-+}
-+menu.add_item{
-+page = "/cgi-bin/freetz_wol",
-+target = "_blank",
-+text = "Freetz WOL",
-+menu = "freetz-wol",
-+explain = "Freetz WOL Webinterface",
-+subpages = {}
-+}
 --- usr/www/all/templates/menu_page_head.html
 +++ usr/www/all/templates/menu_page_head.html
-@@ -31,5 +31,9 @@
+@@ -31,5 +31,8 @@
  menu.write_menu('livetv')
  box.out([[</div>]])
  end
-+dofile("../menus/menu_freetz.lua")
 +box.out([[<div id="MainFreetzhead" class='main_menu_bubble'>]])
 +menu.write_menu('freetz')
 +box.out([[</div>]])
  ?>
  </div>
+--- usr/www/all/menus/menu_data.lua
++++ usr/www/all/menus/menu_data.lua
+@@ -2129,6 +2129,20 @@
+ ["lnk"] = "dbg",
+ ["pos"] = -50
+ } or nil
++-- TODO: find out how to check if Freetz WOL files are avalaible
++local freetzWolInstalled = false
++if freetzWolInstalled then
++menuData["freetz-wol"] = {
++["txt"] = "Freetz WOL",
++["lnk"] = "/cgi-bin/freetz_wol",
++["pos"] = -55
++}
++end
++menuData["freetz"] = {
++["txt"] = "Freetz",
++["lnk"] = "/cgi-bin/freetz_status",
++["pos"] = -60
++}
+ if config.NAS then
+ menuData["nas"] = {
+ ["txt"] = TXT([[{?757:400?}]]),
