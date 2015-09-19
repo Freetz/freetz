@@ -48,15 +48,15 @@
  #endif
  
  /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
-@@ -291,7 +303,12 @@
+@@ -296,7 +308,12 @@
  
  /* This is used by the scp binary when used as a client binary. If you're
   * not using the Dropbear client, you'll need to change it */
 +#ifndef DB_NONFREETZ
- #define _PATH_SSH_PROGRAM "/usr/bin/ssh"
+ #define DROPBEAR_PATH_SSH_PROGRAM "/usr/bin/ssh"
 +#else
 +/* ssh is expected to be in PATH */
-+#define _PATH_SSH_PROGRAM "ssh"
++#define DROPBEAR_PATH_SSH_PROGRAM "ssh"
 +#endif
  
  /* Whether to log commands executed by a client. This only logs the 
