@@ -16,12 +16,10 @@ choice
 	prompt "version"
 	default FREETZ_PHP_VERSION_5_5
 
-	config FREETZ_PHP_VERSION_5_3
-		bool "php 5.3.29"
 	config FREETZ_PHP_VERSION_5_4
-		bool "php 5.4.44"
+		bool "php 5.4.45"
 	config FREETZ_PHP_VERSION_5_5
-		bool "php 5.5.28"
+		bool "php 5.5.29"
 endchoice
 
 menu "Binaries"
@@ -142,15 +140,6 @@ config FREETZ_PACKAGE_PHP_WITH_SOCKETS
 	default n
 	help
 		This option enables the SOCKETS support for PHP
-
-config FREETZ_PACKAGE_PHP_WITH_SQLITE2
-	bool "build with SQLite (v2) support"
-	depends on FREETZ_PHP_VERSION_5_3
-	default n
-	help
-		This option enables the SQLite (v2) support for PHP
-		NB: SQLite v2 is somewhat deprecated. If you're developing
-		a new application you probably don't want to activate this option.
 
 config FREETZ_PACKAGE_PHP_WITH_SQLITE3
 	bool "build with SQLite (v3) support"
