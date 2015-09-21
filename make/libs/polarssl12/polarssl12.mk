@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.15)
+$(call PKG_INIT_LIB, 1.2.16)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/polarssl-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=polarssl-$($(PKG)_VERSION)-gpl.tgz
-$(PKG)_SOURCE_SHA1:=b1da505ce79637a49e29d12a6beb2c1f74d84a72
+$(PKG)_SOURCE_SHA1:=a0679e9ef3ee98b79ab7998e39e58795bc5f4e12
 $(PKG)_SITE:=http://polarssl.org/code/releases
 
 $(PKG)_LIBNAME:=lib$(pkg).so.$($(PKG)_VERSION)
