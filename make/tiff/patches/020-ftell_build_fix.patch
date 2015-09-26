@@ -1,0 +1,14 @@
+
+fixes "error: macro "ftell" requires 3 arguments, but only 1 given" build error
+
+--- libtiff/tiffiop.h
++++ libtiff/tiffiop.h
+@@ -270,7 +270,7 @@
+   Windows read/write APIs support only 'unsigned int' rather than 'size_t'.
+   Windows off_t is only 32-bit, even in 64-bit builds.
+ */
+-#if defined(HAVE_FSEEKO)
++#if defined(__WIN32__) /* probably more checks are required __MSVCRT_VERSION__, etc. */
+ /*
+   Use fseeko() and ftello() if they are available since they use
+   'off_t' rather than 'long'.  It is wrong to use fseeko() and
