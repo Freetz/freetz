@@ -368,7 +368,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ "$grbg" != "0x0" ] && printf "Skipping %d Bytes garbage..." $grbg
 		# Unpack standard *.image file in tar format
 		tail -c $(( $image_size - $image_grbg )) "$FIRMWARE" | \
-		  "$TAR_GNU" -xf "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
+		  "$TAR_GNU" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
 	fi
 	if [ "$FIRMWARE_EXTENSION" == "exe" ] || [ "$untar_failed" ]; then
 		# Unpack Windows recover.exe file or mtdblock dump
@@ -463,7 +463,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ -r "$AVMPLUGINS" ]; then
 		echo0 "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
-		"$TAR_GNU" -xf "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
+		"$TAR_GNU" -xif "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
 
 		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
 			AVMPLUGIN="${i##*/plugin-}"
@@ -484,7 +484,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking var.tar"
 	mkdir "$VARTAR_DIR"
-	"$TAR_GNU" -xpf "$VARTAR" -C "$VARTAR_DIR" || exit 1
+	"$TAR_GNU" -xipf "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
 	echo -e "done.\n"
 
