@@ -230,7 +230,7 @@ UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 if [ "$FREETZ_KERNEL_VERSION_2_6_13" -a "$FREETZ_REPLACE_KERNEL" != "y" ]; then
 	MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS2_TOOL}"
 else
-	if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_EXT2_SQUASHFS4_PACKAGING_SCHEME}" == "y" ]; then
 		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_AVM_BE_TOOL}"
 	else
 		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS3_TOOL}"
@@ -242,7 +242,7 @@ else
 	fi
 fi
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" != "y" ]; then
+if [ "${FREETZ_AVM_HAS_EXT2_SQUASHFS4_PACKAGING_SCHEME}" != "y" ]; then
 	MKSQUASHFS_OPTIONS+=" -noappend"
 	# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
 	if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
@@ -1615,7 +1615,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 
-if [ "${FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR}" == "y" ]; then
+if [ "${FREETZ_AVM_HAS_EXT2_SQUASHFS4_PACKAGING_SCHEME}" == "y" ]; then
 		PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
 		[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
 
