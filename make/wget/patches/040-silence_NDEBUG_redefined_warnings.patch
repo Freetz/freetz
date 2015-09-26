@@ -1,0 +1,11 @@
+--- src/wget.h
++++ src/wget.h
+@@ -47,7 +47,7 @@
+ #include "sysdep.h"
+ 
+ /* Disable assertions when debug support is not compiled in. */
+-#ifndef ENABLE_DEBUG
++#if !defined(ENABLE_DEBUG) && !defined(NDEBUG)
+ # define NDEBUG
+ #endif
+ 
