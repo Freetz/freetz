@@ -238,6 +238,12 @@ if [ -n "$URLs" ]; then
 			elif [ ${url:0:4} == "@1&1" ]; then
 				subpath=${url/@1&1\//}
 				sites[(( num_sites++ ))]=http://acsfwdl.1und1.de/avm/$subpath
+			elif [ ${url:0:4} == "@EWE" ]; then
+				subpath=${url/@EWE\//}
+				sites[(( num_sites++ ))]=http://download.ewe.de/avm/$subpath
+			elif [ ${url:0:6} == "@M-NET" ]; then
+				subpath=${url/@M-NET\//}
+				sites[(( num_sites++ ))]=http://www.m-net.de/fileadmin/downloads/Links/$subpath
 			elif [ ${url:0:7} == "@APACHE" ]; then
 				subpath=${url/@APACHE\//}
 				sites[(( num_sites++ ))]=http://www.eu.apache.org/dist/$subpath
