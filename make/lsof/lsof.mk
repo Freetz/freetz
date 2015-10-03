@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 4.87)
-$(PKG)_SOURCE:=lsof_$($(PKG)_VERSION)_src.tar.bz2
-$(PKG)_SOURCE_MD5:=f4babd93a6ed08d0da3a8992d523e04f
-$(PKG)_SITE:=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
+$(call PKG_INIT_BIN, 4.89)
+$(PKG)_SOURCE:=lsof_$($(PKG)_VERSION)_src.tar.xz
+$(PKG)_SOURCE_MD5:=f95a13724c0cfb1f914660681ee28f87
+$(PKG)_SITE:=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof,http://people.freebsd.org/~abe
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)_src
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsof
@@ -13,6 +13,7 @@ ifeq ($(FREETZ_TARGET_IPV6_SUPPORT),y)
 $(PKG)_HASIPV6 := Y
 endif
 
+$(PKG)_PATCH_PRE_CMDS += chmod -R u+w .;
 $(PKG)_CONFIGURE_PRE_CMDS += ln -s Configure configure;
 
 $(PKG)_CONFIGURE_DEFOPTS := n
