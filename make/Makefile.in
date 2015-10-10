@@ -553,14 +553,14 @@ endef
 define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2
 $($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config | $(SOURCE_DIR)
 	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_hash) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
-	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2> /dev/null $(SILENT); then \
-		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
+	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2>/dev/null $(SILENT); then \
+		$(RM) -r $($(PKG)_DIR); \
 		$($(PKG)_CLEAN_TARGET_DIR__INT) \
+		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
 	else \
 		$(RM) $($(PKG)_FREETZ_CONFIG_FILE).temp; \
 	fi
-$(PACKAGES_DIR)/.$(pkg): $($(PKG)_FREETZ_CONFIG_FILE)
-$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): $($(PKG)_FREETZ_CONFIG_FILE)
+$(pkg)-build-prereq: $($(PKG)_FREETZ_CONFIG_FILE)
 endef
 
 # Finalise packages (general functionality + call to type specifics)
@@ -755,7 +755,7 @@ $(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
 		mv $($(PKG)_FREETZ_CHANGES_FILE).temp $($(PKG)_FREETZ_CHANGES_FILE); \
 	fi
 	@$(RM) $($(PKG)_FREETZ_CHANGES_FILE).temp
-$(pkg) $(pkg)-precompiled $(pkg)-build-prereq: $(PKG)_FREETZ_CHANGES_CHECK
+$(pkg)-build-prereq: $(PKG)_FREETZ_CHANGES_CHECK
 .PHONY: $(PKG)_FREETZ_CHANGES_CHECK
 endef
 
