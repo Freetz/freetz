@@ -1,9 +1,9 @@
-$(call PKG_INIT_LIB, 1.3.4)
+$(call PKG_INIT_LIB, 1.3.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=55f2288055e44754275a17c9a2497391
+$(PKG)_SOURCE_MD5:=28cb28097c07a735d6af56e598e1c90f
 $(PKG)_SITE:=http://downloads.xiph.org/releases/vorbis
 
-$(PKG)_LIBVERSIONS      := 0.4.7 2.0.10 3.3.6
+$(PKG)_LIBVERSIONS      := 0.4.8 2.0.11 3.3.7
 $(PKG)_LIBNAMES_SHORT   := vorbis vorbisenc vorbisfile
 $(PKG)_LIBNAMES_LONG    := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
 $(PKG)_LIBS_BUILD_DIR   := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/.libs/%)
@@ -22,6 +22,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-ogg-libraries="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib"
 $(PKG)_CONFIGURE_OPTIONS += --with-ogg-includes="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
+$(PKG)_CONFIGURE_OPTIONS += --disable-examples
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
