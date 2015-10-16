@@ -28,7 +28,7 @@ def menuselect2kconfig(menuselectFilename):
 		"SPEEX_PREPROCESS": ["FREETZ_LIB_libspeex"],
 		"SYSLOG": [],
 		"SQLITE3": ["FREETZ_LIB_libsqlite3"],
-		"SRTP": ["FREETZ_LIB_libsrtp"],
+		"SRTP": ["FREETZ_LIB_libsrtp", "FREETZ_LIB_libcrypto_WITH_EC"],
 		"ZLIB": ["FREETZ_LIB_libz"]
 	}
 
