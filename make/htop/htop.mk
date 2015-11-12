@@ -12,6 +12,9 @@ $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_stat=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_meminfo=yes
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-unicode
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
+$(PKG)_CONFIGURE_OPTIONS += --disable-native-affinity
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
