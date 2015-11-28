@@ -1,6 +1,6 @@
 --- options.h
 +++ options.h
-@@ -357,7 +357,7 @@
+@@ -363,7 +363,7 @@
  #define DEFAULT_IDLE_TIMEOUT 0
  
  /* The default path. This will often get replaced by the shell */
@@ -49,7 +49,7 @@
  					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
  }
  
-@@ -146,6 +149,7 @@
+@@ -147,6 +150,7 @@
  	svr_opts.hostkey = NULL;
  	svr_opts.delay_hostkey = 0;
  	svr_opts.pidfile = DROPBEAR_PIDFILE;
@@ -57,7 +57,7 @@
  #ifdef ENABLE_SVR_LOCALTCPFWD
  	svr_opts.nolocaltcp = 0;
  #endif
-@@ -249,6 +253,9 @@
+@@ -233,6 +237,9 @@
  				case 'P':
  					next = &svr_opts.pidfile;
  					break;
@@ -67,7 +67,7 @@
  #ifdef DO_MOTD
  				/* motd is displayed by default, -m turns it off */
  				case 'm':
-@@ -319,6 +326,10 @@
+@@ -330,6 +337,10 @@
  	}
  #endif
  
