@@ -1,6 +1,6 @@
 --- errhnd.cpp
 +++ errhnd.cpp
-@@ -325,7 +325,11 @@
+@@ -335,7 +335,11 @@
      mprintf(L"\n%s\n",St(MProgAborted));
  #endif
    SetErrorCode(Code);
@@ -14,7 +14,7 @@
  
 --- extract.cpp
 +++ extract.cpp
-@@ -609,7 +609,11 @@
+@@ -636,7 +636,11 @@
              // in Android, so if free memory is set, check it here
              // trying to prevent crash.
              if (Cmd->FreeMem!=0 && Cmd->FreeMem < Arc.FileHead.WinSize)
@@ -53,7 +53,7 @@
 +#endif
  
  #if defined(_WIN_ALL) && !defined(SFX_MODULE) && !defined(SHELL_EXT)
-   if (ShutdownOnClose)
+   if (ShutdownOnClose && ErrHandler.IsShutdownEnabled())
 --- unpack50frag.cpp
 +++ unpack50frag.cpp
 @@ -47,7 +47,11 @@
