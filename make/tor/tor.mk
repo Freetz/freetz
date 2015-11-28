@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.2.6.10)
+$(call PKG_INIT_BIN, 0.2.7.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=04f919e7882d1ca80f835545af562bad
+$(PKG)_SOURCE_MD5:=2fa650d387eb2ce08ad65ac1f182d3cc
 $(PKG)_SITE:=http://www.torproject.org/dist
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
@@ -14,6 +14,7 @@ $(PKG)_CONFIGURE_ENV += tor_cv_sign_extend=yes
 $(PKG)_CONFIGURE_ENV += tor_cv_size_t_signed=no
 $(PKG)_CONFIGURE_ENV += tor_cv_time_t_signed=yes
 $(PKG)_CONFIGURE_ENV += tor_cv_twos_complement=yes
+$(PKG)_CONFIGURE_ENV += tor_cv_cflags__fasynchronous_unwind_tables=no
 $(PKG)_CONFIGURE_ENV += tor_cv_cflags__fstack_protector_all=no
 $(PKG)_CONFIGURE_ENV += tor_cv_cflags__Wstack_protector=no
 $(PKG)_CONFIGURE_ENV += tor_cv_cflags___param_ssp_buffer_size_1=no
