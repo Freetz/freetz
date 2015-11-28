@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 2.9.2)
+$(call PKG_INIT_LIB, 2.9.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=9e6a9aca9d155737868b3dc5fd82f788
+$(PKG)_SOURCE_MD5:=daece17e045f1c107610e137ab50c179
 $(PKG)_SITE:=ftp://xmlsoft.org/$(pkg)
 
 $(PKG)_LIBNAME:=$(pkg).so.$($(PKG)_VERSION)
@@ -38,6 +38,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-catalog=no
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
 $(PKG)_CONFIGURE_OPTIONS += --with-html=$(if $(FREETZ_LIB_libxml2_WITH_HTML),yes,no)
 $(PKG)_CONFIGURE_OPTIONS += --with-legacy=no		#deprecated APIs for compatibility
+$(PKG)_CONFIGURE_OPTIONS += --with-lzma=no
 $(PKG)_CONFIGURE_OPTIONS += --with-output=yes		#serialization support
 $(PKG)_CONFIGURE_OPTIONS += --with-pattern=yes		#xmlPattern selection interface
 $(PKG)_CONFIGURE_OPTIONS += --with-push=yes		#PUSH parser interfaces

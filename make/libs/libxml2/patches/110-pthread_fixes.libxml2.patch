@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -14890,12 +14890,12 @@
+@@ -15493,12 +15493,12 @@
  	       if test "${THREAD_LIBS}" = "-lpthread" ; then
  	           if expr ${GCC_MEDIUM} \> 2 \& ${GCC_MAJOR} = 3 > /dev/null
  		   then
@@ -18,7 +18,7 @@
 --- threads.c
 +++ threads.c
 @@ -50,6 +50,7 @@
- #ifdef __GNUC__
+ #if defined(__GNUC__) && defined(__GLIBC__)
  #ifdef linux
  #if (__GNUC__ == 3 && __GNUC_MINOR__ >= 3) || (__GNUC__ > 3)
 +#if 0
@@ -31,7 +31,7 @@
  #endif
 +#endif
  #endif /* linux */
- #endif /* __GNUC__ */
+ #endif /* defined(__GNUC__) && defined(__GLIBC__) */
  #endif /* HAVE_PTHREAD_H */
 --- libxml-2.0.pc.in
 +++ libxml-2.0.pc.in
