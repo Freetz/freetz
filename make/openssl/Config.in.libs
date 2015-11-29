@@ -39,14 +39,20 @@ config FREETZ_OPENSSL_VERSION_PROMPT
 	bool
 	default n
 
+config FREETZ_OPENSSL_VERSION_1_REQUIRED
+	bool
+	default n
+
 choice
 
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	prompt "OpenSSL version"
-	default FREETZ_OPENSSL_VERSION_0
+	default FREETZ_OPENSSL_VERSION_0 if !FREETZ_AVM_HAS_OPENSSL_VERSION_1
+	default FREETZ_OPENSSL_VERSION_1
 
 	config FREETZ_OPENSSL_VERSION_0
 	bool "0.9.8zg"
+	depends on !FREETZ_OPENSSL_VERSION_1_REQUIRED
 	help
 	    - is smaller than 1.0.x (about 142kB)
 	    - could be used (with some limitations) as a replacement for AVM's OpenSSL library
