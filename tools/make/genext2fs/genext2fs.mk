@@ -14,11 +14,11 @@ genext2fs-unpacked: $(GENEXT2FS_DIR)/.unpacked
 $(GENEXT2FS_DIR)/.unpacked: $(DL_DIR)/$(GENEXT2FS_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(GENEXT2FS_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(call APPLY_PATCHES,$(GENEXT2FS_MAKE_DIR)/patches,$(GENEXT2FS_DIR))
+	(cd $(GENEXT2FS_DIR); mv configure.in configure.ac)
 	touch $@
 
 $(GENEXT2FS_DIR)/.configured: $(GENEXT2FS_DIR)/.unpacked
 	(cd $(GENEXT2FS_DIR); \
-		mv configure.in configure.ac && \
 		autoreconf -f -i && \
 		./configure --prefix=$(FREETZ_BASE_DIR)/$(TOOLS_DIR) \
 	);
