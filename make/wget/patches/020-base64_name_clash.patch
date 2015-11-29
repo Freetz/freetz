@@ -2,7 +2,7 @@ Rename base64_encode/decode to avoid name clash with the same named functions fr
 
 --- src/http.c
 +++ src/http.c
-@@ -3776,7 +3776,7 @@
+@@ -4542,7 +4542,7 @@
    sprintf (t1, "%s:%s", user, passwd);
  
    t2 = (char *)alloca (BASE64_LENGTH (len1) + 1);
@@ -42,7 +42,7 @@ Rename base64_encode/decode to avoid name clash with the same named functions fr
  
 --- src/utils.c
 +++ src/utils.c
-@@ -2127,7 +2127,7 @@
+@@ -2130,7 +2130,7 @@
     base64 data.  */
  
  size_t
@@ -51,7 +51,7 @@ Rename base64_encode/decode to avoid name clash with the same named functions fr
  {
    /* Conversion table.  */
    static const char tbl[64] = {
-@@ -2195,7 +2195,7 @@
+@@ -2198,7 +2198,7 @@
     This function originates from Free Recode.  */
  
  ssize_t
@@ -62,7 +62,7 @@ Rename base64_encode/decode to avoid name clash with the same named functions fr
       assumes ASCII (but so does Wget in other places).  */
 --- src/utils.h
 +++ src/utils.h
-@@ -134,8 +134,8 @@
+@@ -136,8 +136,8 @@
  /* How many bytes it will take to store LEN bytes in base64.  */
  #define BASE64_LENGTH(len) (4 * (((len) + 2) / 3))
  
