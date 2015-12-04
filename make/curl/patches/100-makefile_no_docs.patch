@@ -3,7 +3,7 @@
 @@ -141,7 +141,7 @@
  bin_SCRIPTS = curl-config
  
- SUBDIRS = lib src include
+ SUBDIRS = lib src include scripts
 -DIST_SUBDIRS = $(SUBDIRS) tests packages docs
 +DIST_SUBDIRS = $(SUBDIRS)       packages
  
@@ -13,12 +13,12 @@
  	done)
  
  html:
--	cd docs; make html
-+	#cd docs; make html
+-	cd docs && make html
++	#cd docs && make html
  
  pdf:
--	cd docs; make pdf
-+	#cd docs; make pdf
+-	cd docs && make pdf
++	#cd docs && make pdf
  
  check: test examples check-docs
  
@@ -31,31 +31,46 @@
  
  check-docs:
  	@(cd docs/libcurl; $(MAKE) check)
+@@ -255,12 +255,12 @@
+ # We extend the standard install with a custom hook:
+ install-data-hook:
+ 	cd include && $(MAKE) install
+-	cd docs && $(MAKE) install
++	#cd docs && $(MAKE) install
+ 
+ # We extend the standard uninstall with a custom hook:
+ uninstall-hook:
+ 	cd include && $(MAKE) uninstall
+-	cd docs && $(MAKE) uninstall
++	#cd docs && $(MAKE) uninstall
+ 
+ ca-bundle: lib/mk-ca-bundle.pl
+ 	@echo "generating a fresh ca-bundle.crt"
 --- Makefile.in
 +++ Makefile.in
-@@ -599,7 +599,7 @@
+@@ -601,7 +601,7 @@
  
  bin_SCRIPTS = curl-config
- SUBDIRS = lib src include
+ SUBDIRS = lib src include scripts
 -DIST_SUBDIRS = $(SUBDIRS) tests packages docs
 +DIST_SUBDIRS = $(SUBDIRS)       packages
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  LIB_VTLS_CFILES = vtls/openssl.c vtls/gtls.c vtls/vtls.c vtls/nss.c     \
-@@ -1303,10 +1303,10 @@
+@@ -1309,10 +1309,10 @@
  	done)
  
  html:
--	cd docs; make html
-+	#cd docs; make html
+-	cd docs && make html
++	#cd docs && make html
  
  pdf:
--	cd docs; make pdf
-+	#cd docs; make pdf
+-	cd docs && make pdf
++	#cd docs && make pdf
  
  check: test examples check-docs
  
-@@ -1329,7 +1329,7 @@
+@@ -1335,7 +1335,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all am-test)
  
  examples:
@@ -64,7 +79,7 @@
  
  check-docs:
  	@(cd docs/libcurl; $(MAKE) check)
-@@ -1393,12 +1393,12 @@
+@@ -1399,12 +1399,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
