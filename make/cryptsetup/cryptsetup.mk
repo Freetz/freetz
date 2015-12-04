@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.6.8)
+$(call PKG_INIT_BIN, 1.7.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=a04d97ca2874e98c112fddbe930b19de
+$(PKG)_SOURCE_SHA256:=075524a7cc0db36d12119fa79116750accb1c6c8825d5faa2534b74b8ce3d148
 $(PKG)_SITE:=@KERNEL/linux/utils/cryptsetup/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
