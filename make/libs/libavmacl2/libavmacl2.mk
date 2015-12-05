@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 7490.06.01)
+$(call PKG_INIT_LIB, 7490.06.30)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=2aeaa5eae6969419cd80f401e714170f
+$(PKG)_SOURCE_MD5:=1130eaa9a0d0f7d7c5de87657aa98bb1
 $(PKG)_SITE:=http://freetz.magenbrot.net
 
 $(PKG)_BUILD_PREREQ += autoreconf
