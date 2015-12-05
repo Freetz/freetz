@@ -1,0 +1,32 @@
+This patch has been created from AVM's opensrc packages for 7390.06.23 and 7390.06.30
+by applying to the kernel sources they contain the following command:
+
+    diff -durN --no-dereference 7390.06.23 7390.06.30 > this.patch
+
+--- linux-2.6.28/net/avm_pa/avm_pa_fusiv.c
++++ linux-2.6.28/net/avm_pa/avm_pa_fusiv.c
+@@ -584,7 +584,11 @@
+    priority = (priority & TC_H_MIN_MASK);
+    if (priority > 7)
+       priority = 7;
+-   flow.egressList[0].pFlowID = (void *) (priority << 16);
++   
++   if (egress_hw->apId == PERI_ID || egress_hw->apId == ATM_ID)
++      flow.egressList[0].pFlowID = (void *) (priority << 16);
++   else
++      flow.egressList[0].pFlowID = (void *) (priority);
+ 
+    if (egress_hw->apId != PERI_ID) {
+       mtu = avm_session->egress[0].mtu;
+@@ -853,7 +857,10 @@
+       (unsigned int) &fusiv_session_array[avm_session->session_handle];
+    flow.egressList[0].pEgress =
+       (void *) (K1_TO_PHYS(apArray[egress_hw->apId].apTxFifo));
+-   flow.egressList[0].pFlowID = (void *) (priority << 16);
++   if (egress_hw->apId == PERI_ID || egress_hw->apId == ATM_ID)
++      flow.egressList[0].pFlowID = (void *) (priority << 16);
++   else
++      flow.egressList[0].pFlowID = (void *) (priority);
+    flow.operations |= (0x1 << AP_ROUTE_VALID_BIT);
+ 
+    flowhash = apIpv6CalculateHash(ingress_hw->apId, &flow);
