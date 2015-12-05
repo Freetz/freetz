@@ -1,16 +1,15 @@
-$(call PKG_INIT_BIN,$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2),2.2.3,2.3.8))
-$(PKG)_SOURCE_MD5_2.2.3:=19265405cbcbf7c86be81418ecb02f4b
-$(PKG)_SOURCE_MD5_2.3.8:=51d996f1f1fc30f501ae251a254effeb
-$(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
+$(call PKG_INIT_BIN, 2.3.8)
+$(PKG)_SOURCE_MD5:=51d996f1f1fc30f501ae251a254effeb
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 
-$(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION)),y)
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))/obfuscation
 endif
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2),openvpn,src/openvpn/openvpn)
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,configure include/*.h src/openvpn/*.h src/openvpn/*.c)
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/openvpn/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
 
 $(PKG)_STARTLEVEL=81
@@ -21,12 +20,6 @@ $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_OPENSSL),openssl)
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_POLARSSL),polarssl12)
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_LZO),lzo)
 
-ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_VERSION_2_3)),y)
-$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,configure include/*.h src/openvpn/*.h src/openvpn/*.c)
-endif
-
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_VERSION_2_2
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_VERSION_2_3
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_OPENSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_POLARSSL
@@ -39,19 +32,10 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl12_WITH_BLOWFISH
 
-ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2)),y)
-$(PKG)_EXTRA_LIBS += $(if $(FREETZ_PACKAGE_OPENVPN_OPENSSL),-ldl)
-$(PKG)_CONFIGURE_OPTIONS += --disable-http
-$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i;
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_VERSION_2_3)),y)
 $(PKG)_CONFIGURE_OPTIONS += --disable-http-proxy
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_polarssl_ssl_init lib_polarssl_aes_crypt_cbc)
-endif
 
-# 2.3 doesn't support --with-*-path options
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,path_IFCONFIG path_IPROUTE path_ROUTE)
 $(PKG)_CONFIGURE_ENV += $(pkg)_path_IFCONFIG=/sbin/ifconfig
 $(PKG)_CONFIGURE_ENV += $(pkg)_path_IPROUTE=/sbin/ip
@@ -62,7 +46,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -ty
 
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
-$(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENVPN_STATIC),$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_2),-static,-all-static))
+$(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENVPN_STATIC),-all-static)
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc/openvpn
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_LZO),--enable-lzo,--disable-lzo)
