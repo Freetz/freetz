@@ -1,7 +1,6 @@
 config FREETZ_LIB_libcurl
 	bool "libcurl (libcurl.so)"
 	default n
-	select FREETZ_LIB_libcyassl     if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_CYASSL
 	select FREETZ_LIB_libcrypto     if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_OPENSSL
 	select FREETZ_LIB_libpolarssl13 if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_POLARSSL
 	select FREETZ_LIB_libz          if FREETZ_LIB_libcurl_WITH_ZLIB
@@ -18,9 +17,6 @@ choice
 	depends on FREETZ_LIB_libcurl_WITH_SSL
 	prompt "SSL library"
 	default FREETZ_LIB_libcurl_WITH_OPENSSL
-
-	config FREETZ_LIB_libcurl_WITH_CYASSL
-		bool "CyaSSL"
 
 	config FREETZ_LIB_libcurl_WITH_OPENSSL
 		bool "OpenSSL"

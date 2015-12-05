@@ -10,9 +10,6 @@ $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libcurl.so.$($(PKG)_LIB_VERSION)
 
-ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_CYASSL)),y)
-$(PKG)_DEPENDS_ON += cyassl
-endif
 ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_OPENSSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
@@ -27,7 +24,6 @@ endif
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure lib/urldata.h lib/vtls/polarssl.c)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_SSL
-$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_CYASSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_OPENSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_POLARSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_ZLIB
@@ -37,7 +33,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_ENV += curl_cv_writable_argv=yes
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_cyassl_error_ssl_h)
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
@@ -61,7 +56,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-sspi
 $(PKG)_CONFIGURE_OPTIONS += --disable-telnet
 $(PKG)_CONFIGURE_OPTIONS += --disable-verbose
 $(PKG)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_CYASSL),--with-cyassl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-cyassl)
+$(PKG)_CONFIGURE_OPTIONS += --without-cyassl
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_POLARSSL),--with-polarssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-polarssl)
