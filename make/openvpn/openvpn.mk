@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION)),y)
-$(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))/obfuscation
+$(PKG)_CONDITIONAL_PATCHES+=obfuscation
 endif
 
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,configure include/*.h src/openvpn/*.h src/openvpn/*.c)
