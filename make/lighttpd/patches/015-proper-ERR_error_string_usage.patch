@@ -46,7 +46,7 @@
  			}
  			break;
  		}
-@@ -1175,8 +1182,9 @@
+@@ -1183,8 +1190,9 @@
  		/* connect FD to SSL */
  		if (srv_socket->is_ssl) {
  			if (NULL == (con->ssl = SSL_new(srv_socket->ssl_ctx))) {
@@ -57,7 +57,7 @@
  
  				return NULL;
  			}
-@@ -1186,8 +1194,9 @@
+@@ -1194,8 +1202,9 @@
  			SSL_set_accept_state(con->ssl);
  
  			if (1 != (SSL_set_fd(con->ssl, cnt))) {
@@ -68,7 +68,7 @@
  				return NULL;
  			}
  		}
-@@ -1399,8 +1408,12 @@
+@@ -1407,8 +1416,12 @@
  
  						break;
  					default:
@@ -82,7 +82,7 @@
  					}
  				}
  #endif
-@@ -1518,10 +1531,11 @@
+@@ -1526,10 +1539,11 @@
  					case SSL_ERROR_SYSCALL:
  						/* perhaps we have error waiting in our error-queue */
  						if (0 != (err = ERR_get_error())) {
@@ -95,7 +95,7 @@
  							} while((err = ERR_get_error()));
  						} else if (errno != 0) { /* ssl bug (see lighttpd ticket #2213): sometimes errno == 0 */
  							switch(errno) {
-@@ -1538,10 +1552,14 @@
+@@ -1546,10 +1560,14 @@
  
  						break;
  					default:
@@ -288,7 +288,7 @@
  			}
 --- src/server.c
 +++ src/server.c
-@@ -1583,3 +1583,10 @@
+@@ -1588,3 +1588,10 @@
  
  	return 0;
  }
