@@ -1,0 +1,283 @@
+This patch has been created from AVM's opensrc packages for 7490.06.23 and 7490.06.30
+by applying to the kernel sources they contain the following command:
+
+    diff -durN --no-dereference 7490.06.23 7490.06.30 > this.patch
+
+--- linux-2.6.32/net/avm_pa/avm_pa.c
++++ linux-2.6.32/net/avm_pa/avm_pa.c
+@@ -382,8 +382,6 @@
+ 
+ #define AVM_PA_PRIOACK_THRESH_PKTS   40   /* wait for X packets to do the TCP-ACK check */
+ #define AVM_PA_PRIOACK_RATIO         70   /* % of packets have to be TCP-ACKs for positive check */
+-#define AVM_PA_PRIOACK_PACKET_SIZE   120  /* packet-size to recognize a packet as TCP-ACK */
+-#define AVM_PA_PRIOACK_PRIORITY      4    /* priority for TCP-ACK packets */
+ 
+ /* ------------------------------------------------------------------------ */
+ 
+@@ -402,10 +400,14 @@
+                               tx_channel_activated:1,
+                               rx_channel_stopped:1,
+    /* prioack handling */
+-                              prioack_enabled:1;
++                              prioack_enabled:1,
++                              tget_enabled:1; /* tget = turbo HTTP-GET */
+    unsigned int               prioack_priority;
+    unsigned                   prioack_acks;
+    unsigned                   prioack_accl_acks;
++   unsigned int               tget_priority;
++   unsigned                   tgets;
++   unsigned                   tget_accl;
+    
+    /* stats */
+    u32                        tx_pkts;
+@@ -523,7 +525,6 @@
+    unsigned                  tok_rate[TOK_SAMLES];
+    unsigned                  tok_pps[TOK_SAMLES];
+    unsigned long             tok_overlimit[TOK_SAMLES];
+-   unsigned                  prioack_packet_size;
+    unsigned                  prioack_thresh_packets;
+    unsigned                  prioack_ratio;
+    struct avm_hardware_pa    hardware_pa;
+@@ -563,7 +564,6 @@
+    .ewma_log = AVM_PA_EST_DEFAULT_EWMA_LOG,
+    .cputime_est_idx = AVM_PA_CPUTIME_EST_DEFAULT_IDX,
+    .cputime_ewma_log = AVM_PA_CPUTIME_EST_DEFAULT_EWMA_LOG,
+-   .prioack_packet_size = AVM_PA_PRIOACK_PACKET_SIZE,
+    .prioack_thresh_packets = AVM_PA_PRIOACK_THRESH_PKTS,
+    .prioack_ratio = AVM_PA_PRIOACK_RATIO,
+ };
+@@ -1931,9 +1931,25 @@
+    struct avm_pa_pkt_info *info = AVM_PKT_INFO(pkt);
+ 
+    if (egress->not_local) {
+-      if (pid->prioack_enabled && info->match.ack_only) {
+-         egress->tcpack_pkts++;
+-         pkt->priority =  pid->prioack_priority;
++      if (pid->prioack_enabled) {
++         if (info->match.ack_only) {
++            egress->tcpack_pkts++;
++            pkt->priority =  pid->prioack_priority;
++#if AVM_PA_TRACE
++            if (ctx->dbgprioacktrace)
++                pa_printk(KERN_DEBUG, "avm_pa: %lu - _pa_transmit(%s), reset tcpack prio to 0x%X\n",
++                          pkt->uniq_id & 0xffffff, pid->cfg.name, pkt->priority);
++#endif
++         } else if (pid->tget_enabled && (info->match.pkttype & AVM_PA_PKTTYPE_PROTO_MASK) == IPPROTO_TCP && egress->tx_pkts < ctx->prioack_thresh_packets) {
++            pkt->priority =  pid->tget_priority;
++#if AVM_PA_TRACE
++            if (ctx->dbgprioack)
++                pa_printk(KERN_DEBUG, "avm_pa: %lu - _pa_transmit(%s), reset tget prio to 0x%X\n",
++                          pkt->uniq_id & 0xffffff, pid->cfg.name, pkt->priority);
++#endif
++         } else {
++            pkt->priority = egress->output.priority;
++         }
+       } else  {
+          pkt->priority = egress->output.priority;
+       }
+@@ -1978,8 +1994,8 @@
+       skb_set_network_header(pkt, egress->push_l2_len);
+ #if AVM_PA_TRACE
+       if (ctx->dbgtrace)
+-         pa_printk(KERN_DEBUG, "avm_pa: %lu - _pa_transmit(%s)\n",
+-                               pkt->uniq_id & 0xffffff, pid->cfg.name);
++         pa_printk(KERN_DEBUG, "avm_pa: %lu - _pa_transmit(%s), prio=0x%X, info->match.ack_only=%d\n",
++                               pkt->uniq_id & 0xffffff, pid->cfg.name, pkt->priority, info->match.ack_only);
+ #endif
+       (*pid->cfg.tx_func)(pid->cfg.tx_arg, pkt);
+    } else {
+@@ -2934,6 +2950,12 @@
+          if (pid->prioack_enabled) {
+             /*--- prompt = "ack prio pkts"; ---*/
+             snprintf(buf, sizeof(buf), "%u (accl acks %u)", pid->prioack_acks, pid->prioack_accl_acks);
++            (*fprintffunc)(arg, "%-10s: %s\n", prompt, buf);
++         }
++         if (pid->tget_enabled) {
++            /*--- prompt = "ack prio pkts"; ---*/
++            snprintf(buf, sizeof(buf), "%u (accl %u)", pid->tgets, pid->tget_accl);
++            (*fprintffunc)(arg, "%-10s: %s\n", prompt, buf);
+          }
+       } else {
+          prompt = "Dest";
+@@ -3937,10 +3959,12 @@
+    struct avm_pa_vpid *evpid;
+    struct ethhdr *ethh;
+    unsigned int orig_packet_prio;
++   unsigned int set_tget_prio;
+    unsigned negress;
+    int headroom;
+    char buf[64];
+    u32 hash; /* not used uninitialized */
++   int do_tget = 0;
+ 
+ #if AVM_PA_TRACE
+    if (ctx->dbgtrace) {
+@@ -3959,25 +3983,33 @@
+    
+    if (!sk) {
+       if (epid->prioack_enabled) {
++         int is_tcp = ((info->match.pkttype & AVM_PA_PKTTYPE_PROTO_MASK) == IPPROTO_TCP) ? 1 : 0;
+          if (ctx->dbgprioacktrace) {
+-            printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: info->match.syn=%d, info->match.ack_only=%d, PKT_LEN(pkt)=%d, pkt->priority=%x\n", 
+-                   info->match.syn, info->match.ack_only, PKT_LEN(pkt), pkt->priority);
++            printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: info->match.syn=%d, info->match.ack_only=%d, is_tcp=%d, pid->tget_enabled=%d, epid->tget_priority=0x%X, PKT_LEN(pkt)=%d, pkt->priority=%x\n", 
++                   info->match.syn, info->match.ack_only, is_tcp, epid->tget_enabled, epid->tget_priority, PKT_LEN(pkt), pkt->priority);
+          }
+          if (info->match.syn || info->match.fin || info->match.ack_only) {
+-            epid->prioack_acks++;
+             /* change TCP-Ack priority */
++            epid->prioack_acks++;
+             if (pkt->priority > epid->prioack_priority) {
+                pkt->priority = epid->prioack_priority;
+                epid->prioack_accl_acks++;
+                if (ctx->dbgprioacktrace) {
+-                  printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: reset priority to=%x\n", pkt->priority);
++                  printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: reset tcpack priority to=%x\n", pkt->priority);
+                }
+             } 
++         } else if (is_tcp && epid->tget_enabled) {
++            /* change TCP-GET priority */
++            //epid->tgets ++;
++            if (info->can_be_accelerated && pkt->priority > epid->tget_priority) {
++               set_tget_prio = epid->tget_priority;
++               do_tget = 1;
++            } 
+          }
+       }
+    }
+    if (ctx->dbgprioacktrace && epid->prioack_enabled) 
+-        printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: priority=%x\n", pkt->priority);
++        printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: priority=%x, epid->tget_enabled=%d, info->can_be_accelerated=%d\n", pkt->priority, epid->tget_enabled, info->can_be_accelerated);
+ 
+    if (!info->can_be_accelerated) {
+       ctx->stats.tx_bypass++;
+@@ -4044,6 +4076,23 @@
+             return AVM_PA_TX_ERROR_SESSION;
+          }
+       }
++
++      if (do_tget) {
++         if (ctx->dbgprioack) {
++            printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: info->match.syn=%d, info->match.ack_only=%d, pid->tget_enabled=%d, PKT_LEN(pkt)=%d, pkt->priority=%x\n", 
++                   info->match.syn, info->match.ack_only, epid->tget_enabled, PKT_LEN(pkt), pkt->priority);
++         }
++         /* change TCP-GET priority */
++         epid->tgets ++;
++         if (pkt->priority > set_tget_prio) {
++            pkt->priority = set_tget_prio;
++            //epid->tget_accl++;
++            if (ctx->dbgprioack) {
++               printk(KERN_DEBUG "avm_pa_pid_snoop_transmit: reset tget priority to=%x\n", pkt->priority);
++            }
++         } 
++      }
++      
+       /* Session State: CREATE */
+       session->ingress_pid_handle = info->ingress_pid_handle;
+       session->ingress_vpid_handle = info->ingress_vpid_handle;
+@@ -4436,7 +4485,7 @@
+                              pid->cfg.name,
+                              pidflags2str(pid->ecfg.flags, buf, sizeof(buf)));
+          if (pid->prioack_enabled)
+-            (*fprintffunc)(arg, " ack prio 0x%x\n", pid->prioack_priority);
++            (*fprintffunc)(arg, " ack prio 0x%x (tget=%d, tget prio 0x%x)\n", pid->prioack_priority, pid->tget_enabled, pid->tget_priority);
+          else
+             (*fprintffunc)(arg, "\n");
+       } else {
+@@ -4451,7 +4500,7 @@
+                              PA_PID(ctx, pid->ingress_pid_handle)->cfg.name,
+                              pidflags2str(pid->ecfg.flags, buf, sizeof(buf)));
+          if (pid->prioack_enabled)
+-            (*fprintffunc)(arg, " ack prio 0x%x\n", pid->prioack_priority);
++            (*fprintffunc)(arg, " ack prio 0x%x (tget=%d, tget prio 0x%x)\n", pid->prioack_priority, pid->tget_enabled, pid->tget_priority);
+          else
+             (*fprintffunc)(arg, "\n");
+       }
+@@ -4629,6 +4678,8 @@
+    }
+    pid->prioack_enabled = enable ? 1 : 0;
+    pid->prioack_priority = prio;
++   pid->tget_enabled = pid->prioack_enabled;
++   pid->tget_priority = prio-1;
+    return 0;
+ }
+ EXPORT_SYMBOL(avm_pa_pid_activate_tcpackprio);
+@@ -6120,7 +6171,6 @@
+   
+    seq_printf(seq, "Packet Threshold : %u\n",ctx->prioack_thresh_packets);
+    seq_printf(seq, "Ratio            : %u\n",ctx->prioack_ratio);
+-   seq_printf(seq, "ACK Size         : %u\n",ctx->prioack_packet_size);
+    
+    for (n=1; n < CONFIG_AVM_PA_MAX_PID; n++) {
+       struct avm_pa_pid *pid = PA_PID(ctx, n);
+@@ -6128,6 +6178,10 @@
+       seq_printf(seq, "PID%d: ACK Priority     : %x\n",pid->pid_handle, pid->prioack_priority);
+       seq_printf(seq, "PID%d: Detected ACKs    : %u\n",pid->pid_handle, pid->prioack_acks);
+       seq_printf(seq, "PID%d: Accelerated ACKs : %u\n",pid->pid_handle, pid->prioack_accl_acks);
++      if (!pid->tget_enabled) continue;
++      seq_printf(seq, "PID%d: TGET Priority    : %x\n",pid->pid_handle, pid->tget_priority);
++      seq_printf(seq, "PID%d: Detected GETs    : %u\n",pid->pid_handle, pid->tgets);
++      seq_printf(seq, "PID%d: Accelerated GETs : %u\n",pid->pid_handle, pid->tget_accl);
+    }
+ 
+    return 0;
+@@ -6572,6 +6626,8 @@
+                   struct avm_pa_pid *pid = PA_PID(ctx, AVM_PA_DEVINFO(dev)->pid_handle);
+                   pid->prioack_enabled = 1;
+                   pid->prioack_priority = simple_strtoul(argv[3], 0, 10);
++                  pid->tget_enabled = 1;
++                  pid->tget_priority = pid->prioack_priority-1;
+                   dev_put(dev);
+                }
+             }
+@@ -6582,12 +6638,47 @@
+                   struct avm_pa_pid *pid = PA_PID(ctx, AVM_PA_DEVINFO(dev)->pid_handle);
+                   pid->prioack_enabled = 0;
+                   pid->prioack_priority = 0;
++                  pid->tget_enabled = 0;
++                  pid->tget_priority = 0;
+                   dev_put(dev);
+                }
++            } else {
++               int n;
++               for (n=1; n < CONFIG_AVM_PA_MAX_PID; n++) {
++                  struct avm_pa_pid *pid = PA_PID(ctx, n);
++                  pid->prioack_enabled = 0;
++                  pid->prioack_priority = 0;
++                  pid->tget_enabled = 0;
++                  pid->tget_priority = 0;
++               }
++            }
++         } else if (strcmp(argv[1], "tgetenable") == 0) {
++            if (argv[2] && argv[3]) {
++               struct net_device *dev = dev_get_by_name(&init_net, argv[2]);
++               if (dev) {
++                  struct avm_pa_pid *pid = PA_PID(ctx, AVM_PA_DEVINFO(dev)->pid_handle);
++                  pid->tget_enabled = 1;
++                  pid->tget_priority = simple_strtoul(argv[3], 0, 10);
++                  dev_put(dev);
++               }
++            }
++         } else if (strcmp(argv[1], "tgetdisable") == 0) {
++            if (argv[2]) {
++               struct net_device *dev = dev_get_by_name(&init_net, argv[2]);
++               if (dev) {
++                  struct avm_pa_pid *pid = PA_PID(ctx, AVM_PA_DEVINFO(dev)->pid_handle);
++                  pid->tget_enabled = 0;
++                  pid->tget_priority = 0;
++                  dev_put(dev);
++               }
++            } else {
++               int n;
++               for (n=1; n < CONFIG_AVM_PA_MAX_PID; n++) {
++                  struct avm_pa_pid *pid = PA_PID(ctx, n);
++                  pid->tget_enabled = 0;
++                  pid->tget_priority = 0;
++               }
+             }
+-         } else if (strcmp(argv[1], "psize") == 0) {
+-            if (argv[2]) val = simple_strtoul(argv[2], 0, 10);
+-            if (val) ctx->prioack_packet_size = val;
+          } else if (strcmp(argv[1], "pthresh") == 0) {
+             if (argv[2]) val = simple_strtoul(argv[2], 0, 10);
+             if (val) ctx->prioack_thresh_packets = val;
