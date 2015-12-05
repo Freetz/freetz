@@ -249,6 +249,11 @@ config FREETZ_KERNEL_LAYOUT_OHIO
 		FREETZ_TYPE_7170 || \
 		FREETZ_TYPE_W501V
 
+config FREETZ_KERNEL_LAYOUT_QCA956x
+	bool
+	default y if \
+		FREETZ_TYPE_4020
+
 config FREETZ_KERNEL_LAYOUT_UR8
 	bool
 	default y if \
@@ -263,7 +268,6 @@ config FREETZ_KERNEL_LAYOUT_VR9
 		FREETZ_TYPE_3370 || \
 		FREETZ_TYPE_3390 || \
 		FREETZ_TYPE_3490 || \
-		FREETZ_TYPE_4020 || \
 		FREETZ_TYPE_6840 || \
 		FREETZ_TYPE_7360 || \
 		FREETZ_TYPE_7362 || \
@@ -279,6 +283,7 @@ config FREETZ_KERNEL_LAYOUT
 	default "ar10"          if FREETZ_KERNEL_LAYOUT_AR10
 	default "iks"           if FREETZ_KERNEL_LAYOUT_IKS
 	default "ohio"          if FREETZ_KERNEL_LAYOUT_OHIO
+	default "qca956x"       if FREETZ_KERNEL_LAYOUT_QCA956x
 	default "ur8"           if FREETZ_KERNEL_LAYOUT_UR8
 	default "vr9"           if FREETZ_KERNEL_LAYOUT_VR9
 
