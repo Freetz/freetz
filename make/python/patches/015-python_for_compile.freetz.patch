@@ -1,6 +1,6 @@
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -203,6 +203,9 @@
+@@ -208,6 +208,9 @@
  TCLTK_INCLUDES=	@TCLTK_INCLUDES@
  TCLTK_LIBS=	@TCLTK_LIBS@
  
@@ -8,9 +8,9 @@
 +PYTHON_FOR_COMPILE=$(PYTHON_FOR_BUILD)
 +
  # The task to run while instrument when building the profile-opt target
- PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
- #PROFILE_TASK=	$(srcdir)/Lib/test/regrtest.py
-@@ -1042,28 +1045,28 @@
+ PROFILE_TASK=-m test.regrtest --pgo
+ 
+@@ -1072,28 +1075,28 @@
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi
