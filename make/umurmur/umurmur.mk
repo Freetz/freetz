@@ -8,16 +8,18 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)d
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure.ac src/crypt.h src/ssl.h src/ssli_polarssl.c)
 $(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh;
 
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_UMURMUR_USE_POLARSSL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_UMURMUR_OPENSSL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_UMURMUR_POLARSSL
 
 $(PKG)_DEPENDS_ON += libconfig protobuf-c
-ifeq ($(strip $(FREETZ_PACKAGE_UMURMUR_USE_POLARSSL)),y)
-$(PKG)_DEPENDS_ON += polarssl13
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl=polarssl
-else
+ifeq ($(strip $(FREETZ_PACKAGE_UMURMUR_OPENSSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
+endif
+ifeq ($(strip $(FREETZ_PACKAGE_UMURMUR_POLARSSL)),y)
+$(PKG)_DEPENDS_ON += polarssl13
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl=polarssl
 endif
 
 $(PKG_SOURCE_DOWNLOAD)

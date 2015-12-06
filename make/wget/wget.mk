@@ -13,7 +13,16 @@ $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_WITH_SSL)),y)
-ifeq ($(strip $(FREETZ_PACKAGE_WGET_USE_GNUTLS)),y)
+
+ifeq ($(strip $(FREETZ_PACKAGE_WGET_OPENSSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
+$(PKG)_DEPENDS_ON += openssl
+$(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
+$(PKG)_CONFIGURE_OPTIONS += --with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --without-libgnutls-prefix
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_WGET_GNUTLS)),y)
 $(PKG)_DEPENDS_ON += gnutls
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=gnutls
 $(PKG)_CONFIGURE_OPTIONS += --with-libgnutls-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
@@ -21,13 +30,8 @@ $(PKG)_CONFIGURE_OPTIONS += --without-libssl-prefix
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
 $(PKG)_STATIC_LIBS := -ltasn1 -lz -lhogweed -lnettle -lgmp
 endif
-else
-$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
-$(PKG)_DEPENDS_ON += openssl
-$(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
-$(PKG)_CONFIGURE_OPTIONS += --with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
-$(PKG)_CONFIGURE_OPTIONS += --without-libgnutls-prefix
 endif
+
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
@@ -45,7 +49,8 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_WGET_WITH_SSL),,--without-ssl)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_BUSYBOX_WGET
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_WGET_WITH_SSL
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_WGET_USE_GNUTLS
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_WGET_OPENSSL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_WGET_GNUTLS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_WGET_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
