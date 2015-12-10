@@ -18,7 +18,7 @@
    for ac_prog in gar ar
 --- Makefile
 +++ Makefile
-@@ -1011,16 +1011,6 @@
+@@ -1015,16 +1015,6 @@
  	PTHREAD_LIBS =
  endif
  
@@ -35,7 +35,7 @@
  ifdef NO_LIBGEN_H
  	COMPAT_CFLAGS += -DNO_LIBGEN_H
  	COMPAT_OBJS += compat/basename.o
-@@ -1030,7 +1020,7 @@
+@@ -1034,7 +1024,7 @@
  	BASIC_CFLAGS += -DUSE_LIBPCRE
  	ifdef LIBPCREDIR
  		BASIC_CFLAGS += -I$(LIBPCREDIR)/include
@@ -44,7 +44,7 @@
  	endif
  	EXTLIBS += -lpcre
  endif
-@@ -1051,7 +1041,7 @@
+@@ -1055,7 +1045,7 @@
  	ifdef CURLDIR
  		# Try "-Wl,-rpath=$(CURLDIR)/$(lib)" in such a case.
  		BASIC_CFLAGS += -I$(CURLDIR)/include
@@ -53,7 +53,7 @@
  	else
  		CURL_LIBCURL = -lcurl
  	endif
-@@ -1088,7 +1078,7 @@
+@@ -1092,7 +1082,7 @@
  	ifndef NO_EXPAT
  		ifdef EXPATDIR
  			BASIC_CFLAGS += -I$(EXPATDIR)/include
@@ -62,7 +62,7 @@
  		else
  			EXPAT_LIBEXPAT = -lexpat
  		endif
-@@ -1101,7 +1091,7 @@
+@@ -1105,7 +1095,7 @@
  
  ifdef ZLIB_PATH
  	BASIC_CFLAGS += -I$(ZLIB_PATH)/include
@@ -71,7 +71,7 @@
  endif
  EXTLIBS += -lz
  
-@@ -1109,7 +1099,7 @@
+@@ -1113,7 +1103,7 @@
  	OPENSSL_LIBSSL = -lssl
  	ifdef OPENSSLDIR
  		BASIC_CFLAGS += -I$(OPENSSLDIR)/include
@@ -80,7 +80,7 @@
  	else
  		OPENSSL_LINK =
  	endif
-@@ -1139,7 +1129,7 @@
+@@ -1143,7 +1133,7 @@
  ifdef NEEDS_LIBICONV
  	ifdef ICONVDIR
  		BASIC_CFLAGS += -I$(ICONVDIR)/include
