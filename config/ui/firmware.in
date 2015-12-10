@@ -316,12 +316,12 @@ choice
 		select FREETZ_AVM_VERSION_06_5X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_5X && FREETZ_SHOW_ADVANCED && FREETZ_REAL_DEVELOPER_ONLY
 
-	config FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR
-		bool "FRITZ! Labor 06.36/06.5X"
+	config FREETZ_TYPE_FIRMWARE_LABOR
+		bool "FRITZ! Labor"
 		select FREETZ_AVM_VERSION_06_5X
-		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_NEXT_MAJOR && FREETZ_SHOW_ADVANCED && FREETZ_REAL_DEVELOPER_ONLY
+		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_SHOW_ADVANCED && FREETZ_REAL_DEVELOPER_ONLY
 		help
-			Enable this to use an AVM Labor 06.36/06.5X firmware as base for modding.
+			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
 
 	config FREETZ_TYPE_FIRMWARE_EWE_05_5X
@@ -348,7 +348,7 @@ comment "WARNING: VULNERABLE FIRMWARE - USE AT YOUR OWN RISK"
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
 	default y
-	depends on !FREETZ_TYPE_FIRMWARE_LABOR_NEXT_MAJOR
+	depends on !FREETZ_TYPE_FIRMWARE_LABOR
 
 config FREETZ_TYPE_FIRMWARE_VULNERABLE
 	bool
