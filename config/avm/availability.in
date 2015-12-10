@@ -213,6 +213,16 @@ config FREETZ_AVM_HAS_FIRMWARE_06_2X
 	help
 		Select this if a Fritz!OS-06.2x/06.3x based firmware is available for your box.
 
+config FREETZ_AVM_HAS_FIRMWARE_06_5X
+	bool "06.5x-firmware available" if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7490 \
+		))
+	default n
+	help
+		Select this if a Fritz!OS-06.5x based firmware is available for your box.
+
 config FREETZ_AVM_HAS_FIRMWARE_LABOR
 	bool "Labor-firmware available" if FREETZ_TYPE_CUSTOM
 #	default y		if \
@@ -233,15 +243,14 @@ config FREETZ_AVM_HAS_FIRMWARE_LABOR_PHONE
 		Select this if a phone labor firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_LABOR_NEXT_MAJOR
-	bool "Labor-06.36 firmware available" if FREETZ_TYPE_CUSTOM
+	bool "Labor-06.36/06.5x firmware available" if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_LANG_DE && ( \
-			FREETZ_TYPE_7390 || \
-			FREETZ_TYPE_7490 \
+			FREETZ_TYPE_7390 \
 		)
 	default n
 	help
-		Select this if a labor-6.36 firmware is available for your box.
+		Select this if a labor-6.36/06.5X firmware is available for your box.
 
 config FREETZ_AVM_HAS_LANG_DE
 	bool "German (DE) language firmware available" if FREETZ_TYPE_CUSTOM
