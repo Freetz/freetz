@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 cat << EOF
 domain-needed
 log-async=10
@@ -47,6 +49,11 @@ fi
 [ "$DNSMASQ_STOP_DNS_REBIND" = "yes" ] && echo "stop-dns-rebind"
 
 [ "$DNSMASQ_LOG_QUERIES" = "yes" ] && echo "log-queries"
+
+if [ "$FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC" = "y" -a "$DNSMASQ_DNSSEC" = "yes" ]; then
+	[ -r /mod/etc/default.dnsmasq/trust-anchors.conf ] && echo "conf-file=/mod/etc/default.dnsmasq/trust-anchors.conf"
+	echo "dnssec"
+fi
 
 isdhcphost () {
 	echo $1 | grep '^dhcp-host$' >/dev/null

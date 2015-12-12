@@ -15,6 +15,7 @@ check "$DNSMASQ_AVM_DNS" yes:avm_dns
 check "$DNSMASQ_WRAPPER" yes:wrapper
 check "$DNSMASQ_MULTID_RESTART" yes:multid_restart
 check "$DNSMASQ_LOG_QUERIES" yes:log_queries
+check "$DNSMASQ_DNSSEC" yes:dnssec
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cat << EOF
@@ -55,6 +56,16 @@ cat << EOF
 <input id="bogus1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="bogus1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
 <input type="hidden" name="stop_dns_rebind" value="no">
 <input id="dnsrebind1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="dnsrebind1"> $(lang de:"Adressen von Upstream Nameservern ablehnen, wenn sie in privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in private IP ranges.")</label><br>
+EOF
+
+if [ "$FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC" = "y" ]; then
+cat << EOF
+<input type="hidden" name="dnssec" value="no">
+<input id="dnssec1" type="checkbox" name="dnssec" value="yes"$dnssec_chk><label for="dnssec1"> $(lang de:"DNSSEC-Validierungen durchf&uuml;hren und DNSSEC-Daten cachen." en:"Validate DNS replies and cache DNSSEC data.")</label><br>
+EOF
+fi
+
+cat << EOF
 <input type="hidden" name="log_queries" value="no">
 <input id="logq1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="logq1"> $(lang de:"Namensaufl&ouml;sung loggen." en:"Log name resolution.")</label><br>
 </p>
