@@ -1,14 +1,20 @@
-$(call PKG_INIT_BIN, 1.17)
+$(call PKG_INIT_BIN, 1.17.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=b8cff5a2f88f5ce60a2b0e361e030b46
+$(PKG)_SOURCE_MD5:=b0d58ef4963690e71effba24c105ed52
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget-gnu
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_z_compress)
+# Rename base64_encode/decode to avoid name clash with the same named functions from GnuTLS
+$(PKG)_PATCH_POST_CMDS += find $(abspath $($(PKG)_DIR)) \( -name *.h -o -name *.c \) -type f \
+	-exec $(SED) -i -r -e 's,(base64_(en|de)code),wget_\1,g' \{\} \+;
+
+$(PKG)_PATCH_POST_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_z_compress)
+
 # add EXTRA_(C|LD)FLAGS
-$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
+$(PKG)_PATCH_POST_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f \
+	-exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
