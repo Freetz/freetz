@@ -4,9 +4,9 @@ Lynx supports gzip-compressed web pages, but causes an error message because
 it assumes GNU gzip while we usually have Busybox gzip. Thus, the parameter
 "--no-name" is not supported. As we do not need it, we can patch it away.
 
---- src/HTFWriter.c	2009-02-02 02:41:02.000000000 +0100
-+++ src/HTFWriter.c	2011-11-26 23:21:09.776208084 +0100
-@@ -1040,7 +1040,7 @@
+--- src/HTFWriter.c
++++ src/HTFWriter.c
+@@ -1052,7 +1052,7 @@
  		     * It's compressed with the modern gzip.  - FM
  		     */
  		    StrAllocCopy(uncompress_mask, program);

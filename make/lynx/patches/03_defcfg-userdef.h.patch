@@ -1,5 +1,5 @@
---- userdefs.h.orig	2009-06-07 02:30:35.000000000 +0200
-+++ userdefs.h	2010-04-18 12:39:38.000000000 +0200
+--- userdefs.h
++++ userdefs.h
 @@ -105,7 +105,8 @@
   * mailcap files (see the examples in the samples directory).
   */
@@ -9,8 +9,8 @@
 +#define LYNX_CFG_FILE "/etc/lynx.cfg"
  #endif /* LYNX_CFG_FILE */
  
- /**************************
-@@ -115,8 +116,10 @@
+ #ifndef LYNX_CFG_PATH
+@@ -119,8 +120,10 @@
   * Mappings in these global and personal files override any SUFFIX
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */
@@ -23,7 +23,7 @@
  
  /**************************
   * The MAILCAP file allows you to map file MIME types to
-@@ -125,7 +128,8 @@
+@@ -129,7 +132,8 @@
   * Mappings in these global and personal files override any VIEWER
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */
@@ -33,7 +33,7 @@
  #define PERSONAL_MAILCAP ".mailcap"
  
  /**************************
-@@ -142,7 +146,8 @@
+@@ -146,7 +150,8 @@
   * Make this NULL if you don't have such a viewer or don't want to
   * use any default viewers for image types.
   */
@@ -43,17 +43,20 @@
  
  /**************************
   * SYSTEM_MAIL must be defined here to your mail sending command,
-@@ -289,7 +294,8 @@
- #ifdef DOSPATH
+@@ -300,8 +305,10 @@
+ #define LYNX_CFG_PATH "."
  #define LYNX_CFG_FILE "./lynx.cfg"
  #else
+-#define LYNX_CFG_PATH "/usr/local/lib"
 -#define LYNX_CFG_FILE "/usr/local/lib/lynx.cfg"
++/* #define LYNX_CFG_PATH "/usr/local/lib" */
 +/* #define LYNX_CFG_FILE "/usr/local/lib/lynx.cfg" */
++#define LYNX_CFG_PATH "/etc"
 +#define LYNX_CFG_FILE "/etc/lynx.cfg"
  #endif /* DOSPATH */
  #endif /* LYNX_CFG_FILE */
  #endif /* HAVE_CONFIG_H */
-@@ -305,7 +311,8 @@
+@@ -317,7 +324,8 @@
   * Mappings in these global and personal files override any SUFFIX
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */
@@ -63,7 +66,7 @@
  #define PERSONAL_EXTENSION_MAP "~/.mime.types"
  
  /**************************
-@@ -315,7 +322,8 @@
+@@ -327,7 +335,8 @@
   * Mappings in these global and personal files override any VIEWER
   * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
   */

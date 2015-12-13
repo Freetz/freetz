@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 2.8.7)
+$(call PKG_INIT_BIN, 2.8.8rel.2)
 $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=493af4c77ef6761e3f0157cd1be033a0
-$(PKG)_SITE:=http://lynx.isc.org/lynx$($(PKG)_VERSION)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)2-8-7
+$(PKG)_SOURCE_MD5:=b231c2aa34dfe7ca25681ef4e55ee7e8
+$(PKG)_SITE:=http://invisible-mirror.net/archives/lynx/tarballs,ftp://invisible-island.net/pub/lynx/tarballs
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)2-8-8
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
@@ -37,10 +37,13 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY) $($(PKG)_CFG) $($(PKG)_LSS): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LYNX_DIR) \
 		LD="$(TARGET_LD)"
-	touch $@
+	@touch $@
+
+$($(PKG)_CFG) $($(PKG)_LSS): $($(PKG)_DIR)/.unpacked
+	@touch $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
