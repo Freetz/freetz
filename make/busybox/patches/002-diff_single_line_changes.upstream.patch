@@ -1,0 +1,24 @@
+From a47fccaa63449182a5d0c11cf03139a072f8c19c Mon Sep 17 00:00:00 2001
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Date: Thu, 30 Jul 2015 23:13:25 +0300
+Subject: diff: fix -B with single line changes
+
+Fix -B with single line changes. They were always ignored regardless
+if they were blank or not.
+
+Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+--- editors/diff.c
++++ editors/diff.c
+@@ -658,8 +658,8 @@ static bool diff(FILE* fp[2], char *file[2])
+ 				}
+ 
+ 				for (j = 0; j < 2; j++)
+-					for (k = v[j].a; k < v[j].b; k++)
+-						nonempty |= (ix[j][k+1] - ix[j][k] != 1);
++					for (k = v[j].a; k <= v[j].b; k++)
++						nonempty |= (ix[j][k] - ix[j][k - 1] != 1);
+ 
+ 				vec = xrealloc_vector(vec, 6, ++idx);
+ 				memcpy(vec[idx], v, sizeof(v));

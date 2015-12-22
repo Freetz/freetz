@@ -1,0 +1,40 @@
+From 39f017293a047ac1063c84263d4d855b86c62ba1 Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Sun, 11 Jan 2015 16:41:54 +0100
+Subject: diff: fix a bug in diffing against stdin. Closes 7784
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+--- editors/diff.c
++++ editors/diff.c
+@@ -740,9 +740,10 @@ static int diffreg(char *file[2])
+ 			unlink(name);
+ 			if (bb_copyfd_eof(fd, fd_tmp) < 0)
+ 				xfunc_die();
+-			if (fd) /* Prevents closing of stdin */
++			if (fd != STDIN_FILENO)
+ 				close(fd);
+ 			fd = fd_tmp;
++			xlseek(fd, 0, SEEK_SET);
+ 		}
+ 		fp[i] = fdopen(fd, "r");
+ 	}
+--- testsuite/diff.tests
++++ testsuite/diff.tests
+@@ -44,6 +44,17 @@ testing "diff of stdin, twice" \
+ 	"" \
+ 	"stdin"
+ 
++testing "diff of empty file against stdin" \
++	"diff -u - input | $TRIM_TAB" \
++"\
++--- -
+++++ input
++@@ -1 +0,0 @@
++-a
++" \
++	"" \
++	"a\n"
++
+ testing "diff of empty file against nonempty one" \
+ 	"diff -u - input | $TRIM_TAB" \
+ "\
