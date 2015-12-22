@@ -255,17 +255,49 @@ config FREETZ_BUSYBOX__MANDATORY_05_XX
 	select FREETZ_BUSYBOX_BZIP2
 	select FREETZ_BUSYBOX_CHGRP
 	select FREETZ_BUSYBOX_CHROOT
+	select FREETZ_BUSYBOX_FEATURE_BRCTL_FANCY # used by /etc/ath/*
+	select FREETZ_BUSYBOX_FEATURE_BRCTL_SHOW  # used by /etc/ath/*
+	select FREETZ_BUSYBOX_FEATURE_DD_IBS_OBS  # used by /var/install since Fritz!OS 6.5x
+	#
+	# enabled in AVM .config but (it looks like) unused (see ifconfig --help)
+	# select FREETZ_BUSYBOX_FEATURE_IFCONFIG_SLIP
+	# select FREETZ_BUSYBOX_FEATURE_IFCONFIG_MEMSTART_IOADDR_IRQ
+	#
 	select FREETZ_BUSYBOX_FEATURE_IP_ADDRESS
 	select FREETZ_BUSYBOX_FEATURE_IP_LINK
 	select FREETZ_BUSYBOX_FEATURE_IP_ROUTE
 	select FREETZ_BUSYBOX_FEATURE_IP_RULE
 	select FREETZ_BUSYBOX_FEATURE_IP_TUNNEL
 	select FREETZ_BUSYBOX_FEATURE_IP_SHORT_FORMS
+	#
+	# enabled in AVM .config but (it looks like) unused (see mount/umount --help)
+	# select FREETZ_BUSYBOX_FEATURE_MOUNT_FAKE
+	# select FREETZ_BUSYBOX_FEATURE_MOUNT_HELPERS
+	# select FREETZ_BUSYBOX_FEATURE_MTAB_SUPPORT
+	#
+	# enabled in AVM .config but (it looks like) unused (see netstat --help)
+	# select FREETZ_BUSYBOX_FEATURE_NETSTAT_WIDE
+	#
+	select FREETZ_BUSYBOX_FEATURE_READLINK_FOLLOW
+	select FREETZ_BUSYBOX_FEATURE_SHOW_THREADS if FREETZ_AVM_UCLIBC_NPTL_ENABLED
+	#
+	# enabled in AVM .config but (it looks like) unused (see sort --help)
+	# select FREETZ_BUSYBOX_FEATURE_SORT_BIG
+	#
+	# enabled in AVM .config but (it looks like) unused (see swapon --help)
+	# select FREETZ_BUSYBOX_FEATURE_SWAPON_PRI
+	#
+	select FREETZ_BUSYBOX_FEATURE_TFTP_GET
+	select FREETZ_BUSYBOX_FEATURE_TFTP_PUT
 	select FREETZ_BUSYBOX_FGCONSOLE
 	select FREETZ_BUSYBOX_FLOCK
 	select FREETZ_BUSYBOX_FTPGET
 	select FREETZ_BUSYBOX_FTPPUT
 	select FREETZ_BUSYBOX_GROUPS
+	#
+	# enabled in AVM .config but (it looks like) unused
+	# select FREETZ_BUSYBOX_INCLUDE_SUSv2
+	#
 	select FREETZ_BUSYBOX_IOSTAT
 	select FREETZ_BUSYBOX_IP
 	select FREETZ_BUSYBOX_KILL
@@ -292,6 +324,8 @@ config FREETZ_BUSYBOX__MANDATORY_05_XX
 	select FREETZ_BUSYBOX_TFTP
 	select FREETZ_BUSYBOX_TIME
 	select FREETZ_BUSYBOX_TRACEROUTE
+	# TODO: enabled in AVM .config (check the availability of 'wc -m')
+	# select FREETZ_BUSYBOX_UNICODE_SUPPORT
 	select FREETZ_BUSYBOX_UNIQ
 	select FREETZ_BUSYBOX_UNXZ
 	select FREETZ_BUSYBOX_UNZIP
