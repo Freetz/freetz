@@ -1,0 +1,287 @@
+From 638a23483b40c5b606ee323e6612e7e454e5154b Mon Sep 17 00:00:00 2001
+From: "Anthony G. Basile" <blueness@gentoo.org>
+Date: Mon, 27 Oct 2014 16:13:34 -0400
+Subject: mkostemp: fix implementation
+
+mkostemp(char *template, int flags) generates a unique temporary
+filename from a template.  The flags parameter accepts three of
+the same flags as open(2): O_APPEND, O_CLOEXEC, and O_SYNC.  The
+current implementation of mkostemp(3) does not respect the flags
+and in fact confuses the flags with the file mode which should
+always be S_IRUSR | S_IWUSR.  This patch corrects this issue.
+
+Signed-off-by: Anthony G. Basile <blueness@gentoo.org>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+
+index b61d69c..168adb1 100644
+--- libc/inet/getaddrinfo.c
++++ libc/inet/getaddrinfo.c
+@@ -310,7 +310,7 @@
+ 		char *buf = ((struct sockaddr_un *)ai->ai_addr)->sun_path;
+ 
+ 		if (__path_search(buf, L_tmpnam, NULL, NULL, 0) != 0
+-		 || __gen_tempname(buf, __GT_NOCREATE, 0) != 0
++		 || __gen_tempname(buf, __GT_NOCREATE, 0, 0) != 0
+ 		) {
+ 			return -EAI_SYSTEM;
+ 		}
+index 18fd823..edcc31c 100644
+--- libc/misc/internals/tempname.c
++++ libc/misc/internals/tempname.c
+@@ -178,7 +178,7 @@
+    __GT_DIR:            create a directory with given mode.
+ 
+ */
+-int attribute_hidden __gen_tempname (char *tmpl, int kind, mode_t mode)
++int attribute_hidden __gen_tempname (char *tmpl, int kind, int flags, mode_t mode)
+ {
+     char *XXXXXX;
+     unsigned int i;
+@@ -220,11 +220,11 @@
+ 			fd = 0;
+ 		}
+ 	    case __GT_FILE:
+-		fd = open (tmpl, O_RDWR | O_CREAT | O_EXCL, mode);
++		fd = open (tmpl, O_RDWR | O_CREAT | O_EXCL | flags, mode);
+ 		break;
+ #if defined __UCLIBC_HAS_LFS__
+ 	    case __GT_BIGFILE:
+-		fd = open64 (tmpl, O_RDWR | O_CREAT | O_EXCL, mode);
++		fd = open64 (tmpl, O_RDWR | O_CREAT | O_EXCL | flags, mode);
+ 		break;
+ #endif
+ 	    case __GT_DIR:
+index e75b632..edfe26d 100644
+--- libc/misc/internals/tempname.h
++++ libc/misc/internals/tempname.h
+@@ -10,7 +10,7 @@
+ 	        const char *pfx /*, int try_tmpdir */) attribute_hidden;
+ #define __path_search(tmpl, tmpl_len, dir, pfx, try_tmpdir) ___path_search(tmpl, tmpl_len, dir, pfx)
+ 
+-extern int __gen_tempname (char *__tmpl, int __kind, mode_t mode) attribute_hidden;
++extern int __gen_tempname (char *__tmpl, int __kind, int flags, mode_t mode) attribute_hidden;
+ 
+ /* The __kind argument to __gen_tempname may be one of: */
+ #define __GT_FILE     0       /* create a file */
+index 232ed02..74bb26e 100644
+--- libc/stdio/tempnam.c
++++ libc/stdio/tempnam.c
+@@ -36,7 +36,7 @@
+   if (__path_search (buf, FILENAME_MAX, dir, pfx, 1))
+     return NULL;
+ 
+-  if (__gen_tempname (buf, __GT_NOCREATE, 0))
++  if (__gen_tempname (buf, __GT_NOCREATE, 0, 0))
+     return NULL;
+ 
+   return strdup (buf);
+index a9bf474..83c85b5 100644
+--- libc/stdio/tmpfile.c
++++ libc/stdio/tmpfile.c
+@@ -36,7 +36,7 @@
+ 
+     if (__path_search (buf, FILENAME_MAX, NULL, "tmpf", 0))
+ 	return NULL;
+-    fd = __gen_tempname (buf, __GT_FILE, S_IRUSR | S_IWUSR);
++    fd = __gen_tempname (buf, __GT_FILE, 0, S_IRUSR | S_IWUSR);
+     if (fd < 0)
+ 	return NULL;
+ 
+index 88b9bff..ffed862 100644
+--- libc/stdio/tmpnam.c
++++ libc/stdio/tmpnam.c
+@@ -41,7 +41,7 @@
+ 			0))
+     return NULL;
+ 
+-  if (__builtin_expect (__gen_tempname (tmpbuf, __GT_NOCREATE, 0), 0))
++  if (__builtin_expect (__gen_tempname (tmpbuf, __GT_NOCREATE, 0, 0), 0))
+     return NULL;
+ 
+   if (s == NULL)
+index 8cde84d..bfd60a4 100644
+--- libc/stdio/tmpnam_r.c
++++ libc/stdio/tmpnam_r.c
+@@ -28,7 +28,7 @@
+ 
+     if (__path_search (s, L_tmpnam, NULL, NULL, 0))
+ 	return NULL;
+-    if (__gen_tempname (s, __GT_NOCREATE, 0))
++    if (__gen_tempname (s, __GT_NOCREATE, 0, 0))
+ 	return NULL;
+ 
+     return s;
+index da7598a..e6d4a36 100644
+--- libc/stdlib/mkdtemp.c
++++ libc/stdlib/mkdtemp.c
+@@ -30,7 +30,7 @@
+    (This function comes from OpenBSD.) */
+ char * mkdtemp (char *template)
+ {
+-  if (__gen_tempname (template, __GT_DIR, S_IRUSR | S_IWUSR | S_IXUSR))
++  if (__gen_tempname (template, __GT_DIR, 0, S_IRUSR | S_IWUSR | S_IXUSR))
+     return NULL;
+   else
+     return template;
+index 0369235..912be30 100644
+--- libc/stdlib/mkostemp.c
++++ libc/stdlib/mkostemp.c
+@@ -17,6 +17,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <fcntl.h>
+ #include "../misc/internals/tempname.h"
+ 
+ /* Generate a unique temporary file name from TEMPLATE.
+@@ -26,5 +27,6 @@
+ int
+ mkostemp (char *template, int flags)
+ {
+-  return __gen_tempname (template, __GT_FILE, flags);
++  flags -= flags & O_ACCMODE; /* Remove O_RDONLY, O_WRONLY, and O_RDWR. */
++  return __gen_tempname (template, __GT_FILE, flags, S_IRUSR | S_IWUSR);
+ }
+index d21def5..c6d6d84 100644
+--- libc/stdlib/mkostemp64.c
++++ libc/stdlib/mkostemp64.c
+@@ -27,5 +27,5 @@
+ int
+ mkostemp64 (char *template, int flags)
+ {
+-  return __gen_tempname (template, __GT_BIGFILE, flags | O_LARGEFILE);
++  return __gen_tempname (template, __GT_BIGFILE, flags | O_LARGEFILE, S_IRUSR | S_IWUSR | S_IXUSR);
+ }
+index 61c7175..a3a1595 100644
+--- libc/stdlib/mkstemp.c
++++ libc/stdlib/mkstemp.c
+@@ -27,5 +27,5 @@
+    Then open the file and return a fd. */
+ int mkstemp (char *template)
+ {
+-    return __gen_tempname (template, __GT_FILE, S_IRUSR | S_IWUSR);
++    return __gen_tempname (template, __GT_FILE, 0, S_IRUSR | S_IWUSR);
+ }
+index e29be2d..6f2ee3e 100644
+--- libc/stdlib/mkstemp64.c
++++ libc/stdlib/mkstemp64.c
+@@ -27,5 +27,5 @@
+    Then open the file and return a fd. */
+ int mkstemp64 (char *template)
+ {
+-    return __gen_tempname (template, __GT_BIGFILE, S_IRUSR | S_IWUSR);
++    return __gen_tempname (template, __GT_BIGFILE, 0, S_IRUSR | S_IWUSR);
+ }
+index edd001d..1ff93da 100644
+--- libc/stdlib/mktemp.c
++++ libc/stdlib/mktemp.c
+@@ -25,7 +25,7 @@
+  * they are replaced with a string that makes the filename unique.  */
+ char *mktemp(char *template)
+ {
+-	if (__gen_tempname (template, __GT_NOCREATE, 0) < 0)
++	if (__gen_tempname (template, __GT_NOCREATE, 0, 0) < 0)
+ 		/* We return the null string if we can't find a unique file name.  */
+ 		template[0] = '\0';
+ 
+index 1b36164..3a72079 100644
+--- libpthread/nptl/sem_open.c
++++ libpthread/nptl/sem_open.c
+@@ -337,7 +337,7 @@
+       mempcpy (mempcpy (tmpfname, mountpoint.dir, mountpoint.dirlen),
+ 	"XXXXXX", 7);
+ 
+-      fd = __gen_tempname (tmpfname, __GT_FILE, mode);
++      fd = __gen_tempname (tmpfname, __GT_FILE, 0, mode);
+       if (fd == -1)
+         return SEM_FAILED;
+ 
+index 8f32031..5944f0a 100644
+--- test/.gitignore
++++ test/.gitignore
+@@ -257,6 +257,8 @@
+ stdlib/testatexit
+ stdlib/test-canon
+ stdlib/test-canon2
++stdlib/test-mkostemp-O_CLOEXEC
++stdlib/test-mkostemp-child
+ stdlib/teston_exit
+ stdlib/teststrtol
+ stdlib/teststrtoq
+new file mode 100644
+index 0000000..9ff229a
+--- /dev/null
++++ test/stdlib/test-mkostemp-O_CLOEXEC.c
+@@ -0,0 +1,45 @@
++#define _XOPEN_SOURCE_EXTENDED
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <sys/wait.h>
++#include <errno.h>
++
++#if !defined __ARCH_USE_MMU__
++# define fork vfork
++#endif
++
++int main(int argc, char *argv[]) {
++    int fd, status;
++    char buff[5];
++    char template[] = "/tmp/test-mkostemp.XXXXXX";
++
++    fd = mkostemp(template, O_CLOEXEC);
++    unlink(template);
++
++    snprintf(buff, 5, "%d", fd);
++
++    if(!fork())
++        if(execl("./test-mkostemp-child", "test-mkostemp-child", buff, NULL) == -1)
++            exit(EXIT_FAILURE);
++
++    wait(&status);
++
++    memset(buff, 0, 5);
++    lseek(fd, 0, SEEK_SET);
++    errno = 0;
++    if(read(fd, buff, 5) == -1)
++        exit(EXIT_FAILURE);
++
++    if(!strncmp(buff, "test", 5))
++        exit(EXIT_FAILURE);
++    else
++        exit(EXIT_SUCCESS);
++
++    close(fd);
++    exit(EXIT_SUCCESS);
++}
+new file mode 100644
+index 0000000..708bd80
+--- /dev/null
++++ test/stdlib/test-mkostemp-child.c
+@@ -0,0 +1,22 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++
++int main(int argc, char *argv[]) {
++    int fd;
++
++    /* This file gets built and run as a test, but its
++     * really just a helper for test-mkostemp-O_CLOEXEC.c.
++     * So, we'll always return succcess.
++     */
++    if(argc != 2)
++        exit(EXIT_SUCCESS);
++
++    sscanf(argv[1], "%d", &fd);
++
++    if(write(fd, "test\0", 5) == -1)
++        ; /* Don't Panic!  Failure is okay here. */
++
++    close(fd);
++    exit(EXIT_SUCCESS);
++}

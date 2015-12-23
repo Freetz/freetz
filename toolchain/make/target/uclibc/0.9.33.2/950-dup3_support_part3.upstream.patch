@@ -1,0 +1,54 @@
+From 90accddebef0cf967e67c9d2412082a361d9f2bd Mon Sep 17 00:00:00 2001
+From: Markos Chandras <markos.chandras@imgtec.com>
+Date: Wed, 10 Oct 2012 16:42:37 +0100
+Subject: dup2: Use dup3 if arch does not have the dup2 syscall
+
+Signed-off-by: Markos Chandras <markos.chandras@imgtec.com>
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+
+--- include/unistd.h
++++ include/unistd.h
+@@ -517,6 +517,7 @@
+ /* Duplicate FD to FD2, closing FD2 and making it open on the same
+    file while setting flags according to FLAGS.  */
+ extern int dup3 (int __fd, int __fd2, int __flags) __THROW;
++libc_hidden_proto(dup3)
+ #endif
+ 
+ /* NULL-terminated array of "NAME=VALUE" environment variables.  */
+--- libc/sysdeps/linux/common/dup2.c
++++ libc/sysdeps/linux/common/dup2.c
+@@ -9,7 +9,24 @@
+ 
+ #include <sys/syscall.h>
+ #include <unistd.h>
++#if defined __NR_dup3 && !defined __NR_dup2
++# include <fcntl.h>
++extern int __libc_fcntl (int fd, int cmd, ...);
++libc_hidden_proto(__libc_fcntl);
+ 
++int dup2(int old, int newfd)
++{
++	/*
++	 * Check if old fd is valid before we try
++	 * to ducplicate it. Return it if valid
++	 * or EBADF otherwise
++	 */
++	if (old == newfd)
++		return fcntl(old, F_GETFL, 0) < 0 ? -1 : newfd;
+ 
++	return dup3(old, newfd, 0);
++}
++#else
+ _syscall2(int, dup2, int, oldfd, int, newfd)
++#endif
+ libc_hidden_def(dup2)
+--- libc/sysdeps/linux/common/dup3.c
++++ libc/sysdeps/linux/common/dup3.c
+@@ -12,4 +12,5 @@
+ 
+ #if defined(__NR_dup3)
+ _syscall3(int, dup3, int, oldfd, int, newfd, int, flags)
++libc_hidden_def(dup3)
+ #endif
