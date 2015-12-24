@@ -65,7 +65,7 @@ echo 'done.'
 
 echo -n 'Loading modules ... '
 for MODULE in fat vfat  mbcache ext2  jbd ext3  crc16 jbd2 ext4  reiserfs  nls_utf8 hfsplus  ipv6; do
-	[ -e /lib/modules/*/kernel/*/*/${MODULE}.ko ] && modprobe $MODULE
+	[ -e /lib/modules/$(uname -r)/kernel/*/*/${MODULE}.ko ] && modprobe $MODULE
 done
 if [ -r /tmp/flash/mod/modules ]; then
 	grep -v "^ *#" /tmp/flash/mod/modules | while read -r module; do
