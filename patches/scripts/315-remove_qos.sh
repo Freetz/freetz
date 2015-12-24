@@ -2,7 +2,7 @@
 
 echo1 "removing qos files"
 rm_files \
-  "${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/net/sched/" \
+  "${MODULES_DIR}/kernel/net/sched/" \
   "${FILESYSTEM_MOD_DIR}/sbin/qos" \
   "${FILESYSTEM_MOD_DIR}/sbin/tc" \
   "${HTML_SPEC_MOD_DIR}/internet/trafficappl*" \

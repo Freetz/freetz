@@ -11,7 +11,7 @@ fi
 rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-printer-lp"
 
 [ "$FREETZ_REMOVE_PRINTSERV_MODULE" == "y" ] && \
-	rm_files ${FILESYSTEM_MOD_DIR}/lib/modules/*/kernel/drivers/usb/class/usblp.ko
+	rm_files ${MODULES_DIR}/kernel/drivers/usb/class/usblp.ko
 
 # patcht System > Diagnose (ab 5.59)
 sedfile="${LUA_MOD_DIR}/usb_devices.lua"
