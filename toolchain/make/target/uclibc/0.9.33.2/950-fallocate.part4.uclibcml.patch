@@ -1,0 +1,83 @@
+From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+To: uclibc@uclibc.org
+Subject: [PATCH v3 1/3] libc: fix setting return value and errno in fallocate()
+Date: Wed, 23 Sep 2015 15:43:37 +0300
+
+fallocate system call must return 0 on success. On error, -1 is returned
+and errno is set to indicate the error.
+
+However there is an error in fallocate which is fixed by this patch - it
+does not set errno and returns invalid value on error (it returns error
+code instead of -1).
+
+This error is detected in LTP's test kernel/syscalls/fallocate02:
+
+    ----------->8----------
+    fallocate(..., 1, 0, 1024) failed, expected errno:9: TEST_ERRNO=0
+    fallocate(..., 1, -1024, 1024) failed, expected errno:22: TEST_ERRNO=0
+    fallocate(..., 1, 1024, -1024) failed, expected errno:22: TEST_ERRNO=0
+    fallocate(..., 1, 12288, 0) failed, expected errno:22: TEST_ERRNO=0
+    fallocate(..., 1, 12288, -1024) failed, expected errno:22: TEST_ERRNO=0
+    fallocate(..., 1, -24576, 1024) failed, expected errno:22: TEST_ERRNO=0
+    ----------->8----------
+
+Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+---
+ libc/sysdeps/linux/common/fallocate.c   | 9 ++++++---
+ libc/sysdeps/linux/common/fallocate64.c | 9 ++++++---
+ 2 files changed, 12 insertions(+), 6 deletions(-)
+
+diff --git libc/sysdeps/linux/common/fallocate.c libc/sysdeps/linux/common/fallocate.c
+index b231226..b2309e9 100644
+--- libc/sysdeps/linux/common/fallocate.c
++++ libc/sysdeps/linux/common/fallocate.c
+@@ -12,6 +12,7 @@
+ #include <fcntl.h>
+ #include <bits/kernel-features.h>
+ #include <stdint.h>
++#include <errno.h>
+ 
+ #if defined __NR_fallocate
+ extern __typeof(fallocate) __libc_fallocate attribute_hidden;
+@@ -34,9 +35,11 @@ int attribute_hidden __libc_fallocate(int fd, int mode, __off_t offset, __off_t
+ # else
+ # error your machine is neither 32 bit or 64 bit ... it must be magical
+ # endif
+-	if (unlikely(INTERNAL_SYSCALL_ERROR_P (ret, err)))
+-		return INTERNAL_SYSCALL_ERRNO (ret, err);
+-	return 0;
++	if (unlikely(INTERNAL_SYSCALL_ERROR_P (ret, err))) {
++		__set_errno(INTERNAL_SYSCALL_ERRNO (ret, err));
++		ret = -1;
++	}
++	return ret;
+ }
+ 
+ # if defined __UCLIBC_LINUX_SPECIFIC__ && defined __USE_GNU
+diff --git libc/sysdeps/linux/common/fallocate64.c libc/sysdeps/linux/common/fallocate64.c
+index cf75693..1aa351e 100644
+--- libc/sysdeps/linux/common/fallocate64.c
++++ libc/sysdeps/linux/common/fallocate64.c
+@@ -13,6 +13,7 @@
+ #include <fcntl.h>
+ #include <bits/kernel-features.h>
+ #include <stdint.h>
++#include <errno.h>
+ 
+ #if defined __NR_fallocate
+ 
+@@ -27,9 +28,11 @@ int attribute_hidden __libc_fallocate64(int fd, int mode, __off64_t offset,
+ 	INTERNAL_SYSCALL_DECL(err);
+ 	ret = (int) (INTERNAL_SYSCALL(fallocate, err, 6, fd, mode,
+ 		OFF64_HI_LO (offset), OFF64_HI_LO (len)));
+-	if (unlikely(INTERNAL_SYSCALL_ERROR_P (ret, err)))
+-		return INTERNAL_SYSCALL_ERRNO (ret, err);
+-	return 0;
++	if (unlikely(INTERNAL_SYSCALL_ERROR_P (ret, err))) {
++		__set_errno(INTERNAL_SYSCALL_ERRNO (ret, err));
++		ret = -1;
++	}
++	return ret;
+ }
+ 
+ #  if defined __UCLIBC_LINUX_SPECIFIC__ && defined __USE_GNU

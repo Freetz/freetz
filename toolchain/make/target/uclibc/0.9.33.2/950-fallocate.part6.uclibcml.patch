@@ -1,0 +1,68 @@
+From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+To: uclibc@uclibc.org
+Subject: [PATCH v3 3/3] libc: posix_fallocate must return an error number on failure
+Date: Wed, 23 Sep 2015 15:43:39 +0300
+
+posix_fallocate implementation in uClibc relies on fallocate
+system call - it just returns what fallocate returns. However
+fallocate returns -1 on failure and assigns an error number
+to errno variable. In the same time posix_fallocate must
+return an error number but not -1.
+
+What does this patch: if fallocate returns -1 then posix_fallocate
+returns errno. Otherwise posix_fallocate returns 0 on success.
+
+However there is a side effect - posix_fallocate sets errno on
+failure because fallocate does it. But POSIX does not forbid it
+thus it's not a problem.
+
+Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+---
+ libc/sysdeps/linux/common/posix_fallocate.c   | 5 ++++-
+ libc/sysdeps/linux/common/posix_fallocate64.c | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git libc/sysdeps/linux/common/posix_fallocate.c libc/sysdeps/linux/common/posix_fallocate.c
+index 76771e3..2316cfd 100644
+--- libc/sysdeps/linux/common/posix_fallocate.c
++++ libc/sysdeps/linux/common/posix_fallocate.c
+@@ -12,12 +12,15 @@
+ #include <fcntl.h>
+ #include <bits/kernel-features.h>
+ #include <stdint.h>
++#include <errno.h>
+ 
+ #if defined __NR_fallocate
+ extern __typeof(fallocate) __libc_fallocate attribute_hidden;
+ int posix_fallocate(int fd, __off_t offset, __off_t len)
+ {
+-	return __libc_fallocate(fd, 0, offset, len);
++	if (__libc_fallocate(fd, 0, offset, len))
++		return errno;
++	return 0;
+ }
+ # if defined __UCLIBC_HAS_LFS__ && __WORDSIZE == 64
+ strong_alias(posix_fallocate,posix_fallocate64)
+diff --git libc/sysdeps/linux/common/posix_fallocate64.c libc/sysdeps/linux/common/posix_fallocate64.c
+index 12ddbc2..85614f6 100644
+--- libc/sysdeps/linux/common/posix_fallocate64.c
++++ libc/sysdeps/linux/common/posix_fallocate64.c
+@@ -12,6 +12,7 @@
+ #include <fcntl.h>
+ #include <bits/kernel-features.h>
+ #include <stdint.h>
++#include <errno.h>
+ 
+ #if defined __NR_fallocate
+ # if __WORDSIZE == 64
+@@ -20,7 +21,9 @@
+ extern __typeof(fallocate64) __libc_fallocate64 attribute_hidden;
+ int posix_fallocate64(int fd, __off64_t offset, __off64_t len)
+ {
+-	return __libc_fallocate64(fd, 0, offset, len);
++	if (__libc_fallocate64(fd, 0, offset, len))
++		return errno;
++	return 0;
+ }
+ # else
+ #  error your machine is neither 32 bit or 64 bit ... it must be magical
