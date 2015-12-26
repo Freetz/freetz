@@ -1,0 +1,13 @@
+--- br2684ctl.c
++++ br2684ctl.c
+@@ -12,7 +12,9 @@
+ #include <linux/atmbr2684.h>
+ #ifndef BR2684_FLAG_ROUTED
+ #warning "Kernel missing routed support for br2684"
+-#define BR2684_FLAG_ROUTED    (1<<16) /* payload is routed, not bridged */
++// Freetz: provided the kernel doesn't support it does it really make sense to define BR2684_FLAG_ROUTED
++//         and proceed further as if the kernel would support it
++// #define BR2684_FLAG_ROUTED    (1<<16) /* payload is routed, not bridged */
+ #endif
+ 
+ /* Written by Marcell GAL <cell@sch.bme.hu> to make use of the */
