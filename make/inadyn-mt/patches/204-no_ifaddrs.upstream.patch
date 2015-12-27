@@ -1,0 +1,57 @@
+--- configure
++++ configure
+@@ -4235,7 +4235,7 @@
+ 
+ 
+ for ac_header in ao/ao.h arpa/inet.h fcntl.h locale.h memory.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h \
+-sys/socket.h sys/time.h syslog.h unistd.h wchar.h wctype.h
++sys/socket.h sys/time.h syslog.h unistd.h wchar.h wctype.h ifaddrs.h
+ do :
+   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+--- src/ip.c
++++ src/ip.c
+@@ -47,7 +47,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
+-#ifndef _WIN32
++
++#if defined(HAVE_IFADDRS_H)
+ #include <sys/types.h>
+ #include <ifaddrs.h>
+ #endif
+@@ -81,7 +82,7 @@
+ /*Allows for compiling, and getifaddr returning 'not supported' on Windows.
+   TODO:  Windows implementation.
+ */
+-#ifndef _WIN32
++#if defined(HAVE_IFADDRS_H)
+ 
+ #define ifaddrs_w ifaddrs
+ 
+@@ -219,12 +220,12 @@
+ static int getifaddrs_w(struct ifaddrs_w** in_ifaddrs)
+ {
+ 
+-#ifndef _WIN32
++#if defined(HAVE_IFADDRS_H)
+ 
+ 	return getifaddrs(in_ifaddrs);
+ #else
+ 
+-	errno=EINVAL;
++	errno=ENOSYS;
+ 
+ 	return -1;
+ #endif
+@@ -234,7 +235,8 @@
+ static void freeifaddrs_w(struct ifaddrs_w* in_ifaddrs)
+ {
+ 
+-#ifndef _WIN32
++#if defined(HAVE_IFADDRS_H)
++
+ 	freeifaddrs(in_ifaddrs);
+ #endif
+ }
