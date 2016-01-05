@@ -19,7 +19,7 @@ choice
 
 	config FREETZ_PACKAGE_OPENVPN_POLARSSL
 		bool "PolarSSL"
-		select FREETZ_LIB_libpolarssl12 if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		select FREETZ_LIB_libpolarssl13 if ! FREETZ_PACKAGE_OPENVPN_STATIC
 		help
 			Leads to smaller binaries, but lacks support for some openssl features.
 
@@ -28,7 +28,7 @@ endchoice
 config FREETZ_PACKAGE_OPENVPN_POLARSSL_WITH_BLOWFISH
 	bool "Include cipher blowfish in PolarSSL"
 	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_POLARSSL
-	select FREETZ_LIB_libpolarssl12_WITH_BLOWFISH
+	select FREETZ_LIB_libpolarssl13_WITH_BLOWFISH
 	default n
 	help
 		Compile PolarSSL with support for OpenVPN default cipher "blowfish" (BF-CBC).

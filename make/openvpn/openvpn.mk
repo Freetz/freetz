@@ -1,5 +1,5 @@
-$(call PKG_INIT_BIN, 2.3.9)
-$(PKG)_SOURCE_MD5:=265755044ae88f9249d509f6d061f7e5
+$(call PKG_INIT_BIN, 2.3.10)
+$(PKG)_SOURCE_MD5:=275a640ccfc6a9f9a8faa4c84a74d294
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 
@@ -7,7 +7,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION)),y)
 $(PKG)_CONDITIONAL_PATCHES+=obfuscation
 endif
 
-$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,12,configure include/*.h src/openvpn/*.h src/openvpn/*.c)
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure include/*.h src/openvpn/*.h src/openvpn/*.c)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/openvpn/openvpn
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/openvpn
@@ -17,7 +17,7 @@ $(PKG)_STARTLEVEL=81
 $(PKG)_BUILD_PREREQ += autoreconf
 
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_OPENSSL),openssl)
-$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_POLARSSL),polarssl12)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_POLARSSL),polarssl13)
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_LZO),lzo)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_OPENSSL
@@ -30,7 +30,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENVPN_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
-$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl12_WITH_BLOWFISH
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libpolarssl13_WITH_BLOWFISH
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-http-proxy
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
@@ -57,7 +57,6 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-port-share
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_WITH_MGMNT),--enable-management,--disable-management)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pkcs11
 $(PKG)_CONFIGURE_OPTIONS += --disable-socks
-$(PKG)_CONFIGURE_OPTIONS += --enable-password-save
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_POLARSSL),--with-crypto-library=polarssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_USE_IPROUTE),--enable-iproute2)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL),--enable-small,--disable-small)

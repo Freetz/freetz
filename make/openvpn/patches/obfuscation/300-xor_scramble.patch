@@ -26,7 +26,7 @@
  	    /* Undo effect of prepend */
 --- src/openvpn/options.c
 +++ src/openvpn/options.c
-@@ -797,6 +797,9 @@
+@@ -792,6 +792,9 @@
    o->max_routes = MAX_ROUTES_DEFAULT;
    o->resolve_retry_seconds = RESOLV_RETRY_INFINITE;
    o->proto_force = -1;
@@ -36,7 +36,7 @@
  #ifdef ENABLE_OCC
    o->occ = true;
  #endif
-@@ -918,6 +921,9 @@
+@@ -907,6 +910,9 @@
    setenv_int_i (es, "local_port", e->local_port, i);
    setenv_str_i (es, "remote", e->remote, i);
    setenv_int_i (es, "remote_port", e->remote_port, i);
@@ -46,7 +46,7 @@
  
  #ifdef ENABLE_HTTP_PROXY
    if (e->http_proxy_options)
-@@ -1377,6 +1383,9 @@
+@@ -1366,6 +1372,9 @@
    SHOW_INT (connect_retry_seconds);
    SHOW_INT (connect_timeout);
    SHOW_INT (connect_retry_max);
@@ -56,7 +56,7 @@
  
  #ifdef ENABLE_HTTP_PROXY
    if (o->http_proxy_options)
-@@ -5156,6 +5165,35 @@
+@@ -5137,6 +5146,35 @@
        options->proto_force = proto_force;
        options->force_connection_list = true;
      }
