@@ -31,7 +31,7 @@
  /* Returns:
 --- util-linux/volume_id/get_devname.c
 +++ util-linux/volume_id/get_devname.c
-@@ -306,6 +306,41 @@
+@@ -306,6 +306,42 @@
  	return NULL;
  }
  
@@ -41,7 +41,7 @@
 +
 +	add_to_uuid_cache(spec, (uint64_t)0);
 +	uc = uuidCache;
-+	if (uc != NULL)
++	while (uc)
 +	{
 +		if (strcasecmp(spec, uc->device) == 0)
 +		{
@@ -59,12 +59,13 @@
 +
 +	add_to_uuid_cache(spec, (uint64_t)0);
 +	uc = uuidCache;
-+	if (uc != NULL)
++	while (uc)
 +	{
 +		if (strcasecmp(spec, uc->device) == 0)
 +		{
 +			return xstrdup(uc->type);
 +		}
++		uc = uc->next;
 +	}
 +	return NULL;
 +}
@@ -73,17 +74,16 @@
  int resolve_mount_spec(char **fsname)
  {
  	char *tmp = *fsname;
-@@ -314,7 +349,12 @@
+@@ -314,6 +349,12 @@
  		tmp = get_devname_from_uuid(*fsname + 5);
  	else if (strncmp(*fsname, "LABEL=", 6) == 0)
  		tmp = get_devname_from_label(*fsname + 6);
--
 +	else if (strncmp(*fsname, "DEVL=", 5) == 0)
 +		tmp = get_label_from_devname(*fsname + 5);
 +#if ENABLE_FEATURE_BLKID_TYPE
 +	else if (strncmp(*fsname, "DEVT=", 5) == 0)
 +		tmp = get_type_from_devname(*fsname + 5);
 +#endif
+ 
  	if (tmp == *fsname)
  		return 0; /* no UUID= or LABEL= prefix found */
- 
