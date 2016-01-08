@@ -165,11 +165,14 @@ ifneq ($(strip $(UCLIBC_VERSION)),0.9.28)
 endif
 	# Build the host utils.
 	# Note: in order the host utils to work the __ELF_NATIVE_CLASS (= __WORDSIZE) of the target
-	# must be known. That's the reason we provide -DTARGET_WORDSIZE=32 here.
+	# must be known. That's the reason we provide -DARCH_NATIVE_BIT=32 here.
+	# uClibc-0.9.28: no fix required
+	# uClibc-0.9.29/uClibc-0.9.32: 990-ldd_fix_host_ldd...patch requires ARCH_NATIVE_BIT to be provided externally
+	# uClibc-0.9.33: 990-ldd_fix_host_ldd...patch(es) contain all required changes
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR)/utils \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
-		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS) -DTARGET_WORDSIZE=32" \
+		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS) $(if $(or $(FREETZ_TARGET_UCLIBC_0_9_29),$(FREETZ_TARGET_UCLIBC_0_9_32)),-DARCH_NATIVE_BIT=32)" \
 		BUILD_LDFLAGS="" \
 		hostutils
 	for i in ldd ldconfig; do \

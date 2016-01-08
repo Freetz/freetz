@@ -1,0 +1,78 @@
+From 3aabb58d126445092dca953223c1730d975491dc Mon Sep 17 00:00:00 2001
+From: Waldemar Brodkorb <wbx@openadk.org>
+Date: Sun, 13 Dec 2015 23:52:24 +0000
+Subject: utlis/ldd: Fix host ldd in case of target wordsize differs from host one
+
+improved solution from http://freetz.org/ticket/842
+
+Signed-off-by: Leonid Lisovskiy <lly.dev@gmail.com>
+Signed-off-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
+
+Freetz adjustments for uClibc-0.9.29: ARCH_NATIVE_BIT is expected to be set externally
+
+Index: utils/ldd.c
+===================================================================
+--- utils/ldd.c
++++ utils/ldd.c
+@@ -170,10 +170,10 @@
+ 	}
+ }
+ 
+-#if ELFCLASSM == ELFCLASS32
+-# define byteswap_to_host(x) byteswap32_to_host(x)
+-#else
++#if __WORDSIZE == 64
+ # define byteswap_to_host(x) byteswap64_to_host(x)
++#else
++# define byteswap_to_host(x) byteswap32_to_host(x)
+ #endif
+ 
+ ElfW(Shdr) *elf_find_section_type(uint32_t key, ElfW(Ehdr) *ehdr)
+@@ -235,7 +235,8 @@
+ int check_elf_header(ElfW(Ehdr) *const ehdr)
+ {
+ 	if (!ehdr || strncmp((char *)ehdr, ELFMAG, SELFMAG) != 0 ||
+-	    ehdr->e_ident[EI_CLASS] != ELFCLASSM ||
++	    /* Use __WORDSIZE, not ELFCLASSM which depends on the host */
++	    ehdr->e_ident[EI_CLASS] != (__WORDSIZE >> 5) ||
+ 	    ehdr->e_ident[EI_VERSION] != EV_CURRENT)
+ 	{
+ 		return 1;
+@@ -515,6 +516,8 @@
+ 	for (cur = lib_list; cur; cur = cur->next) {
+ 		/* Check if this library is already in the list */
+ 		tmp1 = tmp2 = cur->name;
++		if (!cur->name)
++			continue;
+ 		while (*tmp1) {
+ 			if (*tmp1 == '/')
+ 				tmp2 = tmp1 + 1;
+@@ -591,6 +594,8 @@
+ 		}
+ 		for (cur = lib_list; cur; cur = cur->next) {
+ 			/* Check if this library is already in the list */
++			if (!tmp1 || !cur->name)
++				return NULL;
+ 			if (strcmp(cur->name, tmp1) == 0) {
+ 				//printf("find_elf_interpreter is replacing '%s' (already in list)\n", cur->name);
+ 				newlib = cur;
+Index: utils/porting.h
+===================================================================
+--- /dev/null
++++ utils/link.h
+@@ -0,0 +1,15 @@
++#ifndef _UTILS_LINK_H_
++#define _UTILS_LINK_H_
++
++#include <link.h>
++
++/* __WORDSIZE ist used for __ELF_NATIVE_CLASS, which is used for ElfW().
++   We want to provide the wordsize of the target, not of the host, when
++   compiling readelf.host
++ */
++#ifdef ARCH_NATIVE_BIT
++#undef __WORDSIZE
++#define __WORDSIZE ARCH_NATIVE_BIT
++#endif
++
++#endif
