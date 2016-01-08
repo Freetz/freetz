@@ -1,0 +1,32 @@
+commit 9dbd830332b9b9b7e132622cbfba105770c3df40
+Author: Eugene Rudoy <gene@freetz.org>
+Date:   Mon Dec 28 23:36:25 2015 +0100
+
+    ARCH_NATIVE_BIT should in the first place be passed when building utils for host (BUILD_CFLAGS-utils).
+    It could also be passed when building utils for target (CFLAGS-utils), but this is actually
+    not necessary as ARCH_NATIVE_BIT and __WORDSIZE are identical in this case.
+    
+    Fixes 5ec4477584b69fe5f1410649b2eb3a63835fb649 (makes it actually work).
+    
+    Signed-off-by: Eugene Rudoy <gene@freetz.org>
+
+diff --git utils/Makefile.in utils/Makefile.in
+index a601721..6349aa7 100644
+--- utils/Makefile.in
++++ utils/Makefile.in
+@@ -13,7 +13,6 @@
+     -I$(top_srcdir)ldso/include \
+     -DUCLIBC_RUNTIME_PREFIX=\"$(RUNTIME_PREFIX)\" \
+     -DUCLIBC_LDSO=\"$(UCLIBC_LDSO)\" \
+-    -DARCH_NATIVE_BIT=$(ARCH_NATIVE_BIT) \
+     -I$(top_srcdir)/$(KERNEL_HEADERS) \
+     -DNOT_IN_libc \
+     -B$(top_builddir)lib \
+@@ -54,6 +53,7 @@
+ BUILD_CFLAGS-utils := \
+     -DUCLIBC_RUNTIME_PREFIX=\"$(RUNTIME_PREFIX)\" \
+     -DUCLIBC_LDSO=\"$(UCLIBC_LDSO)\" \
++    -DARCH_NATIVE_BIT=$(ARCH_NATIVE_BIT) \
+     $(UTILS_CONFIG_FLAGS-y)
+ BUILD_CFLAGS-ldconfig.host := \
+ 				-DBUILDING_LINKAGE \
