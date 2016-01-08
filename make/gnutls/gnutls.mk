@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 3.4.7)
-$(PKG)_LIB_VERSION:=30.5.0
+$(call PKG_INIT_BIN, 3.4.8)
+$(PKG)_LIB_VERSION:=30.6.0
 $(PKG)_OPENSSL_LIB_VERSION:=27.0.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=e7556cec73c8b34fd2ff0b591e24e44c
+$(PKG)_SOURCE_SHA256:=e07c05dea525c6bf0dd8017fc5b89d886954f04fedf457ecd1ce488ac3b86ab7
 $(PKG)_SITE:=ftp://ftp.gnutls.org/gcrypt/gnutls/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
 $(PKG)_CERTTOOL := certtool
