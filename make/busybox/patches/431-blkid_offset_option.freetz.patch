@@ -312,12 +312,12 @@
  	return 0;
 --- util-linux/volume_id/btrfs.c
 +++ util-linux/volume_id/btrfs.c
-@@ -89,14 +89,14 @@
+@@ -89,20 +89,20 @@
  	// ...
  } PACKED;
  
 -int FAST_FUNC volume_id_probe_btrfs(struct volume_id *id /*,uint64_t off*/)
-+int FAST_FUNC volume_id_probe_btrfs(struct volume_id *id, uint64_t off)
++int FAST_FUNC volume_id_probe_btrfs(struct volume_id *id, uint64_t _off)
  {
  	// btrfs has superblocks at 64K, 64M and 256G
  	// minimum btrfs size is 256M
@@ -325,10 +325,18 @@
  	// the first and the second superblocks
  	struct btrfs_super_block *sb;
 -	unsigned off = 64;
-+	off += 64;
++	uint64_t off = 64;
  
  	while (off < 64*1024*1024) {
  		off *= 1024;
+-		dbg("btrfs: probing at offset 0x%x", off);
++		dbg("btrfs: probing at offset 0x%x", _off + off);
+ 
+-		sb = volume_id_get_buffer(id, off, sizeof(*sb));
++		sb = volume_id_get_buffer(id, _off + off, sizeof(*sb));
+ 		if (sb == NULL)
+ 			return -1;
+ 
 --- util-linux/volume_id/cramfs.c
 +++ util-linux/volume_id/cramfs.c
 @@ -46,9 +46,8 @@
