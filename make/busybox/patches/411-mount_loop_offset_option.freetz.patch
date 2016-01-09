@@ -1,6 +1,6 @@
 --- util-linux/mount.c
 +++ util-linux/mount.c
-@@ -47,6 +47,7 @@
+@@ -145,6 +145,7 @@
  //usage:     "\n-o OPT:"
  //usage:	IF_FEATURE_MOUNT_LOOP(
  //usage:     "\n	loop		Ignored (loop devices are autodetected)"
@@ -8,7 +8,7 @@
  //usage:	)
  //usage:	IF_FEATURE_MOUNT_FLAGS(
  //usage:     "\n	[a]sync		Writes are [a]synchronous"
-@@ -217,6 +218,7 @@
+@@ -316,6 +317,7 @@
  
  	IF_FEATURE_MOUNT_LOOP(
  		/* "loop" */ 0,
@@ -16,7 +16,7 @@
  	)
  
  	IF_FEATURE_MOUNT_FSTAB(
-@@ -277,6 +279,7 @@
+@@ -376,6 +378,7 @@
  static const char mount_option_str[] =
  	IF_FEATURE_MOUNT_LOOP(
  		"loop\0"
@@ -24,7 +24,7 @@
  	)
  	IF_FEATURE_MOUNT_FSTAB(
  		"defaults\0"
-@@ -464,7 +467,7 @@
+@@ -563,7 +566,7 @@
  
  // Use the mount_options list to parse options into flags.
  // Also update list of unrecognized options if unrecognized != NULL
@@ -33,7 +33,7 @@
  {
  	unsigned long flags = MS_SILENT;
  
-@@ -483,8 +486,8 @@
+@@ -582,8 +585,8 @@
  
  			if (strncasecmp(option_str, options, opt_len) == 0
  			 && (options[opt_len] == '\0'
@@ -44,7 +44,7 @@
  			    )
  			) {
  				unsigned long fl = mount_options[i];
-@@ -492,6 +495,12 @@
+@@ -591,6 +594,12 @@
  					flags &= fl;
  				else
  					flags |= fl;
@@ -57,7 +57,7 @@
  				goto found;
  			}
  			option_str += opt_len + 1;
-@@ -1776,12 +1785,13 @@
+@@ -1875,12 +1884,13 @@
  	int rc = -1;
  	unsigned long vfsflags;
  	char *loopFile = NULL, *filteropts = NULL;
@@ -72,7 +72,7 @@
  
  	// Treat fstype "auto" as unspecified
  	if (mp->mnt_type && strcmp(mp->mnt_type, "auto") == 0)
-@@ -1856,7 +1866,7 @@
+@@ -1955,7 +1965,7 @@
  				len, share,
  				share + len + 1  /* "dir1/dir2" */
  			);
@@ -81,7 +81,7 @@
  			if (ENABLE_FEATURE_CLEAN_UP) free(unc);
  		}
  
-@@ -1870,7 +1880,7 @@
+@@ -1969,7 +1979,7 @@
  		if (ENABLE_FEATURE_CLEAN_UP) free(lsa);
  		ip = xasprintf("ip=%s", dotted);
  		if (ENABLE_FEATURE_CLEAN_UP) free(dotted);
@@ -90,7 +90,7 @@
  		if (ENABLE_FEATURE_CLEAN_UP) free(ip);
  
  		mp->mnt_type = (char*)"cifs";
-@@ -1900,7 +1910,7 @@
+@@ -1999,7 +2009,7 @@
  		if (ENABLE_FEATURE_MOUNT_LOOP && S_ISREG(st.st_mode)) {
  			loopFile = bb_simplify_path(mp->mnt_fsname);
  			mp->mnt_fsname = NULL; // will receive malloced loop dev name
@@ -99,7 +99,7 @@
  				if (errno == EPERM || errno == EACCES)
  					bb_error_msg(bb_msg_perm_denied_are_you_root);
  				else
-@@ -2113,7 +2123,7 @@
+@@ -2213,7 +2223,7 @@
  	// Past this point, we are handling either "mount -a [opts]"
  	// or "mount [opts] single_param"
  
@@ -108,7 +108,7 @@
  	if (nonroot && (cmdopt_flags & ~MS_SILENT)) // Non-root users cannot specify flags
  		bb_error_msg_and_die(bb_msg_you_must_be_root);
  
-@@ -2185,7 +2195,7 @@
+@@ -2287,7 +2297,7 @@
  				continue;
  
  			// Skip noauto and swap anyway
@@ -117,7 +117,7 @@
  			// swap is bogus "fstype", parse_mount_options can't check fstypes
  			 || strcasecmp(mtcur->mnt_type, "swap") == 0
  			) {
-@@ -2246,7 +2256,7 @@
+@@ -2348,7 +2358,7 @@
  		// exit_group(32)                          = ?
  #if 0
  		// In case we want to simply skip swap partitions:
@@ -126,7 +126,7 @@
  		if ((l & MOUNT_SWAP)
  		// swap is bogus "fstype", parse_mount_options can't check fstypes
  		 || strcasecmp(mtcur->mnt_type, "swap") == 0
-@@ -2256,7 +2266,7 @@
+@@ -2358,7 +2368,7 @@
  #endif
  		if (nonroot) {
  			// fstab must have "users" or "user"

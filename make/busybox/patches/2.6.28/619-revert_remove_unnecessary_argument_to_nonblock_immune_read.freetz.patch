@@ -1,0 +1,90 @@
+Freetz note:
+ This a revert of the following upstream commit. We need to revert it as our revert_read_sighandler.patch
+ contains a call to nonblock_immune_read with the last argument set to 0. The upstream commit eliminates
+ the last argument assuming all calls use 1.
+
+From 61d6ae244af424b2a05468307723f21c8810ab9e Mon Sep 17 00:00:00 2001
+From: Ron Yorston <rmy@tigress.co.uk>
+Date: Sun, 19 Apr 2015 10:50:25 +0100
+Subject: libbb: remove unnecessary argument to nonblock_immune_read
+
+The loop_on_EINTR argument to nonblock_immune_read is always set to 1.
+
+Signed-off-by: Ron Yorston <rmy@tigress.co.uk>
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+--- include/libbb.h
++++ include/libbb.h
+@@ -745,7 +745,7 @@
+ 
+ 
+ extern ssize_t safe_read(int fd, void *buf, size_t count) FAST_FUNC;
+-extern ssize_t nonblock_immune_read(int fd, void *buf, size_t count) FAST_FUNC;
++extern ssize_t nonblock_immune_read(int fd, void *buf, size_t count, int loop_on_EINTR) FAST_FUNC;
+ // NB: will return short read on error, not -1,
+ // if some data was read before error occurred
+ extern ssize_t full_read(int fd, void *buf, size_t count) FAST_FUNC;
+--- libbb/read_printf.c
++++ libbb/read_printf.c
+@@ -45,20 +45,20 @@
+  * which detects EAGAIN and uses poll() to wait on the fd.
+  * Thankfully, poll() doesn't care about O_NONBLOCK flag.
+  */
+-ssize_t FAST_FUNC nonblock_immune_read(int fd, void *buf, size_t count)
++ssize_t FAST_FUNC nonblock_immune_read(int fd, void *buf, size_t count, int loop_on_EINTR)
+ {
+ 	struct pollfd pfd[1];
+ 	ssize_t n;
+ 
+ 	while (1) {
+-		n = safe_read(fd, buf, count);
++		n = loop_on_EINTR ? safe_read(fd, buf, count) : read(fd, buf, count);
+ 		if (n >= 0 || errno != EAGAIN)
+ 			return n;
+ 		/* fd is in O_NONBLOCK mode. Wait using poll and repeat */
+ 		pfd[0].fd = fd;
+ 		pfd[0].events = POLLIN;
+ 		/* note: safe_poll pulls in printf */
+-		safe_poll(pfd, 1, -1);
++		loop_on_EINTR ? safe_poll(pfd, 1, -1) : poll(pfd, 1, -1);
+ 	}
+ }
+ 
+@@ -81,7 +81,7 @@
+ 			p = buf + sz;
+ 			sz += 128;
+ 		}
+-		if (nonblock_immune_read(fd, p, 1) != 1) {
++		if (nonblock_immune_read(fd, p, 1, /*loop_on_EINTR:*/ 1) != 1) {
+ 			/* EOF/error */
+ 			if (p == buf) { /* we read nothing */
+ 				free(buf);
+--- shell/ash.c
++++ shell/ash.c
+@@ -5922,7 +5922,7 @@
+  read:
+ 		if (in.fd < 0)
+ 			break;
+-		i = nonblock_immune_read(in.fd, buf, sizeof(buf));
++		i = nonblock_immune_read(in.fd, buf, sizeof(buf), /*loop_on_EINTR:*/ 1);
+ 		TRACE(("expbackq: read returns %d\n", i));
+ 		if (i <= 0)
+ 			break;
+@@ -9642,7 +9642,7 @@
+ #if ENABLE_FEATURE_EDITING
+  retry:
+ 	if (!iflag || g_parsefile->pf_fd != STDIN_FILENO)
+-		nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1);
++		nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1, /*loop_on_EINTR:*/ 1);
+ 	else {
+ 		int timeout = -1;
+ # if ENABLE_ASH_IDLE_TIMEOUT
+@@ -9684,7 +9684,7 @@
+ 		}
+ 	}
+ #else
+-	nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1);
++	nr = nonblock_immune_read(g_parsefile->pf_fd, buf, IBUFSIZ - 1, /*loop_on_EINTR:*/ 1);
+ #endif
+ 
+ #if 0 /* disabled: nonblock_immune_read() handles this problem */

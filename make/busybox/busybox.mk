@@ -1,7 +1,10 @@
-$(call PKG_INIT_BIN, 1.23.2)
+$(call PKG_INIT_BIN, 1.24.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=7925683d7dd105aabe9b6b618d48cc73
+$(PKG)_SOURCE_MD5:=be98a40cadf84ce2d6b05fa41a275c6a
 $(PKG)_SITE:=http://www.busybox.net/downloads
+
+$(PKG)_CONDITIONAL_PATCHES += $(call qstrip,$(FREETZ_KERNEL_VERSION_MAJOR))
+$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_MAJOR
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 
