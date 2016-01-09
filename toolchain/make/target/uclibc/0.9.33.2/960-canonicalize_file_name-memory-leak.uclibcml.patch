@@ -1,0 +1,82 @@
+From: Wojciech Niziński <niziak@spox.org>
+To: uclibc@uclibc.org
+Subject: [PATCH]libc/stdlib: canonicalize_file_name() memory leak
+Date: Wed, 21 Oct 2015 06:02:30 +0000 (UTC)
+
+System based on Buildroot 2014.11
+    Linux 3.10.88
+    uclibc 0.9.33.2 (also with 1.0.2)
+    systemd 216
+    gcc 4.8.3 (also with 4.9.2)
+
+Bug:
+    After 2 days system is out of memory. PID 1 (systemd) is allocating.
+    over 120MB od RAM..
+    Just after reboot PID 1 is taking only about 600kB.
+
+How to reproduce:
+    With every systemd service reload or restart, heap of PID 1 grows.
+    Try with command:
+    watch -n1 \
+    'systemctl stop systemd-sysctl ; grep heap /proc/1/smaps -A15; free'
+
+Source of bug:
+
+    Uclibc's canonicalize_file_name() is allocating temprary buffer of.
+    4kB (PATH_MAX), and passing it to realpath() as second argument..
+    Function canonicalize... is not checking if realpath() fails and.
+    memory is lost.
+
+    Backtrace:
+    #0  malloc (bytes=4096) at libc/stdlib/malloc-standard/malloc.c:844
+    #1  canonicalize_file_name.
+        (name="/etc/systemd/system/systemd-sysctl.service.d") at.
+        libc/stdlib/canonicalize.c:30
+    #2  path_strv_resolve (...) at src/shared/path-util.c:275
+
+Solution:
+    Do not use temporary buffer like in eglibc.
+    Function realpath() will be responsible for allocation.
+
+Uclibc's canonicalize_file_name() is allocating temprary buffer of 4kB
+(PATH_MAX), and passing it to realpath() as second argument. Function is
+not checking if realpath() fails and memory is lost.
+---
+ libc/stdlib/canonicalize.c | 21 +--------------------
+ 1 file changed, 1 insertion(+), 20 deletions(-)
+
+index 06e710a..da09d58 100644
+--- libc/stdlib/canonicalize.c
++++ libc/stdlib/canonicalize.c
+@@ -9,30 +9,11 @@
+  */
+ 
+ #include <stdlib.h>
+-#include <limits.h>
+ 
+ #ifdef __USE_GNU
+ 
+-#ifndef PATH_MAX
+-# ifdef _POSIX_VERSION
+-#  define PATH_MAX _POSIX_PATH_MAX
+-# else
+-#  ifdef MAXPATHLEN
+-#   define PATH_MAX MAXPATHLEN
+-#  else
+-#   define PATH_MAX 1024
+-#  endif
+-# endif
+-#endif
+-
+ char * canonicalize_file_name (const char *name)
+ {
+-	char *buf = (char *) malloc(PATH_MAX);
+-
+-	if(unlikely(buf == NULL))
+-		return NULL;
+-
+-	*buf='\0';
+-	return realpath (name, buf);
++	return realpath (name, NULL);
+ }
+ #endif
