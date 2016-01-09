@@ -1,0 +1,15 @@
+Fixes build problem with uClibc versions missing MNT_DETACH symbol (all versions < 0.9.30). The symbol is available
+since this commit https://git.uclibc.org/uClibc/commit?id=854c3194a23d43c8e45ad97e3b218bf85dfadc6b
+
+--- util-linux/umount.c
++++ util-linux/umount.c
+@@ -30,6 +30,9 @@
+ 
+ #include <mntent.h>
+ #include <sys/mount.h>
++# ifndef MNT_DETACH
++#  define MNT_DETACH 0x00000002
++# endif
+ #include "libbb.h"
+ 
+ #if defined(__dietlibc__)
