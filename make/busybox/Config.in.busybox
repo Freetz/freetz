@@ -6174,6 +6174,7 @@ config FREETZ_BUSYBOX_FEATURE_WGET_OPENSSL
 	bool "Try to connect to HTTPS using openssl"
 	default n
 	depends on FREETZ_BUSYBOX_WGET
+	select FREETZ_PACKAGE_OPENSSL
 	help
 	  Choose how wget establishes SSL connection for https:// URLs.
 
@@ -6196,7 +6197,7 @@ config FREETZ_BUSYBOX_FEATURE_WGET_OPENSSL
 config FREETZ_BUSYBOX_FEATURE_WGET_SSL_HELPER
 	bool "Try to connect to HTTPS using ssl_helper"
 	default n
-	depends on FREETZ_BUSYBOX_WGET
+	depends on FREETZ_BUSYBOX_WGET && FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	  Choose how wget establishes SSL connection for https:// URLs.
 

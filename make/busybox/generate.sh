@@ -29,8 +29,14 @@ depends_on() {
 			# get the help line back from the hold buffer
 			G
 		}
-	}
-	' "$BBOUT"
+	}' "$BBOUT"
+}
+
+select_() {
+	sed -r -i '/^config FREETZ_BUSYBOX_'"$1"'/,/^[ \t]+help$/ {
+		/^[ \t]+help$/ i\
+	select '"$2"'
+	}' "$BBOUT"
 }
 
 echo -n "unpacking ..."
@@ -105,5 +111,10 @@ depends_on DESKTOP "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYM
 
 # from-file-to-file mode is supported since 2.6.33, thus disabled
 depends_on FEATURE_USE_SENDFILE "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
+
+# SSL helper not available, thus disabled
+depends_on FEATURE_WGET_SSL_HELPER "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
+
+select_ FEATURE_WGET_OPENSSL "FREETZ_PACKAGE_OPENSSL"
 
 echo " done."
