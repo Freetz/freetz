@@ -11,13 +11,16 @@ $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 $(PKG)_PATCH_POST_CMDS += $(RM) Makefile  Makefile.bak;
 $(PKG)_PATCH_POST_CMDS += ln -s Configure configure;
 
+$(PKG)_CNF := $($(PKG)_DIR)/apps/openssl.cnf
+$(PKG)_TARGET_CNF := $($(PKG)_DEST_DIR)/etc/ssl/openssl.cnf
+
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/apps/openssl
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/openssl
 
 $(PKG)_LIBNAMES_SHORT := libssl libcrypto
 $(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=%.so.$($(PKG)_LIB_VERSION))
 
-$(PKG)_LIBS_BUILD_DIR :=$($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/%)
+$(PKG)_LIBS_BUILD_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/%)
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
@@ -34,7 +37,7 @@ $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-
 $(PKG)_CONFIGURE_DEFOPTS := n
 $(PKG)_CONFIGURE_OPTIONS += linux-freetz-$(if $(FREETZ_TARGET_ARCH_BE),be,le)$(if $(FREETZ_OPENSSL_VERSION_1),-asm)
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
-$(PKG)_CONFIGURE_OPTIONS += --openssldir=/mod/etc/ssl
+$(PKG)_CONFIGURE_OPTIONS += --openssldir=/etc/ssl
 $(PKG)_CONFIGURE_OPTIONS += -DOPENSSL_SMALL_FOOTPRINT
 $(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_NO_CIPHERS)
 $(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_OPTIONS)
@@ -63,6 +66,9 @@ $($(PKG)_BINARY_BUILD_DIR) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 		$(SUBMAKE1) $(OPENSSL_MAKE_FLAGS) $$target; \
 	done
 
+$($(PKG)_TARGET_CNF): $($(PKG)_CNF)
+	$(INSTALL_FILE)
+
 $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 	$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) install
 	$(call PKG_FIX_LIBTOOL_LA,prefix) \
@@ -76,7 +82,7 @@ $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING
 
 $(pkg): $($(PKG)_LIBS_STAGING_DIR)
 
-$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_TARGET_CNF)
 
 $(pkg)-clean: $(pkg)-clean-staging
 	-$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) clean
@@ -89,7 +95,7 @@ $(pkg)-clean-staging:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/openssl
 
 $(pkg)-uninstall:
-	$(RM) $(OPENSSL_BINARY_TARGET_DIR) $(OPENSSL_TARGET_LIBDIR)/{libssl,libcrypto}*.so*
+	$(RM) $($(PKG)_TARGET_CNF) $(OPENSSL_BINARY_TARGET_DIR) $(OPENSSL_TARGET_LIBDIR)/{libssl,libcrypto}*.so*
 
 $(call PKG_ADD_LIB,libcrypto)
 $(PKG_FINISH)
