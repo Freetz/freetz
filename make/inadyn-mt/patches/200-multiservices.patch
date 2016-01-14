@@ -1,3 +1,23 @@
+--- configure.ac
++++ configure.ac
+@@ -21,7 +21,7 @@
+ AC_PROG_CC
+ 
+ # Checks for header files.
+-AC_CHECK_HEADERS([ao/ao.h arpa/inet.h fcntl.h locale.h memory.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h \ 
++AC_CHECK_HEADERS([ao/ao.h arpa/inet.h fcntl.h ifaddrs.h locale.h memory.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h \ 
+ sys/socket.h sys/time.h syslog.h unistd.h wchar.h wctype.h])
+ 
+ # Checks for typedefs, structures, and compiler characteristics.
+@@ -80,7 +80,7 @@
+ 
+ if test x$enable_build = xsolaris ; then
+ 
+-	ARCH_SPECIFIC_LIBS="${ARCH_SPECIFIC_LIBS} -lsocket -lnsl"
++	ARCH_SPECIFIC_LIBS="${ARCH_SPECIFIC_LIBS} -lsocket -lnsl -lrt"
+ fi
+ 
+ if test x$enable_build = xmac ; then
 --- readme.html
 +++ readme.html
 @@ -6,8 +6,7 @@
@@ -6,7 +26,7 @@
  </b></p>
 -<p><b>Version 02.24.47, August 2015<br>
 -
-+<p><b>Version 02.24.47-ms_pid_00_patch, August 2015<br>
++<p><b>Version 02.24.47-ms_pid_04_patch, December 2015<br>
  </b></p>
  <p><b>INADYN Advanced Help<br>
  </b></p>
@@ -46,14 +66,36 @@
  -For freedns.afraid.org DNS system: default@freedns.afraid.org<br>
  -For zoneedit.com: default@zoneedit.com<br>
  -For no-ip.com: default@no-ip.com<br>
-@@ -519,6 +510,10 @@
- <b>HISTORY<br><br>
+@@ -516,9 +507,30 @@
+ Inadyn Advanced Web: stevehorbachuk.com<br>
+ inadyn-mt: bhoover@wecs.com<br><br>
  
- </b>
+-<b>HISTORY<br><br>
++<b>HISTORY</b><br><br>
++Ver.&nbsp; inadyn-mt 2.24.47-ms_pid_patch_04 - December 2015<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - more general, missing ifaddrs.h compile<br><br>
++
++Ver.&nbsp; inadyn-mt 2.24.47-ms_pid_patch_03 - November 2015<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows version check bug fixed.<br><br>
++
++Ver.&nbsp; inadyn-mt 2.24.47-ms_pid_patch_02 - November 2015<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows IPv4 (AF_INNET) only selection fixed (AF_UNSPEC).<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows --addr_pref without specifying --if<br><br>
++
++Ver.&nbsp; inadyn-mt 2.24.47-ms_pid_patch_01 - November 2015<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Windows --addr_pref, --if implementation<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - default DDNS server --addrs_pref default<br>
++&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Solaris build, queue_t collision fixed<br><br>
++
 +Ver.&nbsp; inadyn-mt 2.24.47-ms_pid_patch_00 - August 2015<br>
 +&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
 +&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - Multiple services, in single program instance<br><br>
-+
+ 
+-</b>
  Ver.&nbsp; inadyn-mt 2.24.47 - August 2015<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Changes:<br>
  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; - avoid unnecessary config change related alias updates<br>
@@ -67,73 +109,56 @@
  	char	*alias_ip_v;
  	char	*alias_cmp_src;
  	int	is_auto=false;
-@@ -73,41 +74,44 @@
+@@ -73,18 +74,20 @@
  	alias_ip_v=safe_malloc(strlen(alias)+strlen(alias_type)+2);
  	sprintf(alias_ip_v,"%s:%s",alias,alias_type);
  
 -	for (i=0;i<p_dyndns->alias_info.count;i++) {
 +	for (ii=0;ii<p_dyndns->srv_cnt;ii++) {
- 
--		/*add ip type [auto,coupled,ip6,ip4] to name[i].name to do compare*/
++
 +		for (i=0;i<p_dyndns->info[ii].alias_info.count;i++) {
+ 
+ 		/*add ip type [auto,coupled,ip6,ip4] to name[i].name to do compare*/
  
 -		alias_cmp_src=safe_malloc(strlen(p_dyndns->alias_info.names[i].name)+9);
 -		sprintf(alias_cmp_src,"%s:%s",p_dyndns->alias_info.names[i].name,p_dyndns->alias_info.names[i].ip_v);
-+			/*add ip type [auto,coupled,ip6,ip4] to name[i].name to do compare*/
++			alias_cmp_src=safe_malloc(strlen(p_dyndns->info[ii].alias_info.names[i].name)+9);
++			sprintf(alias_cmp_src,"%s:%s",p_dyndns->info[ii].alias_info.names[i].name,p_dyndns->info[ii].alias_info.names[i].ip_v);
  
 -		if ((!(strcmp(alias_cmp_src,alias_ip_v)) || (strstr(p_dyndns->alias_info.names[i].ip_v,DUAL_LIST)))
 -			&& !(strcmp(p_dyndns->alias_info.names[i].name,alias))
 -			&& !(strcmp(p_dyndns->info.dyndns_server_name.name[ip_store],server))) {
-+			alias_cmp_src=safe_malloc(strlen(p_dyndns->info[ii].alias_info.names[i].name)+9);
-+			sprintf(alias_cmp_src,"%s:%s",p_dyndns->info[ii].alias_info.names[i].name,p_dyndns->info[ii].alias_info.names[i].ip_v);
- 
--			p_dyndns->alias_info.update_succeeded[i]=is_updated;
 +			if ((!(strcmp(alias_cmp_src,alias_ip_v)) || (strstr(p_dyndns->info[ii].alias_info.names[i].ip_v,DUAL_LIST)))
 +				&& !(strcmp(p_dyndns->info[ii].alias_info.names[i].name,alias))
 +				&& !(strcmp(p_dyndns->info[ii].dyndns_server_name.name,server))) {
  
--			is_found=true;
--		}
--		else {
+-			p_dyndns->alias_info.update_succeeded[i]=is_updated;
 +				p_dyndns->info[ii].alias_info.update_succeeded[i]=is_updated;
  
--			/*for aliases of type auto, set update state for either ip6, ip4*/
-+				is_found=true;
-+			}
-+			else {
+ 			is_found=true;
+ 		}
+@@ -94,10 +97,10 @@
  
--			if (is_auto)
-+				/*for aliases of type auto, set update state for either ip6, ip4*/
+ 			if (is_auto)
  
 -				if (!(strcmp(p_dyndns->alias_info.names[i].name,alias))
 -					&& !(strcmp(p_dyndns->info.dyndns_server_name.name[ip_store],server))) {
-+				if (is_auto)
- 
--					p_dyndns->alias_info.update_succeeded[i]=is_updated;
 +					if (!(strcmp(p_dyndns->info[ii].alias_info.names[i].name,alias))
 +						&& !(strcmp(p_dyndns->info[ii].dyndns_server_name.name,server))) {
  
--					is_found=true;
--				}
--		}
+-					p_dyndns->alias_info.update_succeeded[i]=is_updated;
 +						p_dyndns->info[ii].alias_info.update_succeeded[i]=is_updated;
  
--		free(alias_cmp_src);
-+						is_found=true;
-+					}
-+			}
-+
-+			free(alias_cmp_src);
+ 					is_found=true;
+ 				}
+@@ -109,6 +112,7 @@
  
--		if (is_found)
-+			if (is_found)
- 
--			break;
-+				break;
-+		}
+ 			break;
  	}
++	}
  
  	free(alias_ip_v);
+ }
 @@ -295,6 +299,20 @@
  	}
  }
@@ -226,7 +251,7 @@
  					"ipv6");
  
  			if (!(-1==cache_index))
-@@ -455,125 +473,141 @@
+@@ -455,21 +473,31 @@
  }
  
  RC_TYPE ip_cache_list_update_state(DYN_DNS_CLIENT *p_self,int updates_needed,int success_updates,
@@ -234,26 +259,25 @@
 +						int config_fails,RC_TYPE rc,char srv_index,volatile int *is_global_success_updates,
 +						volatile int *is_global_in_proc_update_pending)
  {
--	FILE *fp;
-+	FILE			*fp;
+ 	FILE *fp;
 +	DYNDNS_INFO_TYPE	*info;
 +
 +
 +	info=&p_self->info[srv_index];
- 
++
 +	/*global successes maintained across server iterations in main loop*/
 +	*is_global_success_updates=(*is_global_success_updates || success_updates);
  
--//	if (config_fails==p_self->alias_info.count) {
--	if (config_fails) {
 +	if (config_fails==info->alias_info.count) {
  
--//		DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "All config fail in update_update_state...\n"));
+-//	if (config_fails==p_self->alias_info.count) {
+-	if (config_fails) {
 +		rc=RC_DYNDNS_RSP_CONFIG;
  
--		*rc=RC_DYNDNS_RSP_CONFIG;
+-//		DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "All config fail in update_update_state...\n"));
 +		if (!(srv_index==p_self->srv_cnt-1))
-+
+ 
+-		*rc=RC_DYNDNS_RSP_CONFIG;
 +			return rc;
  	}
 -	else {
@@ -263,52 +287,22 @@
 +		reset on last server if any server successes
 +	*/
 +	if (*is_global_success_updates && srv_index==p_self->srv_cnt-1) {
-+
-+		/*reset forced update period*/
-+		p_self->forced_update_counter=p_self->forced_update_period_sec_orig/p_self->cmd_check_period;
-+		p_self->forced_update_period_sec=p_self->forced_update_period_sec_orig;
  
--			/*reset forced update period*/
--			p_self->forced_update_counter=p_self->forced_update_period_sec_orig/p_self->cmd_check_period;
--			p_self->forced_update_period_sec=p_self->forced_update_period_sec_orig;
-+		if ((fp=utf_fopen(p_self->time_cache, "w"))) {
- 
--			if ((fp=utf_fopen(p_self->time_cache, "w"))) {
-+			fprintf(fp,"%ld",time(NULL));
- 
--				fprintf(fp,"%ld",time(NULL));
-+			fclose(fp);
-+		}
- 
--				fclose(fp);
--			}
-+		fp=utf_fopen(p_self->ip_cache, "w");
- 
--			fp=utf_fopen(p_self->ip_cache, "w");
-+		{
-+			IP_CACHE_LIST	this_cache_list;
-+			char		*p_ip_addr;
-+			char		*p_ip4_addr;
-+			char		*p_ip6_addr;
-+			int		i;
+ 			/*reset forced update period*/
+ 			p_self->forced_update_counter=p_self->forced_update_period_sec_orig/p_self->cmd_check_period;
+@@ -490,54 +518,58 @@
+ 				char		*p_ip4_addr;
+ 				char		*p_ip6_addr;
+ 				int		i;
 +			int		ii;
-+			DYNDNS_IPV	ip_enum;
-+			BOOL		is_dyndns_dual;
+ 				DYNDNS_IPV	ip_enum;
+ 				BOOL		is_dyndns_dual;
  
--			{
--				IP_CACHE_LIST	this_cache_list;
--				char		*p_ip_addr;
--				char		*p_ip4_addr;
--				char		*p_ip6_addr;
--				int		i;
--				DYNDNS_IPV	ip_enum;
--				BOOL		is_dyndns_dual;
-+			memset(&this_cache_list,0,sizeof(IP_CACHE_LIST));
- 
--				memset(&this_cache_list,0,sizeof(IP_CACHE_LIST));
-+			for (ii=0;ii<p_self->srv_cnt;ii++) {
+ 				memset(&this_cache_list,0,sizeof(IP_CACHE_LIST));
  
 -				for (i=0;i<p_self->alias_info.count;i++) {
++			for (ii=0;ii<p_self->srv_cnt;ii++) {
++
 +				for (i=0;i<p_self->info[ii].alias_info.count;i++) {
  
 -					is_dyndns_dual=(NULL!=strstr(p_self->alias_info.names[i].ip_v,DUAL_LIST));
@@ -367,29 +361,15 @@
 -									p_self->info.dyndns_server_host);
 +								fprintf(fp,"%s %s:ip6 %s\n",p_ip6_addr,p_self->info[ii].alias_info.names[i].name,
 +									p_self->info[ii].dyndns_server_host);
++						}
  						}
  					}
  				}
-+			}
- 
--				if (fp)
--					fclose(fp);
-+			if (fp)
-+				fclose(fp);
- 
--				ip_cache_list_destruct(&p_self->ip_cache_list);
--				p_self->ip_cache_list.saved_ip_cache=this_cache_list.saved_ip_cache;
--				p_self->ip_cache_list.count=this_cache_list.count;
--			}
-+			ip_cache_list_destruct(&p_self->ip_cache_list);
-+			p_self->ip_cache_list.saved_ip_cache=this_cache_list.saved_ip_cache;
-+			p_self->ip_cache_list.count=this_cache_list.count;
+@@ -552,28 +584,30 @@
  		}
-+	}
  
--		/*any pending?*/
+ 		/*any pending?*/
 -		if (!(updates_needed && !(success_updates==updates_needed))) {
-+	/*any pending?*/
 +	if ((updates_needed && !(success_updates==updates_needed))) {
  
 -			/*no pendings*/
@@ -401,12 +381,10 @@
  
 -				*rc=RC_OK;
 -			}
--		}
--		else {
 +		DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "One or more (%d) alias updates failed...\n",
 +						updates_needed-success_updates));
-+	}
-+	else {
+ 		}
+ 		else {
  
 -			if (*rc==RC_OK) /*not break after http client init*/
 +		/*no pendings this server*/
@@ -468,16 +446,7 @@
  #include "dyndns.h"
  #include "debug_if.h"
  #include "base64.h"
-@@ -127,13 +129,14 @@
- 
- 	DYN_DNS_CLIENT	*p_dyndns;
- #ifndef _WIN32
--	void		*p_data;
-+	void			*p_data;
- #else
--	RAS_THREAD_DATA	*p_data;
-+	RAS_THREAD_DATA *p_data;
- #endif
+@@ -134,6 +136,7 @@
  
  } CB_ALERT_DATA;
  
@@ -485,36 +454,18 @@
  /*
  	Define this, and link with winmm.lib
  	for audible alerts (see inadyn-mt/extra/wav/alarm.wav)
-@@ -145,10 +148,12 @@
- 
- #endif
- 
--static volatile	BOOL	global_is_online=true;
--static volatile BOOL	is_online_thread_exit=false;
--static volatile BOOL	is_alert_thread_exit=false;
+@@ -148,7 +151,9 @@
+ static volatile	BOOL	global_is_online=true;
+ static volatile BOOL	is_online_thread_exit=false;
+ static volatile BOOL	is_alert_thread_exit=false;
 -static volatile BOOL	is_update_pending=false;
-+static volatile	BOOL		global_is_online=true;
-+static volatile BOOL		is_online_thread_exit=false;
-+static volatile BOOL		is_alert_thread_exit=false;
 +static volatile BOOL		is_global_update_pending=false;
 +static volatile BOOL		is_global_in_proc_update_pending=false;
 +static volatile BOOL		is_global_success_updates=false;
  
  #ifdef USE_THREADS
  
-@@ -175,52 +180,73 @@
- #include "debug_service.h"
- #include "unicode_util.h"
- 
--static BOOL				returnSignaled=false;
--static unsigned long			thread_online_test=0;
--static unsigned long			thread_alert=0;
-+static BOOL		returnSignaled=false;
-+static unsigned long	thread_online_test=0;
-+static unsigned	long	thread_alert=0;
- 
- #endif
- 
+@@ -184,12 +189,32 @@
  static int do_is_dyndns_online(DYN_DNS_CLIENT *p_self);
  static int is_exit_requested(DYN_DNS_CLIENT *p_self);
  static int is_exit_requested_void(void *p_self);
@@ -548,11 +499,10 @@
  #define MD5_DIGEST_BYTES (16)
  
  /* DNS systems specific configurations*/
+@@ -198,29 +223,30 @@
+ DYNDNS_ORG_SPECIFIC_DATA dyndns_org_custom =	{"custom"};
+ DYNDNS_ORG_SPECIFIC_DATA dyndns_org_static =	{"statdns"};
  
--DYNDNS_ORG_SPECIFIC_DATA dyndns_org_dynamic =	{"dyndns"};
--DYNDNS_ORG_SPECIFIC_DATA dyndns_org_custom =	{"custom"};
--DYNDNS_ORG_SPECIFIC_DATA dyndns_org_static =	{"statdns"};
--
 -static int get_req_for_dyndns_server(DYN_DNS_CLIENT *this, int nr, DYNDNS_SYSTEM *p_sys_info);
 -static int get_req_for_freedns_server(DYN_DNS_CLIENT *p_self, int cnt,  DYNDNS_SYSTEM *p_sys_info);
 -static int get_req_for_generic_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt,  DYNDNS_SYSTEM *p_sys_info);
@@ -576,10 +526,6 @@
 -static RC_TYPE is_he_ipv6_server_rsp_ok( DYN_DNS_CLIENT *p_self, int alias_index, char*p_rsp, char* p_ok_string);
 -static RC_TYPE is_dhis_server_rsp_ok( DYN_DNS_CLIENT *p_self, int alias_index, char*p_rsp, char* p_ok_string);
 -static RC_TYPE is_zerigo_server_rsp_ok( DYN_DNS_CLIENT *p_self, int alias_index, char*p_rsp, char* p_ok_string);
-+DYNDNS_ORG_SPECIFIC_DATA dyndns_org_dynamic = {"dyndns"};
-+DYNDNS_ORG_SPECIFIC_DATA dyndns_org_custom = {"custom"};
-+DYNDNS_ORG_SPECIFIC_DATA dyndns_org_static = {"statdns"};
-+
 +static int get_req_for_dyndns_server(DYN_DNS_CLIENT *this,char srv_cnt, int nr, DYNDNS_SYSTEM *p_sys_info);
 +static int get_req_for_freedns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info);
 +static int get_req_for_generic_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info);
@@ -630,20 +576,6 @@
  
  	if (old_cmd != NO_CMD)
  	{
-@@ -441,10 +474,10 @@
- 	}
- 
- #ifdef USE_THREADS
--	/*keeping track of time out of this routine (for forced update period) -- 
--	  a bit experimental, but appears unneccessary.  Easy enough to 
-+	/*keeping track of time out of this routine (for forced update period) --
-+	  a bit experimental, but appears unneccessary.  Easy enough to
- 	  remove though -- these two functions here, the restart below and in
--	  do_update_alias_table, the create in init, and the destroy in main.  
-+	  do_update_alias_table, the create in init, and the destroy in main.
- 	  Compiler option?  :-)
- 	*/
- 	stop_timer(&update_timer);
 @@ -452,7 +485,6 @@
  	dec_forced_update_count(p_self);
  #endif
@@ -652,7 +584,7 @@
  	while(1)
  	{
  
-@@ -473,23 +505,23 @@
+@@ -473,7 +505,7 @@
  
  		if (!(p_self->forced_update_counter)) {
  
@@ -661,19 +593,7 @@
  
  				/*
  					If not retrying pendings, forced update retries fallback to update_period.
- 
--					So, this setup performs as inadyn if retry pendings off.  But, it will attempt
--					a forced update before update_period expiration if havn't tried since last update
--					and not doing pendings.  A bit overdone perhaps...the idea is to decouple ip
--					change checks (and associated interval) from required account maintenance ip
--					updates.  A failed update prompted by either update interval trigger will cause
--					mode shift to pending interval (15 minute default) if pending updates not explicitly
-+					So, this setup performs as inadyn if retry pendings off.  But, it will attempt 
-+					a forced update before update_period expiration if havn't tried since last update 
-+					and not doing pendings.  A bit overdone perhaps...the idea is to decouple ip 
-+					change checks (and associated interval) from required account maintenance ip 
-+					updates.  A failed update prompted by either update interval trigger will cause 
-+					mode shift to pending interval (15 minute default) if pending updates not explicitly 
+@@ -487,9 +519,9 @@
  					turned off.
  				*/
  
@@ -685,7 +605,7 @@
  
  						DBG_PRINTF((LOG_INFO,"I:DYNDNS: Command loop breaking for forced update...\n"));
  
-@@ -550,14 +582,13 @@
+@@ -550,11 +582,10 @@
                  is_online_thread_exit=true;
          }
  #endif
@@ -697,11 +617,7 @@
 +static int get_req_for_dyndns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,DYNDNS_SYSTEM *p_sys_info)
  {
  
--	int	bytes_stored=0;
-+	int bytes_stored=0;
- 
- 
- 	DYNDNS_ORG_SPECIFIC_DATA *p_dyndns_specific =
+ 	int	bytes_stored=0;
 @@ -567,53 +598,53 @@
  
  
@@ -856,9 +772,8 @@
 -				p_self->info.dyndns_server_host);
 +				p_self->info[srv_cnt].alias_info.names[cnt].name,
 +				p_self->info[srv_cnt].dyndns_server_host);
- }
- 
--static int get_req_for_dhis_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt,  DYNDNS_SYSTEM *p_sys_info)
++}
++
 +static int get_req_for_he_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info)
 +{
 +
@@ -870,8 +785,9 @@
 +				   p_self->info[srv_cnt].i_face.my_ip_address.name[ip_store],
 +				   p_self->info[srv_cnt].credentials.p_enc_usr_passwd_buffer,
 +				   p_self->info[srv_cnt].dyndns_server_host);
-+}
-+
+ }
+ 
+-static int get_req_for_dhis_http_dns_server(DYN_DNS_CLIENT *p_self, int cnt,  DYNDNS_SYSTEM *p_sys_info)
 +static int get_req_for_dhis_http_dns_server(DYN_DNS_CLIENT *p_self,char srv_cnt, int cnt,  DYNDNS_SYSTEM *p_sys_info)
  {
  
@@ -1226,26 +1142,16 @@
  
  			DBG_PRINTF((LOG_NOTICE,"N:" MODULE_TAG "Server error.  Pausing a bit before reattempt...\n"));
  
-@@ -1096,26 +1152,26 @@
+@@ -1096,7 +1152,7 @@
  	return RC_DYNDNS_RSP_CONFIG;
  }
  
 -static RC_TYPE update_ip_addr_store(DYN_DNS_CLIENT *p_self,char *p_ip_str)
 +static RC_TYPE update_ip_addr_store(DYN_DNS_CLIENT *p_self,int svr_index,char *p_ip_str)
  {
--	DYNDNS_IPV              ip_enum;
--	int                     family;
--	void                    *in_addr;
--	int                     sock_size;
--	unsigned char           ip_str_to_ip[16];
-+	DYNDNS_IPV	ip_enum;
-+	int		family;
-+	void		*in_addr;
-+	int		sock_size;
-+	unsigned char	ip_str_to_ip[16];
- 
- 
- 	if ((strstr(p_ip_str,".")!=NULL)) {
+ 	DYNDNS_IPV              ip_enum;
+ 	int                     family;
+@@ -1109,13 +1165,13 @@
  
  		ip_enum=ip_4;
  		family=AF_INET;
@@ -1290,14 +1196,12 @@
 -static RC_TYPE do_check_my_ip_address(DYN_DNS_CLIENT *p_self)
 +static RC_TYPE do_check_my_ip_address(DYN_DNS_CLIENT *p_self,char srv_cnt)
  {
--	RC_TYPE			rc=RC_OK;
--	char			*p_current_str=p_self->http_tr.p_rsp;
--	char			*p_ip_str;
++
+ 	RC_TYPE			rc=RC_OK;
+ 	char			*p_current_str=p_self->http_tr.p_rsp;
+ 	char			*p_ip_str;
  
-+	RC_TYPE		rc=RC_OK;
-+	char		*p_current_str=p_self->http_tr.p_rsp;
-+	char		*p_ip_str;
- 
+-
  	if (p_self->http_tr.rsp_len <= 0 || p_self->http_tr.p_rsp == NULL) {
  
  		return RC_INVALID_POINTER;
@@ -1407,7 +1311,7 @@
  
  				/*on *nix, IPv4 precedence could mean no IPv6 routes which could cause a crash on socket send*/
  				if (((is_got_afinet=(is_got_afinet || addr->ai_family==AF_INET)) && addr->ai_family==AF_INET6))
-@@ -1257,75 +1319,74 @@
+@@ -1257,75 +1319,76 @@
  
  					continue;
  
@@ -1421,12 +1325,10 @@
 -*/
  				/*doing any ip4?  and don't skip ip6 from if*/
  				/*continue if...
--					  is ip4                                   and don't need it*/
+ 					  is ip4                                   and don't need it*/
 -				if ((((addr->ai_family==AF_INET && (!(p_self->info.is_update_ip4 || p_self->info.is_update_auto))
--                                        /*or already got it  AND, don't need ip6*/
-+					is ip4						and don't need it*/
 +				if ((((addr->ai_family==AF_INET && (!(p_self->info[srv_index].is_update_ip4 || p_self->info[srv_index].is_update_auto))
-+					/*or already got it  AND, don't need ip6*/
+                                         /*or already got it  AND, don't need ip6*/
  					|| is_got_ip4)) && !(if_addr && !is_got_ip6)))
  
  					continue;
@@ -1438,18 +1340,16 @@
 +
 +				/*doing any ip6?*/
  				/*continue if...
--					  is ip6                                  and don't need it                             or have it*/
+ 					  is ip6                                  and don't need it                             or have it*/
 -				if ((addr->ai_family==AF_INET6 && (!(p_self->info.is_update_ip6 || p_self->info.is_update_auto) || is_got_ip6)))
-+					is ip6					and don't need it				or have it*/
 +				if ((addr->ai_family==AF_INET6 && (!(p_self->info[srv_index].is_update_ip6 || p_self->info[srv_index].is_update_auto) || is_got_ip6)))
  
  					continue;
  
  				/*use interface address*/
  				/*if...
--				    have it           and not ip4, and don't have          OR don't need                   and do need ip6*/
+ 				    have it           and not ip4, and don't have          OR don't need                   and do need ip6*/
 -				if (if_addr && (!(addr->ai_family==AF_INET && !is_got_ip4) || !p_self->info.is_update_ip4) && !is_got_ip6) {
-+				have it		and not ip4, and don't have			OR don't need				and do need ip6*/
 +				if (if_addr && (!(addr->ai_family==AF_INET && !is_got_ip4) || !p_self->info[srv_index].is_update_ip4) && !is_got_ip6) {
  
  					DBG_PRINTF((LOG_NOTICE,"N:" MODULE_TAG "Checking bound interface IPv6 address...\n"));
@@ -1469,6 +1369,8 @@
 -							(void *) &p_self->ipv6_priv_ext.flags,sizeof (&p_self->ipv6_priv_ext.flags));
 +						setsockopt(info->http_to_ip_server.super.super.socket[i],IPPROTO_IPV6,IPV6_ADDR_PREFERENCES,
 +							(void *) &p_self->info[srv_index].ipv6_priv_ext.flags,sizeof(&p_self->info[srv_index].ipv6_priv_ext.flags));
++					
++						DBG_PRINTF((LOG_NOTICE,"N:" MODULE_TAG "Set address preference in check_my_ip_address...\n"));
  					}
  
 -					if (!(RC_OK==(rc=http_client_connect_socket(&p_self->http_to_ip_server)))) {
@@ -1496,11 +1398,11 @@
  						DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "Transaction %d DONE...\n",i));
  
 -                		                p_self->http_tr.p_rsp[p_tr->rsp_len]=0;
-+						DBG_PRINTF((LOG_INFO,"I:DYNDNS: IP server response: %s\n", p_self->p_work_buffer));
+-
+                         		        DBG_PRINTF((LOG_INFO,"I:DYNDNS: IP server response: %s\n", p_self->p_work_buffer));
  
--                        		        DBG_PRINTF((LOG_INFO,"I:DYNDNS: IP server response: %s\n", p_self->p_work_buffer));
 +						p_self->http_tr.p_rsp[p_tr->rsp_len]=0;
- 
++
  						DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "GONNA PARSE...\n"));
  
 -						if (!(RC_OK==(rc=do_check_my_ip_address(p_self)))) {
@@ -1508,7 +1410,7 @@
  
  							DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "ip parse failed in check_my_ip_address...\n"));
  						}
-@@ -1334,16 +1395,17 @@
+@@ -1334,16 +1397,17 @@
  
  				if (rc==RC_OK) {
  
@@ -1531,7 +1433,7 @@
  							break;
  				}
  			}
-@@ -1352,36 +1414,37 @@
+@@ -1352,36 +1416,37 @@
  	while(0);
  
  	/*close*/
@@ -1547,21 +1449,15 @@
 -static RC_TYPE do_update_alias_table(DYN_DNS_CLIENT *p_self,char *is_forced_update_reset)
 +static RC_TYPE do_update_alias_table(DYN_DNS_CLIENT *p_self,char *is_forced_update_reset,char srv_index)
  {
--	int	i;
--	int	success_updates=0;
--	int	update_ok=false;
--	int	config_fails=0;
--	int	updates_needed=p_self->alias_info.count;
--	BOOL	is_ipv4;
--	RC_TYPE	rc_retry_later=RC_OK;
 +	DYNDNS_INFO_TYPE	*info;
-+	int			i;
-+	int			success_updates=0;
-+	int			update_ok=false;
-+	int			config_fails=0;
+ 	int	i;
+ 	int	success_updates=0;
+ 	int	update_ok=false;
+ 	int	config_fails=0;
+-	int	updates_needed=p_self->alias_info.count;
 +	int			updates_needed=p_self->info[srv_index].alias_info.count;
-+	BOOL			is_ipv4;
-+	RC_TYPE			rc_retry_later=RC_OK;
+ 	BOOL	is_ipv4;
+ 	RC_TYPE	rc_retry_later=RC_OK;
  
  	RC_TYPE rc = RC_OK;
  
@@ -1584,7 +1480,7 @@
  
  					config_fails++;
  				}
-@@ -1389,81 +1452,82 @@
+@@ -1389,81 +1454,82 @@
  				updates_needed--;
  			}
  			else {
@@ -1694,7 +1590,7 @@
  
  							if (update_ok)
  							{
-@@ -1477,12 +1541,12 @@
+@@ -1477,12 +1543,12 @@
  									*is_forced_update_reset=true;
  								}
  #endif
@@ -1711,7 +1607,7 @@
  
  								if (p_self->external_command)
  
-@@ -1490,7 +1554,7 @@
+@@ -1490,7 +1556,7 @@
  							}
  							else {
  
@@ -1720,7 +1616,7 @@
  
  								/*dyndns2 protocol, retry later?*/
  								if (rc==RC_DYNDNS_SERVER_ERROR) {
-@@ -1500,10 +1564,9 @@
+@@ -1500,10 +1566,9 @@
  								else {
  									if (!(rc==RC_DYNDNS_RSP_CONFIG)) {
  
@@ -1732,7 +1628,7 @@
  										if (strstr(http_tr.p_rsp,"badagent"))
  
  											DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "Server responded with 'badagent'.  Attempting to update IPv6 to IPv4 only server?  Try ip4 parameter, e.g., --alias youralias ip4.\n"));
-@@ -1511,14 +1574,16 @@
+@@ -1511,14 +1576,16 @@
  
  											DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "Error validating DYNDNS svr answer. Check usr,pass,hostname!\n"));
  
@@ -1751,7 +1647,7 @@
  
  										config_fails++;
  										updates_needed--;
-@@ -1526,13 +1591,14 @@
+@@ -1526,13 +1593,14 @@
  								}
  							}
  
@@ -1767,7 +1663,7 @@
  
  					if (!(rc2==RC_OK))
  
-@@ -1540,130 +1606,135 @@
+@@ -1540,130 +1608,135 @@
  
  				}
  
@@ -1830,12 +1726,11 @@
  
 -	is_cache_current=!(-1==ip_cache_list_index_of(&p_self->ip_cache_list,in_addr,p_self->info.my_ip_address.name[ip_v],
 -					p_self->alias_info.names[alias_index].name,p_self->info.dyndns_server_host,
--					ip_alias_type));
--
 +	is_cache_current=!(-1==ip_cache_list_index_of(&p_self->ip_cache_list,in_addr,p_self->info[svr_index].i_face.my_ip_address.name[ip_v],
 +		p_self->info[svr_index].alias_info.names[alias_index].name,p_self->info[svr_index].dyndns_server_host,
-+		ip_alias_type));
+ 					ip_alias_type));
  
+-
  	free(ip_alias_type);
  
  	return is_cache_current;
@@ -1852,14 +1747,10 @@
 +*/
 +static RC_TYPE do_check_alias_update_table(DYN_DNS_CLIENT *p_self,char srv_index)
  {
--	int		i;
--	DYNDNS_IPV	ip_v;
--	BOOL		is_dyndns_dual;
--	BOOL		is_cache_current;
-+	int			i;
-+	DYNDNS_IPV		ip_v;
-+	BOOL			is_dyndns_dual;
-+	BOOL			is_cache_current;
+ 	int		i;
+ 	DYNDNS_IPV	ip_v;
+ 	BOOL		is_dyndns_dual;
+ 	BOOL		is_cache_current;
 +	DYNDNS_INFO_TYPE	*info;
  
 +	info=&p_self->info[srv_index];
@@ -1942,7 +1833,7 @@
  
  		DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "\n"\
  					ERROR_FLAG \
-@@ -1671,7 +1742,7 @@
+@@ -1671,7 +1744,7 @@
  					"fatal dyndns server update error for "\
  					"alias, %s.\nThis client should be stopped and corrected for "\
  					"configuration errors, and restarted...\n" \
@@ -1951,7 +1842,7 @@
  	else
  
  		DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "\n"\
-@@ -1685,34 +1756,34 @@
+@@ -1685,21 +1758,21 @@
  	return RC_ERROR;
  }
  
@@ -1977,13 +1868,7 @@
  }
  
  /*
- 	- increment the forced update times counter
- 	- detect current IP
--		- connect to an HTTP server
-+		- connect to an HTTP server 
- 		- parse the response for IP addr
- 
- 	- for all the names that have to be maintained
+@@ -1712,7 +1785,7 @@
  		- get the current DYN DNS address from DYN DNS server
  		- compare and update if neccessary
  */
@@ -1992,7 +1877,7 @@
  {
  
  	RC_TYPE	rc=RC_ERROR;
-@@ -1727,9 +1798,9 @@
+@@ -1727,9 +1800,9 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -2004,7 +1889,7 @@
  
  	do
  	{
-@@ -1742,7 +1813,7 @@
+@@ -1742,7 +1815,7 @@
  
  				if ((is_exit=(p_self->net_retries<net_attempts++))) {
  
@@ -2013,7 +1898,7 @@
  
  					break;
  				}
-@@ -1752,7 +1823,7 @@
+@@ -1752,7 +1825,7 @@
  			else {
  
  				/*ask IP server something so will respond and give me my IP */
@@ -2022,7 +1907,7 @@
  
  				if (rc==RC_OK)
  
-@@ -1762,7 +1833,7 @@
+@@ -1762,7 +1835,7 @@
  
  				if (p_self->net_retries<ip_attempts++) {
  
@@ -2031,7 +1916,7 @@
  
  					break;
  				}
-@@ -1789,7 +1860,7 @@
+@@ -1789,7 +1862,7 @@
  			DBG_PRINTF((LOG_INFO,"I:DYNDNS: dyn_dns_update_ip checking alias table...\n"));
  
  			/*step through aliases list, resolve them and check if they point to my IP*/
@@ -2040,7 +1925,7 @@
  			if (rc != RC_OK)
  			{
  				break;
-@@ -1805,7 +1876,7 @@
+@@ -1805,7 +1878,7 @@
  
  					if (p_self->net_retries<net_attempts++) {
  
@@ -2049,7 +1934,7 @@
  
  						break;
  					}
-@@ -1814,21 +1885,29 @@
+@@ -1814,21 +1887,29 @@
  				}
  				else {
  
@@ -2084,7 +1969,7 @@
  						break;
  					else
  						if (p_self->net_retries<ip_attempts++)
-@@ -1853,18 +1932,18 @@
+@@ -1853,18 +1934,18 @@
  	*src+=inc;
  }
  
@@ -2110,7 +1995,7 @@
  }
  
  static int increment_iterations(DYN_DNS_CLIENT *p_dyndns)
-@@ -1880,7 +1959,7 @@
+@@ -1880,7 +1961,7 @@
  	return iterations;
  }
  
@@ -2119,7 +2004,7 @@
  {
  
  
-@@ -1907,6 +1986,9 @@
+@@ -1907,6 +1988,9 @@
  	RC_TYPE	rc=RC_OK;
  	BOOL	init_flag=FALSE;
  	int	current_iteration=0;
@@ -2129,7 +2014,7 @@
  
  #ifdef _WIN32
  
-@@ -1919,39 +2001,62 @@
+@@ -1919,39 +2003,62 @@
  
  	rc=init_update_loop(p_dyndns,argc,argv,&p_ras_thread_data,&init_flag);
  
@@ -2159,36 +2044,32 @@
  
 -				increment_iterations(p_dyndns);
 +				if (p_dyndns->cmd==CMD_STOP)
- 
--			else {
++
 +					break;
- 
--				DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
--					        errorcode_get_name(rc), rc, current_iteration));
++
 +				if (((rc=dyn_dns_update_ip(p_dyndns,i))==RC_OK))
- 
--				if (p_dyndns->is_bad_config=(rc==RC_DYNDNS_RSP_CONFIG))
++
 +					success_count++;
  
--					p_dyndns->cmd=CMD_STOP;
- 				else {
--					/*dyndns2 retry later*/
--					p_dyndns->retry_later=(rc==RC_DYNDNS_SERVER_ERROR);
+ 			else {
  
--					rc=dyn_dns_reinit(p_dyndns);
-+					DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
-+								errorcode_get_name(rc), rc, current_iteration));
-+
+ 				DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
+ 					        errorcode_get_name(rc), rc, current_iteration));
+ 
+-				if (p_dyndns->is_bad_config=(rc==RC_DYNDNS_RSP_CONFIG))
 +					if (p_dyndns->info[i].is_bad_config)
-+
+ 
+-					p_dyndns->cmd=CMD_STOP;
+-				else {
 +						bad_config_count++;
 +					else
-+						/*dyndns2 retry later*/
-+						p_dyndns->retry_later=(rc==RC_DYNDNS_SERVER_ERROR);
- 				}
-+
+ 					/*dyndns2 retry later*/
+ 					p_dyndns->retry_later=(rc==RC_DYNDNS_SERVER_ERROR);
++				}
+ 
+-					rc=dyn_dns_reinit(p_dyndns);
 +				is_global_in_proc_update_pending=(is_global_in_proc_update_pending || p_dyndns->info[i].is_update_pending);
-+			}
+ 				}
 +
 +			is_global_update_pending=is_global_in_proc_update_pending;
 +
@@ -2206,7 +2087,7 @@
  #ifdef USE_SNDFILE
  
  #ifndef USE_THREADS
-@@ -1960,6 +2065,7 @@
+@@ -1960,6 +2067,7 @@
  #endif
  
  #endif
@@ -2214,7 +2095,7 @@
  			if (p_dyndns->cmd==CMD_STOP) {
  
  				DBG_PRINTF((LOG_DEBUG,"D:" MODULE_TAG "STOP command received. Exiting.\n"));
-@@ -1973,14 +2079,6 @@
+@@ -1973,14 +2081,6 @@
  
  				break;
  			}
@@ -2229,13 +2110,7 @@
  
  			/* sleep the time set in the ->sleep_sec data memeber*/
  			dyn_dns_wait_for_cmd(p_dyndns);
-@@ -1989,11 +2087,12 @@
- 			inc_update_times(p_dyndns,&(p_dyndns->times_since_last_update),1);
- 
- 			/*reset the command*/
--			if (!(p_dyndns->cmd==CMD_STOP)) {
-+			if (!(p_dyndns->cmd==CMD_STOP))	{
- 
+@@ -1994,6 +2094,7 @@
  				p_dyndns->cmd=NO_CMD;
  			}
  			else {
@@ -2243,7 +2118,7 @@
  				DBG_PRINTF((LOG_DEBUG,"D:" MODULE_TAG "STOP command received. Exiting.\n"));
  
  				break;
-@@ -2039,24 +2138,24 @@
+@@ -2039,24 +2140,24 @@
  /*************
   Connection testing, connection status alert, DYN_DNS_CLIENT default config, construct, destruct.
  */
@@ -2274,7 +2149,7 @@
  
  	return rc;
  }
-@@ -2064,56 +2163,56 @@
+@@ -2064,56 +2165,56 @@
  static RC_TYPE dyn_dns_set_online_check_params(HTTP_CLIENT *dest,DYN_DNS_CLIENT *p_self)
  {
  
@@ -2349,15 +2224,15 @@
  
  
  	return RC_OK;
-@@ -2121,9 +2220,14 @@
+@@ -2121,9 +2222,14 @@
  
  static RC_TYPE dyn_dns_set_http_clients(DYN_DNS_CLIENT *p_self)
  {
 +	char	i;
++
  
 -	dyn_dns_set_ip_server_params(&p_self->http_to_ip_server,p_self);
 -	dyn_dns_set_dyndns_server_params(&p_self->http_to_dyndns,p_self);
-+
 +	for (i=0;i<p_self->srv_cnt;i++) {
 +
 +		dyn_dns_set_ip_server_params(&p_self->info[i].http_to_ip_server,&p_self->info[i]);
@@ -2366,7 +2241,7 @@
  
  	return RC_OK;
  }
-@@ -2147,11 +2251,11 @@
+@@ -2147,11 +2253,11 @@
  	rc=http_client_test_connect(http_to_ip_server,is_exit_requested_void,p_self);
  #endif
  
@@ -2379,7 +2254,7 @@
  	return rc;
  }
  
-@@ -2329,7 +2433,6 @@
+@@ -2329,7 +2435,6 @@
  
  				sleep_lightly_ms(p_dyndns->alert_interval,&alert_abort_cond,&alert_cond_param);
  
@@ -2387,7 +2262,7 @@
  			} while (1);
  
  			free(wave_params);
-@@ -2359,11 +2462,9 @@
+@@ -2359,11 +2464,9 @@
  
  #else
  
@@ -2400,7 +2275,7 @@
  #endif
  
  	thread_alert=0;
-@@ -2386,11 +2487,9 @@
+@@ -2386,11 +2489,9 @@
  		pthread_join(thread_online_test,NULL);
  #else
  
@@ -2413,16 +2288,7 @@
  #endif
  
  	thread_online_test=0;
-@@ -2417,7 +2516,7 @@
- static void alert_if_offline_thread(void *p_data)
- #endif
- {
--	DYN_DNS_CLIENT		*p_dyndns;
-+	DYN_DNS_CLIENT	*p_dyndns;
- 
- 	if (p_data) {
- 
-@@ -2433,7 +2532,9 @@
+@@ -2433,7 +2534,9 @@
  		}
  	}
  
@@ -2433,16 +2299,7 @@
  	pthread_exit(p_data);
  
  	/*compiler complaints (pthread_exit does not return)*/
-@@ -2558,7 +2659,7 @@
- 					/*sleep less, check status more, if offline*/
- 					sleep_lightly_ms(p_self->status_offline_interval,&thread_exit_cond,p_self);
- 				}
--			}
-+			}	
- 
- 			exit_alert_thread();
- 
-@@ -2568,7 +2669,9 @@
+@@ -2568,7 +2671,9 @@
  		}
  	}
  
@@ -2453,7 +2310,7 @@
  	pthread_exit(p_data);
  
  	/*compiler complaints (pthread_exit does not return)*/
-@@ -2602,11 +2705,11 @@
+@@ -2602,11 +2707,11 @@
  
  #endif /*USE_THREADS*/
  
@@ -2467,7 +2324,7 @@
  {
  
  	if (p_dyndns->dbg.level>=LOG_INFO)
-@@ -2615,7 +2718,7 @@
+@@ -2615,7 +2720,7 @@
  
  
  	*p_ras_thread_data=construct_and_launch_trap_ras_events(dyn_dns_update_ip_handler,p_dyndns,p_dyndns->\
@@ -2476,7 +2333,7 @@
  		                   p_dyndns->dbg.level);
  
  	if (*p_ras_thread_data) {
-@@ -2644,8 +2747,9 @@
+@@ -2644,13 +2749,17 @@
  
  	do
  	{
@@ -2488,7 +2345,15 @@
  		{
  			rc = RC_DYNDNS_INVALID_DNS_SYSTEM_DEFAULT;
  			break;
-@@ -2672,34 +2776,12 @@
+ 		}
+ 
++                strcpy(p_self->info[0].ipv6_priv_ext.addr_pref,"pub");
++                p_self->info[0].ipv6_priv_ext.flags=IPV6_PREFER_SRC_PUBLIC;
++
+ 		/*forced update period*/
+ 		p_self->forced_update_period_sec = DYNDNS_MY_FORCED_UPDATE_PERIOD_S;
+ 		p_self->forced_update_period_sec_orig = DYNDNS_MY_FORCED_UPDATE_PERIOD_S;
+@@ -2672,34 +2781,12 @@
  		p_self->time_cache=safe_malloc(prefix_len+time_len);
  		sprintf(p_self->time_cache, "%s%s", DYNDNS_DEFAULT_CACHE_PREFIX, DYNDNS_DEFAULT_TIME_FILE);
  #endif
@@ -2496,7 +2361,9 @@
  #ifdef _WIN32
 -		/*running as a windows service, default cache dir to module path, else working dir*/
 -		if (!(is_win_service())) {
--
++		p_self->ip_cache=safe_malloc(ip_len);
++		p_self->time_cache=safe_malloc(time_len);
+ 
 -			char	*cwd=dir_delimited(short_name(cross_platform_cwd(&cwd)));
 -			int	cwd_len=strlen(cwd);
 -
@@ -2517,9 +2384,7 @@
 -
 -			sprintf(p_self->ip_cache, "%s%s",cache_dir,DYNDNS_DEFAULT_IP_FILE);
 -			sprintf(p_self->time_cache, "%s%s",cache_dir,DYNDNS_DEFAULT_TIME_FILE);
-+		p_self->ip_cache=safe_malloc(ip_len);
-+		p_self->time_cache=safe_malloc(time_len);
- 
+-
 -			free(cache_dir);
 -		}
 +		sprintf(p_self->ip_cache, "%s", DYNDNS_DEFAULT_IP_FILE);
@@ -2527,7 +2392,7 @@
  #endif
  		/*update period*/
  		p_self->sleep_sec = DYNDNS_DEFAULT_SLEEP;
-@@ -2715,13 +2797,8 @@
+@@ -2715,13 +2802,8 @@
  
  		set_wave_gain(p_self,DYNDNS_DEFAULT_USER_WAVE_GAIN);
  
@@ -2542,13 +2407,7 @@
  
  		if (!(p_self->wave_file)) {
  
-@@ -2733,12 +2810,11 @@
- 		}
- 
- 		/*
--			default:  tell wave routines
-+			default:  tell wave routines 
- 			use quarter bytes/sec buffer
+@@ -2738,7 +2820,6 @@
  		*/
  		p_self->wave_buff_factor=DYNDNS_DEFAULT_WAVE_BUFF_FACTOR;
  #endif
@@ -2556,7 +2415,7 @@
  		p_self->dbg.level=DYNDNS_DEFAULT_DEBUG_LEVEL;
  	}
  	while(0);
-@@ -2746,7 +2822,7 @@
+@@ -2746,7 +2827,7 @@
  	return rc;
  }
  
@@ -2565,7 +2424,7 @@
  {
  	RC_TYPE		rc=RC_OK;
  	char		*str_uri_encoded;
-@@ -2758,17 +2834,17 @@
+@@ -2758,17 +2839,17 @@
  
  	size=strlen(format)+1;
  
@@ -2589,7 +2448,7 @@
  
  	do
  	{
-@@ -2780,8 +2856,8 @@
+@@ -2780,8 +2861,8 @@
  		}
  
  		actual_len = sprintf(p_tmp_buff, format,
@@ -2600,7 +2459,7 @@
  
  		if (actual_len >= size)
  		{
-@@ -2791,15 +2867,15 @@
+@@ -2791,15 +2872,15 @@
  
  		/*encode*/
  
@@ -2620,7 +2479,7 @@
  	}
  	while(0);
  
-@@ -2818,7 +2894,7 @@
+@@ -2818,7 +2899,7 @@
  	DBG_PRINTF((LOG_SYSTEM, "S:" MODULE_TAG "Started 'inadyn-mt version %s' - dynamic DNS updater.\n", DYNDNS_VERSION_STRING));
  }
  
@@ -2629,7 +2488,7 @@
  {
  	gen_list_itr	itr=list_itr_create(*params_list,&itr);
  
-@@ -2833,28 +2909,69 @@
+@@ -2833,6 +2914,47 @@
  	list_itr_destroy(&itr);
  }
  
@@ -2675,62 +2534,10 @@
 +}
 +
  /*
--        Disconnect and some other clean up.
-+	Disconnect and some other clean up.
+         Disconnect and some other clean up.
  */
- static RC_TYPE dyn_dns_shutdown(DYN_DNS_CLIENT *p_self)
- {
--        if (p_self == NULL)
--        {
--                return RC_INVALID_POINTER;
--        }
-+	if (p_self == NULL)
-+	{
-+		return RC_INVALID_POINTER;
-+	}
- 
--        if (p_self->initialized == FALSE)
--        {
--                return RC_OK;
--        }
-+	if (p_self->initialized == FALSE)
-+	{
-+		return RC_OK;
-+	}
- 
--        return RC_OK;
-+	return RC_OK;
- }
- 
- /*
- 	Sets up the object.
- 	- sets the IPs of the DYN DNS server
--	- if proxy server is set use it!
-+    - if proxy server is set use it!
- 	- ...
- */
- static RC_TYPE do_dyn_dns_init(DYN_DNS_CLIENT *p_self)
-@@ -2906,26 +3023,27 @@
- 
- #ifdef USE_THREADS
- 
--	void	**p_ras_thread_data=p_data;
-+	void			**p_ras_thread_data=p_data;
- #endif
- 
- #else
- 	RAS_THREAD_DATA	**p_ras_thread_data= (RAS_THREAD_DATA **) p_data;
--	int		regParamsC=1;
--	wchar_t		*regArgs[50];
--	char		*utf_8_argv[50];
--	int		i=0;
-+	int             regParamsC=1;
-+	wchar_t         *regArgs[50];
-+	char            *utf_8_argv[50];
-+	int             i=0;
- 
--	RC_TYPE		rc_reg=RC_ERROR;
-+	RC_TYPE         rc_reg=RC_ERROR;
+@@ -2919,13 +3041,14 @@
+ 	RC_TYPE		rc_reg=RC_ERROR;
  #endif
  
 -	threads_wrapper_init();
@@ -2746,7 +2553,7 @@
  	if (p_dyndns == NULL)
  
  		return RC_INVALID_POINTER;
-@@ -2937,7 +3055,6 @@
+@@ -2937,7 +3060,6 @@
  		return rc;
  	}
  
@@ -2754,7 +2561,7 @@
  #ifdef _WIN32
  
  	SetLastError(0);
-@@ -2971,7 +3088,6 @@
+@@ -2971,7 +3093,6 @@
  	/* read cmd line options and set object properties*/
  	rc_cmd_line = get_config_data(p_dyndns, argc, argv);
  
@@ -2762,7 +2569,7 @@
  #ifndef _WIN32
  
  	if (rc_cmd_line != RC_OK || p_dyndns->abort)
-@@ -2984,7 +3100,6 @@
+@@ -2984,7 +3105,6 @@
  
  		return rc_cmd_line;
  
@@ -2770,7 +2577,7 @@
  	if (p_dyndns->lang_hard_coded) {
  
  		/*use hard coded defaults -- don't use default locale file*/
-@@ -3005,15 +3120,10 @@
+@@ -3005,15 +3125,10 @@
  	}
  
  	/*if logfile provided, redirect output to log file*/
@@ -2789,7 +2596,7 @@
  
  		rc = os_open_dbg_output(DBG_FILE_LOG, "", p_dyndns->dbg.p_logfilename,p_dyndns->dbg.level);
  
-@@ -3060,6 +3170,35 @@
+@@ -3060,6 +3175,35 @@
  		}
  	}
  
@@ -2825,7 +2632,7 @@
  	dyn_dns_print_hello(NULL);
  
  	/*  now that log is open, report any command line errors eventhough registry params made up for them --
-@@ -3072,7 +3211,7 @@
+@@ -3072,7 +3216,7 @@
  
  	}
  
@@ -2834,16 +2641,7 @@
  
  	rc = dyn_dns_init(p_dyndns);
  
-@@ -3080,7 +3219,7 @@
- 
- 		*init_flag=true;
- 
--                rc = os_install_signal_handler(p_dyndns);
-+		rc = os_install_signal_handler(p_dyndns);
- 
- 		if (rc != RC_OK)
- 
-@@ -3089,7 +3228,18 @@
+@@ -3089,7 +3233,18 @@
  
  	if (rc==RC_OK) {
  
@@ -2863,7 +2661,7 @@
  
  #ifdef _WIN32
  
-@@ -3127,7 +3277,10 @@
+@@ -3127,7 +3282,10 @@
  */
  RC_TYPE dyn_dns_destruct(DYN_DNS_CLIENT *p_self)
  {
@@ -2875,7 +2673,7 @@
  	if (p_self == NULL)
  	{
  		return RC_OK;
-@@ -3138,15 +3291,57 @@
+@@ -3138,15 +3296,57 @@
  		dyn_dns_shutdown(p_self);
  	}
  
@@ -2940,7 +2738,7 @@
  
  	}
  
-@@ -3162,11 +3357,6 @@
+@@ -3162,11 +3362,6 @@
  		p_self->p_req_buffer = NULL;
  	}
  
@@ -2952,7 +2750,7 @@
  
  	if (p_self->lang_file != NULL)
  	{
-@@ -3194,51 +3384,6 @@
+@@ -3194,51 +3389,6 @@
  		p_self->time_cache=NULL;
  	}
  
@@ -3004,7 +2802,7 @@
  
  	if (p_self->external_command != NULL)
  	{
-@@ -3247,97 +3392,12 @@
+@@ -3247,97 +3397,12 @@
  		p_self->external_command=NULL;
  	}
  
@@ -3105,16 +2903,7 @@
  
  	free(p_self);
  	p_self = NULL;
-@@ -3346,7 +3406,7 @@
- }
- 
- /*
--	See if we can find servers_additional.cfg.
-+        See if we can find servers_additional.cfg.
- */
- static void get_servers_additional(DYN_DNS_CLIENT *p_self)
- {
-@@ -3466,6 +3526,8 @@
+@@ -3466,6 +3531,8 @@
  	DYN_DNS_CLIENT	*p_self;
  	BOOL		http_to_dyndns_constructed = FALSE;
  	BOOL		http_to_ip_constructed = FALSE;
@@ -3123,53 +2912,46 @@
  
  	if (pp_self == NULL)
  	{
-@@ -3502,25 +3564,30 @@
+@@ -3502,25 +3569,30 @@
  		}
  
  
 -		rc = http_client_construct(&p_self->http_to_ip_server);
--		if (rc != RC_OK)
--		{
--			rc = RC_OUT_OF_MEMORY;
--			break;
--		}
 +		for (i=0;i<MAX_DNS_SERVER;i++) {
 +
 +			rc = http_client_construct(&p_self->info[i].http_to_ip_server);
-+			if (rc != RC_OK)
-+			{
-+				rc = RC_OUT_OF_MEMORY;
-+				break;
-+			}
+ 		if (rc != RC_OK)
+ 		{
+ 			rc = RC_OUT_OF_MEMORY;
+ 			break;
+ 		}
  
 -		p_self->info.my_ip_address.name[ip_store]=safe_malloc(DYNDNS_MY_IP_ADDRESS_LENGTH);
 -		p_self->info.my_ip_address.name[ip_4]=safe_malloc(DYNDNS_MY_IP_ADDRESS_LENGTH);
 -		p_self->info.my_ip_address.name[ip_6]=safe_malloc(DYNDNS_MY_IP_ADDRESS_LENGTH);
-+			rc = http_client_construct(&p_self->info[i].http_to_dyndns);
-+			if (rc != RC_OK)
-+			{
-+				rc = RC_OUT_OF_MEMORY;
-+				break;
-+			}
- 
+-
 -		http_to_ip_constructed = TRUE;
+-
+-		rc = http_client_construct(&p_self->http_to_dyndns);
++			rc = http_client_construct(&p_self->info[i].http_to_dyndns);
+ 		if (rc != RC_OK)
+ 		{
+ 			rc = RC_OUT_OF_MEMORY;
+ 			break;
+ 		}
++
 +			p_self->info[i].i_face.my_ip_address.name[ip_store]=safe_malloc(DYNDNS_MY_IP_ADDRESS_LENGTH);
 +			p_self->info[i].i_face.my_ip_address.name[ip_4]=safe_malloc(DYNDNS_MY_IP_ADDRESS_LENGTH);
 +			p_self->info[i].i_face.my_ip_address.name[ip_6]=safe_malloc(DYNDNS_MY_IP_ADDRESS_LENGTH);
- 
--		rc = http_client_construct(&p_self->http_to_dyndns);
--		if (rc != RC_OK)
--		{
--			rc = RC_OUT_OF_MEMORY;
--			break;
++
 +			p_self->info[i].credentials.p_enc_usr_passwd_buffer = NULL;
- 		}
++		}
 +
 +		http_to_ip_constructed = TRUE;
  		http_to_dyndns_constructed = TRUE;
  
  		(p_self)->cmd = NO_CMD;
-@@ -3528,12 +3595,9 @@
+@@ -3528,12 +3600,9 @@
  		(p_self)->total_iterations = DYNDNS_DEFAULT_ITERATIONS;
  		(p_self)->initialized = FALSE;
  
@@ -3182,50 +2964,44 @@
  	}
  	while(0);
  
-@@ -3551,25 +3615,33 @@
+@@ -3551,25 +3620,33 @@
  		{
  			free (p_self->p_work_buffer);
  		}
 -		if (http_to_dyndns_constructed)
  		{
 -			http_client_destruct(&p_self->http_to_dyndns);
--		}
--		if (http_to_ip_constructed)
--		{
--			http_client_destruct(&p_self->http_to_ip_server);
--		}
--		if (p_self->info.my_ip_address.name[ip_store])
--		{
--			free(p_self->info.my_ip_address.name[ip_store]);
--		}
--		if (p_self->info.my_ip_address.name[ip_4])
--		{
--			free(p_self->info.my_ip_address.name[ip_4]);
 +			for (i=0;i<MAX_DNS_SERVER;i++) {
 +
 +				http_client_destruct(&p_self->info[i].http_to_dyndns);
 +			}
  		}
--		if (p_self->info.my_ip_address.name[ip_6])
+-		if (http_to_ip_constructed)
  		{
--			free(p_self->info.my_ip_address.name[ip_6]);
+-			http_client_destruct(&p_self->http_to_ip_server);
 +			for (i=0;i<MAX_DNS_SERVER;i++) {
 +
 +				http_client_destruct(&p_self->info[i].http_to_ip_server);
-+			}
+ 		}
+-		if (p_self->info.my_ip_address.name[ip_store])
 +
 +			for (i=0;i<MAX_DNS_SERVER;i++) {
 +
 +				if (p_self->info[i].i_face.my_ip_address.name[ip_store])
-+				{
+ 		{
+-			free(p_self->info.my_ip_address.name[ip_store]);
 +					free(p_self->info[i].i_face.my_ip_address.name[ip_store]);
-+				}
+ 		}
+-		if (p_self->info.my_ip_address.name[ip_4])
 +				if (p_self->info[i].i_face.my_ip_address.name[ip_4])
-+				{
+ 		{
+-			free(p_self->info.my_ip_address.name[ip_4]);
 +					free(p_self->info[i].i_face.my_ip_address.name[ip_4]);
-+				}
+ 		}
+-		if (p_self->info.my_ip_address.name[ip_6])
 +				if (p_self->info[i].i_face.my_ip_address.name[ip_6])
-+				{
+ 		{
+-			free(p_self->info.my_ip_address.name[ip_6]);
 +					free(p_self->info[i].i_face.my_ip_address.name[ip_6]);
 +				}
 +			}
@@ -3234,83 +3010,23 @@
  
 --- src/dyndns.h
 +++ src/dyndns.h
-@@ -22,8 +22,8 @@
- /*
- 
- 	History:
--		Dec 2007 -- Added get_cmd.h include, for get_config_data_with_error_handling
--			prototype.
-+		Dec 2007 -- Added get_cmd.h include, for get_config_data_with_error_handling 
-+					prototype.
- */
- 
- /*interface for main dydns functions */
 @@ -76,7 +76,7 @@
  
  #endif
  
 -#define DYNDNS_EXTRA_VERSION
-+#define	DYNDNS_EXTRA_VERSION    "-ms_pid_patch_00"
++#define	DYNDNS_EXTRA_VERSION    "-ms_pid_patch_04"
  
  #define DYNDNS_VERSION_STRING	"02.24.47" DYNDNS_VERSION_SND DYNDNS_VERSION_THD DYNDNS_EXTRA_VERSION
  #define DYNDNS_AGENT_NAME	"inadyn-mt/" DYNDNS_VERSION_STRING
-@@ -86,26 +86,27 @@
- 
- typedef enum
- {
--	DYNDNS_DYNAMIC,
--	DYNDNS_STATIC,
--	DYNDNS_CUSTOM,
--	DYNDNS_DEFAULT,
--	FREEDNS_AFRAID_ORG_DEFAULT,
--	ZONE_EDIT_DEFAULT,
--	CUSTOM_HTTP_BASIC_AUTH,
--	NOIP_DEFAULT,
--	EASYDNS_DEFAULT,
--	DYNDNS_3322_DYNAMIC,
--	SITELUTIONS_DOMAIN,
--	TZO_DEFAULT,
--	DNSOMATIC_DEFAULT,
--	HE_IPV6TB,
--	DYNSIP_DEFAULT,
--	DHIS_DEFAULT,
--	MAJIMOTO_DEFAULT,
--	ZERIGO_DEFAULT,
--	TWODNS_DEFAULT,
--	LAST_DNS_SYSTEM = -1
-+    DYNDNS_DYNAMIC,
-+    DYNDNS_STATIC,
-+    DYNDNS_CUSTOM,
-+    DYNDNS_DEFAULT,
-+    FREEDNS_AFRAID_ORG_DEFAULT,
-+    ZONE_EDIT_DEFAULT,
-+    CUSTOM_HTTP_BASIC_AUTH,
-+    NOIP_DEFAULT,
-+    EASYDNS_DEFAULT,
-+    DYNDNS_3322_DYNAMIC,
-+    SITELUTIONS_DOMAIN,
-+    TZO_DEFAULT,
-+    DNSOMATIC_DEFAULT,
-+    HE_IPV6TB,
+@@ -100,6 +100,7 @@
+ 	TZO_DEFAULT,
+ 	DNSOMATIC_DEFAULT,
+ 	HE_IPV6TB,
 +    HE_DEFAULT,
-+    DYNSIP_DEFAULT,
-+    DHIS_DEFAULT,
-+    MAJIMOTO_DEFAULT,
-+    ZERIGO_DEFAULT,
-+    TWODNS_DEFAULT,
-+    LAST_DNS_SYSTEM = -1
- } DYNDNS_SYSTEM_ID;
- 
- /*test values*/
-@@ -148,7 +149,7 @@
- 
- #define DYNDNS_SYSTEM_CUSTOM	"custom"
- #define DYNDNS_SYSTEM_DYNAMIC	"dyndns"
--#define DYNDNS_SYSTEM_STATIC	"statdns"
-+#define DYNDNS_SYSTEM_STATIC	"statdns" 
- 
- #define GENERIC_DNS_IP_SERVER_NAME	DYNDNS_MY_IP_SERVER
- #define DYNDNS_MY_DNS_SYSTEM		DYNDNS_DEFAULT
+ 	DYNSIP_DEFAULT,
+ 	DHIS_DEFAULT,
+ 	MAJIMOTO_DEFAULT,
 @@ -156,7 +157,6 @@
  /* Conversation with the IP server */
  #define DYNDNS_GET_MY_IP_HTTP_REQUEST  \
@@ -3319,64 +3035,10 @@
  /* dyndns.org specific update address format */
  /* 3322.org has the same parameters ...*/
  #define DYNDNS_GET_MY_IP_HTTP_REQUEST_FORMAT \
-@@ -196,24 +196,24 @@
- 	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
- 
- #define GENERIC_DNS_CUSTOM_BASIC_AUTH_MY_IP_REQUEST_FORMAT \
--	"GET %s%s&%s=%s&" \
--	"wildcard=%s " \
--	"HTTP/1.0\r\n" \
--	"Authorization: Basic %s\r\n" \
--	"Host: %s\r\n" \
--	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
-+        "GET %s%s&%s=%s&" \
-+        "wildcard=%s " \
-+        "HTTP/1.0\r\n" \
-+        "Authorization: Basic %s\r\n" \
-+        "Host: %s\r\n" \
-+        "User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
- 
- #define GENERIC_DNS_CUSTOM_MY_IP_REQUEST_FORMAT \
--	"GET %s%s&%s=%s&" \
--	"%s=%s&" \
--	"%s=%s&" \
--	"wildcard=%s " \
--	"HTTP/1.0\r\n" \
--	"Host: %s\r\n" \
--	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
-+        "GET %s%s&%s=%s&" \
-+        "%s=%s&" \
-+        "%s=%s&" \
-+        "wildcard=%s " \
-+        "HTTP/1.0\r\n" \
-+        "Host: %s\r\n" \
-+        "User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
- 
- #define GENERIC_NOIP_AUTH_MY_IP_REQUEST_FORMAT \
--	"GET %s%s&myip=%s " \
-+    "GET %s%s&myip=%s " \
- 	 "HTTP/1.0\r\n" \
- 	"Authorization: Basic %s\r\n" \
- 	"Host: %s\r\n" \
-@@ -246,7 +246,7 @@
- 	"GET %s%s&" \
- 	"Email=%s&" \
- 	"TZOKey=%s&" \
--	"IPAddress=%s " \
-+	"IPAddress=%s "	\
- 	"HTTP/1.0\r\n" \
+@@ -262,6 +262,16 @@
  	"Host: %s\r\n" \
  	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
-@@ -257,8 +257,18 @@
- 	"ipv4b=%s&" \
- 	"user_id=%s&" \
- 	"pass=%s&" \
--	"tunnel_id=%s " \
-+	"tunnel_id=%s "	\
- 	"HTTP/1.0\r\n" \
-+	"Host: %s\r\n"	\
-+	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
-+
+ 
 +/* HE DynDNS specific update request format */
 +#define HE_DEFAULT_UPDATE_MY_IP_REQUEST_FORMAT	\
 +	"GET %s" \
@@ -3384,17 +3046,13 @@
 +	"myip=%s " \
 +	"HTTP/1.0\r\n"	\
 +	"Authorization: Basic %s\r\n"	\
- 	"Host: %s\r\n" \
- 	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
- 
-@@ -277,13 +287,13 @@
- #define MAJIMOTO_MY_IP_UPDATE_REQUEST_FORMAT \
++	"Host: %s\r\n" \
++	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
++
+ /* is.dhis.org specific update request format */
+ #define DHIS_MY_IP_UPDATE_REQUEST_FORMAT \
  	"GET %s" \
- 	"hostname=%s&" \
--	"myip=%s "		\
-+	"myip=%s " \
- 	"HTTP/1.0\r\n" \
- 	"Authorization: Basic %s\r\n" \
+@@ -283,7 +293,7 @@
  	"Host: %s\r\n" \
  	"User-Agent: "DYNDNS_AGENT_NAME " " DYNDNS_EMAIL_ADDR"\r\n\r\n"
  
@@ -3403,59 +3061,6 @@
  #define ZERIGO_MY_IP_UPDATE_REQUEST_FORMAT \
  	"GET %s%s&" \
  	"ip=%s " \
-@@ -309,11 +319,11 @@
- 
- 
- /* SOME DEFAULT CONFIGURATIONS */
--#define DYNDNS_DEFAULT_SLEEP			(600)					/*s*/
--#define DYNDNS_MIN_SLEEP			(30)					/*s*/
--#define DYNDNS_MAX_SLEEP			(10 * 24 * 3600)			/*10 days in s*/
-+#define DYNDNS_DEFAULT_SLEEP			(600)	/*s*/
-+#define DYNDNS_MIN_SLEEP			(30)	/*s*/
-+#define DYNDNS_MAX_SLEEP			(10 * 24 * 3600)	/*10 days in s*/
- #define DYNDNS_MIN_FORCED_UPDATE_PERIOD_S	DYNDNS_MIN_SLEEP
--#define DYNDNS_MAX_FORCED_UPDATE_PERIOD_S	(30 * 24 * 3600)			/* 30 days in sec*/
-+#define DYNDNS_MAX_FORCED_UPDATE_PERIOD_S	(30 * 24 * 3600)	/* 30 days in sec*/
- #define DYNDNS_MY_FORCED_UPDATE_PERIOD_S	DYNDNS_MAX_FORCED_UPDATE_PERIOD_S	/* 30 days in sec*/
- #define DYNDNS_DEFAULT_UPDATE_ADJUST		.5
- #define DYNDNS_MIN_FORCED_UPDATE_ADJUST		-4
-@@ -345,13 +355,13 @@
- 
- /*attenuation max, min constants -- translate to [-40..0], [-120db..0db]*/
- #define DYNDNS_MAX_WAVE_RANGE			120
--#define DYNDNS_MIN_WAVE_GAIN			-10		/*minimum wave play volume*/
--#define DYNDNS_MAX_WAVE_GAIN			10		/*maximum wave play volume*/
-+#define DYNDNS_MIN_WAVE_GAIN			-10	/*minimum wave play volume*/
-+#define DYNDNS_MAX_WAVE_GAIN			10	/*maximum wave play volume*/
- 
--#define DYNDNS_INFINITE_WAVE			-1		/*infinite times per wave play call to play wave file*/
--#define DYNDNS_DEFAULT_INAUDIBLE		1		/*audible alerts default as on*/
--#define DYNDNS_DEFAULT_ALERT_RETRIES		0		/*network retries before sounding alert*/
--#define DYNDNS_DEFAULT_ALERT_INTERVAL		0		/*ms time between audible alerts*/
-+#define DYNDNS_INFINITE_WAVE			-1	/*infinite times per wave play call to play wave file*/
-+#define DYNDNS_DEFAULT_INAUDIBLE		1	/*audible alerts default as on*/
-+#define DYNDNS_DEFAULT_ALERT_RETRIES		0	/*network retries before sounding alert*/
-+#define DYNDNS_DEFAULT_ALERT_INTERVAL		0	/*ms time between audible alerts*/
- #define DYNDNS_DEFAULT_WAVE_FILE		"alarm.wav"	/*default wave file, and path ("current working dir")*/
- #define DYNDNS_DEFAULT_WAVE_BUFF_FACTOR		.25		/*max by which to divide or multiply wave file bytes per second for buffer size*/
- 
-@@ -367,12 +377,12 @@
- #define DYNDNS_DEFAULT_USER_WAVE_GAIN		10
- 
- /*allow attenuate to 120db in DYNDNS_MAX_WAVE_RANGE increments*/
--#define DYNDNS_DECIBEL_STEP			DYNDNS_MAX_WAVE_RANGE/(-1*DYNDNS_MIN_WAVE_GAIN+DYNDNS_MAX_WAVE_GAIN)
-+#define DYNDNS_DECIBEL_STEP		DYNDNS_MAX_WAVE_RANGE/(-1*DYNDNS_MIN_WAVE_GAIN+DYNDNS_MAX_WAVE_GAIN)
- 
--#define DYNDNS_DEFAULT_WAVE_LOOPS		0		/*default number of times per wave play call to play wave file*/
-+#define DYNDNS_DEFAULT_WAVE_LOOPS		0	/*default number of times per wave play call to play wave file*/
- 
--#define DYNDNS_DEFAULT_STATUS_INTERVAL		600		/*seconds online status check interval default*/
--#define DYNDNS_DEFAULT_STATUS_OFFLINE_INTERVAL	15		/*seconds online status check interval default, after offline detect*/
-+#define DYNDNS_DEFAULT_STATUS_INTERVAL		600	/*seconds online status check interval default*/
-+#define DYNDNS_DEFAULT_STATUS_OFFLINE_INTERVAL	15	/*seconds online status check interval default, after offline detect*/
- 
- /*local configs*/
- /*address str may contain both ip4,ip6 separated by semi colon*/
 @@ -391,21 +401,24 @@
  #define DUAL_LIST		"coupled"
  #define MAX_IP_TYPE_SIZE	8
@@ -3507,12 +3112,6 @@
  
  typedef struct
  {
--    	BOOL			my_ip_has_changed[3];
--	BOOL			is_update_ip4;
--	BOOL			is_update_ip6;
--	BOOL			is_update_auto;
--	BOOL			is_got_ip4;
--	BOOL			is_got_ip6;
 +	/*multiple of ip types (2 -- IPv4, IPv6)*/
 +	DYNDNS_ALIAS_NAME	names[DYNDNS_MAX_ALIAS_NUMBER*2];
 +	int			update_required[DYNDNS_MAX_ALIAS_NUMBER*2];
@@ -3526,7 +3125,12 @@
 +typedef struct
 +{
 +
-+	BOOL my_ip_has_changed[3];
+     	BOOL			my_ip_has_changed[3];
+-	BOOL			is_update_ip4;
+-	BOOL			is_update_ip6;
+-	BOOL			is_update_auto;
+-	BOOL			is_got_ip4;
+-	BOOL			is_got_ip6;
  
  	/*3 strings - ip_4, ip_6 address,
  	  and temp store, ip_store for
@@ -3557,13 +3161,10 @@
  	DYNDNS_SYSTEM		*p_dns_system;
  	DYNDNS_SERVER_NAME	dyndns_server_name;
 -	char			*dyndns_server_url;
--	char			*dyndns_server_host;
--	DYNDNS_SERVER_NAME	ip_server_name;
--	char			*ip_server_host;
+ 	char			*dyndns_server_host;
+ 	DYNDNS_SERVER_NAME	ip_server_name;
+ 	char			*ip_server_host;
 -	char			*ip_server_url;
-+        char                    *dyndns_server_host;
-+        DYNDNS_SERVER_NAME      ip_server_name;
-+        char                    *ip_server_host;
  	DYNDNS_SERVER_NAME	proxy_server_name;
 -} DYNDNS_INFO_TYPE;
  
@@ -3600,87 +3201,7 @@
  
  typedef struct
  {
-@@ -533,60 +580,58 @@
- 
- typedef struct IP_CACHE
- {
--        char            *ip;
--        char            *alias;
--        char            *type;
--        char            *server;
--        char            *ip_alias_type;
-+	char		*ip;
-+	char		*alias;
-+	char		*type;
-+	char		*server;
-+	char		*ip_alias_type;
- 
--        unsigned char   ip_n[16];
-+	unsigned char	ip_n[16];
- } IP_CACHE;
- 
- typedef struct IP_CACHE_LIST {
- 
--        IP_CACHE        *saved_ip_cache;
-+	IP_CACHE	*saved_ip_cache;
- 
--        int             count;
-+	int		count;
- } IP_CACHE_LIST;
- 
- typedef struct DYN_DNS_CLIENT
- {
- 	DYN_DNS_CMD	cmd;
--	int		sleep_sec;				/* time between 2 updates*/
-+	int		sleep_sec;			/* time between 2 updates*/
- 	unsigned	forced_update_period_sec;
--	float		forced_update_adjust;			/* how to round forced update calculation */
--	unsigned	forced_update_period_sec_orig;		/* original read from cmd line */
-+	float		forced_update_adjust;		/* how to round forced update calculation */
-+	unsigned	forced_update_period_sec_orig;	/* original read from cmd line */
- 	int		times_since_last_update;
--	int		forced_update_times;			/* the same forced update period counted in sleep periods*/
--	unsigned	cmd_check_period;			/*time to wait for a command*/
--	unsigned	forced_update_counter;			/*cmd_check_periods tracking forced_update_period expiration*/
-+	int		forced_update_times;		/* the same forced update period counted in sleep periods*/
-+	unsigned	cmd_check_period;		/*time to wait for a command*/
-+	unsigned	forced_update_counter;		/*cmd_check_periods tracking forced_update_period expiration*/	
- 	int		is_forced_update_attempted;
- 	int		total_iterations;
- 	int		iterations;
--	int		net_retries;				/*failed comm retries*/
--	long		retry_interval;				/*miliseconds wait interval between retries*/
-+	int		net_retries;			/*failed comm retries*/
-+	long		retry_interval;			/*miliseconds wait interval between retries*/
- 	long		retry_pending_interval;
- 	int		retry_pending_off;
--	int		retry_later;				/*dyndns2 network error - retry in 5 minutes*/
--	char		*lang_file;				/*language (locale) file full path, and file name*/
--	int		lang_hard_coded;			/*flagged when --lang_file parameter with empty option*/
--	int		audible_off;				/*compiled with USE_SNDFILE defined, but want run without*/
--	char		*wave_file;				/*network status alerts wave file full path, and file name*/
--	int		wave_loops;				/*number of times per wave play call to play wave file*/
--	float		wave_gain;				/*volume at which to play wave file*/
--	int		alert_retries;				/*network retries before sounding alert*/
--	int		alert_interval;				/*time betweens sounding network status alarm*/
--	int		status_interval;			/*ms between online status checks*/
--	int		status_offline_interval;		/*ms between online status checks, after offline detect*/
--	float		wave_buff_factor;			/*multiple of wave file bytes per second*/
-+	int		retry_later;			/*dyndns2 network error - retry in 5 minutes*/
-+	char		*lang_file;			/*language (locale) file full path, and file name*/
-+	int		lang_hard_coded;		/*flagged when --lang_file parameter with empty option*/
-+	int		audible_off;			/*compiled with USE_SNDFILE defined, but want run without*/
-+	char		*wave_file;			/*network status alerts wave file full path, and file name*/
-+	int		wave_loops;			/*number of times per wave play call to play wave file*/
-+	float		wave_gain;			/*volume at which to play wave file*/
-+	int		alert_retries;			/*network retries before sounding alert*/
-+	int		alert_interval;			/*time betweens sounding network status alarm*/
-+	int		status_interval;		/*ms between online status checks*/
-+	int		status_offline_interval;	/*ms between online status checks, after offline detect*/
-+	float		wave_buff_factor;		/*multiple of wave file bytes per second*/
- 
- 	BOOL		initialized;
- 	BOOL		run_in_background;
+@@ -585,8 +632,6 @@
  	BOOL		debug_to_syslog;
  	BOOL		change_persona;
  
@@ -3689,7 +3210,7 @@
  	HTTP_TRANSACTION	http_tr;
  	char			*p_work_buffer;		/* for HTTP responses*/
  	int			work_buffer_size;
-@@ -596,45 +641,39 @@
+@@ -596,32 +641,26 @@
  	char			*time_cache;
  	char			*ip_cache;
  
@@ -3729,10 +3250,9 @@
 -	int		is_ip_in_svr_rsp;
 +	char 			*p_pidfilename;
  
--	char		*servers_additional;
-+	char			*servers_additional;
+ 	char		*servers_additional;
  
- 	/*dbg*/
+@@ -629,12 +668,12 @@
  	DBG_TYPE		dbg;
  } DYN_DNS_CLIENT;
  
@@ -3746,7 +3266,7 @@
          int             alias_index;
  }EXP_MAPPING;
  
-@@ -667,17 +706,33 @@
+@@ -667,7 +706,7 @@
  char *print_time(void);
  
  /*
@@ -3755,11 +3275,7 @@
  */
  RC_TYPE dyn_dns_construct(DYN_DNS_CLIENT **pp_self);
  
- /*
- 	Resource free.
--*/
-+*/	
- RC_TYPE dyn_dns_destruct(DYN_DNS_CLIENT *p_self);
+@@ -678,6 +717,22 @@
  
  void dyndns_event(int i_event,void  *p_context);
  
@@ -3782,15 +3298,6 @@
  /* MAIN - Dyn DNS update entry point.*/
  
  /*
-@@ -685,7 +740,7 @@
- 		- read the configuration options
- 		- create and init dyn_dns object.
- 		- launch the IP update action
--*/
-+*/		
- int dyn_dns_main(DYN_DNS_CLIENT *p_self, int argc, char* argv[]);
- 
- 
 @@ -703,7 +758,7 @@
  
  #else
@@ -3800,9 +3307,29 @@
  
  int inadyn_main(int argc, char* argv[],int is_service_in,FILE *pLOG_FILE);
  
+--- src/errorcode.c
++++ src/errorcode.c
+@@ -111,7 +111,7 @@
+ static int strerror_rr(int err,char* strerr_buf,int strerr_size)
+ {
+ 
+-#ifndef _WIN32
++#if !(defined(_WIN32) || defined(__SunOS_5_9))
+ 
+ 	return strerror_r(err,strerr_buf,strerr_size);
+ #else
 --- src/errorcode.h
 +++ src/errorcode.h
-@@ -46,7 +46,8 @@
+@@ -20,6 +20,8 @@
+ #ifndef _ERRORCODE_INCLUDED
+ #define _ERRORCODE_INCLUDED
+ 
++#define        __SunOS_5_9 ((defined(sun) && (defined(__svr4__) || defined(__SVR4))) && (_POSIX_VERSION < 200112L))
++
+ #define ERROR_FLAG "**********************************************************************\n"
+ 
+ typedef enum
+@@ -46,7 +48,8 @@
  	RC_HTTP_OBJECT_NOT_INITIALIZED			= 0x30,
  	RC_HTTP_BAD_PARAMETER				= 0x31,
  
@@ -3812,27 +3339,19 @@
  	RC_DYNDNS_INVALID_IP_ADDR			= 0x39,
  	RC_DYNDNS_BUFFER_TOO_SMALL			= 0x40,
  	RC_DYNDNS_INVALID_IP_ADDR_IN_HTTP_RESPONSE	= 0x41,
+--- src/events.c
++++ src/events.c
+@@ -57,7 +57,7 @@
+ #endif
+ 
+ static semaphore_t	event_q_sem;
+-static queue_t		event_q;
++static mt_queue_t	event_q;
+ 
+ static mutex_t		thread_handle_mutex=MUTEX_T_INIT;
+ 
 --- src/inadyn_cmd.c
 +++ src/inadyn_cmd.c
-@@ -21,15 +21,15 @@
- */
- 
- /*
--	Dyn Dns update main implementation file
-+	Dyn Dns update main implementation file 
- 	Author: narcis Ilisei
- 	Date: May 2003
- 
- 	History:
- 		- first implemetnation
--		- 18 May 2003 : cmd line option reading added -
-+		- 18 May 2003 : cmd line option reading added - 
- 		- many options added
--		- january 2005 - new format for the config file =Thanks to Jerome Benoit.
-+		- january 2005 - new format for the config file =Thanks to Jerome Benoit. 
- 		- january 30 2005 - new parser for config file -
- 		- october 2007 - debug level command line parameter added
- 		- dec 2007 - file options handler now provides for command line options precedence
 @@ -59,6 +59,7 @@
  #include "unicode_util.h"
  #include "safe_mem.h"
@@ -3871,7 +3390,7 @@
  static CMD_DESCRIPTION_TYPE cmd_options_table[] =
      {
          {"--help",	0,	{help_handler, NULL,0},	"help" },
-@@ -140,18 +150,19 @@
+@@ -140,15 +150,16 @@
          {"--password",	1,	{get_password_handler, NULL,0},	"<password> - your password. Optional."},
          {"-p",		1,	{get_password_handler, NULL,0},	"<password> - your password"},
  
@@ -3880,10 +3399,8 @@
 +        {"--alias",	3,	{get_alias_handler, NULL,2},	"<alias host name>[,hash] [dual | " DUAL_LIST " | ip4 | ip6 | auto] - alias host name, optional comma delimted hash, and optional ip version, default auto. This option can appear multiple times." },
 +        {"-a",		3,	{get_alias_handler, NULL,2},	"<alias host name>[,hash] [dual | " DUAL_LIST " | ip4 | ip6 | auto] - alias host name, optional comma delimited hash, and optional ip version, default auto. This option can appear multiple times." },
  
--        {"--debug",     1,  {get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
--        {"-d",          1,  {get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
-+        {"--debug",     1,	{get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
-+        {"-d",          1,	{get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
+         {"--debug",     1,  {get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
+         {"-d",          1,  {get_debug_level_handler, NULL,0}, "<#> - debug level 0..7; higher number, more log debug messages."},
  
 -        /*for help display only -- service_main takes care of these handlers
 +        /*
@@ -3893,11 +3410,7 @@
 +        could have a servie_main_display_help() function instead
          */
  
--#ifdef _WIN32
-+#ifdef _WIN32  
-         {"-i",3,{NULL, NULL,3},"[quoted service description] [-n <service name>] - install service"},
-         {"-s",2,{NULL, NULL,2},"[-n <service name>] - start service"},
-         {"-e",2,{NULL, NULL,2},"[-n <service name>] - exit service"},
+ #ifdef _WIN32
 @@ -160,13 +171,37 @@
  #endif
  
@@ -3956,7 +3469,7 @@
  
  #ifdef USE_THREADS
  
-@@ -213,36 +248,40 @@
+@@ -213,30 +248,34 @@
  #endif
  
          {"--log_file",			1,	{get_logfile_name, NULL,0},"<path/file> - log file path and name"},
@@ -4010,14 +3523,6 @@
  
  /*possible other options:
  		-time before go into rest period
- 		-time to rest
--		-time of day block out period
--		-for dial-up, don't test connect
-+		-time of day block out period	
-+		-for dial-up, don't test connect 
- 		'til after dail-up
- 		-for dial-up, don't alert if
- 		user terminated connection
 @@ -254,8 +293,8 @@
  
  #ifdef USE_THREADS
@@ -4052,7 +3557,7 @@
  	       "\t\t 'hash' is extracted from the grab url batch file that is downloaded from freedns.afraid.org\n\n" \
  	       "Parameters:\n");
  
-@@ -299,53 +337,72 @@
+@@ -299,9 +337,28 @@
  	printf("\n\n\n");
  }
  
@@ -4075,23 +3580,15 @@
 +
  static char *do_arg_to_val(struct EXP_MAPPING *p_mapping,char *identifier)
  {
--        char    *p_ret=safe_malloc(strlen("unknown identifier")+1);
-+	char    		*p_ret=safe_malloc(strlen("unknown identifier")+1);
+         char    *p_ret=safe_malloc(strlen("unknown identifier")+1);
 +	int			alias_index=p_mapping->alias_index;
 +	DYNDNS_INFO_TYPE	info=p_mapping->p_dyndns->info[p_mapping->server_index];
  
--        strcpy(p_ret,"unknown identifier");
-+	strcpy(p_ret,"unknown identifier");
+         strcpy(p_ret,"unknown identifier");
  
- 	if (!(identifier))
+@@ -313,26 +370,26 @@
  
- 		return p_ret;
- 
--        DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "mapping from identifier, %s, in do_arg_to_val...\n",identifier));
-+	DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "mapping from identifier, %s, in do_arg_to_val...\n",identifier));
- 
--        if (!(strcmp(identifier,"IP_ADDR"))) {
-+	if (!(strcmp(identifier,"IP_ADDR"))) {
+         if (!(strcmp(identifier,"IP_ADDR"))) {
  
 -		if (!(p_mapping->p_dyndns->info.my_ip_address.name[ip_store]))
 +		if (!(info.i_face.my_ip_address.name[ip_store]))
@@ -4105,13 +3602,11 @@
  
 -                p_ret=safe_realloc(p_ret,strlen(p_mapping->p_dyndns->info.my_ip_address.name[ip_store])+1);
 -                strcpy(p_ret,p_mapping->p_dyndns->info.my_ip_address.name[ip_store]);
--        }
 +		p_ret=safe_realloc(p_ret,strlen(info.i_face.my_ip_address.name[ip_store])+1);
 +		strcpy(p_ret,info.i_face.my_ip_address.name[ip_store]);
-+	}
+         }
  
--        if (!(strcmp(identifier,"ALIAS"))) {
-+	if (!(strcmp(identifier,"ALIAS"))) {
+         if (!(strcmp(identifier,"ALIAS"))) {
  
 -		if (!(p_mapping->alias_index<p_mapping->p_dyndns->alias_info.count))
 +		if (!(alias_index<info.alias_info.count))
@@ -4120,29 +3615,11 @@
  
 -                p_ret=safe_realloc(p_ret,strlen(p_mapping->p_dyndns->alias_info.names[p_mapping->alias_index].name)+1);
 -       	        strcpy(p_ret,p_mapping->p_dyndns->alias_info.names[p_mapping->alias_index].name);
--        }
 +		p_ret=safe_realloc(p_ret,strlen(info.alias_info.names[alias_index].name)+1);
 +		strcpy(p_ret,info.alias_info.names[alias_index].name);
-+	}
+         }
  
  	return p_ret;
- }
- 
- char *arg_to_val(void *p_context,char *token)
- {
--        struct EXP_MAPPING      *p_mapping=p_context;
--        char                    *s_ret=do_arg_to_val(p_mapping,token);
-+	struct EXP_MAPPING      *p_mapping=p_context;
-+	char                    *s_ret=do_arg_to_val(p_mapping,token);
- 
--        DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "mapping value from identifier %s, to value %s, in arg_to_val...\n",token,s_ret));
-+	DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "mapping value from identifier %s, to value %s, in arg_to_val...\n",token,s_ret));
- 
--        return s_ret;
-+	return s_ret;
- }
- 
- static RC_TYPE help_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
 @@ -363,11 +420,14 @@
  static RC_TYPE wildcard_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
@@ -4161,36 +3638,7 @@
  	return RC_OK;
  }
  
-@@ -431,7 +491,7 @@
- 		p_self->dbg.p_logfilename=NULL;
- 	}
- 
--
-+	
- #ifndef _WIN32
- 
- 	p_self->dbg.p_logfilename=safe_malloc(strlen(p_cmd->argv[current_nr])+1);
-@@ -441,32 +501,32 @@
- 
- 	if (create_file2(p_cmd->argv[current_nr]))
- 
--		nt_console_name2(&p_self->dbg.p_logfilename,p_cmd->argv[current_nr]);
-+		nt_console_name2(&p_self->dbg.p_logfilename,p_cmd->argv[current_nr]);	
- #endif
- 
--
-+	
- 	return RC_OK;
- }
- 
- static RC_TYPE get_username_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
- {
- 	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
--
-+	
- 
- 	if (p_self == NULL)
- 	{
+@@ -458,15 +518,15 @@
  		return RC_INVALID_POINTER;
  	}
  
@@ -4259,11 +3707,10 @@
  
  		alias_len=strlen(p_hash);
  	}
-+	
-+	if (p_self->info[server_index].alias_info.names[p_self->info[server_index].alias_info.count].name)
  
 -	if (p_self->alias_info.names[p_self->alias_info.count].name)
--
++	if (p_self->info[server_index].alias_info.names[p_self->info[server_index].alias_info.count].name)
+ 
 -		free(p_self->alias_info.names[p_self->alias_info.count].name);
 +		free(p_self->info[server_index].alias_info.names[p_self->info[server_index].alias_info.count].name);
  
@@ -4362,15 +3809,6 @@
  		}
  		else {
  
-@@ -625,7 +690,7 @@
- #else
- 			if (_snprintf(ip_ver_str, 8, "%s", p_cmd->argv[current_nr+1]) < 0)	{
- #endif
--
-+				
- 				return RC_DYNDNS_INVALID_OPTION;
- 			}
- 		}
 @@ -643,7 +708,7 @@
  
  		if ((RC_OK==(rc=do_get_alias_handler(p_cmd,current_nr,p_context,"ip6"))))
@@ -4380,7 +3818,7 @@
  	}
  
  	return rc;
-@@ -719,57 +784,74 @@
+@@ -719,51 +784,68 @@
  /** Returns the svr name and port if the format is :
   * name[:port] url.
   */
@@ -4416,18 +3854,15 @@
  
 -	if (!(rc==RC_OK))
 +		free(info->url);
- 
--		return rc;
++
 +    info->url=safe_malloc(strlen(p_cmd->argv[current_nr + 1]) + 1);
- 
--	if (!(current_nr+1<p_cmd->argc))
++
 +    strcpy(info->url, p_cmd->argv[current_nr + 1]);
  
--		return RC_OK;
-+    return rc;
+ 		return rc;
 +}
  
--        if (0==(strncmp(p_cmd->argv[current_nr+1],"-",1)))
+-	if (!(current_nr+1<p_cmd->argc))
 +static RC_TYPE get_ip_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
 +{
  
@@ -4435,50 +3870,45 @@
 +    return set_url_param(p_cmd,current_nr,&(((DYN_DNS_CLIENT *) (p_context))->info[server_index].ip_server_name));
 +}
  
--        if (info->ip_server_url)
+-        if (0==(strncmp(p_cmd->argv[current_nr+1],"-",1)))
 +static RC_TYPE get_global_ip_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
 +{
 +	RC_TYPE		rc;
 +	DYN_DNS_CLIENT	*p_self=(DYN_DNS_CLIENT *) p_context;
 +	int		i;
  
--                free(info->ip_server_url);
+-		return RC_OK;
  
--	info->ip_server_url=safe_malloc(strlen(p_cmd->argv[current_nr+1])+1);
+-        if (info->ip_server_url)
 +    if ((RC_OK==(rc=set_url_param(p_cmd,current_nr,&p_self->ip_server_name_global)))) {
  
--	strcpy(info->ip_server_url, p_cmd->argv[current_nr+1]);
+-                free(info->ip_server_url);
 +		for (i=0;i<MAX_DNS_SERVER;i++) {
  
--	return RC_OK;
--}
+-	info->ip_server_url=safe_malloc(strlen(p_cmd->argv[current_nr+1])+1);
 +			if (!(p_self->info[i].ip_server_name.name)) {
  
--static RC_TYPE get_ip_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
--{
+-	strcpy(info->ip_server_url, p_cmd->argv[current_nr+1]);
 +				p_self->info[i].ip_server_name.name=safe_malloc(strlen(p_self->ip_server_name_global.name)+1);
 +				strcpy(p_self->info[i].ip_server_name.name,p_self->ip_server_name_global.name);
  
--    return set_url_param(p_cmd,current_nr,&(((DYN_DNS_CLIENT *) (p_context))->info));
+-	return RC_OK;
+-}
 +				p_self->info[i].ip_server_name.url=safe_malloc(strlen(p_self->ip_server_name_global.url)+1);
 +				strcpy(p_self->info[i].ip_server_name.url,p_self->ip_server_name_global.url);
-+
+ 
+-static RC_TYPE get_ip_server_name_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
+-{
 +				p_self->info[i].ip_server_name.port=p_self->ip_server_name_global.port;
 +			}
 +		}
 +	}
-+
+ 
+-    return set_url_param(p_cmd,current_nr,&(((DYN_DNS_CLIENT *) (p_context))->info));
 +	return rc;
  }
  
  static RC_TYPE get_ip_server_host_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
- {
- 
--	DYN_DNS_CLIENT	*p_self=p_context;
-+	DYN_DNS_CLIENT  *p_self=p_context;
- 
- 
- 	if (p_self==NULL)
 @@ -784,8 +866,8 @@
  
  		return RC_DYNDNS_INVALID_OPTION;
@@ -4490,7 +3920,7 @@
  
  	return RC_OK;
  }
-@@ -796,49 +878,93 @@
+@@ -796,42 +878,86 @@
      return set_url_param(p_cmd,current_nr,&(((DYN_DNS_CLIENT *) (p_context))->info_online_status));
  }
  
@@ -4565,10 +3995,9 @@
  
  RC_TYPE get_dns_server_url_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
--	DYN_DNS_CLIENT		*p_self = (DYN_DNS_CLIENT *) p_context;
+ 	DYN_DNS_CLIENT		*p_self = (DYN_DNS_CLIENT *) p_context;
 -
 -
-+	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
  	if (p_self == NULL)
  	{
  		return RC_INVALID_POINTER;
@@ -4576,51 +4005,30 @@
  
 -	if (p_self->info.dyndns_server_url)
 +	if (p_self->info[server_index].dyndns_server_name.url)
++
++		free(p_self->info[server_index].dyndns_server_name.url);
  
 -		free(p_self->info.dyndns_server_url);
-+		free(p_self->info[server_index].dyndns_server_name.url);
++	p_self->info[server_index].dyndns_server_name.url=safe_malloc(strlen(p_cmd->argv[current_nr])+1);
  
 -	p_self->info.dyndns_server_url=safe_malloc(strlen(p_cmd->argv[current_nr])+1);
 -	strcpy(p_self->info.dyndns_server_url,p_cmd->argv[current_nr]);
-+	p_self->info[server_index].dyndns_server_name.url=safe_malloc(strlen(p_cmd->argv[current_nr])+1);
-+
 +	/*url*/
 +	strcpy(p_self->info[server_index].dyndns_server_name.url, p_cmd->argv[current_nr]);
  
  	return RC_OK;
  }
- 
- static RC_TYPE get_dns_server_host_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
- {
--	DYN_DNS_CLIENT	*p_self=p_context;
-+	DYN_DNS_CLIENT  *p_self=p_context;
- 
- 
- 	if (p_self==NULL)
-@@ -852,9 +978,9 @@
- 	if (!(strncmp(p_cmd->argv[current_nr],"-",1)))
+@@ -853,8 +979,8 @@
  
  		return RC_DYNDNS_INVALID_OPTION;
--	
+ 	
 -	p_self->info.dyndns_server_host=safe_realloc(p_self->info.dyndns_server_host,strlen(p_cmd->argv[current_nr]+1));
 -	strcpy(p_self->info.dyndns_server_host,p_cmd->argv[current_nr]);
-+
 +	p_self->info[server_index].dyndns_server_host=safe_realloc(p_self->info[server_index].dyndns_server_host,strlen(p_cmd->argv[current_nr]+1));
 +	strcpy(p_self->info[server_index].dyndns_server_host,p_cmd->argv[current_nr]);
  
  	return RC_OK;
  }
-@@ -864,8 +990,8 @@
- static RC_TYPE get_proxy_server_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
- {
- 	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
--	RC_TYPE		rc;
--	int		port = -1;
-+    	RC_TYPE		rc;
-+    	int		port = -1;
- 
- 	if (p_self == NULL)
- 	{
 @@ -873,11 +999,11 @@
  	}
  
@@ -4636,42 +4044,17 @@
      }
  	return rc;
  }
-@@ -968,11 +1094,11 @@
- 	}
- 
- 	if ((adjust < DYNDNS_MIN_FORCED_UPDATE_ADJUST) || (adjust > DYNDNS_MAX_FORCED_UPDATE_ADJUST)) {
--
-+		
- 		DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "forced_update_adjust, %d, not [%d..%d]...\n",adjust,DYNDNS_MIN_FORCED_UPDATE_ADJUST,DYNDNS_MAX_FORCED_UPDATE_ADJUST));
- 
- 		return RC_DYNDNS_INVALID_OPTION;
--	}
-+	} 
- 	else {
- 
- 		p_self->forced_update_adjust=(float) adjust*-1;
-@@ -980,7 +1106,7 @@
- 		p_self->forced_update_adjust=p_self->forced_update_adjust/10+.5f;
- 	}
- 
--
-+	
- 	return RC_OK;
- }
- 
-@@ -1068,49 +1194,16 @@
- static RC_TYPE set_file_param(char **dest, char *dir,char *file_name)
- {
+@@ -1070,47 +1196,14 @@
  	RC_TYPE	rc=RC_FILE_IO_OPEN_ERROR;
--	char	*src_ptr=NULL;
-+	char	*src_ptr=NULL;	
+ 	char	*src_ptr=NULL;
  	int	is_file_exists;
 -	char	*p_cwd=NULL;
 -	int	p_trailing;
 -
--
++	int	slen;
+ 
 -	if (dir[0]==DIR_DELIM_STR[0] || dir[1]==':') {
--
+ 
 -		p_cwd=dir;
 -	}
 -	else {
@@ -4679,14 +4062,16 @@
 -		p_cwd=cross_platform_cwd(&p_cwd);
 -
 -		if (dir[0]=='.' && !(dir[1]=='.'))
--
++	slen=strlen(dir)+strlen(DIR_DELIM_STR)+strlen(file_name)+1;
+ 
 -			dir++;
 -
 -		if(dir[0]==DIR_DELIM_STR[0])
 -
 -			dir++;
 -	}
--
++	src_ptr=safe_malloc(slen);
+ 
 -	p_trailing=strlen(dir)-1;
 -
 -	if (p_trailing>=0)
@@ -4694,15 +4079,11 @@
 -		if (dir[p_trailing]==DIR_DELIM_STR[0])
 -
 -			dir[p_trailing]='\0';
-+	int	slen;
-+	
- 
+-
 -	if (p_cwd==dir || !(strlen(dir))) {
-+	slen=strlen(dir)+strlen(DIR_DELIM_STR)+strlen(file_name)+1;
- 
+-
 -		src_ptr=safe_malloc(strlen(p_cwd)+strlen(file_name)+2);
-+	src_ptr=safe_malloc(slen);
- 
+-
 -		sprintf(src_ptr,"%s" DIR_DELIM_STR "%s",p_cwd,file_name);
 -	}
 -	else {
@@ -4726,8 +4107,7 @@
 -		strcpy(*dest,src_ptr);
 +		sprintf(*dest, "%s" DIR_DELIM_STR "%s",dir,file_name);
  #endif
--
-+		
+ 
  	}
  
  	free(src_ptr);
@@ -4746,15 +4126,6 @@
  	char		*ip_cache=NULL;
  	char		*time_cache=NULL;
  
-@@ -1158,7 +1248,7 @@
- 
- 		if (p_self->ip_cache) {
- 
--			free(p_self->ip_cache);
-+			free(p_self->ip_cache);			
- 		}
- 
- 		p_self->ip_cache=ip_cache;
 @@ -1174,9 +1264,29 @@
  		p_self->time_cache=time_cache;
  	}
@@ -4785,7 +4156,7 @@
  static char *read_line(FILE *f_handle)
  {
  	char	c;
-@@ -1304,67 +1414,150 @@
+@@ -1304,20 +1414,31 @@
  	return RC_OK;
  }
  
@@ -4825,16 +4196,10 @@
  }
  
  /**
--    Searches the DYNDNS system by the argument.
--    Input is like: system@server.name
--    system=statdns|custom|dyndns|default
--    server name = dyndns.org | freedns.afraid.org
--    The result is a pointer in the table of DNS systems.
-+	Searches the DYNDNS system by the argument.
-+	Input is like: system@server.name
-+	system=statdns|custom|dyndns|default
-+	server name = dyndns.org | freedns.afraid.org
-+	The result is a pointer in the table of DNS systems.
+@@ -1326,45 +1447,117 @@
+     system=statdns|custom|dyndns|default
+     server name = dyndns.org | freedns.afraid.org
+     The result is a pointer in the table of DNS systems.
 +
 +	Argument may also be searched within additional
 +	preconfigured servers program file.  So if miss
@@ -4852,10 +4217,9 @@
  static RC_TYPE get_dyndns_system_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
 -	DYNDNS_SYSTEM *p_dns_system = NULL;
--	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
--
 +	DYNDNS_SYSTEM	*p_dns_system;
-+	DYN_DNS_CLIENT	*p_self = (DYN_DNS_CLIENT *) p_context;
+ 	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
+-
 +	char		*p_server=NULL;
 +	int		ndx;
  
@@ -4868,12 +4232,12 @@
 +	  index but, first check if it's already in list of servers and set index (or counter) correspondingly
 +	  to it.  all "info" (server info structure) related handlers will use this index (or counter) until
 +	  a new, or other existing name appears.*/
- 
--		char	*p_server;
++
 +	if (!(p_self->srv_cnt<MAX_DNS_SERVER))
  
+-		char	*p_server;
 +		return RC_DYNDNS_TOO_MANY_SERVERS;
-+
+ 
 +	/*search system table first, then additional preconfigured servers file*/
 +	if (!(p_dns_system=get_dns_system(p_cmd->argv[current_nr]))) {
  
@@ -4886,7 +4250,7 @@
  
  			return RC_DYNDNS_INVALID_OPTION;
 +	}
- 
++
 +	if (p_dns_system) {
 +
 +		/*note if more than one 'custom' no way to 'recall' it in config
@@ -4898,18 +4262,16 @@
 +			p_dns_system=create_custom_ddns(p_dns_system,USER_DEFINED_SERVER);
 +
 +			server_index=p_self->srv_cnt;
-+
+ 
 +			p_self->srv_cnt++;
 +		}
  		else {
 +			if (!(-1==(ndx=dns_system_index_of(p_dns_system->p_key,p_self))))
- 
--			DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "Additional server:  %s\n",p_server));
++
 +				server_index=ndx;
 +			else {
 +				server_index=p_self->srv_cnt;
  
--			add_server_params_to_cmd(p_cmd,p_server,current_nr);
 +				p_self->srv_cnt++;
 +			}
 +		}
@@ -4920,8 +4282,7 @@
 +			char	*p_key;
 +
 +			if (!(-1==(ndx=dns_system_index_of(svr_add_cfg_key(&p_key,p_server),p_self)))) {
- 
--			free(p_server);
++
 +				DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "found existing configured server:  %s\n",p_key));
 +
 +				server_index=ndx;
@@ -4929,13 +4290,13 @@
 +				p_dns_system=p_self->info[server_index].p_dns_system;
 +			}
 +			else {
-+				DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "Additional server:  %s\n",p_server));
+ 			DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "Additional server:  %s\n",p_server));
+ 
+ 			add_server_params_to_cmd(p_cmd,p_server,current_nr);
+ 
+ 			free(p_server);
  
 -			p_dns_system=get_dns_system(USER_DEFINED_SERVER);
-+				add_server_params_to_cmd(p_cmd,p_server,current_nr);
-+
-+				free(p_server);
-+
 +				p_dns_system=create_custom_ddns(get_dns_system(USER_DEFINED_SERVER),p_key);
 +
 +				server_index=p_self->srv_cnt;
@@ -4961,41 +4322,14 @@
  
  	return RC_OK;
  }
-@@ -1372,9 +1565,9 @@
- static RC_TYPE get_debug_level_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
- {
- 
--	#define ASCII_ZERO     48
-+	#define ASCII_ZERO	48
- 
--	int                    dwLevel=0;
-+	int	dwLevel=0;
- 
- 
- 	DYN_DNS_CLIENT *p_self = (DYN_DNS_CLIENT *) p_context;
-@@ -1491,6 +1684,7 @@
- 	if (p_self==NULL)
+@@ -1492,6 +1685,7 @@
  
  		return RC_INVALID_POINTER;
-+	
  
++
  	p_self->retry_pending_off=(!(p_self->retry_pending_off));
  
-@@ -1505,11 +1699,11 @@
  
- 
- 	/*
--	use harded coded defaults if have
-+	use harded coded defaults if have 
- 	--lang_file parameter with no option --
- 	otherwise, use option indicated language
--	strings file, and if not there, program
--	will automatically use locale indicated
-+	strings file, and if not there, program 
-+	will automatically use locale indicated 
- 	language strings file, defaulting to
- 	en.lng if locale indicated file not
- 	present.
 @@ -1711,13 +1905,13 @@
  static RC_TYPE get_config_rsp_params_handler(CMD_DATA *p_cmd, int current_nr, void *p_context)
  {
@@ -5071,39 +4405,6 @@
  }
  
  #ifdef USE_SNDFILE
-@@ -2076,7 +2270,7 @@
- /*
- 	Allow wave attenuation to -120db
- 
--	User interface gain [-10..10] (present values of related constants)
-+	User interface gain [-10..10] (present values of related constants) 
- 	is translated to [-20..0]
- 
- 	This in turn is translated according to waveout.c's WAVE_DECIBEL_STEP
-@@ -2101,12 +2295,12 @@
- 		gain=DYNDNS_DEFAULT_WAVE_GAIN;
- 
- 	else
--		gain=DYNDNS_MIN_WAVE_GAIN+gain;
-+		gain=DYNDNS_MIN_WAVE_GAIN+gain;		
- 
- 
- 	p_self->wave_gain=gain*DYNDNS_DECIBEL_STEP/WAVE_DECIBEL_STEP;
- 
--
-+	
- 	return RC_OK;
- }
- 
-@@ -2181,7 +2375,7 @@
- 
- 		DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "status_interval, %s, not [%i..%i]...\n",p_cmd->argv[current_nr],
- 					DYNDNS_MIN_STATUS_INTERVAL,DYNDNS_MAX_STATUS_INTERVAL));
--
-+		
- 
- 		return RC_DYNDNS_INVALID_OPTION;
- 	}
 @@ -2231,13 +2425,11 @@
  static RC_TYPE push_in_buffer(char* p_src, int src_len, char *p_buffer, int* p_act_len, int max_len)
  {
@@ -5119,63 +4420,6 @@
 -
  	return RC_OK;
  }
- 
-@@ -2254,7 +2446,7 @@
- 
- typedef struct
- {
--	FILE		*p_file;
-+	FILE 		*p_file;
- 	PARSER_STATE	state;
- } OPTION_FILE_PARSER;
- 
-@@ -2481,10 +2673,10 @@
- */
- static RC_TYPE parser_utf_8_read_option(OPTION_FILE_PARSER *p_cfg, char *p_buffer, int maxlen)
- {
--	RC_TYPE rc = RC_OK;
--	BOOL parse_end = FALSE;
--	int count = 0;
--	char c_buff[7];
-+	RC_TYPE	rc = RC_OK;
-+	BOOL	parse_end = FALSE;
-+	int	count = 0;
-+	char	c_buff[7];
- 
- 
- 	*p_buffer = 0;
-@@ -2537,11 +2729,11 @@
- 		- add data to buffer
- 		- do not forget a 0 at the end
-  * States:
-- * NEW_LINE - wait here until some option. Add '--' if not already there
-- * SPACE - between options. Like NEW_LINE but no additions
-- * DATA - real data. Stop on space.
-- * COMMENT - everything beginning with # until EOLine
-- * ESCAPE - everything that is otherwise (incl. spaces). Next char is raw copied.
-+ * NEW_LINE	- wait here until some option. Add '--' if not already there
-+ * SPACE	- between options. Like NEW_LINE but no additions
-+ * DATA		- real data. Stop on space.
-+ * COMMENT	- everything beginning with # until EOLine
-+ * ESCAPE	- everything that is otherwise (incl. spaces). Next char is raw copied.
- */
- static RC_TYPE parser_utf_16_read_option(OPTION_FILE_PARSER *p_cfg, char *p_buffer, int maxlen)
- {
-@@ -2621,12 +2813,12 @@
- 	const int		buffer_size = DYNDNS_SERVER_NAME_LENGTH;
- 	OPTION_FILE_PARSER	parser;
- 
--	UTF_PARSE_FUNC		parse_func=parser_utf_8_read_option;
-+	UTF_PARSE_FUNC parse_func=parser_utf_8_read_option;
- 
- #ifdef _WIN32
- 
--	int		is_bom=0;	/*win32 utf byte order mark?*/
--	int		is_bom_8=0;
-+	int	is_bom=0;	/*win32 utf byte order mark?*/
-+	int	is_bom_8=0;
- #endif
- 
  
 @@ -2695,7 +2887,7 @@
  
@@ -5195,12 +4439,8 @@
  {
  
  	RC_TYPE	rc = RC_OK;
-@@ -2843,42 +3035,27 @@
- 
- /*
- 	try inadyn-mt config file first
--	and if it's not there, try mt
-+	and if it's not there, try mt 
+@@ -2846,39 +3038,24 @@
+ 	and if it's not there, try mt
  	config file
  */
 -static RC_TYPE get_default_infile_config(DYN_DNS_CLIENT *p_self,CMD_OPTION_ERR_HANDLER_FUNC pf_err_handler)
@@ -5276,12 +4516,11 @@
 -		  from ip_server_name check.
 -		*/
 -		if (!(p_self->info.ip_server_url))
--		{
++			if (!(p_self->info_online_status.name))
+ 		{
 -			p_self->info.ip_server_url=safe_malloc(strlen(p_self->info.p_dns_system->p_ip_server_url)+1);
 -			strcpy(p_self->info.ip_server_url, p_self->info.p_dns_system->p_ip_server_url);
 -		}
-+			if (!(p_self->info_online_status.name))
-+			{
 +				p_self->info_online_status.name=safe_malloc(strlen(DYNDNS_MY_ONLINE_CHECK)+1);
 +				strcpy(p_self->info_online_status.name,DYNDNS_MY_ONLINE_CHECK);
  
@@ -5293,9 +4532,8 @@
 +				strcpy(p_self->info_online_status.url,DYNDNS_MY_ONLINE_CHECK_URL);
  
 -			p_self->info_online_status.ip_server_name.port=80;
--		}
 +				p_self->info_online_status.port=80;
-+			}
+ 		}
  
 -		if (!(p_self->info_online_status.ip_server_url))
 -		{
@@ -5303,75 +4541,67 @@
 -                       strcpy(p_self->info_online_status.ip_server_url,DYNDNS_MY_ONLINE_CHECK_URL);
 -		}
 +			if (!(p_self->srv_cnt))
- 
--		/*dyndns server*/
--		if (!(p_self->info.dyndns_server_name.name[ip_store]))
--		{
--			if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_name)))) {
++
 +				p_self->srv_cnt=1; /*default server set in main*/
++
++			for (i=0;i<p_self->srv_cnt;i++) {
+ 
+ 		/*dyndns server*/
+-		if (!(p_self->info.dyndns_server_name.name[ip_store]))
++				if (!(p_self->info[i].dyndns_server_name.name))
+ 		{
+-			if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_name)))) {
++					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_name)))) {
  
 -				p_self->info.dyndns_server_name.name[ip_store]=safe_malloc(len+1);
 -        			strcpy(p_self->info.dyndns_server_name.name[ip_store], p_self->info.p_dns_system->p_dyndns_server_name);
--			}
--		}
-+			for (i=0;i<p_self->srv_cnt;i++) {
- 
--		if (!(p_self->info.dyndns_server_url))
--		{
--			if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_url)))) {
-+    				/*dyndns server*/
-+				if (!(p_self->info[i].dyndns_server_name.name))
-+				{
-+					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_name)))) {
- 
--				p_self->info.dyndns_server_url=safe_malloc(len+1);
--      				strcpy(p_self->info.dyndns_server_url, p_self->info.p_dns_system->p_dyndns_server_url);
--			}
--		}
 +						p_self->info[i].dyndns_server_name.name=safe_malloc(len+1);
 +        					strcpy(p_self->info[i].dyndns_server_name.name, p_self->info[i].p_dns_system->p_dyndns_server_name);
-+					}
-+				}
+ 			}
+ 		}
  
+-		if (!(p_self->info.dyndns_server_url))
 + 				/*ip server*/
 +				if (!(p_self->info[i].ip_server_name.name))
-+				{
+ 		{
+-			if (!(0==(len=strlen(p_self->info.p_dns_system->p_dyndns_server_url)))) {
 +					p_self->info[i].ip_server_name.name=safe_malloc(strlen(p_self->info[i].p_dns_system->p_ip_server_name)+1);
 +					strcpy(p_self->info[i].ip_server_name.name, p_self->info[i].p_dns_system->p_ip_server_name);
- 
--		/*check if the neccessary params have been provided*/
--		if ((!(p_self->info.dyndns_server_name.name[ip_store])) || (!(p_self->info.ip_server_name.name[ip_store]))
--			|| (!(p_self->info.dyndns_server_url)) || (p_self->alias_info.count == 0))
++
 +					p_self->info[i].ip_server_name.url=safe_malloc(strlen(p_self->info[i].p_dns_system->p_ip_server_url)+1);
 +					strcpy(p_self->info[i].ip_server_name.url, p_self->info[i].p_dns_system->p_ip_server_url);
 +				}
++
  
--		{
--			rc = RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS;
--			break;
--		}
- 
--		if (!(p_self->info.dyndns_server_host)) {
+-				p_self->info.dyndns_server_url=safe_malloc(len+1);
+-      				strcpy(p_self->info.dyndns_server_url, p_self->info.p_dns_system->p_dyndns_server_url);
 +				if (!(p_self->info[i].dyndns_server_name.url))
 +				{
 +					if (!(0==(len=strlen(p_self->info[i].p_dns_system->p_dyndns_server_url)))) {
 +
 +						p_self->info[i].dyndns_server_name.url=safe_malloc(len+1);
 +    						strcpy(p_self->info[i].dyndns_server_name.url, p_self->info[i].p_dns_system->p_dyndns_server_url);
-+					}
-+				}
-+
+ 			}
+ 		}
+ 
 +				if (!(p_self->info[i].dyndns_server_host)) {
-+
+ 
+-		/*check if the neccessary params have been provided*/
+-		if ((!(p_self->info.dyndns_server_name.name[ip_store])) || (!(p_self->info.ip_server_name.name[ip_store]))
+-			|| (!(p_self->info.dyndns_server_url)) || (p_self->alias_info.count == 0))
 +					p_self->info[i].dyndns_server_host=safe_malloc(strlen(p_self->info[i].dyndns_server_name.name)+1);
-+
+ 
+-		{
+-			rc = RC_DYNDNS_INVALID_OR_MISSING_PARAMETERS;
+-			break;
 +					strcpy(p_self->info[i].dyndns_server_host,p_self->info[i].dyndns_server_name.name);
-+				}
+ 		}
+ 
+-		if (!(p_self->info.dyndns_server_host)) {
++				if (!(p_self->info[i].ip_server_host)) {
  
 -			p_self->info.dyndns_server_host=safe_malloc(strlen(p_self->info.dyndns_server_name.name[ip_store])+1);
 -			strcpy(p_self->info.dyndns_server_host,p_self->info.dyndns_server_name.name[ip_store]);
-+				if (!(p_self->info[i].ip_server_host)) {
-+
 +					p_self->info[i].ip_server_host=safe_malloc(strlen(p_self->info[i].ip_server_name.name)+1);
 +					strcpy(p_self->info[i].ip_server_host,p_self->info[i].ip_server_name.name);
 +				}
@@ -5399,3 +4629,761 @@
  					/*unsigned wrap around?*/
  
  					if (fup_store<p_self->forced_update_period_sec)
+--- src/ip.c
++++ src/ip.c
+@@ -42,12 +42,15 @@
+ #include <winsock2.h>
+ #include <windows.h>
+ #include <winuser.h>
++#include <Iphlpapi.h>
++
++#include "os.h"
+ #endif
+ 
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
+-#ifndef _WIN32
++#if defined(HAVE_IFADDRS_H) && !(defined(__sun) && defined(__SVR4))
+ #include <sys/types.h>
+ #include <ifaddrs.h>
+ #endif
+@@ -55,6 +58,7 @@
+ #include "debug_if.h"
+ #include "ip.h"
+ #include "safe_mem.h"
++#include "unicode_util.h"
+ 
+ #ifdef USE_THREADS
+ 
+@@ -78,31 +82,39 @@
+ 	const char	*p_name;
+ } ADDR_FAMILY_NAME;
+ 
+-/*Allows for compiling, and getifaddr returning 'not supported' on Windows.
+-  TODO:  Windows implementation.
++/*Wrap getifaddrs for Windows, earlier Solaris.
+ */
+-#ifndef _WIN32
++#if defined(HAVE_IFADDRS_H) && !(defined(__sun) && defined(__SVR4))
+ 
+ #define ifaddrs_w ifaddrs
+ 
+ #else
+ 
+-/*Windows compatibility with ifaddrs, getifaddrs.
+-  TODO:  Windows implementation.
+-*/
+-struct ifa_addr_w
+-{
+-	int	sa_family;
+-}ifa_addr_w;
++#ifdef _WIN32
+ 
++/*Wrap ifaddrs, getifaddrs for Windows, earlier Solaris.
++*/
+ struct ifaddrs_w
+ {
+-	struct ifaddrs_w*	ifa_next;
+-	struct ifa_addr_w*	ifa_addr;
+-	char*			ifa_name;
++	struct ifaddrs_w	*ifa_next;
++	char			*ifa_name;
++	unsigned int		ifa_flags;
++	struct sockaddr		*ifa_addr;
++	struct sockaddr		*ifa_netmask; /* Netmask of interface */
++	union {
++		/* Broadcast address of interface */
++		struct sockaddr *ifu_broadaddr;
++		/* Point-to-point destination address */                    
++		struct sockaddr *ifu_dstaddr;
++	} ifa_ifu;
++	#define	ifa_broadaddr	ifa_ifu.ifu_broadaddr
++	#define ifa_dstaddr	ifa_ifu.ifu_dstaddr
++	void			*ifa_data;    /* Address-specific data */
++
+ }ifaddrs_w;
+ 
+ #endif
++#endif
+ 
+ static const ADDR_FAMILY_NAME global_addrfamily_table[]  =
+ {
+@@ -213,20 +225,166 @@
+ 	return RC_OK;
+ }
+ 
+-/*wrap getifaddrs for Windows compatiblity.
+-  TODO:  Windows implementation.
++#ifdef _WIN32
++
++static int get_adapters_addresses_cb(FARPROC pf_GetAdaptersAddresses,PIP_ADAPTER_ADDRESSES adapterAddresses,int *outBufLen)
++{
++
++	return pf_GetAdaptersAddresses(AF_UNSPEC,GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_DNS_SERVER |
++					GAA_FLAG_SKIP_MULTICAST,NULL,adapterAddresses,outBufLen);
++}
++
++int get_adapters_addresses(PIP_ADAPTER_ADDRESSES *adapterAddresses)
++{
++
++	return get_win_api_data("iphlpapi","GetAdaptersAddresses",get_adapters_addresses_cb,adapterAddresses);
++}
++
++static int get_adapters_info_cb(FARPROC pf_GetAdaptersInfo,PIP_ADAPTER_INFO adapterInfo,int *outBufLen)
++{
++
++	return pf_GetAdaptersInfo(adapterInfo,outBufLen);
++}
++
++int get_adapters_info(PIP_ADAPTER_INFO *adapterInfo)
++{		
++
++	return get_win_api_data("iphlpapi","GetAdaptersInfo",get_adapters_info_cb,adapterInfo);
++}
++
++#endif
++
++/*wrap getifaddrs for Windows, earlier Solaris.
+ */
+ static int getifaddrs_w(struct ifaddrs_w** in_ifaddrs)
+ {
+ 
+-#ifndef _WIN32
++#if defined(HAVE_IFADDRS_H) && !(defined(__sun) && defined(__SVR4))
+ 
+ 	return getifaddrs(in_ifaddrs);
+ #else
++	*in_ifaddrs=NULL;
++
++  #ifndef _WIN32
++
++	errno=ENOSYS;
+ 
+-	errno=EINVAL;
++	return -1;
++
++  #else		
++	/*address family AF_UNSPEC or AF_INET6 needs at LEAST Windows XP sp1 (use isWinNT, isWinXPsp1)*/
++				
++	/*not at least windows xp sp1?*/	
++	if (!(isWinXPsp1())) {
++
++		PIP_ADAPTER_INFO	adapterInfo=NULL;
++		PIP_ADAPTER_INFO	pAdapterInfo;
++		struct ifaddrs_w	*p_ifaddrs;
++		IP_ADDR_STRING		*p_IpAddressList;
++
++
++		if (!(0==get_adapters_info(&adapterInfo)))
++			
++			return -1;
++			
++		if (!(adapterInfo))
++
++			return 0;
++				
++		*in_ifaddrs=safe_malloc(sizeof(ifaddrs_w));
++
++		p_ifaddrs=*in_ifaddrs;
++
++		for (pAdapterInfo=adapterInfo;pAdapterInfo;pAdapterInfo=pAdapterInfo->Next) {	
++
++			p_IpAddressList=&pAdapterInfo->IpAddressList;
++				
++			do {
++				p_ifaddrs->ifa_name=safe_malloc(strlen(pAdapterInfo->Description)+1);
++				p_ifaddrs->ifa_name=strcpy(p_ifaddrs->ifa_name,pAdapterInfo->Description);
++															
++				p_ifaddrs->ifa_addr=safe_malloc(sizeof(struct sockaddr_in));					
++				p_ifaddrs->ifa_addr->sa_family=AF_INET;
++				inet_pton_w(AF_INET,(const char *) pAdapterInfo->IpAddressList.IpAddress.String,&((struct sockaddr_in *) p_ifaddrs->ifa_addr)->sin_addr);
++
++				if (!(pAdapterInfo->IpAddressList.Next || pAdapterInfo->Next)) {
++				
++					break;
++				}
++				else {
++					p_ifaddrs->ifa_next=safe_malloc(sizeof(ifaddrs_w));
++					p_ifaddrs=p_ifaddrs->ifa_next;
++						
++					p_IpAddressList=pAdapterInfo->IpAddressList.Next;
++				}			
++			} 
++			while (p_IpAddressList);
++		}
++					
++		return 0;
++	}
++	else {
++		PIP_ADAPTER_ADDRESSES			adapterAddresses=NULL;
++		PIP_ADAPTER_ADDRESSES			pAdapterAddresses;
++		struct _IP_ADAPTER_UNICAST_ADDRESS	*pUnicastAddress;
++		struct ifaddrs_w			*p_ifaddrs;
++		int					sock_size=sizeof(struct sockaddr_in);
++		
++		if (!(0==get_adapters_addresses(&adapterAddresses)))
+ 
+ 	return -1;
++			
++		if (!(adapterAddresses))
++		
++			return 0;
++
++		/*FriendlyName field is supposed to contain like 'local area connection' but does not on win2k,
++		  using .dll wrapper and iphlpapi.dll from xp sp1.  don't know if this is fault of wrapper or win2k.
++		  getaddrinfo does not return ipv6 addresses on win2k tech preview either - wrapper or not.
++			  
++		  According to Microsoft, FriendlyName should work on XP and higher.
++		*/	
++
++		*in_ifaddrs=safe_malloc(sizeof(ifaddrs_w));
++		
++		p_ifaddrs=*in_ifaddrs;
++
++		for (pAdapterAddresses=adapterAddresses;pAdapterAddresses;pAdapterAddresses=adapterAddresses->Next) {			
++			
++			pUnicastAddress=pAdapterAddresses->FirstUnicastAddress;
++			
++			do {				
++				p_ifaddrs->ifa_addr=safe_malloc(sizeof(struct sockaddr_storage));
++
++				if (AF_INET6==(p_ifaddrs->ifa_addr->sa_family=pUnicastAddress->Address.lpSockaddr->sa_family))
++												
++					sock_size=sizeof(struct sockaddr_in6);
++
++				memcpy(p_ifaddrs->ifa_addr,pUnicastAddress->Address.lpSockaddr,sock_size);
++
++				p_ifaddrs->ifa_name=utf_16_to_8(utf_malloc_16_to_8(&p_ifaddrs->ifa_name,pAdapterAddresses->FriendlyName),pAdapterAddresses->FriendlyName);			
++														
++				if (!(pUnicastAddress->Next || pAdapterAddresses->Next)) {
++				
++					break;
++				}
++				else {
++				
++					p_ifaddrs->ifa_next=safe_malloc(sizeof(ifaddrs_w));
++					p_ifaddrs=p_ifaddrs->ifa_next;
++
++					pUnicastAddress=pUnicastAddress->Next;
++				}				
++			}
++			while (pUnicastAddress);
++		}
++
++		free(adapterAddresses);
++			
++		return 0;
++	}
++	
++  #endif
+ #endif
+ 
+ }
+@@ -234,8 +392,33 @@
+ static void freeifaddrs_w(struct ifaddrs_w* in_ifaddrs)
+ {
+ 
+-#ifndef _WIN32
++#if defined(HAVE_IFADDRS_H) && !(defined(__sun) && defined(__SVR4))
++
+ 	freeifaddrs(in_ifaddrs);
++#else
++  #ifndef _WIN32
++  
++	errno=ENOSYS;
++	
++	return -1;
++  #else
++
++	if (in_ifaddrs) {
++	
++		struct ifaddrs_w	*p_in_ifaddrs=in_ifaddrs;
++				
++		do {
++		
++			free(p_in_ifaddrs->ifa_name);
++			free(p_in_ifaddrs->ifa_addr);
++			
++			p_in_ifaddrs=p_in_ifaddrs->ifa_next;
++		}
++		while (p_in_ifaddrs);	
++			
++		free(in_ifaddrs);
++	}
++  #endif
+ #endif
+ }
+ 
+@@ -573,9 +756,16 @@
+ 	int			strerr_size=0;
+ 
+ 
+-        if (!(if_name)) {
++#ifndef _WIN32
+ 
+-                DBG_PRINTF((LOG_DEBUG,"D:" MODULE_TAG "if_name null in if_address...\n"));
++	if (!(if_name)) {
++#else
++	/*windows ip6 - if no if_name, bind to first 
++	  address corresponding to addr_pref.
++	*/
++	if (!(if_name || AF_INET6==addr_family)) {
++#endif
++		DBG_PRINTF((LOG_DEBUG,"D:" MODULE_TAG "if_name null, in if_address...\n"));
+ 
+                 return NULL;
+         }
+@@ -589,7 +779,6 @@
+ 		struct ifaddrs_w	*ifa;
+ 		int			family;
+ 
+-
+ 		for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
+ 
+ 			if (ifa->ifa_addr == NULL)
+@@ -601,21 +790,27 @@
+ 			if (family == addr_family) {
+ 
+ 				int	sock_size=sizeof(struct sockaddr_in);
+-
+-				if ((0==strcmp(ifa->ifa_name,if_name))) {
++				int	is_select_addr;
++					
++				if (!(is_select_addr=(!(if_name))))
++
++					is_select_addr=(0==strcmp(ifa->ifa_name,if_name));
++				
++				if (is_select_addr) {
+ 
+ 					int	is_sellection=1;
+ 
+ 					if (family==AF_INET6) {
+ 
+-						if (is_sellection=is_addr_pref((&(((struct sockaddr_in6*) ifa->ifa_addr)->sin6_addr)),
+-							addr_pref->flags))
++						if (is_sellection=is_addr_pref((&(((struct sockaddr_in6*) ifa->ifa_addr)->sin6_addr)),addr_pref->flags)) {
+ 
+ 							sock_size=sizeof(struct sockaddr_in6);
+ 
+ 							if (!(addr_pref->flags))
+ 
+ 								DBG_PRINTF((LOG_WARNING,"W:" MODULE_TAG "addr pref,'policy' specified.  Assuming addr pref, global temporary in if_addr...\n"));
++								
++						}
+ 					}
+ 
+ 					if (is_sellection) {
+@@ -638,8 +833,12 @@
+ 
+ 			if (addr_pref->flags)
+ 
+-				DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "Specific device, '%s', priv ext address selection '%s',  either not found, or yet supported...\n",if_name,addr_pref->addr_pref));
++				if (!(if_name))                                        
+ 
++					DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "priv ext address selection '%s',  either not found, or yet supported...\n",addr_pref->addr_pref));
++
++				else
++					DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "Specific device, '%s', priv ext address selection '%s',  either not found, or yet supported...\n",if_name,addr_pref->addr_pref));
+ 
+ 	return ret_sockaddrs;
+ }
+@@ -679,6 +878,7 @@
+ 		}
+ 
+ 		if (!(inet_ntop_w(addr_family,in_addr,s_binded_addr,INET6_ADDRSTRLEN)))
++
+ 			log_errno(errno,LOG_ERR,"E:" MODULE_TAG "inet_ntop returned error:  %s, in if_bind...\n");
+ 
+ 		if (!(0==bind(p_self->socket[socket_index],(struct sockaddr*) p_bind_in,sock_size))) {
+@@ -776,7 +976,6 @@
+ 		p_self->initialized=TRUE;
+ 	}
+ 	else {
+-
+ 		if (is_ip_support_ok)
+ 
+ 			os_ip_support_cleanup();
+--- src/ip.h
++++ src/ip.h
+@@ -69,7 +69,7 @@
+ #include <winsock2.h>
+ #include <windows.h>
+ #include <ws2tcpip.h>
+-
++#include <iphlpapi.h>
+ #endif
+ 
+ typedef enum
+@@ -231,6 +231,10 @@
+ const char* addr_family_get_name(int in_val);
+ struct sockaddr_storage* if_address(char *if_name,int addr_family,struct IPV6_PRIV_EXT *addr_pref);
+ RC_TYPE if_bind(IP_SOCKET *p_self,int sock_index);
++#ifdef _WIN32
++int get_adapters_info(PIP_ADAPTER_INFO *adapterInfo);
++int get_adapters_addresses(PIP_ADAPTER_ADDRESSES *adapterAddresses);
++#endif
+ int inet_pton_w(int family, const char * strptr, void* addrptr);
+ const char* inet_ntop_w(int addr_family,const void *net_addr_in,char *s_out_addr,int buff_len);
+ RC_TYPE ip_parser_init(IP_FILE_PARSER *p_cfg, FILE *p_file);
+--- src/os.c
++++ src/os.c
+@@ -27,6 +27,7 @@
+ 
+ */
+ 
++#define MODULE_TAG	"OS: "
+ #define SLEEP_INTERVAL	125
+ #define MAXSTRING	2048
+ 
+@@ -41,6 +42,7 @@
+ #include <string.h>
+ #include <stdarg.h>
+ #include <time.h>
++#include <errno.h>
+ #include "os.h"
+ #include "debug_if.h"
+ #include "lang.h"
+@@ -399,10 +401,47 @@
+ 
+ #ifdef _WIN32
+ 
++/*Elmue's (slightly modified) codeproject.com (www.codeproject.com/Members/Elmue) version detection - must be at least Windows 2000
++*/
++
++// RTL_OSVERSIONINFOEXW is defined in winnt.h
++int get_os_version(RTL_OSVERSIONINFOEXW *pk_OSVer)
++{
++	typedef LONG (WINAPI* tRtlGetVersion)(RTL_OSVERSIONINFOEXW*);
++
++	HMODULE		h_NtDll;
++	tRtlGetVersion	f_RtlGetVersion;
++ 
++	memset(pk_OSVer, 0, sizeof(RTL_OSVERSIONINFOEXW));
++	pk_OSVer->dwOSVersionInfoSize = sizeof(RTL_OSVERSIONINFOEXW);
++ 
++	h_NtDll=GetModuleHandleW(L"ntdll.dll");
++	f_RtlGetVersion=(tRtlGetVersion)GetProcAddress(h_NtDll, "RtlGetVersion");
++ 
++	if (!f_RtlGetVersion)
++	
++		return GetLastError(); // This will never happen (all processes load ntdll.dll)
++
++	return f_RtlGetVersion(pk_OSVer); // STATUS_SUCCESS;
++}
++
++int isWinXPsp1()
++{
++	RTL_OSVERSIONINFOEXW	os_ver;
++	
++	get_os_version(&os_ver);
++
++	return (os_ver.dwMajorVersion>5 || (os_ver.dwMajorVersion==5 && os_ver.dwMinorVersion >=1 && os_ver.wServicePackMajor >=1) || (os_ver.dwMajorVersion==5 && os_ver.dwMinorVersion>1));
++}
++
+ int isWinNT()
+ {
+ 
+-	return (GetVersion() < 0x80000000);
++	RTL_OSVERSIONINFOEXW	os_ver;
++	
++	get_os_version(&os_ver);
++	
++	return (os_ver.dwMajorVersion>=5);
+ }
+ 
+ void dbg_printf_and_err_str(FILE *pLOG_FILE,char *szDbg,DWORD errCode,DWORD logLevel,DWORD logLimit,...)
+@@ -430,7 +469,6 @@
+ 
+ 	FARPROC  p_win_message_format=FormatMessage;
+ 
+-
+ 	if (logLevel<=logLimit) {
+ 
+ 		flush_buffers();
+@@ -982,7 +1020,95 @@
+ 	start_timer(timer);
+ }
+ 
++#ifdef _WIN32
+ 
++int get_dll_function(char *module_name,char *function_name,HMODULE *h_module,FARPROC *pf_func)
++{
++
++	if (!(*h_module=LoadLibrary(module_name))) {
++			
++		dbg_printf_and_err_str(NULL,"E:" MODULE_TAG "LoadLibrary failed in get_dll_function.  " \
++					"Could not load in getifaddrs_w.",GetLastError(),LOG_ERR,LOG_ERR);
++				
++		errno=EIO;
++							
++		return -1;
++	}
++			
++	if (!(*pf_func=GetProcAddress(*h_module,function_name))) {
++			
++		dbg_printf_and_err_str(NULL,"E:" MODULE_TAG "GetProcAddress failed in get_dll_function.  " \
++					"Could not get function address.",GetLastError(),LOG_ERR,LOG_ERR);
++
++		FreeLibrary(*h_module);
++
++		errno=EIO;
++								
++		return -1;
++	}
++
++	return 0;
++}
++
++/*call a Windows api routine - via caller callback function - of the pattern - get a Windows dll function pointer, call the dll function which gives size 
++  of buffer needed to contain data to be retrieved by the function, call the function a second time with buffer size specified by the first call.  Do this 
++  with relevant error checking, logging.
++*/  
++int get_win_api_data(char *win_dll,char *win_func,WIN_BUF_RET_API_FUNC pf_win_api_func_cb,void **win_api_data)
++{
++	HMODULE	h_dll;
++	FARPROC	pf_dll_func;
++	int	outBufLen=1;
++	int	err_ret;
++		
++		
++	if (!(0==get_dll_function(win_dll,win_func,&h_dll,&pf_dll_func))) {
++	
++		errno=EIO;
++		
++		return -1;
++	}
++			
++	*win_api_data=safe_malloc(outBufLen);
++
++	/*get size adapterAddresses needed, in outBufLen*/
++	if (!(NO_ERROR==(err_ret=pf_win_api_func_cb(pf_dll_func,*win_api_data,&outBufLen)))) {
++
++		if (!(err_ret==ERROR_BUFFER_OVERFLOW)) {
++
++			/*report which dll, and which function*/		
++			DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "%s function, %s, via callback function, returned error to get_win_api_data...",win_dll,win_func));
++				
++			/*report error message corresponding to err_ret value*/
++			dbg_printf_and_err_str(NULL,"E:" MODULE_TAG "DLL function returned error in get_win_api_data.",err_ret,LOG_ERR,LOG_ERR);
++
++			errno=EIO;
++					
++			return -1;
++		}
++
++		*win_api_data=safe_realloc(*win_api_data,outBufLen);
++
++		if (!(NO_ERROR==(err_ret=pf_win_api_func_cb(pf_dll_func,*win_api_data,&outBufLen)))) {
++
++			/*report which dll, and which function*/
++			DBG_PRINTF((LOG_ERR,"E:" MODULE_TAG "%s function, %s, via callback function, returned error to get_win_api_data...",win_dll,win_func));
++
++			/*report error message corresponding to err_ret value*/
++			dbg_printf_and_err_str(NULL,"E:" MODULE_TAG "DLL function returned error in get_win_api_data.",err_ret,LOG_ERR,LOG_ERR);
++
++			errno=EIO;
++					
++			return -1;	    
++		}		
++	}
++			
++	FreeLibrary(h_dll);
++			
++	return 0;
++}
++
++#endif
+ #endif
+ 
+ 
+--- src/os.h
++++ src/os.h
+@@ -45,6 +45,7 @@
+ #ifdef _WIN32 
+ 	#include <winsock2.h>
+ 	#include <windows.h> 
++	#include <windef.h>
+ 
+ 	#undef	OS_DEF_OK
+ 	#define	OS_DEF_OK 1
+@@ -65,7 +66,14 @@
+ 		#define	HAVE_OS_BOOL 1 
+ 	#endif 
+ 
++	/*get_win_api_data callback*/
++	typedef int (*WIN_BUF_RET_API_FUNC)(FARPROC pf_dll_func,void *win_api_data,int *outBufLen);
++
+ 	int isWinNT();
++	int get_os_version(RTL_OSVERSIONINFOEXW *pk_OSVer);
++	int isWinXPsp1();
++	int get_dll_function(char *module_name,char *function_name,HMODULE *h_module,FARPROC *pf_func);
++	int get_win_api_data(char *win_dll,char *win_func,WIN_BUF_RET_API_FUNC pf_win_api_func_cb,void **win_api_data);
+ #endif 
+ 
+ #ifdef RMC_DEBUG_VERSION
+@@ -319,5 +327,9 @@
+ 
+ #endif
+ 
++#ifdef _WIN32
++
++
++#endif
+ #endif /* _OS_H_INCLUDED */
+ 
+--- src/os_windows.c
++++ src/os_windows.c
+@@ -357,7 +357,7 @@
+ int wmain(int argc, char* argv[])
+ {
+ 	#define SERVICE_NAME	L"inadyn-mt"
+-	#define SERVICE_DESC	L"Dynamic DNS Updater"
++	#define SERVICE_DESC	L"Updates a user configured dynamic dns server to IP address changes."
+ 
+ 
+ 	#define REG_DEFAULT	L"--dyndns_system default@dyndns.org --dyndns_server_name members.dyndns.org "\
+--- src/queue.c
++++ src/queue.c
+@@ -40,7 +40,7 @@
+ 	mutex_t		q_mutex;
+ }simple_queue;
+ 
+-void queue_enqueue(queue_t a_queue,void *item)
++void queue_enqueue(mt_queue_t a_queue,void *item)
+ {
+ 
+ 	get_mutex(&((simple_queue*) a_queue)->q_mutex);
+@@ -52,7 +52,7 @@
+ 	release_mutex(&((simple_queue*) a_queue)->q_mutex);
+ }
+ 
+-void* queue_dequeue(queue_t a_queue)
++void* queue_dequeue(mt_queue_t a_queue)
+ {
+ 	void*		item=0;
+ 	gen_list_itr	itr=list_get_itr(((simple_queue*) a_queue)->a_queue);
+@@ -73,7 +73,7 @@
+ 	return item;
+ }
+ 
+-int queue_size(queue_t a_queue)
++int queue_size(mt_queue_t a_queue)
+ {
+ 
+ 	int	queue_items;
+@@ -89,7 +89,7 @@
+ 	return queue_items;
+ }
+ 
+-queue_t queue_create(queue_t *a_queue)
++mt_queue_t queue_create(mt_queue_t *a_queue)
+ {
+ 
+ 	*a_queue=safe_malloc(sizeof(simple_queue));
+@@ -102,7 +102,7 @@
+ 	return *a_queue;
+ }
+ 
+-void queue_destroy(queue_t *a_queue)
++void queue_destroy(mt_queue_t *a_queue)
+ {
+ 	gen_list_itr	itr=list_get_itr(((simple_queue*) *a_queue)->a_queue);
+ 
+--- src/queue.h
++++ src/queue.h
+@@ -26,11 +26,11 @@
+                 - first implemetnation
+ */
+ 
+-typedef void*	queue_t;
++typedef void*	mt_queue_t;
+ 
+-queue_t queue_create(queue_t *a_queue);
+-void queue_destroy(queue_t *a_queue);
+-void queue_enqueue(queue_t a_queue,void *item);
+-void* queue_dequeue(queue_t a_queue);
+-int queue_size(queue_t a_queue);
++mt_queue_t queue_create(mt_queue_t *a_queue);
++void queue_destroy(mt_queue_t *a_queue);
++void queue_enqueue(mt_queue_t a_queue,void *item);
++void* queue_dequeue(mt_queue_t a_queue);
++int queue_size(mt_queue_t a_queue);
+ 
+--- src/ras_events.c
++++ src/ras_events.c
+@@ -72,7 +72,7 @@
+ #include "errorcode.h"
+ #include "safe_mem.h"
+ 
+-static OSVERSIONINFO	*p_osVersionInfo=NULL;
++static RTL_OSVERSIONINFOEXW	*p_os_ver=NULL;
+ static HANDLE		hRASMutex=0;
+ static int		dw_debug_level=LOG_ERR;
+ static char		*szTestURL=NULL;
+@@ -707,33 +707,15 @@
+ 
+ static BOOL init_os_version_info(RAS_THREAD_DATA *p_ras_thread_data)
+ {
+-	DWORD infoSize=0;
++	p_os_ver=safe_malloc(sizeof(RTL_OSVERSIONINFOEXW));
+ 
+-
+-	infoSize=sizeof(OSVERSIONINFO);
+-
+-	p_osVersionInfo=safe_malloc(infoSize);
+-
+-	memset(p_osVersionInfo,0,infoSize);
+-
+-	p_osVersionInfo->dwOSVersionInfoSize=infoSize;
+-
+-
+-	if (!(GetVersionEx(p_osVersionInfo))) {
+-
+-		dbg_printf_and_err_str(NULL,"C:" MODULE_TAG "GetVersionEx failed in init_os_version_info.",GetLastError(),LOG_CRIT,DEBUG_LEVEL);
+-
+-		return false;
+-	}
+-	else {
++	get_os_version(p_os_ver);
+ 
+ 		if (DEBUG_LEVEL>=LOG_DEBUG)
+ 
+-			DBG_PRINTF((LOG_DEBUG,"I:" MODULE_TAG "OS major version, %d, minor version, %d\n",p_osVersionInfo->dwMajorVersion,
+-			            p_osVersionInfo->dwMinorVersion));
++		DBG_PRINTF((LOG_DEBUG,"I:" MODULE_TAG "OS major version, %d, minor version, %d\n",p_os_ver->dwMajorVersion,p_os_ver->dwMinorVersion));
+ 
+ 		return true;
+-	}
+ }
+ 
+ /*************PUBLIC FUNCTIONS ******************/
+@@ -741,11 +723,11 @@
+ BOOL is_online(const char *test_url,int debug_level)
+ {
+ 
+-	if (!(p_osVersionInfo))
++	if (!(p_os_ver))
+ 
+ 		return false;
+ 
+-	if (p_osVersionInfo->dwMajorVersion<5)
++	if (p_os_ver->dwMajorVersion<5)
+ 
+ 		return (is_network_up(test_url,debug_level));
+ 
+@@ -993,11 +975,11 @@
+ 
+ 		CloseHandle((*p_p_ras_thread_data)->hRASManSignal);
+ 
+-		if (p_osVersionInfo)
++		if (p_os_ver)
+ 
+-			free(p_osVersionInfo);
++			free(p_os_ver);
+ 
+-		p_osVersionInfo=NULL;
++		p_os_ver=NULL;
+ 
+ 		free(*p_p_ras_thread_data);
+ 
