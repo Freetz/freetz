@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.1.1)
-$(PKG)_LIB_VERSION:=0.5.1
+$(call PKG_INIT_LIB, 1.1.2)
+$(PKG)_LIB_VERSION:=0.5.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=9b84ff56bd7720d5554103c557664efac2b8b18acc4bbcc234cb881ab9a3371e
+$(PKG)_SOURCE_SHA256:=0e290078e31211baa7b5886bcc8ab6bc048b9fc83882532da4a1a45e58e907fd
 $(PKG)_SITE:=http://downloads.xiph.org/releases/opus
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
