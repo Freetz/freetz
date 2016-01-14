@@ -1,11 +1,14 @@
 comment "cryptsetup (not available, needs replace kernel)"
-	depends on FREETZ_KERNEL_VERSION_2_6_13 && !FREETZ_REPLACE_KERNEL
+	depends on FREETZ_KERNEL_VERSION_2_6_13_MAX && !FREETZ_REPLACE_KERNEL
+
+comment "cryptsetup (not available, no kernel sources from AVM)"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN && !FREETZ_REPLACE_MODULE_AVAILABLE
 
 config FREETZ_PACKAGE_CRYPTSETUP
 	bool "cryptsetup 1.7.0 (binary only)"
 	depends on \
-		(FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_REPLACE_KERNEL) || \
-		FREETZ_KERNEL_VERSION_2_6_19_MIN
+		(FREETZ_KERNEL_VERSION_2_6_13_MAX && FREETZ_REPLACE_KERNEL) || \
+		(FREETZ_KERNEL_VERSION_2_6_19_MIN && FREETZ_REPLACE_MODULE_AVAILABLE)
 	select FREETZ_AUTOMOUNT_LUKS if FREETZ_USBSTORAGE_AUTOMOUNT
 	select FREETZ_LIB_libdevmapper
 	select FREETZ_LIB_libgcrypt

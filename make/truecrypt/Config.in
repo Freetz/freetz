@@ -1,12 +1,16 @@
 comment "truecrypt (not available, needs at least kernel 2.6.28)"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 
+comment "truecrypt (not available, no kernel sources from AVM)"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_REPLACE_MODULE_AVAILABLE
+
 comment "truecrypt (not available, needs libstdc++ as the Standard C++ Library)"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 
 config FREETZ_PACKAGE_TRUECRYPT
 	bool "truecrypt 7.2 (binary only)"
-	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX && FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && FREETZ_REPLACE_MODULE_AVAILABLE \
+		&& FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 	select FREETZ_LIB_libdl                 if !FREETZ_PACKAGE_TRUECRYPT_STATIC
 	select FREETZ_LIB_libpthread            if !FREETZ_PACKAGE_TRUECRYPT_STATIC
 	select FREETZ_LIB_STDCXXLIB             if !FREETZ_PACKAGE_TRUECRYPT_STATIC

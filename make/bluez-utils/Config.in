@@ -1,5 +1,6 @@
 config FREETZ_PACKAGE_BLUEZ_UTILS
-	bool "bluez-utils 2.25 (binary only (incl. Pin-Change and NAP)"
+	bool "bluez-utils 2.25 (binary only, incl. Pin-Change and NAP)"
+	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_LIB_libbluetooth
 	select FREETZ_MODULE_btusb if FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_hci_usb if FREETZ_KERNEL_VERSION_2_6_19_MAX
