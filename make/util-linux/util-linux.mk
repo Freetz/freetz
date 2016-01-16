@@ -7,7 +7,7 @@ $(PKG)_BINARIES:=blkid
 # Suffix to add to util-linux binaries in order to distinguish them from e2fsprogs/busybox ones
 $(PKG)_BINARIES_SUFFIX:=-util-linux
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
-$(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/sbin/%$($(PKG)_BINARIES_SUFFIX))
+$(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/sbin/%$($(PKG)_BINARIES_SUFFIX))
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i;
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
@@ -104,7 +104,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(UTIL_LINUX_DIR) V=1 $(UTIL_LINUX_BINARIES)
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%$($(PKG)_BINARIES_SUFFIX): $($(PKG)_DIR)/%
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/sbin/%$($(PKG)_BINARIES_SUFFIX): $($(PKG)_DIR)/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
