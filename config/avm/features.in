@@ -143,7 +143,9 @@ config FREETZ_AVM_HAS_PHONE
 config FREETZ_AVM_HAS_PLUGINS_UPDATE
 	bool "plugins.update"	if FREETZ_TYPE_CUSTOM
 	default y	if \
-		FREETZ_TYPE_4020
+		(FREETZ_TYPE_4020    && FREETZ_AVM_VERSION_06_2X_MIN) || \
+		(FREETZ_TYPE_7270_V1 && FREETZ_AVM_VERSION_04_XX_MAX) || \
+		(FREETZ_TYPE_7390    && FREETZ_AVM_VERSION_06_5X_MIN)
 	default n
 	help
 		Select this option if the original firmware contains plugins.update file
