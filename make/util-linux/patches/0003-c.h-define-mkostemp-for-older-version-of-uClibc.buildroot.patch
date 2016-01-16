@@ -1,0 +1,43 @@
+From 42a84250fc78bae3e885ecd1379e713663fe6487 Mon Sep 17 00:00:00 2001
+From: Romain Naour <romain.naour@openwide.fr>
+Date: Sun, 6 Apr 2014 12:12:41 +0200
+Subject: [PATCH 1/1] c.h: define mkostemp for older version of uClibc
+
+Signed-off-by: Romain Naour <romain.naour@openwide.fr>
+---
+ configure.ac |  2 ++
+ include/c.h  | 14 ++++++++++++++
+ 2 files changed, 16 insertions(+)
+
+--- configure.ac
++++ configure.ac
+@@ -369,6 +369,8 @@
+ ])
+ AC_FUNC_FSEEKO
+ 
++AC_CHECK_FUNCS([mkostemp])
++
+ AC_CHECK_FUNCS([openat fstatat unlinkat], [have_openat=yes], [have_openat=no])
+ AC_CHECK_FUNCS([ioperm iopl], [have_io=yes])
+ AC_CHECK_FUNCS([futimens], [have_futimens=yes])
+--- include/c.h
++++ include/c.h
+@@ -346,4 +346,18 @@
+ # define UL_ASAN_BLACKLIST	/* nothing */
+ #endif
+ 
++/*
++ * mkostemp() may be missing with older version of uClibc
++ */
++#ifndef HAVE_MKOSTEMP
++static inline int mkostemp(char *template, int flags)
++{
++	int fd;
++	fd = mkstemp(template);
++	if (flags & O_CLOEXEC && fd >= 0)
++		fcntl(fd, F_SETFD, FD_CLOEXEC);
++	return fd;
++}
++#endif
++
+ #endif /* UTIL_LINUX_C_H */

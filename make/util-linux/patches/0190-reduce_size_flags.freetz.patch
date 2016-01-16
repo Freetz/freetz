@@ -1,0 +1,42 @@
+--- Makefile.am
++++ Makefile.am
+@@ -3,7 +3,8 @@
+ 	-I$(top_srcdir)/include \
+ 	-DLOCALEDIR=\"$(localedir)\" \
+ 	-D_PATH_LOCALSTATEDIR=\"${localstatedir}\"
+-AM_CFLAGS = -fsigned-char $(WARN_CFLAGS)
++REDUCE_SIZE_CFLAGS = -ffunction-sections -fdata-sections
++AM_CFLAGS = -fsigned-char $(REDUCE_SIZE_CFLAGS) $(WARN_CFLAGS)
+ AM_LDFLAGS =
+ 
+ # Add gettext stuff to the global LDADD for systems with separate libintl
+--- misc-utils/Makemodule.am
++++ misc-utils/Makemodule.am
+@@ -1,3 +1,5 @@
++REDUCE_SIZE_LDFLAGS = -Wl,--gc-sections
++
+ if BUILD_CAL
+ usrbin_exec_PROGRAMS += cal
+ dist_man_MANS += misc-utils/cal.1
+@@ -115,11 +117,12 @@
+ blkid_SOURCES = misc-utils/blkid.c
+ blkid_LDADD = $(LDADD) libblkid.la libcommon.la
+ blkid_CFLAGS = $(AM_CFLAGS) -I$(ul_libblkid_incdir)
++blkid_LDFLAGS = $(REDUCE_SIZE_LDFLAGS)
+ 
+ if HAVE_STATIC_BLKID
+ sbin_PROGRAMS += blkid.static
+ blkid_static_SOURCES = $(blkid_SOURCES)
+-blkid_static_LDFLAGS = -all-static
++blkid_static_LDFLAGS = -all-static $(REDUCE_SIZE_LDFLAGS)
+ blkid_static_LDADD = $(LDADD) libblkid.la
+ blkid_static_CFLAGS = $(AM_CFLAGS) -I$(ul_libblkid_incdir)
+ endif
+@@ -132,6 +135,7 @@
+ findfs_LDADD = $(LDADD) libblkid.la
+ findfs_SOURCES = misc-utils/findfs.c
+ findfs_CFLAGS = $(AM_CFLAGS) -I$(ul_libblkid_incdir)
++findfs_LDFLAGS = $(REDUCE_SIZE_LDFLAGS)
+ endif
+ 
+ if BUILD_WIPEFS

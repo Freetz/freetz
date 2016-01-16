@@ -1,0 +1,315 @@
+--- libblkid/src/devname.c
++++ libblkid/src/devname.c
+@@ -442,11 +442,13 @@
+ 		return 0;
+ 
+ 	blkid_read_cache(cache);
++#if 0
+ 	evms_probe_all(cache, only_if_new);
+ #ifdef VG_DIR
+ 	lvm_probe_all(cache, only_if_new);
+ #endif
+ 	ubi_probe_all(cache, only_if_new);
++#endif
+ 
+ 	proc = fopen(PROC_PARTITIONS, "r" UL_CLOEXECSTR);
+ 	if (!proc)
+--- libblkid/src/Makemodule.am
++++ libblkid/src/Makemodule.am
+@@ -43,68 +43,40 @@
+ 	libblkid/src/partitions/ultrix.c \
+ 	libblkid/src/partitions/unixware.c \
+ 	\
+-	libblkid/src/superblocks/adaptec_raid.c \
+-	libblkid/src/superblocks/bcache.c \
+-	libblkid/src/superblocks/befs.c \
+ 	libblkid/src/superblocks/bfs.c \
+ 	libblkid/src/superblocks/btrfs.c \
+ 	libblkid/src/superblocks/cramfs.c \
+-	libblkid/src/superblocks/ddf_raid.c \
+-	libblkid/src/superblocks/drbd.c \
+-	libblkid/src/superblocks/drbdproxy_datalog.c \
+-	libblkid/src/superblocks/drbdmanage.c \
+ 	libblkid/src/superblocks/exfat.c \
+ 	libblkid/src/superblocks/ext.c \
+ 	libblkid/src/superblocks/f2fs.c \
+-	libblkid/src/superblocks/gfs.c \
+ 	libblkid/src/superblocks/hfs.c \
+-	libblkid/src/superblocks/highpoint_raid.c \
+ 	libblkid/src/superblocks/hpfs.c \
+ 	libblkid/src/superblocks/iso9660.c \
+ 	libblkid/src/superblocks/iso9660.h \
+-	libblkid/src/superblocks/isw_raid.c \
+ 	libblkid/src/superblocks/jfs.c \
+-	libblkid/src/superblocks/jmicron_raid.c \
+-	libblkid/src/superblocks/linux_raid.c \
+-	libblkid/src/superblocks/lsi_raid.c \
+-	libblkid/src/superblocks/luks.c \
+-	libblkid/src/superblocks/lvm.c \
+ 	libblkid/src/superblocks/minix.c \
+ 	libblkid/src/superblocks/netware.c \
+-	libblkid/src/superblocks/nilfs.c \
+ 	libblkid/src/superblocks/ntfs.c \
+ 	libblkid/src/superblocks/refs.c \
+-	libblkid/src/superblocks/nvidia_raid.c \
+-	libblkid/src/superblocks/ocfs.c \
+-	libblkid/src/superblocks/promise_raid.c \
+ 	libblkid/src/superblocks/reiserfs.c \
+ 	libblkid/src/superblocks/romfs.c \
+-	libblkid/src/superblocks/silicon_raid.c \
+ 	libblkid/src/superblocks/squashfs.c \
+ 	libblkid/src/superblocks/superblocks.c \
+ 	libblkid/src/superblocks/superblocks.h \
+ 	libblkid/src/superblocks/swap.c \
+ 	libblkid/src/superblocks/sysv.c \
+-	libblkid/src/superblocks/ubifs.c \
+ 	libblkid/src/superblocks/udf.c \
+ 	libblkid/src/superblocks/ufs.c \
+ 	libblkid/src/superblocks/vfat.c \
+-	libblkid/src/superblocks/via_raid.c \
+-	libblkid/src/superblocks/vmfs.c \
+ 	libblkid/src/superblocks/vxfs.c \
+ 	libblkid/src/superblocks/xfs.c \
+-	libblkid/src/superblocks/zfs.c \
+ 	\
+ 	libblkid/src/topology/topology.c \
+ 	libblkid/src/topology/topology.h
+ 
+ if LINUX
+ libblkid_la_SOURCES += \
+-	libblkid/src/topology/dm.c \
+-	libblkid/src/topology/evms.c \
+ 	libblkid/src/topology/ioctl.c \
+-	libblkid/src/topology/lvm.c \
+-	libblkid/src/topology/md.c \
+ 	libblkid/src/topology/sysfs.c
+ endif
+ 
+--- libblkid/src/superblocks/superblocks.c
++++ libblkid/src/superblocks/superblocks.c
+@@ -88,29 +88,29 @@
+ static const struct blkid_idinfo *idinfos[] =
+ {
+ 	/* RAIDs */
+-	&linuxraid_idinfo,
+-	&ddfraid_idinfo,
+-	&iswraid_idinfo,
+-	&lsiraid_idinfo,
+-	&viaraid_idinfo,
+-	&silraid_idinfo,
+-	&nvraid_idinfo,
+-	&pdcraid_idinfo,
+-	&highpoint45x_idinfo,
+-	&highpoint37x_idinfo,
+-	&adraid_idinfo,
+-	&jmraid_idinfo,
++//	&linuxraid_idinfo,
++//	&ddfraid_idinfo,
++//	&iswraid_idinfo,
++//	&lsiraid_idinfo,
++//	&viaraid_idinfo,
++//	&silraid_idinfo,
++//	&nvraid_idinfo,
++//	&pdcraid_idinfo,
++//	&highpoint45x_idinfo,
++//	&highpoint37x_idinfo,
++//	&adraid_idinfo,
++//	&jmraid_idinfo,
+ 
+-	&bcache_idinfo,
+-	&drbd_idinfo,
+-	&drbdmanage_idinfo,
+-	&drbdproxy_datalog_idinfo,
+-	&lvm2_idinfo,
+-	&lvm1_idinfo,
+-	&snapcow_idinfo,
+-	&verity_hash_idinfo,
+-	&luks_idinfo,
+-	&vmfs_volume_idinfo,
++//	&bcache_idinfo,
++//	&drbd_idinfo,
++//	&drbdmanage_idinfo,
++//	&drbdproxy_datalog_idinfo,
++//	&lvm2_idinfo,
++//	&lvm1_idinfo,
++//	&snapcow_idinfo,
++//	&verity_hash_idinfo,
++//	&luks_idinfo,
++//	&vmfs_volume_idinfo,
+ 
+ 	/* Filesystems */
+ 	&vfat_idinfo,
+@@ -128,7 +128,7 @@
+ 	&jfs_idinfo,
+ 	&udf_idinfo,
+ 	&iso9660_idinfo,
+-	&zfs_idinfo,
++//	&zfs_idinfo,
+ 	&hfsplus_idinfo,
+ 	&hfs_idinfo,
+ 	&ufs_idinfo,
+@@ -140,21 +140,21 @@
+ 	&cramfs_idinfo,
+ 	&romfs_idinfo,
+ 	&minix_idinfo,
+-	&gfs_idinfo,
+-	&gfs2_idinfo,
+-	&ocfs_idinfo,
+-	&ocfs2_idinfo,
+-	&oracleasm_idinfo,
++//	&gfs_idinfo,
++//	&gfs2_idinfo,
++//	&ocfs_idinfo,
++//	&ocfs2_idinfo,
++//	&oracleasm_idinfo,
+ 	&vxfs_idinfo,
+ 	&squashfs_idinfo,
+ 	&squashfs3_idinfo,
+ 	&netware_idinfo,
+ 	&btrfs_idinfo,
+-	&ubifs_idinfo,
++//	&ubifs_idinfo,
+ 	&bfs_idinfo,
+-	&vmfs_fs_idinfo,
+-	&befs_idinfo,
+-	&nilfs2_idinfo,
++//	&vmfs_fs_idinfo,
++//	&befs_idinfo,
++//	&nilfs2_idinfo,
+ 	&exfat_idinfo,
+ 	&f2fs_idinfo
+ };
+--- libblkid/src/superblocks/superblocks.h
++++ libblkid/src/superblocks/superblocks.h
+@@ -12,16 +12,16 @@
+ extern const struct blkid_idinfo cramfs_idinfo;
+ extern const struct blkid_idinfo swap_idinfo;
+ extern const struct blkid_idinfo swsuspend_idinfo;
+-extern const struct blkid_idinfo adraid_idinfo;
+-extern const struct blkid_idinfo ddfraid_idinfo;
+-extern const struct blkid_idinfo iswraid_idinfo;
+-extern const struct blkid_idinfo jmraid_idinfo;
+-extern const struct blkid_idinfo lsiraid_idinfo;
+-extern const struct blkid_idinfo nvraid_idinfo;
+-extern const struct blkid_idinfo pdcraid_idinfo;
+-extern const struct blkid_idinfo silraid_idinfo;
+-extern const struct blkid_idinfo viaraid_idinfo;
+-extern const struct blkid_idinfo linuxraid_idinfo;
++//extern const struct blkid_idinfo adraid_idinfo;
++//extern const struct blkid_idinfo ddfraid_idinfo;
++//extern const struct blkid_idinfo iswraid_idinfo;
++//extern const struct blkid_idinfo jmraid_idinfo;
++//extern const struct blkid_idinfo lsiraid_idinfo;
++//extern const struct blkid_idinfo nvraid_idinfo;
++//extern const struct blkid_idinfo pdcraid_idinfo;
++//extern const struct blkid_idinfo silraid_idinfo;
++//extern const struct blkid_idinfo viaraid_idinfo;
++//extern const struct blkid_idinfo linuxraid_idinfo;
+ extern const struct blkid_idinfo ext4dev_idinfo;
+ extern const struct blkid_idinfo ext4_idinfo;
+ extern const struct blkid_idinfo ext3_idinfo;
+@@ -30,12 +30,12 @@
+ extern const struct blkid_idinfo jfs_idinfo;
+ extern const struct blkid_idinfo xfs_idinfo;
+ extern const struct blkid_idinfo xfs_log_idinfo;
+-extern const struct blkid_idinfo gfs_idinfo;
+-extern const struct blkid_idinfo gfs2_idinfo;
++//extern const struct blkid_idinfo gfs_idinfo;
++//extern const struct blkid_idinfo gfs2_idinfo;
+ extern const struct blkid_idinfo romfs_idinfo;
+-extern const struct blkid_idinfo ocfs_idinfo;
+-extern const struct blkid_idinfo ocfs2_idinfo;
+-extern const struct blkid_idinfo oracleasm_idinfo;
++//extern const struct blkid_idinfo ocfs_idinfo;
++//extern const struct blkid_idinfo ocfs2_idinfo;
++//extern const struct blkid_idinfo oracleasm_idinfo;
+ extern const struct blkid_idinfo reiser_idinfo;
+ extern const struct blkid_idinfo reiser4_idinfo;
+ extern const struct blkid_idinfo hfs_idinfo;
+@@ -49,32 +49,32 @@
+ extern const struct blkid_idinfo vfat_idinfo;
+ extern const struct blkid_idinfo ufs_idinfo;
+ extern const struct blkid_idinfo hpfs_idinfo;
+-extern const struct blkid_idinfo lvm2_idinfo;
+-extern const struct blkid_idinfo lvm1_idinfo;
+-extern const struct blkid_idinfo snapcow_idinfo;
+-extern const struct blkid_idinfo verity_hash_idinfo;
+-extern const struct blkid_idinfo luks_idinfo;
+-extern const struct blkid_idinfo highpoint37x_idinfo;
+-extern const struct blkid_idinfo highpoint45x_idinfo;
++//extern const struct blkid_idinfo lvm2_idinfo;
++//extern const struct blkid_idinfo lvm1_idinfo;
++//extern const struct blkid_idinfo snapcow_idinfo;
++//extern const struct blkid_idinfo verity_hash_idinfo;
++//extern const struct blkid_idinfo luks_idinfo;
++//extern const struct blkid_idinfo highpoint37x_idinfo;
++//extern const struct blkid_idinfo highpoint45x_idinfo;
+ extern const struct blkid_idinfo squashfs_idinfo;
+ extern const struct blkid_idinfo squashfs3_idinfo;
+ extern const struct blkid_idinfo netware_idinfo;
+ extern const struct blkid_idinfo sysv_idinfo;
+ extern const struct blkid_idinfo xenix_idinfo;
+ extern const struct blkid_idinfo btrfs_idinfo;
+-extern const struct blkid_idinfo ubifs_idinfo;
+-extern const struct blkid_idinfo zfs_idinfo;
++//extern const struct blkid_idinfo ubifs_idinfo;
++//extern const struct blkid_idinfo zfs_idinfo;
+ extern const struct blkid_idinfo bfs_idinfo;
+-extern const struct blkid_idinfo vmfs_volume_idinfo;
+-extern const struct blkid_idinfo vmfs_fs_idinfo;
+-extern const struct blkid_idinfo drbd_idinfo;
+-extern const struct blkid_idinfo drbdmanage_idinfo;
+-extern const struct blkid_idinfo drbdproxy_datalog_idinfo;
+-extern const struct blkid_idinfo befs_idinfo;
+-extern const struct blkid_idinfo nilfs2_idinfo;
++//extern const struct blkid_idinfo vmfs_volume_idinfo;
++//extern const struct blkid_idinfo vmfs_fs_idinfo;
++//extern const struct blkid_idinfo drbd_idinfo;
++//extern const struct blkid_idinfo drbdmanage_idinfo;
++//extern const struct blkid_idinfo drbdproxy_datalog_idinfo;
++//extern const struct blkid_idinfo befs_idinfo;
++//extern const struct blkid_idinfo nilfs2_idinfo;
+ extern const struct blkid_idinfo exfat_idinfo;
+ extern const struct blkid_idinfo f2fs_idinfo;
+-extern const struct blkid_idinfo bcache_idinfo;
++//extern const struct blkid_idinfo bcache_idinfo;
+ 
+ /*
+  * superblock functions
+--- libblkid/src/topology/topology.c
++++ libblkid/src/topology/topology.c
+@@ -76,11 +76,11 @@
+ {
+ #ifdef __linux__
+ 	&ioctl_tp_idinfo,
+-	&sysfs_tp_idinfo,
+-	&md_tp_idinfo,
+-	&dm_tp_idinfo,
+-	&lvm_tp_idinfo,
+-	&evms_tp_idinfo
++	&sysfs_tp_idinfo //,
++//	&md_tp_idinfo,
++//	&dm_tp_idinfo,
++//	&lvm_tp_idinfo,
++//	&evms_tp_idinfo
+ #endif
+ };
+ 
+--- libblkid/src/topology/topology.h
++++ libblkid/src/topology/topology.h
+@@ -13,11 +13,11 @@
+  */
+ #ifdef __linux__
+ extern const struct blkid_idinfo ioctl_tp_idinfo;
+-extern const struct blkid_idinfo md_tp_idinfo;
+-extern const struct blkid_idinfo evms_tp_idinfo;
++//extern const struct blkid_idinfo md_tp_idinfo;
++//extern const struct blkid_idinfo evms_tp_idinfo;
+ extern const struct blkid_idinfo sysfs_tp_idinfo;
+-extern const struct blkid_idinfo dm_tp_idinfo;
+-extern const struct blkid_idinfo lvm_tp_idinfo;
++//extern const struct blkid_idinfo dm_tp_idinfo;
++//extern const struct blkid_idinfo lvm_tp_idinfo;
+ #endif
+ 
+ #endif /* BLKID_TOPOLOGY_H */
