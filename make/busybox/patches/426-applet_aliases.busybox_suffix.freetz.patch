@@ -1,27 +1,19 @@
 --- libbb/appletlib.c
 +++ libbb/appletlib.c
-@@ -146,12 +146,28 @@
- 	return strcmp(name, APPLET_NAME(i));
- }
+@@ -148,10 +148,20 @@
  #endif
-+#if ENABLE_HTTPD
-+static const char httpd_applet_name[] ALIGN1 = "httpd";
-+#endif
-+#if ENABLE_WGET
-+static const char wget_applet_name[] ALIGN1 = "wget";
-+static const char wget_alias_applet_name[] ALIGN1 = "wget-busybox";
-+#endif
  int FAST_FUNC find_applet_by_name(const char *name)
  {
-+	const char *name_to_search_for =
-+#if ENABLE_HTTPD
-+	(strncmp(name, httpd_applet_name, 5) == 0) ? httpd_applet_name :
-+#endif
-+#if ENABLE_WGET
-+	(strncmp(name, wget_alias_applet_name, 12) == 0) ? wget_applet_name :
-+#endif
-+	name;
++	const char *name_to_search_for = name;
 +
++	char unaliased_name[MAX_APPLET_NAME_LEN + 1] = { 0 };
++	char *suffix = is_suffixed_with(name_to_search_for, "-busybox");
++	if (suffix) {
++		strncpy(unaliased_name, name_to_search_for, suffix - name_to_search_for);
++		name_to_search_for = unaliased_name;
++	}
++
++	{ /* silence "warning: ISO C90 forbids mixed declarations and code" */
  #if NUM_APPLETS > 8
  	/* Do a binary search to find the applet entry given the name. */
  	const char *p;
@@ -30,7 +22,7 @@
  	/*
  	 * if (!p) return -1;
  	 * ^^^^^^^^^^^^^^^^^^ the code below will do this if p == NULL :)
-@@ -162,7 +178,7 @@
+@@ -162,13 +172,14 @@
  	int i = 0;
  	const char *p = applet_names;
  	while (i < NUM_APPLETS) {
@@ -39,3 +31,10 @@
  			return i;
  		p += strlen(p) + 1;
  		i++;
+ 	}
+ 	return -1;
+ #endif
++	}
+ }
+ 
+ 

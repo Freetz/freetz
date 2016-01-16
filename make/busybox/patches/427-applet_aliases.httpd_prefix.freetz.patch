@@ -1,0 +1,14 @@
+--- libbb/appletlib.c
++++ libbb/appletlib.c
+@@ -156,6 +156,11 @@
+ 		strncpy(unaliased_name, name_to_search_for, suffix - name_to_search_for);
+ 		name_to_search_for = unaliased_name;
+ 	}
++#if ENABLE_HTTPD
++	if (is_prefixed_with(name_to_search_for, APPLET_NAME(APPLET_NO_httpd))) {
++		return APPLET_NO_httpd;
++	}
++#endif
+ 
+ 	{ /* silence "warning: ISO C90 forbids mixed declarations and code" */
+ #if NUM_APPLETS > 8
