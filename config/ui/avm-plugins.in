@@ -1,16 +1,16 @@
-config FREETZ_AVMPLUGINS_ENABLED
-	bool "Integrate AVM Plugins into image"
+config FREETZ_AVMPLUGINS_INTEGRATE
+	bool "Integrate AVM Plugins into the image"
 	depends on FREETZ_AVM_HAS_PLUGINS_UPDATE
 	default n
 	help
 		This feature disables AVM's plugin download and handling.
-		You could integrate these plugins directly into the firmware image by
-		selecting them below. This saves some resources because plugins are not
-		copied into RAM nor mounted with loop-devices.
+		You could integrate the plugins directly into the firmware image by
+		selecting them below. This saves some resources because plugins are
+		neither copied to the RAM nor mounted with loop-devices.
 
 menu "Plugin selection"
-	depends on FREETZ_AVMPLUGINS_ENABLED
-	comment "Select plugin(s) for insertion"
+	depends on FREETZ_AVMPLUGINS_INTEGRATE
+	comment "Select plugin(s) for integration"
 
 	config FREETZ_AVMPLUGINS_MEDIASRV
 		bool "MEDIASRV"

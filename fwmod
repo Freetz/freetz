@@ -929,9 +929,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
 	fi
 
-	# Copy selected avmplugins into the firmware
-	if [ "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
-		echo0 "installing AVM plugins"
+	# Copy selected avmplugins to the firmware
+	if [ "$FREETZ_AVMPLUGINS_INTEGRATE" == "y" ]; then
+		echo0 "integrating AVM plugins"
 		echo "#" > ${FILESYSTEM_MOD_DIR}/sbin/start_plugin.sh
 		rm -rf ${FIRMWARE_MOD_DIR}/${AVMPLUGINS_FILE}
 		mkdir "${AVMPLUGINS_FILESYSTEM_MOD_DIR}"
@@ -1177,7 +1177,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 		rm -rf "$DEPMOD_TEMP" 2>/dev/null
 		# add plugin kernel modules for 7270v1 if plugins are not enabled
-		if [ "$FREETZ_TYPE_7270_V1" == "y" -a ! "$FREETZ_AVMPLUGINS_ENABLED" == "y" ]; then
+		if [ "$FREETZ_TYPE_7270_V1" == "y" -a "$FREETZ_AVMPLUGINS_INTEGRATE" != "y" ]; then
 			echo "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko" >> $MODULES_DIR/modules.dep
 			echo "kernel/drivers/char/audio/avm_audio.ko:" >> $MODULES_DIR/modules.dep
 		fi
