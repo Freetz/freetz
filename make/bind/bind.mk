@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 9.8.4-P2)
+$(call PKG_INIT_BIN, 9.10.3-P2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=73ea53c5e289ae7d5730a43f2a73c923
+$(PKG)_SOURCE_SHA256:=4a6c1911ac0d4b6be635b63de3429b6c168ea244043f12bbc8a4eb3368fd6ecd
 $(PKG)_SITE:=http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
@@ -42,9 +42,9 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_BINARY_LDFLAGS="-Wl,--gc-sections"
 
 $(PKG)_EXPORT_LIB_DIR := $(FREETZ_BASE_DIR)/$(BIND_DIR)/_exportlib
-$(PKG)_CONFIGURE_OPTIONS += --enable-exportlib
-$(PKG)_CONFIGURE_OPTIONS += --with-export-includedir="$($(PKG)_EXPORT_LIB_DIR)/include"
-$(PKG)_CONFIGURE_OPTIONS += --with-export-libdir="$($(PKG)_EXPORT_LIB_DIR)/lib"
+#$(PKG)_CONFIGURE_OPTIONS += --enable-exportlib
+#$(PKG)_CONFIGURE_OPTIONS += --with-export-includedir="$($(PKG)_EXPORT_LIB_DIR)/include"
+#$(PKG)_CONFIGURE_OPTIONS += --with-export-libdir="$($(PKG)_EXPORT_LIB_DIR)/lib"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -55,7 +55,9 @@ $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	@touch $@
 
 $($(PKG)_EXPORT_LIB_DIR)/.installed: $($(PKG)_DIR)/.compiled
-	$(SUBMAKE1) -C $(BIND_DIR)/lib/export $(BIND_MAKE_FLAGS) install
+	$(SUBMAKE1) -C $(BIND_DIR)/lib $(BIND_MAKE_FLAGS) \
+		DESTDIR=$(BIND_EXPORT_LIB_DIR) \
+		install
 	@touch $@
 
 $($(PKG)_BINARIES_BUILD_DIR_sbin) $($(PKG)_BINARIES_BUILD_DIR_bin): $($(PKG)_DIR)/.compiled

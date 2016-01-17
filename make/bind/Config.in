@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_BIND
-	bool "BIND 9.8.4-P2"
+	bool "BIND 9.10.3-P2"
 	default n
 	help
 		BIND is an implementation of the Domain Name System (DNS) protocols.
@@ -13,9 +13,9 @@ config FREETZ_PACKAGE_BIND_NAMED
 	help
 		Adds named, a internet domain name server.
 
-comment "HINT: Don't forget to enable a dns server."
+comment "HINT: Don't forget to enable the DNS server."
 depends on FREETZ_PACKAGE_BIND_NAMED && \
- 	FREETZ_AVMDAEMON_DISABLE_DNS
+	FREETZ_AVMDAEMON_DISABLE_DNS
 
 config FREETZ_PACKAGE_BIND_NAMED_DISABLE_DNS
 	bool "Disable multid's DNS"
