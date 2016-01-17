@@ -951,6 +951,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 						  "s/ CONFIG_TAM_ONRAM=.*$/ CONFIG_TAM_ONRAM=\"n\"/g" \
 						  "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 						;;
+					wlan)
+						modsed -r \
+						  's,(if) (.+ plugin-wlan),\1 test -d "/usr/share/avmplugins/plugin-wlan" || \2,' \
+						  "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.wlan"
+						;;
 				esac
 			fi
 		done
