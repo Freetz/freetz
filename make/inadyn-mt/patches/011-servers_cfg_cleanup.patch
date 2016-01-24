@@ -1,10 +1,13 @@
 --- extra/servers_additional.cfg
 +++ extra/servers_additional.cfg
-@@ -1,25 +1,11 @@
+@@ -1,28 +1,11 @@
 -#File format is utf-8.  If you make changes, additions, be sure and save the file as type utf-8, otherwise things will break (sorry for rhyme).
--#At minimum each entry requires a key, such as, 'default@server.com' followed by dyndns_server_name, and dyndns_server_url options with respective server name, and url parameters.  Excluding svr_rsp_success, and to a lesser extent svr_rsp_other, and if needed svr_ip_param <ip> [usr pw], kind of defeats the purpose here, but it probably won't crash the program - it just may not give expected results.  In short, kind of have an idea of what you're doing, your intentions, etcetera, if you take it upon yourself to edit this file.  Good luck.  And may the Schwartz be with you.
 -
--#Your submissions, or requests at help, or feature requests forums at http://sourceforge.net/projects/inadyn-mt much appreciated.
+-#At minimum each entry requires a key, such as, 'default@server.com' followed by dyndns_server_name, and dyndns_server_url options with respective server name, and url parameters.  
+-#Excluding svr_rsp_success, and to a lesser extent svr_rsp_other, and if needed svr_ip_param <ip> [usr pw], kind of defeats the purpose here, but it probably won't crash the program - it 
+-#just may not give expected results.
+-
+-#Your submissions, or requests at help, or feature requests forums at http://sourceforge.net/projects/inadyn-mt.
 -
 -#Servers
 -#Example (usable) of natively supported dyndns.com (default@dyndns.org)
@@ -26,12 +29,14 @@
  default@dnsdynamic.org --dyndns_server_name www.dnsdynamic.org --dyndns_server_url /api/hostname= --ip_server_name myip.dnsdynamic.com / --svr_rsp_success "good,nochg" --svr_ip_param myip
  default@dnspark.com --dyndns_server_name control.dnspark.com --dyndns_server_url /api/dynamic/update.php?hostname= --ip_server_name ipdetect.dnspark.com --srv_rsp_success "ok,nochg" / svr_ip_param ip
  ipv4@regfish.de --dyndns_server_name dyndns.regfish.de --dyndns_server_url /?thisisipv4=1&FQDN= --svr_rsp_success "SUCCESS,SUCCESS_NONEED" --svr_rsp_other "STATUS_UNKNOWN_ERROR" --svr_ip_param ipv4 blahblah token
-@@ -28,152 +14,4 @@
- default@joker.com --dyndns_server_name svc.joker.com --dyndns_server_url /nic/update?hostname= --ip_server.name svc.joker.com /nic/checkip --svr_rsp_success "good,nochg" --svr_ip_param myip username password
+@@ -31,156 +14,6 @@
+ default@joker.com --dyndns_server_name svc.joker.com --dyndns_server_url /nic/update?hostname= --ip_server_name svc.joker.com /nic/checkip --svr_rsp_success "good,nochg" --svr_ip_param myip username password
  default@strato.com --dyndns_server_name dyndns.strato.com --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_ip_param myip
  default@system-ns.com --dyndns_server_name system-ns.com --dyndns_server_url /api?type=dynamic&command=set&domain= --svr_rsp_success "0" --svr_rsp_other "99" --svr_ip_param ip blahblah token
 -
  mondo@freedns.afraid.org --dyndns_server_name freedns.afraid.org --dyndns_server_url /dynamic/update.php? --svr_rsp_success "has not changed" --svr_ip_in_rsp --svr_ip_param address blah blah
+ default@he.net --dyndns_server_name dyn.dns.he.net --dyndns_server_url /nic/update? --ip_server_name checkip.dns.he.net / --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
+ default@dy.fi --dyndns_server_name www.dy.fi --dyndns_server_url /nic/update?hostname= --ip_server_name checkip.dy.fi / --svr_rsp_success "good,nochg" --svr_ip_param myip
 -
 -#Additional Dynamic DNS Servers Documentation
 -
@@ -122,7 +127,7 @@
 -#parameter.  For instance, say a server's update url requires ip parameter, and password parameter, but no user name parameter.  The following
 -#would suffice:
 -
--#--svr_ip_param ip_addr blahblah pw
+-#--svr_ip_param ip_param_name blahblah pw
 -
 -#and might show up in the update request url like:
 -
@@ -134,6 +139,8 @@
 -#this with the svr_ip_in_rsp option, i.e., simply:
 -
 -#--svr_ip_in_rsp
+-
+-#Alternatively, the IP_ADDR identifier (see below) can be used in a --svr_rsp_success option.
 -
 -#***Variable Expansions***
 -
