@@ -1,6 +1,6 @@
 --- extra/servers_additional.cfg
 +++ extra/servers_additional.cfg
-@@ -1,28 +1,11 @@
+@@ -1,32 +1,12 @@
 -#File format is utf-8.  If you make changes, additions, be sure and save the file as type utf-8, otherwise things will break (sorry for rhyme).
 -
 -#At minimum each entry requires a key, such as, 'default@server.com' followed by dyndns_server_name, and dyndns_server_url options with respective server name, and url parameters.  
@@ -13,7 +13,11 @@
 -#Example (usable) of natively supported dyndns.com (default@dyndns.org)
 -default@ddns_server_of_your_dreams --dyndns_server_name members.dyndns.org --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
 -#Some examples (usable) mapped from the INADYN project
+-
  default@dtdns.com --dyndns_server_name www.dtdns.com --dyndns_server_url /api/autodns.cfm?id= --ip_server_name myip.dtdns.com / --svr_ip_param ip usr pw --svr_rsp_success "Host ($ALIAS) now points to ($IP_ADDR)."
+-
+ test@dtdns.com --dyndns_server_name www.dtdns.com --dyndns_server_url /api/autodns.cfm?id=($ALIAS)&ip=($IP_ADDR)&usr=($USERNAME)&pw=($PASSWORD) --ip_server_name myip.dtdns.com / --svr_rsp_success "Host ($ALIAS) now points to ($IP_ADDR)."
+-
  default@changeip.com --dyndns_server_name ip.changeip.com --dyndns_server_url /nic/update?system=dyndns&hostname= --ip_server_name ip.changeip.com / --svr_rsp_success "good,nochg" --svr_ip_param myip
 -#no change -- 4=, #try later (etc.) 11=
  default@dnsexit.com --dyndns_server_name update.dnsexit.com --dyndns_server_url /RemoteUpdate.sv?host= --ip_server_name ip.dnsexit.com / --svr_ip_param myip login password --svr_rsp_success "0=,1=" --svr_rsp_other "11="
@@ -24,12 +28,12 @@
 -#SSL required for domains.google.com (install stunnel -- see related at http://sourceforge.com/projects/inadyn-mt help forum)
  default@domains.google.com --dyndns_server_name domains.google.com --dyndns_server_url /nic/update?hostname= --ip_server_name checkip.dyndns.org / --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
 -
- default@duckdns.org --dyndns_server_name duckdns.org --dyndns_server_url /update?domains= --ip_server_name ipv4.wtfismyip.com /text --svr_ip_param ip token mumble --svr_rsp_success "good"
+ default@duckdns.org --dyndns_server_name www.duckdns.org --dyndns_server_url /update?domains= --ip_server_name ipv4.wtfismyip.com /text --svr_ip_param ip token mumble --svr_rsp_success "\r\n\r\nOK"
 -
  default@dnsdynamic.org --dyndns_server_name www.dnsdynamic.org --dyndns_server_url /api/hostname= --ip_server_name myip.dnsdynamic.com / --svr_rsp_success "good,nochg" --svr_ip_param myip
  default@dnspark.com --dyndns_server_name control.dnspark.com --dyndns_server_url /api/dynamic/update.php?hostname= --ip_server_name ipdetect.dnspark.com --srv_rsp_success "ok,nochg" / svr_ip_param ip
  ipv4@regfish.de --dyndns_server_name dyndns.regfish.de --dyndns_server_url /?thisisipv4=1&FQDN= --svr_rsp_success "SUCCESS,SUCCESS_NONEED" --svr_rsp_other "STATUS_UNKNOWN_ERROR" --svr_ip_param ipv4 blahblah token
-@@ -31,156 +14,6 @@
+@@ -35,172 +15,6 @@
  default@joker.com --dyndns_server_name svc.joker.com --dyndns_server_url /nic/update?hostname= --ip_server_name svc.joker.com /nic/checkip --svr_rsp_success "good,nochg" --svr_ip_param myip username password
  default@strato.com --dyndns_server_name dyndns.strato.com --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_ip_param myip
  default@system-ns.com --dyndns_server_name system-ns.com --dyndns_server_url /api?type=dynamic&command=set&domain= --svr_rsp_success "0" --svr_rsp_other "99" --svr_ip_param ip blahblah token
@@ -145,16 +149,31 @@
 -#***Variable Expansions***
 -
 -#Comma delimted string parameters to options --svr_rsp_success, and --svr_rsp_other may include variables of the form ($_var_name).
+-#As of v.02.24.49, these vars can also be used in --dyndns_server_url option parameter, and instead of, for instance, the overloaded
+-#--svr_ip_param <ip param name> [username param name] [password param name] option (see above, test@dtdns.com for example).
+-
+-#In the case of --dyndns_server_url, care should be taken in the event of user configuration --dyndns_server_url option parameter override.
+-#For instance, if a DDNS server can accept two or more comma delimited aliases in the --dydns_server_url parameter, the user might elect to 
+-#override this option in user config file, or command line, and render such as:
+-
+-#--dyndns_server_url /nic/update?host=($ALIAS)&usr=($USERNAME)&pass=($PASSWORD)&ip=($IP_ADDR)
+-
+-#to:
+-
+-#--dyndns_server_url /nic/update?host=my.alias1.net,my.alias2.net&usr=my_usr_name&pass=my_pass
+-
+-#Obviously this would clobber the varaible expansions configured in the url option here in servers_additonal.cfg - note missing ip
+-#address parameter name, and value.  If the user knows about this possibilty, they can add '&ip=($IP_ADDR)' to the url or set the
+-#svr_ip_param option, but this can't be assumed.  In such cases, it'd be best to use --svr_ip_param to convey url parameter name.
+-
+-#These variables may also be used with respect to the custom@http_svr_basic_auth DDNS server type.
 -
 -#At this writing, supported variables are:
 -
 -#ALIAS
 -#IP_ADDR
--
--#Adding others requires inadyn-mt recompilation, but it's pretty painless.  If you're up for it, 
--#see src/inadyn_cmd.c function, arg_to_val - it maps above variables to corresponding values in main 
--#inadyn-mt data structure.  If you prefer, ask me about additions in help, or feature requests
--#at http://sourceforge.net/projects/inadyn-mt.
+-#USERNAME
+-#PASSWORD
 -
 -#Variables are expanded to corresponding values on update success/failure checking.
 -
@@ -173,7 +192,8 @@
 -
 -#Response strings may include the following escape sequences:
 -
--#\n (carriage return)
+-#\r (carriage return)
+-#\n (line feed)
 -#\(
 -#\$
 -#\\
