@@ -18,7 +18,7 @@
  WDIRS=  windows
  LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -269,7 +269,7 @@
+@@ -268,7 +268,7 @@
  
  sub_all: build_all
  
@@ -27,7 +27,7 @@
  
  build_libs: build_libcrypto build_libssl openssl.pc
  
-@@ -289,7 +289,7 @@
+@@ -288,7 +288,7 @@
  build_tools: build_libs
  	@dir=tools; target=all; $(BUILD_ONE_CMD)
  
@@ -36,9 +36,9 @@
  build_testapps:
  	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
  
-@@ -532,7 +532,7 @@
- dist_pem_h:
- 	(cd crypto/pem; $(MAKE) -e $(BUILDENV) pem.h; $(MAKE) clean)
+@@ -528,7 +528,7 @@
+ 	@$(MAKE) SDIRS='$(SDIRS)' clean
+ 	@$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
  
 -install: all install_docs install_sw
 +install: all              install_sw
