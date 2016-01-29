@@ -337,7 +337,7 @@ menu "Override options"
 		default "@AVM/fritzbox.fon_wlan_7390/firmware/english"                  if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_7390 || FREETZ_TYPE_7340_7390) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@EWE/7390/download"                                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE_05_5X
 		default "@EWE/7390/download"                                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7390 && FREETZ_TYPE_FIRMWARE_EWE_06_0X
-		default "@AVM/fileadmin/user_upload/DE/Labor/Download"                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7390
+		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta"        if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7390
 		#
 		default "@AVM/fritzbox.7412/firmware/deutsch,@1&1/7412"                 if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7412 && FREETZ_TYPE_FIRMWARE_06_2X
 		#
@@ -351,8 +351,7 @@ menu "Override options"
 		default "@AVM/Downgrade/FRITZ!Box_7490/english"                         if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_0X
 		default "@AVM/fritzbox.7490/firmware/english"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_EN_BE) && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@AVM/fritzbox.7490/firmware/belgium"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN_BE && FREETZ_TYPE_FIRMWARE_06_0X
-		default "@AVM/beta"                                                     if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
-#		default "@AVM/fileadmin/user_upload/DE/Labor/Download"                  if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
+		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta"        if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
 		#
 		default "@AVM/fritzbox.fon_wlan_7570/firmware/english"                  if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
@@ -566,7 +565,7 @@ menu "Override options"
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.04.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_0X
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.30.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_EN_BE) && FREETZ_TYPE_FIRMWARE_06_2X
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.06.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN_BE && FREETZ_TYPE_FIRMWARE_06_0X
-		default "FRITZ.Box_7490_Labor.113.06.51-32225.image"                    if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
+		default "FRITZ.Box_7490_Labor.113.06.51-32297.image"                    if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
 		#
 		default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.92.image"          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
@@ -788,13 +787,13 @@ menu "Override options"
 	config FREETZ_DL_SOURCE_CONTAINER
 		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
 		default "fritzbox-labor-7390-32257.zip"         if FREETZ_TYPE_7390         && FREETZ_TYPE_FIRMWARE_LABOR
-		default "fritzbox-labor_7490-32225.zip"         if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR
+		default "fritzbox-labor_7490-32297.zip"         if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR
 		default ""
 
 	config FREETZ_DL_SOURCE_CONTAINER_MD5
 		string "MD5 checksum for container"             if FREETZ_DL_OVERRIDE
 		default "ef89cc57bce87b9e0fff1ca24cea9f29"      if FREETZ_TYPE_7390         && FREETZ_TYPE_FIRMWARE_LABOR
-		default "a87db98d5a33fdabf4e92d757f128260"      if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR
+		default "7bfdeee642244896c51ccad9b96d20d6"      if FREETZ_TYPE_7490         && FREETZ_TYPE_FIRMWARE_LABOR
 		default ""
 
 	config FREETZ_DL_ALIEN
