@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.0.23)
+$(call PKG_INIT_BIN, 3.0.24)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-stable-src.tar.gz
-$(PKG)_SOURCE_MD5:=bbe47d5ff1a54d9f9fc93a160532697f
+$(PKG)_SOURCE_MD5:=44a47d1a5000db8cccd61ace0e25e7f7
 $(PKG)_SITE:=@SF/ijbswa
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-stable
