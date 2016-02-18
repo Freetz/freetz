@@ -114,7 +114,7 @@ config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS
 	default n
 	help
 		externals the following file(s):
-		 /usr/lib/freetz/libsane.so.$version
+		 \${FREETZ_LIBRARY_DIR}/libsane.so.$version
 		 /usr/sbin/saned
 
 config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
@@ -143,7 +143,7 @@ config EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
 	default n
 	help
 		externals the following file(s):
-		 /usr/lib/freetz/sane/libsane-$backend.so.$version
+		 \${FREETZ_LIBRARY_DIR}/sane/libsane-$backend.so.$version
 
 EOF
 	}
@@ -156,14 +156,14 @@ sub write_external_files {
 
 	open(my $out, ">", $file) or die "Can't open $file for writing: $!";
 	print $out <<EOF;
-[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS" == "y" ] && EXTERNAL_FILES+=" /usr/lib/freetz/libsane.so.$version /usr/sbin/saned"
+[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS" == "y" ] && EXTERNAL_FILES+=" \${FREETZ_LIBRARY_DIR}/libsane.so.$version /usr/sbin/saned"
 [ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner" == "y" ] && EXTERNAL_FILES+=" /usr/bin/sane-find-scanner"
 [ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_scanimage" == "y" ] && EXTERNAL_FILES+=" /usr/bin/scanimage"
 EOF
 
 	foreach my $backend (@backends) {
 		print $out <<EOF;
-[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend" == "y" ] && EXTERNAL_FILES+=" /usr/lib/freetz/sane/libsane-$backend.so.$version"
+[ "\$EXTERNAL_FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend" == "y" ] && EXTERNAL_FILES+=" \${FREETZ_LIBRARY_DIR}/sane/libsane-$backend.so.$version"
 EOF
 	}
 

@@ -1,6 +1,6 @@
 if [ "$EXTERNAL_FREETZ_PACKAGE_NETATALK" == y ]; then
-	EXTERNAL_FILES+=" /sbin/afpd /sbin/hash /sbin/cnid_dbd /sbin/cnid_metad /usr/lib/freetz/uams_guest.so"
+	EXTERNAL_FILES+=" /sbin/afpd /sbin/hash /sbin/cnid_dbd /sbin/cnid_metad ${FREETZ_LIBRARY_DIR}/uams_guest.so"
 	[ "$FREETZ_PACKAGE_NETATALK_DBD" == y ] && EXTERNAL_FILES+=" /sbin/dbd"
-	[ "$FREETZ_PACKAGE_NETATALK_DHX" == y ] && EXTERNAL_FILES+=" /usr/lib/freetz/uams_dhx_passwd.so"
-	[ "$FREETZ_PACKAGE_NETATALK_DHX2" == y ] && EXTERNAL_FILES+=" /usr/lib/freetz/uams_dhx2_passwd.so"
+	[ "$FREETZ_PACKAGE_NETATALK_DHX" == y ] && EXTERNAL_FILES+=" ${FREETZ_LIBRARY_DIR}/uams_dhx_passwd.so"
+	[ "$FREETZ_PACKAGE_NETATALK_DHX2" == y ] && EXTERNAL_FILES+=" ${FREETZ_LIBRARY_DIR}/uams_dhx2_passwd.so"
 fi
