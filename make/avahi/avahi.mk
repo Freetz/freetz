@@ -71,7 +71,7 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 			$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/avahi-core.pc
 
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/sbin)))
-$(foreach library,$($(PKG)_LIBS_STAGING_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH),$(TARGET_SPECIFIC_ROOT_DIR))))
+$(foreach library,$($(PKG)_LIBS_STAGING_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_DIR),$(TARGET_SPECIFIC_ROOT_DIR))))
 
 $(pkg):
 

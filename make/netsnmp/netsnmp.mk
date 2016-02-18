@@ -142,7 +142,7 @@ $($(PKG)_BINARY) $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_APPS_BUILD_DIR): $($(PKG)_DIR
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH))))
+$(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_DIR))))
 $(foreach app,$(NETSNMP_APPS_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(app),/usr/bin)))
 
 $(pkg):

@@ -6,7 +6,7 @@ $(PKG)_SITE:=@SF/$(pkg)
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/src/$(pkg)
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
-$(PKG)_MODULES_DIR := $(FREETZ_LIBRARY_PATH)/$(pkg)
+$(PKG)_MODULES_DIR := $(FREETZ_LIBRARY_DIR)/$(pkg)
 $(PKG)_MODULES_ALL := defaulttarget fix_bogus_via logcall prefix regex shortdial stun demo
 $(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),PLUGIN)
 

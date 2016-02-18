@@ -31,7 +31,7 @@ ${pkg}-list
 	add package to the list of static or dynamic patches
 
 ${pkg}-uninstall
-	remove binary files from package or library files from root/usr/lib/freetz
+	remove binary files from package or library files from root/${FREETZ_LIBRARY_DIR}
 
 
 To use the convenience macros, you need some more defines:
@@ -65,7 +65,7 @@ $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/package-name-$($(PKG)_VERSION)
 BIN:
 $(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
 LIB:
-$(PKG)_TARGET_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)/usr/lib/freetz
+$(PKG)_TARGET_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)$(FREETZ_LIBRARY_DIR)
 
 # root directory for installation. The default value depends on BIN/LIB,
 # It should not be necessary to override this value.

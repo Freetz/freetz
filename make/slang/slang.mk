@@ -8,7 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/elfobjs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_MODULES_DIR:=$(FREETZ_LIBRARY_PATH)/$(pkg)
+$(PKG)_MODULES_DIR:=$(FREETZ_LIBRARY_DIR)/$(pkg)
 $(PKG)_MODULES:=csv fcntl fork iconv pcre rand select slsmg socket sysconf termios varray zlib
 $(PKG)_MODULES_LONG:=$($(PKG)_MODULES:%=%-module.so)
 $(PKG)_MODULES_STAGING_DIR:=$($(PKG)_MODULES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)$($(PKG)_MODULES_DIR)/%)

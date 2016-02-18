@@ -1,11 +1,13 @@
 #!/bin/sh
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 cat << EOF
 #global settings
 Hostname    "fritz.box"
 BaseDir     "/var/lib/collectd"
 PIDFile     "/var/run/collectd.pid"
-PluginDir   "/usr/lib/freetz/collectd"
+PluginDir   "${FREETZ_LIBRARY_DIR}/collectd"
 TypesDB     "/usr/share/collectd/types.db"
 Interval     10
 

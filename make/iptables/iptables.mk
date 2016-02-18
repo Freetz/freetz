@@ -87,7 +87,7 @@ $($(PKG)_TARGET_EXTENSIONS): $($(PKG)_BINARY)
 	$(TARGET_STRIP) $(IPTABLES_EXTENSIONS_TARGET_DIR)/*.so*
 	touch $@
 
-$(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_PATH))))
+$(foreach library,$($(PKG)_LIBS_BUILD_DIR),$(eval $(call INSTALL_LIBRARY_STRIP_RULE,$(library),$(FREETZ_LIBRARY_DIR))))
 endif
 
 $(pkg):

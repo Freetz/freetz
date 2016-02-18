@@ -34,7 +34,7 @@ $($(PKG)_BINARY) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		FREETZ=1 \
 		CC="$(TARGET_CC)" \
 		AUTOFS_CFLAGS="$(TARGET_CFLAGS)" \
-		autofslibdir=$(FREETZ_LIBRARY_PATH)/autofs \
+		autofslibdir=$(FREETZ_LIBRARY_DIR)/autofs \
 		daemon
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)

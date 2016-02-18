@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 cat << EOF
 # Have a look at
 # http://siproxd.sourceforge.net/index.php?op=odoc
@@ -17,6 +19,6 @@ sip_listen_port = 55060
 user = siproxd
 silence_log = 1
 registration_file = /tmp/flash/siproxd/siproxd.reg
-plugindir=/usr/lib/freetz/siproxd
+plugindir=${FREETZ_LIBRARY_DIR}/siproxd
 load_plugin=plugin_logcall.la
 EOF

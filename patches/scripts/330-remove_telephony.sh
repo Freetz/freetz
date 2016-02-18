@@ -15,7 +15,7 @@ fi
 # libcapi cannot be removed in firmwares containing libfaxsend(lua).so, libfaxsend(lua).so is required by /usr/www/cgi-bin/firmwarecfg
 # this is also the reason why we don't remove libfaxsend(lua).so
 # TODO: AVM's version of libcapi can be removed if freetz' version of it is available. In order this to work we however need to symlink
-# AVM's version to the freetz one (i.e. "to replace it"). AVM binaries know nothing about /usr/lib/freetz and will not find libcapi there.
+# AVM's version to the freetz one (i.e. "to replace it"). AVM binaries know nothing about ${FREETZ_LIBRARY_DIR} and will not find libcapi there.
 libcapi_could_be_removed=y
 for binary in \
 	${FILESYSTEM_MOD_DIR}/lib/libfaxsend.so \

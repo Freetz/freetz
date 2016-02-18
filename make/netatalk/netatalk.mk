@@ -62,7 +62,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-acls
 $(PKG)_CONFIGURE_OPTIONS += --without-cnid-cdb-backend
 $(PKG)_CONFIGURE_OPTIONS += --without-cnid-last-backend
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
-$(PKG)_CONFIGURE_OPTIONS += --with-uams-path="$(FREETZ_LIBRARY_PATH)"
+$(PKG)_CONFIGURE_OPTIONS += --with-uams-path="$(FREETZ_LIBRARY_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --with-bdb="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-libgcrypt-dir=$(if $(FREETZ_PACKAGE_NETATALK_DHX2),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl-dir=$(if $(FREETZ_PACKAGE_NETATALK_DHX),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)

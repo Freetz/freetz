@@ -21,7 +21,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	mkdir -p $(HP_UTILS_DEST_DIR)/usr/bin
-	mkdir -p $(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_PATH)
+	mkdir -p $(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_DIR)
 	cp $(HP_UTILS_DIR)/hp-clean $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-faxsetup $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-levels $(HP_UTILS_DEST_DIR)/usr/bin
@@ -29,7 +29,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	cp $(HP_UTILS_DIR)/hp-probe $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-status $(HP_UTILS_DEST_DIR)/usr/bin
 	cp $(HP_UTILS_DIR)/hp-timedate $(HP_UTILS_DEST_DIR)/usr/bin
-	cp -a $(HP_UTILS_DIR)/libhp-utils.so* $(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_PATH)
+	cp -a $(HP_UTILS_DIR)/libhp-utils.so* $(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_DIR)
 	$(TARGET_STRIP) $(HP_UTILS_DEST_DIR)/usr/bin/hp-clean \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-faxsetup \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-levels \
@@ -37,7 +37,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-probe \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-status \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-timedate \
-		$(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_PATH)/libhp-utils.so.$(HP_UTILS_VERSION)
+		$(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_DIR)/libhp-utils.so.$(HP_UTILS_VERSION)
 
 $(pkg):
 
@@ -54,6 +54,6 @@ $(pkg)-uninstall:
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-status \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-printserv \
 		$(HP_UTILS_DEST_DIR)/usr/bin/hp-timedate \
-		$(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_PATH)/libhp-utils.so*
+		$(HP_UTILS_DEST_DIR)$(FREETZ_LIBRARY_DIR)/libhp-utils.so*
 
 $(PKG_FINISH)
