@@ -513,6 +513,9 @@ echo0 -n -b "$SKIP_UNPACK"
 # Lets copy and modify the unpacked firmware ##
 ###############################################
 
+# FREETZ_LIBRARY_DIR is the 1st FREETZ_RPATH entry
+FREETZ_LIBRARY_DIR=$(stripTrailingSlash "${FREETZ_RPATH%%:*}")
+
 MOD_DIR="${DIR}/modified"
 FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"

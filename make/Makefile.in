@@ -92,26 +92,31 @@ TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
 # s. uclibc-${version}/ldso/ldso/dl-elf.c::_dl_load_shared_library
 STANDARD_LIBRARY_DIRS:=/lib /usr/lib
 
-FREETZ_LIBRARY_DIR:=$(call qstrip,$(FREETZ_LIBRARY_DIR))
-ifneq (,$(if $(MAKECMDGOALS),$(filter-out $(KCONFIG_TARGETS),$(MAKECMDGOALS)),do-validate-FREETZ_LIBRARY_DIR-value))
-# check if FREETZ_LIBRARY_DIR contains a valid value
-ifneq (1,$(words $(FREETZ_LIBRARY_DIR)))
-$(error FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") must be set and contain exactly one path)
+FREETZ_RPATH_SPACE_SEPARATED:=$(patsubst %/,%,$(subst :,$(_space),$(call qstrip,$(FREETZ_RPATH))))
+FREETZ_RPATH:=$(subst $(_space),:,$(FREETZ_RPATH_SPACE_SEPARATED))
+
+ifneq (,$(if $(MAKECMDGOALS),$(filter-out $(KCONFIG_TARGETS),$(MAKECMDGOALS)),do-validate-FREETZ_RPATH))
+# check if FREETZ_RPATH contains a valid value
+ifneq (1,$(words $(FREETZ_RPATH)))
+$(error FREETZ_RPATH (="$(FREETZ_RPATH)") must not be empty and must not contain spaces)
 endif
-ifeq (,$(filter /%,$(FREETZ_LIBRARY_DIR)))
-$(error FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") must be an absolute path)
+$(foreach entry,$(FREETZ_RPATH_SPACE_SEPARATED), \
+$(if $(filter /%,$(entry)),,$(error FREETZ_RPATH (="$(FREETZ_RPATH)" contains invalid entry "$(entry)", each entry must be an absolute path))) \
+)
+ifneq (,$(filter     $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+ifneq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+$(error FREETZ_RPATH (="$(FREETZ_RPATH)") contains both standard and non-standard search paths. This is NOT supported)
 endif
-ifneq (,$(filter %/,$(FREETZ_LIBRARY_DIR)))
-$(error FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") must not contain / at the end)
 endif
-ifneq (,$(filter $(FREETZ_LIBRARY_DIR),$(STANDARD_LIBRARY_DIRS)))
+ifeq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
 $(info )
-$(warning Setting FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") to one of the standard search paths ($(STANDARD_LIBRARY_DIRS)) is NOT supported. The only use-case for such setting (and this is the only reason we support it) is to create binaries using the Freetz toolchain and run them on an non-freetz'ed box.)
+$(warning FREETZ_RPATH (="$(FREETZ_RPATH)") contains only standard search paths. The only use-case for such a configuration (and this is the only reason we support it) is to create binaries using the Freetz toolchain and run them on a non-freetz'ed box.)
 $(info )
 endif
 endif
 
-FREETZ_LD_RUN_PATH:=$(if $(filter $(FREETZ_LIBRARY_DIR),$(STANDARD_LIBRARY_DIRS)),,LD_RUN_PATH="$(FREETZ_LIBRARY_DIR)")
+FREETZ_LIBRARY_DIR:=$(firstword $(FREETZ_RPATH_SPACE_SEPARATED))
+FREETZ_LD_RUN_PATH:=$(if $(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)),LD_RUN_PATH="$(FREETZ_RPATH)")
 MAKE_ENV+=FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
 
 # commands to run before calling configure
@@ -441,7 +446,7 @@ $(PKG)_BUILD_PREREQ_HINT:=
 $(PKG)_DEPENDS_ON:=
 $(PKG)_HOST_DEPENDS_ON:=
 #
-$(PKG)_REBUILD_SUBOPTS=FREETZ_LIBRARY_DIR
+$(PKG)_REBUILD_SUBOPTS=FREETZ_RPATH
 #
 $(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
