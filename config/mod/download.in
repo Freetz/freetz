@@ -199,7 +199,8 @@ menu "Override options"
 		default "@AVM/fritzbox.wlan_3390/firmware/english"                      if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3390 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
 		default "@AVM/fritzbox.3490/firmware/deutsch"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
-		default "@AVM/fritzbox.3490/firmware/english"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
+		default "@AVM/fritzbox.3490/firmware/english,@AVM/fritzbox.3490/firmware/belgium" \
+		                                                                        if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_EN_BE) && FREETZ_TYPE_FIRMWARE_06_2X
 		#
 		default "@AVM/fritzbox.4020/firmware/deutsch"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_4020 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
@@ -413,7 +414,7 @@ menu "Override options"
 		default "FRITZ.Box_3390.en-de-es-it-fr-pl.121.06.30.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3390 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
 		default "FRITZ.Box_3490.140.06.31.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
-		default "FRITZ.Box_3490.en-de-es-it-fr-pl.140.06.30.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
+		default "FRITZ.Box_3490.en-de-es-it-fr-pl.140.06.31.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_EN_BE) && FREETZ_TYPE_FIRMWARE_06_2X
 		#
 		default "FRITZ.Box_4020.de-en-es-it-fr-pl.147.06.27.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_4020 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
@@ -627,7 +628,7 @@ menu "Override options"
 		default "0c1a0a4cc9e7f86b4c70a6308dd9e4a8"  if FREETZ_TYPE_3390 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
 		default "aa1ddf1c9f35d4db03e452b3212a8283"  if FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
-		default "0b94fb51b5c038f571d51f3114099bbb"  if FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
+		default "155da2f4a20b4275db86c96a0f1193c4"  if FREETZ_TYPE_3490 && (FREETZ_TYPE_LANG_EN || FREETZ_TYPE_LANG_EN_BE) && FREETZ_TYPE_FIRMWARE_06_2X
 		#
 		default "5ac960ed7020a7351b7969c587e1bf45"  if FREETZ_TYPE_4020 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
