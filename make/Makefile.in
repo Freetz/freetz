@@ -93,6 +93,7 @@ TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
 STANDARD_LIBRARY_DIRS:=/lib /usr/lib
 
 FREETZ_LIBRARY_DIR:=$(call qstrip,$(FREETZ_LIBRARY_DIR))
+ifneq (,$(if $(MAKECMDGOALS),$(filter-out $(KCONFIG_TARGETS),$(MAKECMDGOALS)),do-validate-FREETZ_LIBRARY_DIR-value))
 # check if FREETZ_LIBRARY_DIR contains a valid value
 ifneq (1,$(words $(FREETZ_LIBRARY_DIR)))
 $(error FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") must be set and contain exactly one path)
@@ -107,6 +108,7 @@ ifneq (,$(filter $(FREETZ_LIBRARY_DIR),$(STANDARD_LIBRARY_DIRS)))
 $(info )
 $(warning Setting FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") to one of the standard search paths ($(STANDARD_LIBRARY_DIRS)) is NOT supported. The only use-case for such setting (and this is the only reason we support it) is to create binaries using the Freetz toolchain and run them on an non-freetz'ed box.)
 $(info )
+endif
 endif
 
 FREETZ_LD_RUN_PATH:=$(if $(filter $(FREETZ_LIBRARY_DIR),$(STANDARD_LIBRARY_DIRS)),,LD_RUN_PATH="$(FREETZ_LIBRARY_DIR)")
