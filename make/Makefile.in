@@ -92,6 +92,7 @@ TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
 # We have some libraries (e.g. libcrypto) that should not be used by AVM binaries
 FREETZ_LIBRARY_DIR:=$(call qstrip,$(FREETZ_LIBRARY_DIR))
 FREETZ_LD_RUN_PATH:=$(if $(filter $(FREETZ_LIBRARY_DIR),/lib /usr/lib),,LD_RUN_PATH="$(FREETZ_LIBRARY_DIR)")
+MAKE_ENV+=FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
 
 # commands to run before calling configure
 # each command has to be terminated by ';'
@@ -101,6 +102,7 @@ TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status};
 # setup environment for configure
 TARGET_CONFIGURE_ENV:=
 TARGET_CONFIGURE_ENV += PATH=$(TARGET_PATH)
+TARGET_CONFIGURE_ENV += FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
 
 # Set compiler/linker flags here, not in TARGET_CONFIGURE_OPTIONS,
 # because this way they do not disturb old configure scripts

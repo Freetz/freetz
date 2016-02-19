@@ -16,7 +16,7 @@
  	-DLOCALSTATEDIR='"${localstatedir}"' \
  	-DPKGLOCALSTATEDIR='"${localstatedir}/lib/${PACKAGE_NAME}"' \
 -	$(am__append_3) -DPLUGINDIR='"${pkglibdir}"' \
-+	$(am__append_3) -DPLUGINDIR='"/usr/lib/freetz/collectd"' \
++	$(am__append_3) -DPLUGINDIR='"$(FREETZ_LIBRARY_DIR)/collectd"' \
  	-DPKGDATADIR='"${pkgdatadir}"'
  collectd_SOURCES = collectd.c collectd.h \
  		   common.c common.h \
