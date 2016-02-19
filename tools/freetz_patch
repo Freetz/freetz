@@ -86,6 +86,9 @@ modpatch()
 		fi
 	fi
 	## md5 end
+
+	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
+
 	local backup
 	local do_fix
 	if [ "$_auto_fix_patches" == "y" ]; then
@@ -106,7 +109,7 @@ modpatch()
 			fi
 		fi
 	fi
-	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
+
 	local STATUS
 	if [ "$is_verbose" ]; then
 		echo2 "applying patch file $patch_file"
