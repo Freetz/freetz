@@ -279,8 +279,21 @@ config FREETZ_STDCXXLIB
 	default "libstdcxx"	if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 
 config FREETZ_LIBRARY_DIR
-	string
+	string "FREETZ_LIBRARY_DIR"
 	default "/usr/lib/freetz"
+	help
+		Freetz provides some libraries (e.g. OpenSSL, Zlib, SQLite) which are also used
+		by AVM in the original firmware. Freetz versions of these libraries are not (always)
+		compatible with the AVM ones (Freetz might use a higher version number, a deviating
+		configuration, different compiler settings, etc.). In order to avoid collisions
+		with the AVM versions of the libraries Freetz libraries are put in a non-standard
+		directory (non-standard from the dynamic loader point of view). This option allows
+		the user to adjust this directory.
+
+		Note: If you do NOT plan to flash the Freetz image and use the Freetz toolchain
+		      just for compiling the binaries/libraries then you can also set this option
+		      to one of the standard dynamic loader search paths (/usr or /usr/lib).
+		      In this case the resulting binaries/libraries won't contain an RPATH entry.
 
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"

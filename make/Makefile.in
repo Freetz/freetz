@@ -89,9 +89,27 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.commen
 # Don't use TARGET_TOOLCHAIN_PATH here because it's not set
 TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
 
-# We have some libraries (e.g. libcrypto) that should not be used by AVM binaries
+# s. uclibc-${version}/ldso/ldso/dl-elf.c::_dl_load_shared_library
+STANDARD_LIBRARY_DIRS:=/lib /usr/lib
+
 FREETZ_LIBRARY_DIR:=$(call qstrip,$(FREETZ_LIBRARY_DIR))
-FREETZ_LD_RUN_PATH:=$(if $(filter $(FREETZ_LIBRARY_DIR),/lib /usr/lib),,LD_RUN_PATH="$(FREETZ_LIBRARY_DIR)")
+# check if FREETZ_LIBRARY_DIR contains a valid value
+ifneq (1,$(words $(FREETZ_LIBRARY_DIR)))
+$(error FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") must be set and contain exactly one path)
+endif
+ifeq (,$(filter /%,$(FREETZ_LIBRARY_DIR)))
+$(error FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") must be an absolute path)
+endif
+ifneq (,$(filter %/,$(FREETZ_LIBRARY_DIR)))
+$(error FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") must not contain / at the end)
+endif
+ifneq (,$(filter $(FREETZ_LIBRARY_DIR),$(STANDARD_LIBRARY_DIRS)))
+$(info )
+$(warning Setting FREETZ_LIBRARY_DIR (="$(FREETZ_LIBRARY_DIR)") to one of the standard search paths ($(STANDARD_LIBRARY_DIRS)) is NOT supported. The only use-case for such setting (and this is the only reason we support it) is to create binaries using the Freetz toolchain and run them on an non-freetz'ed box.)
+$(info )
+endif
+
+FREETZ_LD_RUN_PATH:=$(if $(filter $(FREETZ_LIBRARY_DIR),$(STANDARD_LIBRARY_DIRS)),,LD_RUN_PATH="$(FREETZ_LIBRARY_DIR)")
 MAKE_ENV+=FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
 
 # commands to run before calling configure
@@ -420,6 +438,8 @@ $(PKG)_BUILD_PREREQ:=
 $(PKG)_BUILD_PREREQ_HINT:=
 $(PKG)_DEPENDS_ON:=
 $(PKG)_HOST_DEPENDS_ON:=
+#
+$(PKG)_REBUILD_SUBOPTS=FREETZ_LIBRARY_DIR
 #
 $(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
