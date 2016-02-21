@@ -2,22 +2,22 @@
 +++ setup.py
 @@ -8,7 +8,7 @@
  PY_PACKAGE = "curl"
- VERSION = "7.19.5"
+ VERSION = "7.43.0"
  
--import glob, os, re, sys, string, subprocess
-+import glob, os, re, sys, string
+-import glob, os, re, sys, subprocess
++import glob, os, re, sys
  import distutils
  from distutils.core import setup
  from distutils.extension import Extension
-@@ -91,6 +91,7 @@
-             self.include_dirs.append(os.path.join(OPENSSL_DIR, "include"))
+@@ -98,6 +98,7 @@
+             self.library_dirs.append(os.path.join(OPENSSL_DIR, "lib"))
          CURL_CONFIG = os.environ.get('PYCURL_CURL_CONFIG', "curl-config")
-         CURL_CONFIG = scan_argv("--curl-config=", CURL_CONFIG)
+         CURL_CONFIG = scan_argv(self.argv, "--curl-config=", CURL_CONFIG)
 +        ''' comment out curl version checking (doesn't work while cross-compiling) - freetz provides recent enough curl version
          try:
              p = subprocess.Popen((CURL_CONFIG, '--version'),
                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-@@ -106,6 +107,9 @@
+@@ -113,6 +114,9 @@
              raise ConfigurationError(msg)
          libcurl_version = stdout.decode().strip()
          print("Using %s (%s)" % (CURL_CONFIG, libcurl_version))
@@ -27,7 +27,7 @@
          p = subprocess.Popen((CURL_CONFIG, '--cflags'),
              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
          stdout, stderr = p.communicate()
-@@ -121,6 +125,7 @@
+@@ -128,6 +132,7 @@
                      self.include_dirs.append(arg[2:])
              else:
                  self.extra_compile_args.append(arg)
@@ -35,44 +35,45 @@
  
          # Obtain linker flags/libraries to link against.
          # In theory, all we should need is `curl-config --libs`.
-@@ -147,6 +152,10 @@
+@@ -154,6 +159,12 @@
          optbuf = ''
          sslhintbuf = ''
          errtext = ''
 +
++        # cross-compile friendly version
 +        optbuf = os.popen("'%s' --libs" % CURL_CONFIG).read()
 +        sslhintbuf += optbuf
++
 +        ''' comment out as it doesn't work while cross-compiling
          for option in ["--libs", "--static-libs"]:
              p = subprocess.Popen((CURL_CONFIG, option),
                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-@@ -174,6 +183,8 @@
+@@ -181,6 +192,7 @@
              if errtext:
                  msg += ":\n" + errtext
              raise ConfigurationError(msg)
 +        '''
-+        
-         
+ 
          ssl_lib_detected = False
          if 'PYCURL_SSL_LIBRARY' in os.environ:
-@@ -226,6 +237,8 @@
-                     ssl_lib_detected = True
-                     self.libraries.append('ssl3')
+@@ -247,6 +259,8 @@
+             ssl_lib_detected = self.detect_ssl_lib_on_centos6()
+ 
          if not ssl_lib_detected:
 +            print("Warning: assuming cURL has been compiled without SSL support")
 +            '''
              p = subprocess.Popen((CURL_CONFIG, '--features'),
                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
              stdout, stderr = p.communicate()
-@@ -238,6 +251,7 @@
-                 if feature == 'SSL':
-                     # this means any ssl library, not just openssl
+@@ -261,6 +275,7 @@
+                     # we set the ssl flag to check for ssl library mismatch
+                     # at link time and run time
                      self.define_macros.append(('HAVE_CURL_SSL', 1))
 +            '''
-         else:
-             # if we are configuring for a particular ssl library,
-             # we can assume that ssl is being used
-@@ -297,6 +311,7 @@
+         if not self.libraries:
+             self.libraries.append("curl")
+ 
+@@ -350,6 +365,7 @@
          self.extra_compile_args.append("-D_WIN32_WINNT=0x0501")
  
          if str.find(sys.version, "MSC") >= 0:
@@ -80,7 +81,7 @@
              self.extra_compile_args.append("-O2")
              self.extra_compile_args.append("-GF")        # enable read-only string pooling
              self.extra_compile_args.append("-WX")        # treat warnings as errors
-@@ -479,6 +494,7 @@
+@@ -584,6 +600,7 @@
  AUTHORS_PARAGRAPH = 3
  
  def check_authors():

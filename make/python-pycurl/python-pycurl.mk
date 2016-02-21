@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.19.5)
+$(call PKG_INIT_BIN, 7.43.0)
 $(PKG)_SOURCE:=pycurl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=47b4eac84118e2606658122104e62072
-$(PKG)_SITE:=http://pycurl.sourceforge.net/download
+$(PKG)_SOURCE_MD5:=c94bdba01da6004fa38325e9bd6b9760
+$(PKG)_SITE:=http://pycurl.sourceforge.net/download,https://pypi.python.org/packages/source/p/pycurl
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/pycurl-$($(PKG)_VERSION)
 
@@ -17,7 +17,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.configured
-	$(call Build/PyMod/PKG, PYTHON_PYCURL, --curl-config=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl-config)
+	$(call Build/PyMod/PKG, PYTHON_PYCURL, --curl-config=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/curl-config $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl))
 
 $(pkg):
 
