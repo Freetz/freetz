@@ -1329,7 +1329,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		# .config
 		if [ ! "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
-			{ grep '^[^#].*$' "$DOT_CONFIG"; grep '^#.*$' "$DOT_CONFIG.compressed"; } > "${FILESYSTEM_MOD_DIR}/etc/.config"
+			{ grep '^[^#].*$' "$DOT_CONFIG"; grep '^#.*$' "$DOT_CONFIG.compressed"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } > "${FILESYSTEM_MOD_DIR}/etc/.config"
 			echo1 "integrated .config (stripped)"
 		fi
 
