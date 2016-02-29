@@ -4,18 +4,23 @@
 TRANSMISSION_FROM_SVN:=n
 
 ifeq ($(TRANSMISSION_FROM_SVN),y)
-$(call PKG_INIT_BIN, 14308)
+$(call PKG_INIT_BIN, 14695)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=svn://svn.transmissionbt.com/Transmission/branches/2.8x
+$(PKG)_SITE:=svn://svn.transmissionbt.com/Transmission/tags/2.90
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e '/^m4_define.+user_agent_prefix/s,[+],,g' -e '/^m4_define.+peer_id_prefix/s,[XZ]-,0-,g' ./configure.ac;
+$(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e '/^m4_define.+user_agent_prefix/s,[+],,g' -e '/^m4_define.+peer_id_prefix/s,[XZ]-,0-,g' configure.ac;
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure.ac)
+
 $(PKG)_CONFIGURE_PRE_CMDS += AUTOGEN_SUBDIR_MODE=y ./autogen.sh;
 else
-$(call PKG_INIT_BIN, 2.84)
+$(call PKG_INIT_BIN, 2.90)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA1:=455359bc1fa34aeecc1bac9255ad0c884b94419c
-$(PKG)_SITE:=https://transmission.cachefly.net
+$(PKG)_SOURCE_SHA1:=7973ffaaee72250c3e7a3c37187279c7925197cf
+$(PKG)_SITE:=http://download.transmissionbt.com/files,https://transmission.cachefly.net
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure)
 endif
+
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,libtransmission/crypto-utils-polarssl.c cmake/FindPolarSSL.cmake)
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
 $(PKG)_BINARIES_BUILD_SUBDIRS := cli/ daemon/ daemon/ utils/  utils/ utils/
@@ -34,9 +39,12 @@ ifneq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE)),y)
 $(PKG)_EXCLUDED += $($(PKG)_TARGET_WEBINTERFACE_DIR)
 endif
 
-$(PKG)_DEPENDS_ON += zlib openssl curl libevent
+$(PKG)_DEPENDS_ON += zlib curl libevent
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_TRANSMISSION_WITH_OPENSSL),openssl)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_TRANSMISSION_WITH_POLARSSL),polarssl13)
 
-$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_WITH_OPENSSL $(if $(FREETZ_PACKAGE_TRANSMISSION_WITH_OPENSSL),FREETZ_OPENSSL_SHLIB_VERSION)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_WITH_POLARSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TRANSMISSION_STATIC
 
@@ -48,11 +56,13 @@ ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,iconv_open,no_iconv_open_in_0928,' ./configure;
 endif
 
+$(PKG)_CONFIGURE_OPTIONS += --enable-cli
 $(PKG)_CONFIGURE_OPTIONS += --disable-mac
 $(PKG)_CONFIGURE_OPTIONS += --without-gtk
 $(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
 $(PKG)_CONFIGURE_OPTIONS += --enable-lightweight
 $(PKG)_CONFIGURE_OPTIONS += --enable-utp
+$(PKG)_CONFIGURE_OPTIONS += --with-crypto=$(if $(FREETZ_PACKAGE_TRANSMISSION_WITH_OPENSSL),openssl)$(if $(FREETZ_PACKAGE_TRANSMISSION_WITH_POLARSSL),polarssl)
 
 # add EXTRA_(C|LD)FLAGS
 $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
