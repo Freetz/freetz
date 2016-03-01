@@ -47,13 +47,14 @@ choice
 
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	prompt "OpenSSL version"
-	default FREETZ_OPENSSL_VERSION_0 if !FREETZ_AVM_HAS_OPENSSL_VERSION_1
 	default FREETZ_OPENSSL_VERSION_1
 
 	config FREETZ_OPENSSL_VERSION_0
 	bool "0.9.8zh"
 	depends on !FREETZ_OPENSSL_VERSION_1_REQUIRED
 	help
+	    - NOT supported by the OpenSSL development team anymore
+	      (s. https://www.openssl.org/policies/releasestrat.html)
 	    - is smaller than 1.0.x (about 142kB)
 	    - could be used (with some limitations) as a replacement for AVM's OpenSSL library
 	    - contains no assembler optimized code
