@@ -76,7 +76,6 @@ menu "Override options"
 	config FREETZ_DL_KERNEL_SITE
 		string "Kernel site"                                    if FREETZ_DL_OVERRIDE
 #		default "@AVM/fritzbox.wlan_3370/x_misc/opensrc"        if ...
-		default "@KERNEL/linux/kernel/v3.x"                     if FREETZ_VANILLA_SOURCE_3_10_73
 		default ""
 
 	config FREETZ_DL_KERNEL_SOURCE_ID
@@ -109,7 +108,6 @@ menu "Override options"
 
 	config FREETZ_DL_KERNEL_SOURCE
 		string "Kernel source"                     if FREETZ_DL_OVERRIDE
-		default "linux-${FREETZ_DL_KERNEL_SOURCE_ID}.tar.xz" if FREETZ_VANILLA_SOURCE_3_10_73
 		default "${FREETZ_DL_KERNEL_SOURCE_ID}-release_kernel.tar.xz"
 
 	config FREETZ_DL_KERNEL_SOURCE_MD5
@@ -144,7 +142,6 @@ menu "Override options"
 		default "f3d0b2245b0b6442297eb211b0f39692"  if FREETZ_AVM_SOURCE_7490_06_05
 		default "e4ed72a1182e7160de95579334685b0b"  if FREETZ_AVM_SOURCE_7490_06_51
 		default "eb82c0948e81288253f63f63915489a2"  if FREETZ_AVM_SOURCE_r7203
-		default "364e130277cc6459a5c9c3048c9db7456df8bec870d5c9f1a287afa6d138c877" if FREETZ_VANILLA_SOURCE_3_10_73
 
 	config FREETZ_DL_SITE
 		string "Firmware site"                                                  if FREETZ_DL_OVERRIDE
