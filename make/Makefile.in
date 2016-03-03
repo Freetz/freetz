@@ -757,7 +757,7 @@ endef
 ## check for changed files in files and patches folder
 define PKG_UNPACKED_CHECK_CHANGES__INT1
 $(PKG)_FREETZ_CHANGES_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_changes
-$(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH:=patches/.*\|src/.*\|$(pkg)\.mk\|$(pkg).*\.mk\.in\|Makefile\.in\|Config\.in\|Config\.in\.libs
+$(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH:=patches/.*\|src/.*\|$(pkg)\.mk\|$(pkg).*\.mk\.in\|Makefile\.in\|Config\.in\|Config\.in\.libs\|Config\.in\.modules
 $(PKG)_FREETZ_CHANGES_REPACK_SEARCH:=files/.*
 endef
 define PKG_UNPACKED_CHECK_CHANGES__INT2
