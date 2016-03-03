@@ -1,3 +1,5 @@
+if !FREETZ_KERNEL_VERSION_3_10_MIN
+
 config FREETZ_PACKAGE_IPTABLES
 	bool "Iptables 1.4.11.1 (binary only)"
 	depends on FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
@@ -1820,3 +1822,5 @@ config FREETZ_LIB_libip6t_rt
 	help
 		Match on IPv6 routing header.
 endmenu
+
+endif

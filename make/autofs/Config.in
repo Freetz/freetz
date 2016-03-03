@@ -1,3 +1,5 @@
+if !FREETZ_KERNEL_VERSION_3_10_MIN
+
 comment "autofs (not available, needs replace kernel)"
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MAX && !FREETZ_REPLACE_KERNEL
 
@@ -57,3 +59,5 @@ config FREETZ_PACKAGE_AUTOFS_SSHFS
 	default n
 	help
 		select this if you want to mount SSHfs-shares
+
+endif
