@@ -686,17 +686,24 @@ if [ "$DO_MOD" -gt 0 ]; then
 	  ${FILESYSTEM_MOD_DIR}/usr/www \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.nas \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.myfritz \
-	  ; do
+	; do
+		[ ! -d ${webdir} ] && continue
+
 		for edition in ewetel; do
 			[ ! -d ${webdir}/$edition ] && continue
 			[ -d ${webdir}/avm ] && continue
 			[ -d ${webdir}/all ] && continue
-			# force create /usr/www/all/
+			# force creation of /usr/www/all/
 			mv ${webdir}/$edition ${webdir}/avm
 		done
-		if [ -d ${webdir}/avm* ]; then
+
+		# some recent LTE firmwares contain both avm and avme OEMs (identical in all firmwares seen so far)
+		# use the 1st of them (according to the alphabetical order) as the main one
+		main_oem=$(find "${webdir}" -maxdepth 1 -type d -name "avm*" -printf "%P\n" | sort | head -n 1)
+
+		if [ -n "${main_oem}" ]; then
 			echo0 -n " ${webdir#${FILESYSTEM_MOD_DIR}/}"
-			mv ${webdir}/avm* ${webdir}/all
+			mv ${webdir}/${main_oem} ${webdir}/all
 			for i in $oems; do
 				rm -rf ${webdir}/$i
 				ln -s all ${webdir}/$i
