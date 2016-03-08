@@ -8,8 +8,6 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/libopenjpeg/.libs/libopenjpeg.so.$($(PKG)_LIB_VERSI
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libopenjpeg.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libopenjpeg.so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_BUILD_PREREQ += autoreconf
-
 $(PKG)_CONFIGURE_PRE_CMDS += autoreconf -f -i;
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

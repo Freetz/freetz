@@ -4,8 +4,6 @@ $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/scanbuttond
 $(PKG)_SOURCE_MD5:=a117534dab22c2a7a9a1e5a64b2b0c25
 
-$(PKG)_BUILD_PREREQ += autoreconf
-
 $(PKG)_INSTALL_SUBDIR:=_install
 
 $(PKG)_BACKENDS_ALL       := artec_eplus48u epson genesys gt68xx hp3500 hp3900 hp5590 meta mustek niash plustek plustek_umax snapscan

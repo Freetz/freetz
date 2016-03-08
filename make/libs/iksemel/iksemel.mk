@@ -9,8 +9,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_DEPENDS_ON += openssl
 
-$(PKG)_BUILD_PREREQ += autoreconf
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
