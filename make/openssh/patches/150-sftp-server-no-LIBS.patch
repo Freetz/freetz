@@ -1,7 +1,7 @@
 --- Makefile.in
 +++ Makefile.in
 @@ -188,7 +188,7 @@
- 	$(LD) -o $@ ssh-keyscan.o roaming_dummy.o $(LDFLAGS) -lssh -lopenbsd-compat -lssh $(LIBS)
+ 	$(LD) -o $@ ssh-keyscan.o $(LDFLAGS) -lssh -lopenbsd-compat -lssh $(LIBS)
  
  sftp-server$(EXEEXT): $(LIBCOMPAT) libssh.a sftp.o sftp-common.o sftp-server.o sftp-server-main.o
 -	$(LD) -o $@ sftp-server.o sftp-common.o sftp-server-main.o $(LDFLAGS) -lssh -lopenbsd-compat $(LIBS)
