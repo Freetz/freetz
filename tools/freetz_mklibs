@@ -38,7 +38,7 @@ mklibs() {
 	# Copy stripped libs to their destination directory
 	local LIB DEST DEST_DIR
 	for LIB in $(find "${MOD_DIR}/mklibs-out" -type f -name "*.so.*"); do
-		for DEST_DIR in usr/lib/freetz lib usr/lib; do
+		for DEST_DIR in ${FREETZ_LIBRARY_DIR#/} lib usr/lib; do
 			DEST=$(ls "${FILESYSTEM_MOD_DIR}/${DEST_DIR}/${LIB##*/}" 2>/dev/null)
 			[ -n "$DEST" ] && break
 		done
