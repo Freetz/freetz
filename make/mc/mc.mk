@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.8.15)
+$(call PKG_INIT_BIN, 4.8.16)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=cf4e8f5dfe419830d56ca7e5f2495898e37ebcd05da1e47ff7041446c87fba16
+$(PKG)_SOURCE_SHA256:=bbbcbe3097d3160f865d24aa38ff122f1c59752b5ef153ca4ade5ac0f82b7020
 $(PKG)_SITE:=ftp://ftp.midnight-commander.org/pub/midnightcommander
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/mc
@@ -54,7 +54,7 @@ $(PKG)_ENDIS_OPTIONS_DISABLED := $(filter-out $($(PKG)_ENDIS_OPTIONS_ENABLED),$(
 $(PKG)_CONFIGURE_OPTIONS      += $(foreach option,$($(PKG)_ENDIS_OPTIONS_ENABLED),--enable-$(option))
 $(PKG)_CONFIGURE_OPTIONS      += $(foreach option,$($(PKG)_ENDIS_OPTIONS_DISABLED),--disable-$(option))
 
-$(PKG)_WITH_OPTIONS           := edit diff-viewer subshell
+$(PKG)_WITH_OPTIONS           := internal-edit diff-viewer subshell
 $(PKG)_WITH_OPTIONS_YES       := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_WITH_OPTIONS),WITH)
 $(PKG)_WITH_OPTIONS_NO        := $(filter-out $($(PKG)_WITH_OPTIONS_YES),$($(PKG)_WITH_OPTIONS))
 $(PKG)_CONFIGURE_OPTIONS      += $(foreach option,$($(PKG)_WITH_OPTIONS_YES),--with-$(option))

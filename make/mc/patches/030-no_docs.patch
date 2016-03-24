@@ -11,7 +11,7 @@
  endif
 --- doc/hlp/Makefile.in
 +++ doc/hlp/Makefile.in
-@@ -459,7 +459,8 @@
+@@ -471,7 +471,8 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -34,7 +34,7 @@
  endif
 --- doc/man/Makefile.in
 +++ doc/man/Makefile.in
-@@ -460,7 +460,8 @@
+@@ -473,7 +473,8 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -44,7 +44,7 @@
  @USE_NLS_TRUE@SUBDIRS = $(DOC_LINGUAS)
  man_MANS = mc.1 mcedit.1 mcview.1
  CLEANFILES = $(man_MANS)
-@@ -730,7 +731,8 @@
+@@ -742,7 +743,8 @@
  	for dir in "$(DESTDIR)$(man1dir)"; do \
  	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
  	done
@@ -54,36 +54,6 @@
  install-exec: install-exec-recursive
  install-data: install-data-recursive
  uninstall: uninstall-recursive
---- misc/Makefile.am
-+++ misc/Makefile.am
-@@ -14,12 +14,10 @@
- 
- SCRIPTS_IN = \
- 	mc.menu.in \
--	mc.menu.sr.in \
- 	mcedit.menu.in
- 
- SCRIPTS_OUT = \
- 	mc.menu \
--	mc.menu.sr \
- 	mcedit.menu
- 
- LIBFILES_CONST = \
---- misc/Makefile.in
-+++ misc/Makefile.in
-@@ -474,12 +474,10 @@
- pkgdata_DATA = mc.lib $(am__append_1)
- SCRIPTS_IN = \
- 	mc.menu.in \
--	mc.menu.sr.in \
- 	mcedit.menu.in
- 
- SCRIPTS_OUT = \
- 	mc.menu \
--	mc.menu.sr \
- 	mcedit.menu
- 
- LIBFILES_CONST = \
 --- src/vfs/extfs/helpers/Makefile.am
 +++ src/vfs/extfs/helpers/Makefile.am
 @@ -3,7 +3,7 @@
@@ -97,7 +67,7 @@
  EXTFS_CONST = bpp changesetfs gitfs+ patchsetfs rpm trpm u7z
 --- src/vfs/extfs/helpers/Makefile.in
 +++ src/vfs/extfs/helpers/Makefile.in
-@@ -418,7 +418,7 @@
+@@ -430,7 +430,7 @@
  EXTFSCONFFILES = sfs.ini
  
  # Files to install and distribute other than extfs scripts
@@ -119,7 +89,7 @@
  fish_SCRIPTS = ls mkdir fexists unlink chown chmod rmdir ln mv hardlink get send append info utime
 --- src/vfs/fish/helpers/Makefile.in
 +++ src/vfs/fish/helpers/Makefile.in
-@@ -405,7 +405,7 @@
+@@ -417,7 +417,7 @@
  fishdir = $(libexecdir)/@PACKAGE@/fish
  
  # Files to install and distribute other than fish scripts
