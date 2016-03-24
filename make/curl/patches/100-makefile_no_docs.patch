@@ -1,6 +1,6 @@
 --- Makefile.am
 +++ Makefile.am
-@@ -141,7 +141,7 @@
+@@ -150,7 +150,7 @@
  bin_SCRIPTS = curl-config
  
  SUBDIRS = lib src include scripts
@@ -9,7 +9,7 @@
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -160,10 +160,10 @@
+@@ -169,10 +169,10 @@
  	done)
  
  html:
@@ -22,7 +22,7 @@
  
  check: test examples check-docs
  
-@@ -191,7 +191,7 @@
+@@ -200,7 +200,7 @@
  endif
  
  examples:
@@ -31,7 +31,7 @@
  
  check-docs:
  	@(cd docs/libcurl; $(MAKE) check)
-@@ -255,12 +255,12 @@
+@@ -264,12 +264,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
@@ -48,7 +48,7 @@
  	@echo "generating a fresh ca-bundle.crt"
 --- Makefile.in
 +++ Makefile.in
-@@ -601,7 +601,7 @@
+@@ -611,7 +611,7 @@
  
  bin_SCRIPTS = curl-config
  SUBDIRS = lib src include scripts
@@ -57,7 +57,7 @@
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  LIB_VTLS_CFILES = vtls/openssl.c vtls/gtls.c vtls/vtls.c vtls/nss.c     \
-@@ -1311,10 +1311,10 @@
+@@ -1321,10 +1321,10 @@
  	done)
  
  html:
@@ -70,7 +70,7 @@
  
  check: test examples check-docs
  
-@@ -1337,7 +1337,7 @@
+@@ -1347,7 +1347,7 @@
  @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all am-test)
  
  examples:
@@ -79,7 +79,7 @@
  
  check-docs:
  	@(cd docs/libcurl; $(MAKE) check)
-@@ -1401,12 +1401,12 @@
+@@ -1411,12 +1411,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
