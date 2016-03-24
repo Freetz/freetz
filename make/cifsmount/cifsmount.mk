@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 6.4)
+$(call PKG_INIT_BIN, 6.5)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/cifs-utils-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=b7d75b67fd3987952896d27256c7293d
+$(PKG)_SOURCE_SHA256:=e2776578b8267c6dc0862897f5e10f87f10f8337fca9ca6a9118f5eb30cf49f7
 $(PKG)_SITE:=@SAMBA/linux-cifs/cifs-utils
 
 $(PKG)_STARTLEVEL=50
