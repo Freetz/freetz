@@ -4,18 +4,18 @@
 TRANSMISSION_FROM_SVN:=n
 
 ifeq ($(TRANSMISSION_FROM_SVN),y)
-$(call PKG_INIT_BIN, 14711)
+$(call PKG_INIT_BIN, 14714)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=svn://svn.transmissionbt.com/Transmission/tags/2.91
+$(PKG)_SITE:=svn://svn.transmissionbt.com/Transmission/tags/2.92
 
 $(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e '/^m4_define.+user_agent_prefix/s,[+],,g' -e '/^m4_define.+peer_id_prefix/s,[XZ]-,0-,g' configure.ac;
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure.ac)
 
 $(PKG)_CONFIGURE_PRE_CMDS += AUTOGEN_SUBDIR_MODE=y ./autogen.sh;
 else
-$(call PKG_INIT_BIN, 2.91)
+$(call PKG_INIT_BIN, 2.92)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA1:=38c30f15f4ae52fafc6381657177456c937635bc
+$(PKG)_SOURCE_SHA256:=3a8d045c306ad9acb7bf81126939b9594553a388482efa0ec1bfb67b22acd35f
 $(PKG)_SITE:=http://download.transmissionbt.com/files,https://transmission.cachefly.net
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure)
 endif
