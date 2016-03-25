@@ -3,12 +3,12 @@
 
 --- Rules.mak
 +++ Rules.mak
-@@ -195,7 +195,7 @@
+@@ -205,7 +205,7 @@
  CPU_CFLAGS=$(call qstrip,$(CPU_CFLAGS-y))
  
  # Some nice CFLAGS to work with
 -GEN_CFLAGS:=-fno-builtin
 +GEN_CFLAGS:=-fno-builtin -fpermissive
- CFLAGS:=$(XWARNINGS) $(CPU_CFLAGS) -ansi
+ CFLAGS:=$(XWARNINGS) $(CPU_CFLAGS)
  
  LDFLAGS-$(LIBNAME).so:=-Wl,--warn-common -Wl,--warn-once -Wl,-z,combreloc -Wl,-z,defs

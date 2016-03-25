@@ -1,0 +1,18 @@
+--- include/new
++++ include/new
+@@ -39,13 +39,13 @@
+ 
+ _UCXXEXPORT void* operator new(std::size_t numBytes) throw(std::bad_alloc);
+ _UCXXEXPORT void operator delete(void* ptr) throw();
+-#if __cpp_sized_deallocation
++#if defined(__cpp_sized_deallocation) && __cpp_sized_deallocation >= 201309
+ _UCXXEXPORT void operator delete(void* ptr, std::size_t) throw();
+ #endif
+ 
+ _UCXXEXPORT void* operator new[](std::size_t numBytes) throw(std::bad_alloc);
+ _UCXXEXPORT void operator delete[](void * ptr) throw();
+-#if __cpp_sized_deallocation
++#if defined(__cpp_sized_deallocation) && __cpp_sized_deallocation >= 201309
+ _UCXXEXPORT void operator delete[](void * ptr, std::size_t) throw();
+ #endif
+ 

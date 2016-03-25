@@ -1,0 +1,11 @@
+--- Rules.mak
++++ Rules.mak
+@@ -201,7 +201,7 @@
+ $(eval $(call check-gxx-var,-Wno-sized-deallocation))
+ 
+ # Add a bunch of extra pedantic annoyingly strict checks
+-XWARNINGS=$(call qstrip,$(UCLIBCXX_WARNINGS)) -Wno-trigraphs -pedantic
++XWARNINGS=$(call qstrip,$(UCLIBCXX_WARNINGS)) -Wno-trigraphs -pedantic -Wno-long-long
+ CPU_CFLAGS=$(call qstrip,$(CPU_CFLAGS-y))
+ 
+ # Some nice CFLAGS to work with
