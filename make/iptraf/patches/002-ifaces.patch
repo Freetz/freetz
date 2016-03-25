@@ -1,5 +1,5 @@
---- src/dirs.h.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/dirs.h	2010-09-23 16:19:09.000000000 +0200
+--- src/dirs.h
++++ src/dirs.h
 @@ -155,7 +155,6 @@
   */
  
@@ -8,8 +8,8 @@
  
  /*
   * The rvnamed program file
---- src/hostmon.c.orig	2007-09-25 11:18:56.000000000 +0200
-+++ src/hostmon.c	2010-09-23 16:19:09.000000000 +0200
+--- src/hostmon.c
++++ src/hostmon.c
 @@ -31,7 +31,6 @@
  #include <linux/if_packet.h>
  #include <linux/if_ether.h>
@@ -68,8 +68,8 @@
                  } else if (linktype == LINK_TR) {
                      memcpy(scratch_saddr, ((struct trh_hdr *) buf)->saddr,
                             TR_ALEN);
---- src/ifaces.c.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/ifaces.c	2010-09-23 16:19:09.000000000 +0200
+--- src/ifaces.c
++++ src/ifaces.c
 @@ -37,7 +37,7 @@
  extern int daemonized;
  
@@ -79,8 +79,8 @@
      "pvc", "hdlc", "ipsec", "sbni", "tr", "wvlan", "wlan", "sm2", "sm3",
      "pent", "lec", "brg", "tun", "tap", "cipcb", "tunl", "vlan"
  };
---- src/landesc.c.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/landesc.c	2010-09-23 16:19:09.000000000 +0200
+--- src/landesc.c
++++ src/landesc.c
 @@ -83,8 +83,6 @@
  
      if (linktype == LINK_ETHERNET)
@@ -99,8 +99,8 @@
  
      if (fd < 0) {
          etherr();
---- src/links.h.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/links.h	2010-09-23 16:19:09.000000000 +0200
+--- src/links.h
++++ src/links.h
 @@ -6,7 +6,6 @@
  #define LINK_ISDN_RAWIP		6
  #define LINK_ISDN_CISCOHDLC	7
@@ -109,8 +109,8 @@
  #define LINK_FRAD		9
  #define LINK_DLCI		10
  #define LINK_TR			11
---- src/log.c.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/log.c	2010-09-23 16:19:09.000000000 +0200
+--- src/log.c
++++ src/log.c
 @@ -491,8 +491,6 @@
                          ptmp->un.desc.ascaddr);
              else if (ptmp->un.desc.linktype == LINK_PLIP)
@@ -120,8 +120,8 @@
  
              if (ptmp->un.desc.withdesc)
                  fprintf(fd, " (%s)", ptmp->un.desc.desc);
---- src/options.c.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/options.c	2010-09-23 16:19:09.000000000 +0200
+--- src/options.c
++++ src/options.c
 @@ -68,8 +68,6 @@
      tx_additem(menu, NULL, NULL);
      tx_additem(menu, " ^E^thernet/PLIP host descriptions...",
@@ -141,8 +141,8 @@
          }
  
          indicatesetting(row, options, statwin);
---- src/othptab.c.orig	2007-09-25 11:47:35.000000000 +0200
-+++ src/othptab.c	2010-09-23 16:19:09.000000000 +0200
+--- src/othptab.c
++++ src/othptab.c
 @@ -22,7 +22,6 @@
  #include <linux/if_ether.h>
  #include <linux/if_tr.h>
@@ -173,8 +173,8 @@
              sprintf(scratchpad, " from %s to %s on %s",
                      entry->smacaddr, entry->dmacaddr, entry->iface);
  
---- src/packet.c.orig	2007-09-25 11:21:18.000000000 +0200
-+++ src/packet.c	2010-09-23 16:19:09.000000000 +0200
+--- src/packet.c
++++ src/packet.c
 @@ -35,7 +35,6 @@
  #include <linux/if_packet.h>
  #include <linux/if_ether.h>
@@ -222,8 +222,8 @@
      case LINK_TR:
          /*
           * Token Ring patch supplied by Tomas Dvorak 
---- src/promisc.c.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/promisc.c	2010-09-23 16:19:09.000000000 +0200
+--- src/promisc.c
++++ src/promisc.c
 @@ -81,8 +81,8 @@
               */
  
@@ -243,8 +243,8 @@
               (strncmp(ptmp->params.ifname, "tr", 2) == 0) ||
               (strncmp(ptmp->params.ifname, "wvlan", 4) == 0) ||
               (strncmp(ptmp->params.ifname, "lec", 3) == 0)) &&
---- src/rvnamed.h.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/rvnamed.h	2010-09-23 16:19:09.000000000 +0200
+--- src/rvnamed.h
++++ src/rvnamed.h
 @@ -1,9 +1,9 @@
  #include <netinet/in.h>
  #include <arpa/inet.h>
@@ -258,8 +258,8 @@
  
  #define SOCKET_PREFIX	"isock"
  
---- src/tcptable.c.orig	2005-09-13 08:42:54.000000000 +0200
-+++ src/tcptable.c	2010-09-23 16:19:09.000000000 +0200
+--- src/tcptable.c
++++ src/tcptable.c
 @@ -600,8 +600,6 @@
  
          if ((linkproto == LINK_ETHERNET) || (linkproto == LINK_PLIP)) {
@@ -269,8 +269,8 @@
          } else if (linkproto == LINK_TR) {
              convmacaddr(((struct trh_hdr *) packet)->saddr, newmacaddr);
          }
---- src/tcptable.h.orig	2007-09-25 11:46:03.000000000 +0200
-+++ src/tcptable.h	2010-09-23 16:19:09.000000000 +0200
+--- src/tcptable.h
++++ src/tcptable.h
 @@ -23,7 +23,6 @@
  #include <linux/if_packet.h>
  #include <linux/if_ether.h>

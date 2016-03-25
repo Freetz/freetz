@@ -1,5 +1,5 @@
---- src/ifaces.c	2009-11-28 18:45:44.000000000 +0000
-+++ src/ifaces.c	2009-11-28 18:47:46.000000000 +0000
+--- src/ifaces.c
++++ src/ifaces.c
 @@ -32,14 +32,14 @@
  #include "error.h"
  
@@ -17,8 +17,8 @@
  };
  
  char *ltrim(char *buf)
---- src/packet.c	2009-11-28 18:45:44.000000000 +0000
-+++ src/packet.c	2009-11-28 18:48:06.000000000 +0000
+--- src/packet.c
++++ src/packet.c
 @@ -104,6 +104,8 @@
              result = LINK_ETHERNET;
          else if (strncmp(ifname, "tap", 3) == 0)
@@ -28,8 +28,8 @@
          else if ((strncmp(ifname, "isdn", 4) == 0) && (isdn_fd != -1)) {
              isdnent = isdn_table_lookup(isdnlist, ifname, isdn_fd);
  
---- src/promisc.c	2009-11-28 18:45:44.000000000 +0000
-+++ src/promisc.c	2009-11-28 18:48:28.000000000 +0000
+--- src/promisc.c
++++ src/promisc.c
 @@ -82,6 +82,7 @@
  
              if ((strncmp(buf, "eth", 3) == 0) ||

@@ -27,6 +27,8 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		INCLUDEDIR="-I../support" \
+		AR="$(TARGET_AR)" \
+		RANLIB="$(TARGET_RANLIB)" \
 		OS=Linux \
 		ARCH=$(TARGET_ARCH)
 
