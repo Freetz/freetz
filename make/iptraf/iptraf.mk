@@ -26,7 +26,9 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(IPTRAF_DIR)/src \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		INCLUDEDIR="-I../support"
+		INCLUDEDIR="-I../support" \
+		OS=Linux \
+		ARCH=$(TARGET_ARCH)
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/src/%
 	$(INSTALL_BINARY_STRIP)
