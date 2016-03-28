@@ -1,5 +1,10 @@
 config FREETZ_PACKAGE_PRIVATEKEYPASSWORD
-	bool "private key password framework (binary only)"
-	depends on FREETZ_AVM_VERSION_06_2X_MIN
+	bool "privatekeypassword 0.5"
+	depends on FREETZ_AVM_VERSION_06_0X_MIN
 	select FREETZ_LIB_libprivatekeypassword
 	default n
+	help
+		reveal the password for the private key file
+		(/var/flash/websrv_ssl_key.pem) to be able to
+		reuse it for other packages
+
