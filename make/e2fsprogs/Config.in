@@ -24,6 +24,15 @@ config FREETZ_PACKAGE_E2FSPROGS_STATIC
 		NB: Once again for those who don't read long explanations, DON'T deactivate
 		this option, if e2fsck is the only tool you actually include in the image.
 
+config FREETZ_PACKAGE_E2FSPROGS_FULLSTATIC
+	bool "create e2fsprog-binaries without any external dependencies"
+	default n
+	depends on FREETZ_PACKAGE_E2FSPROGS_STATIC
+	help
+		Other libraries, e.g. libuClibc, libgcc, are also linked statically.
+		This makes the created binaries usable outside a Freetz environment,
+		because vendor's uClibc does not provide some needed symbols.
+
 config FREETZ_PACKAGE_E2FSPROGS_E2FSCK
 	bool "Checking Tools"
 	default n

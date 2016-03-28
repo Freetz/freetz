@@ -84,6 +84,7 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_E2MAKING),,usr/sbin/mkfs.ext2
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_BLKID),,sbin/blkid)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_FULLSTATIC
 
 $(PKG)_CONFIGURE_ENV += ac_cv_path_LDCONFIG=$(TARGET_LDCONFIG)
 $(PKG)_CONFIGURE_ENV += gt_cv_func_printf_posix=yes
@@ -96,11 +97,18 @@ $(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
 # silence some warnings
 $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -type f -name "*.c" \
 	-exec $(SED) -i -r -e 's|(\#define (_LARGEFILE(64)?_SOURCE))|\#ifndef \2\n\1\n\#endif|g' \{\} \+ ;
+# link the libgcc_pic.a libraries as libgcc_s.a, it looks like no libgcc_s.a will be staged
+$(PKG)_CONFIGURE_PRE_CMDS += find $(FREETZ_BASE_DIR)/$(TOOLCHAIN_DIR) -type f -name "libgcc_pic.a" | \
+	$(SED) -e 's+^\(.*\)$$$$+fn=\1;d=$$$$(pwd);cd $$$${fn%/*};[ -e libgcc_s.a ] || ln -s libgcc_pic.a libgcc_s.a;cd $$$$d+p' | \
+	sh ;
 
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 # we don't really build profiled libraries, we just misuse e2fsprogs' profile-target
 # to build static libraries with pic-objects inside, s. 010-pic_instead_of_profile.patch
-$(PKG)_CONFIGURE_OPTIONS += --enable-profile
+$(KG)_CONFIGURE_OPTIONS += --enable-profile
+ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_FULLSTATIC)),y)
+$(PKG)_EXTRA_STATIC_LDFLAGS += ,-static
+endif
 else
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --enable-elf-shlibs
@@ -121,7 +129,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(E2FSPROGS_DIR) \
 		EXTRA_CFLAGS="-ffunction-sections -fdata-sections" \
-		EXTRA_LDFLAGS="-Wl,--gc-sections" \
+		EXTRA_LDFLAGS="-Wl,--gc-sections$(E2FSPROGS_EXTRA_STATIC_LDFLAGS)" \
 		INFO=true \
 		V=1 \
 		all \
