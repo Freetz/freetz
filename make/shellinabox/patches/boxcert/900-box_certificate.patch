@@ -1,0 +1,275 @@
+--- libhttp/http.h
++++ libhttp/http.h
+@@ -104,8 +104,9 @@
+ int  serverSupportsSSL();
+ void serverEnableSSL(Server *server, int flag);
+ void serverSetCertificate(Server *server, const char *filename,
+-                          int autoGenerateMissing);
++                          int autoGenerateMissing, int useSNI);
+ void serverSetCertificateFd(Server *server, int fd);
++void serverSetBoxCertificate(Server *server, const char *keyPassword);
+ void serverSetNumericHosts(Server *server, int numericHosts);
+ 
+ void httpTransfer(HttpConnection *http, char *msg, int len);
+--- libhttp/server.c
++++ libhttp/server.c
+@@ -619,7 +619,8 @@
+ }
+ 
+ void serverSetCertificate(struct Server *server, const char *filename,
+-                          int autoGenerateMissing) {
++                          int autoGenerateMissing, int useSNI) {
++  server->ssl.noSNI = !useSNI;
+   sslSetCertificate(&server->ssl, filename, autoGenerateMissing);
+ }
+ 
+@@ -627,6 +628,10 @@
+   sslSetCertificateFd(&server->ssl, fd);
+ }
+ 
++void serverSetBoxCertificate(struct Server *server, const char *keyPassword) {
++  sslSetBoxCertificate(&server->ssl, keyPassword);
++}
++
+ void serverSetNumericHosts(struct Server *server, int numericHosts) {
+   server->numericHosts = numericHosts;
+ }
+--- libhttp/server.h
++++ libhttp/server.h
+@@ -115,8 +115,9 @@
+ void serverLoop(struct Server *server);
+ void serverEnableSSL(struct Server *server, int flag);
+ void serverSetCertificate(struct Server *server, const char *filename,
+-                          int autoGenerateMissing);
++                          int autoGenerateMissing, int useSNI);
+ void serverSetCertificateFd(struct Server *server, int fd);
++void serverSetBoxCertificate(struct Server *server, const char *keyPassword);
+ void serverSetNumericHosts(struct Server *server, int numericHosts);
+ struct Trie *serverGetHttpHandlers(struct Server *server);
+ 
+--- libhttp/ssl.c
++++ libhttp/ssl.c
+@@ -581,6 +581,21 @@
+   int rc = sslSetCertificateFromFd(context, fd);
+   return rc;
+ }
++
++static int sslSetCertificateFromBox(SSL_CTX *context, 
++                                    const char *keyPassword) {
++  int rc             = 1;
++
++  SSL_CTX_set_default_passwd_cb_userdata(context, (void *) keyPassword);
++  if (SSL_CTX_use_certificate_chain_file(context, FRITZBOX_SSL_CERTFILE) == 1) {
++    if (SSL_CTX_use_PrivateKey_file(context, FRITZBOX_SSL_KEYFILE, SSL_FILETYPE_PEM) == 1) {
++      if (SSL_CTX_check_private_key(context) == 1) {
++        rc           = 0;
++      }
++    }
++  }
++  return rc;
++}
+ #endif
+ 
+ #ifdef HAVE_TLSEXT
+@@ -727,7 +742,7 @@
+   // Enable SNI support so that we can set a different certificate, if the
+   // client asked for it.
+ #ifdef HAVE_TLSEXT
+-  if (ptr != NULL) {
++  if (!ssl->noSNI && ptr != NULL) {
+     check(ssl->sniCertificatePattern = strdup(filename));
+     check(SSL_CTX_set_tlsext_servername_callback(ssl->sslContext,
+                                                  sslSNICallback));
+@@ -791,6 +806,16 @@
+   ssl->generateMissing  = 0;
+ #endif
+ }
++
++void sslSetBoxCertificate(struct SSLSupport *ssl, const char *keyPassword) {
++#ifdef HAVE_OPENSSL
++  check(ssl->sslContext = SSL_CTX_new(SSLv23_server_method()));
++  if (sslSetCertificateFromBox(ssl->sslContext, keyPassword)) {
++    fatal("Cannot read FRITZ!Box certificate and key");
++  }
++  ssl->generateMissing  = 0;
++#endif
++}
+ 
+ int sslEnable(struct SSLSupport *ssl, int enabled) {
+   int old      = ssl->enabled;
+--- libhttp/ssl.h
++++ libhttp/ssl.h
+@@ -179,6 +179,7 @@
+   SSL_CTX     *sslContext;
+   char        *sniCertificatePattern;
+   int         generateMissing;
++  int         noSNI;
+   struct Trie sniContexts;
+ };
+ 
+@@ -190,6 +191,7 @@
+ void sslSetCertificate(struct SSLSupport *ssl, const char *filename,
+                        int autoGenerateMissing);
+ void sslSetCertificateFd(struct SSLSupport *ssl, int fd);
++void sslSetBoxCertificate(struct SSLSupport *ssl, const char *keyPassword);
+ int  sslEnable(struct SSLSupport *ssl, int enabled);
+ void sslBlockSigPipe();
+ int  sslUnblockSigPipe();
+@@ -197,4 +199,7 @@
+                      const char *buf, int len);
+ void sslFreeHndl(SSL **sslHndl);
+ 
++#define FRITZBOX_SSL_CERTFILE      "/var/flash/websrv_ssl_cert.pem"
++#define FRITZBOX_SSL_KEYFILE       "/var/flash/websrv_ssl_key.pem"
++
+ #endif
+--- shellinabox/launcher.c
++++ shellinabox/launcher.c
+@@ -69,6 +69,8 @@
+ #include <termios.h>
+ #include <unistd.h>
+ 
++#undef HAVE_LIBUTIL_H
++
+ #ifdef HAVE_LIBUTIL_H
+ #include <libutil.h>
+ #endif
+@@ -85,6 +87,11 @@
+ #include <util.h>
+ #endif
+ 
++#undef HAVE_UTMP_H
++#undef HAVE_UTMPX_H
++#undef HAVE_LOGIN_TTY
++#undef HAVE_OPENPTY
++
+ #ifdef HAVE_UTMP_H
+ #include <utmp.h>
+ #endif
+@@ -1225,7 +1232,7 @@
+   (*environment)[numEnvVars++] = stringPrintf(NULL, "SHELL=%s", pw->pw_shell);
+   check(
+   (*environment)[numEnvVars++] = strdup(
+-                              "PATH=/usr/local/bin:/usr/bin:/bin:/usr/games"));
++                              "PATH=/var/custom/bin:/bin:/var/custom/usr/bin:/usr/bin:/var/custom/sbin:/sbin:/var/custom/usr/sbin:/usr/sbin"));
+   (*environment)[numEnvVars++] = stringPrintf(NULL, "LOGNAME=%s",
+                                               service->user);
+   (*environment)[numEnvVars++] = stringPrintf(NULL, "USER=%s", service->user);
+--- shellinabox/shellinaboxd.c
++++ shellinabox/shellinaboxd.c
+@@ -63,6 +63,8 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ 
++#include <privatekeypassword/privatekeypassword.h>
++
+ #ifdef HAVE_SYS_PRCTL_H
+ #include <sys/prctl.h>
+ #endif
+@@ -120,6 +122,8 @@
+ static const char     *pidfile;
+ static sigjmp_buf     jmpenv;
+ static volatile int   exiting;
++static char           *keyPassword  = NULL;
++static int            useSNI        = 1;
+ 
+ static char *jsonEscape(const char *buf, int len) {
+   static const char *hexDigit = "0123456789ABCDEF";
+@@ -818,7 +822,12 @@
+           !serverSupportsSSL() ? "" :
+           "  -c, --cert=CERTDIR          set certificate dir "
+           "(default: $PWD)\n"
+-          "      --cert-fd=FD            set certificate file from fd\n",
++          "      --no-sni                disable SNI processing and use the\n"
++          "                              the default certificate only, do not\n"
++          "                              try auto-generation for unknown names\n"
++          "      --cert-fd=FD            set certificate file from fd\n"
++          "      --cert-from-box[=PSWD]  use FRITZ!Box certificate and decode\n"
++          "                              the key with the 'PSWD'\n",
+           group, PORTNUM,
+           !serverSupportsSSL() ? "" :
+           "  -t, --disable-ssl           disable transparent SSL support\n"
+@@ -883,6 +892,8 @@
+       { "user-css",         1, 0,  0  },
+       { "verbose",          0, 0, 'v' },
+       { "version",          0, 0,  0  },
++      { "cert-from-box",    2, 0,  0  },
++      { "no-sni",           0, 0,  0  },
+       { 0,                  0, 0,  0  } };
+     int idx                = -1;
+     int c                  = getopt_long(argc, argv, optstring, options, &idx);
+@@ -1122,6 +1133,31 @@
+       // Version
+       message("ShellInABox version " VERSION " (revision " VCS_REVISION ")");
+       exit(0);
++    } else if (!idx--) {
++      // Use FRITZ!Box Certificate
++      if (!hasSSL) {
++        warn("Ignoring FRITZ!Box certificate, as SSL support is unavailable");
++      }
++      if (certificateDir || certificateFd >= 0) {
++        fatal("Cannot use the FRITZ!Box certificate together with a certificate directory and/or file handle");
++      }
++      if (optarg) {
++        check(keyPassword  = strdup(optarg));
++      } else {
++        debug("Trying to get box certificate password ...");
++#ifdef STATIC
++        getPrivateKeyPassword_setMethod(PRIVATEKEYPASSWORD_METHOD_PROXY);
++#endif
++        keyPassword        = getPrivateKeyPassword();
++        if (!keyPassword) fatal("Could not get the password for box certificate");
++      }
++    } else if (!idx--) {
++      // no-sni
++      if (!hasSSL) {
++        warn("Ignoring --no-sni option, as SSL support is unavailable");
++      } else {
++        useSNI             = 0;
++      }
+     }
+   }
+   if (optind != argc) {
+@@ -1211,7 +1247,9 @@
+   // Enable SSL support (if available)
+   if (enableSSL) {
+     check(serverSupportsSSL());
+-    if (certificateFd >= 0) {
++    if (keyPassword) {
++      serverSetBoxCertificate(server, keyPassword);
++    } else if (certificateFd >= 0) {
+       serverSetCertificateFd(server, certificateFd);
+     } else if (certificateDir) {
+       char *tmp;
+@@ -1219,10 +1257,10 @@
+         fatal("Invalid certificate directory name \"%s\".", certificateDir);
+       }
+       check(tmp = stringPrintf(NULL, "%s/certificate%%s.pem", certificateDir));
+-      serverSetCertificate(server, tmp, 1);
++      serverSetCertificate(server, tmp, 1, useSNI);
+       free(tmp);
+     } else {
+-      serverSetCertificate(server, "certificate%s.pem", 1);
++      serverSetCertificate(server, "certificate%s.pem", 1, useSNI);
+     }
+   }
+ }
+@@ -1329,6 +1367,7 @@
+   }
+   free(services);
+   free(certificateDir);
++  if (keyPassword) free(keyPassword);
+   free(cgiSessionKey);
+   if (pidfile) {
+     // As a convenience, remove the pidfile, if it is still the version that
+--- Makefile.in
++++ Makefile.in
+@@ -75,7 +75,7 @@
+ am_shellinaboxd_OBJECTS = shellinaboxd.$(OBJEXT) \
+ 	externalfile.$(OBJEXT) launcher.$(OBJEXT) privileges.$(OBJEXT) \
+ 	service.$(OBJEXT) session.$(OBJEXT) usercss.$(OBJEXT)
+-shellinaboxd_OBJECTS = $(am_shellinaboxd_OBJECTS)
++shellinaboxd_OBJECTS = $(am_shellinaboxd_OBJECTS) libprivatekeypassword.a
+ shellinaboxd_DEPENDENCIES = liblogging.la libhttp.la
+ shellinaboxd_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \

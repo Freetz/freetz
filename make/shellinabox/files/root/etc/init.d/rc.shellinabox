@@ -5,18 +5,27 @@ DAEMON_BIN=shellinaboxd
 DAEMON_LONG_NAME="Shell in a Box"
 . /etc/init.d/modlibrc
 
-
 config() {
-	mkdir -p /tmp/shellinabox
-	if [ -n "${SHELLINABOX_CERT// /}" -a -z "${SHELLINABOX_NOSSL// /}" ]; then
-		echo "$SHELLINABOX_CERT" > /tmp/shellinabox/certificate.pem
+	if [ $SHELLINABOX_USEBOXCERT != yes ]; then
+		mkdir -p /tmp/shellinabox
+		if [ -n "${SHELLINABOX_CERT// /}" -a -z "${SHELLINABOX_NOSSL// /}" ]; then
+			echo "$SHELLINABOX_CERT" > /tmp/shellinabox/certificate.pem
+		fi
 	fi
 }
 
 start() {
-	local CMDLINE="-b --pidfile=$PID_FILE -c /tmp/shellinabox"
+	local CMDLINE="-b --pidfile=$PID_FILE"
 	[ -n "${SHELLINABOX_PORT// /}" ] && CMDLINE="$CMDLINE -p $SHELLINABOX_PORT"
-	[ -n "${SHELLINABOX_NOSSL// /}" ] && CMDLINE="$CMDLINE -t"
+	if [ -n "${SHELLINABOX_NOSSL// /}" ]; then
+		CMDLINE="$CMDLINE -t"
+	else
+		if [ $SHELLINABOX_USEBOXCERT == yes ]; then
+			CMDLINE="$CMDLINE --cert-from-box"
+		else
+			CMDLINE="$CMDLINE -c /tmp/shellinabox"
+		fi
+	fi
 	[ -n "${SHELLINABOX_SERVICE// /}" ] && CMDLINE="$CMDLINE -s $SHELLINABOX_SERVICE"
 	modlib_startdaemon $DAEMON_BIN $CMDLINE $SHELLINABOX_OPTIONS
 }

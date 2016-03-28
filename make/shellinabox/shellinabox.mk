@@ -6,6 +6,11 @@ $(PKG)_SOURCE_MD5:=6c63b52edcebc56ee73a108e7211d174
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)d
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)d
 
+ifeq ($(strip $(FREETZ_PACKAGE_SHELLINABOX_BOXCERT)),y)
+$(PKG)_CONDITIONAL_PATCHES+=boxcert
+$(PKG)_LDFLAGS += -ldl
+endif
+
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 # touch configure.ac to prevent aclocal.m4 & configure from being regenerated
@@ -27,7 +32,7 @@ endif
 $(PKG)_LDFLAGS += -lm
 
 ifeq ($(strip $(FREETZ_PACKAGE_SHELLINABOX_STATIC)),y)
-$(PKG)_ADD_FLAGS += -lm -all-static -ldl
+$(PKG)_ADD_FLAGS += -lm -all-static -ldl -DSTATIC
 endif
 
 $(PKG_SOURCE_DOWNLOAD)
@@ -35,6 +40,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	cp -a $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libprivatekeypassword.a $(SHELLINABOX_DIR)
 	$(SUBMAKE) -C $(SHELLINABOX_DIR) \
 		shellinaboxd_ADD="$(SHELLINABOX_ADD_FLAGS)" \
 		LDFLAGS="$(SHELLINABOX_LDFLAGS)"

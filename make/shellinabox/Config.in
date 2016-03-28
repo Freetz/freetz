@@ -25,3 +25,12 @@ config FREETZ_PACKAGE_SHELLINABOX_SSL
 	help
 		Building "Shell In A Box" w/o SSL will lead to a
 		much smaller binary, but access is unsecure!
+
+config FREETZ_PACKAGE_SHELLINABOX_BOXCERT
+	depends on FREETZ_PACKAGE_SHELLINABOX
+	bool "build with support for FRITZ!OS certificate"
+	select FREETZ_PACKAGE_PRIVATEKEYPASSWORD
+	default n
+	help
+		Building "Shell In A Box" with FRITZ!OS support
+		enables use of existing box certificate and key
