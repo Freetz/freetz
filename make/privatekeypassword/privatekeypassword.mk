@@ -1,13 +1,19 @@
-$(call PKG_INIT_BIN, 0.1)
+$(call PKG_INIT_BIN, 0.5)
+$(PKG)_PRJNAME:=privatekeypassword
+$(PKG)_SOURCE:=v$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA256:=bf432d5d76ce3703386dadefd5b2ecee095285ed92132877cb40e14f81c54bb6
+$(PKG)_SITE:=https://github.com/PeterPawn/$($(PKG)_PRJNAME)/archive
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/getprivkeypass-ftpd-proxy
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/getprivkeypass-ftpd-proxy
+$(PKG)_BINARY:=$($(PKG)_DIR)/$($(PKG)_PRJNAME)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$($(PKG)_PRJNAME)
 
-$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libprivatekeypassword.so
-$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libprivatekeypassword.so
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libprivatekeypassword.so
+$(PKG)_LIBNAME:=lib$($(PKG)_PRJNAME).so
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/$($(PKG)_LIBNAME)
+$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/$($(PKG)_LIBNAME)
 
-$(PKG_LOCALSOURCE_PACKAGE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_LIB_BINARY) $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
