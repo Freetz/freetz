@@ -97,10 +97,6 @@ $(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
 # silence some warnings
 $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -type f -name "*.c" \
 	-exec $(SED) -i -r -e 's|(\#define (_LARGEFILE(64)?_SOURCE))|\#ifndef \2\n\1\n\#endif|g' \{\} \+ ;
-# link the libgcc_pic.a libraries as libgcc_s.a, it looks like no libgcc_s.a will be staged
-$(PKG)_CONFIGURE_PRE_CMDS += find $(FREETZ_BASE_DIR)/$(TOOLCHAIN_DIR) -type f -name "libgcc_pic.a" | \
-	$(SED) -e 's+^\(.*\)$$$$+fn=\1;d=$$$$(pwd);cd $$$${fn%/*};[ -e libgcc_s.a ] || ln -s libgcc_pic.a libgcc_s.a;cd $$$$d+p' | \
-	sh ;
 
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 # we don't really build profiled libraries, we just misuse e2fsprogs' profile-target
