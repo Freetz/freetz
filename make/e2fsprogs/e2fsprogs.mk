@@ -107,7 +107,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 # to build static libraries with pic-objects inside, s. 010-pic_instead_of_profile.patch
 $(KG)_CONFIGURE_OPTIONS += --enable-profile
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_FULLSTATIC)),y)
-$(PKG)_EXTRA_STATIC_LDFLAGS += ,-static
+$(PKG)_EXTRA_STATIC_LDFLAGS := -static
 endif
 else
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
@@ -129,7 +129,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(E2FSPROGS_DIR) \
 		EXTRA_CFLAGS="-ffunction-sections -fdata-sections" \
-		EXTRA_LDFLAGS="-Wl,--gc-sections$(E2FSPROGS_EXTRA_STATIC_LDFLAGS)" \
+		EXTRA_LDFLAGS="-Wl,--gc-sections $(E2FSPROGS_EXTRA_STATIC_LDFLAGS)" \
 		INFO=true \
 		V=1 \
 		all \
