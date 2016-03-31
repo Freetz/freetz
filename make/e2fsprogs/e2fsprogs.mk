@@ -101,7 +101,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -type f -name "*.c" \
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 # we don't really build profiled libraries, we just misuse e2fsprogs' profile-target
 # to build static libraries with pic-objects inside, s. 010-pic_instead_of_profile.patch
-$(KG)_CONFIGURE_OPTIONS += --enable-profile
+$(PKG)_CONFIGURE_OPTIONS += --enable-profile
 ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_FULLSTATIC)),y)
 $(PKG)_EXTRA_STATIC_LDFLAGS := -static
 endif
