@@ -10,8 +10,10 @@ config FREETZ_GCC_ARCH
 config FREETZ_GCC_TUNE
 	string
 	default "4kc"      if FREETZ_TARGET_ARCH_LE
+	default "34kc"     if FREETZ_TARGET_ARCH_BE && FREETZ_TYPE_7490
 	default "24kc"     if FREETZ_TARGET_ARCH_BE
 
 config FREETZ_GCC_FLOAT_ABI
 	string
+	default "hard"     if FREETZ_TYPE_7490
 	default "soft"
