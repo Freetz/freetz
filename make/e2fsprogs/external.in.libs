@@ -1,0 +1,57 @@
+menu "e2fsprogs libraries"
+	depends on EXTERNAL_ENABLED
+	depends on !FREETZ_PACKAGE_E2FSPROGS_ALL_DYN \
+		|| ( \
+			(!FREETZ_PACKAGE_E2FSPROGS_E2FSCK || EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_e2fsck) && \
+			(!FREETZ_PACKAGE_E2FSPROGS_BLKID  || EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid) \
+		)
+
+config EXTERNAL_FREETZ_LIB_libblkid
+	depends on FREETZ_LIB_libblkid
+	bool "libblkid"
+	default n
+	help
+		externals the following file(s)
+		 /usr/lib/libblkid.so.1.0
+
+config EXTERNAL_FREETZ_LIB_libcom_err
+	depends on FREETZ_LIB_libcom_err
+	bool "libcom_err"
+	default n
+	help
+		externals the following file(s)
+		 /usr/lib/libcom_err.so.2.1
+
+config EXTERNAL_FREETZ_LIB_libe2p
+	depends on FREETZ_LIB_libe2p
+	bool "libe2p"
+	default n
+	help
+		externals the following file(s)
+		 /usr/lib/libe2p.so.2.3
+
+config EXTERNAL_FREETZ_LIB_libext2fs
+	depends on FREETZ_LIB_libext2fs
+	bool "libext2fs"
+	default n
+	help
+		externals the following file(s)
+		 /usr/lib/libext2fs.so.2.4
+
+config EXTERNAL_FREETZ_LIB_libss
+	depends on FREETZ_LIB_libss
+	bool "libss"
+	default n
+	help
+		externals the following file(s)
+		 /usr/lib/libss.so.2.0
+
+config EXTERNAL_FREETZ_LIB_libuuid
+	depends on FREETZ_LIB_libuuid
+	bool "libuuid"
+	default n
+	help
+		externals the following file(s)
+		 /usr/lib/libuuid.so.1.2
+
+endmenu

@@ -361,7 +361,7 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_PROPS
 config FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_LOCKS
 	bool "enable locks in mod_webdav"
 	depends on FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_PROPS
-	select FREETZ_LIB_libuuid if ! FREETZ_PACKAGE_E2FSPROGS_STATIC
+	select FREETZ_LIB_libuuid
 	default n
 	help
 		This option enables locks in mod_webdav.

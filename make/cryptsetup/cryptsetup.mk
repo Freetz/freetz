@@ -7,7 +7,6 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/cryptsetup
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/cryptsetup
 
 $(PKG)_DEPENDS_ON += devmapper e2fsprogs popt libgcrypt
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 

@@ -1,0 +1,84 @@
+--- configure
++++ configure
+@@ -4965,7 +4965,7 @@
+ 	esac
+ 	BINARY_TYPE=elfbin
+ 	LIB_EXT=.so
+-	PRIVATE_LIBS_CMT=#
++#	PRIVATE_LIBS_CMT=#
+ 	LDFLAG_DYNAMIC='-Wl,-rpath-link,$(top_builddir)/lib'
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: Enabling ELF shared libraries" >&5
+ $as_echo "Enabling ELF shared libraries" >&6; }
+@@ -5307,8 +5307,8 @@
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: Disabling private uuid library" >&5
+ $as_echo "Disabling private uuid library" >&6; }
+ else
+-	LIBUUID='$(LIB)/libuuid'$LIB_EXT
+-	DEPLIBUUID=$LIBUUID
++	LIBUUID='-L$(LIB) $(LINK_STATICALLY_PRE) -luuid $(LINK_STATICALLY_POST)'
++	DEPLIBUUID='$(LIB)/libuuid'$LIB_EXT
+ 	STATIC_LIBUUID='$(LIB)/libuuid'$STATIC_LIB_EXT
+ 	DEPSTATIC_LIBUUID=$STATIC_LIBUUID
+ 	PROFILED_LIBUUID='$(LIB)/libuuid'$PROFILED_LIB_EXT
+@@ -5318,8 +5318,8 @@
+ fi
+ 
+ else
+-  LIBUUID='$(LIB)/libuuid'$LIB_EXT
+-DEPLIBUUID=$LIBUUID
++  LIBUUID='-L$(LIB) $(LINK_STATICALLY_PRE) -luuid $(LINK_STATICALLY_POST)'
++DEPLIBUUID='$(LIB)/libuuid'$LIB_EXT
+ STATIC_LIBUUID='$(LIB)/libuuid'$STATIC_LIB_EXT
+ DEPSTATIC_LIBUUID=$STATIC_LIBUUID
+ PROFILED_LIBUUID='$(LIB)/libuuid'$PROFILED_LIB_EXT
+@@ -5520,8 +5520,8 @@
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: Disabling private blkid library" >&5
+ $as_echo "Disabling private blkid library" >&6; }
+ else
+-	LIBBLKID='$(LIB)/libblkid'$LIB_EXT
+-	DEPLIBBLKID=$LIBBLKID
++	LIBBLKID='-L$(LIB) $(LINK_STATICALLY_PRE) -lblkid $(LINK_STATICALLY_POST)'
++	DEPLIBBLKID='$(LIB)/libblkid'$LIB_EXT
+ 	STATIC_LIBBLKID='$(LIB)/libblkid'$STATIC_LIB_EXT
+ 	DEPSTATIC_LIBBLKID=$STATIC_LIBBLKID
+ 	PROFILED_LIBBLKID='$(LIB)/libblkid'$PROFILED_LIB_EXT
+@@ -5533,8 +5533,8 @@
+ fi
+ 
+ else
+-  LIBBLKID='$(LIB)/libblkid'$LIB_EXT
+-DEPLIBBLKID=$LIBBLKID
++  LIBBLKID='-L$(LIB) $(LINK_STATICALLY_PRE) -lblkid $(LINK_STATICALLY_POST)'
++DEPLIBBLKID='$(LIB)/libblkid'$LIB_EXT
+ STATIC_LIBBLKID='$(LIB)/libblkid'$STATIC_LIB_EXT
+ DEPSTATIC_LIBBLKID=$STATIC_LIBBLKID
+ PROFILED_LIBBLKID='$(LIB)/libblkid'$PROFILED_LIB_EXT
+--- MCONFIG.in
++++ MCONFIG.in
+@@ -99,14 +99,22 @@
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ MKINSTALLDIRS = @MKINSTALLDIRS@
+ 
++ifeq ($(LINK_MODE),PKG_STAT)
++LINK_STATICALLY_PRE  = -Wl,-Bstatic
++LINK_STATICALLY_POST = -Wl,-Bdynamic
++endif
++ifeq ($(LINK_MODE),ALL_STAT)
++ALL_LDFLAGS += -static
++endif
++
+ #
+ # Library definitions
+ #
+ LIB = $(top_builddir)/lib
+-LIBSS = $(LIB)/libss@LIB_EXT@ @PRIVATE_LIBS_CMT@ @DLOPEN_LIB@
+-LIBCOM_ERR = $(LIB)/libcom_err@LIB_EXT@ @PRIVATE_LIBS_CMT@ @SEM_INIT_LIB@
+-LIBE2P = $(LIB)/libe2p@LIB_EXT@
+-LIBEXT2FS = $(LIB)/libext2fs@LIB_EXT@
++LIBSS = -L$(LIB) $(LINK_STATICALLY_PRE) -lss $(LINK_STATICALLY_POST) @PRIVATE_LIBS_CMT@ @DLOPEN_LIB@
++LIBCOM_ERR = -L$(LIB) $(LINK_STATICALLY_PRE) -lcom_err $(LINK_STATICALLY_POST) @PRIVATE_LIBS_CMT@ @SEM_INIT_LIB@
++LIBE2P = -L$(LIB) $(LINK_STATICALLY_PRE) -le2p $(LINK_STATICALLY_POST)
++LIBEXT2FS = -L$(LIB) $(LINK_STATICALLY_PRE) -lext2fs $(LINK_STATICALLY_POST)
+ LIBUUID = @LIBUUID@ @SOCKET_LIB@
+ LIBQUOTA = @STATIC_LIBQUOTA@
+ LIBBLKID = @LIBBLKID@ @PRIVATE_LIBS_CMT@ $(LIBUUID)

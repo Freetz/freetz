@@ -1,0 +1,127 @@
+--- MCONFIG.in
++++ MCONFIG.in
+@@ -114,6 +114,8 @@
+ SYSLIBS = @LIBS@
+ DEPLIBSS = $(LIB)/libss@LIB_EXT@
+ DEPLIBCOM_ERR = $(LIB)/libcom_err@LIB_EXT@
++DEPLIBE2P = $(LIB)/libe2p@LIB_EXT@
++DEPLIBEXT2FS = $(LIB)/libext2fs@LIB_EXT@
+ DEPLIBUUID = @DEPLIBUUID@
+ DEPLIBQUOTA = @DEPSTATIC_LIBQUOTA@
+ DEPLIBBLKID = @DEPLIBBLKID@ @PRIVATE_LIBS_CMT@ $(DEPLIBUUID)
+--- debugfs/Makefile.in
++++ debugfs/Makefile.in
+@@ -33,7 +33,7 @@
+ 
+ LIBS= $(LIBQUOTA) $(LIBEXT2FS) $(LIBE2P) $(LIBSS) $(LIBCOM_ERR) $(LIBBLKID) \
+ 	$(LIBUUID) $(SYSLIBS)
+-DEPLIBS= $(DEPLIBQUOTA) $(LIBEXT2FS) $(LIBE2P) $(DEPLIBSS) $(DEPLIBCOM_ERR) \
++DEPLIBS= $(DEPLIBQUOTA) $(DEPLIBEXT2FS) $(DEPLIBE2P) $(DEPLIBSS) $(DEPLIBCOM_ERR) \
+ 	$(DEPLIBBLKID) $(DEPLIBUUID)
+ 
+ STATIC_LIBS= $(STATIC_LIBQUOTA) $(STATIC_LIBEXT2FS) $(STATIC_LIBSS) \
+--- e2fsck/Makefile.in
++++ e2fsck/Makefile.in
+@@ -24,7 +24,7 @@
+ 
+ LIBS= $(LIBQUOTA) $(LIBEXT2FS) $(LIBCOM_ERR) $(LIBBLKID) $(LIBUUID) \
+ 	$(LIBINTL) $(LIBE2P) $(SYSLIBS)
+-DEPLIBS= $(DEPLIBQUOTA) $(LIBEXT2FS) $(DEPLIBCOM_ERR) $(DEPLIBBLKID) \
++DEPLIBS= $(DEPLIBQUOTA) $(DEPLIBEXT2FS) $(DEPLIBCOM_ERR) $(DEPLIBBLKID) \
+ 	 $(DEPLIBUUID) $(DEPLIBE2P)
+ 
+ STATIC_LIBS= $(STATIC_LIBQUOTA) $(STATIC_LIBEXT2FS) $(STATIC_LIBCOM_ERR) \
+@@ -148,13 +148,13 @@
+ 	$(Q) $(CC) $(ALL_CFLAGS) $(ALL_LDFLAGS) $(RDYNAMIC) \
+ 		$(srcdir)/sigcatcher.c -DDEBUG -o tst_sigcatcher
+ 
+-tst_problem: $(srcdir)/problem.c $(srcdir)/problem.h $(LIBEXT2FS) \
++tst_problem: $(srcdir)/problem.c $(srcdir)/problem.h $(DEPLIBEXT2FS) \
+ 	$(DEPLIBCOM_ERR)
+ 	$(Q) $(CC) $(ALL_CFLAGS) $(ALL_LDFLAGS) -o tst_problem \
+ 		$(srcdir)/problem.c -DUNITTEST $(LIBEXT2FS) $(LIBCOM_ERR) \
+ 		$(LIBINTL) $(SYSLIBS)
+ 
+-tst_crc32: $(srcdir)/crc32.c $(LIBEXT2FS) $(DEPLIBCOM_ERR)
++tst_crc32: $(srcdir)/crc32.c $(DEPLIBEXT2FS) $(DEPLIBCOM_ERR)
+ 	$(Q) $(CC) $(ALL_LDFLAGS) $(ALL_CFLAGS) -o tst_crc32 $(srcdir)/crc32.c \
+ 		-DUNITTEST $(LIBEXT2FS) $(LIBCOM_ERR) $(SYSLIBS)
+ 
+--- misc/Makefile.in
++++ misc/Makefile.in
+@@ -97,7 +97,7 @@
+ 		$(srcdir)/e2undo.c $(srcdir)/e2freefrag.c
+ 
+ LIBS= $(LIBEXT2FS) $(LIBCOM_ERR)
+-DEPLIBS= $(LIBEXT2FS) $(DEPLIBCOM_ERR)
++DEPLIBS= $(DEPLIBEXT2FS) $(DEPLIBCOM_ERR)
+ PROFILED_LIBS= $(PROFILED_LIBEXT2FS) $(PROFILED_LIBCOM_ERR)
+ PROFILED_DEPLIBS= $(PROFILED_LIBEXT2FS) $(DEPPROFILED_LIBCOM_ERR)
+ 
+@@ -105,7 +105,7 @@
+ STATIC_DEPLIBS= $(STATIC_LIBEXT2FS) $(DEPSTATIC_LIBCOM_ERR) 
+ 
+ LIBS_E2P= $(LIBE2P) $(LIBCOM_ERR) 
+-DEPLIBS_E2P= $(LIBE2P) $(DEPLIBCOM_ERR) 
++DEPLIBS_E2P= $(DEPLIBE2P) $(DEPLIBCOM_ERR) 
+ 
+ COMPILE_ET=$(top_builddir)/lib/et/compile_et --build-tree
+ 
+@@ -160,13 +160,13 @@
+ 	$(E) "	LD $@"
+ 	$(Q) $(CC) $(ALL_LDFLAGS) -o partinfo partinfo.o
+ 
+-e2initrd_helper: e2initrd_helper.o $(DEPLIBS) $(DEPLIBBLKID) $(LIBEXT2FS)
++e2initrd_helper: e2initrd_helper.o $(DEPLIBS) $(DEPLIBBLKID) $(DEPLIBEXT2FS)
+ 	$(E) "	LD $@"
+ 	$(Q) $(CC) $(ALL_LDFLAGS) -o e2initrd_helper e2initrd_helper.o $(LIBS) \
+ 		$(LIBBLKID) $(LIBEXT2FS) $(LIBINTL) $(SYSLIBS)
+ 
+ tune2fs: $(TUNE2FS_OBJS) $(DEPLIBS) $(DEPLIBS_E2P) $(DEPLIBBLKID) \
+-		$(DEPLIBUUID) $(DEPLIBQUOTA) $(LIBEXT2FS)
++		$(DEPLIBUUID) $(DEPLIBQUOTA) $(DEPLIBEXT2FS)
+ 	$(E) "	LD $@"
+ 	$(Q) $(CC) $(ALL_LDFLAGS) -o tune2fs $(TUNE2FS_OBJS) $(LIBS) \
+ 		$(LIBBLKID) $(LIBUUID) $(LIBQUOTA) $(LIBEXT2FS) $(LIBS_E2P) \
+@@ -187,7 +187,7 @@
+ 		$(PROFILED_LIBUUID) $(PROFILED_LIBQUOTA) $(PROFILED_LIBE2P) \
+ 		$(LIBINTL) $(PROFILED_LIBS) $(SYSLIBS)
+ 
+-blkid: $(BLKID_OBJS) $(DEPLIBBLKID) $(LIBEXT2FS)
++blkid: $(BLKID_OBJS) $(DEPLIBBLKID) $(DEPLIBEXT2FS)
+ 	$(E) "	LD $@"
+ 	$(Q) $(CC) $(ALL_LDFLAGS) -o blkid $(BLKID_OBJS) $(LIBBLKID) $(LIBINTL) \
+ 		$(LIBEXT2FS) $(SYSLIBS)
+@@ -247,8 +247,8 @@
+ 	$(Q) $(CC) $(ALL_LDFLAGS) -o mklost+found $(MKLPF_OBJS) \
+ 		$(LIBINTL) $(SYSLIBS)
+ 
+-mke2fs: $(MKE2FS_OBJS) $(DEPLIBS) $(LIBE2P) $(DEPLIBBLKID) $(DEPLIBUUID) \
+-		$(DEPLIBQUOTA) $(LIBEXT2FS)
++mke2fs: $(MKE2FS_OBJS) $(DEPLIBS) $(DEPLIBE2P) $(DEPLIBBLKID) $(DEPLIBUUID) \
++		$(DEPLIBQUOTA) $(DEPLIBEXT2FS)
+ 	$(E) "	LD $@"
+ 	$(Q) $(CC) $(ALL_LDFLAGS) -o mke2fs $(MKE2FS_OBJS) $(LIBS) $(LIBBLKID) \
+ 		$(LIBUUID) $(LIBQUOTA) $(LIBEXT2FS) $(LIBE2P) $(LIBINTL) \
+--- resize/Makefile.in
++++ resize/Makefile.in
+@@ -29,7 +29,7 @@
+ 	$(srcdir)/sim_progress.c
+ 
+ LIBS= $(LIBE2P) $(LIBEXT2FS) $(LIBCOM_ERR) $(LIBINTL) $(SYSLIBS)
+-DEPLIBS= $(LIBE2P) $(LIBEXT2FS) $(DEPLIBCOM_ERR)
++DEPLIBS= $(DEPLIBE2P) $(DEPLIBEXT2FS) $(DEPLIBCOM_ERR)
+ 
+ STATIC_LIBS= $(STATIC_LIBE2P) $(STATIC_LIBEXT2FS) $(STATIC_LIBCOM_ERR) \
+ 	$(LIBINTL) $(SYSLIBS)
+--- tests/progs/Makefile.in
++++ tests/progs/Makefile.in
+@@ -22,7 +22,7 @@
+ SRCS=	$(srcdir)/test_rel.c 
+ 
+ LIBS= $(LIBEXT2FS) $(LIBSS) $(LIBCOM_ERR) $(SYSLIBS)
+-DEPLIBS= $(LIBEXT2FS) $(DEPLIBSS) $(DEPLIBCOM_ERR)
++DEPLIBS= $(DEPLIBEXT2FS) $(DEPLIBSS) $(DEPLIBCOM_ERR)
+ 
+ .c.o:
+ 	$(E) "	CC $<"

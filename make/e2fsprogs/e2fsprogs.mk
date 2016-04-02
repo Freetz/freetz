@@ -31,16 +31,12 @@ $(PKG)_LIBNAMES_SHORT += uuid
 $(PKG)_LIBVERSIONS += 1.2
 endif
 
-ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
-$(PKG)_LIBNAMES_LONG	:= $($(PKG)_LIBNAMES_SHORT_ALL:%=lib%.a)
-else
-$(PKG)_LIBNAMES_LONG := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
+$(PKG)_LIBNAMES_LONG    := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS))
 $(PKG)_LIBS_TARGET_DIR  := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
-endif
-$(PKG)_LIBS_BUILD_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/%)
-$(PKG)_LIBS_STAGING_DIR	:= $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
+$(PKG)_LIBS_BUILD_DIR   := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DIR)/lib/%)
+$(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 
-$(PKG)_MAKE_ALL_EXTRAS	:= && ln -fsT et $($(PKG)_DIR)/lib/com_err
+$(PKG)_MAKE_ALL_EXTRAS  := && ln -fsT et $($(PKG)_DIR)/lib/com_err
 
 $(PKG)_BINARIES_ALL := \
 	e2fsck fsck \
@@ -83,7 +79,10 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_E2FSCK),,usr/sbin/fsck.ext2 u
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_E2MAKING),,usr/sbin/mkfs.ext2 usr/sbin/mkfs.ext3)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_E2FSPROGS_BLKID),,sbin/blkid)
 
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_STATIC
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_ALL_DYN
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_PKG_STAT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_E2FSPROGS_ALL_STAT
+$(PKG)_LINK_MODE := $(call PKG_SELECTED_SUBOPTIONS,ALL_DYN PKG_STAT ALL_STAT)
 
 $(PKG)_CONFIGURE_ENV += ac_cv_path_LDCONFIG=$(TARGET_LDCONFIG)
 $(PKG)_CONFIGURE_ENV += gt_cv_func_printf_posix=yes
@@ -97,14 +96,8 @@ $(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
 $(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -type f -name "*.c" \
 	-exec $(SED) -i -r -e 's|(\#define (_LARGEFILE(64)?_SOURCE))|\#ifndef \2\n\1\n\#endif|g' \{\} \+ ;
 
-ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
-# we don't really build profiled libraries, we just misuse e2fsprogs' profile-target
-# to build static libraries with pic-objects inside, s. 010-pic_instead_of_profile.patch
-$(PKG)_CONFIGURE_OPTIONS += --enable-profile
-else
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --enable-elf-shlibs
-endif
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --disable-defrag
@@ -122,18 +115,13 @@ $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(E2FSPROGS_DIR) \
 		EXTRA_CFLAGS="-ffunction-sections -fdata-sections" \
 		EXTRA_LDFLAGS="-Wl,--gc-sections" \
+		LINK_MODE=$(E2FSPROGS_LINK_MODE) \
 		INFO=true \
 		V=1 \
 		all \
 		$(E2FSPROGS_MAKE_ALL_EXTRAS)
 
 $($(PKG)_LIBS_STAGING_DIR): $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%: $($(PKG)_DIR)/lib/%
-# ensure no shared/static-pic library from previous builds exists in STAGING_DIR
-ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
-	$(RM) $(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%.so*)
-else
-	$(RM) $(E2FSPROGS_LIBNAMES_SHORT_ALL:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%_pic.a)
-endif
 	LIBSUBDIR=`echo $(notdir $@) | $(SED) -r -e 's|^lib||g' -e 's|[.]so[.].*$$||g' -e 's|[.]a$$||g'` \
 	&& \
 	$(SUBMAKE) -C $(E2FSPROGS_DIR)/lib/$${LIBSUBDIR} \
@@ -146,21 +134,15 @@ endif
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/$${LIBSUBDIR}.pc
 
-ifneq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
 $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
 	$(INSTALL_LIBRARY_STRIP)
-endif
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/misc/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
 
-ifeq ($(strip $(FREETZ_PACKAGE_E2FSPROGS_STATIC)),y)
-$(pkg)-precompiled: $($(PKG)_LIBS_STAGING_DIR) $($(PKG)_BINARIES_TARGET_DIR)
-else
 $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_BINARIES_TARGET_DIR)
-endif
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(E2FSPROGS_DIR) clean
