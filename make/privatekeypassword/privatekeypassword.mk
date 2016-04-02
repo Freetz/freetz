@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 0.5)
 $(PKG)_PRJNAME:=privatekeypassword
 $(PKG)_SOURCE:=v$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=bf432d5d76ce3703386dadefd5b2ecee095285ed92132877cb40e14f81c54bb6
+$(PKG)_SOURCE_SHA256:=353e1e868226bfba0e2bcf583dad79cd55231d38ec7cba381a3e7b0e6a0e3715
 $(PKG)_SITE:=https://github.com/PeterPawn/$($(PKG)_PRJNAME)/archive
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$($(PKG)_PRJNAME)
