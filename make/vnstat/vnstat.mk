@@ -9,23 +9,15 @@ $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
-ifeq ($(strip $(FREETZ_PACKAGE_VNSTAT_IMAGE)),y)
 $(PKG)_DEPENDS_ON += libgd
-$(PKG)_MAKE_TARGET := all
-# using cached value of "ac_cv_lib_gd_gdImageLine" might break the build of vnstati (with image support) 
-# for a (later) build of the required libgd would not be honored after a prior run of configure (without libgd)  
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e  '/if.*ac_cv_lib_gd_gdImageLine.*false/ s,ac_cv_lib_gd_gdImageLine,lib_gd_gdImageLine,' ./configure;
-endif
-
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_gd_gdImageLine)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) $(VNSTAT_MAKE_TARGET) -C $(VNSTAT_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)"
+	$(SUBMAKE) -C $(VNSTAT_DIR)
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/%
 	$(INSTALL_BINARY_STRIP)
