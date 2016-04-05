@@ -1,0 +1,11 @@
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_entry.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_entry.c
+@@ -548,6 +548,8 @@
+     /* Print driver version */
+     DEB_ERR("Version: %s\n", AVM_CPMAC_VERSION);
+ 
++    printk(KERN_INFO "cpmac: compiled with sizeof(struct sk_buff) = %d\n", sizeof(struct sk_buff));
++
+     /* Initialize administrative array */
+     memset(&cpmac_global, 0, sizeof(cpmac_global_t));
+     for(instance = 0; instance < AVM_CPMAC_MAX_PHYS; instance++) {

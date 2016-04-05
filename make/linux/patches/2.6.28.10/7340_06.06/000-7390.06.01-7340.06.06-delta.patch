@@ -1,0 +1,3461 @@
+This patch has been created from AVM's opensrc packages for 7390.06.01 and 7340.06.06
+by applying to the kernel sources they contain the following command:
+
+    diff -durN --no-dereference 7390.06.01 7340.06.06 > this.patch
+
+--- linux-2.6.28/drivers/char/avm_new/ar7wdt_main.c
++++ linux-2.6.28/drivers/char/avm_new/ar7wdt_main.c
+@@ -41,7 +41,6 @@
+ #include <linux/mm.h>
+ #include <linux/vmstat.h>
+ 
+-static void AVM_WATCHDOG_check_all_triggered(void);
+ 
+ /*-----------------------------------------------------------------------------------------------*\
+ \*-----------------------------------------------------------------------------------------------*/
+@@ -492,7 +491,6 @@
+     ar7wdt_data.appl[handle].pagefaults  = get_act_pagefaults();
+     /*--- timer neu aufsetzen ---*/
+     _AVM_WATCHDOG_ctrl_timer(AVM_WATCHDOG_DEL_TIMER | AVM_WATCHDOG_SET_TIMER, handle);
+-    AVM_WATCHDOG_check_all_triggered();
+ 
+ #if defined(WATCHDOG_LIST_TASK_STATISTIC)
+     show_task_statistic();
+@@ -748,8 +746,9 @@
+     saved_printk = printk;
+     set_printk(__printk); /*--- folgende Ausgaben sofort ausgeben: ---*/
+     /*--- printk("utime_sum: %lld unorm %d\n", utime_sum, unorm); ---*/
+-    printk(KERN_EMERG "[%lu]AVM_WATCHDOG_reboot(hdl=%u, name=%s): reboot (current: %s pgfault %lu)\n", 
++    printk(KERN_EMERG "[%lu][%x]AVM_WATCHDOG_reboot(hdl=%u, name=%s): reboot (current: %s pgfault %lu)\n", 
+                                     jiffies,
++                                    smp_processor_id(),
+                                     notrigger_handle + 1, ar7wdt_data.appl[notrigger_handle].Name, 
+                                     current->comm,
+                                     current->signal->cmaj_flt
+@@ -869,7 +868,11 @@
+         return -EINVAL; /*--- inval argument ---*/
+     }
+     if(ar7wdt_data.states & (1 << handle)) {
+-        struct task_struct *hungtask = watchdog_task_list(handle);
++        struct task_struct *hungtask;
++        if(!ar7wdt_no_reboot) {
++            ar7wdt_hw_trigger();
++        }
++        hungtask = watchdog_task_list(handle);
+ #ifdef CONFIG_SCHEDSTATS
+         if (ar7wdt_no_reboot == 1) {
+ #if KERNEL_VERSION(2, 6, 19) >= LINUX_VERSION_CODE
+@@ -932,6 +935,7 @@
+                 } 
+             }
+ #endif       
++            AVM_WATCHDOG_deinit();
+             init_timer(&PanicTimer);
+             PanicTimer.data     = (unsigned long)hungtask;
+             PanicTimer.function = panic_function;
+@@ -946,32 +950,6 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+-static void AVM_WATCHDOG_check_all_triggered(void) {
+-    int i;
+-    unsigned int mask    = 0;
+-    unsigned int trigger = 0;
+-    unsigned long flags;
+-
+-    spin_lock_irqsave(&ar7_wdt_lock, flags);
+-    for( i = 0 ; i < MAX_WDT_APPLS ; i++) {
+-        if(ar7wdt_data.mask & (1 << i)) {
+-            mask |= 1 << i;
+-            if(ar7wdt_data.triggered & (1 << i)) {
+-                trigger |= 1 << i;
+-            }
+-        }
+-    }
+-    if(mask == trigger) {
+-        ar7wdt_data.triggered = 0;
+-        spin_unlock_irqrestore(&ar7_wdt_lock, flags);
+-        ar7wdt_hw_trigger();
+-    } else {
+-        spin_unlock_irqrestore(&ar7_wdt_lock, flags);
+-        DBG(KERN_INFO "%s(): not triggered mask 0x%x\n", __func__, mask ^ trigger);
+-    }
+-}
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+ static void AVM_WATCHDOG_timer_handler_action(unsigned int handle) {
+     unsigned long flags;
+     spin_lock_irqsave(&ar7_wdt_lock, flags);
+--- linux-2.6.28/drivers/char/avm_new/ifxmips_wdt.h
++++ linux-2.6.28/drivers/char/avm_new/ifxmips_wdt.h
+@@ -1,7 +1,7 @@
+ #ifndef _ifxmips_wdt_h_
+ #define _ifxmips_wdt_h_
+ 
+-#define WDT_TIMEOUT_SEC 10
++#define WDT_TIMEOUT_SEC 25
+ 
+ #define IFX_WDT_PW1 0x000000BE /**< First password for access */
+ #define IFX_WDT_PW2 0x000000DC /**< Second password for access */
+--- linux-2.6.28/drivers/char/avm_new/Makefile
++++ linux-2.6.28/drivers/char/avm_new/Makefile
+@@ -1,6 +1,6 @@
+ #############################################
+ # Makefile: automaticly genereated by ./init_avm
+-#           Mo 9. Dez 17:19:20 CET 2013
++#           Mo 16. MÃ¤r 17:37:17 CET 2015
+ #############################################
+ 
+ #####################################################################################
+--- linux-2.6.28/drivers/isdn/capi_oslib/appl.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/appl.c
+@@ -9,8 +9,7 @@
+ struct _ApplData *ApplData = NULL;
+ unsigned int MaxApplData   = 0;             /* Array, große bei Treiber Init gesetzt   */
+ unsigned int Karte;                         /* CAPI_INDEX                              */
+-struct semaphore Register_Release_Sema;     /* Semaphore für Register/Release Operation*/
+-struct semaphore ApplData_Sema;     /* Semaphore für Register/Release Operation*/
++static DEFINE_SPINLOCK(ApplData_Sema);
+ /*--- NU_SEMAPHORE S_ToLink; ---*/                      /* Semaphore zum Senden auf Linkinterface  */
+ 
+ void (*Stack_Register)(void *adata, unsigned int Mapper); /*  Callback Register im Stack       */
+@@ -22,16 +21,16 @@
+ unsigned int Appl_Find_ApplId(enum _capi_source CapiSource, unsigned int ApplId) {
+     unsigned int Count;
+     struct _ApplData *A;
+-    down(&ApplData_Sema);
++    spin_lock_bh(&ApplData_Sema);
+     A = &ApplData[0];
+     for(Count = 0 ; Count < MaxApplData ; Count++) {
+         if(A->InUse == _entry_in_use_ && A->ApplId == ApplId && A->CapiSource == CapiSource) {
+-            up(&ApplData_Sema);
++            spin_unlock_bh(&ApplData_Sema);
+             return Count + 1;
+         }
+         A++;
+     }
+-    up(&ApplData_Sema);
++    spin_unlock_bh(&ApplData_Sema);
+     return 0;
+ }
+ 
+@@ -39,15 +38,15 @@
+ \*-------------------------------------------------------------------------------------*/
+ unsigned int Appl_Find_EmptyApplId(void) {
+     unsigned int Count;
+-    down(&ApplData_Sema);
++    spin_lock_bh(&ApplData_Sema);
+     for(Count = 0 ; Count < MaxApplData ; Count++) {
+         if(ApplData[Count].InUse == _entry_not_used_) {
+             ApplData[Count].InUse = _entry_register_pending;
+-            up(&ApplData_Sema);
++            spin_unlock_bh(&ApplData_Sema);
+             return Count + 1;
+         }
+     }
+-    up(&ApplData_Sema);
++    spin_unlock_bh(&ApplData_Sema);
+     return 0;
+ }
+ 
+--- linux-2.6.28/drivers/isdn/capi_oslib/appl.h
++++ linux-2.6.28/drivers/isdn/capi_oslib/appl.h
+@@ -2,7 +2,7 @@
+ #define _APPL_H_
+ 
+ #include <linux/semaphore.h>
+-
++#include "consts.h"
+ /*-------------------------------------------------------------------------------------*\
+ \*-------------------------------------------------------------------------------------*/
+ #define LOCAL_CAPI_APPLIKATIONS             20
+@@ -52,7 +52,7 @@
+     unsigned int       AllocBlockSize;      /* Alloziierte Blocksize                   */
+     unsigned int       WindowSize;          /* Maximal WindowSize >= NCCIWindowsize    */
+     enum _capi_source  CapiSource;          /* Capi Source HOST / ONBOARD              */
+-    struct semaphore   Sema;                /* Semaphore zum Schutz dieser Structur    */
++    spinlock_t         lock; 
+     void              *CapiDataStruct;      /* Stack Daten (_struct _cap20_appl)       */
+     struct _NCCIData  *NCCIData;            /* Array von Verwaltungsstrukturen         */
+     void             (*ApplContextRelease)(void *);     
+@@ -69,9 +69,6 @@
+ extern struct _ApplData *ApplData;
+ extern unsigned int MaxApplData;            /* Array, große bei Treiber Init gesetzt   */
+ extern unsigned int Karte;                  /* CAPI_INDEX                              */
+-extern struct semaphore Register_Release_Sema;  /* Semaphore für Register/Release Operation*/
+-extern struct semaphore ApplData_Sema;     /* Semaphore für Register/Release Operation*/
+-/*--- extern NU_SEMAPHORE S_ToLink; ---*/               /* Semaphore zum Senden auf Linkinterface  */
+ 
+ extern void (*Stack_Register)(void *, unsigned int); /* Callback Register im Stack */
+ extern void (*Stack_Release)(void *); /* Callback Release im Stack               */
+@@ -89,4 +86,14 @@
+ void Debug_PrintAppls(unsigned int MapperId);
+ char *Appl_PrintOneAppl(struct _ApplData *A);
+ 
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static inline void appl_lock(struct _ApplData *A) {
++    spin_lock_bh(&A->lock);
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static inline void appl_unlock(struct _ApplData *A) {
++    spin_unlock_bh(&A->lock);
++}
+ #endif /*--- #ifndef _APPL_H_ ---*/
+--- linux-2.6.28/drivers/isdn/capi_oslib/ca.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/ca.c
+@@ -104,15 +104,15 @@
+         return 0; /*--- ACHTUNG hier gilt 0 als Fehler ---*/
+     }
+         
+-    down(&A->Sema);
++    appl_lock(A);
+     if(A->InUse == _entry_not_used_) {
+-        up(&A->Sema);
++        appl_unlock(A);
+         DEB_ERR("CA_NEW_NCCI: MapperId %d not registered (released)\n", MapperId);
+         return 0; /*--- ACHTUNG hier gilt 0 als Fehler ---*/
+     }
+ 
+     if(Appl_Find_NCCIData(A, NCCI)) {
+-        up(&A->Sema);
++        appl_unlock(A);
+         DEB_ERR("CA_NEW_NCCI: MapperId %u, NCCI %u already exists\n", MapperId, NCCI);
+         return 0; /*--- ACHTUNG hier gilt 0 als Fehler ---*/
+     }
+@@ -165,7 +165,7 @@
+             break;
+         }
+     }
+-    up(&A->Sema);
++    appl_unlock(A);
+ 
+     if(Count == A->NCCIs) {
+         DEB_NOTE("CA_NEW_NCCI: no empty NCCI-Entry found (MapperId %u)\n", MapperId);
+@@ -206,20 +206,20 @@
+     CapiSource = A->CapiSource;
+ 
+     if(NCCI == (unsigned int)-1) {
+-        HOST_RELEASE(A->CapiSource, A->ApplId);
++        HOST_RELEASE(CapiSource, ApplId);
+     } else {
+         int n;
+         
+-        down(&A->Sema);
++        appl_lock(A);
+         if(A->InUse == _entry_not_used_) {
+-            up(&A->Sema);
++            appl_unlock(A);
+             DEB_WARN("CA_FREE_NCCI: MapperId %d not registered (released)\n", MapperId);
+             return;
+         }
+ 
+         N = Appl_Find_NCCIData(A, NCCI);
+         if(N == NULL) {
+-            up(&A->Sema);
++            appl_unlock(A);
+             DEB_WARN("CA_FREE_NCCI: MapperId %d, NCCI %u: NCCI not found\n", MapperId, NCCI);
+             return;
+         }
+@@ -239,7 +239,7 @@
+                 N->TxBuffer[n].Buffer = NULL;
+             }
+         }
+-        up(&A->Sema);
++        appl_unlock(A);
+     }
+ 
+     DEB_INFO("CA_FREE_NCCI: done ");
+@@ -289,16 +289,16 @@
+         return NULL;
+     }
+         
+-    down(&A->Sema);
++    appl_lock(A);
+     if(A->InUse == _entry_not_used_) {
+-        up(&A->Sema);
++        appl_unlock(A);
+         DEB_ERR("CA_NEW_DATA_B3_IND: MapperId %d not registered (released)\n", MapperId);
+         return NULL;
+     }
+ 
+     N = Appl_Find_NCCIData(A, NCCI);
+     if(N == NULL) {
+-        up(&A->Sema);
++        appl_unlock(A);
+         DEB_WARN("CA_NEW_DATA_B3_IND: MapperId %u: NCCI %u not found\n", MapperId, NCCI);
+         return NULL;
+     }
+@@ -311,7 +311,7 @@
+         DEB_ERR("CA_NEW_DATA_B3_IND: MapperId %u, NCCI %u no buffer left\n", MapperId, NCCI);
+     }
+ 
+-    up(&A->Sema);
++    appl_unlock(A);
+     /*--- DEB_INFO("CA_NEW_DATA_B3_IND: done "); ---*/
+     return Buffer;
+ }
+@@ -341,22 +341,22 @@
+         return NULL;
+     }
+         
+-    down(&A->Sema);
++    appl_lock(A);
+     if(A->InUse == _entry_not_used_) {
+-        up(&A->Sema);
++        appl_unlock(A);
+         DEB_WARN("CA_NEW_DATA_B3_REQ: MapperId %d not registered (released)\n", MapperId);
+         return NULL;
+     }
+ 
+     N = Appl_Find_NCCIData(A, NCCI);
+     if(N == NULL) {
+-        up(&A->Sema);
++        appl_unlock(A);
+         DEB_ERR("CA_NEW_DATA_B3_REQ: MapperId %d NCCI %x not found\n", MapperId, NCCI);
+         return NULL;
+     }
+ 
+     if(A->ApplContextRelease) {
+-        up(&A->Sema);
++        appl_unlock(A);
+         DEB_ERR("CA_NEW_DATA_B3_REQ: ERROR: MapperId %d NCCI %x: Illegal Call to CA_NEW_DATA_B3_REQ\n", MapperId, NCCI);
+         return NULL;
+     }
+@@ -374,7 +374,7 @@
+         DEB_WARN("CA_NEW_DATA_B3_REQ: MapperId %d NCCI %x no free buffer\n", MapperId, NCCI);
+ #endif/*--- #if !defined(NDEBUG) ---*/
+ 
+-    up(&A->Sema);
++    appl_unlock(A);
+     /*--- DEB_INFO("CA_NEW_DATA_B3_REQ: done "); ---*/
+     return Buffer;
+ }
+@@ -405,7 +405,7 @@
+         return;
+     }
+         
+-    down(&A->Sema);
++    appl_lock(A);
+     if(A->InUse == _entry_not_used_) {
+         up(&A->Sema);
+         DEB_ERR("CA_FREE_DATA_B3_IND: MapperId %d not registered (released)\n", MapperId);
+@@ -423,7 +423,7 @@
+             }
+         }
+     }
+-    up(&A->Sema);
++    appl_unlock(A);
+     DEB_INFO("CA_FREE_DATA_B3_IND: MapperId %d Data 0x%x not found\n", MapperId, (unsigned int)Data);
+     return;
+ }
+@@ -453,16 +453,16 @@
+         DEB_ERR("CA_FREE_DATA_B3_REQ: MapperId %d not registered\n", MapperId);
+         return;
+     }
+-        
+-    down(&A->Sema);
++
++    appl_lock(A);    
+     if(A->InUse == _entry_not_used_) {
+-        up(&A->Sema);
++        appl_unlock(A);    
+         DEB_ERR("CA_FREE_DATA_B3_REQ: MapperId %d not registered (released)\n", MapperId);
+         return;
+     }
+ 
+     if(A->ApplContextRelease) {
+-        up(&A->Sema);
++        appl_unlock(A);    
+         /*--- DEB_INFO("CA_FREE_DATA_B3_REQ: MapperId %d: ignore CA_FREE_DATA_B3_REQ\n", MapperId); ---*/
+         /*--- DEB_INFO("[b3_req] Data=0x%p\n", Data); ---*/
+         return;
+@@ -478,13 +478,13 @@
+         for(Count = 0 ; Count < N->TxWindowSize ; Count++) {
+             if(N->TxBuffer[Count].Buffer == Data) {
+                 N->TxBuffer[Count].InUse = _entry_not_used_;
+-                up(&A->Sema);
++                appl_unlock(A);    
+                 /*--- DEB_INFO("CA_FREE_DATA_B3_REQ: MapperId %d Data 0x%x freeed\n", MapperId, (unsigned int)Data); ---*/
+                 return;
+             }
+         }
+     }
+-    up(&A->Sema);
++    appl_unlock(A);    
+     DEB_WARN("CA_FREE_DATA_B3_REQ: MapperId %d Data 0x%x not found\n", MapperId, (unsigned int)Data);
+ 
+     return;
+@@ -493,6 +493,7 @@
+ #endif /*--- #if !defined(NO_BCHANNEL) ---*/
+ 
+ /*-------------------------------------------------------------------------------------*\
++ * Kontext: Capi-Scheduler
+ \*-------------------------------------------------------------------------------------*/
+ unsigned int CA_GET_MESSAGE(unsigned char *Msg) {
+     int          Status;
+--- linux-2.6.28/drivers/isdn/capi_oslib/capi_pipe.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/capi_pipe.c
+@@ -7,6 +7,7 @@
+ #include <linux/new_capi.h>
+ #include <linux/capi_oslib.h>
+ #include <linux/semaphore.h>
++#include <linux/hardirq.h>
+ 
+ 
+ #include "capi_pipe.h"
+@@ -17,23 +18,40 @@
+ \*------------------------------------------------------------------------------------------*/
+ struct workqueue_struct *pipe_workqueue;
+ 
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++static inline unsigned int capi_pipe_free(struct capi_pipe *P) {
++    unsigned int ReadPos, WritePos;
++    ReadPos  = P->ReadPos;
++    WritePos = P->WritePos;
++
++    if(WritePos >= ReadPos) {
++        return (P->BufferLen - sizeof(unsigned int)) - (WritePos - ReadPos);
++    }
++    return ReadPos - WritePos - sizeof(unsigned int);
++}
++
+ /*------------------------------------------------------------------------------------------*\
+- * mit RxBuffer == NULL wird die Länge der im Buffer befindelichen CapiMessage returned
++ * mit RxBuffer == NULL wird die Länge der im Buffer befindlichen CapiMessage returned
+ \*------------------------------------------------------------------------------------------*/
+ int Capi_Receive_From_Pipe(struct capi_pipe *P, unsigned char *RxBuffer, unsigned int RxBufferLen, unsigned long *received, unsigned int Suspend) {
+     unsigned int Len, CopyLength;
++    unsigned int ReadPos;
+ 
++    *received = 0;
+     if(P->delete_pending) {
++        printk("%s: delete_pending\n", __func__);
+         return CAPI_PIPE_DELETED;
+     }
+ 
+     if(P->with_lock) {
++        BUG_ON(in_softirq());
+         down(&(P->Lock));
+     }
+ 
+ Capi_Receive_From_Pipe_restart:
+     /*--- if(RxBuffer) ---*/
+-        /*--- DEB_INFO("[Capi_Receive_From_Pipe] write=%u read=%u free=%u\n", P->WritePos, P->ReadPos, P->Free); ---*/
++      /*--- DEB_INFO("[Capi_Receive_From_Pipe] write=%u read=%u free=%u\n", P->WritePos, P->ReadPos, capi_pipe_free(P)); ---*/
+ 
+     if(P->WritePos == P->ReadPos) {
+         if(Suspend == CAPI_SUSPEND) {
+@@ -57,8 +75,9 @@
+         }
+         return RxBuffer == NULL ? 0 : CAPI_PIPE_EMPTY;
+     }
+-
+-    Len = *(unsigned int *)&(P->Buffer[P->ReadPos]);
++    ReadPos = P->ReadPos;
++    Len = *(unsigned int *)&(P->Buffer[ReadPos]);
++    /*--- printk("[Capi_Receive_From_Pipe] %pS write=%u read=%u free=%u Len=%d\n", P, P->WritePos, ReadPos, capi_pipe_free(P), Len); ---*/
+     *received = Len;
+     if(RxBuffer == NULL) {
+         if(P->with_lock)
+@@ -69,22 +88,22 @@
+     if(Len > RxBufferLen) {
+         if(P->with_lock)
+             up(&(P->Lock));
++        /*--- dump_stack(); ---*/
++        /*--- printk(KERN_ERR"%s: error: RxBuffer Len %d > RxBufferLen %d \n", __func__, Len, RxBufferLen); ---*/
+         return CAPI_PIPE_BUFFER_TO_SMALL;
+     }
+ 
+-    P->ReadPos += sizeof(unsigned int);
+-    P->Free    += sizeof(unsigned int);
+-    if(P->ReadPos >= P->BufferLen)
+-        P->ReadPos = 0;
++    ReadPos += sizeof(unsigned int);
++    if(ReadPos >= P->BufferLen)
++        ReadPos = 0;
+ 
+     /*--------------------------------------------------------------------------------------*\
+      * pruefen ob in zwei Abschnitten kopiert werden muss
+     \*--------------------------------------------------------------------------------------*/
+-    if(Len > P->BufferLen - P->ReadPos) {
+-        unsigned int part_Len = P->BufferLen - P->ReadPos;
+-        memcpy(RxBuffer, &(P->Buffer[P->ReadPos]), part_Len);
+-        P->ReadPos = 0;
+-        P->Free  += part_Len;
++    if(Len > P->BufferLen - ReadPos) {
++        unsigned int part_Len = P->BufferLen - ReadPos;
++        memcpy(RxBuffer, &(P->Buffer[ReadPos]), part_Len);
++        ReadPos = 0;
+         RxBuffer += part_Len;
+         Len -= part_Len;
+     }
+@@ -96,12 +115,12 @@
+     Len += sizeof(unsigned int) - 1;    /*--- align auf sizeof(unsigned int) ---*/
+     Len &= ~(sizeof(unsigned int) - 1);
+ 
+-    memcpy(RxBuffer, &(P->Buffer[P->ReadPos]), CopyLength);
+-    P->ReadPos += Len;
+-    P->Free    += Len;
+-    if(P->ReadPos >= P->BufferLen)
+-        P->ReadPos = 0;
++    memcpy(RxBuffer, &(P->Buffer[ReadPos]), CopyLength);
++    ReadPos += Len;
++    if(ReadPos >= P->BufferLen)
++        ReadPos = 0;
+ 
++    P->ReadPos = ReadPos;
+     if(atomic_read(&(P->tx_waiting))) {
+         up(&(P->tx_Wait));
+     }
+@@ -117,28 +136,31 @@
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ int Capi_Send_To_Pipe(struct capi_pipe *P, unsigned char *TxBuffer, unsigned int TxBufferLen, unsigned int Suspend) {
++    unsigned int WritePos;
+ 
+     if(P->delete_pending) {
+         return CAPI_PIPE_DELETED;
+     }
+ 
+     if(P->with_lock) {
++        BUG_ON(in_softirq());
+         down(&(P->Lock));
+     }
+ 
+ Capi_Send_To_Pipe_restart:
++    WritePos = P->WritePos;
+ 
+-    /*--- DEB_INFO("[Capi_Send_To_Pipe] write=%u read=%u free=%u\n", P->WritePos, P->ReadPos, P->Free); ---*/
+ 
+     /*--------------------------------------------------------------------------------------*\
+     \*--------------------------------------------------------------------------------------*/
+-    if(TxBufferLen + 3 + sizeof(unsigned int) >= P->Free) {
++    if(TxBufferLen + 3 + sizeof(unsigned int) >= capi_pipe_free(P)) {
+         if(Suspend == CAPI_SUSPEND) {
+             atomic_inc(&(P->tx_waiting));
+         }
+         if(P->with_lock)
+             up(&(P->Lock));
+         if(Suspend == CAPI_SUSPEND) {
++            BUG_ON(in_softirq());
+             down(&(P->tx_Wait));
+             if(P->with_lock) {
+                 down(&(P->Lock));
+@@ -148,21 +170,24 @@
+                 if(P->with_lock)
+                     up(&(P->Lock));
+                 complete(&P->complete);
++                /*--- printk(KERN_ERR"%s: error: CAPI_PIPE_DELETED \n", __func__); ---*/
+                 return CAPI_PIPE_DELETED;
+             }
+             goto Capi_Send_To_Pipe_restart;
+         }
++        /*--- printk(KERN_ERR"%s: error: CAPI_PIPE_FULL \n", __func__); ---*/
+         return CAPI_PIPE_FULL;
+     }
+ 
++    /*--- printk("[Capi_Send_To_Pipe] %pS write=%u read=%u free=%u TxBufferLen=%d\n", P, P->WritePos, P->ReadPos, capi_pipe_free(P), TxBufferLen); ---*/
++
+     /*--------------------------------------------------------------------------------------*\
+      * Laenge speichern
+     \*--------------------------------------------------------------------------------------*/
+-    *(unsigned int *)&(P->Buffer[P->WritePos]) = TxBufferLen;
+-    P->WritePos += sizeof(unsigned int);
+-    P->Free     -= sizeof(unsigned int);
+-    if(P->WritePos >= P->BufferLen)
+-        P->WritePos = 0;
++    *(unsigned int *)&(P->Buffer[WritePos]) = TxBufferLen;
++    WritePos += sizeof(unsigned int);
++    if(WritePos >= P->BufferLen)
++        WritePos = 0;
+ 
+     TxBufferLen += sizeof(unsigned int) - 1;    /*--- align auf sizeof(unsigned int) ---*/
+     TxBufferLen &= ~(sizeof(unsigned int) - 1);
+@@ -170,23 +195,24 @@
+     /*--------------------------------------------------------------------------------------*\
+      * pruefen ob in zwei Abschnitten kopiert werden muss
+     \*--------------------------------------------------------------------------------------*/
+-    if(TxBufferLen > P->BufferLen - P->WritePos) {
+-        unsigned int Len = P->BufferLen - P->WritePos;
+-        memcpy(&(P->Buffer[P->WritePos]), TxBuffer, Len);
+-        P->WritePos = 0;
+-        P->Free -= Len;
++    if(TxBufferLen > P->BufferLen - WritePos) {
++        unsigned int Len = P->BufferLen - WritePos;
++        memcpy(&(P->Buffer[WritePos]), TxBuffer, Len);
++        WritePos     = 0;
+         TxBufferLen -= Len;
+-        TxBuffer += Len;
++        TxBuffer    += Len;
+     }
+ 
+     /*--------------------------------------------------------------------------------------*\
+      * den rest kopieren
+     \*--------------------------------------------------------------------------------------*/
+-    memcpy(&(P->Buffer[P->WritePos]), TxBuffer, TxBufferLen);
+-    P->WritePos += TxBufferLen;
+-    P->Free     -= TxBufferLen;
+-    if(P->WritePos >= P->BufferLen)
+-        P->WritePos = 0;
++    memcpy(&(P->Buffer[WritePos]), TxBuffer, TxBufferLen);
++    WritePos += TxBufferLen;
++    if(WritePos >= P->BufferLen)
++        WritePos = 0;
++
++    P->WritePos = WritePos;
++    /*--- printk("[Capi_Send_To_Pipe] done %pS write=%u read=%u free=%u\n", P, P->WritePos, P->ReadPos, capi_pipe_free(P)); ---*/
+ 
+     if(atomic_read(&(P->rx_waiting))) {
+         up(&(P->rx_Wait));
+@@ -213,13 +239,12 @@
+     if(P->Name) {
+         strcpy(P->Name, Name);
+     }
+-    P->Buffer = Buffer;
+-    P->BufferLen = BufferLen;
++    P->Buffer        = Buffer;
++    P->BufferLen     = BufferLen;
+     P->MaxMessageLen = MaxMessageLen;
+-    P->Free = BufferLen - sizeof(unsigned int);
+-    P->ReadPos = 0;
+-    P->WritePos = 0;
+-    P->with_lock = Lock;
++    P->ReadPos       = 0;
++    P->WritePos      = 0;
++    P->with_lock     = Lock;
+     if(P->with_lock == CAPI_LOCK)
+         sema_init(&(P->Lock), 1);
+     sema_init(&(P->rx_Wait), 0);  /* blockieren beim ersten mal */
+@@ -264,7 +289,7 @@
+     DEB_ERR("[Capi_Pipe_Status] Pipe=0x%p\n", P);
+ 
+     sprintf(Buffer, "Pipe(%s) wr=%d rd=%d free=%d size=%d", 
+-            P->Name ? P->Name : "noname", P->WritePos, P->ReadPos, P->Free, P->BufferLen);
++            P->Name ? P->Name : "noname", P->WritePos, P->ReadPos, capi_pipe_free(P), P->BufferLen);
+     return Buffer;
+ }
+ 
+--- linux-2.6.28/drivers/isdn/capi_oslib/capi_pipe.h
++++ linux-2.6.28/drivers/isdn/capi_oslib/capi_pipe.h
+@@ -14,7 +14,6 @@
+ struct capi_pipe {
+     char *Name;
+     unsigned char *Buffer;
+-    volatile unsigned int Free;
+     volatile unsigned int ReadPos;
+     volatile unsigned int WritePos;
+     unsigned int BufferLen;
+--- linux-2.6.28/drivers/isdn/capi_oslib/ca_sched.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/ca_sched.c
+@@ -10,14 +10,75 @@
+ #include <linux/capi_oslib.h>
+ #include <linux/ioport.h>
+ #include <linux/workqueue.h>
+-#if defined(CONFIG_AR9) || defined(CONFIG_VR9)
++#if defined(CONFIG_LANTIQ)
+ #include <irq.h>
+-#endif /*--- #if defined(CONFIG_AR9) || defined(CONFIG_VR9) ---*/
++#endif /*--- #if defined(CONFIG_LANTIQ) ---*/
+ #include "debug.h"
+ #include "host.h"
+ #include "ca.h"
+ 
++/*--- #define OSLIB_STAT ---*/
++#if defined(OSLIB_STAT)
++#define CLK_TO_USEC(a) ((a) / 250)
++DEFINE_SPINLOCK(stat_lock);
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++struct _generic_stat {
++    signed long cnt; 
++    signed long avg;
++    signed long min;
++    signed long max;
++};
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++void init_generic_stat(struct _generic_stat *pgstat) {
++    pgstat->min = LONG_MAX;
++    pgstat->max = LONG_MIN;
++    pgstat->cnt = 0;
++    pgstat->avg = 0;
++}
++/*--------------------------------------------------------------------------------*\
++\*--------------------------------------------------------------------------------*/
++void generic_stat(struct _generic_stat *pgstat, signed long val) {
++    if(pgstat->cnt == 0) {
++        init_generic_stat(pgstat);
++    }
++    if(val > pgstat->max) pgstat->max = val;
++    if(val < pgstat->min) pgstat->min = val;
++    pgstat->avg += val;
++    pgstat->cnt++;
++}
++/*--------------------------------------------------------------------------------*\
++ * reset: Statistik ruecksetzen
++ * mode: 0 in msec 
++ *       1 nur Wert
++ *       2 in usec
++\*--------------------------------------------------------------------------------*/
++void display_generic_stat(char *prefix, struct _generic_stat *pgstat, unsigned int mode, unsigned int reset) {
++    struct _generic_stat gstat;
++    signed long cnt;
++    unsigned long flags;
+ 
++    spin_lock_irqsave(&stat_lock, flags);
++    cnt = pgstat->cnt;
++    if(cnt == 0) {
++        spin_unlock_irqrestore(&stat_lock, flags);
++        return;
++    }
++    memcpy(&gstat, pgstat, sizeof(gstat));
++    if(reset) {
++        pgstat->cnt = 0;
++    }
++    spin_unlock_irqrestore(&stat_lock, flags);
++    printk("%s[%ld] min=%ld max=%ld avg=%ld %s\n", prefix, cnt, gstat.min, gstat.max, gstat.avg / cnt, mode == 0 ? "msec" : 
++                                                                                                                   mode == 2 ? "usec" : "");
++}
++struct _generic_stat sched_latency;
++struct _generic_stat sched_consumption;
++struct _generic_stat sched_trigger_latency;
++volatile unsigned int trigger_cycle;
++unsigned int schedstart_cycle;
++#endif/*--- #if defined(OSLIB_STAT) ---*/
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ #if defined(USE_TASKLETS)
+@@ -46,8 +107,6 @@
+ struct tasklet_struct delic_tasklet;
+ struct tasklet_struct *p_delic_tasklet = NULL;
+ 
+-static atomic_t capi_oslib_scheduler_enabled;
+-static atomic_t	capi_oslib_triggered;
+ static atomic_t capi_oslib_crit_level;
+ static void capi_oslib_scheduler (unsigned long data);
+ 
+@@ -75,16 +134,13 @@
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ void capi_oslib_trigger_scheduler(void) {
+-	if (atomic_read (&capi_oslib_scheduler_enabled)) {
+-        if(atomic_inc_return(&capi_oslib_triggered) != 1) {
+-            return;
+-        }
+ #if defined(CAPIOSLIB_CHECK_LATENCY)
+         /*--- capi_check_latency(0, (char *)__func__, 1); ---*/
+ #endif/*--- #if defined(CAPIOSLIB_CHECK_LATENCY) ---*/
+ #if defined(USE_TASKLETS)
++/*--- DEB_INFO("%s %p\n", __func__, p_scheduler_tasklet); ---*/
+         if(p_scheduler_tasklet)
+-            tasklet_schedule(p_scheduler_tasklet);
++            tasklet_hi_schedule(p_scheduler_tasklet);
+ #endif /*--- #if defined(USE_TASKLETS) ---*/
+ #if defined(USE_WORKQUEUES)
+         if(p_scheduler_workqueue)
+@@ -98,12 +154,16 @@
+         wake_up_interruptible(&pcapi_sched->wait_queue);
+         }
+ #endif/*--- #if defined(USE_THREAD) ---*/
+-    }
+ }
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ void os_trigger_scheduler(void) {
++#if defined(OSLIB_STAT)
++    if(trigger_cycle == 0) {
++        trigger_cycle = get_cycles();
++    }
++#endif/*--- #if defined(OSLIB_STAT) ---*/
+     /*--- DEB_TRACE("os_trigger_scheduler\n"); ---*/
+     capi_oslib_trigger_scheduler();
+ }
+@@ -203,31 +263,11 @@
+ #endif/*--- #if defined(USE_THREAD) ---*/
+     }
+ }
+-
+-/*---------------------------------------------------------------------------*\
+-\*---------------------------------------------------------------------------*/
+-static inline void capi_oslib_enable_scheduler (void) {
+-
+-	/*--- DEB_INFO("Enabling scheduler...\n"); ---*/
+-#if defined(USE_TASKLETS)
+-    if(p_scheduler_tasklet)
+-	    tasklet_enable (p_scheduler_tasklet);
+-#endif /*--- #if defined(USE_TASKLETS) ---*/
+-	atomic_set (&capi_oslib_scheduler_enabled, 1);
+-}
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+-void os_enable_scheduler (void) {
+-    capi_oslib_enable_scheduler();
+-}
+-EXPORT_SYMBOL(os_enable_scheduler);
+-
+ /*---------------------------------------------------------------------------*\
+ \*---------------------------------------------------------------------------*/
+ static inline void capi_oslib_disable_scheduler (void) {
+ 
+-	/*--- DEB_INFO("Disabling scheduler...\n"); ---*/
+-	atomic_set (&capi_oslib_scheduler_enabled, 0);
++	DEB_INFO("Disabling scheduler...\n");
+ #if defined(USE_TASKLETS)
+     if(p_scheduler_tasklet)
+ 	    tasklet_disable(p_scheduler_tasklet);
+@@ -268,33 +308,43 @@
+             break;
+         }
+         pcapi_sched->trigger = 0;
+-        atomic_inc(&capi_oslib_triggered); /*--- (mindestens einmal durch Timer) ---*/
+-        while(atomic_read(&capi_oslib_triggered)) {
+-            if(atomic_read (&capi_oslib_scheduler_enabled)) {
+-#if defined(CAPIOSLIB_CHECK_LATENCY)
+-                /*--- capi_check_latency(0, (char *)__func__, 0); ---*/
+-#endif/*--- #if defined(CAPIOSLIB_CHECK_LATENCY) ---*/
+-                CA_TIMER_POLL();
+-                (void)(*capi_oslib_stack->cm_schedule)();
+-            }
+-            atomic_dec(&capi_oslib_triggered);
+-        }
++        CA_TIMER_POLL();
++        (void)(*capi_oslib_stack->cm_schedule)();
+     }
+     pcapi_sched->thread_pid = NULL;
+     printk("[%s] exit\n", __func__);
+     complete_and_exit(&pcapi_sched->on_exit, 0 );
+ #else/*--- #if defined(USE_THREAD) ---*/
+-#if defined(CAPIOSLIB_CHECK_LATENCY)
+-    /*--- capi_check_latency(0, (char *)__func__, 0); ---*/
+-#endif/*--- #if defined(CAPIOSLIB_CHECK_LATENCY) ---*/
+-    while(atomic_read(&capi_oslib_triggered)) {
+-		CA_TIMER_POLL();
+-		(void)(*capi_oslib_stack->cm_schedule)();
+-        /*--- if(!atomic_dec_and_test(&capi_oslib_triggered)) { ---*/
+-        /*---     printk("capi_oslib_scheduler retrigger %d\n", atomic_read(&capi_oslib_triggered));    ---*/
+-        /*--- } ---*/
+-		atomic_dec(&capi_oslib_triggered);
++#if defined(OSLIB_STAT)
++    unsigned int act_cycles = get_cycles();
++
++    if(trigger_cycle) {
++        unsigned int trigger_diff = get_cycles() - trigger_cycle;
++        trigger_cycle = 0;
++        generic_stat(&sched_trigger_latency, CLK_TO_USEC(trigger_diff));
+     }
++    generic_stat(&sched_latency, CLK_TO_USEC(act_cycles - schedstart_cycle));
++#endif/*--- #if defined(OSLIB_STAT) ---*/
++    
++    CA_TIMER_POLL();
++    (void)(*capi_oslib_stack->cm_schedule)();
++
++#if defined(OSLIB_STAT)
++    generic_stat(&sched_consumption, CLK_TO_USEC(get_cycles() - act_cycles));
++    schedstart_cycle = act_cycles;
++    {
++        static int last;
++        if(last == 0) {
++            last = jiffies;
++        }
++        if(jiffies - last > 10 * HZ) {
++            last = jiffies;
++            display_generic_stat("sched-latency",&sched_latency, 2, 1);
++            display_generic_stat("trigger-to-sched-latency",&sched_trigger_latency, 2, 1);
++            display_generic_stat("sched-consumption",&sched_consumption, 2, 1);
++        }
++    }
++#endif/*--- #if defined(OSLIB_STAT) ---*/
+ #endif/*--- #else ---*//*--- #if defined(USE_THREAD) ---*/
+ } 
+ 
+@@ -309,19 +359,17 @@
+ 
+ 	if (args != NULL) {
+ 		if ((*capi_oslib_stack->cm_handle_events) ()) {
+-			if (atomic_read (&capi_oslib_scheduler_enabled)) {
+ #if defined(USE_TASKLETS)
+-                if(p_scheduler_tasklet)
+-				    tasklet_schedule (p_scheduler_tasklet);
++            if(p_scheduler_tasklet)
++                tasklet_hi_schedule (p_scheduler_tasklet);
+ #endif /*--- #if defined(USE_TASKLETS) ---*/
+ #if defined(USE_WORKQUEUES)
+-        		if(p_scheduler_workqueue)
+-	        	    queue_work_on(PCMLINK_TASKLET_CONTROL_CPU, p_scheduler_workqueue, &scheduler_work);
++            if(p_scheduler_workqueue)
++                queue_work_on(PCMLINK_TASKLET_CONTROL_CPU, p_scheduler_workqueue, &scheduler_work);
+ #endif /*--- #if defined(USE_WORKQUEUES) ---*/
+ #if defined(USE_THREAD)
+-                capi_oslib_trigger_scheduler();
++            capi_oslib_trigger_scheduler();
+ #endif/*--- #if defined(USE_THREAD) ---*/
+-			}
+             if(p_delic_tasklet)
+                 tasklet_schedule(p_delic_tasklet);
+             return IRQ_HANDLED;
+--- linux-2.6.28/drivers/isdn/capi_oslib/consts.h
++++ linux-2.6.28/drivers/isdn/capi_oslib/consts.h
+@@ -18,9 +18,12 @@
+ #define USE_THREAD
+ #else
+ /*--- Realtime-Workqueues sind deutlich performanter als Kernelthreads! ---*/
++#if defined(CONFIG_SMP) 
+ #define USE_WORKQUEUES
++#else
++#define USE_TASKLETS
++#endif
+ #endif
+-/*--- #define USE_TASKLETS ---*/
+ 
+ 
+ #endif /*--- #ifndef _consts_h_ ---*/
+--- linux-2.6.28/drivers/isdn/capi_oslib/host.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/host.c
+@@ -3,6 +3,7 @@
+ #include <linux/new_capi.h>
+ #include <linux/capi_oslib.h>
+ #include <linux/semaphore.h>
++#include <linux/hardirq.h>
+ #include "debug.h"
+ #include "capi_pipe.h"
+ #include "appl.h"
+@@ -18,6 +19,7 @@
+ /*-------------------------------------------------------------------------------------*\
+ \*-------------------------------------------------------------------------------------*/
+ struct capi_pipe CapiReceivePipe;
++static DEFINE_SPINLOCK(Register_Release_Sema);
+ 
+ /*-------------------------------------------------------------------------------------*\
+     locale funktionen
+@@ -34,6 +36,7 @@
+     unsigned int  Len;
+     unsigned int  Count;
+     int           Status;
++    int Lock = CAPI_LOCK;                
+     DEB_INFO("HOST_INIT: Source: %u AnzApp %u AnzNCCIs %u Karte %u\n", CapiSource, AnzAppliktions, AnzNCCIs, CAPI_INDEX);
+ 
+     if(CapiSource != SOURCE_UNKNOWN) {
+@@ -54,11 +57,8 @@
+     MaxApplData = AnzAppliktions;
+     Karte       = CAPI_INDEX;
+ 
+-    sema_init(&Register_Release_Sema, 1);
+-    sema_init(&ApplData_Sema, 1);
+-
+     for(Count = 0 ; Count < AnzAppliktions ; Count++) {
+-        sema_init(&(ApplData[Count].Sema), 1);
++        spin_lock_init(&ApplData[Count].lock);
+     }
+ 
+     Len = 16 * 1024 * capi_oslib_stack->controllers;
+@@ -70,8 +70,10 @@
+         DEB_ERR("[HOST_INIT] %s: no memory for CapiPutMessageQueue (%u bytes)\n", capi_source_name[CapiSource], Len);
+         return 0;
+     }
+-
+-    Status = Capi_Create_Pipe(&CapiReceivePipe, "P_Capi", Pointer, Len, CAPI_VARIABLE_SIZE, MAX_CAPI_MESSAGE_SIZE, CAPI_LOCK);
++#if defined(USE_TASKLETS)
++    Lock = CAPI_NO_LOCK;
++#endif
++    Status = Capi_Create_Pipe(&CapiReceivePipe, "P_Capi", Pointer, Len, CAPI_VARIABLE_SIZE, MAX_CAPI_MESSAGE_SIZE, Lock);
+     SYSTEM_ERROR("create receive pipe failed", 0);
+ 
+     LOCAL_CAPI_INIT(CapiSource);
+@@ -106,13 +108,13 @@
+                 CapiSource, ApplId, AnzahlMsgs, B3Connection, B3Blocks, SizeB3);
+ 
+     /*--- Alle Release und Register Funktionen sind mit dier Semaphore geschützt ---*/
+-    down(&Register_Release_Sema);
++    spin_lock_bh(&Register_Release_Sema);
+ 
+     /*--- existiert die ApplId schon ? ---*/
+     TmpMapperId = Appl_Find_ApplId(CapiSource, ApplId);
+     if(TmpMapperId != 0) {
+         DEB_ERR("HOST_REGISTER: source %u ApplId %u: already there (MapperId %u)\n", CapiSource, ApplId, TmpMapperId);
+-        up(&Register_Release_Sema);
++        spin_unlock_bh(&Register_Release_Sema);
+         return;
+     }
+ 
+@@ -121,7 +123,7 @@
+         MapperId = Appl_Find_EmptyApplId();
+         if(MapperId == 0) {
+             DEB_ERR("HOST_REGISTER: source %u ApplId %u: no free entry\n", CapiSource, ApplId);
+-            up(&Register_Release_Sema);
++            spin_unlock_bh(&Register_Release_Sema);
+             return;
+         }
+     }
+@@ -130,7 +132,7 @@
+     /*--- freinen Eintrag gefunden ---*/
+     A = &ApplData[MapperId - 1];
+ 
+-    down(&A->Sema);
++    appl_lock(A);
+ 
+     A->ApplId            = ApplId;            /*--- host ApplId merken ---*/
+     A->Nr                = MapperId - 1;      /*--- eigen Index merken ---*/
+@@ -143,8 +145,8 @@
+     A->CapiDataStruct = CA_MALLOC(capi_oslib_stack->cm_bufsize() * 1);   /*--- CAPI/Stack Datenstructur ---*/
+     if(A->CapiDataStruct == NULL) {
+         DEB_ERR("HOST_REGISTER: no memory for CapiDataStruct\n");
+-        up(&A->Sema);
+-        up(&Register_Release_Sema);
++        appl_unlock(A);
++        spin_unlock_bh(&Register_Release_Sema);
+         return;
+     }
+ 
+@@ -153,8 +155,8 @@
+     if(A->NCCIData == NULL) {
+         DEB_ERR("HOST_REGISTER: no memory for NCCIData\n");
+         CA_FREE(A->CapiDataStruct);
+-        up(&A->Sema);
+-        up(&Register_Release_Sema);
++        appl_unlock(A);
++        spin_unlock_bh(&Register_Release_Sema);
+         return;
+     }
+ 
+@@ -165,8 +167,8 @@
+         DEB_INFO("HOST_REGISTER: source %u ApplId %u: Stack_Register not initialized\n", CapiSource, ApplId);
+     }
+ 
+-    up(&A->Sema);
+-    up(&Register_Release_Sema);
++    appl_unlock(A);
++    spin_unlock_bh(&Register_Release_Sema);
+ 
+     {
+         unsigned int Len;
+@@ -251,14 +253,11 @@
+         DEB_WARN("HOST_MESSAGE: message too long (%u >= %u)\n", Length, MAX_CAPI_MESSAGE_SIZE);
+         return ERR_OS_Resource;
+     }
+-    /*---------------------------------------------------------------------------------*\
+-     * TODO !!!!!!!!!!!
+-    \*---------------------------------------------------------------------------------*/
+-    /*--- if(NU_Current_HISR_Pointer()) ---*/
+-    /*--- Suspend = CAPI_NO_SUSPEND; ---*/
+-    /*--- else ---*/
++#if defined(USE_TASKLETS)
++    Suspend = CAPI_NO_SUSPEND;
++#else 
+     Suspend = CAPI_SUSPEND;
+-
++#endif
+     Status = Capi_Send_To_Pipe(&CapiReceivePipe, Msg, Length, Suspend);
+     if(Status == CAPI_PIPE_FULL) {
+         DEB_WARN("HOST_MESSAGE: pipe overflow (ERR_QueueFull)\n");
+@@ -286,19 +285,19 @@
+ 
+     DEB_INFO("HOST_RELEASE: source %u ApplId %u\n", CapiSource, ApplId);
+ 
+-    /*--- Alle Release und Register Funktionen sind mit dier Semaphore geschützt ---*/
+-    down(&Register_Release_Sema);
++    /*--- Alle Release und Register Funktionen sind mit dieser Semaphore geschützt ---*/
++    spin_lock_bh(&Register_Release_Sema);
+ 
+     MapperId = Appl_Find_ApplId(CapiSource, ApplId);     /*--- Mapper Id ermitteln ---*/
+     if(MapperId == 0) {                 /*--- ist ApplId (noch) registriert ---*/
+-        up(&Register_Release_Sema);
++        spin_unlock_bh(&Register_Release_Sema);
+         DEB_WARN("HOST_RELEASE: ApplId %u not registered\n", ApplId);
+         return;
+     }
+     A = &ApplData[MapperId - 1];        /*--- Appl Structur aufgrund des Index ---*/
+     A->InUse = _entry_not_used_;
+ 
+-    down(&A->Sema);
++    appl_lock(A);
+ 
+     if(Stack_Release) {
+         Stack_Release(A->CapiDataStruct);            /*--- Stack Release, aufräumen ... ---*/
+@@ -344,8 +343,8 @@
+     }
+ /*--- DEB_TRACE("delete A->Sema "); ---*/
+ 
+-    up(&A->Sema);
+-    up(&Register_Release_Sema);
++    appl_unlock(A);
++    spin_unlock_bh(&Register_Release_Sema);
+ 
+     LOCAL_CAPI_RELEASE_CONF(CapiSource, ApplId);
+     HOST_RELEASE_B3_BUFFER(CapiSource, MapperId);
+--- linux-2.6.28/drivers/isdn/capi_oslib/local_capi.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/local_capi.c
+@@ -1,6 +1,7 @@
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <linux/semaphore.h>
++#include <linux/hardirq.h>
+ 
+ #include "debug.h"
+ #include <linux/new_capi.h>
+@@ -26,7 +27,7 @@
+ /*-------------------------------------------------------------------------------------*\
+ \*-------------------------------------------------------------------------------------*/
+ struct _local_capi_appl *LocalCapiAppl[SOURCE_ANZAHL];
+-struct semaphore         LocalCapiRegisterSema;
++static DEFINE_SPINLOCK(LocalCapiRegisterSema);
+ struct semaphore         LocalCapiReleaseSema;
+ unsigned int             LocalCapiMaxAppls;
+ 
+@@ -40,7 +41,6 @@
+     unsigned int Count;
+ 
+     if(capi_source == SOURCE_UNKNOWN) {
+-        sema_init(&LocalCapiRegisterSema, 1);
+         sema_init(&LocalCapiReleaseSema, 0);
+         LocalCapiMaxAppls = LOCAL_CAPI_APPLIKATIONS;
+         DEB_INFO("LOCAL_CAPI_INIT: first done\n");
+@@ -108,6 +108,7 @@
+     unsigned int             Len, MaxLen;
+     struct _local_capi_appl *LA = NULL;
+     int                      Status;
++    int Lock = CAPI_LOCK;                
+     char                     Name[40];
+     
+     if(LocalCapiAppl[capi_source] == NULL) {
+@@ -118,7 +119,8 @@
+     DEB_INFO("LOCAL_CAPI_REGISTER(%s, MessageBufferSize=%u, MaxNCCIs=%u, WindowSize=%u, B3BlockSize=%u, ApplId=...)\n",
+         capi_source_name[capi_source], MessageBufferSize, MaxNCCIs, WindowSize, B3BlockSize);
+ 
+-    down(&LocalCapiRegisterSema);
++    BUG_ON(in_softirq());
++    spin_lock_bh(&LocalCapiRegisterSema);
+     
+     /*--- find free applid ---*/
+     for(Count = 0 ; Count < LocalCapiMaxAppls ; Count++) {
+@@ -129,7 +131,7 @@
+     }
+     if(Count == LocalCapiMaxAppls || LA == NULL) {
+         DEB_WARN("LOCAL_CAPI_REGISTER: ERR_ToManyApplications\n");
+-        up(&LocalCapiRegisterSema);
++        spin_unlock_bh(&LocalCapiRegisterSema);
+         return ERR_ToManyApplications;
+     }
+ 
+@@ -149,14 +151,18 @@
+ 
+     LA->PipePointer    = CA_MALLOC(Len);
+     LA->Pipe           = CA_MALLOC(sizeof(struct capi_pipe) * 1);
+-    Status = Capi_Create_Pipe(LA->Pipe, Name, LA->PipePointer, Len, CAPI_VARIABLE_SIZE, MaxLen, CAPI_LOCK); 
++
++#if defined(USE_TASKLETS)
++    Lock = CAPI_NO_LOCK;
++#endif
++    Status = Capi_Create_Pipe(LA->Pipe, Name, LA->PipePointer, Len, CAPI_VARIABLE_SIZE, MaxLen, Lock); 
+     if(Status != 0) {
+         printk(KERN_ERR "create applid receive pipe failed");
+-        up(&LocalCapiRegisterSema);
++        spin_unlock_bh(&LocalCapiRegisterSema);
+         return ERR_ResourceError;
+     }
+ 
+-    up(&LocalCapiRegisterSema);
++    spin_unlock_bh(&LocalCapiRegisterSema);
+ 
+     HOST_REGISTER(capi_source, *ApplId, 0, MaxNCCIs, WindowSize, B3BlockSize);
+     /*--- capi_oslib_dump_open_data_list("LOCAL_CAPI_REGISTER"); ---*/
+@@ -251,6 +257,7 @@
+     *(unsigned char  *)(RELEASE_REQ+5) = 0x80;                     /*----- subcommand --###*/
+ 
+     ret = (unsigned int)HOST_MESSAGE (capi_source, RELEASE_REQ, NULL);
++    BUG_ON(in_softirq());
+     down(&LocalCapiReleaseSema);
+ 
+     return ret;
+@@ -264,12 +271,12 @@
+ 
+     DEB_INFO("LOCAL_CAPI_RELEASE_CONF(%s, ApplId=%u)\n", capi_source_name[capi_source], ApplId);
+ 
+-    down(&LocalCapiRegisterSema);
++    spin_lock_bh(&LocalCapiRegisterSema);
+ 
+     LA = &LocalCapiAppl[capi_source][ApplId - 1];
+ 
+     if(LA->InUse == _entry_not_used_) {
+-        up(&LocalCapiRegisterSema);
++        spin_unlock_bh(&LocalCapiRegisterSema);
+         return ERR_IllegalApplId;
+     }
+ 
+@@ -291,7 +298,7 @@
+ 
+     LA->Kennung = LOCAL_APPL_KENNUNG;
+ 
+-    up(&LocalCapiRegisterSema);
++    spin_unlock_bh(&LocalCapiRegisterSema);
+     up(&LocalCapiReleaseSema);
+ 
+     return 0x0000;
+--- linux-2.6.28/drivers/isdn/capi_oslib/main.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/main.c
+@@ -196,7 +196,6 @@
+     if(capi_oslib_init_params && capi_oslib_init_params->irq_num)
+ 	    enable_irq (capi_oslib_init_params->irq_num);
+ 
+-    os_enable_scheduler();
+     os_trigger_scheduler();
+ 
+     DEB_INFO("%s: cpu%d done\n", __func__, smp_processor_id());
+--- linux-2.6.28/drivers/isdn/capi_oslib/memmap.c
++++ linux-2.6.28/drivers/isdn/capi_oslib/memmap.c
+@@ -4,6 +4,7 @@
+ #include <linux/init.h>
+ #include <linux/mm.h>
+ #include <linux/vmalloc.h>
++#include <linux/hardirq.h>
+ #include <asm/uaccess.h>
+ #include <asm/errno.h>
+ 
+@@ -80,6 +81,7 @@
+     struct page *P[size];
+     int ret;
+ 
++    BUG_ON(in_softirq());
+     down_read(&current->mm->mmap_sem);
+     ret = get_user_pages(
+             current, /*--- struct task_struct *tsk, ---*/ 
+--- linux-2.6.28/drivers/net/avm_cpmac/cpmac_fusiv_if.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpmac_fusiv_if.c
+@@ -38,11 +38,6 @@
+ 
+ #include <netpro/hostconfig.h>
+ 
+-#if defined(CONFIG_IP_MULTICAST_FASTFORWARD)
+-static struct mcfw_netdriver *fusiv_mcfw_netdrv = NULL;
+-extern int cpmac_mcfw_sourceid;
+-#endif /*--- #if defined(CONFIG_IP_MULTICAST_FASTFORWARD) ---*/
+-
+ /* TODO list */
+ /* - Get MAC address from environment and assign it to the PHY (from cpphy_if_init) */
+  
+@@ -54,24 +49,6 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+-void cpmac_fusiv_register_fastforward(struct mcfw_netdriver *mcfwdrv) {
+-    DEB_TRC("[%s]\n", __FUNCTION__);
+-    fusiv_mcfw_netdrv = mcfwdrv;
+-}
+-EXPORT_SYMBOL(cpmac_fusiv_register_fastforward);
+-
+-
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+-void cpmac_fusiv_unregister_fastforward(void) {
+-    DEB_TRC("[%s]\n", __FUNCTION__);
+-    fusiv_mcfw_netdrv = NULL;
+-}
+-EXPORT_SYMBOL(cpmac_fusiv_unregister_fastforward);
+-
+-
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+ void cpmac_set_vx180_port(void                   *pPort,
+                           unsigned int            instance,
+                           fusiv_mdio_read_t       mdio_read_ptr,
+@@ -199,7 +176,7 @@
+ /*------------------------------------------------------------------------------------------*\
+  * TODO: The receive functions here and in cpmac_if.c should be unified
+ \*------------------------------------------------------------------------------------------*/
+-void cpmac_fusiv_if_rx(struct sk_buff *skb) {
++void cpmac_fusiv_if_rx2(struct sk_buff *skb, struct mcfw_netdriver *mcfwdrv) {
+     cpphy_mdio_t *mdio = &cpmac_global.cpphy[0].mdio;
+     unsigned char port, is_wan = 0;
+     struct net_device *p_dev;
+@@ -251,14 +228,16 @@
+         mdio->switch_config.wan_receive_function(skb);
+     } else {
+ #       if defined(CONFIG_IP_MULTICAST_FASTFORWARD)
+-        skb_push(skb, hlen);
+-        mcfw_snoop_recv(fusiv_mcfw_netdrv, (skb->uniq_id >> 24) & 0xff, skb);
+-        skb_pull(skb, hlen);
++        if(mcfwdrv != NULL) {
++            skb_push(skb, hlen);
++            mcfw_snoop_recv(mcfwdrv, (skb->uniq_id >> 24) & 0xff, skb);
++            skb_pull(skb, hlen);
++        }
+ #       endif /*--- #if defined(CONFIG_IP_MULTICAST_FASTFORWARD) ---*/
+         netif_rx(skb);
+     }
+ }
+-EXPORT_SYMBOL(cpmac_fusiv_if_rx);
++EXPORT_SYMBOL(cpmac_fusiv_if_rx2);
+ 
+ 
+ /*------------------------------------------------------------------------------------------*\
+--- linux-2.6.28/drivers/net/avm_cpmac/cpmac_fusiv_if.h
++++ linux-2.6.28/drivers/net/avm_cpmac/cpmac_fusiv_if.h
+@@ -29,7 +29,7 @@
+ typedef void (*fusiv_set_port_speed_t)(unsigned char instance, unsigned char speed, unsigned char fullduplex);
+ 
+ extern struct semaphore mdio_semaphore;
+-void cpmac_fusiv_if_rx(struct sk_buff *skb);
++void cpmac_fusiv_if_rx2(struct sk_buff *skb, struct mcfw_netdriver *mcfwdrv);
+ void cpmac_fusiv_rx_final(struct sk_buff *skb);
+ void cpmac_fusiv_open(unsigned int instance);
+ void cpmac_set_vx180_dev(struct net_device *dev);
+@@ -40,8 +40,6 @@
+                           fusiv_set_port_speed_t  set_port_speed);
+ 
+ extern int cpmac_fusiv_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd) __attribute__ ((weak));
+-extern void cpmac_fusiv_register_fastforward(struct mcfw_netdriver *mcfwdrv) __attribute__ ((weak));
+-extern void cpmac_fusiv_unregister_fastforward(void) __attribute__ ((weak));
+ 
+ 
+ void cpmac_fusiv_set_port_speed(unsigned char port,
+--- linux-2.6.28/drivers/net/avm_cpmac/cpmac_if.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpmac_if.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -39,7 +39,15 @@
+ #include "cpphy_types.h"
+ #include "cpphy_mgmt.h"   /* for cpphy_mgmt_deinit */
+ #include "cpmac_eth.h"    /* for struct cpmac_devinfo */
++#include "cpphy_main.h"   /* for cpphy_main_config_g_apply */
+ #include "cpphy_ar8216.h"
++#if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0)
++#if defined(CONFIG_MIPS_UR8)
++#include <asm/mach-ur8/hw_nwss.h>
++#include "cpphy_if.h"
++#include "cpphy_if_g.h"
++#endif /*--- #if defined(CONFIG_MIPS_UR8) ---*/
++#endif /*--- #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0) ---*/
+ 
+ extern dev_desc_t g_dev_array[AVM_CPMAC_MAX_PHYS];
+ unsigned int cpmac_devices_installed = 0;
+@@ -301,10 +309,52 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
++void cpmac_if_reset_tx_queues(cpmac_priv_t *cpmac_priv) {
++    cpmac_priv->UR8_QUEUE->tx_emac[0].prio[0] = 0;
++    cpmac_priv->UR8_QUEUE->tx_emac[0].prio[1] = 0;
++    cpmac_priv->UR8_QUEUE->tx_emac[1].prio[0] = 0;
++    cpmac_priv->UR8_QUEUE->tx_emac[1].prio[1] = 0;
++    cpmac_priv->UR8_QUEUE->tx_completion_queue[UR8_TX_COMPLETE] = 0;
++}
++
++
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
+ #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0)
+ cpmac_err_t cpmac_if_teardown_complete(cpmac_priv_t *cpmac_priv) {
+-    DEB_WARN("[cpmac_if_teardown_complete] init\n");
++#   if defined(CONFIG_MIPS_UR8)
++    struct __nwss_channel_cfg channel_cfg_tmp;
++    struct sk_buff *transit_skb;
++    cpphy_cppi_t *cppi = cpmac_priv->cppi;
++    unsigned long flags;
++#   endif /*--- #if defined(CONFIG_MIPS_UR8) ---*/
++
++    DEB_WARN("[%s]\n", __func__);
++
++#   if defined(CONFIG_MIPS_UR8)
++    cpmac_if_reset_tx_queues(cpmac_priv);
++    atomic_set(&cppi->TxPrioQueues.q[0].DMAFree, cppi->TxPrioQueues.q[0].MaxDMAFree);
++    atomic_set(&cppi->TxPrioQueues.q[1].DMAFree, cppi->TxPrioQueues.q[1].MaxDMAFree);
++    spin_lock_irqsave(&cppi->skb_transit_spinlock, flags);
++    while((transit_skb = skb_dequeue(&cppi->skbs_in_transit)) != NULL) {
++        cpphy_if_free_tx_skb(cpmac_priv, transit_skb, CPMAC_ERR_DROPPED);
++    }
++    mb();
++    spin_unlock_irqrestore(&cppi->skb_transit_spinlock, flags);
++    channel_cfg_tmp.tx_A.Register = 0;
++    channel_cfg_tmp.tx_A.Bits.desc_copy_bytecnt = 0;
++    cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].tx_A.Register = channel_cfg_tmp.tx_A.Register;
++    channel_cfg_tmp.tx_B.Register = 0;
++    channel_cfg_tmp.tx_B.Bits.channel_mode = 0;
++    channel_cfg_tmp.tx_B.Bits.packet_type = PACKET_TYPE_ETHERNET;
++    channel_cfg_tmp.tx_B.Bits.cq_index = UR8_TX_COMPLETE;
++    channel_cfg_tmp.tx_B.Bits.enable = 1;
++    cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].tx_B.Register = channel_cfg_tmp.tx_B.Register;
++#   endif /*--- #if defined(CONFIG_MIPS_UR8) ---*/
++
+     netif_wake_queue(cpmac_priv->owner);
++    cpphy_if_data_from_queues(cpmac_priv->cppi);
++
+     return CPMAC_ERR_NOERR;
+ }
+ #endif /*--- #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0) ---*/
+@@ -319,6 +369,8 @@
+     cpmac_err_t ret = CPMAC_ERR_NOERR;
+     char DevName[16];
+ 
++    DEB_TRC("[%s]\n", __func__);
++
+     if(phy->instance >= AVM_CPMAC_MAX_PHYS) {
+         DEB_ERR("[%s] phy_id %u exceeds limit\n", __FUNCTION__, phy->instance);
+         ret = CPMAC_ERR_EXCEEDS_LIMIT;
+@@ -365,6 +417,7 @@
+             /* init PHY */
+             g_dev_array[cpmac_priv->inst].service_funcs.init(g_dev_array[cpmac_priv->inst].phy_handle,
+                                                              (void *)cpmac_priv);
++            cpphy_main_config_g_apply((cpphy_global_t *) g_dev_array[cpmac_priv->inst].phy_handle, p_dev);
+             tasklet_init(&cpmac_priv->tasklet, g_dev_array[cpmac_priv->inst].service_funcs.isr_tasklet,
+                          (unsigned long)phy_handle);
+ #           ifdef CONFIG_AVM_PA
+--- linux-2.6.28/drivers/net/avm_cpmac/cpmac_if.h
++++ linux-2.6.28/drivers/net/avm_cpmac/cpmac_if.h
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -107,7 +107,6 @@
+     unsigned long set_to_close;
+     unsigned long dev_size;
+     struct tasklet_struct tasklet;
+-    volatile unsigned int tx_timeout_tasklet_rescheduled;
+     unsigned long local_stats_rx_errors;
+     unsigned long local_stats_rx_length_errors;
+     unsigned long local_stats_tx_errors;
+@@ -139,8 +138,8 @@
+   CPMAC_CONTROL_REQ_MULTI_ALL = 7,
+   CPMAC_CONTROL_REQ_PROMISCOUS = 8,
+   CPMAC_CONTROL_REQ_HW_STATUS = 9,
+-  CPMAC_CONTROL_REQ_TEARDOWN = 10,
+-  CPMAC_CONTROL_REQ_START_DMA = 11,
++  /*--- CPMAC_CONTROL_REQ_TEARDOWN = 10, ---*/
++  /*--- CPMAC_CONTROL_REQ_START_DMA = 11, ---*/
+   CPMAC_CONTROL_REQ_PORT_COUNT = 12,
+   CPMAC_CONTROL_REQ_VLAN_CONFIG = 13,
+   CPMAC_CONTROL_REQ_VLAN_GET_CONFIG = 14,
+@@ -203,6 +202,9 @@
+ /*--- indications and responses to commands from cpmac (line status, etc.) ---*/
+ cpmac_err_t cpmac_if_control_ind (cpmac_priv_t *cpmac_priv, cpmac_control_ind_t control, ...);
+ 
++/*--- reset the tx queues ---*/
++void cpmac_if_reset_tx_queues(cpmac_priv_t *cpmac_priv);
++
+ /*--- cpphy driver informs about end of teardown ---*/
+ cpmac_err_t cpmac_if_teardown_complete (cpmac_priv_t *cpmac_priv);
+ 
+--- linux-2.6.28/drivers/net/avm_cpmac/cpmac_main.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpmac_main.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -45,6 +45,7 @@
+ #include "cpphy_const.h"
+ #include "cpphy_types.h"        /* for cpphy_global_t */
+ #include "cpphy_if.h"           /* for cpphy_if_tx_complete */
++#include "cpphy_main.h"         /* for cpphy_main_init_queues and cpphy_main_config_g_apply */
+ #include "cpphy_adm6996.h"      /* for ADM_GET_TAG_GROUP */
+ #include "cpphy_ar8216.h"       /* for ATH_GET_TAG_GROUP */
+ #include "cpphy_mgmt.h"         /* for cpphy_mdio_event_dataupdate */
+@@ -109,19 +110,13 @@
+ 
+     /*--- DEB_DEBUG("[%s] received irq\n", __FUNCTION__); ---*/
+ 
+-    if(cpmac_priv->set_to_close) {
+-        DEB_INFO("[%s] set to close\n", __FUNCTION__);
+-        /* TODO: is this necessary */
+-        g_dev_array[cpmac_priv->inst].service_funcs.
+-                isr_end(g_dev_array[cpmac_priv->inst].phy_handle);
+-    } else {
+-        /* performance-impact */
+-        /*--- disable_irq_nosync(cpmac_priv->intr); ---*/
+-#       if defined(CPU_PROFILE_LOG)
+-        ohio_simple_profiling_text("cpmac_main_isr");
+-#       endif
+-        tasklet_schedule(&cpmac_priv->tasklet);
+-    }
++    /* performance-impact */
++    /*--- disable_irq_nosync(cpmac_priv->intr); ---*/
++#   if defined(CPU_PROFILE_LOG)
++    ohio_simple_profiling_text("cpmac_main_isr");
++#   endif
++    tasklet_schedule(&cpmac_priv->tasklet);
++
+     return IRQ_HANDLED;
+ }
+ 
+@@ -149,9 +144,8 @@
+ #if defined(CONFIG_AVM_LED)
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+-static void cpmac_led_remove(int handle) {
+-    handle = handle; /* To make the compiler happy */
+-    /* FIXME Is it really necessary to do anything? */
++static void cpmac_led_remove(int handle __attribute__ ((unused))) {
++    /* TODO Is it really necessary to do anything? */
+ }
+ 
+ 
+@@ -178,6 +172,17 @@
+     int result;
+ 
+     DEB_INFO("[%s] %s\n", __FUNCTION__, p_dev->name);
++    cpphy_main_init_queues((cpphy_global_t *) g_dev_array[cpmac_priv->inst].phy_handle);
++    /* Apply Configuration Values to Device */
++#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
++    cpphy_main_config_apply(cpphy_global, p_dev);
++#   elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
++    cpphy_main_config_g_apply((cpphy_global_t *) g_dev_array[cpmac_priv->inst].phy_handle, p_dev);
++#   else /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
++#   warning "Might need configuration initialization for this architecture"
++#   endif /*--- #else ---*/
++
++    DEB_INFO("[%s] continued %s\n", __FUNCTION__, p_dev->name);
+ 
+ #   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+ #   if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32))
+@@ -253,7 +258,7 @@
+     avm_int_ctrl_irq_pacing_set(cpmac_priv->irq_pace_handle, cpmac_priv->irq_pace_value);
+ #   endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+ 
+-    netif_start_queue(p_dev);
++    cpphy_if_tx_restart_queue(cpmac_priv->cppi);
+     DEB_INFOTRC("[%s] start queue for %s\n", __FUNCTION__, p_dev->name);
+ #   if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32))
+     /*--- netif_napi_add(p_dev, &cpmac_priv->napi, cpmac_poll, 64); ---*/
+@@ -264,10 +269,14 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
++extern dev_desc_t g_dev_array[AVM_CPMAC_MAX_PHYS];
+ static int cpmac_main_dev_close(struct net_device *p_dev) {
+     cpmac_priv_t *cpmac_priv = (cpmac_priv_t *) netdev_priv(p_dev);
++    cpphy_mdio_t *mdio = &((cpphy_global_t *) g_dev_array[cpmac_priv->inst].phy_handle)->mdio;
+ 
+-    DEB_INFO("[%s] init, %s\n", __FUNCTION__, p_dev->name);
++    DEB_INFO("[%s] %s\n", __FUNCTION__, p_dev->name);
++
++    set_bit(0, &cpmac_priv->set_to_close);
+ 
+     /* inform the upper layers. */
+     if(!netif_queue_stopped(p_dev)) {
+@@ -275,13 +284,10 @@
+         cpphy_if_tx_stop_queue(cpmac_priv->cppi);
+     }
+ 
+-    cpphy_mgmt_global_power_set(CPPHY_POWER_GLOBAL_SET_OFF);
++    /* full teardown tx/rx before free int */
++    cpphy_cppi_teardown(cpmac_priv->cppi, CPPHY_RX_TEARDOWN | CPPHY_TX_TEARDOWN | CPPHY_FULL_TEARDOWN | CPPHY_BLOCKING_TEARDOWN);
+ 
+-    /* full teardown tx/rx before free int */ /* FIXME UR8 */
+-    g_dev_array[cpmac_priv->inst].service_funcs.control_req(g_dev_array[cpmac_priv->inst].phy_handle,
+-                                                            CPMAC_CONTROL_REQ_TEARDOWN,
+-                                                            CPPHY_RX_TEARDOWN | CPPHY_TX_TEARDOWN |
+-                                                            CPPHY_FULL_TEARDOWN | CPPHY_BLOCKING_TEARDOWN);
++    cpphy_mgmt_global_power_set(CPPHY_POWER_GLOBAL_SET_OFF);
+ 
+ #   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+     free_irq(cpmac_priv->intr, cpmac_priv);
+@@ -290,6 +296,11 @@
+     free_irq(UR8INT_NWSS_Rx0, cpmac_priv);
+ #   endif /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+ 
++    cpmac_priv->cppi->TxOpen = 0;
++    cpmac_priv->cppi->RxOpen = 0;
++    cpmac_global.cpphy[mdio->inst].is_open = 0;
++    clear_bit(0, &cpmac_priv->set_to_close);
++
+     return (0);
+ }
+ 
+@@ -377,23 +388,21 @@
+ #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0)
+ static void cpmac_main_tx_timeout(struct net_device *p_dev) {
+     cpmac_priv_t *cpmac_priv = (cpmac_priv_t *) netdev_priv(p_dev);
++    static unsigned long last_timeout = 0;
++    static unsigned int timeout_count = 0;
+ 
+     DEB_WARN("[%s] %s, latency: %lu\n", __FUNCTION__, p_dev->name, jiffies - p_dev->trans_start);
+ 
+-#   if defined(CONFIG_MIPS_UR8) /* TODO Find better solution */
+-    if(   !time_after(jiffies, cpmac_priv->cppi->TxLastCompleted + CPMAC_TX_TIMEOUT)
+-       || (cpmac_priv->tx_timeout_tasklet_rescheduled == 0)) {
+-        DEB_ERR("[%s] Rescheduling tx tasklet after timeout\n", __func__); /* FIXME */
+-        cpmac_priv->tx_timeout_tasklet_rescheduled = 1;
+-        tasklet_schedule(&cpmac_priv->tasklet);
+-    } else {
++    if(time_after(jiffies, last_timeout + (300 * HZ))) {
++        timeout_count = 0;
++    }
++    timeout_count++;
++    last_timeout = jiffies;
++    if(timeout_count >= 3) {
+         panic("LAN tx problem");
++    } else {
++        cpphy_cppi_teardown(cpmac_priv->cppi, CPPHY_TX_TEARDOWN | CPPHY_CALLBACK_TEARDOWN);
+     }
+-#   endif /*--- #if defined(CONFIG_MIPS_UR8) ---*/ /* TODO Find better solution */
+-
+-#   if !defined(CONFIG_MIPS_UR8) /* FIXME Implement teardown for UR8! */
+-    cpphy_cppi_teardown(cpmac_priv->cppi, CPPHY_TX_TEARDOWN | CPPHY_CALLBACK_TEARDOWN);
+-#   endif /*--- #if !defined(CONFIG_MIPS_UR8) ---*/
+ }
+ #endif /*--- #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0) ---*/
+ 
+@@ -404,8 +413,7 @@
+     cpmac_priv_t *cpmac_priv = (cpmac_priv_t *) netdev_priv(p_dev);
+ 
+     /* do not access the hardware if it is in the reset state. */
+-    if(!test_bit(0, &cpmac_priv->set_to_close)) {
+-
++    if(likely(!test_bit(0, &cpmac_priv->set_to_close))) {
+         g_dev_array[cpmac_priv->inst].service_funcs.control_req(g_dev_array[cpmac_priv->inst].phy_handle,
+                                                                 CPMAC_CONTROL_REQ_HW_STATUS,
+                                                                 &cpmac_priv->net_dev_stats);
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_ar8216_ar.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_ar8216_ar.c
+@@ -30,6 +30,9 @@
+ #include <linux/avm_event.h>
+ #include <linux/ar_reg.h>
+ #include <linux/etherdevice.h>
++#if defined(CONFIG_IP_MULTICAST_FASTFORWARD)
++#   include <linux/mcfastforward.h>
++#endif /*--- #if defined(CONFIG_IP_MULTICAST_FASTFORWARD) ---*/
+ 
+ #include "cpmac_if.h"
+ #include "cpmac_const.h"
+@@ -355,7 +358,7 @@
+ }
+ 
+ #if defined(CONFIG_FUSIV_VX180) || defined(CONFIG_FUSIV_VX185)
+-#define macport_rx(mdio, skb) cpmac_fusiv_if_rx(skb)
++#define macport_rx(mdio, skb) cpmac_fusiv_if_rx2(skb, NULL)
+ #define MDIO_UNUSED    __attribute__ ((unused))
+ #elif defined(CONFIG_ARCH_PUMA5)
+ #define macport_rx(mdio, skb) cpmac_puma_if_rx(skb)
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_ar8216.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_ar8216.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2008,...,2012 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2008,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -29,6 +29,12 @@
+ #include <linux/ioctl.h>
+ #include <linux/skbuff.h>
+ #include <asm/atomic.h>
++#include <linux/version.h>
++#if (KERNEL_VERSION(2,6,28) <= LINUX_VERSION_CODE)
++#include <linux/env.h>
++#else /*--- #if (KERNEL_VERSION(2,6,28) <= LINUX_VERSION_CODE) ---*/
++#include <asm/mips-boards/prom.h>
++#endif /*--- #else ---*/ /*--- #if (KERNEL_VERSION(2,6,28) <= LINUX_VERSION_CODE) ---*/
+ #include <asm/mach_avm.h>
+ #if defined(CONFIG_AVM_POWER)
+ #include <linux/avm_power.h>
+@@ -962,6 +968,7 @@
+ \*------------------------------------------------------------------------------------------*/
+ void ar_ar8316_init(cpphy_mdio_t *mdio) {
+     unsigned int tmp;
++    char *hwrev = prom_getenv("HWRevision");
+ 
+     ar8216_softreset(mdio);
+ 
+@@ -1064,6 +1071,29 @@
+     tmp |= AR_CONTROL_AGE_EN | AR_CONTROL_AGE_TIME(CPMAC_AR_AGE_TIME);
+     ar8216_mdio_write32(mdio, AR8216_GLOBAL_AR_CONTROL, tmp);
+ 
++    /* Make the MAC aa:aa:aa:aa:aa:aa a static entry in the MAC table linking
++     * it to the port where the Magpie is connected to */
++    if(hwrev && (   (!(strncmp("157", hwrev, 3)) && (strlen(hwrev) < 5)) /* 6360 */
++                 || (!(strncmp("187", hwrev, 3)) && (strlen(hwrev) < 5)) /* 6340 */
++      )) {
++        ar8216_mdio_write32(mdio, AR8316_GLOBAL_AR_1, 0
++                            | AR8316_GLOBAL_AR_1_ADDR_BYTE0_VALUE(0xaa)
++                            | AR8316_GLOBAL_AR_1_ADDR_BYTE1_VALUE(0xaa)
++                            | AR8316_GLOBAL_AR_1_ADDR_BYTE2_VALUE(0xaa)
++                            | AR8316_GLOBAL_AR_1_ADDR_BYTE3_VALUE(0xaa)
++                           );
++        ar8216_mdio_write32(mdio, AR8316_GLOBAL_AR_2, 0
++                            | AR8316_GLOBAL_AR_2_DES_PORT_VALUE(0x20)
++                            | AR8316_GLOBAL_AR_2_AT_STATUS_VALUE(AR8316_GLOBAL_AR_2_AT_STATUS_VALUE_STATIC)
++                           );
++        ar8216_mdio_write32(mdio, AR8316_GLOBAL_AR_0, 0
++                            | AR8316_GLOBAL_AR_0_AT_BUSY 
++                            | AR8316_GLOBAL_AR_0_AT_FUNC_VALUE(AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_LOAD)
++                            | AR8316_GLOBAL_AR_0_ADDR_BYTE4_VALUE(0xaa)
++                            | AR8316_GLOBAL_AR_0_ADDR_BYTE5_VALUE(0xaa)
++                           );
++    }
++
+     if(mdio->f->ar_work_item) {
+         cpphy_mgmt_work_add(mdio, CPMAC_WORK_UPDATE_MAC_TABLE, mdio->f->ar_work_item, CPMAC_ARL_UPDATE_INTERVAL);
+     }
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_cppi.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_cppi.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -138,8 +138,7 @@
+         CPMAC_RX_MBP_ENABLE(p_dev->base_addr) = RxMbpEnable;
+         CPMAC_MACHASH1(p_dev->base_addr) = cppi->hash1;
+         CPMAC_MACHASH2(p_dev->base_addr) = cppi->hash2;
+-        DEB_TRC("[%s] MBP_ENABLE 0x%08X\n", __FUNCTION__,
+-                CPMAC_RX_MBP_ENABLE(p_dev->base_addr));
++        DEB_TRC("[%s] MBP_ENABLE 0x%08X\n", __FUNCTION__, CPMAC_RX_MBP_ENABLE(p_dev->base_addr));
+ #       elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+         /* Promiscous mode for channel 0 */
+         cppi->cpmac_priv->CPGMAC_F->RX_MBP_ENABLE.Bits.rx_caf_en = promiscous ? 1 : 0;
+@@ -334,311 +333,6 @@
+ 
+ 
+ /*----------------------------------------------------------------------------------*\
+-\*----------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-static cpmac_err_t cpphy_cppi_rx_teardown_int(cpphy_cppi_t *cppi) {
+-    unsigned int base = ((struct net_device *)cppi->cpmac_priv->owner)->base_addr;
+-
+-    /* check to see if the interrupt is a teardown interrupt */
+-    if(((CPMAC_RX_INT_ACK( base , 0 )) & TEARDOWN_ACK) == TEARDOWN_ACK) {
+-        /* finish channel teardown */
+-
+-        /* Free channel resources on a FULL teardown */
+-        if(cppi->RxTeardownPending & CPPHY_FULL_TEARDOWN) {
+-            cpphy_cppi_free_rcb(cppi);
+-        }
+-
+-        /* write completion pointer */
+-        (CPMAC_RX_INT_ACK(base, 0)) = TEARDOWN_ACK;
+-
+-        /* no longer pending teardown */
+-        cppi->RxTeardownPending &= ~CPPHY_RX_TEARDOWN;
+-        cppi->RxOpen = 0;
+-        CPMAC_RX_INTMASK_CLEAR(base) = (1<<0);
+-        cppi->RxTeardownPending = 0;
+-
+-        return CPMAC_ERR_NOERR;
+-    }
+-    return CPMAC_ERR_NO_TEARDOWN;
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+-/*----------------------------------------------------------------------------------*\
+-\*----------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-static cpmac_err_t cpphy_cppi_tx_teardown_int(cpphy_cppi_t *cppi) {
+-    unsigned int base = cppi->cpmac_priv->owner->base_addr;
+-    cpphy_tcb_t *Curr;
+-
+-    if((CPMAC_TX_INT_ACK (base, cppi->TxChannel) & TEARDOWN_ACK) == TEARDOWN_ACK) {
+-        Curr = cppi->TxCurrDequeue;
+-        while(Curr->skb) {
+-            cpphy_if_tx_complete(cppi, (struct sk_buff *) Curr->skb, CPMAC_ERR_TEARDOWN);
+-            Curr->skb = NULL;
+-            Curr = (cpphy_tcb_t *) Curr->Next;
+-        }
+-        cppi->TxCurrDequeue = Curr;
+-
+-        /* teardown for close */
+-        if(cppi->TxTeardownPending & CPPHY_FULL_TEARDOWN) {
+-            cpphy_cppi_free_tcb(cppi);
+-        }
+-
+-        /* write completion pointer */
+-        (CPMAC_TX_INT_ACK(base, cppi->TxChannel)) = TEARDOWN_ACK;
+-
+-        /* no longer pending teardown */
+-        cppi->TxTeardownPending &= ~CPPHY_TX_TEARDOWN;
+-        if(cppi->TxTeardownPending & CPPHY_FULL_TEARDOWN) {
+-            cppi->TxOpen = 0;
+-        }
+-        if(cppi->TxTeardownPending & CPPHY_FULL_TEARDOWN) {
+-            CPMAC_TX_INTMASK_CLEAR(base) = (1 << cppi->TxChannel);
+-        }
+-        cppi->TxDmaActive = 0;
+-#       if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0)
+-        if(cppi->TxTeardownPending & CPPHY_CALLBACK_TEARDOWN) {
+-            cppi->TxTeardownPending = 0;
+-            cpmac_if_teardown_complete(cppi->cpmac_priv);
+-        } else {
+-#       endif /*--- #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0) ---*/
+-        cppi->TxTeardownPending = 0;
+-#       if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0)
+-        }
+-#       endif /*--- #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0) ---*/
+-        return CPMAC_ERR_NOERR;
+-    }
+-    return CPMAC_ERR_NO_TEARDOWN;
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-cpmac_err_t cpphy_cppi_rx_return(cpphy_cppi_t *cppi, struct sk_buff *skb) {
+-    char *pBuf;
+-    cpmac_err_t ret = CPMAC_ERR_NOERR;
+-    cpphy_rcb_t *rcb, *rcb_last;
+-    int base = ((struct net_device *) cppi->cpmac_priv->owner)->base_addr;
+-
+-    if(cppi->hw_state != CPPHY_HW_ST_OPENED) {
+-        return CPMAC_ERR_CHAN_NOT_OPEN;
+-    }
+-
+-    rcb_last = cppi->RxPrevEnqueue;
+-    rcb = rcb_last->Next;
+-
+-    if(skb) {
+-        rcb->skb = skb;
+-        rcb->BufPtr = CPPHY_VIRT_TO_PHYS(skb->data);
+-    } else {
+-        pBuf = (char *) cpphy_cppi_malloc_buffer(CPPHY_MAX_RX_BUFFER_SIZE,
+-                                                 CPPHY_TOTAL_RX_BUFFER_SIZE,
+-                                                 CPPHY_TOTAL_RX_RESERVED,
+-                                                 cppi->cpmac_priv->owner,
+-                                                 &rcb->skb);
+-        if(pBuf) {
+-            /* malloc succeeded, requeue the RCB to the hardware */
+-            rcb->BufPtr = CPPHY_VIRT_TO_PHYS(pBuf);
+-        } else {
+-            /* malloc failed, add this RCB to Needs Buffer List */
+-            cppi->CurrNeedCount++;
+-            ret = CPMAC_ERR_NEED_BUFFER;
+-        }
+-    }
+-    if(ret == CPMAC_ERR_NOERR) {
+-        unsigned int dma_running;
+-        rcb->HNext = 0;
+-        rcb->Off_BLen = CPPHY_MAX_RX_BUFFER_SIZE;
+-        rcb->mode = CB_OWNERSHIP_BIT;
+-
+-        /*----------------------------------------------------------------------------------*\
+-         * If the ownership bit of the last rcb is set, DMA is still running.               *
+-        \*----------------------------------------------------------------------------------*/
+-        dma_running = rcb_last->mode & CB_OWNERSHIP_BIT ? 1 : 0;
+-
+-        /*----------------------------------------------------------------------------------*\
+-         * Add the rcb to the existing list after the last rcb                              *
+-         * Attention: This may destroy the ownership bit status, if the DMA controller      *
+-         *            changed it in nearly the same moment!
+-        \*----------------------------------------------------------------------------------*/
+-        rcb_last->HNext = CPPHY_VIRT_TO_PHYS(rcb);
+-        cppi->RxPrevEnqueue = rcb;
+-        /* Add one free buffer to FreeBuffer count of CPMAC */
+-        CPMAC_RX_FREEBUFFER(base, 0) = 1;
+-
+-        if(dma_running) { /* We think DMA is still running */
+-            /* Check the Rx DMA list head to see if we are really still running */
+-            if((CPMAC_RX_HDP(base, 0)) != 0) {
+-                /* The rcb is chained and DMA is still running. Everything okay. */
+-                return ret;
+-            }
+-
+-            /* DMA stopped. Did it complete the current rcb as well? */
+-            if(!(rcb->mode & CB_OWNERSHIP_BIT)) {
+-                /* Current rcb is used as well. Correct the possibly wrong mode of the *\
+-                 * last packet to allow the GC to work correctly. Transmitting is      *
+-                \* finished after that.                                                */
+-                rcb_last->mode  = CB_SOF_BIT | CB_EOF_BIT;
+-                /*--- cpphy_if_gc_tx_queue(cppi); ---*/
+-                return ret;
+-            }
+-        }
+-        /* At this point DMA is not running. Set it up again with rcb as the start */
+-        (CPMAC_RX_HDP(base, 0)) = CPPHY_VIRT_TO_PHYS(rcb);
+-    }
+-
+-    return ret;
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+-/*----------------------------------------------------------------------------------*\
+-\*----------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-void cpphy_cppi_needs_check(cpphy_cppi_t *cppi) {
+-    cpmac_err_t ret;
+-
+-    while(cppi->CurrNeedCount) {
+-        ret = cpphy_cppi_rx_return(cppi, NULL);
+-        if(ret == CPMAC_ERR_NOERR) {
+-            cppi->CurrNeedCount--;
+-        } else {
+-            if(ret == CPMAC_ERR_NEED_BUFFER) {
+-                /* revert the increment in cpphy_cppi_rx_return () */
+-                cppi->CurrNeedCount--;
+-            }
+-            break;
+-        }
+-    }
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+-/*----------------------------------------------------------------------------------*\
+-  main handler of receive interrupts
+-\*----------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-cpmac_err_t cpphy_cppi_rx_int (cpphy_cppi_t *cppi)
+-{
+-  cpphy_rcb_t *rcb, *rcb_last, *rcb_ack;
+-  unsigned int mode;
+-  int base = ((struct net_device *)cppi->cpmac_priv->owner)->base_addr;
+-
+-  if(cppi->CurrNeedCount) {
+-    cpphy_cppi_needs_check (cppi);
+-  }
+-  /* Handle teardown interrupt */
+-  if(cppi->RxTeardownPending) {
+-    if(cpphy_cppi_rx_teardown_int (cppi) == CPMAC_ERR_NOERR) {
+-      return CPMAC_ERR_NOERR;
+-    }
+-  }
+-
+-  rcb = cppi->RxCurrDequeue;
+-  rcb_ack = (cpphy_rcb_t *)CPPHY_PHYS_TO_VIRT_NO_CACHE(CPMAC_RX_INT_ACK (base , 0));
+-  mode = *((volatile unsigned int *) CPPHY_VIRT_TO_VIRT_NO_CACHE(&rcb_ack->mode));
+-  if(!(mode & CB_OWNERSHIP_BIT)) {
+-    struct sk_buff *skb;
+-
+-    /* Write the completion pointer */
+-    (CPMAC_RX_INT_ACK (base, 0)) = CPPHY_VIRT_TO_PHYS(rcb_ack);
+-    do {
+-      skb = (struct sk_buff *)rcb->skb;
+-      rcb->skb = NULL;
+-
+-      mode = *((volatile unsigned int *) CPPHY_VIRT_TO_VIRT_NO_CACHE(&rcb->mode));
+-      if(   (cppi->CurrNeedCount <= cppi->MaxNeedCount) 
+-         && (mode & (CB_SOF_BIT | CB_EOF_BIT)) == (CB_SOF_BIT | CB_EOF_BIT)) {
+-        cpmac_if_data_from_phy (cppi->cpmac_priv, skb, mode & CB_SIZE_MASK);
+-        skb = NULL;
+-      } else {
+-        /*--- DEB_WARN("cpphy_cppi_rx_int, ignore pkt with ill flags: %#x\n", mode); ---*/
+-        DEB_INFO("cpphy_cppi_rx_int, ignore pkt with ill flags: %#x\n", mode);
+-        cppi->cpmac_priv->local_stats_rx_errors++;
+-      }
+-      cpphy_cppi_rx_return (cppi, skb);
+-      rcb_last = rcb;
+-      rcb = rcb->Next;
+-    } while (rcb_last != rcb_ack);
+-    cppi->RxCurrDequeue = rcb;
+-  } else {
+-    /* should never happen: rx int while no buffer received */
+-    DEB_ERR("cpphy_cppi_rx_int, ill rcb_ack: %p (%p,%p)\n",
+-        rcb_ack, cppi->RxFirst, cppi->RxLast);
+-  }
+-  return CPMAC_ERR_NOERR;
+-}
+-
+-
+-/*----------------------------------------------------------------------------------*\
+-  main handler of transmit complete interrupts
+-\*----------------------------------------------------------------------------------*/
+-int cpphy_cppi_tx_int(cpphy_cppi_t *cppi) {
+-    cpphy_tcb_t *tcb, *tcb_ack, *tcb_last;
+-    unsigned int mode;
+-    unsigned int base = cppi->cpmac_priv->owner->base_addr;
+-
+-    /* Handle teardown interrupt */
+-    if(cppi->TxTeardownPending) {
+-        if(cpphy_cppi_tx_teardown_int(cppi) == CPMAC_ERR_NOERR) {
+-            return CPMAC_ERR_NOERR;
+-        }
+-    }
+-    tcb = cppi->TxCurrDequeue;
+-    tcb_ack = (cpphy_tcb_t *)CPPHY_PHYS_TO_VIRT_NO_CACHE(CPMAC_TX_INT_ACK(base, cppi->TxChannel));
+-    mode = *((volatile unsigned int *) CPPHY_VIRT_TO_VIRT_NO_CACHE(&tcb_ack->mode));
+-    if(!(mode & CB_OWNERSHIP_BIT)) {
+-        /* Write the completion pointer */
+-        (CPMAC_TX_INT_ACK(base, cppi->TxChannel)) = CPPHY_VIRT_TO_PHYS(tcb_ack);
+-
+-        /* if there is an error trace concerning locking: start here */
+-        if(*((volatile unsigned int *) &tcb_ack->HNext)) {
+-            /* check possible race condition with dma */
+-            if(mode & CB_EOQ_BIT) {
+-                /* restart dma if halted */
+-                (CPMAC_TX_HDP(base, cppi->TxChannel)) = tcb_ack->HNext;
+-            }
+-        } else {
+-            cppi->TxDmaActive = 0;    /* signal cpphy_if_data_to_phy() to restart dma */
+-            if(*((volatile unsigned int *) &tcb_ack->HNext)) {
+-                /* this hopefully never happens, because of higher prio of tasklet */
+-                DEB_ERR("cpphy_cppi_tx_int, need locking with cpphy_if_data_to_phy()\n");
+-            }
+-        }
+-        /* if there is an error trace concerning locking: end here */
+-
+-        do {
+-            cpphy_if_tx_complete(cppi, (struct sk_buff *) tcb->skb, CPMAC_ERR_NOERR);
+-            tcb->skb = NULL; /* tcb may be reused immediately */
+-            tcb_last = tcb;
+-            tcb = (cpphy_tcb_t *) tcb->Next;
+-        } while(tcb_last != tcb_ack);
+-        cppi->TxCurrDequeue = tcb;
+-        {
+-            struct net_device *p_dev = cppi->cpmac_priv->owner;
+-            struct Qdisc *q = p_dev->qdisc;
+-
+-            if(netif_queue_stopped(p_dev)) {
+-                /*--- DEB_DEBUG("[%s] wake queue for %s\n", __FUNCTION__, p_dev->name); ---*/
+-                cpphy_if_tx_restart_queue(cppi);
+-            } else if(q->q.qlen) {
+-                netif_schedule(p_dev);
+-            }
+-        }
+-    } else {
+-        /* should never happen: tx int while no buffer completed */
+-        DEB_ERR("[%s] ill tcb_ack: %p (%p,%p)\n", __FUNCTION__,
+-                tcb_ack, cppi->TxFirst, cppi->TxLast);
+-    }
+-    return CPMAC_ERR_NOERR;
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+-/*----------------------------------------------------------------------------------*\
+   Transmit buffer descriptor allocation
+ \*----------------------------------------------------------------------------------*/
+ #if !(defined(CONFIG_FUSIV_VX180) || defined(CONFIG_FUSIV_VX185) || defined(CONFIG_ARCH_PUMA5))
+@@ -650,11 +344,14 @@
+     char *AllTcb;
+     int  tcbSize, size_malloc;
+ 
++    DEB_TRC("[%s]\n", __func__);
++
+     tcbSize = (sizeof (cpphy_tcb_t) + 0x3f) & ~0x3f;
+     size_malloc = (tcbSize * Num) + 0x3f;
+ 
+     /* if the memory has already been allocated, simply reuse it! */
+     if(!(AllTcb = cppi->TcbStart)) {
++        DEB_TRC("[%s] Allocating block for tcbs\n", __func__);
+         /* malloc all TCBs at once */
+         if(!(AllTcb = (char *) kmalloc (size_malloc, GFP_KERNEL))) {
+             ret = CPMAC_ERR_NOMEM;
+@@ -667,6 +364,8 @@
+         }
+     }
+     if(AllTcb) {
++        DEB_TRC("[%s] Generating tcbs in allocated area\n", __func__);
++
+         /* align to cache line */
+         AllTcb = (char *) (((unsigned int) AllTcb + 0x3f) & ~0x3f);
+ 
+@@ -725,81 +424,6 @@
+ #endif /*--- #if !(defined(CONFIG_FUSIV_VX180) || defined(CONFIG_FUSIV_VX185) || defined(CONFIG_ARCH_PUMA5)) ---*/
+ 
+ 
+-/*------------------------------------------------------------------------------------------*\
+- * Allocation of receive buffer descriptors and data buffers
+-\*------------------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-static cpmac_err_t cpphy_cppi_init_rcb(cpphy_cppi_t *cppi, int Num, int Size) {
+-    int i;
+-    cpphy_rcb_t *pRcb, *Next;
+-    char *pBuf;
+-    char *AllRcb;
+-    int rcbSize;
+-    int size_malloc;
+-    cpmac_err_t ret = CPMAC_ERR_NOERR;
+-    unsigned int base = cppi->cpmac_priv->owner->base_addr;
+-
+-    /* Align on 16 byte boundary */
+-    rcbSize = (sizeof(cpphy_rcb_t) + 0xf) &~ 0xf;
+-    size_malloc = (rcbSize * Num) + 0xf;
+-
+-    if(!(AllRcb = (char *) kmalloc(size_malloc, GFP_KERNEL))) {
+-        DEB_ERR("[%s] Could not allocate memory\n", __FUNCTION__);
+-        ret = CPMAC_ERR_NOMEM;
+-    } else {
+-        dma_cache_wback_inv(AllRcb, size_malloc);
+-        /* keep this address for freeing later */
+-        cppi->RcbStart = AllRcb;
+-
+-        AllRcb = CPPHY_VIRT_TO_VIRT_NO_CACHE(AllRcb);
+-        memset(AllRcb, 0, size_malloc);
+-
+-        /* align to cache line */
+-        AllRcb = (char *) (((unsigned int) AllRcb + 0xf) & ~0xf);
+-
+-        cppi->MaxNeedCount = Num - 1;   /* need one complete buff to still get rx int */
+-        cppi->RxCurrDequeue = (cpphy_rcb_t *) AllRcb;
+-        cppi->RxFirst = cppi->RxCurrDequeue;
+-        cppi->RxPrevEnqueue = (cpphy_rcb_t *) (AllRcb + ((Num - 1) *rcbSize));
+-        cppi->RxLast = cppi->RxPrevEnqueue;
+-
+-        /* design: descriptors as logical ring buffer (with HW next ptr ring NULL terminated) */
+-        Next = cppi->RxCurrDequeue;
+-        pRcb = cppi->RxPrevEnqueue;
+-        for(i = 0; i < Num; i++) {
+-            pRcb->Next = Next;
+-            pRcb->HNext = i ? CPPHY_VIRT_TO_PHYS(Next) : 0;
+-            pRcb->Off_BLen = CPPHY_MAX_RX_BUFFER_SIZE;
+-            pRcb->mode = CB_OWNERSHIP_BIT;
+-            pBuf = (char *) cpphy_cppi_malloc_buffer_startup(Size,
+-                                                             CPPHY_TOTAL_RX_BUFFER_SIZE,
+-                                                             CPPHY_TOTAL_RX_RESERVED,
+-                                                             cppi->cpmac_priv->owner,
+-                                                             &pRcb->skb);
+-            if(!pBuf) {
+-                cpphy_cppi_free_rcb(cppi);
+-                DEB_ERR("[%s] No buffer\n", __FUNCTION__);
+-                return CPMAC_ERR_NO_BUFFER;
+-            }
+-            pRcb->BufPtr = CPPHY_VIRT_TO_PHYS(pBuf);
+-            Next = pRcb;
+-            pRcb = (cpphy_rcb_t *) (((unsigned char *) pRcb) - rcbSize);
+-        }
+-
+-        /* Set flow control parameters of CPMAC */
+-        /* To set freebuffer count to zero we have to create an overflow of the incremental register */
+-        CPMAC_RX_FREEBUFFER(base, 0) = 0x10000 - CPMAC_RX_FREEBUFFER(base, 0);
+-        CPMAC_RX_FREEBUFFER(base, 0) = Num - 1;
+-        CPMAC_RX_FLOWTHRESH(base, 0) = 5;
+-
+-        /* rx buffer chain to dma */
+-        (CPMAC_RX_HDP(cppi->cpmac_priv->owner->base_addr, 0)) = CPPHY_VIRT_TO_PHYS(cppi->RxFirst);
+-    }
+-    return ret;
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+ /*----------------------------------------------------------------------------------*\
+ \*----------------------------------------------------------------------------------*/
+ #if !(defined(CONFIG_FUSIV_VX180) || defined(CONFIG_FUSIV_VX185) || defined(CONFIG_ARCH_PUMA5)) /* Not needed for this architecture */
+@@ -809,7 +433,7 @@
+     struct net_device *p_dev = (struct net_device *) cppi->cpmac_priv->owner;
+ #   endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+ 
+-    DEB_TRC("cpphy_channel_start_dma, init\n");
++    DEB_TRC("[%s] init\n", __func__);
+     if(cppi->hw_state < CPPHY_HW_ST_OPENED) {
+         /* hardware has never been opened, leave immediately */
+         DEB_WARN("[%s] hw not initialized (state %u)\n", __FUNCTION__, cppi->hw_state);
+@@ -823,7 +447,6 @@
+ #               if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+                 CPMAC_TX_INTMASK_SET(p_dev->base_addr) = (1 << cppi->TxChannel);
+ #               elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-                DEB_TEST("Enable tx interrupts\n");
+                 cppi->cpmac_priv->UR8_QUEUE->tx_int_enable_set.Bits.txcq0_int_enable = 1;
+ #               else /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+ #               warning "Tx-IRQ-Setup for unknown architecture missing"
+@@ -850,7 +473,7 @@
+ #               endif /*--- #else ---*/ /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+                     cppi->RxOpen = 1;
+                 } else {
+-                    DEB_ERR("cpphy_cppi_init_rcb failed!\n");
++                    DEB_ERR("[%s] cpphy_cppi_init_rcb failed!\n", __func__);
+                     if(cppi->TxOpen) {
+                         cppi->TxOpen = 0;
+                         cpphy_cppi_free_tcb(cppi);
+@@ -900,7 +523,7 @@
+ 
+     if(Mode & CPPHY_TX_TEARDOWN) {
+         if(cppi->TxTeardownPending) {
+-            DEB_WARN("cpphy_cppi_teardown, tx already pending\n");
++            DEB_WARN("[%s] tx already pending\n", __func__);
+         } else {
+             if(cppi->hw_state < CPPHY_HW_ST_OPENED) {
+                 /* hardware has never been opened, leave immediately */
+@@ -915,6 +538,8 @@
+ #               if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+                 (CPMAC_TX_TEARDOWN(p_dev->base_addr)) = cppi->TxChannel;
+ #               elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
++                cpmac_if_reset_tx_queues(cppi->cpmac_priv);
++                cppi->cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].tx_B.Bits.teardown = 1;
+ #               endif /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+ 
+                 /* if mode is blocking: wait until teardown has completed */
+@@ -924,24 +549,31 @@
+                         msleep_interruptible(2);
+                         timeout++;
+                         if(timeout > 100) {
+-                            DEB_WARN("cpphy_cppi_teardown, break tx wait\n");
++                            DEB_WARN("[%s] break tx wait\n", __func__);
+                             break;
+                         }
+                     }
+                 }
++#               if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0)
++                if(cppi->TxTeardownPending & CPPHY_CALLBACK_TEARDOWN) {
++                    cppi->TxTeardownPending = 0;
++                    cpmac_if_teardown_complete(cppi->cpmac_priv);
++                }
++#               endif /*--- #if defined(CPMAC_TX_TIMEOUT) && (CPMAC_TX_TIMEOUT > 0) ---*/
++                cppi->TxTeardownPending = 0;
+             }
+         }
+     }
+ 
+     if(Mode & CPPHY_RX_TEARDOWN) {
+         if(cppi->RxTeardownPending) {
+-            DEB_WARN("cpphy_cppi_teardown, rx already pending\n");
++            DEB_WARN("[%s] rx already pending\n", __func__);
+         } else {
+             if(cppi->hw_state < CPPHY_HW_ST_OPENED) {
+                 DEB_INFO("[%s] rx, hw in state %u\n", __FUNCTION__, cppi->hw_state);
+             } else if(!cppi->RxOpen) {
+                 /* hardware has never been opened, leave immediately */
+-                DEB_WARN("cpphy_cppi_teardown, rx, already torn down\n");
++                DEB_WARN("[%s] rx, already torn down\n", __func__);
+             } else {
+                 /* set teardown flag for int handler */
+                 cppi->RxTeardownPending = Mode;
+@@ -950,6 +582,7 @@
+ #               if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+                 CPMAC_RX_TEARDOWN(p_dev->base_addr) = 0;
+ #               elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
++                cppi->cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].rx_B.Bits.teardown = 1;
+ #               endif /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+ 
+                 /* if mode is blocking: wait until teardown has completed */
+@@ -959,11 +592,17 @@
+                         msleep_interruptible(2);
+                         timeout++;
+                         if(timeout > 100) {
+-                            DEB_WARN("cpphy_cppi_teardown, break rx wait\n");
++                            if(cppi->cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].rx_B.Bits.enable == 0) {
++                                /* There might be no teardown descriptor */
++                                DEB_WARN("[%s] no rx teardown descriptor, but channel is disabled anyway.\n", __func__);
++                                break;
++                            }
++                            DEB_WARN("[%s] break rx wait\n", __func__);
+                             break;
+                         }
+                     }
+                 }
++                cppi->RxTeardownPending = 0;
+             }
+         }
+     }
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_entry.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_entry.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,...,2012 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -548,6 +548,11 @@
+     /* Print driver version */
+     DEB_ERR("Version: %s\n", AVM_CPMAC_VERSION);
+ 
++#   if (defined(CONFIG_MIPS_OHIO) || defined(CONFIG_MIPS_AR7))
++    /* Changes for UR8 might have damaged the OHIO/AR7 code */
++#   error "OHIO/AR7 not supported anymore!"
++#   endif /*--- #if (defined(CONFIG_MIPS_OHIO) || defined(CONFIG_MIPS_AR7)) ---*/
++
+     /* Initialize administrative array */
+     memset(&cpmac_global, 0, sizeof(cpmac_global_t));
+     for(instance = 0; instance < AVM_CPMAC_MAX_PHYS; instance++) {
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_if.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_if.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -49,6 +49,9 @@
+ #include "cpphy_adm6996.h"
+ #include "cpphy_ar8216.h"
+ #include "cpphy_switch.h"
++#if defined(CONFIG_MIPS_UR8)
++#include <asm/mach-ur8/ur8_cppi.h>
++#endif /*--- #if defined(CONFIG_MIPS_UR8) ---*/
+ 
+ #if !(defined(CONFIG_FUSIV_VX180) || defined(CONFIG_FUSIV_VX185) || defined(CONFIG_ARCH_PUMA5))
+ 
+@@ -56,7 +59,7 @@
+ \*------------------------------------------------------------------------------------------*/
+ void cpphy_if_free_tcb(cpphy_cppi_t *cppi, cpphy_tcb_t *tcb) {
+     /* TODO: remove NULL checks; IRQ disabling not necessary? */
+-    if(tcb == NULL) {
++    if(unlikely(tcb == NULL)) {
+         DEB_ERR("[%s] tcb == NULL\n", __FUNCTION__);
+         return;
+     }
+@@ -66,7 +69,7 @@
+         return;
+     }
+     local_irq_disable();
+-    if(cppi->TxLastFree == NULL) {
++    if(unlikely(cppi->TxLastFree == NULL)) {
+         DEB_ERR("[%s] cppi->TxLastFree == NULL\n", __FUNCTION__);
+         return;
+     }
+@@ -87,9 +90,9 @@
+     local_irq_disable();
+     if(cppi->TxFirstFree->Next == NULL) {
+         cpphy_tcb_t *ptr;
+-        /* TODO Make freeing the allocated space possible */
++        /* TODO Make freeing the allocated space on shutdown possible */
+         ptr = kmalloc(tcbSize, GFP_ATOMIC);
+-        if(ptr == NULL) {
++        if(unlikely(ptr == NULL)) {
+             local_irq_enable();
+             DEB_ERR("[%s] Unable to allocate a new tcb!\n", __FUNCTION__);
+             return NULL;
+@@ -161,23 +164,12 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+-void cpphy_if_tx_complete(cpphy_cppi_t *cppi,
++void cpphy_if_free_tx_skb(cpmac_priv_t   *cpmac_priv,
+                           struct sk_buff *skb,
+-                          unsigned int status) {
+-    cpmac_priv_t *cpmac_priv = cppi->cpmac_priv;
+-    unsigned int enough_free;
+-    unsigned int prio_queue;
+-
+-    if(skb == NULL) {
+-        DEB_ERR("[%s] skb is NULL!\n", __FUNCTION__);
+-        return;
+-    }
+-
+-    prio_queue = skb->uniq_id >> 24;
+-
+-    if(status == CPMAC_ERR_NOERR) {
++                          unsigned int    status) {
++    if(likely(status == CPMAC_ERR_NOERR)) {
+         /*--- DEB_DEBUG("[%s] %u bytes sent\n", __FUNCTION__, skb->len); ---*/
+-        cppi->TxLastCompleted = jiffies;
++        cpmac_priv->cppi->TxLastCompleted = jiffies;
+         cpmac_priv->net_dev_stats.tx_packets++;
+         cpmac_priv->net_dev_stats.tx_bytes += skb->len;
+     } else {
+@@ -185,63 +177,74 @@
+         cpmac_priv->local_stats_tx_errors++;
+     }
+ 
+-    enough_free = !atomic_read(&cppi->TxPrioQueues.q[prio_queue].DMAFree);
+-    atomic_inc(&cppi->TxPrioQueues.q[prio_queue].DMAFree);
+-    cppi->TxPrioQueues.q[prio_queue].BytesDequeued += skb->len;
+-
+ #   if defined(CONFIG_AVM_SIMPLE_PROFILING)
+     skb_trace(skb, 20);
+ #   endif /*--- #if defined(CONFIG_AVM_SIMPLE_PROFILING) ---*/
+     dev_kfree_skb_any(skb);
+-
+-    /* Wakeup of queue should be here, if there is more than one caller of this function */
+-
+-    if(enough_free) {
+-        cpphy_if_tx_restart_queue(cppi);
+-        cpphy_if_data_from_queues(cppi);
+-    }
+ }
+ 
+ 
+ /*------------------------------------------------------------------------------------------*\
+- * Garbage collect tx DMA queue                                                             *
+ \*------------------------------------------------------------------------------------------*/
+-#if 0
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-void cpphy_if_gc_tx_queue(cpphy_cppi_t *cppi) {
+-    register cpphy_tcb_t *tcb;
+-    static atomic_t only_one = { counter: 0 };
++void cpphy_if_tx_complete(cpphy_cppi_t *cppi,
++                          struct sk_buff *skb,
++                          unsigned int status) {
++    cpmac_priv_t *cpmac_priv = cppi->cpmac_priv;
++    unsigned int enough_free;
++    unsigned int prio_queue;
++    struct sk_buff *transit_skb;
++    unsigned long flags;
+ 
+-    if(atomic_add_return(1, &only_one) != 1) {
++    if(unlikely(skb == NULL)) {
++        DEB_ERR("[%s] skb is NULL!\n", __FUNCTION__);
+         return;
+     }
+-    while ((tcb = (cpphy_tcb_t *) cppi->TxFirst) != NULL) {
+-        dma_cache_inv((unsigned long)(void *)tcb, sizeof(cpphy_tcb_t));
+-        if (tcb->mode & CB_OWNERSHIP_BIT) {
+-            atomic_set(&only_one, 0);
+-            return;
+-        }
+-        if(tcb->skb != NULL) {
+-            cpphy_if_tx_complete(cppi, (struct sk_buff *) tcb->skb, CPMAC_ERR_NOERR);
++
++    prio_queue = skb->uniq_id >> 24;
++
++    enough_free = !atomic_read(&cppi->TxPrioQueues.q[prio_queue].DMAFree);
++    atomic_inc(&cppi->TxPrioQueues.q[prio_queue].DMAFree);
++    cppi->TxPrioQueues.q[prio_queue].BytesDequeued += skb->len;
++
++    spin_lock_irqsave(&cppi->skb_transit_spinlock, flags);
++    transit_skb = skb_dequeue(&cppi->skbs_in_transit);
++    mb();
++    spin_unlock_irqrestore(&cppi->skb_transit_spinlock, flags);
++    if(unlikely((transit_skb != NULL) && (skb != transit_skb))) {
++        unsigned int skbs_freed = 0;
++        do {
++            if(skbs_freed < 3) {
++                DEB_WARN("[%s] skb to complete: 0x%p; will drop expected skb 0x%p!\n", 
++                         __func__, skb, transit_skb);
++            }
++            cpphy_if_free_tx_skb(cpmac_priv, transit_skb, CPMAC_ERR_DROPPED);
++            spin_lock_irqsave(&cppi->skb_transit_spinlock, flags);
++            transit_skb = skb_dequeue(&cppi->skbs_in_transit);
++            mb();
++            spin_unlock_irqrestore(&cppi->skb_transit_spinlock, flags);
++            skbs_freed++;
++        } while(unlikely((transit_skb != NULL) && (skb != transit_skb)));
++        if(skbs_freed > 3) {
++            DEB_WARN("[%s] skb to complete: 0x%p; dropped %u expected skbs overall!\n", 
++                     __func__, skb, skbs_freed);
+         }
+-        tcb->skb = NULL;
+ 
+-        /*----------------------------------------------------------------------------------*\
+-         * The last entry stays in the queue. Therefor the LastTx pointer needs not to be
+-         * touched.
+-        \*----------------------------------------------------------------------------------*/
+-        if(tcb == cppi->TxLast) {
+-            atomic_set(&only_one, 0);
+-            return;
++    }
++    if(likely(skb == transit_skb)) {
++        cpphy_if_free_tx_skb(cpmac_priv, skb, status);
++    } else {
++        DEB_ERR("[%s] Could not find skb %p in tx list!\n", __func__, skb);
++    }
++
++    /* Wakeup of queue should be here, if there is more than one caller of this function */
++
++    if(enough_free) {
++        if(likely(!test_bit(0, &cpmac_priv->set_to_close))) {
++            cpphy_if_tx_restart_queue(cppi);
++            cpphy_if_data_from_queues(cppi);
+         }
+-        cppi->TxFirst = tcb->Next;
+-        /*--- cpphy_if_free_tcb(tcb); ---*/
+     }
+-    atomic_set(&only_one, 0);
+-    return;
+ }
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-#endif /*--- #if 0 ---*/
+ 
+ 
+ /*------------------------------------------------------------------------------------------*\
+@@ -290,42 +293,6 @@
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-void cpphy_if_data_to_phy_dma(cpphy_cppi_t *cppi, cpphy_tcb_t *newtcb) {
+-    cpphy_tcb_t *TmpPrevEnqueue;
+-    cpmac_priv_t *cpmac_priv = cppi->cpmac_priv;
+-    unsigned int base = cpmac_priv->owner->base_addr;
+-    cpphy_tcb_t *tcb;
+-
+-    tcb = (cpphy_tcb_t *) cppi->TxPrevEnqueue->Next;
+-
+-    /* Setup Tx mode and size */
+-    memcpy(tcb, newtcb, 16);
+-    tcb->skb = newtcb->skb;
+-    cpphy_if_free_tcb(cppi, newtcb);
+-
+-    /* increment management ptr */
+-    TmpPrevEnqueue = cppi->TxPrevEnqueue;
+-    cppi->TxPrevEnqueue = tcb;
+-
+-    /* dma may go on by chaining current tx descriptor */
+-    *((volatile unsigned int *) CPPHY_VIRT_TO_VIRT_NO_CACHE(&TmpPrevEnqueue->HNext)) =
+-        CPPHY_VIRT_TO_PHYS(tcb);
+-
+-    /* If tx complete int handling has stopped, restart here. */
+-    /* It does not work to check CB_EOQ_BIT here and restart dma if bit is set: Bug of cpmac? */
+-
+-    if(!cppi->TxDmaActive) {
+-        cppi->TxDmaActive = 1;
+-        /* write CPPI TX HDP */
+-        (CPMAC_TX_HDP(base, cppi->TxChannel)) = CPPHY_VIRT_TO_PHYS(tcb);
+-    }
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+ 
+ #if defined(CPMAC_DMA_TX_PRIOQUEUE_DEBUG)
+ static char buf[60];
+@@ -379,10 +346,11 @@
+ \*------------------------------------------------------------------------------------------*/
+ void cpphy_if_data_from_queues(cpphy_cppi_t *cppi) {
+     cpphy_tcb_t *tcb;
+-    unsigned int priority, count;
++    unsigned int count;
++    unsigned char priority;
+ 
+-    if(atomic_add_return(1, &cppi->dequeue_running) != 1) {
+-        DEB_ERR("[%s] conflict\n", __FUNCTION__); /* FIXME */
++    if(unlikely(atomic_add_return(1, &cppi->dequeue_running) != 1)) {
++        DEB_ERR("[%s] conflict\n", __FUNCTION__); /* TODO? */
+         return;
+     }
+ 
+@@ -422,11 +390,16 @@
+                 }
+ 
+                 tcb = cpphy_if_tcb_dequeue(cppi, priority);
+-                if(tcb != NULL) {
++                if(likely(tcb != NULL)) {
++                    unsigned long flags;
+                     atomic_dec(&cppi->TxPrioQueues.q[priority].DMAFree);
+ #                   ifdef CPMAC_DMA_TX_PRIOQUEUE_DEBUG
+                     log_to_dmaqueue(priority);
+ #                   endif
++                    spin_lock_irqsave(&cppi->skb_transit_spinlock, flags);
++                    skb_queue_tail(&cppi->skbs_in_transit, tcb->skb);
++                    mb();
++                    spin_unlock_irqrestore(&cppi->skb_transit_spinlock, flags);
+ #                   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+                     cpphy_if_data_to_phy_dma(cppi, tcb);
+ #                   elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+@@ -450,84 +423,6 @@
+ }
+ 
+ 
+-/*------------------------------------------------------------------------------------------*\
+-\*------------------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-cpmac_err_t cpphy_if_data_to_phy(cpmac_phy_handle_t phy_handle, struct sk_buff *skb) {
+-    cpphy_cppi_t *cppi = &((cpphy_global_t *)phy_handle)->cppi;
+-    cpphy_mdio_t *mdio = &((cpphy_global_t *)phy_handle)->mdio;
+-    unsigned int priority, frame_length;
+-    cpphy_tcb_t *tcb;
+-
+-    if(!cppi->TxOpen || cppi->TxTeardownPending || (mdio->state != CPPHY_MDIO_ST_LINKED)) {
+-        DEB_INFO("[%s] Channel closing or not opened (TxOpen = %#x, TeardownPend = %#x, state = %#x)\n",
+-                 __FUNCTION__, cppi->TxOpen, cppi->TxTeardownPending, mdio->state);
+-        return CPMAC_ERR_CHAN_NOT_OPEN;
+-    }
+-
+-    /* We do not want a zero length packet */
+-    if(CPMAC_VLAN_IS_0_LEN_FRAME(skb->data)) {
+-#       if defined(CONFIG_AVM_SIMPLE_PROFILING)
+-        skb_trace(skb, 21);
+-#       endif /*--- #if defined(CONFIG_AVM_SIMPLE_PROFILING) ---*/
+-        dev_kfree_skb_any(skb);
+-        cppi->cpmac_priv->local_stats_tx_errors++;
+-        DEB_TRC("[%s] packet dropped!\n", __FUNCTION__);
+-        return CPMAC_ERR_NOERR;
+-    }
+-
+-    /******************************************\
+-     * Part 1: Add skb(s) to correct queue(s) *
+-    \******************************************/
+-
+-    /* Check which queue to use */
+-    priority = skb->uniq_id >> 24;
+-    assert(priority < CPPHY_PRIO_QUEUES);
+-
+-    /* supply min ether frame size */
+-    frame_length = skb->len;
+-    if(frame_length < 60) {
+-        /*--- if(mdio->pad_on) { ---*/
+-            /*--- DEB_TEST("[cpphy_if_data_to_phy] (%u) before padding: %64B\n", skb->len, skb->len, skb->data); ---*/ /* FIXME */
+-            /*--- skb = skb_padto(skb, 60); ---*/ /* + 4 byte hardware added fcs -> min frame length of 64 bytes */
+-            /*--- if(skb == NULL) { ---*/
+-                /*--- DEB_ERR("Out of memory when trying to pad a short packet in the send path.\n"); ---*/
+-                /*--- return CPMAC_ERR_NOMEM; ---*/
+-            /*--- } ---*/
+-            /*--- DEB_TEST("[cpphy_if_data_to_phy] (%u) after padding : %64B\n", skb->len, 64, skb->data); ---*/ /* FIXME */
+-        /*--- } ---*/
+-        frame_length = 60;  /* + 4 byte hardware added fcs -> min frame length of 64 bytes */
+-    }
+-
+-    /* prepare tx data to be available for dma */
+-    dma_cache_wback_inv((unsigned long) skb->data, frame_length);
+-
+-    if(atomic_read(&cppi->TxPrioQueues.q[priority].Free) == 0)
+-        return CPMAC_ERR_NO_BUFFER;
+-
+-    /* Allocate tcb, set it up with the skb data */
+-    tcb = cpphy_if_alloc_tcb(cppi);
+-    if(tcb == NULL) {
+-        return CPMAC_ERR_NO_BUFFER;
+-    }
+-
+-    tcb->HNext    = 0;
+-    tcb->BufPtr   = CPPHY_VIRT_TO_PHYS((unsigned int *)skb->data);
+-    tcb->Off_BLen = frame_length;
+-    tcb->mode     = (frame_length | CB_SOF_BIT | CB_EOF_BIT | CB_OWNERSHIP_BIT);
+-    tcb->Next     = NULL;
+-    tcb->skb      = skb;
+-
+-    /* Enqueue tcb to the corresponding priority queue */
+-    cpphy_if_tcb_enqueue(cppi, priority, tcb);
+-    cppi->TxPrioQueues.q[priority].BytesEnqueued += skb->len;
+-    cpphy_if_data_from_queues(cppi);
+-
+-    return CPMAC_ERR_NOERR;
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+ /*----------------------------------------------------------------------------------*\
+ \*----------------------------------------------------------------------------------*/
+ cpmac_err_t cpphy_if_control_req(cpmac_phy_handle_t phy_handle,
+@@ -577,19 +472,6 @@
+                 va_end(param);
+             }
+             break;
+-        case CPMAC_CONTROL_REQ_TEARDOWN:
+-            {
+-                unsigned int mode;
+-
+-                va_start(param, control);
+-                mode = va_arg(param, unsigned int);
+-                ret = cpphy_cppi_teardown(cppi, mode);
+-                va_end(param);
+-            }
+-            break;
+-        case CPMAC_CONTROL_REQ_START_DMA:
+-            ret = cpphy_cppi_start_dma(&((cpphy_global_t *) phy_handle)->cppi);
+-            break;
+         case CPMAC_CONTROL_REQ_PORT_COUNT:
+             /* to check: adjust port count in case of empty cpphy */
+             /* design: abuse ret as port count */
+@@ -628,96 +510,18 @@
+ 
+ /*----------------------------------------------------------------------------------*\
+ \*----------------------------------------------------------------------------------*/
+-#if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-void cpphy_if_isr_tasklet(unsigned long context) {
+-    cpmac_phy_handle_t phy_handle = (cpmac_phy_handle_t)context;
+-    unsigned int IntVec;
+-    cpphy_cppi_t *cppi = &((cpphy_global_t *) phy_handle)->cppi;
+-    cpmac_priv_t *cpmac_priv = ((cpphy_global_t *) phy_handle)->cpmac_priv;
+-
+-    /* Verify proper device state - important because a call prior to Open would *\
+-    \* result in a lockup                                                        */
+-    if(cppi->hw_state != CPPHY_HW_ST_OPENED)
+-        return;
+-
+-    IntVec = CPMAC_MAC_IN_VECTOR(cpmac_priv->owner->base_addr);
+-    if(IntVec == 0) {
+-        return;
+-    }
+-
+-    /*--- DEB_TRC("[cpphy_if_isr_tasklet] int vec 0x%X\n", IntVec); ---*/
+-
+-    if(IntVec & MAC_IN_VECTOR_TX_INT_OR) { /* only chan 0 in use */
+-        cpphy_cppi_tx_int(cppi);
+-    }
+-
+-    if(IntVec & MAC_IN_VECTOR_RX_INT_OR) { /* only chan 0 in use */
+-        if((IntVec >> 8) & 0x7) {
+-            DEB_ERR("[%s] unexpected rx chan %u\n", __FUNCTION__, (IntVec >> 8) & 0x7);
+-        } else {
+-            cpphy_cppi_rx_int(cppi);
+-        }
+-    }
+-
+-    if(IntVec & MAC_IN_VECTOR_HOST_INT) {
+-        /* severe problem */
+-        DEB_ERR("[%s] status %08X for base:%X\n",
+-                __FUNCTION__,
+-                CPMAC_MACSTATUS(cpmac_priv->owner->base_addr),
+-                (unsigned int) cpmac_priv->owner->base_addr);
+-        /* to do: reset hardware */
+-    }
+-    if(IntVec & (MAC_IN_VECTOR_TX_INT_OR | MAC_IN_VECTOR_RX_INT_OR | MAC_IN_VECTOR_HOST_INT)) {
+-        CPMAC_MAC_EOI_VECTOR(cpmac_priv->owner->base_addr) = 0;
+-    }
+-}
+-#endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+-
+-/*----------------------------------------------------------------------------------*\
+-\*----------------------------------------------------------------------------------*/
+ cpmac_err_t cpphy_if_init(cpmac_phy_handle_t phy_handle, cpmac_priv_t *cpmac_priv) {
+     cpmac_err_t ret = CPMAC_ERR_NOERR;
+     struct net_device *p_dev = cpmac_priv->owner;
+     char *mac_name = NULL;
+     char *mac_string = NULL;
+ 
++    DEB_TRC("[%s]\n", __func__);
++
+     ((cpphy_global_t *) phy_handle)->cpmac_priv = cpmac_priv;
+     ((cpphy_global_t *) phy_handle)->cppi.cpmac_priv = cpmac_priv;
+ 
+-    /* reset of cpmac and phy */
+-#   if defined(CONFIG_MIPS_AR7)
+-    if(((cpphy_global_t *) phy_handle)->high_phy) {
+-        cpmac_priv->mac_reset_bit = EMACB_RESET_BIT;
+-        /* to check: reset although no internal phy on high cpmac */
+-        cpmac_priv->phy_reset_bit = -1; /* signal: no bit to reset */
+-        cpmac_priv->mac_pdown_bit = PDCR_BIT_EMAC1;
+-        cpmac_priv->intr = AR7INT_CPMAC1;
+-        p_dev->if_port = CPPHY_CPMAC_HIGH_PORT_ID;
+-        p_dev->base_addr = AR7_CPMAC1_BASE;
+-        mac_name = "macb";
+-    } else
+-#   endif /*--- #if defined(CONFIG_MIPS_AR7) ---*/
+-#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-    {
+-        cpmac_priv->mac_reset_bit = EMACA_RESET_BIT;
+-        cpmac_priv->phy_reset_bit = EMAC_PHY_RESET_BIT;
+-        cpmac_priv->mac_pdown_bit = PDCR_BIT_EMAC0;
+-#       if defined(CONFIG_MIPS_AR7)
+-        cpmac_priv->intr = AR7INT_CPMAC0;
+-        p_dev->base_addr = AR7_CPMAC0_BASE;
+-#       else /*--- #if defined(CONFIG_MIPS_AR7) ---*/
+-        cpmac_priv->intr = OHIOINT_CPMAC0;
+-        p_dev->base_addr = OHIO_CPMAC0_BASE;
+-#       endif /*--- #else ---*/ /*--- #if defined(CONFIG_MIPS_AR7) ---*/
+-        p_dev->if_port = CPPHY_CPMAC_LOW_PORT_ID;
+-        mac_name = "maca";
+-    }
+-    avm_reset_device(cpmac_priv->mac_reset_bit, 100);
+-    if(cpmac_priv->phy_reset_bit != -1) {
+-        avm_reset_device (cpmac_priv->phy_reset_bit, 100);
+-    }
+-#   elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
++#   if defined(CONFIG_MIPS_UR8)
+     cpmac_priv->UR8_QUEUE = (struct ur8_queue_manager *) UR8_NWSS_QUEUE;
+     cpmac_priv->UR8_NWSS  = (struct ur8_nwss_register *)&(*(volatile unsigned int *)(UR8_NWSS_BASE));
+     if(((cpphy_global_t *) phy_handle)->mdio.high_phy) {
+@@ -727,16 +531,17 @@
+         cpmac_priv->CPGMAC_F = (struct cpgmac_f_regs *) UR8_CPMAC0_BASE;
+         mac_name = "maca";
+     }
+-#   else /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
++    if(ur8_teardown_init() != 0) {
++        DEB_ERR("[%s] Initialization of teardown register failed\n", __func__);
++        return CPMAC_ERR_REGISTER_FAILED;
++    }
++#   else /*--- #if defined(CONFIG_MIPS_UR8) ---*/
+ #   warning "No reset routine for PHY"
+     mac_name = "maca";
+-#   endif /*--- #else ---*/ /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
++#   endif /*--- #else ---*/
+     /*--- wait 100 ms ---*/
+     set_current_state(TASK_INTERRUPTIBLE);
+     schedule_timeout(HZ / 10);
+-#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-    avm_take_device_out_of_power_down(cpmac_priv->mac_pdown_bit);
+-#   endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+ 
+     mac_string = prom_getenv(mac_name);
+     if(!mac_string) {
+@@ -750,29 +555,6 @@
+     DEB_INFO("[%s] dev %s has mac addr: %s\n", __FUNCTION__, p_dev->name, mac_string);
+     cpphy_misc_str2eaddr(p_dev->dev_addr, mac_string);
+ 
+-    /* Use the external PHY only for the switch variants of the FBox */
+-#   if defined(CONFIG_MIPS_OHIO)
+-    if(((cpphy_global_t *) phy_handle)->mdio.switch_config.is_switch) {
+-        /* Reset PHY, leave it in reset state, because we use the external PHY */
+-        if(cpmac_priv->phy_reset_bit != -1) {
+-            avm_put_device_into_reset (cpmac_priv->phy_reset_bit);
+-        }
+-
+-        /* Delay 200ms */
+-        set_current_state(TASK_INTERRUPTIBLE);
+-        schedule_timeout(HZ / 5);
+-
+-        /* MII pins are connected to the MII interface on the EMAC0 module */
+-        *((volatile unsigned int *) OHIO_MII_SEL_REG) = 1;
+-    }
+-#   endif /*--- #if defined(CONFIG_MIPS_OHIO) ---*/
+-
+-#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-    /* Tasklet is initialized at the isr registeration time. */
+-    cpmac_priv->dev_size = 0x800;     /* to check */
+-    request_mem_region(p_dev->base_addr, cpmac_priv->dev_size, p_dev->name);
+-#   endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-
+     cpphy_main_open((cpphy_global_t *) phy_handle, p_dev);
+     return ret;
+ }
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_if_g.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_if_g.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -60,6 +60,8 @@
+ #include "cpgmac_f.h"
+ 
+ 
++static cpphy_rcb_t *unused_rcbs = NULL;
++
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ void cpphy_if_g_data_to_phy_dma (cpphy_cppi_t *cppi, cpphy_tcb_t *tcb) {
+@@ -75,10 +77,11 @@
+ cpmac_err_t cpphy_if_g_data_to_phy(cpmac_phy_handle_t phy_handle, struct sk_buff *skb) {
+     cpphy_cppi_t *cppi = &((cpphy_global_t *)phy_handle)->cppi;
+     cpphy_mdio_t *mdio = &((cpphy_global_t *)phy_handle)->mdio;
+-    unsigned int priority, frame_length;
++    unsigned char priority;
++    unsigned int frame_length;
+     cpphy_tcb_t *tcb;
+ 
+-    if(!cppi->TxOpen || cppi->TxTeardownPending || (mdio->state != CPPHY_MDIO_ST_LINKED)) {
++    if(unlikely(!cppi->TxOpen || cppi->TxTeardownPending || (mdio->state != CPPHY_MDIO_ST_LINKED))) {
+         DEB_INFO("[%s] chan closing or not opened (%u:%u)\n", __FUNCTION__,
+             cppi->hw_state, cppi->TxTeardownPending);
+         return CPMAC_ERR_CHAN_NOT_OPEN;
+@@ -89,7 +92,7 @@
+     \******************************************/
+ 
+     /* Check which queue to use */
+-    priority = skb->uniq_id >> 24;
++    priority = (skb->uniq_id >> 24) & 0xff;
+     assert(priority < CPPHY_PRIO_QUEUES);
+ 
+     if(atomic_read(&cppi->TxPrioQueues.q[priority].Free) == 0) {
+@@ -111,7 +114,7 @@
+ 
+     /* Allocate tcb, set it up with the skb data */
+     tcb = cpphy_if_alloc_tcb(cppi);
+-    if(tcb == NULL) {
++    if(unlikely(tcb == NULL)) {
+         DEB_ERR("[%s] Could not allocate tcb!\n", __FUNCTION__);
+         return CPMAC_ERR_NO_BUFFER;
+     }
+@@ -143,28 +146,40 @@
+ static cpmac_err_t cpphy_if_g_enqueue_rcb(cpphy_cppi_t *cppi, cpphy_rcb_t *rcb) {
+     char *pBuf;
+ 
+-    memset(rcb, 0, sizeof(cpphy_rcb_t));
++    do {
++        if(unlikely(rcb == NULL)) {
++            rcb = unused_rcbs;
++            unused_rcbs = unused_rcbs->Next;
++        }
+ 
+-    /* Allocate buffer and enter data into packet descriptor */
+-    pBuf = (char *) cpphy_cppi_malloc_buffer(CPPHY_MAX_RX_BUFFER_SIZE,
+-                                             CPPHY_TOTAL_RX_BUFFER_SIZE,
+-                                             CPPHY_TOTAL_RX_RESERVED,
+-                                             cppi->cpmac_priv->owner,
+-                                             (struct sk_buff **) &rcb->skb);
+-    if(!pBuf) {
+-        DEB_ERR("[%s] Not enough memory for receive buffers!\n", __FUNCTION__);
+-        return CPMAC_ERR_NO_BUFFER;
+-    }
++        memset(rcb, 0, sizeof(cpphy_rcb_t));
+ 
+-    /* Null/0 need not be written because of the memset above */
+-    /*--- rcb->Packet.Bits.packet_type = PACKET_TYPE_ETHERNET; ---*/
+-    /*--- rcb->Packet.Bits.buffer_length = CPPHY_MAX_RX_BUFFER_SIZE; ---*/
+-    rcb->Buffer.Bits.length = CPPHY_MAX_RX_BUFFER_SIZE;
+-    rcb->pData = CPPHY_VIRT_TO_PHYS(pBuf);
+-    barrier();
++        /* Allocate buffer and enter data into packet descriptor */
++        pBuf = (char *) cpphy_cppi_malloc_buffer(CPPHY_MAX_RX_BUFFER_SIZE,
++                                                 CPPHY_TOTAL_RX_BUFFER_SIZE,
++                                                 CPPHY_TOTAL_RX_RESERVED,
++                                                 cppi->cpmac_priv->owner,
++                                                 (struct sk_buff **) &rcb->skb);
++        if(unlikely(!pBuf)) {
++            DEB_ERR("[%s] Not enough memory for receive buffers!\n", __FUNCTION__);
++            rcb->Next = unused_rcbs;
++            unused_rcbs = rcb;
++            return CPMAC_ERR_NO_BUFFER;
++        }
+ 
+-    /* Enqueue packet descriptors */
+-    cppi->cpmac_priv->UR8_QUEUE->free_db_queue[UR8_RX_FREE_QUEUE].pointer = CPPHY_VIRT_TO_PHYS((unsigned int) rcb);
++        /* Null/0 need not be written because of the memset above */
++        /*--- rcb->Packet.Bits.packet_type = PACKET_TYPE_ETHERNET; ---*/
++        /*--- rcb->Packet.Bits.buffer_length = CPPHY_MAX_RX_BUFFER_SIZE; ---*/
++        rcb->Buffer.Bits.length = CPPHY_MAX_RX_BUFFER_SIZE;
++        rcb->pData = CPPHY_VIRT_TO_PHYS(pBuf);
++        dma_cache_wback_inv((unsigned long) rcb, sizeof(cpphy_rcb_t));
++        barrier();
++
++        /* Enqueue packet descriptors */
++        cppi->cpmac_priv->UR8_QUEUE->free_db_queue[UR8_RX_FREE_QUEUE].pointer = CPPHY_VIRT_TO_PHYS((unsigned int) rcb);
++
++        rcb = NULL;
++    } while(unlikely(unused_rcbs != NULL));
+ 
+     return CPMAC_ERR_NOERR;
+ }
+@@ -177,35 +192,36 @@
+     cpphy_rcb_t *rcb;
+     cpphy_rcb_t *last_rcb;
+ 
+-    /* Handle teardown interrupt */
+-    /* FIXME Rx teardown support missing */
+-    /*--- if(cppi->RxTeardownPending) { ---*/
+-        /*--- if(cpphy_cppi_rx_teardown_int(cppi) == CPMAC_ERR_NOERR) { ---*/
+-            /*--- return CPMAC_ERR_NOERR; ---*/
+-        /*--- } ---*/
+-    /*--- } ---*/
+-
+     rcb = (cpphy_rcb_t *) CPPHY_PHYS_TO_VIRT_NO_CACHE(cppi->cpmac_priv->UR8_QUEUE->rx_queue[UR8_RX_QUEUE].prio[0]);
+ #   if defined(CONFIG_AVM_SIMPLE_PROFILING)
+     avm_simple_profiling_log(avm_profile_data_type_cpphyrx_begin, (unsigned int)cpphy_if_g_rx_int, (unsigned int)rcb);
+ #   endif /*--- #if defined(CONFIG_AVM_SIMPLE_PROFILING) ---*/
+     if(rcb != (cpphy_rcb_t *) CPPHY_PHYS_TO_VIRT_NO_CACHE(0)) {
+         while(rcb != (cpphy_rcb_t *) CPPHY_PHYS_TO_VIRT_NO_CACHE(0)) {
+-            if(rcb->Buffer.Bits.offset != 0) { /* FIXME */
++            if(unlikely(((unsigned int) rcb) & 0x1)) {
++                /* LSB is set to signal teardown complete */
++#               if (CPMAC_DEBUG_LEVEL & CPMAC_DEBUG_LEVEL_INFOTRACE)
++                struct __nwss_td_desc *tdd = (struct __nwss_td_desc *) ((unsigned int) rcb ^ 0x1);
++#               endif /*--- #if (CPMAC_DEBUG_LEVEL & CPMAC_DEBUG_LEVEL_INFOTRACE) ---*/
++                DEB_INFOTRC("[%s] rx channel %u teardown complete!\n", __FUNCTION__, tdd->channel_no);
++                cppi->RxTeardownPending &= ~CPPHY_RX_TEARDOWN;
++                break;
++            }
++            if(unlikely(rcb->Buffer.Bits.offset != 0)) { /* TODO */
+                 DEB_ERR("[%s] did not expect offset in rx buffer: 0x%x\n", __FUNCTION__, rcb->Buffer.Bits.offset);
+             }
+-            if(rcb->Buffer.Bits.length != rcb->Packet.Bits.buffer_length) {
++            if(unlikely(rcb->Buffer.Bits.length != rcb->Packet.Bits.buffer_length)) {
+                 DEB_ERR("[%s] found different buffer lengths: buffer 0x%x, packet 0x%x\n", __FUNCTION__,
+                         rcb->Buffer.Bits.length, rcb->Packet.Bits.buffer_length);
+             }
+-            if(rcb->NextDescr != NULL) { /* FIXME */
++            if(unlikely(rcb->NextDescr != NULL)) { /* TODO */
+                 DEB_ERR("[%s] did not expect further descriptors in rx buffer 0x%p\n", __FUNCTION__, rcb->NextDescr);
+             }
+             /* TODO Check, why there were four bytes too many UR8? Tantos? */
+ #           if defined(CONFIG_AVM_SIMPLE_PROFILING)
+             skb_trace(rcb->skb, 22);
+ #           endif /*--- #if defined(CONFIG_AVM_SIMPLE_PROFILING) ---*/
+-            if(rcb->skb) {
++            if(likely(rcb->skb)) {
+                 cpmac_if_data_from_phy(cppi->cpmac_priv, (struct sk_buff *) rcb->skb, rcb->Buffer.Bits.length - 4);
+             } else {
+                 DEB_ERR("[%s] Received rcb %p with skb == NULL !\n", __FUNCTION__, rcb);
+@@ -230,13 +246,6 @@
+ static unsigned int cpphy_if_g_tx_int(cpphy_cppi_t *cppi) {
+     cpphy_tcb_t *tcb, *next_tcb;
+ 
+-    /* Handle teardown interrupt */
+-    if(cppi->TxTeardownPending) {
+-        /* Missing irq teardown */
+-        /*--- if(cpphy_if_g_tx_teardown_int(cppi) == CPMAC_ERR_NOERR) { ---*/
+-            /*--- return CPMAC_ERR_NOERR; ---*/
+-        /*--- } ---*/
+-    }
+ #   if defined(CONFIG_AVM_SIMPLE_PROFILING)
+     avm_simple_profiling_log(avm_profile_data_type_cpphytx_begin, (unsigned int)cpphy_if_g_tx_int, (unsigned int)0);
+ #   endif /*--- #if defined(CONFIG_AVM_SIMPLE_PROFILING) ---*/
+@@ -245,16 +254,17 @@
+     while(   (tcb = (cpphy_tcb_t *) CPPHY_PHYS_TO_VIRT_NO_CACHE(cppi->cpmac_priv->UR8_QUEUE->tx_completion_queue[UR8_TX_COMPLETE]))
+           != (cpphy_tcb_t *) CPPHY_PHYS_TO_VIRT_NO_CACHE(0)) {
+         while(tcb != (cpphy_tcb_t *) CPPHY_PHYS_TO_VIRT_NO_CACHE(0)) {
+-            if((unsigned int) tcb & 0x1) {
++            if(unlikely((unsigned int) tcb & 0x1)) {
+                 /* LSB is set to signal teardown complete */
+-                DEB_ERR("[%s] tx channel teardown complete!\n", __FUNCTION__);
+-                tcb = (cpphy_tcb_t *) ((unsigned int) tcb ^ 0x1);
+-                if(tcb == NULL) {
+-                    break;
+-                }
++#               if (CPMAC_DEBUG_LEVEL & CPMAC_DEBUG_LEVEL_INFOTRACE)
++                struct __nwss_td_desc *tdd = (struct __nwss_td_desc *) ((unsigned int) tcb ^ 0x1);
++#               endif /*--- #if (CPMAC_DEBUG_LEVEL & CPMAC_DEBUG_LEVEL_INFOTRACE) ---*/
++                DEB_INFOTRC("[%s] tx channel %u teardown complete!\n", __FUNCTION__, tdd->channel_no);
++                cppi->TxTeardownPending &= ~CPPHY_TX_TEARDOWN;
++                break;
+             }
+ 
+-            if(tcb->NextDescr != NULL) {
++            if(unlikely(tcb->NextDescr != NULL)) {
+                 /* We use single buffers to transmit packets */
+                 DEB_ERR("[%s] Did not expect tcb->NextDescr != NULL!\n", __FUNCTION__);
+             }
+@@ -270,7 +280,9 @@
+             struct Qdisc *q = p_dev->qdisc;
+ 
+             if(netif_queue_stopped(p_dev)) {
+-                cpphy_if_tx_restart_queue(cppi);
++                if(likely(!test_bit(0, &cppi->cpmac_priv->set_to_close))) {
++                    cpphy_if_tx_restart_queue(cppi);
++                }
+             } else if(q->q.qlen) {
+ #               if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32))
+                 /*--- napi_schedule(&cppi->cpmac_priv->napi); ---*/
+@@ -280,7 +292,6 @@
+ #               endif /*--- #else ---*/ /*--- #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32)) ---*/
+             }
+         }
+-        cppi->cpmac_priv->tx_timeout_tasklet_rescheduled = 0;
+         /* Acknowledge interrupt */
+         cppi->cpmac_priv->UR8_QUEUE->tx_int_end.Bits.cq_num = UR8_TX_COMPLETE;
+     }
+@@ -300,7 +311,7 @@
+ 
+     /* Verify proper device state - important because a call prior to Open would *\
+     \* result in a lockup                                                        */
+-    if(cppi->hw_state != CPPHY_HW_ST_OPENED) {
++    if(unlikely(cppi->hw_state != CPPHY_HW_ST_OPENED)) {
+         DEB_TRC("[%s] Tasklet called, but state is not open!\n", __FUNCTION__);
+         return;
+     }
+@@ -310,6 +321,11 @@
+ 
+     /* Now clean up completed tx packets */
+     cpphy_if_g_tx_int(cppi);
++
++    /* Make it possible to replenish rcbs with skbs even without receiving a packet */
++    if(unlikely(unused_rcbs != NULL)) {
++        cpphy_if_g_enqueue_rcb(cppi, NULL);
++    }
+ }
+ 
+ 
+@@ -328,6 +344,7 @@
+     size_malloc = (rcbSize * Num) + 0x3f;
+ 
+     if(!(AllRcb = (char *) kmalloc(size_malloc, GFP_KERNEL))) {
++        DEB_ERR("[%s] Out of memory!\n", __func__);
+         ret = CPMAC_ERR_NOMEM;
+     } else {
+         dma_cache_wback_inv((unsigned long) AllRcb, size_malloc);
+@@ -342,10 +359,11 @@
+         /* align to cache line */
+         AllRcb = (char *) (((unsigned int) AllRcb + 0x3f) & ~0x3f);
+         rcb = (cpphy_rcb_t *) AllRcb;
+-        DEB_TEST("[%s] Initialize rx free buffer/descriptor queue\n", __FUNCTION__);
++        DEB_TRC("[%s] Initialize rx free buffer/descriptor queue\n", __FUNCTION__);
+         cppi->cpmac_priv->UR8_QUEUE->free_db_queue[UR8_RX_FREE_QUEUE].size = CPPHY_MAX_RX_BUFFER_SIZE;
+         for(i = 0; i < Num; i++) {
+             if(CPMAC_ERR_NOERR != cpphy_if_g_enqueue_rcb(cppi, rcb)) {
++                DEB_ERR("[%s] Out of memory on enqueue!\n", __func__);
+                 return CPMAC_ERR_NOMEM;
+             }
+             rcb = (cpphy_rcb_t *) (((unsigned char *) rcb) + rcbSize);
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_if.h
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_if.h
+@@ -32,6 +32,9 @@
+ void cpphy_if_isr_tasklet (unsigned long context);
+ void cpphy_if_tcb_enqueue(cpphy_cppi_t *cppi, unsigned char priority, cpphy_tcb_t *tcb);
+ void cpphy_if_tick (cpmac_phy_handle_t phy_handle);
++void cpphy_if_free_tx_skb(cpmac_priv_t   *cpmac_priv,
++                          struct sk_buff *skb,
++                          unsigned int    status);
+ void cpphy_if_tx_complete(cpphy_cppi_t *cppi,
+                           struct sk_buff *skb,
+                           unsigned int status);
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_main.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_main.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -185,8 +185,7 @@
+         RxMbpEnable |= RX_NO_CHAIN;
+     }
+     CPMAC_RX_MBP_ENABLE(p_dev->base_addr) = RxMbpEnable;
+-    DEB_TRC("cpphy_main_config_apply, MBP_ENABLE 0x%08X\n",
+-            CPMAC_RX_MBP_ENABLE(p_dev->base_addr));
++    DEB_TRC("[%s] MBP_ENABLE 0x%08X\n", __func__, CPMAC_RX_MBP_ENABLE(p_dev->base_addr));
+ 
+     CPMAC_MACHASH1(p_dev->base_addr) = capabilities->multicast ? 0xffffffff : 0;
+     CPMAC_MACHASH2(p_dev->base_addr) = capabilities->multicast ? 0xffffffff : 0;
+@@ -204,7 +203,7 @@
+ /*----------------------------------------------------------------------------------*\
+ \*----------------------------------------------------------------------------------*/
+ #if defined(CONFIG_MIPS_UR8)
+-static void cpphy_main_config_g_apply(cpphy_global_t *cpphy_global, struct net_device *p_dev) {
++void cpphy_main_config_g_apply(cpphy_global_t *cpphy_global, struct net_device *p_dev) {
+     cpmac_priv_t *cpmac_priv = (cpmac_priv_t *) netdev_priv(p_dev);
+     cpmac_capabilities_t *capabilities = &cpmac_priv->capabilities;
+     struct __nwss_channel_cfg channel_cfg_tmp;
+@@ -299,24 +298,24 @@
+     cpphy_main_mac_address_set(cpphy_global, p_dev);
+ 
+     if(request_resource(&nwss_tx_queue_resource, &cpmac_resource_nwss_tx_queue)) {
+-        DEB_ERR("could not get tx queue resource! conflicts will exist!\n");
++        DEB_INFO("could not get tx queue resource! conflicts will exist!\n");
+     }
+     if(request_resource(&nwss_tx_completion_queue_resource, &cpmac_resource_nwss_tx_completion_queue)) {
+-        DEB_ERR("Could not get tx complete queue resource! Conflicts will exist!\n");
++        DEB_INFO("Could not get tx complete queue resource! Conflicts will exist!\n");
+     }
+     if(request_resource(&nwss_rx_queue_resource, &cpmac_resource_nwss_rx_queue)) {
+-        DEB_ERR("Could not get rx queue resource! Conflicts will exist!\n");
++        DEB_INFO("Could not get rx queue resource! Conflicts will exist!\n");
+     }
+     if(request_resource(&nwss_free_buffer_queue_resource, &cpmac_resource_nwss_free_buffer_queue)) {
+-        DEB_ERR("Could not get rx free queue resource! Conflicts will exist!\n");
++        DEB_INFO("Could not get rx free queue resource! Conflicts will exist!\n");
+     }
+-    DEB_TRC("Disable tx and rx channels\n");
++    DEB_TRC("[%s] Disable tx and rx channels\n", __func__);
+ 
+     cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].tx_B.Bits.enable = 0;
+     cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC1].tx_B.Bits.enable = 0;
+     cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].rx_B.Bits.enable = 0;
+     cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC1].rx_B.Bits.enable = 0;
+-    DEB_TRC("Empty tx, rx and free buffer queues\n");
++    DEB_TRC("[%s] Empty tx, rx and free buffer queues\n", __func__);
+     cpmac_priv->UR8_QUEUE->tx_emac[0].prio[0] = 0;
+     cpmac_priv->UR8_QUEUE->tx_emac[0].prio[1] = 0;
+     cpmac_priv->UR8_QUEUE->tx_emac[1].prio[0] = 0;
+@@ -329,11 +328,12 @@
+     cpmac_priv->UR8_QUEUE->free_db_queue[UR8_RX_FREE_QUEUE].pointer = 0;
+ 
+     /* Now setup the channels */
+-    DEB_TRC("Setup tx and rx channels\n");
++    DEB_TRC("[%s] Setup tx and rx channels\n", __func__);
+     channel_cfg_tmp.tx_A.Register = 0;
+     channel_cfg_tmp.tx_A.Bits.desc_copy_bytecnt = 0;
+     cpmac_priv->UR8_NWSS->Channel_Cfg[UR8_TX_MAC0].tx_A.Register = channel_cfg_tmp.tx_A.Register;
+     channel_cfg_tmp.tx_B.Register = 0;
++    channel_cfg_tmp.tx_B.Bits.channel_mode = 0;
+     channel_cfg_tmp.tx_B.Bits.packet_type = PACKET_TYPE_ETHERNET;
+     channel_cfg_tmp.tx_B.Bits.cq_index = UR8_TX_COMPLETE;
+     channel_cfg_tmp.tx_B.Bits.enable = 1;
+@@ -348,49 +348,29 @@
+     cpphy_cppi_set_multi_promiscous(&cpphy_global->cppi,
+                                     (capabilities->multicast) ? 1 : 0,
+                                     (capabilities->promiscous) ? 1 : 0);
+-
+ }
+ #endif /*--- #if defined(CONFIG_MIPS_UR8) ---*/
+ 
+ 
+ /*----------------------------------------------------------------------------------*\
+ \*----------------------------------------------------------------------------------*/
+-static void cpphy_main_close_cpmac (struct net_device *p_dev)
+-{
+-  /* perform normal close duties */
+-  CPMAC_MACCONTROL(p_dev->base_addr) &= ~MII_EN;
+-  CPMAC_TX_CONTROL(p_dev->base_addr) &= ~TX_EN;
+-  CPMAC_RX_CONTROL(p_dev->base_addr) &= ~RX_EN;
++static void cpphy_main_close_cpmac (struct net_device *p_dev) {
++    DEB_INFOTRC("[%s] %s\n", __func__, p_dev->name);
++    /* perform normal close duties */
++    CPMAC_MACCONTROL(p_dev->base_addr) &= ~MII_EN;
++    CPMAC_TX_CONTROL(p_dev->base_addr) &= ~TX_EN;
++    CPMAC_RX_CONTROL(p_dev->base_addr) &= ~RX_EN;
+ 
+-  /* disable interrupt masks */
+-  CPMAC_TX_INTMASK_CLEAR(p_dev->base_addr) = 0xFF;
+-  CPMAC_RX_INTMASK_CLEAR(p_dev->base_addr) = 0xFF;
++    /* disable interrupt masks */
++    CPMAC_TX_INTMASK_CLEAR(p_dev->base_addr) = 0xFF;
++    CPMAC_RX_INTMASK_CLEAR(p_dev->base_addr) = 0xFF;
+ }
+ 
+ 
+-/*----------------------------------------------------------------------------------*\
+-\*----------------------------------------------------------------------------------*/
+-cpmac_err_t cpphy_main_open(cpphy_global_t *cpphy_global, struct net_device *p_dev) {
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++void cpphy_main_init_queues(cpphy_global_t *cpphy_global) {
+     unsigned int i;
+-    cpmac_err_t ret = CPMAC_ERR_NOERR;
+-
+-    /* Decide, which TxChannel to use for transfer */
+-    cpphy_global->cppi.TxChannel = 0;
+-
+-#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-    /* After Reset clear the Transmit and Receive DMA Head Descriptor Pointers */
+-    for(i = 0; i < 8; i++) {
+-        CPMAC_TX_HDP(p_dev->base_addr, i) = 0;
+-    }
+-    for(i = 0; i < 8; i++) {
+-        CPMAC_RX_HDP(p_dev->base_addr, i) = 0;
+-    }
+-
+-    CPMAC_RX_BUFFER_OFFSET(p_dev->base_addr) = 0;
+-#   elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-#   else /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+-#   warning "Cleanup of queues needed for unknown architecture?"
+-#   endif /*--- #else ---*/
+ 
+     cpphy_global->cppi.TxPrioQueues.NumberOfPrioQueues = CPPHY_PRIO_QUEUES;
+     atomic_set(&cpphy_global->cppi.TxPrioQueues.SummedFree, 0);
+@@ -410,7 +390,42 @@
+         DEB_INFO("Priority queue %u is size %u\n", i, cpphy_global->cppi.TxPrioQueues.q[i].MaxSize);
+         cpphy_global->cppi.NeededDMAtcbs += atomic_read(&cpphy_global->cppi.TxPrioQueues.q[i].DMAFree);
+     }
++    cpphy_global->cppi.skb_transit_spinlock = SPIN_LOCK_UNLOCKED;
++    skb_queue_head_init(&cpphy_global->cppi.skbs_in_transit);
++
+     cpphy_global->cpmac_priv->TxPrioQueues = &cpphy_global->cppi.TxPrioQueues;
++}
++
++
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++cpmac_err_t cpphy_main_open(cpphy_global_t *cpphy_global, struct net_device *p_dev __attribute__ ((unused))) {
++#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
++    unsigned int i;
++#   endif /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
++    cpmac_err_t ret = CPMAC_ERR_NOERR;
++
++    DEB_TRC("[%s]\n", __func__);
++
++    /* Decide, which TxChannel to use for transfer */
++    cpphy_global->cppi.TxChannel = 0;
++
++#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
++    /* After Reset clear the Transmit and Receive DMA Head Descriptor Pointers */
++    for(i = 0; i < 8; i++) {
++        CPMAC_TX_HDP(p_dev->base_addr, i) = 0;
++    }
++    for(i = 0; i < 8; i++) {
++        CPMAC_RX_HDP(p_dev->base_addr, i) = 0;
++    }
++
++    CPMAC_RX_BUFFER_OFFSET(p_dev->base_addr) = 0;
++#   elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
++#   else /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
++#   warning "Cleanup of queues needed for unknown architecture?"
++#   endif /*--- #else ---*/
++
++    cpphy_main_init_queues(cpphy_global);
+ 
+     cpphy_global->cppi.cpmac_priv = cpphy_global->cpmac_priv;
+     cpphy_global->cpmac_priv->cppi = &cpphy_global->cppi;
+@@ -429,14 +444,6 @@
+ #   else /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+ #   endif /*--- #else ---*/
+ 
+-#   if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO)
+-    cpphy_main_config_apply(cpphy_global, p_dev);  /* Apply Configuration Values to Device */
+-#   elif defined(CONFIG_MIPS_UR8) /*--- #if defined(CONFIG_MIPS_AR7) || defined(CONFIG_MIPS_OHIO) ---*/
+-    cpphy_main_config_g_apply(cpphy_global, p_dev);  /* Apply Configuration Values to Device */
+-#   else /*--- #elif defined(CONFIG_MIPS_UR8) ---*/
+-#   warning "Might need configuration initialization for this architecture"
+-#   endif /*--- #else ---*/
+-
+     cpphy_mdio_init(cpphy_global);
+ 
+     if(reboot_notifier_block.notifier_call == NULL) {
+@@ -456,7 +463,7 @@
+     cpmac_err_t ret = CPMAC_ERR_NOERR;
+     struct net_device *p_dev = (struct net_device *)cppi->cpmac_priv->owner;
+ 
+-    DEB_INFO("[%s] init\n", __FUNCTION__);
++    DEB_INFO("[%s] %s\n", __func__, p_dev->name);
+ 
+     /* Verify proper device state */
+     if(cppi->hw_state == CPPHY_HW_ST_OPENED) {
+@@ -496,6 +503,8 @@
+ cpmac_err_t cpphy_main_register(cpphy_global_t *cpphy_global) {
+     cpmac_service_funcs_t service_funcs;
+ 
++    DEB_TRC("[%s]\n", __func__);
++
+     service_funcs.init = &cpphy_if_init;
+     service_funcs.deinit = &cpphy_if_deinit;
+     service_funcs.control_req = &cpphy_if_control_req;
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_main.h
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_main.h
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -21,6 +21,9 @@
+ cpmac_err_t cpphy_main_open (cpphy_global_t *cpphy_global, struct net_device *p_dev);
+ cpmac_err_t cpphy_main_close (cpphy_cppi_t *cppi);
+ cpmac_err_t cpphy_main_register (cpphy_global_t *cpphy_global);
++void cpphy_main_init_queues(cpphy_global_t *cpphy_global);
++void cpphy_main_config_g_apply(cpphy_global_t *cpphy_global, struct net_device *p_dev);
++
+ 
+ int cpphy_entry_prepare_reboot(struct notifier_block *self, unsigned long kind, void *cmd);
+ 
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_mdio.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_mdio.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2006,2007,2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2006,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -617,7 +617,7 @@
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ void cpphy_mdio_init_11G(cpphy_mdio_t *mdio) {
+-    unsigned int mdio_address = mdio->phy_num; /* TODO Correct this! */
++    unsigned short int mdio_address = mdio->phy_num; /* TODO Correct this! */
+     unsigned char tries = 0;
+ 
+     DEB_INFOTRC("[%s] PHY %u, mdio address %u\n", __FUNCTION__, mdio->phy_num, mdio->phy_num);
+@@ -863,6 +863,8 @@
+     cpphy_mdio_t *mdio = &cpphy_global->mdio;
+     cpmac_priv_t *cpmac_priv = cpphy_global->cpmac_priv;
+ 
++    DEB_TRC("[%s]\n", __func__);
++
+     mdio->linked = 0;
+     mdio->cpmac_priv = cpmac_priv;
+     for(port = 0; port < CPMAC_MAX_LED_HANDLES; port++) {
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_mgmt.c
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_mgmt.c
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2008,2009,2010 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2008,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -222,6 +222,11 @@
+             if(!cpmac_global.cpphy[instance].init_ran && mdio->f->init_phy) {
+                 mdio->f->init_phy(mdio);
+             }
++        } else {
++            /* Initialize switch */
++            if(cpmac_global.cpphy[instance].init_ran && mdio->f->deinit_phy) {
++                mdio->f->deinit_phy(mdio);
++            }
+         }
+         cpmac_global.cpphy[instance].init_ran = power_on;
+ 
+--- linux-2.6.28/drivers/net/avm_cpmac/cpphy_types.h
++++ linux-2.6.28/drivers/net/avm_cpmac/cpphy_types.h
+@@ -203,6 +203,8 @@
+     volatile cpphy_tcb_t   *TxFirstFree;
+     volatile cpphy_tcb_t   *TxLastFree;
+     cpphy_tcb_prio_queues_t TxPrioQueues;
++    spinlock_t              skb_transit_spinlock;
++    struct sk_buff_head skbs_in_transit;
+     unsigned long           TxLastCompleted;
+     unsigned int            NeededDMAtcbs;
+     struct {
+--- linux-2.6.28/drivers/net/avm_cpmac/linux_ar_reg.h
++++ linux-2.6.28/drivers/net/avm_cpmac/linux_ar_reg.h
+@@ -1,5 +1,5 @@
+ /*------------------------------------------------------------------------------------------*\
+- *   Copyright (C) 2008,2009,...,2012 AVM GmbH <fritzbox_info@avm.de>
++ *   Copyright (C) 2008,...,2013 AVM GmbH <fritzbox_info@avm.de>
+  *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -165,7 +165,7 @@
+ #define AR8216_GLOBAL_AR_3              0x58
+ #define AR_3_DES_PORT_SHIFT             0
+ #define AR_3_DES_PORT_MASK              (((1<<6)-1)<< AR_3_DES_PORT_SHIFT)               
+-#define AR_3_DES_PORT_VALUE(value)      (((value)<< AR_3_DES_PORT_SHIFT) & _MASK)           
++#define AR_3_DES_PORT_VALUE(value)      (((value)<< AR_3_DES_PORT_SHIFT) & AR_3_DES_PORT_MASK)           
+ 
+ #define AR_3_AT_PRIORITY_SHIFT          10
+ #define AR_3_AT_PRIORITY_MASK           (((1<<2)-1)<< AR_3_AT_PRIORITY_SHIFT)               
+@@ -182,13 +182,86 @@
+ #define AR_3_REDIRECT_TO_CPU         (1u << 25)
+ #define AR_3_COPY_TO_CPU             (1u << 26)
+ 
+-/*--- #define _SHIFT          0 ---*/
+-/*--- #define _MASK           (((1<<10)-1)<< _SHIFT) ---*/               
+-/*--- #define _VALUE(value)   (((value)<< _SHIFT) & _MASK) ---*/           
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++#define AR8316_GLOBAL_AR_0              0x50
++#define AR8316_GLOBAL_AR_0_ADDR_BYTE4_SHIFT         24
++#define AR8316_GLOBAL_AR_0_ADDR_BYTE4_MASK          (((1u << 8)-1) << AR8316_GLOBAL_AR_0_ADDR_BYTE4_SHIFT)               
++#define AR8316_GLOBAL_AR_0_ADDR_BYTE4_VALUE(value)  (((value) << AR8316_GLOBAL_AR_0_ADDR_BYTE4_SHIFT) & AR8316_GLOBAL_AR_0_ADDR_BYTE4_MASK)           
++
++#define AR8316_GLOBAL_AR_0_ADDR_BYTE5_SHIFT         16
++#define AR8316_GLOBAL_AR_0_ADDR_BYTE5_MASK          (((1u << 8)-1) << AR8316_GLOBAL_AR_0_ADDR_BYTE5_SHIFT)               
++#define AR8316_GLOBAL_AR_0_ADDR_BYTE5_VALUE(value)  (((value) << AR8316_GLOBAL_AR_0_ADDR_BYTE5_SHIFT) & AR8316_GLOBAL_AR_0_ADDR_BYTE5_MASK)           
++
++#define AR8316_GLOBAL_AR_0_AR_FULL_VIO              (1u << 12)
++
++#define AR8316_GLOBAL_AR_0_AT_PORT_NUM_SHIFT        8
++#define AR8316_GLOBAL_AR_0_AT_PORT_NUM_MASK         (((1 << 4)-1) << AR8316_GLOBAL_AR_0_AT_PORT_NUM_SHIFT)               
++#define AR8316_GLOBAL_AR_0_AT_PORT_NUM_VALUE(value) (((value) << AR8316_GLOBAL_AR_0_AT_PORT_NUM_SHIFT) & AR8316_GLOBAL_AR_0_AT_PORT_NUM_MASK)           
++
++#define AR8316_GLOBAL_AR_0_FLUSH_STATIC_EN              (1u << 4)
++#define AR8316_GLOBAL_AR_0_AT_BUSY                      (1u << 3)
++
++#define AR8316_GLOBAL_AR_0_AT_FUNC_SHIFT                0
++#define AR8316_GLOBAL_AR_0_AT_FUNC_MASK                 (((1 << 3)-1) << AR8316_GLOBAL_AR_0_AT_FUNC_SHIFT)               
++#define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE(value)         (((value) << AR8316_GLOBAL_AR_0_AT_FUNC_SHIFT) & AR8316_GLOBAL_AR_0_AT_FUNC_MASK)           
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_NOP            0
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_FLUSH_ALL      1
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_LOAD           2
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_PURGE          3
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_FLUSH_UNLOCKED 4
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_FLUSH_PORT     5
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_NEXT           6
++#  define AR8316_GLOBAL_AR_0_AT_FUNC_VALUE_SEARCH_MAC     7
++
++
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++#define AR8316_GLOBAL_AR_1              0x54
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE0_SHIFT          24
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE0_MASK           (((1u << 8)-1) << AR8316_GLOBAL_AR_1_ADDR_BYTE0_SHIFT)               
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE0_VALUE(value)   (((value) << AR8316_GLOBAL_AR_1_ADDR_BYTE0_SHIFT) & AR8316_GLOBAL_AR_1_ADDR_BYTE0_MASK)           
++
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE1_SHIFT          16 
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE1_MASK           (((1u << 8)-1) << AR8316_GLOBAL_AR_1_ADDR_BYTE1_SHIFT)               
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE1_VALUE(value)   (((value) << AR8316_GLOBAL_AR_1_ADDR_BYTE1_SHIFT) & AR8316_GLOBAL_AR_1_ADDR_BYTE1_MASK)           
++
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE2_SHIFT          8
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE2_MASK           (((1u << 8)-1) << AR8316_GLOBAL_AR_1_ADDR_BYTE2_SHIFT)               
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE2_VALUE(value)   (((value) << AR8316_GLOBAL_AR_1_ADDR_BYTE2_SHIFT) & AR8316_GLOBAL_AR_1_ADDR_BYTE2_MASK)           
++
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE3_SHIFT          0
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE3_MASK           (((1u << 8)-1) << AR8316_GLOBAL_AR_1_ADDR_BYTE3_SHIFT)               
++#define AR8316_GLOBAL_AR_1_ADDR_BYTE3_VALUE(value)   (((value) << AR8316_GLOBAL_AR_1_ADDR_BYTE3_SHIFT) & AR8316_GLOBAL_AR_1_ADDR_BYTE3_MASK)           
++
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++#define AR8316_GLOBAL_AR_2              0x58
++#define AR8316_GLOBAL_AR_2_DES_PORT_SHIFT             0
++#define AR8316_GLOBAL_AR_2_DES_PORT_MASK              (((1<<6)-1)<< AR8316_GLOBAL_AR_2_DES_PORT_SHIFT)               
++#define AR8316_GLOBAL_AR_2_DES_PORT_VALUE(value)      (((value)<< AR8316_GLOBAL_AR_2_DES_PORT_SHIFT) & AR8316_GLOBAL_AR_2_DES_PORT_MASK)           
++
++#define AR8316_GLOBAL_AR_2_AT_PRIORITY_SHIFT          10
++#define AR8316_GLOBAL_AR_2_AT_PRIORITY_MASK           (((1<<2)-1)<< AR8316_GLOBAL_AR_2_AT_PRIORITY_SHIFT)               
++#define AR8316_GLOBAL_AR_2_AT_PRIORITY_VALUE(value)   (((value)<< AR8316_GLOBAL_AR_2_AT_PRIORITY_SHIFT) & AR8316_GLOBAL_AR_2_AT_PRIORITY_MASK)           
++
++#define AR8316_GLOBAL_AR_2_AT_PRIORITY_EN             (1u << 12)
++#define AR8316_GLOBAL_AR_2_AT_MIRROR_EN               (1u << 13)
++#define AR8316_GLOBAL_AR_2_SA_DROP_EN                 (1u << 14)
++#define AR8316_GLOBAL_AR_2_MAC_CLONE                  (1u << 15)
++
++#define AR8316_GLOBAL_AR_2_AT_STATUS_SHIFT            16
++#define AR8316_GLOBAL_AR_2_AT_STATUS_MASK             (((1<<4)-1)<< AR8316_GLOBAL_AR_2_AT_STATUS_SHIFT)               
++#define AR8316_GLOBAL_AR_2_AT_STATUS_VALUE(value)     (((value) << AR8316_GLOBAL_AR_2_AT_STATUS_SHIFT) & AR8316_GLOBAL_AR_2_AT_STATUS_MASK)           
++#  define AR8316_GLOBAL_AR_2_AT_STATUS_VALUE_EMPTY    0u
++#  define AR8316_GLOBAL_AR_2_AT_STATUS_VALUE_DYNAMIC  1u
++#  define AR8316_GLOBAL_AR_2_AT_STATUS_VALUE_IS_DYNAMIC(value) ((value >= 1u) && (value <= 7u))
++#  define AR8316_GLOBAL_AR_2_AT_STATUS_VALUE_STATIC   0xf
++
++#define AR8316_GLOBAL_AR_2_LEAKY_EN                   (1u << 24)
++#define AR8316_GLOBAL_AR_2_REDIRECT_TO_CPU            (1u << 25)
++#define AR8316_GLOBAL_AR_2_COPY_TO_CPU                (1u << 26)
+ 
+-/*--- #define _SHIFT          0 ---*/
+-/*--- #define _MASK           (((1<<10)-1)<< _SHIFT) ---*/               
+-/*--- #define _VALUE(value)   (((value)<< _SHIFT) & _MASK) ---*/           
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
