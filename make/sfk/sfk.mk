@@ -1,0 +1,38 @@
+$(call PKG_INIT_BIN, 1.7.6)
+$(PKG)_PRJNAME=sfk
+$(PKG)_SOURCE:=$($(PKG)_PRJNAME)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA256:=14a5a28903b73d466bfc4c160ca2624df4edb064ea624a94651203247d1f6794
+$(PKG)_SITE:=@SF/swissfileknife
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/$($(PKG)_PRJNAME)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$($(PKG)_PRJNAME)
+
+$(PKG)_DEPENDS_ON += $(STDCXXLIB)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
+
+$(PKG)_CXXFLAGS += $(if $(FREETZ_PACKAGE_SFK_STATIC),-static)
+
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
+$(PKG_CONFIGURED_CONFIGURE)
+
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	$(SUBMAKE) -C $(SFK_DIR) \
+	CXXFLAGS="$(SFK_CXXFLAGS)" \
+	LIBS="-lpthread"
+
+$(pkg):
+
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
+$(pkg)-clean:
+	-$(SUBMAKE) -C $(SFK_DIR) clean
+
+$(pkg)-uninstall:
+	$(RM) \
+	$(SFK_TARGET_BINARY) 
+
+$(PKG_FINISH)
