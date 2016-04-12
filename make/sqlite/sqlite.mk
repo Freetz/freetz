@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3110100)
+$(call PKG_INIT_BIN, 3120100)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=c4b4dcd735a4daf5a2e2bb90f374484c8d4dad29
+$(PKG)_SOURCE_SHA1:=fa1f3dbf6e2e8c6d14125b2eceda5b2e16a19f1f
 $(PKG)_SITE:=http://www.sqlite.org/2016
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-autoconf-$($(PKG)_VERSION)
@@ -10,7 +10,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
 $(PKG)_DEPENDS_ON += readline
 endif
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/sqlite3
+$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/sqlite3
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/sqlite3
 
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/.libs/libsqlite3.so.$($(PKG)_LIB_VERSION)

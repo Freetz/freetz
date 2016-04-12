@@ -1,29 +1,25 @@
-$(call PKG_INIT_BIN, 1.11)
+$(call PKG_INIT_BIN, 1.15)
 $(PKG)_SOURCE:=vnstat-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a5a113f9176cd61fb954f2ba297f5fdb
+$(PKG)_SOURCE_MD5:=351051ef3005e3ca99123eec07ac0a7d
 $(PKG)_SITE:=http://humdi.net/vnstat
 
 $(PKG)_BINARIES_ALL := vnstat vnstatd vnstati
 $(PKG)_BINARIES := $(filter-out $(if $(FREETZ_PACKAGE_VNSTAT_DAEMON),,vnstatd) $(if $(FREETZ_PACKAGE_VNSTAT_IMAGE),,vnstati),$($(PKG)_BINARIES_ALL))
-$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/%)
+$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 
-ifeq ($(strip $(FREETZ_PACKAGE_VNSTAT_IMAGE)),y)
 $(PKG)_DEPENDS_ON += libgd
-$(PKG)_MAKE_TARGET := all
-endif
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_gd_gdImageLine)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
-$(PKG_CONFIGURED_NOP)
+$(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) $(VNSTAT_MAKE_TARGET) -C $(VNSTAT_DIR) \
-		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)"
+	$(SUBMAKE) -C $(VNSTAT_DIR)
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/src/%
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):

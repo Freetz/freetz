@@ -1,0 +1,133 @@
+# Patch von user maflo321 aus Ticket 2823 (http://freetz.org/ticket/2823)
+--- src/ifinfo.c
++++ src/ifinfo.c
+@@ -25,9 +25,14 @@
+ 
+ 		/* try getting interface info from /sys */
+ 		if (readsysclassnet(inface)!=1) {
+-			snprintf(errorstring, 512, "Unable to get interface \"%s\" statistics.", inface);
+-			printe(PT_Error);
+-			return 0;
++
++			/* START - FRITZBOX READ */
++			if (strcmp(inface, "fritzbox") != 0 || readfritzbox(inface) != 1) {
++				snprintf(errorstring, 512, "Unable to get interface \"%s\" statistics.", inface);
++				printe(PT_Error);
++				return 0;
++			}
++			/* END - FRITZBOX READ */
+ 		}
+ 	}
+ #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)  || defined(__FreeBSD_kernel__)
+@@ -64,6 +69,16 @@
+ 	}
+ 	*ifacelist[0] = '\0';
+ 
++	/* START - FRITZBOX ADD INTERFACE */
++	char iffb[] = "fritzbox";
++	*ifacelist = realloc(*ifacelist, ((strlen(*ifacelist) + strlen(iffb) + 2) * sizeof(char)));
++	if (*ifacelist == NULL) {
++		panicexit(__FILE__, __LINE__);
++	}
++	strncat(*ifacelist, iffb, strlen(iffb));
++	strcat(*ifacelist, " ");
++	/* END - FRITZBOX ADD INTERFACE */
++
+ #if defined(__linux__)
+ 	if ((fp=fopen(PROCNETDEV, "r"))!=NULL) {
+ 
+@@ -306,6 +321,76 @@
+ 	return 1;
+ }
+ 
++/* START - FRITZBOX READ FUNCTION */
++int readfritzbox(const char *iface) {
++	FILE *fp;
++	uint64_t rx, tx, high, low;
++
++	strncpy_nt(ifinfo.name, iface, 32);
++
++	/* rx bytes high */
++	if ((fp = popen("ctlmgr_ctl r inetstat status/Today/BytesReceivedHigh", "r")) == NULL) {
++		if (debug)
++			printf("Unable to read: %s - %s\n", "fritzbox", strerror(errno));
++		return 0;
++	}
++	fscanf(fp, "%"SCNu64, &high);
++	pclose(fp);
++
++	/* rx bytes low */
++	if ((fp = popen("ctlmgr_ctl r inetstat status/Today/BytesReceivedLow", "r")) == NULL) {
++		if (debug)
++			printf("Unable to read: %s - %s\n", "fritzbox", strerror(errno));
++		return 0;
++	}
++	fscanf(fp, "%"SCNu64, &low);
++	pclose(fp);
++
++	/* rx bytes shift */
++	rx = (high << 32) + low;
++
++	/* tx bytes high */
++	if ((fp = popen("ctlmgr_ctl r inetstat status/Today/BytesSentHigh", "r")) == NULL) {
++		if (debug)
++			printf("Unable to read: %s - %s\n", "fritzbox", strerror(errno));
++		return 0;
++	}
++	fscanf(fp, "%"SCNu64, &high);
++	pclose(fp);
++
++	/* tx bytes low */
++	if ((fp = popen("ctlmgr_ctl r inetstat status/Today/BytesSentLow", "r")) == NULL) {
++		if (debug)
++			printf("Unable to read: %s - %s\n", "fritzbox", strerror(errno));
++		return 0;
++	}
++	fscanf(fp, "%"SCNu64, &low);
++	pclose(fp);
++
++	/* tx bytes shift */
++	tx = (high << 32) + low;
++
++	/* if new day or counter reset */
++	if (rx < data.currx || tx < data.curtx) {
++		data.currx = 0;
++		data.curtx = 0;
++	}
++
++	ifinfo.rx = rx;
++	ifinfo.tx = tx;
++	
++	/* daemon doesn't need packet data */
++	if (!noexit) {
++		ifinfo.rxp = 0;
++		ifinfo.txp = 0;
++	}
++
++	ifinfo.filled = 1;
++	
++	return 1;
++}
++/* END - FRITZBOX READ FUNCTION */
++
+ void parseifinfo(int newdb)
+ {
+ 	uint64_t rxchange=0, txchange=0, btime, cc;   /* rxchange = rx change in MB */
+@@ -326,8 +411,15 @@
+ 		/* btime in /proc/stat seems to vary ±1 second so we use btime-BVAR just to be safe */
+ 		/* the variation is also slightly different between various kernels... */
+ 		if (data.btime < (btime-cfg.bvar)) {
+-			data.currx=0;
+-			data.curtx=0;
++			/* START - FRITZBOX BOOT WORKAROUND */
++			if (strcmp(ifinfo.name, "fritzbox") == 0) {
++				data.currx = ifinfo.rx;
++				data.currx = ifinfo.rx;
++			} else {
++				data.currx=0;
++				data.curtx=0;
++			}
++			/* END - FRITZBOX BOOT WORKAROUND */
+ 			if (debug)
+ 				printf("System has been booted.\n");
+ 		}
