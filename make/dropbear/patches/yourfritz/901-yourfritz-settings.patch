@@ -1,0 +1,348 @@
+--- debug.h
++++ debug.h
+@@ -39,7 +39,7 @@
+  * Caution: Don't use this in an unfriendly environment (ie unfirewalled),
+  * since the printing may not sanitise strings etc. This will add a reasonable
+  * amount to your executable size. */
+-/*#define DEBUG_TRACE*/
++#define DEBUG_TRACE
+ 
+ /* All functions writing to the cleartext payload buffer call
+  * CHECKCLEARTOWRITE() before writing. This is only really useful if you're
+@@ -57,8 +57,8 @@
+ 
+ /* A couple of flags, not usually useful, and mightn't do anything */
+ 
+-/*#define DEBUG_KEXHASH*/
+-/*#define DEBUG_RSA*/
++/* #define DEBUG_KEXHASH */
++/* #define DEBUG_RSA */
+ 
+ /* you don't need to touch this block */
+ #ifdef DEBUG_TRACE
+--- options.h
++++ options.h
+@@ -31,7 +31,7 @@
+ #ifndef DB_NONFREETZ
+ #define RSA_PRIV_FILENAME "/mod/etc/ssh/rsa_host_key"
+ #else
+-#define RSA_PRIV_FILENAME "/var/tmp/rsa_host_key"
++#define RSA_PRIV_FILENAME "/var/flash/websrv_ssl_key.pem"
+ #endif
+ #endif
+ #ifndef ECDSA_PRIV_FILENAME
+@@ -64,7 +64,8 @@
+ several kB in binary size however will make the symmetrical ciphers and hashes
+ slower, perhaps by 50%. Recommended for small systems that aren't doing
+ much traffic. */
+-#define DROPBEAR_SMALL_CODE
++//#define DROPBEAR_SMALL_CODE
++#undef DROPBEAR_SMALL_CODE
+ 
+ /* Enable X11 Forwarding - server only */
+ //#define ENABLE_X11FWD
+@@ -80,8 +81,10 @@
+ #define ENABLE_SVR_REMOTETCPFWD
+ 
+ /* Enable Authentication Agent Forwarding */
+-#define ENABLE_SVR_AGENTFWD
+-#define ENABLE_CLI_AGENTFWD
++//#define ENABLE_SVR_AGENTFWD
++//#define ENABLE_CLI_AGENTFWD
++#undef ENABLE_SVR_AGENTFWD
++#undef ENABLE_CLI_AGENTFWD
+ 
+ 
+ /* Note: Both ENABLE_CLI_PROXYCMD and ENABLE_CLI_NETCAT must be set to
+@@ -103,16 +106,21 @@
+  * Including multiple keysize variants the same cipher 
+  * (eg AES256 as well as AES128) will result in a minimal size increase.*/
+ #define DROPBEAR_AES128
+-#define DROPBEAR_3DES
++//#define DROPBEAR_3DES
++#undef DROPBEAR_3DES
+ #define DROPBEAR_AES256
+ /* Compiling in Blowfish will add ~6kB to runtime heap memory usage */
+ /*#define DROPBEAR_BLOWFISH*/
+-#define DROPBEAR_TWOFISH256
+-#define DROPBEAR_TWOFISH128
++#undef DROPBEAR_BLOWFISH
++//#define DROPBEAR_TWOFISH256
++#undef DROPBEAR_TWOFISH256
++//#define DROPBEAR_TWOFISH128
++#undef DROPBEAR_TWOFISH128
+ 
+ /* Enable CBC mode for ciphers. This has security issues though
+  * is the most compatible with older SSH implementations */
+-#define DROPBEAR_ENABLE_CBC_MODE
++//#define DROPBEAR_ENABLE_CBC_MODE
++#undef DROPBEAR_ENABLE_CBC_MODE
+ 
+ /* Enable "Counter Mode" for ciphers. This is more secure than normal
+  * CBC mode against certain attacks. It is recommended for security
+@@ -123,12 +131,14 @@
+ has not been tested for interoperability with other SSH implementations.
+ If you test it please contact the Dropbear author */
+ /* #define DROPBEAR_TWOFISH_CTR */
++#undef DROPBEAR_TWOFISH_CTR
+ 
+ /* You can compile with no encryption if you want. In some circumstances
+  * this could be safe security-wise, though make sure you know what
+  * you're doing. Anyone can see everything that goes over the wire, so
+  * the only safe auth method is public key. */
+ /* #define DROPBEAR_NONE_CIPHER */
++#undef DROPBEAR_NONE_CIPHER
+ 
+ /* Message Integrity - at least one required.
+  * Protocol RFC requires sha1 and recommends sha1-96.
+@@ -143,33 +153,37 @@
+  * If you disable MD5, Dropbear will fall back to SHA1 fingerprints,
+  * which are not the standard form. */
+ #define DROPBEAR_SHA1_HMAC
+-#define DROPBEAR_SHA1_96_HMAC
++//#define DROPBEAR_SHA1_96_HMAC
+ #define DROPBEAR_SHA2_256_HMAC
+ #define DROPBEAR_SHA2_512_HMAC
+-#define DROPBEAR_MD5_HMAC
++//#define DROPBEAR_MD5_HMAC
+ 
+ /* You can also disable integrity. Don't bother disabling this if you're
+  * still using a cipher, it's relatively cheap. If you disable this it's dead
+  * simple for an attacker to run arbitrary commands on the remote host. Beware. */
+ /* #define DROPBEAR_NONE_INTEGRITY */
++#undef DROPBEAR_NONE_INTEGRITY
+ 
+ /* Hostkey/public key algorithms - at least one required, these are used
+  * for hostkey as well as for verifying signatures with pubkey auth.
+  * Removing either of these won't save very much space.
+  * SSH2 RFC Draft requires dss, recommends rsa */
+ #define DROPBEAR_RSA
+-#define DROPBEAR_DSS
++//#define DROPBEAR_DSS
++#undef DROPBEAR_DSS
+ /* ECDSA is significantly faster than RSA or DSS. Compiling in ECC
+  * code (either ECDSA or ECDH) increases binary size - around 30kB
+  * on x86-64 */
+-#define DROPBEAR_ECDSA
++//#define DROPBEAR_ECDSA
++#undef DROPBEAR_ECDSA
+ 
+ /* Generate hostkeys as-needed when the first connection using that key type occurs.
+    This avoids the need to otherwise run "dropbearkey" and avoids some problems
+    with badly seeded /dev/urandom when systems first boot.
+    This also requires a runtime flag "-R". This adds ~4kB to binary size (or hardly 
+    anything if dropbearkey is linked in a "dropbearmulti" binary) */
+-#define DROPBEAR_DELAY_HOSTKEY
++//#define DROPBEAR_DELAY_HOSTKEY
++#undef DROPBEAR_DELAY_HOSTKEY
+ 
+ /* Enable Curve25519 for key exchange. This is another elliptic
+  * curve method with good security properties. Increases binary size
+@@ -178,11 +192,13 @@
+ 
+ /* Enable elliptic curve Diffie Hellman key exchange, see note about
+  * ECDSA above */
+-#define DROPBEAR_ECDH
++//#define DROPBEAR_ECDH
++#undef DROPBEAR_ECDH
+ 
+ /* Group14 (2048 bit) is recommended. Group1 is less secure (1024 bit) though
+    is the only option for interoperability with some older SSH programs */
+-#define DROPBEAR_DH_GROUP1 1
++//#define DROPBEAR_DH_GROUP1 1
++#undef DROPBEAR_DH_GROUP1
+ #define DROPBEAR_DH_GROUP14 1
+ 
+ /* Control the memory/performance/compression tradeoff for zlib.
+@@ -202,18 +218,19 @@
+ #define DROPBEAR_SERVER_DELAY_ZLIB 1
+ 
+ /* Whether to do reverse DNS lookups. */
+-#ifndef NO_HOST_LOOKUP
+-#define DO_HOST_LOOKUP
+-#endif
++//#ifndef NO_HOST_LOOKUP
++//#define DO_HOST_LOOKUP
++#undef DO_HOST_LOOKUP
++//#endif
+ 
+ /* Whether to print the message of the day (MOTD). This doesn't add much code
+  * size */
+ #define DO_MOTD
+ 
+ /* The MOTD file path */
+-#ifndef MOTD_FILENAME
+-#define MOTD_FILENAME "/etc/motd"
+-#endif
++//#ifndef MOTD_FILENAME
++#define MOTD_FILENAME "/var/custom/etc/motd"
++//#endif
+ 
+ /* Authentication Types - at least one required.
+    RFC Draft requires pubkey auth, and recommends password */
+@@ -227,10 +244,12 @@
+ 
+ /* This requires crypt() */
+ #ifdef HAVE_CRYPT
+-#define ENABLE_SVR_PASSWORD_AUTH
++//#define ENABLE_SVR_PASSWORD_AUTH
++#undef ENABLE_SVR_PASSWORD_AUTH
+ #endif
+ /* PAM requires ./configure --enable-pam */
+ /*#define ENABLE_SVR_PAM_AUTH */
++#undef ENABLE_SVR_PAM_AUTH
+ #define ENABLE_SVR_PUBKEY_AUTH
+ 
+ /* Whether to take public key options in 
+@@ -241,14 +260,16 @@
+ 
+ /* This requires getpass. */
+ #ifdef HAVE_GETPASS
+-#define ENABLE_CLI_PASSWORD_AUTH
+-#define ENABLE_CLI_INTERACT_AUTH
++//#define ENABLE_CLI_PASSWORD_AUTH
++#undef ENABLE_CLI_PASSWORD_AUTH
++//#define ENABLE_CLI_INTERACT_AUTH
++#undef ENABLE_CLI_INTERACT_AUTH
+ #endif
+ #define ENABLE_CLI_PUBKEY_AUTH
+ 
+ /* A default argument for dbclient -i <privatekey>. 
+ Homedir is prepended unless path begins with / */
+-#define DROPBEAR_DEFAULT_CLI_AUTHKEY ".ssh/id_dropbear"
++#define DROPBEAR_DEFAULT_CLI_AUTHKEY "/var/flash/websrv_ssl_key.pem"
+ 
+ /* This variable can be used to set a password for client
+  * authentication on the commandline. Beware of platforms
+@@ -256,7 +277,8 @@
+  * note that it will be provided for all "hidden" client-interactive
+  * style prompts - if you want something more sophisticated, use 
+  * SSH_ASKPASS instead. Comment out this var to remove this functionality.*/
+-#define DROPBEAR_PASSWORD_ENV "DROPBEAR_PASSWORD"
++//#define DROPBEAR_PASSWORD_ENV "DROPBEAR_PASSWORD"
++#undef DROPBEAR_PASSWORD_ENV
+ 
+ /* Define this (as well as ENABLE_CLI_PASSWORD_AUTH) to allow the use of
+  * a helper program for the ssh client. The helper program should be
+@@ -264,12 +286,14 @@
+  * should be run with DISPLAY set and no tty. The program should
+  * return the password on standard output */
+ /*#define ENABLE_CLI_ASKPASS_HELPER*/
++#undef ENABLE_CLI_ASKPASS_HELPER
+ 
+ /* Save a network roundtrip by sendng a real auth request immediately after
+  * sending a query for the available methods.  It is at the expense of < 100
+  * bytes of extra network traffic. This is not yet enabled by default since it
+  * could cause problems with non-compliant servers */
+ /* #define DROPBEAR_CLI_IMMEDIATE_AUTH */
++#undef DROPBEAR_CLI_IMMEDIATE_AUTH
+ 
+ /* Source for randomness. This must be able to provide hundreds of bytes per SSH
+  * connection without blocking. In addition /dev/random is used for seeding
+@@ -306,16 +330,17 @@
+ 
+ /* The command to invoke for xauth when using X11 forwarding.
+  * "-q" for quiet */
+-#ifndef XAUTH_COMMAND
+-#define XAUTH_COMMAND "/usr/bin/xauth -q"
+-#endif
++//#ifndef XAUTH_COMMAND
++//#define XAUTH_COMMAND "/usr/bin/xauth -q"
++//#endif
++#undef XAUTH_COMMAND
+ 
+ #ifdef DROPBEAR_SFTPSERVER
+ /* if you want to enable running an sftp server (such as the one included with
+  * OpenSSH), set the path below. If the path isn't defined, sftp will not
+  * be enabled */
+ #ifndef SFTPSERVER_PATH
+-#define SFTPSERVER_PATH "/usr/lib/sftp-server"
++#define SFTPSERVER_PATH "/var/custom/usr/bin/sftp-server"
+ #endif
+ #endif
+ 
+@@ -325,13 +350,13 @@
+ #define DROPBEAR_PATH_SSH_PROGRAM "/usr/bin/ssh"
+ #else
+ /* ssh is expected to be in PATH */
+-#define DROPBEAR_PATH_SSH_PROGRAM "ssh"
++#define DROPBEAR_PATH_SSH_PROGRAM "/var/custom/usr/bin/ssh"
+ #endif
+ 
+ /* Whether to log commands executed by a client. This only logs the 
+  * (single) command sent to the server, not what a user did in a 
+  * shell/sftp session etc. */
+-/* #define LOG_COMMANDS */
++#define LOG_COMMANDS
+ 
+ /* Window size limits. These tend to be a trade-off between memory
+    usage and network performance: */
+@@ -356,7 +381,7 @@
+ 
+ /* Ensure that data is transmitted every KEEPALIVE seconds. This can
+ be overridden at runtime with -K. 0 disables keepalives */
+-#define DEFAULT_KEEPALIVE 0
++#define DEFAULT_KEEPALIVE 10
+ 
+ /* If this many KEEPALIVES are sent with no packets received from the
+ other side, exit. Not run-time configurable - if you have a need
+@@ -368,7 +393,7 @@
+ #define DEFAULT_IDLE_TIMEOUT 0
+ 
+ /* The default path. This will often get replaced by the shell */
+-#define DEFAULT_PATH "/usr/bin:/bin:/var/bin"
++#define DEFAULT_PATH "/var/custom/bin:/bin:/var/custom/usr/bin:/usr/bin:/var/custom/sbin:/sbin:/var/custom/usr/sbin:/usr/sbin"
+ 
+ /* Some other defines (that mostly should be left alone) are defined
+  * in sysoptions.h */
+--- sysoptions.h
++++ sysoptions.h
+@@ -4,8 +4,12 @@
+  *******************************************************************/
+ 
+ #ifndef DROPBEAR_VERSION
++#ifdef DROPBEAR_YOURFRITZ
++#define DROPBEAR_VERSION "2016.73-yourfritz"
++#else
+ #define DROPBEAR_VERSION "2016.73"
+ #endif
++#endif
+ 
+ #define LOCAL_IDENT "SSH-2.0-dropbear_" DROPBEAR_VERSION
+ #define PROGNAME "dropbear"
+@@ -13,7 +17,7 @@
+ /* Spec recommends after one hour or 1 gigabyte of data. One hour
+  * is a bit too verbose, so we try 8 hours */
+ #ifndef KEX_REKEY_TIMEOUT
+-#define KEX_REKEY_TIMEOUT (3600 * 8)
++#define KEX_REKEY_TIMEOUT (3600)
+ #endif
+ #ifndef KEX_REKEY_DATA
+ #define KEX_REKEY_DATA (1<<30) /* 2^30 == 1GB, this value must be < INT_MAX */
+@@ -37,7 +41,7 @@
+ #define MIN_DSS_KEYLEN 512
+ #endif
+ #ifndef MIN_RSA_KEYLEN
+-#define MIN_RSA_KEYLEN 512
++#define MIN_RSA_KEYLEN 2048
+ #endif
+ 
+ #define MAX_BANNER_SIZE 2000 /* this is 25*80 chars, any more is foolish */
+@@ -124,13 +128,14 @@
+ #define DROPBEAR_SHA512
+ #endif
+ #if defined(DROPBEAR_MD5_HMAC)
+-#define DROPBEAR_MD5
++//#define DROPBEAR_MD5
+ #endif
++#undef DROPBEAR_MD5
+ 
+ /* These are disabled in Dropbear 2016.73 by default since the spec 
+    draft-ietf-curdle-ssh-kex-sha2-02 is under development. */
+-#define DROPBEAR_DH_GROUP14_256 0
+-#define DROPBEAR_DH_GROUP16 0
++//#define DROPBEAR_DH_GROUP14_256 1
++//#define DROPBEAR_DH_GROUP16 1
+ 
+ /* roughly 2x 521 bits */
+ #define MAX_ECC_SIZE 140
