@@ -36,7 +36,7 @@
  					break;
 --- common-runopts.c
 +++ common-runopts.c
-@@ -31,8 +31,126 @@
+@@ -31,8 +31,128 @@
  #include "algo.h"
  #include "dbrandom.h"
  
@@ -106,7 +106,8 @@
 +	buf_putstring(buf, "ssh-rsa", 7);
 +
 +	BIGNUM ** 	numbers[6];
-+	int		len = 0; 
++	int		len = 0, i = 0;
++	unsigned char * p;
 +	BIGNUM ***	current;
 +
 +// this list is the source of components and the order to copy them
@@ -147,6 +148,7 @@
 +		buf_putstring(buf, mp->data, mp->len);
 +		current++;
 +	}
++	for (i = 0, p = (unsigned char *) mp; i < len; i++, p++) *p = '\0';	
 +	free(mp);
 +
 +// shutdown OpenSSL routines
