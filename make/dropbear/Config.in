@@ -105,3 +105,10 @@ config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 		on non freetz boxes.
 		(Fix for missing devfs and changes to default paths)
 		Will select "static" on firmwares not supporting dynamically linked freetz binaries.
+
+config FREETZ_PACKAGE_DROPBEAR_YOURFRITZ
+	bool "build for YourFritz environment"
+	depends on FREETZ_PACKAGE_DROPBEAR && FREETZ_PACKAGE_DROPBEAR_NONFREETZ
+	default n
+	help
+		build the special version for YourFritz images

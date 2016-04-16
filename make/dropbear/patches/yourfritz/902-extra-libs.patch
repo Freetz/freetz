@@ -1,0 +1,12 @@
+--- Makefile.in
++++ Makefile.in
+@@ -83,7 +83,7 @@
+ INSTALL=@INSTALL@
+ CPPFLAGS=@CPPFLAGS@
+ CFLAGS+=-I. -I$(srcdir) $(CPPFLAGS) @CFLAGS@ $(EXTRA_CFLAGS)
+-LIBS+=@LIBS@
++LIBS+=@LIBS@ $(EXTRA_LIBS)
+ LDFLAGS=@LDFLAGS@ $(EXTRA_LDFLAGS)
+ 
+ EXEEXT=@EXEEXT@
+
