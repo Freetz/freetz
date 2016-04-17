@@ -7,3 +7,11 @@ config FREETZ_PACKAGE_OPENSSL
 	select FREETZ_OPENSSL_VERSION_PROMPT
 	help
 		This package contains the OpenSSL command-line utility.
+
+config FREETZ_PACKAGE_OPENSSL_TRACE
+	bool "SSL server/client trace output option"
+	default n
+	depends on FREETZ_PACKAGE_OPENSSL && FREETZ_OPENSSL_VERSION_1_LTS
+	help
+		build OpenSSL binary with SSL trace support available
+		since version 1.0.2

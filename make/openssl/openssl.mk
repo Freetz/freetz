@@ -1,8 +1,9 @@
-$(call PKG_INIT_BIN,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8zh,1.0.1s))
+$(call PKG_INIT_BIN,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8zh,$(if $(FREETZ_OPENSSL_VERSION_1_LTS),1.0.2g,1.0.1s)))
 $(PKG)_LIB_VERSION:=$(call qstrip,$(FREETZ_OPENSSL_SHLIB_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256_0.9.8zh := f1d9f3ed1b85a82ecf80d0e2d389e1fda3fca9a4dba0bf07adbf231e1a5e2fd6
 $(PKG)_SOURCE_SHA256_1.0.1s  := e7e81d82f3cd538ab0cdba494006d44aab9dd96b7f6233ce9971fb7c7916d511
+$(PKG)_SOURCE_SHA256_1.0.2g  := b784b1b3907ce39abf4098702dade6365522a253ad1552e267a9a0e89594aa33
 $(PKG)_SOURCE_SHA256         := $($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://www.openssl.org/source
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
@@ -24,15 +25,19 @@ $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcrypto_WITH_EC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_0
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1_LTS
 
 $(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5 no-ssl2 no-ssl3
-$(PKG)_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-cms no-seed
+$(PKG)_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-seed
+$(PKG)_NO_CIPHERS += $(if $(FREETZ_OPENSSL_VERSION_1_LTS),no-rc4)
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1_LTS),enable-zlib-dynamic,no-cms)
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
+$(PKG)_OPTIONS    += $(if $(FREETZ_PACKAGE_OPENSSL_TRACE),enable-ssl-trace)
 
 $(PKG)_CONFIGURE_DEFOPTS := n
-$(PKG)_CONFIGURE_OPTIONS += linux-freetz-$(if $(FREETZ_TARGET_ARCH_BE),be,le)$(if $(FREETZ_OPENSSL_VERSION_1),-asm)
+$(PKG)_CONFIGURE_OPTIONS += linux-freetz-$(if $(FREETZ_TARGET_ARCH_BE),be,le)$(if $(FREETZ_OPENSSL_VERSION_0),,-asm)
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
 $(PKG)_CONFIGURE_OPTIONS += --openssldir=$(FREETZ_OPENSSL_CONFIG_DIR)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcrypto_SMALL_FOOTPRINT),-DOPENSSL_SMALL_FOOTPRINT)
@@ -48,6 +53,7 @@ $(PKG)_MAKE_FLAGS += NM="$(TARGET_NM)"
 $(PKG)_MAKE_FLAGS += FREETZ_MOD_OPTIMIZATION_FLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections"
 $(PKG)_MAKE_FLAGS += SHARED_LDFLAGS=""
 $(PKG)_MAKE_FLAGS += INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)"
+$(PKG)_MAKE_FLAGS += CROSS_COMPILE=1
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

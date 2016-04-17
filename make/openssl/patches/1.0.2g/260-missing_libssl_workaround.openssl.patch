@@ -1,0 +1,27 @@
+#
+# Dirty workaround!
+#
+# Do not rebuild shared library if it already exists.
+# Fixes sporadic build problems: libcrypto.so: file not recognized: File truncated
+# resulting in missing libssl.so.*
+#
+--- Makefile.shared
++++ Makefile.shared
+@@ -99,6 +99,7 @@
+     $${LDCMD} $${LDFLAGS} -o $${APPNAME:=$(APPNAME)} $(OBJECTS) $${LIBDEPS} )
+ 
+ LINK_SO=	\
++  if [ ! -e "$$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX" ]; then sleep 1; \
+   ( $(SET_X);   \
+     LIBDEPS="$${LIBDEPS:-$(LIBDEPS)}"; \
+     SHAREDCMD="$${SHAREDCMD:-$(CC)}"; \
+@@ -109,7 +110,8 @@
+     $${SHAREDCMD} $${SHAREDFLAGS} \
+ 	-o $$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX \
+ 	$$ALLSYMSFLAGS $$SHOBJECTS $$NOALLSYMSFLAGS $$LIBDEPS \
+-  ) && $(SYMLINK_SO)
++  ) && $(SYMLINK_SO); \
++  fi
+ 
+ SYMLINK_SO=	\
+ 	if [ -n "$$INHIBIT_SYMLINKS" ]; then :; else \
