@@ -26,8 +26,8 @@ config FREETZ_LIB_libcrypto_WITH_EC
 
 config FREETZ_LIB_libcrypto_SMALL_FOOTPRINT
 	bool "Reduce the footprint of OpenSSL libraries"
-	default y
 	default n if FREETZ_TYPE_7490 || FREETZ_TYPE_3490
+	default y
 	help
 		Build a version with smaller memory/storage footprint - this option is
 		disabled by default for devices with 256 MB RAM and 48 MB filesystem
