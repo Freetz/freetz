@@ -1,0 +1,10 @@
+--- linux-2.6.28/drivers/char/avm_power/avm_cpu_process.c
++++ linux-2.6.28/drivers/char/avm_power/avm_cpu_process.c
+@@ -274,6 +274,7 @@
+             } else {
+                 pg_fault_avg = 0;
+             }
++            if(pcpuidle->fullrun > 1)
+             printk(KERN_WARNING"system-load %d %s loadavg %lu.%lu %lu.%lu %lu.%lu - %d tasks:%lu %% curr:%s(%lu %%) max:%s(%lu %%, pid:%d), readytorun: %ld"
+                     ", pgfault %lu/s (max %lu avg %lu.%lu)"
+                     "\n", 
