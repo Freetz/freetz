@@ -4,19 +4,19 @@
  	windows/test-parser/test-parser.vcproj				\
  	windows/test-tree/test-tree.vcproj windows/libtasn14win.mk
  
--SUBDIRS = gl lib src examples tests doc
+-SUBDIRS = gl lib src examples tests
 +SUBDIRS = gl lib
  
- ACLOCAL_AMFLAGS = -I m4 -I gl/m4 -I lib/glm4
- 
+ if ENABLE_DOC
+ SUBDIRS += doc
 --- Makefile.in
 +++ Makefile.in
-@@ -933,7 +933,7 @@
+@@ -934,7 +934,7 @@
  	windows/test-parser/test-parser.vcproj \
  	windows/test-tree/test-tree.vcproj windows/libtasn14win.mk \
  	cfg.mk maint.mk .clcopying
--SUBDIRS = gl lib src examples tests doc
-+SUBDIRS = gl lib
+-SUBDIRS = gl lib src examples tests $(am__append_1)
++SUBDIRS = gl lib                    $(am__append_1)
  ACLOCAL_AMFLAGS = -I m4 -I gl/m4 -I lib/glm4
  all: config.h
  	$(MAKE) $(AM_MAKEFLAGS) all-recursive

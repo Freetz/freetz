@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 4.7)
-$(PKG)_LIB_VERSION:=6.5.1
+$(call PKG_INIT_LIB, 4.8)
+$(PKG)_LIB_VERSION:=6.5.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=12d10ca4ae0a3b95f7aa06a076da39ec
+$(PKG)_SOURCE_SHA256:=fa802fc94d79baa00e7397cedf29eb6827d4bd8b4dd77b577373577c93a8c513
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -10,6 +10,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-doc
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
