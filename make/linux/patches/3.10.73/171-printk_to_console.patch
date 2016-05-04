@@ -1,0 +1,10 @@
+--- linux-3.10/kernel/printk.c
++++ linux-3.10/kernel/printk.c
+@@ -1576,6 +1576,7 @@
+ {
+ 	static int recursion_bug;
+ 	static char textbuf[LOG_LINE_MAX];
++	facility |= FORCE_PRINTK_LINUX_FACILITIES_VALUE;
+ 	char *text = textbuf;
+ 	size_t text_len;
+ 	enum log_flags lflags = 0;
