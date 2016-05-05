@@ -1,8 +1,9 @@
-SFK_VERSION:=1.7.2
+SFK_VERSION:=1.7.6
 SFK_SOURCE:=sfk-$(SFK_VERSION).tar.gz
-SFK_SOURCE_MD5:=1f924e8118b044ab61fdfd6dbc4fcd47
+SFK_SOURCE_MD5:=6e612077b4bde1f2752c8df4954bbb02
 SFK_SITE:=@SF/swissfileknife
 
+SFK_MAKE_DIR:=$(TOOLS_DIR)/make/sfk
 SFK_DIR:=$(TOOLS_SOURCE_DIR)/sfk-$(SFK_VERSION)
 SFK_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)
 
@@ -13,6 +14,7 @@ $(DL_DIR)/$(SFK_SOURCE): | $(DL_DIR)
 sfk-unpacked: $(SFK_DIR)/.unpacked
 $(SFK_DIR)/.unpacked: $(DL_DIR)/$(SFK_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(SFK_SOURCE),$(TOOLS_SOURCE_DIR))
+	$(call APPLY_PATCHES,$(SFK_MAKE_DIR)/patches,$(SFK_DIR))
 	touch $@
 
 $(SFK_DIR)/.configured: $(SFK_DIR)/.unpacked
