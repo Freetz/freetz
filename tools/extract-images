@@ -222,10 +222,10 @@ esac
 
 # Magic byte sequences (hex) to identify kernel, SquashFS and bootloader
 KERNEL_MAGIC="8112EDFE"
-SQUASHFS_MAGIC_LE="68737173"
 SQUASHFS_MAGIC_BE="73717368"
-BOOTLOADER_MAGIC_LE="00908040"
+SQUASHFS_MAGIC_LE=$(echo "$SQUASHFS_MAGIC_BE" | invertEndianness)
 BOOTLOADER_MAGIC_BE="40809000"
+BOOTLOADER_MAGIC_LE=$(echo "$BOOTLOADER_MAGIC_BE" | invertEndianness)
 
 input_file_size=$(stat -L -c %s "$input_file")
 
