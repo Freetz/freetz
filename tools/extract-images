@@ -42,6 +42,15 @@ getHexContentAtOffset() {
 	"$mod_tools/sfk" hexdump -offlen "$2" "$3" -nofile -pure "$1" | tr -d $'\n'
 }
 
+#
+# inverts endianness of each line of stdin
+# each line is assumed to be a hex-string representation of the data and is processed separately
+# if hex-string length is not muptiple of 8 it is zero padded
+#
+invertEndianness() {
+	sed -r -e ':zero_pad;s/^(.{1,7})((.{8})*)$/0\1\2/;tzero_pad' | sed -r -e 's/(..)(..)(..)(..)/\4\3\2\1/g'
+}
+
 # Parameterized helper function for 'extract_bootloader' doing the actual work
 do_extract_bl()
 {
@@ -108,12 +117,8 @@ do_extract_kfs()
 	for (( i=0; i<${#squashfs_offs[@]}; i++ )); do
 		# Isolate SquashFS length candidates (considering endian type)
 		# Note: 4 bytes of length information are found at (SquashFS magic offset + 8)
-		tmp=$(getHexContentAtOffset "$input_file" $((${squashfs_offs[i]} + 8)) 4)
-		if [ "$ENDIAN_TYPE" == "big" ]; then
-			squashfs_length[i]=$(printf "%d" "0x$tmp")
-		else
-			squashfs_length[i]=$(printf "%d" "0x${tmp:6:2}${tmp:4:2}${tmp:2:2}${tmp:0:2}")
-		fi
+		tmp=$(getHexContentAtOffset "$input_file" $((${squashfs_offs[i]} + 8)) 4 | { [ "$ENDIAN_TYPE" == "little" ] && invertEndianness || cat; })
+		squashfs_length[i]=$(printf "%d" "0x$tmp")
 		# Special case: filesystem length 0 can happen if a raw (mtdblock) dump
 		# from the box is processed, because the box seems to erase the length
 		# info when flashing.
@@ -126,8 +131,8 @@ do_extract_kfs()
 	for (( i=0; i<${#kernel_offs[@]}; i++ )); do
 		# Isolate kernel length candidates (always little endian)
 		# Note: 4 bytes of length information are found at (kernel magic offset + 4)
-		tmp=$(getHexContentAtOffset "$input_file" $((${kernel_offs[i]} + 4)) 4)
-		kernel_length[i]=$(printf "%d" "0x${tmp:6:2}${tmp:4:2}${tmp:2:2}${tmp:0:2}")
+		tmp=$(getHexContentAtOffset "$input_file" $((${kernel_offs[i]} + 4)) 4 | invertEndianness)
+		kernel_length[i]=$(printf "%d" "0x$tmp")
 		# Pad kernel length to 256
 		kernel_pad=$(( (256 - kernel_length[i] % 256) % 256 ))
 		kernel_length[i]=$(( kernel_length[i] + kernel_pad ))
