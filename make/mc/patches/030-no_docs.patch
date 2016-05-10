@@ -11,7 +11,7 @@
  endif
 --- doc/hlp/Makefile.in
 +++ doc/hlp/Makefile.in
-@@ -471,7 +471,8 @@
+@@ -493,7 +493,8 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -34,7 +34,7 @@
  endif
 --- doc/man/Makefile.in
 +++ doc/man/Makefile.in
-@@ -473,7 +473,8 @@
+@@ -495,7 +495,8 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
@@ -44,7 +44,7 @@
  @USE_NLS_TRUE@SUBDIRS = $(DOC_LINGUAS)
  man_MANS = mc.1 mcedit.1 mcview.1
  CLEANFILES = $(man_MANS)
-@@ -742,7 +743,8 @@
+@@ -764,7 +765,8 @@
  	for dir in "$(DESTDIR)$(man1dir)"; do \
  	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
  	done
@@ -67,7 +67,7 @@
  EXTFS_CONST = bpp changesetfs gitfs+ patchsetfs rpm trpm u7z
 --- src/vfs/extfs/helpers/Makefile.in
 +++ src/vfs/extfs/helpers/Makefile.in
-@@ -430,7 +430,7 @@
+@@ -452,7 +452,7 @@
  EXTFSCONFFILES = sfs.ini
  
  # Files to install and distribute other than extfs scripts
@@ -85,16 +85,16 @@
 -FISH_MISC  = README.fish
 +FISH_MISC  =
  
- fish_DATA = $(FISH_MISC)
- fish_SCRIPTS = ls mkdir fexists unlink chown chmod rmdir ln mv hardlink get send append info utime
+ # Install and distribute FISH helper scripts w/o shebang & executable bit as data
+ fish_DATA = $(FISH_MISC) ls mkdir fexists unlink chown chmod rmdir ln mv hardlink get send append info utime
 --- src/vfs/fish/helpers/Makefile.in
 +++ src/vfs/fish/helpers/Makefile.in
-@@ -417,7 +417,7 @@
+@@ -437,7 +437,7 @@
  fishdir = $(libexecdir)/@PACKAGE@/fish
  
  # Files to install and distribute other than fish scripts
 -FISH_MISC = README.fish
 +FISH_MISC =
- fish_DATA = $(FISH_MISC)
- fish_SCRIPTS = ls mkdir fexists unlink chown chmod rmdir ln mv hardlink get send append info utime
- fishconfdir = $(sysconfdir)/@PACKAGE@
+ 
+ # Install and distribute FISH helper scripts w/o shebang & executable bit as data
+ fish_DATA = $(FISH_MISC) ls mkdir fexists unlink chown chmod rmdir ln mv hardlink get send append info utime
