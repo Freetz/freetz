@@ -1,12 +1,12 @@
-$(call PKG_INIT_BIN, 4.6.5)
+$(call PKG_INIT_BIN, 4.7.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=39507c331a987e0534acf75a4c3824a0
+$(PKG)_SOURCE_MD5:=24b64dcd74426803eb1e9bf75a5a590a
 $(PKG)_SITE:=http://lftp.yar.ru/ftp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lftp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lftp
 
-$(PKG)_DEPENDS_ON += ncurses readline $(STDCXXLIB) expat
+$(PKG)_DEPENDS_ON += ncurses readline $(STDCXXLIB) expat zlib
 
 ifeq ($(strip $(FREETZ_PACKAGE_LFTP_WITH_SSL)),y)
 $(PKG)_DEPENDS_ON += openssl
@@ -23,6 +23,10 @@ $(PKG)_CONFIGURE_ENV += gl_cv_func_frexp_no_libm=no
 $(PKG)_CONFIGURE_ENV += gl_cv_func_frexpl_no_libm=no
 $(PKG)_CONFIGURE_ENV += gl_cv_func_ldexp_no_libm=no
 $(PKG)_CONFIGURE_ENV += gl_cv_func_ldexpl_no_libm=no
+
+$(PKG)_CONFIGURE_OPTIONS += --with-expat="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-readline="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
