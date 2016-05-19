@@ -1,16 +1,18 @@
 config FREETZ_PACKAGE_SFK
 	bool "Swiss File Knife 1.7.6"
+	select FREETZ_LIB_STDCXXLIB if ! FREETZ_PACKAGE_SFK_STATIC
+#	select FREETZ_LIB_STDCXXLIB_WITH_WCHAR
 	default n
-	select FREETZ_LIB_STDCXXLIB
-	select FREETZ_LIB_libpthread if !FREETZ_PACKAGE_SFK_STATIC
 	help
-		build the freeware version of sfk, see the site
-		http://stahlworks.com/dev/swiss-file-knife.html
+		Swiss File Knife - A Command Line Tools Collection
+
+		This packages provides the freeware version of SFK,
+		see http://stahlworks.com/dev/swiss-file-knife.html
 		for further information
 
 config FREETZ_PACKAGE_SFK_STATIC
-	bool "link statically"
-	default n
+	bool "create statically linked binary"
 	depends on FREETZ_PACKAGE_SFK
+	default n
 	help
-		create a version usable without additional DSOs
+		Causes all libraries SFK depends on to be linked in statically

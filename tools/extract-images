@@ -18,17 +18,48 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
-# Parametrised helper function for 'extract_bootloader' doing the actual work
+#
+# $1 - input file
+# $2 - binary pattern
+#
+# returns:
+#   offsets of all pattern matches
+getHexOffsetsOfAllMatches() {
+	"$mod_tools/sfk" hexfind "$1" -bin "/$2/" -quiet | sed -nr -e 's|.*hit at offset (0x[0-9A-F]+)|\1|p'
+}
+getDecOffsetsOfAllMatches() {
+	local matches=$(getHexOffsetsOfAllMatches "$@")
+	[ -z "$matches" ] && return
+	echo "$matches" | xargs printf "%d\n"
+}
+
+#
+# $1 - input file
+# $2 - offset
+# $3 - length
+#
+getHexContentAtOffset() {
+	"$mod_tools/sfk" hexdump -offlen "$2" "$3" -nofile -pure "$1" | tr -d $'\n'
+}
+
+#
+# inverts endianness of each line of stdin
+# each line is assumed to be a hex-string representation of the data and is processed separately
+# if hex-string length is not muptiple of 8 it is zero padded
+#
+invertEndianness() {
+	sed -r -e ':zero_pad;s/^(.{1,7})((.{8})*)$/0\1\2/;tzero_pad' | sed -r -e 's/(..)(..)(..)(..)/\4\3\2\1/g'
+}
+
+# Parameterized helper function for 'extract_bootloader' doing the actual work
 do_extract_bl()
 {
 	local BOOTLOADER_MAGIC="$1"
 	local ENDIAN_TYPE="$2"
-	# Find bootloader candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_tools/sfk hexfind "$input_file" -bin /$BOOTLOADER_MAGIC/ -quiet)"
-	# Isolate arrays of bootloader offset candidates (hex & dec)
-	bootloader_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
-	[ "$bootloader_offs_hex" ] || return
-	bootloader_offs=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"))
+
+	# Find bootloader candidates
+	declare -a bootloader_offs=($(getDecOffsetsOfAllMatches "$input_file" "$BOOTLOADER_MAGIC"))
+
 	# Find bootloader candidates and isolate their offsets
 	for (( i=0; i<${#bootloader_offs[@]}; i++ )); do
 		# For each bootloader candidate create a new numbered 'urlader.image' file
@@ -74,44 +105,34 @@ extract_bootloader()
 }
 
 
-# Parametrised helper function for 'extract_kernel_filesystem' doing the actual work
+# Parameterized helper function for 'extract_kernel_filesystem' doing the actual work
 do_extract_kfs()
 {
 	local SQUASHFS_MAGIC="$1"
 	local ENDIAN_TYPE="$2"
 
-	# Find SquashFS candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_tools/sfk hexfind "$input_file" -bin /$SQUASHFS_MAGIC/ -quiet)"
-	# Isolate arrays of SquashFS offset candidates (hex & dec)
-	squashfs_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
-	[ "$squashfs_offs_hex" ] || return
-	squashfs_offs=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"))
+	# Find SquashFS candidates
+	declare -a squashfs_offs=($(getDecOffsetsOfAllMatches "$input_file" "$SQUASHFS_MAGIC"))
+
 	for (( i=0; i<${#squashfs_offs[@]}; i++ )); do
-		# Isolate array of SquashFS length candidates from hexdump lines, considering endian type
+		# Isolate SquashFS length candidates (considering endian type)
 		# Note: 4 bytes of length information are found at (SquashFS magic offset + 8)
-		tmp=$(echo "$hexfind_dump" | grep " 0*${squashfs_offs_hex[i]}\$" | sed -r 's/([^ ]+ ){2}([^ ]+).*/\2/')
-		if [ "$ENDIAN_TYPE" == "big" ]; then
-			squashfs_length[i]=$(printf "%d" "0x$tmp")
-		else
-			squashfs_length[i]=$(printf "%d" "0x${tmp:6:2}${tmp:4:2}${tmp:2:2}${tmp:0:2}")
-		fi
+		tmp=$(getHexContentAtOffset "$input_file" $((${squashfs_offs[i]} + 8)) 4 | { [ "$ENDIAN_TYPE" == "little" ] && invertEndianness || cat; })
+		squashfs_length[i]=$(printf "%d" "0x$tmp")
 		# Special case: filesystem length 0 can happen if a raw (mtdblock) dump
 		# from the box is processed, because the box seems to erase the length
 		# info when flashing.
 		[ ${squashfs_length[i]} -eq 0 ] && squashfs_length[i]=$((input_file_size-squashfs_offs[i]))
 	done
 
-	# Find kernel candidates ('sfk hexfind' dumps offsets and hexdump contexts)
-	hexfind_dump="$($mod_tools/sfk hexfind "$input_file" -bin /$KERNEL_MAGIC/ -quiet)"
-	# Isolate arrays of kernel offset candidates (hex & dec)
-	kernel_offs_hex=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset 0x(.*)/\1/p'))
-	[ "$kernel_offs_hex" ] || return
-	kernel_offs=($(echo "$hexfind_dump" | sed -nr 's/.*hit at offset (.*)/\1/p' | xargs printf "%d\n"))
+	# Find kernel candidates
+	declare -a kernel_offs=($(getDecOffsetsOfAllMatches "$input_file" "$KERNEL_MAGIC"))
+
 	for (( i=0; i<${#kernel_offs[@]}; i++ )); do
-		# Isolate array of kernel length candidates from hexdump lines (always little endian)
+		# Isolate kernel length candidates (always little endian)
 		# Note: 4 bytes of length information are found at (kernel magic offset + 4)
-		tmp=$(echo "$hexfind_dump" | grep " 0*${kernel_offs_hex[i]}\$" | sed -r 's/([^ ]+ )([^ ]+).*/\2/')
-		kernel_length[i]=$(printf "%d" "0x${tmp:6:2}${tmp:4:2}${tmp:2:2}${tmp:0:2}")
+		tmp=$(getHexContentAtOffset "$input_file" $((${kernel_offs[i]} + 4)) 4 | invertEndianness)
+		kernel_length[i]=$(printf "%d" "0x$tmp")
 		# Pad kernel length to 256
 		kernel_pad=$(( (256 - kernel_length[i] % 256) % 256 ))
 		kernel_length[i]=$(( kernel_length[i] + kernel_pad ))
@@ -201,10 +222,10 @@ esac
 
 # Magic byte sequences (hex) to identify kernel, SquashFS and bootloader
 KERNEL_MAGIC="8112EDFE"
-SQUASHFS_MAGIC_LE="68737173"
 SQUASHFS_MAGIC_BE="73717368"
-BOOTLOADER_MAGIC_LE="00908040"
+SQUASHFS_MAGIC_LE=$(echo "$SQUASHFS_MAGIC_BE" | invertEndianness)
 BOOTLOADER_MAGIC_BE="40809000"
+BOOTLOADER_MAGIC_LE=$(echo "$BOOTLOADER_MAGIC_BE" | invertEndianness)
 
 input_file_size=$(stat -L -c %s "$input_file")
 
