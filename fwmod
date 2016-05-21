@@ -150,9 +150,9 @@ FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 MAKEDEVS_TOOL="makedevs"
 UNSQUASHFS_TOOL="unsquashfs4-lzma-avm-be"
-MKSQUASHFS2_TOOL="mksquashfs2-lzma"
-MKSQUASHFS3_TOOL="mksquashfs3-multi"
-MKSQUASHFS_AVM_BE_TOOL="mksquashfs4-lzma-avm-be"
+MKSQUASHFS_TOOL[2]="mksquashfs2-lzma"
+MKSQUASHFS_TOOL[3]="mksquashfs3-multi"
+MKSQUASHFS_TOOL[4]="mksquashfs4-lzma-avm-be"
 DEBUGFS_TOOL="debugfs"
 EXTERNAL_TOOL="external"
 TAR_TOOL="tar"
@@ -223,26 +223,15 @@ NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
 # Options for (un)packing SquashFS
-UNSQUASHFS_OPTIONS="-no-progress -processors 1 -exit-on-decomp-error"
-MKSQUASHFS_OPTIONS="-all-root -info"
-
 UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
-if [ "$FREETZ_KERNEL_VERSION_2_6_13" -a "$FREETZ_REPLACE_KERNEL" != "y" ]; then
-	MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS2_TOOL}"
-else
-	if [ "${FREETZ_AVM_HAS_EXT2_SQUASHFS4_PACKAGING_SCHEME}" == "y" ]; then
-		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_AVM_BE_TOOL}"
-	else
-		MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS3_TOOL}"
-	fi
+UNSQUASHFS_OPTIONS="-no-progress -processors 1 -exit-on-decomp-error"
 
+MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL[${FREETZ_SQUASHFS_VERSION}]}"
+MKSQUASHFS_OPTIONS="-all-root -info"
+if [ "${FREETZ_SQUASHFS_VERSION}" -gt 2 ]; then
 	MKSQUASHFS_OPTIONS+=" -no-progress -no-exports -no-sparse"
-	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
-		MKSQUASHFS_OPTIONS+=" -lzma1"
-	fi
 fi
-
-if [ "${FREETZ_AVM_HAS_EXT2_SQUASHFS4_PACKAGING_SCHEME}" != "y" ]; then
+if [ "${FREETZ_SQUASHFS_VERSION}" -lt 4 ]; then
 	MKSQUASHFS_OPTIONS+=" -noappend"
 	# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
 	if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
@@ -250,6 +239,9 @@ if [ "${FREETZ_AVM_HAS_EXT2_SQUASHFS4_PACKAGING_SCHEME}" != "y" ]; then
 	else
 		MKSQUASHFS_OPTIONS+=" -le"
 	fi
+fi
+if [ "${FREETZ_SQUASHFS_VERSION}" -eq 3 -a "${FREETZ_AVM_SQUASHFS_COMPRESSION}" == "lzma" ]; then
+	MKSQUASHFS_OPTIONS+=" -lzma1"
 fi
 
 
@@ -1630,7 +1622,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 
-		if [ "${FREETZ_AVM_HAS_EXT2_SQUASHFS4_PACKAGING_SCHEME}" == "y" ]; then
+		if [ "${FREETZ_AVM_HAS_EXT2_PACKAGING_SCHEME}" == "y" ]; then
 			PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
 			[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
 
