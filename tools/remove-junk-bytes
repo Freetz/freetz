@@ -36,19 +36,23 @@ fi
 declare -A headerStartPattern=(
 		[v1]=3C1A8000375A038003400008
 	[v2]=409AE8053C1A8000375A038003400008
+	[v3]=409AE805409BE0043C1A8000375A0380
 )
 declare -A expectedHeaderOffset=(
 	[v1]=0xBE0000
 	[v2]=0xBE0000
+	[v3]=0xBE0000
 )
 declare -A expectedHeaderLength=(
 	[v1]=256
 	[v2]=4096
+	[v3]=4096
 )
 NMI_BOOT_PATTERN="4E4D4920426F6F74" # "NMI Boot" as hex pattern
 declare -A expectedNmiBootOffset=(
 	[v1]=0xBE0048
 	[v2]=0xBE0048
+	[v3]=0xBE0048
 )
 
 HEX_DIGIT_PATTERN="[0-9A-F]"
@@ -77,7 +81,7 @@ getInputFileSize() {
 }
 
 
-for v in v2 v1; do
+for v in v3 v2 v1; do
 	declare -a offsets=($(getHexOffsetsOfAllMatches "${headerStartPattern[${v}]}"))
 	noOffsets=${#offsets[@]}
 
