@@ -1,28 +1,28 @@
 --- libexslt/Makefile.in
 +++ libexslt/Makefile.in
-@@ -684,7 +684,7 @@
+@@ -764,7 +764,7 @@
  
  info-am:
  
--install-data-am: install-exsltincHEADERS install-man
-+install-data-am: install-exsltincHEADERS
+-install-data-am: install-exsltincHEADERS install-man \
++install-data-am: install-exsltincHEADERS             \
+ 	install-nodist_exsltincHEADERS
  
  install-dvi: install-dvi-am
- 
 --- libxslt/Makefile.in
 +++ libxslt/Makefile.in
-@@ -730,7 +730,7 @@
+@@ -813,7 +813,7 @@
  
  info-am:
  
--install-data-am: install-man install-xsltincHEADERS
-+install-data-am: install-xsltincHEADERS
+-install-data-am: install-man install-nodist_xsltincHEADERS \
++install-data-am:             install-nodist_xsltincHEADERS \
+ 	install-xsltincHEADERS
  
  install-dvi: install-dvi-am
- 
 --- Makefile.in
 +++ Makefile.in
-@@ -347,12 +347,9 @@
+@@ -417,12 +417,9 @@
  SUBDIRS = \
  	libxslt \
  	libexslt \
@@ -37,12 +37,12 @@
  confexecdir = $(libdir)
  confexec_DATA = xsltConf.sh
  bin_SCRIPTS = xslt-config
-@@ -924,13 +921,13 @@
+@@ -965,13 +962,13 @@
  
  info-am:
  
 -install-data-am: install-m4dataDATA install-pkgconfigDATA
-+install-data-am: install-pkgconfigDATA
++install-data-am:                    install-pkgconfigDATA
  
  install-dvi: install-dvi-recursive
  

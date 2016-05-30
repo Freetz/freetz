@@ -2,26 +2,35 @@
 
 #
 # Remove junk bytes from AVM image files
-# Author: Alexander Kriegisch (http://scrum-master.de)
-#
-# The code below tries to be a bit generic, this is however not really necessary
-# as all junk-byte blocks used by AVM so far use fixed offsets and fixed lengths.
+# Author: Alexander Kriegisch (http://scrum-master.de) and Freetz developer team
 #
 # Junk-byte block v1:
 #  1. starts with byte sequence 3C1A8000375A038003400008
 #  2. located at (fixed) offset 0xBE0000
 #  3. has (fixed) length of 256 bytes
-#  4. image size without the junk block and without the image checksum is saved
-#     in 4 bytes at (fixed) offset 0xBE0040, the same offset could also be
-#     determined by locating the string "NMI Boot" and subtracting 8 bytes
-#     from its offset
+#  4. junk header size is saved in 4 bytes at (fixed) offset 0xBE0044,
+#     the same offset could also be determined by locating the string "NMI Boot"
+#     and subtracting 4 bytes from its offset
+#  5. image size without the junk block and without the image checksum is saved
+#     in 4 bytes at (fixed) offset 0xBE0040,
+#     the same offset could also be determined by locating the string "NMI Boot"
+#     and subtracting 8 bytes from its offset
 #
 # Junk-byte block v2:
 #  1. starts with byte sequence 409AE8053C1A8000375A038003400008 (v1 sequence prefixed with 409AE805)
 #  2. same as v1
 #  3. has (fixed) length of 4096 bytes
 #  4. same as v1
+#  5. same as v1
 #
+# Junk-byte block v3:
+#  1. starts with byte sequence 409AE805409BE0043C1A8000375A0380
+#  2. same as v1
+#  3. same as v2
+#  4. same as v1
+#  5. same as v1
+#
+
 
 SFK_TOOL="$(dirname "$0")/sfk"
 
@@ -33,29 +42,15 @@ if [ $# -ne 2 -o ! -e "$INPUT_FILE" ]; then
 	exit 2
 fi
 
-declare -A headerStartPattern=(
+NMI_BOOT_PATTERN="4E4D4920426F6F74" # "NMI Boot" as hex pattern
+expectedNmiBootOffset=0xBE0048
+
+junkHeaderOffset=0xBE0000
+declare -A knownJunkHeaderStart=(
 		[v1]=3C1A8000375A038003400008
 	[v2]=409AE8053C1A8000375A038003400008
 	[v3]=409AE805409BE0043C1A8000375A0380
 )
-declare -A expectedHeaderOffset=(
-	[v1]=0xBE0000
-	[v2]=0xBE0000
-	[v3]=0xBE0000
-)
-declare -A expectedHeaderLength=(
-	[v1]=256
-	[v2]=4096
-	[v3]=4096
-)
-NMI_BOOT_PATTERN="4E4D4920426F6F74" # "NMI Boot" as hex pattern
-declare -A expectedNmiBootOffset=(
-	[v1]=0xBE0048
-	[v2]=0xBE0048
-	[v3]=0xBE0048
-)
-
-HEX_DIGIT_PATTERN="[0-9A-F]"
 
 IMAGE_CHECKSUM_SIZE=8 # number of bytes needed to store image checksum
 
@@ -65,7 +60,7 @@ IMAGE_CHECKSUM_SIZE=8 # number of bytes needed to store image checksum
 # returns:
 #   offsets of all pattern matches
 getHexOffsetsOfAllMatches() {
-	"$SFK_TOOL" hexfind "$INPUT_FILE" -bin "/$1/" -quiet | sed -nr -e 's|.*hit at offset (0x'"${HEX_DIGIT_PATTERN}"'+)|\1|p'
+	"$SFK_TOOL" hexfind "$INPUT_FILE" -bin "/$1/" -quiet | sed -nr -e 's|.*hit at offset (0x[0-9A-F]+)|\1|p'
 }
 
 #
@@ -81,49 +76,57 @@ getInputFileSize() {
 }
 
 
-for v in v3 v2 v1; do
-	declare -a offsets=($(getHexOffsetsOfAllMatches "${headerStartPattern[${v}]}"))
-	noOffsets=${#offsets[@]}
+declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches "${NMI_BOOT_PATTERN}"))
 
-	[ ${noOffsets} -eq 0 ] && continue # no matches found, probe next header pattern
+if [ ${#nmiBootOffsets[@]} -eq 0 ]; then
+	echo "No junk bytes found" >&2
+	exit 1
+fi
 
-	if [ ${noOffsets} -gt 1 ]; then
-		echo "[Error] Multiple $v junk headers found at the following offsets: ${offsets[@]}" >&2
-		exit 2
-	fi
+if [ ${#nmiBootOffsets[@]} -gt 1 ]; then
+	echo "[Error] Multiple 'NMI Boot'-matches found: ${nmiBootOffsets[@]}" >&2
+	exit 2
+fi
 
-	offset=${offsets[0]}
-	if [ "${offset}" != "${expectedHeaderOffset[${v}]}" ]; then
-		echo "[Error] Junk header $v found at unexpected offset ${offset}" >&2
-		exit 2
-	fi
+nmiBootOffset="${nmiBootOffsets[0]}"
+if [ "${nmiBootOffset}" != "${expectedNmiBootOffset}" ]; then
+	echo "[Error] 'NMI Boot'-match found at unexpected offset ${nmiBootOffset}" >&2
+	exit 2
+fi
 
-	echo "Junk header $v found at offset ${offset}"
+# junk header length is encoded within the junk block 4 bytes before 'NMI Boot'
+junkHeaderLength="0x$(getHexContentAtOffset $((${nmiBootOffset} - 4)) 4)"
+if [ $((${junkHeaderLength})) -ne 256 -a $((${junkHeaderLength})) -ne 4096 ]; then
+	echo "[Error] Unexpected/unsupported junk header length: $((${junkHeaderLength}))" >&2
+	exit 2
+fi
 
-	declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches "${NMI_BOOT_PATTERN}"))
-	if [ ${#nmiBootOffsets[@]} -ne 1 ]; then
-		echo "[Error] No or multiple 'NMI Boot'-matches found: ${nmiBootOffsets[@]}" >&2
-		exit 2
-	fi
-	nmiBootOffset="${nmiBootOffsets[0]}"
-	if [ "${nmiBootOffset}" != "${expectedNmiBootOffset[${v}]}" ]; then
-		echo "[Warning] 'NMI Boot'-match found at unexpected offset ${nmiBootOffset}" >&2
-	fi
+# real image size is encoded within the junk block 8 bytes before 'NMI Boot'
+imageSizeJunk="0x$(getHexContentAtOffset $((${nmiBootOffset} - 8)) 4)"
+imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${junkHeaderLength} - ${IMAGE_CHECKSUM_SIZE} )))
+if [ "$((${imageSizeJunk}))" -ne "$((${imageSizeExpected}))" ]; then
+	echo "[Error] Image size encoded in junk block ($((${imageSizeJunk}))) does not match calculated size ($((${imageSizeExpected})))" >&2
+	exit 2
+fi
 
-	# real image size is encoded within the junk block 8 bytes before 'NMI Boot'
-	imageSizeJunk="0x$(getHexContentAtOffset $((${nmiBootOffset} - 8)) 4)"
-	imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${expectedHeaderLength[${v}]} - ${IMAGE_CHECKSUM_SIZE} )))
-	if [ "${imageSizeJunk}" != "${imageSizeExpected}" ]; then
-		echo "[Warning] Image size encoded in junk block ($((${imageSizeJunk}))) does not match calculated size ($((${imageSizeExpected})))" >&2
+# get first 32 bytes of the junk header
+junkHeaderStart=$(getHexContentAtOffset ${junkHeaderOffset} 32)
+# and check if they contain one of the known sequences
+for v in v1 v2 v3; do
+	if [ "${junkHeaderStart:0:${#knownJunkHeaderStart[${v}]}}" != "${knownJunkHeaderStart[${v}]}" ]; then
 		continue
 	fi
 
-	echo -n "Image size encoded in junk block matches calculated size, removing ${v} junk bytes ... "
-	head -c $((${offset})) "$INPUT_FILE" > "$OUTPUT_FILE"
-	tail -c $((${imageSizeExpected} - ${offset} + ${IMAGE_CHECKSUM_SIZE})) "$INPUT_FILE" >> "$OUTPUT_FILE"
+	echo -n "Junk header $v found at offset ${junkHeaderOffset}, removing ${v} junk bytes ... "
+	head -c $((${junkHeaderOffset})) "$INPUT_FILE" > "$OUTPUT_FILE"
+	tail -c $((${imageSizeExpected} - ${junkHeaderOffset} + ${IMAGE_CHECKSUM_SIZE})) "$INPUT_FILE" >> "$OUTPUT_FILE"
 	echo "done."
+
+	# debug: dump junk-bytes to a separate file
+	#tail -c "+$((${junkHeaderOffset} + 1))" "$INPUT_FILE" | head -c $((${junkHeaderLength})) > "$INPUT_FILE".junk-bytes
+
 	exit 0
 done
 
-echo "No junk bytes found" >&2
-exit 1
+echo "[Error] Junk header start sequence (${junkHeaderStart}) doesn't match any of the known sequences" >&2
+exit 2

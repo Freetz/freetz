@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 2.9.3)
+$(call PKG_INIT_LIB, 2.9.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=daece17e045f1c107610e137ab50c179
+$(PKG)_SOURCE_MD5:=ae249165c173b1ff386ee8ad676815f5
 $(PKG)_SITE:=ftp://xmlsoft.org/$(pkg)
 
 $(PKG)_LIBNAME:=$(pkg).so.$($(PKG)_VERSION)

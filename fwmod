@@ -1030,9 +1030,19 @@ if [ "$DO_MOD" -gt 0 ]; then
 				found=1
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a $files "${FILESYSTEM_MOD_DIR}/${dn}/"
-				if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && echo "${bn}" | grep -qE '^(ld_uClibc|libuClibc)$'; then
-					cp -a $files "${FILESYSTEM_CORE_MOD_DIR}/${dn}/"
+
+				if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+					wrapper_fs_required_libs="ld_uClibc libuClibc"
+
+					# replaced busybox might require some additional libraries not available in AVM's wrapper filesystem
+					[ "$FREETZ_REPLACE_BUSYBOX" == "y" -a -r "${PACKAGES_DIR}/busybox/busybox" ] && \
+					  wrapper_fs_required_libs+=" $(getNeededEntries ${PACKAGES_DIR}/busybox/busybox | sed -r -e 's,[.]so([.].+)?$,,' | sort | tr $'\n' " ")"
+
+					if echo "${bn}" | grep -qE "^($(join '|' ${wrapper_fs_required_libs}))$"; then
+						cp -a $files "${FILESYSTEM_CORE_MOD_DIR}/${dn}/"
+					fi
 				fi
+
 				all_files="$all_files $files"
 			done
 			if [ "$found" = 0 ]; then
