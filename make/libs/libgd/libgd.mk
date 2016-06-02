@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 2.1.1)
-$(PKG)_LIB_VERSION:=3.0.0
+$(call PKG_INIT_LIB, 2.2.1)
+$(PKG)_LIB_VERSION:=3.0.$(subst .,0,$($(PKG)_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=9076f3abd1f9815d106da36467ea15bc
-$(PKG)_SITE:=https://bitbucket.org/libgd/gd-libgd/downloads
+$(PKG)_SOURCE_MD5:=4d3d5b6c77c4875861af1bc663441efd
+$(PKG)_SITE:=https://bitbucket.org/libgd/gd-libgd/downloads,https://github.com/libgd/libgd/releases/download/gd-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libgd.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.so.$($(PKG)_LIB_VERSION)
