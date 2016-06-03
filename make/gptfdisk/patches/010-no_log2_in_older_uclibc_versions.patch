@@ -1,0 +1,11 @@
+--- gpt.cc
++++ gpt.cc
+@@ -30,7 +30,7 @@
+ 
+ using namespace std;
+ 
+-#ifdef __FreeBSD__
++#if defined(__FreeBSD__) || defined(__UCLIBC__)
+ #define log2(x) (log(x) / M_LN2)
+ #endif // __FreeBSD__
+ 
