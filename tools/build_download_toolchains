@@ -1,8 +1,8 @@
 #!/bin/bash
 
-KERNEL_TOOLCHAIN_VERSION=r13181
+KERNEL_TOOLCHAIN_VERSION=r13747
 KERNEL_TOOLCHAIN_FILENAME_SUFFIX=freetz-${KERNEL_TOOLCHAIN_VERSION}-shared-glibc
-TARGET_TOOLCHAIN_VERSION=r13181
+TARGET_TOOLCHAIN_VERSION=r13747
 TARGET_TOOLCHAIN_FILENAME_SUFFIX=freetz-${TARGET_TOOLCHAIN_VERSION}-shared-glibc
 
 TOOL_CONF=tools/config/conf
@@ -32,6 +32,7 @@ EOF
 #     0.9.32.x LE/BE
 #     0.9.33.x LE/BE (as part of freetz uClibc-0.9.33.x test program)
 #     0.9.33.x BE-NPTL
+#     0.9.33.x BE-NPTL-KERNEL_3.10
 #
 
 #                               kernel       uClibc
@@ -44,6 +45,7 @@ EOF
 # FREETZ_TYPE_7390+05.5X+0.9.33 4.6 BE     0.9.33.x BE
 # FREETZ_TYPE_7390+06.0X        4.7 BE     0.9.33.x BE NPTL
 # FREETZ_TYPE_7390+06.2X        4.8 BE     0.9.33.x BE NPTL
+# FREETZ_TYPE_7490+06.5X        4.8 BE     0.9.33.x BE NPTL KERNEL_3.10
 #
 
 mkdir -p $DOWNLOADS
@@ -61,6 +63,8 @@ for options in \
 	"FREETZ_TYPE_7390 FREETZ_TYPE_FIRMWARE_06_0X" \
 	\
 	"FREETZ_TYPE_7390 FREETZ_TYPE_FIRMWARE_06_2X" \
+	\
+	"FREETZ_TYPE_7490 FREETZ_TYPE_FIRMWARE_06_5X" \
 ; do
 	optionsCommaSep=$(echo $options | sed -e 's| |,|g')
 	optionsUnderscoreSep=$(echo $options | sed -e 's| |_|g')
