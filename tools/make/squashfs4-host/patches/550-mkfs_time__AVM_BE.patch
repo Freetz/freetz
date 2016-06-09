@@ -1,0 +1,48 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -4461,6 +4461,9 @@
+ 			sBlk->lookup_table_start);
+ 
+ 	sBlk->bytes_used = bytes;
++#if TARGET_FORMAT == AVM_BE
++	sBlk->mkfs_time = (int) sBlk->bytes_used;
++#endif
+ 
+ 	sBlk->compression = comp->id;
+ 
+@@ -5303,7 +5306,9 @@
+ 	sBlk.flags = SQUASHFS_MKFLAGS(noI, noD, noF, noX, no_fragments,
+ 		always_use_fragments, duplicate_checking, exportable,
+ 		no_xattrs, comp_opts);
++#if TARGET_FORMAT != AVM_BE
+ 	sBlk.mkfs_time = time(NULL);
++#endif
+ 
+ 	disable_info();
+ 
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -1634,8 +1634,21 @@
+ 
+ void squashfs_stat(char *source)
+ {
+-	time_t mkfs_time = (time_t) sBlk.s.mkfs_time;
+-	char *mkfs_str = ctime(&mkfs_time);
++	char *mkfs_str = NULL;
++	int do_interpret_mkfs_time_as_time = 1;
++
++#if TARGET_FORMAT == AVM_BE
++	if (sBlk.s.s_major == 4 && sBlk.s.mkfs_time == (int)sBlk.s.bytes_used) {
++		do_interpret_mkfs_time_as_time = 0;
++		mkfs_str = "not available because of AVM-BE format (mkfs_time == bytes_used)\n";
++	}
++#endif
++
++	if (do_interpret_mkfs_time_as_time) {
++		time_t mkfs_time = (time_t) sBlk.s.mkfs_time;
++		mkfs_str = ctime(&mkfs_time);
++	}
++
+ 
+ 	printf("Found a valid %sSQUASHFS %d:%d superblock on %s.\n",
+ #if __BYTE_ORDER == __BIG_ENDIAN

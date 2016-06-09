@@ -10,6 +10,8 @@ This document summarizes all (so far known) technical details about a non-standa
  - compression method is hardcoded to be XZ (aka LZMA2)
  - it is unknown if any compressor specific option could be set - all original AVM images seen so far
    have COMP_OPT flag unset
+ - super-block field 'mkfs_time' contains (instead of the filesystem creation time) the same value
+   as the super-block field 'bytes_used'
 
  - user id table is always stored uncompressed (TODO: needs more investigation, the current
    implementation ensures that it gets stored uncompressed, this behavior might however also
