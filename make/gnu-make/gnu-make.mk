@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.1)
+$(call PKG_INIT_BIN, 4.2)
 $(PKG)_SOURCE:=make-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=57a7a224a822f94789a587ccbcedff69
+$(PKG)_SOURCE_MD5:=85ad14d08766201ffe71efa866f4fb91
 $(PKG)_SITE:=@GNU/make
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/make-$($(PKG)_VERSION)
