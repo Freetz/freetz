@@ -243,6 +243,9 @@ fi
 if [ "${FREETZ_SQUASHFS_VERSION}" -eq 3 -a "${FREETZ_AVM_SQUASHFS_COMPRESSION}" == "lzma" ]; then
 	MKSQUASHFS_OPTIONS+=" -lzma1"
 fi
+if [ "${FREETZ_SQUASHFS_VERSION}" -eq 4 -a "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
+	MKSQUASHFS_OPTIONS+=" -nopad"
+fi
 
 
 #######################################
