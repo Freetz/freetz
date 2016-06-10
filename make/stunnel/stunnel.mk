@@ -10,6 +10,13 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 
 $(PKG)_DEPENDS_ON += openssl zlib
 
+ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_BOXCERT)),y)
+$(PKG)_CONDITIONAL_PATCHES+=boxcert
+$(PKG)_DEPENDS_ON += privatekeypassword
+$(PKG)_EXTRA_LDFLAGS += -lprivatekeypassword -ldl
+endif
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_STUNNEL_BOXCERT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_STUNNEL_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
@@ -22,6 +29,7 @@ $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_STATIC)),y)
+$(PKG)_EXTRA_CFLAGS += -DSTATIC
 $(PKG)_EXTRA_LDFLAGS += -all-static
 endif
 

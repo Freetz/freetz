@@ -1,0 +1,119 @@
+--- src/ctx.c
++++ src/ctx.c
+@@ -37,6 +37,7 @@
+ 
+ #include "common.h"
+ #include "prototypes.h"
++#include <privatekeypassword/privatekeypassword.h>
+ 
+ #ifndef OPENSSL_NO_DH
+ DH *dh_params=NULL;
+@@ -586,21 +587,61 @@
+ static int cache_initialized=0;
+ 
+ NOEXPORT int load_key_file(SERVICE_OPTIONS *section) {
+-    int i, reason;
++    int i, reason, boxkey=0;
+     UI_DATA ui_data;
+ 
+     s_log(LOG_INFO, "Loading private key from file: %s", section->key);
+-    if(file_permissions(section->key))
+-        return 1; /* FAILED */
++    reason=file_permissions(section->key);
++    /* if the key file is a "character device", we assume it's the private
++       key file from FRITZ!OS and so we'll try to open it with the "secret"
++       password from "getPrivateKeyPassword" first - the file permissions
++       check will return a value of 2, if it detects a character device
++    */
++    if(reason && reason != 2) {
++        return 1; /* this are really wrong permissions */
++    }
++    else if(reason == 2) {
++        boxkey=1; /* but in this case we'll try to see it as a TFFS entry */
++    }
+ 
+     ui_data.section=section; /* setup current section for callbacks */
+     SSL_CTX_set_default_passwd_cb(section->ctx, password_cb);
+ 
+     for(i=0; i<=3; i++) {
+-        if(!i && !cache_initialized)
+-            continue; /* there is no cached value */
+-        SSL_CTX_set_default_passwd_cb_userdata(section->ctx,
+-            i ? &ui_data : NULL); /* try the cached password first */
++        if(!i && boxkey) { /* try box private key first */
++            /* - the "userdata" ptr for callback is of type "void", so we can
++                 and will "abuse" it as a flag (for our changes in password_cb)
++                 to signal "FRITZ!Box certificate" condition - we use it as
++                 "pointer to address 1 instead of 0", which is valid for a
++                 void pointer
++               - the userdata pointer will be reset to NULL starting the next
++                 loop, if this occurs - see changes below
++               - if the private key was successfully opened within the first
++                 loop, the "userdata" pointer for the current "section->ctx"
++                 remains changed to 1 for the duration of its "life", but after
++                 opening the private key the callback should never occur again
++                 for this context and if this loop will ever start over with a
++                 "reused" SSL context, we set an explicit value prior to any
++                 tries with a new key file
++            */
++            SSL_CTX_set_default_passwd_cb_userdata(section->ctx, (void *) 1);
++        } else {
++            /* - to avoid excessive changes to the logic of this loop, we will
++                 reset the changes from above, decrement the loop count and
++                 switch of our "boxkey" flag - so we can do one more loop with
++                 "i == 0" and keep the remaining code of this loop near by the
++                 original one
++            */
++            if(i == 1 && boxkey) {
++               i--; boxkey=0;
++                SSL_CTX_set_default_passwd_cb_userdata(section->ctx, NULL);
++                /* here starts the original code for condition "i == 0" */
++                if(!i && !cache_initialized)
++                    continue; /* there is no cached value */
++                SSL_CTX_set_default_passwd_cb_userdata(section->ctx,
++                    i ? &ui_data : NULL); /* try the cached password first */
++            }
++        }
+         if(SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
+                 SSL_FILETYPE_PEM))
+             break;
+@@ -695,7 +736,18 @@
+ #ifdef USE_WIN32
+         len=passwd_cb(buf, size, rwflag, userdata);
+ #else
+-        len=PEM_def_callback(buf, size, rwflag, NULL);
++        if(userdata == (void *) 1) { /* try to open it as FRITZ!OS key file */
++#ifdef STATIC
++            /* - workaround for dlopen() crash with statically linked binaries
++               - see privatekeypassword package for preconditions and possible
++                 environment settings to locate the proxy binary
++            */
++            getPrivateKeyPassword_setMethod(PRIVATEKEYPASSWORD_METHOD_PROXY);
++#endif
++            len=getPrivateKeyPassword_OpenSSL_Callback(buf, size, rwflag, NULL);
++        } else {
++            len=PEM_def_callback(buf, size, rwflag, NULL);
++        }
+ #endif
+         memcpy(cache, buf, (size_t)size); /* save in cache */
+         cache_initialized=1;
+--- src/file.c
++++ src/file.c
+@@ -208,9 +208,14 @@
+         ioerror(file_name);
+         return 1; /* FAILED */
+     }
+-    if(sb.st_mode & 7)
+-        s_log(LOG_WARNING,
+-            "Insecure file permissions on %s", file_name);
++    if(sb.st_mode & 7) {
++        if (S_ISCHR(sb.st_mode)) {
++            return 2; /* assume private key file from TFFS */
++        } else {
++            s_log(LOG_WARNING,
++                "Insecure file permissions on %s", file_name);
++        }
++    }
+ #else
+     (void)file_name; /* squash the unused parameter warning */
+ #endif

@@ -10,6 +10,16 @@ config FREETZ_PACKAGE_STUNNEL
 	help
 		Stunnel universal SSL proxy
 
+config FREETZ_PACKAGE_STUNNEL_BOXCERT
+	bool "build with support for FRITZ!OS certificate"
+	depends on FREETZ_PACKAGE_STUNNEL
+	depends on FREETZ_AVM_VERSION_06_0X_MIN
+	select FREETZ_PACKAGE_PRIVATEKEYPASSWORD
+	default n
+	help
+		Building stunnel with FRITZ!OS support enables reuse
+		of existing key and certificate from /var/flash
+
 config FREETZ_PACKAGE_STUNNEL_STATIC
 	bool "Statically link libraries"
 	depends on FREETZ_PACKAGE_STUNNEL
