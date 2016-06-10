@@ -1,19 +1,23 @@
-$(call PKG_INIT_BIN, 0.1)
+$(call PKG_INIT_BIN, v0.5)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SITE:=git@https://github.com/PeterPawn/$(pkg).git
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/getprivkeypass-ftpd-proxy
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/getprivkeypass-ftpd-proxy
+$(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/$(pkg)
 
-$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libprivatekeypassword.so
-$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libprivatekeypassword.so
-$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/libprivatekeypassword.so
+$(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib$(pkg).so
+$(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib$(pkg).so
+$(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/lib$(pkg).so
 
-$(PKG_LOCALSOURCE_PACKAGE)
+$(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_LIB_BINARY) $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(PRIVATEKEYPASSWORD_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
+		OPT="" \
 		AR="$(TARGET_AR)" \
 		RANLIB="$(TARGET_RANLIB)"
 
