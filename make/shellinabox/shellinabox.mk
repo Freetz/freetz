@@ -6,6 +6,22 @@ $(PKG)_SOURCE_MD5:=6c63b52edcebc56ee73a108e7211d174
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)d
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)d
 
+# prevent zlib support for from being (accidentally) compiled/linked in
+$(PKG)_PATCH_POST_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_zlib_h)
+$(PKG)_CONFIGURE_ENV += shellinabox_header_zlib_h=no
+
+# disable features not available on non-freetz'ed boxes
+$(PKG)_PATCH_POST_CMDS += $(SED) -r -i -e 's,ac_cv_((header|func)_[$(_dollar)$(_dollar)]ac_\2),$(pkg)_\1,g' ./configure;
+$(PKG)_PATCH_POST_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_login_tty lib_util_login_tty)
+ifeq ($(strip $(FREETZ_PACKAGE_SHELLINABOX_NONFREETZ)),y)
+$(PKG)_CONFIGURE_ENV += shellinabox_header_libutil_h=no
+$(PKG)_CONFIGURE_ENV += shellinabox_header_utmp_h=no
+$(PKG)_CONFIGURE_ENV += shellinabox_header_utmpx_h=no
+$(PKG)_CONFIGURE_ENV += shellinabox_func_login_tty=no
+$(PKG)_CONFIGURE_ENV += shellinabox_lib_util_login_tty=no
+$(PKG)_CONFIGURE_ENV += shellinabox_func_openpty=no
+endif
+
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 # touch configure.ac to prevent aclocal.m4 & configure from being regenerated
@@ -13,6 +29,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 ./configure.ac ./Makefile.
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SHELLINABOX_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SHELLINABOX_BOXCERT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SHELLINABOX_NONFREETZ
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SHELLINABOX_STATIC
 
 ifeq ($(strip $(FREETZ_PACKAGE_SHELLINABOX_SSL)),y)

@@ -1,13 +1,12 @@
 config FREETZ_PACKAGE_SHELLINABOX
 	bool "shellinabox 2.14"
-	select FREETZ_LIB_libutil
+	select FREETZ_LIB_libutil if !FREETZ_PACKAGE_SHELLINABOX_STATIC && !FREETZ_PACKAGE_SHELLINABOX_NONFREETZ
 	default n
 	help
 		Shell In A Box implements a web server that can export arbitrary
 		command line tools to a web based terminal emulator.
 		This emulator is accessible to any JavaScript and CSS enabled
 		web browser and does not require any additional browser plugins.
-
 
 config FREETZ_PACKAGE_SHELLINABOX_SSL
 	depends on FREETZ_PACKAGE_SHELLINABOX
@@ -29,6 +28,11 @@ config FREETZ_PACKAGE_SHELLINABOX_BOXCERT
 	help
 		Building "Shell In A Box" with FRITZ!OS support
 		enables use of existing box certificate and key.
+
+config FREETZ_PACKAGE_SHELLINABOX_NONFREETZ
+	bool "build with support for non-freetz'ed boxes"
+	depends on FREETZ_PACKAGE_SHELLINABOX
+	default n
 
 config FREETZ_PACKAGE_SHELLINABOX_STATIC
 	depends on FREETZ_PACKAGE_SHELLINABOX

@@ -1,0 +1,11 @@
+--- shellinabox/launcher.c
++++ shellinabox/launcher.c
+@@ -1225,7 +1225,7 @@
+   (*environment)[numEnvVars++] = stringPrintf(NULL, "SHELL=%s", pw->pw_shell);
+   check(
+   (*environment)[numEnvVars++] = strdup(
+-                              "PATH=/usr/local/bin:/usr/bin:/bin:/usr/games"));
++                              "PATH=/var/custom/bin:/bin:/var/custom/usr/bin:/usr/bin:/var/custom/sbin:/sbin:/var/custom/usr/sbin:/usr/sbin"));
+   (*environment)[numEnvVars++] = stringPrintf(NULL, "LOGNAME=%s",
+                                               service->user);
+   (*environment)[numEnvVars++] = stringPrintf(NULL, "USER=%s", service->user);
