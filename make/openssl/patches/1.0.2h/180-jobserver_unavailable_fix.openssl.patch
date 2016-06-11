@@ -1,0 +1,221 @@
+--- Makefile.org
++++ Makefile.org
+@@ -279,21 +279,21 @@
+ build_libssl: build_ssl libssl.pc
+ 
+ build_crypto:
+-	@dir=crypto; target=all; $(BUILD_ONE_CMD)
++	@+dir=crypto; target=all; $(BUILD_ONE_CMD)
+ build_ssl: build_crypto
+-	@dir=ssl; target=all; $(BUILD_ONE_CMD)
++	@+dir=ssl; target=all; $(BUILD_ONE_CMD)
+ build_engines: build_crypto
+-	@dir=engines; target=all; $(BUILD_ONE_CMD)
++	@+dir=engines; target=all; $(BUILD_ONE_CMD)
+ build_apps: build_libs
+-	@dir=apps; target=all; $(BUILD_ONE_CMD)
++	@+dir=apps; target=all; $(BUILD_ONE_CMD)
+ build_tests: build_libs
+-	@dir=test; target=all; $(BUILD_ONE_CMD)
++	@+dir=test; target=all; $(BUILD_ONE_CMD)
+ build_tools: build_libs
+-	@dir=tools; target=all; $(BUILD_ONE_CMD)
++	@+dir=tools; target=all; $(BUILD_ONE_CMD)
+ 
+ all_testapps: build_libs
+ build_testapps:
+-	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
++	@+dir=crypto; target=testapps; $(BUILD_ONE_CMD)
+ 
+ fips_premain_dso$(EXE_EXT): libcrypto.a
+ 	[ -z "$(FIPSCANLIB)" ] || $(CC) $(CFLAG) -Iinclude \
+@@ -410,7 +410,7 @@
+ 
+ clean:	libclean
+ 	rm -f shlib/*.o *.o core a.out fluff rehash.time testlog make.log cctest cctest.c
+-	@set -e; target=clean; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=clean; $(RECURSIVE_BUILD_CMD)
+ 	rm -f $(LIBS)
+ 	rm -f openssl.pc libssl.pc libcrypto.pc
+ 	rm -f speed.* .pure
+@@ -426,12 +426,12 @@
+ 
+ files:
+ 	$(PERL) $(TOP)/util/files.pl Makefile > $(TOP)/MINFO
+-	@set -e; target=files; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=files; $(RECURSIVE_BUILD_CMD)
+ 
+ links:
+ 	@$(PERL) $(TOP)/util/mkdir-p.pl include/openssl
+ 	@$(PERL) $(TOP)/util/mklink.pl include/openssl $(EXHEADER)
+-	@set -e; target=links; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=links; $(RECURSIVE_BUILD_CMD)
+ 
+ gentests:
+ 	@(cd test && echo "generating dummy tests (if needed)..." && \
+@@ -439,7 +439,7 @@
+ 
+ dclean:
+ 	rm -rf *.bak include/openssl certs/.0
+-	@set -e; target=dclean; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=dclean; $(RECURSIVE_BUILD_CMD)
+ 
+ rehash: rehash.time
+ rehash.time: certs apps
+@@ -463,13 +463,13 @@
+ 	@$(PERL) util/selftest.pl
+ 
+ update: errors stacks util/libeay.num util/ssleay.num TABLE
+-	@set -e; target=update; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=update; $(RECURSIVE_BUILD_CMD)
+ 
+ depend:
+-	@set -e; target=depend; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=depend; $(RECURSIVE_BUILD_CMD)
+ 
+ lint:
+-	@set -e; target=lint; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=lint; $(RECURSIVE_BUILD_CMD)
+ 
+ tags:
+ 	rm -f TAGS
+@@ -544,7 +544,7 @@
+ 	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
+ 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
+ 	done;
+-	@set -e; target=install; $(RECURSIVE_BUILD_CMD)
++	@+set -e; target=install; $(RECURSIVE_BUILD_CMD)
+ 	@set -e; liblist="$(LIBS)"; for i in $$liblist ;\
+ 	do \
+ 		if [ -f "$$i" ]; then \
+--- crypto/Makefile
++++ crypto/Makefile
+@@ -85,17 +85,17 @@
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+ 
+ subdirs:
+-	@target=all; $(RECURSIVE_MAKE)
++	@+target=all; $(RECURSIVE_MAKE)
+ 
+ files:
+ 	$(PERL) $(TOP)/util/files.pl "CPUID_OBJ=$(CPUID_OBJ)" Makefile >> $(TOP)/MINFO
+-	@target=files; $(RECURSIVE_MAKE)
++	@+target=files; $(RECURSIVE_MAKE)
+ 
+ links:
+ 	@$(PERL) $(TOP)/util/mklink.pl ../include/openssl $(EXHEADER)
+ 	@$(PERL) $(TOP)/util/mklink.pl ../test $(TEST)
+ 	@$(PERL) $(TOP)/util/mklink.pl ../apps $(APPS)
+-	@target=links; $(RECURSIVE_MAKE)
++	@+target=links; $(RECURSIVE_MAKE)
+ 
+ # lib: $(LIB): are splitted to avoid end-less loop
+ lib:	$(LIB)
+@@ -111,7 +111,7 @@
+ 	fi
+ 
+ libs:
+-	@target=lib; $(RECURSIVE_MAKE)
++	@+target=lib; $(RECURSIVE_MAKE)
+ 
+ install:
+ 	@[ -n "$(INSTALLTOP)" ] # should be set by top Makefile...
+@@ -120,17 +120,17 @@
+ 	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
+ 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
+ 	done;
+-	@target=install; $(RECURSIVE_MAKE)
++	@+target=install; $(RECURSIVE_MAKE)
+ 
+ lint:
+-	@target=lint; $(RECURSIVE_MAKE)
++	@+target=lint; $(RECURSIVE_MAKE)
+ 
+ update: local_depend
+-	@[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
++	@+[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+ 
+ depend: local_depend
+-	@[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
++	@+[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+ local_depend:
+ 	@[ -z "$(THIS)" -o -f buildinf.h ] || touch buildinf.h # fake buildinf.h if it does not exist
+@@ -139,13 +139,13 @@
+ 
+ clean:
+ 	rm -f buildinf.h *.s *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
+-	@target=clean; $(RECURSIVE_MAKE)
++	@+target=clean; $(RECURSIVE_MAKE)
+ 
+ dclean:
+ 	$(PERL) -pe 'if (/^# DO NOT DELETE THIS LINE/) {print; exit(0);}' $(MAKEFILE) >Makefile.new
+ 	mv -f Makefile.new $(MAKEFILE)
+ 	rm -f opensslconf.h
+-	@target=dclean; $(RECURSIVE_MAKE)
++	@+target=dclean; $(RECURSIVE_MAKE)
+ 
+ # DO NOT DELETE THIS LINE -- make depend depends on it.
+ 
+--- engines/Makefile
++++ engines/Makefile
+@@ -89,14 +89,14 @@
+ 
+ subdirs:
+ 	echo $(EDIRS)
+-	@target=all; $(RECURSIVE_MAKE)
++	@+target=all; $(RECURSIVE_MAKE)
+ 
+ files:
+ 	$(PERL) $(TOP)/util/files.pl Makefile >> $(TOP)/MINFO
+-	@target=files; $(RECURSIVE_MAKE)
++	@+target=files; $(RECURSIVE_MAKE)
+ 
+ links:
+-	@target=links; $(RECURSIVE_MAKE)
++	@+target=links; $(RECURSIVE_MAKE)
+ 
+ # XXXXX This currently only works on systems that use .so as suffix
+ # for shared libraries as well as for Cygwin which uses the
+@@ -128,7 +128,7 @@
+ 			  mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/engines/$$pfx$$l$$sfx.new $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/engines/$$pfx$$l$$sfx ); \
+ 		done; \
+ 	fi
+-	@target=install; $(RECURSIVE_MAKE)
++	@+target=install; $(RECURSIVE_MAKE)
+ 
+ tags:
+ 	ctags $(SRC)
+@@ -144,26 +144,26 @@
+ 
+ lint:
+ 	lint -DLINT $(INCLUDES) $(SRC)>fluff
+-	@target=lint; $(RECURSIVE_MAKE)
++	@+target=lint; $(RECURSIVE_MAKE)
+ 
+ update: local_depend
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+-	@[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
++	@+[ -z "$(THIS)" ] || (set -e; target=update; $(RECURSIVE_MAKE) )
+ 
+ depend: local_depend
+ 	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
+-	@[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
++	@+[ -z "$(THIS)" ] || (set -e; target=depend; $(RECURSIVE_MAKE) )
+ local_depend:
+ 	@[ -z "$(THIS)" ] || $(MAKEDEPEND) -- $(CFLAG) $(INCLUDES) $(DEPFLAG) -- $(PROGS) $(LIBSRC)
+ 
+ dclean:
+ 	$(PERL) -pe 'if (/^# DO NOT DELETE THIS LINE/) {print; exit(0);}' $(MAKEFILE) >Makefile.new
+ 	mv -f Makefile.new $(MAKEFILE)
+-	@target=dclean; $(RECURSIVE_MAKE)
++	@+target=dclean; $(RECURSIVE_MAKE)
+ 
+ clean:
+ 	rm -f *.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
+-	@target=clean; $(RECURSIVE_MAKE)
++	@+target=clean; $(RECURSIVE_MAKE)
+ 
+ # DO NOT DELETE THIS LINE -- make depend depends on it.
+ 

@@ -18,12 +18,6 @@ config FREETZ_LIB_libcrypto
 		cryptographic hash functions and a cryptographic pseudo-random number
 		generator.
 
-config FREETZ_LIB_libcrypto_WITH_EC
-	bool "Support elliptic curve cryptography" if FREETZ_LIB_libcrypto
-	default n
-	help
-		Enable support for elliptic curve cryptography (ECDSA/ECDH/ECDHE)
-
 config FREETZ_LIB_libssl
 	bool "OpenSSL SSL/TLS library (libssl.so)"
 	depends on FREETZ_LIB_libcrypto
@@ -50,7 +44,7 @@ choice
 	default FREETZ_OPENSSL_VERSION_1
 
 	config FREETZ_OPENSSL_VERSION_0
-	bool "0.9.8zh"
+	bool "0.9.8"
 	depends on !FREETZ_OPENSSL_VERSION_1_REQUIRED
 	help
 	    - NOT supported by the OpenSSL development team anymore
@@ -60,11 +54,17 @@ choice
 	    - contains no assembler optimized code
 
 	config FREETZ_OPENSSL_VERSION_1
-	bool "1.0.1t"
+	bool "1.0.1"
 	help
 	    - is bigger than 0.9.8 (about 142kB)
 	    - could NOT be used as a replacement for AVM's OpenSSL library
 	    - contains assembler optimized code giving performance improvements of up to 30%
+
+	config FREETZ_OPENSSL_VERSION_1_LTS
+	bool "1.0.2"
+	help
+	    - is the LTS (Long Term Support) version, which will be maintained until
+	      01-01-2020 while 1.0.1 will be dropped after 12-31-2016
 
 endchoice
 
@@ -72,4 +72,30 @@ config FREETZ_OPENSSL_SHLIB_VERSION
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	string
 	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
-	default "1.0.0" if FREETZ_OPENSSL_VERSION_1
+	default "1.0.0" if FREETZ_OPENSSL_VERSION_1 || FREETZ_OPENSSL_VERSION_1_LTS
+
+
+menu "OpenSSL configuration"
+	depends on FREETZ_OPENSSL_VERSION_PROMPT
+
+config FREETZ_LIB_libcrypto_WITH_EC
+	bool "Support elliptic curve cryptography"
+	default n
+	help
+		Enable support for elliptic curve cryptography (ECDSA/ECDH/ECDHE)
+
+config FREETZ_OPENSSL_SMALL_FOOTPRINT
+	bool "Reduce the footprint of OpenSSL libraries"
+	default y
+	help
+		Build a version with smaller memory/storage footprint.
+
+config FREETZ_OPENSSL_CONFIG_DIR
+	string "OpenSSL configuration directory"
+	default "/mod/etc/ssl"
+	help
+		The location of OpenSSL directory, where several files
+		(configuration settings, private key, certificates, etc.)
+		can be found.
+
+endmenu
