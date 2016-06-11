@@ -1,6 +1,11 @@
+config FREETZ_BOX_CERTIFICATE_SUPPORT_AVAILABLE
+	bool
+	depends on FREETZ_AVM_VERSION_06_0X_MIN
+	default y
+
 config FREETZ_PACKAGE_PRIVATEKEYPASSWORD
 	bool "privatekeypassword 0.5"
-	depends on FREETZ_AVM_VERSION_06_0X_MIN
+	depends on FREETZ_BOX_CERTIFICATE_SUPPORT_AVAILABLE
 	select FREETZ_LIB_libprivatekeypassword
 	default n
 	help
