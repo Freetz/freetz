@@ -1,0 +1,29 @@
+--- libhttp/httpconnection.c
++++ libhttp/httpconnection.c
+@@ -66,7 +66,7 @@
+ #ifdef HAVE_STRLCAT
+ #define strncat(a,b,c) ({ char *_a = (a); strlcat(_a, (b), (c)+1); _a; })
+ #endif
+-#ifndef HAVE_ISNAN
++#if !defined(isnan) /* configure check for isnan is not suitable for cross-compiling */
+ #define isnan(x) ({ typeof(x) _x = (x); _x != _x; })
+ #endif
+ #define max(a, b) ({ typeof(a) _a = (a); typeof(b) _b = (b);                  \
+--- configure
++++ configure
+@@ -10714,6 +10714,7 @@
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ 
++if false; then
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ #include <math.h>
+@@ -10732,6 +10733,7 @@
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
++fi
+ 
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */

@@ -1,0 +1,22 @@
+--- Makefile.am
++++ Makefile.am
+@@ -126,7 +126,7 @@
+ 
+ shellinaboxd_LDADD   = liblogging.la                                          \
+                        libhttp.la
+-shellinaboxd_LDFLAGS = -static
++shellinaboxd_LDFLAGS =
+ 
+ symbolname           =                                                        \
+   sed -e 's/.*\/\([^.]*\)[.].*/\1/'                                           \
+--- Makefile.in
++++ Makefile.in
+@@ -382,7 +382,7 @@
+ shellinaboxd_LDADD = liblogging.la                                          \
+                        libhttp.la
+ 
+-shellinaboxd_LDFLAGS = -static
++shellinaboxd_LDFLAGS =
+ symbolname = \
+   sed -e 's/.*\/\([^.]*\)[.].*/\1/'                                           \
+       -e 't0'                                                                 \

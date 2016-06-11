@@ -1,0 +1,29 @@
+--- Makefile.in
++++ Makefile.in
+@@ -79,7 +79,7 @@
+ shellinaboxd_DEPENDENCIES = liblogging.la libhttp.la
+ shellinaboxd_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+-	$(shellinaboxd_LDFLAGS) $(LDFLAGS) -o $@
++	$(shellinaboxd_LDFLAGS) $(shellinaboxd_EXTRA_LDFLAGS) $(LDFLAGS) -o $@
+ DEFAULT_INCLUDES = -I.@am__isrc@
+ depcomp = $(SHELL) $(top_srcdir)/depcomp
+ am__depfiles_maybe = depfiles
+@@ -145,7 +145,7 @@
+ AWK = @AWK@
+ CC = @CC@
+ CCDEPMODE = @CCDEPMODE@
+-CFLAGS = @CFLAGS@
++CFLAGS = @CFLAGS@ $(EXTRA_CFLAGS)
+ CPP = @CPP@
+ CPPFLAGS = @CPPFLAGS@
+ CYGPATH_W = @CYGPATH_W@
+@@ -509,7 +509,7 @@
+ 	rm -f $$list
+ shellinaboxd$(EXEEXT): $(shellinaboxd_OBJECTS) $(shellinaboxd_DEPENDENCIES) 
+ 	@rm -f shellinaboxd$(EXEEXT)
+-	$(shellinaboxd_LINK) $(shellinaboxd_OBJECTS) $(shellinaboxd_LDADD) $(LIBS)
++	$(shellinaboxd_LINK) $(shellinaboxd_OBJECTS) $(shellinaboxd_LDADD) $(LIBS) $(shellinaboxd_EXTRA_LIBS)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
