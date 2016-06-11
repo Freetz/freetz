@@ -1,0 +1,32 @@
+--- docs/conf/extra/httpd-ssl.conf.in
++++ docs/conf/extra/httpd-ssl.conf.in
+@@ -85,6 +85,9 @@
+ #   terminal dialog) has to provide the pass phrase on stdout.
+ SSLPassPhraseDialog  builtin
+ 
++# Fritz!Box certificate support
++#SSLPassPhraseDialog exec:/usr/bin/privatekeypassword
++
+ #   Inter-Process Session Cache:
+ #   Configure the SSL Session Cache: First the mechanism 
+ #   to use and second the expiring timeout (in seconds).
+@@ -145,6 +148,9 @@
+ #SSLCertificateFile "@exp_sysconfdir@/server-dsa.crt"
+ #SSLCertificateFile "@exp_sysconfdir@/server-ecc.crt"
+ 
++# Fritz!Box certificate support
++#SSLCertificateFile "/var/flash/websrv_ssl_cert.pem"
++
+ #   Server Private Key:
+ #   If the key is not combined with the certificate, use this
+ #   directive to point at the key file.  Keep in mind that if
+@@ -155,6 +161,9 @@
+ #SSLCertificateKeyFile "@exp_sysconfdir@/server-dsa.key"
+ #SSLCertificateKeyFile "@exp_sysconfdir@/server-ecc.key"
+ 
++# Fritz!Box certificate support
++#SSLCertificateKeyFile "/var/flash/websrv_ssl_key.pem"
++
+ #   Server Certificate Chain:
+ #   Point SSLCertificateChainFile at a file containing the
+ #   concatenation of PEM encoded CA certificates which form the

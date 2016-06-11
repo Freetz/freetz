@@ -1,0 +1,47 @@
+--- docs/conf/extra/httpd-ssl.conf.in
++++ docs/conf/extra/httpd-ssl.conf.in
+@@ -24,9 +24,9 @@
+ # Manual for more details.
+ #
+ #SSLRandomSeed startup file:/dev/random  512
+-#SSLRandomSeed startup file:/dev/urandom 512
++SSLRandomSeed startup file:/dev/urandom 1024
+ #SSLRandomSeed connect file:/dev/random  512
+-#SSLRandomSeed connect file:/dev/urandom 512
++SSLRandomSeed connect file:/dev/urandom 1024
+ 
+ 
+ #
+@@ -49,8 +49,8 @@
+ #   ensure these follow appropriate best practices for this deployment.
+ #   httpd 2.2.30, 2.4.13 and later force-disable aNULL, eNULL and EXP ciphers,
+ #   while OpenSSL disabled these by default in 0.9.8zf/1.0.0r/1.0.1m/1.0.2a.
+-SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4
+-SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4
++#SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4
++#SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4
+ 
+ #  By the end of 2016, only TLSv1.2 ciphers should remain in use.
+ #  Older ciphers should be disallowed as soon as possible, while the
+@@ -62,8 +62,8 @@
+ #  those protocols which do not support forward secrecy, replace
+ #  the SSLCipherSuite and SSLProxyCipherSuite directives above with
+ #  the following two directives, as soon as practical.
+-# SSLCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+-# SSLProxyCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
++SSLCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
++SSLProxyCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+ 
+ #   User agents such as web browsers are not configured for the user's
+ #   own preference of either security or performance, therefore this
+@@ -76,8 +76,8 @@
+ #   Disable SSLv3 by default (cf. RFC 7525 3.1.1).  TLSv1 (1.0) should be
+ #   disabled as quickly as practical.  By the end of 2016, only the TLSv1.2
+ #   protocol or later should remain in use.
+-SSLProtocol all -SSLv3
+-SSLProxyProtocol all -SSLv3
++SSLProtocol      all -SSLv3 -TLSv1.1 -TLSv1
++SSLProxyProtocol all -SSLv3 -TLSv1.1 -TLSv1
+ 
+ #   Pass Phrase Dialog:
+ #   Configure the pass phrase gathering process.
