@@ -2,7 +2,7 @@ $(call PKG_INIT_LIB, 1.3.8)
 $(PKG)_LIB_VERSION:=1.3.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_SHA1:=1d45425ca324336ce2f4ae7d7b4cfbc5567c5446
-$(PKG)_SITE:=http://serf.googlecode.com/svn/src_releases
+$(PKG)_SITE:=@APACHE/serf
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libserf-1.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/libserf-1.so.$($(PKG)_LIB_VERSION)
