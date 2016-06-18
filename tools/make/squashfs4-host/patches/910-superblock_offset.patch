@@ -1,0 +1,157 @@
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -77,6 +77,8 @@
+ int inode_number = 1;
+ int no_xattrs = XATTR_DEF;
+ int user_xattrs = FALSE;
++unsigned int scan_for_superblock = FALSE;
++off_t superblock_offset = 0;
+ 
+ int exit_on_decompression_errors = FALSE;
+ #define DECOMPRESSION_ERROR(s, args...)\
+@@ -171,7 +173,7 @@
+ 	return (INT_MAX >> shift) < a;
+ }
+ 
+- 
++
+ int multiply_overflow(int a, int multiplier)
+ {
+ 	return (INT_MAX / multiplier) < a;
+@@ -423,7 +425,7 @@
+ 	return entry;
+ }
+ 
+-	
++
+ void cache_block_ready(struct cache_entry *entry, int error)
+ {
+ 	/*
+@@ -551,7 +553,7 @@
+ 			userstr = dummy;
+ 	} else
+ 		userstr = user->pw_name;
+-		 
++
+ 	group = getgrgid(inode->gid);
+ 	if(group == NULL) {
+ 		int res = snprintf(dummy2, 12, "%d", inode->gid);
+@@ -598,10 +600,10 @@
+ 	if((inode->mode & S_IFMT) == S_IFLNK)
+ 		printf(" -> %s", inode->symlink);
+ 	printf("\n");
+-		
++
+ 	return 1;
+ }
+-	
++
+ 
+ void add_entry(struct hash_table_entry *hash_table[], long long start,
+ 	int bytes)
+@@ -635,9 +637,40 @@
+ }
+ 
+ 
++off_t find_superblock(int fd)
++{
++	off_t offset = 0;
++	struct squashfs_super_block sBlk;
++	int gotten;
++
++	if(lseek(fd, 0, SEEK_SET) == -1) {
++		ERROR("Lseek failed because %s\n", strerror(errno));
++		return (off_t) -1;
++	}
++
++	while((gotten = read(fd, &sBlk, sizeof(sBlk))) == sizeof(sBlk)) {
++		if(sBlk.s_magic == SQUASHFS_MAGIC) {
++			TRACE("find_superblock: magic 0x%08x found at 0x%08x\n", sBlk.s_magic, (unsigned int) offset);
++			return offset;
++		}
++		else if(sBlk.s_magic == SQUASHFS_MAGIC_SWAP) {
++			TRACE("find_superblock: swapped magic 0x%08x found at 0x%08x\n", sBlk.s_magic, (unsigned int) offset);
++			return offset;
++		}
++		offset += 256;
++		if(lseek(fd, offset, SEEK_SET) == -1) {
++			ERROR("Lseek failed because %s\n", strerror(errno));
++			return (off_t) -1;
++		}
++	}
++
++	return (off_t) -1;
++}
++
++
+ int read_fs_bytes(int fd, long long byte, int bytes, void *buff)
+ {
+-	off_t off = byte;
++	off_t off = byte + superblock_offset;
+ 	int res, count;
+ 
+ 	TRACE("read_bytes: reading from position 0x%llx, bytes %d\n", byte,
+@@ -674,7 +707,7 @@
+ 	unsigned short c_byte;
+ 	int offset = 2, res, compressed;
+ 	int outlen = expected ? expected : SQUASHFS_METADATA_SIZE;
+-	
++
+ 	if (read_fs_bytes(fd, start, 2, &c_byte) == FALSE)
+ 		goto failed;
+ 	if (swap_block_length)
+@@ -1572,7 +1605,7 @@
+ 					strerror(errno));
+ 				squashfs_closedir(dir);
+ 				return;
+-			} 
++			}
+ 
+ 			/*
+ 			 * Try to change permissions of existing directory so
+@@ -1995,7 +2028,7 @@
+ 	fclose(fd);
+ 	return path;
+ }
+-		
++
+ 
+ /*
+  * reader thread.  This thread processes read requests queued by the
+@@ -2652,6 +2685,8 @@
+ 			use_regex = TRUE;
+ 		else if(strcmp(argv[i], "-exit-on-decomp-error") == 0)
+ 			exit_on_decompression_errors = TRUE;
++		else if(strcmp(argv[i], "-scan") == 0 || strcmp(argv[i], "-k") == 0)
++			scan_for_superblock = TRUE;
+ 		else
+ 			goto options;
+ 	}
+@@ -2716,6 +2751,9 @@
+ 			ERROR("\t\t\t\trather than use the default shell "
+ 				"wildcard\n\t\t\t\texpansion (globbing)\n");
+ 			ERROR("\t-exit-on-decomp-error\texit on decompression errors\n");
++			ERROR("\t-scan or -k\t\ttreat filesystem as a combined image\n");
++			ERROR("\t\t\t\t(kernel+SquashFS) and scan it to locate the superblock\n");
++			ERROR("\t\t\t\tand its offset\n");
+ 			ERROR("\nDecompressors available:\n");
+ 			display_compressors("", "");
+ 		}
+@@ -2731,6 +2769,17 @@
+ 		exit(1);
+ 	}
+ 
++	if(scan_for_superblock == TRUE) {
++		superblock_offset = find_superblock(fd);
++		if (superblock_offset == (off_t) -1) {
++			ERROR("Unable to find something looking like a SquashFS superblock in %s.\n", argv[i]);
++			exit(2);
++		}
++		else {
++			ERROR("Found superblock at offset 0x%08x while scanning %s.\n", (unsigned int) superblock_offset, argv[i]);
++		}
++	}
++
+ 	if(read_super(argv[i]) == FALSE)
+ 		exit(1);
+ 
