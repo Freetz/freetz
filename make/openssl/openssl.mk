@@ -31,13 +31,12 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_CONFIG_DIR
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_TRACE
 
 $(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5 no-ssl2 no-ssl3
-$(PKG)_NO_CIPHERS += $(if $(FREETZ_OPENSSL_VERSION_1_LTS),no-rc4)
 
 $(PKG)_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-seed
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm)
-$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
-$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1_LTS),,no-cms)
+$(PKG)_OPTIONS    += $(if $(or $(FREETZ_OPENSSL_VERSION_0),$(FREETZ_OPENSSL_VERSION_1)),no-cms)
+$(PKG)_OPTIONS    += $(if $(or $(FREETZ_OPENSSL_VERSION_1),$(FREETZ_OPENSSL_VERSION_1_LTS)),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
 $(PKG)_OPTIONS    += $(if $(FREETZ_PACKAGE_OPENSSL_TRACE),enable-ssl-trace)
 
 $(PKG)_CONFIGURE_DEFOPTS := n

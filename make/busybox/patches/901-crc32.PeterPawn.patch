@@ -1,0 +1,81 @@
+--- coreutils/cksum.c
++++ coreutils/cksum.c
+@@ -8,9 +8,18 @@
+  */
+ 
+ //usage:#define cksum_trivial_usage
+-//usage:       "FILES..."
++//usage:       "[-l] [-p] FILES..."
+ //usage:#define cksum_full_usage "\n\n"
+ //usage:       "Calculate the CRC32 checksums of FILES"
++//usage:       "\n      -l      least significant bit first"
++//usage:       "\n      -p      preset the CRC value to all ones"
++//usage:
++//usage:#define cksum_example_usage
++//usage:       "$ echo -n 'The quick brown fox jumps over the lazy dog' | cksum -lp\n"
++//usage:       "1095738169 43\n"
++//usage:       "$ echo -n 'The quick brown fox jumps over the lazy dog' | cksum\n"
++//usage:       "2074844392 43\n"
++
+ 
+ #include "libbb.h"
+ 
+@@ -19,19 +28,28 @@
+ int cksum_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+ int cksum_main(int argc UNUSED_PARAM, char **argv)
+ {
+-	uint32_t *crc32_table = crc32_filltable(NULL, 1);
+-	uint32_t crc;
++	uint32_t crc = 0;
+ 	off_t length, filesize;
+ 	int bytes_read;
+ 	int exit_code = EXIT_SUCCESS;
++	int msbfirst = 1;
++	int initones = 0;
++	unsigned opt = 0;
++	uint32_t *crc32_table = NULL;
++	uint32_t (*crc_func)(uint32_t, const void *, unsigned, uint32_t *);
+ 
+-#if ENABLE_DESKTOP
+-	getopt32(argv, ""); /* coreutils 6.9 compat */
++	opt = getopt32(argv, "lp");
+ 	argv += optind;
+-#else
+-	argv++;
+-#endif
++	if (opt & 1) {
++		msbfirst = 0;
++		crc_func = &crc32_block_endian0;
++	} else {
++		crc_func = &crc32_block_endian1;
++	}
++	if (opt & 2)
++		initones = 1;
+ 
++	crc32_table = crc32_filltable(NULL, msbfirst);
+ 	do {
+ 		int fd = open_or_warn_stdin(*argv ? *argv : bb_msg_standard_input);
+ 
+@@ -39,19 +57,19 @@
+ 			exit_code = EXIT_FAILURE;
+ 			continue;
+ 		}
+-		crc = 0;
++		crc = initones ? 0xFFFFFFFF : 0;
+ 		length = 0;
+ 
+ #define read_buf bb_common_bufsiz1
+ 		while ((bytes_read = safe_read(fd, read_buf, sizeof(read_buf))) > 0) {
+ 			length += bytes_read;
+-			crc = crc32_block_endian1(crc, read_buf, bytes_read, crc32_table);
++			crc = (*crc_func)(crc, read_buf, bytes_read, crc32_table);
+ 		}
+ 		close(fd);
+ 
+ 		filesize = length;
+ 
+-		while (length) {
++		while (msbfirst && length) {
+ 			crc = (crc << 8) ^ crc32_table[(uint8_t)(crc >> 24) ^ (uint8_t)length];
+ 			/* must ensure that shift is unsigned! */
+ 			if (sizeof(length) <= sizeof(unsigned))
