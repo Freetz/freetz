@@ -218,7 +218,7 @@
 +				TRACE("read_fs_bytes: buffer content around the gap: 0x%08lX %02x %02x %02x %02x %02x %02x %02x %02x\n", b, *b, *(b + 1), *(b + 2), *(b + 3), *(b + 4), *(b + 5), *(b + 6), *(b + 7));
 +				res = read_fs_bytes(fd, 
 +						    nmi_vector_gap_start - superblock_offset, 
-+						    bytes - (nmi_vector_gap_start - off - 1), 
++						    bytes - (nmi_vector_gap_start - off), 
 +						    buff + (nmi_vector_gap_start - off)
 +						   );
 +				TRACE("read_fs_bytes: part 2 from=0x%08lX, size=0x%08lX", (long) (nmi_vector_gap_start - superblock_offset), (long) (bytes - (nmi_vector_gap_start - off - 1)));
