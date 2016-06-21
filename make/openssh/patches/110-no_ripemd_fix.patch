@@ -1,6 +1,6 @@
 --- digest.h
 +++ digest.h
-@@ -18,10 +18,27 @@
+@@ -18,10 +18,25 @@
  #ifndef _DIGEST_H
  #define _DIGEST_H
  
@@ -16,11 +16,9 @@
 +	SSH_DIGEST_RIPEMD160,
 +#endif
 +	SSH_DIGEST_SHA1,
-+/* TODO: #ifdef HAVE_EVP_SHA256 */
 +	SSH_DIGEST_SHA256,
 +	SSH_DIGEST_SHA384,
 +	SSH_DIGEST_SHA512,
-+/* #endif */
 +	SSH_DIGEST_MAX
 +};
 +
@@ -28,7 +26,7 @@
  #define SSH_DIGEST_MD5		0
  #define SSH_DIGEST_RIPEMD160	1
  #define SSH_DIGEST_SHA1		2
-@@ -29,6 +46,7 @@
+@@ -29,6 +44,7 @@
  #define SSH_DIGEST_SHA384	4
  #define SSH_DIGEST_SHA512	5
  #define SSH_DIGEST_MAX		6
@@ -38,6 +36,18 @@
  struct ssh_digest_ctx;
 --- digest-openssl.c
 +++ digest-openssl.c
+@@ -32,9 +32,11 @@
+ #include "digest.h"
+ #include "ssherr.h"
+ 
++#if 0
+ #ifndef HAVE_EVP_RIPEMD160
+ # define EVP_ripemd160 NULL
+ #endif /* HAVE_EVP_RIPEMD160 */
++#endif
+ #ifndef HAVE_EVP_SHA256
+ # define EVP_sha256 NULL
+ # define EVP_sha384 NULL
 @@ -56,7 +56,9 @@
  /* NB. Indexed directly by algorithm number */
  const struct ssh_digest digests[] = {
@@ -48,6 +58,24 @@
  	{ SSH_DIGEST_SHA1,	"SHA1",	 	20,	EVP_sha1 },
  	{ SSH_DIGEST_SHA256,	"SHA256", 	32,	EVP_sha256 },
  	{ SSH_DIGEST_SHA384,	"SHA384",	48,	EVP_sha384 },
+--- digest-libc.c
++++ digest-libc.c
+@@ -68,6 +68,7 @@
+ 		(md_update_fn *) MD5Update,
+ 		(md_final_fn *) MD5Final
+ 	},
++#ifndef OPENSSL_NO_RIPEMD
+ 	{
+ 		SSH_DIGEST_RIPEMD160,
+ 		"RIPEMD160",
+@@ -78,6 +79,7 @@
+ 		(md_update_fn *) RMD160Update,
+ 		(md_final_fn *) RMD160Final
+ 	},
++#endif
+ 	{
+ 		SSH_DIGEST_SHA1,
+ 		"SHA1",
 --- mac.c
 +++ mac.c
 @@ -64,8 +64,10 @@
