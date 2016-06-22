@@ -18,9 +18,14 @@ $(PKG)_LIB_BINARIES_INCLUDED    := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_LIB_B
 $(PKG)_LIB_BINARIES_BUILD_DIR   := $(addprefix $($(PKG)_DIR)/,$($(PKG)_LIB_BINARIES))
 $(PKG)_LIB_BINARIES_TARGET_DIR  := $(addprefix $($(PKG)_DEST_DIR)/usr/lib/,$($(PKG)_LIB_BINARIES))
 
-$(PKG)_DEPENDS_ON += openssl zlib
+$(PKG)_DEPENDS_ON += zlib
 
+# even though we specify '--without-openssl' OpenSSL is still a compile-time
+# dependency as some types from it are used throughout the OpenSSH code
+$(PKG)_CONFIGURE_OPTIONS += --without-openssl
+$(PKG)_DEPENDS_ON += openssl
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
+
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSH_STATIC
 
 $(PKG)_EXCLUDED += $(addprefix usr/bin/,$(filter-out $($(PKG)_BIN_BINARIES_INCLUDED),$($(PKG)_BIN_BINARIES)))
