@@ -640,11 +640,11 @@ avm_fw_language="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.langu
 avm_fw_language="$avm_fw_language$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| sed 's/.*_//g;s/\.db//g'); do [ "_$x" != "$avm_fw_language" ] && echo -en "-$x"; done; echo)" # other languages
 avm_fw_major="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
 [ -z "$avm_fw_major" ] && avm_fw_major="$(sed -n 's/^HW=[0-9].*VERSION_MAJOR=//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # older firmware
-avm_fw_version="$(sed -n 's/^export FIRMWARE_VERSION=.*}//p' ${FILESYSTEM_DIR}/etc/version)"
+avm_fw_version="$(sed -n 's/^export FIRMWARE_VERSION=.*}[.]//p' ${FILESYSTEM_DIR}/etc/version)"
 avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
 avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
 avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
-echo1 -l "detected$FIRMWARE_MAIN firmware ${avm_fw_product/ /-}$avm_fw_language $avm_fw_major$avm_fw_version$avm_fw_labor rev$avm_fw_revision ($avm_fw_date)\n"
+echo1 -l "detected${FIRMWARE_MAIN} firmware ${avm_fw_product/ /-}${avm_fw_language} ${avm_fw_major}.${avm_fw_version}${avm_fw_labor} rev${avm_fw_revision} (${avm_fw_date})\n"
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"
@@ -816,8 +816,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	# Set version and options
 	SUBVERSION_FILE="${BASE_DIR}/.version"
-	FIRMWAREVERSION_FILE="${FILESYSTEM_MOD_DIR}/etc/.version"
-	FIRMWAREVERSION="$(cat $FIRMWAREVERSION_FILE)"
 
 	if [ ! -r "$SUBVERSION_FILE" ]; then
 		error 1 "cannot determine version"
@@ -1501,10 +1499,13 @@ if [ "$action_names" ]; then
 	rm -f "${DIR}/*.image"
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
+	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}"
+	modbaseimagename+="_${avm_fw_version}"
 	if [ -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
-		modbaselaborname="-rev${avm_fw_revision}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
+		modbaseimagename+="-rev${avm_fw_revision}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
 	fi
-	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}_${FIRMWAREVERSION}${modbaselaborname}-${SUBVERSION}.${FREETZ_TYPE_LANGUAGE}"
+	modbaseimagename+="${SUBVERSION:+-}${SUBVERSION}" # missing in DO_MOD=0 mode
+	modbaseimagename+=".${FREETZ_TYPE_LANGUAGE}"
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
 		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
 	else
@@ -1522,7 +1523,7 @@ if [ "$action_names" ]; then
 		modimagenameprefix=""
 		modimagenamesuffix=""
 	fi
-	modstring="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate"
+	modstring="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_${modmakedate}"
 	modimage="${modstring}.image"
 
 	# collect externalized files
@@ -1533,10 +1534,10 @@ if [ "$action_names" ]; then
 		echo1 "integrate freetz info file into image"
 		freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
 		echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}'" > "$freetz_info_file"
-		echo "export FREETZ_INFO_FIRMWAREVERSION='${FIRMWAREVERSION}'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_FIRMWAREVERSION='${avm_fw_version}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_SUBVERSION='${SUBVERSION}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANGUAGE}'" >> "$freetz_info_file"
-		echo "export FREETZ_INFO_MAKEDATE='$modmakedate'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_MAKEDATE='${modmakedate}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_COMMENT='${FREETZ_USER_DEFINED_COMMENT}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_EXTERNAL_FILES='${externalised_files}'" >> "$freetz_info_file"
@@ -1735,7 +1736,7 @@ fi
 if [ "$action_names" ]; then
 	# Pack externalised files
 	if [ "$EXTERNAL_CREATEPAK" == "y" -a -n "$externalised_files" ]; then
-		tplexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_$modmakedate"
+		tplexternal="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_${modmakedate}"
 		#static packages
 		modexternal="${FW_IMAGES_DIR:-$DIR}/${tplexternal}.external"
 		echo "packing ${modexternal}"
