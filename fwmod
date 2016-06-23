@@ -626,25 +626,25 @@ function sizeinfo()
 }
 
 # show avm image details
-avm_fw_product="$(sed -rn 's/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
-[ -z "$avm_fw_product" ] && avm_fw_product="$(sed -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
+AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
+[ -z "$AVM_FW_PRODUCT" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
 if [ -e "${FILESYSTEM_DIR}/etc/init.d/rc.init" ]; then
 	# /etc/init.d/rc.init is not available in all firmwares
-	[ -z "$avm_fw_product" ] && avm_fw_product="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=(FRITZ!Box|Speedport|Sinus|Eumex)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init | head -n1 | sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" # symbolic name in /etc/init.d/rc.init
-	[ -z "$avm_fw_product" ] && avm_fw_product="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # 4-digits in /etc/init.d/rc.init
+	[ -z "$AVM_FW_PRODUCT" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=(FRITZ!Box|Speedport|Sinus|Eumex)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init | head -n1 | sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" # symbolic name in /etc/init.d/rc.init
+	[ -z "$AVM_FW_PRODUCT" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # 4-digits in /etc/init.d/rc.init
 fi
-[ -z "$avm_fw_product" ] && warn "Failed to determine avm_fw_product, even though this is a cosmetic bug only please report it to the Freetz developers and provide your .config"
-avm_fw_product="${avm_fw_product%% Edition*}"
-avm_fw_product="${avm_fw_product% }"
-avm_fw_language="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
-avm_fw_language="$avm_fw_language$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| sed 's/.*_//g;s/\.db//g'); do [ "_$x" != "$avm_fw_language" ] && echo -en "-$x"; done; echo)" # other languages
-avm_fw_major="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
-[ -z "$avm_fw_major" ] && avm_fw_major="$(sed -n 's/^HW=[0-9].*VERSION_MAJOR=//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # older firmware
-avm_fw_version="$(sed -n 's/^export FIRMWARE_VERSION=.*}[.]//p' ${FILESYSTEM_DIR}/etc/version)"
-avm_fw_labor="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
-avm_fw_revision="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
-avm_fw_date="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
-echo1 -l "detected${FIRMWARE_MAIN} firmware ${avm_fw_product/ /-}${avm_fw_language} ${avm_fw_major}.${avm_fw_version}${avm_fw_labor} rev${avm_fw_revision} (${avm_fw_date})\n"
+[ -z "$AVM_FW_PRODUCT" ] && warn "Failed to determine AVM_FW_PRODUCT, even though this is a cosmetic bug only please report it to the Freetz developers and provide your .config"
+AVM_FW_PRODUCT="${AVM_FW_PRODUCT%% Edition*}"
+AVM_FW_PRODUCT="${AVM_FW_PRODUCT% }"
+AVM_FW_LANGUAGE="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
+AVM_FW_LANGUAGE="$AVM_FW_LANGUAGE$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| sed 's/.*_//g;s/\.db//g'); do [ "_$x" != "$AVM_FW_LANGUAGE" ] && echo -en "-$x"; done; echo)" # other languages
+AVM_FW_MAJOR="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
+[ -z "$AVM_FW_MAJOR" ] && AVM_FW_MAJOR="$(sed -n 's/^HW=[0-9].*VERSION_MAJOR=//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # older firmware
+AVM_FW_VERSION="$(sed -n 's/^export FIRMWARE_VERSION=.*}[.]//p' ${FILESYSTEM_DIR}/etc/version)"
+AVM_FW_LABOR="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
+AVM_FW_REVISION="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)"
+AVM_FW_DATE="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)"
+echo1 -l "detected${FIRMWARE_MAIN} firmware ${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION} (${AVM_FW_DATE})\n"
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"
@@ -1500,9 +1500,9 @@ if [ "$action_names" ]; then
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
 	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}"
-	modbaseimagename+="_${avm_fw_version}"
+	modbaseimagename+="_${AVM_FW_VERSION}"
 	if [ -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
-		modbaseimagename+="-rev${avm_fw_revision}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
+		modbaseimagename+="-rev${AVM_FW_REVISION}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
 	fi
 	modbaseimagename+="${SUBVERSION:+-}${SUBVERSION}" # missing in DO_MOD=0 mode
 	modbaseimagename+=".${FREETZ_TYPE_LANGUAGE}"
@@ -1534,7 +1534,7 @@ if [ "$action_names" ]; then
 		echo1 "integrate freetz info file into image"
 		freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
 		echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}'" > "$freetz_info_file"
-		echo "export FREETZ_INFO_FIRMWAREVERSION='${avm_fw_version}'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_FIRMWAREVERSION='${AVM_FW_VERSION}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_SUBVERSION='${SUBVERSION}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANGUAGE}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_MAKEDATE='${modmakedate}'" >> "$freetz_info_file"
