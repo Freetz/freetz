@@ -24,6 +24,7 @@ Usage: $SELF [-u|-m|-p|-a] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig
     -p         pack firmware image
     -a         all: unpack, modify and pack firmware image
   special actions
+    -s         sign firmware image
     -z         zip file system into archive for USB/NFS root
     -c <dir>   copy file system to target directory for NFS/USB root (implies -z)
   options
@@ -56,15 +57,16 @@ done
 
 # Default values for unset command line parameters
 DOT_CONFIG="$(dirname "$0")/.config"
-DO_UNPACK=0; DO_MOD=0; DO_PACK=0
+DO_UNPACK=0; DO_MOD=0; DO_PACK=0; DO_SIGN=0
 FIRMWARE_NOCOMPILE=0; FORCE_PACK=0; DO_ZIP=0; COPY_FS_DIR=; DIR=
 
 # Parse command line parameters
-while getopts umpanfzc:i:d: opt; do
+while getopts umpsanfzc:i:d: opt; do
 	case "$opt" in
 		u) DO_UNPACK=1 ;;
 		m) DO_MOD=1 ;;
 		p) DO_PACK=1 ;;
+		s) DO_SIGN=1 ;;
 		a) DO_UNPACK=1; DO_MOD=1; DO_PACK=1 ;;
 		n) FIRMWARE_NOCOMPILE=1 ;;
 		f) FORCE_PACK=1 ;;
@@ -1339,7 +1341,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		# .config
 		if [ ! "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
-			{ grep '^[^#].*$' "$DOT_CONFIG"; grep '^#.*$' "$DOT_CONFIG.compressed"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } > "${FILESYSTEM_MOD_DIR}/etc/.config"
+			{ grep '^[^#].*$' "$DOT_CONFIG"; grep '^#.*$' "$DOT_CONFIG.compressed"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } \
+			| grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" > "${FILESYSTEM_MOD_DIR}/etc/.config"
 			echo1 "integrated .config (stripped)"
 		fi
 
@@ -1447,19 +1450,20 @@ if [ "$DO_MOD" -gt 0 ]; then
 fi
 
 
-###########################################
-## Pack, zip, copy the modified firmware ##
-###########################################
+#################################################
+## Pack, sign, zip, copy the modified firmware ##
+#################################################
 
 DO_AVOID_MOD_IN_STEP3=0
 [ "$DO_PACK" -gt 0 ] && action_names+="/PACK"
+[ "$DO_SIGN" -gt 0 ] && action_names+="/SIGN"
 [ "$DO_ZIP"  -gt 0 ] && action_names+="/ZIP"
 [ "$COPY_FS_DIR"   ] && action_names+="/COPY"
 action_names=${action_names##/}
 
-# ------------------------------------------------
-# -- Common initial actions for pack, zip, copy --
-# ------------------------------------------------
+# ------------------------------------------------------
+# -- Common initial actions for pack, sign, zip, copy --
+# ------------------------------------------------------
 
 if [ "$action_names" ]; then
 	echo0 -b "STEP 3: ${action_names}"
@@ -1497,6 +1501,7 @@ if [ "$action_names" ]; then
 	rm -f "$KERNEL_MOD"
 	rm -f "$FILESYSTEM_MOD"
 	rm -f "${DIR}/*.image"
+	rm -f "${FIRMWARE_MOD_DIR}/var/signature"
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
 	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}"
@@ -1553,6 +1558,41 @@ if [ "$action_names" ]; then
 
 	[ "$FREETZ_AVM_HAS_UDEV" == "y" ] || \
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
+fi
+
+
+if [ "$DO_SIGN" -gt 0 ]; then
+	FREETZ_IMAGE_SIGNING_PREFIX="${HOME}/.freetz.image_signing"
+	function getNumberOfImageSigningFiles() {
+		local ret=0
+		for i in asc key pem; do
+			[ -e "${FREETZ_IMAGE_SIGNING_PREFIX}.$i" ] && ret=$((ret+1))
+		done
+		echo $ret
+	}
+
+	NO_IMAGE_SIGNING_FILES=$(getNumberOfImageSigningFiles)
+	if [ "${NO_IMAGE_SIGNING_FILES}" -eq 0 ]; then
+		echo0 "No image signing files found, generating them ..."
+		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
+			# be verbose if no private key password provided
+			"${TOOLS_DIR}/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"
+		else
+			"${TOOLS_DIR}/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/generate_signing_key.log"
+		fi
+		if [ $? -ne 0 ]; then
+			error 1 "failed to generate image signing files, see console output or ${MOD_DIR}/generate_signing_key.log for details"
+		fi
+		NO_IMAGE_SIGNING_FILES=$(getNumberOfImageSigningFiles)
+	else
+		echo0 "Image signing files found, checking their consistency"
+	fi
+	if [ "${NO_IMAGE_SIGNING_FILES}" -ne 3 ]; then
+		error 1 "Unexpected/wrong number of image signing files"
+	fi
+
+	echo0 "Copying ${FREETZ_IMAGE_SIGNING_PREFIX}.asc to /etc/avm_firmware_public_key9"
+	cp -a "${FREETZ_IMAGE_SIGNING_PREFIX}.asc" "${FILESYSTEM_MOD_DIR}/etc/avm_firmware_public_key9"
 fi
 
 # ------------------------------------------------------------------
@@ -1714,7 +1754,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ ! "$DO_AVOID_MOD_IN_STEP3" -gt 0 ]; then
 		# Last, but not least, include .config and addon/static.pkg into firmware
 		# image for further reference, e.g. user support
-		[ -r "$DOT_CONFIG" ] && cp "$DOT_CONFIG" "$FIRMWARE_MOD_DIR/var"
+		[ -r "$DOT_CONFIG" ] && { cat "$DOT_CONFIG" | grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" > "$FIRMWARE_MOD_DIR/var/.config"; }
 		[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 	fi
 
@@ -1726,7 +1766,25 @@ if [ "$DO_PACK" -gt 0 ]; then
 		mv "${img_name}" "${img_name}.corrupted" 2>/dev/null
 		error 1 "packing of firmware image failed"
 	fi
-	echo1 "image file size: $(byte_to_mb $(wc -c < "$img_name"))"
+	echo1 "image file size: $(byte_to_mb $(wc -c < "${img_name}"))"
+fi
+
+if [ "$DO_SIGN" -gt 0 ]; then
+	echo0 "signing $img_name"
+	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
+	if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
+		# be verbose if no private key password provided
+		"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
+	else
+		"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
+	fi
+	if [ $? -ne 0 ]; then
+		mv "${img_name}.signed" "${img_name}.signed.corrupted" 2>/dev/null
+		error 1 "signing of firmware image failed, see console output or ${MOD_DIR}/sign_image.log for details"
+	fi
+
+	mv "${img_name}.signed" "${img_name}"
+	echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}"))"
 fi
 
 # ----------------------------------------------
