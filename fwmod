@@ -1770,8 +1770,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 fi
 
 if [ "$DO_SIGN" -gt 0 ]; then
-	echo0 "signing $img_name"
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
+	echo0 "signing $img_name"
 	if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
 		# be verbose if no private key password provided
 		"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
