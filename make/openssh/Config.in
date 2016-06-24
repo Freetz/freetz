@@ -1,9 +1,8 @@
 menu "OpenSSH"
 config FREETZ_PACKAGE_OPENSSH
 	bool
+	select FREETZ_OPENSSL_VERSION_PROMPT # OpenSSL is a compile-time dependency only
 	select FREETZ_LIB_libcrypt if ! FREETZ_PACKAGE_OPENSSH_STATIC
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENSSH_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_PACKAGE_AUTHORIZED_KEYS
@@ -86,8 +85,6 @@ config FREETZ_PACKAGE_OPENSSH_STATIC
 		OpenSSH needs the following shared libraries which
 		can be linked in statically by activating this switch:
 		- libcrypt
-		- libcrypto
-		- libdl
 		- libutil
 		- libz
 

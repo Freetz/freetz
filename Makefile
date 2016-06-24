@@ -311,6 +311,7 @@ endif
 		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_UNPACK)),,-u)                                   \
 		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_MODIFY)),,-m)                                   \
 		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_PACK)),,-p)                                     \
+		$(if $(call is-y,$(FREETZ_FWMOD_SIGN)),-s)                                           \
 		$(if $(call is-y,$(FREETZ_FWMOD_USBROOT)),-z)                                        \
 		$(if $(strip $(FREETZ_FWMOD_NFSROOT_DIR)),-c "$(strip $(FREETZ_FWMOD_NFSROOT_DIR))") \
 		$(if $(filter firmware-nocompile,$(MAKECMDGOALS)),-n)                                \

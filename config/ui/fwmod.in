@@ -44,6 +44,15 @@ menu "Firmware packaging (fwmod) options"
 			7270_v2/3, but maybe you found a way to port it to another firmware,
 			so you are free to use this option at will.
 
+	config FREETZ_FWMOD_SIGN
+		bool "Sign image"
+		default n
+
+	config FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD
+		string "Password of the private key to be used for signing"
+		depends on FREETZ_FWMOD_SIGN
+		default ""
+
 	config FREETZ_FWMOD_USBROOT
 		bool "Pack file system into archive (USB root mode)"
 		default n
