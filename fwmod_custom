@@ -11,6 +11,21 @@ all() {
 	dummy=0
 }
 
+all_no_freetz() {
+	dummy=0
+
+	# restore telnet support, the user still needs to activate it via the phone code (#96*7*)
+#	ln -sf ../../bin/busybox ./filesystem/usr/sbin/telnetd
+
+	# source freetz-helper-functions and freetz .config
+	# only necessary if freetz patch-scripts are used for modifications
+#	. "$(dirname $0)"/tools/freetz_functions
+#	. "$(dirname $0)"/.config
+
+	# restore debug.cfg support (using Freetz script)
+#	FILESYSTEM_MOD_DIR=./filesystem . ../../patches/scripts/114-debug_cfg_support.sh
+}
+
 clean() {
 	dummy=0
 }
@@ -18,6 +33,9 @@ clean() {
 case "$1" in
 	""|all)
 		all
+		;;
+	all_no_freetz)
+		all_no_freetz
 		;;
 	clean)
 		clean

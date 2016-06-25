@@ -1289,22 +1289,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		sizeinfo add "${ADDON_DIR}/${pkg}"
 	done
 
-	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
-		echo "invoking custom script"
-
-		# syntax check
-		$SHELL -n "${BASE_DIR}/fwmod_custom"
-
-		if [ $? -ne 0 ]; then
-			error 1 "syntax error in custom script"
-		fi
-
-		( cd "$MOD_DIR" && ../../fwmod_custom all ) || exit 1
-
-		if [ $? -ne 0 ]; then
-			error 1 "custom script returned error"
-		fi
-	fi
+	invoke_fwmod_custom all
 
 	# Processing some options, must be done after base package is in place
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
@@ -1494,6 +1479,8 @@ if [ "$action_names" ]; then
 			# Copy the unpacked directory
 			cp -r "$ORG_DIR" "$MOD_DIR"
 		fi
+
+		invoke_fwmod_custom all_no_freetz
 	fi
 
 	# Remove left over Subversion directories

@@ -476,6 +476,30 @@ collect_pkg_files()
 }
 
 #
+# checks if fwmod_custom script exists, has correct syntax, and invokes it
+# with exactly the same parameters as those passed to invoke_fwmod_custom itself
+#
+invoke_fwmod_custom()
+{
+	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
+		echo "invoking custom script"
+
+		# syntax check
+		$SHELL -n "${BASE_DIR}/fwmod_custom"
+
+		if [ $? -ne 0 ]; then
+			error 1 "syntax error in fwmod_custom script"
+		fi
+
+		( cd "$MOD_DIR" && ../../fwmod_custom "$@" ) || exit 1
+
+		if [ $? -ne 0 ]; then
+			error 1 "fwmod_custom script returned error"
+		fi
+	fi
+}
+
+#
 # Returns "(NEEDED)"-entries for all binaries/libraries supplied
 #
 getNeededEntries()
