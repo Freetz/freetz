@@ -91,6 +91,10 @@ TOOLS_DIR="${ABS_BASE_DIR}/tools"
 . "${TOOLS_DIR}/freetz_functions" ||
 	(echo "cannot find script freetz_functions" >&2; exit 1)
 
+if [ "$DO_SIGN" -gt 0 -a $(($DO_PACK + $DO_ZIP)) -eq 0 ]; then
+	error 1 "Firmware signing without packing is not supported, please use PeterPawn's sign_image tool directly if you plan to sign some already existing .image file"
+fi
+
 # Initialise firmware image names
 FIRMWARE="$1"
 FIRMWARE2="$2"
@@ -1768,24 +1772,23 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "packing of firmware image failed"
 	fi
 	echo1 "image file size: $(byte_to_mb $(wc -c < "${img_name}"))"
-fi
 
-if [ "$DO_SIGN" -gt 0 ]; then
-	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
-	echo0 "signing $img_name"
-	if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
-		# be verbose if no private key password provided
-		"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
-	else
-		"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
-	fi
-	if [ $? -ne 0 ]; then
-		mv "${img_name}.signed" "${img_name}.signed.corrupted" 2>/dev/null
-		error 1 "signing of firmware image failed, see console output or ${MOD_DIR}/sign_image.log for details"
-	fi
+	if [ "$DO_SIGN" -gt 0 ]; then
+		echo0 "signing $img_name"
+		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
+			# be verbose if no private key password provided
+			"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
+		else
+			"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
+		fi
+		if [ $? -ne 0 ]; then
+			mv "${img_name}.signed" "${img_name}.signed.corrupted" 2>/dev/null
+			error 1 "signing of firmware image failed, see console output or ${MOD_DIR}/sign_image.log for details"
+		fi
 
-	mv "${img_name}.signed" "${img_name}"
-	echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}"))"
+		mv "${img_name}.signed" "${img_name}"
+		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}"))"
+	fi
 fi
 
 # ----------------------------------------------
