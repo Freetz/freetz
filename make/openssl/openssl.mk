@@ -23,6 +23,7 @@ $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_D
 $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcrypto_WITH_EC
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcrypto_WITH_RC4
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_0
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1_LTS
@@ -30,7 +31,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SMALL_FOOTPRINT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_CONFIG_DIR
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_TRACE
 
-$(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc4 no-rc5 no-sha0 no-smime no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5 no-ssl2 no-ssl3
+$(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5 no-ssl2 no-ssl3
+$(PKG)_NO_CIPHERS += $(if $(FREETZ_LIB_libcrypto_WITH_RC4),,no-rc4)
 
 $(PKG)_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-seed
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)

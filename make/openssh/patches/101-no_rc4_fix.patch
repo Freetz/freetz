@@ -1,10 +1,14 @@
+
+ FREETZ_ENABLE_RC4 is never set (intentionally), this de-facto disables RC4 support
+ in OpenSSH regardless of the OpenSSL configuration.
+
 --- cipher.c
 +++ cipher.c
 @@ -92,9 +92,11 @@
  	{ "cast128-cbc",
  			SSH_CIPHER_SSH2, 8, 16, 0, 0, 0, 1, EVP_cast5_cbc },
  #endif
-+#ifndef OPENSSL_NO_RC4
++#if defined(FREETZ_ENABLE_RC4) && !defined(OPENSSL_NO_RC4)
  	{ "arcfour",	SSH_CIPHER_SSH2, 8, 16, 0, 0, 0, 0, EVP_rc4 },
  	{ "arcfour128",	SSH_CIPHER_SSH2, 8, 16, 0, 0, 1536, 0, EVP_rc4 },
  	{ "arcfour256",	SSH_CIPHER_SSH2, 8, 32, 0, 0, 1536, 0, EVP_rc4 },
@@ -17,7 +21,7 @@
  cipher_get_keycontext(const struct sshcipher_ctx *cc, u_char *dat)
  {
 -#ifdef WITH_OPENSSL
-+#if defined(WITH_OPENSSL) && !defined(OPENSSL_NO_RC4)
++#if defined(FREETZ_ENABLE_RC4) && defined(WITH_OPENSSL) && !defined(OPENSSL_NO_RC4)
  	const struct sshcipher *c = cc->cipher;
  	int plen = 0;
  
@@ -26,7 +30,7 @@
  cipher_set_keycontext(struct sshcipher_ctx *cc, const u_char *dat)
  {
 -#ifdef WITH_OPENSSL
-+#if defined(WITH_OPENSSL) && !defined(OPENSSL_NO_RC4)
++#if defined(FREETZ_ENABLE_RC4) && defined(WITH_OPENSSL) && !defined(OPENSSL_NO_RC4)
  	const struct sshcipher *c = cc->cipher;
  	int plen;
  

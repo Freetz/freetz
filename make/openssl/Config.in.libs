@@ -84,6 +84,23 @@ config FREETZ_LIB_libcrypto_WITH_EC
 	help
 		Enable support for elliptic curve cryptography (ECDSA/ECDH/ECDHE)
 
+config FREETZ_LIB_libcrypto_WITH_RC4
+	bool "Support RC4 cipher (NOT RECOMMENDED)"
+	default n
+	help
+		Enable support for RC4 cipher.
+		NOT RECOMMENDED, please enable it only if absolutely necessary.
+
+		As of 2015, there is speculation that some state cryptologic agencies
+		may possess the capability to break RC4 when used in the TLS protocol[1].
+		IETF has published RFC 7465 to prohibit the use of RC4 in TLS[2].
+		Mozilla[3] and Microsoft[4] have issued similar recommendations.
+
+		[1] http://www.theregister.co.uk/2013/09/06/nsa_cryptobreaking_bullrun_analysis/
+		[2] https://tools.ietf.org/html/rfc7465
+		[3] https://wiki.mozilla.org/Security/Server_Side_TLS
+		[4] https://blogs.technet.microsoft.com/srd/2013/11/12/security-advisory-2868725-recommendation-to-disable-rc4/
+
 config FREETZ_OPENSSL_SMALL_FOOTPRINT
 	bool "Reduce the footprint of OpenSSL libraries"
 	default y
