@@ -23,7 +23,7 @@ $(YOURFRITZ_HOST_DIR)/.unpacked: $(DL_DIR)/$(YOURFRITZ_HOST_SOURCE) | $(TOOLS_SO
 $(YOURFRITZ_HOST_COMPONENTS:%=$(YOURFRITZ_HOST_DIR)/%): | $(YOURFRITZ_HOST_DIR)/.unpacked
 
 $(YOURFRITZ_HOST_COMPONENTS:%=$(YOURFRITZ_HOST_DIR)/%/.symlinked): $(YOURFRITZ_HOST_DIR)/%/.symlinked: $(YOURFRITZ_HOST_DIR)/%
-	ln -Trsf $< $(YOURFRITZ_HOST_TARGET_DIR)/$(notdir $<)
+	@target_abs="$<"; target_rel=$${target_abs#$(FREETZ_BASE_DIR)/}; ln -Tsf ../$${target_rel} $(YOURFRITZ_HOST_TARGET_DIR)/$(notdir $<)
 	touch $@
 
 yourfritz-host: $(YOURFRITZ_HOST_COMPONENTS:%=$(YOURFRITZ_HOST_DIR)/%/.symlinked)
