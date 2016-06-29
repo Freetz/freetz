@@ -8,7 +8,7 @@
  
  #ifndef OPENSSL_NO_DH
  DH *dh_params=NULL;
-@@ -665,8 +666,27 @@
+@@ -665,6 +666,25 @@
      return 0; /* OK */
  }
  
@@ -32,31 +32,22 @@
 +#define FRITZBOX_KEY_PASSWD_CB_MARKER ((void *)1)
 +
  NOEXPORT int load_key_file(SERVICE_OPTIONS *section) {
--    int i, success;
-+    int i, success = 0;
+     int i, success;
      UI_DATA ui_data;
+@@ -681,6 +701,12 @@
+     success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
+         SSL_FILETYPE_PEM);
  
-     s_log(LOG_INFO, "Loading private key from file: %s", section->key);
-@@ -676,10 +696,18 @@
-     ui_data.section=section; /* setup current section for callbacks */
-     SSL_CTX_set_default_passwd_cb(section->ctx, passphrase_cb);
- 
-+    if (is_fritzbox_key(section->key)) {
++    if (!success && is_fritzbox_key(section->key)) {
 +        SSL_CTX_set_default_passwd_cb_userdata(section->ctx, FRITZBOX_KEY_PASSWD_CB_MARKER);
 +        success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
 +            SSL_FILETYPE_PEM);
 +    }
 +
-+if (!success) {
-     /* try the cached value (initially an empty passphrase) */
-     SSL_CTX_set_default_passwd_cb_userdata(section->ctx, NULL);
-     success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
-         SSL_FILETYPE_PEM);
-+}
- 
      /* invoke the UI */
      SSL_CTX_set_default_passwd_cb_userdata(section->ctx, &ui_data);
-@@ -776,7 +804,19 @@
+     for(i=0; !success && i<3; i++) {
+@@ -776,7 +802,19 @@
          buf[size-1]='\0';
          len=(int)strlen(buf);
      } else { /* prompt the user on subsequent requests */
