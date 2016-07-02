@@ -1753,7 +1753,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Pack firmware image (use old tar for compatibility)
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
 	echo0 "packing $img_name"
-	"$TAR" -C "$FIRMWARE_MOD_DIR" -cf "$img_name" .
+	"$TAR" -C "$FIRMWARE_MOD_DIR" -cf "$img_name" ./var
 	if [ $? -ne 0 ] || ! is_valid_tarball "$img_name"; then
 		mv "${img_name}" "${img_name}.corrupted" 2>/dev/null
 		error 1 "packing of firmware image failed"
