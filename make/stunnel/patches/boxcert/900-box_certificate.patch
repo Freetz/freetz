@@ -8,7 +8,7 @@
  
  #ifndef OPENSSL_NO_DH
  DH *dh_params=NULL;
-@@ -665,6 +666,25 @@
+@@ -665,25 +666,46 @@
      return 0; /* OK */
  }
  
@@ -32,25 +32,39 @@
 +#define FRITZBOX_KEY_PASSWD_CB_MARKER ((void *)1)
 +
  NOEXPORT int load_key_file(SERVICE_OPTIONS *section) {
-     int i, success;
+-    int i, success;
++    int i, success, boxkey;
      UI_DATA ui_data;
-@@ -681,6 +701,12 @@
+ 
+     s_log(LOG_INFO, "Loading private key from file: %s", section->key);
+-    if(file_permissions(section->key))
++	boxkey = is_fritzbox_key(section->key);
++    if(!boxkey && file_permissions(section->key))
+         return 1; /* FAILED */
+ 
+     ui_data.section=section; /* setup current section for callbacks */
+     SSL_CTX_set_default_passwd_cb(section->ctx, passphrase_cb);
+ 
+     /* try the cached value (initially an empty passphrase) */
+-    SSL_CTX_set_default_passwd_cb_userdata(section->ctx, NULL);
++    SSL_CTX_set_default_passwd_cb_userdata(section->ctx,
++		(boxkey ? FRITZBOX_KEY_PASSWD_CB_MARKER : NULL));
      success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
          SSL_FILETYPE_PEM);
  
-+    if (!success && is_fritzbox_key(section->key)) {
-+        SSL_CTX_set_default_passwd_cb_userdata(section->ctx, FRITZBOX_KEY_PASSWD_CB_MARKER);
-+        success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
-+            SSL_FILETYPE_PEM);
-+    }
-+
      /* invoke the UI */
      SSL_CTX_set_default_passwd_cb_userdata(section->ctx, &ui_data);
-     for(i=0; !success && i<3; i++) {
-@@ -776,7 +802,19 @@
+-    for(i=0; !success && i<3; i++) {
++    for(i=0; !success && !boxkey && i<3; i++) {
+         if(!ui_retry())
+             break;
+         if(i==0) { /* silence the cached attempt */
+@@ -776,8 +798,20 @@
          buf[size-1]='\0';
          len=(int)strlen(buf);
      } else { /* prompt the user on subsequent requests */
+-        len=passwd_cb(buf, size, rwflag, userdata); /* invoke the UI */
+-        memcpy(cache, buf, (size_t)size); /* save in cache */
 +        if(userdata == FRITZBOX_KEY_PASSWD_CB_MARKER) { /* try to open it as FRITZ!OS key file */
 +#ifdef STATIC
 +            /* - workaround for dlopen() crash with statically linked binaries
@@ -61,9 +75,10 @@
 +#endif
 +            len=getPrivateKeyPassword_OpenSSL_Callback(buf, size, rwflag, NULL);
 +        } else {
-         len=passwd_cb(buf, size, rwflag, userdata); /* invoke the UI */
++        	len=passwd_cb(buf, size, rwflag, userdata); /* invoke the UI */
++	        memcpy(cache, buf, (size_t)size); /* save in cache */
 +        }
 +
-         memcpy(cache, buf, (size_t)size); /* save in cache */
      }
      return len;
+ }
