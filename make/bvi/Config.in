@@ -1,0 +1,14 @@
+config FREETZ_PACKAGE_BVI
+	bool "bvi - editor for binary files (hex editor)"
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		A visual editor (from command line) for binary files.
+		Source: https://sourceforge.net/projects/bvi
+
+config FREETZ_PACKAGE_BVI_INCLUDE_BMORE
+	depends on FREETZ_PACKAGE_BVI
+	bool "include utility to view files only"
+	default n
+	help
+		bmore is a command line filter to show files in hex.
