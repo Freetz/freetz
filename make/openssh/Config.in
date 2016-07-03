@@ -1,10 +1,13 @@
 menu "OpenSSH"
 config FREETZ_PACKAGE_OPENSSH
 	bool
-	select FREETZ_OPENSSL_VERSION_PROMPT # OpenSSL is a compile-time dependency only
 	select FREETZ_LIB_libcrypt if ! FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_LIB_libutil if ! FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_OPENSSH_STATIC
+	#
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO && !FREETZ_PACKAGE_OPENSSH_STATIC
+	#
 	select FREETZ_PACKAGE_AUTHORIZED_KEYS
 	depends on FREETZ_PACKAGE_OPENSSH_sshd \
 		|| FREETZ_PACKAGE_OPENSSH_ssh \
@@ -74,8 +77,20 @@ config FREETZ_PACKAGE_OPENSSH_sftp_server
 	select FREETZ_PACKAGE_OPENSSH
 	default n
 
-comment "Build statically linked binaries ---"
+comment "OpenSSH configuration ---"
 	depends on FREETZ_PACKAGE_OPENSSH
+
+config FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO
+	bool "Use internal crypto algorithms only"
+	depends on FREETZ_PACKAGE_OPENSSH
+	default n
+	help
+		Disable use of OpenSSL and use internal crypto algorithms only.
+
+		Note: enabling this option
+		 - eliminates OpenSSL as OpenSSH runtime dependency on the one hand
+		 - limits the available KEy eXchange algorithms to ed25519 only
+		   on the other one (your client must support it)
 
 config FREETZ_PACKAGE_OPENSSH_STATIC
 	bool "Statically link OpenSSH binaries"
@@ -85,6 +100,8 @@ config FREETZ_PACKAGE_OPENSSH_STATIC
 		OpenSSH needs the following shared libraries which
 		can be linked in statically by activating this switch:
 		- libcrypt
+		- libcrypto
+		- libdl
 		- libutil
 		- libz
 
