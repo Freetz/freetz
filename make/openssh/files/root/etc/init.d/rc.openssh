@@ -7,6 +7,16 @@ DAEMON_BIN=sshd
 
 CONFFILE=/mod/etc/openssh.conf
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+kex_algorithms() {
+	if [ "$FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO" != y ]; then
+		echo rsa
+		echo dsa
+	fi
+	echo ed25519
+}
+
 gen_key() {
 	rm -f "$1"
 	rm -f "$1.pub"
@@ -31,16 +41,19 @@ config() {
 	mkdir -p /tmp/flash/openssh
 	mkdir -p /var/empty
 
-	check_key_file "/tmp/flash/openssh/rsa_host_key" "rsa"
-	check_key_file "/tmp/flash/openssh/dsa_host_key" "dsa"
-
 	if [ ! -d "/mod/etc/ssh" ]; then
 		mkdir -p /mod/etc/ssh
-		ln -s /tmp/flash/openssh/rsa_host_key /mod/etc/ssh/rsa_host_key
-		ln -s /tmp/flash/openssh/dsa_host_key /mod/etc/ssh/dsa_host_key
 	fi
 
-	echo "$OPENSSH_SETTINGS" > $CONFFILE
+	for kex_alg in $(kex_algorithms); do
+		check_key_file "/tmp/flash/openssh/${kex_alg}_host_key" "${kex_alg}"
+		ln -sf /tmp/flash/openssh/${kex_alg}_host_key /mod/etc/ssh/
+	done
+
+	echo "$OPENSSH_SETTINGS" | grep -Ev "^(HostKey|PasswordAuthentication|PermitRootLogin)" > $CONFFILE
+	for kex_alg in $(kex_algorithms); do
+		echo "HostKey /tmp/flash/openssh/${kex_alg}_host_key" >> $CONFFILE
+	done
 	if [ "$OPENSSH_PWDAUTH" = "yes" ]; then
 		if cat /etc/shadow | grep -q '^root:[*!]:'; then
 			echo "Error[$DAEMON]: no root password set - run 'passwd root'" 1>&2
@@ -67,8 +80,9 @@ case $1 in
 		modreg cgi 'openssh' 'OpenSSH'
 		modreg daemon $DAEMON
 
-		modreg file openssh "dsa_key" "dsa_key" 0 "dsa_key"
-		modreg file openssh "rsa_key" "rsa_key" 0 "rsa_key"
+		for kex_alg in $(kex_algorithms); do
+			modreg file openssh "${kex_alg}_key" "${kex_alg}_key" 0 "${kex_alg}_key"
+		done
 
 		mkdir -p /tmp/openssh
 		modlib_add_user_and_group $DAEMON_BIN
