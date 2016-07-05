@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 2.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=9fb6b443392c3978da5d599f1e814eaa
-$(PKG)_SITE:=@SF/$(pkg)
+$(PKG)_SITE:=https://github.com/$(pkg)/$(pkg)/releases/download/$($(PKG)_VERSION)
 
 # workaround tmux-2.0 packaging error - dependency files from other platform are included in the tarball
 $(PKG)_PATCH_PRE_CMDS += $(RM) -r compat/.dirstamp compat/.deps;
