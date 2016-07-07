@@ -1,6 +1,6 @@
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -241,6 +241,8 @@
+@@ -249,6 +249,8 @@
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -9,12 +9,21 @@
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -639,7 +641,7 @@
- $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)
- 		@$(MKDIR_P) Include
- 		$(MAKE) $(PGEN)
--		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
-+		$(PGEN_FOR_BUILD) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
- $(GRAMMAR_C): $(GRAMMAR_H) $(GRAMMAR_INPUT) $(PGENSRCS)
- 		$(MAKE) $(GRAMMAR_H)
- 		touch $(GRAMMAR_C)
+@@ -686,14 +688,14 @@
+ $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGEN)
+ 	@$(MKDIR_P) Include
+ 	# Avoid copying the file onto itself for an in-tree build
+-	if test "$(cross_compiling)" != "yes"; then \
+-		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C); \
++	if true || test "$(cross_compiling)" != "yes"; then \
++		$(PGEN_FOR_BUILD) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C); \
+ 	else \
+ 		cp $(srcdir)/Include/graminit.h $(GRAMMAR_H).tmp; \
+ 		mv $(GRAMMAR_H).tmp $(GRAMMAR_H); \
+ 	fi
+ $(GRAMMAR_C): $(GRAMMAR_H)
+-	if test "$(cross_compiling)" != "yes"; then \
++	if true || test "$(cross_compiling)" != "yes"; then \
+ 		touch $(GRAMMAR_C); \
+ 	else \
+ 		cp $(srcdir)/Python/graminit.c $(GRAMMAR_C).tmp; \
