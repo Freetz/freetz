@@ -1,0 +1,17 @@
+config FREETZ_PACKAGE_BVI
+	bool "bvi/bmore 1.4.0 (binary only) "
+	default n
+	select FREETZ_LIB_libncurses
+	help
+		A hex editor/viewer for binary files
+
+config FREETZ_PACKAGE_BVI_bvi
+	bool "bvi/bview"
+	depends on FREETZ_PACKAGE_BVI
+	select FREETZ_PACKAGE_BVI_bview
+	default y
+
+config FREETZ_PACKAGE_BVI_bmore
+	bool "bmore"
+	depends on FREETZ_PACKAGE_BVI
+	default n
