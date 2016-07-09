@@ -1,0 +1,143 @@
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -77,6 +77,8 @@
+ int inode_number = 1;
+ int no_xattrs = XATTR_DEF;
+ int user_xattrs = FALSE;
++int scan_for_superblock = FALSE;
++off_t superblock_offset = 0;
+ 
+ int exit_on_decompression_errors = FALSE;
+ #define DECOMPRESSION_ERROR(s, args...)\
+@@ -634,10 +636,94 @@
+ 	return -1;
+ }
+ 
++#ifdef LEGACY_FORMATS_SUPPORT
++off_t find_superblock4(int fd)
++#else
++off_t find_superblock(int fd)
++#endif
++{
++	off_t offset;
++	struct squashfs_super_block sBlk_4;
++
++	for (offset = 0; /* forever */; offset += 256) {
++		if (lseek(fd, offset, SEEK_SET) == -1) {
++			ERROR("Lseek failed because %s\n", strerror(errno));
++			return (off_t) -1;
++		}
++
++		if (read(fd, &sBlk_4, sizeof(struct squashfs_super_block)) != sizeof(struct squashfs_super_block)) {
++			return (off_t) -1;
++		}
++
++		if (sBlk_4.s_magic != SQUASHFS_MAGIC && sBlk_4.s_magic != SQUASHFS_MAGIC_SWAP) {
++			continue;
++		}
++
++		TRACE("find_superblock:%s magic 0x%08x found at 0x%08x\n", (sBlk_4.s_magic == SQUASHFS_MAGIC_SWAP ? " swapped" : ""), sBlk_4.s_magic, (unsigned int)offset);
++
++		SQUASHFS_INSWAP_SUPER_BLOCK(&sBlk_4);
++
++		if (sBlk_4.s_major == 4)
++			return offset;
++	}
++
++	return (off_t) -1;
++}
++
++#ifdef LEGACY_FORMATS_SUPPORT
++off_t find_superblock3(int fd)
++{
++	off_t offset;
++	struct squashfs_super_block_3 sBlk_3;
++
++	for (offset = 0; /* forever */; offset += 256) {
++		if (lseek(fd, offset, SEEK_SET) == -1) {
++			ERROR("Lseek failed because %s\n", strerror(errno));
++			return (off_t) -1;
++		}
++
++		if (read(fd, &sBlk_3, sizeof(squashfs_super_block_3)) != sizeof(squashfs_super_block_3)) {
++			return (off_t) -1;
++		}
++
++		if (sBlk_3.s_magic != SQUASHFS_MAGIC && sBlk_3.s_magic != SQUASHFS_MAGIC_SWAP) {
++			continue;
++		}
++
++		TRACE("find_superblock:%s magic 0x%08x found at 0x%08x\n", (sBlk_3.s_magic == SQUASHFS_MAGIC_SWAP ? " swapped" : ""), sBlk_3.s_magic, (unsigned int)offset);
++
++		if (sBlk_3.s_magic == SQUASHFS_MAGIC_SWAP) {
++			squashfs_super_block_3 sblk_3;
++			SQUASHFS_SWAP_SUPER_BLOCK_3(&sblk_3, &sBlk_3);
++			memcpy(&sBlk_3, &sblk_3, sizeof(squashfs_super_block_3));
++		}
++
++		{
++			int is_valid_major = (sBlk_3.s_major <= 3);
++			int is_valid_minor = (sBlk_3.s_minor <= 1) || (sBlk_3.s_minor == 76);
++			if (is_valid_major && is_valid_minor)
++				return offset;
++		}
++	}
++
++	return (off_t) -1;
++}
++
++off_t find_superblock(int fd)
++{
++	/* TODO: merge/simplify both find_superblock functions to avoid double reading */
++	off_t offset = find_superblock4(fd);
++
++	if (offset == (off_t)-1)
++		offset = find_superblock3(fd);
++
++	return offset;
++}
++#endif
+ 
+ int read_fs_bytes(int fd, long long byte, int bytes, void *buff)
+ {
+-	off_t off = byte;
++	off_t off = byte + superblock_offset;
+ 	int res, count;
+ 
+ 	TRACE("read_bytes: reading from position 0x%llx, bytes %d\n", byte,
+@@ -2652,6 +2738,8 @@
+ 			use_regex = TRUE;
+ 		else if(strcmp(argv[i], "-exit-on-decomp-error") == 0)
+ 			exit_on_decompression_errors = TRUE;
++		else if(strcmp(argv[i], "-scan") == 0 || strcmp(argv[i], "-k") == 0)
++			scan_for_superblock = TRUE;
+ 		else
+ 			goto options;
+ 	}
+@@ -2716,6 +2804,9 @@
+ 			ERROR("\t\t\t\trather than use the default shell "
+ 				"wildcard\n\t\t\t\texpansion (globbing)\n");
+ 			ERROR("\t-exit-on-decomp-error\texit on decompression errors\n");
++			ERROR("\t-scan or -k\t\ttreat filesystem as a combined image\n");
++			ERROR("\t\t\t\t(kernel+SquashFS) and scan it to locate the superblock\n");
++			ERROR("\t\t\t\tand its offset\n");
+ 			ERROR("\nDecompressors available:\n");
+ 			display_compressors("", "");
+ 		}
+@@ -2731,6 +2822,16 @@
+ 		exit(1);
+ 	}
+ 
++	if(scan_for_superblock == TRUE) {
++		superblock_offset = find_superblock(fd);
++		if (superblock_offset == (off_t) -1) {
++			ERROR("Unable to find something looking like a SquashFS superblock in %s.\n", argv[i]);
++			exit(2);
++		} else {
++			ERROR("Found a valid superblock at offset 0x%08x while scanning %s.\n", (unsigned int) superblock_offset, argv[i]);
++		}
++	}
++
+ 	if(read_super(argv[i]) == FALSE)
+ 		exit(1);
+ 
