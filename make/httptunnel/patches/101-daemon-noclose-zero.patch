@@ -1,0 +1,11 @@
+--- hts.c
++++ hts.c
+@@ -282,7 +282,7 @@
+   parse_arguments (argc, argv, &arg);
+ 
+   if ((debug_level == 0 || debug_file != NULL) && arg.use_daemon)
+-    daemon (0, 1);
++    daemon (0, 0);
+ 
+ #ifdef DEBUG_MODE
+   if (debug_level != 0 && debug_file == NULL)
