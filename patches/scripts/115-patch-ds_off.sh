@@ -13,4 +13,4 @@ else
 fi
 
 # Emergency stop switch for execution of debug.cfg
-sed -i -r 's#(\. /var/flash/debug\.cfg)#[ "$dbg_off" == "y" ] || \1#g' $rcfile
+modsed -r 's,(if[ \t]+)([!][ \t]*(/usr/bin/)?checkempty[ \t]+/var/flash/debug[.]cfg),\1[ "$dbg_off" != "y" ] \&\& \2,' $rcfile
