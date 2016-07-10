@@ -417,19 +417,19 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
 	done
 
-	# Remove AVM's special junk bytes from SquashFS
-	if [ "$FREETZ_AVM_HAS_JUNK_BYTES" == "y" ]; then
-		echo0 "removing AVM SquashFS junk bytes"
-		[ "$FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
+	# Remove NMI vector from SquashFS
+	if [ "$FREETZ_AVM_HAS_NMI_VECTOR" == "y" ]; then
+		echo0 "removing NMI vector from SquashFS"
+		[ "$FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && FILE_WITH_NMI_VECTOR_TO_PROCESS="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || FILE_WITH_NMI_VECTOR_TO_PROCESS="$KERNEL"
 		if [ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ]; then
-			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk" >/dev/null 2>&1
+			"$TOOLS_DIR/remove-nmi-vector" "$FILE_WITH_NMI_VECTOR_TO_PROCESS" "$FILE_WITH_NMI_VECTOR_TO_PROCESS.no-nmi" >/dev/null 2>&1
 		else
-			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk"
+			"$TOOLS_DIR/remove-nmi-vector" "$FILE_WITH_NMI_VECTOR_TO_PROCESS" "$FILE_WITH_NMI_VECTOR_TO_PROCESS.no-nmi"
 		fi
 		case "$?" in
-			0) mv -f "$JUNK_BYTES_FILE.nojunk" "$JUNK_BYTES_FILE" ;;
-			1) warn2 "AVM SquashFS junk bytes not found. Assuming Freetz or Freetz-repacked image." ;;
-			*) error 1 "fatal error while removing AVM SquashFS junk bytes." ;;
+			0) mv -f "$FILE_WITH_NMI_VECTOR_TO_PROCESS.no-nmi" "$FILE_WITH_NMI_VECTOR_TO_PROCESS" ;;
+			1) warn2 "NMI vector not found. Assuming Freetz or Freetz-repacked image." ;;
+			*) error 1 "fatal error while removing NMI vector from SquashFS." ;;
 		esac
 	fi
 

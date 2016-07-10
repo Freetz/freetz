@@ -1,29 +1,29 @@
 #!/bin/bash
 
 #
-# Remove junk bytes from AVM image files
+# Remove NMI vector from AVM image files
 # Author: Alexander Kriegisch (http://scrum-master.de) and Freetz developer team
 #
-# Junk-byte block v1:
+# NMI vector v1:
 #  1. starts with byte sequence 3C1A8000375A038003400008
 #  2. located at (fixed) offset 0xBE0000
 #  3. has (fixed) length of 256 bytes
-#  4. junk header size is saved in 4 bytes at (fixed) offset 0xBE0044,
+#  4. NMI vector size is saved in 4 bytes at (fixed) offset 0xBE0044,
 #     the same offset could also be determined by locating the string "NMI Boot"
 #     and subtracting 4 bytes from its offset
-#  5. image size without the junk block and without the image checksum is saved
+#  5. image size without the NMI vector and without the image checksum is saved
 #     in 4 bytes at (fixed) offset 0xBE0040,
 #     the same offset could also be determined by locating the string "NMI Boot"
 #     and subtracting 8 bytes from its offset
 #
-# Junk-byte block v2:
+# NMI vector v2:
 #  1. starts with byte sequence 409AE8053C1A8000375A038003400008 (v1 sequence prefixed with 409AE805)
 #  2. same as v1
 #  3. has (fixed) length of 4096 bytes
 #  4. same as v1
 #  5. same as v1
 #
-# Junk-byte block v3:
+# NMI vector v3:
 #  1. starts with byte sequence 409AE805409BE0043C1A8000375A0380
 #  2. same as v1
 #  3. same as v2
@@ -45,8 +45,8 @@ fi
 NMI_BOOT_PATTERN="4E4D4920426F6F74" # "NMI Boot" as hex pattern
 expectedNmiBootOffset=0xBE0048
 
-junkHeaderOffset=0xBE0000
-declare -A knownJunkHeaderStart=(
+nmiVectorOffset=0xBE0000
+declare -A nmiVectorKnownStartSequence=(
 		[v1]=3C1A8000375A038003400008
 	[v2]=409AE8053C1A8000375A038003400008
 	[v3]=409AE805409BE0043C1A8000375A0380
@@ -79,7 +79,7 @@ getInputFileSize() {
 declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches "${NMI_BOOT_PATTERN}"))
 
 if [ ${#nmiBootOffsets[@]} -eq 0 ]; then
-	echo "No junk bytes found" >&2
+	echo "No NMI vector found" >&2
 	exit 1
 fi
 
@@ -94,39 +94,39 @@ if [ "${nmiBootOffset}" != "${expectedNmiBootOffset}" ]; then
 	exit 2
 fi
 
-# junk header length is encoded within the junk block 4 bytes before 'NMI Boot'
-junkHeaderLength="0x$(getHexContentAtOffset $((${nmiBootOffset} - 4)) 4)"
-if [ $((${junkHeaderLength})) -ne 256 -a $((${junkHeaderLength})) -ne 4096 ]; then
-	echo "[Error] Unexpected/unsupported junk header length: $((${junkHeaderLength}))" >&2
+# NMI vector length is encoded within the NMI block 4 bytes before 'NMI Boot'
+nmiVectorLength="0x$(getHexContentAtOffset $((${nmiBootOffset} - 4)) 4)"
+if [ $((${nmiVectorLength})) -ne 256 -a $((${nmiVectorLength})) -ne 4096 ]; then
+	echo "[Error] Unexpected/unsupported NMI vector length: $((${nmiVectorLength}))" >&2
 	exit 2
 fi
 
-# real image size is encoded within the junk block 8 bytes before 'NMI Boot'
-imageSizeJunk="0x$(getHexContentAtOffset $((${nmiBootOffset} - 8)) 4)"
-imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${junkHeaderLength} - ${IMAGE_CHECKSUM_SIZE} )))
-if [ "$((${imageSizeJunk}))" -ne "$((${imageSizeExpected}))" ]; then
-	echo "[Error] Image size encoded in junk block ($((${imageSizeJunk}))) does not match calculated size ($((${imageSizeExpected})))" >&2
+# real image size is encoded within the NMI block 8 bytes before 'NMI Boot'
+imageSizeWithinNMI="0x$(getHexContentAtOffset $((${nmiBootOffset} - 8)) 4)"
+imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${nmiVectorLength} - ${IMAGE_CHECKSUM_SIZE} )))
+if [ "$((${imageSizeWithinNMI}))" -ne "$((${imageSizeExpected}))" ]; then
+	echo "[Error] Image size encoded in NMI block ($((${imageSizeWithinNMI}))) does not match calculated size ($((${imageSizeExpected})))" >&2
 	exit 2
 fi
 
-# get first 32 bytes of the junk header
-junkHeaderStart=$(getHexContentAtOffset ${junkHeaderOffset} 32)
+# get first 32 bytes of the NMI vector
+nmiVectorStartSequence=$(getHexContentAtOffset ${nmiVectorOffset} 32)
 # and check if they contain one of the known sequences
 for v in v1 v2 v3; do
-	if [ "${junkHeaderStart:0:${#knownJunkHeaderStart[${v}]}}" != "${knownJunkHeaderStart[${v}]}" ]; then
+	if [ "${nmiVectorStartSequence:0:${#nmiVectorKnownStartSequence[${v}]}}" != "${nmiVectorKnownStartSequence[${v}]}" ]; then
 		continue
 	fi
 
-	echo -n "Junk header $v found at offset ${junkHeaderOffset}, removing ${v} junk bytes ... "
-	head -c $((${junkHeaderOffset})) "$INPUT_FILE" > "$OUTPUT_FILE"
-	tail -c $((${imageSizeExpected} - ${junkHeaderOffset} + ${IMAGE_CHECKSUM_SIZE})) "$INPUT_FILE" >> "$OUTPUT_FILE"
+	echo -n "NMI vector ${v} found at offset ${nmiVectorOffset}, removing it ... "
+	head -c $((${nmiVectorOffset})) "$INPUT_FILE" > "$OUTPUT_FILE"
+	tail -c $((${imageSizeExpected} - ${nmiVectorOffset} + ${IMAGE_CHECKSUM_SIZE})) "$INPUT_FILE" >> "$OUTPUT_FILE"
 	echo "done."
 
-	# debug: dump junk-bytes to a separate file
-	#tail -c "+$((${junkHeaderOffset} + 1))" "$INPUT_FILE" | head -c $((${junkHeaderLength})) > "$INPUT_FILE".junk-bytes
+	# debug: dump NMI vector to a separate file
+	#tail -c "+$((${nmiVectorOffset} + 1))" "$INPUT_FILE" | head -c $((${nmiVectorLength})) > "$INPUT_FILE".nmi-vector
 
 	exit 0
 done
 
-echo "[Error] Junk header start sequence (${junkHeaderStart}) doesn't match any of the known sequences" >&2
+echo "[Error] NMI vector start sequence (${nmiVectorStartSequence}) doesn't match any of the known sequences" >&2
 exit 2

@@ -29,8 +29,8 @@ config FREETZ_AVM_SQUASHFS_COMPRESSION
 	default "gzip" if FREETZ_KERNEL_VERSION_2_6_32 &&  FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE
 	default "xz"   if FREETZ_KERNEL_VERSION_3_10_MIN
 
-config FREETZ_AVM_HAS_JUNK_BYTES
-	bool "Has junk bytes in SquashFS"	if FREETZ_TYPE_CUSTOM
+config FREETZ_AVM_HAS_NMI_VECTOR
+	bool "Has NMI vector within SquashFS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
 		FREETZ_TYPE_4020 || \
 		FREETZ_TYPE_6810 || \
@@ -39,8 +39,11 @@ config FREETZ_AVM_HAS_JUNK_BYTES
 		FREETZ_TYPE_7390
 	default n
 	help
-		Select this if the original firmware image contains junk bytes in SquashFS,
-		see http://freetz.org/ticket/1614#comment:70 for more information.
+		Select this if the original firmware image contains NMI vector
+		(at the beginning called junk bytes) within the SquashFS, see
+		  - http://freetz.org/ticket/1614#comment:70, and
+		  - http://www.ip-phone-forum.de/showthread.php?t=286318
+		for more information.
 
 config FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE
 	bool "Has update filesystem image"	if FREETZ_TYPE_CUSTOM
