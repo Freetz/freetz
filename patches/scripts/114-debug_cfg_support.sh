@@ -8,7 +8,7 @@ if grep -q "mknod /var/flash/debug.cfg" "$rcfile" 2>/dev/null; then
 	# firmware supports debug.cfg
 	if [ "${FREETZ_DISABLE_DEBUG_CFG_SUPPORT}" == y ]; then
 		echo1 "disabling processing of /var/flash/debug.cfg"
-		modsed -r 's,^([.][ \t]+/var/flash/debug[.]cfg),: # disabled by freetz: \1,' "$rcfile"
+		modsed -r 's,^([ \t]*[.][ \t]+/var/flash/debug[.]cfg),: # disabled by freetz: \1,' "$rcfile"
 	fi
 else
 	# no support for debug.cfg
