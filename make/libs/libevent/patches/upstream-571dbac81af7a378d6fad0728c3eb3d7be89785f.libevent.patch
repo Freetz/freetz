@@ -1,0 +1,24 @@
+From 571dbac81af7a378d6fad0728c3eb3d7be89785f Mon Sep 17 00:00:00 2001
+From: Mark Ellzey <socket@gmail.com>
+Date: Mon, 27 Apr 2015 22:59:42 -0400
+Subject: [PATCH] Fix potential fd leak in listener_read_cb()
+
+As pointed out by harlan_ in #libevent after running a coverity sweep.
+If the listener is free'd, 'new_fd' is never closed.
+---
+ listener.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git listener.c listener.c
+index 2b67b52..845db02 100644
+--- listener.c
++++ listener.c
+@@ -421,6 +421,8 @@ listener_read_cb(evutil_socket_t fd, short what, void *p)
+ 		if (lev->refcnt == 1) {
+ 			int freed = listener_decref_and_unlock(lev);
+ 			EVUTIL_ASSERT(freed);
++
++			evutil_closesocket(new_fd);
+ 			return;
+ 		}
+ 		--lev->refcnt;
