@@ -366,7 +366,8 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		# Check and skip garbage
 		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))"
 		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
-		[ "$grbg" != "0x0" ] && printf "Skipping %d Bytes garbage..." $grbg
+		[ -z "$image_grbg" ] && image_grbg="0x0"
+		[ "$image_grbg" != "0x0" ] && echo "skipping $(($image_grbg)) bytes garbage"
 		# Unpack standard *.image file in tar format
 		tail -c $(( $image_size - $image_grbg )) "$FIRMWARE" | \
 		  "$TAR_GNU" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1

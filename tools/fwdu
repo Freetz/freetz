@@ -97,7 +97,7 @@ image() {
 		local size="0x$(printf "%08X\n" $(stat -L -c %s $img))"
 		local grbg="$($FTOOLS/sfk hexfind $img _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
 		[ -z "$grbg" ] && grbg="0x0"
-		[ "$grbg" != "0x0" ] && printf "\tSkipping %d Bytes garbage:\n" $grbg
+		[ "$grbg" != "0x0" ] && echo -e "\tSkipping $(($grbg)) bytes garbage"
 		tail -c $(( $size - $grbg )) $img | tar x --wildcards './var/tmp/*.image' >/dev/null 2>&1
 	fi
 	if [ ! -d var ]; then
