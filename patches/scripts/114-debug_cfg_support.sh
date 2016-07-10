@@ -29,3 +29,13 @@ fi' \
 
 	fi
 fi
+
+if [ "$FREETZ_ASYNCHRONOUS_DEBUG_CFG" == "y" ]; then
+	if [ ! -x "${FILESYSTEM_MOD_DIR}/sbin/delay" ]; then
+		warn "AVM's /sbin/delay is missing, asynchronous processing of /var/flash/debug.cfg is not (yet) possible."
+	else
+		modsed -r \
+			's,^([ \t]*)[.][ \t]+(/var/flash/debug[.]cfg),delay -d 1 DEBUG_CFG "/bin/sh -c \\"eventadd 1 '"'Processing /var/flash/debug.cfg (asynchronously) ... started'"'; sh \2 0</dev/null 1>/var/log/debug_cfg.log 2>\&1; eventadd 1 '"'Processing /var/flash/debug.cfg ... finished'"'\\"",' \
+			"$rcfile"
+	fi
+fi

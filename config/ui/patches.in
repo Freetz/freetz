@@ -1485,6 +1485,16 @@ config FREETZ_DISABLE_DEBUG_CFG_SUPPORT
 		Warning: if selected you won't be able to install/start
 		such 3rd-party extensions like FHEM, LCR Updater, etc.
 
+config FREETZ_ASYNCHRONOUS_DEBUG_CFG
+	bool "Process /var/flash/debug.cfg asynchronously"
+	depends on ( FREETZ_AVM_HAS_DEBUG_CFG_SUPPORT && !FREETZ_DISABLE_DEBUG_CFG_SUPPORT) \
+		|| (!FREETZ_AVM_HAS_DEBUG_CFG_SUPPORT &&  FREETZ_RESTORE_DEBUG_CFG_SUPPORT)
+	default n
+	help
+		Enables asynchronous processing of /var/flash/debug.cfg.
+
+		Requires AVM's /sbin/debug binary in order to work.
+
 comment "AVM daemons ----------------------------"
 
 config FREETZ_AVMDAEMON_DISABLE_IGD

@@ -54,6 +54,7 @@ case "$3" in
 		do_log /var/log/mod.log
 		do_log /var/log/mod_swap.log
 		do_log /var/log/rc_custom.log
+		do_log /var/log/debug_cfg.log
 		do_log /var/log/onlinechanged.log
 		do_log /var/log/external.log
 		do_log /var/log/mod_mount.log
