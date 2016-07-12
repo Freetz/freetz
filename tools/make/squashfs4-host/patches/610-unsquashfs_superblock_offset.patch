@@ -71,7 +71,7 @@
 +			continue;
 +		}
 +
-+		TRACE("find_superblock:%s magic 0x%08X found at 0x%08X\n", (buf.s_magic == SQUASHFS_MAGIC_SWAP ? " swapped" : ""), buf.s_magic, (unsigned int)offset);
++		TRACE("find_superblock:%s magic 0x%08X found at 0x%08X\n", (buf.magic == SQUASHFS_MAGIC_SWAP ? " swapped" : ""), buf.magic, (unsigned int)offset);
 +
 +		// do not rely on MAGIC only, check a little bit more
 +		if (is_squashfs4_superblock(&buf)) {
