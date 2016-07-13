@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.9.0)
+$(call PKG_INIT_BIN, 2.9.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=f41fa97949948fbf49af94a43d779e072a5452c6b5039d86ffa41ebab747b409
+$(PKG)_SOURCE_SHA256:=e8fe60bc72c1c979feb43740b3c74fea7f8ffbe7712b71cd9734ddb9c89282a2
 $(PKG)_SITE:=@KERNEL/software/scm/git
 
 # files to be moved from /usr/lib/git-core to /usr/bin
