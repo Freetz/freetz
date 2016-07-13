@@ -42,7 +42,9 @@ if [ $# -ne 2 -o ! -e "$INPUT_FILE" ]; then
 	exit 2
 fi
 
-NMI_BOOT_PATTERN="4E4D4920426F6F74" # "NMI Boot" as hex pattern
+# see linux-${KERNEL_VERSION}/arch/mips/fusiv/fusiv_mips32/fusiv_mtd.c (7390) for details
+NMI_BOOT_STRING="NMI Boot Vector"
+NMI_BOOT_PATTERN="${NMI_BOOT_STRING}\\x00" # as (zero-terminated) sfk-spat-pattern
 expectedNmiBootOffset=0xBE0048
 
 nmiVectorOffset=0xBE0000
@@ -55,12 +57,13 @@ declare -A nmiVectorKnownStartSequence=(
 IMAGE_CHECKSUM_SIZE=8 # number of bytes needed to store image checksum
 
 #
-# $1 - binary pattern
+# $1 - pattern type (bin, pat/text, spat/spats - see "sfk help pat" for details)
+# $2 - pattern
 #
 # returns:
 #   offsets of all pattern matches
 getHexOffsetsOfAllMatches() {
-	"$SFK_TOOL" hexfind "$INPUT_FILE" -bin "/$1/" -quiet | sed -nr -e 's|.*hit at offset (0x[0-9A-F]+)|\1|p'
+	"$SFK_TOOL" hexfind "$INPUT_FILE" -$1 "/$2/" -quiet | sed -nr -e 's|.*hit at offset (0x[0-9A-F]+)|\1|p'
 }
 
 #
@@ -76,7 +79,7 @@ getInputFileSize() {
 }
 
 
-declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches "${NMI_BOOT_PATTERN}"))
+declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches spats "${NMI_BOOT_PATTERN}"))
 
 if [ ${#nmiBootOffsets[@]} -eq 0 ]; then
 	echo "No NMI vector found" >&2
@@ -84,13 +87,13 @@ if [ ${#nmiBootOffsets[@]} -eq 0 ]; then
 fi
 
 if [ ${#nmiBootOffsets[@]} -gt 1 ]; then
-	echo "[Error] Multiple 'NMI Boot'-matches found: ${nmiBootOffsets[@]}" >&2
+	echo "[Error] Multiple '${NMI_BOOT_STRING}'-matches found: ${nmiBootOffsets[@]}" >&2
 	exit 2
 fi
 
 nmiBootOffset="${nmiBootOffsets[0]}"
 if [ "${nmiBootOffset}" != "${expectedNmiBootOffset}" ]; then
-	echo "[Error] 'NMI Boot'-match found at unexpected offset ${nmiBootOffset}" >&2
+	echo "[Error] '${NMI_BOOT_STRING}'-match found at unexpected offset ${nmiBootOffset}" >&2
 	exit 2
 fi
 
