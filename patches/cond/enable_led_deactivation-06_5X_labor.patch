@@ -1,0 +1,23 @@
+--- usr/www/avm/menus/menu_data.lua
++++ usr/www/avm/menus/menu_data.lua
+@@ -550,6 +550,12 @@
+ ["lua"] = "system/infoled.lua",
+ ["help"] = forLuaOnly and "hilfe_system_infoanzeige"
+ } or nil,
++-- TODO: untested, check if "led" is the right key and if adding pageData["led"] is enough
++["led"] = {
++["show"] = data.expertMode,
++["lua"] = "system/led_display.lua",
++["help"] = forLuaOnly and "hilfe_system_anzeige"
++} or nil,
+ ["keyLo"] = {
+ ["show"] = true,
+ ["lua"] = "system/keylock.lua",
+@@ -2063,6 +2069,7 @@
+ ["par"] = "mfn",
+ ["pos"] = 10
+ } or nil,
++-- AVM defines menuData["led"] but never defines pageData["led"], we make this entry work by defining pageData["led"]
+ ["led"] = pageData["led"] and {
+ ["txt"] = TXT([[{?menuLed?}]]),
+ ["par"] = "mfn",
