@@ -105,6 +105,7 @@ case $1 in
 			DAEMON="$d"
 			DAEMON_LONG_NAME=$DAEMON
 			DAEMON_BIN=$DAEMON
+			DAEMON_CONFIG=/mod/etc/${DAEMON}.conf
 			PID_FILE=/var/run/${DAEMON_BIN}.pid
 			modlib_start $TMP_ENABLE
 			as=${as#*#}

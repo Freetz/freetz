@@ -39,11 +39,22 @@ for var in $vars; do
 	eval $tmp=\$uebergabe
 done
 
+if [ "$TAP2LAN" = uselanip ]; then
+	LANIPANDMASK="$(ifconfig lan | sed -n '/inet addr/ s/.*inet addr:\([0-9\.]*\) .*Mask:\([0-9\.]*\)/\1 \2/ p')"
+	if [ "${LANIPANDMASK//[0-9]/}" != "... ..." ]; then 
+		echo "No valid LAN-IP found. EXIT" >&2
+		return
+	fi
+	BOX_IP=${LANIPANDMASK% *}
+	BOX_MASK=${LANIPANDMASK#* }
+fi
+
 if [ "openvpn_$CONFIG_NAMES" = "$prefix" ] || [ "$prefix" = "openvpn" -a  $count -eq 1 ]; then
 
 [ "${TYPE}_${CLIENT_INFO}_${AUTH_TYPE}" = "tun_yes_certs" ] && TUNSUBNET=true || TUNSUBNET=""
 
-echo "#  OpenVPN 2.1 Config, $(date)"
+openvpn --version | sed "s/^/#/"
+echo "#  Config date: $(date)"
 
 [ "$IPV6" = yes ] && V6=6 || V6=""
 if [ "$PROTO" = "tcp" ]; then
@@ -55,6 +66,7 @@ fi
 if [ "$TYPE" = "tap" ]; then
 	echo "dev tap$(( $count -1))"
 	[ "$TAP2LAN" = yes ] && echo "#Helperline for rc.openvpn to add tap$(( $count -1)) to lan bridge"
+	[ "$TAP2LAN" = uselanip ] && echo "#Helperline for rc.openvpn to add tap$(( $count -1)) to lan bridge and use LAN IP"
 else
 	echo "dev tun"
 fi
@@ -100,7 +112,7 @@ if [ "$MODE" = "server" ]; then
 	echo "port $PORT"
 
 	if [ "$TYPE" = "tap" ] || [ $TUNSUBNET ]; then
-		echo "ifconfig $BOX_IP $BOX_MASK"
+		[ "$TAP2LAN" != uselanip ] && echo "ifconfig $BOX_IP $BOX_MASK"
 		echo "push \"route-gateway $BOX_IP\""
 		[ $TUNSUBNET ] && echo -e 'topology subnet\npush "topology subnet"'
 		[ "$LOCAL_NET" ] && echo "push \"route $LOCAL_NET\"" | sed 's/[[:space:]]*;[[:space:]]*/\"\npush \"route /g'
