@@ -37,6 +37,7 @@ config FREETZ_PACKAGE_PHP_cli
 
 config FREETZ_PACKAGE_PHP_apxs2
 	bool "Apache2 module"
+	select FREETZ_LIB_libapr_WITH_DSO
 	select FREETZ_LIB_libpcre
 	select FREETZ_LIB_libcurl            if FREETZ_PACKAGE_PHP_WITH_CURL
 	select FREETZ_LIB_libgd              if FREETZ_PACKAGE_PHP_WITH_GD
