@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.2.2)
-$(PKG)_LIB_VERSION:=3.0.$(subst .,0,$($(PKG)_VERSION))
+$(call PKG_INIT_LIB, 2.2.3)
+$(PKG)_LIB_VERSION:=3.0.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=735015d79ea250f8f1ae0949c44af26c
+$(PKG)_SOURCE_MD5:=14e4134c129b4c166c3a0549a32ef340
 $(PKG)_SITE:=https://bitbucket.org/libgd/gd-libgd/downloads,https://github.com/libgd/libgd/releases/download/gd-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libgd.so.$($(PKG)_LIB_VERSION)
@@ -15,6 +15,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --disable-werror
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --with-fontconfig=no
 $(PKG)_CONFIGURE_OPTIONS += --with-freetype="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
