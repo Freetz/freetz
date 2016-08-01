@@ -1,6 +1,31 @@
 --- src/connections.c
 +++ src/connections.c
-@@ -953,8 +953,9 @@
+@@ -213,10 +213,11 @@
+ 			case SSL_ERROR_SYSCALL:
+ 				/* perhaps we have error waiting in our error-queue */
+ 				if (0 != (err = ERR_get_error())) {
++					char ssl_error_string_buf[256];
+ 					do {
+ 						log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
+ 								ssl_r, ret,
+-								ERR_error_string(err, NULL));
++								lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+ 					} while((err = ERR_get_error()));
+ 				} else if (errno != 0) { /* ssl bug (see lighttpd ticket #2213): sometimes errno == 0 */
+ 					switch(errno) {
+@@ -234,9 +235,10 @@
+ 				break;
+ 			default:
+ 				while((err = ERR_get_error())) {
++					char ssl_error_string_buf[256];
+ 					log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
+ 							ssl_r, ret,
+-							ERR_error_string(err, NULL));
++							lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+ 				}
+ 
+ 				break;
+@@ -1092,8 +1094,9 @@
  		/* connect FD to SSL */
  		if (srv_socket->is_ssl) {
  			if (NULL == (con->ssl = SSL_new(srv_socket->ssl_ctx))) {
@@ -11,7 +36,7 @@
  
  				return NULL;
  			}
-@@ -964,8 +965,9 @@
+@@ -1103,8 +1106,9 @@
  			SSL_set_accept_state(con->ssl);
  
  			if (1 != (SSL_set_fd(con->ssl, cnt))) {
@@ -22,47 +47,6 @@
  				return NULL;
  			}
  		}
-@@ -1223,8 +1225,11 @@
- 
- 						break;
- 					default:
-+						{
-+						char ssl_error_string_buf[256];
- 						log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
--								ERR_error_string(ERR_get_error(), NULL));
-+								lighttpd_ERR_error_string_n(ERR_get_error(), ssl_error_string_buf, sizeof(ssl_error_string_buf)));
-+						}
- 					}
- 				}
- #endif
-@@ -1366,10 +1371,11 @@
- 					case SSL_ERROR_SYSCALL:
- 						/* perhaps we have error waiting in our error-queue */
- 						if (0 != (err = ERR_get_error())) {
-+							char ssl_error_string_buf[256];
- 							do {
- 								log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
- 										ssl_r, ret,
--										ERR_error_string(err, NULL));
-+										lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
- 							} while((err = ERR_get_error()));
- 						} else if (errno != 0) { /* ssl bug (see lighttpd ticket #2213): sometimes errno == 0 */
- 							switch(errno) {
-@@ -1386,10 +1392,13 @@
- 
- 						break;
- 					default:
-+						{
-+						char ssl_error_string_buf[256];
- 						while((err = ERR_get_error())) {
- 							log_error_write(srv, __FILE__, __LINE__, "sdds", "SSL:",
- 									ssl_r, ret,
--									ERR_error_string(err, NULL));
-+									lighttpd_ERR_error_string_n(err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
-+						}
- 						}
- 
- 						break;
 --- src/connections-glue.c
 +++ src/connections-glue.c
 @@ -156,9 +156,10 @@
@@ -127,7 +111,7 @@
  			return SSL_TLSEXT_ERR_ALERT_FATAL;
  		}
  
-@@ -646,9 +647,10 @@
+@@ -661,9 +662,10 @@
  	if (NULL == (s->ssl_pemfile_pkey = evp_pkey_load_pem_file(srv, s->ssl_pemfile->ptr))) return -1;
  
  	if (!X509_check_private_key(s->ssl_pemfile_x509, s->ssl_pemfile_pkey)) {
@@ -139,7 +123,7 @@
  				s->ssl_pemfile);
  		return -1;
  	}
-@@ -658,6 +660,7 @@
+@@ -673,6 +675,7 @@
  #endif
  
  int network_init(server *srv) {
@@ -147,7 +131,7 @@
  	buffer *b;
  	size_t i, j;
  	network_backend_t backend;
-@@ -784,7 +787,7 @@
+@@ -799,7 +802,7 @@
  			s->ssl_ca_file_cert_names = SSL_load_client_CA_file(s->ssl_ca_file->ptr);
  			if (NULL == s->ssl_ca_file_cert_names) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -156,7 +140,7 @@
  			}
  		}
  
-@@ -792,7 +795,7 @@
+@@ -807,7 +810,7 @@
  
  		if (NULL == (s->ssl_ctx = SSL_CTX_new(SSLv23_server_method()))) {
  			log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -165,7 +149,7 @@
  			return -1;
  		}
  
-@@ -800,7 +803,7 @@
+@@ -815,7 +818,7 @@
  		if (0 == SSL_CTX_set_session_id_context(s->ssl_ctx, (const unsigned char*) CONST_STR_LEN("lighttpd"))) {
  			log_error_write(srv, __FILE__, __LINE__, "ss:s", "SSL:",
  				"failed to set session context",
@@ -174,7 +158,7 @@
  			return -1;
  		}
  
-@@ -821,7 +824,7 @@
+@@ -836,7 +839,7 @@
  			/* disable SSLv2 */
  			if ((SSL_OP_NO_SSLv2 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv2)) != SSL_OP_NO_SSLv2) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -183,7 +167,7 @@
  				return -1;
  			}
  		}
-@@ -830,7 +833,7 @@
+@@ -845,7 +848,7 @@
  			/* disable SSLv3 */
  			if ((SSL_OP_NO_SSLv3 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv3)) != SSL_OP_NO_SSLv3) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -192,7 +176,7 @@
  				return -1;
  			}
  		}
-@@ -839,7 +842,7 @@
+@@ -854,7 +857,7 @@
  			/* Disable support for low encryption ciphers */
  			if (SSL_CTX_set_cipher_list(s->ssl_ctx, s->ssl_cipher_list->ptr) != 1) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -201,7 +185,7 @@
  				return -1;
  			}
  
-@@ -929,7 +932,7 @@
+@@ -944,7 +947,7 @@
  			if (!buffer_string_is_empty(s1->ssl_ca_file)) {
  				if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s1->ssl_ca_file->ptr, NULL)) {
  					log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -210,7 +194,7 @@
  					return -1;
  				}
  			}
-@@ -953,20 +956,20 @@
+@@ -968,20 +971,20 @@
  
  		if (1 != SSL_CTX_use_certificate(s->ssl_ctx, s->ssl_pemfile_x509)) {
  			log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -236,7 +220,7 @@
  		}
 --- src/network_openssl.c
 +++ src/network_openssl.c
-@@ -130,10 +130,11 @@
+@@ -134,10 +134,11 @@
  			case SSL_ERROR_SYSCALL:
  				/* perhaps we have error waiting in our error-queue */
  				if (0 != (err = ERR_get_error())) {
@@ -249,7 +233,7 @@
  					} while((err = ERR_get_error()));
  				} else if (r == -1) {
  					/* no, but we have errno */
-@@ -163,9 +164,10 @@
+@@ -167,9 +168,10 @@
  				/* fall through */
  			default:
  				while((err = ERR_get_error())) {
@@ -263,7 +247,7 @@
  			}
 --- src/server.c
 +++ src/server.c
-@@ -1854,3 +1854,10 @@
+@@ -1838,3 +1838,10 @@
  
  	return 0;
  }
