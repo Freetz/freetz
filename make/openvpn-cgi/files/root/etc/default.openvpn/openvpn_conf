@@ -53,7 +53,7 @@ if [ "openvpn_$CONFIG_NAMES" = "$prefix" ] || [ "$prefix" = "openvpn" -a  $count
 
 [ "${TYPE}_${CLIENT_INFO}_${AUTH_TYPE}" = "tun_yes_certs" ] && TUNSUBNET=true || TUNSUBNET=""
 
-openvpn --version | sed "s/^/#/"
+openvpn --version | head -n 2 | sed "s/\(.\{240\}\).*/\1... /g ; s/^/# /"
 echo "#  Config date: $(date)"
 
 [ "$IPV6" = yes ] && V6=6 || V6=""
