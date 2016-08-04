@@ -29,7 +29,7 @@ echo "allow-cgi-request-crunching $PRIVOXY_CGI_CRUNCH"
 
 echo "listen-address $PRIVOXY_LISTEN_ADDRESS:$PRIVOXY_LISTEN_PORT"
 
-[ "$PRIVOXY_FORWARD_SOCKS" ] && echo "forward-socks4a / $PRIVOXY_FORWARD_SOCKS ."
+[ "$PRIVOXY_FORWARD_SOCKS" ] && echo "forward-${PRIVOXY_FORWARD_SOCKS_TYPE} / $PRIVOXY_FORWARD_SOCKS ."
 
 if [ ! -z "$PRIVOXY_PERMIT_ACCESS" ]; then
 	echo "$PRIVOXY_PERMIT_ACCESS" | grep -v "^#" | while read -r permit; do

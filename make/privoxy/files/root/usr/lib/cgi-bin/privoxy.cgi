@@ -9,6 +9,7 @@ check "$PRIVOXY_TOGGLE" 1:toggle "*":neutral
 check "$PRIVOXY_ENABLE_REMOTE_TOGGLE" 1:remote_toggle_yes "*":remote_toggle_no
 check "$PRIVOXY_ENFORCE_BLOCKS" 1:enforce_blocks_yes "*":enforce_blocks_no
 check "$PRIVOXY_CGI_CRUNCH" 1:cgi_crunch_yes "*":cgi_crunch_no
+select "$PRIVOXY_FORWARD_SOCKS_TYPE" socks5:socks5 socks5t:socks5t "*":socks4a
 
 if [ "$(cgi_param load_adblocklist)" == "yes" -a -n "$(cgi_param alt_path)" ]; then
 	PRIVOXY_ALT_PATH=$(cgi_param alt_path)
@@ -76,6 +77,17 @@ sec_begin '$(lang de:"Weiterleitung" en:"Forwarding") (optional)'
 cat << EOF
 <p><label for="socks">$(lang de:"N&auml;chster Proxy-Server:" en:"Next proxy:")</label>  <input id="socks" type="text" size="21" title="Syntax: &lt;ip&gt;:&lt;port&gt;" maxlength="21" name="forward_socks" value="$(html "$PRIVOXY_FORWARD_SOCKS")"><br />
 <span style="font-size:x-small">$(lang de:"Privoxy soll alle Anfragen an den angegebenen (socks) Proxy-Server weiter reichen. Das k&ouml;nnte beispielsweise ein Tor-Server sein." en:"Privoxy shall forward all requests to the specified (socks) proxy server. This could be a tor node, for example.")</span></p>
+EOF
+
+cat << EOF
+<p>
+<label for='forward_socks_type'>$(lang de:"Proxy-Server Typ:" en:"Next proxy type:")</label>
+<select name='forward_socks_type' id='forward_socks_type'>
+<option value='socks4a'$socks4a_sel>socks4a</option>
+<option value='socks5'$socks5_sel>socks5</option>
+<option value='socks5t'$socks5t_sel>socks5t</option>
+</select>
+</p>
 EOF
 
 sec_end
