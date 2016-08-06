@@ -27,10 +27,9 @@ if [ "$TOR_SOCKS_POLICY_REJECT" != "no" ]; then
 fi
 
 [ -n "$TOR_ENTRY_NODES" ] && echo "EntryNodes $(_join ',' $(echo "$TOR_ENTRY_NODES" | grep -v "^#"))"
-[ "$TOR_STRICT_ENTRY_NODES" == "yes" ] && echo "StrictEntryNodes 1"
-
 [ -n "$TOR_EXIT_NODES" ] && echo "ExitNodes $(_join ',' $(echo "$TOR_EXIT_NODES" | grep -v "^#"))"
-[ "$TOR_STRICT_EXIT_NODES" == "yes" ] && echo "StrictExitNodes 1"
+[ -n "$TOR_EXCLUDE_NODES" ] && echo "ExcludeNodes $(_join ',' $(echo "$TOR_EXCLUDE_NODES" | grep -v "^#"))"
+[ "$TOR_STRICT_NODES" == "yes" ] && echo "StrictNodes 1"
 
 if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
 	[ "$TOR_NICKNAME" ] && echo "Nickname $TOR_NICKNAME"
