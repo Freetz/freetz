@@ -109,17 +109,16 @@
  		else
  			goto options;
  	}
-@@ -2716,6 +2799,9 @@
+@@ -2716,6 +2799,8 @@
  			ERROR("\t\t\t\trather than use the default shell "
  				"wildcard\n\t\t\t\texpansion (globbing)\n");
  			ERROR("\t-exit-on-decomp-error\texit on decompression errors\n");
 +			ERROR("\t-scan or -k\t\ttreat filesystem as a combined image\n");
 +			ERROR("\t\t\t\t(kernel+SquashFS) and scan it to locate the superblock\n");
-+			ERROR("\t\t\t\tand its offset\n");
  			ERROR("\nDecompressors available:\n");
  			display_compressors("", "");
  		}
-@@ -2731,6 +2817,16 @@
+@@ -2731,6 +2816,16 @@
  		exit(1);
  	}
  
@@ -128,9 +127,9 @@
 +		if (superblock_offset == (off_t) -1) {
 +			ERROR("Unable to find something looking like a SquashFS superblock in %s.\n", argv[i]);
 +			exit(2);
-+		} else {
-+			ERROR("Found a valid superblock at offset 0x%08X while scanning %s.\n", (unsigned int) superblock_offset, argv[i]);
 +		}
++
++		ERROR("Found a valid superblock at offset 0x%08X while scanning %s.\n", (unsigned int) superblock_offset, argv[i]);
 +	}
 +
  	if(read_super(argv[i]) == FALSE)
