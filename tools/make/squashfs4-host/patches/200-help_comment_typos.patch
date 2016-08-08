@@ -27,3 +27,14 @@
  	for(i = source + 2; i < argc; i++)
  		if(strcmp(argv[i], "-sort") == 0) {
  			int res = read_sort_file(argv[++i], source,
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -629,7 +629,7 @@
+ 	off_t off = byte;
+ 	int res, count;
+ 
+-	TRACE("read_bytes: reading from position 0x%llx, bytes %d\n", byte,
++	TRACE("read_fs_bytes: reading from position 0x%llx, bytes %d\n", byte,
+ 		bytes);
+ 
+ 	if(lseek(fd, off, SEEK_SET) == -1) {
