@@ -63,7 +63,7 @@ cs_is_tagged (int fd, uint32_t *sum, off_t *length)
     && get_le32 (cksum.ck_magic) == MAGIC_NUMBER;
   if (is_tagged) {
     if (sum)
-      *sum = get_le32 (cksum.ck_magic);
+      *sum = get_le32 (cksum.ck_crc);
     if (length)
       *length = len;
   }
