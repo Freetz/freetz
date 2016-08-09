@@ -93,7 +93,7 @@ cs_calc_sum (int fd, uint32_t *sum, struct cksum *cksum)
     return -1;
   length = st.st_size;
   if (cksum)
-    length -= sizeof (cksum);
+    length -= sizeof (*cksum);
   if (length < 0)
     return -1;
   if (lseek (fd, 0, SEEK_SET) != 0)
