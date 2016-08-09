@@ -93,7 +93,7 @@ main (int argc, char **argv)
     else
       printf ("Checksum remove successful\n");
     break;
-    
+
   default:
     status = 3;
     break;

@@ -6,8 +6,8 @@
 #define MAGIC_NUMBER 0xC453DE23
 
 struct cksum {
-  uint8_t	ck_magic[4];
-  uint8_t	ck_crc[4];
+  uint8_t ck_magic[4];
+  uint8_t ck_crc[4];
 };
 
 /*
@@ -26,7 +26,7 @@ crctab_init (uint32_t *crctab)
     uint32_t c = (crc >> 31) ^ (i & 1);
     crc <<= 1;
     if (c & 1)
-	crc ^= poly;
+      crc ^= poly;
     crctab[i] = crc;
   }
 }
@@ -88,7 +88,7 @@ cs_calc_sum (int fd, uint32_t *sum, struct cksum *cksum)
   off_t length, pos;
   struct stat st;
   long buflen;
-  
+
   if (fstat (fd, &st) < 0)
     return -1;
   length = st.st_size;
@@ -121,7 +121,7 @@ cs_calc_sum (int fd, uint32_t *sum, struct cksum *cksum)
 
   if (cksum) {
     if (read (fd, cksum, sizeof (*cksum)) != sizeof (*cksum)
-	|| get_le32 (cksum->ck_magic) != MAGIC_NUMBER)
+       || get_le32 (cksum->ck_magic) != MAGIC_NUMBER)
       return -1;
   }
 
@@ -167,4 +167,3 @@ cs_remove_sum (int fd, uint32_t *res)
     return -1;
   return 0;
 }
-
