@@ -1,18 +1,15 @@
-CC = gcc
-LD = ld
-CFLAGS = -W -Wall -O2
+OPT = -O2
+override CFLAGS += -W -Wall $(OPT)
 
-PROGS = tichksum
-OBJS = ckmain.o cksum.o
+SRCS = ckmain.c cksum.c
+OBJS = $(SRCS:%.c=%.o)
 
 tichksum: $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+$(SRCS): cksum.h
 
 clean:
-	rm -f $(PROGS) $(OBJS)
+	rm -f tichksum *.o
 
-ckmain.c: cksum.h
-cksum.c:  cksum.h
-
-
-.PHONY: all clean
+.PHONY: clean
