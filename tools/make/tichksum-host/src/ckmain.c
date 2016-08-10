@@ -73,15 +73,15 @@ main (int argc, char **argv)
     if (status < 0)
       printf ("Adding failed\n");
     else {
-      printf ("Calculated checksum is %08X\n", sum);
+      printf ("Calculated checksum is 0x%08X\n", sum);
       printf ("Added successfully\n");
     }
     break;
   case ACT_VERIFY:
     status = cs_verify_sum (fd, &sum, &res);
     if (status >= 0) {
-      printf ("Calculated checksum is %08X\n", sum);
-      printf ("Saved checksum is %X\n", res);
+      printf ("Calculated checksum is 0x%08X\n", sum);
+      printf ("Saved checksum is 0x%08X\n", res);
     }
     if (status > 0)
       printf ("Checksum validation successful\n");
