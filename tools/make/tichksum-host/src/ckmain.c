@@ -12,8 +12,8 @@ int
 main (int argc, char **argv)
 {
   int fd;
-  uint32_t sum;
-  uint32_t res;
+  uint32_t calculated_sum;
+  uint32_t saved_sum;
   int fn_ind = 1;
   int status;
   enum action {
@@ -69,19 +69,19 @@ main (int argc, char **argv)
 
   switch (act) {
   case ACT_ADD:
-    status = cs_add_sum (fd, &sum);
+    status = cs_add_sum (fd, &calculated_sum);
     if (status < 0)
       printf ("Adding failed\n");
     else {
-      printf ("Calculated checksum is 0x%08X\n", sum);
+      printf ("Calculated checksum is 0x%08X\n", calculated_sum);
       printf ("Added successfully\n");
     }
     break;
   case ACT_VERIFY:
-    status = cs_verify_sum (fd, &sum, &res);
+    status = cs_verify_sum (fd, &calculated_sum, &saved_sum);
     if (status >= 0) {
-      printf ("Calculated checksum is 0x%08X\n", sum);
-      printf ("Saved checksum is 0x%08X\n", res);
+      printf ("Calculated checksum is 0x%08X\n", calculated_sum);
+      printf ("Saved checksum is 0x%08X\n", saved_sum);
     }
     if (status > 0)
       printf ("Checksum validation successful\n");

@@ -52,7 +52,7 @@ set_le32 (void *p, uint32_t v)
 
 // return 1: tagged, 0: not tagged, -1: error
 int
-cs_is_tagged (int fd, uint32_t *sum, off_t *payload_length)
+cs_is_tagged (int fd, uint32_t *saved_sum, off_t *payload_length)
 {
   cksum_t cksum;
   off_t len;
@@ -74,8 +74,8 @@ cs_is_tagged (int fd, uint32_t *sum, off_t *payload_length)
     read (fd, &cksum, sizeof (cksum_t)) == sizeof (cksum_t)
     && get_le32 (cksum.ck_magic) == MAGIC_NUMBER;
 
-  if (is_tagged && sum)
-    *sum = get_le32 (cksum.ck_crc);
+  if (is_tagged && saved_sum)
+    *saved_sum = get_le32 (cksum.ck_crc);
 
   if (payload_length)
     *payload_length = len + (is_tagged ? 0 : sizeof (cksum_t));
@@ -93,44 +93,44 @@ _crc = (_crc << 8) ^ crctab[(_crc >> 24) ^ _val];	\
 // return -1: error, 0: ok
 // cksum only valig for tagged files
 int
-cs_calc_sum (int fd, uint32_t *sum, cksum_t *cksum)
+cs_calc_sum (int fd, uint32_t *calculated_sum, cksum_t *cksum)
 {
   uint8_t buf[BUFLEN];
   uint32_t crc = 0;
   uint32_t crctab[0x100];
-  off_t length, pos;
+  off_t payload_length, pos;
   struct stat st;
   long buflen;
 
   if (fstat (fd, &st) < 0)
     return -1;
-  length = st.st_size;
+  payload_length = st.st_size;
   if (cksum)
-    length -= sizeof (cksum_t);
-  if (length < 0)
+    payload_length -= sizeof (cksum_t);
+  if (payload_length < 0)
     return -1;
   if (lseek (fd, 0, SEEK_SET) != 0)
     return -1;
 
   crctab_init (crctab);
-  for (pos = 0; pos < length; pos += buflen) {
+  for (pos = 0; pos < payload_length; pos += buflen) {
     uint8_t *cp = buf;
     int i;
     buflen = sizeof (buf);
-    if (buflen > length - pos)
-      buflen = length - pos;
+    if (buflen > payload_length - pos)
+      buflen = payload_length - pos;
     if (read (fd, buf, buflen) != buflen)
       return -1;
     for (i = 0; i < buflen; ++i, ++cp)
       ADD_CRC (crc, *cp);
   }
 
-  for (; length; length >>= 8)
-    ADD_CRC (crc, length);
+  for (; payload_length; payload_length >>= 8)
+    ADD_CRC (crc, payload_length);
 
   crc = ~crc & 0xFFFFFFFF;
 
-  *sum = crc;
+  *calculated_sum = crc;
 
   if (cksum) {
     if (read (fd, cksum, sizeof (cksum_t)) != sizeof (cksum_t)
@@ -158,25 +158,25 @@ cs_add_sum (int fd, uint32_t *sum)
 
 // return -1: error, 0: cs bad, 1: cs good
 int
-cs_verify_sum (int fd, uint32_t *sum, uint32_t *res)
+cs_verify_sum (int fd, uint32_t *calculated_sum, uint32_t *saved_sum)
 {
   cksum_t cksum;
 
-  if (cs_calc_sum (fd, sum, &cksum))
+  if (cs_calc_sum (fd, calculated_sum, &cksum))
     return -1;
-  *res = get_le32 (cksum.ck_crc);
-  return *sum == *res;
+  *saved_sum = get_le32 (cksum.ck_crc);
+  return *calculated_sum == *saved_sum;
 }
 
 // return -1: error, 0: ok
 int
-cs_remove_sum (int fd, uint32_t *res)
+cs_remove_sum (int fd, uint32_t *saved_sum)
 {
-  off_t length;
+  off_t payload_length;
 
-  if (cs_is_tagged (fd, res, &length) != 1)
+  if (cs_is_tagged (fd, saved_sum, &payload_length) != 1)
     return -1;
-  if (ftruncate (fd, length))
+  if (ftruncate (fd, payload_length))
     return -1;
   return 0;
 }
