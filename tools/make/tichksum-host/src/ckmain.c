@@ -1,7 +1,9 @@
-
 #include "cksum.h"
+
 #include <stdio.h>
 #include <fcntl.h>
+#include <unistd.h>
+
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif

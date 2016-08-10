@@ -2,8 +2,6 @@
 #define CKSUM_H
 
 #include <stdint.h>
-#include <errno.h>
-#include <unistd.h>
 #include <sys/types.h>
 
 int cs_is_tagged (int fd, uint32_t *sum, off_t *length);

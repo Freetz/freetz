@@ -1,5 +1,7 @@
 #include "cksum.h"
+
 #include <sys/stat.h>
+#include <unistd.h>
 
 #define BUFLEN (1 << 16)
 
