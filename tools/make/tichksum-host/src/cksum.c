@@ -3,8 +3,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define BUFLEN (1 << 16)
-
 #define MAGIC_NUMBER 0xC453DE23
 
 typedef struct cksum_t {
@@ -90,23 +88,19 @@ _crc = (_crc << 8) ^ crctab[(_crc >> 24) ^ _val];	\
 (crc) = _crc;						\
 })
 
+#define BUFLEN (1 << 16)
+
 // return -1: error, 0: ok
-// cksum only valig for tagged files
+static
 int
-cs_calc_sum (int fd, uint32_t *calculated_sum, cksum_t *cksum)
+cs_calc_sum (int fd, off_t payload_length, uint32_t *calculated_sum)
 {
   uint8_t buf[BUFLEN];
   uint32_t crc = 0;
   uint32_t crctab[0x100];
-  off_t payload_length, pos;
-  struct stat st;
+  off_t  pos;
   long buflen;
 
-  if (fstat (fd, &st) < 0)
-    return -1;
-  payload_length = st.st_size;
-  if (cksum)
-    payload_length -= sizeof (cksum_t);
   if (payload_length < 0)
     return -1;
   if (lseek (fd, 0, SEEK_SET) != 0)
@@ -132,25 +126,23 @@ cs_calc_sum (int fd, uint32_t *calculated_sum, cksum_t *cksum)
 
   *calculated_sum = crc;
 
-  if (cksum) {
-    if (read (fd, cksum, sizeof (cksum_t)) != sizeof (cksum_t)
-       || get_le32 (cksum->ck_magic) != MAGIC_NUMBER)
-      return -1;
-  }
-
   return 0;
 }
 
 // return -1: error, 0: ok
 int
-cs_add_sum (int fd, uint32_t *sum)
+cs_add_sum (int fd, uint32_t *calculated_sum)
 {
+  off_t payload_length;
   cksum_t cksum;
 
-  if (cs_calc_sum (fd, sum, NULL))
+  if (cs_is_tagged (fd, NULL, &payload_length) != 0)
     return -1;
+  if (cs_calc_sum (fd, payload_length, calculated_sum))
+    return -1;
+
   set_le32 (cksum.ck_magic, MAGIC_NUMBER);
-  set_le32 (cksum.ck_crc, *sum);
+  set_le32 (cksum.ck_crc, *calculated_sum);
   if (write (fd, &cksum, sizeof (cksum_t)) != sizeof (cksum_t))
     return -1;
   return 0;
@@ -160,11 +152,12 @@ cs_add_sum (int fd, uint32_t *sum)
 int
 cs_verify_sum (int fd, uint32_t *calculated_sum, uint32_t *saved_sum)
 {
-  cksum_t cksum;
+  off_t payload_length;
 
-  if (cs_calc_sum (fd, calculated_sum, &cksum))
+  if (cs_is_tagged (fd, saved_sum, &payload_length) != 1)
     return -1;
-  *saved_sum = get_le32 (cksum.ck_crc);
+  if (cs_calc_sum (fd, payload_length, calculated_sum))
+    return -1;
   return *calculated_sum == *saved_sum;
 }
 
