@@ -57,7 +57,16 @@ cs_is_tagged (int fd, uint32_t *sum, off_t *length)
   cksum_t cksum;
   off_t len;
 
+#if 0
+  // for whatever reason SEEK_END with negative offset doesn't work on the target (most likely a uClibc issue)
   len = lseek (fd, -sizeof (cksum_t), SEEK_END);
+#else
+  // workaround it by using two lseek calls
+  len = lseek (fd,                0, SEEK_END);
+  if (len < 0)
+    return -1;
+  len = lseek (fd, len - sizeof (cksum_t), SEEK_SET);
+#endif
   if (len < 0)
     return -1;
   int is_tagged =
