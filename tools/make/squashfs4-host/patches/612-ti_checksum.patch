@@ -4,7 +4,7 @@
  	return (off_t) -1;
  }
  
-+#define TI_CHECKSUM_MAGIC 0x23DE53C4
++#define TI_CHECKSUM_MAGIC 0x23DE53C4 // big-endian (natural) order
 +typedef struct ti_checksum_buf {
 +	unsigned int magic;
 +	unsigned int checksum;
@@ -34,11 +34,11 @@
 +		return FALSE;
 +	}
 +
-+	if (ntohl(buf.magic) != TI_CHECKSUM_MAGIC) {
++	if (htonl(buf.magic) != TI_CHECKSUM_MAGIC) {
 +		return FALSE;
 +	}
 +
-+	*checksum = ntohl(buf.checksum);
++	*checksum = inswap_le32(htonl(buf.checksum)); // checksum is always stored in little-endian
 +	return TRUE;
 +}
 +
