@@ -70,9 +70,12 @@ main (int argc, char **argv)
   switch (act) {
   case ACT_ADD:
     status = cs_add_sum (fd, &calculated_sum);
-    if (status < 0)
+    if (status < 0) {
+      if (status == -2) {
+        printf ("File already contains the checksum\n");
+      }
       printf ("Adding failed\n");
-    else {
+    } else {
       printf ("Calculated checksum is 0x%08X\n", calculated_sum);
       printf ("Added successfully\n");
     }

@@ -128,7 +128,7 @@ cs_calc_sum (int fd, off_t payload_length, uint32_t *calculated_sum)
   return 0;
 }
 
-// return -1: error, 0: ok
+// return -2: cs already contained, -1: error, 0: ok
 int
 cs_add_sum (int fd, uint32_t *calculated_sum)
 {
@@ -136,7 +136,7 @@ cs_add_sum (int fd, uint32_t *calculated_sum)
   cksum_t cksum;
 
   if (cs_is_tagged (fd, NULL, &payload_length) != 0)
-    return -1;
+    return -2;
   if (cs_calc_sum (fd, payload_length, calculated_sum))
     return -1;
 
