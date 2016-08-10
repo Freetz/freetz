@@ -52,7 +52,7 @@ set_le32 (void *p, uint32_t v)
 
 // return 1: tagged, 0: not tagged, -1: error
 int
-cs_is_tagged (int fd, uint32_t *sum, off_t *length)
+cs_is_tagged (int fd, uint32_t *sum, off_t *payload_length)
 {
   cksum_t cksum;
   off_t len;
@@ -69,15 +69,17 @@ cs_is_tagged (int fd, uint32_t *sum, off_t *length)
 #endif
   if (len < 0)
     return -1;
+
   int is_tagged =
     read (fd, &cksum, sizeof (cksum_t)) == sizeof (cksum_t)
     && get_le32 (cksum.ck_magic) == MAGIC_NUMBER;
-  if (is_tagged) {
-    if (sum)
-      *sum = get_le32 (cksum.ck_crc);
-    if (length)
-      *length = len;
-  }
+
+  if (is_tagged && sum)
+    *sum = get_le32 (cksum.ck_crc);
+
+  if (payload_length)
+    *payload_length = len + (is_tagged ? 0 : sizeof (cksum_t));
+
   return is_tagged;
 }
 
