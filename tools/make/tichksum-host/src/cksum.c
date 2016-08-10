@@ -1,6 +1,5 @@
 #include "cksum.h"
 
-#include <sys/stat.h>
 #include <unistd.h>
 
 #define MAGIC_NUMBER 0xC453DE23
