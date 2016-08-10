@@ -54,16 +54,17 @@ cs_is_tagged (int fd, uint32_t *saved_sum, off_t *payload_length)
   cksum_t cksum;
   off_t len;
 
-#if 0
-  // for whatever reason SEEK_END with negative offset doesn't work on the target (most likely a uClibc issue)
-  len = lseek (fd, -sizeof (cksum_t), SEEK_END);
-#else
-  // workaround it by using two lseek calls
-  len = lseek (fd,                0, SEEK_END);
+  len = lseek (fd, 0, SEEK_END);
   if (len < 0)
     return -1;
+
+  if (payload_length)
+    *payload_length = len;
+
+  if (len < (off_t) sizeof (cksum_t))
+    return 0;
+
   len = lseek (fd, len - sizeof (cksum_t), SEEK_SET);
-#endif
   if (len < 0)
     return -1;
 
@@ -71,11 +72,12 @@ cs_is_tagged (int fd, uint32_t *saved_sum, off_t *payload_length)
     read (fd, &cksum, sizeof (cksum_t)) == sizeof (cksum_t)
     && get_le32 (cksum.ck_magic) == MAGIC_NUMBER;
 
-  if (is_tagged && saved_sum)
-    *saved_sum = get_le32 (cksum.ck_crc);
-
-  if (payload_length)
-    *payload_length = len + (is_tagged ? 0 : sizeof (cksum_t));
+  if (is_tagged) {
+    if (saved_sum)
+      *saved_sum = get_le32 (cksum.ck_crc);
+    if (payload_length)
+      *payload_length -= sizeof (cksum_t);
+  }
 
   return is_tagged;
 }
