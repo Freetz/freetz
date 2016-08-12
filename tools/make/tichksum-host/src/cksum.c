@@ -68,18 +68,18 @@ cs_is_tagged (int fd, uint32_t *saved_sum, off_t *payload_length)
   if (len < 0)
     return -1;
 
-  int is_tagged =
-    read (fd, &cksum, sizeof (cksum_t)) == sizeof (cksum_t)
-    && get_le32 (cksum.ck_magic) == MAGIC_NUMBER;
+  if (read(fd, &cksum, sizeof (cksum_t)) != sizeof (cksum_t))
+    return -1;
 
-  if (is_tagged) {
-    if (saved_sum)
-      *saved_sum = get_le32 (cksum.ck_crc);
-    if (payload_length)
-      *payload_length -= sizeof (cksum_t);
-  }
+  if (get_le32 (cksum.ck_magic) != MAGIC_NUMBER)
+    return 0;
 
-  return is_tagged;
+  if (saved_sum)
+    *saved_sum = get_le32 (cksum.ck_crc);
+  if (payload_length)
+    *payload_length -= sizeof (cksum_t);
+
+  return 1;
 }
 
 #define ADD_CRC(crc, val) ({				\
