@@ -126,7 +126,7 @@ cs_calc_sum (int fd, off_t payload_length, uint32_t *calculated_sum)
 }
 
 int
-cs_add_sum (int fd, uint32_t *calculated_sum)
+cs_add_sum (int fd, uint32_t *calculated_sum, int force)
 {
   off_t payload_length;
   cksum_t cksum;
@@ -135,8 +135,12 @@ cs_add_sum (int fd, uint32_t *calculated_sum)
   rc = cs_is_tagged (fd, NULL, &payload_length);
   if (rc == CS_TECHNICAL_ERROR)
     return CS_TECHNICAL_ERROR;
-  if (rc == TRUE)
-    return CS_FAILURE;
+  if (rc == TRUE) {
+    if (!force)
+      return CS_FAILURE;
+
+    payload_length += sizeof (cksum_t);
+  }
 
   rc = cs_calc_sum (fd, payload_length, calculated_sum);
   if (rc != CS_SUCCESS)

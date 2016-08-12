@@ -34,7 +34,7 @@ int cs_is_tagged  (int fd, uint32_t *saved_sum, off_t *payload_length);
  * returns
  *   CS_TECHNICAL_ERROR, CS_SUCCESS (adding succeeded), CS_FAILURE (file already contains the checksum)
  */
-int cs_add_sum    (int fd, uint32_t *calculated_sum);
+int cs_add_sum    (int fd, uint32_t *calculated_sum, int force);
 
 /*
  * returns

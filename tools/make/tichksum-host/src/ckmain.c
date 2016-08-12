@@ -21,6 +21,7 @@ main (int argc, char **argv)
   enum action {
     ACT_DEFAULT,
     ACT_ADD,
+    ACT_ADD_FORCIBLE,
     ACT_VERIFY,
     ACT_REMOVE,
     ACT_ERR,
@@ -31,7 +32,7 @@ main (int argc, char **argv)
   if (argc > 1 && argv[1][0] == '-') {
     switch (argv[1][1]) {
     case 'a':
-      act = ACT_ADD;
+      act = (argv[1][2] == 'a') ? ACT_ADD_FORCIBLE : ACT_ADD;
       break;
     case 'v':
       act = ACT_VERIFY;
@@ -48,7 +49,7 @@ main (int argc, char **argv)
     fn_ind++;
   }
   if (argc <= fn_ind || act == ACT_ERR) {
-    printf ("Usage: %s [-a|-v|-r|--] filename\n", argv[0]);
+    printf ("Usage: %s [-a|-aa|-v|-r|--] filename\n", argv[0]);
     return CS_FAILURE;
   }
 
@@ -71,7 +72,8 @@ main (int argc, char **argv)
 
   switch (act) {
   case ACT_ADD:
-    rc = cs_add_sum (fd, &calculated_sum);
+  case ACT_ADD_FORCIBLE:
+    rc = cs_add_sum (fd, &calculated_sum, act == ACT_ADD_FORCIBLE);
     if (rc == CS_SUCCESS) {
       printf ("Calculated checksum is 0x%08X\n", calculated_sum);
       printf ("Added successfully\n");
