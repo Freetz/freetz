@@ -47,7 +47,6 @@ set_le32 (void *p, uint32_t v)
   cp[3] = v >> (3 * 8);
 }
 
-// return 1: tagged, 0: not tagged, -1: error
 int
 cs_is_tagged (int fd, uint32_t *saved_sum, off_t *payload_length)
 {
@@ -56,30 +55,29 @@ cs_is_tagged (int fd, uint32_t *saved_sum, off_t *payload_length)
 
   len = lseek (fd, 0, SEEK_END);
   if (len < 0)
-    return -1;
+    return CS_TECHNICAL_ERROR;
 
   if (payload_length)
     *payload_length = len;
 
   if (len < (off_t) sizeof (cksum_t))
-    return 0;
+    return FALSE;
 
   len = lseek (fd, len - sizeof (cksum_t), SEEK_SET);
   if (len < 0)
-    return -1;
-
+    return CS_TECHNICAL_ERROR;
   if (read(fd, &cksum, sizeof (cksum_t)) != sizeof (cksum_t))
-    return -1;
+    return CS_TECHNICAL_ERROR;
 
   if (get_le32 (cksum.ck_magic) != MAGIC_NUMBER)
-    return 0;
+    return FALSE;
 
   if (saved_sum)
     *saved_sum = get_le32 (cksum.ck_crc);
   if (payload_length)
     *payload_length -= sizeof (cksum_t);
 
-  return 1;
+  return TRUE;
 }
 
 #define ADD_CRC(crc, val) ({				\
@@ -91,7 +89,6 @@ _crc = (_crc << 8) ^ crctab[(_crc >> 24) ^ _val];	\
 
 #define BUFLEN (1 << 16)
 
-// return -1: error, 0: ok
 static
 int
 cs_calc_sum (int fd, off_t payload_length, uint32_t *calculated_sum)
@@ -102,10 +99,8 @@ cs_calc_sum (int fd, off_t payload_length, uint32_t *calculated_sum)
   off_t  pos;
   long buflen;
 
-  if (payload_length < 0)
-    return -1;
-  if (lseek (fd, 0, SEEK_SET) != 0)
-    return -1;
+  if (payload_length < 0 || lseek (fd, 0, SEEK_SET) != 0)
+    return CS_TECHNICAL_ERROR;
 
   crctab_init (crctab);
   for (pos = 0; pos < payload_length; pos += buflen) {
@@ -115,7 +110,7 @@ cs_calc_sum (int fd, off_t payload_length, uint32_t *calculated_sum)
     if (buflen > payload_length - pos)
       buflen = payload_length - pos;
     if (read (fd, buf, buflen) != buflen)
-      return -1;
+      return CS_TECHNICAL_ERROR;
     for (i = 0; i < buflen; ++i, ++cp)
       ADD_CRC (crc, *cp);
   }
@@ -127,50 +122,67 @@ cs_calc_sum (int fd, off_t payload_length, uint32_t *calculated_sum)
 
   *calculated_sum = crc;
 
-  return 0;
+  return CS_SUCCESS;
 }
 
-// return -2: cs already contained, -1: error, 0: ok
 int
 cs_add_sum (int fd, uint32_t *calculated_sum)
 {
   off_t payload_length;
   cksum_t cksum;
+  int rc;
 
-  if (cs_is_tagged (fd, NULL, &payload_length) != 0)
-    return -2;
-  if (cs_calc_sum (fd, payload_length, calculated_sum))
-    return -1;
+  rc = cs_is_tagged (fd, NULL, &payload_length);
+  if (rc == CS_TECHNICAL_ERROR)
+    return CS_TECHNICAL_ERROR;
+  if (rc == TRUE)
+    return CS_FAILURE;
+
+  rc = cs_calc_sum (fd, payload_length, calculated_sum);
+  if (rc != CS_SUCCESS)
+    return rc;
 
   set_le32 (cksum.ck_magic, MAGIC_NUMBER);
   set_le32 (cksum.ck_crc, *calculated_sum);
   if (write (fd, &cksum, sizeof (cksum_t)) != sizeof (cksum_t))
-    return -1;
-  return 0;
+    return CS_TECHNICAL_ERROR;
+
+  return CS_SUCCESS;
 }
 
-// return -1: error, 0: cs bad, 1: cs good
 int
 cs_verify_sum (int fd, uint32_t *calculated_sum, uint32_t *saved_sum)
 {
   off_t payload_length;
+  int rc;
 
-  if (cs_is_tagged (fd, saved_sum, &payload_length) != 1)
-    return -1;
-  if (cs_calc_sum (fd, payload_length, calculated_sum))
-    return -1;
-  return *calculated_sum == *saved_sum;
+  rc = cs_is_tagged (fd, saved_sum, &payload_length);
+  if (rc == CS_TECHNICAL_ERROR)
+    return CS_TECHNICAL_ERROR;
+  if (rc == FALSE)
+    return CS_FAILURE;
+
+  rc = cs_calc_sum (fd, payload_length, calculated_sum);
+  if (rc != CS_SUCCESS)
+    return rc;
+
+  return (*calculated_sum == *saved_sum) ? CS_SUCCESS : CS_FAILURE;
 }
 
-// return -1: error, 0: ok
 int
 cs_remove_sum (int fd, uint32_t *saved_sum)
 {
   off_t payload_length;
+  int rc;
 
-  if (cs_is_tagged (fd, saved_sum, &payload_length) != 1)
-    return -1;
+  rc = cs_is_tagged (fd, saved_sum, &payload_length);
+  if (rc == CS_TECHNICAL_ERROR)
+    return CS_TECHNICAL_ERROR;
+  if (rc == FALSE)
+    return CS_FAILURE;
+
   if (ftruncate (fd, payload_length))
-    return -1;
-  return 0;
+    return CS_TECHNICAL_ERROR;
+
+  return CS_SUCCESS;
 }

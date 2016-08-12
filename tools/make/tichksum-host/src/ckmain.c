@@ -12,10 +12,12 @@ int
 main (int argc, char **argv)
 {
   int fd;
-  uint32_t calculated_sum;
-  uint32_t saved_sum;
   int fn_ind = 1;
-  int status;
+  char const *fn;
+
+  uint32_t calculated_sum = 0;
+  uint32_t saved_sum = 0;
+
   enum action {
     ACT_DEFAULT,
     ACT_ADD,
@@ -23,7 +25,8 @@ main (int argc, char **argv)
     ACT_REMOVE,
     ACT_ERR,
   } act = ACT_DEFAULT;
-  char const *fn;
+
+  int rc = CS_FAILURE;
 
   if (argc > 1 && argv[1][0] == '-') {
     switch (argv[1][1]) {
@@ -46,22 +49,21 @@ main (int argc, char **argv)
   }
   if (argc <= fn_ind || act == ACT_ERR) {
     printf ("Usage: %s [-a|-v|-r|--] filename\n", argv[0]);
-    return 1;
+    return CS_FAILURE;
   }
-  fn = argv[fn_ind];
 
+  fn = argv[fn_ind];
   fd = open (fn, act == ACT_VERIFY ? O_RDONLY|O_BINARY : O_RDWR|O_BINARY);
   if (fd < 0) {
     perror (fn);
-    return 1;
+    return CS_TECHNICAL_ERROR;
   }
 
   if (act == ACT_DEFAULT) {
-    if (!cs_is_tagged (fd, NULL, NULL)) {
+    if (cs_is_tagged (fd, NULL, NULL) == FALSE) {
       printf ("File doesn't contain the checksum, adding\n");
       act = ACT_ADD;
-    }
-    else {
+    } else {
       printf ("File already contains the checksum, verifying\n");
       act = ACT_VERIFY;
     }
@@ -69,41 +71,46 @@ main (int argc, char **argv)
 
   switch (act) {
   case ACT_ADD:
-    status = cs_add_sum (fd, &calculated_sum);
-    if (status < 0) {
-      if (status == -2) {
+    rc = cs_add_sum (fd, &calculated_sum);
+    if (rc == CS_SUCCESS) {
+      printf ("Calculated checksum is 0x%08X\n", calculated_sum);
+      printf ("Added successfully\n");
+    } else {
+      if (rc == CS_FAILURE) {
         printf ("File already contains the checksum\n");
       }
       printf ("Adding failed\n");
-    } else {
-      printf ("Calculated checksum is 0x%08X\n", calculated_sum);
-      printf ("Added successfully\n");
     }
     break;
+
   case ACT_VERIFY:
-    status = cs_verify_sum (fd, &calculated_sum, &saved_sum);
-    if (status >= 0) {
+    rc = cs_verify_sum (fd, &calculated_sum, &saved_sum);
+    if (rc != CS_TECHNICAL_ERROR && (calculated_sum != 0 || saved_sum !=0)) {
       printf ("Calculated checksum is 0x%08X\n", calculated_sum);
       printf ("Saved checksum is 0x%08X\n", saved_sum);
     }
-    if (status > 0)
+    if (rc == CS_SUCCESS) {
       printf ("Checksum validation successful\n");
-    else
+    } else {
       printf ("Checksum validation failed\n");
+    }
     break;
+
   case ACT_REMOVE:
-    status = cs_remove_sum (fd, NULL);
-    if (status < 0)
-      printf ("Checksum remove failed\n");
-    else
+    rc = cs_remove_sum (fd, NULL);
+    if (rc == CS_SUCCESS) {
       printf ("Checksum remove successful\n");
+    } else {
+      printf ("Checksum remove failed\n");
+    }
     break;
 
   default:
-    status = 3;
+    rc = CS_FAILURE;
     break;
   }
+
   close (fd);
 
-  return status;
+  return rc;
 }
