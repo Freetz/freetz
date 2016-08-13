@@ -408,7 +408,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	[ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && error 1 "cannot find filesystem.image"
 
 	# Do we have the tool ?
-	for tool in "$UNSQUASHFS" "$FINDSQUASHFS"; do
+	for tool in "$UNSQUASHFS" "$FINDSQUASHFS" "$TICHKSUM"; do
 		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
 	done
 
@@ -1725,8 +1725,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 			fi
 		fi
 	fi
-	# Do we have the tool ?
-	[ ! -x "$TICHKSUM" ] && error 1 "cannot find tool $TICHKSUM_TOOL"
 
 	# Write checksum
 	"$TICHKSUM" "$KERNEL_MOD" > "${MOD_DIR}/kernelchksum.log"
