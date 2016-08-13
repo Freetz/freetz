@@ -1727,7 +1727,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Write checksum
-	"$TICHKSUM" "$KERNEL_MOD" > "${MOD_DIR}/kernelchksum.log"
+	for f in "$KERNEL_MOD" "$FILESYSTEM_MOD"; do
+		[ -s "$f" ] || continue
+
+		fbn=$(basename $f)
+		echo0 "adding checksum to $fbn"
+		"$TICHKSUM" "$f" > "${MOD_DIR}/$fbn-chksum.log" || error 1 "adding checksum to $fbn failed"
+	done
 
 	# Consistency check
 	if [ -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ] || \
