@@ -105,11 +105,13 @@ extract_bootloader()
 
 get_ext2fs_length()
 {
-	local ext2fs_offset="$1" # unused
+	local ext2fs_offset="$1"
 	local ENDIAN_TYPE="$2"   # unused
 
-	# TODO: should we report the length of the AVM-RLE-encoded stream instead
-	echo 0 # dummy length
+	local rle_stream_length
+
+	rle_stream_length=$(tail -c +$(($ext2fs_offset + 5)) "$input_file" | $mod_tools/avm-rle-stream-length)
+	[ $? -eq 0 ] && echo "$rle_stream_length" || echo 0 # dummy length
 }
 
 get_squashfs_length()
@@ -174,11 +176,8 @@ do_extract_kfs()
 			[ $((rootfs_offs[s] + rootfs_length[s])) -le $input_file_size ] || continue
 
 			# Sanity check #3: kernel + SquashFS lengths must be 85-100% of total file size
-			if [ "${rootfs_type}" != "ext2fs" ]; then
-				# TODO: as of now the correct size of AVM-RLE-encoded stream couldn't be determined, so skip this check
-				percentage=$(( (kernel_length[k] + rootfs_length[s]) * 100 / input_file_size ))
-				[ $percentage -ge 85 -a $percentage -le 100 ] || continue
-			fi
+			percentage=$(( (kernel_length[k] + rootfs_length[s]) * 100 / input_file_size ))
+			[ $percentage -ge 85 -a $percentage -le 100 ] || continue
 
 			# Check layout: does SquashFS immediately follow kernel?
 			gap=$((rootfs_offs[s] - kernel_length[k] - kernel_offs[k]))
@@ -193,11 +192,8 @@ do_extract_kfs()
 			fi
 
 			# Sanity check #4: kernel and SquashFS must not intersect
-			if [ "${rootfs_type}" != "ext2fs" ]; then
-				# TODO: as of now the correct size of AVM-RLE-encoded stream couldn't be determined, so skip this check
-				[ $gap -lt 0 ] && gap=$((kernel_offs[k] - rootfs_length[s] - rootfs_offs[s]))
-				[ $gap -lt 0 ] && continue
-			fi
+			[ $gap -lt 0 ] && gap=$((kernel_offs[k] - rootfs_length[s] - rootfs_offs[s]))
+			[ $gap -lt 0 ] && continue
 
 			# Plausible candidates for kernel and filesystem
 			# Save kernel and filesystem as separate files
