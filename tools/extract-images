@@ -136,20 +136,20 @@ do_extract_kfs()
 		[squashfs]="${SQUASHFS_MAGIC[${ENDIAN_TYPE}]}"
 	)
 	for rootfs_type in ext2fs squashfs; do
-		declare -a squashfs_offs=($(getDecOffsetsOfAllMatches "$input_file" "${rootfs_magic[${rootfs_type}]}"))
-		if [ ${#squashfs_offs[@]} -gt 0 ]; then
+		declare -a rootfs_offs=($(getDecOffsetsOfAllMatches "$input_file" "${rootfs_magic[${rootfs_type}]}"))
+		if [ ${#rootfs_offs[@]} -gt 0 ]; then
 			break;
 		fi
 	done
 
-	for (( i=0; i<${#squashfs_offs[@]}; i++ )); do
+	for (( i=0; i<${#rootfs_offs[@]}; i++ )); do
 		# Isolate SquashFS length candidates (considering endian type)
-		squashfs_length[i]=$(get_${rootfs_type}_length "${squashfs_offs[i]}" "$ENDIAN_TYPE")
+		rootfs_length[i]=$(get_${rootfs_type}_length "${rootfs_offs[i]}" "$ENDIAN_TYPE")
 
 		# Special case: filesystem length 0 can happen if a raw (mtdblock) dump
 		# from the box is processed, because the box seems to erase the length
 		# info when flashing.
-		[ ${squashfs_length[i]} -eq 0 ] && squashfs_length[i]=$((input_file_size-squashfs_offs[i]))
+		[ ${rootfs_length[i]} -eq 0 ] && rootfs_length[i]=$((input_file_size-rootfs_offs[i]))
 	done
 
 	# Find kernel candidates
@@ -169,24 +169,24 @@ do_extract_kfs()
 	for (( k=0; k<${#kernel_offs[@]}; k++ )); do
 		# Sanity check #1: kernel offset + length must not exceed total file size
 		[ $((kernel_offs[k] + kernel_length[k])) -le $input_file_size ] || continue
-		for (( s=0; s<${#squashfs_offs[@]}; s++ )); do
+		for (( s=0; s<${#rootfs_offs[@]}; s++ )); do
 			# Sanity check #2: SquashFS offset + length must not exceed total file size
-			[ $((squashfs_offs[s] + squashfs_length[s])) -le $input_file_size ] || continue
+			[ $((rootfs_offs[s] + rootfs_length[s])) -le $input_file_size ] || continue
 
 			# Sanity check #3: kernel + SquashFS lengths must be 85-100% of total file size
 			if [ "${rootfs_type}" != "ext2fs" ]; then
 				# TODO: as of now the correct size of AVM-RLE-encoded stream couldn't be determined, so skip this check
-				percentage=$(( (kernel_length[k] + squashfs_length[s]) * 100 / input_file_size ))
+				percentage=$(( (kernel_length[k] + rootfs_length[s]) * 100 / input_file_size ))
 				[ $percentage -ge 85 -a $percentage -le 100 ] || continue
 			fi
 
 			# Check layout: does SquashFS immediately follow kernel?
-			gap=$((squashfs_offs[s] - kernel_length[k] - kernel_offs[k]))
+			gap=$((rootfs_offs[s] - kernel_length[k] - kernel_offs[k]))
 			if [ $gap -eq 0 ]; then
 				# Hidden root (SquashFS contained in kernel.image)
-				file_length=$((kernel_length[k] + squashfs_length[s]))
+				file_length=$((kernel_length[k] + rootfs_length[s]))
 				output_file="$output_dir/hr_kernel.image${count}"
-				echo "    $output_file - kernel @ ${kernel_offs[k]}, $ENDIAN_TYPE endian SquashFS @ ${squashfs_offs[s]}, total length = $file_length"
+				echo "    $output_file - kernel @ ${kernel_offs[k]}, $ENDIAN_TYPE endian SquashFS @ ${rootfs_offs[s]}, total length = $file_length"
 				echo "        This is a \"hidden root\" image (compound kernel + SquashFS)."
 				echo "        For your convenience I will split them for you so you do not have to use tools/find-squashfs"
 				tail -c +$((kernel_offs[k]+1)) "$input_file" | head -c +$file_length > "$output_file"
@@ -195,7 +195,7 @@ do_extract_kfs()
 			# Sanity check #4: kernel and SquashFS must not intersect
 			if [ "${rootfs_type}" != "ext2fs" ]; then
 				# TODO: as of now the correct size of AVM-RLE-encoded stream couldn't be determined, so skip this check
-				[ $gap -lt 0 ] && gap=$((kernel_offs[k] - squashfs_length[s] - squashfs_offs[s]))
+				[ $gap -lt 0 ] && gap=$((kernel_offs[k] - rootfs_length[s] - rootfs_offs[s]))
 				[ $gap -lt 0 ] && continue
 			fi
 
@@ -210,15 +210,15 @@ do_extract_kfs()
 
 			# filesystem.image
 			output_file="$output_dir/filesystem.image${count}"
-			echo "    $output_file - $ENDIAN_TYPE endian ${rootfs_type} @ ${squashfs_offs[s]}, length = ${squashfs_length[s]}"
+			echo "    $output_file - $ENDIAN_TYPE endian ${rootfs_type} @ ${rootfs_offs[s]}, length = ${rootfs_length[s]}"
 			echo "        If you want to see the unpacked filesystem, try tools/build/bin/fakeroot '--' tools/unsquashfs*"
 			echo "        The unpacked SquashFS may contain filesystem_core.squashfs which you can then also unsquash."
 			if [ "${rootfs_type}" == "ext2fs" ]; then
-				tail -c +$((squashfs_offs[s]+1)) "$input_file" | head -c 4 > "$output_file"
-				tail -c +$((squashfs_offs[s]+5)) "$input_file" | "$mod_tools/avm-rle-decode" >> "$output_file"
+				tail -c +$((rootfs_offs[s]+1)) "$input_file" | head -c 4 > "$output_file"
+				tail -c +$((rootfs_offs[s]+5)) "$input_file" | "$mod_tools/avm-rle-decode" >> "$output_file"
 				tail -c +257 "$output_file" > "$output_file.ext2"
 			else
-				tail -c +$((squashfs_offs[s]+1)) "$input_file" | head -c +${squashfs_length[s]} > "$output_file"
+				tail -c +$((rootfs_offs[s]+1)) "$input_file" | head -c +${rootfs_length[s]} > "$output_file"
 			fi
 
 			n=$((n+1))
