@@ -14,7 +14,10 @@ $(AVM_RLE_HOST_DIR)/avm-rle-decode: $(AVM_RLE_HOST_DIR)/.unpacked
 $(TOOLS_DIR)/avm-rle-decode: $(AVM_RLE_HOST_DIR)/avm-rle-decode
 	$(INSTALL_FILE)
 
-avm-rle-host: $(TOOLS_DIR)/avm-rle-decode
+$(TOOLS_DIR)/avm-rle-stream-length: $(TOOLS_DIR)/avm-rle-decode
+	ln -sf $(notdir $<) $@
+
+avm-rle-host: $(TOOLS_DIR)/avm-rle-decode $(TOOLS_DIR)/avm-rle-stream-length
 
 avm-rle-host-clean:
 	-$(MAKE) -C $(AVM_RLE_HOST_DIR) clean
@@ -23,4 +26,4 @@ avm-rle-host-dirclean:
 	$(RM) -r $(AVM_RLE_HOST_DIR)
 
 avm-rle-host-distclean: avm-rle-host-dirclean
-	$(RM) $(TOOLS_DIR)/avm-rle-decode
+	$(RM) $(TOOLS_DIR)/avm-rle-*

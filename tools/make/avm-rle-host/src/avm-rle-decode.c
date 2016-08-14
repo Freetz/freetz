@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #ifndef FALSE
 #define FALSE (0)
@@ -21,18 +22,24 @@
 size_t i_offset = 0;
 size_t o_offset = 0;
 
+int stream_length_mode = FALSE;
+
 int readByte(uint8_t *byte, int failOnEOF) {
 	int c = getchar();
 
-	if (failOnEOF && c == EOF) {
-		fprintf(stderr, "Unexpected end of AVM-RLE stream\n");
-		exit(EXIT_FAILURE);
+	if (c == EOF) {
+		if (failOnEOF) {
+			fprintf(stderr, "Unexpected end of AVM-RLE stream\n");
+			exit(EXIT_FAILURE);
+		}
+		return TRUE;
 	}
+
 	i_offset++;
 	if (byte) {
 		*byte = c;
 	}
-	return (c == EOF);
+	return FALSE;
 }
 
 size_t readLen(size_t lenWidthInBytes) {
@@ -48,6 +55,9 @@ size_t readLen(size_t lenWidthInBytes) {
 }
 
 void writeBytes(uint8_t byteToWrite, size_t len) {
+	if (stream_length_mode)
+		return;
+
 	DBG("Writing 0x%02X %zu time%s\n", byteToWrite, len, (len!=1) ? "s" : "");
 	for (; len>0; len--) {
 		putchar(byteToWrite);
@@ -55,9 +65,16 @@ void writeBytes(uint8_t byteToWrite, size_t len) {
 	}
 }
 
+int is_suffixed_with(const char *string, const char *key) {
+	ssize_t len_diff = strlen(string) - strlen(key);
+	return (len_diff >= 0) && (strcmp(string + len_diff, key) == 0);
+}
+
 int main(int argc, char * argv[]) {
 	uint8_t opcode, payload;
 	size_t  payloadLen, bytesToSkip, i;
+
+	stream_length_mode = is_suffixed_with(argv[0], "avm-rle-stream-length");
 
 	bytesToSkip = (argc >= 2) ? strtoul(argv[1], NULL, 16) : 0;
 	for (i=0; i<bytesToSkip; i++) {
@@ -97,6 +114,10 @@ int main(int argc, char * argv[]) {
 			readByte(&payload, TRUE);
 			writeBytes(payload, payloadLen);
 		}
+	}
+
+	if (stream_length_mode) {
+		printf("%zu\n", i_offset - bytesToSkip);
 	}
 
 	return EXIT_SUCCESS;
