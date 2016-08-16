@@ -111,7 +111,7 @@ get_ext2fs_length()
 	local rle_stream_length
 
 	rle_stream_length=$(tail -c +$(($ext2fs_offset + 5)) "$input_file" | $mod_tools/avm-rle-stream-length)
-	[ $? -eq 0 ] && echo "$rle_stream_length" || echo 0 # dummy length
+	[ $? -eq 0 ] && echo "$(($rle_stream_length + 4))" || echo 0 # dummy length
 }
 
 get_squashfs_length()
