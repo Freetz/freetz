@@ -1,8 +1,8 @@
 --- usr/www/avm/menus/menu_data.lua
 +++ usr/www/avm/menus/menu_data.lua
-@@ -550,6 +550,12 @@
+@@ -553,6 +553,12 @@
  ["lua"] = "system/infoled.lua",
- ["help"] = forLuaOnly and "hilfe_system_infoanzeige"
+ ["help"] = (forLuaOnly and "hilfe_system_infoanzeige") or true
  } or nil,
 +-- TODO: untested, check if "led" is the right key and if adding pageData["led"] is enough
 +["led"] = {
@@ -13,7 +13,7 @@
  ["keyLo"] = {
  ["show"] = true,
  ["lua"] = "system/keylock.lua",
-@@ -2063,6 +2069,7 @@
+@@ -2085,6 +2091,7 @@
  ["par"] = "mfn",
  ["pos"] = 10
  } or nil,
