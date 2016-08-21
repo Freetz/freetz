@@ -1,0 +1,17 @@
+https://community.openvpn.net/openvpn/changeset/629baad8f89af261445a2ace03694601f8e476f9/
+
+--- src/openvpn/ssl_polarssl.c
++++ src/openvpn/ssl_polarssl.c
+@@ -177,5 +177,10 @@
+   char *tmp_ciphers, *tmp_ciphers_orig, *token;
+   int i, cipher_count;
+-  int ciphers_len = strlen (ciphers);
++  int ciphers_len;
++
++  if (NULL == ciphers)
++    return; /* Nothing to do */
++
++  ciphers_len = strlen (ciphers);
+ 
+   ASSERT (NULL != ctx);
+
