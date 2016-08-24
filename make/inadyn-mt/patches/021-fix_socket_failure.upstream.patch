@@ -1,3 +1,15 @@
+--- src/dyndns.c
++++ src/dyndns.c
+@@ -1357,6 +1357,9 @@
+ 						}
+ 					}
+ 
++			http_client_set_is_ipv4(&p_address->http_to_ip_server,(p_address->is_update_ip4 &&
++						!(p_address->is_update_auto || p_address->is_update_ip6)));
++
+ 			if (!(RC_OK==(rc=http_client_init_all(&p_address->http_to_ip_server))))
+ 
+ 				break;
 --- src/tcp.c
 +++ src/tcp.c
 @@ -168,7 +168,7 @@
@@ -30,7 +42,7 @@
  
  
  			do {
-@@ -204,16 +205,13 @@
+@@ -204,16 +205,17 @@
  				/*only error if no sockets at all created*/
  				if (p_self->super.socket[socket_index]==INVALID_SOCKET) {
  
@@ -38,7 +50,11 @@
 +					str_err=str_errno(errno);
  
 -					rc=RC_IP_SOCKET_CREATE_ERROR;
-+			                DBG_PRINTF((LOG_CRIT,"C:" MODULE_TAG "Invalid socket(s) returned in create socket call in tcp_do_create_socket:  %s...\n",str_err));
++			                DBG_PRINTF((LOG_INFO,"I:" MODULE_TAG "Invalid socket(s) - family, type, proto:  %i, %i, %i - "\
++							"returned in create socket call in tcp_do_create_socket:  %s...\n",
++							p_self->super.addr_ar[socket_index]->ai_family,
++							p_self->super.addr_ar[socket_index]->ai_socktype,
++							p_self->super.addr_ar[socket_index]->ai_protocol,str_err));
  
 -					break;
 +					free(str_err);
@@ -50,7 +66,7 @@
  					/* set timeouts */
  					setsockopt(p_self->super.socket[socket_index],SOL_SOCKET,SO_RCVTIMEO,
  						(char*) &timeout,sizeof(timeout));
-@@ -263,7 +261,12 @@
+@@ -263,7 +265,12 @@
  	}
  	while(0);
  
