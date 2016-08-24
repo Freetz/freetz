@@ -31,6 +31,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-isc-spnego
 $(PKG)_CONFIGURE_OPTIONS += --without-pkcs11
 $(PKG)_CONFIGURE_OPTIONS += --without-idnlib
 $(PKG)_CONFIGURE_OPTIONS += --without-purify
+$(PKG)_CONFIGURE_OPTIONS += --without-libjson
 $(PKG)_CONFIGURE_OPTIONS += --without-libxml2
 $(PKG)_CONFIGURE_OPTIONS += --disable-threads
 $(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
