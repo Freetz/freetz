@@ -21,6 +21,9 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_ASTERISK_DEBUG
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
+# the only reason for calling automake is to install: config.sub, config.guess, install-sh, etc.
+# the package itself is a non-automake package
+$(PKG)_CONFIGURE_PRE_CMDS += automake --force-missing --add-missing 2>/dev/null;
 
 $(PKG)_CONFIGURE_OPTIONS += --with-asterisk=$(ASTERISK_INSTALL_DIR_ABSOLUTE)/usr/include
 
