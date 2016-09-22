@@ -363,13 +363,8 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	mkdir "$FIRMWARE_DIR"
 
 	if [ "$FIRMWARE_EXTENSION" != "exe" ]; then
-		# Check and skip garbage
-		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))"
-		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
-		[ "$grbg" != "0x0" ] && printf "Skipping %d Bytes garbage..." $grbg
 		# Unpack standard *.image file in tar format
-		tail -c $(( $image_size - $image_grbg )) "$FIRMWARE" | \
-		  "$TAR_GNU" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
+		"$TAR_GNU" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
 	fi
 	if [ "$FIRMWARE_EXTENSION" == "exe" ] || [ "$untar_failed" ]; then
 		# Unpack Windows recover.exe file or mtdblock dump
@@ -413,23 +408,23 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	[ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && error 1 "cannot find filesystem.image"
 
 	# Do we have the tool ?
-	for tool in "$UNSQUASHFS" "$FINDSQUASHFS"; do
+	for tool in "$UNSQUASHFS" "$FINDSQUASHFS" "$TICHKSUM"; do
 		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
 	done
 
-	# Remove AVM's special junk bytes from SquashFS
-	if [ "$FREETZ_AVM_HAS_JUNK_BYTES" == "y" ]; then
-		echo0 "removing AVM SquashFS junk bytes"
-		[ "$FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && JUNK_BYTES_FILE="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || JUNK_BYTES_FILE="$KERNEL"
+	# Remove NMI vector from SquashFS
+	if [ "$FREETZ_AVM_HAS_NMI_VECTOR" == "y" ]; then
+		echo0 "removing NMI vector from SquashFS"
+		[ "$FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && FILE_WITH_NMI_VECTOR_TO_PROCESS="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || FILE_WITH_NMI_VECTOR_TO_PROCESS="$KERNEL"
 		if [ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ]; then
-			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk" >/dev/null 2>&1
+			"$TOOLS_DIR/remove-nmi-vector" "$FILE_WITH_NMI_VECTOR_TO_PROCESS" "$FILE_WITH_NMI_VECTOR_TO_PROCESS.no-nmi" >/dev/null 2>&1
 		else
-			"$TOOLS_DIR/remove-junk-bytes" "$JUNK_BYTES_FILE" "$JUNK_BYTES_FILE.nojunk"
+			"$TOOLS_DIR/remove-nmi-vector" "$FILE_WITH_NMI_VECTOR_TO_PROCESS" "$FILE_WITH_NMI_VECTOR_TO_PROCESS.no-nmi"
 		fi
 		case "$?" in
-			0) mv -f "$JUNK_BYTES_FILE.nojunk" "$JUNK_BYTES_FILE" ;;
-			1) warn2 "AVM SquashFS junk bytes not found. Assuming Freetz or Freetz-repacked image." ;;
-			*) error 1 "fatal error while removing AVM SquashFS junk bytes." ;;
+			0) mv -f "$FILE_WITH_NMI_VECTOR_TO_PROCESS.no-nmi" "$FILE_WITH_NMI_VECTOR_TO_PROCESS" ;;
+			1) warn2 "NMI vector not found. Assuming Freetz or Freetz-repacked image." ;;
+			*) error 1 "fatal error while removing NMI vector from SquashFS." ;;
 		esac
 	fi
 
@@ -1730,11 +1725,15 @@ if [ "$DO_PACK" -gt 0 ]; then
 			fi
 		fi
 	fi
-	# Do we have the tool ?
-	[ ! -x "$TICHKSUM" ] && error 1 "cannot find tool $TICHKSUM_TOOL"
 
 	# Write checksum
-	"$TICHKSUM" "$KERNEL_MOD" > "${MOD_DIR}/kernelchksum.log"
+	for f in "$KERNEL_MOD" "$FILESYSTEM_MOD"; do
+		[ -s "$f" ] || continue
+
+		fbn=$(basename $f)
+		echo0 "adding checksum to $fbn"
+		"$TICHKSUM" "$f" > "${MOD_DIR}/$fbn-chksum.log" || error 1 "adding checksum to $fbn failed"
+	done
 
 	# Consistency check
 	if [ -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ] || \

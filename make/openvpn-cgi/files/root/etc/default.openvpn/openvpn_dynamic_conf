@@ -46,34 +46,33 @@ do
 		ln -sf /mod/etc/default.openvpn/openvpn_conf /mod/etc/default.${act}/${act}_conf
 	fi
 	if [ ! -x /mod/etc/init.d/rc.${act} ]; then
-	    ln -s rc.openvpn /mod/etc/init.d/rc.${act}
+		ln -s rc.openvpn /mod/etc/init.d/rc.${act}
 	fi
 	if [ ! -x /mod/sbin/$act ]; then
 		ln -s /usr/sbin/openvpn /mod/sbin/$act
 	fi
 
-
 	unset IFS
 	for deffile in $(ls /mod/etc/default.openvpn/*.def)
 	do
 		name=${deffile##*/}
-			tmpid=${name%%.*}
-			tmpid="OVPN_${LOKAL_CONFIG_NAMES}_$tmpid"
-			tmptitle=$(grep CAPTION $deffile)
-			tmptitle=${tmptitle##*=\'}
-			tmptitle=${tmptitle%%(*}
-			if [ "$LOKAL_OWN_KEYS" == "yes" ]; then
-				 sed "/SAVE/ s/[^\/]openvpn/&${act#openvpn}/g"  $deffile | sed "/CAPTION/ s/VPN/VPN Config ${LOKAL_CONFIG_NAMES}/g" | sed "/FILE\|SAVE/ s%/openvpn/%/openvpn/${LOKAL_CONFIG_NAMES}_%" > /mod/etc/default.${act}/$name
-				modreg file openvpn "$tmpid" "${LOKAL_CONFIG_NAMES}: $tmptitle" 0 "/mod/etc/default.${act}/$name"
-			else
-				modunreg file openvpn "$tmpid"
-			fi
-		done
+		tmpid=${name%%.*}
+		tmpid="OVPN_${LOKAL_CONFIG_NAMES}_$tmpid"
+		tmptitle=$(grep CAPTION $deffile)
+		tmptitle=${tmptitle##*=\'}
+		tmptitle=${tmptitle%%(*}
+		if [ "$LOKAL_OWN_KEYS" == "yes" ]; then
+			sed "/SAVE/ s/[^\/]openvpn/&${act#openvpn}/g"  $deffile | sed "/CAPTION/ s/VPN/VPN Config ${LOKAL_CONFIG_NAMES}/g" | sed "/FILE\|SAVE/ s%/openvpn/%/openvpn/${LOKAL_CONFIG_NAMES}_%" > /mod/etc/default.${act}/$name
+			modreg file openvpn "$tmpid" "${LOKAL_CONFIG_NAMES}: $tmptitle" 0 "/mod/etc/default.${act}/$name"
+		else
+			modunreg file openvpn "$tmpid"
+		fi
+	done
 
 	upperconfigname=$(echo ${LOKAL_CONFIG_NAMES} | tr [a-z]- [A-Z]_)
 	str=$(echo "OPENVPN_${upperconfigname}_ENABLED=\"${LOKAL_CONFIG_AUTOSTART}\"")
 	echo "$str" > /mod/etc/conf/${act}.cfg
-let count++
+	let count++
 done
 unset IFS
 

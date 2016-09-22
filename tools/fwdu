@@ -71,7 +71,7 @@ unpack() {
 	fi
 }
 
-# $1 is expected to be junk-bytes-removed and kernel-filesystem-splitted
+# $1 is expected to be NMI-vector-removed and kernel-filesystem-splitted
 unfs_probe() {
 	{
 		{ $FTOOLS/blkid -O 256 "$1" 2>/dev/null | grep -q 'TYPE="ext2"'; } \
@@ -94,11 +94,7 @@ image() {
 		mkdir -p var
 		mv ${img#*/}.unp var/tmp
 	else
-		local size="0x$(printf "%08X\n" $(stat -L -c %s $img))"
-		local grbg="$($FTOOLS/sfk hexfind $img _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
-		[ -z "$grbg" ] && grbg="0x0"
-		[ "$grbg" != "0x0" ] && printf "\tSkipping %d Bytes garbage:\n" $grbg
-		tail -c $(( $size - $grbg )) $img | tar x --wildcards './var/tmp/*.image' >/dev/null 2>&1
+		tar -xif $img --wildcards './var/tmp/*.image' >/dev/null 2>&1
 	fi
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
@@ -109,7 +105,7 @@ image() {
 		rm -rf var
 		continue
 	fi
-	($FTOOLS/remove-junk-bytes var/tmp/kernel.image var/tmp/kernel.junked 2>&1 && mv var/tmp/kernel.junked var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*junk bytes.*),\t\1,p'
+	($FTOOLS/remove-nmi-vector var/tmp/kernel.image var/tmp/kernel.image.no-nmi 2>&1 && mv var/tmp/kernel.image.no-nmi var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
 	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
 	rm -rf var
 	$FTOOLS/tichksum -r x.image >/dev/null 2>&1

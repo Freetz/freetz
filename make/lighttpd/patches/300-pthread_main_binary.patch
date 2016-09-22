@@ -1,20 +1,18 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -604,7 +604,7 @@
- CCDEPMODE = @CCDEPMODE@
+@@ -728,6 +728,7 @@
  CFLAGS = @CFLAGS@
  CPP = @CPP@
--CPPFLAGS = @CPPFLAGS@
-+CPPFLAGS = @CPPFLAGS@ $(if $(strip $(filter -lpthread,@FAM_LIBS@ @LUA_LIBS@ @MYSQL_LIBS@ @SQLITE_LIBS@ @UUID_LIBS@ @XML_LIBS@)),-D_REENTRANT)
+ CPPFLAGS = @CPPFLAGS@
++CPPFLAGS += $(if $(strip $(filter -lpthread,@FAM_LIBS@ @LIBEV_LIBS@ @LIBUNWIND_LIBS@ @LUA_LIBS@ @MYSQL_LIBS@ @SQLITE_LIBS@ @UUID_LIBS@ @XML_LIBS@)),-D_REENTRANT)
  CRYPT_LIB = @CRYPT_LIB@
  CYGPATH_W = @CYGPATH_W@
  DEFS = @DEFS@ -DHAVE_VERSION_H -DLIBRARY_DIR="\"$(libdir)\"" -DSBIN_DIR="\"$(sbindir)\""
-@@ -908,7 +908,7 @@
- 	version.h
+@@ -1094,6 +1095,7 @@
+ @LIGHTTPD_STATIC_TRUE@  $(XML_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) \
+ @LIGHTTPD_STATIC_TRUE@  $(PCRE_LIB) $(Z_LIB) $(BZ_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) \
+ @LIGHTTPD_STATIC_TRUE@  $(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS)
++lighttpd_LDADD += $(strip $(filter -lpthread,$(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS) $(LUA_LIBS) $(MYSQL_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) $(XML_LIBS)))
  
- lighttpd_SOURCES = $(src)
--lighttpd_LDADD = $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS)
-+lighttpd_LDADD = $(strip $(filter -lpthread,$(FAM_LIBS) $(LUA_LIBS) $(MYSQL_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) $(XML_LIBS))) $(PCRE_LIB) $(DL_LIB) $(SENDFILE_LIB) $(ATTR_LIB) $(common_libadd) $(SSL_LIB) $(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS)
- lighttpd_LDFLAGS = -export-dynamic
- lighttpd_CCPFLAGS = $(FAM_CFLAGS) $(LIBEV_CFLAGS)
- proc_open_SOURCES = proc_open.c buffer.c
+ @LIGHTTPD_STATIC_FALSE@lighttpd_LDFLAGS = -export-dynamic
+ @LIGHTTPD_STATIC_TRUE@lighttpd_LDFLAGS = -export-dynamic

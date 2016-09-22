@@ -1,6 +1,6 @@
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -208,6 +208,9 @@
+@@ -209,6 +209,9 @@
  TCLTK_INCLUDES=	@TCLTK_INCLUDES@
  TCLTK_LIBS=	@TCLTK_LIBS@
  
@@ -8,9 +8,9 @@
 +PYTHON_FOR_COMPILE=$(PYTHON_FOR_BUILD)
 +
  # The task to run while instrument when building the profile-opt target
- PROFILE_TASK=-m test.regrtest --pgo
- 
-@@ -1072,28 +1075,28 @@
+ # We exclude unittests with -x that take a rediculious amount of time to
+ # run in the instrumented training build or do not provide much value.
+@@ -1132,28 +1135,28 @@
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi

@@ -1,9 +1,9 @@
 --- src/openvpn/forward.c
 +++ src/openvpn/forward.c
-@@ -675,7 +675,10 @@
+@@ -674,7 +674,10 @@
+ 
    status = link_socket_read (c->c2.link_socket,
  			     &c->c2.buf,
- 			     MAX_RW_SIZE_LINK (&c->c2.frame),
 -			     &c->c2.from);
 +			     &c->c2.from,
 +			     c->options.ce.xormethod,
@@ -12,7 +12,7 @@
  
    if (socket_connection_reset (c->c2.link_socket, status))
      {
-@@ -1152,7 +1155,10 @@
+@@ -1151,7 +1154,10 @@
  	    /* Send packet */
  	    size = link_socket_write (c->c2.link_socket,
  				      &c->c2.to_link,
@@ -26,7 +26,7 @@
  	    /* Undo effect of prepend */
 --- src/openvpn/options.c
 +++ src/openvpn/options.c
-@@ -792,6 +792,9 @@
+@@ -797,6 +797,9 @@
    o->max_routes = MAX_ROUTES_DEFAULT;
    o->resolve_retry_seconds = RESOLV_RETRY_INFINITE;
    o->proto_force = -1;
@@ -36,7 +36,7 @@
  #ifdef ENABLE_OCC
    o->occ = true;
  #endif
-@@ -907,6 +910,9 @@
+@@ -918,6 +921,9 @@
    setenv_int_i (es, "local_port", e->local_port, i);
    setenv_str_i (es, "remote", e->remote, i);
    setenv_int_i (es, "remote_port", e->remote_port, i);
@@ -46,7 +46,7 @@
  
  #ifdef ENABLE_HTTP_PROXY
    if (e->http_proxy_options)
-@@ -1366,6 +1372,9 @@
+@@ -1377,6 +1383,9 @@
    SHOW_INT (connect_retry_seconds);
    SHOW_INT (connect_timeout);
    SHOW_INT (connect_retry_max);
@@ -56,7 +56,7 @@
  
  #ifdef ENABLE_HTTP_PROXY
    if (o->http_proxy_options)
-@@ -5137,6 +5146,35 @@
+@@ -5168,6 +5177,35 @@
        options->proto_force = proto_force;
        options->force_connection_list = true;
      }
@@ -159,10 +159,10 @@
  /*
   * Some Posix/Win32 differences.
   */
-@@ -875,30 +879,55 @@
+@@ -873,30 +877,55 @@
+ static inline int
  link_socket_read (struct link_socket *sock,
  		  struct buffer *buf,
- 		  int maxsize,
 -		  struct link_socket_actual *from)
 +		  struct link_socket_actual *from,
 +		  int xormethod,
@@ -177,7 +177,7 @@
  #ifdef WIN32
        res = link_socket_read_udp_win32 (sock, buf, from);
  #else
-       res = link_socket_read_udp_posix (sock, buf, maxsize, from);
+       res = link_socket_read_udp_posix (sock, buf, from);
  #endif
 -      return res;
      }
@@ -219,7 +219,7 @@
  }
  
  /*
-@@ -982,8 +1011,33 @@
+@@ -980,8 +1009,33 @@
  static inline int
  link_socket_write (struct link_socket *sock,
  		   struct buffer *buf,

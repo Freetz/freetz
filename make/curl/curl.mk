@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.49.1)
+$(call PKG_INIT_BIN, 7.50.3)
 $(PKG)_LIB_VERSION:=4.4.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=eb63cec4bef692eab9db459033f409533e6d10e20942f4b060b32819e81885f1
+$(PKG)_SOURCE_SHA256:=7b7347d976661d02c84a1f4d6daf40dee377efdc45b9e2c77dedb8acf140d8ec
 $(PKG)_SITE:=http://curl.haxx.se/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src$(if $(FREETZ_PACKAGE_CURL_STATIC),,/.libs)/curl
@@ -39,29 +39,49 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-ares
 $(PKG)_CONFIGURE_OPTIONS += --disable-thread
+$(PKG)_CONFIGURE_OPTIONS += --enable-nonblocking
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-manual
+$(PKG)_CONFIGURE_OPTIONS += --disable-verbose
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-cookies
 $(PKG)_CONFIGURE_OPTIONS += --enable-crypto-auth
-$(PKG)_CONFIGURE_OPTIONS += --enable-nonblocking
 $(PKG)_CONFIGURE_OPTIONS += --enable-file
 $(PKG)_CONFIGURE_OPTIONS += --enable-ftp
 $(PKG)_CONFIGURE_OPTIONS += --enable-http
-$(PKG)_CONFIGURE_OPTIONS += --disable-ares
-$(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --enable-proxy
+$(PKG)_CONFIGURE_OPTIONS += --enable-rtsp
+$(PKG)_CONFIGURE_OPTIONS += --enable-unix-sockets
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-dict
 $(PKG)_CONFIGURE_OPTIONS += --disable-gopher
+$(PKG)_CONFIGURE_OPTIONS += --disable-imap
 $(PKG)_CONFIGURE_OPTIONS += --disable-ldap
-$(PKG)_CONFIGURE_OPTIONS += --disable-manual
+$(PKG)_CONFIGURE_OPTIONS += --disable-ldaps
+$(PKG)_CONFIGURE_OPTIONS += --disable-pop3
+$(PKG)_CONFIGURE_OPTIONS += --disable-smb
+$(PKG)_CONFIGURE_OPTIONS += --disable-smtp
 $(PKG)_CONFIGURE_OPTIONS += --disable-sspi
 $(PKG)_CONFIGURE_OPTIONS += --disable-telnet
-$(PKG)_CONFIGURE_OPTIONS += --disable-verbose
+$(PKG)_CONFIGURE_OPTIONS += --disable-tftp
+$(PKG)_CONFIGURE_OPTIONS += --disable-tls-srp
+
 $(PKG)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
 $(PKG)_CONFIGURE_OPTIONS += --without-cyassl
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_POLARSSL),--with-polarssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-polarssl)
 $(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
+$(PKG)_CONFIGURE_OPTIONS += --without-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn
+$(PKG)_CONFIGURE_OPTIONS += --without-libmetalink
+$(PKG)_CONFIGURE_OPTIONS += --without-librtmp
+$(PKG)_CONFIGURE_OPTIONS += --without-libssh2
+$(PKG)_CONFIGURE_OPTIONS += --without-nghttp2
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_ZLIB),--with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-zlib)
 
 $(PKG_SOURCE_DOWNLOAD)

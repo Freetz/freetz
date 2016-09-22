@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 7.2p2)
+$(call PKG_INIT_BIN, 7.3p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=70e35d7d6386fe08abbd823b3a12a3ca44ac6d38
+$(PKG)_SOURCE_SHA1:=bfade84283fcba885e2084343ab19a08c7d123a5
 $(PKG)_SITE:=http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable,ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
 $(PKG)_BIN_BINARIES             := ssh scp ssh-add ssh-agent ssh-keygen ssh-keysign ssh-keyscan sftp
@@ -20,11 +20,12 @@ $(PKG)_LIB_BINARIES_TARGET_DIR  := $(addprefix $($(PKG)_DEST_DIR)/usr/lib/,$($(P
 
 $(PKG)_DEPENDS_ON += zlib
 
-# even though we specify '--without-openssl' OpenSSL is still a compile-time
+# even in '--without-openssl'-mode OpenSSL is still a compile-time
 # dependency as some types from it are used throughout the OpenSSH code
-$(PKG)_CONFIGURE_OPTIONS += --without-openssl
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO),--without-openssl)
 $(PKG)_DEPENDS_ON += openssl
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSH_STATIC
 
@@ -32,6 +33,7 @@ $(PKG)_EXCLUDED += $(addprefix usr/bin/,$(filter-out $($(PKG)_BIN_BINARIES_INCLU
 $(PKG)_EXCLUDED += $(addprefix usr/sbin/,$(filter-out $($(PKG)_SBIN_BINARIES_INCLUDED),$($(PKG)_SBIN_BINARIES)))
 $(PKG)_EXCLUDED += $(addprefix usr/lib/,$(filter-out $($(PKG)_LIB_BINARIES_INCLUDED),$($(PKG)_LIB_BINARIES)))
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_sshd),,etc/default.openssh etc/init.d/rc.openssh usr/lib/cgi-bin/openssh.cgi)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO),etc/default.openssh/rsa_key.def etc/default.openssh/dsa_key.def)
 
 $(PKG)_AC_VARIABLES := have_decl_LLONG_MAX search_logout search_openpty
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))

@@ -54,11 +54,10 @@ invertEndianness() {
 # Parameterized helper function for 'extract_bootloader' doing the actual work
 do_extract_bl()
 {
-	local BOOTLOADER_MAGIC="$1"
-	local ENDIAN_TYPE="$2"
+	local ENDIAN_TYPE="$1"
 
 	# Find bootloader candidates
-	declare -a bootloader_offs=($(getDecOffsetsOfAllMatches "$input_file" "$BOOTLOADER_MAGIC"))
+	declare -a bootloader_offs=($(getDecOffsetsOfAllMatches "$input_file" "${BOOTLOADER_MAGIC[${ENDIAN_TYPE}]}"))
 
 	# Find bootloader candidates and isolate their offsets
 	for (( i=0; i<${#bootloader_offs[@]}; i++ )); do
@@ -98,31 +97,61 @@ extract_bootloader()
 	n=1
 	unset count
 	[ "$endian" == "-any" -o "$endian" == "-le" ] && \
-		do_extract_bl "$BOOTLOADER_MAGIC_LE" "little"
+		do_extract_bl "little"
 	[ "$endian" == "-any" -o "$endian" == "-be" ] && \
-		do_extract_bl "$BOOTLOADER_MAGIC_BE" "big"
+		do_extract_bl "big"
 	[ $n -eq 1 ] && echo "    No bootloader candidate found in input file"
 }
 
+get_ext2fs_length()
+{
+	local ext2fs_offset="$1"
+	local ENDIAN_TYPE="$2"   # unused
+
+	local rle_stream_length
+
+	rle_stream_length=$(tail -c +$(($ext2fs_offset + 5)) "$input_file" | $mod_tools/avm-rle-stream-length)
+	[ $? -eq 0 ] && echo "$(($rle_stream_length + 4))" || echo 0 # dummy length
+}
+
+get_squashfs_length()
+{
+	local squashfs_offset="$1"
+	local ENDIAN_TYPE="$2"
+
+	local squashfs_length
+
+	# Note: 4 bytes of length information are found at (SquashFS magic offset + 8)
+	squashfs_length=$(getHexContentAtOffset "$input_file" $((${squashfs_offset} + 8)) 4 | { [ "$ENDIAN_TYPE" == "little" ] && invertEndianness || cat; })
+	printf "%d" "0x$squashfs_length"
+}
 
 # Parameterized helper function for 'extract_kernel_filesystem' doing the actual work
 do_extract_kfs()
 {
-	local SQUASHFS_MAGIC="$1"
-	local ENDIAN_TYPE="$2"
+	local ENDIAN_TYPE="$1"
 
-	# Find SquashFS candidates
-	declare -a squashfs_offs=($(getDecOffsetsOfAllMatches "$input_file" "$SQUASHFS_MAGIC"))
+	local rootfs_type
 
-	for (( i=0; i<${#squashfs_offs[@]}; i++ )); do
+	declare -A rootfs_magic=(
+		[ext2fs]="${EXT2FS_MAGIC[${ENDIAN_TYPE}]}"
+		[squashfs]="${SQUASHFS_MAGIC[${ENDIAN_TYPE}]}"
+	)
+	for rootfs_type in ext2fs squashfs; do
+		declare -a rootfs_offs=($(getDecOffsetsOfAllMatches "$input_file" "${rootfs_magic[${rootfs_type}]}"))
+		if [ ${#rootfs_offs[@]} -gt 0 ]; then
+			break;
+		fi
+	done
+
+	for (( i=0; i<${#rootfs_offs[@]}; i++ )); do
 		# Isolate SquashFS length candidates (considering endian type)
-		# Note: 4 bytes of length information are found at (SquashFS magic offset + 8)
-		tmp=$(getHexContentAtOffset "$input_file" $((${squashfs_offs[i]} + 8)) 4 | { [ "$ENDIAN_TYPE" == "little" ] && invertEndianness || cat; })
-		squashfs_length[i]=$(printf "%d" "0x$tmp")
+		rootfs_length[i]=$(get_${rootfs_type}_length "${rootfs_offs[i]}" "$ENDIAN_TYPE")
+
 		# Special case: filesystem length 0 can happen if a raw (mtdblock) dump
 		# from the box is processed, because the box seems to erase the length
 		# info when flashing.
-		[ ${squashfs_length[i]} -eq 0 ] && squashfs_length[i]=$((input_file_size-squashfs_offs[i]))
+		[ ${rootfs_length[i]} -eq 0 ] && rootfs_length[i]=$((input_file_size-rootfs_offs[i]))
 	done
 
 	# Find kernel candidates
@@ -142,37 +171,52 @@ do_extract_kfs()
 	for (( k=0; k<${#kernel_offs[@]}; k++ )); do
 		# Sanity check #1: kernel offset + length must not exceed total file size
 		[ $((kernel_offs[k] + kernel_length[k])) -le $input_file_size ] || continue
-		for (( s=0; s<${#squashfs_offs[@]}; s++ )); do
+		for (( s=0; s<${#rootfs_offs[@]}; s++ )); do
 			# Sanity check #2: SquashFS offset + length must not exceed total file size
-			[ $((squashfs_offs[s] + squashfs_length[s])) -le $input_file_size ] || continue
+			[ $((rootfs_offs[s] + rootfs_length[s])) -le $input_file_size ] || continue
+
 			# Sanity check #3: kernel + SquashFS lengths must be 85-100% of total file size
-			percentage=$(( (kernel_length[k] + squashfs_length[s]) * 100 / input_file_size ))
+			percentage=$(( (kernel_length[k] + rootfs_length[s]) * 100 / input_file_size ))
 			[ $percentage -ge 85 -a $percentage -le 100 ] || continue
+
 			# Check layout: does SquashFS immediately follow kernel?
-			gap=$((squashfs_offs[s] - kernel_length[k] - kernel_offs[k]))
+			gap=$((rootfs_offs[s] - kernel_length[k] - kernel_offs[k]))
 			if [ $gap -eq 0 ]; then
 				# Hidden root (SquashFS contained in kernel.image)
-				file_length=$((kernel_length[k] + squashfs_length[s]))
+				file_length=$((kernel_length[k] + rootfs_length[s]))
 				output_file="$output_dir/hr_kernel.image${count}"
-				echo "    $output_file - kernel @ ${kernel_offs[k]}, $ENDIAN_TYPE endian SquashFS @ ${squashfs_offs[s]}, total length = $file_length"
+				echo "    $output_file - kernel @ ${kernel_offs[k]}, $ENDIAN_TYPE endian SquashFS @ ${rootfs_offs[s]}, total length = $file_length"
 				echo "        This is a \"hidden root\" image (compound kernel + SquashFS)."
 				echo "        For your convenience I will split them for you so you do not have to use tools/find-squashfs"
 				tail -c +$((kernel_offs[k]+1)) "$input_file" | head -c +$file_length > "$output_file"
 			fi
-			# Save kernel and filesystem as separate files
+
 			# Sanity check #4: kernel and SquashFS must not intersect
-			[ $gap -lt 0 ] && gap=$((kernel_offs[k] - squashfs_length[s] - squashfs_offs[s]))
+			[ $gap -lt 0 ] && gap=$((kernel_offs[k] - rootfs_length[s] - rootfs_offs[s]))
 			[ $gap -lt 0 ] && continue
+
 			# Plausible candidates for kernel and filesystem
+			# Save kernel and filesystem as separate files
+
+			# kernel.image
 			output_file="$output_dir/kernel.image${count}"
 			echo "    $output_file - kernel @ ${kernel_offs[k]}, length = ${kernel_length[k]}"
 			echo "        If you are interested in an uncompressed kernel, use tools/unpack-kernel"
 			tail -c +$((kernel_offs[k]+1)) "$input_file" | head -c +${kernel_length[k]} > "$output_file"
+
+			# filesystem.image
 			output_file="$output_dir/filesystem.image${count}"
-			echo "    $output_file - $ENDIAN_TYPE endian SquashFS @ ${squashfs_offs[s]}, length = ${squashfs_length[s]}"
+			echo "    $output_file - $ENDIAN_TYPE endian ${rootfs_type} @ ${rootfs_offs[s]}, length = ${rootfs_length[s]}"
 			echo "        If you want to see the unpacked filesystem, try tools/build/bin/fakeroot '--' tools/unsquashfs*"
 			echo "        The unpacked SquashFS may contain filesystem_core.squashfs which you can then also unsquash."
-			tail -c +$((squashfs_offs[s]+1)) "$input_file" | head -c +${squashfs_length[s]} > "$output_file"
+			if [ "${rootfs_type}" == "ext2fs" ]; then
+				tail -c +$((rootfs_offs[s]+1)) "$input_file" | head -c 4 > "$output_file"
+				tail -c +$((rootfs_offs[s]+5)) "$input_file" | "$mod_tools/avm-rle-decode" >> "$output_file"
+				tail -c +257 "$output_file" > "$output_file.ext2"
+			else
+				tail -c +$((rootfs_offs[s]+1)) "$input_file" | head -c +${rootfs_length[s]} > "$output_file"
+			fi
+
 			n=$((n+1))
 			count="-$n"
 		done
@@ -188,9 +232,9 @@ extract_kernel_filesystem()
 	n=1
 	unset count
 	[ "$endian" == "-any" -o "$endian" == "-le" ] && \
-		do_extract_kfs "$SQUASHFS_MAGIC_LE" "little"
+		do_extract_kfs "little"
 	[ "$endian" == "-any" -o "$endian" == "-be" ] && \
-		do_extract_kfs "$SQUASHFS_MAGIC_BE" "big"
+		do_extract_kfs "big"
 	[ $n -eq 1 ] && echo "    No kernel + filesystem candidates found in $input_file"
 }
 
@@ -222,10 +266,26 @@ esac
 
 # Magic byte sequences (hex) to identify kernel, SquashFS and bootloader
 KERNEL_MAGIC="8112EDFE"
+#
 SQUASHFS_MAGIC_BE="73717368"
 SQUASHFS_MAGIC_LE=$(echo "$SQUASHFS_MAGIC_BE" | invertEndianness)
+declare -A SQUASHFS_MAGIC=(
+	[big]=${SQUASHFS_MAGIC_BE}
+	[little]=${SQUASHFS_MAGIC_LE}
+)
+#
+# sqsh followed by AVM-RLE-encoded sequence of (252 + 1024) zero bytes, 252: AVM-zero-header, 1024: first 1024 EXT2FS bytes
+# opcode: 0x81, payloadLen: 0xFC04 (little-endian), payload: 0x00
+declare -A EXT2FS_MAGIC=(
+	[big]="${SQUASHFS_MAGIC_BE}81FC0400"
+	[little]="${SQUASHFS_MAGIC_LE}81FC0400"
+)
+#
 BOOTLOADER_MAGIC_BE="40809000"
-BOOTLOADER_MAGIC_LE=$(echo "$BOOTLOADER_MAGIC_BE" | invertEndianness)
+declare -A BOOTLOADER_MAGIC=(
+	[big]=${BOOTLOADER_MAGIC_BE}
+	[little]=$(echo "$BOOTLOADER_MAGIC_BE" | invertEndianness)
+)
 
 input_file_size=$(stat -L -c %s "$input_file")
 

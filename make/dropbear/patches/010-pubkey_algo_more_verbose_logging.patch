@@ -1,0 +1,12 @@
+--- svr-authpubkey.c
++++ svr-authpubkey.c
+@@ -207,7 +207,8 @@
+ 	/* check that we can use the algo */
+ 	if (have_algo(algo, algolen, sshhostkey) == DROPBEAR_FAILURE) {
+ 		dropbear_log(LOG_WARNING,
+-				"Pubkey auth attempt with unknown algo for '%s' from %s",
++				"Pubkey auth attempt with unknown algo '%.*s' for '%s' from %s",
++				algolen, algo,
+ 				ses.authstate.pw_name, svr_ses.addrstring);
+ 		goto out;
+ 	}

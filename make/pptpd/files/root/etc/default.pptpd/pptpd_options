@@ -5,6 +5,9 @@ cat <<EOF
 # (must match the second field in /etc/ppp/chap-secrets entries)
 name fritzbox
 
+# Set MTU size
+mtu 1400
+
 # Strip the domain prefix from the username before authentication.
 # (applies if you use pppd with chapms-strip-domain patch)
 #chapms-strip-domain
@@ -24,8 +27,7 @@ require-mschap-v2
 # Encryption
 # Require MPPE 128-bit encryption
 # (note that MPPE requires the use of MSCHAP-V2 or EAP-TLS during authentication)
-mppe required
-mppe stateless
+mppe required,stateless
 
 # Network and Routing
 
@@ -80,6 +82,10 @@ nobsdcomp
 # http://marc.theaimsgroup.com/?t=111343175400006&r=1&w=2 )
 novj
 novjccomp
+
+# Disable protocol field and address/control compression
+nopcomp
+noaccomp
 
 # turn off logging to stderr, since this may be redirected to pptpd
 #nologfd

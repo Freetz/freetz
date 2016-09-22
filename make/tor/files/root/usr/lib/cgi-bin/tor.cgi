@@ -1,12 +1,10 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
 check "$TOR_ENABLED" yes:auto "*":man
 check "$TOR_SOCKS_POLICY_REJECT" yes:closed "*":open
-check "$TOR_STRICT_ENTRY_NODES" yes:strict_entry
-check "$TOR_STRICT_EXIT_NODES" yes:strict_exit
+check "$TOR_STRICT_NODES" yes:strict_nodes
 check "$TOR_FORCE_GEOIP_UPDATE" yes:force_geoip_update
 check "$TOR_RELAY_ENABLED" yes:relay_enabled
 check "$TOR_DATADIRPERSISTENT" yes:datadirpersistent_enabled
@@ -49,19 +47,25 @@ Syntax: &lt;addr&gt;[/&lt;mask&gt;]<br />
 EOF
 
 sec_end
-sec_begin '$(lang de:"Eingangs- und Ausgangsserver" en:"Entrynodes and Exitnodes")'
+sec_begin '$(lang de:"Eingangs- und Ausgangsknoten" en:"Entry and exit nodes")'
 
 cat << EOF
-<h2>$(lang de:"Liste mit Tor Servern (einer pro Zeile)" en:"List of Tor servers (one per line)")</h2>
+<h2>$(lang de:"Tor-Eingangsknoten (einer pro Zeile)" en:"Tor entry nodes (one per line)")</h2>
 <p><textarea id="accept" name="entry_nodes" rows="4" cols="50" maxlength="255">$(html "$TOR_ENTRY_NODES")</textarea></p>
-<p>$(lang de:"Nur diese Server als Eingang verwenden" en:"Only use these servers as entry nodes"): <input type="hidden" name="strict_entry_nodes" value="no"><input id="e6" type="checkbox" name="strict_entry_nodes" value="yes"$strict_entry_chk></p>
-<h2>$(lang de:"Liste mit Tor Servern (einer pro Zeile)" en:"List of Tor servers (one per line)")</h2>
+
+<h2>$(lang de:"Tor-Ausgangsknoten (einer pro Zeile)" en:"Tor exit nodes (one per line)")</h2>
 <p><textarea id="accept" name="exit_nodes" rows="4" cols="50" maxlength="255">$(html "$TOR_EXIT_NODES")</textarea></p>
-<p>$(lang de:"Nur diese Server als Ausgang verwenden" en:"Only use these servers as exit nodes"): <input type="hidden" name="strict_exit_nodes" value="no"><input id="e7" type="checkbox" name="strict_exit_nodes" value="yes"$strict_exit_chk></p>
+
+<h2>$(lang de:"Zu vermeidende Tor-Knoten (einer pro Zeile)" en:"Tor nodes to avoid (one per line)")</h2>
+<p><textarea id="accept" name="exclude_nodes" rows="4" cols="50" maxlength="255">$(html "$TOR_EXCLUDE_NODES")</textarea></p>
+
+<p>$(lang de:"Zu vermeidende Knoten als sicher auszuschlie&szlig;ende interpretieren" en:"Treat nodes to avoid as the ones definitely to exclude"): <input type="hidden" name="strict_nodes" value="no"><input id="e7" type="checkbox" name="strict_nodes" value="yes"$strict_nodes_chk></p>
+
 <p>
 <label for="geoip_file">$(lang de:"Pfad zu GeoIP-Datenbank" en:"Path to GeoIP database"): </label>
 <input type="text" id="geoip_file" name="geoip_file" size="55" maxlength="255" value="$(html "$TOR_GEOIP_FILE")">
 </p>
+
 <p>
 <label for="force_geoip_update">$(lang de:"Aktualisiere GeoIP-Datenbank bei jedem Start" en:"Update GeoIP database on each start"): </label>
 <input type="hidden" name="force_geoip_update" value="no">

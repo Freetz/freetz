@@ -1,6 +1,6 @@
 --- src/network.c
 +++ src/network.c
-@@ -29,6 +29,8 @@
+@@ -31,6 +31,8 @@
  #  include <openssl/dh.h>
  # endif
  # include <openssl/bn.h>
@@ -9,7 +9,7 @@
  
  # if OPENSSL_VERSION_NUMBER >= 0x0090800fL
  #  ifndef OPENSSL_NO_ECDH
-@@ -627,9 +629,8 @@
+@@ -688,9 +690,8 @@
  #endif
  
  #ifdef USE_OPENSSL
@@ -20,7 +20,7 @@
  	BIO *bio;
  
         /* 1024-bit MODP Group with 160-bit prime order subgroup (RFC5114)
-@@ -671,6 +672,7 @@
+@@ -732,6 +733,7 @@
  		0x85,0x5E,0x6E,0xEB,0x22,0xB3,0xB2,0xE5,
  	};
  #endif
@@ -28,7 +28,7 @@
  
  	struct nb_map {
  		network_backend_t nb;
-@@ -808,7 +810,7 @@
+@@ -866,7 +868,7 @@
  			}
  		}
  
