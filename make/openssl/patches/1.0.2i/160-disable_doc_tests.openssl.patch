@@ -1,6 +1,6 @@
 --- Makefile.org
 +++ Makefile.org
-@@ -154,7 +154,7 @@
+@@ -155,7 +155,7 @@
  
  # tests to perform.  "alltests" is a special word indicating that all tests
  # should be performed.
@@ -9,7 +9,7 @@
  
  MAKEFILE= Makefile
  
-@@ -168,7 +168,7 @@
+@@ -169,7 +169,7 @@
  
  TOP=    .
  ONEDIRS=out tmp
@@ -18,7 +18,7 @@
  WDIRS=  windows
  LIBS=   libcrypto.a libssl.a
  SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
-@@ -271,7 +271,7 @@
+@@ -273,7 +273,7 @@
  
  sub_all: build_all
  
@@ -27,7 +27,7 @@
  
  build_libs: build_libcrypto build_libssl openssl.pc
  
-@@ -291,7 +291,7 @@
+@@ -293,7 +293,7 @@
  build_tools: build_libs
  	@dir=tools; target=all; $(BUILD_ONE_CMD)
  
@@ -36,7 +36,7 @@
  build_testapps:
  	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
  
-@@ -528,7 +528,7 @@
+@@ -531,7 +531,7 @@
  	@$(MAKE) SDIRS='$(SDIRS)' clean
  	@$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
  
