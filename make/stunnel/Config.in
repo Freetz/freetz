@@ -1,9 +1,8 @@
 config FREETZ_PACKAGE_STUNNEL
-	bool "Stunnel 5.35"
+	bool "Stunnel 5.36"
 	select FREETZ_OPENSSL_VERSION_PROMPT
 	select FREETZ_LIB_libcrypto  if !FREETZ_PACKAGE_STUNNEL_STATIC
 	select FREETZ_LIB_libssl     if !FREETZ_PACKAGE_STUNNEL_STATIC
-	select FREETZ_LIB_libz       if !FREETZ_PACKAGE_STUNNEL_STATIC
 	select FREETZ_LIB_libpthread if !FREETZ_PACKAGE_STUNNEL_STATIC
 	select FREETZ_LIB_libutil    if !FREETZ_PACKAGE_STUNNEL_STATIC
 	default n
