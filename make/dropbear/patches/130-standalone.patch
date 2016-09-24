@@ -20,38 +20,24 @@
  		}
  	}
  }
---- options.h
-+++ options.h
-@@ -21,13 +21,25 @@
+--- localoptions.h
++++ localoptions.h
+@@ -1,12 +1,23 @@
+ #ifndef DROPBEAR_LOCALOPTIONS_H_
+ #define DROPBEAR_LOCALOPTIONS_H_
  
- /* Default hostkey paths - these can be specified on the command line */
- #ifndef DSS_PRIV_FILENAME
 +#ifndef DB_NONFREETZ
  #define DSS_PRIV_FILENAME "/mod/etc/ssh/dss_host_key"
-+#else
-+#define DSS_PRIV_FILENAME "/var/tmp/dss_host_key"
-+#endif
- #endif
- #ifndef RSA_PRIV_FILENAME
-+#ifndef DB_NONFREETZ
  #define RSA_PRIV_FILENAME "/mod/etc/ssh/rsa_host_key"
-+#else
-+#define RSA_PRIV_FILENAME "/var/tmp/rsa_host_key"
-+#endif
- #endif
- #ifndef ECDSA_PRIV_FILENAME
-+#ifndef DB_NONFREETZ
  #define ECDSA_PRIV_FILENAME "/mod/etc/ssh/ecdsa_host_key"
 +#else
++#define DSS_PRIV_FILENAME "/var/tmp/dss_host_key"
++#define RSA_PRIV_FILENAME "/var/tmp/rsa_host_key"
 +#define ECDSA_PRIV_FILENAME "/var/tmp/ecdsa_host_key"
 +#endif
- #endif
  
- /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
-@@ -307,7 +319,12 @@
+ #define SFTPSERVER_PATH "/usr/lib/sftp-server"
  
- /* This is used by the scp binary when used as a client binary. If you're
-  * not using the Dropbear client, you'll need to change it */
 +#ifndef DB_NONFREETZ
  #define DROPBEAR_PATH_SSH_PROGRAM "/usr/bin/ssh"
 +#else
@@ -59,5 +45,4 @@
 +#define DROPBEAR_PATH_SSH_PROGRAM "ssh"
 +#endif
  
- /* Whether to log commands executed by a client. This only logs the 
-  * (single) command sent to the server, not what a user did in a 
+ #endif
