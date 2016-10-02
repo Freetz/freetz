@@ -10,11 +10,16 @@ $(PKG)_LIBS_BUILD_DIR   := $($(PKG)_LIBNAMES:%=$($(PKG)_DIR)/lib%.so)
 $(PKG)_LIBS_STAGING_DIR := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 $(PKG)_LIBS_TARGET_DIR  := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_DIR)/%)
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,link_ifunc,,nettle)
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_gmp___gmpz_powm_sec)
+
 $(PKG)_DEPENDS_ON += gmp
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-assembler
 $(PKG)_CONFIGURE_OPTIONS += --disable-documentation
 $(PKG)_CONFIGURE_OPTIONS += --disable-openssl
+$(PKG)_CONFIGURE_OPTIONS += --disable-mini-gmp
+$(PKG)_CONFIGURE_OPTIONS += --enable-public-key
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
