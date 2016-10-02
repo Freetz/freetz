@@ -1,22 +1,6 @@
 menu "MTD options"
 	visible if FREETZ_TYPE_CUSTOM
 
-# TODO: check 4020,6820 values
-config FREETZ_FILESYSTEM_MTD_SIZE
-	int "FILESYSTEM (64K blocks)" if FREETZ_TYPE_CUSTOM
-	default 768         if \
-		FREETZ_TYPE_3370 || \
-		FREETZ_TYPE_3390 || \
-		FREETZ_TYPE_3490 || \
-		FREETZ_TYPE_4020 || \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6820 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_6842
-	default 0
-	help
-		Number of 64K blocks in the filesystem mtd device.
-
 config FREETZ_KERNEL_CUSTOM_MTD_SIZE
 	int "Kernel (64K blocks)" if FREETZ_TYPE_CUSTOM
 	default 59	if FREETZ_TYPE_3170_7170
