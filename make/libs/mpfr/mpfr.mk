@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 3.1.4)
-$(PKG)_LIB_VERSION:=4.1.4
+$(call PKG_INIT_LIB, 3.1.5)
+$(PKG)_LIB_VERSION:=4.1.5
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=761413b16d749c53e2bfd2b1dfaa3b027b0e793e404b90b5fbaeef60af6517f5
+$(PKG)_SOURCE_SHA256:=015fde82b3979fbe5f83501986d328331ba8ddf008c1ff3da3c238f49ca062bc
 $(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
