@@ -1,6 +1,6 @@
 --- extra/servers_additional.cfg
 +++ extra/servers_additional.cfg
-@@ -1,50 +1,18 @@
+@@ -1,53 +1,19 @@
 -#File format is utf-8.  If you make changes, additions, be sure and save the file as type utf-8, otherwise things will break (sorry for rhyme).
 -
 -#At minimum each entry requires a key, such as, 'default@server.com' followed by dyndns_server_name, and dyndns_server_url options with respective server name, and url parameters.  
@@ -8,6 +8,9 @@
 -#just may not give expected results.
 -
 -#Your submissions, or requests at help, or feature requests forums at http://sourceforge.net/projects/inadyn-mt.
+-
+-#02.28.07 (revision:  09/21/2016)
+-#corrected regfish.de return codes.
 -
 -#02.28.06-svn_unstable (added:  )
 -
@@ -29,14 +32,14 @@
 -
 -#Servers
 -#Example (usable) of natively supported dyndns.com (default@dyndns.org)
--default@ddns_server_of_your_dreams --dyndns_server_name members.dyndns.org --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
+ default@ddns_server_of_your_dreams --dyndns_server_name members.dyndns.org --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_rsp_other "dnserr,911" --svr_ip_param myip
 -#Some examples (usable) mapped from the INADYN project
 -
  default@dtdns.com --dyndns_server_name www.dtdns.com --dyndns_server_url /api/autodns.cfm?id= --ip_server_name myip.dtdns.com / --svr_ip_param ip usr pw --svr_rsp_success "Host ($ALIAS) now points to ($IP_ADDR)."
 -
  test@dtdns.com --dyndns_server_name www.dtdns.com --dyndns_server_url /api/autodns.cfm?id=($ALIAS)&ip=($IP_ADDR)&usr=($USERNAME)&pw=($PASSWORD) --ip_server_name myip.dtdns.com / --svr_rsp_success "Host ($ALIAS) now points to ($IP_ADDR)."
 -
- default@changeip.com --dyndns_server_name nic.changeip.com --dyndns_server_url /nic/update?hostname = --ip_server_name ip.changeip.com / --svr_rsp_success "good, NOCHG" --svr_ip_param myip
+ default@changeip.com --dyndns_server_name nic.changeip.com --dyndns_server_url /nic/update?hostname= --ip_server_name ip.changeip.com / --svr_rsp_success "good, NOCHG" --svr_ip_param myip
 -#no change -- 4=, #try later (etc.) 11=
  default@dnsexit.com --dyndns_server_name update.dnsexit.com --dyndns_server_url /RemoteUpdate.sv?host= --ip_server_name ip.dnsexit.com / --svr_ip_param myip login password --svr_rsp_success "0=,1=" --svr_rsp_other "11="
  ipv4@nsupdate.info --dyndns_server_name ipv4.nsupdate.info --dyndns_server_url /nic/update?system=dyndns&hostname= --ip_server_name ipv4.nsupdate.info /myip --svr_rsp_success "good,nochg" --svr_ip_param myip
@@ -50,8 +53,8 @@
 -
  default@dnsdynamic.org --dyndns_server_name www.dnsdynamic.org --dyndns_server_url /api/hostname= --ip_server_name myip.dnsdynamic.com / --svr_rsp_success "good,nochg" --svr_ip_param myip
  default@dnspark.com --dyndns_server_name control.dnspark.com --dyndns_server_url /api/dynamic/update.php?hostname= --ip_server_name ipdetect.dnspark.com --srv_rsp_success "ok,nochg" / svr_ip_param ip
- ipv4@regfish.de --dyndns_server_name dyndns.regfish.de --dyndns_server_url /?thisisipv4=1&FQDN= --svr_rsp_success "SUCCESS,SUCCESS_NONEED" --svr_rsp_other "STATUS_UNKNOWN_ERROR" --svr_ip_param ipv4 blahblah token
-@@ -53,174 +21,6 @@
+ ipv4@regfish.de --dyndns_server_name dyndns.regfish.de --dyndns_server_url /?thisisipv4=1&FQDN= --svr_rsp_success "success|100|update succeeded!,success|101|already up-to-date!" --svr_rsp_other "error|414|*" --svr_ip_param ipv4 blahblah token
+@@ -56,174 +22,6 @@
  default@joker.com --dyndns_server_name svc.joker.com --dyndns_server_url /nic/update?hostname= --ip_server_name svc.joker.com /nic/checkip --svr_rsp_success "good,nochg" --svr_ip_param myip username password
  default@strato.com --dyndns_server_name dyndns.strato.com --dyndns_server_url /nic/update?system=dyndns&hostname= --svr_rsp_success "good,nochg" --svr_ip_param myip
  default@system-ns.com --dyndns_server_name system-ns.com --dyndns_server_url /api?type=dynamic&command=set&domain= --svr_rsp_success "0" --svr_rsp_other "99" --svr_ip_param ip blahblah token
