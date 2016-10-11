@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,02.28.08)
+$(call PKG_INIT_BIN,02.28.10)
 $(PKG)_SOURCE:=$(pkg).v.$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=eda0f9df22a20c219067f2f1ca20f26f
+$(PKG)_SOURCE_MD5:=96d193759d61ee620d059799119dd982
 $(PKG)_SITE:=@SF/inadyn-mt
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg).v.$($(PKG)_VERSION)
