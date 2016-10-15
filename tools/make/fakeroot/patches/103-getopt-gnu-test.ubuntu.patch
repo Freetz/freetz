@@ -1,0 +1,25 @@
+
+ Use "getopt -T" to test for GNU getopt rather than parsing the --version output which is locale specific
+
+--- scripts/fakeroot.in
++++ scripts/fakeroot.in
+@@ -43,15 +43,12 @@ export FAKED_MODE
+ 
+ libfound=no
+ 
+-GETOPTEST=`getopt --version`
+-case $GETOPTEST in
+-getopt*) # GNU getopt
++GETOPTTEST=`getopt -T`
++if test "$?" -eq 4; then # GNU getopt
+     FAKE_TEMP=`getopt -l lib: -l faked: -l unknown-is-real -l fd-base: -l version -l help -- +l:f:i:s:ub:vh "$@"`
+-    ;;
+-*) # POSIX getopt ?
++else
+     FAKE_TEMP=`getopt l:f:i:s:ub:vh "$@"`
+-    ;;
+-esac
++fi
+ 
+ if test "$?" -ne 0; then
+   usage
