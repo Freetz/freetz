@@ -26,7 +26,7 @@
  
 --- src/openvpn/options.c
 +++ src/openvpn/options.c
-@@ -1877,8 +1877,10 @@
+@@ -1878,8 +1878,10 @@
        )
      msg (M_USAGE, "--inetd nowait can only be used in TLS mode");
  
@@ -37,7 +37,7 @@
  
  
    if (options->lladdr && dev != DEV_TYPE_TAP)
-@@ -2061,8 +2063,10 @@
+@@ -2062,8 +2064,10 @@
  #endif
        if (options->shaper)
  	msg (M_USAGE, "--shaper cannot be used with --mode server");
@@ -48,7 +48,7 @@
        if (options->ipchange)
  	msg (M_USAGE, "--ipchange cannot be used with --mode server (use --client-connect instead)");
        if (!(proto_is_dgram(ce->proto) || ce->proto == PROTO_TCPv4_SERVER
-@@ -2451,8 +2455,10 @@
+@@ -2452,8 +2456,10 @@
     * In forking TCP server mode, you don't need to ifconfig
     * the tap device (the assumption is that it will be bridged).
     */

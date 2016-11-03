@@ -1,5 +1,5 @@
-$(call PKG_INIT_BIN, 2.3.12)
-$(PKG)_SOURCE_MD5:=375560e3fadc4599ede7221b0cab8a0e
+$(call PKG_INIT_BIN, 2.3.13)
+$(PKG)_SOURCE_MD5:=4051af7925a5e6dc34be7f76efa81621
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 
