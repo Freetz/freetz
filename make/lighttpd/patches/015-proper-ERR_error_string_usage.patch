@@ -25,7 +25,7 @@
  				}
  
  				break;
-@@ -1091,8 +1093,9 @@
+@@ -1095,8 +1097,9 @@
  		/* connect FD to SSL */
  		if (srv_socket->is_ssl) {
  			if (NULL == (con->ssl = SSL_new(srv_socket->ssl_ctx))) {
@@ -36,7 +36,7 @@
  
  				connection_close(srv, con);
  				return NULL;
-@@ -1103,8 +1106,9 @@
+@@ -1107,8 +1110,9 @@
  			SSL_set_accept_state(con->ssl);
  
  			if (1 != (SSL_set_fd(con->ssl, cnt))) {
@@ -85,7 +85,7 @@
  	const char *servername;
  	connection *con = (connection *) SSL_get_app_data(ssl);
  	UNUSED(al);
-@@ -137,14 +138,14 @@
+@@ -138,14 +139,14 @@
  	if (!SSL_use_certificate(ssl, con->conf.ssl_pemfile_x509)) {
  		log_error_write(srv, __FILE__, __LINE__, "ssb:s", "SSL:",
  			"failed to set certificate for TLS server name", con->tlsext_server_name,
@@ -102,7 +102,7 @@
  		return SSL_TLSEXT_ERR_ALERT_FATAL;
  	}
  
-@@ -152,7 +153,7 @@
+@@ -153,7 +154,7 @@
  		if (NULL == con->conf.ssl_ca_file_cert_names) {
  			log_error_write(srv, __FILE__, __LINE__, "ssb:s", "SSL:",
  				"can't verify client without ssl.ca-file for TLS server name", con->tlsext_server_name,
@@ -111,7 +111,7 @@
  			return SSL_TLSEXT_ERR_ALERT_FATAL;
  		}
  
-@@ -660,9 +661,10 @@
+@@ -661,9 +662,10 @@
  	if (NULL == (s->ssl_pemfile_pkey = evp_pkey_load_pem_file(srv, s->ssl_pemfile->ptr))) return -1;
  
  	if (!X509_check_private_key(s->ssl_pemfile_x509, s->ssl_pemfile_pkey)) {
@@ -123,7 +123,7 @@
  				s->ssl_pemfile);
  		return -1;
  	}
-@@ -672,6 +674,7 @@
+@@ -673,6 +675,7 @@
  #endif
  
  int network_init(server *srv) {
@@ -131,7 +131,7 @@
  	buffer *b;
  	size_t i, j;
  	network_backend_t backend;
-@@ -798,7 +801,7 @@
+@@ -799,7 +802,7 @@
  			s->ssl_ca_file_cert_names = SSL_load_client_CA_file(s->ssl_ca_file->ptr);
  			if (NULL == s->ssl_ca_file_cert_names) {
  				log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -140,7 +140,7 @@
  			}
  		}
  
-@@ -806,7 +809,7 @@
+@@ -807,7 +810,7 @@
  
  		if (NULL == (s->ssl_ctx = SSL_CTX_new(SSLv23_server_method()))) {
  			log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -149,7 +149,7 @@
  			return -1;
  		}
  
-@@ -814,7 +817,7 @@
+@@ -815,7 +818,7 @@
  		if (0 == SSL_CTX_set_session_id_context(s->ssl_ctx, (const unsigned char*) CONST_STR_LEN("lighttpd"))) {
  			log_error_write(srv, __FILE__, __LINE__, "ss:s", "SSL:",
  				"failed to set session context",
@@ -158,7 +158,7 @@
  			return -1;
  		}
  
-@@ -835,7 +838,7 @@
+@@ -836,7 +839,7 @@
  			/* disable SSLv2 */
  			if ((SSL_OP_NO_SSLv2 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv2)) != SSL_OP_NO_SSLv2) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -167,7 +167,7 @@
  				return -1;
  			}
  		}
-@@ -844,7 +847,7 @@
+@@ -845,7 +848,7 @@
  			/* disable SSLv3 */
  			if ((SSL_OP_NO_SSLv3 & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv3)) != SSL_OP_NO_SSLv3) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -176,7 +176,7 @@
  				return -1;
  			}
  		}
-@@ -853,7 +856,7 @@
+@@ -854,7 +857,7 @@
  			/* Disable support for low encryption ciphers */
  			if (SSL_CTX_set_cipher_list(s->ssl_ctx, s->ssl_cipher_list->ptr) != 1) {
  				log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:",
@@ -185,7 +185,7 @@
  				return -1;
  			}
  
-@@ -943,7 +946,7 @@
+@@ -944,7 +947,7 @@
  			if (!buffer_string_is_empty(s1->ssl_ca_file)) {
  				if (1 != SSL_CTX_load_verify_locations(s->ssl_ctx, s1->ssl_ca_file->ptr, NULL)) {
  					log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -194,7 +194,7 @@
  					return -1;
  				}
  			}
-@@ -967,20 +970,20 @@
+@@ -968,20 +971,20 @@
  
  		if (1 != SSL_CTX_use_certificate(s->ssl_ctx, s->ssl_pemfile_x509)) {
  			log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
@@ -247,7 +247,7 @@
  			}
 --- src/server.c
 +++ src/server.c
-@@ -1837,3 +1837,10 @@
+@@ -1849,3 +1849,10 @@
  
  	return 0;
  }
