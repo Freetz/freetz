@@ -1,0 +1,22 @@
+--- src/libsodium/randombytes/sysrandom/randombytes_sysrandom.c	2016-12-19 13:25:40.883632951 +0100
++++ src/libsodium/randombytes/sysrandom/randombytes_sysrandom.c	2016-12-19 13:24:36.076962176 +0100
+@@ -122,7 +122,7 @@
+     int           fd;
+     int           pret;
+ 
++    fd = open("/dev/urandom", O_RDONLY);
+-    fd = open("/dev/random", O_RDONLY);
+     if (fd == -1) {
+         return 0;
+     }
+--- src/libsodium/randombytes/salsa20/randombytes_salsa20_random.c	2016-12-19 13:26:01.530300926 +0100
++++ src/libsodium/randombytes/salsa20/randombytes_salsa20_random.c	2016-12-19 13:24:59.220296977 +0100
+@@ -138,7 +138,7 @@
+     int           fd;
+     int           pret;
+ 
++    fd = open("/dev/urandom", O_RDONLY);
+-    fd = open("/dev/random", O_RDONLY);
+     if (fd == -1) {
+         return 0;
+     }
