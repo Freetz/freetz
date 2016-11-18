@@ -1,0 +1,16 @@
+config FREETZ_PACKAGE_DNSCRYPT_PROXY
+	bool "dnscrypt 1.6.1 (binary only)"
+	select FREETZ_LIB_libsodium
+	default n
+	help
+		DNSCrypt is a protocol that authenticates communications between a DNS client
+		and a DNS resolver. It prevents DNS spoofing. It uses cryptographic signatures
+		to verify that responses originate from the chosen DNS resolver and haven't
+		been tampered with.
+
+config FREETZ_PACKAGE_DNSCRYPT_PROXY_RESOLVERS
+	bool "install resolvers list"
+	depends on FREETZ_PACKAGE_DNSCRYPT_PROXY
+	default y
+	help
+		Install dnscrypt-resolvers.csv to /usr/share/dnscrypt-proxy/dnscrypt-resolvers.csv
