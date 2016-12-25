@@ -19,7 +19,8 @@ $(PKG)_CONFIGURE_OPTIONS += --without-lecture \
 			    --disable-root-mailer \
 			    --disable-root-sudo \
 			    --sysconfdir=/mod/etc \
-			    --disable-zlib
+			    --disable-zlib \
+			    --with-libraries=util
 
 $(PKG)_CONFIGURE_ENV += sudo_cv_uid_t_len=10
 
