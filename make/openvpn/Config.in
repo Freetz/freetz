@@ -8,6 +8,18 @@ config FREETZ_PACKAGE_OPENVPN
 
 choice
 	depends on FREETZ_PACKAGE_OPENVPN
+	prompt "Version"
+	default FREETZ_PACKAGE_OPENVPN_VERSION_2_3
+
+	config FREETZ_PACKAGE_OPENVPN_VERSION_2_3
+	bool "2.3.13"
+
+#	config FREETZ_PACKAGE_OPENVPN_VERSION_2_4
+#	bool "2.4.0 - EXPERIMENTAL"
+endchoice
+
+choice
+	depends on FREETZ_PACKAGE_OPENVPN
 	prompt "SSL library"
 	default FREETZ_PACKAGE_OPENVPN_OPENSSL
 
