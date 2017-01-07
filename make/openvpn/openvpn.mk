@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.3.13)
-$(PKG)_SOURCE_MD5_2.3.13:=4051af7925a5e6dc34be7f76efa81621
+$(call PKG_INIT_BIN, 2.3.14)
+$(PKG)_SOURCE_MD5_2.3.14:=70fc1e9c74ba2e6d7f7e320313dc3a7b
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
 
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))

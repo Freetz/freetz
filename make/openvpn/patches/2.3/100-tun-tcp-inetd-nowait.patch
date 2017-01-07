@@ -26,18 +26,18 @@
  
 --- src/openvpn/options.c
 +++ src/openvpn/options.c
-@@ -1878,8 +1878,10 @@
+@@ -1881,8 +1881,10 @@
        )
      msg (M_USAGE, "--inetd nowait can only be used in TLS mode");
  
-+/*
++#if 0
    if (options->inetd == INETD_NOWAIT && dev != DEV_TYPE_TAP)
      msg (M_USAGE, "--inetd nowait only makes sense in --dev tap mode");
-+*/
++#endif
  
  
    if (options->lladdr && dev != DEV_TYPE_TAP)
-@@ -2062,8 +2064,10 @@
+@@ -2065,8 +2067,10 @@
  #endif
        if (options->shaper)
  	msg (M_USAGE, "--shaper cannot be used with --mode server");
@@ -48,14 +48,14 @@
        if (options->ipchange)
  	msg (M_USAGE, "--ipchange cannot be used with --mode server (use --client-connect instead)");
        if (!(proto_is_dgram(ce->proto) || ce->proto == PROTO_TCPv4_SERVER
-@@ -2452,8 +2456,10 @@
+@@ -2457,8 +2461,10 @@
     * In forking TCP server mode, you don't need to ifconfig
     * the tap device (the assumption is that it will be bridged).
     */
-+/*
++#if 0
    if (options->inetd == INETD_NOWAIT)
      options->ifconfig_noexec = true;
-+*/
++#endif
  
  #ifdef WIN32
    if ((dev == DEV_TYPE_TUN || dev == DEV_TYPE_TAP) && !options->route_delay_defined)
@@ -65,9 +65,9 @@
        ASSERT (sock->info.proto == PROTO_TCPv4_SERVER
  	      || sock->info.proto == PROTO_TCPv6_SERVER
  	     );
-+/*
++#if 0
        ASSERT (!sock->inetd);
-+*/
++#endif
        sock->sd = accept_from->sd;
      }
  
