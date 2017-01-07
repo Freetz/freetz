@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.43)
+$(call PKG_INIT_BIN, 1.4.44)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=fe0c4a06dd2408a83ee7a2bfedc45e09597f3313cbda82485507573ae8fa948a
+$(PKG)_SOURCE_SHA256:=adb66ca985651957feb209c91c55ebbf917d23630bfc3a216a2f70043c7b5422
 $(PKG)_SITE:=http://download.lighttpd.net/lighttpd/releases-1.4.x
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/src/lighttpd
