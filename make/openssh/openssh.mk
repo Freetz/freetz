@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 7.3p1)
+$(call PKG_INIT_BIN, 7.4p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=bfade84283fcba885e2084343ab19a08c7d123a5
+$(PKG)_SOURCE_SHA1:=2330bbf82ed08cf3ac70e0acf00186ef3eeb97e0
 $(PKG)_SITE:=http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable,ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
 $(PKG)_BIN_BINARIES             := ssh scp ssh-add ssh-agent ssh-keygen ssh-keysign ssh-keyscan sftp
@@ -35,7 +35,7 @@ $(PKG)_EXCLUDED += $(addprefix usr/lib/,$(filter-out $($(PKG)_LIB_BINARIES_INCLU
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_sshd),,etc/default.openssh etc/init.d/rc.openssh usr/lib/cgi-bin/openssh.cgi)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO),etc/default.openssh/rsa_key.def etc/default.openssh/dsa_key.def)
 
-$(PKG)_AC_VARIABLES := have_decl_LLONG_MAX search_logout search_openpty
+$(PKG)_AC_VARIABLES := have_decl_LLONG_MAX search_logout search_openpty lib_resolv_res_query lib_resolv_strcasecmp
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),--disable-shared,--enable-shared)
