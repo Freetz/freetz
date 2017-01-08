@@ -41,7 +41,7 @@ choice
 
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	prompt "OpenSSL version"
-	default FREETZ_OPENSSL_VERSION_1_LTS
+	default FREETZ_OPENSSL_VERSION_1
 
 	config FREETZ_OPENSSL_VERSION_0
 	bool "0.9.8"
@@ -53,7 +53,7 @@ choice
 	    - could be used (with some limitations) as a replacement for AVM's OpenSSL library
 	    - contains no assembler optimized code
 
-	config FREETZ_OPENSSL_VERSION_1_LTS
+	config FREETZ_OPENSSL_VERSION_1
 	bool "1.0.2"
 	help
 	    - is bigger than 0.9.8
@@ -66,7 +66,7 @@ config FREETZ_OPENSSL_SHLIB_VERSION
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	string
 	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
-	default "1.0.0" if FREETZ_OPENSSL_VERSION_1_LTS
+	default "1.0.0" if FREETZ_OPENSSL_VERSION_1
 
 
 menu "OpenSSL configuration"
