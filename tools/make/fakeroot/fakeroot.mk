@@ -16,9 +16,8 @@ FAKEROOT_TARGET_BIARCH_LIB:=$(FAKEROOT_BIARCH_LD_PRELOAD_PATH)/libfakeroot-0.so
 
 # BIARCH means 32-bit libraries on 64-bit hosts
 # We need 32-bit fakeroot support if we use the 32-bit mips*-linux-strip during fwmod on a 64-bit host
-# This doesn't affect sstrip because we build it on the host.
 # The correct condition here would be:
-# (using 32-bit toolchain) AND (any of the STRIP-options is selected) AND (host i 64-bit)
+# (using 32-bit toolchain) AND (any of the STRIP-options is selected) AND (host is 64-bit)
 BIARCH_BUILD_SYSTEM:=$(and \
 	$(or $(FREETZ_DOWNLOAD_TOOLCHAIN),$(FREETZ_TOOLCHAIN_32BIT)), \
 	$(findstring $(shell uname -m),x86_64))
