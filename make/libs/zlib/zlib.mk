@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.8)
+$(call PKG_INIT_LIB, 1.2.10)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=28f1205d8dd2001f26fec1e8c2cebe37
+$(PKG)_SOURCE_SHA256:=9612bf086047078ce3a1c154fc9052113fc1a2a97234a059da17a6299bd4dd32
 $(PKG)_SITE:=http://zlib.net
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
@@ -16,9 +16,6 @@ $(PKG)_CONFIGURE_ENV += RANLIB="$(TARGET_RANLIB)"
 $(PKG)_CONFIGURE_ENV += NM="$(TARGET_NM)"
 $(PKG)_CONFIGURE_ENV += CROSS_PREFIX="$(TARGET_CROSS)"
 $(PKG)_CONFIGURE_ENV += prefix=/usr
-
-# we could make a patch for it, but as all changes are absolutely identical it's simpler to do it per sed
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,test "`([(][^)]+[)] 2>)&1`" = "",\1>config.log,g' ./configure;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

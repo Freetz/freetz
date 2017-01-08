@@ -1,9 +1,9 @@
 --- configure
 +++ configure
-@@ -121,6 +121,7 @@
-     --sysconfdir=*) echo "ignored option: --sysconfdir" | tee -a configure.log; shift ;;
-     --localstatedir=*) echo "ignored option: --localstatedir" | tee -a configure.log; shift ;;
+@@ -137,6 +137,7 @@
      -c* | --const) zconst=1; shift ;;
+     -w* | --warn) warn=1; shift ;;
+     -d* | --debug) debug=1; shift ;;
 +    --quiet) shift ;;
      *)
        echo "unknown option: $1" | tee -a configure.log
