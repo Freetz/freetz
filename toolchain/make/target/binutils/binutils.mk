@@ -84,7 +84,6 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
 	(cd $(BINUTILS_DIR2); $(RM) config.cache; \
 		CFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
 		$(TARGET_CONFIGURE_ENV) \
-		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" \
 		CONFIG_SITE=$(CONFIG_SITE) \
 		$(BINUTILS_DIR)/configure \
 		--prefix=/usr \
