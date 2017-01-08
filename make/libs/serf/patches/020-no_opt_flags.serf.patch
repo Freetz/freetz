@@ -1,10 +1,10 @@
 --- SConstruct
 +++ SConstruct
-@@ -242,7 +244,6 @@
-     env.Append(CCFLAGS='-g')
+@@ -259,7 +259,6 @@
+     env.Append(CCFLAGS=['-g'])
      env.Append(CPPDEFINES=['DEBUG', '_DEBUG'])
    else:
--    env.Append(CCFLAGS='-O2')
-     env.Append(CPPDEFINES='NDEBUG')
+-    env.Append(CCFLAGS=['-O2'])
+     env.Append(CPPDEFINES=['NDEBUG'])
  
    ### works for Mac OS. probably needs to change
