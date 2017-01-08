@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 4.0.6)
-$(PKG)_LIB_VERSION:=5.2.4
+$(call PKG_INIT_BIN, 4.0.7)
+$(PKG)_LIB_VERSION:=5.2.5
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d1d2e940dea0b5ad435f21f03d96dd72
+$(PKG)_SOURCE_SHA256:=9f43a2cfb9589e5cecaa66e16bf87f814c945f22df7ba600d63aac4632c4f019
 $(PKG)_SITE:=http://download.osgeo.org/libtiff
 
-$(PKG)_BINARIES_ALL := bmp2tiff fax2ps fax2tiff gif2tiff ppm2tiff raw2tiff tiff2bw tiff2pdf tiff2ps tiffinfo tiffsplit
+$(PKG)_BINARIES_ALL := fax2ps fax2tiff ppm2tiff raw2tiff tiff2bw tiff2pdf tiff2ps tiffinfo tiffsplit
 $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/tools/.libs/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
@@ -37,6 +37,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-zlib
 $(PKG)_CONFIGURE_OPTIONS += --enable-jpeg
 $(PKG)_CONFIGURE_OPTIONS += --disable-old-jpeg
 $(PKG)_CONFIGURE_OPTIONS += --disable-jbig
+$(PKG)_CONFIGURE_OPTIONS += --disable-lzma
 $(PKG)_CONFIGURE_OPTIONS += --without-apple-opengl-framework
 
 $(PKG)_CONFIGURE_OPTIONS += --with-jpeg-include-dir="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
