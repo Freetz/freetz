@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 3.4.16)
-$(PKG)_LIB_VERSION:=30.6.8
+$(call PKG_INIT_BIN, 3.5.8)
+$(PKG)_LIB_VERSION:=30.13.1
 $(PKG)_OPENSSL_LIB_VERSION:=27.0.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=d99abb1b320771b58c949bab85e4b654dd1e3e9d92e2572204b7dc479d923927
+$(PKG)_SOURCE_SHA256:=0e97f243ae72b70307d684b84c7fe679385aa7a7a0e37e5be810193dcc17d4ff
 $(PKG)_SITE:=ftp://ftp.gnutls.org/gcrypt/gnutls/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
 $(PKG)_CERTTOOL := certtool
@@ -48,6 +48,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-tests
 $(PKG)_CONFIGURE_OPTIONS += --disable-openpgp-authentication
 $(PKG)_CONFIGURE_OPTIONS += --enable-openssl-compatibility
 $(PKG)_CONFIGURE_OPTIONS += --with-included-libcfg
+$(PKG)_CONFIGURE_OPTIONS += --with-included-unistring
 $(PKG)_CONFIGURE_OPTIONS += --with-libtasn1-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-libz-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-libnsl-prefix=no
