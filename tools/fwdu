@@ -86,7 +86,7 @@ image() {
 	local dst=$2
 	if [ ! -e $img ]; then
 		echo -e "~~~~\t$img" | tee -a _failed.log
-		continue
+		return 1
 	fi
 	rm -rf var
 	if [ "$img" != "${img%.exe}" ]; then
@@ -98,12 +98,12 @@ image() {
 	fi
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
-		continue
+		return 1
 	fi
 	if [ ! -f var/tmp/kernel.image ]; then
 		echo -e "----\t$img" | tee -a _failed.log
 		rm -rf var
-		continue
+		return 1
 	fi
 	($FTOOLS/remove-nmi-vector var/tmp/kernel.image var/tmp/kernel.image.no-nmi 2>&1 && mv var/tmp/kernel.image.no-nmi var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
 	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
