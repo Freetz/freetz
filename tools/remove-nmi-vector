@@ -44,7 +44,7 @@ fi
 
 # see linux-${KERNEL_VERSION}/arch/mips/fusiv/fusiv_mips32/fusiv_mtd.c (7390) for details
 NMI_BOOT_STRING="NMI Boot Vector"
-NMI_BOOT_PATTERN="${NMI_BOOT_STRING}\\x00" # as (zero-terminated) sfk-spat-pattern
+NMI_BOOT_PATTERN="4E4D4920426F6F7420566563746F7200" # the string above (zero-terminated) as sfk-bin-pattern
 expectedNmiBootOffset=0xBE0048
 
 nmiVectorOffset=0xBE0000
@@ -79,7 +79,7 @@ getInputFileSize() {
 }
 
 
-declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches spats "${NMI_BOOT_PATTERN}"))
+declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches bin "${NMI_BOOT_PATTERN}"))
 
 if [ ${#nmiBootOffsets[@]} -eq 0 ]; then
 	echo "No NMI vector found" >&2
