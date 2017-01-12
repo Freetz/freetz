@@ -1,0 +1,47 @@
+--- Makefile.org
++++ Makefile.org
+@@ -155,7 +155,7 @@
+ 
+ # tests to perform.  "alltests" is a special word indicating that all tests
+ # should be performed.
+-TESTS = alltests
++TESTS =
+ 
+ MAKEFILE= Makefile
+ 
+@@ -169,7 +169,7 @@
+ 
+ TOP=    .
+ ONEDIRS=out tmp
+-EDIRS=  times doc bugs util include certs ms shlib mt demos perl sf dep VMS
++EDIRS=  times     bugs util include certs ms shlib mt demos perl sf dep VMS
+ WDIRS=  windows
+ LIBS=   libcrypto.a libssl.a
+ SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
+@@ -273,7 +273,7 @@
+ 
+ sub_all: build_all
+ 
+-build_all: build_libs build_apps build_tests build_tools
++build_all: build_libs build_apps             build_tools
+ 
+ build_libs: build_libcrypto build_libssl openssl.pc
+ 
+@@ -293,7 +293,7 @@
+ build_tools: build_libs
+ 	@dir=tools; target=all; $(BUILD_ONE_CMD)
+ 
+-all_testapps: build_libs build_testapps
++all_testapps: build_libs
+ build_testapps:
+ 	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
+ 
+@@ -531,7 +531,7 @@
+ 	@$(MAKE) SDIRS='$(SDIRS)' clean
+ 	@$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
+ 
+-install: all install_docs install_sw
++install: all              install_sw
+ 
+ install_sw:
+ 	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \

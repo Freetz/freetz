@@ -1,20 +1,3 @@
---- options.h
-+++ options.h
-@@ -310,12 +310,14 @@
- #define XAUTH_COMMAND "/usr/bin/xauth -q"
- #endif
- 
-+#ifdef DROPBEAR_SFTPSERVER
- /* if you want to enable running an sftp server (such as the one included with
-  * OpenSSH), set the path below. If the path isn't defined, sftp will not
-  * be enabled */
- #ifndef SFTPSERVER_PATH
- #define SFTPSERVER_PATH "/usr/lib/sftp-server"
- #endif
-+#endif
- 
- /* This is used by the scp binary when used as a client binary. If you're
-  * not using the Dropbear client, you'll need to change it */
 --- runopts.h
 +++ runopts.h
 @@ -68,6 +68,10 @@
@@ -46,7 +29,7 @@
 --- svr-runopts.c
 +++ svr-runopts.c
 @@ -58,6 +58,10 @@
- #ifdef DROPBEAR_DELAY_HOSTKEY
+ #if DROPBEAR_DELAY_HOSTKEY
  					"-R		Create hostkeys as required\n" 
  #endif
 +#ifdef DROPBEAR_SFTPSERVER
@@ -56,8 +39,8 @@
  					"-F		Don't fork into background\n"
  #ifdef DISABLE_SYSLOG
  					"(Syslog support not compiled in, using stderr)\n"
-@@ -107,6 +111,9 @@
- #ifdef DROPBEAR_ECDSA
+@@ -108,6 +112,9 @@
+ #if DROPBEAR_ECDSA
  					ECDSA_PRIV_FILENAME,
  #endif
 +#ifdef DROPBEAR_SFTPSERVER
@@ -66,7 +49,7 @@
  					DROPBEAR_MAX_PORTS, DROPBEAR_DEFPORT, DROPBEAR_PIDFILE,
  					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
  }
-@@ -124,6 +131,9 @@
+@@ -125,6 +132,9 @@
  
  
  	/* see printhelp() for options */
@@ -75,8 +58,8 @@
 +#endif
  	svr_opts.bannerfile = NULL;
  	svr_opts.banner = NULL;
- 	svr_opts.forkbg = 1;
-@@ -186,6 +196,11 @@
+ 	svr_opts.forced_command = NULL;
+@@ -187,6 +197,11 @@
  				case 'R':
  					svr_opts.delay_hostkey = 1;
  					break;
@@ -88,7 +71,7 @@
  				case 'F':
  					svr_opts.forkbg = 0;
  					break;
-@@ -309,6 +324,12 @@
+@@ -310,6 +325,12 @@
  		svr_opts.portcount = 1;
  	}
  

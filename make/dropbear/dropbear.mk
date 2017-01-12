@@ -1,12 +1,18 @@
-$(call PKG_INIT_BIN, 2016.73)
+# 2535ea9d0a6f = 2016.74 with some post-release fixes
+$(call PKG_INIT_BIN, 2535ea9d0a6f)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=5c61a4f69b093b688629cd365be38701485ff63cfb23642dab7a05ad250aefd7
-$(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
+#$(PKG)_SOURCE_SHA256:=2720ea54ed009af812701bcc290a2a601d5c107d12993e5d92c0f5f81f718891
+#$(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
+$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dropbearmulti
 
 $(PKG)_STARTLEVEL=30
+
+ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB)),y)
+$(PKG)_DEPENDS_ON += zlib
+endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY)),y)
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dropbearkey" MULTI=1
@@ -15,22 +21,18 @@ else
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dbclient dropbearkey scp" MULTI=1 SCPPROGRESS=1
 endif
 
-# disable argument null checking
-$(PKG)_CPPFLAGS:=-DARGTYPE=3
-ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER)),y)
-$(PKG)_CPPFLAGS+=-DDROPBEAR_SFTPSERVER
-endif
-ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP)),y)
-$(PKG)_CPPFLAGS+=-DNO_HOST_LOOKUP
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB)),y)
-$(PKG)_DEPENDS_ON += zlib
-endif
-
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_STATIC)),y)
-$(PKG)_MAKE_OPTIONS+= STATIC=1
+$(PKG)_MAKE_OPTIONS += STATIC=1
 endif
+
+# disable argument null checking (libtomcrypt)
+$(PKG)_CPPFLAGS := -DARGTYPE=3
+
+# disable X11 forwarding
+$(PKG)_CPPFLAGS += -DDROPBEAR_X11FWD=0
+
+# enable/disable reverse DNS lookups
+$(PKG)_CPPFLAGS += -DDO_HOST_LOOKUP=$(if $(FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP),0,1)
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_YOURFRITZ)),y)
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dbclient scp" MULTI=1 SCPPROGRESS=1
@@ -40,7 +42,11 @@ $(PKG)_EXTRA_LIBS += -lprivatekeypassword -ldl -lcrypto
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_NONFREETZ)),y)
-$(PKG)_CPPFLAGS+=-DDB_NONFREETZ
+$(PKG)_CPPFLAGS += -DDB_NONFREETZ
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER)),y)
+$(PKG)_CPPFLAGS += -DDROPBEAR_SFTPSERVER
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
@@ -52,6 +58,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_YOURFRITZ
+
+$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB),,--disable-zlib)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pam

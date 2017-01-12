@@ -1,0 +1,23 @@
+config FREETZ_LIB_libmbedcrypto
+	bool "mbed crypto (libmbedcrypto.so)"
+	default n
+
+config FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH
+	bool "With Blowfish cipher" if FREETZ_LIB_libmbedcrypto
+	default n
+	help
+		Enables support for the Blowfish block cipher.
+
+config FREETZ_LIB_libmbedcrypto_WITH_GENRSA
+	bool "With RSA prime-number generation" if FREETZ_LIB_libmbedcrypto
+	default n
+	help
+		Enables the RSA prime-number generation code.
+
+config FREETZ_LIB_libmbedtls
+	bool "mbed TLS (libmbedtls.so)"
+	default n
+
+config FREETZ_LIB_libmbedx509
+	bool "mbed X.509 (libmbedx509.so)"
+	default n

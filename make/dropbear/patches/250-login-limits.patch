@@ -1,35 +1,12 @@
---- options.h
-+++ options.h
-@@ -284,18 +284,18 @@
-  * not yet authenticated. After this limit, connections are rejected */
- /* The first setting is per-IP, to avoid denial of service */
- #ifndef MAX_UNAUTH_PER_IP
--#define MAX_UNAUTH_PER_IP 5
-+#define MAX_UNAUTH_PER_IP 2 /* limited by freetz */
+--- localoptions.h
++++ localoptions.h
+@@ -20,4 +20,9 @@
+ #define DROPBEAR_PATH_SSH_PROGRAM "ssh"
  #endif
  
- /* And then a global limit to avoid chewing memory if connections 
-  * come from many IPs */
- #ifndef MAX_UNAUTH_CLIENTS
--#define MAX_UNAUTH_CLIENTS 30
-+#define MAX_UNAUTH_CLIENTS 5 /* limited by freetz */
++#define MAX_UNAUTH_PER_IP 2  /* limited by freetz, default 5 */
++#define MAX_UNAUTH_CLIENTS 5 /* limited by freetz, default 30 */
++#define MAX_AUTH_TRIES 2     /* limited by freetz, default 10 */
++#define AUTH_TIMEOUT 60      /* limited by freetz down to 60 seconds, default 300 */
++
  #endif
- 
- /* Maximum number of failed authentication tries (server option) */
- #ifndef MAX_AUTH_TRIES
--#define MAX_AUTH_TRIES 10
-+#define MAX_AUTH_TRIES 2 /* limited by freetz */
- #endif
- 
- /* The default file to store the daemon's process ID, for shutdown
---- sysoptions.h
-+++ sysoptions.h
-@@ -20,7 +20,7 @@
- #endif
- /* Close connections to clients which haven't authorised after AUTH_TIMEOUT */
- #ifndef AUTH_TIMEOUT
--#define AUTH_TIMEOUT 300 /* we choose 5 minutes */
-+#define AUTH_TIMEOUT 60 /* limited by freetz down to 60 seconds */
- #endif
- 
- /* A client should try and send an initial key exchange packet guessing

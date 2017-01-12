@@ -1,8 +1,7 @@
-$(call PKG_INIT_BIN,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8zh,$(if $(FREETZ_OPENSSL_VERSION_1_LTS),1.0.2j,1.0.1u)))
+$(call PKG_INIT_BIN,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8zh,1.0.2j))
 $(PKG)_LIB_VERSION:=$(call qstrip,$(FREETZ_OPENSSL_SHLIB_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256_0.9.8zh := f1d9f3ed1b85a82ecf80d0e2d389e1fda3fca9a4dba0bf07adbf231e1a5e2fd6
-$(PKG)_SOURCE_SHA256_1.0.1u  := 4312b4ca1215b6f2c97007503d80db80d5157f76f8f7d3febbe6b4c56ff26739
 $(PKG)_SOURCE_SHA256_1.0.2j  := e7aff292be21c259c6af26469c7a9b3ba26e9abaaffd325e3dccc9785256c431
 $(PKG)_SOURCE_SHA256         := $($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://www.openssl.org/source
@@ -26,7 +25,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcrypto_WITH_EC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcrypto_WITH_RC4
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_0
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1
-$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1_LTS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SMALL_FOOTPRINT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_CONFIG_DIR
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_TRACE
@@ -36,9 +34,8 @@ $(PKG)_NO_CIPHERS += $(if $(FREETZ_LIB_libcrypto_WITH_RC4),,no-rc4)
 
 $(PKG)_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-seed
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
-$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm)
-$(PKG)_OPTIONS    += $(if $(or $(FREETZ_OPENSSL_VERSION_0),$(FREETZ_OPENSSL_VERSION_1)),no-cms)
-$(PKG)_OPTIONS    += $(if $(or $(FREETZ_OPENSSL_VERSION_1),$(FREETZ_OPENSSL_VERSION_1_LTS)),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm no-cms)
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
 $(PKG)_OPTIONS    += $(if $(FREETZ_PACKAGE_OPENSSL_TRACE),enable-ssl-trace)
 
 $(PKG)_CONFIGURE_DEFOPTS := n

@@ -49,22 +49,16 @@ choice
 	help
 	    - NOT supported by the OpenSSL development team anymore
 	      (s. https://www.openssl.org/policies/releasestrat.html)
-	    - is smaller than 1.0.x (about 142kB)
+	    - is smaller than 1.0.x
 	    - could be used (with some limitations) as a replacement for AVM's OpenSSL library
 	    - contains no assembler optimized code
 
 	config FREETZ_OPENSSL_VERSION_1
-	bool "1.0.1"
-	help
-	    - is bigger than 0.9.8 (about 142kB)
-	    - could NOT be used as a replacement for AVM's OpenSSL library
-	    - contains assembler optimized code giving performance improvements of up to 30%
-
-	config FREETZ_OPENSSL_VERSION_1_LTS
 	bool "1.0.2"
 	help
-	    - is the LTS (Long Term Support) version, which will be maintained until
-	      01-01-2020 while 1.0.1 will be dropped after 12-31-2016
+	    - is bigger than 0.9.8
+	    - could NOT be used as a replacement for AVM's OpenSSL library
+	    - contains assembler optimized code giving performance improvements of up to 30%
 
 endchoice
 
@@ -72,7 +66,7 @@ config FREETZ_OPENSSL_SHLIB_VERSION
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	string
 	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
-	default "1.0.0" if FREETZ_OPENSSL_VERSION_1 || FREETZ_OPENSSL_VERSION_1_LTS
+	default "1.0.0" if FREETZ_OPENSSL_VERSION_1
 
 
 menu "OpenSSL configuration"

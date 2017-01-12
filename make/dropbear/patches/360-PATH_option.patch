@@ -1,19 +1,17 @@
---- options.h
-+++ options.h
-@@ -368,7 +368,7 @@
- #define DEFAULT_IDLE_TIMEOUT 0
+--- localoptions.h
++++ localoptions.h
+@@ -25,4 +25,6 @@
+ #define MAX_AUTH_TRIES 2     /* limited by freetz, default 10 */
+ #define AUTH_TIMEOUT 60      /* limited by freetz down to 60 seconds, default 300 */
  
- /* The default path. This will often get replaced by the shell */
--#define DEFAULT_PATH "/usr/bin:/bin"
 +#define DEFAULT_PATH "/usr/bin:/bin:/var/bin"
- 
- /* Some other defines (that mostly should be left alone) are defined
-  * in sysoptions.h */
++
+ #endif
 --- runopts.h
 +++ runopts.h
-@@ -121,6 +121,7 @@
- 	buffer * banner;
- 	char * pidfile;
+@@ -123,6 +123,7 @@
+ 
+ 	char * forced_command;
  
 +	char * childProcessPATH;
  } svr_runopts;
@@ -21,7 +19,7 @@
  extern svr_runopts svr_opts;
 --- svr-chansession.c
 +++ svr-chansession.c
-@@ -948,7 +948,7 @@
+@@ -956,7 +956,7 @@
  	addnewvar("LOGNAME", ses.authstate.pw_name);
  	addnewvar("HOME", ses.authstate.pw_dir);
  	addnewvar("SHELL", get_user_shell());
@@ -32,7 +30,7 @@
  	}
 --- svr-runopts.c
 +++ svr-runopts.c
-@@ -91,6 +91,8 @@
+@@ -92,6 +92,8 @@
  					"		(default port is %s if none specified)\n"
  					"-P PidFile	Create pid file PidFile\n"
  					"		(default %s)\n"
@@ -41,7 +39,7 @@
  #ifdef INETD_MODE
  					"-i		Start for inetd\n"
  #endif
-@@ -115,6 +117,7 @@
+@@ -116,6 +118,7 @@
  					SFTPSERVER_PATH,
  #endif
  					DROPBEAR_MAX_PORTS, DROPBEAR_DEFPORT, DROPBEAR_PIDFILE,
@@ -49,15 +47,15 @@
  					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
  }
  
-@@ -147,6 +150,7 @@
+@@ -149,6 +152,7 @@
  	svr_opts.hostkey = NULL;
  	svr_opts.delay_hostkey = 0;
  	svr_opts.pidfile = DROPBEAR_PIDFILE;
 +	svr_opts.childProcessPATH = NULL;
- #ifdef ENABLE_SVR_LOCALTCPFWD
+ #if DROPBEAR_SVR_LOCALTCPFWD
  	svr_opts.nolocaltcp = 0;
  #endif
-@@ -233,6 +237,9 @@
+@@ -234,6 +238,9 @@
  				case 'P':
  					next = &svr_opts.pidfile;
  					break;
@@ -67,7 +65,7 @@
  #ifdef DO_MOTD
  				/* motd is displayed by default, -m turns it off */
  				case 'm':
-@@ -330,6 +337,10 @@
+@@ -331,6 +338,10 @@
  	}
  #endif
  

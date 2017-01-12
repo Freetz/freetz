@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_LIGHTTPD
-	bool "lighttpd 1.4.41"
+	bool "lighttpd 1.4.44"
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libpcre
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESS
@@ -121,6 +121,29 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModAuth
 		for more information on this module.
 
+config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTHN_FILE
+	bool "include mod_authn_file (adds about 13kb)"
+	depends on FREETZ_PACKAGE_LIGHTTPD
+	default n
+
+#requires GSS-API/Kerberos not (yet) available in freetz
+#config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTHN_GSSAPI
+#	bool "include mod_authn_gssapi"
+#	depends on FREETZ_PACKAGE_LIGHTTPD
+#	default n
+
+#requires LDAP not (yet) available in freetz
+#config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTHN_LDAP
+#	bool "include mod_authn_ldap"
+#	depends on FREETZ_PACKAGE_LIGHTTPD
+#	default n
+
+#requires mysql not (yet) available in freetz
+#config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTHN_MYSQL
+#	bool "include mod_authn_mysql"
+#	depends on FREETZ_PACKAGE_LIGHTTPD
+#	default n
+
 config FREETZ_PACKAGE_LIGHTTPD_MOD_CGI
 	bool "include mod_cgi (adds about 25kb)"
 	depends on FREETZ_PACKAGE_LIGHTTPD
@@ -147,6 +170,16 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS
 	help
 		This option adds mod_compress.so to the image.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModCompress
+		for more information on this module.
+
+config FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE
+	bool "include mod_deflate (adds about 13kb)"
+	depends on FREETZ_PACKAGE_LIGHTTPD
+	select FREETZ_LIB_libz
+	default y
+	help
+		This option adds mod_deflate.so to the image.
+		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModDeflate
 		for more information on this module.
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_EVASIVE
@@ -202,6 +235,12 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_FLV_STREAMING
 		This option adds mod_flv_streaming.so to the image.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModFLVStreaming
 		for more information on this module.
+
+#requires libGeoIP not (yet) available in freetz
+#config FREETZ_PACKAGE_LIGHTTPD_MOD_GEOIP
+#	bool "include mod_geoip"
+#	depends on FREETZ_PACKAGE_LIGHTTPD
+#	default n
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_MAGNET
 	bool "include mod_magnet (adds about 58kb)"
@@ -313,13 +352,23 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_STATUS
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModStatus
 		for more information on this module.
 
-config FREETZ_PACKAGE_LIGHTTPD_MOD_TRIGGER_B4_DL
-	bool "include mod_trigger_b4_dl (adds about 8kb)"
+#requires libgdbm or libmemcached, both not (yet) available in freetz
+#config FREETZ_PACKAGE_LIGHTTPD_MOD_TRIGGER_B4_DL
+#	bool "include mod_trigger_b4_dl (adds about 8kb)"
+#	depends on FREETZ_PACKAGE_LIGHTTPD
+#	default y
+#	help
+#		This option adds mod_trigger_b4_dl.so to the image.
+#		Please see http://redmine.lighttpd.net/projects/1/wiki/
+#		for more information on this module.
+
+config FREETZ_PACKAGE_LIGHTTPD_MOD_UPLOADPROGRESS
+	bool "include mod_uploadprogress (adds about 8kb)"
 	depends on FREETZ_PACKAGE_LIGHTTPD
 	default y
 	help
-		This option adds mod_trigger_b4_dl.so to the image.
-		Please see http://redmine.lighttpd.net/projects/1/wiki/
+		This option adds mod_userdir.so to the image.
+		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModUploadprogress
 		for more information on this module.
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_USERDIR

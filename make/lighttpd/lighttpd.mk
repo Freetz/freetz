@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.41)
+$(call PKG_INIT_BIN, 1.4.44)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=4bcc383ef6d6dc7b284f68882d71a178e2986c83c4e85eeb3c8f3b882e346b6c
+$(PKG)_SOURCE_SHA256:=adb66ca985651957feb209c91c55ebbf917d23630bfc3a216a2f70043c7b5422
 $(PKG)_SITE:=http://download.lighttpd.net/lighttpd/releases-1.4.x
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/src/lighttpd
@@ -8,18 +8,20 @@ $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/lighttpd
 
 $(PKG)_MODULES_DIR := /usr/lib/lighttpd
 $(PKG)_MODULES_ALL := \
-	accesslog access alias auth \
+	accesslog access alias \
+	auth authn_file authn_gssapi authn_ldap authn_mysql \
 	cgi cml compress \
-	dirlisting \
+	deflate dirlisting \
 	evasive evhost expire extforward \
 	fastcgi flv_streaming \
+	geoip \
 	indexfile \
 	magnet mysql_vhost \
 	proxy \
 	redirect rewrite rrdtool \
 	scgi secdownload setenv simple_vhost ssi staticfile status \
 	trigger_b4_dl \
-	userdir usertrack \
+	uploadprogress userdir usertrack \
 	webdav
 $(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_DIR)/src/.libs/mod_%.so)
@@ -30,6 +32,7 @@ $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/mod_%.so
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_PROPS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LIGHTTPD_MOD_WEBDAV_WITH_LOCKS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
@@ -44,7 +47,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-openssl-libs="$(TARGET_TOOLCHAIN_STAGING_DIR)
 $(PKG)_CONFIGURE_OPTIONS += --with-openssl-includes="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include"
 endif
 
-ifeq ($(strip $(FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS)),y)
+ifeq ($(or $(strip $(FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS)),$(strip $(FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE))),y)
 $(PKG)_DEPENDS_ON += zlib
 $(PKG)_CONFIGURE_OPTIONS += --with-zlib
 else
@@ -71,6 +74,8 @@ $(PKG)_CONFIGURE_OPTIONS += --without-attr
 $(PKG)_CONFIGURE_OPTIONS += --without-bzip2
 $(PKG)_CONFIGURE_OPTIONS += --without-fam
 $(PKG)_CONFIGURE_OPTIONS += --without-gdbm
+$(PKG)_CONFIGURE_OPTIONS += --without-geoip
+$(PKG)_CONFIGURE_OPTIONS += --without-krb5
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --without-libev
 $(PKG)_CONFIGURE_OPTIONS += --without-memcache

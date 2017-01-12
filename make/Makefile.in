@@ -33,15 +33,9 @@ else
 DISABLE_NLS:=--disable-nls
 endif
 
-CFLAGS_LFS_ENABLED:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-CFLAGS_LFS_DISABLED:=-D_FILE_OFFSET_BITS=32
-ifeq ($(strip $(FREETZ_TARGET_LFS)),y)
-DISABLE_LARGEFILE:=
-CFLAGS_LARGEFILE=$(CFLAGS_LFS_ENABLED)
-else
-DISABLE_LARGEFILE:=--disable-largefile
-CFLAGS_LARGEFILE=$(CFLAGS_LFS_DISABLED)
-endif
+TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
+KERNEL_ARCH:=mips
+KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
 
 # TODO: investigate if the flags could/should be changed to the commented out ones
 # the current ones correspond to the flags used in Freetz up to r12843
@@ -50,19 +44,15 @@ TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_TUNE)) -mtune=$
 TARGET_CFLAGS_FLOAT_ABI     := -m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float
 #TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_ARCH)) -mtune=$(call qstrip,$(FREETZ_GCC_TUNE))
 #TARGET_CFLAGS_FLOAT_ABI     := -m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float -Wa,-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float
-
-FPIC:=-fPIC
-
-TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
-KERNEL_ARCH:=mips
-KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
-
 ifneq ($(filter -march=% -mcpu=% -mtune=% -m%-float,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
 $(error Please remove any CPU and architecture related flags (-march/-mcpu/-mtune/-m*-float) \
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
 	These flags are automatically set by freetz build environment now)
 endif
-TARGET_CFLAGS:=$(TARGET_CFLAGS_ARCH_CPU_TUNE) $(TARGET_CFLAGS_FLOAT_ABI) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(CFLAGS_LARGEFILE)
+TARGET_CFLAGS_LFS:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+TARGET_CFLAGS:=$(TARGET_CFLAGS_ARCH_CPU_TUNE) $(TARGET_CFLAGS_FLOAT_ABI) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_LFS)
+
+FPIC:=-fPIC
 
 TARGET_SPECIFIC_SUBDIR:=target-$(TARGET_TOOLCHAIN_COMPILER)
 SOURCE_DIR:=$(SOURCE_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
@@ -170,7 +160,6 @@ TARGET_CONFIGURE_OPTIONS += --sbindir=/usr/sbin
 TARGET_CONFIGURE_OPTIONS += --sysconfdir=/etc
 TARGET_CONFIGURE_OPTIONS += --with-gnu-ld
 TARGET_CONFIGURE_OPTIONS += $(DISABLE_NLS)
-TARGET_CONFIGURE_OPTIONS += $(DISABLE_LARGEFILE)
 
 DL_SITE:=$(call qstrip,$(FREETZ_DL_SITE))
 DL_SOURCE:=$(call qstrip,$(FREETZ_DL_SOURCE))
@@ -822,7 +811,6 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.un
 		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
-		FREETZ_TARGET_LFS="$(strip $(FREETZ_TARGET_LFS))" \
 		CONFIG_SITE=$(CONFIG_SITE) \
 		conf_cmd \
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \

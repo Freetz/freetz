@@ -1,33 +1,34 @@
-$(call PKG_INIT_BIN, 6.9.3-0)
+$(call PKG_INIT_BIN, 7.0.4-3)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION),1)
 $(PKG)_ABI_SUFFIX:=Q16
-$(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=2ba0656eb03d72d8a44e741ead524e8c34097418c0bb5487a5c4f4fe5eca9656
+$(PKG)_SOURCE_SHA256:=bc09ea103a82d1c2c093889eda7e36dd0aa7aa98a06c55de4b73932838459fc4
 $(PKG)_SITE:=@SF/$(pkg),http://www.imagemagick.org/download
 
 $(PKG)_DIR:=$(SOURCE_DIR)/ImageMagick-$($(PKG)_VERSION)
 
-$(PKG)_BINARIES_ALL := convert mogrify stream montage import identify display conjure compare animate composite
-$(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
-$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/utilities/$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,.libs/)%)
-$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+$(PKG)_BINARY := magick
+$(PKG)_BINARY_BUILD_DIR := $($(PKG)_BINARY:%=$($(PKG)_DIR)/utilities/$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,.libs/)%)
+$(PKG)_BINARY_TARGET_DIR := $($(PKG)_BINARY:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-$(PKG)_LIB_CORE := libMagickCore-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_CORE_BUILD_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DIR)/magick/.libs/%)
+$(PKG)_SYMLINKS := animate compare composite conjure convert display identify import magick-script mogrify montage stream
+$(PKG)_SYMLINKS_TARGET_DIR := $($(PKG)_SYMLINKS:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+
+$(PKG)_LIB_CORE := libMagickCore-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.1.0.0
+$(PKG)_LIB_CORE_BUILD_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DIR)/MagickCore/.libs/%)
 $(PKG)_LIB_CORE_TARGET_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DEST_LIBDIR)/%)
 
-$(PKG)_LIB_WAND := libMagickWand-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.$($(PKG)_LIB_VERSION)
-$(PKG)_LIB_WAND_BUILD_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DIR)/wand/.libs/%)
+$(PKG)_LIB_WAND := libMagickWand-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.0.0.0
+$(PKG)_LIB_WAND_BUILD_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DIR)/MagickWand/.libs/%)
 $(PKG)_LIB_WAND_TARGET_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DEST_LIBDIR)/%)
 
 $(PKG)_XML_CONFIGS := \
-	coder.xml colors.xml delegates.xml log.xml magic.xml mime.xml policy.xml \
-	thresholds.xml type.xml type-dejavu.xml type-ghostscript.xml type-windows.xml
+	coder.xml colors.xml delegates.xml english.xml locale.xml log.xml magic.xml mime.xml policy.xml \
+	quantization-table.xml thresholds.xml type.xml type-apple.xml type-dejavu.xml type-ghostscript.xml type-windows.xml
+
 $(PKG)_XML_CONFIGS_BUILD_DIR := $($(PKG)_XML_CONFIGS:%=$($(PKG)_DIR)/config/%)
 $(PKG)_XML_CONFIGS_TARGET_DIR := $($(PKG)_XML_CONFIGS:%=$($(PKG)_DEST_DIR)/etc/ImageMagick-$($(PKG)_MAJOR_VERSION)/%)
 
-$(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_BINARIES),$($(PKG)_BINARIES_ALL)))
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_IMAGEMAGICK_xml),,$($(PKG)_XML_CONFIGS_TARGET_DIR))
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_IMAGEMAGICK_freetype
@@ -96,7 +97,7 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARIES_BUILD_DIR) $(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,$($(PKG)_LIB_CORE_BUILD_DIR) $($(PKG)_LIB_WAND_BUILD_DIR)): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY_BUILD_DIR) $(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,$($(PKG)_LIB_CORE_BUILD_DIR) $($(PKG)_LIB_WAND_BUILD_DIR)): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(IMAGEMAGICK_DIR) \
 		EXTRA_CFLAGS="$(IMAGEMAGICK_EXTRA_CFLAGS)" \
 		EXTRA_LDFLAGS="$(IMAGEMAGICK_EXTRA_LDFLAGS)" \
@@ -105,19 +106,23 @@ $($(PKG)_BINARIES_BUILD_DIR) $(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,$($(PKG)
 $($(PKG)_XML_CONFIGS_BUILD_DIR): $($(PKG)_DIR)/config/%: $($(PKG)_DIR)/.configured
 	@touch $@
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/utilities/$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,.libs/)%
+$($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 	$(INSTALL_BINARY_STRIP)
-$($(PKG)_LIB_CORE_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/magick/.libs/%
+$($(PKG)_LIB_CORE_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/MagickCore/.libs/%
 	$(INSTALL_LIBRARY_STRIP)
-$($(PKG)_LIB_WAND_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/wand/.libs/%
+$($(PKG)_LIB_WAND_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/%: $($(PKG)_DIR)/MagickWand/.libs/%
 	$(INSTALL_LIBRARY_STRIP)
 $($(PKG)_XML_CONFIGS_TARGET_DIR): $($(PKG)_DEST_DIR)/etc/ImageMagick-$($(PKG)_MAJOR_VERSION)/%: $($(PKG)_DIR)/config/%
 	$(INSTALL_FILE)
 
+$($(PKG)_SYMLINKS_TARGET_DIR): $($(PKG)_BINARY_TARGET_DIR)
+	ln -sf $(notdir $<) $@
+
 $(pkg):
 
 $(pkg)-precompiled: \
-	$($(PKG)_BINARIES_TARGET_DIR) \
+	$($(PKG)_BINARY_TARGET_DIR) \
+	$($(PKG)_SYMLINKS_TARGET_DIR) \
 	$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,$($(PKG)_LIB_CORE_TARGET_DIR) $($(PKG)_LIB_WAND_TARGET_DIR)) \
 	$(if $(FREETZ_PACKAGE_IMAGEMAGICK_xml),$($(PKG)_XML_CONFIGS_TARGET_DIR))
 
@@ -127,7 +132,8 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) \
-		$(IMAGEMAGICK_BINARIES_ALL:%=$(IMAGEMAGICK_DEST_DIR)/usr/bin/%) \
+		$(IMAGEMAGICK_BINARY_TARGET_DIR) \
+		$(IMAGEMAGICK_SYMLINKS_ALL:%=$(IMAGEMAGICK_DEST_DIR)/usr/bin/%) \
 		$(IMAGEMAGICK_LIB_CORE_TARGET_DIR) \
 		$(IMAGEMAGICK_LIB_WAND_TARGET_DIR) \
 		$(IMAGEMAGICK_XML_CONFIGS_TARGET_DIR)

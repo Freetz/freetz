@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.35)
+$(call PKG_INIT_BIN, 5.39)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=ffa386ae4c825f35f35157c285e7402a6d58779ad8c3822f74a9d355b54aba1d
+$(PKG)_SOURCE_SHA256:=288c087a50465390d05508068ac76c8418a21fae7275febcc63f041ec5b04dee
 $(PKG)_SITE:=https://www.stunnel.org/downloads/archive/5.x
 
 $(PKG)_STARTLEVEL=81
@@ -8,7 +8,7 @@ $(PKG)_STARTLEVEL=81
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)
 
-$(PKG)_DEPENDS_ON += openssl zlib
+$(PKG)_DEPENDS_ON += openssl
 
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_BOXCERT)),y)
 $(PKG)_CONDITIONAL_PATCHES+=boxcert

@@ -1,0 +1,18 @@
+Older kernel versions do not export __u64 symbol when compiled in ansi mode (i.e. __STRICT_ANSI__ symbol defined)
+resulting in errors like:
+
+	.../include/linux/rtnetlink.h: error: unknown type name '__u64'
+
+Fix it by changing the language standard used.
+
+--- configure
++++ configure
+@@ -6170,7 +6170,7 @@
+ # Set -std=c99 unless user already specified a -std=
+ case "${CFLAGS}" in
+   *-std=*) ;;
+-  *)       CFLAGS="${CFLAGS} -std=c99" ;;
++  *)       CFLAGS="${CFLAGS} -std=gnu99" ;;
+ esac
+ 
+ #
