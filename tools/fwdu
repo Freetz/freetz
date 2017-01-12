@@ -84,15 +84,19 @@ unfs_probe() {
 image() {
 	local img=$1
 	local dst=$2
+
 	if [ ! -e $img ]; then
 		echo -e "~~~~\t$img" | tee -a _failed.log
 		return 1
 	fi
+
 	rm -rf var
+
 	if [ "$img" != "${img%.exe}" ]; then
 		$FTOOLS/extract-images $img >/dev/null
-		mkdir -p var
-		mv ${img#*/}.unp var/tmp
+		mkdir -p var/tmp
+		mv ${img##*/}.unp/*.image var/tmp/
+		rm -rf ${img##*/}.unp
 	else
 		tar -xif $img --wildcards './var/tmp/*.image' >/dev/null 2>&1
 	fi
@@ -100,28 +104,51 @@ image() {
 		echo -e "NULL\t$img"
 		return 1
 	fi
-	if [ ! -f var/tmp/kernel.image ]; then
+	if [ ! -s var/tmp/kernel.image ]; then
 		echo -e "----\t$img" | tee -a _failed.log
 		rm -rf var
 		return 1
 	fi
+
+	# The following cases for kernel/filesystem layout are known/supported:
+	#
+	#  1. kernel.image contains the kernel followed by the (complete) root-filesystem
+	#     filesystem.image is empty
+	#     Examples: 7170, 7270, 7390
+	#
+	#  2. kernel.image contains the kernel followed by the initial part of the root-filesystem
+	#     filesystem.image contains the remaining part of the root-filesystem
+	#     Examples: very old boxes like Fritz!Box SL, 7050en, 2030
+	#
+	#  3. kernel.image contains just the kernel (and nothing else)
+	#     filesystem.image contains just the root-filesystem (and nothing else)
+	#     Examples: 7490
+
+	# strip NMI vector if any
 	($FTOOLS/remove-nmi-vector var/tmp/kernel.image var/tmp/kernel.image.no-nmi 2>&1 && mv var/tmp/kernel.image.no-nmi var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
-	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
-	rm -rf var
-	$FTOOLS/tichksum -r x.image >/dev/null 2>&1
-	$FTOOLS/find-squashfs x.image >/dev/null 2>&1
-	rm x.image
-	cat kernelsquashfs.raw kernel.raw > x.raw
-	rm  kernelsquashfs.raw kernel.raw
-	unfs_probe x.raw >/dev/null 2>&1 || echo FALSE $img
-	rm -f x.raw x.raw.ext2
-	# for recent fw's
+
+	# remove TI checksum
+	for f in var/tmp/kernel.image var/tmp/filesystem.image; do
+		[ -s "$f" ] && $FTOOLS/tichksum -r "$f" >/dev/null 2>&1
+	done
+
+	# concatenate kernel & filesystem images
+	cat var/tmp/kernel.image var/tmp/filesystem.image >kf.image 2>/dev/null
+	rm -f var/tmp/kernel.image var/tmp/filesystem.image
+
+	# and split them again... now at the right bounds (s. case 2 above)
+	$FTOOLS/find-squashfs kf.image >/dev/null 2>&1
+	rm -f kf.image kernel.raw
+
+	# unpack it
+	unfs_probe kernelsquashfs.raw >/dev/null 2>&1 || echo FALSE $img
+	rm -f kernelsquashfs.raw kernelsquashfs.raw.ext2
+
+	# unpack the inner / the enveloped root-filesystem if found
 	if [ -e squashfs-root/filesystem_core.squashfs ]; then
-		$FTOOLS/find-squashfs squashfs-root/filesystem_core.squashfs >/dev/null 2>&1
-		rm squashfs-root/filesystem_core.squashfs kernel.raw
 		mv squashfs-root filesystem_envelope
-		unfs_probe kernelsquashfs.raw >/dev/null 2>&1
-		rm kernelsquashfs.raw
+		unfs_probe filesystem_envelope/filesystem_core.squashfs >/dev/null 2>&1
+		rm -f filesystem_envelope/filesystem_core.squashfs
 		[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
 	fi
 
@@ -132,6 +159,8 @@ image() {
 	else
 		echo -e "====\t$img" | tee -a _failed.log
 	fi
+
+	rm -rf var
 }
 
 # check args
