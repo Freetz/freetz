@@ -85,6 +85,12 @@ image() {
 	local img=$1
 	local dst=$2
 
+	declare -A probeDirs=(
+		[mips]=var/tmp
+		 [arm]=var/remote/var/tmp
+		[atom]=var/remote/var/tmp/x86
+	)
+
 	if [ ! -e $img ]; then
 		echo -e "~~~~\t$img" | tee -a _failed.log
 		return 1
@@ -98,17 +104,24 @@ image() {
 		mv ${img##*/}.unp/*.image var/tmp/
 		rm -rf ${img##*/}.unp
 	else
-		tar -xif $img --wildcards './var/tmp/*.image' >/dev/null 2>&1
+		tar -xif $img $(printf " --wildcards ./%s/*.image" "${probeDirs[@]}") >/dev/null 2>&1
 	fi
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
 		return 1
 	fi
-	if [ ! -s var/tmp/kernel.image ]; then
-		echo -e "----\t$img" | tee -a _failed.log
-		rm -rf var
-		return 1
-	fi
+
+	for d in "${probeDirs[@]}" no_kernel_image_found; do
+		if [ -s ${d}/kernel.image ]; then
+			break;
+		fi
+
+		if [ d == "no_kernel_image_found" ]; then
+			echo -e "----\t$img" | tee -a _failed.log
+			rm -rf var
+			return 1
+		fi
+	done
 
 	# The following cases for kernel/filesystem layout are known/supported:
 	#
@@ -124,41 +137,49 @@ image() {
 	#     filesystem.image contains just the root-filesystem (and nothing else)
 	#     Examples: 7490
 
-	# strip NMI vector if any
-	($FTOOLS/remove-nmi-vector var/tmp/kernel.image var/tmp/kernel.image.no-nmi 2>&1 && mv var/tmp/kernel.image.no-nmi var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
+	for arch in "${!probeDirs[@]}"; do
+		d="${probeDirs[$arch]}"
 
-	# remove TI checksum
-	for f in var/tmp/kernel.image var/tmp/filesystem.image; do
-		[ -s "$f" ] && $FTOOLS/tichksum -r "$f" >/dev/null 2>&1
+		if [ ! -s ${d}/kernel.image ]; then
+			continue;
+		fi
+
+		# strip NMI vector if any
+		($FTOOLS/remove-nmi-vector ${d}/kernel.image ${d}/kernel.image.no-nmi 2>&1 && mv ${d}/kernel.image.no-nmi ${d}/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
+
+		# remove TI checksum
+		for f in ${d}/kernel.image ${d}/filesystem.image; do
+			[ -s "$f" ] && $FTOOLS/tichksum -r "$f" >/dev/null 2>&1
+		done
+
+		# concatenate kernel & filesystem images
+		cat ${d}/kernel.image ${d}/filesystem.image >kf.image 2>/dev/null
+		rm -f ${d}/kernel.image ${d}/filesystem.image
+
+		# and split them again... now at the right bounds (s. case 2 above)
+		$FTOOLS/find-squashfs kf.image >/dev/null 2>&1
+		rm -f kf.image kernel.raw
+
+		# unpack it
+		unfs_probe kernelsquashfs.raw >/dev/null 2>&1 || echo FALSE ${img}-${arch}
+		rm -f kernelsquashfs.raw kernelsquashfs.raw.ext2
+
+		# unpack the inner / the enveloped root-filesystem if found
+		if [ -e squashfs-root/filesystem_core.squashfs ]; then
+			mv squashfs-root filesystem_envelope
+			unfs_probe filesystem_envelope/filesystem_core.squashfs >/dev/null 2>&1
+			rm -f filesystem_envelope/filesystem_core.squashfs
+			[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
+		fi
+
+		if [ -d squashfs-root ]; then
+			local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem_envelope*' | wc -l)
+			echo -e "${numberOfFiles}\t${img}-${arch}"
+			mv squashfs-root "${dst}$(echo ${img%.*} | sed 's!.*/!!')-${arch}"
+		else
+			echo -e "====\t${img}-${arch}" | tee -a _failed.log
+		fi
 	done
-
-	# concatenate kernel & filesystem images
-	cat var/tmp/kernel.image var/tmp/filesystem.image >kf.image 2>/dev/null
-	rm -f var/tmp/kernel.image var/tmp/filesystem.image
-
-	# and split them again... now at the right bounds (s. case 2 above)
-	$FTOOLS/find-squashfs kf.image >/dev/null 2>&1
-	rm -f kf.image kernel.raw
-
-	# unpack it
-	unfs_probe kernelsquashfs.raw >/dev/null 2>&1 || echo FALSE $img
-	rm -f kernelsquashfs.raw kernelsquashfs.raw.ext2
-
-	# unpack the inner / the enveloped root-filesystem if found
-	if [ -e squashfs-root/filesystem_core.squashfs ]; then
-		mv squashfs-root filesystem_envelope
-		unfs_probe filesystem_envelope/filesystem_core.squashfs >/dev/null 2>&1
-		rm -f filesystem_envelope/filesystem_core.squashfs
-		[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
-	fi
-
-	if [ -d squashfs-root ]; then
-		local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem_envelope*' | wc -l)
-		echo -e "${numberOfFiles}\t${img}"
-		mv squashfs-root "${dst}$(echo ${img%.*} |sed 's!.*/!!')"
-	else
-		echo -e "====\t$img" | tee -a _failed.log
-	fi
 
 	rm -rf var
 }
