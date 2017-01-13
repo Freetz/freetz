@@ -117,7 +117,7 @@ image() {
 			break;
 		fi
 
-		if [ d == "no_kernel_image_found" ]; then
+		if [ "${d}" == "no_kernel_image_found" ]; then
 			echo -e "----\t$img" | tee -a _failed.log
 			rm -rf var
 			return 1
