@@ -4,7 +4,7 @@
  			sBlk->lookup_table_start);
  
  	sBlk->bytes_used = bytes;
-+#if TARGET_FORMAT == AVM_BE
++#if (TARGET_FORMAT == AVM_BE || TARGET_FORMAT == AVM_LE)
 +	sBlk->mkfs_time = (int) sBlk->bytes_used;
 +#endif
  
@@ -21,10 +21,10 @@
 +	char *mkfs_str = NULL;
 +	int do_interpret_mkfs_time_as_time = 1;
 +
-+#if TARGET_FORMAT == AVM_BE
++#if (TARGET_FORMAT == AVM_BE || TARGET_FORMAT == AVM_LE)
 +	if (sBlk.s.s_major == 4 && sBlk.s.mkfs_time == (int)sBlk.s.bytes_used) {
 +		do_interpret_mkfs_time_as_time = 0;
-+		mkfs_str = "is not available because of AVM-BE format (mkfs_time == bytes_used)\n";
++		mkfs_str = "is not available because of modified AVM-format (mkfs_time == bytes_used)\n";
 +	}
 +#endif
 +
