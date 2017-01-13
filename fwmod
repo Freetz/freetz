@@ -1562,9 +1562,9 @@ if [ "$DO_SIGN" -gt 0 ]; then
 		echo0 "No image signing files found, generating them ..."
 		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
 			# be verbose if no private key password provided
-			"${TOOLS_DIR}/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"
+			"${TOOLS_DIR}/yf/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"
 		else
-			"${TOOLS_DIR}/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/generate_signing_key.log"
+			"${TOOLS_DIR}/yf/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/generate_signing_key.log"
 		fi
 		if [ $? -ne 0 ]; then
 			error 1 "failed to generate image signing files, see console output or ${MOD_DIR}/generate_signing_key.log for details"
@@ -1763,9 +1763,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo0 "signing $img_name"
 		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
 			# be verbose if no private key password provided
-			"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
+			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
 		else
-			"${TOOLS_DIR}/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
+			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
 		fi
 		if [ $? -ne 0 ]; then
 			mv "${img_name}.signed" "${img_name}.signed.corrupted" 2>/dev/null
