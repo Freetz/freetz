@@ -78,8 +78,8 @@ unfs_probe() {
 		&& dd if="$1" of="$1.ext2" bs=256 skip=1 conv=sync >/dev/null 2>&1   \
 		&& { mkdir -p "squashfs-root"; echo "rdump / squashfs-root" | $FTOOLS/debugfs "$1.ext2"; }
 	} \
-	|| $FTOOLS/unsquashfs4-lzma-avm-be "$1" \
-	|| $FTOOLS/unsquashfs4-lzma-le     "$1"
+	|| $FTOOLS/unsquashfs4-avm-be "$1" \
+	|| $FTOOLS/unsquashfs4-avm-le "$1"
 }
 
 image() {
