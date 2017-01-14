@@ -13,6 +13,13 @@ config FREETZ_PACKAGE_GIT
 		unusually rich command set that provides both high-level operations
 		and full access to internals.
 
+config FREETZ_PATCH_GITSHELL_LOGIN_SHELL
+	bool "add git-shell to login shells"
+	depends on FREETZ_PACKAGE_GIT
+	default n
+	help
+		Adds /usr/bin/git-shell to /etc/shells
+
 config FREETZ_PACKAGE_GIT_REMOVE_WEBIF
 	bool "remove webinterface"
 	depends on FREETZ_PACKAGE_GIT
