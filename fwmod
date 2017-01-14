@@ -1732,7 +1732,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 		fbn=$(basename $f)
 		echo0 "adding checksum to $fbn"
-		"$TICHKSUM" "$f" > "${MOD_DIR}/$fbn-chksum.log" || error 1 "adding checksum to $fbn failed"
+		"$TICHKSUM" -a "$f" > "${MOD_DIR}/$fbn-chksum.log" || error 1 "adding checksum to $fbn failed"
 	done
 
 	# Consistency check
