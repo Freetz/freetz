@@ -145,9 +145,6 @@ image() {
 			continue;
 		fi
 
-		# strip NMI vector if any
-		($FTOOLS/remove-nmi-vector ${d}/kernel.image ${d}/kernel.image.no-nmi 2>&1 && mv ${d}/kernel.image.no-nmi ${d}/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
-
 		# remove TI checksum
 		for f in ${d}/kernel.image ${d}/filesystem.image; do
 			[ -s "$f" ] && $FTOOLS/tichksum -r "$f" >/dev/null 2>&1
@@ -156,6 +153,9 @@ image() {
 		# concatenate kernel & filesystem images
 		cat ${d}/kernel.image ${d}/filesystem.image >kf.image 2>/dev/null
 		rm -f ${d}/kernel.image ${d}/filesystem.image
+
+		# strip NMI vector if any
+		($FTOOLS/remove-nmi-vector kf.image kf.image.no-nmi 2>&1 && mv kf.image.no-nmi kf.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
 
 		# and split them again... now at the right bounds (s. case 2 above)
 		$FTOOLS/find-squashfs kf.image >/dev/null 2>&1
