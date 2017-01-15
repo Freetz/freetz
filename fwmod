@@ -1726,13 +1726,20 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 
+	# Create in-memory image
+	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		echo0 "creating in-memory image ${img_name}.in-memory"
+		cat "$KERNEL_MOD" "$FILESYSTEM_MOD" > "${img_name}.in-memory"
+	fi
+
 	# Write checksum
 	for f in "$KERNEL_MOD" "$FILESYSTEM_MOD"; do
 		[ -s "$f" ] || continue
 
 		fbn=$(basename $f)
 		echo0 "adding checksum to $fbn"
-		"$TICHKSUM" -a "$f" > "${MOD_DIR}/$fbn-chksum.log" || error 1 "adding checksum to $fbn failed"
+		"$TICHKSUM" -a "$f" > "${MOD_DIR}/$fbn-chksum.log" || { rm -f "${img_name}.in-memory"; error 1 "adding checksum to $fbn failed"; }
 	done
 
 	# Consistency check
@@ -1750,7 +1757,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Pack firmware image (use old tar for compatibility)
-	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
 	echo0 "packing $img_name"
 	"$TAR" -C "$FIRMWARE_MOD_DIR" -cf "$img_name" ./var
 	if [ $? -ne 0 ] || ! is_valid_tarball "$img_name"; then
