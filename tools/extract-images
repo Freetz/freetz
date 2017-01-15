@@ -119,11 +119,34 @@ get_squashfs_length()
 	local squashfs_offset="$1"
 	local ENDIAN_TYPE="$2"
 
-	local squashfs_length
+	local squashfs_length=, nmi_offset=, nmi_length=
+
+	local NMI_BOOT_PATTERN="4E4D4920426F6F7420566563746F7200"
 
 	# Note: 4 bytes of length information are found at (SquashFS magic offset + 8)
+	#       valid for all vanilla/AVM SquashFS versions up to (including) SquashFS-3.x
+	#       NOT valid for vanilla SquashFS-4.x but still valid for AVM-SquashFS-4.x
+	#       because of AVM's "mkfs_time=bytes_used" modification (s. SquashFS packages for details)
 	squashfs_length=$(getHexContentAtOffset "$input_file" $((${squashfs_offset} + 8)) 4 | { [ "$ENDIAN_TYPE" == "little" ] && invertEndianness || cat; })
-	printf "%d" "0x$squashfs_length"
+	squashfs_length=$((0x${squashfs_length}))
+
+	declare -a nmi_offsets=($(getDecOffsetsOfAllMatches "$input_file" "$NMI_BOOT_PATTERN"))
+	for (( i=0; i<${#nmi_offsets[@]}; i++ )); do
+		nmi_offset="${nmi_offsets[i]}"
+		if [ "${squashfs_offset}" -le "${nmi_offset}" -a "${nmi_offset}" -lt "$((${squashfs_offset} + ${squashfs_length}))" ]; then
+			# NMI pattern is found within SquashFS
+
+			# NMI vector length is encoded within the NMI block 4 bytes before 'NMI Boot'
+			nmi_length="$(getHexContentAtOffset "$input_file" $((${nmi_offset} - 4)) 4)"
+			nmi_length=$((0x${nmi_length}))
+			if [ "${nmi_length}" -eq 256 -o "${nmi_length}" -eq 4096 ]; then
+				# NMI_length is one of the known correct values => add NMI vector length to SquashFS length
+				squashfs_length=$((${squashfs_length} + ${nmi_length}))
+				break;
+			fi
+		fi
+	done
+	echo "${squashfs_length}"
 }
 
 # Parameterized helper function for 'extract_kernel_filesystem' doing the actual work
