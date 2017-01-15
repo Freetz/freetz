@@ -204,6 +204,16 @@ do_extract_kfs()
 
 			# Check layout: does SquashFS immediately follow kernel?
 			gap=$((rootfs_offs[s] - kernel_length[k] - kernel_offs[k]))
+
+			# workaround for some images with incorrect(?) or at least strange kernel_length
+			# known affected images: FRITZ.Box_Fon_WLAN_7390.AnnexB.06.03.recover-image.exe
+			if [ $gap -eq 256 ]; then
+				# treat gap of 256 bytes as zero-gap and increase kernel_length by 256 bytes,
+				# i.e. pad kernel with additional 256 bytes
+				kernel_length[k]=$((kernel_length[k] + 256))
+				gap=0
+			fi
+
 			if [ $gap -eq 0 ]; then
 				# Hidden root (SquashFS contained in kernel.image)
 				file_length=$((kernel_length[k] + rootfs_length[s]))
