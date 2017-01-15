@@ -54,8 +54,6 @@ declare -A nmiVectorKnownStartSequence=(
 	[v3]=409AE805409BE0043C1A8000375A0380
 )
 
-IMAGE_CHECKSUM_SIZE=8 # number of bytes needed to store image checksum
-
 #
 # $1 - pattern type (bin, pat/text, spat/spats - see "sfk help pat" for details)
 # $2 - pattern
@@ -104,11 +102,21 @@ if [ $((${nmiVectorLength})) -ne 256 -a $((${nmiVectorLength})) -ne 4096 ]; then
 	exit 2
 fi
 
+# check if the image contains the TI-checksum at the end
+TI_CHECKSUM_MAGIC_BE="23DE53C4"
+if [ "$(getHexContentAtOffset $(($(getInputFileSize) - 8)) 4)" == "${TI_CHECKSUM_MAGIC_BE}" ]; then
+	# TI checksum found
+	imageChecksumSize=8
+else
+	# no TI checksum found
+	imageChecksumSize=0
+fi
+
 # real image size is encoded within the NMI block 8 bytes before 'NMI Boot'
 imageSizeWithinNMI="0x$(getHexContentAtOffset $((${nmiBootOffset} - 8)) 4)"
-imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${nmiVectorLength} - ${IMAGE_CHECKSUM_SIZE} )))
+imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${nmiVectorLength} - ${imageChecksumSize} )))
 if [ "$((${imageSizeWithinNMI}))" -ne "$((${imageSizeExpected}))" ]; then
-	echo "[Error] Image size encoded in NMI block ($((${imageSizeWithinNMI}))) does not match calculated size ($((${imageSizeExpected})))" >&2
+	echo "[Error] Image size encoded in NMI block ($((${imageSizeWithinNMI}))) doesn't match calculated size ($((${imageSizeExpected})))" >&2
 	exit 2
 fi
 
@@ -122,7 +130,7 @@ for v in v1 v2 v3; do
 
 	echo -n "NMI vector ${v} found at offset ${nmiVectorOffset}, removing it ... "
 	head -c $((${nmiVectorOffset})) "$INPUT_FILE" > "$OUTPUT_FILE"
-	tail -c $((${imageSizeExpected} - ${nmiVectorOffset} + ${IMAGE_CHECKSUM_SIZE})) "$INPUT_FILE" >> "$OUTPUT_FILE"
+	tail -c $((${imageSizeExpected} - ${nmiVectorOffset} + ${imageChecksumSize})) "$INPUT_FILE" >> "$OUTPUT_FILE"
 	echo "done."
 
 	# debug: dump NMI vector to a separate file
