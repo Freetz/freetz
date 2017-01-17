@@ -1730,8 +1730,10 @@ if [ "$DO_PACK" -gt 0 ]; then
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
 	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		echo0 "creating in-memory image ${img_name}.in-memory"
-		dd if="$KERNEL_MOD" of="${img_name}.in-memory" bs=256 conv=sync 2>/dev/null
-		cat "$FILESYSTEM_MOD" >> "${img_name}.in-memory"
+		{
+			cat "$KERNEL_MOD"     | dd bs=256 conv=sync 2>/dev/null;
+			cat "$FILESYSTEM_MOD" | dd bs=256 conv=sync 2>/dev/null;
+		} > "${img_name}.in-memory"
 	fi
 
 	# Write checksum
