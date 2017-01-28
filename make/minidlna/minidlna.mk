@@ -1,8 +1,10 @@
-$(call PKG_INIT_BIN, 1.1.5)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=1970e553a1eb8a3e7e302e2ce292cbc4
-$(PKG)_SITE:=@SF/minidlna
+$(call PKG_INIT_BIN, v1_1_6)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+#$(PKG)_SOURCE_MD5:=
+#$(PKG)_SITE:=@SF/minidlna
+$(PKG)_SITE:=git://git.code.sf.net/p/minidlna/git
 
+$(PKG)_PATCH_PRE_CMDS += $(AUTORECONF)
 $(PKG)_CONDITIONAL_PATCHES+=$(FREETZ_PACKAGE_MINIDLNA_LANG)
 
 $(PKG)_BINARY := $($(PKG)_DIR)/minidlnad
