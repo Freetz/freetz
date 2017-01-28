@@ -1,6 +1,6 @@
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -1622,6 +1622,7 @@
+@@ -1642,6 +1642,7 @@
  
  SHOWFLAGS::
  	@echo "Using CFLAGS     = $(CFLAGS)"
@@ -8,7 +8,7 @@
  	@echo "      PICFLAG    = $(PICFLAG)"
  	@echo "      LIBS       = $(LIBS)"
  	@echo "      LDFLAGS    = $(LDFLAGS)"
-@@ -1669,7 +1670,7 @@
+@@ -1689,7 +1690,7 @@
  	  echo "Checking  $*.c with '$(CC_CHECKER)'";\
  	  $(CHECK_CC); \
  	 fi
@@ -17,7 +17,7 @@
  	@$(COMPILE) && exit 0;\
  		echo "The following command failed:" 1>&2;\
  		echo "$(subst ",\",$(COMPILE_CC))" 1>&2;\
-@@ -1798,7 +1799,12 @@
+@@ -1818,7 +1819,12 @@
  MULTICALL_O = $(sort $(SMBD_MULTI_O) $(NMBD_MULTI_O) $(SMBPASSWD_MULTI_O) $(MULTI_O))
  
  bin/samba_multicall@EXEEXT@: $(BINARY_PREREQS) $(MULTICALL_O) $(LIBTALLOC) $(LIBTEVENT) $(LIBTDB) $(LIBWBCLIENT) @BUILD_POPT@
