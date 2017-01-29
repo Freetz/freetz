@@ -8,7 +8,7 @@
  
  #ifndef OPENSSL_NO_DH
  DH *dh_params=NULL;
-@@ -665,21 +666,51 @@
+@@ -706,21 +707,51 @@
      return 0; /* OK */
  }
  
@@ -62,7 +62,7 @@
  
      /* invoke the UI */
      SSL_CTX_set_default_passwd_cb_userdata(section->ctx, &ui_data);
-@@ -776,8 +807,19 @@
+@@ -817,8 +848,19 @@
          buf[size-1]='\0';
          len=(int)strlen(buf);
      } else { /* prompt the user on subsequent requests */
