@@ -44,6 +44,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-http-proxy
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_polarssl_ssl_init lib_polarssl_aes_crypt_cbc)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_mbedtls_mbedtls_ssl_init)
+# don't cache any pkg_cv_* variable
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,pkg_cv_,openvpn_,g' ./configure;
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,path_IFCONFIG path_IPROUTE path_ROUTE)
 $(PKG)_CONFIGURE_ENV += $(pkg)_path_IFCONFIG=/sbin/ifconfig
