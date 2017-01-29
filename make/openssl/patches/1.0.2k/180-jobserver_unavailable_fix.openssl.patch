@@ -1,6 +1,6 @@
 --- Makefile.org
 +++ Makefile.org
-@@ -281,21 +281,21 @@
+@@ -282,21 +282,21 @@
  build_libssl: build_ssl libssl.pc
  
  build_crypto:
@@ -29,7 +29,7 @@
  
  fips_premain_dso$(EXE_EXT): libcrypto.a
  	[ -z "$(FIPSCANLIB)" ] || $(CC) $(CFLAG) -Iinclude \
-@@ -413,7 +413,7 @@
+@@ -414,7 +414,7 @@
  
  clean:	libclean
  	rm -f shlib/*.o *.o core a.out fluff rehash.time testlog make.log cctest cctest.c
@@ -38,7 +38,7 @@
  	rm -f $(LIBS)
  	rm -f openssl.pc libssl.pc libcrypto.pc
  	rm -f speed.* .pure
-@@ -429,12 +429,12 @@
+@@ -430,12 +430,12 @@
  
  files:
  	$(PERL) $(TOP)/util/files.pl Makefile > $(TOP)/MINFO
@@ -53,7 +53,7 @@
  
  gentests:
  	@(cd test && echo "generating dummy tests (if needed)..." && \
-@@ -442,7 +442,7 @@
+@@ -443,7 +443,7 @@
  
  dclean:
  	rm -rf *.bak include/openssl certs/.0
@@ -62,7 +62,7 @@
  
  rehash: rehash.time
  rehash.time: certs apps
-@@ -466,13 +466,13 @@
+@@ -467,13 +467,13 @@
  	@$(PERL) util/selftest.pl
  
  update: errors stacks util/libeay.num util/ssleay.num TABLE
@@ -79,7 +79,7 @@
  
  tags:
  	rm -f TAGS
-@@ -547,7 +547,7 @@
+@@ -548,7 +548,7 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;

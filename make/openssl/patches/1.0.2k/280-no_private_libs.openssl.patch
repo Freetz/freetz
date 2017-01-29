@@ -1,6 +1,6 @@
 --- Makefile.org
 +++ Makefile.org
-@@ -374,8 +374,7 @@
+@@ -375,8 +375,7 @@
  	    echo 'Description: OpenSSL cryptography library'; \
  	    echo 'Version: '$(VERSION); \
  	    echo 'Requires: '; \
@@ -10,13 +10,14 @@
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
  
  libssl.pc: Makefile
-@@ -388,8 +387,7 @@
+@@ -388,9 +387,7 @@
+ 	    echo 'Name: OpenSSL-libssl'; \
  	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
  	    echo 'Version: '$(VERSION); \
- 	    echo 'Requires.private: libcrypto'; \
+-	    echo 'Requires.private: libcrypto'; \
 -	    echo 'Libs: -L$${libdir} -lssl'; \
 -	    echo 'Libs.private: $(EX_LIBS)'; \
-+	    echo 'Libs: -L$${libdir} -lssl $(EX_LIBS)'; \
++	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
  	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
  
  openssl.pc: Makefile

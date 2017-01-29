@@ -1,0 +1,31 @@
+Fixes the following build error when compiled without EC support:
+
+ t1_trce.c: In function 'ssl_print_server_keyex':
+ t1_trce.c:912:23: error: 'EXPLICIT_PRIME_CURVE_TYPE' undeclared (first use in this function)
+          if (msg[0] == EXPLICIT_PRIME_CURVE_TYPE)
+                        ^
+ t1_trce.c:912:23: note: each undeclared identifier is reported only once for each function it appears in
+ t1_trce.c:914:28: error: 'EXPLICIT_CHAR2_CURVE_TYPE' undeclared (first use in this function)
+          else if (msg[0] == EXPLICIT_CHAR2_CURVE_TYPE)
+                             ^
+ t1_trce.c:916:28: error: 'NAMED_CURVE_TYPE' undeclared (first use in this function)
+          else if (msg[0] == NAMED_CURVE_TYPE) {
+                             ^
+
+--- ssl/ssl_locl.h
++++ ssl/ssl_locl.h
+@@ -524,14 +524,12 @@
+ #define CERT_PRIVATE_KEY        2
+ */
+ 
+-# ifndef OPENSSL_NO_EC
+ /*
+  * From ECC-TLS draft, used in encoding the curve type in ECParameters
+  */
+ #  define EXPLICIT_PRIME_CURVE_TYPE  1
+ #  define EXPLICIT_CHAR2_CURVE_TYPE  2
+ #  define NAMED_CURVE_TYPE           3
+-# endif                         /* OPENSSL_NO_EC */
+ 
+ typedef struct cert_pkey_st {
+     X509 *x509;
