@@ -1,0 +1,12 @@
+--- src/proxy/cert.c	2016-07-30 19:04:37.000000000 +0200
++++ src/proxy/cert.c	2016-12-22 12:47:47.566646240 +0100
+@@ -86,8 +86,8 @@
+         } else {
+             logger_noformat(proxy_context, LOG_INFO,
+                             "This certificate has not been activated yet");
++            return -1;
+         }
+-        return -1;
+     }
+     if (now_u32 > ts_end) {
+         logger_noformat(proxy_context, LOG_INFO,
