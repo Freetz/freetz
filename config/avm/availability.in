@@ -238,6 +238,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_8X
 	bool "06.8x-firmware available" if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7390 || \
 			FREETZ_TYPE_7490 \
 		))
 	default n
@@ -246,10 +247,9 @@ config FREETZ_AVM_HAS_FIRMWARE_06_8X
 
 config FREETZ_AVM_HAS_FIRMWARE_LABOR
 	bool "Labor firmware available" if FREETZ_TYPE_CUSTOM
-	default y		if \
-		FREETZ_TYPE_LANG_DE && ( \
-			FREETZ_TYPE_7390 \
-		)
+#	default y		if \
+#		FREETZ_TYPE_LANG_DE && ( \
+#		)
 	default n
 	help
 		Select this if a labor firmware is available for your box.
