@@ -145,13 +145,13 @@ image() {
 			continue;
 		fi
 
-		# remove TI checksum
+		# remove TI checksum and concatenate kernel & filesystem images
 		for f in ${d}/kernel.image ${d}/filesystem.image; do
-			[ -s "$f" ] && $FTOOLS/tichksum -r "$f" >/dev/null 2>&1
-		done
-
-		# concatenate kernel & filesystem images
-		cat ${d}/kernel.image ${d}/filesystem.image >kf.image 2>/dev/null
+			if [ -s "$f" ]; then
+				$FTOOLS/tichksum -r "$f" >/dev/null 2>&1
+				cat "$f" | dd bs=256 conv=sync 2>/dev/null;
+			fi
+		done > kf.image
 		rm -f ${d}/kernel.image ${d}/filesystem.image
 
 		# strip NMI vector if any
