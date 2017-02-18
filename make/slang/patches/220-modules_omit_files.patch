@@ -1,6 +1,6 @@
 --- modules/Makefile.in
 +++ modules/Makefile.in
-@@ -144,24 +144,30 @@
+@@ -166,6 +166,7 @@
  		echo $(INSTALL_MODULE) $(OBJDIR)/$$i $(DEST_MODULEDIR); \
  		$(INSTALL_MODULE) $(OBJDIR)/$$i $(DEST_MODULEDIR); \
  	done
@@ -8,8 +8,9 @@
  	-$(MKINSDIR) $(DEST_SLSH_DIR)
  	@for i in $(SLFILES); \
  	do \
- 		echo $(INSTALL_DATA) $$i.sl $(DEST_SLSH_DIR); \
- 		$(INSTALL_DATA) $$i.sl $(DEST_SLSH_DIR); \
+@@ -181,18 +182,23 @@
+ 		$(INSTALL_DATA) $$i $(DEST_SLSH_DIR)/$$d/; \
+ 	   done; \
  	done
 +endif
 +ifdef INSTALL_MODULES_MAP_FILES
@@ -28,6 +29,6 @@
  		$(INSTALL_DATA) $$i $(DEST_HELPDIR); \
  	done
 +endif
- clean:
- 	-cd $(OBJDIR) && /bin/rm -f $(MODULES)
- 	-/bin/rm -f *~
+ runtests: all
+ 	@test_scripts="$(TEST_SCRIPTS)"; \
+ 	test -z "@PNG_MODULE@" || test_scripts="$$test_scripts test_png.sl"; \
