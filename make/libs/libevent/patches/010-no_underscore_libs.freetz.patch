@@ -1,0 +1,22 @@
+--- Makefile.in
++++ Makefile.in
+@@ -1005,8 +1005,7 @@
+ # series won't be binary-compatible.
+ @INSTALL_LIBEVENT_TRUE@dist_bin_SCRIPTS = event_rpcgen.py
+ pkgconfigdir = $(libdir)/pkgconfig
+-LIBEVENT_PKGCONFIG = libevent.pc libevent_core.pc libevent_extra.pc \
+-	$(am__append_2) $(am__append_4)
++LIBEVENT_PKGCONFIG = libevent.pc
+ 
+ # These sources are conditionally added by configure.ac or conditionally
+ # included from other files.
+@@ -1020,8 +1019,7 @@
+ 	whatsnew-2.1.txt $(PLATFORM_DEPENDENT_SRC) \
+ 	test/check-dumpevents.py test/regress.gen.c test/regress.gen.h \
+ 	test/regress.rpc test/rpcgen_wrapper.sh test/test.sh
+-LIBEVENT_LIBS_LA = libevent.la libevent_core.la libevent_extra.la \
+-	$(am__append_1) $(am__append_3)
++LIBEVENT_LIBS_LA = libevent.la
+ @INSTALL_LIBEVENT_TRUE@lib_LTLIBRARIES = $(LIBEVENT_LIBS_LA)
+ @INSTALL_LIBEVENT_TRUE@pkgconfig_DATA = $(LIBEVENT_PKGCONFIG)
+ @INSTALL_LIBEVENT_FALSE@noinst_LTLIBRARIES = $(LIBEVENT_LIBS_LA)
