@@ -162,13 +162,33 @@ $(TARGET_TOOLCHAIN_KERNEL_VERSION_HEADER): $(TOPDIR)/.config $(KERNEL_HEADERS_DE
 	@$(call COPY_KERNEL_HEADERS,$(KERNEL_HEADERS_DEVEL_DIR),$(TARGET_TOOLCHAIN_STAGING_DIR)/usr)
 	@touch $@
 
-$(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_3_10_MIN)),y)
+$(AVM_KERNEL_CONFIG_DIR): | $(KERNEL_DIR)/.unpacked
+	@mkdir -p $@
+
+$(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).bin: $(DL_FW_DIR)/$(DL_SOURCE) | $(KERNEL_DIR)/.unpacked $(AVM_KERNEL_CONFIG_DIR) tools
+	@$(TOOLS_DIR)/avm_kernel_config.extract.sh "$<" >"$@" || { $(RM) "$@"; exit 1; }
+
+$(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).S: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).bin | $(KERNEL_DIR)/.unpacked $(AVM_KERNEL_CONFIG_DIR) tools
+	@$(TOOLS_DIR)/avm_kernel_config.gen "$<" >"$@" || { $(RM) "$@"; exit 1; }
+
+# Force kernel rebuild if avm_kernel_config_area.S differs from avm_kernel_config_area.$(DL_SOURCE_ID).S
+# To reduce maintenance effort we often use the same opensrc package for different boxes.
+# avm_kernel_config_area is however box/firmware-release specific, i.e. the kernel must be rebuilt
+# if BOX_ID changes even though the opensrc package might still be the same.
+$(shell diff -q "$(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S" "$(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).S" >/dev/null 2>&1 || $(RM) "$(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S" >/dev/null 2>&1)
+
+$(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).S
+	@cat "$<" >"$@"
+
+.PHONY: avm_kernel_config
+avm_kernel_config: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S
+endif
+
+$(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(if $(FREETZ_KERNEL_VERSION_3_10_MIN),$(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	$(call _ECHO, kernel image... )
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) $(KERNEL_IMAGE)
 	touch -c $@
-
-kernel-force:
-	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) $(KERNEL_IMAGE)
 
 $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE) | $(KERNEL_TARGET_DIR)
 	cp $(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)

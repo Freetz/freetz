@@ -164,6 +164,7 @@ TARGET_CONFIGURE_OPTIONS += $(DISABLE_NLS)
 DL_SITE:=$(call qstrip,$(FREETZ_DL_SITE))
 DL_SOURCE:=$(call qstrip,$(FREETZ_DL_SOURCE))
 DL_SOURCE_MD5:=$(call qstrip,$(FREETZ_DL_SOURCE_MD5))
+export DL_SOURCE_ID=$(shell echo $(DL_SOURCE) | tools/imagename2id)
 
 ifneq ($(strip $(FREETZ_DL_SOURCE_CONTAINER)),)
 DL_SOURCE_CONTAINER:=$(call qstrip,$(FREETZ_DL_SOURCE_CONTAINER))
