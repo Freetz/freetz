@@ -1039,12 +1039,13 @@ config FREETZ_PATCH_BETA_ATTRIBUTES
 	bool "Patch Beta/Labor attributes"
 	depends on \
 		FREETZ_AVM_VERSION_05_2X && \
+		!FREETZ_TYPE_ALIEN_HARDWARE && \
 		FREETZ_TYPE_LANG_DE && \
 		( \
 		FREETZ_TYPE_7270_16 || \
 		FREETZ_TYPE_7390 \
 		)
-	default n
+	default y
 	help
 		This patch removes Beta/Labor attributes from some
 		(older) firmwares AVM released only as Betas so far.
