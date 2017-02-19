@@ -856,7 +856,6 @@ menu "Override options"
 			FREETZ_TYPE_7320_7330 || \
 			FREETZ_TYPE_7340_7390 || \
 			FREETZ_TYPE_7570_7270 || \
-			FREETZ_TYPE_W500V_7150 || \
 			FREETZ_TYPE_W501V || \
 			FREETZ_TYPE_W701V_7170 || \
 			FREETZ_TYPE_W900V_7170 || \
@@ -889,7 +888,6 @@ menu "Override options"
 		#
 		default "@AVM/fritzbox.fon_wlan_7570/firmware/english"              if FREETZ_TYPE_7570_7270
 		#
-		default "@TELEKOM/Sinus W 500 V"                                    if FREETZ_TYPE_W500V_7150
 		default ""                                                          if FREETZ_TYPE_W501V
 		default "@TELEKOM/Speedport/Speedport W 701 V"                      if FREETZ_TYPE_W701V_7170
 		default "@TELEKOM/Speedport/Speedport W 900V"                       if FREETZ_TYPE_W900V_7170
@@ -922,7 +920,6 @@ menu "Override options"
 		#
 		default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.92.image"      if FREETZ_TYPE_7570_7270
 		#
-		default "Sinus_W_500V.27.04.27.image"                               if FREETZ_TYPE_W500V_7150
 		default "fritz.box_fon_wlan_7141.40.04.37.image"                    if FREETZ_TYPE_W501V
 		default "fw_Speedport_W701V_v33.04.57.image"                        if FREETZ_TYPE_W701V_7170
 		default "fw_Speedport_W900V_v34.04.57.image"                        if FREETZ_TYPE_W900V_7170
@@ -955,20 +952,9 @@ menu "Override options"
 		#
 		default "e25a82bc1d3fe2750a37a3fcdb1c254e"  if FREETZ_TYPE_7570_7270
 		#
-		default "939d8a39d2ac9256a770e2714e812a5c"  if FREETZ_TYPE_W500V_7150
 		default "c49167da6dca42cdb34fbffbaf2c4097"  if FREETZ_TYPE_W501V
 		default "e34713bd989c3e266a4650c133582510"  if FREETZ_TYPE_W701V_7170
 		default "dd6f7461976c64b9808d2cf74ab4532f"  if FREETZ_TYPE_W900V_7170
 		default "d79c67c666416732b4822cc468da8cdf"  if FREETZ_TYPE_W920V_7570
-
-	config FREETZ_DL_SOURCE2_CONTAINER
-		string
-		depends on FREETZ_TYPE_W500V_7150
-		default "fw_SinusW500V_27_04_27.zip"
-
-	config FREETZ_DL_SOURCE2_CONTAINER_MD5
-		string
-		depends on FREETZ_TYPE_W500V_7150
-		default "e13231dcfba56505ebf7bac4ee72af75"
 
 endmenu # Override options #
