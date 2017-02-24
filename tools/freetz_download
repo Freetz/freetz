@@ -208,7 +208,15 @@ if [ -n "$URLs" ]; then
 		num_sites=0
 		CHECKSUM=""
 	else
-		for url in $(echo ${URLs} | sed -e 's, ,%20,g' -e 's/,/ /g'); do
+		URLs="${URLs//@1&1/@1u1}" # replace our 1&1 alias with a one containing no special shell characters
+
+		# replace special shell characters with their percent-encoding counterparts (in order to be able to apply shell brace-expansion)
+		URLs="${URLs//\ /%20}"
+		URLs="${URLs//\!/%21}"
+		URLs="${URLs//\$/%24}"
+		URLs="${URLs//\&/%26}"
+
+		for url in $(eval echo "{${URLs},}"); do # wrap URLs with curly-braces to apply brace-expansion
 			if [ ${url:0:3} == "@SF" ]; then
 				# give sourceforge a few more tries, because it redirects to different mirrors
 				subpath=${url/@SF\//}
@@ -235,8 +243,8 @@ if [ -n "$URLs" ]; then
 				sites[(( num_sites++ ))]=http://www.telekom.de/dlp/eki/downloads/$subpath
 				sites[(( num_sites++ ))]=http://www.t-home.de/dlp/eki/downloads/$subpath
 				sites[(( num_sites++ ))]=http://hilfe.telekom.de/dlp/eki/downloads/$subpath
-			elif [ ${url:0:4} == "@1&1" ]; then
-				subpath=${url/@1&1\//}
+			elif [ ${url:0:4} == "@1u1" ]; then
+				subpath=${url/@1u1\//}
 				sites[(( num_sites++ ))]=http://acsfwdl.1und1.de/avm/$subpath
 			elif [ ${url:0:4} == "@EWE" ]; then
 				subpath=${url/@EWE\//}
