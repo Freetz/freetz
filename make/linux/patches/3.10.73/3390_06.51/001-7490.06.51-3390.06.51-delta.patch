@@ -1,0 +1,935 @@
+--- linux-3.10/arch/mips/boot/dts/Makefile
++++ linux-3.10/arch/mips/boot/dts/Makefile
+@@ -1,7 +1,10 @@
+ 
+ ifdef CONFIG_VR9
+ dtb-$(CONFIG_OF_AVM_DT) := Fritz_Box_3370-1.dtb
++dtb-$(CONFIG_OF_AVM_DT) += Fritz_Box_3370-2.dtb
+ dtb-$(CONFIG_OF_AVM_DT) += Fritz_Box_3370.dtb
++dtb-$(CONFIG_OF_AVM_DT) += Fritz_Box_6840-1.dtb
++dtb-$(CONFIG_OF_AVM_DT) += Fritz_Box_6840-2.dtb
+ dtb-$(CONFIG_OF_AVM_DT) += Fritz_Box_6840.dtb
+ dtb-$(CONFIG_OF_AVM_DT) += Fritz_Box_7360.dtb
+ dtb-$(CONFIG_OF_AVM_DT) += Fritz_Box_HW183.dtb
+--- linux-3.10/drivers/char/tffs-2.0/tffs_panic.c
++++ linux-3.10/drivers/char/tffs-2.0/tffs_panic.c
+@@ -564,8 +564,11 @@
+ \*--------------------------------------------------------------------------------*/
+ static int log_proc_release(struct inode *inode, struct file *file) {
+     if(!(file->f_flags & O_WRONLY)) {
++        struct seq_file *seq = file->private_data;
++	    kfree(seq->private);
++	    seq->private = NULL;
+ 		/*--- printk(KERN_INFO"%s: free after read\n", __func__); ---*/
+-		return seq_release_private(inode, file); /*---  gibt txtbuf frei ----*/
++		return single_release(inode, file); /*---  gibt txtbuf frei ----*/
+ 	}
+ 	/*--- 	printk(KERN_INFO"%s no free\n", __func__); ---*/
+ 	return 0;
+--- linux-3.10/drivers/char/tffs-2.0/tffs_stat.c
++++ linux-3.10/drivers/char/tffs-2.0/tffs_stat.c
+@@ -268,6 +268,15 @@
+     tffs_statistic(buf, bufsize, 0);
+     return single_open(file, tffsstat_show, buf);
+ }
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++static int tffsstat_release(struct inode *inode, struct file *file) {
++    struct seq_file *seq = file->private_data;
++
++	kfree(seq->private);
++	seq->private = NULL;
++    return single_release(inode, file);
++}
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ static const struct file_operations tffsstat_fops = {
+@@ -277,7 +286,7 @@
+    .open    = tffsstat_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release_private,
++   .release = tffsstat_release,
+ };
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+--- linux-3.10/drivers/char/tffs-3.0/tffs_fops.c
++++ linux-3.10/drivers/char/tffs-3.0/tffs_fops.c
+@@ -106,7 +106,7 @@
+         handle->z_length = handle->core_handle->max_segment_size; //STATIC_ZBUFFER_LEN;
+ 
+         // z_Buffer must be DMA-able
+-        handle->z_Buffer = kmalloc(handle->z_length, GFP_KERNEL);
++        handle->z_Buffer = kmalloc(handle->z_length, GFP_KERNEL | __GFP_NOFAIL);
+         if(handle->z_Buffer == NULL){
+             pr_err("[%s] no memory for z_buffer, requested 0x%x bytes\n",
+                    __func__,
+--- linux-3.10/drivers/char/tffs-3.0/tffs_panic.c
++++ linux-3.10/drivers/char/tffs-3.0/tffs_panic.c
+@@ -472,8 +472,10 @@
+ \*--------------------------------------------------------------------------------*/
+ static int log_proc_release(struct inode *inode, struct file *file) {
+     if(!(file->f_flags & O_WRONLY)) {
+-		/*--- printk(KERN_INFO"%s: free after read\n", __func__); ---*/
+-		return seq_release_private(inode, file); /*---  gibt txtbuf frei ----*/
++    	struct seq_file *seq = file->private_data;
++		kfree(seq->private);
++		seq->private = NULL;
++	    return single_release(inode, file);
+ 	}
+ 	/*--- 	printk(KERN_INFO"%s no free\n", __func__); ---*/
+ 	return 0;
+--- linux-3.10/drivers/char/tffs-3.0/tffs_stat.c
++++ linux-3.10/drivers/char/tffs-3.0/tffs_stat.c
+@@ -290,6 +290,15 @@
+     tffs_statistic(buf, bufsize, 0);
+     return single_open(file, tffsstat_show, buf);
+ }
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++static int tffsstat_release(struct inode *inode, struct file *file) {
++    struct seq_file *seq = file->private_data;
++
++	kfree(seq->private);
++	seq->private = NULL;
++    return single_release(inode, file);
++}
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+ static const struct file_operations tffsstat_fops = {
+@@ -299,7 +308,7 @@
+    .open    = tffsstat_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release_private,
++   .release = tffsstat_release,
+ };
+ /*--------------------------------------------------------------------------------*\
+ \*--------------------------------------------------------------------------------*/
+--- linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar8033.c
++++ linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar8033.c
+@@ -79,7 +79,8 @@
+         .read = seq_read,
+         .write = phy_reg_write,
+         .llseek = seq_lseek,
+-        .release = seq_release, };
++        .release = single_release 
++};
+ 
+ #define SGMII_LINK_WAR_MAX_TRY 10
+ 
+--- linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar803x.c
++++ linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar803x.c
+@@ -86,7 +86,8 @@
+         .read = seq_read,
+         .write = phy_reg_write,
+         .llseek = seq_lseek,
+-        .release = seq_release, };
++        .release = single_release 
++};
+ 
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+--- linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar8326.c
++++ linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar8326.c
+@@ -50,7 +50,7 @@
+     .open    = read_rmon_all_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ /*------------------------------------------------------------------------------------------*\
+--- linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar8337.c
++++ linux-3.10/drivers/net/avm_cpmac/phy/avmnet_ar8337.c
+@@ -84,7 +84,7 @@
+     .open    = read_rmon_all_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ static void reset_switch(avmnet_module_t *this, enum rst_type type);
+--- linux-3.10/drivers/net/avm_cpmac/phy/phy_11G.c
++++ linux-3.10/drivers/net/avm_cpmac/phy/phy_11G.c
+@@ -95,7 +95,7 @@
+    .read    = seq_read,
+    .write   = phy_reg_write,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ /*------------------------------------------------------------------------------------------*\
+--- linux-3.10/drivers/net/avm_cpmac/phy/phy_wasp.c
++++ linux-3.10/drivers/net/avm_cpmac/phy/phy_wasp.c
+@@ -41,7 +41,7 @@
+    .open    = phy_reg_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ /*------------------------------------------------------------------------------------------*\
+--- linux-3.10/drivers/net/avm_cpmac/switch/atheros/atheros_gmac.c
++++ linux-3.10/drivers/net/avm_cpmac/switch/atheros/atheros_gmac.c
+@@ -60,7 +60,7 @@
+     .open    = read_rmon_all_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ static struct resource ath_gmac_gpio = {
+--- linux-3.10/drivers/net/avm_cpmac/switch/ifx/7port/swi_7port.c
++++ linux-3.10/drivers/net/avm_cpmac/switch/ifx/7port/swi_7port.c
+@@ -61,6 +61,8 @@
+ 
+ extern volatile int g_stop_datapath;
+ extern unsigned int num_registered_eth_dev;
++static unsigned int add_session_mutex_failure = 0;
++static unsigned int report_session_mutex_failure = 0;
+ 
+ static void write_mdio_sched(unsigned int phyAddr, unsigned int regAddr, unsigned int data);
+ static unsigned short read_mdio_sched(unsigned int phyAddr, unsigned int regAddr);
+@@ -90,7 +92,7 @@
+    .read    = seq_read,
+    .write   = proc_mac_table_write,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ static const struct file_operations read_rmon_all_fops =
+@@ -101,7 +103,7 @@
+    .open    = read_rmon_all_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ static const struct file_operations proc_mirror_fops =
+@@ -113,7 +115,7 @@
+    .read    = seq_read,
+    .write   = proc_mirror_write,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ #ifdef CONFIG_AVM_PA
+@@ -124,6 +126,8 @@
+ int avmnet_7port_pce_add_session(struct avm_pa_session *avm_session);
+ int avmnet_7port_pce_remove_session(struct avm_pa_session *avm_session);
+ int avmnet_7port_pce_remove_session_entry(struct avmnet_7port_pce_session *session);
++int avmnet_7port_pce_session_stats(struct avm_pa_session *session,
++					                struct avm_pa_session_stats *stats);
+ static int pa_sessions_open(struct inode *inode, struct file *file);
+ static int pa_sessions_show(struct seq_file *seq, void *data __attribute__ ((unused)) );
+ 
+@@ -148,6 +152,7 @@
+    .features = HW_PA_CAPABILITY_BRIDGING | HW_PA_CAPABILITY_LAN2LAN,
+    .add_session = avmnet_7port_pce_add_session,
+    .remove_session = avmnet_7port_pce_remove_session,
++   .session_stats = avmnet_7port_pce_session_stats,
+    .name = "avmnet_7port_pce",
+ };
+ 
+@@ -159,7 +164,7 @@
+    .open    = pa_sessions_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ #endif // CONFIG_AVM_PA
+@@ -1747,6 +1752,7 @@
+ 
+     if(down_trylock(&swi_pa_mutex)){
+         AVMNET_INFO("[%s] PA mutex taken, aborting.\n", __func__);
++	add_session_mutex_failure += 1;
+         return AVM_PA_TX_ERROR_SESSION;
+     }
+ 
+@@ -1924,13 +1930,49 @@
+ }
+ 
+ /*------------------------------------------------------------------------------------------*\
++ * read an PA session count
++ * Must be called with the swi_7port_mutex held!
++\*------------------------------------------------------------------------------------------*/
++static uint32_t read_rmon_pce_counter(struct avmnet_7port_pce_session *pce_session)
++{
++	unsigned int val0, val1;
++	uint32_t counter = 0;
++
++
++	if(pce_session->ingress.counter_id >= 0 &&
++	   pce_session->ingress.counter_id < PA_RMON_COUNTERS) {
++		while((SW_READ_REG32(ETHSW_BM_RAM_CTRL_REG) & BM_RAM_CTRL_BAS))
++			;
++
++		SW_WRITE_REG32(pce_session->ingress.counter_id + PA_RMON_CNT_OFF, ETHSW_BM_RAM_ADDR_REG);
++		SW_WRITE_REG32((BM_RAM_CTRL_BAS | ((pce_session->ingress.mac_nr < 6)?(pce_session->ingress.mac_nr):6)), ETHSW_BM_RAM_CTRL_REG);
++
++		while((SW_READ_REG32(ETHSW_BM_RAM_CTRL_REG) & BM_RAM_CTRL_BAS))
++			;
++
++		val0 = SW_READ_REG32(ETHSW_BM_RAM_VAL_0_REG);
++		val1 = SW_READ_REG32(ETHSW_BM_RAM_VAL_1_REG);
++		counter = (val1 << 16) | (val0);
++
++		// check for counter overflow
++		if(counter >= pce_session->ingress.counter_prev){
++			counter -= pce_session->ingress.counter_prev;
++		} else {
++			counter = ~(pce_session->ingress.counter_prev - counter);
++			++counter;
++		}
++	}
++	return counter;
++}
++
++/*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ static int pa_sessions_show(struct seq_file *seq, void *data __attribute__ ((unused)) )
+ {
+     struct avmnet_7port_pce_session *session;
+     struct pce_7port_pa_port *port;
+     avmnet_device_t *avmdev;
+-    unsigned int i, val0, val1;
++    unsigned int i;
+     uint32_t counter;
+ 
+     if(in_interrupt()){
+@@ -1955,29 +1997,16 @@
+         port = &(session->ingress);
+         avmdev = mac_nr_to_avm_dev(port->mac_nr);
+ 
+-        counter = 0;
+-        if(session->ingress.counter_id >= 0 && session->ingress.counter_id < PA_RMON_COUNTERS){
+-            while((SW_READ_REG32(ETHSW_BM_RAM_CTRL_REG) & BM_RAM_CTRL_BAS))
+-                ;
+-
+-            SW_WRITE_REG32(session->ingress.counter_id + PA_RMON_CNT_OFF, ETHSW_BM_RAM_ADDR_REG);
+-            SW_WRITE_REG32((BM_RAM_CTRL_BAS | ((session->ingress.mac_nr < 6)?(session->ingress.mac_nr):6)), ETHSW_BM_RAM_CTRL_REG);
+-
+-            while((SW_READ_REG32(ETHSW_BM_RAM_CTRL_REG) & BM_RAM_CTRL_BAS))
+-                ;
+-
+-            val0 = SW_READ_REG32(ETHSW_BM_RAM_VAL_0_REG);
+-            val1 = SW_READ_REG32(ETHSW_BM_RAM_VAL_1_REG);
+-            counter = (val1 << 16) | (val0);
+-
+-            // check for counter overflow
+-            if(counter >= session->ingress.counter_prev){
+-                counter -= session->ingress.counter_prev;
+-            } else {
+-                counter = ~(session->ingress.counter_prev - counter);
+-                ++counter;
+-            }
+-        }
++	if(down_interruptible(&swi_7port_mutex)){
++		AVMNET_WARN("[%s] interrupted while waiting for semaphore\n", __func__);
++	        return -1;
++	}
++        counter = read_rmon_pce_counter(session);
++	up(&swi_7port_mutex);
++
++	
++	if ((add_session_mutex_failure > 0) || (report_session_mutex_failure > 0))
++		seq_printf(seq, "Mutex faicount: add_session=%u, report_session=%u \n", add_session_mutex_failure, report_session_mutex_failure);
+ 
+         seq_printf(seq, "Session handle: %d ; Counterid=%d; Accelerated Packets: %u\n", session->handle, session->ingress.counter_id, counter);
+ 
+@@ -2013,6 +2042,42 @@
+     return single_open(file, pa_sessions_show, this);
+ }
+ 
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++int avmnet_7port_pce_session_stats(struct avm_pa_session *session,
++				   struct avm_pa_session_stats *stats)
++{
++	uint32_t count;
++	uint32_t diff;
++	struct avmnet_7port_pce_session *pce_session = session->hw_session;
++
++	stats->validflags = 0;
++	stats->tx_bytes = 0;
++	stats->tx_pkts = 0;
++
++	if (!pce_session)
++		return -1;
++
++	if(down_trylock(&swi_7port_mutex)){
++		AVMNET_INFO("[%s] no statistics in this cycle (mutex in use)\n", __func__);
++		report_session_mutex_failure += 1;
++	        return -1;
++	}
++	count = read_rmon_pce_counter(pce_session);
++	up(&swi_7port_mutex);
++
++	diff = count - pce_session->last_report;
++	pce_session->last_report = count;
++
++	if (diff > 0){
++		stats->validflags |= AVM_PA_SESSION_STATS_VALID_HIT;
++		stats->validflags |= AVM_PA_SESSION_STATS_VALID_PKTS;
++		stats->tx_pkts = diff;
++	}
++
++	return 0;
++}
++
+ #endif
+ 
+ /*------------------------------------------------------------------------------------------*\
+--- linux-3.10/drivers/net/avm_cpmac/switch/ifx/7port/swi_7port.h
++++ linux-3.10/drivers/net/avm_cpmac/switch/ifx/7port/swi_7port.h
+@@ -121,6 +121,7 @@
+     struct pce_7port_pa_port egress[AVM_PA_MAX_EGRESS];
+     IFX_FLOW_PCE_rule_t pce_rules[AVM_PA_MAX_EGRESS];
+     unsigned int removed;
++    unsigned int last_report;
+ };
+ #endif
+ 
+--- linux-3.10/drivers/net/avm_cpmac/switch/ifx/ar9/swi_ar9.c
++++ linux-3.10/drivers/net/avm_cpmac/switch/ifx/ar9/swi_ar9.c
+@@ -173,7 +173,7 @@
+    .open    = mac_table_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ static const struct file_operations read_flow_control_fops =
+@@ -185,7 +185,7 @@
+    .read    = seq_read,
+    .write   = write_flow_control,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ static const struct file_operations read_rmon_fops =
+@@ -196,7 +196,7 @@
+    .open    = read_rmon_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ //#define DUMP_PACKET
+@@ -254,7 +254,7 @@
+    .open    = pa_sessions_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ 
+ #endif // CONFIG_AVM_PA
+--- linux-3.10/drivers/net/avm_cpmac/switch/ifx/common/avm_pa_ifx_multiplexer.c
++++ linux-3.10/drivers/net/avm_cpmac/switch/ifx/common/avm_pa_ifx_multiplexer.c
+@@ -13,6 +13,7 @@
+ #include "swi_ifx_common.h"
+ 
+ #define MULTIPLEXER_PROCFILE_NAME "avm_pa_ifx_multiplexer"
++#define DEFAULT_AVM_HIT_POLLING_TIME            1
+ 
+ /*------------------------------------------------------------------------------------------*\
+  * AVM PA multiplexer
+@@ -32,6 +33,11 @@
+ static DEFINE_RWLOCK( hw_pa_list_lock );
+ static DEFINE_SPINLOCK( session_list_lock );
+ 
++#ifndef AVM_PA_HARDWARE_PA_HAS_SESSION_STATS
++static struct timer_list stat_timer;
++static void check_stat(unsigned long dummy __attribute__((unused)));
++#endif
++
+ static struct avm_hardware_pa avm_pa_multiplexer = {
+    .add_session               = avm_pa_multiplexer_add_session,
+    .remove_session            = avm_pa_multiplexer_remove_one_session,
+@@ -41,11 +47,12 @@
+    .alloc_tx_channel          = ifx_ppa_alloc_virtual_tx_device,
+    .free_rx_channel           = ifx_ppa_free_virtual_rx_device,
+    .free_tx_channel           = ifx_ppa_free_virtual_tx_device,
++#ifdef AVM_PA_HARDWARE_PA_HAS_SESSION_STATS
++   .session_stats             = avm_pa_multiplexer_stats,
++#endif
+ };
+ 
+ 
+-
+-
+ static struct avm_pa_multiplexer_session multiplexer_session_array[CONFIG_AVM_PA_MAX_SESSION];
+ static struct avm_hardware_pa_instance *pa_instance_array[MAX_HW_PA_INSTANCES];
+ 
+@@ -68,7 +75,6 @@
+    .release = single_release,
+ };
+ 
+-
+ void clear_session_entry(size_t pos){
+ 
+ 	atomic_set(&multiplexer_session_array[pos].valid, 0);
+@@ -86,17 +92,17 @@
+ 		clear_session_entry(i);
+ 	}
+ 
+-
+ 	for (i = 0; i < MAX_HW_PA_INSTANCES; i++)
+ 		pa_instance_array[i] = NULL;
+ 
+ 	avm_pa_register_hardware_pa( &avm_pa_multiplexer );
+-
+-	/*--- printk(KERN_ERR "[%s] start \n", __func__); ---*/
+-
+ 	avmnet_cfg_add_seq_procentry( avmnet_hw_config_entry->config, MULTIPLEXER_PROCFILE_NAME, &avm_pa_ifx_multiplexer_fops);
+ 
+-	/*--- printk(KERN_ERR "[%s] init complete \n", __func__); ---*/
++#ifndef AVM_PA_HARDWARE_PA_HAS_SESSION_STATS
++	setup_timer(&stat_timer, check_stat, 0 );
++	mod_timer(&stat_timer,  jiffies + HZ * DEFAULT_AVM_HIT_POLLING_TIME - 1);
++#endif
++
+ }
+ EXPORT_SYMBOL(avm_pa_multiplexer_init);
+ 
+@@ -399,7 +405,58 @@
+     return single_open(file, proc_read_avm_pa_ifx_multiplexer_show, NULL);
+ }
+ 
++/*------------------------------------------------------------------------------------------*\
++\*------------------------------------------------------------------------------------------*/
++
++static int avm_pa_multiplexer_stats(struct avm_pa_session *avm_session,
++					                struct avm_pa_session_stats *stats)
++{
++	int res;
++	unsigned long slock_flags;
++	struct avm_pa_multiplexer_session *mp_session;
++
++	memset(stats, 0, sizeof(struct avm_pa_session_stats));
++	BUG_ON(avm_session->session_handle >= CONFIG_AVM_PA_MAX_SESSION);
++
++        spin_lock_irqsave( &session_list_lock, slock_flags);
++	mp_session = &multiplexer_session_array[avm_session->session_handle];
++
++	if (!atomic_read(&mp_session->valid))
++		return -1;
++
++	if ( !mp_session->hw_pa_instance->session_stats )
++		return -1;
++
++	res = mp_session->hw_pa_instance->session_stats(avm_session, stats);
++        spin_unlock_irqrestore( &session_list_lock, slock_flags);
++
++	return res;
++}
++
++#ifndef AVM_PA_HARDWARE_PA_HAS_SESSION_STATS
++static void check_stat(unsigned long dummy __attribute__((unused)))
++{
++	size_t i;
++	struct avm_pa_multiplexer_session *session;
+ 
++
++	for (i = 0 ; i < CONFIG_AVM_PA_MAX_SESSION; i++) {
++		session = &multiplexer_session_array[ i ];
++		if ( atomic_read(&session->valid) ){
++			struct avm_pa_session_stats stats;
++			if (avm_pa_multiplexer_stats(session->avm_session, &stats) >= 0){
++				avm_pa_hardware_session_report(i, stats.tx_pkts,
++							       stats.tx_bytes );
++				if (stats.tx_bytes || stats.tx_pkts)
++					pr_debug("multiplexer_report %d: bytes=%llu, pkts=%d [%s]\n",
++						i, stats.tx_bytes, stats.tx_pkts,
++						session->hw_pa_instance->name);
++			}
++		}
++	}
++	mod_timer(&stat_timer,  jiffies + HZ * DEFAULT_AVM_HIT_POLLING_TIME - 1);
++}
++#endif
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ 
+--- linux-3.10/drivers/net/avm_cpmac/switch/ifx/common/ifx_ppa_mini_sessions.c
++++ linux-3.10/drivers/net/avm_cpmac/switch/ifx/common/ifx_ppa_mini_sessions.c
+@@ -26,7 +26,6 @@
+ 
+ #define PPE_SESSION_LIST_PROCFILE_NAME          "ppe_sessions"
+ #define PPE_SESSIONS_BRIEF_PROCFILE_NAME        "ppe_sessions_brief"
+-#define DEFAULT_AVM_HIT_POLLING_TIME            1
+ #define MAX_QID                                 7
+ #define LANTIQ_LAN_DEV                          0
+ #define LANTIQ_WAN_DEV                          1
+@@ -126,7 +125,6 @@
+ static int read_sessions_brief_open(struct inode *inode, struct file *file);
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+-static struct timer_list g_hit_stat_timer;
+ 
+ static const struct file_operations read_session_list_fops =
+ {
+@@ -411,116 +409,96 @@
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+ 
+-static void ppa_check_hit_stat(unsigned long dummy __attribute__((unused))) {
+-    RW_LOCK_DECLARE;
+-    uint32_t stat_debug_flag = 0;
+-    uint32_t i;
+-    PPE_ROUTING_INFO route={0};
+-    PPE_MC_INFO mc={0};
++static int avm_pa_ifx_session_stats(struct avm_pa_session *session,
++					                struct avm_pa_session_stats *stats)
++{
+ 
+-    SESSION_TABLE_WRITE_LOCK();
+-    for (i = 0; i < CONFIG_AVM_PA_MAX_SESSION; i++){
+-        struct session_list_item *p_item = &session_list[i];
+-        uint64_t bytes_since_last_report = 0;
+-        uint32_t packets_since_last_report = 0;
+-
+-
+-        if ( ! atomic_read(&session_valid[i] ))
+-            continue;
+-
+-        if (p_item->flags & SESSION_LAN_ENTRY )
+-            stat_debug_flag = DBG_ENABLE_MASK_STAT_LAN_SESSION;
+-        if (p_item->flags & SESSION_WAN_ENTRY )
+-            stat_debug_flag = DBG_ENABLE_MASK_STAT_WAN_SESSION;
+-
+-		if (p_item->flags & SESSION_MC_ENTRY) {
+-		   mc.p_entry = p_item->routing_entry;
+-		   ifx_ppa_drv_test_and_clear_mc_hit_stat( &mc, 0);
+-		   if ( mc.f_hit )  {
+-			   session_debug(DBG_ENABLE_MASK_VDEV_SESSION, "%lu: hit routing_entry=%d (MULTICAST)\n", jiffies, p_item->routing_entry & 0x7FFFFFFF);
+-			   p_item->last_hit_time = ppa_get_time_in_sec();
+-			   p_item->hit_count += 1;
++	struct session_list_item *p_item;
++	uint32_t stat_debug_flag = 0;
++	PPE_ROUTING_INFO route={0};
++	PPE_MC_INFO mc={0};
++
++	stats->validflags = 0;
++
++	if (!session || (session->session_handle >= CONFIG_AVM_PA_MAX_SESSION))
++		return -1;
++
++	if ( ! atomic_read(&session_valid[session->session_handle] ))
++		return -1;
++
++	p_item = &session_list[session->session_handle];
++
++	if (p_item->flags & SESSION_LAN_ENTRY )
++		stat_debug_flag = DBG_ENABLE_MASK_STAT_LAN_SESSION;
++	if (p_item->flags & SESSION_WAN_ENTRY )
++		stat_debug_flag = DBG_ENABLE_MASK_STAT_WAN_SESSION;
++
++	if (p_item->flags & SESSION_MC_ENTRY) {
++		mc.p_entry = p_item->routing_entry;
++		ifx_ppa_drv_test_and_clear_mc_hit_stat( &mc, 0);
++		if ( mc.f_hit )  {
++			stats->validflags |= AVM_PA_SESSION_STATS_VALID_HIT;
++			session_debug(DBG_ENABLE_MASK_VDEV_SESSION, "%lu: hit routing_entry=%d (MULTICAST)\n", jiffies, p_item->routing_entry & 0x7FFFFFFF);
++			p_item->last_hit_time = ppa_get_time_in_sec();
++			p_item->hit_count += 1;
+ 
+ #if defined(RTP_SAMPLING_ENABLE) && RTP_SAMPLING_ENABLE
+-			   mc.sample_en = 1;
+-			   ifx_ppa_drv_get_mc_rtp_sampling_cnt( &mc);
++			mc.sample_en = 1;
++			ifx_ppa_drv_get_mc_rtp_sampling_cnt( &mc);
+ 
+-			   if (mc.rtp_pkt_cnt > p_item->last_mc_packets)
+-				  packets_since_last_report = mc.rtp_pkt_cnt - p_item->last_mc_packets;
+-			   else 
+-				  packets_since_last_report = 0;
++			if (mc.rtp_pkt_cnt > p_item->last_mc_packets){
++				stats->validflags |= AVM_PA_SESSION_STATS_VALID_PKTS;
++				stats->tx_pkts = mc.rtp_pkt_cnt - p_item->last_mc_packets;
++			} else {
++				stats->tx_pkts = 0;
++			}
+ #endif
+-			   bytes_since_last_report = packets_since_last_report * p_item->pktlen;
++			if (stats->validflags & AVM_PA_SESSION_STATS_VALID_PKTS) {
++				stats->validflags |= AVM_PA_SESSION_STATS_VALID_BYTES;
++				stats->tx_bytes = stats->tx_pkts * p_item->pktlen;
++			} else {
++				stats->tx_bytes = 0;
++			}
+ 
+-			   p_item->last_mc_packets = mc.rtp_pkt_cnt;
+-			   p_item->acc_bytes += bytes_since_last_report;
++			p_item->last_mc_packets = mc.rtp_pkt_cnt;
++			p_item->acc_bytes += stats->tx_bytes;
+ 
+-			   if ( p_item->session_id 
+-					 && (bytes_since_last_report > 0 || packets_since_last_report > 0)){
+-				   uint16_t session_id = p_item->session_id;
+-				   SESSION_TABLE_WRITE_UNLOCK();
+-				   avm_pa_hardware_session_report(session_id, packets_since_last_report, bytes_since_last_report );
+-				   SESSION_TABLE_WRITE_LOCK();
+-
+-				   session_debug(stat_debug_flag,
+-						   "report_bytes=%010llu,\n", bytes_since_last_report );
+-			   }
+-		   }
+-		} else {
+-		   route.entry = p_item->routing_entry;
+-		   ifx_ppa_drv_test_and_clear_hit_stat( &route, 0 );
+-		   if ( route.f_hit )   {
+-			   session_debug(DBG_ENABLE_MASK_VDEV_SESSION, "%lu: hit routing_entry=%d (%s)\n", jiffies, p_item->routing_entry & 0x7FFFFFFF,( p_item->flags & SESSION_LAN_ENTRY )?"LAN":"WAN");
+-			   session_debug(stat_debug_flag, "session %d was hit\n", p_item->session_id );
+-			   p_item->last_hit_time = ppa_get_time_in_sec();
+-			   p_item->hit_count += 1;
+-
+-			   ifx_ppa_drv_get_routing_entry_bytes( &route, 0 );
+-
+-			   if( route.mib_count >= p_item->last_mib_count) {
+-				   bytes_since_last_report = (uint64_t)(route.mib_count - p_item->last_mib_count) * (uint64_t)route.mib_factor;
+-			   } else {
+-				   session_debug(stat_debug_flag, "doing WRAP\n");
+-				   bytes_since_last_report = ((uint64_t)route.mib_count + (uint64_t)route.mib_max - (uint64_t)p_item->last_mib_count) * (uint64_t)route.mib_factor;
+-			   }
+-			   session_debug(stat_debug_flag,
+-					   "last_mib_count=%#08x, mib_count=%#08x, bytes_since_last_report=%010llu, session_byte_count=%010llu\n",
+-					   p_item->last_mib_count,
+-					   route.mib_count,
+-					   bytes_since_last_report,
+-					   p_item->acc_bytes + bytes_since_last_report);
+-
+-			   p_item->last_mib_count = route.mib_count;
+-			   p_item->acc_bytes += bytes_since_last_report;
+-			   if ( p_item->session_id ){
+-
+-				   // send report to avm_pa (will acquire AVM_PA_LOCK (irqs disabled)),
+-				   // so we cannot hold our lock here, otherwise we might run into a deadlock
+-
+-				   uint16_t session_id = p_item->session_id;
+-
+-				   SESSION_TABLE_WRITE_UNLOCK();
+-				   avm_pa_hardware_session_report(session_id, 0, bytes_since_last_report );
+-				   SESSION_TABLE_WRITE_LOCK();
+-
+-				   session_debug(stat_debug_flag,
+-						   "report_bytes=%010llu,\n", bytes_since_last_report );
+-			   }
+-		   } else if ( p_item->session_id ){
+-
+-			   // send empty session report
+-
+-			   SESSION_TABLE_WRITE_UNLOCK();
+-			   avm_pa_hardware_session_report(p_item->session_id, 0, 0 );
+-			   SESSION_TABLE_WRITE_LOCK();
+-			   session_debug(stat_debug_flag, "report empty session\n");
+-		   }
+ 		}
+-    }
+-
+-    SESSION_TABLE_WRITE_UNLOCK();
+-
+-    mod_timer(&g_hit_stat_timer,  jiffies + HZ * DEFAULT_AVM_HIT_POLLING_TIME - 1);
++	} else {
++		route.entry = p_item->routing_entry;
++		ifx_ppa_drv_test_and_clear_hit_stat( &route, 0 );
++		if ( route.f_hit )   {
++			stats->validflags |= AVM_PA_SESSION_STATS_VALID_HIT;
++			session_debug(DBG_ENABLE_MASK_VDEV_SESSION, "%lu: hit routing_entry=%d (%s)\n", jiffies, p_item->routing_entry & 0x7FFFFFFF,( p_item->flags & SESSION_LAN_ENTRY )?"LAN":"WAN");
++			session_debug(stat_debug_flag, "session %d was hit\n", p_item->session_id );
++			p_item->last_hit_time = ppa_get_time_in_sec();
++			p_item->hit_count += 1;
++
++			ifx_ppa_drv_get_routing_entry_bytes( &route, 0 );
++
++			stats->validflags |= AVM_PA_SESSION_STATS_VALID_BYTES;
++			if( route.mib_count >= p_item->last_mib_count) {
++				stats->tx_bytes = (uint64_t)(route.mib_count - p_item->last_mib_count) * (uint64_t)route.mib_factor;
++			} else {
++				session_debug(stat_debug_flag, "doing WRAP\n");
++				stats->tx_bytes = ((uint64_t)route.mib_count + (uint64_t)route.mib_max - (uint64_t)p_item->last_mib_count) * (uint64_t)route.mib_factor;
++			}
++			session_debug(stat_debug_flag,
++				      "last_mib_count=%#08x, mib_count=%#08x, bytes_since_last_report=%010llu, session_byte_count=%010llu\n",
++				      p_item->last_mib_count,
++				      route.mib_count,
++				      stats->tx_bytes,
++				      p_item->acc_bytes + stats->tx_bytes);
++
++			p_item->last_mib_count = route.mib_count;
++			p_item->acc_bytes += stats->tx_bytes;
++			session_debug(stat_debug_flag,
++				      "report_bytes=%010llu,\n", stats->tx_bytes );
++		} else if ( p_item->session_id ){
++			session_debug(stat_debug_flag, "report empty session\n");
++		}
++	}
++	return 0;
+ }
+ /*------------------------------------------------------------------------------------------*\
+ \*------------------------------------------------------------------------------------------*/
+@@ -1754,6 +1732,7 @@
+     .add_session = avm_pa_add_ifx_session,
+     .remove_session = avm_pa_remove_ifx_session,
+     .change_session = avm_pa_change_ifx_session,
++    .session_stats = avm_pa_ifx_session_stats,
+     .name = "ifx_ppa",
+ };
+ 
+@@ -1853,9 +1832,6 @@
+ 
+     ppa_enable_int(sys_flag);
+ 
+-    setup_timer(&g_hit_stat_timer,ppa_check_hit_stat, 0 );
+-    mod_timer(&g_hit_stat_timer,  jiffies + HZ * DEFAULT_AVM_HIT_POLLING_TIME - 1);
+-
+     avmnet_cfg_add_seq_procentry( avmnet_hw_config_entry->config, PPE_SESSION_LIST_PROCFILE_NAME, &read_session_list_fops);
+     avmnet_cfg_add_seq_procentry( avmnet_hw_config_entry->config, PPE_SESSIONS_BRIEF_PROCFILE_NAME, &read_sessions_brief_fops);
+ 
+@@ -1870,8 +1846,6 @@
+ 
+ void __exit ifx_ppa_mini_session_exit(void) {
+ 
+-    del_timer(&g_hit_stat_timer);
+-
+     if( check_if_avmnet_enables_ppa() ){
+     	avm_pa_unregister_ifx_hw_ppa();
+     	printk("Unregister LANTIQ_PA @ AVM_PA\n");
+--- linux-3.10/fs/squashfs/decompressor.c
++++ linux-3.10/fs/squashfs/decompressor.c
+@@ -93,7 +93,7 @@
+ 	 * Read decompressor specific options from file system if present
+ 	 */
+ 	if (SQUASHFS_COMP_OPTS(flags)) {
+-		buffer = kmalloc(PAGE_CACHE_SIZE, GFP_KERNEL);
++		buffer = kmalloc(PAGE_CACHE_SIZE, GFP_KERNEL | __GFP_NOFAIL);
+ 		if (buffer == NULL)
+ 			return ERR_PTR(-ENOMEM);
+ 
+--- linux-3.10/include/linux/avm_pa_hw.h
++++ linux-3.10/include/linux/avm_pa_hw.h
+@@ -97,6 +97,15 @@
+    unsigned long          refcount;
+ };
+ 
++#define AVM_PA_SESSION_STATS_VALID_HIT      0x01
++#define AVM_PA_SESSION_STATS_VALID_PKTS     0x02
++#define AVM_PA_SESSION_STATS_VALID_BYTES    0x04
++struct avm_pa_session_stats {
++   unsigned      validflags;
++   u32           tx_pkts;
++   u64           tx_bytes;
++};
++
+ struct avm_pa_egress {
+    struct avm_pa_pkt_match         match;
+    avm_pid_handle                  pid_handle;
+--- linux-3.10/include/linux/avm_pa_ifx_multiplexer.h
++++ linux-3.10/include/linux/avm_pa_ifx_multiplexer.h
+@@ -22,6 +22,8 @@
+     int (*add_session)(struct avm_pa_session *avm_session);
+     int (*change_session)(struct avm_pa_session *avm_session);
+     int (*remove_session)(struct avm_pa_session *avm_session);
++    int (*session_stats)(struct avm_pa_session *avm_session,
++                                struct avm_pa_session_stats *stats);
+ };
+ 
+ void avm_pa_multiplexer_register_instance( struct avm_hardware_pa_instance *hw_pa_instance );
+--- linux-3.10/net/avm_pa/avm_pa.c
++++ linux-3.10/net/avm_pa/avm_pa.c
+@@ -6051,7 +6051,7 @@
+     .open    = brief_show_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6074,7 +6074,7 @@
+     .open    = status_show_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6097,7 +6097,7 @@
+     .open    = stats_show_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6120,7 +6120,7 @@
+     .open    = pids_show_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6143,7 +6143,7 @@
+     .open    = vpids_show_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = single_release,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6295,7 +6295,7 @@
+     .open    = bsess_show_open,
+     .read    = seq_read,
+     .llseek  = seq_lseek,
+-    .release = seq_release,
++    .release = seq_release_private,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6377,7 +6377,7 @@
+    .open    = macaddr_show_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = seq_release_private,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6500,7 +6500,7 @@
+    .open    = prioack_show_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release_private,
++   .release = single_release,
+ };
+ 
+ /* ------------------------------------------------------------------------ */
+@@ -6524,7 +6524,7 @@
+    .open    = tstats_show_open,
+    .read    = seq_read,
+    .llseek  = seq_lseek,
+-   .release = seq_release,
++   .release = single_release,
+ };
+ #endif
+ 
