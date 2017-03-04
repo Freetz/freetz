@@ -1,0 +1,20 @@
+Fixes the following build issue with gcc >= 5.x
+
+ In file included from ../ncurses/curses.priv.h:283:0,
+                  from ../ncurses/lib_gen.c:19:
+ _553.c:835:15: error: expected ')' before 'int'
+ ../include/curses.h:1594:56: note: in definition of macro 'mouse_trafo'
+  #define mouse_trafo(y,x,to_screen) wmouse_trafo(stdscr,y,x,to_screen)
+                                                         ^
+
+--- ncurses/base/MKlib_gen.sh
++++ ncurses/base/MKlib_gen.sh
+@@ -62,7 +62,7 @@
+ if test "${LC_CTYPE+set}"    = set; then LC_CTYPE=C;    export LC_CTYPE;    fi
+ if test "${LC_COLLATE+set}"  = set; then LC_COLLATE=C;  export LC_COLLATE;  fi
+ 
+-preprocessor="$1 -DNCURSES_INTERNALS -I../include"
++preprocessor="$1 -P -DNCURSES_INTERNALS -I../include"
+ AWK="$2"
+ USE="$3"
+ 

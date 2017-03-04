@@ -1,0 +1,14 @@
+
+Pass --as-needed by default to the linker.
+
+--- gcc/config/mips/gnu-user.h
++++ gcc/config/mips/gnu-user.h
+@@ -54,7 +54,7 @@
+ 
+ #undef GNU_USER_TARGET_LINK_SPEC
+ #define GNU_USER_TARGET_LINK_SPEC "\
+-  %{G*} %{EB} %{EL} %{mips*} %{shared} \
++  %{G*} %{EB} %{EL} %{mips*} --as-needed %{shared} \
+   %{!shared: \
+     %{!static: \
+       %{rdynamic:-export-dynamic} \
