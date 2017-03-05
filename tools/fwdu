@@ -165,16 +165,16 @@ image() {
 		unfs_probe kernelsquashfs.raw >/dev/null 2>&1 || echo FALSE ${img}-${arch}
 		rm -f kernelsquashfs.raw kernelsquashfs.raw.ext2
 
-		# unpack the inner / the enveloped root-filesystem if found
+		# unpack the inner / the outer root-filesystem if found
 		if [ -e squashfs-root/filesystem_core.squashfs ]; then
-			mv squashfs-root filesystem_envelope
-			unfs_probe filesystem_envelope/filesystem_core.squashfs >/dev/null 2>&1
-			rm -f filesystem_envelope/filesystem_core.squashfs
-			[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
+			mv squashfs-root filesystem.outer
+			unfs_probe filesystem.outer/filesystem_core.squashfs >/dev/null 2>&1
+			rm -f filesystem.outer/filesystem_core.squashfs
+			[ -d squashfs-root ] && mv filesystem.outer squashfs-root/ || rm -rf filesystem.outer
 		fi
 
 		if [ -d squashfs-root ]; then
-			local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem_envelope*' | wc -l)
+			local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem.outer*' | wc -l)
 			echo -e "${numberOfFiles}\t${img}-${arch}"
 			mv squashfs-root "${dst}$(echo ${img%.*} | sed 's!.*/!!')-${arch}"
 		else

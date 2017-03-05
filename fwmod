@@ -128,7 +128,7 @@ mkdir -p "$DIR"
 SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
 FILESYSTEM_SUBDIR="filesystem"
-FILESYSTEM_CORE_SUBDIR="filesystem_core"
+FILESYSTEM_OUTER_SUBDIR="filesystem.outer"
 AVMPLUGINS_SUBDIR="plugins.image"
 EXTERNAL_SUBDIR="external"
 KERNEL_SUBDIR="kernel"
@@ -139,7 +139,7 @@ GRAPHICS_SUBDIR="graphics"
 # Kernel/SquashFS images contained in firmware
 KERNEL_IMAGE="var/tmp/kernel.image"
 FILESYSTEM_IMAGE="var/tmp/filesystem.image"
-FILESYSTEM_CORE_IMAGE="filesystem_core.squashfs"
+FILESYSTEM_INNER_IMAGE="filesystem_core.squashfs"
 
 # More files created during firmware unpacking
 AVMPLUGINS_FILE="var/tmp/plugins.update"
@@ -328,7 +328,7 @@ fi
 ORG_DIR="${DIR}/original"
 FIRMWARE_DIR="${ORG_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_DIR="${ORG_DIR}/${FILESYSTEM_SUBDIR}"
-FILESYSTEM_CORE_DIR="${ORG_DIR}/${FILESYSTEM_CORE_SUBDIR}"
+FILESYSTEM_OUTER_DIR="${ORG_DIR}/${FILESYSTEM_OUTER_SUBDIR}"
 KERNEL_DIR="${ORG_DIR}/${KERNEL_SUBDIR}"
 AVMPLUGINS_DIR="${KERNEL_DIR}/${AVMPLUGINS_SUBDIR}"
 VARTAR_DIR="${KERNEL_DIR}/${VARTAR_SUBDIR}"
@@ -339,7 +339,8 @@ RAW_FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
 if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
-		FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
+		FILESYSTEM="${FILESYSTEM_OUTER_DIR}/${FILESYSTEM_INNER_IMAGE}"
+		INNER_FS_PREFIX="inner-"
 	else
 		FILESYSTEM="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 	fi
@@ -438,13 +439,13 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -r "$RAW_KERNEL" ] && error 1 "copying kernel image failed"
 
 		if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
-			echo "unpacking outer filesystem image"
-			modunpack_autodetect_fs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
-			[ ! -r "$FILESYSTEM" ] && error 1 "unpacking outer filesystem image failed"
+			echo "unpacking outer-filesystem image"
+			modunpack_autodetect_fs "${FILESYSTEM_OUTER_DIR}" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
+			[ ! -r "$FILESYSTEM" ] && error 1 "unpacking outer-filesystem image failed"
 		fi
 
-		echo "unpacking filesystem image"
-		modunpack_autodetect_fs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
+		echo "unpacking ${INNER_FS_PREFIX}filesystem image"
+		modunpack_autodetect_fs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking ${INNER_FS_PREFIX}filesystem image failed"
 	else
 		echo "splitting kernel image"
 		( cd "$KERNEL_DIR" && "${TOOLS_DIR}/${FINDSQUASHFS_TOOL}" "../${FIRMWARE_SUBDIR}/${KERNEL_IMAGE}" > /dev/null 2>&1 )
@@ -519,7 +520,7 @@ FREETZ_LIBRARY_DIR=$(stripTrailingSlash "${FREETZ_RPATH%%:*}")
 MOD_DIR="${DIR}/modified"
 FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
-FILESYSTEM_CORE_MOD_DIR="${MOD_DIR}/${FILESYSTEM_CORE_SUBDIR}"
+FILESYSTEM_OUTER_MOD_DIR="${MOD_DIR}/${FILESYSTEM_OUTER_SUBDIR}"
 EXTERNAL_MOD_DIR="${MOD_DIR}/${EXTERNAL_SUBDIR}"
 KERNEL_MOD_DIR="${MOD_DIR}/${KERNEL_SUBDIR}"
 AVMPLUGINS_MOD_DIR="${KERNEL_MOD_DIR}/${AVMPLUGINS_SUBDIR}"
@@ -534,12 +535,12 @@ RAW_FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 
 if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 	if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
-		CORE_FILESYSTEM_MOD="${FILESYSTEM_CORE_MOD_DIR}/${FILESYSTEM_CORE_IMAGE}"
+		MAIN_FILESYSTEM_MOD="${FILESYSTEM_OUTER_MOD_DIR}/${FILESYSTEM_INNER_IMAGE}"
 	else
-		CORE_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
+		MAIN_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
 	fi
 else
-	CORE_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
+	MAIN_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
 fi
 
 VARTAR_MOD="${FILESYSTEM_MOD_DIR}/${VARTAR_FILE}"
@@ -1049,7 +1050,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 					  wrapper_fs_required_libs+=" $(getNeededEntries ${PACKAGES_DIR}/busybox/busybox | sed -r -e 's,[.]so([.].+)?$,,' | sort | tr $'\n' " ")"
 
 					if echo "${bn}" | grep -qE "^($(join '|' ${wrapper_fs_required_libs}))$"; then
-						cp -a $files "${FILESYSTEM_CORE_MOD_DIR}/${dn}/"
+						cp -a $files "${FILESYSTEM_OUTER_MOD_DIR}/${dn}/"
 					fi
 				fi
 
@@ -1063,7 +1064,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 		if [ "$FREETZ_KEEP_AVM_UCLIBC" != "y" -a "$FREETZ_LIB_libuClibc" == "y" ]; then
 			cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
-			[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_CORE_MOD_DIR}/lib/"
+			[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_OUTER_MOD_DIR}/lib/"
 		fi
 
 		echo1 "checking uClibc version"
@@ -1105,7 +1106,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo0 "installing busybox"
 
 		DIRS_BUSYBOX_TO_REPLACE_WITHIN="${FILESYSTEM_MOD_DIR}"
-		[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_CORE_MOD_DIR}"
+		[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_OUTER_MOD_DIR}"
 
 		echo1 "replacing busybox"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox" ] && error 1 "cannot find busybox replacement"
@@ -1418,7 +1419,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_STRIP_BINARIES" == "y" ]; then
 		echo0 "stripping leftover unstripped binaries"
 		for i in $(find \
-				"${FILESYSTEM_MOD_DIR}" $([ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && echo "${FILESYSTEM_CORE_MOD_DIR}") \
+				"${FILESYSTEM_MOD_DIR}" $([ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && echo "${FILESYSTEM_OUTER_MOD_DIR}") \
 				! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
 				\( -perm /100 -o -name "*.so*" \) \
 				-type f \
@@ -1615,11 +1616,11 @@ fi
 if [ "$DO_PACK" -gt 0 ]; then
 	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS"
 
-	echo0 "creating filesystem image"
+	echo0 "creating ${INNER_FS_PREFIX}filesystem image (SquashFS${FREETZ_SQUASHFS_VERSION}-${FREETZ_AVM_SQUASHFS_COMPRESSION})"
 	echo1 "SquashFS block size: $(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB ($FREETZ_SQUASHFS_BLOCKSIZE bytes)"
 
-	rm -f $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD
-	"$MKSQUASHFS" $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
+	rm -f $ABS_BASE_DIR/${MAIN_FILESYSTEM_MOD}
+	"$MKSQUASHFS" $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/${MAIN_FILESYSTEM_MOD} $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
 
 	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		echo0 "copying kernel image"
@@ -1671,7 +1672,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 		if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
 			if [ "${FREETZ_AVM_HAS_EXT2_PACKAGING_SCHEME}" == "y" ]; then
-				PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
+				echo0 "creating outer-filesystem image (Ext2fs)"
+				PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "${FILESYSTEM_OUTER_MOD_DIR}" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
 				[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
 
 				{
@@ -1682,7 +1684,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 				cat "$RAW_FILESYSTEM_MOD.ext2" >> "$RAW_FILESYSTEM_MOD" && \
 				rm -f "$RAW_FILESYSTEM_MOD.ext2"
 			else
-				"$MKSQUASHFS" $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
+				echo0 "creating outer-filesystem image (SquashFS${FREETZ_SQUASHFS_VERSION}-${FREETZ_AVM_SQUASHFS_COMPRESSION})"
+				"$MKSQUASHFS" ${FILESYSTEM_OUTER_MOD_DIR}/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
 			fi
 		fi
 
