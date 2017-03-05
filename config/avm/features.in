@@ -341,6 +341,13 @@ config FREETZ_AVM_HAS_WLAN
 	help
 		Select this if you have a box with WLAN support.
 
+config FREETZ_AVM_SERIAL_CONSOLE_DEVICE
+	string "Serial console device" if FREETZ_TYPE_CUSTOM
+	default "/dev/ttyS1"           if FREETZ_KERNEL_LAYOUT_AR9
+	default "/dev/ttyS0"
+	help
+		Serial console device used in the original firmware.
+
 endmenu
 
 
