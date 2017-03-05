@@ -67,31 +67,23 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 		Select this if you have a box with separate filesystem.image.
 
 config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
-	bool "Has update filesystem image"	if FREETZ_TYPE_CUSTOM
-	default y		if FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE && !FREETZ_KERNEL_LAYOUT_GRX5
-	default n
+	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
+	bool "Has inner-/outer-filesystem"	if FREETZ_TYPE_CUSTOM
+	default n				if FREETZ_KERNEL_LAYOUT_GRX5
+	default y
 	help
 		Select this if you have a box with root-filesystem wrapped within/by other filesystem,
 		i.e. filesystem.image (whatever filesystem it uses) contains a file named filesystem_core.squashfs.
 
-config FREETZ_AVM_HAS_EXT2_PACKAGING_SCHEME
-	bool "Uses EXT2 based firmware packaging scheme"	if FREETZ_TYPE_CUSTOM
-	# TODO: check if the condition below could be replaced by
-	#       FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM && FREETZ_KERNEL_VERSION_3_10
-	default y		if \
-		FREETZ_AVM_VERSION_06_5X_MIN && ( \
-			FREETZ_TYPE_3370 || \
-			FREETZ_TYPE_3390 || \
-			FREETZ_TYPE_3490 || \
-			FREETZ_TYPE_6840 || \
-			FREETZ_TYPE_7362 || \
-			FREETZ_TYPE_7412 || \
-			FREETZ_TYPE_7430 || \
-			FREETZ_TYPE_7490 \
-		)
-	default n
-	help
-		Select this option if the original firmware uses
-		an EXT2 based packaging scheme.
+#config FREETZ_AVM_INNER_FILESYSTEM_TYPE
+#	depends on FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
+#	string "Inner-filesystem type"		if FREETZ_TYPE_CUSTOM
+#	default "SquashFS"
+
+config FREETZ_AVM_OUTER_FILESYSTEM_TYPE
+	depends on FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
+	string "Outer-filesystem type"		if FREETZ_TYPE_CUSTOM
+	default "Ext2FS"			if FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_KERNEL_VERSION_3_10
+	default "SquashFS"
 
 endmenu
