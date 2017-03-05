@@ -66,7 +66,7 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	help
 		Select this if you have a box with separate filesystem.image.
 
-config FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE
+config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 	bool "Has update filesystem image"	if FREETZ_TYPE_CUSTOM
 	default y		if FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE && !FREETZ_KERNEL_LAYOUT_GRX5
 	default n
@@ -77,7 +77,7 @@ config FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE
 config FREETZ_AVM_HAS_EXT2_PACKAGING_SCHEME
 	bool "Uses EXT2 based firmware packaging scheme"	if FREETZ_TYPE_CUSTOM
 	# TODO: check if the condition below could be replaced by
-	#       FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE && FREETZ_KERNEL_VERSION_3_10
+	#       FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM && FREETZ_KERNEL_VERSION_3_10
 	default y		if \
 		FREETZ_AVM_VERSION_06_5X_MIN && ( \
 			FREETZ_TYPE_3370 || \

@@ -338,7 +338,7 @@ RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
 if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
 		FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
 	else
 		FILESYSTEM="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
@@ -437,7 +437,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
 		[ ! -r "$RAW_KERNEL" ] && error 1 "copying kernel image failed"
 
-		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
 			echo "unpacking outer filesystem image"
 			modunpack_autodetect_fs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
 			[ ! -r "$FILESYSTEM" ] && error 1 "unpacking outer filesystem image failed"
@@ -451,7 +451,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 		if [ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ]; then
 			if [ -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && [ $(stat -c %s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}") -gt 0 ]; then
-				_config_hint=" - maybe you should configure a firmware with FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE/FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE"
+				_config_hint=" - maybe you should configure a firmware with FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE/FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM"
 			fi
 			error 1 "kernel splitting failed${_config_hint}"
 		fi
@@ -533,7 +533,7 @@ RAW_KERNEL_MOD="${KERNEL_MOD_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 
 if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
 		CORE_FILESYSTEM_MOD="${FILESYSTEM_CORE_MOD_DIR}/${FILESYSTEM_CORE_IMAGE}"
 	else
 		CORE_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
@@ -1041,7 +1041,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a $files "${FILESYSTEM_MOD_DIR}/${dn}/"
 
-				if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+				if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
 					wrapper_fs_required_libs="ld_uClibc libuClibc"
 
 					# replaced busybox might require some additional libraries not available in AVM's wrapper filesystem
@@ -1063,7 +1063,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 		if [ "$FREETZ_KEEP_AVM_UCLIBC" != "y" -a "$FREETZ_LIB_libuClibc" == "y" ]; then
 			cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_MOD_DIR}/lib/"
-			[ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_CORE_MOD_DIR}/lib/"
+			[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.0" "${FILESYSTEM_CORE_MOD_DIR}/lib/"
 		fi
 
 		echo1 "checking uClibc version"
@@ -1105,7 +1105,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo0 "installing busybox"
 
 		DIRS_BUSYBOX_TO_REPLACE_WITHIN="${FILESYSTEM_MOD_DIR}"
-		[ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_CORE_MOD_DIR}"
+		[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_CORE_MOD_DIR}"
 
 		echo1 "replacing busybox"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox" ] && error 1 "cannot find busybox replacement"
@@ -1418,7 +1418,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_STRIP_BINARIES" == "y" ]; then
 		echo0 "stripping leftover unstripped binaries"
 		for i in $(find \
-				"${FILESYSTEM_MOD_DIR}" $([ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ] && echo "${FILESYSTEM_CORE_MOD_DIR}") \
+				"${FILESYSTEM_MOD_DIR}" $([ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && echo "${FILESYSTEM_CORE_MOD_DIR}") \
 				! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
 				\( -perm /100 -o -name "*.so*" \) \
 				-type f \
@@ -1669,7 +1669,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 # ---------------------------
 	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 
-		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
 			if [ "${FREETZ_AVM_HAS_EXT2_PACKAGING_SCHEME}" == "y" ]; then
 				PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
 				[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
