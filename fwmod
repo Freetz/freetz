@@ -337,8 +337,12 @@ HTML_DIR="${FILESYSTEM_DIR}/${HTML_SUBDIR}"
 RAW_KERNEL="${KERNEL_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM="${KERNEL_DIR}/${RAW_HIDDEN_FILE}"
 KERNEL="${FIRMWARE_DIR}/${KERNEL_IMAGE}"
-if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
+if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		FILESYSTEM="$FILESYSTEM_CORE_DIR/$FILESYSTEM_CORE_IMAGE"
+	else
+		FILESYSTEM="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
+	fi
 else
 	FILESYSTEM="${RAW_FILESYSTEM}"
 fi
@@ -412,7 +416,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	# Remove NMI vector from SquashFS
 	if [ "$FREETZ_AVM_HAS_NMI_VECTOR" == "y" ]; then
 		echo0 "removing NMI vector from SquashFS"
-		[ "$FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE" == "y" ] && FILE_WITH_NMI_VECTOR_TO_PROCESS="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || FILE_WITH_NMI_VECTOR_TO_PROCESS="$KERNEL"
+		[ "$FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE" == "y" ] && FILE_WITH_NMI_VECTOR_TO_PROCESS="${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" || FILE_WITH_NMI_VECTOR_TO_PROCESS="$KERNEL"
 		if [ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ]; then
 			"$TOOLS_DIR/remove-nmi-vector" "$FILE_WITH_NMI_VECTOR_TO_PROCESS" "$FILE_WITH_NMI_VECTOR_TO_PROCESS.no-nmi" >/dev/null 2>&1
 		else
@@ -429,12 +433,15 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	"$TICHKSUM" -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" > /dev/null
 
 	mkdir -p "$KERNEL_DIR"
-	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		cp "${KERNEL}" "${RAW_KERNEL}"
+		[ ! -r "$RAW_KERNEL" ] && error 1 "copying kernel image failed"
 
-		echo "unpacking update image"
-		modunpack_autodetect_fs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
-		[ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ] && error 1 "copying kernel or filesystem image failed"
+		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+			echo "unpacking outer filesystem image"
+			modunpack_autodetect_fs "$FILESYSTEM_CORE_DIR" "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}"
+			[ ! -r "$FILESYSTEM" ] && error 1 "unpacking outer filesystem image failed"
+		fi
 
 		echo "unpacking filesystem image"
 		modunpack_autodetect_fs "$FILESYSTEM_DIR" "$FILESYSTEM" || error 1 "unpacking filesystem image failed"
@@ -444,7 +451,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 		if [ ! -r "$RAW_KERNEL" -o ! -r "$FILESYSTEM" ]; then
 			if [ -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && [ $(stat -c %s "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}") -gt 0 ]; then
-				_config_hint=" - maybe you should configure a firmware with FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE"
+				_config_hint=" - maybe you should configure a firmware with FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE/FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE"
 			fi
 			error 1 "kernel splitting failed${_config_hint}"
 		fi
@@ -525,8 +532,12 @@ FILESYSTEM_MOD="${FIRMWARE_MOD_DIR}/${FILESYSTEM_IMAGE}"
 RAW_KERNEL_MOD="${KERNEL_MOD_DIR}/${RAW_KERNEL_FILE}"
 RAW_FILESYSTEM_MOD="${KERNEL_MOD_DIR}/${RAW_HIDDEN_FILE}"
 
-if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
-	CORE_FILESYSTEM_MOD="${FILESYSTEM_CORE_MOD_DIR}/${FILESYSTEM_CORE_IMAGE}"
+if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		CORE_FILESYSTEM_MOD="${FILESYSTEM_CORE_MOD_DIR}/${FILESYSTEM_CORE_IMAGE}"
+	else
+		CORE_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
+	fi
 else
 	CORE_FILESYSTEM_MOD="$RAW_FILESYSTEM_MOD"
 fi
@@ -1610,7 +1621,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	rm -f $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD
 	"$MKSQUASHFS" $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/$CORE_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
 
-	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		echo0 "copying kernel image"
 		cp -a "$RAW_KERNEL_MOD" "$KERNEL_MOD"
 	else
@@ -1638,7 +1649,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo1 "kernel image size: $(byte_to_mb $KERNEL_SIZE), max $(byte_to_mb $KERNEL_LIMIT), free $(byte_to_mb $((-KERNEL_DIFF))) ($((-KERNEL_DIFF)) bytes)"
 	[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
 	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 				error 1 -b "kernel image is $KERNEL_DIFF bytes too big. See http://freetz.org/wiki/FAQ#Filesystemimagetoobig for details."
 		else
 			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
@@ -1656,22 +1667,23 @@ if [ "$DO_PACK" -gt 0 ]; then
 # ---------------------------
 # -- Pack filesystem image --
 # ---------------------------
+	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 
-	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+		if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+			if [ "${FREETZ_AVM_HAS_EXT2_PACKAGING_SCHEME}" == "y" ]; then
+				PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
+				[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
 
-		if [ "${FREETZ_AVM_HAS_EXT2_PACKAGING_SCHEME}" == "y" ]; then
-			PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "$FILESYSTEM_CORE_MOD_DIR" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
-			[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
-
-			{
-				# create pseudo SquashFS-header: "sqsh" followed by 252 zeros
-				echo -n "sqsh" > "$RAW_FILESYSTEM_MOD" && \
-				dd if=/dev/zero of="$RAW_FILESYSTEM_MOD" bs=1 count=252 oflag=append conv=notrunc
-			} >> $MOD_DIR/filesystem.log 2>&1 && \
-			cat "$RAW_FILESYSTEM_MOD.ext2" >> "$RAW_FILESYSTEM_MOD" && \
-			rm -f "$RAW_FILESYSTEM_MOD.ext2"
-		else
-			"$MKSQUASHFS" $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
+				{
+					# create pseudo SquashFS-header: "sqsh" followed by 252 zeros
+					echo -n "sqsh" > "$RAW_FILESYSTEM_MOD" && \
+					dd if=/dev/zero of="$RAW_FILESYSTEM_MOD" bs=1 count=252 oflag=append conv=notrunc
+				} >> $MOD_DIR/filesystem.log 2>&1 && \
+				cat "$RAW_FILESYSTEM_MOD.ext2" >> "$RAW_FILESYSTEM_MOD" && \
+				rm -f "$RAW_FILESYSTEM_MOD.ext2"
+			else
+				"$MKSQUASHFS" $FILESYSTEM_CORE_MOD_DIR/* $ABS_BASE_DIR/$RAW_FILESYSTEM_MOD $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
+			fi
 		fi
 
 		[ ! -s "$RAW_FILESYSTEM_MOD" ] && error 1 "creation of filesystem failed"
@@ -1706,7 +1718,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
-		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" != "y" ]; then
+		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
 			# 5*64kB sectors needed, see http://freetz.org/ticket/1680#comment:4
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 327680)))
@@ -1725,7 +1737,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Create in-memory image
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
-	if [ "${FREETZ_AVM_HAS_UPDATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		echo0 "creating in-memory image ${img_name}.in-memory"
 		{
 			cat "$KERNEL_MOD"     | dd bs=256 conv=sync 2>/dev/null;

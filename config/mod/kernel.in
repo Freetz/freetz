@@ -10,6 +10,8 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 		\
 		! (FREETZ_KERNEL_LAYOUT_AR10 && (FREETZ_TYPE_FIRMWARE_06_0X || FREETZ_TYPE_FIRMWARE_06_5X)) && \
 		\
+		! (FREETZ_KERNEL_LAYOUT_GRX5) && \
+		\
 		! FREETZ_TYPE_6820 && \
 		\
 		! FREETZ_TYPE_7369
@@ -37,16 +39,17 @@ config FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 		FREETZ_AVM_SOURCE_7490_06_30 || \
 		FREETZ_AVM_SOURCE_7490_06_51 || \
 		FREETZ_AVM_SOURCE_7490_06_60 || \
-		FREETZ_AVM_SOURCE_7490_06_80
+		FREETZ_AVM_SOURCE_7490_06_80 || \
+		FREETZ_AVM_SOURCE_7580_06_53
 	default y
 
 # at the moment enabled for all configurations fulfilling the condition
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
-#	depends on \
-#		FREETZ_REPLACE_KERNEL_AVAILABLE || \
-#		!FREETZ_KERNEL_VERSION_3_10_MIN
+	depends on \
+		FREETZ_REPLACE_KERNEL_AVAILABLE || \
+		!FREETZ_KERNEL_LAYOUT_GRX5
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.

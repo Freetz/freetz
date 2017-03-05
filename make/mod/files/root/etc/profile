@@ -9,7 +9,7 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 tty="$(tty)"
 
 case "$tty" in
-	/dev/tts/* | /dev/ttyS[01] )
+	/dev/tts/* | /dev/ttyS[01] | /dev/ttyLTQ[01] )
 	stty -F $tty rows 50 cols 132
 	echo -e "\033[50;132q\c"
 	;;
@@ -21,7 +21,7 @@ case $tty in
 		[ -z "$TERM" ] && export TERM=xterm
 		unset serial_term
 		;;
-	/dev/tts/*|/dev/ttyS*|/dev/console)
+	/dev/tts/*|/dev/ttyS*|/dev/ttyLTQ*|/dev/console)
 		export TERM=vt102
 		export serial_term=y
 		if [ -z "$HOME" -o "$HOME" == "/" ]; then
