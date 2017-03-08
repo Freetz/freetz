@@ -86,6 +86,9 @@ image() {
 	local img=$1
 	local dst=$2
 
+	local imgID=$(basename "${img}")
+	imgID=${imgID%.*}
+
 	declare -A probeDirs=(
 		[mips]=var/tmp
 		 [arm]=var/remote/var/tmp
@@ -105,7 +108,10 @@ image() {
 		mv ${img##*/}.unp/*.image var/tmp/
 		rm -rf ${img##*/}.unp
 	else
-		tar -xif $img $(printf " --wildcards ./%s/*.image" "${probeDirs[@]}") >/dev/null 2>&1
+		tar -xif $img \
+		  $(printf " --wildcards ./%s/*.image"        "${probeDirs[@]}") \
+		  $(printf " --wildcards ./%s/plugins.update" "${probeDirs[@]}") \
+		  >/dev/null 2>&1
 	fi
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
@@ -175,9 +181,42 @@ image() {
 
 		if [ -d squashfs-root ]; then
 			local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem.outer*' | wc -l)
-			echo -e "${numberOfFiles}\t${img}-${arch}"
-			mv squashfs-root "${dst}$(echo ${img%.*} | sed 's!.*/!!')-${arch}"
-		else
+			echo -e "${numberOfFiles}\t${imgID}-${arch}"
+			mv squashfs-root "${dst}/${imgID}-${arch}"
+		fi
+
+		if [ -e ${d}/plugins.update ]; then
+			pluginsTmpDir="${imgID}.plugins-${arch}.tmp"
+			mkdir -p "${pluginsTmpDir}"
+			tar -xif "${d}/plugins.update" \
+			  -C "${pluginsTmpDir}" \
+			  --wildcards "./var/*.image" \
+			  >/dev/null 2>&1
+
+			numberOfPlugins=0
+			for pluginImage in $(find "${pluginsTmpDir}/var" -type f -name "*.image"); do
+				pluginID=$(basename "${pluginImage}"); pluginID=${pluginID%.*}
+
+				unfs_probe "$pluginImage" >/dev/null 2>&1
+				if [ -d squashfs-root ]; then
+					((numberOfPlugins++))
+					mv squashfs-root "${pluginsTmpDir}/${pluginID}"
+				fi
+			done
+
+			rm -rf "${pluginsTmpDir}/var"
+			if [ "$numberOfPlugins" -eq 0 ]; then
+				rm -rf "${pluginsTmpDir}"
+			else
+				if [ -d "${dst}/${imgID}-${arch}" ]; then
+					mv "${pluginsTmpDir}" "${dst}/${imgID}-${arch}/plugins"
+				else
+					mv "${pluginsTmpDir}" "${dst}/${imgID}.plugins-${arch}"
+				fi
+			fi
+		fi
+
+		if [ ! -e "${dst}/${imgID}-${arch}" -a ! -e "${dst}/${imgID}.plugins-${arch}" ]; then
 			echo -e "====\t${img}-${arch}" | tee -a _failed.log
 		fi
 	done
