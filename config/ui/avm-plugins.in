@@ -14,21 +14,21 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_MEDIASRV
 		bool "MEDIASRV"
-		depends on FREETZ_TYPE_7270_V1
+		depends on FREETZ_AVM_HAS_PLUGIN_MEDIASRV
 		default n
 		help
 			Integrates UPNP Mediaserver
 
 	config FREETZ_AVMPLUGINS_MINI
 		bool "MINI"
-		depends on FREETZ_TYPE_7270_V1
+		depends on FREETZ_AVM_HAS_PLUGIN_MINI
 		default n
 		help
 			Integrates FRITZ! Mini support
 
 	config FREETZ_AVMPLUGINS_NTFS
 		bool "NTFS"
-		depends on FREETZ_TYPE_7270_V1
+		depends on FREETZ_AVM_HAS_PLUGIN_NTFS
 		default n
 		help
 			Integrates NTFS filesystem support
@@ -36,14 +36,14 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_ONLINEPB
 		bool "Online Phone Book"
-		depends on FREETZ_TYPE_7270_V1
+		depends on FREETZ_AVM_HAS_PLUGIN_ONLINEPB
 		default n
 		help
 			Integrates Online Phone Book support
 
 	config FREETZ_AVMPLUGINS_SAMBA
 		bool "SAMBA"
-		depends on FREETZ_TYPE_7270_V1
+		depends on FREETZ_AVM_HAS_PLUGIN_SAMBA
 		depends on ! FREETZ_PACKAGE_SAMBA_SMBD
 		default n
 		help
@@ -51,19 +51,19 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_TAM
 		bool "TAM"
-		depends on FREETZ_TYPE_7270_V1
+		depends on FREETZ_AVM_HAS_PLUGIN_TAM
 		default n
 		help
 			Integrates Telephone Answering Machine (TAM)
 
 	config FREETZ_AVMPLUGINS_WEBCM_INTERPRETER
 		bool "WebCM Interpreter"
-		depends on FREETZ_TYPE_4020 || FREETZ_TYPE_7390
+		depends on FREETZ_AVM_HAS_PLUGIN_WEBCM_INTERPRETER
 		default n
 
 	config FREETZ_AVMPLUGINS_WEBDAV
 		bool "WEBDAV"
-		depends on FREETZ_TYPE_7270_V1
+		depends on FREETZ_AVM_HAS_PLUGIN_WEBDAV
 		depends on ! FREETZ_PACKAGE_DAVFS2 && ! FREETZ_REMOVE_WEBDAV
 		default n
 		help
@@ -71,7 +71,7 @@ menu "Plugin selection"
 
 	config FREETZ_AVMPLUGINS_WLAN
 		bool "WLAN"
-		depends on FREETZ_TYPE_7390
+		depends on FREETZ_AVM_HAS_PLUGIN_WLAN
 		default n
 
 endmenu # "Plugin selection" #
