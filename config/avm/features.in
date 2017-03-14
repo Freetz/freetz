@@ -233,11 +233,14 @@ config FREETZ_AVM_HAS_TAM
 
 config FREETZ_AVM_HAS_TEMPERATURE_SENSOR
 	bool "Temperature sensor"	if FREETZ_TYPE_CUSTOM
-	default y		if (FREETZ_AVM_VERSION_05_2X_MIN || FREETZ_TYPE_7270) && FREETZ_AVM_VERSION_05_5X_MAX
+	default y		if \
+		(FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_AVM_VERSION_05_5X_MAX) || \
+		(FREETZ_AVM_VERSION_06_2X_MIN) || \
+		FREETZ_KERNEL_LAYOUT_UR8
 	default n
 	help
 		Select this if the device has an internal temperature sensor.
-		Not any longer supported with Fritz!OS 6 by AVM.
+		Not supported in Fritz!OS 6.00 - 6.04.
 
 config FREETZ_AVM_HAS_TR069
 	bool "tr069 support"	if FREETZ_TYPE_CUSTOM
