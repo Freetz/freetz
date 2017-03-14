@@ -1,26 +1,11 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
-check "$RCAPID_ENABLED" inetd "*":disabled
-
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e2" type="radio" name="enabled" value="no"$disabled_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Disabled")</label>
-EOF
-if [ -e "/mod/etc/default.inetd/inetd.cfg" ]; then
-cat << EOF
-<input id="e3" type="radio" name="enabled" value="inetd"$inetd_chk><label for="e3"> $(lang de:"Inetd" en:"Inetd")</label>
-EOF
-fi
-cat << EOF
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$RCAPID_ENABLED" "" "" 1
 sec_end
+
 sec_begin '$(lang de:"Remote CAPI Daemon" en:"Remote CAPI daemon")'
 
 cat << EOF
