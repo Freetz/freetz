@@ -2,7 +2,6 @@
 
 . /usr/lib/libmodcgi.sh
 
-check "$CHECKMAILD_ENABLED" yes:auto "*":man
 check "$CHECKMAILD_IMAP0" Y:imap0 "*":pop0
 check "$CHECKMAILD_IMAP1" Y:imap1 "*":pop1
 check "$CHECKMAILD_IMAP2" Y:imap2 "*":pop2
@@ -10,14 +9,7 @@ check "$CHECKMAILD_CFGNOTIFY" Y:cfgnotify_yes "*":cfgnotify_no
 check "$CHECKMAILD_RECVMSG" Y:msg_recv_yes "*":msg_recv_no
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$CHECKMAILD_ENABLED" "" "" 0
 sec_end
 
 sec_begin '$(lang de:"Konten" en:"Accounts")'

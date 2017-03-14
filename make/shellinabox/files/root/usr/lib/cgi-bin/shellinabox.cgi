@@ -13,7 +13,6 @@ fi
 . /usr/lib/libmodcgi.sh
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
-check "$SHELLINABOX_ENABLED" yes:auto "*":man
 check "$SHELLINABOX_NOSSL" true:ssldis
 if [ "$SHELLINABOX_NOSSL" = true  -o "$FREETZ_PACKAGE_SHELLINABOX_SSL" != "y" ]; then
 	displayssl="none"
@@ -28,13 +27,9 @@ if [ "$FREETZ_PACKAGE_SHELLINABOX_BOXCERT" == y ]; then
 		displayowncert="block"
 	fi
 fi
+
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$SHELLINABOX_ENABLED" "" "" 0
 sec_end
 
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
@@ -90,4 +85,3 @@ cat << EOF
 EOF
 
 sec_end
-

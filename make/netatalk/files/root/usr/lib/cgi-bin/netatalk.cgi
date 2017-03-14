@@ -3,7 +3,6 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-check "$NETATALK_ENABLED" yes:auto "*":man
 select "$NETATALK_LOG_LEVEL" \
   LOG_SEVERE:logsevere \
   LOG_ERROR:logerror \
@@ -14,15 +13,9 @@ select "$NETATALK_LOG_LEVEL" \
 	"*":lognote
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id='e1' type='radio' name='enabled' value='yes'$auto_chk><label for='e1'>$(lang de:"Automatisch" en:"Automatic")</label>
-<input id='e2' type='radio' name='enabled' value='no'$man_chk><label for='e2'>$(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$NETATALK_ENABLED" "" "" 0
 sec_end
+
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
 cat << EOF

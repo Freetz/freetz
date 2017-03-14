@@ -1,23 +1,13 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
-check "$GW6_ENABLED" yes:auto "*":man
 check "$GW6_LOGGING" yes:log
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-EOF
-cat << EOF
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$GW6_ENABLED" "" "" 0
 sec_end
+
 sec_begin '$(lang de:"gw6" en:"gw6")'
 
 cat << EOF
@@ -25,21 +15,21 @@ cat << EOF
 <tr>
 	<td>$(lang de:"Benutzername" en:"Username"):</td>
 	<td><input type="text" name="userid" size="15" maxlength="50" value="$(html "$GW6_USERID")">
-    ($(lang de:"Leer lassen f&uuml;r anonymen Login" en:"Leave this empty for anonymous login"))</td>
+	($(lang de:"Leer lassen f&uuml;r anonymen Login" en:"Leave this empty for anonymous login"))</td>
 </tr>
 <tr>
 	<td>$(lang de:"Passwort" en:"Password"):</td>
 	<td><input type="password" name="passwd" size="15" maxlength="50" value="$(html "$GW6_PASSWD")">
-    ($(lang de:"Leer lassen f&uuml;r anonymen Login" en:"Leave this empty for anonymous login"))</td>
+	($(lang de:"Leer lassen f&uuml;r anonymen Login" en:"Leave this empty for anonymous login"))</td>
 </tr>
 <tr>
 	<td>$(lang de:"Broker" en:"Broker"):</td>
 	<td><input type="text" name="broker" size="25" maxlength="99" value="$(html "$GW6_BROKER")">
-    ($(lang de:"Leer lassen f&uuml;r Vorgabe" en:"Leave this empty for default"))</td>
+	($(lang de:"Leer lassen f&uuml;r Vorgabe" en:"Leave this empty for default"))</td>
 </tr>
 <tr>
-    <td>$(lang de:"Logging" en:"Logging"):</td>
-    <td><input type="checkbox" name="logging" value="yes"$log_chk>$(lang de:"Nach /tmp/gw6c.log loggen." en:"Log to /tmp/gw6c.log.")</td>
+	<td>$(lang de:"Logging" en:"Logging"):</td>
+	<td><input type="checkbox" name="logging" value="yes"$log_chk>$(lang de:"Nach /tmp/gw6c.log loggen." en:"Log to /tmp/gw6c.log.")</td>
 </tr>
 </table>
 

@@ -1,18 +1,11 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
-check "$UMURMUR_ENABLED" yes:auto "*":man
 check "$UMURMUR_REALTIME" yes:realtime
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-cat << EOF
-<p>
-<input id="auto" type="radio" name="enabled" value="yes"$auto_chk><label for="auto"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="manual" type="radio" name="enabled" value="no"$man_chk><label for="manual"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$UMURMUR_ENABLED" "" "" 0
 sec_end
 
 sec_begin '$(lang de:"Priorit&auml;t" en:"Priority")'

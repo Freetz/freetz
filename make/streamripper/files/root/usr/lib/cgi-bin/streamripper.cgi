@@ -1,10 +1,7 @@
 #!/bin/sh
 
-
-
 . /usr/lib/libmodcgi.sh
 
-check "$STREAMRIPPER_ENABLED" "yes":auto "*":man
 check "$STREAMRIPPER_SERVER1_ENABLED" "yes":active1
 check "$STREAMRIPPER_SERVER2_ENABLED" "yes":active2
 check "$STREAMRIPPER_SERVER3_ENABLED" "yes":active3
@@ -12,13 +9,7 @@ check "$STREAMRIPPER_SERVER4_ENABLED" "yes":active4
 check "$STREAMRIPPER_SERVER5_ENABLED" "yes":active5
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$STREAMRIPPER_ENABLED" "" "" 0
 sec_end
 
 sec_begin '$(lang de:"Filteregeln um bereits gerippte Dateien erg&auml;nzen" en:"Add ripped files to filter rules")'
@@ -108,4 +99,3 @@ document.write("<div id='Acc5' style='display:none'><p><label id='acc5' for='r46
 EOF
 
 sec_end
-
