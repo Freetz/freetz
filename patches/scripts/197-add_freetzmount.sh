@@ -35,6 +35,10 @@ done
 # fix AVM typo, lsmod output is usb_storage
 modsed "s/lsmod | grep usb-storage/lsmod | grep usb_storage/g" "${STORAGE_FILE}"
 
+# fix AVM typo, remove '>' from 'mv -f $DEVMAP.$$ > $DEVMAP'
+# affected versions: Fritz!OS 6.0x for 7240/7270v2/7270v3
+modsed -r "s,^(mv -f [$]DEVMAP[.][$][$]) > ([$]DEVMAP)$,\1 \2," "${STORAGE_FILE}"
+
 # and now the new patching of /etc/hotplug/storage and /etc/hotplug/run_mount
 
 echo2 "patching run_mount script"
