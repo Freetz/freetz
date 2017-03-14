@@ -8,9 +8,15 @@ uid = ftpuser
 gid = root
 EOF
 
-if [ -n "$RSYNC_ADDRESS" ]; then
+if [ -n "$RSYNC_BINDADDRESS" ]; then
 cat << EOF
-address = $RSYNC_ADDRESS
+address = $RSYNC_BINDADDRESS
+EOF
+fi
+
+if [ -n "$RSYNC_PORT" ]; then
+cat << EOF
+port = $RSYNC_PORT
 EOF
 fi
 
