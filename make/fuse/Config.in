@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_FUSE
-	bool "FUSE (binary only)"
+	bool "FUSE 2.9.7 (binary only)"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_MODULE_fuse
 	select FREETZ_LIB_libfuse
@@ -20,17 +20,3 @@ config FREETZ_PACKAGE_FUSE
 		be exported as a file system.
 
 		In Freetz, the NTFS package depends on fuse, for example.
-
-if FREETZ_PACKAGE_FUSE || FREETZ_LIB_libfuse
-
-config FREETZ_PACKAGE_FUSE_VERSION_2_7
-	bool
-	depends on FREETZ_KERNEL_VERSION_2_6_13_MAX
-	default y
-
-config FREETZ_PACKAGE_FUSE_VERSION_2_9
-	bool
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
-	default y
-
-endif
