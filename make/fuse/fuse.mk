@@ -39,7 +39,6 @@ $(PKG)_MOD_BINARY:=$($(PKG)_DIR)/kernel/fuse.ko
 $(PKG)_MOD_TARGET_DIR:=$(KERNEL_MODULES_DIR)/fs/fuse
 $(PKG)_MOD_TARGET_BINARY:=$($(PKG)_MOD_TARGET_DIR)/fuse.ko
 $(PKG)_CONFIGURE_OPTIONS += --enable-kernel-module
-$(PKG)_CONFIGURE_OPTIONS += --disable-auto-modprobe
 else
 $(PKG)_CONFIGURE_OPTIONS += --disable-kernel-module
 endif
