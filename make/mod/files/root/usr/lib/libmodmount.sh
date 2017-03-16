@@ -45,7 +45,7 @@ find_mnt_name() {
 		mnt_name="${storage_prefix:0:30}${dev_idx}${part_idx}"
 	fi
 
-	echo $mnt_name
+	echo "$mnt_name"
 }
 
 # mount filesystem according to its type
@@ -59,7 +59,7 @@ find_mnt_name() {
 #
 mount_fs() {
 	local dev_node=$1                                                         # device node
-	local mnt_path=$2                                                         # mount path
+	local mnt_path="$2"                                                       # mount path
 	[ $# -ge 3 ] && local rw_mode=$3 || local rw_mode=rw                      # read/write mode
 	[ $# -ge 4 ] && local ftp_uid=$4 || local ftp_uid=0                       # ftp user id
 	[ $# -ge 5 ] && local ftp_gid=$5 || local ftp_gid=0                       # ftp group id
@@ -68,29 +68,29 @@ mount_fs() {
 	[ -z "$fs_type" ] && local fs_type="unknown"                              # set unknown file system type if detection failed
 	case $fs_type in
 		vfat)
-			mount -t vfat -o $rw_mode,noatime,shortname=winnt,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node $mnt_path
+			mount -t vfat -o $rw_mode,noatime,shortname=winnt,uid=$ftp_uid,gid=$ftp_gid,fmask=0000,dmask=0000 $dev_node "$mnt_path"
 			err_mo=$?
 			;;
 		ext2|ext3|ext4|reiserfs)
-			mount -t $fs_type $dev_node $mnt_path -o noatime,nodiratime,rw,async
+			mount -t $fs_type $dev_node "$mnt_path" -o noatime,nodiratime,rw,async
 			err_mo=$?
 			;;
 		hfs|hfsplus)
-			mount -t $fs_type $dev_node $mnt_path
+			mount -t $fs_type $dev_node "$mnt_path"
 			err_mo=$?
 			;;
 		crypto_LUKS)
 			err_mo=1
 			;;
 		ntfs)
-			[ -x "$(which ntfs-3g)" ] && { ntfs-3g $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
+			[ -x "$(which ntfs-3g)" ] && { ntfs-3g $dev_node "$mnt_path" -o force ; err_mo=$? ; } || err_mo=111
 			;;
 		swap)
 			/etc/init.d/rc.swap autostart $dev_node
 			err_mo=$((17+$?))
 			;;
 		*)                                                                    # fs type unknown
-			mount $dev_node $mnt_path
+			mount $dev_node "$mnt_path"
 			err_mo=$?
 			;;
 	esac
@@ -119,10 +119,10 @@ do_mount_locked() {
 	mount | grep -q "$mnt_dev on /var/media/" && return 0                      # device already mounted
 
 	mnt_name=$(find_mnt_name $mnt_main_dev $mnt_part_num)
-	mnt_path=$FTPDIR/$mnt_name
+	mnt_path="$FTPDIR/$mnt_name"
 	log_freetz notice "Mounting device $mnt_dev at $mnt_path ... "
-	if [ ! -d $mnt_path ]; then
-		mkdir -p $mnt_path
+	if [ ! -d "$mnt_path" ]; then
+		mkdir -p "$mnt_path"
 	else
 		log_freetz notice "$mnt_path already exists, after mounting $mnt_dev its contents (if any) will become invisible ... "
 	fi
@@ -131,12 +131,12 @@ do_mount_locked() {
 	local old_umask=$(umask)                                                   # store actual umask
 	umask 0
 
-	fs_type=$(mount_fs $mnt_dev $mnt_path $mnt_rw $FTPUID $FTPGID)             # FREETZ mount
+	fs_type=$(mount_fs $mnt_dev "$mnt_path" $mnt_rw $FTPUID $FTPGID)           # FREETZ mount
 	local err_fs_mount=$?
 
 	# update device map, do it before notifying other components about changes
 	# TODO: it should be enough to do it on successful mount only, i.e. if err_fs_mount==0
-	if grep -q $mnt_path /proc/mounts; then
+	if grep -q "$mnt_path" /proc/mounts; then
 		if [ -f "$1" -o -f "/proc/bus/usb/$1" -o -f "/dev/bus/usb/$1" ]; then
 			grep -v "^$1=$2:" $DEVMAP > /var/dev-$$.map
 			echo "$1=$2:$mnt_name" >> /var/dev-$$.map
@@ -162,15 +162,15 @@ do_mount_locked() {
 		fi
 
 		# freetz extras
-		/etc/init.d/rc.swap autostart $mnt_path                                                                 # swap
+		/etc/init.d/rc.swap autostart "$mnt_path"                                                               # swap
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &                                        # autorun
-		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &                               # external
+		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start "$mnt_path" &                             # external
 
-		[ -x $tr069starter ] && $tr069starter $mnt_name                                                         # tr069
+		[ -x $tr069starter ] && $tr069starter "$mnt_name"                                                       # tr069
 		[ -x $samba_control ] && $samba_control reconfig                                                        # SAMBA reconfiguration
 		[ -p $tammnt ] && echo "m$mnt_path" > $tammnt                                                           # tam
 
-		rm -f /var/media/NEW_LINK && ln -fs $mnt_path /var/media/NEW_LINK                                       # mark last mounted partition
+		rm -f /var/media/NEW_LINK && ln -fs "$mnt_path" /var/media/NEW_LINK                                     # mark last mounted partition
 
 		# notify other components that a new partition has been mounted
 		if [ $(get_avm_firmware_version) -lt 557 ]; then                                                        # existence of /sbin/upnpdevd could NOT be used as a criterion (available since 05.50)
@@ -189,7 +189,7 @@ do_mount_locked() {
 
 	# mount failed
 	local mnt_failure=0
-	rmdir $mnt_path
+	rmdir "$mnt_path"
 	case "$fs_type" in
 		"crypto_LUKS")
 				eventadd 140 "LUKS ($mnt_dev) detected/erkannt, NOT/NICHT"
@@ -252,7 +252,7 @@ do_mount_locked() {
 # $1 - full mount point path (e.g. /var/media/ftp/uStor01)
 #
 do_umount_locked() {
-	local mnt_path=$1                                                         # /var/media/ftp/uStorMN
+	local mnt_path="$1"                                                       # /var/media/ftp/uStorMN
 	local mnt_name="${mnt_path##*/}"                                          # uStorMN or LABEL
 	local mnt_dev=$(grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//')       # /dev/sdXY
 
@@ -265,8 +265,8 @@ do_umount_locked() {
 
 	# freetz extras
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
-	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
-	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
+	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop "$mnt_path"  # external
+	/etc/init.d/rc.swap autostop "$mnt_path"                                  # swap
 
 	# notify webdav & TAM unconditionally, i.e. before both "mount -o move" & the actual unmount (this is what AVM does)
 	[ -x $webdav_control ] && $webdav_control lost_partition "$mnt_path"      # webdav
@@ -274,7 +274,7 @@ do_umount_locked() {
 
 	# notify other components before the actual unmount, this is NOT exactly the same what AVM does but quite close to it
 	# AVM does it after "mount -o move" and before the actual unmount
-	[ -x $fritznasdb_control ] && $fritznasdb_control lost_partition $mnt_path                           # fritznasdb
+	[ -x $fritznasdb_control ] && $fritznasdb_control lost_partition "$mnt_path"                         # fritznasdb
 	[ -e /lib/libmediasrv.so ] && msgsend upnpd plugin notify libmediasrv.so "lost_partition:$mnt_path"  # mediasrv
 	[ -e /lib/libcloudcds.so ] && msgsend upnpd plugin notify libcloudcds.so "lost_partition:$mnt_path"  # webdav based media server
 	[ -e /lib/libgpmsrv.so   ] && msgsend upnpd plugin notify libgpmsrv.so   "lost_partition:$mnt_path"  # google play music
@@ -287,7 +287,7 @@ do_umount_locked() {
 		sleep 1
 	fi
 
-	umount $mnt_path > /dev/null 2>&1                                         # umount
+	umount "$mnt_path" > /dev/null 2>&1                                       # umount
 
 	local smbd_needs_start=0
 	if grep -q " $mnt_path " /proc/mounts; then                               # still mounted? try to stop smbd
@@ -295,7 +295,7 @@ do_umount_locked() {
 			if [ "$($rcsmbd status)" != "stopped" ]; then
 				smbd_needs_start=1
 				$rcsmbd stop
-				umount $mnt_path > /dev/null 2>&1
+				umount "$mnt_path" > /dev/null 2>&1
 			fi
 		fi
 	fi
@@ -306,7 +306,7 @@ do_umount_locked() {
 			if [ "$($rcftpd status)" != "stopped" ]; then
 				ftpd_needs_start=1
 				$rcftpd stop
-				umount $mnt_path > /dev/null 2>&1
+				umount "$mnt_path" > /dev/null 2>&1
 			fi
 		fi
 	fi
@@ -316,7 +316,7 @@ do_umount_locked() {
 		for SIGN in TERM KILL; do
 			if grep -q " $mnt_path " /proc/mounts; then                # still mounted?
 				for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do
-					umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
+					umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep "$mnt_path")"
 					if [ -n "$umount_files" ]; then
 						umount_blocker="$mnt_path ($mnt_dev) - sending SIG$SIGN to [$pid] $(realpath /proc/$pid/exe):"
 						for umount_file in $umount_files; do
@@ -326,7 +326,7 @@ do_umount_locked() {
 					fi
 				done
 				sync
-				umount $mnt_path > /dev/null 2>&1
+				umount "$mnt_path" > /dev/null 2>&1
 			fi
 		done
 	fi
@@ -334,19 +334,19 @@ do_umount_locked() {
 	if grep -v " hfsplus " /proc/mounts | grep -q " $mnt_path "; then         # mount ro
 		log_freetz notice "$mnt_path ($mnt_dev) - mounting read-only"
 		mount "$mnt_path" -o remount,ro
-		umount $mnt_path > /dev/null 2>&1
+		umount "$mnt_path" > /dev/null 2>&1
 	fi
 
 	local err_code=0
 	if grep -q " $mnt_path " /proc/mounts; then                               # still mounted? force unmount
 		log_freetz notice "$mnt_path ($mnt_dev) - forcing unmount"
-		umount -f $mnt_path
+		umount -f "$mnt_path"
 		err_code=$?
 	fi
 
 	if grep -q " $mnt_path " /proc/mounts; then                               # umount failed
 		for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do                    # log blocker
-			umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
+			umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep "$mnt_path")"
 			if [ -n "$umount_files" ]; then
 				umount_blocker="$mnt_path ($mnt_dev) - still used by $(realpath /proc/$pid/exe):"
 				for umount_file in $umount_files; do
@@ -362,7 +362,7 @@ do_umount_locked() {
 		grep -v ":$mnt_name$" $DEVMAP > /var/dev-$$.map
 		mv -f /var/dev-$$.map $DEVMAP
 
-		rmdir $mnt_path
+		rmdir "$mnt_path"
 		[ -d "$mnt_path" ] && log_freetz err "Directory $mnt_path could not be removed"
 
 		eventadd 141 "Partition $mnt_name ($mnt_dev)"
@@ -372,7 +372,7 @@ do_umount_locked() {
 	if [ $smbd_needs_start -eq 1 ]; then                                      # start smbd
 		$rcsmbd start
 	else
-		[ -x /etc/samba_control ] && /etc/samba_control reconfig $mnt_path
+		[ -x /etc/samba_control ] && /etc/samba_control reconfig "$mnt_path"
 	fi
 	[ $ftpd_needs_start -eq 1 ] && $rcftpd start                              # start ftpd
 
@@ -398,9 +398,9 @@ do_mount() {
 do_umount() {
 	if [ "${1:1:3}" == "dev" ]
 	then                                                                      # old parameter style
-		local mnt_path=$2                                                 # /var/media/ftp/uStorMN
+		local mnt_path="$2"                                               # /var/media/ftp/uStorMN
 	else                                                                      # new parameter style
-		local mnt_path=$1                                                 # /var/media/ftp/uStorMN
+		local mnt_path="$1"                                               # /var/media/ftp/uStorMN
 	fi
 	local err_code=0
 	passeeren                                                                 # semaphore on
@@ -519,7 +519,7 @@ storage_unplug() {
 	[ -z "$MOUNT" ] && return 2                                               # no mounts found
 	set $MOUNT
 	local mnt_dev=$1                                                          # /dev/sda1
-	local mnt_path=$2                                                         # /var/media/ftp/uStorXY or LABEL
+	local mnt_path="$2"                                                       # /var/media/ftp/uStorXY or LABEL
 	local mnt_main_dev=${mnt_dev:5:3}                                         # sda
 	local mserver_start="/sbin/start_mediasrv"
 	local mserver_stop="/sbin/stop_mediasrv"
