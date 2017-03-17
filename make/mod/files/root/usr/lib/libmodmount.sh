@@ -23,15 +23,16 @@ log_freetz() {
 find_mnt_name() {
 	local mnt_name=""
 
-	local storage_prefix="${MOD_STOR_PREFIX:-uStor}"
+	local storage_prefix=$(echo -n ${MOD_STOR_PREFIX})                  # trim leading, trailing, and multiple spaces in-between
+	storage_prefix=${storage_prefix:-uStor}                             # and ensure it's not empty
+
 	local dev_idx=$(echo -n ${1:2} | tr '[a-j]' '[0-9]')
-	local part_idx=$2
-	[ $part_idx -gt 9 ] && part_idx=$(echo $((part_idx-10)) | tr "0-5" "A-F") # partition index in HEX
+	local part_idx=$(printf "%X" $2)                                    # partition index in HEX
 
 	if [ "$MOD_STOR_NAMING_SCHEME" == "PARTITION_LABEL" ]; then
 		[ "$2" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$2"
 		mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
-		mnt_name=$(echo $mnt_name) # trim leading, trailing, and multiple spaces in-between
+		mnt_name=$(echo -n $mnt_name)                               # trim leading, trailing, and multiple spaces in-between
 	elif [ "$MOD_STOR_NAMING_SCHEME" == "VENDOR_PRODUCT" ]; then
 		# a slightly modified version of AVMs nicename from the 6.20 firmware series
 		local VENDOR=$(cat /sys/block/$1/device/vendor 2>/dev/null | tr -d ' ' | tr -c "\na-zA-Z0-9" '-')
@@ -45,7 +46,7 @@ find_mnt_name() {
 		mnt_name="${storage_prefix:0:30}${dev_idx}${part_idx}"
 	fi
 
-	echo $mnt_name
+	echo -n ${mnt_name// /_}                                            # replace all spaces with underscores
 }
 
 # mount filesystem according to its type
