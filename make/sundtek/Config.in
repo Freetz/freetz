@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_SUNDTEK
-	bool "Sundtek DVB driver 130210.134617"
+	bool "Sundtek DVB-C/T/T2 driver"
 	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_librt if FREETZ_TARGET_ARCH_BE
@@ -9,5 +9,22 @@ config FREETZ_PACKAGE_SUNDTEK
 		To use this driver you have to run:
 		export LD_PRELOAD=/usr/lib/libsundtekmediaclient.so
 
-comment "CAUTION: Use 'replace kernel' to avoid mem leak!"
-	depends on FREETZ_PACKAGE_SUNDTEK && FREETZ_KERNEL_VERSION_2_6_19 && !FREETZ_REPLACE_KERNEL
+choice
+	depends on FREETZ_PACKAGE_SUNDTEK
+	prompt "Version"
+	default FREETZ_PACKAGE_SUNDTEK_VERSION_2017
+
+	config FREETZ_PACKAGE_SUNDTEK_VERSION_2013
+	bool "130210.134617"
+
+	config FREETZ_PACKAGE_SUNDTEK_VERSION_2017
+	bool "170310.204343"
+endchoice
+
+if FREETZ_PACKAGE_SUNDTEK
+comment "Note: Try using older version if you experience any problems"
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && !FREETZ_PACKAGE_SUNDTEK_VERSION_2013
+
+comment "CAUTION: Use 'replace kernel' to avoid memory leaks!"
+	depends on FREETZ_KERNEL_VERSION_2_6_19 && !FREETZ_REPLACE_KERNEL
+endif
