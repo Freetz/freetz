@@ -22,6 +22,13 @@ choice
 	bool "170310.204343"
 endchoice
 
+config FREETZ_PACKAGE_SUNDTEK_ARCH
+	depends on FREETZ_PACKAGE_SUNDTEK
+	string
+	default "openwrtmipsr3"  if FREETZ_TARGET_ARCH_BE &&  FREETZ_TARGET_UCLIBC_0_9_33
+	default "openwrtmipsr2"  if FREETZ_TARGET_ARCH_BE && !FREETZ_TARGET_UCLIBC_0_9_33
+	default "mipselbcm"      if FREETZ_TARGET_ARCH_LE
+
 if FREETZ_PACKAGE_SUNDTEK
 comment "Note: Try using older version if you experience any problems"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && !FREETZ_PACKAGE_SUNDTEK_VERSION_2013
