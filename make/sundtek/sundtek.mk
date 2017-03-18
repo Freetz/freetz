@@ -5,11 +5,13 @@ $(PKG)_SITE:=http://www.sundtek.de/media
 
 $(PKG)_STARTLEVEL=90 # before rrdstats
 
-$(PKG)_BINARIES_ALL := mediasrv mediaclient libmediaclient.so
-$(PKG)_BINARIES_PATH := bin/ bin/ lib/
-$(PKG)_BINARIES := $(join $($(PKG)_BINARIES_PATH),$($(PKG)_BINARIES_ALL))
-$(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/opt/%)
-$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/%)
+$(PKG)_BINARIES            := mediasrv mediaclient
+$(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/opt/bin/%)
+$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/sundtek-%)
+
+$(PKG)_LIBS                := libmediaclient.so
+$(PKG)_LIBS_BUILD_DIR      := $($(PKG)_LIBS:%=$($(PKG)_DIR)/opt/lib/%)
+$(PKG)_LIBS_TARGET_DIR     := $($(PKG)_LIBS:lib%=$($(PKG)_DEST_DIR)/usr/lib/libsundtek%)
 
 $(PKG)_BUILD_PREREQ += dd
 
@@ -25,15 +27,18 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
-$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARIES_BUILD_DIR) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	@chmod 755 $@
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/%: $($(PKG)_DIR)/opt/%
+$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/sundtek-%: $($(PKG)_DIR)/opt/bin/%
+	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/libsundtek%: $($(PKG)_DIR)/opt/lib/lib%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR)
 
 $(pkg)-clean:
 
