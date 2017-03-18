@@ -1,0 +1,39 @@
+config EXTERNAL_FREETZ_PACKAGE_SUNDTEK
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_SUNDTEK
+	boolean "sundtek"
+	default n
+	help
+
+menu sundtek
+	depends on EXTERNAL_FREETZ_PACKAGE_SUNDTEK
+
+config EXTERNAL_FREETZ_PACKAGE_SUNDTEK_MEDIASRV
+	bool "sundtek-mediasrv"
+	default n
+	help
+		external this file:
+		 /usr/bin/sundtek-mediasrv
+
+config EXTERNAL_FREETZ_PACKAGE_SUNDTEK_MEDIACLIENT
+	bool "sundtek-mediaclient"
+	default n
+	help
+		external this file:
+		 /usr/bin/sundtek-mediaclient
+
+config EXTERNAL_FREETZ_PACKAGE_SUNDTEK_libmediaclient
+	bool "libsundtekmediaclient.so"
+	default n
+	help
+		external this file:
+		 /usr/lib/libsundtekmediaclient.so
+
+config EXTERNAL_FREETZ_PACKAGE_SUNDTEK_RTSPD
+	depends on FREETZ_PACKAGE_SUNDTEK_RTSPD
+	bool "sundtek-rtspd"
+	default n
+	help
+		external this file:
+		 /usr/bin/sundtek-rtspd
+
+endmenu
