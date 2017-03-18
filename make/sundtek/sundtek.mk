@@ -23,7 +23,7 @@ $(PKG)_BUILD_PREREQ += dd
 define $(PKG)_CUSTOM_UNPACK
 	mkdir -p $($(PKG)_DIR); \
 	payload="$$$$(cat $(1) | sed -rn 's!^_SIZE=(.*)!\1!p')"; \
-	dd if=$(1) skip=1 bs=$$$$payload | \
+	dd if=$(1) skip=1 bs=$$$$payload 2>/dev/null | \
 	$(TAR) Oxz $(if $(FREETZ_TARGET_ARCH_BE),openwrtmipsr2,mipselbcm)/installer.tar.gz | \
 	$(TAR) xz -C $($(PKG)_DIR)
 endef
