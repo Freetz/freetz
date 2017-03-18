@@ -47,17 +47,19 @@ EOF
 do_download()
 {
 	# $1 = target directory, $2 = download URL without file, $3 = (remote) file name
+	local fullURL="${2%/}/$3"
+
 	echo
 	[ "$DEBUG" == "1" ] && echo \
-	"wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P \"${1%/}/\" \"${2%/}/$3\""
-	 wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P  "${1%/}/"   "${2%/}/$3"
+	"wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P \"${1%/}/\" \"${fullURL}\""
+	 wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P  "${1%/}/"   "${fullURL}"
 	wget_result=$?
 	if [ "$wget_result" != "0" ]; then
-		echo "Download failed - \"$2\"  ->  error code $wget_result" >&2
+		echo "Download failed - \"${fullURL}\"  ->  error code $wget_result" >&2
 		rm -f $1/$3
 		return $wget_result
 	fi
-	echo "Download succeeded - \"$2\"  ->  saved to folder \"$1\""
+	echo "Download succeeded - \"${fullURL}\"  ->  saved to folder \"$1\""
 }
 
 do_check()
