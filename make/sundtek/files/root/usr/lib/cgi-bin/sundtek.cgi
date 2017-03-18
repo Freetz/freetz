@@ -17,7 +17,7 @@ if [ "$(/mod/etc/init.d/rc.sundtek status 2>/dev/null)" == "running" ]; then
 
 	echo "$(lang de:"Unterst&uuml;tzte Hardware" en:"Supported hardware"):"
 	echo -n '<pre><FONT SIZE=-1>'
-	sundtek-mediaclient  --enumdevices 2>&1 | grep -C1 'SERIAL' | html
+	sundtek-mediaclient  --enumdevices 2>&1 | grep -EA1 "^device|SERIAL" | sed '2,3d' | html
 	echo '</FONT></pre>'
 
 	echo "$(lang de:"Verbundene Clients" en:"Connected clients"):"
