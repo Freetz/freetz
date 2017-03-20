@@ -76,7 +76,9 @@ lzmaStreamOffset=$((lzmaRecordOffset + 16))
 	# padding
 	dd if=/dev/zero    bs=1                                 count=4 2>/dev/null
 	# compressed data
-	tail -c "+$((lzmaStreamOffset + 8 + 1))" "$inputFile" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null
+	#   +1 = tail expects number of bytes, whereas lzmaStreamOffset is zero-based
+	#   +8 = skip LZMA properties (1 byte) + LZMA dictionary size (4 bytes) + padding (3 bytes)
+	tail -c "+$(((lzmaStreamOffset + 1) + 8))" "$inputFile" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null
 ) | "$UNLZMA" > "$2" 2>/dev/null
 
 [ $? -ne 0 ] && { echo >&2 "ERROR: failed to unpack kernel image"; exit 1; }
