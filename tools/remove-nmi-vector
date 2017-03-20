@@ -31,8 +31,7 @@
 #  5. same as v1
 #
 
-
-SFK_TOOL="$(dirname "$0")/sfk"
+. "$(dirname $(readlink -f ${0}))/freetz_bin_functions"
 
 INPUT_FILE="$1"
 OUTPUT_FILE="$2"
@@ -54,30 +53,12 @@ declare -A nmiVectorKnownStartSequence=(
 	[v3]=409AE805409BE0043C1A8000375A0380
 )
 
-#
-# $1 - pattern type (bin, pat/text, spat/spats - see "sfk help pat" for details)
-# $2 - pattern
-#
-# returns:
-#   offsets of all pattern matches
-getHexOffsetsOfAllMatches() {
-	"$SFK_TOOL" hexfind "$INPUT_FILE" -$1 "/$2/" -quiet | sed -nr -e 's|.*hit at offset (0x[0-9A-F]+)|\1|p'
-}
-
-#
-# $1 - offset
-# $2 - length
-#
-getHexContentAtOffset() {
-	"$SFK_TOOL" hexdump -offlen "$1" "$2" -nofile -pure "$INPUT_FILE" | tr -d $'\n'
-}
-
 getInputFileSize() {
 	stat -L -c "%s" "$INPUT_FILE"
 }
 
 
-declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches bin "${NMI_BOOT_PATTERN}"))
+declare -a nmiBootOffsets=($(getHexOffsetsOfAllMatches "$INPUT_FILE" bin "${NMI_BOOT_PATTERN}"))
 
 if [ ${#nmiBootOffsets[@]} -eq 0 ]; then
 	echo "No NMI vector found" >&2
@@ -96,7 +77,7 @@ if [ "${nmiBootOffset}" != "${expectedNmiBootOffset}" ]; then
 fi
 
 # NMI vector length is encoded within the NMI block 4 bytes before 'NMI Boot'
-nmiVectorLength="0x$(getHexContentAtOffset $((${nmiBootOffset} - 4)) 4)"
+nmiVectorLength="0x$(getHexContentAtOffset "$INPUT_FILE" $((${nmiBootOffset} - 4)) 4)"
 if [ $((${nmiVectorLength})) -ne 256 -a $((${nmiVectorLength})) -ne 4096 ]; then
 	echo "[Error] Unexpected/unsupported NMI vector length: $((${nmiVectorLength}))" >&2
 	exit 2
@@ -104,7 +85,7 @@ fi
 
 # check if the image contains the TI-checksum at the end
 TI_CHECKSUM_MAGIC_BE="23DE53C4"
-if [ "$(getHexContentAtOffset $(($(getInputFileSize) - 8)) 4)" == "${TI_CHECKSUM_MAGIC_BE}" ]; then
+if [ "$(getHexContentAtOffset "$INPUT_FILE" $(($(getInputFileSize) - 8)) 4)" == "${TI_CHECKSUM_MAGIC_BE}" ]; then
 	# TI checksum found
 	imageChecksumSize=8
 else
@@ -113,7 +94,7 @@ else
 fi
 
 # real image size is encoded within the NMI block 8 bytes before 'NMI Boot'
-imageSizeWithinNMI="0x$(getHexContentAtOffset $((${nmiBootOffset} - 8)) 4)"
+imageSizeWithinNMI="0x$(getHexContentAtOffset "$INPUT_FILE" $((${nmiBootOffset} - 8)) 4)"
 imageSizeWithinNMIPadded256=$(( ${imageSizeWithinNMI} + (256 - ${imageSizeWithinNMI} % 256) % 256 ))
 imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${nmiVectorLength} - ${imageChecksumSize} )))
 if [ "$((${imageSizeWithinNMI}))" -ne "$((${imageSizeExpected}))" -a "$((${imageSizeWithinNMIPadded256}))" -ne "$((${imageSizeExpected}))" ]; then
@@ -122,7 +103,7 @@ if [ "$((${imageSizeWithinNMI}))" -ne "$((${imageSizeExpected}))" -a "$((${image
 fi
 
 # get first 32 bytes of the NMI vector
-nmiVectorStartSequence=$(getHexContentAtOffset ${nmiVectorOffset} 32)
+nmiVectorStartSequence=$(getHexContentAtOffset "$INPUT_FILE" ${nmiVectorOffset} 32)
 # and check if they contain one of the known sequences
 for v in v1 v2 v3; do
 	if [ "${nmiVectorStartSequence:0:${#nmiVectorKnownStartSequence[${v}]}}" != "${nmiVectorKnownStartSequence[${v}]}" ]; then
