@@ -1,45 +1,111 @@
 #!/bin/bash
 
-# Uncompress LZMA-packed firmware kernel. This is a functional, but
-# quick & dirty version of the Perl script by Enrik Berkhan shown and explained
-# at http://www.wehavemorefun.de/fritzbox/index.php/EVA. There is no CRC
-# calculation for the time being and also no other kind of error checking,
-# always assuming the source file is okay. The advantage of this version is
-# that we do not need Perl and especially no exotic LZMA package which is
-# unavailable as a Debian image, for example. The opposite is true for unlzma
-# which is installed on most Linux systems in general and part of busybox-tools
-# as a part of Freetz in particular.
+#
+# Uncompress LZMA-packed firmware kernel.
+#
+# Based on the format description available at http://www.wehavemorefun.de/fritzbox/LZMA-Kernel
+#
 
-case $# in
-	2)
-		;;
-	*)
-		echo "usage: $(basename "$0") <kernel_img> <uncomp_file>" >&2
-		echo "    kernel_img  - file starting with compressed kernel image," >&2
-		echo "                  e.g. kernel.image or kernel.raw" >&2
-		echo "    uncomp_file - uncompressed kernel output file name" >&2
-		echo >&2
-		echo "This tool also prints the kernel's load and entry addresses in a format which" >&2
-		echo "can be parsed and re-used as parameters for tools/lzma2eva:" >&2
-		echo "    load=0x94100000 entry=0x94411F50" >&2
-		exit 1
-esac
+if [ $# -ne 2 ]; then
+	{
+		echo "usage: $(basename "$0") <kernel_img> <uncomp_file>"
+		echo "    kernel_img  - file starting with compressed kernel image,"
+		echo "                  e.g. kernel.image or kernel.raw"
+		echo "    uncomp_file - uncompressed kernel output file name"
+		echo
+		echo "This tool also prints the kernel's load and entry addresses in a format which"
+		echo "can be parsed and re-used as parameters for tools/lzma2eva:"
+		echo "    load=0x94100000 entry=0x94411F50"
+	} >&2
+	exit 1
+fi
+
+SELF=$(readlink -f ${0})
+
+. "$(dirname $SELF)/freetz_bin_functions"
+
+declare -x UNLZMA
+UNLZMA="${UNLZMA:-$(dirname $SELF)/unlzma}"
+[ -x "$UNLZMA" ] || { echo >&2 "ERROR: this script requires unlzma tool which is not found on your system, expected location of the tool is \"$UNLZMA\""; exit 1; }
+
+###
+
+inputFile="$1"
+outputFile="$2"
+
+#
+# $1 - magic sequence (in little-endian notation)
+# $2 - magic sequence name (used in error messages)
+# $3 - max expected number of matches (unlimited if omitted)
+#
+getDecOffsetOf1stMagicSequenceMatch() {
+	declare -a offsetCandidates=($(getDecOffsetsOfAllMatches "$inputFile" bin $(echo -n $1 | invertEndianness)))
+	if [ ${#offsetCandidates[@]} -eq 0 ]; then
+		echo >&2 "ERROR: ${2}${2:+ }magic sequence \"0x$1\" not found"
+		return 1
+	elif [ -n "$3" ] && [ ! ${#offsetCandidates[@]} -le "$3" ]; then
+		echo >&2 "ERROR: more ${2}${2:+ }magic sequence \"0x$1\" matches found (${#offsetCandidates[@]}) than expected ($3)"
+		return 2
+	fi
+	echo -n ${offsetCandidates[0]}
+}
+
+{ feed1281_Offset=$(getDecOffsetOf1stMagicSequenceMatch FEED1281 "TI-AR7 kernel" 1); } || exit 1
+
+if [ $feed1281_Offset -ne 0 ]; then
+	{ feed9112_Offset=$(getDecOffsetOf1stMagicSequenceMatch FEED9112 "GRX5 kernel" 1); } || exit 1
+	if [ $feed9112_Offset -ne 0 ]; then
+		echo >&2 "ERROR: GRX5 kernel magic sequence \"0xFEED9112\" found at unexpected offset"; exit 1
+	fi
+fi
+
+{ lzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch 075A0201 "EVA-LZMA-record"); } || exit 1
+lzmaCompressedLenOffset=$((lzmaRecordOffset + 4))
+lzmaCompressedLen=$(getLEu32AtOffset "$inputFile" $lzmaCompressedLenOffset)
+lzmaUncompressedLenOffset=$((lzmaRecordOffset + 8))
+lzmaUncompressedLen=$(getLEu32AtOffset "$inputFile" $lzmaUncompressedLenOffset)
+lzmaCompressedChecksumOffset=$((lzmaRecordOffset + 12))
+lzmaCompressedChecksum=$(getLEu32AtOffset "$inputFile" $lzmaCompressedChecksumOffset)
+lzmaStreamOffset=$((lzmaRecordOffset + 16))
 
 (
-	# Get LZMA properties + dictionary size
-	dd if="$1" bs=1 count=5 skip=28 2>/dev/null
-	# Get uncompressed length (32-bit little-endian), pad to 64-bit
-	dd if="$1" bs=1 count=4 skip=20 2>/dev/null
-	dd if=/dev/zero bs=1 count=4 2>/dev/null
-	# Jump to compressed data, pipe into output stream
-	dd if="$1" bs=36 skip=1 2>/dev/null
-) | $(dirname "$0")/unlzma > "$2" 2>/dev/null
+	# LZMA properties (1 byte) + LZMA dictionary size (4 bytes)
+	dd if="$inputFile" bs=1 skip=$lzmaStreamOffset          count=5 2>/dev/null
+	# uncompressed length
+	dd if="$inputFile" bs=1 skip=$lzmaUncompressedLenOffset count=4 2>/dev/null
+	# padding
+	dd if=/dev/zero    bs=1                                 count=4 2>/dev/null
+	# compressed data
+	tail -c "+$((lzmaStreamOffset + 8 + 1))" "$inputFile" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null
+) | "$UNLZMA" > "$2" 2>/dev/null
 
-[ $? -ne 0 ] && echo "$(basename "$0") ERROR: could not unpack kernel image" >&2 && exit 1
+[ $? -ne 0 ] && { echo >&2 "ERROR: failed to unpack kernel image"; exit 1; }
 
-tmp=$(dd if="$1" bs=4 count=2 skip=1 2>/dev/null | hexdump -C | head -n 1)
-length=$(printf "%d" "0x${tmp:19:2}${tmp:16:2}${tmp:13:2}${tmp:10:2}")
-load_addr=$(printf "0x%X" "0x${tmp:31:2}${tmp:28:2}${tmp:25:2}${tmp:22:2}")
-tmp=$(dd if="$1" bs=1 count=4 skip=$((20+length)) 2>/dev/null | hexdump -C | head -n 1)
-entry_addr=$(printf "0x%X" "0x${tmp:19:2}${tmp:16:2}${tmp:13:2}${tmp:10:2}")
-echo "load=$load_addr entry=$entry_addr"
+getLoadAddr() {
+	local feedxxxxOfset=$1
+	echo -n 0x$(getHexContentAtOffset "$inputFile" $((feedxxxxOfset + 8)) 4 | invertEndianness)
+}
+
+getEntryAddr() {
+	local feedxxxxOfset=$1
+	local tiRecordLen=$(getLEu32AtOffset "$inputFile" $((feedxxxxOfset + 4)))
+	echo -n 0x$(getHexContentAtOffset "$inputFile" $((feedxxxxOfset + tiRecordLen + 20)) 4 | invertEndianness)
+}
+
+feed1281_LoadAddr=$(getLoadAddr $feed1281_Offset)
+feed1281_EntryAddr=$(getEntryAddr $feed1281_Offset)
+
+if [ -n "$feed9112_Offset" ]; then
+	feed9112_LoadAddr=$(getLoadAddr $feed9112_Offset)
+	feed9112_EntryAddr=$(getEntryAddr $feed9112_Offset)
+
+	if [ "$feed1281_LoadAddr" != "$feed9112_LoadAddr" ]; then
+		echo >&2 "WARNING: load addresses stored in TI-AR7 record ($feed1281_LoadAddr) and GRX5 record ($feed9112_LoadAddr) do not match"
+	fi
+
+	if [ "$feed1281_EntryAddr" != "$feed9112_EntryAddr" ]; then
+		echo >&2 "WARNING: entry addresses stored in TI-AR7 record ($feed1281_EntryAddr) and GRX5 record ($feed9112_EntryAddr) do not match"
+	fi
+fi
+
+echo "load=$feed1281_LoadAddr entry=$feed1281_EntryAddr"
