@@ -6,32 +6,90 @@
 # Based on the format description available at http://www.wehavemorefun.de/fritzbox/LZMA-Kernel
 #
 
-if [ $# -ne 2 ]; then
-	{
-		echo "usage: $(basename "$0") <kernel_img> <uncomp_file>"
-		echo "    kernel_img  - file starting with compressed kernel image,"
-		echo "                  e.g. kernel.image or kernel.raw"
-		echo "    uncomp_file - uncompressed kernel output file name"
-		echo
-		echo "This tool also prints the kernel's load and entry addresses in a format which"
-		echo "can be parsed and re-used as parameters for tools/lzma2eva:"
-		echo "    load=0x94100000 entry=0x94411F50"
-	} >&2
-	exit 1
+SELF=$(readlink -f ${0})
+
+usage() {
+cat << EOF
+Usage: $(basename $SELF) [-h|--help] [-u|--unpack] [-d|--dump] [-i|--info] <input-file> [output-file]
+
+    -h|--help        print this help and exit
+
+    -u|--unpack      unpack contained LZMA-record(s), default
+    -d|--dump        dump contained LZMA-record(s) without unpacking
+    -i|--info        print meta information without writing any file
+
+    input-file       file in EVA-kernel-format, i.e. kernel.image or kernel.raw
+    output-file      name of the file output to be written to, optional
+                     if omitted automatically derived from the name of the input-file
+EOF
+}
+
+# process command line parameters
+ARGS=$(getopt -o hudi --long help,unpack,dump,info -n "${SELF}" -- "$@")
+[ $? -eq 0 ] || { usage >&2; exit 1; }
+eval set -- "${ARGS}"
+
+while true; do
+	case "$1" in
+		-h|--help)
+			usage
+			exit 0
+			;;
+		-u|--unpack)
+			METHOD=unpack
+			shift
+			;;
+		-d|--dump)
+			METHOD=dump
+			shift
+			;;
+		-i|--info)
+			METHOD=info
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+		*)
+			echo >&2 "ERROR: internal error!"
+			exit 1
+			;;
+	esac
+done
+METHOD=${METHOD:-unpack} # default to unpack if unset
+
+if [ $# -eq 1 ] || [ "$METHOD" != "info" -a $# -eq 2 ]; then
+	INPUT_FILE="$1"
+	[ -e "$INPUT_FILE" ] || { echo >&2 "ERROR: \"$INPUT_FILE\" could not be read"; exit 1; }
+
+	OUTPUT_FILE="$2"
+	if [ -z "$OUTPUT_FILE" ]; then
+		# no OUTPUT_FILE provided => derive OUTPUT_FILE from INPUT_FILE
+		if [ "$METHOD" == "unpack" ]; then
+			OUTPUT_FILE="${INPUT_FILE}.unpacked"
+		elif [ "$METHOD" == "dump" ]; then
+			OUTPUT_FILE="${INPUT_FILE}.lzma-compressed-dump"
+		fi
+	fi
+else
+	usage >&2; exit 1;
 fi
 
-SELF=$(readlink -f ${0})
+if [ "$METHOD" == "unpack" ]; then
+	declare -x UNLZMA
+	UNLZMA="${UNLZMA:-$(dirname $SELF)/unlzma}"
+	[ -x "$UNLZMA" ] || { echo >&2 "ERROR: this script requires unlzma tool which is not found on your system, expected location of the tool is \"$UNLZMA\""; exit 1; }
+fi
 
 . "$(dirname $SELF)/freetz_bin_functions"
 
-declare -x UNLZMA
-UNLZMA="${UNLZMA:-$(dirname $SELF)/unlzma}"
-[ -x "$UNLZMA" ] || { echo >&2 "ERROR: this script requires unlzma tool which is not found on your system, expected location of the tool is \"$UNLZMA\""; exit 1; }
-
 ###
 
-inputFile="$1"
-outputFile="$2"
+print08X() {
+	printf '0x%08X\n' "$@"
+}
+
 
 #
 # $1 - magic sequence (in little-endian notation)
@@ -46,7 +104,7 @@ getDecOffsetOf1stMagicSequenceMatch() {
 	local maxNumberOfMatches=$3          # unlimited if omitted
 	local lowerBound=${4:--1}            # -1        if omitted
 
-	declare -a offsetCandidates=($(getDecOffsetsOfAllMatches "$inputFile" bin $(echo -n $1 | invertEndianness)))
+	declare -a offsetCandidates=($(getDecOffsetsOfAllMatches "$INPUT_FILE" bin $(echo -n $1 | invertEndianness)))
 
 	for ((i=0; i<${#offsetCandidates[@]}; i++)); do
 		if [ $((lowerBound)) -lt ${offsetCandidates[i]} ]; then
@@ -62,102 +120,146 @@ getDecOffsetOf1stMagicSequenceMatch() {
 		fi
 	done
 
-	local fullfiling=${4:+(fulfilling the restriction $(printf '0x%08X' $lowerBound) < offset) }
+	local fullfiling=${4:+(fulfilling the restriction $(print08X $lowerBound) < offset) }
 	echo >&2 "ERROR: no ${sequenceNamePrefix}magic sequence (0x$1) ${fullfiling}found"
 	return 1
 }
 
+
 #
 # $1 - LZMA-record offset
-# $2 - name of the file decompressed stream to be written to
+# $2 - TI-record name
+# $3 - name of the file output to be written to
 #
-# returns the error code of unlzma
+# returns the error code of unlzma or output redirection (depending on the $METHOD)
 #
-decompressLzmaStream() {
+processLzmaRecord() {
 	local lzmaRecordOffset=$1
-	local outputFile="$2"
+	local tiRecordPrefix=$(echo -n $2 | tr -c '_a-zA-Z0-9' '_')
+	tiRecordPrefix=${tiRecordPrefix}${tiRecordPrefix:+.}
+	local outputFile="$3"
 
-	# unused
-	local lzmaCompressedLen=$(getLEu32AtOffset      "$inputFile" $((lzmaRecordOffset +  4)))
-	local lzmaUncompressedLen=$(getLEu32AtOffset    "$inputFile" $((lzmaRecordOffset +  8)))
-	local lzmaCompressedChecksum=$(getLEu32AtOffset "$inputFile" $((lzmaRecordOffset + 12)))
+	local lzmaCompressedLen=$(getLEu32AtOffset      "$INPUT_FILE" $((lzmaRecordOffset +  4)))
+	local lzmaUncompressedLen=$(getLEu32AtOffset    "$INPUT_FILE" $((lzmaRecordOffset +  8)))
+	local lzmaCompressedChecksum=$(getLEu32AtOffset "$INPUT_FILE" $((lzmaRecordOffset + 12)))
+
+	echo "${tiRecordPrefix}LzmaCompressedStreamLength=$(print08X $lzmaCompressedLen)"
+	echo "${tiRecordPrefix}LzmaUncompressedStreamLength=$(print08X $lzmaUncompressedLen)"
+	echo "${tiRecordPrefix}LzmaCompressedStreamChecksum=$(print08X $lzmaCompressedChecksum)"
+
+	# TODO: verify checksum
+
+	if [ "$METHOD" == "info" ]; then
+		return 0
+	fi
 
 	local lzmaUncompressedLenOffset=$((lzmaRecordOffset + 8))
 	local lzmaStreamOffset=$((lzmaRecordOffset + 16))
-	(
+	{
 		# LZMA properties (1 byte) + LZMA dictionary size (4 bytes)
-		dd if="$inputFile" bs=1 skip=$lzmaStreamOffset          count=5 2>/dev/null
+		dd if="$INPUT_FILE" bs=1 skip=$lzmaStreamOffset          count=5 2>/dev/null
 		# uncompressed length
-		dd if="$inputFile" bs=1 skip=$lzmaUncompressedLenOffset count=4 2>/dev/null
+		dd if="$INPUT_FILE" bs=1 skip=$lzmaUncompressedLenOffset count=4 2>/dev/null
 		# padding
-		dd if=/dev/zero    bs=1                                 count=4 2>/dev/null
+		dd if=/dev/zero    bs=1                                  count=4 2>/dev/null
 		# compressed data
 		#   +1 = tail expects number of bytes, whereas lzmaStreamOffset is zero-based
 		#   +8 = skip LZMA properties (1 byte) + LZMA dictionary size (4 bytes) + padding (3 bytes)
-		tail -c "+$(((lzmaStreamOffset + 1) + 8))" "$inputFile" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null
-	) | "$UNLZMA" > "$outputFile" 2>/dev/null
+		tail -c "+$(((lzmaStreamOffset + 1) + 8))" "$INPUT_FILE" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null
+	} | {
+		if [ "$METHOD" == "unpack" ]; then
+			"$UNLZMA" > "$outputFile" 2>/dev/null
+		elif [ "$METHOD" == "dump" ]; then
+			cat -     > "$outputFile" 2>/dev/null
+		fi
+	}
 }
 
+
 getLoadAddr() {
-	local feedxxxxOfset=$1
-	echo -n 0x$(getHexContentAtOffset "$inputFile" $((feedxxxxOfset + 8)) 4 | invertEndianness)
+	local tiRecordOfset=$1
+	echo -n 0x$(getHexContentAtOffset "$INPUT_FILE" $((tiRecordOfset + 8)) 4 | invertEndianness)
 }
 
 getEntryAddr() {
-	local feedxxxxOfset=$1
-	local tiRecordLen=$(getLEu32AtOffset "$inputFile" $((feedxxxxOfset + 4)))
-	echo -n 0x$(getHexContentAtOffset "$inputFile" $((feedxxxxOfset + tiRecordLen + 20)) 4 | invertEndianness)
+	local tiRecordOfset=$1
+	local tiRecordLen=$(getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 4)))
+	echo -n 0x$(getHexContentAtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen + 20)) 4 | invertEndianness)
 }
+
+getTiRecordChecksum() {
+	local tiRecordOfset=$1
+	local tiRecordLen=$(getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 4)))
+	echo -n 0x$(getHexContentAtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen + 12)) 4 | invertEndianness)
+}
+
+
+#
+# $1 - magic sequence (in little-endian notation)
+# $2 - TI-record name
+# $3 - name of the file output to be written to
+#
+# returns offset of the magic sequence by setting the global variable TI_RECORD_OFFSET
+#
+findAndProcessTiRecord() {
+	local magic="$1"
+	local tiRecordName="$2"
+	local tiRecordPrefix=$(echo -n "$tiRecordName" | tr -c '_a-zA-Z0-9' '_')
+	tiRecordPrefix=${tiRecordPrefix}${tiRecordPrefix:+.}
+	local outputFile="$3"
+
+	# unset return value
+	TI_RECORD_OFFSET=""
+
+	{ local tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1); } || return 1
+	{ local tiRecordLzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $EVA_LZMA_RECORD_MAGIC "${tiRecordName}-LZMA-record" "" $tiRecordOffset); } || return 1
+	[ $((tiRecordLzmaRecordOffset - tiRecordOffset)) -eq 12 ] || { echo >&2 "ERROR: ${tiRecordName}-LZMA-record is expected to be located exactly 12 bytes after ${tiRecordName} magic"; return 1; };
+
+	local tiRecordLoadAddr=$(getLoadAddr $tiRecordOffset)
+	echo "${tiRecordPrefix}LoadAddress=$(print08X $tiRecordLoadAddr)"
+	local tiRecordEntryAddr=$(getEntryAddr $tiRecordOffset)
+	echo "${tiRecordPrefix}EntryAddress=$(print08X $tiRecordEntryAddr)"
+	local tiRecordChecksum=$(getTiRecordChecksum $tiRecordOffset)
+	echo "${tiRecordPrefix}RecordChecksum=$(print08X $tiRecordChecksum)"
+
+	processLzmaRecord $tiRecordLzmaRecordOffset "$tiRecordName" "$outputFile"
+	[ $? -ne 0 ] && { echo >&2 "ERROR: failed to ${METHOD} kernel"; return 1; }
+
+	# set return value
+	TI_RECORD_OFFSET=$tiRecordOffset
+}
+
+##
 
 TI_AR7_MAGIC=FEED1281
 DUAL_KERNEL_MAGIC=FEED9112
-SECOND_KERNEL_MAGIC=FEEDB007
+TI_AR7_2ND_MAGIC=FEEDB007
 EVA_LZMA_RECORD_MAGIC=075A0201
 
 # 1st kernel (all boxes)
-{ feed1281_Offset=$(getDecOffsetOf1stMagicSequenceMatch $TI_AR7_MAGIC "TI-AR7" 1); } || exit 1
-{ feed1281_lzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $EVA_LZMA_RECORD_MAGIC "TI-AR7-LZMA-record" "" $feed1281_Offset); } || exit 1
-[ $((feed1281_lzmaRecordOffset - feed1281_Offset)) -eq 12 ] || { echo >&2 "ERROR: TI-AR7-LZMA-record is expected to be located exactly 12 bytes after TI-AR7 magic"; exit 1; };
-decompressLzmaStream $feed1281_lzmaRecordOffset "$outputFile"
-[ $? -ne 0 ] && { echo >&2 "ERROR: failed to unpack kernel"; exit 1; }
+findAndProcessTiRecord $TI_AR7_MAGIC "TI-AR7" "$OUTPUT_FILE" || exit 1
+feed1281_Offset=$TI_RECORD_OFFSET
 
 # 2nd kernel (GRX5 boxes only)
-if [ $feed1281_Offset -ne 0 ]; then
-	{ feed9112_Offset=$(getDecOffsetOf1stMagicSequenceMatch $DUAL_KERNEL_MAGIC "DUAL-kernel" 1); } || exit 1
-	if [ $feed9112_Offset -ne 0 ]; then
-		echo >&2 "ERROR: DUAL-kernel magic sequence (0x$DUAL_KERNEL_MAGIC) found at unexpected offset ($(printf '0x%08X' $feed9112_Offset))"; exit 1
+feed9112_Offset=$(getDecOffsetOf1stMagicSequenceMatch $DUAL_KERNEL_MAGIC "DUAL-kernel" 1 2>/dev/null)
+if [ -n "$feed9112_Offset" ]; then
+	if [ $((feed1281_Offset - feed9112_Offset)) -ne 12 ]; then
+		echo >&2 "ERROR: DUAL-kernel magic sequence (0x$DUAL_KERNEL_MAGIC) is expected to be found exactly 12 bytes before TI-AR7 record"; exit 1
 	fi
 
-	# Note: feedb007_Offset could probably also be located as (getEntryAddrOffset(feed1281_Offset) + 4) padded to a 4-byte boundary (TODO: 4-byte to be verified)
-	{ feedb007_Offset=$(getDecOffsetOf1stMagicSequenceMatch $SECOND_KERNEL_MAGIC "2nd kernel" 1); } || exit 1
-	{ feedb007_lzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $EVA_LZMA_RECORD_MAGIC "2nd-kernel-LZMA-record" "" $feedb007_Offset); } || exit 1
-	[ $((feedb007_lzmaRecordOffset - feedb007_Offset)) -eq 12 ] || { echo >&2 "ERROR: 2nd-kernel-LZMA-record is expected to be located exactly 12 bytes after 2nd-kernel magic"; exit 1; };
-	decompressLzmaStream $feedb007_lzmaRecordOffset "${outputFile}.FEEDB007"
-	[ $? -ne 0 ] && { echo >&2 "ERROR: failed to unpack 2nd-kernel"; exit 1; }
-fi
-
-###
-
-feed1281_LoadAddr=$(getLoadAddr $feed1281_Offset)
-feed1281_EntryAddr=$(getEntryAddr $feed1281_Offset)
-
-if [ -n "$feed9112_Offset" ]; then
+	feed1281_LoadAddr=$(getLoadAddr $feed1281_Offset)
 	feed9112_LoadAddr=$(getLoadAddr $feed9112_Offset)
-	feed9112_EntryAddr=$(getEntryAddr $feed9112_Offset)
-
 	if [ "$feed1281_LoadAddr" != "$feed9112_LoadAddr" ]; then
 		echo >&2 "WARNING: load addresses stored in TI-AR7 record ($feed1281_LoadAddr) and DUAL-kernel record ($feed9112_LoadAddr) do not match"
 	fi
 
+	feed1281_EntryAddr=$(getEntryAddr $feed1281_Offset)
+	feed9112_EntryAddr=$(getEntryAddr $feed9112_Offset)
 	if [ "$feed1281_EntryAddr" != "$feed9112_EntryAddr" ]; then
 		echo >&2 "WARNING: entry addresses stored in TI-AR7 record ($feed1281_EntryAddr) and DUAL-kernel record ($feed9112_EntryAddr) do not match"
 	fi
-fi
 
-echo "load=$feed1281_LoadAddr entry=$feed1281_EntryAddr"
-
-if [ -n "$feedb007_Offset" ]; then
-	feedb007_LoadAddr=$(getLoadAddr $feedb007_Offset)
-	feedb007_EntryAddr=$(getEntryAddr $feedb007_Offset)
-	echo "load2ndKernel=$feedb007_LoadAddr entry2ndKernel=$feedb007_EntryAddr"
+	# Note: feedb007_Offset could probably also be located as (getEntryAddrOffset(feed1281_Offset) + 4) padded to a 4-byte boundary (TODO: 4-byte to be verified)
+	findAndProcessTiRecord $TI_AR7_2ND_MAGIC "TI-AR7-2ND" "${OUTPUT_FILE}.2ND" || exit 1
+	feedb007_Offset=$TI_RECORD_OFFSET
 fi
