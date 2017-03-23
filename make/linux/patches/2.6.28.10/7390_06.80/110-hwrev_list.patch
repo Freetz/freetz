@@ -1,0 +1,11 @@
+--- linux-2.6.28/drivers/net/avm_cpmac/Makefile
++++ linux-2.6.28/drivers/net/avm_cpmac/Makefile
+@@ -12,7 +12,7 @@
+ #EXTRA_CFLAGS += -Wpadded
+ #EXTRA_CFLAGS += -Wunreachable-code
+ EXTRA_CFLAGS += -Wall -Wextra -Werror
+-avm_version := $(shell svn info $(src) | grep -e ^URL | sed -e "s/^.*\/\([0-9.]\+\)-[^\/]*/\1/g")  -  Revision $(shell svnversion -cn $(src))  -  $(shell date +'%a  %e.%m.%Y  %H:%M:%S')
++avm_version := 1.108.1.135 - Revision 811:3451 - Do 19.01.2017 19:49:42
+ EXTRA_CFLAGS += -DAVM_CPMAC_VERSION='"$(avm_version)"'
+ 
+ # declare multi-module main driver.
