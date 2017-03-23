@@ -221,8 +221,9 @@ findAndProcessTiRecord() {
 	# unset return value
 	TI_RECORD_OFFSET=""
 
-	{ local tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1); } || return 1
-	{ local tiRecordLzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $EVA_LZMA_RECORD_MAGIC "${tiRecordName}-LZMA-record" "" $tiRecordOffset); } || return 1
+	local tiRecordOffset="", tiRecordLzmaRecordOffset=""
+	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1); } || return 1
+	{ tiRecordLzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $EVA_LZMA_RECORD_MAGIC "${tiRecordName}-LZMA-record" "" $tiRecordOffset); } || return 1
 	[ $((tiRecordLzmaRecordOffset - tiRecordOffset)) -eq 12 ] || { echo >&2 "ERROR: ${tiRecordName}-LZMA-record is expected to be located exactly 12 bytes after ${tiRecordName} magic"; return 1; };
 
 	local tiRecordLoadAddr=$(getLoadAddr $tiRecordOffset)
