@@ -175,22 +175,26 @@ processLzmaRecord() {
 	}
 }
 
+getTiRecordLen() {
+	local tiRecordOfset=$1
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 4))
+}
 
 getLoadAddr() {
 	local tiRecordOfset=$1
-	echo -n 0x$(getHexContentAtOffset "$INPUT_FILE" $((tiRecordOfset + 8)) 4 | invertEndianness)
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 8))
 }
 
 getEntryAddr() {
 	local tiRecordOfset=$1
-	local tiRecordLen=$(getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 4)))
-	echo -n 0x$(getHexContentAtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen + 20)) 4 | invertEndianness)
+	local tiRecordLen=$(getTiRecordLen $tiRecordOfset)
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen  + 20))
 }
 
 getTiRecordChecksum() {
 	local tiRecordOfset=$1
-	local tiRecordLen=$(getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 4)))
-	echo -n 0x$(getHexContentAtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen + 12)) 4 | invertEndianness)
+	local tiRecordLen=$(getTiRecordLen $tiRecordOfset)
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen  + 12))
 }
 
 
@@ -219,6 +223,8 @@ findAndProcessTiRecord() {
 	echo "${tiRecordPrefix}LoadAddress=$(print08X $tiRecordLoadAddr)"
 	local tiRecordEntryAddr=$(getEntryAddr $tiRecordOffset)
 	echo "${tiRecordPrefix}EntryAddress=$(print08X $tiRecordEntryAddr)"
+	local tiRecordLen=$(getTiRecordLen $tiRecordOffset)
+	echo "${tiRecordPrefix}RecordLength=$(print08X $tiRecordLen)"
 	local tiRecordChecksum=$(getTiRecordChecksum $tiRecordOffset)
 	echo "${tiRecordPrefix}RecordChecksum=$(print08X $tiRecordChecksum)"
 
@@ -250,13 +256,13 @@ if [ -n "$feed9112_Offset" ]; then
 	feed1281_LoadAddr=$(getLoadAddr $feed1281_Offset)
 	feed9112_LoadAddr=$(getLoadAddr $feed9112_Offset)
 	if [ "$feed1281_LoadAddr" != "$feed9112_LoadAddr" ]; then
-		echo >&2 "WARNING: load addresses stored in TI-AR7 record ($feed1281_LoadAddr) and DUAL-kernel record ($feed9112_LoadAddr) do not match"
+		echo >&2 "WARNING: load addresses stored in TI-AR7 record ($(print08X $feed1281_LoadAddr)) and DUAL-kernel record ($(print08X $feed9112_LoadAddr)) do not match"
 	fi
 
 	feed1281_EntryAddr=$(getEntryAddr $feed1281_Offset)
 	feed9112_EntryAddr=$(getEntryAddr $feed9112_Offset)
 	if [ "$feed1281_EntryAddr" != "$feed9112_EntryAddr" ]; then
-		echo >&2 "WARNING: entry addresses stored in TI-AR7 record ($feed1281_EntryAddr) and DUAL-kernel record ($feed9112_EntryAddr) do not match"
+		echo >&2 "WARNING: entry addresses stored in TI-AR7 record ($(print08X $feed1281_EntryAddr)) and DUAL-kernel record ($(print08X $feed9112_EntryAddr)) do not match"
 	fi
 
 	# Note: feedb007_Offset could probably also be located as (getEntryAddrOffset(feed1281_Offset) + 4) padded to a 4-byte boundary (TODO: 4-byte to be verified)
