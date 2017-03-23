@@ -82,6 +82,9 @@ if [ "$METHOD" == "unpack" ]; then
 	[ -x "$UNLZMA" ] || { echo >&2 "ERROR: this script requires unlzma tool which is not found on your system, expected location of the tool is \"$UNLZMA\""; exit 1; }
 fi
 
+declare -x CKSUM
+CKSUM="${CKSUM:-$(dirname $SELF)/cksum}"
+
 . "$(dirname $SELF)/freetz_bin_functions"
 
 ###
@@ -147,14 +150,19 @@ processLzmaRecord() {
 	echo "${tiRecordPrefix}LzmaUncompressedStreamLength=$(print08X $lzmaUncompressedLen)"
 	echo "${tiRecordPrefix}LzmaCompressedStreamChecksum=$(print08X $lzmaCompressedChecksum)"
 
-	# TODO: verify checksum
+	local lzmaStreamOffset=$((lzmaRecordOffset + 16))
+
+	# verify checksum
+	local lzmaCompressedChecksumComputed=$(tail -c "+$(((lzmaStreamOffset + 1) + 8))" "$INPUT_FILE" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null | $CKSUM -lp 2>/dev/null | cut -d ' ' -f 1)
+	if [ $((lzmaCompressedChecksumComputed)) -ne $((lzmaCompressedChecksum)) ]; then
+		echo >&2 "WARNING: calculated LZMA-stream checksum ($(print08X $lzmaCompressedChecksumComputed)) does not match the saved one ($(print08X $lzmaCompressedChecksum))"
+	fi
 
 	if [ "$METHOD" == "info" ]; then
 		return 0
 	fi
 
 	local lzmaUncompressedLenOffset=$((lzmaRecordOffset + 8))
-	local lzmaStreamOffset=$((lzmaRecordOffset + 16))
 	{
 		# LZMA properties (1 byte) + LZMA dictionary size (4 bytes)
 		dd if="$INPUT_FILE" bs=1 skip=$lzmaStreamOffset          count=5 2>/dev/null
