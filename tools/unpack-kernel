@@ -188,6 +188,12 @@ getLoadAddr() {
 getEntryAddr() {
 	local tiRecordOfset=$1
 	local tiRecordLen=$(getTiRecordLen $tiRecordOfset)
+
+	local tiRecordEntryZero=$(getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen  + 16)))
+	if [ "$tiRecordEntryZero" -ne 0 ]; then
+		echo >&2 "WARNING: entry address is expected to be prefixed with one 32-bit zero word"
+	fi
+
 	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen  + 20))
 }
 
