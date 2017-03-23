@@ -208,6 +208,7 @@ getTiRecordChecksum() {
 # $1 - magic sequence (in little-endian notation)
 # $2 - TI-record name
 # $3 - name of the file output to be written to
+# $4 - tight lower bound of the magic sequence match, optional
 #
 # returns offset of the magic sequence by setting the global variable TI_RECORD_OFFSET
 #
@@ -217,12 +218,13 @@ findAndProcessTiRecord() {
 	local tiRecordPrefix=$(echo -n "$tiRecordName" | tr -c '_a-zA-Z0-9' '_')
 	tiRecordPrefix=${tiRecordPrefix}${tiRecordPrefix:+.}
 	local outputFile="$3"
+	local lowerBound="$4"
 
 	# unset return value
 	TI_RECORD_OFFSET=""
 
 	local tiRecordOffset="", tiRecordLzmaRecordOffset=""
-	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1); } || return 1
+	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1 $lowerBound); } || return 1
 	{ tiRecordLzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $EVA_LZMA_RECORD_MAGIC "${tiRecordName}-LZMA-record" "" $tiRecordOffset); } || return 1
 	[ $((tiRecordLzmaRecordOffset - tiRecordOffset)) -eq 12 ] || { echo >&2 "ERROR: ${tiRecordName}-LZMA-record is expected to be located exactly 12 bytes after ${tiRecordName} magic"; return 1; };
 
@@ -272,7 +274,9 @@ if [ -n "$feed9112_Offset" ]; then
 		echo >&2 "WARNING: entry addresses stored in TI-AR7 record ($(print08X $feed1281_EntryAddr)) and DUAL-kernel record ($(print08X $feed9112_EntryAddr)) do not match"
 	fi
 
-	# Note: feedb007_Offset could probably also be located as (getEntryAddrOffset(feed1281_Offset) + 4) padded to a 4-byte boundary (TODO: 4-byte to be verified)
-	findAndProcessTiRecord $TI_AR7_2ND_MAGIC "TI-AR7-2ND" "${OUTPUT_FILE}.2ND" || exit 1
+	feedb007_LowerBound=$((feed1281_Offset + $(getTiRecordLen $feed1281_Offset)  + 24))
+	feedb007_LowerBound=$((feedb007_LowerBound + (4 - feedb007_LowerBound%4)%4)) # pad to a 4-byte boundary
+
+	findAndProcessTiRecord $TI_AR7_2ND_MAGIC "TI-AR7-2ND" "${OUTPUT_FILE}.2ND" $((feedb007_LowerBound-1)) || exit 1
 	feedb007_Offset=$TI_RECORD_OFFSET
 fi
