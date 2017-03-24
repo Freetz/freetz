@@ -338,8 +338,15 @@ choice
 
 endchoice # "Firmware version" #
 
+if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X || FREETZ_TYPE_FIRMWARE_LABOR
 if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X
 	comment "UNDER DEVELOPMENT means:"
+endif
+if FREETZ_TYPE_FIRMWARE_LABOR
+	comment "HIGHLY EXPERIMENTAL means:"
+	comment " - the box may fail to boot and you need to recover it"
+	comment " - there is a higher probability to face stability issues"
+endif
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"
 if FREETZ_KERNEL_VERSION_3_10
