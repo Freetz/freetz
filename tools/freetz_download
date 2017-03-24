@@ -120,14 +120,13 @@ do_checkout_svn()
 }
 do_checkout_git()
 {
-	GIT_SSL_NO_VERIFY=true git clone "$1" "$2" || return $?
-	(
-		cd "$2" && git checkout "$3" || return $?
-		if [ -f ".gitmodules" ]; then
-			git submodule init && git submodule update || return $?
-		fi
-		rm -rf .git
-	)
+	GIT_SSL_NO_VERIFY=true git clone "$1" "$2" \
+	&& pushd "$2" >/dev/null \
+	&& git checkout "$3" \
+	&& LAST_COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%cD) \
+	&& if [ -f ".gitmodules" ]; then git submodule init && git submodule update; fi \
+	&& rm -rf .git \
+	&& popd >/dev/null
 }
 # Note: remote repository must support "git archive" command
 # $1 is expected to have the following format:
@@ -350,7 +349,15 @@ if [ -n "$VCS" ]; then
 		&& [ ! -d "$SUBDIR" ] \
 		&& do_checkout_"$VCS" "$URLs" "$SUBDIR" "$VERSION" \
 		&& echo "Packing checkout..." \
-		&& tar c${COMPRESSION_FLAG}f "$DL_FILE" "$SUBDIR" \
+		&& { \
+			find "$SUBDIR" -not -type d | LC_ALL=C sort > "$SUBDIR.list.sorted"; \
+			tar \
+			  --format=gnu \
+			  --numeric-owner --owner=0 --group=0 \
+			  ${LAST_COMMIT_TIMESTAMP:+--mtime="${LAST_COMMIT_TIMESTAMP}"} \
+			  -T "$SUBDIR.list.sorted" \
+			  -c${COMPRESSION_FLAG}f "$DL_FILE"; \
+		} \
 	) \
 	&& mv "$TMP_DIR/$DL_FILE" "$DL_DIR/" \
 	&& rm -rf "$TMP_DIR" \
