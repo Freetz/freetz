@@ -319,24 +319,45 @@ choice
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_2X
 
 	config FREETZ_TYPE_FIRMWARE_06_5X
-		bool "FRITZ!OS 06.5x/06.6x - HIGHLY EXPERIMENTAL"
+		bool "FRITZ!OS 06.5x/06.6x - UNDER DEVELOPMENT"
 		select FREETZ_AVM_VERSION_06_5X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_5X && FREETZ_SHOW_ADVANCED
 
 	config FREETZ_TYPE_FIRMWARE_06_8X
-		bool "FRITZ!OS 06.8x - HIGHLY EXPERIMENTAL"
+		bool "FRITZ!OS 06.8x - UNDER DEVELOPMENT"
 		select FREETZ_AVM_VERSION_06_8X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_8X && FREETZ_SHOW_ADVANCED
 
 	config FREETZ_TYPE_FIRMWARE_LABOR
 		bool "FRITZ! Labor - HIGHLY EXPERIMENTAL"
-		select FREETZ_AVM_VERSION_06_5X
+		select FREETZ_AVM_VERSION_06_8X
 		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_SHOW_ADVANCED
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
 
 endchoice # "Firmware version" #
+
+if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X
+	comment "UNDER DEVELOPMENT means:"
+	comment " - some remove/AVM-web-interface patches are not working"
+	comment "   even if selectable in menuconfig"
+if FREETZ_KERNEL_VERSION_3_10
+	comment " - some kernel-modules are not built/available"
+	comment "   even if selectable in menuconfig"
+	comment " - some packages depending on the kernel version"
+	comment "   are not available/selectable in menuconfig"
+	comment "   e.g. iptables, usbip, nfs, ndas, etc."
+endif
+if FREETZ_KERNEL_LAYOUT_GRX5
+	comment " - replace-kernel is not (yet) available"
+	comment "   because of changed bootloader format"
+endif
+if !FREETZ_KERNEL_LAYOUT_GRX5
+	comment " - replace-kernel might not work at all"
+	comment "   or cause instability issues"
+endif
+endif
 
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
