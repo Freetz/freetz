@@ -328,3 +328,10 @@ config FREETZ_KERNEL_PATCHES
 	string
 	default "2.6.13.1"      if FREETZ_KERNEL_VERSION_2_6_13
 	default FREETZ_MODULES_KVER
+
+# AVM kernel config area size in KB
+config FREETZ_AVM_KERNEL_CONFIG_AREA_SIZE
+	depends on FREETZ_KERNEL_VERSION_3_10_MIN
+	int
+	default 96              if FREETZ_KERNEL_LAYOUT_GRX5
+	default 64

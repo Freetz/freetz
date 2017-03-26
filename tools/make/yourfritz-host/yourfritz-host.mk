@@ -1,6 +1,6 @@
-YOURFRITZ_HOST_VERSION:=6da1adde2c
+YOURFRITZ_HOST_VERSION:=fa4d0e7f36
 YOURFRITZ_HOST_SOURCE:=yourfritz-$(YOURFRITZ_HOST_VERSION).tar.xz
-YOURFRITZ_HOST_SITE:=git@https://github.com/PeterPawn/YourFritz.git
+YOURFRITZ_HOST_SITE:=git@https://github.com/er13/YourFritz.git
 
 YOURFRITZ_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/yourfritz-host
 YOURFRITZ_HOST_DIR:=$(TOOLS_SOURCE_DIR)/yourfritz-$(YOURFRITZ_HOST_VERSION)

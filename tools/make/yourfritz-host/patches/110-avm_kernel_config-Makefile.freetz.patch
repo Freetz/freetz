@@ -13,7 +13,7 @@
 +OPT = -O2
 +BITNESS = -m32
 +override CFLAGS   += $(OPT) $(BITNESS) -std=c99 -W -Wall
-+override CPPFLAGS += -I$(LIBFDT_DIR)
++override CPPFLAGS += -I$(LIBFDT_DIR) -DUSE_STRIPPED_AVM_KERNEL_CONFIG_H
 +override LDFLAGS  += $(BITNESS)
 +override LDLIBS   += -L$(LIBFDT_DIR) -lfdt
 +

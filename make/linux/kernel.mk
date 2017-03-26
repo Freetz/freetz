@@ -162,14 +162,14 @@ $(TARGET_TOOLCHAIN_KERNEL_VERSION_HEADER): $(TOPDIR)/.config $(KERNEL_HEADERS_DE
 	@$(call COPY_KERNEL_HEADERS,$(KERNEL_HEADERS_DEVEL_DIR),$(TARGET_TOOLCHAIN_STAGING_DIR)/usr)
 	@touch $@
 
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_3_10_73)),y)
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_3_10_MIN)),y)
 KERNEL_BUILD_DEPENDENCIES += $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S
 
 $(AVM_KERNEL_CONFIG_DIR): | $(KERNEL_DIR)/.unpacked
 	@mkdir -p $@
 
 $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).bin: $(DL_FW_DIR)/$(DL_SOURCE) | $(KERNEL_DIR)/.unpacked $(AVM_KERNEL_CONFIG_DIR) tools
-	@$(TOOLS_DIR)/avm_kernel_config.extract.sh "$<" >"$@" || { $(RM) "$@"; exit 1; }
+	@$(TOOLS_DIR)/avm_kernel_config.extract.sh -s $(FREETZ_AVM_KERNEL_CONFIG_AREA_SIZE) "$<" >"$@" || { $(RM) "$@"; exit 1; }
 
 $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).S: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).bin | $(KERNEL_DIR)/.unpacked $(AVM_KERNEL_CONFIG_DIR) tools
 	@$(TOOLS_DIR)/avm_kernel_config.gen "$<" >"$@" || { $(RM) "$@"; exit 1; }
