@@ -79,6 +79,14 @@ config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 	help
 		LZO compression for VPN traffic
 
+config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
+	bool "With LZ4 compression"
+	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_VERSION_2_4
+	select FREETZ_LIB_liblz4 if ! FREETZ_PACKAGE_OPENVPN_STATIC
+	default n
+	help
+		LZ4 compression for VPN traffic
+
 config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
 	bool "With traffic obfuscation"
 	depends on FREETZ_PACKAGE_OPENVPN
