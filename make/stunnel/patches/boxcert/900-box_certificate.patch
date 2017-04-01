@@ -1,84 +1,47 @@
 --- src/ctx.c
 +++ src/ctx.c
-@@ -37,6 +37,7 @@
- 
- #include "common.h"
- #include "prototypes.h"
-+#include <privatekeypassword/privatekeypassword.h>
- 
- #ifndef OPENSSL_NO_DH
- DH *dh_params=NULL;
-@@ -706,21 +707,51 @@
+@@ -720,16 +720,42 @@
      return 0; /* OK */
  }
  
-+static int is_fritzbox_key(const char *file_name) {
-+    struct stat sb; /* buffer for stat */
++#include <privatekeypassword/privatekeypassword.h>
 +
++static
++int fritzbox_passwd_get_cb(char *buf, int size, int rwflag, void *userdata) {
++   (void)userdata;
++#ifdef CUSTOM_PRIVATEKEYPASSWORD_METHOD
++   getPrivateKeyPassword_setMethod(CUSTOM_PRIVATEKEYPASSWORD_METHOD);
++#endif
++   return getPrivateKeyPassword_OpenSSL_Callback(buf, size, rwflag, NULL);
++}
++
++static
++int is_fritzbox_key(const char *file_name) {
++    struct stat sb;
 +    if (!stat(file_name, &sb))
 +        return 0;
-+
-+    /* TODO: should we check here if file_name matches some pattern */
-+
 +    /* if it's a character device, assume it's the Fritz!OS private key file from TFFS */
 +    return S_ISCHR(sb.st_mode);
 +}
 +
-+/*
-+  the "userdata" ptr for passwd_cb is of type "void", so we can and will "abuse" it
-+  as flag (for our changes in passphrase_cb) to signal "FRITZ!Box certificate" condition
-+  we use a "pointer to address 1 instead of 0", which is valid for void pointer
-+*/
-+#define FRITZBOX_KEY_PASSWD_CB_MARKER ((void *)1)
-+
  NOEXPORT int load_key_file(SERVICE_OPTIONS *section) {
--    int i, success;
-+    int i, success=0, fritzbox_key;
-     UI_DATA ui_data;
+     int i, success;
++    int fritzbox_key=is_fritzbox_key(section->key);
  
      s_log(LOG_INFO, "Loading private key from file: %s", section->key);
 -    if(file_permissions(section->key))
-+
-+    fritzbox_key=is_fritzbox_key(section->key);
-+
 +    if(!fritzbox_key && file_permissions(section->key))
          return 1; /* FAILED */
  
-     ui_data.section=section; /* setup current section for callbacks */
-     SSL_CTX_set_default_passwd_cb(section->ctx, passphrase_cb);
- 
-+    if (fritzbox_key) {
-+        SSL_CTX_set_default_passwd_cb_userdata(section->ctx, FRITZBOX_KEY_PASSWD_CB_MARKER);
-+        success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
-+            SSL_FILETYPE_PEM);
-+    }
-+
-+  if (!success) {
-     /* try the cached value (initially an empty passphrase) */
-     SSL_CTX_set_default_passwd_cb_userdata(section->ctx, NULL);
+-    /* try the cached value first */
+     set_prompt(section->key);
++  if (fritzbox_key) {
++    /* read the Fritz!Box key */
++    SSL_CTX_set_default_passwd_cb(section->ctx, fritzbox_passwd_get_cb);
++  } else {
++    /* try the cached value first */
+     SSL_CTX_set_default_passwd_cb(section->ctx, cache_passwd_get_cb);
++  }
      success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
          SSL_FILETYPE_PEM);
-+  }
- 
-     /* invoke the UI */
-     SSL_CTX_set_default_passwd_cb_userdata(section->ctx, &ui_data);
-@@ -817,8 +848,19 @@
-         buf[size-1]='\0';
-         len=(int)strlen(buf);
-     } else { /* prompt the user on subsequent requests */
-+        if(userdata == FRITZBOX_KEY_PASSWD_CB_MARKER) { /* try to open it as FRITZ!OS key file */
-+#ifdef STATIC
-+            /* - workaround for dlopen() crash with statically linked binaries
-+               - see privatekeypassword package for preconditions and possible
-+                 environment settings to locate the proxy binary
-+            */
-+            getPrivateKeyPassword_setMethod(PRIVATEKEYPASSWORD_METHOD_PROXY);
-+#endif
-+            len=getPrivateKeyPassword_OpenSSL_Callback(buf, size, rwflag, NULL);
-+        } else {
-         len=passwd_cb(buf, size, rwflag, userdata); /* invoke the UI */
-         memcpy(cache, buf, (size_t)size); /* save in cache */
-+        }
-     }
-     return len;
- }
+     /* invoke the UI on subsequent calls */

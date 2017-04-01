@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.40)
+$(call PKG_INIT_BIN, 5.41)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=23acdb390326ffd507d90f8984ecc90e0d9993f6bd6eac1d0a642456565c45ff
+$(PKG)_SOURCE_SHA256:=f05c6321ee1f6ddebacc234ccf20825971941e831b5beea6d0ce0b8e1668148f
 $(PKG)_SITE:=https://www.stunnel.org/downloads/archive/5.x
 
 $(PKG)_STARTLEVEL=81
@@ -29,7 +29,7 @@ $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_STATIC)),y)
-$(PKG)_EXTRA_CFLAGS += -DSTATIC
+$(PKG)_EXTRA_CFLAGS += -DCUSTOM_PRIVATEKEYPASSWORD_METHOD=PRIVATEKEYPASSWORD_METHOD_PROXY
 $(PKG)_EXTRA_LDFLAGS += -all-static
 endif
 
