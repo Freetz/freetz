@@ -19,13 +19,13 @@
 +
 +BASENAME = avm_kernel_config
 +
-+BINS     = gen_$(BASENAME) extract_$(BASENAME)
++BINS     = $(BASENAME).bin2asm $(BASENAME).extract
 +BIN_SRCS = $(BINS:%=%.c)
 +BIN_HDRS = $(BASENAME).h $(BASENAME)_macros.h
 +BIN_OBJS = $(BIN_SRCS:%.c=%.o)
 +
-+HELPER_SRCS = $(BASENAME)_helpers.c
-+HELPER_HDRS = $(BASENAME)_helpers.h
++HELPER_SRCS = lib_$(BASENAME).c memory_mapped_file.c
++HELPER_HDRS = lib_$(BASENAME).h memory_mapped_file.h
 +HELPER_OBJS = $(HELPER_SRCS:%.c=%.o)
 +
 +all: $(BINS)

@@ -172,7 +172,7 @@ $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).bin: $(DL_FW_DIR
 	@$(TOOLS_DIR)/avm_kernel_config.extract.sh -s $(FREETZ_AVM_KERNEL_CONFIG_AREA_SIZE) "$<" >"$@" || { $(RM) "$@"; exit 1; }
 
 $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).S: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.$(DL_SOURCE_ID).bin | $(KERNEL_DIR)/.unpacked $(AVM_KERNEL_CONFIG_DIR) tools
-	@$(TOOLS_DIR)/avm_kernel_config.gen "$<" >"$@" || { $(RM) "$@"; exit 1; }
+	@$(TOOLS_DIR)/avm_kernel_config.bin2asm "$<" >"$@" || { $(RM) "$@"; exit 1; }
 
 # Force kernel rebuild if avm_kernel_config_area.S differs from avm_kernel_config_area.$(DL_SOURCE_ID).S
 # To reduce maintenance effort we often use the same opensrc package for different boxes.
