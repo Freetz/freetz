@@ -8,6 +8,7 @@ Usage: $SELF [-h|--help] [-s|--size] firmware.image
        -s|--size       AVM kernel config area size in KB, sizes known so far:
                        VR9  boxes: 64KB (default)
                        GRX5 boxes: 96KB
+       -2|--2nd        process 2nd kernel on boxes with two kernels
 
        firmware.image  original firmware image
 
@@ -19,7 +20,7 @@ SELF="$(basename "$0")"
 MOD_TOOLS="$(dirname $(readlink -f ${0}))"
 
 # process command line parameters
-ARGS=$(getopt -o s: --long size: -n "${SELF}" -- "$@")
+ARGS=$(getopt -o s:2 --long size:,2nd -n "${SELF}" -- "$@")
 [ $? -eq 0 ] || { usage >&2; exit 1; }
 eval set -- "${ARGS}"
 while true; do
@@ -36,6 +37,10 @@ while true; do
 			fi
 			SIZE="$2"
 			shift 2
+			;;
+		-2|--2nd)
+			SECOND=1
+			shift
 			;;
 		--)
 			shift
@@ -77,11 +82,20 @@ done > kf.image
 # and split them again... now at the right bounds
 $MOD_TOOLS/find-squashfs kf.image >/dev/null 2>&1 || { echo >&2 "ERROR: splitting kernel & filesystem images failed"; exit 1; }
 
-# unpack kernel
-$MOD_TOOLS/unpack-kernel kernel.raw kernel.raw.unpacked >/dev/null 2>&1 || { echo >&2 "ERROR: unpacking kernel failed"; exit 1; }
+# unpack kernel, capture kernel load address(es)
+declare -a load_addr
+load_addr=($($MOD_TOOLS/unpack-kernel kernel.raw kernel.raw.unpacked 2>/dev/null | sed -nre 's,.*LoadAddress=(.+),\1,p'))
+if [ $? -ne 0 -o ! -s "$tmp_dir/kernel.raw.unpacked" ]; then
+	echo >&2 "ERROR: unpacking kernel failed"; exit 1;
+fi
 
 # and finally extract avm_kernel_config from the unpacked kernel
-$MOD_TOOLS/avm_kernel_config.extract ${SIZE:+-s $SIZE} "$tmp_dir/kernel.raw.unpacked"
+if [ "$SECOND" ]; then
+	[ -s "$tmp_dir/kernel.raw.unpacked.2ND" ] || { echo >&2 "ERROR: 2nd kernel not found"; exit 1; }
+	$MOD_TOOLS/avm_kernel_config.extract ${SIZE:+-s $SIZE} -l ${load_addr[1]} "$tmp_dir/kernel.raw.unpacked.2ND"
+else
+	$MOD_TOOLS/avm_kernel_config.extract ${SIZE:+-s $SIZE} -l ${load_addr[0]} "$tmp_dir/kernel.raw.unpacked"
+fi
 
 # pass exit code through
 exit $?
