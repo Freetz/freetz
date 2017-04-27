@@ -1,23 +1,15 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 . /usr/lib/libmodredir.sh
 
-check "$POLIPO_ENABLED" yes:auto "*":man
 check "$POLIPO_DISABLEINDEXING" true:indexdis
 check "$POLIPO_DISABLESERVERSLIST" true:serverdis
 check "$POLIPO_DISABLECONFIGURATION" true:confdis
 check "$POLIPO_DISABLELOCALINTERFACE" true:localifdis
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$POLIPO_ENABLED" "" "" 0
 sec_end
 
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
@@ -61,4 +53,3 @@ if [ "running" == "$(/mod/etc/init.d/rc.polipo status)" ] && [ "true" != "$POLIP
 fi
 
 sec_end
-

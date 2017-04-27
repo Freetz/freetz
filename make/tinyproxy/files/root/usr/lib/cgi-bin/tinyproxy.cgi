@@ -1,11 +1,9 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
 BUILDIN_SUPPORT=$(tinyproxy -h | sed -n "/proxy support/ s/^[ ]*// ; s/ proxy support// p" | tr '\n' ' ')
 
-check "$TINYPROXY_ENABLED" yes:auto "*":man
 check "$TINYPROXY_CATCHALL" yes:catchall
 check "$TINYPROXY_CONFSERVER" yes:confserver
 check "$TINYPROXY_BINDSAME" yes:bindsame
@@ -21,14 +19,9 @@ check "$TINYPROXY_REVERSEONLY" yes:reverseonly
 check "$TINYPROXY_REVERSEMAGIC" yes:reversemagic
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p><input id="auto1" type="radio" name="enabled" value="yes"$auto_chk><label for="auto1">$(lang de:"Automatisch" en:"Automatic")</label>
-<input id="auto2" type="radio" name="enabled" value="no"$man_chk><label for="auto2">$(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$TINYPROXY_ENABLED" "" "" 0
 sec_end
+
 sec_begin '$(lang de:"Proxy-Grundkonfiguration" en:"Basic proxy configuration")'
 
 cat << EOF

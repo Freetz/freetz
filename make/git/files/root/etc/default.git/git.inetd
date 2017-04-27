@@ -1,10 +1,9 @@
 . /mod/etc/conf/git.cfg
-[ -n "$GIT_BINDADDRESS" ] && local BINDADDRESS="${GIT_BINDADDRESS}:"
-echo "$BINDADDRESS" | grep "\." -vq && local BINDPROTO=$1
 inetdcfg_desc="git server"
-inetdcfg_port=${BINDADDRESS}$GIT_PORT
+inetdcfg_port=${GIT_BINDADDRESS}${GIT_BINDADDRESS:+:}${GIT_PORT:-9418}
 inetdcfg_sock=stream
-inetdcfg_proto=tcp$BINDPROTO
+# TODO: replace the test below with "isIPv4 $GIT_BINDADDRESS" as soon as it's implemented
+inetdcfg_proto=tcp$([ -n "${GIT_BINDADDRESS}" -a -z "${GIT_BINDADDRESS##*.*.*.*}" ] || echo -n "$1")
 inetdcfg_flags=nowait
 inetdcfg_user=$GIT_USER:$GIT_GROUP
 inetdcfg_exe=/usr/bin/git-daemon

@@ -1,0 +1,27 @@
+From ea10f953878feea45ccdae846dbd3382e79e7f7e Mon Sep 17 00:00:00 2001
+From: Benjamin Fair <b-fair@ti.com>
+Date: Thu, 3 Nov 2016 10:47:42 -0500
+Subject: [PATCH] libfdt: add missing errors to fdt_strerror()
+
+Some error values were missing from the table which meant that they could
+not be translated by fdt_strerror().
+
+Signed-off-by: Benjamin Fair <b-fair@ti.com>
+Signed-off-by: David Gibson <david@gibson.dropbear.id.au>
+---
+ libfdt/fdt_strerror.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+index 4ab3eb7..9677a18 100644
+--- libfdt/fdt_strerror.c
++++ libfdt/fdt_strerror.c
+@@ -77,6 +77,9 @@ static struct fdt_errtabent fdt_errtable[] = {
+ 	FDT_ERRTABENT(FDT_ERR_BADVERSION),
+ 	FDT_ERRTABENT(FDT_ERR_BADSTRUCTURE),
+ 	FDT_ERRTABENT(FDT_ERR_BADLAYOUT),
++	FDT_ERRTABENT(FDT_ERR_INTERNAL),
++	FDT_ERRTABENT(FDT_ERR_BADNCELLS),
++	FDT_ERRTABENT(FDT_ERR_BADVALUE),
+ };
+ #define FDT_ERRTABSIZE	(sizeof(fdt_errtable) / sizeof(fdt_errtable[0]))
+ 

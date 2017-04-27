@@ -18,46 +18,13 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
-#
-# $1 - input file
-# $2 - binary pattern
-#
-# returns:
-#   offsets of all pattern matches
-getHexOffsetsOfAllMatches() {
-	"$mod_tools/sfk" hexfind "$1" -bin "/$2/" -quiet | sed -nr -e 's|.*hit at offset (0x[0-9A-F]+)|\1|p'
-}
-getDecOffsetsOfAllMatches() {
-	local matches=$(getHexOffsetsOfAllMatches "$@")
-	[ -z "$matches" ] && return
-	echo "$matches" | xargs printf "%d\n"
-}
-
-#
-# $1 - input file
-# $2 - offset
-# $3 - length
-#
-getHexContentAtOffset() {
-	"$mod_tools/sfk" hexdump -offlen "$2" "$3" -nofile -pure "$1" | tr -d $'\n'
-}
-
-#
-# inverts endianness of each line of stdin
-# each line is assumed to be a hex-string representation of the data and is processed separately
-# if hex-string length is not muptiple of 8 it is zero padded
-#
-invertEndianness() {
-	sed -r -e ':zero_pad;s/^(.{1,7})((.{8})*)$/0\1\2/;tzero_pad' | sed -r -e 's/(..)(..)(..)(..)/\4\3\2\1/g'
-}
-
 # Parameterized helper function for 'extract_bootloader' doing the actual work
 do_extract_bl()
 {
 	local ENDIAN_TYPE="$1"
 
 	# Find bootloader candidates
-	declare -a bootloader_offs=($(getDecOffsetsOfAllMatches "$input_file" "${BOOTLOADER_MAGIC[${ENDIAN_TYPE}]}"))
+	declare -a bootloader_offs=($(getDecOffsetsOfAllMatches "$input_file" bin "${BOOTLOADER_MAGIC[${ENDIAN_TYPE}]}"))
 
 	# Find bootloader candidates and isolate their offsets
 	for (( i=0; i<${#bootloader_offs[@]}; i++ )); do
@@ -119,11 +86,34 @@ get_squashfs_length()
 	local squashfs_offset="$1"
 	local ENDIAN_TYPE="$2"
 
-	local squashfs_length
+	local squashfs_length=, nmi_offset=, nmi_length=
+
+	local NMI_BOOT_PATTERN="4E4D4920426F6F7420566563746F7200"
 
 	# Note: 4 bytes of length information are found at (SquashFS magic offset + 8)
+	#       valid for all vanilla/AVM SquashFS versions up to (including) SquashFS-3.x
+	#       NOT valid for vanilla SquashFS-4.x but still valid for AVM-SquashFS-4.x
+	#       because of AVM's "mkfs_time=bytes_used" modification (s. SquashFS packages for details)
 	squashfs_length=$(getHexContentAtOffset "$input_file" $((${squashfs_offset} + 8)) 4 | { [ "$ENDIAN_TYPE" == "little" ] && invertEndianness || cat; })
-	printf "%d" "0x$squashfs_length"
+	squashfs_length=$((0x${squashfs_length}))
+
+	declare -a nmi_offsets=($(getDecOffsetsOfAllMatches "$input_file" bin "$NMI_BOOT_PATTERN"))
+	for (( i=0; i<${#nmi_offsets[@]}; i++ )); do
+		nmi_offset="${nmi_offsets[i]}"
+		if [ "${squashfs_offset}" -le "${nmi_offset}" -a "${nmi_offset}" -lt "$((${squashfs_offset} + ${squashfs_length}))" ]; then
+			# NMI pattern is found within SquashFS
+
+			# NMI vector length is encoded within the NMI block 4 bytes before 'NMI Boot'
+			nmi_length="$(getHexContentAtOffset "$input_file" $((${nmi_offset} - 4)) 4)"
+			nmi_length=$((0x${nmi_length}))
+			if [ "${nmi_length}" -eq 256 -o "${nmi_length}" -eq 4096 ]; then
+				# NMI_length is one of the known correct values => add NMI vector length to SquashFS length
+				squashfs_length=$((${squashfs_length} + ${nmi_length}))
+				break;
+			fi
+		fi
+	done
+	echo "${squashfs_length}"
 }
 
 # Parameterized helper function for 'extract_kernel_filesystem' doing the actual work
@@ -138,7 +128,7 @@ do_extract_kfs()
 		[squashfs]="${SQUASHFS_MAGIC[${ENDIAN_TYPE}]}"
 	)
 	for rootfs_type in ext2fs squashfs; do
-		declare -a rootfs_offs=($(getDecOffsetsOfAllMatches "$input_file" "${rootfs_magic[${rootfs_type}]}"))
+		declare -a rootfs_offs=($(getDecOffsetsOfAllMatches "$input_file" bin "${rootfs_magic[${rootfs_type}]}"))
 		if [ ${#rootfs_offs[@]} -gt 0 ]; then
 			break;
 		fi
@@ -155,7 +145,7 @@ do_extract_kfs()
 	done
 
 	# Find kernel candidates
-	declare -a kernel_offs=($(getDecOffsetsOfAllMatches "$input_file" "$KERNEL_MAGIC"))
+	declare -a kernel_offs=($(getDecOffsetsOfAllMatches "$input_file" bin "$KERNEL_MAGIC"))
 
 	for (( i=0; i<${#kernel_offs[@]}; i++ )); do
 		# Isolate kernel length candidates (always little endian)
@@ -181,6 +171,16 @@ do_extract_kfs()
 
 			# Check layout: does SquashFS immediately follow kernel?
 			gap=$((rootfs_offs[s] - kernel_length[k] - kernel_offs[k]))
+
+			# workaround for some images with incorrect(?) or at least strange kernel_length
+			# known affected images: FRITZ.Box_Fon_WLAN_7390.AnnexB.06.03.recover-image.exe
+			if [ $gap -eq 256 ]; then
+				# treat gap of 256 bytes as zero-gap and increase kernel_length by 256 bytes,
+				# i.e. pad kernel with additional 256 bytes
+				kernel_length[k]=$((kernel_length[k] + 256))
+				gap=0
+			fi
+
 			if [ $gap -eq 0 ]; then
 				# Hidden root (SquashFS contained in kernel.image)
 				file_length=$((kernel_length[k] + rootfs_length[s]))
@@ -263,6 +263,8 @@ case $# in
 		exit 1
 		;;
 esac
+
+. "$mod_tools/freetz_bin_functions"
 
 # Magic byte sequences (hex) to identify kernel, SquashFS and bootloader
 KERNEL_MAGIC="8112EDFE"

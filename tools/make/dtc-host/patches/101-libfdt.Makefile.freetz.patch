@@ -1,0 +1,30 @@
+--- /dev/null
++++ libfdt/Makefile.freetz
+@@ -0,0 +1,27 @@
++CC = gcc
++RM = rm -f
++AR = ar
++RANLIB = ranlib
++
++OPT = -O2
++BITNESS = -m32
++override CFLAGS   += $(OPT) $(BITNESS) -std=c99
++override CPPFLAGS += -I. -D_GNU_SOURCE
++
++include Makefile.libfdt
++
++LIBFDT_a = libfdt.a
++
++all: $(LIBFDT_a)
++
++$(LIBFDT_a): $(LIBFDT_OBJS)
++	-$(RM) $@
++	$(AR) rcu $@ $?
++	$(RANLIB) $@
++
++$(LIBFDT_SRCS): $(LIBFDT_INCLUDES)
++
++clean:
++	-$(RM) *.o *.a
++
++.PHONY: all clean

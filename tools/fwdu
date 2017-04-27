@@ -78,60 +78,151 @@ unfs_probe() {
 		&& dd if="$1" of="$1.ext2" bs=256 skip=1 conv=sync >/dev/null 2>&1   \
 		&& { mkdir -p "squashfs-root"; echo "rdump / squashfs-root" | $FTOOLS/debugfs "$1.ext2"; }
 	} \
-	|| $FTOOLS/unsquashfs4-lzma-avm-be "$1"
+	|| $FTOOLS/unsquashfs4-avm-be "$1" \
+	|| $FTOOLS/unsquashfs4-avm-le "$1"
 }
 
 image() {
 	local img=$1
 	local dst=$2
+	[ -n "${dst}" -a "${dst: -1: 1}" != "/" ] && dst="${dst}/" # add trailing slash if missing
+
+	local imgID=$(basename "${img}")
+	imgID=${imgID%.*}
+
+	declare -A probeDirs=(
+		[mips]=var/tmp
+		 [arm]=var/remote/var/tmp
+		[atom]=var/remote/var/tmp/x86
+	)
+
 	if [ ! -e $img ]; then
 		echo -e "~~~~\t$img" | tee -a _failed.log
 		return 1
 	fi
+
 	rm -rf var
+
 	if [ "$img" != "${img%.exe}" ]; then
 		$FTOOLS/extract-images $img >/dev/null
-		mkdir -p var
-		mv ${img#*/}.unp var/tmp
+		mkdir -p var/tmp
+		mv ${img##*/}.unp/*.image var/tmp/
+		rm -rf ${img##*/}.unp
 	else
-		tar -xif $img --wildcards './var/tmp/*.image' >/dev/null 2>&1
+		tar -xif $img \
+		  $(printf " --wildcards ./%s/*.image"        "${probeDirs[@]}") \
+		  $(printf " --wildcards ./%s/plugins.update" "${probeDirs[@]}") \
+		  >/dev/null 2>&1
 	fi
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
 		return 1
 	fi
-	if [ ! -f var/tmp/kernel.image ]; then
-		echo -e "----\t$img" | tee -a _failed.log
-		rm -rf var
-		return 1
-	fi
-	($FTOOLS/remove-nmi-vector var/tmp/kernel.image var/tmp/kernel.image.no-nmi 2>&1 && mv var/tmp/kernel.image.no-nmi var/tmp/kernel.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
-	cat var/tmp/filesystem.image var/tmp/kernel.image > x.image 2>/dev/null
-	rm -rf var
-	$FTOOLS/tichksum -r x.image >/dev/null 2>&1
-	$FTOOLS/find-squashfs x.image >/dev/null 2>&1
-	rm x.image
-	cat kernelsquashfs.raw kernel.raw > x.raw
-	rm  kernelsquashfs.raw kernel.raw
-	unfs_probe x.raw >/dev/null 2>&1 || echo FALSE $img
-	rm -f x.raw x.raw.ext2
-	# for recent fw's
-	if [ -e squashfs-root/filesystem_core.squashfs ]; then
-		$FTOOLS/find-squashfs squashfs-root/filesystem_core.squashfs >/dev/null 2>&1
-		rm squashfs-root/filesystem_core.squashfs kernel.raw
-		mv squashfs-root filesystem_envelope
-		unfs_probe kernelsquashfs.raw >/dev/null 2>&1
-		rm kernelsquashfs.raw
-		[ -d squashfs-root ] && mv filesystem_envelope squashfs-root/ || rm -rf filesystem_envelope
-	fi
 
-	if [ -d squashfs-root ]; then
-		local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem_envelope*' | wc -l)
-		echo -e "${numberOfFiles}\t${img}"
-		mv squashfs-root "${dst}$(echo ${img%.*} |sed 's!.*/!!')"
-	else
-		echo -e "====\t$img" | tee -a _failed.log
-	fi
+	for d in "${probeDirs[@]}" no_kernel_image_found; do
+		if [ -s ${d}/kernel.image ]; then
+			break;
+		fi
+
+		if [ "${d}" == "no_kernel_image_found" ]; then
+			echo -e "----\t$img" | tee -a _failed.log
+			rm -rf var
+			return 1
+		fi
+	done
+
+	# The following cases for kernel/filesystem layout are known/supported:
+	#
+	#  1. kernel.image contains the kernel followed by the (complete) root-filesystem
+	#     filesystem.image is empty
+	#     Examples: 7170, 7270, 7390
+	#
+	#  2. kernel.image contains the kernel followed by the initial part of the root-filesystem
+	#     filesystem.image contains the remaining part of the root-filesystem
+	#     Examples: very old boxes like Fritz!Box SL, 7050en, 2030
+	#
+	#  3. kernel.image contains just the kernel (and nothing else)
+	#     filesystem.image contains just the root-filesystem (and nothing else)
+	#     Examples: 7490
+
+	for arch in "${!probeDirs[@]}"; do
+		d="${probeDirs[$arch]}"
+
+		if [ ! -s ${d}/kernel.image ]; then
+			continue;
+		fi
+
+		# remove TI checksum and concatenate kernel & filesystem images
+		for f in ${d}/kernel.image ${d}/filesystem.image; do
+			if [ -s "$f" ]; then
+				$FTOOLS/tichksum -r "$f" >/dev/null 2>&1
+				cat "$f" | dd bs=256 conv=sync 2>/dev/null;
+			fi
+		done > kf.image
+		rm -f ${d}/kernel.image ${d}/filesystem.image
+
+		# strip NMI vector if any
+		($FTOOLS/remove-nmi-vector kf.image kf.image.no-nmi 2>&1 && mv kf.image.no-nmi kf.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
+
+		# and split them again... now at the right bounds (s. case 2 above)
+		$FTOOLS/find-squashfs kf.image >/dev/null 2>&1
+		rm -f kf.image kernel.raw
+
+		# unpack it
+		unfs_probe kernelsquashfs.raw >/dev/null 2>&1 || echo FALSE ${img}-${arch}
+		rm -f kernelsquashfs.raw kernelsquashfs.raw.ext2
+
+		# unpack the inner / the outer root-filesystem if found
+		if [ -e squashfs-root/filesystem_core.squashfs ]; then
+			mv squashfs-root filesystem.outer
+			unfs_probe filesystem.outer/filesystem_core.squashfs >/dev/null 2>&1
+			rm -f filesystem.outer/filesystem_core.squashfs
+			[ -d squashfs-root ] && mv filesystem.outer squashfs-root/ || rm -rf filesystem.outer
+		fi
+
+		if [ -d squashfs-root ]; then
+			local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem.outer*' | wc -l)
+			echo -e "${numberOfFiles}\t${imgID}-${arch}"
+			mv squashfs-root "${dst}${imgID}-${arch}"
+		fi
+
+		if [ -e ${d}/plugins.update ]; then
+			pluginsTmpDir="${imgID}.plugins-${arch}.tmp"
+			mkdir -p "${pluginsTmpDir}"
+			tar -xif "${d}/plugins.update" \
+			  -C "${pluginsTmpDir}" \
+			  --wildcards "./var/*.image" \
+			  >/dev/null 2>&1
+
+			numberOfPlugins=0
+			for pluginImage in $(find "${pluginsTmpDir}/var" -type f -name "*.image"); do
+				pluginID=$(basename "${pluginImage}"); pluginID=${pluginID%.*}
+
+				unfs_probe "$pluginImage" >/dev/null 2>&1
+				if [ -d squashfs-root ]; then
+					((numberOfPlugins++))
+					mv squashfs-root "${pluginsTmpDir}/${pluginID}"
+				fi
+			done
+
+			rm -rf "${pluginsTmpDir}/var"
+			if [ "$numberOfPlugins" -eq 0 ]; then
+				rm -rf "${pluginsTmpDir}"
+			else
+				if [ -d "${dst}${imgID}-${arch}" ]; then
+					mv "${pluginsTmpDir}" "${dst}${imgID}-${arch}/plugins"
+				else
+					mv "${pluginsTmpDir}" "${dst}${imgID}.plugins-${arch}"
+				fi
+			fi
+		fi
+
+		if [ ! -e "${dst}${imgID}-${arch}" -a ! -e "${dst}${imgID}.plugins-${arch}" ]; then
+			echo -e "====\t${img}-${arch}" | tee -a _failed.log
+		fi
+	done
+
+	rm -rf var
 }
 
 # check args

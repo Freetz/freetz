@@ -1,6 +1,6 @@
 --- src/openvpn/mtcp.c
 +++ src/openvpn/mtcp.c
-@@ -625,11 +625,27 @@
+@@ -626,11 +626,27 @@
               */
              if (touched && IS_SIG(&touched->context))
              {
@@ -30,7 +30,7 @@
  
 --- src/openvpn/options.c
 +++ src/openvpn/options.c
-@@ -2065,10 +2065,12 @@
+@@ -2075,10 +2075,12 @@
          msg(M_USAGE, "--inetd nowait can only be used in TLS mode");
      }
  
@@ -43,7 +43,7 @@
  
  
      if (options->lladdr && dev != DEV_TYPE_TAP)
-@@ -2298,10 +2300,12 @@
+@@ -2308,10 +2310,12 @@
          {
              msg(M_USAGE, "--shaper cannot be used with --mode server");
          }
@@ -56,7 +56,7 @@
          if (options->ipchange)
          {
              msg(M_USAGE, "--ipchange cannot be used with --mode server (use --client-connect instead)");
-@@ -2875,10 +2879,12 @@
+@@ -2885,10 +2889,12 @@
       * In forking TCP server mode, you don't need to ifconfig
       * the tap device (the assumption is that it will be bridged).
       */
@@ -71,7 +71,7 @@
      if ((dev == DEV_TYPE_TUN || dev == DEV_TYPE_TAP) && !options->route_delay_defined)
 --- src/openvpn/socket.c
 +++ src/openvpn/socket.c
-@@ -1783,7 +1783,9 @@
+@@ -1789,7 +1789,9 @@
      {
          ASSERT(accept_from);
          ASSERT(sock->info.proto == PROTO_TCP_SERVER);

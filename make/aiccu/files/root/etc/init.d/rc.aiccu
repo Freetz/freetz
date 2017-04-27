@@ -23,17 +23,28 @@ start() {
 
 	# try to load kernel module
 	[ -d /proc/sys/net/ipv6 ] || modprobe ipv6 2>/dev/null
+
+	# save the current value of default/disable_ipv6
+	local default_disable_ipv6_path=/proc/sys/net/ipv6/conf/default/disable_ipv6
+	local default_disable_ipv6_value=$(cat $default_disable_ipv6_path 2>/dev/null)
+
+	# change the value of default/disable_ipv6 to that aiccu should be started with
+	echo 0 2>/dev/null >$default_disable_ipv6_path
+
 	modlib_startdaemon $DAEMON start $DAEMON_CONFIG
 	retval=$?
 	local _timer=30
 	while [ $_timer -gt 0 ]; do
 		let _timer--
 		if ifconfig ${AICCU_INTERFACE} >/dev/null 2>&1; then
-			echo 0 2>/dev/null >/proc/sys/net/ipv6/conf/${AICCU_INTERFACE}/disable_ipv6
 			break
 		fi
 		sleep 1
 	done
+
+	# restore the value of default/disable_ipv6
+	echo "$default_disable_ipv6_value" 2>/dev/null >$default_disable_ipv6_path
+
 	if [ "$AICCU_RUNSCRIPT" == "yes" ]; then
 		$AICCU_SH $AICCU_INTERFACE
 		[ "$?" -ne 0 ] && retval=$?

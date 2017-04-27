@@ -6,7 +6,7 @@ cat << EOF
 verbose: false;
 foreground: false;
 numeric: false;
-timeout: 2;
+timeout: ${SSLH_TIMEOUT:-0};
 user: "nobody";
 pidfile: "/var/run/sslh.pid";
 EOF
@@ -26,4 +26,4 @@ echo '('
 cat /tmp/flash/sslh/protocols 2>/dev/null
 echo ');'
 
-[ -n "$SSLH_TIMEOUT" ] && echo "on-timeout: \"$SSLH_TIMEOUT\";"
+[ -n "$SSLH_ON_TIMEOUT" ] && echo "on-timeout: \"$SSLH_ON_TIMEOUT\";"

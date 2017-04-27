@@ -1,96 +1,56 @@
 --- Makefile.am
 +++ Makefile.am
-@@ -153,7 +153,7 @@
+@@ -154,8 +154,8 @@
+ 
  bin_SCRIPTS = curl-config
  
- SUBDIRS = lib src include
--DIST_SUBDIRS = $(SUBDIRS) tests packages docs scripts
-+DIST_SUBDIRS = $(SUBDIRS)       packages      scripts
+-SUBDIRS = lib docs src include
+-DIST_SUBDIRS = $(SUBDIRS) tests packages scripts
++SUBDIRS = lib      src include
++DIST_SUBDIRS = $(SUBDIRS)       packages scripts
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -172,10 +172,10 @@
- 	done)
- 
- html:
--	cd docs && make html
-+	#cd docs && make html
- 
- pdf:
--	cd docs && make pdf
-+	#cd docs && make pdf
- 
- check: test examples check-docs
- 
-@@ -203,7 +203,7 @@
- endif
- 
- examples:
--	@(cd docs/examples; $(MAKE) check)
-+	#@(cd docs/examples; $(MAKE) check)
- 
- check-docs:
- 	@(cd docs/libcurl; $(MAKE) check)
-@@ -267,12 +267,12 @@
+@@ -272,12 +272,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
 -	cd docs && $(MAKE) install
-+	#cd docs && $(MAKE) install
++#	cd docs && $(MAKE) install
  
  # We extend the standard uninstall with a custom hook:
  uninstall-hook:
  	cd include && $(MAKE) uninstall
 -	cd docs && $(MAKE) uninstall
-+	#cd docs && $(MAKE) uninstall
++#	cd docs && $(MAKE) uninstall
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generating a fresh ca-bundle.crt"
 --- Makefile.in
 +++ Makefile.in
-@@ -613,7 +613,7 @@
+@@ -615,8 +615,8 @@
+  $(VC14_LIBVCXPROJ) $(VC14_SRCVCXPROJ)
  
  bin_SCRIPTS = curl-config
- SUBDIRS = lib src include
--DIST_SUBDIRS = $(SUBDIRS) tests packages docs scripts
-+DIST_SUBDIRS = $(SUBDIRS)       packages      scripts
+-SUBDIRS = lib docs src include
+-DIST_SUBDIRS = $(SUBDIRS) tests packages scripts
++SUBDIRS = lib      src include
++DIST_SUBDIRS = $(SUBDIRS)       packages scripts
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  LIB_VAUTH_CFILES = vauth/vauth.c vauth/cleartext.c vauth/cram.c         \
-@@ -1325,10 +1325,10 @@
- 	done)
- 
- html:
--	cd docs && make html
-+	#cd docs && make html
- 
- pdf:
--	cd docs && make pdf
-+	#cd docs && make pdf
- 
- check: test examples check-docs
- 
-@@ -1351,7 +1351,7 @@
- @CROSSCOMPILING_FALSE@	@(cd tests; $(MAKE) all am-test)
- 
- examples:
--	@(cd docs/examples; $(MAKE) check)
-+	#@(cd docs/examples; $(MAKE) check)
- 
- check-docs:
- 	@(cd docs/libcurl; $(MAKE) check)
-@@ -1415,12 +1415,12 @@
+@@ -1421,12 +1421,12 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
 -	cd docs && $(MAKE) install
-+	#cd docs && $(MAKE) install
++#	cd docs && $(MAKE) install
  
  # We extend the standard uninstall with a custom hook:
  uninstall-hook:
  	cd include && $(MAKE) uninstall
 -	cd docs && $(MAKE) uninstall
-+	#cd docs && $(MAKE) uninstall
++#	cd docs && $(MAKE) uninstall
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generating a fresh ca-bundle.crt"

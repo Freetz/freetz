@@ -1,0 +1,14 @@
+--- Makefile.in
++++ Makefile.in
+@@ -25,11 +25,9 @@
+ install-y: all
+ 	$(mkdir_p) $(DESTDIR)$(fusemoduledir)
+ 	$(INSTALL) -m 644 $(fusemodule) $(DESTDIR)$(fusemoduledir)/$(fusemodule)
+-	-/sbin/depmod -a
+ 
+ uninstall-y:
+ 	rm -f $(DESTDIR)$(fusemoduledir)/$(fusemodule)
+-	-/sbin/depmod -a
+ 
+ clean:
+ 	-rm -f $(fusemodule) *.o .*.cmd *.mod.c *.ko *.s */*.o

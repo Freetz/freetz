@@ -1,11 +1,11 @@
 --- modules/socket-module.c
 +++ modules/socket-module.c
-@@ -453,7 +453,7 @@
- #ifndef h_addr
+@@ -455,7 +455,7 @@
+ # ifndef h_addr
     /* Older interface.  There is only one address, so fake a list */
     h_addr_list = fake_h_addr_list;
 -   h_addr_list [0] = hp->h_addr;
 +   h_addr_list [0] = hp->h_addr_list[0];
     h_addr_list [1] = NULL;
- #else
+ # else
     h_addr_list = hp->h_addr_list;

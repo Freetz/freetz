@@ -1,0 +1,11 @@
+. /mod/etc/conf/rsync.cfg
+inetdcfg_desc="rsync server"
+inetdcfg_port=${RSYNC_BINDADDRESS}${RSYNC_BINDADDRESS:+:}${RSYNC_PORT:-873}
+inetdcfg_sock=stream
+# TODO: replace the test below with "isIPv4 $RSYNC_BINDADDRESS" as soon as it's implemented
+inetdcfg_proto=tcp$([ -n "${RSYNC_BINDADDRESS}" -a -z "${RSYNC_BINDADDRESS##*.*.*.*}" ] || echo -n "$1")
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/bin/rsync
+inetdcfg_arg0=rsync
+inetdcfg_args="--daemon --config=/mod/etc/rsync.conf"

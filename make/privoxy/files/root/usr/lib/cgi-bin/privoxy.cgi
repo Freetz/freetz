@@ -3,7 +3,6 @@
 . /usr/lib/libmodcgi.sh
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
-check "$PRIVOXY_ENABLED" yes:auto "*":man
 check "$PRIVOXY_GET_ADBLOCKLIST" yes:getadblocklist "*":nix
 check "$PRIVOXY_TOGGLE" 1:toggle "*":neutral
 check "$PRIVOXY_ENABLE_REMOTE_TOGGLE" 1:remote_toggle_yes "*":remote_toggle_no
@@ -17,13 +16,9 @@ if [ "$(cgi_param load_adblocklist)" == "yes" -a -n "$(cgi_param alt_path)" ]; t
 fi
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p><input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label> <input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$PRIVOXY_ENABLED" "" "" 0
 sec_end
+
 sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
 
 cat << EOF

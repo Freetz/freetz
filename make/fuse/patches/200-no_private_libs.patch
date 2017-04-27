@@ -1,0 +1,10 @@
+--- fuse.pc.in
++++ fuse.pc.in
+@@ -6,6 +6,5 @@
+ Name: fuse
+ Description: Filesystem in Userspace
+ Version: @VERSION@
+-Libs: -L${libdir} -lfuse -pthread
+-Libs.private: @libfuse_libs@
++Libs: -L${libdir} -lfuse @libfuse_libs@ -pthread
+ Cflags: -I${includedir}/fuse -D_FILE_OFFSET_BITS=64

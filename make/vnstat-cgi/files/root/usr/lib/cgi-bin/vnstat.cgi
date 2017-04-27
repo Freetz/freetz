@@ -2,21 +2,14 @@
 
 . /usr/lib/libmodcgi.sh
 
-check "$VNSTAT_ENABLED" yes:auto "*":man
 check "$VNSTAT_WEBENABLED" yes:webenabled
 check "$VNSTAT_WEB_AUTH" yes:web_auth
 check "$VNSTAT_WEB_INETD" yes:web_inetd
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1">$(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2">$(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$VNSTAT_ENABLED" "" "" 0
 sec_end
+
 sec_begin '$(lang de:"Anzeigen" en:"Show statistics")'
 
 cat << EOF
@@ -78,4 +71,3 @@ EOF
 fi
 
 sec_end
-

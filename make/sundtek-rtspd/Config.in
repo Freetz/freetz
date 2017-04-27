@@ -1,0 +1,10 @@
+config FREETZ_PACKAGE_SUNDTEK_RTSPD
+	bool "Include Sundtek Streaming Server (rtspd)"
+	depends on FREETZ_PACKAGE_SUNDTEK && !FREETZ_PACKAGE_SUNDTEK_VERSION_2013
+
+config FREETZ_PACKAGE_SUNDTEK_RTSPD_FORCE_DOWNLOAD
+	bool "Force update on each build"
+	depends on FREETZ_PACKAGE_SUNDTEK_RTSPD
+	default y
+	help
+		Download the latest version of rtspd each time Freetz is built.

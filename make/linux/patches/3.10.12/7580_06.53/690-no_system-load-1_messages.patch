@@ -1,0 +1,10 @@
+--- linux-3.10/drivers/char/avm_power/avm_cpu_process.c
++++ linux-3.10/drivers/char/avm_power/avm_cpu_process.c
+@@ -296,6 +296,7 @@
+                         global_page_state(NR_PAGETABLE)+
+                         global_page_state(NR_BOUNCE);
+ 
++            if(pcpuidle->fullrun > 1)
+             printk(KERN_WARNING"system-load %d%s loadavg %lu.%lu %lu.%lu %lu.%lu - %d tasks:%lu %% curr:%s(%lu %%) max:%s(%lu %%, pid:%d) "
+                                "pgstat: sum=%lu free=%lu slab=%lu alloc/s=%lu fault=%lu/s (sleep %lu)"
+                     "\n", 

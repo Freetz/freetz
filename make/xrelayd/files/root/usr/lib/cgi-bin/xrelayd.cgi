@@ -1,24 +1,15 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
-
-check "$XRELAYD_ENABLED" yes:auto_c "*":man_c
 
 for i in 0 1 2 3 4 5 6 7; do
 	select "$XRELAYD_VERBOSE" "$i":verbose${i}
 done
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_c_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_c_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$XRELAYD_ENABLED" "" "" 0
 sec_end
+
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cat << EOF

@@ -1,10 +1,8 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
-check "$DNSMASQ_ENABLED" yes:auto "*":man
 check "$DNSMASQ_DHCP" yes:dhcp_yes "*":dhcp_no
 check "$DNSMASQ_BOGUSPRIV" yes:boguspriv
 check "$DNSMASQ_ETHERS" yes:ethers
@@ -18,11 +16,9 @@ check "$DNSMASQ_LOG_QUERIES" yes:log_queries
 check "$DNSMASQ_DNSSEC" yes:dnssec
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
+cgi_print_radiogroup_service_starttype "enabled" "$DNSMASQ_ENABLED" "" "" 0
+
 cat << EOF
-<p>
-<input id="ena1" type="radio" name="enabled" value="yes"$auto_chk><label for="ena1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="ena2" type="radio" name="enabled" value="no"$man_chk><label for="ena2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
 <p>
 <input type="hidden" name="wrapper" value="no">
 <input id="wrap1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="wrap1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>

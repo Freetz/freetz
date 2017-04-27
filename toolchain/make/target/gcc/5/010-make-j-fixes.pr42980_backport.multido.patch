@@ -1,0 +1,102 @@
+--- libgcc/Makefile.in
++++ libgcc/Makefile.in
+@@ -116,7 +116,7 @@
+ all-multi:
+ 	# If this is the top-level multilib, build all the other
+ 	# multilibs.
+-	@: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
+ 
+ .PHONY: check installcheck
+ check:
+--- libiberty/Makefile.in
++++ libiberty/Makefile.in
+@@ -379,14 +379,14 @@
+ 		  ${INSTALL_DATA} $$h $(DESTDIR)$${thd}; \
+ 		done; \
+ 	fi
+-	@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
+ 
+ install_to_tooldir: all
+ 	${mkinstalldirs} $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)
+ 	$(INSTALL_DATA) $(TARGETLIB) $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)n
+ 	( cd $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR) ; chmod 644 $(TARGETLIB)n; $(RANLIB) $(TARGETLIB)n )
+ 	mv -f $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)n $(DESTDIR)$(tooldir)/lib/$(MULTIOSDIR)/$(TARGETLIB)
+-	@$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
++	@: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=install
+ 
+ # required-list was used when building a shared bfd/opcodes/libiberty
+ # library.  I don't know if it used by anything currently.
+--- libjava/Makefile.am
++++ libjava/Makefile.am
+@@ -1616,17 +1616,17 @@
+ maintainer-clean-recursive: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	$(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do # $(MAKE)
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do # $(MAKE)
+ mostlyclean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean # $(MAKE)
+ clean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=clean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=clean multi-clean # $(MAKE)
+ distclean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=distclean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=distclean multi-clean # $(MAKE)
+ maintainer-clean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=maintainer-clean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=maintainer-clean multi-clean # $(MAKE)
+ 
+ if ANONVERSCRIPT
+ if ANONVERSCRIPT_SUN
+--- libjava/Makefile.in
++++ libjava/Makefile.in
+@@ -12766,17 +12766,17 @@
+ maintainer-clean-recursive: maintainer-clean-multi
+ 
+ all-multi:
+-	: $(MAKE) ; exec $(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do
++	$(MULTIDO) $(AM_MAKEFLAGS) DO=all multi-do # $(MAKE)
+ install-multi:
+-	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do
++	$(MULTIDO) $(AM_MAKEFLAGS) DO=install multi-do # $(MAKE)
+ mostlyclean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=mostlyclean multi-clean # $(MAKE)
+ clean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=clean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=clean multi-clean # $(MAKE)
+ distclean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=distclean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=distclean multi-clean # $(MAKE)
+ maintainer-clean-multi:
+-	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=maintainer-clean multi-clean
++	$(MULTICLEAN) $(AM_MAKEFLAGS) DO=maintainer-clean multi-clean # $(MAKE)
+ 
+ # This must be at the end of the Makefile, otherwise .SECONDEXPANSION
+ # causes expansion of filenames with $ in their names, which breaks the build.
+--- libobjc/Makefile.in
++++ libobjc/Makefile.in
+@@ -196,7 +196,7 @@
+ # The 'all' rule must be the first one so that it is executed if
+ # nothing is specified on the command-line.
+ all: libobjc$(libsuffix).la $(OBJC_BOEHM_GC)
+-	: $(MAKE) ; exec $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO=all
+ 
+ .SUFFIXES:
+ .SUFFIXES: .c .m .lo
+@@ -315,7 +315,7 @@
+ 	  $(LIBTOOL_INSTALL) $(INSTALL) libobjc_gc$(libsuffix).la \
+ 				$(DESTDIR)$(toolexeclibdir);\
+ 	fi
+-	$(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
++	: $(MAKE) ; $(MULTIDO) $(FLAGS_TO_PASS) multi-do DO="$@"
+ 	@-$(LIBTOOL) --mode=finish $(DESTDIR)$(toolexeclibdir)
+ 
+ # Copy Objective-C headers to installation include directory.

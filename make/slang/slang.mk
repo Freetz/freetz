@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 2.2.4)
-$(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
+$(call PKG_INIT_BIN, 2.3.1a)
+$(PKG)_LIB_VERSION:=2.3.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=7fcfd447e378f07dd0c0bae671fe6487
-$(PKG)_SITE:=ftp://space.mit.edu/pub/davis/slang/v2.2
+$(PKG)_SOURCE_SHA1:=a8ea7f1b5736160a94efb67b137a0f5b9916bdf2
+$(PKG)_SITE:=http://www.jedsoft.org/releases/slang
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/elfobjs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib$(pkg).so.$($(PKG)_LIB_VERSION)

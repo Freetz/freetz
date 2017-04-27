@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3.2.5)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.bz2
-$(PKG)_SOURCE_MD5:=b05c7a6d5269c04891f02f43d4312b30
-$(PKG)_SITE:=ftp://ftp.$(pkg).com/$(pkg)/
+$(call PKG_INIT_BIN, 3.2.6)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.xz
+$(PKG)_SOURCE_SHA256:=5f200687c05d0807690d9fb770327b226f02dd86155b49e750853fce4e31098d
+$(PKG)_SITE:=ftp://ftp.ncftp.com/ncftp
 
 $(PKG)_BINARIES_ALL := ncftp ncftpget ncftpput ncftpbatch ncftpls
 # ncftp is always included
@@ -16,6 +16,7 @@ $(PKG)_CONFIGURE_ENV += wi_cv_look_for_resolv=no
 # the values below are the correct ones, they are equal to the guessed ones
 $(PKG)_CONFIGURE_ENV += wi_cv_snprintf_terminates=yes
 $(PKG)_CONFIGURE_ENV += wi_cv_snprintf_returns_ptr=no
+$(PKG)_CONFIGURE_ENV += TARGET_ARCH=$(TARGET_ARCH)
 
 $(PKG)_CONFIGURE_OPTIONS += --without-curses
 $(PKG)_CONFIGURE_OPTIONS += --without-ncurses

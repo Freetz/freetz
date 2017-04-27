@@ -1,0 +1,10 @@
+config FREETZ_PACKAGE_ATOP
+	bool "atop 2.2.3 (binary only)"
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libz
+	default n
+	help
+		The program atop is an interactive monitor to view the load on a Linux system.
+		It shows the occupation of the most critical hardware resources
+		(from a performance point of view) on system level, i.e. cpu, memory, disk and network.

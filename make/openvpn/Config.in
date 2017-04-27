@@ -15,7 +15,7 @@ choice
 	bool "2.3.14"
 
 	config FREETZ_PACKAGE_OPENVPN_VERSION_2_4
-	bool "2.4.0 - EXPERIMENTAL"
+	bool "2.4.1 - EXPERIMENTAL"
 endchoice
 
 choice
@@ -78,6 +78,14 @@ config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 	default y
 	help
 		LZO compression for VPN traffic
+
+config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
+	bool "With LZ4 compression"
+	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_VERSION_2_4
+	select FREETZ_LIB_liblz4 if ! FREETZ_PACKAGE_OPENVPN_STATIC
+	default n
+	help
+		LZ4 compression for VPN traffic
 
 config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
 	bool "With traffic obfuscation"

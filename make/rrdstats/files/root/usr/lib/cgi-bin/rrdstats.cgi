@@ -3,7 +3,6 @@
 . /usr/lib/libmodcgi.sh
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
-check "$RRDSTATS_ENABLED" yes:auto "*":man
 check "$RRDSTATS_XCHGUPDOWN" yes:xchgupdown
 check "$RRDSTATS_NOTLAZYM" yes:notlazym
 check "$RRDSTATS_NOTLAZYS" yes:notlazys
@@ -49,15 +48,9 @@ check "$RRDSTATS_DIGITEMP_INETD" yes:digitemp_inetd
 check "$RRDSTATS_DIGITEMP_AUTH"  yes:digitemp_auth
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1">$(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2">$(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
-
+cgi_print_radiogroup_service_starttype "enabled" "$RRDSTATS_ENABLED" "" "" 0
 sec_end
+
 sec_begin '$(lang de:"Anzeigen" en:"Show statistics")'
 
 cat << EOF

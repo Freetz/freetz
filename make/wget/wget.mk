@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.18)
+$(call PKG_INIT_BIN, 1.19.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=af9ca95a4bb8ac4a9bf10aeae66fa5ec
+$(PKG)_SOURCE_SHA256:=0c950b9671881222a4d385b013c9604e98a8025d1988529dfca0e93617744cd2
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget

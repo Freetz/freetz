@@ -61,7 +61,9 @@ start() {
 		local _resolv_conf_dns="$(modconf value MOD_RESOLV_DNS mod 2>/dev/null)"
 		local _bind_enabled="$(modconf value BIND_ENABLED bind 2>/dev/null)"
 		local _dnsmasq_enabled="$(modconf value DNSMASQ_ENABLED dnsmasq 2>/dev/null)"
-		if [ "$_resolv_conf_dns" == "127.0.0.1" -a "$_bind_enabled" != yes -a "$_dnsmasq_enabled" != yes ]; then
+		local _dnsmasq_port="$(modconf value DNSMASQ_DNS_PORT dnsmasq 2>/dev/null)"
+		local _dnsmasq_dns_enabled=$([ "$_dnsmasq_enabled" = yes -a "$_dnsmasq_port" -gt 0 ] 2>/dev/null && echo yes || echo no)
+		if [ "$_resolv_conf_dns" == "127.0.0.1" -a "$_bind_enabled" != yes -a "$_dnsmasq_dns_enabled" != yes ]; then
 			echo -n "discarded libmultid, no enabled dns server ... "
 		else
 			export LD_PRELOAD=libmultid.so

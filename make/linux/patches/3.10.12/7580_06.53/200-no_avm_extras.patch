@@ -1,0 +1,11 @@
+--- linux-3.10/drivers/rtc/Makefile
++++ linux-3.10/drivers/rtc/Makefile
+@@ -135,7 +135,7 @@
+ ifeq ($(CONFIG_RTC_DRV_AVM_REF_CLOCK),m)
+ CFLAGS_rtc-avm.o += -DRTC_AVM_DEVICE_COUNT=1 # -DRTC_AVM_DEBUG=1
+ 
+-extra-y			 += install-S09-rtc
++#extra-y			 += install-S09-rtc
+ 
+ $(INSTALL_MOD_PATH)/etc/init.d/S09-rtc: $(src)/Makefile
+ 	@echo "  GEN     $@" >&2

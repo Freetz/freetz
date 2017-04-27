@@ -1,0 +1,38 @@
+--- linux-2.6.32/include/linux/skbuff.h
++++ linux-2.6.32/include/linux/skbuff.h
+@@ -520,10 +520,6 @@
+ 	 */
+     unsigned long uniq_id;
+ 
+-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+-	struct nf_conntrack	*nfct;
+-	struct sk_buff		*nfct_reasm;
+-#endif
+ #if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
+ 	struct nf_queue_entry	*nf_queue_entry;
+ #endif
+@@ -587,6 +583,10 @@
+ 				*data;
+ 	unsigned int		truesize;
+ 	atomic_t		users;
++#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
++	struct nf_conntrack	*nfct;
++	struct sk_buff		*nfct_reasm;
++#endif
+ #ifdef CONFIG_ATHRS_HW_NAT
+         __u32                   ath_hw_nat_fw_flags;
+ #endif
+--- linux-2.6.32/net/core/skbuff.c
++++ linux-2.6.32/net/core/skbuff.c
+@@ -453,6 +453,11 @@
+ 	 * the tail pointer in struct sk_buff!
+ 	 */
+ 	memset(skb, 0, offsetof(struct sk_buff, tail));
++#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
++	skb->nfct = NULL;
++	skb->nfct_reasm = NULL;
++#endif
++
+ 	skb_track_caller(skb);
+ 	skb->truesize = size + sizeof(struct sk_buff);
+ 	atomic_set(&skb->users, 1);

@@ -23,15 +23,16 @@ log_freetz() {
 find_mnt_name() {
 	local mnt_name=""
 
-	local storage_prefix="${MOD_STOR_PREFIX:-uStor}"
+	local storage_prefix=$(echo -n ${MOD_STOR_PREFIX})                  # trim leading, trailing, and multiple spaces in-between
+	storage_prefix=${storage_prefix:-uStor}                             # and ensure it's not empty
+
 	local dev_idx=$(echo -n ${1:2} | tr '[a-j]' '[0-9]')
-	local part_idx=$2
-	[ $part_idx -gt 9 ] && part_idx=$(echo $((part_idx-10)) | tr "0-5" "A-F") # partition index in HEX
+	local part_idx=$(printf "%X" $2)                                    # partition index in HEX
 
 	if [ "$MOD_STOR_NAMING_SCHEME" == "PARTITION_LABEL" ]; then
 		[ "$2" == "0" ] && local mnt_device="/dev/$1" || local mnt_device="/dev/$1$2"
 		mnt_name="$(blkid $mnt_device | sed -rn 's!.*LABEL="([^"]*).*!\1!p')"
-		mnt_name=$(echo $mnt_name) # trim leading, trailing, and multiple spaces in-between
+		mnt_name=$(echo -n $mnt_name)                               # trim leading, trailing, and multiple spaces in-between
 	elif [ "$MOD_STOR_NAMING_SCHEME" == "VENDOR_PRODUCT" ]; then
 		# a slightly modified version of AVMs nicename from the 6.20 firmware series
 		local VENDOR=$(cat /sys/block/$1/device/vendor 2>/dev/null | tr -d ' ' | tr -c "\na-zA-Z0-9" '-')
@@ -45,7 +46,7 @@ find_mnt_name() {
 		mnt_name="${storage_prefix:0:30}${dev_idx}${part_idx}"
 	fi
 
-	echo $mnt_name
+	echo -n ${mnt_name// /_}                                            # replace all spaces with underscores
 }
 
 # mount filesystem according to its type
@@ -89,7 +90,7 @@ mount_fs() {
 			/etc/init.d/rc.swap autostart $dev_node
 			err_mo=$((17+$?))
 			;;
-		*)                                                                    # fs type unknown
+		*)                                                                # fs type unknown
 			mount $dev_node $mnt_path
 			err_mo=$?
 			;;
@@ -180,7 +181,7 @@ do_mount_locked() {
 		fi
 		[ -e /lib/libmediasrv.so ] && msgsend upnpd plugin force_notify libmediasrv.so new_partition            # mediasrv
 		[ -e /lib/libgpmsrv.so   ] && msgsend upnpd plugin force_notify libgpmsrv.so "new_partition:$mnt_path"  # google play music
-		[ -x $fritznasdb_control ] && $fritznasdb_control new_partition "$mnt_path"                             # fritznasdb
+		[ -x $fritznasdb_control ] && $fritznasdb_control new_partition $mnt_path                               # fritznasdb
 
 		[ -x "$(which led-ctrl)" ] && led-ctrl filesystem_done                                                  # led
 
@@ -253,8 +254,8 @@ do_mount_locked() {
 #
 do_umount_locked() {
 	local mnt_path=$1                                                         # /var/media/ftp/uStorMN
-	local mnt_name="${mnt_path##*/}"                                          # uStorMN or LABEL
-	local mnt_dev=$(grep -m 1 "$mnt_path" /proc/mounts | sed 's/ .*//')       # /dev/sdXY
+	local mnt_name=${mnt_path##*/}                                            # uStorMN or LABEL
+	local mnt_dev=$(grep -m 1 $mnt_path /proc/mounts | sed 's/ .*//')         # /dev/sdXY
 
 	local rcftpd="/etc/init.d/rc.ftpd"
 	[ -e /mod/etc/init.d/rc.smbd ] && local rcsmbd="/mod/etc/init.d/rc.smbd" || local rcsmbd="/etc/init.d/rc.smbd"
@@ -269,7 +270,7 @@ do_umount_locked() {
 	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
 
 	# notify webdav & TAM unconditionally, i.e. before both "mount -o move" & the actual unmount (this is what AVM does)
-	[ -x $webdav_control ] && $webdav_control lost_partition "$mnt_path"      # webdav
+	[ -x $webdav_control ] && $webdav_control lost_partition $mnt_path        # webdav
 	[ -p $tammnt ] && echo "u$mnt_path" > $tammnt                             # TAM
 
 	# notify other components before the actual unmount, this is NOT exactly the same what AVM does but quite close to it
@@ -281,7 +282,7 @@ do_umount_locked() {
 	[ -e /sbin/gpmdb         ] && msgsend gpmdb "lost_partition:$mnt_path"                               # google play music database
 
 	# still some open files under $mnt_path ?
-	if ls -l /proc/*/cwd /proc/*/fd/* 2>/dev/null | grep -q "$mnt_path"; then
+	if ls -l /proc/*/cwd /proc/*/fd/* 2>/dev/null | grep -q $mnt_path; then
 		# wait some time to give AVM components a chance
 		# to flush / to close the files under $mnt_path
 		sleep 1
@@ -333,7 +334,7 @@ do_umount_locked() {
 
 	if grep -v " hfsplus " /proc/mounts | grep -q " $mnt_path "; then         # mount ro
 		log_freetz notice "$mnt_path ($mnt_dev) - mounting read-only"
-		mount "$mnt_path" -o remount,ro
+		mount $mnt_path -o remount,ro
 		umount $mnt_path > /dev/null 2>&1
 	fi
 
@@ -363,7 +364,7 @@ do_umount_locked() {
 		mv -f /var/dev-$$.map $DEVMAP
 
 		rmdir $mnt_path
-		[ -d "$mnt_path" ] && log_freetz err "Directory $mnt_path could not be removed"
+		[ -d $mnt_path ] && log_freetz err "Directory $mnt_path could not be removed"
 
 		eventadd 141 "Partition $mnt_name ($mnt_dev)"
 		log_freetz notice "$mnt_path ($mnt_dev) - unmounted successfully"
@@ -404,7 +405,7 @@ do_umount() {
 	fi
 	local err_code=0
 	passeeren                                                                 # semaphore on
-	do_umount_locked "$mnt_path"
+	do_umount_locked $mnt_path
 	err_code=$?
 	vrijgeven                                                                 # semaphore off
 	return $err_code
@@ -527,9 +528,9 @@ storage_unplug() {
 	local remained_devs=""
 	local unplug_ret=0
 	[ -x $mserver_stop ] && $mserver_stop
-	mount "$mnt_path" -o remount,ro
+	mount $mnt_path -o remount,ro
 	[ -x $webdav_control ] && $webdav_control lost_all_partitions
-	do_umount "$mnt_path"                                                     # unmount device
+	do_umount $mnt_path                                                       # unmount device
 	unplug_ret=$?
 	remained_devs=$(grep "$mnt_main_dev" /proc/mounts)                                                       # check for remained partitions on main device
 	[ -z "$remained_devs" ] && is_ctlmgr_parent_of_storage_unplug && remove_swap dummy /proc "$mnt_main_dev" # remove swap partition if required

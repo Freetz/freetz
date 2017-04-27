@@ -1,0 +1,57 @@
+#!/bin/bash
+
+declare -x SFK
+SFK="${SFK:-$(dirname $(readlink -f ${0}))/sfk}"
+[ -x "$SFK" ] || { echo >&2 "ERROR: this script requires sfk tool which is not found on your system, expected location of the tool is \"$SFK\""; exit 1; }
+
+#
+# $1 - input file
+# $2 - pattern type (bin, pat/text, spat/spats - see "sfk help pat" for details)
+# $3 - pattern
+#
+# returns:
+#   offsets of all pattern matches
+getHexOffsetsOfAllMatches() {
+	"$SFK" hexfind "$1" -$2 "/$3/" -quiet | sed -nr -e 's|.*hit at offset (0x[0-9A-F]+)|\1|p'
+}
+getDecOffsetsOfAllMatches() {
+	local matches=$(getHexOffsetsOfAllMatches "$@")
+	[ -z "$matches" ] && return
+	echo "$matches" | xargs printf "%d\n"
+}
+
+#
+# $1 - input file
+# $2 - offset
+# $3 - length
+#
+getHexContentAtOffset() {
+	"$SFK" hexdump -offlen "$2" "$3" -nofile -pure "$1" | tr -d $'\n'
+}
+
+#
+# zero pads each line of stdin to number of characters specified in $1
+#
+# $1 - number of characters to pad to, default 8 if omitted
+#
+padLeftZero() {
+	local numberOfCharsToPadTo="${1:-8}"
+	sed -r -e ':zero_pad;s/^(.{1,'"$((numberOfCharsToPadTo-1))"'})((.{'"${numberOfCharsToPadTo}"'})*)$/0\1\2/;tzero_pad'
+}
+
+#
+# inverts endianness of each line of stdin
+# each line is assumed to be a hex-string representation of 32-bit data and is processed separately
+# if hex-string length is not muptiple of 8 it is zero padded
+#
+invertEndianness() {
+	padLeftZero 8 | sed -r -e 's/(..)(..)(..)(..)/\4\3\2\1/g'
+}
+
+#
+# $1 - input file
+# $2 - offset
+#
+getLEu32AtOffset() {
+	echo -n $((0x$(getHexContentAtOffset "$1" "$2" 4 | invertEndianness)))
+}

@@ -1,0 +1,44 @@
+--- linux-3.10/drivers/char/dect_io/init_dect_io
++++ linux-3.10/drivers/char/dect_io/init_dect_io
+@@ -9,7 +9,7 @@
+ 
+ for i in `find . -name Makefile.$KERNEL_CLASS` ; do
+     dest=${i%.$KERNEL_CLASS}
+-    source="`pwd`/$i"
++    source="${i##*/}"
+     rm -f $dest
+     ln -fvs $source $dest
+ done
+--- linux-3.10/drivers/char/flash_update/init_flash_update
++++ linux-3.10/drivers/char/flash_update/init_flash_update
+@@ -9,7 +9,7 @@
+ 
+ for i in `find . -name Makefile.$KERNEL_CLASS` ; do
+     dest=${i%.$KERNEL_CLASS}
+-    source="`pwd`/$i"
++    source="${i##*/}"
+     rm -f $dest
+     ln -fvs $source $dest
+ done
+--- linux-3.10/drivers/isdn/avm_dect/init_avm_dect
++++ linux-3.10/drivers/isdn/avm_dect/init_avm_dect
+@@ -9,7 +9,7 @@
+ 
+ for i in `find . -name Makefile.$KERNEL_CLASS` ; do
+     dest=${i%.$KERNEL_CLASS}
+-    source="`pwd`/$i"
++    source="${i##*/}"
+     rm -f $dest
+     ln -fvs $source $dest
+ done
+--- linux-3.10/drivers/isdn/isdn_fon5/init_isdn
++++ linux-3.10/drivers/isdn/isdn_fon5/init_isdn
+@@ -9,7 +9,7 @@
+ 
+ for i in `find . -name Makefile.$KERNEL_CLASS` ; do
+     dest=${i%.$KERNEL_CLASS}
+-    source="`pwd`/$i"
++    source="${i##*/}"
+     rm -f $dest
+     ln -fvs $source $dest
+ done

@@ -1,21 +1,27 @@
-$(call PKG_INIT_LIB, 2.0.22-stable)
-$(PKG)_MAJOR_VERSION:=2.0
-$(PKG)_SHLIB_VERSION:=5.1.9
+$(call PKG_INIT_LIB, 2.1.8-stable)
+$(PKG)_MAJOR_VERSION:=2.1
+$(PKG)_SHLIB_VERSION:=6.0.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c4c56f986aa985677ca1db89630a2e11
-$(PKG)_SITE:=@SF/levent
+$(PKG)_SOURCE_MD5:=f3eeaed018542963b7d2416ef1135ecc
+$(PKG)_SITE:=https://github.com/libevent/libevent/releases/download/release-$($(PKG)_VERSION)
 
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
+# zlib is needed only for tests
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_zlib_h)
 $(PKG)_CONFIGURE_ENV += $(pkg)_header_zlib_h=no
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-thread-support
+$(PKG)_CONFIGURE_OPTIONS += --enable-function-sections
 $(PKG)_CONFIGURE_OPTIONS += --disable-openssl
+$(PKG)_CONFIGURE_OPTIONS += --disable-debug-mode
+$(PKG)_CONFIGURE_OPTIONS += --disable-libevent-regress
+$(PKG)_CONFIGURE_OPTIONS += --disable-samples
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

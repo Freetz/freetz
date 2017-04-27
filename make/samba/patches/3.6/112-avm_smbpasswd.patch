@@ -1,6 +1,6 @@
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -1019,13 +1019,7 @@
+@@ -1025,15 +1025,7 @@
  
  PASSWD_UTIL_OBJ = utils/passwd_util.o
  
@@ -10,12 +10,14 @@
 -		$(POPT_LIB_OBJ) $(SMBLDAP_OBJ) \
 -		$(LIBMSRPC_GEN_OBJ) $(LIBMSRPC_OBJ) \
 -		$(LIBCLI_SAMR_OBJ) \
--		rpc_client/init_lsa.o
+-		$(LIBCLI_NETLOGON_OBJ) \
+-		rpc_client/init_lsa.o \
+-		rpc_client/init_netlogon.o
 +SMBPASSWD_OBJ = utils/avm_smbpasswd.o ../libcli/auth/smbdes.o ../lib/crypto/md4.o
  
  PDBEDIT_OBJ = utils/pdbedit.o $(PASSWD_UTIL_OBJ) $(PARAM_OBJ) $(PASSDB_OBJ) \
  		$(LIBSAMBA_OBJ) $(LIBTSOCKET_OBJ) \
-@@ -1789,7 +1783,7 @@
+@@ -1811,7 +1803,7 @@
  		echo "$(COMPILE_CC_PATH)" 1>&2;\
  		$(COMPILE_CC_PATH) >/dev/null 2>&1
  
@@ -24,7 +26,7 @@
  	@echo "Compiling $< (multicall)"
  	@$(COMPILE_CC_PATH) -Dmain=smbpasswd_main && exit 0;\
  		echo "The following command failed:" 1>&2;\
-@@ -1798,7 +1792,7 @@
+@@ -1820,7 +1812,7 @@
  
  SMBD_MULTI_O = $(patsubst smbd/server.o,smbd/server_multicall.o,$(SMBD_OBJ))
  NMBD_MULTI_O = $(patsubst nmbd/nmbd.o,nmbd/nmbd_multicall.o,$(filter-out $(LIB_DUMMY_OBJ),$(NMBD_OBJ)))
@@ -33,7 +35,7 @@
  MULTI_O = multi.o
  
  MULTICALL_O = $(sort $(SMBD_MULTI_O) $(NMBD_MULTI_O) $(SMBPASSWD_MULTI_O) $(MULTI_O))
-@@ -1893,11 +1887,9 @@
+@@ -1915,11 +1907,9 @@
  		$(LIBS) $(POPT_LIBS) $(KRB5LIBS) $(LDAP_LIBS) $(NSCD_LIBS) \
  		$(LIBTALLOC_LIBS) $(LIBTEVENT_LIBS) $(LIBTDB_LIBS) $(LIBWBCLIENT_LIBS) $(ZLIB_LIBS)
  

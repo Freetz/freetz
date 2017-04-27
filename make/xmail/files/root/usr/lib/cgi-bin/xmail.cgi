@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
 XMAIL_SSLSUPPORT= XMAIL_SSLVISIBLE=
@@ -10,7 +9,6 @@ XMAIL_SSLSUPPORT= XMAIL_SSLVISIBLE=
 # Check for installed and running PHPXmail
 [ -e /mod/etc/init.d/rc.phpxmail ] && XMAIL_PHPXMAIL=1
 
-check "$XMAIL_ENABLED" yes:auto "*":man
 check "$XMAIL_UNPRIV" yes:unpriv
 check "$XMAIL_SMTP" yes:smtp
 check "$XMAIL_SSMTP" yes:ssmtp
@@ -32,12 +30,7 @@ sec_end
 )
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-cat << EOF
-<p>
-<input id="e1" type="radio" name="enabled" value="yes"$auto_chk><label for="e1"> $(lang de:"Automatisch" en:"Automatic")</label>
-<input id="e2" type="radio" name="enabled" value="no"$man_chk><label for="e2"> $(lang de:"Manuell" en:"Manual")</label>
-</p>
-EOF
+cgi_print_radiogroup_service_starttype "enabled" "$XMAIL_ENABLED" "" "" 0
 sec_end
 
 sec_begin '$(lang de:"Zentrale Serverkonfiguration" en:"Core server configuration")'

@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.4.9)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/axTLS
+$(call PKG_INIT_BIN, 2.1.3)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/axtls-code
 $(PKG)_SOURCE:=axTLS-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=6d519bc3b5f20faa6ef8d423f5062241
+$(PKG)_SOURCE_MD5:=1f0f4d0233e9d9709117aa95b039fa15
 $(PKG)_SITE:=@SF/axtls
 
 $(PKG)_CATEGORY:=Unstable

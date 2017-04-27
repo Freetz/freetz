@@ -1,10 +1,9 @@
 . /mod/etc/conf/subversion.cfg
-[ -n "$SUBVERSION_BINDADDRESS" ] && local BINDADDRESS="${SUBVERSION_BINDADDRESS}:"
-echo "$BINDADDRESS" | grep "\." -vq && local BINDPROTO=$1
 inetdcfg_desc="subversion server"
-inetdcfg_port=${BINDADDRESS}$SUBVERSION_PORT
+inetdcfg_port=${SUBVERSION_BINDADDRESS}${SUBVERSION_BINDADDRESS:+:}${SUBVERSION_PORT:-3690}
 inetdcfg_sock=stream
-inetdcfg_proto=tcp$BINDPROTO
+# TODO: replace the test below with "isIPv4 $SUBVERSION_BINDADDRESS" as soon as it's implemented
+inetdcfg_proto=tcp$([ -n "${SUBVERSION_BINDADDRESS}" -a -z "${SUBVERSION_BINDADDRESS##*.*.*.*}" ] || echo -n "$1")
 inetdcfg_flags=nowait
 inetdcfg_user=$SUBVERSION_USER:$SUBVERSION_GROUP
 inetdcfg_exe=/usr/bin/svnserve
