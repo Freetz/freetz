@@ -113,7 +113,7 @@
  void parseifinfo(int newdb)
  {
  	uint64_t rxchange=0, txchange=0, btime, cc;   /* rxchange = rx change in MB */
-@@ -326,8 +411,15 @@
+@@ -327,8 +412,15 @@
  		/* btime in /proc/stat seems to vary ±1 second so we use btime-BVAR just to be safe */
  		/* the variation is also slightly different between various kernels... */
  		if (data.btime < (btime-cfg.bvar)) {
