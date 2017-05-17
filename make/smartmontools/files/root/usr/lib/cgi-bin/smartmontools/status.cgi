@@ -36,7 +36,7 @@ for DEVICE in $DEVICES; do
 	POH="$(echo "$DATAA" | sed -rn 's/.*Power_On_Hours.* ([0-9]*)$/\1/p')"
 	WLC="$(echo "$DATAA" | sed -rn 's/.*Perc_Rated_Life_Used.* ([0-9]*)$/\1/p')"
 	DATAH="$(smartctl -H $DEVICE 2>/dev/null | sed  -e '1,3d')"
-	SMART="$(echo "$DATAH" | sed -rn 's/^SMART.*: (.*)/\1/p' | sed 's/^PASSED$/$(lang de:"GUT" en:"PASSED")/g')"
+	SMART="$(echo "$DATAH" | sed -rn 's/^SMART.*result: (.*)/\1/p' | sed 's/^PASSED$/$(lang de:"GUT" en:"PASSED")/g')"
 
 	echo "<table width=100%>"
 	echo "<tr>"

@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.15)
+$(call PKG_INIT_BIN, 1.17)
 $(PKG)_SOURCE:=vnstat-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=351051ef3005e3ca99123eec07ac0a7d
+$(PKG)_SOURCE_MD5:=8de1c7e40806509943804bb4b26f5409
 $(PKG)_SITE:=http://humdi.net/vnstat
 
 $(PKG)_BINARIES_ALL := vnstat vnstatd vnstati
