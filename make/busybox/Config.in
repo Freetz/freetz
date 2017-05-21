@@ -117,14 +117,11 @@ config FREETZ_BUSYBOX__MANDATORY
 	select FREETZ_BUSYBOX_FEATURE_PIDFILE
 	select FREETZ_BUSYBOX_FEATURE_PIDOF_OMIT
 	select FREETZ_BUSYBOX_FEATURE_PIDOF_SINGLE
-	select FREETZ_BUSYBOX_FEATURE_PREFER_APPLETS
 	select FREETZ_BUSYBOX_FEATURE_PS_LONG
 	select FREETZ_BUSYBOX_FEATURE_PS_WIDE
 	select FREETZ_BUSYBOX_FEATURE_SEAMLESS_GZ
 	select FREETZ_BUSYBOX_FEATURE_SHADOWPASSWDS
 	select FREETZ_BUSYBOX_FEATURE_SH_IS_ASH
-	select FREETZ_BUSYBOX_FEATURE_SH_NOFORK
-	select FREETZ_BUSYBOX_FEATURE_SH_STANDALONE
 	select FREETZ_BUSYBOX_FEATURE_SKIP_ROOTFS
 	select FREETZ_BUSYBOX_FEATURE_START_STOP_DAEMON_FANCY if FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_BUSYBOX_FEATURE_STAT_FORMAT
@@ -337,6 +334,22 @@ config FREETZ_BUSYBOX__MANDATORY_05_XX
 	help
 		Selects everything Freetz needs to run properly (with Fritz!OS 05.xx and up)
 
+config FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
+	bool "enable NOEXEC/NOFORK performance optimizations"
+	default y
+	select FREETZ_BUSYBOX_FEATURE_PREFER_APPLETS
+	select FREETZ_BUSYBOX_FEATURE_SH_NOFORK
+	select FREETZ_BUSYBOX_FEATURE_SH_STANDALONE
+	help
+		This option causes busybox' NOEXEC/NOFORK optimizations to be enabled,
+		see https://git.busybox.net/busybox/plain/docs/nofork_noexec.txt
+		for more details.
+
+		This option is known to sometimes cause compatibility issues with
+		AVM's startup scripts. Try disabling this option if you experience
+		problems like
+		 - non-finishing /etc/init.d/rc.S
+		 - or non-rebooting box
 
 config FREETZ_BUSYBOX__IPV6_UTILS
 	bool "IPv6"
