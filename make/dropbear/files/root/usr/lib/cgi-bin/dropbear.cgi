@@ -1,11 +1,13 @@
 #!/bin/sh
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cgi_print_radiogroup_service_starttype "enabled" "$DROPBEAR_ENABLED" "" "" 1
 sec_end
 
+if [ "$FREETZ_PACKAGE_AUTHORIZED_KEYS" == "y" ]; then
 sec_begin '$(lang de:"Public Key Authentication" en:"Public key authentication")'
 cat << EOF
 <ul>
@@ -13,6 +15,7 @@ cat << EOF
 </ul>
 EOF
 sec_end
+fi
 
 sec_begin '$(lang de:"SSH-Server" en:"SSH server")'
 cat << EOF
