@@ -24,7 +24,16 @@
  TEST_PROGS = 
  NULL = 
 -SUBDIRS = gdbus-2.0/codegen $(am__append_1) $(am__append_4) \
-+SUBDIRS = $(am__append_1) $(am__append_4) \
++SUBDIRS =                   $(am__append_1) $(am__append_4) \
  	$(am__append_8) $(am__append_11) . $(am__append_14)
  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@noinst_DATA = gio-2.0.lib
  @MS_LIB_AVAILABLE_TRUE@@OS_WIN32_AND_DLL_COMPILATION_TRUE@install_ms_lib_cmd = $(INSTALL) gio-2.0.lib $(DESTDIR)$(libdir)
+@@ -1260,7 +1260,7 @@
+ BUILT_EXTRA_DIST = \
+ 	gio.rc
+ 
+-CLEANFILES = gdbus-daemon-generated.c gdbus-daemon-generated.h gio-public-headers.txt gconstructor_as_data.h
++CLEANFILES =                                                   gio-public-headers.txt gconstructor_as_data.h
+ glib_compile_resources_LDADD = \
+ 	$(top_builddir)/glib/libglib-2.0.la \
+ 	$(top_builddir)/gobject/libgobject-2.0.la	\
