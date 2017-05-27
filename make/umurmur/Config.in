@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_UMURMUR
-	bool "umurmur 0.2.15"
+	bool "umurmur 0.2.17"
 	select FREETZ_LIB_libconfig
 	select FREETZ_LIB_libprotobuf_c
 	default n
@@ -25,7 +25,9 @@ choice
 		select FREETZ_LIB_libcrypto
 		select FREETZ_LIB_libssl
 
-	config FREETZ_PACKAGE_UMURMUR_POLARSSL
-		bool "PolarSSL"
-		select FREETZ_LIB_libpolarssl13
+	config FREETZ_PACKAGE_UMURMUR_MBEDTLS
+		bool "mbedTLS"
+		select FREETZ_LIB_libmbedcrypto
+		select FREETZ_LIB_libmbedtls
+		select FREETZ_LIB_libmbedx509
 endchoice
