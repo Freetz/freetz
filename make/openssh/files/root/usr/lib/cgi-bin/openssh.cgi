@@ -1,28 +1,23 @@
 #!/bin/sh
 
-
 . /usr/lib/libmodcgi.sh
 
 check "$OPENSSH_PWDAUTH" yes:pwdauth_yes "*":pwdauth_no
 check "$OPENSSH_ROOT" yes:root_yes "*":root_no
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cgi_print_radiogroup_service_starttype \
-	"enabled" "$OPENSSH_ENABLED" "" "" 1
-
+cgi_print_radiogroup_service_starttype "enabled" "$OPENSSH_ENABLED" "" "" 1
 sec_end
-sec_begin '$(lang de:"Public Key Authentication" en:"Public key authentication")'
 
+sec_begin '$(lang de:"Public Key Authentication" en:"Public key authentication")'
 cat << EOF
 <ul>
 <li><a href="$(href file authorized-keys authorized_keys)">$(lang de:"authorized_keys bearbeiten" en:"Edit authorized_keys")</a></li>
 </ul>
 EOF
-
 sec_end
-sec_begin '$(lang de:"SSH Server" en:"SSH server")'
 
+sec_begin '$(lang de:"SSH Server" en:"SSH server")'
 cat << EOF
 <p><i>$(lang de:"Der SSH Server ist gebunden an" en:"The SSH server is listening on"):</i>
 Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$OPENSSH_PORT")"></p>
@@ -41,5 +36,4 @@ Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$OPEN
 <input type="checkbox" name="expert" value="yes" $([ "$OPENSSH_EXPERT" = yes ] && echo checked) onclick='document.getElementById("id_settings").style.display=(this.checked)? "block" : "none"'></p>
 <div align="center"><textarea id="id_settings" style="width: 500px; $([ "$OPENSSH_EXPERT" = yes ] || echo display:none)" name="settings" rows="15" cols="80" wrap="off" >$OPENSSH_SETTINGS</textarea></div>
 EOF
-
 sec_end
