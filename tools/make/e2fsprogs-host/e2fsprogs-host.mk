@@ -84,6 +84,7 @@ e2fsprogs-host: $(TOOLS_DIR)/e2fsck $(TOOLS_DIR)/debugfs $(TOOLS_DIR)/tune2fs
 
 e2fsprogs-host-clean:
 	-$(MAKE) -C $(E2FSPROGS_HOST_DIR) clean
+	$(RM) $(E2FSPROGS_HOST_DIR)/.compiled
 
 e2fsprogs-host-dirclean:
 	$(RM) -r $(E2FSPROGS_HOST_DIR)
