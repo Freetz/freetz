@@ -34,6 +34,7 @@ $(PKG)_NO_CIPHERS += $(if $(FREETZ_LIB_libcrypto_WITH_RC4),,no-rc4)
 
 $(PKG)_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-seed
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
+$(PKG)_OPTIONS    += $(if $(FREETZ_PACKAGE_OPENSSL_WITH_ZLIB),zlib)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm no-cms)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
 $(PKG)_OPTIONS    += $(if $(FREETZ_PACKAGE_OPENSSL_TRACE),enable-ssl-trace)
@@ -56,6 +57,7 @@ $(PKG)_MAKE_FLAGS += FREETZ_MOD_OPTIMIZATION_FLAGS="$(TARGET_CFLAGS) -ffunction-
 $(PKG)_MAKE_FLAGS += SHARED_LDFLAGS=""
 $(PKG)_MAKE_FLAGS += INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)"
 $(PKG)_MAKE_FLAGS += CROSS_COMPILE=1
+$(PKG)_MAKE_FLAGS += $(if ($FREETZ_PACKAGE_OPENSSL_STATIC),STATIC_APPS=1)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -1,0 +1,10 @@
+--- apps/Makefile	2017-06-02 21:06:07.000000000 +0200
++++ apps/Makefile	2017-06-02 21:09:20.141591091 +0200
+@@ -156,6 +156,7 @@
+ 	$(MAKE) -f $(TOP)/Makefile.shared -e \
+ 		APPNAME=$(EXE) OBJECTS="$(PROGRAM).o $(E_OBJ)" \
+ 		LIBDEPS="$(PEX_LIBS) $$LIBRARIES $(EX_LIBS)" \
++		CFLAGS="$(CFLAGS) $(if $(STATIC_APPS),-static,)" \
+ 		link_app.$${shlib_target}
+ 	@(cd ..; $(MAKE) rehash)
+ 
