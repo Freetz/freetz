@@ -17,18 +17,18 @@
  #endif
  					"-w		Disallow root logins\n"
 +					"-0		Allow only root logins\n"
- #if DROPBEAR_SVR_PASSWORD_AUTH || DROPBEAR_SVR_PAM_AUTH
+ #if defined(ENABLE_SVR_PASSWORD_AUTH) || defined(ENABLE_SVR_PAM_AUTH)
  					"-s		Disable password logins\n"
  					"-g		Disable password logins for root\n"
-@@ -129,6 +130,7 @@
- 	svr_opts.forced_command = NULL;
+@@ -127,6 +128,7 @@
+ 	svr_opts.banner = NULL;
  	svr_opts.forkbg = 1;
  	svr_opts.norootlogin = 0;
 +	svr_opts.rootonlylogin = 0;
  	svr_opts.noauthpass = 0;
  	svr_opts.norootpass = 0;
  	svr_opts.allowblankpass = 0;
-@@ -226,6 +228,9 @@
+@@ -225,6 +227,9 @@
  				case 'w':
  					svr_opts.norootlogin = 1;
  					break;

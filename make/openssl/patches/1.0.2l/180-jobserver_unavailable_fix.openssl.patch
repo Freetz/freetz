@@ -38,7 +38,7 @@
  	rm -f $(LIBS)
  	rm -f openssl.pc libssl.pc libcrypto.pc
  	rm -f speed.* .pure
-@@ -430,12 +430,12 @@
+@@ -438,12 +438,12 @@
  
  files:
  	$(PERL) $(TOP)/util/files.pl Makefile > $(TOP)/MINFO
@@ -53,7 +53,7 @@
  
  gentests:
  	@(cd test && echo "generating dummy tests (if needed)..." && \
-@@ -443,7 +443,7 @@
+@@ -451,7 +451,7 @@
  
  dclean:
  	rm -rf *.bak include/openssl certs/.0
@@ -62,7 +62,7 @@
  
  rehash: rehash.time
  rehash.time: certs apps
-@@ -467,13 +467,13 @@
+@@ -475,13 +475,13 @@
  	@$(PERL) util/selftest.pl
  
  update: errors stacks util/libeay.num util/ssleay.num TABLE
@@ -79,7 +79,7 @@
  
  tags:
  	rm -f TAGS
-@@ -548,7 +548,7 @@
+@@ -556,7 +556,7 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;

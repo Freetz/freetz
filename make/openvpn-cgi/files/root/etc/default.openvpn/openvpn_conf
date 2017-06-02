@@ -214,7 +214,7 @@ else # Client
 
 fi
 
-echo "tun-mtu $MTU"
+[ "$MTU" ] && echo "tun-mtu $MTU"
 echo "mssfix"
 [ "$UDP_FRAGMENT" != ""  -a "$UDP_FRAGMENT" != "0" ] && echo "fragment $UDP_FRAGMENT"
 df=/var/tmp/debug_${prefix}.out

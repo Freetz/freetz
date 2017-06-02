@@ -1,9 +1,8 @@
-# 2535ea9d0a6f = 2016.74 with some post-release fixes
-$(call PKG_INIT_BIN, 2535ea9d0a6f)
+$(call PKG_INIT_BIN, 2017.75)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-#$(PKG)_SOURCE_SHA256:=2720ea54ed009af812701bcc290a2a601d5c107d12993e5d92c0f5f81f718891
-#$(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
-$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
+$(PKG)_SOURCE_SHA256:=6cbc1dcb1c9709d226dff669e5604172a18cf5dbf9a201474d5618ae4465098c
+$(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
+#$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dropbearmulti
@@ -59,7 +58,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_YOURFRITZ
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
+#$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB),,--disable-zlib)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pam

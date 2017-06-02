@@ -3,6 +3,7 @@
 DAEMON=dropbear
 DAEMON_LONG_NAME="dropbear SSH server"
 . /etc/init.d/modlibrc
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 pre_config() {
 	mkdir -p /tmp/flash/dropbear
@@ -24,6 +25,10 @@ pre_config() {
 		for alg in rsa dss ecdsa; do
 			ln -sf /tmp/flash/dropbear/${alg}_host_key /mod/etc/ssh/${alg}_host_key
 		done
+	fi
+
+	if [ "$FREETZ_PACKAGE_AUTHORIZED_KEYS" != "y" ]; then
+		[ -e "/mod/root/.ssh" ] || ln -s /tmp/flash/dropbear /mod/root/.ssh
 	fi
 }
 

@@ -138,7 +138,7 @@ do_mount_locked() {
 	# update device map, do it before notifying other components about changes
 	# TODO: it should be enough to do it on successful mount only, i.e. if err_fs_mount==0
 	if grep -q $mnt_path /proc/mounts; then
-		if [ -f "$1" -o -f "/proc/bus/usb/$1" -o -f "/dev/bus/usb/$1" ]; then
+		if [ -f "$1" -o -f "/proc/bus/usb/$1" -o -e "/dev/bus/usb/$1" ]; then
 			grep -v "^$1=$2:" $DEVMAP > /var/dev-$$.map
 			echo "$1=$2:$mnt_name" >> /var/dev-$$.map
 			mv -f /var/dev-$$.map $DEVMAP

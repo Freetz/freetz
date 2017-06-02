@@ -27,7 +27,7 @@
 @@ -1,4 +1,4 @@
 -#! /bin/sh
 +#! /bin/bash
- [ ${#2} -eq 0 -o ${#3} -ne 0 ] && echo "Calling: $0 <interface> <ip address to use>" 2>&1 && exit 1
+ [ ${#2} -eq 0 -o ${#3} -eq 0 -o ${#4} -ne 0 ] && echo "Calling: $0 <interface> <requested ip address of the box> <own ip address to use>" 2>&1 && exit 1
  #
  # some constants to be changed, if needed
 --- eva_tools/eva_to_memory

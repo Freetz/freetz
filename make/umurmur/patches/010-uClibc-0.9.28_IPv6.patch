@@ -1,17 +1,17 @@
 --- src/server.c
 +++ src/server.c
-@@ -273,10 +273,14 @@
- 		if (bind(sockets[1], (struct sockaddr *) addresses[1], sizeof (struct sockaddr_in6)) < 0)
- 			Log_fatal("bind %s %d: %s", Util_addressToString(addresses[1]), Util_addressToPort(addresses[1]), strerror(errno));
- 		val = 0xe0;
+@@ -293,12 +293,14 @@
+ 			Log_fatal("bind %s %d: %s", addressString, Util_addressToPort(addresses[1]), strerror(errno));
+ 			free(addressString);
+ 		}
 +#if defined(IPV6_TCLASS)
+ 		val = 0xe0;
  		if (setsockopt(sockets[1], IPPROTO_IPV6, IPV6_TCLASS, &val, sizeof(val)) < 0)
-+#endif
  			Log_warn("Server: Failed to set TOS for UDP Socket");
  		val = 0x80;
-+#if defined(IPV6_TCLASS)
  		if (setsockopt(sockets[1], IPPROTO_IPV6, IPV6_TCLASS, &val, sizeof(val)) < 0)
-+#endif
  			Log_warn("Server: Failed to set TOS for UDP Socket");
++#endif
  
  		fcntl(sockets[1], F_SETFL, O_NONBLOCK);
+ 		pollfds[(hasv4) ? 3 : 1].fd = sockets[1];

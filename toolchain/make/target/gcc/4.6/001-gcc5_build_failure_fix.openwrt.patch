@@ -1,0 +1,37 @@
+From 46f366f967757517ff75753db0647b166a838a6b Mon Sep 17 00:00:00 2001
+From: blogic <blogic@3c298f89-4303-0410-b956-a3cf2f4a3e73>
+Date: Tue, 14 Jul 2015 07:43:50 +0000
+Subject: [PATCH] toolchain: fix gcc 4.6/4.7 build with gcc5
+
+build error:
+cfns.gperf:101:1: error: 'gnu_inline' attribute present on 'libc_name_p'
+cfns.gperf:26:14: error: but not here
+observed on Arch Linux
+
+affected versions gcc 4.6, gcc 4.7
+
+reported & fixed in DragonFlyBSD issue #136
+https://github.com/DragonFlyBSD/DPorts/issues/136
+
+Signed-off-by: Dirk Neukirchen <dirkneukirchen@web.de>
+--- gcc/cp/cfns.h
++++ gcc/cp/cfns.h
+@@ -53,6 +53,9 @@ __inline
+ static unsigned int hash (const char *, unsigned int);
+ #ifdef __GNUC__
+ __inline
++#ifdef __GNUC_STDC_INLINE__
++__attribute__ ((__gnu_inline__))
++#endif
+ #endif
+ const char * libc_name_p (const char *, unsigned int);
+ /* maximum key range = 391, duplicates = 0 */
+@@ -96,7 +99,7 @@ hash (register const char *str, register
+       400, 400, 400, 400, 400, 400, 400, 400, 400, 400,
+       400, 400, 400, 400, 400, 400, 400
+     };
+-  register int hval = len;
++  register int hval = (int)len;
+ 
+   switch (hval)
+     {
