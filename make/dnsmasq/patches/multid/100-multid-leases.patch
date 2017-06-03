@@ -1,6 +1,6 @@
 --- src/lease.c
 +++ src/lease.c
-@@ -199,13 +199,29 @@
+@@ -230,13 +230,29 @@
        lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
  }
   
@@ -32,7 +32,7 @@
    va_end(ap);
  }
  
-@@ -213,14 +229,28 @@
+@@ -244,14 +260,28 @@
  {
    struct dhcp_lease *lease;
    time_t next_event;
@@ -62,7 +62,7 @@
        
        for (lease = leases; lease; lease = lease->next)
  	{
-@@ -250,14 +280,70 @@
+@@ -281,14 +311,70 @@
  	  ourprintf(&err, " %s ", daemon->addrbuff);
  	  ourprintf(&err, "%s ", lease->hostname ? lease->hostname : "*");
  	  	  
@@ -134,7 +134,7 @@
  	}
        
  #ifdef HAVE_DHCP6  
-@@ -304,6 +390,9 @@
+@@ -335,6 +421,9 @@
        
        if (!err)
  	file_dirty = 0;
@@ -144,7 +144,7 @@
      }
    
    /* Set alarm for when the first lease expires. */
-@@ -344,6 +433,11 @@
+@@ -375,6 +464,11 @@
  		(unsigned int)difftime(next_event, now));
      }
  
@@ -156,7 +156,7 @@
    send_alarm(next_event, now);
  }
  
-@@ -999,6 +1093,7 @@
+@@ -1030,6 +1124,7 @@
  
    lease->last_interface = interface;
    lease->flags |= LEASE_CHANGED; 
