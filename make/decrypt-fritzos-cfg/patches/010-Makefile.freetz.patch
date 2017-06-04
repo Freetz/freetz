@@ -1,0 +1,43 @@
+--- /dev/null
++++ src/Makefile.freetz
+@@ -0,0 +1,40 @@
++CC = gcc
++RM = rm -f
++
++ifdef DEBUG
++OPT = -O0 -ggdb
++override CPPFLAGS += -DDEBUG
++else
++OPT = -O2
++endif
++
++override CFLAGS   += $(OPT) -std=c99 -W -Wall
++
++override CFLAGS   += -ffunction-sections -fdata-sections
++override LDFLAGS  += -Wl,--gc-sections
++
++ifdef OPENSSL_DIR
++override CPPFLAGS += -I$(OPENSSL_DIR)/include
++override LDLIBS   += -L$(OPENSSL_DIR)/lib
++endif
++
++ifeq ($(LINK_MODE),ALL_STAT)
++override LDFLAGS += -static
++else ifeq ($(LINK_MODE),CRYPTO_STAT)
++CRYPTO_LINK_STATICALLY_PRE:=-Wl,-Bstatic
++CRYPTO_LINK_STATICALLY_POST:=-Wl,-Bdynamic
++endif
++
++override LDLIBS += $(CRYPTO_LINK_STATICALLY_PRE) -lcrypto $(CRYPTO_LINK_STATICALLY_POST)
++
++BIN  = decoder
++SRCS = $(BIN:%=%.c)
++HDRS = $(BIN:%=%.h)
++OBJS = $(SRCS:%.c=%.o)
++
++all: $(BIN)
++
++clean:
++	-$(RM) *.o $(BIN)
++
++.PHONY: all clean

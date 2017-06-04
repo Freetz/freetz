@@ -1,56 +1,111 @@
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
-	bool "decrypt FRITZ!OS configs 0.2"
-	depends on FREETZ_AVM_VERSION_06_0X_MIN
-	select FREETZ_BUSYBOX_CAT
-	select FREETZ_BUSYBOX_SED
-	select FREETZ_BUSYBOX_GREP
-	select FREETZ_BUSYBOX_MOUNT
-	select FREETZ_BUSYBOX_UMOUNT
-	select FREETZ_BUSYBOX_CP
-	select FREETZ_BUSYBOX_MKDIR
-	select FREETZ_BUSYBOX_DATE
-	select FREETZ_BUSYBOX_ECHO
-	select FREETZ_BUSYBOX_CHROOT
-	select FREETZ_BUSYBOX_EXPR
-	select FREETZ_BUSYBOX_TEST
-	select FREETZ_BUSYBOX_ASH_BUILTIN_TEST
+	bool "decrypt FRITZ!OS configs 0.3-git"
+	select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
+	select FREETZ_OPENSSL_VERSION_PROMPT
 	default n
 	help
-		This package provides a script making it possible to decrypt
+		This package provides a set of tools making it possible to decrypt
 		encrypted parts (usually credentials) of FRITZ!OS configuration
-		files. See http://www.ip-phone-forum.de/showthread.php?t=276183
-		for usage details.
+		files. See
+		 https://github.com/PeterPawn/decode_passwords,
+		 http://www.ip-phone-forum.de/showthread.php?t=276183,
+		 http://www.ip-phone-forum.de/showthread.php?t=295101
+		for usage details and technical background.
 
 		NO RESPONSIBILITY DISCLAIMER:
-		  Adding easy callable scripts like this providing password
-		  decryption capabilities decreases the SECURITY of your box.
+		  Adding easy usable tools like these (to emphasize it once
+		  more - tools providing password decryption capabilities)
+		  decreases the SECURITY of your box.
 		  Use it on YOUR OWN RISK, Freetz is not responsible
 		  for any potential losses or damages resulting/arising
-		  from adding this script to your firmware.
-
-		Note for boxes without WebDAV support:
-		  This packages requires AVM binary webdavcfginfo (including
-		  its dependencies) to be available in your firmware image.
-		  Please copy all required files manually if the original
-		  firmware for your box doesn't contain them. A firmware
-		  image for some other box with the same kernel layout and
-		  of the same FRITZ!OS version might be a good source, i.e.
-		    7312       <- 7330  (webdavcfginfo, libusbcfg.so*)
-		    6810, 7412 <- 7490  (webdavcfginfo, libusbcfg.so*)
-
-		  Instead of copying webdavcfginfo and its dependencies
-		  from the firmware of the other box you might just copy
-		  the allcfginfo binary from an older firmware version
-		  for your box. You don't necessarily need to overwrite
-		  the original allcfginfo, you might also save it as
-		  allcfginfo-c. Callmonitor package will automatically
-		  detect and use it.
+		  from adding these tools to your firmware.
 
 if FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
 comment "WARNING: See help for the NO RESPONSIBILITY DISCLAIMER."
-
-if !FREETZ_AVM_HAS_WEBDAV
-comment "WARNING: Required files missing! See help for details."
 endif
 
-endif
+choice
+	depends on FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
+	prompt "Link"
+	default FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_CRYPTO_STAT
+
+	config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
+		bool "all libraries dynamically"
+
+	config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_CRYPTO_STAT
+		bool "crypto libraries statically"
+
+	config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_STAT
+		bool "all libraries statically"
+endchoice
+
+menu "symlinks to create for faster access to contained tools"
+	depends on FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
+
+# Freetz alias for decode_secrets
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decrypt_fritzos_cfg
+	bool
+	default y
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_secrets
+	bool "decode_secrets       - decrypt ciphertext values"
+	default y
+	help
+		This is a filter and copies all data from STDIN to STDOUT while decryptable
+		cipher-text occurrences are replaced with their clear-text values.
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_export
+	bool "decode_export        - decrypt settings export files"
+	default n
+	help
+		This is a filter and copies all data from STDIN to STDOUT while decryptable
+		cipher-text occurrences are replaced with their clear-text values.
+		It's a replacement for 'decode_secrets' with automatic handling of the special
+		encryption for the export password.
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_secret
+	bool "decode_secret        - decrypt a single value"
+	default n
+	help
+		This function expects the encrypted data and the key as command line arguments.
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_user_password
+	bool "user_password        - create a decryption key from a specified password"
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_device_password
+	bool "device_password      - create a decryption key from specified device properties"
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_password_from_device
+	bool "password_from_device - create a decryption key from device properties"
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_HEXUTIL
+	bool "hexdec/hexenc        - convert from hexadecimal to binary and vice versa"
+	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_hexdec
+	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_hexenc
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_hexdec
+	bool
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_hexenc
+	bool
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_B64UTIL
+	bool "b64dec/b64enc        - convert from Base64 to binary and vice versa"
+	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b64dec
+	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b64enc
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b64dec
+	bool
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b64enc
+	bool
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_B32UTIL
+	bool "b32dec/b32enc        - convert from Base32 to binary and vice versa"
+	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32dec
+	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32enc
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32dec
+	bool
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32enc
+	bool
+
+endmenu
