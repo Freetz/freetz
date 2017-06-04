@@ -619,6 +619,13 @@ config FREETZ_AVM_HAS_RAMZSWAP
 	help
 		Select this if the original firmware contains ramzswap.ko module.
 
+config FREETZ_AVM_HAS_TUN_BUILTIN
+	bool "tun.ko"	if FREETZ_TYPE_CUSTOM
+	default y		if !FREETZ_KERNEL_LAYOUT_GRX5
+	default n
+	help
+		Select this if the original firmware has TUN/TAP support built into the kernel.
+
 # crypto modules
 config FREETZ_AVM_HAS_CRYPTO_ALGAPI_BUILTIN
 	bool "CRYPTO_ALGAPI support built into the kernel"		if FREETZ_TYPE_CUSTOM
