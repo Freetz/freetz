@@ -109,3 +109,18 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32enc
 	bool
 
 endmenu
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_allcfgconv_c
+	bool "allcfgconv-c - allcfgconv with decryption support"
+	depends on FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG && !FREETZ_AVM_HAS_ALLCFGCONV_WITH_DECRYPTION_SUPPORT
+	default n
+	help
+		allcfgconv-c is a wrapper script for the AVM's allcfgconv utility
+		which readds password decryption capabilities (removed by AVM
+		some Fritz!OS versions ago) back to it.
+
+		The main purpose of this script is to simplify the migration of
+		the tools used allcfgconv so far and relied on this functionality.
+
+		Just replace all invocations of allcfgconv with allcfgconv-c,
+		and that's it.

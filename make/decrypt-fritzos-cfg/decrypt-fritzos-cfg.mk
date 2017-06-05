@@ -17,6 +17,7 @@ $(PKG)_SYMLINKS := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_SYMLINKS_ALL))
 $(PKG)_SYMLINKS_TARGET_DIR := $($(PKG)_SYMLINKS:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,$(filter-out $($(PKG)_SYMLINKS),$($(PKG)_SYMLINKS_ALL)))
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_allcfgconv_c),,bin/allcfgconv-c)
 
 $(PKG)_LINK_MODE := $(call PKG_SELECTED_SUBOPTIONS,ALL_DYN CRYPTO_STAT ALL_STAT)
 
