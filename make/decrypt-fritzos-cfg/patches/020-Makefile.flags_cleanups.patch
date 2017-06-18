@@ -1,0 +1,33 @@
+--- src/Makefile
++++ src/Makefile
+@@ -553,21 +553,24 @@
+ # tools flags, override them for cross-builds                                                         #
+ #                                                                                                     #
+ #######################################################################################################
+-override CFLAGS += -W -Wall -std=c99 -fvisibility=hidden
++override CFLAGS += -W -Wall -std=c99
+ ifeq ($(DECODER_CONFIG_DEBUG),y)
+-override CFLAGS += -O0 -ggdb -DDEBUG
++OPT = -O0 -ggdb
++override CPPFLAGS += -DDEBUG
+ else
+-override CFLAGS += -O2 -ffunction-sections -fdata-sections
+-override LDFLAGS += -Wl,--gc-sections
++OPT = -O2
+ endif
++override CFLAGS += $(OPT)
++override CFLAGS += -fvisibility=hidden
++override CFLAGS += -ffunction-sections -fdata-sections
++override LDFLAGS += -Wl,--gc-sections
+ #######################################################################################################
+ #                                                                                                     #
+ # additional settings for static builds                                                               #
+ #                                                                                                     #
+ #######################################################################################################
+ ifeq ($(DECODER_CONFIG_LINK_STATIC),y)
+-override CFLAGS += -DSTATIC -static
+-override LDFLAGS += -Wl,-static
++override LDFLAGS += -static
+ endif
+ #######################################################################################################
+ #                                                                                                     #
