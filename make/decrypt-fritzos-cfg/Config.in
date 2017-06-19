@@ -48,14 +48,14 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decrypt_fritzos_cfg
 	default y
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_secrets
-	bool "decode_secrets       - decrypt ciphertext values"
+	bool "decode_secrets        - decrypt ciphertext values"
 	default y
 	help
 		This is a filter and copies all data from STDIN to STDOUT while decryptable
 		cipher-text occurrences are replaced with their clear-text values.
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_export
-	bool "decode_export        - decrypt settings export files"
+	bool "decode_export         - decrypt settings export files"
 	default n
 	help
 		This is a filter and copies all data from STDIN to STDOUT while decryptable
@@ -63,23 +63,30 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_export
 		It's a replacement for 'decode_secrets' with automatic handling of the special
 		encryption for the export password.
 
+config FREETZ_PACKAGE_DECODER_DECODE_CRYPTEDBINFILE
+	bool "decode_cryptedbinfile - decrypt data portion of encrypted file sections within an export file"
+	default n
+	help
+		This is a filter and decrypts the content (hexadecimal strings) from a CRYPTEDBINFILE
+		entry in an exported settings file.
+
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_secret
-	bool "decode_secret        - decrypt a single value"
+	bool "decode_secret         - decrypt a single value"
 	default n
 	help
 		This function expects the encrypted data and the key as command line arguments.
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_user_password
-	bool "user_password        - create a decryption key from a specified password"
+	bool "user_password         - create a decryption key from a specified password"
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_device_password
-	bool "device_password      - create a decryption key from specified device properties"
+	bool "device_password       - create a decryption key from specified device properties"
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_password_from_device
-	bool "password_from_device - create a decryption key from device properties"
+	bool "password_from_device  - create a decryption key from device properties"
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_HEXUTIL
-	bool "hexdec/hexenc        - convert from hexadecimal to binary and vice versa"
+	bool "hexdec/hexenc         - convert from hexadecimal to binary and vice versa"
 	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_hexdec
 	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_hexenc
 
@@ -89,7 +96,7 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_hexenc
 	bool
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_B64UTIL
-	bool "b64dec/b64enc        - convert from Base64 to binary and vice versa"
+	bool "b64dec/b64enc         - convert from Base64 to binary and vice versa"
 	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b64dec
 	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b64enc
 
@@ -99,7 +106,7 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b64enc
 	bool
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_B32UTIL
-	bool "b32dec/b32enc        - convert from Base32 to binary and vice versa"
+	bool "b32dec/b32enc         - convert from Base32 to binary and vice versa"
 	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32dec
 	select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32enc
 
@@ -109,3 +116,18 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_b32enc
 	bool
 
 endmenu
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_allcfgconv_c
+	bool "allcfgconv-c - allcfgconv with decryption support"
+	depends on FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG && !FREETZ_AVM_HAS_ALLCFGCONV_WITH_DECRYPTION_SUPPORT
+	default n
+	help
+		allcfgconv-c is a wrapper script for the AVM's allcfgconv utility
+		which readds password decryption capabilities (removed by AVM
+		some Fritz!OS versions ago) back to it.
+
+		The main purpose of this script is to simplify the migration of
+		the tools used allcfgconv so far and relied on this functionality.
+
+		Just replace all invocations of allcfgconv with allcfgconv-c,
+		and that's it.

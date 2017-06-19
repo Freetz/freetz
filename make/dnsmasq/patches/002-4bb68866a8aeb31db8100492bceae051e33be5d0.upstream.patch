@@ -1,0 +1,22 @@
+From: Simon Kelley <simon@thekelleys.org.uk>
+Date: Thu, 15 Jun 2017 22:18:44 +0000 (+0100)
+Subject: Tweak ICMP ping check logic for DHCPv4.
+X-Git-Tag: v2.78test1^0
+X-Git-Url: http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=commitdiff_plain;h=4bb68866a8aeb31db8100492bceae051e33be5d0
+
+Tweak ICMP ping check logic for DHCPv4.
+---
+
+diff --git src/rfc2131.c src/rfc2131.c
+index 1c850e5..75792da 100644
+--- src/rfc2131.c
++++ src/rfc2131.c
+@@ -1040,7 +1040,7 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
+ 		  else if (have_config(config, CONFIG_DECLINED) &&
+ 			   difftime(now, config->decline_time) < (float)DECLINE_BACKOFF)
+ 		    my_syslog(MS_DHCP | LOG_WARNING, _("not using configured address %s because it was previously declined"), addrs);
+-		  else if (!do_icmp_ping(now, config->addr, 0, loopback))
++		  else if ((!lease || lease->addr.s_addr != config->addr.s_addr) && !do_icmp_ping(now, config->addr, 0, loopback))
+ 		    my_syslog(MS_DHCP | LOG_WARNING, _("not using configured address %s because it is in use by another host"), addrs);
+ 		  else
+ 		    conf = config->addr;

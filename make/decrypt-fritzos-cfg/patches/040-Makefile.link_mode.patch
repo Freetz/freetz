@@ -1,0 +1,54 @@
+--- src/Makefile
++++ src/Makefile
+@@ -268,12 +268,10 @@
+ DECODER_CONFIG_WARN_ON_TR069_PASSPHRASE=y
+ #######################################################################################################
+ #                                                                                                     #
+-# create a statically linked binary                                                                   #
++# link mode: ALL_DYN, CRYPTO_STAT, ALL_STAT                                                           #
+ #                                                                                                     #
+ #######################################################################################################
+-ifdef STATIC
+-DECODER_CONFIG_LINK_STATIC=y
+-endif
++DECODER_CONFIG_LINK_MODE=ALL_DYN
+ #######################################################################################################
+ #                                                                                                     #
+ # include debug info on build                                                                         #
+@@ -512,9 +510,7 @@
+ ifeq ($(strip $(DECODER_CONFIG_WARN_ON_TR069_PASSPHRASE)), y)
+ CFG += WARN_ON_TR069_PASSPHRASE
+ endif
+-ifdef DECODER_CONFIG_LINK_STATIC
+-CFG += LINK_STATIC
+-endif
++CFG += LINK_$(DECODER_CONFIG_LINK_MODE)
+ ifdef DECODER_CONFIG_DEBUG
+ CFG += DEBUG
+ endif
+@@ -560,11 +556,14 @@
+ override LDFLAGS += -Wl,--gc-sections
+ #######################################################################################################
+ #                                                                                                     #
+-# additional settings for static builds                                                               #
++# link mode settings                                                                                  #
+ #                                                                                                     #
+ #######################################################################################################
+-ifeq ($(DECODER_CONFIG_LINK_STATIC),y)
++ifeq ($(DECODER_CONFIG_LINK_MODE),ALL_STAT)
+ override LDFLAGS += -static
++else ifeq ($(DECODER_CONFIG_LINK_MODE),CRYPTO_STAT)
++CRYPTO_LINK_STATICALLY_PRE:=-Wl,-Bstatic
++CRYPTO_LINK_STATICALLY_POST:=-Wl,-Bdynamic
+ endif
+ #######################################################################################################
+ #                                                                                                     #
+@@ -575,7 +574,7 @@
+ override CPPFLAGS += -I$(OPENSSL_DIR)/include
+ override LDFLAGS  += -L$(OPENSSL_DIR)/lib
+ endif
+-LDLIBS = -lcrypto
++LDLIBS = $(CRYPTO_LINK_STATICALLY_PRE) -lcrypto $(CRYPTO_LINK_STATICALLY_POST)
+ #######################################################################################################
+ #                                                                                                     #
+ # show values on debug                                                                                #

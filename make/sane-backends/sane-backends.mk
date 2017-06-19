@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN,1.0.25)
-$(PKG)_LIB_VERSION:=1.0.25
+$(call PKG_INIT_BIN,1.0.27)
+$(PKG)_LIB_VERSION:=1.0.27
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
-$(PKG)_SOURCE_MD5:=f9ed5405b3c12f07c6ca51ee60225fe7
+$(PKG)_SOURCE_MD5:=b10a08785f92a4c07ad961f4d843c934
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/$(pkg)
 
 # saned
@@ -31,7 +31,7 @@ endif
 
 $(PKG)_CATEGORY:=Unstable
 
-$(PKG)_DEPENDS_ON+= libusb
+$(PKG)_DEPENDS_ON+= libusb1
 ifeq ($(strip $(FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI)),y)
 $(PKG)_DEPENDS_ON += avahi
 endif
@@ -44,13 +44,12 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI),--enable-avahi,--disable-avahi)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
-$(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthread
 $(PKG)_CONFIGURE_OPTIONS += --disable-latex
-$(PKG)_CONFIGURE_OPTIONS += --disable-libusb_1_0
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-translations
 $(PKG)_CONFIGURE_OPTIONS += --without-gphoto2
+$(PKG)_CONFIGURE_OPTIONS += --with-usb
 
 $(PKG)_CONFIGURE_ENV+=BACKENDS="$(SANE_BACKENDS)"
 

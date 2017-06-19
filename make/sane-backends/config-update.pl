@@ -15,7 +15,7 @@ config FREETZ_PACKAGE_SANE_BACKENDS
 	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libusb_0
+	select FREETZ_LIB_libusb_1
 	default n
 	help
 		SANE - Scanner support

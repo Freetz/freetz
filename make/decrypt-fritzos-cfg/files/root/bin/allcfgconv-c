@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# remove -c (if given) from the parameter list
+for arg; do
+	shift
+	[ "$arg" = "-c" ] && { do_decrypt=true; continue; }
+	set -- "$@" "$arg"
+done
+
+# execute the original allcfgconv with swapped stdout & stderr
+# if (for whatever reason) the original allcfgconv decides to print its usage screen, extend it by adding "-c decrypt password" (this is the reason for swapping stdout & stderr in the step above)
+# swap stdout & stderr back
+# and pipe the output (stdout) to decrypt-fritzos-cfg (if requested)
+(exec 3>&2 2>&1 1>&3 3>&- allcfgconv "$@" | sed -re 's,^(([ \t]+)-[?h]([ \t]+-[ \t]+)print this help.*)$,\1\n\2-c\3decrypt passwords,') 3>&2 2>&1 1>&3 3>&- | {
+	[ "$do_decrypt" ] && decrypt-fritzos-cfg || cat -
+}

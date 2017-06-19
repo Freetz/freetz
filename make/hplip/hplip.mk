@@ -17,7 +17,7 @@ $(PKG)_LIB_HPAIO_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/sane/li
 $(PKG)_LIB_HPAIO_TARGET_BINARY:=$($(PKG)_DEST_LIBDIR)/sane/libsane-hpaio.so.$($(PKG)_LIB_HPAIO_VERSION)
 $(PKG)_CATEGORY:=Unstable
 
-$(PKG)_DEPENDS_ON += libusb sane-backends
+$(PKG)_DEPENDS_ON += libusb1 sane-backends
 
 $(PKG)_REBUILD_SUBOPTS += $(LIBUSB_REBUILD_SUBOPTS)
 
@@ -25,7 +25,6 @@ $(PKG)_CONFIGURE_PRE_CMDS += touch NEWS README AUTHORS ChangeLog;
 $(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_CONFIGURE_OPTIONS += --enable-libusb01_build
 $(PKG)_CONFIGURE_OPTIONS += --enable-lite-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-doc-build
 $(PKG)_CONFIGURE_OPTIONS += --disable-network-build
