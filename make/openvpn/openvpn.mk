@@ -3,7 +3,7 @@ $(PKG)_SOURCE_SHA256_2.3.17:=d300029416b045666f2dc957bdde407ba97894428b5ad8433df
 $(PKG)_SOURCE_SHA256_2.4.3 :=15e15fc97f189b52aee7c90ec8355aa77469c773125110b4c2f089abecde36fb
 $(PKG)_SOURCE_SHA256:=$($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
+$(PKG)_SITE:=https://swupdate.openvpn.net/community/releases,http://build.openvpn.net/downloads/releases
 
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION)),y)
