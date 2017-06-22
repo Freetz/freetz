@@ -1,31 +1,6 @@
---- src/decoder_usage.c
-+++ src/decoder_usage.c
-@@ -115,7 +115,7 @@
- 		leftFill = left;
- 		fprintf(out, "\n");
- 		name = *(current->names);
--		fprintf(out, showBold(*name));
-+		fprintf(out, "%s", showBold(*name));
- 		leftFill -= strlen(*name);
- 		name++;
- 		if (*name)
-@@ -128,11 +128,11 @@
- 			fprintf(out, " ");
- 		}
- 		fprintf(out, " - ");
--		fprintf(out, (*current->short_desc)());
-+		fprintf(out, "%s", (*current->short_desc)());
- 		while (*name)
- 		{
- 			fprintf(out, "\n");
--			fprintf(out, showBold(*name));
-+			fprintf(out, "%s", showBold(*name));
- 			name++;
- 			if (*name)
- 				fprintf(out, " or");
 --- src/help.c
 +++ src/help.c
-@@ -267,7 +267,7 @@
+@@ -274,7 +274,7 @@
  		return;
  	}
  	buildOptionsDisplay();
@@ -33,13 +8,4 @@
 +	fprintf(out, "%s", commandLine);
  	free(commandLine);
  	commandLine = NULL;
- }
---- src/license.c
-+++ src/license.c
-@@ -35,5 +35,5 @@
- 
- void 	showLicense(FILE * out)
- {
--	fprintf(out, license);
-+	fprintf(out, "%s", license);
  }
