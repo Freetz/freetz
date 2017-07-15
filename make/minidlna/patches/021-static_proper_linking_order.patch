@@ -1,20 +1,20 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -413,7 +413,7 @@
+@@ -410,7 +410,7 @@
  	@LIBEXIF_LIBS@ \
  	@LIBINTL@ \
  	@LIBICONV@ \
--	-lFLAC  $(flacoggflag) $(vorbisflag)
-+	-lFLAC $(vorbisflag) $(flacoggflag)
+-	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs)
++	-lFLAC $(vorbislibs) $(flacogglibs) $(avahilibs)
  
  minidlnad_LDFLAGS = @STATIC_LDFLAGS@
  testupnpdescgen_SOURCES = testupnpdescgen.c upnpdescgen.c
-@@ -424,7 +424,7 @@
+@@ -421,7 +421,7 @@
  	@LIBAVFORMAT_LIBS@ \
  	@LIBAVUTIL_LIBS@ \
  	@LIBEXIF_LIBS@ \
--	-lFLAC  $(flacoggflag) $(vorbisflag)
-+	-lFLAC $(vorbisflag) $(flacoggflag)
+-	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs)
++	-lFLAC $(vorbislibs) $(flacogglibs) $(avahilibs)
  
  SUFFIXES = .tmpl .
  GENERATED_FILES = \
