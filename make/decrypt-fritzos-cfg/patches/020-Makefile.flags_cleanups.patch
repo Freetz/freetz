@@ -1,11 +1,11 @@
 --- src/Makefile
 +++ src/Makefile
-@@ -553,21 +553,24 @@
+@@ -574,21 +574,24 @@
  # tools flags, override them for cross-builds                                                         #
  #                                                                                                     #
  #######################################################################################################
--override CFLAGS += -W -Wall -std=c99 -fvisibility=hidden
-+override CFLAGS += -W -Wall -std=c99
+-override CFLAGS += -W -Wall -Wformat=2 -std=c99 -fvisibility=hidden
++override CFLAGS += -W -Wall -Wformat=2 -std=c99
  ifeq ($(DECODER_CONFIG_DEBUG),y)
 -override CFLAGS += -O0 -ggdb -DDEBUG
 +OPT = -O0 -ggdb

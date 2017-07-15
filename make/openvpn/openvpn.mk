@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_4),2.4.2,2.3.16))
-$(PKG)_SOURCE_MD5_2.3.16:=69f5b0bf048a6e723a29745d158707be
-$(PKG)_SOURCE_MD5_2.4.2 :=1933cc4a4f8b8887b503be6d4ca4887a
-$(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_4),2.4.3,2.3.17))
+$(PKG)_SOURCE_SHA256_2.3.17:=d300029416b045666f2dc957bdde407ba97894428b5ad8433df789e793ccc1d3
+$(PKG)_SOURCE_SHA256_2.4.3 :=15e15fc97f189b52aee7c90ec8355aa77469c773125110b4c2f089abecde36fb
+$(PKG)_SOURCE_SHA256:=$($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=http://swupdate.openvpn.net/community/releases
+$(PKG)_SITE:=https://swupdate.openvpn.net/community/releases,http://build.openvpn.net/downloads/releases
 
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION)),y)

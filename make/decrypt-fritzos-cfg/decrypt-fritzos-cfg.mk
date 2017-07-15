@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 8784a80f35)
+$(call PKG_INIT_BIN, 06b7bb54fc)
 $(PKG)_ORIG_NAME:=decode_passwords
 $(PKG)_SOURCE:=$(subst -,_,$(pkg))-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/PeterPawn/$($(PKG)_ORIG_NAME).git
@@ -38,7 +38,6 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CFLAGS="$(TARGET_CFLAGS)" \
 		OPT="" \
 		DECODER_CONFIG_LINK_MODE=$(DECRYPT_FRITZOS_CFG_LINK_MODE) \
-		DECODER_CONFIG_MEMORY_BUFFER_SIZE=65536 \
 		FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG=y
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
