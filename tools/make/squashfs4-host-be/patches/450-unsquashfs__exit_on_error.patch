@@ -27,24 +27,43 @@
  int lookup_type[] = {
  	0,
  	S_IFDIR,
-@@ -700,7 +702,7 @@
- 			outlen, &error);
+@@ -724,7 +726,7 @@
+ 		return res;
  
- 		if(res == -1) {
--			ERROR("%s uncompress failed with error code %d\n",
-+			ERROR_EXIT_UNSQUASHFS("%s uncompress failed with error code %d\n",
- 				comp->name, error);
- 			goto failed;
- 		}
-@@ -746,7 +748,7 @@
- 			block_size, &error);
+ failed:
+-	ERROR("read_block: failed to read block @0x%llx\n", start);
++	ERROR_EXIT_UNSQUASHFS("read_block: failed to read block @0x%llx\n", start);
+ 	return FALSE;
+ }
  
- 		if(res == -1) {
--			ERROR("%s uncompress failed with error code %d\n",
-+			ERROR_EXIT_UNSQUASHFS("%s uncompress failed with error code %d\n",
- 				comp->name, error);
- 			goto failed;
+@@ -760,7 +762,7 @@
+ 	}
+ 
+ failed:
+-	ERROR("read_data_block: failed to read block @0x%llx, size %d\n", start,
++	ERROR_EXIT_UNSQUASHFS("read_data_block: failed to read block @0x%llx, size %d\n", start,
+ 		c_byte);
+ 	return FALSE;
+ }
+@@ -1002,7 +1004,7 @@
+ 	file_fd = open_wait(pathname, O_CREAT | O_WRONLY |
+ 		(force ? O_TRUNC : 0), (mode_t) inode->mode & 0777);
+ 	if(file_fd == -1) {
+-		ERROR("write_file: failed to create file %s, because %s\n",
++		ERROR_EXIT_UNSQUASHFS("write_file: failed to create file %s, because %s\n",
+ 			pathname, strerror(errno));
+ 		return FALSE;
+ 	}
+@@ -2097,8 +2099,8 @@
+ 			set_attributes(file->pathname, file->mode, file->uid,
+ 				file->gid, file->time, file->xattr, force);
+ 		else {
+-			ERROR("Failed to write %s, skipping\n", file->pathname);
+ 			unlink(file->pathname);
++			ERROR_EXIT_UNSQUASHFS("Failed to write %s%s\n", file->pathname, (exit_on_error ? "": ", skipping"));
  		}
+ 		free(file->pathname);
+ 		free(file);
 @@ -2123,7 +2125,7 @@
  			&error);
  
