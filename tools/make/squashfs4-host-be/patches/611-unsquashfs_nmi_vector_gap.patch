@@ -8,9 +8,9 @@
 +off_t nmi_vector_offset = (off_t)-1;
 +unsigned int nmi_vector_size = 0;
  
- int exit_on_decompression_errors = FALSE;
- #define DECOMPRESSION_ERROR(s, args...)\
-@@ -694,6 +697,8 @@
+ int exit_on_error = FALSE;
+ 
+@@ -686,6 +689,8 @@
  			continue;
  		}
  
@@ -19,7 +19,7 @@
  		TRACE("find_superblock:%s magic 0x%08X found at 0x%08X\n", (buf.magic == SQUASHFS_MAGIC_SWAP ? " swapped" : ""), buf.magic, (unsigned int)offset);
  
  		// do not rely on MAGIC only, check a little bit more
-@@ -716,14 +721,98 @@
+@@ -708,14 +713,98 @@
  	return (off_t) -1;
  }
  
@@ -118,15 +118,15 @@
  	if(lseek(fd, off, SEEK_SET) == -1) {
  		ERROR("Lseek failed because %s\n", strerror(errno));
  		return FALSE;
-@@ -2801,6 +2890,7 @@
- 			ERROR("\t-exit-on-decomp-error\texit on decompression errors\n");
+@@ -2793,6 +2882,7 @@
+ 			ERROR("\t-exit-on-error\t\ttreat normally ignored errors as fatal\n");
  			ERROR("\t-scan or -k\t\ttreat filesystem as a combined image\n");
  			ERROR("\t\t\t\t(kernel+SquashFS) and scan it to locate the superblock\n");
 +			ERROR("\t\t\t\tand the NMI vector gap\n");
  			ERROR("\nDecompressors available:\n");
  			display_compressors("", "");
  		}
-@@ -2824,6 +2914,11 @@
+@@ -2816,6 +2906,11 @@
  		}
  
  		ERROR("Found a valid superblock at offset 0x%08X while scanning %s.\n", (unsigned int) superblock_offset, argv[i]);
