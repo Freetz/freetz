@@ -184,31 +184,31 @@ processLzmaRecord() {
 }
 
 getTiRecordLen() {
-	local tiRecordOfset=$1
-	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 4))
+	local tiRecordOffset=$1
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOffset + 4))
 }
 
 getLoadAddr() {
-	local tiRecordOfset=$1
-	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + 8))
+	local tiRecordOffset=$1
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOffset + 8))
 }
 
 getEntryAddr() {
-	local tiRecordOfset=$1
-	local tiRecordLen=$(getTiRecordLen $tiRecordOfset)
+	local tiRecordOffset=$1
+	local tiRecordLen=$(getTiRecordLen $tiRecordOffset)
 
-	local tiRecordEntryZero=$(getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen  + 16)))
+	local tiRecordEntryZero=$(getLEu32AtOffset "$INPUT_FILE" $((tiRecordOffset + tiRecordLen  + 16)))
 	if [ "$tiRecordEntryZero" -ne 0 ]; then
 		echo >&2 "WARNING: entry address is expected to be prefixed with one 32-bit zero word"
 	fi
 
-	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen  + 20))
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOffset + tiRecordLen  + 20))
 }
 
 getTiRecordChecksum() {
-	local tiRecordOfset=$1
-	local tiRecordLen=$(getTiRecordLen $tiRecordOfset)
-	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOfset + tiRecordLen  + 12))
+	local tiRecordOffset=$1
+	local tiRecordLen=$(getTiRecordLen $tiRecordOffset)
+	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOffset + tiRecordLen  + 12))
 }
 
 
