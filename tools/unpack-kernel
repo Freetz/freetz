@@ -183,6 +183,24 @@ processLzmaRecord() {
 	}
 }
 
+#
+# $1 - bzImage offset
+# $2 - bzImage length
+# $3 - name of the file output to be written to
+#
+processX86bzImage() {
+	local bzImageOffset=$1
+	local bzImageLen=$2
+	local outputFile="$3"
+
+	if [ "$METHOD" == "info" ]; then
+		return 0
+	fi
+
+	# in case of bzImage we do not distinguish between "unpack" and "dump" methods
+	tail -c "+$((bzImageOffset + 1))" "$INPUT_FILE" 2>/dev/null | head -c $bzImageLen >"$outputFile" 2>/dev/null
+}
+
 getTiRecordLen() {
 	local tiRecordOffset=$1
 	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOffset + 4))
@@ -231,10 +249,8 @@ findAndProcessTiRecord() {
 	# unset return value
 	TI_RECORD_OFFSET=""
 
-	local tiRecordOffset="", tiRecordLzmaRecordOffset=""
+	local tiRecordOffset=""
 	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1 $lowerBound); } || return 1
-	{ tiRecordLzmaRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $EVA_LZMA_RECORD_MAGIC "${tiRecordName}-LZMA-record" "" $tiRecordOffset); } || return 1
-	[ $((tiRecordLzmaRecordOffset - tiRecordOffset)) -eq 12 ] || { echo >&2 "ERROR: ${tiRecordName}-LZMA-record is expected to be located exactly 12 bytes after ${tiRecordName} magic"; return 1; };
 
 	local tiRecordLoadAddr=$(getLoadAddr $tiRecordOffset)
 	echo "${tiRecordPrefix}LoadAddress=$(print08X $tiRecordLoadAddr)"
@@ -245,7 +261,15 @@ findAndProcessTiRecord() {
 	local tiRecordChecksum=$(getTiRecordChecksum $tiRecordOffset)
 	echo "${tiRecordPrefix}RecordChecksum=$(print08X $tiRecordChecksum)"
 
-	processLzmaRecord $tiRecordLzmaRecordOffset "$tiRecordName" "$outputFile"
+	local tiRecordPayloadOffset=$((tiRecordOffset+12))
+	local payloadFirst16Bytes=$(getHexContentAtOffset "$INPUT_FILE" ${tiRecordPayloadOffset} 16)
+	if [ "${payloadFirst16Bytes:0:${#EVA_LZMA_RECORD_MAGIC_BE}}" == "$EVA_LZMA_RECORD_MAGIC_BE" ]; then
+		processLzmaRecord $tiRecordPayloadOffset "$tiRecordName" "$outputFile"
+	elif [ "${payloadFirst16Bytes:0:${#X86_BOOT_SECTOR_MAGIC_BE}}" == "$X86_BOOT_SECTOR_MAGIC_BE" ]; then
+		processX86bzImage $tiRecordPayloadOffset $tiRecordLen "$outputFile"
+	else
+		echo >&2 "ERROR: unsupported payload within ${tiRecordName}-record (${payloadFirst16Bytes})"; return 1;
+	fi
 	[ $? -ne 0 ] && { echo >&2 "ERROR: failed to ${METHOD} kernel"; return 1; }
 
 	# set return value
@@ -255,9 +279,18 @@ findAndProcessTiRecord() {
 ##
 
 TI_AR7_MAGIC=FEED1281
+TI_PUMA6_MAGIC=FEED8112
 DUAL_KERNEL_MAGIC=FEED9112
 TI_AR7_2ND_MAGIC=FEEDB007
-EVA_LZMA_RECORD_MAGIC=075A0201
+
+EVA_LZMA_RECORD_MAGIC_BE=$(echo -n 075A0201 | invertEndianness)
+X86_BOOT_SECTOR_MAGIC_BE=EA0500C0078CC88ED88EC08ED031E4FB
+
+# 1st kernel (PUMA6 boxes, x86 kernel)
+if getDecOffsetOf1stMagicSequenceMatch $TI_PUMA6_MAGIC "TI-PUMA6" 1 >/dev/null 2>&1; then
+	findAndProcessTiRecord $TI_PUMA6_MAGIC "TI-PUMA6" "$OUTPUT_FILE" || exit 1
+	exit 0
+fi
 
 # 1st kernel (all boxes)
 findAndProcessTiRecord $TI_AR7_MAGIC "TI-AR7" "$OUTPUT_FILE" || exit 1
