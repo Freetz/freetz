@@ -85,6 +85,9 @@ fi
 declare -x CKSUM
 CKSUM="${CKSUM:-$(dirname $SELF)/cksum}"
 
+declare -x SUM
+SUM="${SUM:-$(dirname $SELF)/sum}"
+
 . "$(dirname $SELF)/freetz_bin_functions"
 
 ###
@@ -262,6 +265,14 @@ findAndProcessTiRecord() {
 	echo "${tiRecordPrefix}RecordChecksum=$(print08X $tiRecordChecksum)"
 
 	local tiRecordPayloadOffset=$((tiRecordOffset+12))
+
+	# verify TI-record checksum
+	local tiRecordPayloadSum=$(tail -c "+$((tiRecordPayloadOffset + 1))" "$INPUT_FILE" 2>/dev/null | head -c $tiRecordLen 2>/dev/null | $SUM -p 2>/dev/null | cut -d ' ' -f 1)
+	local tiRecordChecksumComputed=$(( (((tiRecordLen + tiRecordLoadAddr + tiRecordPayloadSum) ^ 0xFFFFFFFF) & 0xFFFFFFFF) + 1 ))
+	if [ $((tiRecordChecksumComputed)) -ne $((tiRecordChecksum)) ]; then
+		echo >&2 "WARNING: calculated TI-record checksum ($(print08X $tiRecordChecksumComputed)) does not match the saved one ($(print08X $tiRecordChecksum))"
+	fi
+
 	local payloadFirst16Bytes=$(getHexContentAtOffset "$INPUT_FILE" ${tiRecordPayloadOffset} 16)
 	if [ "${payloadFirst16Bytes:0:${#EVA_LZMA_RECORD_MAGIC_BE}}" == "$EVA_LZMA_RECORD_MAGIC_BE" ]; then
 		processLzmaRecord $tiRecordPayloadOffset "$tiRecordName" "$outputFile"
