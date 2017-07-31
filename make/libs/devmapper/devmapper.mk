@@ -8,6 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/lib/ioctl/libdevmapper.so
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libdevmapper.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libdevmapper.so.$($(PKG)_LIB_VERSION)
 
+$(PKG)_CONFIGURE_OPTIONS += --cache-file=/dev/null
 $(PKG)_CONFIGURE_OPTIONS += --enable-pkgconfig
 $(PKG)_CONFIGURE_OPTIONS += --with-user=""
 $(PKG)_CONFIGURE_OPTIONS += --with-group=""

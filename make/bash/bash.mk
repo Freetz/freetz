@@ -15,6 +15,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BASH_READLINE
 
 $(PKG)_CONFIGURE_ENV += ac_cv_rl_prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_ENV += ac_cv_rl_version=6.2
+# whacky leads to DEV_FD_PREFIX "/proc/self/fd/" (instead of standard "/dev/fd/")
+$(PKG)_CONFIGURE_ENV += bash_cv_dev_fd=whacky
 $(PKG)_CONFIGURE_ENV += bash_cv_dup2_broken=no
 $(PKG)_CONFIGURE_ENV += bash_cv_func_ctype_nonascii=no
 $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present

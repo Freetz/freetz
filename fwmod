@@ -1014,7 +1014,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		rm -f ${VARTAR_MOD_DIR}/var/*/.dummy
 
-		echo1 "installing libs"
+		echo0 "installing libs"
 		for i in $(set | grep ^FREETZ_LIB_.*=y | grep -v ^FREETZ_LIB_STDCXXLIB); do
 			all_files=""
 			found=0
@@ -1149,6 +1149,61 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done || exit 1
 	fi
 
+	echo0 "installing packages"
+	for pkg in $(static_packages); do
+		sizeinfo "$pkg"
+		pkg_name=$(pkg_name "$pkg")
+
+		"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
+			$(find "${PACKAGES_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
+			. | \
+		"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+
+		[ -d "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" ] && \
+			$(
+				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" . | \
+				"$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
+			)
+
+		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
+			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
+
+		if ! grep -q "^$pkg_name$" "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg" >/dev/null 2>&1; then
+			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
+		fi
+
+		pkgfiles=$(collect_pkg_files "${pkg}" | sed -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
+		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
+	done
+	for pkg in $(static_addons); do
+		sizeinfo "$pkg (addon)"
+		pkg_name=$(pkg_name "$pkg")
+
+		if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
+			echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
+			"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		else
+			"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
+				$(find "${ADDON_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
+				. | \
+			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+
+			[ -d "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" ] && \
+				$(
+					"$TAR" -c -C "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" . | \
+					"$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
+				)
+
+			[ -r "${ADDON_DIR}/${pkg}/.language" ] && \
+				modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
+		fi
+
+		if ! grep -q "^$pkg_name$" "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg" >/dev/null 2>&1; then
+			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
+		fi
+		sizeinfo add "${ADDON_DIR}/${pkg}"
+	done
+
 	if [ "$NOCOMPILE" != "1" -a "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 		echo0 "replacing kernel"
 
@@ -1236,61 +1291,6 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo1 "removing empty kernel module directories"
 	for dir in $(find ${MODULES_DIR} -type d -empty -delete -printf "%P\n"); do
 		echo2 $dir
-	done
-
-	echo0 "installing packages"
-	for pkg in $(static_packages); do
-		sizeinfo "$pkg"
-		pkg_name=$(pkg_name "$pkg")
-
-		"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
-			$(find "${PACKAGES_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
-			. | \
-		"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-
-		[ -d "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" ] && \
-			$(
-				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" . | \
-				"$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
-			)
-
-		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
-			modlang "${PACKAGES_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
-
-		if ! grep -q "^$pkg_name$" "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg" >/dev/null 2>&1; then
-			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
-		fi
-
-		pkgfiles=$(collect_pkg_files "${pkg}" | sed -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
-		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
-	done
-	for pkg in $(static_addons); do
-		sizeinfo "$pkg (addon)"
-		pkg_name=$(pkg_name "$pkg")
-
-		if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
-			echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
-			"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-		else
-			"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
-				$(find "${ADDON_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
-				. | \
-			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-
-			[ -d "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" ] && \
-				$(
-					"$TAR" -c -C "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" . | \
-					"$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
-				)
-
-			[ -r "${ADDON_DIR}/${pkg}/.language" ] && \
-				modlang "${ADDON_DIR}/${pkg}/.language" "${FILESYSTEM_MOD_DIR}"
-		fi
-
-		if ! grep -q "^$pkg_name$" "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg" >/dev/null 2>&1; then
-			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
-		fi
-		sizeinfo add "${ADDON_DIR}/${pkg}"
 	done
 
 	invoke_fwmod_custom all
