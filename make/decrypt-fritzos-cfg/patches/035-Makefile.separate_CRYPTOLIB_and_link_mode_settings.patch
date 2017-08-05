@@ -1,0 +1,47 @@
+--- src/Makefile
++++ src/Makefile
+@@ -302,33 +302,30 @@
+ DECODER_CONFIG_WARN_ON_TR069_PASSPHRASE=y
+ #######################################################################################################
+ #                                                                                                     #
+-# create a statically linked binary, senseless with libcrypto - the binary would be very, very large  #
++# use OpenSSL or Nettle library                                                                       #
+ #                                                                                                     #
+ #######################################################################################################
+-ifeq "$(strip $(STATIC))" "n"
+-DECODER_CONFIG_LINK_STATIC=n
+ ifeq "$(strip $(OPENSSL))" "y"
++DECODER_CONFIG_LIBCRYPTO=y
+ DECODER_CONFIG_LIBNETTLE=n
+ else
++DECODER_CONFIG_LIBCRYPTO=n
+ DECODER_CONFIG_LIBNETTLE=y
+ endif
+-else
+-DECODER_CONFIG_LINK_STATIC=y
+-DECODER_CONFIG_LIBNETTLE=y
+-endif
+-ifeq "$(strip $(OPENSSL))" "y"
+-DECODER_CONFIG_LIBNETTLE=n
+-DECODER_CONFIG_LINK_STATIC=n
+-endif
+ #######################################################################################################
+ #                                                                                                     #
+-# use OpenSSL or Nettle library                                                                       #
++# create a statically linked binary, senseless with libcrypto - the binary would be very, very large  #
+ #                                                                                                     #
+ #######################################################################################################
++ifeq "$(strip $(STATIC))" "n"
++DECODER_CONFIG_LINK_STATIC=n
+ ifeq "$(strip $(DECODER_CONFIG_LIBNETTLE))" "y"
+-DECODER_CONFIG_LIBCRYPTO=n
++ifndef CRYPTOLIB_DIR
++$(error dynamic linking mode is not supported with bundled libnettle)
++endif
++endif
+ else
+-DECODER_CONFIG_LIBCRYPTO=y
++DECODER_CONFIG_LINK_STATIC=y
+ endif
+ #######################################################################################################
+ #                                                                                                     #

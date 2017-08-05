@@ -1,19 +1,19 @@
-$(call PKG_INIT_BIN, 06b7bb54fc)
-$(PKG)_ORIG_NAME:=decode_passwords
+$(call PKG_INIT_BIN, 17fef6c015)
 $(PKG)_SOURCE:=$(subst -,_,$(pkg))-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=git@https://github.com/PeterPawn/$($(PKG)_ORIG_NAME).git
+$(PKG)_SITE:=git@https://github.com/PeterPawn/decoder.git
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(subst -,_,$(pkg))-$($(PKG)_VERSION)
 
 # silence format warnings
 $(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e 's/(errorMessage|warningMessage)[(]([_a-zA-Z0-9]+)[)];/\1("%s", \2);/g' src/*.c;
 
-$(PKG)_DEPENDS_ON += openssl
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_OPENSSL),openssl)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_NETTLE),nettle)
 
 $(PKG)_BINARY := $($(PKG)_DIR)/src/decoder
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/bin/decoder
 
 $(PKG)_SYMLINKS_ALL := decrypt-fritzos-cfg
-$(PKG)_SYMLINKS_ALL += decode_secrets decode_export decode_cryptedbinfile decode_secret user_password device_password password_from_device
+$(PKG)_SYMLINKS_ALL += checksum decode_secrets decode_export split_export decode_cryptedbinfile decode_secret user_password device_password password_from_device privatekeypassword
 $(PKG)_SYMLINKS_ALL += hexdec hexenc b64dec b64enc b32dec b32enc
 
 $(PKG)_SYMLINKS := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_SYMLINKS_ALL))
@@ -24,6 +24,8 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_allcfgconv_c),,bin/
 
 $(PKG)_LINK_MODE := $(call PKG_SELECTED_SUBOPTIONS,ALL_DYN CRYPTO_STAT ALL_STAT)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_OPENSSL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_NETTLE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_CRYPTO_STAT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_STAT
@@ -37,6 +39,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		OPT="" \
+		OPENSSL=$(if $(FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_OPENSSL),y,n) \
+		CRYPTOLIB_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		DECODER_CONFIG_LINK_MODE=$(DECRYPT_FRITZOS_CFG_LINK_MODE) \
 		FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG=y
 
