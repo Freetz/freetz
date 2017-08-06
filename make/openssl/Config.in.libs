@@ -95,6 +95,12 @@ config FREETZ_LIB_libcrypto_WITH_RC4
 		[3] https://wiki.mozilla.org/Security/Server_Side_TLS
 		[4] https://blogs.technet.microsoft.com/srd/2013/11/12/security-advisory-2868725-recommendation-to-disable-rc4/
 
+config FREETZ_LIB_libcrypto_WITH_ZLIB
+	bool "Build with zlib support"
+	depends on FREETZ_OPENSSL_VERSION_1
+	select FREETZ_LIB_libz
+	default n
+
 config FREETZ_OPENSSL_SMALL_FOOTPRINT
 	bool "Reduce the footprint of OpenSSL libraries"
 	default y
