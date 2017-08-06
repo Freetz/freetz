@@ -26,6 +26,9 @@ $(PKG)_DEPENDS_ON += openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-libgnutls-prefix
+ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
+$(PKG)_STATIC_LIBS := $(if $(FREETZ_LIB_libcrypto_WITH_ZLIB),-lz)
+endif
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_GNUTLS)),y)
