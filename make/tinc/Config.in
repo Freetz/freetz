@@ -1,14 +1,36 @@
 config FREETZ_PACKAGE_TINC
-	bool "Tinc 1.0.28"
+	bool "Tinc"
 	default n
+	select FREETZ_LIB_libm      if !FREETZ_PACKAGE_TINC_STATIC && FREETZ_PACKAGE_TINC_VERSION_1_1
 	select FREETZ_LIB_liblzo2   if !FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libz      if !FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_OPENSSL_VERSION_PROMPT
+	select FREETZ_OPENSSL_VERSION_1_REQUIRED
 	help
 		Tinc is a Virtual Private Network (VPN) daemon that uses tunneling
 		and encryption to create a secure private network between hosts on
 		the Internet.
+
+choice
+	depends on FREETZ_PACKAGE_TINC
+	prompt "Version"
+	default FREETZ_PACKAGE_TINC_VERSION_1_0
+
+	config FREETZ_PACKAGE_TINC_VERSION_1_0
+	bool "1.0.31"
+
+	config FREETZ_PACKAGE_TINC_VERSION_1_1
+	bool "1.1pre14 - EXPERIMENTAL"
+endchoice
+
+config FREETZ_PACKAGE_TINC_tinc
+	bool "Include tinc control utility"
+	depends on FREETZ_PACKAGE_TINC
+	depends on FREETZ_PACKAGE_TINC_VERSION_1_1
+	default n
+	select FREETZ_LIB_libreadline if !FREETZ_PACKAGE_TINC_STATIC
+	select FREETZ_LIB_libncurses  if !FREETZ_PACKAGE_TINC_STATIC
 
 config FREETZ_PACKAGE_TINC_STATIC
 	bool "Statically link libraries"

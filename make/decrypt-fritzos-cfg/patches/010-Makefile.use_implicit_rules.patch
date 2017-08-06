@@ -1,29 +1,39 @@
 --- src/Makefile
 +++ src/Makefile
-@@ -544,7 +544,7 @@
- # additional libraries for linker calls                                                               #
+@@ -609,6 +609,7 @@
+ #######################################################################################################
+ ifeq "$(strip $(DECODER_CONFIG_LIBNETTLE))" "y"
+ override CFLAGS += -Iinclude/nettle -DNETTLE
++override LDFLAGS += -L.
+ endif
+ #######################################################################################################
+ #                                                                                                     #
+@@ -616,9 +617,9 @@
  #                                                                                                     #
  #######################################################################################################
+ ifeq "$(strip $(DECODER_CONFIG_LIBNETTLE))" "y"
+-LIBS = -lnettle
++LDLIBS = -lnettle
+ else
 -LIBS = -lcrypto
 +LDLIBS = -lcrypto
+ endif
  #######################################################################################################
  #                                                                                                     #
- # target binary name                                                                                  #
-@@ -613,9 +613,6 @@
+@@ -688,8 +689,6 @@
  # build targets and rules                                                                             #
  #                                                                                                     #
  #######################################################################################################
 -%.o: %.c
 -	$(CC) $(CFLAGS) -c $< -o $@
--
+ 
  all:	$(binfile)
  
- .PHONY:	all install_$(binfile) links uninstall clean install $(CMDS)
-@@ -627,7 +624,6 @@
+@@ -702,7 +701,6 @@
  $(OBJS_MAIN):	$(APPLETS) $(CONFIG) $(HDRS_MAIN) $(SRCS_MAIN) $(USE_MAIN)
  
  $(binfile):	$(OBJS_COMMON) $(OBJS_APP) $(OBJS_MAIN)
--	$(CC) $(LDFLAGS) -L. $(LIBS) -o $@ $(filter %.o,$^)
+-	$(CC) $(LDFLAGS) -L. -o $@ $(filter %.o,$^) $(LIBS)
  
  $(APPLETS): | $(CMDS)
  	@$(RM) $@ 2>/dev/null || true

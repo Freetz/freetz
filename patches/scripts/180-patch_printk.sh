@@ -1,4 +1,4 @@
-isFreetzType 6810 6820 6842 7270_V1 7272 7412 7430 && return 0
+isFreetzType 4020 6810 6820 6842 7270_V1 7272 7412 7430 && return 0
 echo1 "applying printk patch"
 
 file="$FILESYSTEM_MOD_DIR/etc/init.d/rc.S"

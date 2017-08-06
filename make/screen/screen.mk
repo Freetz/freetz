@@ -1,23 +1,19 @@
-$(call PKG_INIT_BIN, 4.0.3)
+$(call PKG_INIT_BIN, 4.6.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=8506fd205028a96c741e4037de6e3c42
-$(PKG)_SITE:=http://ftp.uni-erlangen.de/pub/utilities/screen
+$(PKG)_SOURCE_MD5:=132c893aabfaf2020074790215c8cacd
+$(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/screen
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/screen.bin
 
 $(PKG)_DEPENDS_ON += ncurses
 
-$(PKG)_CONFIGURE_ENV += $(foreach flag,rename fchmod fchown strerror lstat _exit utimes vsnprintf getcwd setlocale strftime,ac_cv_func_$(flag)=yes)
+$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
 
-$(PKG)_AC_VARIABLES := header_dwarf_h header_elf_h
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES),./configure)
-$(PKG)_CONFIGURE_ENV += $(foreach variable,$($(PKG)_AC_VARIABLES),$(pkg)_$(variable)=no)
-
-$(PKG)_CONFIGURE_OPTIONS += --enable-shared
-$(PKG)_CONFIGURE_OPTIONS += --disable-static
+$(PKG)_CONFIGURE_OPTIONS += --cache-file=/dev/null
 $(PKG)_CONFIGURE_OPTIONS += --disable-socket-dir
 $(PKG)_CONFIGURE_OPTIONS += --with-sys-screenrc=/mod/etc/screenrc
+$(PKG)_CONFIGURE_OPTIONS += --enable-colors256
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

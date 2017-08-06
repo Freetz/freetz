@@ -1,22 +1,29 @@
 --- src/Makefile
 +++ src/Makefile
-@@ -280,12 +280,10 @@
- DECODER_CONFIG_WARN_ON_TR069_PASSPHRASE=y
+@@ -314,18 +314,16 @@
+ endif
  #######################################################################################################
  #                                                                                                     #
--# create a statically linked binary                                                                   #
+-# create a statically linked binary, senseless with libcrypto - the binary would be very, very large  #
 +# link mode: ALL_DYN, CRYPTO_STAT, ALL_STAT                                                           #
  #                                                                                                     #
  #######################################################################################################
--ifdef STATIC
+-ifeq "$(strip $(STATIC))" "n"
+-DECODER_CONFIG_LINK_STATIC=n
++DECODER_CONFIG_LINK_MODE=ALL_STAT
++ifeq "$(strip $(DECODER_CONFIG_LINK_MODE))" "ALL_DYN"
+ ifeq "$(strip $(DECODER_CONFIG_LIBNETTLE))" "y"
+ ifndef CRYPTOLIB_DIR
+ $(error dynamic linking mode is not supported with bundled libnettle)
+ endif
+ endif
+-else
 -DECODER_CONFIG_LINK_STATIC=y
--endif
-+DECODER_CONFIG_LINK_MODE=ALL_DYN
+ endif
  #######################################################################################################
  #                                                                                                     #
- # include debug info on build                                                                         #
-@@ -533,9 +531,7 @@
- ifeq ($(strip $(DECODER_CONFIG_WARN_ON_TR069_PASSPHRASE)), y)
+@@ -593,9 +591,7 @@
+ ifeq "$(strip $(DECODER_CONFIG_WARN_ON_TR069_PASSPHRASE))" "y"
  CFG += WARN_ON_TR069_PASSPHRASE
  endif
 -ifdef DECODER_CONFIG_LINK_STATIC
@@ -26,7 +33,7 @@
  ifdef DECODER_CONFIG_DEBUG
  CFG += DEBUG
  endif
-@@ -581,11 +577,14 @@
+@@ -641,11 +637,14 @@
  override LDFLAGS += -Wl,--gc-sections
  #######################################################################################################
  #                                                                                                     #
@@ -35,20 +42,27 @@
  #                                                                                                     #
  #######################################################################################################
 -ifeq ($(DECODER_CONFIG_LINK_STATIC),y)
-+ifeq ($(DECODER_CONFIG_LINK_MODE),ALL_STAT)
++ifeq "$(strip $(DECODER_CONFIG_LINK_MODE))" "ALL_STAT"
  override LDFLAGS += -static
-+else ifeq ($(DECODER_CONFIG_LINK_MODE),CRYPTO_STAT)
++else ifeq "$(strip $(DECODER_CONFIG_LINK_MODE))" "CRYPTO_STAT"
 +CRYPTO_LINK_STATICALLY_PRE:=-Wl,-Bstatic
 +CRYPTO_LINK_STATICALLY_POST:=-Wl,-Bdynamic
  endif
  #######################################################################################################
  #                                                                                                     #
-@@ -596,7 +595,7 @@
- override CPPFLAGS += -I$(OPENSSL_DIR)/include
- override LDFLAGS  += -L$(OPENSSL_DIR)/lib
+@@ -659,13 +658,13 @@
+ 
+ ifeq "$(strip $(DECODER_CONFIG_LIBNETTLE))" "y"
+ override CPPFLAGS += -DNETTLE
+-LDLIBS = -lnettle
++LDLIBS = $(CRYPTO_LINK_STATICALLY_PRE) -lnettle $(CRYPTO_LINK_STATICALLY_POST)
+ ifndef CRYPTOLIB_DIR
+ override CPPFLAGS += -Iinclude
+ override LDFLAGS  += -L.
  endif
+ else
 -LDLIBS = -lcrypto
 +LDLIBS = $(CRYPTO_LINK_STATICALLY_PRE) -lcrypto $(CRYPTO_LINK_STATICALLY_POST)
+ endif
  #######################################################################################################
  #                                                                                                     #
- # show values on debug                                                                                #

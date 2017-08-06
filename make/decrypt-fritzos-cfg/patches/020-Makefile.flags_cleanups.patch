@@ -1,6 +1,6 @@
 --- src/Makefile
 +++ src/Makefile
-@@ -574,21 +574,24 @@
+@@ -650,20 +650,23 @@
  # tools flags, override them for cross-builds                                                         #
  #                                                                                                     #
  #######################################################################################################
@@ -26,8 +26,6 @@
  #######################################################################################################
  ifeq ($(DECODER_CONFIG_LINK_STATIC),y)
 -override CFLAGS += -DSTATIC -static
--override LDFLAGS += -Wl,-static
-+override LDFLAGS += -static
+ override LDFLAGS += -static
  endif
  #######################################################################################################
- #                                                                                                     #

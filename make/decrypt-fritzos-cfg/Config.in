@@ -1,7 +1,5 @@
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
-	bool "decrypt FRITZ!OS configs 0.3-git"
-	select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
-	select FREETZ_OPENSSL_VERSION_PROMPT
+	bool "decrypt FRITZ!OS configs 0.4-git"
 	default n
 	help
 		This package provides a set of tools making it possible to decrypt
@@ -26,6 +24,21 @@ endif
 
 choice
 	depends on FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
+	prompt "Crypto library"
+	default FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_NETTLE
+
+	config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_NETTLE
+		bool "Nettle"
+		select FREETZ_LIB_libnettle if FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
+
+	config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_OPENSSL
+		bool "OpenSSL"
+		select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
+		select FREETZ_OPENSSL_VERSION_PROMPT
+endchoice
+
+choice
+	depends on FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
 	prompt "Link"
 	default FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_CRYPTO_STAT
 
@@ -47,9 +60,14 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decrypt_fritzos_cfg
 	bool
 	default y
 
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_checksum
+	bool "checksum              - compute the checksum of an export file"
+	help
+		This program computes the CRC-32 value for a FRITZ!OS export file.
+
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_secrets
 	bool "decode_secrets        - decrypt ciphertext values"
-	default y
+	default n
 	help
 		This is a filter and copies all data from STDIN to STDOUT while decryptable
 		cipher-text occurrences are replaced with their clear-text values.
@@ -62,6 +80,12 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_decode_export
 		cipher-text occurrences are replaced with their clear-text values.
 		It's a replacement for 'decode_secrets' with automatic handling of the special
 		encryption for the export password.
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_split_export
+	bool "split_export          - split an export file into sub-files, a single file for each settings file"
+	default n
+	help
+		This program splits a single export file into the settings files contained therein.
 
 config FREETZ_PACKAGE_DECODER_DECODE_CRYPTEDBINFILE
 	bool "decode_cryptedbinfile - decrypt data portion of encrypted file sections within an export file"
@@ -84,6 +108,12 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_device_password
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_password_from_device
 	bool "password_from_device  - create a decryption key from device properties"
+
+config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_privatekeypassword
+	bool "privatekeypassword    - compute the private key used for '/var/flash/websrv_ssl_key.pem'"
+	help
+		This program computes the secret key used to encrypt the file '/var/flash/websrv_ssl_key.pem'.
+
 
 config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_HEXUTIL
 	bool "hexdec/hexenc         - convert from hexadecimal to binary and vice versa"
