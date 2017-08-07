@@ -292,6 +292,11 @@ PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODIN
 # 1st level PKG_PREVENT_RPATH_HARDCODING
 PKG_PREVENT_RPATH_HARDCODING1 = $(subst $$$$,$$,$(call PKG_PREVENT_RPATH_HARDCODING,$1))
 
+# Changes a typical Makefile.in line from "FOO = @FOO@" to "FOO = @FOO@ $(EXTRA_FOO)", i.e. adds $(EXTRA_FOO) at the end
+# $1 - variable name or variable names separated by |, i.e. regex OR pattern
+# $2 - optional $($(PKG)_DIR) subdir
+PKG_ADD_EXTRA_FLAGS = find $(abspath $($(PKG)_DIR))$(if $(strip $2),/$(strip $2)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^($(strip $1))[ \t]*=[ \t]*@\1@,& $$$$(EXTRA_\1),' \{\} \+;
+
 # Change prefix of all $3_cv_* variables in $1 to $(pkg).
 #  $1 is allowed to be a space separated list of variables or a ready to be used sed pattern
 #  $2 (optional) is the file to be patched, default ./$($(PKG)_BUILD_SUBDIR)/configure
