@@ -12,9 +12,8 @@ $(PKG)_PATCH_POST_CMDS += find $(abspath $($(PKG)_DIR)) \( -name *.h -o -name *.
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_z_compress)
 
-# add EXTRA_(C|LD)FLAGS
-$(PKG)_PATCH_POST_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f \
-	-exec $(SED) -i -r -e 's,^(C|LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' \{\} \+;
+$(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS|LIBS)
+
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
@@ -27,7 +26,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ssl=openssl
 $(PKG)_CONFIGURE_OPTIONS += --with-libssl-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --without-libgnutls-prefix
 ifeq ($(strip $(FREETZ_PACKAGE_WGET_STATIC)),y)
-$(PKG)_STATIC_LIBS := $(if $(FREETZ_LIB_libcrypto_WITH_ZLIB),-lz)
+$(PKG)_STATIC_LIBS := $(OPENSSL_LIBCRYPTO_EXTRA_LIBS)
 endif
 endif
 
@@ -71,7 +70,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(WGET_DIR) \
 		EXTRA_CFLAGS="$(WGET_EXTRA_CFLAGS)" \
 		EXTRA_LDFLAGS="$(WGET_EXTRA_LDFLAGS)" \
-		STATIC_LIBS="$(WGET_STATIC_LIBS)"
+		EXTRA_LIBS="$(WGET_STATIC_LIBS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

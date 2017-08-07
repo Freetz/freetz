@@ -68,6 +68,10 @@ config FREETZ_OPENSSL_SHLIB_VERSION
 	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
 	default "1.0.0" if FREETZ_OPENSSL_VERSION_1
 
+config FREETZ_OPENSSL_LIBCRYPTO_EXTRA_LIBS
+	string
+	default "-ldl -lz" if FREETZ_LIB_libcrypto_WITH_ZLIB
+	default "-ldl"
 
 menu "OpenSSL configuration"
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
