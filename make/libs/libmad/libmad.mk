@@ -12,7 +12,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-debugging
 $(PKG)_CONFIGURE_OPTIONS += --enable-speed
-$(PKG)_CONFIGURE_OPTIONS += --enable-fpm="mips"
+$(PKG)_CONFIGURE_OPTIONS += --enable-fpm="$(TARGET_ARCH)"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

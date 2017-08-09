@@ -14,7 +14,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg)
 $(PKG)_MAKE_FLAGS += CC="$(TARGET_CC)"
 $(PKG)_MAKE_FLAGS += CROSS_COMPILE="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)"
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="$(TARGET_CFLAGS)"
-$(PKG)_MAKE_FLAGS += ARCH="mips"
+$(PKG)_MAKE_FLAGS += ARCH="$(TARGET_ARCH)"
 
 include $(MAKE_DIR)/busybox/busybox.rebuild-subopts.mk.in
 
