@@ -37,8 +37,10 @@ GCC_COMMON_CONFIGURE_OPTIONS += --disable-nls
 GCC_COMMON_CONFIGURE_OPTIONS += $(QUIET)
 
 ifneq ($(strip $(FREETZ_TARGET_TOOLCHAIN_AVM_COMPATIBLE)),y)
+ifeq ($(strip $(FREETZ_TARGET_ARCH_MIPS)),y)
 # enable non-PIC for mips* targets
 GCC_COMMON_CONFIGURE_OPTIONS += --with-mips-plt
+endif
 endif
 
 ifndef TARGET_TOOLCHAIN_NO_MPFR
