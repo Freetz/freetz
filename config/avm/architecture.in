@@ -61,10 +61,18 @@ config FREETZ_TARGET_ARCH_BE
 		FREETZ_TYPE_7580 || \
 		FREETZ_TYPE_7590
 
+config FREETZ_TARGET_ARCH_MIPS
+	bool
+	default y
+
+config FREETZ_TARGET_ARCH
+	string
+	default "mips"   if FREETZ_TARGET_ARCH_MIPS
+
 config FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT
 	string
-	default "mips" if FREETZ_TARGET_ARCH_BE
-	default "mipsel" if FREETZ_TARGET_ARCH_LE
+	default "mips"   if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE
+	default "mipsel" if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_LE
 
 config FREETZ_TARGET_CROSS
 	string

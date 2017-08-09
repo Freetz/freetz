@@ -35,7 +35,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-uuid
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,^(C)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' $(abspath $($(PKG)_DIR))/{src,ntfsprogs,libfuse-lite}/Makefile.in;
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,^(LD)FLAGS[ \t]*=[ \t]*@\1FLAGS@,& $$$$(EXTRA_\1FLAGS),' $(abspath $($(PKG)_DIR))/{src,ntfsprogs}/Makefile.in;
 
-$(PKG)_MAKE_FLAGS += ARCH="$(KERNEL_ARCH)"
+$(PKG)_MAKE_FLAGS += ARCH="$(TARGET_ARCH)"
 $(PKG)_MAKE_FLAGS += CROSS_COMPILE="$(TARGET_CROSS)"
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections"
 $(PKG)_MAKE_FLAGS += EXTRA_LDFLAGS="-Wl,--gc-sections"

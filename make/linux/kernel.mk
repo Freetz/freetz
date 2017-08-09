@@ -18,7 +18,7 @@ KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/configs/freetz/config-$(KERNEL_ID)
 KERNEL_COMMON_MAKE_OPTIONS := -C $(KERNEL_BUILD_ROOT_DIR)
 KERNEL_COMMON_MAKE_OPTIONS += CROSS_COMPILE="$(KERNEL_CROSS)"
 KERNEL_COMMON_MAKE_OPTIONS += KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)"
-KERNEL_COMMON_MAKE_OPTIONS += ARCH="$(KERNEL_ARCH)"
+KERNEL_COMMON_MAKE_OPTIONS += ARCH="$(TARGET_ARCH)"
 # TODO: KERNEL_LAYOUT is referenced just once in kernel's makefiles.
 # It causes additional fusiv-sources to be added to the list of sources
 # to compile. Compiling these sources however fails, that's the reason

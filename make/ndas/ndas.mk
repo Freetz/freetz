@@ -65,7 +65,7 @@ $($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured | $($(PKG)_DIR)/.exported
 $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured | $($(PKG)_DIR)/.exported
 	$(SUBMAKE1) -C $(NDAS_BUILD_DIR) \
 		$(NDAS_OPTIONS) \
-		ARCH="$(KERNEL_ARCH)" \
+		ARCH="$(TARGET_ARCH)" \
 		CC="$(KERNEL_CROSS)gcc" \
 		LD="$(KERNEL_CROSS)ld" \
 		AR="$(KERNEL_CROSS)ar" \
