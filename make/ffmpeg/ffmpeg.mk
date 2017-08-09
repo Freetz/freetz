@@ -42,7 +42,7 @@ $(PKG)_CONFIGURE_DEFOPTS := n
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-cross-compile
 $(PKG)_CONFIGURE_OPTIONS += --cross-prefix="$(TARGET_CROSS)"
-$(PKG)_CONFIGURE_OPTIONS += --arch="$(TARGET_ARCH)"
+$(PKG)_CONFIGURE_OPTIONS += --arch="$(TARGET_ARCH_ENDIANNESS_DEPENDENT)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-mips32r2
 $(PKG)_CONFIGURE_OPTIONS += --disable-mipsdspr1
 $(PKG)_CONFIGURE_OPTIONS += --disable-mipsdspr2

@@ -24,7 +24,7 @@ esac
 # Import Freetz config variables
 . $mod_base/$DOT_CONFIG
 
-LDD="$mod_base/toolchain/target/bin/${FREETZ_TARGET_ARCH}-linux-ldd"
+LDD="$mod_base/toolchain/target/bin/${FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT}-linux-ldd"
 
 files=$(find "$mod_base/$fw_base" -type f | xargs file | grep "ELF 32" | sed -e 's/: .*//' | grep -v -E '\.ko$')
 

@@ -16,7 +16,7 @@ $(PKG)_CONFIGURE_ENV += wi_cv_look_for_resolv=no
 # the values below are the correct ones, they are equal to the guessed ones
 $(PKG)_CONFIGURE_ENV += wi_cv_snprintf_terminates=yes
 $(PKG)_CONFIGURE_ENV += wi_cv_snprintf_returns_ptr=no
-$(PKG)_CONFIGURE_ENV += TARGET_ARCH=$(TARGET_ARCH)
+$(PKG)_CONFIGURE_ENV += TARGET_ARCH=$(TARGET_ARCH_ENDIANNESS_DEPENDENT)
 
 $(PKG)_CONFIGURE_OPTIONS += --without-curses
 $(PKG)_CONFIGURE_OPTIONS += --without-ncurses

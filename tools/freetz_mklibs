@@ -3,7 +3,7 @@
 mklibs() {
 	local HOST_TOOLS_DIR="${FREETZ_BASE_DIR}/tools/build"
 	local TARGET_TOOLCHAIN_STAGING_DIR="${FREETZ_BASE_DIR}/toolchain/target"
-	local GNU_TARGET_NAME=${FREETZ_TARGET_ARCH}-linux
+	local GNU_TARGET_NAME=${FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT}-linux
 	local REAL_GNU_TARGET_NAME=${GNU_TARGET_NAME}-uclibc
 
 	# replace all absolute symlinks with relative ones to make mklibs happy
