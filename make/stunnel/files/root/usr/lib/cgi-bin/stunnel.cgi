@@ -15,7 +15,7 @@ sec_end
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
 cgi_print_radiogroup \
-	"servercert" "$STUNNEL_USE_BOX_CERT" "" "$(lang de:"Standard-Zertifikat f&uuml;r Server-Dienste" en:"default certificate for 'client=no' services"):&nbsp;" \
+	"use_box_cert" "$STUNNEL_USE_BOX_CERT" "" "$(lang de:"Standard-Zertifikat f&uuml;r Server-Dienste" en:"default certificate for 'client=no' services"):&nbsp;" \
 		"yes::$(lang de:"Ger&auml;te-Zertifikat verwenden" en:"use device certificate")" \
 		"no::$(lang de:"Eigenes Zertifikat verwenden (s.u. zum Bearbeiten)" en:"use an own certificate (see below for links to edit it)")"
 
