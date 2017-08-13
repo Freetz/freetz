@@ -21,7 +21,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 $(PKG)_OPTIONS := \
 	NDAS_KERNEL_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
 	NDAS_KERNEL_VERSION="$(NDAS_KERNEL_VERSION)" \
-	NDAS_KERNEL_ARCH=$(call qstrip,$(FREETZ_TARGET_ARCH)) \
+	NDAS_KERNEL_ARCH=$(TARGET_ARCH_ENDIANNESS_DEPENDENT) \
 	NDAS_VER_BUILD=$(word 3,$(subst .,$(_space),$(NDAS_KERNEL_VERSION))) \
 	NDAS_CROSS_COMPILE=$(TARGET_CROSS) \
 	NDAS_CROSS_COMPILE_UM=$(TARGET_CROSS) \
@@ -41,7 +41,7 @@ $($(PKG)_DIR)/.exported: $($(PKG)_DIR)/.configured
 		$(NDAS_OPTIONS) \
 		XPLAT_OBFUSCATE=y \
 		nxp-os=linux \
-		nxp-cpu=$(call qstrip,$(FREETZ_TARGET_ARCH)) \
+		nxp-cpu=$(TARGET_ARCH_ENDIANNESS_DEPENDENT) \
 		nxp-vendor=freetz \
 		nxpo-asy=y \
 		nxpo-automated=y \
@@ -65,7 +65,7 @@ $($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured | $($(PKG)_DIR)/.exported
 $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured | $($(PKG)_DIR)/.exported
 	$(SUBMAKE1) -C $(NDAS_BUILD_DIR) \
 		$(NDAS_OPTIONS) \
-		ARCH="$(KERNEL_ARCH)" \
+		ARCH="$(TARGET_ARCH)" \
 		CC="$(KERNEL_CROSS)gcc" \
 		LD="$(KERNEL_CROSS)ld" \
 		AR="$(KERNEL_CROSS)ar" \

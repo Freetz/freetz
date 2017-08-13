@@ -1,0 +1,11 @@
+--- Makefile.in
++++ Makefile.in
+@@ -19,7 +19,7 @@
+ #  
+ CC = @CC@
+ CFLAGS = @CFLAGS@ @CPPFLAGS@
+-LDFLAGS = @LDFLAGS@ @LIBS@
++LDFLAGS = @LDFLAGS@ $(EXTRA_LDFLAGS) @LIBS@ $(EXTRA_LIBS)
+ 
+ YACC = @YACC@
+ YACCFLAGS = -d

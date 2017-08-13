@@ -7,6 +7,8 @@ $(PKG)_BINARIES:=bip $(if $(FREETZ_PACKAGE_BIP_BIPMKPW),bipmkpw)
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
+$(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,LDFLAGS|LIBS)
+
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
@@ -14,6 +16,9 @@ endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_BIP_STATIC)),y)
 $(PKG)_LDFLAGS := -static
+ifeq ($(strip $(FREETZ_PACKAGE_BIP_WITH_SSL)),y)
+$(PKG)_STATIC_LIBS += $(OPENSSL_LIBCRYPTO_EXTRA_LIBS)
+endif
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_SSL),--with-openssl,--without-openssl)
@@ -30,7 +35,8 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BIP_DIR) \
-		LDFLAGS="$(BIP_LDFLAGS)"
+		EXTRA_LDFLAGS="$(BIP_LDFLAGS)" \
+		EXTRA_LIBS="$(BIP_STATIC_LIBS)"
 
 $(foreach binary,$($(PKG)_BINARIES_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,$(binary),/usr/bin)))
 

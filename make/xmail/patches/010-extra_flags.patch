@@ -1,0 +1,11 @@
+--- Makefile.lnx
++++ Makefile.lnx
+@@ -55,7 +55,7 @@
+ CFLAGS := $(CFLAGS) -I. -D__UNIX__ -D__LINUX__ -D_REENTRANT=1 -D_THREAD_SAFE=1 -DHAS_SYSMACHINE \
+ 	-D_GNU_SOURCE -D_LARGEFILE64_SOURCE -D_POSIX_PTHREAD_SEMANTICS -DSYS_HAS_SENDFILE
+ 
+-LDFLAGS := $(LDFLAGS) $(SSLLIBS) -ldl -lpthread
++LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS) $(SSLLIBS) $(EXTRA_SSLLIBS) -ldl -lpthread
+ 
+ include Makefile.common
+ 

@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=6462f2a636e5b14f50e92efc000924f0
 $(PKG)_SITE:=http://fritz.v3v.de/dtmfbox/libs
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/pjlib/lib/libpj-$(TARGET_ARCH)-unknown-linux-gnu.a
+$(PKG)_BINARY:=$($(PKG)_DIR)/pjlib/lib/libpj-$(TARGET_ARCH_ENDIANNESS_DEPENDENT)-unknown-linux-gnu.a
 $(PKG)_CONFIG_SITE:=$($(PKG)_DIR)/pjlib/include/pj/config_site.h
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-sound
