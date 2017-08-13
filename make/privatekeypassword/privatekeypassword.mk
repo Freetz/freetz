@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, v0.5)
+$(call PKG_INIT_BIN, v0.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=git@https://github.com/PeterPawn/$(pkg).git
+$(PKG)_SITE:=git@https://github.com/PeterPawn/privatekeypassword.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/$(pkg)
