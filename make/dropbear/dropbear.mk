@@ -37,7 +37,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_YOURFRITZ)),y)
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dbclient scp" MULTI=1 SCPPROGRESS=1
 $(PKG)_CPPFLAGS+=-DDROPBEAR_YOURFRITZ
 $(PKG)_CONDITIONAL_PATCHES+=yourfritz
-$(PKG)_EXTRA_LIBS += -lprivatekeypassword -ldl -lcrypto
+$(PKG)_EXTRA_LIBS += -lprivatekeypassword -lcrypto
 endif
 
 ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_NONFREETZ)),y)
