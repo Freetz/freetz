@@ -315,3 +315,48 @@
  #define DROPBEAR_DH_GROUP16 0
  
  /* roughly 2x 521 bits */
+--- localoptions.h	2017-08-15 02:56:21.807642134 +0200
++++ localoptions.h	2017-08-15 03:04:22.483621760 +0200
+@@ -6,25 +6,41 @@
+ #define RSA_PRIV_FILENAME "/mod/etc/ssh/rsa_host_key"
+ #define ECDSA_PRIV_FILENAME "/mod/etc/ssh/ecdsa_host_key"
+ #else
++#ifndef DROPBEAR_YOURFRITZ
+ #define DSS_PRIV_FILENAME "/var/tmp/dss_host_key"
+ #define RSA_PRIV_FILENAME "/var/tmp/rsa_host_key"
+ #define ECDSA_PRIV_FILENAME "/var/tmp/ecdsa_host_key"
++#else
++#define RSA_PRIV_FILENAME "/var/flash/websrv_ssl_key.pem"
++#endif
+ #endif
+ 
++#ifdef DROPBEAR_YOURFRITZ
++#define SFTPSERVER_PATH "/var/custom/usr/bin/sftp-server"
++#else
+ #define SFTPSERVER_PATH "/usr/lib/sftp-server"
++#endif
+ 
+ #ifndef DB_NONFREETZ
+ #define DROPBEAR_PATH_SSH_PROGRAM "/usr/bin/ssh"
+ #else
++#ifdef DROPBEAR_YOURFRITZ
++#define DROPBEAR_PATH_SSH_PROGRAM "/var/custom/usr/bin/ssh"
++#else
+ /* ssh is expected to be in PATH */
+ #define DROPBEAR_PATH_SSH_PROGRAM "ssh"
+ #endif
++#endif
+ 
+ #define MAX_UNAUTH_PER_IP 2  /* limited by freetz, default 5 */
+-#define MAX_UNAUTH_CLIENTS 5 /* limited by freetz, default 30 */
++#define MAX_UNAUTH_CLIENTS 2 /* limited by freetz, default 30 */
+ #define MAX_AUTH_TRIES 2     /* limited by freetz, default 10 */
+ #define AUTH_TIMEOUT 60      /* limited by freetz down to 60 seconds, default 300 */
+ 
++#ifdef DROPBEAR_YOURFRITZ
++#define DEFAULT_PATH "/var/custom/bin:/bin:/var/custom/usr/bin:/usr/bin:/var/custom/sbin:/sbin:/var/custom/usr/sbin:/usr/sbin"
++#else
+ #define DEFAULT_PATH "/usr/bin:/bin:/var/bin"
++#endif
+ 
+ #endif
