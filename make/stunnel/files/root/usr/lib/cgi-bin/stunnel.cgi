@@ -14,6 +14,11 @@ sec_end
 
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 
+cgi_print_radiogroup \
+	"use_box_cert" "$STUNNEL_USE_BOX_CERT" "" "$(lang de:"Standard-Zertifikat f&uuml;r Server-Dienste" en:"default certificate for 'client=no' services"):&nbsp;" \
+		"yes::$(lang de:"Ger&auml;te-Zertifikat verwenden" en:"use device certificate")" \
+		"no::$(lang de:"Eigenes Zertifikat verwenden (s.u. zum Bearbeiten)" en:"use an own certificate (see below for links to edit it)")"
+
 cat << EOF
 <h2>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings"):</h2>
 EOF
@@ -36,8 +41,8 @@ sec_begin '$(lang de:"Dienste" en:"Services")'
 cat << EOF
 <ul>
 <li><a href="$(href file stunnel svcs)">$(lang de:"Dienste bearbeiten" en:"Edit services file")</a></li>
-<li><a href="$(href file stunnel certchain)">$(lang de:"Zertifikats-Kette bearbeiten" en:"Edit certificate chain")</a></li>
-<li><a href="$(href file stunnel key)">$(lang de:"Privaten Schl&uuml;ssel bearbeiten" en:"Edit private key")</a></li>
+<li><a href="$(href file stunnel certchain)">$(lang de:"Eigene Zertifikats-Kette bearbeiten" en:"Edit own certificate chain")</a></li>
+<li><a href="$(href file stunnel key)">$(lang de:"Eigenen privaten Schl&uuml;ssel bearbeiten" en:"Edit own private key")</a></li>
 </ul>
 EOF
 sec_end

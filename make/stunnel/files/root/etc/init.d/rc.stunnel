@@ -19,8 +19,10 @@ case $1 in
 		modreg cgi 'stunnel' 'Stunnel'
 		modreg daemon $DAEMON
 		modreg file stunnel svcs 'services' 0 "stunnel_svcs"
-		modreg file stunnel key 'Private Key' 0 "stunnel_key"
-		modreg file stunnel certchain 'Certificate Chain' 0 "stunnel_certchain"
+		if ! [ "$STUNNEL_USE_BOX_CERT" = "yes" ]; then
+			modreg file stunnel key 'Private Key' 0 "stunnel_key"
+			modreg file stunnel certchain 'Certificate Chain' 0 "stunnel_certchain"
+		fi
 
 		modlib_start $STUNNEL_ENABLED
 		;;
