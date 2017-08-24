@@ -16,7 +16,7 @@
  	llist_t *fl = NULL;
  	struct stat st;
  
-@@ -1997,9 +1999,35 @@
+@@ -1997,9 +1999,27 @@
  	) {
  		// Do we need to allocate a loopback device for it?
  		if (ENABLE_FEATURE_MOUNT_LOOP && S_ISREG(st.st_mode)) {
@@ -26,22 +26,14 @@
  			mp->mnt_fsname = NULL; // will receive malloced loop dev name
 -			if (set_loop(&mp->mnt_fsname, loopFile, 0, /*ro:*/ (vfsflags & MS_RDONLY)) < 0) {
 +			if (filteropts && (offsetOption = strstr(filteropts, offsetString))) {
-+				// it's only our offsetString, if preceeded by comma or we're 
-+				// at the very beginning of "filteropts"
 +				if (offsetOption == filteropts || *(offsetOption - 1) == ',') {
 +					char *nextOption;
-+					// no further check for valid value is performed here, 
-+					// offset stays 0 if it's invalid - but we remove this
-+					// option here anyway, other checks are done already
 +					if ((nextOption = strchr(offsetOption, ','))) {
-+						// xatoull would take a ',' as part of the number
-+						// and gets into a fuss about any non-numeric 
-+						// character following this one
 +						*(nextOption++) = '\0';
 +						loopOffset = xatoull(offsetOption + strlen(offsetString));
 +						strcpy(offsetOption, nextOption);
 +					}
-+					else { // last option, simply truncate the string
++					else {
 +						loopOffset = xatoull(offsetOption + strlen(offsetString));
 +						nextOption = offsetOption - 1;
 +						if (offsetOption == filteropts) nextOption = filteropts;
