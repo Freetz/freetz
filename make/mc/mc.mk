@@ -34,7 +34,7 @@ endif
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 
-r$(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
+$(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
 $(PKG)_CONFIGURE_OPTIONS += --without-x
 $(PKG)_CONFIGURE_OPTIONS += --without-gpm-mouse
 $(PKG)_CONFIGURE_OPTIONS += --disable-aspell
