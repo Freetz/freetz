@@ -1,18 +1,3 @@
---- src/common.h
-+++ src/common.h
-@@ -42,9 +42,9 @@
- 
- #ifdef NETTLE
- 
--#include "aes.h"
--#include "md5.h"
--#include "cbc.h"
-+#include <nettle/aes.h>
-+#include <nettle/md5.h>
-+#include <nettle/cbc.h>
- 
- #include "crypto_nettle.h"
- 
 --- src/Makefile
 +++ src/Makefile
 @@ -604,25 +604,6 @@
@@ -23,7 +8,7 @@
 -#                                                                                                     #
 -#######################################################################################################
 -ifeq "$(strip $(DECODER_CONFIG_LIBNETTLE))" "y"
--override CFLAGS += -Iinclude/nettle -DNETTLE
+-override CFLAGS += -I./include -DNETTLE
 -override LDFLAGS += -L.
 -endif
 -#######################################################################################################
