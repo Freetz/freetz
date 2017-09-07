@@ -15,24 +15,6 @@
  		       BASE_THREAD_LIBS="-lpthread"
  		   else
  		       echo old GCC disabling weak symbols for pthread
---- threads.c
-+++ threads.c
-@@ -50,6 +50,7 @@
- #if defined(__GNUC__) && defined(__GLIBC__)
- #ifdef linux
- #if (__GNUC__ == 3 && __GNUC_MINOR__ >= 3) || (__GNUC__ > 3)
-+#if 0
- extern int pthread_once (pthread_once_t *__once_control,
-                          void (*__init_routine) (void))
- 	   __attribute((weak));
-@@ -88,6 +89,7 @@
- extern int pthread_cond_signal ()
- 	   __attribute((weak));
- #endif
-+#endif
- #endif /* linux */
- #endif /* defined(__GNUC__) && defined(__GLIBC__) */
- #endif /* HAVE_PTHREAD_H */
 --- libxml-2.0.pc.in
 +++ libxml-2.0.pc.in
 @@ -8,6 +8,5 @@
