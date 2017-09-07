@@ -1,56 +1,60 @@
 --- Makefile.am
 +++ Makefile.am
-@@ -154,8 +154,8 @@
- 
+@@ -155,7 +155,7 @@
  bin_SCRIPTS = curl-config
  
--SUBDIRS = lib docs src include
--DIST_SUBDIRS = $(SUBDIRS) tests packages scripts
-+SUBDIRS = lib      src include
-+DIST_SUBDIRS = $(SUBDIRS)       packages scripts
+ SUBDIRS = lib src
+-DIST_SUBDIRS = $(SUBDIRS) tests packages scripts include docs
++DIST_SUBDIRS = $(SUBDIRS)       packages scripts include
  
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
-@@ -275,12 +275,12 @@
+@@ -275,14 +275,14 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
 -	cd docs && $(MAKE) install
+-	cd docs/libcurl && $(MAKE) install
 +#	cd docs && $(MAKE) install
++#	cd docs/libcurl && $(MAKE) install
  
  # We extend the standard uninstall with a custom hook:
  uninstall-hook:
  	cd include && $(MAKE) uninstall
 -	cd docs && $(MAKE) uninstall
+-	cd docs/libcurl && $(MAKE) uninstall
 +#	cd docs && $(MAKE) uninstall
++#	cd docs/libcurl && $(MAKE) uninstall
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generating a fresh ca-bundle.crt"
 --- Makefile.in
 +++ Makefile.in
-@@ -622,8 +622,8 @@
-  $(VC14_LIBVCXPROJ) $(VC14_SRCVCXPROJ)
+@@ -625,7 +625,7 @@
  
  bin_SCRIPTS = curl-config
--SUBDIRS = lib docs src include
--DIST_SUBDIRS = $(SUBDIRS) tests packages scripts
-+SUBDIRS = lib      src include
-+DIST_SUBDIRS = $(SUBDIRS)       packages scripts
+ SUBDIRS = lib src
+-DIST_SUBDIRS = $(SUBDIRS) tests packages scripts include docs
++DIST_SUBDIRS = $(SUBDIRS)       packages scripts include
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA = libcurl.pc
  LIB_VAUTH_CFILES = vauth/vauth.c vauth/cleartext.c vauth/cram.c         \
-@@ -1429,12 +1429,12 @@
+@@ -1431,14 +1431,14 @@
  # We extend the standard install with a custom hook:
  install-data-hook:
  	cd include && $(MAKE) install
 -	cd docs && $(MAKE) install
+-	cd docs/libcurl && $(MAKE) install
 +#	cd docs && $(MAKE) install
++#	cd docs/libcurl && $(MAKE) install
  
  # We extend the standard uninstall with a custom hook:
  uninstall-hook:
  	cd include && $(MAKE) uninstall
 -	cd docs && $(MAKE) uninstall
+-	cd docs/libcurl && $(MAKE) uninstall
 +#	cd docs && $(MAKE) uninstall
++#	cd docs/libcurl && $(MAKE) uninstall
  
  ca-bundle: lib/mk-ca-bundle.pl
  	@echo "generating a fresh ca-bundle.crt"
