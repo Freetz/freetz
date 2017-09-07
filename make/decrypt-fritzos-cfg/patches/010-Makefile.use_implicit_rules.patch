@@ -3,7 +3,7 @@
 @@ -609,6 +609,7 @@
  #######################################################################################################
  ifeq "$(strip $(DECODER_CONFIG_LIBNETTLE))" "y"
- override CFLAGS += -Iinclude/nettle -DNETTLE
+ override CFLAGS += -I./include -DNETTLE
 +override LDFLAGS += -L.
  endif
  #######################################################################################################
