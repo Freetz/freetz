@@ -47,7 +47,6 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_SHELLINABOX_BOXCERT)),y)
 $(PKG)_CONDITIONAL_PATCHES += boxcert
 $(PKG)_DEPENDS_ON          += privatekeypassword
-$(PKG)_EXTRA_CFLAGS        += $(if $(FREETZ_PACKAGE_SHELLINABOX_STATIC),-DCUSTOM_PRIVATEKEYPASSWORD_METHOD=PRIVATEKEYPASSWORD_METHOD_PROXY)
 $(PKG)_EXTRA_LIBS          += -lprivatekeypassword
 endif
 

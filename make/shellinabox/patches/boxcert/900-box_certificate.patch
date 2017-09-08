@@ -166,7 +166,7 @@
        { 0,                  0, 0,  0  } };
      int idx                = -1;
      int c                  = getopt_long(argc, argv, optstring, options, &idx);
-@@ -1122,6 +1133,31 @@
+@@ -1122,6 +1133,28 @@
        // Version
        message("ShellInABox version " VERSION " (revision " VCS_REVISION ")");
        exit(0);
@@ -182,9 +182,6 @@
 +        check(keyPassword  = strdup(optarg));
 +      } else {
 +        debug("Trying to get box certificate password ...");
-+#ifdef CUSTOM_PRIVATEKEYPASSWORD_METHOD
-+        getPrivateKeyPassword_setMethod(CUSTOM_PRIVATEKEYPASSWORD_METHOD);
-+#endif
 +        keyPassword        = getPrivateKeyPassword();
 +        if (!keyPassword) fatal("Could not get the password for box certificate");
 +      }
@@ -198,7 +195,7 @@
      }
    }
    if (optind != argc) {
-@@ -1211,7 +1247,9 @@
+@@ -1211,7 +1244,9 @@
    // Enable SSL support (if available)
    if (enableSSL) {
      check(serverSupportsSSL());
@@ -209,7 +206,7 @@
        serverSetCertificateFd(server, certificateFd);
      } else if (certificateDir) {
        char *tmp;
-@@ -1219,10 +1257,10 @@
+@@ -1219,10 +1254,10 @@
          fatal("Invalid certificate directory name \"%s\".", certificateDir);
        }
        check(tmp = stringPrintf(NULL, "%s/certificate%%s.pem", certificateDir));
@@ -222,7 +219,7 @@
      }
    }
  }
-@@ -1329,6 +1367,7 @@
+@@ -1329,6 +1364,7 @@
    }
    free(services);
    free(certificateDir);
