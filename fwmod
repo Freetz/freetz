@@ -1080,7 +1080,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		if [ "$FREETZ_SHARE_terminfo" == "y" ]; then
 			echo1 "installing terminfos"
 			for i in $(set | grep ^FREETZ_SHARE_terminfo_.*=y |grep -v '^FREETZ_SHARE_terminfo_showall=' ); do
-				dn=usr/share/terminfo
+				dn=${FREETZ_SHARE_libncurses_terminfo_dir#/}
 				conf=${i%%=*}
 				bn=${conf#FREETZ_SHARE_terminfo_}
 				fn=$(echo "$bn" | sed 's/MINUS/-/g;s/PLUS/+/g;s/\DOT/./g')

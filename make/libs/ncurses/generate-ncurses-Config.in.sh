@@ -13,6 +13,22 @@ config FREETZ_SHARE_terminfo
 	bool "terminfo database"
 	default n
 
+config FREETZ_SHARE_libncurses_terminfo_dir
+	string "terminfo database location"
+	default "/usr/share/terminfo"
+	depends on FREETZ_SHARE_terminfo
+	help
+		Here you may relocate the terminfo database created, if you don't use
+		an "original" Freetz image.
+
+config FREETZ_SHARE_libncurses_tabset_dir
+	string "tabset definitions location"
+	default "/usr/share/tabset"
+	depends on FREETZ_SHARE_terminfo
+	help
+		Here you may relocate the tabset definitions created, if you don't use
+		an "original" Freetz image.
+
 config FREETZ_SHARE_terminfo_showall
 	bool "Show all items"
 	depends on FREETZ_SHARE_terminfo
