@@ -1,47 +1,46 @@
 --- src/ctx.c
 +++ src/ctx.c
-@@ -720,16 +720,42 @@
+@@ -720,16 +720,38 @@
      return 0; /* OK */
  }
  
 +#include <privatekeypassword/privatekeypassword.h>
 +
-+static
-+int fritzbox_passwd_get_cb(char *buf, int size, int rwflag, void *userdata) {
-+   (void)userdata;
-+#ifdef CUSTOM_PRIVATEKEYPASSWORD_METHOD
-+   getPrivateKeyPassword_setMethod(CUSTOM_PRIVATEKEYPASSWORD_METHOD);
-+#endif
-+   return getPrivateKeyPassword_OpenSSL_Callback(buf, size, rwflag, NULL);
++NOEXPORT int fritzbox_passwd_get_cb(char *buf, int size, int rwflag, __attribute__((unused)) void *userdata) {
++    return getPrivateKeyPassword_OpenSSL_Callback(buf, size, rwflag, NULL);
 +}
 +
-+static
-+int is_fritzbox_key(const char *file_name) {
++NOEXPORT int is_fritzbox_key(const char *file_name) {
 +    struct stat sb;
-+    if (!stat(file_name, &sb))
++
++    if (stat(file_name, &sb))
 +        return 0;
 +    /* if it's a character device, assume it's the Fritz!OS private key file from TFFS */
 +    return S_ISCHR(sb.st_mode);
 +}
 +
  NOEXPORT int load_key_file(SERVICE_OPTIONS *section) {
-     int i, success;
-+    int fritzbox_key=is_fritzbox_key(section->key);
+-    int i, success;
++    int i, success, fritzbox_key;
++
++    fritzbox_key=is_fritzbox_key(section->key);
  
-     s_log(LOG_INFO, "Loading private key from file: %s", section->key);
+-    s_log(LOG_INFO, "Loading private key from file: %s", section->key);
 -    if(file_permissions(section->key))
++    s_log(LOG_INFO, "Loading private%s key from file: %s", (fritzbox_key ? " FRITZ!Box" : ""), section->key);
 +    if(!fritzbox_key && file_permissions(section->key))
          return 1; /* FAILED */
  
 -    /* try the cached value first */
      set_prompt(section->key);
-+  if (fritzbox_key) {
-+    /* read the Fritz!Box key */
-+    SSL_CTX_set_default_passwd_cb(section->ctx, fritzbox_passwd_get_cb);
-+  } else {
-+    /* try the cached value first */
-     SSL_CTX_set_default_passwd_cb(section->ctx, cache_passwd_get_cb);
-+  }
+-    SSL_CTX_set_default_passwd_cb(section->ctx, cache_passwd_get_cb);
++    if (fritzbox_key) {
++      /* read the Fritz!Box key */
++      SSL_CTX_set_default_passwd_cb(section->ctx, fritzbox_passwd_get_cb);
++    } else {
++      /* try the cached value first */
++      SSL_CTX_set_default_passwd_cb(section->ctx, cache_passwd_get_cb);
++    }
      success=SSL_CTX_use_PrivateKey_file(section->ctx, section->key,
          SSL_FILETYPE_PEM);
      /* invoke the UI on subsequent calls */
