@@ -43,10 +43,19 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-doxygen-dot
 $(PKG)_CONFIGURE_OPTIONS += --disable-doxygen-html
 $(PKG)_CONFIGURE_OPTIONS += --disable-mclib
 $(PKG)_CONFIGURE_OPTIONS += --disable-tests
+$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=$(FREETZ_PACKAGE_MC_SYSCONFDIR)
+
+ifneq ($(strip $(FREETZ_PACKAGE_MC_PREFIX)),/usr)
+$(PKG)_CONFIGURE_OPTIONS += --prefix=$(FREETZ_PACKAGE_MC_PREFIX)
+$(PKG)_CONFIGURE_OPTIONS += --exec-prefix=$(FREETZ_PACKAGE_MC_PREFIX)
+$(PKG)_CONFIGURE_OPTIONS += --bindir=$(FREETZ_PACKAGE_MC_PREFIX)/bin
+$(PKG)_CONFIGURE_OPTIONS += --datadir=$(FREETZ_PACKAGE_MC_PREFIX)/share
+$(PKG)_CONFIGURE_OPTIONS += --libdir=$(FREETZ_PACKAGE_MC_PREFIX)/lib
+$(PKG)_CONFIGURE_OPTIONS += --libexecdir=$(FREETZ_PACKAGE_MC_PREFIX)/lib
+$(PKG)_CONFIGURE_OPTIONS += --sbindir=$(FREETZ_PACKAGE_MC_PREFIX)/sbin
+endif
 
 $(PKG)_CONFIGURE_OPTIONS += --with-search-engine=glib
-
-$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/usr/share
 
 $(PKG)_ENDIS_OPTIONS          := background charset vfs vfs-cpio vfs-extfs vfs-ftp vfs-sfs vfs-tar vfs-fish vfs-sftp vfs-smb vfs-undelfs
 $(PKG)_ENDIS_OPTIONS_ENABLED  := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_ENDIS_OPTIONS),WITH)
