@@ -1,9 +1,9 @@
 config FREETZ_PACKAGE_OPENSSL
 	bool "OpenSSL (binary only)"
 	default n
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
+	select FREETZ_LIB_libdl              if !FREETZ_PACKAGE_OPENSSL_STATIC
+	select FREETZ_LIB_libcrypto          if !FREETZ_PACKAGE_OPENSSL_STATIC
+	select FREETZ_LIB_libssl             if !FREETZ_PACKAGE_OPENSSL_STATIC
 	select FREETZ_OPENSSL_VERSION_PROMPT
 	help
 		This package contains the OpenSSL command-line utility.
@@ -15,3 +15,10 @@ config FREETZ_PACKAGE_OPENSSL_TRACE
 	default n
 	help
 		Build OpenSSL binary with SSL trace support.
+
+config FREETZ_PACKAGE_OPENSSL_STATIC
+	bool "create statically linked binary"
+	depends on FREETZ_PACKAGE_OPENSSL
+	default n
+	help
+		Causes all libraries OpenSSL binary depends on to be linked in statically.
