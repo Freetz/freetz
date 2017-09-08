@@ -13,7 +13,7 @@ $(PKG)_DEPENDS_ON += openssl
 ifeq ($(strip $(FREETZ_PACKAGE_STUNNEL_BOXCERT)),y)
 $(PKG)_CONDITIONAL_PATCHES+=boxcert
 $(PKG)_DEPENDS_ON += privatekeypassword
-$(PKG)_EXTRA_LDFLAGS += -lprivatekeypassword -ldl
+$(PKG)_EXTRA_LDFLAGS += -lprivatekeypassword
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_STUNNEL_BOXCERT
