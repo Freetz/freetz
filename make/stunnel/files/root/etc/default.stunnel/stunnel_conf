@@ -7,15 +7,20 @@ foreground = no
 pid = /var/run/stunnel.pid
 client = yes
 
-cert = /tmp/flash/stunnel/certs.pem
-key = /tmp/flash/stunnel/key.pem
-
 RNDbytes = 1024
 RNDfile = /var/tmp/.stunnel_rnd
 RNDoverwrite = yes
 
 socket = a:TCP_NODELAY=1
 EOF
+
+if [ "$STUNNEL_USE_BOX_CERT" = "yes" ]; then
+	echo "cert = /var/flash/websrv_ssl_cert.pem"
+	echo "key = /var/flash/websrv_ssl_key.pem"
+else
+	echo "cert = /tmp/flash/stunnel/certs.pem"
+	echo "key = /tmp/flash/stunnel/key.pem"
+fi
 
 if [ ! -z "$STUNNEL_SSLOPTIONS" ]; then
 	echo "options = $STUNNEL_SSLOPTIONS"
