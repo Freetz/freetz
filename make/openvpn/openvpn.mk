@@ -54,8 +54,7 @@ $(PKG)_CONFIGURE_ENV += $(pkg)_path_IFCONFIG=/sbin/ifconfig
 $(PKG)_CONFIGURE_ENV += $(pkg)_path_IPROUTE=/sbin/ip
 $(PKG)_CONFIGURE_ENV += $(pkg)_path_ROUTE=/sbin/route
 
-# add EXTRA_CFLAGS, EXTRA_LDFLAGS, EXTRA_LIBS make variables
-$(PKG)_CONFIGURE_PRE_CMDS += find $(abspath $($(PKG)_DIR)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^((C|LD)FLAGS|LIBS)[ \t]*=[ \t]*@\1@,& $$$$(EXTRA_\1),' \{\} \+;
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS|LIBS)
 
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections

@@ -5,6 +5,8 @@ $(PKG)_SITE:=@SF/minidlna
 
 $(PKG)_CONDITIONAL_PATCHES+=$(FREETZ_PACKAGE_MINIDLNA_LANG)
 
+$(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS|LIBS)
+
 $(PKG)_BINARY := $($(PKG)_DIR)/minidlnad
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/sbin/minidlna
 

@@ -11,9 +11,7 @@ $(PKG)_DEPENDS_ON += bind
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-
-# add EXTRA_CFLAGS, EXTRA_LDFLAGS variables to all Makefile.in's
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,^((C|LD)FLAGS)[ \t]*=[ \t]*@\1@,& $$$$(EXTRA_\1),' `find . -name Makefile.in`;
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS)
 
 $(PKG)_MAKE_OPTIONS := -C $($(PKG)_DIR)
 # reduce binary size by setting appropriate CFLAGS/LDFLAGS
