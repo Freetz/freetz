@@ -1,11 +1,11 @@
 --- os.hpp
 +++ os.hpp
-@@ -160,7 +160,7 @@
+@@ -154,7 +154,7 @@
  #define SAVE_LINKS
  #endif
  
--#if defined(__linux) && !defined (_ANDROID) || defined(__FreeBSD__)
-+#if defined(__linux) && !defined (_ANDROID) && !defined(__UCLIBC__) || defined(__FreeBSD__)
+-#if defined(__linux) || defined(__FreeBSD__)
++#if defined(__linux) && !defined(__UCLIBC__) || defined(__FreeBSD__)
  #include <sys/time.h>
  #define USE_LUTIMES
  #endif
