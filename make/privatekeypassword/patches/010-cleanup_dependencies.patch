@@ -1,0 +1,33 @@
+Cleanup dependencies.
+
+ All *.o files already depend on the header files, no need to make the library and the binary also depend on them and by that to make rules more complicated than necessary.
+
+--- Makefile
++++ Makefile
+@@ -61,20 +61,20 @@
+ #
+ # shared library
+ #
+-$(LIB_SO): $(LIB_OBJS) $(LIBHDR) libcrypt.h
+-	$(CC) -shared -o $@ $(filter %.o,$^)
++$(LIB_SO): $(LIB_OBJS)
++	$(CC) -shared -o $@ $^
+ #
+ # static library
+ #
+-$(LIB_A): $(LIB_OBJS) $(LIBHDR) libcrypt.h
++$(LIB_A): $(LIB_OBJS)
+ 	-$(RM) $@ 2>/dev/null
+-	$(AR) rcu $@ $(filter %.o,$^)
++	$(AR) rcu $@ $^
+ 	$(RANLIB) $@
+ #
+ # the CLI binary
+ #
+-$(BINARY): $(BIN_OBJS) $(LIB_SO)
+-	$(CC) $(LDFLAGS) $(filter %.o,$^) -L. -l$(BASENAME) -o $@ $(LIBS)
++$(BINARY): $(BIN_OBJS) | $(LIB_SO)
++	$(CC) $(LDFLAGS) $^ -L. -l$(BASENAME) -o $@ $(LIBS)
+ #
+ # everything to make, if header file changes
+ #
