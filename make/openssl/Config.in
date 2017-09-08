@@ -15,3 +15,11 @@ config FREETZ_PACKAGE_OPENSSL_TRACE
 	default n
 	help
 		Build OpenSSL binary with SSL trace support.
+
+config FREETZ_PACKAGE_OPENSSL_STATIC
+	bool "build statically linked binary"
+	depends on FREETZ_PACKAGE_OPENSSL
+	depends on FREETZ_OPENSSL_VERSION_1
+	default n
+	help
+		Build the OpenSSL command line utility as a static binary.
