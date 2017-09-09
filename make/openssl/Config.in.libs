@@ -42,23 +42,23 @@ choice
 	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	prompt "OpenSSL version"
 	default FREETZ_OPENSSL_VERSION_1
-
-	config FREETZ_OPENSSL_VERSION_0
-	bool "0.9.8"
-	depends on !FREETZ_OPENSSL_VERSION_1_REQUIRED
 	help
+	 version 0.9.8:
 	    - NOT supported by the OpenSSL development team anymore
 	      (s. https://www.openssl.org/policies/releasestrat.html)
-	    - is smaller than 1.0.x
 	    - could be used (with some limitations) as a replacement for AVM's OpenSSL library
-	    - contains no assembler optimized code
+
+	 version 1.0.2:
+	    - Long Term Support (LTS) version, supported until 2019-12-31
+	    - could NOT be used as a replacement for AVM's OpenSSL library
+
+	config FREETZ_OPENSSL_VERSION_0
+	bool "0.9.8 - avoid using, out of support"
+	depends on FREETZ_AVM_HAS_OPENSSL_VERSION_0
+	depends on !FREETZ_OPENSSL_VERSION_1_REQUIRED
 
 	config FREETZ_OPENSSL_VERSION_1
 	bool "1.0.2"
-	help
-	    - is bigger than 0.9.8
-	    - could NOT be used as a replacement for AVM's OpenSSL library
-	    - contains assembler optimized code giving performance improvements of up to 30%
 
 endchoice
 
