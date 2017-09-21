@@ -1,0 +1,20 @@
+commit 17a30ac4615e2d6a438c0d881d73e9b407fe34d3
+Author: PeterPawn <git@yourfritz.de>
+Date:   Thu Sep 21 16:06:36 2017 +0200
+
+    expr applet: ignore double-dashes as 1st argument
+
+diff --git a/coreutils/expr.c b/coreutils/expr.c
+index e54afbb..3baaa40 100644
+--- coreutils/expr.c
++++ coreutils/expr.c
+@@ -545,6 +545,9 @@ int expr_main(int argc UNUSED_PARAM, char **argv)
+ 
+ 	xfunc_error_retval = 2; /* coreutils compat */
+ 	G.args = argv + 1;
++	if (*G.args != NULL && *(*G.args) == '-' && *(*(G.args)+1) == '-' && *(*(G.args)+2) == 0) {
++		G.args++;
++	}
+ 	if (*G.args == NULL) {
+ 		bb_error_msg_and_die("too few arguments");
+ 	}
