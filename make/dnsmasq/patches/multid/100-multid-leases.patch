@@ -3,7 +3,7 @@
 @@ -230,13 +230,29 @@
        lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
  }
-  
+ 
 +static void ourvprintf(FILE* f, int *errp, char *format, va_list ap)
 +{
 +  if (!(*errp) && f && vfprintf(f, format, ap) < 0)
