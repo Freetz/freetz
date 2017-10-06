@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.7.13)
+$(call PKG_INIT_BIN, 2.7.14)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=53b43534153bb2a0363f08bae8b9d990
+$(PKG)_SOURCE_MD5:=1f6db41ad91d9eb0a6f0c769b8613c5b
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
@@ -89,7 +89,6 @@ $(PKG)_CONFIGURE_PRE_CMDS += touch pybuilddir.txt;
 $(PKG)_MAKE_OPTIONS  := CROSS_TOOLCHAIN_SYSROOT="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_MAKE_OPTIONS  += PYTHON_FOR_COMPILE="$(abspath $(HOST_TOOLS_DIR)/usr/bin/python)"
 $(PKG)_CONFIGURE_ENV += PYTHON_INTERPRETER_FOR_BUILD="$(abspath $($(PKG)_DIR)/hostpython)"
-$(PKG)_MAKE_OPTIONS  += PGEN_FOR_BUILD="$(abspath $($(PKG)_DIR)/hostpgen)"
 
 ifneq ($(strip $(DL_DIR)/$(PYTHON_SOURCE)),$(strip $(DL_DIR)/$(PYTHON_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
