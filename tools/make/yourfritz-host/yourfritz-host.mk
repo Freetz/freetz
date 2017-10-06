@@ -1,6 +1,20 @@
-YOURFRITZ_HOST_VERSION:=968f5f8b54
+YOURFRITZ_HOST_VERSION:=41e0b5203c
 YOURFRITZ_HOST_SOURCE:=yourfritz-$(YOURFRITZ_HOST_VERSION).tar.xz
 YOURFRITZ_HOST_SITE:=git@https://github.com/er13/YourFritz.git
+
+YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/avm_pubkey_to_pkcs8
+YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/check_signed_image
+YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/generate_signing_key
+YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/sign_image
+
+YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_discover
+YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_get_environment
+YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_store_tffs
+YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_switch_system
+YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_to_memory
+YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/image2ram
+
+YOURFRITZ_HOST_BASH_AS_SHEBANG += avm_kernel_config/unpack_kernel.sh
 
 YOURFRITZ_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/yourfritz-host
 YOURFRITZ_HOST_DIR:=$(TOOLS_SOURCE_DIR)/yourfritz-$(YOURFRITZ_HOST_VERSION)
@@ -19,6 +33,7 @@ yourfritz-host-unpacked: $(YOURFRITZ_HOST_DIR)/.unpacked
 $(YOURFRITZ_HOST_DIR)/.unpacked: $(DL_DIR)/$(YOURFRITZ_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(TAR) -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(YOURFRITZ_HOST_SOURCE)
 	$(call APPLY_PATCHES,$(YOURFRITZ_HOST_MAKE_DIR)/patches,$(YOURFRITZ_HOST_DIR))
+	@$(SED) -i -r -e '1 s,^($(_hash)$(_bang)[ \t]*/bin/)(sh),\1ba\2,' $(YOURFRITZ_HOST_BASH_AS_SHEBANG:%=$(YOURFRITZ_HOST_DIR)/%)
 	touch $@
 
 $(YOURFRITZ_HOST_DIR)/.symlinked: | $(YOURFRITZ_HOST_DIR)/.unpacked
