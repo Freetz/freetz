@@ -1,0 +1,61 @@
+Configure test for getpagesize considers only Solaris and thus checks for getpagesize being contained in libucb.
+On Linux getagesize is however contained in libc.
+
+The proper fix would be to check for both "in libc?" and if not "in libucb?".
+
+We workaround the problem for Freetz in a hackish way by patching the "in libucb?"-test to "in libc?".
+
+--- configure
++++ configure
+@@ -11783,13 +11783,12 @@
+ $as_echo "#define HAVE_GETPAGESIZE 1" >>confdefs.h
+ 
+ else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for getpagesize in -lucb" >&5
+-$as_echo_n "checking for getpagesize in -lucb... " >&6; }
+-if ${ac_cv_lib_ucb_getpagesize+:} false; then :
++  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for getpagesize" >&5
++$as_echo_n "checking for getpagesize... " >&6; }
++if ${ac_cv_lib_c_getpagesize+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lucb  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -11809,18 +11808,18 @@
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_ucb_getpagesize=yes
++  ac_cv_lib_c_getpagesize=yes
+ else
+-  ac_cv_lib_ucb_getpagesize=no
++  ac_cv_lib_c_getpagesize=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ucb_getpagesize" >&5
+-$as_echo "$ac_cv_lib_ucb_getpagesize" >&6; }
+-if test "x$ac_cv_lib_ucb_getpagesize" = xyes; then :
+-  LIBS="$LIBS -lucb"; $as_echo "#define HAVE_GETPAGESIZE 1" >>confdefs.h
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_c_getpagesize" >&5
++$as_echo "$ac_cv_lib_c_getpagesize" >&6; }
++if test "x$ac_cv_lib_c_getpagesize" = xyes; then :
++  $as_echo "#define HAVE_GETPAGESIZE 1" >>confdefs.h
+ 
+ fi
+ 
+--- openbsd-compat/bsd-getpagesize.c
++++ openbsd-compat/bsd-getpagesize.c
+@@ -1,5 +1,7 @@
+ /* Placed in the public domain */
+ 
++#include "includes.h"
++
+ #ifndef HAVE_GETPAGESIZE
+ 
+ #include <unistd.h>
