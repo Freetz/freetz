@@ -114,7 +114,7 @@ for v in v1 v2 v3; do
 	{
 		head -c "$((${nmiVectorOffset}))" "$INPUT_FILE"
 		tail -c "+$((${nmiVectorOffset} + ${nmiVectorLength} + 1))" "$INPUT_FILE"
-	} > "$OUTPUT_FILE"
+	} | head -c "$((${imageSizeWithinNMI}))" > "$OUTPUT_FILE"
 	echo "done."
 
 	# debug: dump NMI vector to a separate file
