@@ -95,11 +95,25 @@ fi
 
 # real image size is encoded within the NMI block 8 bytes before 'NMI Boot'
 imageSizeWithinNMI="0x$(getHexContentAtOffset "$INPUT_FILE" $((${nmiBootOffset} - 8)) 4)"
-imageSizeWithinNMIPadded256=$(( ${imageSizeWithinNMI} + (256 - ${imageSizeWithinNMI} % 256) % 256 ))
-imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${nmiVectorLength} - ${imageChecksumSize} )))
-if [ "$((${imageSizeWithinNMI}))" -ne "$((${imageSizeExpected}))" -a "$((${imageSizeWithinNMIPadded256}))" -ne "$((${imageSizeExpected}))" ]; then
-	echo "[Error] Image size encoded in NMI block ($((${imageSizeWithinNMI}))) doesn't match calculated size ($((${imageSizeExpected})))" >&2
-	exit 2
+
+if [ "$((${imageSizeWithinNMI}))" -gt "$((${nmiVectorOffset}))" ]; then
+	# NMI boot block resides within the (filesystem) image, typically Fritz!Box
+	# kernel.image | filesystem.image part1 | NMI block | filesystem.image part2
+	imageSizeWithinNMIPadded256=$(( ${imageSizeWithinNMI} + (256 - ${imageSizeWithinNMI} % 256) % 256 ))
+	imageSizeExpected=$(printf "0x%08X" $(( $(getInputFileSize) - ${nmiVectorLength} - ${imageChecksumSize} )))
+	if [ "$((${imageSizeWithinNMI}))" -ne "$((${imageSizeExpected}))" -a "$((${imageSizeWithinNMIPadded256}))" -ne "$((${imageSizeExpected}))" ]; then
+		echo "[Error] Image size encoded in NMI block ($((${imageSizeWithinNMI}))) doesn't match calculated size ($((${imageSizeExpected})))" >&2
+		exit 2
+	fi
+else
+	# NMI boot block resides after the (filesystem) image, typically Fritz!WLAN Repeater / Fritz!Powerline Adapter
+	# kernel.image | filesystem.image | gap padding bytes | NMI block
+	fileSize=$(getInputFileSize)
+	fileSizeExpected=$(printf "0x%08X" $(( ${nmiVectorOffset} + ${nmiVectorLength} + ${imageChecksumSize} )))
+	if [ "$((${fileSize}))" -ne "$((${fileSizeExpected}))" ]; then
+		echo "[Error] File size ($((${fileSize}))) doesn't match the expected one ($((${fileSizeExpected})))" >&2
+		exit 2
+	fi
 fi
 
 # get first 32 bytes of the NMI vector
