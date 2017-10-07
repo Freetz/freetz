@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.8.2)
+$(call PKG_INIT_BIN, 1.8.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4dbe34bd0b559447d04ab2774e1b5246
+$(PKG)_SOURCE_MD5:=eafd4af7ec8b42f28fa1852186874ba0
 $(PKG)_SITE:=@SF/swissfileknife
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sfk
