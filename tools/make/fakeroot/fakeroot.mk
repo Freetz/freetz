@@ -1,6 +1,6 @@
-FAKEROOT_VERSION:=1.21
-FAKEROOT_SOURCE:=fakeroot_$(FAKEROOT_VERSION).orig.tar.gz
-FAKEROOT_SOURCE_MD5:=be5c9a0e516869fca4a6758105968e5a
+FAKEROOT_VERSION:=1.22
+FAKEROOT_SOURCE:=fakeroot_$(FAKEROOT_VERSION).orig.tar.bz2
+FAKEROOT_SOURCE_MD5:=fae64c9aeb2c895ead8e1b99bf50c631
 FAKEROOT_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
 
 FAKEROOT_MAKE_DIR:=$(TOOLS_DIR)/make/fakeroot
@@ -32,12 +32,7 @@ $(FAKEROOT_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_SOURCE) | $(TOOLS_SOURCE_DIR) $(
 	$(call APPLY_PATCHES,$(FAKEROOT_MAKE_DIR)/patches,$(FAKEROOT_DIR))
 	touch $@
 
-fakeroot-bootstrap: $(FAKEROOT_DIR)/.bootstrapped
-$(FAKEROOT_DIR)/.bootstrapped: $(FAKEROOT_DIR)/.unpacked
-	(cd $(FAKEROOT_DIR); ./bootstrap)
-	touch $@
-
-$(FAKEROOT_MAINARCH_DIR)/.configured: $(FAKEROOT_DIR)/.bootstrapped
+$(FAKEROOT_MAINARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
 	(mkdir -p $(FAKEROOT_MAINARCH_DIR); cd $(FAKEROOT_MAINARCH_DIR); $(RM) config.cache; \
 		CFLAGS="-O3 -Wall" \
 		CC="$(TOOLS_CC)" \
@@ -52,7 +47,7 @@ $(FAKEROOT_TARGET_SCRIPT): $(FAKEROOT_MAINARCH_DIR)/.configured
 	$(MAKE) -C $(FAKEROOT_MAINARCH_DIR) install
 	$(SED) -i -e 's,^PATHS=.*,PATHS=$(FAKEROOT_MAINARCH_LD_PRELOAD_PATH)$(if $(BIARCH_BUILD_SYSTEM),:$(FAKEROOT_BIARCH_LD_PRELOAD_PATH)),g' $(FAKEROOT_TARGET_SCRIPT)
 
-$(FAKEROOT_BIARCH_DIR)/.configured: $(FAKEROOT_DIR)/.bootstrapped
+$(FAKEROOT_BIARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
 	(mkdir -p $(FAKEROOT_BIARCH_DIR); cd $(FAKEROOT_BIARCH_DIR); $(RM) config.cache; \
 		CFLAGS="-m32 -O3 -Wall" \
 		CC="$(TOOLS_CC)" \
