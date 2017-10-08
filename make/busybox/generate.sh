@@ -71,7 +71,7 @@ done
 echo -n " replacing ..."
 sed -i -r \
 	-e "s,([ (!])(${feature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g" \
-	-e "/^[ \t#]*(config|default|depends|select|range)/{
+	-e "/^[ \t#]*(config|default|depends|select|range|if)/{
 		s,([ (!])(${nonfeature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g
 		s,([ (!])(${nonfeature_symbols})($|[ )]),\1FREETZ_BUSYBOX_\2\3,g
 	}" \
