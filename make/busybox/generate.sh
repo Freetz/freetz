@@ -13,7 +13,7 @@ default() {
 }
 
 depends_on() {
-	sed -r -i '/^config FREETZ_BUSYBOX_'"$1"'/,+5 {
+	sed -r -i '/^config FREETZ_BUSYBOX_'"$1"'$/,+5 {
 		/^[ \t]+depends on[ \t]/ {
 			# "depends on" already exists => append && at the end and move the line to the hold buffer
 			s,$, \&\&,
@@ -33,7 +33,7 @@ depends_on() {
 }
 
 select_() {
-	sed -r -i '/^config FREETZ_BUSYBOX_'"$1"'/,/^[ \t]+help$/ {
+	sed -r -i '/^config FREETZ_BUSYBOX_'"$1"'$/,/^[ \t]+help$/ {
 		/^[ \t]+help$/ i\
 	select '"$2"'
 	}' "$BBOUT"
