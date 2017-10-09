@@ -30,7 +30,7 @@ menulua_remove() {
 	local file="${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
 	if [ "$FREETZ_AVM_HAS_LUA_SCALABLE" == "y" ]; then
 		# find ["lua"] line
-		local pattern='\["lua"\] = "[^"]*'"$1"'.lua"'
+		local pattern='\["lua"\] = "[^"]*'"$1"'.*.lua"'
 		local matchLine=$(cat "$file" | get_line_number_of_1st_match "${pattern}")
 		[ -z "${matchLine}" ] && error 1 "menulua_remove: no matches for '${pattern}' found"
 		# the  ["show"] line is either one or two lines before
