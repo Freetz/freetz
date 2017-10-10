@@ -22,7 +22,7 @@ sub expand {
   open(my $fh, '<', $file) or die "Cannot open include file $file in $parent_file\n$!";
   print $fh_deps " \\\n\t$file";
   while (<$fh>) {
-    if (/^\s*source\s+(\S+)$/) {
+    if (/^\s*source\s+([^\s#]+)\s*(#.*)?$/) {
       # For each kconfig "source" statement, recursively read sub-file
       expand($1, $file);
     } else {
