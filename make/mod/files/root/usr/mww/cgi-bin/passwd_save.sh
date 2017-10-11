@@ -24,7 +24,7 @@ else
 
 	#XMail admin account
 	if [ -x /usr/lib/MailRoot/bin/XMCrypt ]; then
-		local DAEMON="xmail"
+		DAEMON="xmail"
 		. /etc/init.d/modlibrc
 		if [ -e $XMAIL_MAILLOCATION/ctrlaccounts.tab ]; then
 			xmcryptpass=$(/usr/lib/MailRoot/bin/XMCrypt $MOD_CGI_PASSWORD)

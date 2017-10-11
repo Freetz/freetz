@@ -9,5 +9,5 @@ else
 fi
 # protect file servers.php to be viewed in clear text via URL with a fantasy password
 [ -h /usr/mww/phpxmail/servers.php ] && echo "/phpxmail/servers.php:$MOD_HTTPD_USER:76advw6djc734hwh"
-local php_cgi=/usr/bin/php-cgi
+php_cgi=/usr/bin/php-cgi
 [ -h ${php_cgi} -o -x ${php_cgi} ] && echo "*.php:${php_cgi}"
