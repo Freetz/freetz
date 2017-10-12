@@ -2,7 +2,7 @@
 
 if [ -n "${QUERY_STRING##*hash=}" ]; then
         source /usr/mww/cgi-bin/login_check.sh
-else                                    
+else
         source /usr/mww/cgi-bin/login_page.sh
-fi  
+fi
 
