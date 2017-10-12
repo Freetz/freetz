@@ -17,7 +17,7 @@ sec_begin '$(lang de:"Verbundene VPN-Clients" en:"Connected clients")' sec-conne
 
 echo "<p>$(lang de:"Laut Status-Datei sind folgende Clients verbunden:" en:"Status file entries of connected sessions:") </p>"
 
-local c=1
+c=1
 for config in $(echo -e "$NAMES"); do
 	if [ "yes" = "$(nth $c $LOG)" -a "server" = "$(nth $c $MODE)" -a -r /var/log/${config}.log ]; then
 		[ $OPENVPN_CONFIG_COUNT -gt 1 ] && echo "<b>$(lang de:"Konfiguration" en:"Configuration") <i>${config}</i></b> "

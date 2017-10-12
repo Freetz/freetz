@@ -1,7 +1,7 @@
 # modlibinetd is only used by rc.inetd
 
 INETD_CONF="/var/mod/etc/inetd.conf"
-[ "$INETD_IPV6_SUPPORT" == "yes" -a -d /proc/sys/net/ipv6 ] && local inetd_ipv6=6
+[ "$INETD_IPV6_SUPPORT" == "yes" -a -d /proc/sys/net/ipv6 ] && inetd_ipv6=6
 
 update_user() {
 	cat /tmp/flash/inetd/inetd.user 2>/dev/null > $INETD_CONF
@@ -90,4 +90,3 @@ update_main() {
 }
 
 [ ! -e $INETD_CONF ] && update_user
-
