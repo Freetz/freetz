@@ -15,7 +15,7 @@
  //config:config FEATURE_CROND_DIR
  //config:	string "crond spool directory"
  //config:	default "/var/spool/cron"
-@@ -104,6 +112,9 @@
+@@ -105,6 +113,9 @@
  	int cl_empty_mail_size;         /* size of mail header only, 0 if no mailfile */
  	char *cl_mailto;                /* whom to mail results, may be NULL */
  #endif
@@ -25,7 +25,7 @@
  	char *cl_shell;
  	/* ordered by size, not in natural order. makes code smaller: */
  	char cl_Dow[7];                 /* 0-6, beginning sunday */
-@@ -467,6 +478,13 @@
+@@ -469,6 +480,13 @@
  			if (n < 6)
  				continue;
  			*pline = line = xzalloc(sizeof(*line));
@@ -39,7 +39,7 @@
  			/* parse date ranges */
  			ParseField(file->cf_username, line->cl_Mins, 60, 0, NULL, tokens[0]);
  			ParseField(file->cf_username, line->cl_Hrs, 24, 0, NULL, tokens[1]);
-@@ -849,6 +867,9 @@
+@@ -851,6 +869,9 @@
  
  			start_one_job(file->cf_username, line);
  			pid = line->cl_pid;

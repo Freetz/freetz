@@ -1,7 +1,7 @@
 --- util-linux/blkid.c
 +++ util-linux/blkid.c
-@@ -8,24 +8,46 @@
-  */
+@@ -28,24 +28,46 @@
+ //kbuild:lib-$(CONFIG_BLKID) += blkid.o
  
  //usage:#define blkid_trivial_usage
 -//usage:       "[BLOCKDEV]..."
@@ -80,9 +80,9 @@
  
  //int FAST_FUNC volume_id_probe_lsi_mega_raid(struct volume_id *id /*,uint64_t off*/, uint64_t size);
  
-@@ -169,25 +169,25 @@
+@@ -171,25 +171,25 @@
  
- /* FS */
+ int FAST_FUNC volume_id_probe_bcache(struct volume_id *id /*,uint64_t off*/);
  
 -int FAST_FUNC volume_id_probe_btrfs(struct volume_id *id /*,uint64_t off*/);
 +int FAST_FUNC volume_id_probe_btrfs(struct volume_id *id, uint64_t off);
@@ -115,7 +115,7 @@
  
  //int FAST_FUNC volume_id_probe_mac_partition_map(struct volume_id *id /*,uint64_t off*/);
  
-@@ -195,28 +195,28 @@
+@@ -197,29 +197,29 @@
  
  //int FAST_FUNC volume_id_probe_msdos_part_table(struct volume_id *id /*,uint64_t off*/);
  
@@ -154,7 +154,8 @@
 -int FAST_FUNC volume_id_probe_xfs(struct volume_id *id /*,uint64_t off*/);
 +int FAST_FUNC volume_id_probe_xfs(struct volume_id *id, uint64_t off);
  
- POP_SAVED_FUNCTION_VISIBILITY
+ int FAST_FUNC volume_id_probe_ubifs(struct volume_id *id /*,uint64_t off*/);
+ 
 --- util-linux/volume_id/volume_id.c
 +++ util-linux/volume_id/volume_id.c
 @@ -47,8 +47,8 @@
@@ -168,7 +169,7 @@
  
  static const raid_probe_fptr raid1[] = {
  #if ENABLE_FEATURE_VOLUMEID_LINUXRAID
-@@ -167,14 +167,14 @@
+@@ -173,14 +173,14 @@
  #endif
  };
  
@@ -185,7 +186,7 @@
  				goto ret;
  			if (id->error)
  				goto ret;
-@@ -182,7 +182,7 @@
+@@ -188,7 +188,7 @@
  	}
  
  	for (i = 0; i < ARRAY_SIZE(raid2); i++) {
@@ -194,7 +195,7 @@
  			goto ret;
  		if (id->error)
  			goto ret;
-@@ -190,7 +190,7 @@
+@@ -196,7 +196,7 @@
  
  	/* signature in the first block, only small buffer needed */
  	for (i = 0; i < ARRAY_SIZE(fs1); i++) {
@@ -203,7 +204,7 @@
  			goto ret;
  		if (id->error)
  			goto ret;
-@@ -200,7 +200,7 @@
+@@ -206,7 +206,7 @@
  	volume_id_get_buffer(id, 0, SB_BUFFER_SIZE);
  
  	for (i = 0; i < ARRAY_SIZE(fs2); i++) {
@@ -268,7 +269,7 @@
  }
  
  /* If get_label_uuid() on device_name returns success,
-@@ -118,7 +120,7 @@
+@@ -122,7 +124,7 @@
  	if (major(statbuf->st_rdev) == 2)
  		return TRUE;
  
@@ -277,7 +278,7 @@
  
  	return TRUE;
  }
-@@ -230,7 +232,10 @@
+@@ -234,7 +236,10 @@
  
  	uc = uuidcache_init(scan_devices);
  	while (uc) {
@@ -289,7 +290,7 @@
  		if (uc->label[0])
  			printf(" LABEL=\"%s\"", uc->label);
  		if (uc->uc_uuid[0])
-@@ -244,7 +249,7 @@
+@@ -248,7 +253,7 @@
  	}
  }
  
@@ -298,7 +299,7 @@
  {
  	char *uuid = uuid; /* for compiler */
  	char *label = label;
-@@ -258,9 +263,9 @@
+@@ -262,9 +267,9 @@
  		return 0;
  
  	/* get_label_uuid() closes fd in all cases (success & failure) */
@@ -312,7 +313,7 @@
  	return 0;
 --- util-linux/volume_id/btrfs.c
 +++ util-linux/volume_id/btrfs.c
-@@ -89,20 +89,20 @@
+@@ -85,20 +85,20 @@
  	// ...
  } PACKED;
  
@@ -339,7 +340,7 @@
  
 --- util-linux/volume_id/cramfs.c
 +++ util-linux/volume_id/cramfs.c
-@@ -46,9 +46,8 @@
+@@ -42,9 +42,8 @@
  	uint8_t		name[16];
  } PACKED;
  
@@ -352,7 +353,7 @@
  	dbg("probing at offset 0x%llx", (unsigned long long) off);
 --- util-linux/volume_id/exfat.c
 +++ util-linux/volume_id/exfat.c
-@@ -75,7 +75,7 @@
+@@ -73,7 +73,7 @@
  		} PACKED type;
  } PACKED;
  
@@ -361,7 +362,7 @@
  {
  	struct exfat_super_block *sb;
  	struct exfat_dir_entry *de;
-@@ -86,8 +86,8 @@
+@@ -84,8 +84,8 @@
  	unsigned	need_lbl_guid;
  
  	// Primary super block
@@ -372,7 +373,7 @@
  
  	if (!sb)
  		return -1;
-@@ -98,7 +98,7 @@
+@@ -96,7 +96,7 @@
  	sector_sz = 1 << sb->bytes_per_sector;
  	cluster_sz = sector_sz << sb->sectors_per_cluster;
  	// There are no clusters 0 and 1, so the first cluster is 2.
@@ -383,7 +384,7 @@
  		(le32_to_cpu(sb->root_dir) - 2) * cluster_sz;
 --- util-linux/volume_id/ext.c
 +++ util-linux/volume_id/ext.c
-@@ -34,9 +34,8 @@
+@@ -30,9 +30,8 @@
  
  #define EXT_SUPERBLOCK_OFFSET			0x400
  
@@ -396,7 +397,7 @@
  	dbg("ext: probing at offset 0x%llx", (unsigned long long) off);
 --- util-linux/volume_id/f2fs.c
 +++ util-linux/volume_id/f2fs.c
-@@ -66,13 +66,13 @@
+@@ -64,13 +64,13 @@
  } PACKED;
  
  
@@ -415,7 +416,7 @@
  		return -1;
 --- util-linux/volume_id/fat.c
 +++ util-linux/volume_id/fat.c
-@@ -130,9 +130,8 @@
+@@ -126,9 +126,8 @@
  	return NULL;
  }
  
@@ -428,7 +429,7 @@
  	uint16_t sector_size_bytes;
 --- util-linux/volume_id/hfs.c
 +++ util-linux/volume_id/hfs.c
-@@ -163,9 +163,8 @@
+@@ -159,9 +159,8 @@
  	volume_id_set_uuid(id, uuid, UUID_DCE);
  }
  
@@ -441,7 +442,7 @@
  	unsigned ext_block_start;
 --- util-linux/volume_id/iso9660.c
 +++ util-linux/volume_id/iso9660.c
-@@ -58,9 +58,8 @@
+@@ -54,9 +54,8 @@
  	uint8_t		version;
  } PACKED;
  
@@ -454,7 +455,7 @@
  	struct high_sierra_volume_descriptor *hs;
 --- util-linux/volume_id/jfs.c
 +++ util-linux/volume_id/jfs.c
-@@ -46,9 +46,8 @@
+@@ -42,9 +42,8 @@
  
  #define JFS_SUPERBLOCK_OFFSET			0x8000
  
@@ -467,7 +468,7 @@
  	dbg("probing at offset 0x%llx", (unsigned long long) off);
 --- util-linux/volume_id/linux_raid.c
 +++ util-linux/volume_id/linux_raid.c
-@@ -53,10 +53,9 @@
+@@ -49,10 +49,9 @@
  #define MD_RESERVED_BYTES		0x10000
  #define MD_MAGIC			0xa92b4efc
  
@@ -481,7 +482,7 @@
  	struct mdp_super_block *mdp;
 --- util-linux/volume_id/linux_swap.c
 +++ util-linux/volume_id/linux_swap.c
-@@ -42,9 +42,8 @@
+@@ -38,9 +38,8 @@
  
  #define LARGEST_PAGESIZE			0x4000
  
@@ -494,7 +495,7 @@
  	unsigned page;
 --- util-linux/volume_id/luks.c
 +++ util-linux/volume_id/luks.c
-@@ -91,9 +91,8 @@
+@@ -87,9 +87,8 @@
  		1 : -1];
  };
  
@@ -507,7 +508,7 @@
  	header = volume_id_get_buffer(id, off, sizeof(*header));
 --- util-linux/volume_id/nilfs.c
 +++ util-linux/volume_id/nilfs.c
-@@ -87,14 +87,14 @@
+@@ -85,14 +85,14 @@
  /* 0xF8 */	// ...
  } PACKED;
  
@@ -527,7 +528,7 @@
  		return -1;
 --- util-linux/volume_id/ntfs.c
 +++ util-linux/volume_id/ntfs.c
-@@ -95,9 +95,8 @@
+@@ -91,9 +91,8 @@
  #define MFT_RECORD_ATTR_OBJECT_ID		0x40
  #define MFT_RECORD_ATTR_END			0xffffffffu
  
@@ -540,7 +541,7 @@
  	uint64_t mft_cluster;
 --- util-linux/volume_id/ocfs2.c
 +++ util-linux/volume_id/ocfs2.c
-@@ -91,9 +91,8 @@
+@@ -87,9 +87,8 @@
  	uint8_t		s_uuid[OCFS2_VOL_UUID_LEN];	/* 128-bit uuid */
  } PACKED;
  
@@ -553,7 +554,7 @@
  	dbg("probing at offset 0x%llx", (unsigned long long) off);
 --- util-linux/volume_id/reiserfs.c
 +++ util-linux/volume_id/reiserfs.c
-@@ -59,9 +59,8 @@
+@@ -55,9 +55,8 @@
  #define REISERFS1_SUPERBLOCK_OFFSET		0x2000
  #define REISERFS_SUPERBLOCK_OFFSET		0x10000
  
@@ -566,7 +567,7 @@
  
 --- util-linux/volume_id/romfs.c
 +++ util-linux/volume_id/romfs.c
-@@ -38,9 +38,8 @@
+@@ -34,9 +34,8 @@
  	uint8_t name[];
  } PACKED;
  
@@ -579,7 +580,7 @@
  	dbg("probing at offset 0x%llx", (unsigned long long) off);
 --- util-linux/volume_id/squashfs.c
 +++ util-linux/volume_id/squashfs.c
-@@ -31,9 +31,8 @@
+@@ -29,9 +29,8 @@
  */
  } PACKED;
  
@@ -592,7 +593,7 @@
  	dbg("SquashFS: probing at offset 0x%llx", (unsigned long long) off);
 --- util-linux/volume_id/sysv.c
 +++ util-linux/volume_id/sysv.c
-@@ -93,9 +93,8 @@
+@@ -89,9 +89,8 @@
  #define XENIX_MAGIC				0x2b5544
  #define SYSV_MAX_BLOCKSIZE			0x800
  
@@ -605,7 +606,7 @@
  	unsigned boff;
 --- util-linux/volume_id/udf.c
 +++ util-linux/volume_id/udf.c
-@@ -66,9 +66,8 @@
+@@ -62,9 +62,8 @@
  
  #define UDF_VSD_OFFSET			0x8000
  
@@ -618,7 +619,7 @@
  	unsigned bs;
 --- util-linux/volume_id/xfs.c
 +++ util-linux/volume_id/xfs.c
-@@ -46,9 +46,8 @@
+@@ -42,9 +42,8 @@
  	uint64_t	fdblocks;
  } PACKED;
  

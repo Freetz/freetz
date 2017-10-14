@@ -1,6 +1,6 @@
 --- networking/telnetd.c
 +++ networking/telnetd.c
-@@ -28,8 +28,8 @@
+@@ -100,8 +100,8 @@
  //usage:	IF_NOT_FEATURE_TELNETD_STANDALONE(" via inetd") "\n"
  //usage:     "\n	-l LOGIN	Exec LOGIN on connect"
  //usage:     "\n	-f ISSUE_FILE	Display ISSUE_FILE instead of /etc/issue"
@@ -11,7 +11,7 @@
  //usage:	IF_FEATURE_TELNETD_STANDALONE(
  //usage:     "\n	-p PORT		Port to listen on"
  //usage:     "\n	-b ADDR[:PORT]	Address to bind to"
-@@ -545,7 +545,7 @@
+@@ -711,7 +711,7 @@
  	/* We don't want to die if just one session is broken */
  	signal(SIGPIPE, SIG_IGN);
  

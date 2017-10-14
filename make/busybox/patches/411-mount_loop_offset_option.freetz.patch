@@ -1,6 +1,6 @@
 --- util-linux/mount.c
 +++ util-linux/mount.c
-@@ -145,6 +145,7 @@
+@@ -153,6 +153,7 @@
  //usage:     "\n-o OPT:"
  //usage:	IF_FEATURE_MOUNT_LOOP(
  //usage:     "\n	loop		Ignored (loop devices are autodetected)"
@@ -8,7 +8,7 @@
  //usage:	)
  //usage:	IF_FEATURE_MOUNT_FLAGS(
  //usage:     "\n	[a]sync		Writes are [a]synchronous"
-@@ -316,6 +317,7 @@
+@@ -328,6 +329,7 @@
  
  	IF_FEATURE_MOUNT_LOOP(
  		/* "loop" */ 0,
@@ -16,15 +16,15 @@
  	)
  
  	IF_FEATURE_MOUNT_FSTAB(
-@@ -376,6 +378,7 @@
- static const char mount_option_str[] =
+@@ -389,6 +391,7 @@
+ static const char mount_option_str[] ALIGN1 =
  	IF_FEATURE_MOUNT_LOOP(
  		"loop\0"
 +		"offset=\0"
  	)
  	IF_FEATURE_MOUNT_FSTAB(
  		"defaults\0"
-@@ -563,7 +566,7 @@
+@@ -577,7 +580,7 @@
  
  // Use the mount_options list to parse options into flags.
  // Also update list of unrecognized options if unrecognized != NULL
@@ -33,7 +33,7 @@
  {
  	unsigned long flags = MS_SILENT;
  
-@@ -582,8 +585,8 @@
+@@ -596,8 +599,8 @@
  
  			if (strncasecmp(option_str, options, opt_len) == 0
  			 && (options[opt_len] == '\0'
@@ -44,7 +44,7 @@
  			    )
  			) {
  				unsigned long fl = mount_options[i];
-@@ -591,6 +594,12 @@
+@@ -605,6 +608,12 @@
  					flags &= fl;
  				else
  					flags |= fl;
@@ -57,7 +57,7 @@
  				goto found;
  			}
  			option_str += opt_len + 1;
-@@ -1875,12 +1884,13 @@
+@@ -1892,12 +1901,13 @@
  	int rc = -1;
  	unsigned long vfsflags;
  	char *loopFile = NULL, *filteropts = NULL;
@@ -72,7 +72,7 @@
  
  	// Treat fstype "auto" as unspecified
  	if (mp->mnt_type && strcmp(mp->mnt_type, "auto") == 0)
-@@ -1955,7 +1965,7 @@
+@@ -1971,7 +1981,7 @@
  				len, share,
  				share + len + 1  /* "dir1/dir2" */
  			);
@@ -81,25 +81,25 @@
  			if (ENABLE_FEATURE_CLEAN_UP) free(unc);
  		}
  
-@@ -1969,7 +1979,7 @@
- 		if (ENABLE_FEATURE_CLEAN_UP) free(lsa);
- 		ip = xasprintf("ip=%s", dotted);
- 		if (ENABLE_FEATURE_CLEAN_UP) free(dotted);
--		parse_mount_options(ip, &filteropts);
-+		parse_mount_options(ip, &filteropts, NULL);
- 		if (ENABLE_FEATURE_CLEAN_UP) free(ip);
+@@ -1997,7 +2007,7 @@
+ // (instead of _numeric_ iface_id) with glibc.
+ // This probably should be fixed in glibc, not here.
+ // The workaround is to manually specify correct "ip=ADDR%n" option.
+-			parse_mount_options(ip, &filteropts);
++			parse_mount_options(ip, &filteropts, NULL);
+ 			if (ENABLE_FEATURE_CLEAN_UP) free(ip);
+ 		}
  
- 		mp->mnt_type = (char*)"cifs";
-@@ -1999,7 +2009,7 @@
- 		if (ENABLE_FEATURE_MOUNT_LOOP && S_ISREG(st.st_mode)) {
- 			loopFile = bb_simplify_path(mp->mnt_fsname);
- 			mp->mnt_fsname = NULL; // will receive malloced loop dev name
--			if (set_loop(&mp->mnt_fsname, loopFile, 0, /*ro:*/ (vfsflags & MS_RDONLY)) < 0) {
-+			if (set_loop(&mp->mnt_fsname, loopFile, loopOffset, /*ro:*/ (vfsflags & MS_RDONLY)) < 0) {
- 				if (errno == EPERM || errno == EACCES)
- 					bb_error_msg(bb_msg_perm_denied_are_you_root);
- 				else
-@@ -2213,7 +2223,7 @@
+@@ -2037,7 +2047,7 @@
+ 			// Subject: Allow auto-destruction of loop devices
+ 			loopfd = set_loop(&mp->mnt_fsname,
+ 					loopFile,
+-					0,
++					loopOffset,
+ 					((vfsflags & MS_RDONLY) ? BB_LO_FLAGS_READ_ONLY : 0)
+ 						| BB_LO_FLAGS_AUTOCLEAR
+ 			);
+@@ -2262,7 +2272,7 @@
  	// Past this point, we are handling either "mount -a [opts]"
  	// or "mount [opts] single_param"
  
@@ -108,7 +108,7 @@
  	if (nonroot && (cmdopt_flags & ~MS_SILENT)) // Non-root users cannot specify flags
  		bb_error_msg_and_die(bb_msg_you_must_be_root);
  
-@@ -2287,7 +2297,7 @@
+@@ -2336,7 +2346,7 @@
  				continue;
  
  			// Skip noauto and swap anyway
@@ -117,7 +117,7 @@
  			// swap is bogus "fstype", parse_mount_options can't check fstypes
  			 || strcasecmp(mtcur->mnt_type, "swap") == 0
  			) {
-@@ -2348,7 +2358,7 @@
+@@ -2397,7 +2407,7 @@
  		// exit_group(32)                          = ?
  #if 0
  		// In case we want to simply skip swap partitions:
@@ -126,7 +126,7 @@
  		if ((l & MOUNT_SWAP)
  		// swap is bogus "fstype", parse_mount_options can't check fstypes
  		 || strcasecmp(mtcur->mnt_type, "swap") == 0
-@@ -2358,7 +2368,7 @@
+@@ -2407,7 +2417,7 @@
  #endif
  		if (nonroot) {
  			// fstab must have "users" or "user"

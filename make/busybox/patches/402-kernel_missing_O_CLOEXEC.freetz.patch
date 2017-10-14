@@ -1,0 +1,59 @@
+commit 0f0df278daf91892afd9efc023484fa26d6ddf2f
+Author: Eugene Rudoy <gene.devel@gmail.com>
+Date:   Mon Oct 9 20:07:45 2017 +0200
+
+    fix O_CLOEXEC related build problems with kernel versions < 2.6.23
+    
+    Do not use O_CLOEXEC flags (available since 2.6.23),
+    use close_on_exec_on provided by libbb instead (like everywhere else)
+    
+    Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
+
+diff --git miscutils/time.c miscutils/time.c
+index f4f8149d3..4f0e37d35 100644
+--- miscutils/time.c
++++ miscutils/time.c
+@@ -442,9 +442,11 @@ int time_main(int argc UNUSED_PARAM, char **argv)
+ 	if (opt & OPT_o) {
+ 		output_fd = xopen(output_filename,
+ 			(opt & OPT_a) /* append? */
+-			? (O_CREAT | O_WRONLY | O_CLOEXEC | O_APPEND)
+-			: (O_CREAT | O_WRONLY | O_CLOEXEC | O_TRUNC)
++			? (O_CREAT | O_WRONLY | O_APPEND)
++			: (O_CREAT | O_WRONLY | O_TRUNC)
+ 		);
++		if (output_fd >= 0)
++			close_on_exec_on(output_fd);
+ 	}
+ 
+ 	run_command(argv, &res);
+diff --git modutils/modprobe-small.c modutils/modprobe-small.c
+index a94b0b9a6..e782d687d 100644
+--- modutils/modprobe-small.c
++++ modutils/modprobe-small.c
+@@ -267,8 +267,9 @@ static int load_module(const char *fname, const char *options)
+ 	r = 1;
+ # ifdef __NR_finit_module
+ 	{
+-		int fd = open(fname, O_RDONLY | O_CLOEXEC);
++		int fd = open(fname, O_RDONLY);
+ 		if (fd >= 0) {
++			close_on_exec_on(fd);
+ 			r = finit_module(fd, options, 0) != 0;
+ 			close(fd);
+ 		}
+diff --git modutils/modutils.c modutils/modutils.c
+index 6f7cd9721..9f73d676c 100644
+--- modutils/modutils.c
++++ modutils/modutils.c
+@@ -215,8 +215,9 @@ int FAST_FUNC bb_init_module(const char *filename, const char *options)
+ 	 */
+ # ifdef __NR_finit_module
+ 	{
+-		int fd = open(filename, O_RDONLY | O_CLOEXEC);
++		int fd = open(filename, O_RDONLY);
+ 		if (fd >= 0) {
++			close_on_exec_on(fd);
+ 			rc = finit_module(fd, options, 0) != 0;
+ 			close(fd);
+ 			if (rc == 0)

@@ -15,8 +15,8 @@ Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
 
 --- include/libbb.h
 +++ include/libbb.h
-@@ -745,7 +745,7 @@
- 
+@@ -826,7 +826,7 @@
+ void visible(unsigned ch, char *buf, int flags) FAST_FUNC;
  
  extern ssize_t safe_read(int fd, void *buf, size_t count) FAST_FUNC;
 -extern ssize_t nonblock_immune_read(int fd, void *buf, size_t count) FAST_FUNC;
@@ -61,7 +61,7 @@ Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
  				free(buf);
 --- shell/ash.c
 +++ shell/ash.c
-@@ -5922,7 +5922,7 @@
+@@ -6216,7 +6216,7 @@
   read:
  		if (in.fd < 0)
  			break;
@@ -70,7 +70,7 @@ Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
  		TRACE(("expbackq: read returns %d\n", i));
  		if (i <= 0)
  			break;
-@@ -9642,7 +9642,7 @@
+@@ -10014,7 +10014,7 @@
  #if ENABLE_FEATURE_EDITING
   retry:
  	if (!iflag || g_parsefile->pf_fd != STDIN_FILENO)
@@ -79,7 +79,7 @@ Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
  	else {
  		int timeout = -1;
  # if ENABLE_ASH_IDLE_TIMEOUT
-@@ -9684,7 +9684,7 @@
+@@ -10059,7 +10059,7 @@
  		}
  	}
  #else

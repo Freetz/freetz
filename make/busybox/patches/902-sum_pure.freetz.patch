@@ -1,7 +1,7 @@
 --- coreutils/sum.c
 +++ coreutils/sum.c
-@@ -14,21 +14,22 @@
-  */
+@@ -23,22 +23,23 @@
+ //kbuild:lib-$(CONFIG_SUM) += sum.o
  
  //usage:#define sum_trivial_usage
 -//usage:       "[-rs] [FILE]..."
@@ -13,6 +13,7 @@
 +//usage:     "\n	-p	Print pure sum of all bytes of the file"
  
  #include "libbb.h"
+ #include "common_bufsiz.h"
  
 -enum { SUM_BSD, PRINT_NAME, SUM_SYSV };
 +enum { SUM_BSD, SUM_SYSV, SUM_PURE };
@@ -24,9 +25,9 @@
 -static unsigned sum_file(const char *file, unsigned type)
 +static unsigned sum_file(const char *file, unsigned type, unsigned print_name)
  {
- #define buf bb_common_bufsiz1
  	unsigned long long total_bytes = 0;
-@@ -65,11 +66,15 @@
+ 	int fd, r;
+@@ -77,11 +78,15 @@
  		}
  	}
  
@@ -45,7 +46,7 @@
  		printf("%u %llu %s\n", s, (total_bytes + 511) / 512, file);
  	} else
  		printf("%05u %5llu %s\n", s, (total_bytes + 1023) / 1024, file);
-@@ -83,23 +88,24 @@
+@@ -95,23 +100,24 @@
  	unsigned n;
  	unsigned type = SUM_BSD;
  
