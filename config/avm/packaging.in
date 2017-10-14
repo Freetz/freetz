@@ -29,6 +29,10 @@ config FREETZ_AVM_SQUASHFS_COMPRESSION
 	default "gzip" if FREETZ_KERNEL_VERSION_2_6_32 &&  FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	default "xz"   if FREETZ_KERNEL_VERSION_3_10_MIN
 
+config FREETZ_AVM_UNSQUASHFS_TOOL
+	string "unsquashfs tool to be used"	if FREETZ_TYPE_CUSTOM
+	default "unsquashfs4-avm-be"
+
 config FREETZ_AVM_HAS_NMI_VECTOR
 	bool "Has NMI vector within SquashFS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
@@ -86,5 +90,13 @@ config FREETZ_AVM_OUTER_FILESYSTEM_TYPE
 	string "Outer-filesystem type"		if FREETZ_TYPE_CUSTOM
 	default "Ext2FS"			if FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_KERNEL_VERSION_3_10
 	default "SquashFS"
+
+config FREETZ_AVM_KERNEL_IMAGE
+	string "Name and path of kernel.image file relative to /var/remote/"		if FREETZ_TYPE_CUSTOM
+	default "var/tmp/kernel.image"
+
+config FREETZ_AVM_FILESYSTEM_IMAGE
+	string "Name and path of filesystem.image file relative to /var/remote/"	if FREETZ_TYPE_CUSTOM
+	default "var/tmp/filesystem.image"
 
 endmenu

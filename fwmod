@@ -136,11 +136,6 @@ VARTAR_SUBDIR="var.tar"
 HTML_SUBDIR="usr/www"
 GRAPHICS_SUBDIR="graphics"
 
-# Kernel/SquashFS images contained in firmware
-KERNEL_IMAGE="var/tmp/kernel.image"
-FILESYSTEM_IMAGE="var/tmp/filesystem.image"
-FILESYSTEM_INNER_IMAGE="filesystem_core.squashfs"
-
 # More files created during firmware unpacking
 AVMPLUGINS_FILE="var/tmp/plugins.update"
 RAW_KERNEL_FILE="kernel.raw"
@@ -155,10 +150,6 @@ SHELL=$BASH
 FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 MAKEDEVS_TOOL="makedevs"
-UNSQUASHFS_TOOL="unsquashfs4-avm-be"
-MKSQUASHFS_TOOL[2]="mksquashfs2-lzma"
-MKSQUASHFS_TOOL[3]="mksquashfs3-multi"
-MKSQUASHFS_TOOL[4]="mksquashfs4-avm-be"
 DEBUGFS_TOOL="debugfs"
 EXTERNAL_TOOL="external"
 TAR_TOOL="tar"
@@ -229,8 +220,19 @@ NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
 # Options for (un)packing SquashFS
+UNSQUASHFS_TOOL="${FREETZ_AVM_UNSQUASHFS_TOOL}"
 UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 UNSQUASHFS_OPTIONS="-no-progress -processors 1 -exit-on-error"
+
+MKSQUASHFS_TOOL[2]="mksquashfs2-lzma"
+MKSQUASHFS_TOOL[3]="mksquashfs3-multi"
+if [ "${FREETZ_TARGET_ARCH_BE}" == "y" ]; then
+	MKSQUASHFS_TOOL[4]="mksquashfs4-avm-be"
+elif [ "${FREETZ_TARGET_ARCH_LE}" == "y" ]; then
+	MKSQUASHFS_TOOL[4]="mksquashfs4-avm-le"
+else
+	error 1 "Your architecture is neither big nor little endian. Something strange is happening here."
+fi
 
 MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL[${FREETZ_SQUASHFS_VERSION}]}"
 MKSQUASHFS_OPTIONS="-all-root -info"
@@ -246,10 +248,15 @@ if [ "${FREETZ_SQUASHFS_VERSION}" -lt 4 ]; then
 		MKSQUASHFS_OPTIONS+=" -le"
 	fi
 fi
+
 if [ "${FREETZ_SQUASHFS_VERSION}" -eq 3 -a "${FREETZ_AVM_SQUASHFS_COMPRESSION}" == "lzma" ]; then
 	MKSQUASHFS_OPTIONS+=" -lzma1"
 fi
 
+# Kernel/SquashFS images contained in firmware
+KERNEL_IMAGE="${FREETZ_AVM_KERNEL_IMAGE}"
+FILESYSTEM_IMAGE="${FREETZ_AVM_FILESYSTEM_IMAGE}"
+FILESYSTEM_INNER_IMAGE="filesystem_core.squashfs"
 
 #######################################
 ## Initialise fakeroot incl. caching ##
@@ -406,8 +413,8 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	fi
 
 	# Do the images exist ?
-	[ ! -r "${KERNEL}" ] && error 1 "cannot find kernel.image"
-	[ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && error 1 "cannot find filesystem.image"
+	[ ! -r "${KERNEL}" ] && error 1 "cannot find kernel.image (${KERNEL})"
+	[ ! -r "${FIRMWARE_DIR}/${FILESYSTEM_IMAGE}" ] && error 1 "cannot find filesystem.image (${FILESYSTEM})"
 
 	# Do we have the tool ?
 	for tool in "$UNSQUASHFS" "$FINDSQUASHFS" "$TICHKSUM"; do
@@ -1742,7 +1749,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Create in-memory image
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
-	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" -a "${FREETZ_TARGET_ARCH}" == "mips" ]; then
 		echo0 "creating in-memory image ${img_name}.in-memory"
 		{
 			cat "$KERNEL_MOD"     | dd bs=256 conv=sync 2>/dev/null;
