@@ -65,7 +65,7 @@ endif
 
 uclibc-config: $(UCLIBC_DIR)/.config
 $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
-	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(UCLIBC_VERSION) $(UCLIBC_DIR)/.config
+	cp $(TOOLCHAIN_DIR)/make/target/uclibc/Config.$(UCLIBC_VERSION)_$(FREETZ_TARGET_ARCH) $(UCLIBC_DIR)/.config
 	$(call PKG_EDIT_CONFIG,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)) $(UCLIBC_DIR)/Rules.mak
 	$(call PKG_EDIT_CONFIG, \
 		$(if $(FREETZ_TARGET_UCLIBC_0_9_28), \
