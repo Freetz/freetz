@@ -43,6 +43,7 @@ $(YOURFRITZ_HOST_DIR)/.symlinked: | $(YOURFRITZ_HOST_DIR)/.unpacked
 $(YOURFRITZ_HOST_AKC_TOOLS_BUILD_DIR): $(YOURFRITZ_HOST_DIR)/.unpacked $(DTC_LIBFDT_HOST_DIR)/libfdt.a
 	$(MAKE) -f Makefile.freetz -C $(YOURFRITZ_HOST_AKC_BUILD_DIR) \
 		CC="$(TOOLS_CC)" \
+		BITNESS="$(HOST_CFLAGS_FORCE_32BIT_CODE)" \
 		LIBFDT_DIR=$(DTC_LIBFDT_HOST_DIR) \
 		$(YOURFRITZ_HOST_AKC_TOOLS:%=avm_kernel_config.%)
 	touch -c $@

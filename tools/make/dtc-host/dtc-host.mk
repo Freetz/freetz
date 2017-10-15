@@ -20,7 +20,8 @@ $(DTC_HOST_DIR)/.unpacked: $(DL_DIR)/$(DTC_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
 
 $(DTC_LIBFDT_HOST_DIR)/libfdt.a: $(DTC_HOST_DIR)/.unpacked
 	$(MAKE) -f Makefile.freetz -C $(DTC_LIBFDT_HOST_DIR) \
-		CC="$(TOOLS_CC)"
+		CC="$(TOOLS_CC)" \
+		BITNESS="$(HOST_CFLAGS_FORCE_32BIT_CODE)"
 	touch -c $@
 
 dtc-host: $(DTC_LIBFDT_HOST_DIR)/libfdt.a
