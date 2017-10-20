@@ -20,7 +20,7 @@ FAKEROOT_TARGET_BIARCH_LIB:=$(FAKEROOT_BIARCH_LD_PRELOAD_PATH)/libfakeroot-0.so
 # (using 32-bit toolchain) AND (any of the STRIP-options is selected) AND (host is 64-bit)
 BIARCH_BUILD_SYSTEM:=$(and \
 	$(or $(FREETZ_DOWNLOAD_TOOLCHAIN),$(FREETZ_TOOLCHAIN_32BIT)), \
-	$(findstring $(shell uname -m),x86_64))
+	$(filter-out 32,$(HOST_BITNESS)))
 
 fakeroot-source: $(DL_DIR)/$(FAKEROOT_SOURCE)
 $(DL_DIR)/$(FAKEROOT_SOURCE): | $(DL_DIR)
@@ -49,7 +49,7 @@ $(FAKEROOT_TARGET_SCRIPT): $(FAKEROOT_MAINARCH_DIR)/.configured
 
 $(FAKEROOT_BIARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
 	(mkdir -p $(FAKEROOT_BIARCH_DIR); cd $(FAKEROOT_BIARCH_DIR); $(RM) config.cache; \
-		CFLAGS="-m32 -O3 -Wall" \
+		CFLAGS="$(HOST_CFLAGS_FORCE_32BIT_CODE) -O3 -Wall" \
 		CC="$(TOOLS_CC)" \
 		../../configure \
 		--prefix=$(FAKEROOT_DESTDIR) \

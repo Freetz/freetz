@@ -4,7 +4,7 @@ Note: this patch has been removed in OpenWrt, we in Freetz however still need it
 
 --- coreutils/id.c
 +++ coreutils/id.c
-@@ -63,9 +63,11 @@
+@@ -62,9 +62,12 @@
  
  /* This is a NOEXEC applet. Be very careful! */
  
@@ -14,10 +14,11 @@ Note: this patch has been removed in OpenWrt, we in Freetz however still need it
  #if defined(__UCLIBC__) && UCLIBC_VERSION < KERNEL_VERSION(0, 9, 30)
 -#error "Sorry, you need at least uClibc version 0.9.30 for id applet to build"
 +#undef HAVE_GETGROUPLIST
++#define HAVE_GETGROUPLIST 0
  #endif
  #endif
  
-@@ -126,7 +128,11 @@
+@@ -125,7 +127,11 @@
  		/* If the user is a member of more than
  		 * *n groups, then -1 is returned. Otherwise >= 0.
  		 * (and no defined way of detecting errors?!) */
@@ -29,7 +30,7 @@ Note: this patch has been removed in OpenWrt, we in Freetz however still need it
  		/* I guess *n < 0 might indicate error. Anyway,
  		 * malloc'ing -1 bytes won't be good, so: */
  		if (*n < 0)
-@@ -208,6 +214,7 @@
+@@ -207,6 +213,7 @@
  			if (egid != rgid)
  				status |= print_group(egid, " ");
  		}
@@ -37,7 +38,7 @@ Note: this patch has been removed in OpenWrt, we in Freetz however still need it
  		/* We are supplying largish buffer, trying
  		 * to not run get_groups() twice. That might be slow
  		 * ("user database in remote SQL server" case) */
-@@ -234,6 +241,7 @@
+@@ -233,6 +240,7 @@
  		}
  		if (ENABLE_FEATURE_CLEAN_UP)
  			free(groups);

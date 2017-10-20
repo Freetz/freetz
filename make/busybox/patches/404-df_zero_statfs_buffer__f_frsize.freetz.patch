@@ -1,0 +1,17 @@
+Make uClibc-workaround
+
+  if (s.f_frsize == 0)
+    s.f_frsize = s.f_bsize;
+
+actually work by zeroing statfs-buffer before statfs-call
+
+--- coreutils/df.c
++++ coreutils/df.c
+@@ -208,6 +208,7 @@
+ 		mount_point = mount_entry->mnt_dir;
+ 		fs_type = mount_entry->mnt_type;
+ 
++		memset(&s, 0, sizeof(s));
+ 		if (statfs(mount_point, &s) != 0) {
+ 			bb_simple_perror_msg(mount_point);
+ 			goto set_error;

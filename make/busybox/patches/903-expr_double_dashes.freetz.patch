@@ -1,0 +1,12 @@
+--- coreutils/expr.c
++++ coreutils/expr.c
+@@ -542,6 +542,9 @@
+ 
+ 	xfunc_error_retval = 2; /* coreutils compat */
+ 	G.args = argv + 1;
++	if (nextarg("--")) {
++		G.args++;
++	}
+ 	if (*G.args == NULL) {
+ 		bb_error_msg_and_die("too few arguments");
+ 	}

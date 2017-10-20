@@ -1,0 +1,18 @@
+--- shell/ash.c
++++ shell/ash.c
+@@ -9319,8 +9319,15 @@
+ {
+ 	char *name;
+ 
++#if 0
++	/*
++	 * Freetz: revert https://git.busybox.net/busybox/commit/?id=ef2386b80abfb22ccb697ddbdd4047aacc395c50
++	 * Reason: some AVM scripts use "local foo=" at scope level 0, i.e. outside of any function
++	 *         it's easier to revert the busybox commit than to determine and to patch all AVM scripts
++	 */
+ 	if (!funcnest)
+ 		ash_msg_and_raise_error("not in a function");
++#endif
+ 
+ 	argv = argptr;
+ 	while ((name = *argv++) != NULL) {

@@ -1,40 +1,23 @@
 --- libbb/appletlib.c
 +++ libbb/appletlib.c
-@@ -148,10 +148,20 @@
- #endif
- int FAST_FUNC find_applet_by_name(const char *name)
- {
-+	const char *name_to_search_for = name;
-+
-+	char unaliased_name[MAX_APPLET_NAME_LEN + 1] = { 0 };
-+	char *suffix = is_suffixed_with(name_to_search_for, "-busybox");
-+	if (suffix) {
-+		strncpy(unaliased_name, name_to_search_for, suffix - name_to_search_for);
-+		name_to_search_for = unaliased_name;
-+	}
-+
-+	{ /* silence "warning: ISO C90 forbids mixed declarations and code" */
- #if NUM_APPLETS > 8
- 	/* Do a binary search to find the applet entry given the name. */
- 	const char *p;
--	p = bsearch(name, (void*)(ptrdiff_t)1, ARRAY_SIZE(applet_main), 1, applet_name_compare);
-+	p = bsearch(name_to_search_for, (void*)(ptrdiff_t)1, ARRAY_SIZE(applet_main), 1, applet_name_compare);
- 	/*
- 	 * if (!p) return -1;
- 	 * ^^^^^^^^^^^^^^^^^^ the code below will do this if p == NULL :)
-@@ -162,13 +172,14 @@
- 	int i = 0;
- 	const char *p = applet_names;
- 	while (i < NUM_APPLETS) {
--		if (strcmp(name, p) == 0)
-+		if (strcmp(name_to_search_for, p) == 0)
- 			return i;
- 		p += strlen(p) + 1;
- 		i++;
- 	}
- 	return -1;
- #endif
-+	}
+@@ -175,11 +175,19 @@
+ 	xfunc_die();
  }
  
+-int FAST_FUNC find_applet_by_name(const char *name)
++int FAST_FUNC find_applet_by_name(const char *original_name)
+ {
+ 	unsigned i, max;
+ 	int j;
+ 	const char *p;
++	const char *name = original_name;
++
++	char unaliased_name[MAX_APPLET_NAME_LEN + 1] = { 0 };
++	char *suffix = is_suffixed_with(name, "-busybox");
++	if (suffix) {
++		strncpy(unaliased_name, name, suffix - name);
++		name = unaliased_name;
++	}
  
+ /* The commented-out word-at-a-time code is ~40% faster, but +160 bytes.
+  * "Faster" here saves ~0.5 microsecond of real time - not worth it.

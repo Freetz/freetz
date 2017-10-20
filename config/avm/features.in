@@ -145,7 +145,7 @@ config FREETZ_AVM_HAS_PHONE
 config FREETZ_AVM_HAS_PLUGINS_UPDATE
 	bool "plugins.update"	if FREETZ_TYPE_CUSTOM
 	default y	if \
-		(FREETZ_TYPE_4020                           && FREETZ_AVM_VERSION_06_2X_MIN) || \
+		(FREETZ_TYPE_4020                           && FREETZ_AVM_VERSION_06_5X_MIN) || \
 		(FREETZ_TYPE_7270_V1                        && FREETZ_AVM_VERSION_04_XX_MAX) || \
 		(FREETZ_TYPE_7360_SL && FREETZ_TYPE_LANG_EN && FREETZ_AVM_VERSION_06_2X_MIN) || \
 		(FREETZ_TYPE_7360_V1 && FREETZ_TYPE_LANG_EN && FREETZ_AVM_VERSION_06_2X_MIN) || \
@@ -197,7 +197,7 @@ config FREETZ_AVM_HAS_PLUGIN_WEBCM_INTERPRETER
 	depends on FREETZ_AVM_HAS_PLUGINS_UPDATE
 	bool "WebCM Interpreter"	if FREETZ_TYPE_CUSTOM
 	default y	if \
-		(FREETZ_TYPE_4020                           && FREETZ_AVM_VERSION_06_2X_MIN) || \
+		(FREETZ_TYPE_4020                           && FREETZ_AVM_VERSION_06_5X_MIN) || \
 		(FREETZ_TYPE_7360_SL && FREETZ_TYPE_LANG_EN && FREETZ_AVM_VERSION_06_2X_MIN) || \
 		(FREETZ_TYPE_7360_V1 && FREETZ_TYPE_LANG_EN && FREETZ_AVM_VERSION_06_2X_MIN) || \
 		(FREETZ_TYPE_7390    && FREETZ_TYPE_LANG_EN && FREETZ_AVM_VERSION_06_2X_MIN)
@@ -595,9 +595,7 @@ config FREETZ_AVM_HAS_JFFS2_MODULE
 		\
 		FREETZ_TYPE_4020 || \
 		FREETZ_TYPE_6810 || \
-		(FREETZ_TYPE_7360_V1 && FREETZ_AVM_VERSION_06_0X_MAX) || \
-		FREETZ_TYPE_7360_V2 || \
-		(FREETZ_TYPE_7360_SL && FREETZ_AVM_VERSION_06_0X_MAX)
+		FREETZ_TYPE_7360_V2
 	default n
 	help
 		Select this if you have a box with JFFS2 filesystem support built as module (jffs2.ko).
@@ -873,7 +871,7 @@ config FREETZ_AVM_HAS_PIGLET_ISDN
 
 config FREETZ_AVM_HAS_SOCAT
 	bool "socat binary"	if FREETZ_TYPE_CUSTOM
-	default y		if (FREETZ_TYPE_7390 && FREETZ_AVM_VERSION_06_0X_MAX) || (FREETZ_TYPE_7490 && FREETZ_AVM_VERSION_06_0X)
+	default y		if (FREETZ_TYPE_7390 && FREETZ_AVM_VERSION_06_0X_MAX)
 	default n
 	help
 		Select this if the original firmware contains socat binary.
@@ -899,13 +897,7 @@ menu "Other AVM firmware properties"
 config FREETZ_AVM_HAS_AR7CFG_V12_MIN
 	bool "ar7.cfg version >= 12"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_AVM_VERSION_06_0X_MIN || \
-		FREETZ_AVM_VERSION_05_5X && ( \
-			FREETZ_TYPE_6810 || \
-			FREETZ_TYPE_6840 || \
-			FREETZ_TYPE_7272 || \
-			FREETZ_TYPE_7490 \
-		)
+		FREETZ_AVM_VERSION_06_0X_MIN
 	default n
 	help
 		Select this if your ar7.cfg is at least version 12.

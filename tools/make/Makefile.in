@@ -1,6 +1,12 @@
 TOOLS_CC:=gcc
 TOOLS_CXX:=g++
 
+# bitness of the build system (also the host system)
+# heuristic: if "uname -m" contains 64 then it's a 64-bit system, 32-bit otherwise
+HOST_BITNESS:=$(if $(findstring 64,$(shell uname -m)),64,32)
+# on 32-bit systems no special CFLAGS are required, on all other systems use -m32 [ and hope it's supported :-) ]
+HOST_CFLAGS_FORCE_32BIT_CODE:=$(if $(filter-out 32,$(HOST_BITNESS)),-m32)
+
 TOOLS_SOURCE_DIR:=$(FREETZ_BASE_DIR)/source/host-tools
 HOST_TOOLS_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
 
