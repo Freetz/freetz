@@ -1749,7 +1749,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Create in-memory image
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
-	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" -a "${FREETZ_TARGET_ARCH}" == "mips" ]; then
+	if [ "${FREETZ_FWMOD_CREATE_IN-MEMORY}" == "y" ]; then
 		echo0 "creating in-memory image ${img_name}.in-memory"
 		{
 			cat "$KERNEL_MOD"     | dd bs=256 conv=sync 2>/dev/null;
