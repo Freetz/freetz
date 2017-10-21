@@ -6,10 +6,10 @@ inspired by uclibc-0002-Fix-__libc_epoll_pwait-compile-failure-on-x86.patch from
  {
  	int ret;
  	INTERNAL_SYSCALL_DECL(err);
-+	int offset_hi = offset >> 32;
-+	int offset_lo = offset & 0xffffffff;
-+	int len_hi    = len    >> 32;
-+	int len_lo    = len    & 0xffffffff;
++	uint32_t offset_hi = OFF64_HI(offset);
++	uint32_t offset_lo = OFF64_LO(offset);
++	uint32_t len_hi    = OFF64_HI(len);
++	uint32_t len_lo    = OFF64_LO(len);
  	ret = (int) (INTERNAL_SYSCALL(fallocate, err, 6, fd, mode,
 -		OFF64_HI_LO (offset), OFF64_HI_LO (len)));
 +		offset_hi, offset_lo,len_hi, len_lo));
