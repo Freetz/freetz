@@ -40,7 +40,7 @@ KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
 # the current ones correspond to the flags used in Freetz up to r12843
 # binutils-2.25 require "-Wa,...", this however might break compilation of some packages (e.g. libffi)
 TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_TUNE)) -mtune=$(call qstrip,$(FREETZ_GCC_TUNE))
-TARGET_CFLAGS_FLOAT_ABI     := -m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float
+TARGET_CFLAGS_FLOAT_ABI     := $(if $(FREETZ_GCC_FLOAT_ABI), -m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
 #TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_ARCH)) -mtune=$(call qstrip,$(FREETZ_GCC_TUNE))
 #TARGET_CFLAGS_FLOAT_ABI     := -m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float -Wa,-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float
 ifneq ($(filter -march=% -mcpu=% -mtune=% -m%-float,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)

@@ -1,6 +1,6 @@
 config FREETZ_GCC_ABI
 	string
-	default "32"
+	default "32"       if FREETZ_TARGET_ARCH_MIPS
 
 config FREETZ_GCC_ARCH
 	string
@@ -14,4 +14,4 @@ config FREETZ_GCC_TUNE
 
 config FREETZ_GCC_FLOAT_ABI
 	string
-	default "soft"
+	default "soft"     if FREETZ_TARGET_ARCH_MIPS
