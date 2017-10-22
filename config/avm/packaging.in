@@ -87,4 +87,18 @@ config FREETZ_AVM_OUTER_FILESYSTEM_TYPE
 	default "Ext2FS"			if FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_KERNEL_VERSION_3_10
 	default "SquashFS"
 
+config FREETZ_AVM_KERNEL_IMAGE
+	string "Name and path of kernel.image file"		if FREETZ_TYPE_CUSTOM
+	default "var/tmp/kernel.image"
+	help
+		Name and path of kernel.image file within the AVM
+		firmware archive
+
+config FREETZ_AVM_FILESYSTEM_IMAGE
+	string "Name and path of filesystem.image file"		if FREETZ_TYPE_CUSTOM
+	default "var/tmp/filesystem.image"
+	help
+		Name and path of filesystem.image file within the
+		AVM firmware archive
+
 endmenu

@@ -54,6 +54,14 @@ menu "Firmware packaging (fwmod) options"
 		depends on FREETZ_FWMOD_SIGN
 		default ""
 
+	config FREETZ_FWMOD_CREATE_IN-MEMORY
+		bool "Create separate .in-memory image file"
+		depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE && FREETZ_TARGET_ARCH_MIPS
+		default y
+		help
+			Creates a separate image file to be booted directly by the boot
+			loader without the need to flash it before.
+
 	config FREETZ_FWMOD_USBROOT
 		bool "Pack file system into archive (USB root mode)"
 		default n
