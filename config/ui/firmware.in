@@ -258,6 +258,11 @@ choice
 		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_UR8
 		bool "7570"
 
+	comment "Cable"
+
+	config FREETZ_TYPE_6490
+		select FREETZ_AVM_SOURCE_FOR_KERNEL_LAYOUT_PUMA6
+		bool "6490"
 
 	comment "Custom"
 		depends on FREETZ_SHOW_EXPERT
@@ -362,7 +367,7 @@ if FREETZ_AVM_VERSION_06_5X_MIN
 if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X || FREETZ_TYPE_FIRMWARE_06_9X
 	comment "UNDER DEVELOPMENT means:"
 endif
-if FREETZ_TYPE_FIRMWARE_LABOR
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_6490
 	comment "HIGHLY EXPERIMENTAL means:"
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
