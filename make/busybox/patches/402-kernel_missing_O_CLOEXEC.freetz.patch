@@ -1,19 +1,32 @@
-commit 0f0df278daf91892afd9efc023484fa26d6ddf2f
+commit 3e25c699dcd1931c8f46a350b0df18c41ce2f435
 Author: Eugene Rudoy <gene.devel@gmail.com>
-Date:   Mon Oct 9 20:07:45 2017 +0200
+Date:   Wed Oct 18 22:31:24 2017 +0200
 
-    fix O_CLOEXEC related build problems with kernel versions < 2.6.23
+    time applet: fix a build problem with kernel versions missing O_CLOEXEC symbol
     
-    Do not use O_CLOEXEC flags (available since 2.6.23),
-    use close_on_exec_on provided by libbb instead (like everywhere else)
+    Kernel versions < 2.6.23 do not support/provide O_CLOEXEC symbol
+    causing the time applet not to compile:
+    
+     miscutils/time.c: In function 'time_main':
+     miscutils/time.c:445:28: error: 'O_CLOEXEC' undeclared (first use in this function)
+     miscutils/time.c:445:28: note: each undeclared identifier is reported
+      only once for each function it appears in
+    
+    Fix it by using close_on_exec_on function provided by libbb
+    instead of passing O_CLOEXEC flag to open.
     
     Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
+    
+    ---
+    
+     v2: remove unnecessary "if (output_fd >= 0)", xopen guarantees the returned
+         file descriptor to be valid, thanks to Xabier Oneca for pointing it out
 
 diff --git miscutils/time.c miscutils/time.c
-index f4f8149d3..4f0e37d35 100644
+index f4f8149d3..c40d945e6 100644
 --- miscutils/time.c
 +++ miscutils/time.c
-@@ -442,9 +442,11 @@ int time_main(int argc UNUSED_PARAM, char **argv)
+@@ -442,9 +442,10 @@ int time_main(int argc UNUSED_PARAM, char **argv)
  	if (opt & OPT_o) {
  		output_fd = xopen(output_filename,
  			(opt & OPT_a) /* append? */
@@ -22,38 +35,7 @@ index f4f8149d3..4f0e37d35 100644
 +			? (O_CREAT | O_WRONLY | O_APPEND)
 +			: (O_CREAT | O_WRONLY | O_TRUNC)
  		);
-+		if (output_fd >= 0)
-+			close_on_exec_on(output_fd);
++		close_on_exec_on(output_fd);
  	}
  
  	run_command(argv, &res);
-diff --git modutils/modprobe-small.c modutils/modprobe-small.c
-index a94b0b9a6..e782d687d 100644
---- modutils/modprobe-small.c
-+++ modutils/modprobe-small.c
-@@ -267,8 +267,9 @@ static int load_module(const char *fname, const char *options)
- 	r = 1;
- # ifdef __NR_finit_module
- 	{
--		int fd = open(fname, O_RDONLY | O_CLOEXEC);
-+		int fd = open(fname, O_RDONLY);
- 		if (fd >= 0) {
-+			close_on_exec_on(fd);
- 			r = finit_module(fd, options, 0) != 0;
- 			close(fd);
- 		}
-diff --git modutils/modutils.c modutils/modutils.c
-index 6f7cd9721..9f73d676c 100644
---- modutils/modutils.c
-+++ modutils/modutils.c
-@@ -215,8 +215,9 @@ int FAST_FUNC bb_init_module(const char *filename, const char *options)
- 	 */
- # ifdef __NR_finit_module
- 	{
--		int fd = open(filename, O_RDONLY | O_CLOEXEC);
-+		int fd = open(filename, O_RDONLY);
- 		if (fd >= 0) {
-+			close_on_exec_on(fd);
- 			rc = finit_module(fd, options, 0) != 0;
- 			close(fd);
- 			if (rc == 0)

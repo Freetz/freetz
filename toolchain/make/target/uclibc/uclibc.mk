@@ -14,6 +14,8 @@ UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DEVEL_DIR)
 
 UCLIBC_DEVEL_SUBDIR:=uClibc_dev
 
+UCLIBC_CONFIG_FILE:=$(UCLIBC_MAKE_DIR)/configs/freetz/config-$(FREETZ_TARGET_ARCH)-$(UCLIBC_VERSION)
+
 # uClibc >= 0.9.31 supports parallel building
 UCLIBC_MAKE:=$(if $(or $(FREETZ_TARGET_UCLIBC_0_9_32),$(FREETZ_TARGET_UCLIBC_0_9_33)),$(MAKE),$(MAKE1))
 
@@ -65,7 +67,7 @@ endif
 
 uclibc-config: $(UCLIBC_DIR)/.config
 $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked
-	cp $(TOOLCHAIN_DIR)/make/target/uclibc/config-$(FREETZ_TARGET_ARCH)-$(UCLIBC_VERSION) $(UCLIBC_DIR)/.config
+	cp $(UCLIBC_CONFIG_FILE) $(UCLIBC_DIR)/.config
 	$(call PKG_EDIT_CONFIG,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)) $(UCLIBC_DIR)/Rules.mak
 	$(call PKG_EDIT_CONFIG, \
 		$(if $(FREETZ_TARGET_UCLIBC_0_9_28), \
@@ -121,7 +123,7 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
 		menuconfig && \
-	cp -f $^ $(TOOLCHAIN_DIR)/make/target/uclibc/config-$(FREETZ_TARGET_ARCH)-$(UCLIBC_VERSION) && \
+	cp -f $^ $(UCLIBC_CONFIG_FILE) && \
 	touch $^
 
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(GCC_BUILD_DIR1)/.installed
