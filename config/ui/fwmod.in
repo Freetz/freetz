@@ -54,6 +54,30 @@ menu "Firmware packaging (fwmod) options"
 		depends on FREETZ_FWMOD_SIGN
 		default ""
 
+	config FREETZ_FWMOD_CREATE_IN_MEMORY_IMAGE
+		bool "Create in-memory image file"
+		depends on FREETZ_TARGET_ARCH_MIPS && FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
+		default n
+		help
+			Creates a so-called in-memory image suitable to be loaded
+			into the box memory and used for booting the box from there.
+
+			On NAND boxes this procedure (booting from the in-memory image)
+			corresponds to a regular recovery process. Every image (original
+			and a modified one) automatically detects the location it has been
+			started from: 1) flash memory partitions, or 2) box memory (RAM).
+			In the 2nd case instead of just running the image as in the 1st one
+			if flashes itself into the flash memory partitions marked as being
+			active (linux_fs_start urlader variable).
+
+			This flashing procedure doesn't require the image being flashed
+			to be signed. That's why the in-memory image can and should be
+			used for modifying a NAND box for the very 1st time.
+
+			The flashing scripts required and a detailed description could be
+			found within the 'eva_tools' directory of the YourFritz project:
+			  https://github.com/PeterPawn/YourFritz/tree/master/eva_tools
+
 	config FREETZ_FWMOD_USBROOT
 		bool "Pack file system into archive (USB root mode)"
 		default n
