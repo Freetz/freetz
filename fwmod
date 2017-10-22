@@ -219,19 +219,24 @@ rm "$DOT_CONFIG.fwmod"
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
-# Options for (un)packing SquashFS
-UNSQUASHFS_TOOL="${FREETZ_AVM_UNSQUASHFS_TOOL}"
+# Options for unpacking SquashFS
+if [ "${FREETZ_TARGET_ARCH_BE}" == "y" ]; then
+	UNSQUASHFS_TOOL="unsquashfs4-avm-be"
+elif [ "${FREETZ_TARGET_ARCH_LE}" == "y" ]; then
+	UNSQUASHFS_TOOL="unsquashfs4-avm-le"
+else
+	error 1 "Your architecture is neither big nor little endian. Something strange is happening here."
+fi
 UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 UNSQUASHFS_OPTIONS="-no-progress -processors 1 -exit-on-error"
 
+# Options for packing SquashFS
 MKSQUASHFS_TOOL[2]="mksquashfs2-lzma"
 MKSQUASHFS_TOOL[3]="mksquashfs3-multi"
 if [ "${FREETZ_TARGET_ARCH_BE}" == "y" ]; then
 	MKSQUASHFS_TOOL[4]="mksquashfs4-avm-be"
-elif [ "${FREETZ_TARGET_ARCH_LE}" == "y" ]; then
-	MKSQUASHFS_TOOL[4]="mksquashfs4-avm-le"
 else
-	error 1 "Your architecture is neither big nor little endian. Something strange is happening here."
+	MKSQUASHFS_TOOL[4]="mksquashfs4-avm-le"
 fi
 
 MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL[${FREETZ_SQUASHFS_VERSION}]}"

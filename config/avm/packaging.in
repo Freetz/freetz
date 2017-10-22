@@ -29,10 +29,6 @@ config FREETZ_AVM_SQUASHFS_COMPRESSION
 	default "gzip" if FREETZ_KERNEL_VERSION_2_6_32 &&  FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	default "xz"   if FREETZ_KERNEL_VERSION_3_10_MIN
 
-config FREETZ_AVM_UNSQUASHFS_TOOL
-	string "unsquashfs tool to be used"	if FREETZ_TYPE_CUSTOM
-	default "unsquashfs4-avm-be"
-
 config FREETZ_AVM_HAS_NMI_VECTOR
 	bool "Has NMI vector within SquashFS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
