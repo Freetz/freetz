@@ -305,6 +305,7 @@ config FREETZ_STDCXXLIB
 
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"
+	default "-Os -pipe"		if FREETZ_TARGET_ARCH_X86
 	default "-Os -pipe -Wa,--trap"
 
 config FREETZ_RPATH
