@@ -45,6 +45,14 @@ config FREETZ_AVM_HAS_NMI_VECTOR
 		  - http://www.ip-phone-forum.de/showthread.php?t=286318
 		for more information.
 
+config FREETZ_AVM_IMAGES_SUBDIR
+	string "Sub-dir containing image files"	if FREETZ_TYPE_CUSTOM
+	default "var/tmp"						if FREETZ_TARGET_ARCH_MIPS
+	default "var/remote/var/tmp/x86"		if FREETZ_TARGET_ARCH_X86
+	help
+		A sub-directory within the .image tarball containing the files
+		like: kernel.image, filesystem.image, plugins.update, etc.
+
 config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool "Has separate filesystem image"	if FREETZ_TYPE_CUSTOM
 	default y		if \
