@@ -146,7 +146,7 @@ config FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
 config FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
 	bool
 	depends on FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
-	default y if FREETZ_AVM_UCLIBC_0_9_33 && !FREETZ_REMOVE_AVM_E2FSPROGS
+	default y if (FREETZ_AVM_UCLIBC_0_9_33 && !FREETZ_REMOVE_AVM_E2FSPROGS) || FREETZ_TYPE_6490
 	default n
 
 choice
