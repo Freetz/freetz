@@ -149,10 +149,6 @@ SHELL=$BASH
 FINDSQUASHFS_TOOL="find-squashfs"
 TICHKSUM_TOOL="tichksum"
 MAKEDEVS_TOOL="makedevs"
-UNSQUASHFS_TOOL="unsquashfs4-avm-be"
-MKSQUASHFS_TOOL[2]="mksquashfs2-lzma"
-MKSQUASHFS_TOOL[3]="mksquashfs3-multi"
-MKSQUASHFS_TOOL[4]="mksquashfs4-avm-be"
 DEBUGFS_TOOL="debugfs"
 EXTERNAL_TOOL="external"
 TAR_TOOL="tar"
@@ -228,10 +224,14 @@ AVMPLUGINS_FILE="${FREETZ_AVM_IMAGES_SUBDIR}/plugins.update"
 NM="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}nm"
 STRIP="${ABS_BASE_DIR}/toolchain/target/bin/${FREETZ_TARGET_CROSS}strip"
 
-# Options for (un)packing SquashFS
+# Tools and options for (un)packing SquashFS
+UNSQUASHFS_TOOL="unsquashfs4-avm-${FREETZ_AVM_SQUASHFS_ENDIANNESS}"
 UNSQUASHFS="${TOOLS_DIR}/${UNSQUASHFS_TOOL}"
 UNSQUASHFS_OPTIONS="-no-progress -processors 1 -exit-on-error"
 
+MKSQUASHFS_TOOL[2]="mksquashfs2-lzma"
+MKSQUASHFS_TOOL[3]="mksquashfs3-multi"
+MKSQUASHFS_TOOL[4]="mksquashfs4-avm-${FREETZ_AVM_SQUASHFS_ENDIANNESS}"
 MKSQUASHFS="${TOOLS_DIR}/${MKSQUASHFS_TOOL[${FREETZ_SQUASHFS_VERSION}]}"
 MKSQUASHFS_OPTIONS="-all-root -info"
 if [ "${FREETZ_SQUASHFS_VERSION}" -gt 2 ]; then
@@ -239,12 +239,7 @@ if [ "${FREETZ_SQUASHFS_VERSION}" -gt 2 ]; then
 fi
 if [ "${FREETZ_SQUASHFS_VERSION}" -lt 4 ]; then
 	MKSQUASHFS_OPTIONS+=" -noappend"
-	# Use FREETZ_TARGET_ARCH_BE to determine SquashFS endianness
-	if [ "$FREETZ_TARGET_ARCH_BE" == "y" ]; then
-		MKSQUASHFS_OPTIONS+=" -be"
-	else
-		MKSQUASHFS_OPTIONS+=" -le"
-	fi
+	MKSQUASHFS_OPTIONS+=" -${FREETZ_AVM_SQUASHFS_ENDIANNESS}"
 fi
 if [ "${FREETZ_SQUASHFS_VERSION}" -eq 3 -a "${FREETZ_AVM_SQUASHFS_COMPRESSION}" == "lzma" ]; then
 	MKSQUASHFS_OPTIONS+=" -lzma1"

@@ -22,6 +22,14 @@ config FREETZ_SQUASHFS_VERSION
 
 		Note: this might deviate from that used by AVM (patched/replaced kernel usually required)
 
+config FREETZ_AVM_SQUASHFS_ENDIANNESS
+	string "SquashFS endianness"	if FREETZ_TYPE_CUSTOM
+	default "le" if FREETZ_TARGET_ARCH_LE
+	default "be" if FREETZ_TARGET_ARCH_BE
+	help
+		Endianness of the SquashFS filesystem.
+		Usually the same as the endianness of the box.
+
 config FREETZ_AVM_SQUASHFS_COMPRESSION
 	string "SquashFS compression method"	if FREETZ_TYPE_CUSTOM
 	default "lzma" if FREETZ_KERNEL_VERSION_2_6_28_MAX
