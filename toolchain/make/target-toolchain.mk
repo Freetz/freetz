@@ -45,9 +45,9 @@ target-toolchain-unpacked: \
 
 target-toolchain-clean: \
 	binutils-uninstall binutils_target-uninstall gcc-uninstall gcc_target-uninstall \
-	binutils-clean binutils_target-clean gcc_initial-clean gcc-clean gcc_target-clean uclibc-clean ccache-clean
+	binutils-clean binutils_target-clean gcc_initial-clean gcc-clean gcc_target-clean uclibc-clean
 
-target-toolchain-dirclean: binutils-dirclean binutils_target-dirclean gcc_initial-dirclean gcc-dirclean gcc_target-dirclean ccache-dirclean uclibc-dirclean
+target-toolchain-dirclean: binutils-dirclean binutils_target-dirclean gcc_initial-dirclean gcc-dirclean gcc_target-dirclean uclibc-dirclean
 	$(RM) -r $(TARGET_TOOLCHAIN_DIR)
 
 .PHONY: target-toolchain target-toolchain-unpacked target-toolchain-clean target-toolchain-dirclean

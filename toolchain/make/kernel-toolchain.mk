@@ -26,9 +26,9 @@ kernel-toolchain-unpacked: \
 
 kernel-toolchain-clean: \
 	binutils-kernel-uninstall gcc-kernel-uninstall \
-	binutils-kernel-clean gcc-kernel-clean ccache-kernel-clean
+	binutils-kernel-clean gcc-kernel-clean
 
-kernel-toolchain-dirclean: binutils-kernel-dirclean gcc-kernel-dirclean ccache-kernel-dirclean
+kernel-toolchain-dirclean: binutils-kernel-dirclean gcc-kernel-dirclean
 	$(RM) -r $(KERNEL_TOOLCHAIN_DIR)
 
 .PHONY: kernel-toolchain kernel-toolchain-unpacked kernel-toolchain-clean kernel-toolchain-dirclean
