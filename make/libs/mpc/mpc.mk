@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.0.3)
+$(call PKG_INIT_LIB, $(MPC_HOST_VERSION))
 $(PKG)_LIB_VERSION:=3.0.0
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=b8be66396c726fdc36ebb0f692ed8a8cca3bcc66
-$(PKG)_SITE:=http://www.multiprecision.org/mpc/download
+$(PKG)_SOURCE:=$(MPC_HOST_SOURCE)
+$(PKG)_SOURCE_SHA1:=$(MPC_HOST_SOURCE_SHA1)
+$(PKG)_SITE:=$(MPC_HOST_SITE)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpc.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpc.so.$($(PKG)_LIB_VERSION)
@@ -17,7 +17,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-mpfr=$(TARGET_TOOLCHAIN_STAGING_DIR)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG_SOURCE_DOWNLOAD)
+#$(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
@@ -48,39 +48,3 @@ $(pkg)-uninstall:
 	$(RM) $(MPC_TARGET_DIR)/libmpc*.so*
 
 $(PKG_FINISH)
-
-# host version
-MPC_DIR2:=$(TOOLS_SOURCE_DIR)/mpc-$(MPC_VERSION)
-MPC_HOST_DIR:=$(HOST_TOOLS_DIR)
-MPC_HOST_BINARY:=$(MPC_HOST_DIR)/lib/libmpc.a
-
-$(MPC_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPC_DIR)/.unpacked
-	mkdir -p $(MPC_DIR2)
-	(cd $(MPC_DIR2); $(RM) config.cache; \
-		CC="$(TOOLCHAIN_HOSTCC)" \
-		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
-		$(FREETZ_BASE_DIR)/$(MPC_DIR)/configure \
-		--prefix=$(MPC_HOST_DIR) \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--disable-shared \
-		--enable-static \
-		--with-gmp=$(GMP_HOST_DIR) \
-		--with-mpfr=$(MPFR_HOST_DIR) \
-		$(DISABLE_NLS) \
-	)
-	touch $@
-
-$(MPC_HOST_BINARY): $(MPC_DIR2)/.configured | $(HOST_TOOLS_DIR)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(MPC_DIR2) install
-
-host-libmpc: $(MPC_HOST_BINARY)
-
-host-libmpc-uninstall:
-	$(RM) $(MPC_HOST_DIR)/lib/libmpc* $(MPC_HOST_DIR)/include/*mpc*.h
-
-host-libmpc-clean: host-libmpc-uninstall
-	-$(MAKE) -C $(MPC_DIR2) clean
-
-host-libmpc-dirclean: host-libmpc-uninstall
-	$(RM) -r $(MPC_DIR2)

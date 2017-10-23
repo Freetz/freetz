@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 6.1.2)
+$(call PKG_INIT_LIB, $(GMP_HOST_VERSION))
 $(PKG)_LIB_VERSION:=10.3.2
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=87b565e89a9a684fe4ebeeddb8399dce2599f9c9049854ca8c0dfbdea0e21912
-$(PKG)_SITE:=@GNU/$(pkg)
+$(PKG)_SOURCE:=$(GMP_HOST_SOURCE)
+$(PKG)_SOURCE_SHA256:=$(GMP_HOST_SOURCE_SHA256)
+$(PKG)_SITE:=$(GMP_HOST_SITE)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libgmp.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgmp.so.$($(PKG)_LIB_VERSION)
@@ -16,7 +16,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-readline=no
 
-$(PKG_SOURCE_DOWNLOAD)
+#$(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
@@ -47,38 +47,3 @@ $(pkg)-uninstall:
 	$(RM) $(GMP_TARGET_DIR)/libgmp*.so*
 
 $(PKG_FINISH)
-
-# host version
-GMP_DIR2:=$(TOOLS_SOURCE_DIR)/gmp-$(GMP_VERSION)
-GMP_HOST_DIR:=$(HOST_TOOLS_DIR)
-GMP_HOST_BINARY:=$(GMP_HOST_DIR)/lib/libgmp.a
-
-$(GMP_DIR2)/.configured: | $(GMP_DIR)/.unpacked
-	mkdir -p $(GMP_DIR2)
-	(cd $(GMP_DIR2); $(RM) config.cache; \
-		CC="$(TOOLCHAIN_HOSTCC)" \
-		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
-		$(if $(strip $(FREETZ_TOOLCHAIN_32BIT)),ABI=32) \
-		$(FREETZ_BASE_DIR)/$(GMP_DIR)/configure \
-		--prefix=$(GMP_HOST_DIR) \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--disable-shared \
-		--enable-static \
-		$(DISABLE_NLS) \
-	)
-	touch $@
-
-$(GMP_HOST_BINARY): $(GMP_DIR2)/.configured | $(HOST_TOOLS_DIR)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(GMP_DIR2) install
-
-host-libgmp: $(GMP_HOST_BINARY)
-
-host-libgmp-uninstall:
-	$(RM) $(GMP_HOST_DIR)/lib/libgmp* $(GMP_HOST_DIR)/include/gmp*.h
-
-host-libgmp-clean: host-libgmp-uninstall
-	-$(MAKE) -C $(GMP_DIR2) clean
-
-host-libgmp-dirclean: host-libgmp-uninstall
-	$(RM) -r $(GMP_DIR2)

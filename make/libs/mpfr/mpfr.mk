@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 3.1.5)
+$(call PKG_INIT_LIB, $(MPFR_HOST_VERSION))
 $(PKG)_LIB_VERSION:=4.1.5
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=015fde82b3979fbe5f83501986d328331ba8ddf008c1ff3da3c238f49ca062bc
-$(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
+$(PKG)_SOURCE:=$(MPFR_HOST_SOURCE)
+$(PKG)_SOURCE_SHA256:=$(MPFR_HOST_SOURCE_SHA256)
+$(PKG)_SITE:=$(MPFR_HOST_SITE)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libmpfr.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libmpfr.so.$($(PKG)_LIB_VERSION)
@@ -17,7 +17,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-gmp=$(TARGET_TOOLCHAIN_STAGING_DIR)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG_SOURCE_DOWNLOAD)
+#$(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
@@ -48,38 +48,3 @@ $(pkg)-uninstall:
 	$(RM) $(MPFR_TARGET_DIR)/libmpfr*.so*
 
 $(PKG_FINISH)
-
-# host version
-MPFR_DIR2:=$(TOOLS_SOURCE_DIR)/mpfr-$(MPFR_VERSION)
-MPFR_HOST_DIR:=$(HOST_TOOLS_DIR)
-MPFR_HOST_BINARY:=$(MPFR_HOST_DIR)/lib/libmpfr.a
-
-$(MPFR_DIR2)/.configured: $(GMP_HOST_BINARY) | $(MPFR_DIR)/.unpacked
-	mkdir -p $(MPFR_DIR2)
-	(cd $(MPFR_DIR2); $(RM) config.cache; \
-		CC="$(TOOLCHAIN_HOST_CC)" \
-		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
-		$(FREETZ_BASE_DIR)/$(MPFR_DIR)/configure \
-		--prefix=$(MPFR_HOST_DIR) \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--disable-shared \
-		--enable-static \
-		--with-gmp=$(GMP_HOST_DIR) \
-		$(DISABLE_NLS) \
-	)
-	touch $@
-
-$(MPFR_HOST_BINARY): $(MPFR_DIR2)/.configured | $(HOST_TOOLS_DIR)
-	PATH=$(TARGET_PATH) $(MAKE) -C $(MPFR_DIR2)/src install
-
-host-libmpfr: $(MPFR_HOST_BINARY)
-
-host-libmpfr-uninstall:
-	$(RM) $(MPFR_HOST_DIR)/lib/libmpfr* $(MPFR_HOST_DIR)/include/*mpfr*.h
-
-host-libmpfr-clean: host-libmpfr-uninstall
-	-$(MAKE) -C $(MPFR_DIR2) clean
-
-host-libmpfr-dirclean: host-libmpfr-uninstall
-	$(RM) -r $(MPFR_DIR2)
