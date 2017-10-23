@@ -19,7 +19,7 @@ GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI+=$(if $(call qstrip,$(FREETZ_GCC_ABI)),--w
 GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI+=$(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),--with-float=$(call qstrip,$(FREETZ_GCC_FLOAT_ABI)))
 
 BINUTILS_BINARIES_BIN := addr2line ar as c++filt elfedit gprof ld nm objcopy objdump ranlib readelf size strings strip
-GCC_BINARIES_BIN := gcc g++ cc c++ cpp gcov
+GCC_BINARIES_BIN := gcc g++ cc c++ cpp gcov gcc-ar gcc-nm gcc-ranlib
 GCC_BINARIES_LIBEXEC := cc1 cc1plus collect2 liblto_plugin.so.0.0.0 lto-wrapper lto1 install-tools/fixincl
 
 # $1 - toolchain base dir
