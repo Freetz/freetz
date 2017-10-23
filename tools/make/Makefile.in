@@ -13,25 +13,15 @@ HOST_TOOLS_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
 $(TOOLS_SOURCE_DIR) $(HOST_TOOLS_DIR):
 	@mkdir -p $@
 
-TOOLS+=avm-rle-host
-TOOLS+=busybox-host
-TOOLS+=e2fsprogs-host
-TOOLS+=dtc-host
-TOOLS+=fakeroot
-TOOLS+=find-squashfs
-TOOLS+=genext2fs
-TOOLS+=kconfig
-TOOLS+=lzma1-host
-TOOLS+=lzma2-host
-TOOLS+=lzma2eva
-TOOLS+=sfk-host
-TOOLS+=squashfs2-host
-TOOLS+=squashfs3-host
-TOOLS+=squashfs4-host-be
-TOOLS+=squashfs4-host-le
-TOOLS+=tar-host
-TOOLS+=tichksum-host
-TOOLS+=yourfritz-host
+TOOLS+=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
 
-# not in use
-#TOOLS+=xdelta
+TOOLS_CONDITIONAL+=gmp-host
+TOOLS_CONDITIONAL+=mpc-host
+TOOLS_CONDITIONAL+=mpfr-host
+
+ifneq ($(strip $(FREETZ_STRIP_LIBRARIES)),y)
+TOOLS_CONDITIONAL+=mklibs
+endif
+TOOLS_CONDITIONAL+=python-host
+TOOLS_CONDITIONAL+=scons-host
+TOOLS_CONDITIONAL+=xdelta
