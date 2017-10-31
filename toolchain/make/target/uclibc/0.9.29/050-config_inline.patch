@@ -1,0 +1,15 @@
+Fix for config program.
+Backport change for different handling of inline functions in newer host compilers.
+
+--- extra/config/zconf.hash.c_shipped
++++ extra/config/zconf.hash.c_shipped
+@@ -161,6 +161,9 @@
+ #define kconf_id_strings ((const char *) &kconf_id_strings_contents)
+ #ifdef __GNUC__
+ __inline
++#ifdef __GNUC_STDC_INLINE__
++__attribute__ ((__gnu_inline__))
++#endif
+ #endif
+ struct kconf_id *
+ kconf_id_lookup (register const char *str, register unsigned int len)
