@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.6.1)
+$(call PKG_INIT_BIN, 4.6.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=132c893aabfaf2020074790215c8cacd
+$(PKG)_SOURCE_MD5:=a0f529d3333b128dfaa324d978ba73a8
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/screen
