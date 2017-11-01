@@ -63,7 +63,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_D
 binutils-uninstall:
 	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME))
 	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(GNU_TARGET_NAME))
-	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/{libiberty*,ldscripts}
+	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib{,64}/{libiberty*,ldscripts}
 
 binutils-clean: binutils-uninstall
 	$(RM) -r $(BINUTILS_DIR1)

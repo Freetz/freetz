@@ -73,7 +73,7 @@ binutils-dependencies:
 
 binutils-kernel-uninstall:
 	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(BINUTILS_BINARIES_BIN),$(REAL_GNU_KERNEL_NAME))
-	$(RM) -r $(KERNEL_TOOLCHAIN_STAGING_DIR)/lib/{libiberty*,ldscripts}
+	$(RM) -r $(KERNEL_TOOLCHAIN_STAGING_DIR)/lib{,64}/{libiberty*,ldscripts}
 
 binutils-kernel-clean: binutils-kernel-uninstall
 	$(RM) -r $(BINUTILS_KERNEL_DIR1)
