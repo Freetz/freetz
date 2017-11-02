@@ -14,17 +14,18 @@ The syscalls are supported at least since kernel 2.6.13, the oldest on Fritz Box
  libc_hidden_proto(memcpy)
  libc_hidden_proto(fstatfs)
  
-@@ -51,3 +52,10 @@
+@@ -51,3 +52,11 @@
      return 0;
  }
- libc_hidden_def(fstatfs64)
 +#else
++libc_hidden_proto(fstatfs64)
 +int fstatfs64(int fd, struct statfs64 *buf)
 +{
 +	/* Signature has 2 arguments but syscalls wants 3 */
-+	return INLINE_SYSCALL(fstatfs64, 3, fd, sizeof(*buf), buf);
++	return syscall(__NR_fstatfs64, fd, sizeof(*buf), buf);
 +}
 +#endif
+ libc_hidden_def(fstatfs64)
 diff --git a/libc/misc/statfs/statfs64.c b/libc/misc/statfs/statfs64.c
 index ce8211b..b1a33b7 100644
 --- libc/misc/statfs/statfs64.c
@@ -43,14 +44,15 @@ index ce8211b..b1a33b7 100644
  /* Return information about the filesystem on which FILE resides.  */
  libc_hidden_proto(statfs64)
  int statfs64 (const char *file, struct statfs64 *buf)
-@@ -49,4 +51,11 @@ int statfs64 (const char *file, struct statfs64 *buf)
+@@ -49,4 +51,12 @@ int statfs64 (const char *file, struct statfs64 *buf)
  
      return 0;
  }
 +#else
++libc_hidden_proto(statfs64)
 +int statfs64 (const char *file, struct statfs64 *buf)
 +{
-+    return INLINE_SYSCALL(statfs64, 3, file, sizeof(*buf), buf);
++    return syscall(__NR_statfs64, 3, file, sizeof(*buf), buf);
 +}
 +#endif
 +

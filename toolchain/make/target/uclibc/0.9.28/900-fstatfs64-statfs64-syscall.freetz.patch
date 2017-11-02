@@ -22,7 +22,7 @@ The syscalls are supported at least since kernel 2.6.13, the oldest on Fritz Box
 +int fstatfs64(int fd, struct statfs64 *buf)
 +{
 +	/* Signature has 2 arguments but syscalls wants 3 */
-+	return INLINE_SYSCALL(fstatfs64, 3, fd, sizeof(*buf), buf);
++	return syscall(__NR_fstatfs64, fd, sizeof(*buf), buf);
 +}
 +#endif
  
@@ -51,7 +51,7 @@ index ce8211b..b1a33b7 100644
 +#else
 +int statfs64 (const char *file, struct statfs64 *buf)
 +{
-+    return INLINE_SYSCALL(statfs64, 3, file, sizeof(*buf), buf);
++    return syscall(__NR_statfs64, 3, file, sizeof(*buf), buf);
 +}
 +#endif
  #endif
