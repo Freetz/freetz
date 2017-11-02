@@ -1,0 +1,57 @@
+Use the fstatfs64/statfs64 syscalls instead of the emulation with fstatfs/statfs
+The syscalls are supported at least since kernel 2.6.13, the oldest on Fritz Boxes
+--- libc/misc/statfs/fstatfs64.c
++++ libc/misc/statfs/fstatfs64.c
+@@ -22,9 +22,10 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <sys/statfs.h>
+-#include <sys/statvfs.h>
++#include <sys/syscall.h>
+ #include <stddef.h>
+ 
++#if !defined __NR_fstatfs64
+ libc_hidden_proto(memcpy)
+ libc_hidden_proto(fstatfs)
+ 
+@@ -51,3 +52,10 @@
+     return 0;
+ }
+ libc_hidden_def(fstatfs64)
++#else
++int fstatfs64(int fd, struct statfs64 *buf)
++{
++	/* Signature has 2 arguments but syscalls wants 3 */
++	return INLINE_SYSCALL(fstatfs64, 3, fd, sizeof(*buf), buf);
++}
++#endif
+diff --git a/libc/misc/statfs/statfs64.c b/libc/misc/statfs/statfs64.c
+index ce8211b..b1a33b7 100644
+--- libc/misc/statfs/statfs64.c
++++ libc/misc/statfs/statfs64.c
+@@ -22,11 +22,13 @@
+ #include <string.h>
+ #include <stddef.h>
+ #include <sys/statfs.h>
++#include <sys/syscall.h>
+ 
+ 
+ libc_hidden_proto(memcpy)
+ libc_hidden_proto(statfs)
+ 
++#if !defined (__NR_statfs64)
+ /* Return information about the filesystem on which FILE resides.  */
+ libc_hidden_proto(statfs64)
+ int statfs64 (const char *file, struct statfs64 *buf)
+@@ -49,4 +51,11 @@ int statfs64 (const char *file, struct statfs64 *buf)
+ 
+     return 0;
+ }
++#else
++int statfs64 (const char *file, struct statfs64 *buf)
++{
++    return INLINE_SYSCALL(statfs64, 3, file, sizeof(*buf), buf);
++}
++#endif
++
+ libc_hidden_def(statfs64)

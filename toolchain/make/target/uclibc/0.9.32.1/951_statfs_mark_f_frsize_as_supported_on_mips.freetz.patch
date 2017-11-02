@@ -1,0 +1,25 @@
+--- libc/sysdeps/linux/mips/bits/statfs.h
++++ libc/sysdeps/linux/mips/bits/statfs.h
+@@ -27,7 +27,7 @@
+     long int f_type;
+ #define f_fstyp f_type
+     long int f_bsize;
+-    long int f_frsize;	/* Fragment size - unsupported */
++    long int f_frsize;
+ #ifndef __USE_FILE_OFFSET64
+     __fsblkcnt_t f_blocks;
+     __fsblkcnt_t f_bfree;
+@@ -54,7 +54,7 @@
+     long int f_type;
+ #define f_fstyp f_type
+     long int f_bsize;
+-    long int f_frsize;	/* Fragment size - unsupported */
++    long int f_frsize;
+     __fsblkcnt64_t f_blocks;
+     __fsblkcnt64_t f_bfree;
+     __fsblkcnt64_t f_files;
+@@ -70,3 +70,4 @@
+ 
+ /* Tell code we have these members.  */
+ #define _STATFS_F_NAMELEN
++#define _STATFS_F_FRSIZE

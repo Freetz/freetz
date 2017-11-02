@@ -1,0 +1,57 @@
+Use the fstatfs64/statfs64 syscalls instead of the emulation with fstatfs/statfs
+The syscalls are supported at least since kernel 2.6.13, the oldest on Fritz Boxes
+--- libc/misc/statfs/fstatfs64.c
++++ libc/misc/statfs/fstatfs64.c
+@@ -37,9 +37,10 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <sys/statfs.h>
+-#include <sys/statvfs.h>
++#include <sys/syscall.h>
+ #include <stddef.h>
+ 
++#if !defined __NR_fstatfs64
+ /* Return information about the filesystem on which FD resides.  */
+ int fstatfs64 (int fd, struct statfs64 *buf)
+ {
+@@ -61,6 +62,13 @@
+ 
+     return 0;
+ }
++#else
++int fstatfs64(int fd, struct statfs64 *buf)
++{
++	/* Signature has 2 arguments but syscalls wants 3 */
++	return INLINE_SYSCALL(fstatfs64, 3, fd, sizeof(*buf), buf);
++}
++#endif
+ 
+ #endif /* __UCLIBC_HAS_LFS__ */
+ 
+diff --git a/libc/misc/statfs/statfs64.c b/libc/misc/statfs/statfs64.c
+index ce8211b..b1a33b7 100644
+--- libc/misc/statfs/statfs64.c
++++ libc/misc/statfs/statfs64.c
+@@ -35,9 +35,11 @@
+ #include <string.h>
+ #include <stddef.h>
+ #include <sys/statfs.h>
++#include <sys/syscall.h>
+ 
+ #if defined __UCLIBC_HAS_LFS__
+ 
++#if !defined (__NR_statfs64)
+ /* Return information about the filesystem on which FILE resides.  */
+ int statfs64 (const char *file, struct statfs64 *buf)
+ {
+@@ -59,4 +61,10 @@ int statfs64 (const char *file, struct statfs64 *buf)
+ 
+     return 0;
+ }
++#else
++int statfs64 (const char *file, struct statfs64 *buf)
++{
++    return INLINE_SYSCALL(statfs64, 3, file, sizeof(*buf), buf);
++}
++#endif
+ #endif
