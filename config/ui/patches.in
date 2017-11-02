@@ -645,6 +645,13 @@ config FREETZ_REMOVE_LIBFUSE
 		This removes libfuse.so and saves about 132 KB (uncompressed).
 		NTFS and Webdav are also removed.
 
+config FREETZ_REMOVE_EXT2
+	bool "Remove ext2.ko"
+	default n
+	depends on FREETZ_AVM_HAS_USB_HOST
+	help
+		Remove ext2.ko (about 81 kB uncompressed / 24 kB compressed).
+
 config FREETZ_REMOVE_ISOFS
 	bool "Remove isofs.ko"
 	default n
