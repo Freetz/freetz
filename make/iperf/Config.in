@@ -1,0 +1,22 @@
+config FREETZ_PACKAGE_IPERF
+	bool "iperf 3.3 (binary only)"
+	default n
+	help
+		iPerf3 is a tool for active measurements of the maximum achievable
+		bandwidth on IP networks. It supports tuning of various parameters
+		related to timing, buffers and protocols (TCP, UDP, SCTP with IPv4
+		and IPv6). For each test it reports the bandwidth, loss, and other
+		parameters. S. https://github.com/esnet/iperf for more details.
+
+config FREETZ_PACKAGE_IPERF_WITH_OPENSSL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_IPERF
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_IPERF_STATIC
+	default n
+	help
+		This option enables OpenSSL support in iperf.
+
+config FREETZ_PACKAGE_IPERF_STATIC
+	bool "Create statically linked binary"
+	depends on FREETZ_PACKAGE_IPERF_WITH_OPENSSL

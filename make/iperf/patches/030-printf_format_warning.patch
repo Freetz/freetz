@@ -1,0 +1,19 @@
+--- src/iperf_api.c
++++ src/iperf_api.c
+@@ -46,6 +46,7 @@
+ #ifdef HAVE_STDINT_H
+ #include <stdint.h>
+ #endif
++#include <inttypes.h>
+ #include <netinet/tcp.h>
+ #include <sys/time.h>
+ #include <sys/resource.h>
+@@ -2481,7 +2482,7 @@
+ 	    double interval_len = timeval_diff(&irp->interval_start_time,
+ 					       &irp->interval_end_time);
+ 	    if (test->debug) {
+-		printf("interval_len %f bytes_transferred %lu\n", interval_len, irp->bytes_transferred);
++		printf("interval_len %f bytes_transferred %" PRIu64 "\n", interval_len, irp->bytes_transferred);
+ 	    }
+ 
+ 	    /*
