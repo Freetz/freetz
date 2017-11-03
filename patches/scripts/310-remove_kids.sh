@@ -24,7 +24,7 @@ if isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ; then
 	modsed "s/^rmmod userman$/# rmmod userman # segfaults/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
 	# subsequent removal of kdsldmod hangs forever
 	modsed "s/^rmmod kdsldmod/# rmmod kdsldmod # hangs forever/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.dsl.sh"
-	modsed "s/^  rmmod kdsldmod$/  # rmmod kdsldmod # hangs forever/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
+	modsed "s/^  rmmod kdsldmod$/  :# rmmod kdsldmod # hangs forever/g" "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
 fi
 
 # patcht Internet > Filter > Kindersicherung
