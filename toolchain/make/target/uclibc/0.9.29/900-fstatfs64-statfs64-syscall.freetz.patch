@@ -30,20 +30,17 @@ diff --git a/libc/misc/statfs/statfs64.c b/libc/misc/statfs/statfs64.c
 index ce8211b..b1a33b7 100644
 --- libc/misc/statfs/statfs64.c
 +++ libc/misc/statfs/statfs64.c
-@@ -22,11 +22,13 @@
+@@ -22,8 +22,10 @@
  #include <string.h>
  #include <stddef.h>
  #include <sys/statfs.h>
 +#include <sys/syscall.h>
  
  
++#if !defined (__NR_statfs64)
  libc_hidden_proto(memcpy)
  libc_hidden_proto(statfs)
  
-+#if !defined (__NR_statfs64)
- /* Return information about the filesystem on which FILE resides.  */
- libc_hidden_proto(statfs64)
- int statfs64 (const char *file, struct statfs64 *buf)
 @@ -49,4 +51,12 @@ int statfs64 (const char *file, struct statfs64 *buf)
  
      return 0;
@@ -52,7 +49,7 @@ index ce8211b..b1a33b7 100644
 +libc_hidden_proto(statfs64)
 +int statfs64 (const char *file, struct statfs64 *buf)
 +{
-+    return syscall(__NR_statfs64, 3, file, sizeof(*buf), buf);
++    return syscall(__NR_statfs64, file, sizeof(*buf), buf);
 +}
 +#endif
 +

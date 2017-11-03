@@ -51,7 +51,7 @@ index ce8211b..b1a33b7 100644
 +#else
 +int statfs64 (const char *file, struct statfs64 *buf)
 +{
-+    return syscall(__NR_statfs64, 3, file, sizeof(*buf), buf);
++    return syscall(__NR_statfs64, file, sizeof(*buf), buf);
 +}
 +#endif
  #endif
