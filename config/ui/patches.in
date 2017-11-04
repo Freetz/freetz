@@ -648,7 +648,7 @@ config FREETZ_REMOVE_LIBFUSE
 config FREETZ_REMOVE_EXT2
 	bool "Remove ext2.ko"
 	default n
-	depends on FREETZ_AVM_HAS_USB_HOST
+	depends on FREETZ_AVM_HAS_USB_HOST && !FREETZ_AVM_HAS_EXT2_BUILTIN
 	help
 		Remove ext2.ko (about 81 kB uncompressed / 24 kB compressed).
 
