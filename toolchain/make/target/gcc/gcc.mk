@@ -143,6 +143,8 @@ $(GCC_BUILD_DIR1)/.installed: $(GCC_BUILD_DIR1)/.compiled
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	touch $@
 
+gcc_initial-configured: $(GCC_BUILD_DIR1)/.configured
+
 gcc_initial: uclibc-configured binutils $(GCC_BUILD_DIR1)/.installed
 
 gcc_initial-uninstall: gcc-uninstall
@@ -207,6 +209,8 @@ $(GCC_BUILD_DIR2)/.installed: $(GCC_BUILD_DIR2)/.compiled
 	ln -snf $(REAL_GNU_TARGET_NAME) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(GNU_TARGET_NAME)
 	$(call CREATE_TARGET_NAME_SYMLINKS,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(GCC_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME))
 	touch $@
+
+gcc-configured: $(GCC_BUILD_DIR2)/.configured
 
 gcc: uclibc-configured binutils gcc_initial uclibc $(GCC_BUILD_DIR2)/.installed
 
@@ -275,6 +279,8 @@ $(TARGET_UTILS_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
 			$(TARGET_UTILS_DIR)/usr/$(GCC_LIB_SUBDIR)/$(GCC_INCLUDE_DIR)/; \
 	fi
 	touch -c $@
+
+gcc_target-configured: $(GCC_BUILD_DIR3)/.configured
 
 gcc_target: uclibc_target binutils_target $(TARGET_UTILS_DIR)/usr/bin/gcc
 
