@@ -1555,6 +1555,11 @@ config FREETZ_BUSYBOX_FEATURE_UNZIP_XZ
 	default n
 	depends on FREETZ_BUSYBOX_FEATURE_UNZIP_CDF && FREETZ_BUSYBOX_DESKTOP
 
+config FREETZ_BUSYBOX_FEATURE_UNZIP_STRIP_COMPONENTS
+	bool "Support non-standard -s option (analog of tar's --strip-components)"
+	default n
+	depends on FREETZ_BUSYBOX_UNZIP
+
 endmenu
 
 # INCLUDE_END archival/Config.in

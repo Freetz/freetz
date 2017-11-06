@@ -1,0 +1,98 @@
+--- archival/unzip.c
++++ archival/unzip.c
+@@ -51,12 +51,19 @@
+ //config:	bool "Support compression method 95 (xz)"
+ //config:	default y
+ //config:	depends on FEATURE_UNZIP_CDF && DESKTOP
++//config:
++//config:config FEATURE_UNZIP_STRIP_COMPONENTS
++//config:	bool "Support non-standard -s option (analog of tar's --strip-components)"
++//config:	default n
++//config:	depends on UNZIP
+ 
+ //applet:IF_UNZIP(APPLET(unzip, BB_DIR_USR_BIN, BB_SUID_DROP))
+ //kbuild:lib-$(CONFIG_UNZIP) += unzip.o
+ 
+ //usage:#define unzip_trivial_usage
+-//usage:       "[-lnopq] FILE[.zip] [FILE]... [-x FILE...] [-d DIR]"
++//usage:       "[-lnopq] "
++//usage:       IF_FEATURE_UNZIP_STRIP_COMPONENTS("[-s NUM] ")
++//usage:       "FILE[.zip] [FILE]... [-x FILE...] [-d DIR]"
+ //usage:#define unzip_full_usage "\n\n"
+ //usage:       "Extract FILEs from ZIP archive\n"
+ //usage:     "\n	-l	List contents (with -q for short form)"
+@@ -64,6 +71,9 @@
+ //usage:     "\n	-o	Overwrite"
+ //usage:     "\n	-p	Print to stdout"
+ //usage:     "\n	-q	Quiet"
++//usage:     IF_FEATURE_UNZIP_STRIP_COMPONENTS(
++//usage:     "\n	-s NUM	strip NUM leading components from file names"
++//usage:     )
+ //usage:     "\n	-x FILE	Exclude FILEs"
+ //usage:     "\n	-d DIR	Extract into DIR"
+ 
+@@ -416,6 +426,9 @@
+ 	smallint listing = 0;
+ 	smallint overwrite = O_PROMPT;
+ 	smallint x_opt_seen;
++#if ENABLE_FEATURE_UNZIP_STRIP_COMPONENTS
++	unsigned strip_components = 0;
++#endif
+ 	uint32_t cdf_offset;
+ 	unsigned long total_usize;
+ 	unsigned long total_size;
+@@ -473,7 +486,7 @@
+ 
+ 	x_opt_seen = 0;
+ 	/* '-' makes getopt return 1 for non-options */
+-	while ((opt = getopt(argc, argv, "-d:lnopqxv")) != -1) {
++	while ((opt = getopt(argc, argv, "-d:lnopqxv" IF_FEATURE_UNZIP_STRIP_COMPONENTS("s:"))) != -1) {
+ 		switch (opt) {
+ 		case 'd':  /* Extract to base directory */
+ 			base_dir = optarg;
+@@ -498,6 +511,12 @@
+ 			quiet++;
+ 			break;
+ 
++#if ENABLE_FEATURE_UNZIP_STRIP_COMPONENTS
++		case 's': /* strip-components */
++			strip_components = xatou(optarg);
++			break;
++#endif
++
+ 		case 'v': /* Verbose list */
+ 			IF_FEATURE_UNZIP_CDF(verbose++;)
+ 			listing = 1;
+@@ -790,6 +809,32 @@
+ 			/* Extracting to STDOUT */
+ 			goto do_extract;
+ 		}
++
++#if ENABLE_FEATURE_UNZIP_STRIP_COMPONENTS
++		if (strip_components > 0) {
++			unsigned n = strip_components;
++			const char *dst_fn_stripped = dst_fn;
++			do {
++				dst_fn_stripped = strchr(dst_fn_stripped, '/');
++				if (!dst_fn_stripped || dst_fn_stripped[1] == '\0') {
++					goto skip_cmpsize;
++				}
++				dst_fn_stripped++;
++			} while (--n != 0);
++			overlapping_strcpy(dst_fn, dst_fn_stripped);
++
++			/*
++			 * Q: What should we do with link targets?
++			 * A: tar behavior is
++			 *     - link targets are shortened only for hardlinks
++			 *     - softlinks are restored unchanged
++			 *    zip format supports only symlinks
++			 *     => nothing to do in regard to link targets
++			 */
++
++		}
++#endif
++
+ 		if (last_char_is(dst_fn, '/')) {
+ 			/* Extract directory */
+ 			if (stat(dst_fn, &stat_buf) == -1) {
