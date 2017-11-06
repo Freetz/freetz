@@ -99,11 +99,12 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(AVM_SOURCE) | gcc-kernel
 		find $(KERNEL_BUILD_ROOT_DIR) -name Makefile -exec \
 		awk '/(obj|subdir)-.*=/ && !/(obj|subdir)-ccflags.*=/ { \
 			while (match ($$0,/\\/)) {sub(/\\/," "); getline l;$$0=$$0""l} \
+			sub(/\r/,""); \
 			gsub(/(#.*|.*=)/,""); \
 			if (! match ($$0,/,/)) { \
 				dirname=substr(FILENAME,1,length(FILENAME)-8); \
 				for (i=1;i<=NF;i++) { \
-					if (match ($$i,/\.o$$|\$$/)) { \
+					if (match ($$i,/\.o$$|\.lds$$|\$$/)) { \
 						$$i=""; \
 					} else if (substr($$i,length($$i))!="/") { \
 						$$i=$$i"/"; \
