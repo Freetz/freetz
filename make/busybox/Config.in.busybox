@@ -1555,10 +1555,13 @@ config FREETZ_BUSYBOX_FEATURE_UNZIP_XZ
 	default n
 	depends on FREETZ_BUSYBOX_FEATURE_UNZIP_CDF && FREETZ_BUSYBOX_DESKTOP
 
-config FREETZ_BUSYBOX_FEATURE_UNZIP_STRIP_COMPONENTS
-	bool "Support non-standard -s option (analog of tar's --strip-components)"
+config FREETZ_BUSYBOX_FEATURE_UNZIP_J_NUM
+	bool "Provide non-standard -J NUM option"
 	default n
 	depends on FREETZ_BUSYBOX_UNZIP
+	help
+	Add support for a non-standard (busybox only) -J NUM option.
+	Its behavior is the same as that of tar's --strip-components=NUM.
 
 endmenu
 

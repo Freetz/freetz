@@ -1,0 +1,56 @@
+From 38d966943f5288bb1f2e7219f50a92753c730b14 Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Tue, 11 Jul 2017 22:10:52 +0200
+Subject: unzip: TODO for symlink support
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+ archival/unzip.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git archival/unzip.c archival/unzip.c
+index 5102552..488dcf3 100644
+--- archival/unzip.c
++++ archival/unzip.c
+@@ -347,6 +347,12 @@
+ 		return;
+ 	}
+ 
++// NB: to support symlinks, need to extract symlink target. A-la:
++// xstate.mem_output_size_max = zip->fmt.ucmpsize;
++// ...unpack...
++// if (xstate.mem_output_buf) { success, xstate.mem_output_size is the size }
++// Although archives I've seen have fmt.method == 0 for symlinks.
++
+ 	init_transformer_state(&xstate);
+ 	xstate.bytes_in = zip->fmt.cmpsize;
+ 	xstate.src_fd = zip_fd;
+@@ -686,6 +692,20 @@
+ 				zip.fmt.cmpsize  = cdf.fmt.cmpsize;
+ 				zip.fmt.ucmpsize = cdf.fmt.ucmpsize;
+ 			}
++// Seen in some zipfiles: central directory 9 byte extra field contains
++// a subfield with ID 0x5455 and 5 data bytes, which is a Unix-style UTC mtime.
++// Local header version:
++//  u16 0x5455 ("UT")
++//  u16 size (1 + 4 * n)
++//  u8  flags: bit 0:mtime is present, bit 1:atime is present, bit 2:ctime is present
++//  u32 mtime
++//  u32 atime
++//  u32 ctime
++// Central header version:
++//  u16 0x5455 ("UT")
++//  u16 size (5 (or 1?))
++//  u8  flags: bit 0:mtime is present, bit 1:atime is present, bit 2:ctime is present
++//  u32 mtime (CDF does not store atime/ctime)
+ # else
+ 			/* CDF has the same data as local header, no need to read the latter...
+ 			 * ...not really. An archive was seen with cdf.extra_len == 6 but
+@@ -700,6 +720,7 @@
+ 			if ((cdf.fmt.version_made_by >> 8) == 3) {
+ 				/* This archive is created on Unix */
+ 				dir_mode = file_mode = (cdf.fmt.external_attributes >> 16);
++//TODO: if (S_ISLNK(file_mode)) this is a symlink
+ 			}
+ 		}
+ #endif

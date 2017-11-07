@@ -1,0 +1,45 @@
+From ad37abf4231275d0991d42f9003666f1efd4114b Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Thu, 20 Jul 2017 20:21:50 +0200
+Subject: unzip: sanitize filename length: malloc(1234mb) is not funny
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+ archival/unzip.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git archival/unzip.c archival/unzip.c
+index d5bca08..b618c36 100644
+--- archival/unzip.c
++++ archival/unzip.c
+@@ -319,6 +319,12 @@
+ };
+ #endif
+ 
++static void die_if_bad_fnamesize(unsigned sz)
++{
++	if (sz > 0xfff) /* more than 4k?! no funny business please */
++		bb_error_msg_and_die("bad archive");
++}
++
+ static void unzip_skip(off_t skip)
+ {
+ 	if (skip != 0)
+@@ -341,8 +347,7 @@
+ {
+ 	char *target;
+ 
+-	if (zip->fmt.ucmpsize > 0xfff) /* no funny business please */
+-		bb_error_msg_and_die("bad archive");
++	die_if_bad_fnamesize(zip->fmt.ucmpsize);
+ 
+ 	if (zip->fmt.method == 0) {
+ 		/* Method 0 - stored (not compressed) */
+@@ -785,6 +790,7 @@
+ 
+ 		/* Read filename */
+ 		free(dst_fn);
++		die_if_bad_fnamesize(zip.fmt.filename_len);
+ 		dst_fn = xzalloc(zip.fmt.filename_len + 1);
+ 		xread(zip_fd, dst_fn, zip.fmt.filename_len);
+ 		/* Skip extra header bytes */

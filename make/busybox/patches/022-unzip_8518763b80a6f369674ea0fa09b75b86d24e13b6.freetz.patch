@@ -1,0 +1,23 @@
+From 8518763b80a6f369674ea0fa09b75b86d24e13b6 Mon Sep 17 00:00:00 2001
+From: Eugene Rudoy <gene.devel@gmail.com>
+Date: Mon, 6 Nov 2017 21:51:16 +0100
+Subject: [PATCH 2/3] unzip: add missing -j to trivial usage
+
+Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
+---
+ archival/unzip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git archival/unzip.c archival/unzip.c
+index 83bd00c4e..50205eb6e 100644
+--- archival/unzip.c
++++ archival/unzip.c
+@@ -56,7 +56,7 @@
+ //kbuild:lib-$(CONFIG_UNZIP) += unzip.o
+ 
+ //usage:#define unzip_trivial_usage
+-//usage:       "[-lnopq] FILE[.zip] [FILE]... [-x FILE...] [-d DIR]"
++//usage:       "[-lnojpq] FILE[.zip] [FILE]... [-x FILE...] [-d DIR]"
+ //usage:#define unzip_full_usage "\n\n"
+ //usage:       "Extract FILEs from ZIP archive\n"
+ //usage:     "\n	-l	List contents (with -q for short form)"
