@@ -737,6 +737,16 @@ config FREETZ_REMOVE_NTFS
 		Be careful, mounting volumes with this filesystem will not work.
 		It saves about 118K compressed space in kernel.image.
 
+config FREETZ_REMOVE_NLS
+	bool "Remove NLS"
+	depends on FREETZ_AVM_HAS_USB_HOST
+	default n
+	help
+		Remove NLS support
+		This patch will remove all the nls_*.ko kernel module from the firmware.
+		This may affect mounting FAT, NTFS and other filesystems.
+		You can add some of the Freetz kernel nls modules if you need them.
+
 config FREETZ_REMOVE_PRINTSERV
 	bool "Remove printserv"
 	depends on \
