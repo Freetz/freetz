@@ -25,6 +25,7 @@ sub expand {
     if (/^\s*source\s+([^\s#]+)\s*(#.*)?$/) {
       # For each kconfig "source" statement, recursively read sub-file
       expand($1, $file);
+      print "# INCLUDE_CONTINUE $file\n";
     } else {
       # Print all other lines normally
       print;
