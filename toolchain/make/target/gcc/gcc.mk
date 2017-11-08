@@ -152,8 +152,7 @@ gcc_initial-uninstall: gcc-uninstall
 gcc_initial-clean: gcc_initial-uninstall
 	$(RM) -r $(GCC_BUILD_DIR1)
 
-gcc_initial-dirclean: gcc_initial-clean gcc-dirclean gcc_target-dirclean
-	$(RM) -r $(GCC_DIR)
+gcc_initial-dirclean: gcc_initial-clean gcc-dirclean
 
 ##############################################################################
 #
@@ -224,6 +223,7 @@ gcc-clean: gcc-uninstall
 	$(RM) -r $(GCC_BUILD_DIR2)
 
 gcc-dirclean: gcc-clean
+	$(RM) -r $(GCC_DIR)
 
 #############################################################
 #
@@ -291,9 +291,9 @@ gcc_target-uninstall:
 gcc_target-clean: gcc_target-uninstall
 	$(RM) -r $(GCC_BUILD_DIR3)
 
-gcc_target-dirclean: gcc_target-clean
+gcc_target-dirclean: gcc_target-clean gcc-dirclean
 
 .PHONY: gcc-source gcc-unpacked \
-	gcc_initial gcc_initial-uninstall gcc_initial-clean gcc_initial-dirclean \
-	gcc gcc-uninstall gcc-clean gcc-dirclean \
-	gcc_target gcc_target-uninstall gcc_target-clean gcc_target-dirclean
+	gcc_initial gcc-configured gcc_initial-uninstall gcc_initial-clean gcc_initial-dirclean \
+	gcc gcc_initial-configured gcc-uninstall gcc-clean gcc-dirclean \
+	gcc_target gcc_target-configured gcc_target-uninstall gcc_target-clean gcc_target-dirclean
