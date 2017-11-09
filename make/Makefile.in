@@ -447,6 +447,9 @@ $(PKG)_REBUILD_SUBOPTS=FREETZ_RPATH
 $(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
 #
+$(PKG)_TARBALL_STRIP_COMPONENTS:=1
+$(PKG)_TARBALL_INCLUDE_FILTER:=
+#
 $(PKG)_EXCLUDED:=
 #
 $(PKG)_CONFIGURE_DEFOPTS:=y
@@ -695,7 +698,18 @@ PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 ### PKG_UNPACK - unpack source archive & apply patches
 # Unpack, without patch, but only if source package is defined
 define PKG_UNPACK
-	$(if $($(PKG)_SOURCE),$(strip $(call $(if $($(PKG)_CUSTOM_UNPACK),$(PKG)_CUSTOM_UNPACK,UNPACK_TARBALL),$(DL_DIR)/$($(PKG)_SOURCE),$($(PKG)_SOURCE_DIR))))
+	$(if $($(PKG)_SOURCE), \
+		$(strip \
+			mkdir -p $($(PKG)_DIR); \
+			$(call \
+				$(if $($(PKG)_CUSTOM_UNPACK),$(PKG)_CUSTOM_UNPACK,UNPACK_TARBALL), \
+				$(DL_DIR)/$($(PKG)_SOURCE), \
+				$($(PKG)_DIR), \
+				$(strip $(filter-out 0,$($(PKG)_TARBALL_STRIP_COMPONENTS))), \
+				$(strip $($(PKG)_TARBALL_INCLUDE_FILTER)) \
+			) \
+		) \
+	)
 endef
 
 ### PKG_PATCH - apply patches
