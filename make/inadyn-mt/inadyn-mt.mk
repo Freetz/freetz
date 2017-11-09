@@ -3,7 +3,6 @@ $(PKG)_SOURCE:=$(pkg).v.$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=96d193759d61ee620d059799119dd982
 $(PKG)_SITE:=@SF/inadyn-mt
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg).v.$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/inadyn-mt
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/inadyn-mt
 $(PKG)_SERVERS_CONF:=$($(PKG)_DIR)/extra/servers_additional.cfg

@@ -3,8 +3,6 @@ $(PKG)_NAME_NO_HYPHEN:=$(subst -,,$(pkg))
 $(PKG)_SOURCE:=$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=svn@https://svn.code.sf.net/p/chan-sccp-b/code/branches/V4.1
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION)
-
 $(PKG)_BINARY := $($(PKG)_DIR)/src/.libs/chan_sccp.so
 $(PKG)_BINARY_TARGET := $($(PKG)_DEST_DIR)$(ASTERISK_MODULES_DIR)/chan_sccp.so
 

@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 3.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=5cecd280f025c1e5beb7d8073b42ec8f
 $(PKG)_SITE:=@SF/bftpd
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/bftpd
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/bftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/bftpd
 

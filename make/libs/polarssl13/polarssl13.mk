@@ -1,5 +1,4 @@
 $(call PKG_INIT_LIB, 1.3.21)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/mbedtls-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=mbedtls-$($(PKG)_VERSION)-gpl.tgz
 $(PKG)_SOURCE_SHA1:=de6855b8f9570f22f660552184efa3f42b3b0412
 $(PKG)_SITE:=http://polarssl.org/code/releases

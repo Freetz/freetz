@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-stable-src.tar.gz
 $(PKG)_SOURCE_MD5:=8a1c842112ccea68c19b7ceb4a0e999f
 $(PKG)_SITE:=@SF/ijbswa
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-stable
-
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy
 

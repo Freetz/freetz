@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=make-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=15b012617e7c44c0ed482721629577ac
 $(PKG)_SITE:=@GNU/make
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/make-$($(PKG)_VERSION)
-
 $(PKG)_BINARY:=$($(PKG)_DIR)/make
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/make
 

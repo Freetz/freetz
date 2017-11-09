@@ -5,8 +5,6 @@ $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_SHA256:=4a1dde5bdfec0fc549955a051be25b7ff96dfb192060997699e43c7ce0f06ab2
 $(PKG)_SITE:=@SF/$(pkg),http://www.imagemagick.org/download
 
-$(PKG)_DIR:=$(SOURCE_DIR)/ImageMagick-$($(PKG)_VERSION)
-
 $(PKG)_BINARY := magick
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_BINARY:%=$($(PKG)_DIR)/utilities/$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,.libs/)%)
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_BINARY:%=$($(PKG)_DEST_DIR)/usr/bin/%)

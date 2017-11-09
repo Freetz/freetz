@@ -3,7 +3,6 @@ $(PKG)_LIB_VERSION:=2.5.0
 $(PKG)_SOURCE:=lib$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=7ab33ebd26687c744a37264a330bbe9a
 $(PKG)_SITE:=@GNU/$(pkg)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/lib$(pkg)-$($(PKG)_VERSION)
 
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 LIB$(PKG)_PREFIX:=/usr

@@ -4,7 +4,6 @@ $(PKG)_LIB_VERSION:=0.1.0
 $(PKG)_SOURCE:=libusb-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=1da9ea3c27b3858fa85c5f4466003e44
 $(PKG)_SITE:=@SF/libusb,https://github.com/libusb/libusb/releases/download/v$($(PKG)_VERSION)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libusb-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libusb/.libs/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)

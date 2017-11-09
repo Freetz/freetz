@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=Cheetah-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=853917116e731afbc8c8a43c37e6ddba
 $(PKG)_SITE:=https://pypi.python.org/packages/source/C/Cheetah
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Cheetah-$($(PKG)_VERSION)
-
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/Cheetah/_namemapper.so
 
 $(PKG)_DEPENDS_ON += python

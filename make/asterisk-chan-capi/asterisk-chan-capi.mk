@@ -3,8 +3,6 @@ $(PKG)_NAME_NO_HYPHEN:=$(subst -,,$(pkg))
 $(PKG)_SOURCE:=$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=svn://svn.chan-capi.org/chan-capi/trunk
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION)
-
 $(PKG)_DEPENDS_ON += libcapi asterisk
 
 $(PKG)_BINARY := $($(PKG)_DIR)/chan_capi.so

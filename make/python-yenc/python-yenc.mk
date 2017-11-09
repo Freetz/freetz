@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=yenc-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=f8bd9eff020c0352fdd4c25c20900007
 $(PKG)_SITE:=http://www.golug.it/pub/yenc
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/yenc-$($(PKG)_VERSION)
-
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/_yenc.so
 
 $(PKG)_DEPENDS_ON += python

@@ -4,8 +4,6 @@ $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5:=1f6db41ad91d9eb0a6f0c769b8613c5b
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Python-$($(PKG)_VERSION)
-
 $(PKG)_LOCAL_INSTALL_DIR:=$($(PKG)_DIR)/_install
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/python$($(PKG)_MAJOR_VERSION).bin

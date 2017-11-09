@@ -2,7 +2,6 @@ $(call PKG_INIT_BIN, 2.8.8rel.2)
 $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=b231c2aa34dfe7ca25681ef4e55ee7e8
 $(PKG)_SITE:=http://invisible-mirror.net/archives/lynx/tarballs,ftp://invisible-island.net/pub/lynx/tarballs
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)2-8-8
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)

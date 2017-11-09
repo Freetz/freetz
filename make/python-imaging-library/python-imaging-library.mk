@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=Imaging-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=fc14a54e1ce02a0225be8854bfba478e
 $(PKG)_SITE:=http://effbot.org/downloads
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/Imaging-$($(PKG)_VERSION)
-
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/PIL/_imaging.so
 
 $(PKG)_DEPENDS_ON += python freetype jpeg zlib

@@ -4,8 +4,6 @@ $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=e6fa25f71226d090f34de3f6b122fb5a
 $(PKG)_SITE:=ftp://ftp.porcupine.org/pub/security
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)_$($(PKG)_VERSION)
-
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/tcpd
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/shared/libwrap.so.$($(PKG)_LIB_VERSION)

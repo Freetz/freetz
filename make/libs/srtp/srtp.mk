@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION)+20100615~dfsg.orig.tar.gz
 $(PKG)_SOURCE_MD5:=debe7fe729d1122f0d22f682a9f27be8
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/srtp
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/srtp~dfsg
-
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/lib$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/lib$(pkg).so.$($(PKG)_VERSION)

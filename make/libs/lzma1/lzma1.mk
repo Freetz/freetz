@@ -2,7 +2,6 @@ $(call PKG_INIT_LIB, 465)
 $(PKG)_SOURCE:=lzma$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=29d5ffd03a5a3e51aef6a74e9eafb759
 $(PKG)_SITE:=@SF/sevenzip
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/lzma$($(PKG)_VERSION)
 
 $(PKG)_DEPENDS_ON += zlib
 

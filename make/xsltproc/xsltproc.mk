@@ -1,5 +1,4 @@
 $(call PKG_INIT_BIN, 1.1.30)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/libxslt-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=libxslt-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256:=ba65236116de8326d83378b2bd929879fa185195bc530b9d1aba72107910b6b3
 $(PKG)_SITE:=ftp://xmlsoft.org/libxslt

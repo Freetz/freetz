@@ -3,7 +3,6 @@ $(PKG)_LIB_VERSION:=2
 $(PKG)_SOURCE:=pjproject-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=6ed4bb7750c827dc1d881e209a3b62db
 $(PKG)_SITE:=http://www.pjsip.org/release/$($(PKG)_VERSION)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/pjproject-$($(PKG)_VERSION)
 
 $(PKG)_INSTALL_SUBDIR:=_install
 

@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 1.1)
 $(PKG)_SOURCE:=$(pkg).tar.bz2
 $(PKG)_SOURCE_MD5:=eb9c41bba1c3dea502fad390879e9dba
 $(PKG)_SITE:=http://www.wbe.se/files
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/smusbutil
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/smusbutil
 

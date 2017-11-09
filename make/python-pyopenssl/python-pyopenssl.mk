@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=pyOpenSSL-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=e27a3b76734c39ea03952ca94cc56715
 $(PKG)_SITE:=https://pypi.python.org/packages/source/p/pyOpenSSL
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/pyOpenSSL-$($(PKG)_VERSION)
-
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/OpenSSL/SSL.so
 
 $(PKG)_DEPENDS_ON += python openssl

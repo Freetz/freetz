@@ -4,8 +4,6 @@ $(PKG)_SOURCE:=$(pkg)-ocr-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=26adc8154f0e815053816825dde246e6
 $(PKG)_SITE:=http://tesseract-ocr.googlecode.com/files
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-ocr
-
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/api/.libs/$(pkg)
 $(PKG)_BINARY_TARGET_DIR:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 

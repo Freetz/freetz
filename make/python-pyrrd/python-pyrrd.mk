@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=PyRRD-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=c33a0760b42a23e45e423b8b9f2cd0b0
 $(PKG)_SITE:=https://pyrrd.googlecode.com/files
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/PyRRD-$($(PKG)_VERSION)
-
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/pyrrd/__init__.py
 
 $(PKG)_DEPENDS_ON += python

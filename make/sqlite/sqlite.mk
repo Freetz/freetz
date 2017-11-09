@@ -4,8 +4,6 @@ $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA1:=f56fe3407d8297fc0a68a058f4c9e6b77e83575c
 $(PKG)_SITE:=http://www.sqlite.org/2017
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-autoconf-$($(PKG)_VERSION)
-
 ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
 $(PKG)_DEPENDS_ON += readline
 endif

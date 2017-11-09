@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=TrueCrypt-$($(PKG)_VERSION)-source-unix.tar.gz
 $(PKG)_SOURCE_MD5:=ec3ab06022bbd00a7a94fde170c4df36
 $(PKG)_SITE:=@SF/truecrypt
 
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
-
 $(PKG)_BINARY := $($(PKG)_DIR)/Main/$(pkg)
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 $(PKG)_CATEGORY:=Unstable

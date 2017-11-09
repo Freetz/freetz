@@ -4,8 +4,6 @@ $(PKG)_SOURCE_MD5:=78818f40e6d33a1d1de68a1551f6595a
 $(PKG)_SITE:=@SAMBA/ppp
 $(PKG)_STARTLEVEL=81
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/ppp-$($(PKG)_VERSION)
-
 $(PKG)_BINARY:=$($(PKG)_DIR)/pppd/pppd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/pppd
 $(PKG)_CHAT_BINARY:=$(PPPD_DIR)/chat/chat

@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN,1.2b)
 $(PKG)_SOURCE:=mini_snmpd-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=9e432c50ba8216d7fab0983b11b7112a
 $(PKG)_SITE:=http://members.aon.at/linuxfreak/linux
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/mini_snmpd
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/mini_snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mini_snmpd
 

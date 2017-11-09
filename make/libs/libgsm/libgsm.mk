@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
 $(PKG)_SOURCE_MD5:=c1ba392ce61dc4aff1c29ea4e92f6df4
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/libg/libgsm
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/gsm-1.0-pl13
-
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_VERSION)

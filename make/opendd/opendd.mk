@@ -2,8 +2,8 @@ $(call PKG_INIT_BIN, 0.7.9)
 $(PKG)_SOURCE:=$(pkg).$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=cb18cc056eedb10a0decd1797c803dfe
 $(PKG)_SITE:=http://www.bsdmon.com/download/
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg)
-$(PKG)_BINARY:=$(SOURCE_DIR)/$(pkg)/$(pkg)
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 $(PKG)_PEM:=$($(PKG)_DIR)/$(pkg).pem
 $(PKG)_TARGET_PEM:=$($(PKG)_DEST_DIR)/etc/default.$(pkg)/$(pkg).pem

@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).zip
 $(PKG)_SOURCE_MD5:=97ca3f2f9805dbc54d6ad763435cd9fd
 $(PKG)_SITE:=@SF/$(pkg)
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)
-
 $(PKG)_CATEGORY:=Web interfaces
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/config.php

@@ -2,7 +2,6 @@ $(call PKG_INIT_BIN, 1.48.04)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.zip
 $(PKG)_SOURCE_MD5:=cadd7482eaafe9239546bdc09fa244c3
 $(PKG)_SITE:=@SF/espeak
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)-source
 
 $(PKG)_PATCH_POST_CMDS += $(RM) -r linux_32bit;
 $(PKG)_PATCH_POST_CMDS += find . -type f -exec chmod 644 {} \+;

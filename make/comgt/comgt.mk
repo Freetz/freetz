@@ -2,8 +2,8 @@ $(call PKG_INIT_BIN, 0.32)
 $(PKG)_SOURCE:=$(pkg).$($(PKG)_VERSION).tgz
 $(PKG)_SOURCE_MD5:=db2452680c3d953631299e331daf49ef
 $(PKG)_SITE:=@SF/$(pkg)
-$(PKG)_DIR:=$(SOURCE_DIR)/$(pkg).$($(PKG)_VERSION)
-$(PKG)_BINARY:=$(SOURCE_DIR)/$(pkg).$($(PKG)_VERSION)/gcom
+
+$(PKG)_BINARY:=$($(PKG)_DIR)/gcom
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/gcom
 
 $(PKG_SOURCE_DOWNLOAD)

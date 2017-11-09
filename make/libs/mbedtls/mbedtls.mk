@@ -1,5 +1,4 @@
 $(call PKG_INIT_LIB, 2.6.0)
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/mbedtls-$($(PKG)_VERSION)
 $(PKG)_SOURCE:=mbedtls-$($(PKG)_VERSION)-gpl.tgz
 $(PKG)_SOURCE_SHA1:=0e657805b5dc9777e0e0333a95d7886ae8f0314e
 $(PKG)_SITE:=https://tls.mbed.org/download

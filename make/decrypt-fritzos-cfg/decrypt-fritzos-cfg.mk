@@ -1,7 +1,6 @@
 $(call PKG_INIT_BIN, 428de17b93)
 $(PKG)_SOURCE:=$(subst -,_,$(pkg))-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/PeterPawn/decoder.git
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(subst -,_,$(pkg))-$($(PKG)_VERSION)
 
 # silence format warnings
 $(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e 's/(errorMessage|warningMessage)[(]([_a-zA-Z0-9]+)[)];/\1("%s", \2);/g' src/*.c;

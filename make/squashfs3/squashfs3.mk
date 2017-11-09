@@ -1,6 +1,5 @@
 $(call PKG_INIT_BIN, 3.4)
 $(PKG)_PRJNAME:=squashfs
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_PRJNAME)$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$($(PKG)_PRJNAME)$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=2a4d2995ad5aa6840c95a95ffa6b1da6
 $(PKG)_SITE:=@SF/$($(PKG)_PRJNAME)

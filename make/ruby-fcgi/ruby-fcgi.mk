@@ -2,8 +2,6 @@ $(call PKG_INIT_BIN, 58cd6b3147)
 $(PKG)_SOURCE:=rubyfcgi-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=git@https://github.com/alphallc/ruby-fcgi-ng.git
 
-$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/rubyfcgi-$($(PKG)_VERSION)
-
 $(PKG)_BINARY:=$(RUBY_FCGI_DIR)/lib/fcgi.rb
 $(PKG)_TARGET_BINARY:=$(RUBY_FCGI_DEST_DIR)/usr/lib/ruby/$(RUBY_VERSION_SUBDIR)/fcgi.rb
 
