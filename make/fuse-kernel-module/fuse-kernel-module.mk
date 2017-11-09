@@ -3,6 +3,9 @@ $(PKG)_SOURCE:=fuse-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=319f12dffd6f7073628fefc980254f4a
 $(PKG)_SITE:=https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4
 
+$(PKG)_TARBALL_STRIP_COMPONENTS:=2
+$(PKG)_TARBALL_INCLUDE_FILTER:=fuse-$($(PKG)_VERSION)/kernel
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/fuse.ko
 $(PKG)_TARGET_DIR:=$(KERNEL_MODULES_DIR)/fs/fuse
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/fuse.ko
@@ -13,10 +16,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_LAYOUT
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-kernel-module
 $(PKG)_CONFIGURE_OPTIONS += --with-kernel="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
-
-define $(PKG)_CUSTOM_UNPACK
-mkdir -p $($(PKG)_DIR); $(TOOLS_DIR)/gunzip -c $(1) | $(TAR) -C $($(PKG)_DIR) $(VERBOSE) -x --strip-components=2 fuse-$($(PKG)_VERSION)/kernel;
-endef
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

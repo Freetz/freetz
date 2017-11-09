@@ -3,14 +3,12 @@ $(PKG)_SOURCE:=lzma$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=29d5ffd03a5a3e51aef6a74e9eafb759
 $(PKG)_SITE:=@SF/sevenzip
 
+$(PKG)_TARBALL_STRIP_COMPONENTS:=0
+
 $(PKG)_DEPENDS_ON += zlib
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/C/LzmaLib/liblzma.a
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/liblzma1.a
-
-define $(PKG)_CUSTOM_UNPACK
-mkdir -p $($(PKG)_DIR); $(call UNPACK_TARBALL,$(1),$($(PKG)_DIR))
-endef
 
 ifneq ($(strip $(DL_DIR)/$(LZMA1_SOURCE)),$(strip $(DL_DIR)/$(LZMA1_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)

@@ -5,17 +5,13 @@ $(PKG)_SITE:=http://tesseract-ocr.googlecode.com/files
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/share/tessdata/eng.traineddata
 
-define $(PKG)_CUSTOM_UNPACK
-mkdir -p $($(PKG)_DIR); $(call UNPACK_TARBALL,$(1),$($(PKG)_DIR))
-endef
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.configured
 	@mkdir -p $(dir $@); \
-	cp $(TESSERACT_ENG_DIR)/tesseract-ocr/tessdata/eng.* $(dir $@); \
+	cp $(TESSERACT_ENG_DIR)/tessdata/eng.* $(dir $@); \
 	touch -c $@
 
 $(pkg):
