@@ -1,0 +1,42 @@
+config FREETZ_PACKAGE_SQUASHFS4_LE
+	bool "squashfs-tools 4.3 (AVM-LE)"
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_LIB_libm        if !FREETZ_PACKAGE_SQUASHFS4_LE_ALL_STAT
+	select FREETZ_LIB_libpthread  if !FREETZ_PACKAGE_SQUASHFS4_LE_ALL_STAT
+	select FREETZ_LIB_libz        if  FREETZ_PACKAGE_SQUASHFS4_LE_ALL_DYN && FREETZ_PACKAGE_SQUASHFS4_LE_LEGACY
+	select FREETZ_LIB_liblzma     if  FREETZ_PACKAGE_SQUASHFS4_LE_ALL_DYN
+	default n
+	help
+		This package provides unsquashfs/mksquashfs utilities modified
+		to be able to expand/create images in AVM-LE format.
+
+		AVM-LE is the format used by AVM to pack the filesystem of some
+		cable boxes, e.g. 6490, 6590 (x86 core only).
+
+		The only difference of this format to the original LE format
+		is that the value of the mkfs_time superblock field is equal
+		to the bytes_used field.
+
+config FREETZ_PACKAGE_SQUASHFS4_LE_LEGACY
+	depends on FREETZ_PACKAGE_SQUASHFS4_LE
+	bool "with SquashFS-1/2/3 support"
+	default n
+	help
+		Enables support (unsquashfs only) for legacy SquashFS-1/2/3 formats
+		including a special header-less/LZMA1-compressed format used by AVM
+		on many boxes.
+
+choice
+	depends on FREETZ_PACKAGE_SQUASHFS4_LE
+	prompt "Link"
+	default FREETZ_PACKAGE_SQUASHFS4_LE_ALL_DYN
+
+	config FREETZ_PACKAGE_SQUASHFS4_LE_ALL_DYN
+		bool "all libraries dynamically"
+
+	config FREETZ_PACKAGE_SQUASHFS4_LE_COMP_STAT
+		bool "compression libraries statically"
+
+	config FREETZ_PACKAGE_SQUASHFS4_LE_ALL_STAT
+		bool "all libraries statically"
+endchoice
