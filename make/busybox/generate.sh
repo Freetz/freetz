@@ -13,22 +13,9 @@ default() {
 }
 
 depends_on() {
-	sed -r -i '/^config FREETZ_BUSYBOX_'"$1"'$/,+5 {
-		/^[ \t]+depends on[ \t]/ {
-			# "depends on" already exists => append && at the end and move the line to the hold buffer
-			s,$, \&\&,
-			h;d
-		}
-		/^[ \t]+help$/ {
-			# eXchange pattern<-->hold buffers
-			x
-			# empty buffer => no "depends on" seen => add it
-			s,^$,\tdepends on,
-			# append new/additional condition at the end
-			s,$, '"$2"',
-			# get the help line back from the hold buffer
-			G
-		}
+	sed -r -i '/^config FREETZ_BUSYBOX_'"$1"'$/,/^[ \t]+help$/ {
+		/^[ \t]+help$/ i\
+	depends on '"$2"'
 	}' "$BBOUT"
 }
 
