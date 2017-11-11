@@ -147,7 +147,7 @@ endif
 	touch -c $@
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-UCLIBC_PREREQ=$(GCC_BUILD_DIR1)/.installed binutils_target
+UCLIBC_PREREQ=$(GCC_BUILD_DIR1)/.installed
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
