@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.19.2)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=4f4a673b6d466efa50fbfba796bd84a46ae24e370fa562ede5b21ab53c11a920
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.lz
+$(PKG)_SOURCE_SHA256:=d59a745ad2c522970660bb30d38601f9457b151b322e01fa20a5a0da0f55df07
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
