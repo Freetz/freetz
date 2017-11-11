@@ -14,10 +14,10 @@ The syscalls are supported at least since kernel 2.6.13, the oldest on Fritz Box
  extern __typeof(fstatfs) __libc_fstatfs;
  
  /* Return information about the filesystem on which FD resides.  */
-@@ -52,3 +53,10 @@
+@@ -51,4 +52,12 @@
+ 
      return 0;
  }
- libc_hidden_def(fstatfs64)
 +#else
 +int fstatfs64(int fd, struct statfs64 *buf)
 +{
@@ -25,6 +25,8 @@ The syscalls are supported at least since kernel 2.6.13, the oldest on Fritz Box
 +	return INLINE_SYSCALL(fstatfs64, 3, fd, sizeof(*buf), buf);
 +}
 +#endif
++
+ libc_hidden_def(fstatfs64)
 diff --git a/libc/misc/statfs/statfs64.c b/libc/misc/statfs/statfs64.c
 index ce8211b..b1a33b7 100644
 --- libc/misc/statfs/statfs64.c
