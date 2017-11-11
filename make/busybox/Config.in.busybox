@@ -1149,6 +1149,10 @@ config FREETZ_BUSYBOX_FEATURE_SEAMLESS_GZ
 	bool "Make tar, rpm, modprobe etc understand .gz data"
 	default n
 
+config FREETZ_BUSYBOX_FEATURE_SEAMLESS_LZ
+	bool "Make tar, rpm, modprobe etc understand .lz data"
+	default n
+
 config FREETZ_BUSYBOX_FEATURE_SEAMLESS_Z
 	bool "Make tar, rpm, modprobe etc understand .Z data"
 	default n  # it is ancient
@@ -1228,6 +1232,13 @@ config FREETZ_BUSYBOX_BZCAT
 	select FREETZ_BUSYBOX_FEATURE_BZIP2_DECOMPRESS
 	help
 	  Alias to "bunzip2 -c".
+config FREETZ_BUSYBOX_LUNZIP
+	bool "lunzip"
+	default n
+	help
+	  lunzip is used to decompress archives created by lzip.
+	  You can use the '-t' option to test the integrity of an archive,
+	  without decompressing it.
 config FREETZ_BUSYBOX_UNLZMA
 	bool "unlzma"
 	default n
@@ -1397,6 +1408,15 @@ config FREETZ_BUSYBOX_FEATURE_GZIP_DECOMPRESS
 	  Enable -d (--decompress) and -t (--test) options for gzip.
 	  This will be automatically selected if gunzip or zcat is
 	  enabled.
+config FREETZ_BUSYBOX_LZIP
+	bool "lzip"
+	default n
+	help
+	  lzip is a lossless data compressor with a user interface similar to
+	  the one of gzip or bzip2. lzip can compress about as fast as gzip or
+	  compress most files more than bzip2 (depending on compression level).
+	  Decompression speed is intermediate between gzip and bzip2. lzip is
+	  better than gzip and bzip2 from a data recovery perspective.
 config FREETZ_BUSYBOX_LZOP
 	bool "lzop"
 	default n
@@ -1454,7 +1474,7 @@ config FREETZ_BUSYBOX_FEATURE_TAR_CREATE
 config FREETZ_BUSYBOX_FEATURE_TAR_AUTODETECT
 	bool "Autodetect compressed tarballs"
 	default n
-	depends on FREETZ_BUSYBOX_TAR && (FREETZ_BUSYBOX_FEATURE_SEAMLESS_Z || FREETZ_BUSYBOX_FEATURE_SEAMLESS_GZ || FREETZ_BUSYBOX_FEATURE_SEAMLESS_BZ2 || FREETZ_BUSYBOX_FEATURE_SEAMLESS_LZMA || FREETZ_BUSYBOX_FEATURE_SEAMLESS_XZ)
+	depends on FREETZ_BUSYBOX_TAR && (FREETZ_BUSYBOX_FEATURE_SEAMLESS_Z || FREETZ_BUSYBOX_FEATURE_SEAMLESS_GZ || FREETZ_BUSYBOX_FEATURE_SEAMLESS_BZ2 || FREETZ_BUSYBOX_FEATURE_SEAMLESS_LZ || FREETZ_BUSYBOX_FEATURE_SEAMLESS_LZMA || FREETZ_BUSYBOX_FEATURE_SEAMLESS_XZ)
 	help
 	  With this option tar can automatically detect compressed
 	  tarballs. Currently it works only on files (not pipes etc).

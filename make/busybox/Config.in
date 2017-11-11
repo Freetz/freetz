@@ -420,6 +420,9 @@ config FREETZ_BUSYBOX__PACKER
 	select FREETZ_BUSYBOX_UNZIP
 	select FREETZ_BUSYBOX_UUENCODE
 	select FREETZ_BUSYBOX_XZ if !FREETZ_PACKAGE_XZ
+	#
+	select FREETZ_BUSYBOX_FEATURE_SEAMLESS_LZ if FREETZ_BUSYBOX_LZIP
+	select FREETZ_BUSYBOX_LUNZIP              if FREETZ_BUSYBOX_LZIP
 	help
 		Selects base64, b(un)zip2, unlzma, unzip, unxz,
 		uuencode and some tar features.
