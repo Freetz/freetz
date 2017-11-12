@@ -43,7 +43,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_STATIC
 
 $(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-camellia no-ssl3
 $(PKG)_NO_CIPHERS += $(if $(FREETZ_OPENSSL_VERSION_2_MAX),no-ssl2)
-$(PKG)_NO_CIPHERS += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),no-sha0 no-smime no-aes192 no-ripemd no-rmd160 no-ans1 no-krb5)
+$(PKG)_NO_CIPHERS += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),no-sha0 no-smime no-aes192 $(if $(FREETZ_PACKAGE_PERL),,no-ripemd) no-rmd160 no-ans1 no-krb5)
 $(PKG)_NO_CIPHERS += $(if $(FREETZ_LIB_libcrypto_WITH_RC4),,no-rc4)
 
 $(PKG)_OPTIONS    := shared no-err no-sse2 no-capieng no-seed

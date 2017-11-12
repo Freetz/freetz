@@ -1,0 +1,207 @@
+#!/bin/sh
+
+DAEMON=fhem
+DAEMON_LONG_NAME="FHEM - Home automation"
+FHEM_HOME=/usr/lib/fhem
+FHEM_DATA=/mod/etc/fhem
+FHEM_LOG=/var/log/fhem
+PID_FILE=/var/run/fhem.pid
+ARGS=
+
+. /etc/init.d/modlibrc
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+
+export PATH=/usr/local/bin:$PATH
+
+cleanup() {
+	rm -rf /mod/etc/$DAEMON
+	rm -rf /var/run/$DAEMON
+}
+
+config() {
+	[ -d "/tmp/flash/$DAEMON" ]  || mkdir -p /tmp/flash/$DAEMON
+	if [ ! -e /tmp/flash/${DAEMON}/fhem.cfg ]; then
+		echo -n "Creating $DAEMON configuration ... "
+		cat /mod/etc/default.${DAEMON}/fhem.cfg.default > /tmp/flash/${DAEMON}/fhem.cfg
+	fi
+	
+	modlib_add_user_and_group fhem
+	
+}	
+
+prepare_fhemdata_directory() {
+	if [ -h ${FHEM_DATA} ]; then
+	  rm ${FHEM_DATA}
+	elif [ -e ${FHEM_DATA} ]; then
+	  find ${FHEM_DATA} -type l -exec rm {} \;
+	  rm -rf ${FHEM_DATA}/demolog
+	  diff /mod/etc/default.${DAEMON}/configDB.db ${FHEM_DATA}/configDB.db && rm ${FHEM_DATA}/configDB.db || echo "Warning[$DAEMON]: configDB has changed, may not correctly initialize fhem directory"
+	  rmdir ${FHEM_DATA}
+	fi
+
+	if [ -z "${FHEM_LOCATION}" ]; then
+		echo "Info[$DAEMON]: internal storage is used" 1>&2
+	elif [ ! -e ${FHEM_LOCATION} ]; then
+		mkdir -p ${FHEM_LOCATION}
+	else
+	  ln -s ${FHEM_LOCATION} ${FHEM_DATA}
+	fi
+	[ -d ${FHEM_DATA}          ] || mkdir -p ${FHEM_DATA}
+
+	if [ -z "${FHEM_LOCATION}" ]; then
+	  [ -e ${FHEM_DATA}/fhem.cfg      ] || ln -s /tmp/flash/${DAEMON}/fhem.cfg ${FHEM_DATA}/fhem.cfg
+	elif [ ! -e "${FHEM_LOCATION}/fhem.cfg" ]; then
+	  echo -n "Creating $DAEMON configuration in ${FHEM_LOCATION} ... "
+	  cat /mod/etc/default.${DAEMON}/fhem.cfg.default > ${FHEM_LOCATION}/fhem.cfg
+	  [ -e ${FHEM_DATA}/fhem.cfg           ] || ln -s ${FHEM_LOCATION}/fhem.cfg ${FHEM_DATA}/fhem.cfg
+	  [ -e ${FHEM_LOCATION}/FHEM/FhemUtils ] || mkdir -p ${FHEM_LOCATION}/FHEM/FhemUtils
+	  [ -e ${FHEM_DATA}/FHEM               ] || mkdir -p ${FHEM_DATA}/FHEM
+	  [ -e ${FHEM_DATA}/FHEM/FhemUtils     ] || ln -s ${FHEM_LOCATION}/FHEM/FhemUtils ${FHEM_DATA}/FHEM/FhemUtils
+	else
+	  [ -e ${FHEM_DATA}/fhem.cfg           ] || ln -s ${FHEM_LOCATION}/fhem.cfg ${FHEM_DATA}/fhem.cfg
+	  [ -e ${FHEM_LOCATION}/FHEM/FhemUtils ] || mkdir -p ${FHEM_LOCATION}/FHEM/FhemUtils
+	  [ -e ${FHEM_DATA}/FHEM               ] || mkdir -p ${FHEM_DATA}/FHEM
+	  [ -e ${FHEM_DATA}/FHEM/FhemUtils     ] || ln -s ${FHEM_LOCATION}/FHEM/FhemUtils ${FHEM_DATA}/FHEM/FhemUtils
+	fi
+	[ -d $(dirname $PID_FILE)       ] || mkdir -p $(dirname $PID_FILE)
+	if [ -n "${FHEM_LOGEXTERN}" ]; then
+	  [ -d ${FHEM_LOGEXTERN}        ] || mkdir -p ${FHEM_LOGEXTERN}
+	  [ -d ${FHEM_DATA}/log         ] || (cd ${FHEM_DATA}; ln -s ${FHEM_LOGEXTERN} log)
+	elif [ -n "${FHEM_LOCATION}" ]; then
+	  [ -d ${FHEM_LOCATION}/log     ] || mkdir -p ${FHEM_LOCATION}/log
+	  [ -d ${FHEM_DATA}/log         ] || (cd ${FHEM_DATA}; ln -s ${FHEM_LOCATION}/log log)
+	else
+	  [ -d ${FHEM_LOG}              ] || mkdir -p ${FHEM_LOG}
+	  [ -d ${FHEM_DATA}/log         ] || (cd ${FHEM_DATA}; ln -s ${FHEM_LOG} log)
+	fi
+	[ -d ${FHEM_DATA}/demolog       ] || (mkdir -p ${FHEM_DATA}/demolog; )
+	[ -e ${FHEM_DATA}/configDB.db   ] || cp /mod/etc/default.${DAEMON}/configDB.db ${FHEM_DATA}/.
+	[ -e ${FHEM_DATA}/configDB.conf ] || ln -s /mod/etc/default.${DAEMON}/configDB.conf ${FHEM_DATA}/configDB.conf
+	for i in $(ls ${FHEM_HOME}); do
+		[ -e ${FHEM_DATA}/$i ] || ln -s ${FHEM_HOME}/$i ${FHEM_DATA}/$i
+	done
+	for i in $(ls ${FHEM_HOME}/FHEM); do
+		[ -e ${FHEM_DATA}/FHEM/$i ] || ln -s ${FHEM_HOME}/FHEM/$i ${FHEM_DATA}/FHEM/$i
+	done
+	for i in $(ls ${FHEM_HOME}/FHEM/FhemUtils); do
+		[ -e ${FHEM_DATA}/FHEM/FhemUtils/$i ] || ln -s ${FHEM_HOME}/FHEM/FhemUtils/$i ${FHEM_DATA}/FHEM/FhemUtils/$i
+	done
+
+	changeownership_fhem
+}
+
+changeownership_fhem() {
+	chown fhem:users ${FHEM_DATA}
+	chown fhem:users ${FHEM_DATA}/configDB.db
+	chown -R fhem:users ${FHEM_DATA}/log/.
+	chown -R fhem:users ${FHEM_DATA}/demolog
+	chown -R fhem:users ${FHEM_DATA}/FHEM/FhemUtils
+	chmod g+w ${FHEM_DATA}/fhem.cfg
+	chmod g+w ${FHEM_DATA}/FHEM/FhemUtils/.
+	chmod g+w ${FHEM_DATA}/FHEM/FhemUtils/uniqueID 2> /dev/null
+	chown fhem:root ${FHEM_DATA}/fhem.cfg
+}
+
+start() {
+	trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 0 1 2 3 15
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
+
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
+	
+	prepare_fhemdata_directory
+
+	local startup_cfg;
+        local mode;
+	if [ "${FHEM_DEMOMODE}" = 'yes' ]; then
+	  startup_cfg=fhem.cfg.demo
+	  mode=demo
+	elif [ "${FHEM_DBMODE}" = 'yes' ]; then
+	  startup_cfg=configDB.pm
+	  mode=configDB
+	else
+	  startup_cfg=fhem.cfg
+	  mode=normal
+	fi
+
+	
+	echo -n "mode=$mode ... "
+	local PWD=`pwd`
+	export PERL5LIB=/mod/external/usr/lib/fhem/FHEM:/usr/lib/fhem/FHEM 
+	cd $FHEM_DATA; start-stop-daemon -S -b -m -p $PID_FILE -x perl fhem.pl $startup_cfg -N15 -- $ARGS 1>&2 | logger -t $DAEMON
+	exitval=$?
+	cd $PWD; sleep 10
+
+	echo `ps | grep fhem | grep -v grep | grep -v rc | awk '{ printf $1 }'` > $PID_FILE
+	if [ -s $PID_FILE ] && kill -0 $(cat $PID_FILE) 2> /dev/null; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+
+trap "rm -f /var/run/rc.$DAEMON.pid; exit 255" 1 2 3 15
+case $1 in
+	""|load)
+		config
+		
+		if [ "${FHEM_DBMODE}" != 'yes' -a "${FHEM_DEMOMODE}" != 'yes' ]; then
+		  modreg file $DAEMON cfg "fhem.cfg" 1 "fhem_cfg"
+		fi
+		modreg cgi $DAEMON FHEM
+		modreg daemon $DAEMON
+
+		modlib_start $FHEM_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		
+		[ -s /var/run/rc.$DAEMON.pid ] && PID_FILE=/var/run/rc.$DAEMON.pid
+		modlib_stop 
+		cleanup
+		;;
+	config)
+		config
+		;;
+	start)
+		if [ -s /var/run/rc.$DAEMON.pid ]; then
+			kill -0 $(cat /var/run/rc.$DAEMON.pid)
+			if [ $? -eq 0 ]; then
+				echo "Startup of $DAEMON already performed." 1>&2
+				exit 0
+			fi
+			rm -f /var/run/rc.$DAEMON.pid
+		fi
+		start
+		;;
+	stop)
+		[ -s /var/run/rc.$DAEMON.pid ] && PID_FILE=/var/run/rc.$DAEMON.pid
+		modlib_stop
+		;;
+	restart)
+		modunreg file $DAEMON
+		modlib_restart
+		if [ "${FHEM_DBMODE}" != 'yes' -a "${FHEM_DEMOMODE}" != 'yes' ]; then
+		  modreg file $DAEMON cfg 'fhem.cfg' 1 "fhem_cfg"
+		fi
+		;;
+	reload)
+		modlib_reload
+		;;
+	status)
+		[ -e $PID_FILE ] || echo `ps | grep fhem | grep -v grep | grep -v rc | awk '{ printf $1 }'` > $PID_FILE
+		[ ! -s $PID_FILE ] && rm $PID_FILE
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|config|start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

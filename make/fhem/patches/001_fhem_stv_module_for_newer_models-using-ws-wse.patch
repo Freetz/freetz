@@ -1,0 +1,1329 @@
+--- FHEM/70_STV.pm	2016-12-21 12:59:33.000000000 +0100
++++ FHEM/70_STV.pm	2018-03-30 22:57:56.672059164 +0200
+@@ -15,15 +15,17 @@
+ package main;
+ use strict;
+ use warnings;
++use Blocking;
+ use IO::Socket::INET;
+ use Sys::Hostname;
+ use MIME::Base64;
+ use DevIo;
++use Crypt::Rijndael;
++use HttpUtils;
+ 
+ my @gets = ('dummy');
+ 
+-sub
+-STV_Initialize($)
++sub STV_Initialize($)
+ {
+   my ($hash) = @_;
+   $hash->{DefFn}    = "STV_Define";
+@@ -33,66 +35,228 @@
+   $hash->{AttrFn}   = "STV_Attr";
+   $hash->{ReadFn}   = "STV_Read";  
+   $hash->{ReadyFn}  = "STV_Ready";
+-  $hash->{AttrList} = "MAC fork:enable,disable setWhenOffline:execute,ignore " . $readingFnAttributes;;
++  $hash->{AttrList} = "MAC fork:enable,disable setWhenOffline:execute,ignore callerURI screenURI " . $readingFnAttributes;;
++}
++
++sub STV_Define($$)
++{
++  my ($hash, $def) = @_;
++#  DevIo_CloseDev($hash);
++  my @args = split("[ \t]+", $def);
++
++  if (int(@args) < 3)
++  {
++    return "Define: not enough arguments. Usage:\n" .
++         "define <name> STV <host> <port>";
++  }
++
++  $hash->{Host} = $args[2];
++  if (defined $args[3]) { 
++    $hash->{Port} = $args[3];
++    $hash->{".validcommands"} = "mute:on,off volume:slider,0,1,100 call sms date";
++  } else {
++    $hash->{Port} = 52235;
++    $hash->{".validcommands"} = "mute:on,off volume:slider,0,1,100 call sms date";
++  }
++  if ( $hash->{Port} ne "55000" && $hash->{Port} ne "52235" && $hash->{Port} ne "ws" && $hash->{Port} ne "wse" ){
++	  return "[STV] Port is not supported";
++  }
++  if (defined $args[4]) { 
++    $hash->{Mode} = $args[4];
++	if (!defined ReadingsVal($args[4],"state",undef)) {  return "Define: optional DLNA device not known. $hash->{Mode} instead" }
++  }
++  else { $hash->{Mode} = undef }
++
++  if ( $hash->{Port} eq 55000 || $hash->{Port} eq "ws" || $hash->{Port} eq "wse"){
++      $hash->{".validcommands"} = "0:noArg 1:noArg 2:noArg 3:noArg 4:noArg 5:noArg 6:noArg 7:noArg 8:noArg 9:noArg 11 12 ".
++"AV1:noArg AV2:noArg CHDOWN:noArg CHUP:noArg CH_LIST:noArg CLEAR:noArg COMPONENT1:noArg COMPONENT2:noArg CONTENTS:noArg ".
++"CYAN:noArg DOWN:noArg ENTER:noArg ESAVING:noArg EXIT:noArg GUIDE:noArg GREEN:noArg HDMI:noArg HDMI1:noArg HDMI2:noArg HELP:noArg ".
++"INFO:noArg LEFT:noArg MENU:noArg MUTE:noArg POWEROFF:noArg POWERON:noArg PRECH:noArg PROGRAM:noArg RED:noArg RETURN:noArg ".
++"RIGHT:noArg SLEEP:noArg TOOLS:noArg TTX_MIX:noArg TV:noArg TV_MODE:noArg UP:noArg VOLDOWN:noArg VOLUP:noArg YELLOW:noArg ".
++"0_text_line 0_command_line ".
++"G_AUTO_:AUTO_ARC_ANTENNA_AIR,AUTO_ARC_ANTENNA_CABLE,AUTO_ARC_ANTENNA_SATELLITE,AUTO_ARC_ANYNET_AUTO_START,AUTO_ARC_ANYNET_MODE_OK,".
++"AUTO_ARC_AUTOCOLOR_FAIL,AUTO_ARC_AUTOCOLOR_SUCCESS,AUTO_ARC_CAPTION_ENG,AUTO_ARC_CAPTION_KOR,AUTO_ARC_CAPTION_OFF,AUTO_ARC_CAPTION_ON,".
++"AUTO_ARC_C_FORCE_AGING,AUTO_ARC_JACK_IDENT,AUTO_ARC_LNA_OFF,AUTO_ARC_LNA_ON,AUTO_ARC_PIP_CH_CHANGE,AUTO_ARC_PIP_DOUBLE,AUTO_ARC_PIP_LARGE,".
++"AUTO_ARC_PIP_LEFT_BOTTOM,AUTO_ARC_PIP_LEFT_TOP,AUTO_ARC_PIP_RIGHT_BOTTOM,AUTO_ARC_PIP_RIGHT_TOP,AUTO_ARC_PIP_SMALL,AUTO_ARC_PIP_SOURCE_CHANGE,".
++"AUTO_ARC_PIP_WIDE,AUTO_ARC_RESET,AUTO_ARC_USBJACK_INSPECT,AUTO_FORMAT,AUTO_PROGRAM ". 
++"G_EXTx:EXT1,EXT2,EXT3,EXT4,EXT5,EXT6,EXT7,EXT8,EXT9,EXT10,EXT11,EXT12,EXT13,EXT14,EXT15,EXT16,EXT17,EXT18,EXT19,EXT20,EXT21,EXT22,EXT23,".
++"EXT24,EXT25,EXT26,EXT27,EXT28,EXT29,EXT30,EXT31,EXT32,EXT33,EXT34,EXT35,EXT36,EXT37,EXT38,EXT39,EXT40,EXT41 ".
++"G_Others:3SPEED,4_3,16_9,AD,ADDDEL,ALT_MHP,ANGLE,ANTENA,ANYNET,ANYVIEW,APP_LIST,ASPECT,AV3,BACK_MHP,BOOKMARK,CALLER_ID,CAPTION,CATV_MODE,".
++"CLOCK_DISPLAY,CONVERGENCE,CONVERT_AUDIO_MAINSUB,CUSTOM,DEVICE_CONNECT,DISC_MENU,DMA,DNET,DNIe,DNSe,DOOR,DSS_MODE,DTV,DTV_LINK,DTV_SIGNAL,".
++"DVD_MODE,DVI,DVR,DVR_MENU,DYNAMIC,ENTERTAINMENT,FACTORY,FAVCH,FF,FF_,FM_RADIO,GAME,HDMI3,HDMI4,HOME,ID_INPUT,ID_SETUP,INSTANT_REPLAY,LINK,".
++"LIVE,MAGIC_BRIGHT,MAGIC_CHANNEL,MDC,MIC,MORE,MOVIE1,MS,MTS,NINE_SEPERATE,OPEN,PANNEL_CHDOWN,PANNEL_CHUP,PANNEL_ENTER,PANNEL_MENU,".
++"PANNEL_POWER,PANNEL_SOURCE,PANNEL_VOLDOW,PANNEL_VOLUP,PANORAMA,PAUSE,PCMODE,PERPECT_FOCUS,PICTURE_SIZE,PIP_CHDOWN,PIP_CHUP,PIP_ONOFF,".
++"PIP_SCAN,PIP_SIZE,PIP_SWAP,PLAY,PLUS100,PMODE,POWER,PRINT,QUICK_REPLAY,REC,REPEAT,RESERVED1,REWIND,REWIND_,RSS,RSURF,SCALE,SEFFECT,".
++"SETUP_CLOCK_TIMER,SOUND_MODE,SOURCE,SRS,STANDARD,STB_MODE,STILL_PICTURE,STOP,SUB_TITLE,SVIDEO1,SVIDEO2,SVIDEO3,TOPMENU,TTX_SUBFACE,".
++"TURBO,VCHIP,VCR_MODE,WHEEL_LEFT,WHEEL_RIGHT,W_LINK,ZOOM1,ZOOM2,ZOOM_IN,ZOOM_MOVE,ZOOM_OUT,connect ";
++
++#"0 1 2 3 4 5 6 7 8 9 11 12 3SPEED 4_3 16_9 AD ADDDEL ALT_MHP ANGLE ".
++#"ANTENA ANYNET ANYVIEW APP_LIST ASPECT AUTO_ARC_ANTENNA_AIR AUTO_ARC_ANTENNA_CABLE AUTO_ARC_ANTENNA_SATELLITE ".
++#"AUTO_ARC_ANYNET_AUTO_START AUTO_ARC_ANYNET_MODE_OK AUTO_ARC_AUTOCOLOR_FAIL AUTO_ARC_AUTOCOLOR_SUCCESS ".
++#"AUTO_ARC_CAPTION_ENG AUTO_ARC_CAPTION_KOR AUTO_ARC_CAPTION_OFF AUTO_ARC_CAPTION_ON AUTO_ARC_C_FORCE_AGING ".
++#"AUTO_ARC_JACK_IDENT AUTO_ARC_LNA_OFF AUTO_ARC_LNA_ON AUTO_ARC_PIP_CH_CHANGE AUTO_ARC_PIP_DOUBLE ".
++#"AUTO_ARC_PIP_LARGE AUTO_ARC_PIP_LEFT_BOTTOM AUTO_ARC_PIP_LEFT_TOP AUTO_ARC_PIP_RIGHT_BOTTOM ".
++#"AUTO_ARC_PIP_RIGHT_TOP AUTO_ARC_PIP_SMALL AUTO_ARC_PIP_SOURCE_CHANGE AUTO_ARC_PIP_WIDE AUTO_ARC_RESET ".
++#"AUTO_ARC_USBJACK_INSPECT AUTO_FORMAT AUTO_PROGRAM AV1 AV2 AV3 BACK_MHP BOOKMARK CALLER_ID CAPTION CATV_MODE ".
++#"CHDOWN CHUP CH_LIST CLEAR CLOCK_DISPLAY COMPONENT1 COMPONENT2 CONTENTS CONVERGENCE CONVERT_AUDIO_MAINSUB ".
++#"CUSTOM CYAN DEVICE_CONNECT DISC_MENU DMA DNET DNIe DNSe DOOR DOWN DSS_MODE DTV DTV_LINK DTV_SIGNAL DVD_MODE ".
++#"DVI DVR DVR_MENU DYNAMIC ENTER ENTERTAINMENT ESAVING EXIT EXT1 EXT2 EXT3 EXT4 EXT5 EXT6 EXT7 EXT8 EXT9 EXT10 ".
++#"EXT11 EXT12 EXT13 EXT14 EXT15 EXT16 EXT17 EXT18 EXT19 EXT20 EXT21 EXT22 EXT23 EXT24 EXT25 EXT26 EXT27 EXT28 ".
++#"EXT29 EXT30 EXT31 EXT32 EXT33 EXT34 EXT35 EXT36 EXT37 EXT38 EXT39 EXT40 EXT41 FACTORY FAVCH FF FF_ FM_RADIO ".
++#"GAME GREEN GUIDE HDMI HDMI1 HDMI2 HDMI3 HDMI4 HELP HOME ID_INPUT ID_SETUP INFO INSTANT_REPLAY LEFT LINK LIVE ".
++#"MAGIC_BRIGHT MAGIC_CHANNEL MDC MENU MIC MORE MOVIE1 MS MTS MUTE NINE_SEPERATE OPEN PANNEL_CHDOWN PANNEL_CHUP ".
++#"PANNEL_ENTER PANNEL_MENU PANNEL_POWER PANNEL_SOURCE PANNEL_VOLDOW PANNEL_VOLUP PANORAMA PAUSE PCMODE ".
++#"PERPECT_FOCUS PICTURE_SIZE PIP_CHDOWN PIP_CHUP PIP_ONOFF PIP_SCAN PIP_SIZE PIP_SWAP PLAY PLUS100 PMODE POWER ".
++#"POWEROFF POWERON PRECH PRINT PROGRAM QUICK_REPLAY REC RED REPEAT RESERVED1 RETURN REWIND REWIND_ RIGHT RSS ".
++#"RSURF SCALE SEFFECT SETUP_CLOCK_TIMER SLEEP SOUND_MODE SOURCE SRS STANDARD STB_MODE STILL_PICTURE STOP ".
++#"SUB_TITLE SVIDEO1 SVIDEO2 SVIDEO3 TOOLS TOPMENU TTX_MIX TTX_SUBFACE TURBO TV TV_MODE UP VCHIP VCR_MODE ".
++#"VOLDOWN VOLUP WHEEL_LEFT WHEEL_RIGHT W_LINK YELLOW ZOOM1 ZOOM2 ZOOM_IN ZOOM_MOVE ZOOM_OUT connect ";
++
++  $hash->{".validcommands"} .= "caller:noArg " if (defined(AttrVal($args[0], "callerURI", undef)));
++  $hash->{".validcommands"} .= "screen:noArg " if (defined(AttrVal($args[0], "screenURI", undef)));
++
++  if($hash->{Port} ne "ws" && $hash->{Port} ne "wse") {
++
++    my $rc = eval
++    {
++      require Net::Address::IP::Local;
++      require IO::Interface::Simple;
++      Net::Address::IP::Local->import();
++      IO::Interface::Simple->import();
++      1;
++    };
++
++    if($rc)
++    {
++
++      $hash->{MyIP} = getIP();
++      $hash->{MAC} = getMAC4IP($hash->{MyIP});
++    }else{
++      Log3 $args[0], 3, "[STV] $args[0]  You are using a deprecated MAC detection mechanism using ifconfig.";
++      Log3 $args[0], 3, "[STV] $args[0]  Please install Pearl Modules libnet-address-ip-local-perl and libio-interface-perl";
++
++    my $system = $^O;
++    my $result = "";
++    if($system =~ m/Win/) {
++      $result = `ipconfig /all`;
++      my @myarp=split(/\n/,$result);
++      foreach (@myarp){
++        if ( /([0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2})$/i )
++        {
++          $result = $1;
++          $result =~ s/-/:/g;
++        }
++      }
++    }
++    if($system eq "linux") {
++      $result = `ifconfig -a eth0`;
++      my @myarp=split(/\n/,$result);
++      foreach (@myarp){
++        if ( /(ether|lan|eth0) .*(..:..:..:..:..:..) .*$/ )
++        {
++          $result = $2;
++        }
++      }
++    }
++    # Fritzbox "? (192.168.0.1) at 00:0b:5d:91:fc:bb [ether]  on lan"
++    # debian   "192.168.0.1              ether   c0:25:06:1f:3c:14   C                     eth0"
++    #$result = "? (192.168.0.1) at 00:0b:5d:91:fc:bb [ether]  on lan";
++
++      $hash->{MAC} = $result;
++      $hash->{MyIP} = getIP_old();
++#      $hash->{DeviceName} = $hash->{Host} . ":" . $hash->{Port};
++   }
++  }
++  else {
++#    if ($hash->{Port} eq "wse" ) {$hash->{DeviceName} = $hash->{Host} . ":7676" }
++#    else                         {$hash->{DeviceName} = $hash->{Host} . ":9197" }
++  }  
++  my $dev = $hash->{DeviceName};
++#  $readyfnlist{"$args[0].$dev"} = $hash;
++#   DevIo_OpenDev($hash, 0, "STV_Init","STV_Callback_Connect");
++  }
++
++  Log3 $args[0], 3, "[STV] $args[0] defined with host: $hash->{Host} port: $hash->{Port}";
++  $hash->{STATE} = 'defined';
++  STV_Init($hash);
++  return undef;
+ }
+ 
+ sub STV_Undefine($$) 
+ {
+   my ($hash,$arg) = @_;
+-  DevIo_CloseDev($hash); 
++  RemoveInternalTimer($hash);
++#  DevIo_CloseDev($hash); 
+   return undef;
+ }
+ 
+-sub 
+-STV_Attr(@)
++sub STV_Attr(@)
+ {
+   my @a = @_;
+   my $hash = $defs{$a[1]};
++  my $cmd      = $a[0];
++  my $attrName = $a[2];
+   my $mac = AttrVal($a[1], "MAC", undef);
+   $hash->{MAC} = $mac if (defined($mac));
++  if( defined(index($attrName,"URI"))) {
++    if( $cmd eq "set" ) { 
++      $hash->{".validcommands"} .= "caller:noArg " if ($attrName eq "callerURI"); #(defined(AttrVal($a[1], "callerURI", undef)));
++      $hash->{".validcommands"} .= "screen:noArg " if ($attrName eq "screenURI"); #(defined(AttrVal($a[1], "screenURI", undef)));
++	}
++  }
+   return;
+ }
+ 
+-sub
+-STV_SetState($$$$)
++sub STV_Init($) 
+ {
+-  my ($hash, $tim, $vt, $val) = @_;
+-  $val = $1 if($val =~ m/^(.*) \d+$/);
+-#  return "Undefined value $val" if(!defined($it_c2b{$val}));
+-  return undef;
+-}
++  my ($hash) = @_;
++  
++  STV_State($hash);
+ 
+-sub getIP()
+-{
+-  my $address = eval {Net::Address::IP::Local->public_ipv4};
+-  if ($@) {
+-    $address = 'localhost';
+-  } 
+-  return "$address";
+-}
++  RemoveInternalTimer($hash);
++  InternalTimer(gettimeofday()+60, "STV_Init", $hash, 0);	
+ 
+-sub getIP_old()
++}
++sub STV_State($)
+ {
+-  my $host = hostname();
+-  my $address = inet_ntoa(scalar gethostbyname(hostname() || 'localhost'));
+-  if ($@) {
+-    $address = 'localhost';
+-  } 
+-  return "$address";
++    my ($hash) = @_;
++    my $name = $hash->{NAME};
++	my $port = $hash->{Port};
++	$port = "8001" if ($hash->{Port} eq "ws") ;
++	$port = "8000" if ($hash->{Port} eq "wse") ;
++    my $param = {
++                    url        => "http://$hash->{Host}:$port/",
++                    timeout    => 5,
++                    hash       => $hash,
++                    method     => "GET",
++                    header     => "",  
++                    callback   =>  \&STV_ParseState 
++                };
++
++    HttpUtils_NonblockingGet($param);
+ }
+ 
+-sub getMAC4IP($)
++sub STV_ParseState($)
+ {
+-  my $IP = shift;
+-  my @interfaces = IO::Interface::Simple->interfaces;
+-  foreach my $if (@interfaces) {
+-    next unless defined ($if->address);
+-    if ($if->address eq $IP) {
+-        return $if->hwaddr;
++    my ($param, $err, $data) = @_;
++    my $hash = $param->{hash};
++    my $name = $hash->{NAME};
++    my $state = "";
++    $param->{code} = "" if(!defined($param->{code}));
++    if($err ne "" && index($err,"empty") < 0)    # workaround for C/D/E/F-Series still to figure ou http server Port 7676(ne "" $param->{code} ne "40")  
++    {
++        Log3 $name, 4, "[STV] $name not able to connect to $hash->{Host}:$hash->{Port} with $param->{url} - code: $param->{code} - error: $err";
++		$state = "disconnected";
+     }
+-  }
+-  return "";
+-}
++
++    else        
++    {
++        Log3 $name, 4, "[STV] $name online with $hash->{Host}:$hash->{Port} - HTTP-Response: $param->{code}";  
++		$state = "connected";
++    }
++   $hash->{STATE} = $state if ($hash->{STATE} ne $state);
++   readingsSingleUpdate($hash, "state", $state, "1") if (ReadingsVal($name,"state","disconnected") ne $state);
++ }
+ 
+ # Force a connection attempt to STV as soon as possible 
+ # (e.g. you know you just started it and want to connect immediately without waiting up to 60 s)
+@@ -149,24 +313,40 @@
+       exit(0);
+     }
+   } else {
+-    return DevIo_OpenDev($hash, 1, "STV_Init");
++      Log3 $hash->{NAME}, 5, "[STV] $hash->{NAME} STV_Ready(connection seems to be closed) OpenDev for DeviceName: $hash->{DeviceName}";
++ #     DevIo_CloseDev($hash) if(DevIo_IsOpen($hash));
++ #     return DevIo_OpenDev($hash, 1, "STV_Init","STV_Callback_Connect");
+   }
+   return undef;
+ }
+ 
+-sub STV_Read($)
++sub STV_Callback_Connect($$)
+ {
+-  my ($hash) = @_;
++  my ($hash, $error) = @_;
+   my $name = $hash->{NAME};
+   
+-  #we dont really expect data here. Its just to gracefully close the device if the connection was closed
+-  my $buf = DevIo_SimpleRead($hash);
++  if ($error ne "") {
++	Log3 $name, 4, "[STV] $name TV_Callback_Connect: reopen failed;  message: $error";
++  }
++}	
++
++sub STV_SetState($$$$)
++{
++  my ($hash, $tim, $vt, $val) = @_;
++  $val = $1 if($val =~ m/^(.*) \d+$/);
++#  return "Undefined value $val" if(!defined($it_c2b{$val}));
++  return undef;
+ }
+ 
+-sub STV_Init($) 
++sub STV_Read($)
+ {
+   my ($hash) = @_;
+-  return undef;
++  my $name = $hash->{NAME};
++  
++  Log3 $name, 3, "[STV] $name STV_Read: connection DeviceName $hash->{DeviceName} may be closed";
++
++  #we dont really expect data here. Its just to gracefully close the device if the connection was closed
++#  my $buf = DevIo_SimpleRead($hash);
+ }
+ 
+ sub STV_ChildExit($) 
+@@ -174,131 +354,77 @@
+    exit(0);
+ }
+ 
+-sub STV_Define($$)
++sub STV_Set($@)
+ {
+-  my ($hash, $def) = @_;
+-  DevIo_CloseDev($hash);
+-  my @args = split("[ \t]+", $def);
+-
+-  if (int(@args) < 3)
+-  {
+-    return "Define: not enough arguments. Usage:\n" .
+-         "define <name> STV <host> <port>";
+-  }
+-
+-  $hash->{Host} = $args[2];
+-  if (defined $args[3]) { 
+-    $hash->{Port} = $args[3];
+-    $hash->{".validcommands"} = "mute:on,off volume:slider,0,1,100 call sms date";
+-  } else {
+-    $hash->{Port} = 52235;
+-    $hash->{".validcommands"} = "mute:on,off volume:slider,0,1,100 call sms date";
+-    Log3 undef, 3, "[STV] defined with host: $hash->{Host} port: $hash->{Port}";
++  my ($hash, @a) = @_;
++  my $nam = $a[0];
++  my $name = $hash->{NAME};
++  my $Port = $hash->{Port};
++  my $Mode = $hash->{Mode};
++  my $cmd = (defined($a[1]) ? $a[1] : ""); #command
++  my $par = (defined($a[2]) ? $a[2] : ""); #parameter
++  if ($cmd eq "?" || $cmd eq "") {
++       return $hash->{".validcommands"};
+   }
+ 
+-  if ( $hash->{Port} eq 55000 ){
+-      $hash->{".validcommands"} = "0 1 2 3 4 5 6 7 8 9 11 12 3SPEED 4_3 16_9 AD ADDDEL ALT_MHP ANGLE ".
+-"ANTENA ANYNET ANYVIEW APP_LIST ASPECT AUTO_ARC_ANTENNA_AIR AUTO_ARC_ANTENNA_CABLE AUTO_ARC_ANTENNA_SATELLITE ".
+-"AUTO_ARC_ANYNET_AUTO_START AUTO_ARC_ANYNET_MODE_OK AUTO_ARC_AUTOCOLOR_FAIL AUTO_ARC_AUTOCOLOR_SUCCESS ".
+-"AUTO_ARC_CAPTION_ENG AUTO_ARC_CAPTION_KOR AUTO_ARC_CAPTION_OFF AUTO_ARC_CAPTION_ON AUTO_ARC_C_FORCE_AGING ".
+-"AUTO_ARC_JACK_IDENT AUTO_ARC_LNA_OFF AUTO_ARC_LNA_ON AUTO_ARC_PIP_CH_CHANGE AUTO_ARC_PIP_DOUBLE ".
+-"AUTO_ARC_PIP_LARGE AUTO_ARC_PIP_LEFT_BOTTOM AUTO_ARC_PIP_LEFT_TOP AUTO_ARC_PIP_RIGHT_BOTTOM ".
+-"AUTO_ARC_PIP_RIGHT_TOP AUTO_ARC_PIP_SMALL AUTO_ARC_PIP_SOURCE_CHANGE AUTO_ARC_PIP_WIDE AUTO_ARC_RESET ".
+-"AUTO_ARC_USBJACK_INSPECT AUTO_FORMAT AUTO_PROGRAM AV1 AV2 AV3 BACK_MHP BOOKMARK CALLER_ID CAPTION CATV_MODE ".
+-"CHDOWN CHUP CH_LIST CLEAR CLOCK_DISPLAY COMPONENT1 COMPONENT2 CONTENTS CONVERGENCE CONVERT_AUDIO_MAINSUB ".
+-"CUSTOM CYAN DEVICE_CONNECT DISC_MENU DMA DNET DNIe DNSe DOOR DOWN DSS_MODE DTV DTV_LINK DTV_SIGNAL DVD_MODE ".
+-"DVI DVR DVR_MENU DYNAMIC ENTER ENTERTAINMENT ESAVING EXIT EXT1 EXT2 EXT3 EXT4 EXT5 EXT6 EXT7 EXT8 EXT9 EXT10 ".
+-"EXT11 EXT12 EXT13 EXT14 EXT15 EXT16 EXT17 EXT18 EXT19 EXT20 EXT21 EXT22 EXT23 EXT24 EXT25 EXT26 EXT27 EXT28 ".
+-"EXT29 EXT30 EXT31 EXT32 EXT33 EXT34 EXT35 EXT36 EXT37 EXT38 EXT39 EXT40 EXT41 FACTORY FAVCH FF FF_ FM_RADIO ".
+-"GAME GREEN GUIDE HDMI HDMI1 HDMI2 HDMI3 HDMI4 HELP HOME ID_INPUT ID_SETUP INFO INSTANT_REPLAY LEFT LINK LIVE ".
+-"MAGIC_BRIGHT MAGIC_CHANNEL MDC MENU MIC MORE MOVIE1 MS MTS MUTE NINE_SEPERATE OPEN PANNEL_CHDOWN PANNEL_CHUP ".
+-"PANNEL_ENTER PANNEL_MENU PANNEL_POWER PANNEL_SOURCE PANNEL_VOLDOW PANNEL_VOLUP PANORAMA PAUSE PCMODE ".
+-"PERPECT_FOCUS PICTURE_SIZE PIP_CHDOWN PIP_CHUP PIP_ONOFF PIP_SCAN PIP_SIZE PIP_SWAP PLAY PLUS100 PMODE POWER ".
+-"POWEROFF POWERON PRECH PRINT PROGRAM QUICK_REPLAY REC RED REPEAT RESERVED1 RETURN REWIND REWIND_ RIGHT RSS ".
+-"RSURF SCALE SEFFECT SETUP_CLOCK_TIMER SLEEP SOUND_MODE SOURCE SRS STANDARD STB_MODE STILL_PICTURE STOP ".
+-"SUB_TITLE SVIDEO1 SVIDEO2 SVIDEO3 TOOLS TOPMENU TTX_MIX TTX_SUBFACE TURBO TV TV_MODE UP VCHIP VCR_MODE ".
+-"VOLDOWN VOLUP WHEEL_LEFT WHEEL_RIGHT W_LINK YELLOW ZOOM1 ZOOM2 ZOOM_IN ZOOM_MOVE ZOOM_OUT connect";
+-
+-    my $rc = eval
+-    {
+-      require Net::Address::IP::Local;
+-      require IO::Interface::Simple;
+-      Net::Address::IP::Local->import();
+-      IO::Interface::Simple->import();
+-      1;
+-    };
+-
+-    if($rc)
+-    {
+-
+-      $hash->{MyIP} = getIP();
+-      $hash->{MAC} = getMAC4IP($hash->{MyIP});
+-    
+-      $hash->{DeviceName} = $hash->{Host} . ":" . $hash->{Port};
+-      my $dev = $hash->{DeviceName};
+-      $readyfnlist{"$args[0].$dev"} = $hash;
+-      Log3 undef, 3, "[STV] defined with host: $hash->{Host} port: $hash->{Port} MAC: $hash->{MAC}";
+-    }else{
+-      Log3 undef, 3, "[STV] You are using a deprecated MAC detection mechanism using ifconfig.";
+-      Log3 undef, 3, "[STV] Please install Pearl Modules libnet-address-ip-local-perl and libio-interface-perl";
++  if ($hash->{".validcommands"} =~ /$cmd/) {
++    if ($cmd eq "connect") {
++        return STV_Connect($hash);
++    }
+ 
+-    my $system = $^O;
+-    my $result = "";
+-    if($system =~ m/Win/) {
+-      $result = `ipconfig /all`;
+-      my @myarp=split(/\n/,$result);
+-      foreach (@myarp){
+-        if ( /([0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2}[:-][0-9a-f]{2})$/i )
+-        {
+-          $result = $1;
+-          $result =~ s/-/:/g;
+-        }
+-      }
++    if ((AttrVal($name, "setWhenOffline", "execute") eq "ignore") and ($hash->{STATE} ne "opened")) {
++      Log3 $name, 3, "[STV] Device seems offline. Set command ignored: $cmd";
++      return;
+     }
+-    if($system eq "linux") {
+-      $result = `ifconfig -a`;
+-      my @myarp=split(/\n/,$result);
+-      foreach (@myarp){
+-        if ( /^(lan|eth0) .*(..:..:..:..:..:..) .*$/ )
+-        {
+-          $result = $2;
+-        }
+-      }
++ # screen message via DLNA caller or individual
++ return "$name currently not available. Try later. " if ($hash->{STATE} ne "connected");
++ if (defined $Mode     &&
++    ($cmd eq "caller" ||
++      $cmd eq "screen")) {
++   my $URI ="";
++   if ( $cmd ne "caller" ) {$URI = AttrVal($name, "screenURI", undef)}
++   else                    {$URI = AttrVal($name, "callerURI", undef)}
++   Log3 $name, 4, "[STV] $name call DLNA-Rendeerer. URI: $URI";
++   STV_DLNA($hash,$URI);
++   return undef;
++}
++   
++    if ($Port eq 55000 ){
++        STV_55000($hash,$name,$cmd,$par);
+     }
+-    # Fritzbox "? (192.168.0.1) at 00:0b:5d:91:fc:bb [ether]  on lan"
+-    # debian   "192.168.0.1              ether   c0:25:06:1f:3c:14   C                     eth0"
+-    #$result = "? (192.168.0.1) at 00:0b:5d:91:fc:bb [ether]  on lan";
+-
+-      $hash->{MAC} = $result;
+-
+-      $hash->{MyIP} = getIP_old();
+-    
+-      $hash->{DeviceName} = $hash->{Host} . ":" . $hash->{Port};
+-      my $dev = $hash->{DeviceName};
+-      $readyfnlist{"$args[0].$dev"} = $hash;
+-	
+-   }
+-  } 
+-
+-  if ( $hash->{Port} != 55000 && $hash->{Port} != 52235 ){
+-	  return "[STV] Port is not supported";
++    elsif ($Port eq 52235 ){
++        STV_52235($hash,@_);
++    }
++    elsif ($Port eq "ws" ){
++        STV_WS($hash,$name,$cmd);
++    }
++    elsif ($Port eq "wse" ){
++        STV_WSE($hash,$name,$cmd);
++    }
++  } else {
++    my $ret = "[STV] Invalid command $cmd. Use any of:\n";
++    my @cmds = split(" ",$hash->{".validcommands"});
++    foreach my $line (0..$#cmds) {
++      $ret .= "\n" if ($line > 1 && $line/10 == int($line/10));
++      $ret .= $cmds[$line]." ";
++    }
++    return $ret;
+   }
+-
+-  $hash->{STATE} = 'Initialized';
+   return undef;
+ }
+-
+-sub connection($$)
++sub connection($$$)
+ {
+-  my $tmp =  shift ; 
+-  Log3 undef, 4, "[STV] connection message: $tmp";
+-  my $TV = shift;
++  my ($hash,$tmp,$port) = @_;
++  my $name = $hash->{NAME};
++  my $TV = $hash->{Host};
+   my $buffer = "";
+   my @tmp2 = "";
+ 
++  Log3 $name, 4, "[STV] $name:$TV:$port connection message: $tmp";
++
+   my $sock = new IO::Socket::INET (
+           PeerAddr => $TV,
+-          PeerPort => '52235',
++          PeerPort => $port,
+           Proto => 'tcp',
+           Timout => 5
+         );
+@@ -308,84 +434,150 @@
+     while ((read $sock, $buff, 1) > 0){
+       $buffer .= $buff;
+     }
++    Log3 $name, 2, "[STV] $name $TV: empty answer received" if ($buffer eq "");
+     @tmp2 = split (/\n/,$buffer);
+-
++    Log3 $name, 4, "[STV] $name $TV: socket answer $buffer";
+     $sock->close();
+-    Log3 undef, 4, "[STV] $TV: socket closed";
++    Log3 $name, 4, "[STV] $name $TV: socket closed";
+   }else{
+-    Log3 undef, 4, "[STV] $TV: not able to close socket";
++    Log3 $name, 2, "[STV] $name $TV: not able to close socket";
+   }
+ }
+ 
+-# new Samsung Models
+-sub STV_55000($$$)
++# even newer Samsung Models
++sub STV_WS($$$)
+ {
+   my ($hash,$name,$cmd) = @_;
+-  my $par=undef;
+-  my @ARGV = split(" ",$cmd);
+-  #### Configuration
+-  my $tv    = "UE46ES8090";  # Might need changing to match your TV type  #"UE46ES8090"
+-  my $port  = $hash->{Port}; # TCP port of Samsung TV
+-  my $tvip  = $hash->{Host}; # IP Address of TV #"192.168.2.124"
+-  my $myip  = $hash->{MyIP}; # IP Address of FHEM Server
+-  my $mymac = $hash->{MAC};  # Used for the access control/validation '"24:65:11:80:0D:01"
+-  my $appstring = "iphone..iapp.samsung"; # What the iPhone app reports
+-  my $tvappstring = "iphone.".$tv.".iapp.samsung"; # TV type
+-  my $remotename = "Perl Samsung Remote"; # What gets reported when it asks for permission/also shows in General->Wireless Remote Control menu
+-  
+-  #### MAC überprüfen wenn nicht gültig vom attribute übernehmen.
+-  if ($mymac !~ /^\w\w:\w\w:\w\w:\w\w|\w\w:\w\w:\w\w:\w\w$/) {
+-    Log3 $name, 3, "[STV] mymac: $mymac invalid format";
+-  }else{
+-    # command-line help
+-    if (!$tv|!$tvip|!$myip|!$mymac) {
+-      return "[STV] Error - Parameter missing:\nmodel, tvip, myip, mymac.";
+-    }
+-    Log3 $name, 5, "[STV] opening socket with tvip: $tvip, cmd: $cmd";
+-    my $sock = new IO::Socket::INET (
+-      PeerAddr => $tvip,
+-      PeerPort => $port,
+-      Proto => 'tcp',
+-      Timout => 5
+-    );
+-  
+-    if (defined ($sock)){
+-        my $messagepart1 = chr(0x64) . chr(0x00) . chr(length(encode_base64($myip, ""))) . chr(0x00) . encode_base64($myip, "") . chr(length(encode_base64($mymac, ""))) . chr(0x00) . encode_base64($mymac, "") . chr(length(encode_base64($remotename, ""))) . chr(0x00) . encode_base64($remotename, "");
+-        my $part1 = chr(0x00) . chr(length($appstring)) . chr(0x00) . $appstring . chr(length($messagepart1)) . chr(0x00) . $messagepart1;
+-        print $sock $part1;
++  BlockingCall("STV_execSamsungCtl", $name."|".$hash->{Host}."|".$cmd);
++}
+ 
+-        my $messagepart2 = chr(0xc8) . chr(0x00);
+-        my $part2 = chr(0x00) . chr(length($appstring)) . chr(0x00) . $appstring . chr(length($messagepart2)) . chr(0x00) . $messagepart2;
+-        print $sock $part2;
+-        # Preceding sections all first time only
++sub STV_execSamsungCtl($)
++{
++  my ($string) = @_;
++  my ($name,$ip,$cmd) = split("\\|", $string);
++  qx(samsungctl --host $ip --timeout 5 --method websocket --name FHEMRemote KEY_$cmd);
++  return $name;
++}
+ 
+-        if (defined($par)) {
+-         # Send text, e.g. in YouTube app's search, N.B. NOT BBC iPlayer app.
+-         my $text = $par;
+-         my $messagepart3 = chr(0x01) . chr(0x00) . chr(length(encode_base64($text, ""))) . chr(0x00) . encode_base64($text, "");
+-         my $part3 = chr(0x01) . chr(length($appstring)) . chr(0x00) . $appstring . chr(length($messagepart3)) . chr(0x00) . $messagepart3;
+-         print $sock $part3;
+-        }
+-        else {
+-          foreach my $argnum (0 .. $#ARGV) {
+-			sleep(1) if ($argnum > 0);
+-            # Send remote key(s)
+-            #Log4 $name, 4, "[STV] sending ".uc($ARGV[$argnum]);
+-            my $key = "KEY_" . uc($ARGV[$argnum]);
+-            my $messagepart3 = chr(0x00) . chr(0x00) . chr(0x00) . chr(length(encode_base64($key, ""))) . chr(0x00) . encode_base64($key, "");
+-            my $part3 = chr(0x00) . chr(length($tvappstring)) . chr(0x00) . $tvappstring . chr(length($messagepart3)) . chr(0x00) . $messagepart3;
+-            print $sock $part3;
+-        #        select(undef, undef, undef, 0.5);
+-          }
+-        }
++# H-, J-Series with encrypted websocket access
++sub STV_WSE($$$)
++{
++use constant DEBUG => 0;
+ 
+-        close($sock);
+-    }else{
+-      #Log5 $name, 3, "[STV] Could not create socket. Aborting." unless $sock;
+-    }
+-  }
++# Opcodes
++use constant {
++  WS_CONTINUATION => 0x0,
++  WS_TEXT         => 0x1,
++  WS_BINARY       => 0x2,
++  WS_CLOSE        => 0x8,
++  WS_PING         => 0x9,
++  WS_PONG         => 0xa
++};
++
++ my ($hash,$name,$cmd) = @_;
++
++ my $tv_address = $hash->{Host};
++ my $key_press	= "KEY_".$cmd;
++ my $json, my $enc_key, my $line, my $session = "";
++# screen message caller or individual
++if ( $cmd eq "caller" ||
++     $cmd eq "screen") {
++   return STV_7676($hash,$cmd);
++}
++#====================================================================================
++#Read key and session-id from file, previously created with regapp.pl
++
++if (open (KEY, "<samsung_session_key.txt")) {
++	$line = <KEY>;
++	close (KEY);
++}
++else  {
++    Log3 $name, 1, "[STV] $name: ERROR cannot open file for input the session key.";
++	return;
++}
++
++if (decode_json($line)) {
++	$json = decode_json($line);
++	$enc_key = $json->{session_key}; Log3 $name, 5, "session_key: ".$enc_key;
++	$session = $json->{session_id};  Log3 $name, 5, "session_id:  ".$session;
+ }
++else  {
++    Log3 $name, 1, "[STV] $name: ERROR: $line is no JSON.";
++	return;
++}
++
++# unhexlify key
++$enc_key =~ s/([a-fA-F0-9]{2})/chr(hex($1))/eg;
++
++# generate json
++$json = '{"method":"POST","body":{"plugin":"RemoteControl","param1":"uuid:12345","param2":"Click","param3":"' . $key_press . '","param4":false,"api":"SendRemoteKey","version":"1.000"}}';
++
++# encrypt json
++$json = $json . chr(16 - length($json)%16) x ( 16 - length($json)%16 ); # padding
++my $cipher = Crypt::Rijndael->new( $enc_key, Crypt::Rijndael::MODE_ECB() );
++my $command_bytes = $cipher->encrypt($json); 
++
++# generate command
++my @chars = $command_bytes =~ /./sg; foreach (@chars) { $_ = ord($_); } 
++my $int_array = join (',', @chars);
++my $command = '5::/com.samsung.companion:{"name":"callCommon","args":[{"Session_Id":' . $session . ',"body":"[' . $int_array . ']"}]}'; Log3 $name, 5, "'$command'";
++
++### STEP 4 START   WEBSOCKETS
++my $millis = int ([gettimeofday] * 1000);
++my $step4_url = "http://$tv_address:8000/socket.io/1/?t=$millis";
++my $res = HTTP_Request ( $step4_url, 'GET' );
++if ($res) {
++	}
++else  {
++    Log3 $name, 1, "[STV] $name: STEP 4: Couldn't get the document.";
++	return;
++}
++
++my $websocket_url = "ws://$tv_address:8000/socket.io/1/websocket/" . (split(':', $res))[0];
++
++if ($websocket_url =~ /^ws:\/\/([^:\/]+)(:\d+)?(\/.*)$/) {
++	}
++else  {
++    Log3 $name, 2, "[STV] $name: $websocket_url: malformed or unsupported websocket URL.";
++	return;
++}
++
++my ($host, $port, $path) = ($1, $2, $3);
+ 
++if( my $socket = IO::Socket::INET->new(PeerAddr=>"$host$port", Timeout=>2, Blocking=>1, ReuseAddr=>1) ) {
++
++	my $ret = "GET $path HTTP/1.1\r\n";
++
++	my $webclient_header = 	'Upgrade: websocket' . "\r\n" .
++							'Connection: Upgrade' . "\r\n" .
++							'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==' . "\r\n" .
++							'Sec-WebSocket-Version: 13' . "\r\n\r\n";
++		
++	syswrite $socket, $ret . $webclient_header;
++	
++	my $buf; my $length = sysread($socket, $buf, 10240); Log3 $name, 5, "$buf";
++	
++	$buf =~ /^[^ ]+ ([\d]{3})/ or die "websocket handshake failed\n";
++	
++	if ($1 eq '101') {
++		Log3 $name, 5, "Websocket Handshake OK ($1)";
++		
++		# build_frame ($masked, $fin, $rsv1, $rsv2, $rsv3, $op, $payload);
++		
++		syswrite $socket, build_frame (0, 1, 0, 0, 0, WS_TEXT, '1::/com.samsung.companion');
++		
++		syswrite $socket, build_frame (0, 1, 0, 0, 0, WS_TEXT, $command);
++		
++		syswrite $socket, build_frame (0, 1, 0, 0, 0, WS_CLOSE, '');
++		
++		shutdown $socket, 2;
++		
++		Log3 $name, 3, "$key_press sent";
++	}
++
++	
++}
++}	
+ # old Samsung Models
+ sub STV_52235($@)
+ {
+@@ -412,7 +604,9 @@
+   if (defined $a[8]) { $cont7 = $a[8]}
+   if (defined $a[9]) { $cont8 = $a[9]}
+ 
+-  my $callsoap = "";
++  my    $callsoap = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n".
++                    "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" >\r\n".
++					"<s:Body>\r\n";
+   my $message = "";
+   my $head = "";
+   my $kind = 0;
+@@ -437,10 +631,47 @@
+       $kind = 0;
+     }
+   }
++  if ( $kind eq 1){
++    $callsoap .= "<ns0:Set$cont1 xmlns:ns0=\"urn:schemas-upnp-org:service:RenderingControl:1\">\r\n";
++    $callsoap .= "<InstanceID>0</InstanceID>\r\n";
++    $callsoap .= "<Desired$cont1>$cont2</Desired$cont1>\r\n";
++    $callsoap .= "<Channel>Master</Channel>\r\n";
++    $callsoap .= "</ns0:Set$cont1>\r\n";
++
++    $head .= "POST /upnp/control/RenderingControl1 HTTP/1.1\r\n";
++    $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
++    $head .= "SOAPACTION: \"SoapAction:urn:schemas-upnp-org:service:RenderingControl:1#Set$cont1\"\r\n";
++  }
++  my $calldate=`date +"%Y-%m-%d"`;
++  chomp($calldate);
++  my $calltime=`date +"%H:%M:%S"`;
++  chomp($calltime);
+   if ( $arg eq "call")
+   {
+     $kind = 2;
+-    
++    $callsoap .= "<u:AddMessage xmlns:u=\"urn:samsung.com:service:MessageBoxService:1\\\">\r\n";
++    $callsoap .= "<MessageType>text/xml</MessageType>\r\n";
++    $callsoap .= "<MessageID>1334799348</MessageID>\r\n";
++    $callsoap .= "<Message>\r\n";
++    $callsoap .= "&lt;Category&gt;Incoming Call&lt;/Category&gt;\r\n";
++    $callsoap .= "&lt;DisplayType&gt;Maximum&lt;/DisplayType&gt;\r\n";
++    $callsoap .= "&lt;CallTime&gt;\r\n";
++    $callsoap .= "&lt;Date&gt;$calldate&lt;/Date&gt;\r\n";
++    $callsoap .= "&lt;Time&gt;$calltime&lt;/Time&gt;\r\n";
++    $callsoap .= "&lt;/CallTime&gt;\r\n";
++    $callsoap .= "&lt;Callee&gt;\r\n";
++    $callsoap .= "&lt;Name&gt;An: $cont4&lt;/Name&gt;\r\n";
++    $callsoap .= "&lt;Number&gt;Nr: $cont5&lt;/Number&gt;\r\n";
++    $callsoap .= "&lt;/Callee&gt;\r\n";
++    $callsoap .= "&lt;Caller&gt;\r\n";
++    $callsoap .= "&lt;Name&gt;Von: $cont2&lt;/Name&gt;\r\n";
++    $callsoap .= "&lt;Number&gt;Nr: $cont3&lt;/Number&gt;\r\n";
++    $callsoap .= "&lt;/Caller&gt;\r\n";
++    $callsoap .= "</Message>\r\n";
++    $callsoap .= "</u:AddMessage>\r\n";
++    $head .= "POST /PMR/control/MessageBoxService HTTP/1.1\r\n";
++    $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
++    $head .= "SOAPACTION: \"urn:samsung.com:service:MessageBoxService:1#AddMessage\"\r\n";
+   }
+   if ( $arg eq "sms")
+   {
+@@ -448,94 +679,6 @@
+     for my $i (6..$count){
+       $body .= $a[$i];
+       $body .= " ";
+-    } 
+-  }
+-  if ( $arg eq "date")
+-  {
+-    $kind = 4;
+-    for my $i (10..$count){
+-      $body .= $a[$i];
+-      $body .= " ";
+-    } 
+-  }
+-
+-  if ( $kind eq 1){
+-          $callsoap .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
+-          $callsoap .= "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n";
+-          $callsoap .= "<s:Body>\r\n";
+-          $callsoap .= "<ns0:Set$cont1 xmlns:ns0=\"urn:schemas-upnp-org:service:RenderingControl:1\">\r\n";
+-          $callsoap .= "<InstanceID>0</InstanceID>\r\n";
+-          $callsoap .= "<Desired$cont1>$cont2</Desired$cont1>\r\n";
+-          $callsoap .= "<Channel>Master</Channel>\r\n";
+-          $callsoap .= "</ns0:Set$cont1>\r\n";
+-          $callsoap .= "</s:Body>\r\n";
+-          $callsoap .= "</s:Envelope>\r\n";
+-
+-          $size = length($callsoap);
+-
+-          $head .= "POST /upnp/control/RenderingControl1 HTTP/1.1\r\n";
+-          $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
+-          $head .= "SOAPACTION: \"SoapAction:urn:schemas-upnp-org:service:RenderingControl:1#Set$cont1\"\r\n";
+-          $head .= "Cache-Control: no-cache\r\n";
+-          $head .= "Host: $TV:52235\r\n";
+-          $head .= "Content-Length: $size\r\n";
+-          $head .= "Connection: Close\r\n";
+-          $head .= "\r\n";
+-
+-          $message .= $head;
+-          $message .= $callsoap;
+-  }
+-
+-  my $calldate=`date +"%Y-%m-%d"`;
+-  chomp($calldate);
+-  my $calltime=`date +"%H:%M:%S"`;
+-  chomp($calltime);
+-
+-  if ( $kind eq 2 ){ # CALL
+-        $callsoap .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
+-        $callsoap .= "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" >\r\n";
+-        $callsoap .= "<s:Body>\r\n";
+-        $callsoap .= "<u:AddMessage xmlns:u=\"urn:samsung.com:service:MessageBoxService:1\\\">\r\n";
+-        $callsoap .= "<MessageType>text/xml</MessageType>\r\n";
+-        $callsoap .= "<MessageID>1334799348</MessageID>\r\n";
+-        $callsoap .= "<Message>\r\n";
+-        $callsoap .= "&lt;Category&gt;Incoming Call&lt;/Category&gt;\r\n";
+-        $callsoap .= "&lt;DisplayType&gt;Maximum&lt;/DisplayType&gt;\r\n";
+-        $callsoap .= "&lt;CallTime&gt;\r\n";
+-        $callsoap .= "&lt;Date&gt;$calldate&lt;/Date&gt;\r\n";
+-        $callsoap .= "&lt;Time&gt;$calltime&lt;/Time&gt;\r\n";
+-        $callsoap .= "&lt;/CallTime&gt;\r\n";
+-        $callsoap .= "&lt;Callee&gt;\r\n";
+-        $callsoap .= "&lt;Name&gt;An: $cont4&lt;/Name&gt;\r\n";
+-        $callsoap .= "&lt;Number&gt;Nr: $cont5&lt;/Number&gt;\r\n";
+-        $callsoap .= "&lt;/Callee&gt;\r\n";
+-        $callsoap .= "&lt;Caller&gt;\r\n";
+-        $callsoap .= "&lt;Name&gt;Von: $cont2&lt;/Name&gt;\r\n";
+-        $callsoap .= "&lt;Number&gt;Nr: $cont3&lt;/Number&gt;\r\n";
+-        $callsoap .= "&lt;/Caller&gt;\r\n";
+-        $callsoap .= "</Message>\r\n";
+-        $callsoap .= "</u:AddMessage>\r\n";
+-        $callsoap .= "</s:Body>\r\n";
+-        $callsoap .= "</s:Envelope>\r\n";
+-
+-        $size = length($callsoap);
+-        $head .= "POST /PMR/control/MessageBoxService HTTP/1.1\r\n";
+-        $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
+-        $head .= "SOAPACTION: \"urn:samsung.com:service:MessageBoxService:1#AddMessage\"\r\n";
+-        $head .= "Cache-Control: no-cache\r\n";
+-        $head .= "Host: $TV:52235\r\n";
+-        $head .= "Content-Length: $size\r\n";
+-        $head .= "Connection: Close\r\n";
+-        $head .= "\r\n";
+-
+-        $message .= $head;
+-        $message .= $callsoap;
+-   }
+-
+-  if ( $kind eq 3 ){ # SMS
+-        $callsoap .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
+-        $callsoap .= "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" >\r\n";
+-        $callsoap .= "<s:Body>\r\n";
+         $callsoap .= "<u:AddMessage xmlns:u=\"urn:samsung.com:service:MessageBoxService:1\\\">\r\n";
+         $callsoap .= "<MessageType>text/xml</MessageType>\r\n";
+         $callsoap .= "<MessageID>1334799348</MessageID>\r\n";
+@@ -557,111 +700,346 @@
+         $callsoap .= "&lt;Body&gt;Inhalt: $body&lt;/Body&gt;\r\n";
+         $callsoap .= "</Message>\r\n";
+         $callsoap .= "</u:AddMessage>\r\n";
+-        $callsoap .= "</s:Body>\r\n";
+-        $callsoap .= "</s:Envelope>\r\n";
+-
+-        $size = length($callsoap);
+         $head .= "POST /PMR/control/MessageBoxService HTTP/1.1\r\n";
+         $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
+         $head .= "SOAPACTION: \"urn:samsung.com:service:MessageBoxService:1#AddMessage\"\r\n";
+-        $head .= "Cache-Control: no-cache\r\n";
+-        $head .= "Host: $TV:52235\r\n";
+-        $head .= "Content-Length: $size\r\n";
+-        $head .= "Connection: Close\r\n";
+-        $head .= "\r\n";
++    } 
++  }
++  if ( $arg eq "date")
++  {
++    $kind = 4;
++    for my $i (10..$count){
++      $body .= $a[$i];
++      $body .= " ";
++    } 
++    $callsoap .= "<u:AddMessage xmlns:u=\"urn:samsung.com:service:MessageBoxService:1\\\">\r\n";
++    $callsoap .= "<MessageType>text/xml</MessageType>\r\n";
++    $callsoap .= "<MessageID>1334799348</MessageID>\r\n";
++    $callsoap .= "<Message>\r\n";
++    $callsoap .= "&lt;Category&gt;Schedule Reminder&lt;/Category&gt;\r\n";
++    $callsoap .= "&lt;DisplayType&gt;Maximum&lt;/DisplayType&gt;\r\n";
++    $callsoap .= "&lt;StartTime&gt;\r\n";
++    $callsoap .= "&lt;Date&gt;$cont2&lt;/Date&gt;\r\n";
++    $callsoap .= "&lt;Time&gt;$cont3&lt;/Time&gt;\r\n";
++    $callsoap .= "&lt;/StartTime&gt;\r\n";
++    $callsoap .= "&lt;Owner&gt;\r\n";
++    $callsoap .= "&lt;Name&gt;Fr: $cont4&lt;/Name&gt;\r\n";
++    $callsoap .= "&lt;Number&gt;Nr: $cont5&lt;/Number&gt;\r\n";
++    $callsoap .= "&lt;/Owner&gt;\r\n";
++    $callsoap .= "&lt;Subject&gt;Betreff: $cont6&lt;/Subject&gt;\r\n";
++    $callsoap .= "&lt;EndTime&gt;\r\n";
++    $callsoap .= "&lt;Date&gt;$cont7&lt;/Date&gt;\r\n";
++    $callsoap .= "&lt;Time&gt;$cont8&lt;/Time&gt;\r\n";
++    $callsoap .= "&lt;/EndTime&gt;\r\n";
++    $callsoap .= "&lt;Location&gt;Ort: $cont9&lt;/Location&gt;\r\n";
++    $callsoap .= "&lt;Body&gt;Inhalt: $body&lt;/Body&gt;\r\n";
++    $callsoap .= "</Message>\r\n";
++    $callsoap .= "</u:AddMessage>\r\n";
++    $head .= "POST /PMR/control/MessageBoxService HTTP/1.1\r\n";
++    $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
++    $head .= "SOAPACTION: \"urn:samsung.com:service:MessageBoxService:1#AddMessage\"\r\n";
++  }
++
++  if ( $kind ne 0 ){
++    $callsoap .= "</s:Body>\r\n";
++    $callsoap .= "</s:Envelope>\r\n";
+ 
+-        $message .= $head;
+-        $message .= $callsoap;
++    $size = length($callsoap);
++ 
++    $head .= "Cache-Control: no-cache\r\n";
++    $head .= "Host: $TV:52235\r\n";
++    $head .= "Content-Length: $size\r\n";
++    $head .= "Connection: Close\r\n";
++    $head .= "\r\n";
++
++    $message .= $head;
++    $message .= $callsoap;
++    connection($hash,$message,52235);
++  }else{
++    return "Unknown argument $name, choose one of mute:on,off volume:slider,0,1,100 call sms date";
++  }
++}
++# new Samsung Models
++sub STV_55000($$$$)
++{
++  my ($hash,$name,$cmd,$par) = @_;
++#  my @ARGV = split(" ",$cmd);
++  if($cmd ne "0_command_line") {@ARGV = split(" ",$cmd)}
++  else			       {@ARGV = split(",",$par)}
++  #### Configuration
++  my $tv    = "UE46ES8090";  # Might need changing to match your TV type  #"UE46ES8090"
++  my $port  = $hash->{Port}; # TCP port of Samsung TV
++  my $tvip  = $hash->{Host}; # IP Address of TV #"192.168.2.124"
++  my $myip  = $hash->{MyIP}; # IP Address of FHEM Server
++  my $mymac = $hash->{MAC};  # Used for the access control/validation '"24:65:11:80:0D:01"
++
++# screen message caller or individual
++if ( $cmd eq "caller" ||
++     $cmd eq "screen") {
++   return STV_7676($hash,$cmd);
++}
++
++  my $appstring = "iphone..iapp.samsung"; # What the iPhone app reports
++  my $tvappstring = "iphone.".$tv.".iapp.samsung"; # TV type
++  my $remotename = "Perl Samsung Remote"; # What gets reported when it asks for permission/also shows in General->Wireless Remote Control menu
++  
++  #### MAC überprüfen wenn nicht gültig vom attribute übernehmen.
++  if ($mymac !~ /^\w\w:\w\w:\w\w:\w\w|\w\w:\w\w:\w\w:\w\w$/) {
++    Log3 $name, 3, "[STV] mymac: $mymac invalid format";
++  }else{
++    # command-line help
++    if (!$tv|!$tvip|!$myip|!$mymac) {
++      return "[STV] Error - Parameter missing:\nmodel, tvip, myip, mymac.";
++    }
++
++    Log3 $name, 5, "[STV] opening socket with tvip: $tvip, cmd: $cmd";
++    my $sock = new IO::Socket::INET (
++      PeerAddr => $tvip,
++      PeerPort => $port,
++      Proto => 'tcp',
++      Timout => 5
++    );
++  
++    if (defined ($sock)){
++        my $messagepart1 = chr(0x64) . chr(0x00) . chr(length(encode_base64($myip, ""))) . chr(0x00) . encode_base64($myip, "") . chr(length(encode_base64($mymac, ""))) . chr(0x00) . encode_base64($mymac, "") . chr(length(encode_base64($remotename, ""))) . chr(0x00) . encode_base64($remotename, "");
++        my $part1 = chr(0x00) . chr(length($appstring)) . chr(0x00) . $appstring . chr(length($messagepart1)) . chr(0x00) . $messagepart1;
++        print $sock $part1;
++
++        my $messagepart2 = chr(0xc8) . chr(0x00);
++        my $part2 = chr(0x00) . chr(length($appstring)) . chr(0x00) . $appstring . chr(length($messagepart2)) . chr(0x00) . $messagepart2;
++        print $sock $part2;
++        # Preceding sections all first time only
++
++        if ($cmd eq "0_text_line") {
++         # Send text, e.g. in YouTube app's search, N.B. NOT BBC iPlayer app.
++         my $text = $par;
++         my $messagepart3 = chr(0x01) . chr(0x00) . chr(length(encode_base64($text, ""))) . chr(0x00) . encode_base64($text, "");
++         my $part3 = chr(0x01) . chr(length($appstring)) . chr(0x00) . $appstring . chr(length($messagepart3)) . chr(0x00) . $messagepart3;
++         print $sock $part3;
++        }
++        else {
++          foreach my $argnum (0 .. $#ARGV) {
++			sleep(0.3) if ($argnum > 0);
++            # Send remote key(s)
++#            Log3 $name, 3, "[STV] sending ".uc($ARGV[$argnum]);
++            my $key = "KEY_" . uc($ARGV[$argnum]);
++            my $messagepart3 = chr(0x00) . chr(0x00) . chr(0x00) . chr(length(encode_base64($key, ""))) . chr(0x00) . encode_base64($key, "");
++            my $part3 = chr(0x00) . chr(length($tvappstring)) . chr(0x00) . $tvappstring . chr(length($messagepart3)) . chr(0x00) . $messagepart3;
++            print $sock $part3;
++        #        select(undef, undef, undef, 0.5);
++          }
++        }
++
++        close($sock);
++    }else{
++      #Log5 $name, 3, "[STV] Could not create socket. Aborting." unless $sock;
++    }
++  }
++}
++
++sub STV_7676($$)
++{
++
++   my ($hash,$arg) = @_;
++   my $TV    = $hash->{Host};
++   my $name  = $hash->{NAME};
++   my ($URI, $location) = undef;
++   if ($hash->{Port} eq "wse") {$location = "smp_4_" }
++   else                        {$location = "smp_12_" }
++   my $callsoap .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
++   $callsoap .= "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" >\r\n";
++   $callsoap .= "<s:Body>\r\n";
++   $callsoap .= "<u:RunBrowser xmlns:u=\"urn:samsung.com:service:MainTVAgent2:1\">\r\n";
++
++   if ( $arg ne "caller" ) {$URI = AttrVal($name, "screenURI", undef)}
++   else                    {$URI = AttrVal($name, "callerURI", undef)}
++   if (defined $URI) {$callsoap .= "<BrowserURL>".$URI."</BrowserURL>\r\n"}
++   $callsoap .= "</u:RunBrowser>\r\n";
++   $callsoap .= "</s:Body>\r\n";
++   $callsoap .= "</s:Envelope>\r\n";
++
++   my $size = length($callsoap);
++   my $head .= "POST /$location HTTP/1.1\r\n";
++   $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
++   $head .= "SOAPACTION: \"urn:samsung.com:service:MainTVAgent2:1#RunBrowser\"\r\n";
++   $head .= "Cache-Control: no-cache\r\n";
++   $head .= "Host: $TV:7676\r\n";
++   $head .= "Content-Length: $size\r\n";
++   $head .= "Connection: Close\r\n";
++   $head .= "\r\n";
++   
++   my $message .= $head;
++   $message .= $callsoap;
++   connection($hash,$message,7676);
++}
++
++sub STV_DLNA($$)
++{
++   my ($hash,$arg) = @_;
++   if (ReadingsVal($hash->{Mode},"state","offline") ne "offline") {
++	  my $command = "set ".$hash->{Mode}." stream ".$arg;
++      my $name    = $hash->{NAME};
++      # copying of picture for caller to be done outside of program
++      fhem($command);
++      Log3 $name, 5, "[STV] $name DLNA-command:  $command";
+    }
++   else {
++      return "DLNAClient $hash->{Mode} currently offline";
++   }
++}
+ 
+-  if ( $kind eq 4 ){ # Termin
+-        $callsoap .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
+-        $callsoap .= "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" >\r\n";
+-        $callsoap .= "<s:Body>\r\n";
+-        $callsoap .= "<u:AddMessage xmlns:u=\"urn:samsung.com:service:MessageBoxService:1\\\">\r\n";
+-        $callsoap .= "<MessageType>text/xml</MessageType>\r\n";
+-        $callsoap .= "<MessageID>1334799348</MessageID>\r\n";
+-        $callsoap .= "<Message>\r\n";
+-        $callsoap .= "&lt;Category&gt;Schedule Reminder&lt;/Category&gt;\r\n";
+-        $callsoap .= "&lt;DisplayType&gt;Maximum&lt;/DisplayType&gt;\r\n";
+-        $callsoap .= "&lt;StartTime&gt;\r\n";
+-        $callsoap .= "&lt;Date&gt;$cont2&lt;/Date&gt;\r\n";
+-        $callsoap .= "&lt;Time&gt;$cont3&lt;/Time&gt;\r\n";
+-        $callsoap .= "&lt;/StartTime&gt;\r\n";
+-        $callsoap .= "&lt;Owner&gt;\r\n";
+-        $callsoap .= "&lt;Name&gt;Fr: $cont4&lt;/Name&gt;\r\n";
+-        $callsoap .= "&lt;Number&gt;Nr: $cont5&lt;/Number&gt;\r\n";
+-        $callsoap .= "&lt;/Owner&gt;\r\n";
+-        $callsoap .= "&lt;Subject&gt;Betreff: $cont6&lt;/Subject&gt;\r\n";
+-        $callsoap .= "&lt;EndTime&gt;\r\n";
+-        $callsoap .= "&lt;Date&gt;$cont7&lt;/Date&gt;\r\n";
+-        $callsoap .= "&lt;Time&gt;$cont8&lt;/Time&gt;\r\n";
+-        $callsoap .= "&lt;/EndTime&gt;\r\n";
+-        $callsoap .= "&lt;Location&gt;Ort: $cont9&lt;/Location&gt;\r\n";
+-        $callsoap .= "&lt;Body&gt;Inhalt: $body&lt;/Body&gt;\r\n";
+-        $callsoap .= "</Message>\r\n";
+-        $callsoap .= "</u:AddMessage>\r\n";
+-        $callsoap .= "</s:Body>\r\n";
+-        $callsoap .= "</s:Envelope>\r\n";
++sub HTTP_Request # nach justme1968
++{
++	my ($url, $method, $data, $timeout, $header_ref) = @_;
++	$timeout //= 4.0;
++  
++  	if($method !~ /POST|GET|DELETE/) {
++		print "HTTP_Request $url: wrong method, $method.\n";
++		return undef;
++	}
++  
++	if($url !~ /^(http|https):\/\/([^:\/]+)(:\d+)?(\/.*)$/) {
++		print "HTTP_Request $url: malformed or unsupported URL.\n";
++		return undef;
++	}
++	my ($protocol, $host, $port, $path) = ($1, $2, $3, $4);
++
++	if(defined($port)) {
++		$port =~ s/^://;
++	} else {
++		$port = ($protocol eq "https" ? '443' : '80');
++	}
++	$path= '/' unless defined($path);
++
++	my $conn;
++	if($protocol eq "https") {
++		eval "use IO::Socket::SSL";
++		if($@) {
++			print "$@\n";
++		}
++		else {
++			$conn = IO::Socket::SSL->new(PeerAddr => "$host:$port", Timeout=>$timeout, SSL_use_cert=>0);
++		}
++	} else {
++		$conn = IO::Socket::INET->new(PeerAddr => "$host:$port", Timeout=>$timeout);
++	}
++
++	if(!$conn) {
++		print "HTTP_Request $host: Can't connect.\n";
++		undef $conn;
++		return undef;
++	}
++	
++	# copy hash with header data to array
++	my @header = ();
++	while ( my ($key, $value) = each %{ $header_ref } ) {
++		push @header, $key . ': ' . $value;
++	}
++	
++	$host =~ s/:.*//; 
++	my $hdr  = "$method $path HTTP/1.0\r\nHost: $host\r\n";
++	   $hdr .= 'Content-Length: ' . length($data) . "\r\n" if($data); #print "data:\n'$data'\n" if($data);
++	   $hdr .= join("\r\n", @header) if (@header); #print "header:\n'$hdr'\n";
++	   $hdr .= "\r\n\r\n"; 
++	
++	syswrite $conn, $hdr;
++	syswrite $conn, $data if ($data);
++	shutdown $conn, 1; # writing data stopped
++
++	my ($buf, $ret) = ('', ''); 
++	$conn->timeout($timeout);
++	for(;;) {
++		my ($rout, $rin) = ('', '');
++		vec($rin, $conn->fileno(), 1) = 1;
++		my $nfound = select($rout=$rin, undef, undef, $timeout);
++		if($nfound <= 0) {
++		  print "HTTP_Request $url: Select timeout/error: $!\n";
++		  shutdown $conn, 2; undef $conn;
++		  return undef;
++		}
++
++		my $len = sysread($conn, $buf, 65536);
++		last if(!defined($len) || $len <= 0);
++		$ret .= $buf;
++	}
++	
++	$ret =~ s/(.*?)\r\n\r\n//s; # Not greedy: switch off the header.
+ 
+-        $size = length($callsoap);
+-        $head .= "POST /PMR/control/MessageBoxService HTTP/1.1\r\n";
+-        $head .= "Content-Type: text/xml; charset=\"utf-8\"\r\n";
+-        $head .= "SOAPACTION: \"urn:samsung.com:service:MessageBoxService:1#AddMessage\"\r\n";
+-        $head .= "Cache-Control: no-cache\r\n";
+-        $head .= "Host: $TV:52235\r\n";
+-        $head .= "Content-Length: $size\r\n";
+-        $head .= "Connection: Close\r\n";
+-        $head .= "\r\n";
++	shutdown $conn, 2; undef $conn;
++	return $ret;
++}
+ 
+-        $message .= $head;
+-        $message .= $callsoap;
++sub build_frame { # nach http://mojolicious.org/perldoc/
++  my ($masked, $fin, $rsv1, $rsv2, $rsv3, $op, $payload) = @_;
++  #warn "-- Building frame ($fin, $rsv1, $rsv2, $rsv3, $op)\n" if DEBUG;
++
++  # Head
++  my $head = $op + ($fin ? 128 : 0);
++  $head |= 0b01000000 if $rsv1;
++  $head |= 0b00100000 if $rsv2;
++  $head |= 0b00010000 if $rsv3;
++  my $frame = pack 'C', $head;
++
++  # Small payload
++  my $len = length $payload;
++  if ($len < 126) {
++    warn "-- Small payload ($len)\n" if DEBUG;
++    $frame .= pack 'C', $masked ? ($len | 128) : $len;
+   }
+ 
+-  if ( $kind ne 0 ){
+-    connection($message, $TV);
+-  }else{
+-    return "Unknown argument $name, choose one of mute:on,off volume:slider,0,1,100 call sms date";
++  # Extended payload (16-bit)
++  elsif ($len < 65536) {
++    warn "-- Extended 16-bit payload ($len)\n" if DEBUG;
++    $frame .= pack 'Cn', $masked ? (126 | 128) : 126, $len;
++  }
++
++  # Extended payload (64-bit with 32-bit fallback)
++  else {
++    warn "-- Extended 64-bit payload ($len)\n" if DEBUG;
++    $frame .= pack 'C', $masked ? (127 | 128) : 127;
++	$frame .= pack('NN', 0, $len & 0xffffffff);
++    #$frame .= MODERN ? pack('Q>', $len) : pack('NN', 0, $len & 0xffffffff);
++  }
++
++  # Mask payload
++  if ($masked) {
++    my $mask = pack 'N', int(rand 9 x 7);
++    $payload = $mask . xor_encode($payload, $mask x 128);
+   }
++
++  return $frame . $payload;
+ }
+ 
+-sub STV_Set($@)
++sub getIP()
+ {
+-  my ($hash, @a) = @_;
+-  my $nam = $a[0];
+-  my $name = $hash->{NAME};
+-  my $Port = $hash->{Port};
+-  my $cmd = (defined($a[1]) ? $a[1] : ""); #command
+-  my $par = (defined($a[2]) ? $a[2] : ""); #parameter
+-  if ($cmd eq "?" || $cmd eq "") {
+-       return $hash->{".validcommands"};
+-  }
+-  if ($hash->{".validcommands"} =~ /$cmd/) {
+-    if ($cmd eq "connect") {
+-        return STV_Connect($hash);
+-    }
++  my $address = eval {Net::Address::IP::Local->public_ipv4};
++  if ($@) {
++    $address = 'localhost';
++  } 
++  return "$address";
++}
+ 
+-    if ((AttrVal($name, "setWhenOffline", "execute") eq "ignore") and ($hash->{STATE} ne "opened")) {
+-      Log3 $name, 3, "[STV] Device seems offline. Set command ignored: $cmd";
+-      return;
+-    }
+-    
+-    if ($Port eq 55000 ){
+-        STV_55000($hash,$nam,$cmd);
+-    }
+-    elsif ($Port eq 52235 ){
+-        STV_52235($hash,@_);
+-    }
+-  } else {
+-    my $ret = "[STV] Invalid command $cmd. Use any of:\n";
+-    my @cmds = split(" ",$hash->{".validcommands"});
+-    foreach my $line (0..$#cmds) {
+-      $ret .= "\n" if ($line > 1 && $line/10 == int($line/10));
+-      $ret .= $cmds[$line]." ";
++sub getIP_old()
++{
++  my $host = hostname();
++  my $address = inet_ntoa(scalar gethostbyname(hostname() || 'localhost'));
++  if ($@) {
++    $address = 'localhost';
++  } 
++  return "$address";
++}
++
++sub getMAC4IP($)
++{
++  my $IP = shift;
++  my @interfaces = IO::Interface::Simple->interfaces;
++  foreach my $if (@interfaces) {
++    next unless defined ($if->address);
++    if ($if->address eq $IP) {
++        return $if->hwaddr;
+     }
+-    return $ret;
+   }
+-  return undef;
++  return "";
+ }
+ 
+ 1;
