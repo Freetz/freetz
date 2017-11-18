@@ -88,7 +88,7 @@ ABS_BASE_DIR="$(readlink -f "$BASE_DIR")"
 TOOLS_DIR="${ABS_BASE_DIR}/tools"
 
 # Include common helper functions (isFreetzType, echo*, error, modunsqfs* etc.)
-. "${TOOLS_DIR}/freetz_functions" ||
+source "${TOOLS_DIR}/freetz_functions" ||
 	(echo "cannot find script freetz_functions" >&2; exit 1)
 
 if [ "$DO_SIGN" -gt 0 -a $(($DO_PACK + $DO_ZIP)) -eq 0 ]; then
@@ -207,7 +207,7 @@ VARTAR_AUX_DIR="${KERNEL_AUX_DIR}/${VARTAR_SUBDIR}"
 # Include config file, but do not override variables which are already defined
 # in the environment, e.g. via "make FREETZ_SOMETHING=y"
 sed -nr 's/^([^=]+)=(.*)/: ${\1:=\2}/p' "$DOT_CONFIG" > "$DOT_CONFIG.fwmod"
-. "$DOT_CONFIG.fwmod"
+source "$DOT_CONFIG.fwmod"
 rm "$DOT_CONFIG.fwmod"
 
 # Set default verbosity level, just in case none was defined in the (possibly
@@ -715,7 +715,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo0 "applying patches"
 
 	# Include patching helper function (modpatch)
-	. "${TOOLS_DIR}/freetz_patch" || error 1 "cannot find script freetz_patch"
+	source "${TOOLS_DIR}/freetz_patch" || error 1 "cannot find script freetz_patch"
 
 	PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC="${PATCHES_DEVICES_DIR}/${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}"
 	PATCHES_DEVICES_DIR_BOX_SPECIFIC="${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC}/${FREETZ_TYPE_PREFIX%_*}"
@@ -743,7 +743,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	for j in ${PATCHES_DEVICES_DIR_FULL_LIST[@]}; do
 		for i in $j/*.sh; do
 			echo2 "applying patch file $i"
-			. $i
+			source $i
 		done
 	done
 	shopt -u nullglob
@@ -890,7 +890,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	for i in "${PATCHES_SCRIPTS_DIR}/"*.sh; do
 		[ -r "$i" ] || continue
 		echo2 "applying patch file $i"
-		. $i
+		source $i
 	done
 
 	# stop execution if in patch test mode
@@ -1370,7 +1370,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	if [ "$FREETZ_STRIP_LIBRARIES" == "y" ]; then
 		echo0 "shrinking shared libs"
-		. ${TOOLS_DIR}/freetz_mklibs
+		source ${TOOLS_DIR}/freetz_mklibs
 		mklibs || error 1 "mklibs returned an error. Please see mklibs.log."
 	fi
 	if  [ "$FREETZ_STRIP_MODULES_ALL" == "y" ]; then
@@ -1430,7 +1430,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$EXTERNAL_ENABLED" == "y" ]; then
 		echo0 "processing external"
 		[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
-		. "${EXTERNAL}"
+		source "${EXTERNAL}"
 	fi
 
 	touch "${DIR}/.modified"
