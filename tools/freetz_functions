@@ -252,16 +252,20 @@ echoX()
 
 # If the verbosity level is undefined, probably this script has been called
 # directly by a professional user, so let's give him all the details.
-: ${FREETZ_VERBOSITY_LEVEL:=2}
+: ${FREETZ_VERBOSITY_LEVEL:=3}
 
 # Two spaces per indentation level seems to be a sensible default
-[ ! "$L2" ] && L0= && L1="  " && L2="    "
+[ -z "$L1" ] && L1="  "
+L0=""
+L1="$L0$L1"
+L2="$L1$L1"
+L3="$L2$L1"
 
 # Verbosity-level-dependent, indented printing
 echo0() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX -i "$L0" "$@"; }
 echo1() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX -i "$L1" "$@"; }
 echo2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@"; }
-echo3() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 3 ] && echoX -i "$L2" "$@"; }
+echo3() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 3 ] && echoX -i "$L3" "$@"; }
 
 # Warning message
 warn() { echoX -c -p "WARNING: " "$@" >&2; }
