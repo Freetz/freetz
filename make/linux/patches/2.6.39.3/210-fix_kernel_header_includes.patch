@@ -1,0 +1,11 @@
+--- linux-2.6.39/include/linux/if_vlan.h.orig	2016-09-06 13:29:04.000000000 +0200
++++ linux-2.6.39/include/linux/if_vlan.h	2017-10-22 10:40:25.046204459 +0200
+@@ -364,6 +364,8 @@
+ 
+ 	return protocol;
+ }
++#else
++#include <stdint.h>
+ #endif /* __KERNEL__ */
+ 
+ /* VLAN IOCTLs are found in sockios.h */

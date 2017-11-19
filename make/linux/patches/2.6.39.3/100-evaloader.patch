@@ -1,0 +1,25 @@
+--- linux-2.6.39/Makefile.orig	2017-11-02 06:14:58.498738309 +0100
++++ linux-2.6.39/Makefile	2017-11-02 06:16:13.270083258 +0100
+@@ -549,6 +549,13 @@
+ # Defaults to vmlinux, but the arch makefile usually adds further targets
+ all: vmlinux
+ 
++vmlinux.eva_pad: bzImage
++	loadaddr=0x40B20000; \
++	entry=0x40B20000; \
++	echo loadaddr=$$loadaddr entry=$$entry; \
++	$$FREETZ_BASE_DIR/tools/bzimage2eva $$loadaddr $$entry \
++		arch/x86/boot/bzImage vmlinux.eva_pad
++
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ KBUILD_CFLAGS	+= -Os
+ else
+@@ -1139,7 +1151,7 @@
+ 
+ # Directories & files removed with 'make clean'
+ CLEAN_DIRS  += $(MODVERDIR)
+-CLEAN_FILES +=	vmlinux System.map \
++CLEAN_FILES +=	vmlinux vmlinux.eva_pad System.map \
+                 .tmp_kallsyms* .tmp_version .tmp_vmlinux* .tmp_System.map
+ 
+ # Directories & files removed with 'make mrproper'
