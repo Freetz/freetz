@@ -1,18 +1,28 @@
-comment "modules"
+menu "Kernel modules"
 	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
 
+config EXTERNAL_OWN_MODULES
+	string "own kernel modules"
+	default ""
+	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
+	help
+		Put your own kernel modules here (space separated, without extension)
+
+comment "each of the following options will external the named kernel module"
+
+
+comment "fs"
+
 config EXTERNAL_FREETZ_MODULE_cifs
-	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED && FREETZ_MODULE_cifs
+	depends on FREETZ_MODULE_cifs
 	bool "cifs.ko"
 	default n
-	help
-		externals the following file(s):
-		 /lib/modules/*/kernel/fs/cifs/cifs.ko
+
+comment "net"
 
 config EXTERNAL_FREETZ_MODULE_ipv6
-	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED && FREETZ_MODULE_ipv6
+	depends on FREETZ_MODULE_ipv6
 	bool "ipv6.ko"
 	default n
-	help
-		externals the following file(s):
-		 /lib/modules/*/kernel/net/ipv6/ipv6.ko
+
+endmenu
