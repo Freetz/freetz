@@ -128,7 +128,7 @@ function extract_kernel_config() {
 			else
 				unset VERSION PATCHLEVEL SUBLEVEL EXTRAVERSION
 				cat ${tmp}/${makefile} | sed -n -r -e "s,^(VERSION|PATCHLEVEL|SUBLEVEL|EXTRAVERSION)[ \t]*=[ \t]*([^ \t]+),\1=\2,p" > ${tmp}/${makefile}.version
-				. ${tmp}/${makefile}.version
+				source ${tmp}/${makefile}.version
 				mv ${tmp}/${config} "$(dirname "${opensrc_tarball}")/.config-AVM-${id}-${VERSION}.${PATCHLEVEL}.${SUBLEVEL}${EXTRAVERSION}" && echo "done" || echo "failed"
 			fi
 		fi

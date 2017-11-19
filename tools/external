@@ -28,7 +28,7 @@ fi
 
 #external services
 for EXTERNAL_SERVICE in $(find make -maxdepth 2 -name external.services); do
-	. $EXTERNAL_SERVICE
+	source $EXTERNAL_SERVICE
 done
 #.pkg files
 echo $EXTERNAL_SERVICES > "${VARTAR_MOD_DIR}/var/mod/etc/external.pkg"
@@ -69,7 +69,7 @@ for EXT_FILE in make/*/external.files make/libs/*/external.files; do
 		pkg=$(basename "${EXT_FILE%/external.files}")
 		echo "$EXTERNAL_SERVICES" | grep -qE "(^| )${pkg}( |$)" && continue
 	fi
-	. $EXT_FILE
+	source $EXT_FILE
 done
 EXTERNAL_FILES=$(echo $EXTERNAL_FILES | sed -e 's| |\n/|g;s|//\+|/|g' | sort -u)
 
