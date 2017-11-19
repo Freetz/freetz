@@ -1,2 +1,18 @@
-[ "$EXTERNAL_FREETZ_MODULE_cifs" == "y" ] && EXTERNAL_FILES+=" /${MODULES_SUBDIR}/kernel/fs/cifs/cifs.ko"
-[ "$EXTERNAL_FREETZ_MODULE_ipv6" == "y" ] && EXTERNAL_FILES+=" /${MODULES_SUBDIR}/kernel/net/ipv6/ipv6.ko"
+# This file is called after the files are in place, so we can use find to list all the available modules
+
+(
+    # Create a subshell to keep local variables from the parent shell
+
+    OWN_MODULES=" ${EXTERNAL_OWN_MODULES/-/_} "
+    for file in $(cd "${FILESYSTEM_MOD_DIR}" && find "${MODULES_SUBDIR}/kernel" -name '*.ko'); do
+	# NAME is the name of the kernel module, without extension, minus replaced with underline
+	NAME=$file
+	NAME=${NAME%.ko}
+	NAME=${NAME##*/}
+	NAME=${NAME/-/_}
+	eval conf=\$EXTERNAL_FREETZ_MODULE_${NAME}
+	if [ "$conf" == "y" -o "${OWN_MODULES/ $NAME /}" != "${OWN_MODULES}" ]; then
+	    EXTERNAL_FILES+=" /$file"
+	fi
+    done
+)
