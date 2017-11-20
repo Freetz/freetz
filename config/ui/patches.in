@@ -747,6 +747,18 @@ config FREETZ_REMOVE_NLS
 		This may affect mounting FAT, NTFS and other filesystems.
 		You can add some of the Freetz kernel nls modules if you need them.
 
+config FREETZ_REMOVE_USBHOST
+	bool "Remove USB Host"
+	depends on FREETZ_AVM_HAS_USB_HOST
+	default n
+	help
+		Remove USB Host
+		This patch will remove all the kernel modules needed for the USB Host from the firmware.
+		You will not be able to use USB storage or USB printers unless you provide a way to
+		download and install these modules at runtime.
+		Selecting this patch does not automatically select the patches to remove the
+		kernel modules for the file systems (EXT2, FAT, NTFS, ...)
+
 config FREETZ_REMOVE_PRINTSERV
 	bool "Remove printserv"
 	depends on \
