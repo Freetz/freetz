@@ -1,6 +1,6 @@
 # This file is called after the files are in place, so we can use find to list all the available modules
 
-(
+EXTERNAL_FILES+="$(
     # Create a subshell to keep local variables from the parent shell
 
     OWN_MODULES=" ${EXTERNAL_OWN_MODULES/-/_} "
@@ -12,7 +12,7 @@
 	NAME=${NAME/-/_}
 	eval conf=\$EXTERNAL_FREETZ_MODULE_${NAME}
 	if [ "$conf" == "y" -o "${OWN_MODULES/ $NAME /}" != "${OWN_MODULES}" ]; then
-	    EXTERNAL_FILES+=" /$file"
+	    echo -n " /$file"
 	fi
     done
-)
+)"
