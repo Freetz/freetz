@@ -3,7 +3,8 @@ if [ "$FREETZ_REMOVE_MICROVOIP_DSL" == "y" ]; then
 	echo1 "removing microvoip-dsl.bin file"
 	rm_files \
 	  "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip-dsl.bin" \
-	  "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-*/kernel/drivers/atm/avm_atm/tiatm.ko"
+	  "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-*/kernel/drivers/atm/avm_atm/tiatm.ko" \
+	  "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-*/kernel/drivers/char/ubik2/ubik2.ko"
 fi
 
 if [ "$FREETZ_ADD_ANNEX_A_FIRMWARE" == "y" ]; then
