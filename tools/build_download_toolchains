@@ -1,8 +1,8 @@
 #!/bin/bash
 
-KERNEL_TOOLCHAIN_VERSION=r14612
+KERNEL_TOOLCHAIN_VERSION=rXXXXX
 KERNEL_TOOLCHAIN_FILENAME_SUFFIX=freetz-${KERNEL_TOOLCHAIN_VERSION}-shared-glibc
-TARGET_TOOLCHAIN_VERSION=r14612
+TARGET_TOOLCHAIN_VERSION=rXXXXX
 TARGET_TOOLCHAIN_FILENAME_SUFFIX=freetz-${TARGET_TOOLCHAIN_VERSION}-shared-glibc
 
 TOOL_CONF=tools/config/conf
@@ -21,37 +21,42 @@ EOF
 
 #
 # required kernel compiler versions:
-#     3.4 LE
-#     4.6 LE/BE
-#     4.7 BE
-#     4.8 BE
-#     5   BE
+#     3.4 LE    mipsel
+#     4.6 LE/BE mips/el
+#     4.7 LE    i686
+#     4.7 BE    mips
+#     4.8 BE    mips
+#     5   BE    mips
 #
 # required uClibc versions:
-#     0.9.28   LE
-#     0.9.29   LE
-#     0.9.32.x LE/BE
-#     0.9.33.x LE/BE (as part of freetz uClibc-0.9.33.x test program)
-#     0.9.33.x BE-NPTL
-#     0.9.33.x BE-NPTL-KERNEL_3.10
+#     0.9.28   LE    mipsel
+#     0.9.29   LE    mipsel
+#     0.9.32.x LE/BE mips/el
+#     0.9.33.x LE/BE mips/el (as part of freetz uClibc-0.9.33.x test program)
+#     0.9.33.x LE/BE-NPTL mips/el
+#     0.9.33.x BE-NPTL-KERNEL_3.10 mips
 #
 
-#                               kernel       uClibc
-# FREETZ_TYPE_WLAN              3.4 LE     0.9.28   LE
-# FREETZ_TYPE_7270_V1+IPv6      3.4 LE     0.9.29   LE
-# FREETZ_TYPE_7270_V3           4.6 LE     0.9.32.x LE
-# FREETZ_TYPE_7270_V3+0.9.33    4.6 LE     0.9.33.x LE
+#                               arch    kernel       uClibc
+# FREETZ_TYPE_6490/6590         i686    4.7 LE     0.9.33.x LE NPTL
 #
-# FREETZ_TYPE_7390+05.5X        4.6 BE     0.9.32.x BE
-# FREETZ_TYPE_7390+05.5X+0.9.33 4.6 BE     0.9.33.x BE
-# FREETZ_TYPE_7390+06.0X        4.7 BE     0.9.33.x BE NPTL
-# FREETZ_TYPE_7390+06.2X        4.8 BE     0.9.33.x BE NPTL
-# FREETZ_TYPE_7490+06.5X        4.8 BE     0.9.33.x BE NPTL KERNEL_3.10
-# FREETZ_TYPE_7580+06.8X        5   BE     0.9.33.x BE NPTL KERNEL_3.10
+# FREETZ_TYPE_WLAN              mipsel  3.4 LE     0.9.28   LE
+# FREETZ_TYPE_7270_V1+IPv6      mipsel  3.4 LE     0.9.29   LE
+# FREETZ_TYPE_7270_V3           mipsel  4.6 LE     0.9.32.x LE
+# FREETZ_TYPE_7270_V3+0.9.33    mipsel  4.6 LE     0.9.33.x LE
+#
+# FREETZ_TYPE_7390+05.5X        mips    4.6 BE     0.9.32.x BE
+# FREETZ_TYPE_7390+05.5X+0.9.33 mips    4.6 BE     0.9.33.x BE
+# FREETZ_TYPE_7390+06.0X        mips    4.7 BE     0.9.33.x BE NPTL
+# FREETZ_TYPE_7390+06.2X        mips    4.8 BE     0.9.33.x BE NPTL
+# FREETZ_TYPE_7490+06.5X        mips    4.8 BE     0.9.33.x BE NPTL KERNEL_3.10
+# FREETZ_TYPE_7580+06.8X        mips    5   BE     0.9.33.x BE NPTL KERNEL_3.10
 #
 
 mkdir -p $DOWNLOADS
 for options in \
+	"FREETZ_TYPE_6490" \
+	\
 	"FREETZ_TYPE_WLAN" \
 	\
 	"FREETZ_TYPE_7270_V1 FREETZ_TARGET_IPV6_SUPPORT" \
