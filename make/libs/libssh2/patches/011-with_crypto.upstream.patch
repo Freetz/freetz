@@ -1,0 +1,429 @@
+--- acinclude.m4
++++ acinclude.m4
+@@ -382,86 +382,93 @@
+   #
+ ])
+ 
+-AC_DEFUN([LIBSSH2_CHECKFOR_MBEDTLS], [
+-
+-  old_LDFLAGS=$LDFLAGS
+-  old_CFLAGS=$CFLAGS
+-  if test -n "$use_mbedtls" && test "$use_mbedtls" != "no"; then
+-    LDFLAGS="$LDFLAGS -L$use_mbedtls/lib"
+-    CFLAGS="$CFLAGS -I$use_mbedtls/include"
+-  fi
+-
+-  AC_LIB_HAVE_LINKFLAGS([mbedtls], [], [
+-    #include <mbedtls/version.h>
+-  ])
+-
+-  if test "$ac_cv_libmbedtls" = "yes"; then
+-    AC_DEFINE(LIBSSH2_MBEDTLS, 1, [Use mbedtls])
+-    LIBSREQUIRED= # mbedtls doesn't provide a .pc file
+-    LIBS="$LIBS -lmbedtls -lmbedcrypto"
+-    found_crypto=libmbedtls
+-    support_clear_memory=yes
+-  else
+-    # restore
+-    LDFLAGS=$old_LDFLAGS
+-    CFLAGS=$old_CFLAGS
++dnl LIBSSH2_LIB_HAVE_LINKFLAGS
++dnl --------------------------
++dnl Wrapper around AC_LIB_HAVE_LINKFLAGS to also check $prefix/lib, if set.
++dnl
++dnl autoconf only checks $prefix/lib64 if gcc -print-search-dirs output
++dnl includes a directory named lib64. So, to find libraries in $prefix/lib
++dnl we append -L$prefix/lib to LDFLAGS before checking.
++dnl
++dnl For conveniece, $4 is expanded if [lib]$1 is found.
++
++AC_DEFUN([LIBSSH2_LIB_HAVE_LINKFLAGS], [
++  libssh2_save_CPPFLAGS="$CPPFLAGS"
++  libssh2_save_LDFLAGS="$LDFLAGS"
++
++  if test "${with_lib$1_prefix+set}" = set; then
++    CPPFLAGS="$CPPFLAGS${CPPFLAGS:+ }-I${with_lib$1_prefix}/include"
++    LDFLAGS="$LDFLAGS${LDFLAGS:+ }-L${with_lib$1_prefix}/lib"
+   fi
+-])
+ 
+-AC_DEFUN([LIBSSH2_CHECKFOR_GCRYPT], [
++  AC_LIB_HAVE_LINKFLAGS([$1], [$2], [$3])
+ 
+-  old_LDFLAGS=$LDFLAGS
+-  old_CFLAGS=$CFLAGS
+-  if test -n "$use_libgcrypt" && test "$use_libgcrypt" != "no"; then
+-    LDFLAGS="$LDFLAGS -L$use_libgcrypt/lib"
+-    CFLAGS="$CFLAGS -I$use_libgcrypt/include"
+-  fi
+-  AC_LIB_HAVE_LINKFLAGS([gcrypt], [], [
+-    #include <gcrypt.h>
+-  ])
++  LDFLAGS="$libssh2_save_LDFLAGS"
+ 
+-  if test "$ac_cv_libgcrypt" = "yes"; then
+-    AC_DEFINE(LIBSSH2_LIBGCRYPT, 1, [Use libgcrypt])
+-    LIBSREQUIRED= # libgcrypt doesn't provide a .pc file. sad face.
+-    LIBS="$LIBS -lgcrypt"
+-    found_crypto=libgcrypt
++  if test "$ac_cv_lib$1" = "yes"; then :
++    $4
+   else
+-    # restore
+-    LDFLAGS=$old_LDFLAGS
+-    CFLAGS=$old_CFLAGS
++    CPPFLAGS="$libssh2_save_CPPFLAGS"
+   fi
+ ])
+ 
++AC_DEFUN([LIBSSH2_CHECK_CRYPTO], [
++if test "$use_crypto" = "auto" && test "$found_crypto" = "none" || test "$use_crypto" = "$1"; then
++m4_case([$1],
++[openssl], [
++  LIBSSH2_LIB_HAVE_LINKFLAGS([ssl], [crypto], [#include <openssl/ssl.h>], [
++    AC_DEFINE(LIBSSH2_OPENSSL, 1, [Use $1])
++    LIBSREQUIRED="$LIBSREQUIRED${LIBSREQUIRED:+ }libssl libcrypto"
++
++    # Not all OpenSSL have AES-CTR functions.
++    libssh2_save_LIBS="$LIBS"
++    LIBS="$LIBS $LIBSSL"
++    AC_CHECK_FUNCS(EVP_aes_128_ctr)
++    LIBS="$libssh2_save_LIBS"
++
++    found_crypto="$1"
++    found_crypto_str="OpenSSL (AES-CTR: ${ac_cv_func_EVP_aes_128_ctr:-N/A})"
++  ])
++],
++
++[libgcrypt], [
++  LIBSSH2_LIB_HAVE_LINKFLAGS([gcrypt], [], [#include <gcrypt.h>], [
++    AC_DEFINE(LIBSSH2_LIBGCRYPT, 1, [Use $1])
++    found_crypto="$1"
++  ])
++],
++
++[mbedtls], [
++  LIBSSH2_LIB_HAVE_LINKFLAGS([mbedcrypto], [], [#include <mbedtls/version.h>], [
++    AC_DEFINE(LIBSSH2_MBEDTLS, 1, [Use $1])
++    found_crypto="$1"
++    support_clear_memory=yes
++  ])
++],
+ 
+-AC_DEFUN([LIBSSH2_CHECKFOR_WINCNG], [
+-
++[wincng], [
+   # Look for Windows Cryptography API: Next Generation
+ 
+-  AC_LIB_HAVE_LINKFLAGS([bcrypt], [], [
+-    #include <windows.h>
+-    #include <bcrypt.h>
+-  ])
+-  AC_LIB_HAVE_LINKFLAGS([crypt32], [], [
++  AC_CHECK_HEADERS([ntdef.h ntstatus.h], [], [], [#include <windows.h>])
++  AC_CHECK_DECLS([SecureZeroMemory], [], [], [#include <windows.h>])
++
++  LIBSSH2_LIB_HAVE_LINKFLAGS([crypt32], [], [
+     #include <windows.h>
+     #include <wincrypt.h>
+   ])
+-  AC_CHECK_HEADERS([ntdef.h ntstatus.h], [], [], [
++  LIBSSH2_LIB_HAVE_LINKFLAGS([bcrypt], [], [
+     #include <windows.h>
+-  ])
+-  AC_CHECK_DECLS([SecureZeroMemory], [], [], [
+-    #include <windows.h>
+-  ])
+-
+-  if test "$ac_cv_libbcrypt" = "yes"; then
+-    AC_DEFINE(LIBSSH2_WINCNG, 1, [Use Windows CNG])
+-    LIBSREQUIRED= # wincng doesn't provide a .pc file. sad face.
+-    LIBS="$LIBS -lbcrypt"
+-    if test "$ac_cv_libcrypt32" = "yes"; then
+-      LIBS="$LIBS -lcrypt32"
+-    fi
+-    found_crypto="Windows Cryptography API: Next Generation"
+-    if test "$ac_cv_have_decl_SecureZeroMemory" = "yes"; then
+-      support_clear_memory=yes
+-    fi
+-  fi
++    #include <bcrypt.h>
++  ], [
++    AC_DEFINE(LIBSSH2_WINCNG, 1, [Use $1])
++    found_crypto="$1"
++    found_crypto_str="Windows Cryptography API: Next Generation"
++    support_clear_memory="$ac_cv_have_decl_SecureZeroMemory"
++  ])
++],
++)
++  test "$found_crypto" = "none" &&
++    crypto_errors="${crypto_errors}No $1 crypto library found!
++"
++fi
+ ])
+--- configure.ac
++++ configure.ac
+@@ -83,79 +83,81 @@
+ dnl check for how to do large files
+ AC_SYS_LARGEFILE
+ 
++# Configure parameters
++
++
++# Crypto backends
++
+ found_crypto=none
++found_crypto_str=""
++support_clear_memory=no
++crypto_errors=""
+ 
+-# Configure parameters
+-AC_ARG_WITH(openssl,
+-  AC_HELP_STRING([--with-openssl],[Use OpenSSL for crypto]),
+-  use_openssl=$withval,use_openssl=auto)
+-AC_ARG_WITH(libgcrypt,
+-  AC_HELP_STRING([--with-libgcrypt],[Use libgcrypt for crypto]),
+-  [ use_libgcrypt=$withval
+-    LIBSSH2_CHECKFOR_GCRYPT
+-  ], use_libgcrypt=auto)
+-AC_ARG_WITH(wincng,
+-  AC_HELP_STRING([--with-wincng],[Use Windows CNG for crypto]),
+-  [ use_wincng=$withval
+-    LIBSSH2_CHECKFOR_WINCNG
+-  ] ,use_wincng=auto)
+-AC_ARG_WITH([mbedtls],
+-  AC_HELP_STRING([--with-mbedtls],[Use mbedTLS for crypto]),
+-  [ use_mbedtls=$withval
+-    LIBSSH2_CHECKFOR_MBEDTLS
+-  ], use_mbedtls=auto
++m4_set_add([crypto_backends], [openssl])
++m4_set_add([crypto_backends], [libgcrypt])
++m4_set_add([crypto_backends], [mbedtls])
++m4_set_add([crypto_backends], [wincng])
++
++AC_ARG_WITH([crypto],
++  AC_HELP_STRING([--with-crypto=auto|]m4_set_contents([crypto_backends], [|]),
++    [Select crypto backend (default: auto)]),
++  use_crypto=$withval,
++  use_crypto=auto
+ )
+-AC_ARG_WITH(libz,
+-  AC_HELP_STRING([--with-libz],[Use zlib for compression]),
+-  use_libz=$withval,use_libz=auto)
+ 
+-support_clear_memory=no
++case "${use_crypto}" in
++  auto|m4_set_contents([crypto_backends], [|]))
++    m4_set_map([crypto_backends], [LIBSSH2_CHECK_CRYPTO])
++    ;;
++  yes|"")
++    crypto_errors="No crypto backend specified!"
++    ;;
++  *)
++    crypto_errors="Unknown crypto backend '${use_crypto}' specified!"
++    ;;
++esac
+ 
+-# Look for OpenSSL
+-if test "$found_crypto" = "none" && test "$use_openssl" != "no"; then
+-  AC_LIB_HAVE_LINKFLAGS([ssl], [crypto], [#include <openssl/ssl.h>])
+-fi
+-if test "$ac_cv_libssl" = "yes"; then
+-  AC_DEFINE(LIBSSH2_OPENSSL, 1, [Use OpenSSL])
+-  LIBSREQUIRED=libssl,libcrypto
+-
+-  # Not all OpenSSL have AES-CTR functions.
+-  save_LIBS="$LIBS"
+-  LIBS="$LIBS $LIBSSL"
+-  AC_CHECK_FUNCS(EVP_aes_128_ctr)
+-  LIBS="$save_LIBS"
++if test "$found_crypto" = "none"; then
++  crypto_errors="${crypto_errors}
++Specify --with-crypto=\$backend and/or the neccessary library search prefix.
+ 
+-  found_crypto="OpenSSL (AES-CTR: ${ac_cv_func_EVP_aes_128_ctr:-N/A})"
++Known crypto backends: auto, m4_set_contents([crypto_backends], [, ])"
++  AS_MESSAGE([ERROR: ${crypto_errors}])
++else
++  test "$found_crypto_str" = "" && found_crypto_str="$found_crypto"
+ fi
+ 
+-AM_CONDITIONAL(OPENSSL, test "$ac_cv_libssl" = "yes")
+-AM_CONDITIONAL(WINCNG, test "$ac_cv_libbcrypt" = "yes")
+-AM_CONDITIONAL(LIBGCRYPT, test "$ac_cv_libgcrypt" = "yes")
+-AM_CONDITIONAL(MBEDTLS, test "$ac_cv_libmbedtls" = "yes")
+-AM_CONDITIONAL(OS400QC3, false)
++m4_set_foreach([crypto_backends], [backend],
++  [AM_CONDITIONAL(m4_toupper(backend), test "$found_crypto" = "backend")]
++)
++m4_undefine([backend])
+ 
+-# Check if crypto library was found
+-if test "$found_crypto" = "none"; then
+-  AC_MSG_ERROR([No crypto library found!
+-Try --with-libssl-prefix=PATH
+- or --with-libgcrypt-prefix=PATH
+- or --with-libmbedtls-prefix=PATH
+- or --with-wincng on Windows\
+-])
+-fi
+ 
+-# Look for Libz
+-if test "$use_libz" != "no"; then
++# libz
++
++AC_ARG_WITH([libz],
++  AC_HELP_STRING([--with-libz],[Use libz for compression]),
++  use_libz=$withval,
++  use_libz=auto)
++
++found_libz=no
++libz_errors=""
++
++if test "$use_libz" != no; then
+   AC_LIB_HAVE_LINKFLAGS([z], [], [#include <zlib.h>])
+   if test "$ac_cv_libz" != yes; then
+-    AC_MSG_NOTICE([Cannot find zlib, disabling compression])
+-    AC_MSG_NOTICE([Try --with-libz-prefix=PATH if you know you have it])
++    if test "$use_libz" = auto; then
++      AC_MSG_NOTICE([Cannot find libz, disabling compression])
++      found_libz="disabled; no libz found"
++    else
++      libz_errors="No libz found!
++Try --with-libz-prefix=PATH if you know that you have it."
++      AS_MESSAGE([ERROR: $libz_errors])
++    fi
+   else
+     AC_DEFINE(LIBSSH2_HAVE_ZLIB, 1, [Compile in zlib support])
+-    if test "${LIBSREQUIRED}" != ""; then
+-      LIBSREQUIRED="${LIBSREQUIRED},"
+-    fi
+-    LIBSREQUIRED="${LIBSREQUIRED}zlib"
++    LIBSREQUIRED="$LIBSREQUIRED${LIBSREQUIRED:+ }zlib"
++    found_libz="yes"
+   fi
+ fi
+ 
+@@ -351,6 +353,22 @@
+ 
+ CURL_CHECK_NONBLOCKING_SOCKET
+ 
++missing_required_deps=0
++
++if test "${libz_errors}" != ""; then
++  AS_MESSAGE([ERROR: ${libz_errors}])
++  missing_required_deps=1
++fi
++
++if test "$found_crypto" = "none"; then
++  AS_MESSAGE([ERROR: ${crypto_errors}])
++  missing_required_deps=1
++fi
++
++if test $missing_required_deps = 1; then
++  AC_MSG_ERROR([Required dependencies are missing!])
++fi
++
+ AC_CONFIG_FILES([Makefile
+                  src/Makefile
+                  tests/Makefile
+@@ -367,10 +385,10 @@
+   Compiler:         ${CC}
+   Compiler flags:   ${CFLAGS}
+   Library types:    Shared=${enable_shared}, Static=${enable_static}
+-  Crypto library:   ${found_crypto}
++  Crypto library:   ${found_crypto_str}
+   Clear memory:     $enable_clear_memory
+   Debug build:      $enable_debug
+   Build examples:   $build_examples
+   Path to sshd:     $ac_cv_path_SSHD (only for self-tests)
+-  zlib compression: $ac_cv_libz
++  zlib compression: ${found_libz}
+ ])
+--- docs/HACKING.CRYPTO
++++ docs/HACKING.CRYPTO
+@@ -13,6 +13,33 @@
+ indicates the libssh2 core modules never use the function result.
+ 
+ 
++0) Build system.
++
++Add a new crypto backend to the autotools build system (./configure) as such:
++
++* Add one new line to configure.ac:
++
++m4_set_add([crypto_backends], [newname])
++
++This automatically creates a new --with-crypto=newname option which users can
++specify when invoking configure at compile-time to select the new backend.
++
++* Add a new m4_case stanza to acinclude.m4 within LIBSSH2_CRYPTO_CHECK,
++  with checks for library availability. A successful check should set
++  library linking variables. The LIBSSH2_LIB_HAVE_LINKFLAGS macro creates
++  such a variable automatically if the checked library can be found.
++
++* Add a Makefile.newname.inc in the top-level directory which sets
++  CRYPTO_CSOURCES and CRYPTO_HHEADERS to the new backend source files,
++  and CRYPTO_LTLIBS to the libtool linking parameters for the library, set
++  e.g. by a LIBSSH2_LIB_HAVE_LINKFLAGS call in LIBSSH2_CRYPTO_CHECK.
++
++* Add a new block to src/Makefile.am:
++  if NEWNAME
++  include ../Makefile.newname.inc
++  endif
++
++
+ 1) Crypto library initialization/termination.
+ 
+ void libssh2_crypto_init(void);
+--- Makefile.libgcrypt.inc
++++ Makefile.libgcrypt.inc
+@@ -1,2 +1,3 @@
+ CRYPTO_CSOURCES = libgcrypt.c
+ CRYPTO_HHEADERS = libgcrypt.h
++CRYPTO_LTLIBS = $(LTLIBGCRYPT)
+--- Makefile.mbedTLS.inc
++++ Makefile.mbedTLS.inc
+@@ -1,2 +1,3 @@
+ CRYPTO_CSOURCES = mbedtls.c
+ CRYPTO_HHEADERS = mbedtls.h
++CRYPTO_LTLIBS = $(LTLIBMBEDCRYPTO)
+--- Makefile.OpenSSL.inc
++++ Makefile.OpenSSL.inc
+@@ -1,2 +1,3 @@
+ CRYPTO_CSOURCES = openssl.c
+ CRYPTO_HHEADERS = openssl.h
++CRYPTO_LTLIBS = $(LTLIBSSL)
+--- Makefile.WinCNG.inc
++++ Makefile.WinCNG.inc
+@@ -1,2 +1,3 @@
+ CRYPTO_CSOURCES = wincng.c
+ CRYPTO_HHEADERS = wincng.h
++CRYPTO_LTLIBS = $(LTLIBBCRYPT) $(LTLIBCRYPT32)
+--- src/Makefile.am
++++ src/Makefile.am
+@@ -1,7 +1,7 @@
+ # $Id: Makefile.am,v 1.21 2009/05/07 17:21:56 bagder Exp $
+ AUTOMAKE_OPTIONS = foreign nostdinc
+ 
+-# Get the CRYPTO_CSOURCES and CRYPTO_HHEADERS defines
++# Get the CRYPTO_CSOURCES, CRYPTO_HHEADERS and CRYPTO_LTLIBS defines
+ if OPENSSL
+ include ../Makefile.OpenSSL.inc
+ endif
+@@ -11,9 +11,6 @@
+ if WINCNG
+ include ../Makefile.WinCNG.inc
+ endif
+-if OS400QC3
+-include ../Makefile.os400qc3.inc
+-endif
+ if MBEDTLS
+ include ../Makefile.mbedTLS.inc
+ endif
+@@ -65,4 +62,4 @@
+ 
+ libssh2_la_LDFLAGS = $(VERSION) -no-undefined \
+ 	-export-symbols-regex '^libssh2_.*' \
+-	$(LTLIBGCRYPT) $(LTLIBSSL) $(LTLIBZ)
++	$(CRYPTO_LTLIBS) $(LTLIBZ)

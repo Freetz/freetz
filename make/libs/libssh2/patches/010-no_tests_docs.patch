@@ -1,0 +1,20 @@
+--- Makefile.in
++++ Makefile.in
+@@ -195,7 +195,7 @@
+ ETAGS = etags
+ CTAGS = ctags
+ CSCOPE = cscope
+-DIST_SUBDIRS = src tests docs example
++DIST_SUBDIRS = src
+ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.inc \
+ 	$(srcdir)/libssh2.pc.in COPYING ChangeLog NEWS README compile \
+ 	config.guess config.rpath config.sub depcomp install-sh \
+@@ -389,7 +389,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = foreign nostdinc
+-SUBDIRS = src tests docs $(am__append_1)
++SUBDIRS = src $(am__append_1)
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libssh2.pc
+ include_HEADERS = \
