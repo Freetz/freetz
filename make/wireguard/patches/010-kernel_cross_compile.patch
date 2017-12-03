@@ -1,0 +1,18 @@
+--- src/Makefile
++++ src/Makefile
+@@ -29,13 +29,13 @@
+ 	git update-index --assume-unchanged dkms.conf || true
+ 
+ module: version.h
+-	@$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
++	@$(MAKE) -C "$(KERNELDIR)" SUBDIRS="$(SUBDIRS)" ARCH="$(ARCH)" CROSS_COMPILE="$(CROSS_COMPILE)" modules
+ 
+ module-debug: version.h
+ 	@$(MAKE) -C $(KERNELDIR) M=$(PWD) V=1 CONFIG_WIREGUARD_DEBUG=y modules
+ 
+ clean:
+-	@$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
++	@$(MAKE) -C "$(KERNELDIR)" SUBDIRS="$(SUBDIRS)" ARCH="$(ARCH)" CROSS_COMPILE="$(CROSS_COMPILE)" clean
+ 	@$(MAKE) -C tools clean
+ 
+ module-install:

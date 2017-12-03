@@ -1,0 +1,57 @@
+#!/bin/sh
+
+DAEMON=wireguard
+DAEMON_LONG_NAME="WireGuard"
+DAEMON_CHECK=wg-crypt-wg0
+
+. /etc/init.d/modlibrc
+
+start() {
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
+	modprobe wireguard
+	ip link add dev wg0 type wireguard
+	ip address add $WIREGUARD_IP dev wg0
+	wg setconf wg0 /tmp/flash/wireguard/wireguard.conf
+	ip link set wg0 up
+	echo 'done.'
+}
+
+stop() {
+	ip link set wg0 down
+	ip link delete dev wg0 type wireguard
+}
+
+case $1 in
+	""|load)
+		[ ! -d /tmp/flash/$DAEMON ] && mkdir -p /tmp/flash/$DAEMON
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg file $DAEMON wireguard '$(lang de:"Konfiguration" en:"Configuration")' 1 wireguard
+		modreg daemon $DAEMON
+		modlib_start $WIREGUARD_ENABLED
+		;;
+	unload)
+		stop
+		modunreg daemon $DAEMON
+		modunreg file $DAEMON
+		modunreg cgi $DAEMON
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+
+esac
+
+exit 0
