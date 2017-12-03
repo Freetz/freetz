@@ -6,6 +6,7 @@ config FREETZ_LIB_libcurl
 	select FREETZ_LIB_libmbedcrypto if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_MBEDTLS
 	select FREETZ_LIB_libmbedtls    if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_MBEDTLS
 	select FREETZ_LIB_libmbedx509   if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_MBEDTLS
+	select FREETZ_LIB_libssh2       if FREETZ_LIB_libcurl_WITH_SFTP
 	select FREETZ_LIB_libz          if FREETZ_LIB_libcurl_WITH_ZLIB
 	help
 		A client-side URL transfer library.
@@ -33,6 +34,12 @@ choice
 		# TODO: remove this dependency as soon as transmission supports mbed TLS (current git version already does)
 		depends on !FREETZ_PACKAGE_TRANSMISSION
 endchoice
+
+config FREETZ_LIB_libcurl_WITH_SFTP
+	bool "build with sftp support" if FREETZ_LIB_libcurl || FREETZ_PACKAGE_CURL
+	default n
+	help
+		This option enables sftp support in curl.
 
 config FREETZ_LIB_libcurl_WITH_ZLIB
 	bool "build with zlib support" if FREETZ_LIB_libcurl || FREETZ_PACKAGE_CURL

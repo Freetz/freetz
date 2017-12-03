@@ -20,6 +20,9 @@ endif
 ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_MBEDTLS)),y)
 $(PKG)_DEPENDS_ON += mbedtls
 endif
+ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_SFTP)),y)
+$(PKG)_DEPENDS_ON += libssh2
+endif
 ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_ZLIB)),y)
 $(PKG)_DEPENDS_ON += zlib
 endif
@@ -30,6 +33,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_OPENSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_POLARSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_MBEDTLS
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_SFTP
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_ZLIB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURL_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
@@ -87,8 +91,8 @@ $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn
 $(PKG)_CONFIGURE_OPTIONS += --without-libmetalink
 $(PKG)_CONFIGURE_OPTIONS += --without-librtmp
-$(PKG)_CONFIGURE_OPTIONS += --without-libssh2
 $(PKG)_CONFIGURE_OPTIONS += --without-nghttp2
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_SFTP),--with-libssh2="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-libssh2)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_ZLIB),--with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-zlib)
 
 $(PKG_SOURCE_DOWNLOAD)
