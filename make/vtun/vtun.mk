@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.0.3)
+$(call PKG_INIT_BIN, 3.0.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=f3becf2a0270910a841060c08d1db824
+$(PKG)_SOURCE_MD5:=f952c5895ae8f40235aaad9a8f41a4bd
 $(PKG)_SITE:=@SF/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/vtund
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/vtund

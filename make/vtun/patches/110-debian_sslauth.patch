@@ -1,4 +1,4 @@
---- auth.c.orig
+--- auth.c
 +++ auth.c
 @@ -23,6 +23,10 @@
  /*
@@ -44,13 +44,13 @@
 +/* Encryption and Decryption of the challenge-key */
 +#ifdef HAVE_SSL
 +
- void gen_chal(char *buf)
+ static void gen_chal(char *buf)
  {
     RAND_bytes(buf, VTUN_CHAL_SIZE);
  }
  
--void encrypt_chal(char *chal, char *pwd)
-+void ssl_encrypt_chal(char *chal, char *pwd)
+-static void encrypt_chal(char *chal, char *pwd)
++static void ssl_encrypt_chal(char *chal, char *pwd)
  { 
     register int i;
     BF_KEY key;
@@ -62,8 +62,8 @@
        BF_ecb_encrypt(chal + i,  chal + i, &key, BF_ENCRYPT);
  }
  
--void decrypt_chal(char *chal, char *pwd)
-+void ssl_decrypt_chal(char *chal, char *pwd)
+-static void decrypt_chal(char *chal, char *pwd)
++static void ssl_decrypt_chal(char *chal, char *pwd)
  { 
     register int i;
     BF_KEY key;
@@ -72,11 +72,11 @@
     BF_set_key(&key, 16, MD5(pwd,strlen(pwd),NULL));
  
     for(i=0; i < VTUN_CHAL_SIZE; i += 8 )
-@@ -91,30 +118,43 @@ void decrypt_chal(char *chal, char *pwd)
+@@ -91,30 +118,43 @@
  
  #else /* HAVE_SSL */
  
--void encrypt_chal(char *chal, char *pwd)
+-static void encrypt_chal(char *chal, char *pwd)
 -{ 
 -   char * xor_msk = pwd;
 -   register int i, xor_len = strlen(xor_msk);
@@ -85,13 +85,13 @@
 -      chal[i] ^= xor_msk[i%xor_len];
 -}
 -
--void inline decrypt_chal(char *chal, char *pwd)
+-static void inline decrypt_chal(char *chal, char *pwd)
 -{ 
 -   encrypt_chal(chal, pwd);
 -}
 -
  /* Generate PSEUDO random challenge key. */
- void gen_chal(char *buf)
+ static void gen_chal(char *buf)
  {
     register int i;
 - 
@@ -132,7 +132,7 @@
  #endif /* HAVE_SSL */
  
  /* 
-@@ -358,7 +398,11 @@ struct vtun_host * auth_server(int fd)
+@@ -358,7 +398,11 @@
  		   if( !(h = find_host(host)) )
  		      break;
  
@@ -145,7 +145,7 @@
  	
  		   if( !memcmp(chal_req, chal_res, VTUN_CHAL_SIZE) ){
  		      /* Auth successeful. */
-@@ -410,7 +454,11 @@ int auth_client(int fd, struct vtun_host
+@@ -410,7 +454,11 @@
  		   if( !strncmp(buf,"OK",2) && cs2cl(buf,chal)){
  		      stage = ST_CHAL;
  					
@@ -158,9 +158,9 @@
  		      print_p(fd,"CHAL: %s\n", cl2cs(chal));
  
  		      continue;
---- cfg_file.y.orig
+--- cfg_file.y
 +++ cfg_file.y
-@@ -74,7 +74,7 @@ int yyerror(char *s); 
+@@ -74,7 +74,7 @@
  %token K_OPTIONS K_DEFAULT K_PORT K_BINDADDR K_PERSIST K_TIMEOUT
  %token K_PASSWD K_PROG K_PPP K_SPEED K_IFCFG K_FWALL K_ROUTE K_DEVICE 
  %token K_MULTI K_SRCADDR K_IFACE K_ADDR
@@ -169,7 +169,7 @@
  %token K_UP K_DOWN K_SYSLOG K_IPROUTE
  
  %token <str> K_HOST K_ERROR
-@@ -284,6 +284,13 @@ host_option: '\n'
+@@ -285,6 +285,13 @@
  			}
  			compress
  
@@ -183,9 +183,9 @@
    | K_ENCRYPT NUM 	{  
  			  if( $2 ){
  			     parse_host->flags |= VTUN_ENCRYPT;
---- cfg_kwords.h.orig
+--- cfg_kwords.h
 +++ cfg_kwords.h
-@@ -37,6 +37,7 @@ struct kword cfg_keyword[] = {
+@@ -37,6 +37,7 @@
     { "addr",  	 K_ADDR }, 
     { "iface",  	 K_IFACE }, 
     { "bindaddr", K_BINDADDR },
@@ -193,9 +193,9 @@
     { "persist",	 K_PERSIST }, 
     { "multi",	 K_MULTI }, 
     { "iface",    K_IFACE }, 
---- main.c.orig
+--- main.c
 +++ main.c
-@@ -66,6 +66,7 @@ int main(int argc, char *argv[], char *e
+@@ -79,6 +79,7 @@
       vtun.cfg_file = VTUN_CONFIG_FILE;
       vtun.persist = -1;
       vtun.timeout = -1;
@@ -203,7 +203,7 @@
  	
       /* Dup strings because parser will try to free them */
       vtun.ppp   = strdup("/usr/sbin/pppd");
-@@ -88,6 +89,11 @@ int main(int argc, char *argv[], char *e
+@@ -101,6 +102,11 @@
       default_host.ka_interval = 30;
       default_host.ka_maxfail  = 4;
       default_host.loc_fd = default_host.rmt_fd = -1;
@@ -215,7 +215,7 @@
  
       /* Start logging to syslog and stderr */
       openlog("vtund", LOG_PID | LOG_NDELAY | LOG_PERROR, LOG_DAEMON);
-@@ -166,6 +172,16 @@ int main(int argc, char *argv[], char *e
+@@ -181,6 +187,16 @@
  	vtun.persist = 0;
       if(vtun.timeout == -1)
  	vtun.timeout = VTUN_TIMEOUT;
@@ -232,9 +232,9 @@
  
       switch( vtun.svr_type ){
  	case -1:
---- vtun.h.orig
+--- vtun.h
 +++ vtun.h
-@@ -99,6 +99,9 @@ struct vtun_host {
+@@ -100,6 +100,9 @@
     int  rmt_fd;
     int  loc_fd;
  
@@ -244,7 +244,7 @@
     /* Persist mode */
     int  persist;
  
-@@ -204,6 +207,7 @@ extern llist host_list;
+@@ -205,6 +208,7 @@
  struct vtun_opts {
     int  timeout;
     int  persist;
