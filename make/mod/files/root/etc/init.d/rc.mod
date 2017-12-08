@@ -44,7 +44,7 @@ start() {
 		[ "$MOD_IPV6_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 	fi
 
-	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv; do
+	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv smbd; do
 		local rc="/etc/init.d/rc.$pkg"
 		[ -x "$rc" ] && log "$($rc)"
 	done

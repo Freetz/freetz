@@ -46,6 +46,7 @@ set_mode() {
 case $1 in
 	""|load)
 		modreg daemon -p avm ftpd
+		[ -e /tmp/ftpd_add_to_inetd_later ] && inetdctl enable ftpd
 		;;
 	unload)
 		modunreg daemon avm ftpd
