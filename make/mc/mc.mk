@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 4.8.19)
+$(call PKG_INIT_BIN, 4.8.20)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=eb9e56bbb5b2893601d100d0e0293983049b302c5ab61bfb544ad0ee2cc1f2df
+$(PKG)_SOURCE_SHA256:=017ee7f4f8ae420a04f4d6fcebaabe5b494661075c75442c76e9c8b1923d501c
 $(PKG)_SITE:=ftp://ftp.midnight-commander.org/pub/midnightcommander
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/mc
