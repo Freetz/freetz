@@ -118,6 +118,9 @@ depends_on MKFS_EXT2 "!FREETZ_PACKAGE_E2FSPROGS_E2MAKING"
 # alternatively we might apply this patch http://busybox.net/0001-mdev-create-devices-from-sys-dev.patch
 depends_on MDEV "FREETZ_KERNEL_VERSION_2_6_28_MIN"
 
+# setns syscall is available since kernel 3.0 (s. http://man7.org/linux/man-pages/man2/setns.2.html#VERSIONS)
+depends_on NSENTER "FREETZ_KERNEL_VERSION_3_10_MIN"
+
 # fallocate applet requires posix_fallocate which is available (in Freetz) since uClibc-0.9.33
 depends_on FALLOCATE FREETZ_TARGET_UCLIBC_0_9_33
 
