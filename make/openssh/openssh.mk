@@ -38,9 +38,6 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO),etc/default.op
 $(PKG)_AC_VARIABLES := have_decl_LLONG_MAX search_logout search_openpty lib_resolv_res_query lib_resolv_strcasecmp
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),--disable-shared,--enable-shared)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),--enable-static,--disable-static)
-$(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-etc-default-login
 $(PKG)_CONFIGURE_OPTIONS += --disable-lastlog
 $(PKG)_CONFIGURE_OPTIONS += --disable-utmp
@@ -53,7 +50,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-pie
 
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
-$(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static)
+$(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static -lssh -ldl)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
