@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -4621,6 +4621,7 @@
+@@ -4620,6 +4620,7 @@
  
  config_appended_defs="$config_appended_defs${newline}INLINE=${INLINE}"
  
@@ -8,7 +8,7 @@
  # which switch to pass runtime path to dynamic libraries to the linker
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if linker supports -R" >&5
  $as_echo_n "checking if linker supports -R... " >&6; }
-@@ -4732,6 +4733,7 @@
+@@ -4731,6 +4732,7 @@
  fi
  
  config_appended_defs="$config_appended_defs${newline}CC_LD_DYNPATH=${CC_LD_DYNPATH}"
@@ -18,7 +18,7 @@
    for ac_prog in gar ar
 --- Makefile
 +++ Makefile
-@@ -1129,16 +1129,6 @@
+@@ -1151,16 +1151,6 @@
  	PTHREAD_LIBS =
  endif
  
@@ -35,7 +35,7 @@
  ifdef NO_LIBGEN_H
  	COMPAT_CFLAGS += -DNO_LIBGEN_H
  	COMPAT_OBJS += compat/basename.o
-@@ -1166,7 +1156,7 @@
+@@ -1188,7 +1178,7 @@
  
  ifdef LIBPCREDIR
  	BASIC_CFLAGS += -I$(LIBPCREDIR)/include
@@ -44,7 +44,7 @@
  endif
  
  ifdef HAVE_ALLOCA_H
-@@ -1185,7 +1175,7 @@
+@@ -1207,7 +1197,7 @@
  	ifdef CURLDIR
  		# Try "-Wl,-rpath=$(CURLDIR)/$(lib)" in such a case.
  		BASIC_CFLAGS += -I$(CURLDIR)/include
@@ -53,7 +53,7 @@
  	else
  		CURL_LIBCURL = -lcurl
  	endif
-@@ -1222,7 +1212,7 @@
+@@ -1244,7 +1234,7 @@
  	ifndef NO_EXPAT
  		ifdef EXPATDIR
  			BASIC_CFLAGS += -I$(EXPATDIR)/include
@@ -62,7 +62,7 @@
  		else
  			EXPAT_LIBEXPAT = -lexpat
  		endif
-@@ -1235,7 +1225,7 @@
+@@ -1257,7 +1247,7 @@
  
  ifdef ZLIB_PATH
  	BASIC_CFLAGS += -I$(ZLIB_PATH)/include
@@ -71,7 +71,7 @@
  endif
  EXTLIBS += -lz
  
-@@ -1243,7 +1233,7 @@
+@@ -1265,7 +1255,7 @@
  	OPENSSL_LIBSSL = -lssl
  	ifdef OPENSSLDIR
  		BASIC_CFLAGS += -I$(OPENSSLDIR)/include
@@ -80,7 +80,7 @@
  	else
  		OPENSSL_LINK =
  	endif
-@@ -1270,7 +1260,7 @@
+@@ -1291,7 +1281,7 @@
  ifdef NEEDS_LIBICONV
  	ifdef ICONVDIR
  		BASIC_CFLAGS += -I$(ICONVDIR)/include
