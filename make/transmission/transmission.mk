@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.92)
+$(call PKG_INIT_BIN, 2.93)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=3a8d045c306ad9acb7bf81126939b9594553a388482efa0ec1bfb67b22acd35f
-$(PKG)_SITE:=http://download.transmissionbt.com/files,https://transmission.cachefly.net
+$(PKG)_SOURCE_SHA256:=8815920e0a4499bcdadbbe89a4115092dab42ce5199f71ff9a926cfd12b9b90b
+$(PKG)_SITE:=https://github.com/transmission/transmission-releases/raw/master
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure)
 
 $(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,libtransmission/crypto-utils-polarssl.c cmake/FindPolarSSL.cmake)

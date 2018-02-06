@@ -83,7 +83,7 @@
  .Ar ratio
 --- extras/rpc-spec.txt
 +++ extras/rpc-spec.txt
-@@ -464,6 +464,8 @@
+@@ -479,6 +479,8 @@
     "download-queue-enabled"         | boolean    | if true, limit how many torrents can be downloaded at once
     "dht-enabled"                    | boolean    | true means allow dht in public torrents
     "encryption"                     | string     | "required", "preferred", "tolerated"
@@ -92,7 +92,7 @@
     "idle-seeding-limit"             | number     | torrents we're seeding will be stopped if they're idle for this long
     "idle-seeding-limit-enabled"     | boolean    | true if the seeding inactivity limit is honored by default
     "incomplete-dir"                 | string     | path for incomplete torrents, when enabled
-@@ -765,6 +767,8 @@
+@@ -780,6 +782,8 @@
           |         | yes       | torrent-rename-path  | new method
           |         | yes       | free-space           | new method
           |         | yes       | torrent-add          | new return return arg "torrent-duplicate"
@@ -103,7 +103,7 @@
  
 --- libtransmission/quark.c
 +++ libtransmission/quark.c
-@@ -399,7 +399,9 @@
+@@ -401,7 +401,9 @@
    { "watch-dir", 9 },
    { "watch-dir-enabled", 17 },
    { "webseeds", 8 },
@@ -116,7 +116,7 @@
  static int
 --- libtransmission/quark.h
 +++ libtransmission/quark.h
-@@ -402,6 +402,8 @@
+@@ -404,6 +404,8 @@
    TR_KEY_watch_dir_enabled,
    TR_KEY_webseeds,
    TR_KEY_webseedsSendingToUs,
@@ -160,7 +160,7 @@
    tr_variantDictAddInt  (d, TR_KEY_message_level,                   TR_LOG_INFO);
    tr_variantDictAddInt  (d, TR_KEY_download_queue_size,             5);
    tr_variantDictAddBool (d, TR_KEY_download_queue_enabled,          true);
-@@ -405,6 +407,8 @@
+@@ -407,6 +409,8 @@
    tr_variantDictAddBool (d, TR_KEY_idle_seeding_limit_enabled,   tr_sessionIsIdleLimited (s));
    tr_variantDictAddStr  (d, TR_KEY_incomplete_dir,               tr_sessionGetIncompleteDir (s));
    tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled,       tr_sessionIsIncompleteDirEnabled (s));
@@ -169,7 +169,7 @@
    tr_variantDictAddInt  (d, TR_KEY_message_level,                tr_logGetLevel ());
    tr_variantDictAddInt  (d, TR_KEY_peer_limit_global,            s->peerLimit);
    tr_variantDictAddInt  (d, TR_KEY_peer_limit_per_torrent,       s->peerLimitPerTorrent);
-@@ -841,6 +845,10 @@
+@@ -843,6 +847,10 @@
      tr_sessionSetIncompleteDirEnabled (session, boolVal);
    if (tr_variantDictFindBool (settings, TR_KEY_rename_partial_files, &boolVal))
      tr_sessionSetIncompleteFileNamingEnabled (session, boolVal);
@@ -180,7 +180,7 @@
  
    /* rpc server */
    if (session->rpcServer != NULL) /* close the old one */
-@@ -1067,6 +1075,49 @@
+@@ -1069,6 +1077,49 @@
  ****
  ***/
  
@@ -230,7 +230,7 @@
  void
  tr_sessionLock (tr_session * session)
  {
-@@ -1968,6 +2019,7 @@
+@@ -1970,6 +2021,7 @@
    tr_free (session->resumeDir);
    tr_free (session->torrentDir);
    tr_free (session->incompleteDir);
@@ -273,7 +273,7 @@
          tor->ratio_limit_hit_func (tor, tor->ratio_limit_hit_func_user_data);
 --- libtransmission/transmission.h
 +++ libtransmission/transmission.h
-@@ -311,6 +311,27 @@
+@@ -312,6 +312,27 @@
  
  
  /**
