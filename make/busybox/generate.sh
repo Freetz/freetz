@@ -119,7 +119,8 @@ depends_on MKFS_EXT2 "!FREETZ_PACKAGE_E2FSPROGS_E2MAKING"
 depends_on MDEV "FREETZ_KERNEL_VERSION_2_6_28_MIN"
 
 # setns syscall is available since kernel 3.0 (s. http://man7.org/linux/man-pages/man2/setns.2.html#VERSIONS)
-depends_on NSENTER "FREETZ_KERNEL_VERSION_3_10_MIN"
+# and since uclibc-ng 1.0.1 (s. https://github.com/wbx-github/uclibc-ng/commit/5d5c77daae197b00f89ad1517ffb5a7a01a78cff)
+depends_on NSENTER "FREETZ_KERNEL_VERSION_3_10_MIN \&\& FREETZ_AVM_UCLIBC_1_0_14"
 
 # fallocate applet requires posix_fallocate which is available (in Freetz) since uClibc-0.9.33
 depends_on FALLOCATE FREETZ_TARGET_UCLIBC_0_9_33
