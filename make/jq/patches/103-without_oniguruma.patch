@@ -1,0 +1,19 @@
+--- configure
++++ configure
+@@ -13634,6 +13634,7 @@
+
+ # check for ONIGURUMA library
+ HAVE_ONIGURUMA=0
++if ! test "$WO_ONIGURUMA" = "1"; then
+ as_ac_Header=`$as_echo "ac_cv_header_"oniguruma.h"" | $as_tr_sh`
+ ac_fn_c_check_header_mongrel "$LINENO" ""oniguruma.h"" "$as_ac_Header" "$ac_includes_default"
+ if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+@@ -13678,6 +13679,8 @@
+ fi
+
+ fi
++
++fi
+
+
+

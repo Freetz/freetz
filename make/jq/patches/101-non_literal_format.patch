@@ -1,0 +1,13 @@
+--- builtin.c
++++ builtin.c
+@@ -1188,7 +1188,10 @@
+   const char *fmt = jv_string_value(b);
+   size_t alloced = strlen(fmt) + 100;
+   char *buf = alloca(alloced);
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+   size_t n = strftime(buf, alloced, fmt, &tm);
++#pragma GCC diagnostic pop
+   jv_free(b);
+   /* POSIX doesn't provide errno values for strftime() failures; weird */
+   if (n == 0 || n > alloced)
