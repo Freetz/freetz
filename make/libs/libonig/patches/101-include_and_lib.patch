@@ -1,0 +1,28 @@
+--- onig-config.in
++++ onig-config.in
+@@ -30,6 +30,8 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ is_set_exec_prefix=no
++includedir=@includedir@
++libdir=@libdir@
+
+ while test $# -gt 0; do
+   case "$1" in
+@@ -57,13 +59,13 @@
+       echo $exec_prefix
+       ;;
+     --cflags)
+-      if test @includedir@ != /usr/include ; then
+-        show_includedir=-I@includedir@
++      if test ${includedir} != /usr/include ; then
++        show_includedir=-I${includedir}
+       fi
+       echo $show_includedir
+       ;;
+     --libs)
+-      echo -L@libdir@ -lonig
++      echo -L${libdir} -lonig
+       ;;
+     --version)
+       echo $ONIG_VERSION
