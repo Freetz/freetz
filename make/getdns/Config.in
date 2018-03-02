@@ -1,0 +1,14 @@
+config FREETZ_PACKAGE_GETDNS
+	bool "getdns 1.4.0"
+	select FREETZ_LIB_libyaml
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	select FREETZ_OPENSSL_VERSION_1_REQUIRED
+	select FREETZ_LIB_libssl
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libcrypto_WITH_EC
+	default n
+	help
+		getdns/Stubby is an application that acts as a local DNS
+		Privacy stub resolver (using DNS-over-TLS). Stubby encrypts
+		DNS queries sent from a client machine (desktop or laptop)
+		to a DNS Privacy resolver increasing end user privacy.
