@@ -1,0 +1,11 @@
+#! /bin/bash
+myname="${0##*/}"
+URL="freetz.org"
+output_name="freetz.wiki.tar.gz"
+trap 'rm -r $URL; echo "Execution aborted." 1>&2' HUP KILL INT
+rm -rf "$URL"
+wget -m -k -p -nv -E -I wiki -I chrome --rejected-log=rejected.txt http://$URL http://$URL/wikicss.css
+tar -c -z -f "$output_name" $URL
+printf "Wiki content from 'http://%s' mirrored and copied to '%s'.\n" "$URL" "$output_name" 1>&2
+rm -rf "$URL"
+exit 0
