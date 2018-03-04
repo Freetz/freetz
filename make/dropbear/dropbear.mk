@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2017.75)
+$(call PKG_INIT_BIN, 2018.76)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=6cbc1dcb1c9709d226dff669e5604172a18cf5dbf9a201474d5618ae4465098c
+$(PKG)_SOURCE_SHA256:=f2fb9167eca8cf93456a5fc1d4faf709902a3ab70dd44e352f3acbc3ffdaea65
 $(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
 #$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
 
@@ -18,10 +18,6 @@ $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dropbearkey" MULTI=1
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)/usr/bin/%,ssh scp)
 else
 $(PKG)_MAKE_OPTIONS:=PROGRAMS="dropbear dbclient dropbearkey scp" MULTI=1 SCPPROGRESS=1
-endif
-
-ifeq ($(strip $(FREETZ_PACKAGE_DROPBEAR_STATIC)),y)
-$(PKG)_MAKE_OPTIONS += STATIC=1
 endif
 
 # disable argument null checking (libtomcrypt)
@@ -57,7 +53,9 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-pam
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_NONFREETZ),$(if $(FREETZ_PACKAGE_DROPBEAR_STATIC),--enable-openpty,--disable-openpty),--enable-openpty)
 $(PKG)_CONFIGURE_OPTIONS += --enable-syslog
 $(PKG)_CONFIGURE_OPTIONS += --enable-shadow
+$(PKG)_CONFIGURE_OPTIONS += --disable-harden
 $(PKG)_CONFIGURE_OPTIONS += --disable-lastlog
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_STATIC),--enable-static)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_UTMP),,--disable-utmp)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_UTMP),,--disable-utmpx)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_WTMP),,--disable-wtmp)

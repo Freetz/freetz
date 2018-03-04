@@ -9,9 +9,9 @@
  #endif
 --- runopts.h
 +++ runopts.h
-@@ -121,6 +121,7 @@
- 	buffer * banner;
- 	char * pidfile;
+@@ -132,6 +132,7 @@
+ 
+ 	char * forced_command;
  
 +	char * childProcessPATH;
  } svr_runopts;
@@ -19,7 +19,7 @@
  extern svr_runopts svr_opts;
 --- svr-chansession.c
 +++ svr-chansession.c
-@@ -948,7 +948,7 @@
+@@ -961,7 +961,7 @@
  	addnewvar("LOGNAME", ses.authstate.pw_name);
  	addnewvar("HOME", ses.authstate.pw_dir);
  	addnewvar("SHELL", get_user_shell());
@@ -30,42 +30,42 @@
  	}
 --- svr-runopts.c
 +++ svr-runopts.c
-@@ -91,6 +91,8 @@
+@@ -98,6 +98,8 @@
  					"		(default port is %s if none specified)\n"
  					"-P PidFile	Create pid file PidFile\n"
  					"		(default %s)\n"
 +					"-x PATH		Set PATH environment variable of child processes\n"
-+					"		(default: %s)\n"
- #ifdef INETD_MODE
++					"		(default %s)\n"
+ #if INETD_MODE
  					"-i		Start for inetd\n"
  #endif
-@@ -115,6 +117,7 @@
- 					SFTPSERVER_PATH,
+@@ -123,6 +125,7 @@
  #endif
+ 					MAX_AUTH_TRIES,
  					DROPBEAR_MAX_PORTS, DROPBEAR_DEFPORT, DROPBEAR_PIDFILE,
 +					DEFAULT_PATH,
  					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
  }
  
-@@ -147,6 +150,7 @@
+@@ -162,6 +165,7 @@
  	svr_opts.hostkey = NULL;
  	svr_opts.delay_hostkey = 0;
  	svr_opts.pidfile = DROPBEAR_PIDFILE;
 +	svr_opts.childProcessPATH = NULL;
- #ifdef ENABLE_SVR_LOCALTCPFWD
+ #if DROPBEAR_SVR_LOCALTCPFWD
  	svr_opts.nolocaltcp = 0;
  #endif
-@@ -233,6 +237,9 @@
+@@ -247,6 +251,9 @@
  				case 'P':
  					next = &svr_opts.pidfile;
  					break;
 +				case 'x':
 +					next = &svr_opts.childProcessPATH;
 +					break;
- #ifdef DO_MOTD
+ #if DO_MOTD
  				/* motd is displayed by default, -m turns it off */
  				case 'm':
-@@ -330,6 +337,10 @@
+@@ -352,6 +359,10 @@
  	}
  #endif
  
