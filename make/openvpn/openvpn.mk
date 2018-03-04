@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_4),2.4.4,2.3.18))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_OPENVPN_VERSION_2_4),2.4.5,2.3.18))
 $(PKG)_SOURCE_SHA256_2.3.18:=5ed3c79c367794dc52a7561869ec3031c649861940c906e739d5a0f5f7901fce
-$(PKG)_SOURCE_SHA256_2.4.4 :=96cd1b8fe1e8cb2920f07c3fd3985faea756e16fdeebd11d3e146d5bd2b04a80
+$(PKG)_SOURCE_SHA256_2.4.5 :=43c0a363a332350f620d1cd93bb431e082bedbc93d4fb872f758650d53c1d29e
 $(PKG)_SOURCE_SHA256:=$($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=https://swupdate.openvpn.net/community/releases,http://build.openvpn.net/downloads/releases

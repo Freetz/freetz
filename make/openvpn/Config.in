@@ -10,13 +10,13 @@ config FREETZ_PACKAGE_OPENVPN
 choice
 	depends on FREETZ_PACKAGE_OPENVPN
 	prompt "Version"
-	default FREETZ_PACKAGE_OPENVPN_VERSION_2_3
+	default FREETZ_PACKAGE_OPENVPN_VERSION_2_4
 
 	config FREETZ_PACKAGE_OPENVPN_VERSION_2_3
-	bool "2.3.18"
+	bool "2.3.18 - DEPRECATED"
 
 	config FREETZ_PACKAGE_OPENVPN_VERSION_2_4
-	bool "2.4.4 - EXPERIMENTAL"
+	bool "2.4.5"
 endchoice
 
 choice
@@ -91,7 +91,6 @@ config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
 config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
 	bool "With traffic obfuscation"
 	depends on FREETZ_PACKAGE_OPENVPN
-	depends on FREETZ_PACKAGE_OPENVPN_VERSION_2_3
 	default n
 	help
 		Adds support for an additional configuration option 'scramble'
