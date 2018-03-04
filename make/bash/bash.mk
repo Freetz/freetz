@@ -22,7 +22,7 @@ $(PKG)_CONFIGURE_ENV += bash_cv_func_ctype_nonascii=no
 $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present
 $(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
 $(PKG)_CONFIGURE_ENV += bash_cv_getcwd_malloc=yes
-$(PKG)_CONFIGURE_ENV += bash_cv_getenv_redef=yes
+$(PKG)_CONFIGURE_ENV += bash_cv_getenv_redef=$(if $(FREETZ_PACKAGE_BASH_STATIC_LINK),no,yes)
 $(PKG)_CONFIGURE_ENV += bash_cv_job_control_missing=present
 $(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
 $(PKG)_CONFIGURE_ENV += bash_cv_opendir_not_robust=no
@@ -44,6 +44,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-read
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-history)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-bang-history)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),--with-installed-readline,)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_STATIC_LINK),--enable-static-link,)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

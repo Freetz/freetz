@@ -25,6 +25,13 @@ config FREETZ_PACKAGE_BASH_READLINE
 	help
 		Enable command line editing and history. This feature needs ncurses and readline.
 
+config FREETZ_PACKAGE_BASH_STATIC_LINK
+	bool "link bash shell as static binary"
+	depends on FREETZ_PACKAGE_BASH
+	default n
+	help
+		Include all needed libraries and build a single-file binary.
+
 config FREETZ_PATCH_BASH_LOGIN_SHELL
 	bool "add bash to the list of login shells"
 	depends on FREETZ_PACKAGE_BASH
