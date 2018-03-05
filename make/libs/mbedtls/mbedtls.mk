@@ -24,8 +24,8 @@ $(PKG)_FEATURES_TO_DISABLE += MBEDTLS_CERTS_C
 $(PKG)_FEATURES_TO_DISABLE += MBEDTLS_DEBUG_C
 $(PKG)_FEATURES_TO_DISABLE += MBEDTLS_PADLOCK_C
 $(PKG)_FEATURES_TO_DISABLE += MBEDTLS_XTEA_C
-$(PKG)_FEATURES_TO_DISABLE += $(if $(FREETZ_LIB_libmbedtls_WITH_BLOWFISH),,MBEDTLS_BLOWFISH_C)
-$(PKG)_FEATURES_TO_DISABLE += $(if $(FREETZ_LIB_libmbedtls_WITH_GENRSA),,MBEDTLS_GENPRIME)
+$(PKG)_FEATURES_TO_DISABLE += $(if $(FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH),,MBEDTLS_BLOWFISH_C)
+$(PKG)_FEATURES_TO_DISABLE += $(if $(FREETZ_LIB_libmbedcrypto_WITH_GENRSA),,MBEDTLS_GENPRIME)
 
 # Don't use -D/-U to define/undefine required symbols, patch config.h instead. The installed headers must contain properly defined symbols.
 $(PKG)_PATCH_POST_CMDS += $(SED) -ri $(foreach f,$(MBEDTLS_FEATURES_TO_DISABLE),-e 's|^([ \t]*$(_hash)define[ \t]+$(f)[ \t]*)$$$$|/* \1 */|') include/mbedtls/config.h;
