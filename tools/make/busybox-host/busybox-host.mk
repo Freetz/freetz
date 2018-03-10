@@ -1,7 +1,7 @@
 BUSYBOX_HOST_VERSION:=1.27.2
 BUSYBOX_HOST_SOURCE:=busybox-$(BUSYBOX_HOST_VERSION).tar.bz2
 BUSYBOX_HOST_SOURCE_MD5:=476186f4bab81781dab2369bfd42734e
-BUSYBOX_HOST_SITE:=http://www.busybox.net/downloads
+BUSYBOX_HOST_SITE:=https://web.archive.org/web/https://busybox.net/downloads
 
 BUSYBOX_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/busybox-host
 BUSYBOX_HOST_DIR:=$(TOOLS_SOURCE_DIR)/busybox-$(BUSYBOX_HOST_VERSION)
