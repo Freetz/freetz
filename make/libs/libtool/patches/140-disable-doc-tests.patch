@@ -1,0 +1,31 @@
+--- configure.ac
++++ configure.ac
+@@ -137,5 +137,5 @@
+ ## -------- ##
+ ## Outputs. ##
+ ## -------- ##
+-AC_CONFIG_FILES([Makefile doc/Makefile tests/Makefile])
++AC_CONFIG_FILES([Makefile])
+ AC_OUTPUT
+--- Makefile.am
++++ Makefile.am
+@@ -2,7 +2,7 @@
+ 
+ AUTOMAKE_OPTIONS = 1.3e gnu
+ 
+-BUILD_SUBDIRS = . libltdl doc tests
++BUILD_SUBDIRS = . libltdl
+ CONF_SUBDIRS = @CONF_SUBDIRS@
+ SUBDIRS = $(BUILD_SUBDIRS)
+ DIST_SUBDIRS = $(BUILD_SUBDIRS) $(CONF_SUBDIRS)
+--- Makefile.in
++++ Makefile.in
+@@ -210,7 +210,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.3e gnu
+-BUILD_SUBDIRS = . libltdl doc tests
++BUILD_SUBDIRS = . libltdl
+ SUBDIRS = $(BUILD_SUBDIRS)
+ DIST_SUBDIRS = $(BUILD_SUBDIRS) $(CONF_SUBDIRS)
+ CPPLAGS = @CPPFLAGS@
