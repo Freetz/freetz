@@ -1,0 +1,26 @@
+--- acinclude.m4
++++ acinclude.m4
+@@ -416,13 +416,13 @@
+ if test "$use_crypto" = "auto" && test "$found_crypto" = "none" || test "$use_crypto" = "$1"; then
+ m4_case([$1],
+ [openssl], [
+-  LIBSSH2_LIB_HAVE_LINKFLAGS([ssl], [crypto], [#include <openssl/ssl.h>], [
++  LIBSSH2_LIB_HAVE_LINKFLAGS([crypto],    [], [#include <openssl/ssl.h>], [
+     AC_DEFINE(LIBSSH2_OPENSSL, 1, [Use $1])
+-    LIBSREQUIRED="$LIBSREQUIRED${LIBSREQUIRED:+ }libssl libcrypto"
++    LIBSREQUIRED="$LIBSREQUIRED${LIBSREQUIRED:+ }libcrypto"
+ 
+     # Not all OpenSSL have AES-CTR functions.
+     libssh2_save_LIBS="$LIBS"
+-    LIBS="$LIBS $LIBSSL"
++    LIBS="$LIBS $LIBCRYPTO"
+     AC_CHECK_FUNCS(EVP_aes_128_ctr)
+     LIBS="$libssh2_save_LIBS"
+ 
+--- Makefile.OpenSSL.inc
++++ Makefile.OpenSSL.inc
+@@ -1,3 +1,3 @@
+ CRYPTO_CSOURCES = openssl.c
+ CRYPTO_HHEADERS = openssl.h
+-CRYPTO_LTLIBS = $(LTLIBSSL)
++CRYPTO_LTLIBS = $(LTLIBCRYPTO)

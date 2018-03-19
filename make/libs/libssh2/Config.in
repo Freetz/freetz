@@ -2,7 +2,7 @@ config FREETZ_LIB_libssh2
 	bool "libssh2 (libssh2.so)"
 	select FREETZ_LIB_libcrypto     if FREETZ_LIB_libssh2_WITH_SSL && FREETZ_LIB_libssh2_WITH_OPENSSL
 	select FREETZ_LIB_libmbedcrypto if FREETZ_LIB_libssh2_WITH_SSL && FREETZ_LIB_libssh2_WITH_MBEDTLS
-	select FREETZ_LIB_libz		if FREETZ_LIB_libssh2_WITH_ZLIB
+	select FREETZ_LIB_libz          if FREETZ_LIB_libssh2_WITH_ZLIB
 	default n
 	help
 		libssh2 is a client-side C library implementing the SSH2 protocol.
@@ -31,4 +31,3 @@ config FREETZ_LIB_libssh2_WITH_ZLIB
 	default n
 	help
 		This option enables zlib support in libssh2.
-

@@ -1,8 +1,7 @@
-$(call PKG_INIT_LIB, 1.8.0)
+$(call PKG_INIT_LIB, libssh2-1.8.0)
 $(PKG)_LIB_VERSION:=1.0.1
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3d1147cae66e2959ea5441b183de1b1c
-$(PKG)_SITE:=http://libssh2.org/download
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SITE:=git@https://github.com/libssh2/libssh2.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -11,6 +10,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 ifeq ($(strip $(FREETZ_LIB_libssh2_WITH_OPENSSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
+$(PKG)_CONFIGURE_ENV += OPENSSL_LIBCRYPTO_EXTRA_LIBS="$(OPENSSL_LIBCRYPTO_EXTRA_LIBS)"
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_LIBCRYPTO_EXTRA_LIBS
 endif
 ifeq ($(strip $(FREETZ_LIB_libssh2_WITH_MBEDTLS)),y)
 $(PKG)_DEPENDS_ON += mbedtls
@@ -24,7 +25,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libssh2_WITH_OPENSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libssh2_WITH_MBEDTLS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libssh2_WITH_ZLIB
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
+$(PKG)_CONFIGURE_PRE_CMDS += ./buildconf || { $(call ERROR,1,buildconf failed) };
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

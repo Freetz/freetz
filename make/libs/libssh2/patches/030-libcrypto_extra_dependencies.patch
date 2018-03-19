@@ -1,0 +1,16 @@
+--- acinclude.m4
++++ acinclude.m4
+@@ -420,6 +420,13 @@
+     AC_DEFINE(LIBSSH2_OPENSSL, 1, [Use $1])
+     LIBSREQUIRED="$LIBSREQUIRED${LIBSREQUIRED:+ }libcrypto"
+ 
++    # consider the hint from the build environment about the additional libcrypto dependencies
++    # required for e.g. proper static builds of some packages depending on libssh2
++    if test "x${OPENSSL_LIBCRYPTO_EXTRA_LIBS}" != "x"; then
++      LIBCRYPTO="${LIBCRYPTO} ${OPENSSL_LIBCRYPTO_EXTRA_LIBS}"
++      LTLIBCRYPTO="${LTLIBCRYPTO} ${OPENSSL_LIBCRYPTO_EXTRA_LIBS}"
++    fi
++
+     # Not all OpenSSL have AES-CTR functions.
+     libssh2_save_LIBS="$LIBS"
+     LIBS="$LIBS $LIBCRYPTO"
