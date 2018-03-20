@@ -78,7 +78,7 @@ choice
 		depends on FREETZ_AVM_GCC_4_8
 
 	config FREETZ_KERNEL_GCC_5
-		bool "gcc-5.4 (EXPERIMENTAL)"
+		bool "gcc-5.5"
 		depends on FREETZ_AVM_GCC_5
 endchoice
 
@@ -97,7 +97,7 @@ config FREETZ_KERNEL_GCC_VERSION
 	default "4.6.4" if FREETZ_KERNEL_GCC_4_6
 	default "4.7.4" if FREETZ_KERNEL_GCC_4_7
 	default "4.8.5" if FREETZ_KERNEL_GCC_4_8
-	default "5.4.0" if FREETZ_KERNEL_GCC_5
+	default "5.5.0" if FREETZ_KERNEL_GCC_5
 
 comment "Target toolchain options ----------------------------------"
 choice
@@ -200,7 +200,7 @@ choice
 			|| (FREETZ_AVM_GCC_4_9_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 
 	config FREETZ_TARGET_GCC_5
-		bool "gcc-5.4 (EXPERIMENTAL)"
+		bool "gcc-5.5"
 		depends on FREETZ_AVM_GCC_5 \
 			|| (FREETZ_AVM_GCC_5_MAX && (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE))
 endchoice
@@ -214,8 +214,8 @@ config FREETZ_TARGET_GCC_SNAPSHOT_DATE
 	string "Snapshot date (in YYYYMMDD format)"
 	depends on FREETZ_TARGET_GCC_SNAPSHOT
 	default "20150611" if FREETZ_TARGET_GCC_4_8
-	default "20150624" if FREETZ_TARGET_GCC_4_9
-	default "20170131" if FREETZ_TARGET_GCC_5
+	default "20160727" if FREETZ_TARGET_GCC_4_9
+	default "20171003" if FREETZ_TARGET_GCC_5
 
 config FREETZ_TARGET_GCC_DEFAULT_AS_NEEDED
 	bool
@@ -283,7 +283,7 @@ config FREETZ_TARGET_GCC_MINOR_VERSION
 	default "4"		if FREETZ_TARGET_GCC_4_7
 	default "5"		if FREETZ_TARGET_GCC_4_8
 	default "4"		if FREETZ_TARGET_GCC_4_9
-	default "4.0"		if FREETZ_TARGET_GCC_5
+	default "5.0"		if FREETZ_TARGET_GCC_5
 
 config FREETZ_TARGET_GCC_VERSION
 	string
