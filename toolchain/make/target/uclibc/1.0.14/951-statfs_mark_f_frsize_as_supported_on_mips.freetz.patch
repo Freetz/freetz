@@ -1,0 +1,36 @@
+--- libc/sysdeps/linux/mips/bits/statfs.h
++++ libc/sysdeps/linux/mips/bits/statfs.h
+@@ -26,7 +26,7 @@
+     long int f_type;
+ #define f_fstyp f_type
+     long int f_bsize;
+-    long int f_frsize;	/* Fragment size - unsupported */
++    long int f_frsize;
+ #ifndef __USE_FILE_OFFSET64
+     __fsblkcnt_t f_blocks;
+     __fsblkcnt_t f_bfree;
+@@ -53,7 +53,7 @@
+     long int f_type;
+ #define f_fstyp f_type
+     long int f_bsize;
+-    long int f_frsize;	/* Fragment size - unsupported */
++    long int f_frsize;
+     __fsblkcnt64_t f_blocks;
+     __fsblkcnt64_t f_bfree;
+     __fsblkcnt64_t f_files;
+@@ -69,3 +69,4 @@
+ 
+ /* Tell code we have these members.  */
+ #define _STATFS_F_NAMELEN
++#define _STATFS_F_FRSIZE
+--- test/misc/tst-statfs.c
++++ test/misc/tst-statfs.c
+@@ -21,8 +21,6 @@
+ 			argv[i], s.f_blocks, s.f_bfree, s.f_bsize);
+ #ifdef _STATFS_F_FRSIZE
+ 		printf("\tfrsize=%lld\n", s.f_frsize);
+-#elif defined __mips__
+-		printf("\tfrsize=mips, unsupported?\n");
+ #else
+ # error no _STATFS_F_FRSIZE
+ #endif

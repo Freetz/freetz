@@ -32,7 +32,7 @@ target-toolchain: \
 	$(TARGET_TOOLCHAIN_STAGING_DIR) \
 	$(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE) \
 	$(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP) \
-	kernel-configured uclibc-configured target-toolchain-kernel-headers \
+	kernel-configured target-toolchain-kernel-headers \
 	$(TARGET_TOOLCHAIN) \
 	| $(TARGET_TOOLCHAIN_DIR)
 

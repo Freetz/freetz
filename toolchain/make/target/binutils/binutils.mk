@@ -71,7 +71,7 @@ binutils-clean: binutils-uninstall
 binutils-dirclean: binutils-clean binutils_target-dirclean
 	$(RM) -r $(BINUTILS_DIR)
 
-binutils: uclibc-configured binutils-dependencies $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
+binutils: binutils-dependencies $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
 
 #############################################################
 #

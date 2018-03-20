@@ -16,7 +16,7 @@
 -    fi
 -
 -    for TESTLIB in libc.so `echo $USRLIBCGUESS` `echo $LIBCGUESS`
-+    for TESTLIB in /lib/libc.so.0
++    for TESTLIB in /lib/libc.so.${UCLIBC_MAJOR:-0}
      do
          echo "$as_me:$LINENO: checking if we can access libc with $TESTLIB" >&5
  echo $ECHO_N "checking if we can access libc with $TESTLIB... $ECHO_C" >&6

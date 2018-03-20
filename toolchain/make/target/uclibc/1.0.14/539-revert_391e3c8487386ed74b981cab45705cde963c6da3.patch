@@ -1,0 +1,95 @@
+From 391e3c8487386ed74b981cab45705cde963c6da3 Mon Sep 17 00:00:00 2001
+From: Waldemar Brodkorb <wbx@uclibc-ng.org>
+Date: Sun, 3 Jan 2016 19:20:23 +0100
+Subject: [PATCH] remove pregenerated locale support, we don't support it
+
+--- extra/Configs/Config.in
++++ extra/Configs/Config.in
+@@ -1557,6 +1557,17 @@
+ 	  If you do not need all locales that are available on your
+ 	  host-box, then set this to 'Y'.
+ 
++config UCLIBC_PREGENERATED_LOCALE_DATA
++	bool "Use Pre-generated Locale Data"
++	depends on UCLIBC_HAS_LOCALE && !TARGET_metag
++	help
++	  Use pre-built locale data.
++
++	  Note that these pregenerated locales are sensitive to your
++	  target architecture (endianess, bitcount).
++
++	  Saying N here is highly recommended.
++
+ endchoice
+ 
+ config UCLIBC_BUILD_MINIMAL_LOCALES
+@@ -1571,6 +1582,19 @@
+ 	  default:
+ 	      en_US
+ 
++config UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA
++	bool "Automagically Download the Pre-generated Locale Data (if necessary)"
++	depends on UCLIBC_PREGENERATED_LOCALE_DATA
++	help
++	  If you would like the build process to use 'wget' to automatically
++	  download the pregenerated locale data, enable this option.  Otherwise
++	  you will need to obtain the locale data yourself from:
++		http://www.uclibc.org/downloads/uClibc-locale-*.tgz
++	  and place the uClibc-locale-*.tgz tarball in the extra/locale/
++	  directory.
++
++	  Note that the use of pregenerated locale data is discouraged.
++
+ config UCLIBC_HAS_XLOCALE
+ 	bool "Extended Locale Support (experimental/incomplete)"
+ 	depends on UCLIBC_HAS_LOCALE
+--- extra/locale/Makefile.in
++++ extra/locale/Makefile.in
+@@ -190,6 +190,26 @@
+ 		$(SED) -e "s/^.*COL_IDX_\([^, ]*\).*$$/\1/" | sort | uniq | \
+ 		xargs $< $(locale_DIR)/collation $(FLAG-locale-verbose) -o $@
+ 
++$(locale_OUT)/$(LOCALE_DATA_FILENAME):
++ifeq ($(UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA),y)
++	( cd $(@D); $(WGET) http://www.uclibc.org/downloads/$(@F) )
++endif
++
++ifeq ($(UCLIBC_PREGENERATED_LOCALE_DATA),y)
++
++$(locale_SRC): $(locale_OUT)/$(LOCALE_DATA_FILENAME)
++	zcat $< | $(TAR) -xv -C $(@D) -f -
++	touch $@
++	# we use the one in locale_DIR
++	#$(RM) $(locale_OUT)/locale_mmap.h
++
++# for arch specific versions we have to at least overwrite
++# lt_defines.h/locale_data.c/uClibc_locale_data.h
++
++$(locale_OUT)/uClibc_locale_data.h: $(locale_SRC)
++
++else
++
+ $(locale_SRC): $(locale_OUT)/gen_ldc $(locale_OUT)/lt_defines.h
+ 	@$(disp_gen)
+ 	$(Q)$< $@
+@@ -199,6 +219,8 @@
+ 	$(Q)grep -v "define __LC" $< > $@
+ 	$(Q)cat $(wordlist 2,4,$^) >> $@
+ 
++endif
++
+ $(top_builddir)include/bits/uClibc_locale_data.h: $(locale_OUT)/uClibc_locale_data.h | $(top_builddir)include/bits/uClibc_config.h
+ 	@$(disp_gen)
+ 	$(Q)$(AWK) 'BEGIN{i=1}{if (/WANT_/) i=/endif/;else if (i) print $0}' \
+--- extra/scripts/randconfig.sh
++++ extra/scripts/randconfig.sh
+@@ -10,7 +10,9 @@
+ test "x$ARCH" = "x" && ARCH=`uname -m`
+ KCONFIG_ALLCONFIG=.config.allconfig
+ (echo TARGET_$ARCH=y
++ echo '# UCLIBC_PREGENERATED_LOCALE_DATA is not set'
+  echo '# DOMULTI is not set'
++ echo '# UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA is not set'
+ ) > $KCONFIG_ALLCONFIG
+ export KCONFIG_ALLCONFIG
+ 

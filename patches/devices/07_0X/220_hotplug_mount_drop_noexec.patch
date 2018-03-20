@@ -1,0 +1,25 @@
+--- etc/hotplug/udev-mount-sd
++++ etc/hotplug/udev-mount-sd
+@@ -177,19 +177,19 @@
+ ;;
+ vfat)
+ echo "MOUNT: mount -t 'vfat' $DEVNODE $MNTPATH" >/dev/console
+-if mount -t vfat -o $READMODE,noatime,shortname=winnt,uid=$FTPUID,gid=$FTPGID,utf8,$FMASK,$DMASK,noexec $DEVNODE "$MNTPATH"; then
++if mount -t vfat -o $READMODE,noatime,shortname=winnt,uid=$FTPUID,gid=$FTPGID,utf8,$FMASK,$DMASK        $DEVNODE "$MNTPATH"; then
+ new_filesystem=true
+ fi
+ ;;
+ ntfs)
+ echo "MOUNT: mount -t 'antfs' $DEVNODE $MNTPATH" >/dev/console
+-if mount -t antfs -o $READMODE,noatime,utf8,noexec $DEVNODE "$MNTPATH"; then
++if mount -t antfs -o $READMODE,noatime,utf8        $DEVNODE "$MNTPATH"; then
+ new_filesystem=true
+ fi
+ ;;
+ ext2|ext3|ext4)
+ echo "MOUNT:mount -t 'extX' $DEVNODE $MNTPATH" >/dev/console
+-if mount -t $filesystem_type -o noexec $DEVNODE "$MNTPATH"; then
++if mount -t $filesystem_type           $DEVNODE "$MNTPATH"; then
+ new_filesystem=true
+ chmod 777 "$MNTPATH"
+ fi

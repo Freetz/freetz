@@ -1,32 +1,44 @@
 UCLIBC_FILES = \
 	ld-uClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
-	ld-uClibc.so.0 \
+	$(sort \
+		ld-uClibc.so.0 \
+		ld-uClibc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	) \
+	\
+	libuClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libc.so \
-	libc.so.0 \
+	libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	\
 	libcrypt-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libcrypt.so \
-	libcrypt.so.0 \
+	libcrypt.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	\
 	libdl-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libdl.so \
-	libdl.so.0 \
+	libdl.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	\
 	libm-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libm.so \
-	libm.so.0 \
+	libm.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	\
 	libpthread-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libpthread.so \
-	libpthread.so.0 \
+	libpthread.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	\
 	librt-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	librt.so \
-	librt.so.0 \
+	librt.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	\
 	libthread_db-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libthread_db.so \
 	libthread_db.so.1 \
-	libuClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
+	\
 	libutil-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libutil.so \
-	libutil.so.0 \
+	libutil.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	\
 	$(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace), \
 		libubacktrace-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 		libubacktrace.so \
-		libubacktrace.so.0 \
+		libubacktrace.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
 	)

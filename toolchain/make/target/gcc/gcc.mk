@@ -145,7 +145,7 @@ $(GCC_BUILD_DIR1)/.installed: $(GCC_BUILD_DIR1)/.compiled
 
 gcc_initial-configured: $(GCC_BUILD_DIR1)/.configured
 
-gcc_initial: uclibc-configured binutils $(GCC_BUILD_DIR1)/.installed
+gcc_initial: binutils $(GCC_BUILD_DIR1)/.installed
 
 gcc_initial-uninstall: gcc-uninstall
 

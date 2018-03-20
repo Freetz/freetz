@@ -26,6 +26,9 @@ config FREETZ_AVM_VERSION_06_8X
 config FREETZ_AVM_VERSION_06_9X
 	bool
 
+config FREETZ_AVM_VERSION_07_0X
+	bool
+
 config FREETZ_AVM_VERSION_04_XX_MIN
 	bool
 	default y if \
@@ -78,7 +81,14 @@ config FREETZ_AVM_VERSION_06_8X_MIN
 config FREETZ_AVM_VERSION_06_9X_MIN
 	bool
 	default y if \
-		FREETZ_AVM_VERSION_06_9X
+		FREETZ_AVM_VERSION_06_9X || \
+		FREETZ_AVM_VERSION_07_0X_MIN
+	default n
+
+config FREETZ_AVM_VERSION_07_0X_MIN
+	bool
+	default y if \
+		FREETZ_AVM_VERSION_07_0X
 	default n
 
 config FREETZ_AVM_VERSION_04_XX_MAX
@@ -134,4 +144,11 @@ config FREETZ_AVM_VERSION_06_9X_MAX
 	default y if \
 		FREETZ_AVM_VERSION_06_8X_MAX || \
 		FREETZ_AVM_VERSION_06_9X
+	default n
+
+config FREETZ_AVM_VERSION_07_0X_MAX
+	bool
+	default y if \
+		FREETZ_AVM_VERSION_06_9X_MAX || \
+		FREETZ_AVM_VERSION_07_0X
 	default n

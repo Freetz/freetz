@@ -1,0 +1,17 @@
+--- src/mklibs
++++ src/mklibs
+@@ -606,12 +606,12 @@
+                 extra_post_obj.append(sysroot + libc_extras_dir + "/sofini.o")
+                 symbols.add(ProvidedSymbol('__dso_handle', None, None, True, True))
+ 
+-            if soname == "libc.so.0":
++            if soname in ("libc.so.0", "libc.so.1"):
+                 symbols.add(ProvidedSymbol('__uClibc_init', None, None, True, True))
+                 symbols.add(ProvidedSymbol('__uClibc_fini', None, None, True, True))
+                 extra_pre_obj.append("-Wl,-init,__uClibc_init")
+ 
+-            if soname == "libpthread.so.0":
++            if soname in ("libpthread.so.0", "libpthread.so.1"):
+                 symbols.add(ProvidedSymbol('__pthread_initialize_minimal_internal', None, None, True, True))
+                 extra_flags.append("-Wl,-z,nodelete,-z,initfirst,-init=__pthread_initialize_minimal_internal")
+ 

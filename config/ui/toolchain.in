@@ -9,6 +9,7 @@ choice
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Download and use precompiled toolchains"
+		depends on FREETZ_AVM_VERSION_06_9X_MAX
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build own toolchains (requires 4GB diskspace)"
@@ -20,7 +21,8 @@ choice
 	prompt "Kernel binutils"
 	default FREETZ_KERNEL_BINUTILS_2_18 if FREETZ_AVM_GCC_3_4
 	default FREETZ_KERNEL_BINUTILS_2_22 if FREETZ_AVM_GCC_4_6_MIN && FREETZ_KERNEL_VERSION_2_6_32_MAX
-	default FREETZ_KERNEL_BINUTILS_2_24 if FREETZ_AVM_GCC_4_6_MIN && FREETZ_KERNEL_VERSION_3_10_MIN
+	default FREETZ_KERNEL_BINUTILS_2_24 if FREETZ_AVM_GCC_4_6_MIN && FREETZ_KERNEL_VERSION_3_10_MIN   && FREETZ_AVM_VERSION_06_9X_MAX
+	default FREETZ_KERNEL_BINUTILS_2_25 if FREETZ_AVM_GCC_5_MIN   && FREETZ_KERNEL_VERSION_3_10_MIN   && FREETZ_AVM_VERSION_07_0X_MIN
 
 	config FREETZ_KERNEL_BINUTILS_2_18
 		bool "binutils-2.18"
@@ -40,6 +42,7 @@ choice
 	config FREETZ_KERNEL_BINUTILS_2_24
 		bool "binutils-2.24"
 		depends on FREETZ_AVM_GCC_4_6_MIN
+		depends on FREETZ_AVM_VERSION_06_9X_MAX
 		depends on FREETZ_KERNEL_VERSION_3_10_MIN || (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 
 	config FREETZ_KERNEL_BINUTILS_2_25
@@ -106,6 +109,7 @@ choice
 	default FREETZ_TARGET_UCLIBC_0_9_29 if FREETZ_AVM_UCLIBC_0_9_29
 	default FREETZ_TARGET_UCLIBC_0_9_32 if FREETZ_AVM_UCLIBC_0_9_32
 	default FREETZ_TARGET_UCLIBC_0_9_33 if FREETZ_AVM_UCLIBC_0_9_33
+	default FREETZ_TARGET_UCLIBC_1_0_14 if FREETZ_AVM_UCLIBC_1_0_14
 
 	config FREETZ_TARGET_UCLIBC_0_9_28
 	bool "0.9.28"
@@ -125,6 +129,10 @@ choice
 	depends on FREETZ_AVM_UCLIBC_0_9_33 \
 		|| (FREETZ_AVM_UCLIBC_0_9_32 && FREETZ_KERNEL_VERSION_2_6_32) \
 		|| ((FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE) && (FREETZ_AVM_UCLIBC_0_9_29 || FREETZ_AVM_UCLIBC_0_9_32))
+
+	config FREETZ_TARGET_UCLIBC_1_0_14
+	bool "1.0.14"
+	depends on FREETZ_AVM_UCLIBC_1_0_14
 endchoice
 
 comment "CAUTION: Usage of an uClibc version higher than that used by AVM may lead to an unstable box"
@@ -133,20 +141,22 @@ comment "CAUTION: Usage of an uClibc version higher than that used by AVM may le
 
 config FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
 	bool
-	#default y if FREETZ_TARGET_UCLIBC_0_9_32 || FREETZ_TARGET_UCLIBC_0_9_33
-	default y if FREETZ_TARGET_UCLIBC_0_9_33
+	#default y	if FREETZ_TARGET_UCLIBC_0_9_32
+	default y	if FREETZ_TARGET_UCLIBC_0_9_33
+	default y	if FREETZ_TARGET_UCLIBC_1
 	default n
 
 config FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
 	bool
 	depends on FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
-	default y if FREETZ_AVM_UCLIBC_0_9_33 && !FREETZ_REMOVE_AVM_E2FSPROGS
+	default y if (FREETZ_AVM_UCLIBC_0_9_33 || FREETZ_TARGET_UCLIBC_1) && !FREETZ_REMOVE_AVM_E2FSPROGS
 	default n
 
 choice
 	prompt "Target binutils"
 	default FREETZ_TARGET_BINUTILS_2_22 if FREETZ_KERNEL_VERSION_2_6_32_MAX
-	default FREETZ_TARGET_BINUTILS_2_24 if FREETZ_KERNEL_VERSION_3_10_MIN
+	default FREETZ_TARGET_BINUTILS_2_24 if FREETZ_KERNEL_VERSION_3_10_MIN   && FREETZ_AVM_VERSION_06_9X_MAX
+	default FREETZ_TARGET_BINUTILS_2_25 if FREETZ_KERNEL_VERSION_3_10_MIN   && FREETZ_AVM_VERSION_07_0X_MIN
 
 	config FREETZ_TARGET_BINUTILS_2_22
 		bool "binutils-2.22"
@@ -159,6 +169,7 @@ choice
 
 	config FREETZ_TARGET_BINUTILS_2_24
 		bool "binutils-2.24"
+		depends on FREETZ_AVM_VERSION_06_9X_MAX
 		depends on FREETZ_KERNEL_VERSION_3_10_MIN || (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 
 	config FREETZ_TARGET_BINUTILS_2_25
@@ -219,7 +230,8 @@ config FREETZ_TARGET_GCC_SNAPSHOT_DATE
 
 config FREETZ_TARGET_GCC_DEFAULT_AS_NEEDED
 	bool
-	default n if FREETZ_TARGET_UCLIBC_0_9_28 || FREETZ_TARGET_UCLIBC_0_9_29
+	# TODO 1.0.14: enable it for 1.0.14, as of now uClibc fails to compile (probably wrong link order), thus disabled
+	default n if FREETZ_TARGET_UCLIBC_0_9_28 || FREETZ_TARGET_UCLIBC_0_9_29 || FREETZ_TARGET_UCLIBC_1_0_14
 	default y
 	help
 		Enabling this option changes linker default from '--no-as-needed' to '--as-needed'.
@@ -253,12 +265,31 @@ choice
 
 endchoice
 
+config FREETZ_TARGET_UCLIBC_0
+	bool
+	default y			if FREETZ_TARGET_UCLIBC_0_9_28
+	default y			if FREETZ_TARGET_UCLIBC_0_9_29
+	default y			if FREETZ_TARGET_UCLIBC_0_9_32
+	default y			if FREETZ_TARGET_UCLIBC_0_9_33
+	default n
+
+config FREETZ_TARGET_UCLIBC_1
+	bool
+	default y			if FREETZ_TARGET_UCLIBC_1_0_14
+	default n
+
 config FREETZ_TARGET_UCLIBC_VERSION
 	string
 	default "0.9.28"	if FREETZ_TARGET_UCLIBC_0_9_28
 	default "0.9.29"	if FREETZ_TARGET_UCLIBC_0_9_29
 	default "0.9.32.1"	if FREETZ_TARGET_UCLIBC_0_9_32
 	default "0.9.33.2"	if FREETZ_TARGET_UCLIBC_0_9_33
+	default "1.0.14"	if FREETZ_TARGET_UCLIBC_1_0_14
+
+config FREETZ_TARGET_UCLIBC_MAJOR_VERSION
+	string
+	default "1"			if FREETZ_TARGET_UCLIBC_1
+	default "0"			if FREETZ_TARGET_UCLIBC_0
 
 config FREETZ_TARGET_BINUTILS_VERSION
 	string
@@ -349,7 +380,7 @@ config FREETZ_TARGET_TOOLCHAIN_AVM_COMPATIBLE
 
 config FREETZ_TARGET_UCLIBC_DODEBUG
 	bool "Include debug symbols in uClibc"
-	depends on (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE) && (FREETZ_TARGET_UCLIBC_0_9_32 || FREETZ_TARGET_UCLIBC_0_9_33)
+	depends on (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE) && (FREETZ_TARGET_UCLIBC_0_9_32 || FREETZ_TARGET_UCLIBC_0_9_33 || FREETZ_TARGET_UCLIBC_1)
 	default n
 	help
 		This is a developers only option! Do not activate it
@@ -380,7 +411,8 @@ config FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET
 						( \
 						FREETZ_TARGET_UCLIBC_0_9_29 || \
 						FREETZ_TARGET_UCLIBC_0_9_32 || \
-						FREETZ_TARGET_UCLIBC_0_9_33    \
+						FREETZ_TARGET_UCLIBC_0_9_33 || \
+						FREETZ_TARGET_UCLIBC_1         \
 						)
 	default y
 	help

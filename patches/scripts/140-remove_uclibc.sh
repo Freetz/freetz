@@ -4,6 +4,7 @@
 [ "$FREETZ_AVM_UCLIBC_0_9_29" == "y" ] && version="0.9.29"
 [ "$FREETZ_AVM_UCLIBC_0_9_32" == "y" ] && version="0.9.32"
 [ "$FREETZ_AVM_UCLIBC_0_9_33" == "y" ] && version="0.9.33.2"
+[ "$FREETZ_AVM_UCLIBC_1_0_14" == "y" ] && version="1.0.14"
 
 [ -z "$version" ] && error 1 "FREETZ_AVM_UCLIBC is not configured"
 

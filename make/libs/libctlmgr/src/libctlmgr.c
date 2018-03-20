@@ -20,6 +20,14 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#define xstr(s) str(s)
+#define str(s) #s
+
+#ifndef LIBC_LOCATION
+#if defined(__UCLIBC__)
+#define LIBC_LOCATION "/lib/libc.so." xstr(__UCLIBC_MAJOR__)
+#endif
+#endif
 
 static void debug_printf(char *fmt, ...) {
 #ifdef DEBUG
@@ -45,7 +53,7 @@ static void _libctlmgr_init (void)
    */
 	void *libc_handle = RTLD_NEXT;
 #else
-	void *libc_handle = dlopen("/lib/libc.so.0", RTLD_LOCAL | RTLD_LAZY);
+	void *libc_handle = dlopen(LIBC_LOCATION, RTLD_LOCAL | RTLD_LAZY);
 #endif
 	if (!libc_handle || NULL != (err = dlerror())) {
 		fprintf(stderr, "ctlmgr: libctlmgr unable to get libc-handle: %s\n", err);
