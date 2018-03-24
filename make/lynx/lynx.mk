@@ -15,6 +15,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_
 $(PKG)_CONFIGURE_OPTIONS += \
 	--enable-warnings \
 	--with-screen=ncurses \
+	--with-ssl \
 	--enable-nested-tables \
 	--enable-read-eta \
 	--enable-charset-choice \
