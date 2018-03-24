@@ -1,0 +1,85 @@
+#!/bin/sh
+
+DAEMON=isc-dhcp
+DAEMON_BIN=isc-dhcpd
+DAEMON_CONFIG=/tmp/flash/${DAEMON}/${DAEMON_BIN}.conf
+PID_FILE=/var/run/dhcpd.pid
+. /etc/init.d/modlibrc
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+if [ "$ISC_DHCP_MULTID" != "yes" -o "$FREETZ_AVMDAEMON_DISABLE_DNS" == "y" ]; then
+	nomultid=y
+else
+	[ "$(/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
+fi
+
+start() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	touch /var/tmp/flash/dhcpd.leases
+	modlib_startdaemon $DAEMON_BIN $ISC_DHCP_CMDLINE
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	return 0
+}
+
+stop() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	kill $(cat $PID_FILE) 2>/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	return 0
+}
+
+case $1 in
+	""|load|multid)
+		if [ "$1" == "multid" ]; then
+			[ "$ISC_DHCP_WRAPPER" != "yes" -o "$EXTERNAL_FREETZ_PACKAGE_ISC_DHCP" == "y" ] && exit
+		else
+			[ "$ISC_DHCP_WRAPPER" == "yes" -a "$EXTERNAL_FREETZ_PACKAGE_ISC_DHCP" != "y" ] && exit
+		fi
+
+		mkdir -p "/tmp/flash/${DAEMON}"
+
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/${DAEMON_BIN}_conf > $DAEMON_CONFIG
+
+		modreg cgi "$DAEMON" "isc-dhcp"
+		modreg daemon $DAEMON
+		# modreg file <pkg> <id> <title> <sec-level>  <desc-file (ohne Pfad und .def-Endung)>  
+		modreg file $DAEMON dhcpd-conf Configuration 0 isc-dhcpd_conf
+
+		modlib_start $ISC_DHCP_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		# modlib_stop
+		# TODO ;=)
+		/usr/bin/killall -9 isc-dhcpd
+		rm -f $PID_FILE
+		;;
+	restart)
+		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+			modlib_check_running && nomultid=y
+		fi
+		# modlib_restart
+		# TODO ;=)
+		/usr/bin/killall -9 isc-dhcpd
+		rm -f $PID_FILE
+		modlib_start
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
