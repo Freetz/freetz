@@ -12,7 +12,7 @@ if [ "$EXTERNAL_FREETZ_PACKAGE_ISC_DHCP" != "y" ]; then
 cat << EOF
 <p>
 <input type="hidden" name="wrapper" value="no">
-<input id="e1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="w1"> start before multid</label><br>
+<input disabled="true" id="e1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="e1"> start before multid does not currently work</label><br>
 </p>
 EOF
 fi
