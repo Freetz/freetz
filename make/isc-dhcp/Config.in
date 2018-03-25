@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_ISC_DHCP
-	bool "ISC dhcp 4.3.3-P1 (binary only)"
+	bool "ISC dhcp 4.3.6-P1"
 	default n
 	help
 		ISC DHCP is open source software that implements the Dynamic Host Configuration Protocol
@@ -7,3 +7,8 @@ config FREETZ_PACKAGE_ISC_DHCP
 		solution for implementing DHCP servers, relay agents, and clients for small local networks
 		to large enterprises. ISC DHCP solution supports both IPv4 and IPv6, and is suitable
 		for use in high-volume and high-reliability applications.
+
+		Note: if you are using dnsmasq: to avoid conflict you can do any of:
+		- pass -p <otherport> to isc-dhcp 
+		- pass --dhcp-alternate-port to dnsmasq
+		- disable dhcp for dnsmasq by removing the dhcp-range setting

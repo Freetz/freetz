@@ -1,7 +1,7 @@
 
-$(call PKG_INIT_BIN, 4.3.3-P1)
+$(call PKG_INIT_BIN, 4.3.6-P1)
 $(PKG)_SOURCE:=dhcp-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=c11e896dffa1bfbc49462965d3f6dec45534e34068603546d9a236f2aa669921
+$(PKG)_SOURCE_SHA256:=2fd177bef02856f05fe17713ced9bfcc7d94f14c933c15f2f2fbedc9cc57a3c3
 $(PKG)_SITE:=http://ftp.isc.org/isc/dhcp/$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/server/dhcpd
@@ -20,6 +20,7 @@ $(PKG)_MAKE_OPTIONS += EXTRA_LDFLAGS="-Wl,--gc-sections"
 
 $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_random=yes
 $(PKG)_CONFIGURE_OPTIONS += \
+	--with-randomdev="/dev/random" \
 	--with-libbind="$(BIND_EXPORT_LIB_DIR)/usr" \
 	--enable-paranoia \
 	--enable-early-chroot
