@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 7.6p1)
+$(call PKG_INIT_BIN, 7.7p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=a6984bc2c72192bed015c8b879b35dd9f5350b3b
+$(PKG)_SOURCE_SHA1:=446fe9ed171f289f0d62197dffdbfdaaf21c49f2
 $(PKG)_SITE:=http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable,ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
 $(PKG)_BIN_BINARIES             := ssh scp ssh-add ssh-agent ssh-keygen ssh-keysign ssh-keyscan sftp

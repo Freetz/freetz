@@ -1,6 +1,6 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -42,7 +42,7 @@
+@@ -40,7 +40,7 @@
  
  CC=@CC@
  LD=@LD@
@@ -9,7 +9,7 @@
  CPPFLAGS=-I. -I$(srcdir) @CPPFLAGS@ $(PATHS) @DEFS@
  LIBS=@LIBS@
  K5LIBS=@K5LIBS@
-@@ -58,7 +58,7 @@
+@@ -55,7 +55,7 @@
  SED=@SED@
  ENT=@ENT@
  XAUTH_PATH=@XAUTH_PATH@
@@ -17,10 +17,10 @@
 +LDFLAGS=-L. -Lopenbsd-compat/ @LDFLAGS@ $(EXTRA_LDFLAGS)
  EXEEXT=@EXEEXT@
  MANFMT=@MANFMT@
- 
+ MKDIR_P=@MKDIR_P@
 --- openbsd-compat/Makefile.in
 +++ openbsd-compat/Makefile.in
-@@ -8,13 +8,13 @@
+@@ -6,13 +6,13 @@
  VPATH=@srcdir@
  CC=@CC@
  LD=@LD@
@@ -34,11 +34,11 @@
 -LDFLAGS=-L. @LDFLAGS@
 +LDFLAGS=-L. @LDFLAGS@ $(EXTRA_LDFLAGS)
  
- OPENBSD=base64.o basename.o bcrypt_pbkdf.o bindresvport.o blowfish.o daemon.o dirname.o fmt_scaled.o getcwd.o getgrouplist.o getopt_long.o getrrsetbyname.o glob.o inet_aton.o inet_ntoa.o inet_ntop.o mktemp.o pwcache.o readpassphrase.o reallocarray.o realpath.o recallocarray.o rresvport.o setenv.o setproctitle.o sha1.o sha2.o rmd160.o md5.o sigact.o strcasestr.o strlcat.o strlcpy.o strmode.o strnlen.o strptime.o strsep.o strtonum.o strtoll.o strtoul.o strtoull.o timingsafe_bcmp.o vis.o blowfish.o bcrypt_pbkdf.o explicit_bzero.o freezero.o
- 
+ OPENBSD=base64.o \
+ 	basename.o \
 --- openbsd-compat/regress/Makefile.in
 +++ openbsd-compat/regress/Makefile.in
-@@ -8,12 +8,12 @@
+@@ -6,12 +6,12 @@
  VPATH=@srcdir@
  CC=@CC@
  LD=@LD@

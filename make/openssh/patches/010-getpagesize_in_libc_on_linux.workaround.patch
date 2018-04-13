@@ -7,7 +7,7 @@ We workaround the problem for Freetz in a hackish way by patching the "in libucb
 
 --- configure
 +++ configure
-@@ -11783,13 +11783,12 @@
+@@ -12163,13 +12163,12 @@
  $as_echo "#define HAVE_GETPAGESIZE 1" >>confdefs.h
  
  else
@@ -24,7 +24,7 @@ We workaround the problem for Freetz in a hackish way by patching the "in libucb
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -11809,18 +11808,18 @@
+@@ -12189,18 +12188,18 @@
  }
  _ACEOF
  if ac_fn_c_try_link "$LINENO"; then :
@@ -49,13 +49,3 @@ We workaround the problem for Freetz in a hackish way by patching the "in libucb
  
  fi
  
---- openbsd-compat/bsd-getpagesize.c
-+++ openbsd-compat/bsd-getpagesize.c
-@@ -1,5 +1,7 @@
- /* Placed in the public domain */
- 
-+#include "includes.h"
-+
- #ifndef HAVE_GETPAGESIZE
- 
- #include <unistd.h>
