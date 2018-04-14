@@ -126,19 +126,25 @@ $ipaddr = (@{$boxes[0]})[4];
 	# sub _PASV { shift->command("P\@SW")->response() == Net::FTP::CMD_OK }
 	sub _GETENV {
 		my $ftp = shift;
-		my ($ok, $name, $value);
+		my ($ok, $value, $rvalue, $rname, $line);
 
 		$ftp->command("GETENV",@_);
-		while(length($ok = $ftp->response()) < 1) {
-			my $line = $ftp->getline();
-			unless (defined($value)) {
+		if ($ftp->ok())
+		{
+			$line = $ftp->getline();
+			$value = "(missing)";
+			while ($line)
+			{
+				my $ec = substr($line, 0, 3);
+				return $value if ($ec eq "200");
+				return $value if ($ec eq "501"); # usually "ok()" should prevent us from here
 				chomp($line);
-				($name, $value) = split(/\s+/, $line, 2);
+				($rname, $rvalue) = split(/\s+/, $line, 2);
+				$value = $rvalue if ($rname); # no assignment on empty lines
+				$line = $ftp->getline();
 			}
 		}
-		$ftp->debug_print(0, "getenv: $value\n")
-			if $ftp->debug();
-		return $value;
+		return "(missing)";
 	}
 	sub getenv {
 		my $ftp = shift;
@@ -270,6 +276,9 @@ print "MTD1: $mtd1len bytes\n";
 print "MTD2: $mtd2len bytes\n";
 print "MTD3: $mtd3len bytes\n";
 print "MTD4: $mtd4len bytes\n";
+
+die "missing HWRevision" if ($hwrev eq "(missing)");
+die "wrong HWRevision" if ($hwrev >= 185);
 
 $ftp->hash(\*STDOUT, 64 * 1024);
 
