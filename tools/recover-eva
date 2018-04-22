@@ -126,19 +126,47 @@ $ipaddr = (@{$boxes[0]})[4];
 	# sub _PASV { shift->command("P\@SW")->response() == Net::FTP::CMD_OK }
 	sub _GETENV {
 		my $ftp = shift;
-		my ($ok, $name, $value);
 
 		$ftp->command("GETENV",@_);
-		while(length($ok = $ftp->response()) < 1) {
-			my $line = $ftp->getline();
-			unless (defined($value)) {
+
+		# TODO: override parse_response if possible
+
+		# EVA responses are not RFC 959 compliant - they miss the first line
+		# s. https://tools.ietf.org/html/rfc959, section 4.2
+		# this results in the following behavior of Net::FTP::parse_response
+		# in error case:
+		#    EVA outputs just one line, according to RFC 959 it's actually
+		#    the last line, but at the same time it's the first line =>
+		#    parse_response parses it and (by coincidence) works
+		# in success case:
+		#    EVA outputs multiple lines - actual response line(s) and the last line
+		#    actual response line doesn't match status line pattern =>
+		#    parse_response fails to parse it and returns empty string
+		if ( length($ftp->response()) == 0 ) {
+			my $value;
+
+			while (1) {
+				my $line = $ftp->getline();
 				chomp($line);
-				($name, $value) = split(/\s+/, $line, 2);
+
+				# last line
+				if ($line =~ s/^(\d\d\d)[ ]//) {
+					if ($1 eq "200") {
+						$ftp->debug_print(0, "getenv: $value\n")
+							if $ftp->debug();
+						return $value;
+					}
+					return undef;
+				}
+
+				unless (defined($value)) {
+					my ($rname, $rvalue) = split(/\s+/, $line, 2);
+					$value = $rvalue if ($rname); # no assignment on empty lines
+				}
 			}
 		}
-		$ftp->debug_print(0, "getenv: $value\n")
-			if $ftp->debug();
-		return $value;
+
+		return undef;
 	}
 	sub getenv {
 		my $ftp = shift;
@@ -240,14 +268,37 @@ $ipaddr = (@{$boxes[0]})[4];
 	}
 }
 
+sub getenv_test {
+	my $ftp = shift;
+
+	my $getenv_hwrev = $ftp->getenv('HWRevision');
+	print "getenv_hwrev is undef\n"        if !defined $getenv_hwrev;
+	print "getenv_hwrev = $getenv_hwrev\n" if  defined $getenv_hwrev;
+
+	my $getenv_empty = $ftp->getenv('');
+	print  "getenv_empty is undef\n" if !defined $getenv_empty;
+
+	my $getenv_non_existing = $ftp->getenv('non_existing');
+	print "getenv_non_existing is undef\n" if !defined $getenv_non_existing;
+
+	die "getenv_test: always die\n";
+}
+
 # passive mode geht mit Net::FTP nicht, connected zu spaet fuer ADAM2!
 # EVA kann nur passive mode
 $ftp = ADAM2FTP->new(inet_ntoa($ipaddr), Passive => 1, Debug => 0, Timeout => 600)
 	or die "can't FTP ADAM2";
 $ftp->login("adam2", "adam2") or die "can't login adam2";
 $ftp->binary();
-my $pid   = $ftp->getenv('ProductID');
+
+#getenv_test($ftp);
+
 my $hwrev = $ftp->getenv('HWRevision');
+die "missing HWRevision" if !defined $hwrev;
+# TODO: improve the check
+die "unsupported HWRevision, this script is intended to be used on NOR boxes only" if ($hwrev >= 185);
+
+my $pid   = $ftp->getenv('ProductID');
 my $fwrev = $ftp->getenv('firmware_info');
 my $ulrev = $ftp->getenv('urlader-version');
 my @mtd0 = split(',', $ftp->getenv('mtd0'), 2);
