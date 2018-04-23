@@ -124,49 +124,59 @@ $ipaddr = (@{$boxes[0]})[4];
 	# ADAM2 requires upper case commands, some brain dead firewall doesn't ;-)
 	sub _USER { shift->command("USER",@_)->response() }
 	# sub _PASV { shift->command("P\@SW")->response() == Net::FTP::CMD_OK }
+
+	# EVA responses are not RFC 959 compliant - they miss the first line
+	# s. https://tools.ietf.org/html/rfc959, section 4.2
+	#
+	# This results in the following behavior of Net::CMD::response()
+	# in error case:
+	#    EVA outputs just one line, according to RFC 959 it's actually
+	#    the last line, but at the same time it's the 1st line
+	#    => response() parses it and (by coincidence) works as decribed
+	#       in the documentation
+	# in success case:
+	#    EVA outputs multiple lines
+	#      actual response line(s) (response payload)
+	#      and the last line
+	#    the 1st line of the actual response doesn't match "the status line"-pattern
+	#    => response() fails to parse it and returns
+	#       either empty string (older versions of Net::Cmd)
+	#       or     CMD_ERROR    (recent versions of Net::Cmd)
+	#
+	# TODO: override response if possible, overriding parse_response is not enough
+
 	sub _GETENV {
 		my $ftp = shift;
+		my $value;
 
 		$ftp->command("GETENV",@_);
 
-		# TODO: override parse_response if possible
+		# EVA responses are not RFC 959 compliant
+		# do not rely on the return values of Net::Cmd->response()
+		# as they depend on the version of Net::Cmd (s. the long note above)
 
-		# EVA responses are not RFC 959 compliant - they miss the first line
-		# s. https://tools.ietf.org/html/rfc959, section 4.2
-		# this results in the following behavior of Net::FTP::parse_response
-		# in error case:
-		#    EVA outputs just one line, according to RFC 959 it's actually
-		#    the last line, but at the same time it's the first line =>
-		#    parse_response parses it and (by coincidence) works
-		# in success case:
-		#    EVA outputs multiple lines - actual response line(s) and the last line
-		#    actual response line doesn't match status line pattern =>
-		#    parse_response fails to parse it and returns empty string
-		if ( length($ftp->response()) == 0 ) {
-			my $value;
+		# instead simply iterate over all response lines and exit
+		# after reaching the line matching "the status line"-pattern
 
-			while (1) {
-				my $line = $ftp->getline();
-				chomp($line);
+		while (1) {
+			my $line = $ftp->getline();
+			chomp($line);
 
-				# last line
-				if ($line =~ s/^(\d\d\d)[ ]//) {
-					if ($1 eq "200") {
-						$ftp->debug_print(0, "getenv: $value\n")
-							if $ftp->debug();
-						return $value;
-					}
-					return undef;
+			# status line? always the last line in EVA responses
+			if ($line =~ s/^(\d\d\d)[ ]//) {
+				if ($1 eq "200") {
+					$ftp->debug_print(0, "getenv: $value\n")
+						if $ftp->debug();
+					return $value;
 				}
+				return undef;
+			}
 
-				unless (defined($value)) {
-					my ($rname, $rvalue) = split(/\s+/, $line, 2);
-					$value = $rvalue if ($rname); # no assignment on empty lines
-				}
+			unless (defined($value)) {
+				my ($rname, $rvalue) = split(/\s+/, $line, 2);
+				$value = $rvalue if ($rname); # no assignment on empty lines
 			}
 		}
-
-		return undef;
 	}
 	sub getenv {
 		my $ftp = shift;
