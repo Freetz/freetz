@@ -1,6 +1,6 @@
-YOURFRITZ_HOST_VERSION:=41e0b5203c
+YOURFRITZ_HOST_VERSION:=11010cf9f8
 YOURFRITZ_HOST_SOURCE:=yourfritz-$(YOURFRITZ_HOST_VERSION).tar.xz
-YOURFRITZ_HOST_SITE:=git@https://github.com/er13/YourFritz.git
+YOURFRITZ_HOST_SITE:=git@https://github.com/PeterPawn/YourFritz.git
 
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/avm_pubkey_to_pkcs8
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/check_signed_image
