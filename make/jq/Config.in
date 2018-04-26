@@ -1,0 +1,30 @@
+config FREETZ_PACKAGE_JQ
+	bool "jq - a command-line JSON processor"
+	default n
+	select FREETZ_LIB_libm if !FREETZ_PACKAGE_JQ_STATIC
+	select FREETZ_LIB_libonig if !FREETZ_PACKAGE_JQ_STATIC && FREETZ_PACKAGE_JQ_WITH_RE_SUPPORT
+	help
+		jq is a command-line JSON processor.
+
+		Because all files together need some room in the image
+		file (600-800 KB uncompressed), it's possible to move
+		them to an 'external' image, if it's activated at all.
+
+config FREETZ_PACKAGE_JQ_WITH_RE_SUPPORT
+	bool "include support for regular expresssions using Oniguruma"
+	depends on FREETZ_PACKAGE_JQ && FREETZ_SHOW_EXPERT
+	default y
+	help
+		Support for regular expressions adds 358 KB uncompressed
+		(about 105 KB compressed) to the final image (in the
+		binary and/or a shared library).
+		You may omit RE support here, if you'll not need it.
+
+config FREETZ_PACKAGE_JQ_STATIC
+	bool "Build static binary"
+	depends on FREETZ_PACKAGE_JQ && FREETZ_SHOW_EXPERT
+	default n
+	help
+		The resulting binary takes ~800 KB (~250 KB compressed)
+		on a MIPS-based architecture (-march=34kc).
+
