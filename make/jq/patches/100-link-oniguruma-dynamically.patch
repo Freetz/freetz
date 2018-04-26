@@ -1,0 +1,11 @@
+--- Makefile.in
++++ Makefile.in
+@@ -681,7 +681,7 @@
+ @ENABLE_ERROR_INJECTION_TRUE@libinject_errors_la_LDFLAGS = -module
+ generate_ver = ver="`{ $(srcdir)/scripts/version || echo '$(VERSION)' ; } | sed 's/.*/\#define JQ_VERSION \"&\"/'`"
+ jq_SOURCES = main.c version.h
+-jq_LDFLAGS = -static-libtool-libs $(am__append_3)
++jq_LDFLAGS =                      $(am__append_3)
+ jq_LDADD = libjq.la -lm
+ 
+ ### Tests (make check)
