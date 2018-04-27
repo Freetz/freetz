@@ -1,0 +1,20 @@
+Fixes
+
+./compat/getentropy_linux.c:390:4: warning: implicit declaration of function 'getsid' [-Wimplicit-function-declaration]
+    HX((pid = getsid(pid)) == -1, pid);
+    ^
+./compat/getentropy_linux.c:392:4: warning: implicit declaration of function 'getpgid' [-Wimplicit-function-declaration]
+    HX((pid = getpgid(0)) == -1, pid);
+    ^
+
+--- configure
++++ configure
+@@ -3954,7 +3954,7 @@
+ 
+ 
+ case "$host_os" in
+-  linux* ) CFLAGS="$CFLAGS -D_BSD_SOURCE -D_DEFAULT_SOURCE"
++  linux* ) CFLAGS="$CFLAGS -D_GNU_SOURCE"
+   ;;
+   solaris* ) CFLAGS="$CFLAGS -D__EXTENSIONS__"  # for strdup() from <string.h>
+   ;;
