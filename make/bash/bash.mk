@@ -12,6 +12,7 @@ endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BASH_MINIMAL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BASH_READLINE
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BASH_STATIC
 
 $(PKG)_CONFIGURE_ENV += ac_cv_rl_prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_ENV += ac_cv_rl_version=6.2
@@ -22,7 +23,7 @@ $(PKG)_CONFIGURE_ENV += bash_cv_func_ctype_nonascii=no
 $(PKG)_CONFIGURE_ENV += bash_cv_func_sigsetjmp=present
 $(PKG)_CONFIGURE_ENV += bash_cv_func_strcoll_broken=no
 $(PKG)_CONFIGURE_ENV += bash_cv_getcwd_malloc=yes
-$(PKG)_CONFIGURE_ENV += bash_cv_getenv_redef=yes
+$(PKG)_CONFIGURE_ENV += bash_cv_getenv_redef=$(if $(FREETZ_PACKAGE_BASH_STATIC),no,yes)
 $(PKG)_CONFIGURE_ENV += bash_cv_job_control_missing=present
 $(PKG)_CONFIGURE_ENV += bash_cv_must_reinstall_sighandlers=no
 $(PKG)_CONFIGURE_ENV += bash_cv_opendir_not_robust=no
@@ -39,11 +40,12 @@ $(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-restricted
 $(PKG)_CONFIGURE_OPTIONS += --without-bash-malloc
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_MINIMAL),--enable-minimal-config,)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_MINIMAL),--enable-minimal-config)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-readline)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-history)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),,--disable-bang-history)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),--with-installed-readline,)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_READLINE),--with-installed-readline)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BASH_STATIC),--enable-static-link)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
