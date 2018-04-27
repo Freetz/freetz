@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, v0.6)
+$(call PKG_INIT_BIN, 584d2d9a3f)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/PeterPawn/$(pkg).git
 
@@ -17,7 +17,7 @@ $($(PKG)_LIB_BINARY) $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(PRIVATEKEYPASSWORD_DIR) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS)" \
-		OPT="" \
+		CC_OPT="" \
 		AR="$(TARGET_AR)" \
 		RANLIB="$(TARGET_RANLIB)"
 
