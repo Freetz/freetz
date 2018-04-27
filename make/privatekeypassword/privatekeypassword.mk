@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, v0.6)
+$(call PKG_INIT_BIN, 02da6a4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/PeterPawn/$(pkg).git
 
