@@ -28,9 +28,6 @@ config FREETZ_PACKAGE_BASH_READLINE
 config FREETZ_PACKAGE_BASH_STATIC_LINK
 	bool "link bash shell as static binary"
 	depends on FREETZ_PACKAGE_BASH
-	select FREETZ_LIB_libncurses
-	select FREETZ_LIB_libreadline
-	select FREETZ_LIB_libhistory
 	default n
 	help
 		Include all needed libraries and build a single-file binary.
