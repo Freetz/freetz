@@ -6,6 +6,10 @@ $(PKG)_SITE:=@GNU/$(pkg)
 $(PKG)_BINARY:=$(BASH_DIR)/bash
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/bin/bash
 
+$(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS)
+$(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
+$(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
+
 ifeq ($(strip $(FREETZ_PACKAGE_BASH_READLINE)),y)
 $(PKG)_DEPENDS_ON += ncurses readline
 endif
@@ -53,8 +57,13 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(BASH_DIR)/builtins \
-		LDFLAGS_FOR_BUILD= mkbuiltins
+		EXTRA_CFLAGS="$(BASH_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS="$(BASH_EXTRA_LDFLAGS)" \
+		LDFLAGS_FOR_BUILD="" \
+		mkbuiltins
 	$(SUBMAKE) -C $(BASH_DIR) \
+		EXTRA_CFLAGS="$(BASH_EXTRA_CFLAGS)" \
+		EXTRA_LDFLAGS="$(BASH_EXTRA_LDFLAGS)" \
 		READLINE_LDFLAGS="" \
 		HISTORY_LDFLAGS="" \
 		all
