@@ -29,7 +29,7 @@
  
 +#if defined(__UCLIBC__)
 +	/* UCLIBC doesn't implement sysconf(_SC_PHYS_PAGES) */
-+	int phys_mem = get_proc_meminfo_value("MemTotal: %ld kB");
++	int phys_mem = get_proc_meminfo_value("MemTotal: %ld kB") >> 10;
 +#else
  	long long num_pages = sysconf(_SC_PHYS_PAGES);
  	long long page_size = sysconf(_SC_PAGESIZE);
