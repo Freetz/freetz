@@ -50,7 +50,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-pie
 
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
-$(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static)
+$(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static -lssh -ldl)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
