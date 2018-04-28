@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.6.34)
+$(call PKG_INIT_BIN, 5.6.36)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256_5.6.34:=21453be3a045204cd2717543ef42771324f411f40962ecda4fe841930a933128
+$(PKG)_SOURCE_SHA256_5.6.36:=18f536bf548e909b4e980379d0c4e56d024b2b1eb1c9768fd169360491f1d6dd
 $(PKG)_SOURCE_SHA256:=$($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://de.php.net/distributions,http://de2.php.net/distributions
 
