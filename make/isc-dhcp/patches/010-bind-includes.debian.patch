@@ -1,0 +1,21 @@
+description: explicitly include bind's isc/util.h header
+author: Michael Gilbert <mgilbert@debian.org>
+bug-debian: http://bugs.debian.org/894093
+
+Freetz: fixes the following build error
+
+libomapi.a(connection.o): In function `trace_connect_input':
+connection.c:(.text.trace_connect_input+0xcc): undefined reference to `POST'
+collect2: error: ld returned 1 exit status
+
+--- includes/dhcpd.h
++++ includes/dhcpd.h
+@@ -62,6 +62,8 @@
+ # include <net/if_dl.h>
+ #endif
+ 
++#include <isc/util.h>
++
+ #include <setjmp.h>
+ 
+ #include "cdefs.h"
