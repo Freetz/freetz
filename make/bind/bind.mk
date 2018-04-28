@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 9.10.3-P4)
+$(call PKG_INIT_BIN, 9.11.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=2ac044b5fbdf45fb45107af0df961b3b7cb5262a3bf1948ed3fe7a170dd13e3e
+$(PKG)_SOURCE_SHA256:=0d9dde14b2ec7f9cdc3b69f19540c7a2e4eee7b6c727965dfae48810965876f5
 $(PKG)_SITE:=http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
@@ -25,7 +25,7 @@ $(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-epoll=no
-$(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/urandom"
+$(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/random"
 $(PKG)_CONFIGURE_OPTIONS += --with-libtool
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
 $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
@@ -35,6 +35,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-idnlib
 $(PKG)_CONFIGURE_OPTIONS += --without-purify
 $(PKG)_CONFIGURE_OPTIONS += --without-libjson
 $(PKG)_CONFIGURE_OPTIONS += --without-libxml2
+$(PKG)_CONFIGURE_OPTIONS += --without-zlib
 $(PKG)_CONFIGURE_OPTIONS += --disable-threads
 $(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
 $(PKG)_CONFIGURE_OPTIONS += --disable-symtable
