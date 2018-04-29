@@ -55,9 +55,9 @@ config FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
-#	depends on \
-#		FREETZ_REPLACE_KERNEL_AVAILABLE || \
-#		!FREETZ_KERNEL_LAYOUT_GRX5
+	depends on \
+		FREETZ_REPLACE_KERNEL_AVAILABLE || \
+		!FREETZ_AVM_VERSION_07_0X
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.
