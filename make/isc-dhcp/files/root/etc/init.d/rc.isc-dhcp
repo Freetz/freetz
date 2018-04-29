@@ -1,0 +1,94 @@
+#!/bin/sh
+
+DAEMON=isc-dhcp
+DAEMON_BIN=isc-dhcpd
+DAEMON_CONFIG=/tmp/flash/${DAEMON}/${DAEMON_BIN}.conf
+PID_FILE=/var/run/${DAEMON}/${DAEMON_BIN}.pid
+LEASES_FILE=/var/tmp/${DAEMON_BIN}.leases
+USER_GROUP=nobody
+. /etc/init.d/modlibrc
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+if [ "$ISC_DHCP_MULTID" != "yes" -o "$FREETZ_AVMDAEMON_DISABLE_DNS" == "y" ]; then
+	nomultid=y
+else
+	[ "$(/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
+fi
+
+startdaemon_pre() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null || true
+}
+
+start() {
+	touch $LEASES_FILE
+	chown $USER_GROUP:$USER_GROUP $LEASES_FILE
+
+	local OPTIONS="$ISC_DHCP_CMDLINE -cf $DAEMON_CONFIG -q -user $USER_GROUP -group $USER_GROUP -pf $PID_FILE -lf $LEASES_FILE"
+	modlib_startdaemon $DAEMON_BIN $OPTIONS
+}
+
+startdaemon_post() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null || true
+}
+
+stop_pre() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+}
+
+stop_post() {
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+}
+
+case $1 in
+	""|load|multid)
+		if [ "$1" == "multid" ]; then
+			[ "$ISC_DHCP_WRAPPER" != "yes" -o "$EXTERNAL_FREETZ_PACKAGE_ISC_DHCP" == "y" ] && exit
+		else
+			[ "$ISC_DHCP_WRAPPER" == "yes" -a "$EXTERNAL_FREETZ_PACKAGE_ISC_DHCP" != "y" ] && exit
+		fi
+
+		mkdir -p ${DAEMON_CONFIG%/*}
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/${DAEMON_BIN}_conf > $DAEMON_CONFIG
+
+		modlib_add_user_and_group $USER_GROUP
+		mkdir -p ${PID_FILE%/*}
+		chown $USER_GROUP:$USER_GROUP ${PID_FILE%/*}
+
+		modreg cgi "$DAEMON" "isc-dhcp"
+		modreg daemon $DAEMON
+		modreg file $DAEMON dhcpd-conf '$(lang de:"Konfiguration" en:"Configuration")' 0 isc-dhcpd_conf
+
+		modlib_start $ISC_DHCP_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+			modlib_check_running && nomultid=y
+		fi
+		modlib_restart
+		;;
+	reload)
+		modlib_reload
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

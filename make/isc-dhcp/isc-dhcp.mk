@@ -19,6 +19,8 @@ $(PKG)_MAKE_OPTIONS += EXTRA_LDFLAGS="-Wl,--gc-sections"
 $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_random=yes
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/random"
 $(PKG)_CONFIGURE_OPTIONS += --with-libbind="$(BIND_EXPORT_LIB_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --enable-paranoia
+$(PKG)_CONFIGURE_OPTIONS += --enable-early-chroot
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
