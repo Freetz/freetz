@@ -12,7 +12,7 @@ You can request a subnet from your SixXS [https://www.sixxs.net/home/ home page]
 
 === Creating a Feetz Image with Radvd ===
 
-Follow the directions from the [[http://freetz.org/wiki/WikiStart.en# Wiki]] [[br]]
+Follow the directions from the [[/wiki/WikiStart.en# Wiki]] [[br]]
 After the following step you can configure the packages you want to have included in your image.
 {{{
 make menuconfig
@@ -37,17 +37,17 @@ Advanced options  --->	BusyBox options  --->	IPv6 Options  --->	[*] traceroute6 
 
 ==== 'Patching' Freetz-1.2 with Client config option ====
 Due to an application that is not supported on later versions, I prever to stay on Freetz-1.2. [[br]]
-But due to issues with other IPv6 enabled devices, I would like to include enhancement [http://freetz.org/ticket/1921 1921] also in Freetz-1.2. [[br]]
+But due to issues with other IPv6 enabled devices, I would like to include enhancement [/ticket/1921 1921] also in Freetz-1.2. [[br]]
 
 With the following commands executed before make you can have this enhancement included also:
 
 {{{
 cd ~/freetz-1.2/make/radvd/files/root/etc/default.radvd/
-wget "http://freetz.org/browser/trunk/make/radvd/files/root/etc/default.radvd/radvd.cfg?rev=9419&format=txt" -O radvd.cfg
+wget "/browser/trunk/make/radvd/files/root/etc/default.radvd/radvd.cfg?rev=9419&format=txt" -O radvd.cfg
 cd ~/freetz-1.2/make/radvd/files/root/etc/default.radvd/
-wget "http://freetz.org/browser/trunk/make/radvd/files/root/etc/default.radvd/radvd_conf?rev=9453&format=txt" -O radvd_conf
+wget "/browser/trunk/make/radvd/files/root/etc/default.radvd/radvd_conf?rev=9453&format=txt" -O radvd_conf
 cd ~/freetz-1.2/make/radvd/files/root/usr/lib/cgi-bin/
-wget "http://freetz.org/browser/trunk/make/radvd/files/root/usr/lib/cgi-bin/radvd.cgi?rev=9444&format=txt" -O radvd.cgi
+wget "/browser/trunk/make/radvd/files/root/usr/lib/cgi-bin/radvd.cgi?rev=9444&format=txt" -O radvd.cgi
 }}}
 
 
@@ -58,7 +58,7 @@ E.g. you can pick the first possilbe /64 range 2001:aaaa:bbbb:0000::/64
 
 Network range - 2001:aaaa:bbbb:0000:0000:0000:0000:0000 - 2001:aaaa:bbbb:0000:ffff:ffff:ffff:ffff
 
-'''Note''' In below screenshot enhancement [http://freetz.org/ticket/1921 1921] is included.
+'''Note''' In below screenshot enhancement [/ticket/1921 1921] is included.
 [[Screenshot(236)]]
 
 To prevent unexpected reboots I had to unselect the 'Activate on start resp. deactivate on stop the IPv6 forwarding' on my FB-7270v3.[[br]]

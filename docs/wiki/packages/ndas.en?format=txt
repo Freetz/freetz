@@ -7,8 +7,8 @@ I'm using NDAS currenlty to play movies up to 720p.
 === Creating a Feetz Image with NDAS ===
 
 '''Note''' NDAS is now supported for little endian (e.g. 7170, 7270) and big endian (e.g. 7390) thanks to [http://www.ip-phone-forum.de/member.php?u=83184 ER13].[[br]]
-The changes are introduced in [http://freetz.org/changeset/11390 11390] to [http://freetz.org/changeset/11392 11392], [http://freetz.org/changeset/11434 11434], and [http://freetz.org/changeset/11464 11464].[[br]][[br]]
-Follow the directions from the [http://freetz.org/wiki/WikiStart.en# Wiki] [[br]]
+The changes are introduced in [/changeset/11390 11390] to [/changeset/11392 11392], [/changeset/11434 11434], and [/changeset/11464 11464].[[br]][[br]]
+Follow the directions from the [/wiki/WikiStart.en# Wiki] [[br]]
 After the following step you can configure the packages you want to have included in your image.
 {{{
 make menuconfig
@@ -20,16 +20,16 @@ Package selection  ---> Packages  ---> [*] (binary only)
 }}}
 
 Recommended optional additional packages:
- [http://freetz.org/wiki/packages/ntfs-3g NTFS-3G] [[br]]
- [http://freetz.org/wiki/packages/samba Samba] [[br]]
+ [/wiki/packages/ntfs-3g NTFS-3G] [[br]]
+ [/wiki/packages/samba Samba] [[br]]
 or(/and)
- [http://freetz.org/wiki/packages/nfsd NFS Server] (no ntfs support, but a faster) [[br]]
+ [/wiki/packages/nfsd NFS Server] (no ntfs support, but a faster) [[br]]
  with optionally some additional patches for ext3 or/and ReiserFS (see Patches  ---> ... in menuconfig) [[br]]
  
 
 === Setup in Freetz ===
 
-There is currently (Freetz-trunk [http://freetz.org/changeset/11464 11464]) no web-interface available for NDAS. [[br]]
+There is currently (Freetz-trunk [/changeset/11464 11464]) no web-interface available for NDAS. [[br]]
 You can configure NDAS via console (e.g. via ssh or telnet access), but you can also use a script in rc.custom to get all configured for NDAS to work at startup. [[br]]
 
 ==== Manual configure via console ====
@@ -125,7 +125,7 @@ But I wasn't able to mount my FAT32 formatted drive, also tried -t vfat.
 
 ==== Script at startup ====
 
-You can use the script in file rc.custom, which can be edited via the [http://freetz.org/wiki/packages/mod#rc_custom web-interface]. 
+You can use the script in file rc.custom, which can be edited via the [/wiki/packages/mod#rc_custom web-interface]. 
 
 {{{
 #! /bin/sh
@@ -222,7 +222,7 @@ Some hints that could be helpful.
 === Usages ===
 I used to have Ndas toghether with Samba on my 7270v3, to play movies from the ntfs formated NetDrive, via a Win7 pc over HDMI to my TV.[[br]]
 This is working well for movies upto 720p, 1080p (e.g. upto 8GB). I also tried a 1080p of about 25GB, but that didn't work out.[[br]]
-Via monitoring using [http://freetz.org/wiki/packages/netsnmp.en Net-SNMP] I found that it is the CPU resources on the 7270v3, which is the limiting factor.[[br]][[br]]
+Via monitoring using [/wiki/packages/netsnmp.en Net-SNMP] I found that it is the CPU resources on the 7270v3, which is the limiting factor.[[br]][[br]]
 Currently I'm using Ndas with NFS on my 7390, with ext3 formatted NetDrive, via a Win7 pc over HDMI to my TV.[[br]]
 I found it possible to play a movie of about 25GB with 1080p, only the very high detailed fragments where causing issues.[[br]]
 It is still the CPU resources on the 7390 causing a bottleneck.
