@@ -1,0 +1,20 @@
+--- etc/init.d/S15-filesys
++++ etc/init.d/S15-filesys
+@@ -93,7 +93,7 @@
+ fi
+ umask_save=`umask`
+ umask 0
+-if mount -t ubifs "${AvmUserDataDev}" "${mountpoint}" -o sync,noexec ; then
++if mount -t ubifs "${AvmUserDataDev}" "${mountpoint}" -o sync        ; then
+ chmod 775 "${mountpoint}"
+ echo "[ubifs] Internal Memory assigned @ ${mountpoint}" ;
+ sync
+@@ -111,7 +111,7 @@
+ else
+ echo "[ubi] Internal Memory erasing failed"
+ fi
+-if mount -t ubifs "${AvmUserDataDev}" "${mountpoint}" -o sync,noexec ; then
++if mount -t ubifs "${AvmUserDataDev}" "${mountpoint}" -o sync        ; then
+ chmod 775 "${mountpoint}"
+ echo "[ubifs] Internal Memory assigned @ ${mountpoint}" ;
+ sync
